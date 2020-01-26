@@ -52,7 +52,7 @@ class Timeline {
 		this.page_info = page.page_info
 	}
 
-	getFeed() {
+	async fetchFeed() {
 		const feed = new RSS({
 			title: `@${this.user.data.username}`,
 			feed_url: `${config.website_origin}/u/${this.user.data.username}/rss.xml`,
@@ -63,9 +63,9 @@ class Timeline {
 			ttl: this.user.getTtl(1000*60) // scale to minute
 		})
 		const page = this.pages[0] // only get posts from first page
-		for (const item of page) {
-			feed.item(item.getFeedData())
-		}
+		await Promise.all(page.map(item =>
+			item.fetchFeedData().then(feedData => feed.item(feedData))
+		))
 		return feed
 	}
 }

@@ -9,7 +9,8 @@ require("../testimports")(collectors, TimelineChild, TimelineBaseMethods)
 
 const rssDescriptionTemplate = compile(`
 p(style='white-space: pre-line')= caption
-img(alt=alt src=src)
+each child in children
+	img(alt=child.alt src=child.src width=child.width height=child.height)
 `)
 
 class TimelineEntry extends TimelineBaseMethods {
@@ -198,13 +199,22 @@ class TimelineEntry extends TimelineBaseMethods {
 		}
 	}
 
-	getFeedData() {
+	async fetchFeedData() {
+		const children = await this.fetchChildren()
 		return {
 			title: this.getCaptionIntroduction() || `New post from @${this.getBasicOwner().username}`,
-			description: rssDescriptionTemplate({src: `${config.website_origin}${this.getDisplayUrlP()}`, alt: this.getAlt(), caption: this.getCaption()}),
+			description: rssDescriptionTemplate({
+				caption: this.getCaption(),
+				children: children.map(child => ({
+					src: `${config.website_origin}${child.getDisplayUrlP()}`,
+					alt: child.getAlt(),
+					width: child.data.dimensions.width,
+					height: child.data.dimensions.height
+				}))
+			}),
 			author: this.data.owner.username,
 			url: `${config.website_origin}/p/${this.data.shortcode}`,
-			guid: `${config.website_origin}/p/${this.data.shortcode}`,
+			guid: `${config.website_origin}/p/${this.data.shortcode}`, // Is it wise to keep the origin in here? The same post would have a different ID from different servers.
 			date: new Date(this.data.taken_at_timestamp*1000)
 			/*
 				Readers should display the description as HTML rather than using the media enclosure.

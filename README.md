@@ -6,6 +6,8 @@ Bibliogram works without client-side JavaScript, has no ads or tracking, and doe
 
 See also: [Invidious, a front-end for YouTube.](https://github.com/omarroth/invidious)
 
+Join the Bibliogram discussion room on Matrix: [#bibliogram:matrix.org](https://riot.im/app/#/room/#bibliogram:matrix.org)
+
 ## Features
 
 - [x] View profile and timeline
@@ -42,11 +44,15 @@ These features will not be added, unless you ask _reallllly_ nicely:
 - Comments
 - Tagging users
 
+These features will not be added, and I will not investigate adding them:
+
+- Viewing or interacting with a private profile's timeline
+
 ## Instances
 
-There is currently no official Bibliogram instance.
+There is currently no official Bibliogram instance, but there will be in the future.
 
-Perflyst has hosted an instance on https://bibliogram.snopyta.org ([example page](https://bibliogram.snopyta.org/u/instagram)), but this is not managed by me and I cannot verify its code.
+For now, you can see a list of instances created by the community [on the wiki page](https://github.com/cloudrac3r/bibliogram/wiki).
 
 If you only use one computer, you can install Bibliogram on that computer and then access the instance through localhost.
 

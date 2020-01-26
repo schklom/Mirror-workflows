@@ -13,6 +13,8 @@ class FreezeWidth extends ElemJS {
 	}
 }
 
+const intersectionThreshold = 0
+
 class NextPage extends FreezeWidth {
 	constructor(container) {
 		super(container)
@@ -21,7 +23,7 @@ class NextPage extends FreezeWidth {
 		this.attribute("href", "javascript:void(0)")
 		this.event("click", event => this.onClick(event))
 
-		this.observer = new IntersectionObserver(entries => this.onIntersect(entries), {rootMargin: "-20px", threshold: 1})
+		this.observer = new IntersectionObserver(entries => this.onIntersect(entries), {rootMargin: "0px", threshold: intersectionThreshold})
 		this.observer.observe(this.element)
 	}
 
@@ -44,7 +46,7 @@ class NextPage extends FreezeWidth {
 	 * @param {IntersectionObserverEntry[]} entries
 	 */
 	onIntersect(entries) {
-		if (entries.some(entry => entry.isIntersecting && entry.intersectionRatio == 1)) this.onClick()
+		if (entries.some(entry => entry.isIntersecting && entry.intersectionRatio >= intersectionThreshold)) this.onClick()
 	}
 }
 

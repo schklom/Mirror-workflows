@@ -11,6 +11,11 @@ module.exports = {
 	},
 
 	symbols: {
-		NO_MORE_PAGES: Symbol("NO_MORE_PAGES")
+		NO_MORE_PAGES: Symbol("NO_MORE_PAGES"),
+		TYPE_IMAGE: Symbol("TYPE_IMAGE"),
+		TYPE_VIDEO: Symbol("TYPE_VIDEO"),
+		TYPE_GALLERY: Symbol("TYPE_GALLERY"),
+		TYPE_GALLERY_IMAGE: Symbol("TYPE_GALLERY_IMAGE"),
+		TYPE_GALLERY_VIDEO: Symbol("TYPE_GALLERY_VIDEO")
 	}
 }

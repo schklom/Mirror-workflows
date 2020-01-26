@@ -10,6 +10,6 @@ mixin timeline_page(page, pageIndex)
 		.timeline-inner
 			- const suggestedSize = 260 //- from css :(
 			each image in page
-				- const thumbnail = image.getSuggestedThumbnail(suggestedSize) //- use this as the src in case there are problems with srcset
+				- const thumbnail = image.getSuggestedThumbnailP(suggestedSize) //- use this as the src in case there are problems with srcset
 				a(href=`/p/${image.data.shortcode}`).sized-link
-					img(src=thumbnail.src alt=image.getAlt() width=thumbnail.config_width height=thumbnail.config_height srcset=image.getSrcset() sizes=image.getSizes()).sized-image
+					img(src=thumbnail.src alt=image.getAlt() width=thumbnail.config_width height=thumbnail.config_height srcset=image.getThumbnailSrcsetP() sizes=image.getThumbnailSizes()).sized-image

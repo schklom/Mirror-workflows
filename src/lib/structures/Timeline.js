@@ -1,14 +1,20 @@
 const RSS = require("rss")
 const constants = require("../constants")
 const config = require("../../../config")
-const TimelineImage = require("./TimelineImage")
+const TimelineEntry = require("./TimelineEntry")
 const InstaCache = require("../cache")
 const collectors = require("../collectors")
-require("../testimports")(constants, collectors, TimelineImage, InstaCache)
+require("../testimports")(constants, collectors, TimelineEntry, InstaCache)
 
 /** @param {any[]} edges */
 function transformEdges(edges) {
-	return edges.map(e => collectors.createShortcodeFromData(e.node, false))
+	return edges.map(e => {
+		/** @type {import("../types").TimelineEntryAll} */
+		const data = e.node
+		const entry = collectors.getOrCreateShortcode(data.shortcode)
+		entry.apply(data)
+		return entry
+	})
 }
 
 class Timeline {
@@ -17,7 +23,7 @@ class Timeline {
 	 */
 	constructor(user) {
 		this.user = user
-		/** @type {import("./TimelineImage")[][]} */
+		/** @type {import("./TimelineEntry")[][]} */
 		this.pages = []
 		this.addPage(this.user.data.edge_owner_to_timeline_media)
 		this.page_info = this.user.data.edge_owner_to_timeline_media.page_info

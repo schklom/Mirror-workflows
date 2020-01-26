@@ -5,8 +5,8 @@ const {TtlCache, RequestCache} = require("./cache")
 require("./testimports")(constants, request, extractSharedData, RequestCache)
 
 const requestCache = new RequestCache(constants.resource_cache_time)
-/** @type {import("./cache").TtlCache<import("./structures/TimelineImage")>} */
-const timelineImageCache = new TtlCache(constants.resource_cache_time)
+/** @type {import("./cache").TtlCache<import("./structures/TimelineEntry")>} */
+const timelineEntryCache = new TtlCache(constants.resource_cache_time)
 
 function fetchUser(username) {
 	return requestCache.getOrFetch("user/"+username, () => {
@@ -45,13 +45,37 @@ function fetchTimelinePage(userID, after) {
 
 /**
  * @param {string} shortcode
- * @param {boolean} needDirect
- * @returns {Promise<import("./structures/TimelineImage")>}
+ * @returns {import("./structures/TimelineEntry")}
  */
-function fetchShortcode(shortcode, needDirect = false) {
-	const attempt = timelineImageCache.get(shortcode)
-	if (attempt && (attempt.isDirect === true || needDirect === false)) return Promise.resolve(attempt)
+function getOrCreateShortcode(shortcode) {
+	if (timelineEntryCache.has(shortcode)) {
+		return timelineEntryCache.get(shortcode)
+	} else {
+		// require down here or have to deal with require loop. require cache will take care of it anyway.
+		// TimelineImage -> collectors -/> TimelineImage
+		const TimelineEntry = require("./structures/TimelineEntry")
+		const result = new TimelineEntry()
+		timelineEntryCache.set(shortcode, result)
+		return result
+	}
+}
 
+async function getOrFetchShortcode(shortcode) {
+	if (timelineEntryCache.has(shortcode)) {
+		return timelineEntryCache.get(shortcode)
+	} else {
+		const data = await fetchShortcodeData(shortcode)
+		const entry = getOrCreateShortcode(shortcode)
+		entry.applyN3(data)
+		return entry
+	}
+}
+
+/**
+ * @param {string} shortcode
+ * @returns {Promise<import("./types").TimelineEntryN3>}
+ */
+function fetchShortcodeData(shortcode) {
 	// example actual query from web:
 	// query_hash=2b0673e0dc4580674a88d426fe00ea90&variables={"shortcode":"xxxxxxxxxxx","child_comment_count":3,"fetch_comment_count":40,"parent_comment_count":24,"has_threaded_comments":true}
 	// we will not include params about comments, which means we will not receive comments, but everything else should still work fine
@@ -60,35 +84,17 @@ function fetchShortcode(shortcode, needDirect = false) {
 	p.set("variables", JSON.stringify({shortcode}))
 	return requestCache.getOrFetchPromise("shortcode/"+shortcode, () => {
 		return request(`https://www.instagram.com/graphql/query/?${p.toString()}`).then(res => res.json()).then(root => {
-			/** @type {import("./types").GraphImage} */
+			/** @type {import("./types").TimelineEntryN3} */
 			const data = root.data.shortcode_media
-			return createShortcodeFromData(data, true)
+			return data
 		})
 	})
 }
 
-/**
- * @param {import("./types").GraphImage} data
- * @param {boolean} isDirect
- */
-function createShortcodeFromData(data, isDirect) {
-	const existing = timelineImageCache.get(data.shortcode)
-	if (existing) {
-		existing.updateData(data, isDirect)
-		return existing
-	} else {
-		// require down here or have to deal with require loop. require cache will take care of it anyway.
-		// TimelineImage -> collectors -/> TimelineImage
-		const TimelineImage = require("./structures/TimelineImage")
-		const timelineImage = new TimelineImage(data, false)
-		timelineImageCache.set(data.shortcode, timelineImage)
-		return timelineImage
-	}
-}
-
 module.exports.fetchUser = fetchUser
 module.exports.fetchTimelinePage = fetchTimelinePage
-module.exports.fetchShortcode = fetchShortcode
-module.exports.createShortcodeFromData = createShortcodeFromData
+module.exports.getOrCreateShortcode = getOrCreateShortcode
+module.exports.fetchShortcodeData = fetchShortcodeData
 module.exports.requestCache = requestCache
-module.exports.timelineImageCache = timelineImageCache
+module.exports.timelineEntryCache = timelineEntryCache
+module.exports.getOrFetchShortcode = getOrFetchShortcode

@@ -13,15 +13,24 @@ class TtlCache {
 
 	clean() {
 		for (const key of this.cache.keys()) {
-			const value = this.cache.get(key)
-			if (Date.now() > value.time + this.ttl) this.cache.delete(key)
+			this.cleanKey(key)
 		}
+	}
+
+	cleanKey(key) {
+		const value = this.cache.get(key)
+		if (value && Date.now() > value.time + this.ttl) this.cache.delete(key)
 	}
 
 	/**
 	 * @param {string} key
 	 */
 	has(key) {
+		this.cleanKey(key)
+		return this.hasWithoutClean(key)
+	}
+
+	hasWithoutClean(key) {
 		return this.cache.has(key)
 	}
 
@@ -29,17 +38,27 @@ class TtlCache {
 	 * @param {string} key
 	 */
 	get(key) {
+		this.cleanKey(key)
+		return this.getWithoutClean(key)
+	}
+
+	getWithoutClean(key) {
 		const value = this.cache.get(key)
 		if (value) return value.data
 		else return null
 	}
 
 	/**
+	 * Returns null if doesn't exist
 	 * @param {string} key
 	 * @param {number} factor factor to divide the result by. use 60*1000 to get the ttl in minutes.
 	 */
 	getTtl(key, factor = 1) {
-		return Math.max((Math.floor(Date.now() - this.cache.get(key).time) / factor), 0)
+		if (this.has(key)) {
+			return Math.max((Math.floor(Date.now() - this.cache.get(key).time) / factor), 0)
+		} else {
+			return null
+		}
 	}
 
 	/**
@@ -48,6 +67,13 @@ class TtlCache {
 	 */
 	set(key, data) {
 		this.cache.set(key, {data, time: Date.now()})
+	}
+
+	/**
+	 * @param {string} key
+	 */
+	refresh(key) {
+		this.cache.get(key).time = Date.now()
 	}
 }
 
@@ -66,7 +92,7 @@ class RequestCache extends TtlCache {
 	 * @template T
 	 */
 	getOrFetch(key, callback) {
-		this.clean()
+		this.cleanKey(key)
 		if (this.cache.has(key)) return Promise.resolve(this.get(key))
 		else {
 			const pending = callback().then(result => {

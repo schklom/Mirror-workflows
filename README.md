@@ -19,14 +19,16 @@ See also: [Invidious, a front-end for YouTube.](https://github.com/omarroth/invi
 - [ ] Image disk cache
 - [ ] Clickable usernames and hashtags
 - [ ] Homepage
+- [ ] Instance list
 - [ ] Proper error checking
 - [ ] Optimised for mobile
 - [ ] Favicon
 - [ ] Settings (e.g. data saving)
 - [ ] List view
 - [ ] IGTV
-- [ ] Public API
+- [ ] Test suite
 - [ ] Rate limiting
+- [ ] Public API
 - [ ] Explore hashtags
 - [ ] Explore locations
 - [ ] _more..._

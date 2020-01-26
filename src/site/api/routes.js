@@ -1,5 +1,5 @@
 const constants = require("../../lib/constants")
-const {fetchUser, fetchShortcode} = require("../../lib/collectors")
+const {fetchUser, getOrFetchShortcode} = require("../../lib/collectors")
 const {render} = require("pinski/plugins")
 
 module.exports = [
@@ -33,8 +33,9 @@ module.exports = [
 	},
 	{
 		route: `/p/(${constants.external.shortcode_regex})`, methods: ["GET"], code: async ({fill}) => {
-			const post = await fetchShortcode(fill[0])
-			await post.fetchExtendedOwner()
+			const post = await getOrFetchShortcode(fill[0])
+			await post.fetchChildren()
+			await post.fetchExtendedOwnerP() // parallel await is okay since intermediate fetch result is cached
 			return render(200, "pug/post.pug", {post})
 		}
 	}

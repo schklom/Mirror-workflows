@@ -5,4 +5,14 @@ function proxyImage(url, width) {
 	return "/imageproxy?"+params.toString()
 }
 
+/**
+ * @param {import("../types").ExtendedOwner} owner
+ */
+function proxyExtendedOwner(owner) {
+	const clone = {...owner}
+	clone.profile_pic_url = proxyImage(clone.profile_pic_url)
+	return clone
+}
+
 module.exports.proxyImage = proxyImage
+module.exports.proxyExtendedOwner = proxyExtendedOwner

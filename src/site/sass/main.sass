@@ -95,7 +95,7 @@ body
 		--image-size: 120px
 
 	background-color: $background
-	padding: 15px 15px 12vh
+	padding: 15px 15px 40px
 
 	.page-number
 		color: #444
@@ -168,6 +168,11 @@ body
 		margin: 0 auto
 		min-height: 100vh
 
+		@media screen and (max-width: $layout-a-max)
+			display: flex
+			flex-direction: column
+
+
 		.description-section
 			display: grid
 			align-items: start
@@ -178,6 +183,11 @@ body
 			height: 100vh
 			overflow-y: auto
 			box-sizing: border-box
+
+			@media screen and (max-width: $layout-a-max)
+				position: inherit
+				top: inherit
+				height: inherit
 
 			.user-header
 				display: flex
@@ -208,6 +218,9 @@ body
 				font-size: 20px
 				line-height: 1.4
 
+				@media screen and (max-width: $layout-a-max)
+					font-size: 18px
+
 		.images-gallery
 			display: flex
 			flex-direction: column
@@ -215,6 +228,9 @@ body
 			justify-content: center
 			background-color: #262728
 			padding: 10px
+
+			@media screen and (max-width: $layout-a-max)
+				flex: 1
 
 			.sized-image
 				color: #eee

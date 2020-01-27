@@ -390,22 +390,35 @@
 /**
  * @typedef GraphUser
  * @property {string} biography
- * @property {string} external_url
- * @property {GraphEdgeCount} edge_followed_by
+ * @property {boolean} blocked_by_viewer
+ * @property {any} business_category_name todo: discover
+ * @property {any} connected_fb_page todo: discover
+ * @property {boolean} country_block
+ * @property {any} edge_felix_video_timeline todo: doc
  * @property {GraphEdgeCount} edge_follow
+ * @property {GraphEdgeCount} edge_followed_by
+ * @property {any} edge_media_collections todo: doc
+ * @property {GraphEdgeCount} edge_mutual_followed_by
+ * @property {PagedEdges<GraphImage>} edge_owner_to_timeline_media
+ * @property {any} edge_saved_media todo: doc
+ * @property {string | null} external_url
+ * @property {string | null} external_url_linkshimmed
+ * @property {boolean} followed_by_viewer
+ * @property {boolean} follows_viewer
  * @property {string} full_name
+ * @property {boolean} has_blocked_viewer
+ * @property {boolean} has_channel
+ * @property {boolean} has_requested_viewer
+ * @property {number} highlight_reel_count
  * @property {string} id
  * @property {boolean} is_business_account
  * @property {boolean} is_joined_recently
+ * @property {boolean} is_private
  * @property {boolean} is_verified
  * @property {string} profile_pic_url
  * @property {string} profile_pic_url_hd
+ * @property {boolean} requested_by_viewer
  * @property {string} username
- *
- * @property {any} edge_felix_video_timeline
- * @property {PagedEdges<GraphImage>} edge_owner_to_timeline_media
- * @property {any} edge_saved_media
- * @property {any} edge_media_collections
  */
 
 module.exports = {}

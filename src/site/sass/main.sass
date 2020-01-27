@@ -7,12 +7,13 @@ body
 	font-size: 18px
 
 .main-divider
-	display: block
+	display: flex
+	flex-direction: column
+	min-height: 100vh
 
 	@media screen and (min-width: $layout-b-min)
 		display: grid
 		grid-template-columns: 235px 1fr
-		min-height: 100vh
 
 .pfp
 	border-radius: 50%
@@ -93,9 +94,15 @@ body
 
 	@media screen and (max-width: $layout-a-max)
 		--image-size: 120px
+		flex: 1
 
 	background-color: $background
 	padding: 15px 15px 40px
+
+	&.no-posts
+		display: flex
+		flex-direction: column
+		justify-content: center
 
 	.page-number
 		color: #444
@@ -106,12 +113,6 @@ body
 		text-align: center
 		position: relative
 
-		.number
-			position: relative
-			z-index: 1
-			padding: 10px
-			background-color: $background
-
 		&::before
 			position: absolute
 			display: block
@@ -120,6 +121,15 @@ body
 			right: 0
 			top: 50%
 			border-top: 1px solid
+
+
+		&:no-posts
+
+		.number
+			position: relative
+			z-index: 1
+			padding: 10px
+			background-color: $background
 
 	.next-page-container
 		margin: 20px 0px
@@ -171,7 +181,6 @@ body
 		@media screen and (max-width: $layout-a-max)
 			display: flex
 			flex-direction: column
-
 
 		.description-section
 			display: grid

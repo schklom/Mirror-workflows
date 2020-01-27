@@ -39,8 +39,20 @@ html
 						a(rel="alternate" type="application/rss+xml" href=`/u/${user.data.username}/rss.xml`) RSS
 						a(rel="noreferrer noopener" href=`https://www.instagram.com/${user.data.username}`) instagram.com
 
-			main#timeline.timeline
-				each page, pageIndex in user.timeline.pages
-					+timeline_page(page, pageIndex)
+			- const hasPosts = !user.data.is_private && user.timeline.pages.length && user.timeline.pages[0].length
+			main(class=hasPosts ? "" : "no-posts")#timeline.timeline
+				if !user.data.is_private
+					if hasPosts
+						each page, pageIndex in user.timeline.pages
+							+timeline_page(page, pageIndex)
+						+next_page_button(user, url)
 
-				+next_page_button(user, url)
+					else
+						div
+							div.page-number
+								span.number No posts.
+
+				else
+					div
+						div.page-number
+							span.number Profile is private.

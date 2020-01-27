@@ -10,13 +10,16 @@ const timelineEntryCache = new TtlCache(constants.resource_cache_time)
 
 function fetchUser(username) {
 	return requestCache.getOrFetch("user/"+username, () => {
-		return request(`https://www.instagram.com/${username}/`).then(res => res.text()).then(text => {
-			// require down here or have to deal with require loop. require cache will take care of it anyway.
-			// User -> Timeline -> TimelineImage -> collectors -/> User
-			const User = require("./structures/User")
-			const sharedData = extractSharedData(text)
-			const user = new User(sharedData.entry_data.ProfilePage[0].graphql.user)
-			return user
+		return request(`https://www.instagram.com/${username}/`).then(res => {
+			if (res.status === 404) throw constants.symbols.NOT_FOUND
+			else return res.text().then(text => {
+				// require down here or have to deal with require loop. require cache will take care of it anyway.
+				// User -> Timeline -> TimelineImage -> collectors -/> User
+				const User = require("./structures/User")
+				const sharedData = extractSharedData(text)
+				const user = new User(sharedData.entry_data.ProfilePage[0].graphql.user)
+				return user
+			})
 		})
 	})
 }
@@ -24,7 +27,7 @@ function fetchUser(username) {
 /**
  * @param {string} userID
  * @param {string} after
- * @returns {Promise<import("./types").PagedEdges<import("./types").GraphImage>>}
+ * @returns {Promise<import("./types").PagedEdges<import("./types").TimelineEntryN2>>}
  */
 function fetchTimelinePage(userID, after) {
 	const p = new URLSearchParams()
@@ -36,7 +39,7 @@ function fetchTimelinePage(userID, after) {
 	}))
 	return requestCache.getOrFetchPromise("page/"+after, () => {
 		return request(`https://www.instagram.com/graphql/query/?${p.toString()}`).then(res => res.json()).then(root => {
-			/** @type {import("./types").PagedEdges<import("./types").GraphImage>} */
+			/** @type {import("./types").PagedEdges<import("./types").TimelineEntryN2>} */
 			const timeline = root.data.user.edge_owner_to_timeline_media
 			return timeline
 		})
@@ -86,7 +89,12 @@ function fetchShortcodeData(shortcode) {
 		return request(`https://www.instagram.com/graphql/query/?${p.toString()}`).then(res => res.json()).then(root => {
 			/** @type {import("./types").TimelineEntryN3} */
 			const data = root.data.shortcode_media
-			return data
+			if (data == null) {
+				// the thing doesn't exist
+				throw constants.symbols.NOT_FOUND
+			} else {
+				return data
+			}
 		})
 	})
 }

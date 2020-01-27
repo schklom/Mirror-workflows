@@ -1,3 +1,4 @@
+const constants = require("../constants")
 const {Parser} = require("./parser/parser")
 
 /**
@@ -5,7 +6,8 @@ const {Parser} = require("./parser/parser")
  */
 function extractSharedData(text) {
 	const parser = new Parser(text)
-	parser.seek("window._sharedData = ", {moveToMatch: true, useEnd: true})
+	const index = parser.seek("window._sharedData = ", {moveToMatch: true, useEnd: true})
+	if (index === -1) throw constants.symbols.NO_SHARED_DATA
 	parser.store()
 	const end = parser.seek(";</script>")
 	parser.restore()

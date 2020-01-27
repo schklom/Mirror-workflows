@@ -19,8 +19,9 @@ class TimelineEntry extends TimelineBaseMethods {
 		/** @type {import("../types").TimelineEntryAll} some properties may not be available yet! */
 		// @ts-ignore
 		this.data = {}
+		const error = new Error("TimelineEntry data was not initalised in same event loop (missing __typename)") // initialise here for a useful stack trace
 		setImmediate(() => { // next event loop
-			if (!this.data.__typename) throw new Error("TimelineEntry data was not initalised in same event loop (missing __typename)")
+			if (!this.data.__typename) throw error
 		})
 		/** @type {string} Not available until fetchExtendedOwnerP is called */
 		this.ownerPfpCacheP = null
@@ -29,8 +30,12 @@ class TimelineEntry extends TimelineBaseMethods {
 	}
 
 	async update() {
-		const data = await collectors.fetchShortcodeData(this.data.shortcode)
-		this.applyN3(data)
+		return collectors.fetchShortcodeData(this.data.shortcode).then(data => {
+			this.applyN3(data)
+		}).catch(error => {
+			console.error("TimelineEntry could not self-update; trying to continue anyway...")
+			console.error("E:", error)
+		})
 	}
 
 	/**

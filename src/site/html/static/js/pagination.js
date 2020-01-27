@@ -36,7 +36,6 @@ class NextPage extends FreezeWidth {
 		fetch(`/fragment/user/${this.element.getAttribute("data-username")}/${this.nextPageNumber}`).then(res => res.text()).then(text => {
 			q("#next-page-container").remove()
 			this.observer.disconnect()
-
 			q("#timeline").insertAdjacentHTML("beforeend", text)
 			addNextPageControl()
 		})

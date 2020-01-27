@@ -50,9 +50,7 @@ These features will not be added, and I will not investigate adding them:
 
 ## Instances
 
-There is currently no official Bibliogram instance, but there will be in the future.
-
-For now, you can see a list of instances created by the community [on the wiki page](https://github.com/cloudrac3r/bibliogram/wiki).
+The official instance is on https://bibliogram.art. You can see a list of instances run by the community [on the wiki page](https://github.com/cloudrac3r/bibliogram/wiki).
 
 If you only use one computer, you can install Bibliogram on that computer and then access the instance through localhost.
 

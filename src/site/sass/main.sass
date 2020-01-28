@@ -260,6 +260,7 @@ body
 					margin-bottom: 10px
 
 .error-page
+	box-sizing: border-box
 	min-height: 100vh
 	background: #191919
 	padding: 10px
@@ -269,10 +270,9 @@ body
 	justify-content: center
 	align-items: center
 
-	.code, .message, .back-link
+	.code, .message, .explanation, .back-link
 		line-height: 1.2
 		margin: 0px
-		color: white
 
 	.code
 		font-size: 80px
@@ -282,9 +282,14 @@ body
 	.message
 		font-size: 35px
 		color: #ccc
-		margin-bottom: 15vh
+
+	.explanation
+		margin-top: 10px
+		font-size: 20px
+		color: #bbb
 
 	.back
+		margin-top: 15vh
 		color: #4a93d2
 		font-size: 25px
 

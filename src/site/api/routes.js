@@ -15,7 +15,8 @@ module.exports = [
 				return render(400, "pug/friendlyerror.pug", {
 					statusCode: 400,
 					title: "Bad request",
-					message: "Expected a username."
+					message: "Expected a username",
+					explanation: "Write /u/{username} or /u?u={username}."
 				})
 			}
 		}
@@ -54,7 +55,7 @@ module.exports = [
 					return {
 						statusCode: 400,
 						contentType: "text/html",
-						content: "That page does not exist"
+						content: "That page does not exist."
 					}
 				}
 			}).catch(error => {
@@ -80,7 +81,8 @@ module.exports = [
 				return render(400, "pug/friendlyerror.pug", {
 					statusCode: 400,
 					title: "Bad request",
-					message: "Expected a username."
+					message: "Expected a shortcode",
+					explanation: "Write /p/{shortcode} or /p?u={shortcode}."
 				})
 			}
 		}

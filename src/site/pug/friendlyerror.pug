@@ -15,4 +15,6 @@ html
 	body.error-page
 		h1.code= statusCode
 		p.message= message
+		if explanation
+			p.explanation= explanation
 		a(href="javascript:history.back()").back ← Go back?

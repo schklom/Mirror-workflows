@@ -23,18 +23,9 @@ html
 					h1.full-name= user.data.full_name
 					h2.username= `@${user.data.username}`
 					p.bio= user.data.biography
-					div.profile-counter
-						span(data-numberformat=user.posts).count #{numberFormat(user.posts)}
-						|
-						| posts
-					div.profile-counter
-						span(data-numberformat=user.following).count #{numberFormat(user.following)}
-						|
-						| following
-					div.profile-counter
-						span(data-numberformat=user.followedBy).count #{numberFormat(user.followedBy)}
-						|
-						| followed by
+					div.profile-counter #[span(data-numberformat=user.posts).count #{numberFormat(user.posts)}] posts
+					div.profile-counter #[span(data-numberformat=user.following).count #{numberFormat(user.following)}] following
+					div.profile-counter #[span(data-numberformat=user.followedBy).count #{numberFormat(user.followedBy)}] followed by
 					div.links
 						a(rel="alternate" type="application/rss+xml" href=`/u/${user.data.username}/rss.xml`) RSS
 						a(rel="noreferrer noopener" href=`https://www.instagram.com/${user.data.username}`) instagram.com

@@ -1,4 +1,5 @@
 const constants = require("../../lib/constants")
+const child_process = require("child_process")
 const {fetchUser} = require("../../lib/collectors")
 
 function reply(statusCode, content) {
@@ -7,6 +8,16 @@ function reply(statusCode, content) {
 		contentType: "application/json",
 		content: JSON.stringify(content)
 	}
+}
+
+let commit = ""
+{
+	const p = child_process.spawn("git", ["rev-parse", "--short", "HEAD"])
+	p.on("error", console.error)
+	p.stdout.on("data", data => {
+		const string = data.toString()
+		commit = "-" + string.match(/[0-9a-f]+/)[0]
+	})
 }
 
 module.exports = [
@@ -35,7 +46,7 @@ module.exports = [
 				version: "2.0",
 				software: {
 					name: "bibliogram",
-					version: "1.0.0"
+					version: "1.0.0"+commit
 				},
 				protocols: [],
 				services: {

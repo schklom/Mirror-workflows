@@ -1,8 +1,25 @@
 const constants = require("../../lib/constants")
 const {fetchUser, getOrFetchShortcode} = require("../../lib/collectors")
-const {render} = require("pinski/plugins")
+const {render, redirect} = require("pinski/plugins")
 
 module.exports = [
+	{
+		route: `/u`, methods: ["GET"], code: async ({url}) => {
+			if (url.searchParams.has("u")) {
+				let username = url.searchParams.get("u")
+				username = username.replace(/^(https?:\/\/)?([a-z]+\.)?instagram\.com\//, "")
+				username = username.replace(/^\@+/, "")
+				username = username.replace(/\/+$/, "")
+				return redirect(`/u/${username}`, 301)
+			} else {
+				return render(400, "pug/friendlyerror.pug", {
+					statusCode: 400,
+					title: "Bad request",
+					message: "Expected a username."
+				})
+			}
+		}
+	},
 	{
 		route: `/u/(${constants.external.username_regex})`, methods: ["GET"], code: ({url, fill}) => {
 			const params = url.searchParams
@@ -51,6 +68,21 @@ module.exports = [
 					throw error
 				}
 			})
+		}
+	},
+	{
+		route: "/p", methods: ["GET"], code: async ({url}) => {
+			if (url.searchParams.has("p")) {
+				let post = url.searchParams.get("p")
+				post = post.replace(/^(https?:\/\/)?([a-z]+\.)?instagram\.com\/p\//, "")
+				return redirect(`/p/${post}`, 301)
+			} else {
+				return render(400, "pug/friendlyerror.pug", {
+					statusCode: 400,
+					title: "Bad request",
+					message: "Expected a username."
+				})
+			}
 		}
 	},
 	{

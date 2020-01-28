@@ -69,7 +69,8 @@ module.exports = [
 						features: [
 							"PAGE_PROFILE",
 							"PAGE_POST",
-							"API_STATS"
+							"API_STATS",
+							"PAGE_HOME"
 						]
 					}
 				}

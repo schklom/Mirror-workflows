@@ -1,0 +1,44 @@
+doctype html
+html
+	head
+		meta(charset="utf-8")
+		meta(name="viewport" content="width=device-width, initial-scale=1")
+		title Bibliogram
+		link(rel="stylesheet" type="text/css" href="/static/css/main.css")
+	body.homepage
+		header
+			h1.banner
+				img.banner-image(src="/static/img/banner-min.svg")
+		.go-sections-container
+			.go-sections
+				section
+					h2.title Go to profile
+					form(method="get" action="/u").pair-entry
+						input(type="text" name="u" placeholder="Username or URL" autofocus).text
+						input(type="submit" value="Go").button
+				section
+					h2.title Go to post
+					form(method="get" action="/p").pair-entry
+						input(type="text" name="p" placeholder="Shortcode or URL").text
+						input(type="submit" value="Go").button
+		.about-container
+			section.about
+				h2 About Bibliogram
+				p.
+					Bibliogram takes data from Instagram's public profile views and produces a friendlier page
+					that loads faster, proxies images, provides copyable and saveable image sources, eliminates ads,
+					generates RSS feeds, and doesn't urge you to sign up.
+				p.
+					Bibliogram does #[em not] allow you to anonymously post, like, comment, follow, or view private profiles.
+					It does not preserve deleted posts.
+				ul.link-list
+					-
+						const links = [
+							["https://github.com/cloudrac3r/bibliogram", "GitHub repository"],
+							["https://riot.im/app/#/room/#bibliogram:matrix.org", "Discussion room on Matrix"],
+							["https://github.com/cloudrac3r/bibliogram/wiki/Home", "Other Bibliogram instances"],
+							["https://github.com/cloudrac3r/bibliogram/projects/1?fullscreen=true", "Project board"],
+							["https://cadence.moe/about/contact", "Contact the developer"]
+						]
+					each entry in links
+						li: a(href!=entry[0] target="_blank" rel="noopener noreferrer")= entry[1]

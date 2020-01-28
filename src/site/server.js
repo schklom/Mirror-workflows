@@ -14,6 +14,7 @@ subdirs("pug", (err, dirs) => {
 	//pinski.addRoute("/", "pug/index.pug", "pug")
 	pinski.addRoute("/static/css/main.css", "sass/main.sass", "sass")
 	pinski.addPugDir("pug", dirs)
+	pinski.addRoute("/", "pug/home.pug", "pug")
 	pinski.addAPIDir("html/static/js/templates/api")
 	pinski.addSassDir("sass")
 	pinski.addAPIDir("api")

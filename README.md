@@ -1,4 +1,4 @@
-# Bibliogram
+# [Bibliogram](https://bibliogram.art)
 
 ## An alternative front-end for Instagram.
 
@@ -50,7 +50,9 @@ These features will not be added, and I will not investigate adding them:
 
 ## Instances
 
-The official instance is on https://bibliogram.art. You can see a list of instances run by the community [on the wiki page](https://github.com/cloudrac3r/bibliogram/wiki/Instances).
+The official instance is on https://bibliogram.art.
+
+You can see a list of instances run by the community [on the wiki page](https://github.com/cloudrac3r/bibliogram/wiki/Instances).
 
 If you only use one computer, you can install Bibliogram on that computer and then access the instance through localhost.
 
@@ -70,6 +72,11 @@ Bibliogram is now running on `0.0.0.0:10407`.
 
 ## User-facing endpoints
 
+- `/` - homepage
 - `/u/{username}` - load a user's profile and timeline
 - `/u/{username}/rss.xml` - get the RSS feed for a user
 - `/p/{shortcode}` - load a post
+
+## Credits
+
+Site banner by [TheFrenchGhosty](https://gitlab.com/TheFrenchGhosty), [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)

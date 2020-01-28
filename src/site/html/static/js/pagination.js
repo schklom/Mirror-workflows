@@ -29,8 +29,25 @@ class NextPage extends FreezeWidth {
 
 	onClick(event) {
 		if (event) event.preventDefault()
-		if (this.clicked) return
-		this.clicked = true
+		if (this.fetching) return
+		this.class("clicked")
+		this.fetch()
+	}
+
+	/**
+	 * @param {IntersectionObserverEntry[]} entries
+	 */
+	onIntersect(entries) {
+		if (entries.some(entry => entry.isIntersecting && entry.intersectionRatio >= intersectionThreshold)) {
+			if (this.fetching) return
+			this.class("disabled")
+			this.fetch()
+		}
+	}
+
+	fetch() {
+		if (this.fetching) return
+		this.fetching = true
 		this.freeze("Loading...")
 
 		fetch(`/fragment/user/${this.element.getAttribute("data-username")}/${this.nextPageNumber}`).then(res => res.text()).then(text => {
@@ -39,13 +56,6 @@ class NextPage extends FreezeWidth {
 			q("#timeline").insertAdjacentHTML("beforeend", text)
 			addNextPageControl()
 		})
-	}
-
-	/**
-	 * @param {IntersectionObserverEntry[]} entries
-	 */
-	onIntersect(entries) {
-		if (entries.some(entry => entry.isIntersecting && entry.intersectionRatio >= intersectionThreshold)) this.onClick()
 	}
 }
 

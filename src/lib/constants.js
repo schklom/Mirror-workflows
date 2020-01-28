@@ -11,7 +11,8 @@ let constants = {
 	// Things that server owners _could_ change if they want to.
 	caching: {
 		image_cache_control: `public, max-age=${7*24*60*60}`,
-		resource_cache_time: 30*60*1000
+		resource_cache_time: 30*60*1000,
+		instance_list_cache_time: 3*60*1000
 	},
 
 	// Instagram uses this stuff. This shouldn't be changed, except to fix a bug that hasn't yet been fixed upstream.
@@ -21,6 +22,10 @@ let constants = {
 		timeline_fetch_first: 12,
 		username_regex: "[\\w.]+",
 		shortcode_regex: "[\\w-]+"
+	},
+
+	resources: {
+		instances_wiki_raw: "https://raw.githubusercontent.com/wiki/cloudrac3r/bibliogram/Instances.md"
 	},
 
 	// My code uses this stuff. Server owners have no reason to change it.

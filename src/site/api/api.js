@@ -70,7 +70,8 @@ module.exports = [
 							"PAGE_PROFILE",
 							"PAGE_POST",
 							"API_STATS",
-							"PAGE_HOME"
+							"PAGE_HOME",
+							"API_INSTANCES"
 						]
 					}
 				}

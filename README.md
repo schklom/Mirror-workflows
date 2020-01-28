@@ -16,11 +16,11 @@ Join the Bibliogram discussion room on Matrix: [#bibliogram:matrix.org](https://
 - [x] RSS (latest 12 posts)
 - [x] View post
 - [x] Galleries
+- [x] Homepage
 - [ ] Videos
 - [ ] Galleries of videos
 - [ ] Image disk cache
 - [ ] Clickable usernames and hashtags
-- [ ] Homepage
 - [ ] Instance list
 - [ ] Proper error checking
 - [ ] Optimised for mobile
@@ -50,7 +50,7 @@ These features will not be added, and I will not investigate adding them:
 
 ## Instances
 
-The official instance is on https://bibliogram.art. You can see a list of instances run by the community [on the wiki page](https://github.com/cloudrac3r/bibliogram/wiki).
+The official instance is on https://bibliogram.art. You can see a list of instances run by the community [on the wiki page](https://github.com/cloudrac3r/bibliogram/wiki/Instances).
 
 If you only use one computer, you can install Bibliogram on that computer and then access the instance through localhost.
 
@@ -60,7 +60,7 @@ Bibliogram depends on GraphicsMagick for resizing thumbnails.
 
 Ubuntu: `# apt install graphicsmagick`
 
-1. `$ git clone https://github.com/cloudrac3r/bibliogram`
+1. `$ git clone https://github.com/cloudrac3r/bibliogram`  
 If you are using a fork, be sure to actually install that fork instead!
 1. `$ npm install`
 1. Edit `/config.js` to suit your server environment

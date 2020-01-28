@@ -4,9 +4,9 @@ const {extractSharedData} = require("./utils/body")
 const {TtlCache, RequestCache} = require("./cache")
 require("./testimports")(constants, request, extractSharedData, RequestCache)
 
-const requestCache = new RequestCache(constants.resource_cache_time)
+const requestCache = new RequestCache(constants.caching.resource_cache_time)
 /** @type {import("./cache").TtlCache<import("./structures/TimelineEntry")>} */
-const timelineEntryCache = new TtlCache(constants.resource_cache_time)
+const timelineEntryCache = new TtlCache(constants.caching.resource_cache_time)
 
 function fetchUser(username) {
 	return requestCache.getOrFetch("user/"+username, () => {
@@ -39,6 +39,7 @@ function fetchTimelinePage(userID, after) {
 	}))
 	return requestCache.getOrFetchPromise("page/"+after, () => {
 		return request(`https://www.instagram.com/graphql/query/?${p.toString()}`).then(res => res.json()).then(root => {
+			if (!root.data) console.error("missing data:", root) //todo: please make this better.
 			/** @type {import("./types").PagedEdges<import("./types").TimelineEntryN2>} */
 			const timeline = root.data.user.edge_owner_to_timeline_media
 			return timeline

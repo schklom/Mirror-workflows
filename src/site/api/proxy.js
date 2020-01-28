@@ -33,7 +33,7 @@ module.exports = [
 					statusCode: 200,
 					contentType: "image/jpeg",
 					headers: {
-						"Cache-Control": constants.image_cache_control
+						"Cache-Control": constants.caching.image_cache_control
 					},
 					stream: image.stream("jpg")
 				}
@@ -54,7 +54,7 @@ module.exports = [
 			})
 		} else {
 			return proxy(url, {
-				"Cache-Control": constants.image_cache_control
+				"Cache-Control": constants.caching.image_cache_control
 			})
 		}
 	}}

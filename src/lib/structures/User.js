@@ -18,7 +18,7 @@ class User {
 	}
 
 	getTtl(scale = 1) {
-		const expiresAt = this.cachedAt + constants.resource_cache_time
+		const expiresAt = this.cachedAt + constants.caching.resource_cache_time
 		const ttl = expiresAt - Date.now()
 		return Math.ceil(Math.max(ttl, 0) / scale)
 	}

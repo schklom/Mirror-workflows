@@ -82,7 +82,7 @@ module.exports = [
 					statusCode: 400,
 					title: "Bad request",
 					message: "Expected a shortcode",
-					explanation: "Write /p/{shortcode} or /p?u={shortcode}."
+					explanation: "Write /p/{shortcode} or /p?p={shortcode}."
 				})
 			}
 		}

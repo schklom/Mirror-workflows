@@ -22,5 +22,8 @@ html
 				if post.getCaption()
 					p.description= post.getCaption()
 			section.images-gallery
-				for image in post.children
-					img(src=image.getDisplayUrlP() alt=image.getAlt() width=image.data.dimensions.width height=image.data.dimensions.height).sized-image
+				for entry in post.children
+					if entry.isVideo()
+						video(src=entry.getVideoUrlP() controls preload="auto" width=entry.data.dimensions.width height=entry.data.dimensions.height).sized-video
+					else
+						img(src=entry.getDisplayUrlP() alt=entry.getAlt() width=entry.data.dimensions.width height=entry.data.dimensions.height).sized-image

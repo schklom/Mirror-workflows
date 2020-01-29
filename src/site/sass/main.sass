@@ -267,16 +267,22 @@ body
 			@media screen and (max-width: $layout-a-max)
 				flex: 1
 
-			.sized-image
+			.sized-image, .sized-video
 				color: #eee
 				background-color: #3b3c3d
 				max-height: 94vh
 				max-width: 100%
-				width: auto
-				height: auto
 
 				&:not(:last-child)
 					margin-bottom: 10px
+
+			.sized-image
+				width: auto
+				height: auto
+
+			.sized-video
+				width: 100%
+				height: 100%
 
 .error-page
 	box-sizing: border-box

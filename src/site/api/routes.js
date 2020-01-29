@@ -92,6 +92,7 @@ module.exports = [
 			return getOrFetchShortcode(fill[0]).then(async post => {
 				await post.fetchChildren()
 				await post.fetchExtendedOwnerP() // parallel await is okay since intermediate fetch result is cached
+				if (post.isVideo()) await post.fetchVideoURL()
 				return render(200, "pug/post.pug", {post})
 			}).catch(error => {
 				if (error === constants.symbols.NOT_FOUND) {

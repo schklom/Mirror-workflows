@@ -203,6 +203,12 @@ class TimelineEntry extends TimelineBaseMethods {
 		}
 	}
 
+	fetchVideoURL() {
+		if (!this.isVideo()) return Promise.resolve(null)
+		else if (this.data.video_url) return Promise.resolve(this.getVideoUrlP())
+		else return this.update().then(() => this.getVideoUrlP())
+	}
+
 	async fetchFeedData() {
 		const children = await this.fetchChildren()
 		return {

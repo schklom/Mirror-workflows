@@ -1,5 +1,5 @@
 const constants = require("../constants")
-const {proxyImage, proxyExtendedOwner} = require("../utils/proxyurl")
+const {proxyImage, proxyVideo} = require("../utils/proxyurl")
 
 class TimelineBaseMethods {
 	constructor() {
@@ -21,8 +21,16 @@ class TimelineBaseMethods {
 		}
 	}
 
+	isVideo() {
+		return this.data.__typename === "GraphVideo"
+	}
+
 	getDisplayUrlP() {
 		return proxyImage(this.data.display_url)
+	}
+
+	getVideoUrlP() {
+		return proxyVideo(this.data.video_url)
 	}
 
 	getAlt() {

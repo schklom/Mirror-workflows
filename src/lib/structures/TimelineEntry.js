@@ -1,4 +1,3 @@
-const config = require("../../../config")
 const constants = require("../constants")
 const {proxyImage, proxyExtendedOwner} = require("../utils/proxyurl")
 const {compile} = require("pug")
@@ -211,15 +210,15 @@ class TimelineEntry extends TimelineBaseMethods {
 			description: rssDescriptionTemplate({
 				caption: this.getCaption(),
 				children: children.map(child => ({
-					src: `${config.website_origin}${child.getDisplayUrlP()}`,
+					src: `${constants.website_origin}${child.getDisplayUrlP()}`,
 					alt: child.getAlt(),
 					width: child.data.dimensions.width,
 					height: child.data.dimensions.height
 				}))
 			}),
 			author: this.data.owner.username,
-			url: `${config.website_origin}/p/${this.data.shortcode}`,
-			guid: `${config.website_origin}/p/${this.data.shortcode}`, // Is it wise to keep the origin in here? The same post would have a different ID from different servers.
+			url: `${constants.website_origin}/p/${this.data.shortcode}`,
+			guid: `${constants.website_origin}/p/${this.data.shortcode}`, // Is it wise to keep the origin in here? The same post would have a different ID from different servers.
 			date: new Date(this.data.taken_at_timestamp*1000)
 			/*
 				Readers should display the description as HTML rather than using the media enclosure.

@@ -58,9 +58,7 @@ If you only use one computer, you can install Bibliogram on that computer and th
 
 ## Installing
 
-Bibliogram depends on GraphicsMagick for resizing thumbnails.
-
-Ubuntu: `# apt install graphicsmagick`
+You need [node.js](https://nodejs.org/en/) to run Bibliogram. Versions before 12.13.0 are untested.
 
 1. `$ git clone https://github.com/cloudrac3r/bibliogram`  
 If you are using a fork, be sure to actually install that fork instead!

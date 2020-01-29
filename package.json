@@ -10,11 +10,11 @@
   "author": "",
   "license": "AGPL-3.0-only",
   "dependencies": {
-    "gm": "^1.23.1",
     "mixin-deep": "^2.0.1",
     "node-dir": "^0.1.17",
     "node-fetch": "^2.6.0",
     "pinski": "github:cloudrac3r/pinski#19495f7a1c62fbfd8c685cf5bb5d678788906032",
-    "rss": "^1.2.2"
+    "rss": "^1.2.2",
+    "sharp": "^0.24.0"
   }
 }

@@ -149,7 +149,7 @@ class TimelineEntry extends TimelineBaseMethods {
 	}
 
 	getThumbnailSizes() {
-		return `(max-width: 820px) 120px, 260px` // from css :(
+		return `(max-width: 820px) 200px, 260px` // from css :(
 	}
 
 	async fetchChildren() {

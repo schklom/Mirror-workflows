@@ -1,5 +1,6 @@
 $layout-a-max: 820px
 $layout-b-min: 821px
+$layout-c-max: 680px;
 $layout-home-a-max: 520px
 $layout-home-b-min: 521px
 
@@ -100,8 +101,11 @@ body
 	$background: #fff4e8
 
 	@media screen and (max-width: $layout-a-max)
-		--image-size: 120px
+		--image-size: 150px
 		flex: 1
+
+	@media screen and (max-width: $layout-c-max)
+		--image-size: calc(33vw - 10px)
 
 	background-color: $background
 	padding: 15px 15px 40px
@@ -154,6 +158,12 @@ body
 		flex-wrap: wrap
 		margin: 0 auto
 
+		@media screen and (max-width: $layout-c-max)
+			display: grid
+			grid-template-columns: repeat(3, 1fr)
+			justify-content: center
+			justify-items: center
+
 		@mixin sized()
 			width: $image-size
 			height: $image-size
@@ -171,6 +181,15 @@ body
 				$border-width: 3px
 				margin: $margin - $border-width
 				border: $border-width solid #111
+
+			@media screen and (max-width: $layout-c-max)
+				$margin: 2px
+				margin: $margin
+
+				&:hover
+					$border-width: 2px
+					margin: $margin - $border-width
+					border: $border-width solid #111
 
 			.sized-image
 				@include sized

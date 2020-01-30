@@ -1,6 +1,7 @@
 const constants = require("../../lib/constants")
 const child_process = require("child_process")
-const {fetchUser} = require("../../lib/collectors")
+const {history} = require("../../lib/collectors")
+const {redirect} = require("pinski/plugins")
 
 function reply(statusCode, content) {
 	return {
@@ -22,13 +23,6 @@ let commit = ""
 
 module.exports = [
 	{
-		route: `/api/user/(${constants.external.username_regex})`, methods: ["GET"], code: async ({fill}) => {
-			const user = await fetchUser(fill[0])
-			const data = user.export()
-			return reply(200, data)
-		}
-	},
-	{
 		route: "/.well-known/nodeinfo", methods: ["GET"], code: async ({fill}) => {
 			return reply(200, {
 				link: [
@@ -41,7 +35,39 @@ module.exports = [
 		}
 	},
 	{
-		route: "/api/stats/2.0", methods: ["GET"], code: async ({fill}) => {
+		route: "/api/stats", methods: ["GET"], code: async () => {
+			return redirect("/api/stats/2.0", 302)
+		}
+	},
+	{
+		route: "/api/stats/2.0", methods: ["GET"], code: async ({url}) => {
+			const versions = ["1.0", "1.1"]
+			const features = [
+				"PAGE_PROFILE",
+				"PAGE_POST",
+				"API_STATS",
+				"PAGE_HOME",
+				"API_INSTANCES"
+			]
+			const inner = (
+				new Map([
+					["1.0", {
+						version: "1.0",
+						features
+					}],
+					["1.1", {
+						version: "1.1",
+						availableVersions: versions,
+						features,
+						history: history.export()
+					}]
+				])
+			).get(url.searchParams.get("bv") || versions[0])
+			if (!inner) return reply(400, {
+				status: "fail",
+				fields: ["q:bv"],
+				message: "query parameter `bv` selects version, must be either missing or any of " + versions.map(v => "`"+v+"`").join(", ") + "."
+			})
 			return reply(200, {
 				version: "2.0",
 				software: {
@@ -64,16 +90,7 @@ module.exports = [
 					}
 				},
 				metadata: {
-					bibliogram: {
-						version: "1.0",
-						features: [
-							"PAGE_PROFILE",
-							"PAGE_POST",
-							"API_STATS",
-							"PAGE_HOME",
-							"API_INSTANCES"
-						]
-					}
+					bibliogram: inner
 				}
 			})
 		}

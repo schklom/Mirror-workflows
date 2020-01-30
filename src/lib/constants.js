@@ -17,6 +17,7 @@ let constants = {
 
 	// Instagram uses this stuff. This shouldn't be changed, except to fix a bug that hasn't yet been fixed upstream.
 	external: {
+		user_query_hash: "c9100bf9110dd6361671f113dd02e7d6",
 		timeline_query_hash: "e769aa130647d2354c40ea6a439bfc08",
 		shortcode_query_hash: "2b0673e0dc4580674a88d426fe00ea90",
 		timeline_fetch_first: 12,

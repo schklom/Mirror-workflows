@@ -55,7 +55,7 @@ class TtlCache {
 	 */
 	getTtl(key, factor = 1) {
 		if (this.has(key)) {
-			return Math.max((Math.floor(Date.now() - this.cache.get(key).time) / factor), 0)
+			return Math.max(Math.ceil((this.cache.get(key).time + this.ttl - Date.now()) / factor), 0)
 		} else {
 			return null
 		}

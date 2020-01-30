@@ -11,7 +11,8 @@ const timelineEntryCache = new TtlCache(constants.caching.resource_cache_time)
 function fetchUser(username) {
 	return requestCache.getOrFetch("user/"+username, () => {
 		return request(`https://www.instagram.com/${username}/`).then(res => {
-			if (res.status === 404) throw constants.symbols.NOT_FOUND
+			if (res.status === 302) throw constants.symbols.INSTAGRAM_DEMANDS_LOGIN
+			else if (res.status === 404) throw constants.symbols.NOT_FOUND
 			else return res.text().then(text => {
 				// require down here or have to deal with require loop. require cache will take care of it anyway.
 				// User -> Timeline -> TimelineImage -> collectors -/> User

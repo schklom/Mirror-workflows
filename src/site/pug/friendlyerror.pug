@@ -1,7 +1,6 @@
-//- Needs title, message, statusCode
+//- Needs title, message, statusCode ?explanation
 
-include includes/timeline_page.pug
-include includes/next_page_button.pug
+include includes/error.pug
 
 - const numberFormat = new Intl.NumberFormat().format
 
@@ -13,8 +12,6 @@ html
 		title= `${title} | Bibliogram`
 		link(rel="stylesheet" type="text/css" href="/static/css/main.css")
 	body.error-page
-		h1.code= statusCode
-		p.message= message
-		if explanation
-			p.explanation= explanation
-		a(href="javascript:history.back()").back ← Go back?
+		+error(statusCode, message)
+			if explanation
+				=explanation

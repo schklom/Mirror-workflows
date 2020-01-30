@@ -1,6 +1,7 @@
 const constants = require("../../lib/constants")
-const {fetchUser, getOrFetchShortcode} = require("../../lib/collectors")
+const {fetchUser, getOrFetchShortcode, requestCache} = require("../../lib/collectors")
 const {render, redirect} = require("pinski/plugins")
+const {pugCache} = require("../passthrough")
 
 module.exports = [
 	{
@@ -37,6 +38,17 @@ module.exports = [
 						title: "Not found",
 						message: "This user doesn't exist."
 					})
+				} else if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN) {
+					return {
+						statusCode: 503,
+						contentType: "text/html",
+						headers: {
+							"Retry-After": requestCache.getTtl("user/"+fill[0], 1000)
+						},
+						content: pugCache.get("pug/blocked.pug").web({
+							expiresMinutes: requestCache.getTtl("user/"+fill[0], 1000*60)
+						})
+					}
 				} else {
 					throw error
 				}

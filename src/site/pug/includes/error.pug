@@ -1,0 +1,7 @@
+mixin error(statusCode, message)
+	h1.code= statusCode
+	p.message= message
+	if block
+		p.explanation
+			block
+	a(href="javascript:history.back()").back ← Go back?

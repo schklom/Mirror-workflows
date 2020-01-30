@@ -17,13 +17,13 @@ Join the Bibliogram discussion room on Matrix: [#bibliogram:matrix.org](https://
 - [x] View post
 - [x] Galleries
 - [x] Homepage
-- [ ] Videos
-- [ ] Galleries of videos
+- [x] Videos
+- [x] Galleries of videos
+- [x] Optimised for mobile
+- [x] Instance list
 - [ ] Image disk cache
 - [ ] Clickable usernames and hashtags
-- [ ] Instance list
 - [ ] Proper error checking
-- [ ] Optimised for mobile
 - [ ] Favicon
 - [ ] Settings (e.g. data saving)
 - [ ] List view

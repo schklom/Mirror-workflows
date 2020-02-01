@@ -1,3 +1,5 @@
+//- Needs rssEnabled, allUnblocked
+
 doctype html
 html
 	head
@@ -31,6 +33,11 @@ html
 				p.
 					Bibliogram does #[em not] allow you to anonymously post, like, comment, follow, or view private profiles.
 					It does not preserve deleted posts.
+				h2 About this instance
+				ul
+					li Instance is #{allUnblocked ? "not blocked" : "blocked"}
+					li RSS feeds are #{rssEnabled ? "enabled" : "disabled"}
+				h2 External links
 				ul.link-list
 					-
 						const links = [

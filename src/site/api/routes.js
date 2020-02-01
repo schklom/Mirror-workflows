@@ -1,9 +1,17 @@
 const constants = require("../../lib/constants")
-const {fetchUser, getOrFetchShortcode, requestCache} = require("../../lib/collectors")
+const {fetchUser, getOrFetchShortcode, requestCache, history} = require("../../lib/collectors")
 const {render, redirect} = require("pinski/plugins")
 const {pugCache} = require("../passthrough")
 
 module.exports = [
+	{
+		route: "/", methods: ["GET"], code: async () => {
+			return render(200, "pug/home.pug", {
+				rssEnabled: constants.settings.rss_enabled,
+				allUnblocked: history.testNoneBlocked()
+			})
+		}
+	},
 	{
 		route: `/u`, methods: ["GET"], code: async ({url}) => {
 			if (url.searchParams.has("u")) {

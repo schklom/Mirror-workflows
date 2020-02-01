@@ -32,6 +32,13 @@ class RequestHistory {
 		}
 		return result
 	}
+
+	testNoneBlocked() {
+		for (const value of this.store.values()) {
+			if (value.lastRequestSuccessful === false) return false
+		}
+		return true
+	}
 }
 
 module.exports = RequestHistory

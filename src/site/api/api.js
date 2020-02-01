@@ -47,7 +47,8 @@ module.exports = [
 				"PAGE_POST",
 				"API_STATS",
 				"PAGE_HOME",
-				"API_INSTANCES"
+				"API_INSTANCES",
+				"BLOCK_DETECT_USER_HTML"
 			]
 			const inner = (
 				new Map([

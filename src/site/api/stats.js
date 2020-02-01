@@ -1,5 +1,7 @@
-const constants = require("../../lib/constants")
+const semver = require("semver")
 const child_process = require("child_process")
+const md = require("mixin-deep")
+const constants = require("../../lib/constants")
 const {history} = require("../../lib/collectors")
 const {redirect} = require("pinski/plugins")
 
@@ -11,6 +13,8 @@ function reply(statusCode, content) {
 	}
 }
 
+// Load current commit hash
+
 let commit = ""
 {
 	const p = child_process.spawn("git", ["rev-parse", "--short", "HEAD"])
@@ -18,6 +22,43 @@ let commit = ""
 	p.stdout.on("data", data => {
 		const string = data.toString()
 		commit = "-" + string.match(/[0-9a-f]+/)[0]
+	})
+}
+
+// Set up inner versioning
+
+const displayVersions = ["1.0", "1.1", "1.2"]
+const versions = new Map(displayVersions.map(v => [v, semver.coerce(v)]))
+const features = [
+	"PAGE_PROFILE",
+	"PAGE_POST",
+	"API_STATS",
+	"PAGE_HOME",
+	"API_INSTANCES",
+	"BLOCK_DETECT_USER_HTML"
+]
+const innerMap = new Map()
+{
+	const addVersion = function(shortVersion, block) {
+		const coerced = semver.coerce(shortVersion)
+		const previousVersion = semver.maxSatisfying([...innerMap.keys()], coerced.major+".x")
+		let previous = {}
+		if (previousVersion) previous = innerMap.get(previousVersion)
+		md(block, previous)
+		md(block, {version: shortVersion})
+		innerMap.set(coerced.version, block)
+	}
+	addVersion("1.0", {
+		features
+	})
+	addVersion("1.1", {
+		availableVersions: [...versions.keys()],
+		history: history.export()
+	})
+	addVersion("1.2", {
+		settings: {
+			rssEnabled: constants.settings.rss_enabled
+		}
 	})
 }
 
@@ -41,43 +82,13 @@ module.exports = [
 	},
 	{
 		route: "/api/stats/2.0", methods: ["GET"], code: async ({url}) => {
-			const versions = ["1.0", "1.1", "1.2"]
-			const features = [
-				"PAGE_PROFILE",
-				"PAGE_POST",
-				"API_STATS",
-				"PAGE_HOME",
-				"API_INSTANCES",
-				"BLOCK_DETECT_USER_HTML"
-			]
-			const inner = (
-				new Map([
-					["1.0", {
-						version: "1.0",
-						features
-					}],
-					["1.1", {
-						version: "1.1",
-						availableVersions: versions,
-						features,
-						history: history.export()
-					}],
-					["1.2", {
-						version: "1.2",
-						availableVersions: versions,
-						features,
-						history: history.export(),
-						settings: {
-							rssEnabled: constants.settings.rss_enabled
-						}
-					}]
-				])
-			).get(url.searchParams.get("bv") || versions[0])
-			if (!inner) return reply(400, {
+			const selected = semver.maxSatisfying([...innerMap.keys()], url.searchParams.get("bv") || "1.0")
+			if (!selected) return reply(400, {
 				status: "fail",
 				fields: ["q:bv"],
-				message: "query parameter `bv` selects version, must be either missing or any of " + versions.map(v => "`"+v+"`").join(", ") + "."
+				message: "query parameter `bv` selects inner version, must be either missing or a semver query matching any of " + displayVersions.map(v => "`"+v+"`").join(", ") + "."
 			})
+			const inner = innerMap.get(selected)
 			return reply(200, {
 				version: "2.0",
 				software: {

@@ -12,8 +12,7 @@ html
 		title= `Blocked | Bibliogram`
 		link(rel="stylesheet" type="text/css" href="/static/css/main.css")
 	body.error-page
-		+error(503, "Blocked by Instagram")
+		+error(503, "Blocked by Instagram", true)
 			| Instagram is refusing to provide data to this server. Try again later to see if the block has been lifted.
 			| This error has been cached. The internal cache will expire in #{expiresMinutes} minutes.
 			|
-			a(href="https://github.com/cloudrac3r/bibliogram/wiki/Instances") You could try browsing Bibliogram on another instance.

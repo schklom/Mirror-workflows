@@ -41,7 +41,7 @@ module.exports = [
 	},
 	{
 		route: "/api/stats/2.0", methods: ["GET"], code: async ({url}) => {
-			const versions = ["1.0", "1.1"]
+			const versions = ["1.0", "1.1", "1.2"]
 			const features = [
 				"PAGE_PROFILE",
 				"PAGE_POST",
@@ -60,6 +60,15 @@ module.exports = [
 						availableVersions: versions,
 						features,
 						history: history.export()
+					}],
+					["1.2", {
+						version: "1.2",
+						availableVersions: versions,
+						features,
+						history: history.export(),
+						settings: {
+							rssEnabled: constants.settings.rss_enabled
+						}
 					}]
 				])
 			).get(url.searchParams.get("bv") || versions[0])

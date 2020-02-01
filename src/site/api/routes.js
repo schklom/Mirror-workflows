@@ -17,7 +17,8 @@ module.exports = [
 					statusCode: 400,
 					title: "Bad request",
 					message: "Expected a username",
-					explanation: "Write /u/{username} or /u?u={username}."
+					explanation: "Write /u/{username} or /u?u={username}.",
+					withInstancesLink: false
 				})
 			}
 		}
@@ -30,13 +31,14 @@ module.exports = [
 				if (typeof page === "number" && !isNaN(page) && page >= 1) {
 					await user.timeline.fetchUpToPage(page - 1)
 				}
-				return render(200, "pug/user.pug", {url, user})
+				return render(200, "pug/user.pug", {url, user, constants})
 			}).catch(error => {
 				if (error === constants.symbols.NOT_FOUND) {
 					return render(404, "pug/friendlyerror.pug", {
 						statusCode: 404,
 						title: "Not found",
-						message: "This user doesn't exist."
+						message: "This user doesn't exist.",
+						withInstancesLink: false
 					})
 				} else if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN) {
 					return {
@@ -75,7 +77,8 @@ module.exports = [
 					return render(404, "pug/friendlyerror.pug", {
 						statusCode: 404,
 						title: "Not found",
-						message: "This user doesn't exist."
+						message: "This user doesn't exist.",
+						withInstancesLink: false
 					})
 				} else {
 					throw error
@@ -94,7 +97,8 @@ module.exports = [
 					statusCode: 400,
 					title: "Bad request",
 					message: "Expected a shortcode",
-					explanation: "Write /p/{shortcode} or /p?p={shortcode}."
+					explanation: "Write /p/{shortcode} or /p?p={shortcode}.",
+					withInstancesLink: false
 				})
 			}
 		}
@@ -111,7 +115,8 @@ module.exports = [
 					return render(404, "pug/friendlyerror.pug", {
 						statusCode: 404,
 						title: "Not found",
-						message: "Somehow, you reached a post that doesn't exist."
+						message: "Somehow, you reached a post that doesn't exist.",
+						withInstancesLink: false
 					})
 				} else {
 					throw error

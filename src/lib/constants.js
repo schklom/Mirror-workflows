@@ -9,6 +9,10 @@ let constants = {
 	website_origin: "http://localhost:10407",
 
 	// Things that server owners _could_ change if they want to.
+	settings: {
+		rss_enabled: true
+	},
+
 	caching: {
 		image_cache_control: `public, max-age=${7*24*60*60}`,
 		resource_cache_time: 30*60*1000,

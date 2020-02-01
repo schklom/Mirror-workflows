@@ -1,4 +1,4 @@
-//- Needs title, message, statusCode ?explanation
+//- Needs title, message, statusCode, ?explanation, withInstancesLink
 
 include includes/error.pug
 
@@ -12,6 +12,6 @@ html
 		title= `${title} | Bibliogram`
 		link(rel="stylesheet" type="text/css" href="/static/css/main.css")
 	body.error-page
-		+error(statusCode, message)
+		+error(statusCode, message, withInstancesLink)
 			if explanation
 				=explanation

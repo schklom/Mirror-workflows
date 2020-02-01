@@ -1,7 +1,10 @@
-mixin error(statusCode, message)
+mixin error(statusCode, message, withInstancesLink)
 	h1.code= statusCode
 	p.message= message
-	if block
+	if block || withInstancesLink
 		p.explanation
-			block
+			if block
+				block
+			if withInstancesLink
+				a(href="https://github.com/cloudrac3r/bibliogram/wiki/Instances") You could try browsing Bibliogram on another instance.
 	a(href="javascript:history.back()").back ← Go back?

@@ -1,3 +1,5 @@
+//- Needs user, url, constants
+
 include includes/timeline_page.pug
 include includes/next_page_button.pug
 
@@ -30,7 +32,8 @@ html
 					div.profile-counter #[span(data-numberformat=user.following).count #{numberFormat(user.following)}] following
 					div.profile-counter #[span(data-numberformat=user.followedBy).count #{numberFormat(user.followedBy)}] followed by
 					div.links
-						a(rel="alternate" type="application/rss+xml" href=`/u/${user.data.username}/rss.xml`) RSS
+						if constants.settings.rss_enabled
+							a(rel="alternate" type="application/rss+xml" href=`/u/${user.data.username}/rss.xml`) RSS
 						a(rel="noreferrer noopener" href=`https://www.instagram.com/${user.data.username}`) instagram.com
 
 			- const hasPosts = !user.data.is_private && user.timeline.pages.length && user.timeline.pages[0].length

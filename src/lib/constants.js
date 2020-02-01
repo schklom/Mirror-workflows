@@ -16,7 +16,9 @@ let constants = {
 	caching: {
 		image_cache_control: `public, max-age=${7*24*60*60}`,
 		resource_cache_time: 30*60*1000,
-		instance_list_cache_time: 3*60*1000
+		instance_list_cache_time: 3*60*1000,
+		db_user_id: true,
+		db_post_n3: true
 	},
 
 	// Instagram uses this stuff. This shouldn't be changed, except to fix a bug that hasn't yet been fixed upstream.
@@ -44,7 +46,9 @@ let constants = {
 		NOT_FOUND: Symbol("NOT_FOUND"),
 		NO_SHARED_DATA: Symbol("NO_SHARED_DATA"),
 		INSTAGRAM_DEMANDS_LOGIN: Symbol("INSTAGRAM_DEMANDS_LOGIN")
-	}
+	},
+
+	database_version: 1
 }
 
 // Override values from config and export the result

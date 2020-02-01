@@ -3,6 +3,7 @@ const {request} = require("./utils/request")
 const {extractSharedData} = require("./utils/body")
 const {TtlCache, RequestCache} = require("./cache")
 const RequestHistory = require("./structures/RequestHistory")
+const db = require("./db")
 require("./testimports")(constants, request, extractSharedData, RequestCache, RequestHistory)
 
 const requestCache = new RequestCache(constants.caching.resource_cache_time)
@@ -25,6 +26,10 @@ function fetchUser(username) {
 				const sharedData = extractSharedData(text)
 				const user = new User(sharedData.entry_data.ProfilePage[0].graphql.user)
 				history.report("user", true)
+				if (constants.caching.db_user_id) {
+					db.prepare("INSERT OR IGNORE INTO Users (username, user_id) VALUES (@username, @user_id)")
+						.run({username: user.data.username, user_id: user.data.id})
+				}
 				return user
 			})
 		})
@@ -105,14 +110,18 @@ function fetchShortcodeData(shortcode) {
 				history.report("post", false)
 				console.error("missing data from post request, 429?", root) //todo: please make this better.
 				throw new Error("missing data from post request, 429?")
-			/** @type {import("./types").TimelineEntryN3} */
 			} else {
+				/** @type {import("./types").TimelineEntryN3} */
 				const data = root.data.shortcode_media
 				if (data == null) {
 					// the thing doesn't exist
 					throw constants.symbols.NOT_FOUND
 				} else {
 					history.report("post", true)
+					if (constants.caching.db_post_n3) {
+						db.prepare("REPLACE INTO Posts (shortcode, id, id_as_numeric, username, json) VALUES (@shortcode, @id, @id_as_numeric, @username, @json)")
+							.run({shortcode: data.shortcode, id: data.id, id_as_numeric: data.id, username: data.owner.username, json: JSON.stringify(data)})
+					}
 					return data
 				}
 			}

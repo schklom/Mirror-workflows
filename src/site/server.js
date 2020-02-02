@@ -1,5 +1,6 @@
 const {Pinski} = require("pinski")
 const {subdirs} = require("node-dir")
+const constants = require("../lib/constants")
 
 const passthrough = require("./passthrough")
 
@@ -8,7 +9,7 @@ const pinski = new Pinski({
 	relativeRoot: __dirname
 })
 
-subdirs("pug", (err, dirs) => {
+subdirs("pug", async (err, dirs) => {
 	if (err) throw err
 
 	//pinski.addRoute("/", "pug/index.pug", "pug")
@@ -20,6 +21,11 @@ subdirs("pug", (err, dirs) => {
 	pinski.muteLogsStartingWith("/imageproxy")
 	pinski.muteLogsStartingWith("/videoproxy")
 	pinski.muteLogsStartingWith("/static")
+
+	if (constants.tor.enabled) {
+		await require("../lib/utils/tor") // make sure tor state is known before going further
+	}
+
 	pinski.startServer()
 	pinski.enableWS()
 

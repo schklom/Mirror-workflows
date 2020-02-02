@@ -1,4 +1,5 @@
 const constants = require("../../lib/constants")
+const switcher = require("../../lib/utils/torswitcher")
 const {fetchUser, getOrFetchShortcode, userRequestCache, history} = require("../../lib/collectors")
 const {render, redirect} = require("pinski/plugins")
 const {pugCache} = require("../passthrough")
@@ -8,7 +9,8 @@ module.exports = [
 		route: "/", methods: ["GET"], code: async () => {
 			return render(200, "pug/home.pug", {
 				rssEnabled: constants.settings.rss_enabled,
-				allUnblocked: history.testNoneBlocked()
+				allUnblocked: history.testNoneBlocked(),
+				torAvailable: switcher.canUseTor()
 			})
 		}
 	},

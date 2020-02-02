@@ -10,6 +10,10 @@ class TorSwitcher {
 		this.torManager = torManager
 	}
 
+	canUseTor() {
+		return !!this.torManager
+	}
+
 	/**
 	 * Request from the URL.
 	 * The test function will be called with the response object.

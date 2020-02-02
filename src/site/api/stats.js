@@ -3,6 +3,7 @@ const child_process = require("child_process")
 const md = require("mixin-deep")
 const constants = require("../../lib/constants")
 const {history} = require("../../lib/collectors")
+const switcher = require("../../lib/utils/torswitcher")
 const {redirect} = require("pinski/plugins")
 
 function reply(statusCode, content) {
@@ -27,7 +28,7 @@ let commit = ""
 
 // Set up inner versioning
 
-const displayVersions = ["1.0", "1.1", "1.2"]
+const displayVersions = ["1.0", "1.1", "1.2", "1.3"]
 const versions = new Map(displayVersions.map(v => [v, semver.coerce(v)]))
 const features = [
 	"PAGE_PROFILE",
@@ -59,6 +60,11 @@ const innerMap = new Map()
 	addVersion("1.2", {
 		settings: {
 			rssEnabled: constants.settings.rss_enabled
+		}
+	})
+	addVersion("1.3", {
+		settings: {
+			torAvailable: switcher.canUseTor() // server.js holds on loading this file until tor state is known, so this is fine
 		}
 	})
 }

@@ -10,7 +10,7 @@ require("./testimports")(constants, request, extractSharedData, RequestCache, Re
 const requestCache = new RequestCache(constants.caching.resource_cache_time)
 /** @type {import("./cache").TtlCache<import("./structures/TimelineEntry")>} */
 const timelineEntryCache = new TtlCache(constants.caching.resource_cache_time)
-const history = new RequestHistory(["user", "timeline", "post"])
+const history = new RequestHistory(["user", "timeline", "post", "reel"])
 
 async function fetchUser(username) {
 	if (constants.allow_user_from_reel === "never") {
@@ -92,7 +92,13 @@ function fetchUserFromCombined(userID, username) {
 			const page = await fetchTimelinePage(userID, "")
 			user.timeline.addPage(page)
 		}
+		history.report("reel", true)
 		return user
+	}).catch(error => {
+		if (error === constants.symbols.RATE_LIMITED) {
+			history.report("reel", false)
+		}
+		throw error
 	})
 }
 

@@ -23,7 +23,10 @@ async function fetchUser(username) {
 		return fetchUserFromHTML(username).catch(error => {
 			if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN || error === constants.symbols.RATE_LIMITED) {
 				const userID = db.prepare("SELECT user_id FROM Users WHERE username = ?").pluck().get(username)
-				if (userID) return fetchUserFromCombined(userID, username)
+				if (userID) {
+					requestCache.cache.delete("user/"+username)
+					return fetchUserFromCombined(userID, username)
+				}
 			}
 			throw error
 		})

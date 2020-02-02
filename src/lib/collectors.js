@@ -1,5 +1,6 @@
 const constants = require("./constants")
 const {request} = require("./utils/request")
+const switcher = require("./utils/torswitcher")
 const {extractSharedData} = require("./utils/body")
 const {TtlCache, RequestCache} = require("./cache")
 const RequestHistory = require("./structures/RequestHistory")
@@ -50,17 +51,19 @@ function fetchTimelinePage(userID, after) {
 		after: after
 	}))
 	return requestCache.getOrFetchPromise("page/"+after, () => {
-		return request(`https://www.instagram.com/graphql/query/?${p.toString()}`).then(res => res.json()).then(root => {
-			if (!root.data) {
+		return switcher.request(`https://www.instagram.com/graphql/query/?${p.toString()}`, async res => {
+			if (res.status === 429) throw constants.symbols.RATE_LIMITED
+			return res
+		}).then(res => res.json()).then(root => {
+			/** @type {import("./types").PagedEdges<import("./types").TimelineEntryN2>} */
+			const timeline = root.data.user.edge_owner_to_timeline_media
+			history.report("timeline", true)
+			return timeline
+		}).catch(error => {
+			if (error === constants.symbols.RATE_LIMITED) {
 				history.report("timeline", false)
-				console.error("missing data from timeline request, 429?", root) //todo: please make this better.
-				throw new Error("missing data from timeline request, 429?")
-			} else {
-				/** @type {import("./types").PagedEdges<import("./types").TimelineEntryN2>} */
-				const timeline = root.data.user.edge_owner_to_timeline_media
-				history.report("timeline", true)
-				return timeline
 			}
+			throw error
 		})
 	})
 }
@@ -105,26 +108,28 @@ function fetchShortcodeData(shortcode) {
 	p.set("query_hash", constants.external.shortcode_query_hash)
 	p.set("variables", JSON.stringify({shortcode}))
 	return requestCache.getOrFetchPromise("shortcode/"+shortcode, () => {
-		return request(`https://www.instagram.com/graphql/query/?${p.toString()}`).then(res => res.json()).then(root => {
-			if (!root.data) {
-				history.report("post", false)
-				console.error("missing data from post request, 429?", root) //todo: please make this better.
-				throw new Error("missing data from post request, 429?")
+		return switcher.request(`https://www.instagram.com/graphql/query/?${p.toString()}`, async res => {
+			if (res.status === 429) throw constants.symbols.RATE_LIMITED
+			return res
+		}).then(res => res.json()).then(root => {
+			/** @type {import("./types").TimelineEntryN3} */
+			const data = root.data.shortcode_media
+			if (data == null) {
+				// the thing doesn't exist
+				throw constants.symbols.NOT_FOUND
 			} else {
-				/** @type {import("./types").TimelineEntryN3} */
-				const data = root.data.shortcode_media
-				if (data == null) {
-					// the thing doesn't exist
-					throw constants.symbols.NOT_FOUND
-				} else {
-					history.report("post", true)
-					if (constants.caching.db_post_n3) {
-						db.prepare("REPLACE INTO Posts (shortcode, id, id_as_numeric, username, json) VALUES (@shortcode, @id, @id_as_numeric, @username, @json)")
-							.run({shortcode: data.shortcode, id: data.id, id_as_numeric: data.id, username: data.owner.username, json: JSON.stringify(data)})
-					}
-					return data
+				history.report("post", true)
+				if (constants.caching.db_post_n3) {
+					db.prepare("REPLACE INTO Posts (shortcode, id, id_as_numeric, username, json) VALUES (@shortcode, @id, @id_as_numeric, @username, @json)")
+						.run({shortcode: data.shortcode, id: data.id, id_as_numeric: data.id, username: data.owner.username, json: JSON.stringify(data)})
 				}
+				return data
 			}
+		}).catch(error => {
+			if (error === constants.symbols.RATE_LIMITED) {
+				history.report("post", false)
+			}
+			throw error
 		})
 	})
 }

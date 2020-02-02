@@ -17,6 +17,9 @@ subdirs("pug", (err, dirs) => {
 	pinski.addAPIDir("html/static/js/templates/api")
 	pinski.addSassDir("sass")
 	pinski.addAPIDir("api")
+	pinski.muteLogsStartingWith("/imageproxy")
+	pinski.muteLogsStartingWith("/videoproxy")
+	pinski.muteLogsStartingWith("/static")
 	pinski.startServer()
 	pinski.enableWS()
 

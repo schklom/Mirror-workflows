@@ -3,8 +3,6 @@ const {request} = require("../../lib/utils/request")
 const {proxy} = require("pinski/plugins")
 const sharp = require("sharp")
 
-const VERIFY_SUCCESS = Symbol("VERIFY_SUCCESS")
-
 /**
  * Check that a resource is on Instagram.
  * @param {URL} completeURL
@@ -38,7 +36,7 @@ module.exports = [
 					Some thumbnails aren't square and would otherwise be stretched on the page without this.
 					If I cropped the images client side, it would have to be done with CSS background-image, which means no <img srcset>.
 				*/
-				return request(verifyResult.url).then(res => {
+				return request(verifyResult.url, {}, {log: false}).then(res => {
 					const converter = sharp().resize(width, width, {position: "entropy"})
 					return {
 						statusCode: 200,

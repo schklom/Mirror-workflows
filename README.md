@@ -60,9 +60,9 @@ If you only use one computer, you can install Bibliogram on that computer and th
 
 You need [node.js](https://nodejs.org/en/) to run Bibliogram. Versions before 12.13.0 are untested.
 
-1. `$ git clone https://github.com/cloudrac3r/bibliogram`  
+1. `$ git clone https://github.com/cloudrac3r/bibliogram`
 If you are using a fork, be sure to actually install that fork instead!
-1. `$ npm install`
+1. `$ npm install --no-optional` (for Tor support, omit `--no-optional`)
 1. Edit `/config.js` to suit your server environment
 1. `$ npm start`
 

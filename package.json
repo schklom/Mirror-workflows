@@ -14,9 +14,14 @@
     "mixin-deep": "^2.0.1",
     "node-dir": "^0.1.17",
     "node-fetch": "^2.6.0",
-    "pinski": "github:cloudrac3r/pinski#19495f7a1c62fbfd8c685cf5bb5d678788906032",
+    "pinski": "github:cloudrac3r/pinski#9eb56d90fdd00357451dd5a546dbcca1f9bf114a",
+    "pug": "^2.0.4",
     "rss": "^1.2.2",
     "semver": "^7.1.2",
-    "sharp": "^0.24.0"
+    "sharp": "^0.24.0",
+    "socks-proxy-agent": "github:cloudrac3r/node-socks-proxy-agent#6a26d274b12098dfef6cc2faafd25b0c051f2467"
+  },
+  "optionalDependencies": {
+    "@deadcanaries/granax": "^3.2.5"
   }
 }

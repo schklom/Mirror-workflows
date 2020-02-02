@@ -2,20 +2,26 @@ const constants = require("./constants")
 const {request} = require("./utils/request")
 const switcher = require("./utils/torswitcher")
 const {extractSharedData} = require("./utils/body")
-const {TtlCache, RequestCache} = require("./cache")
+const {TtlCache, RequestCache, UserRequestCache} = require("./cache")
 const RequestHistory = require("./structures/RequestHistory")
 const db = require("./db")
-require("./testimports")(constants, request, extractSharedData, RequestCache, RequestHistory)
+require("./testimports")(constants, request, extractSharedData, UserRequestCache, RequestHistory)
 
 const requestCache = new RequestCache(constants.caching.resource_cache_time)
+const userRequestCache = new UserRequestCache(constants.caching.resource_cache_time)
 /** @type {import("./cache").TtlCache<import("./structures/TimelineEntry")>} */
 const timelineEntryCache = new TtlCache(constants.caching.resource_cache_time)
 const history = new RequestHistory(["user", "timeline", "post", "reel"])
 
-async function fetchUser(username) {
-	if (constants.allow_user_from_reel === "never") {
+async function fetchUser(username, isRSS) {
+	let mode = constants.allow_user_from_reel
+	if (mode === "preferForRSS") {
+		if (isRSS) mode = "prefer"
+		else mode = "fallback"
+	}
+	if (mode === "never") {
 		return fetchUserFromHTML(username)
-	} else if (constants.allow_user_from_reel === "prefer") {
+	} else if (mode === "prefer") {
 		const userID = db.prepare("SELECT user_id FROM Users WHERE username = ?").pluck().get(username)
 		if (userID) return fetchUserFromCombined(userID, username)
 		else return fetchUserFromHTML(username)
@@ -24,7 +30,6 @@ async function fetchUser(username) {
 			if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN || error === constants.symbols.RATE_LIMITED) {
 				const userID = db.prepare("SELECT user_id FROM Users WHERE username = ?").pluck().get(username)
 				if (userID) {
-					requestCache.cache.delete("user/"+username)
 					return fetchUserFromCombined(userID, username)
 				}
 			}
@@ -34,7 +39,7 @@ async function fetchUser(username) {
 }
 
 function fetchUserFromHTML(username) {
-	return requestCache.getOrFetch("user/"+username, () => {
+	return userRequestCache.getOrFetch("user/"+username, false, true, () => {
 		return switcher.request("user_html", `https://www.instagram.com/${username}/`, async res => {
 			if (res.status === 302) throw constants.symbols.INSTAGRAM_DEMANDS_LOGIN
 			if (res.status === 429) throw constants.symbols.RATE_LIMITED
@@ -74,7 +79,7 @@ function fetchUserFromCombined(userID, username) {
 		user_id: userID,
 		include_reel: true
 	}))
-	return requestCache.getOrFetch("user/"+username, () => {
+	return userRequestCache.getOrFetch("user/"+username, true, false, () => {
 		return switcher.request("reel_graphql", `https://www.instagram.com/graphql/query/?${p.toString()}`, async res => {
 			if (res.status === 429) throw constants.symbols.RATE_LIMITED
 			return res
@@ -192,8 +197,8 @@ function fetchShortcodeData(shortcode) {
 						.run({shortcode: data.shortcode, id: data.id, id_as_numeric: data.id, username: data.owner.username, json: JSON.stringify(data)})
 				}
 				// if we have the owner but only a reelUser, update it. this code is gross.
-				if (requestCache.hasNotPromise("user/"+data.owner.username)) {
-					const user = requestCache.getWithoutClean("user/"+data.owner.username)
+				if (userRequestCache.hasNotPromise("user/"+data.owner.username)) {
+					const user = userRequestCache.getWithoutClean("user/"+data.owner.username)
 					if (user.fromReel) {
 						user.data.full_name = data.owner.full_name
 						user.data.is_verified = data.owner.is_verified
@@ -214,7 +219,7 @@ module.exports.fetchUser = fetchUser
 module.exports.fetchTimelinePage = fetchTimelinePage
 module.exports.getOrCreateShortcode = getOrCreateShortcode
 module.exports.fetchShortcodeData = fetchShortcodeData
-module.exports.requestCache = requestCache
+module.exports.userRequestCache = userRequestCache
 module.exports.timelineEntryCache = timelineEntryCache
 module.exports.getOrFetchShortcode = getOrFetchShortcode
 module.exports.history = history

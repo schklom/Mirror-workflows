@@ -85,6 +85,10 @@ class TtlCache {
 	}
 }
 
+/**
+ * @extends TtlCache<T>
+ * @template T
+ */
 class RequestCache extends TtlCache {
 	/**
 	 * @param {number} ttl time to keep each resource in milliseconds
@@ -97,7 +101,6 @@ class RequestCache extends TtlCache {
 	 * @param {string} key
 	 * @param {() => Promise<T>} callback
 	 * @returns {Promise<T>}
-	 * @template T
 	 */
 	getOrFetch(key, callback) {
 		this.cleanKey(key)
@@ -116,7 +119,6 @@ class RequestCache extends TtlCache {
 	 * @param {string} key
 	 * @param {() => Promise<T>} callback
 	 * @returns {Promise<T>}
-	 * @template T
 	 */
 	getOrFetchPromise(key, callback) {
 		return this.getOrFetch(key, callback).then(result => {
@@ -126,5 +128,56 @@ class RequestCache extends TtlCache {
 	}
 }
 
+/**
+ * @template T
+ */
+class UserRequestCache extends TtlCache {
+	constructor(ttl) {
+		super(ttl)
+		/** @type {Map<string, {data: T, isReel: boolean, isFailedPromise: boolean, htmlFailed: boolean, time: number}>} */
+		this.cache
+	}
+
+	/**
+	 * @param {string} key
+	 * @param {boolean} isReel
+	 * @param {any} [data]
+	 */
+	set(key, isReel, data) {
+		const existing = this.cache.get(key)
+		// Preserve html failure status if now requesting as reel
+		const htmlFailed = isReel && existing && existing.htmlFailed
+		this.cache.set(key, {data, isReel, isFailedPromise: false, htmlFailed, time: Date.now()})
+	}
+
+	/**
+	 * @param {string} key
+	 * @param {boolean} isHtmlPreferred
+	 * @param {boolean} willFetchReel
+	 * @param {() => Promise<T>} callback
+	 * @returns {Promise<T>}
+	 */
+	getOrFetch(key, willFetchReel, isHtmlPreferred, callback) {
+		this.cleanKey(key)
+		if (this.cache.has(key)) {
+			const existing = this.cache.get(key)
+			if ((!existing.isReel || !isHtmlPreferred || existing.htmlFailed) && !existing.isFailedPromise) return Promise.resolve(existing.data)
+		}
+		const pending = callback().then(result => {
+			if (this.getWithoutClean(key) === pending) { // if nothing has replaced the current cache in the meantime
+				this.set(key, willFetchReel, result)
+			}
+			return result
+		}).catch(error => {
+			this.cache.get(key).htmlFailed = true
+			this.cache.get(key).isFailedPromise = true
+			throw error
+		})
+		this.set(key, willFetchReel, pending)
+		return pending
+	}
+}
+
 module.exports.TtlCache = TtlCache
 module.exports.RequestCache = RequestCache
+module.exports.UserRequestCache = UserRequestCache

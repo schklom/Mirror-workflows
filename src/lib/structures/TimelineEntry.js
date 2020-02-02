@@ -180,9 +180,9 @@ class TimelineEntry extends TimelineBaseMethods {
 		}
 		// The owner may be in the user cache, so copy from that.
 		// This could be implemented better.
-		else if (collectors.requestCache.hasNotPromise("user/"+this.data.owner.username)) {
+		else if (collectors.userRequestCache.hasNotPromise("user/"+this.data.owner.username)) {
 			/** @type {import("./User")} */
-			const user = collectors.requestCache.getWithoutClean("user/"+this.data.owner.username)
+			const user = collectors.userRequestCache.getWithoutClean("user/"+this.data.owner.username)
 			if (user.data.full_name) {
 				this.data.owner = {
 					id: user.data.id,

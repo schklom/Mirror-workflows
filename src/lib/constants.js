@@ -20,7 +20,7 @@ let constants = {
 		}
 	},
 
-	allow_user_from_reel: "fallback", // one of: "never", "fallback", "prefer".
+	allow_user_from_reel: "preferForRSS", // one of: "never", "fallback", "prefer", "preferForRSS"
 
 	settings: {
 		rss_enabled: true

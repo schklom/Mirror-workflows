@@ -1,12 +1,12 @@
 const constants = require("../../lib/constants")
-const {fetchUser, requestCache} = require("../../lib/collectors")
+const {fetchUser, userRequestCache} = require("../../lib/collectors")
 const {render} = require("pinski/plugins")
 const {pugCache} = require("../passthrough")
 
 module.exports = [
 	{route: `/u/(${constants.external.username_regex})/rss.xml`, methods: ["GET"], code: ({fill}) => {
 		if (constants.settings.rss_enabled) {
-			return fetchUser(fill[0]).then(async user => {
+			return fetchUser(fill[0], true).then(async user => {
 				const content = await user.timeline.fetchFeed()
 				const xml = content.xml()
 				return {
@@ -27,10 +27,10 @@ module.exports = [
 						statusCode: 503,
 						contentType: "text/html",
 						headers: {
-							"Retry-After": requestCache.getTtl("user/"+fill[0], 1000)
+							"Retry-After": userRequestCache.getTtl("user/"+fill[0], 1000)
 						},
 						content: pugCache.get("pug/blocked.pug").web({
-							expiresMinutes: requestCache.getTtl("user/"+fill[0], 1000*60)
+							expiresMinutes: userRequestCache.getTtl("user/"+fill[0], 1000*60)
 						})
 					}
 				} else {

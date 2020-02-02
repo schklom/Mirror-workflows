@@ -1,5 +1,5 @@
 const constants = require("../../lib/constants")
-const {fetchUser, getOrFetchShortcode, requestCache, history} = require("../../lib/collectors")
+const {fetchUser, getOrFetchShortcode, userRequestCache, history} = require("../../lib/collectors")
 const {render, redirect} = require("pinski/plugins")
 const {pugCache} = require("../passthrough")
 
@@ -34,7 +34,7 @@ module.exports = [
 	{
 		route: `/u/(${constants.external.username_regex})`, methods: ["GET"], code: ({url, fill}) => {
 			const params = url.searchParams
-			return fetchUser(fill[0]).then(async user => {
+			return fetchUser(fill[0], false).then(async user => {
 				const page = +params.get("page")
 				if (typeof page === "number" && !isNaN(page) && page >= 1) {
 					await user.timeline.fetchUpToPage(page - 1)
@@ -53,10 +53,10 @@ module.exports = [
 						statusCode: 503,
 						contentType: "text/html",
 						headers: {
-							"Retry-After": requestCache.getTtl("user/"+fill[0], 1000)
+							"Retry-After": userRequestCache.getTtl("user/"+fill[0], 1000)
 						},
 						content: pugCache.get("pug/blocked.pug").web({
-							expiresMinutes: requestCache.getTtl("user/"+fill[0], 1000*60)
+							expiresMinutes: userRequestCache.getTtl("user/"+fill[0], 1000*60)
 						})
 					}
 				} else {
@@ -67,7 +67,7 @@ module.exports = [
 	},
 	{
 		route: `/fragment/user/(${constants.external.username_regex})/(\\d+)`, methods: ["GET"], code: async ({url, fill}) => {
-			return fetchUser(fill[0]).then(async user => {
+			return fetchUser(fill[0], false).then(async user => {
 				const pageNumber = +fill[1]
 				const pageIndex = pageNumber - 1
 				await user.timeline.fetchUpToPage(pageIndex)

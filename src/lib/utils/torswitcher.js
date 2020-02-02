@@ -21,8 +21,8 @@ class TorSwitcher {
 	 * @returns {Promise<T>}
 	 * @template T the return value of the test function
 	 */
-	request(url, test) {
-		if (this.torManager) {
+	request(type, url, test) {
+		if (this.torManager && constants.tor.for[type]) {
 			return this.torManager.request(url, test)
 		} else {
 			return request(url).then(res => test(res))
@@ -32,7 +32,7 @@ class TorSwitcher {
 
 const switcher = new TorSwitcher()
 
-if (constants.use_tor) {
+if (constants.tor.enabled) {
 	require("./tor").then(torManager => {
 		if (torManager) switcher.setManager(torManager)
 	})

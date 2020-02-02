@@ -10,27 +10,33 @@ html
 	head
 		meta(charset="utf-8")
 		meta(name="viewport" content="width=device-width, initial-scale=1")
-		title
-			= `${user.data.full_name} (@${user.data.username}) | Bibliogram`
+		if user.data.full_name
+			title= `${user.data.full_name} (@${user.data.username}) | Bibliogram`
+		else
+			title= `@${user.data.username} | Bibliogram`
 		link(rel="stylesheet" type="text/css" href="/static/css/main.css")
 		script(src="/static/js/pagination.js" type="module")
 	body
 		.main-divider
 			header.profile-overview
 				.profile-sticky
-					img(src=user.proxyProfilePicture width="150px" height="150px" alt=`${user.data.full_name}'s profile picture.`).pfp
+					img(src=user.proxyProfilePicture width="150px" height="150px" alt=`${user.data.full_name || user.data.username}'s profile picture.`).pfp
 					//-
 						Instagram only uses the above URL, but an HD version is also available.
 						The alt text is pathetic, I know. I don't have much to work with.
-					h1.full-name= user.data.full_name
-					h2.username= `@${user.data.username}`
-					p.bio= user.data.biography
-					if user.data.external_url
-						p.website
-							a(href=user.data.external_url)= user.data.external_url
-					div.profile-counter #[span(data-numberformat=user.posts).count #{numberFormat(user.posts)}] posts
-					div.profile-counter #[span(data-numberformat=user.following).count #{numberFormat(user.following)}] following
-					div.profile-counter #[span(data-numberformat=user.followedBy).count #{numberFormat(user.followedBy)}] followed by
+					if user.data.full_name
+						h1.full-name= user.data.full_name
+						h2.username= `@${user.data.username}`
+					else
+						h1.full-name= `@${user.data.username}`
+					if !user.fromReel
+						p.bio= user.data.biography
+						if user.data.external_url
+							p.website
+								a(href=user.data.external_url)= user.data.external_url
+						div.profile-counter #[span(data-numberformat=user.posts).count #{numberFormat(user.posts)}] posts
+						div.profile-counter #[span(data-numberformat=user.following).count #{numberFormat(user.following)}] following
+						div.profile-counter #[span(data-numberformat=user.followedBy).count #{numberFormat(user.followedBy)}] followed by
 					div.links
 						if constants.settings.rss_enabled
 							a(rel="alternate" type="application/rss+xml" href=`/u/${user.data.username}/rss.xml`) RSS

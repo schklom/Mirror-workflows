@@ -44,12 +44,12 @@ module.exports = new Promise(resolve => {
 		/** @type {import("@deadcanaries/granax/lib/controller")} */
 		// @ts-ignore
 		let tor
-		if (constants.tor_password == null) {
+		if (constants.tor.password == null) {
 			// @ts-ignore
 			tor = new granax()
 		} else {
 			tor = new granax.TorController(connect(9051), {authOnConnect: false})
-			tor.authenticate(`"${constants.tor_password}"`, err => {
+			tor.authenticate(`"${constants.tor.password}"`, err => {
 				if (err) console.log("Tor auth error:", err)
 			})
 		}

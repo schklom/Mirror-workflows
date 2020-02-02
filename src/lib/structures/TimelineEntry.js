@@ -180,27 +180,28 @@ class TimelineEntry extends TimelineBaseMethods {
 		}
 		// The owner may be in the user cache, so copy from that.
 		// This could be implemented better.
-		else if (collectors.requestCache.hasWithoutClean("user/"+this.data.owner.username)) {
+		else if (collectors.requestCache.hasNotPromise("user/"+this.data.owner.username)) {
 			/** @type {import("./User")} */
 			const user = collectors.requestCache.getWithoutClean("user/"+this.data.owner.username)
-			this.data.owner = {
-				id: user.data.id,
-				username: user.data.username,
-				is_verified: user.data.is_verified,
-				full_name: user.data.full_name,
-				profile_pic_url: user.data.profile_pic_url // _hd is also available here.
+			if (user.data.full_name) {
+				this.data.owner = {
+					id: user.data.id,
+					username: user.data.username,
+					is_verified: user.data.is_verified,
+					full_name: user.data.full_name,
+					profile_pic_url: user.data.profile_pic_url // _hd is also available here.
+				}
+				const clone = proxyExtendedOwner(this.data.owner)
+				this.ownerPfpCacheP = clone.profile_pic_url
+				return clone
 			}
-			const clone = proxyExtendedOwner(this.data.owner)
-			this.ownerPfpCacheP = clone.profile_pic_url
-			return clone
+			// That didn't work, so just fall through...
 		}
 		// We'll have to re-request ourselves.
-		else {
-			await this.update()
-			const clone = proxyExtendedOwner(this.data.owner)
-			this.ownerPfpCacheP = clone.profile_pic_url
-			return clone
-		}
+		await this.update()
+		const clone = proxyExtendedOwner(this.data.owner)
+		this.ownerPfpCacheP = clone.profile_pic_url
+		return clone
 	}
 
 	fetchVideoURL() {

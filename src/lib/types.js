@@ -399,7 +399,7 @@
  * @property {GraphEdgeCount} edge_followed_by
  * @property {any} edge_media_collections todo: doc
  * @property {GraphEdgeCount} edge_mutual_followed_by
- * @property {PagedEdges<GraphImage>} edge_owner_to_timeline_media
+ * @property {PagedEdges<TimelineEntryN1>} edge_owner_to_timeline_media
  * @property {any} edge_saved_media todo: doc
  * @property {string | null} external_url
  * @property {string | null} external_url_linkshimmed

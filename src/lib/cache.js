@@ -34,6 +34,14 @@ class TtlCache {
 		return this.cache.has(key)
 	}
 
+	hasNotPromise(key) {
+		const has = this.has(key)
+		if (!has) return false
+		const value = this.get(key)
+		if (value instanceof Promise || (value.constructor && value.constructor.name === "Promise")) return false
+		return true
+	}
+
 	/**
 	 * @param {string} key
 	 */

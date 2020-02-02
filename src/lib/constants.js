@@ -7,10 +7,21 @@
 let constants = {
 	// Things that server owners _should_ change!
 	website_origin: "http://localhost:10407",
-	use_tor: false, // Whether to enable Tor support at all
-	tor_password: null, // No effect without `use_tor = true`. If `null`, node will run its own Tor process instead.
 
 	// Things that server owners _could_ change if they want to.
+	tor: {
+		enabled: false, // If false, everything else in this block has no effect.
+		password: null, // If `null`, Bibliogram will run its own Tor process instead.
+		for: {
+			user_html: false, // User HTML page seems to have less forgiving rates, and Tor always fails, so it's disabled by default.
+			timeline_graphql: true,
+			post_graphql: true,
+			reel_graphql: true
+		}
+	},
+
+	allow_user_from_reel: "fallback", // one of: "never", "fallback", "prefer".
+
 	settings: {
 		rss_enabled: true
 	},
@@ -25,7 +36,7 @@ let constants = {
 
 	// Instagram uses this stuff. This shouldn't be changed, except to fix a bug that hasn't yet been fixed upstream.
 	external: {
-		user_query_hash: "c9100bf9110dd6361671f113dd02e7d6",
+		reel_query_hash: "c9100bf9110dd6361671f113dd02e7d6",
 		timeline_query_hash: "e769aa130647d2354c40ea6a439bfc08",
 		timeline_query_hash_2: "42323d64886122307be10013ad2dcc44", // https://github.com/rarcega/instagram-scraper/blob/dc022081dbefc81500c5f70cce5c70cfd2816e3c/instagram_scraper/constants.py#L30
 		shortcode_query_hash: "2b0673e0dc4580674a88d426fe00ea90",

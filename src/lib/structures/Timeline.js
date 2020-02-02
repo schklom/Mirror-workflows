@@ -19,14 +19,15 @@ function transformEdges(edges) {
 
 class Timeline {
 	/**
-	 * @param {import("./User")} user
+	 * @param {import("./User")|import("./ReelUser")} user
 	 */
 	constructor(user) {
 		this.user = user
 		/** @type {import("./TimelineEntry")[][]} */
 		this.pages = []
-		this.addPage(this.user.data.edge_owner_to_timeline_media)
-		this.page_info = this.user.data.edge_owner_to_timeline_media.page_info
+		if (this.user.data.edge_owner_to_timeline_media) {
+			this.addPage(this.user.data.edge_owner_to_timeline_media)
+		}
 	}
 
 	hasNextPage() {

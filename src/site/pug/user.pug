@@ -32,7 +32,9 @@ html
 						h1.full-name= `@${user.data.username}`
 					if !user.fromReel
 						p.structured-text.bio
-							+display_structured(user.getStructuredBio())
+							- const bio = user.getStructuredBio()
+							if bio
+								+display_structured(bio)
 						if user.data.external_url
 							p.website
 								a(href=user.data.external_url)= user.data.external_url

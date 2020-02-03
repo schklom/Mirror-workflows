@@ -43,7 +43,7 @@ let constants = {
 		timeline_fetch_first: 12,
 		username_regex: "[\\w.]+",
 		shortcode_regex: "[\\w-]+",
-		hashtag_regex: "[\\w]+"
+		hashtag_regex: "[^ `~!@#\\$%^&*()\\-=+[\\]{};:\"',<.>/?\\\\]+"
 	},
 
 	resources: {

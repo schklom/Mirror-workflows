@@ -1,0 +1,11 @@
+mixin display_structured(parts)
+	each part in parts
+		if part.type === "text"
+			= part.text
+		else if part.type === "user"
+			a(href="/u/"+part.user).link-to-user= part.text
+		else if part.type === "hashtag"
+			//- todo: add link to explore page, when explore page exists.
+			a.link-to-hashtag= part.text
+		else
+			| [UNKNOWN PART TYPE #{part.type}, TEXT:] [#{part.text}]

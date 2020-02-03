@@ -42,7 +42,8 @@ let constants = {
 		shortcode_query_hash: "2b0673e0dc4580674a88d426fe00ea90",
 		timeline_fetch_first: 12,
 		username_regex: "[\\w.]+",
-		shortcode_regex: "[\\w-]+"
+		shortcode_regex: "[\\w-]+",
+		hashtag_regex: "[\\w]+"
 	},
 
 	resources: {

@@ -2,6 +2,7 @@ const constants = require("../constants")
 const {proxyImage, proxyExtendedOwner} = require("../utils/proxyurl")
 const {compile} = require("pug")
 const collectors = require("../collectors")
+const {structure} = require("../utils/structuretext")
 const TimelineBaseMethods = require("./TimelineBaseMethods")
 const TimelineChild = require("./TimelineChild")
 require("../testimports")(collectors, TimelineChild, TimelineBaseMethods)
@@ -85,6 +86,12 @@ class TimelineEntry extends TimelineBaseMethods {
 		const edge = this.data.edge_media_to_caption.edges[0]
 		if (!edge) return null // no caption
 		else return edge.node.text.replace(/\u2063/g, "") // I don't know why U+2063 INVISIBLE SEPARATOR is in here, but it is, and it causes rendering issues with certain fonts, so let's just remove it.
+	}
+
+	getStructuredCaption() {
+		const caption = this.getCaption()
+		if (!caption) return null // no caption
+		else return structure(caption)
 	}
 
 	/**

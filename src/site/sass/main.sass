@@ -3,6 +3,7 @@ $layout-b-min: 821px
 $layout-c-max: 680px;
 $layout-home-a-max: 520px
 $layout-home-b-min: 521px
+$main-theme-link-color: #085cae
 
 body
 	margin: 0
@@ -89,7 +90,10 @@ body
 			flex-wrap: wrap
 			justify-content: center
 
-			a
+			a, a:visited
+				color: $main-theme-link-color
+
+			> *
 				margin: 5px
 
 		> *:last-child
@@ -426,3 +430,14 @@ body
 
 			.link-list
 				color: $link-color
+
+.structured-text
+	a, a:visited
+		color: $main-theme-link-color
+		text-decoration: none
+
+	a:link, a:link:visited
+		text-decoration: underline
+
+	.link-to-hashtag
+		color: #127722

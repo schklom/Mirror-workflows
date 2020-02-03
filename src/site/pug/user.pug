@@ -2,6 +2,7 @@
 
 include includes/timeline_page.pug
 include includes/next_page_button.pug
+include includes/display_structured
 
 - const numberFormat = new Intl.NumberFormat().format
 
@@ -30,7 +31,8 @@ html
 					else
 						h1.full-name= `@${user.data.username}`
 					if !user.fromReel
-						p.bio= user.data.biography
+						p.structured-text.bio
+							+display_structured(user.getStructuredBio())
 						if user.data.external_url
 							p.website
 								a(href=user.data.external_url)= user.data.external_url

@@ -21,9 +21,9 @@ Join the Bibliogram discussion room on Matrix: [#bibliogram:matrix.org](https://
 - [x] Galleries of videos
 - [x] Optimised for mobile
 - [x] Instance list
+- [x] Clickable usernames and hashtags
+- [x] Proper error checking
 - [ ] Image disk cache
-- [ ] Clickable usernames and hashtags
-- [ ] Proper error checking
 - [ ] Favicon
 - [ ] Settings (e.g. data saving)
 - [ ] List view
@@ -33,7 +33,7 @@ Join the Bibliogram discussion room on Matrix: [#bibliogram:matrix.org](https://
 - [ ] Public API
 - [ ] Explore hashtags
 - [ ] Explore locations
-- [ ] _more..._
+- [ ] _more...?_
 
 These features may not be able to be implemented for technical reasons:
 

@@ -1,3 +1,10 @@
+# Code stuff
 node_modules
 .vscode
+
+# Database stuff
 db/**/*.db*
+
+# Test stuff
+/coverage
+/.nyc_output

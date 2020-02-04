@@ -1,5 +1,4 @@
 const constants = require("../constants")
-const {Parser} = require("./parser/parser")
 
 function tryMatch(text, against, callback) {
 	let matched = text.match(against)
@@ -28,6 +27,7 @@ function partsUsername(parts) {
 			})
 		}
 	}
+	return parts
 }
 
 function partsHashtag(parts) {
@@ -41,6 +41,7 @@ function partsHashtag(parts) {
 			})
 		}
 	}
+	return parts
 }
 
 function structure(text) {
@@ -51,3 +52,5 @@ function structure(text) {
 }
 
 module.exports.structure = structure
+module.exports.partsUsername = partsUsername
+module.exports.partsHashtag = partsHashtag

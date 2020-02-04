@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cd src/site && node server.js"
+    "start": "cd src/site && node server.js",
+    "test": "tap"
   },
   "keywords": [],
   "author": "",
@@ -23,5 +24,8 @@
   },
   "optionalDependencies": {
     "@deadcanaries/granax": "^3.2.5"
+  },
+  "devDependencies": {
+    "tap": "^14.10.6"
   }
 }

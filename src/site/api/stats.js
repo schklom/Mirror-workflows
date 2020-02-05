@@ -39,6 +39,7 @@ const features = [
 	"API_INSTANCES",
 	"BLOCK_DETECT_USER_HTML"
 ]
+if (constants.has_privacy_policy) features.push("PRIVACY_POLICY")
 const innerMap = new Map()
 {
 	const addVersion = function(shortVersion, block) {

@@ -12,7 +12,8 @@ tap.same(
 		{type: "text", text: " "},
 		{type: "hashtag", text: "#epic", hashtag: "epic"},
 		{type: "text", text: ""}
-	]
+	],
+	"partsHashtag works"
 )
 
 // lone test username
@@ -26,97 +27,110 @@ tap.same(
 		{type: "text", text: " with "},
 		{type: "user", text: "@person", user: "person"},
 		{type: "text", text: ""}
-	]
+	],
+	"partsUsername works"
 )
 
-// plain text
-tap.same(
-	structure("hello world"),
-	[
-		{type: "text", text: "hello world"}
-	]
-)
+tap.test("entire structure works", childTest => {
+	// plain text
+	childTest.same(
+		structure("hello world"),
+		[
+			{type: "text", text: "hello world"}
+		],
+		"plain text"
+	)
 
-// username
-tap.same(
-	structure("hello @person world"),
-	[
-		{type: "text", text: "hello "},
-		{type: "user", text: "@person", user: "person"},
-		{type: "text", text: " world"}
-	]
-)
+	// username
+	childTest.same(
+		structure("hello @person world"),
+		[
+			{type: "text", text: "hello "},
+			{type: "user", text: "@person", user: "person"},
+			{type: "text", text: " world"}
+		],
+		"username"
+	)
 
-// username at start
-tap.same(
-	structure("@person hello"),
-	[
-		{type: "text", text: ""},
-		{type: "user", text: "@person", user: "person"},
-		{type: "text", text: " hello"}
-	]
-)
+	// username at start
+	childTest.same(
+		structure("@person hello"),
+		[
+			{type: "text", text: ""},
+			{type: "user", text: "@person", user: "person"},
+			{type: "text", text: " hello"}
+		],
+		"username at start"
+	)
 
-// username at end
-tap.same(
-	structure("hello @person"),
-	[
-		{type: "text", text: "hello "},
-		{type: "user", text: "@person", user: "person"},
-		{type: "text", text: ""},
-	]
-)
+	// username at end
+	childTest.same(
+		structure("hello @person"),
+		[
+			{type: "text", text: "hello "},
+			{type: "user", text: "@person", user: "person"},
+			{type: "text", text: ""},
+		],
+		"username at end"
+	)
 
-// multiple usernames
-tap.same(
-	structure("hello @person1 @person2"),
-	[
-		{type: "text", text: "hello "},
-		{type: "user", text: "@person1", user: "person1"},
-		{type: "text", text: " "},
-		{type: "user", text: "@person2", user: "person2"},
-		{type: "text", text: ""}
-	]
-)
-
-
-// hashtag
-tap.same(
-	structure("what a #beautiful day"),
-	[
-		{type: "text", text: "what a "},
-		{type: "hashtag", text: "#beautiful", hashtag: "beautiful"},
-		{type: "text", text: " day"}
-	]
-)
+	// multiple usernames
+	childTest.same(
+		structure("hello @person1 @person2"),
+		[
+			{type: "text", text: "hello "},
+			{type: "user", text: "@person1", user: "person1"},
+			{type: "text", text: " "},
+			{type: "user", text: "@person2", user: "person2"},
+			{type: "text", text: ""}
+		],
+		"multiple usernames"
+	)
 
 
-// mixed
-tap.same(
-	structure("@person what a #beautiful #day in @city"),
-	[
-		{type: "text", text: ""},
-		{type: "user", text: "@person", user: "person"},
-		{type: "text", text: " what a "},
-		{type: "hashtag", text: "#beautiful", hashtag: "beautiful"},
-		{type: "text", text: " "},
-		{type: "hashtag", text: "#day", hashtag: "day"},
-		{type: "text", text: " in "},
-		{type: "user", text: "@city", user: "city"},
-		{type: "text", text: ""}
-	]
-)
+	// hashtag
+	childTest.same(
+		structure("what a #beautiful day"),
+		[
+			{type: "text", text: "what a "},
+			{type: "hashtag", text: "#beautiful", hashtag: "beautiful"},
+			{type: "text", text: " day"}
+		],
+		"hashtag"
+	)
 
-// special characters
-tap.same(
-	structure("#goodmorning! @city.planner, #parks\nare awesome"),
-	[
-		{type: "text", text: ""},
-		{type: "hashtag", text: "#goodmorning", hashtag: "goodmorning"},
-		{type: "text", text: "! "},
-		{type: "user", text: "@city.planner", user: "city.planner"},
-		{type: "text", text: ", "},
-		{type: "hashtag", text: "#parks", hashtag: "parks"},
-		{type: "text", text: "\nare awesome"}
-	]
-)
+
+	// mixed
+	childTest.same(
+		structure("@person what a #beautiful #day in @city"),
+		[
+			{type: "text", text: ""},
+			{type: "user", text: "@person", user: "person"},
+			{type: "text", text: " what a "},
+			{type: "hashtag", text: "#beautiful", hashtag: "beautiful"},
+			{type: "text", text: " "},
+			{type: "hashtag", text: "#day", hashtag: "day"},
+			{type: "text", text: " in "},
+			{type: "user", text: "@city", user: "city"},
+			{type: "text", text: ""}
+		],
+		"mixed"
+	)
+
+	// special characters
+	childTest.same(
+		structure("#goodmorning! @city.planner, #parks\nare awesome"),
+		[
+			{type: "text", text: ""},
+			{type: "hashtag", text: "#goodmorning", hashtag: "goodmorning"},
+			{type: "text", text: "! "},
+			{type: "user", text: "@city.planner", user: "city.planner"},
+			{type: "text", text: ", "},
+			{type: "hashtag", text: "#parks", hashtag: "parks"},
+			{type: "text", text: "\nare awesome"}
+		],
+		"special characters"
+	)
+
+	childTest.end()
+})

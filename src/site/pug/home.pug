@@ -1,4 +1,4 @@
-//- Needs rssEnabled, allUnblocked, torAvailable
+//- Needs rssEnabled, allUnblocked, torAvailable, hasPrivacyPolicy
 
 doctype html
 html
@@ -33,6 +33,10 @@ html
 					It does not preserve deleted posts.
 				h2 About this instance
 				ul
+					if hasPrivacyPolicy
+						li: a(href="/privacy") Privacy policy
+					else
+						li Owner has not written a privacy policy
 					li Instance is #{allUnblocked ? "not blocked" : "blocked"}
 					li RSS feeds are #{rssEnabled ? "enabled" : "disabled"}
 					li Tor is #{torAvailable ? "enabled" : "not available"}

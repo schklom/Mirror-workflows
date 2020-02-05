@@ -1,0 +1,100 @@
+//-
+	============================================================================
+
+	Welcome. Please read this entire section before you start writing.
+
+	It is important for instance owners to provide a privacy policy so that
+	their users understand what data is collected and how it is used.
+
+	This is a Pug file. https://pugjs.org/ You can write any valid Pug here,
+	but no variables are imported for you to use.
+
+	If you are unfamiliar with Pug, you can also write HTML tags. You can mix
+	Pug and HTML in this file.
+
+	Get started by following these instructions:
+
+	1. Copy this file from /src/site/pug/privacy.pug.template
+	   to /src/site/pug/privacy.pug
+	2. Edit this file to represent the actual privacy policy of your service.
+	   You will likely need to delete or create entire sections of text.
+	3. Open /config.js and add the pair `has_privacy_policy: true` to
+	   mark your instance as having a privacy policy. The policy will be linked
+	   on the homepage and a feature will be added to /api/stats.
+
+	If you prefer to set your privacy policy through other software like nginx,
+	you may just set the pair in config.js without following steps 1-2. Set up
+	a rule for the URL `/privacy` to either serve a page or redirect somewhere.
+	If you choose to do that, Bibliogram will not be able to apply meta tags
+	or CSS to your page.
+
+	============================================================================
+
+html
+	head
+		title Privacy policy | Bibliogram
+		include includes/head
+	body.privacy-policy
+		article
+			h1 Privacy policy
+
+			section
+				//-
+					This data is collected by the Bibliogram software itself. It is
+					likely the same for your instance, unless you have set
+					special settings to change it.
+				h2 Data collected by Bibliogram
+				p.
+					Bibliogram logs all incoming request URLs and the time of the request
+					to the console, but does not log headers, IP addresses, or other
+					information. These logs are not stored on disk.
+				p.
+					Bibliogram has a database that stores the usernames and IDs of
+					viewed users, and all data about viewed posts. This data is not
+					linked with the user that requested it.
+
+			section
+				//-
+					This data is not collected by Bibliogram, and is specific to your
+					server, and is entirely within your control.
+					If you operate under a "no logs" policy, you can likely delete this
+					entire section.
+				h2 Data collected by nginx
+				p.
+					This server uses nginx as a reverse proxy to Bibliogram. nginx is
+					configured to use the default logging settings, which means that this
+					data is logged:
+				ul
+					li Request timestamp
+					li Request URL
+					li IP address
+					li Reported user agent
+					li Reported referrer
+				p.
+					These logs are saved to disk and stored indefinitely.
+
+			section
+				//-
+					I sure hope you're not sending user data anywhere, but if you actually
+					are, you'll need to change this section.
+					If you use Google Analytics or similar software, you could write
+					about it here.
+				h2 Sending data
+				p.
+					Data collected by Bibliogram is not public and is never sent
+					to any external services.
+
+			section
+				h2 Exporting or deleting your data
+				p.
+					Since Bibliogram does not associate any stored data with a user
+					identifier, we cannot export or delete "your" data since we have
+					no concept of "you".
+
+			//-
+				Remember that you can create or delete entire sections containing
+				whatever content you want!
+
+		section.return-home
+			div
+				a(href="/") ←&ensp;Back to homepage

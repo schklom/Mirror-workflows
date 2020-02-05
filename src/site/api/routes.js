@@ -10,8 +10,25 @@ module.exports = [
 			return render(200, "pug/home.pug", {
 				rssEnabled: constants.settings.rss_enabled,
 				allUnblocked: history.testNoneBlocked(),
-				torAvailable: switcher.canUseTor()
+				torAvailable: switcher.canUseTor(),
+				hasPrivacyPolicy: constants.has_privacy_policy
 			})
+		}
+	},
+	{
+		route: "/privacy", methods: ["GET"], code: async () => {
+			if (constants.has_privacy_policy && pugCache.has("pug/privacy.pug")) {
+				return render(200, "pug/privacy.pug")
+			} else {
+				return render(404, "pug/friendlyerror.pug", {
+					statusCode: 404,
+					title: "No privacy policy",
+					message: "No privacy policy",
+					explanation:
+						"The owner of this instance has not actually written a privacy policy."
+						+"\nIf you own this instance, please read the file stored at /src/site/pug/privacy.pug.template."
+				})
+			}
 		}
 	},
 	{

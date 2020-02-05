@@ -15,7 +15,7 @@ module.exports = [
 					content: xml
 				}
 			}).catch(error => {
-				if (error === constants.symbols.NOT_FOUND) {
+				if (error === constants.symbols.NOT_FOUND || error === constants.symbols.ENDPOINT_OVERRIDDEN) {
 					return render(404, "pug/friendlyerror.pug", {
 						statusCode: 404,
 						title: "Not found",

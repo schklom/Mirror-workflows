@@ -60,7 +60,7 @@ module.exports = [
 				}
 				return render(200, "pug/user.pug", {url, user, constants})
 			}).catch(error => {
-				if (error === constants.symbols.NOT_FOUND) {
+				if (error === constants.symbols.NOT_FOUND || error === constants.symbols.ENDPOINT_OVERRIDDEN) {
 					return render(404, "pug/friendlyerror.pug", {
 						statusCode: 404,
 						title: "Not found",
@@ -100,7 +100,7 @@ module.exports = [
 					}
 				}
 			}).catch(error => {
-				if (error === constants.symbols.NOT_FOUND) {
+				if (error === constants.symbols.NOT_FOUND || error === constants.symbols.ENDPOINT_OVERRIDDEN) {
 					return render(404, "pug/friendlyerror.pug", {
 						statusCode: 404,
 						title: "Not found",

@@ -87,7 +87,7 @@ html
 			section
 				h2 Exporting or deleting your data
 				p.
-					Since Bibliogram does not associate any stored data with a user
+					Since Bibliogram does not associate any data with a user
 					identifier, we cannot export or delete "your" data since we have
 					no concept of "you".
 

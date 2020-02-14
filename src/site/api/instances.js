@@ -27,13 +27,15 @@ module.exports = [
 						while (inTable && parser.hasRemaining()) {
 							const line = parser.get({split: "\n"})
 							if (line.startsWith("|")) {
-								/** [empty, official, address, country] */
+								/** [empty, official, address, country, rss, cloudflare] */
 								const parts = line.split("|")
 								if (parts.length >= 4 && parts[2].includes("://")) {
 									instances.push({
 										address: parts[2].trim(),
 										country: parts[3].match(/[A-Z]{2,}|$/)[0] || null,
-										official: parts[1].trim() === ":white_check_mark:"
+										official: parts[1].trim() === ":white_check_mark:",
+										rss: parts[4].trim() === ":white_check_mark:",
+										cloudflare: parts[5].trim() === ":crying_cat_face:"
 									})
 								}
 							} else {

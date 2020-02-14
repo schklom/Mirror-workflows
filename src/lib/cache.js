@@ -161,7 +161,23 @@ class UserRequestCache extends TtlCache {
 		this.cleanKey(key)
 		if (this.cache.has(key)) {
 			const existing = this.cache.get(key)
-			if ((!existing.isReel || !isHtmlPreferred || existing.htmlFailed) && !existing.isFailedPromise) return Promise.resolve(existing.data)
+			if (!existing.isFailedPromise) { // if the existing entry contains usable data
+				if (!existing.isReel) { // hurrah, the best we could get!
+					return Promise.resolve(existing.data)
+				}
+				// we don't have HTML, only reel
+				if (!isHtmlPreferred) { // well that's cool, we only wanted reel anyway
+					return Promise.resolve(existing.data)
+				} else { // (isHtmlPreferred ~= true): we'd _like_ some HTML, but we don't have it currently. if HTML is blocked then using reel is smart
+					if (existing.htmlFailed) { // HTML is in fact blocked, so we will have to settle for reel. fortunately we already have reel!
+						return Promise.resolve(existing.data)
+					}
+				}
+			} else { // (existing.isFailedPromise ~= true): the existing entry is a failed request
+				if (existing.htmlFailed && !willFetchReel) { // it's no use! the HTML attempt will fail again: abandon it.
+					return Promise.resolve(existing.data) // this is actually a promise rejection
+				}
+			}
 		}
 		const pending = callback().then(result => {
 			if (this.getWithoutClean(key) === pending) { // if nothing has replaced the current cache in the meantime

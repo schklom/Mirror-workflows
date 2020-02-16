@@ -6,7 +6,11 @@ const passthrough = require("./passthrough")
 
 const pinski = new Pinski({
 	port: 10407,
-	relativeRoot: __dirname
+	relativeRoot: __dirname,
+	basicCacheControl: {
+		exts: ["ttf", "woff2", "png", "jpg", "jpeg", "svg", "gif", "webmanifest", "ico"],
+		seconds: 604800
+	},
 })
 
 subdirs("pug", async (err, dirs) => {

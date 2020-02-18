@@ -54,7 +54,7 @@ module.exports = new Promise(resolve => {
 			})
 		}
 
-		console.log("Starting tor...")
+		console.log("Starting Tor...")
 
 		tor.once("ready", () => {
 			tor.getInfo("net/listeners/socks", (err, result) => {
@@ -73,7 +73,7 @@ module.exports = new Promise(resolve => {
 			console.log(...arguments)
 		})
 	} else {
-		console.log("Note: Tor functionality not installed. You may wish to run `npm install @deadcanaries/granax`. (78+ MB download required.)")
+		console.log("Note: Tor functionality not installed. You may wish to run `npm install`. (78+ MB download required.)")
 		resolve(null)
 	}
 })

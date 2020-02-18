@@ -19,7 +19,8 @@ subdirs("pug", async (err, dirs) => {
 	// need to check for and run db upgrades before anything starts using it
 	await require("../lib/utils/upgradedb")()
 
-	//pinski.addRoute("/", "pug/index.pug", "pug")
+	pinski.addRoute("/404", "pug/404.pug", "pug")
+	pinski.setNotFoundTarget("/404")
 	pinski.addRoute("/static/css/main.css", "sass/main.sass", "sass")
 	pinski.addPugDir("pug", dirs)
 	pinski.addAPIDir("html/static/js/templates/api")

@@ -16,7 +16,7 @@
     "mixin-deep": "^2.0.1",
     "node-dir": "^0.1.17",
     "node-fetch": "^2.6.0",
-    "pinski": "github:cloudrac3r/pinski#9eb56d90fdd00357451dd5a546dbcca1f9bf114a",
+    "pinski": "github:cloudrac3r/pinski#1193025936cac58ac329b30e0749884bba6abb11",
     "pug": "^2.0.4",
     "semver": "^7.1.2",
     "sharp": "^0.24.0",

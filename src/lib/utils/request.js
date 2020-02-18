@@ -3,7 +3,7 @@ const fetch = require("node-fetch").default
 function request(url, options = {}, settings = {}) {
 	if (settings.statusLine === undefined) settings.statusLine = "OUT"
 	if (settings.log === undefined) settings.log = true
-	if (settings.log) console.log(`->           [${settings.statusLine}] ${url}`) // todo: make more like pinski?
+	if (settings.log) console.log(`          -> [${settings.statusLine}] ${url}`) // todo: make more like pinski?
 	// @ts-ignore
 	return fetch(url, Object.assign({
 		headers: {

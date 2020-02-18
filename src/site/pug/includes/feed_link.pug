@@ -1,0 +1,9 @@
+mixin feed_link(name, urlPart, username, contentType)
+	span
+		a(rel="alternate" type=contentType href=`/u/${username}/${urlPart}.xml`)
+			= name
+		sup.validate-feed
+			-
+				let params = new URLSearchParams()
+				params.set("url", `${website_origin}/u/${username}/${urlPart}.xml`)
+			a(href="https://validator.w3.org/feed/check.cgi?"+params.toString() title="Validate this feed") v!

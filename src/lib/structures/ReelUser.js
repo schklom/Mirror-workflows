@@ -13,9 +13,14 @@ class ReelUser {
 		this.following = 0
 		this.followedBy = 0
 		this.posts = 0
+		/** @type {import("./Timeline")} */
 		this.timeline = new Timeline(this)
 		this.cachedAt = Date.now()
 		this.proxyProfilePicture = proxyImage(this.data.profile_pic_url)
+	}
+
+	getStructuredBio() {
+		return null
 	}
 
 	getTtl(scale = 1) {

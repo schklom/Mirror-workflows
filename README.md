@@ -77,7 +77,9 @@ See [Wiki:Installing](https://github.com/cloudrac3r/bibliogram/wiki/Installing) 
 - `/` - homepage
 - `/u/{username}` - load a user's profile and timeline
 - `/u/{username}/rss.xml` - get the RSS feed for a user
+- `/u/{username}/atom.xml` - get the Atom feed for a user
 - `/p/{shortcode}` - load a post
+- `/privacy` - privacy policy
 
 ## Credits
 

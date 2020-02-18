@@ -1,4 +1,4 @@
-const RSS = require("rss")
+const {Feed} = require("feed")
 const constants = require("../constants")
 const config = require("../../../config")
 const TimelineEntry = require("./TimelineEntry")
@@ -54,18 +54,27 @@ class Timeline {
 	}
 
 	async fetchFeed() {
-		const feed = new RSS({
-			title: `@${this.user.data.username}`,
-			feed_url: `${config.website_origin}/u/${this.user.data.username}/rss.xml`,
-			site_url: config.website_origin,
+		// we likely cannot use full_name here - reel fallback would make the feed title inconsistent, leading to confusing experience
+		const usedName = `@${this.user.data.username}`
+		const feed = new Feed({
+			title: usedName,
 			description: this.user.data.biography,
-			image_url: config.website_origin+this.user.proxyProfilePicture,
-			pubDate: new Date(this.user.cachedAt),
-			ttl: this.user.getTtl(1000*60) // scale to minute
+			id: `bibliogram:user/${this.user.data.username}`,
+			link: `${constants.website_origin}/u/${this.user.data.username}`,
+			feedLinks: {
+				rss: `${constants.website_origin}/u/${this.user.data.username}/rss.xml`,
+				atom: `${constants.website_origin}/u/${this.user.data.username}/atom.xml`
+			},
+			image: constants.website_origin+this.user.proxyProfilePicture,
+			updated: new Date(this.user.cachedAt),
+			author: {
+				name: usedName,
+				link: `${constants.website_origin}/u/${this.user.data.username}`
+			}
 		})
 		const page = this.pages[0] // only get posts from first page
 		await Promise.all(page.map(item =>
-			item.fetchFeedData().then(feedData => feed.item(feedData))
+			item.fetchFeedData().then(feedData => feed.addItem(feedData))
 		))
 		return feed
 	}

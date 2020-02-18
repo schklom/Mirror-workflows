@@ -13,6 +13,10 @@ const userRequestCache = new UserRequestCache(constants.caching.resource_cache_t
 const timelineEntryCache = new TtlCache(constants.caching.resource_cache_time)
 const history = new RequestHistory(["user", "timeline", "post", "reel"])
 
+/**
+ * @param {string} username
+ * @param {boolean} isRSS
+ */
 async function fetchUser(username, isRSS) {
 	let mode = constants.allow_user_from_reel
 	if (mode === "preferForRSS") {
@@ -38,6 +42,10 @@ async function fetchUser(username, isRSS) {
 	}
 }
 
+/**
+ * @param {string} username
+ * @returns {Promise<import("./structures/User")>}
+ */
 function fetchUserFromHTML(username) {
 	return userRequestCache.getOrFetch("user/"+username, false, true, () => {
 		return switcher.request("user_html", `https://www.instagram.com/${username}/`, async res => {
@@ -72,6 +80,11 @@ function fetchUserFromHTML(username) {
 	})
 }
 
+/**
+ * @param {string} userID
+ * @param {string} username
+ * @returns {Promise<import("./structures/ReelUser")>}
+ */
 function fetchUserFromCombined(userID, username) {
 	// Fetch basic user information
 	const p = new URLSearchParams()

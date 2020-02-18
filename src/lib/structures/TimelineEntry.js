@@ -217,6 +217,9 @@ class TimelineEntry extends TimelineBaseMethods {
 		else return this.update().then(() => this.getVideoUrlP())
 	}
 
+	/**
+	 * @returns {Promise<import("feed/src/typings/index").Item>}
+	 */
 	async fetchFeedData() {
 		const children = await this.fetchChildren()
 		return {
@@ -230,10 +233,10 @@ class TimelineEntry extends TimelineBaseMethods {
 					height: child.data.dimensions.height
 				}))
 			}),
-			author: this.data.owner.username,
-			url: `${constants.website_origin}/p/${this.data.shortcode}`,
-			guid: `${constants.website_origin}/p/${this.data.shortcode}`, // Is it wise to keep the origin in here? The same post would have a different ID from different servers.
-			date: new Date(this.data.taken_at_timestamp*1000)
+			link: `${constants.website_origin}/p/${this.data.shortcode}`,
+			id: `bibliogram:post/${this.data.shortcode}`, // Is it wise to keep the origin in here? The same post would have a different ID from different servers.
+			published: new Date(this.data.taken_at_timestamp*1000), // first published date
+			date: new Date(this.data.taken_at_timestamp*1000) // last modified date
 			/*
 				Readers should display the description as HTML rather than using the media enclosure.
 				enclosure: {

@@ -1,8 +1,9 @@
-//- Needs user, url, constants
+//- Needs user, url, constants, website_origin
 
 include includes/timeline_page.pug
 include includes/next_page_button.pug
 include includes/display_structured
+include includes/feed_link
 
 - const numberFormat = new Intl.NumberFormat().format
 
@@ -19,7 +20,7 @@ html
 		.main-divider
 			header.profile-overview
 				.profile-sticky
-					img(src=user.proxyProfilePicture width="150px" height="150px" alt=`${user.data.full_name || user.data.username}'s profile picture.`).pfp
+					img(src=user.proxyProfilePicture width=150 height=150 alt=`${user.data.full_name || user.data.username}'s profile picture.`).pfp
 					//-
 						Instagram only uses the above URL, but an HD version is also available.
 						The alt text is pathetic, I know. I don't have much to work with.
@@ -28,20 +29,23 @@ html
 						h2.username= `@${user.data.username}`
 					else
 						h1.full-name= `@${user.data.username}`
-					if !user.fromReel
-						p.structured-text.bio
-							- const bio = user.getStructuredBio()
-							if bio
-								+display_structured(bio)
-						if user.data.external_url
-							p.website
-								a(href=user.data.external_url)= user.data.external_url
+					p.structured-text.bio
+						- const bio = user.getStructuredBio()
+						if bio
+							+display_structured(bio)
+					if user.data.external_url
+						p.website
+							a(href=user.data.external_url)= user.data.external_url
+					if user.posts != undefined
 						div.profile-counter #[span(data-numberformat=user.posts).count #{numberFormat(user.posts)}] posts
+					if user.following != undefined
 						div.profile-counter #[span(data-numberformat=user.following).count #{numberFormat(user.following)}] following
+					if user.followedBy != undefined
 						div.profile-counter #[span(data-numberformat=user.followedBy).count #{numberFormat(user.followedBy)}] followed by
 					div.links
 						if constants.settings.rss_enabled
-							a(rel="alternate" type="application/rss+xml" href=`/u/${user.data.username}/rss.xml`) RSS
+							+feed_link("RSS", "rss", user.data.username, "application/rss+xml")
+							+feed_link("Atom", "atom", user.data.username, "application/atom+xml")
 						a(rel="noreferrer noopener" href=`https://www.instagram.com/${user.data.username}`) instagram.com
 
 			- const hasPosts = !user.data.is_private && user.timeline.pages.length && user.timeline.pages[0].length

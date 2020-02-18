@@ -6,7 +6,7 @@
 
 let constants = {
 	// Things that server owners _should_ change!
-	website_origin: "http://localhost:10407",
+	website_origin: "http://localhost:10407", // Protocol and domain that this instance is hosted on. Do NOT include a trailing slash.
 	has_privacy_policy: false, // You MUST read /src/site/pug/privacy.pug.template before changing this!
 
 	// Things that server owners _could_ change if they want to.

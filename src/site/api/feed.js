@@ -4,15 +4,29 @@ const {render} = require("pinski/plugins")
 const {pugCache} = require("../passthrough")
 
 module.exports = [
-	{route: `/u/(${constants.external.username_regex})/rss.xml`, methods: ["GET"], code: ({fill}) => {
+	{route: `/u/(${constants.external.username_regex})/(rss|atom)\\.xml`, methods: ["GET"], code: ({fill}) => {
 		if (constants.settings.rss_enabled) {
+			const kind = fill[1]
 			return fetchUser(fill[0], true).then(async user => {
-				const content = await user.timeline.fetchFeed()
-				const xml = content.xml()
+				const feed = await user.timeline.fetchFeed()
+				if (kind === "rss") {
+					var data = {
+						contentType: "application/rss+xml", // see https://stackoverflow.com/questions/595616/what-is-the-correct-mime-type-to-use-for-an-rss-feed,
+						content: feed.rss2()
+					}
+				} else if (kind === "atom") {
+					var data = {
+						contentType: "application/atom+xml", // see https://en.wikipedia.org/wiki/Atom_(standard)#Including_in_HTML
+						content: feed.atom1()
+					}
+				}
 				return {
 					statusCode: 200,
-					contentType: "application/rss+xml", // see https://stackoverflow.com/questions/595616/what-is-the-correct-mime-type-to-use-for-an-rss-feed
-					content: xml
+					contentType: data.contentType,
+					headers: {
+						"Cache-Control": `max-age=${userRequestCache.getTtl("user/"+user.data.username, 1000)}`
+					},
+					content: data.content
 				}
 			}).catch(error => {
 				if (error === constants.symbols.NOT_FOUND || error === constants.symbols.ENDPOINT_OVERRIDDEN) {
@@ -40,8 +54,8 @@ module.exports = [
 		} else {
 			return Promise.resolve(render(403, "pug/friendlyerror.pug", {
 				statusCode: 403,
-				title: "RSS disabled",
-				message: "RSS is disabled on this instance.",
+				title: "Feeds disabled",
+				message: "Feeds are disabled on this instance.",
 				withInstancesLink: true
 			}))
 		}

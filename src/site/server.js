@@ -21,7 +21,6 @@ subdirs("pug", async (err, dirs) => {
 	pinski.addPugDir("pug", dirs)
 	pinski.addAPIDir("html/static/js/templates/api")
 	pinski.addSassDir("sass")
-	pinski.addAPIDir("api")
 	pinski.muteLogsStartingWith("/imageproxy")
 	pinski.muteLogsStartingWith("/videoproxy")
 	pinski.muteLogsStartingWith("/static")
@@ -30,6 +29,7 @@ subdirs("pug", async (err, dirs) => {
 		await require("../lib/utils/tor") // make sure tor state is known before going further
 	}
 
+	pinski.addAPIDir("api")
 	pinski.startServer()
 	pinski.enableWS()
 

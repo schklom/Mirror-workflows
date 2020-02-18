@@ -58,7 +58,7 @@ module.exports = [
 				if (typeof page === "number" && !isNaN(page) && page >= 1) {
 					await user.timeline.fetchUpToPage(page - 1)
 				}
-				return render(200, "pug/user.pug", {url, user, constants})
+				return render(200, "pug/user.pug", {url, user, constants, website_origin: constants.website_origin})
 			}).catch(error => {
 				if (error === constants.symbols.NOT_FOUND || error === constants.symbols.ENDPOINT_OVERRIDDEN) {
 					return render(404, "pug/friendlyerror.pug", {

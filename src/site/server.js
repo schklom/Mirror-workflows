@@ -16,6 +16,9 @@ const pinski = new Pinski({
 subdirs("pug", async (err, dirs) => {
 	if (err) throw err
 
+	// need to check for and run db upgrades before anything starts using it
+	await require("../lib/utils/upgradedb")()
+
 	//pinski.addRoute("/", "pug/index.pug", "pug")
 	pinski.addRoute("/static/css/main.css", "sass/main.sass", "sass")
 	pinski.addPugDir("pug", dirs)

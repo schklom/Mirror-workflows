@@ -20,6 +20,24 @@ const deltas = new Map([
 		db.prepare("CREATE TABLE Posts (shortcode TEXT NOT NULL UNIQUE, id TEXT NOT NULL UNIQUE, id_as_numeric NUMERIC NOT NULL, username TEXT NOT NULL, json TEXT NOT NULL, PRIMARY KEY (shortcode))")
 			// for future investigation: may not be able to sort by id as a string, may not be able to fit entire id in numeric type
 			.run()
+	}],
+	// version 1 to version 2
+	[2, function() {
+		db.transaction(() => {
+			db.prepare(
+				"CREATE TABLE Users_New (username TEXT NOT NULL UNIQUE, user_id TEXT NOT NULL UNIQUE, created INTEGER NOT NULL, updated INTEGER NOT NULL"
+				+", updated_version INTEGER NOT NULL, biography TEXT, post_count INTEGER NOT NULL, following_count INTEGER NOT NULL, followed_by_count INTEGER NOT NULL, external_url TEXT"
+				+", full_name TEXT, is_private INTEGER NOT NULL, is_verified INTEGER NOT NULL, profile_pic_url TEXT NOT NULL"
+				+", PRIMARY KEY (username))"
+			)
+				.run()
+			db.prepare("INSERT INTO Users_New SELECT username, user_id, 0, 0, 1, NULL, 0, 0, 0, NULL, NULL, 0, 0, '' from Users")
+				.run()
+			db.prepare("DROP TABLE Users")
+				.run()
+			db.prepare("ALTER TABLE Users_New RENAME TO Users")
+				.run()
+		})()
 	}]
 ])
 

@@ -21,7 +21,7 @@ let constants = {
 		}
 	},
 
-	allow_user_from_reel: "preferForRSS", // one of: "never", "fallback", "prefer", "preferForRSS"
+	allow_user_from_reel: "preferForRSS", // one of: "never", "fallback", "prefer", "onlyPreferSaved", "preferForRSS"
 
 	settings: {
 		rss_enabled: true
@@ -66,7 +66,7 @@ let constants = {
 		ENDPOINT_OVERRIDDEN: Symbol("ENDPOINT_OVERRIDDEN")
 	},
 
-	database_version: 1
+	database_version: 2
 }
 
 // Override values from config and export the result

@@ -51,6 +51,7 @@ class Timeline {
 	addPage(page) {
 		this.pages.push(transformEdges(page.edges))
 		this.page_info = page.page_info
+		this.user.posts = page.count
 	}
 
 	async fetchFeed() {

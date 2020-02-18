@@ -5,7 +5,7 @@ const {extractSharedData} = require("./utils/body")
 const {TtlCache, RequestCache, UserRequestCache} = require("./cache")
 const RequestHistory = require("./structures/RequestHistory")
 const db = require("./db")
-require("./testimports")(constants, request, extractSharedData, UserRequestCache, RequestHistory)
+require("./testimports")(constants, request, extractSharedData, UserRequestCache, RequestHistory, db)
 
 const requestCache = new RequestCache(constants.caching.resource_cache_time)
 const userRequestCache = new UserRequestCache(constants.caching.resource_cache_time)
@@ -21,25 +21,43 @@ async function fetchUser(username, isRSS) {
 	let mode = constants.allow_user_from_reel
 	if (mode === "preferForRSS") {
 		if (isRSS) mode = "prefer"
-		else mode = "fallback"
+		else mode = "onlyPreferSaved"
 	}
 	if (mode === "never") {
 		return fetchUserFromHTML(username)
-	} else if (mode === "prefer") {
-		const userID = db.prepare("SELECT user_id FROM Users WHERE username = ?").pluck().get(username)
-		if (userID) return fetchUserFromCombined(userID, username)
-		else return fetchUserFromHTML(username)
-	} else { // === "fallback"
+	}
+	if (mode === "prefer") {
+		const saved = db.prepare("SELECT username, user_id, updated_version, biography, post_count, following_count, followed_by_count, external_url, full_name, is_private, is_verified, profile_pic_url FROM Users WHERE username = ?").get(username)
+		if (saved && saved.updated_version >= 2) {
+			return fetchUserFromSaved(saved)
+		} else if (saved && saved.updated_version === 1) {
+			return fetchUserFromCombined(saved.user_id, saved.username)
+		} else {
+			return fetchUserFromHTML(username)
+		}
+	}
+	if (mode === "onlyPreferSaved") {
+		const saved = db.prepare("SELECT username, user_id, updated_version, biography, post_count, following_count, followed_by_count, external_url, full_name, is_private, is_verified, profile_pic_url FROM Users WHERE username = ?").get(username)
+		if (saved && saved.updated_version >= 2) {
+			return fetchUserFromSaved(saved)
+		} else {
+			mode = "fallback"
+		}
+	}
+	if (mode === "fallback") {
 		return fetchUserFromHTML(username).catch(error => {
 			if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN || error === constants.symbols.RATE_LIMITED) {
-				const userID = db.prepare("SELECT user_id FROM Users WHERE username = ?").pluck().get(username)
-				if (userID) {
-					return fetchUserFromCombined(userID, username)
+				const saved = db.prepare("SELECT username, user_id, updated_version, biography, post_count, following_count, followed_by_count, external_url, full_name, is_private, is_verified, profile_pic_url FROM Users WHERE username = ?").get(username)
+				if (saved && saved.updated_version === 1) {
+					return fetchUserFromCombined(saved.user_id, username)
+				} else if (saved && saved.updated_version >= 2) {
+					return fetchUserFromSaved(saved)
 				}
 			}
 			throw error
 		})
 	}
+	throw new Error(`Selected fetch mode ${mode} was unmatched.`)
 }
 
 /**
@@ -65,8 +83,26 @@ function fetchUserFromHTML(username) {
 					const user = new User(sharedData.entry_data.ProfilePage[0].graphql.user)
 					history.report("user", true)
 					if (constants.caching.db_user_id) {
-						db.prepare("INSERT OR IGNORE INTO Users (username, user_id) VALUES (@username, @user_id)")
-							.run({username: user.data.username, user_id: user.data.id})
+						const existing = db.prepare("SELECT created, updated_version FROM Users WHERE username = ?").get(user.data.username)
+						db.prepare(
+							"REPLACE INTO Users (username,  user_id,  created,  updated,  updated_version,  biography,  post_count,  following_count,  followed_by_count,  external_url,  full_name,  is_private,  is_verified,  profile_pic_url) VALUES "
+							                 +"(@username, @user_id, @created, @updated, @updated_version, @biography, @post_count, @following_count, @followed_by_count, @external_url, @full_name, @is_private, @is_verified, @profile_pic_url)"
+						).run({
+							username: user.data.username,
+							user_id: user.data.id,
+							created: existing && existing.updated_version === constants.database_version ? existing.created : Date.now(),
+							updated: Date.now(),
+							updated_version: constants.database_version,
+							biography: user.data.biography || null,
+							post_count: user.posts || 0,
+							following_count: user.following || 0,
+							followed_by_count: user.followedBy || 0,
+							external_url: user.data.external_url || null,
+							full_name: user.data.full_name || null,
+							is_private: +user.data.is_private,
+							is_verified: +user.data.is_verified,
+							profile_pic_url: user.data.profile_pic_url
+						})
 					}
 					return user
 				})
@@ -104,6 +140,7 @@ function fetchUserFromCombined(userID, username) {
 			// ReelUser -> Timeline -> TimelineEntry -> collectors -/> User
 			const ReelUser = require("./structures/ReelUser")
 			const user = new ReelUser(result.reel.user)
+			history.report("reel", true)
 			return user
 		}).catch(error => {
 			throw error
@@ -114,13 +151,38 @@ function fetchUserFromCombined(userID, username) {
 			const page = await fetchTimelinePage(userID, "")
 			user.timeline.addPage(page)
 		}
-		history.report("reel", true)
 		return user
 	}).catch(error => {
 		if (error === constants.symbols.RATE_LIMITED) {
 			history.report("reel", false)
 		}
 		throw error
+	})
+}
+
+function fetchUserFromSaved(saved) {
+	return userRequestCache.getOrFetch("user/"+saved.username, false, true, async () => {
+		// require down here or have to deal with require loop. require cache will take care of it anyway.
+		// ReelUser -> Timeline -> TimelineEntry -> collectors -/> ReelUser
+		const ReelUser = require("./structures/ReelUser")
+		const user = new ReelUser({
+			username: saved.username,
+			id: saved.user_id,
+			biography: saved.biography,
+			edge_follow: {count: saved.following_count},
+			edge_followed_by: {count: saved.followed_by_count},
+			external_url: saved.external_url,
+			full_name: saved.full_name,
+			is_private: !!saved.is_private,
+			is_verified: !!saved.is_verified,
+			profile_pic_url: saved.profile_pic_url
+		})
+		// Add first timeline page
+		if (!user.timeline.pages[0]) {
+			const page = await fetchTimelinePage(user.data.id, "")
+			user.timeline.addPage(page)
+		}
+		return user
 	})
 }
 

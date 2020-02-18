@@ -38,6 +38,9 @@ module.exports = [
 				*/
 				return request(verifyResult.url, {}, {log: false}).then(res => {
 					const converter = sharp().resize(width, width, {position: "entropy"})
+					converter.on("error", error => {
+						console.error("Sharp instance emitted an error:", error)
+					})
 					return {
 						statusCode: 200,
 						contentType: "image/jpeg",

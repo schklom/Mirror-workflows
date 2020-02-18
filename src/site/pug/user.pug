@@ -1,4 +1,4 @@
-//- Needs user, url, constants, website_origin
+//- Needs user, url, constants, website_origin, display_feed_validation_buttons
 
 include includes/timeline_page.pug
 include includes/next_page_button.pug
@@ -44,8 +44,8 @@ html
 						div.profile-counter #[span(data-numberformat=user.followedBy).count #{numberFormat(user.followedBy)}] followed by
 					div.links
 						if constants.settings.rss_enabled
-							+feed_link("RSS", "rss", user.data.username, "application/rss+xml")
-							+feed_link("Atom", "atom", user.data.username, "application/atom+xml")
+							+feed_link("RSS", "rss", user.data.username, "application/rss+xml", display_feed_validation_buttons)
+							+feed_link("Atom", "atom", user.data.username, "application/atom+xml", display_feed_validation_buttons)
 						a(rel="noreferrer noopener" href=`https://www.instagram.com/${user.data.username}`) instagram.com
 
 			- const hasPosts = !user.data.is_private && user.timeline.pages.length && user.timeline.pages[0].length

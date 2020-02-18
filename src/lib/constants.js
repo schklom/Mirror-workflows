@@ -24,7 +24,8 @@ let constants = {
 	allow_user_from_reel: "preferForRSS", // one of: "never", "fallback", "prefer", "onlyPreferSaved", "preferForRSS"
 
 	settings: {
-		rss_enabled: true
+		rss_enabled: true,
+		display_feed_validation_buttons: false
 	},
 
 	caching: {

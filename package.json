@@ -12,7 +12,7 @@
   "license": "AGPL-3.0-only",
   "dependencies": {
     "better-sqlite3": "^5.4.3",
-    "feed": "github:cloudrac3r/feed#dbd55889e9c7135a8710eaa4d4c415ffeee7fc27",
+    "feed": "github:cloudrac3r/feed#f42b4d7183fc2b6e566cb400ad083c4dd714c858",
     "mixin-deep": "^2.0.1",
     "node-dir": "^0.1.17",
     "node-fetch": "^2.6.0",

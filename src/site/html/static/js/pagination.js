@@ -15,9 +15,29 @@ class FreezeWidth extends ElemJS {
 
 const intersectionThreshold = 0
 
+class NextPageController {
+	constructor() {
+		this.instance = null
+	}
+
+	add() {
+		const nextPage = q("#next-page")
+		if (nextPage) {
+			this.instance = new NextPage(nextPage, this)
+		} else {
+			this.instance = null
+		}
+	}
+
+	activate() {
+		if (this.instance) this.instance.activate()
+	}
+}
+
 class NextPage extends FreezeWidth {
-	constructor(container) {
+	constructor(container, controller) {
 		super(container)
+		this.controller = controller
 		this.clicked = false
 		this.nextPageNumber = +this.element.getAttribute("data-page")
 		this.attribute("href", "javascript:void(0)")
@@ -54,14 +74,17 @@ class NextPage extends FreezeWidth {
 			q("#next-page-container").remove()
 			this.observer.disconnect()
 			q("#timeline").insertAdjacentHTML("beforeend", text)
-			addNextPageControl()
+			this.controller.add()
 		})
+	}
+
+	activate() {
+		if (this.fetching) return
+		this.class("disabled")
+		this.fetch()
 	}
 }
 
-function addNextPageControl() {
-	const nextPage = q("#next-page")
-	if (nextPage) new NextPage(nextPage)
-}
-
-addNextPageControl()
+const controller = new NextPageController()
+controller.add()
+export {controller}

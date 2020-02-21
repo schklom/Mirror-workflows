@@ -115,6 +115,34 @@ module.exports = [
 		}
 	},
 	{
+		route: `/fragment/post/(${constants.external.shortcode_regex})`, methods: ["GET"], code: ({fill}) => {
+			return getOrFetchShortcode(fill[0]).then(async post => {
+				await post.fetchChildren()
+				await post.fetchExtendedOwnerP() // serial await is okay since intermediate fetch result is cached
+				if (post.isVideo()) await post.fetchVideoURL()
+				return {
+					statusCode: 200,
+					contentType: "application/json",
+					content: {
+						title: post.getCaptionIntroduction(),
+						html: pugCache.get("pug/fragments/post.pug").web({post})
+					}
+				}
+			}).catch(error => {
+				if (error === constants.symbols.NOT_FOUND) {
+					return render(404, "pug/friendlyerror.pug", {
+						statusCode: 404,
+						title: "Not found",
+						message: "Somehow, you reached a post that doesn't exist.",
+						withInstancesLink: false
+					})
+				} else {
+					throw error
+				}
+			})
+		}
+	},
+	{
 		route: "/p", methods: ["GET"], code: async ({url}) => {
 			if (url.searchParams.has("p")) {
 				let post = url.searchParams.get("p")
@@ -135,7 +163,7 @@ module.exports = [
 		route: `/p/(${constants.external.shortcode_regex})`, methods: ["GET"], code: ({fill}) => {
 			return getOrFetchShortcode(fill[0]).then(async post => {
 				await post.fetchChildren()
-				await post.fetchExtendedOwnerP() // parallel await is okay since intermediate fetch result is cached
+				await post.fetchExtendedOwnerP() // serial await is okay since intermediate fetch result is cached
 				if (post.isVideo()) await post.fetchVideoURL()
 				return render(200, "pug/post.pug", {post})
 			}).catch(error => {

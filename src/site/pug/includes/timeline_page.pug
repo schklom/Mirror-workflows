@@ -11,5 +11,5 @@ mixin timeline_page(page, pageIndex)
 			- const suggestedSize = 260 //- from css :(
 			each image in page
 				- const thumbnail = image.getSuggestedThumbnailP(suggestedSize) //- use this as the src in case there are problems with srcset
-				a(href=`/p/${image.data.shortcode}`).sized-link
+				a(href=`/p/${image.data.shortcode}` data-shortcode=image.data.shortcode).sized-link
 					img(src=thumbnail.src alt=image.getAlt() width=thumbnail.config_width height=thumbnail.config_height srcset=image.getThumbnailSrcsetP() sizes=image.getThumbnailSizes()).sized-image

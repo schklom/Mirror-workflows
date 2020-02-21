@@ -16,6 +16,7 @@ html
 			title= `@${user.data.username} | Bibliogram`
 		include includes/head
 		script(src="/static/js/pagination.js" type="module")
+		script(src="/static/js/post_overlay.js" type="module")
 	body
 		.main-divider
 			header.profile-overview
@@ -46,7 +47,7 @@ html
 						if constants.settings.rss_enabled
 							+feed_link("RSS", "rss", user.data.username, "application/rss+xml", display_feed_validation_buttons)
 							+feed_link("Atom", "atom", user.data.username, "application/atom+xml", display_feed_validation_buttons)
-						a(rel="noreferrer noopener" href=`https://www.instagram.com/${user.data.username}`) instagram.com
+						a(rel="noreferrer noopener" href=`https://www.instagram.com/${user.data.username}` target="_blank") instagram.com
 
 			- const hasPosts = !user.data.is_private && user.timeline.pages.length && user.timeline.pages[0].length
 			main(class=hasPosts ? "" : "no-posts")#timeline.timeline

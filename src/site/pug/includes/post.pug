@@ -1,0 +1,17 @@
+include ./display_structured
+
+mixin post(post)
+	.post-page-divider
+		section.description-section
+			header.user-header
+				img(src=post.ownerPfpCacheP width=150 height=150 alt="").pfp
+				a.name(href=`/u/${post.getBasicOwner().username}`)= `${post.data.owner.full_name} (@${post.getBasicOwner().username})`
+			if post.getCaption()
+				p.structured-text.description
+					+display_structured(post.getStructuredCaption())
+		section.images-gallery
+			for entry in post.children
+				if entry.isVideo()
+					video(src=entry.getVideoUrlP() controls preload="auto" width=entry.data.dimensions.width height=entry.data.dimensions.height).sized-video
+				else
+					img(src=entry.getDisplayUrlP() alt=entry.getAlt() width=entry.data.dimensions.width height=entry.data.dimensions.height).sized-image

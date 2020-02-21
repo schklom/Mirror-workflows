@@ -43,7 +43,7 @@ let constants = {
 		timeline_query_hash_2: "42323d64886122307be10013ad2dcc44", // https://github.com/rarcega/instagram-scraper/blob/dc022081dbefc81500c5f70cce5c70cfd2816e3c/instagram_scraper/constants.py#L30
 		shortcode_query_hash: "2b0673e0dc4580674a88d426fe00ea90",
 		timeline_fetch_first: 12,
-		username_regex: "[\\w.]+",
+		username_regex: "[\\w.]*[\\w]",
 		shortcode_regex: "[\\w-]+",
 		hashtag_regex: "[^ \\n`~!@#\\$%^&*()\\-=+[\\]{};:\"',<.>/?\\\\]+"
 	},

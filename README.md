@@ -81,6 +81,8 @@ See [Wiki:Installing](https://github.com/cloudrac3r/bibliogram/wiki/Installing) 
 - `/p/{shortcode}` - load a post
 - `/privacy` - privacy policy
 
-## Credits
+## Credits & license information
 
 Site banner by [TheFrenchGhosty](https://gitlab.com/TheFrenchGhosty), [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+Site font is [Bariol](http://atipofoundry.com/fonts/bariol) by [atipo foundry](http://atipofoundry.com/), located in /src/site/html/static/fonts. Proprietary license, used with permission. See http://atipofoundry.com/license, section "webfont license".

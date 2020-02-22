@@ -12,7 +12,7 @@ html
 		else
 			h1 Bibliogram updater
 			if numberOfCommits > 0
-				div You are #{numberOfCommits} commits behind (most recent first):
+				div You are #{numberOfCommits} #{numberOfCommits === 1 ? "commit" : "commits"} behind (most recent first):
 				div.commits
 					each line in formattedLog
 						div.commit

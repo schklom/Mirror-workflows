@@ -25,13 +25,15 @@ let constants = {
 
 	settings: {
 		rss_enabled: true,
-		display_feed_validation_buttons: false
+		display_feed_validation_buttons: false,
+		enable_updater_page: false
 	},
 
 	caching: {
 		image_cache_control: `public, max-age=${7*24*60*60}`,
 		resource_cache_time: 30*60*1000,
 		instance_list_cache_time: 3*60*1000,
+		updater_cache_time: 2*60*1000,
 		db_user_id: true,
 		db_post_n3: true
 	},

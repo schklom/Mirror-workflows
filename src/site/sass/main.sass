@@ -248,27 +248,47 @@ body
 			height: inherit
 
 		.user-header
-			display: flex
+			display: grid
 			align-items: center
+			grid-template-columns: auto 1fr auto
 			justify-content: center
 			background-color: #b3b3b3
 			padding: 10px
 
-			.pfp
-				$size: 40px
+			.navigate-posts
+				-webkit-appearance: none
+				-moz-appearance: none
+				border: none
+				margin: 0
+				padding: 0
+				cursor: pointer
+				background: none
 
-				width: $size
-				height: $size
-				margin-right: 10px
-				background-color: rgba(40, 40, 40, 0.25)
+				.icon
+					display: block
 
-			.name
-				font-size: 20px
-				color: black
-				text-decoration: none
+			.user-header-inner
+				display: flex
+				align-items: center
+				justify-content: center
+				grid-row: 1
+				grid-column: 2
 
-				&:hover
-					text-decoration: underline
+				.pfp
+					$size: 40px
+
+					width: $size
+					height: $size
+					margin-right: 10px
+					background-color: rgba(40, 40, 40, 0.25)
+
+				.name
+					font-size: 20px
+					color: black
+					text-decoration: none
+
+					&:hover
+						text-decoration: underline
 
 		.description
 			margin: 12px
@@ -402,7 +422,7 @@ body
 				display: flex
 
 				.text, .button
-					appearance: none
+					-webkit-appearance: none
 					-moz-appearance: none
 					display: flex
 					padding: 9px 8px 7px

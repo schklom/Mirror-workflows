@@ -1,11 +1,17 @@
 include ./display_structured
 
-mixin post(post)
+mixin post(post, headerWithNavigation)
 	.post-page-divider
 		section.description-section
-			header.user-header
-				img(src=post.ownerPfpCacheP width=150 height=150 alt="").pfp
-				a.name(href=`/u/${post.getBasicOwner().username}`)= `${post.data.owner.full_name} (@${post.getBasicOwner().username})`
+			.user-header
+				header.user-header-inner
+					img(src=post.ownerPfpCacheP width=150 height=150 alt="").pfp
+					a.name(href=`/u/${post.getBasicOwner().username}`)= `${post.data.owner.full_name} (@${post.getBasicOwner().username})`
+				if headerWithNavigation
+					button.navigate-posts.previous
+						img(src="/static/img/arrow-circled.svg" alt="Previous post." style="transform: rotate(180deg)").icon
+					button.navigate-posts.next
+						img(src="/static/img/arrow-circled.svg" alt="Next post.").icon
 			if post.getCaption()
 				p.structured-text.description
 					+display_structured(post.getStructuredCaption())

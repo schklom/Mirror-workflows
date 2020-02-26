@@ -1,4 +1,5 @@
 import {q, ElemJS} from "./elemjs/elemjs.js"
+import {timeline} from "./post_series.js"
 
 /** @type {PostOverlay[]} */
 const postOverlays = []
@@ -10,23 +11,28 @@ window.addEventListener("popstate", event => {
 	// console.log(event.state, postOverlays.length)
 	if (event.state) {
 		if (event.state.view === "post_overlay") {
-			loadPostOverlay(event.state.shortcode, false)
+			console.log(event.state.shortcode, postOverlays.map(o => o.identifier))
+			/*if (postOverlays.length >= 2 && postOverlays.slice(-2)[0].identifier === event.state.shortcode) {
+				// continue down to actually pop please
+			} else {*/
+				return loadPostOverlay(event.state.shortcode, "none")
+			/*}*/
 		}
-	} else { // event.state === null which means back to originally loaded page, so pop overlay
-		setTimeout(() => { // make sure document is entirely loaded
-			if (titleHistory.length === 1) {
-				document.title = titleHistory[0]
-			} else if (titleHistory.length >= 2) {
-				titleHistory.pop()
-				document.title = titleHistory.slice(-1)[0]
-			}
-			if (postOverlays.length) {
-				popOverlay()
-			} else {
-				window.location.reload()
-			}
-		})
 	}
+	// event.state === null which means back to originally loaded page, so pop overlay
+	setTimeout(() => { // make sure document is entirely loaded
+		if (titleHistory.length === 1) {
+			document.title = titleHistory[0]
+		} else if (titleHistory.length >= 2) {
+			titleHistory.pop()
+			document.title = titleHistory.slice(-1)[0]
+		}
+		if (postOverlays.length) {
+			popOverlay()
+		} else {
+			window.location.reload()
+		}
+	})
 })
 
 function pushOverlay(overlay) {
@@ -43,14 +49,17 @@ function popOverlay() {
 }
 
 class PostOverlay extends ElemJS {
-	constructor() {
+	constructor(identifier) {
 		super("div")
+		this.identifier = identifier
+		this.loaded = false
+		this.available = true
+		this.keyboardListeners = []
+
 		this.class("post-overlay")
 		this.event("click", event => {
 			if (event.target === event.currentTarget) history.back()
 		})
-		this.loaded = false
-		this.available = true
 		setTimeout(() => {
 			if (!this.loaded) {
 				this.class("loading")
@@ -59,6 +68,13 @@ class PostOverlay extends ElemJS {
 				)
 			}
 		}, 0)
+	}
+
+	addKeyboardCallback(callback) {
+		if (this.available) {
+			this.keyboardListeners.push(callback)
+			document.addEventListener("keydown", callback)
+		}
 	}
 
 	setContent(html) {
@@ -79,12 +95,15 @@ class PostOverlay extends ElemJS {
 	pop() {
 		this.element.remove()
 		this.available = false
+		while (this.keyboardListeners.length) {
+			document.removeEventListener("keydown", this.keyboardListeners.shift())
+		}
 	}
 }
 
-const timeline = q("#timeline")
-if (timeline) {
-	timeline.addEventListener("click", event => {
+const timelineElement = q("#timeline")
+if (timelineElement) {
+	timelineElement.addEventListener("click", event => {
 		/** @type {HTMLElement[]} */
 		//@ts-ignore
 		const path = event.composedPath()
@@ -92,7 +111,7 @@ if (timeline) {
 		if (postLink) {
 			event.preventDefault()
 			const shortcode = postLink.getAttribute("data-shortcode")
-			loadPostOverlay(shortcode, true)
+			loadPostOverlay(shortcode, "push")
 		}
 	})
 }
@@ -102,24 +121,74 @@ function fetchShortcodeFragment(shortcode) {
 	else return fetch(`/fragment/post/${shortcode}`).then(res => res.json())
 }
 
-function loadPostOverlay(shortcode, shouldPushState) {
-	const overlay = new PostOverlay()
+function loadPostOverlay(shortcode, stateChangeType) {
+	const overlay = new PostOverlay(shortcode)
 	document.body.appendChild(overlay.element)
 	pushOverlay(overlay)
-	if (shouldPushState) history.pushState({view: "post_overlay", shortcode: shortcode}, "", `/p/${shortcode}`)
-	const fetcher = fetchShortcodeFragment(shortcode)
-	fetcher.then(root => {
-		shortcodeDataMap.set(shortcode, root)
-		if (overlay.available) {
-			const {title, html} = root
-			overlay.setContent(html)
+	if (stateChangeType === "push") {
+		history.pushState({view: "post_overlay", shortcode: shortcode}, "", `/p/${shortcode}`)
+	} else if (stateChangeType === "replace") {
+		history.replaceState({view: "post_overlay", shortcode: shortcode}, "", `/p/${shortcode}`)
+	} else if (stateChangeType !== "none") {
+		throw new Error("Unknown stateChangeType: "+stateChangeType)
+	}
+	return new Promise((resolve, reject) => {
+		const fetcher = fetchShortcodeFragment(shortcode)
+		fetcher.then(root => {
+			shortcodeDataMap.set(shortcode, root)
 			if (overlay.available) {
-				document.title = title
+				const {title, html} = root
+				overlay.setContent(html)
+				if (overlay.available) {
+					document.title = title
+				}
+				while (postOverlays.length >= 2) postOverlays.shift().pop()
+				const entry = timeline.entries.get(shortcode)
+				let canInteractWithNavigation = true
+				overlay.element.querySelectorAll(".navigate-posts").forEach(button => {
+					button.addEventListener("click", async event => {
+						/** @type {HTMLButtonElement} */
+						//@ts-ignore
+						const button = event.currentTarget
+						if (button.classList.contains("next")) {
+							navigate("next")
+						} else {
+							navigate("previous")
+						}
+					})
+				})
+				overlay.addKeyboardCallback(event => {
+					if (event.key === "ArrowRight") navigate("next")
+					else if (event.key === "ArrowLeft") navigate("previous")
+				})
+				async function navigate(direction) {
+					if (canInteractWithNavigation) {
+						/** @type {HTMLButtonElement} */
+						//@ts-ignore
+						if (direction === "next") {
+							canInteractWithNavigation = false
+							if (entry.isLastEntry()) await timeline.fetch()
+							if (!overlay.available) return
+							var futureShortcode = entry.getNextShortcode()
+						} else { // "previous"
+							if (entry.isFirstEntry()) return
+							canInteractWithNavigation = false
+							var futureShortcode = entry.getPreviousShortcode()
+						}
+						await loadPostOverlay(futureShortcode, "replace")
+						const newOverlay = postOverlays.slice(-1)[0]
+						if (newOverlay === overlay) { // was cancelled
+							canInteractWithNavigation = true
+						}
+					}
+				}
 			}
-		}
-	})
-	fetcher.catch(error => {
-		console.error(error)
-		overlay.showError()
+			resolve()
+		})
+		fetcher.catch(error => {
+			console.error(error)
+			overlay.showError()
+			reject(error)
+		})
 	})
 }

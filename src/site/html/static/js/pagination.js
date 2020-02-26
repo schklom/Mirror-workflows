@@ -18,6 +18,7 @@ const intersectionThreshold = 0
 class NextPageController {
 	constructor() {
 		this.instance = null
+		this.activatedCallbacks = []
 	}
 
 	add() {
@@ -27,10 +28,15 @@ class NextPageController {
 		} else {
 			this.instance = null
 		}
+		this.activatedCallbacks.forEach(c => c())
 	}
 
-	activate() {
-		if (this.instance) this.instance.activate()
+	addActivatedCallback(callback) {
+		this.activatedCallbacks.push(callback)
+	}
+
+	async activate() {
+		if (this.instance) await this.instance.activate()
 	}
 }
 
@@ -70,7 +76,7 @@ class NextPage extends FreezeWidth {
 		this.fetching = true
 		this.freeze("Loading...")
 
-		fetch(`/fragment/user/${this.element.getAttribute("data-username")}/${this.nextPageNumber}`).then(res => res.text()).then(text => {
+		return fetch(`/fragment/user/${this.element.getAttribute("data-username")}/${this.nextPageNumber}`).then(res => res.text()).then(text => {
 			q("#next-page-container").remove()
 			this.observer.disconnect()
 			q("#timeline").insertAdjacentHTML("beforeend", text)
@@ -81,7 +87,7 @@ class NextPage extends FreezeWidth {
 	activate() {
 		if (this.fetching) return
 		this.class("disabled")
-		this.fetch()
+		return this.fetch()
 	}
 }
 

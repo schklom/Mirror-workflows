@@ -233,16 +233,16 @@ body
 
 	.description-section
 		display: grid
-		align-items: start
-		align-content: normal
-		background-color: #eee
+		align-items: stretch
+		align-content: stretch
+		grid-template-rows: auto 1fr
 		position: sticky
 		top: 0
 		height: 100vh
-		overflow-y: auto
 		box-sizing: border-box
 
 		@media screen and (max-width: $layout-a-max)
+			display: contents // this is absolutely disgusting
 			position: inherit
 			top: inherit
 			height: inherit
@@ -254,6 +254,8 @@ body
 			justify-content: center
 			background-color: #b3b3b3
 			padding: 10px
+			position: sticky
+			top: 0
 
 			.navigate-posts
 				-webkit-appearance: none
@@ -291,6 +293,21 @@ body
 					&:hover
 						text-decoration: underline
 
+		.relative-box
+			background-color: #eee
+
+		@media screen and (min-width: $layout-b-min)
+			.relative-box
+				position: relative
+
+				.scrolling-box
+					position: absolute
+					top: 0
+					bottom: 0
+					overflow-y: auto
+					display: grid
+					align-items: center
+
 		.description
 			margin: 12px
 			white-space: pre-line
@@ -298,6 +315,8 @@ body
 			font-size: 20px
 			line-height: 1.4
 			unicode-bidi: plaintext
+			@media screen and (min-width: $layout-b-min)
+				padding-bottom: 20px
 
 			@media screen and (max-width: $layout-a-max)
 				font-size: 18px
@@ -312,6 +331,7 @@ body
 
 		@media screen and (max-width: $layout-a-max)
 			flex: 1
+			position: relative
 
 		.sized-image, .sized-video
 			color: #eee
@@ -524,7 +544,7 @@ body
 	bottom: 0
 	background: rgba(0, 0, 0, 0.7)
 	z-index: 10
-	overflow-y: auto
+	overflow-y: scroll
 
 	&:not(.loading) > *
 		min-height: 100vh

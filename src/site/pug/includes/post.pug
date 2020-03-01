@@ -16,9 +16,11 @@ mixin post(post, headerWithNavigation)
 						img(src="/static/img/arrow-circled.svg" alt="Previous post." style="transform: rotate(180deg)").icon
 					button.navigate-posts.next
 						img(src="/static/img/arrow-circled.svg" alt="Next post.").icon
-			if post.getCaption()
-				p.structured-text.description
-					+display_structured(post.getStructuredCaption())
+			div.relative-box
+				div.scrolling-box
+					if post.getCaption()
+						p.structured-text.description
+							+display_structured(post.getStructuredCaption())
 		section.images-gallery
 			for entry in post.children
 				if entry.isVideo()

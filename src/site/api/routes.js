@@ -4,6 +4,11 @@ const {fetchUser, getOrFetchShortcode, userRequestCache, history} = require("../
 const {render, redirect} = require("pinski/plugins")
 const {pugCache} = require("../passthrough")
 
+/** @param {import("../../lib/structures/TimelineEntry")} post */
+function getPageTitle(post) {
+	return (post.getCaptionIntroduction() || `Post from @${post.getBasicOwner().username}`) + " | Bibliogram"
+}
+
 module.exports = [
 	{
 		route: "/", methods: ["GET"], code: async () => {
@@ -124,7 +129,7 @@ module.exports = [
 					statusCode: 200,
 					contentType: "application/json",
 					content: {
-						title: post.getCaptionIntroduction(),
+						title: getPageTitle(post),
 						html: pugCache.get("pug/fragments/post.pug").web({post})
 					}
 				}
@@ -165,7 +170,10 @@ module.exports = [
 				await post.fetchChildren()
 				await post.fetchExtendedOwnerP() // serial await is okay since intermediate fetch result is cached
 				if (post.isVideo()) await post.fetchVideoURL()
-				return render(200, "pug/post.pug", {post})
+				return render(200, "pug/post.pug", {
+					title: getPageTitle(post),
+					post
+				})
 			}).catch(error => {
 				if (error === constants.symbols.NOT_FOUND) {
 					return render(404, "pug/friendlyerror.pug", {

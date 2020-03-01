@@ -1,14 +1,11 @@
+//- Needs title, post
+
 include includes/post
 
 doctype html
 html
 	head
-		title
-			if post.getCaptionIntroduction()
-				=post.getCaptionIntroduction()
-			else
-				=`Post from @${post.getBasicOwner().username}`
-			=` | Bibliogram`
+		title= title
 		include includes/head
 		script(type="module" src="/static/js/post_overlay.js")
 	body.post-page

@@ -9,6 +9,9 @@ class TtlCache {
 		this.ttl = ttl
 		/** @type {Map<string, {data: T, time: number}>} */
 		this.cache = new Map()
+		this.sweepInterval = setInterval(() => {
+			this.clean()
+		}, this.ttl)
 	}
 
 	clean() {

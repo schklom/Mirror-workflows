@@ -6,7 +6,11 @@ mixin post(post, headerWithNavigation)
 			.user-header
 				header.user-header-inner
 					img(src=post.ownerPfpCacheP width=150 height=150 alt="").pfp
-					a.name(href=`/u/${post.getBasicOwner().username}`)= `${post.data.owner.full_name} (@${post.getBasicOwner().username})`
+					a.name(href=`/u/${post.getBasicOwner().username}`)
+						if post.data.owner.full_name
+							= `${post.data.owner.full_name} (@${post.getBasicOwner().username})`
+						else
+							= `@${post.getBasicOwner().username}`
 				if headerWithNavigation
 					button.navigate-posts.previous
 						img(src="/static/img/arrow-circled.svg" alt="Previous post." style="transform: rotate(180deg)").icon

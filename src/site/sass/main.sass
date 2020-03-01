@@ -268,11 +268,12 @@ body
 					display: block
 
 			.user-header-inner
+				grid-row: 1
+				grid-column: 2
 				display: flex
 				align-items: center
 				justify-content: center
-				grid-row: 1
-				grid-column: 2
+				margin: 0px 10px
 
 				.pfp
 					$size: 40px
@@ -297,7 +298,7 @@ body
 			font-size: 20px
 			line-height: 1.4
 			unicode-bidi: plaintext
-                        
+
 			@media screen and (max-width: $layout-a-max)
 				font-size: 18px
 

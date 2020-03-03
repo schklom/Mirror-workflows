@@ -20,6 +20,9 @@ let constants = {
 			reel_graphql: true
 		}
 	},
+	// After setting your privacy policy, I suggest you read src/site/html/.well-known/dnt-policy.txt. If you comply with it,
+	// change this to `true` to serve it, which will make extensions like Privacy Badger automatically whitelist the domain.
+	does_not_track: false,
 
 	allow_user_from_reel: "preferForRSS", // one of: "never", "fallback", "prefer", "onlyPreferSaved", "preferForRSS"
 

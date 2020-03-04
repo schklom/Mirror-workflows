@@ -1,4 +1,4 @@
-//- Needs title, post
+//- Needs website_origin, title, post
 
 include includes/post
 
@@ -8,6 +8,33 @@ html
 		title= title
 		include includes/head
 		script(type="module" src="/static/js/post_overlay.js")
+		meta(property="og:url" content=`${website_origin}/p/${post.data.shortcode}`)
+		meta(property="og:type" content="article")
+		meta(property="og:title" content=`Post by ${post.data.owner.full_name || post.data.owner.username}`)
+		- let description = ""
+		if post.getCaption()
+			- description = post.getCaption()
+		if post.children.length >= 2
+			if description
+				- description = `\n\n${description}`
+			- description = `Gallery of ${post.children.length} images.${description}`
+		if description
+			meta(property="og:description" content=description)
+		- let firstEntry = post.children[0]
+		if firstEntry.isVideo()
+			meta(property="og:video" content=`${website_origin}${firstEntry.getVideoUrlP()}`)
+			meta(property="og:video:type" content="video/mp4")
+			meta(property="og:video:width" content=firstEntry.data.dimensions.width)
+			meta(property="og:video:height" content=firstEntry.data.dimensions.height)
+			meta(property="og:video:alt" content=firstEntry.getAlt())
+		else
+			meta(property="og:image" content=`${website_origin}${firstEntry.getDisplayUrlP()}`)
+			meta(property="og:image:width" content=firstEntry.data.dimensions.width)
+			meta(property="og:image:height" content=firstEntry.data.dimensions.height)
+			meta(property="og:image:type" content="image/jpeg")
+			meta(property="og:image:alt" content=firstEntry.getAlt())
+		meta(property="og:site_name" content="Bibliogram")
+
 	body.post-page
 		main
 			+post(post, false)

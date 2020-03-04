@@ -172,7 +172,8 @@ module.exports = [
 				if (post.isVideo()) await post.fetchVideoURL()
 				return render(200, "pug/post.pug", {
 					title: getPageTitle(post),
-					post
+					post,
+					website_origin: constants.website_origin
 				})
 			}).catch(error => {
 				if (error === constants.symbols.NOT_FOUND) {

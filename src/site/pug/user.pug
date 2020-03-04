@@ -17,6 +17,17 @@ html
 		include includes/head
 		script(src="/static/js/pagination.js" type="module")
 		script(src="/static/js/post_overlay.js" type="module")
+		meta(property="og:url" content=`${website_origin}/u/${user.data.username}`)
+		meta(property="og:type" content="profile")
+		meta(property="og:title" content=(user.data.full_name || user.data.username))
+		if user.data.biography
+			meta(property="og:description" content=user.data.biography)
+		meta(property="og:image" content=`${website_origin}${user.proxyProfilePicture}`)
+		meta(property="og:image:width" content=150)
+		meta(property="og:image:height" content=150)
+		meta(property="og:image:type" content="image/jpeg")
+		meta(property="og:site_name" content="Bibliogram")
+
 	body
 		.main-divider
 			header.profile-overview

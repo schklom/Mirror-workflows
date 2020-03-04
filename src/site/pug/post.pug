@@ -10,7 +10,13 @@ html
 		script(type="module" src="/static/js/post_overlay.js")
 		meta(property="og:url" content=`${website_origin}/p/${post.data.shortcode}`)
 		meta(property="og:type" content="article")
-		meta(property="og:title" content=`Post by ${post.data.owner.full_name || post.data.owner.username}`)
+		- let firstEntry = post.children[0]
+		- let postType = "Photo"
+		if post.children.length >= 2
+			- postType = "Post" //- it's a gallery, but "Gallery" doesn't really sound right
+		else if firstEntry.isVideo()
+			- postType = "Video"
+		meta(property="og:title" content=`${postType} by ${post.data.owner.full_name || post.data.owner.username}`)
 		- let description = ""
 		if post.getCaption()
 			- description = post.getCaption()
@@ -20,7 +26,6 @@ html
 			- description = `Gallery of ${post.children.length} images.${description}`
 		if description
 			meta(property="og:description" content=description)
-		- let firstEntry = post.children[0]
 		if firstEntry.isVideo()
 			meta(property="og:video" content=`${website_origin}${firstEntry.getVideoUrlP()}`)
 			meta(property="og:video:type" content="video/mp4")

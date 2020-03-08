@@ -17,7 +17,11 @@
     "fetch": "^1.1.0",
     "koa": "^2.11.0",
     "koa-better-router": "^2.1.1",
+    "koa-session": "^5.13.1",
     "koa-static": "^5.0.0",
-    "nightmare": "^3.0.2"
+    "lru-cache": "^5.1.1",
+    "nightmare": "^3.0.2",
+    "nightmare-load-filter": "^0.2.0",
+    "purecss": "^1.0.1"
   }
 }

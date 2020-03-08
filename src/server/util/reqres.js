@@ -26,7 +26,7 @@ methods.wrap = function(fn) {
 			return next();
 		}
 		try {
-			let res = await fn(params,ctx.request);
+			let res = await fn(params,ctx);
 			ctx.body = JSON.stringify(res,null,' ');
 		} catch(err) {
 			debug("request error",err);

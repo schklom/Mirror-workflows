@@ -5,10 +5,21 @@ const FS = require('fs');
 const Router = require('koa-better-router');
 const ReqRes = require('./util/reqres');
 const parse = require('co-body');
+const session = require('koa-session');
+const cookieStorage = require('./util/cookieStorage');
+const crypto = require('crypto');
 
 const path = require("path");
 var app = new koa();
 
+app.keys = [ crypto.randomBytes(24).toString('hex') ];
+
+app.use(session({
+	renew: true,
+	key: 'pol:app',
+	maxAge: 1000 * 60 * 60 * 12,
+	store: cookieStorage
+}, app));
 
 app.use( serve( path.normalize(__dirname+'/../../dist/'),{
 	maxage : 0,
@@ -16,6 +27,12 @@ app.use( serve( path.normalize(__dirname+'/../../dist/'),{
 	index : "index.html",
 	defer : true
 }) );
+
+app.use(async (ctx, next) => {
+	if (!ctx.session.view) ctx.session.view = 0;
+	ctx.session.view += 1;
+	await next();
+});
 
 app.use(async (ctx, next) => {
 	await next();
@@ -36,7 +53,7 @@ app.use(async (ctx, next) => {
 app.use(async (ctx,next) => {
 	if (ctx.request.method === 'POST' && ctx.request.header['content-length'] > 0) {
 		ctx.request.body = await parse.json(ctx);
-		//console.log("body parsed",ctx.request.body);
+		// console.log("body parsed",ctx.request.body);
 	}
 	await next();
 });

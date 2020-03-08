@@ -1,6 +1,6 @@
 {
     "env": {
-        "browser": false,
+        "browser": true,
         "commonjs": true,
         "es6": true,
         "node": true
@@ -15,6 +15,10 @@
     },
     "rules": {
 		"no-console":"off",
-		"no-case-declarations":"off"
+		"no-case-declarations":"off",
+		"no-cond-assign": "off"
+    },
+	"parserOptions": {
+    	"parser": "babel-eslint"
     }
 }

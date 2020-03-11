@@ -12,9 +12,9 @@ mixin post(post, headerWithNavigation)
 						else
 							= `@${post.getBasicOwner().username}`
 				if headerWithNavigation
-					button.navigate-posts.previous
-						img(src="/static/img/arrow-circled.svg" alt="Previous post." style="transform: rotate(180deg)").icon
-					button.navigate-posts.next
+					button.navigate-posts
+						img(src="/static/img/arrow-circled.svg" alt="Previous post.").icon.previous
+					button.navigate-posts
 						img(src="/static/img/arrow-circled.svg" alt="Next post.").icon
 			div.relative-box
 				div.scrolling-box

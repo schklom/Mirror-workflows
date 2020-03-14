@@ -1,48 +1,71 @@
+const RRM = require('./rrm');
 
+const parent = new RRM({
+	out(msg) {
+		window.parent.postMessage(
+			JSON.stringify(msg),
+			document.location.origin
+		);
+	},
+	initStatus: RRM.S_OPEN,
+	timeout: 400
+});
+parent.setHandler('highlight', path => highlightXpath(path));
+parent.setHandler('getCount', getCount);
+parent.setHandler('selectionToggle', selectionToggle);
+
+let selectionEnabled = false;
+let selectionColor = '#000';
+
+function selectionToggle(data) {
+	console.log('selectionToggle', data);
+	selectionEnabled = data.enabled;
+	if (data.color) selectionColor = data.color;
+}
+
+document.addEventListener('mouseover', e => {
+	if (!selectionEnabled || e.target === document) return;
+	// console.log('enter', e.target);
+	e.target.style.outline = '1px solid '+selectionColor;
+});
+document.addEventListener('mouseout', e => {
+	if (e.target === document) return;
+	// if (!overElement) return;
+	// console.log('leave', e.target);
+	e.target.style.outline = '';
+});
 
 document.addEventListener('click', e => {
 	e.preventDefault();
 	e.stopImmediatePropagation();
 	e.stopPropagation();
-	// console.log(e);
 	const path = getPathTo(e.target);
-	send('selected', path);
+	parent.createEvent('selected', path);
 }, false);
-
-function send(action, data) {
-	window.parent.postMessage(JSON.stringify({ action, data }), document.location.origin);
-}
 
 window.addEventListener('message', (msg) => {
-	let { action, data } = JSON.parse(msg.data);
-	console.log('message inner', action, data);
-	switch (action) {
-		case 'highlight': {
-			highlightXpath(data);
-			break;
-		}
-		case 'getCount': {
-			getCount(data);
-			break;
-		}
-	}
+	console.log('message.inner', msg.data);
+	parent.handleRequest(JSON.parse(msg.data))
 }, false);
 
-function getCount(xpath) {
+async function getCount(xpath) {
 	let res = document.evaluate(xpath, document);
 	let n = 0;
 	while (res.iterateNext()) {
 		n += 1;
 	}
-	send('updateCount', n);
+	return n;
 }
 function highlightXpath(xpath, reset) {
 	let res = document.evaluate(xpath, document);
 	let elem;
+	let n = 0;
 	while (elem = res.iterateNext()) {
-		elem.style.background = reset ? 'inherit' : 'yellow';
+		elem.style.background = reset ? 'inherit' : selectionColor;
+		n += 1;
 	}
 	if (!reset) setTimeout(() => highlightXpath(xpath, true), 2000);
+	return Promise.resolve(n);
 }
 
 function getPathTo(element) {

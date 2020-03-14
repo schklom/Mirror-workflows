@@ -1,13 +1,13 @@
 import '../../node_modules/purecss/build/pure-min.css';
-import './assets/custom.css';
+import './assets/custom.scss';
 
 const iframe = document.getElementById('iframe');
 const input1 = document.getElementById('xpath1');
 const input2 = document.getElementById('xpath2');
 const input3 = document.getElementById('xpath3');
 const input4 = document.getElementById('found3');
-const button1 = document.getElementById('select1');
-const button2 = document.getElementById('select2');
+const button1 = document.getElementsByClassName('select1');
+const button2 = document.getElementsByClassName('select2');
 const loadForm = document.getElementById('loadForm');
 
 let selectionTarget = null;
@@ -18,19 +18,23 @@ function highlightSelectionTarget(status) {
 input1.addEventListener('blur', e => {
 	highlightXpath(input1.value);
 })
-button1.addEventListener('click', e => {
-	e.preventDefault();
-	selectionTarget = input1;
-	highlightSelectionTarget(true)
-})
+for (let button of button1) {
+	button.addEventListener('click', e => {
+		e.preventDefault();
+		selectionTarget = input1;
+		highlightSelectionTarget(true)
+	})
+}
 input2.addEventListener('blur', e => {
 	highlightXpath(input2.value);
 })
-button2.addEventListener('click', e => {
-	e.preventDefault();
-	selectionTarget = input2;
-	highlightSelectionTarget(true)
-})
+for (let button of button2) {
+	button.addEventListener('click', e => {
+		e.preventDefault();
+		selectionTarget = input2;
+		highlightSelectionTarget(true)
+	})
+}
 input3.addEventListener('blur', e => {
 	highlightXpath(input3.value);
 	updateFound();
@@ -103,8 +107,13 @@ loadForm.addEventListener('submit', e => {
 	console.log(data);
 	ajax('api/main/load-page', data)
 	.then(res => {
+		if (res.error) {
+			return;
+		}
 		console.log(res);
-		document.getElementById('iframe').contentWindow.location.reload();
+		const iframe = document.getElementById('iframe');
+		iframe.contentWindow.location.reload();
+		iframe.parentElement.parentElement.firstElementChild.checked = true;
 	});
 });
 
@@ -129,4 +138,11 @@ function ajax(action, data) {
 		},
 		body
 	}).then((response) => response.json());
+}
+
+let nextButtons = document.getElementsByClassName('btn-next');
+for (let button of nextButtons) {
+	button.addEventListener('click', e => {
+		button.parentElement.parentElement.parentElement.nextElementSibling.firstElementChild.checked = true;
+	});
 }

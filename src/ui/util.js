@@ -18,7 +18,12 @@ inner.setHandler('selected', (data) => {
 window.addEventListener('message', (msg) => {
 	console.log('message.outer', msg.data);
 	if (typeof msg.data !== 'string') return;
-	inner.handleRequest(JSON.parse(msg.data))
+	try {
+		let action = JSON.parse(msg.data)
+		inner.handleRequest(action)
+	} catch (e) {
+		console.debug(e);
+	}
 }, false);
 
 export function ajax(action, data) {

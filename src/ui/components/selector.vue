@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<form class="pure-form pure-form-aligned" id="xpathForm">
+		<form class="pure-form pure-form-aligned" id="xpathForm" @submit.prevent="submit">
 			<div class="simple-mode">
 				<p>
 					Now
@@ -23,7 +23,7 @@
 					<span class="error" v-else>✘</span>
 				</p>
 				<p v-if="pathTitle.length > 0">
-					Found <input readonly class="pure-input-1-5" style="width: 32px" v-model="found" /> entries.
+					Found <input readonly class="pure-input-1-5" style="width: 64px" v-model="found" /> entries.
 				</p>
 			</div>
 			<button
@@ -35,38 +35,61 @@
 			</button>
 			<div class="advanced-mode" v-else>
 				<div class="pure-control-group">
+					<label for="name">Title</label>
+					<input type="text"
+						class="pure-input-2-3"
+						v-model="pathTitle"
+						required
+						@blur="blur"
+					/>
+				</div>
+				<div class="pure-control-group">
 					<label for="name">Link</label>
-					<input type="text" name="xpath" class="pure-input-2-3" required v-model="pathTitle" />
-					<button class="pure-button select1" @click.prevent="selectTitle">Select</button>
+					<input type="text"
+						class="pure-input-2-3"
+						required
+						v-model="pathLink"
+						@blur="blur"
+					/>
 				</div>
 				<div class="pure-control-group">
 					<label for="name">Description (optional)</label>
-					<input type="text" name="xpath" class="pure-input-2-3" v-model="pathDescription" />
-					<button class="pure-button select2" @click.prevent="selectDescription">Select</button>
+					<input type="text"
+						class="pure-input-2-3"
+						v-model="pathDescription"
+						@blur="blur"
+					/>
 				</div>
 				<div class="pure-control-group">
 					<label for="name">Entry (computed)</label>
-					<input type="text" id="xpath3" name="xpath" class="pure-input-1-2" v-model="pathEntry" />
-					(found <input readonly class="pure-input-1-5" style="width: 32px" v-model="found" />)
+					<input type="text"
+						class="pure-input-1-2"
+						v-model="pathEntry"
+						@blur="blur"
+					/>
+					(found <input readonly class="pure-input-1-5" style="width: 64px" v-model="found" />)
 				</div>
 			</div>
 
-			<button class="pure-button pure-button-primary btn-next">Next</button>
+			<button class="pure-button pure-button-primary btn-next" @click.prevent="submit">Next</button>
 		</form>
-		<iframe ref="iframe" id="iframe" src="/iframe/" width="100%" height="600px"></iframe>
+		<iframe ref="iframe" id="iframe" src="/raw/iframe/" width="100%" height="600px"></iframe>
 	</div>
 </template>
 <script>
-import { EventHub, sendEvent, send } from '../util.js';
+import { EventHub, sendEvent, send, ajax } from '../util.js';
 
 export default {
 	name: 'Selector',
 	data() {
 		return {
 			expertMode: false,
+			pathTitleAbsolute: '',
+			pathDescriptionAbsolute: '',
 			pathTitle: '',
 			pathDescription: '',
 			pathEntry: '',
+			pathLink: './ancestor-or-self::node()/@href',
 			found: 0,
 			selecting: '',
 			selectTitleColor: '#ffaa00',
@@ -92,6 +115,20 @@ export default {
 		}
 	},
 	methods: {
+		submit() {
+			ajax('api/main/set-selectors', {
+				pathTitle: this.pathTitle,
+				pathEntry: this.pathEntry,
+				pathDescription: this.pathDescription,
+				pathLink: this.pathLink
+			})
+			.then(res => {
+				if (res.error) {
+					return;
+				}
+				this.$emit('next');
+			});
+		},
 		selectTitle() {
 			this.selecting = 'title';
 			sendEvent('selectionToggle', { enabled: true, color: this.selectTitleColor });
@@ -100,15 +137,18 @@ export default {
 			this.selecting = 'description';
 			sendEvent('selectionToggle', { enabled: true, color: this.selectDescriptionColor });
 		},
+		async blur(e) {
+			this.found = await send('highlight', this.pathEntry);
+		},
 		async selected(data) {
 			sendEvent('selectionToggle', { enabled: false });
 			if (!this.selecting) return;
 			console.log('selected', data);
 			let xpath = this.stripNumbers(data);
 			if (this.selecting === 'title') {
-				this.pathTitle = xpath;
+				this.pathTitleAbsolute = xpath;
 			} else if (this.selecting === 'description') {
-				this.pathDescription = xpath;
+				this.pathDescriptionAbsolute = xpath;
 			}
 			this.selecting = '';
 			this.updateEntry();
@@ -123,10 +163,10 @@ export default {
 			return p.join('/');
 		},
 		updateEntry() {
-			let path1 = this.pathTitle;
-			let path2 = this.pathDescription;
-			let path3 = '';
+			let path1 = this.pathTitleAbsolute;
+			let path2 = this.pathDescriptionAbsolute;
 			if (path2) {
+				let path3 = '';
 				for (let i=0, ii=path1.length; i<ii; i++) {
 					if (path1[i] === path2[i]) {
 						path3 = path3 + path1[i];
@@ -134,16 +174,16 @@ export default {
 						break;
 					}
 				}
-				path3 = path3.replace(/\/$/, '');
+				this.pathEntry = path3.replace(/\/$/, '');
+				this.pathTitle = '.' + this.pathTitleAbsolute.substr(this.pathEntry.length) + '/text()';
+				this.pathLink = '.' + this.pathTitleAbsolute.substr(this.pathEntry.length) + '/ancestor-or-self::node()/@href';
+				this.pathDescription = '.' + this.pathDescriptionAbsolute.substr(this.pathEntry.length) + '/text()';
 			} else {
-				path3 = path1;
+				this.pathEntry = path1;
+				this.pathTitle = './text()';
+				this.pathLink = './ancestor-or-self::node()/@href';
+				this.pathDescription = '';
 			}
-			this.pathEntry = path3;
-			// this.updateFound();
-		},
-		async updateFound() {
-			if (!this.pathEntry) return;
-			this.found = await send('getCount', this.pathEntry);
 		}
 	}
 }

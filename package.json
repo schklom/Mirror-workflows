@@ -16,6 +16,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
     "co-body": "^6.0.0",
+    "core-js": "^3.6.4",
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
     "feed": "^4.1.0",
@@ -28,8 +29,9 @@
     "nightmare": "^3.0.2",
     "nightmare-load-filter": "^0.2.0",
     "purecss": "^1.0.1",
-    "core-js": "^3.6.4",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "xmldom": "^0.3.0",
+    "xpath.js": "^1.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.2.0",

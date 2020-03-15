@@ -1,6 +1,5 @@
-const nightmareFetcher = require('../../fetcher/nightmare');
-const simpleFetcher = require('../../fetcher/fetch');
 const getFilteredHtml = require('../../fetcher/getfilteredhtml');
+const { generateFeedFromSettings, getHtml } = require('../../fetcher/feed');
 
 const methods = {};
 const controller = {};
@@ -11,20 +10,8 @@ controller['POST /test'] = async (data) => {
 
 controller['POST /load-page'] = async (data, ctx) => {
 	ctx.session.url = data.url;
-	let html;
-	if (data.loadScripts) {
-		let params = {
-			url: data.url
-		};
-		if (data.waitFor === 'time') {
-			params.waitTime = ~~(data.waitForTime);
-		} else if (data.waitFor === 'selector') {
-			params.waitForSelector = data.waitForSelector;
-		}
-		html = await nightmareFetcher(params);
-	} else {
-		html = await simpleFetcher(data.url);
-	}
+	ctx.session.loadParams = data;
+	let html = await getHtml(data);
 	html = await getFilteredHtml({
 		input: html,
 		baseUrl: data.url,
@@ -33,6 +20,15 @@ controller['POST /load-page'] = async (data, ctx) => {
 	});
 	ctx.session.loadedPage = html;
 	return { ok: true, length: html.length }
+}
+
+controller['POST /set-selectors'] = async (data, ctx) => {
+	ctx.session.selectors = data;
+	let settings = Object.assign({}, ctx.session.loadParams);
+	settings = Object.assign(settings, ctx.session.selectors);
+	let feed = await generateFeedFromSettings(settings);
+	ctx.session.generated = feed.atom1();
+	return { ok: true }
 }
 
 methods.controller = controller;

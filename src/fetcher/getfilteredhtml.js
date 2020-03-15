@@ -1,16 +1,7 @@
 const cheerio = require('cheerio');
-const { fetchUrl } = require('fetch');
 const debug = require('debug')('ap:fetch');
 const URL = require("url");
-
-async function fetch(url) {
-	debug('fetch '+url);
-	return new Promise(function(resolve) {
-		fetchUrl(url, {}, (err, meta, body) => {
-			resolve(body ? body.toString('utf8') : '');
-		});
-	});
-}
+const fetch = require('./fetch');
 
 async function run({
 	removeScripts = true,

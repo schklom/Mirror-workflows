@@ -15,7 +15,7 @@ module.exports = {
 			'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization'
 		},
 		proxy: {
-				'(/inner.js|/(main|iframe)/*)': {
+				'(/inner.js|/(main|raw)/*)': {
 					target: 'http://localhost:3000/',
 					changeOrigin: true,
 					ws: false

@@ -27,7 +27,7 @@
 	  				Select items
 	  			</label>
 	  			<main>
-	  				<form-selector />
+	  				<form-selector @next="startStep3" />
 	  			</main>
 	  		</article>
 	  		<article>
@@ -36,7 +36,7 @@
 	  				Preview Feed
 	  			</label>
 	  			<main>
-	  				Feed preview
+	  				<form-preview @next="done" />
 	  			</main>
 	  		</article>
 	  		<article>
@@ -57,12 +57,14 @@ import '../../node_modules/purecss/build/pure-min.css';
 import '../assets/custom.scss';
 import Loader from './components/loader.vue';
 import Selector from './components/selector.vue';
+import Preview from './components/preview.vue';
 
 export default {
 	name: 'App',
 	components: {
 		'form-loader': Loader,
-		'form-selector': Selector
+		'form-selector': Selector,
+		'form-preview': Preview
 	},
 	data() {
 		return {
@@ -73,6 +75,12 @@ export default {
 		startStep2() {
 			this.accordion = 2;
 			this.$root.$emit('iframe.reload');
+		},
+		startStep3() {
+			this.accordion = 3;
+		},
+		done() {
+			this.accordion = 4;
 		}
 	}
 }

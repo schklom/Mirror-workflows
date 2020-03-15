@@ -148,11 +148,11 @@ function loadPostOverlay(shortcode, stateChangeType) {
 				overlay.element.querySelectorAll(".navigate-posts").forEach(button => {
 					button.addEventListener("click", async event => {
 						/** @type {HTMLButtonElement} */
-						//@ts-ignore
+						// @ts-ignore
 						const button = event.currentTarget
-						if (button.classList.contains("next")) {
+						if (button.hasAttribute("data-next")) {
 							navigate("next")
-						} else {
+						} else if (button.hasAttribute("data-previous")) {
 							navigate("previous")
 						}
 					})

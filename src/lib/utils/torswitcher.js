@@ -21,15 +21,14 @@ class TorSwitcher {
 	 * If the test function fails, its error will be rejected here.
 	 * Only include rate limit logic in the test function!
 	 * @param {string} url
-	 * @param {(res: import("node-fetch").Response) => Promise<T>} test
-	 * @returns {Promise<T>}
-	 * @template T the return value of the test function
+	 * @param {(res: import("./requestbackends/reference").GrabResponse) => any} test
+	 * @returns {Promise<import("./requestbackends/reference")>}
 	 */
 	request(type, url, test) {
 		if (this.torManager && constants.tor.for[type]) {
 			return this.torManager.request(url, test)
 		} else {
-			return request(url).then(res => test(res))
+			return request(url).check(test)
 		}
 	}
 }

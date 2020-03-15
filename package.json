@@ -1,5 +1,6 @@
 {
   "name": "bibliogram",
+  "private": true,
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -23,7 +24,8 @@
     "socks-proxy-agent": "github:cloudrac3r/node-socks-proxy-agent#6a26d274b12098dfef6cc2faafd25b0c051f2467"
   },
   "optionalDependencies": {
-    "@deadcanaries/granax": "^3.2.5"
+    "@deadcanaries/granax": "^3.2.5",
+    "got": "^10.6.0"
   },
   "devDependencies": {
     "tap": "^14.10.6"

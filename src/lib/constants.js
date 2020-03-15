@@ -20,6 +20,7 @@ let constants = {
 			reel_graphql: true
 		}
 	},
+	request_backend: "node-fetch", // one of: "node-fetch", "got"
 	// After setting your privacy policy, I suggest you read src/site/html/.well-known/dnt-policy.txt. If you comply with it,
 	// change this to `true` to serve it, which will make extensions like Privacy Badger automatically whitelist the domain.
 	does_not_track: false,

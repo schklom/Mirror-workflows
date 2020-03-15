@@ -71,41 +71,41 @@ function fetchUserFromHTML(username) {
 			if (res.status === 302) throw constants.symbols.INSTAGRAM_DEMANDS_LOGIN
 			if (res.status === 429) throw constants.symbols.RATE_LIMITED
 			return res
-		}).then(res => {
+		}).then(async g => {
+			const res = await g.response()
 			if (res.status === 404) {
 				throw constants.symbols.NOT_FOUND
 			} else {
-				return res.text().then(text => {
-					// require down here or have to deal with require loop. require cache will take care of it anyway.
-					// User -> Timeline -> TimelineEntry -> collectors -/> User
-					const User = require("./structures/User")
-					const sharedData = extractSharedData(text)
-					const user = new User(sharedData.entry_data.ProfilePage[0].graphql.user)
-					history.report("user", true)
-					if (constants.caching.db_user_id) {
-						const existing = db.prepare("SELECT created, updated_version FROM Users WHERE username = ?").get(user.data.username)
-						db.prepare(
-							"REPLACE INTO Users (username,  user_id,  created,  updated,  updated_version,  biography,  post_count,  following_count,  followed_by_count,  external_url,  full_name,  is_private,  is_verified,  profile_pic_url) VALUES "
-							                 +"(@username, @user_id, @created, @updated, @updated_version, @biography, @post_count, @following_count, @followed_by_count, @external_url, @full_name, @is_private, @is_verified, @profile_pic_url)"
-						).run({
-							username: user.data.username,
-							user_id: user.data.id,
-							created: existing && existing.updated_version === constants.database_version ? existing.created : Date.now(),
-							updated: Date.now(),
-							updated_version: constants.database_version,
-							biography: user.data.biography || null,
-							post_count: user.posts || 0,
-							following_count: user.following || 0,
-							followed_by_count: user.followedBy || 0,
-							external_url: user.data.external_url || null,
-							full_name: user.data.full_name || null,
-							is_private: +user.data.is_private,
-							is_verified: +user.data.is_verified,
-							profile_pic_url: user.data.profile_pic_url
-						})
-					}
-					return user
-				})
+				const text = await g.text()
+				// require down here or have to deal with require loop. require cache will take care of it anyway.
+				// User -> Timeline -> TimelineEntry -> collectors -/> User
+				const User = require("./structures/User")
+				const sharedData = extractSharedData(text)
+				const user = new User(sharedData.entry_data.ProfilePage[0].graphql.user)
+				history.report("user", true)
+				if (constants.caching.db_user_id) {
+					const existing = db.prepare("SELECT created, updated_version FROM Users WHERE username = ?").get(user.data.username)
+					db.prepare(
+						"REPLACE INTO Users (username,  user_id,  created,  updated,  updated_version,  biography,  post_count,  following_count,  followed_by_count,  external_url,  full_name,  is_private,  is_verified,  profile_pic_url) VALUES "
+						                 +"(@username, @user_id, @created, @updated, @updated_version, @biography, @post_count, @following_count, @followed_by_count, @external_url, @full_name, @is_private, @is_verified, @profile_pic_url)"
+					).run({
+						username: user.data.username,
+						user_id: user.data.id,
+						created: existing && existing.updated_version === constants.database_version ? existing.created : Date.now(),
+						updated: Date.now(),
+						updated_version: constants.database_version,
+						biography: user.data.biography || null,
+						post_count: user.posts || 0,
+						following_count: user.following || 0,
+						followed_by_count: user.followedBy || 0,
+						external_url: user.data.external_url || null,
+						full_name: user.data.full_name || null,
+						is_private: +user.data.is_private,
+						is_verified: +user.data.is_verified,
+						profile_pic_url: user.data.profile_pic_url
+					})
+				}
+				return user
 			}
 		}).catch(error => {
 			if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN || error === constants.symbols.RATE_LIMITED) {
@@ -202,8 +202,7 @@ function fetchTimelinePage(userID, after) {
 	return requestCache.getOrFetchPromise(`page/${userID}/${after}`, () => {
 		return switcher.request("timeline_graphql", `https://www.instagram.com/graphql/query/?${p.toString()}`, async res => {
 			if (res.status === 429) throw constants.symbols.RATE_LIMITED
-			return res
-		}).then(res => res.json()).then(root => {
+		}).then(g => g.json()).then(root => {
 			/** @type {import("./types").PagedEdges<import("./types").TimelineEntryN2>} */
 			const timeline = root.data.user.edge_owner_to_timeline_media
 			history.report("timeline", true)
@@ -259,7 +258,6 @@ function fetchShortcodeData(shortcode) {
 	return requestCache.getOrFetchPromise("shortcode/"+shortcode, () => {
 		return switcher.request("post_graphql", `https://www.instagram.com/graphql/query/?${p.toString()}`, async res => {
 			if (res.status === 429) throw constants.symbols.RATE_LIMITED
-			return res
 		}).then(res => res.json()).then(root => {
 			/** @type {import("./types").TimelineEntryN3} */
 			const data = root.data.shortcode_media

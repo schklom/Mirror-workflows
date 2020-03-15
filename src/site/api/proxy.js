@@ -36,10 +36,17 @@ module.exports = [
 					Some thumbnails aren't square and would otherwise be stretched on the page without this.
 					If I cropped the images client side, it would have to be done with CSS background-image, which means no <img srcset>.
 				*/
-				return request(verifyResult.url, {}, {log: false}).then(res => {
+				return request(verifyResult.url, {}, {log: false}).stream().then(body => {
 					const converter = sharp().resize(width, width, {position: "entropy"})
+					body.on("error", error => {
+						console.error("Response stream emitted an error:", error)
+					})
 					converter.on("error", error => {
 						console.error("Sharp instance emitted an error:", error)
+					})
+					const piped = body.pipe(converter)
+					piped.on("error", error => {
+						console.error("Piped stream emitted na error:", error)
 					})
 					return {
 						statusCode: 200,
@@ -47,7 +54,7 @@ module.exports = [
 						headers: {
 							"Cache-Control": constants.caching.image_cache_control
 						},
-						stream: res.body.pipe(converter)
+						stream: piped
 					}
 				})
 			} else {

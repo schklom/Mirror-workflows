@@ -38,6 +38,7 @@ let constants = {
 		resource_cache_time: 30*60*1000,
 		instance_list_cache_time: 3*60*1000,
 		updater_cache_time: 2*60*1000,
+		cache_sweep_interval: 3*60*1000,
 		db_user_id: true,
 		db_post_n3: true
 	},

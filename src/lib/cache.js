@@ -1,3 +1,5 @@
+const constants = require("./constants")
+
 /**
  * @template T
  */
@@ -11,7 +13,7 @@ class TtlCache {
 		this.cache = new Map()
 		this.sweepInterval = setInterval(() => {
 			this.clean()
-		}, this.ttl)
+		}, constants.caching.cache_sweep_interval)
 	}
 
 	clean() {

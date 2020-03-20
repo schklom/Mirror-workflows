@@ -1,8 +1,13 @@
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+
 module.exports = {
 	configureWebpack: {
 		entry: {
 			app: './src/ui/entry.js'
-		}
+		},
+		plugins: [
+			new FaviconsWebpackPlugin('./src/assets/small.jpg')
+		]
 	},
 	devServer: {
 		hotOnly: true,
@@ -15,7 +20,7 @@ module.exports = {
 			'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization'
 		},
 		proxy: {
-				'(/inner.js|/(main|raw)/*)': {
+				'(/inner.js|/(main|raw|feed)/*)': {
 					target: 'http://localhost:3000/',
 					changeOrigin: true,
 					ws: false

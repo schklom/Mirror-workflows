@@ -7,15 +7,20 @@ textarea {
 	font-family: "DejaVu Sans", sans-serif;
 }
 
+$text: #2ded80;
+$inactive: #795fdc;
+$active: #a13064;
+$dark: #000233;
+
 body {
 	margin: 1em;
+	background: url('./skyline1.jpeg');
+	color: $text;
+	height: 100%;
+	background-repeat: no-repeat;
+	background-color: #000;
+	background-attachment: fixed;
 }
-
-
-$inactive: #d2a623;
-$active: #2d1682;
-
-
 
 /* Accordion styles */
 #accordion {
@@ -25,7 +30,7 @@ $active: #2d1682;
 
     > article {
     	width: 100%;
-    	color: white;
+    	color: $text;
     	overflow: hidden;
 
 		> input {
@@ -60,7 +65,7 @@ $active: #2d1682;
 			overflow: hidden;
     		padding: 0 1em;
     		color: $active;
-    		background: white;
+    		background: rgba(0,0,0, 0.5);
     		transition: all 0.35s;
     	}
 
@@ -91,4 +96,19 @@ $active: #2d1682;
 			color: red;
 		}
 	}
+}
+
+.pure-form input[type=color], .pure-form input[type=date], .pure-form input[type=datetime-local], .pure-form input[type=datetime], .pure-form input[type=email], .pure-form input[type=month], .pure-form input[type=number], .pure-form input[type=password], .pure-form input[type=search], .pure-form input[type=tel], .pure-form input[type=text], .pure-form input[type=time], .pure-form input[type=url], .pure-form input[type=week], .pure-form select, .pure-form textarea {
+	background: $dark;
+	border: none;
+	box-shadow: inset 0 1px 3px $text;
+}
+
+.pure-button {
+	background: $active;
+	color: $text;
+}
+
+a {
+	color: $text;
 }

@@ -4,9 +4,6 @@ const { generateFeedFromSettings, getHtml } = require('../../fetcher/feed');
 const methods = {};
 const controller = {};
 
-controller['POST /test'] = async (data) => {
-	return data;
-}
 
 controller['POST /load-page'] = async (data, ctx) => {
 	ctx.session.url = data.url;

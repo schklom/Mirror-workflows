@@ -21,7 +21,7 @@ export default {
 	},
 	methods: {
 		submit() {
-			ajax('api/main/save', {})
+			ajax('/api/feed/create', {}, true)
 			.then(res => {
 				if (res.error) {
 					return;

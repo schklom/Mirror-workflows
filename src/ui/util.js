@@ -26,11 +26,11 @@ window.addEventListener('message', (msg) => {
 	}
 }, false);
 
-export function ajax(action, data) {
+export function ajax(action, data, post) {
 	if (action[0] === '/') action = action.substr(1);
 	let url = `${document.location.origin}/${action}`;
 	let method = data ? 'POST' : 'GET';
-	let body = '';
+	let body = undefined;
 	if (data) {
 		body = JSON.stringify(data);
 	}

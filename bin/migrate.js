@@ -1,15 +1,16 @@
 const env = require('dotenv');
 env.config({ path: '.env.local' });
 env.config({ path: '.env' });
-const port = process.env.APP_PORT || 3000;
 const { runMigrations, waitForDatabase } = require('../src/server/db');
 
 async function run() {
+	console.log(process.env.DATABASE_URL);
 	const dbUri = new URL(process.env.DATABASE_URL || '');
+	console.log('waiting for db...');
 	await waitForDatabase(dbUri);
+	console.log('executing migrations...');
 	await runMigrations(dbUri);
-	const App = require("../src/server/server");
-	App.listen(port);
+	console.log('done');
 }
 
 run()

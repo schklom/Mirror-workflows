@@ -4,10 +4,10 @@
 	  	<nav>
 	  		<ul>
 	  			<li>
-	  				Create new Feed
+	  				<a href="#" @click.prevent="accordion = 1">Create new Feed</a>
 	  			</li>
 	  			<li>
-	  				Manage existing feeds
+	  				<a href="#" @click.prevent="accordion = 4">Manage existing feeds</a>
 	  			</li>
 	  		</ul>
 	  	</nav>
@@ -45,7 +45,7 @@
 	  				Manage Feeds
 	  			</label>
 	  			<main>
-	  				Feed list
+	  				<feed-list />
 	  			</main>
 	  		</article>
 		</div>
@@ -58,17 +58,20 @@ import '../assets/custom.scss';
 import Loader from './components/loader.vue';
 import Selector from './components/selector.vue';
 import Preview from './components/preview.vue';
+import List from './components/list.vue';
+import { EventHub } from './util.js';
 
 export default {
 	name: 'App',
 	components: {
 		'form-loader': Loader,
 		'form-selector': Selector,
-		'form-preview': Preview
+		'form-preview': Preview,
+		'feed-list': List
 	},
 	data() {
 		return {
-			accordion: 1
+			accordion: 0
 		}
 	},
 	methods: {
@@ -81,6 +84,7 @@ export default {
 		},
 		done() {
 			this.accordion = 4;
+			EventHub.$emit('refreshFeeds');
 		}
 	}
 }

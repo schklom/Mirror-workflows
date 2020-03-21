@@ -1,8 +1,7 @@
 {
-  "name": "angrypol",
+  "name": "feedropolis",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "rss feed generator",
   "scripts": {
     "watch-inner": "rm -rf dist/* && webpack --config webpack.config.dev.js --watch",
     "serve": "vue-cli-service serve",

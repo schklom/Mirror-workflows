@@ -2,8 +2,9 @@ const FeedRepo = require('../server/repository/feed');
 const FeedItemRepo = require('../server/repository/feed-items');
 const { generateFeedFromSettings } = require('./feed');
 const debug = require('debug')('ap:cron');
-const baseInterval = 50000;
-const rngInterval = 20000;
+
+const baseInterval = (parseInt(process.env.CRON_BASE) || 50) * 1000;
+const rngInterval = (parseInt(process.env.CRON_RNG) || 20) * 1000;
 
 let timer, running = false;
 

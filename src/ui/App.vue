@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		<h1>Angry Pol</h1>
+		<h1>FeedroPolis</h1>
 	  	<nav>
 	  		<ul>
 	  			<li>

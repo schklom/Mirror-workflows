@@ -178,7 +178,7 @@ function createFeed(settings, feedData) {
 		description: settings.description,
 		id: settings.url,
 		link: settings.url,
-		generator: 'AngryPol',
+		generator: 'FeedroPolis',
 		feedLinks: {
 			atom: 'https://example.com/feed/secretkey'	//@TODO implement
 		}

@@ -105,4 +105,4 @@ function getXpath(element) {
 	}
 }
 
-console.log('angrypol injection loaded');
+console.log('FeedroPolis injection loaded');

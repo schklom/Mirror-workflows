@@ -46,48 +46,29 @@ window.addEventListener('message', (msg) => {
 
 
 function highlightXpath(xpath, reset) {
+	let n = highlightOne(xpath, 0, reset);
+	if (!reset) setTimeout(() => highlightXpath(xpath, true), 2000);
+	return Promise.resolve(n);
+}
+
+function highlightOne(xpath, offset, reset) {
 	let res = document.evaluate(xpath, document);
 	let elem;
 	let n = 0;
 	while (elem = res.iterateNext()) {
-		if (!elem || !elem.style) continue;
-		elem.style.background = reset ? 'inherit' : selectionColor;
 		n += 1;
+		if (n < offset) continue;
+		else break;
 	}
-	if (!reset) setTimeout(() => highlightXpath(xpath, true), 2000);
-	return Promise.resolve(n);
-}
-function highlightCss(selector, reset) {
-	let res = document.querySelector(selector);
-	let elem;
-	let n = 0;
-	while (elem = res.iterateNext()) {
+	if (elem && elem.style) {
 		elem.style.background = reset ? 'inherit' : selectionColor;
-		n += 1;
+		return highlightOne(xpath, offset+1, reset);
+	} else {
+		return offset;
 	}
-	if (!reset) setTimeout(() => highlightCss(selector, true), 2000);
-	return Promise.resolve(n);
 }
-function getCssPath(el) {
-    if (!(el instanceof Element)) return;
-    const path = [];
-    while (el.nodeType === Node.ELEMENT_NODE) {
-        let selector = el.nodeName.toLowerCase();
-		if (selector === 'body') break;
-        if (el.id) {
-            selector += '#' + el.id;
-        } else if (el.className) {
-        	selector += '.' + el.className.trim().replace(/ +/g, '.');
-		} else {
-            let sib = el, nth = 1;
-            while (sib.nodeType === Node.ELEMENT_NODE && (sib = sib.previousSibling) && nth++);
-            selector += ":nth-child("+nth+")";
-        }
-        path.unshift(selector);
-        el = el.parentNode;
-    }
-    return path.join(" > ");
-}
+
+
 function getXpath(element) {
 	// if (element.id !== '')
 	// 	return 'id("'+element.id+'")';

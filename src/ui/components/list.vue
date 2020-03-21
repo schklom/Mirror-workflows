@@ -1,5 +1,41 @@
 <template>
 	<div>
+		<div v-show="errors">
+			<ul>
+				<li v-for="e in errors">
+					<strong>{{ e.message }}</strong>
+					<p v-show="!!e.stack">
+						{{ e.stack }}
+					</p>
+				</li>
+			</ul>
+			<button class="pure-button" @click="errors=null">Close</button>
+		</div>
+		<div v-if="edit">
+			<form class="pure-form pure-form-stacked" @submit.prevent="save">
+				<div class="pure-control-group">
+					<label>Title: </label>
+					<input type="text" v-model="edit.title" minlength="1" maxlength="255">
+				</div>
+				<div class="pure-control-group">
+					<label>Description: </label>
+					<input type="text" v-model="edit.description" minlength="1" maxlength="255">
+				</div>
+				<div class="pure-control-group">
+					<label>Check interval in minutes: </label>
+					<input type="number" step="1" min="1" v-model="edit.checkinterval" />
+				</div>
+				<div class="pure-control-group">
+					<label>Max items per generated feed: </label>
+					<input type="number" min="1" max="500" step="1" v-model="edit.maxitems" />
+				</div>
+
+				<button class="pure-button" @click.prevent="save">✔ Save</button> -
+				<button class="pure-button" @click.prevent="refreshSecret">Refresh secret</button>  -
+				<button class="pure-button" @click.prevent="deleteFeed">✘ Delete</button> -
+				<button class="pure-button" @click.prevent="edit = null">Close</button>
+			</form>
+		</div>
 		<table class="pure-table">
 			<thead>
 				<tr>
@@ -25,7 +61,7 @@
 						Feed
 					</th>
 					<th>
-						Delete
+						Actions
 					</th>
 				</tr>
 			</thead>
@@ -45,6 +81,7 @@
 					</td>
 					<td>
 						{{ item.errorcount }}
+						<a href="#" @click.prevent="showErrors(item)" v-show="item.log.errors && item.log.errors.length">Show</a>
 					</td>
 					<td>
 						{{ item.checkinterval }}
@@ -53,11 +90,12 @@
 						<a :href="getLink(item)">Link</a>
 					</td>
 					<td>
-						<button class="pure-button" @click.prevent="deleteFeed(item)">✘</button>
+						<button class="pure-button" @click.prevent="editFeed(item)">Edit</button>
 					</td>
 				</tr>
 			</tbody>
 		</table>
+
 	</div>
 </template>
 <script>
@@ -67,7 +105,9 @@ export default {
 	name: 'FeedList',
 	data() {
 		return {
-			feeds: []
+			feeds: [],
+			errors: null,
+			edit: null
 		}
 	},
 	filters: {
@@ -81,6 +121,11 @@ export default {
 		this.refresh();
 		EventHub.$on('refreshFeeds', this.refresh.bind(this));
 	},
+	computed: {
+		link(item) {
+			return `${document.location.origin}/api/feed/get/${item.uid}/${item.secret}/`
+		}
+	},
 	methods: {
 		refresh() {
 			return ajax('/api/feed/list')
@@ -88,14 +133,38 @@ export default {
 					this.feeds = res;
 				});
 		},
-		deleteFeed(feed) {
-			ajax('/api/feed/delete', { id: feed.id }, true)
-			.then(res => {
-
-			})
+		async deleteFeed() {
+			let res = await ajax('/api/feed/delete', { uid: this.edit.uid }, true)
+			let idx = this.feeds.findIndex(f => f.uid === this.edit.uid);
+			this.feeds.splice(idx, 1);
+			this.edit = null;
 		},
 		getLink(item) {
-			return `${document.location.origin}/api/feed/get/${item.uid}/${item.secret}/`
+			return `${document.location.origin}/feed/get/${item.uid}/${item.secret}/`
+		},
+		showErrors(item) {
+			this.errors = item.log.errors;
+		},
+		editFeed(item) {
+			this.edit = {
+				uid: item.uid,
+				title: item.title,
+				description: item.description,
+				checkinterval: item.checkinterval,
+				maxitems: item.maxitems
+			};
+		},
+		async refreshSecret() {
+			let data = await ajax('/api/feed/refreshsecret', { uid: this.edit.uid });
+			let idx = this.feeds.findIndex(f => f.uid === data.uid);
+			this.feeds[idx].secret = data.secret;
+			this.edit = null;
+		},
+		async save() {
+			let data = await ajax('/api/feed/save', this.edit);
+			let idx = this.feeds.findIndex(f => f.uid === data.uid);
+			this.feeds.splice(idx, 1, data);
+			this.edit = null;
 		}
 	}
 }

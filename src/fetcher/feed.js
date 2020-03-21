@@ -115,8 +115,11 @@ function extractDataXpath(doc, settings) {
 			debug('no link found', linkElem);
 			return;
 		}
-		let descriptionElem = select(entry, settings.pathDescription);
-		let description = getValue(descriptionElem); //.length ? descriptionElem[0].data : null;
+		let description;
+		if (settings.pathDescription) {
+			let descriptionElem = select(entry, settings.pathDescription);
+			description = getValue(descriptionElem); //.length ? descriptionElem[0].data : null;
+		}
 		data.push({
 			title,
 			link,

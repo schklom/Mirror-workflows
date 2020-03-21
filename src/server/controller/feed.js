@@ -25,7 +25,7 @@ controller['POST /create'] = async (data, ctx) => {
 };
 
 controller['POST /delete'] = async (data) => {
-	await FeedRepo.deleteFeed(data.id);
+	await FeedRepo.deleteFeed(data.uid);
 	return { ok: 1 };
 };
 
@@ -34,7 +34,21 @@ controller['GET /list'] = async () => {
 	return list;
 };
 
+controller['POST /save'] = async (data) => {
+	let feed = await FeedRepo.getById(data.uid);
+	Object.keys(data).forEach(key => {
+		feed[key] = data[key];
+	});
+	await FeedRepo.updateFeed(feed);
+	return feed;
+};
 
+controller['POST /refreshsecret'] = async (data) => {
+	let feed = await FeedRepo.getById(data.uid);
+	feed.secret = crypto.randomBytes(8).toString('hex'),
+	await FeedRepo.updateFeed(feed);
+	return feed;
+};
 
 module.exports = {
 	controller

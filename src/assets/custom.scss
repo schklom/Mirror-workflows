@@ -129,3 +129,8 @@ a {
 	background-color: rgba(65, 7, 66, 0.5);
 	color: $table;
 }
+
+#error {
+	color: red;
+	white-space: pre-wrap;
+}

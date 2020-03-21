@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
 		<h1>FeedroPolis</h1>
-	  	<nav>
+	  	<nav v-if="!error">
 	  		<ul>
 	  			<li>
 	  				<a href="#" @click.prevent="accordion = 1">Create new Feed</a>
@@ -11,6 +11,10 @@
 	  			</li>
 	  		</ul>
 	  	</nav>
+		<div id="error" v-else>
+			{{ error }}
+			{{ error.data }}
+		</div>
 	  	<div id="accordion">
 	  		<article>
 	  			<input type="radio" name="accordion" id="acc_loader" value="1" v-model="accordion" />
@@ -71,8 +75,15 @@ export default {
 	},
 	data() {
 		return {
-			accordion: 0
+			accordion: 0,
+			error: null
 		}
+	},
+	created() {
+		EventHub.$on('requestError', e => {
+			this.error = e;
+			this.accordion = -1;
+		})
 	},
 	methods: {
 		startStep2() {

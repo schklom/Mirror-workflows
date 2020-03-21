@@ -41,7 +41,18 @@ export function ajax(action, data, post) {
 			'Content-Type': 'application/json'
 		},
 		body
-	}).then((response) => response.json());
+	}).then((response) => response.json())
+	.then(data => {
+		if (data.error) {
+			let e = new Error('backend error');
+			e.data = data;
+			throw e;
+		}
+		return data;
+	}).catch(e => {
+		EventHub.$emit('requestError', e);
+		throw e;
+	});
 }
 
 export function send(action, data) {

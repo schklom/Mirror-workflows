@@ -9,7 +9,7 @@ module.exports = [
 	{
 		route: "/api/instances", methods: ["GET"], code: () => {
 			return instanceListCache.getOrFetch("instances", () => {
-				return request(constants.resources.instances_wiki_raw).then(res => res.text()).then(text => {
+				return request(constants.resources.instances_wiki_raw).text().then(text => {
 					const result = (() => {
 						const instances = []
 						const parser = new Parser(text)

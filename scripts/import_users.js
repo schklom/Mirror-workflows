@@ -10,7 +10,7 @@ const {request} = require("../src/lib/utils/request")
 		process.exit(1)
 	}
 	if (target.match(/^https?:\/\//)) {
-		var usersString = await request(target).then(res => res.text())
+		var usersString = await request(target).text()
 	} else {
 		var usersString = await fs.readFile(target, {encoding: "utf8"})
 	}

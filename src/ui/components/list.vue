@@ -87,7 +87,7 @@
 						{{ item.checkinterval }}
 					</td>
 					<td>
-						<a :href="getLink(item)">Link</a>
+						<a :href="getLink(item)" target="_blank">Link</a>
 					</td>
 					<td>
 						<button class="pure-button" @click.prevent="editFeed(item)">Edit</button>

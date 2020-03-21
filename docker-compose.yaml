@@ -2,15 +2,17 @@ version: '3.4'
 
 services:
 
+  app:
+    build: .
+    ports:
+      - 80:3000
+    environment:
+      - DATABASE_URL=postgres://test:test@db:5432/test
+      - BASE_URL=http://localhost
+      - DEBUG=
+
   db:
     image: postgres:latest
     environment:
       - POSTGRES_USER=test
       - POSTGRES_PASSWORD=test
-    ports:
-      - 5432:5432/tcp
-
-  adminer:
-    image: adminer
-    ports:
-      - 8090:8080

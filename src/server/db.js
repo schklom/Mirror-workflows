@@ -13,7 +13,7 @@ function waitForDatabase(dbUri) {
 			if (p.killed) return;
 			p.kill();
 			reject(new Error('timeout connecting to database'));
-		},3000);
+		},6000);
 	});
 }
 

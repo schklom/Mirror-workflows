@@ -18,13 +18,13 @@ controller['POST /load-page'] = async (data, ctx) => {
 	let dom = getDom(html);
 	let siteData = extractSitedata(dom, html, { url: data.url });
 	ctx.session.loadedPage = html;
-	return { ok: true, length: html.length, name: siteData.title  }
+	return { ok: true, length: html.length, title: siteData.title, description: siteData.description  }
 }
 
 controller['POST /set-selectors'] = async (data, ctx) => {
 	ctx.session.selectors = data;
 	let settings = Object.assign({}, ctx.session.loadParams);
-	settings = Object.assign(settings, ctx.session.selectors);
+	settings.selectors = ctx.session.selectors;
 	let feed = await generateFeedFromSettings(settings);
 	ctx.session.generated = feed.atom1();
 	return { ok: true }

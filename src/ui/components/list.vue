@@ -4,13 +4,22 @@
 			<thead>
 				<tr>
 					<th>
-						URL
+						Title
 					</th>
 					<th>
 						Created
 					</th>
 					<th>
 						Last Check
+					</th>
+					<th>
+						Next Check
+					</th>
+					<th>
+						Failed to check
+					</th>
+					<th>
+						Check interval in minutes
 					</th>
 					<th>
 						Feed
@@ -23,7 +32,7 @@
 			<tbody>
 				<tr v-for="item in feeds">
 					<td>
-						<a :href="item.url" target="_blank">{{ item.url }}</a>
+						<a :href="item.url" target="_blank">{{ item.title }}</a>
 					</td>
 					<td>
 						{{ item.created | localeDate }}
@@ -32,10 +41,19 @@
 						{{ item.lastcheck | localeDate }}
 					</td>
 					<td>
+						{{ item.nextcheck | localeDate }}
+					</td>
+					<td>
+						{{ item.errorcount }}
+					</td>
+					<td>
+						{{ item.checkinterval }}
+					</td>
+					<td>
 						<a :href="getLink(item)">Link</a>
 					</td>
 					<td>
-						<button @click.prevent="deleteFeed(item)">✘</button>
+						<button class="pure-button" @click.prevent="deleteFeed(item)">✘</button>
 					</td>
 				</tr>
 			</tbody>
@@ -77,7 +95,7 @@ export default {
 			})
 		},
 		getLink(item) {
-			return `${document.location.origin}/feed/${item.uid}/${item.secret}/`
+			return `${document.location.origin}/api/feed/get/${item.uid}/${item.secret}/`
 		}
 	}
 }

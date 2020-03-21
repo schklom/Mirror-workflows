@@ -35,7 +35,7 @@
 			</button>
 			<div class="advanced-mode" v-else>
 				<div class="pure-control-group">
-					<label for="name">Title</label>
+					<label>Title</label>
 					<input type="text"
 						class="pure-input-2-3"
 						v-model="pathTitle"
@@ -44,7 +44,7 @@
 					/>
 				</div>
 				<div class="pure-control-group">
-					<label for="name">Link</label>
+					<label>Link</label>
 					<input type="text"
 						class="pure-input-2-3"
 						required
@@ -53,7 +53,7 @@
 					/>
 				</div>
 				<div class="pure-control-group">
-					<label for="name">Description (optional)</label>
+					<label>Description (optional)</label>
 					<input type="text"
 						class="pure-input-2-3"
 						v-model="pathDescription"
@@ -61,7 +61,7 @@
 					/>
 				</div>
 				<div class="pure-control-group">
-					<label for="name">Entry (computed)</label>
+					<label>Entry (computed)</label>
 					<input type="text"
 						class="pure-input-1-2"
 						v-model="pathEntry"

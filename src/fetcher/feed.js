@@ -18,11 +18,12 @@ async function generateFeedFromSettings(settings) {
 	let html = await getHtml(settings);
 	let doc = await getDom(html);
 	debug('dom', doc);
-	let feedData = extractDataXpath(doc, settings);
+	let feedData = extractDataXpath(doc, settings.selectors);
 	debug('feedData', feedData);
 	let siteData = extractSitedata(doc, html, settings);
 	feedData = sanitizeFeedData(feedData, siteData);
 	let feed = createFeed(settings, feedData, siteData);
+	debug('feed', feed);
 	return feed;
 }
 
@@ -35,10 +36,10 @@ function extractSitedata(doc, html, settings) {
 
 	let titleElem = select(doc, '//title/text()');
 	if (!titleElem.length) titleElem = select(doc, '//h1/text()');
-	if (titleElem.length) res.title = titleElem[0].data;
+	if (titleElem.length) res.title = titleElem[0].data.trim();
 
 	let descElem = select(doc, '//meta[@name="description"]/@content')
-	if (descElem.length) res.description = descElem[0].value;
+	if (descElem.length) res.description = descElem[0].value.trim();
 
 	if (!res.title) {
 		let u = new URL(settings.url);
@@ -53,13 +54,13 @@ function sanitizeFeedData(feedData, siteData) {
 		return {
 			link: URL.resolve( siteData.url, entry.link ),
 			title: entry.title.trim(),
-			description: entry.description ? entry.description.trim() : ''
+			description: entry.description ? entry.description.trim() : '',
+			added: new Date()
 		}
 	})
 }
 
 function getDom(html) {
-	// return new JSDOM(html);
 	return new DOMParser({
 		errorHandler: {
 			warning(w) {
@@ -73,18 +74,6 @@ function getDom(html) {
 			}
 		}
 	}).parseFromString(html);
-	// return new Promise(function(resolve, reject) {
-	// 	const handler = new DomHandler(function(error, dom) {
-	// 	    if (error) {
-	// 	        reject(error)
-	// 	    } else {
-	// 	        resolve(dom[0])
-	// 	    }
-	// 	});
-	// 	const parser = new Parser(handler);
-	// 	parser.write(html);
-	// 	parser.end();
-	// });
 }
 function getDomCheerio(html) {
 	return cheerio.load(html);
@@ -183,24 +172,24 @@ function r2a(res) {
 	return a;
 }
 
-function createFeed(settings, feedData, siteData) {
+function createFeed(settings, feedData) {
 	const feed = new Feed({
-		title: siteData.title,
-		description: siteData.description,
-		id: siteData.url,
-		link: siteData.url,
+		title: settings.title,
+		description: settings.description,
+		id: settings.url,
+		link: settings.url,
 		generator: 'AngryPol',
 		feedLinks: {
 			atom: 'https://example.com/feed/secretkey'	//@TODO implement
 		}
 	});
-	feedData.forEach(({ title, link, description }) => {
+	feedData.forEach(({ title, link, description, added }) => {
 		feed.addItem({
-			title,
 			id: link,
+			title,
 			link,
 			description,
-			date: new Date()
+			date: added
 		});
 	});
 	return feed;
@@ -212,5 +201,6 @@ module.exports = {
 	getDom,
 	extractDataXpath,
 	extractDataSelect,
-	extractSitedata
+	extractSitedata,
+	createFeed
 }

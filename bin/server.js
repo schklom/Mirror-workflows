@@ -10,6 +10,8 @@ async function run() {
 	await runMigrations(dbUri);
 	const App = require("../src/server/server");
 	App.listen(port);
+	const Cron = require('../src/fetcher/cron');
+	Cron.start();
 }
 
 run()

@@ -7,6 +7,10 @@
 			<label for="feedName">Specify a name:</label>
 			<input id="feedName" type="text" v-model="name" minlength="1" maxlength="255">
 		</div>
+		<div class="pure-control-group">
+			<label for="feedDesc">Optional description:</label>
+			<input id="feedDesc" type="text" v-model="description" minlength="1" maxlength="255">
+		</div>
 		<input type="submit" class="pure-button" value="Save" @click.prevent="submit" />
 	</form>
 </template>
@@ -16,21 +20,25 @@ export default {
 	name: 'Preview',
 	data() {
 		return {
-			name: ''
+			name: '',
+			description: ''
 		}
 	},
 	created() {
 		EventHub.$on('reset', () => {
 			this.name = '';
+			this.description = '';
 		});
 		EventHub.$on('pageInfo', info => {
-			this.name = info.name;
+			this.name = info.title;
+			this.description = info.description;
 		});
 	},
 	methods: {
 		submit() {
 			ajax('/api/feed/create', {
-				name: this.name
+				title: this.name,
+				description: this.description
 			}, true)
 			.then(res => {
 				if (res.error) {

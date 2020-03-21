@@ -29,15 +29,17 @@ app.use( serve( path.normalize(__dirname+'/../../dist/'),{
 }) );
 
 app.use(async (ctx, next) => {
-	if (!ctx.session.view) ctx.session.view = 0;
-	ctx.session.view += 1;
 	await next();
+	if (ctx.request.path === 'index.html') {
+		if (!ctx.session.view) ctx.session.view = 0;
+		ctx.session.view += 1;
+	}
 });
 
 app.use(async (ctx, next) => {
 	await next();
 	const p = ctx.request.path;
-	if (p.indexOf('.') === -1) {
+	if (p.indexOf('.') === -1 && !ctx.response.body) {
 		ctx.request.path = 'index.html';
 	}
 });
@@ -64,7 +66,7 @@ FS.readdirSync(path.normalize(__dirname+'/controller/')).forEach((entry) => {
 	if (!match) return;
 	let name = match[1].toLowerCase();
 	let router;
-	if (name !== 'iframe') {
+	if (name !== 'raw') {
 		let module = require(__dirname+'/controller/'+entry);
 		if (!module.controller) return;
 		router = Router({ prefix: '/api/'+name });

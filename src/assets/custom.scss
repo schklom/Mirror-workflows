@@ -11,6 +11,7 @@ $text: #2ded80;
 $inactive: #795fdc;
 $active: #a13064;
 $dark: #000233;
+$table: #1eaeb7;
 
 body {
 	margin: 1em;
@@ -117,4 +118,14 @@ body {
 
 a {
 	color: $text;
+}
+
+.pure-table,
+.pure-table td,
+.pure-table th {
+	border-color: $table;
+}
+.pure-table thead {
+	background-color: rgba(65, 7, 66, 0.5);
+	color: $table;
 }

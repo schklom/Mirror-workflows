@@ -3,25 +3,35 @@
 		<p>
 			Preview your feed <a href="/raw/test-feed/" target="_blank">here</a>
 		</p>
+		<div class="pure-control-group">
+			<label for="feedName">Specify a name:</label>
+			<input id="feedName" type="text" v-model="name" minlength="1" maxlength="255">
+		</div>
 		<input type="submit" class="pure-button" value="Save" @click.prevent="submit" />
 	</form>
 </template>
 <script>
-import { ajax } from '../util.js';
+import { ajax, EventHub } from '../util.js';
 export default {
 	name: 'Preview',
 	data() {
 		return {
-			url: '',
-			loadScripts: false,
-			waitFor: 'time',
-			waitForTime: 0,
-			waitForSelector: ''
+			name: ''
 		}
+	},
+	created() {
+		EventHub.$on('reset', () => {
+			this.name = '';
+		});
+		EventHub.$on('pageInfo', info => {
+			this.name = info.name;
+		});
 	},
 	methods: {
 		submit() {
-			ajax('/api/feed/create', {}, true)
+			ajax('/api/feed/create', {
+				name: this.name
+			}, true)
 			.then(res => {
 				if (res.error) {
 					return;

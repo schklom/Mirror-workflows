@@ -1,5 +1,5 @@
 const getFilteredHtml = require('../../fetcher/getfilteredhtml');
-const { generateFeedFromSettings, getHtml } = require('../../fetcher/feed');
+const { generateFeedFromSettings, getHtml, getDom, extractSitedata } = require('../../fetcher/feed');
 
 const methods = {};
 const controller = {};
@@ -15,8 +15,10 @@ controller['POST /load-page'] = async (data, ctx) => {
 		inlineStylesheets: true,
 		appendScripts: [ '/inner.js' ]
 	});
+	let dom = getDom(html);
+	let siteData = extractSitedata(dom, html, { url: data.url });
 	ctx.session.loadedPage = html;
-	return { ok: true, length: html.length }
+	return { ok: true, length: html.length, name: siteData.title  }
 }
 
 controller['POST /set-selectors'] = async (data, ctx) => {

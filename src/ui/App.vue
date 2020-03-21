@@ -85,6 +85,7 @@ export default {
 		done() {
 			this.accordion = 4;
 			EventHub.$emit('refreshFeeds');
+			EventHub.$emit('reset');
 		}
 	}
 }

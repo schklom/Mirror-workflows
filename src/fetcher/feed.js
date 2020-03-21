@@ -28,7 +28,7 @@ async function generateFeedFromSettings(settings) {
 
 function extractSitedata(doc, html, settings) {
 	let res = {
-		title: settings.url,
+		title: '',
 		description: '',
 		url: settings.url
 	};
@@ -39,6 +39,11 @@ function extractSitedata(doc, html, settings) {
 
 	let descElem = select(doc, '//meta[@name="description"]/@content')
 	if (descElem.length) res.description = descElem[0].value;
+
+	if (!res.title) {
+		let u = new URL(settings.url);
+		res.title = u.hostname;
+	}
 
 	return res;
 }
@@ -206,5 +211,6 @@ module.exports = {
 	getHtml,
 	getDom,
 	extractDataXpath,
-	extractDataSelect
+	extractDataSelect,
+	extractSitedata
 }

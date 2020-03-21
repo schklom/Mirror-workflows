@@ -38,11 +38,11 @@
 				@input="waitFor='selector'"
 			/>
 		</label>
-		<input type="submit" class="pure-button" value="Load" @click.prevent="submit" />
+		<input type="submit" class="pure-button" value="Load" @click.prevent="submit" :disabled="loading" />
 	</form>
 </template>
 <script>
-import { ajax } from '../util.js';
+import { ajax, EventHub } from '../util.js';
 export default {
 	name: 'Loader',
 	data() {
@@ -51,11 +51,21 @@ export default {
 			loadScripts: false,
 			waitFor: 'time',
 			waitForTime: 0,
-			waitForSelector: ''
+			waitForSelector: '',
+			loading: false
 		}
+	},
+	created() {
+		EventHub.$on('reset', () => {
+			this.url = '';
+			this.loadScripts = false;
+			this.waitForTime = 0;
+			this.waitForSelector = '';
+		});
 	},
 	methods: {
 		submit() {
+			this.loading = true;
 			ajax('api/main/load-page', {
 				url: this.url,
 				loadScripts: this.loadScripts,
@@ -64,9 +74,11 @@ export default {
 				waitForSelector: this.waitForSelector
 			})
 			.then(res => {
+				this.loading = false;
 				if (res.error) {
 					return;
 				}
+				EventHub.$emit('pageInfo', res);
 				this.$emit('next');
 			});
 		}

@@ -5,9 +5,8 @@
   "main": "index.js",
   "scripts": {
     "watch-inner": "rm -rf dist/* && webpack --config webpack.config.dev.js --watch",
-    "build-inner": "rm -rf dist/* && webpack --config webpack.config.prod.js",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build && webpack --config webpack.config.prod.js",
     "start": "node bin/server.js"
   },
   "keywords": [],

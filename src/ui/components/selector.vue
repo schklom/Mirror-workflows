@@ -40,7 +40,7 @@
 						class="pure-input-2-3"
 						v-model="pathTitle"
 						required
-						@blur="blur"
+						@blur="highlight(pathTitle)"
 					/>
 				</div>
 				<div class="pure-control-group">
@@ -49,7 +49,7 @@
 						class="pure-input-2-3"
 						required
 						v-model="pathLink"
-						@blur="blur"
+						@blur="highlight(pathLink)"
 					/>
 				</div>
 				<div class="pure-control-group">
@@ -57,7 +57,7 @@
 					<input type="text"
 						class="pure-input-2-3"
 						v-model="pathDescription"
-						@blur="blur"
+						@blur="highlight(pathDescription)"
 					/>
 				</div>
 				<div class="pure-control-group">
@@ -65,13 +65,13 @@
 					<input type="text"
 						class="pure-input-1-2"
 						v-model="pathEntry"
-						@blur="blur"
+						@blur="highlight('.')"
 					/>
 					(found <input readonly class="pure-input-1-5" style="width: 64px" v-model="found" />)
 				</div>
 			</div>
 
-			<button class="pure-button pure-button-primary btn-next" @click.prevent="submit">Next</button>
+			<button class="pure-button pure-button-primary btn-next" @click.prevent="submit" :disabled="!canSubmit">Next</button>
 		</form>
 		<iframe ref="iframe" id="iframe" src="/raw/iframe/" width="100%" height="600px"></iframe>
 	</div>
@@ -82,25 +82,33 @@ import { EventHub, sendEvent, send, ajax } from '../util.js';
 export default {
 	name: 'Selector',
 	data() {
-		return {
+		let initial = {
 			expertMode: false,
 			pathTitleAbsolute: '',
 			pathDescriptionAbsolute: '',
 			pathTitle: '',
 			pathDescription: '',
 			pathEntry: '',
-			pathLink: './ancestor-or-self::node()/@href',
+			pathLink: './ancestor-or-self::node()[1]/@href',
 			found: 0,
 			selecting: '',
 			selectTitleColor: '#ffaa00',
 			selectDescriptionColor: '#aaaa00'
-		}
+		};
+		let data = Object.assign({}, initial);
+		data.initial = Object.freeze(initial);
+		return data;
 	},
 	created() {
 		this.$root.$on('iframe.reload', () => {
 			this.$refs.iframe.contentWindow.location.reload();
 		});
 		EventHub.$on('selected', this.selected.bind(this));
+		EventHub.$on('reset', () => {
+			for (let k in this.initial) {
+				this[k] = this.initial[k];
+			}
+		});
 	},
 	computed: {
 		selectTitleStyle() {
@@ -112,6 +120,9 @@ export default {
 			let r = {};
 			if (this.selecting === 'description') r.background = this.selectDescriptionColor;
 			return r;
+		},
+		canSubmit() {
+			return this.found > 0 && this.pathTitle.length > 0 && this.pathEntry.length > 0;
 		}
 	},
 	methods: {
@@ -137,8 +148,14 @@ export default {
 			this.selecting = 'description';
 			sendEvent('selectionToggle', { enabled: true, color: this.selectDescriptionColor });
 		},
-		async blur(e) {
-			this.found = await send('highlight', this.pathEntry);
+		async highlight(path) {
+			let absolute = path[0] === '.' ? this.pathEntry + path.substr(1) : path;
+			let parts = absolute.split('/');
+			let end = parts[parts.length-1];
+			if (end === 'text()' || end[0] === '@') parts.pop();
+			absolute = parts.join('/');
+			let found = await send('highlight', absolute);
+			if (absolute === this.pathEntry) this.found = found;
 		},
 		async selected(data) {
 			sendEvent('selectionToggle', { enabled: false });

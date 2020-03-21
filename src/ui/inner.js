@@ -50,6 +50,7 @@ function highlightXpath(xpath, reset) {
 	let elem;
 	let n = 0;
 	while (elem = res.iterateNext()) {
+		if (!elem || !elem.style) continue;
 		elem.style.background = reset ? 'inherit' : selectionColor;
 		n += 1;
 	}

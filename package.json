@@ -26,7 +26,6 @@
     "koa-static": "^5.0.0",
     "lru-cache": "^5.1.1",
     "nightmare": "^3.0.2",
-    "nightmare-load-filter": "^0.2.0",
     "pg": "^7.18.2",
     "purecss": "^1.0.1",
     "vue": "^2.6.11",

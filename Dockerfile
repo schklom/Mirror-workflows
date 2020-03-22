@@ -1,8 +1,9 @@
-FROM node:lts-alpine3.11
+FROM node:lts-buster-slim
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apk add -U bash
+RUN apt-get update \
+ && apt-get install -y xvfb libasound2 libnss3 libgconf-2-4 libxss1 libgtk-3-0
 
 RUN mkdir /app
 ADD . /app/
@@ -19,4 +20,5 @@ RUN npm ci
 
 EXPOSE 3000
 
+ENTRYPOINT /app/docker-entrypoint.sh
 CMD npm run start

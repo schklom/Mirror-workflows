@@ -6,6 +6,9 @@ services:
     build: .
     ports:
       - 80:3000
+    user: root
+    command: npm run start
+    entrypoint: '/app/docker-entrypoint.sh'
     environment:
       - DATABASE_URL=postgres://test:test@db:5432/test
       - BASE_URL=http://localhost

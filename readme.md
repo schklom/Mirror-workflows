@@ -2,10 +2,10 @@
 
 ## Installation ##
 
-Recommended way
+Recommended way to deploy is with docker
 
 - clone from gitlab
-- configure
+- edit config file (see below)
 - use docker to deploy
 
 ### Configuration:
@@ -41,4 +41,7 @@ every feed has a set time when it can be checked again, based on the checktime c
 
 when there is an error refreshing a feed, the next checks are delayed by 1, 6, and 30 hours depending on how often an error ocurreed. after 4 errors, the feed is disabled automatically
 
-## 
+## tech
+
+Feedropolis uses fetch for loading pages directly (without scripts) and electron (via nightmare) when loading scripts.
+Running electron on a server requires some workarounds with Xvfb. See docker-entrypoint and Dockerfile for details. 

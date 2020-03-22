@@ -4,20 +4,18 @@ const select = require('xpath.js')
 const nightmareFetcher = require('./nightmare');
 const simpleFetcher = require('./fetch');
 const { Feed } = require('feed');
-// const { Parser } = require("htmlparser2");
-// const { DomHandler } = require("domhandler");
 const debug = require('debug')('ap:feed');
 const cheerio = require('cheerio');
-// const { DOMParserImpl } = require('xmldom-ts');
-// const { select } = require('xpath-ts');
-// const { JSDOM } = require('jsdom');
-const URL = require('url');
+const url = require('url');
+const crypto = require('crypto');
+const getFilteredHtml = require('./getfilteredhtml');
 
 async function generateFeedFromSettings(settings) {
 	debug('generateFeedFromSettings', settings);
 	let html = await getHtml(settings);
+	html = await getFilteredHtml({ input: html });
 	let doc = await getDom(html);
-	debug('dom', doc);
+	// debug('dom', doc);
 	let feedData = extractDataXpath(doc, settings.selectors);
 	debug('feedData', feedData);
 	let siteData = extractSitedata(doc, html, settings);
@@ -52,7 +50,7 @@ function extractSitedata(doc, html, settings) {
 function sanitizeFeedData(feedData, siteData) {
 	return feedData.map(entry => {
 		return {
-			link: URL.resolve( siteData.url, entry.link ),
+			link: url.resolve( siteData.url, entry.link ),
 			title: entry.title.trim(),
 			description: entry.description ? entry.description.trim() : '',
 			added: new Date()
@@ -73,7 +71,7 @@ function getDom(html) {
 				throw new Error(e)
 			}
 		}
-	}).parseFromString(html);
+	}).parseFromString(html, 'text/html');
 }
 function getDomCheerio(html) {
 	return cheerio.load(html);
@@ -100,7 +98,7 @@ async function getHtml(settings) {
 function extractDataXpath(doc, settings) {
 	let data = [];
 	let entries = select(doc, settings.pathEntry);
-	// debug('entries', entries);
+	debug('entries', entries.length);
 	entries.forEach(entry => {
 		// debug('entry', entry);
 		let titleElem = select(entry, settings.pathTitle);
@@ -175,20 +173,22 @@ function r2a(res) {
 	return a;
 }
 
+const baseUrl = process.env.BASE_URL || 'http://localhost';
+
 function createFeed(settings, feedData) {
 	const feed = new Feed({
-		title: settings.title,
-		description: settings.description,
-		id: settings.url,
-		link: settings.url,
+		title: settings.title || 'unnamed',
+		description: settings.description || 'no description',
+		id: settings.url, //crypto.createHash('sha1').update(settings.url).digest('hex'),
+		link: encodeURIComponent(settings.url),
 		generator: 'FeedroPolis',
 		feedLinks: {
-			atom: 'https://example.com/feed/secretkey'	//@TODO implement
+			atom: url.resolve(baseUrl, `/feed/get/${settings.uid || 0}/${settings.secret || 'none'}/`)
 		}
 	});
 	feedData.forEach(({ title, link, description, added }) => {
 		feed.addItem({
-			id: link,
+			id: link, //crypto.createHash('sha1').update(link).digest('hex'),
 			title,
 			link,
 			description,

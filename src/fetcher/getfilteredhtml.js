@@ -13,6 +13,7 @@ async function run({
 	baseUrl
 }) {
 	const $ = cheerio.load(input);
+	$('html').attr('xmlns', null);
 	if (removeScripts) $('script').remove();
 	if (removeIframes) $('iframe').remove();
 	if (removeLinks) $('link').not('[rel=stylesheet]').remove();
@@ -34,11 +35,8 @@ async function run({
 	}
 	appendScripts.forEach(src => {
 		$('body').append(`<script src="${src}"></script>`)
-	})
-
-	let output = $.html();
-	// output = `${output}\n`
-	return output;
+	});
+	return $.html();
 }
 
 module.exports = run;

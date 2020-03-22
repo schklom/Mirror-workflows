@@ -21,6 +21,9 @@
 			<input type="number"
 				name="waitForTime"
 				value="0"
+				min="100"
+				step="1"
+				max="10000"
 				v-model="waitForTime"
 				@input="waitFor='time'"
 			/>
@@ -35,6 +38,8 @@
 			<input type="text"
 				name="waitForSelector"
 				v-model="waitForSelector"
+				minlength="2"
+				maxlength="255"
 				@input="waitFor='selector'"
 			/>
 		</label>
@@ -50,7 +55,7 @@ export default {
 			url: '',
 			loadScripts: false,
 			waitFor: 'time',
-			waitForTime: 0,
+			waitForTime: 500,
 			waitForSelector: '',
 			loading: false
 		}
@@ -59,7 +64,7 @@ export default {
 		EventHub.$on('reset', () => {
 			this.url = '';
 			this.loadScripts = false;
-			this.waitForTime = 0;
+			this.waitForTime = 500;
 			this.waitForSelector = '';
 		});
 	},

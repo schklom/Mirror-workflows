@@ -16,7 +16,7 @@ inner.setHandler('selected', (data) => {
 })
 
 window.addEventListener('message', (msg) => {
-	console.log('message.outer', msg.data);
+	console.debug('message.outer', msg.data);
 	if (typeof msg.data !== 'string') return;
 	try {
 		let action = JSON.parse(msg.data)

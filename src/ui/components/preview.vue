@@ -5,11 +5,11 @@
 		</p>
 		<div class="pure-control-group">
 			<label for="feedName">Specify a name:</label>
-			<input id="feedName" type="text" v-model="name" minlength="1" maxlength="255">
+			<input id="feedName" type="text" v-model="name" minlength="1" maxlength="255" style="width: 100%" />
 		</div>
 		<div class="pure-control-group">
 			<label for="feedDesc">Optional description:</label>
-			<input id="feedDesc" type="text" v-model="description" minlength="1" maxlength="255">
+			<input id="feedDesc" type="text" v-model="description" minlength="1" maxlength="255" style="width: 100%" />
 		</div>
 		<input type="submit" class="pure-button" value="Save" @click.prevent="submit" />
 	</form>

@@ -17,7 +17,7 @@ let selectionEnabled = false;
 let selectionColor = '#000';
 
 function selectionToggle(data) {
-	console.log('selectionToggle', data);
+	console.debug('selectionToggle', data);
 	selectionEnabled = data.enabled;
 	if (data.color) selectionColor = data.color;
 }
@@ -40,7 +40,7 @@ document.addEventListener('click', e => {
 }, false);
 
 window.addEventListener('message', (msg) => {
-	console.log('message.inner', msg.data);
+	console.debug('message.inner', msg.data);
 	parent.handleRequest(JSON.parse(msg.data))
 }, false);
 
@@ -64,7 +64,7 @@ function highlightOne(xpath, offset, reset) {
 		elem.style.background = reset ? 'inherit' : selectionColor;
 		return highlightOne(xpath, offset+1, reset);
 	} else {
-		return offset;
+		return offset-1;
 	}
 }
 

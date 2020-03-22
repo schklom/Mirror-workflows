@@ -29,7 +29,8 @@ function request(url, options = {}, settings = {}) {
 			headers: {
 				"User-Agent": userAgent
 			},
-			followRedirect: false
+			followRedirect: false,
+			throwHttpErrors: false
 		}, options))
 	} else {
 		throw new Error("Invalid value for setting `request_backend`.")

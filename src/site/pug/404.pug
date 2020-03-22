@@ -1,3 +1,5 @@
+//- Needs path, couldBeUsername
+
 include includes/error
 
 doctype html
@@ -8,3 +10,5 @@ html
 
 	body.error-page
 		+error(404, "Page not found.")
+			if couldBeUsername
+				| Trying to access a user? #[a(href=`/u${path}`) Visit @#{path.slice(1)}]

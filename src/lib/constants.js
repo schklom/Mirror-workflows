@@ -6,8 +6,15 @@
 
 let constants = {
 	// Things that server owners _should_ change!
-	website_origin: "http://localhost:10407", // Protocol and domain that this instance is hosted on. Do NOT include a trailing slash.
-	has_privacy_policy: false, // You MUST read /src/site/pug/privacy.pug.template before changing this!
+	// Protocol and domain that the website can be accessed on. Images and links in RSS feeds start with this URL.
+	// Do NOT include a trailing slash. If you leave this as localhost, Bibliogram will not work correctly when accessed from any other device.
+	// If you are using nginx to make Bibliogram accessible on port 80/443, do NOT write a port here.
+	// For example, "https://bibliogram.art"
+	website_origin: "http://localhost:10407",
+	// Port to actually run the webserver on.
+	port: 10407,
+	// You MUST read /src/site/pug/privacy.pug.template before changing has_privacy_policy!
+	has_privacy_policy: false,
 
 	// Things that server owners _could_ change if they want to.
 	tor: {

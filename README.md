@@ -1,12 +1,14 @@
 # [Bibliogram](https://bibliogram.art)
 
+[![Humane Tech badge.](https://raw.githubusercontent.com/cloudrac3r/bibliogram/master/art/humane-tech-badge.svg?sanitize=true)](https://github.com/humanetech-community/awesome-humane-tech#readme) ![GitHub](https://img.shields.io/github/license/cloudrac3r/bibliogram) [![Discussion on Matrix.](https://img.shields.io/matrix/bibliogram:matrix.org?label=%23bibliogram&logo=matrix)](https://matrix.to/#/#bibliogram:matrix.org)
+
 ## An alternative front-end for Instagram.
 
 Bibliogram works without client-side JavaScript, has no ads or tracking, and doesn't urge you to sign up.
 
 See also: [Invidious, a front-end for YouTube.](https://github.com/omarroth/invidious)
 
-Join the Bibliogram discussion room on Matrix: [#bibliogram:matrix.org](https://riot.im/app/#/room/#bibliogram:matrix.org)
+Join the Bibliogram discussion room on Matrix: [#bibliogram:matrix.org](https://matrix.to/#/#bibliogram:matrix.org)
 
 ## Features
 
@@ -23,8 +25,8 @@ Join the Bibliogram discussion room on Matrix: [#bibliogram:matrix.org](https://
 - [x] Instance list
 - [x] Clickable usernames and hashtags
 - [x] Proper error checking
+- [x] Favicon
 - [ ] Image disk cache
-- [ ] Favicon
 - [ ] Settings (e.g. data saving)
 - [ ] List view
 - [ ] IGTV

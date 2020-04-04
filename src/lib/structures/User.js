@@ -1,5 +1,5 @@
 const constants = require("../constants")
-const {proxyImage} = require("../utils/proxyurl")
+const {proxyProfilePic} = require("../utils/proxyurl")
 const {structure} = require("../utils/structuretext")
 const Timeline = require("./Timeline")
 require("../testimports")(constants, Timeline)
@@ -15,7 +15,11 @@ class User {
 		this.posts = data.edge_owner_to_timeline_media.count
 		this.timeline = new Timeline(this)
 		this.cachedAt = Date.now()
-		this.proxyProfilePicture = proxyImage(this.data.profile_pic_url)
+		this.computeProxyProfilePic()
+	}
+
+	computeProxyProfilePic() {
+		this.proxyProfilePicture = proxyProfilePic(this.data.profile_pic_url, this.data.id)
 	}
 
 	getStructuredBio() {

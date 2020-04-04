@@ -5,6 +5,13 @@ function proxyImage(url, width) {
 	return "/imageproxy?"+params.toString()
 }
 
+function proxyProfilePic(url, userID) {
+	const params = new URLSearchParams()
+	params.set("userID", userID)
+	params.set("url", url)
+	return "/imageproxy?"+params.toString()
+}
+
 function proxyVideo(url) {
 	const params = new URLSearchParams()
 	params.set("url", url)
@@ -21,5 +28,6 @@ function proxyExtendedOwner(owner) {
 }
 
 module.exports.proxyImage = proxyImage
+module.exports.proxyProfilePic = proxyProfilePic
 module.exports.proxyVideo = proxyVideo
 module.exports.proxyExtendedOwner = proxyExtendedOwner

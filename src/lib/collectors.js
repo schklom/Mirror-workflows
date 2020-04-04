@@ -8,6 +8,7 @@ const db = require("./db")
 require("./testimports")(constants, request, extractSharedData, UserRequestCache, RequestHistory, db)
 
 const requestCache = new RequestCache(constants.caching.resource_cache_time)
+/** @type {import("./cache").UserRequestCache<import("./structures/User")|import("./structures/ReelUser")>} */
 const userRequestCache = new UserRequestCache(constants.caching.resource_cache_time)
 /** @type {import("./cache").TtlCache<import("./structures/TimelineEntry")>} */
 const timelineEntryCache = new TtlCache(constants.caching.resource_cache_time)
@@ -118,8 +119,41 @@ function fetchUserFromHTML(username) {
 
 /**
  * @param {string} userID
+ */
+function updateProfilePictureFromReel(userID) {
+	const p = new URLSearchParams()
+	p.set("query_hash", constants.external.reel_query_hash)
+	p.set("variables", JSON.stringify({
+		user_id: userID,
+		include_reel: true
+	}))
+	return switcher.request("reel_graphql", `https://www.instagram.com/graphql/query/?${p.toString()}`, async res => {
+		if (res.status === 429) throw constants.symbols.RATE_LIMITED
+		return res
+	}).then(res => res.json()).then(root => {
+		const result = root.data.user
+		if (!result) throw constants.symbols.NOT_FOUND
+		const profilePicURL = result.reel.user.profile_pic_url
+		if (!profilePicURL) throw constants.symbols.NOT_FOUND
+		db.prepare("UPDATE Users SET profile_pic_url = ? WHERE user_id = ?").run(profilePicURL, userID)
+		for (const user of userRequestCache.cache.values()) {
+			// yes, data.data is correct.
+			if (user.data.data.id === userID) {
+				user.data.data.profile_pic_url = profilePicURL
+				user.data.computeProxyProfilePic()
+				break // stop checking entries from the cache since we won't find any more
+			}
+		}
+		return profilePicURL
+	}).catch(error => {
+		throw error
+	})
+}
+
+/**
+ * @param {string} userID
  * @param {string} username
- * @returns {Promise<import("./structures/ReelUser")>}
+ * @returns {Promise<import("./structures/ReelUser")|import("./structures/User")>}
  */
 function fetchUserFromCombined(userID, username) {
 	// Fetch basic user information
@@ -296,4 +330,5 @@ module.exports.fetchShortcodeData = fetchShortcodeData
 module.exports.userRequestCache = userRequestCache
 module.exports.timelineEntryCache = timelineEntryCache
 module.exports.getOrFetchShortcode = getOrFetchShortcode
+module.exports.updateProfilePictureFromReel = updateProfilePictureFromReel
 module.exports.history = history

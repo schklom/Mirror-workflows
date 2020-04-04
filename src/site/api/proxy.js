@@ -1,7 +1,10 @@
-const constants = require("../../lib/constants")
-const {request} = require("../../lib/utils/request")
-const {proxy} = require("pinski/plugins")
 const sharp = require("sharp")
+
+const constants = require("../../lib/constants")
+const collectors = require("../../lib/collectors")
+const {request} = require("../../lib/utils/request")
+const db = require("../../lib/db")
+require("../../lib/testimports")(constants, request, db)
 
 /**
  * Check that a resource is on Instagram.
@@ -21,6 +24,47 @@ function verifyURL(completeURL) {
 	if (!["fbcdn.net", "cdninstagram.com"].some(host => url.host.endsWith(host))) return {status: "fail", value: [400, "URL host is not allowed"]}
 	return {status: "ok", url}
 }
+
+function statusCodeIsAcceptable(status) {
+	return (status >= 200 && status < 300) || status === 304
+}
+
+/**
+ * @param {string} url
+ */
+async function proxyResource(url, suggestedHeaders = {}, refreshCallback = null) {
+	// console.log(`Asked to proxy ${url}\n`, suggestedHeaders)
+	const headersToSend = {}
+	for (const key of ["accept", "accept-encoding", "accept-language", "range"]) {
+		if (suggestedHeaders[key]) headersToSend[key] = suggestedHeaders[key]
+	}
+	const sent = request(url, {headers: headersToSend})
+	const stream = await sent.stream()
+	const response = await sent.response()
+	// console.log(response.status, response.headers)
+	if (statusCodeIsAcceptable(response.status)) {
+		const headersToReturn = {}
+		for (const key of ["content-type", "date", "last-modified", "expires", "cache-control", "accept-ranges", "origin", "etag", "content-length", "transfer-encoding"]) {
+			headersToReturn[key] = response.headers.get(key)
+		}
+		return {
+			statusCode: response.status,
+			headers: headersToReturn,
+			stream: stream
+		}
+	} else if (refreshCallback && response.status === 410) { // 410 GONE, profile picture has since changed
+		return refreshCallback()
+	} else {
+		return {
+			statusCode: 502,
+			headers: {
+				"Content-Type": "text/plain; charset=UTF-8"
+			},
+			content: `Instagram returned HTTP status ${response.status}, which is not a success code.`
+		}
+	}
+}
+
 module.exports = [
 	{
 		route: "/imageproxy", methods: ["GET"], code: async (input) => {
@@ -59,9 +103,41 @@ module.exports = [
 				})
 			} else {
 				// No specific size was requested, so just stream proxy the file directly.
-				return proxy(verifyResult.url, {
-					"Cache-Control": constants.caching.image_cache_control
-				})
+				if (params.has("userID")) {
+					// Users get special handling, because we need to update their profile picture if an expired version is cached.
+					return proxyResource(verifyResult.url.toString(), input.req.headers, () => {
+						// If we get here, we got HTTP 410 GONE.
+						const userID = params.get("userID")
+						const storedProfilePicURL = db.prepare("SELECT profile_pic_url FROM Users WHERE user_id = ?").pluck().get(userID)
+						if (storedProfilePicURL === verifyResult.url.toString()) {
+							// Everything looks fine, find out what the new URL for the provided user ID is and store it.
+							return collectors.updateProfilePictureFromReel(userID).then(url => {
+								// Updated. Return the new picture (without recursing)
+								return proxyResource(url, input.req.headers)
+							}).catch(error => {
+								console.error(error)
+								return {
+									statusCode: 500,
+									headers: {
+										"Content-Type": "text/plain; charset=UTF-8"
+									},
+									content: String(error)
+								}
+							})
+						} else {
+							// The request is a lie!
+							return {
+								statusCode: 400,
+								headers: {
+									"Content-Type": "text/plain; charset=UTF-8"
+								},
+								content: "Profile picture must be refreshed, but provided userID parameter does not match the stored profile_pic_url."
+							}
+						}
+					})
+				} else {
+					return proxyResource(verifyResult.url.toString(), input.req.headers)
+				}
 			}
 		}
 	},
@@ -71,9 +147,7 @@ module.exports = [
 			if (verifyResult.status !== "ok") return verifyResult.value
 			const url = verifyResult.url
 			if (!["mp4"].some(ext => url.pathname.endsWith(ext))) return [400, "URL extension is not allowed"]
-			return proxy(url, {
-				"Cache-Control": constants.caching.image_cache_control
-			})
+			return proxyResource(url.toString(), input.req.headers)
 		}
 	}
 ]

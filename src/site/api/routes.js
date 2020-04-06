@@ -43,6 +43,7 @@ module.exports = [
 				username = username.replace(/^(https?:\/\/)?([a-z]+\.)?instagram\.com\//, "")
 				username = username.replace(/^\@+/, "")
 				username = username.replace(/\/+$/, "")
+				username = username.toLowerCase()
 				return redirect(`/u/${username}`, 301)
 			} else {
 				return render(400, "pug/friendlyerror.pug", {
@@ -57,6 +58,10 @@ module.exports = [
 	},
 	{
 		route: `/u/(${constants.external.username_regex})`, methods: ["GET"], code: ({url, fill}) => {
+			if (fill[0] !== fill[0].toLowerCase()) { // some capital letters
+				return Promise.resolve(redirect(`/u/${fill[0].toLowerCase()}`, 301))
+			}
+
 			const params = url.searchParams
 			return fetchUser(fill[0], false).then(async user => {
 				const page = +params.get("page")

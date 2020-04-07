@@ -22,7 +22,7 @@ class Assistant {
 		this.lastRequest = Date.now()
 		return new Promise((resolve, reject) => {
 			request(`${this.origin}/api/user/v1/${username}`).json().then(root => {
-				console.log(root)
+				// console.log(root)
 				if (root.status === "ok") {
 					this.lastRequestStatus = constants.symbols.assistant_statuses.OK
 					resolve(root.data.user)
@@ -31,7 +31,7 @@ class Assistant {
 					reject(constants.symbols.assistant_statuses.BLOCKED)
 				}
 			}).catch(error => {
-				console.error(error)
+				// console.error(error)
 				this.lastRequestStatus = constants.symbols.assistant_statuses.OFFLINE
 				reject(constants.symbols.assistant_statuses.OFFLINE)
 			})

@@ -40,6 +40,15 @@ let constants = {
 		enable_updater_page: false
 	},
 
+	assistant: {
+		enabled: false,
+		// List of assistant origin URLs, if you have any.
+		origins: [
+		],
+		offline_request_cooldown: 20*60*1000,
+		blocked_request_cooldown: 2*60*60*1000,
+	},
+
 	caching: {
 		image_cache_control: `public, max-age=${7*24*60*60}`,
 		resource_cache_time: 30*60*1000,
@@ -78,7 +87,14 @@ let constants = {
 		NO_SHARED_DATA: Symbol("NO_SHARED_DATA"),
 		INSTAGRAM_DEMANDS_LOGIN: Symbol("INSTAGRAM_DEMANDS_LOGIN"),
 		RATE_LIMITED: Symbol("RATE_LIMITED"),
-		ENDPOINT_OVERRIDDEN: Symbol("ENDPOINT_OVERRIDDEN")
+		ENDPOINT_OVERRIDDEN: Symbol("ENDPOINT_OVERRIDDEN"),
+		NO_ASSISTANTS_AVAILABLE: Symbol("NO_ASSISTANTS_AVAILABLE"),
+		assistant_statuses: {
+			OFFLINE: Symbol("OFFLINE"),
+			BLOCKED: Symbol("BLOCKED"),
+			OK: Symbol("OK"),
+			NONE: Symbol("NONE")
+		}
 	},
 
 	database_version: 2

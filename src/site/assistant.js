@@ -6,42 +6,35 @@ const passthrough = require("./passthrough")
 
 const pinski = new Pinski({
 	port: constants.port,
-	relativeRoot: __dirname,
-	basicCacheControl: {
-		exts: ["ttf", "woff2", "png", "jpg", "jpeg", "svg", "gif", "webmanifest", "ico"],
-		seconds: 604800
-	},
+	relativeRoot: __dirname
 })
 
-subdirs("pug", async (err, dirs) => {
+;(async (err, dirs) => {
 	if (err) throw err
 
 	// need to check for and run db upgrades before anything starts using it
 	await require("../lib/utils/upgradedb")()
 
-	pinski.setNotFoundTarget("/404")
-	pinski.addRoute("/static/css/main.css", "sass/main.sass", "sass")
-	pinski.addPugDir("pug", dirs)
-	pinski.addAPIDir("html/static/js/templates/api")
-	pinski.addSassDir("sass")
-	pinski.muteLogsStartingWith("/imageproxy")
-	pinski.muteLogsStartingWith("/videoproxy")
-	pinski.muteLogsStartingWith("/static")
-
 	if (constants.tor.enabled) {
 		await require("../lib/utils/tor") // make sure tor state is known before going further
 	}
 
-	pinski.addAPIDir("api")
+	pinski.addAPIDir("assistant_api")
 	pinski.startServer()
+	pinski.enableWS()
 
 	require("pinski/plugins").setInstance(pinski)
 
 	Object.assign(passthrough, pinski.getExports())
 
-	console.log("Server started")
+	console.log("Assistant started")
+
+	if (constants.allow_user_from_reel !== "never") {
+		constants.allow_user_from_reel = "never"
+		console.log(`[!] You are running the assistant, so \`constants.allow_user_from_reel\` has been set to "never" for this session.`)
+	}
 
 	if (process.stdin.isTTY || process.argv.includes("--enable-repl")) {
 		require("./repl")
 	}
-})
+})()

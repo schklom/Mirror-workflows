@@ -14,6 +14,9 @@ const userRequestCache = new UserRequestCache(constants.caching.resource_cache_t
 const timelineEntryCache = new TtlCache(constants.caching.resource_cache_time)
 const history = new RequestHistory(["user", "timeline", "post", "reel"])
 
+const AssistantSwitcher = require("./structures/AssistantSwitcher")
+const assistantSwitcher = new AssistantSwitcher()
+
 /**
  * @param {string} username
  * @param {boolean} isRSS
@@ -53,6 +56,11 @@ async function fetchUser(username, isRSS) {
 					return fetchUserFromCombined(saved.user_id, username)
 				} else if (saved && saved.updated_version >= 2) {
 					return fetchUserFromSaved(saved)
+				} else if (assistantSwitcher.enabled()) {
+					return assistantSwitcher.requestUser(username).catch(error => {
+						if (error === constants.symbols.NO_ASSISTANTS_AVAILABLE) throw constants.symbols.RATE_LIMITED
+						else throw error
+					})
 				}
 			}
 			throw error
@@ -332,3 +340,5 @@ module.exports.timelineEntryCache = timelineEntryCache
 module.exports.getOrFetchShortcode = getOrFetchShortcode
 module.exports.updateProfilePictureFromReel = updateProfilePictureFromReel
 module.exports.history = history
+module.exports.fetchUserFromSaved = fetchUserFromSaved
+module.exports.assistantSwitcher = assistantSwitcher

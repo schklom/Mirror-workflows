@@ -78,7 +78,7 @@ module.exports = [
 						message: "This user doesn't exist.",
 						withInstancesLink: false
 					})
-				} else if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN) {
+				} else if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN || error === constants.symbols.RATE_LIMITED) {
 					return {
 						statusCode: 503,
 						contentType: "text/html",

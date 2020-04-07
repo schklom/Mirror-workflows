@@ -1,6 +1,7 @@
 const {instance, pugCache, wss} = require("./passthrough")
 const {userRequestCache, timelineEntryCache, history} = require("../lib/collectors")
 const constants = require("../lib/constants")
+const collectors = require("../lib/collectors")
 const util = require("util")
 const repl = require("repl")
 const vm = require("vm")

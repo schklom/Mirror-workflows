@@ -76,7 +76,6 @@ async function fetchUser(username, isRSS) {
 function fetchUserFromHTML(username) {
 	return userRequestCache.getOrFetch("user/"+username, false, true, () => {
 		return switcher.request("user_html", `https://www.instagram.com/${username}/`, async res => {
-			throw constants.symbols.INSTAGRAM_DEMANDS_LOGIN // TEST
 			if (res.status === 301) throw constants.symbols.ENDPOINT_OVERRIDDEN
 			if (res.status === 302) throw constants.symbols.INSTAGRAM_DEMANDS_LOGIN
 			if (res.status === 429) throw constants.symbols.RATE_LIMITED

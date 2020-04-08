@@ -26,9 +26,14 @@ class Assistant {
 				if (root.status === "ok") {
 					this.lastRequestStatus = constants.symbols.assistant_statuses.OK
 					resolve(root.data.user)
-				} else {
-					this.lastRequestStatus = constants.symbols.assistant_statuses.BLOCKED
-					reject(constants.symbols.assistant_statuses.BLOCKED)
+				} else { // "fail"
+					if (root.identifier === "NOT_FOUND") {
+						this.lastRequestStatus = constants.symbols.assistant_statuses.OK
+						reject(constants.symbols.NOT_FOUND)
+					} else { // blocked
+						this.lastRequestStatus = constants.symbols.assistant_statuses.BLOCKED
+						reject(constants.symbols.assistant_statuses.BLOCKED)
+					}
 				}
 			}).catch(error => {
 				// console.error(error)

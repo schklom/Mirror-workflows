@@ -65,6 +65,14 @@ module.exports = [
 							message: "Rate limited by Instagram.",
 							identifier: "RATE_LIMITED"
 						})
+					} else if (error === constants.symbols.NOT_FOUND || error === constants.symbols.ENDPOINT_OVERRIDDEN) {
+						return reply(404, {
+							status: "fail",
+							version: "1.0",
+							generatedAt: Date.now(),
+							message: "User not found.",
+							identifier: "NOT_FOUND"
+						})
 					} else {
 						throw error
 					}

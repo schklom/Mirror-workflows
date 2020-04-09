@@ -36,6 +36,8 @@ class Assistant {
 					}
 				}
 			}).catch(error => {
+				// this catches network errors, parse errors, and property access errors.
+				// all of these mean that the user API didn't behave in an expected manner, probably because the server is doing something else
 				// console.error(error)
 				this.lastRequestStatus = constants.symbols.assistant_statuses.OFFLINE
 				reject(constants.symbols.assistant_statuses.OFFLINE)

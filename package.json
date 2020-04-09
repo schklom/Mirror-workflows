@@ -13,15 +13,15 @@
   "author": "",
   "license": "AGPL-3.0-only",
   "dependencies": {
-    "better-sqlite3": "^5.4.3",
+    "better-sqlite3": "^6.0.1",
     "feed": "github:cloudrac3r/feed#f42b4d7183fc2b6e566cb400ad083c4dd714c858",
     "mixin-deep": "^2.0.1",
     "node-dir": "^0.1.17",
     "node-fetch": "^2.6.0",
     "pinski": "github:cloudrac3r/pinski#4baee0a52b809ff9ac9767dbccc5addebc6c842a",
     "pug": "^2.0.4",
-    "semver": "^7.1.2",
-    "sharp": "^0.24.0",
+    "semver": "^7.2.1",
+    "sharp": "^0.25.2",
     "socks-proxy-agent": "github:cloudrac3r/node-socks-proxy-agent#6a26d274b12098dfef6cc2faafd25b0c051f2467"
   },
   "optionalDependencies": {
@@ -29,6 +29,6 @@
     "got": "^10.6.0"
   },
   "devDependencies": {
-    "tap": "^14.10.6"
+    "tap": "^14.10.7"
   }
 }

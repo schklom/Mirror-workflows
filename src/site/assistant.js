@@ -29,11 +29,6 @@ const pinski = new Pinski({
 
 	console.log("Assistant started")
 
-	if (constants.allow_user_from_reel !== "never") {
-		constants.allow_user_from_reel = "never"
-		console.log(`[!] You are running the assistant, so \`constants.allow_user_from_reel\` has been set to "never" for this session.`)
-	}
-
 	if (process.stdin.isTTY || process.argv.includes("--enable-repl")) {
 		require("./repl")
 	}

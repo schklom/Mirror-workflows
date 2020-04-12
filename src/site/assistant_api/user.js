@@ -1,3 +1,4 @@
+const crypto = require("crypto")
 const constants = require("../../lib/constants")
 const collectors = require("../../lib/collectors")
 const db = require("../../lib/db")
@@ -22,27 +23,49 @@ module.exports = [
 	},
 	{
 		route: `/api/user/v1/(${constants.external.username_regex})`, methods: ["GET"], code: async ({fill, url}) => {
-			function replyWithUserData(userData, type) {
+			function replyWithUserData(userData) {
 				return reply(200, {
 					status: "ok",
 					version: "1.0",
 					generatedAt: Date.now(),
 					data: {
-						type,
-						allow_user_from_reel: constants.allow_user_from_reel,
 						user: userData
 					}
 				})
+			}
+
+			if (constants.as_assistant.require_key) {
+				if (url.searchParams.has("key")) {
+					const inputKey = url.searchParams.get("key")
+					if (!constants.as_assistant.keys.some(key => inputKey === key)) {
+						return reply(401, {
+							status: "fail",
+							version: "1.0",
+							generatedAt: Date.now(),
+							message: "The authentication key provided is not in the list of allowed keys.",
+							fields: ["q:key"],
+							identifier: "NOT_AUTHENTICATED"
+						})
+					}
+				} else {
+					return reply(401, {
+						status: "fail",
+						version: "1.0",
+						generatedAt: Date.now(),
+						message: "This endpoint requires authentication. If you have a key, specify it with the `key` query parameter.",
+						fields: ["q:key"],
+						identifier: "NOT_AUTHENTICATED"
+					})
+				}
 			}
 
 			const username = fill[0]
 			const saved = db.prepare("SELECT username, user_id, updated_version, biography, post_count, following_count, followed_by_count, external_url, full_name, is_private, is_verified, profile_pic_url FROM Users WHERE username = ?").get(username)
 			if (saved && saved.updated_version >= 2) { // suitable data is already saved
 				delete saved.updated_version
-				return Promise.resolve(replyWithUserData(saved, "user"))
+				return Promise.resolve(replyWithUserData(saved))
 			} else {
-				return collectors.fetchUser(username, false).then(user => {
-					const type = user.constructor.name === "User" ? "user" : "reel"
+				return collectors.fetchUser(username, constants.symbols.fetch_context.ASSISTANT).then(user => {
 					return replyWithUserData({
 						username: user.data.username,
 						user_id: user.data.id,
@@ -55,7 +78,7 @@ module.exports = [
 						is_private: user.data.is_private,
 						is_verified: user.data.is_verified,
 						profile_pic_url: user.data.profile_pic_url
-					}, type)
+					})
 				}).catch(error => {
 					if (error === constants.symbols.RATE_LIMITED || error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN) {
 						return reply(503, {

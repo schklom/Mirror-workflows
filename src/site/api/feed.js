@@ -7,7 +7,7 @@ module.exports = [
 	{route: `/u/(${constants.external.username_regex})/(rss|atom)\\.xml`, methods: ["GET"], code: ({fill}) => {
 		if (constants.settings.rss_enabled) {
 			const kind = fill[1]
-			return fetchUser(fill[0], true).then(async user => {
+			return fetchUser(fill[0], constants.symbols.fetch_context.RSS).then(async user => {
 				const feed = await user.timeline.fetchFeed()
 				if (kind === "rss") {
 					var data = {

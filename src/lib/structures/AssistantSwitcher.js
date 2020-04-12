@@ -5,11 +5,11 @@ const db = require("../db")
 
 class AssistantSwitcher {
 	constructor() {
-		this.assistants = constants.assistant.origins.map(origin => new Assistant(origin))
+		this.assistants = constants.use_assistant.assistants.map(data => new Assistant(data.origin, data.key))
 	}
 
 	enabled() {
-		return constants.assistant.enabled && this.assistants.length
+		return constants.use_assistant.enabled && this.assistants.length
 	}
 
 	getAvailableAssistants() {
@@ -30,6 +30,9 @@ class AssistantSwitcher {
 						rejection.catch(() => {}) // otherwise we get a warning that the rejection was handled asynchronously
 						collectors.userRequestCache.set(`user/${username}`, false, rejection)
 						return reject(e)
+					} else if (e === constants.symbols.assistant_statuses.NOT_AUTHENTICATED) {
+						// no further requests will be successful. the assistant has already marked itself as not available.
+						console.error(`Assistant ${assistant.origin} refused request, not authenticated`)
 					}
 					// that assistant broke. try the next one.
 				}

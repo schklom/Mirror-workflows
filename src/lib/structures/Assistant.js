@@ -2,17 +2,20 @@ const {request} = require("../utils/request")
 const constants = require("../constants")
 
 class Assistant {
-	constructor(origin) {
+	constructor(origin, key) {
 		this.origin = origin
+		this.key = key
 		this.lastRequest = 0
 		this.lastRequestStatus = constants.symbols.assistant_statuses.NONE
 	}
 
 	available() {
 		if (this.lastRequestStatus === constants.symbols.assistant_statuses.OFFLINE) {
-			return Date.now() - this.lastRequest > constants.assistant.offline_request_cooldown
+			return Date.now() - this.lastRequest > constants.use_assistant.offline_request_cooldown
 		} else if (this.lastRequestStatus === constants.symbols.assistant_statuses.BLOCKED) {
-			return Date.now() - this.lastRequest > constants.assistant.blocked_request_cooldown
+			return Date.now() - this.lastRequest > constants.use_assistant.blocked_request_cooldown
+		} else if (this.lastRequestStatus === constants.symbols.assistant_statuses.NOT_AUTHENTICATED) {
+			return false
 		} else {
 			return true
 		}
@@ -21,7 +24,9 @@ class Assistant {
 	requestUser(username) {
 		this.lastRequest = Date.now()
 		return new Promise((resolve, reject) => {
-			request(`${this.origin}/api/user/v1/${username}`).json().then(root => {
+			const url = new URL(`${this.origin}/api/user/v1/${username}`)
+			if (this.key !== null) url.searchParams.append("key", this.key)
+			request(url.toString()).json().then(root => {
 				// console.log(root)
 				if (root.status === "ok") {
 					this.lastRequestStatus = constants.symbols.assistant_statuses.OK
@@ -30,6 +35,9 @@ class Assistant {
 					if (root.identifier === "NOT_FOUND") {
 						this.lastRequestStatus = constants.symbols.assistant_statuses.OK
 						reject(constants.symbols.NOT_FOUND)
+					} else if (root.identifier === "NOT_AUTHENTICATED") {
+						this.lastRequestStatus = constants.symbols.assistant_statuses.NOT_AUTHENTICATED
+						reject(constants.symbols.assistant_statuses.NOT_AUTHENTICATED)
 					} else { // blocked
 						this.lastRequestStatus = constants.symbols.assistant_statuses.BLOCKED
 						reject(constants.symbols.assistant_statuses.BLOCKED)

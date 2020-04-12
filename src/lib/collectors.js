@@ -19,13 +19,25 @@ const assistantSwitcher = new AssistantSwitcher()
 
 /**
  * @param {string} username
- * @param {boolean} isRSS
+ * @param {symbol} [context]
  */
-async function fetchUser(username, isRSS) {
+async function fetchUser(username, context) {
+	if (constants.external.reserved_paths.includes(username)) {
+		throw constants.symbols.ENDPOINT_OVERRIDDEN
+	}
+
 	let mode = constants.allow_user_from_reel
 	if (mode === "preferForRSS") {
-		if (isRSS) mode = "prefer"
+		if (context === constants.symbols.fetch_context.RSS) mode = "prefer"
 		else mode = "onlyPreferSaved"
+	}
+	if (context === constants.symbols.fetch_context.ASSISTANT) {
+		const saved = db.prepare("SELECT username, user_id, updated_version, biography, post_count, following_count, followed_by_count, external_url, full_name, is_private, is_verified, profile_pic_url FROM Users WHERE username = ?").get(username)
+		if (saved && saved.updated_version >= 2) {
+			return fetchUserFromSaved(saved)
+		} else {
+			return fetchUserFromHTML(username)
+		}
 	}
 	if (mode === "never") {
 		return fetchUserFromHTML(username)

@@ -63,7 +63,7 @@ module.exports = [
 			}
 
 			const params = url.searchParams
-			return fetchUser(fill[0], false).then(async user => {
+			return fetchUser(fill[0]).then(async user => {
 				const page = +params.get("page")
 				if (typeof page === "number" && !isNaN(page) && page >= 1) {
 					await user.timeline.fetchUpToPage(page - 1)
@@ -97,7 +97,7 @@ module.exports = [
 	},
 	{
 		route: `/fragment/user/(${constants.external.username_regex})/(\\d+)`, methods: ["GET"], code: async ({url, fill}) => {
-			return fetchUser(fill[0], false).then(async user => {
+			return fetchUser(fill[0]).then(async user => {
 				const pageNumber = +fill[1]
 				const pageIndex = pageNumber - 1
 				await user.timeline.fetchUpToPage(pageIndex)

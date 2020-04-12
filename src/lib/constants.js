@@ -40,13 +40,21 @@ let constants = {
 		enable_updater_page: false
 	},
 
-	assistant: {
+	use_assistant: {
 		enabled: false,
-		// List of assistant origin URLs, if you have any.
-		origins: [
+		// Read the docs.
+		assistants: [
 		],
 		offline_request_cooldown: 20*60*1000,
 		blocked_request_cooldown: 2*60*60*1000,
+	},
+
+	as_assistant: {
+		enabled: false, // You can still start just the assistant with npm run assistant.
+		require_key: false,
+		// List of keys that are allowed access. You can use any string.
+		// Try `crypto.randomBytes(20).toString("hex")` to get some randomness.
+		keys: []
 	},
 
 	caching: {
@@ -68,7 +76,15 @@ let constants = {
 		timeline_fetch_first: 12,
 		username_regex: "[\\w.]*[\\w]",
 		shortcode_regex: "[\\w-]+",
-		hashtag_regex: "[^ \\n`~!@#\\$%^&*()\\-=+[\\]{};:\"',<.>/?\\\\]+"
+		hashtag_regex: "[^ \\n`~!@#\\$%^&*()\\-=+[\\]{};:\"',<.>/?\\\\]+",
+		reserved_paths: [ // https://github.com/cloudrac3r/bibliogram/wiki/Reserved-URLs
+			// Redirects
+			"about", "explore", "support", "press", "api", "privacy", "safety", "admin",
+			// Content
+			"embed.js",
+			// Not found, but likely reserved
+			"graphql", "accounts", "p", "help", "terms", "contact", "blog", "igtv"
+		]
 	},
 
 	resources: {
@@ -93,7 +109,12 @@ let constants = {
 			OFFLINE: Symbol("OFFLINE"),
 			BLOCKED: Symbol("BLOCKED"),
 			OK: Symbol("OK"),
-			NONE: Symbol("NONE")
+			NONE: Symbol("NONE"),
+			NOT_AUTHENTICATED: Symbol("NOT_AUTHENTICATED")
+		},
+		fetch_context: {
+			RSS: Symbol("RSS"),
+			ASSISTANT: Symbol("ASSISTANT")
 		}
 	},
 

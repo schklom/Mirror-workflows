@@ -33,6 +33,12 @@ subdirs("pug", async (err, dirs) => {
 	}
 
 	pinski.addAPIDir("api")
+
+	if (constants.as_assistant.enabled) {
+		console.log("Assistant API enabled")
+		pinski.addAPIDir("assistant_api")
+	}
+
 	pinski.startServer()
 
 	require("pinski/plugins").setInstance(pinski)

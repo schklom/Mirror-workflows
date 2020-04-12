@@ -52,7 +52,7 @@ async function proxyResource(url, suggestedHeaders = {}, refreshCallback = null)
 			headers: headersToReturn,
 			stream: stream
 		}
-	} else if (refreshCallback && (response.status === 410 || response.status === 404)) { // 410 GONE, profile picture has since changed
+	} else if (refreshCallback && [410, 404, 403].includes(response.status)) { // profile picture has since changed
 		return refreshCallback()
 	} else {
 		return {

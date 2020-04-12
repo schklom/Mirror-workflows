@@ -40,6 +40,10 @@ const features = [
 	"BLOCK_DETECT_USER_HTML"
 ]
 if (constants.has_privacy_policy) features.push("PRIVACY_POLICY")
+if (constants.as_assistant.enabled) {
+	if (constants.as_assistant.require_key) features.push("ASSISTANT_PRIVATE")
+	else features.push("ASSISTANT_PUBLIC")
+}
 const innerMap = new Map()
 {
 	const addVersion = function(shortVersion, block) {

@@ -96,6 +96,14 @@ module.exports = [
 							message: "User not found.",
 							identifier: "NOT_FOUND"
 						})
+					} else if (error === constants.symbols.extractor_results.AGE_RESTRICTED) {
+						return reply(403, {
+							status: "fail",
+							version: "1.0",
+							generatedAt: Date.now(),
+							message: "Profile is age restricted.",
+							identifier: "AGE_RESTRICTED"
+						})
 					} else {
 						throw error
 					}

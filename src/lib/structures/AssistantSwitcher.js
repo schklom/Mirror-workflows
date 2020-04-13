@@ -25,7 +25,7 @@ class AssistantSwitcher {
 					const user = await assistant.requestUser(username)
 					return resolve(user)
 				} catch (e) {
-					if (e === constants.symbols.NOT_FOUND) {
+					if (e === constants.symbols.NOT_FOUND || e === constants.symbols.extractor_results.AGE_RESTRICTED) {
 						const rejection = Promise.reject(e)
 						rejection.catch(() => {}) // otherwise we get a warning that the rejection was handled asynchronously
 						collectors.userRequestCache.set(`user/${username}`, false, rejection)

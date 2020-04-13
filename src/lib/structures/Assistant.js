@@ -35,6 +35,9 @@ class Assistant {
 					if (root.identifier === "NOT_FOUND") {
 						this.lastRequestStatus = constants.symbols.assistant_statuses.OK
 						reject(constants.symbols.NOT_FOUND)
+					} else if (root.identifier === "AGE_RESTRICTED") {
+						this.lastRequestStatus = constants.symbols.assistant_statuses.OK
+						reject(constants.symbols.extractor_results.AGE_RESTRICTED)
 					} else if (root.identifier === "NOT_AUTHENTICATED") {
 						this.lastRequestStatus = constants.symbols.assistant_statuses.NOT_AUTHENTICATED
 						reject(constants.symbols.assistant_statuses.NOT_AUTHENTICATED)

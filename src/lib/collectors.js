@@ -101,32 +101,41 @@ function fetchUserFromHTML(username) {
 				// require down here or have to deal with require loop. require cache will take care of it anyway.
 				// User -> Timeline -> TimelineEntry -> collectors -/> User
 				const User = require("./structures/User")
-				const sharedData = extractSharedData(text)
-				const user = new User(sharedData.entry_data.ProfilePage[0].graphql.user)
-				history.report("user", true)
-				if (constants.caching.db_user_id) {
-					const existing = db.prepare("SELECT created, updated_version FROM Users WHERE username = ?").get(user.data.username)
-					db.prepare(
-						"REPLACE INTO Users (username,  user_id,  created,  updated,  updated_version,  biography,  post_count,  following_count,  followed_by_count,  external_url,  full_name,  is_private,  is_verified,  profile_pic_url) VALUES "
-						                 +"(@username, @user_id, @created, @updated, @updated_version, @biography, @post_count, @following_count, @followed_by_count, @external_url, @full_name, @is_private, @is_verified, @profile_pic_url)"
-					).run({
-						username: user.data.username,
-						user_id: user.data.id,
-						created: existing && existing.updated_version === constants.database_version ? existing.created : Date.now(),
-						updated: Date.now(),
-						updated_version: constants.database_version,
-						biography: user.data.biography || null,
-						post_count: user.posts || 0,
-						following_count: user.following || 0,
-						followed_by_count: user.followedBy || 0,
-						external_url: user.data.external_url || null,
-						full_name: user.data.full_name || null,
-						is_private: +user.data.is_private,
-						is_verified: +user.data.is_verified,
-						profile_pic_url: user.data.profile_pic_url
-					})
+				const result = extractSharedData(text)
+				if (result.status === constants.symbols.extractor_results.SUCCESS) {
+					const sharedData = result.value
+					const user = new User(sharedData.entry_data.ProfilePage[0].graphql.user)
+					history.report("user", true)
+					if (constants.caching.db_user_id) {
+						const existing = db.prepare("SELECT created, updated_version FROM Users WHERE username = ?").get(user.data.username)
+						db.prepare(
+							"REPLACE INTO Users (username,  user_id,  created,  updated,  updated_version,  biography,  post_count,  following_count,  followed_by_count,  external_url,  full_name,  is_private,  is_verified,  profile_pic_url) VALUES "
+												+"(@username, @user_id, @created, @updated, @updated_version, @biography, @post_count, @following_count, @followed_by_count, @external_url, @full_name, @is_private, @is_verified, @profile_pic_url)"
+						).run({
+							username: user.data.username,
+							user_id: user.data.id,
+							created: existing && existing.updated_version === constants.database_version ? existing.created : Date.now(),
+							updated: Date.now(),
+							updated_version: constants.database_version,
+							biography: user.data.biography || null,
+							post_count: user.posts || 0,
+							following_count: user.following || 0,
+							followed_by_count: user.followedBy || 0,
+							external_url: user.data.external_url || null,
+							full_name: user.data.full_name || null,
+							is_private: +user.data.is_private,
+							is_verified: +user.data.is_verified,
+							profile_pic_url: user.data.profile_pic_url
+						})
+					}
+					return user
+				} else if (result.status === constants.symbols.extractor_results.AGE_RESTRICTED) {
+					// I don't like this code.
+					history.report("user", true)
+					throw constants.symbols.extractor_results.AGE_RESTRICTED
+				} else {
+					throw result.status
 				}
-				return user
 			}
 		}).catch(error => {
 			if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN || error === constants.symbols.RATE_LIMITED) {

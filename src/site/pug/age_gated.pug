@@ -1,0 +1,11 @@
+include includes/error.pug
+
+doctype html
+html
+	head
+		title= `Restricted profile | Bibliogram`
+		include includes/head
+	body.error-page
+		+error(403, "Restricted profile", false)
+			| This profile is age restricted.
+			| You must log in to Instagram to view this profile.

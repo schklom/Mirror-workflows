@@ -37,6 +37,7 @@ class Parser {
 	}
 
 	/**
+	 * Get the next element from the buffer, either up to a token or between two tokens, and update the cursor.
 	 * @param {GetOptions} [options]
 	 * @returns {String}
 	 */
@@ -123,7 +124,7 @@ class Parser {
 	}
 
 	/**
-	 * Seek past the next occurance of the string.
+	 * Seek to or past the next occurance of the string.
 	 * @param {string} toFind
 	 * @param {{moveToMatch?: boolean, useEnd?: boolean}} options both default to false
 	 */

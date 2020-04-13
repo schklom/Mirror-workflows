@@ -89,6 +89,8 @@ module.exports = [
 							expiresMinutes: userRequestCache.getTtl("user/"+fill[0], 1000*60)
 						})
 					}
+				} else if (error === constants.symbols.extractor_results.AGE_RESTRICTED) {
+					return render(403, "pug/age_gated.pug")
 				} else {
 					throw error
 				}

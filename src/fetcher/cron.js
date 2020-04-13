@@ -40,7 +40,6 @@ let backoffIntervals = [
 const maxErrorCount = 3;
 
 async function fetchNextFeed() {
-	debug('cron');
 	let feedSettings = await FeedRepo.getNextFeedInQueue();
 	if (!feedSettings) return;
 	debug('cron check', feedSettings);

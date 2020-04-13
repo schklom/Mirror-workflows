@@ -1,5 +1,6 @@
 const Nightmare = require('nightmare')
 // require('nightmare-load-filter')(Nightmare)
+const userAgent = process.env.USER_AGENT || 'Feedropolis RSS Generator';
 
 module.exports = function({
 	waitTime = -1,
@@ -7,6 +8,7 @@ module.exports = function({
 	url
 }) {
 	let p = Nightmare({ show: false });
+	p = p.useragent(userAgent);
 	// p.filter({ urls: [] }, (details, cb) => {
 	// 	console.log('~~~URL DETAILS~~~', details);
 	// 	return cb({ cancel: false })

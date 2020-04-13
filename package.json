@@ -6,7 +6,8 @@
     "watch-inner": "rm -rf dist/* && webpack --config webpack.config.dev.js --watch",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build && webpack --config webpack.config.prod.js",
-    "start": "node bin/server.js"
+    "start": "node bin/server.js",
+	"migrate": "node bin/migrate.js"
   },
   "keywords": [],
   "author": "",

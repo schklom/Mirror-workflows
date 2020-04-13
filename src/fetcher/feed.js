@@ -14,6 +14,7 @@ async function generateFeedFromSettings(settings) {
 	debug('generateFeedFromSettings', settings);
 	let html = await getHtml(settings);
 	html = await getFilteredHtml({ input: html });
+	debug('html filtered size', html.length);
 	let doc = await getDom(html);
 	// debug('dom', doc);
 	let feedData = extractDataXpath(doc, settings.selectors);

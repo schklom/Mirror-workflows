@@ -74,6 +74,8 @@ Bibliogram is now running on `0.0.0.0:10407`.
 
 See [Wiki:Installing](https://github.com/cloudrac3r/bibliogram/wiki/Installing) and [Wiki:Configuring](https://github.com/cloudrac3r/bibliogram/wiki/Configuring) for more details. Problems? [Wiki:Troubleshooting](https://github.com/cloudrac3r/bibliogram/wiki/Troubleshooting)
 
+You can also deploy on Heroku, though I personally would not recommend this. https://heroku.com/deploy?template=https://github.com/cloudrac3r/bibliogram
+
 ## User-facing endpoints
 
 - `/` - homepage

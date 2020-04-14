@@ -5,7 +5,7 @@ const constants = require("../lib/constants")
 const passthrough = require("./passthrough")
 
 const pinski = new Pinski({
-	port: constants.port,
+	port: +process.env.PORT || constants.port,
 	relativeRoot: __dirname,
 	basicCacheControl: {
 		exts: ["ttf", "woff2", "png", "jpg", "jpeg", "svg", "gif", "webmanifest", "ico"],

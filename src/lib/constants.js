@@ -127,6 +127,11 @@ let constants = {
 
 // Override values from config and export the result
 const md = require("mixin-deep")
-const config = require("../../config")
-constants = md(constants, config)
+if (process.env.BIBLIOGRAM_CONFIG) { // presence of environment variable BIBLIOGRAM_CONFIG overrides /config.js
+	const config = JSON.parse(process.env.BIBLIOGRAM_CONFIG)
+	constants = md(constants, config)
+} else {
+	const config = require("../../config")
+	constants = md(constants, config)
+}
 module.exports = constants

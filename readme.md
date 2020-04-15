@@ -1,12 +1,20 @@
 # README #
 
+## Introduction ##
+
+Feedropolis is a rss feed generator. It can take any site that is accessible directly via an URL, parse it's contents via XPATH and generate an Atom feed from that content.
+
+How to parse each site is selected by the user in a visual GUI. Feedropolis can even handle content that is rendered by javascript. The only requirement is a direct URL.
+
 ## Installation ##
 
 Deployment with docker is recommended
 
-- clone from gitlab
-- edit config file (see below)
-- use docker to deploy
+- Pre-requisite: you need to have have installed [docker](https://docs.docker.com/engine/install/debian/#install-using-the-convenience-script) and [docker-compose](https://docs.docker.com/compose/install/)
+- clone or download the repo from [gitlab](https://gitlab.com/stormking/feedropolis/)
+- edit the config (see below)
+- use docker to deploy: `docker-compose up -d` builds and starts the app including the database in the background
+- then open [localhost](http://localhost/) in the browser to access the UI
 
 ### Configuration:
 
@@ -14,6 +22,8 @@ All config settings are specified via ENV-vars.
 
 - with docker: set the variables in your docker service / docker-compose.yml
 - without docker: copy .env.sample to .env and edit that file
+
+ENV vars set in docker-compose.yaml override vars in the .env file.
 
 Config options:
 
@@ -23,7 +33,7 @@ DATABASE_URL - full uri to postgres database including name/pw/db
 BASE_URL - the external url how the app is reachable. required to build the feeds
 (example: http://localhost:8080)
 
-APP_PORT - internal port for listening to http connections
+APP_PORT - port for listening to http connections
 (example: 3000)
 
 DEBUG - for debug output, see npm debug package for details

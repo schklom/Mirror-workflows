@@ -29,6 +29,14 @@
 					<label>Max items per generated feed: </label>
 					<input type="number" min="1" max="500" step="1" v-model="edit.maxitems" />
 				</div>
+				<div class="pure-control-group">
+					<label>Create feed items from errors: </label>
+					<input type="checkbox" :value="true" v-model="edit.inserterrorsasitems" />
+				</div>
+				<div class="pure-control-group">
+					<label>Create error if no items are found: </label>
+					<input type="checkbox" :value="true" v-model="edit.noitemsiserror" />
+				</div>
 
 				<button class="pure-button" @click.prevent="save">✔ Save</button> -
 				<button class="pure-button" @click.prevent="refreshSecret">Refresh secret</button>  -
@@ -151,7 +159,9 @@ export default {
 				title: item.title,
 				description: item.description,
 				checkinterval: item.checkinterval,
-				maxitems: item.maxitems
+				maxitems: item.maxitems,
+				inserterrorsasitems: item.inserterrorsasitems,
+				noitemsiserror: item.noitemsiserror
 			};
 		},
 		async refreshSecret() {

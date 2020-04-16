@@ -46,6 +46,9 @@ async function fetchNextFeed() {
 	feedSettings.lastcheck = new Date();
 	try {
 		let feed = await generateFeedFromSettings(feedSettings);
+		if (feed.items.length === 0 && feedSettings.noitemsiserror) {
+			throw new Error('found no content in page');
+		}
 		for (let item of feed.items) {
 			await FeedItemRepo.insertIfNotExists(item, feedSettings.uid);
 		}
@@ -60,8 +63,23 @@ async function fetchNextFeed() {
 		if (feedSettings.errorcount > maxErrorCount) {
 			feedSettings.nextcheck = null;
 		}
+		if (feedSettings.inserterrorsasitems) {
+			let errorItem = createErrorItem(e, feedSettings);
+			await FeedItemRepo.insertIfNotExists(errorItem, feedSettings.uid);
+		}
 	}
 	await FeedRepo.updateFeed(feedSettings);
+}
+
+function createErrorItem(err, feedSettings) {
+	let link = feedSettings.url + '#error' + Date.now();
+	return {
+		id: link, //crypto.createHash('sha1').update(link).digest('hex'),
+		title: 'Error when retrieving feed',
+		link,
+		description: err.message,
+		date: new Date()
+	};
 }
 
 function updateNextCheck(feedSettings, error) {

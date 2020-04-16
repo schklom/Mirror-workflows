@@ -14,7 +14,9 @@ controller['POST /create'] = async (data, ctx) => {
 		log: { errors: [], infos: [] },
 		nextcheck: new Date(),
 		errorcount: 0,
-		checkinterval: 60 * 4
+		checkinterval: 60 * 4,
+		noitemsiserror: false,
+		inserterrorsasitems: true
 	}
 	let res = await FeedRepo.createFeed(e);
 	ctx.session.url = null;

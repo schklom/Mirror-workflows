@@ -1,3 +1,6 @@
+const constants = require("../constants")
+const db = require("../db")
+
 class RequestHistory {
 	/**
 	 * @param {string[]} tracked list of things that can be tracked
@@ -23,6 +26,9 @@ class RequestHistory {
 		const entry = this.store.get(key)
 		entry.lastRequestAt = Date.now()
 		entry.lastRequestSuccessful = success
+		if (constants.caching.db_request_history) {
+			db.prepare("INSERT INTO RequestHistory (type, success, timestamp) VALUES (?, ?, ?)").run(key, +entry.lastRequestSuccessful, entry.lastRequestAt)
+		}
 	}
 
 	export() {

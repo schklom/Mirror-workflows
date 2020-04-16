@@ -38,7 +38,18 @@ const deltas = new Map([
 			db.prepare("ALTER TABLE Users_New RENAME TO Users")
 				.run()
 		})()
+	}],
+	// version 2 to version 3
+	[3, function() {
+		db.transaction(() => {
+			db.prepare("DROP TABLE IF EXISTS RequestHistory")
+				.run()
+			db.prepare("CREATE TABLE RequestHistory (type TEXT NOT NULL, success INTEGER NOT NULL, timestamp INTEGER NOT NULL)")
+				.run()
+		})()
 	}]
+
+
 ])
 
 module.exports = async function() {

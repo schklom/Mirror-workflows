@@ -64,7 +64,8 @@ let constants = {
 		updater_cache_time: 2*60*1000,
 		cache_sweep_interval: 3*60*1000,
 		db_user_id: true,
-		db_post_n3: true
+		db_post_n3: true,
+		db_request_history: false
 	},
 
 	// Instagram uses this stuff. This shouldn't be changed, except to fix a bug that hasn't yet been fixed upstream.
@@ -122,7 +123,7 @@ let constants = {
 		}
 	},
 
-	database_version: 2
+	database_version: 3
 }
 
 // Override values from config and export the result

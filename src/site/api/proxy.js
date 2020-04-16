@@ -38,7 +38,7 @@ async function proxyResource(url, suggestedHeaders = {}, refreshCallback = null)
 	for (const key of ["accept", "accept-encoding", "accept-language", "range"]) {
 		if (suggestedHeaders[key]) headersToSend[key] = suggestedHeaders[key]
 	}
-	const sent = request(url, {headers: headersToSend})
+	const sent = request(url, {headers: headersToSend}, {log: false})
 	const stream = await sent.stream()
 	const response = await sent.response()
 	// console.log(response.status, response.headers)

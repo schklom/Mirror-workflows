@@ -166,8 +166,12 @@ class TimelineEntry extends TimelineBaseMethods {
 		if (this.getType() !== constants.symbols.TYPE_GALLERY) {
 			return this.children = [new TimelineChild(this.data)]
 		}
-		// Fetch children if needed
-		if (!this.data.edge_sidecar_to_children) {
+		/** @type {import("../types").Edges<import("../types").GraphChildN1>|import("../types").Edges<import("../types").GraphChildVideoN3>} */
+		// @ts-ignore
+		const children = this.data.edge_sidecar_to_children
+		// It's a gallery, so we may need to fetch its children
+		// We need to fetch children if one of them is a video, because N1 has no video_url.
+		if (!children || !children.edges.length || children.edges.some(edge => edge.node.is_video && !edge.node.video_url)) {
 			await this.update()
 		}
 		// Create children

@@ -194,7 +194,24 @@
  * @typedef {TimelineEntryN1 & GraphSidecarN1Diff} GraphSidecarN1
  *
  * @typedef GraphSidecarN1Diff
+ * @property {Edges<GraphChildN1>} edge_sidecar_to_children
  * @property {"GraphSidecar"} __typename
+ */
+
+/**
+ * @typedef GraphChildN1
+ * @property {string} __typename
+ * @property {string} id
+ * @property {string} shortcode interestingly, each child of a post has a different shortcode.
+ * @property {Dimensions} dimensions
+ * @property {string} display_url
+ * @property {any} gating_info todo: discover
+ * @property {any} fact_check_overall_rating todo: discover
+ * @property {any} fact_check_information todo: discover
+ * @property {string} media_preview base64 of something
+ * @property {BasicOwner} owner
+ * @property {boolean} is_video
+ * @property {string} accessibility_caption
  */
 
 /**

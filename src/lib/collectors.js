@@ -87,6 +87,14 @@ async function fetchUser(username, context) {
  */
 function fetchUserFromHTML(username) {
 	return userRequestCache.getOrFetch("user/"+username, false, true, () => {
+		if (constants.caching.self_blocked_status.enabled) {
+			if (history.store.has("user")) {
+				const entry = history.store.get("user")
+				if (!entry.lastRequestSuccessful && Date.now() < entry.lastRequestAt + constants.caching.self_blocked_status.time) {
+					return Promise.reject(constants.symbols.RATE_LIMITED)
+				}
+			}
+		}
 		return switcher.request("user_html", `https://www.instagram.com/${username}/`, async res => {
 			if (res.status === 301) throw constants.symbols.ENDPOINT_OVERRIDDEN
 			if (res.status === 302) throw constants.symbols.INSTAGRAM_DEMANDS_LOGIN
@@ -110,7 +118,7 @@ function fetchUserFromHTML(username) {
 						const existing = db.prepare("SELECT created, updated_version FROM Users WHERE username = ?").get(user.data.username)
 						db.prepare(
 							"REPLACE INTO Users (username,  user_id,  created,  updated,  updated_version,  biography,  post_count,  following_count,  followed_by_count,  external_url,  full_name,  is_private,  is_verified,  profile_pic_url) VALUES "
-												+"(@username, @user_id, @created, @updated, @updated_version, @biography, @post_count, @following_count, @followed_by_count, @external_url, @full_name, @is_private, @is_verified, @profile_pic_url)"
+							                 +"(@username, @user_id, @created, @updated, @updated_version, @biography, @post_count, @following_count, @followed_by_count, @external_url, @full_name, @is_private, @is_verified, @profile_pic_url)"
 						).run({
 							username: user.data.username,
 							user_id: user.data.id,

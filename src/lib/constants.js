@@ -11,6 +11,11 @@ let constants = {
 	// If you are using nginx to make Bibliogram accessible on port 80/443, do NOT write a port here.
 	// For example, "https://bibliogram.art"
 	website_origin: "http://localhost:10407",
+	// IP address to bind to.
+	// "0.0.0.0" will make the server reachable on all IPv4 interfaces.
+	// "::" will make the server reachable on all IPv6 interfaces, and maybe also IPv4. (https://nodejs.org/api/net.html#net_server_listen_port_host_backlog_callback)
+	// If you run nginx, you must change the nginx config instead.
+	bind_ip: "0.0.0.0",
 	// Port to actually run the webserver on.
 	port: 10407,
 	// You MUST read /src/site/pug/privacy.pug.template before changing has_privacy_policy!

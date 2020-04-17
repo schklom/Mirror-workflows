@@ -6,6 +6,7 @@ const passthrough = require("./passthrough")
 
 const pinski = new Pinski({
 	port: +process.env.PORT || constants.port,
+	ip: constants.bind_ip,
 	relativeRoot: __dirname,
 	basicCacheControl: {
 		exts: ["ttf", "woff2", "png", "jpg", "jpeg", "svg", "gif", "webmanifest", "ico"],

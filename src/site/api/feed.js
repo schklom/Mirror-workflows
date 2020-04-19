@@ -24,7 +24,7 @@ module.exports = [
 					statusCode: 200,
 					contentType: data.contentType,
 					headers: {
-						"Cache-Control": `max-age=${userRequestCache.getTtl("user/"+user.data.username, 1000)}`
+						"Cache-Control": `public, max-age=${userRequestCache.getTtl("user/"+user.data.username, 1000)}`
 					},
 					content: data.content
 				}
@@ -36,11 +36,12 @@ module.exports = [
 						message: "This user doesn't exist.",
 						withInstancesLink: false
 					})
-				} else if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN) {
+				} else if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN || error === constants.symbols.RATE_LIMITED) {
 					return {
 						statusCode: 503,
 						contentType: "text/html",
 						headers: {
+							"Cache-Control": `public, max-age=${userRequestCache.getTtl("user/"+fill[0], 1000)}`,
 							"Retry-After": userRequestCache.getTtl("user/"+fill[0], 1000)
 						},
 						content: pugCache.get("pug/blocked.pug").web({

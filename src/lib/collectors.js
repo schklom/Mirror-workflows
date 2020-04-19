@@ -86,15 +86,15 @@ async function fetchUser(username, context) {
  * @returns {Promise<import("./structures/User")>}
  */
 function fetchUserFromHTML(username) {
-	return userRequestCache.getOrFetch("user/"+username, false, true, () => {
-		if (constants.caching.self_blocked_status.enabled) {
-			if (history.store.has("user")) {
-				const entry = history.store.get("user")
-				if (!entry.lastRequestSuccessful && Date.now() < entry.lastRequestAt + constants.caching.self_blocked_status.time) {
-					return Promise.reject(constants.symbols.RATE_LIMITED)
-				}
+	if (constants.caching.self_blocked_status.enabled) {
+		if (history.store.has("user")) {
+			const entry = history.store.get("user")
+			if (!entry.lastRequestSuccessful && Date.now() < entry.lastRequestAt + constants.caching.self_blocked_status.time) {
+				return Promise.reject(constants.symbols.RATE_LIMITED)
 			}
 		}
+	}
+	return userRequestCache.getOrFetch("user/"+username, false, true, () => {
 		return switcher.request("user_html", `https://www.instagram.com/${username}/`, async res => {
 			if (res.status === 301) throw constants.symbols.ENDPOINT_OVERRIDDEN
 			if (res.status === 302) throw constants.symbols.INSTAGRAM_DEMANDS_LOGIN

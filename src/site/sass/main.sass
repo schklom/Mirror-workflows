@@ -87,20 +87,26 @@ body
 			font-weight: normal
 
 		.bio
+			margin: 20px 0px
 			unicode-bidi: plaintext
 
 		.profile-counter
 			line-height: 1.3
 
+			&.not-available
+				font-style: italic
+
 			.count
 				font-weight: bold
 
 		.website
+			margin: 20px 0px
+
 			a, a:visited
 				color: $main-theme-link-color
 
 		.links
-			margin-top: 20px
+			margin: 15px 0px
 			display: flex
 			flex-wrap: wrap
 			justify-content: center
@@ -113,9 +119,6 @@ body
 
 			> *
 				margin: 5px
-
-		> *:last-child
-			margin-bottom: 10px // because padding-bottom on parent doesn't seem to work.
 
 .timeline
 	--image-size: 260px

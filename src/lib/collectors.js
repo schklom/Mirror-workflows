@@ -173,11 +173,11 @@ function updateProfilePictureFromReel(userID) {
 		const profilePicURL = result.reel.user.profile_pic_url
 		if (!profilePicURL) throw constants.symbols.NOT_FOUND
 		db.prepare("UPDATE Users SET profile_pic_url = ? WHERE user_id = ?").run(profilePicURL, userID)
-		for (const user of userRequestCache.cache.values()) {
+		for (const entry of userRequestCache.cache.values()) {
 			// yes, data.data is correct.
-			if (user.data.data.id === userID) {
-				user.data.data.profile_pic_url = profilePicURL
-				user.data.computeProxyProfilePic()
+			if (entry.data && entry.data.data && entry.data.data.id === userID) {
+				entry.data.data.profile_pic_url = profilePicURL
+				entry.data.computeProxyProfilePic()
 				break // stop checking entries from the cache since we won't find any more
 			}
 		}

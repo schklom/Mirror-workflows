@@ -4,6 +4,7 @@ const config = require("../../../config")
 const TimelineEntry = require("./TimelineEntry")
 const InstaCache = require("../cache")
 const collectors = require("../collectors")
+const {getFeedSetup} = require("../utils/feed")
 require("../testimports")(constants, collectors, TimelineEntry, InstaCache)
 
 /** @param {any[]} edges */
@@ -55,24 +56,8 @@ class Timeline {
 	}
 
 	async fetchFeed() {
-		// we likely cannot use full_name here - reel fallback would make the feed title inconsistent, leading to confusing experience
-		const usedName = `@${this.user.data.username}`
-		const feed = new Feed({
-			title: usedName,
-			description: this.user.data.biography,
-			id: `bibliogram:user/${this.user.data.username}`,
-			link: `${constants.website_origin}/u/${this.user.data.username}`,
-			feedLinks: {
-				rss: `${constants.website_origin}/u/${this.user.data.username}/rss.xml`,
-				atom: `${constants.website_origin}/u/${this.user.data.username}/atom.xml`
-			},
-			image: constants.website_origin+this.user.proxyProfilePicture,
-			updated: new Date(this.user.cachedAt),
-			author: {
-				name: usedName,
-				link: `${constants.website_origin}/u/${this.user.data.username}`
-			}
-		})
+		const setup = getFeedSetup(this.user.data.username, this.user.data.biography, constants.website_origin+this.user.proxyProfilePicture, new Date(this.user.cachedAt))
+		const feed = new Feed(setup)
 		const page = this.pages[0] // only get posts from first page
 		await Promise.all(page.map(item =>
 			item.fetchFeedData().then(feedData => feed.addItem(feedData))

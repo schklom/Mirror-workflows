@@ -29,6 +29,10 @@ subdirs("pug", async (err, dirs) => {
 	pinski.muteLogsStartingWith("/videoproxy")
 	pinski.muteLogsStartingWith("/static")
 
+	for (const route of constants.additional_routes) {
+		pinski.addRoute(route.web, route.local, route.type)
+	}
+
 	if (constants.tor.enabled) {
 		await require("../lib/utils/tor") // make sure tor state is known before going further
 	}

@@ -245,7 +245,7 @@ class TimelineEntry extends TimelineBaseMethods {
 				Readers should display the description as HTML rather than using the media enclosure.
 				enclosure: {
 					url: this.data.display_url,
-					type: "image/jpeg" //TODO: can instagram have PNGs? everything is JPEG according to https://medium.com/@autolike.it/how-to-avoid-low-res-thumbnails-on-instagram-android-problem-bc24f0ed1c7d
+					type: "image/jpeg" // Instagram only has JPEGs as far as I can tell
 				}
 			*/
 		}

@@ -1,4 +1,4 @@
-//- Needs user, followerCountsAvailable, url, constants, website_origin, display_feed_validation_buttons
+//- Needs user, followerCountsAvailable, url, constants
 
 include includes/timeline_page.pug
 include includes/next_page_button.pug
@@ -17,12 +17,12 @@ html
 		include includes/head
 		script(src="/static/js/pagination.js" type="module")
 		script(src="/static/js/post_overlay.js" type="module")
-		meta(property="og:url" content=`${website_origin}/u/${user.data.username}`)
+		meta(property="og:url" content=`${constants.website_origin}/u/${user.data.username}`)
 		meta(property="og:type" content="profile")
 		meta(property="og:title" content=(user.data.full_name || user.data.username))
 		if user.data.biography
 			meta(property="og:description" content=user.data.biography)
-		meta(property="og:image" content=`${website_origin}${user.proxyProfilePicture}`)
+		meta(property="og:image" content=`${constants.website_origin}${user.proxyProfilePicture}`)
 		meta(property="og:image:width" content=150)
 		meta(property="og:image:height" content=150)
 		meta(property="og:image:type" content="image/jpeg")
@@ -58,9 +58,9 @@ html
 					else
 						div.profile-counter.not-available Followers not available.
 					div.links
-						if constants.settings.rss_enabled
-							+feed_link("RSS", "rss", user.data.username, "application/rss+xml", display_feed_validation_buttons)
-							+feed_link("Atom", "atom", user.data.username, "application/atom+xml", display_feed_validation_buttons)
+						if constants.feeds.enabled && constants.feeds.display_links
+							+feed_link("RSS", "rss", user.data.username, "application/rss+xml", constants.feeds.display_validation_links)
+							+feed_link("Atom", "atom", user.data.username, "application/atom+xml", constants.feeds.display_validation_links)
 						a(rel="noreferrer noopener" href=`https://www.instagram.com/${user.data.username}` target="_blank") instagram.com
 
 			- const hasPosts = !user.data.is_private && user.timeline.pages.length && user.timeline.pages[0].length

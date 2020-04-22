@@ -69,8 +69,7 @@ module.exports = [
 					await user.timeline.fetchUpToPage(page - 1)
 				}
 				const followerCountsAvailable = !(user.constructor.name === "ReelUser" && user.following === 0 && user.followedBy === 0)
-				const {website_origin, settings: {display_feed_validation_buttons}} = constants
-				return render(200, "pug/user.pug", {url, user, followerCountsAvailable, constants, website_origin, display_feed_validation_buttons})
+				return render(200, "pug/user.pug", {url, user, followerCountsAvailable, constants})
 			}).catch(error => {
 				if (error === constants.symbols.NOT_FOUND || error === constants.symbols.ENDPOINT_OVERRIDDEN) {
 					return render(404, "pug/friendlyerror.pug", {

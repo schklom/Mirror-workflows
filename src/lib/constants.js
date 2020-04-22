@@ -39,9 +39,36 @@ let constants = {
 
 	allow_user_from_reel: "preferForRSS", // one of: "never", "fallback", "prefer", "onlyPreferSaved", "preferForRSS"
 
+	feeds: {
+		// Whether feeds are enabled.
+		enabled: true,
+		// Whether to display links to feeds on pages.
+		display_links: true,
+		// Whether to display the `v!` link to validate a feed.
+		display_validation_links: false,
+		// This feed message field allows you to insert a custom message into all RSS feeds to inform users of important changes,
+		// such as feeds being disabled forever on that instance.
+		feed_message: {
+			enabled: false,
+			// If the feed message is enabled, then `id` MUST be supplied.
+			// Please set it to `bibliogram:feed_announcement/your.domain/1`
+			// replacing `your.domain` with the address of your own domain,
+			// and incrementing `1` every time you make a new announcement (to make sure the IDs are unique).
+			id: "",
+			// The timestamp that you disabled feeds at. For example, if you disabled feeds forever starting at 2020-04-01T12:00:00 UTC,
+			// you should set this to 1585742400000.
+			timestamp: 0,
+			// The title of the feed item.
+			title: "Important message from Bibliogram",
+			// The text of the message.
+			message: "There is an important message about feeds on this Bibliogram instance. Please visit this link to read the message: ",
+			// The link address.
+			link: "https://your.domain/feedannouncement"
+		},
+		feed_disabled_max_age: 2*24*60*60 // 2 days
+	},
+
 	settings: {
-		rss_enabled: true,
-		display_feed_validation_buttons: false,
 		enable_updater_page: false
 	},
 
@@ -131,6 +158,8 @@ let constants = {
 			ASSISTANT: Symbol("ASSISTANT")
 		}
 	},
+
+	additional_routes: [],
 
 	database_version: 3
 }

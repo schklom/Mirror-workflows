@@ -175,9 +175,13 @@ function loadPostOverlay(shortcode, stateChangeType) {
 							canInteractWithNavigation = false
 							var futureShortcode = entry.getPreviousShortcode()
 						}
-						await loadPostOverlay(futureShortcode, "replace")
-						const newOverlay = postOverlays.slice(-1)[0]
-						if (newOverlay === overlay) { // was cancelled
+						if (futureShortcode) {
+							await loadPostOverlay(futureShortcode, "replace")
+							const newOverlay = postOverlays.slice(-1)[0]
+							if (newOverlay === overlay) { // was cancelled
+								canInteractWithNavigation = true
+							}
+						} else {
 							canInteractWithNavigation = true
 						}
 					}

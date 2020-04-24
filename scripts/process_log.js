@@ -85,7 +85,7 @@ class DateCollection {
 }
 
 // ip, date, method, path, status, bytes, userAgent
-const regex = /^([^ ]+) - - \[([^\]]+)\] "([A-Z]+) ([^"]+) HTTP\/(?:1.0|1.1|2.0)" ([0-9]+) ([0-9]+) "([^"]+)"$/
+const regex = /^([^ ]+) - - \[([^\]]+)\] "([A-Z]+) ([^"]+) HTTP\/(?:1.0|1.1|2.0)" ([0-9]+) ([0-9]+) "([^"]*)"$/
 
 function parseLine(line) {
 	const result = line.match(regex)

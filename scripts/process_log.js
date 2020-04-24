@@ -89,14 +89,20 @@ const regex = /^([^ ]+) - - \[([^\]]+)\] "([A-Z]+) ([^"]+) HTTP\/(?:1.0|1.1|2.0)
 
 function parseLine(line) {
 	const result = line.match(regex)
-	return {
-		ip: result[1],
-		date: result[2],
-		method: result[3],
-		path: result[4],
-		status: result[5],
-		bytes: +result[6],
-		userAgent: result[7]
+	if (!result) {
+		console.log("Line didn't match regular expression:")
+		console.log(line)
+		return null
+	} else {
+		return {
+			ip: result[1],
+			date: result[2],
+			method: result[3],
+			path: result[4],
+			status: result[5],
+			bytes: +result[6],
+			userAgent: result[7]
+		}
 	}
 }
 
@@ -124,6 +130,7 @@ let dateCollection = null
 
 reader.on("line", line => {
 	const parsed = parseLine(line)
+	if (!parsed) return
 	const dateObject = new Date(parsed.date.replace(":", " "))
 
 	//console.log(parsed)

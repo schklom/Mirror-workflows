@@ -64,7 +64,7 @@ const innerMap = new Map()
 	})
 	addVersion("1.2", {
 		settings: {
-			rssEnabled: constants.settings.rss_enabled
+			rssEnabled: constants.feeds.enabled
 		}
 	})
 	addVersion("1.3", {

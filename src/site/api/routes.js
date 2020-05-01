@@ -13,7 +13,7 @@ module.exports = [
 	{
 		route: "/", methods: ["GET"], code: async () => {
 			return render(200, "pug/home.pug", {
-				rssEnabled: constants.settings.rss_enabled,
+				rssEnabled: constants.feeds.enabled,
 				allUnblocked: history.testNoneBlocked(),
 				torAvailable: switcher.canUseTor(),
 				hasPrivacyPolicy: constants.has_privacy_policy

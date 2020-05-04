@@ -1,0 +1,152 @@
+@mixin medium-border
+	border-color: #aaa
+
+@mixin full-border
+	border-color: #888
+
+@mixin outside-shadow
+	box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.2)
+
+@mixin inside-shadow
+	box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.2) inset
+
+@mixin curve-in
+	background: linear-gradient(to bottom, #efebe9, #faf8f7)
+
+@mixin curve-out
+	background: linear-gradient(to bottom, #fff 20%, #efeceb)
+
+@mixin curve-out-major
+	background: linear-gradient(to bottom, #fff 10%, #e4e2e0)
+
+@mixin disabled
+	background-color: #dfd6cb
+	color: #606060
+
+@mixin acts-like-button
+	&:not(:disabled)
+		cursor: pointer
+		@include curve-out
+
+		&:hover, &:focus
+			@include medium-border
+			@include outside-shadow
+
+		&:active
+			@include full-border
+			@include inside-shadow
+			@include curve-in
+
+fieldset
+	border: none
+	padding: 55px 0px 0px 0px
+	position: relative
+
+	@media screen and (max-width: 400px)
+		padding-top: 70px
+
+	legend
+		position: absolute
+		top: 5px
+		left: 0px
+		width: 100%
+		font-size: 28px
+		font-weight: bold
+		padding: 0
+		border-bottom: 1px solid #333
+		line-height: 1.56
+
+		@media screen and (max-width: 400px)
+			margin-top: 15px
+
+
+.field-row
+	line-height: 1
+	display: flex
+	align-items: center
+	justify-content: space-between
+	position: relative
+	padding-bottom: 5px
+	margin-bottom: 5px
+	border-bottom: 1px solid #bbb
+
+	@media screen and (max-width: 400px)
+		flex-direction: column
+		align-items: start
+		padding-bottom: 15px
+
+	.description
+		padding: 8px 8px 8px 0px
+
+button, select, input, .checkbox-row .pill
+	font-family: inherit
+	font-size: inherit
+	color: #222
+	border: 1px solid #ccc
+	border-radius: 4px
+	background-color: #fff
+	padding: 8px
+	line-height: 1
+
+	&::placeholder
+		font-style: italic
+
+	&:disabled
+		@include disabled
+
+input[type="text"]
+	width: 200px
+
+select
+	padding: 4px 6px 4px 4px
+
+input:not(:disabled)
+	&:hover
+		@include medium-border
+
+	&:focus
+		@include full-border
+		@include outside-shadow
+
+select:not(:disabled)
+	&:hover, &:focus
+		@include medium-border
+		@include outside-shadow
+		@include curve-out
+
+button
+	@include acts-like-button
+
+.checkbox-row
+	.pill
+		display: flex
+		align-items: center
+		user-select: none
+
+	.fake-checkbox
+		-webkit-appearance: none
+		background-color: white
+		width: 16px
+		height: 16px
+		padding: 0px
+		border: 1px solid #666
+		border-radius: 3px
+		margin-left: 8px
+		position: relative
+		outline: none
+
+	.checkbox
+		display: none
+
+		&:checked + .pill .fake-checkbox
+			background: center center / contain url(/static/img/tick.svg)
+
+		&:disabled + .pill
+			@include disabled
+
+			.fake-checkbox
+				@include disabled
+
+		&.checkbox:not(:disabled) + .pill
+			@include acts-like-button
+			cursor: pointer

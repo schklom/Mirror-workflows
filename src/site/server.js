@@ -22,6 +22,7 @@ subdirs("pug", async (err, dirs) => {
 
 	pinski.setNotFoundTarget("/404")
 	pinski.addRoute("/static/css/main.css", "sass/main.sass", "sass")
+	pinski.addRoute("/settings", "pug/settings.pug", "pug")
 	pinski.addPugDir("pug", dirs)
 	pinski.addSassDir("sass")
 	pinski.addStaticHashTableDir("html/static/js")

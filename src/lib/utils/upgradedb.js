@@ -47,9 +47,20 @@ const deltas = new Map([
 			db.prepare("CREATE TABLE RequestHistory (type TEXT NOT NULL, success INTEGER NOT NULL, timestamp INTEGER NOT NULL)")
 				.run()
 		})()
+	}],
+	// version 3 to version 4
+	[4, function() {
+		db.transaction(() => {
+			db.prepare("DROP TABLE IF EXISTS UserSettings")
+				.run()
+			db.prepare(
+				"CREATE TABLE UserSettings (token TEXT NOT NULL, created INTEGER NOT NULL, language TEXT NOT NULL, show_comments INTEGER NOT NULL, link_hashtags INTEGER NOT NULL"
+				+", spa INTEGER NOT NULL, theme TEXT NOT NULL, caption_side TEXT NOT NULL, display_alt INTEGER NOT NULL"
+				+", PRIMARY KEY (token))"
+			)
+				.run()
+		})()
 	}]
-
-
 ])
 
 module.exports = async function() {

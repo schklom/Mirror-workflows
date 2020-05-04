@@ -68,6 +68,45 @@ let constants = {
 		feed_disabled_max_age: 2*24*60*60 // 2 days
 	},
 
+	user_settings: [
+		{
+			name: "language",
+			default: "English (International)",
+			boolean: false,
+			replaceEmptyWithDefault: true // set this to false if the control is a checkbox and is not disabled
+		},{
+			name: "show_comments",
+			default: "",
+			boolean: true,
+			replaceEmptyWithDefault: true
+		},{
+			name: "link_hashtags",
+			default: "",
+			boolean: true,
+			replaceEmptyWithDefault: true
+		},{
+			name: "spa",
+			default: "on",
+			boolean: true,
+			replaceEmptyWithDefault: true
+		},{
+			name: "theme",
+			default: "Classic",
+			boolean: false,
+			replaceEmptyWithDefault: true
+		},{
+			name: "caption_side",
+			default: "Left (Bibliogram)",
+			boolean: false,
+			replaceEmptyWithDefault: true
+		},{
+			name: "display_alt",
+			default: "",
+			boolean: true,
+			replaceEmptyWithDefault: true
+		}
+	],
+
 	settings: {
 		enable_updater_page: false
 	},
@@ -161,7 +200,7 @@ let constants = {
 
 	additional_routes: [],
 
-	database_version: 3
+	database_version: 4
 }
 
 // Override values from config and export the result

@@ -23,7 +23,6 @@ subdirs("pug", async (err, dirs) => {
 	pinski.setNotFoundTarget("/404")
 	pinski.addRoute("/static/css/main.css", "sass/main.sass", "sass")
 	pinski.addPugDir("pug", dirs)
-	pinski.addAPIDir("html/static/js/templates/api")
 	pinski.addSassDir("sass")
 	pinski.muteLogsStartingWith("/imageproxy")
 	pinski.muteLogsStartingWith("/videoproxy")

@@ -1,7 +1,7 @@
 const constants = require("../../lib/constants")
 const switcher = require("../../lib/utils/torswitcher")
 const {fetchUser, getOrFetchShortcode, userRequestCache, history} = require("../../lib/collectors")
-const {render, redirect} = require("pinski/plugins")
+const {render, redirect, getStaticURL} = require("pinski/plugins")
 const {pugCache} = require("../passthrough")
 
 /** @param {import("../../lib/structures/TimelineEntry")} post */
@@ -86,7 +86,8 @@ module.exports = [
 							"Retry-After": userRequestCache.getTtl("user/"+fill[0], 1000)
 						},
 						content: pugCache.get("pug/blocked.pug").web({
-							expiresMinutes: userRequestCache.getTtl("user/"+fill[0], 1000*60)
+							expiresMinutes: userRequestCache.getTtl("user/"+fill[0], 1000*60),
+							getStaticURL
 						})
 					}
 				} else if (error === constants.symbols.extractor_results.AGE_RESTRICTED) {

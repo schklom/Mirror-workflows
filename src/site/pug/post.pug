@@ -7,7 +7,7 @@ html
 	head
 		title= title
 		include includes/head
-		script(type="module" src="/static/js/post_overlay.js")
+		script(type="module" src=getStaticURL("html", "/static/js/post_overlay.js"))
 		meta(property="og:url" content=`${website_origin}/p/${post.data.shortcode}`)
 		meta(property="og:type" content="article")
 		- let firstEntry = post.children[0]

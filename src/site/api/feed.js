@@ -2,7 +2,7 @@ const constants = require("../../lib/constants")
 const {Feed} = require("feed")
 const {getFeedSetup} = require("../../lib/utils/feed")
 const {fetchUser, userRequestCache} = require("../../lib/collectors")
-const {render} = require("pinski/plugins")
+const {render, getStaticURL} = require("pinski/plugins")
 const {pugCache} = require("../passthrough")
 const {compile} = require("pug")
 
@@ -80,7 +80,8 @@ module.exports = [
 								"Retry-After": userRequestCache.getTtl("user/"+fill[0], 1000)
 							},
 							content: pugCache.get("pug/blocked.pug").web({
-								expiresMinutes: userRequestCache.getTtl("user/"+fill[0], 1000*60)
+								expiresMinutes: userRequestCache.getTtl("user/"+fill[0], 1000*60),
+								getStaticURL
 							})
 						}
 					} else if (error === constants.symbols.extractor_results.AGE_RESTRICTED) {

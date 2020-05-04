@@ -15,8 +15,8 @@ html
 		else
 			title= `@${user.data.username} | Bibliogram`
 		include includes/head
-		script(src="/static/js/pagination.js" type="module")
-		script(src="/static/js/post_overlay.js" type="module")
+		script(src=getStaticURL("html", "/static/js/pagination.js") type="module")
+		script(src=getStaticURL("html", "/static/js/post_overlay.js") type="module")
 		meta(property="og:url" content=`${constants.website_origin}/u/${user.data.username}`)
 		meta(property="og:type" content="profile")
 		meta(property="og:title" content=(user.data.full_name || user.data.username))

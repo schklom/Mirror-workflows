@@ -24,6 +24,7 @@ subdirs("pug", async (err, dirs) => {
 	pinski.addRoute("/static/css/main.css", "sass/main.sass", "sass")
 	pinski.addPugDir("pug", dirs)
 	pinski.addSassDir("sass")
+	pinski.addStaticHashTableDir("html/static/js")
 	pinski.muteLogsStartingWith("/imageproxy")
 	pinski.muteLogsStartingWith("/videoproxy")
 	pinski.muteLogsStartingWith("/static")

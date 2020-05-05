@@ -88,7 +88,7 @@ let constants = {
 			name: "spa",
 			default: "on",
 			boolean: true,
-			replaceEmptyWithDefault: true
+			replaceEmptyWithDefault: false
 		},{
 			name: "theme",
 			default: "classic",

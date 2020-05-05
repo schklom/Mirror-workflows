@@ -1,4 +1,4 @@
-//- Needs website_origin, title, post
+//- Needs website_origin, title, post, settings
 
 include includes/post
 
@@ -7,7 +7,8 @@ html
 	head
 		title= title
 		include includes/head
-		script(type="module" src=getStaticURL("html", "/static/js/post_overlay.js"))
+		if settings.spa
+			script(type="module" src=getStaticURL("html", "/static/js/post_overlay.js"))
 		meta(property="og:url" content=`${website_origin}/p/${post.data.shortcode}`)
 		meta(property="og:type" content="article")
 		- let firstEntry = post.children[0]

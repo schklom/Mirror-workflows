@@ -1,4 +1,4 @@
-//- Needs user, followerCountsAvailable, url, constants
+//- Needs user, followerCountsAvailable, url, constants, settings
 
 include includes/timeline_page.pug
 include includes/next_page_button.pug
@@ -15,7 +15,10 @@ html
 		else
 			title= `@${user.data.username} | Bibliogram`
 		include includes/head
-		script(src=getStaticURL("html", "/static/js/post_overlay.js") type="module")
+		if settings.spa
+			script(src=getStaticURL("html", "/static/js/post_overlay.js") type="module")
+		else
+			script(src=getStaticURL("html", "/static/js/pagination.js") type="module")
 		meta(property="og:url" content=`${constants.website_origin}/u/${user.data.username}`)
 		meta(property="og:type" content="profile")
 		meta(property="og:title" content=(user.data.full_name || user.data.username))

@@ -3,6 +3,7 @@ const switcher = require("../../lib/utils/torswitcher")
 const {fetchUser, getOrFetchShortcode, userRequestCache, history} = require("../../lib/collectors")
 const {render, redirect, getStaticURL} = require("pinski/plugins")
 const {pugCache} = require("../passthrough")
+const {getSettings} = require("./utils/getsettings")
 
 /** @param {import("../../lib/structures/TimelineEntry")} post */
 function getPageTitle(post) {
@@ -57,7 +58,7 @@ module.exports = [
 		}
 	},
 	{
-		route: `/u/(${constants.external.username_regex})`, methods: ["GET"], code: ({url, fill}) => {
+		route: `/u/(${constants.external.username_regex})`, methods: ["GET"], code: ({req, url, fill}) => {
 			if (fill[0] !== fill[0].toLowerCase()) { // some capital letters
 				return Promise.resolve(redirect(`/u/${fill[0].toLowerCase()}`, 301))
 			}
@@ -69,7 +70,10 @@ module.exports = [
 					await user.timeline.fetchUpToPage(page - 1)
 				}
 				const followerCountsAvailable = !(user.constructor.name === "ReelUser" && user.following === 0 && user.followedBy === 0)
-				return render(200, "pug/user.pug", {url, user, followerCountsAvailable, constants})
+
+				const settings = getSettings(req)
+
+				return render(200, "pug/user.pug", {url, user, followerCountsAvailable, constants, settings})
 			}).catch(error => {
 				if (error === constants.symbols.NOT_FOUND || error === constants.symbols.ENDPOINT_OVERRIDDEN) {
 					return render(404, "pug/friendlyerror.pug", {
@@ -173,15 +177,19 @@ module.exports = [
 		}
 	},
 	{
-		route: `/p/(${constants.external.shortcode_regex})`, methods: ["GET"], code: ({fill}) => {
+		route: `/p/(${constants.external.shortcode_regex})`, methods: ["GET"], code: ({req, fill}) => {
 			return getOrFetchShortcode(fill[0]).then(async post => {
 				await post.fetchChildren()
 				await post.fetchExtendedOwnerP() // serial await is okay since intermediate fetch result is cached
 				if (post.isVideo()) await post.fetchVideoURL()
+
+				const settings = getSettings(req)
+
 				return render(200, "pug/post.pug", {
 					title: getPageTitle(post),
 					post,
-					website_origin: constants.website_origin
+					website_origin: constants.website_origin,
+					settings
 				})
 			}).catch(error => {
 				if (error === constants.symbols.NOT_FOUND) {

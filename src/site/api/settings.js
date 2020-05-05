@@ -1,13 +1,16 @@
 const constants = require("../../lib/constants")
 const {render, redirect} = require("pinski/plugins")
+const {getSettings} = require("./utils/getsettings")
 const crypto = require("crypto")
 const db = require("../../lib/db")
 
 module.exports = [
 	{
-		route: "/settings", methods: ["GET"], code: async ({url}) => {
+		route: "/settings", methods: ["GET"], code: async ({req, url}) => {
+			const settings = getSettings(req)
+			// console.log(settings)
 			const saved = url.searchParams.has("saved")
-			return render(200, "pug/settings.pug", {saved})
+			return render(200, "pug/settings.pug", {saved, settings})
 		}
 	},
 	{
@@ -31,6 +34,7 @@ module.exports = [
 				}
 				prepared[setting.name] = valueCorrectType
 			}
+			// console.log(prepared)
 			const checkPrepared = db.prepare("SELECT token FROM UserSettings WHERE token = ?")
 			do {
 				prepared.token = crypto.randomBytes(16).toString("hex")

@@ -71,7 +71,7 @@ let constants = {
 	user_settings: [
 		{
 			name: "language",
-			default: "English (International)",
+			default: "en",
 			boolean: false,
 			replaceEmptyWithDefault: true // set this to false if the control is a checkbox and is not disabled
 		},{
@@ -91,12 +91,12 @@ let constants = {
 			replaceEmptyWithDefault: true
 		},{
 			name: "theme",
-			default: "Classic",
+			default: "classic",
 			boolean: false,
 			replaceEmptyWithDefault: true
 		},{
 			name: "caption_side",
-			default: "Left (Bibliogram)",
+			default: "left",
 			boolean: false,
 			replaceEmptyWithDefault: true
 		},{

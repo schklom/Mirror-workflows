@@ -56,6 +56,15 @@ html
 						{value: "classic", text: "Classic"}
 					])
 
+					+checkbox("display_top_nav", "Display top bar", "Always", false)
+
+					+select("timeline_columns", "Timeline columns", true, [
+						{value: "dynamic", text: "Dynamic"},
+						{value: "3", text: "3 columns"},
+						{value: "4", text: "4 columns"},
+						{value: "6", text: "6 columns"}
+					])
+
 					+select("caption_side", "Caption side", true, [
 						{value: "left", text: "Left (Bibliogram)"},
 						{value: "right", text: "Right (Instagram)"}

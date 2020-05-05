@@ -31,39 +31,50 @@ html
 		meta(property="og:site_name" content="Bibliogram")
 
 	body
+		nav(class=(settings.display_top_nav ? "always-displayed" : "")).top-nav
+			//- Alt text guidelines from https://axesslab.com/alt-texts/
+			a(href="/").nav-icon-link
+				img(src="/static/img/logo-circle-min.svg" alt="Bibliogram").logo
+			a(href="/settings").nav-icon-link
+				img(src="/static/img/settings.svg" alt="Settings").settings
 		.main-divider
 			header.profile-overview
 				.profile-sticky
-					img(src=user.proxyProfilePicture width=150 height=150 alt=`${user.data.full_name || user.data.username}'s profile picture.`).pfp
-					//-
-						Instagram only uses the above URL, but an HD version is also available.
-						The alt text is pathetic, I know. I don't have much to work with.
-					if user.data.full_name
-						h1.full-name= user.data.full_name
-						h2.username= `@${user.data.username}`
-					else
-						h1.full-name= `@${user.data.username}`
-					p.structured-text.bio
-						- const bio = user.getStructuredBio()
-						if bio
-							+display_structured(bio)
-					if user.data.external_url
-						p.website
-							a(href=user.data.external_url)= user.data.external_url
-					if user.posts != undefined
-						div.profile-counter #[span(data-numberformat=user.posts).count #{numberFormat(user.posts)}] posts
-					if followerCountsAvailable
-						if user.following != undefined
-							div.profile-counter #[span(data-numberformat=user.following).count #{numberFormat(user.following)}] following
-						if user.followedBy != undefined
-							div.profile-counter #[span(data-numberformat=user.followedBy).count #{numberFormat(user.followedBy)}] followed by
-					else
-						div.profile-counter.not-available Followers not available.
-					div.links
-						if constants.feeds.enabled && constants.feeds.display_links
-							+feed_link("RSS", "rss", user.data.username, "application/rss+xml", constants.feeds.display_validation_links)
-							+feed_link("Atom", "atom", user.data.username, "application/atom+xml", constants.feeds.display_validation_links)
-						a(rel="noreferrer noopener" href=`https://www.instagram.com/${user.data.username}` target="_blank") instagram.com
+					section
+						img(src=user.proxyProfilePicture width=150 height=150 alt=`${user.data.full_name || user.data.username}'s profile picture.`).pfp
+						//-
+							Instagram only uses the above URL, but an HD version is also available.
+							The alt text is pathetic, I know. I don't have much to work with.
+						if user.data.full_name
+							h1.full-name= user.data.full_name
+							h2.username= `@${user.data.username}`
+						else
+							h1.full-name= `@${user.data.username}`
+						p.structured-text.bio
+							- const bio = user.getStructuredBio()
+							if bio
+								+display_structured(bio)
+						if user.data.external_url
+							p.website
+								a(href=user.data.external_url)= user.data.external_url
+						if user.posts != undefined
+							div.profile-counter #[span(data-numberformat=user.posts).count #{numberFormat(user.posts)}] posts
+						if followerCountsAvailable
+							if user.following != undefined
+								div.profile-counter #[span(data-numberformat=user.following).count #{numberFormat(user.following)}] following
+							if user.followedBy != undefined
+								div.profile-counter #[span(data-numberformat=user.followedBy).count #{numberFormat(user.followedBy)}] followed by
+						else
+							div.profile-counter.not-available Followers not available.
+						.links
+							if constants.feeds.enabled && constants.feeds.display_links
+								+feed_link("RSS", "rss", user.data.username, "application/rss+xml", constants.feeds.display_validation_links)
+								+feed_link("Atom", "atom", user.data.username, "application/atom+xml", constants.feeds.display_validation_links)
+							a(rel="noreferrer noopener" href=`https://www.instagram.com/${user.data.username}` target="_blank") instagram.com
+					section.bibliogram-meta
+						.links
+							a(href="/") Home
+							a(href="/settings") Settings
 
 			- const hasPosts = !user.data.is_private && user.timeline.pages.length && user.timeline.pages[0].length
 			main(class=hasPosts ? "" : "no-posts")#timeline.timeline

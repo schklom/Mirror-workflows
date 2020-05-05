@@ -60,7 +60,21 @@ const deltas = new Map([
 			)
 				.run()
 		})()
-	}]
+	}],
+	// version 4 to version 5
+	[5, function() {
+		db.transaction(() => {
+			// the previous version wasn't around for long enough for me to care about the contents
+			db.prepare("DROP TABLE IF EXISTS UserSettings")
+				.run()
+			db.prepare(
+				"CREATE TABLE UserSettings (token TEXT NOT NULL, created INTEGER NOT NULL, language TEXT NOT NULL, show_comments INTEGER NOT NULL, link_hashtags INTEGER NOT NULL"
+				+", spa INTEGER NOT NULL, theme TEXT NOT NULL, caption_side TEXT NOT NULL, display_alt INTEGER NOT NULL, timeline_columns TEXT NOT NULL, display_top_nav INTEGER NOT NULL"
+				+", PRIMARY KEY (token))"
+			)
+				.run()
+		})()
+	}],
 ])
 
 module.exports = async function() {

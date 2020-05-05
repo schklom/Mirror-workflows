@@ -40,10 +40,8 @@ module.exports = [
 				prepared.token = crypto.randomBytes(16).toString("hex")
 			} while (checkPrepared.get(prepared.token))
 			prepared.created = Date.now()
-			db.prepare(
-				"INSERT INTO UserSettings (token,  created,  language,  show_comments,  link_hashtags,  spa,  theme,  caption_side,  display_alt)"
-				               +" VALUES (@token, @created, @language, @show_comments, @link_hashtags, @spa, @theme, @caption_side, @display_alt)"
-			).run(prepared)
+			const fields = constants.user_settings.map(s => s.name)
+			db.prepare(`INSERT INTO UserSettings (token, created, ${fields.join(", ")}) VALUES (@token, @created, ${fields.map(f => "@"+f).join(", ")})`).run(prepared)
 			const expires = new Date(Date.now() + 4000*24*60*60*1000).toUTCString()
 			return {
 				statusCode: 303,

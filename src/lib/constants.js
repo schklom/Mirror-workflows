@@ -104,6 +104,16 @@ let constants = {
 			default: "",
 			boolean: true,
 			replaceEmptyWithDefault: true
+		},{
+			name: "timeline_columns",
+			default: "dynamic",
+			boolean: false,
+			replaceEmptyWithDefault: true
+		},{
+			name: "display_top_nav",
+			default: "",
+			boolean: true,
+			replaceEmptyWithDefault: true
 		}
 	],
 
@@ -200,7 +210,7 @@ let constants = {
 
 	additional_routes: [],
 
-	database_version: 4
+	database_version: 5
 }
 
 // Override values from config and export the result

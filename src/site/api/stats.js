@@ -99,7 +99,7 @@ module.exports = [
 	},
 	{
 		route: "/api/stats/2.0", methods: ["GET"], code: async ({url}) => {
-			const selected = semver.maxSatisfying([...innerMap.keys()], url.searchParams.get("bv") || "1.0")
+			const selected = semver.maxSatisfying([...innerMap.keys()], url.searchParams.get("bv") || "1.x")
 			if (!selected) return reply(400, {
 				status: "fail",
 				fields: ["q:bv"],

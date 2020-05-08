@@ -24,7 +24,6 @@ module.exports = [
 							}
 						}
 						if (!parser.hasRemaining()) return null
-						console.log(parser.remaining())
 						while (parser.hasRemaining()) {
 							const line = parser.get({split: "\n"})
 							if (line.startsWith("|")) {

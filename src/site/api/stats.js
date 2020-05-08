@@ -28,7 +28,7 @@ let commit = ""
 
 // Set up inner versioning
 
-const displayVersions = ["1.0", "1.1", "1.2", "1.3"]
+const displayVersions = ["1.0", "1.1", "1.2", "1.3", "1.4"]
 const versions = new Map(displayVersions.map(v => [v, semver.coerce(v)]))
 const features = [
 	"PAGE_PROFILE",
@@ -70,6 +70,11 @@ const innerMap = new Map()
 	addVersion("1.3", {
 		settings: {
 			torAvailable: switcher.canUseTor() // server.js holds on loading this file until tor state is known, so this is fine
+		}
+	})
+	addVersion("1.4", {
+		settings: {
+			canonicalOrigin: constants.website_origin
 		}
 	})
 }

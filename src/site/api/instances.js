@@ -24,18 +24,21 @@ module.exports = [
 							}
 						}
 						if (!parser.hasRemaining()) return null
-						while (inTable && parser.hasRemaining()) {
+						console.log(parser.remaining())
+						while (parser.hasRemaining()) {
 							const line = parser.get({split: "\n"})
 							if (line.startsWith("|")) {
-								/** [empty, official, address, country, rss, cloudflare] */
+								/** [empty, address, country, rss, privacy policy, cloudflare] */
 								const parts = line.split("|")
-								if (parts.length >= 4 && parts[2].includes("://")) {
+								if (parts.length >= 6 && parts[1].includes("://")) {
+									const address = parts[1].trim().split(" ")[0]
 									instances.push({
-										address: parts[2].trim(),
-										country: parts[3].match(/[A-Z]{2,}|$/)[0] || null,
-										official: parts[1].trim() === ":white_check_mark:",
-										rss: parts[4].trim() === ":white_check_mark:",
-										cloudflare: parts[5].trim() === ":crying_cat_face:"
+										address,
+										country: parts[2].match(/[A-Z]{2,}|$/)[0] || null,
+										official: address === "https://bibliogram.art", // yeah we're just gonna hard code this
+										rss_enabled: parts[3].trim() === ":white_check_mark:",
+										has_privacy_policy: parts[4].trim() === ":white_check_mark:",
+										using_cloudflare: parts[5].trim() === ":crying_cat_face:"
 									})
 								}
 							} else {
@@ -44,13 +47,13 @@ module.exports = [
 						}
 						return instances
 					})()
-					if (Array.isArray(result)) {
+					if (Array.isArray(result) && result.length) {
 						return {
 							statusCode: 200,
 							contentType: "application/json",
 							content: {
 								status: "ok",
-								version: "1.0",
+								version: "2.0",
 								generatedAt: Date.now(),
 								data: result
 							}

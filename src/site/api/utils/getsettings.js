@@ -1,3 +1,4 @@
+const crypto = require("crypto")
 const {parse} = require("cookie")
 
 const constants = require("../../../lib/constants")
@@ -19,14 +20,49 @@ function addDefaults(input = {}) {
 	return result
 }
 
-function getSettings(req) {
-	if (!req.headers.cookie) return addDefaults()
+function getToken(req) {
+	if (!req.headers.cookie) return null
 	const cookie = parse(req.headers.cookie)
-	const settings = cookie.settings
-	if (!settings) return addDefaults()
-	const row = db.prepare("SELECT * FROM UserSettings WHERE token = ?").get(settings)
-	if (!row) return addDefaults()
-	return addDefaults(row)
+	const token = cookie.settings
+	if (token) return token
+	else return null
 }
 
+function getSettings(req) {
+	const token = getToken(req)
+	if (token) {
+		const row = db.prepare("SELECT * FROM UserSettings WHERE token = ?").get(token)
+		if (row) {
+			return addDefaults(row)
+		}
+	}
+	return addDefaults()
+}
+
+function generateCSRF() {
+	const token = crypto.randomBytes(16).toString("hex")
+	const expires = Date.now() + constants.caching.csrf_time
+	db.prepare("INSERT INTO CSRFTokens (token, expires) VALUES (?, ?)").run(token, expires)
+	return token
+}
+
+function checkCSRF(token) {
+	const row = db.prepare("SELECT * FROM CSRFTokens WHERE token = ? AND expires > ?").get(token, Date.now())
+	if (row) {
+		db.prepare("DELETE FROM CSRFTokens WHERE token = ?").run(token)
+		return true
+	} else {
+		return false
+	}
+}
+
+function cleanCSRF() {
+	db.prepare("DELETE FROM CSRFTokens WHERE expires <= ?").run(Date.now())
+}
+cleanCSRF()
+setInterval(cleanCSRF, constants.caching.csrf_time)
+
+module.exports.getToken = getToken
 module.exports.getSettings = getSettings
+module.exports.generateCSRF = generateCSRF
+module.exports.checkCSRF = checkCSRF

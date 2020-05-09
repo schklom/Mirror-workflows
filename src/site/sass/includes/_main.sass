@@ -668,10 +668,16 @@ body
 	.status-notice
 		padding: 15px
 		font-size: 24px
-		line-height: 1
+		line-height: 1.36
 		text-align: center
-		background-color: map-get($theme, "background-banner-success")
 		color: map-get($theme, "foreground-banner")
+		white-space: pre-line
+
+		&.success
+			background-color: map-get($theme, "background-banner-success")
+
+		&.fail
+			background-color: map-get($theme, "background-banner-fail")
 
 	.action-container
 		margin-top: 20px

@@ -9,6 +9,7 @@ html
 		header
 			h1.banner
 				img.banner-image(src="/static/img/banner-min.svg" alt="Bibliogram")
+
 		.go-sections-container
 			.go-sections
 				section
@@ -21,6 +22,7 @@ html
 					form(method="get" action="/p").pair-entry
 						input(type="text" name="p" placeholder="Shortcode or URL").text
 						input(type="submit" value="Go").button
+
 		.about-container
 			section.about
 				h2 About Bibliogram
@@ -31,23 +33,25 @@ html
 				p.
 					Bibliogram does #[em not] allow you to anonymously post, like, comment, follow, or view private profiles.
 					It does not preserve deleted posts.
+
 				h2 About this instance
 				ul
+					li: a(href="/settings") Settings
 					if hasPrivacyPolicy
 						li: a(href="/privacy") Privacy policy
 					else
 						li Owner has not written a privacy policy
 					li Instance is #{allUnblocked ? "not blocked" : "blocked"}
 					li RSS feeds are #{rssEnabled ? "enabled" : "disabled"}
-					li Tor is #{torAvailable ? "enabled" : "not available"}
+
 				h2 External links
-				ul.link-list
+				ul
 					-
 						const links = [
 							["https://github.com/cloudrac3r/bibliogram", "GitHub repository"],
 							["https://riot.im/app/#/room/#bibliogram:matrix.org", "Discussion room on Matrix"],
 							["https://github.com/cloudrac3r/bibliogram/wiki/Instances", "Other Bibliogram instances"],
-							["https://github.com/cloudrac3r/bibliogram/projects/1?fullscreen=true", "Project board"],
+							["https://github.com/cloudrac3r/bibliogram/projects/1?fullscreen=true", "Project roadmap"],
 							["https://cadence.moe/about/contact", "Contact the developer"]
 						]
 					each entry in links

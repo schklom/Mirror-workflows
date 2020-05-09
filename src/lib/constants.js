@@ -166,6 +166,7 @@ let constants = {
 		instance_list_cache_time: 3*60*1000,
 		updater_cache_time: 2*60*1000,
 		cache_sweep_interval: 3*60*1000,
+		csrf_time: 60*60*1000,
 		self_blocked_status: {
 			enabled: true,
 			time: 2*60*60*1000,
@@ -232,7 +233,7 @@ let constants = {
 
 	additional_routes: [],
 
-	database_version: 6
+	database_version: 7
 }
 
 // Override values from config and export the result

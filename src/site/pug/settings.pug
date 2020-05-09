@@ -1,4 +1,4 @@
-//- Needs saved, settings
+//- Needs constants, settings, csrf, status, message
 
 mixin fieldset(name)
 	fieldset
@@ -31,12 +31,14 @@ html
 		title Settings | Bibliogram
 		include includes/head
 	body.settings-page
-		if saved
-			.status-notice Saved.
+		if status && message
+			.status-notice(class=status)= message
 			script.
 				history.replaceState(null, "", "/settings")
 		main.settings
 			form(action="/settings" method="post" enctype="application/x-www-form-urlencoded")
+				input(type="hidden" name="csrf" value=csrf)
+
 				h1 Settings
 
 				+fieldset("Features")

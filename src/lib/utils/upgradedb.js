@@ -85,6 +85,15 @@ const deltas = new Map([
 			db.prepare("ALTER TABLE UserSettings ADD COLUMN rewrite_twitter TEXT NOT NULL DEFAULT ''")
 				.run()
 		})()
+	}],
+	// version 6 to version 7
+	[7, function() {
+		db.transaction(() => {
+			db.prepare("DROP TABLE IF EXISTS CSRFTokens")
+				.run()
+			db.prepare("CREATE TABLE CSRFTokens (token TEXT NOT NULL, expires INTEGER NOT NULL, PRIMARY KEY (token))")
+				.run()
+		})()
 	}]
 ])
 

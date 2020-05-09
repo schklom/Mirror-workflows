@@ -114,6 +114,21 @@ let constants = {
 			default: "",
 			boolean: true,
 			replaceEmptyWithDefault: true
+		},{
+			name: "save_data",
+			default: "automatic",
+			boolean: false,
+			replaceEmptyWithDefault: true
+		},{
+			name: "rewrite_youtube",
+			default: "",
+			boolean: false,
+			replaceEmptyWithDefault: true
+		},{
+			name: "rewrite_twitter",
+			default: "",
+			boolean: false,
+			replaceEmptyWithDefault: true
 		}
 	],
 
@@ -210,7 +225,7 @@ let constants = {
 
 	additional_routes: [],
 
-	database_version: 5
+	database_version: 6
 }
 
 // Override values from config and export the result

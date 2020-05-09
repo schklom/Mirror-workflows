@@ -12,8 +12,10 @@ function getPageTitle(post) {
 
 module.exports = [
 	{
-		route: "/", methods: ["GET"], code: async () => {
+		route: "/", methods: ["GET"], code: async ({req}) => {
+			const settings = getSettings(req)
 			return render(200, "pug/home.pug", {
+				settings,
 				rssEnabled: constants.feeds.enabled,
 				allUnblocked: history.testNoneBlocked(),
 				torAvailable: switcher.canUseTor(),
@@ -22,9 +24,11 @@ module.exports = [
 		}
 	},
 	{
-		route: "/privacy", methods: ["GET"], code: async () => {
+		route: "/privacy", methods: ["GET"], code: async ({req}) => {
+
 			if (constants.has_privacy_policy && pugCache.has("pug/privacy.pug")) {
-				return render(200, "pug/privacy.pug")
+				const settings = getSettings(req)
+				return render(200, "pug/privacy.pug", {settings})
 			} else {
 				return render(404, "pug/friendlyerror.pug", {
 					statusCode: 404,

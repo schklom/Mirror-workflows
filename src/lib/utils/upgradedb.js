@@ -75,6 +75,17 @@ const deltas = new Map([
 				.run()
 		})()
 	}],
+	// version 5 to version 6
+	[6, function() {
+		db.transaction(() => {
+			db.prepare("ALTER TABLE UserSettings ADD COLUMN save_data TEXT NOT NULL DEFAULT 'automatic'")
+				.run()
+			db.prepare("ALTER TABLE UserSettings ADD COLUMN rewrite_youtube TEXT NOT NULL DEFAULt ''")
+				.run()
+			db.prepare("ALTER TABLE UserSettings ADD COLUMN rewrite_twitter TEXT NOT NULL DEFAULT ''")
+				.run()
+		})()
+	}]
 ])
 
 module.exports = async function() {

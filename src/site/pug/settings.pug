@@ -6,10 +6,10 @@ mixin fieldset(name)
 		.fieldset-contents
 			block
 
-mixin input(id, description, disabled)
+mixin input(id, description, placeholder, disabled)
 	.field-row
 		label.description(for=id)= description
-		input(type="text" id=id name=id value=settings[id] disabled=disabled)
+		input(type="text" id=id name=id value=settings[id] placeholder=placeholder disabled=disabled)
 
 mixin checkbox(id, description, label, disabled)
 	.field-row.checkbox-row
@@ -45,6 +45,17 @@ html
 						{value: "en-us", text: "English (US)"}
 					])
 
+					+select("save_data", "Save data", true, [
+						{value: "automatic", text: "Automatic"},
+						{value: "off", text: "Off"},
+						{value: "lazy_load", text: "Lazy load"},
+						{value: "full", text: "Full"}
+					])
+
+					+input("rewrite_youtube", "Rewrite YouTube domain", "youtube.com", true)
+
+					+input("rewrite_twitter", "Rewrite Twitter domain", "twitter.com", true)
+
 					+checkbox("show_comments", "Display comments", "Display", true)
 
 					+checkbox("link_hashtags", "Clickable hashtags", "Clickable", true)
@@ -52,8 +63,9 @@ html
 					+checkbox("spa", "Fast navigation", "Enabled", false)
 
 				+fieldset("Appearance")
-					+select("theme", "Theme", true, [
-						{value: "classic", text: "Classic"}
+					+select("theme", "Theme", false, [
+						{value: "classic", text: "Classic"},
+						{value: "blue", text: "Classic blue"}
 					])
 
 					+checkbox("display_top_nav", "Display top bar", "Always", false)

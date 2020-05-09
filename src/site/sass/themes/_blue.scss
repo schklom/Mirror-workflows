@@ -1,0 +1,16 @@
+// Defined in scss file instead of sass because indented syntax does not have multiline maps
+// This is based on the classic theme, so it pulls that in as the base and then overwrites only the properties it cares about
+// This also makes it future-proof because future additions to classic will be automatically available in this style too
+
+@use "classic";
+
+$theme: map-merge(classic.$theme, (
+	"background-power-primary": #3e73b7,
+	"background-power-secondary": #274771,
+	"background-power-tertiary": #1b233c,
+	"background-power-palest": #bee5ff,
+	"background-power-pale": #7cc4ff,
+	"background-banner-success": #173d6f,
+	"link-power": #91cbfd,
+	"edge-power-divider": 1px solid #3b496a
+));

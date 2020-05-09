@@ -83,6 +83,7 @@ body
 	text-align: center
 	position: relative
 	line-height: 1
+	color: map-get($theme, "foreground-primary")
 
 	@media screen and (max-width: $layout-a-max)
 		border-bottom: map-get($theme, "edge-context-divider")
@@ -115,11 +116,13 @@ body
 		.full-name
 			margin: 0 0 8px
 			font-size: 30px
+			color: map-get($theme, "foreground-header")
 
 		.username
 			margin: 0
 			font-size: 20px
 			font-weight: normal
+			color: map-get($theme, "foreground-header")
 
 		.bio
 			margin: 20px 0px
@@ -330,7 +333,7 @@ body
 
 				.name
 					font-size: 20px
-					color: map-get($theme, "foreground-timeline-header")
+					color: map-get($theme, "foreground-post-header")
 					text-decoration: none
 
 					&:hover
@@ -338,6 +341,7 @@ body
 
 		.relative-box
 			background-color: map-get($theme, "background-post-caption")
+			color: map-get($theme, "foreground-primary")
 
 		@media screen and (min-width: $layout-b-min)
 			.relative-box

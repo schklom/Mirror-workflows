@@ -10,7 +10,7 @@ module.exports = [
 			const settings = getSettings(req)
 			// console.log(settings)
 			const saved = url.searchParams.has("saved")
-			return render(200, "pug/settings.pug", {saved, settings})
+			return render(200, "pug/settings.pug", {saved, constants, settings})
 		}
 	},
 	{

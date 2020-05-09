@@ -68,8 +68,20 @@ let constants = {
 		feed_disabled_max_age: 2*24*60*60 // 2 days
 	},
 
+	// Enabled themes. `file` is the filename without extension. `name` is the display name on the settings page.
+	// If you make your own theme, I encourage you to submit a pull request for it!
+	themes: [
+		{file: "classic", name: "Classic"},
+		{file: "blue", name: "Classic blue"}
+	],
+
 	user_settings: [
 		{
+			name: "theme",
+			default: "classic",
+			boolean: false,
+			replaceEmptyWithDefault: true
+		},{
 			name: "language",
 			default: "en",
 			boolean: false,
@@ -89,11 +101,6 @@ let constants = {
 			default: "on",
 			boolean: true,
 			replaceEmptyWithDefault: false
-		},{
-			name: "theme",
-			default: "classic",
-			boolean: false,
-			replaceEmptyWithDefault: true
 		},{
 			name: "caption_side",
 			default: "left",

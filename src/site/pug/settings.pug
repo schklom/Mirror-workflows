@@ -63,10 +63,7 @@ html
 					+checkbox("spa", "Fast navigation", "Enabled", false)
 
 				+fieldset("Appearance")
-					+select("theme", "Theme", false, [
-						{value: "classic", text: "Classic"},
-						{value: "blue", text: "Classic blue"}
-					])
+					+select("theme", "Theme", false, constants.themes.map(entry => ({value: entry.file, text: entry.name})))
 
 					+checkbox("display_top_nav", "Display top bar", "Always", false)
 

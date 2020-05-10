@@ -12,4 +12,5 @@ mixin timeline_page(page, pageIndex)
 			each image in page
 				- const thumbnail = image.getSuggestedThumbnailP(suggestedSize) //- use this as the src in case there are problems with srcset
 				a(href=`/p/${image.data.shortcode}` data-shortcode=image.data.shortcode).sized-link
-					img(src=thumbnail.src alt=image.getAlt() width=thumbnail.config_width height=thumbnail.config_height srcset=image.getThumbnailSrcsetP() sizes=image.getThumbnailSizes()).sized-image
+					//- using config_width twice because the proxy makes it square
+					img(src=thumbnail.src alt=image.getAlt() width=thumbnail.config_width height=thumbnail.config_width srcset=image.getThumbnailSrcsetP() sizes=image.getThumbnailSizes()).sized-image

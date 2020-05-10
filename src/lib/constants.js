@@ -149,7 +149,7 @@ let constants = {
 		assistants: [
 		],
 		offline_request_cooldown: 20*60*1000,
-		blocked_request_cooldown: 2*60*60*1000,
+		blocked_request_cooldown: 0
 	},
 
 	as_assistant: {

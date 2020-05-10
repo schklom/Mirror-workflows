@@ -68,20 +68,39 @@ let constants = {
 		feed_disabled_max_age: 2*24*60*60 // 2 days
 	},
 
-	// Enabled themes. `file` is the filename without extension. `name` is the display name on the settings page.
+	// Themes. `file` is the filename without extension. `name` is the display name on the settings page.
 	// If you make your own theme, I encourage you to submit a pull request for it!
-	themes: [
-		{file: "classic", name: "Classic"},
-		{file: "blue", name: "Classic blue"}
-	],
+	themes: {
+		// If you want to disable some official themes, then create an entry that replaces this array in config.js.
+		// Format: `{file: string, name: string}[]`
+		official: [
+			{file: "classic", name: "Classic"},
+			{file: "blue", name: "Classic blue"}
+		],
+		// To add your own theme, create an entry that replaces this array in config.js, then add your theme to it.
+		// Format: `{file: string, name: string}[]`
+		custom: [
+		],
+		// If you want your custom theme to be the default for your instance, don't forget to set it here!
+		// For good UI, you probably also want the default entry to be the first thing in the selection box.
+		default: "classic",
+		// This sets which order the themes appear in in the list on the settings page.
+		sort: {
+			// This sets whether the order is custom + official, or official + custom
+			order: "custom_first", // "custom_first", "official_first"
+			// To selectively override that order, add things to this array.
+			// If you set it to `["blue", "midnight"]` then the theme with file name `blue` will be hoisted to the top,
+			// the theme with file name `midnight` will be below it, and all other themes will appear below those.
+			// Format: `string[]`
+			manual: []
+		},
+		// These arrays should be empty, do not edit them!
+		collated: [],
+		collatedFiles: []
+	},
 
 	user_settings: [
 		{
-			name: "theme",
-			default: "classic",
-			boolean: false,
-			replaceEmptyWithDefault: true
-		},{
 			name: "language",
 			default: "en",
 			boolean: false,
@@ -245,4 +264,28 @@ if (process.env.BIBLIOGRAM_CONFIG) { // presence of environment variable BIBLIOG
 	const config = require("../../config")
 	constants = md(constants, config)
 }
+
+// Set theme settings
+constants.user_settings.push({
+	name: "theme",
+	default: constants.themes.default,
+	boolean: false,
+	replaceEmptyWithDefault: true
+})
+let pool
+if (constants.themes.sort.order === "custom_first") {
+	pool = [].concat(constants.themes.custom, constants.themes.official)
+} else if (constants.themes.sort.order === "official_first") {
+	pool = [].concat(constants.themes.official, constants.themes.custom)
+}
+for (const file of constants.themes.sort.manual) {
+	const index = pool.findIndex(row => row.file === file)
+	if (index !== -1) {
+		const removed = pool.splice(index, 1)[0]
+		constants.themes.collated.push(removed)
+	}
+}
+constants.themes.collated = constants.themes.collated.concat(pool)
+constants.themes.collatedFiles = constants.themes.collatedFiles.concat(pool.map(row => row.file))
+
 module.exports = constants

@@ -1,8 +1,4 @@
 meta(charset="utf-8")
-
-- let theme = settings ? settings.theme : "classic"
-link(rel="stylesheet" type="text/css" href=getStaticURL("sass", `${theme}.sass`))
-
 meta(name="viewport" content="width=device-width, initial-scale=1")
 link(rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png")
 link(rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png")
@@ -11,3 +7,25 @@ link(rel="manifest" href="/site.webmanifest")
 link(rel="mask-icon" href="/safari-pinned-tab.svg" color="#303030")
 meta(name="msapplication-TileColor" content="#00aba9")
 meta(name="theme-color" content="#ffffff")
+
+-
+	let themeURL
+	let theme =
+		settings
+			? settings.theme
+		: constants
+			? constants.themes.default
+		: "classic"
+	try {
+		themeURL = getStaticURL("sass", `${theme}.sass`)
+	} catch (e) {}
+
+if themeURL
+	link(rel="stylesheet" type="text/css" href=themeURL)
+else
+	div(style="font-size: 22px; padding: 40px 20px; white-space: pre-line; border-bottom: 3px solid black").
+		Your theme value "#{theme}" wasn't understood.
+		There is no loaded theme with that name.
+		Please #[a(href="/settings") go to the settings page] and select a different theme.
+		If that doesn't help, #[a(href="https://github.com/cloudrac3r/bibliogram/issues/new") report a bug.]
+		In your bug report, tell us which website address you saw this on, and what your theme value is.

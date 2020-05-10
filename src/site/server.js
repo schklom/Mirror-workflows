@@ -21,8 +21,9 @@ subdirs("pug", async (err, dirs) => {
 	await require("../lib/utils/upgradedb")()
 
 	pinski.setNotFoundTarget("/404")
-	for (const theme of constants.themes) {
-		pinski.addRoute(`/static/css/${theme.file}.css`, `sass/${theme.file}.sass`, "sass")
+	Object.assign(pinski.pugDefaultLocals, {constants})
+	for (const file of constants.themes.collatedFiles) {
+		pinski.addRoute(`/static/css/${file}.css`, `sass/${file}.sass`, "sass")
 	}
 	pinski.addRoute("/settings", "pug/settings.pug", "pug")
 	pinski.addPugDir("pug", dirs)

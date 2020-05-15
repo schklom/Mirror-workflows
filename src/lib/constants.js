@@ -76,7 +76,8 @@ let constants = {
 		official: [
 			{file: "classic", name: "Vanilla sard"},
 			{file: "blue", name: "Vanilla sky"},
-			{file: "pussthecat.org", name: "Dark by PussTheCat.org"}
+			{file: "pussthecat.org", name: "PussTheCat.org dark v1"},
+			{file: "pussthecat.org-v2", name: "PussTheCat.org dark v2"}
 		],
 		// To add your own theme, create an entry that replaces this array in config.js, then add your theme to it.
 		// Format: `{file: string, name: string}[]`

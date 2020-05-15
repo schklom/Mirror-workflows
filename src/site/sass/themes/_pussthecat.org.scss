@@ -4,43 +4,46 @@
 
 @use "classic";
 
+$link: #6ca9e6;
+
 $theme: map-merge(classic.$theme, (
-
-//Global
-        "link-primary": #687078,
-        "link-hashtag": #687078,
-        "link-power": #687078,
-        "foreground-primary": #ffffff,
-
-//Homepage
-        "background-power-primary": #343a40,
-        "background-power-secondary": #121212,
-        "background-power-palest": #343a40,
-        "background-power-pale": #121212,
-	"foreground-power-primary": #ffffff,
-	"foreground-power-secondary": #ffffff,
-	"background-go-input": #687078,
-	"foreground-go-control": #ffffff,
-
-//Timeline Page
-        "background-primary": #121212,
-        "background-timeline-profile": #121212,
-        "foreground-header": #ffffff,
-	"edge-context-divider": 2px solid #ffffff,
-	"edge-thumbnail-hover": 2px #ffffff,
-	"foreground-timeline-page": #ffffff,
-
-//Post Page
-        "background-post-caption": #121212,
-        "background-post-header": #343a40,
+	"background-primary": #121212,
+	"background-timeline-profile": #121212,
+	"background-timeline-loading": #343a40,
+	"background-post-distraction": #0a0a0a,
+	"background-post-overlay": #0a0a0a95,
+	"background-post-header": #343a40,
 	"background-post-pfp-loading": #343a40,
-        "background-post-gallery": #121212,
-        "background-post-loading": #121212,
-        "background-post-overlay": #121212b3,
-        "background-post-distraction": #121212,
-	"foreground-post-header": #ffffff,
-
-//Setting Page
-        "background-banner-success": #343a40,
-
+	"background-post-caption": #121212,
+	"background-post-gallery": #121212,
+	"background-post-loading": #121212,
+	"background-power-primary": #343a40,
+	"background-power-secondary": #121212,
+	"background-power-tertiary": #121212,
+	"background-power-palest": #585e64,
+	"background-power-pale": #474c51,
+	"background-power-quote": #343a40,
+	"background-go-input": #687078,
+	"background-primary-quote": #343a40,
+	"background-banner-success": #343a40,
+	"foreground-primary": #d3d3d3,
+	"foreground-header": #fff,
+	"foreground-power-primary": #fff,
+	"foreground-power-secondary": #d3d3d3,
+	"foreground-power-tertiary": #d3d3d3,
+	"foreground-go-control": #fff,
+	"foreground-thumbnail-alt": #ccc,
+	"foreground-timeline-page": #aaa,
+	"foreground-post-header": #fff,
+	"link-primary": $link,
+	"link-power": $link,
+	"link-error-page": $link,
+	"link-hashtag": #7eae74,
+	"edge-context-divider": 2px solid #000,
+	"edge-thumbnail-hover": solid #ffffff,
+	"edge-go-control": 1px solid #000,
+	"edge-power-divider": 1px solid #343a40,
+	"shadow-down": none,
+	"shadow-right": none,
+	"shadow-down-inset": none
 ));

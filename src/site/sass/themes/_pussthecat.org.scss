@@ -1,0 +1,46 @@
+// Defined in scss file instead of sass because indented syntax does not have multiline maps
+// This is based on the classic theme, so it pulls that in as the base and then overwrites only the properties it cares about
+// This also makes it future-proof because future additions to classic will be automatically available in this style too
+
+@use "classic";
+
+$theme: map-merge(classic.$theme, (
+
+//Global
+        "link-primary": #687078,
+        "link-hashtag": #687078,
+        "link-power": #687078,
+        "foreground-primary": #ffffff,
+
+//Homepage
+        "background-power-primary": #343a40,
+        "background-power-secondary": #121212,
+        "background-power-palest": #343a40,
+        "background-power-pale": #121212,
+	"foreground-power-primary": #ffffff,
+	"foreground-power-secondary": #ffffff,
+	"background-go-input": #687078,
+	"foreground-go-control": #ffffff,
+
+//Timeline Page
+        "background-primary": #121212,
+        "background-timeline-profile": #121212,
+        "foreground-header": #ffffff,
+	"edge-context-divider": 2px solid #ffffff,
+	"edge-thumbnail-hover": 2px #ffffff,
+	"foreground-timeline-page": #ffffff,
+
+//Post Page
+        "background-post-caption": #121212,
+        "background-post-header": #343a40,
+	"background-post-pfp-loading": #343a40,
+        "background-post-gallery": #121212,
+        "background-post-loading": #121212,
+        "background-post-overlay": #121212b3,
+        "background-post-distraction": #121212,
+	"foreground-post-header": #ffffff,
+
+//Setting Page
+        "background-banner-success": #343a40,
+
+));

@@ -4,7 +4,7 @@
 
 @use "classic";
 
-$link: #808080;
+$link: #6ca9e6;
 
 $theme: map-merge(classic.$theme, (
 	"background-primary": #121212,
@@ -20,17 +20,17 @@ $theme: map-merge(classic.$theme, (
 	"background-power-primary": #343a40,
 	"background-power-secondary": #121212,
 	"background-power-tertiary": #121212,
-	"background-power-palest": #121212,
-	"background-power-pale": #343a40,
+	"background-power-palest": #585e64,
+	"background-power-pale": #474c51,
 	"background-power-quote": #343a40,
 	"background-go-input": #687078,
 	"background-primary-quote": #343a40,
 	"background-banner-success": #343a40,
-	"foreground-primary": #ffffff,
+	"foreground-primary": #d3d3d3,
 	"foreground-header": #fff,
 	"foreground-power-primary": #fff,
-	"foreground-power-secondary": #ffffff,
-	"foreground-power-tertiary": #ffffff,
+	"foreground-power-secondary": #d3d3d3,
+	"foreground-power-tertiary": #d3d3d3,
 	"foreground-go-control": #fff,
 	"foreground-thumbnail-alt": #ccc,
 	"foreground-timeline-page": #aaa,
@@ -39,7 +39,7 @@ $theme: map-merge(classic.$theme, (
 	"link-power": $link,
 	"link-error-page": $link,
 	"link-hashtag": #7eae74,
-	"edge-context-divider": 2px solid #ffffff,
+	"edge-context-divider": 2px solid #000,
 	"edge-thumbnail-hover": solid #ffffff,
 	"edge-go-control": 1px solid #000,
 	"edge-power-divider": 1px solid #343a40,

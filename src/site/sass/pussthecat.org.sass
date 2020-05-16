@@ -1,9 +1,11 @@
 @use "themes/pussthecat.org" as *
+@use "includes/dimensions" as *
 @use "includes/main" with ($theme: $theme)
 
-.post-page-divider
-	border-left: map-get($theme, "edge-context-divider")
-	border-right: map-get($theme, "edge-context-divider")
+@media screen and (min-width: $layout-b-min)
+	.post-page-divider
+		border-left: map-get($theme, "edge-context-divider")
+		border-right: map-get($theme, "edge-context-divider")
 
-.images-gallery
-	border-left: map-get($theme, "edge-context-divider")
+	.images-gallery
+		border-left: map-get($theme, "edge-context-divider")

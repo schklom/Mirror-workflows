@@ -35,9 +35,9 @@ module.exports = [
 										address,
 										country: parts[2].match(/[A-Z]{2,}|$/)[0] || null,
 										official: address === "https://bibliogram.art", // yeah we're just gonna hard code this
-										rss_enabled: parts[3].trim() === ":white_check_mark:",
-										has_privacy_policy: parts[4].trim() === ":white_check_mark:",
-										using_cloudflare: parts[5].trim() === ":crying_cat_face:"
+										rss_enabled: parts[3].trim() !== "",
+										has_privacy_policy: parts[4].trim() !== "",
+										using_cloudflare: parts[5].trim() !== ""
 									})
 								}
 							} else {

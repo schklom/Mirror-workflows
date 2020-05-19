@@ -41,7 +41,10 @@ html
 						li: a(href="/privacy") Privacy policy
 					else
 						li Owner has not written a privacy policy
-					li Instance is #{allUnblocked ? "not blocked" : "blocked"}
+					if allUnblocked
+						li Instance is not blocked
+					else
+						li: a(href="https://github.com/cloudrac3r/bibliogram/wiki/Rate-limits#working-around") Instance is partially blocked
 					li RSS feeds are #{rssEnabled ? "enabled" : "disabled"}
 
 				h2 External links

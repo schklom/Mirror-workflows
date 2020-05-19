@@ -1,6 +1,6 @@
 const constants = require("../../lib/constants")
 const switcher = require("../../lib/utils/torswitcher")
-const {fetchUser, getOrFetchShortcode, userRequestCache, history} = require("../../lib/collectors")
+const {fetchUser, getOrFetchShortcode, userRequestCache, history, assistantSwitcher} = require("../../lib/collectors")
 const {render, redirect, getStaticURL} = require("pinski/plugins")
 const {pugCache} = require("../passthrough")
 const {getSettings} = require("./utils/getsettings")
@@ -17,7 +17,7 @@ module.exports = [
 			return render(200, "pug/home.pug", {
 				settings,
 				rssEnabled: constants.feeds.enabled,
-				allUnblocked: history.testNoneBlocked(),
+				allUnblocked: history.testNoneBlocked() || assistantSwitcher.displaySomeUnblocked(),
 				torAvailable: switcher.canUseTor(),
 				hasPrivacyPolicy: constants.has_privacy_policy
 			})

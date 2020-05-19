@@ -16,6 +16,12 @@ class AssistantSwitcher {
 		return this.assistants.filter(assistant => assistant.available()).sort((a, b) => (a.lastRequest - b.lastRequest))
 	}
 
+	displaySomeUnblocked() {
+		return this.assistants.some(assistant =>
+			[constants.symbols.assistant_statuses.NONE, constants.symbols.assistant_statuses.OK].includes(assistant.lastRequestStatus)
+		)
+	}
+
 	requestUser(username) {
 		return new Promise(async (resolve, reject) => {
 			const assistants = this.getAvailableAssistants()

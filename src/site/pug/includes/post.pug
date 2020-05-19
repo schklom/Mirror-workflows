@@ -4,6 +4,10 @@ mixin post(post, headerWithNavigation)
 	.post-page-divider(class={
 		"caption-on-right": settings.caption_side === "right"
 	})
+		- let willDisplayAlt = settings.display_alt && post.children.some(p => p.data.accessibility_caption)
+		- let willDisplayAltInDescription = willDisplayAlt && post.children.length === 1
+		- let willDisplayAltInGallery = willDisplayAlt && post.children.length !== 1
+
 		section.description-section
 			.user-header
 				header.user-header-inner
@@ -18,14 +22,26 @@ mixin post(post, headerWithNavigation)
 						img(src="/static/img/arrow-circled.svg" alt="Previous post.").icon.previous
 					button(data-next).navigate-posts
 						img(src="/static/img/arrow-circled.svg" alt="Next post.").icon
+
 			div.relative-box
 				div.scrolling-box
 					if post.getCaption()
 						p.structured-text.description
 							+display_structured(post.getStructuredCaption())
+
+					if willDisplayAltInDescription
+						each child in post.children
+							- let caption = child.data.accessibility_caption
+							if caption
+								p.description= caption
+
 		section.images-gallery
 			for entry in post.children
 				if entry.isVideo()
 					video(src=entry.getVideoUrlP() controls preload="auto" width=entry.data.dimensions.width height=entry.data.dimensions.height).sized-video
 				else
 					img(src=entry.getDisplayUrlP() alt=entry.getAlt() width=entry.data.dimensions.width height=entry.data.dimensions.height).sized-image
+				if willDisplayAltInGallery
+					- let caption = entry.data.accessibility_caption
+					if caption
+						p.description.alt-in-gallery= caption

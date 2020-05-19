@@ -272,6 +272,20 @@ body
 		.description-section
 			order: 1
 
+	.description
+		margin: 12px
+		white-space: pre-line
+		overflow-wrap: anywhere
+		font-size: 20px
+		line-height: 1.4
+		unicode-bidi: plaintext
+
+		@media screen and (min-width: $layout-b-min)
+			padding-bottom: 20px
+
+		@media screen and (max-width: $layout-a-max)
+			font-size: 18px
+
 	.description-section
 		display: grid
 		align-items: stretch
@@ -358,19 +372,6 @@ body
 					display: grid
 					align-items: center
 
-		.description
-			margin: 12px
-			white-space: pre-line
-			overflow-wrap: anywhere
-			font-size: 20px
-			line-height: 1.4
-			unicode-bidi: plaintext
-			@media screen and (min-width: $layout-b-min)
-				padding-bottom: 20px
-
-			@media screen and (max-width: $layout-a-max)
-				font-size: 18px
-
 	.images-gallery
 		display: flex
 		flex-direction: column
@@ -399,6 +400,13 @@ body
 		.sized-video
 			width: auto
 			height: auto
+
+		.alt-in-gallery
+			color: map-get($theme, "foreground-gallery-alt")
+			padding: 0px 50px
+			margin: 0px 0px 50px
+			text-align: center
+			font-size: 20px
 
 .error-page
 	box-sizing: border-box

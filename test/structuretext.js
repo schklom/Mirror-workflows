@@ -132,5 +132,25 @@ tap.test("entire structure works", childTest => {
 		"special characters"
 	)
 
+	// email address
+	childTest.same(
+		structure("someaddress@gmail.com"),
+		[
+			{type: "text", text: "someaddress@gmail.com"}
+		],
+		"email address"
+	)
+
+	// email address + username
+	childTest.same(
+		structure("someaddress@gmail.com @gmail.com"),
+		[
+			{type: "text", text: "someaddress@gmail.com "},
+			{type: "user", text: "@gmail.com", user: "gmail.com"},
+			{type: "text", text: ""}
+		],
+		"email address"
+	)
+
 	childTest.end()
 })

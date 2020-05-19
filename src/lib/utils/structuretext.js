@@ -31,7 +31,7 @@ function partsUsername(parts) {
 	for (let i = 0; i < parts.length; i++) {
 		if (parts[i].type === "text") {
 			tryMatch(parts[i].text, new RegExp(`@(${constants.external.username_regex})`, "g"), match => {
-				if (match.index === 0 || parts[i].text[match.index-1].match(/\s/)) { // check that there's a space before the username
+				if (match.index === 0 || parts[i].text[match.index-1].match(/\W/)) { // check that there isn't a word directly before the username
 					replacePart(parts, i, match, [
 						{type: "user", text: match[0], user: match[1]}
 					])

@@ -25,7 +25,6 @@ module.exports = [
 	},
 	{
 		route: "/privacy", methods: ["GET"], code: async ({req}) => {
-
 			if (constants.has_privacy_policy && pugCache.has("pug/privacy.pug")) {
 				const settings = getSettings(req)
 				return render(200, "pug/privacy.pug", {settings})
@@ -107,13 +106,14 @@ module.exports = [
 		}
 	},
 	{
-		route: `/fragment/user/(${constants.external.username_regex})/(\\d+)`, methods: ["GET"], code: async ({url, fill}) => {
+		route: `/fragment/user/(${constants.external.username_regex})/(\\d+)`, methods: ["GET"], code: async ({req, url, fill}) => {
 			return fetchUser(fill[0]).then(async user => {
 				const pageNumber = +fill[1]
 				const pageIndex = pageNumber - 1
 				await user.timeline.fetchUpToPage(pageIndex)
 				if (user.timeline.pages[pageIndex]) {
-					return render(200, "pug/fragments/timeline_page.pug", {page: user.timeline.pages[pageIndex], pageIndex, user, url})
+					const settings = getSettings(req)
+					return render(200, "pug/fragments/timeline_page.pug", {page: user.timeline.pages[pageIndex], pageIndex, user, url, settings})
 				} else {
 					return {
 						statusCode: 400,
@@ -136,17 +136,18 @@ module.exports = [
 		}
 	},
 	{
-		route: `/fragment/post/(${constants.external.shortcode_regex})`, methods: ["GET"], code: ({fill}) => {
+		route: `/fragment/post/(${constants.external.shortcode_regex})`, methods: ["GET"], code: ({req, fill}) => {
 			return getOrFetchShortcode(fill[0]).then(async post => {
 				await post.fetchChildren()
 				await post.fetchExtendedOwnerP() // serial await is okay since intermediate fetch result is cached
 				if (post.isVideo()) await post.fetchVideoURL()
+				const settings = getSettings(req)
 				return {
 					statusCode: 200,
 					contentType: "application/json",
 					content: {
 						title: getPageTitle(post),
-						html: pugCache.get("pug/fragments/post.pug").web({post})
+						html: pugCache.get("pug/fragments/post.pug").web({post, settings})
 					}
 				}
 			}).catch(error => {
@@ -186,9 +187,7 @@ module.exports = [
 				await post.fetchChildren()
 				await post.fetchExtendedOwnerP() // serial await is okay since intermediate fetch result is cached
 				if (post.isVideo()) await post.fetchVideoURL()
-
 				const settings = getSettings(req)
-
 				return render(200, "pug/post.pug", {
 					title: getPageTitle(post),
 					post,

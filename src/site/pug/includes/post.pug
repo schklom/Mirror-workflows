@@ -1,7 +1,9 @@
 include ./display_structured
 
 mixin post(post, headerWithNavigation)
-	.post-page-divider
+	.post-page-divider(class={
+		"caption-on-right": settings.caption_side === "right"
+	})
 		section.description-section
 			.user-header
 				header.user-header-inner

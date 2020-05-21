@@ -6,7 +6,7 @@
 
 Bibliogram works without client-side JavaScript, has no ads or tracking, and doesn't urge you to sign up.
 
-See Bibliogram's features: [Wiki:Features](./wiki/Features)
+See Bibliogram's features: [Wiki:Features](https://github.com/cloudrac3r/bibliogram/wiki/Features)
 
 Join the Bibliogram discussion room on Matrix: [#bibliogram:matrix.org](https://matrix.to/#/#bibliogram:matrix.org)
 

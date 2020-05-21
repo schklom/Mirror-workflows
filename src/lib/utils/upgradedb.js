@@ -97,35 +97,89 @@ const deltas = new Map([
 	}]
 ])
 
+function writeProgress(i) {
+	const size = deltas.size
+	const progress = "=".repeat(i) + " ".repeat(deltas.size-i)
+	const numberLength = String(deltas.size).length
+	process.stdout.cursorTo(0)
+	process.stdout.write(
+		`Creating database... (${String(i).padStart(numberLength, " ")}`
+		+`/${String(size).padStart(numberLength, " ")}) [${progress}]`
+	)
+}
+
+async function createBackup(entry) {
+	const filename = `backups/bibliogram.db.bak-v${entry-1}`
+	process.stdout.write(`Backing up current to ${filename}... `)
+	await db.backup(pj(__dirname, "../../../db", filename))
+	process.stdout.write("done.\n")
+}
+
+/**
+ * @param {number} entry
+ * @param {boolean} log
+ */
+function runDelta(entry, log) {
+	if (log) process.stdout.write(`Using script ${entry}... `)
+	deltas.get(entry)()
+	db.prepare("DELETE FROM DatabaseVersion").run()
+	db.prepare("INSERT INTO DatabaseVersion (version) VALUES (?)").run(entry)
+	if (log) process.stdout.write("done.\n")
+}
+
 module.exports = async function() {
 	let currentVersion = 0
+	let upgradeType = "stages" // "stages", "progress", whether to execute each stage at a time or show a progress bar and run all
 	try {
 		currentVersion = db.prepare("SELECT version FROM DatabaseVersion").pluck().get() || 0
 	} catch (e) {}
 
+	if (currentVersion === 0) {
+		upgradeType = "progress"
+		console.log(
+			   "Welcome to Bibliogram! Thank you for installing."
+			+"\n"
+			+"\n  -> Make sure you have set `config/website_origin`"
+			+"\n     as instructed in the installation guide."
+			+"\n  -> Consider adding yourself to the instance list:"
+			+"\n     https://github.com/cloudrac3r/bibliogram/wiki/Instances"
+			+"\n  -> Join the Matrix chatroom for help: #bibliogram:matrix.org"
+			+"\n"
+		)
+		writeProgress(0)
+		await new Promise(resolve => setTimeout(resolve, 300))
+	}
+
 	const newVersion = constants.database_version
 
 	if (currentVersion !== newVersion) {
-		console.log(`Upgrading database from version ${currentVersion} to version ${newVersion}...`)
-		// go through the entire upgrade path
+		if (upgradeType === "stages") {
+			console.log(`Upgrading database from version ${currentVersion} to version ${newVersion}...`)
+		}
+
+		// go through the entire upgrade sequence
 		for (let entry = currentVersion+1; entry <= newVersion; entry++) {
 			// Back up current version
-			if (entry !== 1) {
-				const filename = `backups/bibliogram.db.bak-v${entry-1}`
-				process.stdout.write(`Backing up current to ${filename}... `)
-				await db.backup(pj(__dirname, "../../../db", filename))
-				process.stdout.write("done.\n")
+			if (upgradeType === "stages" && entry !== 1) {
+				await createBackup(entry)
 			}
+
 			// Run delta
-			process.stdout.write(`Using script ${entry}... `)
-			deltas.get(entry)()
-			db.prepare("DELETE FROM DatabaseVersion").run()
-			db.prepare("INSERT INTO DatabaseVersion (version) VALUES (?)").run(entry)
-			process.stdout.write("done.\n")
+			runDelta(entry, upgradeType === "stages")
+
+			if (upgradeType === "progress") {
+				writeProgress(entry)
+			}
 		}
-		console.log(
-			   "Upgrade complete."
-			+"\n-----------------"
-		)
+
+		if (upgradeType === "stages") {
+			console.log(
+					"Upgrade complete."
+				+"\n-----------------"
+			)
+		} else {
+			process.stdout.write(" done.\n\n")
+			await new Promise(resolve => setTimeout(resolve, 300))
+		}
 	}
 }

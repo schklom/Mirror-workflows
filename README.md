@@ -6,49 +6,11 @@
 
 Bibliogram works without client-side JavaScript, has no ads or tracking, and doesn't urge you to sign up.
 
-See also: [Invidious, a front-end for YouTube.](https://github.com/omarroth/invidious)
+See Bibliogram's features: [Wiki:Features](./wiki/Features)
 
 Join the Bibliogram discussion room on Matrix: [#bibliogram:matrix.org](https://matrix.to/#/#bibliogram:matrix.org)
 
-## Features
-
-- [x] View profile and timeline
-- [x] Infinite scroll
-- [x] User memory cache
-- [x] RSS (latest 12 posts)
-- [x] View post
-- [x] Galleries
-- [x] Homepage
-- [x] Videos
-- [x] Galleries of videos
-- [x] Optimised for mobile
-- [x] Instance list
-- [x] Clickable usernames and hashtags
-- [x] Proper error checking
-- [x] Favicon
-- [ ] Image disk cache
-- [ ] Settings (e.g. data saving)
-- [ ] List view
-- [ ] IGTV
-- [ ] Test suite
-- [ ] Rate limiting
-- [ ] Public API
-- [ ] Explore hashtags
-- [ ] Explore locations
-- [ ] _more...?_
-
-These features may not be able to be implemented for technical reasons:
-
-- Stories
-
-These features will not be added, unless you ask _reallllly_ nicely:
-
-- Comments
-- Tagging users
-
-These features will not be added, and I will not investigate adding them:
-
-- Viewing or interacting with a private profile's timeline
+See also: [Invidious, a front-end for YouTube.](https://github.com/omarroth/invidious)
 
 ## Instances
 
@@ -76,16 +38,9 @@ After installing, you _must_ configure `website_origin`. See [Wiki:Installing](h
 
 You can also deploy on Heroku, though I personally would not recommend this. [Get started with Heroku.](https://heroku.com/deploy?template=https://github.com/cloudrac3r/bibliogram)
 
-## User-facing endpoints
-
-- `/` - homepage
-- `/u/{username}` - load a user's profile and timeline
-- `/u/{username}/rss.xml` - get the RSS feed for a user
-- `/u/{username}/atom.xml` - get the Atom feed for a user
-- `/p/{shortcode}` - load a post
-- `/privacy` - privacy policy
-
 ## Credits & license information
+
+All of Bibliogram's code uses the [AGPL 3.0 license](https://choosealicense.com/licenses/agpl-3.0/). In short, this means that if you make any modifications to the code and then publish the result (e.g. by hosting the result on a webserver), you must publicly distribute your changes and declare that they also use AGPL 3.0.
 
 Site banner by [TheFrenchGhosty](https://gitlab.com/TheFrenchGhosty), [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 

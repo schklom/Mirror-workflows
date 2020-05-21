@@ -19,10 +19,14 @@ module.exports = [
 				}
 			})
 			streams.add(stream)
+			stream.push(":connected\n\n")
 
 			return {
 				statusCode: 200,
 				contentType: "text/event-stream",
+				headers: {
+					"X-Accel-Buffering": "no"
+				},
 				stream
 			}
 		}

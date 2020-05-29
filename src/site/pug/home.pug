@@ -29,7 +29,7 @@ html
 				p.
 					Bibliogram is a website that takes data from Instagram's public profile views and puts it into
 					a friendlier page that loads faster, gives downloadable images, eliminates ads,
-					generates RSS feeds, and doesn't urge you to sign up. #[a(href="/u/instagram").example-link See an example.]
+					generates RSS feeds, and doesn't urge you to sign up. #[a(href=(constants.featured_profiles.length ? "#featured-profiles" : "/u/instagram")).example-link See an example.]
 				p.
 					Bibliogram does #[em not] allow you to anonymously post, like, comment, follow, or view private profiles.
 					It does not preserve deleted posts.
@@ -59,3 +59,20 @@ html
 						]
 					each entry in links
 						li: a(href!=entry[0] target="_blank" rel="noopener noreferrer")= entry[1]
+
+				if constants.featured_profiles.length
+					.featured-profiles#featured-profiles
+						h2.featured-profiles-header Featured profiles
+
+						table.featured-profile-table
+							tbody
+								each profile in constants.featured_profiles
+									tr
+										td.username: a(href=`/u/${profile.username}`) @#{profile.username}
+										td= profile.description
+
+						details
+							summary What's this?
+							.details-content
+								p The owner of this website personally thinks that these profiles are interesting.
+								p These are not endorsements from the Bibliogram project.

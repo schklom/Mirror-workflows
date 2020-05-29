@@ -11,6 +11,9 @@ $theme: () !default
 body, input, button, textarea
 	font-family: "Bariol", sans-serif
 
+summary
+	text-decoration: underline
+
 body
 	margin: 0
 	padding: 0
@@ -549,6 +552,43 @@ body
 			.link-list
 				color: map-get($theme, "link-power")
 
+	.featured-profiles
+		margin-bottom: 20px
+		line-height: 1.4
+
+		&:target
+			background-color: map-get($theme, "background-power-highlight")
+			margin: -6px -16px 14px
+			padding: 5px 15px
+			border-radius: 10px
+			border: map-get($theme, "edge-power-border")
+
+			.featured-profiles-header::before
+				content: "» "
+
+		summary
+			color: map-get($theme, "link-power")
+			padding-left: 2px
+
+		.featured-profile-table
+			line-height: 1.4
+			margin: 1em 0px 1px 1em
+
+			@media screen and (max-width: $layout-c-max)
+				line-height: 1.15
+				margin: 1em 0px 1px 15px
+				text-indent: -15px
+
+				tr
+					display: block
+					margin-bottom: 10px
+
+				td
+					display: inline
+
+		.username
+			padding-right: 6px
+
 .structured-text
 	a, a:visited
 		color: map-get($theme, "link-primary")
@@ -712,3 +752,19 @@ body
 
 		.home-link
 			font-size: 21px
+
+.details-content
+	border: map-get($theme, "edge-power-border")
+	margin-top: 5px
+	padding: 15px 20px
+	border-radius: 5px
+	line-height: 1.4
+
+	p
+		margin: 0.6em 0
+
+	> p:first-child
+		margin-top: 0
+
+	> p:last-child
+		margin-bottom: 0

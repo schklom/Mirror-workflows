@@ -164,6 +164,9 @@ let constants = {
 		enable_updater_page: false
 	},
 
+	featured_profiles: [
+	],
+
 	use_assistant: {
 		enabled: false,
 		// Read the docs.

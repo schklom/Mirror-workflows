@@ -203,7 +203,9 @@ let constants = {
 		timeline_query_hash: "e769aa130647d2354c40ea6a439bfc08",
 		timeline_query_hash_2: "42323d64886122307be10013ad2dcc44", // https://github.com/rarcega/instagram-scraper/blob/dc022081dbefc81500c5f70cce5c70cfd2816e3c/instagram_scraper/constants.py#L30
 		shortcode_query_hash: "2b0673e0dc4580674a88d426fe00ea90",
+		igtv_query_hash: "bc78b344a68ed16dd5d7f264681c4c76",
 		timeline_fetch_first: 12,
+		igtv_fetch_first: 12,
 		username_regex: "[\\w.]*[\\w]",
 		shortcode_regex: "[\\w-]+",
 		hashtag_regex: "[^ \\n`~!@#\\$%^&*()\\-=+[\\]{};:\"',<.>/?\\\\]+",
@@ -250,6 +252,10 @@ let constants = {
 			RSS: Symbol("RSS"),
 			ASSISTANT: Symbol("ASSISTANT")
 		}
+	},
+
+	secrets: {
+		push_webhook_token: null
 	},
 
 	additional_routes: [],

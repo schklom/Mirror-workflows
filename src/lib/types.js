@@ -99,6 +99,7 @@
  * @property {boolean} [viewer_has_saved_to_collection]
  * @property {boolean} [viewer_in_photo_of_you]
  * @property {boolean} [viewer_can_reshare]
+ * @property {string} [title] igtv only
  * N3
  * @property {boolean} [caption_is_edited]
  * @property {boolean} [has_ranked_comments]
@@ -244,6 +245,7 @@
  * @property {boolean} viewer_can_reshare
  * @property {string} thumbnail_src
  * @property {DisplayResource[]} thumbnail_resources
+ * @property {string} [title] igtv only
  */
 
 /**

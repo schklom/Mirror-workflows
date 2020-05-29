@@ -1,6 +1,7 @@
 const constants = require("../../lib/constants")
 const {render, redirect} = require("pinski/plugins")
 const {getSettings, getToken, generateCSRF, checkCSRF} = require("./utils/getsettings")
+const {getSettingsReferrer} = require("./utils/settingsreferrer")
 const crypto = require("crypto")
 const db = require("../../lib/db")
 
@@ -12,11 +13,21 @@ module.exports = [
 			const csrf = generateCSRF()
 			const message = url.searchParams.get("message")
 			const status = url.searchParams.get("status")
-			return render(200, "pug/settings.pug", {constants, settings, csrf, status, message})
+			return render(200, "pug/settings.pug", {
+				stayAction: getSettingsReferrer(url.searchParams.get("referrer"), "/settings/stay"),
+				returnAction: getSettingsReferrer(url.searchParams.get("referrer"), "/settings/return"),
+				returnURL: url.searchParams.get("referrer") || "/",
+				constants,
+				settings,
+				csrf,
+				status,
+				message
+			})
 		}
 	},
 	{
-		route: "/settings", methods: ["POST"], upload: true, code: async ({req, body}) => {
+		route: "/settings/(stay|return)", methods: ["POST"], upload: true, code: async ({req, body, fill, url}) => {
+			const action = fill[0]
 			const oldToken = getToken(req)
 			const params = new URLSearchParams(body.toString())
 			if (!checkCSRF(params.get("csrf"))) {
@@ -53,10 +64,22 @@ module.exports = [
 			db.prepare(`INSERT INTO UserSettings (token, created, ${fields.join(", ")}) VALUES (@token, @created, ${fields.map(f => "@"+f).join(", ")})`).run(prepared)
 			db.prepare("DELETE FROM UserSettings WHERE token = ?").run(oldToken)
 			const expires = new Date(Date.now() + 4000*24*60*60*1000).toUTCString()
+			let location
+			if (action === "return" && url.searchParams.has("referrer")) {
+				location = url.searchParams.get("referrer")
+			} else { // stay
+				const newParams = new URLSearchParams()
+				newParams.append("status", "success")
+				newParams.append("message", "Saved.")
+				if (url.searchParams.has("referrer")) {
+					newParams.append("referrer", url.searchParams.get("referrer"))
+				}
+				location = "/settings?" + newParams.toString()
+			}
 			return {
 				statusCode: 303,
 				headers: {
-					"Location": "/settings?status=success&message=Saved.",
+					"Location": location,
 					"Set-Cookie": `settings=${prepared.token}; Path=/; Expires=${expires}; SameSite=Lax`
 				},
 				contentType: "text/html; charset=UTF-8",

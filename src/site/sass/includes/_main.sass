@@ -691,14 +691,22 @@ body
 
 	.action-container
 		margin-top: 20px
-		display: flex
-		justify-content: space-between
+		display: grid
+		grid-template-columns: 1fr auto auto
+		grid-gap: 10px
 		align-items: center
 
-		.save-button
-			padding: 12px
-			width: 180px
+		@media screen and (max-width: 400px)
+			display: flex
+			flex-direction: column
+			align-items: stretch
+			text-align: center
 
+			.home-link-container
+				order: 1
+
+		.save-button
+			padding: 12px 32px
 			&:not(:active)
 				@include forms.curve-out-major
 

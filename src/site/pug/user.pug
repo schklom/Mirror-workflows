@@ -35,7 +35,7 @@ html
 			//- Alt text guidelines from https://axesslab.com/alt-texts/
 			a(href="/").nav-icon-link
 				img(src="/static/img/logo-circle-min.svg" alt="Bibliogram").logo
-			a(href="/settings").nav-icon-link
+			a(href=settingsReferrer).nav-icon-link
 				img(src="/static/img/settings.svg" alt="Settings").settings
 		.main-divider
 			header.profile-overview
@@ -74,7 +74,7 @@ html
 					section.bibliogram-meta
 						.links
 							a(href="/") Home
-							a(href="/settings") Settings
+							a(href=settingsReferrer) Settings
 
 			- const hasPosts = !user.data.is_private && user.timeline.pages.length && user.timeline.pages[0].length
 			main(class=hasPosts ? "" : "no-posts")#timeline.timeline

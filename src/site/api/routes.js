@@ -4,6 +4,7 @@ const {fetchUser, getOrFetchShortcode, userRequestCache, history, assistantSwitc
 const {render, redirect, getStaticURL} = require("pinski/plugins")
 const {pugCache} = require("../passthrough")
 const {getSettings} = require("./utils/getsettings")
+const {getSettingsReferrer} = require("./utils/settingsreferrer")
 
 /** @param {import("../../lib/structures/TimelineEntry")} post */
 function getPageTitle(post) {
@@ -16,6 +17,7 @@ module.exports = [
 			const settings = getSettings(req)
 			return render(200, "pug/home.pug", {
 				settings,
+				settingsReferrer: getSettingsReferrer("/"),
 				rssEnabled: constants.feeds.enabled,
 				allUnblocked: history.testNoneBlocked() || assistantSwitcher.displaySomeUnblocked(),
 				torAvailable: switcher.canUseTor(),
@@ -76,7 +78,14 @@ module.exports = [
 
 				const settings = getSettings(req)
 
-				return render(200, "pug/user.pug", {url, user, followerCountsAvailable, constants, settings})
+				return render(200, "pug/user.pug", {
+					url,
+					user,
+					followerCountsAvailable,
+					constants,
+					settings,
+					settingsReferrer: getSettingsReferrer(req.url)
+				})
 			}).catch(error => {
 				if (error === constants.symbols.NOT_FOUND || error === constants.symbols.ENDPOINT_OVERRIDDEN) {
 					return render(404, "pug/friendlyerror.pug", {

@@ -34,9 +34,12 @@ html
 		if status && message
 			.status-notice(class=status)= message
 			script.
-				history.replaceState(null, "", "/settings")
+				const params = new URLSearchParams(window.location.search)
+				params.delete("status")
+				params.delete("message")
+				history.replaceState(null, "", "?" + params.toString())
 		main.settings
-			form(action="/settings" method="post" enctype="application/x-www-form-urlencoded")
+			form(action=returnAction method="post" enctype="application/x-www-form-urlencoded")
 				input(type="hidden" name="csrf" value=csrf)
 
 				h1 Settings
@@ -123,5 +126,6 @@ html
 									span.fake-checkbox
 
 				.action-container
-					a(href="/").home-link ← Home
-					button(type="submit").save-button Save settings
+					span.home-link-container: a(href=returnURL).home-link ← Return
+					button(type="submit" formaction=stayAction).save-button Save
+					button(type="submit").save-button Save &amp; return

@@ -29,5 +29,7 @@ function customWriter(output) {
 	return output
 }
 
-console.log("REPL started")
-repl.start({prompt: "b) ", eval: customEval, writer: customWriter}).once("exit", () => process.exit())
+setTimeout(() => {
+	console.log("[.] REPL started")
+	repl.start({prompt: "b) ", eval: customEval, writer: customWriter}).once("exit", () => process.exit())
+}, 2000) // wait for pinski to initialise. TODO: do this properly

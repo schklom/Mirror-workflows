@@ -54,7 +54,7 @@ subdirs("pug", async (err, dirs) => {
 
 	Object.assign(passthrough, pinski.getExports())
 
-	console.log("Server started")
+	console.log("[.] Server started")
 
 	if (process.stdin.isTTY || process.argv.includes("--enable-repl")) {
 		require("./repl")

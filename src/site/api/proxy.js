@@ -90,7 +90,7 @@ module.exports = [
 					})
 					const piped = body.pipe(converter)
 					piped.on("error", error => {
-						console.error("Piped stream emitted na error:", error)
+						console.error("Piped stream emitted an error:", error)
 					})
 					return {
 						statusCode: 200,

@@ -28,7 +28,10 @@ mixin post(post, headerWithNavigation)
 					div
 						if post.getCaption()
 							p.structured-text.description
-								+display_structured(post.getStructuredCaption())
+								if settings.remove_trailing_hashtags
+									+display_structured(post.getStructuredCaptionWithoutTrailingHashtags())
+								else
+									+display_structured(post.getStructuredCaption())
 
 						footer
 							if willDisplayAltInDescription

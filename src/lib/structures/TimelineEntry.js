@@ -2,7 +2,7 @@ const constants = require("../constants")
 const {proxyImage, proxyExtendedOwner} = require("../utils/proxyurl")
 const {compile} = require("pug")
 const collectors = require("../collectors")
-const {structure} = require("../utils/structuretext")
+const {structure, removeTrailingHashtags} = require("../utils/structuretext")
 const TimelineBaseMethods = require("./TimelineBaseMethods")
 const TimelineChild = require("./TimelineChild")
 require("../testimports")(collectors, TimelineChild, TimelineBaseMethods)
@@ -108,6 +108,12 @@ class TimelineEntry extends TimelineBaseMethods {
 		const caption = this.getCaption()
 		if (!caption) return null // no caption
 		else return structure(caption)
+	}
+
+	getStructuredCaptionWithoutTrailingHashtags() {
+		const structured = this.getStructuredCaption()
+		if (!structured) return null // no caption
+		else return removeTrailingHashtags(structured)
 	}
 
 	/**

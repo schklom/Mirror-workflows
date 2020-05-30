@@ -1,5 +1,20 @@
 const constants = require("../constants")
 
+const dots = [
+	".", // full stop
+	"\u00b7", // middle dot
+	"\u2022", // bullet
+	"\u2027", // hyphenation point
+	"\u2219", // bullet operator
+	"\u22c5", // dot operator
+	"\u2e31", // word separator middle dot
+	"\u2e33", // raised dot
+	"\u30fb", // katakana middle dot
+	"\uff65", // halfwidth katakana middle dot
+]
+
+const dotRegex = new RegExp(`[\n ][\n #${dots.join("")}]*$`, "gms")
+
 function tryMatch(text, against, callback) {
 	if (against instanceof RegExp && against.global) {
 		// if it's a global match, keep sending matches to the callback while the callback returns true
@@ -67,6 +82,41 @@ function structure(text) {
 	return parts
 }
 
+/**
+ * Edit a structure in-place to remove trailing hashtags and separator characters.
+ */
+function removeTrailingHashtags(structured) {
+	let hasHashtags = structured.some(part => part.type === "hashtag")
+	let seenHashtags = false
+
+	function shouldRemoveLastPart() {
+		const part = structured[structured.length-1]
+		if (part.type === "hashtag") {
+			seenHashtags = true
+			return true
+		} else if (part.type === "user") {
+			if (hasHashtags && !seenHashtags) { // compromise?
+				return true
+			}
+		} else if (part.type === "text") {
+			const content = part.text.replace(dotRegex, "")
+			if (content.length === 0) {
+				return true
+			} else {
+				part.text = content
+			}
+		}
+		return false
+	}
+
+	while (shouldRemoveLastPart()) {
+		structured.pop()
+	}
+
+	return structured
+}
+
 module.exports.structure = structure
 module.exports.partsUsername = partsUsername
 module.exports.partsHashtag = partsHashtag
+module.exports.removeTrailingHashtags = removeTrailingHashtags

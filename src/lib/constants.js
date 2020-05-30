@@ -113,6 +113,11 @@ let constants = {
 			boolean: true,
 			replaceEmptyWithDefault: true
 		},{
+			name: "remove_trailing_hashtags",
+			default: "",
+			boolean: true,
+			replaceEmptyWithDefault: false
+		},{
 			name: "link_hashtags",
 			default: "",
 			boolean: true,
@@ -122,6 +127,11 @@ let constants = {
 			default: "on",
 			boolean: true,
 			replaceEmptyWithDefault: false
+		},{
+			name: "infinite_scroll",
+			default: "normal",
+			boolean: false,
+			replaceEmptyWithDefault: true
 		},{
 			name: "caption_side",
 			default: "left",
@@ -263,7 +273,7 @@ let constants = {
 
 	additional_routes: [],
 
-	database_version: 7
+	database_version: 8
 }
 
 // Override values from config and export the result

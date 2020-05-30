@@ -80,7 +80,7 @@ const deltas = new Map([
 		db.transaction(() => {
 			db.prepare("ALTER TABLE UserSettings ADD COLUMN save_data TEXT NOT NULL DEFAULT 'automatic'")
 				.run()
-			db.prepare("ALTER TABLE UserSettings ADD COLUMN rewrite_youtube TEXT NOT NULL DEFAULt ''")
+			db.prepare("ALTER TABLE UserSettings ADD COLUMN rewrite_youtube TEXT NOT NULL DEFAULT ''")
 				.run()
 			db.prepare("ALTER TABLE UserSettings ADD COLUMN rewrite_twitter TEXT NOT NULL DEFAULT ''")
 				.run()
@@ -92,6 +92,15 @@ const deltas = new Map([
 			db.prepare("DROP TABLE IF EXISTS CSRFTokens")
 				.run()
 			db.prepare("CREATE TABLE CSRFTokens (token TEXT NOT NULL, expires INTEGER NOT NULL, PRIMARY KEY (token))")
+				.run()
+		})()
+	}],
+	// version 7 to version 8
+	[8, function() {
+		db.transaction(() => {
+			db.prepare("ALTER TABLE UserSettings ADD COLUMN remove_trailing_hashtags INTEGER NOT NULL DEFAULT 0")
+				.run()
+			db.prepare("ALTER TABLE UserSettings ADD COLUMN infinite_scroll TEXT NOT NULL DEFAULT 'normal'")
 				.run()
 		})()
 	}]

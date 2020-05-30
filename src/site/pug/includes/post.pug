@@ -25,15 +25,18 @@ mixin post(post, headerWithNavigation)
 
 			div.relative-box
 				div.scrolling-box
-					if post.getCaption()
-						p.structured-text.description
-							+display_structured(post.getStructuredCaption())
+					div
+						if post.getCaption()
+							p.structured-text.description
+								+display_structured(post.getStructuredCaption())
 
-					if willDisplayAltInDescription
-						each child in post.children
-							- let caption = child.data.accessibility_caption
-							if caption
-								p.description= caption
+						footer
+							if willDisplayAltInDescription
+								- let caption = post.children[0].data.accessibility_caption
+								if caption
+									p.description= caption
+							p.description
+								span Posted on #[time(datetime=post.date.toISOString() data-local-date)= post.getDisplayDate()].
 
 		section.images-gallery
 			for entry in post.children

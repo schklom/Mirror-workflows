@@ -105,7 +105,6 @@
  * @property {boolean} [has_ranked_comments]
  * @property {boolean} [comments_disabled]
  * @property {boolean} [commenting_disabled_for_viewer]
- * @property {number} [taken_at_timestamp]
  * @property {boolean} [is_ad]
  * @property {any} [edge_web_media_to_related_media] todo: discover
  * Image

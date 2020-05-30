@@ -4,10 +4,13 @@ node_modules
 
 # Personalisation stuff
 /src/site/pug/privacy.pug
+/src/site/pug/announcements
 
 # Database stuff
 db/**/*.db*
 users_export.json
+*.log
+*.csv
 
 # Test stuff
 /coverage

@@ -91,7 +91,7 @@ class TimelineEntry extends TimelineBaseMethods {
 		return (
 			`${this.date.getUTCFullYear()}`
 			+ `-${pad(this.date.getUTCMonth()+1)}`
-			+ `-${pad(this.date.getUTCDay()+1)}`
+			+ `-${pad(this.date.getUTCDate())}`
 			+ ` ${pad(this.date.getUTCHours())}`
 			+ `:${pad(this.date.getUTCMinutes())}`
 			+ ` UTC`

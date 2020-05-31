@@ -110,11 +110,16 @@ function writeProgress(i) {
 	const size = deltas.size
 	const progress = "=".repeat(i) + " ".repeat(deltas.size-i)
 	const numberLength = String(deltas.size).length
-	process.stdout.cursorTo(0)
+	if (process.stdout.isTTY) {
+		process.stdout.cursorTo(0)
+	}
 	process.stdout.write(
 		`Creating database... (${String(i).padStart(numberLength, " ")}`
 		+`/${String(size).padStart(numberLength, " ")}) [${progress}]`
 	)
+	if (!process.stdout.isTTY) {
+		process.stdout.write("\n")
+	}
 }
 
 async function createBackup(entry) {

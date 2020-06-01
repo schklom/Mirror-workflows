@@ -55,7 +55,7 @@ subdirs("pug", async (err, dirs) => {
 	pinski.addAPIDir("api")
 
 	if (constants.as_assistant.enabled) {
-		console.log("Assistant API enabled")
+		console.log("[.] Assistant API enabled")
 		pinski.addAPIDir("assistant_api")
 	}
 
@@ -68,6 +68,8 @@ subdirs("pug", async (err, dirs) => {
 	console.log("[.] Server started")
 
 	if (process.stdin.isTTY || process.argv.includes("--enable-repl")) {
-		require("./repl")
+		pinski.waitForFirstCompile().then(() => {
+			require("./repl")
+		})
 	}
 })

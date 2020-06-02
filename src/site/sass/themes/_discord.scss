@@ -1,0 +1,73 @@
+@use "pussthecat.org-v2" as ptc;
+
+$blurple-1: #4e5d94; // project blurple
+$blurple-2: #5c6fb1; // app context menu hover
+$blurple-3: #7289da; // branding page
+$blurple-pale: #95a2ce;
+$darkest: #090a0b;
+$dark-1: #18191c; // context menu background
+$dark-2: #202225; // app guild list background
+$dark-3: #23272a; // branding page
+$dark-4: #2c2f33; // branding page
+$dark-5: #2f3136; // app channel list background
+$dark-6: #36393f; // main app background
+$red: #f04747; // app context menu hover
+$header-primary: #fff;
+$text-normal: #dcddde;
+$text-muted: #898e97; // altered to be accessible
+$link: #6ca9f7;
+
+$theme: map-merge(ptc.$theme, (
+	"background-primary": $dark-5,
+	"background-timeline-profile": $dark-2,
+	"background-timeline-loading": $dark-1,
+	"background-post-distraction": $darkest,
+	"background-post-overlay": rgba(0, 0, 0, 0.7),
+	"background-post-header": $dark-6,
+	"background-post-pfp-loading": $dark-4,
+	"background-post-caption": $dark-6,
+	"background-post-gallery": $dark-2,
+	"background-post-loading": $dark-6,
+	"background-power-primary": $blurple-3,
+	"background-power-secondary": $blurple-1,
+	"background-power-tertiary": $dark-4,
+	"background-power-palest": $blurple-2,
+	"background-power-pale": $blurple-3,
+	"background-power-quote": $dark-1,
+	"background-go-input": $blurple-1,
+	"background-primary-quote": #ccc,
+	"background-error-page": $dark-2,
+	"background-alert": $dark-2,
+	"background-banner-fail": #5f1111,
+	"background-banner-success": $blurple-2,
+	"foreground-primary": $text-normal,
+	"foreground-header": $header-primary,
+	"foreground-power-primary": #000,
+	"foreground-power-secondary": #fff,
+	"foreground-power-tertiary": $text-normal,
+	"foreground-go-control": #fff,
+	"foreground-thumbnail-alt": $text-muted,
+	"foreground-timeline-page": #999ea5,
+	"foreground-post-header": $header-primary,
+	"foreground-gallery-alt": $text-normal,
+	"foreground-error-code": $header-primary,
+	"foreground-error-message": $text-normal,
+	"foreground-error-explanation": $text-normal,
+	"foreground-header-privacy": $header-primary,
+	"foreground-alert": $header-primary,
+	"foreground-primary-quote": $text-normal,
+	"foreground-banner": $header-primary,
+	"link-primary": $link,
+	"link-power": #fff9d6,
+	"link-error-page": $link,
+	"link-hashtag": #6ac879,
+	"edge-context-divider": none,
+	"edge-thumbnail-hover": solid $blurple-3,
+	"edge-go-control": 1px solid $darkest,
+	"edge-power-divider": 1px solid $blurple-pale,
+	"edge-power-border": 1px solid $blurple-pale,
+	"edge-alert": 2px solid #949698,
+	"shadow-down": (0 1px 0 rgba(4,4,5,0.2),0 1.5px 0 rgba(6,6,7,0.05),0 2px 0 rgba(4,4,5,0.05)),
+	"shadow-right": none,
+	"shadow-down-inset": (0 1px 0 rgba(4,4,5,0.2) inset, 0 1.5px 0 rgba(6,6,7,0.05) inset, 0 2px 0 rgba(4,4,5,0.05) inset),
+));

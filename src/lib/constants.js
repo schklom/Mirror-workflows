@@ -76,6 +76,7 @@ let constants = {
 		official: [
 			{file: "classic", name: "Vanilla sard"},
 			{file: "blue", name: "Vanilla sky"},
+			{file: "discord", name: "Discord dark"},
 			{file: "pussthecat.org", name: "PussTheCat.org dark v1"},
 			{file: "pussthecat.org-v2", name: "PussTheCat.org dark v2"}
 		],

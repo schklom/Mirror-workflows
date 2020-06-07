@@ -180,7 +180,6 @@ let constants = {
 
 	use_assistant: {
 		enabled: false,
-		// Read the docs.
 		assistants: [
 		],
 		offline_request_cooldown: 20*60*1000,

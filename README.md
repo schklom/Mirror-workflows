@@ -36,12 +36,12 @@ Bibliogram is now running on `0.0.0.0:10407`.
 
 After installing, you _must_ configure `website_origin`. See [Wiki:Installing](https://github.com/cloudrac3r/bibliogram/wiki/Installing) and [Wiki:Configuring](https://github.com/cloudrac3r/bibliogram/wiki/Configuring) for more details. Problems? [Wiki:Troubleshooting](https://github.com/cloudrac3r/bibliogram/wiki/Troubleshooting)
 
-You can also deploy on Heroku, though I personally would not recommend this. [Get started with Heroku.](https://heroku.com/deploy?template=https://github.com/cloudrac3r/bibliogram)
+You can also deploy on Heroku, though I personally would not recommend this, because [Heroku's filesystem is ephemeral,](https://devcenter.heroku.com/articles/active-storage-on-heroku#ephemeral-disk) and the database is saved as a file, which means saved settings and the cache will be lost when the dyno restarts, which Heroku does automatically every few hours. In addition, configuration options [must be set via environment variables](https://github.com/cloudrac3r/bibliogram/wiki/Environment-variables) because, again, the configuration file does not persist (unless you fork the repository, make your changes as commits, push them to Heroku, and then manually manage and merge future commits to upstream Bibliogram). Despite this warning, [you can still deploy on Heroku if you want to.](https://heroku.com/deploy?template=https://github.com/cloudrac3r/bibliogram)
 
 ## Credits & license information
 
 All of Bibliogram's code uses the [AGPL 3.0 license](https://choosealicense.com/licenses/agpl-3.0/). In short, this means that if you make any modifications to the code and then publish the result (e.g. by hosting the result on a webserver), you must publicly distribute your changes and declare that they also use AGPL 3.0.
 
-Site banner by [TheFrenchGhosty](https://gitlab.com/TheFrenchGhosty), [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+Site banner by [TheFrenchGhosty](https://github.com/TheFrenchGhosty), [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 Site font is [Bariol](http://atipofoundry.com/fonts/bariol) by [atipo foundry](http://atipofoundry.com/), located in /src/site/html/static/fonts. Proprietary license, used with permission. See http://atipofoundry.com/license, section "webfont license".

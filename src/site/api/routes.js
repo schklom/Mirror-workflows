@@ -102,6 +102,8 @@ module.exports = [
 							"Retry-After": userRequestCache.getTtl("user/"+fill[0], 1000)
 						},
 						content: pugCache.get("pug/blocked.pug").web({
+							website_origin: constants.website_origin,
+							username: fill[0],
 							expiresMinutes: userRequestCache.getTtl("user/"+fill[0], 1000*60),
 							getStaticURL
 						})

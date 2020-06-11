@@ -424,6 +424,18 @@ body
 	a, a:visited
 		color: map-get($theme, "link-error-page")
 
+	p
+		white-space: pre-line
+
+	code, pre
+		font-size: 0.8em
+		padding: 3px 5px
+		background-color: rgba(255, 255, 255, 0.15)
+		border-radius: 3px
+
+	pre
+		white-space: pre-line
+
 	.code, .message, .explanation, .back-link
 		line-height: 1.2
 		margin: 0px
@@ -442,11 +454,17 @@ body
 		margin-top: 10px
 		font-size: 20px
 		color: map-get($theme, "foreground-error-explanation")
-		white-space: pre-line
 
 	.back
-		margin-top: 15vh
+		margin-top: 40px
 		font-size: 25px
+
+	.width-block
+		max-width: 600px
+		text-align: left
+		color: map-get($theme, "foreground-error-explanation")
+		margin-top: 10px
+		font-size: 20px
 
 .homepage
 	display: flex

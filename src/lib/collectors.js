@@ -288,6 +288,66 @@ function fetchTimelinePage(userID, after) {
 }
 
 /**
+ * @param {string} userID
+ * @param {string} after
+ * @returns {Promise<import("./types").PagedEdges<import("./types").TimelineEntryN2>>}
+ */
+function fetchIGTVPage(userID, after) {
+	const p = new URLSearchParams()
+	p.set("query_hash", constants.external.igtv_query_hash)
+	p.set("variables", JSON.stringify({
+		id: userID,
+		first: constants.external.igtv_fetch_first,
+		after: after
+	}))
+	return requestCache.getOrFetchPromise(`igtv/${userID}/${after}`, () => {
+		// assuming this uses the same bucket as timeline, which may not be the case
+		return switcher.request("timeline_graphql", `https://www.instagram.com/graphql/query/?${p.toString()}`, async res => {
+			if (res.status === 429) throw constants.symbols.RATE_LIMITED
+		}).then(g => g.json()).then(root => {
+			/** @type {import("./types").PagedEdges<import("./types").TimelineEntryN2>} */
+			const timeline = root.data.user.edge_owner_to_timeline_media
+			history.report("timeline", true)
+			return timeline
+		}).catch(error => {
+			if (error === constants.symbols.RATE_LIMITED) {
+				history.report("timeline", false)
+			}
+			throw error
+		})
+	})
+}
+
+/**
+ * @param {string} userID
+ * @param {string} username
+ * @returns {Promise<boolean>}
+ */
+function verifyUserPair(userID, username) {
+	// Fetch basic user information
+	const p = new URLSearchParams()
+	p.set("query_hash", constants.external.reel_query_hash)
+	p.set("variables", JSON.stringify({
+		user_id: userID,
+		include_reel: true
+	}))
+	return requestCache.getOrFetchPromise("userID/"+userID, () => {
+		return switcher.request("reel_graphql", `https://www.instagram.com/graphql/query/?${p.toString()}`, async res => {
+			if (res.status === 429) throw constants.symbols.RATE_LIMITED
+			return res
+		}).then(res => res.json()).then(root => {
+			let user = root.data.user
+			if (!user) throw constants.symbols.NOT_FOUND
+			user = user.reel.user
+			history.report("reel", true)
+			return user.id === userID && user.username === username
+		}).catch(error => {
+			throw error
+		})
+	})
+}
+
+/**
  * @param {string} shortcode
  * @returns {import("./structures/TimelineEntry")}
  */
@@ -371,3 +431,4 @@ module.exports.updateProfilePictureFromReel = updateProfilePictureFromReel
 module.exports.history = history
 module.exports.fetchUserFromSaved = fetchUserFromSaved
 module.exports.assistantSwitcher = assistantSwitcher
+module.exports.verifyUserPair = verifyUserPair

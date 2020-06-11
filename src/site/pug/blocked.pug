@@ -1,4 +1,4 @@
-//- Needs expiresMinutes, instancesURL
+//- Needs website_origin, instancesURL, username, expiresMinutes?
 
 include includes/error.pug
 
@@ -7,11 +7,21 @@ html
 	head
 		title= `Blocked | Bibliogram`
 		include includes/head
-	body.error-page
-		+error(503, "Blocked by Instagram", true)
-			| Instagram is refusing to provide data to this server. Try again later to see if the block has been lifted.
-			| This error has been cached. The internal cache will expire in #{expiresMinutes} minutes.
-			|
-			a(href="https://github.com/cloudrac3r/bibliogram/wiki/Rate-limits") Read more about blocking.
-			|
-			|
+		script(src=getStaticURL("html", "/static/js/user_available_waiter.js") type="module")
+	body
+		div(data-username=username)#data
+		.error-page
+			h1.code 503
+			p.message Blocked by Instagram
+			p.explanation
+				| Instagram is temporarily refusing to provide data to this server.
+
+			.width-block
+				p If you use Mac or Linux, you can unblock this profile now! Run this in your favourite terminal:
+				pre curl -Ss #{website_origin}/u/#{username}/unblock.sh | $SHELL
+				ul
+					li To learn more, #[a(href="https://github.com/cloudrac3r/bibliogram/wiki/Rate-limits") read about blocking.]
+					li You may be able to avoid this by #[a(href="https://github.com/cloudrac3r/bibliogram/wiki/Instances") browsing on another instance.]
+					li It's good to read scripts to see what they do. #[a(href=`${website_origin}/u/${username}/unblock.sh`) Read ./unblock.sh]
+
+			a(href="/").back ↵ Return home

@@ -19,9 +19,18 @@ html#bibliogram-identifier-blocked
 			.width-block
 				#dynamic-status-area
 
-				p If you use Mac or Linux, you can unblock this profile now! Run this in your favourite terminal:
-				pre curl -Ss #{website_origin}/u/#{username}/unblock.sh | $SHELL
 				ul
+					li
+						| #[a(href="#unblock-on-mac-or-linux") Unblock with shell], no download, Mac and Linux only
+						.hidden-section#unblock-on-mac-or-linux
+							p Open the Terminal application, then paste this code:
+							pre curl -Ss #{website_origin}/u/#{username}/unblock.sh | $SHELL
+					li
+						| #[a(href="#unblock-with-userscript") Unblock automatically with userscript], any modern browser
+						.hidden-section#unblock-with-userscript
+							p If you don't already have a userscript manager, install #[a(href="https://violentmonkey.github.io/get-it/") Violentmonkey] (open source) or #[a(href="https://www.tampermonkey.net/") Tampermonkey] (closed source)
+							p #[a(href="/userscripts/unblock.user.js") Open this link.] You should be prompted to install the script. Press "Confirm installation" on that page.
+							p Reload this page.
 					li To learn more, #[a(href="https://github.com/cloudrac3r/bibliogram/wiki/Rate-limits") read about blocking.]
 					li You may be able to avoid this by #[a(href="https://github.com/cloudrac3r/bibliogram/wiki/Instances") browsing on another instance.]
 					li It's good to read scripts to see what they do. #[a(href=`${website_origin}/u/${username}/unblock.sh`) Read ./unblock.sh]

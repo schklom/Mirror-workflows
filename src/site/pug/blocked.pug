@@ -3,7 +3,7 @@
 include includes/error.pug
 
 doctype html
-html
+html#bibliogram-identifier-blocked
 	head
 		title= `Blocked | Bibliogram`
 		include includes/head
@@ -15,6 +15,8 @@ html
 			p.message Blocked by Instagram
 			p.explanation
 				| Instagram is temporarily refusing to provide data to this server.
+
+			div#dynamic-status-area
 
 			.width-block
 				p If you use Mac or Linux, you can unblock this profile now! Run this in your favourite terminal:

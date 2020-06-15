@@ -1,6 +1,6 @@
 const {Feed} = require("feed")
 const constants = require("../constants")
-const config = require("../../../config")
+const db = require("../db")
 const TimelineEntry = require("./TimelineEntry")
 const InstaCache = require("../cache")
 const collectors = require("../collectors")
@@ -50,6 +50,15 @@ class Timeline {
 	}
 
 	addPage(page) {
+		// update whether the user should be private
+		if (this.pages.length === 0 && page.count > 0) { // this is the first page, and user has posted
+			const shouldBePrivate = page.edges.length === 0
+			if (shouldBePrivate !== this.user.data.is_private) {
+				db.prepare("UPDATE Users SET is_private = ? WHERE user_id = ?").run(+shouldBePrivate, this.user.data.id)
+				this.user.data.is_private = shouldBePrivate
+			}
+		}
+		// add the page
 		this.pages.push(transformEdges(page.edges))
 		this.page_info = page.page_info
 		this.user.posts = page.count

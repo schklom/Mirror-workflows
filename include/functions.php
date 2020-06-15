@@ -1289,19 +1289,13 @@
 			}
 
 			if ($entry->hasAttribute('srcset')) {
-				$tokens = explode(",", $entry->getAttribute('srcset'));
+				$matches = RSSUtils::decode_srcset($entry->getAttribute('srcset'));
 
-				for ($i = 0; $i < count($tokens); $i++) {
-					$token = trim($tokens[$i]);
-
-					list ($url, $width) = explode(" ", $token, 2);
-
-					$url = rewrite_relative_url($rewrite_base_url, $url);
-
-					$tokens[$i] = "$url $width";
+				for ($i = 0; $i < count($matches); $i++) {
+					$matches[$i]["url"] = rewrite_relative_url($rewrite_base_url, $matches[$i]["url"]);
 				}
 
-				$entry->setAttribute("srcset", implode(", ", $tokens));
+				$entry->setAttribute("srcset", RSSUtils::encode_srcset($matches));
 			}
 
 			if ($entry->hasAttribute('src') &&

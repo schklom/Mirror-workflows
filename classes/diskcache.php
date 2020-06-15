@@ -314,22 +314,19 @@ class DiskCache {
 				}
 
 				if ($entry->hasAttribute("srcset")) {
-					$tokens = explode(",", $entry->getAttribute('srcset'));
+					$matches = RSSUtils::decode_srcset($entry->getAttribute('srcset'));
 
-					for ($i = 0; $i < count($tokens); $i++) {
-						$token = trim($tokens[$i]);
-
-						list ($url, $width) = explode(" ", $token, 2);
-						$cached_filename = sha1($url);
+					for ($i = 0; $i < count($matches); $i++) {
+						$cached_filename = sha1($matches[$i]["url"]);
 
 						if ($cache->exists($cached_filename)) {
-							$tokens[$i] = $cache->getUrl($cached_filename) . " " . $width;
+							$matches[$i]["url"] = $cache->getUrl($cached_filename);
 
 							$need_saving = true;
 						}
 					}
 
-					$entry->setAttribute("srcset", implode(", ", $tokens));
+					$entry->setAttribute("srcset", RSSUtils::encode_srcset($matches));
 				}
 			}
 

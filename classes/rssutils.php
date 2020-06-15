@@ -1196,6 +1196,7 @@ class RSSUtils {
 		return true;
 	}
 
+	/* TODO: move to DiskCache? */
 	static function cache_enclosures($enclosures, $site_url) {
 		$cache = new DiskCache("images");
 
@@ -1231,6 +1232,7 @@ class RSSUtils {
 		}
 	}
 
+	/* TODO: move to DiskCache? */
 	static function cache_media_url($cache, $url, $site_url) {
 		$url = rewrite_relative_url($site_url, $url);
 		$local_filename = sha1($url);
@@ -1257,6 +1259,7 @@ class RSSUtils {
 		}
 	}
 
+	/* TODO: move to DiskCache? */
 	static function cache_media($html, $site_url) {
 		$cache = new DiskCache("images");
 
@@ -1275,14 +1278,10 @@ class RSSUtils {
 					}
 
 					if ($entry->hasAttribute("srcset")) {
-						$tokens = explode(",", $entry->getAttribute('srcset'));
+						$matches = RSSUtils::decode_srcset($entry->getAttribute('srcset'));
 
-						for ($i = 0; $i < count($tokens); $i++) {
-							$token = trim($tokens[$i]);
-
-							list ($url, $width) = explode(" ", $token, 2);
-
-							RSSUtils::cache_media_url($cache, $url, $site_url);
+						for ($i = 0; $i < count($matches); $i++) {
+							RSSUtils::cache_media_url($cache, $matches[$i]["url"], $site_url);
 						}
 					}
 				}
@@ -1738,4 +1737,32 @@ class RSSUtils {
 		return $favicon_url;
 	}
 
+	// https://community.tt-rss.org/t/problem-with-img-srcset/3519
+	static function decode_srcset($srcset) {
+		$matches = [];
+
+		preg_match_all(
+			'/(?:\A|,)\s*(?P<url>(?!,)\S+(?<!,))\s*(?P<size>\s\d+w|\s\d+(?:\.\d+)?(?:[eE][+-]?\d+)?x|)\s*(?=,|\Z)/',
+			$srcset, $matches, PREG_SET_ORDER
+		);
+
+		foreach ($matches as $m) {
+			array_push($matches, [
+				"url" => trim($m["url"]),
+				"size" => trim($m["size"])
+			]);
+		}
+
+		return $matches;
+	}
+
+	static function encode_srcset($matches) {
+		$tokens = [];
+
+		foreach ($matches as $m) {
+			array_push($tokens, trim($m["url"]) . " " . trim($m["size"]));
+		}
+
+		return implode(",", $tokens);
+	}
 }

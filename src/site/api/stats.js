@@ -37,7 +37,8 @@ const features = [
 	"API_STATS_SEMVER",
 	"PAGE_HOME",
 	"API_INSTANCES",
-	"BLOCK_DETECT_USER_HTML"
+	"BLOCK_DETECT_USER_HTML",
+	"API_UNBLOCK"
 ]
 if (constants.has_privacy_policy) features.push("PRIVACY_POLICY")
 if (constants.as_assistant.enabled) {

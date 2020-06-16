@@ -27,8 +27,8 @@ module.exports = [
 	},
 	{
 		route: "/privacy", methods: ["GET"], code: async ({req}) => {
+			const settings = getSettings(req)
 			if (constants.has_privacy_policy && pugCache.has("pug/privacy.pug")) {
-				const settings = getSettings(req)
 				return render(200, "pug/privacy.pug", {settings})
 			} else {
 				return render(404, "pug/friendlyerror.pug", {
@@ -37,7 +37,8 @@ module.exports = [
 					message: "No privacy policy",
 					explanation:
 						"The owner of this instance has not actually written a privacy policy."
-						+"\nIf you own this instance, please read the file stored at /src/site/pug/privacy.pug.template."
+						+"\nIf you own this instance, please read the file stored at /src/site/pug/privacy.pug.template.",
+					settings
 				})
 			}
 		}
@@ -68,6 +69,7 @@ module.exports = [
 				return Promise.resolve(redirect(`/u/${fill[0].toLowerCase()}`, 301))
 			}
 
+			const settings = getSettings(req)
 			const params = url.searchParams
 			return fetchUser(fill[0]).then(async user => {
 				const page = +params.get("page")
@@ -75,9 +77,6 @@ module.exports = [
 					await user.timeline.fetchUpToPage(page - 1)
 				}
 				const followerCountsAvailable = !(user.constructor.name === "ReelUser" && user.following === 0 && user.followedBy === 0)
-
-				const settings = getSettings(req)
-
 				return render(200, "pug/user.pug", {
 					url,
 					user,
@@ -92,7 +91,8 @@ module.exports = [
 						statusCode: 404,
 						title: "Not found",
 						message: "This user doesn't exist.",
-						withInstancesLink: false
+						withInstancesLink: false,
+						settings
 					})
 				} else if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN || error === constants.symbols.RATE_LIMITED) {
 					return {
@@ -105,11 +105,12 @@ module.exports = [
 							website_origin: constants.website_origin,
 							username: fill[0],
 							expiresMinutes: userRequestCache.getTtl("user/"+fill[0], 1000*60),
-							getStaticURL
+							getStaticURL,
+							settings
 						})
 					}
 				} else if (error === constants.symbols.extractor_results.AGE_RESTRICTED) {
-					return render(403, "pug/age_gated.pug")
+					return render(403, "pug/age_gated.pug", {settings})
 				} else {
 					throw error
 				}
@@ -194,11 +195,11 @@ module.exports = [
 	},
 	{
 		route: `/p/(${constants.external.shortcode_regex})`, methods: ["GET"], code: ({req, fill}) => {
+			const settings = getSettings(req)
 			return getOrFetchShortcode(fill[0]).then(async post => {
 				await post.fetchChildren()
 				await post.fetchExtendedOwnerP() // serial await is okay since intermediate fetch result is cached
 				if (post.isVideo()) await post.fetchVideoURL()
-				const settings = getSettings(req)
 				return render(200, "pug/post.pug", {
 					title: getPageTitle(post),
 					post,
@@ -211,7 +212,8 @@ module.exports = [
 						statusCode: 404,
 						title: "Not found",
 						message: "Somehow, you reached a post that doesn't exist.",
-						withInstancesLink: false
+						withInstancesLink: false,
+						settings
 					})
 				} else {
 					throw error

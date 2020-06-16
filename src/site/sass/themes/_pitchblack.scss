@@ -1,0 +1,58 @@
+// Defined in scss file instead of sass because indented syntax does not have multiline maps
+// This is based on the classic theme, so it pulls that in as the base and then overwrites only the properties it cares about
+// This also makes it future-proof because future additions to classic will be automatically available in this style too
+
+@use "pussthecat.org-v2" as ptc;
+
+$edge: #646566;
+$link: #6ca9e6;
+$fg-1: #fff;
+$fg-2: #f7f7f7;
+$fg-3: #e0e0e0;
+
+$theme: map-merge(ptc.$theme, (
+	"background-primary": #000,
+	"background-timeline-profile": #000,
+	"background-timeline-loading": #343a40, //todo
+	"background-post-distraction": #050607,
+	"background-post-overlay": #0c0d0e95,
+	"background-post-header": #000,
+	"background-post-pfp-loading": #121212,
+	"background-post-caption": #000,
+	"background-post-gallery": #000,
+	"background-post-loading": #000,
+	"background-power-primary": #000,
+	"background-power-secondary": #000,
+	"background-power-tertiary": #000,
+	"background-power-palest": #121416,
+	"background-power-pale": #050607,
+	"background-power-quote": #343a40,
+	"background-go-input": #121416,
+	"background-error-page": #000,
+	"background-primary-quote": #343a40,
+	"background-banner-success": #163115,
+	"foreground-primary": $fg-2,
+	"foreground-header": $fg-1,
+	"foreground-power-primary": $fg-1,
+	"foreground-power-secondary": $fg-2,
+	"foreground-power-tertiary": $fg-2,
+	"foreground-go-control": $fg-2,
+	"foreground-thumbnail-alt": $fg-3,
+	"foreground-timeline-page": $fg-3,
+	"foreground-post-header": $fg-1,
+	"foreground-error-code": $fg-1,
+	"foreground-error-message": $fg-1,
+	"foreground-error-explanation": $fg-2,
+	"link-primary": $link,
+	"link-power": $link,
+	"link-error-page": $link,
+	"link-hashtag": #7eae74,
+	"edge-context-divider": none,
+	"edge-thumbnail-hover": solid #ffffff,
+	"edge-go-control": 1px solid $edge,
+	"edge-power-border": 1px solid #666,
+	"edge-power-divider": 1px solid #343a40,
+	"shadow-down": none,
+	"shadow-right": none,
+	"shadow-down-inset": none
+));

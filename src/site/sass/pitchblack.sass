@@ -1,0 +1,10 @@
+@use "themes/pitchblack" as *
+@use "includes/dimensions" as *
+@use "includes/main" with ($theme: $theme)
+
+.top-nav
+	border-bottom: 1px solid $edge
+
+@media screen and (min-width: $layout-b-min)
+	.images-gallery
+		border-left: 1px solid $edge

@@ -1,0 +1,9 @@
+bibliogram:
+    build: .
+    volumes:
+        - ./config.js:/app/config.js:ro
+        - ./db:/app/db
+    ports:
+        - "10407:10407"
+    restart:
+        unless-stopped

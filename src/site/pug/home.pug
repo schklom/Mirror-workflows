@@ -1,4 +1,4 @@
-//- Needs rssEnabled, allUnblocked, torAvailable, hasPrivacyPolicy
+//- Needs rssEnabled, allUnblocked, torAvailable, hasPrivacyPolicy, onionLocation
 
 doctype html
 html
@@ -36,6 +36,8 @@ html
 
 				h2 About this instance
 				ul
+					if onionLocation
+						li: a(href=onionLocation) Onion site available
 					li: a(href=settingsReferrer) Settings
 					if hasPrivacyPolicy
 						li: a(href="/privacy") Privacy policy

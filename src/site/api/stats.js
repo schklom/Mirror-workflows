@@ -28,7 +28,7 @@ let commit = ""
 
 // Set up inner versioning
 
-const displayVersions = ["1.0", "1.1", "1.2", "1.3", "1.4"]
+const displayVersions = ["1.0", "1.1", "1.2", "1.3", "1.4", "1.5"]
 const versions = new Map(displayVersions.map(v => [v, semver.coerce(v)]))
 const features = [
 	"PAGE_PROFILE",
@@ -76,6 +76,11 @@ const innerMap = new Map()
 	addVersion("1.4", {
 		settings: {
 			canonicalOrigin: constants.website_origin
+		}
+	})
+	addVersion("1.5", {
+		settings: {
+			onionLocation: constants.onion_location
 		}
 	})
 }

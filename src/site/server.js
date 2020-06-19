@@ -22,7 +22,8 @@ const pinski = new Pinski({
 		"Feature-Policy": deniedFeatures.map(feature => `${feature} 'none'`).join("; "),
 		"Referrer-Policy": "strict-origin",
 		"X-Content-Type-Options": "nosniff"
-	}
+	},
+	onionLocation: constants.onion_location
 })
 
 subdirs("pug", async (err, dirs) => {

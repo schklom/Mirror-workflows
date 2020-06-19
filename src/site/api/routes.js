@@ -21,7 +21,8 @@ module.exports = [
 				rssEnabled: constants.feeds.enabled,
 				allUnblocked: history.testNoneBlocked() || assistantSwitcher.displaySomeUnblocked(),
 				torAvailable: switcher.canUseTor(),
-				hasPrivacyPolicy: constants.has_privacy_policy
+				hasPrivacyPolicy: constants.has_privacy_policy,
+				onionLocation: constants.onion_location
 			})
 		}
 	},

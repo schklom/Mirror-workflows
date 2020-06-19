@@ -4,8 +4,8 @@
 // <instance_match_list>
 // @downloadURL <website_origin>/userscripts/unblock.user.js
 // @updateURL   <website_origin>/userscripts/unblock.user.js
-// @grant       none
-// @version     1.0
+// @grant       GM.xmlHttpRequest
+// @version     1.1
 // @author      cloudrac3r
 // ==/UserScript==
 
@@ -35,6 +35,34 @@ function applyStyles(element, styles) {
 	}
 }
 
+class GMResponse {
+	constructor(data) {
+		this.headers = data.responseHeaders
+		this.text = data.responseText
+		this.status = data.status
+	}
+
+	toJSON() {
+		return JSON.parse(this.text)
+	}
+}
+
+function gmFetch(url, options = {}) {
+	console.log("Making request")
+	return new Promise((resolve, reject) => {
+		options.url = url
+		if (!options.method) options.method = "GET"
+		options.onload = response => {
+			console.log("Got response", response)
+			resolve(new GMResponse(response))
+		}
+		options.onerror = response => {
+			reject(response)
+		}
+		GM.xmlHttpRequest(options)
+	})
+}
+
 if (q("#bibliogram-identifier-blocked")) {
 	const scriptStatus = addChild(q("#dynamic-status-area"), "p", "Unblocker script is processing...", "explanation")
 	applyStyles(scriptStatus, {border: "solid orange", borderWidth: "1px 0px", padding: "10px", marginTop: "20px", textAlign: "center"})
@@ -47,10 +75,9 @@ if (q("#bibliogram-identifier-blocked")) {
 
 	const username = q("#data").getAttribute("data-username")
 
-	fetch(`https://www.instagram.com/${username}/`).then(res => {
-
-	if (res.status === 200) {
-		res.text().then(text => {
+	gmFetch(`https://www.instagram.com/${username}/`).then(res => {
+		if (res.status === 200) {
+			const text = res.text
 			const id = (text.match(/"id":"([0-9]+)"/) || [])[1]
 
 			if (id) {
@@ -58,21 +85,20 @@ if (q("#bibliogram-identifier-blocked")) {
 				params.append("username", username)
 				params.append("user_id", id)
 
-				fetch(`${window.location.origin}/api/suggest_user/v1`, {
+				gmFetch(`${window.location.origin}/api/suggest_user/v1`, {
 					headers: {
 						"content-type": "application/x-www-form-urlencoded"
 					},
 					method: "POST",
-					body: params.toString()
+					data: params.toString()
 				}).then(res => {
 					if (res.status === 201) {
 						scriptStatus.textContent = "Done! Please wait to be redirected..."
-						flashBackground();
+						flashBackground()
 					} else {
-						res.json().then(data => {
-							console.log(data)
-							alert(data.message)
-						})
+						const data = res.toJSON()
+						scriptStatus.textContent = data.message
+						flashBackground()
 					}
 				}).catch(error => {
 					scriptStatus.textContent = "Submission request error: " + (error && error.message || error)
@@ -83,19 +109,18 @@ if (q("#bibliogram-identifier-blocked")) {
 				scriptStatus.textContent = "Couldn't extract ID from page."
 				flashBackground();
 			}
-		})
-	}
+		}
 
-	else if (res.status === 302) {
-		scriptStatus.textContent =
-			"Your network is blocked too. To be unblocked, wait several hours without making any more attempts."
-			+" VPNs, proxies and Tor are always blocked."
-		flashBackground();
-	}
+		else if (res.status === 302) {
+			scriptStatus.textContent =
+				"Your network is blocked too. To be unblocked, wait several hours without making any more attempts."
+				+" VPNs, proxies and Tor are always blocked."
+			flashBackground();
+		}
 
-	else if (res.status === 404) {
-		scriptStatus.textContent = "This profile doesn't exist."
-		flashBackground();
-	}
-})
+		else if (res.status === 404) {
+			scriptStatus.textContent = "This profile doesn't exist."
+			flashBackground();
+		}
+	})
 }

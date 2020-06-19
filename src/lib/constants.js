@@ -22,7 +22,7 @@ let constants = {
 	has_privacy_policy: false,
 	// If your instance is also available as an onion site, add the onion URL here.
 	// It should look something like "http://3gldbgtv5e4god56.onion" (no trailing slash).
-	onion_location: "http://3gldbgtv5e4god56.onion",
+	onion_location: null,
 
 	// Things that server owners _could_ change if they want to.
 	tor: {

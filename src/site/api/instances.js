@@ -30,14 +30,17 @@ module.exports = [
 								/** [empty, address, country, rss, privacy policy, cloudflare] */
 								const parts = line.split("|")
 								if (parts.length >= 6 && parts[1].includes("://")) {
-									const address = parts[1].trim().split(" ")[0]
+									let address = parts[1].trim().split(" ")[0]
+									let match
+									if (match = address.match(/^\[\S+\]\((\S+)\)$/)) address = match[1]
 									instances.push({
 										address,
 										country: parts[2].match(/[A-Z]{2,}|$/)[0] || null,
 										official: address === "https://bibliogram.art", // yeah we're just gonna hard code this
 										rss_enabled: parts[3].trim() !== "",
 										has_privacy_policy: parts[4].trim() !== "",
-										using_cloudflare: parts[5].trim() !== ""
+										using_cloudflare: parts[5].trim() !== "",
+										onion_site: address.endsWith(".onion")
 									})
 								}
 							} else {
@@ -52,7 +55,7 @@ module.exports = [
 							contentType: "application/json",
 							content: {
 								status: "ok",
-								version: "2.0",
+								version: "2.1",
 								generatedAt: Date.now(),
 								data: result
 							}

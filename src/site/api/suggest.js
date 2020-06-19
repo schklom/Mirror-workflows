@@ -1,4 +1,5 @@
 const {Readable} = require("stream")
+const fs = require("fs").promises
 
 const db = require("../../lib/db")
 const collectors = require("../../lib/collectors")
@@ -189,15 +190,13 @@ module.exports = [
 	{
 		route: `/u/(${constants.external.username_regex})/unblock.sh`, methods: ["GET"], code: async ({fill}) => {
 			const username = fill[0]
+			let script = await fs.readFile(__dirname+"/utils/unblock.sh", "utf8")
+			script = script.replace(/<website_origin>/g, constants.website_origin)
+			script = script.replace(/<username>/g, username)
 			return {
 				statusCode: 200,
 				contentType: "text/plain",
-				content:
-					`# Good on you for looking at shell scripts before blindly running them.`
-					+`\n# This script contacts Instagram to get the profile's user ID, then sends the ID to Bibliogram. Bibliogram can take over from there.`
-					+`\ncurl 'https://www.instagram.com/${username}/' -Ss | grep -oE '"id":"[0-9]+"'`
-					+` | head -n 1 | grep -oE '[0-9]+' | curl --data-urlencode 'username=${username}' --data-urlencode 'user_id@-'`
-					+` '${constants.website_origin}/api/suggest_user/v1?plaintext=1'`
+				content: script
 			}
 		}
 	}

@@ -86,6 +86,7 @@ function structure(text) {
  * Edit a structure in-place to remove trailing hashtags and separator characters.
  */
 function removeTrailingHashtags(structured) {
+	let original = structured.slice()
 	let hasHashtags = structured.some(part => part.type === "hashtag")
 	let seenHashtags = false
 
@@ -111,6 +112,7 @@ function removeTrailingHashtags(structured) {
 
 	while (shouldRemoveLastPart()) {
 		structured.pop()
+		if (structured.length === 0) return original
 	}
 
 	return structured

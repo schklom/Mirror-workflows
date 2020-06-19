@@ -240,5 +240,25 @@ tap.test("remove trailing hashtags", childTest => {
 		"chongquing china"
 	)
 
+	childTest.same(
+		removeTrailingHashtags(structure("#justice #onlyhashtags")),
+		[
+			{type: "text", text: ""},
+			{type: "hashtag", text: "#justice", hashtag: "justice"},
+			{type: "text", text: " "},
+			{type: "hashtag", text: "#onlyhashtags", hashtag: "onlyhashtags"},
+			{type: "text", text: ""}
+		],
+		"only hashtags"
+	)
+
+	childTest.same(
+		removeTrailingHashtags(structure("")),
+		[
+			{type: "text", text: ""}
+		],
+		"no content"
+	)
+
 	childTest.end()
 })

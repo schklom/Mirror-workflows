@@ -1,5 +1,5 @@
 const crypto = require("crypto")
-const {parse} = require("cookie")
+const {parse: parseCookie} = require("cookie")
 
 const constants = require("../../../lib/constants")
 const db = require("../../../lib/db")
@@ -22,7 +22,7 @@ function addDefaults(input = {}) {
 
 function getToken(req) {
 	if (!req.headers.cookie) return null
-	const cookie = parse(req.headers.cookie)
+	const cookie = parseCookie(req.headers.cookie)
 	const token = cookie.settings
 	if (token) return token
 	else return null

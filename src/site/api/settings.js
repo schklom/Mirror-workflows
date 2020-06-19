@@ -8,6 +8,7 @@ const db = require("../../lib/db")
 module.exports = [
 	{
 		route: "/settings", methods: ["GET"], code: async ({req, url}) => {
+			const token = getToken(req)
 			const settings = getSettings(req)
 			// console.log(settings)
 			const csrf = generateCSRF()
@@ -19,6 +20,7 @@ module.exports = [
 				returnURL: url.searchParams.get("referrer") || "/",
 				constants,
 				settings,
+				token,
 				csrf,
 				status,
 				message
@@ -28,7 +30,7 @@ module.exports = [
 	{
 		route: "/settings/(stay|return)", methods: ["POST"], upload: true, code: async ({req, body, fill, url}) => {
 			const action = fill[0]
-			const oldToken = getToken(req)
+			const token = getToken(req)
 			const params = new URLSearchParams(body.toString())
 			if (!checkCSRF(params.get("csrf"))) {
 				const returnParams = new URLSearchParams()
@@ -55,14 +57,17 @@ module.exports = [
 				prepared[setting.name] = valueCorrectType
 			}
 			// console.log(prepared)
-			const checkPrepared = db.prepare("SELECT token FROM UserSettings WHERE token = ?")
-			do {
-				prepared.token = crypto.randomBytes(16).toString("hex")
-			} while (checkPrepared.get(prepared.token))
+			if (token) {
+				prepared.token = token
+			} else {
+				const checkPrepared = db.prepare("SELECT token FROM UserSettings WHERE token = ?")
+				do {
+					prepared.token = crypto.randomBytes(16).toString("hex")
+				} while (checkPrepared.get(prepared.token))
+			}
 			prepared.created = Date.now()
 			const fields = constants.user_settings.map(s => s.name)
-			db.prepare(`INSERT INTO UserSettings (token, created, ${fields.join(", ")}) VALUES (@token, @created, ${fields.map(f => "@"+f).join(", ")})`).run(prepared)
-			db.prepare("DELETE FROM UserSettings WHERE token = ?").run(oldToken)
+			db.prepare(`REPLACE INTO UserSettings (token, created, ${fields.join(", ")}) VALUES (@token, @created, ${fields.map(f => "@"+f).join(", ")})`).run(prepared)
 			const expires = new Date(Date.now() + 4000*24*60*60*1000).toUTCString()
 			let location
 			if (action === "return" && url.searchParams.has("referrer")) {
@@ -84,6 +89,20 @@ module.exports = [
 				},
 				contentType: "text/html; charset=UTF-8",
 				content: "Redirecting..."
+			}
+		}
+	},
+	{
+		route: "/applysettings/([0-9a-f]+)", methods: ["GET"], code: async ({fill}) => {
+			const expires = new Date(Date.now() + 4000*24*60*60*1000).toUTCString()
+			return {
+				statusCode: 302,
+				headers: {
+					"Location": "/",
+					"Set-Cookie": `settings=${fill[0]}; Path=/; Expires=${expires}; SameSite=Lax`
+				},
+				contentType: "text/html; charset=UTF-8",
+				content: "Settings restored. Redirecting..."
 			}
 		}
 	}

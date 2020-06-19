@@ -3,27 +3,10 @@ const sharp = require("sharp")
 const constants = require("../../lib/constants")
 const collectors = require("../../lib/collectors")
 const {request} = require("../../lib/utils/request")
+const {verifyURL} = require("../../lib/utils/proxyurl")
 const db = require("../../lib/db")
-require("../../lib/testimports")(constants, request, db)
+require("../../lib/testimports")(constants, request, db, verifyURL)
 
-/**
- * Check that a resource is on Instagram.
- * @param {URL} completeURL
- */
-function verifyURL(completeURL) {
-	const params = completeURL.searchParams
-	if (!params.get("url")) return {status: "fail", value: [400, "Must supply `url` query parameter"]}
-	try {
-		var url = new URL(params.get("url"))
-	} catch (e) {
-		return {status: "fail", value: [400, "`url` query parameter is not a valid URL"]}
-	}
-	// check url protocol
-	if (url.protocol !== "https:") return {status: "fail", value: [400, "URL protocol must be `https:`"]}
-	// check url host
-	if (!["fbcdn.net", "cdninstagram.com"].some(host => url.host.endsWith(host))) return {status: "fail", value: [400, "URL host is not allowed"]}
-	return {status: "ok", url}
-}
 
 function statusCodeIsAcceptable(status) {
 	return (status >= 200 && status < 300) || status === 304

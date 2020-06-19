@@ -48,12 +48,10 @@ class GMResponse {
 }
 
 function gmFetch(url, options = {}) {
-	console.log("Making request")
 	return new Promise((resolve, reject) => {
 		options.url = url
 		if (!options.method) options.method = "GET"
 		options.onload = response => {
-			console.log("Got response", response)
 			resolve(new GMResponse(response))
 		}
 		options.onerror = response => {

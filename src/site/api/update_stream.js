@@ -7,7 +7,7 @@ setInterval((new (function() {
 	for (const stream of streams.values()) {
 		stream.push(payload)
 	}
-})).constructor, 50000)
+})).constructor, 50000).unref()
 
 module.exports = [
 	{

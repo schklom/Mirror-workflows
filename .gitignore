@@ -15,3 +15,5 @@ users_export.json
 # Test stuff
 /coverage
 /.nyc_output
+/test/screenshots/diff
+/test/screenshots/staging

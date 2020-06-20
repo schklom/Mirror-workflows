@@ -26,6 +26,8 @@ const pinski = new Pinski({
 	onionLocation: constants.onion_location
 })
 
+pinski.startServer()
+
 subdirs("pug", async (err, dirs) => {
 	if (err) throw err
 
@@ -60,8 +62,6 @@ subdirs("pug", async (err, dirs) => {
 		pinski.addAPIDir("assistant_api")
 	}
 
-	pinski.startServer()
-
 	require("pinski/plugins").setInstance(pinski)
 
 	Object.assign(passthrough, pinski.getExports())
@@ -74,3 +74,5 @@ subdirs("pug", async (err, dirs) => {
 		})
 	}
 })
+
+module.exports = pinski

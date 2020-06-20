@@ -1,2 +1,3 @@
 coverage-report: "lcov"
 no-browser: true
+test-ignore: "^test/screenshots/commands\\.js"

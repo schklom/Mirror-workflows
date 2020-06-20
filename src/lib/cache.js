@@ -14,6 +14,7 @@ class TtlCache {
 		this.sweepInterval = setInterval(() => {
 			this.clean()
 		}, constants.caching.cache_sweep_interval)
+		this.sweepInterval.unref()
 	}
 
 	clean() {

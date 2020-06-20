@@ -60,7 +60,7 @@ function cleanCSRF() {
 	db.prepare("DELETE FROM CSRFTokens WHERE expires <= ?").run(Date.now())
 }
 cleanCSRF()
-setInterval(cleanCSRF, constants.caching.csrf_time)
+setInterval(cleanCSRF, constants.caching.csrf_time).unref()
 
 module.exports.getToken = getToken
 module.exports.getSettings = getSettings

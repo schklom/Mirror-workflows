@@ -19,7 +19,7 @@
     "mixin-deep": "^2.0.1",
     "node-dir": "^0.1.17",
     "node-fetch": "^2.6.0",
-    "pinski": "github:cloudrac3r/pinski#7152d86dbf40d8dd9448f9a918d3e6fb76428c6a",
+    "pinski": "github:cloudrac3r/pinski#ffa2f36eee807a13dd1090717045f945a5d5e3d2",
     "pug": "^2.0.4",
     "semver": "^7.2.1",
     "sharp": "^0.25.2",
@@ -30,6 +30,9 @@
     "got": "^10.6.0"
   },
   "devDependencies": {
-    "tap": "^14.10.7"
+    "jimp": "^0.13.0",
+    "selenium-webdriver": "^4.0.0-alpha.7",
+    "tap": "^14.10.7",
+    "why-is-node-running": "^2.2.0"
   }
 }

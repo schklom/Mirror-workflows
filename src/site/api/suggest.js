@@ -13,7 +13,7 @@ setInterval((new (function() {
 	for (const waiter of waiters.values()) {
 		waiter.stream.push(payload)
 	}
-})).constructor, 50000)
+})).constructor, 50000).unref()
 
 class Waiter {
 	constructor(username) {

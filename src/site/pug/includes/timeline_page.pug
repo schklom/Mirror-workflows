@@ -7,7 +7,7 @@ mixin timeline_page(page, pageIndex)
 			header.page-number(id=`page-${pageNumber}`)
 				span.number Page #{pageNumber}
 
-		.timeline-inner
+		.timeline-inner(class=`${settings.timeline_columns}-columns`)
 			- const suggestedSize = 260 //- from css :(
 			each image in page
 				- const thumbnail = image.getSuggestedThumbnailP(suggestedSize) //- use this as the src in case there are problems with srcset

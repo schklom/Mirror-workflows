@@ -76,11 +76,11 @@ html
 
 					+checkbox("display_top_nav", "Display top bar", "Always", false)
 
-					+select("timeline_columns", "Timeline columns", true, [
+					+select("timeline_columns", "Timeline columns", false, [
 						{value: "dynamic", text: "Dynamic"},
-						{value: "3", text: "3 columns"},
-						{value: "4", text: "4 columns"},
-						{value: "6", text: "6 columns"}
+						{value: "three", text: "3 columns"},
+						{value: "four", text: "4 columns"},
+						{value: "six", text: "6 columns"}
 					])
 
 					+select("caption_side", "Caption side", false, [

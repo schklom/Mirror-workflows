@@ -217,6 +217,18 @@ body
 		flex-wrap: wrap
 		margin: 0 auto
 
+		&.three-columns
+			max-width: 810px
+
+			@media screen and (max-width: $layout-a-max)
+				max-width: 480px
+
+		&.four-columns
+			max-width: 1080px
+
+		&.six-columns
+			max-width: 1620px
+
 		@media screen and (max-width: $layout-c-max)
 			display: grid
 			grid-template-columns: repeat(3, 1fr)

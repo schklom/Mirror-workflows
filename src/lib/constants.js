@@ -175,10 +175,6 @@ let constants = {
 		}
 	],
 
-	settings: {
-		enable_updater_page: false
-	},
-
 	featured_profiles: [
 	],
 
@@ -202,7 +198,6 @@ let constants = {
 		image_cache_control: `public, max-age=${7*24*60*60}`,
 		resource_cache_time: 30*60*1000,
 		instance_list_cache_time: 3*60*1000,
-		updater_cache_time: 2*60*1000,
 		cache_sweep_interval: 3*60*1000,
 		csrf_time: 60*60*1000,
 		self_blocked_status: {

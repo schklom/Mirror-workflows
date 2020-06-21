@@ -1,5 +1,5 @@
-const NodeFetch = require("./requestbackends/node-fetch")
-const Got = require("./requestbackends/got")
+const NodeFetch = require("./request_backends/node-fetch")
+const Got = require("./request_backends/got")
 
 const constants = require("../constants")
 
@@ -11,7 +11,7 @@ const backendStatusLineMap = new Map([
 ])
 
 /**
- * @returns {import("./requestbackends/reference")}
+ * @returns {import("./request_backends/reference")}
  */
 function request(url, options = {}, settings = {}) {
 	if (settings.statusLine === undefined) settings.statusLine = "OUT"

@@ -21,8 +21,8 @@ class TorSwitcher {
 	 * If the test function fails, its error will be rejected here.
 	 * Only include rate limit logic in the test function!
 	 * @param {string} url
-	 * @param {(res: import("./requestbackends/reference").GrabResponse) => any} test
-	 * @returns {Promise<import("./requestbackends/reference")>}
+	 * @param {(res: import("./request_backends/reference").GrabResponse) => any} test
+	 * @returns {Promise<import("./request_backends/reference")>}
 	 */
 	request(type, url, test) {
 		if (this.torManager && constants.tor.for[type]) {

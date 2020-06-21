@@ -6,10 +6,14 @@ mixin fieldset(name)
 		.fieldset-contents
 			block
 
-mixin input(id, description, placeholder, disabled)
+mixin input(id, description, placeholder, disabled, list)
 	.field-row
 		label.description(for=id)= description
-		input(type="text" id=id name=id value=settings[id] placeholder=placeholder disabled=disabled)
+		input(type="text" id=id name=id value=settings[id] placeholder=placeholder disabled=disabled list=`${id}-list`)
+		if list
+			datalist(id=`${id}-list`)
+				each item in list
+					option(value=item)
 
 mixin checkbox(id, description, label, disabled)
 	.field-row.checkbox-row
@@ -53,9 +57,26 @@ html
 						{value: "full", text: "Full"}
 					])
 
-					+input("rewrite_youtube", "Rewrite YouTube domain", "youtube.com", true)
+					+input("rewrite_youtube", "Rewrite YouTube domain", constants.default_user_settings.rewrite_youtube, false, [
+						"invidio.us",
+						"invidious.snopyta.org",
+						"invidious.13ad.de",
+						"watch.nettohikari.com",
+						"invidious.fdn.fr",
+						"yewtu.be"
+					])
 
-					+input("rewrite_twitter", "Rewrite Twitter domain", "twitter.com", true)
+					+input("rewrite_twitter", "Rewrite Twitter domain", constants.default_user_settings.rewrite_twitter, false, [
+						"nitter.net",
+						"nitter.snopyta.org",
+						"nitter.pussthecat.org",
+						"nitter.42l.fr",
+						"nitter.mastodont.cat",
+						"nitter.tedomum.net",
+						"nitter.cattube.org",
+						"nitter.fdn.fr",
+						"nitter.1d4.us"
+					])
 
 					+checkbox("remove_trailing_hashtags", "Hide trailing hashtags", "Hide", false)
 

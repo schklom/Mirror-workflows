@@ -12,6 +12,8 @@ function addDefaults(input = {}) {
 		} else {
 			if (setting.boolean) {
 				result[setting.name] = +(setting.default !== "")
+			} else if (setting.name in constants.default_user_settings) {
+				result[setting.name] = constants.default_user_settings[setting.name]
 			} else {
 				result[setting.name] = setting.default
 			}

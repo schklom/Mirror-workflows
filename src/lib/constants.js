@@ -106,6 +106,11 @@ let constants = {
 		collatedFiles: []
 	},
 
+	default_user_settings: {
+		rewrite_youtube: "invidio.us",
+		rewrite_twitter: "nitter.net"
+	},
+
 	user_settings: [
 		{
 			name: "language",
@@ -166,12 +171,12 @@ let constants = {
 			name: "rewrite_youtube",
 			default: "",
 			boolean: false,
-			replaceEmptyWithDefault: true
+			replaceEmptyWithDefault: false
 		},{
 			name: "rewrite_twitter",
 			default: "",
 			boolean: false,
-			replaceEmptyWithDefault: true
+			replaceEmptyWithDefault: false
 		}
 	],
 

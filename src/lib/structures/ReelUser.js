@@ -1,11 +1,11 @@
 const constants = require("../constants")
-const {proxyProfilePic} = require("../utils/proxyurl")
-const {structure} = require("../utils/structuretext")
 const Timeline = require("./Timeline")
-require("../testimports")(constants, Timeline)
+const BaseUser = require("./BaseUser")
+require("../testimports")(constants, Timeline, BaseUser)
 
-class ReelUser {
+class ReelUser extends BaseUser {
 	constructor(data) {
+		super()
 		/** @type {import("../types").GraphUser} */
 		this.data = data
 		this.fromReel = true
@@ -16,25 +16,6 @@ class ReelUser {
 		this.timeline = new Timeline(this)
 		this.cachedAt = Date.now()
 		this.computeProxyProfilePic()
-	}
-
-	computeProxyProfilePic() {
-		this.proxyProfilePicture = proxyProfilePic(this.data.profile_pic_url, this.data.id)
-	}
-
-	getStructuredBio() {
-		if (!this.data.biography) return null
-		return structure(this.data.biography)
-	}
-
-	getTtl(scale = 1) {
-		const expiresAt = this.cachedAt + constants.caching.resource_cache_time
-		const ttl = expiresAt - Date.now()
-		return Math.ceil(Math.max(ttl, 0) / scale)
-	}
-
-	export() {
-		return this.data
 	}
 }
 

@@ -54,9 +54,10 @@ html
 							- const bio = user.getStructuredBio()
 							if bio
 								+display_structured(bio)
-						if user.data.external_url
+						- const userURL = user.getRewriteLink(settings)
+						if userURL
 							p.website
-								a(href=user.data.external_url)= user.data.external_url
+								a(href=userURL)= userURL
 						if user.posts != undefined
 							div.profile-counter #[span(data-numberformat=user.posts).count #{numberFormat(user.posts)}] posts
 						if followerCountsAvailable

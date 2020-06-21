@@ -103,6 +103,15 @@ const deltas = new Map([
 			db.prepare("ALTER TABLE UserSettings ADD COLUMN infinite_scroll TEXT NOT NULL DEFAULT 'normal'")
 				.run()
 		})()
+	}],
+	// version 8 to version 9
+	[9, function() {
+		db.transaction(() => {
+			db.prepare("DROP TABLE IF EXISTS SavedRequests")
+				.run()
+			db.prepare("CREATE TABLE SavedRequests (url TEXT NOT NULL, path TEXT NOT NULL, PRIMARY KEY (url))")
+				.run()
+		})()
 	}]
 ])
 

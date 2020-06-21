@@ -277,7 +277,7 @@ let constants = {
 
 	additional_routes: [],
 
-	database_version: 8
+	database_version: 9
 }
 
 // Override values from config and export the result

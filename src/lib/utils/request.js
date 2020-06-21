@@ -1,5 +1,6 @@
 const NodeFetch = require("./request_backends/node-fetch")
 const Got = require("./request_backends/got")
+const SavedRequestManager = require("./saved_requests/manager")
 
 const constants = require("../constants")
 
@@ -7,7 +8,8 @@ const userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 
 
 const backendStatusLineMap = new Map([
 	["node-fetch", "NF "],
-	["got", "GOT"]
+	["got", "GOT"],
+	["saved", "SAV"]
 ])
 
 /**
@@ -17,6 +19,8 @@ function request(url, options = {}, settings = {}) {
 	if (settings.statusLine === undefined) settings.statusLine = "OUT"
 	if (settings.log === undefined) settings.log = true
 	if (settings.log) console.log(`      -> [${settings.statusLine}-${backendStatusLineMap.get(constants.request_backend)}] ${url}`) // todo: make more like pinski?
+	const save = !!settings.save
+
 	if (constants.request_backend === "node-fetch") {
 		return new NodeFetch(url, Object.assign({
 			headers: {
@@ -32,6 +36,8 @@ function request(url, options = {}, settings = {}) {
 			followRedirect: false,
 			throwHttpErrors: false
 		}, options))
+	} else if (constants.request_backend === "saved") {
+		return new SavedRequestManager(url).request()
 	} else {
 		throw new Error("Invalid value for setting `request_backend`.")
 	}

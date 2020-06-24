@@ -120,12 +120,12 @@ module.exports = [
 	},
 	{
 		route: `/fragment/user/(${constants.external.username_regex})/(\\d+)`, methods: ["GET"], code: async ({req, url, fill}) => {
+			const settings = getSettings(req)
 			return fetchUser(fill[0]).then(async user => {
 				const pageNumber = +fill[1]
 				const pageIndex = pageNumber - 1
 				await user.timeline.fetchUpToPage(pageIndex)
 				if (user.timeline.pages[pageIndex]) {
-					const settings = getSettings(req)
 					return render(200, "pug/fragments/timeline_page.pug", {page: user.timeline.pages[pageIndex], pageIndex, user, url, settings})
 				} else {
 					return {
@@ -141,6 +141,16 @@ module.exports = [
 						title: "Not found",
 						message: "This user doesn't exist.",
 						withInstancesLink: false
+					})
+				} else if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN || error === constants.symbols.RATE_LIMITED) {
+					return render(503, "pug/friendlyerror.pug", {
+						statusCode: 503,
+						title: "Timeline loading blocked",
+						message: "Timeline loading blocked",
+						explanation:
+								"Instagram blocked this server for requesting too many timeline pages."
+							+"\nThis block is not permanent, and will expire soon."
+							+"\nPlease wait a few minutes before trying again."
 					})
 				} else {
 					throw error
@@ -170,6 +180,16 @@ module.exports = [
 						title: "Not found",
 						message: "Somehow, you reached a post that doesn't exist.",
 						withInstancesLink: false
+					})
+				} else if (error === constants.symbols.RATE_LIMITED) {
+					return render(503, "pug/friendlyerror.pug", {
+						statusCode: 503,
+						title: "Post loading blocked",
+						message: "Post loading blocked",
+						explanation:
+								"Instagram blocked this server for requesting too much post data."
+							+"\nThis block is not permanent, and will expire soon."
+							+"\nPlease wait a few minutes before trying again."
 					})
 				} else {
 					throw error

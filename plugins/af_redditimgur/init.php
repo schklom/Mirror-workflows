@@ -437,6 +437,7 @@ class Af_RedditImgur extends Plugin {
 
 			if ($node && $found) {
 				$article["content"] = $doc->saveHTML($node);
+				$article["enclosures"] = [];
 			} else if ($content_link) {
 				$article = $this->readability($article, $content_link->getAttribute("href"), $doc, $xpath);
 			}

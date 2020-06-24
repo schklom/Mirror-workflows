@@ -653,6 +653,38 @@ class RSSUtils {
 					$article_labels = array();
 				}
 
+				Debug::log("looking for enclosures...", Debug::$LOG_VERBOSE);
+
+				// enclosures
+
+				$enclosures = array();
+
+				$encs = $item->get_enclosures();
+
+				if (is_array($encs)) {
+					foreach ($encs as $e) {
+
+						foreach ($pluginhost->get_hooks(PluginHost::HOOK_ENCLOSURE_IMPORTED) as $plugin) {
+							$e = $plugin->hook_enclosure_imported($e, $feed);
+						}
+
+						$e_item = array(
+							rewrite_relative_url($site_url, $e->link),
+							$e->type, $e->length, $e->title, $e->width, $e->height);
+
+						// Yet another episode of "mysql utf8_general_ci is gimped"
+						if (DB_TYPE == "mysql" && MYSQL_CHARSET != "UTF8MB4") {
+							for ($i = 0; $i < count($e_item); $i++) {
+								if (is_string($e_item[$i])) {
+									$e_item[$i] = RSSUtils::strip_utf8mb4($e_item[$i]);
+								}
+							}
+						}
+
+						array_push($enclosures, $e_item);
+					}
+				}
+
 				$article = array("owner_uid" => $owner_uid, // read only
 					"guid" => $entry_guid, // read only
 					"guid_hashed" => $entry_guid_hashed, // read only
@@ -667,6 +699,7 @@ class RSSUtils {
 					"language" => $entry_language,
 					"timestamp" => $entry_timestamp,
 					"num_comments" => $num_comments,
+					"enclosures" => $enclosures,
 					"feed" => array("id" => $feed,
 						"fetch_url" => $fetch_url,
 						"site_url" => $site_url,
@@ -809,6 +842,7 @@ class RSSUtils {
 				$entry_language = $article["language"];
 				$entry_timestamp = $article["timestamp"];
 				$num_comments = $article["num_comments"];
+				$enclosures = $article["enclosures"];
 
 				if ($entry_timestamp == -1 || !$entry_timestamp || $entry_timestamp > time()) {
 					$entry_timestamp = time();
@@ -1026,38 +1060,6 @@ class RSSUtils {
 
 				RSSUtils::assign_article_to_label_filters($entry_ref_id, $article_filters,
 					$owner_uid, $article_labels);
-
-				Debug::log("looking for enclosures...", Debug::$LOG_VERBOSE);
-
-				// enclosures
-
-				$enclosures = array();
-
-				$encs = $item->get_enclosures();
-
-				if (is_array($encs)) {
-					foreach ($encs as $e) {
-
-						foreach ($pluginhost->get_hooks(PluginHost::HOOK_ENCLOSURE_IMPORTED) as $plugin) {
-							$e = $plugin->hook_enclosure_imported($e, $feed);
-						}
-
-						$e_item = array(
-							rewrite_relative_url($site_url, $e->link),
-							$e->type, $e->length, $e->title, $e->width, $e->height);
-
-						// Yet another episode of "mysql utf8_general_ci is gimped"
-						if (DB_TYPE == "mysql" && MYSQL_CHARSET != "UTF8MB4") {
-							for ($i = 0; $i < count($e_item); $i++) {
-								if (is_string($e_item[$i])) {
-									$e_item[$i] = RSSUtils::strip_utf8mb4($e_item[$i]);
-								}
-							}
-						}
-
-						array_push($enclosures, $e_item);
-					}
-				}
 
 				if ($cache_images)
 					RSSUtils::cache_enclosures($enclosures, $site_url);

@@ -10,10 +10,12 @@ class NodeFetch {
 	}
 
 	response() {
-		return this.instance.then(res => ({
-			status: res.status,
-			headers: new Map(Object.entries(res.headers))
-		}))
+		return this.instance.then(res => {
+			return {
+				status: res.status,
+				headers: res.headers
+			}
+		})
 	}
 
 	json() {

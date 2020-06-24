@@ -1,6 +1,8 @@
+//- Needs user, selectedTimeline, url, type
+
 include ../includes/timeline_page.pug
 include ../includes/next_page_button.pug
 
 +timeline_page(page, pageIndex)
 
-+next_page_button(user, url)
++next_page_button(user, selectedTimeline, url, type)

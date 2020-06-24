@@ -12,8 +12,8 @@ class ReelUser extends BaseUser {
 		this.posts = 0
 		this.following = data.edge_follow ? data.edge_follow.count : 0
 		this.followedBy = data.edge_followed_by ? data.edge_followed_by.count : 0
-		/** @type {import("./Timeline")} */
-		this.timeline = new Timeline(this)
+		this.timeline = new Timeline(this, "timeline")
+		this.igtv = new Timeline(this, "igtv")
 		this.cachedAt = Date.now()
 		this.computeProxyProfilePic()
 	}

@@ -172,13 +172,23 @@ class TimelineEntry extends TimelineBaseMethods {
 				config_height: found.config_height,
 				src: proxyImage(found.src, found.config_width) // force resize to config rather than requested
 			}
+		} else if (this.data.thumbnail_src) {
+			return {
+				config_width: size, // probably?
+				config_height: size,
+				src: proxyImage(this.data.thumbnail_src, size) // force resize to requested
+			}
 		} else {
 			return null
 		}
 	}
 
 	getThumbnailSizes() {
-		return `(max-width: 820px) 200px, 260px` // from css :(
+		if (this.data.thumbnail_resources) {
+			return `(max-width: 820px) 200px, 260px` // from css :(
+		} else {
+			return null
+		}
 	}
 
 	async fetchChildren() {

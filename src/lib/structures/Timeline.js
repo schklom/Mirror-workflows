@@ -21,9 +21,12 @@ function transformEdges(edges) {
 class Timeline {
 	/**
 	 * @param {import("./User")|import("./ReelUser")} user
+	 * @param {string} type
 	 */
-	constructor(user) {
+	constructor(user, type) {
 		this.user = user
+		/** one of: "timeline", "igtv" */
+		this.type = type
 		/** @type {import("./TimelineEntry")[][]} */
 		this.pages = []
 		if (this.user.data.edge_owner_to_timeline_media) {
@@ -32,12 +35,17 @@ class Timeline {
 	}
 
 	hasNextPage() {
-		return this.page_info.has_next_page
+		return !this.page_info || this.page_info.has_next_page
 	}
 
 	fetchNextPage() {
 		if (!this.hasNextPage()) return constants.symbols.NO_MORE_PAGES
-		return collectors.fetchTimelinePage(this.user.data.id, this.page_info.end_cursor).then(page => {
+		const method =
+			this.type === "timeline" ? collectors.fetchTimelinePage
+			: this.type === "igtv" ? collectors.fetchIGTVPage
+			: null
+		const after = this.page_info ? this.page_info.end_cursor : ""
+		return method(this.user.data.id, after).then(page => {
 			this.addPage(page)
 			return this.pages.slice(-1)[0]
 		})

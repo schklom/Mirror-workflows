@@ -65,22 +65,27 @@ module.exports = [
 		}
 	},
 	{
-		route: `/u/(${constants.external.username_regex})`, methods: ["GET"], code: ({req, url, fill}) => {
-			if (fill[0] !== fill[0].toLowerCase()) { // some capital letters
-				return Promise.resolve(redirect(`/u/${fill[0].toLowerCase()}`, 301))
+		route: `/u/(${constants.external.username_regex})(/channel)?`, methods: ["GET"], code: ({req, url, fill}) => {
+			const username = fill[0]
+			const type = fill[1] ? "igtv" : "timeline"
+
+			if (username !== username.toLowerCase()) { // some capital letters
+				return Promise.resolve(redirect(`/u/${username.toLowerCase()}`, 301))
 			}
 
 			const settings = getSettings(req)
 			const params = url.searchParams
-			return fetchUser(fill[0]).then(async user => {
-				const page = +params.get("page")
-				if (typeof page === "number" && !isNaN(page) && page >= 1) {
-					await user.timeline.fetchUpToPage(page - 1)
-				}
+			return fetchUser(username).then(async user => {
+				const selectedTimeline = user[type]
+				let pageNumber = +params.get("page")
+				if (isNaN(pageNumber) || pageNumber < 1) pageNumber = 1
+				await selectedTimeline.fetchUpToPage(pageNumber - 1)
 				const followerCountsAvailable = !(user.constructor.name === "ReelUser" && user.following === 0 && user.followedBy === 0)
 				return render(200, "pug/user.pug", {
 					url,
 					user,
+					selectedTimeline,
+					type,
 					followerCountsAvailable,
 					constants,
 					settings,
@@ -100,12 +105,12 @@ module.exports = [
 						statusCode: 503,
 						contentType: "text/html",
 						headers: {
-							"Retry-After": userRequestCache.getTtl("user/"+fill[0], 1000)
+							"Retry-After": userRequestCache.getTtl("user/"+username, 1000)
 						},
 						content: pugCache.get("pug/blocked.pug").web({
 							website_origin: constants.website_origin,
-							username: fill[0],
-							expiresMinutes: userRequestCache.getTtl("user/"+fill[0], 1000*60),
+							username,
+							expiresMinutes: userRequestCache.getTtl("user/"+username, 1000*60),
 							getStaticURL,
 							settings
 						})
@@ -120,13 +125,25 @@ module.exports = [
 	},
 	{
 		route: `/fragment/user/(${constants.external.username_regex})/(\\d+)`, methods: ["GET"], code: async ({req, url, fill}) => {
+			const username = fill[0]
+			let pageNumber = +fill[1]
+			if (isNaN(pageNumber) || pageNumber < 1) {
+				return {
+					statusCode: 400,
+					contentType: "text/html",
+					content: "Bad page number"
+				}
+			}
+			let type = url.searchParams.get("type")
+			if (!["timeline", "igtv"].includes(type)) type = "timeline"
+
 			const settings = getSettings(req)
-			return fetchUser(fill[0]).then(async user => {
-				const pageNumber = +fill[1]
+			return fetchUser(username).then(async user => {
 				const pageIndex = pageNumber - 1
-				await user.timeline.fetchUpToPage(pageIndex)
-				if (user.timeline.pages[pageIndex]) {
-					return render(200, "pug/fragments/timeline_page.pug", {page: user.timeline.pages[pageIndex], pageIndex, user, url, settings})
+				const selectedTimeline = user[type]
+				await selectedTimeline.fetchUpToPage(pageIndex)
+				if (selectedTimeline.pages[pageIndex]) {
+					return render(200, "pug/fragments/timeline_page.pug", {page: selectedTimeline.pages[pageIndex], selectedTimeline, type, pageIndex, user, url, settings})
 				} else {
 					return {
 						statusCode: 400,

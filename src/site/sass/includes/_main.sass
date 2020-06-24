@@ -158,24 +158,40 @@ body
 			@media screen and (max-width: $layout-a-max)
 				display: none
 
-.timeline
-	--image-size: 260px
-	$image-size: var(--image-size)
-
-	@media screen and (max-width: $layout-a-max)
-		--image-size: 150px
-		flex: 1
-
-	@media screen and (max-width: $layout-c-max)
-		--image-size: calc(33vw - 10px)
-
+.timeline-section
 	background-color: map-get($theme, "background-primary")
-	padding: 15px 15px 40px
+	padding: 0px 15px 40px
 
-	&.no-posts
+	.selector-container
+		padding: 15px
 		display: flex
-		flex-direction: column
 		justify-content: center
+
+		.selector
+			background-color: map-get($theme, "background-primary")
+			color: map-get($theme, "foreground-primary")
+			text-decoration: none
+			padding: 10px 10px 13px
+			line-height: 1
+			font-size: 22px
+			border: 1px solid transparent
+			border-bottom: 1px solid map-get($theme, "foreground-timeline-page")
+			margin: 0px 10px
+			box-shadow: map-get($theme, "shadow-down-only")
+			border-radius: 5px
+
+			&:hover, &:focus
+				border: 1px solid map-get($theme, "foreground-timeline-page")
+
+			&.active
+				background-color: map-get($theme, "background-power-primary")
+				color: map-get($theme, "foreground-power-primary")
+				cursor: default
+				border: 1px solid map-get($theme, "foreground-timeline-page")
+
+			&:hover, &:focus, &.active
+				padding-bottom: 10px
+				border-bottom: 4px solid map-get($theme, "foreground-primary")
 
 	.page-number
 		color: map-get($theme, "foreground-timeline-page")
@@ -201,71 +217,87 @@ body
 			padding: 10px
 			background-color: map-get($theme, "background-primary")
 
-	.next-page-container
-		margin: 20px 0px
-		display: flex
-		justify-content: center
+	.timeline
+		--image-size: 260px
+		$image-size: var(--image-size)
 
-		.next-page
-			@include link-button
-			font-size: 18px
-			text-align: center
-
-	.timeline-inner
-		display: flex
-		justify-content: center
-		flex-wrap: wrap
-		margin: 0 auto
-
-		&.three-columns
-			max-width: 810px
-
-			@media screen and (max-width: $layout-a-max)
-				max-width: 480px
-
-		&.four-columns
-			max-width: 1080px
-
-		&.six-columns
-			max-width: 1620px
+		@media screen and (max-width: $layout-a-max)
+			--image-size: 150px
+			flex: 1
 
 		@media screen and (max-width: $layout-c-max)
-			display: grid
-			grid-template-columns: repeat(3, 1fr)
+			--image-size: calc(33vw - 10px)
+
+		&.no-posts
+			display: flex
+			flex-direction: column
 			justify-content: center
-			justify-items: center
 
-		@mixin sized()
-			width: $image-size
-			height: $image-size
+		.next-page-container
+			margin: 20px 0px
+			display: flex
+			justify-content: center
 
-		.sized-link
-			$margin: 5px
+			.next-page
+				@include link-button
+				font-size: 18px
+				text-align: center
 
-			margin: $margin
-			color: map-get($theme, "foreground-thumbnail-alt")
-			border: 0px map-get($theme, "edge-thumbnail-hover")
-			background-color: map-get($theme, "background-timeline-loading")
-			text-decoration: none
-			overflow: hidden
-			@include sized
+		.timeline-inner
+			display: flex
+			justify-content: center
+			flex-wrap: wrap
+			margin: 0 auto
 
-			&:hover
-				$border-width: 3px
-				margin: $margin - $border-width
-				border-width: $border-width
+			&.three-columns
+				max-width: 810px
+
+				@media screen and (max-width: $layout-a-max)
+					max-width: 480px
+
+			&.four-columns
+				max-width: 1080px
+
+			&.six-columns
+				max-width: 1620px
 
 			@media screen and (max-width: $layout-c-max)
-				$margin: 2px
+				display: grid
+				grid-template-columns: repeat(3, 1fr)
+				justify-content: center
+				justify-items: center
+
+			@mixin sized()
+				width: $image-size
+				height: $image-size
+
+			.sized-link
+				$margin: 5px
+
 				margin: $margin
+				color: map-get($theme, "foreground-thumbnail-alt")
+				border: 0px map-get($theme, "edge-thumbnail-hover")
+				background-color: map-get($theme, "background-timeline-loading")
+				text-decoration: none
+				overflow: hidden
+				@include sized
 
 				&:hover
-					$border-width: 2px
+					$border-width: 3px
 					margin: $margin - $border-width
 					border-width: $border-width
 
-			.sized-image
-				@include sized
+				@media screen and (max-width: $layout-c-max)
+					$margin: 2px
+					margin: $margin
+
+					&:hover
+						$border-width: 2px
+						margin: $margin - $border-width
+						border-width: $border-width
+
+				.sized-image
+					@include sized
 
 .post-page
 	background-color: map-get($theme, "background-post-distraction")

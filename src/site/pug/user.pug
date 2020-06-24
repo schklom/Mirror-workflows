@@ -1,4 +1,4 @@
-//- Needs user, followerCountsAvailable, url, constants, settings
+//- Needs user, selectedTimeline, type, followerCountsAvailable, url, constants, settings
 
 include includes/timeline_page.pug
 include includes/next_page_button.pug
@@ -6,6 +6,9 @@ include includes/display_structured
 include includes/feed_link
 
 - const numberFormat = new Intl.NumberFormat().format
+
+mixin selector-button(text, selectorType, urlSuffix)
+	a(href=(type !== selectorType && `/u/${user.data.username}${urlSuffix}`) class=(type === selectorType && "active")).selector= text
 
 doctype html
 html
@@ -77,17 +80,23 @@ html
 							a(href="/") Home
 							a(href=settingsReferrer) Settings
 
-			- const hasPosts = !user.data.is_private && user.timeline.pages.length && user.timeline.pages[0].length
-			main(class=hasPosts ? "" : "no-posts")#timeline.timeline
-				if hasPosts
-					each page, pageIndex in user.timeline.pages
-						+timeline_page(page, pageIndex)
-					+next_page_button(user, url)
-				else
-					div
-						div.page-number
-							span.number
-								if user.data.is_private
-									| Profile is private.
-								else
-									| No posts.
+			- const hasPosts = !user.data.is_private && selectedTimeline.pages.length && selectedTimeline.pages[0].length
+			.timeline-section
+				.selector-container
+					+selector-button("Timeline", "timeline", "")
+					if user.data.has_channel !== false
+						+selector-button("IGTV", "igtv", "/channel")
+
+				main(class=hasPosts ? "" : "no-posts")#timeline.timeline
+					if hasPosts
+						each page, pageIndex in selectedTimeline.pages
+							+timeline_page(page, pageIndex)
+						+next_page_button(user, selectedTimeline, url, type)
+					else
+						div
+							div.page-number
+								span.number
+									if user.data.is_private
+										| Profile is private.
+									else
+										| No posts.

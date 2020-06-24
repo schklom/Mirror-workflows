@@ -12,7 +12,7 @@ const requestCache = new RequestCache(constants.caching.resource_cache_time)
 const userRequestCache = new UserRequestCache(constants.caching.resource_cache_time)
 /** @type {import("./cache").TtlCache<import("./structures/TimelineEntry")>} */
 const timelineEntryCache = new TtlCache(constants.caching.resource_cache_time)
-const history = new RequestHistory(["user", "timeline", "post", "reel"])
+const history = new RequestHistory(["user", "timeline", "igtv", "post", "reel"])
 
 const AssistantSwitcher = require("./structures/AssistantSwitcher")
 const assistantSwitcher = new AssistantSwitcher()
@@ -306,12 +306,12 @@ function fetchIGTVPage(userID, after) {
 			if (res.status === 429) throw constants.symbols.RATE_LIMITED
 		}).then(g => g.json()).then(root => {
 			/** @type {import("./types").PagedEdges<import("./types").TimelineEntryN2>} */
-			const timeline = root.data.user.edge_owner_to_timeline_media
-			history.report("timeline", true)
+			const timeline = root.data.user.edge_felix_video_timeline
+			history.report("igtv", true)
 			return timeline
 		}).catch(error => {
 			if (error === constants.symbols.RATE_LIMITED) {
-				history.report("timeline", false)
+				history.report("igtv", false)
 			}
 			throw error
 		})
@@ -422,6 +422,7 @@ function fetchShortcodeData(shortcode) {
 
 module.exports.fetchUser = fetchUser
 module.exports.fetchTimelinePage = fetchTimelinePage
+module.exports.fetchIGTVPage = fetchIGTVPage
 module.exports.getOrCreateShortcode = getOrCreateShortcode
 module.exports.fetchShortcodeData = fetchShortcodeData
 module.exports.userRequestCache = userRequestCache

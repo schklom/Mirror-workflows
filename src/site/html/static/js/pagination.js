@@ -75,8 +75,9 @@ class NextPage extends FreezeWidth {
 		if (this.fetching) return
 		this.fetching = true
 		this.freeze("Loading...")
+		const type = this.element.getAttribute("data-type")
 
-		return fetch(`/fragment/user/${this.element.getAttribute("data-username")}/${this.nextPageNumber}`).then(res => res.text()).then(text => {
+		return fetch(`/fragment/user/${this.element.getAttribute("data-username")}/${this.nextPageNumber}?type=${type}`).then(res => res.text()).then(text => {
 			q("#next-page-container").remove()
 			this.observer.disconnect()
 			q("#timeline").insertAdjacentHTML("beforeend", text)

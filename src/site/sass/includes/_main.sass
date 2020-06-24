@@ -161,6 +161,11 @@ body
 .timeline-section
 	background-color: map-get($theme, "background-primary")
 	padding: 0px 15px 40px
+	display: flex
+	flex-direction: column
+
+	@media screen and (max-width: $layout-a-max)
+		flex: 1
 
 	.selector-container
 		padding: 15px
@@ -220,10 +225,10 @@ body
 	.timeline
 		--image-size: 260px
 		$image-size: var(--image-size)
+		flex: 1
 
 		@media screen and (max-width: $layout-a-max)
 			--image-size: 150px
-			flex: 1
 
 		@media screen and (max-width: $layout-c-max)
 			--image-size: calc(33vw - 10px)

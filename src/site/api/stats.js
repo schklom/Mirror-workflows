@@ -38,7 +38,8 @@ const features = [
 	"PAGE_HOME",
 	"API_INSTANCES",
 	"BLOCK_DETECT_USER_HTML",
-	"API_UNBLOCK"
+	"API_UNBLOCK",
+	"PAGE_IGTV"
 ]
 if (constants.has_privacy_policy) features.push("PRIVACY_POLICY")
 if (constants.as_assistant.enabled) {

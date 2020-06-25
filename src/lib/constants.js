@@ -210,7 +210,7 @@ let constants = {
 			time: 2*60*60*1000,
 		},
 		db_user_id: true,
-		db_post_n3: true,
+		db_post_n3: false,
 		db_request_history: false
 	},
 

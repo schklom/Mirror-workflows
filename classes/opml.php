@@ -606,7 +606,7 @@ class Opml extends Handler_Protected {
 		if (is_file($tmp_file)) {
 			$doc = new DOMDocument();
 			libxml_disable_entity_loader(false);
-			$doc->load($tmp_file);
+			$loaded = $doc->load($tmp_file);
 			libxml_disable_entity_loader(true);
 			unlink($tmp_file);
 		} else if (!$doc) {
@@ -614,7 +614,7 @@ class Opml extends Handler_Protected {
 			return;
 		}
 
-		if ($doc) {
+		if ($loaded) {
 			$this->pdo->beginTransaction();
 			$this->opml_import_category($doc, false, $owner_uid, false);
 			$this->pdo->commit();

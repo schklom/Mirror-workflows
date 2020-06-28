@@ -32,21 +32,21 @@ body
 	border-radius: 50%
 
 @mixin link-button
-	color: hsl(107, 100%, 21.8%)
-	background: hsl(87, 78.4%, 80%)
+	color: map-get($theme, "foreground-power-primary")
+	background-color: map-get($theme, "background-power-primary")
+	border: 1px solid map-get($theme, "background-power-secondary")
 	padding: 12px
 	border-radius: 10px
-	border: 1px solid hsl(106.9, 49.8%, 46.9%)
 	line-height: 1
 	text-decoration: none
 
 	&.disabled
 		cursor: default
 
-	&:hover:not(.disabled), &:active, &.clicked
-		color: hsl(106.4, 100%, 12.9%)
-		background: hsl(102.1, 77.2%, 67.3%)
-		border-color: hsl(104, 51.4%, 43.5%)
+	&:hover:not(.disabled), &:active, &:focus
+		color: map-get($theme, "foreground-power-secondary")
+		background-color: map-get($theme, "background-power-secondary")
+		border-color: map-get($theme, "background-power-tertiary")
 
 .top-nav
 	background-color: map-get($theme, "background-power-primary")
@@ -287,7 +287,7 @@ body
 				overflow: hidden
 				@include sized
 
-				&:hover
+				&:hover, &:focus
 					$border-width: 3px
 					margin: $margin - $border-width
 					border-width: $border-width
@@ -296,7 +296,7 @@ body
 					$margin: 2px
 					margin: $margin
 
-					&:hover
+					&:hover, &:focus
 						$border-width: 2px
 						margin: $margin - $border-width
 						border-width: $border-width

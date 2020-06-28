@@ -67,6 +67,7 @@ class NextPage extends FreezeWidth {
 		if (entries.some(entry => entry.isIntersecting && entry.intersectionRatio >= intersectionThreshold)) {
 			if (this.fetching) return
 			this.class("disabled")
+			this.class("clicked")
 			this.fetch()
 		}
 	}

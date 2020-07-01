@@ -238,6 +238,7 @@ class Pref_Filters extends Handler_Protected {
 		$root = array();
 		$root['id'] = 'root';
 		$root['name'] = __('Filters');
+		$root['enabled'] = true;
 		$root['items'] = array();
 
 		$filter_search = $_SESSION["prefs_filter_search"];
@@ -965,7 +966,7 @@ class Pref_Filters extends Handler_Protected {
 		print "<section>";
 
 		print "<textarea dojoType='fox.form.ValidationTextArea'
-			 required='true' id='filterDlg_regExp' 
+			 required='true' id='filterDlg_regExp'
 			 ValidRegExp='true'
 			 rows='4'
 			 style='font-size : 14px; width : 490px; word-break: break-all'

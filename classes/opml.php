@@ -8,7 +8,7 @@ class Opml extends Handler_Protected {
 	}
 
 	function export() {
-		$output_name = "tt-rss_".date("Y-m-d").".opml";
+		$output_name = sprintf("tt-rss_%s_%s.opml", $_SESSION["name"], date("Y-m-d"));
 		$include_settings = $_REQUEST["include_settings"] == "1";
 		$owner_uid = $_SESSION["uid"];
 
@@ -62,7 +62,7 @@ class Opml extends Handler_Protected {
 		$ttrss_specific_qpart = "";
 
 		if ($cat_id) {
-			$sth = $this->pdo->prepare("SELECT title,order_id 
+			$sth = $this->pdo->prepare("SELECT title,order_id
 				FROM ttrss_feed_categories WHERE id = ?
 					AND owner_uid = ?");
 			$sth->execute([$cat_id, $owner_uid]);

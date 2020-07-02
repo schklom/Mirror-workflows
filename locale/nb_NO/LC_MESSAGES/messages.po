@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-28 08:08+0300\n"
 "PO-Revision-Date: 2020-07-03 22:17+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Last-Translator: Jan Espen Pedersen <hphjanni@gmail.com>\n"
 "Language-Team: Norwegian Bokmål <https://weblate.tt-rss.org/projects/tt-rss/"
 "messages/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -122,9 +122,10 @@ msgid "Frontend sanity check failed."
 msgstr "Frontprogramsjekk feilet."
 
 #: errors.php:19
-#, fuzzy
 msgid "Incorrect database schema version. &lt;a href='db-updater.php'&gt;Please update&lt;/a&gt;."
-msgstr "Feil databaseskjemautgave. &lt;a href='update.php'&gt;Vennligst oppdater&lt;/a&gt;."
+msgstr ""
+"Feil databaseskjemautgave. &lt;a href='update.php'&gt;Vennligst "
+"oppdater&lt;/a&gt;."
 
 #: errors.php:21
 msgid "Request not authorized."
@@ -500,7 +501,7 @@ msgstr "Åpne neste strøm"
 
 #: include/functions.php:1029
 msgid "Open previous feed"
-msgstr ""
+msgstr "Åpne forrige strøm"
 
 #: include/functions.php:1030
 #, fuzzy

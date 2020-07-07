@@ -140,7 +140,7 @@ class RequestCache extends TtlCache {
 class UserRequestCache extends TtlCache {
 	constructor(ttl) {
 		super(ttl)
-		/** @type {Map<string, {data: T, isReel: boolean, isFailedPromise: boolean, htmlFailed: boolean, time: number}>} */
+		/** @type {Map<string, {data: T, isReel: boolean, isFailedPromise: boolean, htmlFailed: boolean, reelFailed: boolean, time: number}>} */
 		this.cache
 	}
 
@@ -153,7 +153,7 @@ class UserRequestCache extends TtlCache {
 		const existing = this.cache.get(key)
 		// Preserve html failure status if now requesting as reel
 		const htmlFailed = isReel && existing && existing.htmlFailed
-		this.cache.set(key, {data, isReel, isFailedPromise: false, htmlFailed, time: Date.now()})
+		this.cache.set(key, {data, isReel, isFailedPromise: false, htmlFailed, reelFailed: false, time: Date.now()})
 	}
 
 	/**
@@ -180,7 +180,7 @@ class UserRequestCache extends TtlCache {
 					}
 				}
 			} else { // (existing.isFailedPromise ~= true): the existing entry is a failed request
-				if (existing.htmlFailed && !willFetchReel) { // it's no use! the HTML attempt will fail again: abandon it.
+				if (existing.reelFailed || (existing.htmlFailed && !willFetchReel)) { // it's no use! the attempt will fail again; don't try.
 					return Promise.resolve(existing.data) // this is actually a promise rejection
 				}
 			}
@@ -191,7 +191,8 @@ class UserRequestCache extends TtlCache {
 			}
 			return result
 		}).catch(error => {
-			this.cache.get(key).htmlFailed = true
+			if (willFetchReel) this.cache.get(key).reelFailed = true
+			else this.cache.get(key).htmlFailed = true
 			this.cache.get(key).isFailedPromise = true
 			throw error
 		})

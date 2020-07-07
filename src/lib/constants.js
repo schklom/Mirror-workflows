@@ -237,7 +237,8 @@ let constants = {
 	},
 
 	resources: {
-		instances_wiki_raw: "https://raw.githubusercontent.com/wiki/cloudrac3r/bibliogram/Instances.md"
+		instances_wiki_raw: "https://raw.githubusercontent.com/wiki/cloudrac3r/bibliogram/Instances.md",
+		saved_requests_location: "https://meta.bibliogram.art/saved_requests/"
 	},
 
 	// My code uses this stuff. Server owners have no reason to change it.

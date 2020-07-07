@@ -206,15 +206,17 @@ function fetchUserFromCombined(userID, username) {
 			return res
 		}).then(res => res.json()).then(root => {
 			const result = root.data.user
-			if (!result) throw constants.symbols.NOT_FOUND
+			if (!result) {
+				// user ID doesn't exist.
+				db.prepare("DELETE FROM Users WHERE user_id = ?").run(userID) // deleting the entry makes sense to me; the username might be claimed by somebody else later
+				throw constants.symbols.NOT_FOUND // this should cascade down and show the user not found page
+			}
 			// require down here or have to deal with require loop. require cache will take care of it anyway.
 			// ReelUser -> Timeline -> TimelineEntry -> collectors -/> User
 			const ReelUser = require("./structures/ReelUser")
 			const user = new ReelUser(result.reel.user)
 			history.report("reel", true)
 			return user
-		}).catch(error => {
-			throw error
 		})
 	}).then(async user => {
 		// Add first timeline page
@@ -274,6 +276,12 @@ function fetchTimelinePage(userID, after) {
 		return switcher.request("timeline_graphql", `https://www.instagram.com/graphql/query/?${p.toString()}`, async res => {
 			if (res.status === 429) throw constants.symbols.RATE_LIMITED
 		}).then(g => g.json()).then(root => {
+			if (root.data.user === null) {
+				// user ID doesn't exist.
+				db.prepare("DELETE FROM Users WHERE user_id = ?").run(userID) // deleting the entry makes sense to me; the username might be claimed by somebody else later
+				requestCache
+				throw constants.symbols.NOT_FOUND // this should cascade down and show the user not found page
+			}
 			/** @type {import("./types").PagedEdges<import("./types").TimelineEntryN2>} */
 			const timeline = root.data.user.edge_owner_to_timeline_media
 			history.report("timeline", true)
@@ -425,6 +433,7 @@ module.exports.fetchTimelinePage = fetchTimelinePage
 module.exports.fetchIGTVPage = fetchIGTVPage
 module.exports.getOrCreateShortcode = getOrCreateShortcode
 module.exports.fetchShortcodeData = fetchShortcodeData
+module.exports.requestCache = requestCache
 module.exports.userRequestCache = userRequestCache
 module.exports.timelineEntryCache = timelineEntryCache
 module.exports.getOrFetchShortcode = getOrFetchShortcode

@@ -17,3 +17,4 @@ users_export.json
 /.nyc_output
 /test/screenshots/diff
 /test/screenshots/staging
+/src/lib/utils/saved_requests/files

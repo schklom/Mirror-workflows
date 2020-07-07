@@ -18,12 +18,13 @@ const cookies = {
 	}
 }
 
-function generateSetup(pageName, url, sizeName, cookiesName) {
+function generateSetup(pageName, url, sizeName, cookiesName, scrolls) {
 	return {
 		url: url,
 		filename: `${pageName}-${sizeName}-${cookiesName}`,
 		size: sizes[sizeName],
-		cookies: cookies[cookiesName]
+		cookies: cookies[cookiesName],
+		scrolls: scrolls
 	}
 }
 
@@ -31,6 +32,8 @@ module.exports = [
 	generateSetup("home", "/", "laptop", "default"),
 	generateSetup("settings", "/settings", "laptop", "default"),
 	generateSetup("home", "/", "phone", "default"),
+	generateSetup("settings", "/settings", "phone", "default"),
+
 	generateSetup("home", "/", "laptop", "ptc"),
 	generateSetup("settings", "/settings", "laptop", "ptc"),
 	generateSetup("home", "/", "phone", "ptc"),

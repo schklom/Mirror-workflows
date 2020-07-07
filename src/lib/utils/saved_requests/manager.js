@@ -5,6 +5,7 @@ const {promisify} = require("util")
 const crypto = require("crypto")
 const stream = require("stream")
 
+const constants = require("../../constants")
 const db = require("../../db")
 const Saved = require("../request_backends/saved")
 const NodeFetch = require("../request_backends/node-fetch")
@@ -56,9 +57,32 @@ class SavedRequestManager {
 	request() {
 		const row = db.prepare("SELECT * FROM SavedRequests WHERE url = ?").get(this.url)
 		if (row) {
-			console.log("Found, using saved request for "+row.path)
 			const base = pj(folder, row.path)
-			return new Saved(base)
+			try {
+				fs.accessSync(base)
+				console.log("Found, using saved request for "+row.path)
+				return new Saved(base)
+			} catch (e) {
+				console.log("Known, but not downloaded  for "+row.path)
+
+				function download(name) {
+					return new NodeFetch(constants.external.saved_requests_location+name).stream().then(readable => {
+						return promisify(stream.pipeline)(
+							readable,
+							fs.createWriteStream(pj(folder, name))
+						)
+					})
+				}
+
+				return new DelayedBackend(
+					Promise.all([
+						download(row.path),
+						download(row.path + ".meta.json")
+					]).then(() => {
+						return this.clone().request()
+					})
+				)
+			}
 		} else {
 			const name = generateName()
 			console.log("Not found, saving now as "+name)

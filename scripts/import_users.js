@@ -11,7 +11,15 @@ const {request} = require("../src/lib/utils/request")
 	}
 
 	if (target.match(/^https?:\/\//)) {
-		var usersString = await request(target).text()
+		console.log("Seems to be a URL, requesting now. This could take a few minutes. Be patient.")
+		const ref = await request(target)
+		const res = await ref.response()
+		const lengthContainer = res.headers.get("content-length")
+		if (lengthContainer) {
+			const length = Number(Array.isArray(lengthContainer) ? lengthContainer[0] : lengthContainer)
+			console.log(`${Math.floor(length/1000)} kB will be downloaded`)
+		}
+		var usersString = await ref.text()
 	} else {
 		var usersString = await fs.readFile(target, {encoding: "utf8"})
 	}
@@ -19,10 +27,12 @@ const {request} = require("../src/lib/utils/request")
 	/** @type {{username: string, user_id: string, created: number, updated: number, updated_version: number, biography: string, post_count: number, following_count: number, followed_by_count: number, external_url: string, full_name: string, is_private: number, is_verified: number, profile_pic_url: string}[]} */
 	const incomingUsers = JSON.parse(usersString)
 
+	process.stdout.write("Noting existing users... ")
 	const existing = new Map()
 	for (const row of db.prepare("SELECT user_id, updated, updated_version FROM Users").iterate()) {
 		existing.set(row.user_id, row)
 	}
+	process.stdout.write("done.\n")
 
 	const base =
 		"INTO Users (username,  user_id,  created,  updated,  updated_version,  biography,  post_count,  following_count,  followed_by_count,  external_url,  full_name,  is_private,  is_verified,  profile_pic_url) VALUES "
@@ -34,6 +44,7 @@ const {request} = require("../src/lib/utils/request")
 	let overwrittenCount = 0
 	let skippedCount = 0
 
+	process.stdout.write("Importing into database... ")
 	db.transaction(() => {
 		for (const user of incomingUsers) {
 			if (existing.has(user.user_id)) {
@@ -50,6 +61,7 @@ const {request} = require("../src/lib/utils/request")
 			}
 		}
 	})()
+	process.stdout.write("done.\n")
 
 	console.log(`Imported ${incomingUsers.length} entries (${newCount} new, ${overwrittenCount} overwritten, ${skippedCount} skipped)`)
 })()

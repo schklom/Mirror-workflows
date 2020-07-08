@@ -1,10 +1,11 @@
-FROM node:12.18.1-alpine as build
+FROM node:14.5.0-alpine as build
 RUN apk --no-cache add git python3 make g++
 WORKDIR /app
 COPY . .
+COPY ./.config.js.default ./config.js
 RUN npm install --no-optional
 
-FROM node:12.18.1-alpine as app
+FROM node:14.5.0-alpine as app
 WORKDIR /app
 COPY --from=build /app /app
 EXPOSE 10407

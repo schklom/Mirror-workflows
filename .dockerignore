@@ -1,1 +1,27 @@
+# Editor stuff
+.vscode
+
+# Test stuff
+test
+coverage
+.nyc_output
+src/lib/utils/saved_requests/files
+
+# Database stuff
+db
+*.log
+*.csv
+
+# Personal stuff
+notes.txt
+config.js
+
+# Cached stuff
+db
 node_modules
+
+# Stuff Docker doesn't need
+.git
+art
+*.log
+*.csv

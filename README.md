@@ -16,27 +16,68 @@ See also: [Invidious, a front-end for YouTube.](https://github.com/omarroth/invi
 
 The official instance is on https://bibliogram.art.
 
-You can see a list of instances run by the community [on the wiki page](https://github.com/cloudrac3r/bibliogram/wiki/Instances).
+Community instances are listed [on the wiki page](https://github.com/cloudrac3r/bibliogram/wiki/Instances).
 
 If you only use one computer, you can install Bibliogram on that computer and then access the instance through localhost.
 
 ## Installing
 
-Quick setup, if you've run webservers before:
+Select a section and follow the instructions in that section only.
+
+### With bibliogram-updater
+
+**This is the best method to run Bibliogram on a server.** This method **will** automatically keep Bibliogram up to date, requiring no maintenance after the initial setup.
+
+The updater scripts run in fish. If installing fish isn't possible, please choose a different method.
+
+To clone Bibliogram, install dependencies, and automatically keep it up to date in future, run this in a shell:
+
+    wget -o install-bibliogram.sh https://raw.githubusercontent.com/cloudrac3r/bibliogram-updater/master/.clone.sh
+    bash install-bibliogram.sh
+
+If you want more details, extended documentation, or want to use it without pasting code, please check out the project page: https://github.com/cloudrac3r/bibliogram-updater
+
+### With Docker
+
+I have no idea how Docker works. Good luck. You **won't** be automatically updated to new versions with this.
+
+[Discuss the Docker setup in issue #81](https://github.com/cloudrac3r/bibliogram/issues/81) and tell me about how I can make it more convenient for you, or even submit a pull request if you know what you want.
+
+Recommended: Clone the repo, then `docker-compose up`.
+
+Alternatively: `docker run -p 10407:10407 -v db:/app/db cloudrac3r/bibliogram`.
+
+[Repository on Docker Hub.](https://hub.docker.com/repository/docker/cloudrac3r/bibliogram)
+
+### Manually, if you've run webservers before
+
+**This is the best method to run Bibliogram if you're a developer.** You **won't** be automatically updated to new versions with this.
 
 1. Install [node.js](https://nodejs.org/en/) (^12.13.0 suggested)
 1. `$ git clone https://github.com/cloudrac3r/bibliogram`  
-If you are using a fork, be sure to actually install that fork instead!
+If you are currently looking at a fork, be sure to actually install that fork instead!
 1. `$ cd bibliogram`
 1. `$ npm install --no-optional` (for Tor support, omit `--no-optional`)
-1. Edit `/config.js` to suit your server environment
+1. Edit `/config.js` to suit your environment
 1. `$ npm start`
 
 Bibliogram is now running on `0.0.0.0:10407`.
 
-After installing, you _must_ configure `website_origin`. See [Wiki:Installing](https://github.com/cloudrac3r/bibliogram/wiki/Installing) and [Wiki:Configuring](https://github.com/cloudrac3r/bibliogram/wiki/Configuring) for more details. Problems? [Wiki:Troubleshooting](https://github.com/cloudrac3r/bibliogram/wiki/Troubleshooting)
+You _must_ configure `website_origin`. Read [Wiki:Configuring](https://github.com/cloudrac3r/bibliogram/wiki/Configuring) for help.
 
-You can also deploy on Heroku, though I personally would not recommend this, because [Heroku's filesystem is ephemeral,](https://devcenter.heroku.com/articles/active-storage-on-heroku#ephemeral-disk) and the database is saved as a file, which means saved settings and the cache will be lost when the dyno restarts, which Heroku does automatically every few hours. In addition, configuration options [must be set via environment variables](https://github.com/cloudrac3r/bibliogram/wiki/Environment-variables) because, again, the configuration file does not persist (unless you fork the repository, make your changes as commits, push them to Heroku, and then manually manage and merge future commits to upstream Bibliogram). Despite this warning, [you can still deploy on Heroku if you want to.](https://heroku.com/deploy?template=https://github.com/cloudrac3r/bibliogram)
+### Manually, if you're new to running webservers
+
+You **won't** be automatically updated to new versions with this.
+
+Guide: [Wiki:Installing](https://github.com/cloudrac3r/bibliogram/wiki/Installing)
+
+Problems? [Wiki:Troubleshooting](https://github.com/cloudrac3r/bibliogram/wiki/Troubleshooting)
+
+You _must_ configure `website_origin`. Read [Wiki:Configuring](https://github.com/cloudrac3r/bibliogram/wiki/Configuring) for help.
+
+### With Heroku
+
+Don't deploy Bibliogram on Heroku. It's a really bad idea. Please read about the [ephemeral filesystem](https://devcenter.heroku.com/articles/active-storage-on-heroku#ephemeral-disk) which the database is stored on, and then read about [configuring with environment variables](https://github.com/cloudrac3r/bibliogram/wiki/Environment-variables), and then [read the rate limit documentation](https://github.com/cloudrac3r/bibliogram/wiki/Rate-limits), and then understand that Heroku will _never_ be unblocked because Instagram knows that because its IP address is from a cloud server it's going to be doing bad things. Despite these warnings, [you can still deploy on Heroku if you really want to.](https://heroku.com/deploy?template=https://github.com/cloudrac3r/bibliogram)
 
 ## Credits & license information
 

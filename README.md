@@ -32,7 +32,7 @@ The updater scripts run in fish. If installing fish isn't possible, please choos
 
 To clone Bibliogram, install dependencies, and automatically keep it up to date in future, run this in a shell:
 
-    wget -o install-bibliogram.sh https://raw.githubusercontent.com/cloudrac3r/bibliogram-updater/master/.clone.sh
+    wget -O install-bibliogram.sh https://raw.githubusercontent.com/cloudrac3r/bibliogram-updater/master/.clone.sh
     bash install-bibliogram.sh
 
 If you want more details, extended documentation, or want to use it without pasting code, please check out the project page: https://github.com/cloudrac3r/bibliogram-updater

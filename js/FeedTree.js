@@ -1,9 +1,42 @@
 /* eslint-disable prefer-rest-params */
 /* global __, dojo, dijit, define, App, Feeds, CommonDialogs */
 
-define(["dojo/_base/declare", "dojo/dom-construct", "dijit/Tree", "dijit/Menu"], function (declare, domConstruct) {
+define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/cookie", "dijit/Tree", "dijit/Menu"], function (declare, domConstruct, array, cookie) {
 
 	return declare("fox.FeedTree", dijit.Tree, {
+		// save state in localStorage instead of cookies
+		// reference: https://stackoverflow.com/a/27968996
+		_saveExpandedNodes: function(){
+			if(this.persist && this.cookieName){
+				var ary = [];
+				for(var id in this._openedNodes){
+					ary.push(id);
+				}
+				// Was:
+				// cookie(this.cookieName, ary.join(","), {expires: 365});
+				localStorage.setItem(this.cookieName, ary.join(","));
+			}
+		},
+		_initState: function(){
+			// summary:
+			//    Load in which nodes should be opened automatically
+			this._openedNodes = {};
+			if(this.persist && this.cookieName){
+				// Was:
+				// var oreo = cookie(this.cookieName);
+				var oreo = localStorage.getItem(this.cookieName);
+				// migrate old data if nothing in localStorage
+				if(oreo == null || oreo === '') {
+					oreo = cookie(this.cookieName);
+					cookie(this.cookieName, null, { expires: -1 });
+				}
+				if(oreo){
+					array.forEach(oreo.split(','), function(item){
+						this._openedNodes[item] = true;
+					}, this);
+				}
+			}
+		},
 		_onContainerKeydown: function(/* Event */ /* e */) {
 			return; // Stop dijit.Tree from interpreting keystrokes
 		},

@@ -10,7 +10,7 @@ require("../testimports")(collectors, TimelineChild, TimelineBaseMethods)
 const rssDescriptionTemplate = compile(`
 p(style='white-space: pre-line')= caption
 each child in children
-	img(alt=child.alt src=child.src width=child.width height=child.height)
+	!= child.getFeedItem()
 `)
 
 class TimelineEntry extends TimelineBaseMethods {
@@ -262,12 +262,7 @@ class TimelineEntry extends TimelineBaseMethods {
 			title: this.getCaptionIntroduction() || `New post from @${this.getBasicOwner().username}`,
 			description: rssDescriptionTemplate({
 				caption: this.getCaption(),
-				children: children.map(child => ({
-					src: `${constants.website_origin}${child.getDisplayUrlP()}`,
-					alt: child.getAlt(),
-					width: child.data.dimensions.width,
-					height: child.data.dimensions.height
-				}))
+				children
 			}),
 			link: `${constants.website_origin}/p/${this.data.shortcode}`,
 			id: `bibliogram:post/${this.data.shortcode}`, // Is it wise to keep the origin in here? The same post would have a different ID from different servers.

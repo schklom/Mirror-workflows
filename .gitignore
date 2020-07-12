@@ -8,7 +8,7 @@ node_modules
 
 # Database stuff
 db/**/*.db*
-users_export.json
+users_export.json*
 *.log
 *.csv
 

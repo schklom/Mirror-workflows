@@ -1,10 +1,13 @@
-const fs = require("fs").promises
+const fs = require("fs")
+const {createGunzip} = require("zlib")
 const pj = require("path").join
 const db = require("../src/lib/db")
 const {request} = require("../src/lib/utils/request")
 
+
 ;(async () => {
 	const target = process.argv[2]
+	const isGzip = target.endsWith(".gz")
 	if (!target) {
 		console.log("Provide the file or URL to import from on the command line.")
 		process.exit(1)
@@ -19,10 +22,23 @@ const {request} = require("../src/lib/utils/request")
 			const length = Number(Array.isArray(lengthContainer) ? lengthContainer[0] : lengthContainer)
 			console.log(`${Math.floor(length/1000)} kB will be downloaded`)
 		}
-		var usersString = await ref.text()
+		var usersStream = await ref.stream()
 	} else {
-		var usersString = await fs.readFile(target, {encoding: "utf8"})
+		/** @type {any} */
+		var usersStream = await fs.createReadStream(target)
 	}
+
+	if (isGzip) {
+		usersStream = usersStream.pipe(createGunzip())
+	}
+
+	// Read out the stream into a buffer
+	process.stdout.write("Reading data... ")
+	const buffers = []
+	usersStream.on("data", chunk => buffers.push(chunk))
+	await new Promise(resolve => usersStream.once("end", resolve))
+	const usersString = Buffer.concat(buffers).toString("utf8")
+	process.stdout.write("done.\n")
 
 	/** @type {{username: string, user_id: string, created: number, updated: number, updated_version: number, biography: string, post_count: number, following_count: number, followed_by_count: number, external_url: string, full_name: string, is_private: number, is_verified: number, profile_pic_url: string}[]} */
 	const incomingUsers = JSON.parse(usersString)
@@ -49,7 +65,7 @@ const {request} = require("../src/lib/utils/request")
 		for (const user of incomingUsers) {
 			if (existing.has(user.user_id)) {
 				const existingRow = existing.get(user.user_id)
-				if (existingRow.updated_version <= user.updated_version && existingRow.updated <= user.updated) {
+				if (existingRow.updated_version <= user.updated_version && existingRow.updated < user.updated) {
 					preparedReplace.run(user)
 					overwrittenCount++
 				} else {

@@ -1,7 +1,7 @@
 const fs = require("fs")
 const {createGunzip} = require("zlib")
-const pj = require("path").join
 const db = require("../src/lib/db")
+const getStream = require("get-stream")
 const {request} = require("../src/lib/utils/request")
 
 async function progress(message, callback) {
@@ -42,10 +42,7 @@ async function progress(message, callback) {
 	// Read out the stream into a buffer
 	/** @type {{username: string, user_id: string, created: number, updated: number, updated_version: number, biography: string, post_count: number, following_count: number, followed_by_count: number, external_url: string, full_name: string, is_private: number, is_verified: number, profile_pic_url: string}[]} */
 	const incomingUsers = await progress("Reading data... ", async () => {
-		const buffers = []
-		usersStream.on("data", chunk => buffers.push(chunk))
-		await new Promise(resolve => usersStream.once("end", resolve))
-		const usersString = Buffer.concat(buffers).toString("utf8")
+		const usersString = await getStream(usersStream, {encoding: "utf8"})
 		return JSON.parse(usersString)
 	})
 

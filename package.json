@@ -16,6 +16,7 @@
     "better-sqlite3": "^6.0.1",
     "cookie": "^0.4.1",
     "feed": "github:cloudrac3r/feed#f42b4d7183fc2b6e566cb400ad083c4dd714c858",
+    "get-stream": "^5.1.0",
     "mixin-deep": "^2.0.1",
     "node-dir": "^0.1.17",
     "node-fetch": "^2.6.0",

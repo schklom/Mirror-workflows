@@ -9,15 +9,24 @@ const shouldGzip = process.argv.slice(2).includes("--gzip")
 const filename = "users_export.json" + (shouldGzip ? ".gz" : "")
 const target = pj(__dirname, targetDir, filename)
 
+async function progress(message, callback) {
+	process.stdout.write(message)
+	const result = await callback()
+	process.stdout.write("done.\n")
+	return result
+}
+
 ;(async () => {
-	const users = db.prepare("SELECT * FROM Users").all()
-	let data = Buffer.from(JSON.stringify(users), "utf8")
+	let data = await progress("Preparing export data... ", () => {
+		const users = db.prepare("SELECT * FROM Users").all()
+		return Buffer.from(JSON.stringify(users), "utf8")
+	})
 
 	if (shouldGzip) {
-		data = await p(gzip)(data)
+		data = await progress("Compressing... ", () => p(gzip)(data))
 	}
 
-	await fs.writeFile(target, data)
+	await progress("Writing file... ", () => fs.writeFile(target, data))
 
 	console.log(`Users exported to ${target}`)
 })()

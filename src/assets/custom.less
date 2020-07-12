@@ -7,16 +7,16 @@ textarea {
 	font-family: "DejaVu Sans Mono", monospace;
 }
 
-$text: #2ded80;
-$inactive: #795fdc;
-$active: #a13064;
-$dark: #000233;
-$table: #1eaeb7;
+@text: #2ded80;
+@inactive: #795fdc;
+@active: #a13064;
+@dark: #000233;
+@table: #1eaeb7;
 
 body {
 	margin: 1em;
 	background: url('./skyline1.jpeg');
-	color: $text;
+	color: @text;
 	height: 100%;
 	background-repeat: no-repeat;
     background-color: #000;
@@ -33,7 +33,7 @@ body {
 
     > article {
     	width: 100%;
-    	color: $text;
+    	color: @text;
     	overflow: hidden;
 
 		> input {
@@ -46,12 +46,12 @@ body {
     		display: flex;
     		justify-content: space-between;
     		padding: 1em;
-    		background: rgba($inactive, 0.75);
+    		background: rgba(@inactive, 0.75);
     		font-weight: bold;
     		cursor: pointer;
     		/* Icon */
     		&:hover {
-    			background: rgba($active, 0.75);
+    			background: rgba(@active, 0.75);
     		}
 
     		&::after {
@@ -67,14 +67,14 @@ body {
     		max-height: 0;
 			overflow: hidden;
     		padding: 0 1em;
-    		color: $active;
+    		color: @active;
     		background: rgba(0,0,0, 0.75);
     		transition: all 0.35s;
     	}
 
         > input:checked {
         	+ label {
-        		background: rgba($active, 0.75);
+        		background: rgba(@active, 0.75);
 
         		&::after {
         			transform: rotate(90deg);
@@ -117,37 +117,38 @@ body {
 .pure-form input[type=week],
 .pure-form select,
 .pure-form textarea {
-	background: $dark;
+	background: @dark;
 	border: none;
-	box-shadow: inset 0 1px 3px $text;
+	box-shadow: inset 0 1px 3px @text;
+	color: @text;
 }
 
 .pure-form input[readonly],
 .pure-form select[readonly],
 .pure-form textarea[readonly] {
-	background-color: $dark;
-	color: $text;
-	border-color: $inactive;
+	background-color: @dark;
+	color: @inactive;
+	border-color: @inactive;
 }
 
 .pure-button {
-	background: $active;
-	color: $text;
+	background: @active;
+	color: @text;
 	box-shadow: inset 0 1px 3px #2ded80;
 }
 
 a {
-	color: $text;
+	color: @text;
 }
 
 .pure-table,
 .pure-table td,
 .pure-table th {
-	border-color: $table;
+	border-color: @table;
 }
 .pure-table thead {
 	background-color: rgba(65, 7, 66, 0.5);
-	color: $table;
+	color: @table;
 }
 
 #error {

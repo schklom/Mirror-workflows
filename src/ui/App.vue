@@ -58,7 +58,7 @@
 
 <script>
 import '../../node_modules/purecss/build/pure-min.css';
-import '../assets/custom.scss';
+import '../assets/custom.less';
 import Loader from './components/loader.vue';
 import Selector from './components/selector.vue';
 import Preview from './components/preview.vue';

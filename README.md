@@ -13,7 +13,7 @@ The GitHub repository will remain here in some form, and may be kept up to date,
 ## Navigation
 
 - [Bibliogram project on sourcehut][project]
-- [Bibliogram code repository][main repo]
+- › Bibliogram code repository
 - [Bibliogram issues tracker][issues]
 - [Updater code repository][updater repo]
 - [Full documentation][docs folder]

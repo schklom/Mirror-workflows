@@ -21,16 +21,16 @@ class MapOfNumber {
 		this.backing = new Map()
 	}
 
-	add(value) {
-		if (this.backing.has(value)) {
-			this.backing.set(value, this.backing.get(value) + 1)
-		} else {
-			this.backing.set(value, 1)
-		}
+	add(key) {
+		this.backing.set(key, this.get(key) + 1)
 	}
 
-	get(value) {
-		return this.backing.has(value) ? this.backing.get(value) : 0
+	get(key) {
+		return this.backing.has(key) ? this.backing.get(key) : 0
+	}
+
+	sort() {
+		return [...this.backing.entries()].sort((a, b) => (b[1] - a[1]))
 	}
 }
 
@@ -90,8 +90,8 @@ const regex = /^([^ ]+) - - \[([^\]]+)\] "([A-Z]+) ([^"]+) HTTP\/(?:1.0|1.1|2.0)
 function parseLine(line) {
 	const result = line.match(regex)
 	if (!result) {
-		console.log("Line didn't match regular expression:")
-		console.log(line)
+		// console.log("Line didn't match regular expression:")
+		// console.log(line)
 		return null
 	} else {
 		return {
@@ -106,7 +106,7 @@ function parseLine(line) {
 	}
 }
 
-const additionalStatic = ["/android-chrome-512x512.png", "/safari-pinned-tab.svg", "/robots.txt", "/site.webmanifest", "/apple-touch-icon.png", "/favicon-32x32.png", "/favicon-16x16.png", "/favicon.ico", "/android-chrome-192x192.png"]
+const additionalStatic = ["/android-chrome-512x512.png", "/safari-pinned-tab.svg", "/robots.txt", "/bibliogram.webmanifest", "/apple-touch-icon.png", "/favicon-32x32.png", "/favicon-16x16.png", "/favicon.ico", "/android-chrome-192x192.png"]
 
 let total = 0
 let ipv4c = 0
@@ -125,6 +125,7 @@ let kinds = {
 	api: 0
 }
 const statuses = new MapOfNumber()
+const ips = new MapOfNumber()
 /** @type {DateCollection} */
 let dateCollection = null
 
@@ -136,7 +137,7 @@ reader.on("line", line => {
 	//console.log(parsed)
 
 	if (!dateCollection) {
-		dateCollection = new DateCollection(dateObject.getTime(), 10*60*1000)
+		dateCollection = new DateCollection(dateObject.getTime(), 60*60*1000)
 	}
 
 	total++
@@ -174,6 +175,7 @@ reader.on("line", line => {
 	if (kind) {
 		kinds[kind]++
 		dateCollection.add(kind, dateObject.getTime())
+		if (kind === "api") ips.add(parsed.ip)
 	}
 })
 
@@ -210,4 +212,12 @@ reader.on("close", () => {
 		out.write(`${entry[0]};${entry[1].join(";")}\n`)
 	}
 	console.log(`Overwrote ${outPath}`)
+	console.log()
+
+	const sorted = ips.sort()
+	const percentile = 98
+	console.log("Top 10 IPs:")
+	console.log(sorted.slice(0, 10))
+	console.log(`${percentile}th percentile:`)
+	console.log(sorted[Math.floor(sorted.length / 100 * (100 - percentile))])
 })

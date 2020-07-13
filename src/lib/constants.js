@@ -237,7 +237,7 @@ let constants = {
 	},
 
 	resources: {
-		instances_wiki_raw: "https://raw.githubusercontent.com/wiki/cloudrac3r/bibliogram/Instances.md",
+		instances_wiki_raw: "https://git.sr.ht/~cadence/bibliogram-docs/blob/master/docs/Instances.md",
 		saved_requests_location: "https://meta.bibliogram.art/saved_requests/"
 	},
 

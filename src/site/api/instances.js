@@ -67,7 +67,7 @@ module.exports = [
 							content: {
 								status: "fail",
 								generatedAt: Date.now(),
-								message: "Unable to parse the table from the wiki page: https://raw.githubusercontent.com/wiki/cloudrac3r/bibliogram/Instances.md"
+								message: `Unable to parse the table from the instances page at ${constants.resources.instances_wiki_raw}`
 							}
 						}
 					}

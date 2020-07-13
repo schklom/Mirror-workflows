@@ -165,7 +165,7 @@ module.exports = async function() {
 			+"\n  -> Make sure you have set `config/website_origin`"
 			+"\n     as instructed in the installation guide."
 			+"\n  -> Consider adding yourself to the instance list:"
-			+"\n     https://github.com/cloudrac3r/bibliogram/wiki/Instances"
+			+"\n     https://git.sr.ht/~cadence/bibliogram-docs/tree/master/docs/Instances.md"
 			+"\n  -> Join the Matrix chatroom for help: #bibliogram:matrix.org"
 			+"\n"
 		)

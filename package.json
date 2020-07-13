@@ -13,7 +13,7 @@
   "author": "",
   "license": "AGPL-3.0-only",
   "dependencies": {
-    "better-sqlite3": "^6.0.1",
+    "better-sqlite3": "^7.1.0",
     "cookie": "^0.4.1",
     "feed": "github:cloudrac3r/feed#f42b4d7183fc2b6e566cb400ad083c4dd714c858",
     "get-stream": "^5.1.0",
@@ -22,8 +22,8 @@
     "node-fetch": "^2.6.0",
     "pinski": "github:cloudrac3r/pinski#ffa2f36eee807a13dd1090717045f945a5d5e3d2",
     "pug": "^2.0.4",
-    "semver": "^7.2.1",
-    "sharp": "^0.25.2",
+    "semver": "^7.3.2",
+    "sharp": "^0.25.4",
     "socks-proxy-agent": "github:cloudrac3r/node-socks-proxy-agent#6a26d274b12098dfef6cc2faafd25b0c051f2467"
   },
   "optionalDependencies": {
@@ -31,7 +31,7 @@
     "got": "^10.6.0"
   },
   "devDependencies": {
-    "jimp": "^0.13.0",
+    "jimp": "^0.14.0",
     "selenium-webdriver": "^4.0.0-alpha.7",
     "tap": "^14.10.7",
     "why-is-node-running": "^2.2.0"

@@ -32,7 +32,7 @@ and doesn't urge you to sign up.
 
 See Bibliogram's features: [`docs/Features.md`][features]
 
-[features]: https://git.sr.ht/~cadence/bibliogram-docs/tree/main/docs/Features.md
+[features]: https://git.sr.ht/~cadence/bibliogram-docs/tree/master/docs/Features.md
 
 Join the Bibliogram discussion room on Matrix:
 [#bibliogram:matrix.org][matrix]
@@ -51,15 +51,15 @@ The official instance is on
 Community instances are listed in [`docs/Instances.md`][instances].
 Submit a patchset to add your own instance to that list.
 
-[instances]: https://git.sr.ht/~cadence/bibliogram-docs/tree/main/docs/Instances.md
+[instances]: https://git.sr.ht/~cadence/bibliogram-docs/tree/master/docs/Instances.md
 
 ## Installing
 
 See [`docs/Installing (basic).md`][basic] and
 [`docs/Installing (extended).md`][extended].
 
-[basic]: https://git.sr.ht/~cadence/bibliogram-docs/tree/main/docs/Installing%20%28basic%29.md
-[extended]: https://git.sr.ht/~cadence/bibliogram-docs/tree/main/docs/Installing%20%28extended%29.md
+[basic]: https://git.sr.ht/~cadence/bibliogram-docs/tree/master/docs/Installing%20%28basic%29.md
+[extended]: https://git.sr.ht/~cadence/bibliogram-docs/tree/master/docs/Installing%20%28extended%29.md
 
 ## Credits & license information
 

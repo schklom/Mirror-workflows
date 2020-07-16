@@ -226,7 +226,7 @@ let constants = {
 		username_regex: "[\\w.]*[\\w]",
 		shortcode_regex: "[\\w-]+",
 		hashtag_regex: "[^ \\n`~!@#\\$%^&*()\\-=+[\\]{};:\"',<.>/?\\\\]+",
-		reserved_paths: [ // https://github.com/cloudrac3r/bibliogram/wiki/Reserved-URLs
+		reserved_paths: [ // https://git.sr.ht/~cadence/bibliogram-docs/tree/master/docs/Reserved%20URLs.md
 			// Redirects
 			"about", "explore", "support", "press", "api", "privacy", "safety", "admin",
 			// Content

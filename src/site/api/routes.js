@@ -187,7 +187,7 @@ module.exports = [
 					contentType: "application/json",
 					content: {
 						title: getPageTitle(post),
-						html: pugCache.get("pug/fragments/post.pug").web({post, settings})
+						html: pugCache.get("pug/fragments/post.pug").web({post, settings, getStaticURL})
 					}
 				}
 			}).catch(error => {

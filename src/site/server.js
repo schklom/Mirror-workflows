@@ -35,7 +35,6 @@ subdirs("pug", async (err, dirs) => {
 	await require("../lib/utils/upgradedb")()
 
 	pinski.setNotFoundTarget("/404")
-	Object.assign(pinski.pugDefaultLocals, {constants})
 	for (const file of constants.themes.collatedFiles) {
 		pinski.addRoute(`/static/css/${file}.css`, `sass/${file}.sass`, "sass")
 	}
@@ -63,8 +62,9 @@ subdirs("pug", async (err, dirs) => {
 		pinski.addAPIDir("assistant_api")
 	}
 
-	require("pinski/plugins").setInstance(pinski)
-
+	const plugins = require("pinski/plugins")
+	plugins.setInstance(pinski)
+	Object.assign(pinski.pugDefaultLocals, {constants})
 	Object.assign(passthrough, pinski.getExports())
 
 	console.log("[.] Server started")

@@ -19,9 +19,9 @@ mixin post(post, headerWithNavigation)
 							= `@${post.getBasicOwner().username}`
 				if headerWithNavigation
 					button(data-previous).navigate-posts
-						img(src="/static/img/arrow-circled.svg" alt="Previous post.").icon.previous
+						img(src=getStaticURL("html", "/static/img/arrow-circled.svg") alt="Previous post.").icon.previous
 					button(data-next).navigate-posts
-						img(src="/static/img/arrow-circled.svg" alt="Next post.").icon
+						img(src=getStaticURL("html", "/static/img/arrow-circled.svg") alt="Next post.").icon
 
 			div.relative-box
 				div.scrolling-box

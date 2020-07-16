@@ -53,14 +53,13 @@ html
 				ul
 					-
 						const links = [
-							["https://sr.ht/~cadence/bibliogram/", "Code on sourcehut", "noopener"],
-							["https://matrix.to/#/#bibliogram:matrix.org", "Discussion room on Matrix"],
-							["https://git.sr.ht/~cadence/bibliogram-docs/tree/master/docs/Instances.md", "Other Bibliogram instances", "noopener"],
-							["https://github.com/cloudrac3r/bibliogram/projects/1?fullscreen=true", "Project roadmap"],
-							["https://cadence.moe/about/contact", "Contact the developer"]
+							["https://sr.ht/~cadence/bibliogram/", "Code on sourcehut", "noopener noreferrer"],
+							["https://matrix.to/#/#bibliogram:matrix.org", "Discussion room on Matrix", "noopener noreferrer"],
+							["https://git.sr.ht/~cadence/bibliogram-docs/tree/master/docs/Instances.md", "Other Bibliogram instances", "noopener noreferrer"],
+							["https://cadence.moe/about/contact", "Contact the developer", "noopener noreferrer"]
 						]
 					each entry in links
-						li: a(href!=entry[0] target="_blank" rel=(entry[2] || "noopener noreferrer"))= entry[1]
+						li: a(href!=entry[0] target="_blank" rel=entry[2])= entry[1]
 
 				if constants.featured_profiles.length
 					.featured-profiles#featured-profiles

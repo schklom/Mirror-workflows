@@ -15,16 +15,16 @@
   "dependencies": {
     "better-sqlite3": "^7.1.0",
     "cookie": "^0.4.1",
-    "feed": "github:cloudrac3r/feed#f42b4d7183fc2b6e566cb400ad083c4dd714c858",
+    "feed": "git+https://git.sr.ht/~cadence/nodejs-feed#3dde82f8296d7a6f5659323e497e0c684f03ab71",
     "get-stream": "^5.1.0",
     "mixin-deep": "^2.0.1",
     "node-dir": "^0.1.17",
     "node-fetch": "^2.6.0",
-    "pinski": "github:cloudrac3r/pinski#ffa2f36eee807a13dd1090717045f945a5d5e3d2",
-    "pug": "^2.0.4",
+    "pinski": "git+https://git.sr.ht/~cadence/nodejs-pinski#4791286f5c999dc73e17fdfa0d9a330189f4463f",
+    "pug": "^3.0.0",
     "semver": "^7.3.2",
     "sharp": "^0.25.4",
-    "socks-proxy-agent": "github:cloudrac3r/node-socks-proxy-agent#6a26d274b12098dfef6cc2faafd25b0c051f2467"
+    "socks-proxy-agent": "git+https://git.sr.ht/~cadence/nodejs-socks-proxy-agent#5eef50a01667bd5c6b5626fb8e206232152dfbee"
   },
   "optionalDependencies": {
     "@deadcanaries/granax": "^3.2.5",

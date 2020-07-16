@@ -10,6 +10,9 @@ include includes/feed_link
 mixin selector-button(text, selectorType, urlSuffix)
 	a(href=(type !== selectorType && `/u/${user.data.username}${urlSuffix}`) class=(type === selectorType && "active")).selector= text
 
+mixin verified-badge(classes)
+	img.verified-badge(class=classes src=getStaticURL("html", "/static/img/verified.svg") width=19 height=19 alt="Verified." title="Verified")
+
 doctype html
 html
 	head
@@ -50,9 +53,15 @@ html
 							The alt text is pathetic, I know. I don't have much to work with.
 						if user.data.full_name
 							h1.full-name= user.data.full_name
-							h2.username= `@${user.data.username}`
+							h2.username
+								= `@${user.data.username}`
+								if user.data.is_verified
+									+verified-badge("as-username")
 						else
-							h1.full-name= `@${user.data.username}`
+							h1.full-name
+								= `@${user.data.username}`
+								if user.data.is_verified
+									+verified-badge("as-fullname")
 						p.structured-text.bio
 							- const bio = user.getStructuredBio()
 							if bio

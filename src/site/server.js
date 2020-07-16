@@ -43,6 +43,7 @@ subdirs("pug", async (err, dirs) => {
 	pinski.addPugDir("pug", dirs)
 	pinski.addSassDir("sass", ["sass/includes", "sass/themes"])
 	pinski.addStaticHashTableDir("html/static/js")
+	pinski.addStaticHashTableDir("html/static/img")
 	pinski.muteLogsStartingWith("/imageproxy")
 	pinski.muteLogsStartingWith("/videoproxy")
 	pinski.muteLogsStartingWith("/static")

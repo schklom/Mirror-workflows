@@ -130,6 +130,9 @@ class RequestCache extends TtlCache {
 		return this.getOrFetch(key, callback).then(result => {
 			this.cache.delete(key)
 			return result
+		}).catch(error => {
+			this.cache.delete(key)
+			throw error
 		})
 	}
 }

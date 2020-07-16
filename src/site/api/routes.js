@@ -160,15 +160,7 @@ module.exports = [
 						withInstancesLink: false
 					})
 				} else if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN || error === constants.symbols.RATE_LIMITED) {
-					return render(503, "pug/friendlyerror.pug", {
-						statusCode: 503,
-						title: "Timeline loading blocked",
-						message: "Timeline loading blocked",
-						explanation:
-								"Instagram blocked this server for requesting too many timeline pages."
-							+"\nThis block is not permanent, and will expire soon."
-							+"\nPlease wait a few minutes before trying again."
-					})
+					return render(503, "pug/fragments/timeline_loading_blocked.pug")
 				} else {
 					throw error
 				}

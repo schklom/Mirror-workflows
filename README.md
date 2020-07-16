@@ -1,7 +1,7 @@
 # [Bibliogram](https://bibliogram.art)
 
 [![Humane Tech badge.](https://meta.bibliogram.art/art/humane-tech-badge.svg)](https://github.com/humanetech-community/awesome-humane-tech#readme)
-![GitHub](https://img.shields.io/github/license/cloudrac3r/bibliogram)
+![License: AGPL.](https://img.shields.io/badge/license-AGPL-%233897f0)
 [![Discussion on Matrix.](https://img.shields.io/matrix/bibliogram:matrix.org?label=%23bibliogram&logo=matrix)](https://matrix.to/#/#bibliogram:matrix.org)
 
 ## Attention! The GitHub repository will be moving soon.
@@ -69,8 +69,6 @@ short, this means that if you make any modifications to the code and
 then publish the result (e.g. by hosting the result on a webserver),
 you must publicly distribute your changes and declare that they also
 use AGPL 3.0.
-
-[This documentation uses the Unlicense](https://unlicense.org/).
 
 Site banner by [TheFrenchGhosty](https://github.com/TheFrenchGhosty),
 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)

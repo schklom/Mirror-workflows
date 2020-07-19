@@ -9,6 +9,7 @@
 - [Bibliogram project on sourcehut][project]
 - › Bibliogram code repository
 - [Bibliogram issues tracker][issues]
+- [Bibliogram development mailing list][list]
 - [Updater code repository][updater repo]
 - [Full documentation][docs folder]
 - [Discussion on Matrix][matrix]
@@ -16,6 +17,7 @@
 [project]: https://sr.ht/~cadence/bibliogram/
 [main repo]: https://git.sr.ht/~cadence/bibliogram
 [issues]: https://todo.sr.ht/~cadence/bibliogram-issues
+[list]: https://lists.sr.ht/~cadence/bibliogram-devel
 [updater repo]: https://git.sr.ht/~cadence/bibliogram-updater
 [docs folder]: https://git.sr.ht/~cadence/bibliogram-docs/tree/master/docs
 

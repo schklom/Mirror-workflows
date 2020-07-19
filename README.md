@@ -4,12 +4,6 @@
 ![License: AGPL.](https://img.shields.io/badge/license-AGPL-%233897f0)
 [![Discussion on Matrix.](https://img.shields.io/matrix/bibliogram:matrix.org?label=%23bibliogram&logo=matrix)](https://matrix.to/#/#bibliogram:matrix.org)
 
-## Attention! The GitHub repository will be moving soon.
-
-The new home is on sourcehut: https://sr.ht/~cadence/bibliogram/
-
-The GitHub repository will remain here in some form, and may be kept up to date, but you should avoid using it.
-
 ## Navigation
 
 - [Bibliogram project on sourcehut][project]

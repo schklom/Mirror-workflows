@@ -18,7 +18,7 @@ const cookies = {
 	}
 }
 
-function generateSetup(pageName, url, sizeName, cookiesName, scrolls) {
+function generateSetup(pageName, url, sizeName, cookiesName, scrolls = 1) {
 	return {
 		url: url,
 		filename: `${pageName}-${sizeName}-${cookiesName}`,
@@ -28,13 +28,18 @@ function generateSetup(pageName, url, sizeName, cookiesName, scrolls) {
 	}
 }
 
-module.exports = [
-	generateSetup("home", "/", "laptop", "default"),
-	generateSetup("settings", "/settings", "laptop", "default"),
-	generateSetup("home", "/", "phone", "default"),
-	generateSetup("settings", "/settings", "phone", "default"),
+function generateAllSetups(pageName, url, scrolls) {
+	return Object.keys(cookies).map(cookieKey =>
+		Object.keys(sizes).map(sizeKey =>
+			generateSetup(pageName, url, sizeKey, cookieKey, scrolls)
+		)
+	).flat()
+}
 
-	generateSetup("home", "/", "laptop", "ptc"),
-	generateSetup("settings", "/settings", "laptop", "ptc"),
-	generateSetup("home", "/", "phone", "ptc"),
+module.exports = [
+	...generateAllSetups("home", "/"),
+	...generateAllSetups("settings", "/settings"),
+	...generateAllSetups("anti__reality", "/u/anti__reality?page=3", 2),
+	...generateAllSetups("post", "/p/CCyko7oJ-ta"),
+	...generateAllSetups("gallery", "/p/CCbVsCMpizf", 2)
 ]

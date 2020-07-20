@@ -1,5 +1,6 @@
 const tap = require("tap")
 const se = require("selenium-webdriver")
+const firefox = require("selenium-webdriver/firefox")
 const fs = require("fs").promises
 const Jimp = require("jimp")
 const commands = require("./screenshots/commands")
@@ -24,6 +25,9 @@ const dimensions = new Map([
 
 const browserDimensions = dimensions.get(browser)
 
+const constants = require("../src/lib/constants")
+constants.request_backend = "saved" // predictable request results
+
 process.chdir("src/site")
 const server = require("../src/site/server")
 
@@ -39,8 +43,10 @@ function exec(command) {
 	await fs.mkdir("../../test/screenshots/diff", {recursive: true})
 	await fs.mkdir("../../test/screenshots/staging", {recursive: true})
 
+	const options = new firefox.Options()
+	// options.addArguments("-headless")
 	const [driver] = await Promise.all([
-		new se.Builder().forBrowser(browser).build(),
+		new se.Builder().forBrowser(browser).setFirefoxOptions(options).build(),
 		server.waitForFirstCompile()
 	])
 
@@ -56,10 +62,6 @@ function exec(command) {
 	await driver.get(origin)
 
 	for (const command of commands) {
-		function screenPath(dir) {
-			return `../../test/screenshots/${dir}/${command.filename}.png`
-		}
-
 		await Promise.all(Object.keys(command.cookies).map(cookieName =>
 			driver.manage().addCookie({
 				name: cookieName,
@@ -67,35 +69,44 @@ function exec(command) {
 			})
 		))
 
-		await Promise.all([
-			setSize(command.size),
-			driver.get(origin + command.url)
-		])
+		await setSize(command.size) // complete this before driver.get so that srcset doesn't get confused
+		await driver.get(origin + command.url)
 
-		const finalExists = await fs.access(screenPath("final")).then(() => true).catch(() => false)
-
-		const screenshot = Buffer.from(await driver.takeScreenshot(), "base64")
-
-		const message = `equal screens: ${command.filename}`
-		tap.test(message, async childTest => {
-			const image = await Jimp.read(screenshot)
-			image.crop(0, 0, command.size.width, command.size.height) // crop out page scrollbar
-
-			if (finalExists) {
-				await image.writeAsync(screenPath("staging"))
-				const message = `screen: ${command.filename}`
-				const result = await exec(`compare -metric AE ${screenPath("staging")} ${screenPath("final")} ${screenPath("diff")}`)
-				const diff = +result.stderr
-				childTest.ok(diff === 0, message)
-				if (diff === 0) { // it worked, so we don't need the files anymore
-					fs.unlink(screenPath("staging"))
-					fs.unlink(screenPath("diff"))
-				}
-			} else {
-				image.writeAsync(screenPath("final"))
-				console.log(`note: creating new screenshot ${command.filename}`)
+		for (let scrollNumber = 1; scrollNumber <= command.scrolls; scrollNumber++) {
+			const filenameWithScroll = `${command.filename}-${scrollNumber}`
+			function screenPath(dir) {
+				return `../../test/screenshots/${dir}/${filenameWithScroll}.png`
 			}
-		})
+
+			if (scrollNumber > 1) {
+				await driver.executeScript(`window.scrollByPages(1)`)
+			}
+
+			const finalExists = await fs.access(screenPath("final")).then(() => true).catch(() => false)
+
+			const screenshot = Buffer.from(await driver.takeScreenshot(), "base64")
+
+			const message = `equal screens: ${filenameWithScroll}`
+			tap.test(message, async childTest => {
+				const image = await Jimp.read(screenshot)
+				image.crop(0, 0, command.size.width, command.size.height) // crop out page scrollbar
+
+				if (finalExists) {
+					await image.writeAsync(screenPath("staging"))
+					const message = `screen: ${filenameWithScroll}`
+					const result = await exec(`compare -metric AE ${screenPath("staging")} ${screenPath("final")} ${screenPath("diff")}`)
+					const diff = +result.stderr
+					childTest.ok(diff === 0, message)
+					if (diff === 0) { // it worked, so we don't need the files anymore
+						fs.unlink(screenPath("staging"))
+						fs.unlink(screenPath("diff"))
+					}
+				} else {
+					image.writeAsync(screenPath("final"))
+					console.log(`note: creating new screenshot ${filenameWithScroll}`)
+				}
+			})
+		}
 	}
 
 	tap.teardown(() => {

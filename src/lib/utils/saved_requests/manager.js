@@ -60,7 +60,7 @@ class SavedRequestManager {
 			const base = pj(folder, row.path)
 			try {
 				fs.accessSync(base)
-				console.log("Found, using saved request for "+row.path)
+				// console.log("Found, using saved request for "+row.path)
 				return new Saved(base)
 			} catch (e) {
 				console.log("Known, but not downloaded  for "+row.path)
@@ -85,7 +85,7 @@ class SavedRequestManager {
 			}
 		} else {
 			const name = generateName()
-			console.log("Not found, saving now as "+name)
+			console.log(`Not found, saving now:\n    ${this.url}\n    -> ${name}`)
 
 			const internalRequest = new NodeFetch(this.url)
 			return new DelayedBackend(

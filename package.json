@@ -8,7 +8,9 @@
     "start": "cd src/site && node server.js",
     "assistant": "cd src/site && node assistant.js",
     "build-lang": "cd src/lang/utils && node build_base.js",
-    "test": "tap"
+    "test": "tap",
+    "upload-test-files": "rsync -a src/lib/utils/saved_requests/files/ debib:meta/saved_requests; rsync -a test/screenshots/final/ debib:meta/screenshots",
+    "download-test-files": "bash -c 'mkdir -p test/screenshots/{diff,final,staging} && rm test/screenshots/final/* && wget -q -r -nd -np -P test/screenshots/final -R html -R tmp https://meta.bibliogram.art/screenshots/'"
   },
   "keywords": [],
   "author": "",

@@ -5,10 +5,15 @@ const fs = require("fs").promises
 const Jimp = require("jimp")
 const commands = require("./screenshots/commands")
 const child_process = require("child_process")
+const constants = require("../src/lib/constants")
 
 const browser = "firefox"
 
-const origin = "http://localhost:10407"
+const port = 10407 + (+process.env.TAP_CHILD_ID)
+constants.port = port
+constants.request_backend = "saved" // predictable request results
+const origin = `http://localhost:${port}`
+constants.website_origin = origin
 
 const dimensions = new Map([
 	["firefox", {
@@ -24,9 +29,6 @@ const dimensions = new Map([
 ])
 
 const browserDimensions = dimensions.get(browser)
-
-const constants = require("../src/lib/constants")
-constants.request_backend = "saved" // predictable request results
 
 process.chdir("src/site")
 const server = require("../src/site/server")

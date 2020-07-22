@@ -112,6 +112,15 @@ const deltas = new Map([
 			db.prepare("CREATE TABLE SavedRequests (url TEXT NOT NULL, path TEXT NOT NULL, PRIMARY KEY (url))")
 				.run()
 		})()
+	}],
+	// version 9 to version 10
+	[10, function() {
+		db.transaction(() => {
+			db.prepare("DROP TABLE IF EXISTS QuotaHistory")
+				.run()
+			db.prepare("CREATE Table QuotaHistory (identifier TEXT NOT NULL, timestamp INTEGER NOT NULL, remaining INTEGER NOT NULL)")
+				.run()
+		})()
 	}]
 ])
 
@@ -134,8 +143,12 @@ function writeProgress(i) {
 async function createBackup(entry) {
 	const filename = `backups/bibliogram.db.bak-v${entry-1}`
 	process.stdout.write(`Backing up current to ${filename}... `)
-	await db.backup(pj(__dirname, "../../../db", filename))
-	process.stdout.write("done.\n")
+	if (constants.actually_backup_on_database_upgrade) {
+		await db.backup(pj(__dirname, "../../../db", filename))
+		process.stdout.write("done.\n")
+	} else {
+		process.stdout.write("jk. You turned off backups.\n")
+	}
 }
 
 /**

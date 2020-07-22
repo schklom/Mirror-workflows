@@ -117,7 +117,8 @@ let constants = {
 		timeframe: 20*60*60*1000,
 		count: 50,
 		ip_mode: "header", // one of: "header", "address"
-		ip_header: "x-forwarded-for"
+		ip_header: "x-forwarded-for",
+		track: false
 	},
 
 	user_settings: [
@@ -288,7 +289,8 @@ let constants = {
 
 	additional_routes: [],
 
-	database_version: 9
+	database_version: 10,
+	actually_backup_on_database_upgrade: true
 }
 
 // Override values from config and export the result

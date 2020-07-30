@@ -20,7 +20,7 @@ function remaining(req) {
 	if (!constants.quota.enabled) return Infinity // sure.
 
 	const ip = getIPFromReq(req)
-	const identifier = String(getIdentifier(ip))
+	const identifier = getIdentifier(ip)
 	const remaining = limiter.remaining(identifier)
 
 	if (constants.quota.track) {
@@ -34,7 +34,7 @@ function add(req, count) {
 	if (!constants.quota.enabled) return Infinity // why not.
 
 	const ip = getIPFromReq(req)
-	const identifier = String(getIdentifier(ip))
+	const identifier = getIdentifier(ip)
 	return limiter.add(identifier, count)
 }
 

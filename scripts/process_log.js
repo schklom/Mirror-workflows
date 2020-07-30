@@ -175,7 +175,7 @@ reader.on("line", line => {
 	if (kind) {
 		kinds[kind]++
 		dateCollection.add(kind, dateObject.getTime())
-		if (kind === "api") ips.add(parsed.ip)
+		ips.add(parsed.ip)
 	}
 })
 

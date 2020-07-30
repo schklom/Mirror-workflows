@@ -20,6 +20,7 @@
     "cookie": "^0.4.1",
     "feed": "git+https://git.sr.ht/~cadence/nodejs-feed#3dde82f8296d7a6f5659323e497e0c684f03ab71",
     "get-stream": "^5.1.0",
+    "is-in-subnet": "^3.1.0",
     "mixin-deep": "^2.0.1",
     "node-dir": "^0.1.17",
     "node-fetch": "^2.6.0",

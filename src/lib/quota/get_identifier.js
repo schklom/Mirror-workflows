@@ -33,21 +33,16 @@ if (constants.quota.enabled) {
 }
 
 function getIdentifier(address) {
-	let d = Date.now()
-	const result = (() => {
-		try {
-			if (address == undefined) return "missing"
-			else if (checker(address)) return "proxy"
-			else if (addressSet.has(address)) return "proxy"
-			else return address
-		} catch (e) {
-			// not a valid IP address, or some error like that
-			console.error(e)
-			throw e
-		}
-	})()
-	console.log(`identified ${address} -> ${result} in ${Date.now()-d} ms`)
-	return result
+	try {
+		if (address == undefined) return "missing"
+		else if (checker(address)) return "proxy"
+		else if (addressSet.has(address)) return "proxy"
+		else return address
+	} catch (e) {
+		// not a valid IP address, or some error like that
+		console.error(e)
+		throw e
+	}
 }
 
 module.exports.getIdentifier = getIdentifier

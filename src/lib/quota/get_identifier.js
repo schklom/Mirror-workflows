@@ -23,7 +23,7 @@ if (constants.quota.enabled) {
 	Promise.all([
 		getList("https://check.torproject.org/torbulkexitlist", "Tor exit node list"),
 		getList("https://meta.bibliogram.art/quota-list/vpn-ipv4.txt", "VPN IPv4 list"),
-		getList("https://meta.bibliogram.art/quota-list/applied-privacy.txt", "applied-privacy.net subnets")
+		getList("https://meta.bibliogram.art/quota-list/known-bots.txt", "Bibliogram known bot list")
 	]).then(() => {
 		let d = Date.now()
 		checker = createChecker(subnets)

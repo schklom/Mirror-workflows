@@ -222,7 +222,7 @@ module.exports = [
 				} else if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN || error === constants.symbols.RATE_LIMITED) {
 					return render(503, "pug/fragments/timeline_loading_blocked.pug")
 				} else if (error === constants.symbols.QUOTA_REACHED) {
-					return render(429, "pug/fragments/quota_reached.pug")
+					return render(429, "pug/fragments/timeline_quota_reached.pug")
 				} else {
 					throw error
 				}

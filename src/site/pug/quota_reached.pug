@@ -1,3 +1,5 @@
+//- Needs isProxyNetwork
+
 include includes/error.pug
 
 doctype html
@@ -10,5 +12,11 @@ html
 			| Each person has a limited number of requests to Bibliogram.
 			| You have reached that limit. You cannot load any more data on this instance.
 			| Your quota will reset automatically after some time has passed.
+			if isProxyNetwork
+				|
+				|
+				| However, this website has detected that you are using a proxy network, like Tor or a VPN.
+				| To prevent bot abuse, all users on proxy networks share the same request quota.
+			|
 			|
 			|

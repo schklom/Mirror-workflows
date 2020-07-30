@@ -38,5 +38,14 @@ function add(req, count) {
 	return limiter.add(identifier, count)
 }
 
+function isProxyNetwork(req) {
+	if (!constants.quota.enabled) return false // no need to try to perform detection if we didn't even load the lists
+
+	const ip = getIPFromReq(req)
+	const identifier = getIdentifier(ip)
+	return identifier === "proxy"
+}
+
 module.exports.remaining = remaining
 module.exports.add = add
+module.exports.isProxyNetwork = isProxyNetwork

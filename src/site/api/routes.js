@@ -159,7 +159,8 @@ module.exports = [
 				} else if (error === constants.symbols.extractor_results.AGE_RESTRICTED) {
 					return render(403, "pug/age_gated.pug", {settings})
 				} else if (error === constants.symbols.QUOTA_REACHED) {
-					return render(429, "pug/quota_reached.pug")
+					const isProxyNetwork = quota.isProxyNetwork(req)
+					return render(429, "pug/quota_reached.pug", {isProxyNetwork})
 				} else {
 					throw error
 				}
@@ -302,7 +303,8 @@ module.exports = [
 				} else if (error === constants.symbols.RATE_LIMITED) {
 					return render(503, "pug/blocked_graphql.pug")
 				} else if (error === constants.symbols.QUOTA_REACHED) {
-					return render(429, "pug/quota_reached.pug")
+					const isProxyNetwork = quota.isProxyNetwork(req)
+					return render(429, "pug/quota_reached.pug", {isProxyNetwork})
 				} else {
 					throw error
 				}

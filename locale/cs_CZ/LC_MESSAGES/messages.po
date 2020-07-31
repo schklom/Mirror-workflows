@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: TT-RSS CZech\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-28 08:08+0300\n"
-"PO-Revision-Date: 2020-02-05 15:58+0000\n"
+"PO-Revision-Date: 2020-07-31 16:23+0000\n"
 "Last-Translator: Marek Pavelka <mara.pavelka@gmail.com>\n"
-"Language-Team: Czech <https://weblate.tt-rss.org/projects/tt-rss/messages/cs/>\n"
+"Language-Team: Czech <https://weblate.tt-rss.org/projects/tt-rss/messages/cs/"
+">\n"
 "Language: cs_CZ\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 3.10.3\n"
+"X-Generator: Weblate 4.0.4\n"
 
 #: backend.php:58
 msgid "Use default"
@@ -607,7 +608,7 @@ msgstr "Přepnout rozbalení článku (kombinovaný režim)"
 
 #: include/functions.php:1056
 msgid "Toggle full article text via Readability"
-msgstr ""
+msgstr "Přepnout text celého článku prostřednictvím Readability"
 
 #: include/functions.php:1057
 msgid "Article selection"
@@ -2093,6 +2094,8 @@ msgstr "Změnit heslo"
 #, php-format
 msgid "Authentication module used for this session (<b>%s</b>) does not provide an ability to set passwords."
 msgstr ""
+"Ověřovací modul použitý pro tuto relaci (<b>%s</b>) neposkytuje schopnost "
+"nastavit hesla."
 
 #: classes/pref/prefs.php:410
 msgid "App passwords"
@@ -2464,9 +2467,8 @@ msgid "Inline content"
 msgstr "Vložený obsah"
 
 #: plugins/af_readability/init.php:56
-#, fuzzy
 msgid "Toggle full article text"
-msgstr "Vložený obsah článku"
+msgstr "Přepnout úplný text článku"
 
 #: plugins/af_readability/init.php:63
 msgid "Readability settings (af_readability)"
@@ -3036,9 +3038,8 @@ msgid "Please enable mail or mailto plugin first."
 msgstr "Nejdříve povolte modul mail nebo mailto."
 
 #: js/tt-rss.js:484
-#, fuzzy
 msgid "Please enable af_readability first."
-msgstr "Nejdříve povolte modul mail nebo mailto."
+msgstr "Nejdříve povolte af_readability."
 
 #: js/tt-rss.js:497
 #: js/tt-rss.js:584
@@ -3341,9 +3342,8 @@ msgid "Removing selected users..."
 msgstr "Odebírání vybraných uživatelů..."
 
 #: plugins/af_readability/init.js:29
-#, fuzzy
 msgid "Unable to fetch full text for this article"
-msgstr "Zadejte nové hodnocení pro tento článek:"
+msgstr "Nelze načíst úplný text pro tento článek"
 
 #: plugins/note/note.js:14
 msgid "Saving article note..."

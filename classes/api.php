@@ -174,9 +174,9 @@ class API extends Handler {
 				$unread = getFeedUnread($cat_id, true);
 
 				if ($unread || !$unread_only) {
-					array_push($cats, array("id" => $cat_id,
+					array_push($cats, array("id" => (int) $cat_id,
 						"title" => Feeds::getCategoryTitle($cat_id),
-						"unread" => $unread));
+						"unread" => (int) $unread));
 				}
 			}
 		}

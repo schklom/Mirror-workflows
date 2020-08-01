@@ -160,9 +160,9 @@ class API extends Handler {
 					$unread += Feeds::getCategoryChildrenUnread($line["id"]);
 
 				if ($unread || !$unread_only) {
-					array_push($cats, array("id" => $line["id"],
+					array_push($cats, array("id" => (int) $line["id"],
 						"title" => $line["title"],
-						"unread" => $unread,
+						"unread" => (int) $unread,
 						"order_id" => (int) $line["order_id"],
 					));
 				}

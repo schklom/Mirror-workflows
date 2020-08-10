@@ -90,7 +90,7 @@ class Opml extends Handler_Protected {
 			$out .= $this->opml_export_category($owner_uid, $line["id"], $hide_private_feeds, $include_settings);
 		}
 
-		$fsth = $this->pdo->prepare("select title, feed_url, site_url, update_interval, order_id
+		$fsth = $this->pdo->prepare("select title, feed_url, site_url, update_interval, order_id, purge_interval
 				FROM ttrss_feeds WHERE
 					(cat_id = :cat OR (:cat = 0 AND cat_id IS NULL)) AND owner_uid = :uid AND $hide_qpart
 				ORDER BY order_id, title");
@@ -105,8 +105,9 @@ class Opml extends Handler_Protected {
 			if ($include_settings) {
 				$update_interval = (int)$fline["update_interval"];
 				$order_id = (int)$fline["order_id"];
+				$purge_interval = (int)$fline["purge_interval"];
 
-				$ttrss_specific_qpart = "ttrssSortOrder=\"$order_id\" ttrssUpdateInterval=\"$update_interval\"";
+				$ttrss_specific_qpart = "ttrssSortOrder=\"$order_id\" ttrssPurgeInterval=\"$purge_interval\" ttrssUpdateInterval=\"$update_interval\"";
 			} else {
 				$ttrss_specific_qpart = "";
 			}
@@ -327,11 +328,14 @@ class Opml extends Handler_Protected {
 				$order_id = (int) $attrs->getNamedItem('ttrssSortOrder')->nodeValue;
 				if (!$order_id) $order_id = 0;
 
-				$sth = $this->pdo->prepare("INSERT INTO ttrss_feeds
-					(title, feed_url, owner_uid, cat_id, site_url, order_id, update_interval) VALUES
-					(?, ?, ?, ?, ?, ?, ?)");
+				$purge_interval = (int) $attrs->getNamedItem('ttrssPurgeInterval')->nodeValue;
+				if (!$purge_interval) $purge_interval = 0;
 
-				$sth->execute([$feed_title, $feed_url, $owner_uid, $cat_id, $site_url, $order_id, $update_interval]);
+				$sth = $this->pdo->prepare("INSERT INTO ttrss_feeds
+					(title, feed_url, owner_uid, cat_id, site_url, order_id, update_interval, purge_interval) VALUES
+					(?, ?, ?, ?, ?, ?, ?, ?)");
+
+				$sth->execute([$feed_title, $feed_url, $owner_uid, $cat_id, $site_url, $order_id, $update_interval, $purge_interval]);
 
 			} else {
 				$this->opml_notice(T_sprintf("Duplicate feed: %s", $feed_title == '[Unknown]' ? $feed_url : $feed_title));

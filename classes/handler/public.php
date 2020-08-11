@@ -25,7 +25,7 @@ class Handler_Public extends Handler {
 			$date_sort_field = "ttrss_entries.title, date_entered, updated";
 			break;
 		case "date_reverse":
-			$date_sort_field = "date_entered, updated";
+			$date_sort_field = "updated";
 			break;
 		case "feed_dates":
 			$date_sort_field = "updated DESC";

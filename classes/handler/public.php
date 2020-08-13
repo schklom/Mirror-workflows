@@ -12,24 +12,16 @@ class Handler_Public extends Handler {
 
 		if (!$limit) $limit = 60;
 
-		$date_sort_field = "date_entered DESC, updated DESC";
+		list($override_order, $skip_first_id_check) = Feeds::order_to_override_query($order);
 
-		if ($feed == -2 && !$is_cat) {
-			$date_sort_field = "last_published DESC";
-		} else if ($feed == -1 && !$is_cat) {
-			$date_sort_field = "last_marked DESC";
-		}
+		if (!$override_order) {
+			$override_order = "date_entered DESC, updated DESC";
 
-		switch ($order) {
-		case "title":
-			$date_sort_field = "ttrss_entries.title, date_entered, updated";
-			break;
-		case "date_reverse":
-			$date_sort_field = "updated";
-			break;
-		case "feed_dates":
-			$date_sort_field = "updated DESC";
-			break;
+			if ($feed == -2 && !$is_cat) {
+				$override_order = "last_published DESC";
+			} else if ($feed == -1 && !$is_cat) {
+				$override_order = "last_marked DESC";
+			}
 		}
 
 		$params = array(
@@ -39,7 +31,7 @@ class Handler_Public extends Handler {
 			"view_mode" => $view_mode,
 			"cat_view" => $is_cat,
 			"search" => $search,
-			"override_order" => $date_sort_field,
+			"override_order" => $override_order,
 			"include_children" => true,
 			"ignore_vfeed_group" => true,
 			"offset" => $offset,

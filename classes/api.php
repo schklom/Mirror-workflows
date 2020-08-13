@@ -214,21 +214,7 @@ class API extends Handler {
 
 			$_SESSION['hasSandbox'] = $has_sandbox;
 
-			$skip_first_id_check = false;
-
-			$override_order = false;
-			switch (clean($_REQUEST["order_by"])) {
-				case "title":
-					$override_order = "ttrss_entries.title, date_entered, updated";
-					break;
-				case "date_reverse":
-					$override_order = "updated";
-					$skip_first_id_check = true;
-					break;
-				case "feed_dates":
-					$override_order = "updated DESC";
-					break;
-			}
+			list($override_order, $skip_first_id_check) = Feeds::order_to_override_query(clean($_REQUEST["order_by"]));
 
 			/* do not rely on params below */
 

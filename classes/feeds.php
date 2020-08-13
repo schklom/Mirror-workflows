@@ -2352,6 +2352,13 @@ class Feeds extends Handler_Protected {
 				break;
 		}
 
+		if (!$query) {
+			foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_HEADLINES_CUSTOM_SORT_OVERRIDE) as $p) {
+				list ($query, $skip_first_id) = $p->hook_headlines_custom_sort_override($order);
+
+				if ($query)	break;
+			}
+		}
 		return [$query, $skip_first_id];
 	}
 }

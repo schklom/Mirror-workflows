@@ -670,9 +670,9 @@ class Handler_Public extends Handler {
 			$remember_me = clean($_POST["remember_me"]);
 
 			if ($remember_me) {
-				session_set_cookie_params(SESSION_COOKIE_LIFETIME);
+				@session_set_cookie_params(SESSION_COOKIE_LIFETIME);
 			} else {
-				session_set_cookie_params(0);
+				@session_set_cookie_params(0);
 			}
 
 			if (authenticate_user($login, $password)) {

@@ -234,8 +234,8 @@ class Counters {
        			COUNT(u1.unread) AS total
 			FROM ttrss_labels2 LEFT JOIN ttrss_user_labels2 ON
 				(ttrss_labels2.id = label_id)
-					LEFT JOIN ttrss_user_entries AS u1 ON u1.ref_id = article_id
-						WHERE ttrss_labels2.owner_uid = :uid AND u1.owner_uid = :uid
+					LEFT JOIN ttrss_user_entries AS u1 ON u1.ref_id = article_id AND u1.owner_uid = :uid
+						WHERE ttrss_labels2.owner_uid = :uid
 							GROUP BY ttrss_labels2.id, ttrss_labels2.caption");
 		$sth->execute([":uid" => $_SESSION['uid']]);
 

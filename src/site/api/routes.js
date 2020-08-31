@@ -279,7 +279,7 @@ module.exports = [
 		}
 	},
 	{
-		route: `/p/(${constants.external.shortcode_regex})`, methods: ["GET"], code: async ({req, fill}) => {
+		route: `/(?:p|tv|igtv|reel)/(${constants.external.shortcode_regex})`, methods: ["GET"], code: async ({req, fill}) => {
 			const shortcode = fill[0]
 			const settings = getSettings(req)
 

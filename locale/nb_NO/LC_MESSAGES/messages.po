@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS 1.3.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-28 08:08+0300\n"
-"PO-Revision-Date: 2019-08-23 22:06+0000\n"
+"PO-Revision-Date: 2020-07-19 16:40+0000\n"
 "Last-Translator: Jan Espen Pedersen <hphjanni@gmail.com>\n"
-"Language-Team: Norwegian Bokmål <https://weblate.tt-rss.org/projects/tt-rss/messages/nb_NO/>\n"
+"Language-Team: Norwegian Bokmål <https://weblate.tt-rss.org/projects/tt-rss/"
+"messages/nb_NO/>\n"
 "Language: nb_NO\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.7.1\n"
+"X-Generator: Weblate 4.0.4\n"
 
 #: backend.php:58
 msgid "Use default"
@@ -121,9 +122,10 @@ msgid "Frontend sanity check failed."
 msgstr "Frontprogramsjekk feilet."
 
 #: errors.php:19
-#, fuzzy
 msgid "Incorrect database schema version. &lt;a href='db-updater.php'&gt;Please update&lt;/a&gt;."
-msgstr "Feil databaseskjemautgave. &lt;a href='update.php'&gt;Vennligst oppdater&lt;/a&gt;."
+msgstr ""
+"Feil databaseskjemautgave. &lt;a href='update.php'&gt;Vennligst "
+"oppdater&lt;/a&gt;."
 
 #: errors.php:21
 msgid "Request not authorized."
@@ -482,12 +484,12 @@ msgstr "Ukategorisert"
 
 #: include/functions.php:92
 msgid "Detect automatically"
-msgstr ""
+msgstr "Oppdag automatisk"
 
 #: include/functions.php:831
 #, php-format
 msgid "%d min"
-msgstr ""
+msgstr "%d min"
 
 #: include/functions.php:1027
 msgid "Navigation"
@@ -499,7 +501,7 @@ msgstr "Åpne neste strøm"
 
 #: include/functions.php:1029
 msgid "Open previous feed"
-msgstr ""
+msgstr "Åpne forrige strøm"
 
 #: include/functions.php:1030
 #, fuzzy
@@ -1653,7 +1655,7 @@ msgstr "Kategorier"
 
 #: classes/pref/feeds.php:1249
 msgid "Add category"
-msgstr "Kag kategori"
+msgstr "Lag kategori"
 
 #: classes/pref/feeds.php:1253
 #, fuzzy
@@ -3215,9 +3217,8 @@ msgid "Clear stored data for this plugin?"
 msgstr ""
 
 #: js/PrefHelpers.js:200
-#, fuzzy
 msgid "Please choose an OPML file first."
-msgstr "Vennligst velg en eller flere nyhetsstrømmer først"
+msgstr "Vennligst velg en OPML fil først."
 
 #: js/PrefHelpers.js:224
 #, fuzzy
@@ -3230,19 +3231,16 @@ msgid "Replace current OPML publishing address with a new one?"
 msgstr "Bytt ut nåværende publiseringsadresse med en ny?"
 
 #: js/common.js:215
-#, fuzzy
 msgid "Click to close"
-msgstr "Trykk for å endre"
+msgstr "Klikk for å lukke"
 
 #: js/tt-rss.js:368
-#, fuzzy
 msgid "Please enable mail or mailto plugin first."
-msgstr "Vennligst velg en eller flere nyhetsstrømmer først"
+msgstr "Vennligst aktiver epost eller mailto plugin først."
 
 #: js/tt-rss.js:484
-#, fuzzy
 msgid "Please enable af_readability first."
-msgstr "Vennligst velg en eller flere nyhetsstrømmer først"
+msgstr "Vennligst aktiver af_readability først."
 
 #: js/tt-rss.js:497
 #: js/tt-rss.js:584
@@ -3454,11 +3452,10 @@ msgid "Mark all articles in %s as read?"
 msgstr "Marker alle artikler i %s som leste?"
 
 #: js/Headlines.js:930
-#, fuzzy
 msgid "%d article selected"
 msgid_plural "%d articles selected"
-msgstr[0] "Ingen artikkel er valgt."
-msgstr[1] "Ingen artikkel er valgt."
+msgstr[0] "%d artikkel valgt"
+msgstr[1] "%d artikler valgt"
 
 #: js/PrefFeedTree.js:141
 #, fuzzy
@@ -3582,19 +3579,16 @@ msgid "Removing selected users..."
 msgstr "Fjerner markerte brukere..."
 
 #: plugins/af_readability/init.js:29
-#, fuzzy
 msgid "Unable to fetch full text for this article"
-msgstr "Vennligst skriv inn et notat for denne artikkelen:"
+msgstr "Kan ikke hente fulltekst for denne artikkelen"
 
 #: plugins/note/note.js:14
-#, fuzzy
 msgid "Saving article note..."
-msgstr "Lagrer artikkelens kategorier..."
+msgstr "Lagrer artikkelens notat..."
 
 #: plugins/share/share.js:15
-#, fuzzy
 msgid "Trying to change URL..."
-msgstr "Prøver å endre e-posten..."
+msgstr "Prøver å endre URL..."
 
 #: plugins/share/share.js:40
 #, fuzzy

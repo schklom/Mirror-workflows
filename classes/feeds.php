@@ -2339,6 +2339,12 @@ class Feeds extends Handler_Protected {
 		$query = "";
 		$skip_first_id = false;
 
+		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_HEADLINES_CUSTOM_SORT_OVERRIDE) as $p) {
+			list ($query, $skip_first_id) = $p->hook_headlines_custom_sort_override($order);
+
+			if ($query)	return [$query, $skip_first_id];
+		}
+
 		switch ($order) {
 			case "title":
 				$query = "ttrss_entries.title, date_entered, updated";
@@ -2352,13 +2358,6 @@ class Feeds extends Handler_Protected {
 				break;
 		}
 
-		if (!$query) {
-			foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_HEADLINES_CUSTOM_SORT_OVERRIDE) as $p) {
-				list ($query, $skip_first_id) = $p->hook_headlines_custom_sort_override($order);
-
-				if ($query)	break;
-			}
-		}
 		return [$query, $skip_first_id];
 	}
 }

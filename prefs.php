@@ -39,6 +39,10 @@
 	}
 	?>
 
+	<script type="text/javascript">
+		const __csrf_token = "<?php echo $_SESSION["csrf_token"]; ?>";
+	</script>
+
 	<?php print_user_stylesheet() ?>
 
 	<link rel="shortcut icon" type="image/png" href="images/favicon.png"/>

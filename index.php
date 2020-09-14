@@ -47,6 +47,10 @@
 	}
 	?>
 
+	<script type="text/javascript">
+		const __csrf_token = "<?php echo $_SESSION["csrf_token"]; ?>";
+	</script>
+
 	<?php print_user_stylesheet() ?>
 
 	<style type="text/css">

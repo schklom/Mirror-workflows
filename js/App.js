@@ -576,6 +576,8 @@ const App = {
       this.is_prefs = is_prefs;
       window.onerror = this.Error.onWindowError;
 
+      this.setInitParam("csrf_token", __csrf_token);
+
       this.setupNightModeDetection(() => {
          parser.parse();
 

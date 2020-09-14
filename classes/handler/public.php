@@ -1234,7 +1234,7 @@ class Handler_Public extends Handler {
 	public function pluginhandler() {
 		$host = new PluginHost();
 
-		$plugin_name = clean_filename($_REQUEST["plugin"]);
+		$plugin_name = basename(clean($_REQUEST["plugin"]));
 		$method = clean($_REQUEST["pmethod"]);
 
 		$host->load($plugin_name, PluginHost::KIND_USER, 0);

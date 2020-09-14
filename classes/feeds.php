@@ -1124,9 +1124,9 @@ class Feeds extends Handler_Protected {
 
 		$pdo = Db::pdo();
 
-		$url = Feeds::fix_url($url);
+		$url = validate_url($url);
 
-		if (!$url || !Feeds::validate_feed_url($url)) return array("code" => 2);
+		if (!$url) return array("code" => 2);
 
 		$contents = @fetch_file_contents($url, false, $auth_login, $auth_pass);
 
@@ -1924,7 +1924,7 @@ class Feeds extends Handler_Protected {
 	}
 
 	static function get_feeds_from_html($url, $content) {
-		$url     = Feeds::fix_url($url);
+		$url     = validate_url($url);
 		$baseUrl = substr($url, 0, strrpos($url, '/') + 1);
 
 		$feedUrls = [];
@@ -1953,56 +1953,6 @@ class Feeds extends Handler_Protected {
 
 	static function is_html($content) {
 		return preg_match("/<html|DOCTYPE html/i", substr($content, 0, 8192)) !== 0;
-	}
-
-	static function validate_feed_url($url) {
-		$parts = parse_url($url);
-
-		return ($parts['scheme'] == 'http' || $parts['scheme'] == 'feed' || $parts['scheme'] == 'https');
-	}
-
-	/**
-	 * Fixes incomplete URLs by prepending "http://".
-	 * Also replaces feed:// with http://, and
-	 * prepends a trailing slash if the url is a domain name only.
-	 *
-	 * @param string $url Possibly incomplete URL
-	 *
-	 * @return string Fixed URL.
-	 */
-	static function fix_url($url) {
-
-		// support schema-less urls
-		if (strpos($url, '//') === 0) {
-			$url = 'https:' . $url;
-		}
-
-		if (strpos($url, '://') === false) {
-			$url = 'http://' . $url;
-		} else if (substr($url, 0, 5) == 'feed:') {
-			$url = 'http:' . substr($url, 5);
-		}
-
-		//prepend slash if the URL has no slash in it
-		// "http://www.example" -> "http://www.example/"
-		if (strpos($url, '/', strpos($url, ':') + 3) === false) {
-			$url .= '/';
-		}
-
-		//convert IDNA hostname to punycode if possible
-		if (function_exists("idn_to_ascii")) {
-			$parts = parse_url($url);
-			if (mb_detect_encoding($parts['host']) != 'ASCII')
-			{
-				$parts['host'] = idn_to_ascii($parts['host']);
-				$url = build_url($parts);
-			}
-		}
-
-		if ($url != "http:///")
-			return $url;
-		else
-			return '';
 	}
 
 	static function add_feed_category($feed_cat, $parent_cat_id = false, $order_id = 0) {

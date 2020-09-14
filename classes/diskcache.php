@@ -191,7 +191,7 @@ class DiskCache {
 	];
 
 	public function __construct($dir) {
-		$this->dir = CACHE_DIR . "/" . clean_filename($dir);
+		$this->dir = CACHE_DIR . "/" . basename(clean($dir));
 	}
 
 	public function getDir() {
@@ -227,9 +227,7 @@ class DiskCache {
 	}
 
 	public function getFullPath($filename) {
-		$filename = clean_filename($filename);
-
-		return $this->dir . "/" . $filename;
+		return $this->dir . "/" . basename(clean($filename));
 	}
 
 	public function put($filename, $data) {

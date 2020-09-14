@@ -1701,7 +1701,7 @@ class Pref_Feeds extends Handler_Protected {
 		foreach ($feeds as $feed) {
 			$feed = trim($feed);
 
-			if (Feeds::validate_feed_url($feed)) {
+			if (validate_url($feed)) {
 
 				$this->pdo->beginTransaction();
 

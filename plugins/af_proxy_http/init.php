@@ -45,8 +45,7 @@ class Af_Proxy_Http extends Plugin {
 	}
 
 	public function imgproxy() {
-
-		$url = rewrite_relative_url(get_self_url_prefix(), $_REQUEST["url"]);
+		$url = validate_url(clean($_REQUEST["url"]));
 
 		// called without user context, let's just redirect to original URL
 		if (!$_SESSION["uid"]) {
@@ -59,7 +58,6 @@ class Af_Proxy_Http extends Plugin {
 		if ($this->cache->exists($local_filename)) {
 			header("Location: " . $this->cache->getUrl($local_filename));
 			return;
-			//$this->cache->send($local_filename);
 		} else {
 			$data = fetch_file_contents(["url" => $url, "max_size" => MAX_CACHE_FILE_SIZE]);
 
@@ -97,14 +95,13 @@ class Af_Proxy_Http extends Plugin {
 					imagedestroy($img);
 
 				} else {
-					header("Content-type: text/html");
+					header("Content-type: text/plain");
 
 					http_response_code(400);
 
-					print "<h1>Proxy request failed.</h1>";
-					print "<p>Fetch error $fetch_last_error ($fetch_last_error_code)</p>";
-					print "<p>URL: $url</p>";
-					print "<textarea cols='80' rows='25'>" . htmlspecialchars($fetch_last_error_content) . "</textarea>";
+					print "Proxy request failed.\n".
+						"Fetch error $fetch_last_error ($fetch_last_error_code)\n".
+						"Requested URL: $url";
 				}
 			}
 		}

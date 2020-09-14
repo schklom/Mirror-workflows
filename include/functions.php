@@ -238,8 +238,9 @@
 		$url = ltrim($url, ' ');
 		$url = str_replace(' ', '%20', $url);
 
-		if (strpos($url, "//") === 0)
-			$url = 'http:' . $url;
+		$url = validate_url($url);
+
+		if (!$url) return false;
 
 		$url_host = parse_url($url, PHP_URL_HOST);
 		$fetch_domain_hits[$url_host] += 1;
@@ -621,10 +622,6 @@
 		} else {
 			return $param;
 		}
-	}
-
-	function clean_filename($filename) {
-		return basename(preg_replace("/\.\.|[\/\\\]/", "", clean($filename)));
 	}
 
 	function make_password($length = 12) {
@@ -1517,13 +1514,6 @@
 		return $parts['scheme'] . "://" . $parts['host'] . $parts['path'];
 	}
 
-	function cleanup_url_path($path) {
-		$path = str_replace("/./", "/", $path);
-		$path = str_replace("//", "/", $path);
-
-		return $path;
-	}
-
 	/**
 	 * Converts a (possibly) relative URL to a absolute one.
 	 *
@@ -1533,33 +1523,35 @@
 	 * @return string Absolute URL
 	 */
 	function rewrite_relative_url($url, $rel_url) {
-		if (strpos($rel_url, "://") !== false) {
+
+		$rel_parts = parse_url($rel_url);
+
+		if ($rel_parts['host'] && $rel_parts['scheme']) {
 			return $rel_url;
 		} else if (strpos($rel_url, "//") === 0) {
 			# protocol-relative URL (rare but they exist)
+			return "https:" . $rel_url;
+		} else if (strpos($rel_url, "magnet:") === 0) {
+			# allow magnet links
 			return $rel_url;
-		} else if (preg_match("/^[a-z]+:/i", $rel_url)) {
-			# magnet:, feed:, etc
-			return $rel_url;
-		} else if (strpos($rel_url, "/") === 0) {
-			$parts = parse_url($url);
-			$parts['path'] = $rel_url;
-			$parts['path'] = cleanup_url_path($parts['path']);
-
-			return build_url($parts);
-
 		} else {
 			$parts = parse_url($url);
+
 			if (!isset($parts['path'])) {
 				$parts['path'] = '/';
 			}
+
 			$dir = $parts['path'];
+
 			if (substr($dir, -1) !== '/') {
 				$dir = dirname($parts['path']);
 				$dir !== '/' && $dir .= '/';
 			}
+
 			$parts['path'] = $dir . $rel_url;
-			$parts['path'] = cleanup_url_path($parts['path']);
+
+			$parts['path'] = str_replace("/./", "/", $parts['path']);
+			$parts['path'] = str_replace("//", "/", $parts['path']);
 
 			return build_url($parts);
 		}
@@ -1837,6 +1829,15 @@
 			if ($mimetype == "application/octet-stream")
 				$mimetype = "video/mp4";
 
+			/* only serve video and images */
+			if (!preg_match("/(image|video)\//", $mimetype)) {
+				http_response_code(400);
+				header("Content-type: text/plain");
+
+				print "Stored file has disallowed content type ($mimetype)";
+				return false;
+			}
+
 			header("Content-type: $mimetype");
 
 			$stamp = gmdate("D, d M Y H:i:s", filemtime($filename)) . " GMT";
@@ -1923,4 +1924,35 @@
 		}
 
 		return $ttrss_version['version'];
+	}
+
+	function validate_url($url) {
+
+		# fix protocol-relative URLs
+		if (strpos($url, "//") === 0)
+			$url = "https:" . $url;
+
+		if (filter_var($url, FILTER_VALIDATE_URL) === FALSE)
+			return false;
+
+		$tokens = parse_url($url);
+
+		if (!$tokens['host'])
+			return false;
+
+		if (!in_array($tokens['scheme'], ['http', 'https']))
+			return false;
+
+		//convert IDNA hostname to punycode if possible
+		if (function_exists("idn_to_ascii")) {
+			if (mb_detect_encoding($tokens['host']) != 'ASCII') {
+				$parts['host'] = idn_to_ascii($tokens['host']);
+				$url = build_url($tokens);
+			}
+		}
+
+		/* if ($tokens['host'] == 'localhost' || $tokens['host'] == '127.0.0.1')
+			return false; */
+
+		return $url;
 	}

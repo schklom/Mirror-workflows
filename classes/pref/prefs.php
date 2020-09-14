@@ -125,7 +125,13 @@ class Pref_Prefs extends Handler_Protected {
 
 		$old_pw = clean($_POST["old_password"]);
 		$new_pw = clean($_POST["new_password"]);
+		$new_unclean_pw = $_POST["new_password"];
 		$con_pw = clean($_POST["confirm_password"]);
+
+		if ($new_unclean_pw != $new_pw) {
+			print "ERROR: ".format_error("New password contains disallowed characters.");
+			return;
+		}
 
 		if ($old_pw == $new_pw) {
 			print "ERROR: ".format_error("New password must be different from the old one.");
@@ -380,12 +386,12 @@ class Pref_Prefs extends Handler_Protected {
 
 			print "<fieldset>";
 			print "<label>" . __("New password:") . "</label>";
-			print "<input dojoType='dijit.form.ValidationTextBox' type='password' required='1' name='new_password'>";
+			print "<input dojoType='dijit.form.ValidationTextBox' type='password' regexp='^[^<>]+' required='1' name='new_password'>";
 			print "</fieldset>";
 
 			print "<fieldset>";
 			print "<label>" . __("Confirm password:") . "</label>";
-			print "<input dojoType='dijit.form.ValidationTextBox' type='password' required='1' name='confirm_password'>";
+			print "<input dojoType='dijit.form.ValidationTextBox' type='password' regexp='^[^<>]+' required='1' name='confirm_password'>";
 			print "</fieldset>";
 
 			print_hidden("op", "pref-prefs");

@@ -291,7 +291,7 @@ class Handler_Public extends Handler {
 		$uuid = clean($_REQUEST["key"]);
 
 		if ($uuid) {
-			$sth = $this->pdo->prepare("SELECT ref_id, owner_uid 
+			$sth = $this->pdo->prepare("SELECT ref_id, owner_uid
 						FROM ttrss_user_entries WHERE uuid = ?");
 			$sth->execute([$uuid]);
 
@@ -366,7 +366,7 @@ class Handler_Public extends Handler {
 					}
                     body.css_loading * {
 						display : none;
-					}                   
+					}
 					</style>
                     <link rel='shortcut icon' type='image/png' href='images/favicon.png'>
                     <link rel='icon' type='image/png' sizes='72x72' href='images/favicon-72px.png'>";
@@ -728,7 +728,7 @@ class Handler_Public extends Handler {
 		if ($_SESSION["uid"]) {
 
 			$feed_url = trim(clean($_REQUEST["feed_url"]));
-			$csrf_token = clean($_REQUEST["csrf_token"]);
+			$csrf_token = clean($_POST["csrf_token"]);
 
 			header('Content-Type: text/html; charset=utf-8');
 			?>

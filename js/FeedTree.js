@@ -101,8 +101,9 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 					menu.addChild(new dijit.MenuItem({
 						label: __("Debug feed"),
 						onClick: function() {
-							window.open("backend.php?op=feeds&method=update_debugger&feed_id=" + this.getParent().row_id +
-								"&csrf_token=" + App.getInitParam("csrf_token"));
+							/* global __csrf_token */
+							App.postOpenWindow("backend.php", {op: "feeds", method: "update_debugger",
+								feed_id: this.getParent().row_id, csrf_token: __csrf_token});
 						}}));
 				}
 

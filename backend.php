@@ -20,7 +20,7 @@
 		return;
 	}
 
-	@$csrf_token = $_REQUEST['csrf_token'];
+	@$csrf_token = $_POST['csrf_token'];
 
 	require_once "autoload.php";
 	require_once "sessions.php";

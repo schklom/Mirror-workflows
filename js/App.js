@@ -126,7 +126,33 @@ const App = {
 				return callOriginal(options);
 			}
 		);
-	},
+   },
+   postOpenWindow: function(target, params) {
+      const w = window.open("");
+
+		if (w) {
+			w.opener = null;
+
+			const form = document.createElement("form");
+
+			form.setAttribute("method", "post");
+			form.setAttribute("action", App.getInitParam("self_url_prefix") + "/" + target);
+
+			for (const [k,v] of Object.entries(params)) {
+				const field = document.createElement("input");
+
+				field.setAttribute("name", k);
+				field.setAttribute("value", v);
+				field.setAttribute("type", "hidden");
+
+				form.appendChild(field);
+			}
+
+			w.document.body.appendChild(form);
+			form.submit();
+		}
+
+   },
 	urlParam: function(param) {
 		return String(window.location.href).parseQuery()[param];
 	},
@@ -986,8 +1012,11 @@ const App = {
          };
          this.hotkey_actions["feed_debug_update"] = () => {
             if (!Feeds.activeIsCat() && parseInt(Feeds.getActive()) > 0) {
-               window.open("backend.php?op=feeds&method=update_debugger&feed_id=" + Feeds.getActive() +
-                  "&csrf_token=" + this.getInitParam("csrf_token"));
+               //window.open("backend.php?op=feeds&method=update_debugger&feed_id=" + Feeds.getActive());
+
+               /* global __csrf_token */
+               App.postOpenWindow("backend.php", {op: "feeds", method: "update_debugger", feed_id: Feeds.getActive(), csrf_token: __csrf_token});
+
             } else {
                alert("You can't debug this kind of feed.");
             }

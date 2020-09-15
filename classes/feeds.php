@@ -751,7 +751,7 @@ class Feeds extends Handler_Protected {
 
 		$feed_id = (int)$_REQUEST["feed_id"];
 		@$do_update = $_REQUEST["action"] == "do_update";
-		$csrf_token = $_REQUEST["csrf_token"];
+		$csrf_token = $_POST["csrf_token"];
 
 		$sth = $this->pdo->prepare("SELECT id FROM ttrss_feeds WHERE id = ? AND owner_uid = ?");
 		$sth->execute([$feed_id, $_SESSION['uid']]);
@@ -799,7 +799,7 @@ class Feeds extends Handler_Protected {
 			<div class="container">
 				<h1>Feed Debugger: <?php echo "$feed_id: " . $this->getFeedTitle($feed_id) ?></h1>
 				<div class="content">
-					<form method="GET" action="">
+					<form method="post" action="">
 						<input type="hidden" name="op" value="feeds">
 						<input type="hidden" name="method" value="update_debugger">
 						<input type="hidden" name="xdebug" value="1">

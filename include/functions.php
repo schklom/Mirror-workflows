@@ -1011,7 +1011,7 @@
 
 		$params['simple_update'] = defined('SIMPLE_UPDATE_MODE') && SIMPLE_UPDATE_MODE;
 
-		$params["icon_indicator_white"] = base64_img("images/indicator_white.gif");
+		$params["icon_indicator_white"] = image_to_base64("images/indicator_white.gif");
 
 		$params["labels"] = Labels::get_all_labels($_SESSION["uid"]);
 
@@ -1789,7 +1789,7 @@
 		return $errors[$code];
 	}
 
-	function base64_img($filename) {
+	function image_to_base64($filename) {
 		if (file_exists($filename)) {
 			$ext = pathinfo($filename, PATHINFO_EXTENSION);
 

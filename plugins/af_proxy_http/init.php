@@ -28,6 +28,9 @@ class Af_Proxy_Http extends Plugin {
 		$host->add_hook($host::HOOK_ENCLOSURE_ENTRY, $this);
 
 		$host->add_hook($host::HOOK_PREFS_TAB, $this);
+
+		if (!$_SESSION['af_proxy_http_token'])
+			$_SESSION['af_proxy_http_token'] = uniqid_short();
 	}
 
 	function hook_enclosure_entry($enc) {
@@ -48,7 +51,7 @@ class Af_Proxy_Http extends Plugin {
 		$url = validate_url(clean($_REQUEST["url"]));
 
 		// called without user context, let's just redirect to original URL
-		if (!$_SESSION["uid"]) {
+		if (!$_SESSION["uid"] || $_REQUEST['af_proxy_http_token'] != $_SESSION['af_proxy_http_token']) {
 			header("Location: $url");
 			return;
 		}
@@ -131,7 +134,8 @@ class Af_Proxy_Http extends Plugin {
 						}
 					}
 
-					return $this->host->get_public_method_url($this, "imgproxy", ["url" => $url]);
+					return $this->host->get_public_method_url($this, "imgproxy",
+						["url" => $url, "af_proxy_http_token" => $_SESSION["af_proxy_http_token"]]);
 				}
 			}
 		}

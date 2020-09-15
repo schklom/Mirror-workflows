@@ -62,17 +62,10 @@ class Af_Proxy_Http extends Plugin {
 			$data = fetch_file_contents(["url" => $url, "max_size" => MAX_CACHE_FILE_SIZE]);
 
 			if ($data) {
-
-				$disable_cache = $this->host->get($this, "disable_cache");
-
-				if (!$disable_cache) {
-					if ($this->cache->put($local_filename, $data)) {
-						header("Location: " . $this->cache->getUrl($local_filename));
-						return;
-					}
+				if ($this->cache->put($local_filename, $data)) {
+					header("Location: " . $this->cache->getUrl($local_filename));
+					return;
 				}
-
-				print $data;
 			} else {
 				global $fetch_last_error;
 				global $fetch_last_error_code;
@@ -232,10 +225,6 @@ class Af_Proxy_Http extends Plugin {
 		print_checkbox("proxy_all", $proxy_all);
 		print "&nbsp;<label for=\"proxy_all\">" . __("Enable proxy for all remote images.") . "</label><br/>";
 
-		$disable_cache = $this->host->get($this, "disable_cache");
-		print_checkbox("disable_cache", $disable_cache);
-		print "&nbsp;<label for=\"disable_cache\">" . __("Don't cache files locally.") . "</label>";
-
 		print "<p>"; print_button("submit", __("Save"));
 
 		print "</form>";
@@ -245,10 +234,8 @@ class Af_Proxy_Http extends Plugin {
 
 	function save() {
 		$proxy_all = checkbox_to_sql_bool($_POST["proxy_all"]);
-		$disable_cache = checkbox_to_sql_bool($_POST["disable_cache"]);
 
 		$this->host->set($this, "proxy_all", $proxy_all, false);
-		$this->host->set($this, "disable_cache", $disable_cache);
 
 		echo __("Configuration saved");
 	}

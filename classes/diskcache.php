@@ -273,7 +273,7 @@ class DiskCache {
 	}
 
 	public function getUrl($filename) {
-		return get_self_url_prefix() . "/public.php?op=cached_url&file=" . basename($this->dir) . "/" . $filename;
+		return get_self_url_prefix() . "/public.php?op=cached_url&file=" . basename($this->dir) . "/" . basename($filename);
 	}
 
 	// check for locally cached (media) URLs and rewrite to local versions

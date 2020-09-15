@@ -2,7 +2,7 @@
 class RPC extends Handler_Protected {
 
 	function csrf_ignore($method) {
-		$csrf_ignored = array("sanitycheck", "completelabels", "saveprofile");
+		$csrf_ignored = array("completelabels", "saveprofile");
 
 		return array_search($method, $csrf_ignored) !== false;
 	}

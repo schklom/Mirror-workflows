@@ -588,6 +588,7 @@ const App = {
 
          this.setLoadingProgress(30);
          this.initHotkeyActions();
+         this.enableCsrfSupport();
 
          const a = document.createElement('audio');
          const hasAudio = !!a.canPlayType;
@@ -628,7 +629,6 @@ const App = {
       return errorMsg == "";
    },
    initSecondStage: function() {
-      this.enableCsrfSupport();
 
       document.onkeydown = (event) => { return this.hotkeyHandler(event) };
       document.onkeypress = (event) => { return this.hotkeyHandler(event) };

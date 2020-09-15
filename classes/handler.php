@@ -9,7 +9,7 @@ class Handler implements IHandler {
 	}
 
 	function csrf_ignore($method) {
-		return true;
+		return false;
 	}
 
 	function before($method) {

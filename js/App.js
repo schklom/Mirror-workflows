@@ -300,19 +300,19 @@ const App = {
       }
    },
    helpDialog: function(topic) {
-		const query = "backend.php?op=backend&method=help&topic=" + encodeURIComponent(topic);
-
 		if (dijit.byId("helpDlg"))
 			dijit.byId("helpDlg").destroyRecursive();
 
-		const dialog = new dijit.Dialog({
-			id: "helpDlg",
-			title: __("Help"),
-			style: "width: 600px",
-			href: query,
-		});
+	   xhrPost("backend.php", {op: "backend", method: "help", topic: topic}, (transport) => {
+		   const dialog = new dijit.Dialog({
+			   id: "helpDlg",
+			   title: __("Help"),
+			   style: "width: 600px",
+			   content: transport.responseText,
+		   });
 
-		dialog.show();
+		   dialog.show();
+	   });
 	},
 	displayDlg: function(title, id, param, callback) {
 		Notify.progress("Loading, please wait...", true);

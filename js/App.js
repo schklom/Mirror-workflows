@@ -127,6 +127,28 @@ const App = {
 			}
 		);
    },
+   postCurrentWindow: function(target, params) {
+      const form = document.createElement("form");
+
+      form.setAttribute("method", "post");
+      form.setAttribute("action", App.getInitParam("self_url_prefix") + "/" + target);
+
+      for (const [k,v] of Object.entries(params)) {
+         const field = document.createElement("input");
+
+         field.setAttribute("name", k);
+         field.setAttribute("value", v);
+         field.setAttribute("type", "hidden");
+
+         form.appendChild(field);
+      }
+
+      document.body.appendChild(form);
+
+      form.submit();
+
+      form.parentNode.removeChild(form);
+   },
    postOpenWindow: function(target, params) {
       const w = window.open("");
 
@@ -1143,7 +1165,7 @@ const App = {
             document.location.href = "prefs.php";
             break;
          case "qmcLogout":
-            document.location.href = "backend.php?op=logout";
+            App.postCurrentWindow("public.php", {op: "logout", csrf_token: __csrf_token});
             break;
          case "qmcTagCloud":
             this.displayDlg(__("Tag cloud"), "printTagCloud");

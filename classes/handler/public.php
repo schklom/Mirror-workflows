@@ -283,8 +283,10 @@ class Handler_Public extends Handler {
 	}
 
 	function logout() {
-		logout_user();
-		header("Location: index.php");
+		if ($_POST["csrf_token"] == $_SESSION["csrf_token"]) {
+			logout_user();
+			header("Location: index.php");
+		}
 	}
 
 	function share() {

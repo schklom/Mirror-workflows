@@ -1002,6 +1002,7 @@
 		$max_feed_id = $row["mid"];
 		$num_feeds = $row["nf"];
 
+		$params["self_url_prefix"] = get_self_url_prefix();
 		$params["max_feed_id"] = (int) $max_feed_id;
 		$params["num_feeds"] = (int) $num_feeds;
 

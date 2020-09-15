@@ -131,16 +131,37 @@ const Article = {
 		});
 	},
 	openInNewWindow: function (id) {
-		const w = window.open("");
 
-		/* global __csrf_token */
+		const w = window.open("");
 
 		if (w) {
 			w.opener = null;
-			w.location = "backend.php?op=article&method=redirect&id=" + id + "&csrf_token=" + __csrf_token;
+
+			const form = document.createElement("form");
+
+			form.setAttribute("method", "post");
+			form.setAttribute("action", App.getInitParam("self_url_prefix") + "/backend.php");
+
+			/* global __csrf_token */
+
+			const params = { "op": "article", "method": "redirect", "id": id, "csrf_token": __csrf_token };
+
+			for (const [k,v] of Object.entries(params)) {
+				const field = document.createElement("input");
+
+				field.setAttribute("name", k);
+				field.setAttribute("value", v);
+				field.setAttribute("type", "hidden");
+
+				form.appendChild(field);
+			}
+
+			w.document.body.appendChild(form);
+			form.submit();
 
 			Headlines.toggleUnread(id, 0);
 		}
+
 	},
 	render: function (article) {
 		App.cleanupMemory("content-insert");

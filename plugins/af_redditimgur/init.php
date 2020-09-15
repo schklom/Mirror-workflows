@@ -471,11 +471,11 @@ class Af_RedditImgur extends Plugin {
 		$entry->parentNode->insertBefore($video, $entry);
 		$entry->parentNode->insertBefore($br, $entry);
 
-		$img = $doc->createElement('img');
+		/*$img = $doc->createElement('img');
 		$img->setAttribute("src",
 			"data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs%3D");
 
-		$entry->parentNode->insertBefore($img, $entry);
+		$entry->parentNode->insertBefore($img, $entry);*/
 	}
 
 	function testurl() {

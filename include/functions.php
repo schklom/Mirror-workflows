@@ -1811,15 +1811,6 @@
 
 			if (is_writable($filename)) touch($filename);
 
-			$tmppluginhost = new PluginHost();
-
-			$tmppluginhost->load(PLUGINS, PluginHost::KIND_SYSTEM);
-			$tmppluginhost->load_data();
-
-			foreach ($tmppluginhost->get_hooks(PluginHost::HOOK_SEND_LOCAL_FILE) as $plugin) {
-				if ($plugin->hook_send_local_file($filename)) return true;
-			}
-
 			$mimetype = mime_content_type($filename);
 
 			// this is hardly ideal but 1) only media is cached in images/ and 2) seemingly only mp4
@@ -1835,6 +1826,15 @@
 
 				print "Stored file has disallowed content type ($mimetype)";
 				return false;
+			}
+
+			$tmppluginhost = new PluginHost();
+
+			$tmppluginhost->load(PLUGINS, PluginHost::KIND_SYSTEM);
+			$tmppluginhost->load_data();
+
+			foreach ($tmppluginhost->get_hooks(PluginHost::HOOK_SEND_LOCAL_FILE) as $plugin) {
+				if ($plugin->hook_send_local_file($filename)) return true;
 			}
 
 			header("Content-type: $mimetype");

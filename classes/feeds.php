@@ -8,7 +8,7 @@ class Feeds extends Handler_Protected {
     private $params;
 
     function csrf_ignore($method) {
-		$csrf_ignored = array("index", "quickaddfeed", "search");
+		$csrf_ignored = array("index");
 
 		return array_search($method, $csrf_ignored) !== false;
 	}

@@ -552,47 +552,50 @@ const	Feeds = {
 			return tree.model.store.getValue(nuf, 'bare_id');
 	},
 	search: function() {
-		const query = "backend.php?op=feeds&method=search&param=" +
-			encodeURIComponent(Feeds.getActive() + ":" + Feeds.activeIsCat());
-
 		if (dijit.byId("searchDlg"))
 			dijit.byId("searchDlg").destroyRecursive();
 
-		const dialog = new dijit.Dialog({
-			id: "searchDlg",
-			title: __("Search"),
-			style: "width: 600px",
-			execute: function () {
-				if (this.validate()) {
-					Feeds._search_query = this.attr('value');
+		xhrPost("backend.php",
+					{op: "feeds", method: "search",
+						param: Feeds.getActive() + ":" + Feeds.activeIsCat()},
+					(transport) => {
+						const dialog = new dijit.Dialog({
+							id: "searchDlg",
+							content: transport.responseText,
+							title: __("Search"),
+							style: "width: 600px",
+							execute: function () {
+								if (this.validate()) {
+									Feeds._search_query = this.attr('value');
 
-					// disallow empty queries
-					if (!Feeds._search_query.query)
-						Feeds._search_query = false;
+									// disallow empty queries
+									if (!Feeds._search_query.query)
+										Feeds._search_query = false;
 
-					this.hide();
-					Feeds.reloadCurrent();
-				}
-			},
-			href: query
-		});
+									this.hide();
+									Feeds.reloadCurrent();
+								}
+							},
+						});
 
-		const tmph = dojo.connect(dialog, 'onLoad', function () {
-			dojo.disconnect(tmph);
+						const tmph = dojo.connect(dialog, 'onLoad', function () {
+							dojo.disconnect(tmph);
 
-			if (Feeds._search_query) {
-				if (Feeds._search_query.query)
-					dijit.byId('search_query')
-						.attr('value', Feeds._search_query.query);
+							if (Feeds._search_query) {
+								if (Feeds._search_query.query)
+									dijit.byId('search_query')
+										.attr('value', Feeds._search_query.query);
 
-				if (Feeds._search_query.search_language)
-					dijit.byId('search_language')
-						.attr('value', Feeds._search_query.search_language);
-			}
+								if (Feeds._search_query.search_language)
+									dijit.byId('search_language')
+										.attr('value', Feeds._search_query.search_language);
+							}
 
-		});
+						});
 
-		dialog.show();
+						dialog.show();
+					});
+
 	},
 	updateRandom: function() {
 		console.log("in update_random_feed");

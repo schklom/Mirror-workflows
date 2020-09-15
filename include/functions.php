@@ -1526,10 +1526,10 @@
 		$rel_parts = parse_url($rel_url);
 
 		if ($rel_parts['host'] && $rel_parts['scheme']) {
-			return $rel_url;
+			return validate_url($rel_url);
 		} else if (strpos($rel_url, "//") === 0) {
 			# protocol-relative URL (rare but they exist)
-			return "https:" . $rel_url;
+			return validate_url("https:" . $rel_url);
 		} else if (strpos($rel_url, "magnet:") === 0) {
 			# allow magnet links
 			return $rel_url;
@@ -1552,7 +1552,7 @@
 			$parts['path'] = str_replace("/./", "/", $parts['path']);
 			$parts['path'] = str_replace("//", "/", $parts['path']);
 
-			return build_url($parts);
+			return validate_url(build_url($parts));
 		}
 	}
 

@@ -444,7 +444,7 @@ const	CommonDialogs = {
 							Notify.close();
 
 							if (App.isPrefs())
-								dijit.byId("feedTree").reload();
+								dijit.byId("feedTree") && dijit.byId("feedTree").reload();
 							else
 								Feeds.reload();
 

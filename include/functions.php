@@ -1927,6 +1927,8 @@
 
 	function validate_url($url) {
 
+		$url = clean($url);
+
 		# fix protocol-relative URLs
 		if (strpos($url, "//") === 0)
 			$url = "https:" . $url;

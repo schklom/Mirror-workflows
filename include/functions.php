@@ -1941,7 +1941,13 @@
 		if (!$tokens['host'])
 			return false;
 
+		if (!in_array($tokens['port'], [80, 443, '']))
+			return false;
+
 		if (!in_array($tokens['scheme'], ['http', 'https']))
+			return false;
+
+		if ($tokens['host'] == 'localhost' || $tokens['host'] == '::1' || strpos($tokens['host'], '127.') === 0)
 			return false;
 
 		//convert IDNA hostname to punycode if possible
@@ -1951,9 +1957,6 @@
 				$url = build_url($tokens);
 			}
 		}
-
-		/* if ($tokens['host'] == 'localhost' || $tokens['host'] == '127.0.0.1')
-			return false; */
 
 		return $url;
 	}

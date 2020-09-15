@@ -133,9 +133,11 @@ const Article = {
 	openInNewWindow: function (id) {
 		const w = window.open("");
 
+		/* global __csrf_token */
+
 		if (w) {
 			w.opener = null;
-			w.location = "backend.php?op=article&method=redirect&id=" + id;
+			w.location = "backend.php?op=article&method=redirect&id=" + id + "&csrf_token=" + __csrf_token;
 
 			Headlines.toggleUnread(id, 0);
 		}

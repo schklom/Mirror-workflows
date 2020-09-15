@@ -2,7 +2,7 @@
 class Article extends Handler_Protected {
 
 	function csrf_ignore($method) {
-		$csrf_ignored = array("redirect", "editarticletags");
+		$csrf_ignored = array("editarticletags");
 
 		return array_search($method, $csrf_ignored) !== false;
 	}

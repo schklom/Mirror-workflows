@@ -170,7 +170,7 @@ const Article = {
 				comments_msg = hl.num_comments + " " + ngettext("comment", "comments", hl.num_comments)
 			}
 
-			comments = `<a href="${App.escapeHtml(hl.comments ? hl.comments : hl.link)}">(${comments_msg})</a>`;
+			comments = `<a target="_blank" rel="noopener noreferrer" href="${App.escapeHtml(hl.comments ? hl.comments : hl.link)}">(${comments_msg})</a>`;
 		}
 
 		return comments;

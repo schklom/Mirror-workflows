@@ -772,6 +772,7 @@ class Pref_Feeds extends Handler_Protected {
 				<input style='display: none' id='icon_file' size='10' name='icon_file' type='file'>
 			</label>
 			<input type='hidden' name='op' value='pref-feeds'>
+			<input type='hidden' name='csrf_token' value='".$_SESSION['csrf_token']."'>
 			<input type='hidden' name='feed_id' value='$feed_id'>
 			<input type='hidden' name='method' value='uploadicon'>
 			<button dojoType='dijit.form.Button' onclick=\"return CommonDialogs.uploadFeedIcon();\"
@@ -1325,6 +1326,7 @@ class Pref_Feeds extends Handler_Protected {
 				<input style='display : none' id='opml_file' name='opml_file' type='file'>&nbsp;
 			</label>
 			<input type='hidden' name='op' value='dlg'>
+			<input type='hidden' name='csrf_token' value='".$_SESSION['csrf_token']."'>
 			<input type='hidden' name='method' value='importOpml'>
 			<button dojoType='dijit.form.Button' class='alt-primary' onclick=\"return Helpers.OPML.import();\" type=\"submit\">" .
 			__('Import OPML') . "</button>";

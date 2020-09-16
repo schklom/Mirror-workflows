@@ -1820,8 +1820,11 @@
 			if ($mimetype == "application/octet-stream")
 				$mimetype = "video/mp4";
 
+			# block SVG because of possible embedded javascript (.....)
+			$mimetype_blacklist = [ "image/svg+xml" ];
+
 			/* only serve video and images */
-			if (!preg_match("/(image|video)\//", $mimetype)) {
+			if (!preg_match("/(image|video)\//", $mimetype) || in_array($mimetype, $mimetype_blacklist)) {
 				http_response_code(400);
 				header("Content-type: text/plain");
 

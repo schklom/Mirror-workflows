@@ -784,7 +784,7 @@ class Handler_Public extends Handler {
 					<?php print_hidden("csrf_token", $_SESSION["csrf_token"]) ?>
 					<fieldset>
 						<label>Feed or site URL:</label>
-						<input style="width: 300px" dojoType="dijit.form.ValidationTextBox" required="1" name="feed_url">
+						<input style="width: 300px" dojoType="dijit.form.ValidationTextBox" required="1" name="feed_url" value="<?php echo htmlspecialchars($feed_url) ?>">
 					</fieldset>
 
 					<button class="alt-primary" dojoType="dijit.form.Button" type="submit">

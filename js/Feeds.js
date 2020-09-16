@@ -226,23 +226,25 @@ const	Feeds = {
 			if (dijit.byId("defaultPasswordDlg"))
 				dijit.byId("defaultPasswordDlg").destroyRecursive();
 
-			const dialog = new dijit.Dialog({
-				title: __("Your password is at default value"),
-				href: "backend.php?op=dlg&method=defaultpasswordwarning",
-				id: 'defaultPasswordDlg',
-				style: "width: 600px",
-				onCancel: function () {
-					return true;
-				},
-				onExecute: function () {
-					return true;
-				},
-				onClose: function () {
-					return true;
-				}
-			});
+			xhrPost("backend.php", {op: 'dlg', method: 'defaultpasswordwarning'}, (transport) => {
+				const dialog = new dijit.Dialog({
+					title: __("Your password is at default value"),
+					content: transport.responseText,
+					id: 'defaultPasswordDlg',
+					style: "width: 600px",
+					onCancel: function () {
+						return true;
+					},
+					onExecute: function () {
+						return true;
+					},
+					onClose: function () {
+						return true;
+					}
+				});
 
-			dialog.show();
+				dialog.show();
+			});
 		}
 
 		// bw_limit disables timeout() so we request initial counters separately

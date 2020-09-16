@@ -1511,7 +1511,12 @@
 	}
 
 	function build_url($parts) {
-		return $parts['scheme'] . "://" . $parts['host'] . $parts['path'];
+		$tmp = $parts['scheme'] . "://" . $parts['host'] . $parts['path'];
+
+		if (isset($parts['query'])) $tmp .= '?' . $parts['query'];
+		if (isset($parts['fragment'])) $tmp .= '#' . $parts['fragment'];
+
+		return $tmp;
 	}
 
 	/**
@@ -1537,23 +1542,16 @@
 		} else {
 			$parts = parse_url($url);
 
-			if (!isset($parts['path'])) {
-				$parts['path'] = '/';
-			}
+			$rel_parts['host'] = $parts['host'];
+			$rel_parts['scheme'] = $parts['scheme'];
 
-			$dir = $parts['path'];
+			if (strpos($rel_parts['path'], '/') !== 0)
+				$rel_parts['path'] = '/' . $rel_parts['path'];
 
-			if (substr($dir, -1) !== '/') {
-				$dir = dirname($parts['path']);
-				$dir !== '/' && $dir .= '/';
-			}
+			$rel_parts['path'] = str_replace("/./", "/", $rel_parts['path']);
+			$rel_parts['path'] = str_replace("//", "/", $rel_parts['path']);
 
-			$parts['path'] = $dir . $rel_url;
-
-			$parts['path'] = str_replace("/./", "/", $parts['path']);
-			$parts['path'] = str_replace("//", "/", $parts['path']);
-
-			return validate_url(build_url($parts));
+			return validate_url(build_url($rel_parts));
 		}
 	}
 

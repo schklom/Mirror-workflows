@@ -441,7 +441,21 @@
 
 			$old_error = error_get_last();
 
-			$fetch_effective_url = $url;
+			$fetch_effective_url = resolve_redirects($url, $timeout ? $timeout : FILE_FETCH_CONNECT_TIMEOUT);
+
+			if (!validate_url($fetch_effective_url)) {
+				$fetch_last_error = "URL hostname received after redirection failed to validate.";
+
+				return false;
+			}
+
+			$fetch_effective_ip_addr = gethostbyname(parse_url($fetch_effective_url, PHP_URL_HOST));
+
+			if (!$fetch_effective_ip_addr || strpos($fetch_effective_ip_addr, "127.") === 0) {
+				$fetch_last_error = "URL hostname received after redirection failed to resolve or resolved to a loopback address ($fetch_effective_ip_addr)";
+
+				return false;
+			}
 
 			$data = @file_get_contents($url, false, $context);
 
@@ -1983,4 +1997,46 @@
 		}
 
 		return $url;
+	}
+
+	function resolve_redirects($url, $timeout, $nest = 0) {
+
+		// too many redirects
+		if ($nest > 10)
+			return false;
+
+		$context_options = array(
+			'http' => array(
+				 'header' => array(
+					 'Connection: close'
+				 ),
+				 'method' => 'HEAD',
+				 'timeout' => $timeout,
+				 'protocol_version'=> 1.1)
+			);
+
+		if (defined('_HTTP_PROXY')) {
+			$context_options['http']['request_fulluri'] = true;
+			$context_options['http']['proxy'] = _HTTP_PROXY;
+		}
+
+		$context = stream_context_create($context_options);
+		$headers = get_headers($url, 0, $context);
+
+		if (is_array($headers)) {
+			$headers = array_reverse($headers); // last one is the correct one
+
+			foreach($headers as $header) {
+				if (stripos($header, 'Location:') === 0) {
+					$url = rewrite_relative_url($url, trim(substr($header, strlen('Location:'))));
+
+					return resolve_redirects($url, $timeout, $nest + 1);
+				}
+			}
+
+			return $url;
+		}
+
+		// request failed?
+		return false;
 	}

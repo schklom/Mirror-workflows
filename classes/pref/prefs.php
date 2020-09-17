@@ -1012,7 +1012,7 @@ class Pref_Prefs extends Handler_Protected {
 	function otpqrcode() {
 		$csrf_token_hash = clean($_REQUEST["csrf_token_hash"]);
 
-		if (sha1($_SESSION["csrf_token"] === $csrf_token_hash)) {
+		if (sha1($_SESSION["csrf_token"]) === $csrf_token_hash) {
 			require_once "lib/phpqrcode/phpqrcode.php";
 
 			$sth = $this->pdo->prepare("SELECT login

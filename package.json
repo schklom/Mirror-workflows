@@ -5,6 +5,6 @@
   "devDependencies": {
     "gulp": "^4.0.2",
     "gulp-less": "^4.0.1",
-    "lessc": "^1.0.2"
+    "less": "^3.12.2"
   }
 }

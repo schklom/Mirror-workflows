@@ -243,6 +243,13 @@
 		if (!$url) return false;
 
 		$url_host = parse_url($url, PHP_URL_HOST);
+		$ip_addr = gethostbyname($url_host);
+
+		if (!$ip_addr || strpos($ip_addr, "127.0") === 0) {
+			$fetch_last_error = "URL hostname failed to resolve or resolved to loopback address ($ip_addr)";
+			return false;
+		}
+
 		$fetch_domain_hits[$url_host] += 1;
 
 		/*if ($fetch_domain_hits[$url_host] > MAX_FETCH_REQUESTS_PER_HOST) {

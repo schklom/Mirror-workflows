@@ -581,7 +581,7 @@
 
 				$_SESSION["name"] = $row["login"];
 				$_SESSION["access_level"] = $row["access_level"];
-				$_SESSION["csrf_token"] = uniqid_short();
+				$_SESSION["csrf_token"] = bin2hex(get_random_bytes(16));
 
 				$usth = $pdo->prepare("UPDATE ttrss_users SET last_login = NOW() WHERE id = ?");
 				$usth->execute([$user_id]);
@@ -608,9 +608,8 @@
 
 			$_SESSION["auth_module"] = false;
 
-			if (!$_SESSION["csrf_token"]) {
-				$_SESSION["csrf_token"] = uniqid_short();
-			}
+			if (!$_SESSION["csrf_token"])
+				$_SESSION["csrf_token"] = bin2hex(get_random_bytes(16));
 
 			$_SESSION["ip_address"] = $_SERVER["REMOTE_ADDR"];
 
@@ -680,7 +679,7 @@
 	}
 
 	function validate_csrf($csrf_token) {
-		return $csrf_token === $_SESSION['csrf_token'];
+		return hash_equals($csrf_token, $_SESSION['csrf_token']);
 	}
 
 	function load_user_plugins($owner_uid, $pluginhost = false) {
@@ -1669,7 +1668,9 @@
 	}
 
 	function get_random_bytes($length) {
-		if (function_exists('openssl_random_pseudo_bytes')) {
+		if (function_exists('random_bytes')) {
+			return random_bytes($length);
+		} else if (function_exists('openssl_random_pseudo_bytes')) {
 			return openssl_random_pseudo_bytes($length);
 		} else {
 			$output = "";

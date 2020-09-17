@@ -30,7 +30,7 @@ class Af_Proxy_Http extends Plugin {
 		$host->add_hook($host::HOOK_PREFS_TAB, $this);
 
 		if (!$_SESSION['af_proxy_http_token'])
-			$_SESSION['af_proxy_http_token'] = uniqid_short();
+			$_SESSION['af_proxy_http_token'] = bin2hex(get_random_bytes(16));
 	}
 
 	function hook_enclosure_entry($enc) {
@@ -202,7 +202,7 @@ class Af_Proxy_Http extends Plugin {
 	function hook_prefs_tab($args) {
 		if ($args != "prefFeeds") return;
 
-		print "<div dojoType=\"dijit.layout.AccordionPane\" 
+		print "<div dojoType=\"dijit.layout.AccordionPane\"
 			title=\"<i class='material-icons'>extension</i> ".__('Image proxy settings (af_proxy_http)')."\">";
 
 		print "<form dojoType=\"dijit.form.Form\">";

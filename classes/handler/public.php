@@ -940,7 +940,7 @@ class Handler_Public extends Handler {
 
 					if ($timestamp && $resetpass_token &&
 						$timestamp >= time() - 15*60*60 &&
-						$resetpass_token == $hash) {
+						$resetpass_token === $hash) {
 
 							$sth = $this->pdo->prepare("UPDATE ttrss_users SET resetpass_token = NULL
 								WHERE id = ?");

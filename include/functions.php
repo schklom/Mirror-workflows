@@ -666,7 +666,7 @@
 
 		$sth = $pdo->prepare("insert into ttrss_feeds (owner_uid,title,feed_url)
 			values (?, 'Tiny Tiny RSS: Forum',
-				'http://tt-rss.org/forum/rss.php')");
+				'https://tt-rss.org/forum/rss.php')");
 		$sth->execute([$uid]);
 	}
 

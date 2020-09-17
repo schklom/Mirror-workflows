@@ -238,7 +238,7 @@
 		$url = ltrim($url, ' ');
 		$url = str_replace(' ', '%20', $url);
 
-		$url = validate_url($url);
+		$url = validate_url($url, true);
 
 		if (!$url) return false;
 
@@ -350,7 +350,7 @@
 
 			$fetch_effective_url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
 
-			if (!validate_url($fetch_effective_url)) {
+			if (!validate_url($fetch_effective_url, true)) {
 				$fetch_last_error = "URL hostname received after redirection failed to validate.";
 
 				return false;
@@ -443,7 +443,7 @@
 
 			$fetch_effective_url = resolve_redirects($url, $timeout ? $timeout : FILE_FETCH_CONNECT_TIMEOUT);
 
-			if (!validate_url($fetch_effective_url)) {
+			if (!validate_url($fetch_effective_url, true)) {
 				$fetch_last_error = "URL hostname received after redirection failed to validate.";
 
 				return false;
@@ -1963,7 +1963,8 @@
 		return $ttrss_version['version'];
 	}
 
-	function validate_url($url) {
+	// extended filtering involves validation for safe ports and loopback
+	function validate_url($url, $extended_filtering = false) {
 
 		$url = clean($url);
 
@@ -1979,14 +1980,16 @@
 		if (!$tokens['host'])
 			return false;
 
-		if (!in_array($tokens['port'], [80, 443, '']))
-			return false;
-
 		if (!in_array($tokens['scheme'], ['http', 'https']))
 			return false;
 
-		if ($tokens['host'] == 'localhost' || $tokens['host'] == '::1' || strpos($tokens['host'], '127.') === 0)
-			return false;
+		if ($extended_filtering) {
+			if (!in_array($tokens['port'], [80, 443, '']))
+				return false;
+
+			if ($tokens['host'] == 'localhost' || $tokens['host'] == '::1' || strpos($tokens['host'], '127.') === 0)
+				return false;
+		}
 
 		//convert IDNA hostname to punycode if possible
 		if (function_exists("idn_to_ascii")) {

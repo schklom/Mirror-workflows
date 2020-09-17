@@ -283,9 +283,12 @@ class Handler_Public extends Handler {
 	}
 
 	function logout() {
-		if ($_POST["csrf_token"] == $_SESSION["csrf_token"]) {
+		if (validate_csrf($_POST["csrf_token"])) {
 			logout_user();
 			header("Location: index.php");
+		} else {
+			header("Content-Type: text/json");
+			print error_json(6);
 		}
 	}
 
@@ -777,7 +780,7 @@ class Handler_Public extends Handler {
 			<div class='content'>
 			<?php
 
-			if (!$feed_url || $csrf_token != $_SESSION["csrf_token"]) {
+			if (!$feed_url || !validate_csrf($csrf_token)) {
 				?>
 				<form method="post">
 					<input type="hidden" name="op" value="subscribe">

@@ -680,7 +680,7 @@
 	}
 
 	function validate_csrf($csrf_token) {
-		return $csrf_token == $_SESSION['csrf_token'];
+		return $csrf_token === $_SESSION['csrf_token'];
 	}
 
 	function load_user_plugins($owner_uid, $pluginhost = false) {

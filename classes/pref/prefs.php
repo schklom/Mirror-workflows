@@ -8,7 +8,7 @@ class Pref_Prefs extends Handler_Protected {
 	private $profile_blacklist = [];
 
 	function csrf_ignore($method) {
-		$csrf_ignored = array("index", "updateself", "customizecss", "editprefprofiles");
+		$csrf_ignored = array("index", "updateself", "customizecss", "editprefprofiles", "otpqrcode");
 
 		return array_search($method, $csrf_ignored) !== false;
 	}
@@ -483,8 +483,8 @@ class Pref_Prefs extends Handler_Protected {
 				if (function_exists("imagecreatefromstring")) {
 					print "<h3>" . __("Scan the following code by the Authenticator application or copy the key manually") . "</h3>";
 
-					$csrf_token = $_SESSION["csrf_token"];
-					print "<img alt='otp qr-code' src='backend.php?op=pref-prefs&method=otpqrcode&csrf_token=$csrf_token'>";
+					$csrf_token_hash = sha1($_SESSION["csrf_token"]);
+					print "<img alt='otp qr-code' src='backend.php?op=pref-prefs&method=otpqrcode&csrf_token_hash=$csrf_token_hash'>";
 				} else {
 					print_error("PHP GD functions are required to generate QR codes.");
 					print "<h3>" . __("Use the following OTP key with a compatible Authenticator application") . "</h3>";
@@ -1010,21 +1010,28 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	function otpqrcode() {
-		require_once "lib/phpqrcode/phpqrcode.php";
+		$csrf_token_hash = clean($_REQUEST["csrf_token_hash"]);
 
-		$sth = $this->pdo->prepare("SELECT login
-			FROM ttrss_users
-			WHERE id = ?");
-		$sth->execute([$_SESSION['uid']]);
+		if (sha1($_SESSION["csrf_token"] === $csrf_token_hash)) {
+			require_once "lib/phpqrcode/phpqrcode.php";
 
-		if ($row = $sth->fetch()) {
-			$secret = $this->otpsecret();
-			$login = $row['login'];
+			$sth = $this->pdo->prepare("SELECT login
+				FROM ttrss_users
+				WHERE id = ?");
+			$sth->execute([$_SESSION['uid']]);
 
-			if ($secret) {
-				QRcode::png("otpauth://totp/".urlencode($login).
-					"?secret=$secret&issuer=".urlencode("Tiny Tiny RSS"));
+			if ($row = $sth->fetch()) {
+				$secret = $this->otpsecret();
+				$login = $row['login'];
+
+				if ($secret) {
+					QRcode::png("otpauth://totp/".urlencode($login).
+						"?secret=$secret&issuer=".urlencode("Tiny Tiny RSS"));
+				}
 			}
+		} else {
+			header("Content-Type: text/json");
+			print error_json(6);
 		}
 	}
 

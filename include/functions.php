@@ -246,7 +246,7 @@
 		$ip_addr = gethostbyname($url_host);
 
 		if (!$ip_addr || strpos($ip_addr, "127.") === 0) {
-			$fetch_last_error = "URL hostname failed to resolve or resolved to loopback address ($ip_addr)";
+			$fetch_last_error = "URL hostname failed to resolve or resolved to a loopback address ($ip_addr)";
 			return false;
 		}
 
@@ -349,6 +349,20 @@
 			$fetch_last_content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 
 			$fetch_effective_url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+
+			if (!validate_url($fetch_effective_url)) {
+				$fetch_last_error = "URL hostname received after redirection failed to validate.";
+
+				return false;
+			}
+
+			$fetch_effective_ip_addr = gethostbyname(parse_url($fetch_effective_url, PHP_URL_HOST));
+
+			if (!$fetch_effective_ip_addr || strpos($fetch_effective_ip_addr, "127.") === 0) {
+				$fetch_last_error = "URL hostname received after redirection failed to resolve or resolved to a loopback address ($fetch_effective_ip_addr)";
+
+				return false;
+			}
 
 			$fetch_last_error_code = $http_code;
 

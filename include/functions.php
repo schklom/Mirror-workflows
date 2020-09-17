@@ -326,7 +326,7 @@
 			$contents = substr($ret, $headers_length);
 
 			foreach ($headers as $header) {
-				if (strstr($header, ": ") !== FALSE) {
+				if (strstr($header, ": ") !== false) {
 					list ($key, $value) = explode(": ", $header);
 
 					if (strtolower($key) == "last-modified") {
@@ -461,7 +461,7 @@
 
 			if (isset($http_response_header) && is_array($http_response_header)) {
 				foreach ($http_response_header as $header) {
-					if (strstr($header, ": ") !== FALSE) {
+					if (strstr($header, ": ") !== false) {
 						list ($key, $value) = explode(": ", $header);
 
 						$key = strtolower($key);
@@ -538,7 +538,7 @@
 		}
 
 		while ($line = $sth->fetch()) {
-			if (array_search($line["pref_name"], $active_prefs) === FALSE) {
+			if (array_search($line["pref_name"], $active_prefs) === false) {
 //				print "adding " . $line["pref_name"] . "<br>";
 
 				if (get_schema_version() < 63) {
@@ -1613,7 +1613,7 @@
 		foreach ($filter["rules"] AS $rule) {
 			$rule['reg_exp'] = str_replace('/', '\/', $rule["reg_exp"]);
 			$regexp_valid = preg_match('/' . $rule['reg_exp'] . '/',
-					$rule['reg_exp']) !== FALSE;
+					$rule['reg_exp']) !== false;
 
 			if ($regexp_valid) {
 
@@ -1761,7 +1761,7 @@
 
 			for ($i = 0; $i < $l10n->total; $i++) {
 				$orig = $l10n->get_original_string($i);
-				if(strpos($orig, "\000") !== FALSE) { // Plural forms
+				if(strpos($orig, "\000") !== false) { // Plural forms
 					$key = explode(chr(0), $orig);
 					print T_js_decl($key[0], _ngettext($key[0], $key[1], 1)); // Singular
 					print T_js_decl($key[1], _ngettext($key[0], $key[1], 2)); // Plural
@@ -1971,7 +1971,7 @@
 		if (strpos($url, "//") === 0)
 			$url = "https:" . $url;
 
-		if (filter_var($url, FILTER_VALIDATE_URL) === FALSE)
+		if (filter_var($url, FILTER_VALIDATE_URL) === false)
 			return false;
 
 		$tokens = parse_url($url);

@@ -155,7 +155,7 @@ class PluginHost {
 			foreach (array_keys($this->hooks[$type]) as $prio) {
 				$key = array_search($sender, $this->hooks[$type][$prio]);
 
-				if ($key !== FALSE) {
+				if ($key !== false) {
 					unset($this->hooks[$type][$prio][$key]);
 				}
 			}
@@ -218,7 +218,7 @@ class PluginHost {
 					if (file_exists($vendor_dir)) {
 						spl_autoload_register(function($class) use ($vendor_dir) {
 
-							if (strpos($class, '\\') !== FALSE) {
+							if (strpos($class, '\\') !== false) {
 								list ($namespace, $class_name) = explode('\\', $class, 2);
 
 								if ($namespace && $class_name) {

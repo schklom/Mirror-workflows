@@ -148,7 +148,7 @@ class RSSUtils {
 			if ($tline = $usth->fetch()) {
 				Debug::log(" => " . $tline["last_updated"] . ", " . $tline["id"] . " " . $tline["owner_uid"]);
 
-				if (array_search($tline["owner_uid"], $batch_owners) === FALSE)
+				if (array_search($tline["owner_uid"], $batch_owners) === false)
 					array_push($batch_owners, $tline["owner_uid"]);
 
 				$fstarted = microtime(true);

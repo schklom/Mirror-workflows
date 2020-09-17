@@ -122,7 +122,7 @@
 	}
 
 	require_once "lib/accept-to-gettext.php";
-	require_once "lib/gettext/gettext.inc";
+	require_once "lib/gettext/gettext.inc.php";
 
 	function startup_gettext() {
 

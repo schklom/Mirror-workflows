@@ -52,7 +52,7 @@ class Auth_Internal extends Plugin implements IAuthModule {
 						$totp_legacy = new \OTPHP\TOTP($secret_legacy);
 						$otp_check_legacy = $totp_legacy->now();
 
-						if ($otp != $otp_check && $otp != $otp_check_legacy) {
+						if ($otp !== $otp_check && $otp !== $otp_check_legacy) {
 							return false;
 						}
 					} else {
@@ -260,8 +260,8 @@ class Auth_Internal extends Plugin implements IAuthModule {
 	}
 
 	private function check_app_password($login, $password, $service) {
-		$sth = $this->pdo->prepare("SELECT p.id, p.pwd_hash, u.id AS uid 
-			FROM ttrss_app_passwords p, ttrss_users u 
+		$sth = $this->pdo->prepare("SELECT p.id, p.pwd_hash, u.id AS uid
+			FROM ttrss_app_passwords p, ttrss_users u
 			WHERE p.owner_uid = u.id AND u.login = ? AND service = ?");
 		$sth->execute([$login, $service]);
 

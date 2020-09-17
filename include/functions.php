@@ -485,7 +485,7 @@
 
 		if (get_schema_version() < 63) $profile_qpart = "";
 
-		$pdo = DB::pdo();
+		$pdo = Db::pdo();
 		$in_nested_tr = false;
 
 		try {
@@ -573,7 +573,7 @@
 				$_SESSION["uid"] = $user_id;
 				$_SESSION["auth_module"] = $auth_module;
 
-				$pdo = DB::pdo();
+				$pdo = Db::pdo();
 				$sth = $pdo->prepare("SELECT login,access_level,pwd_hash FROM ttrss_users
 					WHERE id = ?");
 				$sth->execute([$user_id]);
@@ -662,7 +662,7 @@
 
 	function initialize_user($uid) {
 
-		$pdo = DB::pdo();
+		$pdo = Db::pdo();
 
 		$sth = $pdo->prepare("insert into ttrss_feeds (owner_uid,title,feed_url)
 			values (?, 'Tiny Tiny RSS: Forum',
@@ -861,7 +861,7 @@
 	function get_schema_version($nocache = false) {
 		global $schema_version;
 
-		$pdo = DB::pdo();
+		$pdo = Db::pdo();
 
 		if (!$schema_version && !$nocache) {
 			$row = $pdo->query("SELECT schema_version FROM ttrss_version")->fetch();

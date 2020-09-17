@@ -2097,7 +2097,7 @@ class Feeds extends Handler_Protected {
 
 	static function feed_purge_interval($feed_id) {
 
-		$pdo = DB::pdo();
+		$pdo = Db::pdo();
 
 		$sth = $pdo->prepare("SELECT purge_interval, owner_uid FROM ttrss_feeds
 			WHERE id = ?");

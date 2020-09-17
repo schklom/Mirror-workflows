@@ -42,7 +42,7 @@ class Counters {
 
 		array_push($ret, $cv);
 
-		$pdo = DB::pdo();
+		$pdo = Db::pdo();
 
 		$sth = $pdo->prepare("SELECT fc.id,
 				SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,

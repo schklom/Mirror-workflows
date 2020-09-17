@@ -652,7 +652,7 @@ class Article extends Handler_Protected {
 	}
 
 	static function getLastArticleId() {
-		$pdo = DB::pdo();
+		$pdo = Db::pdo();
 
 		$sth = $pdo->prepare("SELECT ref_id AS id FROM ttrss_user_entries
 			WHERE owner_uid = ? ORDER BY ref_id DESC LIMIT 1");

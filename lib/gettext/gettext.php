@@ -21,6 +21,8 @@
 
 */
 
+require('plurals.php');
+
 /**
  * Provides a simple gettext replacement that works independently from
  * the system's gettext abilities.
@@ -39,16 +41,16 @@ class gettext_reader {
 
    //private:
   var $BYTEORDER = 0;        // 0: low endian, 1: big endian
-  var $STREAM = NULL;
+  var $STREAM = null;
   var $short_circuit = false;
   var $enable_cache = false;
-  var $originals = NULL;      // offset of original table
-  var $translations = NULL;    // offset of translation table
-  var $pluralheader = NULL;    // cache header field for plural forms
+  var $originals = null;      // offset of original table
+  var $translations = null;    // offset of translation table
+  var $pluralheader = null;    // cache header field for plural forms
   var $total = 0;          // total string count
-  var $table_originals = NULL;  // table for original strings (offsets)
-  var $table_translations = NULL;  // table for translated strings (offsets)
-  var $cache_translations = NULL;  // original -> translation mapping
+  var $table_originals = null;  // table for original strings (offsets)
+  var $table_translations = null;  // table for translated strings (offsets)
+  var $cache_translations = null;  // original -> translation mapping
 
 
   /* Methods */
@@ -270,41 +272,6 @@ class gettext_reader {
   }
 
   /**
-   * Sanitize plural form expression for use in PHP eval call.
-   *
-   * @access private
-   * @return string sanitized plural form expression
-   */
-  function sanitize_plural_expression($expr) {
-    // Get rid of disallowed characters.
-    $expr = preg_replace('@[^a-zA-Z0-9_:;\(\)\?\|\&=!<>+*/\%-]@', '', $expr);
-
-    // Add parenthesis for tertiary '?' operator.
-    $expr .= ';';
-    $res = '';
-    $p = 0;
-    for ($i = 0; $i < strlen($expr); $i++) {
-      $ch = $expr[$i];
-      switch ($ch) {
-      case '?':
-        $res .= ' ? (';
-        $p++;
-        break;
-      case ':':
-        $res .= ') : (';
-        break;
-      case ';':
-        $res .= str_repeat( ')', $p) . ';';
-        $p = 0;
-        break;
-      default:
-        $res .= $ch;
-      }
-    }
-    return $res;
-  }
-
-  /**
    * Parse full PO header and extract only plural forms line.
    *
    * @access private
@@ -327,17 +294,17 @@ class gettext_reader {
   function get_plural_forms() {
     // lets assume message number 0 is header
     // this is true, right?
-    $this->load_tables();
+		$this->load_tables();
 
     // cache header field for plural forms
-    if (! is_string($this->pluralheader)) {
+    if ($this->pluralheader === null) {
       if ($this->enable_cache) {
         $header = $this->cache_translations[""];
       } else {
         $header = $this->get_translation_string(0);
       }
       $expr = $this->extract_plural_forms_header_from_po_header($header);
-      $this->pluralheader = $this->sanitize_plural_expression($expr);
+      $this->pluralheader = new PluralHeader($expr);
     }
     return $this->pluralheader;
   }
@@ -353,17 +320,14 @@ class gettext_reader {
     if (!is_int($n)) {
       throw new InvalidArgumentException(
         "Select_string only accepts integers: " . $n);
-    }
-    $string = $this->get_plural_forms();
-    $string = str_replace('nplurals',"\$total",$string);
-    $string = str_replace("n",$n,$string);
-    $string = str_replace('plural',"\$plural",$string);
+		}
 
-    $total = 0;
-    $plural = 0;
+		$plural_header = $this->get_plural_forms();
+    $plural = $plural_header->expression->evaluate($n);
 
-    eval("$string");
-    if ($plural >= $total) $plural = $total - 1;
+    if ($plural < 0) $plural = 0;
+    if ($plural >= $plural_header->total) $plural = $plural_header->total - 1;
+
     return $plural;
   }
 
@@ -387,7 +351,7 @@ class gettext_reader {
     // find out the appropriate form
     $select = $this->select_string($number);
 
-    // this should contains all strings separated by NULLs
+    // this should contains all strings separated by nulls
     $key = $single . chr(0) . $plural;
 
 

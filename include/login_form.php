@@ -146,6 +146,14 @@
 				<?php echo __("Does not display images in articles, reduces automatic refreshes."); ?>
 			</div>
 
+			<fieldset class="narrow">
+				<label> </label>
+
+				<label ><input dojoType="dijit.form.CheckBox" name="safe_mode" id="safe_mode"
+					  type="checkbox">
+					<?php echo __("Safe mode (no plugins)") ?></label>
+			</fieldset>
+
 			<?php if (SESSION_COOKIE_LIFETIME > 0) { ?>
 
 				<fieldset class="narrow">

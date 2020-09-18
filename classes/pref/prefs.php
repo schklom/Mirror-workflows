@@ -858,6 +858,10 @@ class Pref_Prefs extends Handler_Protected {
 			print_warning("Your PHP configuration has open_basedir restrictions enabled. Some plugins relying on CURL for functionality may not work correctly.");
 		}
 
+		if ($_SESSION["safe_mode"]) {
+			print_error("You have logged in using safe mode, no user plugins will be actually enabled until you login again.");
+		}
+
 		$feed_handler_whitelist = [ "Af_Comics" ];
 
 		$feed_handlers = array_merge(

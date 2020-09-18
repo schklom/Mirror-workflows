@@ -673,6 +673,7 @@ class Handler_Public extends Handler {
 			$login = clean($_POST["login"]);
 			$password = clean($_POST["password"]);
 			$remember_me = clean($_POST["remember_me"]);
+			$safe_mode = checkbox_to_sql_bool(clean($_POST["safe_mode"]));
 
 			if ($remember_me) {
 				@session_set_cookie_params(SESSION_COOKIE_LIFETIME);
@@ -689,6 +690,7 @@ class Handler_Public extends Handler {
 
 				$_SESSION["ref_schema_version"] = get_schema_version(true);
 				$_SESSION["bw_limit"] = !!clean($_POST["bw_limit"]);
+				$_SESSION["safe_mode"] = $safe_mode;
 
 				if (clean($_POST["profile"])) {
 

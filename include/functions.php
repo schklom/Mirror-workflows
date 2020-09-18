@@ -714,7 +714,7 @@
 
 		if (!$pluginhost) $pluginhost = PluginHost::getInstance();
 
-		if ($owner_uid && SCHEMA_VERSION >= 100) {
+		if ($owner_uid && SCHEMA_VERSION >= 100 && !$_SESSION["safe_mode"]) {
 			$plugins = get_pref("_ENABLED_PLUGINS", $owner_uid);
 
 			$pluginhost->load($plugins, PluginHost::KIND_USER, $owner_uid);

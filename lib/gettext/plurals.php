@@ -259,14 +259,14 @@ class PluralsParser {
    * 0. However, ':' and ')' exist here to make sure that parsing does not
    * proceed beyond them when they are not to be parsed.
    */
-  private const PREC = [
+  const PREC = [
     ':' => -1, '?' => 0, '||' => 1, '&&' => 2, '==' => 3, '!=' => 3,
     '>' => 4, '<' => 4, '>=' => 4, '<=' => 4, '+' => 5, '-' => 5, '*' => 6,
     '/' => 6, '%' => 6, '!' => 7, '__END__' => -1, ')' => -1
   ];
 
   // List of right associative operators
-  private const RIGHT_ASSOC = ['?'];
+  const RIGHT_ASSOC = ['?'];
 
   /**
    * Constructor

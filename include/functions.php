@@ -2009,8 +2009,6 @@
 			return false;
 
 		if (version_compare(PHP_VERSION, '7.1.0', '>=')) {
-			$context = stream_context_create($context_options);
-
 			$context_options = array(
 				'http' => array(
 					 'header' => array(
@@ -2025,6 +2023,8 @@
 				$context_options['http']['request_fulluri'] = true;
 				$context_options['http']['proxy'] = _HTTP_PROXY;
 			}
+
+			$context = stream_context_create($context_options);
 
 			$headers = get_headers($url, 0, $context);
 		} else {

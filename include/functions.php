@@ -2008,23 +2008,28 @@
 		if ($nest > 10)
 			return false;
 
-		$context_options = array(
-			'http' => array(
-				 'header' => array(
-					 'Connection: close'
-				 ),
-				 'method' => 'HEAD',
-				 'timeout' => $timeout,
-				 'protocol_version'=> 1.1)
-			);
+		if (version_compare(PHP_VERSION, '7.1.0', '>=')) {
+			$context = stream_context_create($context_options);
 
-		if (defined('_HTTP_PROXY')) {
-			$context_options['http']['request_fulluri'] = true;
-			$context_options['http']['proxy'] = _HTTP_PROXY;
+			$context_options = array(
+				'http' => array(
+					 'header' => array(
+						 'Connection: close'
+					 ),
+					 'method' => 'HEAD',
+					 'timeout' => $timeout,
+					 'protocol_version'=> 1.1)
+				);
+
+			if (defined('_HTTP_PROXY')) {
+				$context_options['http']['request_fulluri'] = true;
+				$context_options['http']['proxy'] = _HTTP_PROXY;
+			}
+
+			$headers = get_headers($url, 0, $context);
+		} else {
+			$headers = get_headers($url, 0);
 		}
-
-		$context = stream_context_create($context_options);
-		$headers = get_headers($url, 0, $context);
 
 		if (is_array($headers)) {
 			$headers = array_reverse($headers); // last one is the correct one

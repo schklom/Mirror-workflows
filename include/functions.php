@@ -243,7 +243,7 @@
 		$url = validate_url($url, true);
 
 		if (!$url) {
-			$fetch_last_error = "Requested URL failed to validate.";
+			$fetch_last_error = "Requested URL failed extended validation.";
 			return false;
 		}
 

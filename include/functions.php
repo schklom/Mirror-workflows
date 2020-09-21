@@ -184,6 +184,7 @@
 		global $fetch_last_content_type;
 		global $fetch_last_modified;
 		global $fetch_effective_url;
+		global $fetch_effective_ip_addr;
 		global $fetch_curl_used;
 		global $fetch_domain_hits;
 
@@ -194,6 +195,7 @@
 		$fetch_curl_used = false;
 		$fetch_last_modified = "";
 		$fetch_effective_url = "";
+		$fetch_effective_ip_addr = "";
 
 		if (!is_array($fetch_domain_hits))
 			$fetch_domain_hits = [];
@@ -240,7 +242,10 @@
 
 		$url = validate_url($url, true);
 
-		if (!$url) return false;
+		if (!$url) {
+			$fetch_last_error = "Requested URL failed to validate.";
+			return false;
+		}
 
 		$url_host = parse_url($url, PHP_URL_HOST);
 		$ip_addr = gethostbyname($url_host);
@@ -351,7 +356,7 @@
 			$fetch_effective_url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
 
 			if (!validate_url($fetch_effective_url, true)) {
-				$fetch_last_error = "URL hostname received after redirection failed to validate.";
+				$fetch_last_error = "URL received after redirection failed extended validation.";
 
 				return false;
 			}
@@ -444,7 +449,7 @@
 			$fetch_effective_url = resolve_redirects($url, $timeout ? $timeout : FILE_FETCH_CONNECT_TIMEOUT);
 
 			if (!validate_url($fetch_effective_url, true)) {
-				$fetch_last_error = "URL hostname received after redirection failed to validate.";
+				$fetch_last_error = "URL received after redirection failed extended validation.";
 
 				return false;
 			}

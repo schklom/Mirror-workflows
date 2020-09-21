@@ -1980,14 +1980,14 @@
 		if (!$tokens['host'])
 			return false;
 
-		if (!in_array($tokens['scheme'], ['http', 'https']))
+		if (!in_array(strtolower($tokens['scheme']), ['http', 'https']))
 			return false;
 
 		if ($extended_filtering) {
 			if (!in_array($tokens['port'], [80, 443, '']))
 				return false;
 
-			if ($tokens['host'] == 'localhost' || $tokens['host'] == '::1' || strpos($tokens['host'], '127.') === 0)
+			if (strtolower($tokens['host']) == 'localhost' || $tokens['host'] == '::1' || strpos($tokens['host'], '127.') === 0)
 				return false;
 		}
 

@@ -410,7 +410,10 @@ class RSSUtils {
 
 			$feed_data = trim($feed_data);
 
+			global $fetch_effective_url;
+
 			Debug::log("fetch done.", Debug::$LOG_VERBOSE);
+			Debug::log("effective URL (after redirects): " . clean($fetch_effective_url), Debug::$LOG_VERBOSE);
 			Debug::log("source last modified: " . $fetch_last_modified, Debug::$LOG_VERBOSE);
 
 			if ($feed_data && $fetch_last_modified != $stored_last_modified) {

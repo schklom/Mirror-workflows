@@ -13,15 +13,16 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-28 08:08+0300\n"
-"PO-Revision-Date: 2019-08-14 10:49+0000\n"
-"Last-Translator: Edgar Pireyn <edgar@pireyn.be>\n"
-"Language-Team: French <https://weblate.tt-rss.org/projects/tt-rss/messages/fr/>\n"
+"PO-Revision-Date: 2020-09-22 01:24+0000\n"
+"Last-Translator: Glandos <bugs-ttrss@antipoul.fr>\n"
+"Language-Team: French <https://weblate.tt-rss.org/projects/tt-rss/messages/"
+"fr/>\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 3.7.1\n"
+"X-Generator: Weblate 4.2.2\n"
 
 #: backend.php:58
 msgid "Use default"
@@ -506,23 +507,20 @@ msgid "Open previous feed"
 msgstr "Ouvrir le flux précédent"
 
 #: include/functions.php:1030
-#, fuzzy
 msgid "Open next article (in combined mode, scroll down)"
-msgstr "Ouvrir l’article suivant (ne pas faire défiler les articles longs)"
+msgstr "Ouvrir l’article suivant (défiler vers le bas en mode combiné)"
 
 #: include/functions.php:1031
-#, fuzzy
 msgid "Open previous article (in combined mode, scroll up)"
-msgstr "Ouvrir l’article précédent (ne pas faire défiler les articles longs)"
+msgstr "Ouvrir l’article précédent (défiler vers le haut en mode combiné)"
 
 #: include/functions.php:1032
 msgid "Scroll article by one page down"
-msgstr ""
+msgstr "Fait défiler l’article d’une page vers le bas"
 
 #: include/functions.php:1033
-#, fuzzy
 msgid "Scroll article by one page up"
-msgstr "Sélectionner les articles du groupe"
+msgstr "Faire défiler l’article d’une page vers le haut"
 
 #: include/functions.php:1034
 msgid "Open next article"
@@ -583,21 +581,19 @@ msgstr "Marquer les articles au-dessus comme lus"
 
 #: include/functions.php:1047
 msgid "Scroll down"
-msgstr "Défiler vers le bas"
+msgstr "Faire défiler vers le bas"
 
 #: include/functions.php:1048
 msgid "Scroll up"
-msgstr "Défiler vers le haut"
+msgstr "Faire défiler vers le haut"
 
 #: include/functions.php:1049
-#, fuzzy
 msgid "Scroll down page"
-msgstr "Défiler vers le bas"
+msgstr "Faire défiler d’une page vers le bas"
 
 #: include/functions.php:1050
-#, fuzzy
 msgid "Scroll up page"
-msgstr "Défiler vers le haut"
+msgstr "Faire défiler d’une page vers le haut"
 
 #: include/functions.php:1051
 msgid "Select article under cursor"
@@ -617,7 +613,7 @@ msgstr "Basculer le développement (mode combiné)"
 
 #: include/functions.php:1056
 msgid "Toggle full article text via Readability"
-msgstr ""
+msgstr "Bascule vers l’affichage du texte complet en utilisant Readability"
 
 #: include/functions.php:1057
 msgid "Article selection"
@@ -2100,21 +2096,20 @@ msgstr "Modifier le mot de passe"
 #, php-format
 msgid "Authentication module used for this session (<b>%s</b>) does not provide an ability to set passwords."
 msgstr ""
+"Le module d’authentification utilisé pour cette session (<b>%s</b>) ne "
+"permet pas de changer de définir un mot de passe."
 
 #: classes/pref/prefs.php:410
-#, fuzzy
 msgid "App passwords"
-msgstr "Ancien mot de passe :"
+msgstr "Mots de passe d’applications"
 
 #: classes/pref/prefs.php:422
-#, fuzzy
 msgid "Generate new password"
-msgstr "Générer une nouvelle URL"
+msgstr "Générer un nouveau mot de passe"
 
 #: classes/pref/prefs.php:426
-#, fuzzy
 msgid "Remove selected passwords"
-msgstr "Supprimer les profils sélectionnés"
+msgstr "Supprimer les mots de passe sélectionnés"
 
 #: classes/pref/prefs.php:430
 msgid "One time passwords / Authenticator"
@@ -2130,18 +2125,17 @@ msgid "Disable OTP"
 msgstr "Désactiver les mots de passe à usage unique"
 
 #: classes/pref/prefs.php:480
-#, fuzzy
 msgid "Scan the following code by the Authenticator application or copy the key manually"
-msgstr "Scanner le code suivant avec l’application identificateur :"
+msgstr ""
+"Scannez le code suivant avec l’application ou copiez la clé manuellement"
 
 #: classes/pref/prefs.php:486
-#, fuzzy
 msgid "Use the following OTP key with a compatible Authenticator application"
-msgstr "Scanner le code suivant avec l’application identificateur :"
+msgstr "Utilisez la clé OTP avec une application compatible Authenticator"
 
 #: classes/pref/prefs.php:494
 msgid "OTP Key:"
-msgstr ""
+msgstr "Clé OTP :"
 
 #: classes/pref/prefs.php:527
 msgid "One time password:"
@@ -2201,6 +2195,10 @@ msgstr "Revenir aux valeurs par défaut"
 #, php-format
 msgid "The following plugins use per-feed content hooks. This may cause excessive data usage and origin server load resulting in a ban of your instance: <b>%s</b>"
 msgstr ""
+"Les plugins suivants utilisent l’inspection de contenu pour chaque flux. "
+"Cela peut causer une consommation excessive de bande passante, être à l’"
+"origine d’une surcharge de votre serveur, et aboutir au bannissement de "
+"votre instance : <b>%s</b>"
 
 #: classes/pref/prefs.php:875
 msgid "System plugins"
@@ -2240,15 +2238,16 @@ msgstr "Vous pouvez ici redéfinir les couleurs, les polices et la mise en page 
 #: classes/pref/prefs.php:1146
 msgid "User CSS has been applied, you might need to reload the page to see all changes."
 msgstr ""
+"La CSS personnalisée a été appliquée, vous pourriez avoir besoin de "
+"recharger la page pour voir tous les changements."
 
 #: classes/pref/prefs.php:1154
 msgid "Apply"
-msgstr ""
+msgstr "Appliquer"
 
 #: classes/pref/prefs.php:1156
-#, fuzzy
 msgid "Save and reload"
-msgstr "Marquer les articles au-dessus comme lus"
+msgstr "Sauvegarder et recharger"
 
 #: classes/pref/prefs.php:1181
 msgid "Create profile"
@@ -2272,19 +2271,19 @@ msgid "Description"
 msgstr "Description"
 
 #: classes/pref/prefs.php:1291
-#, fuzzy
 msgid "Created"
-msgstr "Créer"
+msgstr "Créé"
 
 #: classes/pref/prefs.php:1292
-#, fuzzy
 msgid "Last used"
-msgstr "Dernière mise à jour :"
+msgstr "Dernière utilisation"
 
 #: classes/pref/prefs.php:1345
 #, php-format
 msgid "Generated password <strong>%s</strong> for %s. Please remember it for future reference."
 msgstr ""
+"Mot de passe généré <strong>%s</strong> pour %s. Veuillez vous en souvenir "
+"pour la prochaine fois."
 
 #: classes/pref/system.php:8
 #: classes/pref/users.php:6
@@ -2410,9 +2409,8 @@ msgid "The following comics are currently supported:"
 msgstr "Les comics suivants sont actuellement supportés :"
 
 #: plugins/af_proxy_http/init.php:212
-#, fuzzy
 msgid "Image proxy settings (af_proxy_http)"
-msgstr "Réglages du mandataire des images (af_zz_imgproxy)"
+msgstr "Réglages du mandataire des images (af_proxy_http)"
 
 #: plugins/af_proxy_http/init.php:236
 msgid "Enable proxy for all remote images."
@@ -2480,9 +2478,8 @@ msgid "Inline content"
 msgstr "Contenu intégré"
 
 #: plugins/af_readability/init.php:56
-#, fuzzy
 msgid "Toggle full article text"
-msgstr "Simplifier le contenu de l’article"
+msgstr "Basculer vers l’affichage de l’article complet"
 
 #: plugins/af_readability/init.php:63
 msgid "Readability settings (af_readability)"
@@ -2985,9 +2982,8 @@ msgid "Remove selected filters?"
 msgstr "Supprimer les filtres sélectionnés ?"
 
 #: js/PrefHelpers.js:17
-#, fuzzy
 msgid "Remove selected app passwords?"
-msgstr "Supprimer les catégories sélectionnées ?"
+msgstr "Supprimer les mots de passe d’applications sélectionnés ?"
 
 #: js/PrefHelpers.js:42
 msgid "This will invalidate all previously generated feed URLs. Continue?"
@@ -3046,9 +3042,8 @@ msgid "Please enable mail or mailto plugin first."
 msgstr "Veuillez d’abord activer le greffon mail ou mailto."
 
 #: js/tt-rss.js:484
-#, fuzzy
 msgid "Please enable af_readability first."
-msgstr "Veuillez d’abord activer le greffon mail ou mailto."
+msgstr "Veuillez d’abord activer le greffon af_readability."
 
 #: js/tt-rss.js:497
 #: js/tt-rss.js:584
@@ -3350,9 +3345,8 @@ msgid "Removing selected users..."
 msgstr "Suppression des utilisateurs sélectionnés…"
 
 #: plugins/af_readability/init.js:29
-#, fuzzy
 msgid "Unable to fetch full text for this article"
-msgstr "Nouveau score pour cet article :"
+msgstr "Impossible de récupérer le texte complet de cet article"
 
 #: plugins/note/note.js:14
 msgid "Saving article note..."

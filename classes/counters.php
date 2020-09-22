@@ -2,12 +2,12 @@
 class Counters {
 
 	static function getAllCounters() {
-		$data = Counters::getGlobalCounters();
+		$data = self::getGlobalCounters();
 
-		$data = array_merge($data, Counters::getVirtCounters());
-		$data = array_merge($data, Counters::getLabelCounters());
-		$data = array_merge($data, Counters::getFeedCounters());
-		$data = array_merge($data, Counters::getCategoryCounters());
+		$data = array_merge($data, self::getVirtCounters());
+		$data = array_merge($data, self::getLabelCounters());
+		$data = array_merge($data, self::getFeedCounters());
+		$data = array_merge($data, self::getCategoryCounters());
 
 		return $data;
 	}
@@ -23,7 +23,7 @@ class Counters {
 		$marked = 0;
 
 		while ($line = $sth->fetch()) {
-			list ($tmp_unread, $tmp_marked) = Counters::getCategoryChildrenCounters($line["id"], $owner_uid);
+			list ($tmp_unread, $tmp_marked) = self::getCategoryChildrenCounters($line["id"], $owner_uid);
 
 			$unread += $tmp_unread + Feeds::getCategoryUnread($line["id"], $owner_uid);
 			$marked += $tmp_marked + Feeds::getCategoryMarked($line["id"], $owner_uid);
@@ -68,7 +68,7 @@ class Counters {
 
 		while ($line = $sth->fetch()) {
 			if ($line["num_children"] > 0) {
-				list ($child_counter, $child_marked_counter) = Counters::getCategoryChildrenCounters($line["id"], $_SESSION["uid"]);
+				list ($child_counter, $child_marked_counter) = self::getCategoryChildrenCounters($line["id"], $_SESSION["uid"]);
 			} else {
 				$child_counter = 0;
 				$child_marked_counter = 0;

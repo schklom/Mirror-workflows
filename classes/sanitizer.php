@@ -124,7 +124,7 @@ class Sanitizer {
 
 		$entries = $xpath->query('//iframe');
 		foreach ($entries as $entry) {
-			if (!Sanitizer::iframe_whitelisted($entry)) {
+			if (!self::iframe_whitelisted($entry)) {
 				$entry->setAttribute('sandbox', 'allow-scripts');
 			} else {
 				if (is_prefix_https()) {
@@ -163,7 +163,7 @@ class Sanitizer {
 		}
 
 		$doc->removeChild($doc->firstChild); //remove doctype
-		$doc = Sanitizer::strip_harmful_tags($doc, $allowed_elements, $disallowed_attributes);
+		$doc = self::strip_harmful_tags($doc, $allowed_elements, $disallowed_attributes);
 
 		$entries = $xpath->query('//iframe');
 		foreach ($entries as $entry) {

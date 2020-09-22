@@ -1151,7 +1151,7 @@ class Pref_Feeds extends Handler_Protected {
 		$ids = explode(",", clean($_REQUEST["ids"]));
 
 		foreach ($ids as $id) {
-			Pref_Feeds::remove_feed($id, $_SESSION["uid"]);
+			self::remove_feed($id, $_SESSION["uid"]);
 		}
 
 		return;

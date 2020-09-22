@@ -91,18 +91,18 @@ class UserHelper {
 
 		if (SINGLE_USER_MODE) {
 			@session_start();
-			UserHelper::authenticate("admin", null);
+			self::authenticate("admin", null);
 			startup_gettext();
-			UserHelper::load_user_plugins($_SESSION["uid"]);
+			self::load_user_plugins($_SESSION["uid"]);
 		} else {
 			if (!validate_session()) $_SESSION["uid"] = false;
 
 			if (!$_SESSION["uid"]) {
 
-				if (AUTH_AUTO_LOGIN && UserHelper::authenticate(null, null)) {
+				if (AUTH_AUTO_LOGIN && self::authenticate(null, null)) {
 					$_SESSION["ref_schema_version"] = get_schema_version(true);
 				} else {
-					 UserHelper::authenticate(null, null, true);
+					 self::authenticate(null, null, true);
 				}
 
 				if (!$_SESSION["uid"]) {
@@ -122,7 +122,7 @@ class UserHelper {
 
 			if ($_SESSION["uid"]) {
 				startup_gettext();
-				UserHelper::load_user_plugins($_SESSION["uid"]);
+				self::load_user_plugins($_SESSION["uid"]);
 			}
 		}
 	}

@@ -235,8 +235,8 @@ class PluginHost {
 
 					$plugin_api = $plugin->api_version();
 
-					if ($plugin_api < PluginHost::API_VERSION) {
-						user_error("Plugin $class is not compatible with current API version (need: " . PluginHost::API_VERSION . ", got: $plugin_api)", E_USER_WARNING);
+					if ($plugin_api < self::API_VERSION) {
+						user_error("Plugin $class is not compatible with current API version (need: " . self::API_VERSION . ", got: $plugin_api)", E_USER_WARNING);
 						continue;
 					}
 

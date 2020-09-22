@@ -22,10 +22,10 @@ class UrlHelper {
 		$rel_parts = parse_url($rel_url);
 
 		if ($rel_parts['host'] && $rel_parts['scheme']) {
-			return UrlHelper::validate($rel_url);
+			return self::validate($rel_url);
 		} else if (strpos($rel_url, "//") === 0) {
 			# protocol-relative URL (rare but they exist)
-			return UrlHelper::validate("https:" . $rel_url);
+			return self::validate("https:" . $rel_url);
 		} else if (strpos($rel_url, "magnet:") === 0) {
 			# allow magnet links
 			return $rel_url;
@@ -41,7 +41,7 @@ class UrlHelper {
 			$rel_parts['path'] = str_replace("/./", "/", $rel_parts['path']);
 			$rel_parts['path'] = str_replace("//", "/", $rel_parts['path']);
 
-			return UrlHelper::validate(UrlHelper::build_url($rel_parts));
+			return self::validate(self::build_url($rel_parts));
 		}
 	}
 
@@ -127,9 +127,9 @@ class UrlHelper {
 
 			foreach($headers as $header) {
 				if (stripos($header, 'Location:') === 0) {
-					$url = UrlHelper::rewrite_relative($url, trim(substr($header, strlen('Location:'))));
+					$url = self::rewrite_relative($url, trim(substr($header, strlen('Location:'))));
 
-					return UrlHelper::resolve_redirects($url, $timeout, $nest + 1);
+					return self::resolve_redirects($url, $timeout, $nest + 1);
 				}
 			}
 
@@ -207,7 +207,7 @@ class UrlHelper {
 		$url = ltrim($url, ' ');
 		$url = str_replace(' ', '%20', $url);
 
-		$url = UrlHelper::validate($url, true);
+		$url = self::validate($url, true);
 
 		if (!$url) {
 			$fetch_last_error = "Requested URL failed extended validation.";
@@ -322,7 +322,7 @@ class UrlHelper {
 
 			$fetch_effective_url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
 
-			if (!UrlHelper::validate($fetch_effective_url, true)) {
+			if (!self::validate($fetch_effective_url, true)) {
 				$fetch_last_error = "URL received after redirection failed extended validation.";
 
 				return false;
@@ -413,9 +413,9 @@ class UrlHelper {
 
 			$old_error = error_get_last();
 
-			$fetch_effective_url = UrlHelper::resolve_redirects($url, $timeout ? $timeout : FILE_FETCH_CONNECT_TIMEOUT);
+			$fetch_effective_url = self::resolve_redirects($url, $timeout ? $timeout : FILE_FETCH_CONNECT_TIMEOUT);
 
-			if (!UrlHelper::validate($fetch_effective_url, true)) {
+			if (!self::validate($fetch_effective_url, true)) {
 				$fetch_last_error = "URL received after redirection failed extended validation.";
 
 				return false;

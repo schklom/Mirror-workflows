@@ -154,7 +154,7 @@ class RSSUtils {
 				$fstarted = microtime(true);
 
 				try {
-					RSSUtils::update_rss_feed($tline["id"], true, false);
+					self::update_rss_feed($tline["id"], true, false);
 				} catch (PDOException $e) {
 					Logger::get()->log_error(E_USER_NOTICE, $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString());
 
@@ -180,7 +180,7 @@ class RSSUtils {
 		foreach ($batch_owners as $owner_uid) {
 			Debug::log("Running housekeeping tasks for user $owner_uid...");
 
-			RSSUtils::housekeeping_user($owner_uid);
+			self::housekeeping_user($owner_uid);
 		}
 
 		// Send feed digests by email if needed.
@@ -288,7 +288,7 @@ class RSSUtils {
 		// this is not optimal currently as it fetches stuff separately TODO: optimize
 		if ($title == "[Unknown]" || !$title || !$site_url) {
 			Debug::log("setting basic feed info for $feed [$title, $site_url]...");
-			RSSUtils::set_basic_feed_info($feed);
+			self::set_basic_feed_info($feed);
 		}
 
 		$sth = $pdo->prepare("SELECT id,update_interval,auth_login,
@@ -522,7 +522,7 @@ class RSSUtils {
 
 				Debug::log("checking favicon...", Debug::$LOG_VERBOSE);
 
-				RSSUtils::check_feed_favicon($site_url, $feed);
+				self::check_feed_favicon($site_url, $feed);
 				$favicon_modified_new = @filemtime($favicon_file);
 
 				if ($favicon_modified_new > $favicon_modified)
@@ -551,7 +551,7 @@ class RSSUtils {
 
 			Debug::log("loading filters & labels...", Debug::$LOG_VERBOSE);
 
-			$filters = RSSUtils::load_filters($feed, $owner_uid);
+			$filters = self::load_filters($feed, $owner_uid);
 
 			if (Debug::get_loglevel() >= Debug::$LOG_EXTENDED) {
 				print_r($filters);
@@ -590,7 +590,7 @@ class RSSUtils {
 
 				$entry_guid = strip_tags($item->get_id());
 				if (!$entry_guid) $entry_guid = strip_tags($item->get_link());
-				if (!$entry_guid) $entry_guid = RSSUtils::make_guid_from_title($item->get_title());
+				if (!$entry_guid) $entry_guid = self::make_guid_from_title($item->get_title());
 
 				if (!$entry_guid) {
 					$pdo->commit();
@@ -682,7 +682,7 @@ class RSSUtils {
 						if (DB_TYPE == "mysql" && MYSQL_CHARSET != "UTF8MB4") {
 							for ($i = 0; $i < count($e_item); $i++) {
 								if (is_string($e_item[$i])) {
-									$e_item[$i] = RSSUtils::strip_utf8mb4($e_item[$i]);
+									$e_item[$i] = self::strip_utf8mb4($e_item[$i]);
 								}
 							}
 						}
@@ -713,7 +713,7 @@ class RSSUtils {
 				);
 
 				$entry_plugin_data = "";
-				$entry_current_hash = RSSUtils::calculate_article_hash($article, $pluginhost);
+				$entry_current_hash = self::calculate_article_hash($article, $pluginhost);
 
 				Debug::log("article hash: $entry_current_hash [stored=$entry_stored_hash]", Debug::$LOG_VERBOSE);
 
@@ -759,7 +759,7 @@ class RSSUtils {
 					foreach ($article as $k => $v) {
 						// i guess we'll have to take the risk of 4byte unicode labels & tags here
 						if (is_string($article[$k])) {
-							$article[$k] = RSSUtils::strip_utf8mb4($v);
+							$article[$k] = self::strip_utf8mb4($v);
 						}
 					}
 				}
@@ -769,7 +769,7 @@ class RSSUtils {
 				$matched_rules = [];
 				$matched_filters = [];
 
-				$article_filters = RSSUtils::get_article_filters($filters, $article["title"],
+				$article_filters = self::get_article_filters($filters, $article["title"],
 					$article["content"], $article["link"], $article["author"],
 					$article["tags"], $matched_rules, $matched_filters);
 
@@ -809,7 +809,7 @@ class RSSUtils {
 					}
 				}
 
-				$plugin_filter_names = RSSUtils::find_article_filters($article_filters, "plugin");
+				$plugin_filter_names = self::find_article_filters($article_filters, "plugin");
 				$plugin_filter_actions = $pluginhost->get_filter_actions();
 
 				if (count($plugin_filter_names) > 0) {
@@ -870,7 +870,7 @@ class RSSUtils {
 				Debug::log("force catchup: $entry_force_catchup", Debug::$LOG_VERBOSE);
 
 				if ($cache_images)
-					RSSUtils::cache_media($entry_content, $site_url);
+					self::cache_media($entry_content, $site_url);
 
 				$csth = $pdo->prepare("SELECT id FROM ttrss_entries
 					WHERE guid IN (?, ?, ?)");
@@ -931,13 +931,13 @@ class RSSUtils {
 					$ref_id = $row['id'];
 					$entry_ref_id = $ref_id;
 
-					if (RSSUtils::find_article_filter($article_filters, "filter")) {
+					if (self::find_article_filter($article_filters, "filter")) {
 						Debug::log("article is filtered out, nothing to do.", Debug::$LOG_VERBOSE);
 						$pdo->commit();
 						continue;
 					}
 
-					$score = RSSUtils::calculate_article_score($article_filters) + $entry_score_modifier;
+					$score = self::calculate_article_score($article_filters) + $entry_score_modifier;
 
 					Debug::log("initial score: $score [including plugin modifier: $entry_score_modifier]", Debug::$LOG_VERBOSE);
 
@@ -957,7 +957,7 @@ class RSSUtils {
 
 						Debug::log("user record not found, creating...", Debug::$LOG_VERBOSE);
 
-						if ($score >= -500 && !RSSUtils::find_article_filter($article_filters, 'catchup') && !$entry_force_catchup) {
+						if ($score >= -500 && !self::find_article_filter($article_filters, 'catchup') && !$entry_force_catchup) {
 							$unread = 1;
 							$last_read_qpart = null;
 						} else {
@@ -965,13 +965,13 @@ class RSSUtils {
 							$last_read_qpart = date("Y-m-d H:i"); // we can't use NOW() here because it gets quoted
 						}
 
-						if (RSSUtils::find_article_filter($article_filters, 'mark') || $score > 1000) {
+						if (self::find_article_filter($article_filters, 'mark') || $score > 1000) {
 							$marked = 1;
 						} else {
 							$marked = 0;
 						}
 
-						if (RSSUtils::find_article_filter($article_filters, 'publish')) {
+						if (self::find_article_filter($article_filters, 'publish')) {
 							$published = 1;
 						} else {
 							$published = 0;
@@ -1044,7 +1044,7 @@ class RSSUtils {
 
 					if ($mark_unread_on_update &&
 						!$entry_force_catchup &&
-						!RSSUtils::find_article_filter($article_filters, 'catchup')) {
+						!self::find_article_filter($article_filters, 'catchup')) {
 
 						Debug::log("article updated, marking unread as requested.", Debug::$LOG_VERBOSE);
 
@@ -1064,11 +1064,11 @@ class RSSUtils {
 
 				Debug::log("assigning labels [filters]...", Debug::$LOG_VERBOSE);
 
-				RSSUtils::assign_article_to_label_filters($entry_ref_id, $article_filters,
+				self::assign_article_to_label_filters($entry_ref_id, $article_filters,
 					$owner_uid, $article_labels);
 
 				if ($cache_images)
-					RSSUtils::cache_enclosures($enclosures, $site_url);
+					self::cache_enclosures($enclosures, $site_url);
 
 				if (Debug::get_loglevel() >= Debug::$LOG_EXTENDED) {
 					Debug::log("article enclosures:", Debug::$LOG_VERBOSE);
@@ -1281,15 +1281,15 @@ class RSSUtils {
 				foreach ($entries as $entry) {
 					foreach (array('src', 'poster') as $attr) {
 						if ($entry->hasAttribute($attr) && strpos($entry->getAttribute($attr), "data:") !== 0) {
-							RSSUtils::cache_media_url($cache, $entry->getAttribute($attr), $site_url);
+							self::cache_media_url($cache, $entry->getAttribute($attr), $site_url);
 						}
 					}
 
 					if ($entry->hasAttribute("srcset")) {
-						$matches = RSSUtils::decode_srcset($entry->getAttribute('srcset'));
+						$matches = self::decode_srcset($entry->getAttribute('srcset'));
 
 						for ($i = 0; $i < count($matches); $i++) {
-							RSSUtils::cache_media_url($cache, $matches[$i]["url"], $site_url);
+							self::cache_media_url($cache, $matches[$i]["url"], $site_url);
 						}
 					}
 				}
@@ -1492,7 +1492,7 @@ class RSSUtils {
 	static function assign_article_to_label_filters($id, $filters, $owner_uid, $article_labels) {
 		foreach ($filters as $f) {
 			if ($f["type"] == "label") {
-				if (!RSSUtils::labels_contains_caption($article_labels, $f["param"])) {
+				if (!self::labels_contains_caption($article_labels, $f["param"])) {
 					Labels::add_article($id, $f["param"], $owner_uid);
 				}
 			}
@@ -1523,13 +1523,13 @@ class RSSUtils {
 	static function housekeeping_common() {
 		DiskCache::expire();
 
-		RSSUtils::expire_lock_files();
-		RSSUtils::expire_error_log();
-		RSSUtils::expire_feed_archive();
-		RSSUtils::cleanup_feed_browser();
+		self::expire_lock_files();
+		self::expire_error_log();
+		self::expire_feed_archive();
+		self::cleanup_feed_browser();
 
 		Article::purge_orphans();
-		RSSUtils::cleanup_counters_cache();
+		self::cleanup_counters_cache();
 
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_HOUSE_KEEPING, "hook_house_keeping", "");
 	}
@@ -1540,7 +1540,7 @@ class RSSUtils {
 		$icon_file = ICONS_DIR . "/$feed.ico";
 
 		if (!file_exists($icon_file)) {
-			$favicon_url = RSSUtils::get_favicon_url($site_url);
+			$favicon_url = self::get_favicon_url($site_url);
 
 			if ($favicon_url) {
 				// Limiting to "image" type misses those served with text/plain

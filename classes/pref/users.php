@@ -304,7 +304,7 @@ class Pref_Users extends Handler_Protected {
 
 		function resetPass() {
 			$uid = clean($_REQUEST["id"]);
-			Pref_Users::resetUserPassword($uid);
+			self::resetUserPassword($uid);
 		}
 
 		function index() {

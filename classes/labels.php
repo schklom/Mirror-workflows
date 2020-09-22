@@ -57,7 +57,7 @@ class Labels
 		$pdo = Db::pdo();
 
 		if ($force)
-			Labels::clear_cache($id);
+			self::clear_cache($id);
 
 		if (!$labels)
 			$labels = Article::get_article_labels($id);
@@ -82,7 +82,7 @@ class Labels
 
 	static function remove_article($id, $label, $owner_uid) {
 
-		$label_id = Labels::find_id($label, $owner_uid);
+		$label_id = self::find_id($label, $owner_uid);
 
 		if (!$label_id) return;
 
@@ -95,12 +95,12 @@ class Labels
 
 		$sth->execute([$label_id, $id]);
 
-		Labels::clear_cache($id);
+		self::clear_cache($id);
 	}
 
 	static function add_article($id, $label, $owner_uid)	{
 
-		$label_id = Labels::find_id($label, $owner_uid);
+		$label_id = self::find_id($label, $owner_uid);
 
 		if (!$label_id) return;
 
@@ -123,7 +123,7 @@ class Labels
 			$sth->execute([$label_id, $id]);
 		}
 
-		Labels::clear_cache($id);
+		self::clear_cache($id);
 
 	}
 

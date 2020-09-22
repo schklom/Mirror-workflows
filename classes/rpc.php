@@ -514,7 +514,7 @@ class RPC extends Handler_Protected {
 	}
 
 	function updaterandomfeed() {
-		RPC::updaterandomfeed_real();
+		self::updaterandomfeed_real();
 	}
 
 	private function markArticlesById($ids, $cmode) {

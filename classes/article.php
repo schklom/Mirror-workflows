@@ -159,7 +159,7 @@ class Article extends Handler_Protected {
 
 		$param = clean($_REQUEST['param']);
 
-		$tags = Article::get_article_tags($param);
+		$tags = self::get_article_tags($param);
 
 		$tags_str = join(", ", $tags);
 
@@ -261,7 +261,7 @@ class Article extends Handler_Protected {
 
 		$this->pdo->commit();
 
-		$tags = Article::get_article_tags($id);
+		$tags = self::get_article_tags($id);
 		$tags_str = $this->format_tags_string($tags, $id);
 		$tags_str_full = join(", ", $tags);
 
@@ -344,7 +344,7 @@ class Article extends Handler_Protected {
 	static function format_article_enclosures($id, $always_display_enclosures,
 									   $article_content, $hide_images = false) {
 
-		$result = Article::get_article_enclosures($id);
+		$result = self::get_article_enclosures($id);
 		$rv = '';
 
 		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FORMAT_ENCLOSURES) as $plugin) {

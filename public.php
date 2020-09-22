@@ -32,7 +32,14 @@
 
 	if (implements_interface($handler, "IHandler") && $handler->before($method)) {
 		if ($method && method_exists($handler, $method)) {
-			$handler->$method();
+			$reflection = new ReflectionMethod($handler, $method);
+
+			if ($reflection->getNumberOfRequiredParameters() == 0) {
+				$handler->$method();
+			} else {
+				header("Content-Type: text/json");
+				print error_json(6);
+			}
 		} else if (method_exists($handler, 'index')) {
 			$handler->index();
 		}

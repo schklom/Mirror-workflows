@@ -107,7 +107,14 @@
 			if (validate_csrf($csrf_token) || $handler->csrf_ignore($method)) {
 				if ($handler->before($method)) {
 					if ($method && method_exists($handler, $method)) {
-						$handler->$method();
+						$reflection = new ReflectionMethod($handler, $method);
+
+						if ($reflection->getNumberOfRequiredParameters() == 0) {
+							$handler->$method();
+						} else {
+							header("Content-Type: text/json");
+							print error_json(6);
+						}
 					} else {
 						if (method_exists($handler, "catchall")) {
 							$handler->catchall($method);

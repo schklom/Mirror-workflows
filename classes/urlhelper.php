@@ -48,7 +48,7 @@ class UrlHelper {
 	// extended filtering involves validation for safe ports and loopback
 	static function validate($url, $extended_filtering = false) {
 
-		$url = clean(rawurldecode($url));
+		$url = clean($url);
 
 		# fix protocol-relative URLs
 		if (strpos($url, "//") === 0)
@@ -65,8 +65,10 @@ class UrlHelper {
 			return false;
 
 		if ($tokens['path']) {
-			// urlencode path, but respect "/" path delimiters
-			$tokens['path'] = implode("/", array_map("rawurlencode", explode("/", $tokens['path'])));
+			$tokens['path'] = implode("/",
+										array_map("rawurlencode",
+											array_map("rawurldecode",
+												explode("/", $tokens['path']))));
 		}
 
 		//convert IDNA hostname to punycode if possible

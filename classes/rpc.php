@@ -435,9 +435,8 @@ class RPC extends Handler_Protected {
 				) OR (
 					ttrss_feeds.update_interval > 0
 					AND ttrss_feeds.last_updated < NOW() - CAST((ttrss_feeds.update_interval || ' minutes') AS INTERVAL)
-				) OR ttrss_feeds.last_updated IS NULL
-				OR (
-					ttrss_feeds.update_interval > 0
+				) OR (
+					ttrss_feeds.update_interval >= 0
 					AND (last_updated = '1970-01-01 00:00:00' OR last_updated IS NULL)
 				))";
 		} else {
@@ -447,9 +446,8 @@ class RPC extends Handler_Protected {
 				) OR (
 					ttrss_feeds.update_interval > 0
 					AND ttrss_feeds.last_updated < DATE_SUB(NOW(), INTERVAL ttrss_feeds.update_interval MINUTE)
-				) OR ttrss_feeds.last_updated IS NULL
-				OR (
-					ttrss_feeds.update_interval > 0
+				) OR (
+					ttrss_feeds.update_interval >= 0
 					AND (last_updated = '1970-01-01 00:00:00' OR last_updated IS NULL)
 				))";
 		}

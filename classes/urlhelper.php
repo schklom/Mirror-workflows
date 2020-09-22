@@ -69,6 +69,13 @@ class UrlHelper {
 			$tokens['path'] = implode("/", array_map("rawurlencode", explode("/", $tokens['path'])));
 		}
 
+		//convert IDNA hostname to punycode if possible
+		if (function_exists("idn_to_ascii")) {
+			if (mb_detect_encoding($tokens['host']) != 'ASCII') {
+				$tokens['host'] = idn_to_ascii($tokens['host']);
+			}
+		}
+
 		$url = self::build_url($tokens);
 
 		if (filter_var($url, FILTER_VALIDATE_URL) === false)
@@ -80,14 +87,6 @@ class UrlHelper {
 
 			if (strtolower($tokens['host']) == 'localhost' || $tokens['host'] == '::1' || strpos($tokens['host'], '127.') === 0)
 				return false;
-		}
-
-		//convert IDNA hostname to punycode if possible
-		if (function_exists("idn_to_ascii")) {
-			if (mb_detect_encoding($tokens['host']) != 'ASCII') {
-				$tokens['host'] = idn_to_ascii($tokens['host']);
-				$url = self::build_url($tokens);
-			}
 		}
 
 		return $url;

@@ -48,21 +48,30 @@ class UrlHelper {
 	// extended filtering involves validation for safe ports and loopback
 	static function validate($url, $extended_filtering = false) {
 
-		$url = clean($url);
+		$url = clean(rawurldecode($url));
 
 		# fix protocol-relative URLs
 		if (strpos($url, "//") === 0)
 			$url = "https:" . $url;
 
-		if (filter_var($url, FILTER_VALIDATE_URL) === false)
-			return false;
-
 		$tokens = parse_url($url);
 
+		// this isn't really necessary because filter_var(... FILTER_VALIDATE_URL) requires host and scheme
+		// as per https://php.watch/versions/7.3/filter-var-flag-deprecation but it might save time
 		if (!$tokens['host'])
 			return false;
 
 		if (!in_array(strtolower($tokens['scheme']), ['http', 'https']))
+			return false;
+
+		if ($tokens['path']) {
+			// urlencode path, but respect "/" path delimiters
+			$tokens['path'] = implode("/", array_map("rawurlencode", explode("/", $tokens['path'])));
+		}
+
+		$url = self::build_url($tokens);
+
+		if (filter_var($url, FILTER_VALIDATE_URL) === false)
 			return false;
 
 		if ($extended_filtering) {
@@ -76,8 +85,8 @@ class UrlHelper {
 		//convert IDNA hostname to punycode if possible
 		if (function_exists("idn_to_ascii")) {
 			if (mb_detect_encoding($tokens['host']) != 'ASCII') {
-				$parts['host'] = idn_to_ascii($tokens['host']);
-				$url = UrlHelper::build_url($tokens);
+				$tokens['host'] = idn_to_ascii($tokens['host']);
+				$url = self::build_url($tokens);
 			}
 		}
 

@@ -8,7 +8,7 @@ class Af_Comics_Pvp extends Af_ComicFilter {
 	function process(&$article) {
 		if (strpos($article["guid"], "pvponline.com") !== false) {
 
-				$res = fetch_file_contents($article["link"], false, false, false,
+				$res = UrlHelper::fetch($article["link"], false, false, false,
 					 false, false, 0,
 					 "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)");
 

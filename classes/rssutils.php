@@ -218,7 +218,7 @@ class RSSUtils {
 			}
 
 			if (!$basic_info) {
-				$feed_data = fetch_file_contents($fetch_url, false,
+				$feed_data = UrlHelper::fetch($fetch_url, false,
 					$auth_login, $auth_pass, false,
 					FEED_FETCH_TIMEOUT,
 					0);
@@ -267,8 +267,6 @@ class RSSUtils {
 	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	static function update_rss_feed($feed, $no_cache = false) {
-
-		reset_fetch_domain_quota();
 
 		Debug::log("start", Debug::$LOG_VERBOSE);
 
@@ -400,7 +398,7 @@ class RSSUtils {
 
 			Debug::log("fetching [$fetch_url] (force_refetch: $force_refetch)...", Debug::$LOG_VERBOSE);
 
-			$feed_data = fetch_file_contents([
+			$feed_data = UrlHelper::fetch([
 				"url" => $fetch_url,
 				"login" => $auth_login,
 				"pass" => $auth_pass,
@@ -1225,7 +1223,7 @@ class RSSUtils {
 						global $fetch_last_error_code;
 						global $fetch_last_error;
 
-						$file_content = fetch_file_contents(array("url" => $src,
+						$file_content = UrlHelper::fetch(array("url" => $src,
 							"http_referrer" => $src,
 							"max_size" => MAX_CACHE_FILE_SIZE));
 
@@ -1255,7 +1253,7 @@ class RSSUtils {
 			global $fetch_last_error_code;
 			global $fetch_last_error;
 
-			$file_content = fetch_file_contents(array("url" => $url,
+			$file_content = UrlHelper::fetch(array("url" => $url,
 				"http_referrer" => $url,
 				"max_size" => MAX_CACHE_FILE_SIZE));
 
@@ -1517,7 +1515,7 @@ class RSSUtils {
 	static function housekeeping_user($owner_uid) {
 		$tmph = new PluginHost();
 
-		load_user_plugins($owner_uid, $tmph);
+		UserHelper::load_user_plugins($owner_uid, $tmph);
 
 		$tmph->run_hooks(PluginHost::HOOK_HOUSE_KEEPING, "hook_house_keeping", "");
 	}
@@ -1546,7 +1544,7 @@ class RSSUtils {
 
 			if ($favicon_url) {
 				// Limiting to "image" type misses those served with text/plain
-				$contents = fetch_file_contents($favicon_url); // , "image");
+				$contents = UrlHelper::fetch($favicon_url); // , "image");
 
 				if ($contents) {
 					// Crude image type matching.
@@ -1719,7 +1717,7 @@ class RSSUtils {
 
 		$favicon_url = false;
 
-		if ($html = @fetch_file_contents($url)) {
+		if ($html = @UrlHelper::fetch($url)) {
 
 			$doc = new DOMDocument();
 			if ($doc->loadHTML($html)) {

@@ -10,7 +10,7 @@ class Af_Comics_Pa extends Af_ComicFilter {
 
 				$doc = new DOMDocument();
 
-				if ($doc->loadHTML(fetch_file_contents($article["link"]))) {
+				if ($doc->loadHTML(UrlHelper::fetch($article["link"]))) {
 					$xpath = new DOMXPath($doc);
 					$basenode = $xpath->query('(//div[@id="comicFrame"])')->item(0);
 
@@ -25,7 +25,7 @@ class Af_Comics_Pa extends Af_ComicFilter {
 		if (strpos($article["link"], "penny-arcade.com") !== false && strpos($article["title"], "News Post:") !== false) {
 				$doc = new DOMDocument();
 
-				if ($doc->loadHTML(fetch_file_contents($article["link"]))) {
+				if ($doc->loadHTML(UrlHelper::fetch($article["link"]))) {
 					$xpath = new DOMXPath($doc);
 					$entries = $xpath->query('(//div[@class="post"])');
 

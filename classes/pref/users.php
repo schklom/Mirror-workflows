@@ -259,7 +259,7 @@ class Pref_Users extends Handler_Protected {
 					print T_sprintf("Added user %s with password %s",
 						$login, $tmp_user_pwd);
 
-					initialize_user($new_uid);
+					$this->initialize_user($new_uid);
 
 				} else {
 
@@ -442,5 +442,26 @@ class Pref_Users extends Handler_Protected {
 			else
 				return $default;
 		}
+
+	// this is called after user is created to initialize default feeds, labels
+	// or whatever else
+	// user preferences are checked on every login, not here
+	static function initialize_user($uid) {
+
+		$pdo = Db::pdo();
+
+		$sth = $pdo->prepare("insert into ttrss_feeds (owner_uid,title,feed_url)
+			values (?, 'Tiny Tiny RSS: Forum',
+				'https://tt-rss.org/forum/rss.php')");
+		$sth->execute([$uid]);
+	}
+
+	static function logout_user() {
+		@session_destroy();
+		if (isset($_COOKIE[session_name()])) {
+		   setcookie(session_name(), '', time()-42000, '/');
+		}
+		session_commit();
+	}
 
 }

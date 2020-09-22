@@ -74,10 +74,10 @@ class API extends Handler {
 		}
 
 		if (get_pref("ENABLE_API_ACCESS", $uid)) {
-			if (authenticate_user($login, $password, false,  Auth_Base::AUTH_SERVICE_API)) {               // try login with normal password
+			if (UserHelper::authenticate($login, $password, false,  Auth_Base::AUTH_SERVICE_API)) {               // try login with normal password
 				$this->wrap(self::STATUS_OK, array("session_id" => session_id(),
 					"api_level" => self::API_LEVEL));
-			} else if (authenticate_user($login, $password_base64, false, Auth_Base::AUTH_SERVICE_API)) { // else try with base64_decoded password
+			} else if (UserHelper::authenticate($login, $password_base64, false, Auth_Base::AUTH_SERVICE_API)) { // else try with base64_decoded password
 				$this->wrap(self::STATUS_OK,	array("session_id" => session_id(),
 					"api_level" => self::API_LEVEL));
 			} else {                                                         // else we are not logged in
@@ -91,7 +91,7 @@ class API extends Handler {
 	}
 
 	function logout() {
-		logout_user();
+		Pref_Users::logout_user();
 		$this->wrap(self::STATUS_OK, array("status" => "OK"));
 	}
 
@@ -343,7 +343,7 @@ class API extends Handler {
 				);
 
 				if ($sanitize_content) {
-					$article["content"] = sanitize(
+					$article["content"] = Sanitizer::sanitize(
 						$line["content"],
 						API::param_to_bool($line['hide_images']),
 						false, $line["site_url"], false, $line["id"]);
@@ -748,7 +748,7 @@ class API extends Handler {
 					if ($show_content) {
 
 						if ($sanitize_content) {
-							$headline_row["content"] = sanitize(
+							$headline_row["content"] = Sanitizer::sanitize(
 								$line["content"],
 								API::param_to_bool($line['hide_images']),
 								false, $line["site_url"], false, $line["id"]);

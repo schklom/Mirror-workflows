@@ -176,7 +176,7 @@ class Af_Readability extends Plugin {
 
 		global $fetch_effective_url;
 
-		$tmp = fetch_file_contents([
+		$tmp = UrlHelper::fetch([
 			"url" => $url,
 			"http_accept" => "text/*",
 			"type" => "text/html"]);
@@ -235,7 +235,7 @@ class Af_Readability extends Plugin {
 		$extracted_content = $this->extract_content($article["link"]);
 
 		# let's see if there's anything of value in there
-		$content_test = trim(strip_tags(sanitize($extracted_content)));
+		$content_test = trim(strip_tags(Sanitizer::sanitize($extracted_content)));
 
 		if ($content_test) {
 			$article["content"] = $extracted_content;
@@ -264,7 +264,7 @@ class Af_Readability extends Plugin {
 			$extracted_content = $this->extract_content($link);
 
 			# let's see if there's anything of value in there
-			$content_test = trim(strip_tags(sanitize($extracted_content)));
+			$content_test = trim(strip_tags(Sanitizer::sanitize($extracted_content)));
 
 			if ($content_test) {
 				return $extracted_content;
@@ -303,7 +303,7 @@ class Af_Readability extends Plugin {
 		$ret = [];
 
 		if ($row = $sth->fetch()) {
-			$ret["content"] = sanitize($this->extract_content($row["link"]));
+			$ret["content"] = Sanitizer::sanitize($this->extract_content($row["link"]));
 		}
 
 		print json_encode($ret);

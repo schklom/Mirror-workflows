@@ -29,7 +29,7 @@ class Af_Comics_Gocomics extends Af_ComicFilter {
 
 			$article_link = $site_url . date('/Y/m/d');
 
-			$body = fetch_file_contents(array('url' => $article_link, 'type' => 'text/html', 'followlocation' => false));
+			$body = UrlHelper::fetch(array('url' => $article_link, 'type' => 'text/html', 'followlocation' => false));
 
 			$feed_title = htmlspecialchars($comic[1]);
 			$site_url = htmlspecialchars($site_url);

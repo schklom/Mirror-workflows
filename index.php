@@ -28,7 +28,7 @@
 
 	if (!init_plugins()) return;
 
-	login_sequence();
+	UserHelper::login_sequence();
 
 	header('Content-Type: text/html; charset=utf-8');
 
@@ -51,7 +51,7 @@
 		const __csrf_token = "<?php echo $_SESSION["csrf_token"]; ?>";
 	</script>
 
-	<?php print_user_stylesheet() ?>
+	<?php UserHelper::print_user_stylesheet() ?>
 
 	<style type="text/css">
 	<?php

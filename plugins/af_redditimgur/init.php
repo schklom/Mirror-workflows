@@ -103,7 +103,7 @@ class Af_RedditImgur extends Plugin {
 				if (!$found && preg_match("/^https?:\/\/twitter.com\/(.*?)\/status\/(.*)/", $entry->getAttribute("href"), $matches)) {
 					Debug::log("handling as twitter: " . $matches[1] . " " . $matches[2], Debug::$LOG_VERBOSE);
 
-					$oembed_result = fetch_file_contents("https://publish.twitter.com/oembed?url=" . urlencode($entry->getAttribute("href")));
+					$oembed_result = UrlHelper::fetch("https://publish.twitter.com/oembed?url=" . urlencode($entry->getAttribute("href")));
 
 					if ($oembed_result) {
 						$oembed_result = json_decode($oembed_result, true);
@@ -165,7 +165,7 @@ class Af_RedditImgur extends Plugin {
 					$source_stream = false;
 
 					if ($source_article_url) {
-						$j = json_decode(fetch_file_contents($source_article_url.".json"), true);
+						$j = json_decode(UrlHelper::fetch($source_article_url.".json"), true);
 
 						if ($j) {
 							foreach ($j as $listing) {
@@ -195,7 +195,7 @@ class Af_RedditImgur extends Plugin {
 
 					Debug::log("Handling as Streamable", Debug::$LOG_VERBOSE);
 
-					$tmp = fetch_file_contents($entry->getAttribute("href"));
+					$tmp = UrlHelper::fetch($entry->getAttribute("href"));
 
 					if ($tmp) {
 						$tmpdoc = new DOMDocument();
@@ -285,7 +285,7 @@ class Af_RedditImgur extends Plugin {
 
 					Debug::log("handling as imgur page/whatever", Debug::$LOG_VERBOSE);
 
-					$content = fetch_file_contents(["url" => $entry->getAttribute("href"),
+					$content = UrlHelper::fetch(["url" => $entry->getAttribute("href"),
 						"http_accept" => "text/*"]);
 
 					if ($content) {
@@ -331,7 +331,7 @@ class Af_RedditImgur extends Plugin {
 				if (!$found) {
 					Debug::log("looking for meta og:image", Debug::$LOG_VERBOSE);
 
-					$content = fetch_file_contents(["url" => $entry->getAttribute("href"),
+					$content = UrlHelper::fetch(["url" => $entry->getAttribute("href"),
 						"http_accept" => "text/*"]);
 
 					if ($content) {

@@ -37,7 +37,7 @@ class Af_Comics_Gocomics_FarSide extends Af_ComicFilter {
 			$tpl->setVariable('FEED_URL', htmlspecialchars($url), true);
 			$tpl->setVariable('SELF_URL', htmlspecialchars($url), true);
 
-			$body = fetch_file_contents(['url' => $article_link, 'type' => 'text/html', 'followlocation' => false]);
+			$body = UrlHelper::fetch(['url' => $article_link, 'type' => 'text/html', 'followlocation' => false]);
 
 			if ($body) {
 				$doc = new DOMDocument();

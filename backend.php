@@ -41,7 +41,7 @@
 	}
 
 	if (SINGLE_USER_MODE) {
-		authenticate_user( "admin", null);
+		UserHelper::authenticate( "admin", null);
 	}
 
 	if ($_SESSION["uid"]) {
@@ -50,7 +50,7 @@
 			print error_json(6);
 			return;
 		}
-		load_user_plugins( $_SESSION["uid"]);
+		UserHelper::load_user_plugins($_SESSION["uid"]);
 	}
 
 	$purge_intervals = array(

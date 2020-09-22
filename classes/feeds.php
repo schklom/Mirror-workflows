@@ -305,7 +305,7 @@ class Feeds extends Handler_Protected {
                     $line["buttons"] .= $p->hook_article_button($line);
                 }
 
-                $line["content"] = sanitize($line["content"],
+                $line["content"] = Sanitizer::sanitize($line["content"],
                     $line['hide_images'], false, $line["site_url"], $highlight_words, $line["id"]);
 
                 foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_RENDER_ARTICLE_CDM) as $p) {
@@ -550,7 +550,7 @@ class Feeds extends Handler_Protected {
             						"disable_cache" => (bool) $disable_cache];
 
 		// this is parsed by handleRpcJson() on first viewfeed() to set cdm expanded, etc
-		$reply['runtime-info'] = make_runtime_info();
+		$reply['runtime-info'] = RPC::make_runtime_info();
 
 		$reply_json = json_encode($reply);
 
@@ -1124,11 +1124,11 @@ class Feeds extends Handler_Protected {
 
 		$pdo = Db::pdo();
 
-		$url = validate_url($url);
+		$url = UrlHelper::validate($url);
 
 		if (!$url) return array("code" => 2);
 
-		$contents = @fetch_file_contents($url, false, $auth_login, $auth_pass);
+		$contents = @UrlHelper::fetch($url, false, $auth_login, $auth_pass);
 
 		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_SUBSCRIBE_FEED) as $plugin) {
 			$contents = $plugin->hook_subscribe_feed($contents, $url, $auth_login, $auth_pass);
@@ -1924,7 +1924,7 @@ class Feeds extends Handler_Protected {
 	}
 
 	static function get_feeds_from_html($url, $content) {
-		$url     = validate_url($url);
+		$url     = UrlHelper::validate($url);
 		$baseUrl = substr($url, 0, strrpos($url, '/') + 1);
 
 		$feedUrls = [];

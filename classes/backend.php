@@ -19,8 +19,8 @@ class Backend extends Handler_Protected {
 		$topic = basename(clean($_REQUEST["topic"])); // only one for now
 
 		if ($topic == "main") {
-			$info = get_hotkeys_info();
-			$imap = get_hotkeys_map();
+			$info = RPC::get_hotkeys_info();
+			$imap = RPC::get_hotkeys_map();
 			$omap = array();
 
 			foreach ($imap[1] as $sequence => $action) {

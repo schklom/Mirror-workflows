@@ -288,7 +288,7 @@
 
 					$new_uid = db_fetch_result($result, 0, "id");
 
-					initialize_user( $new_uid);
+					Pref_Users::initialize_user($new_uid);
 
 					$reg_text = "Hi!\n".
 						"\n".

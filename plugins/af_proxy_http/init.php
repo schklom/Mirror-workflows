@@ -48,7 +48,7 @@ class Af_Proxy_Http extends Plugin {
 	}
 
 	public function imgproxy() {
-		$url = validate_url(clean($_REQUEST["url"]));
+		$url = UrlHelper::validate(clean($_REQUEST["url"]));
 
 		// called without user context, let's just redirect to original URL
 		if (!$_SESSION["uid"] || $_REQUEST['af_proxy_http_token'] != $_SESSION['af_proxy_http_token']) {
@@ -62,7 +62,7 @@ class Af_Proxy_Http extends Plugin {
 			header("Location: " . $this->cache->getUrl($local_filename));
 			return;
 		} else {
-			$data = fetch_file_contents(["url" => $url, "max_size" => MAX_CACHE_FILE_SIZE]);
+			$data = UrlHelper::fetch(["url" => $url, "max_size" => MAX_CACHE_FILE_SIZE]);
 
 			if ($data) {
 				if ($this->cache->put($local_filename, $data)) {
@@ -125,7 +125,7 @@ class Af_Proxy_Http extends Plugin {
 					foreach (explode(" " , $this->ssl_known_whitelist) as $host) {
 						if (substr(strtolower($parts['host']), -strlen($host)) === strtolower($host)) {
 							$parts['scheme'] = 'https';
-							$url = build_url($parts);
+							$url = UrlHelper::build_url($parts);
 							if ($all_remote && $is_remote) {
 								break;
 							} else {

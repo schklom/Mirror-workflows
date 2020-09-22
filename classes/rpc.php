@@ -52,7 +52,7 @@ class RPC extends Handler_Protected {
 					$profile_id = $row['id'];
 
 					if ($profile_id) {
-						initialize_user_prefs($_SESSION["uid"], $profile_id);
+						Pref_Prefs::initialize_user_prefs($_SESSION["uid"], $profile_id);
 					}
 				}
 			}
@@ -279,7 +279,7 @@ class RPC extends Handler_Protected {
 		];
 
 		if ($seq % 2 == 0)
-			$reply['runtime-info'] = make_runtime_info();
+			$reply['runtime-info'] = $this->make_runtime_info();
 
 		print json_encode($reply);
 	}
@@ -323,8 +323,8 @@ class RPC extends Handler_Protected {
 		$reply['error'] = sanity_check();
 
 		if ($reply['error']['code'] == 0) {
-			$reply['init-params'] = make_init_params();
-			$reply['runtime-info'] = make_runtime_info();
+			$reply['init-params'] = $this->make_init_params();
+			$reply['runtime-info'] = $this->make_runtime_info();
 		}
 
 		print json_encode($reply);
@@ -461,7 +461,7 @@ class RPC extends Handler_Protected {
 			$updstart_thresh_qpart = "AND (ttrss_feeds.last_update_started IS NULL OR ttrss_feeds.last_update_started < DATE_SUB(NOW(), INTERVAL 5 MINUTE))";
 		}
 
-		$random_qpart = sql_random_function();
+		$random_qpart = Db::sql_random_function();
 
 		$pdo = Db::pdo();
 
@@ -602,7 +602,7 @@ class RPC extends Handler_Protected {
 		get_version($git_commit, $git_timestamp);
 
 		if (defined('CHECK_FOR_UPDATES') && CHECK_FOR_UPDATES && $_SESSION["access_level"] >= 10 && $git_timestamp) {
-			$content = @fetch_file_contents(["url" => "https://tt-rss.org/version.json"]);
+			$content = @UrlHelper::fetch(["url" => "https://tt-rss.org/version.json"]);
 
 			if ($content) {
 				$content = json_decode($content, true);
@@ -618,6 +618,294 @@ class RPC extends Handler_Protected {
 		}
 
 		print json_encode($rv);
+	}
+
+	private function make_init_params() {
+		$params = array();
+
+		foreach (array("ON_CATCHUP_SHOW_NEXT_FEED", "HIDE_READ_FEEDS",
+					 "ENABLE_FEED_CATS", "FEEDS_SORT_BY_UNREAD", "CONFIRM_FEED_CATCHUP",
+					 "CDM_AUTO_CATCHUP", "FRESH_ARTICLE_MAX_AGE",
+					 "HIDE_READ_SHOWS_SPECIAL", "COMBINED_DISPLAY_MODE") as $param) {
+
+			$params[strtolower($param)] = (int) get_pref($param);
+		}
+
+		$params["check_for_updates"] = CHECK_FOR_UPDATES;
+		$params["icons_url"] = ICONS_URL;
+		$params["cookie_lifetime"] = SESSION_COOKIE_LIFETIME;
+		$params["default_view_mode"] = get_pref("_DEFAULT_VIEW_MODE");
+		$params["default_view_limit"] = (int) get_pref("_DEFAULT_VIEW_LIMIT");
+		$params["default_view_order_by"] = get_pref("_DEFAULT_VIEW_ORDER_BY");
+		$params["bw_limit"] = (int) $_SESSION["bw_limit"];
+		$params["is_default_pw"] = Pref_Prefs::isdefaultpassword();
+		$params["label_base_index"] = (int) LABEL_BASE_INDEX;
+
+		$theme = get_pref( "USER_CSS_THEME", false, false);
+		$params["theme"] = theme_exists($theme) ? $theme : "";
+
+		$params["plugins"] = implode(", ", PluginHost::getInstance()->get_plugin_names());
+
+		$params["php_platform"] = PHP_OS;
+		$params["php_version"] = PHP_VERSION;
+
+		$params["sanity_checksum"] = sha1(file_get_contents("include/sanity_check.php"));
+
+		$pdo = Db::pdo();
+
+		$sth = $pdo->prepare("SELECT MAX(id) AS mid, COUNT(*) AS nf FROM
+				ttrss_feeds WHERE owner_uid = ?");
+		$sth->execute([$_SESSION['uid']]);
+		$row = $sth->fetch();
+
+		$max_feed_id = $row["mid"];
+		$num_feeds = $row["nf"];
+
+		$params["self_url_prefix"] = get_self_url_prefix();
+		$params["max_feed_id"] = (int) $max_feed_id;
+		$params["num_feeds"] = (int) $num_feeds;
+
+		$params["hotkeys"] = $this->get_hotkeys_map();
+
+		$params["widescreen"] = (int) $_COOKIE["ttrss_widescreen"];
+
+		$params['simple_update'] = defined('SIMPLE_UPDATE_MODE') && SIMPLE_UPDATE_MODE;
+
+		$params["icon_indicator_white"] = $this->image_to_base64("images/indicator_white.gif");
+
+		$params["labels"] = Labels::get_all_labels($_SESSION["uid"]);
+
+		return $params;
+	}
+
+	private function image_to_base64($filename) {
+		if (file_exists($filename)) {
+			$ext = pathinfo($filename, PATHINFO_EXTENSION);
+
+			return "data:image/$ext;base64," . base64_encode(file_get_contents($filename));
+		} else {
+			return "";
+		}
+	}
+
+	static function make_runtime_info() {
+		$data = array();
+
+		$pdo = Db::pdo();
+
+		$sth = $pdo->prepare("SELECT MAX(id) AS mid, COUNT(*) AS nf FROM
+				ttrss_feeds WHERE owner_uid = ?");
+		$sth->execute([$_SESSION['uid']]);
+		$row = $sth->fetch();
+
+		$max_feed_id = $row['mid'];
+		$num_feeds = $row['nf'];
+
+		$data["max_feed_id"] = (int) $max_feed_id;
+		$data["num_feeds"] = (int) $num_feeds;
+		$data['cdm_expanded'] = get_pref('CDM_EXPANDED');
+		$data["labels"] = Labels::get_all_labels($_SESSION["uid"]);
+
+		if (LOG_DESTINATION == 'sql' && $_SESSION['access_level'] >= 10) {
+			if (DB_TYPE == 'pgsql') {
+				$log_interval = "created_at > NOW() - interval '1 hour'";
+			} else {
+				$log_interval = "created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)";
+			}
+
+			$sth = $pdo->prepare("SELECT COUNT(id) AS cid FROM ttrss_error_log WHERE $log_interval");
+			$sth->execute();
+
+			if ($row = $sth->fetch()) {
+				$data['recent_log_events'] = $row['cid'];
+			}
+		}
+
+		if (file_exists(LOCK_DIRECTORY . "/update_daemon.lock")) {
+
+			$data['daemon_is_running'] = (int) file_is_locked("update_daemon.lock");
+
+			if (time() - $_SESSION["daemon_stamp_check"] > 30) {
+
+				$stamp = (int) @file_get_contents(LOCK_DIRECTORY . "/update_daemon.stamp");
+
+				if ($stamp) {
+					$stamp_delta = time() - $stamp;
+
+					if ($stamp_delta > 1800) {
+						$stamp_check = 0;
+					} else {
+						$stamp_check = 1;
+						$_SESSION["daemon_stamp_check"] = time();
+					}
+
+					$data['daemon_stamp_ok'] = $stamp_check;
+
+					$stamp_fmt = date("Y.m.d, G:i", $stamp);
+
+					$data['daemon_stamp'] = $stamp_fmt;
+				}
+			}
+		}
+
+		return $data;
+	}
+
+	static function get_hotkeys_info() {
+		$hotkeys = array(
+			__("Navigation") => array(
+				"next_feed" => __("Open next feed"),
+				"prev_feed" => __("Open previous feed"),
+				"next_article_or_scroll" => __("Open next article (in combined mode, scroll down)"),
+				"prev_article_or_scroll" => __("Open previous article (in combined mode, scroll up)"),
+				"next_headlines_page" => __("Scroll headlines by one page down"),
+				"prev_headlines_page" => __("Scroll headlines by one page up"),
+				"next_article_noscroll" => __("Open next article"),
+				"prev_article_noscroll" => __("Open previous article"),
+				"next_article_noexpand" => __("Move to next article (don't expand)"),
+				"prev_article_noexpand" => __("Move to previous article (don't expand)"),
+				"search_dialog" => __("Show search dialog"),
+				"cancel_search" => __("Cancel active search")),
+			__("Article") => array(
+				"toggle_mark" => __("Toggle starred"),
+				"toggle_publ" => __("Toggle published"),
+				"toggle_unread" => __("Toggle unread"),
+				"edit_tags" => __("Edit tags"),
+				"open_in_new_window" => __("Open in new window"),
+				"catchup_below" => __("Mark below as read"),
+				"catchup_above" => __("Mark above as read"),
+				"article_scroll_down" => __("Scroll down"),
+				"article_scroll_up" => __("Scroll up"),
+				"article_page_down" => __("Scroll down page"),
+				"article_page_up" => __("Scroll up page"),
+				"select_article_cursor" => __("Select article under cursor"),
+				"email_article" => __("Email article"),
+				"close_article" => __("Close/collapse article"),
+				"toggle_expand" => __("Toggle article expansion (combined mode)"),
+				"toggle_widescreen" => __("Toggle widescreen mode"),
+				"toggle_full_text" => __("Toggle full article text via Readability")),
+			__("Article selection") => array(
+				"select_all" => __("Select all articles"),
+				"select_unread" => __("Select unread"),
+				"select_marked" => __("Select starred"),
+				"select_published" => __("Select published"),
+				"select_invert" => __("Invert selection"),
+				"select_none" => __("Deselect everything")),
+			__("Feed") => array(
+				"feed_refresh" => __("Refresh current feed"),
+				"feed_unhide_read" => __("Un/hide read feeds"),
+				"feed_subscribe" => __("Subscribe to feed"),
+				"feed_edit" => __("Edit feed"),
+				"feed_catchup" => __("Mark as read"),
+				"feed_reverse" => __("Reverse headlines"),
+				"feed_toggle_vgroup" => __("Toggle headline grouping"),
+				"feed_debug_update" => __("Debug feed update"),
+				"feed_debug_viewfeed" => __("Debug viewfeed()"),
+				"catchup_all" => __("Mark all feeds as read"),
+				"cat_toggle_collapse" => __("Un/collapse current category"),
+				"toggle_cdm_expanded" => __("Toggle auto expand in combined mode"),
+				"toggle_combined_mode" => __("Toggle combined mode")),
+			__("Go to") => array(
+				"goto_all" => __("All articles"),
+				"goto_fresh" => __("Fresh"),
+				"goto_marked" => __("Starred"),
+				"goto_published" => __("Published"),
+				"goto_read" => __("Recently read"),
+				"goto_tagcloud" => __("Tag cloud"),
+				"goto_prefs" => __("Preferences")),
+			__("Other") => array(
+				"create_label" => __("Create label"),
+				"create_filter" => __("Create filter"),
+				"collapse_sidebar" => __("Un/collapse sidebar"),
+				"help_dialog" => __("Show help dialog"))
+		);
+
+		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_HOTKEY_INFO) as $plugin) {
+			$hotkeys = $plugin->hook_hotkey_info($hotkeys);
+		}
+
+		return $hotkeys;
+	}
+
+	// {3} - 3 panel mode only
+	// {C} - combined mode only
+	static function get_hotkeys_map() {
+		$hotkeys = array(
+			"k" => "next_feed",
+			"j" => "prev_feed",
+			"n" => "next_article_noscroll",
+			"p" => "prev_article_noscroll",
+			"N" => "article_page_down",
+			"P" => "article_page_up",
+			"*(33)|Shift+PgUp" => "article_page_up",
+			"*(34)|Shift+PgDn" => "article_page_down",
+			"{3}(38)|Up" => "prev_article_or_scroll",
+			"{3}(40)|Down" => "next_article_or_scroll",
+			"*(38)|Shift+Up" => "article_scroll_up",
+			"*(40)|Shift+Down" => "article_scroll_down",
+			"^(38)|Ctrl+Up" => "prev_article_noscroll",
+			"^(40)|Ctrl+Down" => "next_article_noscroll",
+			"/" => "search_dialog",
+			"\\" => "cancel_search",
+			"s" => "toggle_mark",
+			"S" => "toggle_publ",
+			"u" => "toggle_unread",
+			"T" => "edit_tags",
+			"o" => "open_in_new_window",
+			"c p" => "catchup_below",
+			"c n" => "catchup_above",
+			"a W" => "toggle_widescreen",
+			"a e" => "toggle_full_text",
+			"e" => "email_article",
+			"a q" => "close_article",
+			"a a" => "select_all",
+			"a u" => "select_unread",
+			"a U" => "select_marked",
+			"a p" => "select_published",
+			"a i" => "select_invert",
+			"a n" => "select_none",
+			"f r" => "feed_refresh",
+			"f a" => "feed_unhide_read",
+			"f s" => "feed_subscribe",
+			"f e" => "feed_edit",
+			"f q" => "feed_catchup",
+			"f x" => "feed_reverse",
+			"f g" => "feed_toggle_vgroup",
+			"f D" => "feed_debug_update",
+			"f G" => "feed_debug_viewfeed",
+			"f C" => "toggle_combined_mode",
+			"f c" => "toggle_cdm_expanded",
+			"Q" => "catchup_all",
+			"x" => "cat_toggle_collapse",
+			"g a" => "goto_all",
+			"g f" => "goto_fresh",
+			"g s" => "goto_marked",
+			"g p" => "goto_published",
+			"g r" => "goto_read",
+			"g t" => "goto_tagcloud",
+			"g P" => "goto_prefs",
+			"r" => "select_article_cursor",
+			"c l" => "create_label",
+			"c f" => "create_filter",
+			"c s" => "collapse_sidebar",
+			"?" => "help_dialog",
+		);
+
+		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_HOTKEY_MAP) as $plugin) {
+			$hotkeys = $plugin->hook_hotkey_map($hotkeys);
+		}
+
+		$prefixes = array();
+
+		foreach (array_keys($hotkeys) as $hotkey) {
+			$pair = explode(" ", $hotkey, 2);
+
+			if (count($pair) > 1 && !in_array($pair[0], $prefixes)) {
+				array_push($prefixes, $pair[0]);
+			}
+		}
+
+		return array($prefixes, $hotkeys);
 	}
 
 }

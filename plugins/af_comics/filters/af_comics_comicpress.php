@@ -18,7 +18,7 @@ class Af_Comics_ComicPress extends Af_ComicFilter {
 				// lol at people who block clients by user agent
 				// oh noes my ad revenue Q_Q
 
-				$res = fetch_file_contents(["url" => $article["link"],
+				$res = UrlHelper::fetch(["url" => $article["link"],
 					"useragent" => "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)"]);
 
 				$doc = new DOMDocument();
@@ -37,7 +37,7 @@ class Af_Comics_ComicPress extends Af_ComicFilter {
 
 					if ($webtoon_link) {
 
-						$res = fetch_file_contents(["url" => $webtoon_link->getAttribute("href"),
+						$res = UrlHelper::fetch(["url" => $webtoon_link->getAttribute("href"),
 							"useragent" => "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)"]);
 
 						if (@$doc->loadHTML($res)) {

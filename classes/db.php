@@ -113,4 +113,13 @@ class Db
 
 		return self::$instance->pdo;
 	}
+
+	public static function sql_random_function() {
+		if (DB_TYPE == "mysql") {
+			return "RAND()";
+		} else {
+			return "RANDOM()";
+		}
+	}
+
 }

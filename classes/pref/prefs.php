@@ -257,7 +257,7 @@ class Pref_Prefs extends Handler_Protected {
 				AND owner_uid = :uid");
 		$sth->execute([":profile" => $_SESSION['profile'], ":uid" => $_SESSION['uid']]);
 
-		initialize_user_prefs($_SESSION["uid"], $_SESSION["profile"]);
+		$this->initialize_user_prefs($_SESSION["uid"], $_SESSION["profile"]);
 
 		echo __("Your preferences are now set to default values.");
 	}
@@ -590,9 +590,9 @@ class Pref_Prefs extends Handler_Protected {
 		if ($profile) {
 			print_notice(__("Some preferences are only available in default profile."));
 
-			initialize_user_prefs($_SESSION["uid"], $profile);
+			$this->initialize_user_prefs($_SESSION["uid"], $profile);
 		} else {
-			initialize_user_prefs($_SESSION["uid"]);
+			$this->initialize_user_prefs($_SESSION["uid"]);
 		}
 
 		$prefs_available = [];
@@ -1366,4 +1366,57 @@ class Pref_Prefs extends Handler_Protected {
 
 		$this->appPasswordList();
 	}
+
+	static function initialize_user_prefs($uid, $profile = false) {
+
+		if (get_schema_version() < 63) $profile_qpart = "";
+
+		$pdo = Db::pdo();
+		$in_nested_tr = false;
+
+		try {
+			$pdo->beginTransaction();
+		} catch (Exception $e) {
+			$in_nested_tr = true;
+		}
+
+		$sth = $pdo->query("SELECT pref_name,def_value FROM ttrss_prefs");
+
+		if (!is_numeric($profile) || !$profile || get_schema_version() < 63) $profile = null;
+
+		$u_sth = $pdo->prepare("SELECT pref_name
+			FROM ttrss_user_prefs WHERE owner_uid = :uid AND
+				(profile = :profile OR (:profile IS NULL AND profile IS NULL))");
+		$u_sth->execute([':uid' => $uid, ':profile' => $profile]);
+
+		$active_prefs = array();
+
+		while ($line = $u_sth->fetch()) {
+			array_push($active_prefs, $line["pref_name"]);
+		}
+
+		while ($line = $sth->fetch()) {
+			if (array_search($line["pref_name"], $active_prefs) === false) {
+//				print "adding " . $line["pref_name"] . "<br>";
+
+				if (get_schema_version() < 63) {
+					$i_sth = $pdo->prepare("INSERT INTO ttrss_user_prefs
+						(owner_uid,pref_name,value) VALUES
+						(?, ?, ?)");
+					$i_sth->execute([$uid, $line["pref_name"], $line["def_value"]]);
+
+				} else {
+					$i_sth = $pdo->prepare("INSERT INTO ttrss_user_prefs
+						(owner_uid,pref_name,value, profile) VALUES
+						(?, ?, ?, ?)");
+					$i_sth->execute([$uid, $line["pref_name"], $line["def_value"], $profile]);
+				}
+
+			}
+		}
+
+		if (!$in_nested_tr) $pdo->commit();
+
+	}
+
 }

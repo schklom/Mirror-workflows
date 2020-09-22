@@ -269,7 +269,7 @@ class DiskCache {
 
 		header("Content-Disposition: inline; filename=\"${filename}${fake_extension}\"");
 
-		return send_local_file($this->getFullPath($filename));
+		return $this->send_local_file($this->getFullPath($filename));
 	}
 
 	public function getUrl($filename) {
@@ -357,6 +357,58 @@ class DiskCache {
 
 				Debug::log("Expired $cache_dir: removed $num_deleted files.");
 			}
+		}
+	}
+
+	/*	this is essentially a wrapper for readfile() which allows plugins to hook
+		output with httpd-specific "fast" implementation i.e. X-Sendfile or whatever else
+
+		hook function should return true if request was handled (or at least attempted to)
+
+		note that this can be called without user context so the plugin to handle this
+		should be loaded systemwide in config.php */
+	function send_local_file($filename) {
+		if (file_exists($filename)) {
+
+			if (is_writable($filename)) touch($filename);
+
+			$mimetype = mime_content_type($filename);
+
+			// this is hardly ideal but 1) only media is cached in images/ and 2) seemingly only mp4
+			// video files are detected as octet-stream by mime_content_type()
+
+			if ($mimetype == "application/octet-stream")
+				$mimetype = "video/mp4";
+
+			# block SVG because of possible embedded javascript (.....)
+			$mimetype_blacklist = [ "image/svg+xml" ];
+
+			/* only serve video and images */
+			if (!preg_match("/(image|video)\//", $mimetype) || in_array($mimetype, $mimetype_blacklist)) {
+				http_response_code(400);
+				header("Content-type: text/plain");
+
+				print "Stored file has disallowed content type ($mimetype)";
+				return false;
+			}
+
+			$tmppluginhost = new PluginHost();
+
+			$tmppluginhost->load(PLUGINS, PluginHost::KIND_SYSTEM);
+			$tmppluginhost->load_data();
+
+			foreach ($tmppluginhost->get_hooks(PluginHost::HOOK_SEND_LOCAL_FILE) as $plugin) {
+				if ($plugin->hook_send_local_file($filename)) return true;
+			}
+
+			header("Content-type: $mimetype");
+
+			$stamp = gmdate("D, d M Y H:i:s", filemtime($filename)) . " GMT";
+			header("Last-Modified: $stamp", true);
+
+			return readfile($filename);
+		} else {
+			return false;
 		}
 	}
 }

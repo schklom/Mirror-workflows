@@ -67,7 +67,7 @@
 			return;
 		}
 
-		load_user_plugins( $_SESSION["uid"]);
+		UserHelper::load_user_plugins( $_SESSION["uid"]);
 	}
 
 	$method = strtolower($_REQUEST["op"]);

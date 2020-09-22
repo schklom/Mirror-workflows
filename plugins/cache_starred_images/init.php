@@ -40,16 +40,16 @@ class Cache_Starred_Images extends Plugin {
 
 		Debug::log("caching media of starred articles for user " . $this->host->get_owner_uid() . "...");
 
-		$sth = $this->pdo->prepare("SELECT content, ttrss_entries.title, 
+		$sth = $this->pdo->prepare("SELECT content, ttrss_entries.title,
        		ttrss_user_entries.owner_uid, link, site_url, ttrss_entries.id, plugin_data
 			FROM ttrss_entries, ttrss_user_entries LEFT JOIN ttrss_feeds ON
 				(ttrss_user_entries.feed_id = ttrss_feeds.id)
 			WHERE ref_id = ttrss_entries.id AND
 				marked = true AND
-				site_url != '' AND 
+				site_url != '' AND
 			    ttrss_user_entries.owner_uid = ? AND
 				plugin_data NOT LIKE '%starred_cache_images%'
-			ORDER BY ".sql_random_function()." LIMIT 100");
+			ORDER BY ".Db::sql_random_function()." LIMIT 100");
 
 		if ($sth->execute([$this->host->get_owner_uid()])) {
 
@@ -139,7 +139,7 @@ class Cache_Starred_Images extends Plugin {
 		if (!$this->cache->exists($local_filename)) {
 			Debug::log("cache_images: downloading: $url to $local_filename", Debug::$LOG_VERBOSE);
 
-			$data = fetch_file_contents(["url" => $url, "max_size" => MAX_CACHE_FILE_SIZE]);
+			$data = UrlHelper::fetch(["url" => $url, "max_size" => MAX_CACHE_FILE_SIZE]);
 
 			if ($data)
 				return $this->cache->put($local_filename, $data);;

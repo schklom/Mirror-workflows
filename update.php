@@ -14,6 +14,19 @@
 	require_once "db.php";
 	require_once "db-prefs.php";
 
+	function make_stampfile($filename) {
+		$fp = fopen(LOCK_DIRECTORY . "/$filename", "w");
+
+		if (flock($fp, LOCK_EX | LOCK_NB)) {
+			fwrite($fp, time() . "\n");
+			flock($fp, LOCK_UN);
+			fclose($fp);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	function cleanup_tags($days = 14, $limit = 1000) {
 
 		$days = (int) $days;

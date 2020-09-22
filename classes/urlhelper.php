@@ -120,7 +120,7 @@ class UrlHelper {
 				if (stripos($header, 'Location:') === 0) {
 					$url = UrlHelper::rewrite_relative($url, trim(substr($header, strlen('Location:'))));
 
-					return resolve_redirects($url, $timeout, $nest + 1);
+					return UrlHelper::resolve_redirects($url, $timeout, $nest + 1);
 				}
 			}
 
@@ -404,7 +404,7 @@ class UrlHelper {
 
 			$old_error = error_get_last();
 
-			$fetch_effective_url = resolve_redirects($url, $timeout ? $timeout : FILE_FETCH_CONNECT_TIMEOUT);
+			$fetch_effective_url = UrlHelper::resolve_redirects($url, $timeout ? $timeout : FILE_FETCH_CONNECT_TIMEOUT);
 
 			if (!UrlHelper::validate($fetch_effective_url, true)) {
 				$fetch_last_error = "URL received after redirection failed extended validation.";

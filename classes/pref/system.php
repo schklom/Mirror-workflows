@@ -26,7 +26,7 @@ class Pref_System extends Handler_Protected {
 	function index() {
 
 		print "<div dojoType=\"dijit.layout.AccordionContainer\" region=\"center\">";
-		print "<div dojoType=\"dijit.layout.AccordionPane\" 
+		print "<div dojoType=\"dijit.layout.AccordionPane\"
 			title=\"<i class='material-icons'>report</i> ".__('Event Log')."\">";
 
 		if (LOG_DESTINATION == "sql") {
@@ -66,8 +66,7 @@ class Pref_System extends Handler_Protected {
 				print "<td class='login'>" . $line["login"] . "</td>";
 
 				print "<td class='timestamp'>" .
-					make_local_datetime(
-					$line["created_at"], false) . "</td>";
+					TimeHelper::make_local_datetime($line["created_at"], false) . "</td>";
 
 				print "</tr>";
 			}
@@ -81,7 +80,7 @@ class Pref_System extends Handler_Protected {
 
 		print "</div>";
 
-		print "<div dojoType=\"dijit.layout.AccordionPane\" 
+		print "<div dojoType=\"dijit.layout.AccordionPane\"
 			title=\"<i class='material-icons'>info</i> ".__('PHP Information')."\">";
 
 		ob_start();

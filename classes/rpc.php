@@ -647,8 +647,6 @@ class RPC extends Handler_Protected {
 		$params["php_platform"] = PHP_OS;
 		$params["php_version"] = PHP_VERSION;
 
-		$params["sanity_checksum"] = sha1(file_get_contents("include/sanity_check.php"));
-
 		$pdo = Db::pdo();
 
 		$sth = $pdo->prepare("SELECT MAX(id) AS mid, COUNT(*) AS nf FROM

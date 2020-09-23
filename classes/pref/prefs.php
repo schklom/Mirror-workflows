@@ -1320,11 +1320,11 @@ class Pref_Prefs extends Handler_Protected {
 			print "<td>" . htmlspecialchars($row["title"]) . "</td>";
 
 			print "<td align='right' class='text-muted'>";
-			print make_local_datetime($row['created'], false);
+			print TimeHelper::make_local_datetime($row['created'], false);
 			print "</td>";
 
 			print "<td align='right' class='text-muted'>";
-			print make_local_datetime($row['last_used'], false);
+			print TimeHelper::make_local_datetime($row['last_used'], false);
 			print "</td>";
 
 			print "</tr>";

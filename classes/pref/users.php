@@ -137,10 +137,10 @@ class Pref_Users extends Handler_Protected {
 			if ($row = $sth->fetch()) {
 				print "<table width='100%'>";
 
-				$last_login = make_local_datetime(
+				$last_login = TimeHelper::make_local_datetime(
 					$row["last_login"], true);
 
-				$created = make_local_datetime(
+				$created = TimeHelper::make_local_datetime(
 					$row["created"], true);
 
 				$stored_articles = $row["stored_articles"];
@@ -399,8 +399,8 @@ class Pref_Users extends Handler_Protected {
 				print "<tr data-row-id='$uid' onclick='Users.edit($uid)'>";
 
 				$line["login"] = htmlspecialchars($line["login"]);
-				$line["created"] = make_local_datetime($line["created"], false);
-				$line["last_login"] = make_local_datetime($line["last_login"], false);
+				$line["created"] = TimeHelper::make_local_datetime($line["created"], false);
+				$line["last_login"] = TimeHelper::make_local_datetime($line["last_login"], false);
 
 				print "<td align='center'><input onclick='Tables.onRowChecked(this); event.stopPropagation();'
 					dojoType='dijit.form.CheckBox' type='checkbox'></td>";

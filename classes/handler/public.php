@@ -414,7 +414,7 @@ class Handler_Public extends Handler {
 			$rv .= "<div class='row'>"; # row
 
 			//$entry_author = $line["author"] ? " - " . $line["author"] : "";
-			$parsed_updated = make_local_datetime($line["updated"], true,
+			$parsed_updated = TimeHelper::make_local_datetime($line["updated"], true,
 				$owner_uid, true);
 
 			$rv .= "<div>".$line['author']."</div>";

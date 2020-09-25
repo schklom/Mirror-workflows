@@ -97,7 +97,7 @@ class Digest
 		$tpl_t->readTemplateFromFile("digest_template.txt");
 
 		$user_tz_string = get_pref('USER_TIMEZONE', $user_id);
-		$local_ts = convert_timestamp(time(), 'UTC', $user_tz_string);
+		$local_ts = TimeHelper::convert_timestamp(time(), 'UTC', $user_tz_string);
 
 		$tpl->setVariable('CUR_DATE', date('Y/m/d', $local_ts));
 		$tpl->setVariable('CUR_TIME', date('G:i', $local_ts));
@@ -159,7 +159,7 @@ class Digest
 
 			array_push($affected_ids, $line["ref_id"]);
 
-			$updated = make_local_datetime($line['last_updated'], false,
+			$updated = TimeHelper::make_local_datetime($line['last_updated'], false,
 				$user_id);
 
 			if (get_pref('ENABLE_FEED_CATS', $user_id)) {

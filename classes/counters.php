@@ -112,7 +112,7 @@ class Counters {
 
 			$id = $line["id"];
 			$last_error = htmlspecialchars($line["last_error"]);
-			$last_updated = make_local_datetime($line['last_updated'], false);
+			$last_updated = TimeHelper::make_local_datetime($line['last_updated'], false);
 
 			if (Feeds::feedHasIcon($id)) {
 				$has_img = filemtime(Feeds::getIconFile($id));

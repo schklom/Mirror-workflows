@@ -98,7 +98,7 @@ class Af_Psql_Trgm extends Plugin {
 
 				print "</div>";
 
-				print "<div style='text-align : right' class='text-muted'>" . smart_date_time(strtotime($line["updated"])) . "</div>";
+				print "<div style='text-align : right' class='text-muted'>" . TimeHelper::smart_date_time(strtotime($line["updated"])) . "</div>";
 
 				print "</li>";
 			}
@@ -123,7 +123,7 @@ class Af_Psql_Trgm extends Plugin {
 	function hook_prefs_tab($args) {
 		if ($args != "prefFeeds") return;
 
-		print "<div dojoType=\"dijit.layout.AccordionPane\" 
+		print "<div dojoType=\"dijit.layout.AccordionPane\"
 			title=\"<i class='material-icons'>extension</i> ".__('Mark similar articles as read')."\">";
 
 		if (DB_TYPE != "pgsql") {

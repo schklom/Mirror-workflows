@@ -851,7 +851,7 @@ class Feeds extends Handler_Protected {
 
 			// fall back in case of no plugins
 			if (!$search_qpart) {
-				list($search_qpart, $search_words) = self::search_to_sql($search[0], $search[1]);
+				list($search_qpart, $search_words) = self::search_to_sql($search[0], $search[1], $owner_uid);
 			}
 		} else {
 			$search_qpart = "true";
@@ -1450,7 +1450,7 @@ class Feeds extends Handler_Protected {
 
 			// fall back in case of no plugins
 			if (!$search_query_part) {
-				list($search_query_part, $search_words) = self::search_to_sql($search, $search_language);
+				list($search_query_part, $search_words) = self::search_to_sql($search, $search_language, $owner_uid);
 			}
 
 			if (DB_TYPE == "pgsql") {
@@ -2117,7 +2117,7 @@ class Feeds extends Handler_Protected {
 		}
 	}
 
-	static function search_to_sql($search, $search_language) {
+	static function search_to_sql($search, $search_language, $owner_uid) {
 
 		$keywords = str_getcsv(trim($search), " ");
 		$query_keywords = array();
@@ -2129,7 +2129,7 @@ class Feeds extends Handler_Protected {
 		if ($search_language)
 			$search_language = $pdo->quote(mb_strtolower($search_language));
 		else
-			$search_language = $pdo->quote("english");
+			$search_language = $pdo->quote(mb_strtolower(get_pref('DEFAULT_SEARCH_LANGUAGE', $owner_uid)));
 
 		foreach ($keywords as $k) {
 			if (strpos($k, "-") === 0) {

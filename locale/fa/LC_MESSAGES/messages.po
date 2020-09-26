@@ -8,160 +8,172 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-28 08:08+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2020-09-27 11:35+0000\n"
+"Last-Translator: CERT <certphishalert@gmail.com>\n"
+"Language-Team: Persian <https://weblate.tt-rss.org/projects/tt-rss/messages/"
+"fa/>\n"
 "Language: fa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.2.2\n"
 
 #: backend.php:58
 msgid "Use default"
-msgstr ""
+msgstr "استفاده پیشفرض"
 
 #: backend.php:59
 msgid "Never purge"
-msgstr ""
+msgstr "غیرقابل حذف"
 
 #: backend.php:60
 msgid "1 week old"
-msgstr ""
+msgstr "یک هفته گذشته"
 
 #: backend.php:61
 msgid "2 weeks old"
-msgstr ""
+msgstr "دو هفته گذشته"
 
 #: backend.php:62
 msgid "1 month old"
-msgstr ""
+msgstr "یک ماه گذشته"
 
 #: backend.php:63
 msgid "2 months old"
-msgstr ""
+msgstr "دو ماه گذشته"
 
 #: backend.php:64
 msgid "3 months old"
-msgstr ""
+msgstr "سه ماه گذشته"
 
 #: backend.php:67
 msgid "Default interval"
-msgstr ""
+msgstr "بازه زمانی پیش فرض"
 
 #: backend.php:68 backend.php:78
 msgid "Disable updates"
-msgstr ""
+msgstr "غیرفعال نمودن به روزرسانی ها"
 
 #: backend.php:69 backend.php:79
 msgid "15 minutes"
-msgstr ""
+msgstr "15 دقیقه"
 
 #: backend.php:70 backend.php:80
 msgid "30 minutes"
-msgstr ""
+msgstr "30 دقیقه"
 
 #: backend.php:71 backend.php:81
 msgid "Hourly"
-msgstr ""
+msgstr "ساعتی"
 
 #: backend.php:72 backend.php:82
 msgid "4 hours"
-msgstr ""
+msgstr "4 ساعت"
 
 #: backend.php:73 backend.php:83
 msgid "12 hours"
-msgstr ""
+msgstr "12 ساعت"
 
 #: backend.php:74 backend.php:84
 msgid "Daily"
-msgstr ""
+msgstr "روزانه"
 
 #: backend.php:75 backend.php:85
 msgid "Weekly"
-msgstr ""
+msgstr "هفتگی"
 
 #: backend.php:88 classes/pref/system.php:52 classes/pref/users.php:47
 msgid "User"
-msgstr ""
+msgstr "کاربر"
 
 #: backend.php:89
 msgid "Power User"
-msgstr ""
+msgstr "کاربر حرفه ای"
 
 #: backend.php:90
 msgid "Administrator"
-msgstr ""
+msgstr "مدیر"
 
 #: errors.php:9
 msgid ""
 "This program requires XmlHttpRequest to function properly. Your browser "
 "doesn't seem to support it."
 msgstr ""
+"این برنامه جهت عملکرد صحیح به XmlHttpRequest نیاز دارد.به نظر می رسد که "
+"مرورگر شما  از آن پشتیبانی نمی کند."
 
 #: errors.php:12
 msgid ""
 "This program requires cookies to function properly. Your browser doesn't "
 "seem to support them."
 msgstr ""
+"این برنامه برای عملکرد صحیح به کوکی ها نیاز دارد. به نظرمی رسد  که مرورگر "
+"شما از آنها پشتیبانی نمی کند."
 
 #: errors.php:15
 msgid "Backend sanity check failed."
-msgstr ""
+msgstr "موفق  نبودن بررسی درستی برنامه های پشت زمینه."
 
 #: errors.php:17
 msgid "Frontend sanity check failed."
-msgstr ""
+msgstr "ناموفق بودن بررسی درستی فرانت اند"
 
 #: errors.php:19
 msgid ""
 "Incorrect database schema version. &lt;a href='db-updater.php'&gt;Please "
 "update&lt;/a&gt;."
 msgstr ""
+"صحیح نبودن ورژن الگوی دیتابیس.  &lt;a href='db-updater.php'&gt، لطفا "
+"&lt;/a&gt; را بروزرسانی نمایید."
 
 #: errors.php:21
 msgid "Request not authorized."
-msgstr ""
+msgstr "درخواست مجاز نیست."
 
 #: errors.php:23
 msgid "No operation to perform."
-msgstr ""
+msgstr "هیچ عملیاتی برای انجام دادن نیست."
 
 #: errors.php:25
 msgid ""
 "Could not display feed: query failed. Please check label match syntax or "
 "local configuration."
 msgstr ""
+"فید نمایش داده نشد: درخواست ناموفق بود. لطفا  مطابقت برچسب با سینتگس و یا "
+"تنظیمات داخلی را بررسی نمایید."
 
 #: errors.php:27
 msgid "Denied. Your access level is insufficient to access this page."
-msgstr ""
+msgstr "ممنوع. شما مجوز لازم برای دسترسی به این صفحه را ندارید."
 
 #: errors.php:29
 msgid "Configuration check failed"
-msgstr ""
+msgstr "ناموفق بودن بررسی تنظیمات"
 
 #: errors.php:31
 msgid ""
 "Your version of MySQL is not currently supported. Please see official site "
 "for more information."
 msgstr ""
+"نسخه  mysqlشما، در حال حاضر پشتیبانی نمی شود. لطفا برای اطلاعات بیشتر به "
+"سایت معتبر و رسمی مراجعه نمایید."
 
 #: errors.php:35
 msgid "SQL escaping test failed, check your database and PHP configuration"
-msgstr ""
+msgstr "ناموفق بودن تست فراربودن SQL. تنظیمات دیتابیس و PHP را چک کنید."
 
 #: errors.php:37
 msgid "Method not found"
-msgstr ""
+msgstr "متد پیدا نشد."
 
 #: errors.php:39
 msgid "Plugin not found"
-msgstr ""
+msgstr "پلاگین  پیدا نشد."
 
 #: errors.php:41
 msgid "Encoding data as JSON failed"
-msgstr ""
+msgstr "ناموفق بودن رمزگذاری داده به صورت JSON"
 
 #: index.php:132 index.php:147 index.php:263 prefs.php:117
 #: classes/backend.php:5 classes/pref/feeds.php:1268
@@ -173,129 +185,129 @@ msgstr ""
 #: js/PrefHelpers.js:61 js/PrefHelpers.js:110 js/PrefHelpers.js:182
 #: plugins/af_readability/init.js:17
 msgid "Loading, please wait..."
-msgstr ""
+msgstr "در حال بارگذای، لطفا منتظر بمانید."
 
 #: index.php:161 js/AppBase.js:289 js/AppBase.js:295
 msgid "Communication problem with server."
-msgstr ""
+msgstr "مشکل در برقراری ارتباط با سرور"
 
 #: index.php:164
 msgid "Recent entries found in event log."
-msgstr ""
+msgstr "ورودی های اخیر در گزارشات لاگ یافت شد."
 
 #: index.php:167
 msgid "Updates are available from Git."
-msgstr ""
+msgstr "به روز رسانی ها در Git قابل دسترس هستند."
 
 #: index.php:181
 msgid "Show articles"
-msgstr ""
+msgstr "نمایش مقالات"
 
 #: index.php:184
 msgid "Adaptive"
-msgstr ""
+msgstr "توافقی"
 
 #: index.php:185
 msgid "All Articles"
-msgstr ""
+msgstr "همه مقالات"
 
 #: index.php:186 include/functions.php:1081 classes/feeds.php:74
 msgid "Starred"
-msgstr ""
+msgstr "ستاره دار"
 
 #: index.php:187 include/functions.php:1082 classes/feeds.php:75
 msgid "Published"
-msgstr ""
+msgstr "منتشر شده"
 
 #: index.php:188 classes/feeds.php:67 classes/feeds.php:73
 msgid "Unread"
-msgstr ""
+msgstr "خوانده نشده"
 
 #: index.php:189
 msgid "With Note"
-msgstr ""
+msgstr "تبصره"
 
 #: index.php:190
 msgid "Ignore Scoring"
-msgstr ""
+msgstr "نادیده گرفتن رتبه بندی"
 
 #: index.php:193
 msgid "Sort articles"
-msgstr ""
+msgstr "مرتب کردن مقالات"
 
 #: index.php:197
 msgid "Default"
-msgstr ""
+msgstr "پیش فرض"
 
 #: index.php:198
 msgid "Newest first"
-msgstr ""
+msgstr "جدیدترین"
 
 #: index.php:199
 msgid "Oldest first"
-msgstr ""
+msgstr "قدیمیترین"
 
 #: index.php:200
 msgid "Title"
-msgstr ""
+msgstr "عنوان"
 
 #: index.php:204 index.php:238 include/functions.php:1069 classes/feeds.php:79
 #: js/FeedTree.js:54 js/FeedTree.js:83
 msgid "Mark as read"
-msgstr ""
+msgstr "علامت زدن به عنوان خوانده شده"
 
 #: index.php:207
 msgid "Older than one day"
-msgstr ""
+msgstr "بیش از یک روز گذشته"
 
 #: index.php:210
 msgid "Older than one week"
-msgstr ""
+msgstr "بیش از یک هفته گذشته"
 
 #: index.php:213
 msgid "Older than two weeks"
-msgstr ""
+msgstr "بیشتر از یک هفته گذشته."
 
 #: index.php:228
 msgid "Actions..."
-msgstr ""
+msgstr "اقدامات..."
 
 #: index.php:231
 msgid "Preferences..."
-msgstr ""
+msgstr "اولویت ها..."
 
 #: index.php:232
 msgid "Search..."
-msgstr ""
+msgstr "جستجو..."
 
 #: index.php:233
 msgid "Feed actions:"
-msgstr ""
+msgstr "اقدامات فید:"
 
 #: index.php:234 classes/handler/public.php:783
 msgid "Subscribe to feed..."
-msgstr ""
+msgstr "اضافه کردن به فید..."
 
 #: index.php:235
 msgid "Edit this feed..."
-msgstr ""
+msgstr "ویرایش این فید..."
 
 #: index.php:236 classes/pref/feeds.php:796 classes/pref/feeds.php:1241
 #: js/PrefFeedTree.js:62
 msgid "Unsubscribe"
-msgstr ""
+msgstr "غیرقابل اشتراک گذاری"
 
 #: index.php:237
 msgid "All feeds:"
-msgstr ""
+msgstr "همه فیدها:"
 
 #: index.php:239
 msgid "(Un)hide read feeds"
-msgstr ""
+msgstr "مخفی نمودن فیدهای خوانده شده."
 
 #: index.php:240
 msgid "Other actions:"
-msgstr ""
+msgstr "دیگر فعالیت ها:"
 
 #: index.php:241 include/functions.php:1055
 msgid "Toggle widescreen mode"
@@ -303,53 +315,53 @@ msgstr ""
 
 #: index.php:242
 msgid "Keyboard shortcuts help"
-msgstr ""
+msgstr "راهنمای میان برهای صفحه کلید"
 
 #: index.php:251
 msgid "Logout"
-msgstr ""
+msgstr "خروج"
 
 #: prefs.php:31 prefs.php:134 include/functions.php:1085
 #: classes/pref/prefs.php:554
 msgid "Preferences"
-msgstr ""
+msgstr "اولویت ها"
 
 #: prefs.php:126
 msgid "Keyboard shortcuts"
-msgstr ""
+msgstr "میان برهای صفحه کلید"
 
 #: prefs.php:127
 msgid "Exit preferences"
-msgstr ""
+msgstr "خروج از اولویت ها"
 
 #: prefs.php:137 classes/pref/feeds.php:127 classes/pref/feeds.php:1176
 #: classes/pref/feeds.php:1230 classes/pref/prefs.php:28
 msgid "Feeds"
-msgstr ""
+msgstr "فیدها:"
 
 #: prefs.php:141 classes/pref/filters.php:243
 msgid "Filters"
-msgstr ""
+msgstr "فیلترها"
 
 #: prefs.php:145 classes/feeds.php:1391 classes/pref/labels.php:85
 msgid "Labels"
-msgstr ""
+msgstr "برچسب ها"
 
 #: prefs.php:150
 msgid "Users"
-msgstr ""
+msgstr "کاربرها"
 
 #: prefs.php:153
 msgid "System"
-msgstr ""
+msgstr "سیستم"
 
 #: register.php:183 include/login_form.php:170
 msgid "Create new account"
-msgstr ""
+msgstr "ایجاد یک حساب کاربری جدید"
 
 #: register.php:189
 msgid "New user registrations are administratively disabled."
-msgstr ""
+msgstr "ثبت نام کاربر جدید توسط مدیریت غیرفعال شده است."
 
 #: register.php:193 register.php:238 register.php:251 register.php:266
 #: register.php:285 register.php:332 register.php:342 register.php:354
@@ -359,7 +371,7 @@ msgstr ""
 #: classes/handler/public.php:1167 classes/handler/public.php:1179
 #: classes/handler/public.php:1184 classes/handler/public.php:1208
 msgid "Return to Tiny Tiny RSS"
-msgstr ""
+msgstr "بازگشت به  Tiny Tiny RSS"
 
 #: register.php:214
 msgid ""
@@ -367,38 +379,40 @@ msgid ""
 "were not logged in once, are erased automatically 24 hours after temporary "
 "password is sent."
 msgstr ""
+"رمز عبور موقت شما به ایمیل مشخص شده ارسال می گردد. حساب هایی که 24 ساعت بعد "
+"از ارسال رمز عبور موقت، یک بار لاگین نشوند، به صورت اتوماتیک پاک می شوند."
 
 #: register.php:220
 msgid "Desired login:"
-msgstr ""
+msgstr "ورود به سیستم موردنظر"
 
 #: register.php:223
 msgid "Check availability"
-msgstr ""
+msgstr "بررسی   در دسترس بودن"
 
 #: register.php:225 classes/handler/public.php:980
 msgid "Email:"
-msgstr ""
+msgstr "ایمیل:"
 
 #: register.php:228
 msgid "How much is two plus two:"
-msgstr ""
+msgstr "حاصل جمع 2 +2  می شود:"
 
 #: register.php:231
 msgid "Submit registration"
-msgstr ""
+msgstr "ثبت نام را ارسال کنید."
 
 #: register.php:249
 msgid "Your registration information is incomplete."
-msgstr ""
+msgstr "اطلاعات ثبت نام شما کامل نیست."
 
 #: register.php:264
 msgid "Sorry, this username is already taken."
-msgstr ""
+msgstr "متاسفانه، این نام کاربری تکراری می باشد."
 
 #: register.php:283
 msgid "Registration failed."
-msgstr ""
+msgstr "ثبت نام موفقیت آمیز نبود."
 
 #: register.php:329
 msgid "Account created successfully."

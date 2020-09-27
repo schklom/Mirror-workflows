@@ -453,7 +453,7 @@ class RSSUtils {
 					last_updated = NOW() WHERE id = ?");
 			$sth->execute([$error_message, $feed]);
 
-			return;
+			return $error_message == "";
 		}
 
 		Debug::log("running HOOK_FEED_FETCHED handlers...", Debug::$LOG_VERBOSE);

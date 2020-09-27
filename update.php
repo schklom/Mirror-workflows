@@ -82,6 +82,7 @@
 	$longopts = array("feeds",
 			"daemon",
 			"daemon-loop",
+			"update-feed:",
 			"send-digests",
 			"task:",
 			"cleanup-tags",
@@ -235,8 +236,8 @@
 	}
 
 	if (isset($options["feeds"])) {
-		RSSUtils::update_daemon_common();
-		RSSUtils::housekeeping_common(true);
+		RSSUtils::update_daemon_common(DAEMON_FEED_LIMIT, $options);
+		RSSUtils::housekeeping_common();
 
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK, "hook_update_task", $op);
 	}
@@ -244,8 +245,8 @@
 	if (isset($options["daemon"])) {
 		while (true) {
 			$quiet = (isset($options["quiet"])) ? "--quiet" : "";
-            $log = isset($options['log']) ? '--log '.$options['log'] : '';
-            $log_level = isset($options['log-level']) ? '--log-level '.$options['log-level'] : '';
+			$log = isset($options['log']) ? '--log '.$options['log'] : '';
+			$log_level = isset($options['log-level']) ? '--log-level '.$options['log-level'] : '';
 
 			passthru(PHP_EXECUTABLE . " " . $argv[0] ." --daemon-loop $quiet $log $log_level");
 
@@ -257,15 +258,26 @@
 		}
 	}
 
+	if (isset($options["update-feed"])) {
+		try {
+			RSSUtils::update_rss_feed($options["update-feed"], true);
+		} catch (PDOException $e) {
+			Debug::log(sprintf("Exception while updating feed %d: %s (%s:%d)",
+				$options["update-feed"], $e->getMessage(), $e->getFile(), $e->getLine()));
+
+			Logger::get()->log_error(E_USER_NOTICE, $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString());
+		}
+	}
+
 	if (isset($options["daemon-loop"])) {
 		if (!make_stampfile('update_daemon.stamp')) {
 			Debug::log("warning: unable to create stampfile\n");
 		}
 
-		RSSUtils::update_daemon_common(isset($options["pidlock"]) ? 50 : DAEMON_FEED_LIMIT);
+		RSSUtils::update_daemon_common(isset($options["pidlock"]) ? 50 : DAEMON_FEED_LIMIT, $options);
 
 		if (!isset($options["pidlock"]) || $options["task"] == 0)
-			RSSUtils::housekeeping_common(true);
+			RSSUtils::housekeeping_common();
 
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK, "hook_update_task", $op);
 	}

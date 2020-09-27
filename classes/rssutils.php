@@ -29,7 +29,7 @@ class RSSUtils {
 		$pdo->query("DELETE FROM ttrss_feedbrowser_cache");
 	}
 
-	static function update_daemon_common($limit = DAEMON_FEED_LIMIT) {
+	static function update_daemon_common($limit = DAEMON_FEED_LIMIT, $options = []) {
 		$schema_version = get_schema_version();
 
 		if ($schema_version != SCHEMA_VERSION) {
@@ -137,7 +137,6 @@ class RSSUtils {
 			Debug::log("Base feed: $feed");
 
 			$usth->execute([$feed]);
-			//update_rss_feed($line["id"], true);
 
 			if ($tline = $usth->fetch()) {
 				Debug::log(" => " . $tline["last_updated"] . ", " . $tline["id"] . " " . $tline["owner_uid"]);
@@ -146,8 +145,15 @@ class RSSUtils {
 					array_push($batch_owners, $tline["owner_uid"]);
 
 				$fstarted = microtime(true);
+				$my_pid = posix_getpid();
 
-				try {
+				$quiet = (isset($options["quiet"])) ? "--quiet" : "";
+				$log = function_exists("flock") && isset($options['log']) ? '--log '.$options['log'] : '';
+				$log_level = isset($options['log-level']) ? '--log-level '.$options['log-level'] : '';
+
+				passthru(PHP_EXECUTABLE . " update.php --update-feed " . $tline["id"] . " --pidlock $my_pid $quiet $log $log_level");
+
+				/* try {
 					self::update_rss_feed($tline["id"], true, false);
 				} catch (PDOException $e) {
 					Logger::get()->log_error(E_USER_NOTICE, $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString());
@@ -158,7 +164,7 @@ class RSSUtils {
 						// it doesn't matter if there wasn't actually anything to rollback, PDO Exception can be
 						// thrown outside of an active transaction during feed update
 					}
-				}
+				} */
 
 				Debug::log(sprintf("    %.4f (sec)", microtime(true) - $fstarted));
 

@@ -150,7 +150,8 @@ class RSSUtils {
 				$log = function_exists("flock") && isset($options['log']) ? '--log '.$options['log'] : '';
 				$log_level = isset($options['log-level']) ? '--log-level '.$options['log-level'] : '';
 
-				passthru(PHP_EXECUTABLE . " update.php --update-feed " . $tline["id"] . " --pidlock feed-" . $tline["id"] . " $quiet $log $log_level");
+				$exit_code = 0;
+				passthru(PHP_EXECUTABLE . " update.php --update-feed " . $tline["id"] . " --pidlock feed-" . $tline["id"] . " $quiet $log $log_level", $exit_code);
 
 				/* try {
 					self::update_rss_feed($tline["id"], true, false);
@@ -165,7 +166,11 @@ class RSSUtils {
 					}
 				} */
 
-				Debug::log(sprintf("    %.4f (sec)", microtime(true) - $fstarted));
+				Debug::log(sprintf("    %.4f (sec) RC=%d", microtime(true) - $fstarted, $exit_code));
+
+				if ($exit_code != 0) {
+					Logger::get()->log(sprintf("Update process for feed %d terminated with non-zero exit code: %d", $tline["id"], $exit_code));
+				}
 
 				++$nf;
 			}

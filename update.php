@@ -260,12 +260,17 @@
 
 	if (isset($options["update-feed"])) {
 		try {
-			RSSUtils::update_rss_feed($options["update-feed"], true);
+
+			if (!RSSUtils::update_rss_feed($options["update-feed"], true))
+				exit(100);
+
 		} catch (PDOException $e) {
 			Debug::log(sprintf("Exception while updating feed %d: %s (%s:%d)",
 				$options["update-feed"], $e->getMessage(), $e->getFile(), $e->getLine()));
 
 			Logger::get()->log_error(E_USER_NOTICE, $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString());
+
+			exit(110);
 		}
 	}
 

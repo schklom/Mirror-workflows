@@ -145,13 +145,12 @@ class RSSUtils {
 					array_push($batch_owners, $tline["owner_uid"]);
 
 				$fstarted = microtime(true);
-				$my_pid = posix_getpid();
 
 				$quiet = (isset($options["quiet"])) ? "--quiet" : "";
 				$log = function_exists("flock") && isset($options['log']) ? '--log '.$options['log'] : '';
 				$log_level = isset($options['log-level']) ? '--log-level '.$options['log-level'] : '';
 
-				passthru(PHP_EXECUTABLE . " update.php --update-feed " . $tline["id"] . " --pidlock $my_pid $quiet $log $log_level");
+				passthru(PHP_EXECUTABLE . " update.php --update-feed " . $tline["id"] . " --pidlock feed-" . $tline["id"] . " $quiet $log $log_level");
 
 				/* try {
 					self::update_rss_feed($tline["id"], true, false);

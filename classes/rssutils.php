@@ -173,7 +173,8 @@ class RSSUtils {
 
 				Debug::log(sprintf("<= %.4f (sec) exit code: %d", microtime(true) - $fstarted, $exit_code));
 
-				if ($exit_code != 0) {
+				// -1 can be caused by a SIGCHLD handler which daemon master process installs (not every setup, apparently)
+				if ($exit_code != 0 && $exit_code != -1) {
 					$esth = $pdo->prepare("SELECT last_error FROM ttrss_feeds WHERE id = ?");
 					$esth->execute([$tline["id"]]);
 
@@ -186,7 +187,7 @@ class RSSUtils {
 					Debug::log("!! Last error: $error_message");
 
 					Logger::get()->log(
-						sprintf("Update process for feed %d (%s, owner UID: %d) terminated with non-zero exit code: %d (%s).",
+						sprintf("Update process for feed %d (%s, owner UID: %d) failed with exit code: %d (%s).",
 							$tline["id"], clean($tline["title"]), $tline["owner_uid"], $exit_code, clean($error_message)));
 				}
 

@@ -186,9 +186,8 @@ class RSSUtils {
 					Debug::log("!! Last error: $error_message");
 
 					Logger::get()->log(
-						sprintf("Update process for feed %d (%s, owner UID: %d) terminated with non-zero exit code: %d (%s). Last successful update: %s.",
-							$tline["id"], clean($tline["title"]), $tline["owner_uid"], $exit_code, clean($error_message),
-									$tline["last_updated"]));
+						sprintf("Update process for feed %d (%s, owner UID: %d) terminated with non-zero exit code: %d (%s).",
+							$tline["id"], clean($tline["title"]), $tline["owner_uid"], $exit_code, clean($error_message)));
 				}
 
 				++$nf;

@@ -122,7 +122,11 @@ class RSSUtils {
 		$batch_owners = array();
 
 		// since we have the data cached, we can deal with other feeds with the same url
-		$usth = $pdo->prepare("SELECT DISTINCT ttrss_feeds.id,last_updated,ttrss_feeds.owner_uid
+		$usth = $pdo->prepare("SELECT
+			DISTINCT ttrss_feeds.id,
+				last_updated,
+				ttrss_feeds.owner_uid,
+				ttrss_feeds.title
 			FROM ttrss_feeds, ttrss_users, ttrss_user_prefs WHERE
 				ttrss_user_prefs.owner_uid = ttrss_feeds.owner_uid AND
 				ttrss_users.id = ttrss_user_prefs.owner_uid AND
@@ -139,7 +143,8 @@ class RSSUtils {
 			$usth->execute([$feed]);
 
 			if ($tline = $usth->fetch()) {
-				Debug::log(" => " . $tline["last_updated"] . ", " . $tline["id"] . " " . $tline["owner_uid"]);
+				Debug::log(sprintf("=> %s (ID: %d, UID: %d), last updated: %s", $tline["title"], $tline["id"], $tline["owner_uid"],
+					$tline["last_updated"] ? $tline["last_updated"] : "never"));
 
 				if (array_search($tline["owner_uid"], $batch_owners) === false)
 					array_push($batch_owners, $tline["owner_uid"]);
@@ -166,10 +171,24 @@ class RSSUtils {
 					}
 				} */
 
-				Debug::log(sprintf("    %.4f (sec) RC=%d", microtime(true) - $fstarted, $exit_code));
+				Debug::log(sprintf("<= %.4f (sec) exit code: %d", microtime(true) - $fstarted, $exit_code));
 
 				if ($exit_code != 0) {
-					Logger::get()->log(sprintf("Update process for feed %d terminated with non-zero exit code: %d", $tline["id"], $exit_code));
+					$esth = $pdo->prepare("SELECT last_error FROM ttrss_feeds WHERE id = ?");
+					$esth->execute([$tline["id"]]);
+
+					if ($erow = $esth->fetch()) {
+						$error_message = $erow["last_error"];
+					} else {
+						$error_message = "N/A";
+					}
+
+					Debug::log("!! Last error: $error_message");
+
+					Logger::get()->log(
+						sprintf("Update process for feed %d (%s, owner UID: %d) terminated with non-zero exit code: %d (%s). Last successful update: %s.",
+							$tline["id"], clean($tline["title"]), $tline["owner_uid"], $exit_code, clean($error_message),
+									$tline["last_updated"]));
 				}
 
 				++$nf;

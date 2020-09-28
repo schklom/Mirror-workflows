@@ -98,6 +98,7 @@ create table ttrss_feeds (id serial not null primary key,
 	cache_content boolean not null default false,
 	last_viewed timestamp default null,
 	last_update_started timestamp default null,
+	last_successful_update timestamp default null,
 	update_method integer not null default 0,
 	always_display_enclosures boolean not null default false,
 	order_id integer not null default 0,
@@ -278,7 +279,7 @@ create index ttrss_tags_post_int_id_idx on ttrss_tags(post_int_id);
 
 create table ttrss_version (schema_version int not null);
 
-insert into ttrss_version values (139);
+insert into ttrss_version values (140);
 
 create table ttrss_enclosures (id serial not null primary key,
 	content_url text not null,

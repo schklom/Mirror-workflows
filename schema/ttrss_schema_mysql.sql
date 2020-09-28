@@ -130,6 +130,7 @@ create table ttrss_feeds (id integer not null auto_increment primary key,
 	auth_pass_encrypted boolean not null default false,
 	last_viewed datetime default null,
 	last_update_started datetime default null,
+	last_successful_update datetime default null,
 	always_display_enclosures boolean not null default false,
 	update_method integer not null default 0,
 	order_id integer not null default 0,
@@ -296,7 +297,7 @@ create table ttrss_tags (id integer primary key auto_increment,
 
 create table ttrss_version (schema_version int not null) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
-insert into ttrss_version values (139);
+insert into ttrss_version values (140);
 
 create table ttrss_enclosures (id integer primary key auto_increment,
 	content_url text not null,

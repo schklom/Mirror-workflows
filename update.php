@@ -91,7 +91,7 @@
 			"log-level:",
 			"indexes",
 			"pidlock:",
-			"update-schema",
+			"update-schema:",
 			"convert-filters",
 			"force-update",
 			"gen-search-idx",
@@ -145,7 +145,7 @@
 		print "  --log FILE                  - log messages to FILE\n";
 		print "  --log-level N               - log verbosity level\n";
 		print "  --indexes                   - recreate missing schema indexes\n";
-		print "  --update-schema             - update database schema\n";
+		print "  --update-schema [force-yes] - update database schema (without prompting)\n";
 		print "  --gen-search-idx            - generate basic PostgreSQL fulltext search index\n";
 		print "  --convert-filters           - convert type1 filters to type2\n";
 		print "  --send-digests              - send pending email digests\n";
@@ -412,12 +412,16 @@
 			else
 				Debug::log("WARNING: please backup your database before continuing.");
 
-			Debug::log("Type 'yes' to continue.");
+			if ($options["update-schema"] != "force-yes") {
+				Debug::log("Type 'yes' to continue.");
 
-			if (read_stdin() != 'yes')
-				exit;
+				if (read_stdin() != 'yes')
+					exit;
+			} else {
+				Debug::log("Proceeding to update without confirmation...");
+			}
 
-			Debug::log("Performing updates to version " . SCHEMA_VERSION);
+			Debug::log("Performing updates to version " . SCHEMA_VERSION . "...");
 
 			for ($i = $updater->getSchemaVersion() + 1; $i <= SCHEMA_VERSION; $i++) {
 				Debug::log("* Updating to version $i...");
@@ -430,10 +434,11 @@
 					Debug::log("One of the updates failed. Either retry the process or perform updates manually.");
 					return;
 				}
-
 			}
+
+			Debug::log("All done.");
 		} else {
-			Debug::log("Update not required.");
+			Debug::log("Database schema is already at latest version.");
 		}
 
 	}

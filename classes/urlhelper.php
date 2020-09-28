@@ -64,13 +64,6 @@ class UrlHelper {
 		if (!in_array(strtolower($tokens['scheme']), ['http', 'https']))
 			return false;
 
-		if ($tokens['path']) {
-			$tokens['path'] = implode("/",
-										array_map("rawurlencode",
-											array_map("rawurldecode",
-												explode("/", $tokens['path']))));
-		}
-
 		//convert IDNA hostname to punycode if possible
 		if (function_exists("idn_to_ascii")) {
 			if (mb_detect_encoding($tokens['host']) != 'ASCII') {
@@ -78,9 +71,21 @@ class UrlHelper {
 			}
 		}
 
-		$url = self::build_url($tokens);
+		// separate set of tokens with urlencoded 'path' because filter_var() rightfully fails on non-latin characters
+		// (used for validation only, we actually request the original URL, in case of urlencode breaking it)
+		$tokens_filter_var = $tokens;
 
-		if (filter_var($url, FILTER_VALIDATE_URL) === false)
+		if ($tokens['path']) {
+			$tokens_filter_var['path'] = implode("/",
+										array_map("rawurlencode",
+											array_map("rawurldecode",
+												explode("/", $tokens['path']))));
+		}
+
+		$url = self::build_url($tokens);
+		$url_filter_var = self::build_url($tokens_filter_var);
+
+		if (filter_var($url_filter_var, FILTER_VALIDATE_URL) === false)
 			return false;
 
 		if ($extended_filtering) {

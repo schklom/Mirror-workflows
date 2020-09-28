@@ -155,40 +155,54 @@ class RSSUtils {
 				$log = function_exists("flock") && isset($options['log']) ? '--log '.$options['log'] : '';
 				$log_level = isset($options['log-level']) ? '--log-level '.$options['log-level'] : '';
 
-				$exit_code = 0;
-				passthru(PHP_EXECUTABLE . " update.php --update-feed " . $tline["id"] . " --pidlock feed-" . $tline["id"] . " $quiet $log $log_level", $exit_code);
+				/* shared hosting may have this disabled and it's not strictly required */
+				if (self::function_enabled('passthru')) {
+					$exit_code = 0;
 
-				/* try {
-					self::update_rss_feed($tline["id"], true, false);
-				} catch (PDOException $e) {
-					Logger::get()->log_error(E_USER_NOTICE, $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString());
+					passthru(PHP_EXECUTABLE . " update.php --update-feed " . $tline["id"] . " --pidlock feed-" . $tline["id"] . " $quiet $log $log_level", $exit_code);
 
+					Debug::log(sprintf("<= %.4f (sec) exit code: %d", microtime(true) - $fstarted, $exit_code));
+
+					// -1 can be caused by a SIGCHLD handler which daemon master process installs (not every setup, apparently)
+					if ($exit_code != 0 && $exit_code != -1) {
+						$esth = $pdo->prepare("SELECT last_error FROM ttrss_feeds WHERE id = ?");
+						$esth->execute([$tline["id"]]);
+
+						if ($erow = $esth->fetch()) {
+							$error_message = $erow["last_error"];
+						} else {
+							$error_message = "N/A";
+						}
+
+						Debug::log("!! Last error: $error_message");
+
+						Logger::get()->log(
+							sprintf("Update process for feed %d (%s, owner UID: %d) failed with exit code: %d (%s).",
+								$tline["id"], clean($tline["title"]), $tline["owner_uid"], $exit_code, clean($error_message)));
+					}
+
+				} else {
 					try {
-						$pdo->rollback();
+						if (!self::update_rss_feed($tline["id"], true)) {
+							global $fetch_last_error;
+
+							Logger::get()->log(
+								sprintf("Update request for feed %d (%s, owner UID: %d) failed: %s.",
+									$tline["id"], clean($tline["title"]), $tline["owner_uid"], clean($fetch_last_error)));
+						}
+
+						Debug::log(sprintf("<= %.4f (sec) (not using a separate process)", microtime(true) - $fstarted));
+
 					} catch (PDOException $e) {
-						// it doesn't matter if there wasn't actually anything to rollback, PDO Exception can be
-						// thrown outside of an active transaction during feed update
+						Logger::get()->log_error(E_USER_NOTICE, $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString());
+
+						try {
+							$pdo->rollback();
+						} catch (PDOException $e) {
+							// it doesn't matter if there wasn't actually anything to rollback, PDO Exception can be
+							// thrown outside of an active transaction during feed update
+						}
 					}
-				} */
-
-				Debug::log(sprintf("<= %.4f (sec) exit code: %d", microtime(true) - $fstarted, $exit_code));
-
-				// -1 can be caused by a SIGCHLD handler which daemon master process installs (not every setup, apparently)
-				if ($exit_code != 0 && $exit_code != -1) {
-					$esth = $pdo->prepare("SELECT last_error FROM ttrss_feeds WHERE id = ?");
-					$esth->execute([$tline["id"]]);
-
-					if ($erow = $esth->fetch()) {
-						$error_message = $erow["last_error"];
-					} else {
-						$error_message = "N/A";
-					}
-
-					Debug::log("!! Last error: $error_message");
-
-					Logger::get()->log(
-						sprintf("Update process for feed %d (%s, owner UID: %d) failed with exit code: %d (%s).",
-							$tline["id"], clean($tline["title"]), $tline["owner_uid"], $exit_code, clean($error_message)));
 				}
 
 				++$nf;
@@ -1795,5 +1809,10 @@ class RSSUtils {
 		}
 
 		return implode(",", $tokens);
+	}
+
+	static function function_enabled($func) {
+		return !in_array($func,
+						explode(',', (string)ini_get('disable_functions')));
 	}
 }

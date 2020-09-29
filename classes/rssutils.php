@@ -29,6 +29,28 @@ class RSSUtils {
 		$pdo->query("DELETE FROM ttrss_feedbrowser_cache");
 	}
 
+	static function cleanup_feed_icons() {
+		$pdo = Db::pdo();
+		$sth = $pdo->prepare("SELECT id FROM ttrss_feeds WHERE id = ?");
+
+		// check icon files once every CACHE_MAX_DAYS days
+		$icon_files = array_filter(glob(ICONS_DIR . "/*.ico"),
+			function($f) { return filemtime($f) < time() - 86400*CACHE_MAX_DAYS; });
+
+		foreach ($icon_files as $icon) {
+			$feed_id = basename($icon, ".ico");
+
+			$sth->execute([$feed_id]);
+
+			if ($sth->fetch()) {
+				@touch($icon);
+			} else {
+				Debug::log("Removing orphaned feed icon: $icon");
+				unlink($icon);
+			}
+		}
+	}
+
 	static function update_daemon_common($limit = DAEMON_FEED_LIMIT, $options = []) {
 		$schema_version = get_schema_version();
 
@@ -1564,6 +1586,7 @@ class RSSUtils {
 		self::expire_error_log();
 		self::expire_feed_archive();
 		self::cleanup_feed_browser();
+		self::cleanup_feed_icons();
 
 		Article::purge_orphans();
 		self::cleanup_counters_cache();

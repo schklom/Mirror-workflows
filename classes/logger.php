@@ -30,9 +30,9 @@ class Logger {
 			return false;
 	}
 
-	function log($string, $context = "") {
+	function log($errno, $errstr, $context = "") {
 		if ($this->adapter)
-			return $this->adapter->log_error(E_USER_NOTICE, $string, '', 0, $context);
+			return $this->adapter->log_error($errno, $errstr, '', 0, $context);
 		else
 			return false;
 	}

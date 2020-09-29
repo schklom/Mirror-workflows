@@ -709,7 +709,7 @@ class RPC extends Handler_Protected {
 				$log_interval = "created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)";
 			}
 
-			$sth = $pdo->prepare("SELECT COUNT(id) AS cid FROM ttrss_error_log WHERE $log_interval");
+			$sth = $pdo->prepare("SELECT COUNT(id) AS cid FROM ttrss_error_log WHERE errno != 1024 AND $log_interval");
 			$sth->execute();
 
 			if ($row = $sth->fetch()) {

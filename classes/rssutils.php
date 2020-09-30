@@ -1582,6 +1582,43 @@ class RSSUtils {
 		$pdo->query("DELETE FROM ttrss_cat_counters_cache");
 	}
 
+	static function disable_failed_feeds() {
+		if (defined('DAEMON_UNSUCCESSFUL_DAYS_LIMIT') && DAEMON_UNSUCCESSFUL_DAYS_LIMIT > 0) {
+
+			$pdo = Db::pdo();
+
+			$pdo->beginTransaction();
+
+			$days = (int) DAEMON_UNSUCCESSFUL_DAYS_LIMIT;
+
+			if (DB_TYPE == "pgsql") {
+				$interval_query = "last_successful_update < NOW() - INTERVAL '$days days'";
+			} else if (DB_TYPE == "mysql") {
+				$interval_query = "last_successful_update < DATE_SUB(NOW(), INTERVAL $days DAY)";
+			}
+
+			$sth = $pdo->prepare("SELECT id, title, owner_uid
+				FROM ttrss_feeds
+				WHERE update_interval != -1 AND last_successful_update IS NOT NULL AND $interval_query");
+
+			$sth->execute();
+
+			while ($row = $sth->fetch()) {
+				Logger::get()->log(E_USER_NOTICE,
+					sprintf("Auto disabling feed %d (%s, UID: %d) because it failed to update for %d days.",
+						$row["id"], clean($row["title"]), $row["owner_uid"], DAEMON_UNSUCCESSFUL_DAYS_LIMIT));
+
+				Debug::log(sprintf("Auto-disabling feed %d (failed to update for %d days).", $row["id"], DAEMON_UNSUCCESSFUL_DAYS_LIMIT));
+			}
+
+			$sth = $pdo->prepare("UPDATE ttrss_feeds SET update_interval = -1 WHERE
+				update_interval != -1 AND last_successful_update IS NOT NULL AND $interval_query");
+			$sth->execute();
+
+			$pdo->commit();
+		}
+	}
+
 	static function housekeeping_user($owner_uid) {
 		$tmph = new PluginHost();
 
@@ -1598,6 +1635,7 @@ class RSSUtils {
 		self::expire_feed_archive();
 		self::cleanup_feed_browser();
 		self::cleanup_feed_icons();
+		self::disable_failed_feeds();
 
 		Article::purge_orphans();
 		self::cleanup_counters_cache();

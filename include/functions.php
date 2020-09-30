@@ -72,6 +72,9 @@
 	// this is used to not cause excessive load on the origin server on
 	// e.g. feed subscription when all articles are being processes
 	// (not implemented)
+	define_default('DAEMON_UNSUCCESSFUL_DAYS_LIMIT', 30);
+	// automatically disable updates for feeds which failed to
+	// update for this amount of days; 0 disables
 
 	/* tunables end here */
 

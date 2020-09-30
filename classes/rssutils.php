@@ -497,15 +497,21 @@ class RSSUtils {
 			Debug::log("unable to fetch: $fetch_last_error [$fetch_last_error_code]", Debug::$LOG_VERBOSE);
 
 			// If-Modified-Since
-			if ($fetch_last_error_code != 304) {
-				$error_message = $fetch_last_error;
-			} else {
+			if ($fetch_last_error_code == 304) {
 				Debug::log("source claims data not modified, nothing to do.", Debug::$LOG_VERBOSE);
 				$error_message = "";
+
+				$sth = $pdo->prepare("UPDATE ttrss_feeds SET last_error = ?,
+					last_successful_update = NOW(),
+					last_updated = NOW() WHERE id = ?");
+
+			} else {
+				$error_message = $fetch_last_error;
+
+				$sth = $pdo->prepare("UPDATE ttrss_feeds SET last_error = ?,
+					last_updated = NOW() WHERE id = ?");
 			}
 
-			$sth = $pdo->prepare("UPDATE ttrss_feeds SET last_error = ?,
-					last_updated = NOW() WHERE id = ?");
 			$sth->execute([$error_message, $feed]);
 
 			return $error_message == "";
@@ -1232,8 +1238,11 @@ class RSSUtils {
 
 			Feeds::purge_feed($feed, 0);
 
-			$sth = $pdo->prepare("UPDATE ttrss_feeds
-				SET last_updated = NOW(), last_unconditional = NOW(), last_error = '' WHERE id = ?");
+			$sth = $pdo->prepare("UPDATE ttrss_feeds SET
+				last_updated = NOW(),
+				last_unconditional = NOW(),
+				last_successful_update = NOW(),
+				last_error = '' WHERE id = ?");
 			$sth->execute([$feed]);
 
 		} else {
@@ -1248,8 +1257,10 @@ class RSSUtils {
 				}
 			}
 
-			$sth = $pdo->prepare("UPDATE ttrss_feeds SET last_error = ?,
-				last_updated = NOW(), last_unconditional = NOW() WHERE id = ?");
+			$sth = $pdo->prepare("UPDATE ttrss_feeds SET
+				last_error = ?,
+				last_updated = NOW(),
+				last_unconditional = NOW() WHERE id = ?");
 			$sth->execute([$error_msg, $feed]);
 
 			unset($rss);

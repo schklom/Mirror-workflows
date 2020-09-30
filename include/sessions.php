@@ -19,7 +19,7 @@
 	ini_set("session.name", $session_name);
 	ini_set("session.use_only_cookies", true);
 	ini_set("session.gc_maxlifetime", $session_expire);
-	ini_set("session.cookie_lifetime", min(0, SESSION_COOKIE_LIFETIME));
+	ini_set("session.cookie_lifetime", 0);
 
 	function session_get_schema_version() {
 		global $schema_version;

@@ -91,7 +91,7 @@
 			"log-level:",
 			"indexes",
 			"pidlock:",
-			"update-schema:",
+			"update-schema::",
 			"convert-filters",
 			"force-update",
 			"gen-search-idx",
@@ -145,7 +145,7 @@
 		print "  --log FILE                  - log messages to FILE\n";
 		print "  --log-level N               - log verbosity level\n";
 		print "  --indexes                   - recreate missing schema indexes\n";
-		print "  --update-schema [force-yes] - update database schema (without prompting)\n";
+		print "  --update-schema[=force-yes] - update database schema (without prompting)\n";
 		print "  --gen-search-idx            - generate basic PostgreSQL fulltext search index\n";
 		print "  --convert-filters           - convert type1 filters to type2\n";
 		print "  --send-digests              - send pending email digests\n";

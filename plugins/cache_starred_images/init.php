@@ -190,7 +190,7 @@ class Cache_Starred_Images extends Plugin {
 		$has_images = false;
 		$success = false;
 
-        if ($doc->loadHTML('<?xml encoding="UTF-8">' . $content)) {
+        if (@$doc->loadHTML('<?xml encoding="UTF-8">' . $content)) {
 			$xpath = new DOMXPath($doc);
 			$entries = $xpath->query('(//img[@src])|(//video/source[@src])');
 

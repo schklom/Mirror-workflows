@@ -1341,9 +1341,9 @@ class RSSUtils {
 	static function cache_media($html, $site_url) {
 		$cache = new DiskCache("images");
 
-		if ($cache->isWritable()) {
+		if ($html && $cache->isWritable()) {
 			$doc = new DOMDocument();
-			if ($doc->loadHTML($html)) {
+			if (@$doc->loadHTML($html)) {
 				$xpath = new DOMXPath($doc);
 
 				$entries = $xpath->query('(//img[@src]|//source[@src|@srcset]|//video[@poster|@src])');
@@ -1829,7 +1829,7 @@ class RSSUtils {
 		if ($html = @UrlHelper::fetch($url)) {
 
 			$doc = new DOMDocument();
-			if ($doc->loadHTML($html)) {
+			if (@$doc->loadHTML($html)) {
 				$xpath = new DOMXPath($doc);
 
 				$base = $xpath->query('/html/head/base[@href]');

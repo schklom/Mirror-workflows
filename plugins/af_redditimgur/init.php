@@ -24,7 +24,7 @@ class Af_RedditImgur extends Plugin {
 	function hook_prefs_tab($args) {
 		if ($args != "prefFeeds") return;
 
-		print "<div dojoType=\"dijit.layout.AccordionPane\" 
+		print "<div dojoType=\"dijit.layout.AccordionPane\"
 			title=\"<i class='material-icons'>extension</i> ".__('Reddit content settings (af_redditimgur)')."\">";
 
 		$enable_readability = $this->host->get($this, "enable_readability");
@@ -111,7 +111,7 @@ class Af_RedditImgur extends Plugin {
 						if ($oembed_result && isset($oembed_result["html"])) {
 
 							$tmp = new DOMDocument();
-							if ($tmp->loadHTML('<?xml encoding="utf-8" ?>' . $oembed_result["html"])) {
+							if (@$tmp->loadHTML('<?xml encoding="utf-8" ?>' . $oembed_result["html"])) {
 								$p = $doc->createElement("p");
 
 								$p->appendChild($doc->importNode(

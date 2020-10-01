@@ -286,7 +286,7 @@ class DiskCache {
 		if (!$res) return '';
 
 		$doc = new DOMDocument();
-		if ($doc->loadHTML('<?xml encoding="UTF-8">' . $res)) {
+		if (@$doc->loadHTML('<?xml encoding="UTF-8">' . $res)) {
 			$xpath = new DOMXPath($doc);
 			$cache = new DiskCache("images");
 

@@ -1930,7 +1930,7 @@ class Feeds extends Handler_Protected {
 		$feedUrls = [];
 
 		$doc = new DOMDocument();
-		if ($doc->loadHTML($content)) {
+		if (@$doc->loadHTML($content)) {
 			$xpath = new DOMXPath($doc);
 			$entries = $xpath->query('/html/head/link[@rel="alternate" and '.
 				'(contains(@type,"rss") or contains(@type,"atom"))]|/html/head/link[@rel="feed"]');

@@ -103,6 +103,7 @@
 					"es_ES" => "Español (España)",
 					"es_LA" => "Español",
 					"de_DE" => "Deutsch",
+					"fa"    => "Persian (Farsi)",
 					"fr_FR" => "Français",
 					"hu_HU" => "Magyar (Hungarian)",
 					"it_IT" => "Italiano",

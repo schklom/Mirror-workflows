@@ -1,7 +1,7 @@
 <?php
 class API extends Handler {
 
-	const API_LEVEL  = 14;
+	const API_LEVEL  = 15;
 
 	const STATUS_OK  = 0;
 	const STATUS_ERR = 1;
@@ -397,8 +397,12 @@ class API extends Handler {
 	function catchupFeed() {
 		$feed_id = clean($_REQUEST["feed_id"]);
 		$is_cat = clean($_REQUEST["is_cat"]);
+		@$mode = clean($_REQUEST["mode"]);
 
-		Feeds::catchup_feed($feed_id, $is_cat);
+		if (!in_array($mode, ["all", "1day", "1week", "2week"]))
+			$mode = "all";
+
+		Feeds::catchup_feed($feed_id, $is_cat, $_SESSION["uid"], $mode);
 
 		$this->wrap(self::STATUS_OK, array("status" => "OK"));
 	}

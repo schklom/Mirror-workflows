@@ -8,15 +8,17 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-28 08:08+0300\n"
-"PO-Revision-Date: 2019-12-03 15:38+0000\n"
+"PO-Revision-Date: 2020-10-03 17:41+0000\n"
 "Last-Translator: Андрій Жук <zhouck@gmail.com>\n"
-"Language-Team: Ukrainian <https://weblate.tt-rss.org/projects/tt-rss/messages/uk/>\n"
+"Language-Team: Ukrainian <https://weblate.tt-rss.org/projects/tt-rss/"
+"messages/uk/>\n"
 "Language: uk_UA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 3.7.1\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.2.2\n"
 
 #: backend.php:58
 msgid "Use default"
@@ -501,23 +503,20 @@ msgid "Open previous feed"
 msgstr "Відкрити попередній канал"
 
 #: include/functions.php:1030
-#, fuzzy
 msgid "Open next article (in combined mode, scroll down)"
-msgstr "Відкрити наступну статтю (не прокручувати довгі статті)"
+msgstr "Відкрити наступну статтю (в комбінованому режимі, прокрутка вниз)"
 
 #: include/functions.php:1031
-#, fuzzy
 msgid "Open previous article (in combined mode, scroll up)"
-msgstr "Відкрити попередню статтю (не прокручувати довгі статті)"
+msgstr "Відкрити попередню статтю (в комбінованому режимі, прокрутка вверх)"
 
 #: include/functions.php:1032
 msgid "Scroll article by one page down"
-msgstr ""
+msgstr "Прокрутити статті на одну сторінку вниз"
 
 #: include/functions.php:1033
-#, fuzzy
 msgid "Scroll article by one page up"
-msgstr "Обрати статті в групі"
+msgstr "Прокрутити статті на одну сторінку вгору"
 
 #: include/functions.php:1034
 msgid "Open next article"
@@ -585,14 +584,12 @@ msgid "Scroll up"
 msgstr "Гортати уверх"
 
 #: include/functions.php:1049
-#, fuzzy
 msgid "Scroll down page"
-msgstr "Гортати донизу"
+msgstr "Прокрутити вниз"
 
 #: include/functions.php:1050
-#, fuzzy
 msgid "Scroll up page"
-msgstr "Гортати уверх"
+msgstr "Прокрутити вгору"
 
 #: include/functions.php:1051
 msgid "Select article under cursor"
@@ -612,7 +609,7 @@ msgstr "Перемкнути розтягнення статті (комбіно
 
 #: include/functions.php:1056
 msgid "Toggle full article text via Readability"
-msgstr ""
+msgstr "Переключити на повний текст статті через Readability"
 
 #: include/functions.php:1057
 msgid "Article selection"
@@ -1352,7 +1349,8 @@ msgstr "Завершено."
 #: classes/handler/public.php:1189
 #, php-format
 msgid "Tiny Tiny RSS database needs update to the latest version (%d to %d)."
-msgstr "База даних Tiny Tiny RSS  потребує оновлення до останньої версії  (з %d до %d)."
+msgstr ""
+"База даних Tiny Tiny RSS потребує оновлення до останньої версії (з %d до %d)."
 
 #: classes/handler/public.php:1201
 msgid "Perform updates"
@@ -2098,21 +2096,20 @@ msgstr "Змінити пароль"
 #, php-format
 msgid "Authentication module used for this session (<b>%s</b>) does not provide an ability to set passwords."
 msgstr ""
+"Модуль автентифікації, що використовується для цієї сесії (<b>%s</b>), не "
+"дає можливості встановлювати паролі."
 
 #: classes/pref/prefs.php:410
-#, fuzzy
 msgid "App passwords"
-msgstr "Старий пароль:"
+msgstr "Паролі додатків"
 
 #: classes/pref/prefs.php:422
-#, fuzzy
 msgid "Generate new password"
-msgstr "Створити нове посилання"
+msgstr "Створити новий пароль"
 
 #: classes/pref/prefs.php:426
-#, fuzzy
 msgid "Remove selected passwords"
-msgstr "Вилучити обрані профілі"
+msgstr "Вилучити обрані паролі"
 
 #: classes/pref/prefs.php:430
 msgid "One time passwords / Authenticator"
@@ -2128,18 +2125,16 @@ msgid "Disable OTP"
 msgstr "Вимкнути OTP"
 
 #: classes/pref/prefs.php:480
-#, fuzzy
 msgid "Scan the following code by the Authenticator application or copy the key manually"
-msgstr "Відскануйте наступний код Автентифікатором:"
+msgstr "Відскануйте наступний код Автентифікатором чи скопіюйте ключ руками"
 
 #: classes/pref/prefs.php:486
-#, fuzzy
 msgid "Use the following OTP key with a compatible Authenticator application"
-msgstr "Відскануйте наступний код Автентифікатором:"
+msgstr "Використовуйте наступний ключ OTP з сумісною програмою Автентифікатором"
 
 #: classes/pref/prefs.php:494
 msgid "OTP Key:"
-msgstr ""
+msgstr "Ключ OTP (одноразовий):"
 
 #: classes/pref/prefs.php:527
 msgid "One time password:"
@@ -2199,6 +2194,9 @@ msgstr "Скинути на типові"
 #, php-format
 msgid "The following plugins use per-feed content hooks. This may cause excessive data usage and origin server load resulting in a ban of your instance: <b>%s</b>"
 msgstr ""
+"Наступні плагіни використовують хуки вмісту для кожного каналу. Це може "
+"призвести до надмірного використання даних з серверів, і може мати наслідком "
+"бан вашої інсталяції: <b>%s</b>"
 
 #: classes/pref/prefs.php:875
 msgid "System plugins"
@@ -2238,15 +2236,16 @@ msgstr "Ви можете перевизначати кольори, шрифт�
 #: classes/pref/prefs.php:1146
 msgid "User CSS has been applied, you might need to reload the page to see all changes."
 msgstr ""
+"Користувацькі стилі застосовано, можливо треба перезавантажити сторінку, щоб "
+"побачити всі зміни."
 
 #: classes/pref/prefs.php:1154
 msgid "Apply"
-msgstr ""
+msgstr "Застосувати"
 
 #: classes/pref/prefs.php:1156
-#, fuzzy
 msgid "Save and reload"
-msgstr "Позначити статті вище як прочитані"
+msgstr "Зберегти й перезавантажити"
 
 #: classes/pref/prefs.php:1181
 msgid "Create profile"
@@ -2270,19 +2269,19 @@ msgid "Description"
 msgstr "Опис"
 
 #: classes/pref/prefs.php:1291
-#, fuzzy
 msgid "Created"
-msgstr "Створити"
+msgstr "Створено"
 
 #: classes/pref/prefs.php:1292
-#, fuzzy
 msgid "Last used"
-msgstr "Останнє оновлення:"
+msgstr "Останні використані"
 
 #: classes/pref/prefs.php:1345
 #, php-format
 msgid "Generated password <strong>%s</strong> for %s. Please remember it for future reference."
 msgstr ""
+"Створено пароль <strong>%s</strong> для %s. Запам’ятайте для подальшого "
+"використання."
 
 #: classes/pref/system.php:8
 #: classes/pref/users.php:6
@@ -2408,9 +2407,8 @@ msgid "The following comics are currently supported:"
 msgstr "Наступні комікси наразі підтримуються:"
 
 #: plugins/af_proxy_http/init.php:212
-#, fuzzy
 msgid "Image proxy settings (af_proxy_http)"
-msgstr "Налаштування проксі картинок (af_zz_imgproxy)"
+msgstr "Налаштування проксі картинок (af_proxy_http)"
 
 #: plugins/af_proxy_http/init.php:236
 msgid "Enable proxy for all remote images."
@@ -2478,9 +2476,8 @@ msgid "Inline content"
 msgstr "Вбудовувати вміст"
 
 #: plugins/af_readability/init.php:56
-#, fuzzy
 msgid "Toggle full article text"
-msgstr "Вбудувати вміст статті"
+msgstr "Показати повний текст статті"
 
 #: plugins/af_readability/init.php:63
 msgid "Readability settings (af_readability)"
@@ -2488,7 +2485,9 @@ msgstr "Налаштування Readability (af_readability)"
 
 #: plugins/af_readability/init.php:98
 msgid "Provide full-text services to core code (bookmarklets) and other plugins"
-msgstr "Надає повнотекстові сервіси до основного коду (букмарклетів)  та інших плагінів"
+msgstr ""
+"Надає повнотекстові сервіси до основного коду (букмарклетів) та інших "
+"плагінів"
 
 #: plugins/af_readability/init.php:129
 msgid "Readability"
@@ -2611,7 +2610,7 @@ msgstr "Неприйнятно на роботі (клацніть, щоб пе�
 
 #: plugins/nsfw/init.php:53
 msgid "NSFW Plugin"
-msgstr "NSFW  (Обережно-цицьки-на-екрані) додаток"
+msgstr "NSFW (Непристойно-на-роботі) додаток"
 
 #: plugins/nsfw/init.php:80
 msgid "Tags to consider NSFW (comma-separated)"
@@ -2826,17 +2825,17 @@ msgstr "Не вдається оновити заголовки (отриман�
 #, perl-format
 msgid "Delete %d selected article in %s?"
 msgid_plural "Delete %d selected articles in %s?"
-msgstr[0] "Видалити  %d виділену статтю в %s?"
-msgstr[1] "Видалити  %d виділені статті в %s?"
-msgstr[2] "Видалити  %d виділених статей в %s?"
+msgstr[0] "Видалити %d виділену статтю в %s?"
+msgstr[1] "Видалити %d виділені статті в %s?"
+msgstr[2] "Видалити %d виділених статей в %s?"
 
 #: js/Headlines.js:1005
 #, perl-format
 msgid "Delete %d selected article?"
 msgid_plural "Delete %d selected articles?"
-msgstr[0] "Видалити  %d виділену статтю?"
-msgstr[1] "Видалити  %d виділені статті?"
-msgstr[2] "Видалити  %d виділених статтей?"
+msgstr[0] "Видалити %d виділену статтю?"
+msgstr[1] "Видалити %d виділені статті?"
+msgstr[2] "Видалити %d виділених статей?"
 
 #: js/Headlines.js:1145
 #, perl-format
@@ -2850,9 +2849,9 @@ msgstr[2] "Архівувати %d виділених статей в %s?"
 #, perl-format
 msgid "Move %d archived article back?"
 msgid_plural "Move %d archived articles back?"
-msgstr[0] "Перемістити  %d архівовану статтю назад?"
-msgstr[1] "Перемістити  %d архівовані статті назад?"
-msgstr[2] "Перемістити  %d архівованих статей назад?"
+msgstr[0] "Перемістити %d архівовану статтю назад?"
+msgstr[1] "Перемістити %d архівовані статті назад?"
+msgstr[2] "Перемістити %d архівованих статей назад?"
 
 #: js/Headlines.js:1149
 msgid "Please note that unstarred articles might get purged on next feed update."
@@ -2990,9 +2989,8 @@ msgid "Remove selected filters?"
 msgstr "Видалити обрані фільтри?"
 
 #: js/PrefHelpers.js:17
-#, fuzzy
 msgid "Remove selected app passwords?"
-msgstr "Видалити виділені категорії?"
+msgstr "Видалити виділені паролі додатків?"
 
 #: js/PrefHelpers.js:42
 msgid "This will invalidate all previously generated feed URLs. Continue?"
@@ -3051,9 +3049,8 @@ msgid "Please enable mail or mailto plugin first."
 msgstr "Будь ласка, увімкніть додаток mail чи mailto."
 
 #: js/tt-rss.js:484
-#, fuzzy
 msgid "Please enable af_readability first."
-msgstr "Будь ласка, увімкніть додаток mail чи mailto."
+msgstr "Будь ласка, увімкніть af_readability."
 
 #: js/tt-rss.js:497
 #: js/tt-rss.js:584
@@ -3356,9 +3353,8 @@ msgid "Removing selected users..."
 msgstr "Видалення виділених користувачі..."
 
 #: plugins/af_readability/init.js:29
-#, fuzzy
 msgid "Unable to fetch full text for this article"
-msgstr "Будь ласка, вкажіть нову оцінку цієї статті:"
+msgstr "Не вдалося витягнути повний текст для цієї статті"
 
 #: plugins/note/note.js:14
 msgid "Saving article note..."

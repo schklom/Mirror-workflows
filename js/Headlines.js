@@ -517,6 +517,7 @@ const Headlines = {
 		this.row_observer.observe(tmp.firstChild, {attributes: true});
 
 		PluginHost.run(PluginHost.HOOK_HEADLINE_RENDERED, tmp.firstChild);
+		PluginHost.run(PluginHost.HOOK_ARTICLE_RENDERED_CDM, tmp.firstChild);
 
 		return tmp.firstChild;
 	},

@@ -239,7 +239,7 @@ class Af_Proxy_Http extends Plugin {
 	function save() {
 		$proxy_all = checkbox_to_sql_bool($_POST["proxy_all"]);
 
-		$this->host->set($this, "proxy_all", $proxy_all, false);
+		$this->host->set($this, "proxy_all", $proxy_all);
 
 		echo __("Configuration saved");
 	}

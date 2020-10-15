@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-15 16:27+0300\n"
-"PO-Revision-Date: 2020-10-15 13:25+0000\n"
+"PO-Revision-Date: 2020-10-15 17:22+0000\n"
 "Last-Translator: Dario Di Ludovico <dario@diludovico.it>\n"
 "Language-Team: Italian <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "it/>\n"
@@ -475,9 +475,8 @@ msgid "Does not display images in articles, reduces automatic refreshes."
 msgstr "Non mostra le immagini negli articoli, riduce i refresh automatici."
 
 #: include/login_form.php:154
-#, fuzzy
 msgid "Safe mode (no plugins)"
-msgstr "Plugin di sistema"
+msgstr "Modalità sicura (plugins disattivati)"
 
 #: include/login_form.php:163
 msgid "Remember me"
@@ -565,12 +564,10 @@ msgid "Open previous article (in combined mode, scroll up)"
 msgstr "Apri l'articolo precedente (non scorrere gli articoli lunghi)"
 
 #: classes/rpc.php:757
-#, fuzzy
 msgid "Scroll headlines by one page down"
 msgstr "Scorri gli articoli con PgDwn"
 
 #: classes/rpc.php:758
-#, fuzzy
 msgid "Scroll headlines by one page up"
 msgstr "Scorri gli articoli con PgUp"
 
@@ -583,23 +580,20 @@ msgid "Open previous article"
 msgstr "Apri l'articolo precedente"
 
 #: classes/rpc.php:761
-#, fuzzy
 msgid "Move to next article (don't expand)"
-msgstr "Passa all'articolo successivo (senza espandere o segnare come letto)"
+msgstr "Passa all'articolo successivo (senza espandere)"
 
 #: classes/rpc.php:762
-#, fuzzy
 msgid "Move to previous article (don't expand)"
-msgstr "Passa all'articolo precedente (senza espandere o segnare come letto)"
+msgstr "Passa all'articolo precedente (senza espandere)"
 
 #: classes/rpc.php:763
 msgid "Show search dialog"
 msgstr "Mostra il campo di ricerca"
 
 #: classes/rpc.php:764
-#, fuzzy
 msgid "Cancel active search"
-msgstr "Annulla ricerca"
+msgstr "Annulla la ricerca"
 
 #: classes/rpc.php:765
 msgid "Article"

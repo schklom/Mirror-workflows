@@ -9,16 +9,16 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-15 16:27+0300\n"
-"PO-Revision-Date: 2020-02-28 14:59+0000\n"
+"PO-Revision-Date: 2020-10-15 17:22+0000\n"
 "Last-Translator: Ptsa Daniel <ptsa1987@gmail.com>\n"
-"Language-Team: Chinese (Simplified) <https://weblate.tt-rss.org/projects/tt-"
-"rss/messages/zh_Hans/>\n"
+"Language-Team: Chinese (Simplified) <https://weblate.tt-rss.org/projects/"
+"tt-rss/messages/zh_Hans/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 3.11.2\n"
+"X-Generator: Weblate 4.2.2\n"
 
 #: backend.php:57
 msgid "Use default"
@@ -461,9 +461,8 @@ msgid "Does not display images in articles, reduces automatic refreshes."
 msgstr "不显示文章中的图片，减少自动刷新。"
 
 #: include/login_form.php:154
-#, fuzzy
 msgid "Safe mode (no plugins)"
-msgstr "系统插件"
+msgstr "安全模式（无插件）"
 
 #: include/login_form.php:163
 msgid "Remember me"
@@ -551,14 +550,12 @@ msgid "Open previous article (in combined mode, scroll up)"
 msgstr "打开上一篇文章（在合并模式下，向上滚动）"
 
 #: classes/rpc.php:757
-#, fuzzy
 msgid "Scroll headlines by one page down"
-msgstr "将文章向下滚动一页"
+msgstr "将标题向下翻一页"
 
 #: classes/rpc.php:758
-#, fuzzy
 msgid "Scroll headlines by one page up"
-msgstr "将文章向上滚动一页"
+msgstr "将标题向上翻一页"
 
 #: classes/rpc.php:759
 msgid "Open next article"
@@ -569,23 +566,20 @@ msgid "Open previous article"
 msgstr "显示前一篇文章"
 
 #: classes/rpc.php:761
-#, fuzzy
 msgid "Move to next article (don't expand)"
-msgstr "跳转至下一篇文章 (不要展开或标记为已读)"
+msgstr "打开下一篇文章 (不要展开)"
 
 #: classes/rpc.php:762
-#, fuzzy
 msgid "Move to previous article (don't expand)"
-msgstr "跳转至前一篇文章 (不要展开或标记为已读)"
+msgstr "打开上一篇文章 (不要展开)"
 
 #: classes/rpc.php:763
 msgid "Show search dialog"
 msgstr "显示搜索对话框"
 
 #: classes/rpc.php:764
-#, fuzzy
 msgid "Cancel active search"
-msgstr "取消搜索"
+msgstr "取消活动搜索"
 
 #: classes/rpc.php:765
 msgid "Article"

@@ -10,7 +10,8 @@ msgstr ""
 "POT-Creation-Date: 2020-10-15 16:27+0300\n"
 "PO-Revision-Date: 2019-12-10 18:38+0000\n"
 "Last-Translator: Nikolay Korotkiy <sikmir@gmail.com>\n"
-"Language-Team: Esperanto <https://weblate.tt-rss.org/projects/tt-rss/messages/eo/>\n"
+"Language-Team: Esperanto <https://weblate.tt-rss.org/projects/tt-rss/"
+"messages/eo/>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -50,49 +51,39 @@ msgstr ""
 msgid "Default interval"
 msgstr "Defaŭlta intervalo"
 
-#: backend.php:67
-#: backend.php:77
+#: backend.php:67 backend.php:77
 msgid "Disable updates"
 msgstr ""
 
-#: backend.php:68
-#: backend.php:78
+#: backend.php:68 backend.php:78
 msgid "15 minutes"
 msgstr "15 minutoj"
 
-#: backend.php:69
-#: backend.php:79
+#: backend.php:69 backend.php:79
 msgid "30 minutes"
 msgstr "30 minutoj"
 
-#: backend.php:70
-#: backend.php:80
+#: backend.php:70 backend.php:80
 msgid "Hourly"
 msgstr ""
 
-#: backend.php:71
-#: backend.php:81
+#: backend.php:71 backend.php:81
 msgid "4 hours"
 msgstr "4 horoj"
 
-#: backend.php:72
-#: backend.php:82
+#: backend.php:72 backend.php:82
 msgid "12 hours"
 msgstr "12 horoj"
 
-#: backend.php:73
-#: backend.php:83
+#: backend.php:73 backend.php:83
 msgid "Daily"
 msgstr "Ĉiutage"
 
-#: backend.php:74
-#: backend.php:84
+#: backend.php:74 backend.php:84
 msgid "Weekly"
 msgstr "Semajne"
 
-#: backend.php:87
-#: classes/pref/users.php:47
-#: classes/pref/system.php:52
+#: backend.php:87 classes/pref/users.php:47 classes/pref/system.php:52
 msgid "User"
 msgstr "Uzanto"
 
@@ -105,11 +96,15 @@ msgid "Administrator"
 msgstr "Administranto"
 
 #: errors.php:9
-msgid "This program requires XmlHttpRequest to function properly. Your browser doesn't seem to support it."
+msgid ""
+"This program requires XmlHttpRequest to function properly. Your browser "
+"doesn't seem to support it."
 msgstr ""
 
 #: errors.php:12
-msgid "This program requires cookies to function properly. Your browser doesn't seem to support them."
+msgid ""
+"This program requires cookies to function properly. Your browser doesn't "
+"seem to support them."
 msgstr ""
 
 #: errors.php:15
@@ -121,7 +116,9 @@ msgid "Frontend sanity check failed."
 msgstr ""
 
 #: errors.php:19
-msgid "Incorrect database schema version. &lt;a href='db-updater.php'&gt;Please update&lt;/a&gt;."
+msgid ""
+"Incorrect database schema version. &lt;a href='db-updater.php'&gt;Please "
+"update&lt;/a&gt;."
 msgstr ""
 
 #: errors.php:21
@@ -133,7 +130,9 @@ msgid "No operation to perform."
 msgstr ""
 
 #: errors.php:25
-msgid "Could not display feed: query failed. Please check label match syntax or local configuration."
+msgid ""
+"Could not display feed: query failed. Please check label match syntax or "
+"local configuration."
 msgstr ""
 
 #: errors.php:27
@@ -145,7 +144,9 @@ msgid "Configuration check failed"
 msgstr ""
 
 #: errors.php:31
-msgid "Your version of MySQL is not currently supported. Please see official site for more information."
+msgid ""
+"Your version of MySQL is not currently supported. Please see official site "
+"for more information."
 msgstr ""
 
 #: errors.php:35
@@ -164,36 +165,18 @@ msgstr "Kromprogramo ne trovita"
 msgid "Encoding data as JSON failed"
 msgstr ""
 
-#: index.php:136
-#: index.php:151
-#: index.php:274
-#: prefs.php:121
-#: classes/pref/filters.php:796
-#: classes/pref/labels.php:281
-#: classes/pref/feeds.php:1269
-#: js/App.js:318
-#: js/CommonDialogs.js:299
-#: js/CommonDialogs.js:379
-#: js/Feeds.js:359
-#: js/Feeds.js:437
-#: js/Headlines.js:306
-#: js/PrefFeedTree.js:127
-#: js/PrefFeedTree.js:134
-#: js/PrefFeedTree.js:251
-#: js/PrefFeedTree.js:320
-#: js/PrefFilterTree.js:98
-#: js/PrefHelpers.js:26
-#: js/PrefHelpers.js:38
-#: js/PrefHelpers.js:62
-#: js/PrefHelpers.js:111
-#: js/PrefHelpers.js:184
-#: plugins/af_readability/init.js:17
+#: index.php:136 index.php:151 index.php:274 prefs.php:121
+#: classes/pref/filters.php:796 classes/pref/labels.php:281
+#: classes/pref/feeds.php:1269 js/App.js:318 js/CommonDialogs.js:299
+#: js/CommonDialogs.js:379 js/Feeds.js:359 js/Feeds.js:437 js/Headlines.js:306
+#: js/PrefFeedTree.js:127 js/PrefFeedTree.js:134 js/PrefFeedTree.js:251
+#: js/PrefFeedTree.js:320 js/PrefFilterTree.js:98 js/PrefHelpers.js:26
+#: js/PrefHelpers.js:38 js/PrefHelpers.js:62 js/PrefHelpers.js:111
+#: js/PrefHelpers.js:184 plugins/af_readability/init.js:17
 msgid "Loading, please wait..."
 msgstr ""
 
-#: index.php:165
-#: js/App.js:415
-#: js/App.js:421
+#: index.php:165 js/App.js:415 js/App.js:421
 msgid "Communication problem with server."
 msgstr ""
 
@@ -217,21 +200,15 @@ msgstr ""
 msgid "All Articles"
 msgstr "Ĉiuj artikoloj"
 
-#: index.php:190
-#: classes/rpc.php:807
-#: classes/feeds.php:74
+#: index.php:190 classes/rpc.php:807 classes/feeds.php:74
 msgid "Starred"
 msgstr ""
 
-#: index.php:191
-#: classes/rpc.php:808
-#: classes/feeds.php:75
+#: index.php:191 classes/rpc.php:808 classes/feeds.php:75
 msgid "Published"
 msgstr "Eldonita"
 
-#: index.php:192
-#: classes/feeds.php:67
-#: classes/feeds.php:73
+#: index.php:192 classes/feeds.php:67 classes/feeds.php:73
 msgid "Unread"
 msgstr "Nelegita"
 
@@ -263,12 +240,8 @@ msgstr "Plej malnova unue"
 msgid "Title"
 msgstr "Titolo"
 
-#: index.php:216
-#: index.php:250
-#: classes/rpc.php:795
-#: classes/feeds.php:79
-#: js/FeedTree.js:89
-#: js/FeedTree.js:119
+#: index.php:216 index.php:250 classes/rpc.php:795 classes/feeds.php:79
+#: js/FeedTree.js:89 js/FeedTree.js:119
 msgid "Mark as read"
 msgstr "Marki kiel legita"
 
@@ -300,8 +273,7 @@ msgstr "Serĉi…"
 msgid "Feed actions:"
 msgstr ""
 
-#: index.php:246
-#: classes/handler/public.php:781
+#: index.php:246 classes/handler/public.php:781
 msgid "Subscribe to feed..."
 msgstr ""
 
@@ -309,9 +281,7 @@ msgstr ""
 msgid "Edit this feed..."
 msgstr ""
 
-#: index.php:248
-#: classes/pref/feeds.php:797
-#: classes/pref/feeds.php:1242
+#: index.php:248 classes/pref/feeds.php:797 classes/pref/feeds.php:1242
 #: js/PrefFeedTree.js:63
 msgid "Unsubscribe"
 msgstr "Malaboni"
@@ -328,8 +298,7 @@ msgstr ""
 msgid "Other actions:"
 msgstr "Aliaj agoj:"
 
-#: index.php:253
-#: classes/rpc.php:781
+#: index.php:253 classes/rpc.php:781
 msgid "Toggle widescreen mode"
 msgstr ""
 
@@ -341,10 +310,7 @@ msgstr ""
 msgid "Logout"
 msgstr "Elsaluto"
 
-#: prefs.php:31
-#: prefs.php:138
-#: classes/rpc.php:811
-#: classes/pref/prefs.php:558
+#: prefs.php:31 prefs.php:138 classes/rpc.php:811 classes/pref/prefs.php:558
 msgid "Preferences"
 msgstr "Agordoj"
 
@@ -356,22 +322,16 @@ msgstr "Fulmoklavoj"
 msgid "Exit preferences"
 msgstr ""
 
-#: prefs.php:141
-#: classes/pref/prefs.php:28
-#: classes/pref/feeds.php:127
-#: classes/pref/feeds.php:1177
-#: classes/pref/feeds.php:1231
+#: prefs.php:141 classes/pref/prefs.php:28 classes/pref/feeds.php:127
+#: classes/pref/feeds.php:1177 classes/pref/feeds.php:1231
 msgid "Feeds"
 msgstr "Fluoj"
 
-#: prefs.php:145
-#: classes/pref/filters.php:240
+#: prefs.php:145 classes/pref/filters.php:240
 msgid "Filters"
 msgstr "Filtriloj"
 
-#: prefs.php:149
-#: classes/pref/labels.php:85
-#: classes/feeds.php:1377
+#: prefs.php:149 classes/pref/labels.php:85 classes/feeds.php:1377
 msgid "Labels"
 msgstr ""
 
@@ -383,8 +343,7 @@ msgstr "Uzantoj"
 msgid "System"
 msgstr "Sistemo"
 
-#: register.php:183
-#: include/login_form.php:178
+#: register.php:183 include/login_form.php:178
 msgid "Create new account"
 msgstr ""
 
@@ -392,29 +351,21 @@ msgstr ""
 msgid "New user registrations are administratively disabled."
 msgstr ""
 
-#: register.php:193
-#: register.php:238
-#: register.php:251
-#: register.php:266
-#: register.php:285
-#: register.php:332
-#: register.php:342
-#: register.php:354
-#: classes/handler/public.php:799
-#: classes/handler/public.php:849
-#: classes/handler/public.php:873
-#: classes/handler/public.php:965
-#: classes/handler/public.php:995
-#: classes/handler/public.php:1068
-#: classes/handler/public.php:1165
-#: classes/handler/public.php:1177
-#: classes/handler/public.php:1182
-#: classes/handler/public.php:1206
+#: register.php:193 register.php:238 register.php:251 register.php:266
+#: register.php:285 register.php:332 register.php:342 register.php:354
+#: classes/handler/public.php:799 classes/handler/public.php:849
+#: classes/handler/public.php:873 classes/handler/public.php:965
+#: classes/handler/public.php:995 classes/handler/public.php:1068
+#: classes/handler/public.php:1165 classes/handler/public.php:1177
+#: classes/handler/public.php:1182 classes/handler/public.php:1206
 msgid "Return to Tiny Tiny RSS"
 msgstr ""
 
 #: register.php:214
-msgid "Your temporary password will be sent to the specified email. Accounts, which were not logged in once, are erased automatically 24 hours after temporary password is sent."
+msgid ""
+"Your temporary password will be sent to the specified email. Accounts, which "
+"were not logged in once, are erased automatically 24 hours after temporary "
+"password is sent."
 msgstr ""
 
 #: register.php:220
@@ -425,8 +376,7 @@ msgstr ""
 msgid "Check availability"
 msgstr ""
 
-#: register.php:225
-#: classes/handler/public.php:980
+#: register.php:225 classes/handler/public.php:980
 msgid "Email:"
 msgstr "Retpoŝtadreso:"
 
@@ -462,19 +412,13 @@ msgstr ""
 msgid "Tiny Tiny RSS data update script."
 msgstr ""
 
-#: include/controls.php:85
-#: classes/pref/filters.php:209
-#: classes/pref/filters.php:220
-#: classes/pref/filters.php:535
+#: include/controls.php:85 classes/pref/filters.php:209
+#: classes/pref/filters.php:220 classes/pref/filters.php:535
 msgid "All feeds"
 msgstr "Ĉiuj fluoj"
 
-#: include/controls.php:138
-#: include/controls.php:230
-#: classes/opml.php:544
-#: classes/pref/feeds.php:246
-#: classes/feeds.php:1389
-#: classes/digest.php:124
+#: include/controls.php:138 include/controls.php:230 classes/opml.php:544
+#: classes/pref/feeds.php:246 classes/feeds.php:1389 classes/digest.php:124
 msgid "Uncategorized"
 msgstr ""
 
@@ -482,15 +426,12 @@ msgstr ""
 msgid "Detect automatically"
 msgstr ""
 
-#: include/login_form.php:104
-#: classes/pref/users.php:55
-#: classes/handler/public.php:640
-#: classes/handler/public.php:975
+#: include/login_form.php:104 classes/pref/users.php:55
+#: classes/handler/public.php:640 classes/handler/public.php:975
 msgid "Login:"
 msgstr "Salutnomo:"
 
-#: include/login_form.php:113
-#: classes/handler/public.php:647
+#: include/login_form.php:113 classes/handler/public.php:647
 msgid "Password:"
 msgstr "Pasvorto:"
 
@@ -502,9 +443,7 @@ msgstr "Mi forgesis mian pasvorton"
 msgid "Profile:"
 msgstr "Profilo:"
 
-#: include/login_form.php:133
-#: classes/rpc.php:69
-#: classes/pref/prefs.php:1218
+#: include/login_form.php:133 classes/rpc.php:69 classes/pref/prefs.php:1218
 #: classes/handler/public.php:272
 msgid "Default profile"
 msgstr "Defaŭlta profilo"
@@ -525,8 +464,7 @@ msgstr ""
 msgid "Remember me"
 msgstr "Memoru min"
 
-#: include/login_form.php:174
-#: classes/handler/public.php:660
+#: include/login_form.php:174 classes/handler/public.php:660
 msgid "Log in"
 msgstr "Ensaluti"
 
@@ -554,44 +492,28 @@ msgstr "Artikolo ne trovita."
 msgid "Tags for this article (separated by commas):"
 msgstr ""
 
-#: classes/article.php:182
-#: classes/pref/users.php:114
-#: classes/pref/filters.php:507
-#: classes/pref/labels.php:73
-#: classes/pref/feeds.php:798
-#: classes/pref/feeds.php:952
-#: plugins/af_readability/init.php:102
-#: plugins/note/init.php:53
-#: plugins/af_redditimgur/init.php:69
-#: plugins/af_psql_trgm/init.php:197
-#: plugins/nsfw/init.php:86
-#: plugins/af_proxy_http/init.php:232
+#: classes/article.php:182 classes/pref/users.php:114
+#: classes/pref/filters.php:507 classes/pref/labels.php:73
+#: classes/pref/feeds.php:798 classes/pref/feeds.php:952
+#: plugins/af_readability/init.php:102 plugins/note/init.php:53
+#: plugins/af_redditimgur/init.php:69 plugins/af_psql_trgm/init.php:197
+#: plugins/nsfw/init.php:86 plugins/af_proxy_http/init.php:232
 #: plugins/mail/init.php:66
 msgid "Save"
 msgstr "Konservi"
 
-#: classes/article.php:184
-#: classes/pref/users.php:116
-#: classes/pref/filters.php:510
-#: classes/pref/filters.php:932
-#: classes/pref/filters.php:1011
-#: classes/pref/filters.php:1104
-#: classes/pref/labels.php:75
-#: classes/pref/prefs.php:1171
-#: classes/pref/prefs.php:1268
-#: classes/pref/feeds.php:799
-#: classes/pref/feeds.php:955
-#: classes/pref/feeds.php:1684
-#: classes/feeds.php:698
-#: classes/feeds.php:739
-#: classes/handler/public.php:618
-#: plugins/note/init.php:55
-#: plugins/mail/init.php:182
+#: classes/article.php:184 classes/pref/users.php:116
+#: classes/pref/filters.php:510 classes/pref/filters.php:932
+#: classes/pref/filters.php:1011 classes/pref/filters.php:1104
+#: classes/pref/labels.php:75 classes/pref/prefs.php:1171
+#: classes/pref/prefs.php:1268 classes/pref/feeds.php:799
+#: classes/pref/feeds.php:955 classes/pref/feeds.php:1684 classes/feeds.php:698
+#: classes/feeds.php:739 classes/handler/public.php:618
+#: plugins/note/init.php:55 plugins/mail/init.php:182
 msgid "Cancel"
 msgstr "Nuligi"
 
-#: classes/article.php:268
-#: classes/article.php:534
+#: classes/article.php:268 classes/article.php:534
 msgid "no tags"
 msgstr ""
 
@@ -660,18 +582,15 @@ msgstr ""
 msgid "Article"
 msgstr "Artikolo"
 
-#: classes/rpc.php:766
-#: js/Headlines.js:1246
+#: classes/rpc.php:766 js/Headlines.js:1246
 msgid "Toggle starred"
 msgstr ""
 
-#: classes/rpc.php:767
-#: js/Headlines.js:1258
+#: classes/rpc.php:767 js/Headlines.js:1258
 msgid "Toggle published"
 msgstr ""
 
-#: classes/rpc.php:768
-#: js/Headlines.js:1233
+#: classes/rpc.php:768 js/Headlines.js:1233
 msgid "Toggle unread"
 msgstr ""
 
@@ -683,13 +602,11 @@ msgstr ""
 msgid "Open in new window"
 msgstr ""
 
-#: classes/rpc.php:771
-#: js/Headlines.js:1279
+#: classes/rpc.php:771 js/Headlines.js:1279
 msgid "Mark below as read"
 msgstr ""
 
-#: classes/rpc.php:772
-#: js/Headlines.js:1272
+#: classes/rpc.php:772 js/Headlines.js:1272
 msgid "Mark above as read"
 msgstr ""
 
@@ -757,9 +674,7 @@ msgstr ""
 msgid "Deselect everything"
 msgstr ""
 
-#: classes/rpc.php:790
-#: classes/pref/feeds.php:529
-#: classes/pref/feeds.php:818
+#: classes/rpc.php:790 classes/pref/feeds.php:529 classes/pref/feeds.php:818
 msgid "Feed"
 msgstr "Fluo"
 
@@ -771,14 +686,11 @@ msgstr ""
 msgid "Un/hide read feeds"
 msgstr ""
 
-#: classes/rpc.php:793
-#: classes/pref/feeds.php:1234
+#: classes/rpc.php:793 classes/pref/feeds.php:1234
 msgid "Subscribe to feed"
 msgstr ""
 
-#: classes/rpc.php:794
-#: js/PrefFeedTree.js:57
-#: js/FeedTree.js:96
+#: classes/rpc.php:794 js/PrefFeedTree.js:57 js/FeedTree.js:96
 #: js/Headlines.js:1402
 msgid "Edit feed"
 msgstr "Redakti fluon"
@@ -799,8 +711,7 @@ msgstr ""
 msgid "Debug viewfeed()"
 msgstr ""
 
-#: classes/rpc.php:800
-#: js/FeedTree.js:144
+#: classes/rpc.php:800 js/FeedTree.js:144
 msgid "Mark all feeds as read"
 msgstr ""
 
@@ -820,8 +731,7 @@ msgstr ""
 msgid "Go to"
 msgstr ""
 
-#: classes/rpc.php:805
-#: classes/feeds.php:1245
+#: classes/rpc.php:805 classes/feeds.php:1245
 msgid "All articles"
 msgstr "Ĉiuj artikoloj"
 
@@ -829,14 +739,11 @@ msgstr "Ĉiuj artikoloj"
 msgid "Fresh"
 msgstr ""
 
-#: classes/rpc.php:809
-#: classes/feeds.php:1249
+#: classes/rpc.php:809 classes/feeds.php:1249
 msgid "Recently read"
 msgstr ""
 
-#: classes/rpc.php:810
-#: js/App.js:1094
-#: js/App.js:1171
+#: classes/rpc.php:810 js/App.js:1094 js/App.js:1171
 msgid "Tag cloud"
 msgstr ""
 
@@ -844,13 +751,11 @@ msgstr ""
 msgid "Other"
 msgstr "Alia"
 
-#: classes/rpc.php:813
-#: classes/pref/labels.php:266
+#: classes/rpc.php:813 classes/pref/labels.php:266
 msgid "Create label"
 msgstr ""
 
-#: classes/rpc.php:814
-#: classes/pref/filters.php:775
+#: classes/rpc.php:814 classes/pref/filters.php:775
 msgid "Create filter"
 msgstr ""
 
@@ -862,17 +767,10 @@ msgstr ""
 msgid "Show help dialog"
 msgstr ""
 
-#: classes/dlg.php:30
-#: classes/dlg.php:57
-#: classes/dlg.php:89
-#: classes/dlg.php:153
-#: classes/dlg.php:187
-#: classes/dlg.php:204
-#: classes/pref/filters.php:172
-#: classes/pref/feeds.php:1495
-#: classes/pref/feeds.php:1555
-#: classes/backend.php:87
-#: plugins/af_psql_trgm/init.php:111
+#: classes/dlg.php:30 classes/dlg.php:57 classes/dlg.php:89 classes/dlg.php:153
+#: classes/dlg.php:187 classes/dlg.php:204 classes/pref/filters.php:172
+#: classes/pref/feeds.php:1495 classes/pref/feeds.php:1555
+#: classes/backend.php:87 plugins/af_psql_trgm/init.php:111
 #: plugins/share/init.php:133
 msgid "Close this window"
 msgstr "Fermi ĉi tiun fenestron"
@@ -881,23 +779,26 @@ msgstr "Fermi ĉi tiun fenestron"
 msgid "Your Public OPML URL is:"
 msgstr ""
 
-#: classes/dlg.php:54
-#: classes/dlg.php:184
-#: plugins/share/init.php:130
+#: classes/dlg.php:54 classes/dlg.php:184 plugins/share/init.php:130
 msgid "Generate new URL"
 msgstr ""
 
 #: classes/dlg.php:68
-msgid "Update daemon is enabled in configuration, but daemon process is not running, which prevents all feeds from updating. Please start the daemon process or contact instance owner."
+msgid ""
+"Update daemon is enabled in configuration, but daemon process is not "
+"running, which prevents all feeds from updating. Please start the daemon "
+"process or contact instance owner."
 msgstr ""
 
-#: classes/dlg.php:72
-#: classes/dlg.php:81
+#: classes/dlg.php:72 classes/dlg.php:81
 msgid "Last update:"
 msgstr "Lasta ĝisdatigo:"
 
 #: classes/dlg.php:77
-msgid "Update daemon is taking too long to perform a feed update. This could indicate a problem like crash or a hang. Please check the daemon process or contact instance owner."
+msgid ""
+"Update daemon is taking too long to perform a feed update. This could "
+"indicate a problem like crash or a hang. Please check the daemon process or "
+"contact instance owner."
 msgstr ""
 
 #: classes/dlg.php:170
@@ -905,27 +806,24 @@ msgstr ""
 msgid "%s can be accessed via the following secret URL:"
 msgstr ""
 
-#: classes/dlg.php:181
-#: classes/pref/filters.php:1005
-#: classes/pref/prefs.php:768
-#: classes/pref/prefs.php:879
-#: classes/pref/prefs.php:913
-#: classes/pref/prefs.php:959
-#: classes/pref/prefs.php:974
+#: classes/dlg.php:181 classes/pref/filters.php:1005 classes/pref/prefs.php:768
+#: classes/pref/prefs.php:879 classes/pref/prefs.php:913
+#: classes/pref/prefs.php:959 classes/pref/prefs.php:974
 #: plugins/bookmarklets/init.php:45
 msgid "More info..."
 msgstr "Pli da informoj…"
 
 #: classes/dlg.php:196
-msgid "You are using default tt-rss password. Please change it in the Preferences (Personal data / Authentication)."
+msgid ""
+"You are using default tt-rss password. Please change it in the Preferences "
+"(Personal data / Authentication)."
 msgstr ""
 
 #: classes/dlg.php:201
 msgid "Open Preferences"
 msgstr ""
 
-#: classes/opml.php:28
-#: classes/opml.php:32
+#: classes/opml.php:28 classes/opml.php:32
 msgid "OPML Utility"
 msgstr ""
 
@@ -993,8 +891,7 @@ msgstr ""
 msgid "Error while parsing document."
 msgstr ""
 
-#: classes/pref/users.php:6
-#: classes/pref/system.php:8
+#: classes/pref/users.php:6 classes/pref/system.php:8
 msgid "Your access level is insufficient to open this tab."
 msgstr ""
 
@@ -1002,10 +899,8 @@ msgstr ""
 msgid "Edit user"
 msgstr ""
 
-#: classes/pref/users.php:63
-#: classes/pref/feeds.php:651
-#: classes/pref/feeds.php:886
-#: classes/pref/feeds.php:1665
+#: classes/pref/users.php:63 classes/pref/feeds.php:651
+#: classes/pref/feeds.php:886 classes/pref/feeds.php:1665
 #: plugins/auth_internal/init.php:69
 msgid "Authentication"
 msgstr ""
@@ -1014,21 +909,17 @@ msgstr ""
 msgid "Access level: "
 msgstr ""
 
-#: classes/pref/users.php:82
-#: classes/pref/prefs.php:388
+#: classes/pref/users.php:82 classes/pref/prefs.php:388
 msgid "New password:"
 msgstr "Nova pasvorto:"
 
-#: classes/pref/users.php:90
-#: classes/pref/filters.php:457
-#: classes/pref/filters.php:903
-#: classes/pref/feeds.php:682
+#: classes/pref/users.php:90 classes/pref/filters.php:457
+#: classes/pref/filters.php:903 classes/pref/feeds.php:682
 #: classes/pref/feeds.php:908
 msgid "Options"
 msgstr ""
 
-#: classes/pref/users.php:94
-#: classes/pref/prefs.php:310
+#: classes/pref/users.php:94 classes/pref/prefs.php:310
 msgid "E-mail:"
 msgstr ""
 
@@ -1036,8 +927,7 @@ msgstr ""
 msgid "User details"
 msgstr ""
 
-#: classes/pref/users.php:148
-#: classes/pref/users.php:390
+#: classes/pref/users.php:148 classes/pref/users.php:390
 msgid "Registered"
 msgstr ""
 
@@ -1053,8 +943,7 @@ msgstr ""
 msgid "Stored articles"
 msgstr ""
 
-#: classes/pref/users.php:162
-#: classes/pref/users.php:389
+#: classes/pref/users.php:162 classes/pref/users.php:389
 msgid "Subscribed feeds"
 msgstr ""
 
@@ -1082,58 +971,35 @@ msgstr ""
 msgid "Changed password of user %s to %s"
 msgstr ""
 
-#: classes/pref/users.php:330
-#: classes/pref/filters.php:762
-#: classes/pref/feeds.php:1218
-#: classes/feeds.php:738
-#: js/Feeds.js:567
+#: classes/pref/users.php:330 classes/pref/filters.php:762
+#: classes/pref/feeds.php:1218 classes/feeds.php:738 js/Feeds.js:567
 msgid "Search"
 msgstr "Serĉi"
 
-#: classes/pref/users.php:340
-#: classes/pref/filters.php:358
-#: classes/pref/filters.php:418
-#: classes/pref/filters.php:766
-#: classes/pref/filters.php:852
-#: classes/pref/filters.php:881
-#: classes/pref/labels.php:257
-#: classes/pref/prefs.php:1180
-#: classes/pref/prefs.php:1290
-#: classes/pref/feeds.php:1222
-#: classes/pref/feeds.php:1450
-#: classes/pref/feeds.php:1507
+#: classes/pref/users.php:340 classes/pref/filters.php:358
+#: classes/pref/filters.php:418 classes/pref/filters.php:766
+#: classes/pref/filters.php:852 classes/pref/filters.php:881
+#: classes/pref/labels.php:257 classes/pref/prefs.php:1180
+#: classes/pref/prefs.php:1290 classes/pref/feeds.php:1222
+#: classes/pref/feeds.php:1450 classes/pref/feeds.php:1507
 msgid "Select"
 msgstr ""
 
-#: classes/pref/users.php:343
-#: classes/pref/filters.php:361
-#: classes/pref/filters.php:421
-#: classes/pref/filters.php:769
-#: classes/pref/filters.php:855
-#: classes/pref/filters.php:884
-#: classes/pref/labels.php:260
-#: classes/pref/prefs.php:1183
-#: classes/pref/prefs.php:1293
-#: classes/pref/feeds.php:1225
-#: classes/pref/feeds.php:1453
-#: classes/pref/feeds.php:1510
-#: classes/feeds.php:66
+#: classes/pref/users.php:343 classes/pref/filters.php:361
+#: classes/pref/filters.php:421 classes/pref/filters.php:769
+#: classes/pref/filters.php:855 classes/pref/filters.php:884
+#: classes/pref/labels.php:260 classes/pref/prefs.php:1183
+#: classes/pref/prefs.php:1293 classes/pref/feeds.php:1225
+#: classes/pref/feeds.php:1453 classes/pref/feeds.php:1510 classes/feeds.php:66
 msgid "All"
 msgstr "Ĉiuj"
 
-#: classes/pref/users.php:345
-#: classes/pref/filters.php:363
-#: classes/pref/filters.php:423
-#: classes/pref/filters.php:771
-#: classes/pref/filters.php:857
-#: classes/pref/filters.php:886
-#: classes/pref/labels.php:262
-#: classes/pref/prefs.php:1185
-#: classes/pref/prefs.php:1295
-#: classes/pref/feeds.php:1227
-#: classes/pref/feeds.php:1455
-#: classes/pref/feeds.php:1512
-#: classes/feeds.php:69
+#: classes/pref/users.php:345 classes/pref/filters.php:363
+#: classes/pref/filters.php:423 classes/pref/filters.php:771
+#: classes/pref/filters.php:857 classes/pref/filters.php:886
+#: classes/pref/labels.php:262 classes/pref/prefs.php:1185
+#: classes/pref/prefs.php:1295 classes/pref/feeds.php:1227
+#: classes/pref/feeds.php:1455 classes/pref/feeds.php:1512 classes/feeds.php:69
 msgid "None"
 msgstr "Nenio"
 
@@ -1141,29 +1007,22 @@ msgstr "Nenio"
 msgid "Create user"
 msgstr "Krei uzanton"
 
-#: classes/pref/users.php:352
-#: classes/pref/filters.php:781
+#: classes/pref/users.php:352 classes/pref/filters.php:781
 msgid "Edit"
 msgstr ""
 
-#: classes/pref/users.php:354
-#: classes/pref/filters.php:500
-#: classes/pref/filters.php:788
-#: classes/pref/labels.php:269
+#: classes/pref/users.php:354 classes/pref/filters.php:500
+#: classes/pref/filters.php:788 classes/pref/labels.php:269
 #: classes/pref/feeds.php:781
 msgid "Remove"
 msgstr ""
 
-#: classes/pref/users.php:356
-#: classes/handler/public.php:994
+#: classes/pref/users.php:356 classes/handler/public.php:994
 msgid "Reset password"
 msgstr "Restarigi pasvorton"
 
-#: classes/pref/users.php:387
-#: classes/pref/feeds.php:657
-#: classes/pref/feeds.php:892
-#: classes/pref/feeds.php:1668
-#: classes/feeds.php:675
+#: classes/pref/users.php:387 classes/pref/feeds.php:657
+#: classes/pref/feeds.php:892 classes/pref/feeds.php:1668 classes/feeds.php:675
 msgid "Login"
 msgstr "Salutnomo"
 
@@ -1187,66 +1046,53 @@ msgstr ""
 msgid "No matching users found."
 msgstr ""
 
-#: classes/pref/filters.php:231
-#: classes/pref/filters.php:555
+#: classes/pref/filters.php:231 classes/pref/filters.php:555
 msgid "(inverse)"
 msgstr ""
 
-#: classes/pref/filters.php:227
-#: classes/pref/filters.php:554
+#: classes/pref/filters.php:227 classes/pref/filters.php:554
 #, php-format
 msgid "%s on %s in %s %s"
 msgstr ""
 
-#: classes/pref/filters.php:347
-#: classes/pref/filters.php:840
+#: classes/pref/filters.php:347 classes/pref/filters.php:840
 #: classes/pref/labels.php:25
 msgid "Caption"
 msgstr ""
 
-#: classes/pref/filters.php:352
-#: classes/pref/filters.php:846
+#: classes/pref/filters.php:352 classes/pref/filters.php:846
 #: classes/pref/filters.php:964
 msgid "Match"
 msgstr ""
 
-#: classes/pref/filters.php:367
-#: classes/pref/filters.php:427
-#: classes/pref/filters.php:861
-#: classes/pref/filters.php:890
+#: classes/pref/filters.php:367 classes/pref/filters.php:427
+#: classes/pref/filters.php:861 classes/pref/filters.php:890
 msgid "Add"
 msgstr ""
 
-#: classes/pref/filters.php:370
-#: classes/pref/filters.php:430
-#: classes/pref/filters.php:864
-#: classes/pref/filters.php:893
+#: classes/pref/filters.php:370 classes/pref/filters.php:430
+#: classes/pref/filters.php:864 classes/pref/filters.php:893
 #: classes/feeds.php:84
 msgid "Delete"
 msgstr "Forigi"
 
-#: classes/pref/filters.php:411
-#: classes/pref/filters.php:874
+#: classes/pref/filters.php:411 classes/pref/filters.php:874
 msgid "Apply actions"
 msgstr ""
 
-#: classes/pref/filters.php:468
-#: classes/pref/filters.php:909
+#: classes/pref/filters.php:468 classes/pref/filters.php:909
 msgid "Enabled"
 msgstr ""
 
-#: classes/pref/filters.php:479
-#: classes/pref/filters.php:914
+#: classes/pref/filters.php:479 classes/pref/filters.php:914
 msgid "Match any rule"
 msgstr ""
 
-#: classes/pref/filters.php:490
-#: classes/pref/filters.php:919
+#: classes/pref/filters.php:490 classes/pref/filters.php:919
 msgid "Inverse matching"
 msgstr ""
 
-#: classes/pref/filters.php:504
-#: classes/pref/filters.php:928
+#: classes/pref/filters.php:504 classes/pref/filters.php:928
 msgid "Test"
 msgstr ""
 
@@ -1254,8 +1100,7 @@ msgstr ""
 msgid "Combine"
 msgstr ""
 
-#: classes/pref/filters.php:784
-#: classes/pref/feeds.php:1238
+#: classes/pref/filters.php:784 classes/pref/feeds.php:1238
 #: classes/pref/feeds.php:1252
 msgid "Reset sort order"
 msgstr ""
@@ -1272,8 +1117,7 @@ msgstr ""
 msgid "on field"
 msgstr ""
 
-#: classes/pref/filters.php:987
-#: js/PrefFilterTree.js:46
+#: classes/pref/filters.php:987 js/PrefFilterTree.js:46
 msgid "in"
 msgstr ""
 
@@ -1281,8 +1125,7 @@ msgstr ""
 msgid "Save rule"
 msgstr ""
 
-#: classes/pref/filters.php:1008
-#: js/CommonFilters.js:132
+#: classes/pref/filters.php:1008 js/CommonFilters.js:132
 msgid "Add rule"
 msgstr ""
 
@@ -1298,8 +1141,7 @@ msgstr ""
 msgid "Save action"
 msgstr ""
 
-#: classes/pref/filters.php:1101
-#: js/CommonFilters.js:162
+#: classes/pref/filters.php:1101 js/CommonFilters.js:162
 msgid "Add action"
 msgstr ""
 
@@ -1350,8 +1192,7 @@ msgstr ""
 msgid "Clear colors"
 msgstr ""
 
-#: classes/pref/prefs.php:20
-#: classes/pref/feeds.php:521
+#: classes/pref/prefs.php:20 classes/pref/feeds.php:521
 msgid "General"
 msgstr ""
 
@@ -1480,7 +1321,9 @@ msgid "Long date format"
 msgstr ""
 
 #: classes/pref/prefs.php:88
-msgid "Syntax is identical to PHP <a href='http://php.net/manual/function.date.php'>date()</a> function."
+msgid ""
+"Syntax is identical to PHP <a href='http://php.net/manual/function.date."
+"php'>date()</a> function."
 msgstr ""
 
 #: classes/pref/prefs.php:89
@@ -1527,8 +1370,7 @@ msgstr ""
 msgid "SSL client certificate"
 msgstr ""
 
-#: classes/pref/prefs.php:97
-#: classes/pref/feeds.php:729
+#: classes/pref/prefs.php:97 classes/pref/feeds.php:729
 #: classes/pref/feeds.php:927
 msgid "Do not embed media"
 msgstr ""
@@ -1541,8 +1383,7 @@ msgstr ""
 msgid "Strip all but most common HTML tags when reading articles."
 msgstr ""
 
-#: classes/pref/prefs.php:99
-#: js/PrefHelpers.js:153
+#: classes/pref/prefs.php:99 js/PrefHelpers.js:153
 msgid "Customize stylesheet"
 msgstr ""
 
@@ -1598,11 +1439,8 @@ msgstr ""
 msgid "Save data"
 msgstr ""
 
-#: classes/pref/prefs.php:341
-#: classes/pref/feeds.php:665
-#: classes/pref/feeds.php:900
-#: classes/pref/feeds.php:1669
-#: classes/feeds.php:679
+#: classes/pref/prefs.php:341 classes/pref/feeds.php:665
+#: classes/pref/feeds.php:900 classes/pref/feeds.php:1669 classes/feeds.php:679
 msgid "Password"
 msgstr "Pasvorto"
 
@@ -1624,7 +1462,9 @@ msgstr "Ŝanĝi pasvorton"
 
 #: classes/pref/prefs.php:408
 #, php-format
-msgid "Authentication module used for this session (<b>%s</b>) does not provide an ability to set passwords."
+msgid ""
+"Authentication module used for this session (<b>%s</b>) does not provide an "
+"ability to set passwords."
 msgstr ""
 
 #: classes/pref/prefs.php:414
@@ -1646,8 +1486,7 @@ msgstr "Restarigi pasvorton"
 msgid "One time passwords / Authenticator"
 msgstr ""
 
-#: classes/pref/prefs.php:464
-#: classes/pref/prefs.php:525
+#: classes/pref/prefs.php:464 classes/pref/prefs.php:525
 msgid "Your password:"
 msgstr "Via pasvorto:"
 
@@ -1656,7 +1495,9 @@ msgid "Disable OTP"
 msgstr ""
 
 #: classes/pref/prefs.php:484
-msgid "Scan the following code by the Authenticator application or copy the key manually"
+msgid ""
+"Scan the following code by the Authenticator application or copy the key "
+"manually"
 msgstr ""
 
 #: classes/pref/prefs.php:490
@@ -1695,8 +1536,7 @@ msgstr ""
 msgid "Register"
 msgstr ""
 
-#: classes/pref/prefs.php:764
-#: classes/pref/system.php:44
+#: classes/pref/prefs.php:764 classes/pref/system.php:44
 msgid "Clear"
 msgstr ""
 
@@ -1721,22 +1561,23 @@ msgstr ""
 msgid "Reset to defaults"
 msgstr ""
 
-#: classes/pref/prefs.php:830
-#: classes/pref/feeds.php:786
+#: classes/pref/prefs.php:830 classes/pref/feeds.php:786
 msgid "Plugins"
 msgstr ""
 
 #: classes/pref/prefs.php:877
 #, php-format
-msgid "The following plugins use per-feed content hooks. This may cause excessive data usage and origin server load resulting in a ban of your instance: <b>%s</b>"
+msgid ""
+"The following plugins use per-feed content hooks. This may cause excessive "
+"data usage and origin server load resulting in a ban of your instance: <b>"
+"%s</b>"
 msgstr ""
 
 #: classes/pref/prefs.php:883
 msgid "System plugins"
 msgstr ""
 
-#: classes/pref/prefs.php:917
-#: classes/pref/prefs.php:963
+#: classes/pref/prefs.php:917 classes/pref/prefs.php:963
 #, php-format
 msgid "v%.2f, by %s"
 msgstr ""
@@ -1757,17 +1598,20 @@ msgstr ""
 msgid "Incorrect one time password"
 msgstr ""
 
-#: classes/pref/prefs.php:1074
-#: classes/pref/prefs.php:1128
+#: classes/pref/prefs.php:1074 classes/pref/prefs.php:1128
 msgid "Incorrect password"
 msgstr ""
 
 #: classes/pref/prefs.php:1152
-msgid "You can override colors, fonts and layout of your currently selected theme with custom CSS declarations here."
+msgid ""
+"You can override colors, fonts and layout of your currently selected theme "
+"with custom CSS declarations here."
 msgstr ""
 
 #: classes/pref/prefs.php:1159
-msgid "User CSS has been applied, you might need to reload the page to see all changes."
+msgid ""
+"User CSS has been applied, you might need to reload the page to see all "
+"changes."
 msgstr ""
 
 #: classes/pref/prefs.php:1167
@@ -1782,8 +1626,7 @@ msgstr ""
 msgid "Create profile"
 msgstr ""
 
-#: classes/pref/prefs.php:1213
-#: classes/pref/prefs.php:1233
+#: classes/pref/prefs.php:1213 classes/pref/prefs.php:1233
 msgid "(active)"
 msgstr ""
 
@@ -1811,17 +1654,17 @@ msgstr "Lasta ĝisdatigo:"
 
 #: classes/pref/prefs.php:1358
 #, php-format
-msgid "Generated password <strong>%s</strong> for %s. Please remember it for future reference."
+msgid ""
+"Generated password <strong>%s</strong> for %s. Please remember it for future "
+"reference."
 msgstr ""
 
 #: classes/pref/feeds.php:28
 msgid "Check to enable field"
 msgstr ""
 
-#: classes/pref/feeds.php:77
-#: classes/pref/feeds.php:232
-#: classes/pref/feeds.php:280
-#: classes/pref/feeds.php:286
+#: classes/pref/feeds.php:77 classes/pref/feeds.php:232
+#: classes/pref/feeds.php:280 classes/pref/feeds.php:286
 #: classes/pref/feeds.php:315
 #, php-format
 msgid "(%d feed)"
@@ -1833,8 +1676,7 @@ msgstr[1] "(%d fluoj)"
 msgid "Feed Title"
 msgstr ""
 
-#: classes/pref/feeds.php:548
-#: classes/handler/public.php:597
+#: classes/pref/feeds.php:548 classes/handler/public.php:597
 msgid "URL:"
 msgstr "URL:"
 
@@ -1842,10 +1684,8 @@ msgstr "URL:"
 msgid "Feed URL"
 msgstr ""
 
-#: classes/pref/feeds.php:571
-#: classes/pref/feeds.php:827
-#: classes/pref/feeds.php:1656
-#: classes/feeds.php:649
+#: classes/pref/feeds.php:571 classes/pref/feeds.php:827
+#: classes/pref/feeds.php:1656 classes/feeds.php:649
 msgid "Place in category:"
 msgstr ""
 
@@ -1857,53 +1697,45 @@ msgstr ""
 msgid "Site URL"
 msgstr ""
 
-#: classes/pref/feeds.php:603
-#: classes/pref/feeds.php:842
-#: classes/feeds.php:723
+#: classes/pref/feeds.php:603 classes/pref/feeds.php:842 classes/feeds.php:723
 msgid "Language:"
 msgstr "Lingvo:"
 
-#: classes/pref/feeds.php:612
-#: classes/pref/feeds.php:853
+#: classes/pref/feeds.php:612 classes/pref/feeds.php:853
 msgid "Update"
 msgstr ""
 
-#: classes/pref/feeds.php:621
-#: classes/pref/feeds.php:860
+#: classes/pref/feeds.php:621 classes/pref/feeds.php:860
 msgid "Interval:"
 msgstr ""
 
-#: classes/pref/feeds.php:634
-#: classes/pref/feeds.php:875
+#: classes/pref/feeds.php:634 classes/pref/feeds.php:875
 msgid "Article purging:"
 msgstr ""
 
 #: classes/pref/feeds.php:669
-msgid "<b>Hint:</b> you need to fill in your login information if your feed requires authentication, except for Twitter feeds."
+msgid ""
+"<b>Hint:</b> you need to fill in your login information if your feed "
+"requires authentication, except for Twitter feeds."
 msgstr ""
 
-#: classes/pref/feeds.php:680
-#: classes/feeds.php:691
+#: classes/pref/feeds.php:680 classes/feeds.php:691
 msgid "This feed requires authentication."
 msgstr ""
 
-#: classes/pref/feeds.php:698
-#: classes/pref/feeds.php:913
+#: classes/pref/feeds.php:698 classes/pref/feeds.php:913
 msgid "Include in e-mail digest"
 msgstr ""
 
-#: classes/pref/feeds.php:714
-#: classes/pref/feeds.php:920
+#: classes/pref/feeds.php:714 classes/pref/feeds.php:920
 msgid "Always display image attachments"
 msgstr ""
 
-#: classes/pref/feeds.php:744
-#: classes/pref/feeds.php:934
+#: classes/pref/feeds.php:744 classes/pref/feeds.php:934
 msgid "Cache media"
 msgstr ""
 
-#: classes/pref/feeds.php:759
-#: classes/pref/feeds.php:941
+#: classes/pref/feeds.php:759 classes/pref/feeds.php:941
 msgid "Mark updated articles as unread"
 msgstr ""
 
@@ -1911,8 +1743,7 @@ msgstr ""
 msgid "Icon"
 msgstr ""
 
-#: classes/pref/feeds.php:771
-#: classes/pref/feeds.php:1325
+#: classes/pref/feeds.php:771 classes/pref/feeds.php:1325
 msgid "Choose file..."
 msgstr ""
 
@@ -1932,8 +1763,7 @@ msgstr ""
 msgid "Edit selected feeds"
 msgstr ""
 
-#: classes/pref/feeds.php:1240
-#: js/PrefFeedTree.js:348
+#: classes/pref/feeds.php:1240 js/PrefFeedTree.js:348
 msgid "Batch subscribe"
 msgstr ""
 
@@ -1954,7 +1784,9 @@ msgid "OPML"
 msgstr ""
 
 #: classes/pref/feeds.php:1314
-msgid "Using OPML you can export and import your feeds, filters, labels and Tiny Tiny RSS settings."
+msgid ""
+"Using OPML you can export and import your feeds, filters, labels and Tiny "
+"Tiny RSS settings."
 msgstr ""
 
 #: classes/pref/feeds.php:1332
@@ -1974,11 +1806,15 @@ msgid "Published OPML"
 msgstr ""
 
 #: classes/pref/feeds.php:1353
-msgid "Your OPML can be published publicly and can be subscribed by anyone who knows the URL below."
+msgid ""
+"Your OPML can be published publicly and can be subscribed by anyone who "
+"knows the URL below."
 msgstr ""
 
 #: classes/pref/feeds.php:1355
-msgid "Published OPML does not include your Tiny Tiny RSS settings, feeds that require authentication or feeds hidden from Popular feeds."
+msgid ""
+"Published OPML does not include your Tiny Tiny RSS settings, feeds that "
+"require authentication or feeds hidden from Popular feeds."
 msgstr ""
 
 #: classes/pref/feeds.php:1357
@@ -1994,14 +1830,12 @@ msgid "Published & shared articles / Generated feeds"
 msgstr ""
 
 #: classes/pref/feeds.php:1368
-msgid "Published articles can be subscribed by anyone who knows the following URL:"
+msgid ""
+"Published articles can be subscribed by anyone who knows the following URL:"
 msgstr ""
 
-#: classes/pref/feeds.php:1373
-#: classes/feeds.php:36
-#: classes/feeds.php:37
-#: classes/feeds.php:103
-#: classes/feeds.php:104
+#: classes/pref/feeds.php:1373 classes/feeds.php:36 classes/feeds.php:37
+#: classes/feeds.php:103 classes/feeds.php:104
 msgid "Show as feed"
 msgstr ""
 
@@ -2013,13 +1847,11 @@ msgstr ""
 msgid "Clear all generated URLs"
 msgstr ""
 
-#: classes/pref/feeds.php:1476
-#: classes/pref/feeds.php:1533
+#: classes/pref/feeds.php:1476 classes/pref/feeds.php:1533
 msgid "Click to edit feed"
 msgstr ""
 
-#: classes/pref/feeds.php:1493
-#: classes/pref/feeds.php:1552
+#: classes/pref/feeds.php:1493 classes/pref/feeds.php:1552
 msgid "Unsubscribe from selected feeds"
 msgstr ""
 
@@ -2031,8 +1863,7 @@ msgstr ""
 msgid "Feeds require authentication."
 msgstr ""
 
-#: classes/pref/feeds.php:1683
-#: classes/feeds.php:696
+#: classes/pref/feeds.php:1683 classes/feeds.php:696
 #: classes/handler/public.php:796
 msgid "Subscribe"
 msgstr "Aboni"
@@ -2098,9 +1929,7 @@ msgstr ""
 msgid "Archive"
 msgstr "Arkivo"
 
-#: classes/feeds.php:90
-#: classes/feeds.php:95
-#: plugins/mailto/init.php:24
+#: classes/feeds.php:90 classes/feeds.php:95 plugins/mailto/init.php:24
 #: plugins/mail/init.php:76
 msgid "Forward by email"
 msgstr ""
@@ -2109,8 +1938,7 @@ msgstr ""
 msgid "Feed:"
 msgstr "Fluo:"
 
-#: classes/feeds.php:153
-#: classes/feeds.php:509
+#: classes/feeds.php:153 classes/feeds.php:509
 msgid "Feed not found."
 msgstr "Fluo ne trovita."
 
@@ -2118,8 +1946,7 @@ msgstr "Fluo ne trovita."
 msgid "Never"
 msgstr "Neniam"
 
-#: classes/feeds.php:265
-#: classes/feeds.php:1247
+#: classes/feeds.php:265 classes/feeds.php:1247
 msgid "Archived articles"
 msgstr ""
 
@@ -2145,21 +1972,22 @@ msgid "No starred articles found to display."
 msgstr ""
 
 #: classes/feeds.php:412
-msgid "No articles found to display. You can assign articles to labels manually from article header context menu (applies to all selected articles) or use a filter."
+msgid ""
+"No articles found to display. You can assign articles to labels manually "
+"from article header context menu (applies to all selected articles) or use a "
+"filter."
 msgstr ""
 
 #: classes/feeds.php:414
 msgid "No articles found to display."
 msgstr ""
 
-#: classes/feeds.php:431
-#: classes/feeds.php:585
+#: classes/feeds.php:431 classes/feeds.php:585
 #, php-format
 msgid "Feeds last updated at %s"
 msgstr ""
 
-#: classes/feeds.php:443
-#: classes/feeds.php:597
+#: classes/feeds.php:443 classes/feeds.php:597
 msgid "Some feeds have update errors (click for details)"
 msgstr ""
 
@@ -2214,8 +2042,7 @@ msgstr ""
 msgid "Search results: %s"
 msgstr ""
 
-#: classes/handler/public.php:519
-#: plugins/bookmarklets/init.php:41
+#: classes/handler/public.php:519 plugins/bookmarklets/init.php:41
 msgid "Share with Tiny Tiny RSS"
 msgstr ""
 
@@ -2285,7 +2112,9 @@ msgid "Password recovery"
 msgstr "Pasvorta reakiro"
 
 #: classes/handler/public.php:968
-msgid "You will need to provide valid account name and email. Password reset link will be sent to your email address."
+msgid ""
+"You will need to provide valid account name and email. Password reset link "
+"will be sent to your email address."
 msgstr ""
 
 #: classes/handler/public.php:988
@@ -2297,8 +2126,7 @@ msgstr "Kiom estas %d + %d:"
 msgid "Some of the required form parameters are missing or incorrect."
 msgstr ""
 
-#: classes/handler/public.php:1010
-#: classes/handler/public.php:1075
+#: classes/handler/public.php:1010 classes/handler/public.php:1075
 msgid "Go back"
 msgstr ""
 
@@ -2363,7 +2191,9 @@ msgid "Bookmarklets"
 msgstr ""
 
 #: plugins/bookmarklets/init.php:25
-msgid "Drag the link below to your browser toolbar, open the feed you're interested in in your browser and click on the link to subscribe to it."
+msgid ""
+"Drag the link below to your browser toolbar, open the feed you're interested "
+"in in your browser and click on the link to subscribe to it."
 msgstr ""
 
 #: plugins/bookmarklets/init.php:29
@@ -2395,17 +2225,16 @@ msgstr ""
 msgid "Readability settings (af_readability)"
 msgstr ""
 
-#: plugins/af_readability/init.php:69
-#: plugins/af_psql_trgm/init.php:166
+#: plugins/af_readability/init.php:69 plugins/af_psql_trgm/init.php:166
 msgid "Global settings"
 msgstr ""
 
 #: plugins/af_readability/init.php:98
-msgid "Provide full-text services to core code (bookmarklets) and other plugins"
+msgid ""
+"Provide full-text services to core code (bookmarklets) and other plugins"
 msgstr ""
 
-#: plugins/af_readability/init.php:112
-#: plugins/af_psql_trgm/init.php:207
+#: plugins/af_readability/init.php:112 plugins/af_psql_trgm/init.php:207
 msgid "Currently enabled for (click to edit):"
 msgstr ""
 
@@ -2417,8 +2246,7 @@ msgstr ""
 msgid "Inline article content"
 msgstr ""
 
-#: plugins/note/init.php:26
-#: plugins/note/note.js:10
+#: plugins/note/init.php:26 plugins/note/note.js:10
 msgid "Edit article note"
 msgstr ""
 
@@ -2434,15 +2262,12 @@ msgstr ""
 msgid "Old password is incorrect."
 msgstr ""
 
-#: plugins/mailto/init.php:47
-#: plugins/mailto/init.php:55
-#: plugins/mail/init.php:120
-#: plugins/mail/init.php:128
+#: plugins/mailto/init.php:47 plugins/mailto/init.php:55
+#: plugins/mail/init.php:120 plugins/mail/init.php:128
 msgid "[Forwarded]"
 msgstr ""
 
-#: plugins/mailto/init.php:47
-#: plugins/mail/init.php:120
+#: plugins/mailto/init.php:47 plugins/mail/init.php:120
 msgid "Multiple articles"
 msgstr ""
 
@@ -2455,7 +2280,8 @@ msgid "Forward selected article(s) by email."
 msgstr ""
 
 #: plugins/mailto/init.php:78
-msgid "You should be able to edit the message before sending in your mail client."
+msgid ""
+"You should be able to edit the message before sending in your mail client."
 msgstr ""
 
 #: plugins/mailto/init.php:83
@@ -2482,8 +2308,7 @@ msgstr ""
 msgid "Enable additional duplicate checking"
 msgstr ""
 
-#: plugins/af_redditimgur/init.php:82
-#: plugins/af_proxy_http/init.php:244
+#: plugins/af_redditimgur/init.php:82 plugins/af_proxy_http/init.php:244
 msgid "Configuration saved"
 msgstr ""
 
@@ -2496,8 +2321,7 @@ msgstr ""
 msgid "Show related articles"
 msgstr ""
 
-#: plugins/af_psql_trgm/init.php:127
-#: plugins/af_psql_trgm/init.php:236
+#: plugins/af_psql_trgm/init.php:127 plugins/af_psql_trgm/init.php:236
 msgid "Mark similar articles as read"
 msgstr ""
 
@@ -2506,7 +2330,10 @@ msgid "Minimum similarity:"
 msgstr ""
 
 #: plugins/af_psql_trgm/init.php:178
-msgid "PostgreSQL trigram extension returns string similarity as a floating point number (0-1). Setting it too low might produce false positives, zero disables checking."
+msgid ""
+"PostgreSQL trigram extension returns string similarity as a floating point "
+"number (0-1). Setting it too low might produce false positives, zero "
+"disables checking."
 msgstr ""
 
 #: plugins/af_psql_trgm/init.php:183
@@ -2541,8 +2368,7 @@ msgstr ""
 msgid "Unshare article"
 msgstr ""
 
-#: plugins/nsfw/init.php:30
-#: plugins/nsfw/init.php:42
+#: plugins/nsfw/init.php:30 plugins/nsfw/init.php:42
 msgid "Not work safe (click to toggle)"
 msgstr ""
 
@@ -2574,8 +2400,7 @@ msgstr ""
 msgid "The following comics are currently supported:"
 msgstr ""
 
-#: plugins/vf_shared/init.php:17
-#: plugins/vf_shared/init.php:73
+#: plugins/vf_shared/init.php:17 plugins/vf_shared/init.php:73
 msgid "Shared articles"
 msgstr ""
 
@@ -2619,17 +2444,10 @@ msgstr ""
 msgid "Please enter new score for selected articles:"
 msgstr ""
 
-#: js/Article.js:61
-#: plugins/mailto/init.js:7
-#: plugins/mail/mail.js:7
-#: js/Headlines.js:729
-#: js/Headlines.js:755
-#: js/Headlines.js:767
-#: js/Headlines.js:895
-#: js/Headlines.js:913
-#: js/Headlines.js:931
-#: js/Headlines.js:1072
-#: js/Headlines.js:1108
+#: js/Article.js:61 plugins/mailto/init.js:7 plugins/mail/mail.js:7
+#: js/Headlines.js:729 js/Headlines.js:755 js/Headlines.js:767
+#: js/Headlines.js:895 js/Headlines.js:913 js/Headlines.js:931
+#: js/Headlines.js:1072 js/Headlines.js:1108
 msgid "No articles selected."
 msgstr ""
 
@@ -2668,7 +2486,9 @@ msgid "Subscribe to Feed"
 msgstr ""
 
 #: js/CommonDialogs.js:119
-msgid "Failed to parse output. This can indicate server timeout and/or network issues. Backend output was logged to browser console."
+msgid ""
+"Failed to parse output. This can indicate server timeout and/or network "
+"issues. Backend output was logged to browser console."
 msgstr ""
 
 #: js/CommonDialogs.js:134
@@ -2706,17 +2526,12 @@ msgstr ""
 msgid "Feeds with update errors"
 msgstr ""
 
-#: js/CommonDialogs.js:210
-#: js/PrefFeedTree.js:383
+#: js/CommonDialogs.js:210 js/PrefFeedTree.js:383
 msgid "Remove selected feeds?"
 msgstr ""
 
-#: js/CommonDialogs.js:231
-#: js/CommonDialogs.js:316
-#: js/PrefFeedTree.js:169
-#: js/PrefFeedTree.js:231
-#: js/PrefFeedTree.js:247
-#: js/PrefFeedTree.js:399
+#: js/CommonDialogs.js:231 js/CommonDialogs.js:316 js/PrefFeedTree.js:169
+#: js/PrefFeedTree.js:231 js/PrefFeedTree.js:247 js/PrefFeedTree.js:399
 msgid "No feeds selected."
 msgstr ""
 
@@ -2725,22 +2540,21 @@ msgid "More Feeds"
 msgstr ""
 
 #: js/CommonDialogs.js:348
-msgid "Remove selected feeds from the archive? Feeds with stored articles will not be removed."
+msgid ""
+"Remove selected feeds from the archive? Feeds with stored articles will not "
+"be removed."
 msgstr ""
 
 #: js/CommonDialogs.js:370
 msgid "Please enter label caption:"
 msgstr ""
 
-#: js/CommonDialogs.js:394
-#: js/App.js:1204
+#: js/CommonDialogs.js:394 js/App.js:1204
 #, perl-format
 msgid "Unsubscribe from %s?"
 msgstr ""
 
-#: js/CommonDialogs.js:422
-#: js/App.js:1053
-#: js/App.js:1184
+#: js/CommonDialogs.js:422 js/App.js:1053 js/App.js:1184
 msgid "You can't edit this kind of feed."
 msgstr ""
 
@@ -2766,7 +2580,8 @@ msgstr ""
 
 #: js/PrefFeedTree.js:141
 #, perl-format
-msgid "Remove category %s? Any nested feeds would be placed into Uncategorized."
+msgid ""
+"Remove category %s? Any nested feeds would be placed into Uncategorized."
 msgstr ""
 
 #: js/PrefFeedTree.js:154
@@ -2809,9 +2624,7 @@ msgstr ""
 msgid "Inverse"
 msgstr ""
 
-#: js/PrefFilterTree.js:108
-#: js/PrefFilterTree.js:124
-#: js/PrefFilterTree.js:235
+#: js/PrefFilterTree.js:108 js/PrefFilterTree.js:124 js/PrefFilterTree.js:235
 msgid "No filters selected."
 msgstr ""
 
@@ -2853,7 +2666,8 @@ msgid "Settings Profiles"
 msgstr ""
 
 #: js/PrefHelpers.js:88
-msgid "Remove selected profiles? Active and default profiles will not be removed."
+msgid ""
+"Remove selected profiles? Active and default profiles will not be removed."
 msgstr ""
 
 #: js/PrefHelpers.js:103
@@ -2892,8 +2706,7 @@ msgstr ""
 msgid "Click to close"
 msgstr ""
 
-#: plugins/mailto/init.js:21
-#: plugins/mail/mail.js:21
+#: plugins/mailto/init.js:21 plugins/mail/mail.js:21
 msgid "Forward article by email"
 msgstr ""
 
@@ -2922,11 +2735,14 @@ msgid "Error sending email:"
 msgstr ""
 
 #: js/App.js:436
-msgid "<span onclick=\"App.explainError(1)\">Update daemon is not running.</span>"
+msgid ""
+"<span onclick=\"App.explainError(1)\">Update daemon is not running.</span>"
 msgstr ""
 
 #: js/App.js:449
-msgid "<span onclick=\"App.explainError(3)\">Update daemon is not updating feeds.</span>"
+msgid ""
+"<span onclick=\"App.explainError(3)\">Update daemon is not updating feeds.</"
+"span>"
 msgstr ""
 
 #: js/App.js:601
@@ -2941,8 +2757,7 @@ msgstr ""
 msgid "Please enable af_readability first."
 msgstr ""
 
-#: js/App.js:1135
-#: js/App.js:1225
+#: js/App.js:1135 js/App.js:1225
 msgid "Widescreen is not available in combined mode."
 msgstr ""
 
@@ -2986,8 +2801,7 @@ msgstr ""
 msgid "Upload failed."
 msgstr ""
 
-#: js/CommonDialogs.js:211
-#: js/PrefFeedTree.js:384
+#: js/CommonDialogs.js:211 js/PrefFeedTree.js:384
 msgid "Removing selected feeds..."
 msgstr ""
 
@@ -2995,20 +2809,16 @@ msgstr ""
 msgid "Removing feed..."
 msgstr ""
 
-#: js/CommonDialogs.js:440
-#: js/PrefFeedTree.js:297
-#: js/PrefFilterTree.js:205
+#: js/CommonDialogs.js:440 js/PrefFeedTree.js:297 js/PrefFilterTree.js:205
 #: js/PrefUsers.js:42
 msgid "Saving data..."
 msgstr ""
 
-#: js/CommonDialogs.js:462
-#: js/PrefHelpers.js:249
+#: js/CommonDialogs.js:462 js/PrefHelpers.js:249
 msgid "Trying to change address..."
 msgstr ""
 
-#: js/CommonDialogs.js:482
-#: js/PrefHelpers.js:265
+#: js/CommonDialogs.js:482 js/PrefHelpers.js:265
 msgid "Could not change feed URL."
 msgstr ""
 
@@ -3080,9 +2890,7 @@ msgstr ""
 msgid "Mark all articles in %s as read?"
 msgstr ""
 
-#: js/Headlines.js:614
-#: js/Headlines.js:664
-#: js/Headlines.js:681
+#: js/Headlines.js:614 js/Headlines.js:664 js/Headlines.js:681
 msgid "Click to open next unread feed."
 msgstr ""
 
@@ -3125,7 +2933,8 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: js/Headlines.js:1085
-msgid "Please note that unstarred articles might get purged on next feed update."
+msgid ""
+"Please note that unstarred articles might get purged on next feed update."
 msgstr ""
 
 #: js/Headlines.js:1114
@@ -3204,8 +3013,7 @@ msgstr ""
 msgid "Removing selected filters..."
 msgstr ""
 
-#: js/PrefHelpers.js:44
-#: plugins/share/share_prefs.js:4
+#: js/PrefHelpers.js:44 plugins/share/share_prefs.js:4
 msgid "Clearing URLs..."
 msgstr ""
 
@@ -3233,8 +3041,7 @@ msgstr ""
 msgid "Reset selected labels to default colors?"
 msgstr ""
 
-#: js/PrefLabelTree.js:140
-#: js/PrefLabelTree.js:160
+#: js/PrefLabelTree.js:140 js/PrefLabelTree.js:160
 msgid "No labels selected."
 msgstr ""
 
@@ -3258,14 +3065,11 @@ msgstr ""
 msgid "User Editor"
 msgstr ""
 
-#: js/PrefUsers.js:59
-#: js/PrefUsers.js:98
-#: js/PrefUsers.js:105
+#: js/PrefUsers.js:59 js/PrefUsers.js:98 js/PrefUsers.js:105
 msgid "No users selected."
 msgstr ""
 
-#: js/PrefUsers.js:64
-#: js/PrefUsers.js:110
+#: js/PrefUsers.js:64 js/PrefUsers.js:110
 msgid "Please select one user."
 msgstr ""
 
@@ -3278,7 +3082,9 @@ msgid "Resetting password for selected user..."
 msgstr ""
 
 #: js/PrefUsers.js:84
-msgid "Remove selected users? Neither default admin nor your account will be removed."
+msgid ""
+"Remove selected users? Neither default admin nor your account will be "
+"removed."
 msgstr ""
 
 #: js/PrefUsers.js:85

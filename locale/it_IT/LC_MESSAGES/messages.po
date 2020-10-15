@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-28 08:08+0300\n"
-"PO-Revision-Date: 2020-03-08 21:12+0000\n"
+"PO-Revision-Date: 2020-10-15 13:25+0000\n"
 "Last-Translator: Dario Di Ludovico <dario@diludovico.it>\n"
 "Language-Team: Italian <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "it/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.11.2\n"
+"X-Generator: Weblate 4.2.2\n"
 
 #: backend.php:58
 msgid "Use default"
@@ -2917,7 +2917,7 @@ msgstr "Nessuna categoria selezionata."
 
 #: js/PrefFeedTree.js:260
 msgid "Edit Multiple Feeds"
-msgstr "Modifica  più notiziari"
+msgstr "Modifica più notiziari"
 
 #: js/PrefFeedTree.js:284
 msgid "Save changes to selected feeds?"

@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-15 16:27+0300\n"
-"PO-Revision-Date: 2020-09-22 01:24+0000\n"
+"PO-Revision-Date: 2020-10-17 09:24+0000\n"
 "Last-Translator: Glandos <bugs-ttrss@antipoul.fr>\n"
 "Language-Team: French <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "fr/>\n"
@@ -484,9 +484,8 @@ msgstr ""
 "automatiques."
 
 #: include/login_form.php:154
-#, fuzzy
 msgid "Safe mode (no plugins)"
-msgstr "Plugins systèmes"
+msgstr "Mode sans échec (sans greffon)"
 
 #: include/login_form.php:163
 msgid "Remember me"
@@ -574,14 +573,12 @@ msgid "Open previous article (in combined mode, scroll up)"
 msgstr "Ouvrir l’article précédent (défiler vers le haut en mode combiné)"
 
 #: classes/rpc.php:757
-#, fuzzy
 msgid "Scroll headlines by one page down"
-msgstr "Fait défiler l’article d’une page vers le bas"
+msgstr "Fait défiler les titres d’une page vers le bas"
 
 #: classes/rpc.php:758
-#, fuzzy
 msgid "Scroll headlines by one page up"
-msgstr "Faire défiler l’article d’une page vers le haut"
+msgstr "Faire défiler les titres d’une page vers le haut"
 
 #: classes/rpc.php:759
 msgid "Open next article"
@@ -592,23 +589,20 @@ msgid "Open previous article"
 msgstr "Ouvrir l’article précédent"
 
 #: classes/rpc.php:761
-#, fuzzy
 msgid "Move to next article (don't expand)"
-msgstr "Aller à l’article suivant (ne pas développer ou marquer comme lu)"
+msgstr "Aller à l’article suivant (sans développer)"
 
 #: classes/rpc.php:762
-#, fuzzy
 msgid "Move to previous article (don't expand)"
-msgstr "Aller à l’article précédent (ne pas développer ou marquer comme lu)"
+msgstr "Aller à l’article précédent (sans développer)"
 
 #: classes/rpc.php:763
 msgid "Show search dialog"
 msgstr "Afficher la fenêtre de recherche"
 
 #: classes/rpc.php:764
-#, fuzzy
 msgid "Cancel active search"
-msgstr "Annuler la recherche"
+msgstr "Annuler la recherche courante"
 
 #: classes/rpc.php:765
 msgid "Article"

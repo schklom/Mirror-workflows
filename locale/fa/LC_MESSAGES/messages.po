@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-15 16:27+0300\n"
-"PO-Revision-Date: 2020-10-08 07:39+0000\n"
+"PO-Revision-Date: 2020-10-20 07:52+0000\n"
 "Last-Translator: CERT <certphishalert@gmail.com>\n"
 "Language-Team: Persian <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "fa/>\n"
@@ -472,9 +472,8 @@ msgstr ""
 "شود."
 
 #: include/login_form.php:154
-#, fuzzy
 msgid "Safe mode (no plugins)"
-msgstr "پلاگین‌های سیستم"
+msgstr "حالت امن (بدون پلاگین‌ها)"
 
 #: include/login_form.php:163
 msgid "Remember me"
@@ -580,23 +579,20 @@ msgid "Open previous article"
 msgstr "مقاله قبلی را باز کنید"
 
 #: classes/rpc.php:761
-#, fuzzy
 msgid "Move to next article (don't expand)"
-msgstr "به مقاله بعدی بروید. (« خوانده شده » علامت گذاری شود.)"
+msgstr "رفتن مقاله بعدی (گسترش نده)"
 
 #: classes/rpc.php:762
-#, fuzzy
 msgid "Move to previous article (don't expand)"
-msgstr "به مقاله قبلی بروید.( به عنوان خوانده شده نشان داده نشود)"
+msgstr "رفتن به مقاله قبلی (گسترش نده)"
 
 #: classes/rpc.php:763
 msgid "Show search dialog"
 msgstr "نمایش متن جستجو شده"
 
 #: classes/rpc.php:764
-#, fuzzy
 msgid "Cancel active search"
-msgstr "جستجو را لغو کن"
+msgstr "لغو کردن جستجوی فعال"
 
 #: classes/rpc.php:765
 msgid "Article"
@@ -1139,7 +1135,7 @@ msgstr "ایجاد کنید"
 
 #: classes/pref/filters.php:980
 msgid "Inverse regular expression matching"
-msgstr ""
+msgstr "معکوس کردن تطابق عبارت منظم"
 
 #: classes/pref/filters.php:984
 msgid "on field"
@@ -1287,7 +1283,7 @@ msgstr "تعداد مقالاتی که بلافاصله باید نمایش دا
 
 #: classes/pref/prefs.php:78
 msgid "Default update interval"
-msgstr ""
+msgstr "بازه پیش‌فرض به‌روزرسانی"
 
 #: classes/pref/prefs.php:79
 msgid "Mark sent articles as read"
@@ -1327,7 +1323,7 @@ msgstr "فیدها را بر اساس تعداد مقالات خوانده نش�
 
 #: classes/pref/prefs.php:85
 msgid "Maximum age of fresh articles"
-msgstr ""
+msgstr "حداکثر سن مقالات جدید"
 
 #: classes/pref/prefs.php:85
 msgid "hours"
@@ -1354,6 +1350,8 @@ msgid ""
 "Syntax is identical to PHP <a href='http://php.net/manual/function.date."
 "php'>date()</a> function."
 msgstr ""
+"نحوه نوشتار با تابع <a href='http://php.net/manual/function.date.php'>date() "
+"</a> در PHP یکسان است."
 
 #: classes/pref/prefs.php:89
 msgid "Automatically show next feed"
@@ -1412,7 +1410,7 @@ msgstr "تگ های ناامن را از مقالات بردار"
 
 #: classes/pref/prefs.php:98
 msgid "Strip all but most common HTML tags when reading articles."
-msgstr ""
+msgstr "به جز رایج‌ترین تگ‌های html، برچسب‌ها را هنگام خواندن مقالات ببندید."
 
 #: classes/pref/prefs.php:99 js/PrefHelpers.js:153
 msgid "Customize stylesheet"
@@ -1604,6 +1602,9 @@ msgid ""
 "data usage and origin server load resulting in a ban of your instance: <b>"
 "%s</b>"
 msgstr ""
+"پلاگین‌های زیر از قلاب‌های محتوای هر فید استفاده می‌کنند. این امر ممکن است "
+"موجب مصرف بیش از حد داده و افزایش بار سرور مبدا و درنتیجه مسدودسازی در این "
+"مورد شما شود: <b>%s</b>"
 
 #: classes/pref/prefs.php:883
 msgid "System plugins"
@@ -1612,7 +1613,7 @@ msgstr "پلاگین‌های سیستم"
 #: classes/pref/prefs.php:917 classes/pref/prefs.php:963
 #, php-format
 msgid "v%.2f, by %s"
-msgstr ""
+msgstr "نسخه‌ی %.2f، به‌وسیله‌ی %s"
 
 #: classes/pref/prefs.php:925
 msgid "User plugins"
@@ -1957,7 +1958,7 @@ msgstr "معکوس کردن"
 
 #: classes/feeds.php:71
 msgid "Selection toggle:"
-msgstr ""
+msgstr "ضامن انتخاب:"
 
 #: classes/feeds.php:77
 msgid "Selection:"
@@ -2248,11 +2249,13 @@ msgid ""
 "Drag the link below to your browser toolbar, open the feed you're interested "
 "in in your browser and click on the link to subscribe to it."
 msgstr ""
+"لینک زیر را به نوار ابزار مرورگر خود بکشید، فید مورد نظر تان را در مرورگر "
+"خود باز کنید و برای عضویت در آن، روی لینک کلیک کنید."
 
 #: plugins/bookmarklets/init.php:29
 #, php-format
 msgid "Subscribe to %s in Tiny Tiny RSS?"
-msgstr ""
+msgstr "عضویت در %s در Tiny Tiny RSS؟"
 
 #: plugins/bookmarklets/init.php:34
 msgid "Subscribe in Tiny Tiny RSS"
@@ -2270,11 +2273,11 @@ msgstr "اطلاعات ذخیره شد."
 
 #: plugins/af_readability/init.php:47
 msgid "Inline content"
-msgstr ""
+msgstr "محتوای درون خطی"
 
 #: plugins/af_readability/init.php:56
 msgid "Toggle full article text"
-msgstr ""
+msgstr "تغییر متن کامل مقاله"
 
 #: plugins/af_readability/init.php:63
 msgid "Readability settings (af_readability)"
@@ -2287,7 +2290,7 @@ msgstr "تنظیمات جهانی"
 #: plugins/af_readability/init.php:98
 msgid ""
 "Provide full-text services to core code (bookmarklets) and other plugins"
-msgstr ""
+msgstr "ارائه‌ی خدمات تمام متن به کد اصلی (نشانک‌ها) و سایر پلاگین‌ها"
 
 #: plugins/af_readability/init.php:112 plugins/af_psql_trgm/init.php:207
 msgid "Currently enabled for (click to edit):"
@@ -2299,7 +2302,7 @@ msgstr "خوانایی"
 
 #: plugins/af_readability/init.php:141
 msgid "Inline article content"
-msgstr ""
+msgstr "محتوای درون خطی مقاله"
 
 #: plugins/note/init.php:26 plugins/note/note.js:10
 msgid "Edit article note"
@@ -2353,7 +2356,7 @@ msgstr "مقاله را ببندید"
 
 #: plugins/af_redditimgur/init.php:28
 msgid "Reddit content settings (af_redditimgur)"
-msgstr ""
+msgstr "تنظیمات محتوای Reddit (af_redditimgur)"
 
 #: plugins/af_redditimgur/init.php:60
 msgid "Extract missing content using Readability (requires af_readability)"
@@ -2363,7 +2366,7 @@ msgstr ""
 
 #: plugins/af_redditimgur/init.php:66
 msgid "Enable additional duplicate checking"
-msgstr ""
+msgstr "فعال کردن کنترل مضاعف موارد تکراری"
 
 #: plugins/af_redditimgur/init.php:82 plugins/af_proxy_http/init.php:244
 msgid "Configuration saved"
@@ -2392,6 +2395,9 @@ msgid ""
 "number (0-1). Setting it too low might produce false positives, zero "
 "disables checking."
 msgstr ""
+"پسوند trigram در PostgreSQL شباهت رشته را به صورت یک شماره (0-1) برمی‌"
+"گرداند. تنظیم کردن یک مقدار اندک برای آن ممکن است سبب تشخیص اشتباه شود، قرار "
+"دادن مقدار «صفر» بررسی را غیرفعال می‌کند."
 
 #: plugins/af_psql_trgm/init.php:183
 msgid "Minimum title length:"
@@ -2437,7 +2443,7 @@ msgstr "افزونهNSFW"
 
 #: plugins/nsfw/init.php:80
 msgid "Tags to consider NSFW (comma-separated)"
-msgstr ""
+msgstr "تگ‌ها برای در نظر گرفتن NSFW ( جدا شده با ویرگول)"
 
 #: plugins/nsfw/init.php:101
 msgid "Configuration saved."
@@ -2569,7 +2575,7 @@ msgstr "به نظر می رسد URL مشخص شده، هیچ فیدی را شا�
 
 #: js/CommonDialogs.js:159
 msgid "Expand to select feed"
-msgstr ""
+msgstr "برای انتخاب فید، گسترش دهید"
 
 #: js/CommonDialogs.js:171
 #, perl-format
@@ -2925,7 +2931,7 @@ msgstr "مشکل‌یابی فید"
 
 #: js/FeedTree.js:125
 msgid "(Un)collapse"
-msgstr ""
+msgstr "بستن/باز کردن"
 
 #: js/Feeds.js:387
 msgid "Mark all articles as read?"
@@ -2938,14 +2944,20 @@ msgstr "در حال علامت‌گذاری همه فیدها به عنوان «
 #: js/Feeds.js:409
 msgid "Mark %w in %s older than 1 day as read?"
 msgstr ""
+"%w در %s که بیشتر از یک روز از آن گذشته، به عنوان «خوانده شده» علامت‌گذاری "
+"شود؟"
 
 #: js/Feeds.js:412
 msgid "Mark %w in %s older than 1 week as read?"
 msgstr ""
+"%w در %s که بیشتر از یک هفته از آن گذشته، به عنوان «خوانده شده» علامت‌گذاری "
+"شود؟"
 
 #: js/Feeds.js:415
 msgid "Mark %w in %s older than 2 weeks as read?"
 msgstr ""
+"%w در %s که بیشتر از دو هفته از آن گذشته، به عنوان «خوانده شده» علامت‌گذاری "
+"شود؟"
 
 #: js/Feeds.js:418
 msgid "Mark %w in %s as read?"
@@ -2984,8 +2996,8 @@ msgstr[1] "٪ d مقالات انتخاب شد"
 #: js/Headlines.js:939
 msgid "Delete %d selected article in %s?"
 msgid_plural "Delete %d selected articles in %s?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d مقاله‌ی انتخاب شده در %s حذف شود؟"
+msgstr[1] "%d مقاله‌ی انتخاب شده در %s حذف شوند؟"
 
 #: js/Headlines.js:941
 msgid "Delete %d selected article?"
@@ -3002,8 +3014,8 @@ msgstr[1] "%d مقاله‌ی انتخاب شده در %s آرشیو شوند؟"
 #: js/Headlines.js:1084
 msgid "Move %d archived article back?"
 msgid_plural "Move %d archived articles back?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d مقاله‌ی آرشیو شده بازگردانی شود؟"
+msgstr[1] "%d مقاله‌ی آرشیو شده بازگردانی شوند؟"
 
 #: js/Headlines.js:1085
 msgid ""

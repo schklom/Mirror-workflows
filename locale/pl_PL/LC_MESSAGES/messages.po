@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-15 16:27+0300\n"
-"PO-Revision-Date: 2019-07-31 13:03+0000\n"
-"Last-Translator: Marcin Sadowski <sadowski.marcin@icloud.com>\n"
+"PO-Revision-Date: 2020-10-21 12:45+0000\n"
+"Last-Translator: Piotr <piotrdev+ttrss@outlook.com>\n"
 "Language-Team: Polish <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "pl/>\n"
 "Language: pl_PL\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 3.7.1\n"
+"X-Generator: Weblate 4.2.2\n"
 
 #: backend.php:57
 msgid "Use default"
@@ -458,7 +458,7 @@ msgstr "Hasło:"
 
 #: include/login_form.php:125
 msgid "I forgot my password"
-msgstr "Zapomniałem hasła"
+msgstr "Zapomniałem hasło"
 
 #: include/login_form.php:130
 msgid "Profile:"
@@ -1564,7 +1564,7 @@ msgstr "Zeskanuj poniższy kod przy użyciu aplikacji uwierzytelniającej:"
 
 #: classes/pref/prefs.php:498
 msgid "OTP Key:"
-msgstr ""
+msgstr "Klucz OTP:"
 
 #: classes/pref/prefs.php:531
 msgid "One time password:"
@@ -1676,7 +1676,7 @@ msgstr ""
 
 #: classes/pref/prefs.php:1167
 msgid "Apply"
-msgstr ""
+msgstr "Zastosuj"
 
 #: classes/pref/prefs.php:1169
 #, fuzzy

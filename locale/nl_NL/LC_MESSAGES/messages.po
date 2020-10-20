@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-15 16:27+0300\n"
-"PO-Revision-Date: 2020-06-01 22:02+0000\n"
+"PO-Revision-Date: 2020-10-21 12:45+0000\n"
 "Last-Translator: Patrick Ahles <p.ahles+weblate@gmail.com>\n"
 "Language-Team: Dutch <https://weblate.tt-rss.org/projects/tt-rss/messages/nl/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.0.4\n"
+"X-Generator: Weblate 4.2.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: _\n"
 "X-Poedit-Basepath: .\n"
@@ -477,9 +477,8 @@ msgstr ""
 "Geeft geen afbeeldingen weer in artikelen, vermindert automatisch herladen."
 
 #: include/login_form.php:154
-#, fuzzy
 msgid "Safe mode (no plugins)"
-msgstr "Systeem plug-ins"
+msgstr "Veilige modus (geen plug-ins)"
 
 #: include/login_form.php:163
 msgid "Remember me"
@@ -567,14 +566,12 @@ msgid "Open previous article (in combined mode, scroll up)"
 msgstr "Open vorig artikel (in gecombineerde modus, scroll naar boven)"
 
 #: classes/rpc.php:757
-#, fuzzy
 msgid "Scroll headlines by one page down"
-msgstr "Scroll artikel een pagina naar beneden"
+msgstr "Scroll titels een pagina naar beneden"
 
 #: classes/rpc.php:758
-#, fuzzy
 msgid "Scroll headlines by one page up"
-msgstr "Scroll artikel een pagina naar boven"
+msgstr "Scroll titels een pagina naar boven"
 
 #: classes/rpc.php:759
 msgid "Open next article"
@@ -585,21 +582,18 @@ msgid "Open previous article"
 msgstr "Open voorgaand artikel"
 
 #: classes/rpc.php:761
-#, fuzzy
 msgid "Move to next article (don't expand)"
-msgstr "Open volgend artikel (niet uitklappen of markeren als gelezen)"
+msgstr "Ga naar volgend artikel (niet uitklappen)"
 
 #: classes/rpc.php:762
-#, fuzzy
 msgid "Move to previous article (don't expand)"
-msgstr "Open vorig artikel (niet uitklappen of markeren als gelezen)"
+msgstr "Ga naar vorig artikel (niet uitklappen)"
 
 #: classes/rpc.php:763
 msgid "Show search dialog"
 msgstr "Toon zoekdialoogvenster"
 
 #: classes/rpc.php:764
-#, fuzzy
 msgid "Cancel active search"
 msgstr "Zoeken annuleren"
 

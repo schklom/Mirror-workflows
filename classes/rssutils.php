@@ -187,11 +187,11 @@ class RSSUtils {
 
 					// -1 can be caused by a SIGCHLD handler which daemon master process installs (not every setup, apparently)
 					if ($exit_code != 0 && $exit_code != -1) {
-						$esth = $pdo->prepare("SELECT last_error FROM ttrss_feeds WHERE id = ?");
-						$esth->execute([$tline["id"]]);
+						$festh = $pdo->prepare("SELECT last_error FROM ttrss_feeds WHERE id = ?");
+						$festh->execute([$tline["id"]]);
 
-						if ($erow = $esth->fetch()) {
-							$error_message = $erow["last_error"];
+						if ($ferow = $festh->fetch()) {
+							$error_message = $ferow["last_error"];
 						} else {
 							$error_message = "N/A";
 						}
@@ -201,6 +201,13 @@ class RSSUtils {
 						Logger::get()->log(E_USER_NOTICE,
 							sprintf("Update process for feed %d (%s, owner UID: %d) failed with exit code: %d (%s).",
 								$tline["id"], clean($tline["title"]), $tline["owner_uid"], $exit_code, clean($error_message)));
+
+						$combined_error_message = sprintf("Update process failed with exit code: %d (%s)",
+							$exit_code, clean($error_message));
+
+						# mark failed feed as having an update error (unless it is already marked)
+						$fusth = $pdo->prepare("UPDATE ttrss_feeds SET last_error = ? WHERE id = ? AND last_error = ''");
+						$fusth->execute([$combined_error_message, $tline["id"]]);
 					}
 
 				} else {

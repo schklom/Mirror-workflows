@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-15 16:27+0300\n"
-"PO-Revision-Date: 2020-10-21 12:45+0000\n"
+"PO-Revision-Date: 2020-10-22 23:52+0000\n"
 "Last-Translator: xnor <xnoreq@gmail.com>\n"
 "Language-Team: German <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "de/>\n"
@@ -233,7 +233,7 @@ msgstr "Ungelesen"
 
 #: index.php:193
 msgid "With Note"
-msgstr "mit Anmerkung"
+msgstr "Mit Anmerkung"
 
 #: index.php:194
 msgid "Ignore Scoring"
@@ -477,7 +477,7 @@ msgstr "Weniger Datenverkehr nutzen"
 #: include/login_form.php:146
 msgid "Does not display images in articles, reduces automatic refreshes."
 msgstr ""
-"Zeigt keine Bilder in Artikeln, reduziert die automatischen Aktualisierungen."
+"Zeigt keine Bilder in Artikeln, reduziert automatische Aktualisierungen."
 
 #: include/login_form.php:154
 msgid "Safe mode (no plugins)"
@@ -606,11 +606,11 @@ msgstr "Artikel"
 
 #: classes/rpc.php:766 js/Headlines.js:1246
 msgid "Toggle starred"
-msgstr "Markierung ein-/ausschalten"
+msgstr "Markierung umschalten"
 
 #: classes/rpc.php:767 js/Headlines.js:1258
 msgid "Toggle published"
-msgstr "Veröffentlichung ein-/ausschalten"
+msgstr "Veröffentlichung umschalten"
 
 #: classes/rpc.php:768 js/Headlines.js:1233
 msgid "Toggle unread"
@@ -723,7 +723,7 @@ msgstr "Schlagzeilensortierung umkehren"
 
 #: classes/rpc.php:797
 msgid "Toggle headline grouping"
-msgstr "Gruppierung der Kopfzeilen umschalten"
+msgstr "Gruppierung der Schlagzeilen umschalten"
 
 #: classes/rpc.php:798
 msgid "Debug feed update"
@@ -743,7 +743,7 @@ msgstr "Aktuelle Kategorie ein-/ausklappen"
 
 #: classes/rpc.php:802
 msgid "Toggle auto expand in combined mode"
-msgstr "Kombinierte Feed-Anzeige umschalten"
+msgstr "Automatisches Ausklappen in kombinierter Feed-Anzeige umschalten"
 
 #: classes/rpc.php:803
 msgid "Toggle combined mode"

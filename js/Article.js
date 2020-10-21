@@ -180,6 +180,36 @@ const Article = {
 				${__('Originally from:')} <a target="_blank" rel="noopener noreferrer" href="${App.escapeHtml(hl.orig_feed[1])}">${hl.orig_feed[0]}</a>
 				</span>` : "";
 	},
+	unpack: function(row) {
+		if (row.hasAttribute("data-content")) {
+			console.log("unpacking: " + row.id);
+
+			const container = row.querySelector(".content-inner");
+
+			container.innerHTML = row.getAttribute("data-content").trim();
+
+			// blank content element might screw up onclick selection and keyboard moving
+			if (container.textContent.length == 0)
+				container.innerHTML += "&nbsp;";
+
+			// in expandable mode, save content for later, so that we can pack unfocused rows back
+			if (App.isCombinedMode() && $("main").hasClassName("expandable"))
+				row.setAttribute("data-content-original", row.getAttribute("data-content"));
+
+			row.removeAttribute("data-content");
+
+			PluginHost.run(PluginHost.HOOK_ARTICLE_RENDERED_CDM, row);
+		}
+	},
+	pack: function(row) {
+		if (row.hasAttribute("data-content-original")) {
+			console.log("packing", row.id);
+			row.setAttribute("data-content", row.getAttribute("data-content-original"));
+			row.removeAttribute("data-content-original");
+
+			row.querySelector(".content-inner").innerHTML = "&nbsp;";
+		}
+	},
 	view: function (id, no_expand) {
 		this.setActive(id);
 		Headlines.scrollToArticleId(id);
@@ -298,11 +328,14 @@ const Article = {
 
 			$$("div[id*=RROW][class*=active]").each((row) => {
 				row.removeClassName("active");
+				Article.pack(row);
 			});
 
 			const row = $("RROW-" + id);
 
 			if (row) {
+				Article.unpack(row);
+
 				row.removeClassName("Unread");
 				row.addClassName("active");
 

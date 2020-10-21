@@ -32,6 +32,15 @@ const Headlines = {
 		},
 		{threshold: [0, 1], root: document.querySelector("#headlines-frame")}
 	),
+	unpack_observer: new IntersectionObserver(
+		(entries, observer) => {
+			entries.forEach((entry) => {
+				if (entry.intersectionRatio > 0)
+					Article.unpack(entry.target);
+			});
+		},
+		{threshold: [0], root: document.querySelector("#headlines-frame")}
+	),
 	row_observer: new MutationObserver((mutations) => {
 		const modified = [];
 
@@ -360,6 +369,7 @@ const Headlines = {
 
 				if (hl.active) {
 					new_row.addClassName("active");
+					Article.unpack(new_row);
 
 					if (App.isCombinedMode())
 						Article.cdmMoveToId(id, {noscroll: true});
@@ -374,6 +384,11 @@ const Headlines = {
 		$$(".cdm .header-sticky-guard").each((e) => {
 			this.sticky_header_observer.observe(e)
 		});
+
+		if (App.getInitParam("cdm_expanded"))
+			$$("#headlines-frame > div[id*=RROW].cdm").each((e) => {
+				this.unpack_observer.observe(e)
+			});
 
 	},
 	render: function (headlines, hl) {
@@ -411,6 +426,7 @@ const Headlines = {
 						id="RROW-${hl.id}"
 						data-article-id="${hl.id}"
 						data-orig-feed-id="${hl.feed_id}"
+						data-content="${App.escapeHtml(hl.content)}"
 						data-score="${hl.score}"
 						data-article-title="${App.escapeHtml(hl.title)}"
 						onmouseover="Article.mouseIn(${hl.id})"
@@ -450,7 +466,7 @@ const Headlines = {
 						<div class="content" onclick="return Headlines.click(event, ${hl.id}, true);">
 							<div id="POSTNOTE-${hl.id}">${hl.note}</div>
 							<div class="content-inner" lang="${hl.lang ? hl.lang : 'en'}">
-								${hl.content}
+								<img src="${App.getInitParam('icon_indicator_white')}">
 							</div>
 							<div class="intermediate">
 								${hl.enclosures}
@@ -687,6 +703,11 @@ const Headlines = {
 				this.sticky_header_observer.observe(e)
 			});
 
+			if (App.getInitParam("cdm_expanded"))
+				$$("#headlines-frame > div[id*=RROW].cdm").each((e) => {
+					this.unpack_observer.observe(e)
+				});
+
 		} else {
 			console.error("Invalid object received: " + transport.responseText);
 			dijit.byId("headlines-frame").attr('content', "<div class='whiteBox'>" +
@@ -697,7 +718,7 @@ const Headlines = {
 		Feeds.infscroll_in_progress = 0;
 
 		// this is used to auto-catchup articles if needed after infscroll request has finished,
-		// fill buffer more, etc
+		// unpack visible articles, fill buffer more, etc
 		this.scrollHandler();
 
 		Notify.close();

@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-15 16:27+0300\n"
-"PO-Revision-Date: 2020-10-21 12:45+0000\n"
+"PO-Revision-Date: 2020-10-22 23:52+0000\n"
 "Last-Translator: Piotr <piotrdev+ttrss@outlook.com>\n"
 "Language-Team: Polish <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "pl/>\n"
@@ -386,8 +386,8 @@ msgid ""
 "password is sent."
 msgstr ""
 "Twoje tymczasowe hasło zostanie wysłane na podany adres email. Konta, na "
-"które  nikt nie zalogował się, są usuwane automatycznie 24 godziny po "
-"wysłaniu hasła tymczasowego."
+"które nikt się nie zalogował, są usuwane automatycznie po 24 godzinach od "
+"wysłania hasła tymczasowego."
 
 #: register.php:220
 msgid "Desired login:"
@@ -479,9 +479,8 @@ msgstr ""
 "Nie wyświetla obrazków w artykułach, zmniejsza częstotliwość odświeżania."
 
 #: include/login_form.php:154
-#, fuzzy
 msgid "Safe mode (no plugins)"
-msgstr "Wtyczki systemowe"
+msgstr "Tryb awaryjny (bez wtyczek)"
 
 #: include/login_form.php:163
 msgid "Remember me"
@@ -561,24 +560,20 @@ msgid "Open previous feed"
 msgstr "Otwórz poprzedni kanał"
 
 #: classes/rpc.php:755
-#, fuzzy
 msgid "Open next article (in combined mode, scroll down)"
-msgstr "Otwórz następny artykuł (nie przewijaj długich artykułów)"
+msgstr "Otwórz następny artykuł (w trybie scalonym przewijaj w dół)"
 
 #: classes/rpc.php:756
-#, fuzzy
 msgid "Open previous article (in combined mode, scroll up)"
-msgstr "Otwórz poprzeni artykuł (nie przewijaj długich artykułów)"
+msgstr "Otwórz poprzeni artykuł (w trybie scalonym przewijaj w górę)"
 
 #: classes/rpc.php:757
-#, fuzzy
 msgid "Scroll headlines by one page down"
-msgstr "Wybierz artykuły w grupie"
+msgstr "Przewijaj nagłówki o stronę w dół"
 
 #: classes/rpc.php:758
-#, fuzzy
 msgid "Scroll headlines by one page up"
-msgstr "Wybierz artykuły w grupie"
+msgstr "Przewijaj nagłówki o stronę w górę"
 
 #: classes/rpc.php:759
 msgid "Open next article"
@@ -589,25 +584,18 @@ msgid "Open previous article"
 msgstr "Otwórz poprzedni artykuł"
 
 #: classes/rpc.php:761
-#, fuzzy
 msgid "Move to next article (don't expand)"
-msgstr ""
-"Przejdź do następnego artykułu (nie rozwijaj lub nie oznaczaj jako "
-"przeczytane)"
+msgstr "Przejdź do następnego artykułu (nie rozwijaj)"
 
 #: classes/rpc.php:762
-#, fuzzy
 msgid "Move to previous article (don't expand)"
-msgstr ""
-"Przejdź do poprzedniego artykułu (nie rozwijaj lub nie oznaczaj jako "
-"przeczytane)"
+msgstr "Przejdź do poprzedniego artykułu (nie rozwijaj)"
 
 #: classes/rpc.php:763
 msgid "Show search dialog"
 msgstr "Otwórz okno wyszukiwania"
 
 #: classes/rpc.php:764
-#, fuzzy
 msgid "Cancel active search"
 msgstr "Anuluj wyszukiwanie"
 
@@ -652,14 +640,12 @@ msgid "Scroll up"
 msgstr "Przewiń do góry"
 
 #: classes/rpc.php:775
-#, fuzzy
 msgid "Scroll down page"
-msgstr "Przewiń w dół"
+msgstr "Przewiń w dół o stronę"
 
 #: classes/rpc.php:776
-#, fuzzy
 msgid "Scroll up page"
-msgstr "Przewiń do góry"
+msgstr "Przewiń do góry o stronę"
 
 #: classes/rpc.php:777
 msgid "Select article under cursor"
@@ -679,7 +665,7 @@ msgstr "Przełącz rozwijanie artykułów (tryb scalony)"
 
 #: classes/rpc.php:782
 msgid "Toggle full article text via Readability"
-msgstr ""
+msgstr "Przełącz pełną treść artykułu przy pomocy Readability"
 
 #: classes/rpc.php:783
 msgid "Article selection"
@@ -1522,21 +1508,20 @@ msgid ""
 "Authentication module used for this session (<b>%s</b>) does not provide an "
 "ability to set passwords."
 msgstr ""
+"Moduł autoryzacji użyty dla tej sesji (<b>%s</b>) nie wspiera możliwości "
+"ustawienia hasła."
 
 #: classes/pref/prefs.php:414
-#, fuzzy
 msgid "App passwords"
-msgstr "Stare hasło:"
+msgstr "Hasła aplikacji"
 
 #: classes/pref/prefs.php:426
-#, fuzzy
 msgid "Generate new password"
-msgstr "Wygeneruj nowy adres"
+msgstr "Wygeneruj nowe hasło"
 
 #: classes/pref/prefs.php:430
-#, fuzzy
 msgid "Remove selected passwords"
-msgstr "Usuń wybrane profile"
+msgstr "Usuń wybrane hasła"
 
 #: classes/pref/prefs.php:434
 msgid "One time passwords / Authenticator"
@@ -1551,16 +1536,18 @@ msgid "Disable OTP"
 msgstr "Wyłącz hasła jednorazowe"
 
 #: classes/pref/prefs.php:484
-#, fuzzy
 msgid ""
 "Scan the following code by the Authenticator application or copy the key "
 "manually"
-msgstr "Zeskanuj poniższy kod przy użyciu aplikacji uwierzytelniającej:"
+msgstr ""
+"Zeskanuj poniższy kod przy użyciu aplikacji uwierzytelniającej lub skopiuj "
+"klucz ręcznie"
 
 #: classes/pref/prefs.php:490
-#, fuzzy
 msgid "Use the following OTP key with a compatible Authenticator application"
-msgstr "Zeskanuj poniższy kod przy użyciu aplikacji uwierzytelniającej:"
+msgstr ""
+"Zeskanuj poniższy kod OTP przy użyciu kompatybilnej aplikacji "
+"uwierzytelniającej"
 
 #: classes/pref/prefs.php:498
 msgid "OTP Key:"
@@ -1630,6 +1617,9 @@ msgid ""
 "data usage and origin server load resulting in a ban of your instance: <b>"
 "%s</b>"
 msgstr ""
+"Te wtyczki używają hooków dla treści per kanał. To może spowodować nadmierne "
+"wykorzystanie łącza i obciążać serwer źródłowy skutkując blokadą twojej "
+"instancji: <b>%s</b>"
 
 #: classes/pref/prefs.php:883
 msgid "System plugins"
@@ -1673,15 +1663,16 @@ msgid ""
 "User CSS has been applied, you might need to reload the page to see all "
 "changes."
 msgstr ""
+"Zastosowano CSS użytkownika, możliwe, że trzeba przeładować stronę, aby "
+"zobaczyć wszystkie zmiany."
 
 #: classes/pref/prefs.php:1167
 msgid "Apply"
 msgstr "Zastosuj"
 
 #: classes/pref/prefs.php:1169
-#, fuzzy
 msgid "Save and reload"
-msgstr "Oznacz powyższe jako przeczytane"
+msgstr "Zapisz i przeładuj"
 
 #: classes/pref/prefs.php:1194
 msgid "Create profile"
@@ -1704,14 +1695,12 @@ msgid "Description"
 msgstr "Opis"
 
 #: classes/pref/prefs.php:1304
-#, fuzzy
 msgid "Created"
-msgstr "Utwórz"
+msgstr "Utworzono"
 
 #: classes/pref/prefs.php:1305
-#, fuzzy
 msgid "Last used"
-msgstr "Ostatnia aktualizacja:"
+msgstr "Ostatnio użyte"
 
 #: classes/pref/prefs.php:1358
 #, php-format
@@ -1719,6 +1708,8 @@ msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
 "reference."
 msgstr ""
+"Hasło <strong>%s</strong> dla %s zostało wygenerowane. Proszę je zapamiętać "
+"na przyszłość."
 
 #: classes/pref/feeds.php:28
 msgid "Check to enable field"
@@ -2090,7 +2081,7 @@ msgstr "Szukaj %s..."
 
 #: classes/feeds.php:725
 msgid "Used for word stemming"
-msgstr ""
+msgstr "Używane do tworzenia słów"
 
 #: classes/feeds.php:735
 msgid "Search syntax"
@@ -2309,12 +2300,11 @@ msgstr "Dane zapisane."
 
 #: plugins/af_readability/init.php:47
 msgid "Inline content"
-msgstr ""
+msgstr "Treść osadzona"
 
 #: plugins/af_readability/init.php:56
-#, fuzzy
 msgid "Toggle full article text"
-msgstr "Wybierz wszystkie artykuły"
+msgstr "Przełącz pełną treść artykułu"
 
 #: plugins/af_readability/init.php:63
 msgid "Readability settings (af_readability)"
@@ -2341,7 +2331,7 @@ msgstr "Readability"
 
 #: plugins/af_readability/init.php:141
 msgid "Inline article content"
-msgstr ""
+msgstr "Wbudowana treść artykułu"
 
 #: plugins/note/init.php:26 plugins/note/note.js:10
 msgid "Edit article note"
@@ -2490,9 +2480,8 @@ msgid "Configuration saved."
 msgstr "Konfiguracja została zapisana."
 
 #: plugins/af_proxy_http/init.php:206
-#, fuzzy
 msgid "Image proxy settings (af_proxy_http)"
-msgstr "Ustawienia proxy dla obrazków (af_zz_imgproxy)"
+msgstr "Ustawienia proxy dla obrazków (af_proxy_http)"
 
 #: plugins/af_proxy_http/init.php:230
 msgid "Enable proxy for all remote images."
@@ -2765,9 +2754,8 @@ msgid "Remove selected filters?"
 msgstr "Usunąć wybrane filtry?"
 
 #: js/PrefHelpers.js:19
-#, fuzzy
 msgid "Remove selected app passwords?"
-msgstr "Usunąć wybrane kategorię?"
+msgstr "Usunąć wybrane hasła aplikacji?"
 
 #: js/PrefHelpers.js:43
 msgid "This will invalidate all previously generated feed URLs. Continue?"
@@ -2878,9 +2866,8 @@ msgid "Please enable mail or mailto plugin first."
 msgstr "Włącz najpierw wtyczkę obsługi poczty (mail lub mailto)."
 
 #: js/App.js:1122
-#, fuzzy
 msgid "Please enable af_readability first."
-msgstr "Włącz najpierw wtyczkę obsługi poczty (mail lub mailto)."
+msgstr "Najpierw włącz wtyczkę af_readability."
 
 #: js/App.js:1135 js/App.js:1225
 msgid "Widescreen is not available in combined mode."
@@ -3228,9 +3215,8 @@ msgid "Removing selected users..."
 msgstr "Usuwanie wybranych użytkowników..."
 
 #: plugins/af_readability/init.js:29
-#, fuzzy
 msgid "Unable to fetch full text for this article"
-msgstr "Wprowadź nową punktację dla tego artykułu:"
+msgstr "Ściągnięcie pełnej treści artykułu nie było możliwe"
 
 #: plugins/note/note.js:14
 msgid "Saving article note..."

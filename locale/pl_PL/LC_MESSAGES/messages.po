@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-15 16:27+0300\n"
-"PO-Revision-Date: 2020-10-23 23:54+0000\n"
+"PO-Revision-Date: 2020-10-26 13:24+0000\n"
 "Last-Translator: Piotr <piotrdev+ttrss@outlook.com>\n"
 "Language-Team: Polish <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "pl/>\n"
@@ -1266,7 +1266,7 @@ msgstr "Oznacz jako przeczytane przy przewijaniu"
 
 #: classes/pref/prefs.php:73
 msgid "Mark articles as read as you scroll past them"
-msgstr "Oznaczaj artykuły jako przeczytane, podczas przewijania listy"
+msgstr "Oznaczaj artykuły jako przeczytane podczas przewijania listy"
 
 #: classes/pref/prefs.php:74
 msgid "Always expand articles"
@@ -1422,8 +1422,8 @@ msgstr "Usuń niebezpieczne etykiety z artykułów"
 #: classes/pref/prefs.php:98
 msgid "Strip all but most common HTML tags when reading articles."
 msgstr ""
-"Podczas czytania artykułu usuń wszystkie poza najpopularniejszymi znaczniki "
-"HTML."
+"Podczas czytania artykułu usuń wszystkie, poza najpopularniejszymi, "
+"znaczniki HTML."
 
 #: classes/pref/prefs.php:99 js/PrefHelpers.js:153
 msgid "Customize stylesheet"
@@ -1525,7 +1525,7 @@ msgstr "Usuń wybrane hasła"
 
 #: classes/pref/prefs.php:434
 msgid "One time passwords / Authenticator"
-msgstr "Hasło jednorazowe / Uwierzytelnianie"
+msgstr "Hasła jednorazowe / Uwierzytelnianie"
 
 #: classes/pref/prefs.php:464 classes/pref/prefs.php:525
 msgid "Your password:"
@@ -1588,7 +1588,7 @@ msgstr "Wyczyść"
 #: classes/pref/prefs.php:775
 #, php-format
 msgid "Current server time: %s"
-msgstr "Aktualny czas serwera to: %s"
+msgstr "Aktualny czas serwera: %s"
 
 #: classes/pref/prefs.php:804
 msgid "Save configuration"

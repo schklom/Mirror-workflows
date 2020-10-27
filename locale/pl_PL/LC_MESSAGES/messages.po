@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-15 16:27+0300\n"
-"PO-Revision-Date: 2020-10-26 13:24+0000\n"
+"PO-Revision-Date: 2020-10-28 18:24+0000\n"
 "Last-Translator: Piotr <piotrdev+ttrss@outlook.com>\n"
 "Language-Team: Polish <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "pl/>\n"
@@ -385,7 +385,7 @@ msgid ""
 "were not logged in once, are erased automatically 24 hours after temporary "
 "password is sent."
 msgstr ""
-"Twoje tymczasowe hasło zostanie wysłane na podany adres email. Konta, na "
+"Twoje tymczasowe hasło zostanie wysłane na podany adres e-mail. Konta, na "
 "które nikt się nie zalogował, są usuwane automatycznie po 24 godzinach od "
 "wysłania hasła tymczasowego."
 
@@ -399,7 +399,7 @@ msgstr "Sprawdź dostępność"
 
 #: register.php:225 classes/handler/public.php:980
 msgid "Email:"
-msgstr "Email:"
+msgstr "E-mail:"
 
 #: register.php:228
 msgid "How much is two plus two:"
@@ -653,7 +653,7 @@ msgstr "Wybierz artykuł pod kursorem"
 
 #: classes/rpc.php:778
 msgid "Email article"
-msgstr "Prześlij artykuł emailem"
+msgstr "Prześlij artykuł e-mailem"
 
 #: classes/rpc.php:779
 msgid "Close/collapse article"
@@ -1780,7 +1780,7 @@ msgstr "Ten kanał wymaga uwierzytelniania."
 
 #: classes/pref/feeds.php:698 classes/pref/feeds.php:913
 msgid "Include in e-mail digest"
-msgstr "Umieść w przeglądzie emailowym"
+msgstr "Umieść w przeglądzie e-mailowym"
 
 #: classes/pref/feeds.php:714 classes/pref/feeds.php:920
 msgid "Always display image attachments"
@@ -1895,7 +1895,7 @@ msgstr "Opublikowane i udostępnione artykuły / Wygenerowane kanały"
 msgid ""
 "Published articles can be subscribed by anyone who knows the following URL:"
 msgstr ""
-"Opublikowane artykuły mogą byś subskrybowane przez każdego, kto zna ten "
+"Opublikowane artykuły mogą być subskrybowane przez każdego, kto zna ten "
 "adres:"
 
 #: classes/pref/feeds.php:1373 classes/feeds.php:36 classes/feeds.php:37
@@ -1998,7 +1998,7 @@ msgstr "Archiwizuj"
 #: classes/feeds.php:90 classes/feeds.php:95 plugins/mailto/init.php:24
 #: plugins/mail/init.php:76
 msgid "Forward by email"
-msgstr "Przekaż za pomocą emaila"
+msgstr "Przekaż za pomocą e-maila"
 
 #: classes/feeds.php:99
 msgid "Feed:"
@@ -2165,7 +2165,8 @@ msgstr "Nie znaleziono kanałów w <b>%s</b>."
 #, php-format
 msgid "Could not subscribe to <b>%s</b>.<br>Can't download the Feed URL."
 msgstr ""
-"Nie udało się zaprenumerować <b>%s</b>. Nie udało się pobrać adresu kanału."
+"Nie udało się zaprenumerować <b>%s</b>.<br>Nie udało się pobrać adresu "
+"kanału."
 
 #: classes/handler/public.php:835
 msgid "Multiple feed URLs found:"
@@ -2188,8 +2189,8 @@ msgid ""
 "You will need to provide valid account name and email. Password reset link "
 "will be sent to your email address."
 msgstr ""
-"Musisz podać prawidłową nazwę konta oraz adres email. Link do zresetowania "
-"hasła zostanie przesłany na Twój adres email."
+"Musisz podać prawidłową nazwę konta oraz adres e-mail. Link do zresetowania "
+"hasła zostanie przesłany na Twój adres e-mail."
 
 #: classes/handler/public.php:988
 #, php-format
@@ -2213,7 +2214,7 @@ msgstr "[tt-rss] Prośba o zmianę hasła"
 #: classes/handler/public.php:1071
 msgid "Sorry, login and email combination not found."
 msgstr ""
-"Przykro mi, podana kombinacja nazwy użytkownika i adresu email nie została "
+"Przykro mi, podana kombinacja nazwy użytkownika i adresu e-mail nie została "
 "oznaleziona."
 
 #: classes/handler/public.php:1094
@@ -2277,7 +2278,7 @@ msgid ""
 "in in your browser and click on the link to subscribe to it."
 msgstr ""
 "Przeciągnij poniższy odnośnik na pasek zakładek Twojej przeglądarki, otwórz "
-"kanał który Cie interesuje w przeglądarce i kliknij na utworzonym odnośniku "
+"kanał który Cię interesuje w przeglądarce i kliknij na utworzonym odnośniku "
 "aby zaprenumerować kanał."
 
 #: plugins/bookmarklets/init.php:29
@@ -2364,13 +2365,13 @@ msgstr "Kliknij odnośnik aby uruchomić Twój program pocztowy:"
 
 #: plugins/mailto/init.php:75
 msgid "Forward selected article(s) by email."
-msgstr "Prześlij artykuł emailem."
+msgstr "Prześlij artykuł(y) e-mailem."
 
 #: plugins/mailto/init.php:78
 msgid ""
 "You should be able to edit the message before sending in your mail client."
 msgstr ""
-"Powinieneś mieć jeszcze możliwość edycji wiamości przed wysłaniem w poziomu "
+"Będziesz mieć jeszcze możliwość edycji wiamości przed wysłaniem z poziomu "
 "programu pocztowego."
 
 #: plugins/mailto/init.php:83
@@ -2493,7 +2494,7 @@ msgstr "Kanały wspierane przez af_comics"
 
 #: plugins/af_comics/init.php:53
 msgid "The following comics are currently supported:"
-msgstr "Obecnie są wspierane następujące komiksy:"
+msgstr "Obecnie wspierane są następujące komiksy:"
 
 #: plugins/vf_shared/init.php:17 plugins/vf_shared/init.php:73
 msgid "Shared articles"
@@ -2510,7 +2511,7 @@ msgstr "Wtyczka Mail"
 #: plugins/mail/init.php:38
 msgid "You can set predefined email addressed here (comma-separated list):"
 msgstr ""
-"Możesz tutaj predefiniować adresy e-mail do wysyłki (lista rozdzielona "
+"Tutaj możesz predefiniować adresy e-mail do wysyłki (lista rozdzielona "
 "przecinkami):"
 
 #: plugins/mail/init.php:150
@@ -2523,7 +2524,7 @@ msgstr "Temat:"
 
 #: plugins/mail/init.php:181
 msgid "Send e-mail"
-msgstr "Wyślij email"
+msgstr "Wyślij e-mail"
 
 #: js/App.js:309
 msgid "Help"
@@ -2617,7 +2618,7 @@ msgstr "Nie udało się pobrać wprowadzonego adresu: %s"
 #: js/CommonDialogs.js:174
 #, perl-format
 msgid "XML validation failed: %s"
-msgstr "Weryfikacja XML niepowiodła się: %s"
+msgstr "Weryfikacja XML nie powiodła się: %s"
 
 #: js/CommonDialogs.js:177
 msgid "You are already subscribed to this feed."
@@ -2667,7 +2668,7 @@ msgstr "Edytuj kanał"
 
 #: js/CommonDialogs.js:460
 msgid "Generate new syndication address for this feed?"
-msgstr "Wygenerowań nowy adres do dzielenia się tym kanałem?"
+msgstr "Wygenerować nowy adres do dzielenia się tym kanałem?"
 
 #: js/Feeds.js:231
 msgid "Your password is at default value"
@@ -2723,7 +2724,7 @@ msgstr "Prenumerowanie kanałów..."
 
 #: js/PrefFeedTree.js:374
 msgid "Feeds without recent updates"
-msgstr "Kanały nieaktualizowane ostatnio"
+msgstr "Kanały bez najnowszych aktualizacji"
 
 #: js/PrefFilterTree.js:49
 msgid "Inverse"
@@ -2815,7 +2816,7 @@ msgstr "Kliknij aby zamknąć"
 
 #: plugins/mailto/init.js:21 plugins/mail/mail.js:21
 msgid "Forward article by email"
-msgstr "Prześlij artykuł emailem"
+msgstr "Prześlij artykuł e-mailem"
 
 #: plugins/af_psql_trgm/init.js:10
 msgid "Related articles"
@@ -2847,14 +2848,15 @@ msgstr "Błąd wysyłania e-mail:"
 msgid ""
 "<span onclick=\"App.explainError(1)\">Update daemon is not running.</span>"
 msgstr ""
-"<span onclick=\"App.explainError(1)\">Proces aktualizacji nie pracuje.</span>"
+"<span onclick=\"App.explainError(1)\">Usługa aktualizacji nie jest "
+"uruchomiona.</span>"
 
 #: js/App.js:449
 msgid ""
 "<span onclick=\"App.explainError(3)\">Update daemon is not updating feeds.</"
 "span>"
 msgstr ""
-"<span onclick=\"App.explainError(3)\">Proces aktualizacji nie aktualizuje "
+"<span onclick=\"App.explainError(3)\">Usługa aktualizacji nie odświeża "
 "kanałów.</span>"
 
 #: js/App.js:601
@@ -2863,7 +2865,7 @@ msgstr "Nieobsługiwany wyjątek"
 
 #: js/App.js:1003
 msgid "Please enable mail or mailto plugin first."
-msgstr "Włącz najpierw wtyczkę obsługi poczty (mail lub mailto)."
+msgstr "Najpierw włącz wtyczkę obsługi poczty (mail lub mailto)."
 
 #: js/App.js:1122
 msgid "Please enable af_readability first."
@@ -2875,7 +2877,7 @@ msgstr "Opcja szerokiego ekranu nie jest dostępna w trybie scalonym."
 
 #: js/App.js:1193
 msgid "Please select some feed first."
-msgstr "Wybierz najpierw jakiś kanał."
+msgstr "Najpierw wybierz jakiś kanał."
 
 #: js/App.js:1198
 msgid "You can't unsubscribe from the category."
@@ -2899,7 +2901,7 @@ msgstr "Ikona kanału usunięta."
 
 #: js/CommonDialogs.js:41
 msgid "Uploading, please wait..."
-msgstr "Trwa ładowanie, proszę czekać..."
+msgstr "Trwa przekazywanie, proszę czekać..."
 
 #: js/CommonDialogs.js:50
 msgid "Upload complete."
@@ -3136,7 +3138,7 @@ msgstr "Usuwanie wybranych filtrów..."
 
 #: js/PrefHelpers.js:44 plugins/share/share_prefs.js:4
 msgid "Clearing URLs..."
-msgstr "Czyszczę URLe..."
+msgstr "Czyszczę URL-e..."
 
 #: js/PrefHelpers.js:47
 msgid "Generated URLs cleared."

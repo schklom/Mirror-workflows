@@ -864,7 +864,7 @@ class RSSUtils {
 				if (Debug::get_loglevel() >= Debug::$LOG_EXTENDED) {
 					Debug::log("matched filters: ", Debug::$LOG_VERBOSE);
 
-					if (count($matched_filters != 0)) {
+					if (count($matched_filters) != 0) {
 						print_r($matched_filters);
 					}
 

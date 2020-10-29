@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-10-15 16:27+0300\n"
-"PO-Revision-Date: 2019-07-31 13:03+0000\n"
-"Last-Translator: Marcin Sadowski <sadowski.marcin@icloud.com>\n"
+"PO-Revision-Date: 2020-10-28 18:24+0000\n"
+"Last-Translator: Piotr <piotrdev+ttrss@outlook.com>\n"
 "Language-Team: Polish <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "pl/>\n"
 "Language: pl_PL\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 3.7.1\n"
+"X-Generator: Weblate 4.2.2\n"
 
 #: backend.php:57
 msgid "Use default"
@@ -199,11 +199,11 @@ msgstr "Problem w komunikacji z serwerem."
 
 #: index.php:168
 msgid "Recent entries found in event log."
-msgstr "Ostatnie wpisy Znalezione w dzienniku zdarzeń."
+msgstr "Znaleziono nowe wpisy w dzienniku zdarzeń."
 
 #: index.php:171
 msgid "Updates are available from Git."
-msgstr "Aktualizacje są dostępne na Git."
+msgstr "Dostępne są aktualizacje na Git."
 
 #: index.php:185
 msgid "Show articles"
@@ -385,9 +385,9 @@ msgid ""
 "were not logged in once, are erased automatically 24 hours after temporary "
 "password is sent."
 msgstr ""
-"Twoje tymczasowe hasło zostanie wysłane na podany adres email. Konta, na "
-"które  nikt nie zalogował się, są usuwane automatycznie 24 godziny po "
-"wysłaniu hasła tymczasowego."
+"Twoje tymczasowe hasło zostanie wysłane na podany adres e-mail. Konta, na "
+"które nikt się nie zalogował, są usuwane automatycznie po 24 godzinach od "
+"wysłania hasła tymczasowego."
 
 #: register.php:220
 msgid "Desired login:"
@@ -399,7 +399,7 @@ msgstr "Sprawdź dostępność"
 
 #: register.php:225 classes/handler/public.php:980
 msgid "Email:"
-msgstr "Email:"
+msgstr "E-mail:"
 
 #: register.php:228
 msgid "How much is two plus two:"
@@ -458,7 +458,7 @@ msgstr "Hasło:"
 
 #: include/login_form.php:125
 msgid "I forgot my password"
-msgstr "Zapomniałem hasła"
+msgstr "Przypomnij hasło"
 
 #: include/login_form.php:130
 msgid "Profile:"
@@ -479,9 +479,8 @@ msgstr ""
 "Nie wyświetla obrazków w artykułach, zmniejsza częstotliwość odświeżania."
 
 #: include/login_form.php:154
-#, fuzzy
 msgid "Safe mode (no plugins)"
-msgstr "Wtyczki systemowe"
+msgstr "Tryb awaryjny (bez wtyczek)"
 
 #: include/login_form.php:163
 msgid "Remember me"
@@ -497,7 +496,7 @@ msgstr "Nie powiodła się weryfikacja sesji (zmieniona wersja schematu)"
 
 #: include/sessions.php:52
 msgid "Session failed to validate (UA changed)."
-msgstr "Nie powiodła się weryfikacja sesji (zmienione hasło)."
+msgstr "Nie powiodła się weryfikacja sesji (zmieniona przeglądarka)."
 
 #: include/sessions.php:66
 msgid "Session failed to validate (password changed)"
@@ -561,24 +560,20 @@ msgid "Open previous feed"
 msgstr "Otwórz poprzedni kanał"
 
 #: classes/rpc.php:755
-#, fuzzy
 msgid "Open next article (in combined mode, scroll down)"
-msgstr "Otwórz następny artykuł (nie przewijaj długich artykułów)"
+msgstr "Otwórz następny artykuł (w trybie scalonym przewijaj w dół)"
 
 #: classes/rpc.php:756
-#, fuzzy
 msgid "Open previous article (in combined mode, scroll up)"
-msgstr "Otwórz poprzeni artykuł (nie przewijaj długich artykułów)"
+msgstr "Otwórz poprzeni artykuł (w trybie scalonym przewijaj w górę)"
 
 #: classes/rpc.php:757
-#, fuzzy
 msgid "Scroll headlines by one page down"
-msgstr "Wybierz artykuły w grupie"
+msgstr "Przewijaj nagłówki o stronę w dół"
 
 #: classes/rpc.php:758
-#, fuzzy
 msgid "Scroll headlines by one page up"
-msgstr "Wybierz artykuły w grupie"
+msgstr "Przewijaj nagłówki o stronę w górę"
 
 #: classes/rpc.php:759
 msgid "Open next article"
@@ -589,25 +584,18 @@ msgid "Open previous article"
 msgstr "Otwórz poprzedni artykuł"
 
 #: classes/rpc.php:761
-#, fuzzy
 msgid "Move to next article (don't expand)"
-msgstr ""
-"Przejdź do następnego artykułu (nie rozwijaj lub nie oznaczaj jako "
-"przeczytane)"
+msgstr "Przejdź do następnego artykułu (nie rozwijaj)"
 
 #: classes/rpc.php:762
-#, fuzzy
 msgid "Move to previous article (don't expand)"
-msgstr ""
-"Przejdź do poprzedniego artykułu (nie rozwijaj lub nie oznaczaj jako "
-"przeczytane)"
+msgstr "Przejdź do poprzedniego artykułu (nie rozwijaj)"
 
 #: classes/rpc.php:763
 msgid "Show search dialog"
 msgstr "Otwórz okno wyszukiwania"
 
 #: classes/rpc.php:764
-#, fuzzy
 msgid "Cancel active search"
 msgstr "Anuluj wyszukiwanie"
 
@@ -652,14 +640,12 @@ msgid "Scroll up"
 msgstr "Przewiń do góry"
 
 #: classes/rpc.php:775
-#, fuzzy
 msgid "Scroll down page"
-msgstr "Przewiń w dół"
+msgstr "Przewiń w dół o stronę"
 
 #: classes/rpc.php:776
-#, fuzzy
 msgid "Scroll up page"
-msgstr "Przewiń do góry"
+msgstr "Przewiń do góry o stronę"
 
 #: classes/rpc.php:777
 msgid "Select article under cursor"
@@ -667,7 +653,7 @@ msgstr "Wybierz artykuł pod kursorem"
 
 #: classes/rpc.php:778
 msgid "Email article"
-msgstr "Prześlij artykuł emailem"
+msgstr "Prześlij artykuł e-mailem"
 
 #: classes/rpc.php:779
 msgid "Close/collapse article"
@@ -679,7 +665,7 @@ msgstr "Przełącz rozwijanie artykułów (tryb scalony)"
 
 #: classes/rpc.php:782
 msgid "Toggle full article text via Readability"
-msgstr ""
+msgstr "Przełącz pełną treść artykułu przy pomocy Readability"
 
 #: classes/rpc.php:783
 msgid "Article selection"
@@ -826,7 +812,7 @@ msgid ""
 msgstr ""
 "Proces aktualizacji jest włączony w ustawieniach, jednak nie działa, co "
 "powoduje iż kanały nie są aktualizowane. Proszę uruchomić proces "
-"aktualizacji lub skontaktować się z właścicielem tej instalacji."
+"aktualizacji lub skontaktuj się z właścicielem tej instancji."
 
 #: classes/dlg.php:72 classes/dlg.php:81
 msgid "Last update:"
@@ -928,7 +914,7 @@ msgstr "Błąd: proszę wgrać plik OPML."
 
 #: classes/opml.php:617
 msgid "Error: unable to find moved OPML file."
-msgstr "Błąd: nie udało się przenieść pliku OPML."
+msgstr "Błąd: nie udało się odnaleźć przeniesionego pliku OPML."
 
 #: classes/opml.php:626
 msgid "Error while parsing document."
@@ -997,7 +983,7 @@ msgstr "Użytkownik nie został odnaleziony"
 #: classes/pref/users.php:259
 #, php-format
 msgid "Added user %s with password %s"
-msgstr "Dodano użytkownika <b>%s</b> używającego hasła <b>%s</b>"
+msgstr "Dodano użytkownika <b>%s</b> z hasłem <b>%s</b>"
 
 #: classes/pref/users.php:266
 #, php-format
@@ -1280,7 +1266,7 @@ msgstr "Oznacz jako przeczytane przy przewijaniu"
 
 #: classes/pref/prefs.php:73
 msgid "Mark articles as read as you scroll past them"
-msgstr "Oznaczaj artykuły jako przeczytane, podczas przewijania listy"
+msgstr "Oznaczaj artykuły jako przeczytane podczas przewijania listy"
 
 #: classes/pref/prefs.php:74
 msgid "Always expand articles"
@@ -1436,8 +1422,8 @@ msgstr "Usuń niebezpieczne etykiety z artykułów"
 #: classes/pref/prefs.php:98
 msgid "Strip all but most common HTML tags when reading articles."
 msgstr ""
-"Podczas czytania artykułu usuń wszystkie poza najpopularniejszymi znaczniki "
-"HTML."
+"Podczas czytania artykułu usuń wszystkie, poza najpopularniejszymi, "
+"znaczniki HTML."
 
 #: classes/pref/prefs.php:99 js/PrefHelpers.js:153
 msgid "Customize stylesheet"
@@ -1522,25 +1508,24 @@ msgid ""
 "Authentication module used for this session (<b>%s</b>) does not provide an "
 "ability to set passwords."
 msgstr ""
+"Moduł autoryzacji użyty dla tej sesji (<b>%s</b>) nie wspiera możliwości "
+"ustawienia hasła."
 
 #: classes/pref/prefs.php:414
-#, fuzzy
 msgid "App passwords"
-msgstr "Stare hasło:"
+msgstr "Hasła aplikacji"
 
 #: classes/pref/prefs.php:426
-#, fuzzy
 msgid "Generate new password"
-msgstr "Wygeneruj nowy adres"
+msgstr "Wygeneruj nowe hasło"
 
 #: classes/pref/prefs.php:430
-#, fuzzy
 msgid "Remove selected passwords"
-msgstr "Usuń wybrane profile"
+msgstr "Usuń wybrane hasła"
 
 #: classes/pref/prefs.php:434
 msgid "One time passwords / Authenticator"
-msgstr "Hasło jednorazowe / Uwierzytelnianie"
+msgstr "Hasła jednorazowe / Uwierzytelnianie"
 
 #: classes/pref/prefs.php:464 classes/pref/prefs.php:525
 msgid "Your password:"
@@ -1551,20 +1536,22 @@ msgid "Disable OTP"
 msgstr "Wyłącz hasła jednorazowe"
 
 #: classes/pref/prefs.php:484
-#, fuzzy
 msgid ""
 "Scan the following code by the Authenticator application or copy the key "
 "manually"
-msgstr "Zeskanuj poniższy kod przy użyciu aplikacji uwierzytelniającej:"
+msgstr ""
+"Zeskanuj poniższy kod przy użyciu aplikacji uwierzytelniającej lub skopiuj "
+"klucz ręcznie"
 
 #: classes/pref/prefs.php:490
-#, fuzzy
 msgid "Use the following OTP key with a compatible Authenticator application"
-msgstr "Zeskanuj poniższy kod przy użyciu aplikacji uwierzytelniającej:"
+msgstr ""
+"Zeskanuj poniższy kod OTP przy użyciu kompatybilnej aplikacji "
+"uwierzytelniającej"
 
 #: classes/pref/prefs.php:498
 msgid "OTP Key:"
-msgstr ""
+msgstr "Klucz OTP:"
 
 #: classes/pref/prefs.php:531
 msgid "One time password:"
@@ -1601,7 +1588,7 @@ msgstr "Wyczyść"
 #: classes/pref/prefs.php:775
 #, php-format
 msgid "Current server time: %s"
-msgstr "Aktualny czas serwera to: %s"
+msgstr "Aktualny czas serwera: %s"
 
 #: classes/pref/prefs.php:804
 msgid "Save configuration"
@@ -1630,6 +1617,9 @@ msgid ""
 "data usage and origin server load resulting in a ban of your instance: <b>"
 "%s</b>"
 msgstr ""
+"Te wtyczki używają hooków dla treści per kanał. To może spowodować nadmierne "
+"wykorzystanie łącza i obciążać serwer źródłowy skutkując blokadą twojej "
+"instancji: <b>%s</b>"
 
 #: classes/pref/prefs.php:883
 msgid "System plugins"
@@ -1673,15 +1663,16 @@ msgid ""
 "User CSS has been applied, you might need to reload the page to see all "
 "changes."
 msgstr ""
+"Zastosowano CSS użytkownika, możliwe, że trzeba przeładować stronę, aby "
+"zobaczyć wszystkie zmiany."
 
 #: classes/pref/prefs.php:1167
 msgid "Apply"
-msgstr ""
+msgstr "Zastosuj"
 
 #: classes/pref/prefs.php:1169
-#, fuzzy
 msgid "Save and reload"
-msgstr "Oznacz powyższe jako przeczytane"
+msgstr "Zapisz i przeładuj"
 
 #: classes/pref/prefs.php:1194
 msgid "Create profile"
@@ -1704,14 +1695,12 @@ msgid "Description"
 msgstr "Opis"
 
 #: classes/pref/prefs.php:1304
-#, fuzzy
 msgid "Created"
-msgstr "Utwórz"
+msgstr "Utworzono"
 
 #: classes/pref/prefs.php:1305
-#, fuzzy
 msgid "Last used"
-msgstr "Ostatnia aktualizacja:"
+msgstr "Ostatnio użyte"
 
 #: classes/pref/prefs.php:1358
 #, php-format
@@ -1719,6 +1708,8 @@ msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
 "reference."
 msgstr ""
+"Hasło <strong>%s</strong> dla %s zostało wygenerowane. Proszę je zapamiętać "
+"na przyszłość."
 
 #: classes/pref/feeds.php:28
 msgid "Check to enable field"
@@ -1789,7 +1780,7 @@ msgstr "Ten kanał wymaga uwierzytelniania."
 
 #: classes/pref/feeds.php:698 classes/pref/feeds.php:913
 msgid "Include in e-mail digest"
-msgstr "Umieść w przeglądzie emailowym"
+msgstr "Umieść w przeglądzie e-mailowym"
 
 #: classes/pref/feeds.php:714 classes/pref/feeds.php:920
 msgid "Always display image attachments"
@@ -1904,7 +1895,7 @@ msgstr "Opublikowane i udostępnione artykuły / Wygenerowane kanały"
 msgid ""
 "Published articles can be subscribed by anyone who knows the following URL:"
 msgstr ""
-"Opublikowane artykuły mogą byś subskrybowane przez każdego, kto zna ten "
+"Opublikowane artykuły mogą być subskrybowane przez każdego, kto zna ten "
 "adres:"
 
 #: classes/pref/feeds.php:1373 classes/feeds.php:36 classes/feeds.php:37
@@ -2007,7 +1998,7 @@ msgstr "Archiwizuj"
 #: classes/feeds.php:90 classes/feeds.php:95 plugins/mailto/init.php:24
 #: plugins/mail/init.php:76
 msgid "Forward by email"
-msgstr "Przekaż za pomocą emaila"
+msgstr "Przekaż za pomocą e-maila"
 
 #: classes/feeds.php:99
 msgid "Feed:"
@@ -2090,7 +2081,7 @@ msgstr "Szukaj %s..."
 
 #: classes/feeds.php:725
 msgid "Used for word stemming"
-msgstr ""
+msgstr "Używane do tworzenia słów"
 
 #: classes/feeds.php:735
 msgid "Search syntax"
@@ -2174,7 +2165,8 @@ msgstr "Nie znaleziono kanałów w <b>%s</b>."
 #, php-format
 msgid "Could not subscribe to <b>%s</b>.<br>Can't download the Feed URL."
 msgstr ""
-"Nie udało się zaprenumerować <b>%s</b>. Nie udało się pobrać adresu kanału."
+"Nie udało się zaprenumerować <b>%s</b>.<br>Nie udało się pobrać adresu "
+"kanału."
 
 #: classes/handler/public.php:835
 msgid "Multiple feed URLs found:"
@@ -2197,8 +2189,8 @@ msgid ""
 "You will need to provide valid account name and email. Password reset link "
 "will be sent to your email address."
 msgstr ""
-"Będziesz musiał podać prawidłową nazwę konta oraz adres email. Link do "
-"zresetowania hasła zostanie przesłany na Twój adres email."
+"Musisz podać prawidłową nazwę konta oraz adres e-mail. Link do zresetowania "
+"hasła zostanie przesłany na Twój adres e-mail."
 
 #: classes/handler/public.php:988
 #, php-format
@@ -2222,7 +2214,7 @@ msgstr "[tt-rss] Prośba o zmianę hasła"
 #: classes/handler/public.php:1071
 msgid "Sorry, login and email combination not found."
 msgstr ""
-"Przykro mi, podana kombinacja nazwy użytkownika i adresu email nie została "
+"Przykro mi, podana kombinacja nazwy użytkownika i adresu e-mail nie została "
 "oznaleziona."
 
 #: classes/handler/public.php:1094
@@ -2286,7 +2278,7 @@ msgid ""
 "in in your browser and click on the link to subscribe to it."
 msgstr ""
 "Przeciągnij poniższy odnośnik na pasek zakładek Twojej przeglądarki, otwórz "
-"kanał który Cie interesuje w przeglądarce i kliknij na utworzonym odnośniku "
+"kanał który Cię interesuje w przeglądarce i kliknij na utworzonym odnośniku "
 "aby zaprenumerować kanał."
 
 #: plugins/bookmarklets/init.php:29
@@ -2309,12 +2301,11 @@ msgstr "Dane zapisane."
 
 #: plugins/af_readability/init.php:47
 msgid "Inline content"
-msgstr ""
+msgstr "Treść osadzona"
 
 #: plugins/af_readability/init.php:56
-#, fuzzy
 msgid "Toggle full article text"
-msgstr "Wybierz wszystkie artykuły"
+msgstr "Przełącz pełną treść artykułu"
 
 #: plugins/af_readability/init.php:63
 msgid "Readability settings (af_readability)"
@@ -2341,7 +2332,7 @@ msgstr "Readability"
 
 #: plugins/af_readability/init.php:141
 msgid "Inline article content"
-msgstr ""
+msgstr "Wbudowana treść artykułu"
 
 #: plugins/note/init.php:26 plugins/note/note.js:10
 msgid "Edit article note"
@@ -2374,13 +2365,13 @@ msgstr "Kliknij odnośnik aby uruchomić Twój program pocztowy:"
 
 #: plugins/mailto/init.php:75
 msgid "Forward selected article(s) by email."
-msgstr "Prześlij artykuł emailem."
+msgstr "Prześlij artykuł(y) e-mailem."
 
 #: plugins/mailto/init.php:78
 msgid ""
 "You should be able to edit the message before sending in your mail client."
 msgstr ""
-"Powinieneś mieć jeszcze możliwość edycji wiamości przed wysłaniem w poziomu "
+"Będziesz mieć jeszcze możliwość edycji wiamości przed wysłaniem z poziomu "
 "programu pocztowego."
 
 #: plugins/mailto/init.php:83
@@ -2490,9 +2481,8 @@ msgid "Configuration saved."
 msgstr "Konfiguracja została zapisana."
 
 #: plugins/af_proxy_http/init.php:206
-#, fuzzy
 msgid "Image proxy settings (af_proxy_http)"
-msgstr "Ustawienia proxy dla obrazków (af_zz_imgproxy)"
+msgstr "Ustawienia proxy dla obrazków (af_proxy_http)"
 
 #: plugins/af_proxy_http/init.php:230
 msgid "Enable proxy for all remote images."
@@ -2504,7 +2494,7 @@ msgstr "Kanały wspierane przez af_comics"
 
 #: plugins/af_comics/init.php:53
 msgid "The following comics are currently supported:"
-msgstr "Obecnie są wspierane następujące komiksy:"
+msgstr "Obecnie wspierane są następujące komiksy:"
 
 #: plugins/vf_shared/init.php:17 plugins/vf_shared/init.php:73
 msgid "Shared articles"
@@ -2521,7 +2511,7 @@ msgstr "Wtyczka Mail"
 #: plugins/mail/init.php:38
 msgid "You can set predefined email addressed here (comma-separated list):"
 msgstr ""
-"Możesz tutaj predefiniować adresy e-mail do wysyłki (lista rozdzielona "
+"Tutaj możesz predefiniować adresy e-mail do wysyłki (lista rozdzielona "
 "przecinkami):"
 
 #: plugins/mail/init.php:150
@@ -2534,7 +2524,7 @@ msgstr "Temat:"
 
 #: plugins/mail/init.php:181
 msgid "Send e-mail"
-msgstr "Wyślij email"
+msgstr "Wyślij e-mail"
 
 #: js/App.js:309
 msgid "Help"
@@ -2628,7 +2618,7 @@ msgstr "Nie udało się pobrać wprowadzonego adresu: %s"
 #: js/CommonDialogs.js:174
 #, perl-format
 msgid "XML validation failed: %s"
-msgstr "Weryfikacja XML niepowiodła się: %s"
+msgstr "Weryfikacja XML nie powiodła się: %s"
 
 #: js/CommonDialogs.js:177
 msgid "You are already subscribed to this feed."
@@ -2678,7 +2668,7 @@ msgstr "Edytuj kanał"
 
 #: js/CommonDialogs.js:460
 msgid "Generate new syndication address for this feed?"
-msgstr "Wygenerowań nowy adres do dzielenia się tym kanałem?"
+msgstr "Wygenerować nowy adres do dzielenia się tym kanałem?"
 
 #: js/Feeds.js:231
 msgid "Your password is at default value"
@@ -2734,7 +2724,7 @@ msgstr "Prenumerowanie kanałów..."
 
 #: js/PrefFeedTree.js:374
 msgid "Feeds without recent updates"
-msgstr "Kanały nieaktualizowane ostatnio"
+msgstr "Kanały bez najnowszych aktualizacji"
 
 #: js/PrefFilterTree.js:49
 msgid "Inverse"
@@ -2765,9 +2755,8 @@ msgid "Remove selected filters?"
 msgstr "Usunąć wybrane filtry?"
 
 #: js/PrefHelpers.js:19
-#, fuzzy
 msgid "Remove selected app passwords?"
-msgstr "Usunąć wybrane kategorię?"
+msgstr "Usunąć wybrane hasła aplikacji?"
 
 #: js/PrefHelpers.js:43
 msgid "This will invalidate all previously generated feed URLs. Continue?"
@@ -2827,7 +2816,7 @@ msgstr "Kliknij aby zamknąć"
 
 #: plugins/mailto/init.js:21 plugins/mail/mail.js:21
 msgid "Forward article by email"
-msgstr "Prześlij artykuł emailem"
+msgstr "Prześlij artykuł e-mailem"
 
 #: plugins/af_psql_trgm/init.js:10
 msgid "Related articles"
@@ -2859,14 +2848,15 @@ msgstr "Błąd wysyłania e-mail:"
 msgid ""
 "<span onclick=\"App.explainError(1)\">Update daemon is not running.</span>"
 msgstr ""
-"<span onclick=\"App.explainError(1)\">Proces aktualizacji nie pracuje.</span>"
+"<span onclick=\"App.explainError(1)\">Usługa aktualizacji nie jest "
+"uruchomiona.</span>"
 
 #: js/App.js:449
 msgid ""
 "<span onclick=\"App.explainError(3)\">Update daemon is not updating feeds.</"
 "span>"
 msgstr ""
-"<span onclick=\"App.explainError(3)\">Proces aktualizacji nie aktualizuje "
+"<span onclick=\"App.explainError(3)\">Usługa aktualizacji nie odświeża "
 "kanałów.</span>"
 
 #: js/App.js:601
@@ -2875,12 +2865,11 @@ msgstr "Nieobsługiwany wyjątek"
 
 #: js/App.js:1003
 msgid "Please enable mail or mailto plugin first."
-msgstr "Włącz najpierw wtyczkę obsługi poczty (mail lub mailto)."
+msgstr "Najpierw włącz wtyczkę obsługi poczty (mail lub mailto)."
 
 #: js/App.js:1122
-#, fuzzy
 msgid "Please enable af_readability first."
-msgstr "Włącz najpierw wtyczkę obsługi poczty (mail lub mailto)."
+msgstr "Najpierw włącz wtyczkę af_readability."
 
 #: js/App.js:1135 js/App.js:1225
 msgid "Widescreen is not available in combined mode."
@@ -2888,7 +2877,7 @@ msgstr "Opcja szerokiego ekranu nie jest dostępna w trybie scalonym."
 
 #: js/App.js:1193
 msgid "Please select some feed first."
-msgstr "Wybierz najpierw jakiś kanał."
+msgstr "Najpierw wybierz jakiś kanał."
 
 #: js/App.js:1198
 msgid "You can't unsubscribe from the category."
@@ -2912,7 +2901,7 @@ msgstr "Ikona kanału usunięta."
 
 #: js/CommonDialogs.js:41
 msgid "Uploading, please wait..."
-msgstr "Trwa ładowanie, proszę czekać..."
+msgstr "Trwa przekazywanie, proszę czekać..."
 
 #: js/CommonDialogs.js:50
 msgid "Upload complete."
@@ -3149,7 +3138,7 @@ msgstr "Usuwanie wybranych filtrów..."
 
 #: js/PrefHelpers.js:44 plugins/share/share_prefs.js:4
 msgid "Clearing URLs..."
-msgstr "Czyszczę URLe..."
+msgstr "Czyszczę URL-e..."
 
 #: js/PrefHelpers.js:47
 msgid "Generated URLs cleared."
@@ -3228,9 +3217,8 @@ msgid "Removing selected users..."
 msgstr "Usuwanie wybranych użytkowników..."
 
 #: plugins/af_readability/init.js:29
-#, fuzzy
 msgid "Unable to fetch full text for this article"
-msgstr "Wprowadź nową punktację dla tego artykułu:"
+msgstr "Ściągnięcie pełnej treści artykułu nie było możliwe"
 
 #: plugins/note/note.js:14
 msgid "Saving article note..."

@@ -106,7 +106,7 @@ class jimIcon {
                 // See if we can parse it (might be PNG format here)
                 $i = @imagecreatefromstring($data);
                 if ($i) {
-                        imagesavealpha($img, true);
+                        imagesavealpha($i, true);
                         return $i;
                 }
 

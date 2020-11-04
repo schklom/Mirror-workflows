@@ -384,7 +384,7 @@ class DiskCache {
 			$mimetype_blacklist = [ "image/svg+xml" ];
 
 			/* only serve video and images */
-			if (!preg_match("/(image|video)\//", $mimetype) || in_array($mimetype, $mimetype_blacklist)) {
+			if (!preg_match("/(image|audio|video)\//", $mimetype) || in_array($mimetype, $mimetype_blacklist)) {
 				http_response_code(400);
 				header("Content-type: text/plain");
 

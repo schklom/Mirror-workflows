@@ -37,7 +37,7 @@
   "devDependencies": {
     "jimp": "^0.14.0",
     "selenium-webdriver": "^4.0.0-alpha.7",
-    "tap": "^14.10.7",
+    "tap": "^14.10.8",
     "why-is-node-running": "^2.2.0"
   }
 }

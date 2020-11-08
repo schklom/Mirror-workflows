@@ -71,7 +71,7 @@ module.exports = [
 				username = username.replace(/^(https?:\/\/)?([a-z]+\.)?instagram\.com\//, "")
 				username = username.replace(/^\@+/, "")
 				username = username.replace(/\/+$/, "")
-				username = username.toLowerCase()
+				username = username.toLowerCase().trim()
 				return redirect(`/u/${username}`, 301)
 			} else {
 				return render(400, "pug/friendlyerror.pug", {
@@ -264,7 +264,7 @@ module.exports = [
 	{
 		route: "/p", methods: ["GET"], code: async ({url}) => {
 			if (url.searchParams.has("p")) {
-				let post = url.searchParams.get("p")
+				let post = url.searchParams.get("p").trim()
 				post = post.replace(/^(https?:\/\/)?([a-z]+\.)?instagram\.com\/p\//, "")
 				return redirect(`/p/${post}`, 301)
 			} else {

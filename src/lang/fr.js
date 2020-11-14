@@ -3,6 +3,11 @@ const {pug} = require("./utils/functions")
 const constants = require("../lib/constants")
 if (!constants.language_dev) Object.assign(data, require("./en.js"))
 
+// \u202f = narrow no-break space and \u00a0 = no-break space
+// will be used to clearly show they aren't regular spaces
+// see https://fr.wikipedia.org/wiki/Espace_insécable#En_France (fr)
+// or https://en.wikipedia.org/wiki/Non-breaking_space (en)
+
 ;(() => {
 	data.meta_direction = "ltr"
 
@@ -37,7 +42,7 @@ if (!constants.language_dev) Object.assign(data, require("./en.js"))
 	data.instances_link = "Autres instances Bibliogram"
 	data.contact_link = "Contacter le développeur"
 	data.featured_profiles_header = "Profils en vedette"
-	data.featured_profiles_whats_this = "Qu'est-ce que c'est ?"
+	data.featured_profiles_whats_this = "Qu'est-ce que c'est\u202f?"
 	data.html_featured_profiles_disclaimer = pug(`
 		p Le propriétaire de ce site pense personnellement que ces profils sont intéressants.
 		p Ils ne sont pas approuvés par le projet Bibliogram.
@@ -47,7 +52,7 @@ if (!constants.language_dev) Object.assign(data, require("./en.js"))
 	data.post_counter_label = "posts"
 	data.outgoing_follows_counter_label = "abonnements"
 	data.incoming_follows_counter_label = "abonnés"
-	data.quota_left = "Quota restant :"
+	data.quota_left = "Quota restant\u00a0:"
 	data.t_home = "Accueil"
 	data.tab_timeline = "Publications"
 	data.tab_igtv = "IGTV"
@@ -86,7 +91,7 @@ if (!constants.language_dev) Object.assign(data, require("./en.js"))
 	data.t_theme = "Thème"
 	data.display_top_nav = "Afficher la barre en haut de la page"
 	data.t_always = "Toujours"
-	data.timeline_columns = "Publications : nombre de colonnes"
+	data.timeline_columns = "Publications\u00a0: nombre de colonnes"
 	data.t_dynamic = "Dynamique"
 	data.three_columns = "3 colonnes"
 	data.four_columns = "4 colonnes"

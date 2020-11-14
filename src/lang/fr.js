@@ -57,6 +57,48 @@ const {pug} = require("./utils/functions")
 	data.pug_post_timestamp = pug(`
 		| Posté le #[time(datetime=post.date.toISOString() data-local-date)= post.getDisplayDate()].
 	`)
+	// paramètres
+	data.t_features = "Fonctionnalités"
+	data.t_language = "Langue"
+	data.save_data = "Économiser des données"
+	data.t_automatic = "Automatique"
+	data.t_off = "Éteint"
+	data.lazy_load = "Chargement paresseux"
+	data.t_full = "Complet"
+	data.rewrite_youtube = "Réécrire le domaine de YouTube"
+	data.rewrite_twitter = "Réécrire le domaine de Twitter"
+	data.remove_trailing_hashtags = "Supprimer les hashtags en fin de post"
+	data.t_hide = "Cacher"
+	data.link_hashtags = "Hashtags cliquables"
+	data.t_clickable = "Cliquable"
+	data.show_comments = "Afficher les commentaires"
+	data.t_display = "Afficher"
+	data.fast_navigation = "Navigation rapide"
+	data.t_enabled = "Activé"
+	data.infinite_scroll = "Défilement infini"
+	data.t_normal = "Normal"
+	data.t_eager = "Fervent"
+	data.t_manual = "Manuel"
+	data.t_appearance = "Apparence"
+	data.t_theme = "Thème"
+	data.display_top_nav = "Afficher la barre en haut de la page"
+	data.t_always = "Toujours"
+	data.timeline_columns = "Publications : nombre de colonnes"
+	data.t_dynamic = "Dynamique"
+	data.three_columns = "3 colonnes"
+	data.four_columns = "4 colonnes"
+	data.six_columns = "6 colonnes"
+	data.caption_side = "Côté des sous-titres"
+	data.left_caption = "Gauche (Bibliogram)"
+	data.right_caption = "Droite (Instagram)"
+	data.display_alt_text = "Afficher le texte alternatif en ligne"
+	data.t_return = "Revenir"
+	data.t_save = "Sauvegarder"
+	data.save_and_return = "Sauvegarder & revenir"
+	data.pug_restore_sync_settings = pug(`
+		| Vous pouvez sauvegarder et synchroniser vos préférences sauvegardées en #[a(href="/applysettings/"+token)#restore-link ajoutant ce lien à vos favoris.]
+	`)
+
 })()
 
 module.exports = data

@@ -57,6 +57,14 @@ See [`docs/Installing (basic).md`][basic] and
 [basic]: https://git.sr.ht/~cadence/bibliogram-docs/tree/master/docs/Installing%20%28basic%29.md
 [extended]: https://git.sr.ht/~cadence/bibliogram-docs/tree/master/docs/Installing%20%28extended%29.md
 
+## Contributing
+
+- [Learn how to submit a patchset][patchset docs]
+- [Translate for your language][translating]
+
+[patchset docs]: https://git.sr.ht/~cadence/bibliogram-docs/tree/master/docs/Submitting%20a%20patchset.md
+[translating]: https://git.sr.ht/~cadence/bibliogram-docs/tree/master/docs/Translating.md
+
 ## Credits & license information
 
 All of Bibliogram's code uses the
@@ -65,6 +73,8 @@ short, this means that if you make any modifications to the code and
 then publish the result (e.g. by hosting the result on a webserver),
 you must publicly distribute your changes and declare that they also
 use AGPL 3.0.
+
+[The documentation uses the Unlicense](https://unlicense.org/).
 
 Site banner by [TheFrenchGhosty](https://github.com/TheFrenchGhosty),
 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)

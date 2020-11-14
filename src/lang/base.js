@@ -79,7 +79,9 @@ const data = {
 	"t_return": "MISSING STRING: t_return",
 	"t_save": "MISSING STRING: t_save",
 	"save_and_return": "MISSING STRING: save_and_return",
-	"pug_restore_sync_settings": locals => "MISSING TEMPLATE: pug_restore_sync_settings"
+	"pug_restore_sync_settings": locals => "MISSING TEMPLATE: pug_restore_sync_settings",
+	"settings_saved": "MISSING STRING: settings_saved",
+	"quota_left": "MISSING STRING: quota_left"
 }
 
 module.exports = data

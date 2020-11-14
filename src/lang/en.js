@@ -45,6 +45,7 @@ const {pug} = require("./utils/functions")
 	data.post_counter_label = "posts"
 	data.outgoing_follows_counter_label = "following"
 	data.incoming_follows_counter_label = "followed by"
+	data.quota_left = "Quota left:"
 	data.t_home = "Home"
 	data.tab_timeline = "Timeline"
 	data.tab_igtv = "IGTV"
@@ -98,6 +99,7 @@ const {pug} = require("./utils/functions")
 	data.pug_restore_sync_settings = pug(`
 		| You can restore and sync saved settings by #[a(href="/applysettings/"+token)#restore-link bookmarking this link.]
 	`)
+	data.settings_saved = "Saved."
 
 })()
 

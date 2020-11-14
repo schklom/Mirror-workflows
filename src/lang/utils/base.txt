@@ -89,3 +89,5 @@ t_return
 t_save
 save_and_return
 pug_restore_sync_settings
+settings_saved
+quota_left

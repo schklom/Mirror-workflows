@@ -47,6 +47,7 @@ if (!constants.language_dev) Object.assign(data, require("./en.js"))
 	data.post_counter_label = "posts"
 	data.outgoing_follows_counter_label = "abonnements"
 	data.incoming_follows_counter_label = "abonnés"
+	data.quota_left = "Quota restant :"
 	data.t_home = "Accueil"
 	data.tab_timeline = "Publications"
 	data.tab_igtv = "IGTV"
@@ -100,6 +101,7 @@ if (!constants.language_dev) Object.assign(data, require("./en.js"))
 	data.pug_restore_sync_settings = pug(`
 		| Vous pouvez sauvegarder et synchroniser vos préférences sauvegardées en #[a(href="/applysettings/"+token)#restore-link ajoutant ce lien à vos favoris.]
 	`)
+	data.settings_saved = "Sauvegardé."
 
 })()
 

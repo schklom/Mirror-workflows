@@ -1,4 +1,5 @@
 const constants = require("../../lib/constants")
+const lang = require("../../lang")
 const {render, redirect} = require("pinski/plugins")
 const {getSettings, getToken, generateCSRF, checkCSRF} = require("./utils/getsettings")
 const {getSettingsReferrer} = require("./utils/settingsreferrer")
@@ -73,9 +74,10 @@ module.exports = [
 			if (action === "return" && url.searchParams.has("referrer")) {
 				location = url.searchParams.get("referrer")
 			} else { // stay
+				const ll = lang.get(prepared.language)
 				const newParams = new URLSearchParams()
 				newParams.append("status", "success")
-				newParams.append("message", "Saved.")
+				newParams.append("message", ll.settings_saved)
 				if (url.searchParams.has("referrer")) {
 					newParams.append("referrer", url.searchParams.get("referrer"))
 				}

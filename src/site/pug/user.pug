@@ -96,7 +96,9 @@ html
 							a(href="/")= ll.t_home
 							a(href=settingsReferrer)= ll.t_settings
 						if constants.quota.enabled
-							.quota Quota left: #[span#quota= remaining]
+							.quota
+								= ll.quota_left
+								|  #[span#quota= remaining]
 
 			- const hasPosts = !user.data.is_private && selectedTimeline.pages.length && selectedTimeline.pages[0].length
 			.timeline-section(dir=ll.meta_direction)

@@ -37,7 +37,7 @@ Join the Bibliogram discussion room on Matrix:
 
 See also: [Invidious, a front-end for YouTube.][invidious repo]
 
-[invidious repo]: https://github.com/omarroth/invidious
+[invidious repo]: https://github.com/iv-org/invidious
 
 ## Instances
 

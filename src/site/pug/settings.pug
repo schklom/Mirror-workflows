@@ -1,4 +1,5 @@
 //- Needs constants, settings, csrf, status, message
+- const ll = lang.get(settings.language)
 
 mixin fieldset(name)
 	fieldset
@@ -32,7 +33,7 @@ mixin select(id, description, disabled, options)
 doctype html
 html
 	head
-		title Settings | Bibliogram
+		title= `${ll.t_settings} | Bibliogram`
 		include includes/head
 		script(src=getStaticURL("html", "/static/js/settings_message.js") type="module")
 	body.settings-page
@@ -42,10 +43,10 @@ html
 			form(action=returnAction method="post" enctype="application/x-www-form-urlencoded")
 				input(type="hidden" name="csrf" value=csrf)
 
-				h1 Settings
+				h1.title= ll.t_settings
 
-				+fieldset("Features")
-					+select("language", "Language", false, [
+				+fieldset(ll.t_features)
+					+select("language", ll.t_language, false, [
 						{value: "bg", text: "Български"},
 						{value: "en", text: "English (International)"},
 						{value: "en-us", text: "English (US)"},
@@ -58,14 +59,14 @@ html
 						{value: "ru", text: "Русский"}
 					])
 
-					+select("save_data", "Save data", true, [
-						{value: "automatic", text: "Automatic"},
-						{value: "off", text: "Off"},
-						{value: "lazy_load", text: "Lazy load"},
-						{value: "full", text: "Full"}
+					+select("save_data", ll.save_data, true, [
+						{value: "automatic", text: ll.t_automatic},
+						{value: "off", text: ll.t_off},
+						{value: "lazy_load", text: ll.lazy_load},
+						{value: "full", text: ll.t_full}
 					])
 
-					+input("rewrite_youtube", "Rewrite YouTube domain", constants.default_user_settings.rewrite_youtube, false, [
+					+input("rewrite_youtube", ll.rewrite_youtube, constants.default_user_settings.rewrite_youtube, false, [
 						"invidio.us",
 						"invidious.snopyta.org",
 						"invidious.13ad.de",
@@ -74,7 +75,7 @@ html
 						"yewtu.be"
 					])
 
-					+input("rewrite_twitter", "Rewrite Twitter domain", constants.default_user_settings.rewrite_twitter, false, [
+					+input("rewrite_twitter", ll.rewrite_twitter, constants.default_user_settings.rewrite_twitter, false, [
 						"nitter.net",
 						"nitter.snopyta.org",
 						"nitter.pussthecat.org",
@@ -86,38 +87,38 @@ html
 						"nitter.1d4.us"
 					])
 
-					+checkbox("remove_trailing_hashtags", "Hide trailing hashtags", "Hide", false)
+					+checkbox("remove_trailing_hashtags", ll.remove_trailing_hashtags, ll.hide, false)
 
-					+checkbox("link_hashtags", "Clickable hashtags", "Clickable", true)
+					+checkbox("link_hashtags", ll.link_hashtags, ll.t_clickable, true)
 
-					+checkbox("show_comments", "Display comments", "Display", true)
+					+checkbox("show_comments", ll.show_comments, ll.t_display, true)
 
-					+checkbox("spa", "Fast navigation", "Enabled", false)
+					+checkbox("spa", ll.fast_navigation, ll.t_enabled, false)
 
-					+select("infinite_scroll", "Infinite scroll", true, [
-						{value: "normal", text: "Normal"},
-						{value: "eager", text: "Eager"},
-						{value: "off", text: "Manual"}
+					+select("infinite_scroll", ll.infinite_scroll, true, [
+						{value: "normal", text: ll.t_normal},
+						{value: "eager", text: ll.t_eager},
+						{value: "off", text: ll.t_manual}
 					])
 
-				+fieldset("Appearance")
-					+select("theme", "Theme", false, constants.themes.collated.map(entry => ({value: entry.file, text: entry.name})))
+				+fieldset(ll.t_appearance)
+					+select("theme", ll.t_theme, false, constants.themes.collated.map(entry => ({value: entry.file, text: entry.name})))
 
-					+checkbox("display_top_nav", "Display top bar", "Always", false)
+					+checkbox("display_top_nav", ll.display_top_nav, ll.t_always, false)
 
-					+select("timeline_columns", "Timeline columns", false, [
-						{value: "dynamic", text: "Dynamic"},
-						{value: "three", text: "3 columns"},
-						{value: "four", text: "4 columns"},
-						{value: "six", text: "6 columns"}
+					+select("timeline_columns", ll.timeline_columns, false, [
+						{value: "dynamic", text: ll.t_dynamic},
+						{value: "three", text: ll.three_columns},
+						{value: "four", text: ll.four_columns},
+						{value: "six", text: ll.six_columns}
 					])
 
-					+select("caption_side", "Caption side", false, [
-						{value: "left", text: "Left (Bibliogram)"},
-						{value: "right", text: "Right (Instagram)"}
+					+select("caption_side", ll.caption_side, false, [
+						{value: "left", text: ll.left_caption},
+						{value: "right", text: ll.right_caption}
 					])
 
-					+checkbox("display_alt", "Display alt text inline", "Display", false)
+					+checkbox("display_alt", ll.display_alt_text, ll.t_display, false)
 
 				//- div
 					//- Here are all the possible input styles. Uncomment to test styling.
@@ -159,9 +160,9 @@ html
 									span.fake-checkbox
 
 				if token
-					p You can restore and sync saved settings by #[a(href=`/applysettings/${token}`)#restore-link bookmarking this link.]
+					p!= ll.pug_restore_sync_settings({token})
 
 				.action-container
-					span.home-link-container: a(href=returnURL).home-link ← Return
-					button(type="submit" formaction=stayAction).save-button Save
-					button(type="submit").save-button Save &amp; return
+					span.home-link-container: a(href=returnURL).home-link= `← ${ll.t_return}`
+					input(type="submit" value=ll.t_save formaction=stayAction).save-button
+					input(type="submit" value=ll.save_and_return).save-button

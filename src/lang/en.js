@@ -57,6 +57,48 @@ const {pug} = require("./utils/functions")
 	data.pug_post_timestamp = pug(`
 		| Posted on #[time(datetime=post.date.toISOString() data-local-date)= post.getDisplayDate()].
 	`)
+	// settings
+	data.t_features = "Features"
+	data.t_language = "Language"
+	data.save_data = "Save data"
+	data.t_automatic = "Automatic"
+	data.t_off = "Off"
+	data.lazy_load = "Lazy load"
+	data.t_full = "Full"
+	data.rewrite_youtube = "Rewrite YouTube domain"
+	data.rewrite_twitter = "Rewrite Twitter domain"
+	data.remove_trailing_hashtags = "Hide trailing hashtags"
+	data.t_hide = "Hide"
+	data.link_hashtags = "Clickable hashtags"
+	data.t_clickable = "Clickable"
+	data.show_comments = "Display comments"
+	data.t_display = "Display"
+	data.fast_navigation = "Fast navigation"
+	data.t_enabled = "Enabled"
+	data.infinite_scroll = "Infinite scroll"
+	data.t_normal = "Normal"
+	data.t_eager = "Eager"
+	data.t_manual = "Manual"
+	data.t_appearance = "Appearance"
+	data.t_theme = "Theme"
+	data.display_top_nav = "Display top bar"
+	data.t_always = "Always"
+	data.timeline_columns = "Timeline columns"
+	data.t_dynamic = "Dynamic"
+	data.three_columns = "3 columns"
+	data.four_columns = "4 columns"
+	data.six_columns = "6 columns"
+	data.caption_side = "Caption side"
+	data.left_caption = "Left (Bibliogram)"
+	data.right_caption = "Right (Instagram)"
+	data.display_alt_text = "Display alt text inline"
+	data.t_return = "Return"
+	data.t_save = "Save"
+	data.save_and_return = "Save & return"
+	data.pug_restore_sync_settings = pug(`
+		| You can restore and sync saved settings by #[a(href="/applysettings/"+token)#restore-link bookmarking this link.]
+	`)
+
 })()
 
 module.exports = data

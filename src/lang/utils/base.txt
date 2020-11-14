@@ -49,3 +49,43 @@ fn_page_divider
 # Post page
 
 pug_post_timestamp
+
+# settings
+t_features
+t_language
+save_data
+t_automatic
+t_off
+lazy_load
+t_full
+rewrite_youtube
+rewrite_twitter
+remove_trailing_hashtags
+t_hide
+link_hashtags
+t_clickable
+show_comments
+t_display
+fast_navigation
+t_enabled
+infinite_scroll
+t_normal
+t_eager
+t_manual
+t_appearance
+t_theme
+display_top_nav
+t_always
+timeline_columns
+t_dynamic
+three_columns
+four_columns
+six_columns
+caption_side
+left_caption
+right_caption
+display_alt_text
+t_return
+t_save
+save_and_return
+pug_restore_sync_settings

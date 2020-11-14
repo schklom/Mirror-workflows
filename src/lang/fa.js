@@ -1,5 +1,7 @@
 const data = {...require("./base")}
 const {pug} = require("./utils/functions")
+const constants = require("../lib/constants")
+if (!constants.language_dev) Object.assign(data, require("./en.js"))
 
 ;(() => {
 	data.meta_direction = "rtl"

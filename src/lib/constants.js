@@ -290,7 +290,10 @@ let constants = {
 	additional_routes: [],
 
 	database_version: 10,
-	actually_backup_on_database_upgrade: true
+	actually_backup_on_database_upgrade: true,
+
+	// enable this to display: "MISSING STRING: string_id" instead of the English version for all untranslated strings
+	language_dev: false
 }
 
 // Override values from config and export the result

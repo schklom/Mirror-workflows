@@ -67,7 +67,11 @@ class UrlHelper {
 		//convert IDNA hostname to punycode if possible
 		if (function_exists("idn_to_ascii")) {
 			if (mb_detect_encoding($tokens['host']) != 'ASCII') {
-				$tokens['host'] = idn_to_ascii($tokens['host']);
+				if (defined('IDNA_NONTRANSITIONAL_TO_ASCII') && defined('INTL_IDNA_VARIANT_UTS46')) {
+					$tokens['host'] = idn_to_ascii($tokens['host'], IDNA_NONTRANSITIONAL_TO_ASCII, INTL_IDNA_VARIANT_UTS46);
+				} else {
+					$tokens['host'] = idn_to_ascii($tokens['host']);
+				}
 			}
 		}
 

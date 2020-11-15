@@ -15,8 +15,8 @@ if (!constants.language_dev) Object.assign(data, require("./en.js"))
 	data.pug_about_bibliogram_content = pug(`
 		p.
 			Bibliogram adalah website yang mengubahsuai data Instagram (profil-profil awam)
-			lalu susunan yang kemas, lebih cepat, khidmat download gambar, tiada iklan,
-			khidmat RSS feeds, dan tidak perlu akaun. #[a(href=(link_to_featured_profiles ? "#featured-profiles" : "/u/instagram")).example-link See an example.]
+			lalu susunan yang lebih kemas, lebih cepat khidmat download gambar, tiada iklan,
+			terada khidmat RSS feeds, dan tidak perlu akaun. #[a(href=(link_to_featured_profiles ? "#featured-profiles" : "/u/instagram")).example-link Lihatla contoh ini.]
 		p.
 			Bibliogram #[em tidak] membenarkan anda post, like, comment, follow, atau view profil yang private secara rahsia.
 			Bibligram tidak boleh save deleted posts.
@@ -47,6 +47,7 @@ if (!constants.language_dev) Object.assign(data, require("./en.js"))
 	data.post_counter_label = "posts"
 	data.outgoing_follows_counter_label = "following"
 	data.incoming_follows_counter_label = "followed by"
+	data.quota_left = "Quota yg tertinggal:"
 	data.t_home = "Home"
 	data.tab_timeline = "Timeline"
 	data.tab_igtv = "IGTV"
@@ -59,6 +60,49 @@ if (!constants.language_dev) Object.assign(data, require("./en.js"))
 	data.pug_post_timestamp = pug(`
 		| Posted on #[time(datetime=post.date.toISOString() data-local-date)= post.getDisplayDate()].
 	`)
+	// settings
+	data.t_features = "Feature2"
+	data.t_language = "Bahasa"
+	data.save_data = "Selamatkan data"
+	data.t_automatic = "Auto"
+	data.t_off = "Off"
+	data.lazy_load = "Lazy load"
+	data.t_full = "Load semua"
+	data.rewrite_youtube = "Pangkar URL YouTube"
+	data.rewrite_twitter = "Pangkar URL Twitter"
+	data.remove_trailing_hashtags = "Sembunyikan hashtag2 melebih"
+	data.t_hide = "Disembunyikan"
+	data.link_hashtags = "Hidupkan hashtags"
+	data.t_clickable = "Dihidupkan"
+	data.show_comments = "Bentang kommen-kommen"
+	data.t_display = "Akan bentang"
+	data.fast_navigation = "Fast navigation"
+	data.t_enabled = "Dibenarkan"
+	data.infinite_scroll = "Scroll Infinite"
+	data.t_normal = "Biasa"
+	data.t_eager = "Eager"
+	data.t_manual = "Manual"
+	data.t_appearance = "Hiasan rupa"
+	data.t_theme = "Thema"
+	data.display_top_nav = "Tampal top bar"
+	data.t_always = "Selalu"
+	data.timeline_columns = "Barisan Timeline"
+	data.t_dynamic = "Dynamik"
+	data.three_columns = "3 barisan"
+	data.four_columns = "4 barisan"
+	data.six_columns = "6 barisan"
+	data.caption_side = "Merengan Caption"
+	data.left_caption = "Kiri (Bibliogram)"
+	data.right_caption = "Kanan (Instagram)"
+	data.display_alt_text = "Bentang alt text inline"
+	data.t_return = "Pulang semula"
+	data.t_save = "Save"
+	data.save_and_return = "Putaralik selepas Save"
+	data.pug_restore_sync_settings = pug(`
+		| Anda boleh menyusun semula settings! Hanya harus #[a(href="/applysettings/"+token)#restore-link melayari semula/bookmarking link ini.]
+	`)
+	data.settings_saved = "Data Selamat..."
+
 })()
 
 module.exports = data

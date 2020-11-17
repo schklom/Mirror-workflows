@@ -26,10 +26,10 @@ let constants = {
 
 	// Things that server owners _could_ change if they want to.
 	tor: {
-		enabled: false, // If false, everything else in this block has no effect.
+		enabled: true, // If false, everything else in this block has no effect.
 		password: null, // If `null`, Bibliogram will run its own Tor process instead.
 		for: {
-			user_html: false, // User HTML page seems to have less forgiving rates, and Tor always fails, so it's disabled by default.
+			user_html: true, // User HTML page seems to have less forgiving rates, and Tor always fails, so it's disabled by default.
 			timeline_graphql: true,
 			post_graphql: true,
 			reel_graphql: true
@@ -40,7 +40,7 @@ let constants = {
 	// change this to `true` to serve it, which will make extensions like Privacy Badger automatically whitelist the domain.
 	does_not_track: false,
 
-	allow_user_from_reel: "preferForRSS", // one of: "never", "fallback", "prefer", "onlyPreferSaved", "preferForRSS"
+	allow_user_from_reel: "fallback", // one of: "never", "fallback", "prefer", "onlyPreferSaved", "preferForRSS"
 
 	feeds: {
 		// Whether feeds are enabled.

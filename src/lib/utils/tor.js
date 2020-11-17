@@ -2,6 +2,7 @@ const SocksProxyAgent = require("socks-proxy-agent")
 const {connect} = require("net");
 const constants = require("../constants")
 const {request} = require("./request")
+const {RequestCache} = require("../cache")
 
 class TorManager {
 	/**
@@ -12,14 +13,17 @@ class TorManager {
 		this.tor = tor
 		this.port = port
 		this.agent = new SocksProxyAgent("socks5://localhost:"+this.port)
+		this.circuitManager = new RequestCache()
 	}
 
 	async request(url, test) {
 		let result = null
-		while (!result) {
+		let done = false
+		while (!done) {
 			const req = await request(url, {agent: this.agent}, {log: true, statusLine: "TOR"})
 			try {
 				result = await test(req)
+				done = true
 			} catch (e) {
 				await this.newCircuit()
 			}
@@ -28,9 +32,12 @@ class TorManager {
 	}
 
 	newCircuit() {
-		return new Promise(resolve => {
-			this.tor.cleanCircuits(() => resolve())
-		})
+		return this.circuitManager.getOrFetchPromise("circuit", () => {
+			console.log("      <> [TOR-CIR] Finding a new circuit...")
+			return new Promise(resolve => {
+				this.tor.cleanCircuits(() => resolve())
+			})
+		}).then(x => x.result)
 	}
 }
 

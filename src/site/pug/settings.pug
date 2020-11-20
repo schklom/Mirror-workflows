@@ -164,5 +164,5 @@ html
 
 				.action-container
 					span.home-link-container: a(href=returnURL).home-link= `← ${ll.t_return}`
-					input(type="submit" value=ll.t_save formaction=stayAction).save-button
-					input(type="submit" value=ll.save_and_return).save-button
+					button(type="submit" formaction=stayAction).save-button= ll.t_save
+					button(type="submit").save-button= ll.save_and_return

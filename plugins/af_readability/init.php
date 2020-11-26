@@ -45,6 +45,7 @@ class Af_Readability extends Plugin {
 		$host->add_hook($host::HOOK_GET_FULL_TEXT, $this);
 
 		$host->add_filter_action($this, "action_inline", __("Inline content"));
+		$host->add_filter_action($this, "action_inline_append", __("Append content"));
 	}
 
 	function get_js() {
@@ -102,20 +103,26 @@ class Af_Readability extends Plugin {
 			print_button("submit", __("Save"), "class='alt-primary'");
 			print "</form>";
 
-			$enabled_feeds = $this->host->get($this, "enabled_feeds");
-			if (!is_array($enabled_feeds)) $enabled_feeds = array();
+			/* cleanup */
+			$enabled_feeds = $this->filter_unknown_feeds(
+				$this->get_stored_array("enabled_feeds"));
 
-			$enabled_feeds = $this->filter_unknown_feeds($enabled_feeds);
+			$append_feeds = $this->filter_unknown_feeds(
+				$this->get_stored_array("append_feeds"));
+
 			$this->host->set($this, "enabled_feeds", $enabled_feeds);
+			$this->host->set($this, "append_feeds", $append_feeds);
 
 			if (count($enabled_feeds) > 0) {
 				print "<h3>" . __("Currently enabled for (click to edit):") . "</h3>";
 
 				print "<ul class='panel panel-scrollable list list-unstyled'>";
 				foreach ($enabled_feeds as $f) {
+					$is_append = in_array($f, $append_feeds);
+
 					print "<li><i class='material-icons'>rss_feed</i> <a href='#'
 						onclick='CommonDialogs.editFeed($f)'>".
-						Feeds::getFeedTitle($f) . "</a></li>";
+						Feeds::getFeedTitle($f) . " " . ($is_append ? __("(append)") : "") . "</a></li>";
 				}
 				print "</ul>";
 			}
@@ -129,47 +136,69 @@ class Af_Readability extends Plugin {
 		print "<header>".__("Readability")."</header>";
 		print "<section>";
 
-		$enabled_feeds = $this->host->get($this, "enabled_feeds");
-		if (!is_array($enabled_feeds)) $enabled_feeds = array();
+		$enabled_feeds = $this->get_stored_array("enabled_feeds");
+		$append_feeds = $this->get_stored_array("append_feeds");
 
-		$key = array_search($feed_id, $enabled_feeds);
-		$checked = $key !== false ? "checked" : "";
+		$enable_checked = in_array($feed_id, $enabled_feeds) ? "checked" : "";
+		$append_checked = in_array($feed_id, $append_feeds) ? "checked" : "";
 
 		print "<fieldset>";
 
 		print "<label class='checkbox'><input dojoType='dijit.form.CheckBox' type='checkbox' id='af_readability_enabled'
-			name='af_readability_enabled' $checked>&nbsp;".__('Inline article content')."</label>";
+			name='af_readability_enabled' $enable_checked>&nbsp;".__('Inline article content')."</label>";
 
-		print "</fieldset>";
+		print "</fieldset><fieldset>";
+
+		print "<label class='checkbox'><input dojoType='dijit.form.CheckBox' type='checkbox' id='af_readability_append'
+			name='af_readability_append' $append_checked>&nbsp;".__('Append to summary, instead of replacing it')."</label>";
 
 		print "</section>";
 	}
 
 	function hook_prefs_save_feed($feed_id) {
-		$enabled_feeds = $this->host->get($this, "enabled_feeds");
-		if (!is_array($enabled_feeds)) $enabled_feeds = array();
+		$enabled_feeds = $this->get_stored_array("enabled_feeds");
+		$append_feeds = $this->get_stored_array("append_feeds");
 
 		$enable = checkbox_to_sql_bool($_POST["af_readability_enabled"]);
-		$key = array_search($feed_id, $enabled_feeds);
+		$append = checkbox_to_sql_bool($_POST["af_readability_append"]);
+
+		$enable_key = array_search($feed_id, $enabled_feeds);
+		$append_key = array_search($feed_id, $append_feeds);
 
 		if ($enable) {
-			if ($key === false) {
+			if ($enable_key === false) {
 				array_push($enabled_feeds, $feed_id);
 			}
 		} else {
-			if ($key !== false) {
-				unset($enabled_feeds[$key]);
+			if ($enable_key !== false) {
+				unset($enabled_feeds[$enable_key]);
+			}
+		}
+
+		if ($append) {
+			if ($append_key === false) {
+				array_push($append_feeds, $feed_id);
+			}
+		} else {
+			if ($append_key !== false) {
+				unset($append_feeds[$append_key]);
 			}
 		}
 
 		$this->host->set($this, "enabled_feeds", $enabled_feeds);
+		$this->host->set($this, "append_feeds", $append_feeds);
 	}
 
 	/**
 	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	function hook_article_filter_action($article, $action) {
-		return $this->process_article($article);
+		switch ($action) {
+			case "action_inline":
+				return $this->process_article($article, false);
+			case "action_append":
+				return $this->process_article($article, true);
+		}
 	}
 
 	public function extract_content($url) {
@@ -230,7 +259,7 @@ class Af_Readability extends Plugin {
 		return false;
 	}
 
-	function process_article($article) {
+	function process_article($article, $append_mode) {
 
 		$extracted_content = $this->extract_content($article["link"]);
 
@@ -238,26 +267,38 @@ class Af_Readability extends Plugin {
 		$content_test = trim(strip_tags(Sanitizer::sanitize($extracted_content)));
 
 		if ($content_test) {
-			$article["content"] = $extracted_content;
+			if ($append_mode)
+				$article["content"] .= "<hr/>" . $extracted_content;
+			else
+				$article["content"] = $extracted_content;
 		}
 
 		return $article;
 	}
 
+	private function get_stored_array($name) {
+		$tmp = $this->host->get($this, $name);
+
+		if (!is_array($tmp)) $tmp = [];
+
+		return $tmp;
+	}
+
 	function hook_article_filter($article) {
 
-		$enabled_feeds = $this->host->get($this, "enabled_feeds");
-		if (!is_array($enabled_feeds)) return $article;
+		$enabled_feeds = $this->get_stored_array("enabled_feeds");
+		$append_feeds = $this->get_stored_array("append_feeds");
 
-		$key = array_search($article["feed"]["id"], $enabled_feeds);
-		if ($key === false) return $article;
+		$feed_id = $article["feed"]["id"];
 
-		return $this->process_article($article);
+		if (!in_array($feed_id, $enabled_feeds))
+			return $article;
+
+		return $this->process_article($article, in_array($feed_id, $append_feeds));
 
 	}
 
-	function hook_get_full_text($link)
-	{
+	function hook_get_full_text($link) {
 		$enable_share_anything = $this->host->get($this, "enable_share_anything");
 
 		if ($enable_share_anything) {

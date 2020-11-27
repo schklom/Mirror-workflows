@@ -707,6 +707,9 @@ body.ttrss_main #toolbar-frame #toolbar .left i.icon-error {
 body.ttrss_main #toolbar-frame #toolbar i.log-alert {
   color: #ddba1c;
 }
+body.ttrss_main #toolbar-frame #toolbar i {
+  margin: 0 4px;
+}
 body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines {
   padding-right: 4px;
   flex-grow: 2;
@@ -717,9 +720,8 @@ body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines .left {
   display: flex;
   align-items: center;
 }
-body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines .left img {
-  vertical-align: middle;
-  margin-right: 8px;
+body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines .left #feed_title {
+  margin-left: 4px;
 }
 body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines .right {
   display: flex;

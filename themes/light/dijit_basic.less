@@ -20,8 +20,16 @@
 		top : -1px;
 	}
 
-	#filterDlg_Matches span.filterRule {
-		color: green;
+	#filterDlg_Matches {
+			.filterRule {
+				color: green;
+				word-break : break-all;
+
+				.field, .feed {
+					word-break : break-word;
+					font-style : italic;
+				}
+			}
 	}
 
 	#filterTree .filterRules li.inverse,

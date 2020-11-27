@@ -552,7 +552,7 @@ class Pref_Filters extends Handler_Protected {
 
 		return "<span class='filterRule $inverse'>" .
 			T_sprintf("%s on %s in %s %s", htmlspecialchars($rule["reg_exp"]),
-			$filter_type, $feed, isset($rule["inverse"]) ? __("(inverse)") : "") . "</span>";
+			"<span class='field'>$filter_type</span>", "<span class='feed'>$feed</span>", isset($rule["inverse"]) ? __("(inverse)") : "") . "</span>";
 	}
 
 	function printRuleName() {

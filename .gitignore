@@ -21,3 +21,4 @@ web.config
 /.save.cson
 /.tags*
 /.gutentags
+/.vscode/settings.json

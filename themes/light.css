@@ -1662,8 +1662,14 @@ body.ttrss_utility.share_popup .content {
   position: relative;
   top: -1px;
 }
-.flat #filterDlg_Matches span.filterRule {
+.flat #filterDlg_Matches .filterRule {
   color: green;
+  word-break: break-all;
+}
+.flat #filterDlg_Matches .filterRule .field,
+.flat #filterDlg_Matches .filterRule .feed {
+  word-break: break-word;
+  font-style: italic;
 }
 .flat #filterTree .filterRules li.inverse,
 .flat #filterDlg_Matches span.filterRule.inverse {

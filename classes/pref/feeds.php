@@ -620,7 +620,6 @@ class Pref_Feeds extends Handler_Protected {
 			print "<label>".__("Interval:")."</label> ";
 
 			$local_update_intervals = $update_intervals;
-
 			$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[get_pref("DEFAULT_UPDATE_INTERVAL")]);
 
 			print_select_hash("update_interval", $update_interval, $local_update_intervals,
@@ -636,7 +635,10 @@ class Pref_Feeds extends Handler_Protected {
 
 			print "<label>" . __('Article purging:') . "</label> ";
 
-			print_select_hash("purge_interval", $purge_interval, $purge_intervals,
+			$local_purge_intervals = $purge_intervals;
+			$local_purge_intervals[0] .= " " . T_sprintf("(%d days)", get_pref("PURGE_OLD_DAYS"));
+
+			print_select_hash("purge_interval", $purge_interval, $local_purge_intervals,
 				'dojoType="fox.form.Select" ' .
 				((FORCE_ARTICLE_PURGE == 0) ? "" : 'disabled="1"'));
 
@@ -863,7 +865,6 @@ class Pref_Feeds extends Handler_Protected {
 		print "<label>".__("Interval:")."</label> ";
 
 		$local_update_intervals = $update_intervals;
-
 		$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[get_pref("DEFAULT_UPDATE_INTERVAL")]);
 
 		print_select_hash("update_interval", "", $local_update_intervals,
@@ -881,7 +882,10 @@ class Pref_Feeds extends Handler_Protected {
 
 			print "<label>" . __('Article purging:') . "</label> ";
 
-			print_select_hash("purge_interval", "", $purge_intervals,
+			$local_purge_intervals = $purge_intervals;
+			$local_purge_intervals[0] .= " " . T_sprintf("(%d days)", get_pref("PURGE_OLD_DAYS"));
+
+			print_select_hash("purge_interval", "", $local_purge_intervals,
 				'disabled="1" dojoType="fox.form.Select"');
 
 			$this->batch_edit_cbox("purge_interval");

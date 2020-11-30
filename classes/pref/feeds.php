@@ -509,7 +509,6 @@ class Pref_Feeds extends Handler_Protected {
 		global $purge_intervals;
 		global $update_intervals;
 
-
 		$feed_id = clean($_REQUEST["id"]);
 
 		$sth = $this->pdo->prepare("SELECT * FROM ttrss_feeds WHERE id = ? AND
@@ -620,7 +619,11 @@ class Pref_Feeds extends Handler_Protected {
 
 			print "<label>".__("Interval:")."</label> ";
 
-			print_select_hash("update_interval", $update_interval, $update_intervals,
+			$local_update_intervals = $update_intervals;
+
+			$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[get_pref("DEFAULT_UPDATE_INTERVAL")]);
+
+			print_select_hash("update_interval", $update_interval, $local_update_intervals,
 				'dojoType="fox.form.Select"');
 
 			print "</fieldset>";
@@ -859,7 +862,11 @@ class Pref_Feeds extends Handler_Protected {
 
 		print "<label>".__("Interval:")."</label> ";
 
-		print_select_hash("update_interval", "", $update_intervals,
+		$local_update_intervals = $update_intervals;
+
+		$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[get_pref("DEFAULT_UPDATE_INTERVAL")]);
+
+		print_select_hash("update_interval", "", $local_update_intervals,
 			'disabled="1" dojoType="fox.form.Select"');
 
 		$this->batch_edit_cbox("update_interval");

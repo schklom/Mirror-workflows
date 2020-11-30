@@ -441,7 +441,8 @@ const	Feeds = {
 
 			const show_next_feed = App.getInitParam("on_catchup_show_next_feed");
 
-			if (show_next_feed) {
+			// only select next unread feed if catching up entirely (as opposed to last week etc)
+			if (show_next_feed && !mode) {
 				const nuf = this.getNextUnread(feed, is_cat);
 
 				if (nuf) {

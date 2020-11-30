@@ -7,6 +7,10 @@
 
 	define('COOKIE_LIFETIME_LONG', 86400*365);
 
+	// this CSS file is included for everyone (if it exists in themes.local)
+	// on login, registration, and main (index and prefs) pages
+	define('LOCAL_OVERRIDE_STYLESHEET', '.local-overrides.css');
+
 	$fetch_last_error = false;
 	$fetch_last_error_code = false;
 	$fetch_last_content_type = false;

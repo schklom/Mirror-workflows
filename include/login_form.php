@@ -18,6 +18,10 @@
 
 	} ?>
 
+	<?php if (theme_exists(LOCAL_OVERRIDE_STYLESHEET)) {
+		echo stylesheet_tag(get_theme_path(LOCAL_OVERRIDE_STYLESHEET));
+	} ?>
+
 	<style type="text/css">
 		@media (prefers-color-scheme: dark) {
 			body {

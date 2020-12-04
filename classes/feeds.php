@@ -1647,6 +1647,11 @@ class Feeds extends Handler_Protected {
 			$vfeed_query_part = $override_vfeed;
 		}
 
+		$feed_title = "";
+		$feed_site_url = "";
+		$last_error = "";
+		$last_updated = "";
+
 		if ($search) {
 			$feed_title = T_sprintf("Search results: %s", $search);
 		} else {
@@ -1684,6 +1689,8 @@ class Feeds extends Handler_Protected {
 			$start_ts_query_part = "";
 		}
 
+		$first_id = 0;
+
 		if (is_numeric($feed)) {
 			// proper override_order applied above
 			if ($vfeed_query_part && !$ignore_vfeed_group && get_pref('VFEED_GROUP_BY_FEED', $owner_uid)) {
@@ -1702,8 +1709,6 @@ class Feeds extends Handler_Protected {
 				}
 			}
 
-			$feed_check_qpart = "";
-
 			if (!$allow_archived) {
 				$from_qpart = "${ext_tables_part}ttrss_entries LEFT JOIN ttrss_user_entries ON (ref_id = ttrss_entries.id),ttrss_feeds";
 				$feed_check_qpart = "ttrss_user_entries.feed_id = ttrss_feeds.id AND";
@@ -1711,11 +1716,11 @@ class Feeds extends Handler_Protected {
 			} else {
 				$from_qpart = "${ext_tables_part}ttrss_entries LEFT JOIN ttrss_user_entries ON (ref_id = ttrss_entries.id)
 						LEFT JOIN ttrss_feeds ON (feed_id = ttrss_feeds.id)";
+				$feed_check_qpart = "";
 			}
 
 			if ($vfeed_query_part) $vfeed_query_part .= "favicon_avg_color,";
 
-			$first_id = 0;
 			$first_id_query_strategy_part = $query_strategy_part;
 
 			if ($feed == -3)

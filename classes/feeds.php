@@ -1702,6 +1702,8 @@ class Feeds extends Handler_Protected {
 				}
 			}
 
+			$feed_check_qpart = "";
+
 			if (!$allow_archived) {
 				$from_qpart = "${ext_tables_part}ttrss_entries LEFT JOIN ttrss_user_entries ON (ref_id = ttrss_entries.id),ttrss_feeds";
 				$feed_check_qpart = "ttrss_user_entries.feed_id = ttrss_feeds.id AND";

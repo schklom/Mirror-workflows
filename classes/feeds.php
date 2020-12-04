@@ -1412,9 +1412,6 @@ class Feeds extends Handler_Protected {
 
 		$pdo = Db::pdo();
 
-		// experimental: define _HEADLINES_QUERY_NO_DISTINCT to disable DISTINCT keyword on headline queries
-		$HEADLINES_QUERY_DISTINCT = defined('_HEADLINES_QUERY_NO_DISTINCT') ? "" : "DISTINCT";
-
 		// WARNING: due to highly dynamic nature of this query its going to quote parameters
 		// right before adding them to SQL part
 
@@ -1732,7 +1729,7 @@ class Feeds extends Handler_Protected {
 
 			if (!$search && !$skip_first_id_check) {
 				// if previous topmost article id changed that means our current pagination is no longer valid
-				$query = "SELECT $HEADLINES_QUERY_DISTINCT
+				$query = "SELECT
 							ttrss_feeds.title,
 							date_entered,
                             $yyiw_qpart,
@@ -1772,9 +1769,9 @@ class Feeds extends Handler_Protected {
 				}
 			}
 
-			$query = "SELECT $HEADLINES_QUERY_DISTINCT
+			$query = "SELECT
 						date_entered,
-                        $yyiw_qpart,
+						$yyiw_qpart,
 						guid,
 						ttrss_entries.id,ttrss_entries.title,
 						updated,
@@ -1813,7 +1810,7 @@ class Feeds extends Handler_Protected {
 		} else {
 			// browsing by tag
 
-			$query = "SELECT $HEADLINES_QUERY_DISTINCT
+			$query = "SELECT
 							date_entered,
 							guid,
 							note,

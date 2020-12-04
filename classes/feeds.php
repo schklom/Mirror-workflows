@@ -5,7 +5,10 @@ class Feeds extends Handler_Protected {
 	const NEVER_GROUP_FEEDS = [ -6, 0 ];
 	const NEVER_GROUP_BY_DATE = [ -2, -1, -3 ];
 
-    private $params;
+	 private $params;
+
+	 private $viewfeed_timestamp;
+	 private $viewfeed_timestamp_last;
 
     function csrf_ignore($method) {
 		$csrf_ignored = array("index");
@@ -122,6 +125,8 @@ class Feeds extends Handler_Protected {
 
 		$disable_cache = false;
 
+		$this->mark_timestamp("init");
+
 		$reply = array();
 
 		$rgba_cache = array();
@@ -203,6 +208,8 @@ class Feeds extends Handler_Protected {
 			$qfh_ret = $this->queryFeedHeadlines($params);
 		}
 
+		$this->mark_timestamp("db query");
+
 		$vfeed_group_enabled = get_pref("VFEED_GROUP_BY_FEED") &&
 			!(in_array($feed, self::NEVER_GROUP_FEEDS) && !$cat_view);
 
@@ -233,10 +240,13 @@ class Feeds extends Handler_Protected {
 
 		$reply['content'] = [];
 
+		$this->mark_timestamp("object header");
+
 		$headlines_count = 0;
 
         if (is_object($result)) {
 			while ($line = $result->fetch(PDO::FETCH_ASSOC)) {
+				$this->mark_timestamp("article start: " . $line["id"] . " " . $line["title"]);
 
 				++$headlines_count;
 
@@ -248,7 +258,9 @@ class Feeds extends Handler_Protected {
 					foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_QUERY_HEADLINES) as $p) {
 						$line = $p->hook_query_headlines($line, 250, false);
 					}
-                }
+				}
+
+				$this->mark_timestamp("   hook_query_headlines");
 
 				$id = $line["id"];
 
@@ -293,62 +305,83 @@ class Feeds extends Handler_Protected {
 					array_push($topmost_article_ids, $id);
 				}
 
+				$this->mark_timestamp("   labels");
+
 				if (!$line["feed_title"]) $line["feed_title"] = "";
 
-                $line["buttons_left"] = "";
-                foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_ARTICLE_LEFT_BUTTON) as $p) {
-                    $line["buttons_left"] .= $p->hook_article_left_button($line);
-                }
+				$line["buttons_left"] = "";
+				foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_ARTICLE_LEFT_BUTTON) as $p) {
+					$line["buttons_left"] .= $p->hook_article_left_button($line);
+				}
 
-                $line["buttons"] = "";
-                foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_ARTICLE_BUTTON) as $p) {
-                    $line["buttons"] .= $p->hook_article_button($line);
-                }
+				$line["buttons"] = "";
+				foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_ARTICLE_BUTTON) as $p) {
+					$line["buttons"] .= $p->hook_article_button($line);
+				}
 
-                $line["content"] = Sanitizer::sanitize($line["content"],
-                    $line['hide_images'], false, $line["site_url"], $highlight_words, $line["id"]);
+				$this->mark_timestamp("   pre-sanitize");
 
-                foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_RENDER_ARTICLE_CDM) as $p) {
-                    $line = $p->hook_render_article_cdm($line);
-                }
+				$line["content"] = Sanitizer::sanitize($line["content"],
+					$line['hide_images'], false, $line["site_url"], $highlight_words, $line["id"]);
 
-                $line['content'] = DiskCache::rewriteUrls($line['content']);
+				$this->mark_timestamp("   sanitize");
 
-                if ($line['note'])
-                    $line['note'] = Article::format_article_note($id, $line['note']);
-                else
-                    $line['note'] = "";
+				foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_RENDER_ARTICLE_CDM) as $p) {
+					$line = $p->hook_render_article_cdm($line);
 
-                if (!get_pref("CDM_EXPANDED")) {
-                    $line["cdm_excerpt"] = "<span class='collapse'>
-                        <i class='material-icons' onclick='return Article.cdmUnsetActive(event)'
-                            title=\"" . __("Collapse article") . "\">remove_circle</i></span>";
+					$this->mark_timestamp("       hook_render_cdm: " . get_class($p));
+				}
 
-                    if (get_pref('SHOW_CONTENT_PREVIEW')) {
-                        $line["cdm_excerpt"] .= "<span class='excerpt'>" . $line["content_preview"] . "</span>";
-                    }
-                }
+				$this->mark_timestamp("   hook_render_cdm");
 
-                $line["enclosures"] = Article::format_article_enclosures($id, $line["always_display_enclosures"],
-                    $line["content"], $line["hide_images"]);
+				$line['content'] = DiskCache::rewriteUrls($line['content']);
 
-                if ($line["orig_feed_id"]) {
+				$this->mark_timestamp("   disk_cache_rewrite");
 
-                    $ofgh = $this->pdo->prepare("SELECT * FROM ttrss_archived_feeds
-                    WHERE id = ? AND owner_uid = ?");
-                    $ofgh->execute([$line["orig_feed_id"], $_SESSION['uid']]);
+				if ($line['note'])
+					$line['note'] = Article::format_article_note($id, $line['note']);
+				else
+					$line['note'] = "";
 
-                    if ($tmp_line = $ofgh->fetch()) {
-                        $line["orig_feed"] = [ $tmp_line["title"], $tmp_line["site_url"], $tmp_line["feed_url"] ];
-                    }
-                }
+				$this->mark_timestamp("   note");
+
+				if (!get_pref("CDM_EXPANDED")) {
+					$line["cdm_excerpt"] = "<span class='collapse'>
+						<i class='material-icons' onclick='return Article.cdmUnsetActive(event)'
+								title=\"" . __("Collapse article") . "\">remove_circle</i></span>";
+
+					if (get_pref('SHOW_CONTENT_PREVIEW')) {
+						$line["cdm_excerpt"] .= "<span class='excerpt'>" . $line["content_preview"] . "</span>";
+					}
+				}
+
+				$this->mark_timestamp("   pre-enclosures");
+
+				$line["enclosures"] = Article::format_article_enclosures($id, $line["always_display_enclosures"],
+					$line["content"], $line["hide_images"]);
+
+				$this->mark_timestamp("   enclosures");
+
+				if ($line["orig_feed_id"]) {
+
+					$ofgh = $this->pdo->prepare("SELECT * FROM ttrss_archived_feeds
+					WHERE id = ? AND owner_uid = ?");
+					$ofgh->execute([$line["orig_feed_id"], $_SESSION['uid']]);
+
+					if ($tmp_line = $ofgh->fetch()) {
+						$line["orig_feed"] = [ $tmp_line["title"], $tmp_line["site_url"], $tmp_line["feed_url"] ];
+					}
+				}
+
+				$this->mark_timestamp("   orig-feed-id");
 
 				$line["updated_long"] = TimeHelper::make_local_datetime($line["updated"],true);
 				$line["updated"] = TimeHelper::make_local_datetime($line["updated"], false, false, false, true);
 
-
 				$line['imported'] = T_sprintf("Imported at %s",
-				TimeHelper::make_local_datetime($line["date_entered"], false));
+					TimeHelper::make_local_datetime($line["date_entered"], false));
+
+				$this->mark_timestamp("   local-datetime");
 
 				if ($line["tag_cache"])
 					$tags = explode(",", $line["tag_cache"]);
@@ -356,6 +389,8 @@ class Feeds extends Handler_Protected {
 					$tags = false;
 
 				$line["tags_str"] = Article::format_tags_string($tags, $id);
+
+				$this->mark_timestamp("   tags");
 
 				if (self::feedHasIcon($feed_id)) {
 					$line['feed_icon'] = "<img class=\"icon\" src=\"".ICONS_URL."/$feed_id.ico\" alt=\"\">";
@@ -365,6 +400,8 @@ class Feeds extends Handler_Protected {
 
 			    //setting feed headline background color, needs to change text color based on dark/light
 				$fav_color = $line['favicon_avg_color'];
+
+				$this->mark_timestamp("   pre-color");
 
 				require_once "colors.php";
 
@@ -378,17 +415,23 @@ class Feeds extends Handler_Protected {
 
 				if (isset($rgba_cache[$feed_id])) {
 				    $line['feed_bg_color'] = 'rgba(' . implode(",", $rgba_cache[$feed_id]) . ',0.3)';
-                }
+				}
+
+				$this->mark_timestamp("   color");
 
 				/* we don't need those */
 
-                foreach (["date_entered", "guid", "last_published", "last_marked", "tag_cache", "favicon_avg_color",
-                             "uuid", "label_cache", "yyiw"] as $k)
-                    unset($line[$k]);
+				foreach (["date_entered", "guid", "last_published", "last_marked", "tag_cache", "favicon_avg_color",
+								"uuid", "label_cache", "yyiw"] as $k)
+					unset($line[$k]);
 
 				array_push($reply['content'], $line);
+
+				$this->mark_timestamp("article end");
 			}
-        }
+		}
+
+		$this->mark_timestamp("end of articles");
 
 		if (!$headlines_count) {
 
@@ -449,6 +492,8 @@ class Feeds extends Handler_Protected {
 				$reply['first_id_changed'] = true;
 			}
 		}
+
+		$this->mark_timestamp("end");
 
 		return array($topmost_article_ids, $headlines_count, $feed, $disable_cache, $reply);
 	}
@@ -1856,7 +1901,7 @@ class Feeds extends Handler_Protected {
 							$query_strategy_part ORDER BY $order_by
 							$limit_query_part $offset_query_part";
 
-			if ($_REQUEST["debug"]) print $query;
+			//if ($_REQUEST["debug"]) print $query;
 
 			$res = $pdo->query($query);
 		}
@@ -2317,5 +2362,25 @@ class Feeds extends Handler_Protected {
 
 		return [$query, $skip_first_id];
 	}
+
+	function mark_timestamp($label) {
+
+		if (!$_REQUEST['timestamps'])
+			return;
+
+
+		if (!$this->viewfeed_timestamp) $this->viewfeed_timestamp = hrtime(true);
+		if (!$this->viewfeed_timestamp_last) $this->viewfeed_timestamp_last = hrtime(true);
+
+		$timestamp = hrtime(true);
+
+		printf("[%4d ms, %4d abs] %s\n",
+			($timestamp - $this->viewfeed_timestamp_last) / 1e6,
+			($timestamp - $this->viewfeed_timestamp) / 1e6,
+			$label);
+
+		$this->viewfeed_timestamp_last = $timestamp;
+	}
+
 }
 

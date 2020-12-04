@@ -1037,7 +1037,8 @@ const App = {
                //window.open("backend.php?op=feeds&method=update_debugger&feed_id=" + Feeds.getActive());
 
                /* global __csrf_token */
-               App.postOpenWindow("backend.php", {op: "feeds", method: "update_debugger", feed_id: Feeds.getActive(), csrf_token: __csrf_token});
+               App.postOpenWindow("backend.php", {op: "feeds", method: "update_debugger",
+                  feed_id: Feeds.getActive(), csrf_token: __csrf_token});
 
             } else {
                alert("You can't debug this kind of feed.");
@@ -1045,7 +1046,10 @@ const App = {
          };
 
          this.hotkey_actions["feed_debug_viewfeed"] = () => {
-            Feeds.open({feed: Feeds.getActive(), is_cat: Feeds.activeIsCat(), viewfeed_debug: true});
+            //Feeds.open({feed: Feeds.getActive(), is_cat: Feeds.activeIsCat(), viewfeed_debug: true});
+
+            App.postOpenWindow("backend.php", {op: "feeds", method: "view",
+               feed: Feeds.getActive(), timestamps: 1, is_cat: Feeds.activeIsCat(), csrf_token: __csrf_token});
          };
 
          this.hotkey_actions["feed_edit"] = () => {

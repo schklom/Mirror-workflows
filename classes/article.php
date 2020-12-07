@@ -179,7 +179,7 @@ class Article extends Handler_Protected {
 
 		print "<footer>";
 		print "<button dojoType='dijit.form.Button'
-			type='submit' class='alt-primary' onclick=\"dijit.byId('editTagsDlg').execute()\">".__('Save')."</button> ";
+			type='submit' class='alt-primary'>".__('Save')."</button> ";
 		print "<button dojoType='dijit.form.Button'
 			onclick=\"dijit.byId('editTagsDlg').hide()\">".__('Cancel')."</button>";
 		print "</footer>";
@@ -232,19 +232,24 @@ class Article extends Handler_Protected {
 
 			$int_id = $row['int_id'];
 
-			$sth = $this->pdo->prepare("DELETE FROM ttrss_tags WHERE
+			$dsth = $this->pdo->prepare("DELETE FROM ttrss_tags WHERE
 				post_int_id = ? AND owner_uid = ?");
-			$sth->execute([$int_id, $_SESSION['uid']]);
+			$dsth->execute([$int_id, $_SESSION['uid']]);
+
+			$csth = $this->pdo->prepare("SELECT post_int_id FROM ttrss_tags
+				WHERE post_int_id = ? AND owner_uid = ? AND tag_name = ?");
+
+			$usth = $this->pdo->prepare("INSERT INTO ttrss_tags
+				(post_int_id, owner_uid, tag_name)
+				VALUES (?, ?, ?)");
 
 			$tags = FeedItem_Common::normalize_categories($tags);
 
 			foreach ($tags as $tag) {
-				if ($tag != '') {
-					$sth = $this->pdo->prepare("INSERT INTO ttrss_tags
-								(post_int_id, owner_uid, tag_name)
-								VALUES (?, ?, ?)");
+				$csth->execute([$int_id, $_SESSION['uid'], $tag]);
 
-					$sth->execute([$int_id, $_SESSION['uid'], $tag]);
+				if (!$csth->fetch()) {
+					$usth->execute([$int_id, $_SESSION['uid'], $tag]);
 				}
 
 				array_push($tags_to_cache, $tag);

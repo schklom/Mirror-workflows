@@ -1049,7 +1049,7 @@ const App = {
             //Feeds.open({feed: Feeds.getActive(), is_cat: Feeds.activeIsCat(), viewfeed_debug: true});
 
             App.postOpenWindow("backend.php", {op: "feeds", method: "view",
-               feed: Feeds.getActive(), timestamps: 1, debug: 1, is_cat: Feeds.activeIsCat(), csrf_token: __csrf_token});
+               feed: Feeds.getActive(), timestamps: 1, debug: 1, cat: Feeds.activeIsCat(), csrf_token: __csrf_token});
          };
 
          this.hotkey_actions["feed_edit"] = () => {

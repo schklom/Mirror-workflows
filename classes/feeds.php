@@ -1774,20 +1774,24 @@ class Feeds extends Handler_Protected {
 			if (DB_TYPE == "pgsql") {
 				$sanity_interval_qpart = "date_entered >= NOW() - INTERVAL '1 hour' AND";
 				$yyiw_qpart = "to_char(date_entered, 'IYYY-IW') AS yyiw";
+
+				$distinct_columns = str_replace("desc", "", strtolower($order_by));
+				$distinct_qpart = "DISTINCT ON (id, $distinct_columns)";
 			} else {
 				$sanity_interval_qpart = "date_entered >= DATE_SUB(NOW(), INTERVAL 1 hour) AND";
 				$yyiw_qpart = "date_format(date_entered, '%Y-%u') AS yyiw";
+				$distinct_qpart = "DISTINCT"; //fallback
 			}
 
 			if (!$search && !$skip_first_id_check) {
 				// if previous topmost article id changed that means our current pagination is no longer valid
-				$query = "SELECT
-							ttrss_feeds.title,
-							date_entered,
-                            $yyiw_qpart,
-							guid,
+				$query = "SELECT $distinct_qpart
 							ttrss_entries.id,
+							date_entered,
+							$yyiw_qpart,
+							guid,
 							ttrss_entries.title,
+							ttrss_feeds.title,
 							updated,
 							score,
 							marked,
@@ -1806,9 +1810,9 @@ class Feeds extends Handler_Protected {
 						$sanity_interval_qpart
 						$first_id_query_strategy_part ORDER BY $order_by LIMIT 1";
 
-				/*if ($_REQUEST["debug"]) {
-					print $query;
-				}*/
+				if ($_REQUEST["debug"]) {
+					print "\n*** FIRST ID QUERY ***\n$query\n";
+				}
 
 				$res = $pdo->query($query);
 
@@ -1821,11 +1825,12 @@ class Feeds extends Handler_Protected {
 				}
 			}
 
-			$query = "SELECT
+			$query = "SELECT $distinct_qpart
+						ttrss_entries.id AS id,
 						date_entered,
 						$yyiw_qpart,
 						guid,
-						ttrss_entries.id,ttrss_entries.title,
+						ttrss_entries.title,
 						updated,
 						label_cache,
 						tag_cache,
@@ -1857,12 +1862,16 @@ class Feeds extends Handler_Protected {
 
 			//if ($_REQUEST["debug"]) print $query;
 
+			if ($_REQUEST["debug"]) {
+				print "\n*** HEADLINES QUERY ***\n$query\n";
+			}
+
 			$res = $pdo->query($query);
 
 		} else {
 			// browsing by tag
 
-			$query = "SELECT
+			$query = "SELECT $distinct_qpart
 							date_entered,
 							guid,
 							note,

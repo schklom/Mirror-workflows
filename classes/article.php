@@ -716,6 +716,11 @@ class Article extends Handler_Protected {
 
 		$article_image = "";
 		$article_stream = "";
+		$article_kind = 0;
+
+		define('ARTICLE_KIND_ALBUM', 1); /* TODO */
+		define('ARTICLE_KIND_VIDEO', 2);
+		define('ARTICLE_KIND_YOUTUBE', 3);
 
 		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_ARTICLE_IMAGE) as $p) {
 			list ($article_image, $article_stream, $content) = $p->hook_article_image($enclosures, $content, $site_url);
@@ -734,6 +739,7 @@ class Article extends Handler_Protected {
 						if ($rrr = preg_match("/\/embed\/([\w-]+)/", $e->getAttribute("src"), $matches)) {
 							$article_image = "https://img.youtube.com/vi/" . $matches[1] . "/hqdefault.jpg";
 							$article_stream = "https://youtu.be/" . $matches[1];
+							$article_kind = ARTICLE_KIND_YOUTUBE;
 							break;
 						}
 					} else if ($e->nodeName == "video") {
@@ -743,6 +749,7 @@ class Article extends Handler_Protected {
 
 						if ($src) {
 							$article_stream = $src->getAttribute("src");
+							$article_kind = ARTICLE_KIND_VIDEO;
 						}
 
 						break;
@@ -778,7 +785,7 @@ class Article extends Handler_Protected {
 		if ($article_stream && $cache->exists(sha1($article_stream)))
 			$article_stream = $cache->getUrl(sha1($article_stream));
 
-		return [$article_image, $article_stream];
+		return [$article_image, $article_stream, $article_kind];
 	}
 
 }

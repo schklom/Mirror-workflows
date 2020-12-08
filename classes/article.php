@@ -770,8 +770,12 @@ class Article extends Handler_Protected {
 					}
 				}
 
-			if ($article_image)
+			if ($article_image) {
 				$article_image = rewrite_relative_url($site_url, $article_image);
+
+				if (!$article_kind && (count($enclosures) > 1 || $elems->length > 1))
+					$article_kind = ARTICLE_KIND_ALBUM;
+			}
 
 			if ($article_stream)
 				$article_stream = rewrite_relative_url($site_url, $article_stream);

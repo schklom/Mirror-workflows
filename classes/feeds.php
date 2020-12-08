@@ -1785,7 +1785,7 @@ class Feeds extends Handler_Protected {
 
 			if (!$search && !$skip_first_id_check) {
 				// if previous topmost article id changed that means our current pagination is no longer valid
-				$query = "SELECT $distinct_qpart
+				$query = "SELECT
 							ttrss_entries.id,
 							date_entered,
 							$yyiw_qpart,
@@ -1871,6 +1871,13 @@ class Feeds extends Handler_Protected {
 		} else {
 			// browsing by tag
 
+			if (DB_TYPE == "pgsql") {
+				$distinct_columns = str_replace("desc", "", strtolower($order_by));
+				$distinct_qpart = "DISTINCT ON (id, $distinct_columns)";
+			} else {
+				$distinct_qpart = "DISTINCT"; //fallback
+			}
+
 			$query = "SELECT $distinct_qpart
 							date_entered,
 							guid,
@@ -1911,6 +1918,10 @@ class Feeds extends Handler_Protected {
 							$limit_query_part $offset_query_part";
 
 			//if ($_REQUEST["debug"]) print $query;
+
+			if ($_REQUEST["debug"]) {
+				print "\n*** TAGS QUERY ***\n$query\n";
+			}
 
 			$res = $pdo->query($query);
 		}

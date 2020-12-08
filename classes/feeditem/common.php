@@ -189,6 +189,9 @@ abstract class FeedItem_Common extends FeedItem {
 			return $cat;
 		}, $tmp);
 
+		// remove empty values
+		$tmp = array_filter($tmp, 'strlen');
+
 		asort($tmp);
 
 		return array_unique($tmp);

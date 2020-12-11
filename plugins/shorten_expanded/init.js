@@ -37,7 +37,7 @@ require(['dojo/_base/kernel', 'dojo/ready'], function  (dojo, ready) {
 
 						c_inner.innerHTML = `<div class="content-shrink-wrap">
 							${c_inner.innerHTML}
-							${tmp.innerHTML}</div>							
+							${tmp.innerHTML}</div>
 							<button dojoType="dijit.form.Button" class="alt-info expand-prompt" onclick="return Plugins.Shorten_Expanded.expand('${row.id}')" href="#">
 								${__("Click to expand article")}</button>`;
 

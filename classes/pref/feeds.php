@@ -126,6 +126,7 @@ class Pref_Feeds extends Handler_Protected {
 		$root['id'] = 'root';
 		$root['name'] = __('Feeds');
 		$root['items'] = array();
+		$root['param'] = 0;
 		$root['type'] = 'category';
 
 		$enable_cats = get_pref('ENABLE_FEED_CATS');
@@ -229,7 +230,7 @@ class Pref_Feeds extends Handler_Protected {
 				$cat['items'] = $this->get_category_items($line['id']);
 
 				$num_children = $this->calculate_children_count($cat);
-				$cat['param'] = vsprintf(_ngettext('(%d feed)', '(%d feeds)', (int) $num_children), $num_children);
+				$cat['param'] = sprintf(_ngettext('(%d feed)', '(%d feeds)', (int) $num_children), $num_children);
 
 				if ($num_children > 0 || $show_empty_cats)
 					array_push($root['items'], $cat);
@@ -277,13 +278,13 @@ class Pref_Feeds extends Handler_Protected {
 				array_push($cat['items'], $feed);
 			}
 
-			$cat['param'] = vsprintf(_ngettext('(%d feed)', '(%d feeds)', count($cat['items'])), count($cat['items']));
+			$cat['param'] = sprintf(_ngettext('(%d feed)', '(%d feeds)', count($cat['items'])), count($cat['items']));
 
 			if (count($cat['items']) > 0 || $show_empty_cats)
 				array_push($root['items'], $cat);
 
 			$num_children = $this->calculate_children_count($root);
-			$root['param'] = vsprintf(_ngettext('(%d feed)', '(%d feeds)', (int) $num_children), $num_children);
+			$root['param'] = sprintf(_ngettext('(%d feed)', '(%d feeds)', (int) $num_children), $num_children);
 
 		} else {
 			$fsth = $this->pdo->prepare("SELECT id, title, last_error,
@@ -312,7 +313,7 @@ class Pref_Feeds extends Handler_Protected {
 				array_push($root['items'], $feed);
 			}
 
-			$root['param'] = vsprintf(_ngettext('(%d feed)', '(%d feeds)', count($root['items'])), count($root['items']));
+			$root['param'] = sprintf(_ngettext('(%d feed)', '(%d feeds)', count($root['items'])), count($root['items']));
 		}
 
 		$fl = array();
@@ -1198,10 +1199,11 @@ class Pref_Feeds extends Handler_Protected {
 		}
 
 		if ($num_errors > 0) {
-
 			$error_button = "<button dojoType=\"dijit.form.Button\"
 			  		onclick=\"CommonDialogs.showFeedsWithErrors()\" id=\"errorButton\">" .
 				__("Feeds with errors") . "</button>";
+		} else {
+			$error_button = "";
 		}
 
 		$inactive_button = "<button dojoType=\"dijit.form.Button\"

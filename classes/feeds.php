@@ -791,8 +791,10 @@ class Feeds extends Handler_Protected {
 	function update_debugger() {
 		header("Content-type: text/html");
 
+		$xdebug = isset($_REQUEST["xdebug"]) ? (int)$_REQUEST["xdebug"] : 1;
+
 		Debug::set_enabled(true);
-		Debug::set_loglevel($_REQUEST["xdebug"]);
+		Debug::set_loglevel($xdebug);
 
 		$feed_id = (int)$_REQUEST["feed_id"];
 		@$do_update = $_REQUEST["action"] == "do_update";
@@ -833,7 +835,7 @@ class Feeds extends Handler_Protected {
 		</head>
 		<body class="flat ttrss_utility feed_debugger css_loading">
 		<script type="text/javascript">
-			require(['dojo/parser', "dojo/ready", 'dijit/form/Button','dijit/form/CheckBox', 'dijit/form/Form',
+			require(['dojo/parser', "dojo/ready", 'dijit/form/Button','dijit/form/CheckBox', 'dijit/form/Select', 'dijit/form/Form',
 				'dijit/form/Select','dijit/form/TextBox','dijit/form/ValidationTextBox'],function(parser, ready){
 				ready(function() {
 					parser.parse();
@@ -847,12 +849,19 @@ class Feeds extends Handler_Protected {
 					<form method="post" action="">
 						<input type="hidden" name="op" value="feeds">
 						<input type="hidden" name="method" value="update_debugger">
-						<input type="hidden" name="xdebug" value="1">
 						<input type="hidden" name="csrf_token" value="<?php echo $csrf_token ?>">
 						<input type="hidden" name="action" value="do_update">
 						<input type="hidden" name="feed_id" value="<?php echo $feed_id ?>">
 
-						<fieldset class="narrow">
+						<fieldset>
+							<label>
+							<?php print_select_hash("xdebug", $xdebug,
+									[Debug::$LOG_VERBOSE => "LOG_VERBOSE", Debug::$LOG_EXTENDED => "LOG_EXTENDED"],
+									'dojoType="dijit.form.Select"');
+							?></label>
+						</fieldset>
+
+						<fieldset>
 							<label class="checkbox"><input dojoType="dijit.form.CheckBox" type="checkbox" name="force_refetch" value="1" <?php echo $refetch_checked ?>> Force refetch</label>
 						</fieldset>
 

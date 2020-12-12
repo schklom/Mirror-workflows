@@ -18,7 +18,10 @@
 	$fetch_effective_url = false;
 	$fetch_curl_used = false;
 
-	libxml_disable_entity_loader(true);
+	if (version_compare(PHP_VERSION, '8.0.0', '<')) {
+		libxml_disable_entity_loader(true);
+	}
+
 	libxml_use_internal_errors(true);
 
 	// separate test because this is included before sanity checks

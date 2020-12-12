@@ -327,7 +327,7 @@
 
 	function sanity_check() {
 		require_once 'errors.php';
-		global $ERRORS;
+		$ERRORS = get_error_types();
 
 		$error_code = 0;
 		$schema_version = get_schema_version(true);
@@ -540,7 +540,7 @@
 	 */
 	function error_json($code) {
 		require_once "errors.php";
-		global $ERRORS;
+		$ERRORS = get_error_types();
 
 		@$message = $ERRORS[$code];
 

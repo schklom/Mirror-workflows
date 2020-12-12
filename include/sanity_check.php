@@ -21,6 +21,8 @@
 	}
 
 	function make_self_url_path() {
+		if (!isset($_SERVER["HTTP_HOST"])) return false;
+
 		$proto = is_server_https() ? 'https' : 'http';
 		$url_path = $proto . '://' . $_SERVER["HTTP_HOST"] . parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
@@ -115,14 +117,18 @@
 			}
 
 			$ref_self_url_path = make_self_url_path();
-			$ref_self_url_path = preg_replace("/\w+\.php$/", "", $ref_self_url_path);
 
-			if (SELF_URL_PATH == "http://example.org/tt-rss/") {
-				array_push($errors,
-						"Please set SELF_URL_PATH to the correct value for your server (possible value: <b>$ref_self_url_path</b>)");
+			if ($ref_self_url_path) {
+				$ref_self_url_path = preg_replace("/\w+\.php$/", "", $ref_self_url_path);
 			}
 
-			if (isset($_SERVER["HTTP_HOST"]) &&
+			if (SELF_URL_PATH == "http://example.org/tt-rss/") {
+				$hint = $ref_self_url_path ? "(possible value: <b>$ref_self_url_path</b>)" : "";
+				array_push($errors,
+						"Please set SELF_URL_PATH to the correct value for your server $hint");
+			}
+
+			if ($ref_self_url_path &&
 				(!defined('_SKIP_SELF_URL_PATH_CHECKS') || !_SKIP_SELF_URL_PATH_CHECKS) &&
 				SELF_URL_PATH != $ref_self_url_path && SELF_URL_PATH != mb_substr($ref_self_url_path, 0, mb_strlen($ref_self_url_path)-1)) {
 				array_push($errors,

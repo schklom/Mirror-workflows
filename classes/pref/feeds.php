@@ -636,7 +636,12 @@ class Pref_Feeds extends Handler_Protected {
 			print "<label>" . __('Article purging:') . "</label> ";
 
 			$local_purge_intervals = $purge_intervals;
-			$local_purge_intervals[0] .= " " . T_sprintf("(%d days)", get_pref("PURGE_OLD_DAYS"));
+			$default_purge_interval = get_pref("PURGE_OLD_DAYS");
+
+			if ($default_purge_interval > 0)
+				$local_purge_intervals[0] .= " " . T_sprintf("(%d days)", $default_purge_interval);
+			else
+				$local_purge_intervals[0] .= " " . sprintf("(%s)", __("Disabled"));
 
 			print_select_hash("purge_interval", $purge_interval, $local_purge_intervals,
 				'dojoType="fox.form.Select" ' .
@@ -883,7 +888,12 @@ class Pref_Feeds extends Handler_Protected {
 			print "<label>" . __('Article purging:') . "</label> ";
 
 			$local_purge_intervals = $purge_intervals;
-			$local_purge_intervals[0] .= " " . T_sprintf("(%d days)", get_pref("PURGE_OLD_DAYS"));
+			$default_purge_interval = get_pref("PURGE_OLD_DAYS");
+
+			if ($default_purge_interval > 0)
+				$local_purge_intervals[0] .= " " . T_sprintf("(%d days)", $default_purge_interval);
+			else
+				$local_purge_intervals[0] .= " " . sprintf("(%s)", __("Disabled"));
 
 			print_select_hash("purge_interval", "", $local_purge_intervals,
 				'disabled="1" dojoType="fox.form.Select"');

@@ -2104,12 +2104,10 @@ class Feeds extends Handler_Protected {
 	/**
 	 * Purge a feed old posts.
 	 *
-	 * @param mixed $link A database connection.
 	 * @param mixed $feed_id The id of the purged feed.
 	 * @param mixed $purge_interval Olderness of purged posts.
-	 * @param boolean $debug Set to True to enable the debug. False by default.
 	 * @access public
-	 * @return void
+	 * @return mixed
 	 */
 	static function purge_feed($feed_id, $purge_interval) {
 
@@ -2117,63 +2115,68 @@ class Feeds extends Handler_Protected {
 
 		$pdo = Db::pdo();
 
+		$owner_uid = false;
+		$rows_deleted = 0;
+
 		$sth = $pdo->prepare("SELECT owner_uid FROM ttrss_feeds WHERE id = ?");
 		$sth->execute([$feed_id]);
 
-		$owner_uid = false;
-
 		if ($row = $sth->fetch()) {
 			$owner_uid = $row["owner_uid"];
-		}
 
-		if ($purge_interval == -1 || !$purge_interval) {
-			return;
-		}
+			if (FORCE_ARTICLE_PURGE != 0) {
+				Debug::log("purge_feed: FORCE_ARTICLE_PURGE is set, overriding interval to " . FORCE_ARTICLE_PURGE);
+				$purge_unread = true;
+				$purge_interval = FORCE_ARTICLE_PURGE;
+			} else {
+				$purge_unread = get_pref("PURGE_UNREAD_ARTICLES", $owner_uid, false);
+			}
 
-		if (!$owner_uid) return;
+			$purge_interval = (int) $purge_interval;
 
-		if (FORCE_ARTICLE_PURGE == 0) {
-			$purge_unread = get_pref("PURGE_UNREAD_ARTICLES",
-				$owner_uid, false);
+			Debug::log("purge_feed: interval $purge_interval days for feed $feed_id, owner: $owner_uid, purge unread: $purge_unread");
+
+			if ($purge_interval <= 0) {
+				Debug::log("purge_feed: purging disabled for this feed, nothing to do.");
+				return;
+			}
+
+			if (!$purge_unread)
+				$query_limit = " unread = false AND ";
+			else
+				$query_limit = "";
+
+			if (DB_TYPE == "pgsql") {
+				$sth = $pdo->prepare("DELETE FROM ttrss_user_entries
+					USING ttrss_entries
+					WHERE ttrss_entries.id = ref_id AND
+					marked = false AND
+					feed_id = ? AND
+					$query_limit
+					ttrss_entries.date_updated < NOW() - INTERVAL '$purge_interval days'");
+				$sth->execute([$feed_id]);
+
+			} else {
+				$sth  = $pdo->prepare("DELETE FROM ttrss_user_entries
+					USING ttrss_user_entries, ttrss_entries
+					WHERE ttrss_entries.id = ref_id AND
+					marked = false AND
+					feed_id = ? AND
+					$query_limit
+					ttrss_entries.date_updated < DATE_SUB(NOW(), INTERVAL $purge_interval DAY)");
+				$sth->execute([$feed_id]);
+
+			}
+
+			$rows_deleted = $sth->rowCount();
+
+			Debug::log("purge_feed: processed $feed_id: deleted $rows_deleted articles");
+
 		} else {
-			$purge_unread = true;
-			$purge_interval = FORCE_ARTICLE_PURGE;
+			Debug::log("purge_feed: owner of $feed_id not found");
 		}
 
-		if (!$purge_unread)
-			$query_limit = " unread = false AND ";
-		else
-			$query_limit = "";
-
-		$purge_interval = (int) $purge_interval;
-
-		if (DB_TYPE == "pgsql") {
-			$sth = $pdo->prepare("DELETE FROM ttrss_user_entries
-				USING ttrss_entries
-				WHERE ttrss_entries.id = ref_id AND
-				marked = false AND
-				feed_id = ? AND
-				$query_limit
-				ttrss_entries.date_updated < NOW() - INTERVAL '$purge_interval days'");
-			$sth->execute([$feed_id]);
-
-		} else {
-			$sth  = $pdo->prepare("DELETE FROM ttrss_user_entries
-				USING ttrss_user_entries, ttrss_entries
-				WHERE ttrss_entries.id = ref_id AND
-				marked = false AND
-				feed_id = ? AND
-				$query_limit
-				ttrss_entries.date_updated < DATE_SUB(NOW(), INTERVAL $purge_interval DAY)");
-			$sth->execute([$feed_id]);
-
-		}
-
-		$rows = $sth->rowCount();
-
-		Debug::log("Purged feed $feed_id ($purge_interval): deleted $rows articles");
-
-		return $rows;
+		return $rows_deleted;
 	}
 
 	static function feed_purge_interval($feed_id) {
@@ -2188,11 +2191,10 @@ class Feeds extends Handler_Protected {
 			$purge_interval = $row["purge_interval"];
 			$owner_uid = $row["owner_uid"];
 
-			if ($purge_interval == 0) $purge_interval = get_pref(
-				'PURGE_OLD_DAYS', $owner_uid);
+			if ($purge_interval == 0)
+				$purge_interval = get_pref('PURGE_OLD_DAYS', $owner_uid, false);
 
 			return $purge_interval;
-
 		} else {
 			return -1;
 		}

@@ -2170,7 +2170,7 @@ class Feeds extends Handler_Protected {
 
 			$rows_deleted = $sth->rowCount();
 
-			Debug::log("purge_feed: processed $feed_id: deleted $rows_deleted articles");
+			Debug::log("purge_feed: deleted $rows_deleted articles.");
 
 		} else {
 			Debug::log("purge_feed: owner of $feed_id not found");

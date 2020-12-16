@@ -736,10 +736,8 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	function index() {
-
-		$filter_search = clean($_REQUEST["search"]);
-
 		if (array_key_exists("search", $_REQUEST)) {
+			$filter_search = clean($_REQUEST["search"]);
 			$_SESSION["prefs_filter_search"] = $filter_search;
 		} else {
 			$filter_search = $_SESSION["prefs_filter_search"];
@@ -748,12 +746,6 @@ class Pref_Filters extends Handler_Protected {
 		print "<div dojoType='dijit.layout.BorderContainer' gutters='false'>";
 		print "<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='top'>";
 		print "<div dojoType='fox.Toolbar'>";
-
-		if (array_key_exists("search", $_REQUEST)) {
-			$_SESSION["prefs_filter_search"] = $filter_search;
-		} else {
-			$filter_search = $_SESSION["prefs_filter_search"];
-		}
 
 		print "<div style='float : right; padding-right : 4px;'>
 			<input dojoType=\"dijit.form.TextBox\" id=\"filter_search\" size=\"20\" type=\"search\"

@@ -31,7 +31,13 @@ function format_backtrace($trace) {
 	return $rv;
 }
 
-function ttrss_error_handler($errno, $errstr, $file, $line, $context) {
+function ttrss_error_handler($errno, $errstr, $file, $line) {
+	if (version_compare(PHP_VERSION, '8.0.0', '<')) {
+		if (error_reporting() == 0 || !$errno) return false;
+	} else {
+		if (!(error_reporting() & $errno)) return false;
+	}
+
 	if (error_reporting() == 0 || !$errno) return false;
 
 	$file = substr(str_replace(dirname(dirname(__FILE__)), "", $file), 1);

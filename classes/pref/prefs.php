@@ -1271,14 +1271,14 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	private function getShortDesc($pref_name) {
-		if (isset($this->pref_help[$pref_name])) {
+		if (isset($this->pref_help[$pref_name][0])) {
 			return $this->pref_help[$pref_name][0];
 		}
 		return "";
 	}
 
 	private function getHelpText($pref_name) {
-		if (isset($this->pref_help[$pref_name])) {
+		if (isset($this->pref_help[$pref_name][1])) {
 			return $this->pref_help[$pref_name][1];
 		}
 		return "";

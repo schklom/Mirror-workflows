@@ -506,7 +506,7 @@ class Af_RedditImgur extends Plugin {
 		}
 	}
 
-	private function get_header($url, $useragent = SELF_USER_AGENT, $header) {
+	private function get_header($url, $header, $useragent = SELF_USER_AGENT) {
 		$ret = false;
 
 		if (function_exists("curl_init") && !defined("NO_CURL")) {
@@ -526,11 +526,11 @@ class Af_RedditImgur extends Plugin {
 	}
 
 	private function get_content_type($url, $useragent = SELF_USER_AGENT) {
-		return $this->get_header($url, $useragent, CURLINFO_CONTENT_TYPE);
+		return $this->get_header($url, CURLINFO_CONTENT_TYPE, $useragent);
 	}
 
 	private function get_location($url, $useragent = SELF_USER_AGENT) {
-		return $this->get_header($url, $useragent, CURLINFO_EFFECTIVE_URL);
+		return $this->get_header($url, CURLINFO_EFFECTIVE_URL, $useragent);
 	}
 
 	/**

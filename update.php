@@ -239,7 +239,7 @@
 		RSSUtils::update_daemon_common(DAEMON_FEED_LIMIT, $options);
 		RSSUtils::housekeeping_common();
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK, "hook_update_task", $op);
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK, "hook_update_task", $options);
 	}
 
 	if (isset($options["daemon"])) {

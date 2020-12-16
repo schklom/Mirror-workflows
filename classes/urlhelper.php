@@ -1,8 +1,9 @@
 <?php
 class UrlHelper {
 	static function build_url($parts) {
-		$tmp = $parts['scheme'] . "://" . $parts['host'] . $parts['path'];
+		$tmp = $parts['scheme'] . "://" . $parts['host'];
 
+		if (isset($parts['path'])) $tmp .= $parts['path'];
 		if (isset($parts['query'])) $tmp .= '?' . $parts['query'];
 		if (isset($parts['fragment'])) $tmp .= '#' . $parts['fragment'];
 
@@ -35,11 +36,13 @@ class UrlHelper {
 			$rel_parts['host'] = $parts['host'];
 			$rel_parts['scheme'] = $parts['scheme'];
 
-			if (strpos($rel_parts['path'], '/') !== 0)
-				$rel_parts['path'] = '/' . $rel_parts['path'];
+			if (isset($rel_parts['path'])) {
+				if (strpos($rel_parts['path'], '/') !== 0)
+					$rel_parts['path'] = '/' . $rel_parts['path'];
 
-			$rel_parts['path'] = str_replace("/./", "/", $rel_parts['path']);
-			$rel_parts['path'] = str_replace("//", "/", $rel_parts['path']);
+				$rel_parts['path'] = str_replace("/./", "/", $rel_parts['path']);
+				$rel_parts['path'] = str_replace("//", "/", $rel_parts['path']);
+			}
 
 			return self::validate(self::build_url($rel_parts));
 		}

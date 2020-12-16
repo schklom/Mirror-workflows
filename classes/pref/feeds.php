@@ -74,7 +74,7 @@ class Pref_Feeds extends Handler_Protected {
 			$cat['items'] = $this->get_category_items($line['id']);
 
 			$num_children = $this->calculate_children_count($cat);
-			$cat['param'] = vsprintf(_ngettext('(%d feed)', '(%d feeds)', (int) $num_children), $num_children);
+			$cat['param'] = sprintf(_ngettext('(%d feed)', '(%d feeds)', (int) $num_children), $num_children);
 
 			if ($num_children > 0 || $show_empty_cats)
 				array_push($items, $cat);

@@ -649,13 +649,19 @@ body
 	.about-container
 		background-color: map-get($theme, "background-power-secondary")
 		color: map-get($theme, "foreground-power-secondary")
-		padding: 50px 20px
+		padding: 50px 0px
 		flex: 1
 		min-height: 60vh
+
+		.notice
+			background-color: map-get($theme, "background-power-tertiary")
+			margin: 10px 0px
+			padding: 20px 0px 10px
 
 		.about
 			max-width: 700px
 			margin: 0px auto
+			padding: 0px 20px
 			line-height: 1.4
 			font-size: 20px
 

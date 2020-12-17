@@ -29,6 +29,13 @@ html
 			section.about
 				h2= ll.about_bibliogram_header
 				!= ll.pug_about_bibliogram_content({link_to_featured_profiles: constants.featured_profiles.length})
+
+			.notice
+				section.about
+					h2 Experiencing problems with Bibliogram?
+					p: a(href="https://lists.sr.ht/~cadence/bibliogram-announce/%3C20201218014302.855fa8a816be2f19da2f56e3%40disroot.org%3E") Read more here.
+
+			section.about
 				h2= ll.about_this_instance_header
 				ul
 					if onionLocation

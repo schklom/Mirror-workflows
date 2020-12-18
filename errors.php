@@ -40,6 +40,8 @@
 		$ERRORS[14] = __("Plugin not found");
 
 		$ERRORS[15] = __("Encoding data as JSON failed");
+
+		return $ERRORS;
 	}
 
 	if ($_REQUEST['mode'] == 'js') {

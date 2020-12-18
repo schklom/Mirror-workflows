@@ -3,6 +3,7 @@ class Af_RedditImgur extends Plugin {
 
 	/* @var PluginHost $host */
 	private $host;
+	private $domain_blacklist = [ "github.com" ];
 
 	function about() {
 		return array(1.0,
@@ -431,6 +432,9 @@ class Af_RedditImgur extends Plugin {
 				}
 			}
 
+			if ($content_link && $this->is_blacklisted($content_link->getAttribute("href")))
+				return $article;
+
 			$found = $this->inline_stuff($article, $doc, $xpath);
 
 			$node = $doc->getElementsByTagName('body')->item(0);
@@ -566,5 +570,17 @@ class Af_RedditImgur extends Plugin {
 		}
 
 		return $article;
+	}
+
+	private function is_blacklisted($src) {
+		$src_domain = parse_url($src, PHP_URL_HOST);
+
+		foreach ($this->domain_blacklist as $domain) {
+			if (strstr($src_domain, $domain) !== false) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

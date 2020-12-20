@@ -396,12 +396,6 @@
 		return uniqid(base_convert(rand(), 10, 36));
 	}
 
-	function trim_array($array) {
-		$tmp = $array;
-		array_walk($tmp, 'trim');
-		return $tmp;
-	}
-
 	function T_sprintf() {
 		$args = func_get_args();
 		return vsprintf(__(array_shift($args)), $args);

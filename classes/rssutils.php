@@ -1174,7 +1174,7 @@ class RSSUtils {
 				foreach ($article_filters as $f) {
 					if ($f["type"] == "tag") {
 
-						$manual_tags = trim_array(explode(",", $f["param"]));
+						$manual_tags = array_map('trim', explode(",", mb_strtolower($f["param"])));
 
 						foreach ($manual_tags as $tag) {
 							array_push($entry_tags, $tag);
@@ -1184,28 +1184,19 @@ class RSSUtils {
 
 				// Skip boring tags
 
-				$boring_tags = trim_array(explode(",", mb_strtolower(get_pref(
-					'BLACKLISTED_TAGS', $owner_uid, ''), 'utf-8')));
+				$boring_tags = array_map('trim',
+						explode(",", mb_strtolower(
+							get_pref('BLACKLISTED_TAGS', $owner_uid))));
 
-				$filtered_tags = array();
-				$tags_to_cache = array();
+				$entry_tags = FeedItem_Common::normalize_categories(
+					array_unique(
+						array_diff($entry_tags, $boring_tags)));
 
-				foreach ($entry_tags as $tag) {
-					if (array_search($tag, $boring_tags) === false) {
-						array_push($filtered_tags, $tag);
-					}
-				}
-
-				$filtered_tags = array_unique($filtered_tags);
-
-				if (Debug::get_loglevel() >= Debug::$LOG_VERBOSE) {
-					Debug::log("filtered tags: " . implode(", ", $filtered_tags), Debug::$LOG_VERBOSE);
-
-				}
+				Debug::log("filtered tags: " . implode(", ", $entry_tags), Debug::$LOG_VERBOSE);
 
 				// Save article tags in the database
 
-				if (count($filtered_tags) > 0) {
+				if (count($entry_tags) > 0) {
 
 					$tsth = $pdo->prepare("SELECT id FROM ttrss_tags
 							WHERE tag_name = ? AND post_int_id = ? AND
@@ -1215,25 +1206,25 @@ class RSSUtils {
 									(owner_uid,tag_name,post_int_id)
 									VALUES (?, ?, ?)");
 
-					$filtered_tags = FeedItem_Common::normalize_categories($filtered_tags);
-
-					foreach ($filtered_tags as $tag) {
+					foreach ($entry_tags as $tag) {
 						$tsth->execute([$tag, $entry_int_id, $owner_uid]);
 
 						if (!$tsth->fetch()) {
 							$usth->execute([$owner_uid, $tag, $entry_int_id]);
 						}
-
-						array_push($tags_to_cache, $tag);
 					}
 
 					/* update the cache */
-					$tags_str = join(",", $tags_to_cache);
 
 					$tsth = $pdo->prepare("UPDATE ttrss_user_entries
 						SET tag_cache = ? WHERE ref_id = ?
 						AND owner_uid = ?");
-					$tsth->execute([$tags_str, $entry_ref_id, $owner_uid]);
+
+					$tsth->execute([
+						join(",", $entry_tags),
+						$entry_ref_id,
+						$owner_uid
+					]);
 				}
 
 				Debug::log("article processed", Debug::$LOG_VERBOSE);

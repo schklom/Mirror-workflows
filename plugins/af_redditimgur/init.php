@@ -20,6 +20,9 @@ class Af_RedditImgur extends Plugin {
 
 		$host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
 		$host->add_hook($host::HOOK_PREFS_TAB, $this);
+
+		$host->add_hook($host::HOOK_RENDER_ARTICLE, $this);
+		$host->add_hook($host::HOOK_RENDER_ARTICLE_CDM, $this);
 	}
 
 	function hook_prefs_tab($args) {
@@ -30,6 +33,7 @@ class Af_RedditImgur extends Plugin {
 
 		$enable_readability = $this->host->get($this, "enable_readability");
 		$enable_content_dupcheck = $this->host->get($this, "enable_content_dupcheck");
+		$reddit_to_teddit = $this->host->get($this, "reddit_to_teddit");
 
 		if (version_compare(PHP_VERSION, '5.6.0', '<')) {
 			print_error("Readability requires PHP version 5.6.");
@@ -67,6 +71,12 @@ class Af_RedditImgur extends Plugin {
 		print " " . __("Enable additional duplicate checking") . "</label>";
 		print "</fieldset>";
 
+		print "<fieldset class='narrow'>";
+		print "<label class='checkbox'>";
+		print_checkbox("reddit_to_teddit", $reddit_to_teddit);
+		print " " . T_sprintf("Rewrite Reddit URLs to %s",
+			"<a target=\"_blank\" href=\"https://teddit.net/about\">Teddit</a>") . "</label>";
+
 		print_button("submit", __("Save"), 'class="alt-primary"');
 		print "</form>";
 
@@ -76,8 +86,10 @@ class Af_RedditImgur extends Plugin {
 	function save() {
 		$enable_readability = checkbox_to_sql_bool($_POST["enable_readability"]);
 		$enable_content_dupcheck = checkbox_to_sql_bool($_POST["enable_content_dupcheck"]);
+		$reddit_to_teddit = checkbox_to_sql_bool($_POST["reddit_to_teddit"]);
 
 		$this->host->set($this, "enable_readability", $enable_readability, false);
+		$this->host->set($this, "reddit_to_teddit", $reddit_to_teddit, false);
 		$this->host->set($this, "enable_content_dupcheck", $enable_content_dupcheck);
 
 		echo __("Configuration saved");
@@ -583,4 +595,45 @@ class Af_RedditImgur extends Plugin {
 
 		return false;
 	}
+
+	function hook_render_article($article) {
+		return $this->hook_render_article_cdm($article);
+	}
+
+	private function rewrite_to_teddit($str) {
+		if (strpos($str, "reddit.com") !== false) {
+			return preg_replace("/https?:\/\/([a-z]+\.)?reddit\.com/", "https://teddit.net", $str);
+		}
+
+		return $str;
+	}
+
+	function hook_render_article_cdm($article) {
+		if ($this->host->get($this, "reddit_to_teddit")) {
+			$need_saving = false;
+
+			$article["link"] = $this->rewrite_to_teddit($article["link"]);
+
+			$doc = new DOMDocument();
+			if (@$doc->loadHTML('<?xml encoding="UTF-8">' . $article["content"])) {
+				$xpath = new DOMXPath($doc);
+				$elems = $xpath->query("//a[@href]");
+
+				foreach ($elems as $elem) {
+					$href = $elem->getAttribute("href");
+					$rewritten_href = $this->rewrite_to_teddit($href);
+
+					if ($href != $rewritten_href) {
+						$elem->setAttribute("href", $rewritten_href);
+						$need_saving = true;
+					}
+				}
+			}
+
+			if ($need_saving) $article["content"] = $doc->saveHTML();
+		}
+
+		return $article;
+	}
+
 }

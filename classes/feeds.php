@@ -2125,7 +2125,7 @@ class Feeds extends Handler_Protected {
 			$owner_uid = $row["owner_uid"];
 
 			if (FORCE_ARTICLE_PURGE != 0) {
-				Debug::log("purge_feed: FORCE_ARTICLE_PURGE is set, overriding interval to " . FORCE_ARTICLE_PURGE);
+				Debug::log("purge_feed: FORCE_ARTICLE_PURGE is set, overriding interval to " . FORCE_ARTICLE_PURGE, Debug::$LOG_VERBOSE);
 				$purge_unread = true;
 				$purge_interval = FORCE_ARTICLE_PURGE;
 			} else {
@@ -2134,10 +2134,10 @@ class Feeds extends Handler_Protected {
 
 			$purge_interval = (int) $purge_interval;
 
-			Debug::log("purge_feed: interval $purge_interval days for feed $feed_id, owner: $owner_uid, purge unread: $purge_unread");
+			Debug::log("purge_feed: interval $purge_interval days for feed $feed_id, owner: $owner_uid, purge unread: $purge_unread", Debug::$LOG_VERBOSE);
 
 			if ($purge_interval <= 0) {
-				Debug::log("purge_feed: purging disabled for this feed, nothing to do.");
+				Debug::log("purge_feed: purging disabled for this feed, nothing to do.", Debug::$LOG_VERBOSE);
 				return;
 			}
 
@@ -2170,10 +2170,10 @@ class Feeds extends Handler_Protected {
 
 			$rows_deleted = $sth->rowCount();
 
-			Debug::log("purge_feed: deleted $rows_deleted articles.");
+			Debug::log("purge_feed: deleted $rows_deleted articles.", Debug::$LOG_VERBOSE);
 
 		} else {
-			Debug::log("purge_feed: owner of $feed_id not found");
+			Debug::log("purge_feed: owner of $feed_id not found", Debug::$LOG_VERBOSE);
 		}
 
 		return $rows_deleted;

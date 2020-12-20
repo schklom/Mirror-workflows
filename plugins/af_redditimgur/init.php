@@ -23,6 +23,7 @@ class Af_RedditImgur extends Plugin {
 
 		$host->add_hook($host::HOOK_RENDER_ARTICLE, $this);
 		$host->add_hook($host::HOOK_RENDER_ARTICLE_CDM, $this);
+		$host->add_hook($host::HOOK_RENDER_ARTICLE_API, $this);
 	}
 
 	function hook_prefs_tab($args) {
@@ -634,6 +635,12 @@ class Af_RedditImgur extends Plugin {
 		}
 
 		return $article;
+	}
+
+	function hook_render_article_api($params) {
+		$article = isset($params["article"]) ? $params["article"] : $params["headline"];
+
+		return $this->hook_render_article_cdm($article);
 	}
 
 }

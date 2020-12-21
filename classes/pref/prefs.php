@@ -66,9 +66,13 @@ class Pref_Prefs extends Handler_Protected {
 			]
 		];
 
+		$this->pref_help_bottom = [
+			"BLACKLISTED_TAGS" => __("Never apply these tags automatically (comma-separated list)."),
+		];
+
 		$this->pref_help = [
 			"ALLOW_DUPLICATE_POSTS" => array(__("Allow duplicate articles"), ""),
-			"BLACKLISTED_TAGS" => array(__("Blacklisted tags"), __("Never apply these tags automatically (comma-separated list).")),
+			"BLACKLISTED_TAGS" => array(__("Blacklisted tags"), ""),
 			"DEFAULT_SEARCH_LANGUAGE" => array(__("Default language"), __("Used for full-text search")),
 			"CDM_AUTO_CATCHUP" => array(__("Mark read on scroll"), __("Mark articles as read as you scroll past them")),
 			"CDM_EXPANDED" => array(__("Always expand articles")),
@@ -191,6 +195,12 @@ class Pref_Prefs extends Handler_Protected {
 
 				case 'USER_CSS_THEME':
 					if (!$need_reload) $need_reload = get_pref($pref_name) != $value;
+					break;
+
+				case 'BLACKLISTED_TAGS':
+					$cats = FeedItem_Common::normalize_categories(explode(",", $value));
+					asort($cats);
+					$value = implode(", ", $cats);
 					break;
 			}
 
@@ -671,6 +681,19 @@ class Pref_Prefs extends Handler_Protected {
 						$timezones = explode("\n", file_get_contents("lib/timezones.txt"));
 
 						print_select($pref_name, $value, $timezones, 'dojoType="dijit.form.FilteringSelect"');
+
+					} else if ($pref_name == "BLACKLISTED_TAGS") { # TODO: other possible <textarea> prefs go here
+
+						print "<div>";
+
+						print "<textarea dojoType='dijit.form.SimpleTextarea' rows='4'
+							style='width: 500px; font-size : 12px;'
+							name='$pref_name'>$value</textarea><br/>";
+
+						print "<div class='help-text-bottom text-muted'>" . $this->pref_help_bottom[$pref_name] . "</div>";
+
+						print "</div>";
+
 					} else if ($pref_name == "USER_CSS_THEME") {
 
 						$themes = array_merge(glob("themes/*.php"), glob("themes/*.css"), glob("themes.local/*.css"));
@@ -725,8 +748,8 @@ class Pref_Prefs extends Handler_Protected {
 						print "<input type='checkbox' name='$pref_name' $checked $disabled
 							dojoType='dijit.form.CheckBox' id='CB_$pref_name' value='1'>";
 
-					} else if (array_search($pref_name, array('FRESH_ARTICLE_MAX_AGE',
-							'PURGE_OLD_DAYS', 'LONG_DATE_FORMAT', 'SHORT_DATE_FORMAT')) !== false) {
+					} else if (in_array($pref_name, ['FRESH_ARTICLE_MAX_AGE',
+							'PURGE_OLD_DAYS', 'LONG_DATE_FORMAT', 'SHORT_DATE_FORMAT'])) {
 
 						$regexp = ($type_name == 'integer') ? 'regexp="^\d*$"' : '';
 

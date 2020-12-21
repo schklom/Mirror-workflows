@@ -1472,6 +1472,9 @@ body.ttrss_prefs .user-css-editor {
 }
 body.ttrss_prefs fieldset.prefs {
   min-height: 30px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 body.ttrss_prefs fieldset.prefs label:first-of-type {
   min-width: 300px;
@@ -1479,6 +1482,9 @@ body.ttrss_prefs fieldset.prefs label:first-of-type {
 body.ttrss_prefs fieldset.prefs .help-text {
   display: inline-block;
   margin-left: 10px;
+}
+body.ttrss_prefs fieldset.prefs .help-text-bottom {
+  margin-top: 10px;
 }
 body.ttrss_prefs fieldset.plugin label.description {
   width: 600px;

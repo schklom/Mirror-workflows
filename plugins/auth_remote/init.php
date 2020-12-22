@@ -42,6 +42,7 @@ class Auth_Remote extends Plugin implements IAuthModule {
 	 */
 	function authenticate($login, $password) {
 		$try_login = $_SERVER["REMOTE_USER"];
+		if (!$try_login) $try_login = $_SERVER["HTTP_REMOTE_USER"];
 
 		// php-cgi
 		if (!$try_login) $try_login = $_SERVER["REDIRECT_REMOTE_USER"];

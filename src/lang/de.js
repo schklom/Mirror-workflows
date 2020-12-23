@@ -9,7 +9,7 @@ if (!constants.language_dev) Object.assign(data, require("./en.js"))
 	data.go_to_profile = "Gehe zu Profile"
 	data.go_to_post = "Gehe zu Post"
 	data.go_username_or_url = "Benutzername oder URL"
-	data.go_shortcode_or_url = "Shortcode or URL"
+	data.go_shortcode_or_url = "Shortcode oder URL"
 	data.go_button = "Los"
 	data.about_bibliogram_header = "Über Bibliogram"
 	data.pug_about_bibliogram_content = pug(`

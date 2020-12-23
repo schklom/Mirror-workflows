@@ -562,6 +562,7 @@ const	Feeds = {
 					{op: "feeds", method: "search",
 						param: Feeds.getActive() + ":" + Feeds.activeIsCat()},
 					(transport) => {
+
 						const dialog = new dijit.Dialog({
 							id: "searchDlg",
 							content: transport.responseText,
@@ -581,7 +582,7 @@ const	Feeds = {
 							},
 						});
 
-						const tmph = dojo.connect(dialog, 'onLoad', function () {
+						const tmph = dojo.connect(dialog, 'onShow', function () {
 							dojo.disconnect(tmph);
 
 							if (Feeds._search_query) {

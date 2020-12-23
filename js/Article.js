@@ -295,7 +295,7 @@ const Article = {
 				},
 			});
 
-			const tmph = dojo.connect(dialog, 'onLoad', function () {
+			const tmph = dojo.connect(dialog, 'onShow', function () {
 				dojo.disconnect(tmph);
 
 				new Ajax.Autocompleter('tags_str', 'tags_choices',

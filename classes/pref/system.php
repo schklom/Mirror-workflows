@@ -25,27 +25,43 @@ class Pref_System extends Handler_Protected {
 
 	function index() {
 
-		print "<div dojoType=\"dijit.layout.AccordionContainer\" region=\"center\">";
-		print "<div dojoType=\"dijit.layout.AccordionPane\"
-			title=\"<i class='material-icons'>report</i> ".__('Event Log')."\">";
+		$severity = isset($_REQUEST["severity"]) ? (int) clean($_REQUEST["severity"]) : E_USER_WARNING;
+
+		print "<div dojoType='dijit.layout.AccordionContainer' region='center'>";
+		print "<div dojoType='dijit.layout.AccordionPane' style='padding : 0'
+			title='<i class=\"material-icons\">report</i> ".__('Event Log')."'>";
 
 		if (LOG_DESTINATION == "sql") {
 
-			$res = $this->pdo->query("SELECT errno, errstr, filename, lineno,
-				created_at, login, context FROM ttrss_error_log
-				LEFT JOIN ttrss_users ON (owner_uid = ttrss_users.id)
-				ORDER BY ttrss_error_log.id DESC
-				LIMIT 100");
+			print "<div dojoType='dijit.layout.BorderContainer' gutters='false'>";
 
-			print "<button dojoType=\"dijit.form.Button\"
-				onclick=\"Helpers.updateEventLog()\">".__('Refresh')."</button> ";
+			print "<div region='top' dojoType='fox.Toolbar'>";
 
-			print "&nbsp;<button dojoType=\"dijit.form.Button\"
-				class=\"alt-danger\" onclick=\"Helpers.clearEventLog()\">".__('Clear')."</button> ";
+			print "<button dojoType='dijit.form.Button'
+				onclick='Helpers.updateEventLog()'>".__('Refresh')."</button>";
 
-			print "<p><table width=\"100%\" cellspacing=\"10\" class=\"prefErrorLog\">";
+			print "<button dojoType='dijit.form.Button'
+				onclick='Helpers.clearEventLog()'>".__('Clear')."</button>";
 
-			print "<tr class=\"title\">
+			print "<div class='pull-right'>";
+
+			print __("Severity:") . " ";
+			print_select_hash("severity", $severity,
+				[
+					E_USER_ERROR => __("Errors"),
+					E_USER_WARNING => __("Warnings"),
+					E_USER_NOTICE => __("Everything")
+				], 'dojoType="fox.form.Select" onchange="Helpers.updateEventLog()"');
+
+			print "</div>"; # pull-right
+
+			print "</div>"; # toolbar
+
+			print '<div style="padding : 0px" dojoType="dijit.layout.ContentPane" region="center">';
+
+			print "<table width='100%' cellspacing='10' class='prefErrorLog'>";
+
+			print "<tr class='title'>
 				<td width='5%'>".__("Error")."</td>
 				<td>".__("Filename")."</td>
 				<td>".__("Message")."</td>
@@ -53,7 +69,37 @@ class Pref_System extends Handler_Protected {
 				<td width='5%'>".__("Date")."</td>
 				</tr>";
 
-			while ($line = $res->fetch()) {
+			$errno_values = [];
+
+			switch ($severity) {
+				case E_USER_ERROR:
+					$errno_values = [ E_ERROR, E_USER_ERROR, E_PARSE ];
+					break;
+				case E_USER_WARNING:
+					$errno_values = [ E_ERROR, E_USER_ERROR, E_PARSE, E_WARNING, E_USER_WARNING, E_DEPRECATED, E_USER_DEPRECATED ];
+					break;
+			}
+
+			if (count($errno_values) > 0) {
+				$errno_qmarks = arr_qmarks($errno_values);
+				$errno_filter_qpart = "errno IN ($errno_qmarks)";
+			} else {
+				$errno_filter_qpart = "true";
+			}
+
+			$sth = $this->pdo->prepare("SELECT
+					errno, errstr, filename, lineno, created_at, login, context
+				FROM
+					ttrss_error_log LEFT JOIN ttrss_users ON (owner_uid = ttrss_users.id)
+				WHERE
+					$errno_filter_qpart
+				ORDER BY
+					ttrss_error_log.id DESC
+				LIMIT 100");
+
+			$sth->execute($errno_values);
+
+			while ($line = $sth->fetch()) {
 				print "<tr>";
 
 				foreach ($line as $k => $v) {
@@ -73,15 +119,15 @@ class Pref_System extends Handler_Protected {
 
 			print "</table>";
 		} else {
-
 			print_notice("Please set LOG_DESTINATION to 'sql' in config.php to enable database logging.");
-
 		}
 
-		print "</div>";
+		print "</div>"; # content pane
+		print "</div>"; # container
+		print "</div>"; # accordion pane
 
-		print "<div dojoType=\"dijit.layout.AccordionPane\"
-			title=\"<i class='material-icons'>info</i> ".__('PHP Information')."\">";
+		print "<div dojoType='dijit.layout.AccordionPane'
+			title='<i class=\"material-icons\">info</i> ".__('PHP Information')."'>";
 
 		ob_start();
 		phpinfo();
@@ -92,7 +138,7 @@ class Pref_System extends Handler_Protected {
 		print preg_replace( '%^.*<body>(.*)</body>.*$%ms','$1', $info);
 		print "</div>";
 
-		print "</div>";
+		print "</div>"; # accordion pane
 
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB,
 			"hook_prefs_tab", "prefSystem");

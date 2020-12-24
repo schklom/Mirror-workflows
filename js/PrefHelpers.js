@@ -51,7 +51,7 @@ const	Helpers = {
 		return false;
 	},
 	updateEventLog: function() {
-		xhrPost("backend.php", { op: "pref-system" }, (transport) => {
+		xhrPost("backend.php", { op: "pref-system", severity: dijit.byId("severity").attr('value') }, (transport) => {
 			dijit.byId('systemConfigTab').attr('content', transport.responseText);
 			Notify.close();
 		});

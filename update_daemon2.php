@@ -58,12 +58,12 @@
 				if (file_is_locked("update_daemon-$pid.lock")) {
 					array_push($tmp, $pid);
 				} else {
-					Debug::log("[reap_children] child $pid seems active but lockfile is unlocked.");
+					Debug::log("Child process with PID $pid seems active but lockfile is unlocked.");
 					unset($ctimes[$pid]);
 
 				}
 			} else {
-				Debug::log("[reap_children] child $pid reaped.");
+				Debug::log("Child process with PID $pid reaped.");
 				unset($ctimes[$pid]);
 			}
 		}
@@ -80,7 +80,7 @@
 			$started = $ctimes[$pid];
 
 			if (time() - $started > MAX_CHILD_RUNTIME) {
-				Debug::log("[MASTER] child process $pid seems to be stuck, aborting...");
+				Debug::log("Child process with PID $pid seems to be stuck, aborting...");
 				posix_kill($pid, SIGKILL);
 			}
 		}
@@ -92,7 +92,7 @@
 	function sigchld_handler($signal) {
 		$running_jobs = reap_children();
 
-		Debug::log("[SIGCHLD] jobs left: $running_jobs");
+		Debug::log("Received SIGCHLD, $running_jobs active tasks left.");
 
 		pcntl_waitpid(-1, $status, WNOHANG);
 	}
@@ -100,7 +100,7 @@
 	function shutdown($caller_pid) {
 		if ($caller_pid == posix_getpid()) {
 			if (file_exists(LOCK_DIRECTORY . "/update_daemon.lock")) {
-				Debug::log("removing lockfile (master)...");
+				Debug::log("Removing lockfile (master)...");
 				unlink(LOCK_DIRECTORY . "/update_daemon.lock");
 			}
 		}
@@ -110,19 +110,19 @@
 		$pid = posix_getpid();
 
 		if (file_exists(LOCK_DIRECTORY . "/update_daemon-$pid.lock")) {
-			Debug::log("removing lockfile ($pid)...");
+			Debug::log("Removing task lockfile for PID $pid...");
 			unlink(LOCK_DIRECTORY . "/update_daemon-$pid.lock");
 		}
 	}
 
 	function sigint_handler() {
-		Debug::log("[MASTER] SIG_INT received.\n");
+		Debug::log("[MASTER] SIG_INT received, shutting down master process.");
 		shutdown(posix_getpid());
 		die;
 	}
 
 	function task_sigint_handler() {
-		Debug::log("[TASK] SIG_INT received.\n");
+		Debug::log("[TASK] SIG_INT received, shutting down task.");
 		task_shutdown();
 		die;
 	}
@@ -215,7 +215,7 @@
 
 		if ($next_spawn % 60 == 0) {
 			$running_jobs = count($children);
-			Debug::log("[MASTER] active jobs: $running_jobs, next spawn at $next_spawn sec.");
+			Debug::log("$running_jobs active tasks, next spawn at $next_spawn sec.");
 		}
 
 		if ($last_checkpoint + $spawn_interval < time()) {
@@ -229,14 +229,14 @@
 				} else if ($pid) {
 
 					if (!$master_handlers_installed) {
-						Debug::log("[MASTER] installing shutdown handlers");
+						Debug::log("Installing shutdown handlers");
 						pcntl_signal(SIGINT, 'sigint_handler');
 						pcntl_signal(SIGTERM, 'sigint_handler');
 						register_shutdown_function('shutdown', posix_getpid());
 						$master_handlers_installed = true;
 					}
 
-					Debug::log("[MASTER] spawned client $j [PID:$pid]...");
+					Debug::log("Spawned child process with PID $pid for task $j.");
 					array_push($children, $pid);
 					$ctimes[$pid] = time();
 				} else {

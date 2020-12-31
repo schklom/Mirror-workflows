@@ -218,7 +218,7 @@
 
 	if (isset($options["task"]) && isset($options["pidlock"])) {
 		$waits = $options["task"] * 5;
-		Debug::log("Waiting before update ($waits)");
+		Debug::log("Waiting before update ($waits)...");
 		sleep($waits);
 	}
 

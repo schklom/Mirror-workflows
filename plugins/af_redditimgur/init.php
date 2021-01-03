@@ -110,6 +110,9 @@ class Af_RedditImgur extends Plugin {
 		foreach ($entries as $entry) {
 			if ($entry->hasAttribute("href") && strpos($entry->getAttribute("href"), "reddit.com") === false) {
 
+				if ($this->is_blacklisted($entry->getAttribute("href")))
+					continue;
+
 				Debug::log("processing href: " . $entry->getAttribute("href"), Debug::$LOG_VERBOSE);
 
 				$matches = array();

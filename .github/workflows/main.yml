@@ -5,10 +5,10 @@ name: Mirroring Repository
 # Controls when the action will run. 
 on:
   # Triggers the workflow on push or delete events but only for the main branch
-  push:
-    branches: [ main ]
-  delete:
-    branches: [ main ]
+  #push:
+    #branches: [ main ]
+  #delete:
+    #branches: [ main ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 

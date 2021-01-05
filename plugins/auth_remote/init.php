@@ -41,12 +41,14 @@ class Auth_Remote extends Plugin implements IAuthModule {
 	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	function authenticate($login, $password) {
-		$try_login = $_SERVER["REMOTE_USER"];
-		if (!$try_login) $try_login = $_SERVER["HTTP_REMOTE_USER"];
+		$try_login = "";
 
-		// php-cgi
-		if (!$try_login) $try_login = $_SERVER["REDIRECT_REMOTE_USER"];
-		if (!$try_login) $try_login = $_SERVER["PHP_AUTH_USER"];
+		foreach (["REMOTE_USER", "HTTP_REMOTE_USER", "REDIRECT_REMOTE_USER", "PHP_AUTH_USER"] as $hdr) {
+			if (isset($_SERVER[$hdr])) {
+				$try_login = $_SERVER["hdr"];
+				break;
+			}
+		}
 
 		if (!$try_login) $try_login = $this->get_login_by_ssl_certificate();
 

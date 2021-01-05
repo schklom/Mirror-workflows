@@ -1,0 +1,24 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Mirroring Repository
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or delete events but only for the main branch
+  push:
+    branches: [ main ]
+  delete:
+    branches: [ main ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  to_gitlab:
+    runs-on: ubuntu-18.04
+    steps:                                              # <-- must use actions/checkout@v1 before mirroring!
+    - uses: actions/checkout@v1
+    - uses: pixta-dev/repository-mirroring-action@v1
+      with:
+        target_repo_url:
+          git@git.tt-rss.org:fox/tt-rss.git

@@ -1,0 +1,15 @@
+name: Git Sync Action
+
+on: push
+jobs:
+  repo-sync:
+    runs-on: ubuntu-latest
+    steps:
+    - name: repo-sync
+      uses: wei/git-sync@v2
+      with:
+        source_repo: "https://git.tt-rss.org/fox/ttrss-docker-compose.git"
+        source_branch: "main"
+        destination_repo: "https://github.com/schklom/ttrss-mirror.git"
+        destination_branch: "main"
+        #ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}

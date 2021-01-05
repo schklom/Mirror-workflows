@@ -9,7 +9,7 @@ jobs:
       uses: wei/git-sync@v2
       with:
         source_repo: "https://git.tt-rss.org/fox/ttrss-docker-compose.git"
-        source_branch: "main"
+        source_branch: "static-dockerhub"
         destination_repo: "https://github.com/schklom/ttrss-mirror.git"
         destination_branch: "main"
         #ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}

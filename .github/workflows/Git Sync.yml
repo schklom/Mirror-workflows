@@ -1,6 +1,6 @@
 name: Git Sync Action
 
-on: push
+on: workflow_dispatch
 jobs:
   repo-sync:
     runs-on: ubuntu-latest

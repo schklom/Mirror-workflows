@@ -21,4 +21,4 @@ jobs:
     - uses: pixta-dev/repository-mirroring-action@v1
       with:
         target_repo_url:
-          git@git.tt-rss.org:fox/tt-rss.git
+          https://git.tt-rss.org/fox/tt-rss.git

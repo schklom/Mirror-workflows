@@ -139,7 +139,7 @@ class UserHelper {
 	}
 
 	static function get_user_ip() {
-		foreach (["HTTP_X_REAL_IP", "REMOTE_ADDR", "REMOTEADDR"] as $hdr) {
+		foreach (["HTTP_X_REAL_IP", "REMOTE_ADDR"] as $hdr) {
 			if (isset($_SERVER[$hdr]))
 				return $_SERVER[$hdr];
 		}

@@ -16,7 +16,10 @@ class Logger_SQL {
 			$context = mb_substr($context, 0, 8192);
 
 			$server_params = [
-				"IP" => "REMOTE_ADDR",
+				"Real IP" => "HTTP_X_REAL_IP",
+				"Forwarded For" => "HTTP_X_FORWARDED_FOR",
+				"Forwarded Protocol" => "HTTP_X_FORWARDED_PROTO",
+				"Remote IP" => "REMOTE_ADDR",
 				"Request URI" => "REQUEST_URI",
 				"User agent" => "HTTP_USER_AGENT",
 			];

@@ -38,7 +38,7 @@ class UserHelper {
 				$usth = $pdo->prepare("UPDATE ttrss_users SET last_login = NOW() WHERE id = ?");
 				$usth->execute([$user_id]);
 
-				$_SESSION["ip_address"] = $_SERVER["REMOTE_ADDR"];
+				$_SESSION["ip_address"] = UserHelper::get_user_ip();
 				$_SESSION["user_agent"] = sha1($_SERVER['HTTP_USER_AGENT']);
 				$_SESSION["pwd_hash"] = $row["pwd_hash"];
 
@@ -63,7 +63,7 @@ class UserHelper {
 			if (!$_SESSION["csrf_token"])
 				$_SESSION["csrf_token"] = bin2hex(get_random_bytes(16));
 
-			$_SESSION["ip_address"] = $_SERVER["REMOTE_ADDR"];
+			$_SESSION["ip_address"] = UserHelper::get_user_ip();
 
 			Pref_Prefs::initialize_user_prefs($_SESSION["uid"]);
 
@@ -136,6 +136,13 @@ class UserHelper {
 			print "</style>";
 		}
 
+	}
+
+	static function get_user_ip() {
+		foreach (["HTTP_X_REAL_IP", "REMOTE_ADDR", "REMOTEADDR"] as $hdr) {
+			if (isset($_SERVER[$hdr]))
+				return $_SERVER[$hdr];
+		}
 	}
 
 }

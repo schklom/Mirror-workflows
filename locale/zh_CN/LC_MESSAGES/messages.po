@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-15 16:27+0300\n"
+"POT-Creation-Date: 2021-01-07 18:21+0300\n"
 "PO-Revision-Date: 2020-12-22 13:22+0000\n"
 "Last-Translator: Ptsa Daniel <ptsa1987@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.tt-rss.org/projects/tt-rss/messages/zh_Hans/>\n"
@@ -1192,7 +1192,8 @@ msgstr "没有匹配的用户。"
 msgid "(inverse)"
 msgstr "(反选)"
 
-#: classes/pref/filters.php:227 classes/pref/filters.php:554
+#: classes/pref/filters.php:227
+#: classes/pref/filters.php:554
 #, fuzzy, php-format
 msgid "%s on %s in %s %s"
 msgstr "%s on %s in %s %s"
@@ -1320,7 +1321,7 @@ msgstr "匹配任意规则"
 msgid "inverse"
 msgstr "反选"
 
-#: classes/pref/filters.php:1149
+#: classes/pref/filters.php:1141
 #, php-format
 msgid "%s (+%d action)"
 msgid_plural "%s (+%d actions)"

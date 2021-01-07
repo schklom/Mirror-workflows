@@ -44,7 +44,7 @@ class Auth_Remote extends Plugin implements IAuthModule {
 		$try_login = "";
 
 		foreach (["REMOTE_USER", "HTTP_REMOTE_USER", "REDIRECT_REMOTE_USER", "PHP_AUTH_USER"] as $hdr) {
-			if (isset($_SERVER[$hdr])) {
+			if (!empty($_SERVER[$hdr])) {
 				$try_login = $_SERVER[$hdr];
 				break;
 			}

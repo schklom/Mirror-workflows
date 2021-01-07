@@ -5,7 +5,8 @@ const userAgent = process.env.USER_AGENT || 'Feedropolis RSS Generator';
 module.exports = function({
 	waitTime = -1,
 	waitForSelector = '',
-	url
+	url,
+	cookies = ''
 }) {
 	let p = Nightmare({ show: false });
 	p = p.useragent(userAgent);
@@ -13,7 +14,11 @@ module.exports = function({
 	// 	console.log('~~~URL DETAILS~~~', details);
 	// 	return cb({ cancel: false })
 	// })
-	p = p.goto(url);
+	let headers = {};
+	if (cookies) {
+		headers.Cookie = cookies;
+	}
+	p = p.goto(url, headers);
 	if (waitTime > 0) {
 		p = p.wait(waitTime);
 	}

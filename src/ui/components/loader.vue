@@ -1,49 +1,60 @@
 <template>
-	<form class="pure-form pure-form-stacked" id="loadForm" @submit.prevent="submit">
+	<form class="pure-form" id="loadForm" @submit.prevent="submit">
 		<div class="pure-control-group">
-			<input id="name" type="url" name="url" placeholder="https://" v-model="url">
+			URL: <input id="name" type="url" name="url" placeholder="https://" v-model="url">
 		</div>
-		<label>
-			Load Scripts
-			<input type="checkbox"
-				name="loadScripts"
-				value="1"
-				v-model="loadScripts"
-			/>
-		</label>
-		<label v-show="loadScripts">
-			<input type="radio"
-				name="waitFor"
-				value="time"
-				v-model="waitFor"
-			/>
-			Wait for x milliseconds:
-			<input type="number"
-				name="waitForTime"
-				value="0"
-				min="100"
-				step="1"
-				max="10000"
-				v-model="waitForTime"
-				@input="waitFor='time'"
-			/>
-		</label>
-		<label v-show="loadScripts">
-			<input type="radio"
-				name="waitFor"
-				value="selector"
-				v-model="waitFor"
-			/>
-			Wait for selector:
-			<input type="text"
-				name="waitForSelector"
-				v-model="waitForSelector"
-				minlength="2"
-				maxlength="255"
-				@input="waitFor='selector'"
-			/>
-		</label>
-		<input type="submit" class="pure-button" value="Load" @click.prevent="submit" :disabled="loading" />
+		<div class="pure-control-group">
+			Cookies: <input id="cookies" type="text" name="cookies" placeholder="key1=value1;key2=..." v-model="cookies">
+		</div>
+		<div class="pure-control-group">
+			<label>
+				Load Scripts
+				<input type="checkbox"
+					name="loadScripts"
+					value="1"
+					v-model="loadScripts"
+				/>
+			</label>
+			<div class="pure-control-group">
+				<label v-show="loadScripts">
+					<input type="radio"
+						name="waitFor"
+						value="time"
+						v-model="waitFor"
+					/>
+					Wait for x milliseconds:
+					<input type="number"
+						name="waitForTime"
+						value="0"
+						min="100"
+						step="1"
+						max="10000"
+						v-model="waitForTime"
+						@input="waitFor='time'"
+					/>
+				</label>
+			</div>
+			<div class="pure-control-group">
+				<label v-show="loadScripts">
+					<input type="radio"
+						name="waitFor"
+						value="selector"
+						v-model="waitFor"
+					/>
+					Wait for selector:
+					<input type="text"
+						name="waitForSelector"
+						v-model="waitForSelector"
+						minlength="2"
+						maxlength="255"
+						@input="waitFor='selector'"
+					/>
+				</label>
+			</div>
+		</div>
+		<div class="pure-control-group">
+			<input type="submit" class="pure-button" value="Load" @click.prevent="submit" :disabled="loading" />
+		</div>
 	</form>
 </template>
 <script>
@@ -53,6 +64,7 @@ export default {
 	data() {
 		return {
 			url: '',
+			cookies: '',
 			loadScripts: false,
 			waitFor: 'time',
 			waitForTime: 500,
@@ -63,6 +75,7 @@ export default {
 	created() {
 		EventHub.$on('reset', () => {
 			this.url = '';
+			this.cookies = '';
 			this.loadScripts = false;
 			this.waitForTime = 500;
 			this.waitForSelector = '';
@@ -73,6 +86,7 @@ export default {
 			this.loading = true;
 			ajax('api/main/load-page', {
 				url: this.url,
+				cookies: this.cookies,
 				loadScripts: this.loadScripts,
 				waitFor: this.waitFor,
 				waitForTime: this.waitForTime,

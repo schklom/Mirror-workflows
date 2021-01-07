@@ -84,6 +84,9 @@ async function getHtml(settings) {
 		let params = {
 			url: settings.url
 		};
+		if (settings.cookies) {
+			params.cookies = settings.cookies;
+		}
 		if (settings.waitFor === 'time') {
 			params.waitTime = ~~(settings.waitForTime);
 		} else if (settings.waitFor === 'selector') {
@@ -91,7 +94,7 @@ async function getHtml(settings) {
 		}
 		html = await nightmareFetcher(params);
 	} else {
-		html = await simpleFetcher(settings.url);
+		html = await simpleFetcher(settings.url, settings.cookies);
 	}
 	return html;
 }

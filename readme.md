@@ -6,6 +6,8 @@ Feedropolis is a rss feed generator. It can take any site that is accessible dir
 
 How to parse each site is selected by the user in a visual GUI. Feedropolis can even handle content that is rendered by javascript. The only requirement is a direct URL.
 
+Feed items are created by links. If the selected item does not have a url (href-attribute) and a title (text), no feed item can be created.
+
 ## Installation ##
 
 Deployment with docker is recommended
@@ -63,3 +65,10 @@ Migrations will be applied automatically at startup. They can be run without the
 
 Feedropolis uses fetch for loading pages directly (without scripts) and electron (via nightmare) when loading with scripts.
 Running electron on a server requires some workarounds with Xvfb. See docker-entrypoint and Dockerfile for details.
+
+## Changelog
+
+### 2021-01-07
+
+- added option to set cookies. the cookie string will be directly passed on as Cookie header.
+- updated dependencies

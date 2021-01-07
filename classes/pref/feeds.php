@@ -636,13 +636,19 @@ class Pref_Feeds extends Handler_Protected {
 
 			print "<label>" . __('Article purging:') . "</label> ";
 
-			$local_purge_intervals = $purge_intervals;
-			$default_purge_interval = get_pref("PURGE_OLD_DAYS");
+			if (FORCE_ARTICLE_PURGE == 0) {
+				$local_purge_intervals = $purge_intervals;
+				$default_purge_interval = get_pref("PURGE_OLD_DAYS");
 
-			if ($default_purge_interval > 0)
-				$local_purge_intervals[0] .= " " . T_sprintf("(%d days)", $default_purge_interval);
+				if ($default_purge_interval > 0)
+				$local_purge_intervals[0] .= " " . T_nsprintf('(%d day)', '(%d days)', $default_purge_interval, $default_purge_interval);
 			else
 				$local_purge_intervals[0] .= " " . sprintf("(%s)", __("Disabled"));
+
+			} else {
+				$purge_interval = FORCE_ARTICLE_PURGE;
+				$local_purge_intervals = [ T_nsprintf('%d day', '%d days', $purge_interval, $purge_interval) ];
+			}
 
 			print_select_hash("purge_interval", $purge_interval, $local_purge_intervals,
 				'dojoType="fox.form.Select" ' .

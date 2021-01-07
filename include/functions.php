@@ -401,6 +401,11 @@
 		return vsprintf(__(array_shift($args)), $args);
 	}
 
+	function T_nsprintf() {
+		$args = func_get_args();
+		return vsprintf(_ngettext(array_shift($args), array_shift($args), array_shift($args)), $args);
+	}
+
 	function is_server_https() {
 		return (!empty($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] != 'off')) || $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https';
 	}

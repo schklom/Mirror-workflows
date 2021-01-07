@@ -1,5 +1,4 @@
-FROM node@sha256:d4bee82fddad384eb7959e7230c001365aec1e0d439d2b0c4a66a08322bad524
-#lts-buster-slim - lts14 is broken for the moment
+FROM node:12-buster-slim
 
 ENV DEBIAN_FRONTEND noninteractive
 

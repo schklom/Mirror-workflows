@@ -9,16 +9,16 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-01-07 18:21+0300\n"
-"PO-Revision-Date: 2020-12-22 13:22+0000\n"
+"PO-Revision-Date: 2021-01-09 04:19+0000\n"
 "Last-Translator: Ptsa Daniel <ptsa1987@gmail.com>\n"
-"Language-Team: Chinese (Simplified) <https://weblate.tt-rss.org/projects/tt-"
-"rss/messages/zh_Hans/>\n"
+"Language-Team: Chinese (Simplified) <https://weblate.tt-rss.org/projects/"
+"tt-rss/messages/zh_Hans/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.2.2\n"
+"X-Generator: Weblate 4.4\n"
 
 #: backend.php:57
 msgid "Use default"
@@ -1175,7 +1175,7 @@ msgstr "反选"
 #, php-format
 msgid "%s (+%d action)"
 msgid_plural "%s (+%d actions)"
-msgstr[0] "%s (+%d 个操作)"
+msgstr[0] "%s (+%d 操作)"
 
 #: classes/pref/labels.php:38
 msgid "Colors"
@@ -1718,21 +1718,20 @@ msgid "Article purging:"
 msgstr "文章清理："
 
 #: classes/pref/feeds.php:644
-#, fuzzy, php-format
+#, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
-msgstr[0] "(%d 个信息源)"
+msgstr[0] "(%d 天)"
 
 #: classes/pref/feeds.php:646 classes/pref/feeds.php:903
-#, fuzzy
 msgid "Disabled"
-msgstr "禁用 OTP 动态口令"
+msgstr "禁用"
 
 #: classes/pref/feeds.php:650
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
+msgstr[0] "%d 天"
 
 #: classes/pref/feeds.php:686
 msgid ""
@@ -1775,9 +1774,9 @@ msgid "Replace"
 msgstr "替换"
 
 #: classes/pref/feeds.php:901
-#, fuzzy, php-format
+#, php-format
 msgid "(%d days)"
-msgstr "(%d 个信息源)"
+msgstr "(%d 天)"
 
 #: classes/pref/feeds.php:1220
 msgid "Feeds with errors"
@@ -1908,21 +1907,19 @@ msgstr "刷新"
 
 #: classes/pref/system.php:48
 msgid "Severity:"
-msgstr ""
+msgstr "严重:"
 
 #: classes/pref/system.php:51
-#, fuzzy
 msgid "Errors"
 msgstr "错误"
 
 #: classes/pref/system.php:52
 msgid "Warnings"
-msgstr ""
+msgstr "警告"
 
 #: classes/pref/system.php:53
-#, fuzzy
 msgid "Everything"
-msgstr "取消全选"
+msgstr "全部"
 
 #: classes/pref/system.php:65
 msgid "Error"
@@ -2268,9 +2265,8 @@ msgid "Inline content"
 msgstr "Inline 内容"
 
 #: plugins/af_readability/init.php:48
-#, fuzzy
 msgid "Append content"
-msgstr "Inline 内容"
+msgstr "附加内容"
 
 #: plugins/af_readability/init.php:57
 msgid "Toggle full article text"
@@ -2295,7 +2291,7 @@ msgstr "当前启用（点击编辑）:"
 
 #: plugins/af_readability/init.php:125
 msgid "(append)"
-msgstr ""
+msgstr "(附加)"
 
 #: plugins/af_readability/init.php:136
 msgid "Readability"
@@ -2307,7 +2303,7 @@ msgstr "Inline 文章内容"
 
 #: plugins/af_readability/init.php:153
 msgid "Append to summary, instead of replacing it"
-msgstr ""
+msgstr "附加到摘要,而不是替换它"
 
 #: plugins/note/init.php:26 plugins/note/note.js:10
 msgid "Edit article note"
@@ -2374,7 +2370,7 @@ msgstr "开启额外的重复检查"
 #: plugins/af_redditimgur/init.php:78
 #, php-format
 msgid "Rewrite Reddit URLs to %s"
-msgstr ""
+msgstr "重写reddit的网址到%s"
 
 #: plugins/af_redditimgur/init.php:96 plugins/af_proxy_http/init.php:244
 msgid "Configuration saved"

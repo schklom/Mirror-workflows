@@ -89,7 +89,7 @@ class Handler_Public extends Handler {
 				}
 
 				foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_ARTICLE_EXPORT_FEED) as $p) {
-					$line = $p->hook_article_export_feed($line, $feed, $is_cat);
+					$line = $p->hook_article_export_feed($line, $feed, $is_cat, $owner_uid);
 				}
 
 				$tpl->setVariable('ARTICLE_ID',

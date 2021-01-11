@@ -82,6 +82,7 @@ class Handler_Public extends Handler {
 			while ($line = $result->fetch()) {
 
 				$line["content_preview"] = Sanitizer::sanitize(truncate_string(strip_tags($line["content"]), 100, '...'));
+				$line["tags"] = Article::get_article_tags($line["id"], $owner_uid);
 
 				foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_QUERY_HEADLINES) as $p) {
 					$line = $p->hook_query_headlines($line);
@@ -121,9 +122,7 @@ class Handler_Public extends Handler {
 				$tpl->setVariable('ARTICLE_SOURCE_LINK', htmlspecialchars($line['site_url'] ? $line["site_url"] : get_self_url_prefix()), true);
 				$tpl->setVariable('ARTICLE_SOURCE_TITLE', htmlspecialchars($line['feed_title'] ? $line['feed_title'] : $feed_title), true);
 
-				$tags = Article::get_article_tags($line["id"], $owner_uid);
-
-				foreach ($tags as $tag) {
+				foreach ($line["tags"] as $tag) {
 					$tpl->setVariable('ARTICLE_CATEGORY', htmlspecialchars($tag), true);
 					$tpl->addBlock('category');
 				}
@@ -181,6 +180,7 @@ class Handler_Public extends Handler {
 			while ($line = $result->fetch()) {
 
 				$line["content_preview"] = Sanitizer::sanitize(truncate_string(strip_tags($line["content_preview"]), 100, '...'));
+				$line["tags"] = Article::get_article_tags($line["id"], $owner_uid);
 
 				foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_QUERY_HEADLINES) as $p) {
 					$line = $p->hook_query_headlines($line, 100);
@@ -202,12 +202,10 @@ class Handler_Public extends Handler {
 				if ($line['note']) $article['note'] = $line['note'];
 				if ($article['author']) $article['author'] = $line['author'];
 
-				$tags = Article::get_article_tags($line["id"], $owner_uid);
-
-				if (count($tags) > 0) {
+				if (count($line["tags"]) > 0) {
 					$article['tags'] = array();
 
-					foreach ($tags as $tag) {
+					foreach ($line["tags"] as $tag) {
 						array_push($article['tags'], $tag);
 					}
 				}

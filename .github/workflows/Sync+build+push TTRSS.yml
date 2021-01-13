@@ -1,0 +1,97 @@
+name: Sync+build+push TTRSS
+
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  repo-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: repo-sync
+        uses: wei/git-sync@v2
+        with:
+          source_repo: "https://git.tt-rss.org/fox/ttrss-docker-compose.git"
+          source_branch: "master"
+          destination_repo: "git@github.com:schklom/Mirror-workflows.git"
+          destination_branch: "TTRSS-docker"
+          ssh_private_key: ${{ secrets.GITSYNCACTION }}
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        with:
+          ref: 'TTRSS-docker'
+      #- name: app dockerfile
+      #  run: sed -r 's/^FROM ([a-zA-Z]+)(.*)$/FROM arm32v7\/\1\2/' src/app/Dockerfile > src/app/Dockerfile
+      #- name: adapt web dockerfile
+      #  run: sed -r 's/^FROM abiosoft\/caddy:no-stats$/FROM jessestuart\/caddy/' web/Dockerfile > web/Dockerfile
+      # https://github.com/marketplace/actions/git-auto-commit
+      #- name: pushing web Dockerfile changes to main branch
+      #  uses: stefanzweifel/git-auto-commit-action@v4
+      #  with:
+          # Optional but recommended
+          # Defaults to "Apply automatic changes"
+      #    commit_message: Updated web Dockerfile to work with Raspberry Pi 4
+
+          # Optional branch name where commit should be pushed to
+          # Defaults to the current branch
+          #branch: feature-123
+
+          # Optional options appended to `git-push`
+          # See git-push documentation for details: https://git-scm.com/docs/git-push#_options
+       #   push_options: '--force'
+  buildandpush:
+    needs: [repo-sync]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          #repository: 'schklom/TTRSS-mirror'
+          ref: 'TTRSS-docker' # branch
+      # https://github.com/docker/setup-qemu-action#usage
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+        #with:
+          #image: tonistiigi/binfmt:latest
+          #platforms: all
+          #platforms: arm/v7
+      # https://github.com/marketplace/actions/docker-setup-buildx
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+        #with:
+          #install: true
+      #- name: Available platforms
+      #  run: echo ${{ steps.buildx.outputs.platforms }}
+      # https://github.com/docker/login-action#docker-hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # https://github.com/docker/build-push-action#multi-platform-image
+      - name: Build and push TTRSS app
+        uses: docker/build-push-action@v2
+        with:
+          context: ./app
+          file: ./app/Dockerfile
+          #platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
+          platforms: linux/arm/v7
+          pull: true
+          push: true
+          tags: |
+            schklom/ttrss-app:latest
+      - name: Build and push TTRSS web-nginx
+        uses: docker/build-push-action@v2
+        with:
+          context: ./web-nginx
+          file: ./web-nginx/Dockerfile
+          #platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
+          platforms: linux/arm/v7
+          pull: true
+          push: true
+          tags: |
+            schklom/ttrss-web-nginx:latest

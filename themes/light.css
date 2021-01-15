@@ -343,6 +343,7 @@ body.ttrss_main .dijitContentPane pre {
   display: block;
   max-width: 98%;
   overflow: auto;
+  white-space: pre-wrap;
 }
 body.ttrss_main div.prefHelp {
   color: #555;
@@ -1880,4 +1881,5 @@ body.ttrss_zoom div.post div.content pre {
   display: block;
   max-width: 98%;
   overflow: auto;
+  white-space: pre-wrap;
 }

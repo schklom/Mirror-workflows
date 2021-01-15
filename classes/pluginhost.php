@@ -14,6 +14,7 @@ class PluginHost {
 	private $plugin_actions = array();
 	private $owner_uid;
 	private $last_registered;
+	private $data_loaded;
 	private static $instance;
 
 	const API_VERSION = 2;
@@ -268,6 +269,8 @@ class PluginHost {
 				}
 			}
 		}
+
+		$this->load_data();
 	}
 
 	function is_system($plugin) {
@@ -352,8 +355,8 @@ class PluginHost {
 		}
 	}
 
-	function load_data() {
-		if ($this->owner_uid)  {
+	private function load_data() {
+		if (get_schema_version() > 100 && $this->owner_uid && !$this->data_loaded)  {
 			$sth = $this->pdo->prepare("SELECT name, content FROM ttrss_plugin_storage
 				WHERE owner_uid = ?");
 			$sth->execute([$this->owner_uid]);
@@ -361,6 +364,8 @@ class PluginHost {
 			while ($line = $sth->fetch()) {
 				$this->storage[$line["name"]] = unserialize($line["content"]);
 			}
+
+			$this->data_loaded = true;
 		}
 	}
 
@@ -410,6 +415,8 @@ class PluginHost {
 
 	function get($sender, $name, $default_value = false) {
 		$idx = get_class($sender);
+
+		$this->load_data();
 
 		if (isset($this->storage[$idx][$name])) {
 			return $this->storage[$idx][$name];

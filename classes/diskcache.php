@@ -395,7 +395,7 @@ class DiskCache {
 			$tmppluginhost = new PluginHost();
 
 			$tmppluginhost->load(PLUGINS, PluginHost::KIND_SYSTEM);
-			$tmppluginhost->load_data();
+			//$tmppluginhost->load_data();
 
 			foreach ($tmppluginhost->get_hooks(PluginHost::HOOK_SEND_LOCAL_FILE) as $plugin) {
 				if ($plugin->hook_send_local_file($filename)) return true;

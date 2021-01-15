@@ -911,7 +911,7 @@ class Pref_Prefs extends Handler_Protected {
 
 		$tmppluginhost = new PluginHost();
 		$tmppluginhost->load_all($tmppluginhost::KIND_ALL, $_SESSION["uid"], true);
-		$tmppluginhost->load_data(true);
+		//$tmppluginhost->load_data(true);
 
 		foreach ($tmppluginhost->get_plugins() as $name => $plugin) {
 			$about = $plugin->about();

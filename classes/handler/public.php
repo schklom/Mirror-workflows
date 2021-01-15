@@ -45,7 +45,7 @@ class Handler_Public extends Handler {
 			$tmppluginhost = new PluginHost();
 			$tmppluginhost->load(PLUGINS, PluginHost::KIND_ALL);
 			$tmppluginhost->load($user_plugins, PluginHost::KIND_USER, $owner_uid);
-			$tmppluginhost->load_data();
+			//$tmppluginhost->load_data();
 
 			$handler = $tmppluginhost->get_feed_handler(
 				PluginHost::feed_to_pfeed_id($feed));
@@ -1246,7 +1246,7 @@ class Handler_Public extends Handler {
 		$method = clean($_REQUEST["pmethod"]);
 
 		$host->load($plugin_name, PluginHost::KIND_USER, 0);
-		$host->load_data();
+		//$host->load_data();
 
 		$plugin = $host->get_plugin($plugin_name);
 

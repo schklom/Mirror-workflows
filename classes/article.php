@@ -29,7 +29,7 @@ class Article extends Handler_Protected {
 		if (!$content) {
 			$pluginhost = new PluginHost();
 			$pluginhost->load_all(PluginHost::KIND_ALL, $owner_uid);
-			$pluginhost->load_data();
+			//$pluginhost->load_data();
 
 			foreach ($pluginhost->get_hooks(PluginHost::HOOK_GET_FULL_TEXT) as $p) {
 				$extracted_content = $p->hook_get_full_text($url);

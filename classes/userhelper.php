@@ -80,9 +80,9 @@ class UserHelper {
 
 			$pluginhost->load($plugins, PluginHost::KIND_USER, $owner_uid);
 
-			if (get_schema_version() > 100) {
+			/*if (get_schema_version() > 100) {
 				$pluginhost->load_data();
-			}
+			}*/
 		}
 	}
 

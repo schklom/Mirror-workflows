@@ -276,7 +276,7 @@ class RSSUtils {
 
 			$pluginhost->load(PLUGINS, PluginHost::KIND_ALL);
 			$pluginhost->load($user_plugins, PluginHost::KIND_USER, $owner_uid);
-			$pluginhost->load_data();
+			//$pluginhost->load_data();
 
 			$basic_info = array();
 			foreach ($pluginhost->get_hooks(PluginHost::HOOK_FEED_BASIC_INFO) as $plugin) {
@@ -403,7 +403,7 @@ class RSSUtils {
 
 		$pluginhost->load(PLUGINS, PluginHost::KIND_ALL);
 		$pluginhost->load($user_plugins, PluginHost::KIND_USER, $owner_uid);
-		$pluginhost->load_data();
+		//$pluginhost->load_data();
 
 		$rss_hash = false;
 

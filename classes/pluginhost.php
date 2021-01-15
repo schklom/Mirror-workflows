@@ -356,7 +356,7 @@ class PluginHost {
 	}
 
 	private function load_data() {
-		if (get_schema_version() > 100 && $this->owner_uid && !$this->data_loaded)  {
+		if ($this->owner_uid && !$this->data_loaded && get_schema_version() > 100)  {
 			$sth = $this->pdo->prepare("SELECT name, content FROM ttrss_plugin_storage
 				WHERE owner_uid = ?");
 			$sth->execute([$this->owner_uid]);

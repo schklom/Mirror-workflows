@@ -96,12 +96,12 @@ class Feeds extends Handler_Protected {
 				"</option>";
 		}
 
-		$reply .= "<option value=\"0\" disabled=\"1\">".__('Feed:')."</option>";
+		//$reply .= "<option value=\"0\" disabled=\"1\">".__('Feed:')."</option>";
 
 		//$reply .= "<option value=\"catchupPage()\">".__('Mark as read')."</option>";
 
-		$reply .= "<option value=\"App.displayDlg('".__("Show as feed")."','generatedFeed', '$feed_id:$is_cat:$rss_link')\">".
-            __('Show as feed')."</option>";
+		/*$reply .= "<option value=\"App.displayDlg('".__("Show as feed")."','generatedFeed', '$feed_id:$is_cat:$rss_link')\">".
+            __('Show as feed')."</option>";*/
 
 		$reply .= "</select>";
 

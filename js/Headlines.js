@@ -420,7 +420,6 @@ const Headlines = {
 			row_class += App.getInitParam("cdm_expanded") ? " expanded" : " expandable";
 
 			const comments = Article.formatComments(hl);
-			const originally_from = Article.formatOriginallyFrom(hl);
 
 			row = `<div class="cdm ${row_class} ${Article.getScoreClass(hl.score)}"
 						id="RROW-${hl.id}"
@@ -483,7 +482,6 @@ const Headlines = {
 								</div>
 
 								<div class="right">
-									${originally_from}
 									${hl.buttons}
 								</div>
 							</div>
@@ -1084,43 +1082,6 @@ const Headlines = {
 					row.addClassName("Selected");
 			}
 		}
-	},
-	/* not exposed in the UI by default, deprecated - ? */
-	archiveSelection: function () {
-		const rows = Headlines.getSelected();
-
-		if (rows.length == 0) {
-			alert(__("No articles selected."));
-			return;
-		}
-
-		const fn = Feeds.getName(Feeds.getActive(), Feeds.activeIsCat());
-		let str;
-		let op;
-
-		if (Feeds.getActive() != 0) {
-			str = ngettext("Archive %d selected article in %s?", "Archive %d selected articles in %s?", rows.length);
-			op = "archive";
-		} else {
-			str = ngettext("Move %d archived article back?", "Move %d archived articles back?", rows.length);
-			str += " " + __("Please note that unstarred articles might get purged on next feed update.");
-
-			op = "unarchive";
-		}
-
-		str = str.replace("%d", rows.length);
-		str = str.replace("%s", fn);
-
-		if (App.getInitParam("confirm_feed_catchup") && !confirm(str)) {
-			return;
-		}
-
-		const query = {op: "rpc", method: op, ids: rows.toString()};
-
-		xhrPost("backend.php", query, (transport) => {
-			App.handleRpcJson(transport);
-			Feeds.reloadCurrent();
-		});
 	},
 	catchupSelection: function () {
 		const rows = Headlines.getSelected();

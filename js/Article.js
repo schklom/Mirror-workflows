@@ -175,11 +175,6 @@ const Article = {
 
 		return comments;
 	},
-	formatOriginallyFrom: function(hl) {
-		return hl.orig_feed ? `<span>
-				${__('Originally from:')} <a target="_blank" rel="noopener noreferrer" href="${App.escapeHtml(hl.orig_feed[1])}">${hl.orig_feed[0]}</a>
-				</span>` : "";
-	},
 	unpack: function(row) {
 		if (row.hasAttribute("data-content")) {
 			console.log("unpacking: " + row.id);
@@ -220,7 +215,6 @@ const Article = {
 			if (hl) {
 
 				const comments = this.formatComments(hl);
-				const originally_from = this.formatOriginallyFrom(hl);
 
 				const article = `<div class="post post-${hl.id}" data-article-id="${hl.id}">
 					<div class="header">
@@ -243,7 +237,6 @@ const Article = {
 					</div>
 					<div id="POSTNOTE-${hl.id}">${hl.note}</div>
 					<div class="content" lang="${hl.lang ? hl.lang : 'en'}">
-						${originally_from}
 						${hl.content}
 						${hl.enclosures}
 					</div>

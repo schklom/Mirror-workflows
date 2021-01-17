@@ -1379,18 +1379,11 @@ class RSSUtils {
 		}
 	}
 
+	// deprecated; table not used
 	static function expire_feed_archive() {
-		Debug::log("Removing old archived feeds...");
-
 		$pdo = Db::pdo();
 
-		if (DB_TYPE == "pgsql") {
-			$pdo->query("DELETE FROM ttrss_archived_feeds
-				WHERE created < NOW() - INTERVAL '1 month'");
-		} else {
-			$pdo->query("DELETE FROM ttrss_archived_feeds
-				WHERE created < DATE_SUB(NOW(), INTERVAL 1 MONTH)");
-		}
+		$pdo->query("DELETE FROM ttrss_archived_feeds");
 	}
 
 	static function expire_lock_files() {

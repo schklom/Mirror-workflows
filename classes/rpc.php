@@ -80,20 +80,6 @@ class RPC extends Handler_Protected {
 		}
 	}
 
-	// Silent
-	function remarchive() {
-		$ids = explode(",", clean($_REQUEST["ids"]));
-
-		$sth = $this->pdo->prepare("DELETE FROM ttrss_archived_feeds WHERE
-		  		(SELECT COUNT(*) FROM ttrss_user_entries
-					WHERE orig_feed_id = :id) = 0 AND
-						id = :id AND owner_uid = :uid");
-
-		foreach ($ids as $id) {
-			$sth->execute([":id" => $id, ":uid" => $_SESSION['uid']]);
-		}
-	}
-
 	function addfeed() {
 		$feed = clean($_REQUEST['feed']);
 		$cat = clean($_REQUEST['cat']);
@@ -148,113 +134,6 @@ class RPC extends Handler_Protected {
 		Article::purge_orphans();
 
 		print json_encode(array("message" => "UPDATE_COUNTERS"));
-	}
-
-	function unarchive() {
-		$ids = explode(",", clean($_REQUEST["ids"]));
-
-		foreach ($ids as $id) {
-			$this->pdo->beginTransaction();
-
-			$sth = $this->pdo->prepare("SELECT feed_url,site_url,title FROM ttrss_archived_feeds
-				WHERE id = (SELECT orig_feed_id FROM ttrss_user_entries WHERE ref_id = :id
-				AND owner_uid = :uid) AND owner_uid = :uid");
-			$sth->execute([":uid" => $_SESSION['uid'], ":id" => $id]);
-
-			if ($row = $sth->fetch()) {
-				$feed_url = $row['feed_url'];
-				$site_url = $row['site_url'];
-				$title = $row['title'];
-
-				$sth = $this->pdo->prepare("SELECT id FROM ttrss_feeds WHERE feed_url = ?
-					AND owner_uid = ?");
-				$sth->execute([$feed_url, $_SESSION['uid']]);
-
-				if ($row = $sth->fetch()) {
-					$feed_id = $row["id"];
-				} else {
-					if (!$title) $title = '[Unknown]';
-
-					$sth = $this->pdo->prepare("INSERT INTO ttrss_feeds
-							(owner_uid,feed_url,site_url,title,cat_id,auth_login,auth_pass,update_method)
-							VALUES (?, ?, ?, ?, NULL, '', '', 0)");
-					$sth->execute([$_SESSION['uid'], $feed_url, $site_url, $title]);
-
-					$sth = $this->pdo->prepare("SELECT id FROM ttrss_feeds WHERE feed_url = ?
-						AND owner_uid = ?");
-					$sth->execute([$feed_url, $_SESSION['uid']]);
-
-					if ($row = $sth->fetch()) {
-						$feed_id = $row['id'];
-					}
-				}
-
-				if ($feed_id) {
-					$sth = $this->pdo->prepare("UPDATE ttrss_user_entries
-						SET feed_id = ?, orig_feed_id = NULL
-						WHERE ref_id = ? AND owner_uid = ?");
-					$sth->execute([$feed_id, $id, $_SESSION['uid']]);
-				}
-			}
-
-			$this->pdo->commit();
-		}
-
-		print json_encode(array("message" => "UPDATE_COUNTERS"));
-	}
-
-	function archive() {
-		$ids = explode(",", clean($_REQUEST["ids"]));
-
-		foreach ($ids as $id) {
-			$this->archive_article($id, $_SESSION["uid"]);
-		}
-
-		print json_encode(array("message" => "UPDATE_COUNTERS"));
-	}
-
-	private function archive_article($id, $owner_uid) {
-		$this->pdo->beginTransaction();
-
-		if (!$owner_uid) $owner_uid = $_SESSION['uid'];
-
-		$sth = $this->pdo->prepare("SELECT feed_id FROM ttrss_user_entries
-			WHERE ref_id = ? AND owner_uid = ?");
-		$sth->execute([$id, $owner_uid]);
-
-		if ($row = $sth->fetch()) {
-
-			/* prepare the archived table */
-
-			$feed_id = (int) $row['feed_id'];
-
-			if ($feed_id) {
-				$sth = $this->pdo->prepare("SELECT id FROM ttrss_archived_feeds
-					WHERE id = ? AND owner_uid = ?");
-				$sth->execute([$feed_id, $owner_uid]);
-
-				if ($row = $sth->fetch()) {
-					$new_feed_id = $row['id'];
-				} else {
-					$row = $this->pdo->query("SELECT MAX(id) AS id FROM ttrss_archived_feeds")->fetch();
-					$new_feed_id = (int)$row['id'] + 1;
-
-					$sth = $this->pdo->prepare("INSERT INTO ttrss_archived_feeds
-						(id, owner_uid, title, feed_url, site_url, created)
-							SELECT ?, owner_uid, title, feed_url, site_url, NOW() from ttrss_feeds
-							  	WHERE id = ?");
-
-					$sth->execute([$new_feed_id, $feed_id]);
-				}
-
-				$sth = $this->pdo->prepare("UPDATE ttrss_user_entries
-					SET orig_feed_id = ?, feed_id = NULL
-					WHERE ref_id = ? AND owner_uid = ?");
-				$sth->execute([$new_feed_id, $id, $owner_uid]);
-			}
-		}
-
-		$this->pdo->commit();
 	}
 
 	function publ() {
@@ -345,60 +224,6 @@ class RPC extends Handler_Protected {
 			print "<li>" . $line["caption"] . "</li>";
 		}
 		print "</ul>";
-	}
-
-	// Silent
-	function massSubscribe() {
-
-		$payload = json_decode(clean($_REQUEST["payload"]), false);
-		$mode = clean($_REQUEST["mode"]);
-
-		if (!$payload || !is_array($payload)) return;
-
-		if ($mode == 1) {
-			foreach ($payload as $feed) {
-
-				$title = $feed[0];
-				$feed_url = $feed[1];
-
-				$sth = $this->pdo->prepare("SELECT id FROM ttrss_feeds WHERE
-					feed_url = ? AND owner_uid = ?");
-				$sth->execute([$feed_url, $_SESSION['uid']]);
-
-				if (!$sth->fetch()) {
-					$sth = $this->pdo->prepare("INSERT INTO ttrss_feeds
-									(owner_uid,feed_url,title,cat_id,site_url)
-									VALUES (?, ?, ?, NULL, '')");
-
-					$sth->execute([$_SESSION['uid'], $feed_url, $title]);
-				}
-			}
-		} else if ($mode == 2) {
-			// feed archive
-			foreach ($payload as $id) {
-				$sth = $this->pdo->prepare("SELECT * FROM ttrss_archived_feeds
-					WHERE id = ? AND owner_uid = ?");
-				$sth->execute([$id, $_SESSION['uid']]);
-
-				if ($row = $sth->fetch()) {
-					$site_url = $row['site_url'];
-					$feed_url = $row['feed_url'];
-					$title = $row['title'];
-
-					$sth = $this->pdo->prepare("SELECT id FROM ttrss_feeds WHERE
-						feed_url = ? AND owner_uid = ?");
-					$sth->execute([$feed_url, $_SESSION['uid']]);
-
-					if (!$sth->fetch()) {
-						$sth = $this->pdo->prepare("INSERT INTO ttrss_feeds
-								(owner_uid,feed_url,title,cat_id,site_url)
-									VALUES (?, ?, ?, NULL, ?)");
-
-						$sth->execute([$_SESSION['uid'], $feed_url, $title, $site_url]);
-					}
-				}
-			}
-		}
 	}
 
 	function catchupFeed() {

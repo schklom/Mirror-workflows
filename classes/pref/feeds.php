@@ -1607,54 +1607,23 @@ class Pref_Feeds extends Handler_Protected {
 
 			/* save starred articles in Archived feed */
 
-			/* prepare feed if necessary */
+			$sth = $pdo->prepare("UPDATE ttrss_user_entries SET
+					feed_id = NULL, orig_feed_id = NULL
+				WHERE feed_id = ? AND marked = true AND owner_uid = ?");
 
-			$sth = $pdo->prepare("SELECT feed_url FROM ttrss_feeds WHERE id = ?
-				AND owner_uid = ?");
 			$sth->execute([$id, $owner_uid]);
 
-			if ($row = $sth->fetch()) {
-				$feed_url = $row["feed_url"];
+			/* Remove access key for the feed */
 
-				$sth = $pdo->prepare("SELECT id FROM ttrss_archived_feeds
-					WHERE feed_url = ? AND owner_uid = ?");
-				$sth->execute([$feed_url, $owner_uid]);
+			$sth = $pdo->prepare("DELETE FROM ttrss_access_keys WHERE
+				feed_id = ? AND owner_uid = ?");
+			$sth->execute([$id, $owner_uid]);
 
-				if ($row = $sth->fetch()) {
-					$archive_id = $row["id"];
-				} else {
-					$res = $pdo->query("SELECT MAX(id) AS id FROM ttrss_archived_feeds");
-					$row = $res->fetch();
+			/* remove the feed */
 
-					$new_feed_id = (int)$row['id'] + 1;
-
-					$sth = $pdo->prepare("INSERT INTO ttrss_archived_feeds
-						(id, owner_uid, title, feed_url, site_url, created)
-							SELECT ?, owner_uid, title, feed_url, site_url, NOW() from ttrss_feeds
-							WHERE id = ?");
-					$sth->execute([$new_feed_id, $id]);
-
-					$archive_id = $new_feed_id;
-				}
-
-				$sth = $pdo->prepare("UPDATE ttrss_user_entries SET feed_id = NULL,
-					orig_feed_id = ? WHERE feed_id = ? AND
-						marked = true AND owner_uid = ?");
-
-				$sth->execute([$archive_id, $id, $owner_uid]);
-
-				/* Remove access key for the feed */
-
-				$sth = $pdo->prepare("DELETE FROM ttrss_access_keys WHERE
-					feed_id = ? AND owner_uid = ?");
-				$sth->execute([$id, $owner_uid]);
-
-				/* remove the feed */
-
-				$sth = $pdo->prepare("DELETE FROM ttrss_feeds
-					WHERE id = ? AND owner_uid = ?");
-				$sth->execute([$id, $owner_uid]);
-			}
+			$sth = $pdo->prepare("DELETE FROM ttrss_feeds
+				WHERE id = ? AND owner_uid = ?");
+			$sth->execute([$id, $owner_uid]);
 
 			$pdo->commit();
 

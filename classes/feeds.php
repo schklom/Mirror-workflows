@@ -350,19 +350,6 @@ class Feeds extends Handler_Protected {
 
 				$this->mark_timestamp("   enclosures");
 
-				if ($line["orig_feed_id"]) {
-
-					$ofgh = $this->pdo->prepare("SELECT * FROM ttrss_archived_feeds
-					WHERE id = ? AND owner_uid = ?");
-					$ofgh->execute([$line["orig_feed_id"], $_SESSION['uid']]);
-
-					if ($tmp_line = $ofgh->fetch()) {
-						$line["orig_feed"] = [ $tmp_line["title"], $tmp_line["site_url"], $tmp_line["feed_url"] ];
-					}
-				}
-
-				$this->mark_timestamp("   orig-feed-id");
-
 				$line["updated_long"] = TimeHelper::make_local_datetime($line["updated"],true);
 				$line["updated"] = TimeHelper::make_local_datetime($line["updated"], false, false, false, true);
 
@@ -1840,7 +1827,7 @@ class Feeds extends Handler_Protected {
 						uuid,
 						lang,
 						hide_images,
-						unread,feed_id,marked,published,link,last_read,orig_feed_id,
+						unread,feed_id,marked,published,link,last_read,
 						last_marked, last_published,
 						$vfeed_query_part
 						$content_query_part
@@ -1884,7 +1871,6 @@ class Feeds extends Handler_Protected {
 							updated,
 							unread,
 							feed_id,
-							orig_feed_id,
 							marked,
 							published,
 							num_comments,

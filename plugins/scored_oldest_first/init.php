@@ -8,7 +8,7 @@ class Scored_Oldest_First extends Plugin {
 
 	function hook_headlines_custom_sort_map() {
 		return [
-			"dates_reverse_scored" => "Oldest first (legacy)"
+			"dates_reverse_scored" => "Oldest first (with score)"
 		];
 	}
 

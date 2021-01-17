@@ -1085,6 +1085,7 @@ const Headlines = {
 			}
 		}
 	},
+	/* not exposed in the UI by default, deprecated - ? */
 	archiveSelection: function () {
 		const rows = Headlines.getSelected();
 

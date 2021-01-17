@@ -83,10 +83,7 @@ class Feeds extends Handler_Protected {
 		$reply .= "<option value=\"Article.selectionSetScore()\">".__('Set score')."</option>";
 
 		if ($feed_id == 0 && !$is_cat) {
-			$reply .= "<option value=\"Headlines.archiveSelection()\">".__('Move back')."</option>";
 			$reply .= "<option value=\"Headlines.deleteSelection()\">".__('Delete')."</option>";
-		} else {
-			$reply .= "<option value=\"Headlines.archiveSelection()\">".__('Archive')."</option>";
 		}
 
 		if (PluginHost::getInstance()->get_plugin("mail")) {

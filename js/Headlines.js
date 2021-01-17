@@ -1207,11 +1207,6 @@ const Headlines = {
 			});
 		}
 	},
-	onActionChanged: function (elem) {
-		// eslint-disable-next-line no-eval
-		eval(elem.value);
-		elem.attr('value', 'false');
-	},
 	scrollToArticleId: function (id) {
 		const container = $("headlines-frame");
 		const row = $("RROW-" + id);

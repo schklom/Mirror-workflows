@@ -61,51 +61,42 @@ class Feeds extends Handler_Protected {
 		$reply .= "<span class=\"right\">";
 		$reply .= "<span id='selected_prompt'></span>";
 		$reply .= "&nbsp;";
-		$reply .= "<select dojoType=\"fox.form.Select\"
-			onchange=\"Headlines.onActionChanged(this)\">";
 
-		$reply .= "<option value=\"0\" disabled='1'>".__('Select...')."</option>";
-
-		$reply .= "<option value=\"Headlines.select('all')\">".__('All')."</option>";
-		$reply .= "<option value=\"Headlines.select('unread')\">".__('Unread')."</option>";
-		$reply .= "<option value=\"Headlines.select('invert')\">".__('Invert')."</option>";
-		$reply .= "<option value=\"Headlines.select('none')\">".__('None')."</option>";
-
-		$reply .= "<option value=\"0\" disabled=\"1\">".__('Selection toggle:')."</option>";
-
-		$reply .= "<option value=\"Headlines.selectionToggleUnread()\">".__('Unread')."</option>
-			<option value=\"Headlines.selectionToggleMarked()\">".__('Starred')."</option>
-			<option value=\"Headlines.selectionTogglePublished()\">".__('Published')."</option>";
-
-		$reply .= "<option value=\"0\" disabled=\"1\">".__('Selection:')."</option>";
-
-		$reply .= "<option value=\"Headlines.catchupSelection()\">".__('Mark as read')."</option>";
-		$reply .= "<option value=\"Article.selectionSetScore()\">".__('Set score')."</option>";
-
-		if ($feed_id == 0 && !$is_cat) {
-			$reply .= "<option value=\"Headlines.deleteSelection()\">".__('Delete')."</option>";
-		}
+		$reply .= "<div dojoType='fox.form.DropDownButton' title='".__('Select articles')."'>
+			<span>".__("Select...")."</span>
+			<div dojoType='dijit.Menu' style='display: none;'>
+			<div dojoType='dijit.MenuItem' onclick='Headlines.select(\"all\")'>".__('All')."</div>
+			<div dojoType='dijit.MenuItem' onclick='Headlines.select(\"unread\")'>".__('Unread')."</div>
+			<div dojoType='dijit.MenuItem' onclick='Headlines.select(\"invert\")'>".__('Invert')."</div>
+			<div dojoType='dijit.MenuItem' onclick='Headlines.select(\"none\")'>".__('None')."</div>
+			<div dojoType='dijit.MenuSeparator'></div>
+			<div dojoType='dijit.MenuItem' onclick='Headlines.selectionToggleUnread()'>".__('Toggle unread')."</div>
+			<div dojoType='dijit.MenuItem' onclick='Headlines.selectionToggleMarked()'>".__('Toggle starred')."</div>
+			<div dojoType='dijit.MenuItem' onclick='Headlines.selectionTogglePublished()'>".__('Toggle published')."</div>
+			<div dojoType='dijit.MenuSeparator'></div>
+			<div dojoType='dijit.MenuItem' onclick='Headlines.catchupSelection()'>".__('Mark as read')."</div>
+			<div dojoType='dijit.MenuItem' onclick='Article.selectionSetScore()'>".__('Set score')."</div>";
 
 		if (PluginHost::getInstance()->get_plugin("mail")) {
-			$reply .= "<option value=\"Plugins.Mail.send()\">".__('Forward by email').
-				"</option>";
+			$reply .= "<div dojoType='dijit.MenuItem' value='Plugins.Mail.send()'>".__('Forward by email')."</div>";
 		}
 
 		if (PluginHost::getInstance()->get_plugin("mailto")) {
-			$reply .= "<option value=\"Plugins.Mailto.send()\">".__('Forward by email').
-				"</option>";
+			$reply .= "<div dojoType='dijit.MenuItem' value='Plugins.Mailto.send()'>".__('Forward by email')."</div>";
 		}
 
-		//$reply .= "<option value=\"0\" disabled=\"1\">".__('Feed:')."</option>";
+		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM) as $p) {
+			$reply .= $p->hook_headline_toolbar_select_menu_item($feed_id, $is_cat);
+	  	}
 
-		//$reply .= "<option value=\"catchupPage()\">".__('Mark as read')."</option>";
+		if ($feed_id == 0 && !$is_cat) {
+			$reply .= "<div dojoType='dijit.MenuSeparator'></div>
+				<div dojoType='dijit.MenuItem' class='text-error' onclick='Headlines.deleteSelection()'>".__('Delete permanently')."</div>";
+		}
 
-		/*$reply .= "<option value=\"App.displayDlg('".__("Show as feed")."','generatedFeed', '$feed_id:$is_cat:$rss_link')\">".
-            __('Show as feed')."</option>";*/
+		$reply .= "</div>"; /* menu */
 
-		$reply .= "</select>";
-
-		//$reply .= "</h2";
+		$reply .= "</div>"; /* dropdown */
 
 		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_HEADLINE_TOOLBAR_BUTTON) as $p) {
 			 $reply .= $p->hook_headline_toolbar_button($feed_id, $is_cat);

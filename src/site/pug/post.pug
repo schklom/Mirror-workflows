@@ -26,7 +26,8 @@ html
 		if post.children.length >= 2
 			if description
 				- description = `\n\n${description}`
-			- description = `Gallery of ${post.children.length} images.${description}`
+			- let galleryType = post.children.every(c => c.isVideo()) ? "videos" : "images"
+			- description = `Gallery of ${post.children.length} ${galleryType}.${description}`
 		if description
 			meta(property="og:description" content=description)
 		if firstEntry.isVideo()

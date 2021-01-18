@@ -250,7 +250,7 @@ module.exports = [
 					}
 				}
 			} catch (error) {
-				if (error === constants.symbols.NOT_FOUND || constants.symbols.RATE_LIMITED || error === constants.symbols.QUOTA_REACHED) {
+				if (error === constants.symbols.NOT_FOUND || constants.symbols.RATE_LIMITED || error === constants.symbols.QUOTA_REACHED || error === constants.symbols.INSTAGRAM_BLOCK_TYPE_DECEMBER) {
 					const statusCode = error === constants.symbols.QUOTA_REACHED ? 429 : 503
 					return {
 						statusCode,
@@ -304,6 +304,8 @@ module.exports = [
 						withInstancesLink: false,
 						settings
 					})
+				} else if (error === constants.symbols.INSTAGRAM_BLOCK_TYPE_DECEMBER) {
+					return render(502, "pug/blocked_december.pug")
 				} else if (error === constants.symbols.RATE_LIMITED) {
 					return render(503, "pug/blocked_graphql.pug")
 				} else if (error === constants.symbols.QUOTA_REACHED) {

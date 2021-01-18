@@ -78,12 +78,12 @@ html
 						if followerCountsAvailable
 							if user.following != undefined
 								div.profile-counter
-									| #[span(data-numberformat=user.following).count #{numberFormat(user.following)} ]
 									= ll.outgoing_follows_counter_label
+									span(data-numberformat=user.following).count  #{numberFormat(user.following)}
 							if user.followedBy != undefined
 								div.profile-counter
-									| #[span(data-numberformat=user.followedBy).count #{numberFormat(user.followedBy)} ]
 									= ll.incoming_follows_counter_label
+									span(data-numberformat=user.followedBy).count  #{numberFormat(user.followedBy)}
 						else
 							div.profile-counter.not-available Followers not available.
 						.links

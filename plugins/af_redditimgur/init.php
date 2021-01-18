@@ -105,18 +105,57 @@ class Af_RedditImgur extends Plugin {
 		$img_entries = $xpath->query("(//img[@src])");
 
 		$found = false;
-		//$debug = 1;
 
 		foreach ($entries as $entry) {
-			if ($entry->hasAttribute("href") && strpos($entry->getAttribute("href"), "reddit.com") === false) {
+			if ($entry->hasAttribute("href")) {
 				$entry_href = $entry->getAttribute("href");
-
-				if ($this->is_blacklisted($entry_href))
-					continue;
 
 				Debug::log("processing href: " . $entry_href, Debug::$LOG_VERBOSE);
 
-				$matches = array();
+				$matches = [];
+
+				if (!$found && preg_match("/^https?:\/\/www\.reddit\.com\/gallery\/(.*)/", $entry_href, $matches)) {
+					Debug::log("handling as a reddit gallery: " . $matches[1], Debug::$LOG_VERBOSE);
+
+					$tmp = UrlHelper::fetch($entry_href);
+
+					if ($tmp) {
+						$tmpdoc = new DOMDocument();
+
+						if (@$tmpdoc->loadHTML($tmp)) {
+							$tmpxpath = new DOMXPath($tmpdoc);
+
+							$links = $tmpxpath->query("//figure/a[@href]");
+
+							foreach ($links as $link) {
+								$link_href = $link->getAttribute("href");
+
+								if (strpos($link_href, "preview.redd.it") !== false) {
+									Debug::log("found URL: $link_href", Debug::$LOG_EXTENDED);
+
+									// TODO: could there be other media types? videos?
+									if (strpos($link_href, ".jpg") !== false) {
+										$img = $doc->createElement("img");
+										$img->setAttribute("src", $link_href);
+
+										$p = $doc->createElement("p");
+										$p->appendChild($img);
+
+										$entry->parentNode->insertBefore($p, $entry);
+
+										$found = true;
+									}
+								}
+							}
+						}
+					}
+				}
+
+				/* skip other links going to reddit other than galleries (and any other blacklisted stuff) */
+				if (!$found && $this->is_blacklisted($entry_href, ["reddit.com"])) {
+					Debug::log("domain is blacklisted, skipping", Debug::$LOG_VERBOSE);
+					continue;
+				}
 
 				if (!$found && preg_match("/^https?:\/\/twitter.com\/(.*?)\/status\/(.*)/", $entry_href, $matches)) {
 					Debug::log("handling as twitter: " . $matches[1] . " " . $matches[2], Debug::$LOG_VERBOSE);
@@ -500,11 +539,14 @@ class Af_RedditImgur extends Plugin {
 	}
 
 	function testurl() {
-		$url = htmlspecialchars($_REQUEST["url"]);
-
 		header("Content-type: text/plain");
 
-		print "URL: $url\n";
+		Debug::set_enabled(true);
+		Debug::set_loglevel(Debug::$LOG_VERBOSE);
+
+		$url = htmlspecialchars($_REQUEST["url"]);
+
+		Debug::log("URL: $url", Debug::$LOG_VERBOSE);
 
 		$doc = new DOMDocument();
 		@$doc->loadHTML("<html><body><a href=\"$url\">[link]</a></body>");
@@ -512,16 +554,16 @@ class Af_RedditImgur extends Plugin {
 
 		$found = $this->inline_stuff([], $doc, $xpath);
 
-		print "Inline result: $found\n";
+		Debug::log("Inline result: $found");
 
 		if (!$found) {
-			print "\nReadability result:\n";
+			Debug::log("Readability result:");
 
 			$article = $this->readability([], $url, $doc, $xpath);
 
 			print_r($article);
 		} else {
-			print "\nResulting HTML:\n";
+			Debug::log("Resulting HTML:");
 
 			print $doc->saveHTML();
 		}
@@ -589,10 +631,10 @@ class Af_RedditImgur extends Plugin {
 		return $article;
 	}
 
-	private function is_blacklisted($src) {
+	private function is_blacklisted($src, $also_blacklist = []) {
 		$src_domain = parse_url($src, PHP_URL_HOST);
 
-		foreach ($this->domain_blacklist as $domain) {
+		foreach (array_merge($this->domain_blacklist, $also_blacklist) as $domain) {
 			if (strstr($src_domain, $domain) !== false) {
 				return true;
 			}

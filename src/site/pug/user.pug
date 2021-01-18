@@ -71,9 +71,9 @@ html
 						if userURL
 							p.website
 								a(href=userURL)= userURL
-						if user.posts != undefined
+						if selectedTimeline.entryCount != undefined
 							div.profile-counter
-								| #[span(data-numberformat=user.posts).count #{numberFormat(user.posts)} ]
+								| #[span(data-numberformat=selectedTimeline.entryCount).count #{numberFormat(selectedTimeline.entryCount)} ]
 								= ll.post_counter_label
 						if followerCountsAvailable
 							if user.following != undefined
@@ -104,7 +104,7 @@ html
 			.timeline-section(dir=ll.meta_direction)
 				.selector-container
 					+selector-button(ll.tab_timeline, "timeline", "")
-					if user.data.has_channel !== false
+					if user.data.has_channel !== false || user.data.edge_felix_video_timeline.count !== 0
 						+selector-button(ll.tab_igtv, "igtv", "/channel")
 
 				main(class=hasPosts ? "" : "no-posts")#timeline.timeline

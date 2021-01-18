@@ -29,8 +29,15 @@ class Timeline {
 		this.type = type
 		/** @type {import("./TimelineEntry")[][]} */
 		this.pages = []
-		if (this.user.data.edge_owner_to_timeline_media) {
-			this.addPage(this.user.data.edge_owner_to_timeline_media)
+		this.entryCount = 0
+		if (this.type === "timeline") {
+			if (this.user.data.edge_owner_to_timeline_media) {
+				this.addPage(this.user.data.edge_owner_to_timeline_media)
+			}
+		} else if (this.type === "igtv") {
+			if (this.user.data.edge_felix_video_timeline) {
+				this.addPage(this.user.data.edge_felix_video_timeline)
+			}
 		}
 	}
 
@@ -75,7 +82,12 @@ class Timeline {
 		// add the page
 		this.pages.push(transformEdges(page.edges))
 		this.page_info = page.page_info
-		this.user.posts = page.count
+		// update self post count
+		this.entryCount = page.count
+		// update user post count
+		if (this.type === "timeline") {
+			this.user.posts = page.count
+		}
 	}
 
 	async fetchFeed() {

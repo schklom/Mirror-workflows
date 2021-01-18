@@ -1,0 +1,15 @@
+include includes/error.pug
+
+doctype html
+html
+	head
+		title= `Blocked | Bibliogram`
+		include includes/head
+	body.error-page
+		+error(502, "Blocked by Instagram", true)
+			| Instagram is refusing to provide data to this server.
+			| This server will only be able to load the first page of timelines.
+			| This error is permanent.
+			| #[a(href="https://lists.sr.ht/~cadence/bibliogram-announce/%3C20201218014302.855fa8a816be2f19da2f56e3%40disroot.org%3E") See here for more information.]
+			|
+			|

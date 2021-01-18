@@ -29,10 +29,10 @@ let constants = {
 		enabled: true, // If false, everything else in this block has no effect.
 		password: null, // If `null`, Bibliogram will run its own Tor process instead.
 		for: {
-			user_html: true, // User HTML page seems to have less forgiving rates, and Tor always fails, so it's disabled by default.
-			timeline_graphql: true,
-			post_graphql: true,
-			reel_graphql: true
+			user_html: true,
+			timeline_graphql: false,
+			post_graphql: false,
+			reel_graphql: false
 		}
 	},
 	request_backend: "node-fetch", // one of: "node-fetch", "got"
@@ -262,6 +262,7 @@ let constants = {
 		NOT_FOUND: Symbol("NOT_FOUND"),
 		INSTAGRAM_DEMANDS_LOGIN: Symbol("INSTAGRAM_DEMANDS_LOGIN"),
 		RATE_LIMITED: Symbol("RATE_LIMITED"),
+		INSTAGRAM_BLOCK_TYPE_DECEMBER: Symbol("INSTAGRAM_BLOCK_TYPE_DECEMBER"),
 		ENDPOINT_OVERRIDDEN: Symbol("ENDPOINT_OVERRIDDEN"),
 		NO_ASSISTANTS_AVAILABLE: Symbol("NO_ASSISTANTS_AVAILABLE"),
 		QUOTA_REACHED: Symbol("QUOTA_REACHED"),

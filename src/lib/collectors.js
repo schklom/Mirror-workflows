@@ -280,6 +280,7 @@ function fetchTimelinePage(userID, after) {
 	}))
 	return requestCache.getOrFetchPromise(`page/${userID}/${after}`, () => {
 		return switcher.request("timeline_graphql", `https://www.instagram.com/graphql/query/?${p.toString()}`, async res => {
+			if (res.status === 302) throw constants.symbols.INSTAGRAM_BLOCK_TYPE_DECEMBER
 			if (res.status === 429) throw constants.symbols.RATE_LIMITED
 		}).then(g => g.json()).then(root => {
 			if (root.data.user === null) {
@@ -317,6 +318,7 @@ function fetchIGTVPage(userID, after) {
 	return requestCache.getOrFetchPromise(`igtv/${userID}/${after}`, () => {
 		// assuming this uses the same bucket as timeline, which may not be the case
 		return switcher.request("timeline_graphql", `https://www.instagram.com/graphql/query/?${p.toString()}`, async res => {
+			if (res.status === 302) throw constants.symbols.INSTAGRAM_BLOCK_TYPE_DECEMBER
 			if (res.status === 429) throw constants.symbols.RATE_LIMITED
 		}).then(g => g.json()).then(root => {
 			/** @type {import("./types").PagedEdges<import("./types").TimelineEntryN2>} */
@@ -347,6 +349,7 @@ function verifyUserPair(userID, username) {
 	}))
 	return requestCache.getOrFetchPromise("userID/"+userID, () => {
 		return switcher.request("reel_graphql", `https://www.instagram.com/graphql/query/?${p.toString()}`, async res => {
+			if (res.status === 302) throw constants.symbols.INSTAGRAM_BLOCK_TYPE_DECEMBER
 			if (res.status === 429) throw constants.symbols.RATE_LIMITED
 			return res
 		}).then(res => res.json()).then(root => {
@@ -402,6 +405,7 @@ function fetchShortcodeData(shortcode) {
 	p.set("variables", JSON.stringify({shortcode}))
 	return requestCache.getOrFetchPromise("shortcode/"+shortcode, () => {
 		return switcher.request("post_graphql", `https://www.instagram.com/graphql/query/?${p.toString()}`, async res => {
+			if (res.status === 302) throw constants.symbols.INSTAGRAM_BLOCK_TYPE_DECEMBER
 			if (res.status === 429) throw constants.symbols.RATE_LIMITED
 		}).then(res => res.json()).then(root => {
 			/** @type {import("./types").TimelineEntryN3} */

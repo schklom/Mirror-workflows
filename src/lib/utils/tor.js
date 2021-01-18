@@ -17,18 +17,18 @@ class TorManager {
 	}
 
 	async request(url, test) {
-		let result = null
 		let done = false
+		let g
 		while (!done) {
-			const req = await request(url, {agent: this.agent}, {log: true, statusLine: "TOR"})
+			g = await request(url, {agent: this.agent}, {log: true, statusLine: "TOR"})
 			try {
-				result = await test(req)
-				done = true
+				await g.check(test)
+				break
 			} catch (e) {
 				await this.newCircuit()
 			}
 		}
-		return result
+		return g
 	}
 
 	newCircuit() {

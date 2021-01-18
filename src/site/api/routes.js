@@ -154,6 +154,8 @@ module.exports = [
 							lang
 						})
 					}
+				} else if (error === constants.symbols.INSTAGRAM_BLOCK_TYPE_DECEMBER) {
+					return render(503, "pug/blocked_december.pug")
 				} else if (error === constants.symbols.RATE_LIMITED) {
 					return render(503, "pug/blocked_graphql.pug")
 				} else if (error === constants.symbols.extractor_results.AGE_RESTRICTED) {
@@ -219,6 +221,8 @@ module.exports = [
 						message: "This user doesn't exist.",
 						withInstancesLink: false
 					})
+				} else if (error === constants.symbols.INSTAGRAM_BLOCK_TYPE_DECEMBER) {
+					return render(502, "pug/fragments/timeline_loading_blocked_december.pug")
 				} else if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN || error === constants.symbols.RATE_LIMITED) {
 					return render(503, "pug/fragments/timeline_loading_blocked.pug")
 				} else if (error === constants.symbols.QUOTA_REACHED) {

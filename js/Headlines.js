@@ -300,6 +300,16 @@ const Headlines = {
 			}
 		}
 	},
+	unpackVisible: function(container) {
+		const rows = $$("#headlines-frame > div[id*=RROW][data-content].cdm");
+
+		for (let i = 0; i < rows.length; i++) {
+			if (App.Scrollable.isChildVisible(rows[i], container)) {
+				console.log('force unpacking:', rows[i].getAttribute('id'));
+				Article.unpack(rows[i]);
+			}
+		}
+	},
 	scrollHandler: function (/*event*/) {
 		try {
 			if (!Feeds.infscroll_disabled && !Feeds.infscroll_in_progress) {
@@ -318,6 +328,14 @@ const Headlines = {
 						return;
 					}
 				}
+			}
+
+			if (App.isCombinedMode() && App.getInitParam("cdm_expanded")) {
+				const container = $("headlines-frame")
+
+				/* don't do anything until there was some scrolling */
+				if (container.scrollTop > 0)
+					Headlines.unpackVisible(container);
 			}
 
 			if (App.getInitParam("cdm_auto_catchup")) {

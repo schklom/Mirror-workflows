@@ -1,4 +1,4 @@
-name: Sync Politepol-amd64
+name: Sync+DH build Politepol-amd64
 
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
@@ -19,3 +19,5 @@ jobs:
           destination_repo: "git@github.com:schklom/Mirror-workflows.git"
           destination_branch: "Politepol-amd64"
           ssh_private_key: ${{ secrets.GITSYNCACTION }}
+      - name: build on DockerHub
+        run: curl -X POST ${{ secrets.DH_BUILD_POLITEPOL_AMD64 }}

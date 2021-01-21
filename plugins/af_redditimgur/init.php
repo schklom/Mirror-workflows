@@ -132,7 +132,7 @@ class Af_RedditImgur extends Plugin {
 			}
 		} */
 
-		if ($data["post_hint"] == "hosted:video") {
+		if (!$found && $data["post_hint"] == "hosted:video") {
 			$media_url = $data["url"];
 
 			if (isset($data["preview"]["images"][0]["source"]))
@@ -152,7 +152,7 @@ class Af_RedditImgur extends Plugin {
 			}
 		}
 
-		if ($data["post_hint"] == "video") {
+		if (!$found && $data["post_hint"] == "video") {
 			$media_url = $data["url"];
 
 			if (isset($data["preview"]["images"][0]["source"]))
@@ -166,13 +166,30 @@ class Af_RedditImgur extends Plugin {
 			$found = 1;
 		}
 
-		if ($data["post_hint"] == "image") {
+		if (!$found && $data["post_hint"] == "image") {
 			$media_url = $data["url"];
 
 			Debug::log("found image url: $media_url", Debug::$LOG_VERBOSE);
 			$this->handle_as_image($doc, $anchor, $media_url);
 
 			$found = 1;
+		}
+
+		if (!$found && $data["post_hint"] == "self" && is_array($data["preview"]["images"])) {
+			foreach ($data["preview"]["images"] as $img) {
+				if (isset($img["source"]["url"])) {
+					$media_url = htmlspecialchars_decode($img["source"]["url"]);
+					$target_url = $data["url"];
+
+					if ($media_url) {
+						Debug::log("found preview image url: $media_url (link: $target_url)", Debug::$LOG_VERBOSE);
+
+						$this->handle_as_image($doc, $anchor, $media_url, $target_url);
+
+						$found = 1;
+					}
+				}
+			}
 		}
 
 		return $found;
@@ -194,9 +211,11 @@ class Af_RedditImgur extends Plugin {
 			if ($tmp && $anchor) {
 				$json = json_decode($tmp, true);
 
-				Debug::log("JSON: processing media elements...", Debug::$LOG_EXTENDED);
-
 				if ($json) {
+					Debug::log("JSON: processing media elements...", Debug::$LOG_EXTENDED);
+
+					//print_r($json);
+
 					foreach ($json as $listing) {
 						foreach ($listing["data"]["children"] as $child) {
 
@@ -208,7 +227,8 @@ class Af_RedditImgur extends Plugin {
 								foreach ($data["crosspost_parent_list"] as $parent) {
 									if ($this->process_post_media($parent, $doc, $xpath, $anchor)) {
 										$found = 1;
-										continue;
+
+										break 2;
 									}
 								}
 							}
@@ -217,10 +237,13 @@ class Af_RedditImgur extends Plugin {
 
 							if (!$found && $this->process_post_media($data, $doc, $xpath, $anchor)) {
 								$found = 1;
-								continue;
+
+								break 2;
 							}
 						}
 					}
+				} else {
+					Debug::log("JSON: failed to parse received data.", Debug::$LOG_EXTENDED);
 				}
 			} else {
 				if (!$tmp) {
@@ -538,12 +561,21 @@ class Af_RedditImgur extends Plugin {
 			$thumb->parentNode->parentNode->removeChild($thumb->parentNode);
 	}
 
-	private function handle_as_image($doc, $entry, $image_url) {
+	private function handle_as_image($doc, $entry, $image_url, $link_url = false) {
 		$img = $doc->createElement("img");
 		$img->setAttribute("src", $image_url);
 
 		$p = $doc->createElement("p");
-		$p->appendChild($img);
+
+		if ($link_url) {
+			$a = $doc->createElement("a");
+			$a->setAttribute("href", $link_url);
+
+			$a->appendChild($img);
+			$p->appendChild($a);
+		} else {
+			$p->appendChild($img);
+		}
 
 		$entry->parentNode->insertBefore($p, $entry);
 	}
@@ -576,15 +608,39 @@ class Af_RedditImgur extends Plugin {
 		$entry->parentNode->insertBefore($img, $entry);*/
 	}
 
-	// TODO: draw a form or something if url/article_url are not given
 	function testurl() {
+
+		$url = clean($_POST["url"]);
+		$article_url = clean($_POST["article_url"]);
+
+		if (!$url && !$article_url) {
+			header("Content-type: text/html");
+			?>
+			<style type="text/css">
+				fieldset { border : 0; }
+				label { display : inline-block; min-width : 120px; }
+			</style>
+			<form action="backend.php?op=pluginhandler&method=testurl&plugin=af_redditimgur" method="post">
+				<fieldset>
+					<label>URL:</label>
+					<input name="url" size="100" value="<?php echo htmlspecialchars($url) ?>"></input>
+				</fieldset>
+				<fieldset>
+					<label>Article URL:</label>
+					<input name="article_url" size="100" value="<?php echo htmlspecialchars($article_url) ?>"></input>
+				</fieldset>
+				<fieldset>
+					<button type="submit">Test</button>
+				</fieldset>
+			</form>
+			<?php
+			return;
+		}
+
 		header("Content-type: text/plain");
 
 		Debug::set_enabled(true);
 		Debug::set_loglevel(Debug::$LOG_EXTENDED);
-
-		$url = clean($_REQUEST["url"]);
-		$article_url = clean($_REQUEST["article_url"]);
 
 		Debug::log("URL: $url", Debug::$LOG_VERBOSE);
 
@@ -607,6 +663,7 @@ class Af_RedditImgur extends Plugin {
 
 			print $doc->saveHTML();
 		}
+
 	}
 
 	private function get_header($url, $header, $useragent = SELF_USER_AGENT) {

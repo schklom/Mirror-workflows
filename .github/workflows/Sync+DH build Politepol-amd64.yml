@@ -4,7 +4,7 @@ on:
   # Triggers the workflow on push or pull request events but only for the main branch
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '0 0 * * *'
+    - cron:  '0 0 * * 0'
   workflow_dispatch:
 
 jobs:
@@ -20,4 +20,4 @@ jobs:
           destination_branch: "Politepol-amd64"
           ssh_private_key: ${{ secrets.GITSYNCACTION }}
       - name: build on DockerHub
-        run: curl -X POST ${{ secrets.DH_BUILD_POLITEPOL_AMD64 }}
+        run: curl -X POST ${{ secrets.DH_BUILD_POLITEPOL }}

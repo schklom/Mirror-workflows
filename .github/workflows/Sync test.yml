@@ -26,8 +26,10 @@ jobs:
       # Runs a single command using the runners shell
       - name: Add python and build-essential to apt-get install
         run: |
+          id
           ls -alh
-          sed -i '/apt-get install -y/s/$/ python3 build-essential/' ./Dockefile
+          cat Dockerfile
+          sed -i '/apt-get install -y/s/$/ python3 build-essential/' Dockefile
       
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:

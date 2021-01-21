@@ -25,8 +25,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          #repository: 'schklom/TTRSS-mirror'
           ref: 'Feedropolis' # branch
+      - name: Add python and build-essential to apt-get install, for a linux/arm/v7 image
+        run: sed -i '/apt-get install -y/s/$/ python3 build-essential/' Dockerfile
+      - name: Commit and push the change
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Add python and build-essential to apt-get install, for a linux/arm/v7 image
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1

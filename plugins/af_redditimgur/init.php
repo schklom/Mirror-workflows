@@ -4,6 +4,8 @@ class Af_RedditImgur extends Plugin {
 	/* @var PluginHost $host */
 	private $host;
 	private $domain_blacklist = [ "github.com" ];
+	private $dump_json_data = false;
+	private $fallback_preview_urls = [];
 
 	function about() {
 		return array(1.0,
@@ -175,18 +177,22 @@ class Af_RedditImgur extends Plugin {
 			$found = 1;
 		}
 
-		if (!$found && $data["post_hint"] == "self" && is_array($data["preview"]["images"])) {
+		if (!$found && is_array($data["preview"]["images"])) {
 			foreach ($data["preview"]["images"] as $img) {
 				if (isset($img["source"]["url"])) {
 					$media_url = htmlspecialchars_decode($img["source"]["url"]);
 					$target_url = $data["url"];
 
 					if ($media_url) {
-						Debug::log("found preview image url: $media_url (link: $target_url)", Debug::$LOG_VERBOSE);
+						if ($data["post_hint"] == "self") {
+							Debug::log("found preview image url: $media_url (link: $target_url)", Debug::$LOG_VERBOSE);
+							$this->handle_as_image($doc, $anchor, $media_url, $target_url);
 
-						$this->handle_as_image($doc, $anchor, $media_url, $target_url);
-
-						$found = 1;
+							$found = 1;
+						} else { // gonna use this later if nothing is found using generic link processing
+							Debug::log("found fallback preview image url: $media_url (link: $target_url);", Debug::$LOG_VERBOSE);
+							array_push($this->fallback_preview_urls, $media_url);
+						}
 					}
 				}
 			}
@@ -199,14 +205,16 @@ class Af_RedditImgur extends Plugin {
 
 		$found = false;
 
+		// embed before reddit <table> post layout
+		$anchor = $xpath->query('//body/*')->item(0);
+
 		// deal with json-provided media content first
-		if ($article["link"]) {
+		if ($article["link"] && $anchor) {
 			Debug::log("JSON: requesting from URL: " . $article["link"] . "/.json", Debug::$LOG_VERBOSE);
 
 			$tmp = UrlHelper::fetch($article["link"] . "/.json");
 
-			// embed before reddit <table> post layout
-			$anchor = $xpath->query('//body/*')->item(0);
+			$this->fallback_preview_urls = [];
 
 			if ($tmp && $anchor) {
 				$json = json_decode($tmp, true);
@@ -214,7 +222,7 @@ class Af_RedditImgur extends Plugin {
 				if ($json) {
 					Debug::log("JSON: processing media elements...", Debug::$LOG_EXTENDED);
 
-					//print_r($json);
+					if ($this->dump_json_data) print_r($json);
 
 					foreach ($json as $listing) {
 						foreach ($listing["data"]["children"] as $child) {
@@ -250,11 +258,9 @@ class Af_RedditImgur extends Plugin {
 					global $fetch_last_error;
 					Debug::log("JSON: failed to fetch post:" . $fetch_last_error, Debug::$LOG_EXTENDED);
 				}
-
-				if (!$anchor) {
-					Debug::log("JSON: anchor element not found, unable to embed", Debug::$LOG_EXTENDED);
-				}
 			}
+		} else if (!$anchor) {
+			Debug::log("JSON: anchor element not found, unable to embed", Debug::$LOG_EXTENDED);
 		}
 
 		if ($found) {
@@ -489,6 +495,16 @@ class Af_RedditImgur extends Plugin {
 				$this->remove_post_thumbnail($doc, $xpath);
 		}
 
+		if (!$found && $anchor && count($this->fallback_preview_urls) > 0) {
+			Debug::log("JSON: processing fallback preview urls...", Debug::$LOG_VERBOSE);
+
+			foreach ($this->fallback_preview_urls as $media_url) {
+				$this->handle_as_image($doc, $anchor, $media_url);
+
+				$found = 1;
+			}
+		}
+
 		return $found;
 	}
 
@@ -612,6 +628,8 @@ class Af_RedditImgur extends Plugin {
 
 		$url = clean($_POST["url"]);
 		$article_url = clean($_POST["article_url"]);
+
+		$this->dump_json_data = true;
 
 		if (!$url && !$article_url) {
 			header("Content-type: text/html");

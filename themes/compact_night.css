@@ -1801,6 +1801,10 @@ body.ttrss_utility.installer,
 body.ttrss_utility.feed_debugger {
   margin: 2em;
 }
+body.ttrss_utility.installer pre,
+body.ttrss_utility.feed_debugger pre {
+  white-space: pre-wrap;
+}
 body.ttrss_utility.share_popup {
   margin: 0;
   padding: 0;

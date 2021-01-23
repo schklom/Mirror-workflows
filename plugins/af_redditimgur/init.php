@@ -354,6 +354,7 @@ class Af_RedditImgur extends Plugin {
 			$matches = array();
 			if (!$found && (preg_match("/youtube\.com\/v\/([\w-]+)/", $entry_href, $matches) ||
 				preg_match("/youtube\.com\/.*?[\&\?]v=([\w-]+)/", $entry_href, $matches) ||
+				preg_match("/youtube\.com\/embed\/([\w-]+)/", $entry_href, $matches) ||
 				preg_match("/youtube\.com\/watch\?v=([\w-]+)/", $entry_href, $matches) ||
 				preg_match("/\/\/youtu.be\/([\w-]+)/", $entry_href, $matches))) {
 
@@ -490,9 +491,6 @@ class Af_RedditImgur extends Plugin {
 					}
 				}
 			}
-
-			if ($found)
-				$this->remove_post_thumbnail($doc, $xpath);
 		}
 
 		if (!$found && $anchor && count($this->fallback_preview_urls) > 0) {
@@ -504,6 +502,9 @@ class Af_RedditImgur extends Plugin {
 				$found = 1;
 			}
 		}
+
+		if ($found)
+			$this->remove_post_thumbnail($doc, $xpath);
 
 		return $found;
 	}

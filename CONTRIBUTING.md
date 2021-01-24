@@ -14,8 +14,7 @@ extensions should work).
 
 ## Contributing translations
 
-Believe it or not, people also spam using Weblate. Therefore, there's some minor 
-jumping through hoops involved here:
+Believe it or not, people also spam using Weblate. Therefore, some minor jumping through hoops is involved here:
 
 1. Register on [Weblate](https://weblate.tt-rss.org/) / forums;
 2. Post in the [Weblate discussion thread](https://community.tt-rss.org/t/easier-translations-with-weblate/1680) on the forum, ask to be added to a project 

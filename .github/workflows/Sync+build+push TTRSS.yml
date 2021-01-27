@@ -4,12 +4,32 @@ on:
   # Triggers the workflow on push or pull request events but only for the main branch
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '0 0 * * *'
+    - cron:  '0 */4 * * *'
   workflow_dispatch:
 
 jobs:
-  repo-sync:
+  get_commits:
     runs-on: ubuntu-latest
+    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    outputs:
+      LOCAL: ${{ steps.commits.outputs.SETLOCAL }}
+      REMOTE: ${{ steps.commits.outputs.SETREMOTE }} 
+    steps:
+      - name: set commits as environment variables
+        id: commits
+        # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+        run: |
+          echo "::set-output name=SETREMOTE::$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')"
+          echo "::set-output name=SETLOCAL::$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')
+  
+  repo_sync:
+    needs: [get_commits]
+    runs-on: ubuntu-latest
+    if: $LOCAL != $REMOTE
+    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    env:
+      LOCAL: ${{ needs.get_commits.outputs.LOCAL }}
+      REMOTE: ${{ needs.get_commits.outputs.REMOTE }}
     steps:
       - name: repo-sync
         uses: wei/git-sync@v3
@@ -35,15 +55,8 @@ jobs:
           # Defaults to "Apply automatic changes"
       #    commit_message: Updated web Dockerfile to work with Raspberry Pi 4
 
-          # Optional branch name where commit should be pushed to
-          # Defaults to the current branch
-          #branch: feature-123
-
-          # Optional options appended to `git-push`
-          # See git-push documentation for details: https://git-scm.com/docs/git-push#_options
-       #   push_options: '--force'
-  buildandpush:
-    needs: [repo-sync]
+  build_push:
+    needs: [repo_sync]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

@@ -36,10 +36,7 @@ jobs:
           destination_repo: "git@github.com:schklom/Mirror-workflows.git"
           destination_branch: "Politepol"
           ssh_private_key: ${{ secrets.GITSYNCACTION }}
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-        with:
-          ref: 'Politepol'
+  
   buildandpush:
     needs: [repo-sync]
     runs-on: ubuntu-latest

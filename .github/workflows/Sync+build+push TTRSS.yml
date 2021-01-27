@@ -52,7 +52,7 @@ jobs:
           # Defaults to "Apply automatic changes"
       #    commit_message: Updated web Dockerfile to work with Raspberry Pi 4
 
-build_push:
+  build_push:
     needs: [repo_sync]
     runs-on: ubuntu-latest
     steps:

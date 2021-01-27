@@ -11,16 +11,21 @@ jobs:
   repo-sync:
     runs-on: ubuntu-latest
     steps:
-      - name: repo-sync
-        uses: wei/git-sync@v3
-        with:
-          source_repo: "https://git.tt-rss.org/fox/ttrss-docker-compose.git"
-          source_branch: "master"
-          destination_repo: "git@github.com:schklom/Mirror-workflows.git"
-          destination_branch: "TTRSS-docker"
-          ssh_private_key: ${{ secrets.GITSYNCACTION }}
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
         with:
           ref: 'TTRSS-docker'
-        
+      - name: test-commit
+        run: |
+          git rev-parse refs/heads/TTRSS-docker
+          export REMOTE = $(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')
+          export LOCAL = $(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')
+          echo $REMOTE
+          echo $LOCAL
+          echo $(git rev-parse refs/heads/TTRSS-docker)
+      - name: if yes
+        if: ${{ REMOTE = LOCAL }}
+        run: echo "OUIIIIIIIIIIIIIII"
+      - name: if no
+        if: ${{ REMOTE != LOCAL }}
+        run: echo "NOOOOOOOOOOOOOON"

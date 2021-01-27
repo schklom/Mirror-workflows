@@ -24,8 +24,8 @@ jobs:
           echo $LOCAL
           echo $(git rev-parse refs/heads/TTRSS-docker)
       - name: if yes
-        if: ${{ "$REMOTE" = "$LOCAL" }}
+        if: ${{ $REMOTE = $LOCAL }}
         run: echo "OUIIIIIIIIIIIIIII"
       - name: if no
-        if: ${{ "$REMOTE" = "$LOCAL" }}
+        if: ${{ $REMOTE = $LOCAL }}
         run: echo "NOOOOOOOOOOOOOON"

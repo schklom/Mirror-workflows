@@ -24,9 +24,6 @@ jobs:
         if: env.LOCAL == env.REMOTE
         run: |
           echo "OUIIIIIIIIIIIIIIIIII"
-        env:
-          LOCAL: ${{ env.LOCAL }}
-          REMOTE: ${{ env.REMOTE }}
         #env:
           #REMOTE: $(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')
           #LOCAL: $(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')
@@ -34,3 +31,4 @@ jobs:
         if: env.LOCAL != env.REMOTE
         run: |
           echo "NONNNNNNNNNNNNNNNNNN"
+          echo $env.LOCAL

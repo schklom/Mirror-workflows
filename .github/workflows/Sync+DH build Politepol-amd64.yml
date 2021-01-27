@@ -23,7 +23,10 @@ jobs:
           echo "::set-output name=SETLOCAL::$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/Politepol-amd64 | awk '{ print $1 }')"
   
   repo-sync:
+    needs: [get_commits]
     runs-on: ubuntu-latest
+    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
     steps:
       - name: repo-sync
         uses: wei/git-sync@v3

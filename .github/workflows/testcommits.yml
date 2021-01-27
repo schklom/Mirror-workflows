@@ -34,6 +34,3 @@ jobs:
         if: env.LOCAL != env.REMOTE
         run: |
           echo "NONNNNNNNNNNNNNNNNNN"
-        env:
-          LOCAL: ${{ env.LOCAL }}
-          REMOTE: ${{ env.REMOTE }}

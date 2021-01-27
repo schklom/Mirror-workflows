@@ -8,8 +8,25 @@ on:
   workflow_dispatch:
 
 jobs:
-  repo-sync:
+  get_commits:
     runs-on: ubuntu-latest
+    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    outputs:
+      LOCAL: ${{ steps.commits.outputs.SETLOCAL }}
+      REMOTE: ${{ steps.commits.outputs.SETREMOTE }} 
+    steps:
+      - name: set commits as environment variables
+        id: commits
+        # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+        run: |
+          echo "::set-output name=SETREMOTE::$(git ls-remote https://github.com/CollaboraOnline/online HEAD | awk '{ print $1 }')"
+          echo "::set-output name=SETLOCAL::$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/CollaboraOnline | awk '{ print $1 }')"
+  
+  repo-sync:
+    needs: [get_commits]
+    runs-on: ubuntu-latest
+    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
     steps:
       - name: repo-sync
         uses: wei/git-sync@v3

@@ -25,7 +25,13 @@ jobs:
           echo $(git rev-parse refs/heads/TTRSS-docker)
       - name: if yes
         if: ${{ $REMOTE = $LOCAL }}
+        env:
+          REMOTE: $(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')
+          LOCAL: $(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')
         run: echo "OUIIIIIIIIIIIIIII"
       - name: if no
         if: ${{ $REMOTE = $LOCAL }}
+        env:
+          REMOTE: $(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')
+          LOCAL: $(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')
         run: echo "NOOOOOOOOOOOOOON"

@@ -36,8 +36,8 @@ jobs:
     steps:
       - run: echo ${{ needs.get_commits.steps.commits.outputs.LOCAL }}
       - run: echo env.AAA
-        with:
+        env:
           AAA: ${{ needs.get_commits.steps.commits.outputs.LOCAL }}
       - run: echo $AAA
-        with:
+        env:
           AAA: ${{ needs.get_commits.steps.commits.outputs.LOCAL }}

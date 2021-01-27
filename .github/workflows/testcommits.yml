@@ -18,7 +18,7 @@ jobs:
         run: |
           echo "::set-output name=LOCAL::$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')"
           echo "::set-output name=REMOTE::$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')"
-      
+          echo "OUTPUT=output-$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')" >> $GITHUB_ENV
       - name: if yes
         if: $("${{steps.commits.outputs.LOCAL}}" = "${{steps.commits.outputs.REMOTE}}")
         run: |
@@ -27,6 +27,8 @@ jobs:
           #REMOTE: $(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')
           #LOCAL: $(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')
       - name: if no
-        if: ${{steps.commits.outputs.LOCAL}} != ${{steps.commits.outputs.REMOTE}}
+        #if: ${{steps.commits.outputs.LOCAL}} != ${{steps.commits.outputs.REMOTE}}
         run: |
           echo "NONNNNNNNNNNNNNNNNNN"
+        env:
+          name: ${{ env.OUTPUT }}

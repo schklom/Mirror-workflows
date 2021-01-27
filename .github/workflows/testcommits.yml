@@ -1,0 +1,26 @@
+name: Sync+build+push TTRSS
+
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  #schedule:
+    # * is a special character in YAML so you have to quote this string
+    #- cron:  '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  repo-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: repo-sync
+        uses: wei/git-sync@v3
+        with:
+          source_repo: "https://git.tt-rss.org/fox/ttrss-docker-compose.git"
+          source_branch: "master"
+          destination_repo: "git@github.com:schklom/Mirror-workflows.git"
+          destination_branch: "TTRSS-docker"
+          ssh_private_key: ${{ secrets.GITSYNCACTION }}
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        with:
+          ref: 'TTRSS-docker'
+        

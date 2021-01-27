@@ -34,4 +34,10 @@ jobs:
     needs: [get_commits]
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ needs.get_commits.steps.commits.outputs.SETLOCAL }}
+      - run: echo ${{ needs.get_commits.steps.commits.outputs.LOCAL }}
+      - run: echo env.AAA
+        with:
+          AAA: ${{ needs.get_commits.steps.commits.outputs.LOCAL }}
+      - run: echo $AAA
+        with:
+          AAA: ${{ needs.get_commits.steps.commits.outputs.LOCAL }}

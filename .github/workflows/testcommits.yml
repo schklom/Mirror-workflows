@@ -31,4 +31,4 @@ jobs:
     needs: [get_commits]
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{jobs.get_commits.steps.commits.outputs.SETLOCAL}}
+      - run: echo ${{needs.get_commits.steps.commits.outputs.SETLOCAL}}

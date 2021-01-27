@@ -271,21 +271,16 @@ body.flat.ttrss_main {
 		border-color : @border-light;
 	}
 
-	/*
-	.post .content img,
-	.cdm .content-inner img,
-	.post .content video,
-	.cdm .content-inner video {
-		transition : opacity 0.2s linear, filter 0.2s linear;
-	}
+	.post .content,
+	.cdm .content-inner {
+		img, video {
+			transition : filter 0.25s linear;
+		}
 
-	.post .content img:not(:hover),
-	.cdm .content-inner img:not(:hover),
-	.post .content video:not(:hover),
-	.cdm .content-inner video:not(:hover) {
-		opacity : 0.5;
-		filter: grayscale(80%);
-	} */
+		img:not(:hover), video:not(:hover) {
+			filter: saturate(0.9) brightness(0.8);
+		}
+	}
 
 	.article-note {
 		background : @color-accent;

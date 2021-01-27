@@ -11,25 +11,22 @@ jobs:
   repo-sync:
     runs-on: ubuntu-latest
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-        with:
-          ref: 'TTRSS-docker'
       # https://github.com/actions/starter-workflows/issues/68#issuecomment-626239810
       - name: set commits as environment variables
         id: commits
+          #echo "::set-output name=LOCAL::$(git rev-parse refs/heads/TTRSS-docker)"
         run: |
-          echo "::set-output name=LOCAL::$(git rev-parse refs/heads/TTRSS-docker)"
+          echo "::set-output name=LOCAL::$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')"
           echo "::set-output name=REMOTE::$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')"
       
       - name: if yes
-        if: ${{steps.commits.outputs.LOCAL}} = ${{steps.commits.outputs.LOCAL}}
+        if: ${{steps.commits.outputs.LOCAL}} = ${{steps.commits.outputs.REMOTE}}
         run: |
-          echo "${{steps.commits.outputs.LOCAL}}"
+          echo "OUIIIIIIIIIIIIIIIIII"
         #env:
           #REMOTE: $(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')
           #LOCAL: $(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')
-      - name: if no
-        #if: $(cat REMOTE) != $(cat LOCAL)
-        #if: ${{ $REMOTE = $LOCAL }}
-        run: echo "NOOOOOOOOOOOOOON"
+      - name: if yes
+        if: ${{steps.commits.outputs.LOCAL}} != ${{steps.commits.outputs.REMOTE}}
+        run: |
+          echo "NONNNNNNNNNNNNNNNNNN"

@@ -18,9 +18,10 @@ jobs:
       - name: test-commit
         run: |
           git rev-parse refs/heads/TTRSS-docker
-          cat $(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }') > REMOTE
-        
+          echo $(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }') > REMOTE
+          cat REMOTE
       - name: if yes
+        continue-on-error: true
         #if: ${{ $REMOTE = $LOCAL }}
         run: |
           echo "OUIIIIIIIIIIIIIII"

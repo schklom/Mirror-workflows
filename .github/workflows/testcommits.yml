@@ -23,7 +23,7 @@ jobs:
           echo "::set-output name=REMOTE::$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')"
       
       - name: if yes
-        #if: ${{ $(cat REMOTE) = $(cat LOCAL) }}
+        if: ${{ "${{steps.commits.outputs.LOCAL}}" = "${{steps.commits.outputs.LOCAL}}" }}
         run: |
           echo "${{steps.commits.outputs.LOCAL}}"
         #env:

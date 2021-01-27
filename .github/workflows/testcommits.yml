@@ -8,15 +8,16 @@ on:
   workflow_dispatch:
 
 jobs:
-  repo-sync:
+  get_commits:
     runs-on: ubuntu-latest
     steps:
       # https://github.com/actions/starter-workflows/issues/68#issuecomment-626239810
+      #echo "::set-output name=LOCAL::$(git rev-parse refs/heads/TTRSS-docker)"
+      #echo "::set-output name=LOCAL::$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')"
+      #echo "::set-output name=REMOTE::$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')"
       - name: set commits as environment variables
         id: commits
-          #echo "::set-output name=LOCAL::$(git rev-parse refs/heads/TTRSS-docker)"
-          #echo "::set-output name=LOCAL::$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')"
-          #echo "::set-output name=REMOTE::$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')"
+        # https://github.community/t/how-can-i-set-an-expression-as-an-environment-variable-at-workflow-level/16516/9
         run: |
           echo "LOCAL=$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')" >> $GITHUB_ENV
           echo "REMOTE=$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')" >> $GITHUB_ENV
@@ -24,11 +25,13 @@ jobs:
         if: env.LOCAL == env.REMOTE
         run: |
           echo "OUIIIIIIIIIIIIIIIIII"
-        #env:
-          #REMOTE: $(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')
-          #LOCAL: $(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')
       - name: if no
         if: env.LOCAL != env.REMOTE
         run: |
           echo "NONNNNNNNNNNNNNNNNNN"
           echo $env.LOCAL
+  sync:
+    needs: [get_commits]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo $env.LOCAL

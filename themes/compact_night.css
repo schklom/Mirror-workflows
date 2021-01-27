@@ -2033,6 +2033,9 @@ body.flat.ttrss_main .dijitToolbar .dijitSelect:not(.dijitHover) .dijitButtonCon
 body.flat.ttrss_main .dijitToolbar .dijitSelect:not(.dijitHover) .dijitButtonNode {
   background-color: #222;
 }
+body.flat.ttrss_main .dijitSplitterHover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
 body.flat.ttrss_main .dijitCheckBox:not(.dijitChecked)::before {
   color: #999999;
   background: #222;

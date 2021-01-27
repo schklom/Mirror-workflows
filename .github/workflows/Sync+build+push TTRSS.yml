@@ -28,6 +28,15 @@ jobs:
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     if: ${{ needs.get_commits.outputs.LOCAL }} != ${{ needs.get_commits.outputs.REMOTE }}
     steps:
+      - name: see-commits
+        run: |
+          echo ${{ needs.get_commits.outputs.LOCAL }}
+          echo ${{ needs.get_commits.outputs.REMOTE }}
+          if [ "${{ needs.get_commits.outputs.LOCAL }}" = "${{ needs.get_commits.outputs.REMOTE }}" ]; then
+            echo "Strings are equal."
+          else
+            echo "Strings are not equal."
+          fi
       - name: repo-sync
         uses: wei/git-sync@v3
         with:

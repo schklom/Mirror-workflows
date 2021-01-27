@@ -15,23 +15,19 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: 'TTRSS-docker'
-      - name: set ENV variables
-        run: echo "::set-env name=REMOTE::$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')"
       - name: test-commit
         run: |
           git rev-parse refs/heads/TTRSS-docker
-          echo REMOTE
-        #env:
-          #REMOTE: $(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')
-          #LOCAL: $(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')
-
+          cat $(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }') > REMOTE
+        
       - name: if yes
         #if: ${{ $REMOTE = $LOCAL }}
         run: |
           echo "OUIIIIIIIIIIIIIII"
-        env:
-          REMOTE: $(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')
-          LOCAL: $(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')
+          cat REMOTE
+        #env:
+          #REMOTE: $(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')
+          #LOCAL: $(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')
       - name: if no
         #if: ${{ $REMOTE = $LOCAL }}
         run: echo "NOOOOOOOOOOOOOON"

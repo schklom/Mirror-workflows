@@ -21,7 +21,7 @@ jobs:
           echo $(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }') > REMOTE
 
       - name: if yes
-        if: $(cat REMOTE) = $(cat LOCAL)
+        if: ${{ $(cat REMOTE) = $(cat LOCAL) }}
         run: |
           echo "OUIIIIIIIIIIIIIII"
         #env:

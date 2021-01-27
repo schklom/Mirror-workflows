@@ -15,24 +15,25 @@ jobs:
       - name: set commits as environment variables
         id: commits
           #echo "::set-output name=LOCAL::$(git rev-parse refs/heads/TTRSS-docker)"
+          #echo "::set-output name=LOCAL::$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')"
+          #echo "::set-output name=REMOTE::$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')"
         run: |
-          echo "::set-output name=LOCAL::$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')"
-          echo "::set-output name=REMOTE::$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')"
-          echo "OUTPUT=output-$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')" >> $GITHUB_ENV
+          echo "LOCAL=$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')" >> $GITHUB_ENV
+          echo "REMOTE=$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')" >> $GITHUB_ENV
       - name: if yes
-        if: $("${{steps.commits.outputs.LOCAL}}" = "${{steps.commits.outputs.REMOTE}}")
+        if: env.LOCAL == env.REMOTE
         run: |
           echo "OUIIIIIIIIIIIIIIIIII"
+        env:
+          LOCAL: ${{ env.LOCAL }}
+          REMOTE: ${{ env.REMOTE }}
         #env:
           #REMOTE: $(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')
           #LOCAL: $(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')
       - name: if no
-        #if: ${{steps.commits.outputs.LOCAL}} != ${{steps.commits.outputs.REMOTE}}
+        if: env.LOCAL != env.REMOTE
         run: |
           echo "NONNNNNNNNNNNNNNNNNN"
-          echo "$OUTPUT"
-          echo "OUTPUT"
-          echo $OUTPUT
-          echo OUTPUT
         env:
-          name: ${{ env.OUTPUT }}
+          LOCAL: ${{ env.LOCAL }}
+          REMOTE: ${{ env.REMOTE }}

@@ -20,7 +20,7 @@ jobs:
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         run: |
           echo "::set-output name=SETREMOTE::$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')"
-          echo "::set-output name=SETLOCAL::$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')
+          echo "::set-output name=SETLOCAL::$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')"
   
   repo_sync:
     needs: [get_commits]

@@ -10,6 +10,9 @@ on:
 jobs:
   get_commits:
     runs-on: ubuntu-latest
+    outputs:
+      LOCAL: ${{ steps.commits.outputs.SETLOCAL }}
+      REMOTE: ${{ steps.commits.outputs.SETREMOTE }} 
     steps:
       # https://github.com/actions/starter-workflows/issues/68#issuecomment-626239810
       #echo "::set-output name=LOCAL::$(git rev-parse refs/heads/TTRSS-docker)"
@@ -18,17 +21,17 @@ jobs:
       - name: set commits as environment variables
         id: commits
         # https://github.community/t/how-can-i-set-an-expression-as-an-environment-variable-at-workflow-level/16516/9
+          #echo "LOCAL=$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')" >> $GITHUB_ENV
+          #echo "REMOTE=$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')" >> $GITHUB_ENV
+          
+        # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         run: |
-          echo "LOCAL=$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')" >> $GITHUB_ENV
-          echo "REMOTE=$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')" >> $GITHUB_ENV
-          echo "::set-output name=SETLOCAL::$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')"
-      - name: if no
-        if: env.LOCAL != env.REMOTE
-        run: |
-          echo "NONNNNNNNNNNNNNNNNNN"
-          echo $env.LOCAL
+          echo "::set-output name=SETREMOTE::$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose HEAD | awk '{ print $1 }')"
+          echo "::set-output name=SETLOCAL::$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TTRSS-docker | awk '{ print $1 }')"
+      #- name: if no
+        #if: env.LOCAL != env.REMOTE
   sync:
     needs: [get_commits]
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{needs.get_commits.steps.commits.outputs.SETLOCAL}}
+      - run: echo ${{ needs.get_commits.steps.commits.outputs.SETLOCAL }}

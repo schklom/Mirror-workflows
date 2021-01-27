@@ -4,7 +4,7 @@ on:
   # Triggers the workflow on push or pull request events but only for the main branch
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '0 */4 * * *'
+    - cron:  '0 0 * * *'
   workflow_dispatch:
 
 jobs:
@@ -37,9 +37,9 @@ jobs:
           destination_branch: "TTRSS-docker"
           ssh_private_key: ${{ secrets.GITSYNCACTION }}
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-        with:
-          ref: 'TTRSS-docker'
+      #- uses: actions/checkout@v2
+        #with:
+          #ref: 'TTRSS-docker'
       #- name: app dockerfile
       #  run: sed -r 's/^FROM ([a-zA-Z]+)(.*)$/FROM arm32v7\/\1\2/' src/app/Dockerfile > src/app/Dockerfile
       #- name: adapt web dockerfile

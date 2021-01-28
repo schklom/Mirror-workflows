@@ -2076,12 +2076,6 @@ body.flat.ttrss_main .post .content img,
 body.flat.ttrss_main .cdm .content-inner img,
 body.flat.ttrss_main .post .content video,
 body.flat.ttrss_main .cdm .content-inner video {
-  transition: filter 0.25s linear;
-}
-body.flat.ttrss_main .post .content img:not(:hover),
-body.flat.ttrss_main .cdm .content-inner img:not(:hover),
-body.flat.ttrss_main .post .content video:not(:hover),
-body.flat.ttrss_main .cdm .content-inner video:not(:hover) {
   filter: saturate(0.9) brightness(0.8);
 }
 body.flat.ttrss_main .article-note {

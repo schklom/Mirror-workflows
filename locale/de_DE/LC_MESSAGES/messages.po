@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-01-07 18:21+0300\n"
-"PO-Revision-Date: 2020-10-22 23:52+0000\n"
-"Last-Translator: xnor <xnoreq@gmail.com>\n"
+"PO-Revision-Date: 2021-01-28 18:19+0000\n"
+"Last-Translator: Eike <weblate.tt-rss.org@lotz.me>\n"
 "Language-Team: German <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "de/>\n"
 "Language: de_DE\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.2.2\n"
+"X-Generator: Weblate 4.4\n"
 "X-Poedit-Bookmarks: -1,557,558,-1,-1,-1,-1,-1,-1,-1\n"
 
 #: backend.php:57
@@ -1537,13 +1537,13 @@ msgid ""
 "Scan the following code by the Authenticator application or copy the key "
 "manually"
 msgstr ""
-"Scannen Sie den folgenden QR-Code mit der Authentifizierungs-App oder "
-"kopieren Sie den Schlüssel manuell"
+"Scannen Sie den folgenden Code mit Ihrem Authentifikator oder kopieren sie "
+"ihn manuell"
 
 #: classes/pref/prefs.php:500
 msgid "Use the following OTP key with a compatible Authenticator application"
 msgstr ""
-"Verwenden Sie das folgenden OTP-Geheimnis mit einer kompatiblen "
+"Verwenden Sie den folgenden OTP-Schlüssel mit einer kompatiblen "
 "Authentifizierungs-App"
 
 #: classes/pref/prefs.php:508
@@ -1665,11 +1665,11 @@ msgstr ""
 
 #: classes/pref/prefs.php:1190
 msgid "Apply"
-msgstr "Speichern"
+msgstr "Übernehmen"
 
 #: classes/pref/prefs.php:1192
 msgid "Save and reload"
-msgstr "Speichern und neu laden"
+msgstr "Speichern und neuladen"
 
 #: classes/pref/prefs.php:1217
 msgid "Create profile"
@@ -1705,8 +1705,8 @@ msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
 "reference."
 msgstr ""
-"Generiertes Passwort <strong>%s</strong> für %s. Bitte merken Sie es sich "
-"zur späteren Verwendung."
+"Generiertes Passwort <stark>%s</stark> für %s. Bitte merken Sie sich das für "
+"eine spätere Nutzung."
 
 #: classes/pref/feeds.php:28
 msgid "Check to enable field"
@@ -1763,23 +1763,22 @@ msgid "Article purging:"
 msgstr "Artikel löschen:"
 
 #: classes/pref/feeds.php:644
-#, fuzzy, php-format
+#, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
-msgstr[0] "(%d Feed)"
-msgstr[1] "(%d Feeds)"
+msgstr[0] "(%d Tag)"
+msgstr[1] "(%d Tage)"
 
 #: classes/pref/feeds.php:646 classes/pref/feeds.php:903
-#, fuzzy
 msgid "Disabled"
-msgstr "Einmalpasswörter ausschalten"
+msgstr "Deaktiviert"
 
 #: classes/pref/feeds.php:650
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d Tag"
+msgstr[1] "%d Tage"
 
 #: classes/pref/feeds.php:686
 msgid ""
@@ -1822,9 +1821,9 @@ msgid "Replace"
 msgstr "Ersetzen"
 
 #: classes/pref/feeds.php:901
-#, fuzzy, php-format
+#, php-format
 msgid "(%d days)"
-msgstr "(%d Feed)"
+msgstr "(%d Tage)"
 
 #: classes/pref/feeds.php:1220
 msgid "Feeds with errors"
@@ -1963,21 +1962,19 @@ msgstr "Aktualisieren"
 
 #: classes/pref/system.php:48
 msgid "Severity:"
-msgstr ""
+msgstr "Schweregrad:"
 
 #: classes/pref/system.php:51
-#, fuzzy
 msgid "Errors"
 msgstr "Fehler"
 
 #: classes/pref/system.php:52
 msgid "Warnings"
-msgstr ""
+msgstr "Warnungen"
 
 #: classes/pref/system.php:53
-#, fuzzy
 msgid "Everything"
-msgstr "Auswahl aufheben"
+msgstr "Alles"
 
 #: classes/pref/system.php:65
 msgid "Error"
@@ -2336,9 +2333,8 @@ msgid "Inline content"
 msgstr "Eingebetteter Artikelinhalt"
 
 #: plugins/af_readability/init.php:48
-#, fuzzy
 msgid "Append content"
-msgstr "Eingebetteter Artikelinhalt"
+msgstr "Inhalt anhängen"
 
 #: plugins/af_readability/init.php:57
 msgid "Toggle full article text"
@@ -2365,7 +2361,7 @@ msgstr "Zur Zeit aktiviert für (klicken zum Bearbeiten):"
 
 #: plugins/af_readability/init.php:125
 msgid "(append)"
-msgstr ""
+msgstr "(anhängen)"
 
 #: plugins/af_readability/init.php:136
 msgid "Readability"
@@ -2377,7 +2373,7 @@ msgstr "Artikelinhalt"
 
 #: plugins/af_readability/init.php:153
 msgid "Append to summary, instead of replacing it"
-msgstr ""
+msgstr "An die Zusammenfassung anhängen, statt sie zu ersetzen"
 
 #: plugins/note/init.php:26 plugins/note/note.js:10
 msgid "Edit article note"
@@ -2437,7 +2433,7 @@ msgstr "Reddit Inhalts-Einstellungen (af_redditimgur)"
 
 #: plugins/af_redditimgur/init.php:66
 msgid "Extract missing content using Readability (requires af_readability)"
-msgstr "Extrahiere fehlenden Inhalt mit Readability (benötigt af_readability)"
+msgstr "Extrahiere fehlende Inhalte mit Readability (benötigt af_readability)"
 
 #: plugins/af_redditimgur/init.php:72
 msgid "Enable additional duplicate checking"
@@ -2446,7 +2442,7 @@ msgstr "Zusätzliche Duplikat-Prüfung aktivieren"
 #: plugins/af_redditimgur/init.php:78
 #, php-format
 msgid "Rewrite Reddit URLs to %s"
-msgstr ""
+msgstr "Reddit-URLs nach %s umschreiben"
 
 #: plugins/af_redditimgur/init.php:96 plugins/af_proxy_http/init.php:244
 msgid "Configuration saved"

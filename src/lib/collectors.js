@@ -86,10 +86,11 @@ async function fetchUser(username, context) {
  * @returns {Promise<{user: import("./structures/User"), quotaUsed: number}>}
  */
 function fetchUserFromHTML(username) {
-	if (constants.caching.self_blocked_status.enabled) {
+	const blockedCacheConfig = constants.caching.self_blocked_status.user_html
+	if (blockedCacheConfig) {
 		if (history.store.has("user")) {
 			const entry = history.store.get("user")
-			if (!entry.lastRequestSuccessful && Date.now() < entry.lastRequestAt + constants.caching.self_blocked_status.time) {
+			if (!entry.lastRequestSuccessful && Date.now() < entry.lastRequestAt + blockedCacheConfig.time) {
 				return Promise.reject(constants.symbols.RATE_LIMITED)
 			}
 		}
@@ -271,6 +272,15 @@ function fetchUserFromSaved(saved) {
  * @returns {Promise<{result: import("./types").PagedEdges<import("./types").TimelineEntryN2>, fromCache: boolean}>}
  */
 function fetchTimelinePage(userID, after) {
+	const blockedCacheConfig = constants.caching.self_blocked_status.timeline_graphql
+	if (blockedCacheConfig) {
+		if (history.store.has("timeline")) {
+			const entry = history.store.get("timeline")
+			if (!entry.lastRequestSuccessful && Date.now() < entry.lastRequestAt + blockedCacheConfig.time) {
+				return Promise.reject(constants.symbols.RATE_LIMITED)
+			}
+		}
+	}
 	const p = new URLSearchParams()
 	p.set("query_hash", constants.external.timeline_query_hash)
 	p.set("variables", JSON.stringify({
@@ -294,7 +304,7 @@ function fetchTimelinePage(userID, after) {
 			history.report("timeline", true)
 			return timeline
 		}).catch(error => {
-			if (error === constants.symbols.RATE_LIMITED) {
+			if (error === constants.symbols.RATE_LIMITED || error === constants.symbols.INSTAGRAM_BLOCK_TYPE_DECEMBER) {
 				history.report("timeline", false)
 			}
 			throw error
@@ -326,7 +336,7 @@ function fetchIGTVPage(userID, after) {
 			history.report("igtv", true)
 			return timeline
 		}).catch(error => {
-			if (error === constants.symbols.RATE_LIMITED) {
+			if (error === constants.symbols.RATE_LIMITED || error === constants.symbols.INSTAGRAM_BLOCK_TYPE_DECEMBER) {
 				history.report("igtv", false)
 			}
 			throw error
@@ -430,7 +440,7 @@ function fetchShortcodeData(shortcode) {
 				return data
 			}
 		}).catch(error => {
-			if (error === constants.symbols.RATE_LIMITED) {
+			if (error === constants.symbols.RATE_LIMITED || error === constants.symbols.INSTAGRAM_BLOCK_TYPE_DECEMBER) {
 				history.report("post", false)
 			}
 			throw error

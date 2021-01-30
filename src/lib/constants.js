@@ -216,8 +216,14 @@ let constants = {
 		cache_sweep_interval: 3*60*1000,
 		csrf_time: 60*60*1000,
 		self_blocked_status: {
-			enabled: true,
-			time: 2*60*60*1000,
+			user_html: {
+				enabled: false,
+				time: 15*60*1000
+			},
+			timeline_graphql: {
+				enabled: false,
+				time: 24*60*60*1000
+			}
 		},
 		db_user_id: true,
 		db_post_n3: false,

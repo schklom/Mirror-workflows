@@ -91,7 +91,7 @@ function fetchUserFromHTML(username) {
 		if (history.store.has("user")) {
 			const entry = history.store.get("user")
 			if (!entry.lastRequestSuccessful && Date.now() < entry.lastRequestAt + blockedCacheConfig.time) {
-				return Promise.reject(constants.symbols.RATE_LIMITED)
+				return Promise.reject(entry.kind || constants.symbols.RATE_LIMITED)
 			}
 		}
 	}
@@ -148,7 +148,7 @@ function fetchUserFromHTML(username) {
 			}
 		}).catch(error => {
 			if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN || error === constants.symbols.RATE_LIMITED) {
-				history.report("user", false)
+				history.report("user", false, error)
 			}
 			throw error
 		})
@@ -230,7 +230,7 @@ function fetchUserFromCombined(userID, username) {
 		return {user, quotaUsed}
 	}).catch(error => {
 		if (error === constants.symbols.RATE_LIMITED) {
-			history.report("reel", false)
+			history.report("reel", false, error)
 		}
 		throw error
 	})
@@ -277,7 +277,7 @@ function fetchTimelinePage(userID, after) {
 		if (history.store.has("timeline")) {
 			const entry = history.store.get("timeline")
 			if (!entry.lastRequestSuccessful && Date.now() < entry.lastRequestAt + blockedCacheConfig.time) {
-				return Promise.reject(constants.symbols.RATE_LIMITED)
+				return Promise.reject(entry.kind || constants.symbols.RATE_LIMITED)
 			}
 		}
 	}
@@ -305,7 +305,7 @@ function fetchTimelinePage(userID, after) {
 			return timeline
 		}).catch(error => {
 			if (error === constants.symbols.RATE_LIMITED || error === constants.symbols.INSTAGRAM_BLOCK_TYPE_DECEMBER) {
-				history.report("timeline", false)
+				history.report("timeline", false, error)
 			}
 			throw error
 		})
@@ -337,7 +337,7 @@ function fetchIGTVPage(userID, after) {
 			return timeline
 		}).catch(error => {
 			if (error === constants.symbols.RATE_LIMITED || error === constants.symbols.INSTAGRAM_BLOCK_TYPE_DECEMBER) {
-				history.report("igtv", false)
+				history.report("igtv", false, error)
 			}
 			throw error
 		})
@@ -441,7 +441,7 @@ function fetchShortcodeData(shortcode) {
 			}
 		}).catch(error => {
 			if (error === constants.symbols.RATE_LIMITED || error === constants.symbols.INSTAGRAM_BLOCK_TYPE_DECEMBER) {
-				history.report("post", false)
+				history.report("post", false, error)
 			}
 			throw error
 		})

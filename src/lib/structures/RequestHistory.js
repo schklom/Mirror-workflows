@@ -7,7 +7,7 @@ class RequestHistory {
 	 */
 	constructor(tracked) {
 		this.tracked = new Set(tracked)
-		/** @type {Map<string, {lastRequestAt: number | null, lastRequestSuccessful: boolean | null}>} */
+		/** @type {Map<string, {lastRequestAt: number | null, lastRequestSuccessful: boolean | null, kind?: any}>} */
 		this.store = new Map()
 		for (const key of tracked) {
 			this.store.set(key, {
@@ -20,12 +20,14 @@ class RequestHistory {
 	/**
 	 * @param {string} key
 	 * @param {boolean} success
+	 * @param {any} [kind]
 	 */
-	report(key, success) {
+	report(key, success, kind) {
 		if (!this.tracked.has(key)) throw new Error(`Trying to report key ${key}, but is not tracked`)
 		const entry = this.store.get(key)
 		entry.lastRequestAt = Date.now()
 		entry.lastRequestSuccessful = success
+		entry.kind = kind
 		if (constants.caching.db_request_history) {
 			db.prepare("INSERT INTO RequestHistory (type, success, timestamp) VALUES (?, ?, ?)").run(key, +entry.lastRequestSuccessful, entry.lastRequestAt)
 		}

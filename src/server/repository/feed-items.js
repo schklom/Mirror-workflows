@@ -14,7 +14,8 @@ async function insertIfNotExists(data, feedId) {
 			feed: feedId,
 			link: data.link,
 			title: data.title,
-			description: data.description
+			description: data.description,
+			added: data.added
 		});
 }
 

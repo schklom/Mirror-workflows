@@ -72,3 +72,7 @@ Running electron on a server requires some workarounds with Xvfb. See docker-ent
 
 - added option to set cookies. the cookie string will be directly passed on as Cookie header.
 - updated dependencies
+
+### 2021-01-31
+
+- fixed feed item dates. before now they were all set to the date the database was created

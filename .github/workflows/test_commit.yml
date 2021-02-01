@@ -13,4 +13,4 @@ jobs:
       - name: set commits as environment variables
         id: commits
         run: |
-          echo $(git log)
+          echo $(git log -n 2)

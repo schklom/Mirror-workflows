@@ -11,10 +11,10 @@ jobs:
         with:
           ref: 'Feedropolis' # branch
       - run: |
-          echo $(git log -n 2)
-      - run: |
-          echo $(git log -n 4)
-      - run: |
-          echo $(git log -n 6)
+          echo $(git log)
       - run: |
           echo $(git log -n 8)
+      - run: |
+          echo $(git log --full-history)
+      - run: |
+          echo $(git log -p -3)

@@ -1,0 +1,16 @@
+name: test commit
+on:
+  workflow_dispatch:
+
+jobs:
+  get_commits:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: 'Feedropolis' # branch
+      - name: set commits as environment variables
+        id: commits
+        run: |
+          echo $(git log)

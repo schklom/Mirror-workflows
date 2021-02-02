@@ -19,7 +19,7 @@ jobs:
       with:
         ref: 'Feedropolis' # branch
     - name: get most recent commit id on original repo, for next comparison on sync
-      run: git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/Feedropolis | awk '{ print $1 }') > last_sync_with_original_repo_commit_id
+      run: git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/Feedropolis | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
     - name: Add python and build-essential to apt-get install, for a linux/arm/v7 image
       run: sed -i '/apt-get install -y/s/$/ python3 build-essential/' Dockerfile
     # https://github.com/marketplace/actions/git-auto-commit

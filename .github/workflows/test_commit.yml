@@ -11,12 +11,8 @@ jobs:
         with:
           ref: 'Feedropolis' # branch
       - run: |
-          echo $(git log)
+          git log
       - run: |
-          echo $(git log -n 8)
+          git log -n 2
       - run: |
-          echo $(git log --full-history)
-      - run: |
-          echo $(git rev-parse @~)
-      - run: |
-          echo $(git rev-parse @~2)
+          git log --full-history

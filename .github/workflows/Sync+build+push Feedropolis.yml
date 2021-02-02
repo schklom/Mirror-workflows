@@ -12,14 +12,18 @@ jobs:
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     outputs:
       LOCAL: ${{ steps.commits.outputs.SETLOCAL }}
-      REMOTE: ${{ steps.commits.outputs.SETREMOTE }} 
+      REMOTE: ${{ steps.commits.outputs.SETREMOTE }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: 'Feedropolis' # branch
       - name: set commits as environment variables
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         run: |
-          echo "::set-output name=SETREMOTE::$(git ls-remote https://gitlab.com/stormking/feedropolis HEAD | awk '{ print $1 }')"
-          echo "::set-output name=SETLOCAL::$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/Feedropolis | awk '{ print $1 }')"
+          echo "::set-output name=SETREMOTE::$(git ls-remote https://gitlab.com/stormking/feedropolis.git HEAD | awk '{ print $1 }')"
+          echo "::set-output name=SETLOCAL::$(cat last_sync_with_original_repo_commit_id)"
   
   repo-sync:
     needs: [get_commits]
@@ -35,6 +39,12 @@ jobs:
         destination_repo: "git@github.com:schklom/Mirror-workflows.git"
         destination_branch: "Feedropolis"
         ssh_private_key: ${{ secrets.GITSYNCACTION }}
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        ref: 'Feedropolis' # branch
+    - name: get most recent commit id on original repo, for next comparison on sync
+      run: git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/Feedropolis | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
 
   buildandpush:
     needs: [repo-sync]

@@ -19,7 +19,7 @@ jobs:
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         run: |
-          echo "::set-output name=SETREMOTE::$(git ls-remote https://github.com/marklagendijk/node-toogoodtogo-watcher HEAD | awk '{ print $1 }')"
+          echo "::set-output name=SETREMOTE::$(git ls-remote https://github.com/marklagendijk/node-toogoodtogo-watcher.git HEAD | awk '{ print $1 }')"
           echo "::set-output name=SETLOCAL::$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/TGTG | awk '{ print $1 }')"
   
   repo-sync:

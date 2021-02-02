@@ -17,4 +17,6 @@ jobs:
       - run: |
           echo $(git log --full-history)
       - run: |
-          echo $(git log -p -3)
+          echo $(git rev-parse @~)
+      - run: |
+          echo $(git rev-parse @~2)

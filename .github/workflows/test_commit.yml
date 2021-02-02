@@ -3,16 +3,30 @@ on:
   workflow_dispatch:
 
 jobs:
-  get_commits:
+  repo-sync:
+    needs: [get_commits]
     runs-on: ubuntu-latest
+    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          ref: 'Feedropolis' # branch
-      - run: |
-          git log
-      - run: |
-          git log -n 2
-      - run: |
-          git log --full-history
+    - name: repo-sync
+      uses: wei/git-sync@v3
+      with:
+        source_repo: "https://gitlab.com/stormking/feedropolis.git"
+        source_branch: "master"
+        destination_repo: "git@github.com:schklom/Mirror-workflows.git"
+        destination_branch: "Feedropolis"
+        ssh_private_key: ${{ secrets.GITSYNCACTION }}
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        ref: 'Feedropolis' # branch
+    - name: get most recent commit id on original repo, for next comparison on sync
+      run: git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/Feedropolis | awk '{ print $1 }') > last_sync_with_original_repo_commit_id
+    - name: Add python and build-essential to apt-get install, for a linux/arm/v7 image
+      run: sed -i '/apt-get install -y/s/$/ python3 build-essential/' Dockerfile
+    # https://github.com/marketplace/actions/git-auto-commit
+    - name: Commit and push the change
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+         commit_message: Add python and build-essential to apt-get install, for a linux/arm/v7 image

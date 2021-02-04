@@ -10,11 +10,15 @@ To build the image:
 Download Pi.Alert and uncompress to pialert directory
 
 curl -LO https://github.com/pucherot/Pi.Alert/raw/main/tar/pialert_latest.tar
+
 tar xvf pialert_latest.tar
+
 rm pialert_latest.tar
 
 Inside the image, replace the pialert.conf with the one include here
+
 mv pialert/config/pialert.conf pialert/config/pialert.conf.orig
+
 cp ./pialert.conf pialert/config/pialert.conf
 
 docker build -t bcollier/pialert:0.9 .
@@ -22,6 +26,7 @@ docker build -t bcollier/pialert:0.9 .
 To run it:
 
 mkdir /opt/pialert
+
 copy the files pialert.conf and version.conf from here to the new directory (sorry, I have not yet figured out how to do this automatically inside the docker build).
 
 docker run \

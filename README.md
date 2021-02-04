@@ -31,5 +31,5 @@ docker run \
         
 In order for arp-scan to work in a docker, the container must use net=host (if you know a way around, let me know).
 
-
+You can then manually add pi.alert to your pi-hole Local DNS names pointing the the host machine IP. The address on your system becomes http://pi.alert
 

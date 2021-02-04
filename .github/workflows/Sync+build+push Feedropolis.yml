@@ -54,13 +54,13 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: 'Feedropolis' # branch
-      - name: Add python and build-essential to apt-get install, for a linux/arm/v7 image
+      - name: Add python and build-essential to apt-get install, for a linux/arm/v7,linux/arm64 image
         run: sed -i '/apt-get install -y/s/$/ python3 build-essential/' Dockerfile
       # https://github.com/marketplace/actions/git-auto-commit
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: Add python and build-essential to apt-get install, for a linux/arm/v7 image
+          commit_message: Add python and build-essential to apt-get install, for a linux/arm/v7,linux/arm64 image
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -89,7 +89,7 @@ jobs:
           context: .
           file: ./Dockerfile
           #platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
-          platforms: linux/arm/v7
+          platforms: linux/arm/v7,linux/arm64
           pull: true
           push: true
           tags: |

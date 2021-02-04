@@ -108,7 +108,7 @@ let constants = {
 
 	default_user_settings: {
 		language: "en",
-		rewrite_youtube: "invidious.io",
+		rewrite_youtube: "redirect.invidious.io",
 		rewrite_twitter: "nitter.net"
 	},
 

@@ -21,6 +21,9 @@ docker build -t bcollier/pialert:0.9 .
 
 To run it:
 
+mkdir /opt/pialert
+copy the files pialert.conf and version.conf from here to the new directory (sorry, I have not yet figured out how to do this automatically inside the docker build).
+
 docker run \
         --rm \
         --name=pialert \

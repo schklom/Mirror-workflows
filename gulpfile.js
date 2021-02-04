@@ -1,6 +1,7 @@
 // Less configuration
 const gulp = require('gulp');
 const less = require('gulp-less');
+const touch = require('gulp-touch-fd');
 
 function swallowError(error) {
 	console.log(error.toString())
@@ -18,7 +19,7 @@ gulp.task('less', function(cb) {
       gulp.dest(function(f) {
         return f.base;
       })
-    );
+    ).pipe(touch());
   cb();
 });
 

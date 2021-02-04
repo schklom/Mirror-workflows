@@ -1,6 +1,8 @@
 # pialert
 A docker version of @pucherot pi.alert
 
+Reference : https://github.com/pucherot/Pi.Alert
+
 This docker image is based on a Debian source and adds the code from @pucherot pi.alert.  The default pialert.conf file is modified from the original to create a set of default values that can be used in the initial image build without prompting.  The config directory must be mounted on the host system to be accessible.  You can mofidy the defaults and then restart the docker container.
 
 To build the image:

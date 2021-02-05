@@ -128,7 +128,7 @@ class PluginHost {
 	}
 
 	function get_plugin($name) {
-		return $this->plugins[strtolower($name)];
+		return $this->plugins[strtolower($name)] ?? null;
 	}
 
 	function run_hooks($type, $method, $args) {
@@ -140,11 +140,11 @@ class PluginHost {
 	function add_hook($type, $sender, $priority = 50) {
 		$priority = (int) $priority;
 
-		if (!is_array($this->hooks[$type])) {
+		if (empty($this->hooks[$type])) {
 			$this->hooks[$type] = [];
 		}
 
-		if (!is_array($this->hooks[$type][$priority])) {
+		if (empty($this->hooks[$type][$priority])) {
 			$this->hooks[$type][$priority] = [];
 		}
 
@@ -277,7 +277,7 @@ class PluginHost {
 	function is_system($plugin) {
 		$about = $plugin->about();
 
-		return @$about[3];
+		return $about[3] ?? false;
 	}
 
 	// only system plugins are allowed to modify routing
@@ -307,7 +307,7 @@ class PluginHost {
 		$handler = str_replace("-", "_", strtolower($handler));
 		$method = strtolower($method);
 
-		if (is_array($this->handlers[$handler])) {
+		if (isset($this->handlers[$handler])) {
 			if (isset($this->handlers[$handler]["*"])) {
 				return $this->handlers[$handler]["*"];
 			} else {
@@ -429,9 +429,7 @@ class PluginHost {
 	function get_all($sender) {
 		$idx = get_class($sender);
 
-		$data = $this->storage[$idx];
-
-		return $data ? $data : [];
+		return $this->storage[$idx] ?? [];
 	}
 
 	function clear_data($sender) {
@@ -461,7 +459,7 @@ class PluginHost {
 	}
 
 	function get_feeds($cat_id) {
-		return $this->feeds[$cat_id];
+		return $this->feeds[$cat_id] ?? [];
 	}
 
 	// convert feed_id (e.g. -129) to pfeed_id first

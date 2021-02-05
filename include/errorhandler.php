@@ -10,10 +10,12 @@ function format_backtrace($trace) {
 
 				if (is_array($e["args"])) {
 					foreach ($e["args"] as $a) {
-						if (!is_object($a)) {
-							array_push($fmt_args, $a);
-						} else {
+						if (is_object($a)) {
 							array_push($fmt_args, "[" . get_class($a) . "]");
+						} else if (is_array($a)) {
+							array_push($fmt_args, "[" . truncate_string(json_encode($a), 128, "...")) . "]";
+						} else {
+							array_push($fmt_args, $a);
 						}
 					}
 				}
@@ -21,7 +23,11 @@ function format_backtrace($trace) {
 				$filename = str_replace(dirname(__DIR__) . "/", "", $e["file"]);
 
 				$rv .= sprintf("%d. %s(%s): %s(%s)\n",
-					$idx, $filename, $e["line"], $e["function"], implode(", ", $fmt_args));
+					$idx,
+					$filename,
+					$e["line"],
+					$e["function"],
+					implode(", ", $fmt_args));
 
 				$idx++;
 			}

@@ -687,7 +687,7 @@ class Article extends Handler_Protected {
 			if ($label_cache) {
 				$tmp = json_decode($label_cache, true);
 
-				if (!$tmp || $tmp["no-labels"] == 1)
+				if (empty($tmp) || ($tmp["no-labels"] ?? 0) == 1)
 					return $rv;
 				else
 					return $tmp;

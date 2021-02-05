@@ -138,7 +138,11 @@
 	function startup_gettext() {
 
 		# Get locale from Accept-Language header
-		$lang = al2gt(array_keys(get_translations()), "text/html");
+		if (version_compare(PHP_VERSION, '8.0.0', '<')) {
+			$lang = al2gt(array_keys(get_translations()), "text/html");
+		} else {
+			$lang = ""; // FIXME: do something with accept-to-gettext.php
+		}
 
 		if (defined('_TRANSLATION_OVERRIDE_DEFAULT')) {
 			$lang = _TRANSLATION_OVERRIDE_DEFAULT;
@@ -222,13 +226,13 @@
 	/* end compat shims */
 
 	function get_ssl_certificate_id() {
-		if ($_SERVER["REDIRECT_SSL_CLIENT_M_SERIAL"]) {
+		if ($_SERVER["REDIRECT_SSL_CLIENT_M_SERIAL"] ?? false) {
 			return sha1($_SERVER["REDIRECT_SSL_CLIENT_M_SERIAL"] .
 				$_SERVER["REDIRECT_SSL_CLIENT_V_START"] .
 				$_SERVER["REDIRECT_SSL_CLIENT_V_END"] .
 				$_SERVER["REDIRECT_SSL_CLIENT_S_DN"]);
 		}
-		if ($_SERVER["SSL_CLIENT_M_SERIAL"]) {
+		if ($_SERVER["SSL_CLIENT_M_SERIAL"] ?? false) {
 			return sha1($_SERVER["SSL_CLIENT_M_SERIAL"] .
 				$_SERVER["SSL_CLIENT_V_START"] .
 				$_SERVER["SSL_CLIENT_V_END"] .
@@ -240,11 +244,11 @@
 	// this is used for user http parameters unless HTML code is actually needed
 	function clean($param) {
 		if (is_array($param)) {
-			return array_map("strip_tags", $param);
+			return trim(array_map("strip_tags", $param));
 		} else if (is_string($param)) {
-			return strip_tags($param);
+			return trim(strip_tags($param));
 		} else {
-			return $param;
+			return trim($param);
 		}
 	}
 
@@ -407,7 +411,8 @@
 	}
 
 	function is_server_https() {
-		return (!empty($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] != 'off')) || $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https';
+		return (!empty($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] != 'off')) ||
+			(!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https');
 	}
 
 	function is_prefix_https() {
@@ -577,7 +582,7 @@
 		if (is_array($ttrss_version) && isset($ttrss_version['version'])) {
 			$git_commit = $ttrss_version['commit'];
 			$git_timestamp = $ttrss_version['timestamp'];
-			$last_error = $ttrss_version['last_error'];
+			$last_error = $ttrss_version['last_error'] ?? "";
 
 			return $ttrss_version['version'];
 		} else {

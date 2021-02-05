@@ -10,7 +10,7 @@ class Logger_SQL {
 
 		if ($this->pdo && get_schema_version() > 117) {
 
-			$owner_uid = $_SESSION["uid"] ? $_SESSION["uid"] : null;
+			$owner_uid = $_SESSION["uid"] ?? null;
 
 			// limit context length, DOMDocument dumps entire XML in here sometimes, which may be huge
 			$context = mb_substr($context, 0, 8192);

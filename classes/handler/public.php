@@ -731,7 +731,7 @@ class Handler_Public extends Handler {
 
 		if ($_SESSION["uid"]) {
 
-			$feed_url = trim(clean($_REQUEST["feed_url"]));
+			$feed_url = clean($_REQUEST["feed_url"]);
 			$csrf_token = clean($_POST["csrf_token"]);
 
 			header('Content-Type: text/html; charset=utf-8');

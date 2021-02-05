@@ -166,7 +166,7 @@ class Pref_Labels extends Handler_Protected {
 	function save() {
 
 		$id = clean($_REQUEST["id"]);
-		$caption = trim(clean($_REQUEST["caption"]));
+		$caption = clean($_REQUEST["caption"]);
 
 		$this->pdo->beginTransaction();
 

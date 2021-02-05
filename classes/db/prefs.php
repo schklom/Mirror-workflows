@@ -8,7 +8,7 @@ class Db_Prefs {
 		$this->pdo = Db::pdo();
 		$this->cache = array();
 
-		if ($_SESSION["uid"]) $this->cache();
+		if (!empty($_SESSION["uid"])) $this->cache();
 	}
 
 	private function __clone() {
@@ -24,7 +24,7 @@ class Db_Prefs {
 
 	function cache() {
 		$user_id = $_SESSION["uid"];
-		@$profile = $_SESSION["profile"];
+		$profile = $_SESSION["profile"] ?? false;
 
 		if (!is_numeric($profile) || !$profile || get_schema_version() < 63) $profile = null;
 
@@ -55,12 +55,12 @@ class Db_Prefs {
 
 		if (!$user_id) {
 			$user_id = $_SESSION["uid"];
-			@$profile = $_SESSION["profile"];
+			$profile = $_SESSION["profile"] ?? false;
 		} else {
 			$profile = false;
 		}
 
-		if ($user_id == $_SESSION['uid'] && isset($this->cache[$pref_name])) {
+		if ($user_id == ($_SESSION['uid'] ?? false) && isset($this->cache[$pref_name])) {
 			$tuple = $this->cache[$pref_name];
 			return $this->convert($tuple["value"], $tuple["type"]);
 		}
@@ -83,7 +83,7 @@ class Db_Prefs {
 			$value = $row["value"];
 			$type_name = $row["type_name"];
 
-			if ($user_id == $_SESSION["uid"]) {
+			if ($user_id == ($_SESSION["uid"] ?? false)) {
 				$this->cache[$pref_name]["type"] = $type_name;
 				$this->cache[$pref_name]["value"] = $value;
 			}
@@ -113,7 +113,7 @@ class Db_Prefs {
 
 		if (!$user_id) {
 			$user_id = $_SESSION["uid"];
-			@$profile = $_SESSION["profile"];
+			@$profile = $_SESSION["profile"] ?? false;
 		} else {
 			$profile = null;
 		}

@@ -22,7 +22,7 @@ class UrlHelper {
 
 		$rel_parts = parse_url($rel_url);
 
-		if ($rel_parts['host'] && $rel_parts['scheme']) {
+		if (!empty($rel_parts['host']) && !empty($rel_parts['scheme'])) {
 			return self::validate($rel_url);
 		} else if (strpos($rel_url, "//") === 0) {
 			# protocol-relative URL (rare but they exist)
@@ -61,7 +61,7 @@ class UrlHelper {
 
 		// this isn't really necessary because filter_var(... FILTER_VALIDATE_URL) requires host and scheme
 		// as per https://php.watch/versions/7.3/filter-var-flag-deprecation but it might save time
-		if (!$tokens['host'])
+		if (empty($tokens['host']))
 			return false;
 
 		if (!in_array(strtolower($tokens['scheme']), ['http', 'https']))
@@ -82,7 +82,7 @@ class UrlHelper {
 		// (used for validation only, we actually request the original URL, in case of urlencode breaking it)
 		$tokens_filter_var = $tokens;
 
-		if ($tokens['path']) {
+		if ($tokens['path'] ?? false) {
 			$tokens_filter_var['path'] = implode("/",
 										array_map("rawurlencode",
 											array_map("rawurldecode",
@@ -96,7 +96,7 @@ class UrlHelper {
 			return false;
 
 		if ($extended_filtering) {
-			if (!in_array($tokens['port'], [80, 443, '']))
+			if (!in_array($tokens['port'] ?? '', [80, 443, '']))
 				return false;
 
 			if (strtolower($tokens['host']) == 'localhost' || $tokens['host'] == '::1' || strpos($tokens['host'], '127.') === 0)
@@ -166,7 +166,6 @@ class UrlHelper {
 		global $fetch_effective_url;
 		global $fetch_effective_ip_addr;
 		global $fetch_curl_used;
-		global $fetch_domain_hits;
 
 		$fetch_last_error = false;
 		$fetch_last_error_code = -1;
@@ -176,9 +175,6 @@ class UrlHelper {
 		$fetch_last_modified = "";
 		$fetch_effective_url = "";
 		$fetch_effective_ip_addr = "";
-
-		if (!is_array($fetch_domain_hits))
-			$fetch_domain_hits = [];
 
 		if (!is_array($options)) {
 
@@ -234,13 +230,6 @@ class UrlHelper {
 			$fetch_last_error = "URL hostname failed to resolve or resolved to a loopback address ($ip_addr)";
 			return false;
 		}
-
-		$fetch_domain_hits[$url_host] += 1;
-
-		/*if ($fetch_domain_hits[$url_host] > MAX_FETCH_REQUESTS_PER_HOST) {
-			user_error("Exceeded fetch request quota for $url_host: " . $fetch_domain_hits[$url_host], E_USER_WARNING);
-			#return false;
-		}*/
 
 		if (!defined('NO_CURL') && function_exists('curl_init') && !ini_get("open_basedir")) {
 

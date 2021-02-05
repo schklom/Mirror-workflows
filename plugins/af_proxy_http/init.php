@@ -29,7 +29,7 @@ class Af_Proxy_Http extends Plugin {
 
 		$host->add_hook($host::HOOK_PREFS_TAB, $this);
 
-		if (!$_SESSION['af_proxy_http_token'])
+		if (empty($_SESSION['af_proxy_http_token']))
 			$_SESSION['af_proxy_http_token'] = bin2hex(get_random_bytes(16));
 	}
 

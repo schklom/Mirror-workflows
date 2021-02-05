@@ -3,7 +3,9 @@
 		get_include_path());
 
 	$op = $_REQUEST["op"];
-	@$method = $_REQUEST['subop'] ? $_REQUEST['subop'] : $_REQUEST["method"];
+	$method = !empty($_REQUEST['subop']) ?
+		$_REQUEST['subop'] :
+		$_REQUEST["method"] ?? false;
 
 	if (!$method)
 		$method = 'index';
@@ -19,7 +21,7 @@
 		return;
 	}
 
-	@$csrf_token = $_POST['csrf_token'];
+	$csrf_token = $_POST['csrf_token'] ?? "";
 
 	require_once "autoload.php";
 	require_once "sessions.php";

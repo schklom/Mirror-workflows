@@ -284,7 +284,7 @@
 		if (!isset($options["pidlock"]) || $options["task"] == 0)
 			RSSUtils::housekeeping_common();
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK, "hook_update_task", $op);
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK, "hook_update_task", $options);
 	}
 
 	if (isset($options["cleanup-tags"])) {

@@ -11,8 +11,8 @@
 
 	// we need a separate check here because functions.php might get parsed
 	// incorrectly before 5.3 because of :: syntax.
-	if (version_compare(PHP_VERSION, '5.6.0', '<')) {
-		print "<b>Fatal Error</b>: PHP version 5.6.0 or newer required. You're using " . PHP_VERSION . ".\n";
+	if (version_compare(PHP_VERSION, '7.0.0', '<')) {
+		print "<b>Fatal Error</b>: PHP version 7.0.0 or newer required. You're using " . PHP_VERSION . ".\n";
 		exit;
 	}
 
@@ -262,7 +262,7 @@
                             }
                         ?>
 
-                        <?php if (!$_SESSION["hide_logout"]) { ?>
+                        <?php if (empty($_SESSION["hide_logout"])) { ?>
                             <div dojoType="dijit.MenuItem" onclick="App.onActionSelected('qmcLogout')"><?php echo __('Logout') ?></div>
                         <?php } ?>
                     </div>

@@ -42,14 +42,14 @@ class Pref_Feeds extends Handler_Protected {
 
 	private function get_category_items($cat_id) {
 
-		if (clean($_REQUEST['mode']) != 2)
-			$search = $_SESSION["prefs_feed_search"];
+		if (clean($_REQUEST['mode'] ?? 0) != 2)
+			$search = $_SESSION["prefs_feed_search"] ?? "";
 		else
 			$search = "";
 
 		// first one is set by API
-		$show_empty_cats = clean($_REQUEST['force_show_empty']) ||
-			(clean($_REQUEST['mode']) != 2 && !$search);
+		$show_empty_cats = clean($_REQUEST['force_show_empty'] ?? false) ||
+			(clean($_REQUEST['mode'] ?? 0) != 2 && !$search);
 
 		$items = array();
 
@@ -117,8 +117,8 @@ class Pref_Feeds extends Handler_Protected {
 
 	function makefeedtree() {
 
-		if (clean($_REQUEST['mode']) != 2)
-			$search = $_SESSION["prefs_feed_search"];
+		if (clean($_REQUEST['mode'] ?? 0) != 2)
+			$search = $_SESSION["prefs_feed_search"] ?? "";
 		else
 			$search = "";
 
@@ -131,7 +131,7 @@ class Pref_Feeds extends Handler_Protected {
 
 		$enable_cats = get_pref('ENABLE_FEED_CATS');
 
-		if (clean($_REQUEST['mode']) == 2) {
+		if (clean($_REQUEST['mode'] ?? 0) == 2) {
 
 			if ($enable_cats) {
 				$cat = $this->feedlist_init_cat(-1);
@@ -208,8 +208,8 @@ class Pref_Feeds extends Handler_Protected {
 		}
 
 		if ($enable_cats) {
-			$show_empty_cats = clean($_REQUEST['force_show_empty']) ||
-				(clean($_REQUEST['mode']) != 2 && !$search);
+			$show_empty_cats = clean($_REQUEST['force_show_empty'] ?? false) ||
+				(clean($_REQUEST['mode'] ?? 0) != 2 && !$search);
 
 			$sth = $this->pdo->prepare("SELECT id, title FROM ttrss_feed_categories
 				WHERE owner_uid = ? AND parent_cat IS NULL ORDER BY order_id, title");
@@ -320,7 +320,7 @@ class Pref_Feeds extends Handler_Protected {
 		$fl['identifier'] = 'id';
 		$fl['label'] = 'name';
 
-		if (clean($_REQUEST['mode']) != 2) {
+		if (clean($_REQUEST['mode'] ?? 0) != 2) {
 			$fl['items'] = array($root);
 		} else {
 			$fl['items'] = $root['items'];
@@ -551,11 +551,9 @@ class Pref_Feeds extends Handler_Protected {
 				regExp='^(http|https)://.*' style='width : 300px'
 				name='feed_url' value=\"$feed_url\">";
 
-			$last_error = $row["last_error"];
-
-			if ($last_error) {
+			if (!empty($row["last_error"])) {
 				print "&nbsp;<i class=\"material-icons\"
-					title=\"".htmlspecialchars($last_error)."\">error</i>";
+					title=\"".htmlspecialchars($row["last_error"])."\">error</i>";
 			}
 
 			print "</fieldset>";
@@ -996,16 +994,16 @@ class Pref_Feeds extends Handler_Protected {
 
 	function editsaveops($batch) {
 
-		$feed_title = trim(clean($_POST["title"]));
-		$feed_url = trim(clean($_POST["feed_url"]));
-		$site_url = trim(clean($_POST["site_url"]));
+		$feed_title = clean($_POST["title"]);
+		$feed_url = clean($_POST["feed_url"]);
+		$site_url = clean($_POST["site_url"]);
 		$upd_intl = (int) clean($_POST["update_interval"]);
 		$purge_intl = (int) clean($_POST["purge_interval"]);
 		$feed_id = (int) clean($_POST["id"]); /* editSave */
 		$feed_ids = explode(",", clean($_POST["ids"])); /* batchEditSave */
 		$cat_id = (int) clean($_POST["cat_id"]);
-		$auth_login = trim(clean($_POST["auth_login"]));
-		$auth_pass = trim(clean($_POST["auth_pass"]));
+		$auth_login = clean($_POST["auth_login"]);
+		$auth_pass = clean($_POST["auth_pass"]);
 		$private = checkbox_to_sql_bool(clean($_POST["private"]));
 		$include_in_digest = checkbox_to_sql_bool(
 			clean($_POST["include_in_digest"]));
@@ -1019,7 +1017,7 @@ class Pref_Feeds extends Handler_Protected {
 		$mark_unread_on_update = checkbox_to_sql_bool(
 			clean($_POST["mark_unread_on_update"]));
 
-		$feed_language = trim(clean($_POST["feed_language"]));
+		$feed_language = clean($_POST["feed_language"]);
 
 		if (!$batch) {
 			if (clean($_POST["need_auth"]) !== 'on') {
@@ -1193,7 +1191,7 @@ class Pref_Feeds extends Handler_Protected {
 	}
 
 	function addCat() {
-		$feed_cat = trim(clean($_REQUEST["cat"]));
+		$feed_cat = clean($_REQUEST["cat"]);
 
 		Feeds::add_feed_category($feed_cat);
 	}
@@ -1228,12 +1226,12 @@ class Pref_Feeds extends Handler_Protected {
 				onclick=\"dijit.byId('feedTree').showInactiveFeeds()\">" .
 				__("Inactive feeds") . "</button>";
 
-		$feed_search = clean($_REQUEST["search"]);
+		$feed_search = clean($_REQUEST["search"] ?? "");
 
 		if (array_key_exists("search", $_REQUEST)) {
 			$_SESSION["prefs_feed_search"] = $feed_search;
 		} else {
-			$feed_search = $_SESSION["prefs_feed_search"];
+			$feed_search = $_SESSION["prefs_feed_search"] ?? "";
 		}
 
 		print '<div dojoType="dijit.layout.BorderContainer" gutters="false">';
@@ -1689,7 +1687,7 @@ class Pref_Feeds extends Handler_Protected {
 		$cat_id = clean($_REQUEST['cat']);
 		$feeds = explode("\n", clean($_REQUEST['feeds']));
 		$login = clean($_REQUEST['login']);
-		$pass = trim(clean($_REQUEST['pass']));
+		$pass = clean($_REQUEST['pass']);
 
 		$csth = $this->pdo->prepare("SELECT id FROM ttrss_feeds
 						WHERE feed_url = ? AND owner_uid = ?");
@@ -1756,8 +1754,8 @@ class Pref_Feeds extends Handler_Protected {
 	private function calculate_children_count($cat) {
 		$c = 0;
 
-		foreach ($cat['items'] as $child) {
-			if ($child['type'] == 'category') {
+		foreach ($cat['items'] ?? [] as $child) {
+			if ($child['type'] ?? '' == 'category') {
 				$c += $this->calculate_children_count($child);
 			} else {
 				$c += 1;

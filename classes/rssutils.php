@@ -10,7 +10,8 @@ class RSSUtils {
 				continue;
 
 			if ($k != "feed" && isset($v)) {
-				$x = strip_tags(is_array($v) ? implode(",", $v) : $v);
+				$x = strip_tags(
+					is_array($v) ? implode(",", array_keys($v)) : $v);
 
 				$tmp .= sha1("$k:" . sha1($x));
 			}

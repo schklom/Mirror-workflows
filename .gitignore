@@ -1,4 +1,5 @@
 Thumbs.db
+/.app_is_ready
 /deploy.exclude
 /deploy.sh
 /messages.mo

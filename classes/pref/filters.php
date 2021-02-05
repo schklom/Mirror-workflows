@@ -599,9 +599,9 @@ class Pref_Filters extends Handler_Protected {
 
 	function editSave() {
 		$filter_id = clean($_REQUEST["id"]);
-		$enabled = checkbox_to_sql_bool(clean($_REQUEST["enabled"]));
+		$enabled = checkbox_to_sql_bool(clean($_REQUEST["enabled"] ?? false));
 		$match_any_rule = checkbox_to_sql_bool(clean($_REQUEST["match_any_rule"]));
-		$inverse = checkbox_to_sql_bool(clean($_REQUEST["inverse"]));
+		$inverse = checkbox_to_sql_bool(clean($_REQUEST["inverse"] ?? false));
 		$title = clean($_REQUEST["title"]);
 
 		$this->pdo->beginTransaction();
@@ -638,8 +638,8 @@ class Pref_Filters extends Handler_Protected {
 		$sth = $this->pdo->prepare("DELETE FROM ttrss_filters2_actions WHERE filter_id = ?");
 		$sth->execute([$filter_id]);
 
-		if (!is_array(clean($_REQUEST["rule"]))) $_REQUEST["rule"] = [];
-		if (!is_array(clean($_REQUEST["action"]))) $_REQUEST["action"] = [];
+		if (!is_array(clean($_REQUEST["rule"] ?? ""))) $_REQUEST["rule"] = [];
+		if (!is_array(clean($_REQUEST["action"] ?? ""))) $_REQUEST["action"] = [];
 
 		if ($filter_id) {
 			/* create rules */

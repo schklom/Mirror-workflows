@@ -70,8 +70,8 @@
 				array_push($errors, "Please don't run this script as root.");
 			}
 
-			if (version_compare(PHP_VERSION, '5.6.0', '<')) {
-				array_push($errors, "PHP version 5.6.0 or newer required. You're using " . PHP_VERSION . ".");
+			if (version_compare(PHP_VERSION, '7.0.0', '<')) {
+				array_push($errors, "PHP version 7.0.0 or newer required. You're using " . PHP_VERSION . ".");
 			}
 
 			if (!class_exists("UConverter")) {
@@ -125,14 +125,14 @@
 			if (SELF_URL_PATH == "http://example.org/tt-rss/") {
 				$hint = $ref_self_url_path ? "(possible value: <b>$ref_self_url_path</b>)" : "";
 				array_push($errors,
-						"Please set SELF_URL_PATH to the correct value for your server $hint");
+						"Please set SELF_URL_PATH to the correct value for your server: $hint");
 			}
 
 			if ($ref_self_url_path &&
 				(!defined('_SKIP_SELF_URL_PATH_CHECKS') || !_SKIP_SELF_URL_PATH_CHECKS) &&
 				SELF_URL_PATH != $ref_self_url_path && SELF_URL_PATH != mb_substr($ref_self_url_path, 0, mb_strlen($ref_self_url_path)-1)) {
 				array_push($errors,
-					"Please set SELF_URL_PATH to the correct value detected for your server: <b>$ref_self_url_path</b>");
+					"Please set SELF_URL_PATH to the correct value detected for your server: <b>$ref_self_url_path</b> (you're using: <b>" . SELF_URL_PATH . "</b>)");
 			}
 
 			if (!is_writable(ICONS_DIR)) {

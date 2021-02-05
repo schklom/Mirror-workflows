@@ -44,7 +44,7 @@
 		return $ERRORS;
 	}
 
-	if ($_REQUEST['mode'] == 'js') {
+	if ($_REQUEST['mode'] ?? "" == 'js') {
 		header("Content-Type: text/javascript; charset=UTF-8");
 
 		print "var ERRORS = [];\n";

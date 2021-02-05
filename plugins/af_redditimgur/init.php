@@ -101,7 +101,7 @@ class Af_RedditImgur extends Plugin {
 	private function process_post_media($data, $doc, $xpath, $anchor) {
 		$found = 0;
 
-		if (is_array($data["media_metadata"])) {
+		if (isset($data["media_metadata"])) {
 			foreach ($data["media_metadata"] as $media) {
 				$media_url = htmlspecialchars_decode($media["s"]["u"]);
 
@@ -134,7 +134,9 @@ class Af_RedditImgur extends Plugin {
 			}
 		} */
 
-		if (!$found && $data["post_hint"] == "hosted:video") {
+		$post_hint = $data["post_hint"] ?? false;
+
+		if (!$found && $post_hint == "hosted:video") {
 			$media_url = $data["url"];
 
 			if (isset($data["preview"]["images"][0]["source"]))
@@ -154,7 +156,7 @@ class Af_RedditImgur extends Plugin {
 			}
 		}
 
-		if (!$found && $data["post_hint"] == "video") {
+		if (!$found && $post_hint == "video") {
 			$media_url = $data["url"];
 
 			if (isset($data["preview"]["images"][0]["source"]))
@@ -168,7 +170,7 @@ class Af_RedditImgur extends Plugin {
 			$found = 1;
 		}
 
-		if (!$found && $data["post_hint"] == "image") {
+		if (!$found && $post_hint == "image") {
 			$media_url = $data["url"];
 
 			Debug::log("found image url: $media_url", Debug::$LOG_VERBOSE);
@@ -177,14 +179,14 @@ class Af_RedditImgur extends Plugin {
 			$found = 1;
 		}
 
-		if (!$found && is_array($data["preview"]["images"])) {
+		if (!$found && isset($data["preview"]["images"])) {
 			foreach ($data["preview"]["images"] as $img) {
 				if (isset($img["source"]["url"])) {
 					$media_url = htmlspecialchars_decode($img["source"]["url"]);
 					$target_url = $data["url"];
 
 					if ($media_url) {
-						if ($data["post_hint"] == "self") {
+						if ($post_hint == "self") {
 							Debug::log("found preview image url: $media_url (link: $target_url)", Debug::$LOG_VERBOSE);
 							$this->handle_as_image($doc, $anchor, $media_url, $target_url);
 
@@ -229,7 +231,7 @@ class Af_RedditImgur extends Plugin {
 
 							$data = $child["data"];
 
-							if (is_array($data["crosspost_parent_list"])) {
+							if (isset($data["crosspost_parent_list"])) {
 								Debug::log("JSON: processing child crosspost_parent_list", Debug::$LOG_EXTENDED);
 
 								foreach ($data["crosspost_parent_list"] as $parent) {

@@ -191,10 +191,10 @@ class Pref_Users extends Handler_Protected {
 		}
 
 		function editSave() {
-			$login = trim(clean($_REQUEST["login"]));
+			$login = clean($_REQUEST["login"]);
 			$uid = clean($_REQUEST["id"]);
 			$access_level = (int) clean($_REQUEST["access_level"]);
-			$email = trim(clean($_REQUEST["email"]));
+			$email = clean($_REQUEST["email"]);
 			$password = clean($_REQUEST["password"]);
 
 			if ($password) {
@@ -230,7 +230,7 @@ class Pref_Users extends Handler_Protected {
 		}
 
 		function add() {
-			$login = trim(clean($_REQUEST["login"]));
+			$login = clean($_REQUEST["login"]);
 			$tmp_user_pwd = make_password();
 			$salt = substr(bin2hex(get_random_bytes(125)), 0, 250);
 			$pwd_hash = encrypt_password($tmp_user_pwd, $salt, true);
@@ -315,7 +315,7 @@ class Pref_Users extends Handler_Protected {
 			print "<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='top'>";
 			print "<div dojoType='fox.Toolbar'>";
 
-			$user_search = trim(clean($_REQUEST["search"]));
+			$user_search = clean($_REQUEST["search"] ?? "");
 
 			if (array_key_exists("search", $_REQUEST)) {
 				$_SESSION["prefs_user_search"] = $user_search;
@@ -330,7 +330,7 @@ class Pref_Users extends Handler_Protected {
 					__('Search')."</button>
 				</div>";
 
-			$sort = clean($_REQUEST["sort"]);
+			$sort = clean($_REQUEST["sort"] ?? "");
 
 			if (!$sort || $sort == "undefined") {
 				$sort = "login";

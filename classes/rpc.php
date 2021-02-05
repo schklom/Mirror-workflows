@@ -15,7 +15,7 @@ class RPC extends Handler_Protected {
 	}
 
 	function remprofiles() {
-		$ids = explode(",", trim(clean($_REQUEST["ids"])));
+		$ids = explode(",", clean($_REQUEST["ids"]));
 
 		foreach ($ids as $id) {
 			if ($_SESSION["profile"] != $id) {
@@ -28,7 +28,7 @@ class RPC extends Handler_Protected {
 
 	// Silent
 	function addprofile() {
-		$title = trim(clean($_REQUEST["title"]));
+		$title = clean($_REQUEST["title"]);
 
 		if ($title) {
 			$this->pdo->beginTransaction();
@@ -63,7 +63,7 @@ class RPC extends Handler_Protected {
 
 	function saveprofile() {
 		$id = clean($_REQUEST["id"]);
-		$title = trim(clean($_REQUEST["value"]));
+		$title = clean($_REQUEST["value"]);
 
 		if ($id == 0) {
 			print __("Default profile");
@@ -85,7 +85,7 @@ class RPC extends Handler_Protected {
 		$cat = clean($_REQUEST['cat']);
 		$need_auth = isset($_REQUEST['need_auth']);
 		$login = $need_auth ? clean($_REQUEST['login']) : '';
-		$pass = $need_auth ? trim(clean($_REQUEST['pass'])) : '';
+		$pass = $need_auth ? clean($_REQUEST['pass']) : '';
 
 		$rc = Feeds::subscribe_to_feed($feed, $cat, $login, $pass);
 
@@ -546,7 +546,7 @@ class RPC extends Handler_Protected {
 
 			$data['daemon_is_running'] = (int) file_is_locked("update_daemon.lock");
 
-			if (time() - $_SESSION["daemon_stamp_check"] > 30) {
+			if (time() - ($_SESSION["daemon_stamp_check"] ?? 0) > 30) {
 
 				$stamp = (int) @file_get_contents(LOCK_DIRECTORY . "/update_daemon.stamp");
 

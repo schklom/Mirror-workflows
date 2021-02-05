@@ -321,7 +321,7 @@ class Pref_Prefs extends Handler_Protected {
 		print "<input dojoType='dijit.form.ValidationTextBox' name='email' required='1' value='$email'>";
 		print "</fieldset>";
 
-		if (!SINGLE_USER_MODE && !$_SESSION["hide_hello"]) {
+		if (!SINGLE_USER_MODE && !empty($_SESSION["hide_hello"])) {
 
 			$access_level = $row["access_level"];
 			print "<fieldset>";
@@ -595,7 +595,7 @@ class Pref_Prefs extends Handler_Protected {
 
 		print '<div dojoType="dijit.layout.ContentPane" region="center" style="overflow-y : auto">';
 
-		$profile = $_SESSION["profile"];
+		$profile = $_SESSION["profile"] ?? null;
 
 		if ($profile) {
 			print_notice(__("Some preferences are only available in default profile."));
@@ -916,7 +916,7 @@ class Pref_Prefs extends Handler_Protected {
 		foreach ($tmppluginhost->get_plugins() as $name => $plugin) {
 			$about = $plugin->about();
 
-			if ($about[3]) {
+			if ($about[3] ?? false) {
 				if (in_array($name, $system_enabled)) {
 					$checked = "checked='1'";
 				} else {
@@ -930,7 +930,7 @@ class Pref_Prefs extends Handler_Protected {
 							dojoType='dijit.form.CheckBox' $checked type='checkbox'>
 						".htmlspecialchars($about[1]). "</label>";
 
-					if (@$about[4]) {
+					if ($about[4] ?? false) {
 						print "<button dojoType='dijit.form.Button' class='alt-info'
 							onclick='window.open(\"".htmlspecialchars($about[4])."\")'>
 								<i class='material-icons'>open_in_new</i> ".__("More info...")."</button>";
@@ -950,7 +950,7 @@ class Pref_Prefs extends Handler_Protected {
 		foreach ($tmppluginhost->get_plugins() as $name => $plugin) {
 			$about = $plugin->about();
 
-			if (!$about[3]) {
+			if ($about[3] ?? false) {
 
 				$checked = "";
 				$disabled = "";
@@ -976,7 +976,7 @@ class Pref_Prefs extends Handler_Protected {
 					}
 				}
 
-				if (@$about[4]) {
+				if ($about[4] ?? false) {
 					print " <button dojoType='dijit.form.Button' class='alt-info'
 							onclick='window.open(\"".htmlspecialchars($about[4])."\")'>
 								<i class='material-icons'>open_in_new</i> ".__("More info...")."</button>";

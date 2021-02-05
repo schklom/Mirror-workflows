@@ -718,8 +718,8 @@ class API extends Handler {
 						$label_cache = json_decode($label_cache, true);
 
 						if ($label_cache) {
-							if ($label_cache["no-labels"] == 1)
-								$labels = array();
+							if (($label_cache["no-labels"] ?? 0) == 1)
+								$labels = [];
 							else
 								$labels = $label_cache;
 						}
@@ -762,7 +762,7 @@ class API extends Handler {
 					}
 
 					// unify label output to ease parsing
-					if ($labels["no-labels"] == 1) $labels = array();
+					if (($labels["no-labels"] ?? 0) == 1) $labels = [];
 
 					$headline_row["labels"] = $labels;
 

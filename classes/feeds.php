@@ -20,7 +20,7 @@ class Feeds extends Handler_Protected {
 			$feed_id, $is_cat, $search,
 			$error, $feed_last_updated) {
 
-		if ($is_cat) $cat_q = "&is_cat=$is_cat";
+		$cat_q = $is_cat ? "&is_cat=$is_cat" : "";
 
 		if ($search) {
 			$search_q = "&q=$search";
@@ -31,7 +31,7 @@ class Feeds extends Handler_Protected {
 		$reply = "";
 
 		$rss_link = htmlspecialchars(get_self_url_prefix() .
-			"/public.php?op=rss&id=$feed_id$cat_q$search_q");
+			"/public.php?op=rss&id=${feed_id}${cat_q}${search_q}");
 
 		$reply .= "<span class='left'>";
 
@@ -147,8 +147,8 @@ class Feeds extends Handler_Protected {
 			}
 		}
 
-		@$search = $_REQUEST["query"];
-		@$search_language = $_REQUEST["search_language"]; // PGSQL only
+		$search = $_REQUEST["query"] ?? "";
+		$search_language = $_REQUEST["search_language"] ?? ""; // PGSQL only
 
 		if ($search) {
 			$disable_cache = true;
@@ -274,7 +274,7 @@ class Feeds extends Handler_Protected {
 					$label_cache = json_decode($label_cache, true);
 
 					if ($label_cache) {
-						if ($label_cache["no-labels"] == 1)
+						if ($label_cache["no-labels"] ?? false == 1)
 							$labels = array();
 						else
 							$labels = $label_cache;
@@ -295,7 +295,7 @@ class Feeds extends Handler_Protected {
 
 				$this->mark_timestamp("   labels");
 
-				if (!$line["feed_title"]) $line["feed_title"] = "";
+				$line["feed_title"] = $line["feed_title"] ?? "";
 
 				$line["buttons_left"] = "";
 				foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_ARTICLE_LEFT_BUTTON) as $p) {
@@ -374,7 +374,7 @@ class Feeds extends Handler_Protected {
 				}
 
 			    //setting feed headline background color, needs to change text color based on dark/light
-				$fav_color = $line['favicon_avg_color'];
+				$fav_color = $line['favicon_avg_color'] ?? false;
 
 				$this->mark_timestamp("   pre-color");
 
@@ -483,14 +483,14 @@ class Feeds extends Handler_Protected {
 		$reply = array();
 
 		$feed = $_REQUEST["feed"];
-		$method = $_REQUEST["m"];
+		$method = $_REQUEST["m"] ?? "";
 		$view_mode = $_REQUEST["view_mode"];
 		$limit = 30;
-		@$cat_view = $_REQUEST["cat"] == "true";
-		@$next_unread_feed = $_REQUEST["nuf"];
-		@$offset = $_REQUEST["skip"];
+		$cat_view = $_REQUEST["cat"] == "true";
+		$next_unread_feed = $_REQUEST["nuf"] ?? 0;
+		$offset = $_REQUEST["skip"] ?? 0;
 		$order_by = $_REQUEST["order_by"];
-		$check_first_id = $_REQUEST["fid"];
+		$check_first_id = $_REQUEST["fid"] ?? 0;
 
 		if (is_numeric($feed)) $feed = (int) $feed;
 
@@ -564,7 +564,7 @@ class Feeds extends Handler_Protected {
 		else
 			$reply['headlines']['id'] = $next_unread_feed;
 
-		$reply['headlines']['is_cat'] = (bool) $cat_view;
+		$reply['headlines']['is_cat'] = $cat_view;
 
 		$reply['headlines-info'] = ["count" => (int) $headlines_count,
             						"disable_cache" => (bool) $disable_cache];
@@ -1794,7 +1794,7 @@ class Feeds extends Handler_Protected {
 						$sanity_interval_qpart
 						$first_id_query_strategy_part ORDER BY $order_by LIMIT 1";
 
-				if ($_REQUEST["debug"]) {
+				if (!empty($_REQUEST["debug"])) {
 					print "\n*** FIRST ID QUERY ***\n$query\n";
 				}
 
@@ -1846,7 +1846,7 @@ class Feeds extends Handler_Protected {
 
 			//if ($_REQUEST["debug"]) print $query;
 
-			if ($_REQUEST["debug"]) {
+			if (!empty($_REQUEST["debug"])) {
 				print "\n*** HEADLINES QUERY ***\n$query\n";
 			}
 
@@ -1902,7 +1902,7 @@ class Feeds extends Handler_Protected {
 
 			//if ($_REQUEST["debug"]) print $query;
 
-			if ($_REQUEST["debug"]) {
+			if (!empty($_REQUEST["debug"])) {
 				print "\n*** TAGS QUERY ***\n$query\n";
 			}
 
@@ -2370,9 +2370,8 @@ class Feeds extends Handler_Protected {
 
 	function mark_timestamp($label) {
 
-		if (!$_REQUEST['timestamps'])
+		if (empty($_REQUEST['timestamps']))
 			return;
-
 
 		if (!$this->viewfeed_timestamp) $this->viewfeed_timestamp = hrtime(true);
 		if (!$this->viewfeed_timestamp_last) $this->viewfeed_timestamp_last = hrtime(true);

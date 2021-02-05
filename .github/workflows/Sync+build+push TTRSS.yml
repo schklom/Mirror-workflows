@@ -42,7 +42,7 @@ jobs:
           ref: 'TTRSS-docker' # branch
       - run: ls -alh
       - run: ls -alhR
-      #- run: cat last_sync_with_original_repo_commit_id
+      - run: cat last_sync_with_original_repo_commit_id
       - run: echo $needs.get_commits.outputs.LOCAL
       - run: echo ${{ needs.get_commits.outputs.LOCAL }}
           

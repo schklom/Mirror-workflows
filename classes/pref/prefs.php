@@ -950,7 +950,7 @@ class Pref_Prefs extends Handler_Protected {
 		foreach ($tmppluginhost->get_plugins() as $name => $plugin) {
 			$about = $plugin->about();
 
-			if ($about[3] ?? false) {
+			if ($about[3] ?? true) {
 
 				$checked = "";
 				$disabled = "";

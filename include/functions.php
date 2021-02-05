@@ -244,7 +244,7 @@
 	// this is used for user http parameters unless HTML code is actually needed
 	function clean($param) {
 		if (is_array($param)) {
-			return trim(array_map("strip_tags", $param));
+			return array_map("trim", array_map("strip_tags", $param));
 		} else if (is_string($param)) {
 			return trim(strip_tags($param));
 		} else {

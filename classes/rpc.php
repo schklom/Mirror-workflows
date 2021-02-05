@@ -488,7 +488,7 @@ class RPC extends Handler_Protected {
 
 		$params["hotkeys"] = $this->get_hotkeys_map();
 
-		$params["widescreen"] = (int) $_COOKIE["ttrss_widescreen"];
+		$params["widescreen"] = (int) ($_COOKIE["ttrss_widescreen"] ?? 0);
 
 		$params['simple_update'] = defined('SIMPLE_UPDATE_MODE') && SIMPLE_UPDATE_MODE;
 

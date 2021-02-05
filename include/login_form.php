@@ -99,7 +99,7 @@
 
 			<?php print_hidden("op", "login"); ?>
 
-			<?php if ($_SESSION["login_error_msg"]) { ?>
+			<?php if (!empty($_SESSION["login_error_msg"])) { ?>
 				<?php echo format_error($_SESSION["login_error_msg"]) ?>
 				<?php $_SESSION["login_error_msg"] = ""; ?>
 			<?php } ?>
@@ -110,7 +110,7 @@
 					   onchange="UtilityApp.fetchProfiles()"
 					   onfocus="UtilityApp.fetchProfiles()"
 					   onblur="UtilityApp.fetchProfiles()"
-					   required="1" value="<?php echo $_SESSION["fake_login"] ?>" />
+					   required="1" value="<?php echo $_SESSION["fake_login"] ?? "" ?>" />
 			</fieldset>
 
 			<fieldset>
@@ -122,7 +122,7 @@
 					   onchange="UtilityApp.fetchProfiles()"
 					   onfocus="UtilityApp.fetchProfiles()"
 					   onblur="UtilityApp.fetchProfiles()"
-					   value="<?php echo $_SESSION["fake_password"] ?>"/>
+					   value="<?php echo $_SESSION["fake_password"] ?? "" ?>"/>
 			</fieldset>
 			<?php if (strpos(PLUGINS, "auth_internal") !== false) { ?>
 				<fieldset class="align-right">

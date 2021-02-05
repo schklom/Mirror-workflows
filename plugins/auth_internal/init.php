@@ -22,7 +22,7 @@ class Auth_Internal extends Plugin implements IAuthModule {
 
 		$pwd_hash1 = encrypt_password($password);
 		$pwd_hash2 = encrypt_password($password, $login);
-		$otp = (int)$_REQUEST["otp"];
+		$otp = (int) ($_REQUEST["otp"] ?? 0);
 
 		if (get_schema_version() > 96) {
 

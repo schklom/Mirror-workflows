@@ -49,7 +49,7 @@ class TimeHelper {
 
 			$tz_offset = $user_tz->getOffset($dt);
 		} else {
-			$tz_offset = (int) -$_SESSION["clientTzOffset"];
+			$tz_offset = (int) -($_SESSION["clientTzOffset"] ?? 0);
 		}
 
 		$user_timestamp = $dt->format('U') + $tz_offset;

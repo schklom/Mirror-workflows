@@ -97,7 +97,7 @@ class UserHelper {
 		} else {
 			if (!validate_session()) $_SESSION["uid"] = false;
 
-			if (!$_SESSION["uid"]) {
+			if (empty($_SESSION["uid"])) {
 
 				if (AUTH_AUTO_LOGIN && self::authenticate(null, null)) {
 					$_SESSION["ref_schema_version"] = get_schema_version(true);
@@ -105,7 +105,7 @@ class UserHelper {
 					 self::authenticate(null, null, true);
 				}
 
-				if (!$_SESSION["uid"]) {
+				if (empty($_SESSION["uid"])) {
 					Pref_Users::logout_user();
 
 					Handler_Public::render_login_form();

@@ -329,7 +329,9 @@ class DiskCache {
 			}
 
 			if ($need_saving) {
-				$doc->removeChild($doc->firstChild); //remove doctype
+				if (isset($doc->firstChild))
+					$doc->removeChild($doc->firstChild); //remove doctype
+
 				$res = $doc->saveHTML();
 			}
 		}
@@ -384,7 +386,7 @@ class DiskCache {
 			$mimetype_blacklist = [ "image/svg+xml" ];
 
 			/* only serve video and images */
-			if (!preg_match("/(image|audio|video)\//", $mimetype) || in_array($mimetype, $mimetype_blacklist)) {
+			if (!preg_match("/(image|audio|video)\//", (string)$mimetype) || in_array($mimetype, $mimetype_blacklist)) {
 				http_response_code(400);
 				header("Content-type: text/plain");
 
@@ -403,7 +405,7 @@ class DiskCache {
 
 			header("Content-type: $mimetype");
 
-			$stamp = gmdate("D, d M Y H:i:s", filemtime($filename)) . " GMT";
+			$stamp = gmdate("D, d M Y H:i:s", (int)filemtime($filename)) . " GMT";
 			header("Last-Modified: $stamp", true);
 
 			return readfile($filename);

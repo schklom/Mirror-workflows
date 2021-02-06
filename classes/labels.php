@@ -196,6 +196,8 @@ class Labels
 			$sth->execute([$caption, $owner_uid, $fg_color, $bg_color]);
 
 			$result = $sth->rowCount();
+		} else {
+			$result = false;
 		}
 
 		if (!$tr_in_progress) $pdo->commit();

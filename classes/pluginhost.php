@@ -390,13 +390,13 @@ class PluginHost {
 			if ($sth->fetch()) {
 				$sth = $this->pdo_data->prepare("UPDATE ttrss_plugin_storage SET content = ?
 					WHERE owner_uid= ? AND name = ?");
-				$sth->execute([(string)$content, $this->owner_uid, $plugin]);
+				$sth->execute([$content, $this->owner_uid, $plugin]);
 
 			} else {
 				$sth = $this->pdo_data->prepare("INSERT INTO ttrss_plugin_storage
 					(name,owner_uid,content) VALUES
 					(?, ?, ?)");
-				$sth->execute([$plugin, $this->owner_uid, (string)$content]);
+				$sth->execute([$plugin, $this->owner_uid, $content]);
 			}
 
 			$this->pdo_data->commit();

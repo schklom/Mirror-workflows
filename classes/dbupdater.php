@@ -6,7 +6,7 @@ class DbUpdater {
 	private $need_version;
 
 	function __construct($pdo, $db_type, $need_version) {
-		$this->pdo = Db::pdo(); //$pdo;
+		$this->pdo = $pdo;
 		$this->db_type = $db_type;
 		$this->need_version = (int) $need_version;
 	}
@@ -24,7 +24,7 @@ class DbUpdater {
 		$filename = "schema/versions/".$this->db_type."/$version.sql";
 
 		if (file_exists($filename)) {
-			return explode(";", preg_replace("/[\r\n]/", "", file_get_contents($filename)));
+			return explode(";", (string)preg_replace("/[\r\n]/", "", (string)file_get_contents($filename)));
 		} else {
 			user_error("DB Updater: schema file for version $version is not found.");
 			return false;

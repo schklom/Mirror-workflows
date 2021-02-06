@@ -5,8 +5,6 @@ class Digest
 	/**
 	 * Send by mail a digest of last articles.
 	 *
-	 * @param mixed $link The database connection.
-	 * @param integer $limit The maximum number of articles by digest.
 	 * @return boolean Return false if digests are not enabled.
 	 */
 	static function send_headlines_digests() {
@@ -18,7 +16,7 @@ class Digest
 
 		if (DB_TYPE == "pgsql") {
 			$interval_qpart = "last_digest_sent < NOW() - INTERVAL '1 days'";
-		} else if (DB_TYPE == "mysql") {
+		} else /* if (DB_TYPE == "mysql") */ {
 			$interval_qpart = "last_digest_sent < DATE_SUB(NOW(), INTERVAL 1 DAY)";
 		}
 
@@ -113,7 +111,7 @@ class Digest
 
 		if (DB_TYPE == "pgsql") {
 			$interval_qpart = "ttrss_entries.date_updated > NOW() - INTERVAL '$days days'";
-		} else if (DB_TYPE == "mysql") {
+		} else /* if (DB_TYPE == "mysql") */ {
 			$interval_qpart = "ttrss_entries.date_updated > DATE_SUB(NOW(), INTERVAL $days DAY)";
 		}
 

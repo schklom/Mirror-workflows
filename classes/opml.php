@@ -272,7 +272,7 @@ class Opml extends Handler_Protected {
 		$doc->preserveWhiteSpace = false;
 		$doc->loadXML($out);
 
-		$xpath = new DOMXpath($doc);
+		$xpath = new DOMXPath($doc);
 		$outlines = $xpath->query("//outline[@title]");
 
 		// cleanup empty categories
@@ -534,10 +534,11 @@ class Opml extends Handler_Protected {
 			$outlines = $root_node->childNodes;
 
 		} else {
-			$xpath = new DOMXpath($doc);
+			$xpath = new DOMXPath($doc);
 			$outlines = $xpath->query("//opml/body/outline");
 
 			$cat_id = 0;
+			$cat_title = false;
 		}
 
 		#$this->opml_notice("[CAT] $cat_title id: $cat_id P_id: $parent_id");
@@ -593,7 +594,7 @@ class Opml extends Handler_Protected {
 		}
 
 		if (is_uploaded_file($_FILES['opml_file']['tmp_name'])) {
-			$tmp_file = tempnam(CACHE_DIR . '/upload', 'opml');
+			$tmp_file = (string)tempnam(CACHE_DIR . '/upload', 'opml');
 
 			$result = move_uploaded_file($_FILES['opml_file']['tmp_name'],
 				$tmp_file);
@@ -607,13 +608,15 @@ class Opml extends Handler_Protected {
 			return;
 		}
 
+		$loaded = false;
+
 		if (is_file($tmp_file)) {
 			$doc = new DOMDocument();
 			libxml_disable_entity_loader(false);
 			$loaded = $doc->load($tmp_file);
 			libxml_disable_entity_loader(true);
 			unlink($tmp_file);
-		} else if (!$doc) {
+		} else if (empty($doc)) {
 			print_error(__('Error: unable to find moved OPML file.'));
 			return;
 		}

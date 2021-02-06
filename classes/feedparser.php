@@ -53,7 +53,7 @@ class FeedParser {
 
 		$root = $xpath->query("(//atom03:feed|//atom:feed|//channel|//rdf:rdf|//rdf:RDF)");
 
-		if ($root && $root->length > 0) {
+		if (!empty($root) && $root->length > 0) {
 			$root = $root->item(0);
 
 			if ($root) {
@@ -106,7 +106,7 @@ class FeedParser {
 
 				$articles = $xpath->query("//atom:entry");
 
-				if (!$articles || $articles->length == 0)
+				if (empty($articles) || $articles->length == 0)
 					$articles = $xpath->query("//atom03:entry");
 
 				foreach ($articles as $article) {

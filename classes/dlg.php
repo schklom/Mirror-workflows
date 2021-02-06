@@ -136,7 +136,7 @@ class Dlg extends Handler_Protected {
 			// and add the $min_size set above
 			$size = round($min_size + (($value - $min_qty) * $step));
 
-			$key_escaped = str_replace("'", "\\'", $key);
+			$key_escaped = str_replace("'", "\\'", (string)$key);
 
 			echo "<a href=\"#\" onclick=\"Feeds.open({feed:'$key_escaped'}) \" style=\"font-size: " .
 				$size . "px\" title=\"$value articles tagged with " .

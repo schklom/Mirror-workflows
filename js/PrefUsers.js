@@ -114,7 +114,7 @@ const	Users = {
 		this.edit(rows[0]);
 	},
 	getSelection :function() {
-		return Tables.getSelected("prefUserList");
+		return Tables.getSelected("users-list");
 	}
 }
 

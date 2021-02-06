@@ -339,9 +339,9 @@ class Pref_Users extends Handler_Protected {
 			print "<div dojoType='fox.form.DropDownButton'>".
 					"<span>" . __('Select')."</span>";
 			print "<div dojoType='dijit.Menu' style='display: none'>";
-			print "<div onclick=\"Tables.select('prefUserList', true)\"
+			print "<div onclick=\"Tables.select('users-list', true)\"
 				dojoType='dijit.MenuItem'>".__('All')."</div>";
-			print "<div onclick=\"Tables.select('prefUserList', false)\"
+			print "<div onclick=\"Tables.select('users-list', false)\"
 				dojoType='dijit.MenuItem'>".__('None')."</div>";
 			print "</div></div>";
 
@@ -380,7 +380,7 @@ class Pref_Users extends Handler_Protected {
 				ORDER BY $sort");
 			$sth->execute([":search" => $user_search ? "%$user_search%" : ""]);
 
-			print "<p><table width='100%' cellspacing='0' class='prefUserList' id='prefUserList'>";
+			print "<table width='100%' class='users-list' id='users-list'>";
 
 			print "<tr class='title'>
 						<td align='center' width='5%'>&nbsp;</td>

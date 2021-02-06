@@ -772,7 +772,7 @@ class Feeds extends Handler_Protected {
 		Debug::set_loglevel($xdebug);
 
 		$feed_id = (int)$_REQUEST["feed_id"];
-		@$do_update = $_REQUEST["action"] == "do_update";
+		$do_update = ($_REQUEST["action"] ?? "") == "do_update";
 		$csrf_token = $_POST["csrf_token"];
 
 		$sth = $this->pdo->prepare("SELECT id FROM ttrss_feeds WHERE id = ? AND owner_uid = ?");

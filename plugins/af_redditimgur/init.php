@@ -515,56 +515,58 @@ class Af_RedditImgur extends Plugin {
 
 	function hook_article_filter($article) {
 
-		if (strpos($article["link"], "reddit.com/r/") !== false) {
+		if (strpos($article["link"], "reddit.com/r/") !== false && !empty($article["content"])) {
 			$doc = new DOMDocument();
-			@$doc->loadHTML($article["content"]);
-			$xpath = new DOMXPath($doc);
 
-			$content_link = $xpath->query("(//a[contains(., '[link]')])")->item(0);
+			if (@$doc->loadHTML($article["content"])) {
+				$xpath = new DOMXPath($doc);
 
-			if ($this->host->get($this, "enable_content_dupcheck")) {
+				$content_link = $xpath->query("(//a[contains(., '[link]')])")->item(0);
 
-				if ($content_link) {
-					$content_href = $content_link->getAttribute("href");
-					$entry_guid = $article["guid_hashed"];
-					$owner_uid = $article["owner_uid"];
+				if ($this->host->get($this, "enable_content_dupcheck")) {
 
-					if (DB_TYPE == "pgsql") {
-						$interval_qpart = "date_entered < NOW() - INTERVAL '1 day'";
-					} else {
-						$interval_qpart = "date_entered < DATE_SUB(NOW(), INTERVAL 1 DAY)";
-					}
+					if ($content_link) {
+						$content_href = $content_link->getAttribute("href");
+						$entry_guid = $article["guid_hashed"];
+						$owner_uid = $article["owner_uid"];
 
-					$sth = $this->pdo->prepare("SELECT COUNT(id) AS cid
-						FROM ttrss_entries, ttrss_user_entries WHERE
-							ref_id = id AND
-							$interval_qpart AND
-							guid != ? AND
-							owner_uid = ? AND
-							content LIKE ?");
+						if (DB_TYPE == "pgsql") {
+							$interval_qpart = "date_entered < NOW() - INTERVAL '1 day'";
+						} else {
+							$interval_qpart = "date_entered < DATE_SUB(NOW(), INTERVAL 1 DAY)";
+						}
 
-					$sth->execute([$entry_guid, $owner_uid, "%href=\"$content_href\">[link]%"]);
+						$sth = $this->pdo->prepare("SELECT COUNT(id) AS cid
+							FROM ttrss_entries, ttrss_user_entries WHERE
+								ref_id = id AND
+								$interval_qpart AND
+								guid != ? AND
+								owner_uid = ? AND
+								content LIKE ?");
 
-					if ($row = $sth->fetch()) {
-						$num_found = $row['cid'];
+						$sth->execute([$entry_guid, $owner_uid, "%href=\"$content_href\">[link]%"]);
 
-						if ($num_found > 0) $article["force_catchup"] = true;
+						if ($row = $sth->fetch()) {
+							$num_found = $row['cid'];
+
+							if ($num_found > 0) $article["force_catchup"] = true;
+						}
 					}
 				}
-			}
 
-			if ($content_link && $this->is_blacklisted($content_link->getAttribute("href")))
-				return $article;
+				if ($content_link && $this->is_blacklisted($content_link->getAttribute("href")))
+					return $article;
 
-			$found = $this->inline_stuff($article, $doc, $xpath);
+				$found = $this->inline_stuff($article, $doc, $xpath);
 
-			$node = $doc->getElementsByTagName('body')->item(0);
+				$node = $doc->getElementsByTagName('body')->item(0);
 
-			if ($node && $found) {
-				$article["content"] = $doc->saveHTML($node);
-				$article["enclosures"] = [];
-			} else if ($content_link) {
-				$article = $this->readability($article, $content_link->getAttribute("href"), $doc, $xpath);
+				if ($node && $found) {
+					$article["content"] = $doc->saveHTML($node);
+					$article["enclosures"] = [];
+				} else if ($content_link) {
+					$article = $this->readability($article, $content_link->getAttribute("href"), $doc, $xpath);
+				}
 			}
 		}
 

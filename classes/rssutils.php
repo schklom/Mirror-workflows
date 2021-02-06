@@ -591,12 +591,12 @@ class RSSUtils {
 				 * the icon avgcolor again (unless the icon got updated) */
 
 				$favicon_file = ICONS_DIR . "/$feed.ico";
-				$favicon_modified = @filemtime($favicon_file);
+				$favicon_modified = file_exists($favicon_file) ? filemtime($favicon_file) : -1;
 
 				Debug::log("checking favicon...", Debug::$LOG_VERBOSE);
 
 				self::check_feed_favicon($site_url, $feed);
-				$favicon_modified_new = @filemtime($favicon_file);
+				$favicon_modified_new = file_exists($favicon_file) ? filemtime($favicon_file) : -1;
 
 				if ($favicon_modified_new > $favicon_modified)
 					$favicon_avg_color = '';

@@ -197,7 +197,7 @@ class Article extends Handler_Protected {
 
 		$sth->execute(array_merge([$score], $ids, [$_SESSION['uid']]));
 
-		print json_encode(["id" => $ids, "score" => (int)$score]);
+		print json_encode(["id" => $ids, "score" => $score]);
 	}
 
 	function getScore() {
@@ -267,7 +267,7 @@ class Article extends Handler_Protected {
 		$this->pdo->commit();
 
 		$tags = self::get_article_tags($id);
-		$tags_str = $this->format_tags_string($tags, $id);
+		$tags_str = $this->format_tags_string($tags);
 		$tags_str_full = join(", ", $tags);
 
 		if (!$tags_str_full) $tags_str_full = __("no tags");
@@ -419,7 +419,7 @@ class Article extends Handler_Protected {
 							$retval = $plugin->hook_render_enclosure($entry, $hide_images);
 
 
-						if ($retval) {
+						if (!empty($retval)) {
 							$rv .= $retval;
 						} else {
 
@@ -584,8 +584,6 @@ class Article extends Handler_Protected {
 			<i class='material-icons'>note</i>
 			<div $onclick class='body'>$note</div>
 			</div>";
-
-		return $str;
 	}
 
 	static function get_article_enclosures($id) {
@@ -778,7 +776,7 @@ class Article extends Handler_Protected {
 			if ($article_image) {
 				$article_image = rewrite_relative_url($site_url, $article_image);
 
-				if (!$article_kind && (count($enclosures) > 1 || $elems->length > 1))
+				if (!$article_kind && (count($enclosures) > 1 || (isset($elems) && $elems->length > 1)))
 					$article_kind = ARTICLE_KIND_ALBUM;
 			}
 

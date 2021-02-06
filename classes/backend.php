@@ -40,7 +40,7 @@ class Backend extends Handler_Protected {
 
 				foreach ($hotkeys as $action => $description) {
 
-					if (is_array($omap[$action])) {
+					if (!empty($omap[$action])) {
 						foreach ($omap[$action] as $sequence) {
 							if (strpos($sequence, "|") !== false) {
 								$sequence = substr($sequence,

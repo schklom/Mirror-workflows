@@ -174,7 +174,7 @@ class API extends Handler {
 				$unread = getFeedUnread($cat_id, true);
 
 				if ($unread || !$unread_only) {
-					array_push($cats, array("id" => (int) $cat_id,
+					array_push($cats, array("id" => $cat_id,
 						"title" => Feeds::getCategoryTitle($cat_id),
 						"unread" => (int) $unread));
 				}
@@ -243,6 +243,7 @@ class API extends Handler {
 
 		$field = "";
 		$set_to = "";
+		$additional_fields = "";
 
 		switch ($field_raw) {
 			case 0:
@@ -842,14 +843,8 @@ class API extends Handler {
 		$_REQUEST['mode'] = 2;
 		$_REQUEST['force_show_empty'] = $include_empty;
 
-		if ($pf){
-			$data = $pf->makefeedtree();
-			$this->wrap(self::STATUS_OK, array("categories" => $data));
-		} else {
-			$this->wrap(self::STATUS_ERR, array("error" =>
-				'UNABLE_TO_INSTANTIATE_OBJECT'));
-		}
-
+		$this->wrap(self::STATUS_OK,
+			array("categories" => $pf->makefeedtree()));
 	}
 
 	// only works for labels or uncategorized for the time being

@@ -2,6 +2,8 @@
 
 class Pref_System extends Handler_Protected {
 
+	private $log_page_limit = 15;
+
 	function before($method) {
 		if (parent::before($method)) {
 			if ($_SESSION["access_level"] < 10) {
@@ -24,16 +26,6 @@ class Pref_System extends Handler_Protected {
 	}
 
 	private function log_viewer(int $page, int $severity) {
-		print "<table width='100%' cellspacing='10' class='prefErrorLog'>";
-
-		print "<tr class='title'>
-			<td width='5%'>".__("Error")."</td>
-			<td>".__("Filename")."</td>
-			<td>".__("Message")."</td>
-			<td width='5%'>".__("User")."</td>
-			<td width='5%'>".__("Date")."</td>
-			</tr>";
-
 		$errno_values = [];
 
 		switch ($severity) {
@@ -52,8 +44,69 @@ class Pref_System extends Handler_Protected {
 			$errno_filter_qpart = "true";
 		}
 
-		$limit = 10;
+		$limit = $this->log_page_limit;
 		$offset = $limit * $page;
+
+		$sth = $this->pdo->prepare("SELECT
+				COUNT(id) AS total_pages
+			FROM
+				ttrss_error_log
+			WHERE
+				$errno_filter_qpart");
+
+		$sth->execute($errno_values);
+
+		if ($res = $sth->fetch()) {
+			$total_pages = (int)($res["total_pages"] / $limit);
+		} else {
+			$total_pages = 0;
+		}
+
+		print "<div dojoType='dijit.layout.BorderContainer' gutters='false'>";
+
+		print "<div region='top' dojoType='fox.Toolbar'>";
+
+		print "<button dojoType='dijit.form.Button'
+			onclick='Helpers.EventLog.refresh()'>".__('Refresh')."</button>";
+
+		print "<button dojoType='dijit.form.Button'
+			onclick='Helpers.EventLog.prevPage()'>".__('&lt;&lt;')."</button>";
+
+		print "<button dojoType='dijit.form.Button' disabled>".T_sprintf('Page %d of %d', $page+1, $total_pages+1)."</button>";
+
+		$next_page_disabled = $page >= $total_pages ? "disabled" : "";
+
+		print "<button dojoType='dijit.form.Button' $next_page_disabled
+			onclick='Helpers.EventLog.nextPage()'>".__('&gt;&gt;')."</button>";
+
+		print "<button dojoType='dijit.form.Button'
+			onclick='Helpers.EventLog.clear()'>".__('Clear')."</button>";
+
+		print "<div class='pull-right'>";
+
+		print __("Severity:") . " ";
+		print_select_hash("severity", $severity,
+			[
+				E_USER_ERROR => __("Errors"),
+				E_USER_WARNING => __("Warnings"),
+				E_USER_NOTICE => __("Everything")
+			], 'dojoType="fox.form.Select" onchange="Helpers.updateEventLog()"');
+
+		print "</div>"; # pull-right
+
+		print "</div>"; # toolbar
+
+		print '<div style="padding : 0px" dojoType="dijit.layout.ContentPane" region="center">';
+
+		print "<table width='100%' cellspacing='10' class='prefErrorLog'>";
+
+		print "<tr class='title'>
+			<td width='5%'>".__("Error")."</td>
+			<td>".__("Filename")."</td>
+			<td>".__("Message")."</td>
+			<td width='5%'>".__("User")."</td>
+			<td width='5%'>".__("Date")."</td>
+			</tr>";
 
 		$sth = $this->pdo->prepare("SELECT
 				errno, errstr, filename, lineno, created_at, login, context
@@ -98,40 +151,6 @@ class Pref_System extends Handler_Protected {
 			title='<i class=\"material-icons\">report</i> ".__('Event Log')."'>";
 
 		if (LOG_DESTINATION == "sql") {
-
-			print "<div dojoType='dijit.layout.BorderContainer' gutters='false'>";
-
-			print "<div region='top' dojoType='fox.Toolbar'>";
-
-			print "<button dojoType='dijit.form.Button'
-				onclick='Helpers.EventLog.refresh()'>".__('Refresh')."</button>";
-
-			print "<button dojoType='dijit.form.Button'
-				onclick='Helpers.EventLog.prevPage()'>".__('&lt;&lt;')."</button>";
-
-			print "<button dojoType='dijit.form.Button' disabled>".T_sprintf('Page %d', $page+1)."</button>";
-
-			print "<button dojoType='dijit.form.Button'
-				onclick='Helpers.EventLog.nextPage()'>".__('&gt;&gt;')."</button>";
-
-			print "<button dojoType='dijit.form.Button'
-				onclick='Helpers.EventLog.clear()'>".__('Clear')."</button>";
-
-			print "<div class='pull-right'>";
-
-			print __("Severity:") . " ";
-			print_select_hash("severity", $severity,
-				[
-					E_USER_ERROR => __("Errors"),
-					E_USER_WARNING => __("Warnings"),
-					E_USER_NOTICE => __("Everything")
-				], 'dojoType="fox.form.Select" onchange="Helpers.updateEventLog()"');
-
-			print "</div>"; # pull-right
-
-			print "</div>"; # toolbar
-
-			print '<div style="padding : 0px" dojoType="dijit.layout.ContentPane" region="center">';
 
 			$this->log_viewer($page, $severity);
 

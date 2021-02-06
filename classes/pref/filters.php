@@ -241,7 +241,7 @@ class Pref_Filters extends Handler_Protected {
 		$root['enabled'] = true;
 		$root['items'] = array();
 
-		$filter_search = $_SESSION["prefs_filter_search"];
+		$filter_search = ($_SESSION["prefs_filter_search"] ?? "");
 
 		$sth = $this->pdo->prepare("SELECT *,
 			(SELECT action_param FROM ttrss_filters2_actions
@@ -740,7 +740,7 @@ class Pref_Filters extends Handler_Protected {
 			$filter_search = clean($_REQUEST["search"]);
 			$_SESSION["prefs_filter_search"] = $filter_search;
 		} else {
-			$filter_search = $_SESSION["prefs_filter_search"];
+			$filter_search = ($_SESSION["prefs_filter_search"] ?? "");
 		}
 
 		print "<div dojoType='dijit.layout.BorderContainer' gutters='false'>";

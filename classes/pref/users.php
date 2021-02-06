@@ -320,7 +320,7 @@ class Pref_Users extends Handler_Protected {
 			if (array_key_exists("search", $_REQUEST)) {
 				$_SESSION["prefs_user_search"] = $user_search;
 			} else {
-				$user_search = $_SESSION["prefs_user_search"];
+				$user_search = ($_SESSION["prefs_user_search"] ?? "");
 			}
 
 			print "<div style='float : right; padding-right : 4px;'>

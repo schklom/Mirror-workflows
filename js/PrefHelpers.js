@@ -50,21 +50,37 @@ const	Helpers = {
 
 		return false;
 	},
-	updateEventLog: function() {
-		xhrPost("backend.php", { op: "pref-system", severity: dijit.byId("severity").attr('value') }, (transport) => {
-			dijit.byId('systemConfigTab').attr('content', transport.responseText);
-			Notify.close();
-		});
-	},
-	clearEventLog: function() {
-		if (confirm(__("Clear event log?"))) {
-
-			Notify.progress("Loading, please wait...");
-
-			xhrPost("backend.php", {op: "pref-system", method: "clearLog"}, () => {
-				this.updateEventLog();
+	EventLog: {
+		log_page: 0,
+		refresh: function() {
+			this.log_page = 0;
+			this.update();
+		},
+		update: function() {
+			xhrPost("backend.php", { op: "pref-system", severity: dijit.byId("severity").attr('value'), page: Helpers.EventLog.log_page }, (transport) => {
+				dijit.byId('systemConfigTab').attr('content', transport.responseText);
+				Notify.close();
 			});
-		}
+		},
+		nextPage: function()  {
+			this.log_page += 1;
+			this.update();
+		},
+		prevPage: function() {
+			if (this.log_page > 0) this.log_page -= 1;
+
+			this.update();
+		},
+		clear: function() {
+			if (confirm(__("Clear event log?"))) {
+
+				Notify.progress("Loading, please wait...");
+
+				xhrPost("backend.php", {op: "pref-system", method: "clearLog"}, () => {
+					Helpers.EventLog.refresh();
+				});
+			}
+		},
 	},
 	editProfiles: function() {
 

@@ -11,11 +11,11 @@ function format_backtrace($trace) {
 				if (is_array($e["args"])) {
 					foreach ($e["args"] as $a) {
 						if (is_object($a)) {
-							array_push($fmt_args, "[" . get_class($a) . "]");
+							array_push($fmt_args, "{" . get_class($a) . "}");
 						} else if (is_array($a)) {
-							array_push($fmt_args, "[" . truncate_string(json_encode($a), 128, "...")) . "]";
+							array_push($fmt_args, "[" . truncate_string(json_encode($a), 256, "...")) . "]";
 						} else {
-							array_push($fmt_args, $a);
+							array_push($fmt_args, truncate_string($a, 256, "..."));
 						}
 					}
 				}

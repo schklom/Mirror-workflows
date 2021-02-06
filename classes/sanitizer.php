@@ -54,7 +54,9 @@ class Sanitizer {
 	}
 
 	public static function sanitize($str, $force_remove_images = false, $owner = false, $site_url = false, $highlight_words = false, $article_id = false) {
-		if (!$owner) $owner = $_SESSION["uid"];
+
+		if (!$owner && isset($_SESSION["uid"]))
+			$owner = $_SESSION["uid"];
 
 		$res = trim($str); if (!$res) return '';
 

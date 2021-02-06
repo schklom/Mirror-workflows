@@ -23,9 +23,75 @@ class Pref_System extends Handler_Protected {
 		$this->pdo->query("DELETE FROM ttrss_error_log");
 	}
 
+	private function log_viewer(int $page, int $severity) {
+		print "<table width='100%' cellspacing='10' class='prefErrorLog'>";
+
+		print "<tr class='title'>
+			<td width='5%'>".__("Error")."</td>
+			<td>".__("Filename")."</td>
+			<td>".__("Message")."</td>
+			<td width='5%'>".__("User")."</td>
+			<td width='5%'>".__("Date")."</td>
+			</tr>";
+
+		$errno_values = [];
+
+		switch ($severity) {
+			case E_USER_ERROR:
+				$errno_values = [ E_ERROR, E_USER_ERROR, E_PARSE ];
+				break;
+			case E_USER_WARNING:
+				$errno_values = [ E_ERROR, E_USER_ERROR, E_PARSE, E_WARNING, E_USER_WARNING, E_DEPRECATED, E_USER_DEPRECATED ];
+				break;
+		}
+
+		if (count($errno_values) > 0) {
+			$errno_qmarks = arr_qmarks($errno_values);
+			$errno_filter_qpart = "errno IN ($errno_qmarks)";
+		} else {
+			$errno_filter_qpart = "true";
+		}
+
+		$limit = 10;
+		$offset = $limit * $page;
+
+		$sth = $this->pdo->prepare("SELECT
+				errno, errstr, filename, lineno, created_at, login, context
+			FROM
+				ttrss_error_log LEFT JOIN ttrss_users ON (owner_uid = ttrss_users.id)
+			WHERE
+				$errno_filter_qpart
+			ORDER BY
+				ttrss_error_log.id DESC
+			LIMIT $limit OFFSET $offset");
+
+		$sth->execute($errno_values);
+
+		while ($line = $sth->fetch()) {
+			print "<tr>";
+
+			foreach ($line as $k => $v) {
+				$line[$k] = htmlspecialchars($v);
+			}
+
+			print "<td class='errno'>" . Logger::$errornames[$line["errno"]] . " (" . $line["errno"] . ")</td>";
+			print "<td class='filename'>" . $line["filename"] . ":" . $line["lineno"] . "</td>";
+			print "<td class='errstr'>" . $line["errstr"] . "<hr/>" . nl2br($line["context"]) . "</td>";
+			print "<td class='login'>" . $line["login"] . "</td>";
+
+			print "<td class='timestamp'>" .
+				TimeHelper::make_local_datetime($line["created_at"], false) . "</td>";
+
+			print "</tr>";
+		}
+
+		print "</table>";
+	}
+
 	function index() {
 
-		$severity = isset($_REQUEST["severity"]) ? (int) clean($_REQUEST["severity"]) : E_USER_WARNING;
+		$severity = (int) ($_REQUEST["severity"] ?? E_USER_WARNING);
+		$page = (int) ($_REQUEST["page"] ?? 0);
 
 		print "<div dojoType='dijit.layout.AccordionContainer' region='center'>";
 		print "<div dojoType='dijit.layout.AccordionPane' style='padding : 0'
@@ -38,10 +104,18 @@ class Pref_System extends Handler_Protected {
 			print "<div region='top' dojoType='fox.Toolbar'>";
 
 			print "<button dojoType='dijit.form.Button'
-				onclick='Helpers.updateEventLog()'>".__('Refresh')."</button>";
+				onclick='Helpers.EventLog.refresh()'>".__('Refresh')."</button>";
 
 			print "<button dojoType='dijit.form.Button'
-				onclick='Helpers.clearEventLog()'>".__('Clear')."</button>";
+				onclick='Helpers.EventLog.prevPage()'>".__('&lt;&lt;')."</button>";
+
+			print "<button dojoType='dijit.form.Button' disabled>".T_sprintf('Page %d', $page+1)."</button>";
+
+			print "<button dojoType='dijit.form.Button'
+				onclick='Helpers.EventLog.nextPage()'>".__('&gt;&gt;')."</button>";
+
+			print "<button dojoType='dijit.form.Button'
+				onclick='Helpers.EventLog.clear()'>".__('Clear')."</button>";
 
 			print "<div class='pull-right'>";
 
@@ -59,65 +133,8 @@ class Pref_System extends Handler_Protected {
 
 			print '<div style="padding : 0px" dojoType="dijit.layout.ContentPane" region="center">';
 
-			print "<table width='100%' cellspacing='10' class='prefErrorLog'>";
+			$this->log_viewer($page, $severity);
 
-			print "<tr class='title'>
-				<td width='5%'>".__("Error")."</td>
-				<td>".__("Filename")."</td>
-				<td>".__("Message")."</td>
-				<td width='5%'>".__("User")."</td>
-				<td width='5%'>".__("Date")."</td>
-				</tr>";
-
-			$errno_values = [];
-
-			switch ($severity) {
-				case E_USER_ERROR:
-					$errno_values = [ E_ERROR, E_USER_ERROR, E_PARSE ];
-					break;
-				case E_USER_WARNING:
-					$errno_values = [ E_ERROR, E_USER_ERROR, E_PARSE, E_WARNING, E_USER_WARNING, E_DEPRECATED, E_USER_DEPRECATED ];
-					break;
-			}
-
-			if (count($errno_values) > 0) {
-				$errno_qmarks = arr_qmarks($errno_values);
-				$errno_filter_qpart = "errno IN ($errno_qmarks)";
-			} else {
-				$errno_filter_qpart = "true";
-			}
-
-			$sth = $this->pdo->prepare("SELECT
-					errno, errstr, filename, lineno, created_at, login, context
-				FROM
-					ttrss_error_log LEFT JOIN ttrss_users ON (owner_uid = ttrss_users.id)
-				WHERE
-					$errno_filter_qpart
-				ORDER BY
-					ttrss_error_log.id DESC
-				LIMIT 100");
-
-			$sth->execute($errno_values);
-
-			while ($line = $sth->fetch()) {
-				print "<tr>";
-
-				foreach ($line as $k => $v) {
-					$line[$k] = htmlspecialchars($v);
-				}
-
-				print "<td class='errno'>" . Logger::$errornames[$line["errno"]] . " (" . $line["errno"] . ")</td>";
-				print "<td class='filename'>" . $line["filename"] . ":" . $line["lineno"] . "</td>";
-				print "<td class='errstr'>" . $line["errstr"] . "<hr/>" . nl2br($line["context"]) . "</td>";
-				print "<td class='login'>" . $line["login"] . "</td>";
-
-				print "<td class='timestamp'>" .
-					TimeHelper::make_local_datetime($line["created_at"], false) . "</td>";
-
-				print "</tr>";
-			}
-
-			print "</table>";
 		} else {
 			print_notice("Please set LOG_DESTINATION to 'sql' in config.php to enable database logging.");
 		}

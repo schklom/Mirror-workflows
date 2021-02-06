@@ -103,13 +103,15 @@ class Af_RedditImgur extends Plugin {
 
 		if (isset($data["media_metadata"])) {
 			foreach ($data["media_metadata"] as $media) {
-				$media_url = htmlspecialchars_decode($media["s"]["u"]);
+				if (!empty($media["s"]["u"])) {
+					$media_url = htmlspecialchars_decode($media["s"]["u"]);
 
-				Debug::log("found media_metadata (gallery): $media_url", Debug::$LOG_VERBOSE);
+					Debug::log("found media_metadata (gallery): $media_url", Debug::$LOG_VERBOSE);
 
-				if ($media_url) {
-					$this->handle_as_image($doc, $anchor, $media_url);
-					$found = 1;
+					if ($media_url) {
+						$this->handle_as_image($doc, $anchor, $media_url);
+						$found = 1;
+					}
 				}
 			}
 		}

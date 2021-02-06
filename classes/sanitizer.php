@@ -97,7 +97,7 @@ class Sanitizer {
 			}
 
 			if ($entry->hasAttribute('src') &&
-					($owner && get_pref("STRIP_IMAGES", $owner)) || $force_remove_images || $_SESSION["bw_limit"]) {
+					($owner && get_pref("STRIP_IMAGES", $owner)) || $force_remove_images || ($_SESSION["bw_limit"] ?? false)) {
 
 				$p = $doc->createElement('p');
 
@@ -147,7 +147,7 @@ class Sanitizer {
 			'sup', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'time',
 			'tr', 'track', 'tt', 'u', 'ul', 'var', 'wbr', 'video', 'xml:namespace' );
 
-		if ($_SESSION['hasSandbox']) $allowed_elements[] = 'iframe';
+		if ($_SESSION['hasSandbox'] ?? false) $allowed_elements[] = 'iframe';
 
 		$disallowed_attributes = array('id', 'style', 'class', 'width', 'height', 'allow');
 

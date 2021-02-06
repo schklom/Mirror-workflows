@@ -115,10 +115,9 @@ class Feeds extends Handler_Protected {
 
 		$this->mark_timestamp("init");
 
-		$reply = array();
-
-		$rgba_cache = array();
-		$topmost_article_ids = array();
+		$reply = [];
+		$rgba_cache = [];
+		$topmost_article_ids = [];
 
 		if (!$offset) $offset = 0;
 		if ($method == "undefined") $method = "";
@@ -153,6 +152,8 @@ class Feeds extends Handler_Protected {
 		if ($search) {
 			$disable_cache = true;
 		}
+
+		$qfh_ret = [];
 
 		if (!$cat_view && is_numeric($feed) && $feed < PLUGIN_FEED_BASE_INDEX && $feed > LABEL_BASE_INDEX) {
 			$handler = PluginHost::getInstance()->get_feed_handler(
@@ -220,19 +221,19 @@ class Feeds extends Handler_Protected {
 			$feed, $cat_view, $search,
 			$last_error, $last_updated);
 
+		$reply['content'] = [];
+
 		if ($offset == 0) {
 			foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_HEADLINES_BEFORE) as $p) {
 				 $reply['content'] .= $p->hook_headlines_before($feed, $cat_view, $qfh_ret);
 			}
 		}
 
-		$reply['content'] = [];
-
 		$this->mark_timestamp("object header");
 
 		$headlines_count = 0;
 
-        if (is_object($result)) {
+		if ($result instanceof PDOStatement) {
 			while ($line = $result->fetch(PDO::FETCH_ASSOC)) {
 				$this->mark_timestamp("article start: " . $line["id"] . " " . $line["title"]);
 
@@ -363,7 +364,7 @@ class Feeds extends Handler_Protected {
 				else
 					$tags = false;
 
-				$line["tags_str"] = Article::format_tags_string($tags, $id);
+				$line["tags_str"] = Article::format_tags_string($tags);
 
 				$this->mark_timestamp("   tags");
 
@@ -410,7 +411,7 @@ class Feeds extends Handler_Protected {
 
 		if (!$headlines_count) {
 
-			if (is_object($result)) {
+			if ($result instanceof PDOStatement) {
 
 				if ($query_error_override) {
 					$message = $query_error_override;
@@ -1087,7 +1088,7 @@ class Feeds extends Handler_Protected {
 		} else if ($n_feed >= 0) {
 
 			if ($n_feed != 0) {
-				$match_part = "feed_id = " . (int)$n_feed;
+				$match_part = sprintf("feed_id = %d", $n_feed);
 			} else {
 				$match_part = "feed_id IS NULL";
 			}

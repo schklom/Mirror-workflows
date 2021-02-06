@@ -188,16 +188,16 @@ class Sanitizer {
 					$text = $child->textContent;
 
 					while (($pos = mb_stripos($text, $word)) !== false) {
-						$fragment->appendChild(new DomText(mb_substr($text, 0, $pos)));
-						$word = mb_substr($text, $pos, mb_strlen($word));
+						$fragment->appendChild(new DOMText(mb_substr($text, 0, (int)$pos)));
+						$word = mb_substr($text, (int)$pos, mb_strlen($word));
 						$highlight = $doc->createElement('span');
-						$highlight->appendChild(new DomText($word));
+						$highlight->appendChild(new DOMText($word));
 						$highlight->setAttribute('class', 'highlight');
 						$fragment->appendChild($highlight);
 						$text = mb_substr($text, $pos + mb_strlen($word));
 					}
 
-					if (!empty($text)) $fragment->appendChild(new DomText($text));
+					if (!empty($text)) $fragment->appendChild(new DOMText($text));
 
 					$child->parentNode->replaceChild($fragment, $child);
 				}

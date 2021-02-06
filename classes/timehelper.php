@@ -82,7 +82,8 @@ class TimeHelper {
 		}
 
 		$dt = new DateTime(date('Y-m-d H:i:s', $timestamp), $source_tz);
-		return $dt->format('U') + $dest_tz->getOffset($dt);
+
+		return (int)$dt->format('U') + $dest_tz->getOffset($dt);
 	}
 
 }

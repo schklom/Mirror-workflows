@@ -81,7 +81,7 @@
 	}
 
 
-	function sanity_check($db_type) {
+	function installer_sanity_check($db_type) {
 		$errors = array();
 
 		if (version_compare(PHP_VERSION, '7.0.0', '<')) {
@@ -278,7 +278,7 @@
 	<h2>Checking configuration</h2>
 
 	<?php
-		$errors = sanity_check($DB_TYPE);
+		$errors = installer_sanity_check($DB_TYPE);
 
 		if (count($errors) > 0) {
 			print "<p>Some configuration tests failed. Please correct them before continuing.</p>";

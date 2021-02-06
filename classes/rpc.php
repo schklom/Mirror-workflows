@@ -244,7 +244,7 @@ class RPC extends Handler_Protected {
 	function setpanelmode() {
 		$wide = (int) clean($_REQUEST["wide"]);
 
-		setcookie("ttrss_widescreen", $wide,
+		setcookie("ttrss_widescreen", (string)$wide,
 			time() + COOKIE_LIFETIME_LONG);
 
 		print json_encode(array("wide" => $wide));
@@ -462,7 +462,7 @@ class RPC extends Handler_Protected {
 		$params["default_view_order_by"] = get_pref("_DEFAULT_VIEW_ORDER_BY");
 		$params["bw_limit"] = (int) $_SESSION["bw_limit"];
 		$params["is_default_pw"] = Pref_Prefs::isdefaultpassword();
-		$params["label_base_index"] = (int) LABEL_BASE_INDEX;
+		$params["label_base_index"] = LABEL_BASE_INDEX;
 
 		$theme = get_pref( "USER_CSS_THEME", false, false);
 		$params["theme"] = theme_exists($theme) ? $theme : "";
@@ -490,7 +490,7 @@ class RPC extends Handler_Protected {
 
 		$params["widescreen"] = (int) ($_COOKIE["ttrss_widescreen"] ?? 0);
 
-		$params['simple_update'] = defined('SIMPLE_UPDATE_MODE') && SIMPLE_UPDATE_MODE;
+		$params['simple_update'] = SIMPLE_UPDATE_MODE;
 
 		$params["icon_indicator_white"] = $this->image_to_base64("images/indicator_white.gif");
 
@@ -503,7 +503,7 @@ class RPC extends Handler_Protected {
 		if (file_exists($filename)) {
 			$ext = pathinfo($filename, PATHINFO_EXTENSION);
 
-			return "data:image/$ext;base64," . base64_encode(file_get_contents($filename));
+			return "data:image/$ext;base64," . base64_encode((string)file_get_contents($filename));
 		} else {
 			return "";
 		}
@@ -719,7 +719,7 @@ class RPC extends Handler_Protected {
 		$prefixes = array();
 
 		foreach (array_keys($hotkeys) as $hotkey) {
-			$pair = explode(" ", $hotkey, 2);
+			$pair = explode(" ", (string)$hotkey, 2);
 
 			if (count($pair) > 1 && !in_array($pair[0], $prefixes)) {
 				array_push($prefixes, $pair[0]);

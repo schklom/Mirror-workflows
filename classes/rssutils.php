@@ -1415,7 +1415,7 @@ class RSSUtils {
 	 * @param    string    query
 	 * @return    array    params
 	 */
-	static function convertUrlQuery($query) {
+	/* static function convertUrlQuery($query) {
 		$queryParts = explode('&', $query);
 
 		$params = array();
@@ -1426,7 +1426,7 @@ class RSSUtils {
 		}
 
 		return $params;
-	}
+	} */
 
 	static function get_article_filters($filters, $title, $content, $link, $author, $tags, &$matched_rules = false, &$matched_filters = false) {
 		$matches = array();
@@ -1435,14 +1435,16 @@ class RSSUtils {
 			$match_any_rule = $filter["match_any_rule"];
 			$inverse = $filter["inverse"];
 			$filter_match = false;
+			$last_processed_rule = false;
 
 			foreach ($filter["rules"] as $rule) {
 				$match = false;
-				$reg_exp = str_replace('/', '\/', $rule["reg_exp"]);
+				$reg_exp = str_replace('/', '\/', (string)$rule["reg_exp"]);
 				$reg_exp = str_replace("\n", "", $reg_exp); // reg_exp may be formatted with CRs now because of textarea, we need to strip those
 				$rule_inverse = $rule["inverse"];
+				$last_processed_rule = $rule;
 
-				if (!$reg_exp)
+				if (empty($reg_exp))
 					continue;
 
 				switch ($rule["type"]) {
@@ -1451,13 +1453,13 @@ class RSSUtils {
 						break;
 					case "content":
 						// we don't need to deal with multiline regexps
-						$content = preg_replace("/[\r\n\t]/", "", $content);
+						$content = (string)preg_replace("/[\r\n\t]/", "", $content);
 
 						$match = @preg_match("/$reg_exp/iu", $content);
 						break;
 					case "both":
 						// we don't need to deal with multiline regexps
-						$content = preg_replace("/[\r\n\t]/", "", $content);
+						$content = (string)preg_replace("/[\r\n\t]/", "", $content);
 
 						$match = (@preg_match("/$reg_exp/iu", $title) || @preg_match("/$reg_exp/iu", $content));
 						break;
@@ -1495,7 +1497,7 @@ class RSSUtils {
 			if ($inverse) $filter_match = !$filter_match;
 
 			if ($filter_match) {
-				if (is_array($matched_rules)) array_push($matched_rules, $rule);
+				if (is_array($matched_rules)) array_push($matched_rules, $last_processed_rule);
 				if (is_array($matched_filters)) array_push($matched_filters, $filter);
 
 				foreach ($filter["actions"] AS $action) {
@@ -1581,11 +1583,11 @@ class RSSUtils {
 
 			$pdo->beginTransaction();
 
-			$days = (int) DAEMON_UNSUCCESSFUL_DAYS_LIMIT;
+			$days = DAEMON_UNSUCCESSFUL_DAYS_LIMIT;
 
 			if (DB_TYPE == "pgsql") {
 				$interval_query = "last_successful_update < NOW() - INTERVAL '$days days' AND last_updated > NOW() - INTERVAL '1 days'";
-			} else if (DB_TYPE == "mysql") {
+			} else /* if (DB_TYPE == "mysql") */ {
 				$interval_query = "last_successful_update < DATE_SUB(NOW(), INTERVAL $days DAY) AND last_updated > DATE_SUB(NOW(), INTERVAL 1 DAY)";
 			}
 

@@ -237,6 +237,8 @@ class UrlHelper {
 
 			$ch = curl_init($url);
 
+			if (!$ch) return false;
+
 			$curl_http_headers = [];
 
 			if ($last_modified && !$post_query)
@@ -361,7 +363,7 @@ class UrlHelper {
 
 			$is_gzipped = RSSUtils::is_gzipped($contents);
 
-			if ($is_gzipped) {
+			if ($is_gzipped && is_string($contents)) {
 				$tmp = @gzdecode($contents);
 
 				if ($tmp) $contents = $tmp;
@@ -433,28 +435,26 @@ class UrlHelper {
 
 			$data = @file_get_contents($url, false, $context);
 
-			if (isset($http_response_header) && is_array($http_response_header)) {
-				foreach ($http_response_header as $header) {
-					if (strstr($header, ": ") !== false) {
-						list ($key, $value) = explode(": ", $header);
+			foreach ($http_response_header as $header) {
+				if (strstr($header, ": ") !== false) {
+					list ($key, $value) = explode(": ", $header);
 
-						$key = strtolower($key);
+					$key = strtolower($key);
 
-						if ($key == 'content-type') {
-							$fetch_last_content_type = $value;
-							// don't abort here b/c there might be more than one
-							// e.g. if we were being redirected -- last one is the right one
-						} else if ($key == 'last-modified') {
-							$fetch_last_modified = $value;
-						} else if ($key == 'location') {
-							$fetch_effective_url = $value;
-						}
+					if ($key == 'content-type') {
+						$fetch_last_content_type = $value;
+						// don't abort here b/c there might be more than one
+						// e.g. if we were being redirected -- last one is the right one
+					} else if ($key == 'last-modified') {
+						$fetch_last_modified = $value;
+					} else if ($key == 'location') {
+						$fetch_effective_url = $value;
 					}
+				}
 
-					if (substr(strtolower($header), 0, 7) == 'http/1.') {
-						$fetch_last_error_code = (int) substr($header, 9, 3);
-						$fetch_last_error = $header;
-					}
+				if (substr(strtolower($header), 0, 7) == 'http/1.') {
+					$fetch_last_error_code = (int) substr($header, 9, 3);
+					$fetch_last_error = $header;
 				}
 			}
 
@@ -472,7 +472,7 @@ class UrlHelper {
 
 			$is_gzipped = RSSUtils::is_gzipped($data);
 
-			if ($is_gzipped) {
+			if ($is_gzipped && $data) {
 				$tmp = @gzdecode($data);
 
 				if ($tmp) $data = $tmp;

@@ -90,7 +90,7 @@ class Pref_System extends Handler_Protected {
 				E_USER_ERROR => __("Errors"),
 				E_USER_WARNING => __("Warnings"),
 				E_USER_NOTICE => __("Everything")
-			], 'dojoType="fox.form.Select" onchange="Helpers.updateEventLog()"');
+			], 'dojoType="fox.form.Select" onchange="Helpers.EventLog.refresh()"');
 
 		print "</div>"; # pull-right
 

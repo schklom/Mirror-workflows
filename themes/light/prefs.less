@@ -112,10 +112,15 @@ body.ttrss_prefs {
 		}
 	}
 
-	.prefErrorLog {
+	.event-log {
 		tr {
 			td {
 				font-size: 10px;
+				padding : 8px;
+				vertical-align : top;
+				border-width : 0 0 1px 0;
+				border-style : solid;
+				border-color : @border-default;
 			}
 
 			.errno {
@@ -125,7 +130,8 @@ body.ttrss_prefs {
 			}
 
 			.errstr {
-				word-break: break-all;
+				word-break : break-all;
+				white-space : pre-wrap;
 			}
 
 			.filename, .login, .timestamp {

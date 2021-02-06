@@ -98,7 +98,7 @@ class Pref_System extends Handler_Protected {
 
 		print '<div style="padding : 0px" dojoType="dijit.layout.ContentPane" region="center">';
 
-		print "<table width='100%' cellspacing='10' class='prefErrorLog'>";
+		print "<table width='100%' class='event-log'>";
 
 		print "<tr class='title'>
 			<td width='5%'>".__("Error")."</td>
@@ -129,7 +129,7 @@ class Pref_System extends Handler_Protected {
 
 			print "<td class='errno'>" . Logger::$errornames[$line["errno"]] . " (" . $line["errno"] . ")</td>";
 			print "<td class='filename'>" . $line["filename"] . ":" . $line["lineno"] . "</td>";
-			print "<td class='errstr'>" . $line["errstr"] . "<hr/>" . nl2br($line["context"]) . "</td>";
+			print "<td class='errstr'>" . $line["errstr"] . "\n" .  $line["context"] . "</td>";
 			print "<td class='login'>" . $line["login"] . "</td>";
 
 			print "<td class='timestamp'>" .

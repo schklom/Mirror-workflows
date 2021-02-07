@@ -30,7 +30,7 @@ mkdir /opt/pialert
 copy the files pialert.conf and version.conf from here to the new directory (sorry, I have not yet figured out how to do this automatically inside the docker build).
 
 docker run \
-        --rm \
+        --restart=always \
         --name=pialert \
         --net=host \
         --detach \

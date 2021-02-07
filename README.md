@@ -21,7 +21,7 @@ mv pialert/config/pialert.conf pialert/config/pialert.conf.orig
 
 cp ./pialert.conf pialert/config/pialert.conf
 
-docker build -t bcollier/pialert:0.9 .
+docker build -t bcollier/pialert .
 
 To run it:
 
@@ -35,7 +35,7 @@ docker run \
         --net=host \
         --detach \
         -v /opt/pialert/config:/opt/pialert/config \
-        bcollier/pialert:0.9
+        bcollier/pialert:latest
         
 In order for arp-scan to work in a docker, the container must use net=host (if you know a way around, let me know).
 

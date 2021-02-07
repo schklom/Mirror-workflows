@@ -19,7 +19,7 @@ class Bookmarklets extends Plugin {
   function hook_prefs_tab($args) {
     if ($args == "prefFeeds") {
 
-		print "<div dojoType=\"dijit.layout.AccordionPane\" 
+		print "<div dojoType=\"dijit.layout.AccordionPane\"
 			title=\"<i class='material-icons'>bookmark</i> ".__('Bookmarklets')."\">";
 
 		print "<h3>" . __("Drag the link below to your browser toolbar, open the feed you're interested in in your browser and click on the link to subscribe to it.") . "</h3>";
@@ -28,7 +28,7 @@ class Bookmarklets extends Plugin {
 
 		$confirm_str = str_replace("'", "\'", __('Subscribe to %s in Tiny Tiny RSS?'));
 
-		$bm_url = htmlspecialchars("javascript:{if(confirm('$confirm_str'.replace('%s',window.location.href)))window.location.href='$bm_subscribe_url'+window.location.href}");
+		$bm_url = htmlspecialchars("javascript:{if(confirm('$confirm_str'.replace('%s',window.location.href)))window.location.href='$bm_subscribe_url'+encodeURIComponent(window.location.href)}");
 
 		print "<p><label class='dijitButton'>";
 		print "<a href=\"$bm_url\">" . __('Subscribe in Tiny Tiny RSS'). "</a>";

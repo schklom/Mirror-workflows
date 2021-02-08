@@ -731,9 +731,11 @@ class Article extends Handler_Protected {
 		define('ARTICLE_KIND_VIDEO', 2);
 		define('ARTICLE_KIND_YOUTUBE', 3);
 
-		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_ARTICLE_IMAGE) as $p) {
-			list ($article_image, $article_stream, $content) = $p->hook_article_image($enclosures, $content, $site_url);
-		}
+		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_ARTICLE_IMAGE,
+			function ($result) use (&$article_image, &$article_stream, &$content) {
+				list ($article_image, $article_stream, $content) = $result;
+			},
+			$enclosures, $content, $site_url);
 
 		if (!$article_image && !$article_stream) {
 			$tmpdoc = new DOMDocument();

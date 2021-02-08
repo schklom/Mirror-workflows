@@ -7,7 +7,7 @@ class Dlg extends Handler_Protected {
 		if (parent::before($method)) {
 			header("Content-Type: text/html"); # required for iframe
 
-			$this->param = $_REQUEST["param"];
+			$this->param = ($_REQUEST["param"] ?? false);
 			return true;
 		}
 		return false;

@@ -490,17 +490,17 @@ class Handler_Public extends Handler {
 	}
 
 	function updateTask() {
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK, "hook_update_task", false);
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK);
 	}
 
 	function housekeepingTask() {
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_HOUSE_KEEPING, "hook_house_keeping", false);
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_HOUSE_KEEPING);
 	}
 
 	function globalUpdateFeeds() {
 		RPC::updaterandomfeed_real();
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK, "hook_update_task", false);
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK);
 	}
 
 	function sharepopup() {

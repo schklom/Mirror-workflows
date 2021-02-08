@@ -800,8 +800,7 @@ class Pref_Feeds extends Handler_Protected {
 
 			print '</div><div dojoType="dijit.layout.ContentPane" title="'.__('Plugins').'">';
 
-			PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_EDIT_FEED,
-				"hook_prefs_edit_feed", $feed_id);
+			PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_EDIT_FEED, $feed_id);
 
 			print "</div></div>";
 
@@ -1072,8 +1071,7 @@ class Pref_Feeds extends Handler_Protected {
 				RSSUtils::set_basic_feed_info($feed_id);
 			} */
 
-			PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_SAVE_FEED,
-				"hook_prefs_save_feed", $feed_id);
+			PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_SAVE_FEED, $feed_id);
 
 		} else {
 			$feed_data = array();
@@ -1384,8 +1382,7 @@ class Pref_Feeds extends Handler_Protected {
 		print "<button dojoType='dijit.form.Button' class='alt-primary' onclick=\"return App.displayDlg('".__("Public OPML URL")."','pubOPMLUrl')\">".
 			__('Display published OPML URL')."</button> ";
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION,
-			"hook_prefs_tab_section", "prefFeedsOPML");
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION, "prefFeedsOPML");
 
 		print "</div>"; # pane
 
@@ -1403,13 +1400,11 @@ class Pref_Feeds extends Handler_Protected {
 		print "<button class=\"alt-danger\" dojoType=\"dijit.form.Button\" onclick=\"return Helpers.clearFeedAccessKeys()\">".
 			__('Clear all generated URLs')."</button> ";
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION,
-			"hook_prefs_tab_section", "prefFeedsPublishedGenerated");
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION, "prefFeedsPublishedGenerated");
 
 		print "</div>"; #pane
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB,
-			"hook_prefs_tab", "prefFeeds");
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefFeeds");
 
 		print "</div>"; #container
 	}

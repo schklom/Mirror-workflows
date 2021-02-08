@@ -559,8 +559,7 @@ class Pref_Prefs extends Handler_Protected {
 
 		print "</div>"; # tab container
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION,
-			"hook_prefs_tab_section", "prefPrefsAuth");
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION, "prefPrefsAuth");
 
 		print "</div>"; #pane
 
@@ -814,8 +813,7 @@ class Pref_Prefs extends Handler_Protected {
 
 		print_hidden("boolean_prefs", "$listed_boolean_prefs");
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION,
-			"hook_prefs_tab_section", "prefPrefsPrefsInside");
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION, "prefPrefsPrefsInside");
 
 		print '</div>'; # inside pane
 		print '<div dojoType="dijit.layout.ContentPane" region="bottom">';
@@ -840,8 +838,7 @@ class Pref_Prefs extends Handler_Protected {
 
 		print "&nbsp;";
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION,
-			"hook_prefs_tab_section", "prefPrefsPrefsOutside");
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION, "prefPrefsPrefsOutside");
 
 		print "</form>";
 		print '</div>'; # inner pane
@@ -1005,8 +1002,7 @@ class Pref_Prefs extends Handler_Protected {
 
 		print "</form>";
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB,
-			"hook_prefs_tab", "prefPrefs");
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefPrefs");
 
 		print "</div>"; #container
 

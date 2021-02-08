@@ -355,8 +355,7 @@ class Pref_Users extends Handler_Protected {
 				<button dojoType='dijit.form.Button' onclick='Users.resetSelected()'>".
 				__('Reset password')."</button dojoType=\"dijit.form.Button\">";
 
-			PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION,
-				"hook_prefs_tab_section", "prefUsersToolbar");
+			PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION, "prefUsersToolbar");
 
 			print "</div>"; #toolbar
 			print "</div>"; #pane
@@ -429,8 +428,7 @@ class Pref_Users extends Handler_Protected {
 
 			print "</div>"; #pane
 
-			PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB,
-				"hook_prefs_tab", "prefUsers");
+			PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefUsers");
 
 			print "</div>"; #container
 

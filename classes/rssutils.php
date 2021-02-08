@@ -808,7 +808,20 @@ class RSSUtils {
 
 				Debug::log("hash differs, applying plugin filters:", Debug::$LOG_VERBOSE);
 
-				foreach ($pluginhost->get_hooks(PluginHost::HOOK_ARTICLE_FILTER) as $plugin) {
+				$start_ts = microtime(true);
+
+				PluginHost::getInstance()->run_hooks_callback(PluginHost::HOOK_ARTICLE_FILTER,
+				function ($result, $plugin) use (&$article, &$entry_plugin_data, $start_ts) {
+					$article = $result;
+
+					$entry_plugin_data .= mb_strtolower(get_class($plugin)) . ",";
+
+					Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)),
+						Debug::$LOG_VERBOSE);
+				},
+				$article);
+
+				/* foreach ($pluginhost->get_hooks(PluginHost::HOOK_ARTICLE_FILTER) as $plugin) {
 					Debug::log("... " . get_class($plugin), Debug::$LOG_VERBOSE);
 
 					$start = microtime(true);
@@ -817,9 +830,9 @@ class RSSUtils {
 					Debug::log(sprintf("=== %.4f (sec)", microtime(true) - $start), Debug::$LOG_VERBOSE);
 
 					$entry_plugin_data .= mb_strtolower(get_class($plugin)) . ",";
-				}
+				} */
 
-                if (Debug::get_loglevel() >= 3) {
+				if (Debug::get_loglevel() >= 3) {
 					print "processed content: ";
 					print htmlspecialchars($article["content"]);
 					print "\n";
@@ -1619,7 +1632,7 @@ class RSSUtils {
 
 		UserHelper::load_user_plugins($owner_uid, $tmph);
 
-		$tmph->run_hooks(PluginHost::HOOK_HOUSE_KEEPING, "hook_house_keeping", "");
+		$tmph->run_hooks(PluginHost::HOOK_HOUSE_KEEPING);
 	}
 
 	static function housekeeping_common() {
@@ -1635,7 +1648,7 @@ class RSSUtils {
 		Article::purge_orphans();
 		self::cleanup_counters_cache();
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_HOUSE_KEEPING, "hook_house_keeping", "");
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_HOUSE_KEEPING);
 	}
 
 	static function check_feed_favicon($site_url, $feed) {

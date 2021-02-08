@@ -216,7 +216,7 @@
 		RSSUtils::update_daemon_common(DAEMON_FEED_LIMIT, $options);
 		RSSUtils::housekeeping_common();
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK, "hook_update_task", $options);
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK, $options);
 	}
 
 	if (isset($options["daemon"])) {
@@ -261,7 +261,7 @@
 		if (!isset($options["pidlock"]) || $options["task"] == 0)
 			RSSUtils::housekeeping_common();
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK, "hook_update_task", $options);
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK, $options);
 	}
 
 	if (isset($options["cleanup-tags"])) {

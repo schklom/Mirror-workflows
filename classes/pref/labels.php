@@ -304,8 +304,7 @@ class Pref_Labels extends Handler_Protected {
 
 		print "</div>"; #pane
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB,
-			"hook_prefs_tab", "prefLabels");
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefLabels");
 
 		print "</div>"; #container
 

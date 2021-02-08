@@ -160,8 +160,7 @@
                 title="<i class='material-icons'>info_outline</i> <?php echo __('System') ?>"></div>
         <?php } ?>
         <?php
-            PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TABS,
-                "hook_prefs_tabs", false);
+            PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TABS);
         ?>
         </div>
 		<?php $version = get_version($git_commit, $git_timestamp, $last_error); ?>

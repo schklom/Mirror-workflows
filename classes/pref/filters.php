@@ -814,8 +814,7 @@ class Pref_Filters extends Handler_Protected {
 
 		print "</div>"; #pane
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB,
-			"hook_prefs_tab", "prefFilters");
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefFilters");
 
 		print "</div>"; #container
 

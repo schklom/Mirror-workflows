@@ -176,8 +176,7 @@ class Pref_System extends Handler_Protected {
 
 		print "</div>"; # accordion pane
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB,
-			"hook_prefs_tab", "prefSystem");
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefSystem");
 
 		print "</div>"; #container
 	}

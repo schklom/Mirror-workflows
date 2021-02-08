@@ -249,23 +249,29 @@ class PluginHost {
 
 					$this->last_registered = $class;
 
-					switch ($kind) {
-					case $this::KIND_SYSTEM:
-						if ($this->is_system($plugin)) {
-							if (!$skip_init) $plugin->init($this);
-							$this->register_plugin($class, $plugin);
-						}
-						break;
-					case $this::KIND_USER:
-						if (!$this->is_system($plugin)) {
-							if (!$skip_init) $plugin->init($this);
-							$this->register_plugin($class, $plugin);
-						}
-						break;
-					case $this::KIND_ALL:
-						if (!$skip_init) $plugin->init($this);
-						$this->register_plugin($class, $plugin);
-						break;
+					try {
+						switch ($kind) {
+							case $this::KIND_SYSTEM:
+								if ($this->is_system($plugin)) {
+									if (!$skip_init) $plugin->init($this);
+									$this->register_plugin($class, $plugin);
+								}
+								break;
+							case $this::KIND_USER:
+								if (!$this->is_system($plugin)) {
+									if (!$skip_init) $plugin->init($this);
+									$this->register_plugin($class, $plugin);
+								}
+								break;
+							case $this::KIND_ALL:
+								if (!$skip_init) $plugin->init($this);
+								$this->register_plugin($class, $plugin);
+								break;
+							}
+					} catch (Exception $ex) {
+						user_error($ex, E_USER_WARNING);
+					} catch (Error $err) {
+						user_error($err, E_USER_WARNING);
 					}
 				}
 			}

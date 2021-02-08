@@ -1,9 +1,7 @@
 <?php
-class Auth_Remote extends Plugin implements IAuthModule {
+class Auth_Remote extends Auth_Base {
 
 	private $host;
-	/* @var Auth_Base $base */
-	private $base;
 
 	function about() {
 		return array(1.0,
@@ -13,9 +11,8 @@ class Auth_Remote extends Plugin implements IAuthModule {
 	}
 
 	/* @var PluginHost $host */
-	function init($host ) {
+	function init($host) {
 		$this->host = $host;
-		$this->base = new Auth_Base();
 
 		$host->add_hook($host::HOOK_AUTH_USER, $this);
 	}
@@ -53,7 +50,7 @@ class Auth_Remote extends Plugin implements IAuthModule {
 		if (!$try_login) $try_login = $this->get_login_by_ssl_certificate();
 
 		if ($try_login) {
-			$user_id = $this->base->auto_create_user($try_login, $password);
+			$user_id = $this->auto_create_user($try_login, $password);
 
 			if ($user_id) {
 				$_SESSION["fake_login"] = $try_login;

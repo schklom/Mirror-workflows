@@ -1,5 +1,5 @@
 <?php
-class Auth_Internal extends Plugin implements IAuthModule {
+class Auth_Internal extends Auth_Base {
 
 	private $host;
 
@@ -13,7 +13,6 @@ class Auth_Internal extends Plugin implements IAuthModule {
 	/* @var PluginHost $host */
 	function init($host) {
 		$this->host = $host;
-		$this->pdo = Db::pdo();
 
 		$host->add_hook($host::HOOK_AUTH_USER, $this);
 	}
@@ -178,7 +177,7 @@ class Auth_Internal extends Plugin implements IAuthModule {
 		return false;
 	}
 
-	function check_password($owner_uid, $password) {
+	function check_password($owner_uid, $password, $service = '') {
 
 		$sth = $this->pdo->prepare("SELECT salt,login,otp_enabled FROM ttrss_users WHERE
 			id = ?");
@@ -188,6 +187,11 @@ class Auth_Internal extends Plugin implements IAuthModule {
 
 			$salt = $row['salt'];
 			$login = $row['login'];
+
+			// check app password only if service is specified
+			if ($service && get_schema_version() > 138) {
+				return $this->check_app_password($login, $password, $service);
+			}
 
 			if (!$salt) {
 				$password_hash1 = encrypt_password($password);

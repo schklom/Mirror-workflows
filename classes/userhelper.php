@@ -7,15 +7,15 @@ class UserHelper {
 			$user_id = false;
 			$auth_module = false;
 
-			foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_AUTH_USER) as $plugin) {
-
-				$user_id = (int) $plugin->authenticate($login, $password, $service);
-
-				if ($user_id) {
-					$auth_module = strtolower(get_class($plugin));
-					break;
-				}
-			}
+			PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_AUTH_USER,
+				function ($result, $plugin) use (&$user_id, &$auth_module) {
+					if ($result) {
+						$user_id = (int)$result;
+						$auth_module = strtolower(get_class($plugin));
+						return true;
+					}
+				},
+				$login, $password, $service);
 
 			if ($user_id && !$check_only) {
 

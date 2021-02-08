@@ -1,6 +1,6 @@
 <?php
-class Auth_Base {
-	private $pdo;
+abstract class Auth_Base extends Plugin implements IAuthModule {
+	protected $pdo;
 
 	const AUTH_SERVICE_API = '_api';
 
@@ -8,18 +8,9 @@ class Auth_Base {
 		$this->pdo = Db::pdo();
 	}
 
-	/**
-	 * @SuppressWarnings(unused)
-	 */
-	function check_password($owner_uid, $password, $service = '') {
-		return false;
-	}
-
-	/**
-	 * @SuppressWarnings(unused)
-	 */
-	function authenticate($login, $password, $service = '') {
-		return false;
+	// compatibility wrapper, because of how pluginhost works (hook name == method name)
+	function hook_auth_user(...$args) {
+		return $this->authenticate(...$args);
 	}
 
 	// Auto-creates specified user if allowed by system configuration

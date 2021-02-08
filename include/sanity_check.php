@@ -1,18 +1,5 @@
 <?php
-	/* WARNING!
-	 *
-	 * If you modify this file, you are ON YOUR OWN!
-	 *
-	 * Believe it or not, all of the checks below are required to succeed for
-	 * tt-rss to actually function properly.
-	 *
-	 * If you think you have a better idea about what is or isn't required, feel
-	 * free to modify the file, note though that you are therefore automatically
-	 * disqualified from any further support by official channels, e.g. tt-rss.org
-	 * issue tracker or the forums.
-	 *
-	 * If you come crying when stuff inevitably breaks, you will be mocked and told
-	 * to get out. */
+	/* WARNING! If you modify this file, you are ON YOUR OWN! */
 
 	function make_self_url() {
 		$proto = is_server_https() ? 'https' : 'http';
@@ -45,9 +32,6 @@
 		return $bad_tables;
 	}
 
-/**
-	 * @SuppressWarnings(PHPMD.UnusedLocalVariable)
-	 */
 	function initial_sanity_check() {
 
 		$errors = array();
@@ -116,23 +100,25 @@
 				}
 			}
 
-			$ref_self_url_path = make_self_url_path();
+			if (php_sapi_name() != "cli") {
+				$ref_self_url_path = make_self_url_path();
 
-			if ($ref_self_url_path) {
-				$ref_self_url_path = preg_replace("/\w+\.php$/", "", $ref_self_url_path);
-			}
+				if ($ref_self_url_path) {
+					$ref_self_url_path = preg_replace("/\w+\.php$/", "", $ref_self_url_path);
+				}
 
-			if (SELF_URL_PATH == "http://example.org/tt-rss/") {
-				$hint = $ref_self_url_path ? "(possible value: <b>$ref_self_url_path</b>)" : "";
-				array_push($errors,
-						"Please set SELF_URL_PATH to the correct value for your server: $hint");
-			}
+				if (SELF_URL_PATH == "http://example.org/tt-rss/") {
+					$hint = $ref_self_url_path ? "(possible value: <b>$ref_self_url_path</b>)" : "";
+					array_push($errors,
+							"Please set SELF_URL_PATH to the correct value for your server: $hint");
+				}
 
-			if ($ref_self_url_path &&
-				(!defined('_SKIP_SELF_URL_PATH_CHECKS') || !_SKIP_SELF_URL_PATH_CHECKS) &&
-				SELF_URL_PATH != $ref_self_url_path && SELF_URL_PATH != mb_substr($ref_self_url_path, 0, mb_strlen($ref_self_url_path)-1)) {
-				array_push($errors,
-					"Please set SELF_URL_PATH to the correct value detected for your server: <b>$ref_self_url_path</b> (you're using: <b>" . SELF_URL_PATH . "</b>)");
+				if ($ref_self_url_path &&
+					(!defined('_SKIP_SELF_URL_PATH_CHECKS') || !_SKIP_SELF_URL_PATH_CHECKS) &&
+					SELF_URL_PATH != $ref_self_url_path && SELF_URL_PATH != mb_substr($ref_self_url_path, 0, mb_strlen($ref_self_url_path)-1)) {
+					array_push($errors,
+						"Please set SELF_URL_PATH to the correct value detected for your server: <b>$ref_self_url_path</b> (you're using: <b>" . SELF_URL_PATH . "</b>)");
+				}
 			}
 
 			if (!is_writable(ICONS_DIR)) {
@@ -207,7 +193,7 @@
 			}
 		}
 
-		if (count($errors) > 0 && $_SERVER['REQUEST_URI']) { ?>
+		if (count($errors) > 0 && php_sapi_name() != "cli") { ?>
 			<!DOCTYPE html>
 			<html>
 			<head>
@@ -240,7 +226,7 @@
 			echo "Please fix errors indicated by the following messages:\n\n";
 
 			foreach ($errors as $error) {
-				echo " * $error\n";
+				echo " * " . strip_tags($error)."\n";
 			}
 
 			echo "\nYou might want to check tt-rss wiki or the forums for more information.\n";

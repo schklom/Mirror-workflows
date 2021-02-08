@@ -72,9 +72,6 @@
 		return $tags_deleted;
 	}
 
-	if (!defined('PHP_EXECUTABLE'))
-		define('PHP_EXECUTABLE', '/usr/bin/php');
-
 	$pdo = Db::pdo();
 
 	init_plugins();
@@ -106,33 +103,13 @@
 		array_push($longopts, $command . $data["suffix"]);
 	}
 
-	$options = getopt("", $longopts);
-
-	if (!is_array($options)) {
-		die("error: getopt() failed. ".
-			"Most probably you are using PHP CGI to run this script ".
-			"instead of required PHP CLI. Check tt-rss wiki page on updating feeds for ".
-			"additional information.\n");
-	}
-
-	if (count($options) == 0 && !defined('STDIN')) {
-		?>
-		<!DOCTYPE html>
-		<html>
-		<head>
-		<title>Tiny Tiny RSS data update script.</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		</head>
-
-		<body>
-		<h1><?php echo __("Tiny Tiny RSS data update script.") ?></h1>
-
-		<?php print_error("Please run this script from the command line. Use option \"--help\" to display command help if this error is displayed erroneously."); ?>
-
-		</body></html>
-	<?php
+	if (php_sapi_name() != "cli") {
+		header("Content-type: text/plain");
+		print "Please run this script from the command line.\n";
 		exit;
 	}
+
+	$options = getopt("", $longopts);
 
 	if (count($options) == 0 || isset($options["help"]) ) {
 		print "Tiny Tiny RSS data update script.\n\n";

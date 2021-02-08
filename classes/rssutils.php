@@ -595,8 +595,12 @@ class RSSUtils {
 
 				Debug::log("checking favicon...", Debug::$LOG_VERBOSE);
 
+				user_error("before favicon", E_USER_WARNING);
+
 				self::check_feed_favicon($site_url, $feed);
 				$favicon_modified_new = file_exists($favicon_file) ? filemtime($favicon_file) : -1;
+
+				user_error("after favicon", E_USER_WARNING);
 
 				if ($favicon_modified_new > $favicon_modified)
 					$favicon_avg_color = '';

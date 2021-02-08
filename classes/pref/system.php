@@ -69,7 +69,9 @@ class Pref_System extends Handler_Protected {
 		print "<button dojoType='dijit.form.Button'
 			onclick='Helpers.EventLog.refresh()'>".__('Refresh')."</button>";
 
-		print "<button dojoType='dijit.form.Button'
+		$prev_page_disabled = $page <= 0 ? "disabled" : "";
+
+		print "<button dojoType='dijit.form.Button' $prev_page_disabled
 			onclick='Helpers.EventLog.prevPage()'>".__('&lt;&lt;')."</button>";
 
 		print "<button dojoType='dijit.form.Button' disabled>".T_sprintf('Page %d of %d', $page+1, $total_pages+1)."</button>";

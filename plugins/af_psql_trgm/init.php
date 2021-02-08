@@ -238,7 +238,7 @@ class Af_Psql_Trgm extends Plugin {
 	function hook_prefs_save_feed($feed_id) {
 		$enabled_feeds = $this->get_stored_array("enabled_feeds");
 
-		$enable = checkbox_to_sql_bool($_POST["trgm_similarity_enabled"]);
+		$enable = checkbox_to_sql_bool($_POST["trgm_similarity_enabled"] ?? "");
 		$key = array_search($feed_id, $enabled_feeds);
 
 		if ($enable) {

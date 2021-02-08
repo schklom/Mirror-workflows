@@ -104,11 +104,7 @@ class jimIcon {
                 }
 
                 // See if we can parse it (might be PNG format here)
-                // (all this to hide one GD warning)
-                $er = error_reporting();
-                error_reporting(0);
-                $i = imagecreatefromstring($data);
-                error_reporting($er);
+                $i = @imagecreatefromstring($data);
 
                 if ($i) {
                         imagesavealpha($i, true);

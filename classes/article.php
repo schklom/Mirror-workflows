@@ -31,14 +31,14 @@ class Article extends Handler_Protected {
 			$pluginhost->load_all(PluginHost::KIND_ALL, $owner_uid);
 			//$pluginhost->load_data();
 
-			foreach ($pluginhost->get_hooks(PluginHost::HOOK_GET_FULL_TEXT) as $p) {
-				$extracted_content = $p->hook_get_full_text($url);
-
-				if ($extracted_content) {
-					$content = $extracted_content;
-					break;
-				}
-			}
+			$pluginhost->run_hooks_callback(PluginHost::HOOK_GET_FULL_TEXT,
+				function ($result) use (&$content) {
+					if ($result) {
+						$content = $result;
+						return true;
+					}
+				},
+				$url);
 		}
 
 		$content_hash = sha1($content);

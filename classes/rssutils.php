@@ -279,10 +279,11 @@ class RSSUtils {
 			$pluginhost->load($user_plugins, PluginHost::KIND_USER, $owner_uid);
 			//$pluginhost->load_data();
 
-			$basic_info = array();
-			foreach ($pluginhost->get_hooks(PluginHost::HOOK_FEED_BASIC_INFO) as $plugin) {
-				$basic_info = $plugin->hook_feed_basic_info($basic_info, $fetch_url, $owner_uid, $feed, $auth_login, $auth_pass);
-			}
+			$basic_info = [];
+
+			$pluginhost->run_hooks_callback(PluginHost::HOOK_FEED_BASIC_INFO, function ($result) use (&$basic_info) {
+				$basic_info = $result;
+			}, $basic_info, $fetch_url, $owner_uid, $feed, $auth_login, $auth_pass);
 
 			if (!$basic_info) {
 				$feed_data = UrlHelper::fetch($fetch_url, false,
@@ -810,27 +811,16 @@ class RSSUtils {
 
 				$start_ts = microtime(true);
 
-				PluginHost::getInstance()->run_hooks_callback(PluginHost::HOOK_ARTICLE_FILTER,
-				function ($result, $plugin) use (&$article, &$entry_plugin_data, $start_ts) {
-					$article = $result;
+				$pluginhost->chain_hooks_callback(PluginHost::HOOK_ARTICLE_FILTER,
+					function ($result, $plugin) use (&$article, &$entry_plugin_data, $start_ts) {
+						$article = $result;
 
-					$entry_plugin_data .= mb_strtolower(get_class($plugin)) . ",";
+						$entry_plugin_data .= mb_strtolower(get_class($plugin)) . ",";
 
-					Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)),
-						Debug::$LOG_VERBOSE);
-				},
-				$article);
-
-				/* foreach ($pluginhost->get_hooks(PluginHost::HOOK_ARTICLE_FILTER) as $plugin) {
-					Debug::log("... " . get_class($plugin), Debug::$LOG_VERBOSE);
-
-					$start = microtime(true);
-					$article = $plugin->hook_article_filter($article);
-
-					Debug::log(sprintf("=== %.4f (sec)", microtime(true) - $start), Debug::$LOG_VERBOSE);
-
-					$entry_plugin_data .= mb_strtolower(get_class($plugin)) . ",";
-				} */
+						Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)),
+							Debug::$LOG_VERBOSE);
+					},
+					$article);
 
 				if (Debug::get_loglevel() >= 3) {
 					print "processed content: ";

@@ -153,9 +153,9 @@
             <img src='images/indicator_tiny.gif'/>
             <?php echo  __("Loading, please wait..."); ?></div>
         <?php
-          foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FEED_TREE) as $p) {
-            echo $p->hook_feed_tree();
-          }
+			 PluginHost::getInstance()->run_hooks_callback(PluginHost::HOOK_FEED_TREE, function ($result) {
+				 echo $result;
+			 });
         ?>
         <div id="feedTree"></div>
     </div>
@@ -174,9 +174,10 @@
                title="<?php echo __('Updates are available from Git.') ?>">new_releases</i>
 
             <?php
-            foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_MAIN_TOOLBAR_BUTTON) as $p) {
-                echo $p->hook_main_toolbar_button();
-            }
+
+            PluginHost::getInstance()->run_hooks_callback(PluginHost::HOOK_MAIN_TOOLBAR_BUTTON, function ($result) {
+                echo $result;
+				});
             ?>
 
             <form id="toolbar-headlines" action="" style="order : 10" onsubmit='return false'>
@@ -206,13 +207,13 @@
                 <option value="date_reverse"><?php echo __('Oldest first') ?></option>
                 <option value="title"><?php echo __('Title') ?></option>
 
-				<?php foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_HEADLINES_CUSTOM_SORT_MAP) as $p) {
-					$sort_map = $p->hook_headlines_custom_sort_map();
-
-					foreach ($sort_map as $sort_value => $sort_title) {
-						print "<option value=\"" . htmlspecialchars($sort_value) . "\">$sort_title</option>";
-					}
-				} ?>
+				<?php
+					PluginHost::getInstance()->run_hooks_callback(PluginHost::HOOK_HEADLINES_CUSTOM_SORT_MAP, function ($result) {
+						foreach ($result as $sort_value => $sort_title) {
+							print "<option value=\"" . htmlspecialchars($sort_value) . "\">$sort_title</option>";
+						}
+					});
+				?>
             </select>
 
             <div dojoType="fox.form.ComboButton" onclick="Feeds.catchupCurrent()">
@@ -235,9 +236,9 @@
             <div class="action-chooser" style="order : 30">
 
                 <?php
-                    foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_TOOLBAR_BUTTON) as $p) {
-                         echo $p->hook_toolbar_button();
-                    }
+						  PluginHost::getInstance()->run_hooks_callback(PluginHost::HOOK_TOOLBAR_BUTTON, function ($result) {
+							echo $result;
+						});
                 ?>
 
                 <div dojoType="fox.form.DropDownButton" class="action-button" title="<?php echo __('Actions...') ?>">
@@ -257,9 +258,9 @@
                         <div dojoType="dijit.MenuItem" onclick="App.onActionSelected('qmcHKhelp')"><?php echo __('Keyboard shortcuts help') ?></div>
 
                         <?php
-                            foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_ACTION_ITEM) as $p) {
-                             echo $p->hook_action_item();
-                            }
+									PluginHost::getInstance()->run_hooks_callback(PluginHost::HOOK_ACTION_ITEM, function ($result) {
+										echo $result;
+									});
                         ?>
 
                         <?php if (empty($_SESSION["hide_logout"])) { ?>

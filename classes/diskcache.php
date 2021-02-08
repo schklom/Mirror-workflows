@@ -399,9 +399,8 @@ class DiskCache {
 			$tmppluginhost->load(PLUGINS, PluginHost::KIND_SYSTEM);
 			//$tmppluginhost->load_data();
 
-			foreach ($tmppluginhost->get_hooks(PluginHost::HOOK_SEND_LOCAL_FILE) as $plugin) {
-				if ($plugin->hook_send_local_file($filename)) return true;
-			}
+			if ($tmppluginhost->run_hooks_until(PluginHost::HOOK_SEND_LOCAL_FILE, true, $filename))
+				return true;
 
 			header("Content-type: $mimetype");
 

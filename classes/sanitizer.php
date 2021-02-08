@@ -41,14 +41,10 @@ class Sanitizer {
 	}
 
 	public static function iframe_whitelisted($entry) {
-		@$src = parse_url($entry->getAttribute("src"), PHP_URL_HOST);
+		$src = parse_url($entry->getAttribute("src"), PHP_URL_HOST);
 
-		if ($src) {
-			foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_IFRAME_WHITELISTED) as $plugin) {
-				if ($plugin->hook_iframe_whitelisted($src))
-					return true;
-			}
-		}
+		if (!empty($src))
+			return PluginHost::getInstance()->run_hooks_until(PluginHost::HOOK_IFRAME_WHITELISTED, true, $src);
 
 		return false;
 	}
@@ -153,16 +149,17 @@ class Sanitizer {
 
 		$disallowed_attributes = array('id', 'style', 'class', 'width', 'height', 'allow');
 
-		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_SANITIZE) as $plugin) {
-			$retval = $plugin->hook_sanitize($doc, $site_url, $allowed_elements, $disallowed_attributes, $article_id);
-			if (is_array($retval)) {
-				$doc = $retval[0];
-				$allowed_elements = $retval[1];
-				$disallowed_attributes = $retval[2];
-			} else {
-				$doc = $retval;
-			}
-		}
+		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_SANITIZE,
+			function ($result) use (&$doc, &$allowed_elements, &$disallowed_attributes) {
+				if (is_array($result)) {
+					$doc = $result[0];
+					$allowed_elements = $result[1];
+					$disallowed_attributes = $result[2];
+				} else {
+					$doc = $result;
+				}
+			},
+			$doc, $site_url, $allowed_elements, $disallowed_attributes, $article_id);
 
 		$doc->removeChild($doc->firstChild); //remove doctype
 		$doc = self::strip_harmful_tags($doc, $allowed_elements, $disallowed_attributes);

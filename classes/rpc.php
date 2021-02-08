@@ -641,9 +641,11 @@ class RPC extends Handler_Protected {
 				"help_dialog" => __("Show help dialog"))
 		);
 
-		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_HOTKEY_INFO) as $plugin) {
-			$hotkeys = $plugin->hook_hotkey_info($hotkeys);
-		}
+		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HOTKEY_INFO,
+			function ($result) use (&$hotkeys) {
+				$hotkeys = $result;
+			},
+			$hotkeys);
 
 		return $hotkeys;
 	}
@@ -712,9 +714,11 @@ class RPC extends Handler_Protected {
 			"?" => "help_dialog",
 		);
 
-		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_HOTKEY_MAP) as $plugin) {
-			$hotkeys = $plugin->hook_hotkey_map($hotkeys);
-		}
+		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HOTKEY_MAP,
+			function ($result) use (&$hotkeys) {
+				$hotkeys = $result;
+			},
+			$hotkeys);
 
 		$prefixes = array();
 

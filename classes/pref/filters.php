@@ -140,9 +140,13 @@ class Pref_Filters extends Handler_Protected {
 
 				$line["content_preview"] = truncate_string(strip_tags($line["content"]), 200, '&hellip;');
 
-				foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_QUERY_HEADLINES) as $p) {
-					$line = $p->hook_query_headlines($line, 100);
-				}
+				$excerpt_length = 100;
+
+				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_QUERY_HEADLINES,
+					function ($result) use (&$line) {
+						$line = $result;
+					},
+					$line, $excerpt_length);
 
 				$content_preview = $line["content_preview"];
 

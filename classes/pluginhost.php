@@ -135,7 +135,7 @@ class PluginHost {
 		$method = strtolower($hook);
 
 		foreach ($this->get_hooks($hook) as $plugin) {
-			Debug::log("invoking: " . get_class($plugin) . "->$hook()", Debug::$LOG_VERBOSE);
+			//Debug::log("invoking: " . get_class($plugin) . "->$hook()", Debug::$LOG_VERBOSE);
 
 			try {
 				$plugin->$method(...$args);
@@ -147,6 +147,26 @@ class PluginHost {
 		}
 	}
 
+	function run_hooks_until($hook, $check, ...$args) {
+		$method = strtolower($hook);
+
+		foreach ($this->get_hooks($hook) as $plugin) {
+			try {
+				$result = $plugin->$method(...$args);
+
+				if ($result == $check)
+					return true;
+
+			} catch (Exception $ex) {
+				user_error($ex, E_USER_WARNING);
+			} catch (Error $err) {
+				user_error($err, E_USER_WARNING);
+			}
+		}
+
+		return false;
+	}
+
 	function run_hooks_callback($hook, $callback, ...$args) {
 		$method = strtolower($hook);
 
@@ -154,7 +174,25 @@ class PluginHost {
 			//Debug::log("invoking: " . get_class($plugin) . "->$hook()", Debug::$LOG_VERBOSE);
 
 			try {
-				$callback($plugin->$method(...$args), $plugin);
+				if ($callback($plugin->$method(...$args), $plugin))
+					break;
+			} catch (Exception $ex) {
+				user_error($ex, E_USER_WARNING);
+			} catch (Error $err) {
+				user_error($err, E_USER_WARNING);
+			}
+		}
+	}
+
+	function chain_hooks_callback($hook, $callback, &...$args) {
+		$method = strtolower($hook);
+
+		foreach ($this->get_hooks($hook) as $plugin) {
+			//Debug::log("invoking: " . get_class($plugin) . "->$hook()", Debug::$LOG_VERBOSE);
+
+			try {
+				if ($callback($plugin->$method(...$args), $plugin))
+					break;
 			} catch (Exception $ex) {
 				user_error($ex, E_USER_WARNING);
 			} catch (Error $err) {

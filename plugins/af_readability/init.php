@@ -159,8 +159,8 @@ class Af_Readability extends Plugin {
 		$enabled_feeds = $this->get_stored_array("enabled_feeds");
 		$append_feeds = $this->get_stored_array("append_feeds");
 
-		$enable = checkbox_to_sql_bool($_POST["af_readability_enabled"]);
-		$append = checkbox_to_sql_bool($_POST["af_readability_append"]);
+		$enable = checkbox_to_sql_bool($_POST["af_readability_enabled"] ?? "");
+		$append = checkbox_to_sql_bool($_POST["af_readability_append"] ?? "");
 
 		$enable_key = array_search($feed_id, $enabled_feeds);
 		$append_key = array_search($feed_id, $append_feeds);

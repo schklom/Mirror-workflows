@@ -84,13 +84,17 @@ class Handler_Public extends Handler {
 				$line["content_preview"] = Sanitizer::sanitize(truncate_string(strip_tags($line["content"]), 100, '...'));
 				$line["tags"] = Article::get_article_tags($line["id"], $owner_uid);
 
-				foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_QUERY_HEADLINES) as $p) {
-					$line = $p->hook_query_headlines($line);
-				}
+				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_QUERY_HEADLINES,
+					function ($result) use (&$line) {
+						$line = $result;
+					},
+					$line);
 
-				foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_ARTICLE_EXPORT_FEED) as $p) {
-					$line = $p->hook_article_export_feed($line, $feed, $is_cat, $owner_uid);
-				}
+				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_ARTICLE_EXPORT_FEED,
+					function ($result) use (&$line) {
+						$line = $result;
+					},
+					$line, $feed, $is_cat, $owner_uid);
 
 				$tpl->setVariable('ARTICLE_ID',
 					htmlspecialchars($orig_guid ? $line['link'] :
@@ -182,13 +186,17 @@ class Handler_Public extends Handler {
 				$line["content_preview"] = Sanitizer::sanitize(truncate_string(strip_tags($line["content_preview"]), 100, '...'));
 				$line["tags"] = Article::get_article_tags($line["id"], $owner_uid);
 
-				foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_QUERY_HEADLINES) as $p) {
-					$line = $p->hook_query_headlines($line, 100);
-				}
+				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_QUERY_HEADLINES,
+					function ($result) use (&$line) {
+						$line = $result;
+					},
+					$line);
 
-				foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_ARTICLE_EXPORT_FEED) as $p) {
-					$line = $p->hook_article_export_feed($line, $feed, $is_cat);
-				}
+				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_ARTICLE_EXPORT_FEED,
+					function ($result) use (&$line) {
+						$line = $result;
+					},
+					$line, $feed, $is_cat, $owner_uid);
 
 				$article = array();
 
@@ -344,9 +352,11 @@ class Handler_Public extends Handler {
 				$line['hide_images'],
 				$owner_uid, $line["site_url"], false, $line["id"]);
 
-			foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_RENDER_ARTICLE) as $p) {
-				$line = $p->hook_render_article($line);
-			}
+			PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE,
+				function ($result) use (&$line) {
+					$line = $result;
+				},
+				$line);
 
 			$line['content'] = DiskCache::rewriteUrls($line['content']);
 
@@ -441,9 +451,11 @@ class Handler_Public extends Handler {
 
 		}
 
-		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FORMAT_ARTICLE) as $p) {
-			$rv = $p->hook_format_article($rv, $line, true);
-		}
+		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_FORMAT_ARTICLE,
+			function ($result) use (&$rv) {
+				$rv = $result;
+			},
+			$rv, $line);
 
 		return $rv;
 

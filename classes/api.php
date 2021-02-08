@@ -352,9 +352,11 @@ class API extends Handler {
 					$article["content"] = $line["content"];
 				}
 
-				foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_RENDER_ARTICLE_API) as $p) {
-					$article = $p->hook_render_article_api(array("article" => $article));
-				}
+				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE_API,
+					function ($result) use (&$article) {
+						$article = $result;
+					},
+					["article" => $article]);
 
 				$article['content'] = DiskCache::rewriteUrls($article['content']);
 
@@ -703,9 +705,12 @@ class API extends Handler {
 			if (!is_numeric($result)) {
 				while ($line = $result->fetch()) {
 					$line["content_preview"] = truncate_string(strip_tags($line["content"]), $excerpt_length);
-					foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_QUERY_HEADLINES) as $p) {
-						$line = $p->hook_query_headlines($line, $excerpt_length, true);
-					}
+
+					PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_QUERY_HEADLINES,
+						function ($result) use (&$line) {
+							$line = $result;
+						},
+						$line, $excerpt_length);
 
 					$is_updated = ($line["last_read"] == "" &&
 						($line["unread"] != "t" && $line["unread"] != "1"));
@@ -781,9 +786,11 @@ class API extends Handler {
 					$headline_row["note"] = $line["note"];
 					$headline_row["lang"] = $line["lang"];
 
-					foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_RENDER_ARTICLE_API) as $p) {
-						$headline_row = $p->hook_render_article_api(array("headline" => $headline_row));
-					}
+					PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE_API,
+						function ($result) use (&$headline_row) {
+							$headline_row = $result;
+						},
+						["headline" => $headline_row]);
 
 					$headline_row["content"] = DiskCache::rewriteUrls($headline_row['content']);
 

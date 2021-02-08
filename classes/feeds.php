@@ -874,13 +874,17 @@ class Feeds extends Handler_Protected {
 		if (is_array($search) && $search[0]) {
 			$search_qpart = "";
 
-			foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_SEARCH) as $plugin) {
-				list($search_qpart, $search_words) = $plugin->hook_search($search[0]);
-				break;
-			}
+			PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_SEARCH,
+				function ($result) use (&$search_qpart, &$search_words) {
+					if (!empty($result)) {
+						list($search_qpart, $search_words) = $result;
+						return true;
+					}
+				},
+				$search[0]);
 
 			// fall back in case of no plugins
-			if (!$search_qpart) {
+			if (empty($search_qpart)) {
 				list($search_qpart, $search_words) = self::search_to_sql($search[0], $search[1], $owner_uid);
 			}
 		} else {
@@ -1160,11 +1164,13 @@ class Feeds extends Handler_Protected {
 
 		$contents = @UrlHelper::fetch($url, false, $auth_login, $auth_pass);
 
-		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_SUBSCRIBE_FEED) as $plugin) {
-			$contents = $plugin->hook_subscribe_feed($contents, $url, $auth_login, $auth_pass);
-		}
+		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_SUBSCRIBE_FEED,
+			function ($result) use (&$contents) {
+				$contents = $result;
+			},
+			$contents, $url, $auth_login, $auth_pass);
 
-		if (!$contents) {
+		if (empty($contents)) {
 			if (preg_match("/cloudflare\.com/", $fetch_last_error_content)) {
 				$fetch_last_error .= " (feed behind Cloudflare)";
 			}
@@ -1473,10 +1479,14 @@ class Feeds extends Handler_Protected {
 		if ($search) {
 			$search_query_part = "";
 
-			foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_SEARCH) as $plugin) {
-				list($search_query_part, $search_words) = $plugin->hook_search($search);
-				break;
-			}
+			PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_SEARCH,
+				function ($result) use (&$search_query_part, &$search_words) {
+					if (!empty($result)) {
+						list($search_query_part, $search_words) = $result;
+						return true;
+					}
+				},
+				$search);
 
 			// fall back in case of no plugins
 			if (!$search_query_part) {
@@ -2347,11 +2357,13 @@ class Feeds extends Handler_Protected {
 		$query = "";
 		$skip_first_id = false;
 
-		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_HEADLINES_CUSTOM_SORT_OVERRIDE) as $p) {
-			list ($query, $skip_first_id) = $p->hook_headlines_custom_sort_override($order);
+		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HEADLINES_CUSTOM_SORT_OVERRIDE,
+			function ($result) use (&$query, &$skip_first_id) {
+				list ($query, $skip_first_id) = $result;
+			},
+			$order);
 
-			if ($query)	return [$query, $skip_first_id];
-		}
+		if ($query)	return [$query, $skip_first_id];
 
 		switch ($order) {
 			case "title":

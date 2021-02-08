@@ -701,7 +701,7 @@ class Handler_Public extends Handler {
 				$_SESSION["bw_limit"] = !!clean($_POST["bw_limit"] ?? false);
 				$_SESSION["safe_mode"] = $safe_mode;
 
-				if (clean($_POST["profile"])) {
+				if (!empty($_POST["profile"])) {
 
 					$profile = (int) clean($_POST["profile"]);
 
@@ -712,8 +712,8 @@ class Handler_Public extends Handler {
 					if ($sth->fetch()) {
 						$_SESSION["profile"] = $profile;
  					} else {
-					    $_SESSION["profile"] = null;
-                    }
+						$_SESSION["profile"] = null;
+					}
 				}
 			} else {
 

@@ -204,6 +204,15 @@ class PluginHost {
 	function add_hook($type, $sender, $priority = 50) {
 		$priority = (int) $priority;
 
+		if (!method_exists($sender, strtolower($type))) {
+			user_error(
+				sprintf("Plugin %s tried to register a hook without implementation: %s",
+					get_class($sender), $type),
+				E_USER_WARNING
+			);
+			return;
+		}
+
 		if (empty($this->hooks[$type])) {
 			$this->hooks[$type] = [];
 		}

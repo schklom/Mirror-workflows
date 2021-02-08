@@ -352,16 +352,16 @@ class Article extends Handler_Protected {
 		$result = self::get_article_enclosures($id);
 		$rv = '';
 
-		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FORMAT_ENCLOSURES) as $plugin) {
-			$retval = $plugin->hook_format_enclosures($rv, $result, $id, $always_display_enclosures, $article_content, $hide_images);
-			if (is_array($retval)) {
-				$rv = $retval[0];
-				$result = $retval[1];
-			} else {
-				$rv = $retval;
-			}
-		}
-		unset($retval); // Unset to prevent breaking render if there are no HOOK_RENDER_ENCLOSURE hooks below.
+		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_FORMAT_ENCLOSURES,
+			function ($result) use (&$rv) {
+				if (is_array($result)) {
+					$rv = $result[0];
+					$result = $result[1];
+				} else {
+					$rv = $result;
+				}
+			},
+			$rv, $result, $id, $always_display_enclosures, $article_content, $hide_images);
 
 		if ($rv === '' && !empty($result)) {
 			$entries_html = array();
@@ -370,9 +370,11 @@ class Article extends Handler_Protected {
 
 			foreach ($result as $line) {
 
-				foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_ENCLOSURE_ENTRY) as $plugin) {
-					$line = $plugin->hook_enclosure_entry($line, $id);
-				}
+				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_ENCLOSURE_ENTRY,
+					function($result) use (&$line) {
+						$line = $result;
+					},
+					$line, $id);
 
 				$url = $line["content_url"];
 				$ctype = $line["content_type"];
@@ -415,9 +417,13 @@ class Article extends Handler_Protected {
 
 					foreach ($entries as $entry) {
 
-						foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_RENDER_ENCLOSURE) as $plugin)
-							$retval = $plugin->hook_render_enclosure($entry, $hide_images);
+						$retval = null;
 
+						PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ENCLOSURE,
+							function($result) use (&$retval) {
+								$retval = $result;
+							},
+							$entry, $hide_images);
 
 						if (!empty($retval)) {
 							$rv .= $retval;

@@ -18,7 +18,7 @@ class Dlg extends Handler_Protected {
 
 		print "<div class='panel panel-scrollable'>";
 
-		$opml = new Opml($_REQUEST);
+		$opml = new OPML($_REQUEST);
 
 		$opml->opml_import($_SESSION["uid"]);
 

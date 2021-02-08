@@ -26,7 +26,7 @@
 		if ($row = $sth->fetch()) {
 			$owner_uid = $row['owner_uid'];
 
-			$opml = new Opml($_REQUEST);
+			$opml = new OPML($_REQUEST);
 			$opml->opml_export("", $owner_uid, true, false);
 
 		} else {

@@ -77,17 +77,21 @@ class Feeds extends Handler_Protected {
 			<div dojoType='dijit.MenuItem' onclick='Headlines.catchupSelection()'>".__('Mark as read')."</div>
 			<div dojoType='dijit.MenuItem' onclick='Article.selectionSetScore()'>".__('Set score')."</div>";
 
+		// TODO: move to mail plugin
 		if (PluginHost::getInstance()->get_plugin("mail")) {
 			$reply .= "<div dojoType='dijit.MenuItem' value='Plugins.Mail.send()'>".__('Forward by email')."</div>";
 		}
 
+		// TODO: move to mailto plugin
 		if (PluginHost::getInstance()->get_plugin("mailto")) {
 			$reply .= "<div dojoType='dijit.MenuItem' value='Plugins.Mailto.send()'>".__('Forward by email')."</div>";
 		}
 
-		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM) as $p) {
-			$reply .= $p->hook_headline_toolbar_select_menu_item($feed_id, $is_cat);
-	  	}
+		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM,
+			function ($result) use (&$reply) {
+				$reply .= $result;
+			},
+			$feed_id, $is_cat);
 
 		if ($feed_id == 0 && !$is_cat) {
 			$reply .= "<div dojoType='dijit.MenuSeparator'></div>
@@ -98,9 +102,11 @@ class Feeds extends Handler_Protected {
 
 		$reply .= "</div>"; /* dropdown */
 
-		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_HEADLINE_TOOLBAR_BUTTON) as $p) {
-			 $reply .= $p->hook_headline_toolbar_button($feed_id, $is_cat);
-		}
+		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HEADLINE_TOOLBAR_BUTTON,
+			function ($result) use (&$reply) {
+				$reply .= $result;
+			},
+			$feed_id, $is_cat);
 
 		$reply .= "</span>";
 
@@ -223,11 +229,12 @@ class Feeds extends Handler_Protected {
 
 		$reply['content'] = [];
 
-		if ($offset == 0) {
-			foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_HEADLINES_BEFORE) as $p) {
-				 $reply['content'] .= $p->hook_headlines_before($feed, $cat_view, $qfh_ret);
-			}
-		}
+		if ($offset == 0)
+			PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HEADLINES_BEFORE,
+					function ($result) use (&$reply) {
+						$reply['content'] .= $result;
+					},
+					$feed, $cat_view, $qfh_ret);
 
 		$this->mark_timestamp("object header");
 
@@ -244,9 +251,13 @@ class Feeds extends Handler_Protected {
 				} else {
 					$line["content_preview"] =  "&mdash; " . truncate_string(strip_tags($line["content"]), 250);
 
-					foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_QUERY_HEADLINES) as $p) {
-						$line = $p->hook_query_headlines($line, 250, false);
-					}
+					$max_excerpt_length = 250;
+
+					PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_QUERY_HEADLINES,
+						function ($result) use (&$line) {
+							$line = $result;
+						},
+						$line, $max_excerpt_length);
 				}
 
 				$this->mark_timestamp("   hook_query_headlines");
@@ -299,14 +310,18 @@ class Feeds extends Handler_Protected {
 				$line["feed_title"] = $line["feed_title"] ?? "";
 
 				$line["buttons_left"] = "";
-				foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_ARTICLE_LEFT_BUTTON) as $p) {
-					$line["buttons_left"] .= $p->hook_article_left_button($line);
-				}
+				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_ARTICLE_LEFT_BUTTON,
+					function ($result) use (&$line) {
+						$line["buttons_left"] .= $result;
+					},
+					$line);
 
 				$line["buttons"] = "";
-				foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_ARTICLE_BUTTON) as $p) {
-					$line["buttons"] .= $p->hook_article_button($line);
-				}
+				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_ARTICLE_BUTTON,
+					function ($result) use (&$line) {
+						$line["buttons"] .= $result;
+					},
+					$line);
 
 				$this->mark_timestamp("   pre-sanitize");
 
@@ -315,11 +330,12 @@ class Feeds extends Handler_Protected {
 
 				$this->mark_timestamp("   sanitize");
 
-				foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_RENDER_ARTICLE_CDM) as $p) {
-					$line = $p->hook_render_article_cdm($line);
-
-					$this->mark_timestamp("       hook_render_cdm: " . get_class($p));
-				}
+				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE_CDM,
+					function ($result, $plugin) use (&$line) {
+						$line = $result;
+						$this->mark_timestamp("       hook_render_cdm: " . get_class($plugin));
+					},
+					$line);
 
 				$this->mark_timestamp("   hook_render_cdm");
 
@@ -1580,7 +1596,7 @@ class Feeds extends Handler_Protected {
 							implode(",", $subcats).")";
 
 					} else {
-						$query_strategy_part = "cat_id = " . $pdo->quote($feed);
+						$query_strategy_part = "cat_id = " . $pdo->quote((string)$feed);
 					}
 
 				} else {
@@ -1590,7 +1606,7 @@ class Feeds extends Handler_Protected {
 				$vfeed_query_part = "ttrss_feeds.title AS feed_title,";
 
 			} else {
-				$query_strategy_part = "feed_id = " . $pdo->quote($feed);
+				$query_strategy_part = "feed_id = " . $pdo->quote((string)$feed);
 			}
 		} else if ($feed == 0 && !$cat_view) { // archive virtual feed
 			$query_strategy_part = "feed_id IS NULL";
@@ -1811,7 +1827,7 @@ class Feeds extends Handler_Protected {
 
 				$res = $pdo->query($query);
 
-				if ($row = $res->fetch()) {
+				if (!empty($res) && $row = $res->fetch()) {
 					$first_id = (int)$row["id"];
 
 					if ($offset > 0 && $first_id && $check_first_id && $first_id != $check_first_id) {

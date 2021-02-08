@@ -111,7 +111,7 @@ class PluginHost {
 		return Db::get();
 	}
 
-	function get_pdo() {
+	function get_pdo(): PDO {
 		return $this->pdo;
 	}
 

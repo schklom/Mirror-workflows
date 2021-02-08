@@ -92,7 +92,7 @@ class Db
 		return self::$instance;
 	}
 
-	public static function get() {
+	public static function get() : Db {
 		if (self::$instance == null)
 			self::$instance = new self();
 
@@ -103,7 +103,7 @@ class Db
 		return self::$instance->adapter;
 	}
 
-	public static function pdo() {
+	public static function pdo() : PDO {
 		if (self::$instance == null)
 			self::$instance = new self();
 

@@ -77,7 +77,7 @@ class PluginHost {
 	const KIND_SYSTEM = 2;
 	const KIND_USER = 3;
 
-	static function object_to_domain($plugin) {
+	static function object_to_domain(Plugin $plugin) {
 		return strtolower(get_class($plugin));
 	}
 
@@ -97,7 +97,7 @@ class PluginHost {
 		return self::$instance;
 	}
 
-	private function register_plugin($name, $plugin) {
+	private function register_plugin(string $name, Plugin $plugin) {
 		//array_push($this->plugins, $plugin);
 		$this->plugins[$name] = $plugin;
 	}
@@ -129,11 +129,11 @@ class PluginHost {
 		return $this->plugins;
 	}
 
-	function get_plugin($name) {
+	function get_plugin(string $name) {
 		return $this->plugins[strtolower($name)] ?? null;
 	}
 
-	function run_hooks($hook, ...$args) {
+	function run_hooks(string $hook, ...$args) {
 		$method = strtolower($hook);
 
 		foreach ($this->get_hooks($hook) as $plugin) {
@@ -149,7 +149,7 @@ class PluginHost {
 		}
 	}
 
-	function run_hooks_until($hook, $check, ...$args) {
+	function run_hooks_until(string $hook, $check, ...$args) {
 		$method = strtolower($hook);
 
 		foreach ($this->get_hooks($hook) as $plugin) {
@@ -169,7 +169,7 @@ class PluginHost {
 		return false;
 	}
 
-	function run_hooks_callback($hook, $callback, ...$args) {
+	function run_hooks_callback(string $hook, Closure $callback, ...$args) {
 		$method = strtolower($hook);
 
 		foreach ($this->get_hooks($hook) as $plugin) {
@@ -186,7 +186,7 @@ class PluginHost {
 		}
 	}
 
-	function chain_hooks_callback($hook, $callback, &...$args) {
+	function chain_hooks_callback(string $hook, Closure $callback, &...$args) {
 		$method = strtolower($hook);
 
 		foreach ($this->get_hooks($hook) as $plugin) {
@@ -203,7 +203,7 @@ class PluginHost {
 		}
 	}
 
-	function add_hook($type, $sender, $priority = 50) {
+	function add_hook(string $type, Plugin $sender, int $priority = 50) {
 		$priority = (int) $priority;
 
 		if (!method_exists($sender, strtolower($type))) {
@@ -227,7 +227,7 @@ class PluginHost {
 		ksort($this->hooks[$type]);
 	}
 
-	function del_hook($type, $sender) {
+	function del_hook(string $type, Plugin $sender) {
 		if (is_array($this->hooks[$type])) {
 			foreach (array_keys($this->hooks[$type]) as $prio) {
 				$key = array_search($sender, $this->hooks[$type][$prio]);
@@ -239,7 +239,7 @@ class PluginHost {
 		}
 	}
 
-	function get_hooks($type) {
+	function get_hooks(string $type) {
 		if (isset($this->hooks[$type])) {
 			$tmp = [];
 
@@ -252,7 +252,7 @@ class PluginHost {
 			return [];
 		}
 	}
-	function load_all($kind, $owner_uid = false, $skip_init = false) {
+	function load_all(int $kind, int $owner_uid = null, bool $skip_init = false) {
 
 		$plugins = array_merge(glob("plugins/*"), glob("plugins.local/*"));
 		$plugins = array_filter($plugins, "is_dir");
@@ -263,7 +263,7 @@ class PluginHost {
 		$this->load(join(",", $plugins), $kind, $owner_uid, $skip_init);
 	}
 
-	function load($classlist, $kind, $owner_uid = false, $skip_init = false) {
+	function load(string $classlist, int $kind, int $owner_uid = null, bool $skip_init = false) {
 		$plugins = explode(",", $classlist);
 
 		$this->owner_uid = (int) $owner_uid;
@@ -360,14 +360,14 @@ class PluginHost {
 		$this->load_data();
 	}
 
-	function is_system($plugin) {
+	function is_system(Plugin $plugin) {
 		$about = $plugin->about();
 
 		return $about[3] ?? false;
 	}
 
 	// only system plugins are allowed to modify routing
-	function add_handler($handler, $method, $sender) {
+	function add_handler(string $handler, $method, Plugin $sender) {
 		$handler = str_replace("-", "_", strtolower($handler));
 		$method = strtolower($method);
 
@@ -380,7 +380,7 @@ class PluginHost {
 		}
 	}
 
-	function del_handler($handler, $method, $sender) {
+	function del_handler(string $handler, $method, Plugin $sender) {
 		$handler = str_replace("-", "_", strtolower($handler));
 		$method = strtolower($method);
 
@@ -404,7 +404,7 @@ class PluginHost {
 		return false;
 	}
 
-	function add_command($command, $description, $sender, $suffix = "", $arghelp = "") {
+	function add_command(string $command, string $description, Plugin $sender, string $suffix = "", string $arghelp = "") {
 		$command = str_replace("-", "_", strtolower($command));
 
 		$this->commands[$command] = array("description" => $description,
@@ -413,7 +413,7 @@ class PluginHost {
 			"class" => $sender);
 	}
 
-	function del_command($command) {
+	function del_command(string $command) {
 		$command = "-" . strtolower($command);
 
 		unset($this->commands[$command]);
@@ -433,7 +433,7 @@ class PluginHost {
 		return $this->commands;
 	}
 
-	function run_commands($args) {
+	function run_commands(array $args) {
 		foreach ($this->get_commands() as $command => $data) {
 			if (isset($args[$command])) {
 				$command = str_replace("-", "", $command);
@@ -456,7 +456,7 @@ class PluginHost {
 		}
 	}
 
-	private function save_data($plugin) {
+	private function save_data(string $plugin) {
 		if ($this->owner_uid) {
 
 			if (!$this->pdo_data)
@@ -489,7 +489,7 @@ class PluginHost {
 		}
 	}
 
-	function set($sender, $name, $value, $sync = true) {
+	function set(Plugin $sender, string $name, $value, bool $sync = true) {
 		$idx = get_class($sender);
 
 		if (!isset($this->storage[$idx]))
@@ -500,7 +500,7 @@ class PluginHost {
 		if ($sync) $this->save_data(get_class($sender));
 	}
 
-	function get($sender, $name, $default_value = false) {
+	function get(Plugin $sender, string $name, $default_value = false) {
 		$idx = get_class($sender);
 
 		$this->load_data();
@@ -518,7 +518,7 @@ class PluginHost {
 		return $this->storage[$idx] ?? [];
 	}
 
-	function clear_data($sender) {
+	function clear_data(Plugin $sender) {
 		if ($this->owner_uid) {
 			$idx = get_class($sender);
 
@@ -533,7 +533,7 @@ class PluginHost {
 	// Plugin feed functions are *EXPERIMENTAL*!
 
 	// cat_id: only -1 is supported (Special)
-	function add_feed($cat_id, $title, $icon, $sender) {
+	function add_feed(int $cat_id, $title, $icon, Plugin $sender) {
 		if (!$this->feeds[$cat_id]) $this->feeds[$cat_id] = array();
 
 		$id = count($this->feeds[$cat_id]);
@@ -544,7 +544,7 @@ class PluginHost {
 		return $id;
 	}
 
-	function get_feeds($cat_id) {
+	function get_feeds(int $cat_id) {
 		return $this->feeds[$cat_id] ?? [];
 	}
 
@@ -559,25 +559,25 @@ class PluginHost {
 		}
 	}
 
-	static function pfeed_to_feed_id($label) {
-		return PLUGIN_FEED_BASE_INDEX - 1 - abs($label);
+	static function pfeed_to_feed_id($pfeed) {
+		return PLUGIN_FEED_BASE_INDEX - 1 - abs($pfeed);
 	}
 
 	static function feed_to_pfeed_id($feed) {
 		return PLUGIN_FEED_BASE_INDEX - 1 + abs($feed);
 	}
 
-	function add_api_method($name, $sender) {
+	function add_api_method(string $name, Plugin $sender) {
 		if ($this->is_system($sender)) {
 			$this->api_methods[strtolower($name)] = $sender;
 		}
 	}
 
-	function get_api_method($name) {
+	function get_api_method(string $name) {
 		return $this->api_methods[$name];
 	}
 
-	function add_filter_action($sender, $action_name, $action_desc) {
+	function add_filter_action(Plugin $sender, string $action_name, string $action_desc) {
 		$sender_class = get_class($sender);
 
 		if (!isset($this->plugin_actions[$sender_class]))
@@ -596,7 +596,7 @@ class PluginHost {
 	}
 
 	// handled by classes/pluginhandler.php, requires valid session
-	function get_method_url($sender, $method, $params)  {
+	function get_method_url(Plugin $sender, string $method, $params)  {
 		return get_self_url_prefix() . "/backend.php?" .
 			http_build_query(
 				array_merge(
@@ -609,7 +609,7 @@ class PluginHost {
 	}
 
 	// WARNING: endpoint in public.php, exposed to unauthenticated users
-	function get_public_method_url($sender, $method, $params)  {
+	function get_public_method_url(Plugin $sender, string $method, $params)  {
 		if ($sender->is_public_method($method)) {
 			return get_self_url_prefix() . "/public.php?" .
 				http_build_query(

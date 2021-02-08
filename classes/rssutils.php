@@ -414,12 +414,14 @@ class RSSUtils {
 
 		Debug::log("running HOOK_FETCH_FEED handlers...", Debug::$LOG_VERBOSE);
 
-		foreach ($pluginhost->get_hooks(PluginHost::HOOK_FETCH_FEED) as $plugin) {
-			Debug::log("... " . get_class($plugin), Debug::$LOG_VERBOSE);
-			$start = microtime(true);
-			$feed_data = $plugin->hook_fetch_feed($feed_data, $fetch_url, $owner_uid, $feed, 0, $auth_login, $auth_pass);
-			Debug::log(sprintf("=== %.4f (sec)", microtime(true) - $start), Debug::$LOG_VERBOSE);
-		}
+		$start_ts = microtime(true);
+		$last_article_timestamp = 0;
+		$pluginhost->chain_hooks_callback(PluginHost::HOOK_FETCH_FEED,
+			function ($result, $plugin) use (&$feed_data, $start_ts) {
+				$feed_data = $result;
+				Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)), Debug::$LOG_VERBOSE);
+			},
+			$feed_data, $fetch_url, $owner_uid, $feed, $last_article_timestamp, $auth_login, $auth_pass);
 
 		if ($feed_data) {
 			Debug::log("feed data has been modified by a plugin.", Debug::$LOG_VERBOSE);
@@ -529,12 +531,13 @@ class RSSUtils {
 		Debug::log("running HOOK_FEED_FETCHED handlers...", Debug::$LOG_VERBOSE);
 		$feed_data_checksum = md5($feed_data);
 
-		foreach ($pluginhost->get_hooks(PluginHost::HOOK_FEED_FETCHED) as $plugin) {
-			Debug::log("... " . get_class($plugin), Debug::$LOG_VERBOSE);
-			$start = microtime(true);
-			$feed_data = $plugin->hook_feed_fetched($feed_data, $fetch_url, $owner_uid, $feed);
-			Debug::log(sprintf("=== %.4f (sec)", microtime(true) - $start), Debug::$LOG_VERBOSE);
-		}
+		$start_ts = microtime(true);
+		$pluginhost->chain_hooks_callback(PluginHost::HOOK_FEED_FETCHED,
+			function ($result, $plugin) use (&$feed_data, $start_ts) {
+				$feed_data = $result;
+				Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)), Debug::$LOG_VERBOSE);
+			},
+			$feed_data, $fetch_url, $owner_uid, $feed);
 
 		if (md5($feed_data) != $feed_data_checksum) {
 			Debug::log("feed data has been modified by a plugin.", Debug::$LOG_VERBOSE);
@@ -551,12 +554,12 @@ class RSSUtils {
 
 			// We use local pluginhost here because we need to load different per-user feed plugins
 
-			foreach ($pluginhost->get_hooks(PluginHost::HOOK_FEED_PARSED) as $plugin) {
-				Debug::log("... " . get_class($plugin), Debug::$LOG_VERBOSE);
-				$start = microtime(true);
-				$plugin->hook_feed_parsed($rss, $feed);
-				Debug::log(sprintf("=== %.4f (sec)", microtime(true) - $start), Debug::$LOG_VERBOSE);
-			}
+			$start_ts = microtime(true);
+			$pluginhost->chain_hooks_callback(PluginHost::HOOK_FEED_PARSED,
+				function($result, $plugin) use ($start_ts) {
+					Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)), Debug::$LOG_VERBOSE);
+				},
+				$rss, $feed);
 
 			Debug::log("language: $feed_language", Debug::$LOG_VERBOSE);
 			Debug::log("processing feed data...", Debug::$LOG_VERBOSE);
@@ -744,9 +747,11 @@ class RSSUtils {
 				if (is_array($encs)) {
 					foreach ($encs as $e) {
 
-						foreach ($pluginhost->get_hooks(PluginHost::HOOK_ENCLOSURE_IMPORTED) as $plugin) {
-							$e = $plugin->hook_enclosure_imported($e, $feed);
-						}
+						$pluginhost->chain_hooks_callback(PluginHost::HOOK_ENCLOSURE_IMPORTED,
+							function ($result) use (&$e) {
+								$e = $result;
+							},
+							$e, $feed);
 
 						$e_item = array(
 							rewrite_relative_url($site_url, $e->link),
@@ -850,9 +855,8 @@ class RSSUtils {
 					$article["tags"], $matched_rules, $matched_filters);
 
 				// $article_filters should be renamed to something like $filter_actions; actual filter objects are in $matched_filters
-				foreach ($pluginhost->get_hooks(PluginHost::HOOK_FILTER_TRIGGERED) as $plugin) {
-					$plugin->hook_filter_triggered($feed, $owner_uid, $article, $matched_filters, $matched_rules, $article_filters);
-				}
+				$pluginhost->run_hooks(PluginHost::HOOK_FILTER_TRIGGERED,
+					$feed, $owner_uid, $article, $matched_filters, $matched_rules, $article_filters);
 
 				$matched_filter_ids = array_map(function($f) { return $f['id']; }, $matched_filters);
 

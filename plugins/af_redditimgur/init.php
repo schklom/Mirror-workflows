@@ -738,14 +738,14 @@ class Af_RedditImgur extends Plugin {
 
 				if ($content_type && strpos($content_type, "text/html") !== false) {
 
-					foreach ($this->host->get_hooks(PluginHost::HOOK_GET_FULL_TEXT) as $p) {
-						$extracted_content = $p->hook_get_full_text($url);
-
-						if ($extracted_content) {
-							$article["content"] = $extracted_content;
-							break;
-						}
-					}
+					$this->host->run_hooks_callback(PluginHost::HOOK_GET_FULL_TEXT,
+						function ($result) use (&$article) {
+							if ($result) {
+								$article["content"]  = $result;
+								return true;
+							}
+						},
+						$url);
 				}
 			}
 		}

@@ -729,10 +729,10 @@ class Handler_Public extends Handler {
 			UserHelper::login_sequence();
 		}
 
-		if ($_SESSION["uid"]) {
+		if (!empty($_SESSION["uid"])) {
 
-			$feed_url = clean($_REQUEST["feed_url"]);
-			$csrf_token = clean($_POST["csrf_token"]);
+			$feed_url = clean($_REQUEST["feed_url"] ?? "");
+			$csrf_token = clean($_POST["csrf_token"] ?? "");
 
 			header('Content-Type: text/html; charset=utf-8');
 			?>

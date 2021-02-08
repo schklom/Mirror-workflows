@@ -19,9 +19,6 @@ class Af_Youtube_Embed extends Plugin {
 		return in_array($src, ["www.youtube.com", "youtube.com", "youtu.be"]);
 	}
 
-	/**
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-	 */
 	function hook_render_enclosure($entry, $hide_images) {
 
 		$matches = array();

@@ -34,9 +34,6 @@ class Auth_Remote extends Auth_Base {
 		return "";
 	}
 
-	/**
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-	 */
 	function authenticate($login, $password) {
 		$try_login = "";
 

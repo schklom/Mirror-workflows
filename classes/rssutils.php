@@ -331,9 +331,6 @@ class RSSUtils {
 		}
 	}
 
-	/**
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-	 */
 	static function update_rss_feed($feed, $no_cache = false) {
 
 		Debug::log("start", Debug::$LOG_VERBOSE);

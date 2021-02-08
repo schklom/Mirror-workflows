@@ -21,9 +21,6 @@ class VF_Shared extends Plugin {
 		return 2;
 	}
 
-	/**
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-	 */
 	function get_unread($feed_id) {
 		$sth = $this->pdo->prepare("select count(int_id) AS count
 			from ttrss_user_entries where owner_uid = ? and unread = true and uuid != ''");
@@ -36,9 +33,6 @@ class VF_Shared extends Plugin {
 		return 0;
 	}
 
-	/**
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-	 */
 	function get_total($feed_id) {
 		$sth = $this->pdo->prepare("select count(int_id) AS count
 			from ttrss_user_entries where owner_uid = ? and uuid != ''");
@@ -51,9 +45,6 @@ class VF_Shared extends Plugin {
 		return 0;
 	}
 
-	/**
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-	 */
 	function get_headlines($feed_id, $options) {
 		$params = array(
 			"feed" => -4,

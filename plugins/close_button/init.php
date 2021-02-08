@@ -18,9 +18,6 @@ class Close_Button extends Plugin {
 		return "i.icon-close-article { color : red; }";
 	}
 
-	/**
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-	 */
 	function hook_article_button($line) {
 		if (!get_pref("COMBINED_DISPLAY_MODE")) {
 			$rv = "<i class='material-icons icon-close-article'

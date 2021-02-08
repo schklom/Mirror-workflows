@@ -189,9 +189,6 @@ class Af_Readability extends Plugin {
 		$this->host->set($this, "append_feeds", $append_feeds);
 	}
 
-	/**
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-	 */
 	function hook_article_filter_action($article, $action) {
 		switch ($action) {
 			case "action_inline":

@@ -718,9 +718,6 @@ class Af_RedditImgur extends Plugin {
 		return $this->get_header($url, CURLINFO_EFFECTIVE_URL, $useragent);
 	}
 
-	/**
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-	 */
 	private function readability($article, $url, $doc, $xpath, $debug = false) {
 
 		if (!defined('NO_CURL') && function_exists("curl_init") && $this->host->get($this, "enable_readability") &&

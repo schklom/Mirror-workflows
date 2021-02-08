@@ -143,9 +143,6 @@ class Af_Proxy_Http extends Plugin {
 		return $url;
 	}
 
-	/**
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-	 */
 	function hook_render_article_cdm($article, $api_mode = false) {
 
 		$need_saving = false;

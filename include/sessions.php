@@ -80,9 +80,6 @@
 		return true;
 	}
 
-	/**
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-	 */
 	function ttrss_open ($s, $n) {
 		return true;
 	}
@@ -141,9 +138,6 @@
 		return true;
 	}
 
-	/**
-	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-	 */
 	function ttrss_gc ($expire) {
 		Db::pdo()->query("DELETE FROM ttrss_sessions WHERE expire < " . time());
 

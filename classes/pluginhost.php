@@ -210,7 +210,12 @@ class PluginHost {
 			}
 
 			if (!isset($this->plugins[$class])) {
-				if (file_exists($file)) require_once $file;
+				try {
+					if (file_exists($file)) require_once $file;
+				} catch (Error $err) {
+					user_error($err, E_USER_WARNING);
+					continue;
+				}
 
 				if (class_exists($class) && is_subclass_of($class, "Plugin")) {
 

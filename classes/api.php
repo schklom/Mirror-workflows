@@ -26,7 +26,7 @@ class API extends Handler {
 				return false;
 			}
 
-			$this->seq = (int) clean($_REQUEST['seq']);
+			$this->seq = (int) clean($_REQUEST['seq'] ?? 0);
 
 			return true;
 		}
@@ -118,8 +118,8 @@ class API extends Handler {
 	function getFeeds() {
 		$cat_id = clean($_REQUEST["cat_id"]);
 		$unread_only = self::param_to_bool(clean($_REQUEST["unread_only"]));
-		$limit = (int) clean($_REQUEST["limit"]);
-		$offset = (int) clean($_REQUEST["offset"]);
+		$limit = (int) clean($_REQUEST["limit"] ?? 0);
+		$offset = (int) clean($_REQUEST["offset"] ?? 0);
 		$include_nested = self::param_to_bool(clean($_REQUEST["include_nested"]));
 
 		$feeds = $this->api_get_feeds($cat_id, $unread_only, $limit, $offset, $include_nested);
@@ -238,7 +238,7 @@ class API extends Handler {
 	function updateArticle() {
 		$article_ids = explode(",", clean($_REQUEST["article_ids"]));
 		$mode = (int) clean($_REQUEST["mode"]);
-		$data = clean($_REQUEST["data"]);
+		$data = clean($_REQUEST["data"] ?? "");
 		$field_raw = (int)clean($_REQUEST["field"]);
 
 		$field = "";

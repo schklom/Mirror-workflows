@@ -16,12 +16,12 @@ class API extends Handler {
 		if (parent::before($method)) {
 			header("Content-Type: text/json");
 
-			if (!$_SESSION["uid"] && $method != "login" && $method != "isloggedin") {
+			if (empty($_SESSION["uid"]) && $method != "login" && $method != "isloggedin") {
 				$this->wrap(self::STATUS_ERR, array("error" => 'NOT_LOGGED_IN'));
 				return false;
 			}
 
-			if ($_SESSION["uid"] && $method != "logout" && !get_pref('ENABLE_API_ACCESS')) {
+			if (!empty($_SESSION["uid"]) && $method != "logout" && !get_pref('ENABLE_API_ACCESS')) {
 				$this->wrap(self::STATUS_ERR, array("error" => 'API_DISABLED'));
 				return false;
 			}
@@ -120,7 +120,7 @@ class API extends Handler {
 		$unread_only = self::param_to_bool(clean($_REQUEST["unread_only"] ?? 0));
 		$limit = (int) clean($_REQUEST["limit"] ?? 0);
 		$offset = (int) clean($_REQUEST["offset"] ?? 0);
-		$include_nested = self::param_to_bool(clean($_REQUEST["include_nested"]));
+		$include_nested = self::param_to_bool(clean($_REQUEST["include_nested"] ?? false));
 
 		$feeds = $this->api_get_feeds($cat_id, $unread_only, $limit, $offset, $include_nested);
 
@@ -128,9 +128,9 @@ class API extends Handler {
 	}
 
 	function getCategories() {
-		$unread_only = self::param_to_bool(clean($_REQUEST["unread_only"]));
-		$enable_nested = self::param_to_bool(clean($_REQUEST["enable_nested"]));
-		$include_empty = self::param_to_bool(clean($_REQUEST['include_empty']));
+		$unread_only = self::param_to_bool(clean($_REQUEST["unread_only"] ?? false));
+		$enable_nested = self::param_to_bool(clean($_REQUEST["enable_nested"] ?? false));
+		$include_empty = self::param_to_bool(clean($_REQUEST['include_empty'] ?? false));
 
 		// TODO do not return empty categories, return Uncategorized and standard virtual cats
 
@@ -195,7 +195,7 @@ class API extends Handler {
 			if (!$limit || $limit >= 200) $limit = 200;
 
 			$offset = (int)clean($_REQUEST["skip"]);
-			$filter = clean($_REQUEST["filter"]);
+			$filter = clean($_REQUEST["filter"] ?? "");
 			$is_cat = self::param_to_bool(clean($_REQUEST["is_cat"]));
 			$show_excerpt = self::param_to_bool(clean($_REQUEST["show_excerpt"]));
 			$show_content = self::param_to_bool(clean($_REQUEST["show_content"]));
@@ -206,11 +206,11 @@ class API extends Handler {
 			$include_nested = self::param_to_bool(clean($_REQUEST["include_nested"]));
 			$sanitize_content = !isset($_REQUEST["sanitize"]) ||
 				self::param_to_bool($_REQUEST["sanitize"]);
-			$force_update = self::param_to_bool(clean($_REQUEST["force_update"]));
-			$has_sandbox = self::param_to_bool(clean($_REQUEST["has_sandbox"]));
-			$excerpt_length = (int)clean($_REQUEST["excerpt_length"]);
-			$check_first_id = (int)clean($_REQUEST["check_first_id"]);
-			$include_header = self::param_to_bool(clean($_REQUEST["include_header"]));
+			$force_update = self::param_to_bool(clean($_REQUEST["force_update"] ?? false));
+			$has_sandbox = self::param_to_bool(clean($_REQUEST["has_sandbox"] ?? false));
+			$excerpt_length = (int)clean($_REQUEST["excerpt_length"] ?? 0);
+			$check_first_id = (int)clean($_REQUEST["check_first_id"] ?? 0);
+			$include_header = self::param_to_bool(clean($_REQUEST["include_header"] ?? false));
 
 			$_SESSION['hasSandbox'] = $has_sandbox;
 
@@ -218,7 +218,7 @@ class API extends Handler {
 
 			/* do not rely on params below */
 
-			$search = clean($_REQUEST["search"]);
+			$search = clean($_REQUEST["search"] ?? "");
 
 			list($headlines, $headlines_header) = $this->api_get_headlines($feed_id, $limit, $offset,
 				$filter, $is_cat, $show_excerpt, $show_content, $view_mode, $override_order,

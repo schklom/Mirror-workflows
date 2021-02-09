@@ -41,11 +41,11 @@
 		}
 	} else {
 		// Accept JSON only
-		$input = json_decode($input, true);
+		$input = json_decode((string)$input, true);
 		$_REQUEST = $input;
 	}
 
-	if ($_REQUEST["sid"]) {
+	if (!empty($_REQUEST["sid"])) {
 		session_id($_REQUEST["sid"]);
 		@session_start();
 	} else if (defined('_API_DEBUG_HTTP_ENABLED')) {
@@ -56,7 +56,7 @@
 
 	if (!init_plugins()) return;
 
-	if ($_SESSION["uid"]) {
+	if (!empty($_SESSION["uid"])) {
 		if (!validate_session()) {
 			header("Content-Type: text/json");
 
@@ -67,7 +67,7 @@
 			return;
 		}
 
-		UserHelper::load_user_plugins( $_SESSION["uid"]);
+		UserHelper::load_user_plugins($_SESSION["uid"]);
 	}
 
 	$method = strtolower($_REQUEST["op"]);
@@ -77,7 +77,7 @@
 	if ($handler->before($method)) {
 		if ($method && method_exists($handler, $method)) {
 			$handler->$method();
-		} else if (method_exists($handler, 'index')) {
+		} else /* if (method_exists($handler, 'index')) */ {
 			$handler->index($method);
 		}
 		$handler->after();

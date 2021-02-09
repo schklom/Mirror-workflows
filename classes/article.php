@@ -1,5 +1,8 @@
 <?php
 class Article extends Handler_Protected {
+	const ARTICLE_KIND_ALBUM = 1;
+	const ARTICLE_KIND_VIDEO = 2;
+	const ARTICLE_KIND_YOUTUBE = 3;
 
 	function redirect() {
 		$id = clean($_REQUEST['id']);
@@ -727,10 +730,6 @@ class Article extends Handler_Protected {
 		$article_stream = "";
 		$article_kind = 0;
 
-		define('ARTICLE_KIND_ALBUM', 1); /* TODO */
-		define('ARTICLE_KIND_VIDEO', 2);
-		define('ARTICLE_KIND_YOUTUBE', 3);
-
 		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_ARTICLE_IMAGE,
 			function ($result) use (&$article_image, &$article_stream, &$content) {
 				list ($article_image, $article_stream, $content) = $result;
@@ -750,7 +749,7 @@ class Article extends Handler_Protected {
 						if ($rrr = preg_match("/\/embed\/([\w-]+)/", $e->getAttribute("src"), $matches)) {
 							$article_image = "https://img.youtube.com/vi/" . $matches[1] . "/hqdefault.jpg";
 							$article_stream = "https://youtu.be/" . $matches[1];
-							$article_kind = ARTICLE_KIND_YOUTUBE;
+							$article_kind = Article::ARTICLE_KIND_YOUTUBE;
 							break;
 						}
 					} else if ($e->nodeName == "video") {
@@ -760,7 +759,7 @@ class Article extends Handler_Protected {
 
 						if ($src) {
 							$article_stream = $src->getAttribute("src");
-							$article_kind = ARTICLE_KIND_VIDEO;
+							$article_kind = Article::ARTICLE_KIND_VIDEO;
 						}
 
 						break;
@@ -785,7 +784,7 @@ class Article extends Handler_Protected {
 				$article_image = rewrite_relative_url($site_url, $article_image);
 
 				if (!$article_kind && (count($enclosures) > 1 || (isset($elems) && $elems->length > 1)))
-					$article_kind = ARTICLE_KIND_ALBUM;
+					$article_kind = Article::ARTICLE_KIND_ALBUM;
 			}
 
 			if ($article_stream)

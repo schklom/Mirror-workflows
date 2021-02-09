@@ -352,7 +352,7 @@ class API extends Handler {
 					$article["content"] = $line["content"];
 				}
 
-				$hook_object = ["article" => $article];
+				$hook_object = ["article" => &$article];
 
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE_API,
 					function ($result) use (&$article) {
@@ -785,7 +785,7 @@ class API extends Handler {
 					$headline_row["note"] = $line["note"];
 					$headline_row["lang"] = $line["lang"];
 
-					$hook_object = ["headline" => $headline_row];
+					$hook_object = ["headline" => &$headline_row];
 
 					PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE_API,
 						function ($result) use (&$headline_row) {

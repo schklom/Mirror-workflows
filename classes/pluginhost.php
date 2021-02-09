@@ -533,13 +533,15 @@ class PluginHost {
 	// Plugin feed functions are *EXPERIMENTAL*!
 
 	// cat_id: only -1 is supported (Special)
-	function add_feed(int $cat_id, $title, $icon, Plugin $sender) {
-		if (!$this->feeds[$cat_id]) $this->feeds[$cat_id] = array();
+	function add_feed(int $cat_id, string $title, string $icon, Plugin $sender) {
+
+		if (empty($this->feeds[$cat_id]))
+			$this->feeds[$cat_id] = [];
 
 		$id = count($this->feeds[$cat_id]);
 
 		array_push($this->feeds[$cat_id],
-			array('id' => $id, 'title' => $title, 'sender' => $sender, 'icon' => $icon));
+			['id' => $id, 'title' => $title, 'sender' => $sender, 'icon' => $icon]);
 
 		return $id;
 	}
@@ -549,7 +551,7 @@ class PluginHost {
 	}
 
 	// convert feed_id (e.g. -129) to pfeed_id first
-	function get_feed_handler($pfeed_id) {
+	function get_feed_handler(int $pfeed_id) {
 		foreach ($this->feeds as $cat) {
 			foreach ($cat as $feed) {
 				if ($feed['id'] == $pfeed_id) {
@@ -559,11 +561,11 @@ class PluginHost {
 		}
 	}
 
-	static function pfeed_to_feed_id($pfeed) {
+	static function pfeed_to_feed_id(int $pfeed) {
 		return PLUGIN_FEED_BASE_INDEX - 1 - abs($pfeed);
 	}
 
-	static function feed_to_pfeed_id($feed) {
+	static function feed_to_pfeed_id(int $feed) {
 		return PLUGIN_FEED_BASE_INDEX - 1 + abs($feed);
 	}
 

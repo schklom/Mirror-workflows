@@ -117,7 +117,7 @@ class API extends Handler {
 
 	function getFeeds() {
 		$cat_id = clean($_REQUEST["cat_id"]);
-		$unread_only = self::param_to_bool(clean($_REQUEST["unread_only"]));
+		$unread_only = self::param_to_bool(clean($_REQUEST["unread_only"] ?? 0));
 		$limit = (int) clean($_REQUEST["limit"] ?? 0);
 		$offset = (int) clean($_REQUEST["offset"] ?? 0);
 		$include_nested = self::param_to_bool(clean($_REQUEST["include_nested"]));

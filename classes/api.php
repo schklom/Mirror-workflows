@@ -196,13 +196,13 @@ class API extends Handler {
 
 			$offset = (int)clean($_REQUEST["skip"]);
 			$filter = clean($_REQUEST["filter"] ?? "");
-			$is_cat = self::param_to_bool(clean($_REQUEST["is_cat"]));
+			$is_cat = self::param_to_bool(clean($_REQUEST["is_cat"] ?? false));
 			$show_excerpt = self::param_to_bool(clean($_REQUEST["show_excerpt"]));
 			$show_content = self::param_to_bool(clean($_REQUEST["show_content"]));
 			/* all_articles, unread, adaptive, marked, updated */
 			$view_mode = clean($_REQUEST["view_mode"]);
 			$include_attachments = self::param_to_bool(clean($_REQUEST["include_attachments"]));
-			$since_id = (int)clean($_REQUEST["since_id"]);
+			$since_id = (int)clean($_REQUEST["since_id"] ?? 0);
 			$include_nested = self::param_to_bool(clean($_REQUEST["include_nested"]));
 			$sanitize_content = !isset($_REQUEST["sanitize"]) ||
 				self::param_to_bool($_REQUEST["sanitize"]);
@@ -352,11 +352,13 @@ class API extends Handler {
 					$article["content"] = $line["content"];
 				}
 
+				$hook_object = ["article" => $article];
+
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE_API,
 					function ($result) use (&$article) {
 						$article = $result;
 					},
-					["article" => $article]);
+					$hook_object);
 
 				$article['content'] = DiskCache::rewriteUrls($article['content']);
 
@@ -783,11 +785,13 @@ class API extends Handler {
 					$headline_row["note"] = $line["note"];
 					$headline_row["lang"] = $line["lang"];
 
+					$hook_object = ["headline" => $headline_row];
+
 					PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE_API,
 						function ($result) use (&$headline_row) {
 							$headline_row = $result;
 						},
-						["headline" => $headline_row]);
+						$hook_object);
 
 					$headline_row["content"] = DiskCache::rewriteUrls($headline_row['content']);
 

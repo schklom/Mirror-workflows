@@ -660,7 +660,7 @@ class Pref_Prefs extends Handler_Protected {
 					continue;
 				}
 
-				if ($item = $prefs_available[$pref_name]) {
+				if (isset($prefs_available[$pref_name]) &&$item = $prefs_available[$pref_name]) {
 
 					print "<fieldset class='prefs'>";
 

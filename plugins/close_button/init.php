@@ -20,12 +20,10 @@ class Close_Button extends Plugin {
 
 	function hook_article_button($line) {
 		if (!get_pref("COMBINED_DISPLAY_MODE")) {
-			$rv = "<i class='material-icons icon-close-article'
+			return "<i class='material-icons icon-close-article'
 				style='cursor : pointer' onclick='Article.close()'
 				title='".__('Close article')."'>close</i>";
 		}
-
-		return $rv;
 	}
 
 	function api_version() {

@@ -1248,7 +1248,7 @@ class Pref_Prefs extends Handler_Protected {
 
 			print "<td><input onclick='Tables.onRowChecked(this);' dojoType='dijit.form.CheckBox' type='checkbox'></td>";
 
-			if ($_SESSION["profile"] == $line["id"]) {
+			if (isset($_SESSION["profile"]) && $_SESSION["profile"] == $line["id"]) {
 				$is_active = __("(active)");
 			} else {
 				$is_active = "";

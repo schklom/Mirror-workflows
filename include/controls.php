@@ -102,7 +102,7 @@ function print_feed_multi_select($id, $default_ids = [],
 		while ($line = $sth->fetch()) {
 
 			for ($i = 0; $i < $nest_level; $i++)
-				$line["title"] = " - " . $line["title"];
+				$line["title"] = " " . $line["title"];
 
 			$is_selected = in_array("CAT:".$line["id"], $default_ids) ? "selected=\"1\"" : "";
 
@@ -121,10 +121,10 @@ function print_feed_multi_select($id, $default_ids = [],
 			while ($fline = $f_sth->fetch()) {
 				$is_selected = (in_array($fline["id"], $default_ids)) ? "selected=\"1\"" : "";
 
-				$fline["title"] = " + " . $fline["title"];
+				$fline["title"] = " " . $fline["title"];
 
 				for ($i = 0; $i < $nest_level; $i++)
-					$fline["title"] = " - " . $fline["title"];
+					$fline["title"] = " " . $fline["title"];
 
 				printf("<option $is_selected value='%d'>%s</option>",
 					$fline["id"], htmlspecialchars($fline["title"]));
@@ -144,10 +144,10 @@ function print_feed_multi_select($id, $default_ids = [],
 			while ($fline = $f_sth->fetch()) {
 				$is_selected = in_array($fline["id"], $default_ids) ? "selected=\"1\"" : "";
 
-				$fline["title"] = " + " . $fline["title"];
+				$fline["title"] = " " . $fline["title"];
 
 				for ($i = 0; $i < $nest_level; $i++)
-					$fline["title"] = " - " . $fline["title"];
+					$fline["title"] = " " . $fline["title"];
 
 				printf("<option $is_selected value='%d'>%s</option>",
 					$fline["id"], htmlspecialchars($fline["title"]));
@@ -204,7 +204,7 @@ function print_feed_cat_select($id, $default_id,
 		}
 
 		for ($i = 0; $i < $nest_level; $i++)
-			$line["title"] = " - " . $line["title"];
+			$line["title"] = " " . $line["title"];
 
 		if ($line["title"])
 			printf("<option $is_selected value='%d'>%s</option>",
@@ -218,7 +218,7 @@ function print_feed_cat_select($id, $default_id,
 	if (!$root_id) {
 		if ($include_all_cats) {
 			if ($found > 0) {
-				print "<option disabled=\"1\">--------</option>";
+				print "<option disabled=\"1\">―――――――――――――――</option>";
 			}
 
 			if ($default_id == 0) {

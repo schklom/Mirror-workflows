@@ -187,13 +187,13 @@ class API extends Handler {
 			$offset = (int)clean($_REQUEST["skip"]);
 			$filter = clean($_REQUEST["filter"] ?? "");
 			$is_cat = self::param_to_bool(clean($_REQUEST["is_cat"] ?? false));
-			$show_excerpt = self::param_to_bool(clean($_REQUEST["show_excerpt"]));
+			$show_excerpt = self::param_to_bool(clean($_REQUEST["show_excerpt"] ?? false));
 			$show_content = self::param_to_bool(clean($_REQUEST["show_content"]));
 			/* all_articles, unread, adaptive, marked, updated */
-			$view_mode = clean($_REQUEST["view_mode"]);
-			$include_attachments = self::param_to_bool(clean($_REQUEST["include_attachments"]));
+			$view_mode = clean($_REQUEST["view_mode"] ?? null);
+			$include_attachments = self::param_to_bool(clean($_REQUEST["include_attachments"] ?? false));
 			$since_id = (int)clean($_REQUEST["since_id"] ?? 0);
-			$include_nested = self::param_to_bool(clean($_REQUEST["include_nested"]));
+			$include_nested = self::param_to_bool(clean($_REQUEST["include_nested"] ?? false));
 			$sanitize_content = !isset($_REQUEST["sanitize"]) ||
 				self::param_to_bool($_REQUEST["sanitize"]);
 			$force_update = self::param_to_bool(clean($_REQUEST["force_update"] ?? false));
@@ -204,7 +204,7 @@ class API extends Handler {
 
 			$_SESSION['hasSandbox'] = $has_sandbox;
 
-			list($override_order, $skip_first_id_check) = Feeds::order_to_override_query(clean($_REQUEST["order_by"]));
+			list($override_order, $skip_first_id_check) = Feeds::order_to_override_query(clean($_REQUEST["order_by"] ?? null));
 
 			/* do not rely on params below */
 
@@ -754,6 +754,8 @@ class API extends Handler {
 						} else {
 							$headline_row["content"] = $line["content"];
 						}
+
+						$headline_row["content"] = DiskCache::rewriteUrls($headline_row['content']);
 					}
 
 					// unify label output to ease parsing
@@ -781,8 +783,6 @@ class API extends Handler {
 							$headline_row = $result;
 						},
 						$hook_object);
-
-					$headline_row["content"] = DiskCache::rewriteUrls($headline_row['content']);
 
 					list ($flavor_image, $flavor_stream, $flavor_kind) = Article::get_article_image($enclosures, $line["content"], $line["site_url"]);
 

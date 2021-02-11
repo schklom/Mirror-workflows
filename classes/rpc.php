@@ -454,6 +454,7 @@ class RPC extends Handler_Protected {
 			$params[strtolower($param)] = (int) get_pref($param);
 		}
 
+		$params["safe_mode"] = !empty($_SESSION["safe_mode"]);
 		$params["check_for_updates"] = CHECK_FOR_UPDATES;
 		$params["icons_url"] = ICONS_URL;
 		$params["cookie_lifetime"] = SESSION_COOKIE_LIFETIME;

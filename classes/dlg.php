@@ -202,6 +202,6 @@ class Dlg extends Handler_Protected {
 		print "<button dojoType='dijit.form.Button'
 			onclick=\"return dijit.byId('defaultPasswordDlg').hide();\">".
 			__('Close this window')."</button>";
-		print "</footeer>";
+		print "</footer>";
 	}
 }

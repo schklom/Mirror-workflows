@@ -153,11 +153,14 @@
 			<fieldset class="narrow">
 				<label> </label>
 
-				<label ><input dojoType="dijit.form.CheckBox" name="safe_mode" id="safe_mode"
+				<label id="safe_mode_label"><input dojoType="dijit.form.CheckBox" name="safe_mode" id="safe_mode"
 					  type="checkbox">
-					<?php echo __("Safe mode (no plugins)") ?></label>
+					<?php echo __("Safe mode") ?></label>
 			</fieldset>
 
+			<div dojoType="dijit.Tooltip" connectId="safe_mode_label" position="below" style="display:none">
+				<?php echo __("Uses default theme and prevents all plugins from loading."); ?>
+			</div>
 			<?php if (SESSION_COOKIE_LIFETIME > 0) { ?>
 
 				<fieldset class="narrow">

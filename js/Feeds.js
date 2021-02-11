@@ -247,6 +247,38 @@ const	Feeds = {
 			});
 		}
 
+		if (dijit.byId("safeModeDlg"))
+				dijit.byId("safeModeDlg").destroyRecursive();
+
+		if (App.getInitParam("safe_mode")) {
+			const dialog = new dijit.Dialog({
+				title: __("Safe mode"),
+				content: `
+					<div class='alert alert-info'>
+						${__('Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. You will need to log out and back in to disable it.')}
+					</div>
+					<footer class='text-center'>
+						<button dojoType='dijit.form.Button' type='submit'>
+							${__('Close this window')}
+						</button>
+					</footer>
+					`,
+				id: 'safeModeDlg',
+				style: "width: 600px",
+				onCancel: function () {
+					return true;
+				},
+				onExecute: function () {
+					return true;
+				},
+				onClose: function () {
+					return true;
+				}
+			});
+
+			dialog.show();
+		}
+
 		// bw_limit disables timeout() so we request initial counters separately
 		if (App.getInitParam("bw_limit")) {
 			this.requestCounters(true);

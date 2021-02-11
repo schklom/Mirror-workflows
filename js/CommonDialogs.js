@@ -359,5 +359,54 @@ const	CommonDialogs = {
 				});
 			}
 			return false;
-		}
+		},
+		publishedOPML: function() {
+
+			Notify.progress("Loading, please wait...", true);
+
+			xhrJson("backend.php", {op: "pref-feeds", method: "getOPMLKey"}, (reply) => {
+				try {
+					if (dijit.byId("publicOPMLDlg"))
+						dijit.byId("publicOPMLDlg").destroyRecursive();
+
+					const dialog = new dijit.Dialog({
+						title: "Public OPML URL",
+						id: 'publicOPMLDlg',
+						style: "width: 600px",
+						onCancel: function () {
+							return true;
+						},
+						onExecute: function () {
+							return true;
+						},
+						onClose: function () {
+							return true;
+						},
+						content: `
+							<header>${__("Your Public OPML URL is:")}</header>
+							<section>
+								<div class='panel text-center'>
+									<a id='pub_opml_url' href='$url_path' target='_blank'>${reply.link}</a>
+								</div>
+							</section>
+							<footer class='text-center'>
+								<button dojoType='dijit.form.Button' onclick="return Helpers.OPML.changeKey()">
+									${__('Generate new URL')}
+								</button>
+								<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>
+									${__('Close this window')}
+								</button>
+						</footer>
+						`
+					});
+
+					dialog.show();
+
+					Notify.close();
+
+				} catch (e) {
+					this.Error.report(e);
+				}
+			});
+		},
 	};

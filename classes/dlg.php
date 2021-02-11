@@ -35,32 +35,6 @@ class Dlg extends Handler_Protected {
 		//return;
 	}
 
-	function pubOPMLUrl() {
-		$url_path = Opml::opml_publish_url();
-
-		print "<header>" . __("Your Public OPML URL is:") . "</header>";
-
-		print "<section>";
-
-		print "<div class='panel text-center'>";
-		print "<a id='pub_opml_url' href='$url_path' target='_blank'>$url_path</a>";
-		print "</div>";
-
-		print "</section>";
-
-		print "<footer class='text-center'>";
-
-		print "<button dojoType='dijit.form.Button' onclick=\"return Helpers.OPML.changeKey()\">".
-			__('Generate new URL')."</button> ";
-
-		print "<button dojoType='dijit.form.Button' onclick=\"return CommonDialogs.closeInfoBox()\">".
-			__('Close this window')."</button>";
-
-		print "</footer>";
-
-		//return;
-	}
-
 	function explainError() {
 		print "<div class=\"errorExplained\">";
 
@@ -191,17 +165,4 @@ class Dlg extends Handler_Protected {
 		//return;
 	}
 
-	function defaultPasswordWarning() {
-
-    	print_warning(__("You are using default tt-rss password. Please change it in the Preferences (Personal data / Authentication)."));
-
-		print "<footer class='text-center'>";
-		print "<button dojoType='dijit.form.Button' class='alt-primary'
-			onclick=\"document.location.href = 'prefs.php'\">".
-			__('Open Preferences')."</button> ";
-		print "<button dojoType='dijit.form.Button'
-			onclick=\"return dijit.byId('defaultPasswordDlg').hide();\">".
-			__('Close this window')."</button>";
-		print "</footer>";
-	}
 }

@@ -226,25 +226,34 @@ const	Feeds = {
 			if (dijit.byId("defaultPasswordDlg"))
 				dijit.byId("defaultPasswordDlg").destroyRecursive();
 
-			xhrPost("backend.php", {op: 'dlg', method: 'defaultpasswordwarning'}, (transport) => {
-				const dialog = new dijit.Dialog({
-					title: __("Your password is at default value"),
-					content: transport.responseText,
-					id: 'defaultPasswordDlg',
-					style: "width: 600px",
-					onCancel: function () {
-						return true;
-					},
-					onExecute: function () {
-						return true;
-					},
-					onClose: function () {
-						return true;
-					}
-				});
+			const dialog = new dijit.Dialog({
+				title: __("Your password is at default value"),
+				content: `<div class='alert alert-error'>
+					${__("You are using default tt-rss password. Please change it in the Preferences (Personal data / Authentication).")}
+				</div>
 
-				dialog.show();
+				<footer class='text-center'>
+					<button dojoType='dijit.form.Button' class='alt-primary' onclick="document.location.href = 'prefs.php'">
+						${__('Open Preferences')}
+					</button>
+					<button dojoType='dijit.form.Button' onclick="return dijit.byId('defaultPasswordDlg').hide()">
+						${__('Close this window')}
+					</button>
+				</footer>`,
+				id: 'defaultPasswordDlg',
+				style: "width: 600px",
+				onCancel: function () {
+					return true;
+				},
+				onExecute: function () {
+					return true;
+				},
+				onClose: function () {
+					return true;
+				}
 			});
+
+			dialog.show();
 		}
 
 		if (dijit.byId("safeModeDlg"))
@@ -258,7 +267,7 @@ const	Feeds = {
 						${__('Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. You will need to log out and back in to disable it.')}
 					</div>
 					<footer class='text-center'>
-						<button dojoType='dijit.form.Button' type='submit'>
+						<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>
 							${__('Close this window')}
 						</button>
 					</footer>

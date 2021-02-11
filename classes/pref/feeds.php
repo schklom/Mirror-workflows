@@ -1379,7 +1379,7 @@ class Pref_Feeds extends Handler_Protected {
 			" " .
 			__("Published OPML does not include your Tiny Tiny RSS settings, feeds that require authentication or feeds hidden from Popular feeds.") . "</p>";
 
-		print "<button dojoType='dijit.form.Button' class='alt-primary' onclick=\"return App.displayDlg('".__("Public OPML URL")."','pubOPMLUrl')\">".
+		print "<button dojoType='dijit.form.Button' class='alt-primary' onclick=\"return CommonDialogs.publishedOPML()\">".
 			__('Display published OPML URL')."</button> ";
 
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION, "prefFeedsOPML");
@@ -1706,13 +1706,17 @@ class Pref_Feeds extends Handler_Protected {
 		}
 	}
 
+	function getOPMLKey() {
+		print json_encode(["link" => OPML::opml_publish_url()]);
+	}
+
 	function regenOPMLKey() {
 		$this->update_feed_access_key('OPML:Publish',
-		false, $_SESSION["uid"]);
+			false, $_SESSION["uid"]);
 
-		$new_link = Opml::opml_publish_url();
+		$new_link = OPML::opml_publish_url();
 
-		print json_encode(array("link" => $new_link));
+		print json_encode(["link" => $new_link]);
 	}
 
 	function regenFeedKey() {

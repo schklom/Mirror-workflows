@@ -502,13 +502,10 @@
 
 		Debug::log("Exporting feeds of user $user to $filename as OPML...");
 
-		$sth = $pdo->prepare("SELECT id FROM ttrss_users WHERE LOWER(login) = LOWER(?)");
-		$sth->execute([$user]);
-
-		if ($res = $sth->fetch()) {
+		if ($owner_uid = UserHelper::find_user_by_login($user)) {
 			$opml = new OPML("");
 
-			$rc = $opml->opml_export($filename, $res["id"], false, true, true);
+			$rc = $opml->opml_export($filename, $owner_uid, false, true, true);
 
 			Debug::log($rc ? "Success." : "Failed.");
 		} else {

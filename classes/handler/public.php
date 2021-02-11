@@ -248,19 +248,15 @@ class Handler_Public extends Handler {
 		$login = clean($_REQUEST["login"]);
 		$fresh = clean($_REQUEST["fresh"]) == "1";
 
-		$sth = $this->pdo->prepare("SELECT id FROM ttrss_users WHERE LOWER(login) = LOWER(?)");
-		$sth->execute([$login]);
+		$uid = UserHelper::find_user_by_login($login);
 
-		if ($row = $sth->fetch()) {
-			$uid = $row["id"];
-
+		if ($uid) {
 			print Feeds::getGlobalUnread($uid);
 
 			if ($fresh) {
 				print ";";
 				print Feeds::getFeedArticles(-3, false, true, $uid);
 			}
-
 		} else {
 			print "-1;User not found";
 		}

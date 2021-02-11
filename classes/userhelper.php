@@ -1,8 +1,7 @@
 <?php
 class UserHelper {
 
-	static function authenticate($login, $password, $check_only = false, $service = false) {
-
+	static function authenticate(string $login = null, string $password = null, bool $check_only = false, string $service = null) {
 		if (!SINGLE_USER_MODE) {
 			$user_id = false;
 			$auth_module = false;
@@ -71,7 +70,7 @@ class UserHelper {
 		}
 	}
 
-	static function load_user_plugins($owner_uid, $pluginhost = false) {
+	static function load_user_plugins(int $owner_uid, PluginHost $pluginhost = null) {
 
 		if (!$pluginhost) $pluginhost = PluginHost::getInstance();
 
@@ -145,4 +144,17 @@ class UserHelper {
 		}
 	}
 
+	static function find_user_by_login(string $login) {
+		$pdo = Db::pdo();
+
+		$sth = $pdo->prepare("SELECT id FROM ttrss_users WHERE
+			LOWER(login) = LOWER(?)");
+		$sth->execute([$login]);
+
+		if ($row = $sth->fetch()) {
+			return $row["id"];
+		}
+
+		return false;
+	}
 }

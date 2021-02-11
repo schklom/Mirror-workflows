@@ -73,12 +73,8 @@
 	if ($action == "check") {
 		header("Content-Type: application/xml");
 
-		$login = trim(db_escape_string( $_REQUEST['login']));
-
-		$result = db_query( "SELECT id FROM ttrss_users WHERE
-			LOWER(login) = LOWER('$login')");
-
-		$is_registered = db_num_rows($result) > 0;
+		$login = clean($_REQUEST['login']);
+		$is_registered = UserHelper::find_user_by_login($login);
 
 		print "<result>";
 
@@ -258,10 +254,7 @@
 
 		if ($test == "four" || $test == "4") {
 
-			$result = db_query( "SELECT id FROM ttrss_users WHERE
-				login = '$login'");
-
-			$is_registered = db_num_rows($result) > 0;
+			$is_registered = UserHelper::find_user_by_login($login);
 
 			if ($is_registered) {
 				print_error(__('Sorry, this username is already taken.'));
@@ -279,18 +272,14 @@
 					(login,pwd_hash,access_level,last_login, email, created, salt)
 					VALUES (LOWER('$login'), '$pwd_hash', 0, null, '$email', NOW(), '$salt')");
 
-				$result = db_query( "SELECT id FROM ttrss_users WHERE
-					login = '$login' AND pwd_hash = '$pwd_hash'");
+				$new_uid = UserHelper::find_user_by_login($login);
 
-				if (db_num_rows($result) != 1) {
+				if (!$new_uid) {
 					print_error(__('Registration failed.'));
 					print "<p><form method=\"GET\" action=\"index.php\">
 					<input type=\"submit\" value=\"".__("Return to Tiny Tiny RSS")."\">
 					</form>";
 				} else {
-
-					$new_uid = db_fetch_result($result, 0, "id");
-
 					Pref_Users::initialize_user($new_uid);
 
 					$reg_text = "Hi!\n".

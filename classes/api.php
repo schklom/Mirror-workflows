@@ -59,35 +59,25 @@ class API extends Handler {
 
 		if (SINGLE_USER_MODE) $login = "admin";
 
-		$sth = $this->pdo->prepare("SELECT id FROM ttrss_users WHERE LOWER(login) = LOWER(?)");
-		$sth->execute([$login]);
-
-		if ($row = $sth->fetch()) {
-			$uid = $row["id"];
+		if ($uid = UserHelper::find_user_by_login($login)) {
+			if (get_pref("ENABLE_API_ACCESS", $uid)) {
+				if (UserHelper::authenticate($login, $password, false,  Auth_Base::AUTH_SERVICE_API)) {               // try login with normal password
+					$this->wrap(self::STATUS_OK, array("session_id" => session_id(),
+						"api_level" => self::API_LEVEL));
+				} else if (UserHelper::authenticate($login, $password_base64, false, Auth_Base::AUTH_SERVICE_API)) { // else try with base64_decoded password
+					$this->wrap(self::STATUS_OK,	array("session_id" => session_id(),
+						"api_level" => self::API_LEVEL));
+				} else {                                                         // else we are not logged in
+					user_error("Failed login attempt for $login from " . UserHelper::get_user_ip(), E_USER_WARNING);
+					$this->wrap(self::STATUS_ERR, array("error" => "LOGIN_ERROR"));
+				}
+			} else {
+				$this->wrap(self::STATUS_ERR, array("error" => "API_DISABLED"));
+			}
 		} else {
-			$uid = 0;
-		}
-
-		if (!$uid) {
 			$this->wrap(self::STATUS_ERR, array("error" => "LOGIN_ERROR"));
 			return;
 		}
-
-		if (get_pref("ENABLE_API_ACCESS", $uid)) {
-			if (UserHelper::authenticate($login, $password, false,  Auth_Base::AUTH_SERVICE_API)) {               // try login with normal password
-				$this->wrap(self::STATUS_OK, array("session_id" => session_id(),
-					"api_level" => self::API_LEVEL));
-			} else if (UserHelper::authenticate($login, $password_base64, false, Auth_Base::AUTH_SERVICE_API)) { // else try with base64_decoded password
-				$this->wrap(self::STATUS_OK,	array("session_id" => session_id(),
-					"api_level" => self::API_LEVEL));
-			} else {                                                         // else we are not logged in
-				user_error("Failed login attempt for $login from " . UserHelper::get_user_ip(), E_USER_WARNING);
-				$this->wrap(self::STATUS_ERR, array("error" => "LOGIN_ERROR"));
-			}
-		} else {
-			$this->wrap(self::STATUS_ERR, array("error" => "API_DISABLED"));
-		}
-
 	}
 
 	function logout() {

@@ -237,22 +237,14 @@ class Pref_Users extends Handler_Protected {
 
 			if (!$login) return; // no blank usernames
 
-			$sth = $this->pdo->prepare("SELECT id FROM ttrss_users WHERE
-				LOWER(login) = LOWER(?)");
-			$sth->execute([$login]);
-
-			if (!$sth->fetch()) {
+			if (!UserHelper::find_user_by_login($login)) {
 
 				$sth = $this->pdo->prepare("INSERT INTO ttrss_users
 					(login,pwd_hash,access_level,last_login,created, salt)
 					VALUES (LOWER(?), ?, 0, null, NOW(), ?)");
 				$sth->execute([$login, $pwd_hash, $salt]);
 
-				$sth = $this->pdo->prepare("SELECT id FROM ttrss_users WHERE
-					LOWER(login) = LOWER(?) AND pwd_hash = ?");
-				$sth->execute([$login, $pwd_hash]);
-
-				if ($row = $sth->fetch()) {
+				if ($new_uid = UserHelper::find_user_by_login($login)) {
 
 					$new_uid = $row['id'];
 

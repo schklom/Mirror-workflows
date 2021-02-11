@@ -1391,10 +1391,10 @@ class Pref_Feeds extends Handler_Protected {
 
 		print "<h3>" . __('Published articles can be subscribed by anyone who knows the following URL:') . "</h3>";
 
-		$rss_url = '-2::' . htmlspecialchars(get_self_url_prefix() .
+		$rss_url = htmlspecialchars(get_self_url_prefix() .
 				"/public.php?op=rss&id=-2&view-mode=all_articles");;
 
-		print "<button dojoType='dijit.form.Button' class='alt-primary' onclick=\"return App.displayDlg('".__("Show as feed")."','generatedFeed', '$rss_url')\">".
+		print "<button dojoType='dijit.form.Button' class='alt-primary' onclick='CommonDialogs.generatedFeed('-2', false, \"$rss_url\")'>".
 			__('Display URL')."</button> ";
 
 		print "<button class=\"alt-danger\" dojoType=\"dijit.form.Button\" onclick=\"return Helpers.clearFeedAccessKeys()\">".
@@ -1714,23 +1714,26 @@ class Pref_Feeds extends Handler_Protected {
 		$this->update_feed_access_key('OPML:Publish',
 			false, $_SESSION["uid"]);
 
-		$new_link = OPML::opml_publish_url();
-
-		print json_encode(["link" => $new_link]);
+		print json_encode(["link" => OPML::opml_publish_url()]);
 	}
 
 	function regenFeedKey() {
 		$feed_id = clean($_REQUEST['id']);
 		$is_cat = clean($_REQUEST['is_cat']);
 
-		$new_key = $this->update_feed_access_key($feed_id, $is_cat);
+		$new_key = $this->update_feed_access_key($feed_id, $is_cat, $_SESSION["uid"]);
 
 		print json_encode(["link" => $new_key]);
 	}
 
+	function getFeedKey() {
+		$feed_id = clean($_REQUEST['id']);
+		$is_cat = clean($_REQUEST['is_cat']);
 
-	private function update_feed_access_key($feed_id, $is_cat, $owner_uid = false) {
-		if (!$owner_uid) $owner_uid = $_SESSION["uid"];
+		print json_encode(["link" => Feeds::get_feed_access_key($feed_id, $is_cat, $_SESSION["uid"])]);
+	}
+
+	private function update_feed_access_key($feed_id, $is_cat, $owner_uid) {
 
 		// clear old value and generate new one
 		$sth = $this->pdo->prepare("DELETE FROM ttrss_access_keys

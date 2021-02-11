@@ -37,7 +37,7 @@ class Feeds extends Handler_Protected {
 
 		$reply .= "<a href=\"#\"
 				title=\"".__("Show as feed")."\"
-				onclick=\"App.displayDlg('".__("Show as feed")."','generatedFeed', '$feed_id:$is_cat:$rss_link')\">
+				onclick='CommonDialogs.generatedFeed(\"$feed_id\", \"$is_cat\", \"$rss_link\")'>
 				<i class='icon-syndicate material-icons'>rss_feed</i></a>";
 
 		$reply .= "<span id='feed_title'>";

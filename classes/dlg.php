@@ -128,41 +128,4 @@ class Dlg extends Handler_Protected {
 		print "</footer>";
 
 	}
-
-	function generatedFeed() {
-
-		$this->params = explode(":", $this->param, 3);
-		$feed_id = $this->params[0];
-		$is_cat = (bool) $this->params[1];
-
-		$key = Feeds::get_feed_access_key($feed_id, $is_cat);
-
-		$url_path = htmlspecialchars($this->params[2]) . "&key=" . $key;
-
-		$feed_title = Feeds::getFeedTitle($feed_id, $is_cat);
-
-		print "<header>".T_sprintf("%s can be accessed via the following secret URL:", $feed_title)."</header>";
-
-		print "<section>";
-		print "<div class='panel text-center'>";
-		print "<a id='gen_feed_url' href='$url_path' target='_blank'>$url_path</a>";
-		print "</div>";
-		print "</section>";
-
-		print "<footer>";
-
-		print "<button dojoType='dijit.form.Button' style='float : left' class='alt-info' onclick='window.open(\"https://tt-rss.org/wiki/GeneratedFeeds\")'>
-			<i class='material-icons'>help</i> ".__("More info...")."</button>";
-
-		print "<button dojoType='dijit.form.Button' onclick=\"return CommonDialogs.genUrlChangeKey('$feed_id', '$is_cat')\">".
-			__('Generate new URL')."</button> ";
-
-		print "<button dojoType='dijit.form.Button' onclick=\"return CommonDialogs.closeInfoBox()\">".
-			__('Close this window')."</button>";
-
-		print "</footer>";
-
-		//return;
-	}
-
 }

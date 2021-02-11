@@ -370,7 +370,7 @@ const	CommonDialogs = {
 						dijit.byId("publicOPMLDlg").destroyRecursive();
 
 					const dialog = new dijit.Dialog({
-						title: "Public OPML URL",
+						title: __("Public OPML URL"),
 						id: 'publicOPMLDlg',
 						style: "width: 600px",
 						onCancel: function () {
@@ -386,7 +386,7 @@ const	CommonDialogs = {
 							<header>${__("Your Public OPML URL is:")}</header>
 							<section>
 								<div class='panel text-center'>
-									<a id='pub_opml_url' href='$url_path' target='_blank'>${reply.link}</a>
+									<a id='pub_opml_url' href="${App.escapeHtml(reply.link)}" target='_blank'>${reply.link}</a>
 								</div>
 							</section>
 							<footer class='text-center'>
@@ -396,7 +396,63 @@ const	CommonDialogs = {
 								<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>
 									${__('Close this window')}
 								</button>
-						</footer>
+							</footer>
+						`
+					});
+
+					dialog.show();
+
+					Notify.close();
+
+				} catch (e) {
+					this.Error.report(e);
+				}
+			});
+		},
+		generatedFeed: function(feed, is_cat, rss_url) {
+
+			Notify.progress("Loading, please wait...", true);
+
+			xhrJson("backend.php", {op: "pref-feeds", method: "getFeedKey", id: feed, is_cat: is_cat}, (reply) => {
+				try {
+					if (dijit.byId("genFeedDlg"))
+						dijit.byId("genFeedDlg").destroyRecursive();
+
+					const feed_title = Feeds.getName(feed, is_cat);
+
+					const secret_url = rss_url + "&key=" + encodeURIComponent(reply.link);
+
+					const dialog = new dijit.Dialog({
+						title: __("Show as feed"),
+						id: 'genFeedDlg',
+						style: "width: 600px",
+						onCancel: function () {
+							return true;
+						},
+						onExecute: function () {
+							return true;
+						},
+						onClose: function () {
+							return true;
+						},
+						content: `
+							<header>${__("%s can be accessed via the following secret URL:").replace("%s", feed_title)}</header>
+							<section>
+								<div class='panel text-center'>
+									<a id='gen_feed_url' href="${App.escapeHtml(secret_url)}" target='_blank'>${secret_url}</a>
+								</div>
+							</section>
+							<footer>
+								<button dojoType='dijit.form.Button' style='float : left' class='alt-info'
+									onclick='window.open("https://tt-rss.org/wiki/GeneratedFeeds")'>
+									<i class='material-icons'>help</i> ${__("More info...")}</button>
+								<button dojoType='dijit.form.Button' onclick="return CommonDialogs.genUrlChangeKey('${feed}', '${is_cat}')">
+									${__('Generate new URL')}
+								</button>
+								<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>
+									${__('Close this window')}
+								</button>
+							</footer>
 						`
 					});
 

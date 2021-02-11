@@ -26,7 +26,7 @@ class Auth_Internal extends Auth_Base {
 		if (get_schema_version() > 96) {
 
 			$sth = $this->pdo->prepare("SELECT otp_enabled,salt FROM ttrss_users WHERE
-				login = ?");
+				LOWER(login) = LOWER(?)");
 			$sth->execute([$login]);
 
 			if ($row = $sth->fetch()) {
@@ -104,7 +104,7 @@ class Auth_Internal extends Auth_Base {
 
 		if (get_schema_version() > 87) {
 
-			$sth = $this->pdo->prepare("SELECT salt FROM ttrss_users WHERE login = ?");
+			$sth = $this->pdo->prepare("SELECT salt FROM ttrss_users WHERE LOWER(login) = LOWER(?)");
 			$sth->execute([$login]);
 
 			if ($row = $sth->fetch()) {
@@ -113,7 +113,7 @@ class Auth_Internal extends Auth_Base {
 				if ($salt == "") {
 
 					$sth = $this->pdo->prepare("SELECT id FROM ttrss_users WHERE
-						login = ? AND (pwd_hash = ? OR pwd_hash = ?)");
+						LOWER(login) = LOWER(?) AND (pwd_hash = ? OR pwd_hash = ?)");
 
 					$sth->execute([$login, $pwd_hash1, $pwd_hash2]);
 
@@ -128,7 +128,7 @@ class Auth_Internal extends Auth_Base {
 						$pwd_hash = encrypt_password($password, $salt, true);
 
 						$sth = $this->pdo->prepare("UPDATE ttrss_users SET
-							pwd_hash = ?, salt = ? WHERE login = ?");
+							pwd_hash = ?, salt = ? WHERE LOWER(login) = LOWER(?)");
 
 						$sth->execute([$pwd_hash, $salt, $login]);
 
@@ -143,7 +143,7 @@ class Auth_Internal extends Auth_Base {
 
 					$sth = $this->pdo->prepare("SELECT id
 						  FROM ttrss_users WHERE
-						  login = ? AND pwd_hash = ?");
+						  LOWER(login) = LOWER(?) AND pwd_hash = ?");
 					$sth->execute([$login, $pwd_hash]);
 
 					if ($row = $sth->fetch()) {
@@ -154,7 +154,7 @@ class Auth_Internal extends Auth_Base {
 			} else {
 				$sth = $this->pdo->prepare("SELECT id
 					FROM ttrss_users WHERE
-					  login = ? AND (pwd_hash = ? OR pwd_hash = ?)");
+					  LOWER(login) = LOWER(?) AND (pwd_hash = ? OR pwd_hash = ?)");
 
 				$sth->execute([$login, $pwd_hash1, $pwd_hash2]);
 
@@ -165,7 +165,7 @@ class Auth_Internal extends Auth_Base {
 		} else {
 			$sth = $this->pdo->prepare("SELECT id
 					FROM ttrss_users WHERE
-					  login = ? AND (pwd_hash = ? OR pwd_hash = ?)");
+					  LOWER(login) = LOWER(?) AND (pwd_hash = ? OR pwd_hash = ?)");
 
 			$sth->execute([$login, $pwd_hash1, $pwd_hash2]);
 
@@ -266,7 +266,7 @@ class Auth_Internal extends Auth_Base {
 	private function check_app_password($login, $password, $service) {
 		$sth = $this->pdo->prepare("SELECT p.id, p.pwd_hash, u.id AS uid
 			FROM ttrss_app_passwords p, ttrss_users u
-			WHERE p.owner_uid = u.id AND u.login = ? AND service = ?");
+			WHERE p.owner_uid = u.id AND LOWER(u.login) = LOWER(?) AND service = ?");
 		$sth->execute([$login, $service]);
 
 		while ($row = $sth->fetch()) {

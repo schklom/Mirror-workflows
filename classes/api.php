@@ -59,7 +59,7 @@ class API extends Handler {
 
 		if (SINGLE_USER_MODE) $login = "admin";
 
-		$sth = $this->pdo->prepare("SELECT id FROM ttrss_users WHERE login = ?");
+		$sth = $this->pdo->prepare("SELECT id FROM ttrss_users WHERE LOWER(login) = LOWER(?)");
 		$sth->execute([$login]);
 
 		if ($row = $sth->fetch()) {

@@ -248,7 +248,7 @@ class Handler_Public extends Handler {
 		$login = clean($_REQUEST["login"]);
 		$fresh = clean($_REQUEST["fresh"]) == "1";
 
-		$sth = $this->pdo->prepare("SELECT id FROM ttrss_users WHERE login = ?");
+		$sth = $this->pdo->prepare("SELECT id FROM ttrss_users WHERE LOWER(login) = LOWER(?)");
 		$sth->execute([$login]);
 
 		if ($row = $sth->fetch()) {
@@ -272,7 +272,7 @@ class Handler_Public extends Handler {
 
 		if ($login) {
 			$sth = $this->pdo->prepare("SELECT ttrss_settings_profiles.* FROM ttrss_settings_profiles,ttrss_users
-			WHERE ttrss_users.id = ttrss_settings_profiles.owner_uid AND login = ? ORDER BY title");
+			WHERE ttrss_users.id = ttrss_settings_profiles.owner_uid AND LOWER(login) = LOWER(?) ORDER BY title");
 			$sth->execute([$login]);
 
 			$rv = [ [ "value" => 0, "label" => __("Default profile") ] ];
@@ -941,7 +941,7 @@ class Handler_Public extends Handler {
 
 			if ($login) {
 				$sth = $this->pdo->prepare("SELECT id, resetpass_token FROM ttrss_users
-					WHERE login = ?");
+					WHERE LOWER(login) = LOWER(?)");
 				$sth->execute([$login]);
 
 				if ($row = $sth->fetch()) {
@@ -1026,7 +1026,7 @@ class Handler_Public extends Handler {
 				$_SESSION["pwdreset:testvalue2"] = rand(1, 1000);
 
 				$sth = $this->pdo->prepare("SELECT id FROM ttrss_users
-					WHERE login = ? AND email = ?");
+					WHERE LOWER(login) = LOWER(?) AND email = ?");
 				$sth->execute([$login, $email]);
 
 				if ($row = $sth->fetch()) {
@@ -1066,7 +1066,7 @@ class Handler_Public extends Handler {
 
 						$sth = $this->pdo->prepare("UPDATE ttrss_users
 							SET resetpass_token = ?
-							WHERE login = ? AND email = ?");
+							WHERE LOWER(login) = LOWER(?) AND email = ?");
 
 						$sth->execute([$resetpass_token_full, $login, $email]);
 

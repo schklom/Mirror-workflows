@@ -277,7 +277,7 @@
 
 				db_query( "INSERT INTO ttrss_users
 					(login,pwd_hash,access_level,last_login, email, created, salt)
-					VALUES ('$login', '$pwd_hash', 0, null, '$email', NOW(), '$salt')");
+					VALUES (LOWER('$login'), '$pwd_hash', 0, null, '$email', NOW(), '$salt')");
 
 				$result = db_query( "SELECT id FROM ttrss_users WHERE
 					login = '$login' AND pwd_hash = '$pwd_hash'");

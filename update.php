@@ -502,7 +502,7 @@
 
 		Debug::log("Exporting feeds of user $user to $filename as OPML...");
 
-		$sth = $pdo->prepare("SELECT id FROM ttrss_users WHERE login = ?");
+		$sth = $pdo->prepare("SELECT id FROM ttrss_users WHERE LOWER(login) = LOWER(?)");
 		$sth->execute([$user]);
 
 		if ($res = $sth->fetch()) {

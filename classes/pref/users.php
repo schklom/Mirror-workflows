@@ -206,7 +206,7 @@ class Pref_Users extends Handler_Protected {
 				$pass_query_part = "";
 			}
 
-			$sth = $this->pdo->prepare("UPDATE ttrss_users SET $pass_query_part login = ?,
+			$sth = $this->pdo->prepare("UPDATE ttrss_users SET $pass_query_part login = LOWER(?),
 				access_level = ?, email = ?, otp_enabled = false WHERE id = ?");
 			$sth->execute([$login, $access_level, $email, $uid]);
 
@@ -238,18 +238,18 @@ class Pref_Users extends Handler_Protected {
 			if (!$login) return; // no blank usernames
 
 			$sth = $this->pdo->prepare("SELECT id FROM ttrss_users WHERE
-				login = ?");
+				LOWER(login) = LOWER(?)");
 			$sth->execute([$login]);
 
 			if (!$sth->fetch()) {
 
 				$sth = $this->pdo->prepare("INSERT INTO ttrss_users
 					(login,pwd_hash,access_level,last_login,created, salt)
-					VALUES (?, ?, 0, null, NOW(), ?)");
+					VALUES (LOWER(?), ?, 0, null, NOW(), ?)");
 				$sth->execute([$login, $pwd_hash, $salt]);
 
 				$sth = $this->pdo->prepare("SELECT id FROM ttrss_users WHERE
-					login = ? AND pwd_hash = ?");
+					LOWER(login) = LOWER(?) AND pwd_hash = ?");
 				$sth->execute([$login, $pwd_hash]);
 
 				if ($row = $sth->fetch()) {

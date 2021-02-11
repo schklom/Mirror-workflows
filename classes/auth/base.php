@@ -27,7 +27,7 @@ abstract class Auth_Base extends Plugin implements IAuthModule {
 
 				$sth = $this->pdo->prepare("INSERT INTO ttrss_users
 						(login,access_level,last_login,created,pwd_hash,salt)
-						VALUES (?, 0, null, NOW(), ?,?)");
+						VALUES (LOWER(?), 0, null, NOW(), ?,?)");
 				$sth->execute([$login, $pwd_hash, $salt]);
 
 				return $this->find_user_by_login($login);
@@ -42,7 +42,7 @@ abstract class Auth_Base extends Plugin implements IAuthModule {
 
 	function find_user_by_login($login) {
 		$sth = $this->pdo->prepare("SELECT id FROM ttrss_users WHERE
-			login = ?");
+			LOWER(login) = LOWER(?)");
 		$sth->execute([$login]);
 
 		if ($row = $sth->fetch()) {

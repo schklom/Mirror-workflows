@@ -92,7 +92,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			let search = (searchElem) ? searchElem.value : "";
 
 			xhrPost("backend.php", { op: "pref-feeds", search: search }, (transport) => {
-				dijit.byId('feedConfigTab').attr('content', transport.responseText);
+				dijit.byId('feedsTab').attr('content', transport.responseText);
 				Notify.close();
 			});
 		},

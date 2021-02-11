@@ -1098,7 +1098,7 @@ const App = {
             this.displayDlg(__("Tag cloud"), "printTagCloud");
          };
          this.hotkey_actions["goto_prefs"] = () => {
-            document.location.href = "prefs.php";
+            App.openPreferences();
          };
          this.hotkey_actions["select_article_cursor"] = () => {
             const id = Article.getUnderPointer();
@@ -1163,10 +1163,13 @@ const App = {
          };
       }
    },
+   openPreferences: function(tab) {
+      document.location.href = "prefs.php" + (tab ? "?tab=" + tab : "");
+   },
    onActionSelected: function(opid) {
       switch (opid) {
          case "qmcPrefs":
-            document.location.href = "prefs.php";
+            App.openPreferences();
             break;
          case "qmcLogout":
             App.postCurrentWindow("public.php", {op: "logout", csrf_token: __csrf_token});

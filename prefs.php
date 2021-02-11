@@ -136,26 +136,26 @@
 
 <div id="main" dojoType="dijit.layout.BorderContainer">
     <div dojoType="dijit.layout.TabContainer" region="center" id="pref-tabs">
-        <div id="genConfigTab" dojoType="dijit.layout.ContentPane"
+        <div id="prefsTab" dojoType="dijit.layout.ContentPane"
             href="backend.php?op=pref-prefs"
             title="<i class='material-icons'>settings</i> <?php echo __('Preferences') ?>"></div>
-        <div id="feedConfigTab" dojoType="dijit.layout.ContentPane"
+        <div id="feedsTab" dojoType="dijit.layout.ContentPane"
             href="backend.php?op=pref-feeds"
             title="<i class='material-icons'>rss_feed</i>  <?php echo __('Feeds') ?>"></div>
-        <div id="filterConfigTab" dojoType="dijit.layout.ContentPane"
+        <div id="filtersTab" dojoType="dijit.layout.ContentPane"
             style="padding : 0px"
             href="backend.php?op=pref-filters"
             title="<i class='material-icons'>filter_list1</i> <?php echo __('Filters') ?>"></div>
-        <div id="labelConfigTab" dojoType="dijit.layout.ContentPane"
+        <div id="labelsTab" dojoType="dijit.layout.ContentPane"
             style="padding : 0px"
             href="backend.php?op=pref-labels"
             title="<i class='material-icons'>label_outline1</i> <?php echo __('Labels') ?>"></div>
         <?php if ($_SESSION["access_level"] >= 10) { ?>
-            <div id="userConfigTab" dojoType="dijit.layout.ContentPane"
+            <div id="usersTab" dojoType="dijit.layout.ContentPane"
                 style="padding : 0px"
                 href="backend.php?op=pref-users"
                 title="<i class='material-icons'>person</i> <?php echo __('Users') ?>"></div>
-            <div id="systemConfigTab" dojoType="dijit.layout.ContentPane"
+            <div id="systemTab" dojoType="dijit.layout.ContentPane"
                 href="backend.php?op=pref-system"
                 title="<i class='material-icons'>info_outline</i> <?php echo __('System') ?>"></div>
         <?php } ?>

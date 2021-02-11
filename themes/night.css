@@ -708,6 +708,7 @@ body.ttrss_main #toolbar-frame #toolbar .left i.icon-error {
 }
 body.ttrss_main #toolbar-frame #toolbar i.log-alert {
   color: #ddba1c;
+  cursor: pointer;
 }
 body.ttrss_main #toolbar-frame #toolbar i {
   margin: 0 4px;

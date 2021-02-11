@@ -58,7 +58,7 @@ const	Helpers = {
 		},
 		update: function() {
 			xhrPost("backend.php", { op: "pref-system", severity: dijit.byId("severity").attr('value'), page: Helpers.EventLog.log_page }, (transport) => {
-				dijit.byId('systemConfigTab').attr('content', transport.responseText);
+				dijit.byId('systemTab').attr('content', transport.responseText);
 				Notify.close();
 			});
 		},
@@ -206,7 +206,7 @@ const	Helpers = {
 	},
 	refresh: function() {
 		xhrPost("backend.php", { op: "pref-prefs" }, (transport) => {
-			dijit.byId('genConfigTab').attr('content', transport.responseText);
+			dijit.byId('prefsTab').attr('content', transport.responseText);
 			Notify.close();
 		});
 	},

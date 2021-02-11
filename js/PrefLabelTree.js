@@ -54,7 +54,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 		},
 		reload: function() {
 			xhrPost("backend.php", { op: "pref-labels" }, (transport) => {
-				dijit.byId('labelConfigTab').attr('content', transport.responseText);
+				dijit.byId('labelsTab').attr('content', transport.responseText);
 				Notify.close();
 			});
 		},

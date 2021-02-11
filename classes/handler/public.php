@@ -871,7 +871,7 @@ class Handler_Public extends Handler {
 
 				if ($feed_id) {
 					print "<form method='GET' action=\"$tp_uri\">
-					<input type='hidden' name='tab' value='feedConfig'>
+					<input type='hidden' name='tab' value='feeds'>
 					<input type='hidden' name='method' value='editfeed'>
 					<input type='hidden' name='methodparam' value='$feed_id'>
 					<button dojoType='dijit.form.Button' class='alt-info' type='submit'>".__("Edit subscription options")."</button>

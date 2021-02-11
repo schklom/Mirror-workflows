@@ -9,7 +9,7 @@ const	Users = {
 		const search = user_search ? user_search.value : "";
 
 		xhrPost("backend.php", { op: "pref-users", sort: sort, search: search }, (transport) => {
-			dijit.byId('userConfigTab').attr('content', transport.responseText);
+			dijit.byId('usersTab').attr('content', transport.responseText);
 			Notify.close();
 		});
 	},

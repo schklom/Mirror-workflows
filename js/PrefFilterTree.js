@@ -90,7 +90,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			if (user_search) { search = user_search.value; }
 
 			xhrPost("backend.php", { op: "pref-filters", search: search }, (transport) => {
-				dijit.byId('filterConfigTab').attr('content', transport.responseText);
+				dijit.byId('filtersTab').attr('content', transport.responseText);
 				Notify.close();
 			});
 		},

@@ -14,6 +14,8 @@ function format_backtrace($trace) {
 							array_push($fmt_args, "{" . get_class($a) . "}");
 						} else if (is_array($a)) {
 							array_push($fmt_args, "[" . truncate_string(json_encode($a), 256, "...")) . "]";
+						} else if (is_resource($a)) {
+							array_push($fmt_args, truncate_string(get_resource_type($a), 256, "..."));
 						} else {
 							array_push($fmt_args, truncate_string($a, 256, "..."));
 						}

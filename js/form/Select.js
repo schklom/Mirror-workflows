@@ -1,4 +1,4 @@
-/* global dijit */
+/* global dijit, define */
 define(["dojo/_base/declare", "dijit/form/Select"], function (declare) {
 	return declare("fox.form.Select", dijit.form.Select, {
 		focus: function() {

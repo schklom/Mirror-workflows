@@ -1,6 +1,7 @@
 'use strict';
 
 /* global dijit, __, App, Ajax */
+/* eslint-disable no-new */
 
 /* error reporting shim */
 // TODO: deprecated; remove
@@ -31,8 +32,8 @@ function xhrPost(url, params, complete) {
 
 /* exported xhrJson */
 function xhrJson(url, params, complete) {
-	return new Promise((resolve, reject) => {
-		return xhrPost(url, params).then((reply) => {
+	return new Promise((resolve, reject) =>
+		xhrPost(url, params).then((reply) => {
 			let obj = null;
 
 			try {
@@ -44,8 +45,7 @@ function xhrJson(url, params, complete) {
 			if (complete != undefined) complete(obj);
 
 			resolve(obj);
-		});
-	});
+		}));
 }
 
 /* add method to remove element from array */

@@ -7,9 +7,9 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 		// save state in localStorage instead of cookies
 		// reference: https://stackoverflow.com/a/27968996
 		_saveExpandedNodes: function(){
-			if(this.persist && this.cookieName){
-				var ary = [];
-				for(var id in this._openedNodes){
+			if (this.persist && this.cookieName){
+				const ary = [];
+				for (const id in this._openedNodes){
 					ary.push(id);
 				}
 				// Was:
@@ -21,16 +21,16 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 			// summary:
 			//    Load in which nodes should be opened automatically
 			this._openedNodes = {};
-			if(this.persist && this.cookieName){
+			if (this.persist && this.cookieName){
 				// Was:
 				// var oreo = cookie(this.cookieName);
-				var oreo = localStorage.getItem(this.cookieName);
+				let oreo = localStorage.getItem(this.cookieName);
 				// migrate old data if nothing in localStorage
-				if(oreo == null || oreo === '') {
+				if (oreo == null || oreo === '') {
 					oreo = cookie(this.cookieName);
 					cookie(this.cookieName, null, { expires: -1 });
 				}
-				if(oreo){
+				if (oreo){
 					array.forEach(oreo.split(','), function(item){
 						this._openedNodes[item] = true;
 					}, this);

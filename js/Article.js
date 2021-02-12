@@ -1,5 +1,6 @@
 'use strict'
 
+/* eslint-disable no-new */
 /* global __, ngettext, App, Headlines, xhrPost, xhrJson, dojo, dijit, PluginHost, Notify, $$, Ajax, fox */
 
 const Article = {
@@ -250,51 +251,51 @@ const Article = {
 		return false;
 	},
 	editTags: function (id) {
-		xhrPost("backend.php", {op: "article", method: "editarticletags", param: id}, (transport) => {
+		const dialog = new fox.SingleUseDialog({
+			id: "editTagsDlg",
+			title: __("Edit article Tags"),
+			content: __("Loading, please wait..."),
+			execute: function () {
+				if (this.validate()) {
+					Notify.progress("Saving article tags...", true);
 
-			const dialog = new fox.SingleUseDialog({
-				id: "editTagsDlg",
-				title: __("Edit article Tags"),
-				content: transport.responseText,
-				execute: function () {
-					if (this.validate()) {
-						Notify.progress("Saving article tags...", true);
+					xhrPost("backend.php", this.attr('value'), (transport) => {
+						try {
+							Notify.close();
+							dialog.hide();
 
-						xhrPost("backend.php", this.attr('value'), (transport) => {
-							try {
-								Notify.close();
-								dialog.hide();
+							const data = JSON.parse(transport.responseText);
 
-								const data = JSON.parse(transport.responseText);
+							if (data) {
+								const id = data.id;
 
-								if (data) {
-									const id = data.id;
+								const tags = $("ATSTR-" + id);
+								const tooltip = dijit.byId("ATSTRTIP-" + id);
 
-									const tags = $("ATSTR-" + id);
-									const tooltip = dijit.byId("ATSTRTIP-" + id);
-
-									if (tags) tags.innerHTML = data.content;
-									if (tooltip) tooltip.attr('label', data.content_full);
-								}
-							} catch (e) {
-								App.Error.report(e);
+								if (tags) tags.innerHTML = data.content;
+								if (tooltip) tooltip.attr('label', data.content_full);
 							}
-						});
-					}
-				},
-			});
+						} catch (e) {
+							App.Error.report(e);
+						}
+					});
+				}
+			},
+		});
 
-			const tmph = dojo.connect(dialog, 'onShow', function () {
-				dojo.disconnect(tmph);
+		const tmph = dojo.connect(dialog, 'onShow', function () {
+			dojo.disconnect(tmph);
+
+			xhrPost("backend.php", {op: "article", method: "editarticletags", param: id}, (transport) => {
+				dialog.attr('content', transport.responseText);
 
 				new Ajax.Autocompleter('tags_str', 'tags_choices',
 					"backend.php?op=article&method=completeTags",
 					{tokens: ',', paramName: "search"});
 			});
-
-			dialog.show();
-
 		});
+
+		dialog.show();
 
 	},
 	cdmMoveToId: function (id, params) {

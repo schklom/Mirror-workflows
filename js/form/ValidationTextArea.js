@@ -1,4 +1,6 @@
 // https://stackoverflow.com/questions/19317258/how-to-use-dijit-textarea-validation-dojo-1-9
+/* eslint-disable no-new */
+/* global define */
 
 define(["dojo/_base/declare", "dojo/_base/lang", "dijit/form/SimpleTextarea", "dijit/form/ValidationTextBox"],
     function(declare, lang, SimpleTextarea, ValidationTextBox) {
@@ -8,6 +10,7 @@ define(["dojo/_base/declare", "dojo/_base/lang", "dijit/form/SimpleTextarea", "d
                 this.constraints = {};
                 this.baseClass += ' dijitValidationTextArea';
             },
+            // eslint-disable-next-line no-template-curly-in-string
             templateString: "<textarea ${!nameAttrSetting} data-dojo-attach-point='focusNode,containerNode,textbox' autocomplete='off'></textarea>",
             validator: function(value, constraints) {
                 //console.log(this, value, constraints);

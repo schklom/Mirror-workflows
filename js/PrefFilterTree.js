@@ -1,4 +1,5 @@
-/* global __, $$, define, lib, dijit, dojo, xhrPost, Notify, Filters, Lists */
+/* eslint-disable prefer-rest-params */
+/* global __, define, lib, dijit, dojo, xhrPost, Notify */
 
 define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], function (declare, domConstruct) {
 
@@ -54,6 +55,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			return label;
 		},
 		getIconClass: function (item, opened) {
+			// eslint-disable-next-line no-nested-ternary
 			return (!item || this.model.mayHaveChildren(item)) ? (opened ? "dijitFolderOpened" : "dijitFolderClosed") : "invisible";
 		},
 		getRowClass: function (item, opened) {
@@ -62,7 +64,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			return enabled ? "dijitTreeRow" : "dijitTreeRow filterDisabled";
 		},
 		checkItemAcceptance: function(target, source, position) {
-			const item = dijit.getEnclosingWidget(target).item;
+			//const item = dijit.getEnclosingWidget(target).item;
 
 			// disable copying items
 			source.copyState = function() { return false; };

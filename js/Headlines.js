@@ -199,6 +199,7 @@ const Headlines = {
 		} else if (event.ctrlKey) {
 			Headlines.select('invert', id);
 		} else {
+			// eslint-disable-next-line no-lonely-if
 			if (App.isCombinedMode()) {
 
 				if (event.altKey && !in_body) {
@@ -237,6 +238,7 @@ const Headlines = {
 
 				return in_body;
 			} else {
+				// eslint-disable-next-line no-lonely-if
 				if (event.altKey) {
 					Article.openInNewWindow(id);
 					Headlines.toggleUnread(id, 0);

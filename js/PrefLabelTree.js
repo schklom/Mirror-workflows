@@ -1,3 +1,4 @@
+/* eslint-disable prefer-rest-params */
 /* global __, define, lib, dijit, dojo, xhrPost, Notify, fox */
 
 define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/form/DropDownButton"], function (declare, domConstruct) {
@@ -39,6 +40,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 			return tnode;
 		},
 		getIconClass: function (item, opened) {
+			// eslint-disable-next-line no-nested-ternary
 			return (!item || this.model.mayHaveChildren(item)) ? (opened ? "dijitFolderOpened" : "dijitFolderClosed") : "invisible";
 		},
 		getSelectedLabels: function() {

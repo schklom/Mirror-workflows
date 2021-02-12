@@ -258,37 +258,6 @@ const	Helpers = {
 				return false;
 			}
 		},
-		onImportComplete: function(iframe) {
-			if (!iframe.contentDocument.body.innerHTML) return false;
-
-			Element.show(iframe);
-
-			Notify.close();
-
-			if (dijit.byId('opmlImportDlg'))
-				dijit.byId('opmlImportDlg').destroyRecursive();
-
-			const content = iframe.contentDocument.body.innerHTML;
-
-			const dialog = new dijit.Dialog({
-				id: "opmlImportDlg",
-				title: __("OPML Import"),
-				style: "width: 600px",
-				onCancel: function () {
-					window.location.reload();
-				},
-				execute: function () {
-					window.location.reload();
-				},
-				content: content
-			});
-
-			dojo.connect(dialog, "onShow", function () {
-				Element.hide(iframe);
-			});
-
-			dialog.show();
-		},
 		export: function() {
 			console.log("export");
 			window.open("backend.php?op=opml&method=export&" + dojo.formToQuery("opmlExportForm"));

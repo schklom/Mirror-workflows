@@ -387,17 +387,19 @@ const	CommonDialogs = {
 					Notify.close();
 
 				} catch (e) {
-					this.Error.report(e);
+					App.Error.report(e);
 				}
 			});
 		},
-		generatedFeed: function(feed, is_cat, rss_url) {
+		generatedFeed: function(feed, is_cat, rss_url, feed_title) {
 
 			Notify.progress("Loading, please wait...", true);
 
 			xhrJson("backend.php", {op: "pref-feeds", method: "getFeedKey", id: feed, is_cat: is_cat}, (reply) => {
 				try {
-					const feed_title = Feeds.getName(feed, is_cat);
+					if (!feed_title && typeof Feeds != "undefined")
+						feed_title = Feeds.getName(feed, is_cat);
+
 					const secret_url = rss_url + "&key=" + encodeURIComponent(reply.link);
 
 					const dialog = new fox.SingleUseDialog({
@@ -428,7 +430,7 @@ const	CommonDialogs = {
 					Notify.close();
 
 				} catch (e) {
-					this.Error.report(e);
+					App.Error.report(e);
 				}
 			});
 		},

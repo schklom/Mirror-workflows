@@ -1391,10 +1391,10 @@ class Pref_Feeds extends Handler_Protected {
 		$rss_url = htmlspecialchars(get_self_url_prefix() .
 				"/public.php?op=rss&id=-2&view-mode=all_articles");;
 
-		print "<button dojoType='dijit.form.Button' class='alt-primary' onclick='CommonDialogs.generatedFeed(-2, false, \"$rss_url\")'>".
-			__('Display URL')."</button> ";
-
-		print "<button class=\"alt-danger\" dojoType=\"dijit.form.Button\" onclick=\"return Helpers.clearFeedAccessKeys()\">".
+		print "<button dojoType='dijit.form.Button' class='alt-primary'
+			onclick='CommonDialogs.generatedFeed(-2, false, \"$rss_url\", \"".__("Published articles")."\")'>".
+			__('Display URL')."</button>
+		<button class='alt-danger' dojoType='dijit.form.Button' onclick='return Helpers.clearFeedAccessKeys()'>".
 			__('Clear all generated URLs')."</button> ";
 
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION, "prefFeedsPublishedGenerated");

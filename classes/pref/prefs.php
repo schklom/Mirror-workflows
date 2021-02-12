@@ -715,7 +715,7 @@ class Pref_Prefs extends Handler_Protected {
 						print "</select>";
 
 						print " <button dojoType=\"dijit.form.Button\" class='alt-info'
-							onclick=\"Helpers.customizeCSS()\">" . __('Customize') . "</button>";
+							onclick=\"Helpers.Prefs.customizeCSS()\">" . __('Customize') . "</button>";
 
 						print " <button dojoType='dijit.form.Button' onclick='window.open(\"https://tt-rss.org/wiki/Themes\")'>
 							<i class='material-icons'>open_in_new</i> ".__("More themes...")."</button>";
@@ -830,10 +830,10 @@ class Pref_Prefs extends Handler_Protected {
 			</div>
 			</div>";
 
-		print "<button dojoType=\"dijit.form.Button\" onclick=\"return Helpers.editProfiles()\">".
+		print "<button dojoType=\"dijit.form.Button\" onclick=\"return Helpers.Profiles.edit()\">".
 			__('Manage profiles')."</button> ";
 
-		print "<button dojoType=\"dijit.form.Button\" class=\"alt-danger\" onclick=\"return Helpers.confirmReset()\">".
+		print "<button dojoType=\"dijit.form.Button\" class=\"alt-danger\" onclick=\"return Helpers.Prefs.confirmReset()\">".
 			__('Reset to defaults')."</button>";
 
 		print "&nbsp;";
@@ -968,7 +968,7 @@ class Pref_Prefs extends Handler_Protected {
 				if (count($tmppluginhost->get_all($plugin)) > 0) {
 					if (in_array($name, $system_enabled) || in_array($name, $user_enabled)) {
 						print " <button dojoType='dijit.form.Button'
-							onclick=\"Helpers.clearPluginData('$name')\">
+							onclick=\"Helpers.Prefs.clearPluginData('$name')\">
 								<i class='material-icons'>clear</i> ".__("Clear data")."</button>";
 					}
 				}

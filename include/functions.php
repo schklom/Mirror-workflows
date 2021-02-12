@@ -91,14 +91,8 @@
 		define('SUBSTRING_FOR_DATE', 'SUBSTRING');
 	}
 
-	/**
-	 * Return available translations names.
-	 *
-	 * @access public
-	 * @return array A array of available translations.
-	 */
 	function get_translations() {
-		$tr = array(
+		$t = array(
 					"auto"  => __("Detect automatically"),
 					"ar_SA" => "العربيّة (Arabic)",
 					"bg_BG" => "Bulgarian",
@@ -129,38 +123,76 @@
 					"fi_FI" => "Suomi",
 					"tr_TR" => "Türkçe");
 
-		return $tr;
+		return $t;
 	}
 
-	require_once "lib/accept-to-gettext.php";
 	require_once "lib/gettext/gettext.inc.php";
 
 	function startup_gettext() {
 
-		# Get locale from Accept-Language header
-		if (version_compare(PHP_VERSION, '8.0.0', '<')) {
-			$lang = al2gt(array_keys(get_translations()), "text/html");
-		} else {
-			$lang = ""; // FIXME: do something with accept-to-gettext.php
-		}
+		$selected_locale = "";
 
-		if (defined('_TRANSLATION_OVERRIDE_DEFAULT')) {
-			$lang = _TRANSLATION_OVERRIDE_DEFAULT;
-		}
+		// https://www.codingwithjesse.com/blog/use-accept-language-header/
+		if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+			$valid_langs = [];
+			$translations = array_keys(get_translations());
 
-		if (!empty($_SESSION["uid"]) && get_schema_version() >= 120) {
-			$pref_lang = get_pref("USER_LANGUAGE", $_SESSION["uid"]);
+			array_shift($translations); // remove "auto"
 
-			if ($pref_lang && $pref_lang != 'auto') {
-				$lang = $pref_lang;
+			// full locale first
+			foreach ($translations as $t) {
+				$lang = strtolower(str_replace("_", "-", (string)$t));
+				$valid_langs[$lang] = $t;
+
+				$lang = substr($lang, 0, 2);
+				if (!isset($valid_langs[$lang]))
+					$valid_langs[$lang] = $t;
+			}
+
+			// break up string into pieces (languages and q factors)
+			preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i',
+				$_SERVER['HTTP_ACCEPT_LANGUAGE'], $lang_parse);
+
+			if (count($lang_parse[1])) {
+				// create a list like "en" => 0.8
+				$langs = array_combine($lang_parse[1], $lang_parse[4]);
+
+				if (is_array($langs)) {
+					// set default to 1 for any without q factor
+					foreach ($langs as $lang => $val) {
+						if ($val === '') $langs[$lang] = 1;
+					}
+
+					// sort list based on value
+					arsort($langs, SORT_NUMERIC);
+
+					foreach (array_keys($langs) as $lang) {
+						$lang = strtolower($lang);
+
+						foreach ($valid_langs as $vlang => $vlocale) {
+							if ($vlang == $lang) {
+								$selected_locale = $vlocale;
+								break 2;
+							}
+						}
+					}
+				}
 			}
 		}
 
-		if ($lang) {
+		if (!empty($_SESSION["uid"]) && get_schema_version() >= 120) {
+			$pref_locale = get_pref("USER_LANGUAGE", $_SESSION["uid"]);
+
+			if (!empty($pref_locale) && $pref_locale != 'auto') {
+				$selected_locale = $pref_locale;
+			}
+		}
+
+		if ($selected_locale) {
 			if (defined('LC_MESSAGES')) {
-				_setlocale(LC_MESSAGES, $lang);
+				_setlocale(LC_MESSAGES, $selected_locale);
 			} else if (defined('LC_ALL')) {
-				_setlocale(LC_ALL, $lang);
+				_setlocale(LC_ALL, $selected_locale);
 			}
 
 			_bindtextdomain("messages", "locale");

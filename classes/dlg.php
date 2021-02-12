@@ -35,37 +35,6 @@ class Dlg extends Handler_Protected {
 		//return;
 	}
 
-	function explainError() {
-		print "<div class=\"errorExplained\">";
-
-		if ($this->param == 1) {
-			print __("Update daemon is enabled in configuration, but daemon process is not running, which prevents all feeds from updating. Please start the daemon process or contact instance owner.");
-
-			$stamp = (int) file_get_contents(LOCK_DIRECTORY . "/update_daemon.stamp");
-
-			print "<p>" . __("Last update:") . " " . date("Y.m.d, G:i", $stamp);
-
-		}
-
-		if ($this->param == 3) {
-			print __("Update daemon is taking too long to perform a feed update. This could indicate a problem like crash or a hang. Please check the daemon process or contact instance owner.");
-
-			$stamp = (int) file_get_contents(LOCK_DIRECTORY . "/update_daemon.stamp");
-
-			print "<p>" . __("Last update:") . " " . date("Y.m.d, G:i", $stamp);
-
-		}
-
-		print "</div>";
-
-		print "<footer class='text-center'>";
-		print "<button onclick=\"return CommonDialogs.closeInfoBox()\">".
-			__('Close this window')."</button>";
-		print "</footer>";
-
-		//return;
-	}
-
 	function printTagCloud() {
 		print "<div class='panel text-center'>";
 

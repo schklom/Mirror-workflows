@@ -433,7 +433,7 @@ const App = {
 				console.log("RI:", k, "=>", v);
 
 				if (k == "daemon_is_running" && v != 1) {
-					Notify.error("<span onclick=\"App.explainError(1)\">Update daemon is not running.</span>", true);
+					Notify.error("Update daemon is not running.", true);
 					return;
 				}
 
@@ -446,7 +446,7 @@ const App = {
 				}
 
 				if (k == "daemon_stamp_ok" && v != 1) {
-					Notify.error("<span onclick=\"App.explainError(3)\">Update daemon is not updating feeds.</span>", true);
+					Notify.error("Update daemon is not updating feeds.", true);
 					return;
 				}
 
@@ -529,9 +529,6 @@ const App = {
 		}
 
 		this.initSecondStage();
-	},
-	explainError: function(code) {
-		return this.displayDlg(__("Error explained"), "explainError", code);
 	},
 	Error: {
 		fatal: function (error, params) {

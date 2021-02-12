@@ -22,13 +22,7 @@
 	ini_set('session.use_cookies', 0);
 	ini_set("session.gc_maxlifetime", 86400);
 
-	if (defined('ENABLE_GZIP_OUTPUT') && ENABLE_GZIP_OUTPUT &&
-			function_exists("ob_gzhandler")) {
-
-		ob_start("ob_gzhandler");
-	} else {
-		ob_start();
-	}
+	ob_start();
 
 	$input = file_get_contents("php://input");
 

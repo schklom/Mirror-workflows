@@ -25,6 +25,15 @@ class Pref_System extends Handler_Protected {
 		$this->pdo->query("DELETE FROM ttrss_error_log");
 	}
 
+	function getphpinfo() {
+		ob_start();
+		phpinfo();
+		$info = ob_get_contents();
+		ob_end_clean();
+
+		print preg_replace( '%^.*<body>(.*)</body>.*$%ms','$1', $info);
+	}
+
 	private function log_viewer(int $page, int $severity) {
 		$errno_values = [];
 
@@ -167,14 +176,11 @@ class Pref_System extends Handler_Protected {
 		print "<div dojoType='dijit.layout.AccordionPane'
 			title='<i class=\"material-icons\">info</i> ".__('PHP Information')."'>";
 
-		ob_start();
-		phpinfo();
-		$info = ob_get_contents();
-		ob_end_clean();
+		print "<script type='dojo/method' event='onSelected' args='evt'>
+			Helpers.System.getPHPInfo(this);
+		</script>";
 
-		print "<div class='phpinfo'>";
-		print preg_replace( '%^.*<body>(.*)</body>.*$%ms','$1', $info);
-		print "</div>";
+		print "<div class='phpinfo'>" . __("Loading, please wait...") . "</div>";
 
 		print "</div>"; # accordion pane
 

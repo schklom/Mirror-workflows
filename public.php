@@ -16,10 +16,6 @@
 
 	if (!init_plugins()) return;
 
-	if (ENABLE_GZIP_OUTPUT && function_exists("ob_gzhandler")) {
-		ob_start("ob_gzhandler");
-	}
-
 	$method = $_REQUEST["op"];
 
 	$override = PluginHost::getInstance()->lookup_handler("public", $method);

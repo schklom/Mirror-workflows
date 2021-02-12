@@ -38,10 +38,6 @@
 
 	header("Content-Type: text/json; charset=utf-8");
 
-	if (ENABLE_GZIP_OUTPUT && function_exists("ob_gzhandler")) {
-		ob_start("ob_gzhandler");
-	}
-
 	if (SINGLE_USER_MODE) {
 		UserHelper::authenticate( "admin", null);
 	}

@@ -257,7 +257,7 @@ const	Filters = {
 				<ul class='panel panel-scrollable list list-unstyled' id='prefFilterTestResultList'></ul>
 
 				<footer class='text-center'>
-					<button dojoType='dijit.form.Button' onclick="dijit.byId('filterTestDlg').hide()"><?php echo __('Close this window') ?></button>
+					<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>${__('Close this window')}</button>
 				</footer>
 			`
 		});

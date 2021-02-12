@@ -50,53 +50,43 @@ msgstr "3 mēnešus vecs"
 msgid "Default interval"
 msgstr "Noklusētais intervāls"
 
-#: backend.php:69
-#: backend.php:79
+#: backend.php:69 backend.php:79
 msgid "Disable updates"
 msgstr "Atslēgt atjaunojumus"
 
-#: backend.php:70
-#: backend.php:80
+#: backend.php:70 backend.php:80
 #, fuzzy
 msgid "15 minutes"
 msgstr "Katras 15 minūtes"
 
-#: backend.php:71
-#: backend.php:81
+#: backend.php:71 backend.php:81
 #, fuzzy
 msgid "30 minutes"
 msgstr "Katras 30 minūtes"
 
-#: backend.php:72
-#: backend.php:82
+#: backend.php:72 backend.php:82
 msgid "Hourly"
 msgstr "Ik stundu"
 
-#: backend.php:73
-#: backend.php:83
+#: backend.php:73 backend.php:83
 #, fuzzy
 msgid "4 hours"
 msgstr "Katras 4 stundas"
 
-#: backend.php:74
-#: backend.php:84
+#: backend.php:74 backend.php:84
 #, fuzzy
 msgid "12 hours"
 msgstr "Katras 12 stundas"
 
-#: backend.php:75
-#: backend.php:85
+#: backend.php:75 backend.php:85
 msgid "Daily"
 msgstr "Ik dienas"
 
-#: backend.php:76
-#: backend.php:86
+#: backend.php:76 backend.php:86
 msgid "Weekly"
 msgstr "Ik nedēļu"
 
-#: backend.php:89
-#: classes/pref/system.php:109
-#: classes/pref/users.php:47
+#: backend.php:89 classes/pref/system.php:109 classes/pref/users.php:47
 msgid "User"
 msgstr "Lietotājs"
 
@@ -109,12 +99,20 @@ msgid "Administrator"
 msgstr "Administrators"
 
 #: errors.php:10
-msgid "This program requires XmlHttpRequest to function properly. Your browser doesn't seem to support it."
-msgstr "Lai šī programma strādātu pareizi, ir nepieciešams XmlHttpRequest atbalsts. Šķiet, ka jūsu pārlūkprogramma to neatbalsta."
+msgid ""
+"This program requires XmlHttpRequest to function properly. Your browser "
+"doesn't seem to support it."
+msgstr ""
+"Lai šī programma strādātu pareizi, ir nepieciešams XmlHttpRequest atbalsts. "
+"Šķiet, ka jūsu pārlūkprogramma to neatbalsta."
 
 #: errors.php:13
-msgid "This program requires cookies to function properly. Your browser doesn't seem to support them."
-msgstr "Lai šī programma strādātu pareizi, ir nepieciešams sīkfailu atbalsts. Šķiet, ka jūsu pārlūkprogramma tos neatbalsta."
+msgid ""
+"This program requires cookies to function properly. Your browser doesn't "
+"seem to support them."
+msgstr ""
+"Lai šī programma strādātu pareizi, ir nepieciešams sīkfailu atbalsts. Šķiet, "
+"ka jūsu pārlūkprogramma tos neatbalsta."
 
 #: errors.php:16
 msgid "Backend sanity check failed."
@@ -125,8 +123,12 @@ msgid "Frontend sanity check failed."
 msgstr "Neizdevās priekšpuses pareizības pārbaude."
 
 #: errors.php:20
-msgid "Incorrect database schema version. &lt;a href='db-updater.php'&gt;Please update&lt;/a&gt;."
-msgstr "Nepareiza datu bāzes shēmas versija. &lt;a href='db-updater.php'&gt;Lūdzu atjaunojiet&lt;/a&gt;."
+msgid ""
+"Incorrect database schema version. &lt;a href='db-updater.php'&gt;Please "
+"update&lt;/a&gt;."
+msgstr ""
+"Nepareiza datu bāzes shēmas versija. &lt;a href='db-updater.php'&gt;Lūdzu "
+"atjaunojiet&lt;/a&gt;."
 
 #: errors.php:22
 msgid "Request not authorized."
@@ -137,8 +139,12 @@ msgid "No operation to perform."
 msgstr "Nav veicamās darbības."
 
 #: errors.php:26
-msgid "Could not display feed: query failed. Please check label match syntax or local configuration."
-msgstr "Pieprasījums neizdevās un neizdevās parādīt barotni. Lūdzu pārbaudiet iezīmes sintaksi vai arī lokālos iestatījumus."
+msgid ""
+"Could not display feed: query failed. Please check label match syntax or "
+"local configuration."
+msgstr ""
+"Pieprasījums neizdevās un neizdevās parādīt barotni. Lūdzu pārbaudiet "
+"iezīmes sintaksi vai arī lokālos iestatījumus."
 
 #: errors.php:28
 msgid "Denied. Your access level is insufficient to access this page."
@@ -149,12 +155,17 @@ msgid "Configuration check failed"
 msgstr "Neizdevās iestatījumu pārbaude."
 
 #: errors.php:32
-msgid "Your version of MySQL is not currently supported. Please see official site for more information."
-msgstr "Jūsu izmantotā MySQL versija netiek atbalstīta. Lūdzu skatiet papildu informāciju oficiālajā vietnē."
+msgid ""
+"Your version of MySQL is not currently supported. Please see official site "
+"for more information."
+msgstr ""
+"Jūsu izmantotā MySQL versija netiek atbalstīta. Lūdzu skatiet papildu "
+"informāciju oficiālajā vietnē."
 
 #: errors.php:36
 msgid "SQL escaping test failed, check your database and PHP configuration"
-msgstr "Neizdevās SQL izņēmumu tests, pārbaudiet jūsu datu bāzes un PHP iestatījumus"
+msgstr ""
+"Neizdevās SQL izņēmumu tests, pārbaudiet jūsu datu bāzes un PHP iestatījumus"
 
 #: errors.php:38
 #, fuzzy
@@ -170,42 +181,20 @@ msgstr "Lietotājs netika atrasts"
 msgid "Encoding data as JSON failed"
 msgstr ""
 
-#: index.php:135
-#: index.php:150
-#: index.php:274
-#: prefs.php:120
-#: classes/pref/labels.php:281
-#: classes/pref/filters.php:755
-#: classes/pref/feeds.php:1297
-#: js/Article.js:257
-#: js/CommonDialogs.js:225
-#: js/CommonDialogs.js:320
-#: js/PrefFeedTree.js:363
-#: js/PrefFeedTree.js:409
-#: js/CommonDialogs.js:248
-#: js/CommonDialogs.js:364
-#: js/CommonDialogs.js:399
-#: js/Feeds.js:370
-#: js/Feeds.js:448
-#: js/Headlines.js:327
-#: js/PrefFeedTree.js:130
-#: js/PrefFeedTree.js:137
-#: js/PrefFeedTree.js:254
-#: js/PrefFeedTree.js:326
-#: js/PrefFilterTree.js:100
-#: js/PrefHelpers.js:27
-#: js/PrefHelpers.js:39
-#: js/PrefHelpers.js:78
-#: js/PrefHelpers.js:138
-#: js/PrefHelpers.js:219
-#: js/PrefLabelTree.js:116
-#: plugins/af_readability/init.js:17
+#: index.php:135 index.php:150 index.php:274 prefs.php:120
+#: classes/pref/labels.php:281 classes/pref/filters.php:755
+#: classes/pref/feeds.php:1297 js/Article.js:257 js/CommonDialogs.js:225
+#: js/CommonDialogs.js:320 js/PrefFeedTree.js:363 js/PrefFeedTree.js:409
+#: js/CommonDialogs.js:248 js/CommonDialogs.js:364 js/CommonDialogs.js:399
+#: js/Feeds.js:370 js/Feeds.js:448 js/Headlines.js:327 js/PrefFeedTree.js:130
+#: js/PrefFeedTree.js:137 js/PrefFeedTree.js:254 js/PrefFeedTree.js:326
+#: js/PrefFilterTree.js:100 js/PrefHelpers.js:27 js/PrefHelpers.js:39
+#: js/PrefHelpers.js:78 js/PrefHelpers.js:138 js/PrefHelpers.js:219
+#: js/PrefLabelTree.js:116 plugins/af_readability/init.js:17
 msgid "Loading, please wait..."
 msgstr "Ielādē, lūdzu gaidiet..."
 
-#: index.php:164
-#: js/App.js:379
-#: js/App.js:385
+#: index.php:164 js/App.js:379 js/App.js:385
 msgid "Communication problem with server."
 msgstr "Saziņas kļūda ar serveri."
 
@@ -229,18 +218,15 @@ msgstr "Adaptīvs"
 msgid "All Articles"
 msgstr "Visus rakstus"
 
-#: index.php:190
-#: classes/rpc.php:638
+#: index.php:190 classes/rpc.php:638
 msgid "Starred"
 msgstr "Zvaigžņotos"
 
-#: index.php:191
-#: classes/rpc.php:639
+#: index.php:191 classes/rpc.php:639
 msgid "Published"
 msgstr "Publicētos"
 
-#: index.php:192
-#: classes/feeds.php:69
+#: index.php:192 classes/feeds.php:69
 msgid "Unread"
 msgstr "Nelasītos"
 
@@ -272,12 +258,8 @@ msgstr "Vecāko vispirms"
 msgid "Title"
 msgstr "Virsraksts"
 
-#: index.php:216
-#: index.php:250
-#: classes/rpc.php:626
-#: classes/feeds.php:77
-#: js/FeedTree.js:89
-#: js/FeedTree.js:119
+#: index.php:216 index.php:250 classes/rpc.php:626 classes/feeds.php:77
+#: js/FeedTree.js:89 js/FeedTree.js:119
 msgid "Mark as read"
 msgstr "Atzīmēt kā lasītu"
 
@@ -309,8 +291,7 @@ msgstr "Meklēt..."
 msgid "Feed actions:"
 msgstr "Barotnes darbības"
 
-#: index.php:246
-#: classes/handler/public.php:786
+#: index.php:246 classes/handler/public.php:786
 msgid "Subscribe to feed..."
 msgstr "Abonēt barotni..."
 
@@ -318,9 +299,7 @@ msgstr "Abonēt barotni..."
 msgid "Edit this feed..."
 msgstr "Mainīt šo barotni..."
 
-#: index.php:248
-#: classes/pref/feeds.php:810
-#: classes/pref/feeds.php:1270
+#: index.php:248 classes/pref/feeds.php:810 classes/pref/feeds.php:1270
 #: js/PrefFeedTree.js:64
 msgid "Unsubscribe"
 msgstr "Dzēst"
@@ -337,8 +316,7 @@ msgstr "(Ne)rādīt lasītās barotnes"
 msgid "Other actions:"
 msgstr "Citas darbības:"
 
-#: index.php:253
-#: classes/rpc.php:612
+#: index.php:253 classes/rpc.php:612
 msgid "Toggle widescreen mode"
 msgstr "Pārslēgt platekrāna režīmu"
 
@@ -350,10 +328,7 @@ msgstr "Isinājumtaustiņu palīdzība"
 msgid "Logout"
 msgstr "Atteikties"
 
-#: prefs.php:27
-#: prefs.php:137
-#: classes/rpc.php:641
-#: classes/pref/prefs.php:567
+#: prefs.php:27 prefs.php:137 classes/rpc.php:641 classes/pref/prefs.php:567
 msgid "Preferences"
 msgstr "Iestatījumi"
 
@@ -365,22 +340,16 @@ msgstr "Īsinājumtaustiņi"
 msgid "Exit preferences"
 msgstr "Iziet no iestatījumiem"
 
-#: prefs.php:140
-#: classes/pref/prefs.php:28
-#: classes/pref/feeds.php:125
-#: classes/pref/feeds.php:1204
-#: classes/pref/feeds.php:1259
+#: prefs.php:140 classes/pref/prefs.php:28 classes/pref/feeds.php:125
+#: classes/pref/feeds.php:1204 classes/pref/feeds.php:1259
 msgid "Feeds"
 msgstr "Barotnes"
 
-#: prefs.php:144
-#: classes/pref/filters.php:228
+#: prefs.php:144 classes/pref/filters.php:228
 msgid "Filters"
 msgstr "Filtri"
 
-#: prefs.php:148
-#: classes/pref/labels.php:85
-#: classes/feeds.php:1431
+#: prefs.php:148 classes/pref/labels.php:85 classes/feeds.php:1431
 msgid "Labels"
 msgstr "Iezīmes"
 
@@ -392,19 +361,13 @@ msgstr "Lietotāji"
 msgid "System"
 msgstr "Sistēma"
 
-#: include/controls.php:93
-#: classes/pref/filters.php:197
-#: classes/pref/filters.php:208
-#: classes/pref/filters.php:502
+#: include/controls.php:93 classes/pref/filters.php:197
+#: classes/pref/filters.php:208 classes/pref/filters.php:502
 msgid "All feeds"
 msgstr "Visas barotnes"
 
-#: include/controls.php:146
-#: include/controls.php:238
-#: classes/pref/feeds.php:245
-#: classes/digest.php:122
-#: classes/opml.php:545
-#: classes/feeds.php:1443
+#: include/controls.php:146 include/controls.php:238 classes/pref/feeds.php:245
+#: classes/digest.php:122 classes/opml.php:545 classes/feeds.php:1443
 msgid "Uncategorized"
 msgstr "Nekategorizēts"
 
@@ -412,15 +375,12 @@ msgstr "Nekategorizēts"
 msgid "Detect automatically"
 msgstr ""
 
-#: include/login_form.php:108
-#: classes/handler/public.php:645
-#: classes/handler/public.php:980
-#: classes/pref/users.php:55
+#: include/login_form.php:108 classes/handler/public.php:645
+#: classes/handler/public.php:980 classes/pref/users.php:55
 msgid "Login:"
 msgstr "Pieteikties:"
 
-#: include/login_form.php:117
-#: classes/handler/public.php:652
+#: include/login_form.php:117 classes/handler/public.php:652
 msgid "Password:"
 msgstr "Parole:"
 
@@ -432,9 +392,7 @@ msgstr "Esmu aizmirsis paroli"
 msgid "Profile:"
 msgstr "Profils:"
 
-#: include/login_form.php:137
-#: classes/rpc.php:69
-#: classes/handler/public.php:274
+#: include/login_form.php:137 classes/rpc.php:69 classes/handler/public.php:274
 #: classes/pref/prefs.php:1216
 msgid "Default profile"
 msgstr "Noklusētais profils"
@@ -447,8 +405,7 @@ msgstr "Saspiest datu plūsmu"
 msgid "Does not display images in articles, reduces automatic refreshes."
 msgstr "Nerāda rakstu attēlus, samazina automātisko atjaunojumu izmēru."
 
-#: include/login_form.php:158
-#: js/Feeds.js:247
+#: include/login_form.php:158 js/Feeds.js:247
 msgid "Safe mode"
 msgstr ""
 
@@ -460,8 +417,7 @@ msgstr ""
 msgid "Remember me"
 msgstr "Atcerēties mani"
 
-#: include/login_form.php:180
-#: classes/handler/public.php:665
+#: include/login_form.php:180 classes/handler/public.php:665
 msgid "Log in"
 msgstr "Pieteikties"
 
@@ -545,21 +501,15 @@ msgstr "Atcelt meklēšanu"
 msgid "Article"
 msgstr "Raksts"
 
-#: classes/rpc.php:597
-#: classes/feeds.php:74
-#: js/Headlines.js:1243
+#: classes/rpc.php:597 classes/feeds.php:74 js/Headlines.js:1243
 msgid "Toggle starred"
 msgstr "Pārslēgt zvaigžņošanu"
 
-#: classes/rpc.php:598
-#: classes/feeds.php:75
-#: js/Headlines.js:1255
+#: classes/rpc.php:598 classes/feeds.php:75 js/Headlines.js:1255
 msgid "Toggle published"
 msgstr "Pārslēgt publicēšanu"
 
-#: classes/rpc.php:599
-#: classes/feeds.php:73
-#: js/Headlines.js:1230
+#: classes/rpc.php:599 classes/feeds.php:73 js/Headlines.js:1230
 msgid "Toggle unread"
 msgstr "Pārslēgt nelasītu"
 
@@ -571,13 +521,11 @@ msgstr "Mainīt iezīmes"
 msgid "Open in new window"
 msgstr "Atvērt jaunā logā"
 
-#: classes/rpc.php:602
-#: js/Headlines.js:1276
+#: classes/rpc.php:602 js/Headlines.js:1276
 msgid "Mark below as read"
 msgstr "Iezīmēt lejup kā lasītus"
 
-#: classes/rpc.php:603
-#: js/Headlines.js:1269
+#: classes/rpc.php:603 js/Headlines.js:1269
 msgid "Mark above as read"
 msgstr "Iezīmēt augšup kā lasītus"
 
@@ -647,9 +595,7 @@ msgstr "Apvērst izvēli"
 msgid "Deselect everything"
 msgstr "Neatzīmēt visu"
 
-#: classes/rpc.php:621
-#: classes/pref/feeds.php:527
-#: classes/pref/feeds.php:831
+#: classes/rpc.php:621 classes/pref/feeds.php:527 classes/pref/feeds.php:831
 msgid "Feed"
 msgstr "Barotne"
 
@@ -661,14 +607,11 @@ msgstr "Atjaunot tekošo barotni"
 msgid "Un/hide read feeds"
 msgstr "(Ne)rādīt lasītās barotnes"
 
-#: classes/rpc.php:624
-#: classes/pref/feeds.php:1262
+#: classes/rpc.php:624 classes/pref/feeds.php:1262
 msgid "Subscribe to feed"
 msgstr "Abonēt barotni"
 
-#: classes/rpc.php:625
-#: js/PrefFeedTree.js:58
-#: js/FeedTree.js:96
+#: classes/rpc.php:625 js/PrefFeedTree.js:58 js/FeedTree.js:96
 #: js/Headlines.js:1399
 msgid "Edit feed"
 msgstr "Mainīt barotni"
@@ -690,8 +633,7 @@ msgstr "Atkļūdot barotņu atjaunojumus"
 msgid "Debug viewfeed()"
 msgstr "Atkļūdot barotņu atjaunojumus"
 
-#: classes/rpc.php:631
-#: js/FeedTree.js:144
+#: classes/rpc.php:631 js/FeedTree.js:144
 msgid "Mark all feeds as read"
 msgstr "Atzīmēt visas barotnes kā lasītas"
 
@@ -711,8 +653,7 @@ msgstr "Pārslēgt kombinēto režīmu"
 msgid "Go to"
 msgstr "Doties uz"
 
-#: classes/rpc.php:636
-#: classes/feeds.php:1299
+#: classes/rpc.php:636 classes/feeds.php:1299
 msgid "All articles"
 msgstr "Visi raksti"
 
@@ -720,8 +661,7 @@ msgstr "Visi raksti"
 msgid "Fresh"
 msgstr "Svaigs"
 
-#: classes/rpc.php:640
-#: classes/feeds.php:1303
+#: classes/rpc.php:640 classes/feeds.php:1303
 msgid "Recently read"
 msgstr "Nesen lasītie raksti"
 
@@ -729,13 +669,11 @@ msgstr "Nesen lasītie raksti"
 msgid "Other"
 msgstr "Citi"
 
-#: classes/rpc.php:643
-#: classes/pref/labels.php:266
+#: classes/rpc.php:643 classes/pref/labels.php:266
 msgid "Create label"
 msgstr "Izveidot etiķeti"
 
-#: classes/rpc.php:644
-#: classes/pref/filters.php:734
+#: classes/rpc.php:644 classes/pref/filters.php:734
 msgid "Create filter"
 msgstr "Izveidot filtru"
 
@@ -755,16 +693,13 @@ msgstr "Shift"
 msgid "Ctrl"
 msgstr "Ctrl"
 
-#: classes/backend.php:86
-#: classes/pref/feeds.php:1514
-#: classes/pref/feeds.php:1573
-#: plugins/af_psql_trgm/init.php:112
+#: classes/backend.php:86 classes/pref/feeds.php:1514
+#: classes/pref/feeds.php:1573 plugins/af_psql_trgm/init.php:112
 #: plugins/share/init.php:133
 msgid "Close this window"
 msgstr "Aizvērt šo logu"
 
-#: classes/handler/public.php:524
-#: plugins/bookmarklets/init.php:41
+#: classes/handler/public.php:524 plugins/bookmarklets/init.php:41
 msgid "Share with Tiny Tiny RSS"
 msgstr "Kopīgot ar Tiny Tiny RSS"
 
@@ -772,8 +707,7 @@ msgstr "Kopīgot ar Tiny Tiny RSS"
 msgid "Title:"
 msgstr "Virsraksts:"
 
-#: classes/handler/public.php:602
-#: classes/pref/feeds.php:546
+#: classes/handler/public.php:602 classes/pref/feeds.php:546
 msgid "URL:"
 msgstr "URL:"
 
@@ -789,22 +723,13 @@ msgstr "Etiķetes:"
 msgid "Share"
 msgstr "Kopīgot"
 
-#: classes/handler/public.php:623
-#: classes/pref/labels.php:75
-#: classes/pref/prefs.php:1265
-#: classes/pref/filters.php:471
-#: classes/pref/filters.php:478
-#: classes/pref/filters.php:863
-#: classes/pref/filters.php:956
-#: classes/pref/users.php:116
-#: classes/pref/feeds.php:812
-#: classes/pref/feeds.php:978
-#: classes/pref/feeds.php:1668
-#: classes/feeds.php:736
-#: classes/feeds.php:778
-#: classes/article.php:187
-#: plugins/note/init.php:55
-#: plugins/mail/init.php:182
+#: classes/handler/public.php:623 classes/pref/labels.php:75
+#: classes/pref/prefs.php:1265 classes/pref/filters.php:471
+#: classes/pref/filters.php:478 classes/pref/filters.php:863
+#: classes/pref/filters.php:956 classes/pref/users.php:116
+#: classes/pref/feeds.php:812 classes/pref/feeds.php:978
+#: classes/pref/feeds.php:1668 classes/feeds.php:736 classes/feeds.php:778
+#: classes/article.php:187 plugins/note/init.php:55 plugins/mail/init.php:182
 msgid "Cancel"
 msgstr "Atcelt"
 
@@ -816,22 +741,16 @@ msgstr "Kopīgotais raksts parādīsies Publicēts barotnē"
 msgid "Incorrect username or password"
 msgstr "Nepareizs lietotāja vārds vai parole"
 
-#: classes/handler/public.php:801
-#: classes/pref/feeds.php:1667
+#: classes/handler/public.php:801 classes/pref/feeds.php:1667
 #: classes/feeds.php:733
 msgid "Subscribe"
 msgstr "Pasūtīt"
 
-#: classes/handler/public.php:804
-#: classes/handler/public.php:854
-#: classes/handler/public.php:878
-#: classes/handler/public.php:970
-#: classes/handler/public.php:1000
-#: classes/handler/public.php:1073
-#: classes/handler/public.php:1170
-#: classes/handler/public.php:1182
-#: classes/handler/public.php:1187
-#: classes/handler/public.php:1211
+#: classes/handler/public.php:804 classes/handler/public.php:854
+#: classes/handler/public.php:878 classes/handler/public.php:970
+#: classes/handler/public.php:1000 classes/handler/public.php:1073
+#: classes/handler/public.php:1170 classes/handler/public.php:1182
+#: classes/handler/public.php:1187 classes/handler/public.php:1211
 msgid "Return to Tiny Tiny RSS"
 msgstr "Atgriezties uz Tiny Tiny RSS"
 
@@ -879,8 +798,12 @@ msgstr "Parole atjaunošana"
 
 #: classes/handler/public.php:973
 #, fuzzy
-msgid "You will need to provide valid account name and email. Password reset link will be sent to your email address."
-msgstr "Jums būs nepieciešams norādīt darbojošos e-pasta kontu. Uz jūsu norādīto adresi tiks nosūtīta paroles pārstatīšanas saite."
+msgid ""
+"You will need to provide valid account name and email. Password reset link "
+"will be sent to your email address."
+msgstr ""
+"Jums būs nepieciešams norādīt darbojošos e-pasta kontu. Uz jūsu norādīto "
+"adresi tiks nosūtīta paroles pārstatīšanas saite."
 
 #: classes/handler/public.php:985
 msgid "Email:"
@@ -891,17 +814,16 @@ msgstr "E-pasts:"
 msgid "How much is %d + %d:"
 msgstr "Cik ir divi un divi:"
 
-#: classes/handler/public.php:999
-#: classes/pref/users.php:348
+#: classes/handler/public.php:999 classes/pref/users.php:348
 msgid "Reset password"
 msgstr "Atstatīt paroli"
 
 #: classes/handler/public.php:1011
 msgid "Some of the required form parameters are missing or incorrect."
-msgstr "Trūkst daži no obligātajiem parametriem, vai tie ir norādīti nepareizi."
+msgstr ""
+"Trūkst daži no obligātajiem parametriem, vai tie ir norādīti nepareizi."
 
-#: classes/handler/public.php:1015
-#: classes/handler/public.php:1080
+#: classes/handler/public.php:1015 classes/handler/public.php:1080
 msgid "Go back"
 msgstr "Doties atpakaļ"
 
@@ -911,7 +833,8 @@ msgstr "[tt-rss] paroles pārstatīšanas pieprasījums"
 
 #: classes/handler/public.php:1076
 msgid "Sorry, login and email combination not found."
-msgstr "Piedodiet, norādītā e-pasta un pieteikšanās kombinācija netika atrasta."
+msgstr ""
+"Piedodiet, norādītā e-pasta un pieteikšanās kombinācija netika atrasta."
 
 #: classes/handler/public.php:1099
 msgid "Your access level is insufficient to run this script."
@@ -942,14 +865,15 @@ msgstr ""
 #: classes/handler/public.php:1192
 #, fuzzy, php-format
 msgid "Tiny Tiny RSS database needs update to the latest version (%d to %d)."
-msgstr "Jūsu Tiny Tiny RSS datubāzi ir nepieciešams atjaunot uz jaunāko versiju (no <b>%d</b> uz <b>%d</b>)."
+msgstr ""
+"Jūsu Tiny Tiny RSS datubāzi ir nepieciešams atjaunot uz jaunāko versiju (no "
+"<b>%d</b> uz <b>%d</b>)."
 
 #: classes/handler/public.php:1204
 msgid "Perform updates"
 msgstr "Izpildīt atjaunojumus"
 
-#: classes/pref/labels.php:25
-#: classes/pref/filters.php:341
+#: classes/pref/labels.php:25 classes/pref/filters.php:341
 msgid "Caption"
 msgstr "Uzraksts"
 
@@ -965,18 +889,12 @@ msgstr "Pamats:"
 msgid "Background:"
 msgstr "Virspuse:"
 
-#: classes/pref/labels.php:73
-#: classes/pref/filters.php:469
-#: classes/pref/users.php:114
-#: classes/pref/feeds.php:811
-#: classes/pref/feeds.php:975
-#: classes/article.php:185
-#: plugins/af_psql_trgm/init.php:195
-#: plugins/note/init.php:53
-#: plugins/af_proxy_http/init.php:229
-#: plugins/mail/init.php:66
-#: plugins/af_readability/init.php:103
-#: plugins/nsfw/init.php:86
+#: classes/pref/labels.php:73 classes/pref/filters.php:469
+#: classes/pref/users.php:114 classes/pref/feeds.php:811
+#: classes/pref/feeds.php:975 classes/article.php:185
+#: plugins/af_psql_trgm/init.php:195 plugins/note/init.php:53
+#: plugins/af_proxy_http/init.php:229 plugins/mail/init.php:66
+#: plugins/af_readability/init.php:103 plugins/nsfw/init.php:86
 #: plugins/af_redditimgur/init.php:83
 msgid "Save"
 msgstr "Saglabāt"
@@ -986,51 +904,32 @@ msgstr "Saglabāt"
 msgid "Created label <b>%s</b>"
 msgstr "Izveidoju etiķeti <b>%s</b>"
 
-#: classes/pref/labels.php:257
-#: classes/pref/prefs.php:1178
-#: classes/pref/prefs.php:1289
-#: classes/pref/filters.php:349
-#: classes/pref/filters.php:406
-#: classes/pref/filters.php:725
-#: classes/pref/users.php:332
-#: classes/pref/feeds.php:1250
-#: classes/pref/feeds.php:1469
-#: classes/pref/feeds.php:1526
+#: classes/pref/labels.php:257 classes/pref/prefs.php:1178
+#: classes/pref/prefs.php:1289 classes/pref/filters.php:349
+#: classes/pref/filters.php:406 classes/pref/filters.php:725
+#: classes/pref/users.php:332 classes/pref/feeds.php:1250
+#: classes/pref/feeds.php:1469 classes/pref/feeds.php:1526
 msgid "Select"
 msgstr "Iezīmēt"
 
-#: classes/pref/labels.php:260
-#: classes/pref/prefs.php:1181
-#: classes/pref/prefs.php:1292
-#: classes/pref/filters.php:353
-#: classes/pref/filters.php:409
-#: classes/pref/filters.php:728
-#: classes/pref/users.php:335
-#: classes/pref/feeds.php:1253
-#: classes/pref/feeds.php:1472
-#: classes/pref/feeds.php:1529
-#: classes/feeds.php:68
+#: classes/pref/labels.php:260 classes/pref/prefs.php:1181
+#: classes/pref/prefs.php:1292 classes/pref/filters.php:353
+#: classes/pref/filters.php:409 classes/pref/filters.php:728
+#: classes/pref/users.php:335 classes/pref/feeds.php:1253
+#: classes/pref/feeds.php:1472 classes/pref/feeds.php:1529 classes/feeds.php:68
 msgid "All"
 msgstr "Visus"
 
-#: classes/pref/labels.php:262
-#: classes/pref/prefs.php:1183
-#: classes/pref/prefs.php:1294
-#: classes/pref/filters.php:355
-#: classes/pref/filters.php:411
-#: classes/pref/filters.php:730
-#: classes/pref/users.php:337
-#: classes/pref/feeds.php:1255
-#: classes/pref/feeds.php:1474
-#: classes/pref/feeds.php:1531
-#: classes/feeds.php:71
+#: classes/pref/labels.php:262 classes/pref/prefs.php:1183
+#: classes/pref/prefs.php:1294 classes/pref/filters.php:355
+#: classes/pref/filters.php:411 classes/pref/filters.php:730
+#: classes/pref/users.php:337 classes/pref/feeds.php:1255
+#: classes/pref/feeds.php:1474 classes/pref/feeds.php:1531 classes/feeds.php:71
 msgid "None"
 msgstr "Nevienu"
 
-#: classes/pref/labels.php:269
-#: classes/pref/filters.php:464
-#: classes/pref/filters.php:747
-#: classes/pref/users.php:346
+#: classes/pref/labels.php:269 classes/pref/filters.php:464
+#: classes/pref/filters.php:747 classes/pref/users.php:346
 #: classes/pref/feeds.php:794
 msgid "Remove"
 msgstr "Dzēst"
@@ -1039,8 +938,7 @@ msgstr "Dzēst"
 msgid "Clear colors"
 msgstr "Attīrīt krāsas"
 
-#: classes/pref/prefs.php:20
-#: classes/pref/feeds.php:519
+#: classes/pref/prefs.php:20 classes/pref/feeds.php:519
 msgid "General"
 msgstr "Vispārīgi"
 
@@ -1101,7 +999,9 @@ msgstr "Pārslēgt kombinēto režīmu"
 #: classes/pref/prefs.php:79
 #, fuzzy
 msgid "Show flat list of articles instead of separate panels"
-msgstr "Atsevišķa virsraksta un satura vietā parāda paplašinātu barotnes rakstu sarakstu"
+msgstr ""
+"Atsevišķa virsraksta un satura vietā parāda paplašinātu barotnes rakstu "
+"sarakstu"
 
 #: classes/pref/prefs.php:80
 #, fuzzy
@@ -1130,7 +1030,9 @@ msgstr "Ieslēgt īssavilkuma sūtīšanu pa e-pastu"
 #: classes/pref/prefs.php:84
 #, fuzzy
 msgid "Send daily digest of new (and unread) headlines to your e-mail address"
-msgstr "Šī iespēja ļauj nosūtīt ikdienas jauno (vai nelasīto) rakstu īssavilkumu uz norādīto e-pasta adresi"
+msgstr ""
+"Šī iespēja ļauj nosūtīt ikdienas jauno (vai nelasīto) rakstu īssavilkumu uz "
+"norādīto e-pasta adresi"
 
 #: classes/pref/prefs.php:85
 #, fuzzy
@@ -1190,8 +1092,12 @@ msgstr "Garais datumu formāts"
 
 #: classes/pref/prefs.php:92
 #, fuzzy
-msgid "Syntax is identical to PHP <a href='http://php.net/manual/function.date.php'>date()</a> function."
-msgstr "Izmantotā sintakse ir identiska PHP <a href='http://php.net/manual/function.date.php'>date()</a> funkcijai."
+msgid ""
+"Syntax is identical to PHP <a href='http://php.net/manual/function.date."
+"php'>date()</a> function."
+msgstr ""
+"Izmantotā sintakse ir identiska PHP <a href='http://php.net/manual/function."
+"date.php'>date()</a> funkcijai."
 
 #: classes/pref/prefs.php:93
 #, fuzzy
@@ -1235,15 +1141,15 @@ msgstr "Kārtot virsrakstus pēc barotnes laika"
 
 #: classes/pref/prefs.php:99
 msgid "Use feed-specified date to sort headlines instead of local import date."
-msgstr "Kārtošanai izmantot barotnē norādīto raksta laiku nevis tā importēšanas laiku"
+msgstr ""
+"Kārtošanai izmantot barotnē norādīto raksta laiku nevis tā importēšanas laiku"
 
 #: classes/pref/prefs.php:100
 #, fuzzy
 msgid "SSL client certificate"
 msgstr "Pieteikties ar SSL sertifikātu"
 
-#: classes/pref/prefs.php:101
-#: classes/pref/feeds.php:742
+#: classes/pref/prefs.php:101 classes/pref/feeds.php:742
 #: classes/pref/feeds.php:951
 #, fuzzy
 msgid "Do not embed media"
@@ -1257,8 +1163,7 @@ msgstr "Izdzrest nedrošos tagus no rakstiem"
 msgid "Strip all but most common HTML tags when reading articles."
 msgstr "Lasot rakstus, atmest visus, izņemot pašus svarīgākos HTML tagus."
 
-#: classes/pref/prefs.php:103
-#: js/PrefHelpers.js:159
+#: classes/pref/prefs.php:103 js/PrefHelpers.js:159
 msgid "Customize stylesheet"
 msgstr "Pielāgot stilu lapu"
 
@@ -1308,8 +1213,7 @@ msgstr "Personīgie dati"
 msgid "Full name:"
 msgstr "Vārds un uzvārds"
 
-#: classes/pref/prefs.php:320
-#: classes/pref/users.php:94
+#: classes/pref/prefs.php:320 classes/pref/users.php:94
 #, fuzzy
 msgid "E-mail:"
 msgstr "E-pasts:"
@@ -1323,11 +1227,8 @@ msgstr "Pieejas līmenis:"
 msgid "Save data"
 msgstr "Saglabāt datus"
 
-#: classes/pref/prefs.php:351
-#: classes/pref/feeds.php:678
-#: classes/pref/feeds.php:924
-#: classes/pref/feeds.php:1653
-#: classes/feeds.php:716
+#: classes/pref/prefs.php:351 classes/pref/feeds.php:678
+#: classes/pref/feeds.php:924 classes/pref/feeds.php:1653 classes/feeds.php:716
 msgid "Password"
 msgstr "Parole"
 
@@ -1340,8 +1241,7 @@ msgstr "Jūsu tekošās paroles maiņa izslēgs VLP."
 msgid "Old password:"
 msgstr "Vecā parole"
 
-#: classes/pref/prefs.php:398
-#: classes/pref/users.php:82
+#: classes/pref/prefs.php:398 classes/pref/users.php:82
 #, fuzzy
 msgid "New password:"
 msgstr "Jaunā parole"
@@ -1357,7 +1257,9 @@ msgstr "Nomainīt paroli"
 
 #: classes/pref/prefs.php:418
 #, php-format
-msgid "Authentication module used for this session (<b>%s</b>) does not provide an ability to set passwords."
+msgid ""
+"Authentication module used for this session (<b>%s</b>) does not provide an "
+"ability to set passwords."
 msgstr ""
 
 #: classes/pref/prefs.php:424
@@ -1379,8 +1281,7 @@ msgstr "Dzēst iezīmētos profilus"
 msgid "One time passwords / Authenticator"
 msgstr "Vienreizlietojamā parole/autentifikācija"
 
-#: classes/pref/prefs.php:474
-#: classes/pref/prefs.php:535
+#: classes/pref/prefs.php:474 classes/pref/prefs.php:535
 #, fuzzy
 msgid "Your password:"
 msgstr "Apstipriniet paroli"
@@ -1391,7 +1292,9 @@ msgstr "Atslēgt vienreizlietojamo paroli"
 
 #: classes/pref/prefs.php:494
 #, fuzzy
-msgid "Scan the following code by the Authenticator application or copy the key manually"
+msgid ""
+"Scan the following code by the Authenticator application or copy the key "
+"manually"
 msgstr "Ar autentifikācijas moduli noskenējiet sekojošo kodu:"
 
 #: classes/pref/prefs.php:500
@@ -1434,19 +1337,14 @@ msgstr "Papildu iespējas..."
 msgid "Register"
 msgstr "Reģistrēt"
 
-#: classes/pref/prefs.php:786
-#: classes/pref/system.php:85
+#: classes/pref/prefs.php:786 classes/pref/system.php:85
 msgid "Clear"
 msgstr "Attīrīt"
 
-#: classes/pref/prefs.php:790
-#: classes/pref/prefs.php:899
-#: classes/pref/prefs.php:933
-#: classes/pref/prefs.php:979
-#: classes/pref/prefs.php:994
-#: classes/pref/filters.php:857
-#: plugins/bookmarklets/init.php:45
-#: js/CommonDialogs.js:420
+#: classes/pref/prefs.php:790 classes/pref/prefs.php:899
+#: classes/pref/prefs.php:933 classes/pref/prefs.php:979
+#: classes/pref/prefs.php:994 classes/pref/filters.php:857
+#: plugins/bookmarklets/init.php:45 js/CommonDialogs.js:420
 #, fuzzy
 msgid "More info..."
 msgstr "papildu info"
@@ -1472,22 +1370,23 @@ msgstr "Pārvaldīt profilus"
 msgid "Reset to defaults"
 msgstr "Atstatīt uz noklusētajiem"
 
-#: classes/pref/prefs.php:850
-#: classes/pref/feeds.php:799
+#: classes/pref/prefs.php:850 classes/pref/feeds.php:799
 msgid "Plugins"
 msgstr "Spraudņi"
 
 #: classes/pref/prefs.php:897
 #, php-format
-msgid "The following plugins use per-feed content hooks. This may cause excessive data usage and origin server load resulting in a ban of your instance: <b>%s</b>"
+msgid ""
+"The following plugins use per-feed content hooks. This may cause excessive "
+"data usage and origin server load resulting in a ban of your instance: <b>"
+"%s</b>"
 msgstr ""
 
 #: classes/pref/prefs.php:903
 msgid "System plugins"
 msgstr "Sistēmas spraudņi"
 
-#: classes/pref/prefs.php:937
-#: classes/pref/prefs.php:983
+#: classes/pref/prefs.php:937 classes/pref/prefs.php:983
 #, php-format
 msgid "v%.2f, by %s"
 msgstr ""
@@ -1508,8 +1407,7 @@ msgstr "Ieslēgt izvēlētos spraudņus"
 msgid "Incorrect one time password"
 msgstr "Nepareiza vienreiz lietojamā parole"
 
-#: classes/pref/prefs.php:1093
-#: classes/pref/prefs.php:1147
+#: classes/pref/prefs.php:1093 classes/pref/prefs.php:1147
 msgid "Incorrect password"
 msgstr "Nepareiza parole"
 
@@ -1517,8 +1415,7 @@ msgstr "Nepareiza parole"
 msgid "Create profile"
 msgstr "Izveidot profilu"
 
-#: classes/pref/prefs.php:1211
-#: classes/pref/prefs.php:1231
+#: classes/pref/prefs.php:1211 classes/pref/prefs.php:1231
 msgid "(active)"
 msgstr "(aktīvs)"
 
@@ -1546,11 +1443,12 @@ msgstr "Pēdējais atjaunojums:"
 
 #: classes/pref/prefs.php:1357
 #, php-format
-msgid "Generated password <strong>%s</strong> for %s. Please remember it for future reference."
+msgid ""
+"Generated password <strong>%s</strong> for %s. Please remember it for future "
+"reference."
 msgstr ""
 
-#: classes/pref/system.php:10
-#: classes/pref/users.php:6
+#: classes/pref/system.php:10 classes/pref/users.php:6
 msgid "Your access level is insufficient to open this tab."
 msgstr "Jums nav pietiekamas pieejas tiesības, lai atvērtu šo cilni."
 
@@ -1614,29 +1512,24 @@ msgstr ""
 msgid "PHP Information"
 msgstr "Pielietot darbību"
 
-#: classes/pref/filters.php:219
-#: classes/pref/filters.php:522
+#: classes/pref/filters.php:219 classes/pref/filters.php:522
 msgid "(inverse)"
 msgstr "(apvērst)"
 
-#: classes/pref/filters.php:215
-#: classes/pref/filters.php:521
+#: classes/pref/filters.php:215 classes/pref/filters.php:521
 #, php-format
 msgid "%s on %s in %s %s"
 msgstr "%s uz %s iekš %s %s"
 
-#: classes/pref/filters.php:345
-#: classes/pref/filters.php:816
+#: classes/pref/filters.php:345 classes/pref/filters.php:816
 msgid "Match"
 msgstr "Atbilstība"
 
-#: classes/pref/filters.php:359
-#: classes/pref/filters.php:415
+#: classes/pref/filters.php:359 classes/pref/filters.php:415
 msgid "Add"
 msgstr "Pievienot"
 
-#: classes/pref/filters.php:361
-#: classes/pref/filters.php:417
+#: classes/pref/filters.php:361 classes/pref/filters.php:417
 msgid "Delete"
 msgstr "Dzēst"
 
@@ -1644,10 +1537,8 @@ msgstr "Dzēst"
 msgid "Apply actions"
 msgstr "Pielietot darbības"
 
-#: classes/pref/filters.php:445
-#: classes/pref/users.php:90
-#: classes/pref/feeds.php:695
-#: classes/pref/feeds.php:932
+#: classes/pref/filters.php:445 classes/pref/users.php:90
+#: classes/pref/feeds.php:695 classes/pref/feeds.php:932
 msgid "Options"
 msgstr "Iespējas"
 
@@ -1663,8 +1554,7 @@ msgstr "Atbilst jebkuram likumam"
 msgid "Inverse matching"
 msgstr "Ačgārnā atbilstība"
 
-#: classes/pref/filters.php:467
-#: classes/pref/filters.php:474
+#: classes/pref/filters.php:467 classes/pref/filters.php:474
 msgid "Test"
 msgstr "Pārbaudīt"
 
@@ -1672,11 +1562,8 @@ msgstr "Pārbaudīt"
 msgid "Create"
 msgstr "Izveidot"
 
-#: classes/pref/filters.php:721
-#: classes/pref/users.php:322
-#: classes/pref/feeds.php:1246
-#: classes/feeds.php:777
-#: js/Feeds.js:577
+#: classes/pref/filters.php:721 classes/pref/users.php:322
+#: classes/pref/feeds.php:1246 classes/feeds.php:777 js/Feeds.js:577
 msgid "Search"
 msgstr "Meklēt"
 
@@ -1684,13 +1571,11 @@ msgstr "Meklēt"
 msgid "Combine"
 msgstr "Apvienot"
 
-#: classes/pref/filters.php:740
-#: classes/pref/users.php:344
+#: classes/pref/filters.php:740 classes/pref/users.php:344
 msgid "Edit"
 msgstr "Mainīt"
 
-#: classes/pref/filters.php:743
-#: classes/pref/feeds.php:1266
+#: classes/pref/filters.php:743 classes/pref/feeds.php:1266
 #: classes/pref/feeds.php:1280
 msgid "Reset sort order"
 msgstr "Atstatīt kārtošanas secību"
@@ -1703,8 +1588,7 @@ msgstr "Ačgārna regulāro izteiksmju atbilstība"
 msgid "on field"
 msgstr "laukā"
 
-#: classes/pref/filters.php:839
-#: js/PrefFilterTree.js:47
+#: classes/pref/filters.php:839 js/PrefFilterTree.js:47
 msgid "in"
 msgstr "kur"
 
@@ -1712,8 +1596,7 @@ msgstr "kur"
 msgid "Save rule"
 msgstr "Saglabāt likumu"
 
-#: classes/pref/filters.php:860
-#: js/CommonFilters.js:97
+#: classes/pref/filters.php:860 js/CommonFilters.js:97
 msgid "Add rule"
 msgstr "Pievienot likumu"
 
@@ -1730,8 +1613,7 @@ msgstr "Ir pieejama jauna versija!"
 msgid "Save action"
 msgstr "Saglabāt darbību"
 
-#: classes/pref/filters.php:953
-#: js/CommonFilters.js:119
+#: classes/pref/filters.php:953 js/CommonFilters.js:119
 msgid "Add action"
 msgstr "Pievienot darbību"
 
@@ -1768,10 +1650,8 @@ msgstr[1] "%s (+%d darbības)"
 msgid "Edit user"
 msgstr "Mainīt likumu"
 
-#: classes/pref/users.php:63
-#: classes/pref/feeds.php:664
-#: classes/pref/feeds.php:910
-#: classes/pref/feeds.php:1649
+#: classes/pref/users.php:63 classes/pref/feeds.php:664
+#: classes/pref/feeds.php:910 classes/pref/feeds.php:1649
 #: plugins/auth_internal/init.php:68
 msgid "Authentication"
 msgstr "Autentifikācija"
@@ -1784,8 +1664,7 @@ msgstr "Pieejas līmenis:"
 msgid "User details"
 msgstr "Lietotāja detaļas"
 
-#: classes/pref/users.php:148
-#: classes/pref/users.php:381
+#: classes/pref/users.php:148 classes/pref/users.php:381
 msgid "Registered"
 msgstr "Reģistrēts"
 
@@ -1802,8 +1681,7 @@ msgstr "Pasūtīto barotņu skaits"
 msgid "Stored articles"
 msgstr "Zvaigžņotie raksti"
 
-#: classes/pref/users.php:162
-#: classes/pref/users.php:380
+#: classes/pref/users.php:162 classes/pref/users.php:380
 msgid "Subscribed feeds"
 msgstr "Pasūtītās barotnes"
 
@@ -1835,11 +1713,8 @@ msgstr "Izmainīta parole lietotājam no <b>%s</b> uz <b>%s</b>"
 msgid "Create user"
 msgstr "Izveidot lietotāju"
 
-#: classes/pref/users.php:378
-#: classes/pref/feeds.php:670
-#: classes/pref/feeds.php:916
-#: classes/pref/feeds.php:1652
-#: classes/feeds.php:712
+#: classes/pref/users.php:378 classes/pref/feeds.php:670
+#: classes/pref/feeds.php:916 classes/pref/feeds.php:1652 classes/feeds.php:712
 msgid "Login"
 msgstr "Pieteikšanās"
 
@@ -1867,10 +1742,8 @@ msgstr "Neatradu atbilstošus lietotājus."
 msgid "Check to enable field"
 msgstr "Iezīmējiet, lai ieslēgtu"
 
-#: classes/pref/feeds.php:75
-#: classes/pref/feeds.php:231
-#: classes/pref/feeds.php:279
-#: classes/pref/feeds.php:285
+#: classes/pref/feeds.php:75 classes/pref/feeds.php:231
+#: classes/pref/feeds.php:279 classes/pref/feeds.php:285
 #: classes/pref/feeds.php:314
 #, php-format
 msgid "(%d feed)"
@@ -1886,10 +1759,8 @@ msgstr "Barotnes virsraksts"
 msgid "Feed URL"
 msgstr "Barotnes URL"
 
-#: classes/pref/feeds.php:567
-#: classes/pref/feeds.php:840
-#: classes/pref/feeds.php:1640
-#: classes/feeds.php:686
+#: classes/pref/feeds.php:567 classes/pref/feeds.php:840
+#: classes/pref/feeds.php:1640 classes/feeds.php:686
 msgid "Place in category:"
 msgstr "Ievietot kategorijā:"
 
@@ -1903,26 +1774,21 @@ msgstr "Raksta vietrādis:"
 msgid "Site URL"
 msgstr "Barotnes URL"
 
-#: classes/pref/feeds.php:599
-#: classes/pref/feeds.php:855
-#: classes/feeds.php:761
+#: classes/pref/feeds.php:599 classes/pref/feeds.php:855 classes/feeds.php:761
 #, fuzzy
 msgid "Language:"
 msgstr "Valoda"
 
-#: classes/pref/feeds.php:608
-#: classes/pref/feeds.php:866
+#: classes/pref/feeds.php:608 classes/pref/feeds.php:866
 msgid "Update"
 msgstr "Atjaunot"
 
-#: classes/pref/feeds.php:617
-#: classes/pref/feeds.php:873
+#: classes/pref/feeds.php:617 classes/pref/feeds.php:873
 #, fuzzy
 msgid "Interval:"
 msgstr "Saskarne"
 
-#: classes/pref/feeds.php:633
-#: classes/pref/feeds.php:891
+#: classes/pref/feeds.php:633 classes/pref/feeds.php:891
 msgid "Article purging:"
 msgstr "Dzēšu rakstu:"
 
@@ -1933,8 +1799,7 @@ msgid_plural "(%d days)"
 msgstr[0] "(%d barotne)"
 msgstr[1] "(%d barotnes)"
 
-#: classes/pref/feeds.php:642
-#: classes/pref/feeds.php:899
+#: classes/pref/feeds.php:642 classes/pref/feeds.php:899
 #, fuzzy
 msgid "Disabled"
 msgstr "Atslēgt vienreizlietojamo paroli"
@@ -1947,31 +1812,30 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: classes/pref/feeds.php:682
-msgid "<b>Hint:</b> you need to fill in your login information if your feed requires authentication, except for Twitter feeds."
-msgstr "<b>Ieteikums:</b> ja jūsu barotnei ir nepieciešama autentifikācija, jums ir jāievada pieteikšanās informācija. Vienīgais izņēmums ir Twitter barotnes."
+msgid ""
+"<b>Hint:</b> you need to fill in your login information if your feed "
+"requires authentication, except for Twitter feeds."
+msgstr ""
+"<b>Ieteikums:</b> ja jūsu barotnei ir nepieciešama autentifikācija, jums ir "
+"jāievada pieteikšanās informācija. Vienīgais izņēmums ir Twitter barotnes."
 
-#: classes/pref/feeds.php:693
-#: classes/feeds.php:728
+#: classes/pref/feeds.php:693 classes/feeds.php:728
 msgid "This feed requires authentication."
 msgstr "Šim laukam ir nepieciešams autentificēties."
 
-#: classes/pref/feeds.php:711
-#: classes/pref/feeds.php:937
+#: classes/pref/feeds.php:711 classes/pref/feeds.php:937
 msgid "Include in e-mail digest"
 msgstr "Iekļaut e-pasta īssavilkumu"
 
-#: classes/pref/feeds.php:727
-#: classes/pref/feeds.php:944
+#: classes/pref/feeds.php:727 classes/pref/feeds.php:944
 msgid "Always display image attachments"
 msgstr "Vienmēr rādīt attēlu pielikumus"
 
-#: classes/pref/feeds.php:757
-#: classes/pref/feeds.php:958
+#: classes/pref/feeds.php:757 classes/pref/feeds.php:958
 msgid "Cache media"
 msgstr ""
 
-#: classes/pref/feeds.php:772
-#: classes/pref/feeds.php:965
+#: classes/pref/feeds.php:772 classes/pref/feeds.php:965
 msgid "Mark updated articles as unread"
 msgstr "Atzīmēt atjaunotos rakstus kā nelasītus"
 
@@ -1979,8 +1843,7 @@ msgstr "Atzīmēt atjaunotos rakstus kā nelasītus"
 msgid "Icon"
 msgstr "Ikona"
 
-#: classes/pref/feeds.php:784
-#: classes/pref/feeds.php:1347
+#: classes/pref/feeds.php:784 classes/pref/feeds.php:1347
 #, fuzzy
 msgid "Choose file..."
 msgstr "Izveidot filtru..."
@@ -2006,8 +1869,7 @@ msgstr "Neaktīvās barotnes"
 msgid "Edit selected feeds"
 msgstr "Mainīt izvēlētās barotnes"
 
-#: classes/pref/feeds.php:1268
-#: js/PrefFeedTree.js:348
+#: classes/pref/feeds.php:1268 js/PrefFeedTree.js:348
 msgid "Batch subscribe"
 msgstr "Pasūtījuma pakotne"
 
@@ -2028,8 +1890,12 @@ msgid "OPML"
 msgstr "OPML"
 
 #: classes/pref/feeds.php:1342
-msgid "Using OPML you can export and import your feeds, filters, labels and Tiny Tiny RSS settings."
-msgstr "Izmantojot OPML jūs varat eksportēt un importēt savas barotnes, filtrus, etiķetes un Tiny Tiny RSS iestatījumus."
+msgid ""
+"Using OPML you can export and import your feeds, filters, labels and Tiny "
+"Tiny RSS settings."
+msgstr ""
+"Izmantojot OPML jūs varat eksportēt un importēt savas barotnes, filtrus, "
+"etiķetes un Tiny Tiny RSS iestatījumus."
 
 #: classes/pref/feeds.php:1354
 #, fuzzy
@@ -2050,12 +1916,20 @@ msgid "Published OPML"
 msgstr "Publicētos"
 
 #: classes/pref/feeds.php:1375
-msgid "Your OPML can be published publicly and can be subscribed by anyone who knows the URL below."
-msgstr "Jūsu OPML var publicēt un to var abonēt katrs, kas zin zemāk minēto saiti."
+msgid ""
+"Your OPML can be published publicly and can be subscribed by anyone who "
+"knows the URL below."
+msgstr ""
+"Jūsu OPML var publicēt un to var abonēt katrs, kas zin zemāk minēto saiti."
 
 #: classes/pref/feeds.php:1377
-msgid "Published OPML does not include your Tiny Tiny RSS settings, feeds that require authentication or feeds hidden from Popular feeds."
-msgstr "Publicētajā OPML nav iekļauti: jūsu Tiny Tiny RSS iestatījumi, barotnes, kurās nepieciešams autentificēties un arī barotnes, kas ir paslēptas no populārajām barotnēm."
+msgid ""
+"Published OPML does not include your Tiny Tiny RSS settings, feeds that "
+"require authentication or feeds hidden from Popular feeds."
+msgstr ""
+"Publicētajā OPML nav iekļauti: jūsu Tiny Tiny RSS iestatījumi, barotnes, "
+"kurās nepieciešams autentificēties un arī barotnes, kas ir paslēptas no "
+"populārajām barotnēm."
 
 #: classes/pref/feeds.php:1380
 msgid "Display published OPML URL"
@@ -2067,11 +1941,12 @@ msgstr "Publicētie un kopīgotie raksti / sagatavotās barotnes"
 
 #: classes/pref/feeds.php:1389
 #, fuzzy
-msgid "Published articles can be subscribed by anyone who knows the following URL:"
-msgstr "Jūsu OPML var publicēt un to var abonēt katrs, kas zin zemāk minēto saiti."
+msgid ""
+"Published articles can be subscribed by anyone who knows the following URL:"
+msgstr ""
+"Jūsu OPML var publicēt un to var abonēt katrs, kas zin zemāk minēto saiti."
 
-#: classes/pref/feeds.php:1395
-#: classes/feeds.php:1295
+#: classes/pref/feeds.php:1395 classes/feeds.php:1295
 msgid "Published articles"
 msgstr "Publicētie raksti"
 
@@ -2083,27 +1958,26 @@ msgstr "Parādīt URL"
 msgid "Clear all generated URLs"
 msgstr "Attīrīt visus ģenerētos URL"
 
-#: classes/pref/feeds.php:1495
-#: classes/pref/feeds.php:1552
+#: classes/pref/feeds.php:1495 classes/pref/feeds.php:1552
 msgid "Click to edit feed"
 msgstr "Klikšķiniet, lai mainītu"
 
-#: classes/pref/feeds.php:1512
-#: classes/pref/feeds.php:1571
+#: classes/pref/feeds.php:1512 classes/pref/feeds.php:1571
 msgid "Unsubscribe from selected feeds"
 msgstr "Atcelt izvēlēto barotņu pasūtīšanu"
 
 #: classes/pref/feeds.php:1631
 #, fuzzy
 msgid "One valid feed per line (no detection is done)"
-msgstr "Pievienojiet vienu derīgu RSS barotni vienā rindā (barotnes netiek pārbaudītas)"
+msgstr ""
+"Pievienojiet vienu derīgu RSS barotni vienā rindā (barotnes netiek "
+"pārbaudītas)"
 
 #: classes/pref/feeds.php:1662
 msgid "Feeds require authentication."
 msgstr "Barotnēm nepieciešama autentifikācija"
 
-#: classes/opml.php:28
-#: classes/opml.php:32
+#: classes/opml.php:28 classes/opml.php:32
 msgid "OPML Utility"
 msgstr "OPML rīks"
 
@@ -2171,8 +2045,7 @@ msgstr "Kļūda: neizdevās atrast pārvietoto OPML failu."
 msgid "Error while parsing document."
 msgstr "Dokumenta apstrādes kļūda."
 
-#: classes/feeds.php:39
-#: js/CommonDialogs.js:409
+#: classes/feeds.php:39 js/CommonDialogs.js:409
 #, fuzzy
 msgid "Show as feed"
 msgstr "Šajā barotnē"
@@ -2200,9 +2073,7 @@ msgstr "Apgriezt"
 msgid "Set score"
 msgstr "Iestatīr vērtējumu"
 
-#: classes/feeds.php:82
-#: classes/feeds.php:87
-#: plugins/mail/init.php:76
+#: classes/feeds.php:82 classes/feeds.php:87 plugins/mail/init.php:76
 #: plugins/mailto/init.php:24
 msgid "Forward by email"
 msgstr "Pārsūtīt e-pastā"
@@ -2211,8 +2082,7 @@ msgstr "Pārsūtīt e-pastā"
 msgid "Delete permanently"
 msgstr ""
 
-#: classes/feeds.php:151
-#: classes/feeds.php:546
+#: classes/feeds.php:151 classes/feeds.php:546
 msgid "Feed not found."
 msgstr "Barotne netika atrasta."
 
@@ -2220,8 +2090,7 @@ msgstr "Barotne netika atrasta."
 msgid "Never"
 msgstr "Nekad"
 
-#: classes/feeds.php:277
-#: classes/feeds.php:1301
+#: classes/feeds.php:277 classes/feeds.php:1301
 msgid "Archived articles"
 msgstr "Arhivētie raksti"
 
@@ -2247,23 +2116,27 @@ msgid "No starred articles found to display."
 msgstr "Nav zvaigžņotu rakstu, ko rādīt."
 
 #: classes/feeds.php:447
-msgid "No articles found to display. You can assign articles to labels manually from article header context menu (applies to all selected articles) or use a filter."
-msgstr "Netika atrasti parādāmi raksti. Jūs varat pievienot rakstus etiķetēm manuāli (ir spēkā visiem atlasītajiem rakstiem), vai arī ar filtru."
+msgid ""
+"No articles found to display. You can assign articles to labels manually "
+"from article header context menu (applies to all selected articles) or use a "
+"filter."
+msgstr ""
+"Netika atrasti parādāmi raksti. Jūs varat pievienot rakstus etiķetēm manuāli "
+"(ir spēkā visiem atlasītajiem rakstiem), vai arī ar filtru."
 
 #: classes/feeds.php:449
 msgid "No articles found to display."
 msgstr "Netika atrasti raksti, ko rādīt."
 
-#: classes/feeds.php:466
-#: classes/feeds.php:622
+#: classes/feeds.php:466 classes/feeds.php:622
 #, php-format
 msgid "Feeds last updated at %s"
 msgstr "Barotnes pēdējo reizi atjaunotas %s."
 
-#: classes/feeds.php:478
-#: classes/feeds.php:634
+#: classes/feeds.php:478 classes/feeds.php:634
 msgid "Some feeds have update errors (click for details)"
-msgstr "Dažas barotnes ir atjaunotas ar kļūdām (klikšķiniet lai skatītu vairāk)"
+msgstr ""
+"Dažas barotnes ir atjaunotas ar kļūdām (klikšķiniet lai skatītu vairāk)"
 
 #: classes/feeds.php:611
 msgid "No feed selected."
@@ -2325,8 +2198,7 @@ msgstr "Raksts netika atrasts."
 msgid "Tags for this article (separated by commas):"
 msgstr "Šī raksta iezīmes (atdalītas ar komatiem):"
 
-#: classes/article.php:276
-#: classes/article.php:548
+#: classes/article.php:276 classes/article.php:548
 msgid "no tags"
 msgstr "nav iezīmju"
 
@@ -2354,8 +2226,7 @@ msgstr "Parole ir nomainīta."
 msgid "Old password is incorrect."
 msgstr "Vecā parole nav pareiza."
 
-#: plugins/vf_shared/init.php:17
-#: plugins/vf_shared/init.php:64
+#: plugins/vf_shared/init.php:17 plugins/vf_shared/init.php:64
 msgid "Shared articles"
 msgstr "Kopīgoti raksti"
 
@@ -2374,8 +2245,7 @@ msgstr "Kopīgoti raksti"
 msgid "Mark similar articles as read (af_psql_trgm)"
 msgstr "Vai atzīmēt visus rakstus kā lasītus?"
 
-#: plugins/af_psql_trgm/init.php:164
-#: plugins/af_readability/init.php:70
+#: plugins/af_psql_trgm/init.php:164 plugins/af_readability/init.php:70
 #, fuzzy
 msgid "Global settings"
 msgstr "Iekļaut iestatījumus"
@@ -2385,7 +2255,10 @@ msgid "Minimum similarity:"
 msgstr ""
 
 #: plugins/af_psql_trgm/init.php:176
-msgid "PostgreSQL trigram extension returns string similarity as a floating point number (0-1). Setting it too low might produce false positives, zero disables checking."
+msgid ""
+"PostgreSQL trigram extension returns string similarity as a floating point "
+"number (0-1). Setting it too low might produce false positives, zero "
+"disables checking."
 msgstr ""
 
 #: plugins/af_psql_trgm/init.php:181
@@ -2397,8 +2270,7 @@ msgstr ""
 msgid "Enable for all feeds:"
 msgstr "Ieslēgt barotņu kategorijas"
 
-#: plugins/af_psql_trgm/init.php:205
-#: plugins/af_readability/init.php:117
+#: plugins/af_psql_trgm/init.php:205 plugins/af_readability/init.php:117
 msgid "Currently enabled for (click to edit):"
 msgstr ""
 
@@ -2411,8 +2283,7 @@ msgstr ""
 msgid "Mark similar articles as read"
 msgstr "Vai atzīmēt visus rakstus kā lasītus?"
 
-#: plugins/note/init.php:26
-#: plugins/note/note.js:9
+#: plugins/note/init.php:26 plugins/note/note.js:9
 msgid "Edit article note"
 msgstr "Mainīt raksta piezīmes"
 
@@ -2425,8 +2296,7 @@ msgstr ""
 msgid "Enable proxy for all remote images."
 msgstr "Ieslēgt barotņu kategorijas"
 
-#: plugins/af_proxy_http/init.php:241
-#: plugins/af_redditimgur/init.php:98
+#: plugins/af_proxy_http/init.php:241 plugins/af_redditimgur/init.php:98
 #, fuzzy
 msgid "Configuration saved"
 msgstr "Iestatījumi ir saglabāti."
@@ -2441,17 +2311,16 @@ msgstr "E-pasta spraudnis"
 
 #: plugins/mail/init.php:38
 msgid "You can set predefined email addressed here (comma-separated list):"
-msgstr "Jūs varat šeit iestatīt iepriekšnoteiktas adreses (ar komatu atdalīts saraksts):"
+msgstr ""
+"Jūs varat šeit iestatīt iepriekšnoteiktas adreses (ar komatu atdalīts "
+"saraksts):"
 
-#: plugins/mail/init.php:120
-#: plugins/mail/init.php:128
-#: plugins/mailto/init.php:47
-#: plugins/mailto/init.php:55
+#: plugins/mail/init.php:120 plugins/mail/init.php:128
+#: plugins/mailto/init.php:47 plugins/mailto/init.php:55
 msgid "[Forwarded]"
 msgstr "[Pārsūtīts]"
 
-#: plugins/mail/init.php:120
-#: plugins/mailto/init.php:47
+#: plugins/mail/init.php:120 plugins/mailto/init.php:47
 msgid "Multiple articles"
 msgstr "Vairāki raksti"
 
@@ -2491,7 +2360,8 @@ msgid "Readability settings (af_readability)"
 msgstr ""
 
 #: plugins/af_readability/init.php:99
-msgid "Provide full-text services to core code (bookmarklets) and other plugins"
+msgid ""
+"Provide full-text services to core code (bookmarklets) and other plugins"
 msgstr ""
 
 #: plugins/af_readability/init.php:125
@@ -2517,8 +2387,12 @@ msgid "Bookmarklets"
 msgstr "Grāmatzīmes"
 
 #: plugins/bookmarklets/init.php:25
-msgid "Drag the link below to your browser toolbar, open the feed you're interested in in your browser and click on the link to subscribe to it."
-msgstr "Velciet zemāk minēto saiti uz jūsu pārlūkprogrammas rīku joslu, tad atveriet jūs interesējošo saiti un klikšķiniet uz tās, lai pasūtītu tās jaunumus"
+msgid ""
+"Drag the link below to your browser toolbar, open the feed you're interested "
+"in in your browser and click on the link to subscribe to it."
+msgstr ""
+"Velciet zemāk minēto saiti uz jūsu pārlūkprogrammas rīku joslu, tad atveriet "
+"jūs interesējošo saiti un klikšķiniet uz tās, lai pasūtītu tās jaunumus"
 
 #: plugins/bookmarklets/init.php:29
 #, php-format
@@ -2541,8 +2415,7 @@ msgstr "Ar af_comics atbalstītās barotnes"
 msgid "The following comics are currently supported:"
 msgstr "Šobrīd tiek atbalstīti sekojoši komiksi:"
 
-#: plugins/nsfw/init.php:30
-#: plugins/nsfw/init.php:42
+#: plugins/nsfw/init.php:30 plugins/nsfw/init.php:42
 msgid "Not work safe (click to toggle)"
 msgstr "Nav drošs darbam (klikšķiniet, lai pārslēgtu)"
 
@@ -2567,8 +2440,10 @@ msgid "Forward selected article(s) by email."
 msgstr "Pārsūtīt izvēlētos rakstus pa e-pastu."
 
 #: plugins/mailto/init.php:78
-msgid "You should be able to edit the message before sending in your mail client."
-msgstr "Jums vajadzētu spēt mainīt ziņu pirms nosūtīšanas jūsu e-pasta klientam."
+msgid ""
+"You should be able to edit the message before sending in your mail client."
+msgstr ""
+"Jums vajadzētu spēt mainīt ziņu pirms nosūtīšanas jūsu e-pasta klientam."
 
 #: plugins/mailto/init.php:83
 msgid "Close this dialog"
@@ -2632,15 +2507,9 @@ msgstr ""
 msgid "Please enter new score for selected articles:"
 msgstr "Ievadiet jauno vērtējumu izvēlētajiem rakstiem:"
 
-#: js/Article.js:62
-#: plugins/mail/mail.js:9
-#: plugins/mailto/init.js:9
-#: js/Headlines.js:767
-#: js/Headlines.js:793
-#: js/Headlines.js:805
-#: js/Headlines.js:933
-#: js/Headlines.js:951
-#: js/Headlines.js:969
+#: js/Article.js:62 plugins/mail/mail.js:9 plugins/mailto/init.js:9
+#: js/Headlines.js:767 js/Headlines.js:793 js/Headlines.js:805
+#: js/Headlines.js:933 js/Headlines.js:951 js/Headlines.js:969
 #: js/Headlines.js:1110
 #, fuzzy
 msgid "No articles selected."
@@ -2685,7 +2554,9 @@ msgid "Subscribe to Feed"
 msgstr "Pasūtīt barotni"
 
 #: js/CommonDialogs.js:116
-msgid "Failed to parse output. This can indicate server timeout and/or network issues. Backend output was logged to browser console."
+msgid ""
+"Failed to parse output. This can indicate server timeout and/or network "
+"issues. Backend output was logged to browser console."
 msgstr ""
 
 #: js/CommonDialogs.js:131
@@ -2724,16 +2595,12 @@ msgstr "Jūs jau esat pasūtījis šo barotni."
 msgid "Feeds with update errors"
 msgstr "Barotnes ar atjaunošanas kļūdām"
 
-#: js/CommonDialogs.js:201
-#: js/PrefFeedTree.js:387
+#: js/CommonDialogs.js:201 js/PrefFeedTree.js:387
 msgid "Remove selected feeds?"
 msgstr "Dzēst izvēlētās barotnes?"
 
-#: js/CommonDialogs.js:222
-#: js/PrefFeedTree.js:172
-#: js/PrefFeedTree.js:234
-#: js/PrefFeedTree.js:250
-#: js/PrefFeedTree.js:406
+#: js/CommonDialogs.js:222 js/PrefFeedTree.js:172 js/PrefFeedTree.js:234
+#: js/PrefFeedTree.js:250 js/PrefFeedTree.js:406
 #, fuzzy
 msgid "No feeds selected."
 msgstr "Nav izvēlēta barotne."
@@ -2742,16 +2609,12 @@ msgstr "Nav izvēlēta barotne."
 msgid "Please enter label caption:"
 msgstr "Lūdzu ievadiet etiķetes uzrakstu:"
 
-#: js/CommonDialogs.js:263
-#: js/CommonDialogs.js:299
-#: js/App.js:1160
+#: js/CommonDialogs.js:263 js/CommonDialogs.js:299 js/App.js:1160
 #, perl-format
 msgid "Unsubscribe from %s?"
 msgstr "Atteikt pasūtījumu %s?"
 
-#: js/CommonDialogs.js:289
-#: js/App.js:1012
-#: js/App.js:1140
+#: js/CommonDialogs.js:289 js/App.js:1012 js/App.js:1140
 msgid "You can't edit this kind of feed."
 msgstr "Jūs nevarat mainīt šāda veida barotni."
 
@@ -2804,8 +2667,11 @@ msgstr "Dzēst kategoriju"
 
 #: js/PrefFeedTree.js:144
 #, perl-format
-msgid "Remove category %s? Any nested feeds would be placed into Uncategorized."
-msgstr "Dzēst kategoriju %s? Visas iekļautās barotnes tiks pārvietotas uz Nekategorizēts kategoriju."
+msgid ""
+"Remove category %s? Any nested feeds would be placed into Uncategorized."
+msgstr ""
+"Dzēst kategoriju %s? Visas iekļautās barotnes tiks pārvietotas uz "
+"Nekategorizēts kategoriju."
 
 #: js/PrefFeedTree.js:157
 msgid "Unsubscribe from selected feeds?"
@@ -2849,9 +2715,7 @@ msgstr "Barotnes bez neseniem jaunumiem"
 msgid "Inverse"
 msgstr "Apgriezt"
 
-#: js/PrefFilterTree.js:110
-#: js/PrefFilterTree.js:126
-#: js/PrefFilterTree.js:156
+#: js/PrefFilterTree.js:110 js/PrefFilterTree.js:126 js/PrefFilterTree.js:156
 #, fuzzy
 msgid "No filters selected."
 msgstr "Nav izvēlēts filtrs."
@@ -2887,7 +2751,8 @@ msgid "Settings Profiles"
 msgstr "Profilu iestatījumi"
 
 #: js/PrefHelpers.js:97
-msgid "Remove selected profiles? Active and default profiles will not be removed."
+msgid ""
+"Remove selected profiles? Active and default profiles will not be removed."
 msgstr "Dzēst izvēlētos profilus? Aktīvie un noklusētie profili netiks dzēsti."
 
 #: js/PrefHelpers.js:112
@@ -2932,8 +2797,7 @@ msgstr "Klikšķiniet, lai aizvērtu"
 msgid "Related articles"
 msgstr "Dzēst rakstu"
 
-#: plugins/mail/mail.js:20
-#: plugins/mailto/init.js:20
+#: plugins/mail/mail.js:20 plugins/mailto/init.js:20
 msgid "Forward article by email"
 msgstr "Pārsūtīt rakstu pa e-pastu"
 
@@ -2955,7 +2819,9 @@ msgstr "Dzēst šī raksta kopīgojumu?"
 
 #: plugins/share/share_prefs.js:3
 msgid "This will invalidate all previously shared article URLs. Continue?"
-msgstr "Tas padarīs nederīgus visu iepriekš izveidoto kopīgoto rakstu URLus. Turpināt?"
+msgstr ""
+"Tas padarīs nederīgus visu iepriekš izveidoto kopīgoto rakstu URLus. "
+"Turpināt?"
 
 #: js/App.js:400
 msgid "Update daemon is not running."
@@ -2979,8 +2845,7 @@ msgstr "Lūdzu, vispirmi ieslēdziet e-pasta spraudni."
 msgid "Please enable af_readability first."
 msgstr "Lūdzu, vispirmi ieslēdziet e-pasta spraudni."
 
-#: js/App.js:1091
-#: js/App.js:1181
+#: js/App.js:1091 js/App.js:1181
 msgid "Widescreen is not available in combined mode."
 msgstr ""
 
@@ -3024,8 +2889,7 @@ msgstr "Augšuplāde neizdevās ar kļūdas kodu %d"
 msgid "Upload failed."
 msgstr ""
 
-#: js/CommonDialogs.js:202
-#: js/PrefFeedTree.js:388
+#: js/CommonDialogs.js:202 js/PrefFeedTree.js:388
 msgid "Removing selected feeds..."
 msgstr "Dzēš izvēlētās barotnes..."
 
@@ -3033,20 +2897,16 @@ msgstr "Dzēš izvēlētās barotnes..."
 msgid "Removing feed..."
 msgstr "Pārsauc barotni..."
 
-#: js/CommonDialogs.js:306
-#: js/CommonFilters.js:304
-#: js/PrefFeedTree.js:297
+#: js/CommonDialogs.js:306 js/CommonFilters.js:304 js/PrefFeedTree.js:297
 #: js/PrefUsers.js:36
 msgid "Saving data..."
 msgstr "Saglabā datus..."
 
-#: js/CommonDialogs.js:336
-#: js/PrefHelpers.js:287
+#: js/CommonDialogs.js:336 js/PrefHelpers.js:287
 msgid "Trying to change address..."
 msgstr "Mēģina izmainīt adresi..."
 
-#: js/CommonDialogs.js:356
-#: js/PrefHelpers.js:303
+#: js/CommonDialogs.js:356 js/PrefHelpers.js:303
 #, fuzzy
 msgid "Could not change feed URL."
 msgstr "Neizdevās izveidot lietotāju <b>%s</b>"
@@ -3083,7 +2943,9 @@ msgid "(Un)collapse"
 msgstr "Izvērst/sakļaut sānjoslu"
 
 #: js/Feeds.js:229
-msgid "You are using default tt-rss password. Please change it in the Preferences (Personal data / Authentication)."
+msgid ""
+"You are using default tt-rss password. Please change it in the Preferences "
+"(Personal data / Authentication)."
 msgstr ""
 
 #: js/Feeds.js:398
@@ -3128,9 +2990,7 @@ msgstr "Visi raksti"
 msgid "Mark all articles in %s as read?"
 msgstr "Vai atzīmēt visus rakstus %s kā lasītus?"
 
-#: js/Headlines.js:647
-#: js/Headlines.js:697
-#: js/Headlines.js:714
+#: js/Headlines.js:647 js/Headlines.js:697 js/Headlines.js:714
 msgid "Click to open next unread feed."
 msgstr "Klikšķiniet, lai atvērtu nākamo nelasīto barotni."
 
@@ -3238,8 +3098,7 @@ msgstr "Apvieno filtrus..."
 msgid "Removing selected filters..."
 msgstr "Dzēš izvēlētos filtrus..."
 
-#: js/PrefHelpers.js:45
-#: plugins/share/share_prefs.js:4
+#: js/PrefHelpers.js:45 plugins/share/share_prefs.js:4
 msgid "Clearing URLs..."
 msgstr "Attīra vietrāžus..."
 
@@ -3260,11 +3119,18 @@ msgstr "Izveido profilu..."
 
 #: js/PrefHelpers.js:175
 #, fuzzy
-msgid "You can override colors, fonts and layout of your currently selected theme with custom CSS declarations here."
-msgstr "Jūs varat aizstāt krāsas, fontus un izklājumu, šobrīd izmantotā CSS vietā izmantojot savus pielāgojumus. Paraugu varat ņemt no <a target=\"_blank\" class=\"visibleLink\" href=\"%s\">šī faila</a>."
+msgid ""
+"You can override colors, fonts and layout of your currently selected theme "
+"with custom CSS declarations here."
+msgstr ""
+"Jūs varat aizstāt krāsas, fontus un izklājumu, šobrīd izmantotā CSS vietā "
+"izmantojot savus pielāgojumus. Paraugu varat ņemt no <a target=\"_blank\" "
+"class=\"visibleLink\" href=\"%s\">šī faila</a>."
 
 #: js/PrefHelpers.js:184
-msgid "User CSS has been applied, you might need to reload the page to see all changes."
+msgid ""
+"User CSS has been applied, you might need to reload the page to see all "
+"changes."
 msgstr ""
 
 #: js/PrefHelpers.js:240
@@ -3272,8 +3138,12 @@ msgid "Importing, please wait..."
 msgstr "Importē, lūdzu gaidiet..."
 
 #: js/PrefHelpers.js:260
-msgid "If you have imported labels and/or filters, you might need to reload preferences to see your new data."
-msgstr "Ja esat importējis etiķetus vai filtrus, iespējams, ka jums nepieciešams pārlādēt iestatījumus, lai redzētu jaunos datus."
+msgid ""
+"If you have imported labels and/or filters, you might need to reload "
+"preferences to see your new data."
+msgstr ""
+"Ja esat importējis etiķetus vai filtrus, iespējams, ka jums nepieciešams "
+"pārlādēt iestatījumus, lai redzētu jaunos datus."
 
 #: js/PrefLabelTree.js:66
 msgid "Label Editor"
@@ -3283,8 +3153,7 @@ msgstr "Etiķešu redaktors"
 msgid "Reset selected labels to default colors?"
 msgstr "Atstatīt iezīmētās etiķetes uz noklusētajām krāsām?"
 
-#: js/PrefLabelTree.js:146
-#: js/PrefLabelTree.js:166
+#: js/PrefLabelTree.js:146 js/PrefLabelTree.js:166
 #, fuzzy
 msgid "No labels selected."
 msgstr "Nav izvēlēta etiķete."
@@ -3310,15 +3179,12 @@ msgstr "Pievieno lietotāju..."
 msgid "User Editor"
 msgstr "Lietotāja redaktors"
 
-#: js/PrefUsers.js:54
-#: js/PrefUsers.js:93
-#: js/PrefUsers.js:100
+#: js/PrefUsers.js:54 js/PrefUsers.js:93 js/PrefUsers.js:100
 #, fuzzy
 msgid "No users selected."
 msgstr "Nav izvēlēts lietotājs."
 
-#: js/PrefUsers.js:59
-#: js/PrefUsers.js:105
+#: js/PrefUsers.js:59 js/PrefUsers.js:105
 #, fuzzy
 msgid "Please select one user."
 msgstr "Lūdzu izvēlieties tikai vienu lietotāju."
@@ -3332,8 +3198,12 @@ msgid "Resetting password for selected user..."
 msgstr "Atstata izvēlētā lietotāja paroli..."
 
 #: js/PrefUsers.js:79
-msgid "Remove selected users? Neither default admin nor your account will be removed."
-msgstr "Dzēst izvēlētos lietotājus? Netiks dzēsts ne jūsu konts, ne arī noklusētais administratora konts."
+msgid ""
+"Remove selected users? Neither default admin nor your account will be "
+"removed."
+msgstr ""
+"Dzēst izvēlētos lietotājus? Netiks dzēsts ne jūsu konts, ne arī noklusētais "
+"administratora konts."
 
 #: js/PrefUsers.js:80
 msgid "Removing selected users..."
@@ -3371,8 +3241,14 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "New user registrations are administratively disabled."
 #~ msgstr "Jaunu lietotāju reģistrēšana ir administratīvi atcelta."
 
-#~ msgid "Your temporary password will be sent to the specified email. Accounts, which were not logged in once, are erased automatically 24 hours after temporary password is sent."
-#~ msgstr "Jūsu īslaicīgā parole tiks nosūtīta uz norādīto e-pastu. Konti, kuros ne neviens nav pieteicies, tiek automātiski izdzēsti 24 stundu laikā pēc īslaicīgās paroles nosūtīšanas."
+#~ msgid ""
+#~ "Your temporary password will be sent to the specified email. Accounts, "
+#~ "which were not logged in once, are erased automatically 24 hours after "
+#~ "temporary password is sent."
+#~ msgstr ""
+#~ "Jūsu īslaicīgā parole tiks nosūtīta uz norādīto e-pastu. Konti, kuros ne "
+#~ "neviens nav pieteicies, tiek automātiski izdzēsti 24 stundu laikā pēc "
+#~ "īslaicīgās paroles nosūtīšanas."
 
 #~ msgid "Desired login:"
 #~ msgstr "Vēlamais pieteikšanās vārds:"
@@ -3411,14 +3287,26 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "Tag cloud"
 #~ msgstr "Iezīmju mākonis"
 
-#~ msgid "Update daemon is enabled in configuration, but daemon process is not running, which prevents all feeds from updating. Please start the daemon process or contact instance owner."
-#~ msgstr "Atjaunošanas process iestatījumos ir ieslēgts, bet tas nedarbojas, tāpēc barotnes neatjaunojas. Lūdzu palaidiet atjaunošanas procesu vai arī sazinieties ar servera īpašnieku."
+#~ msgid ""
+#~ "Update daemon is enabled in configuration, but daemon process is not "
+#~ "running, which prevents all feeds from updating. Please start the daemon "
+#~ "process or contact instance owner."
+#~ msgstr ""
+#~ "Atjaunošanas process iestatījumos ir ieslēgts, bet tas nedarbojas, tāpēc "
+#~ "barotnes neatjaunojas. Lūdzu palaidiet atjaunošanas procesu vai arī "
+#~ "sazinieties ar servera īpašnieku."
 
 #~ msgid "Last update:"
 #~ msgstr "Pēdējais atjaunojums:"
 
-#~ msgid "Update daemon is taking too long to perform a feed update. This could indicate a problem like crash or a hang. Please check the daemon process or contact instance owner."
-#~ msgstr "Atjaunošanas process aizņem pārāk ilgu laiku. Iespējams, ka tas ir tāpēc, ka process ir \"uzkāries\". Lūdzu pārbaudiet atjaunošanas procesu vai arī sazinieties ar servera īpašnieku."
+#~ msgid ""
+#~ "Update daemon is taking too long to perform a feed update. This could "
+#~ "indicate a problem like crash or a hang. Please check the daemon process "
+#~ "or contact instance owner."
+#~ msgstr ""
+#~ "Atjaunošanas process aizņem pārāk ilgu laiku. Iespējams, ka tas ir tāpēc, "
+#~ "ka process ir \"uzkāries\". Lūdzu pārbaudiet atjaunošanas procesu vai arī "
+#~ "sazinieties ar servera īpašnieku."
 
 #, fuzzy
 #~ msgid "Open Preferences"
@@ -3446,8 +3334,12 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "More Feeds"
 #~ msgstr "Vairāk barotnes"
 
-#~ msgid "Remove selected feeds from the archive? Feeds with stored articles will not be removed."
-#~ msgstr "Dzēst izvēlētās barotnes no arhīva? Barotnes, kurās ir raksti, netiks dzēstas."
+#~ msgid ""
+#~ "Remove selected feeds from the archive? Feeds with stored articles will "
+#~ "not be removed."
+#~ msgstr ""
+#~ "Dzēst izvēlētās barotnes no arhīva? Barotnes, kurās ir raksti, netiks "
+#~ "dzēstas."
 
 #~ msgid "Edit Filter"
 #~ msgstr "Mainīt filtru"
@@ -3462,8 +3354,11 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgstr[0] "Pārvietot %d arhivēto rakstu atpakaļ?"
 #~ msgstr[1] "Pārvietot %d arhivētos rakstus atpakaļ?"
 
-#~ msgid "Please note that unstarred articles might get purged on next feed update."
-#~ msgstr "Lūdzu ņemiet vērā, ka nezvaigžņotie raksti pēc nākamā atjaunojuma var tikt dzēsti."
+#~ msgid ""
+#~ "Please note that unstarred articles might get purged on next feed update."
+#~ msgstr ""
+#~ "Lūdzu ņemiet vērā, ka nezvaigžņotie raksti pēc nākamā atjaunojuma var "
+#~ "tikt dzēsti."
 
 #, fuzzy
 #~ msgid "No file was uploaded"
@@ -3489,8 +3384,13 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "Import and export"
 #~ msgstr "Imports un eksports"
 
-#~ msgid "You can export and import your Starred and Archived articles for safekeeping or when migrating between tt-rss instances of same version."
-#~ msgstr "Jūs varat eksportēt un importēt jūsu zvaigžņotos un arhivētos rakstus, lai saglabātu tos, migrējot tt-rss versiju vai pārejot uz citu tt-rss instanci."
+#~ msgid ""
+#~ "You can export and import your Starred and Archived articles for "
+#~ "safekeeping or when migrating between tt-rss instances of same version."
+#~ msgstr ""
+#~ "Jūs varat eksportēt un importēt jūsu zvaigžņotos un arhivētos rakstus, "
+#~ "lai saglabātu tos, migrējot tt-rss versiju vai pārejot uz citu tt-rss "
+#~ "instanci."
 
 #~ msgid "Export my data"
 #~ msgstr "Eksportēt manus datus"
@@ -3538,10 +3438,18 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "Export Data"
 #~ msgstr "Eksportēt datus"
 
-#~ msgid "Finished, exported %d article. You can download the data <a class='visibleLink' href='%u'>here</a>."
-#~ msgid_plural "Finished, exported %d articles. You can download the data <a class='visibleLink' href='%u'>here</a>."
-#~ msgstr[0] "Pabeigts. Eksportēts %d raksts. Jūs varat lejuplādēt datus <a class='visibleLink' href='%u'>šeit</a>."
-#~ msgstr[1] "Pabeigts. Eksportēti %d raksti. Jūs varat lejuplādēt datus <a class='visibleLink' href='%u'>šeit</a>."
+#~ msgid ""
+#~ "Finished, exported %d article. You can download the data <a "
+#~ "class='visibleLink' href='%u'>here</a>."
+#~ msgid_plural ""
+#~ "Finished, exported %d articles. You can download the data <a "
+#~ "class='visibleLink' href='%u'>here</a>."
+#~ msgstr[0] ""
+#~ "Pabeigts. Eksportēts %d raksts. Jūs varat lejuplādēt datus <a "
+#~ "class='visibleLink' href='%u'>šeit</a>."
+#~ msgstr[1] ""
+#~ "Pabeigts. Eksportēti %d raksti. Jūs varat lejuplādēt datus <a "
+#~ "class='visibleLink' href='%u'>šeit</a>."
 
 #~ msgid "Data Import"
 #~ msgstr "Datu imports"
@@ -3578,8 +3486,12 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "Hide from Popular feeds"
 #~ msgstr "Nerādīt populārajās barotnēs"
 
-#~ msgid "These feeds have not been updated with new content for 3 months (oldest first):"
-#~ msgstr "Šajās barotnēs nav bijis jauns saturs vairāk kā 3 mēnešus (sākot ar vecākajām):"
+#~ msgid ""
+#~ "These feeds have not been updated with new content for 3 months (oldest "
+#~ "first):"
+#~ msgstr ""
+#~ "Šajās barotnēs nav bijis jauns saturs vairāk kā 3 mēnešus (sākot ar "
+#~ "vecākajām):"
 
 #~ msgid "Plugin"
 #~ msgstr "Spraudnis"
@@ -3611,7 +3523,9 @@ msgstr "Kopīgotie vietrāži attīrīti."
 
 #, fuzzy
 #~ msgid "Automatically opens next unread feed after marking one as read"
-#~ msgstr "Automātiski atver nākamo barotni, kad vienā visi raksti ir atzīmēti kā lasīti"
+#~ msgstr ""
+#~ "Automātiski atver nākamo barotni, kad vienā visi raksti ir atzīmēti kā "
+#~ "lasīti"
 
 #~ msgid "Other interface tips are available in the Tiny Tiny RSS wiki."
 #~ msgstr "Citi saskarnes padomi ir pieejami Tiny Tiny RSS viki vietnē."
@@ -3628,8 +3542,12 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "Interface"
 #~ msgstr "Saskarne"
 
-#~ msgid "When auto-detecting tags in articles these tags will not be applied (comma-separated list)."
-#~ msgstr "Automātiski nosakot rakstu tagus, šie tagi netiks lietoti (ar komatu atdalīts saraksts)."
+#~ msgid ""
+#~ "When auto-detecting tags in articles these tags will not be applied "
+#~ "(comma-separated list)."
+#~ msgstr ""
+#~ "Automātiski nosakot rakstu tagus, šie tagi netiks lietoti (ar komatu "
+#~ "atdalīts saraksts)."
 
 #~ msgid "Automatically mark articles as read"
 #~ msgstr "Automātiski atzīmēt rakstus kā izlasītus"
@@ -3662,8 +3580,11 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "Group headlines in virtual feeds"
 #~ msgstr "Apvienot virsrakstus virtuālās barotnēs"
 
-#~ msgid "Special feeds, labels, and categories are grouped by originating feeds"
-#~ msgstr "Īpašās barotnes, iezīmes un kategorijas tiek grupētas pēc izcelsmes barotnēm"
+#~ msgid ""
+#~ "Special feeds, labels, and categories are grouped by originating feeds"
+#~ msgstr ""
+#~ "Īpašās barotnes, iezīmes un kategorijas tiek grupētas pēc izcelsmes "
+#~ "barotnēm"
 
 #~ msgid "Feeds to subscribe, One per line"
 #~ msgstr "Pasūtāmās barotnes, pa vienai katrā rindā"
@@ -3671,11 +3592,19 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "Look for"
 #~ msgstr "Meklēt"
 
-#~ msgid "This option enables marking articles as read automatically while you scroll article list."
-#~ msgstr "Šī iespēja ļauj automātiski atzīmēt rakstu kā lasītu, jums pārtinot tā saturu."
+#~ msgid ""
+#~ "This option enables marking articles as read automatically while you "
+#~ "scroll article list."
+#~ msgstr ""
+#~ "Šī iespēja ļauj automātiski atzīmēt rakstu kā lasītu, jums pārtinot tā "
+#~ "saturu."
 
-#~ msgid "Shortest interval at which a feed will be checked for updates regardless of update method"
-#~ msgstr "Īsākais periods, pēc kura barotno tiks pārbaudīti jaunumi, neatkarīgi no atjaunošanas veida"
+#~ msgid ""
+#~ "Shortest interval at which a feed will be checked for updates regardless "
+#~ "of update method"
+#~ msgstr ""
+#~ "Īsākais periods, pēc kura barotno tiks pārbaudīti jaunumi, neatkarīgi no "
+#~ "atjaunošanas veida"
 
 #~ msgid "Uses UTC timezone"
 #~ msgstr "Izmanto UTC laika zonu"
@@ -3695,14 +3624,22 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "Access level"
 #~ msgstr "Pieejas līmenis"
 
-#~ msgid "One time passwords are currently enabled. Enter your current password below to disable."
-#~ msgstr "Vienreiz lietojamās paroles (VLP) šobrīd ir ieslēgtas. Lai izslēgtu, ievadiet jūsu pašreizējo paroli."
+#~ msgid ""
+#~ "One time passwords are currently enabled. Enter your current password "
+#~ "below to disable."
+#~ msgstr ""
+#~ "Vienreiz lietojamās paroles (VLP) šobrīd ir ieslēgtas. Lai izslēgtu, "
+#~ "ievadiet jūsu pašreizējo paroli."
 
 #~ msgid "Enter your password"
 #~ msgstr "Ievadiet savu paroli"
 
-#~ msgid "You will need a compatible Authenticator to use this. Changing your password would automatically disable OTP."
-#~ msgstr "Lai to lietotu, jums būs nepieciešams savietojams autentifikators. Jūsu paroles maiņa automātiski atslēgs vienreizlietojamo paroli."
+#~ msgid ""
+#~ "You will need a compatible Authenticator to use this. Changing your "
+#~ "password would automatically disable OTP."
+#~ msgstr ""
+#~ "Lai to lietotu, jums būs nepieciešams savietojams autentifikators. Jūsu "
+#~ "paroles maiņa automātiski atslēgs vienreizlietojamo paroli."
 
 #~ msgid "Enter the generated one time password"
 #~ msgstr "Ievadiet vienreiz lietojamo paroli:"
@@ -3718,7 +3655,9 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgstr "Jaunākie raksti"
 
 #~ msgid "Sorry, your browser does not support sandboxed iframes."
-#~ msgstr "Piedodiet, jūsu pārlūkprogramma neatbalsta iegultos rāmjus (iframe) smilšu kastē."
+#~ msgstr ""
+#~ "Piedodiet, jūsu pārlūkprogramma neatbalsta iegultos rāmjus (iframe) "
+#~ "smilšu kastē."
 
 #~ msgid " - "
 #~ msgstr "–"
@@ -3735,11 +3674,18 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "mark feed as read"
 #~ msgstr "atzīmēt barotni kā lasītu"
 
-#~ msgid "You will need to reload Tiny Tiny RSS for plugin changes to take effect."
-#~ msgstr "Lai tas sāktu strādāt, jums būs nepieciešams pārlādēt Tiny Tiny RSS spraudni."
+#~ msgid ""
+#~ "You will need to reload Tiny Tiny RSS for plugin changes to take effect."
+#~ msgstr ""
+#~ "Lai tas sāktu strādāt, jums būs nepieciešams pārlādēt Tiny Tiny RSS "
+#~ "spraudni."
 
-#~ msgid "Published articles are exported as a public RSS feed and can be subscribed by anyone who knows the URL specified below."
-#~ msgstr "Publicētie raksti tiek eksportēti kā publiskas RSS barotnes un tās var izmantot katrs, kas zina zemāk minēto saiti."
+#~ msgid ""
+#~ "Published articles are exported as a public RSS feed and can be "
+#~ "subscribed by anyone who knows the URL specified below."
+#~ msgstr ""
+#~ "Publicētie raksti tiek eksportēti kā publiskas RSS barotnes un tās var "
+#~ "izmantot katrs, kas zina zemāk minēto saiti."
 
 #~ msgid "Trying to unshare..."
 #~ msgstr "Mēģinu atkopīgot..."
@@ -3801,8 +3747,12 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "Firefox integration"
 #~ msgstr "Firefox integrācija"
 
-#~ msgid "This Tiny Tiny RSS site can be used as a Firefox Feed Reader by clicking the link below."
-#~ msgstr "Šo Tiny Tiny RSS vietni var izmantot kā Firefox Feed Reader, klikšķinot uz zemākās saites."
+#~ msgid ""
+#~ "This Tiny Tiny RSS site can be used as a Firefox Feed Reader by clicking "
+#~ "the link below."
+#~ msgstr ""
+#~ "Šo Tiny Tiny RSS vietni var izmantot kā Firefox Feed Reader, klikšķinot "
+#~ "uz zemākās saites."
 
 #~ msgid "Click here to register this site as a feed reader."
 #~ msgstr "Klikšķiniet šeit, lai reģistrētu šo vietni kā barotņu avotu."
@@ -3871,10 +3821,20 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgstr "Pārpasūtīt atjaunojumu grūšanu"
 
 #~ msgid "Resets PubSubHubbub subscription status for push-enabled feeds."
-#~ msgstr "Atstata PubSubHubbub pasūtījumu statusu barotnēm ar ieslēgtu atjaunojumu grūšanu."
+#~ msgstr ""
+#~ "Atstata PubSubHubbub pasūtījumu statusu barotnēm ar ieslēgtu atjaunojumu "
+#~ "grūšanu."
 
-#~ msgid "Download more plugins at tt-rss.org <a class=\"visibleLink\" target=\"_blank\" href=\"http://tt-rss.org/forum/viewforum.php?f=22\">forums</a> or <a target=\"_blank\" class=\"visibleLink\" href=\"http://tt-rss.org/wiki/Plugins\">wiki</a>."
-#~ msgstr "Lejuplādējiet citus spraudņus no tt-rss.org <a class=\"visibleLink\" target=\"_blank\" href=\"http://tt-rss.org/forum/viewforum.php?f=22\">forumiem</a> vai <a target=\"_blank\" class=\"visibleLink\" href=\"http://tt-rss.org/wiki/Plugins\">viki</a>."
+#~ msgid ""
+#~ "Download more plugins at tt-rss.org <a class=\"visibleLink\" target="
+#~ "\"_blank\" href=\"http://tt-rss.org/forum/viewforum.php?f=22\">forums</a> "
+#~ "or <a target=\"_blank\" class=\"visibleLink\" href=\"http://tt-rss.org/"
+#~ "wiki/Plugins\">wiki</a>."
+#~ msgstr ""
+#~ "Lejuplādējiet citus spraudņus no tt-rss.org <a class=\"visibleLink\" "
+#~ "target=\"_blank\" href=\"http://tt-rss.org/forum/viewforum.php?"
+#~ "f=22\">forumiem</a> vai <a target=\"_blank\" class=\"visibleLink\" href="
+#~ "\"http://tt-rss.org/wiki/Plugins\">viki</a>."
 
 #~ msgid "Linked"
 #~ msgstr "Saistīts"
@@ -3900,8 +3860,13 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "Link instance"
 #~ msgstr "Saites instance"
 
-#~ msgid "You can connect other instances of Tiny Tiny RSS to this one to share Popular feeds. Link to this instance of Tiny Tiny RSS by using this URL:"
-#~ msgstr "Jūs varat pievienot kopīgot populārās barotnes un pieslēgt tai citas Tiny Tiny RSS instances. Pievienoties šai Tiny Tiny RSS instancei var, izmantojot šo saiti:"
+#~ msgid ""
+#~ "You can connect other instances of Tiny Tiny RSS to this one to share "
+#~ "Popular feeds. Link to this instance of Tiny Tiny RSS by using this URL:"
+#~ msgstr ""
+#~ "Jūs varat pievienot kopīgot populārās barotnes un pieslēgt tai citas Tiny "
+#~ "Tiny RSS instances. Pievienoties šai Tiny Tiny RSS instancei var, "
+#~ "izmantojot šo saiti:"
 
 #~ msgid "Last connected"
 #~ msgstr "Pēdējo reizi pieteicies"
@@ -3915,8 +3880,12 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "Create link"
 #~ msgstr "Izveidot saiti"
 
-#~ msgid "Reset subscription? Tiny Tiny RSS will try to subscribe to the notification hub again on next feed update."
-#~ msgstr "Atstatīt pasūtīšanu? Tiny Tiny RSS mēģinās savākt informāciju no šīs barotnes kārtējā atjaunojuma laikā."
+#~ msgid ""
+#~ "Reset subscription? Tiny Tiny RSS will try to subscribe to the "
+#~ "notification hub again on next feed update."
+#~ msgstr ""
+#~ "Atstatīt pasūtīšanu? Tiny Tiny RSS mēģinās savākt informāciju no šīs "
+#~ "barotnes kārtējā atjaunojuma laikā."
 
 #~ msgid "Subscription reset."
 #~ msgstr "Barotnes pārstatīšana."
@@ -3945,8 +3914,14 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "Report to tt-rss.org"
 #~ msgstr "Ziņot tt-rss.org"
 
-#~ msgid "Are you sure to report this exception to tt-rss.org? The report will include information about your web browser and tt-rss configuration. Your IP will be saved in the database."
-#~ msgstr "Vai tiešām vēlaties ziņot par šo izņēmumu tt-rss.org? Ziņojumā tiks iekļauta informācija par jūsu pārlūkprogrammu, un jūsu IP adrese tiks saglabāta datu bāzē."
+#~ msgid ""
+#~ "Are you sure to report this exception to tt-rss.org? The report will "
+#~ "include information about your web browser and tt-rss configuration. Your "
+#~ "IP will be saved in the database."
+#~ msgstr ""
+#~ "Vai tiešām vēlaties ziņot par šo izņēmumu tt-rss.org? Ziņojumā tiks "
+#~ "iekļauta informācija par jūsu pārlūkprogrammu, un jūsu IP adrese tiks "
+#~ "saglabāta datu bāzē."
 
 #~ msgid "More..."
 #~ msgstr "Vairāk..."
@@ -3976,7 +3951,8 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgstr "Importēt zvaigžņotos vai kopīgotos rakstus no Google Reader"
 
 #~ msgid "Paste your starred.json or shared.json into the form below."
-#~ msgstr "Ievietojiet jūsu starred.json vai shared.json zemāk parādītajā formā."
+#~ msgstr ""
+#~ "Ievietojiet jūsu starred.json vai shared.json zemāk parādītajā formā."
 
 #~ msgid "Import my Starred items"
 #~ msgstr "Importēt manus zvaigžņotos rakstus"
@@ -4016,8 +3992,12 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "Limit search to:"
 #~ msgstr "Ierobežot meklēšanu:"
 
-#~ msgid "Complex expressions might not give results while testing due to issues with database server regexp implementation."
-#~ msgstr "Sarežģītas izteiksmes testējot var neatgriezt rezultātu sakarā ar datu bāzes vai servera regulāro izteiksmju implementāciju."
+#~ msgid ""
+#~ "Complex expressions might not give results while testing due to issues "
+#~ "with database server regexp implementation."
+#~ msgstr ""
+#~ "Sarežģītas izteiksmes testējot var neatgriezt rezultātu sakarā ar datu "
+#~ "bāzes vai servera regulāro izteiksmju implementāciju."
 
 #~ msgid "Old password cannot be blank."
 #~ msgstr "Vecā parole nedrīkst būt tukša"
@@ -4067,8 +4047,12 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "New version of Tiny Tiny RSS is available (%s)."
 #~ msgstr "Ir pieejama jauna Tiny Tiny RSS versija (%s)."
 
-#~ msgid "You can update using built-in updater in the Preferences or by using update.php"
-#~ msgstr "Jūs varat veikt atjaunojumus, izmantojot iestatījumos norādīto atjaunošanas procesu, vai arī atverot update.php lapu"
+#~ msgid ""
+#~ "You can update using built-in updater in the Preferences or by using "
+#~ "update.php"
+#~ msgstr ""
+#~ "Jūs varat veikt atjaunojumus, izmantojot iestatījumos norādīto "
+#~ "atjaunošanas procesu, vai arī atverot update.php lapu"
 
 #~ msgid "See the release notes"
 #~ msgstr "Skatiet laidiena piezīmes"
@@ -4077,7 +4061,9 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgstr "Lejuplādēt"
 
 #~ msgid "Error receiving version information or no new version available."
-#~ msgstr "Jauna versija nav pieejama, vai arī radās kļūda, saņemot versijas informāciju."
+#~ msgstr ""
+#~ "Jauna versija nav pieejama, vai arī radās kļūda, saņemot versijas "
+#~ "informāciju."
 
 #~ msgid "Update Tiny Tiny RSS"
 #~ msgstr "Atjaunot Tiny Tiny RSS"
@@ -4097,8 +4083,14 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "Your database will not be modified."
 #~ msgstr "Jūsu datubāze netiks mainīta."
 
-#~ msgid "Your current tt-rss installation directory will not be modified. It will be renamed and left in the parent directory. You will be able to migrate all your customized files after update finishes."
-#~ msgstr "Jūsu tekošā tt-rss mape netiks mainīta. Tā tiks pārsaukta un tiks atstāta vecākajā mapē. Jums būs iespēja migrēt jūsu pielāgotos failus pēc atjaunošanas beigām."
+#~ msgid ""
+#~ "Your current tt-rss installation directory will not be modified. It will "
+#~ "be renamed and left in the parent directory. You will be able to migrate "
+#~ "all your customized files after update finishes."
+#~ msgstr ""
+#~ "Jūsu tekošā tt-rss mape netiks mainīta. Tā tiks pārsaukta un tiks atstāta "
+#~ "vecākajā mapē. Jums būs iespēja migrēt jūsu pielāgotos failus pēc "
+#~ "atjaunošanas beigām."
 
 #~ msgid "Ready to update."
 #~ msgstr "Gatavs atjaunošanai."
@@ -4106,8 +4098,12 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "Start update"
 #~ msgstr "Sākt atjaunošanu"
 
-#~ msgid "Backup your tt-rss directory before continuing. Please type 'yes' to continue."
-#~ msgstr "Lūdzu, pirms turpināt izveidojiet jūsu tt-rss rezerves kopiju. Ievadiet 'yes', lai turpinātu."
+#~ msgid ""
+#~ "Backup your tt-rss directory before continuing. Please type 'yes' to "
+#~ "continue."
+#~ msgstr ""
+#~ "Lūdzu, pirms turpināt izveidojiet jūsu tt-rss rezerves kopiju. Ievadiet "
+#~ "'yes', lai turpinātu."
 
 #~ msgid "From:"
 #~ msgstr "No:"
@@ -4145,7 +4141,9 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgstr "Šīs barotnes netika atjaunotas sekojošu kļūdu dēļ:"
 
 #, fuzzy
-#~ msgid "Your browser doesn't support Javascript, which is required for this application to function properly. Please check your browser settings."
+#~ msgid ""
+#~ "Your browser doesn't support Javascript, which is required for this "
+#~ "application to function properly. Please check your browser settings."
 #~ msgstr ""
 #~ "Jūsu pārlūkprogramma neatbalsta Javascript, kas ir nepieciešams\n"
 #~ "\t\t\tlai šī programma strādātu pareizi. Lūdzu pārbaudiet savas\n"
@@ -4239,9 +4237,12 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgstr "Atskaņo..."
 
 #, fuzzy
-#~ msgid "Could not upload file. You might need to adjust upload_max_filesize in PHP.ini (current value = %s)"
+#~ msgid ""
+#~ "Could not upload file. You might need to adjust upload_max_filesize in "
+#~ "PHP.ini (current value = %s)"
 #~ msgstr ""
-#~ "Neizdevās augšuplādēt failu. Iespējams, jums ir jāpielāgo upload_max_filesize iestatījums\n"
+#~ "Neizdevās augšuplādēt failu. Iespējams, jums ir jāpielāgo "
+#~ "upload_max_filesize iestatījums\n"
 #~ "\t\t\t\tPHP.ini failā (tekošā vērtība = %s)"
 
 #~ msgid "Default interval between feed updates"
@@ -4270,7 +4271,8 @@ msgstr "Kopīgotie vietrāži attīrīti."
 
 #, fuzzy
 #~ msgid "Finished. Performed <b>%d</b> update up to schema version <b>%d</b>."
-#~ msgid_plural "Finished. Performed <b>%d</b> updates up to schema version <b>%d</b>."
+#~ msgid_plural ""
+#~ "Finished. Performed <b>%d</b> updates up to schema version <b>%d</b>."
 #~ msgstr[0] ""
 #~ "Pabeigts. Izpildīju <b>%d</b> shēmas atjaunojumu(s)\n"
 #~ "\t\t\tversija <b>%d</b>."
@@ -4284,14 +4286,22 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "Found schema version: <b>%d</b>, required: <b>%d</b>."
 #~ msgstr "Atradu shēmu ar versiju: <b>%d</b>, nepieciešama: <b>%d</b>."
 
-#~ msgid "Schema upgrade impossible. Please update Tiny Tiny RSS files to the newer version and continue."
-#~ msgstr "Nav iespējams veikt shēmas atjaunošanu. Lūdzu, pirms turpiniet, atjaunojiet Tiny Tiny RSS failus uz jaunāku versiju."
+#~ msgid ""
+#~ "Schema upgrade impossible. Please update Tiny Tiny RSS files to the newer "
+#~ "version and continue."
+#~ msgstr ""
+#~ "Nav iespējams veikt shēmas atjaunošanu. Lūdzu, pirms turpiniet, "
+#~ "atjaunojiet Tiny Tiny RSS failus uz jaunāku versiju."
 
 #~ msgid "Enable external API"
 #~ msgstr "Ieslēgt ārēju API"
 
-#~ msgid "When this option is enabled, headlines in Special feeds and Labels are grouped by feeds"
-#~ msgstr "Ja šī iespēja ir ieslēgta, īpašo barotņu un iezīmju virsraksti tiek grupēti pēc barotnēm"
+#~ msgid ""
+#~ "When this option is enabled, headlines in Special feeds and Labels are "
+#~ "grouped by feeds"
+#~ msgstr ""
+#~ "Ja šī iespēja ir ieslēgta, īpašo barotņu un iezīmju virsraksti tiek "
+#~ "grupēti pēc barotnēm"
 
 #~ msgid "Title or Content"
 #~ msgstr "Virsraksts vai saturs"
@@ -4314,8 +4324,14 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "Modify score"
 #~ msgstr "Mainīt novērtējumu"
 
-#~ msgid "This option is useful when you are reading several planet-type aggregators with partially colliding userbase. When disabled, it forces same posts from different feeds to appear only once."
-#~ msgstr "Šī ir vērtīga iespēja, ja izmantojat planētas tipa agregatorus ar parklājošiem datiem. Kad tas ir atslēgts, tas no visām līdzīgām barotnēm parāda tikai vienu unikālu rakstu."
+#~ msgid ""
+#~ "This option is useful when you are reading several planet-type "
+#~ "aggregators with partially colliding userbase. When disabled, it forces "
+#~ "same posts from different feeds to appear only once."
+#~ msgstr ""
+#~ "Šī ir vērtīga iespēja, ja izmantojat planētas tipa agregatorus ar "
+#~ "parklājošiem datiem. Kad tas ir atslēgts, tas no visām līdzīgām barotnēm "
+#~ "parāda tikai vienu unikālu rakstu."
 
 #~ msgid "Date syntax appears to be correct:"
 #~ msgstr "Datuma sintakse ir pareiza:"
@@ -4367,14 +4383,17 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "Back to feeds"
 #~ msgstr "Atpakaļ uz barotnēm"
 
-#~ msgid "This will clear your stored authentication information for Twitter. Continue?"
+#~ msgid ""
+#~ "This will clear your stored authentication information for Twitter. "
+#~ "Continue?"
 #~ msgstr "Tas izdēsīs jūsu Twitter autentifikācijas informāciju. Turpināt?"
 
 #~ msgid "Updated"
 #~ msgstr "Atjaunotos"
 
 #~ msgid "Finished: %d articles processed, %d imported, %d feeds created."
-#~ msgstr "Pabeigts: %d apstrādāti raksti, %d importēti, %d izveidotas barotnes."
+#~ msgstr ""
+#~ "Pabeigts: %d apstrādāti raksti, %d importēti, %d izveidotas barotnes."
 
 #~ msgid "Related"
 #~ msgstr "Saistīts"
@@ -4436,8 +4455,12 @@ msgstr "Kopīgotie vietrāži attīrīti."
 #~ msgid "Focus search (if present)"
 #~ msgstr "Fokusēt meklēšanu (ja ir)"
 
-#~ msgid "<b>Note:</b> not all actions may be available, depending on Tiny Tiny RSS configuration and your access level."
-#~ msgstr "<b>Piezīme:</b> iespējams, ka visas darbības nav pieejamas, atkarībā no Tiny Tiny RSS iestatījumiem un jūsu pieejas tiesībām."
+#~ msgid ""
+#~ "<b>Note:</b> not all actions may be available, depending on Tiny Tiny RSS "
+#~ "configuration and your access level."
+#~ msgstr ""
+#~ "<b>Piezīme:</b> iespējams, ka visas darbības nav pieejamas, atkarībā no "
+#~ "Tiny Tiny RSS iestatījumiem un jūsu pieejas tiesībām."
 
 #~ msgid "Fatal: authentication module %s not found."
 #~ msgstr "Fatāla kļūda: netika atrasts autentifikācijas modulis %s."

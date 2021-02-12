@@ -44,53 +44,43 @@ msgstr "3 μηνών"
 msgid "Default interval"
 msgstr "Προκαθορισμένο διάστημα"
 
-#: backend.php:69
-#: backend.php:79
+#: backend.php:69 backend.php:79
 msgid "Disable updates"
 msgstr "Απενεργοποίηση ενημερώσεων"
 
-#: backend.php:70
-#: backend.php:80
+#: backend.php:70 backend.php:80
 #, fuzzy
 msgid "15 minutes"
 msgstr "Κάθε 15 λεπτά"
 
-#: backend.php:71
-#: backend.php:81
+#: backend.php:71 backend.php:81
 #, fuzzy
 msgid "30 minutes"
 msgstr "Κάθε 30 λεπτά"
 
-#: backend.php:72
-#: backend.php:82
+#: backend.php:72 backend.php:82
 msgid "Hourly"
 msgstr "Ωριαία"
 
-#: backend.php:73
-#: backend.php:83
+#: backend.php:73 backend.php:83
 #, fuzzy
 msgid "4 hours"
 msgstr "Κάθε 4 ώρες"
 
-#: backend.php:74
-#: backend.php:84
+#: backend.php:74 backend.php:84
 #, fuzzy
 msgid "12 hours"
 msgstr "Κάθε 12 ώρες"
 
-#: backend.php:75
-#: backend.php:85
+#: backend.php:75 backend.php:85
 msgid "Daily"
 msgstr "Καθημερινά"
 
-#: backend.php:76
-#: backend.php:86
+#: backend.php:76 backend.php:86
 msgid "Weekly"
 msgstr "Εβδομαδιαία"
 
-#: backend.php:89
-#: classes/pref/system.php:109
-#: classes/pref/users.php:47
+#: backend.php:89 classes/pref/system.php:109 classes/pref/users.php:47
 msgid "User"
 msgstr "Χρήστης"
 
@@ -103,11 +93,15 @@ msgid "Administrator"
 msgstr "Διαχειριστής"
 
 #: errors.php:10
-msgid "This program requires XmlHttpRequest to function properly. Your browser doesn't seem to support it."
+msgid ""
+"This program requires XmlHttpRequest to function properly. Your browser "
+"doesn't seem to support it."
 msgstr ""
 
 #: errors.php:13
-msgid "This program requires cookies to function properly. Your browser doesn't seem to support them."
+msgid ""
+"This program requires cookies to function properly. Your browser doesn't "
+"seem to support them."
 msgstr ""
 
 #: errors.php:16
@@ -119,7 +113,9 @@ msgid "Frontend sanity check failed."
 msgstr "Απέτυχε ο έλεγχος υγιεινής μπροστινού άκρου."
 
 #: errors.php:20
-msgid "Incorrect database schema version. &lt;a href='db-updater.php'&gt;Please update&lt;/a&gt;."
+msgid ""
+"Incorrect database schema version. &lt;a href='db-updater.php'&gt;Please "
+"update&lt;/a&gt;."
 msgstr ""
 
 #: errors.php:22
@@ -131,7 +127,9 @@ msgid "No operation to perform."
 msgstr "Δεν υπάρχει λειτουργία προς εκτέλεση."
 
 #: errors.php:26
-msgid "Could not display feed: query failed. Please check label match syntax or local configuration."
+msgid ""
+"Could not display feed: query failed. Please check label match syntax or "
+"local configuration."
 msgstr ""
 
 #: errors.php:28
@@ -143,7 +141,9 @@ msgid "Configuration check failed"
 msgstr "Ο έλεγχος διαμόρφωσης απέτυχε"
 
 #: errors.php:32
-msgid "Your version of MySQL is not currently supported. Please see official site for more information."
+msgid ""
+"Your version of MySQL is not currently supported. Please see official site "
+"for more information."
 msgstr ""
 
 #: errors.php:36
@@ -164,42 +164,20 @@ msgstr "Ο χρήστης δεν βρέθηκε."
 msgid "Encoding data as JSON failed"
 msgstr ""
 
-#: index.php:135
-#: index.php:150
-#: index.php:274
-#: prefs.php:120
-#: classes/pref/labels.php:281
-#: classes/pref/filters.php:755
-#: classes/pref/feeds.php:1297
-#: js/Article.js:257
-#: js/CommonDialogs.js:225
-#: js/CommonDialogs.js:320
-#: js/PrefFeedTree.js:363
-#: js/PrefFeedTree.js:409
-#: js/CommonDialogs.js:248
-#: js/CommonDialogs.js:364
-#: js/CommonDialogs.js:399
-#: js/Feeds.js:370
-#: js/Feeds.js:448
-#: js/Headlines.js:327
-#: js/PrefFeedTree.js:130
-#: js/PrefFeedTree.js:137
-#: js/PrefFeedTree.js:254
-#: js/PrefFeedTree.js:326
-#: js/PrefFilterTree.js:100
-#: js/PrefHelpers.js:27
-#: js/PrefHelpers.js:39
-#: js/PrefHelpers.js:78
-#: js/PrefHelpers.js:138
-#: js/PrefHelpers.js:219
-#: js/PrefLabelTree.js:116
-#: plugins/af_readability/init.js:17
+#: index.php:135 index.php:150 index.php:274 prefs.php:120
+#: classes/pref/labels.php:281 classes/pref/filters.php:755
+#: classes/pref/feeds.php:1297 js/Article.js:257 js/CommonDialogs.js:225
+#: js/CommonDialogs.js:320 js/PrefFeedTree.js:363 js/PrefFeedTree.js:409
+#: js/CommonDialogs.js:248 js/CommonDialogs.js:364 js/CommonDialogs.js:399
+#: js/Feeds.js:370 js/Feeds.js:448 js/Headlines.js:327 js/PrefFeedTree.js:130
+#: js/PrefFeedTree.js:137 js/PrefFeedTree.js:254 js/PrefFeedTree.js:326
+#: js/PrefFilterTree.js:100 js/PrefHelpers.js:27 js/PrefHelpers.js:39
+#: js/PrefHelpers.js:78 js/PrefHelpers.js:138 js/PrefHelpers.js:219
+#: js/PrefLabelTree.js:116 plugins/af_readability/init.js:17
 msgid "Loading, please wait..."
 msgstr "Φόρτωση σε εξέλιξη, παρακαλώ περιμένετε..."
 
-#: index.php:164
-#: js/App.js:379
-#: js/App.js:385
+#: index.php:164 js/App.js:379 js/App.js:385
 msgid "Communication problem with server."
 msgstr "Πρόβλημα επικοινωνίας με τον εξυπηρετητή."
 
@@ -223,18 +201,15 @@ msgstr "Προσαρμόσιμο"
 msgid "All Articles"
 msgstr "Όλα τα Άρθρα"
 
-#: index.php:190
-#: classes/rpc.php:638
+#: index.php:190 classes/rpc.php:638
 msgid "Starred"
 msgstr "Με αστέρι"
 
-#: index.php:191
-#: classes/rpc.php:639
+#: index.php:191 classes/rpc.php:639
 msgid "Published"
 msgstr "Δημοσιεύτηκαν"
 
-#: index.php:192
-#: classes/feeds.php:69
+#: index.php:192 classes/feeds.php:69
 msgid "Unread"
 msgstr "Μη αναγνωσμένα"
 
@@ -266,12 +241,8 @@ msgstr "Πρώτα το Παλαιότερο"
 msgid "Title"
 msgstr "Τίτλος"
 
-#: index.php:216
-#: index.php:250
-#: classes/rpc.php:626
-#: classes/feeds.php:77
-#: js/FeedTree.js:89
-#: js/FeedTree.js:119
+#: index.php:216 index.php:250 classes/rpc.php:626 classes/feeds.php:77
+#: js/FeedTree.js:89 js/FeedTree.js:119
 msgid "Mark as read"
 msgstr "Σήμανση ως αναγνωσμένο"
 
@@ -303,8 +274,7 @@ msgstr "Αναζήτηση..."
 msgid "Feed actions:"
 msgstr "Ενέργειες ροών:"
 
-#: index.php:246
-#: classes/handler/public.php:786
+#: index.php:246 classes/handler/public.php:786
 msgid "Subscribe to feed..."
 msgstr "Εγγραφή για ροή..."
 
@@ -312,9 +282,7 @@ msgstr "Εγγραφή για ροή..."
 msgid "Edit this feed..."
 msgstr "Επεξεργασία αυτής της ροής..."
 
-#: index.php:248
-#: classes/pref/feeds.php:810
-#: classes/pref/feeds.php:1270
+#: index.php:248 classes/pref/feeds.php:810 classes/pref/feeds.php:1270
 #: js/PrefFeedTree.js:64
 msgid "Unsubscribe"
 msgstr "Κατάργηση εγγραφής"
@@ -331,8 +299,7 @@ msgstr "Επανεμφάνιση/Απόκρυψη ροών ανάγνωσης"
 msgid "Other actions:"
 msgstr "Άλλες ενέργειες:"
 
-#: index.php:253
-#: classes/rpc.php:612
+#: index.php:253 classes/rpc.php:612
 msgid "Toggle widescreen mode"
 msgstr "Εναλλαγή λειτουργίας ευρείας οθόνης"
 
@@ -344,10 +311,7 @@ msgstr "Βοήθεια συντομεύσεων πληκτρολογίου"
 msgid "Logout"
 msgstr "Αποσύνδεση"
 
-#: prefs.php:27
-#: prefs.php:137
-#: classes/rpc.php:641
-#: classes/pref/prefs.php:567
+#: prefs.php:27 prefs.php:137 classes/rpc.php:641 classes/pref/prefs.php:567
 msgid "Preferences"
 msgstr "Προτιμήσεις"
 
@@ -359,22 +323,16 @@ msgstr "Συντομεύσεις πληκτρολογίου"
 msgid "Exit preferences"
 msgstr "Προτιμήσεις εξόδου"
 
-#: prefs.php:140
-#: classes/pref/prefs.php:28
-#: classes/pref/feeds.php:125
-#: classes/pref/feeds.php:1204
-#: classes/pref/feeds.php:1259
+#: prefs.php:140 classes/pref/prefs.php:28 classes/pref/feeds.php:125
+#: classes/pref/feeds.php:1204 classes/pref/feeds.php:1259
 msgid "Feeds"
 msgstr "Ροές"
 
-#: prefs.php:144
-#: classes/pref/filters.php:228
+#: prefs.php:144 classes/pref/filters.php:228
 msgid "Filters"
 msgstr "Φίλτρα"
 
-#: prefs.php:148
-#: classes/pref/labels.php:85
-#: classes/feeds.php:1431
+#: prefs.php:148 classes/pref/labels.php:85 classes/feeds.php:1431
 msgid "Labels"
 msgstr "Ετικέτες"
 
@@ -386,19 +344,13 @@ msgstr "Χρήστες"
 msgid "System"
 msgstr "Σύστημα"
 
-#: include/controls.php:93
-#: classes/pref/filters.php:197
-#: classes/pref/filters.php:208
-#: classes/pref/filters.php:502
+#: include/controls.php:93 classes/pref/filters.php:197
+#: classes/pref/filters.php:208 classes/pref/filters.php:502
 msgid "All feeds"
 msgstr "Όλες οι ροές"
 
-#: include/controls.php:146
-#: include/controls.php:238
-#: classes/pref/feeds.php:245
-#: classes/digest.php:122
-#: classes/opml.php:545
-#: classes/feeds.php:1443
+#: include/controls.php:146 include/controls.php:238 classes/pref/feeds.php:245
+#: classes/digest.php:122 classes/opml.php:545 classes/feeds.php:1443
 msgid "Uncategorized"
 msgstr "Χωρίς κατηγορία"
 
@@ -406,15 +358,12 @@ msgstr "Χωρίς κατηγορία"
 msgid "Detect automatically"
 msgstr ""
 
-#: include/login_form.php:108
-#: classes/handler/public.php:645
-#: classes/handler/public.php:980
-#: classes/pref/users.php:55
+#: include/login_form.php:108 classes/handler/public.php:645
+#: classes/handler/public.php:980 classes/pref/users.php:55
 msgid "Login:"
 msgstr "Είσοδος:"
 
-#: include/login_form.php:117
-#: classes/handler/public.php:652
+#: include/login_form.php:117 classes/handler/public.php:652
 msgid "Password:"
 msgstr "Κωδικός Πρόσβασης:"
 
@@ -426,9 +375,7 @@ msgstr "Ξέχασα τον κωδικό πρόσβασής μου"
 msgid "Profile:"
 msgstr "Προφίλ:"
 
-#: include/login_form.php:137
-#: classes/rpc.php:69
-#: classes/handler/public.php:274
+#: include/login_form.php:137 classes/rpc.php:69 classes/handler/public.php:274
 #: classes/pref/prefs.php:1216
 msgid "Default profile"
 msgstr "Προκαθορισμένο προφίλ"
@@ -441,8 +388,7 @@ msgstr "Χρήση μικρότερης κίνησης"
 msgid "Does not display images in articles, reduces automatic refreshes."
 msgstr ""
 
-#: include/login_form.php:158
-#: js/Feeds.js:247
+#: include/login_form.php:158 js/Feeds.js:247
 msgid "Safe mode"
 msgstr ""
 
@@ -454,8 +400,7 @@ msgstr ""
 msgid "Remember me"
 msgstr "Απομνημόνευση"
 
-#: include/login_form.php:180
-#: classes/handler/public.php:665
+#: include/login_form.php:180 classes/handler/public.php:665
 msgid "Log in"
 msgstr "Συνδεθείτε"
 
@@ -536,21 +481,15 @@ msgstr "Ακύρωση αναζήτησης"
 msgid "Article"
 msgstr "Άρθρο"
 
-#: classes/rpc.php:597
-#: classes/feeds.php:74
-#: js/Headlines.js:1243
+#: classes/rpc.php:597 classes/feeds.php:74 js/Headlines.js:1243
 msgid "Toggle starred"
 msgstr "Εναλλαγή με αστέρια"
 
-#: classes/rpc.php:598
-#: classes/feeds.php:75
-#: js/Headlines.js:1255
+#: classes/rpc.php:598 classes/feeds.php:75 js/Headlines.js:1255
 msgid "Toggle published"
 msgstr "Εναλλαγή δημοσιευμένη"
 
-#: classes/rpc.php:599
-#: classes/feeds.php:73
-#: js/Headlines.js:1230
+#: classes/rpc.php:599 classes/feeds.php:73 js/Headlines.js:1230
 msgid "Toggle unread"
 msgstr "Εναλλαγή μη αναγνωσμένο"
 
@@ -562,13 +501,11 @@ msgstr "Επεξεργασία ετικετών"
 msgid "Open in new window"
 msgstr "Άνοιγμα σε νέο παράθυρο"
 
-#: classes/rpc.php:602
-#: js/Headlines.js:1276
+#: classes/rpc.php:602 js/Headlines.js:1276
 msgid "Mark below as read"
 msgstr "Σήμανση παρακάτω ως αναγνωσμένα"
 
-#: classes/rpc.php:603
-#: js/Headlines.js:1269
+#: classes/rpc.php:603 js/Headlines.js:1269
 msgid "Mark above as read"
 msgstr "Σήμανση παραπάνω ως αναγνωσμένα"
 
@@ -639,9 +576,7 @@ msgstr "Αναστροφή επιλογής"
 msgid "Deselect everything"
 msgstr "Αποεπιλογή όλων"
 
-#: classes/rpc.php:621
-#: classes/pref/feeds.php:527
-#: classes/pref/feeds.php:831
+#: classes/rpc.php:621 classes/pref/feeds.php:527 classes/pref/feeds.php:831
 msgid "Feed"
 msgstr "Ροή"
 
@@ -653,14 +588,11 @@ msgstr "Ανανέωση τρέχουσας ροής"
 msgid "Un/hide read feeds"
 msgstr "Επανεμφάνιση/Απόκρυψη ροών ανάγνωσης"
 
-#: classes/rpc.php:624
-#: classes/pref/feeds.php:1262
+#: classes/rpc.php:624 classes/pref/feeds.php:1262
 msgid "Subscribe to feed"
 msgstr "Εγγραφή για ροή"
 
-#: classes/rpc.php:625
-#: js/PrefFeedTree.js:58
-#: js/FeedTree.js:96
+#: classes/rpc.php:625 js/PrefFeedTree.js:58 js/FeedTree.js:96
 #: js/Headlines.js:1399
 msgid "Edit feed"
 msgstr "Επεξεργασία ροής"
@@ -682,8 +614,7 @@ msgstr "Εκσφαλμάτωση ενημέρωσης ροής"
 msgid "Debug viewfeed()"
 msgstr "Εκσφαλμάτωση ενημέρωσης ροής"
 
-#: classes/rpc.php:631
-#: js/FeedTree.js:144
+#: classes/rpc.php:631 js/FeedTree.js:144
 #, fuzzy
 msgid "Mark all feeds as read"
 msgstr "Σήμανση ροής ως αναγνωσμένη"
@@ -705,8 +636,7 @@ msgstr "Εναλλαγή συνδυασμένης λειτουργίας"
 msgid "Go to"
 msgstr "Μετάβαση σε"
 
-#: classes/rpc.php:636
-#: classes/feeds.php:1299
+#: classes/rpc.php:636 classes/feeds.php:1299
 msgid "All articles"
 msgstr "Όλα τα άρθρα"
 
@@ -714,8 +644,7 @@ msgstr "Όλα τα άρθρα"
 msgid "Fresh"
 msgstr "Φρέσκο"
 
-#: classes/rpc.php:640
-#: classes/feeds.php:1303
+#: classes/rpc.php:640 classes/feeds.php:1303
 msgid "Recently read"
 msgstr "Πρόσφατα αναγνωσμένα"
 
@@ -723,13 +652,11 @@ msgstr "Πρόσφατα αναγνωσμένα"
 msgid "Other"
 msgstr "Άλλο"
 
-#: classes/rpc.php:643
-#: classes/pref/labels.php:266
+#: classes/rpc.php:643 classes/pref/labels.php:266
 msgid "Create label"
 msgstr "Δημιουργία ετικέτας"
 
-#: classes/rpc.php:644
-#: classes/pref/filters.php:734
+#: classes/rpc.php:644 classes/pref/filters.php:734
 msgid "Create filter"
 msgstr "Δημιουργία φίλτρου"
 
@@ -749,16 +676,13 @@ msgstr "Shift"
 msgid "Ctrl"
 msgstr "Ctrl"
 
-#: classes/backend.php:86
-#: classes/pref/feeds.php:1514
-#: classes/pref/feeds.php:1573
-#: plugins/af_psql_trgm/init.php:112
+#: classes/backend.php:86 classes/pref/feeds.php:1514
+#: classes/pref/feeds.php:1573 plugins/af_psql_trgm/init.php:112
 #: plugins/share/init.php:133
 msgid "Close this window"
 msgstr "Κλείστε αυτό το παράθυρο"
 
-#: classes/handler/public.php:524
-#: plugins/bookmarklets/init.php:41
+#: classes/handler/public.php:524 plugins/bookmarklets/init.php:41
 #, fuzzy
 msgid "Share with Tiny Tiny RSS"
 msgstr "Ενημέρωση του Tiny Tiny RSS"
@@ -767,8 +691,7 @@ msgstr "Ενημέρωση του Tiny Tiny RSS"
 msgid "Title:"
 msgstr "Τίτλος:"
 
-#: classes/handler/public.php:602
-#: classes/pref/feeds.php:546
+#: classes/handler/public.php:602 classes/pref/feeds.php:546
 msgid "URL:"
 msgstr "URL:"
 
@@ -784,22 +707,13 @@ msgstr "Ετικέτες:"
 msgid "Share"
 msgstr "Διαμοιρασμός"
 
-#: classes/handler/public.php:623
-#: classes/pref/labels.php:75
-#: classes/pref/prefs.php:1265
-#: classes/pref/filters.php:471
-#: classes/pref/filters.php:478
-#: classes/pref/filters.php:863
-#: classes/pref/filters.php:956
-#: classes/pref/users.php:116
-#: classes/pref/feeds.php:812
-#: classes/pref/feeds.php:978
-#: classes/pref/feeds.php:1668
-#: classes/feeds.php:736
-#: classes/feeds.php:778
-#: classes/article.php:187
-#: plugins/note/init.php:55
-#: plugins/mail/init.php:182
+#: classes/handler/public.php:623 classes/pref/labels.php:75
+#: classes/pref/prefs.php:1265 classes/pref/filters.php:471
+#: classes/pref/filters.php:478 classes/pref/filters.php:863
+#: classes/pref/filters.php:956 classes/pref/users.php:116
+#: classes/pref/feeds.php:812 classes/pref/feeds.php:978
+#: classes/pref/feeds.php:1668 classes/feeds.php:736 classes/feeds.php:778
+#: classes/article.php:187 plugins/note/init.php:55 plugins/mail/init.php:182
 msgid "Cancel"
 msgstr "Ακύρωση"
 
@@ -811,22 +725,16 @@ msgstr ""
 msgid "Incorrect username or password"
 msgstr "Λανθασμένο όνομα χρήστη ή κωδικός πρόσβασης"
 
-#: classes/handler/public.php:801
-#: classes/pref/feeds.php:1667
+#: classes/handler/public.php:801 classes/pref/feeds.php:1667
 #: classes/feeds.php:733
 msgid "Subscribe"
 msgstr "Εγγραφή"
 
-#: classes/handler/public.php:804
-#: classes/handler/public.php:854
-#: classes/handler/public.php:878
-#: classes/handler/public.php:970
-#: classes/handler/public.php:1000
-#: classes/handler/public.php:1073
-#: classes/handler/public.php:1170
-#: classes/handler/public.php:1182
-#: classes/handler/public.php:1187
-#: classes/handler/public.php:1211
+#: classes/handler/public.php:804 classes/handler/public.php:854
+#: classes/handler/public.php:878 classes/handler/public.php:970
+#: classes/handler/public.php:1000 classes/handler/public.php:1073
+#: classes/handler/public.php:1170 classes/handler/public.php:1182
+#: classes/handler/public.php:1187 classes/handler/public.php:1211
 #, fuzzy
 msgid "Return to Tiny Tiny RSS"
 msgstr "Ενημέρωση του Tiny Tiny RSS"
@@ -874,7 +782,9 @@ msgid "Password recovery"
 msgstr "Ανάκτηση κωδικού πρόσβασης"
 
 #: classes/handler/public.php:973
-msgid "You will need to provide valid account name and email. Password reset link will be sent to your email address."
+msgid ""
+"You will need to provide valid account name and email. Password reset link "
+"will be sent to your email address."
 msgstr ""
 
 #: classes/handler/public.php:985
@@ -886,8 +796,7 @@ msgstr "Email:"
 msgid "How much is %d + %d:"
 msgstr ""
 
-#: classes/handler/public.php:999
-#: classes/pref/users.php:348
+#: classes/handler/public.php:999 classes/pref/users.php:348
 msgid "Reset password"
 msgstr "Επαναφορά κωδικού πρόσβασης"
 
@@ -895,8 +804,7 @@ msgstr "Επαναφορά κωδικού πρόσβασης"
 msgid "Some of the required form parameters are missing or incorrect."
 msgstr ""
 
-#: classes/handler/public.php:1015
-#: classes/handler/public.php:1080
+#: classes/handler/public.php:1015 classes/handler/public.php:1080
 msgid "Go back"
 msgstr "Επιστροφή"
 
@@ -945,8 +853,7 @@ msgstr ""
 msgid "Perform updates"
 msgstr "Εκτέλεση ενημερώσεων"
 
-#: classes/pref/labels.php:25
-#: classes/pref/filters.php:341
+#: classes/pref/labels.php:25 classes/pref/filters.php:341
 msgid "Caption"
 msgstr "Λεζάντα"
 
@@ -962,18 +869,12 @@ msgstr "Προσκήνιο:"
 msgid "Background:"
 msgstr "Παρασκήνιο:"
 
-#: classes/pref/labels.php:73
-#: classes/pref/filters.php:469
-#: classes/pref/users.php:114
-#: classes/pref/feeds.php:811
-#: classes/pref/feeds.php:975
-#: classes/article.php:185
-#: plugins/af_psql_trgm/init.php:195
-#: plugins/note/init.php:53
-#: plugins/af_proxy_http/init.php:229
-#: plugins/mail/init.php:66
-#: plugins/af_readability/init.php:103
-#: plugins/nsfw/init.php:86
+#: classes/pref/labels.php:73 classes/pref/filters.php:469
+#: classes/pref/users.php:114 classes/pref/feeds.php:811
+#: classes/pref/feeds.php:975 classes/article.php:185
+#: plugins/af_psql_trgm/init.php:195 plugins/note/init.php:53
+#: plugins/af_proxy_http/init.php:229 plugins/mail/init.php:66
+#: plugins/af_readability/init.php:103 plugins/nsfw/init.php:86
 #: plugins/af_redditimgur/init.php:83
 msgid "Save"
 msgstr "Αποθήκευση"
@@ -983,51 +884,32 @@ msgstr "Αποθήκευση"
 msgid "Created label <b>%s</b>"
 msgstr "Δημιουργία ετικέτας"
 
-#: classes/pref/labels.php:257
-#: classes/pref/prefs.php:1178
-#: classes/pref/prefs.php:1289
-#: classes/pref/filters.php:349
-#: classes/pref/filters.php:406
-#: classes/pref/filters.php:725
-#: classes/pref/users.php:332
-#: classes/pref/feeds.php:1250
-#: classes/pref/feeds.php:1469
-#: classes/pref/feeds.php:1526
+#: classes/pref/labels.php:257 classes/pref/prefs.php:1178
+#: classes/pref/prefs.php:1289 classes/pref/filters.php:349
+#: classes/pref/filters.php:406 classes/pref/filters.php:725
+#: classes/pref/users.php:332 classes/pref/feeds.php:1250
+#: classes/pref/feeds.php:1469 classes/pref/feeds.php:1526
 msgid "Select"
 msgstr "Επιλογή"
 
-#: classes/pref/labels.php:260
-#: classes/pref/prefs.php:1181
-#: classes/pref/prefs.php:1292
-#: classes/pref/filters.php:353
-#: classes/pref/filters.php:409
-#: classes/pref/filters.php:728
-#: classes/pref/users.php:335
-#: classes/pref/feeds.php:1253
-#: classes/pref/feeds.php:1472
-#: classes/pref/feeds.php:1529
-#: classes/feeds.php:68
+#: classes/pref/labels.php:260 classes/pref/prefs.php:1181
+#: classes/pref/prefs.php:1292 classes/pref/filters.php:353
+#: classes/pref/filters.php:409 classes/pref/filters.php:728
+#: classes/pref/users.php:335 classes/pref/feeds.php:1253
+#: classes/pref/feeds.php:1472 classes/pref/feeds.php:1529 classes/feeds.php:68
 msgid "All"
 msgstr "Όλα"
 
-#: classes/pref/labels.php:262
-#: classes/pref/prefs.php:1183
-#: classes/pref/prefs.php:1294
-#: classes/pref/filters.php:355
-#: classes/pref/filters.php:411
-#: classes/pref/filters.php:730
-#: classes/pref/users.php:337
-#: classes/pref/feeds.php:1255
-#: classes/pref/feeds.php:1474
-#: classes/pref/feeds.php:1531
-#: classes/feeds.php:71
+#: classes/pref/labels.php:262 classes/pref/prefs.php:1183
+#: classes/pref/prefs.php:1294 classes/pref/filters.php:355
+#: classes/pref/filters.php:411 classes/pref/filters.php:730
+#: classes/pref/users.php:337 classes/pref/feeds.php:1255
+#: classes/pref/feeds.php:1474 classes/pref/feeds.php:1531 classes/feeds.php:71
 msgid "None"
 msgstr "Κανένα"
 
-#: classes/pref/labels.php:269
-#: classes/pref/filters.php:464
-#: classes/pref/filters.php:747
-#: classes/pref/users.php:346
+#: classes/pref/labels.php:269 classes/pref/filters.php:464
+#: classes/pref/filters.php:747 classes/pref/users.php:346
 #: classes/pref/feeds.php:794
 msgid "Remove"
 msgstr "Αφαίρεση"
@@ -1036,8 +918,7 @@ msgstr "Αφαίρεση"
 msgid "Clear colors"
 msgstr "Απαλοιφή χρωμάτων"
 
-#: classes/pref/prefs.php:20
-#: classes/pref/feeds.php:519
+#: classes/pref/prefs.php:20 classes/pref/feeds.php:519
 msgid "General"
 msgstr "Γενικά"
 
@@ -1184,7 +1065,9 @@ msgid "Long date format"
 msgstr "Μακρά μορφή ημερομηνίας"
 
 #: classes/pref/prefs.php:92
-msgid "Syntax is identical to PHP <a href='http://php.net/manual/function.date.php'>date()</a> function."
+msgid ""
+"Syntax is identical to PHP <a href='http://php.net/manual/function.date."
+"php'>date()</a> function."
 msgstr ""
 
 #: classes/pref/prefs.php:93
@@ -1235,8 +1118,7 @@ msgstr ""
 msgid "SSL client certificate"
 msgstr ""
 
-#: classes/pref/prefs.php:101
-#: classes/pref/feeds.php:742
+#: classes/pref/prefs.php:101 classes/pref/feeds.php:742
 #: classes/pref/feeds.php:951
 #, fuzzy
 msgid "Do not embed media"
@@ -1250,8 +1132,7 @@ msgstr ""
 msgid "Strip all but most common HTML tags when reading articles."
 msgstr ""
 
-#: classes/pref/prefs.php:103
-#: js/PrefHelpers.js:159
+#: classes/pref/prefs.php:103 js/PrefHelpers.js:159
 msgid "Customize stylesheet"
 msgstr "Διαμόρφωση φύλλου ύφους"
 
@@ -1300,8 +1181,7 @@ msgstr "Προσωπικά δεδομένα"
 msgid "Full name:"
 msgstr "Πλήρες όνομα"
 
-#: classes/pref/prefs.php:320
-#: classes/pref/users.php:94
+#: classes/pref/prefs.php:320 classes/pref/users.php:94
 #, fuzzy
 msgid "E-mail:"
 msgstr "E-mail"
@@ -1315,11 +1195,8 @@ msgstr "Επίπεδο πρόσβασης: "
 msgid "Save data"
 msgstr "Αποθήκευση δεδομένων"
 
-#: classes/pref/prefs.php:351
-#: classes/pref/feeds.php:678
-#: classes/pref/feeds.php:924
-#: classes/pref/feeds.php:1653
-#: classes/feeds.php:716
+#: classes/pref/prefs.php:351 classes/pref/feeds.php:678
+#: classes/pref/feeds.php:924 classes/pref/feeds.php:1653 classes/feeds.php:716
 msgid "Password"
 msgstr "Κωδικός Πρόσβασης"
 
@@ -1332,8 +1209,7 @@ msgstr ""
 msgid "Old password:"
 msgstr "Παλιός Κωδικός Πρόσβασης"
 
-#: classes/pref/prefs.php:398
-#: classes/pref/users.php:82
+#: classes/pref/prefs.php:398 classes/pref/users.php:82
 #, fuzzy
 msgid "New password:"
 msgstr "Νέος Κωδικός Πρόσβασης"
@@ -1349,7 +1225,9 @@ msgstr "Αλλαγή κωδικού πρόσβασης"
 
 #: classes/pref/prefs.php:418
 #, php-format
-msgid "Authentication module used for this session (<b>%s</b>) does not provide an ability to set passwords."
+msgid ""
+"Authentication module used for this session (<b>%s</b>) does not provide an "
+"ability to set passwords."
 msgstr ""
 
 #: classes/pref/prefs.php:424
@@ -1371,8 +1249,7 @@ msgstr "Αφαίρεση επιλεγμένων προφίλ"
 msgid "One time passwords / Authenticator"
 msgstr "Κωδικοί πρόσβασης / Επαληθευτής μίας φοράς"
 
-#: classes/pref/prefs.php:474
-#: classes/pref/prefs.php:535
+#: classes/pref/prefs.php:474 classes/pref/prefs.php:535
 #, fuzzy
 msgid "Your password:"
 msgstr "Επιβεβαίωση κωδικού πρόσβασης"
@@ -1382,7 +1259,9 @@ msgid "Disable OTP"
 msgstr "Απενεργοποίηση του OTP"
 
 #: classes/pref/prefs.php:494
-msgid "Scan the following code by the Authenticator application or copy the key manually"
+msgid ""
+"Scan the following code by the Authenticator application or copy the key "
+"manually"
 msgstr ""
 
 #: classes/pref/prefs.php:500
@@ -1424,19 +1303,14 @@ msgstr "Περισσότερες ενέργειες..."
 msgid "Register"
 msgstr "Εγγραφή"
 
-#: classes/pref/prefs.php:786
-#: classes/pref/system.php:85
+#: classes/pref/prefs.php:786 classes/pref/system.php:85
 msgid "Clear"
 msgstr "Απαλοιφή"
 
-#: classes/pref/prefs.php:790
-#: classes/pref/prefs.php:899
-#: classes/pref/prefs.php:933
-#: classes/pref/prefs.php:979
-#: classes/pref/prefs.php:994
-#: classes/pref/filters.php:857
-#: plugins/bookmarklets/init.php:45
-#: js/CommonDialogs.js:420
+#: classes/pref/prefs.php:790 classes/pref/prefs.php:899
+#: classes/pref/prefs.php:933 classes/pref/prefs.php:979
+#: classes/pref/prefs.php:994 classes/pref/filters.php:857
+#: plugins/bookmarklets/init.php:45 js/CommonDialogs.js:420
 #, fuzzy
 msgid "More info..."
 msgstr "περισσότερες πληροφορίες"
@@ -1462,22 +1336,23 @@ msgstr "Διαχείριση προφίλ"
 msgid "Reset to defaults"
 msgstr "Επαναφορά σε προεπιλογή"
 
-#: classes/pref/prefs.php:850
-#: classes/pref/feeds.php:799
+#: classes/pref/prefs.php:850 classes/pref/feeds.php:799
 msgid "Plugins"
 msgstr "Πρόσθετα"
 
 #: classes/pref/prefs.php:897
 #, php-format
-msgid "The following plugins use per-feed content hooks. This may cause excessive data usage and origin server load resulting in a ban of your instance: <b>%s</b>"
+msgid ""
+"The following plugins use per-feed content hooks. This may cause excessive "
+"data usage and origin server load resulting in a ban of your instance: <b>"
+"%s</b>"
 msgstr ""
 
 #: classes/pref/prefs.php:903
 msgid "System plugins"
 msgstr "Πρόσθετα συστήματος"
 
-#: classes/pref/prefs.php:937
-#: classes/pref/prefs.php:983
+#: classes/pref/prefs.php:937 classes/pref/prefs.php:983
 #, php-format
 msgid "v%.2f, by %s"
 msgstr ""
@@ -1498,8 +1373,7 @@ msgstr "Ενεργοποίηση επιλεγμένων προσθέτων"
 msgid "Incorrect one time password"
 msgstr "Λανθασμένος κωδικός πρόσβασης μίας φοράς"
 
-#: classes/pref/prefs.php:1093
-#: classes/pref/prefs.php:1147
+#: classes/pref/prefs.php:1093 classes/pref/prefs.php:1147
 msgid "Incorrect password"
 msgstr "Λανθασμένος κωδικός πρόσβασης"
 
@@ -1507,8 +1381,7 @@ msgstr "Λανθασμένος κωδικός πρόσβασης"
 msgid "Create profile"
 msgstr "Δημιουργία προφίλ"
 
-#: classes/pref/prefs.php:1211
-#: classes/pref/prefs.php:1231
+#: classes/pref/prefs.php:1211 classes/pref/prefs.php:1231
 msgid "(active)"
 msgstr "(ενεργό)"
 
@@ -1536,11 +1409,12 @@ msgstr "Τελευταία ενημέρωση:"
 
 #: classes/pref/prefs.php:1357
 #, php-format
-msgid "Generated password <strong>%s</strong> for %s. Please remember it for future reference."
+msgid ""
+"Generated password <strong>%s</strong> for %s. Please remember it for future "
+"reference."
 msgstr ""
 
-#: classes/pref/system.php:10
-#: classes/pref/users.php:6
+#: classes/pref/system.php:10 classes/pref/users.php:6
 msgid "Your access level is insufficient to open this tab."
 msgstr ""
 
@@ -1604,29 +1478,24 @@ msgstr ""
 msgid "PHP Information"
 msgstr "Πραγματοποίηση Ενέργειας"
 
-#: classes/pref/filters.php:219
-#: classes/pref/filters.php:522
+#: classes/pref/filters.php:219 classes/pref/filters.php:522
 msgid "(inverse)"
 msgstr "(αναστροφή)"
 
-#: classes/pref/filters.php:215
-#: classes/pref/filters.php:521
+#: classes/pref/filters.php:215 classes/pref/filters.php:521
 #, php-format
 msgid "%s on %s in %s %s"
 msgstr ""
 
-#: classes/pref/filters.php:345
-#: classes/pref/filters.php:816
+#: classes/pref/filters.php:345 classes/pref/filters.php:816
 msgid "Match"
 msgstr "Αντιστοίχιση"
 
-#: classes/pref/filters.php:359
-#: classes/pref/filters.php:415
+#: classes/pref/filters.php:359 classes/pref/filters.php:415
 msgid "Add"
 msgstr "Προσθήκη"
 
-#: classes/pref/filters.php:361
-#: classes/pref/filters.php:417
+#: classes/pref/filters.php:361 classes/pref/filters.php:417
 msgid "Delete"
 msgstr "Διαγραφή"
 
@@ -1634,10 +1503,8 @@ msgstr "Διαγραφή"
 msgid "Apply actions"
 msgstr "Εφαρμογή ενεργειών"
 
-#: classes/pref/filters.php:445
-#: classes/pref/users.php:90
-#: classes/pref/feeds.php:695
-#: classes/pref/feeds.php:932
+#: classes/pref/filters.php:445 classes/pref/users.php:90
+#: classes/pref/feeds.php:695 classes/pref/feeds.php:932
 msgid "Options"
 msgstr "Επιλογές"
 
@@ -1653,8 +1520,7 @@ msgstr "Αντιστοίχιση με οποιονδήποτε κανόνα"
 msgid "Inverse matching"
 msgstr "Αναστροφή αντιστοίχισης"
 
-#: classes/pref/filters.php:467
-#: classes/pref/filters.php:474
+#: classes/pref/filters.php:467 classes/pref/filters.php:474
 msgid "Test"
 msgstr "Δοκιμή"
 
@@ -1662,11 +1528,8 @@ msgstr "Δοκιμή"
 msgid "Create"
 msgstr "Δημιουργία"
 
-#: classes/pref/filters.php:721
-#: classes/pref/users.php:322
-#: classes/pref/feeds.php:1246
-#: classes/feeds.php:777
-#: js/Feeds.js:577
+#: classes/pref/filters.php:721 classes/pref/users.php:322
+#: classes/pref/feeds.php:1246 classes/feeds.php:777 js/Feeds.js:577
 msgid "Search"
 msgstr "Αναζήτηση"
 
@@ -1674,13 +1537,11 @@ msgstr "Αναζήτηση"
 msgid "Combine"
 msgstr "Συνδυασμός"
 
-#: classes/pref/filters.php:740
-#: classes/pref/users.php:344
+#: classes/pref/filters.php:740 classes/pref/users.php:344
 msgid "Edit"
 msgstr "Επεξεργασία"
 
-#: classes/pref/filters.php:743
-#: classes/pref/feeds.php:1266
+#: classes/pref/filters.php:743 classes/pref/feeds.php:1266
 #: classes/pref/feeds.php:1280
 msgid "Reset sort order"
 msgstr "Επαναφορά σειράς ταξινόμησης"
@@ -1693,8 +1554,7 @@ msgstr "Αναστροφή τακτικής αντιστοίχισης έκφρ�
 msgid "on field"
 msgstr "επί τόπου"
 
-#: classes/pref/filters.php:839
-#: js/PrefFilterTree.js:47
+#: classes/pref/filters.php:839 js/PrefFilterTree.js:47
 msgid "in"
 msgstr "σε"
 
@@ -1702,8 +1562,7 @@ msgstr "σε"
 msgid "Save rule"
 msgstr "Αποθήκευση κανόνα"
 
-#: classes/pref/filters.php:860
-#: js/CommonFilters.js:97
+#: classes/pref/filters.php:860 js/CommonFilters.js:97
 msgid "Add rule"
 msgstr "Προσθήκη κανόνα"
 
@@ -1720,8 +1579,7 @@ msgstr "Διατίθεται νέα έκδοση!"
 msgid "Save action"
 msgstr "Αποθήκευση ενέργειας"
 
-#: classes/pref/filters.php:953
-#: js/CommonFilters.js:119
+#: classes/pref/filters.php:953 js/CommonFilters.js:119
 msgid "Add action"
 msgstr "Προσθήκη ενέργειας"
 
@@ -1758,10 +1616,8 @@ msgstr[1] "Προσθήκη ενέργειας"
 msgid "Edit user"
 msgstr "Επεξεργασία κανόνα"
 
-#: classes/pref/users.php:63
-#: classes/pref/feeds.php:664
-#: classes/pref/feeds.php:910
-#: classes/pref/feeds.php:1649
+#: classes/pref/users.php:63 classes/pref/feeds.php:664
+#: classes/pref/feeds.php:910 classes/pref/feeds.php:1649
 #: plugins/auth_internal/init.php:68
 msgid "Authentication"
 msgstr "Πιστοποίηση"
@@ -1774,8 +1630,7 @@ msgstr "Επίπεδο πρόσβασης: "
 msgid "User details"
 msgstr "Λεπτομέρειες χρήστη"
 
-#: classes/pref/users.php:148
-#: classes/pref/users.php:381
+#: classes/pref/users.php:148 classes/pref/users.php:381
 msgid "Registered"
 msgstr "Εγγεγραμμένος"
 
@@ -1792,8 +1647,7 @@ msgstr "Αριθμός εγγεγραμμένων ροών"
 msgid "Stored articles"
 msgstr "Άρθρα με αστέρια"
 
-#: classes/pref/users.php:162
-#: classes/pref/users.php:380
+#: classes/pref/users.php:162 classes/pref/users.php:380
 msgid "Subscribed feeds"
 msgstr "Εγγεγραμμένες ροές"
 
@@ -1825,11 +1679,8 @@ msgstr "Αλλαγή κωδικού πρόσβασης"
 msgid "Create user"
 msgstr "Δημιουργία χρήστη"
 
-#: classes/pref/users.php:378
-#: classes/pref/feeds.php:670
-#: classes/pref/feeds.php:916
-#: classes/pref/feeds.php:1652
-#: classes/feeds.php:712
+#: classes/pref/users.php:378 classes/pref/feeds.php:670
+#: classes/pref/feeds.php:916 classes/pref/feeds.php:1652 classes/feeds.php:712
 msgid "Login"
 msgstr "Σύνδεση"
 
@@ -1857,10 +1708,8 @@ msgstr "Δεν βρέθηκαν χρήστες που να αντιστοιχο�
 msgid "Check to enable field"
 msgstr "Έλεγχος για ενεργοποίηση πεδίου"
 
-#: classes/pref/feeds.php:75
-#: classes/pref/feeds.php:231
-#: classes/pref/feeds.php:279
-#: classes/pref/feeds.php:285
+#: classes/pref/feeds.php:75 classes/pref/feeds.php:231
+#: classes/pref/feeds.php:279 classes/pref/feeds.php:285
 #: classes/pref/feeds.php:314
 #, fuzzy, php-format
 msgid "(%d feed)"
@@ -1876,10 +1725,8 @@ msgstr "Τίτλος Ροής"
 msgid "Feed URL"
 msgstr "URL Ροής"
 
-#: classes/pref/feeds.php:567
-#: classes/pref/feeds.php:840
-#: classes/pref/feeds.php:1640
-#: classes/feeds.php:686
+#: classes/pref/feeds.php:567 classes/pref/feeds.php:840
+#: classes/pref/feeds.php:1640 classes/feeds.php:686
 msgid "Place in category:"
 msgstr "Τοποθέτηση σε κατηγορία:"
 
@@ -1893,26 +1740,21 @@ msgstr "URL άρθρου:"
 msgid "Site URL"
 msgstr "URL Ροής"
 
-#: classes/pref/feeds.php:599
-#: classes/pref/feeds.php:855
-#: classes/feeds.php:761
+#: classes/pref/feeds.php:599 classes/pref/feeds.php:855 classes/feeds.php:761
 #, fuzzy
 msgid "Language:"
 msgstr "Γλώσσα"
 
-#: classes/pref/feeds.php:608
-#: classes/pref/feeds.php:866
+#: classes/pref/feeds.php:608 classes/pref/feeds.php:866
 msgid "Update"
 msgstr "Ενημέρωση"
 
-#: classes/pref/feeds.php:617
-#: classes/pref/feeds.php:873
+#: classes/pref/feeds.php:617 classes/pref/feeds.php:873
 #, fuzzy
 msgid "Interval:"
 msgstr "Διεπαφή"
 
-#: classes/pref/feeds.php:633
-#: classes/pref/feeds.php:891
+#: classes/pref/feeds.php:633 classes/pref/feeds.php:891
 msgid "Article purging:"
 msgstr "Εκκαθάριση άρθρου:"
 
@@ -1923,8 +1765,7 @@ msgid_plural "(%d days)"
 msgstr[0] "Επεξεργασία ροής"
 msgstr[1] "Επεξεργασία ροής"
 
-#: classes/pref/feeds.php:642
-#: classes/pref/feeds.php:899
+#: classes/pref/feeds.php:642 classes/pref/feeds.php:899
 #, fuzzy
 msgid "Disabled"
 msgstr "Απενεργοποίηση του OTP"
@@ -1937,31 +1778,28 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: classes/pref/feeds.php:682
-msgid "<b>Hint:</b> you need to fill in your login information if your feed requires authentication, except for Twitter feeds."
+msgid ""
+"<b>Hint:</b> you need to fill in your login information if your feed "
+"requires authentication, except for Twitter feeds."
 msgstr ""
 
-#: classes/pref/feeds.php:693
-#: classes/feeds.php:728
+#: classes/pref/feeds.php:693 classes/feeds.php:728
 msgid "This feed requires authentication."
 msgstr "Αυτή η ροή απαιτεί πιστοποίηση."
 
-#: classes/pref/feeds.php:711
-#: classes/pref/feeds.php:937
+#: classes/pref/feeds.php:711 classes/pref/feeds.php:937
 msgid "Include in e-mail digest"
 msgstr "Συμπεριλάβετε σε σύνοψη e-mail"
 
-#: classes/pref/feeds.php:727
-#: classes/pref/feeds.php:944
+#: classes/pref/feeds.php:727 classes/pref/feeds.php:944
 msgid "Always display image attachments"
 msgstr "Να εμφανίζονται πάντα συνημμένα εικόνας"
 
-#: classes/pref/feeds.php:757
-#: classes/pref/feeds.php:958
+#: classes/pref/feeds.php:757 classes/pref/feeds.php:958
 msgid "Cache media"
 msgstr ""
 
-#: classes/pref/feeds.php:772
-#: classes/pref/feeds.php:965
+#: classes/pref/feeds.php:772 classes/pref/feeds.php:965
 #, fuzzy
 msgid "Mark updated articles as unread"
 msgstr "Σήμανση ροής ως αναγνωσμένη"
@@ -1970,8 +1808,7 @@ msgstr "Σήμανση ροής ως αναγνωσμένη"
 msgid "Icon"
 msgstr "Εικονίδιο"
 
-#: classes/pref/feeds.php:784
-#: classes/pref/feeds.php:1347
+#: classes/pref/feeds.php:784 classes/pref/feeds.php:1347
 #, fuzzy
 msgid "Choose file..."
 msgstr "Δημιουργία φίλτρου..."
@@ -1997,8 +1834,7 @@ msgstr "Αδρανείς ροές"
 msgid "Edit selected feeds"
 msgstr "Επεξεργασία επιλεγμένων ροών"
 
-#: classes/pref/feeds.php:1268
-#: js/PrefFeedTree.js:348
+#: classes/pref/feeds.php:1268 js/PrefFeedTree.js:348
 msgid "Batch subscribe"
 msgstr "Εγγραφή παρτίδας"
 
@@ -2019,7 +1855,9 @@ msgid "OPML"
 msgstr "OPML"
 
 #: classes/pref/feeds.php:1342
-msgid "Using OPML you can export and import your feeds, filters, labels and Tiny Tiny RSS settings."
+msgid ""
+"Using OPML you can export and import your feeds, filters, labels and Tiny "
+"Tiny RSS settings."
 msgstr ""
 
 #: classes/pref/feeds.php:1354
@@ -2041,11 +1879,15 @@ msgid "Published OPML"
 msgstr "Δημοσιεύτηκαν"
 
 #: classes/pref/feeds.php:1375
-msgid "Your OPML can be published publicly and can be subscribed by anyone who knows the URL below."
+msgid ""
+"Your OPML can be published publicly and can be subscribed by anyone who "
+"knows the URL below."
 msgstr ""
 
 #: classes/pref/feeds.php:1377
-msgid "Published OPML does not include your Tiny Tiny RSS settings, feeds that require authentication or feeds hidden from Popular feeds."
+msgid ""
+"Published OPML does not include your Tiny Tiny RSS settings, feeds that "
+"require authentication or feeds hidden from Popular feeds."
 msgstr ""
 
 #: classes/pref/feeds.php:1380
@@ -2057,11 +1899,11 @@ msgid "Published & shared articles / Generated feeds"
 msgstr ""
 
 #: classes/pref/feeds.php:1389
-msgid "Published articles can be subscribed by anyone who knows the following URL:"
+msgid ""
+"Published articles can be subscribed by anyone who knows the following URL:"
 msgstr ""
 
-#: classes/pref/feeds.php:1395
-#: classes/feeds.php:1295
+#: classes/pref/feeds.php:1395 classes/feeds.php:1295
 msgid "Published articles"
 msgstr "Δημοσιευμένα άρθρα"
 
@@ -2073,13 +1915,11 @@ msgstr "Εμφάνιση URL"
 msgid "Clear all generated URLs"
 msgstr "Απαλοιφή όλων των παραχθέντων URLs"
 
-#: classes/pref/feeds.php:1495
-#: classes/pref/feeds.php:1552
+#: classes/pref/feeds.php:1495 classes/pref/feeds.php:1552
 msgid "Click to edit feed"
 msgstr "Κάντε κλικ για επεξεργασία ροής"
 
-#: classes/pref/feeds.php:1512
-#: classes/pref/feeds.php:1571
+#: classes/pref/feeds.php:1512 classes/pref/feeds.php:1571
 msgid "Unsubscribe from selected feeds"
 msgstr "Κατάργηση εγγραφής από επιλεγμένες ροές"
 
@@ -2091,8 +1931,7 @@ msgstr ""
 msgid "Feeds require authentication."
 msgstr "Οι ροές απαιτούν πιστοποίηση."
 
-#: classes/opml.php:28
-#: classes/opml.php:32
+#: classes/opml.php:28 classes/opml.php:32
 msgid "OPML Utility"
 msgstr "Βοηθητικό OPML"
 
@@ -2160,8 +1999,7 @@ msgstr ""
 msgid "Error while parsing document."
 msgstr "Σφάλμα κατά τη συντακτική ανάλυση του εγγράφου."
 
-#: classes/feeds.php:39
-#: js/CommonDialogs.js:409
+#: classes/feeds.php:39 js/CommonDialogs.js:409
 #, fuzzy
 msgid "Show as feed"
 msgstr "Αυτή τη ροή"
@@ -2189,9 +2027,7 @@ msgstr "Αναστροφή"
 msgid "Set score"
 msgstr "Ορισμός βαθμολογίας"
 
-#: classes/feeds.php:82
-#: classes/feeds.php:87
-#: plugins/mail/init.php:76
+#: classes/feeds.php:82 classes/feeds.php:87 plugins/mail/init.php:76
 #: plugins/mailto/init.php:24
 msgid "Forward by email"
 msgstr "Προώθηση μέσω e-mail"
@@ -2200,8 +2036,7 @@ msgstr "Προώθηση μέσω e-mail"
 msgid "Delete permanently"
 msgstr ""
 
-#: classes/feeds.php:151
-#: classes/feeds.php:546
+#: classes/feeds.php:151 classes/feeds.php:546
 msgid "Feed not found."
 msgstr "Η ροή δεν βρέθηκε."
 
@@ -2209,8 +2044,7 @@ msgstr "Η ροή δεν βρέθηκε."
 msgid "Never"
 msgstr "Ποτέ"
 
-#: classes/feeds.php:277
-#: classes/feeds.php:1301
+#: classes/feeds.php:277 classes/feeds.php:1301
 msgid "Archived articles"
 msgstr "Αρχειοθετημένα άρθρα"
 
@@ -2236,21 +2070,22 @@ msgid "No starred articles found to display."
 msgstr ""
 
 #: classes/feeds.php:447
-msgid "No articles found to display. You can assign articles to labels manually from article header context menu (applies to all selected articles) or use a filter."
+msgid ""
+"No articles found to display. You can assign articles to labels manually "
+"from article header context menu (applies to all selected articles) or use a "
+"filter."
 msgstr ""
 
 #: classes/feeds.php:449
 msgid "No articles found to display."
 msgstr ""
 
-#: classes/feeds.php:466
-#: classes/feeds.php:622
+#: classes/feeds.php:466 classes/feeds.php:622
 #, fuzzy, php-format
 msgid "Feeds last updated at %s"
 msgstr "Ενημερώθηκε τελευταία: %s"
 
-#: classes/feeds.php:478
-#: classes/feeds.php:634
+#: classes/feeds.php:478 classes/feeds.php:634
 msgid "Some feeds have update errors (click for details)"
 msgstr ""
 
@@ -2314,8 +2149,7 @@ msgstr "Το άρθρο δεν βρέθηκε."
 msgid "Tags for this article (separated by commas):"
 msgstr ""
 
-#: classes/article.php:276
-#: classes/article.php:548
+#: classes/article.php:276 classes/article.php:548
 msgid "no tags"
 msgstr "χωρίς ετικέτες"
 
@@ -2344,8 +2178,7 @@ msgstr "Ο κωδικός πρόσβασης έχει αλλάξει."
 msgid "Old password is incorrect."
 msgstr "Ο παλιός κωδικός πρόσβασης είναι λανθασμένος."
 
-#: plugins/vf_shared/init.php:17
-#: plugins/vf_shared/init.php:64
+#: plugins/vf_shared/init.php:17 plugins/vf_shared/init.php:64
 msgid "Shared articles"
 msgstr "Κοινόχρηστα άρθρα"
 
@@ -2364,8 +2197,7 @@ msgstr "Κοινόχρηστα άρθρα"
 msgid "Mark similar articles as read (af_psql_trgm)"
 msgstr "Σήμανση παραπάνω ως αναγνωσμένα"
 
-#: plugins/af_psql_trgm/init.php:164
-#: plugins/af_readability/init.php:70
+#: plugins/af_psql_trgm/init.php:164 plugins/af_readability/init.php:70
 #, fuzzy
 msgid "Global settings"
 msgstr "Συμπεριλάβετε ρυθμίσεις"
@@ -2375,7 +2207,10 @@ msgid "Minimum similarity:"
 msgstr ""
 
 #: plugins/af_psql_trgm/init.php:176
-msgid "PostgreSQL trigram extension returns string similarity as a floating point number (0-1). Setting it too low might produce false positives, zero disables checking."
+msgid ""
+"PostgreSQL trigram extension returns string similarity as a floating point "
+"number (0-1). Setting it too low might produce false positives, zero "
+"disables checking."
 msgstr ""
 
 #: plugins/af_psql_trgm/init.php:181
@@ -2387,8 +2222,7 @@ msgstr ""
 msgid "Enable for all feeds:"
 msgstr "Ενεργοποίηση κατηγοριών ροών"
 
-#: plugins/af_psql_trgm/init.php:205
-#: plugins/af_readability/init.php:117
+#: plugins/af_psql_trgm/init.php:205 plugins/af_readability/init.php:117
 msgid "Currently enabled for (click to edit):"
 msgstr ""
 
@@ -2401,8 +2235,7 @@ msgstr ""
 msgid "Mark similar articles as read"
 msgstr "Σήμανση παραπάνω ως αναγνωσμένα"
 
-#: plugins/note/init.php:26
-#: plugins/note/note.js:9
+#: plugins/note/init.php:26 plugins/note/note.js:9
 msgid "Edit article note"
 msgstr "Επεξεργασία σημείωσης άρθρου"
 
@@ -2415,8 +2248,7 @@ msgstr ""
 msgid "Enable proxy for all remote images."
 msgstr "Ενεργοποίηση κατηγοριών ροών"
 
-#: plugins/af_proxy_http/init.php:241
-#: plugins/af_redditimgur/init.php:98
+#: plugins/af_proxy_http/init.php:241 plugins/af_redditimgur/init.php:98
 #, fuzzy
 msgid "Configuration saved"
 msgstr "Η διαμόρφωση αποθηκεύτηκε."
@@ -2434,15 +2266,12 @@ msgstr "Πρόσθετα χρήστη"
 msgid "You can set predefined email addressed here (comma-separated list):"
 msgstr ""
 
-#: plugins/mail/init.php:120
-#: plugins/mail/init.php:128
-#: plugins/mailto/init.php:47
-#: plugins/mailto/init.php:55
+#: plugins/mail/init.php:120 plugins/mail/init.php:128
+#: plugins/mailto/init.php:47 plugins/mailto/init.php:55
 msgid "[Forwarded]"
 msgstr "[Προωθήθηκε]"
 
-#: plugins/mail/init.php:120
-#: plugins/mailto/init.php:47
+#: plugins/mail/init.php:120 plugins/mailto/init.php:47
 msgid "Multiple articles"
 msgstr "Πολλαπλά άρθρα"
 
@@ -2482,7 +2311,8 @@ msgid "Readability settings (af_readability)"
 msgstr ""
 
 #: plugins/af_readability/init.php:99
-msgid "Provide full-text services to core code (bookmarklets) and other plugins"
+msgid ""
+"Provide full-text services to core code (bookmarklets) and other plugins"
 msgstr ""
 
 #: plugins/af_readability/init.php:125
@@ -2508,7 +2338,9 @@ msgid "Bookmarklets"
 msgstr "Σελιδοδείκτες"
 
 #: plugins/bookmarklets/init.php:25
-msgid "Drag the link below to your browser toolbar, open the feed you're interested in in your browser and click on the link to subscribe to it."
+msgid ""
+"Drag the link below to your browser toolbar, open the feed you're interested "
+"in in your browser and click on the link to subscribe to it."
 msgstr ""
 
 #: plugins/bookmarklets/init.php:29
@@ -2533,8 +2365,7 @@ msgstr ""
 msgid "The following comics are currently supported:"
 msgstr ""
 
-#: plugins/nsfw/init.php:30
-#: plugins/nsfw/init.php:42
+#: plugins/nsfw/init.php:30 plugins/nsfw/init.php:42
 msgid "Not work safe (click to toggle)"
 msgstr ""
 
@@ -2560,7 +2391,8 @@ msgid "Forward selected article(s) by email."
 msgstr "Προώθηση άρθρου μέσω e-mail"
 
 #: plugins/mailto/init.php:78
-msgid "You should be able to edit the message before sending in your mail client."
+msgid ""
+"You should be able to edit the message before sending in your mail client."
 msgstr ""
 
 #: plugins/mailto/init.php:83
@@ -2626,15 +2458,9 @@ msgstr ""
 msgid "Please enter new score for selected articles:"
 msgstr "Εισάγετε τίτλο κατηγορίας:"
 
-#: js/Article.js:62
-#: plugins/mail/mail.js:9
-#: plugins/mailto/init.js:9
-#: js/Headlines.js:767
-#: js/Headlines.js:793
-#: js/Headlines.js:805
-#: js/Headlines.js:933
-#: js/Headlines.js:951
-#: js/Headlines.js:969
+#: js/Article.js:62 plugins/mail/mail.js:9 plugins/mailto/init.js:9
+#: js/Headlines.js:767 js/Headlines.js:793 js/Headlines.js:805
+#: js/Headlines.js:933 js/Headlines.js:951 js/Headlines.js:969
 #: js/Headlines.js:1110
 #, fuzzy
 msgid "No articles selected."
@@ -2682,7 +2508,9 @@ msgid "Subscribe to Feed"
 msgstr "Εγγραφή για Ροή"
 
 #: js/CommonDialogs.js:116
-msgid "Failed to parse output. This can indicate server timeout and/or network issues. Backend output was logged to browser console."
+msgid ""
+"Failed to parse output. This can indicate server timeout and/or network "
+"issues. Backend output was logged to browser console."
 msgstr ""
 
 #: js/CommonDialogs.js:131
@@ -2721,16 +2549,12 @@ msgstr "Εγγεγραμμένος σε %s"
 msgid "Feeds with update errors"
 msgstr "Ροές με σφάλματα ενημέρωσης"
 
-#: js/CommonDialogs.js:201
-#: js/PrefFeedTree.js:387
+#: js/CommonDialogs.js:201 js/PrefFeedTree.js:387
 msgid "Remove selected feeds?"
 msgstr "Αφαίρεση επιλεγμένων ροών;"
 
-#: js/CommonDialogs.js:222
-#: js/PrefFeedTree.js:172
-#: js/PrefFeedTree.js:234
-#: js/PrefFeedTree.js:250
-#: js/PrefFeedTree.js:406
+#: js/CommonDialogs.js:222 js/PrefFeedTree.js:172 js/PrefFeedTree.js:234
+#: js/PrefFeedTree.js:250 js/PrefFeedTree.js:406
 #, fuzzy
 msgid "No feeds selected."
 msgstr "Δεν επιλέχθηκε ροή."
@@ -2739,16 +2563,12 @@ msgstr "Δεν επιλέχθηκε ροή."
 msgid "Please enter label caption:"
 msgstr "Εισάγετε λεζάντα ετικέτας:"
 
-#: js/CommonDialogs.js:263
-#: js/CommonDialogs.js:299
-#: js/App.js:1160
+#: js/CommonDialogs.js:263 js/CommonDialogs.js:299 js/App.js:1160
 #, perl-format
 msgid "Unsubscribe from %s?"
 msgstr "Κατάργηση εγγραφής από %s;"
 
-#: js/CommonDialogs.js:289
-#: js/App.js:1012
-#: js/App.js:1140
+#: js/CommonDialogs.js:289 js/App.js:1012 js/App.js:1140
 msgid "You can't edit this kind of feed."
 msgstr ""
 
@@ -2800,7 +2620,8 @@ msgstr "Αφαίρεση κατηγορίας"
 
 #: js/PrefFeedTree.js:144
 #, perl-format
-msgid "Remove category %s? Any nested feeds would be placed into Uncategorized."
+msgid ""
+"Remove category %s? Any nested feeds would be placed into Uncategorized."
 msgstr ""
 
 #: js/PrefFeedTree.js:157
@@ -2846,9 +2667,7 @@ msgstr "Ροές χωρίς πρόσφατες ενημερώσεις"
 msgid "Inverse"
 msgstr "Αναστροφή"
 
-#: js/PrefFilterTree.js:110
-#: js/PrefFilterTree.js:126
-#: js/PrefFilterTree.js:156
+#: js/PrefFilterTree.js:110 js/PrefFilterTree.js:126 js/PrefFilterTree.js:156
 #, fuzzy
 msgid "No filters selected."
 msgstr "Δεν επιλέχθηκαν φίλτρα."
@@ -2885,7 +2704,8 @@ msgid "Settings Profiles"
 msgstr "Προφίλ Ρυθμίσεων"
 
 #: js/PrefHelpers.js:97
-msgid "Remove selected profiles? Active and default profiles will not be removed."
+msgid ""
+"Remove selected profiles? Active and default profiles will not be removed."
 msgstr ""
 
 #: js/PrefHelpers.js:112
@@ -2930,8 +2750,7 @@ msgstr "Κάντε κλικ για κλείσιμο"
 msgid "Related articles"
 msgstr "Κοινόχρηστα άρθρα"
 
-#: plugins/mail/mail.js:20
-#: plugins/mailto/init.js:20
+#: plugins/mail/mail.js:20 plugins/mailto/init.js:20
 msgid "Forward article by email"
 msgstr "Προώθηση άρθρου μέσω e-mail"
 
@@ -2976,8 +2795,7 @@ msgstr ""
 msgid "Please enable af_readability first."
 msgstr "Απαλοιφή επιλεγμένης ροής σε εξέλιξη..."
 
-#: js/App.js:1091
-#: js/App.js:1181
+#: js/App.js:1091 js/App.js:1181
 msgid "Widescreen is not available in combined mode."
 msgstr ""
 
@@ -3019,8 +2837,7 @@ msgstr ""
 msgid "Upload failed."
 msgstr "Πλήρης φόρτωση."
 
-#: js/CommonDialogs.js:202
-#: js/PrefFeedTree.js:388
+#: js/CommonDialogs.js:202 js/PrefFeedTree.js:388
 msgid "Removing selected feeds..."
 msgstr "Αφαίρεση επιλεγμένων ροών σε εξέλιξη..."
 
@@ -3028,20 +2845,16 @@ msgstr "Αφαίρεση επιλεγμένων ροών σε εξέλιξη..."
 msgid "Removing feed..."
 msgstr "Αφαίρεση ροής σε εξέλιξη..."
 
-#: js/CommonDialogs.js:306
-#: js/CommonFilters.js:304
-#: js/PrefFeedTree.js:297
+#: js/CommonDialogs.js:306 js/CommonFilters.js:304 js/PrefFeedTree.js:297
 #: js/PrefUsers.js:36
 msgid "Saving data..."
 msgstr "Αποθήκευση δεδομένων σε εξέλιξη..."
 
-#: js/CommonDialogs.js:336
-#: js/PrefHelpers.js:287
+#: js/CommonDialogs.js:336 js/PrefHelpers.js:287
 msgid "Trying to change address..."
 msgstr "Απόπειρα αλλαγής διεύθυνσης σε εξέλιξη..."
 
-#: js/CommonDialogs.js:356
-#: js/PrefHelpers.js:303
+#: js/CommonDialogs.js:356 js/PrefHelpers.js:303
 #, fuzzy
 msgid "Could not change feed URL."
 msgstr "Δημιουργία χρήστη"
@@ -3078,7 +2891,9 @@ msgid "(Un)collapse"
 msgstr "Ανάπτυξη/σύμπτυξη πλευρικής μπάρας"
 
 #: js/Feeds.js:229
-msgid "You are using default tt-rss password. Please change it in the Preferences (Personal data / Authentication)."
+msgid ""
+"You are using default tt-rss password. Please change it in the Preferences "
+"(Personal data / Authentication)."
 msgstr ""
 
 #: js/Feeds.js:398
@@ -3126,9 +2941,7 @@ msgstr "Όλα τα άρθρα"
 msgid "Mark all articles in %s as read?"
 msgstr "Αναβαθμολόγηση άρθρων σε %s;"
 
-#: js/Headlines.js:647
-#: js/Headlines.js:697
-#: js/Headlines.js:714
+#: js/Headlines.js:647 js/Headlines.js:697 js/Headlines.js:714
 #, fuzzy
 msgid "Click to open next unread feed."
 msgstr "Κάντε κλικ για επεξεργασία ροής"
@@ -3235,8 +3048,7 @@ msgstr "Ένωση φίλτρων σε εξέλιξη...."
 msgid "Removing selected filters..."
 msgstr "Αφαίρεση επιλεγμένων φίλτρων σε εξέλιξη..."
 
-#: js/PrefHelpers.js:45
-#: plugins/share/share_prefs.js:4
+#: js/PrefHelpers.js:45 plugins/share/share_prefs.js:4
 msgid "Clearing URLs..."
 msgstr "Απαλοιφή των URL..."
 
@@ -3253,11 +3065,15 @@ msgid "Creating profile..."
 msgstr "Δημιουργία προφίλ σε εξέλιξη..."
 
 #: js/PrefHelpers.js:175
-msgid "You can override colors, fonts and layout of your currently selected theme with custom CSS declarations here."
+msgid ""
+"You can override colors, fonts and layout of your currently selected theme "
+"with custom CSS declarations here."
 msgstr ""
 
 #: js/PrefHelpers.js:184
-msgid "User CSS has been applied, you might need to reload the page to see all changes."
+msgid ""
+"User CSS has been applied, you might need to reload the page to see all "
+"changes."
 msgstr ""
 
 #: js/PrefHelpers.js:240
@@ -3265,7 +3081,9 @@ msgid "Importing, please wait..."
 msgstr "Εισαγωγή σε εξέλιξη, παρακαλώ περιμένετε..."
 
 #: js/PrefHelpers.js:260
-msgid "If you have imported labels and/or filters, you might need to reload preferences to see your new data."
+msgid ""
+"If you have imported labels and/or filters, you might need to reload "
+"preferences to see your new data."
 msgstr ""
 
 #: js/PrefLabelTree.js:66
@@ -3277,8 +3095,7 @@ msgstr "Επεξεργαστής Ετικέτας"
 msgid "Reset selected labels to default colors?"
 msgstr "Αφαίρεση επιλεγμένων ετικετών;"
 
-#: js/PrefLabelTree.js:146
-#: js/PrefLabelTree.js:166
+#: js/PrefLabelTree.js:146 js/PrefLabelTree.js:166
 #, fuzzy
 msgid "No labels selected."
 msgstr "Δεν επιλέχθηκαν ετικέτες."
@@ -3304,15 +3121,12 @@ msgstr "Προσθήκη χρήστη σε εξέλιξη..."
 msgid "User Editor"
 msgstr "Επεξεργαστής Χρήστη"
 
-#: js/PrefUsers.js:54
-#: js/PrefUsers.js:93
-#: js/PrefUsers.js:100
+#: js/PrefUsers.js:54 js/PrefUsers.js:93 js/PrefUsers.js:100
 #, fuzzy
 msgid "No users selected."
 msgstr "Δεν επιλέχθηκαν χρήστες."
 
-#: js/PrefUsers.js:59
-#: js/PrefUsers.js:105
+#: js/PrefUsers.js:59 js/PrefUsers.js:105
 #, fuzzy
 msgid "Please select one user."
 msgstr "Αφαίρεση επιλεγμένων φίλτρων;"
@@ -3328,7 +3142,9 @@ msgid "Resetting password for selected user..."
 msgstr "Αφαίρεση επιλεγμένων χρηστών σε εξέλιξη..."
 
 #: js/PrefUsers.js:79
-msgid "Remove selected users? Neither default admin nor your account will be removed."
+msgid ""
+"Remove selected users? Neither default admin nor your account will be "
+"removed."
 msgstr ""
 
 #: js/PrefUsers.js:80

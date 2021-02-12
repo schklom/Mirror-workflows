@@ -13,28 +13,6 @@ class Dlg extends Handler_Protected {
 		return false;
 	}
 
-	function importOpml() {
-		print_notice("If you have imported labels and/or filters, you might need to reload preferences to see your new data.");
-
-		print "<div class='panel panel-scrollable'>";
-
-		$opml = new OPML($_REQUEST);
-
-		$opml->opml_import($_SESSION["uid"]);
-
-		print "</div>";
-
-		print "<footer class='text-center'>";
-		print "<button dojoType='dijit.form.Button'
-			onclick=\"dijit.byId('opmlImportDlg').execute()\">".
-			__('Close this window')."</button>";
-		print "</footer>";
-
-		print "</div>";
-
-		//return;
-	}
-
 	function printTagCloud() {
 		print "<div class='panel text-center'>";
 

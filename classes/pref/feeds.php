@@ -1194,6 +1194,11 @@ class Pref_Feeds extends Handler_Protected {
 		Feeds::add_feed_category($feed_cat);
 	}
 
+	function importOpml() {
+		$opml = new OPML($_REQUEST);
+		$opml->opml_import($_SESSION["uid"]);
+	}
+
 	function index() {
 
 		print "<div dojoType='dijit.layout.AccordionContainer' region='center'>";
@@ -1340,17 +1345,11 @@ class Pref_Feeds extends Handler_Protected {
 
 		print_notice("Only main settings profile can be migrated using OPML.");
 
-		print "<iframe id=\"upload_iframe\"
-			name=\"upload_iframe\" onload=\"Helpers.OPML.onImportComplete(this)\"
-			style=\"width: 400px; height: 100px; display: none;\"></iframe>";
-
-		print "<form  name='opml_form' style='display : inline-block' target='upload_iframe'
-			enctype='multipart/form-data' method='POST'
-			action='backend.php'>
+		print "<form id='opml_import_form' method='post' enctype='multipart/form-data' >
 			<label class='dijitButton'>".__("Choose file...")."
 				<input style='display : none' id='opml_file' name='opml_file' type='file'>&nbsp;
 			</label>
-			<input type='hidden' name='op' value='dlg'>
+			<input type='hidden' name='op' value='pref-feeds'>
 			<input type='hidden' name='csrf_token' value='".$_SESSION['csrf_token']."'>
 			<input type='hidden' name='method' value='importOpml'>
 			<button dojoType='dijit.form.Button' class='alt-primary' onclick=\"return Helpers.OPML.import();\" type=\"submit\">" .

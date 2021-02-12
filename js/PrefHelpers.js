@@ -220,9 +220,42 @@ const	Helpers = {
 			} else {
 				Notify.progress("Importing, please wait...", true);
 
-				Element.show("upload_iframe");
+				const xhr = new XMLHttpRequest();
 
-				return true;
+				xhr.open( 'POST', 'backend.php', true );
+				xhr.onload = function () {
+					Notify.close();
+
+					const dialog = new dijit.Dialog({
+						title: __("OPML Import"),
+						style: "width: 600px",
+						onCancel: function () {
+							window.location.reload();
+						},
+						execute: function () {
+							window.location.reload();
+						},
+						content: `
+							<div class='alert alert-info'>
+								${__("If you have imported labels and/or filters, you might need to reload preferences to see your new data.")}
+							</div>
+							<div class='panel panel-scrollable'>
+								${xhr.responseText}
+							</div>
+							<footer class='text-center'>
+								<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>
+									${__('Close this window')}
+								</button>
+							</footer>
+						`
+					});
+
+					dialog.show();
+				};
+
+				xhr.send(new FormData($("opml_import_form")));
+
+				return false;
 			}
 		},
 		onImportComplete: function(iframe) {

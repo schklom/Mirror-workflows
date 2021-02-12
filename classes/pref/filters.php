@@ -2,7 +2,7 @@
 class Pref_Filters extends Handler_Protected {
 
 	function csrf_ignore($method) {
-		$csrf_ignored = array("index", "getfiltertree", "edit", "newfilter", "newrule",
+		$csrf_ignored = array("index", "getfiltertree", "newrule",
 			"newaction", "savefilterorder");
 
 		return array_search($method, $csrf_ignored) !== false;
@@ -313,24 +313,30 @@ class Pref_Filters extends Handler_Protected {
 
 	function edit() {
 
-		$filter_id = clean($_REQUEST["id"]);
+		$filter_id = (int) clean($_REQUEST["id"] ?? 0);
 
 		$sth = $this->pdo->prepare("SELECT * FROM ttrss_filters2
 			WHERE id = ? AND owner_uid = ?");
 		$sth->execute([$filter_id, $_SESSION['uid']]);
 
-		if ($row = $sth->fetch()) {
+		if (empty($filter_id) || $row = $sth->fetch()) {
 
-			$enabled = $row["enabled"];
-			$match_any_rule = $row["match_any_rule"];
-			$inverse = $row["inverse"];
-			$title = htmlspecialchars($row["title"]);
+			$enabled = $row["enabled"] ?? true;
+			$match_any_rule = $row["match_any_rule"] ?? false;
+			$inverse = $row["inverse"] ?? false;
+			$title = htmlspecialchars($row["title"] ?? "");
 
-			print "<form id='filter_edit_form' onsubmit='return false'>";
+			print "<form onsubmit='return false'>";
 
 			print_hidden("op", "pref-filters");
-			print_hidden("id", "$filter_id");
-			print_hidden("method", "editSave");
+
+			if ($filter_id) {
+				print_hidden("id", "$filter_id");
+				print_hidden("method", "editSave");
+			} else {
+				print_hidden("method", "add");
+			}
+
 			print_hidden("csrf_token", $_SESSION['csrf_token']);
 
 			print "<header>".__("Caption")."</header>
@@ -358,35 +364,37 @@ class Pref_Filters extends Handler_Protected {
 
 			print "<ul id='filterDlg_Matches'>";
 
-			$rules_sth = $this->pdo->prepare("SELECT * FROM ttrss_filters2_rules
-				  WHERE filter_id = ? ORDER BY reg_exp, id");
-			$rules_sth->execute([$filter_id]);
+			if ($filter_id) {
+				$rules_sth = $this->pdo->prepare("SELECT * FROM ttrss_filters2_rules
+					WHERE filter_id = ? ORDER BY reg_exp, id");
+		 		$rules_sth->execute([$filter_id]);
 
-			while ($line = $rules_sth->fetch()) {
-				if ($line["match_on"]) {
-					$line["feed_id"] = json_decode($line["match_on"], true);
-				} else {
-					if ($line["cat_filter"]) {
-						$feed_id = "CAT:" . (int)$line["cat_id"];
+				while ($line = $rules_sth->fetch()) {
+					if ($line["match_on"]) {
+						$line["feed_id"] = json_decode($line["match_on"], true);
 					} else {
-						$feed_id = (int)$line["feed_id"];
+						if ($line["cat_filter"]) {
+							$feed_id = "CAT:" . (int)$line["cat_id"];
+						} else {
+							$feed_id = (int)$line["feed_id"];
+						}
+
+						$line["feed_id"] = ["" . $feed_id]; // set item type to string for in_array()
 					}
 
-					$line["feed_id"] = ["" . $feed_id]; // set item type to string for in_array()
+					unset($line["cat_filter"]);
+					unset($line["cat_id"]);
+					unset($line["filter_id"]);
+					unset($line["id"]);
+					if (!$line["inverse"]) unset($line["inverse"]);
+					unset($line["match_on"]);
+
+					$data = htmlspecialchars((string)json_encode($line));
+
+					print "<li><input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
+						<span onclick='App.dialogOf(this).editRule(this)'>".$this->getRuleName($line)."</span>".
+						format_hidden("rule[]", $data)."</li>";
 				}
-
-				unset($line["cat_filter"]);
-				unset($line["cat_id"]);
-				unset($line["filter_id"]);
-				unset($line["id"]);
-				if (!$line["inverse"]) unset($line["inverse"]);
-				unset($line["match_on"]);
-
-				$data = htmlspecialchars((string)json_encode($line));
-
-				print "<li><input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>".
-					"<span onclick='console.log(this);App.dialogOf(this).editRule(this)'>".$this->getRuleName($line)."</span>".
-					"<input type='hidden' name='rule[]' value=\"$data\"/></li>";
 			}
 
 			print "</ul>
@@ -412,79 +420,66 @@ class Pref_Filters extends Handler_Protected {
 
 			print "<ul id='filterDlg_Actions'>";
 
-			$actions_sth = $this->pdo->prepare("SELECT * FROM ttrss_filters2_actions
-				WHERE filter_id = ? ORDER BY id");
-			$actions_sth->execute([$filter_id]);
+			if ($filter_id) {
+				$actions_sth = $this->pdo->prepare("SELECT * FROM ttrss_filters2_actions
+					WHERE filter_id = ? ORDER BY id");
+				$actions_sth->execute([$filter_id]);
 
-			while ($line = $actions_sth->fetch()) {
-				$line["action_param_label"] = $line["action_param"];
+				while ($line = $actions_sth->fetch()) {
+					$line["action_param_label"] = $line["action_param"];
 
-				unset($line["filter_id"]);
-				unset($line["id"]);
+					unset($line["filter_id"]);
+					unset($line["id"]);
 
-				$data = htmlspecialchars((string)json_encode($line));
+					$data = htmlspecialchars((string)json_encode($line));
 
-				print "<li><input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>".
-					"<span onclick='App.dialogOf(this).editAction(this)'>".$this->getActionName($line)."</span>".
-					"<input type='hidden' name='action[]' value=\"$data\"/></li>";
+					print "<li><input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
+						<span onclick='App.dialogOf(this).editAction(this)'>".$this->getActionName($line)."</span>".
+						format_hidden("action[]", $data)."</li>";
+				}
 			}
 
 			print "</ul>";
 
 			print "</section>";
 
-			print "<header>".__("Options")."</header>";
-			print "<section>";
+			print "<header>".__("Options")."</header>
+				<section>";
 
-			if ($enabled) {
-				$checked = "checked=\"1\"";
+			print "<fieldset class='narrow'>
+				<label class='checkbox'>".format_checkbox('enabled', $enabled)." ".__('Enabled')."</label></fieldset>";
+
+			print "<fieldset class='narrow'>
+				<label class='checkbox'>".format_checkbox('match_any_rule', $match_any_rule)." ".__('Match any rule')."</label>
+				</fieldset>";
+
+			print "<fieldset class='narrow'><label class='checkbox'>".format_checkbox('inverse', $inverse)." ".__('Inverse matching')."</label>
+				</fieldset>";
+
+			print "</section>
+				<footer>";
+
+			if ($filter_id) {
+				print "<div style='float : left'>
+					<button dojoType='dijit.form.Button' class='alt-danger' onclick='App.dialogOf(this).removeFilter()'>".
+						__('Remove')."</button>
+					</div>
+					<button dojoType='dijit.form.Button' class='alt-info' onclick='App.dialogOf(this).test()'>".
+						__('Test')."</button>
+					<button dojoType='dijit.form.Button' type='submit' class='alt-primary' onclick='App.dialogOf(this).execute()'>".
+						__('Save')."</button>
+					<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
+						__('Cancel')."</button>";
 			} else {
-				$checked = "";
+				print "<button dojoType='dijit.form.Button' class='alt-info' onclick='App.dialogOf(this).test()'>".
+						__('Test')."</button>
+					<button dojoType='dijit.form.Button' type='submit' class='alt-primary' onclick='App.dialogOf(this).execute()'>".
+						__('Create')."</button>
+					<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
+						__('Cancel')."</button>";
 			}
 
-			print "<fieldset class='narrow'>";
-			print "<label class='checkbox'><input dojoType=\"dijit.form.CheckBox\" type=\"checkbox\" name=\"enabled\" id=\"enabled\" $checked>
-				".__('Enabled')."</label>";
-
-			if ($match_any_rule) {
-				$checked = "checked=\"1\"";
-			} else {
-				$checked = "";
-			}
-
-			print "</fieldset><fieldset class='narrow'>";
-
-			print "<label class='checkbox'><input dojoType=\"dijit.form.CheckBox\" type=\"checkbox\" name=\"match_any_rule\" id=\"match_any_rule\" $checked>
-				".__('Match any rule')."</label>";
-
-			print "</fieldset><fieldset class='narrow'>";
-
-			if ($inverse) {
-				$checked = "checked=\"1\"";
-			} else {
-				$checked = "";
-			}
-
-			print "<label class='checkbox'><input dojoType=\"dijit.form.CheckBox\" type=\"checkbox\" name=\"inverse\" id=\"inverse\" $checked>
-				".__('Inverse matching')."</label>";
-
-			print "</fieldset>";
-
-			print "</section>";
-
-			print "<footer>
-				<div style='float : left'>
-				<button dojoType='dijit.form.Button' class='alt-danger' onclick='App.dialogOf(this).removeFilter()'>".
-					__('Remove')."</button>
-				</div>
-				<button dojoType='dijit.form.Button' class='alt-info' onclick='App.dialogOf(this).test()'>".
-					__('Test')."</button>
-				<button dojoType='dijit.form.Button' type='submit' class='alt-primary' onclick='App.dialogOf(this).execute()'>".
-					__('Save')."</button>
-				<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
-					__('Cancel')."</button>
-				</footer>
-				</form>";
+			print "</footer></form>";
 		}
 	}
 
@@ -736,7 +731,7 @@ class Pref_Filters extends Handler_Protected {
 			dojoType=\"dijit.MenuItem\">".__('None')."</div>";
 		print "</div></div>";
 
-		print "<button dojoType=\"dijit.form.Button\" onclick=\"return Filters.quickAddFilter()\">".
+		print "<button dojoType=\"dijit.form.Button\" onclick=\"return Filters.edit()\">".
 			__('Create filter')."</button> ";
 
 		print "<button dojoType=\"dijit.form.Button\" onclick=\"return dijit.byId('filterTree').joinSelectedFilters()\">".
@@ -779,7 +774,7 @@ class Pref_Filters extends Handler_Protected {
 			var bare_id = id.substr(id.indexOf(':')+1);
 
 			if (id.match('FILTER:')) {
-				dijit.byId('filterTree').editFilter(bare_id);
+				Filters.edit(bare_id);
 			}
 		</script>
 
@@ -790,112 +785,6 @@ class Pref_Filters extends Handler_Protected {
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefFilters");
 
 		print "</div>"; #container
-
-	}
-
-	function newfilter() {
-
-		print "<form name='filter_new_form' id='filter_new_form' onsubmit='return false'>";
-
-		print_hidden("op", "pref-filters");
-		print_hidden("method", "add");
-		print_hidden("csrf_token", $_SESSION['csrf_token']);
-
-		print "<header>".__("Caption")."</header>";
-
-		print "<section>";
-		print "<input required='true' dojoType='dijit.form.ValidationTextBox' style='width : 20em;' name='title' value=''>";
-		print "</section>";
-
-		print "<header class='horizontal'>".__("Match")."</header >";
-		print "<section>";
-
-		print "<div dojoType='fox.Toolbar'>";
-
-		print "<div dojoType='fox.form.DropDownButton'>".
-				"<span>" . __('Select')."</span>";
-		print "<div dojoType='dijit.Menu' style='display: none'>";
-		print "<div onclick=\"dijit.byId('filterEditDlg').selectRules(true)\"
-			dojoType='dijit.MenuItem'>".__('All')."</div>";
-		print "<div onclick=\"dijit.byId('filterEditDlg').selectRules(false)\"
-			dojoType='dijit.MenuItem'>".__('None')."</div>";
-		print "</div></div>";
-
-		print "<button dojoType='dijit.form.Button' onclick=\"return dijit.byId('filterEditDlg').addRule()\">".
-			__('Add')."</button> ";
-
-		print "<button dojoType='dijit.form.Button' onclick=\"return dijit.byId('filterEditDlg').deleteRule()\">".
-			__('Delete')."</button> ";
-
-		print "</div>";
-
-		print "<ul id='filterDlg_Matches'>";
-#		print "<li>No rules</li>";
-		print "</ul>";
-
-		print "</section>";
-
-		print "<header class='horizontal'>".__("Apply actions")."</header>";
-
-		print "<section>";
-
-		print "<div dojoType='fox.Toolbar'>";
-
-		print "<div dojoType='fox.form.DropDownButton'>".
-				"<span>" . __('Select')."</span>";
-		print "<div dojoType='dijit.Menu' style='display: none'>";
-		print "<div onclick=\"dijit.byId('filterEditDlg').selectActions(true)\"
-			dojoType='dijit.MenuItem'>".__('All')."</div>";
-		print "<div onclick=\"dijit.byId('filterEditDlg').selectActions(false)\"
-			dojoType='dijit.MenuItem'>".__('None')."</div>";
-		print "</div></div>";
-
-		print "<button dojoType='dijit.form.Button' onclick=\"return dijit.byId('filterEditDlg').addAction()\">".
-			__('Add')."</button> ";
-
-		print "<button dojoType='dijit.form.Button' onclick=\"return dijit.byId('filterEditDlg').deleteAction()\">".
-			__('Delete')."</button> ";
-
-		print "</div>";
-
-		print "<ul id='filterDlg_Actions'>";
-#		print "<li>No actions</li>";
-		print "</ul>";
-
-		print "</section>";
-
-		print "<header>".__("Options")."</header>";
-
-		print "<section>";
-		print "<fieldset class='narrow'>";
-
-		print "<label class='checkbox'><input dojoType='dijit.form.CheckBox' type='checkbox' name='enabled' id='enabled' checked='1'>
-				".__('Enabled')."</label>";
-
-		print "</fieldset><fieldset class='narrow'>";
-
-		print "<label class='checkbox'><input dojoType='dijit.form.CheckBox' type='checkbox' name='match_any_rule' id='match_any_rule'>
-				".__('Match any rule')."</label>";
-
-		print "</fieldset><fieldset class='narrow'>";
-
-		print "<label class='checkbox'><input dojoType='dijit.form.CheckBox' type='checkbox' name='inverse' id='inverse'>
-				".__('Inverse matching')."</label>";
-
-		print "</fieldset>";
-
-		print "</section>";
-
-		print "<footer>";
-
-		print "<button dojoType='dijit.form.Button' class='alt-info' onclick=\"return dijit.byId('filterEditDlg').test()\">".
-			__('Test')."</button> ";
-		print "<button dojoType='dijit.form.Button' type='submit' class='alt-primary' onclick=\"return dijit.byId('filterEditDlg').execute()\">".
-			__('Create')."</button> ";
-		print "<button dojoType='dijit.form.Button' onclick=\"return dijit.byId('filterEditDlg').hide()\">".
-			__('Cancel')."</button>";
-
-		print "</footer>";
 
 	}
 

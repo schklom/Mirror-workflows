@@ -96,7 +96,8 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 					};
 
 					xhrPost("backend.php", query, () => {
-						dijit.byId("filterTree").reload(); // maybe there's labels in there
+						const tree = dijit.byId("filterTree");
+						if (tree) tree.reload(); // maybe there's labels in there
 					});
 
 				},
@@ -111,7 +112,8 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 						this.hide();
 
 						xhrPost("backend.php", this.attr('value'), () => {
-							dijit.byId("filterTree").reload(); // maybe there's labels in there
+							const tree = dijit.byId("filterTree");
+							if (tree) tree.reload(); // maybe there's labels in there
 						});
 					}
 				},

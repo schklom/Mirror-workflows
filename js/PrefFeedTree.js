@@ -297,7 +297,10 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 
 							xhrPost("backend.php", query, () => {
 								dialog.hide();
-								dijit.byId("feedTree").reload();
+
+								const tree = dijit.byId("feedTree");
+
+								if (tree) tree.reload();
 							});
 						}
 					},
@@ -351,7 +354,10 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 
 						xhrPost("backend.php", this.attr('value'), () => {
 							Notify.close();
-							dijit.byId("feedTree").reload();
+
+							const tree = dijit.byId("feedTree");
+							if (tree) tree.reload();
+
 							dialog.hide();
 						});
 					}
@@ -387,7 +393,10 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 
 							xhrPost("backend.php", query, () => {
 								Notify.close();
-								dijit.byId("feedTree").reload();
+
+								const tree = dijit.byId("feedTree");
+								if (tree) tree.reload();
+
 								dialog.hide();
 							});
 						}

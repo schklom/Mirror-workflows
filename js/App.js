@@ -18,7 +18,7 @@ const App = {
    LABEL_BASE_INDEX: -1024,
    FormFields: {
       hidden: function(name, value) {
-         return `<input dojoType="dijit.form.TextBox" style="display : none" name="${name}" value="${value}"></input>`
+         return `<input dojoType="dijit.form.TextBox" style="display : none" name="${name}" value="${App.escapeHtml(value)}"></input>`
       }
    },
    Scrollable: {
@@ -884,7 +884,7 @@ const App = {
          };
 
          this.hotkey_actions["create_filter"] = () => {
-            Filters.quickAddFilter();
+            Filters.edit();
          };
 
          this.hotkey_actions["help_dialog"] = () => {
@@ -1115,7 +1115,7 @@ const App = {
             CommonDialogs.addLabel();
          };
          this.hotkey_actions["create_filter"] = () => {
-            Filters.quickAddFilter();
+            Filters.edit();
          };
          this.hotkey_actions["collapse_sidebar"] = () => {
             Feeds.toggle();

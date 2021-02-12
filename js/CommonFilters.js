@@ -35,33 +35,17 @@ const	Filters = {
 		}
 	},
 	createNewRuleElement: function(parentNode, replaceNode) {
-		const form = document.forms["filter_new_rule_form"];
-		const query = {op: "pref-filters", method: "printrulename", rule: dojo.formToJson(form)};
+		const rule = dojo.formToJson("filter_new_rule_form");
 
-		xhrPost("backend.php", query, (transport) => {
+		xhrPost("backend.php", {op: "pref-filters", method: "printrulename", rule: rule}, (transport) => {
 			try {
-				const li = dojo.create("li");
+				const li = document.createElement('li');
 
-				const cb = dojo.create("input", {type: "checkbox"}, li);
+				li.innerHTML = `<input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
+						<span onclick='App.dialogOf(this).editRule(this)'>${transport.responseText}</span>
+					${App.FormFields.hidden("rule[]", rule)}`;
 
-				new dijit.form.CheckBox({
-					onChange: function () {
-						Lists.onRowChecked(this);
-					},
-				}, cb);
-
-				dojo.create("input", {
-					type: "hidden",
-					name: "rule[]",
-					value: dojo.formToJson(form)
-				}, li);
-
-				dojo.create("span", {
-					onclick: function () {
-						dijit.byId('filterEditDlg').editRule(this);
-					},
-					innerHTML: transport.responseText
-				}, li);
+				dojo.parser.parse(li);
 
 				if (replaceNode) {
 					parentNode.replaceChild(li, replaceNode);
@@ -82,35 +66,17 @@ const	Filters = {
 			form.action_param.value = form.action_param_plugin.value;
 		}
 
-		const query = {
-			op: "pref-filters", method: "printactionname",
-			action: dojo.formToJson(form)
-		};
+		const action = dojo.formToJson(form);
 
-		xhrPost("backend.php", query, (transport) => {
+		xhrPost("backend.php", { op: "pref-filters", method: "printactionname", action: action }, (transport) => {
 			try {
-				const li = dojo.create("li");
+				const li = document.createElement('li');
 
-				const cb = dojo.create("input", {type: "checkbox"}, li);
+				li.innerHTML = `<input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
+						<span onclick='App.dialogOf(this).editAction(this)'>${transport.responseText}</span>
+					${App.FormFields.hidden("action[]", action)}`;
 
-				new dijit.form.CheckBox({
-					onChange: function () {
-						Lists.onRowChecked(this);
-					},
-				}, cb);
-
-				dojo.create("input", {
-					type: "hidden",
-					name: "action[]",
-					value: dojo.formToJson(form)
-				}, li);
-
-				dojo.create("span", {
-					onclick: function () {
-						dijit.byId('filterEditDlg').editAction(this);
-					},
-					innerHTML: transport.responseText
-				}, li);
+				dojo.parser.parse(li);
 
 				if (replaceNode) {
 					parentNode.replaceChild(li, replaceNode);
@@ -170,7 +136,7 @@ const	Filters = {
 
 		rule_dlg.show();
 	},
-	editFilterTest: function(params) {
+	test: function(params) {
 
 		if (dijit.byId("filterTestDlg"))
 			dijit.byId("filterTestDlg").destroyRecursive();
@@ -268,123 +234,143 @@ const	Filters = {
 
 		test_dlg.show();
 	},
-	quickAddFilter: function() {
+	edit: function(id) { // if no id, new filter dialog
 		let query;
 
 		if (!App.isPrefs()) {
 			query = {
-				op: "pref-filters", method: "newfilter",
+				op: "pref-filters", method: "edit",
 				feed: Feeds.getActive(), is_cat: Feeds.activeIsCat()
 			};
 		} else {
-			query = {op: "pref-filters", method: "newfilter"};
+			query = {op: "pref-filters", method: "edit", id: id};
 		}
 
-		console.log('quickAddFilter', query);
+		console.log('Filters.edit', query);
 
-		if (dijit.byId("feedEditDlg"))
-			dijit.byId("feedEditDlg").destroyRecursive();
+		xhrPost("backend.php", query, function (transport) {
+			if (dijit.byId("feedEditDlg"))
+				dijit.byId("feedEditDlg").destroyRecursive();
 
-		if (dijit.byId("filterEditDlg"))
-			dijit.byId("filterEditDlg").destroyRecursive();
+			if (dijit.byId("filterEditDlg"))
+				dijit.byId("filterEditDlg").destroyRecursive();
 
-		const dialog = new dijit.Dialog({
-			id: "filterEditDlg",
-			title: __("Create Filter"),
-			test: function () {
-				Filters.editFilterTest(dojo.formToObject("filter_new_form"));
-			},
-			selectRules: function (select) {
-				Lists.select("filterDlg_Matches", select);
-			},
-			selectActions: function (select) {
-				Lists.select("filterDlg_Actions", select);
-			},
-			editRule: function (e) {
-				const li = e.parentNode;
-				const rule = li.getElementsByTagName("INPUT")[1].value;
-				Filters.addFilterRule(li, rule);
-			},
-			editAction: function (e) {
-				const li = e.parentNode;
-				const action = li.getElementsByTagName("INPUT")[1].value;
-				Filters.addFilterAction(li, action);
-			},
-			addAction: function () {
-				Filters.addFilterAction();
-			},
-			addRule: function () {
-				Filters.addFilterRule();
-			},
-			deleteAction: function () {
-				$$("#filterDlg_Actions li[class*=Selected]").each(function (e) {
-					e.parentNode.removeChild(e)
-				});
-			},
-			deleteRule: function () {
-				$$("#filterDlg_Matches li[class*=Selected]").each(function (e) {
-					e.parentNode.removeChild(e)
-				});
-			},
-			execute: function () {
-				if (this.validate()) {
+			const dialog = new dijit.Dialog({
+				id: "filterEditDlg",
+				title: __("Create Filter"),
+				test: function () {
+					Filters.test(this.attr('value'));
+				},
+				selectRules: function (select) {
+					Lists.select("filterDlg_Matches", select);
+				},
+				selectActions: function (select) {
+					Lists.select("filterDlg_Actions", select);
+				},
+				editRule: function (e) {
+					const li = e.closest('li');
+					const rule = li.querySelector('input[name="rule[]"]').value
 
-					const query = dojo.formToQuery("filter_new_form");
+					Filters.addFilterRule(li, rule);
+				},
+				editAction: function (e) {
+					const li = e.closest('li');
+					const action = li.querySelector('input[name="action[]"]').value
 
-					xhrPost("backend.php", query, () => {
-						if (App.isPrefs()) {
-							dijit.byId("filterTree").reload();
-						}
+					Filters.addFilterAction(li, action);
+				},
+				removeFilter: function () {
+					const msg = __("Remove filter?");
 
-						dialog.hide();
+					if (confirm(msg)) {
+						this.hide();
+
+						Notify.progress("Removing filter...");
+
+						const query = {op: "pref-filters", method: "remove", ids: this.attr('value').id};
+
+						xhrPost("backend.php", query, () => {
+							const tree = dijit.byId("filterTree");
+
+							if (tree) tree.reload();
+						});
+					}
+				},
+				addAction: function () {
+					Filters.addFilterAction();
+				},
+				addRule: function () {
+					Filters.addFilterRule();
+				},
+				deleteAction: function () {
+					$$("#filterDlg_Actions li[class*=Selected]").each(function (e) {
+						e.parentNode.removeChild(e)
 					});
-				}
-			},
-			href: "backend.php?" + dojo.objectToQuery(query)
-		});
-
-		if (!App.isPrefs()) {
-			/* global getSelectionText */
-			const selectedText = getSelectionText();
-
-			const lh = dojo.connect(dialog, "onLoad", function () {
-				dojo.disconnect(lh);
-
-				if (selectedText != "") {
-
-					const feed_id = Feeds.activeIsCat() ? 'CAT:' + parseInt(Feeds.getActive()) :
-						Feeds.getActive();
-
-					const rule = {reg_exp: selectedText, feed_id: [feed_id], filter_type: 1};
-
-					Filters.addFilterRule(null, dojo.toJson(rule));
-
-				} else {
-
-					const query = {op: "rpc", method: "getlinktitlebyid", id: Article.getActive()};
-
-					xhrPost("backend.php", query, (transport) => {
-						const reply = JSON.parse(transport.responseText);
-
-						let title = false;
-
-						if (reply && reply.title) title = reply.title;
-
-						if (title || Feeds.getActive() || Feeds.activeIsCat()) {
-
-							console.log(title + " " + Feeds.getActive());
-
-							const feed_id = Feeds.activeIsCat() ? 'CAT:' + parseInt(Feeds.getActive()) :
-								Feeds.getActive();
-
-							const rule = {reg_exp: title, feed_id: [feed_id], filter_type: 1};
-
-							Filters.addFilterRule(null, dojo.toJson(rule));
-						}
+				},
+				deleteRule: function () {
+					$$("#filterDlg_Matches li[class*=Selected]").each(function (e) {
+						e.parentNode.removeChild(e)
 					});
-				}
+				},
+				execute: function () {
+					if (this.validate()) {
+
+						Notify.progress("Saving data...", true);
+
+						xhrPost("backend.php", this.attr('value'), () => {
+							dialog.hide();
+
+							const tree = dijit.byId("filterTree");
+							if (tree) tree.reload();
+						});
+					}
+				},
+				content: transport.responseText
 			});
-		}
-		dialog.show();
+
+			if (!App.isPrefs()) {
+				/* global getSelectionText */
+				const selectedText = getSelectionText();
+
+				const lh = dojo.connect(dialog, "onLoad", function () {
+					dojo.disconnect(lh);
+
+					if (selectedText != "") {
+
+						const feed_id = Feeds.activeIsCat() ? 'CAT:' + parseInt(Feeds.getActive()) :
+							Feeds.getActive();
+
+						const rule = {reg_exp: selectedText, feed_id: [feed_id], filter_type: 1};
+
+						Filters.addFilterRule(null, dojo.toJson(rule));
+
+					} else {
+
+						const query = {op: "rpc", method: "getlinktitlebyid", id: Article.getActive()};
+
+						xhrPost("backend.php", query, (transport) => {
+							const reply = JSON.parse(transport.responseText);
+
+							let title = false;
+
+							if (reply && reply.title) title = reply.title;
+
+							if (title || Feeds.getActive() || Feeds.activeIsCat()) {
+
+								console.log(title + " " + Feeds.getActive());
+
+								const feed_id = Feeds.activeIsCat() ? 'CAT:' + parseInt(Feeds.getActive()) :
+									Feeds.getActive();
+
+								const rule = {reg_exp: title, feed_id: [feed_id], filter_type: 1};
+
+								Filters.addFilterRule(null, dojo.toJson(rule));
+							}
+						});
+					}
+				});
+			}
+			dialog.show();
+		});
 	},
 };

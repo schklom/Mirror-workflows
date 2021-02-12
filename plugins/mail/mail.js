@@ -1,7 +1,9 @@
+/* global Plugins, Headlines, xhrJson, Notify, fox, __ */
+
 Plugins.Mail = {
 	send: function(id) {
 		if (!id) {
-			let ids = Headlines.getSelected();
+			const ids = Headlines.getSelected();
 
 			if (ids.length == 0) {
 				alert(__("No articles selected."));
@@ -11,12 +13,9 @@ Plugins.Mail = {
 			id = ids.toString();
 		}
 
-		if (dijit.byId("emailArticleDlg"))
-			dijit.byId("emailArticleDlg").destroyRecursive();
-
 		const query = "backend.php?op=pluginhandler&plugin=mail&method=emailArticle&param=" + encodeURIComponent(id);
 
-		const dialog = new dijit.Dialog({
+		const dialog = new fox.SingleUseDialog({
 			id: "emailArticleDlg",
 			title: __("Forward article by email"),
 			execute: function () {

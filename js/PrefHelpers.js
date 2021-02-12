@@ -1,6 +1,6 @@
 'use strict';
 
-/* global __, dijit, dojo, Tables, xhrPost, Notify, xhrJson, App */
+/* global __, dijit, dojo, Tables, xhrPost, Notify, xhrJson, App, fox */
 
 const	Helpers = {
 	AppPasswords: {
@@ -83,14 +83,7 @@ const	Helpers = {
 		},
 	},
 	editProfiles: function() {
-
-		if (dijit.byId("profileEditDlg"))
-			dijit.byId("profileEditDlg").destroyRecursive();
-
-		const query = "backend.php?op=pref-prefs&method=editPrefProfiles";
-
-		// noinspection JSUnusedGlobalSymbols
-		const dialog = new dijit.Dialog({
+		const dialog = new fox.SingleUseDialog({
 			id: "profileEditDlg",
 			title: __("Settings Profiles"),
 			getSelectedProfiles: function () {
@@ -110,7 +103,7 @@ const	Helpers = {
 
 						xhrPost("backend.php", query, () => {
 							Notify.close();
-							Helpers.editProfiles();
+							dialog.refresh();
 						});
 					}
 
@@ -126,10 +119,15 @@ const	Helpers = {
 
 					xhrPost("backend.php", query, () => {
 						Notify.close();
-						Helpers.editProfiles();
+						dialog.refresh();
 					});
 
 				}
+			},
+			refresh: function() {
+				xhrPost("backend.php", {op: 'pref-prefs', method: 'editPrefProfiles'}, (transport) => {
+					dialog.attr('content', transport.responseText);
+				});
 			},
 			execute: function () {
 				const sel_rows = this.getSelectedProfiles();
@@ -147,15 +145,16 @@ const	Helpers = {
 					alert(__("Please choose a profile to activate."));
 				}
 			},
-			href: query
+			content: ""
 		});
 
+		dialog.refresh();
 		dialog.show();
 	},
 	customizeCSS: function() {
 		xhrJson("backend.php", {op: "pref-prefs", method: "customizeCSS"}, (reply) => {
 
-			const dialog = new dijit.Dialog({
+			const dialog = new fox.SingleUseDialog({
 				title: __("Customize stylesheet"),
 				apply: function() {
 					xhrPost("backend.php", this.attr('value'), () => {
@@ -245,13 +244,15 @@ const	Helpers = {
 				xhr.onload = function () {
 					Notify.close();
 
-					const dialog = new dijit.Dialog({
+					const dialog = new fox.SingleUseDialog({
 						title: __("OPML Import"),
 						onCancel: function () {
-							window.location.reload();
+							this.execute();
 						},
 						execute: function () {
-							window.location.reload();
+							const tree = dijit.byId('feedTree');
+
+							if (tree) tree.reload();
 						},
 						content: `
 							<div class='alert alert-info'>

@@ -1,11 +1,10 @@
+/* global Plugins, xhrJson, Notify, fox, xhrPost, __ */
+
 Plugins.Share = {
 	shareArticle: function(id) {
-		if (dijit.byId("shareArticleDlg"))
-			dijit.byId("shareArticleDlg").destroyRecursive();
-
 		const query = "backend.php?op=pluginhandler&plugin=share&method=shareArticle&param=" + encodeURIComponent(id);
 
-		const dialog = new dijit.Dialog({
+		const dialog = new fox.SingleUseDialog({
 			id: "shareArticleDlg",
 			title: __("Share article by URL"),
 			newurl: function () {
@@ -73,7 +72,4 @@ Plugins.Share = {
 		const img = $("SHARE-IMG-" + id);
 		img.addClassName("shared");
 	}
-};
-
-
-
+}

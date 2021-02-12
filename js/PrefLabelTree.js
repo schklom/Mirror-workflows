@@ -1,4 +1,4 @@
-/* global __, define, lib, dijit, dojo, xhrPost, Notify */
+/* global __, define, lib, dijit, dojo, xhrPost, Notify, fox */
 
 define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/form/DropDownButton"], function (declare, domConstruct) {
 
@@ -62,10 +62,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 			const query = "backend.php?op=pref-labels&method=edit&id=" +
 				encodeURIComponent(id);
 
-			if (dijit.byId("labelEditDlg"))
-				dijit.byId("labelEditDlg").destroyRecursive();
-
-			const dialog = new dijit.Dialog({
+			const dialog = new fox.SingleUseDialog({
 				id: "labelEditDlg",
 				title: __("Label Editor"),
 				style: "width: 650px",

@@ -1,6 +1,6 @@
 'use strict'
 
-/* global __, ngettext, dojo, dijit, Notify, App, Feeds, $$, xhrPost, xhrJson, Tables, Effect */
+/* global __, ngettext, dojo, dijit, Notify, App, Feeds, $$, xhrPost, xhrJson, Tables, Effect, fox */
 
 /* exported CommonDialogs */
 const	CommonDialogs = {
@@ -75,16 +75,11 @@ const	CommonDialogs = {
 			return false;
 		},
 		quickAddFeed: function() {
-
-			// overlapping widgets
-			if (dijit.byId("batchSubDlg")) dijit.byId("batchSubDlg").destroyRecursive();
-			if (dijit.byId("feedAddDlg")) dijit.byId("feedAddDlg").destroyRecursive();
-
 			xhrPost("backend.php",
 					{op: "feeds", method: "quickAddFeed"},
 					(transport) => {
 
-						const dialog = new dijit.Dialog({
+						const dialog = new fox.SingleUseDialog({
 							id: "feedAddDlg",
 							title: __("Subscribe to Feed"),
 							content: transport.responseText,
@@ -192,10 +187,7 @@ const	CommonDialogs = {
 		showFeedsWithErrors: function() {
 			const query = {op: "pref-feeds", method: "feedsWithErrors"};
 
-			if (dijit.byId("errorFeedsDlg"))
-				dijit.byId("errorFeedsDlg").destroyRecursive();
-
-			const dialog = new dijit.Dialog({
+			const dialog = new fox.SingleUseDialog({
 				id: "errorFeedsDlg",
 				title: __("Feeds with update errors"),
 				getSelectedFeeds: function () {
@@ -298,13 +290,7 @@ const	CommonDialogs = {
 
 			console.log("editFeed", query);
 
-			if (dijit.byId("filterEditDlg"))
-				dijit.byId("filterEditDlg").destroyRecursive();
-
-			if (dijit.byId("feedEditDlg"))
-				dijit.byId("feedEditDlg").destroyRecursive();
-
-			const dialog = new dijit.Dialog({
+			const dialog = new fox.SingleUseDialog({
 				id: "feedEditDlg",
 				title: __("Edit Feed"),
 				execute: function () {
@@ -363,10 +349,7 @@ const	CommonDialogs = {
 
 			xhrJson("backend.php", {op: "pref-feeds", method: "getOPMLKey"}, (reply) => {
 				try {
-					if (dijit.byId("publicOPMLDlg"))
-						dijit.byId("publicOPMLDlg").destroyRecursive();
-
-					const dialog = new dijit.Dialog({
+					const dialog = new fox.SingleUseDialog({
 						title: __("Public OPML URL"),
 						id: 'publicOPMLDlg',
 						onCancel: function () {
@@ -411,14 +394,10 @@ const	CommonDialogs = {
 
 			xhrJson("backend.php", {op: "pref-feeds", method: "getFeedKey", id: feed, is_cat: is_cat}, (reply) => {
 				try {
-					if (dijit.byId("genFeedDlg"))
-						dijit.byId("genFeedDlg").destroyRecursive();
-
 					const feed_title = Feeds.getName(feed, is_cat);
-
 					const secret_url = rss_url + "&key=" + encodeURIComponent(reply.link);
 
-					const dialog = new dijit.Dialog({
+					const dialog = new fox.SingleUseDialog({
 						title: __("Show as feed"),
 						id: 'genFeedDlg',
 						onCancel: function () {

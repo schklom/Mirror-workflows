@@ -1,11 +1,10 @@
+/* global Plugins, xhrJson, Notify, fox, __ */
+
 Plugins.Note = {
 	edit: function(id) {
 		const query = "backend.php?op=pluginhandler&plugin=note&method=edit&param=" + encodeURIComponent(id);
 
-		if (dijit.byId("editNoteDlg"))
-			dijit.byId("editNoteDlg").destroyRecursive();
-
-		const dialog = new dijit.Dialog({
+		const dialog = new fox.SingleUseDialog({
 			id: "editNoteDlg",
 			title: __("Edit article note"),
 			execute: function () {

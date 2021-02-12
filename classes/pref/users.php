@@ -12,7 +12,7 @@ class Pref_Users extends Handler_Protected {
 		}
 
 		function csrf_ignore($method) {
-			$csrf_ignored = array("index", "edit", "userdetails");
+			$csrf_ignored = array("index", "userdetails");
 
 			return array_search($method, $csrf_ignored) !== false;
 		}

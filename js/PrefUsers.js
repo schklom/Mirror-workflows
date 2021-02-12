@@ -1,7 +1,7 @@
 'use strict'
 
 /* global __  */
-/* global xhrPost, dojo, dijit, Notify, Tables */
+/* global xhrPost, dojo, dijit, Notify, Tables, fox */
 
 const	Users = {
 	reload: function(sort) {
@@ -27,29 +27,25 @@ const	Users = {
 		}
 	},
 	edit: function(id) {
-		const query = "backend.php?op=pref-users&method=edit&id=" +
-			encodeURIComponent(id);
+		xhrPost('backend.php', {op: 'pref-users', method: 'edit', id: id}, (transport) => {
+			const dialog = new fox.SingleUseDialog({
+				id: "userEditDlg",
+				title: __("User Editor"),
+				execute: function () {
+					if (this.validate()) {
+						Notify.progress("Saving data...", true);
 
-		if (dijit.byId("userEditDlg"))
-			dijit.byId("userEditDlg").destroyRecursive();
+						xhrPost("backend.php", dojo.formToObject("user_edit_form"), (/* transport */) => {
+							dialog.hide();
+							Users.reload();
+						});
+					}
+				},
+				content: transport.responseText
+			});
 
-		const dialog = new dijit.Dialog({
-			id: "userEditDlg",
-			title: __("User Editor"),
-			execute: function () {
-				if (this.validate()) {
-					Notify.progress("Saving data...", true);
-
-					xhrPost("backend.php", dojo.formToObject("user_edit_form"), (/* transport */) => {
-						dialog.hide();
-						Users.reload();
-					});
-				}
-			},
-			href: query
+			dialog.show();
 		});
-
-		dialog.show();
 	},
 	resetSelected: function() {
 		const rows = this.getSelection();

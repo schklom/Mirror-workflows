@@ -1,4 +1,4 @@
-/* global __, lib, dijit, define, dojo, CommonDialogs, Notify, Tables, xhrPost */
+/* global __, lib, dijit, define, dojo, CommonDialogs, Notify, Tables, xhrPost, fox, App */
 
 define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], function (declare, domConstruct) {
 
@@ -250,64 +250,65 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 
 			Notify.progress("Loading, please wait...");
 
-			if (dijit.byId("feedEditDlg"))
-				dijit.byId("feedEditDlg").destroyRecursive();
-
 			xhrPost("backend.php", {op: "pref-feeds", method: "editfeeds", ids: rows.toString()}, (transport) => {
 				Notify.close();
 
-				const dialog = new dijit.Dialog({
-					id: "feedEditDlg",
-					title: __("Edit Multiple Feeds"),
-					getChildByName: function (name) {
-						let rv = null;
-						this.getChildren().each(
-							function (child) {
-								if (child.name == name) {
-									rv = child;
-									return;
-								}
-							});
-						return rv;
-					},
-					toggleField: function (checkbox, elem, label) {
-						this.getChildByName(elem).attr('disabled', !checkbox.checked);
+				try {
+					const dialog = new fox.SingleUseDialog({
+						id: "feedEditDlg",
+						title: __("Edit Multiple Feeds"),
+						getChildByName: function (name) {
+							let rv = null;
+							this.getChildren().each(
+								function (child) {
+									if (child.name == name) {
+										rv = child;
+										return;
+									}
+								});
+							return rv;
+						},
+						toggleField: function (checkbox, elem, label) {
+							this.getChildByName(elem).attr('disabled', !checkbox.checked);
 
-						if ($(label))
-							if (checkbox.checked)
-								$(label).removeClassName('text-muted');
-							else
-								$(label).addClassName('text-muted');
+							if ($(label))
+								if (checkbox.checked)
+									$(label).removeClassName('text-muted');
+								else
+									$(label).addClassName('text-muted');
 
-					},
-					execute: function () {
-						if (this.validate() && confirm(__("Save changes to selected feeds?"))) {
-							const query = this.attr('value');
+						},
+						execute: function () {
+							if (this.validate() && confirm(__("Save changes to selected feeds?"))) {
+								const query = this.attr('value');
 
-							/* normalize unchecked checkboxes because [] is not serialized */
+								/* normalize unchecked checkboxes because [] is not serialized */
 
-							Object.keys(query).each((key) => {
-								let val = query[key];
+								Object.keys(query).each((key) => {
+									let val = query[key];
 
-								if (typeof val == "object" && val.length == 0)
-									query[key] = ["off"];
-							});
+									if (typeof val == "object" && val.length == 0)
+										query[key] = ["off"];
+								});
 
-							Notify.progress("Saving data...", true);
+								Notify.progress("Saving data...", true);
 
-							xhrPost("backend.php", query, () => {
-								dialog.hide();
+								xhrPost("backend.php", query, () => {
+									dialog.hide();
 
-								const tree = dijit.byId("feedTree");
+									const tree = dijit.byId("feedTree");
 
-								if (tree) tree.reload();
-							});
-						}
-					},
-					content: transport.responseText
-				});
+									if (tree) tree.reload();
+								});
+							}
+						},
+						content: transport.responseText
+					});
 
-				dialog.show();
+					dialog.show();
+				} catch (e) {
+					App.Error.report(e);
+				}
 			});
 		},
 		editCategory: function(id, item) {
@@ -339,13 +340,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			}
 		},
 		batchSubscribe: function() {
-			const query = "backend.php?op=pref-feeds&method=batchSubscribe";
-
-			// overlapping widgets
-			if (dijit.byId("batchSubDlg")) dijit.byId("batchSubDlg").destroyRecursive();
-			if (dijit.byId("feedAddDlg")) dijit.byId("feedAddDlg").destroyRecursive();
-
-			const dialog = new dijit.Dialog({
+			const dialog = new fox.SingleUseDialog({
 				id: "batchSubDlg",
 				title: __("Batch subscribe"),
 				execute: function () {
@@ -362,18 +357,13 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 						});
 					}
 				},
-				href: query
+				href: "backend.php?" + dojo.objectToQuery({op: 'pref-feeds', method: 'batchSubscribe'})
 			});
 
 			dialog.show();
 		},
 		showInactiveFeeds: function() {
-			const query = "backend.php?op=pref-feeds&method=inactiveFeeds";
-
-			if (dijit.byId("inactiveFeedsDlg"))
-				dijit.byId("inactiveFeedsDlg").destroyRecursive();
-
-			const dialog = new dijit.Dialog({
+			const dialog = new fox.SingleUseDialog({
 				id: "inactiveFeedsDlg",
 				title: __("Feeds without recent updates"),
 				getSelectedFeeds: function () {
@@ -405,11 +395,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 						alert(__("No feeds selected."));
 					}
 				},
-				execute: function () {
-					if (this.validate()) {
-					}
-				},
-				href: query
+				href: 'backend.php?' + dojo.objectToQuery({op: 'pref-feeds', method: 'inactiveFeeds'})
 			});
 
 			dialog.show();

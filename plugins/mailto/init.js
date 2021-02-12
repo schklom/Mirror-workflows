@@ -1,3 +1,5 @@
+/* global Plugins, Headlines, fox, __ */
+
 Plugins.Mailto = {
 	send: function (id) {
 		if (!id) {
@@ -11,12 +13,9 @@ Plugins.Mailto = {
 			id = ids.toString();
 		}
 
-		if (dijit.byId("emailArticleDlg"))
-			dijit.byId("emailArticleDlg").destroyRecursive();
-
 		const query = "backend.php?op=pluginhandler&plugin=mailto&method=emailArticle&param=" + encodeURIComponent(id);
 
-		const dialog = new dijit.Dialog({
+		const dialog = new fox.SingleUseDialog({
 			id: "emailArticleDlg",
 			title: __("Forward article by email"),
 			href: query});

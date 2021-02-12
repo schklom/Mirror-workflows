@@ -1,6 +1,6 @@
 'use strict'
 
-/* global __, ngettext, App, Headlines, xhrPost, xhrJson, dojo, dijit, PluginHost, Notify, $$, Ajax */
+/* global __, ngettext, App, Headlines, xhrPost, xhrJson, dojo, dijit, PluginHost, Notify, $$, Ajax, fox */
 
 const Article = {
 	_scroll_reset_timeout: false,
@@ -250,12 +250,9 @@ const Article = {
 		return false;
 	},
 	editTags: function (id) {
-		if (dijit.byId("editTagsDlg"))
-			dijit.byId("editTagsDlg").destroyRecursive();
-
 		xhrPost("backend.php", {op: "article", method: "editarticletags", param: id}, (transport) => {
 
-			const dialog = new dijit.Dialog({
+			const dialog = new fox.SingleUseDialog({
 				id: "editTagsDlg",
 				title: __("Edit article Tags"),
 				content: transport.responseText,

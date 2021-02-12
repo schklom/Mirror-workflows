@@ -1,6 +1,6 @@
 'use strict';
 
-/* global __, Article, Ajax, Headlines, Filters */
+/* global __, Article, Ajax, Headlines, Filters, fox */
 /* global xhrPost, xhrJson, dojo, dijit, PluginHost, Notify, $$, Feeds, Cookie */
 /* global CommonDialogs, Plugins, Effect */
 
@@ -313,7 +313,7 @@ const App = {
    },
    helpDialog: function(topic) {
       xhrPost("backend.php", {op: "backend", method: "help", topic: topic}, (transport) => {
-         const dialog = new dijit.Dialog({
+         const dialog = new fox.SingleUseDialog({
             title: __("Help"),
             content: transport.responseText,
          });
@@ -333,7 +333,7 @@ const App = {
 				let dialog = dijit.byId("infoBox");
 
 				if (!dialog) {
-					dialog = new dijit.Dialog({
+					dialog = new fox.SingleUseDialog({
 						title: title,
 						id: 'infoBox',
 						onCancel: function () {
@@ -577,9 +577,6 @@ const App = {
 			}
 
 			try {
-				if (dijit.byId("exceptionDlg"))
-					dijit.byId("exceptionDlg").destroyRecursive();
-
 				let stack_msg = "";
 
 				if (error.stack)
@@ -599,7 +596,7 @@ const App = {
 						</div>
 					</div>`;
 
-				const dialog = new dijit.Dialog({
+				const dialog = new fox.SingleUseDialog({
 					id: "exceptionDlg",
 					title: params.title || __("Unhandled exception"),
 					content: content

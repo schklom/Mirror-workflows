@@ -1,6 +1,6 @@
 'use strict'
 
-/* global __, App, Headlines, xhrPost, dojo, dijit, Form, fox, PluginHost, Notify, $$ */
+/* global __, App, Headlines, xhrPost, dojo, dijit, Form, fox, PluginHost, Notify, $$, fox */
 
 const	Feeds = {
 	counters_last_request: 0,
@@ -223,10 +223,7 @@ const	Feeds = {
 		if (App.getInitParam("is_default_pw")) {
 			console.warn("user password is at default value");
 
-			if (dijit.byId("defaultPasswordDlg"))
-				dijit.byId("defaultPasswordDlg").destroyRecursive();
-
-			const dialog = new dijit.Dialog({
+			const dialog = new fox.SingleUseDialog({
 				title: __("Your password is at default value"),
 				content: `<div class='alert alert-error'>
 					${__("You are using default tt-rss password. Please change it in the Preferences (Personal data / Authentication).")}
@@ -236,51 +233,26 @@ const	Feeds = {
 					<button dojoType='dijit.form.Button' class='alt-primary' onclick="document.location.href = 'prefs.php'">
 						${__('Open Preferences')}
 					</button>
-					<button dojoType='dijit.form.Button' onclick="return dijit.byId('defaultPasswordDlg').hide()">
+					<button dojoType='dijit.form.Button' onclick="App.dialogOf(this).hide()">
 						${__('Close this window')}
 					</button>
-				</footer>`,
-				id: 'defaultPasswordDlg',
-				onCancel: function () {
-					return true;
-				},
-				onExecute: function () {
-					return true;
-				},
-				onClose: function () {
-					return true;
-				}
+				</footer>`
 			});
 
 			dialog.show();
 		}
 
-		if (dijit.byId("safeModeDlg"))
-				dijit.byId("safeModeDlg").destroyRecursive();
-
 		if (App.getInitParam("safe_mode")) {
-			const dialog = new dijit.Dialog({
+			const dialog = new fox.SingleUseDialog({
 				title: __("Safe mode"),
-				content: `
-					<div class='alert alert-info'>
+				content: `<div class='alert alert-info'>
 						${__('Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. You will need to log out and back in to disable it.')}
 					</div>
 					<footer class='text-center'>
 						<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>
 							${__('Close this window')}
 						</button>
-					</footer>
-					`,
-				id: 'safeModeDlg',
-				onCancel: function () {
-					return true;
-				},
-				onExecute: function () {
-					return true;
-				},
-				onClose: function () {
-					return true;
-				}
+					</footer>`
 			});
 
 			dialog.show();
@@ -598,43 +570,43 @@ const	Feeds = {
 					{op: "feeds", method: "search",
 						param: Feeds.getActive() + ":" + Feeds.activeIsCat()},
 					(transport) => {
-						if (dijit.byId("searchDlg"))
-							dijit.byId("searchDlg").destroyRecursive();
+						try {
+							const dialog = new fox.SingleUseDialog({
+								id: "searchDlg",
+								content: transport.responseText,
+								title: __("Search"),
+								execute: function () {
+									if (this.validate()) {
+										Feeds._search_query = this.attr('value');
 
-						const dialog = new dijit.Dialog({
-							id: "searchDlg",
-							content: transport.responseText,
-							title: __("Search"),
-							execute: function () {
-								if (this.validate()) {
-									Feeds._search_query = this.attr('value');
+										// disallow empty queries
+										if (!Feeds._search_query.query)
+											Feeds._search_query = false;
 
-									// disallow empty queries
-									if (!Feeds._search_query.query)
-										Feeds._search_query = false;
+										this.hide();
+										Feeds.reloadCurrent();
+									}
+								},
+							});
 
-									this.hide();
-									Feeds.reloadCurrent();
+							const tmph = dojo.connect(dialog, 'onShow', function () {
+								dojo.disconnect(tmph);
+
+								if (Feeds._search_query) {
+									if (Feeds._search_query.query)
+										dijit.byId('search_query')
+											.attr('value', Feeds._search_query.query);
+
+									if (Feeds._search_query.search_language)
+										dijit.byId('search_language')
+											.attr('value', Feeds._search_query.search_language);
 								}
-							},
-						});
+							});
 
-						const tmph = dojo.connect(dialog, 'onShow', function () {
-							dojo.disconnect(tmph);
-
-							if (Feeds._search_query) {
-								if (Feeds._search_query.query)
-									dijit.byId('search_query')
-										.attr('value', Feeds._search_query.query);
-
-								if (Feeds._search_query.search_language)
-									dijit.byId('search_language')
-										.attr('value', Feeds._search_query.search_language);
-							}
-
-						});
-
-						dialog.show();
+							dialog.show();
+						} catch (e) {
+							App.Error.report(e);
+						}
 					});
 
 	},

@@ -1,5 +1,7 @@
 'use strict'
 
+/* eslint-disable no-new */
+
 /* global __, App, Article, Lists, Effect, fox */
 /* global xhrPost, dojo, dijit, Notify, $$, Feeds */
 

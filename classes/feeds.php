@@ -730,9 +730,10 @@ class Feeds extends Handler_Protected {
 
 		print "<footer>";
 		print "<button dojoType='dijit.form.Button' class='alt-primary' type='submit'
-				onclick=\"App.dialogOf(this).execute()\">".__('Subscribe')."</button>";
+				onclick='App.dialogOf(this).execute()'>".__('Subscribe')."</button>";
 
-		print "<button dojoType='dijit.form.Button' onclick=\"App.dialogOf(this).hide()\">".__('Cancel')."</button>";
+		print "<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
+				__('Cancel')."</button>";
 		print "</footer>";
 
 		print "</form>";

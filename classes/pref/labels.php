@@ -69,9 +69,9 @@ class Pref_Labels extends Handler_Protected {
 			print "</section>";
 
 			print "<footer>";
-			print "<button dojoType='dijit.form.Button' type='submit' class='alt-primary' onclick=\"dijit.byId('labelEditDlg').execute()\">".
+			print "<button dojoType='dijit.form.Button' type='submit' class='alt-primary' onclick='App.dialogOf(this).execute()'>".
 				__('Save')."</button>";
-			print "<button dojoType='dijit.form.Button' onclick=\"dijit.byId('labelEditDlg').hide()\">".
+			print "<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
 				__('Cancel')."</button>";
 			print "</footer>";
 

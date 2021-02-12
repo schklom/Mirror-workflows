@@ -110,9 +110,9 @@ class Pref_Users extends Handler_Protected {
 			print '</div>';
 
 			print "<footer>
-				<button dojoType='dijit.form.Button' class='alt-primary' type='submit' onclick=\"dijit.byId('userEditDlg').execute()\">".
+				<button dojoType='dijit.form.Button' class='alt-primary' type='submit' onclick='App.dialogOf(this).execute()'>".
 				__('Save')."</button>
-				<button dojoType='dijit.form.Button' onclick=\"dijit.byId('userEditDlg').hide()\">".
+				<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
 				__('Cancel')."</button>
 				</footer>";
 

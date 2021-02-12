@@ -118,22 +118,6 @@ const	Helpers = {
 					alert(__("No profiles selected."));
 				}
 			},
-			activateProfile: function () {
-				const sel_rows = this.getSelectedProfiles();
-
-				if (sel_rows.length == 1) {
-					if (confirm(__("Activate selected profile?"))) {
-						Notify.progress("Loading, please wait...");
-
-						xhrPost("backend.php", {op: "rpc", method: "setprofile", id: sel_rows.toString()}, () => {
-							window.location.reload();
-						});
-					}
-
-				} else {
-					alert(__("Please choose a profile to activate."));
-				}
-			},
 			addProfile: function () {
 				if (this.validate()) {
 					Notify.progress("Creating profile...", true);
@@ -148,8 +132,19 @@ const	Helpers = {
 				}
 			},
 			execute: function () {
-				if (this.validate()) {
-					//
+				const sel_rows = this.getSelectedProfiles();
+
+				if (sel_rows.length == 1) {
+					if (confirm(__("Activate selected profile?"))) {
+						Notify.progress("Loading, please wait...");
+
+						xhrPost("backend.php", {op: "rpc", method: "setprofile", id: sel_rows.toString()}, () => {
+							window.location.reload();
+						});
+					}
+
+				} else {
+					alert(__("Please choose a profile to activate."));
 				}
 			},
 			href: query

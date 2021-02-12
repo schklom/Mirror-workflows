@@ -3,7 +3,7 @@ class Pref_Filters extends Handler_Protected {
 
 	function csrf_ignore($method) {
 		$csrf_ignored = array("index", "getfiltertree", "edit", "newfilter", "newrule",
-			"newaction", "savefilterorder", "testfilterdlg");
+			"newaction", "savefilterorder");
 
 		return array_search($method, $csrf_ignored) !== false;
 	}
@@ -161,21 +161,6 @@ class Pref_Filters extends Handler_Protected {
 		}
 
 		print json_encode($rv);
-	}
-
-	function testFilterDlg() {
-		?>
-			<div>
-				<img id='prefFilterLoadingIndicator' src='images/indicator_tiny.gif'>&nbsp;
-				<span id='prefFilterProgressMsg'>Looking for articles...</span>
-			</div>
-
-			<ul class='panel panel-scrollable list list-unstyled' id='prefFilterTestResultList'></ul>
-
-			<footer class='text-center'>
-				<button dojoType='dijit.form.Button' onclick="dijit.byId('filterTestDlg').hide()"><?php echo __('Close this window') ?></button>
-			</footer>
-		<?php
 	}
 
 	private function getfilterrules_list($filter_id) {

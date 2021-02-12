@@ -1169,29 +1169,6 @@ class Pref_Prefs extends Handler_Protected {
 		$value = str_replace("<br/>", "\n", $value);
 
 		print json_encode(["value" => $value]);
-
-		/*print_notice(__("You can override colors, fonts and layout of your currently selected theme with custom CSS declarations here."));
-
-		print_hidden("op", "rpc");
-		print_hidden("method", "setpref");
-		print_hidden("key", "USER_STYLESHEET");
-
-		print "<div id='css_edit_apply_msg' style='display : none'>";
-		print_warning(__("User CSS has been applied, you might need to reload the page to see all changes."));
-		print "</div>";
-
-		print "<textarea class='panel user-css-editor' dojoType='dijit.form.SimpleTextarea'
-			style='font-size : 12px;' name='value'>$value</textarea>";
-
-		print "<footer>";
-		print "<button dojoType='dijit.form.Button' class='alt-success'
-			onclick=\"dijit.byId('cssEditDlg').apply()\">".__('Apply')."</button> ";
-		print "<button dojoType='dijit.form.Button' class='alt-primary'
-			onclick=\"dijit.byId('cssEditDlg').execute()\">".__('Save and reload')."</button> ";
-		print "<button dojoType='dijit.form.Button'
-			onclick=\"dijit.byId('cssEditDlg').hide()\">".__('Cancel')."</button>";
-		print "</footer>";*/
-
 	}
 
 	function editPrefProfiles() {
@@ -1220,9 +1197,9 @@ class Pref_Prefs extends Handler_Protected {
 			WHERE owner_uid = ? ORDER BY title");
 		$sth->execute([$_SESSION['uid']]);
 
-		print "<div class='panel panel-scrollable'>";
+		print "<form onsubmit='return false'>";
 
-		print "<form id='profile_edit_form' onsubmit='return false'>";
+		print "<div class='panel panel-scrollable'>";
 
 		print "<table width='100%' id='pref-profiles-list'>";
 
@@ -1277,17 +1254,18 @@ class Pref_Prefs extends Handler_Protected {
 		}
 
 		print "</table>";
-		print "</form>";
 		print "</div>";
 
 		print "<footer>
-			<button style='float : left' class='alt-danger' dojoType=\"dijit.form.Button\" onclick=\"dijit.byId('profileEditDlg').removeSelected()\">".
-			__('Remove selected profiles')."</button>
-			<button dojoType='dijit.form.Button' class='alt-primary' type='submit' onclick=\"dijit.byId('profileEditDlg').activateProfile()\">".
-			__('Activate profile')."</button>
-			<button dojoType='dijit.form.Button' onclick=\"dijit.byId('profileEditDlg').hide()\">".
-			__('Cancel')."</button>";
+			<button style='float : left' class='alt-danger' dojoType='dijit.form.Button' onclick='App.dialogOf(this).removeSelected()'>".
+				__('Remove selected profiles')."</button>
+			<button dojoType='dijit.form.Button' class='alt-primary' type='submit' onclick='App.dialogOf(this).execute()'>".
+				__('Activate profile')."</button>
+			<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
+				__('Cancel')."</button>";
 		print "</footer>";
+
+		print "</form>";
 
 	}
 

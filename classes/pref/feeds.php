@@ -975,7 +975,7 @@ class Pref_Feeds extends Handler_Protected {
 			<button dojoType='dijit.form.Button' type='submit' class='alt-primary' type='submit'>".
 				__('Save')."</button>
 			<button dojoType='dijit.form.Button'
-			onclick=\"App.dialogOf(this).hide()\">".
+			onclick='App.dialogOf(this).hide()'>".
 				__('Cancel')."</button>
 			</footer>";
 
@@ -1509,9 +1509,9 @@ class Pref_Feeds extends Handler_Protected {
 		print "</div>";
 
 		print "<footer>
-			<button style='float : left' class=\"alt-danger\" dojoType='dijit.form.Button' onclick=\"dijit.byId('inactiveFeedsDlg').removeSelected()\">"
+			<button style='float : left' class='alt-danger' dojoType='dijit.form.Button' onclick='App.dialogOf(this).removeSelected()'>"
 			.__('Unsubscribe from selected feeds')."</button>
-			<button dojoType='dijit.form.Button' onclick=\"dijit.byId('inactiveFeedsDlg').hide()\">"
+			<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>"
 			.__('Close this window')."</button>
 			</footer>";
 
@@ -1568,10 +1568,9 @@ class Pref_Feeds extends Handler_Protected {
 		print "</div>";
 
 		print "<footer>";
-		print "<button style='float : left' class=\"alt-danger\" dojoType=\"dijit.form.Button\" onclick=\"dijit.byId('errorFeedsDlg').removeSelected()\">"
+		print "<button style='float : left' class='alt-danger' dojoType='dijit.form.Button' onclick='App.dialogOf(this).removeSelected()'>"
 			.__('Unsubscribe from selected feeds')."</button> ";
-
-		print "<button dojoType=\"dijit.form.Button\" onclick=\"dijit.byId('errorFeedsDlg').hide()\">".
+		print "<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>".
 			__('Close this window')."</button>";
 
 		print "</footer>";
@@ -1665,9 +1664,9 @@ class Pref_Feeds extends Handler_Protected {
 		print "</fieldset>";
 
 		print "<footer>
-			<button dojoType='dijit.form.Button' onclick=\"return dijit.byId('batchSubDlg').execute()\" type='submit' class='alt-primary'>".
+			<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).execute()' type='submit' class='alt-primary'>".
 				__('Subscribe')."</button>
-			<button dojoType='dijit.form.Button' onclick=\"return dijit.byId('batchSubDlg').hide()\">".__('Cancel')."</button>
+			<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".__('Cancel')."</button>
 			</footer>";
 
 		print "</form>";

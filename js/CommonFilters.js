@@ -248,10 +248,21 @@ const	Filters = {
 
 				});
 			},
-			href: "backend.php?op=pref-filters&method=testFilterDlg"
+			content: `
+				<div>
+					<img id='prefFilterLoadingIndicator' src='images/indicator_tiny.gif'>&nbsp;
+					<span id='prefFilterProgressMsg'>Looking for articles...</span>
+				</div>
+
+				<ul class='panel panel-scrollable list list-unstyled' id='prefFilterTestResultList'></ul>
+
+				<footer class='text-center'>
+					<button dojoType='dijit.form.Button' onclick="dijit.byId('filterTestDlg').hide()"><?php echo __('Close this window') ?></button>
+				</footer>
+			`
 		});
 
-		dojo.connect(test_dlg, "onLoad", null, function (/* e */) {
+		dojo.connect(test_dlg, "onShow", null, function (/* e */) {
 			test_dlg.getTestResults(params, 0);
 		});
 

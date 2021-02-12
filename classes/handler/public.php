@@ -163,7 +163,7 @@ class Handler_Public extends Handler {
 			$tpl->addBlock('feed');
 			$tpl->generateOutputToString($tmp);
 
-			if (@!clean($_REQUEST["noxml"])) {
+			if (empty($_REQUEST["noxml"])) {
 				header("Content-Type: text/xml; charset=utf-8");
 			} else {
 				header("Content-Type: text/plain; charset=utf-8");
@@ -460,19 +460,17 @@ class Handler_Public extends Handler {
 	function rss() {
 		$feed = clean($_REQUEST["id"]);
 		$key = clean($_REQUEST["key"]);
-		$is_cat = clean($_REQUEST["is_cat"]);
-		$limit = (int)clean($_REQUEST["limit"]);
-		$offset = (int)clean($_REQUEST["offset"]);
+		$is_cat = clean($_REQUEST["is_cat"] ?? false);
+		$limit = (int)clean($_REQUEST["limit"] ?? 0);
+		$offset = (int)clean($_REQUEST["offset"] ?? 0);
 
-		$search = clean($_REQUEST["q"]);
-		$view_mode = clean($_REQUEST["view-mode"]);
-		$order = clean($_REQUEST["order"]);
-		$start_ts = clean($_REQUEST["ts"]);
+		$search = clean($_REQUEST["q"] ?? "");
+		$view_mode = clean($_REQUEST["view-mode"] ?? "");
+		$order = clean($_REQUEST["order"] ?? "");
+		$start_ts = (int)clean($_REQUEST["ts"] ?? 0);
 
-		$format = clean($_REQUEST['format']);
-		$orig_guid = clean($_REQUEST["orig_guid"]);
-
-		if (!$format) $format = 'atom';
+		$format = clean($_REQUEST['format'] ?? "atom");
+		$orig_guid = clean($_REQUEST["orig_guid"] ?? false);
 
 		if (SINGLE_USER_MODE) {
 			UserHelper::authenticate("admin", null);

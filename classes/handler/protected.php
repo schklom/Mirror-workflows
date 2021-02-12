@@ -2,6 +2,6 @@
 class Handler_Protected extends Handler {
 
 	function before($method) {
-		return parent::before($method) && $_SESSION['uid'];
+		return parent::before($method) && !empty($_SESSION['uid']);
 	}
 }

@@ -46,7 +46,7 @@
 		UserHelper::authenticate( "admin", null);
 	}
 
-	if ($_SESSION["uid"]) {
+	if (!empty($_SESSION["uid"])) {
 		if (!validate_session()) {
 			header("Content-Type: text/json");
 			print error_json(6);

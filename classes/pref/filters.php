@@ -333,32 +333,28 @@ class Pref_Filters extends Handler_Protected {
 			print_hidden("method", "editSave");
 			print_hidden("csrf_token", $_SESSION['csrf_token']);
 
-			print "<header>".__("Caption")."</header>";
-			print "<section>";
-			print "<input required=\"true\" dojoType=\"dijit.form.ValidationTextBox\" style=\"width : 20em;\" name=\"title\" value=\"$title\">";
-			print "</section>";
-
-			print "<header class='horizontal'>".__("Match")."</header>";
-			print "<section>";
-
-			print "<div dojoType=\"fox.Toolbar\">";
-
-			print "<div dojoType=\"fox.form.DropDownButton\">".
-				"<span>" . __('Select')."</span>";
-			print "<div dojoType=\"dijit.Menu\" style=\"display: none;\">";
-			print "<div onclick=\"dijit.byId('filterEditDlg').selectRules(true)\"
-			dojoType=\"dijit.MenuItem\">".__('All')."</div>";
-			print "<div onclick=\"dijit.byId('filterEditDlg').selectRules(false)\"
-			dojoType=\"dijit.MenuItem\">".__('None')."</div>";
-			print "</div></div>";
-
-			print "<button dojoType=\"dijit.form.Button\" onclick=\"return dijit.byId('filterEditDlg').addRule()\">".
-				__('Add')."</button> ";
-
-			print "<button dojoType=\"dijit.form.Button\" onclick=\"return dijit.byId('filterEditDlg').deleteRule()\">".
-				__('Delete')."</button> ";
-
-			print "</div>";
+			print "<header>".__("Caption")."</header>
+				<section>
+					<input required='true' dojoType='dijit.form.ValidationTextBox' style='width : 20em;' name=\"title\" value=\"$title\">
+				</section>
+				<header class='horizontal'>".__("Match")."</header>
+				<section>
+					<div dojoType='fox.Toolbar'>
+						<div dojoType='fox.form.DropDownButton'>
+							<span>" . __('Select')."</span>
+							<div dojoType='dijit.Menu' style='display: none;'>
+								<!-- can't use App.dialogOf() here because DropDownButton is not a child of the Dialog -->
+								<div onclick='dijit.byId(\"filterEditDlg\").selectRules(true)'
+									dojoType='dijit.MenuItem'>".__('All')."</div>
+								<div onclick='dijit.byId(\"filterEditDlg\").selectRules(false)'
+									dojoType='dijit.MenuItem'>".__('None')."</div>
+							</div>
+						</div>
+					<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).addRule()'>".
+						__('Add')."</button>
+					<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).deleteRule()'>".
+						__('Delete')."</button>
+					</div>";
 
 			print "<ul id='filterDlg_Matches'>";
 
@@ -386,39 +382,33 @@ class Pref_Filters extends Handler_Protected {
 				if (!$line["inverse"]) unset($line["inverse"]);
 				unset($line["match_on"]);
 
-				$data = htmlspecialchars(json_encode($line));
+				$data = htmlspecialchars((string)json_encode($line));
 
 				print "<li><input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>".
-					"<span onclick=\"dijit.byId('filterEditDlg').editRule(this)\">".$this->getRuleName($line)."</span>".
+					"<span onclick='console.log(this);App.dialogOf(this).editRule(this)'>".$this->getRuleName($line)."</span>".
 					"<input type='hidden' name='rule[]' value=\"$data\"/></li>";
 			}
 
-			print "</ul>";
+			print "</ul>
+				</section>";
 
-			print "</section>";
-
-			print "<header class='horizontal'>".__("Apply actions")."</header>";
-
-			print "<section>";
-
-			print "<div dojoType=\"fox.Toolbar\">";
-
-			print "<div dojoType=\"fox.form.DropDownButton\">".
-				"<span>" . __('Select')."</span>";
-			print "<div dojoType=\"dijit.Menu\" style=\"display: none;\">";
-			print "<div onclick=\"dijit.byId('filterEditDlg').selectActions(true)\"
-			dojoType=\"dijit.MenuItem\">".__('All')."</div>";
-			print "<div onclick=\"dijit.byId('filterEditDlg').selectActions(false)\"
-			dojoType=\"dijit.MenuItem\">".__('None')."</div>";
-			print "</div></div>";
-
-			print "<button dojoType=\"dijit.form.Button\" onclick=\"return dijit.byId('filterEditDlg').addAction()\">".
-				__('Add')."</button> ";
-
-			print "<button dojoType=\"dijit.form.Button\" onclick=\"return dijit.byId('filterEditDlg').deleteAction()\">".
-				__('Delete')."</button> ";
-
-			print "</div>";
+			print "<header class='horizontal'>".__("Apply actions")."</header>
+				<section>
+					<div dojoType='fox.Toolbar'>
+						<div dojoType='fox.form.DropDownButton'>
+							<span>".__('Select')."</span>
+							<div dojoType='dijit.Menu' style='display: none'>
+								<div onclick='dijit.byId(\"filterEditDlg\").selectActions(true)'
+									dojoType='dijit.MenuItem'>".__('All')."</div>
+								<div onclick='dijit.byId(\"filterEditDlg\").selectActions(false)'
+									dojoType='dijit.MenuItem'>".__('None')."</div>
+								</div>
+							</div>
+						<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).addAction()'>".
+							__('Add')."</button>
+						<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).deleteAction()'>".
+						__('Delete')."</button>
+					</div>";
 
 			print "<ul id='filterDlg_Actions'>";
 
@@ -432,10 +422,10 @@ class Pref_Filters extends Handler_Protected {
 				unset($line["filter_id"]);
 				unset($line["id"]);
 
-				$data = htmlspecialchars(json_encode($line));
+				$data = htmlspecialchars((string)json_encode($line));
 
 				print "<li><input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>".
-					"<span onclick=\"dijit.byId('filterEditDlg').editAction(this)\">".$this->getActionName($line)."</span>".
+					"<span onclick='App.dialogOf(this).editAction(this)'>".$this->getActionName($line)."</span>".
 					"<input type='hidden' name='action[]' value=\"$data\"/></li>";
 			}
 
@@ -482,25 +472,19 @@ class Pref_Filters extends Handler_Protected {
 
 			print "</section>";
 
-			print "<footer>";
-
-			print "<div style=\"float : left\">";
-			print "<button dojoType=\"dijit.form.Button\" class=\"alt-danger\" onclick=\"return dijit.byId('filterEditDlg').removeFilter()\">".
-				__('Remove')."</button>";
-			print "</div>";
-
-			print "<button dojoType=\"dijit.form.Button\" class=\"alt-info\" onclick=\"return dijit.byId('filterEditDlg').test()\">".
-				__('Test')."</button> ";
-
-			print "<button dojoType=\"dijit.form.Button\" type=\"submit\" class=\"alt-primary\" onclick=\"return dijit.byId('filterEditDlg').execute()\">".
-				__('Save')."</button> ";
-
-			print "<button dojoType=\"dijit.form.Button\" onclick=\"return dijit.byId('filterEditDlg').hide()\">".
-				__('Cancel')."</button>";
-
-			print "</footer>";
-			print "</form>";
-
+			print "<footer>
+				<div style='float : left'>
+				<button dojoType='dijit.form.Button' class='alt-danger' onclick='App.dialogOf(this).removeFilter()'>".
+					__('Remove')."</button>
+				</div>
+				<button dojoType='dijit.form.Button' class='alt-info' onclick='App.dialogOf(this).test()'>".
+					__('Test')."</button>
+				<button dojoType='dijit.form.Button' type='submit' class='alt-primary' onclick='App.dialogOf(this).execute()'>".
+					__('Save')."</button>
+				<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
+					__('Cancel')."</button>
+				</footer>
+				</form>";
 		}
 	}
 

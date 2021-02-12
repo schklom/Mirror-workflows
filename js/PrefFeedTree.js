@@ -29,7 +29,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			const bare_id = parseInt(id.substr(id.indexOf(':')+1));
 
 			if (id.match("CAT:") && bare_id > 0) {
-				var menu = new dijit.Menu();
+				const menu = new dijit.Menu();
 				menu.row_id = bare_id;
 				menu.item = args.item;
 
@@ -49,7 +49,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 				menu.bindDomNode(tnode.domNode);
 				tnode._menu = menu;
 			} else if (id.match("FEED:")) {
-				var menu = new dijit.Menu();
+				const menu = new dijit.Menu();
 				menu.row_id = bare_id;
 				menu.item = args.item;
 
@@ -76,6 +76,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			this.inherited(arguments);
 			this.tree.model.store.save();
 		},
+		// eslint-disable-next-line no-unused-vars
 		getRowClass: function (item, opened) {
 			let rc = (!item.error || item.error == '') ? "dijitTreeRow" :
 				"dijitTreeRow Error";
@@ -85,11 +86,12 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			return rc;
 		},
 		getIconClass: function (item, opened) {
+			// eslint-disable-next-line no-nested-ternary
 			return (!item || this.model.store.getValue(item, 'type') == 'category') ? (opened ? "dijitFolderOpened" : "dijitFolderClosed") : "feed-icon";
 		},
 		reload: function() {
 			const searchElem = $("feed_search");
-			let search = (searchElem) ? searchElem.value : "";
+			const search = (searchElem) ? searchElem.value : "";
 
 			xhrPost("backend.php", { op: "pref-feeds", search: search }, (transport) => {
 				dijit.byId('feedsTab').attr('content', transport.responseText);
@@ -285,7 +287,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 								/* normalize unchecked checkboxes because [] is not serialized */
 
 								Object.keys(query).each((key) => {
-									let val = query[key];
+									const val = query[key];
 
 									if (typeof val == "object" && val.length == 0)
 										query[key] = ["off"];
@@ -395,7 +397,15 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 						alert(__("No feeds selected."));
 					}
 				},
-				href: 'backend.php?' + dojo.objectToQuery({op: 'pref-feeds', method: 'inactiveFeeds'})
+				content: __("Loading, please wait...")
+			});
+
+			const tmph = dojo.connect(dialog, 'onShow', function () {
+				dojo.disconnect(tmph);
+
+				xhrPost("backend.php", {op: "pref-feeds", method: "inactivefeeds"}, (transport) => {
+					dialog.attr('content', transport.responseText);
+				})
 			});
 
 			dialog.show();

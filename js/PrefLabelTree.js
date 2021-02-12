@@ -13,10 +13,10 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 		_createTreeNode: function(args) {
 			const tnode = this.inherited(arguments);
 
-			const fg_color = this.model.store.getValue(args.item, 'fg_color');
-			const bg_color = this.model.store.getValue(args.item, 'bg_color');
+			//const fg_color = this.model.store.getValue(args.item, 'fg_color');
+			//const bg_color = this.model.store.getValue(args.item, 'bg_color');
 			const type = this.model.store.getValue(args.item, 'type');
-			const bare_id = this.model.store.getValue(args.item, 'bare_id');
+			//const bare_id = this.model.store.getValue(args.item, 'bare_id');
 
 			if (type == 'label') {
 				const label = dojo.doc.createElement('i');
@@ -59,9 +59,6 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 			});
 		},
 		editLabel: function(id) {
-			const query = "backend.php?op=pref-labels&method=edit&id=" +
-				encodeURIComponent(id);
-
 			const dialog = new fox.SingleUseDialog({
 				id: "labelEditDlg",
 				title: __("Label Editor"),
@@ -114,7 +111,15 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 						});
 					}
 				},
-				href: query
+				content: __("Loading, please wait...")
+			});
+
+			const tmph = dojo.connect(dialog, 'onShow', function () {
+				dojo.disconnect(tmph);
+
+				xhrPost("backend.php", {op: "pref-labels", method: "edit", id: id}, (transport) => {
+					dialog.attr('content', transport.responseText);
+				})
 			});
 
 			dialog.show();

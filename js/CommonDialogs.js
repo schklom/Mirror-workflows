@@ -185,8 +185,6 @@ const	CommonDialogs = {
 					});
 		},
 		showFeedsWithErrors: function() {
-			const query = {op: "pref-feeds", method: "feedsWithErrors"};
-
 			const dialog = new fox.SingleUseDialog({
 				id: "errorFeedsDlg",
 				title: __("Feeds with update errors"),
@@ -221,12 +219,15 @@ const	CommonDialogs = {
 						alert(__("No feeds selected."));
 					}
 				},
-				execute: function () {
-					if (this.validate()) {
-						//
-					}
-				},
-				href: "backend.php?" + dojo.objectToQuery(query)
+				content: __("Loading, please wait...")
+			});
+
+			const tmph = dojo.connect(dialog, 'onShow', function () {
+				dojo.disconnect(tmph);
+
+				xhrPost("backend.php", {op: "pref-feeds", method: "feedsWithErrors"}, (transport) => {
+					dialog.attr('content', transport.responseText);
+				})
 			});
 
 			dialog.show();
@@ -313,7 +314,15 @@ const	CommonDialogs = {
 						});
 					}
 				},
-				href: "backend.php?" + dojo.objectToQuery(query)
+				content: __("Loading, please wait...")
+			});
+
+			const tmph = dojo.connect(dialog, 'onShow', function () {
+				dojo.disconnect(tmph);
+
+				xhrPost("backend.php", {op: "pref-feeds", method: "editfeed", id: feed}, (transport) => {
+					dialog.attr('content', transport.responseText);
+				})
 			});
 
 			dialog.show();

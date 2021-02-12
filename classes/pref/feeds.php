@@ -1,9 +1,7 @@
 <?php
 class Pref_Feeds extends Handler_Protected {
 	function csrf_ignore($method) {
-		$csrf_ignored = array("index", "getfeedtree", "add", "editcats", "editfeed",
-			"savefeedorder", "uploadicon", "feedswitherrors", "inactivefeeds",
-			"batchsubscribe");
+		$csrf_ignored = array("index", "getfeedtree", "savefeedorder", "uploadicon");
 
 		return array_search($method, $csrf_ignored) !== false;
 	}

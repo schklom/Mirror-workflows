@@ -2,7 +2,7 @@
 class Pref_Labels extends Handler_Protected {
 
 	function csrf_ignore($method) {
-		$csrf_ignored = array("index", "getlabeltree", "edit");
+		$csrf_ignored = array("index", "getlabeltree");
 
 		return array_search($method, $csrf_ignored) !== false;
 	}

@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-12 19:55+0300\n"
-"PO-Revision-Date: 2020-10-17 09:24+0000\n"
+"PO-Revision-Date: 2021-02-12 22:53+0000\n"
 "Last-Translator: Glandos <bugs-ttrss@antipoul.fr>\n"
 "Language-Team: French <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "fr/>\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.2.2\n"
+"X-Generator: Weblate 4.4.2\n"
 
 #: backend.php:59
 msgid "Use default"
@@ -414,11 +414,11 @@ msgstr ""
 
 #: include/login_form.php:158 js/Feeds.js:247
 msgid "Safe mode"
-msgstr ""
+msgstr "Mode sans échec"
 
 #: include/login_form.php:162
 msgid "Uses default theme and prevents all plugins from loading."
-msgstr ""
+msgstr "Utilise le thème par défaut et empêche le chargement des greffons."
 
 #: include/login_form.php:170
 msgid "Remember me"
@@ -1426,24 +1426,23 @@ msgstr ""
 #: classes/pref/system.php:77
 #, php-format
 msgid "Page %d of %d"
-msgstr ""
+msgstr "Page %d sur %d"
 
 #: classes/pref/system.php:82
 msgid "&gt;&gt;"
-msgstr ""
+msgstr "&gt;&gt;"
 
 #: classes/pref/system.php:89
 msgid "Severity:"
-msgstr ""
+msgstr "Sévérité :"
 
 #: classes/pref/system.php:92
-#, fuzzy
 msgid "Errors"
-msgstr "Erreur"
+msgstr "Erreurs"
 
 #: classes/pref/system.php:93
 msgid "Warnings"
-msgstr ""
+msgstr "Avertissements"
 
 #: classes/pref/system.php:94
 #, fuzzy
@@ -1761,8 +1760,8 @@ msgstr "Désactiver les mots de passe à usage unique"
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d jour"
+msgstr[1] "%d jours"
 
 #: classes/pref/feeds.php:682
 msgid ""
@@ -2026,7 +2025,7 @@ msgstr "Transférer par email"
 
 #: classes/feeds.php:98
 msgid "Delete permanently"
-msgstr ""
+msgstr "Supprimer définitivement"
 
 #: classes/feeds.php:151 classes/feeds.php:546
 msgid "Feed not found."
@@ -2289,9 +2288,8 @@ msgid "Inline content"
 msgstr "Contenu intégré"
 
 #: plugins/af_readability/init.php:48
-#, fuzzy
 msgid "Append content"
-msgstr "Contenu intégré"
+msgstr "Ajouter le contenu"
 
 #: plugins/af_readability/init.php:57
 msgid "Toggle full article text"
@@ -2310,7 +2308,7 @@ msgstr ""
 
 #: plugins/af_readability/init.php:125
 msgid "(append)"
-msgstr ""
+msgstr "(ajouté)"
 
 #: plugins/af_readability/init.php:136
 msgid "Readability"
@@ -2322,7 +2320,7 @@ msgstr "Simplifier le contenu de l’article"
 
 #: plugins/af_readability/init.php:153
 msgid "Append to summary, instead of replacing it"
-msgstr ""
+msgstr "Ajouter au résumé au lieu de le remplacer"
 
 #: plugins/bookmarklets/init.php:23
 msgid "Bookmarklets"
@@ -2410,7 +2408,7 @@ msgstr "Activer la vérification additionnelle de doublon"
 #: plugins/af_redditimgur/init.php:80
 #, php-format
 msgid "Rewrite Reddit URLs to %s"
-msgstr ""
+msgstr "Réécrire les URLs Reddit en %s"
 
 #: plugins/toggle_sidebar/init.php:27
 msgid "Toggle sidebar"
@@ -2766,7 +2764,7 @@ msgstr ""
 
 #: js/App.js:400
 msgid "Update daemon is not running."
-msgstr ""
+msgstr "Le service de mise à jour n’est pas démarré."
 
 #: js/App.js:413
 #, fuzzy

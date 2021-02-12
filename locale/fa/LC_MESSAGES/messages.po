@@ -7,11 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-07 18:21+0300\n"
+"POT-Creation-Date: 2021-02-12 19:55+0300\n"
 "PO-Revision-Date: 2020-10-20 07:52+0000\n"
 "Last-Translator: CERT <certphishalert@gmail.com>\n"
-"Language-Team: Persian <https://weblate.tt-rss.org/projects/tt-rss/messages/"
-"fa/>\n"
+"Language-Team: Persian <https://weblate.tt-rss.org/projects/tt-rss/messages/fa/>\n"
 "Language: fa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,97 +18,99 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.2.2\n"
 
-#: backend.php:57
+#: backend.php:59
 msgid "Use default"
 msgstr "استفاده پیش‌فرض"
 
-#: backend.php:58
+#: backend.php:60
 msgid "Never purge"
 msgstr "هرگز پاک نشود"
 
-#: backend.php:59
+#: backend.php:61
 msgid "1 week old"
 msgstr "یک هفته گذشته"
 
-#: backend.php:60
+#: backend.php:62
 msgid "2 weeks old"
 msgstr "دو هفته گذشته"
 
-#: backend.php:61
+#: backend.php:63
 msgid "1 month old"
 msgstr "یک ماه گذشته"
 
-#: backend.php:62
+#: backend.php:64
 msgid "2 months old"
 msgstr "دو ماه گذشته"
 
-#: backend.php:63
+#: backend.php:65
 msgid "3 months old"
 msgstr "سه ماه قبل"
 
-#: backend.php:66
+#: backend.php:68
 msgid "Default interval"
 msgstr "زمان پیش‌فرض"
 
-#: backend.php:67 backend.php:77
+#: backend.php:69
+#: backend.php:79
 msgid "Disable updates"
 msgstr "به‌روزرسانی‌ها را غیرفعال کنید"
 
-#: backend.php:68 backend.php:78
+#: backend.php:70
+#: backend.php:80
 msgid "15 minutes"
 msgstr "15 دقیقه"
 
-#: backend.php:69 backend.php:79
+#: backend.php:71
+#: backend.php:81
 msgid "30 minutes"
 msgstr "30 دقیقه"
 
-#: backend.php:70 backend.php:80
+#: backend.php:72
+#: backend.php:82
 msgid "Hourly"
 msgstr "بازه یک ساعت"
 
-#: backend.php:71 backend.php:81
+#: backend.php:73
+#: backend.php:83
 msgid "4 hours"
 msgstr "4 ساعت"
 
-#: backend.php:72 backend.php:82
+#: backend.php:74
+#: backend.php:84
 msgid "12 hours"
 msgstr "12 ساعت"
 
-#: backend.php:73 backend.php:83
+#: backend.php:75
+#: backend.php:85
 msgid "Daily"
 msgstr "روزانه"
 
-#: backend.php:74 backend.php:84
+#: backend.php:76
+#: backend.php:86
 msgid "Weekly"
 msgstr "هفتگی"
 
-#: backend.php:87 classes/pref/users.php:47 classes/pref/system.php:68
+#: backend.php:89
+#: classes/pref/system.php:109
+#: classes/pref/users.php:47
 msgid "User"
 msgstr "کاربر"
 
-#: backend.php:88
+#: backend.php:90
 msgid "Power User"
 msgstr "کاربر حرفه ای"
 
-#: backend.php:89
+#: backend.php:91
 msgid "Administrator"
 msgstr "مدیر"
 
 #: errors.php:10
-msgid ""
-"This program requires XmlHttpRequest to function properly. Your browser "
-"doesn't seem to support it."
-msgstr ""
-"این برنامه جهت عملکرد صحیح به XmlHttpRequest نیاز دارد.به نظر می رسد که "
-"مرورگر شما از آن پشتیبانی نمی کند."
+msgid "This program requires XmlHttpRequest to function properly. Your browser doesn't seem to support it."
+msgstr "این برنامه جهت عملکرد صحیح به XmlHttpRequest نیاز دارد.به نظر می رسد که مرورگر شما از آن پشتیبانی نمی کند."
 
 #: errors.php:13
-msgid ""
-"This program requires cookies to function properly. Your browser doesn't "
-"seem to support them."
-msgstr ""
-"این برنامه برای عملکرد صحیح به کوکی‌ها نیاز دارد. به نظر می‌رسد که مرورگر شما "
-"از آنها پشتیبانی نمی‌کند."
+msgid "This program requires cookies to function properly. Your browser doesn't seem to support them."
+msgstr "این برنامه برای عملکرد صحیح به کوکی‌ها نیاز دارد. به نظر می‌رسد که مرورگر شما از آنها پشتیبانی نمی‌کند."
 
 #: errors.php:16
 msgid "Backend sanity check failed."
@@ -120,12 +121,8 @@ msgid "Frontend sanity check failed."
 msgstr "بررسی درستی فرانت اند ناموفق بود."
 
 #: errors.php:20
-msgid ""
-"Incorrect database schema version. &lt;a href='db-updater.php'&gt;Please "
-"update&lt;/a&gt;."
-msgstr ""
-"صحیح نبودن ورژن الگوی دیتابیس. &lt;a href='db-updater.php'&gt، لطفا &lt;/"
-"a&gt; را بروزرسانی نمایید."
+msgid "Incorrect database schema version. &lt;a href='db-updater.php'&gt;Please update&lt;/a&gt;."
+msgstr "صحیح نبودن ورژن الگوی دیتابیس. &lt;a href='db-updater.php'&gt، لطفا &lt;/a&gt; را بروزرسانی نمایید."
 
 #: errors.php:22
 msgid "Request not authorized."
@@ -136,12 +133,8 @@ msgid "No operation to perform."
 msgstr "هیچ عملیاتی برای انجام دادن نیست."
 
 #: errors.php:26
-msgid ""
-"Could not display feed: query failed. Please check label match syntax or "
-"local configuration."
-msgstr ""
-"فید نمایش داده نشد: درخواست ناموفق بود. لطفا مطابقت برچسب با سینتگس و یا "
-"تنظیمات داخلی را بررسی نمایید."
+msgid "Could not display feed: query failed. Please check label match syntax or local configuration."
+msgstr "فید نمایش داده نشد: درخواست ناموفق بود. لطفا مطابقت برچسب با سینتگس و یا تنظیمات داخلی را بررسی نمایید."
 
 #: errors.php:28
 msgid "Denied. Your access level is insufficient to access this page."
@@ -152,17 +145,12 @@ msgid "Configuration check failed"
 msgstr "بررسی تنظیمات ناموفق بود"
 
 #: errors.php:32
-msgid ""
-"Your version of MySQL is not currently supported. Please see official site "
-"for more information."
-msgstr ""
-"در حال حاضر نسخه mysql شما، پشتیبانی نمی‌شود. لطفا برای اطلاعات بیشتر به سایت "
-"معتبر و رسمی مراجعه نمایید."
+msgid "Your version of MySQL is not currently supported. Please see official site for more information."
+msgstr "در حال حاضر نسخه mysql شما، پشتیبانی نمی‌شود. لطفا برای اطلاعات بیشتر به سایت معتبر و رسمی مراجعه نمایید."
 
 #: errors.php:36
 msgid "SQL escaping test failed, check your database and PHP configuration"
-msgstr ""
-"تست فرار بودن SQL با موفقیت انجام نشد، تنظیمات دیتابیس و PHP را بررسی کنید"
+msgstr "تست فرار بودن SQL با موفقیت انجام نشد، تنظیمات دیتابیس و PHP را بررسی کنید"
 
 #: errors.php:38
 msgid "Method not found"
@@ -176,262 +164,241 @@ msgstr "پلاگین یافت نشد"
 msgid "Encoding data as JSON failed"
 msgstr "رمزگذاری داده به صورت JSON با موفقیت انجام نشد"
 
-#: index.php:139 index.php:154 index.php:277 prefs.php:124
-#: classes/pref/filters.php:788 classes/pref/labels.php:281
-#: classes/pref/feeds.php:1298 js/App.js:318 js/CommonDialogs.js:299
-#: js/CommonDialogs.js:379 js/Feeds.js:359 js/Feeds.js:437 js/Headlines.js:315
-#: js/PrefFeedTree.js:127 js/PrefFeedTree.js:134 js/PrefFeedTree.js:251
-#: js/PrefFeedTree.js:320 js/PrefFilterTree.js:98 js/PrefHelpers.js:26
-#: js/PrefHelpers.js:38 js/PrefHelpers.js:62 js/PrefHelpers.js:111
-#: js/PrefHelpers.js:184 plugins/af_readability/init.js:17
+#: index.php:135
+#: index.php:150
+#: index.php:274
+#: prefs.php:120
+#: classes/pref/labels.php:281
+#: classes/pref/filters.php:755
+#: classes/pref/feeds.php:1297
+#: js/Article.js:257
+#: js/CommonDialogs.js:225
+#: js/CommonDialogs.js:320
+#: js/PrefFeedTree.js:363
+#: js/PrefFeedTree.js:409
+#: js/CommonDialogs.js:248
+#: js/CommonDialogs.js:364
+#: js/CommonDialogs.js:399
+#: js/Feeds.js:370
+#: js/Feeds.js:448
+#: js/Headlines.js:327
+#: js/PrefFeedTree.js:130
+#: js/PrefFeedTree.js:137
+#: js/PrefFeedTree.js:254
+#: js/PrefFeedTree.js:326
+#: js/PrefFilterTree.js:100
+#: js/PrefHelpers.js:27
+#: js/PrefHelpers.js:39
+#: js/PrefHelpers.js:78
+#: js/PrefHelpers.js:138
+#: js/PrefHelpers.js:219
+#: js/PrefLabelTree.js:116
+#: plugins/af_readability/init.js:17
 msgid "Loading, please wait..."
 msgstr "در حال بارگذاری، لطفا منتظر بمانید."
 
-#: index.php:168 js/App.js:415 js/App.js:421
+#: index.php:164
+#: js/App.js:379
+#: js/App.js:385
 msgid "Communication problem with server."
 msgstr "مشکل در برقراری ارتباط با سرور."
 
-#: index.php:171
+#: index.php:167
 msgid "Recent entries found in event log."
 msgstr "ورودی های اخیر در گزارش حادثه یافت شد."
 
-#: index.php:174
+#: index.php:170
 msgid "Updates are available from Git."
 msgstr "به‌روزرسانی‌ها در Git قابل دسترس هستند."
 
-#: index.php:188
+#: index.php:185
 msgid "Show articles"
 msgstr "نمایش مقالات"
 
-#: index.php:191
+#: index.php:188
 msgid "Adaptive"
 msgstr "توافقی"
 
-#: index.php:192
+#: index.php:189
 msgid "All Articles"
 msgstr "همه مقالات"
 
-#: index.php:193 classes/rpc.php:807 classes/feeds.php:77
+#: index.php:190
+#: classes/rpc.php:638
 msgid "Starred"
 msgstr "ستاره دار"
 
-#: index.php:194 classes/rpc.php:808 classes/feeds.php:78
+#: index.php:191
+#: classes/rpc.php:639
 msgid "Published"
 msgstr "منتشر شده"
 
-#: index.php:195 classes/feeds.php:70 classes/feeds.php:76
+#: index.php:192
+#: classes/feeds.php:69
 msgid "Unread"
 msgstr "خوانده نشده"
 
-#: index.php:196
+#: index.php:193
 msgid "With Note"
 msgstr "یادداشت"
 
-#: index.php:197
+#: index.php:194
 msgid "Ignore Scoring"
 msgstr "امتیازدهی را نادیده بگیرید"
 
-#: index.php:200
+#: index.php:197
 msgid "Sort articles"
 msgstr "مقالات مرتب شود"
 
-#: index.php:204
+#: index.php:201
 msgid "Default"
 msgstr "پیش فرض"
 
-#: index.php:205
+#: index.php:202
 msgid "Newest first"
 msgstr "تازه ترین"
 
-#: index.php:206
+#: index.php:203
 msgid "Oldest first"
 msgstr "قدیمیترین"
 
-#: index.php:207
+#: index.php:204
 msgid "Title"
 msgstr "عنوان"
 
-#: index.php:219 index.php:253 classes/rpc.php:795 classes/feeds.php:82
-#: js/FeedTree.js:89 js/FeedTree.js:119
+#: index.php:216
+#: index.php:250
+#: classes/rpc.php:626
+#: classes/feeds.php:77
+#: js/FeedTree.js:89
+#: js/FeedTree.js:119
 msgid "Mark as read"
 msgstr "علامت زدن به عنوان خوانده شده"
 
-#: index.php:222
+#: index.php:219
 msgid "Older than one day"
 msgstr "بیش از یک روز گذشته"
 
-#: index.php:225
+#: index.php:222
 msgid "Older than one week"
 msgstr "بیش از یک هفته گذشته"
 
-#: index.php:228
+#: index.php:225
 msgid "Older than two weeks"
 msgstr "بیشتر از دو هفته گذشته"
 
-#: index.php:243
+#: index.php:240
 msgid "Actions..."
 msgstr "اقدامات..."
 
-#: index.php:246
+#: index.php:243
 msgid "Preferences..."
 msgstr "اولویت ها..."
 
-#: index.php:247
+#: index.php:244
 msgid "Search..."
 msgstr "جستجو..."
 
-#: index.php:248
+#: index.php:245
 msgid "Feed actions:"
 msgstr "فعالیت های فید:"
 
-#: index.php:249 classes/handler/public.php:781
+#: index.php:246
+#: classes/handler/public.php:786
 msgid "Subscribe to feed..."
 msgstr "مشترک شدن در فید..."
 
-#: index.php:250
+#: index.php:247
 msgid "Edit this feed..."
 msgstr "ویرایش این فید..."
 
-#: index.php:251 classes/pref/feeds.php:814 classes/pref/feeds.php:1271
-#: js/PrefFeedTree.js:63
+#: index.php:248
+#: classes/pref/feeds.php:810
+#: classes/pref/feeds.php:1270
+#: js/PrefFeedTree.js:64
 msgid "Unsubscribe"
 msgstr "غیرقابل اشتراک گذاری"
 
-#: index.php:252
+#: index.php:249
 msgid "All feeds:"
 msgstr "همه فیدها:"
 
-#: index.php:254
+#: index.php:251
 msgid "(Un)hide read feeds"
 msgstr "فیدهای خوانده شده را مخفی کنید/ آشکار کنید"
 
-#: index.php:255
+#: index.php:252
 msgid "Other actions:"
 msgstr "دیگر فعالیت‌ها:"
 
-#: index.php:256 classes/rpc.php:781
+#: index.php:253
+#: classes/rpc.php:612
 msgid "Toggle widescreen mode"
 msgstr "تغییر وضعیت حالت صفحه عریض"
 
-#: index.php:257
+#: index.php:254
 msgid "Keyboard shortcuts help"
 msgstr "راهنمای میان برهای صفحه کلید"
 
-#: index.php:266
+#: index.php:263
 msgid "Logout"
 msgstr "خروج"
 
-#: prefs.php:31 prefs.php:141 classes/rpc.php:811 classes/pref/prefs.php:568
+#: prefs.php:27
+#: prefs.php:137
+#: classes/rpc.php:641
+#: classes/pref/prefs.php:567
 msgid "Preferences"
 msgstr "اولویت ها"
 
-#: prefs.php:133
+#: prefs.php:129
 msgid "Keyboard shortcuts"
 msgstr "میان برهای صفحه کلید"
 
-#: prefs.php:134
+#: prefs.php:130
 msgid "Exit preferences"
 msgstr "از اولویت‌ها خارج شوید"
 
-#: prefs.php:144 classes/pref/prefs.php:28 classes/pref/feeds.php:127
-#: classes/pref/feeds.php:1205 classes/pref/feeds.php:1260
+#: prefs.php:140
+#: classes/pref/prefs.php:28
+#: classes/pref/feeds.php:125
+#: classes/pref/feeds.php:1204
+#: classes/pref/feeds.php:1259
 msgid "Feeds"
 msgstr "فیدها"
 
-#: prefs.php:148 classes/pref/filters.php:240
+#: prefs.php:144
+#: classes/pref/filters.php:228
 msgid "Filters"
 msgstr "فیلترها"
 
-#: prefs.php:152 classes/pref/labels.php:85 classes/feeds.php:1431
+#: prefs.php:148
+#: classes/pref/labels.php:85
+#: classes/feeds.php:1431
 msgid "Labels"
 msgstr "برچسب‌ها"
 
-#: prefs.php:157
+#: prefs.php:153
 msgid "Users"
 msgstr "کاربرها"
 
-#: prefs.php:160
+#: prefs.php:156
 msgid "System"
 msgstr "سیستم"
 
-#: register.php:186 include/login_form.php:182
-msgid "Create new account"
-msgstr "ایجاد حساب کاربری جدید"
-
-#: register.php:192
-msgid "New user registrations are administratively disabled."
-msgstr "ثبت نام کاربر جدید توسط مدیریت غیرفعال شده است."
-
-#: register.php:196 register.php:241 register.php:254 register.php:269
-#: register.php:288 register.php:335 register.php:345 register.php:357
-#: classes/handler/public.php:799 classes/handler/public.php:849
-#: classes/handler/public.php:873 classes/handler/public.php:965
-#: classes/handler/public.php:995 classes/handler/public.php:1068
-#: classes/handler/public.php:1165 classes/handler/public.php:1177
-#: classes/handler/public.php:1182 classes/handler/public.php:1206
-msgid "Return to Tiny Tiny RSS"
-msgstr "برگشت به صفحه Tiny Tiny RSS"
-
-#: register.php:217
-msgid ""
-"Your temporary password will be sent to the specified email. Accounts, which "
-"were not logged in once, are erased automatically 24 hours after temporary "
-"password is sent."
-msgstr ""
-"رمز عبور موقت شما به ایمیل مشخص شده ارسال می گردد. حساب هایی که 24 ساعت بعد "
-"از ارسال رمز عبور موقت، یک بار لاگین نشوند، به صورت اتوماتیک پاک می شوند."
-
-#: register.php:223
-msgid "Desired login:"
-msgstr "ورود به سیستم موردنظر:"
-
-#: register.php:226
-msgid "Check availability"
-msgstr "در دسترس بودن را بررسی کنید"
-
-#: register.php:228 classes/handler/public.php:980
-msgid "Email:"
-msgstr "ایمیل:"
-
-#: register.php:231
-msgid "How much is two plus two:"
-msgstr "حاصل جمع 2+2 می‌شود:"
-
-#: register.php:234
-msgid "Submit registration"
-msgstr "ارسال ثبت‌نام"
-
-#: register.php:252
-msgid "Your registration information is incomplete."
-msgstr "اطلاعات ثبت نام شما کامل نیست."
-
-#: register.php:267
-msgid "Sorry, this username is already taken."
-msgstr "متاسفانه، این نام کاربری تکراری می باشد."
-
-#: register.php:286
-msgid "Registration failed."
-msgstr "ثبت نام موفقیت آمیز نبود."
-
-#: register.php:332
-msgid "Account created successfully."
-msgstr "حساب کاربری با موفقیت ایجاد شد."
-
-#: register.php:354
-msgid "New user registrations are currently closed."
-msgstr "ثبت نام کاربر جدید در حال حاضر امکانپذیر نمی باشد."
-
-#: update.php:128
-msgid "Tiny Tiny RSS data update script."
-msgstr "اسکرپیت به‌روزرسانی داده Tiny Tiny RSS."
-
-#: include/controls.php:85 classes/pref/filters.php:209
-#: classes/pref/filters.php:220 classes/pref/filters.php:535
+#: include/controls.php:93
+#: classes/pref/filters.php:197
+#: classes/pref/filters.php:208
+#: classes/pref/filters.php:502
 msgid "All feeds"
 msgstr "همه فیدها"
 
-#: include/controls.php:138 include/controls.php:230 classes/opml.php:544
-#: classes/pref/feeds.php:247 classes/feeds.php:1443 classes/digest.php:124
+#: include/controls.php:146
+#: include/controls.php:238
+#: classes/pref/feeds.php:245
+#: classes/digest.php:122
+#: classes/opml.php:545
+#: classes/feeds.php:1443
 msgid "Uncategorized"
 msgstr "دسته‌بندی نشده"
 
@@ -439,12 +406,15 @@ msgstr "دسته‌بندی نشده"
 msgid "Detect automatically"
 msgstr "کشف خودکار"
 
-#: include/login_form.php:108 classes/pref/users.php:55
-#: classes/handler/public.php:640 classes/handler/public.php:975
+#: include/login_form.php:108
+#: classes/handler/public.php:645
+#: classes/handler/public.php:980
+#: classes/pref/users.php:55
 msgid "Login:"
 msgstr "ورود:"
 
-#: include/login_form.php:117 classes/handler/public.php:647
+#: include/login_form.php:117
+#: classes/handler/public.php:652
 msgid "Password:"
 msgstr "رمز عبور:"
 
@@ -456,8 +426,10 @@ msgstr "رمز عبور خود را فراموش کردم"
 msgid "Profile:"
 msgstr "پروفایل:"
 
-#: include/login_form.php:137 classes/rpc.php:69 classes/pref/prefs.php:1241
-#: classes/handler/public.php:272
+#: include/login_form.php:137
+#: classes/rpc.php:69
+#: classes/handler/public.php:274
+#: classes/pref/prefs.php:1216
 msgid "Default profile"
 msgstr "پروفایل پیش‌فرض"
 
@@ -467,19 +439,23 @@ msgstr "استفاده از ترافیک کمتر"
 
 #: include/login_form.php:150
 msgid "Does not display images in articles, reduces automatic refreshes."
-msgstr ""
-"تصاویر در مقاله نمایش داده نمی شود، این کار باعث کاهش بازخوانی اتوماتیک می "
-"شود."
+msgstr "تصاویر در مقاله نمایش داده نمی شود، این کار باعث کاهش بازخوانی اتوماتیک می شود."
 
 #: include/login_form.php:158
-msgid "Safe mode (no plugins)"
-msgstr "حالت امن (بدون پلاگین‌ها)"
+#: js/Feeds.js:247
+msgid "Safe mode"
+msgstr ""
 
-#: include/login_form.php:167
+#: include/login_form.php:162
+msgid "Uses default theme and prevents all plugins from loading."
+msgstr ""
+
+#: include/login_form.php:170
 msgid "Remember me"
 msgstr "مرا به خاطر بسپار"
 
-#: include/login_form.php:178 classes/handler/public.php:660
+#: include/login_form.php:180
+#: classes/handler/public.php:665
 msgid "Log in"
 msgstr "ورود"
 
@@ -499,701 +475,466 @@ msgstr "نشست تایید نشد (رمز عبور تغییر کرده است)"
 msgid "Session failed to validate (user not found)"
 msgstr "نشست تایید نشد (کاربر یافت نشد)"
 
-#: classes/article.php:20
-msgid "Article not found."
-msgstr "مقاله یافت نشد."
-
-#: classes/article.php:170
-msgid "Tags for this article (separated by commas):"
-msgstr "تگ‌های این مقاله (جدا شده با ویرگول):"
-
-#: classes/article.php:182 classes/pref/users.php:114
-#: classes/pref/filters.php:507 classes/pref/labels.php:73
-#: classes/pref/feeds.php:815 classes/pref/feeds.php:980
-#: plugins/af_readability/init.php:103 plugins/note/init.php:53
-#: plugins/af_redditimgur/init.php:81 plugins/af_psql_trgm/init.php:197
-#: plugins/nsfw/init.php:86 plugins/af_proxy_http/init.php:232
-#: plugins/mail/init.php:66
-msgid "Save"
-msgstr "ذخیره"
-
-#: classes/article.php:184 classes/pref/users.php:116
-#: classes/pref/filters.php:510 classes/pref/filters.php:924
-#: classes/pref/filters.php:1003 classes/pref/filters.php:1096
-#: classes/pref/labels.php:75 classes/pref/prefs.php:1194
-#: classes/pref/prefs.php:1291 classes/pref/feeds.php:816
-#: classes/pref/feeds.php:983 classes/pref/feeds.php:1713 classes/feeds.php:743
-#: classes/feeds.php:784 classes/handler/public.php:618
-#: plugins/note/init.php:55 plugins/mail/init.php:182
-msgid "Cancel"
-msgstr "انصراف"
-
-#: classes/article.php:273 classes/article.php:539
-msgid "no tags"
-msgstr "بدون تگ"
-
-#: classes/article.php:383
-msgid "unknown type"
-msgstr "فرمت ناشناخته"
-
-#: classes/article.php:460
-msgid "Attachments"
-msgstr "پیوست‌ها"
-
-#: classes/rpc.php:752
+#: classes/rpc.php:583
 msgid "Navigation"
 msgstr "جهت یابی"
 
-#: classes/rpc.php:753
+#: classes/rpc.php:584
 msgid "Open next feed"
 msgstr "فید بعدی را باز کنید"
 
-#: classes/rpc.php:754
+#: classes/rpc.php:585
 msgid "Open previous feed"
 msgstr "فید قبلی را باز کنید"
 
-#: classes/rpc.php:755
+#: classes/rpc.php:586
 msgid "Open next article (in combined mode, scroll down)"
 msgstr "مقاله بعدی را باز کنید (در حالت ترکیبی ، به پایین بروید)"
 
-#: classes/rpc.php:756
+#: classes/rpc.php:587
 msgid "Open previous article (in combined mode, scroll up)"
 msgstr "مقاله قبلی را باز کنید (در حالت ترکیبی، به بالا بروید)"
 
-#: classes/rpc.php:757
+#: classes/rpc.php:588
 #, fuzzy
 msgid "Scroll headlines by one page down"
 msgstr "مقاله را با کلید page down پیمایش کنید"
 
-#: classes/rpc.php:758
+#: classes/rpc.php:589
 #, fuzzy
 msgid "Scroll headlines by one page up"
 msgstr "مقاله را با کلید page up پیمایش کنید"
 
-#: classes/rpc.php:759
+#: classes/rpc.php:590
 msgid "Open next article"
 msgstr "مقاله بعدی را باز کنید"
 
-#: classes/rpc.php:760
+#: classes/rpc.php:591
 msgid "Open previous article"
 msgstr "مقاله قبلی را باز کنید"
 
-#: classes/rpc.php:761
+#: classes/rpc.php:592
 msgid "Move to next article (don't expand)"
 msgstr "رفتن مقاله بعدی (گسترش نده)"
 
-#: classes/rpc.php:762
+#: classes/rpc.php:593
 msgid "Move to previous article (don't expand)"
 msgstr "رفتن به مقاله قبلی (گسترش نده)"
 
-#: classes/rpc.php:763
+#: classes/rpc.php:594
 msgid "Show search dialog"
 msgstr "نمایش متن جستجو شده"
 
-#: classes/rpc.php:764
+#: classes/rpc.php:595
 msgid "Cancel active search"
 msgstr "لغو کردن جستجوی فعال"
 
-#: classes/rpc.php:765
+#: classes/rpc.php:596
 msgid "Article"
 msgstr "مقاله"
 
-#: classes/rpc.php:766 js/Headlines.js:1266
+#: classes/rpc.php:597
+#: classes/feeds.php:74
+#: js/Headlines.js:1243
 msgid "Toggle starred"
 msgstr "تغییر وضعیت ستاره دار شد"
 
-#: classes/rpc.php:767 js/Headlines.js:1278
+#: classes/rpc.php:598
+#: classes/feeds.php:75
+#: js/Headlines.js:1255
 msgid "Toggle published"
 msgstr "تغییر وضعیت به حالت «منتشر شده»"
 
-#: classes/rpc.php:768 js/Headlines.js:1253
+#: classes/rpc.php:599
+#: classes/feeds.php:73
+#: js/Headlines.js:1230
 msgid "Toggle unread"
 msgstr "تغییر وضعیت به حالت «خوانده نشده»"
 
-#: classes/rpc.php:769
+#: classes/rpc.php:600
 msgid "Edit tags"
 msgstr "تگ‌ها را ویرایش کنید"
 
-#: classes/rpc.php:770
+#: classes/rpc.php:601
 msgid "Open in new window"
 msgstr "در پنجره جدید باز کنید"
 
-#: classes/rpc.php:771 js/Headlines.js:1299
+#: classes/rpc.php:602
+#: js/Headlines.js:1276
 msgid "Mark below as read"
 msgstr "در پایین به عنوان خوانده شده علامت بزنید"
 
-#: classes/rpc.php:772 js/Headlines.js:1292
+#: classes/rpc.php:603
+#: js/Headlines.js:1269
 msgid "Mark above as read"
 msgstr "در بالا به عنوان خوانده شده علامت بزنید"
 
-#: classes/rpc.php:773
+#: classes/rpc.php:604
 msgid "Scroll down"
 msgstr "به پایین بروید"
 
-#: classes/rpc.php:774
+#: classes/rpc.php:605
 msgid "Scroll up"
 msgstr "به بالا بروید"
 
-#: classes/rpc.php:775
+#: classes/rpc.php:606
 msgid "Scroll down page"
 msgstr "به پایین صفحه بروید"
 
-#: classes/rpc.php:776
+#: classes/rpc.php:607
 msgid "Scroll up page"
 msgstr "به بالای صفحه بروید"
 
-#: classes/rpc.php:777
+#: classes/rpc.php:608
 msgid "Select article under cursor"
 msgstr "مقاله زیر مکان نما را انتخاب کنید"
 
-#: classes/rpc.php:778
+#: classes/rpc.php:609
 msgid "Email article"
 msgstr "مقاله را ایمیل نمایید"
 
-#: classes/rpc.php:779
+#: classes/rpc.php:610
 msgid "Close/collapse article"
 msgstr "مقاله را ببندید/حذف کنید"
 
-#: classes/rpc.php:780
+#: classes/rpc.php:611
 msgid "Toggle article expansion (combined mode)"
 msgstr "تغییر وضعیت گستردگی مقاله(حالت ترکیبی)"
 
-#: classes/rpc.php:782
+#: classes/rpc.php:613
 msgid "Toggle full article text via Readability"
 msgstr "متن کامل مقاله را از طریق خوانایی تغییر دهید"
 
-#: classes/rpc.php:783
+#: classes/rpc.php:614
 msgid "Article selection"
 msgstr "انتخاب مقاله"
 
-#: classes/rpc.php:784
+#: classes/rpc.php:615
 msgid "Select all articles"
 msgstr "همه مقالات را انتخاب کنید"
 
-#: classes/rpc.php:785
+#: classes/rpc.php:616
 msgid "Select unread"
 msgstr "«خوانده نشده» را انتخاب کنید"
 
-#: classes/rpc.php:786
+#: classes/rpc.php:617
 msgid "Select starred"
 msgstr "ستاره دار را انتخاب کنید"
 
-#: classes/rpc.php:787
+#: classes/rpc.php:618
 msgid "Select published"
 msgstr "منتشر شده را انتخاب کنید"
 
-#: classes/rpc.php:788
+#: classes/rpc.php:619
 msgid "Invert selection"
 msgstr "انتخاب معکوس"
 
-#: classes/rpc.php:789
+#: classes/rpc.php:620
 msgid "Deselect everything"
 msgstr "همه چیز را از حالت انتخاب خارج کنید"
 
-#: classes/rpc.php:790 classes/pref/feeds.php:529 classes/pref/feeds.php:835
+#: classes/rpc.php:621
+#: classes/pref/feeds.php:527
+#: classes/pref/feeds.php:831
 msgid "Feed"
 msgstr "فید"
 
-#: classes/rpc.php:791
+#: classes/rpc.php:622
 msgid "Refresh current feed"
 msgstr "فید فعلی را به‌روزرسانی نمایید"
 
-#: classes/rpc.php:792
+#: classes/rpc.php:623
 msgid "Un/hide read feeds"
 msgstr "فیدهای خوانده شده را آشکار/ مخفی کنید"
 
-#: classes/rpc.php:793 classes/pref/feeds.php:1263
+#: classes/rpc.php:624
+#: classes/pref/feeds.php:1262
 msgid "Subscribe to feed"
 msgstr "فید به اشتراک گذاشته شود"
 
-#: classes/rpc.php:794 js/PrefFeedTree.js:57 js/FeedTree.js:96
-#: js/Headlines.js:1422
+#: classes/rpc.php:625
+#: js/PrefFeedTree.js:58
+#: js/FeedTree.js:96
+#: js/Headlines.js:1399
 msgid "Edit feed"
 msgstr "فید ویرایش شود"
 
-#: classes/rpc.php:796
+#: classes/rpc.php:627
 msgid "Reverse headlines"
 msgstr "عناوین معکوس"
 
-#: classes/rpc.php:797
+#: classes/rpc.php:628
 msgid "Toggle headline grouping"
 msgstr "تغییر عناوین گروه‌بندی"
 
-#: classes/rpc.php:798
+#: classes/rpc.php:629
 msgid "Debug feed update"
 msgstr "رفع مشکل به روز رسانی فید"
 
-#: classes/rpc.php:799
+#: classes/rpc.php:630
 msgid "Debug viewfeed()"
 msgstr "رفع مشکل تابع viewfeed"
 
-#: classes/rpc.php:800 js/FeedTree.js:144
+#: classes/rpc.php:631
+#: js/FeedTree.js:144
 msgid "Mark all feeds as read"
 msgstr "همه ی فیدها به وضعیت «خوانده شده» تغییر داده شود"
 
-#: classes/rpc.php:801
+#: classes/rpc.php:632
 msgid "Un/collapse current category"
 msgstr "جمع کردن/ از بین بردن مجموعه فعلی"
 
-#: classes/rpc.php:802
+#: classes/rpc.php:633
 msgid "Toggle auto expand in combined mode"
 msgstr "تغییر وضعیت گسترش خودکار در حالت ترکیبی"
 
-#: classes/rpc.php:803
+#: classes/rpc.php:634
 msgid "Toggle combined mode"
 msgstr "تغییر حالت ترکیبی"
 
-#: classes/rpc.php:804
+#: classes/rpc.php:635
 msgid "Go to"
 msgstr "برو به"
 
-#: classes/rpc.php:805 classes/feeds.php:1299
+#: classes/rpc.php:636
+#: classes/feeds.php:1299
 msgid "All articles"
 msgstr "همه مقاله‌ها"
 
-#: classes/rpc.php:806
+#: classes/rpc.php:637
 msgid "Fresh"
 msgstr "تازه"
 
-#: classes/rpc.php:809 classes/feeds.php:1303
+#: classes/rpc.php:640
+#: classes/feeds.php:1303
 msgid "Recently read"
 msgstr "اخیراً خوانده شده"
 
-#: classes/rpc.php:810 js/App.js:1098 js/App.js:1175
-msgid "Tag cloud"
-msgstr "تگ کلود"
-
-#: classes/rpc.php:812
+#: classes/rpc.php:642
 msgid "Other"
 msgstr "سایر"
 
-#: classes/rpc.php:813 classes/pref/labels.php:266
+#: classes/rpc.php:643
+#: classes/pref/labels.php:266
 msgid "Create label"
 msgstr "برچسب ایجاد کنید"
 
-#: classes/rpc.php:814 classes/pref/filters.php:767
+#: classes/rpc.php:644
+#: classes/pref/filters.php:734
 msgid "Create filter"
 msgstr "محدودیت ایجاد کنید"
 
-#: classes/rpc.php:815
+#: classes/rpc.php:645
 msgid "Un/collapse sidebar"
 msgstr "باز/ بستن نوار کناری"
 
-#: classes/rpc.php:816
+#: classes/rpc.php:646
 msgid "Show help dialog"
 msgstr "دایالوگ راهنما را نشان دهید"
 
-#: classes/dlg.php:30 classes/dlg.php:57 classes/dlg.php:89 classes/dlg.php:153
-#: classes/dlg.php:187 classes/dlg.php:204 classes/pref/filters.php:172
-#: classes/pref/feeds.php:1524 classes/pref/feeds.php:1584
-#: classes/backend.php:87 plugins/af_psql_trgm/init.php:111
+#: classes/backend.php:58
+msgid "Shift"
+msgstr "شیفت"
+
+#: classes/backend.php:61
+msgid "Ctrl"
+msgstr "کلید CTRL"
+
+#: classes/backend.php:86
+#: classes/pref/feeds.php:1514
+#: classes/pref/feeds.php:1573
+#: plugins/af_psql_trgm/init.php:112
 #: plugins/share/init.php:133
 msgid "Close this window"
 msgstr "این پنجره را ببندید"
 
-#: classes/dlg.php:41
-msgid "Your Public OPML URL is:"
-msgstr "آدرس url عمومی و opml شما این است:"
+#: classes/handler/public.php:524
+#: plugins/bookmarklets/init.php:41
+msgid "Share with Tiny Tiny RSS"
+msgstr "اشتراک‌گذاری با Tiny Tiny RSS"
 
-#: classes/dlg.php:54 classes/dlg.php:184 plugins/share/init.php:130
-msgid "Generate new URL"
-msgstr "تولید URL جدید"
+#: classes/handler/public.php:597
+msgid "Title:"
+msgstr "عنوان:"
 
-#: classes/dlg.php:68
-msgid ""
-"Update daemon is enabled in configuration, but daemon process is not "
-"running, which prevents all feeds from updating. Please start the daemon "
-"process or contact instance owner."
-msgstr ""
-"به‌روزرسانی daemon در تنظیمات فعال است، اما هیچ فرآیند daemon در حال اجرا "
-"نیست و این موضوع از به‌روزرسانی فیدها جلوگیری می‌کند. لطفاً فرآیند مربوط به "
-"daemon را اجرا کنید و یا با مالک تماس بگیرید."
+#: classes/handler/public.php:602
+#: classes/pref/feeds.php:546
+msgid "URL:"
+msgstr "آدرس URL:"
 
-#: classes/dlg.php:72 classes/dlg.php:81
-msgid "Last update:"
-msgstr "آخرین به‌روزرسانی:"
+#: classes/handler/public.php:607
+msgid "Content:"
+msgstr "محتوا:"
 
-#: classes/dlg.php:77
-msgid ""
-"Update daemon is taking too long to perform a feed update. This could "
-"indicate a problem like crash or a hang. Please check the daemon process or "
-"contact instance owner."
-msgstr ""
-"فرآیند به‌روزرسانی daemon برای به‌روزسانی یک فید بسیار طولانی شده است. این "
-"می‌تواند نشان‌دهنده‌ی یک اشکال مانند خرابی یا تعلیق باشد. لطفا فرآیند daemon را "
-"بررسی کنید یا با مالک تماس بگیرید."
+#: classes/handler/public.php:612
+msgid "Labels:"
+msgstr "برچسب‌ها:"
 
-#: classes/dlg.php:170
+#: classes/handler/public.php:622
+msgid "Share"
+msgstr "اشتراک‌گذاری"
+
+#: classes/handler/public.php:623
+#: classes/pref/labels.php:75
+#: classes/pref/prefs.php:1265
+#: classes/pref/filters.php:471
+#: classes/pref/filters.php:478
+#: classes/pref/filters.php:863
+#: classes/pref/filters.php:956
+#: classes/pref/users.php:116
+#: classes/pref/feeds.php:812
+#: classes/pref/feeds.php:978
+#: classes/pref/feeds.php:1668
+#: classes/feeds.php:736
+#: classes/feeds.php:778
+#: classes/article.php:187
+#: plugins/note/init.php:55
+#: plugins/mail/init.php:182
+msgid "Cancel"
+msgstr "انصراف"
+
+#: classes/handler/public.php:624
+msgid "Shared article will appear in the Published feed."
+msgstr "مقالات به اشتراک گذاشته شده در فید منتشر شده نمایش داده می شود."
+
+#: classes/handler/public.php:720
+msgid "Incorrect username or password"
+msgstr "نام کاربری یا رمز عبور نادرست است"
+
+#: classes/handler/public.php:801
+#: classes/pref/feeds.php:1667
+#: classes/feeds.php:733
+msgid "Subscribe"
+msgstr "مشترک شدن"
+
+#: classes/handler/public.php:804
+#: classes/handler/public.php:854
+#: classes/handler/public.php:878
+#: classes/handler/public.php:970
+#: classes/handler/public.php:1000
+#: classes/handler/public.php:1073
+#: classes/handler/public.php:1170
+#: classes/handler/public.php:1182
+#: classes/handler/public.php:1187
+#: classes/handler/public.php:1211
+msgid "Return to Tiny Tiny RSS"
+msgstr "برگشت به صفحه Tiny Tiny RSS"
+
+#: classes/handler/public.php:814
 #, php-format
-msgid "%s can be accessed via the following secret URL:"
-msgstr "%s توسط URL محرمانه‌ی زیر در دسترس است:"
+msgid "Already subscribed to <b>%s</b>."
+msgstr "قبلا با <b>%s</b> به اشتراک گذاشته شده است."
 
-#: classes/dlg.php:181 classes/pref/filters.php:997 classes/pref/prefs.php:791
-#: classes/pref/prefs.php:902 classes/pref/prefs.php:936
-#: classes/pref/prefs.php:982 classes/pref/prefs.php:997
-#: plugins/bookmarklets/init.php:45
-msgid "More info..."
-msgstr "اطلاعات بیشتر..."
-
-#: classes/dlg.php:196
-msgid ""
-"You are using default tt-rss password. Please change it in the Preferences "
-"(Personal data / Authentication)."
-msgstr ""
-"شما از رمز عبور پیش‌فرض tt-rss استفاده می‌کنید. لطفا آن را در قسمت اولویت‌ها "
-"تغییر دهید (اطلاعات شخصی / احراز هویت)."
-
-#: classes/dlg.php:201
-msgid "Open Preferences"
-msgstr "اولویت ها را باز کنید"
-
-#: classes/opml.php:28 classes/opml.php:32
-msgid "OPML Utility"
-msgstr "امکانات OPML"
-
-#: classes/opml.php:36
-msgid "Importing OPML..."
-msgstr "در حال وارد کردن OPML..."
-
-#: classes/opml.php:41
-msgid "Return to preferences"
-msgstr "برگشت به تنظیمات اولویت‌ها"
-
-#: classes/opml.php:321
+#: classes/handler/public.php:817
 #, php-format
-msgid "Adding feed: %s"
-msgstr "در حال افزودن فید: %s"
+msgid "Subscribed to <b>%s</b>."
+msgstr "با <b>%s</b> به اشتراک گذاشته شده است."
 
-#: classes/opml.php:341
+#: classes/handler/public.php:820
 #, php-format
-msgid "Duplicate feed: %s"
-msgstr "فیدهای تکراری:%s"
+msgid "Could not subscribe to <b>%s</b>."
+msgstr "با <b>%s</b> به اشتراک گذاشته نشده است."
 
-#: classes/opml.php:355
+#: classes/handler/public.php:823
 #, php-format
-msgid "Adding label %s"
-msgstr "در حال افزودن برپسب: %s"
+msgid "No feeds found in <b>%s</b>."
+msgstr "هیچ فیدی در <b>%s</b> یافت نشد."
 
-#: classes/opml.php:358
+#: classes/handler/public.php:829
 #, php-format
-msgid "Duplicate label: %s"
-msgstr "برچسب‌های تکراری: %s"
+msgid "Could not subscribe to <b>%s</b>.<br>Can't download the Feed URL."
+msgstr "با <b>%s</b> به اشتراک گذاشته نشده است. <br> امکان دانلود آدرس url فید را ندارد."
 
-#: classes/opml.php:370
+#: classes/handler/public.php:840
+msgid "Multiple feed URLs found:"
+msgstr "چندین URL فید یافت شد:"
+
+#: classes/handler/public.php:853
+msgid "Subscribe to selected feed"
+msgstr "به اشتراک گذاشتن فیدهای انتخاب شده"
+
+#: classes/handler/public.php:877
+msgid "Edit subscription options"
+msgstr "گزینه های مشترک شده را ویرایش کنید"
+
+#: classes/handler/public.php:930
+msgid "Password recovery"
+msgstr "بازیابی رمز عبور"
+
+#: classes/handler/public.php:973
+msgid "You will need to provide valid account name and email. Password reset link will be sent to your email address."
+msgstr "شما باید نام حساب و ایمیل معتبری ارائه دهید. لینک تنظیم مجدد رمز عبور به آدرس ایمیل شما ارسال خواهد شد."
+
+#: classes/handler/public.php:985
+msgid "Email:"
+msgstr "ایمیل:"
+
+#: classes/handler/public.php:993
 #, php-format
-msgid "Setting preference key %s to %s"
-msgstr "تنظیم کلید اولویت %s به %s"
+msgid "How much is %d + %d:"
+msgstr "حاصل %d + %d می‌شود:"
 
-#: classes/opml.php:406
-#, php-format
-msgid "Adding filter %s..."
-msgstr "در حال افزودن فیلتر %s ..."
-
-#: classes/opml.php:544
-#, php-format
-msgid "Processing category: %s"
-msgstr "در حال پردازش دسته: %s"
-
-#: classes/opml.php:590
-#, php-format
-msgid "Upload failed with error code %d"
-msgstr "آپلود با خطای شماره %d مواجه شد"
-
-#: classes/opml.php:602
-msgid "Unable to move uploaded file."
-msgstr "فایل آپلود شده قابل انتقال نیست."
-
-#: classes/opml.php:606
-msgid "Error: please upload OPML file."
-msgstr "خطا: لطفا فایل OPML را آپلود نمایید."
-
-#: classes/opml.php:617
-msgid "Error: unable to find moved OPML file."
-msgstr "خطا: قادر به یافتن فایل OPML انتقال یافته نمی باشد."
-
-#: classes/opml.php:626
-msgid "Error while parsing document."
-msgstr "خطا در هنگام ترجمه سند."
-
-#: classes/pref/users.php:6 classes/pref/system.php:8
-msgid "Your access level is insufficient to open this tab."
-msgstr "سطح دسترسی شما برای باز کردن این تب کافی نیست."
-
-#: classes/pref/users.php:26
-msgid "Edit user"
-msgstr "ویرایش کردن کاربر"
-
-#: classes/pref/users.php:63 classes/pref/feeds.php:668
-#: classes/pref/feeds.php:914 classes/pref/feeds.php:1694
-#: plugins/auth_internal/init.php:69
-msgid "Authentication"
-msgstr "احراز هویت"
-
-#: classes/pref/users.php:68
-msgid "Access level: "
-msgstr "سطح دسترسی: "
-
-#: classes/pref/users.php:82 classes/pref/prefs.php:398
-msgid "New password:"
-msgstr "رمز عبور جدید:"
-
-#: classes/pref/users.php:90 classes/pref/filters.php:457
-#: classes/pref/filters.php:895 classes/pref/feeds.php:699
-#: classes/pref/feeds.php:936
-msgid "Options"
-msgstr "گزینه ها"
-
-#: classes/pref/users.php:94 classes/pref/prefs.php:320
-msgid "E-mail:"
-msgstr "آدرس ایمیل:"
-
-#: classes/pref/users.php:107
-msgid "User details"
-msgstr "جزییات کاربر"
-
-#: classes/pref/users.php:148 classes/pref/users.php:390
-msgid "Registered"
-msgstr "ثبت‌نام شده"
-
-#: classes/pref/users.php:149
-msgid "Last logged in"
-msgstr "آخرین ورود به سیستم"
-
-#: classes/pref/users.php:157
-msgid "Subscribed feeds count"
-msgstr "تعداد فیدهای قابل قبول"
-
-#: classes/pref/users.php:158
-msgid "Stored articles"
-msgstr "مقاله‌های ذخیره شده"
-
-#: classes/pref/users.php:162 classes/pref/users.php:389
-msgid "Subscribed feeds"
-msgstr "فیدهای قابل قبول"
-
-#: classes/pref/users.php:188
-msgid "User not found"
-msgstr "کاربر یافت نشد"
-
-#: classes/pref/users.php:259
-#, php-format
-msgid "Added user %s with password %s"
-msgstr "کاربر %s با رمز عبور %s اضافه شد"
-
-#: classes/pref/users.php:266
-#, php-format
-msgid "Could not create user %s"
-msgstr "ایجاد کاربر %s امکان پذیر نیست"
-
-#: classes/pref/users.php:270
-#, php-format
-msgid "User %s already exists."
-msgstr "کاربر %s از قبل تعریف شده است."
-
-#: classes/pref/users.php:295
-#, php-format
-msgid "Changed password of user %s to %s"
-msgstr "رمز عبور کاربر %s به %s تغییر کرد"
-
-#: classes/pref/users.php:330 classes/pref/filters.php:754
-#: classes/pref/feeds.php:1247 classes/feeds.php:783 js/Feeds.js:569
-msgid "Search"
-msgstr "جستجو"
-
-#: classes/pref/users.php:340 classes/pref/filters.php:358
-#: classes/pref/filters.php:418 classes/pref/filters.php:758
-#: classes/pref/filters.php:844 classes/pref/filters.php:873
-#: classes/pref/labels.php:257 classes/pref/prefs.php:1203
-#: classes/pref/prefs.php:1313 classes/pref/feeds.php:1251
-#: classes/pref/feeds.php:1479 classes/pref/feeds.php:1536
-msgid "Select"
-msgstr "انتخاب"
-
-#: classes/pref/users.php:343 classes/pref/filters.php:361
-#: classes/pref/filters.php:421 classes/pref/filters.php:761
-#: classes/pref/filters.php:847 classes/pref/filters.php:876
-#: classes/pref/labels.php:260 classes/pref/prefs.php:1206
-#: classes/pref/prefs.php:1316 classes/pref/feeds.php:1254
-#: classes/pref/feeds.php:1482 classes/pref/feeds.php:1539 classes/feeds.php:69
-msgid "All"
-msgstr "همه"
-
-#: classes/pref/users.php:345 classes/pref/filters.php:363
-#: classes/pref/filters.php:423 classes/pref/filters.php:763
-#: classes/pref/filters.php:849 classes/pref/filters.php:878
-#: classes/pref/labels.php:262 classes/pref/prefs.php:1208
-#: classes/pref/prefs.php:1318 classes/pref/feeds.php:1256
-#: classes/pref/feeds.php:1484 classes/pref/feeds.php:1541 classes/feeds.php:72
-msgid "None"
-msgstr "هیچ کدام"
-
+#: classes/handler/public.php:999
 #: classes/pref/users.php:348
-msgid "Create user"
-msgstr "کاربر جدید ایجاد کنید"
-
-#: classes/pref/users.php:352 classes/pref/filters.php:773
-msgid "Edit"
-msgstr "ویرایش کنید."
-
-#: classes/pref/users.php:354 classes/pref/filters.php:500
-#: classes/pref/filters.php:780 classes/pref/labels.php:269
-#: classes/pref/feeds.php:798
-msgid "Remove"
-msgstr "پاک کنید"
-
-#: classes/pref/users.php:356 classes/handler/public.php:994
 msgid "Reset password"
 msgstr "تنطیم مجدد رمز عبور"
 
-#: classes/pref/users.php:387 classes/pref/feeds.php:674
-#: classes/pref/feeds.php:920 classes/pref/feeds.php:1697 classes/feeds.php:720
-msgid "Login"
-msgstr "ورود"
+#: classes/handler/public.php:1011
+msgid "Some of the required form parameters are missing or incorrect."
+msgstr "برخی پارامترهای مورد نیاز فرم نادرست است یا وجود ندارد."
 
-#: classes/pref/users.php:388
-msgid "Access Level"
-msgstr "سطح دسترسی"
+#: classes/handler/public.php:1015
+#: classes/handler/public.php:1080
+msgid "Go back"
+msgstr "برگشت به عقب"
 
-#: classes/pref/users.php:391
-msgid "Last login"
-msgstr "آخرین ورود به سیستم"
+#: classes/handler/public.php:1056
+msgid "[tt-rss] Password reset request"
+msgstr "[tt-rss] درخواست تنطیم مجدد رمز عبور"
 
-#: classes/pref/users.php:408
-msgid "Click to edit"
-msgstr "برای ویرایش کلیک کنید"
+#: classes/handler/public.php:1076
+msgid "Sorry, login and email combination not found."
+msgstr "متاسفیم، ایمیل و اطلاعات ورود به سیستم متناظر یافت نشد."
 
-#: classes/pref/users.php:424
-msgid "No users defined."
-msgstr "هیچ کاربری تعریف نشده است."
+#: classes/handler/public.php:1099
+msgid "Your access level is insufficient to run this script."
+msgstr "سطح دسترسی شما برای اجرای این اسکریپت کافی نیست."
 
-#: classes/pref/users.php:426
-msgid "No matching users found."
-msgstr "هیچ کاربر منطبقی یافت نشد."
+#: classes/handler/public.php:1140
+msgid "Database Updater"
+msgstr "به‌روزرسانی کننده‌ی دیتابیس"
 
-#: classes/pref/filters.php:231 classes/pref/filters.php:555
-msgid "(inverse)"
-msgstr "(معکوس)"
-
-#: classes/pref/filters.php:227 classes/pref/filters.php:554
+#: classes/handler/public.php:1151
 #, php-format
-msgid "%s on %s in %s %s"
-msgstr ""
+msgid "Performing updates to version %d"
+msgstr "انجام به روز رسانی ها به نسخه %d"
 
-#: classes/pref/filters.php:347 classes/pref/filters.php:832
+#: classes/handler/public.php:1156
+#, php-format
+msgid "Updating to version %d"
+msgstr "به‌روزرسانی به نسخه‌ی %d"
+
+#: classes/handler/public.php:1169
+msgid "Try again"
+msgstr "تلاش مجدد"
+
+#: classes/handler/public.php:1175
+msgid "Completed."
+msgstr "کامل شد."
+
+#: classes/handler/public.php:1192
+#, php-format
+msgid "Tiny Tiny RSS database needs update to the latest version (%d to %d)."
+msgstr "دیتابیس Tiny Tiny RSS باید به جدیدترین نسخه، به‌روزرسانی شود. (%d to %d)."
+
+#: classes/handler/public.php:1204
+msgid "Perform updates"
+msgstr "به‌روزرسانی انجام شود"
+
 #: classes/pref/labels.php:25
+#: classes/pref/filters.php:341
 msgid "Caption"
 msgstr "زیرنویس"
-
-#: classes/pref/filters.php:352 classes/pref/filters.php:838
-#: classes/pref/filters.php:956
-msgid "Match"
-msgstr "مطابق"
-
-#: classes/pref/filters.php:367 classes/pref/filters.php:427
-#: classes/pref/filters.php:853 classes/pref/filters.php:882
-msgid "Add"
-msgstr "افزودن"
-
-#: classes/pref/filters.php:370 classes/pref/filters.php:430
-#: classes/pref/filters.php:856 classes/pref/filters.php:885
-#: classes/feeds.php:87
-msgid "Delete"
-msgstr "حذف"
-
-#: classes/pref/filters.php:411 classes/pref/filters.php:866
-msgid "Apply actions"
-msgstr "اعمال اقدامات"
-
-#: classes/pref/filters.php:468 classes/pref/filters.php:901
-msgid "Enabled"
-msgstr "فعال شد"
-
-#: classes/pref/filters.php:479 classes/pref/filters.php:906
-msgid "Match any rule"
-msgstr "تطابق با هر قانونی"
-
-#: classes/pref/filters.php:490 classes/pref/filters.php:911
-msgid "Inverse matching"
-msgstr "تطبیق معکوس"
-
-#: classes/pref/filters.php:504 classes/pref/filters.php:920
-msgid "Test"
-msgstr "تست"
-
-#: classes/pref/filters.php:770
-msgid "Combine"
-msgstr "ترکیب کنید"
-
-#: classes/pref/filters.php:776 classes/pref/feeds.php:1267
-#: classes/pref/feeds.php:1281
-msgid "Reset sort order"
-msgstr "ریست کردن شاخص مرتب‌سازی"
-
-#: classes/pref/filters.php:922
-msgid "Create"
-msgstr "ایجاد کنید"
-
-#: classes/pref/filters.php:972
-msgid "Inverse regular expression matching"
-msgstr "معکوس کردن تطابق عبارت منظم"
-
-#: classes/pref/filters.php:976
-msgid "on field"
-msgstr "در زمینه"
-
-#: classes/pref/filters.php:979 js/PrefFilterTree.js:46
-msgid "in"
-msgstr "در"
-
-#: classes/pref/filters.php:1000
-msgid "Save rule"
-msgstr "قانون را ذخیره کنید"
-
-#: classes/pref/filters.php:1000 js/CommonFilters.js:132
-msgid "Add rule"
-msgstr "قانون را اضافه کنید"
-
-#: classes/pref/filters.php:1023
-msgid "Perform Action"
-msgstr "اجرای اقدام"
-
-#: classes/pref/filters.php:1074
-msgid "No actions available"
-msgstr "هیچ اقدامی موجود نیست"
-
-#: classes/pref/filters.php:1093
-msgid "Save action"
-msgstr "اقدام ذخیره کنید"
-
-#: classes/pref/filters.php:1093 js/CommonFilters.js:162
-msgid "Add action"
-msgstr "اقدام (فعالیت) را اضافه نمایید"
-
-#: classes/pref/filters.php:1121
-msgid "[No caption]"
-msgstr "[بدون زیرنویس]"
-
-#: classes/pref/filters.php:1123
-#, php-format
-msgid "%s (%d rule)"
-msgid_plural "%s (%d rules)"
-msgstr[0] "%s (قانون %d)"
-msgstr[1] "%s (قوانین %d)"
-
-#: classes/pref/filters.php:1137
-msgid "matches any rule"
-msgstr "با هر قانونی مطابقت دارد"
-
-#: classes/pref/filters.php:1138
-msgid "inverse"
-msgstr "معکوس"
-
-#: classes/pref/filters.php:1141
-#, php-format
-msgid "%s (+%d action)"
-msgid_plural "%s (+%d actions)"
-msgstr[0] "%s (+ %d اقدام)"
-msgstr[1] "%s (+%d اقدامات)"
 
 #: classes/pref/labels.php:38
 msgid "Colors"
@@ -1207,16 +948,82 @@ msgstr "پیش زمینه:"
 msgid "Background:"
 msgstr "زمینه:"
 
+#: classes/pref/labels.php:73
+#: classes/pref/filters.php:469
+#: classes/pref/users.php:114
+#: classes/pref/feeds.php:811
+#: classes/pref/feeds.php:975
+#: classes/article.php:185
+#: plugins/af_psql_trgm/init.php:195
+#: plugins/note/init.php:53
+#: plugins/af_proxy_http/init.php:229
+#: plugins/mail/init.php:66
+#: plugins/af_readability/init.php:103
+#: plugins/nsfw/init.php:86
+#: plugins/af_redditimgur/init.php:83
+msgid "Save"
+msgstr "ذخیره"
+
 #: classes/pref/labels.php:231
 #, php-format
 msgid "Created label <b>%s</b>"
 msgstr "برچسب ایجاد شد<b>%s</b>"
 
+#: classes/pref/labels.php:257
+#: classes/pref/prefs.php:1178
+#: classes/pref/prefs.php:1289
+#: classes/pref/filters.php:349
+#: classes/pref/filters.php:406
+#: classes/pref/filters.php:725
+#: classes/pref/users.php:332
+#: classes/pref/feeds.php:1250
+#: classes/pref/feeds.php:1469
+#: classes/pref/feeds.php:1526
+msgid "Select"
+msgstr "انتخاب"
+
+#: classes/pref/labels.php:260
+#: classes/pref/prefs.php:1181
+#: classes/pref/prefs.php:1292
+#: classes/pref/filters.php:353
+#: classes/pref/filters.php:409
+#: classes/pref/filters.php:728
+#: classes/pref/users.php:335
+#: classes/pref/feeds.php:1253
+#: classes/pref/feeds.php:1472
+#: classes/pref/feeds.php:1529
+#: classes/feeds.php:68
+msgid "All"
+msgstr "همه"
+
+#: classes/pref/labels.php:262
+#: classes/pref/prefs.php:1183
+#: classes/pref/prefs.php:1294
+#: classes/pref/filters.php:355
+#: classes/pref/filters.php:411
+#: classes/pref/filters.php:730
+#: classes/pref/users.php:337
+#: classes/pref/feeds.php:1255
+#: classes/pref/feeds.php:1474
+#: classes/pref/feeds.php:1531
+#: classes/feeds.php:71
+msgid "None"
+msgstr "هیچ کدام"
+
+#: classes/pref/labels.php:269
+#: classes/pref/filters.php:464
+#: classes/pref/filters.php:747
+#: classes/pref/users.php:346
+#: classes/pref/feeds.php:794
+msgid "Remove"
+msgstr "پاک کنید"
+
 #: classes/pref/labels.php:272
 msgid "Clear colors"
 msgstr "رنگ‌ها را پاک کن"
 
-#: classes/pref/prefs.php:20 classes/pref/feeds.php:521
+#: classes/pref/prefs.php:20
+#: classes/pref/feeds.php:519
 msgid "General"
 msgstr "عمومی"
 
@@ -1234,8 +1041,7 @@ msgstr "پیشرفته"
 
 #: classes/pref/prefs.php:70
 msgid "Never apply these tags automatically (comma-separated list)."
-msgstr ""
-"هیچ وقت این تگ‌ها را به صورت خودکار اعمال نکنید (لیست با کاما از هم جدا شده)."
+msgstr "هیچ وقت این تگ‌ها را به صورت خودکار اعمال نکنید (لیست با کاما از هم جدا شده)."
 
 #: classes/pref/prefs.php:74
 msgid "Allow duplicate articles"
@@ -1346,12 +1152,8 @@ msgid "Long date format"
 msgstr "فرمت نمایش تاریخ به صورت سال/روز/ماه mmmm dd, yyyy"
 
 #: classes/pref/prefs.php:92
-msgid ""
-"Syntax is identical to PHP <a href='http://php.net/manual/function.date."
-"php'>date()</a> function."
-msgstr ""
-"نحوه نوشتار با تابع <a href='http://php.net/manual/function.date.php'>date() "
-"</a> در PHP یکسان است."
+msgid "Syntax is identical to PHP <a href='http://php.net/manual/function.date.php'>date()</a> function."
+msgstr "نحوه نوشتار با تابع <a href='http://php.net/manual/function.date.php'>date() </a> در PHP یکسان است."
 
 #: classes/pref/prefs.php:93
 msgid "Automatically show next feed"
@@ -1391,16 +1193,15 @@ msgstr "مرتب سازی عناوین بر اساس تاریخ فیدها"
 
 #: classes/pref/prefs.php:99
 msgid "Use feed-specified date to sort headlines instead of local import date."
-msgstr ""
-"به جای تاریخ ایمپورت محلی ازتاریخ فیدهای مشخص شده برای مرتب سازی عناوین "
-"استفاده نمایید."
+msgstr "به جای تاریخ ایمپورت محلی ازتاریخ فیدهای مشخص شده برای مرتب سازی عناوین استفاده نمایید."
 
 #: classes/pref/prefs.php:100
 msgid "SSL client certificate"
 msgstr "گواهینامه‌ی SSL کلاینت"
 
-#: classes/pref/prefs.php:101 classes/pref/feeds.php:746
-#: classes/pref/feeds.php:955
+#: classes/pref/prefs.php:101
+#: classes/pref/feeds.php:742
+#: classes/pref/feeds.php:951
 msgid "Do not embed media"
 msgstr "رسانه تعبیه نشود"
 
@@ -1412,7 +1213,8 @@ msgstr "تگ های ناامن را از مقالات بردار"
 msgid "Strip all but most common HTML tags when reading articles."
 msgstr "به جز رایج‌ترین تگ‌های html، برچسب‌ها را هنگام خواندن مقالات ببندید."
 
-#: classes/pref/prefs.php:103 js/PrefHelpers.js:153
+#: classes/pref/prefs.php:103
+#: js/PrefHelpers.js:159
 msgid "Customize stylesheet"
 msgstr "سفارشی‌سازی stylesheet"
 
@@ -1460,6 +1262,11 @@ msgstr "اطلاعات شخصی"
 msgid "Full name:"
 msgstr "نام و نام خانوادگی:"
 
+#: classes/pref/prefs.php:320
+#: classes/pref/users.php:94
+msgid "E-mail:"
+msgstr "آدرس ایمیل:"
+
 #: classes/pref/prefs.php:328
 msgid "Access level:"
 msgstr "سطح دسترسی:"
@@ -1468,19 +1275,26 @@ msgstr "سطح دسترسی:"
 msgid "Save data"
 msgstr "داده را ذخیره کن"
 
-#: classes/pref/prefs.php:351 classes/pref/feeds.php:682
-#: classes/pref/feeds.php:928 classes/pref/feeds.php:1698 classes/feeds.php:724
+#: classes/pref/prefs.php:351
+#: classes/pref/feeds.php:678
+#: classes/pref/feeds.php:924
+#: classes/pref/feeds.php:1653
+#: classes/feeds.php:716
 msgid "Password"
 msgstr "رمز عبور"
 
 #: classes/pref/prefs.php:389
 msgid "Changing your current password will disable OTP."
-msgstr ""
-"تغییر دادن رمز عبور فعلی شما باعث غیرفعال شدن رمز یکبارمصرف (OTP) خواهد شد."
+msgstr "تغییر دادن رمز عبور فعلی شما باعث غیرفعال شدن رمز یکبارمصرف (OTP) خواهد شد."
 
 #: classes/pref/prefs.php:393
 msgid "Old password:"
 msgstr "رمز عبور قدیمی:"
+
+#: classes/pref/prefs.php:398
+#: classes/pref/users.php:82
+msgid "New password:"
+msgstr "رمز عبور جدید:"
 
 #: classes/pref/prefs.php:403
 msgid "Confirm password:"
@@ -1492,12 +1306,8 @@ msgstr "تغییر رمز عبور"
 
 #: classes/pref/prefs.php:418
 #, php-format
-msgid ""
-"Authentication module used for this session (<b>%s</b>) does not provide an "
-"ability to set passwords."
-msgstr ""
-"ماژول احراز هویت مورد استفاده در این نشست (<b>%s</b>) امکان تنظیم رمز عبور "
-"را فراهم نمی‌کند."
+msgid "Authentication module used for this session (<b>%s</b>) does not provide an ability to set passwords."
+msgstr "ماژول احراز هویت مورد استفاده در این نشست (<b>%s</b>) امکان تنظیم رمز عبور را فراهم نمی‌کند."
 
 #: classes/pref/prefs.php:424
 msgid "App passwords"
@@ -1515,7 +1325,8 @@ msgstr "حذف رمز عبورهای انتخاب شده"
 msgid "One time passwords / Authenticator"
 msgstr "رمز عبورهای یکبارمصرف / احراز هویت کننده"
 
-#: classes/pref/prefs.php:474 classes/pref/prefs.php:535
+#: classes/pref/prefs.php:474
+#: classes/pref/prefs.php:535
 msgid "Your password:"
 msgstr "رمز عبور شما:"
 
@@ -1524,11 +1335,8 @@ msgid "Disable OTP"
 msgstr "OTP را غیرفعال کن"
 
 #: classes/pref/prefs.php:494
-msgid ""
-"Scan the following code by the Authenticator application or copy the key "
-"manually"
-msgstr ""
-"کد زیر را توسط برنامه احراز هویت اسکن کنید یا کلید را به صورت دستی کپی نمایید"
+msgid "Scan the following code by the Authenticator application or copy the key manually"
+msgstr "کد زیر را توسط برنامه احراز هویت اسکن کنید یا کلید را به صورت دستی کپی نمایید"
 
 #: classes/pref/prefs.php:500
 msgid "Use the following OTP key with a compatible Authenticator application"
@@ -1546,574 +1354,865 @@ msgstr "رمز عبور یکبارمصرف:"
 msgid "Enable OTP"
 msgstr "OTP را فعال کن"
 
-#: classes/pref/prefs.php:601
+#: classes/pref/prefs.php:600
 msgid "Some preferences are only available in default profile."
 msgstr "برخی علایق فقط در پروفایل پیش‌فرض در دسترس است."
 
-#: classes/pref/prefs.php:709
+#: classes/pref/prefs.php:708
 msgid "default"
 msgstr "پیش‌فرض"
 
-#: classes/pref/prefs.php:719
+#: classes/pref/prefs.php:718
 msgid "Customize"
 msgstr "شخصی‌سازی"
 
-#: classes/pref/prefs.php:722
+#: classes/pref/prefs.php:721
 msgid "More themes..."
 msgstr "تم‌های بیشتر..."
 
-#: classes/pref/prefs.php:783
+#: classes/pref/prefs.php:782
 msgid "Register"
 msgstr "ثبت‌نام"
 
-#: classes/pref/prefs.php:787 classes/pref/system.php:44
+#: classes/pref/prefs.php:786
+#: classes/pref/system.php:85
 msgid "Clear"
 msgstr "حذف"
 
-#: classes/pref/prefs.php:798
+#: classes/pref/prefs.php:790
+#: classes/pref/prefs.php:899
+#: classes/pref/prefs.php:933
+#: classes/pref/prefs.php:979
+#: classes/pref/prefs.php:994
+#: classes/pref/filters.php:857
+#: plugins/bookmarklets/init.php:45
+#: js/CommonDialogs.js:420
+msgid "More info..."
+msgstr "اطلاعات بیشتر..."
+
+#: classes/pref/prefs.php:797
 #, php-format
 msgid "Current server time: %s"
 msgstr "زمان فعلی سرور: %s"
 
-#: classes/pref/prefs.php:827
+#: classes/pref/prefs.php:825
 msgid "Save configuration"
 msgstr "تنظیمات را ذخیره‌ کن"
 
-#: classes/pref/prefs.php:831
+#: classes/pref/prefs.php:829
 msgid "Save and exit preferences"
 msgstr "ذخیره کردن و خروج از علایق"
 
-#: classes/pref/prefs.php:836
+#: classes/pref/prefs.php:834
 msgid "Manage profiles"
 msgstr "مدیریت پروفایل‌ها"
 
-#: classes/pref/prefs.php:839
+#: classes/pref/prefs.php:837
 msgid "Reset to defaults"
 msgstr "بازگردانی به حالت پیش‌فرض"
 
-#: classes/pref/prefs.php:853 classes/pref/feeds.php:803
+#: classes/pref/prefs.php:850
+#: classes/pref/feeds.php:799
 msgid "Plugins"
 msgstr "افزونه ها"
 
-#: classes/pref/prefs.php:900
+#: classes/pref/prefs.php:897
 #, php-format
-msgid ""
-"The following plugins use per-feed content hooks. This may cause excessive "
-"data usage and origin server load resulting in a ban of your instance: <b>"
-"%s</b>"
-msgstr ""
-"پلاگین‌های زیر از قلاب‌های محتوای هر فید استفاده می‌کنند. این امر ممکن است موجب "
-"مصرف بیش از حد داده و افزایش بار سرور مبدا و درنتیجه مسدودسازی در این مورد "
-"شما شود: <b>%s</b>"
+msgid "The following plugins use per-feed content hooks. This may cause excessive data usage and origin server load resulting in a ban of your instance: <b>%s</b>"
+msgstr "پلاگین‌های زیر از قلاب‌های محتوای هر فید استفاده می‌کنند. این امر ممکن است موجب مصرف بیش از حد داده و افزایش بار سرور مبدا و درنتیجه مسدودسازی در این مورد شما شود: <b>%s</b>"
 
-#: classes/pref/prefs.php:906
+#: classes/pref/prefs.php:903
 msgid "System plugins"
 msgstr "پلاگین‌های سیستم"
 
-#: classes/pref/prefs.php:940 classes/pref/prefs.php:986
+#: classes/pref/prefs.php:937
+#: classes/pref/prefs.php:983
 #, php-format
 msgid "v%.2f, by %s"
 msgstr "نسخه‌ی %.2f، به‌وسیله‌ی %s"
 
-#: classes/pref/prefs.php:948
+#: classes/pref/prefs.php:945
 msgid "User plugins"
 msgstr "پلاگین‌های کاربر"
 
-#: classes/pref/prefs.php:975
+#: classes/pref/prefs.php:972
 msgid "Clear data"
 msgstr "داده‌ها را پاک کن"
 
-#: classes/pref/prefs.php:1000
+#: classes/pref/prefs.php:997
 msgid "Enable selected plugins"
 msgstr "پلاگین‌های انتخاب شده را فعال کن"
 
-#: classes/pref/prefs.php:1092
+#: classes/pref/prefs.php:1088
 msgid "Incorrect one time password"
 msgstr "رمز عبور یکبارمصرف نادرست است"
 
-#: classes/pref/prefs.php:1097 classes/pref/prefs.php:1151
+#: classes/pref/prefs.php:1093
+#: classes/pref/prefs.php:1147
 msgid "Incorrect password"
 msgstr "رمز عبور نادرست است"
 
-#: classes/pref/prefs.php:1175
-msgid ""
-"You can override colors, fonts and layout of your currently selected theme "
-"with custom CSS declarations here."
-msgstr ""
-"در اینجا می‌توانید رنگ‌ها، فونت‌ها و چیدمان تمی که در حال حاضر انتخاب کرده‌اید "
-"را با اعلامیه‌های سفارسی CSS بازتعریف کنید."
-
-#: classes/pref/prefs.php:1182
-msgid ""
-"User CSS has been applied, you might need to reload the page to see all "
-"changes."
-msgstr ""
-"کدهای CSS کاربر اعمال شد، برای مشاهده‌ی همه‌ی تغییرات صفحه را مجدداً بارگذاری "
-"کنید."
-
-#: classes/pref/prefs.php:1190
-msgid "Apply"
-msgstr "اعمال"
-
 #: classes/pref/prefs.php:1192
-msgid "Save and reload"
-msgstr "ذخیره و بارگیری مجدد"
-
-#: classes/pref/prefs.php:1217
 msgid "Create profile"
 msgstr "ایجاد پروفایل"
 
-#: classes/pref/prefs.php:1236 classes/pref/prefs.php:1256
+#: classes/pref/prefs.php:1211
+#: classes/pref/prefs.php:1231
 msgid "(active)"
 msgstr "(فعال)"
 
-#: classes/pref/prefs.php:1287
+#: classes/pref/prefs.php:1261
 msgid "Remove selected profiles"
 msgstr "حذف پروفایل‌های انتخاب شده"
 
-#: classes/pref/prefs.php:1289
+#: classes/pref/prefs.php:1263
 msgid "Activate profile"
 msgstr "پروفایل را فعال کن"
 
-#: classes/pref/prefs.php:1326
+#: classes/pref/prefs.php:1302
 msgid "Description"
 msgstr "توضیحات"
 
-#: classes/pref/prefs.php:1327
+#: classes/pref/prefs.php:1303
 msgid "Created"
 msgstr "ایجاد شده"
 
-#: classes/pref/prefs.php:1328
+#: classes/pref/prefs.php:1304
 msgid "Last used"
 msgstr "آخرین باری که مورد استفاده قرار گرفته"
 
-#: classes/pref/prefs.php:1381
+#: classes/pref/prefs.php:1357
 #, php-format
-msgid ""
-"Generated password <strong>%s</strong> for %s. Please remember it for future "
-"reference."
-msgstr ""
-"رمز عبور تولید شده <strong>%s</strong> برای %s. لطفاً آن را برای مراجعات بعدی "
-"بخاطر بسپارید."
+msgid "Generated password <strong>%s</strong> for %s. Please remember it for future reference."
+msgstr "رمز عبور تولید شده <strong>%s</strong> برای %s. لطفاً آن را برای مراجعات بعدی بخاطر بسپارید."
 
-#: classes/pref/feeds.php:28
+#: classes/pref/system.php:10
+#: classes/pref/users.php:6
+msgid "Your access level is insufficient to open this tab."
+msgstr "سطح دسترسی شما برای باز کردن این تب کافی نیست."
+
+#: classes/pref/system.php:70
+msgid "Refresh"
+msgstr "به‌روزرسانی"
+
+#: classes/pref/system.php:75
+msgid "&lt;&lt;"
+msgstr ""
+
+#: classes/pref/system.php:77
+#, php-format
+msgid "Page %d of %d"
+msgstr ""
+
+#: classes/pref/system.php:82
+msgid "&gt;&gt;"
+msgstr ""
+
+#: classes/pref/system.php:89
+msgid "Severity:"
+msgstr ""
+
+#: classes/pref/system.php:92
+#, fuzzy
+msgid "Errors"
+msgstr "خطا"
+
+#: classes/pref/system.php:93
+msgid "Warnings"
+msgstr ""
+
+#: classes/pref/system.php:94
+#, fuzzy
+msgid "Everything"
+msgstr "همه چیز را از حالت انتخاب خارج کنید"
+
+#: classes/pref/system.php:106
+msgid "Error"
+msgstr "خطا"
+
+#: classes/pref/system.php:107
+msgid "Filename"
+msgstr "نام فایل"
+
+#: classes/pref/system.php:108
+msgid "Message"
+msgstr "پیام"
+
+#: classes/pref/system.php:110
+msgid "Date"
+msgstr "تاریخ"
+
+#: classes/pref/system.php:153
+msgid "Event Log"
+msgstr "لاگ رخداد"
+
+#: classes/pref/system.php:168
+msgid "PHP Information"
+msgstr "اطلاعات PHP"
+
+#: classes/pref/filters.php:219
+#: classes/pref/filters.php:522
+msgid "(inverse)"
+msgstr "(معکوس)"
+
+#: classes/pref/filters.php:215
+#: classes/pref/filters.php:521
+#, php-format
+msgid "%s on %s in %s %s"
+msgstr ""
+
+#: classes/pref/filters.php:345
+#: classes/pref/filters.php:816
+msgid "Match"
+msgstr "مطابق"
+
+#: classes/pref/filters.php:359
+#: classes/pref/filters.php:415
+msgid "Add"
+msgstr "افزودن"
+
+#: classes/pref/filters.php:361
+#: classes/pref/filters.php:417
+msgid "Delete"
+msgstr "حذف"
+
+#: classes/pref/filters.php:402
+msgid "Apply actions"
+msgstr "اعمال اقدامات"
+
+#: classes/pref/filters.php:445
+#: classes/pref/users.php:90
+#: classes/pref/feeds.php:695
+#: classes/pref/feeds.php:932
+msgid "Options"
+msgstr "گزینه ها"
+
+#: classes/pref/filters.php:449
+msgid "Enabled"
+msgstr "فعال شد"
+
+#: classes/pref/filters.php:452
+msgid "Match any rule"
+msgstr "تطابق با هر قانونی"
+
+#: classes/pref/filters.php:455
+msgid "Inverse matching"
+msgstr "تطبیق معکوس"
+
+#: classes/pref/filters.php:467
+#: classes/pref/filters.php:474
+msgid "Test"
+msgstr "تست"
+
+#: classes/pref/filters.php:476
+msgid "Create"
+msgstr "ایجاد کنید"
+
+#: classes/pref/filters.php:721
+#: classes/pref/users.php:322
+#: classes/pref/feeds.php:1246
+#: classes/feeds.php:777
+#: js/Feeds.js:577
+msgid "Search"
+msgstr "جستجو"
+
+#: classes/pref/filters.php:737
+msgid "Combine"
+msgstr "ترکیب کنید"
+
+#: classes/pref/filters.php:740
+#: classes/pref/users.php:344
+msgid "Edit"
+msgstr "ویرایش کنید."
+
+#: classes/pref/filters.php:743
+#: classes/pref/feeds.php:1266
+#: classes/pref/feeds.php:1280
+msgid "Reset sort order"
+msgstr "ریست کردن شاخص مرتب‌سازی"
+
+#: classes/pref/filters.php:832
+msgid "Inverse regular expression matching"
+msgstr "معکوس کردن تطابق عبارت منظم"
+
+#: classes/pref/filters.php:836
+msgid "on field"
+msgstr "در زمینه"
+
+#: classes/pref/filters.php:839
+#: js/PrefFilterTree.js:47
+msgid "in"
+msgstr "در"
+
+#: classes/pref/filters.php:860
+msgid "Save rule"
+msgstr "قانون را ذخیره کنید"
+
+#: classes/pref/filters.php:860
+#: js/CommonFilters.js:97
+msgid "Add rule"
+msgstr "قانون را اضافه کنید"
+
+#: classes/pref/filters.php:883
+msgid "Perform Action"
+msgstr "اجرای اقدام"
+
+#: classes/pref/filters.php:934
+msgid "No actions available"
+msgstr "هیچ اقدامی موجود نیست"
+
+#: classes/pref/filters.php:953
+msgid "Save action"
+msgstr "اقدام ذخیره کنید"
+
+#: classes/pref/filters.php:953
+#: js/CommonFilters.js:119
+msgid "Add action"
+msgstr "اقدام (فعالیت) را اضافه نمایید"
+
+#: classes/pref/filters.php:981
+msgid "[No caption]"
+msgstr "[بدون زیرنویس]"
+
+#: classes/pref/filters.php:983
+#, php-format
+msgid "%s (%d rule)"
+msgid_plural "%s (%d rules)"
+msgstr[0] "%s (قانون %d)"
+msgstr[1] "%s (قوانین %d)"
+
+#: classes/pref/filters.php:997
+msgid "matches any rule"
+msgstr "با هر قانونی مطابقت دارد"
+
+#: classes/pref/filters.php:998
+msgid "inverse"
+msgstr "معکوس"
+
+#: classes/pref/filters.php:1001
+#, php-format
+msgid "%s (+%d action)"
+msgid_plural "%s (+%d actions)"
+msgstr[0] "%s (+ %d اقدام)"
+msgstr[1] "%s (+%d اقدامات)"
+
+#: classes/pref/users.php:26
+msgid "Edit user"
+msgstr "ویرایش کردن کاربر"
+
+#: classes/pref/users.php:63
+#: classes/pref/feeds.php:664
+#: classes/pref/feeds.php:910
+#: classes/pref/feeds.php:1649
+#: plugins/auth_internal/init.php:68
+msgid "Authentication"
+msgstr "احراز هویت"
+
+#: classes/pref/users.php:68
+msgid "Access level: "
+msgstr "سطح دسترسی: "
+
+#: classes/pref/users.php:107
+msgid "User details"
+msgstr "جزییات کاربر"
+
+#: classes/pref/users.php:148
+#: classes/pref/users.php:381
+msgid "Registered"
+msgstr "ثبت‌نام شده"
+
+#: classes/pref/users.php:149
+msgid "Last logged in"
+msgstr "آخرین ورود به سیستم"
+
+#: classes/pref/users.php:157
+msgid "Subscribed feeds count"
+msgstr "تعداد فیدهای قابل قبول"
+
+#: classes/pref/users.php:158
+msgid "Stored articles"
+msgstr "مقاله‌های ذخیره شده"
+
+#: classes/pref/users.php:162
+#: classes/pref/users.php:380
+msgid "Subscribed feeds"
+msgstr "فیدهای قابل قبول"
+
+#: classes/pref/users.php:188
+msgid "User not found"
+msgstr "کاربر یافت نشد"
+
+#: classes/pref/users.php:251
+#, php-format
+msgid "Added user %s with password %s"
+msgstr "کاربر %s با رمز عبور %s اضافه شد"
+
+#: classes/pref/users.php:258
+#, php-format
+msgid "Could not create user %s"
+msgstr "ایجاد کاربر %s امکان پذیر نیست"
+
+#: classes/pref/users.php:262
+#, php-format
+msgid "User %s already exists."
+msgstr "کاربر %s از قبل تعریف شده است."
+
+#: classes/pref/users.php:287
+#, php-format
+msgid "Changed password of user %s to %s"
+msgstr "رمز عبور کاربر %s به %s تغییر کرد"
+
+#: classes/pref/users.php:340
+msgid "Create user"
+msgstr "کاربر جدید ایجاد کنید"
+
+#: classes/pref/users.php:378
+#: classes/pref/feeds.php:670
+#: classes/pref/feeds.php:916
+#: classes/pref/feeds.php:1652
+#: classes/feeds.php:712
+msgid "Login"
+msgstr "ورود"
+
+#: classes/pref/users.php:379
+msgid "Access Level"
+msgstr "سطح دسترسی"
+
+#: classes/pref/users.php:382
+msgid "Last login"
+msgstr "آخرین ورود به سیستم"
+
+#: classes/pref/users.php:399
+msgid "Click to edit"
+msgstr "برای ویرایش کلیک کنید"
+
+#: classes/pref/users.php:415
+msgid "No users defined."
+msgstr "هیچ کاربری تعریف نشده است."
+
+#: classes/pref/users.php:417
+msgid "No matching users found."
+msgstr "هیچ کاربر منطبقی یافت نشد."
+
+#: classes/pref/feeds.php:26
 msgid "Check to enable field"
 msgstr "قسمت فعال کردن را تیک بزنید"
 
-#: classes/pref/feeds.php:77 classes/pref/feeds.php:233
-#: classes/pref/feeds.php:281 classes/pref/feeds.php:287
-#: classes/pref/feeds.php:316
+#: classes/pref/feeds.php:75
+#: classes/pref/feeds.php:231
+#: classes/pref/feeds.php:279
+#: classes/pref/feeds.php:285
+#: classes/pref/feeds.php:314
 #, php-format
 msgid "(%d feed)"
 msgid_plural "(%d feeds)"
 msgstr[0] "(%d فید)"
 msgstr[1] "(%d فیدها)"
 
-#: classes/pref/feeds.php:537
+#: classes/pref/feeds.php:535
 msgid "Feed Title"
 msgstr "عنوان فید"
 
-#: classes/pref/feeds.php:548 classes/handler/public.php:597
-msgid "URL:"
-msgstr "آدرس URL:"
-
-#: classes/pref/feeds.php:550
+#: classes/pref/feeds.php:548
 msgid "Feed URL"
 msgstr "آدرس url فید"
 
-#: classes/pref/feeds.php:571 classes/pref/feeds.php:844
-#: classes/pref/feeds.php:1685 classes/feeds.php:694
+#: classes/pref/feeds.php:567
+#: classes/pref/feeds.php:840
+#: classes/pref/feeds.php:1640
+#: classes/feeds.php:686
 msgid "Place in category:"
 msgstr "قرار دادن در دسته‌بندی:"
 
-#: classes/pref/feeds.php:585
+#: classes/pref/feeds.php:581
 msgid "Site URL:"
 msgstr "آدرس URL سایت:"
 
-#: classes/pref/feeds.php:587
+#: classes/pref/feeds.php:583
 msgid "Site URL"
 msgstr "آدرس url سایت"
 
-#: classes/pref/feeds.php:603 classes/pref/feeds.php:859 classes/feeds.php:768
+#: classes/pref/feeds.php:599
+#: classes/pref/feeds.php:855
+#: classes/feeds.php:761
 msgid "Language:"
 msgstr "زبان:"
 
-#: classes/pref/feeds.php:612 classes/pref/feeds.php:870
+#: classes/pref/feeds.php:608
+#: classes/pref/feeds.php:866
 msgid "Update"
 msgstr "به روز رسانی"
 
-#: classes/pref/feeds.php:621 classes/pref/feeds.php:877
+#: classes/pref/feeds.php:617
+#: classes/pref/feeds.php:873
 msgid "Interval:"
 msgstr "بازه زمانی:"
 
-#: classes/pref/feeds.php:637 classes/pref/feeds.php:895
+#: classes/pref/feeds.php:633
+#: classes/pref/feeds.php:891
 msgid "Article purging:"
 msgstr "حذف مقاله:"
 
-#: classes/pref/feeds.php:644
+#: classes/pref/feeds.php:640
 #, fuzzy, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
 msgstr[0] "(%d فید)"
 msgstr[1] "(%d فیدها)"
 
-#: classes/pref/feeds.php:646 classes/pref/feeds.php:903
+#: classes/pref/feeds.php:642
+#: classes/pref/feeds.php:899
 #, fuzzy
 msgid "Disabled"
 msgstr "OTP را غیرفعال کن"
 
-#: classes/pref/feeds.php:650
+#: classes/pref/feeds.php:646
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: classes/pref/feeds.php:686
-msgid ""
-"<b>Hint:</b> you need to fill in your login information if your feed "
-"requires authentication, except for Twitter feeds."
-msgstr ""
-"<b>نکته:</b> اگر فید شما نیاز به احراز هویت دارد،به جز برای فید توییتر، شما "
-"باید اطلاعات ورود به سیستم را پر کنید."
+#: classes/pref/feeds.php:682
+msgid "<b>Hint:</b> you need to fill in your login information if your feed requires authentication, except for Twitter feeds."
+msgstr "<b>نکته:</b> اگر فید شما نیاز به احراز هویت دارد،به جز برای فید توییتر، شما باید اطلاعات ورود به سیستم را پر کنید."
 
-#: classes/pref/feeds.php:697 classes/feeds.php:736
+#: classes/pref/feeds.php:693
+#: classes/feeds.php:728
 msgid "This feed requires authentication."
 msgstr "این فید به احراز هویت نیاز دارد."
 
-#: classes/pref/feeds.php:715 classes/pref/feeds.php:941
+#: classes/pref/feeds.php:711
+#: classes/pref/feeds.php:937
 msgid "Include in e-mail digest"
 msgstr "قرار دادن در خلاصه‌ی ایمیل"
 
-#: classes/pref/feeds.php:731 classes/pref/feeds.php:948
+#: classes/pref/feeds.php:727
+#: classes/pref/feeds.php:944
 msgid "Always display image attachments"
 msgstr "همیشه تصاویر پیوست ایمیل را نمایش بده"
 
-#: classes/pref/feeds.php:761 classes/pref/feeds.php:962
+#: classes/pref/feeds.php:757
+#: classes/pref/feeds.php:958
 msgid "Cache media"
 msgstr "رسانه را در حافظه پنهان ذخیره کن"
 
-#: classes/pref/feeds.php:776 classes/pref/feeds.php:969
+#: classes/pref/feeds.php:772
+#: classes/pref/feeds.php:965
 msgid "Mark updated articles as unread"
 msgstr "مقالات به‌روزرسانی شده را به عنوان خوانده نشده علامت بزن"
 
-#: classes/pref/feeds.php:780
+#: classes/pref/feeds.php:776
 msgid "Icon"
 msgstr "آیکون"
 
-#: classes/pref/feeds.php:788 classes/pref/feeds.php:1354
+#: classes/pref/feeds.php:784
+#: classes/pref/feeds.php:1347
 msgid "Choose file..."
 msgstr "انتخاب فایل..."
 
-#: classes/pref/feeds.php:796
+#: classes/pref/feeds.php:792
 msgid "Replace"
 msgstr "جایگزین کنید"
 
-#: classes/pref/feeds.php:901
+#: classes/pref/feeds.php:897
 #, fuzzy, php-format
 msgid "(%d days)"
 msgstr "(%d فید)"
 
-#: classes/pref/feeds.php:1220
+#: classes/pref/feeds.php:1219
 msgid "Feeds with errors"
 msgstr "فیدهایی که خطا دارند"
 
-#: classes/pref/feeds.php:1229
+#: classes/pref/feeds.php:1228
 msgid "Inactive feeds"
 msgstr "فیدهای غیرفعال"
 
-#: classes/pref/feeds.php:1265
+#: classes/pref/feeds.php:1264
 msgid "Edit selected feeds"
 msgstr "فیدهای انتخاب شده را ویرایش کنید"
 
-#: classes/pref/feeds.php:1269 js/PrefFeedTree.js:348
+#: classes/pref/feeds.php:1268
+#: js/PrefFeedTree.js:348
 msgid "Batch subscribe"
 msgstr "به اشتراک‌گذاری دسته‌ای"
 
-#: classes/pref/feeds.php:1276
+#: classes/pref/feeds.php:1275
 msgid "Categories"
 msgstr "دسته بندیها"
 
-#: classes/pref/feeds.php:1279
+#: classes/pref/feeds.php:1278
 msgid "Add category"
 msgstr "افزودن دسته‌بندی"
 
-#: classes/pref/feeds.php:1283
+#: classes/pref/feeds.php:1282
 msgid "Remove selected"
 msgstr "مورد انتخاب شده را حذف کنید"
 
-#: classes/pref/feeds.php:1341
+#: classes/pref/feeds.php:1340
 msgid "OPML"
 msgstr "OPML"
 
-#: classes/pref/feeds.php:1343
-msgid ""
-"Using OPML you can export and import your feeds, filters, labels and Tiny "
-"Tiny RSS settings."
-msgstr ""
-"با استفاده از OPML می‌توانید فیدها، فیلترها، برچسب‌ها و تنظیمات Tiny Tiny RSS "
-"را وارد و export نمایید."
+#: classes/pref/feeds.php:1342
+msgid "Using OPML you can export and import your feeds, filters, labels and Tiny Tiny RSS settings."
+msgstr "با استفاده از OPML می‌توانید فیدها، فیلترها، برچسب‌ها و تنظیمات Tiny Tiny RSS را وارد و export نمایید."
 
-#: classes/pref/feeds.php:1361
+#: classes/pref/feeds.php:1354
 msgid "Import OPML"
 msgstr "وارد کردن OPML"
 
-#: classes/pref/feeds.php:1369
+#: classes/pref/feeds.php:1362
 msgid "Export OPML"
 msgstr "خارج کردن OPML"
 
-#: classes/pref/feeds.php:1373
+#: classes/pref/feeds.php:1366
 msgid "Include settings"
 msgstr "تنظیمات را وارد کنید"
 
-#: classes/pref/feeds.php:1380
+#: classes/pref/feeds.php:1373
 msgid "Published OPML"
 msgstr "OPML منتشر شده"
 
-#: classes/pref/feeds.php:1382
-msgid ""
-"Your OPML can be published publicly and can be subscribed by anyone who "
-"knows the URL below."
-msgstr ""
-"فایل OPML به صورت عمومی منتشر می شود و هر کسی که آدرس URL زیر را بداند قابل "
-"استفاده است."
+#: classes/pref/feeds.php:1375
+msgid "Your OPML can be published publicly and can be subscribed by anyone who knows the URL below."
+msgstr "فایل OPML به صورت عمومی منتشر می شود و هر کسی که آدرس URL زیر را بداند قابل استفاده است."
 
-#: classes/pref/feeds.php:1384
-msgid ""
-"Published OPML does not include your Tiny Tiny RSS settings, feeds that "
-"require authentication or feeds hidden from Popular feeds."
-msgstr ""
-"OPML منتشر شده شامل تنظیمات Tiny Tiny RSS، فیدهایی که نیاز به احزار هویت "
-"دارند و یا فید هایی مخفی در فیدهای عمومی نمیشود."
+#: classes/pref/feeds.php:1377
+msgid "Published OPML does not include your Tiny Tiny RSS settings, feeds that require authentication or feeds hidden from Popular feeds."
+msgstr "OPML منتشر شده شامل تنظیمات Tiny Tiny RSS، فیدهایی که نیاز به احزار هویت دارند و یا فید هایی مخفی در فیدهای عمومی نمیشود."
 
-#: classes/pref/feeds.php:1386
-msgid "Public OPML URL"
-msgstr "URL عمومی OPML"
-
-#: classes/pref/feeds.php:1387
+#: classes/pref/feeds.php:1380
 msgid "Display published OPML URL"
 msgstr "آدرس اینترنتی (URL) منتشر شده را نمایش بده"
 
-#: classes/pref/feeds.php:1395
+#: classes/pref/feeds.php:1387
 msgid "Published & shared articles / Generated feeds"
 msgstr "انتشار و به اشتراک گذاری مقالات/ فیدهای تولید شده"
 
-#: classes/pref/feeds.php:1397
-msgid ""
-"Published articles can be subscribed by anyone who knows the following URL:"
-msgstr ""
-"مقالات منتشر شده، توسط هر شخصی که آدرس URL زیر را می‌داند قابل اشتراک گذاری "
-"است:"
+#: classes/pref/feeds.php:1389
+msgid "Published articles can be subscribed by anyone who knows the following URL:"
+msgstr "مقالات منتشر شده، توسط هر شخصی که آدرس URL زیر را می‌داند قابل اشتراک گذاری است:"
 
-#: classes/pref/feeds.php:1402 classes/feeds.php:39 classes/feeds.php:40
-#: classes/feeds.php:106 classes/feeds.php:107
-msgid "Show as feed"
-msgstr "به عنوان فید نمایش داده شود"
+#: classes/pref/feeds.php:1395
+#: classes/feeds.php:1295
+msgid "Published articles"
+msgstr "مقالات منتشر شده"
 
-#: classes/pref/feeds.php:1403
+#: classes/pref/feeds.php:1396
 msgid "Display URL"
 msgstr "نمایش آدرس اینترنتی (URL)"
 
-#: classes/pref/feeds.php:1406
+#: classes/pref/feeds.php:1398
 msgid "Clear all generated URLs"
 msgstr "همه URLهای ایجاد شده را پاک کنید"
 
-#: classes/pref/feeds.php:1505 classes/pref/feeds.php:1562
+#: classes/pref/feeds.php:1495
+#: classes/pref/feeds.php:1552
 msgid "Click to edit feed"
 msgstr "برای ویرایش فید کلیک کنید"
 
-#: classes/pref/feeds.php:1522 classes/pref/feeds.php:1581
+#: classes/pref/feeds.php:1512
+#: classes/pref/feeds.php:1571
 msgid "Unsubscribe from selected feeds"
 msgstr "لغو اشتراک‌گذاری برای فیدهای انتخاب شده"
 
-#: classes/pref/feeds.php:1676
+#: classes/pref/feeds.php:1631
 msgid "One valid feed per line (no detection is done)"
 msgstr "یک فید معتبر در هرخط ( هیچ تشخیصی انجام نمی شود)"
 
-#: classes/pref/feeds.php:1707
+#: classes/pref/feeds.php:1662
 msgid "Feeds require authentication."
 msgstr "لازم است که فید ها احراز هویت شوند."
 
-#: classes/pref/feeds.php:1712 classes/feeds.php:741
-#: classes/handler/public.php:796
-msgid "Subscribe"
-msgstr "مشترک شدن"
+#: classes/opml.php:28
+#: classes/opml.php:32
+msgid "OPML Utility"
+msgstr "امکانات OPML"
 
-#: classes/pref/system.php:32
-msgid "Event Log"
-msgstr "لاگ رخداد"
+#: classes/opml.php:36
+msgid "Importing OPML..."
+msgstr "در حال وارد کردن OPML..."
 
-#: classes/pref/system.php:41
-msgid "Refresh"
-msgstr "به‌روزرسانی"
+#: classes/opml.php:41
+msgid "Return to preferences"
+msgstr "برگشت به تنظیمات اولویت‌ها"
 
-#: classes/pref/system.php:48
-msgid "Severity:"
-msgstr ""
+#: classes/opml.php:321
+#, php-format
+msgid "Adding feed: %s"
+msgstr "در حال افزودن فید: %s"
 
-#: classes/pref/system.php:51
-#, fuzzy
-msgid "Errors"
-msgstr "خطا"
+#: classes/opml.php:341
+#, php-format
+msgid "Duplicate feed: %s"
+msgstr "فیدهای تکراری:%s"
 
-#: classes/pref/system.php:52
-msgid "Warnings"
-msgstr ""
+#: classes/opml.php:355
+#, php-format
+msgid "Adding label %s"
+msgstr "در حال افزودن برپسب: %s"
 
-#: classes/pref/system.php:53
-#, fuzzy
-msgid "Everything"
-msgstr "همه چیز را از حالت انتخاب خارج کنید"
+#: classes/opml.php:358
+#, php-format
+msgid "Duplicate label: %s"
+msgstr "برچسب‌های تکراری: %s"
 
-#: classes/pref/system.php:65
-msgid "Error"
-msgstr "خطا"
+#: classes/opml.php:370
+#, php-format
+msgid "Setting preference key %s to %s"
+msgstr "تنظیم کلید اولویت %s به %s"
 
-#: classes/pref/system.php:66
-msgid "Filename"
-msgstr "نام فایل"
+#: classes/opml.php:406
+#, php-format
+msgid "Adding filter %s..."
+msgstr "در حال افزودن فیلتر %s ..."
 
-#: classes/pref/system.php:67
-msgid "Message"
-msgstr "پیام"
+#: classes/opml.php:545
+#, php-format
+msgid "Processing category: %s"
+msgstr "در حال پردازش دسته: %s"
 
-#: classes/pref/system.php:69
-msgid "Date"
-msgstr "تاریخ"
+#: classes/opml.php:591
+#, php-format
+msgid "Upload failed with error code %d"
+msgstr "آپلود با خطای شماره %d مواجه شد"
 
-#: classes/pref/system.php:130
-msgid "PHP Information"
-msgstr "اطلاعات PHP"
+#: classes/opml.php:603
+msgid "Unable to move uploaded file."
+msgstr "فایل آپلود شده قابل انتقال نیست."
+
+#: classes/opml.php:607
+msgid "Error: please upload OPML file."
+msgstr "خطا: لطفا فایل OPML را آپلود نمایید."
+
+#: classes/opml.php:620
+msgid "Error: unable to find moved OPML file."
+msgstr "خطا: قادر به یافتن فایل OPML انتقال یافته نمی باشد."
+
+#: classes/opml.php:629
+msgid "Error while parsing document."
+msgstr "خطا در هنگام ترجمه سند."
+
+#: classes/feeds.php:39
+#: js/CommonDialogs.js:409
+msgid "Show as feed"
+msgstr "به عنوان فید نمایش داده شود"
 
 #: classes/feeds.php:46
 #, php-format
 msgid "Last updated: %s"
 msgstr "آخرین به‌روزرسانی: %s"
 
-#: classes/feeds.php:67
+#: classes/feeds.php:65
+#, fuzzy
+msgid "Select articles"
+msgstr "همه مقالات را انتخاب کنید"
+
+#: classes/feeds.php:66
 msgid "Select..."
 msgstr "انتخاب ..."
 
-#: classes/feeds.php:71
+#: classes/feeds.php:70
 msgid "Invert"
 msgstr "معکوس کردن"
 
-#: classes/feeds.php:74
-msgid "Selection toggle:"
-msgstr "ضامن انتخاب:"
-
-#: classes/feeds.php:80
-msgid "Selection:"
-msgstr "انتخاب:"
-
-#: classes/feeds.php:83
+#: classes/feeds.php:78
 msgid "Set score"
 msgstr "امتیاز دهید"
 
-#: classes/feeds.php:86
-msgid "Move back"
-msgstr "به عقب برگردید"
-
-#: classes/feeds.php:89
-msgid "Archive"
-msgstr "آرشیو"
-
-#: classes/feeds.php:93 classes/feeds.php:98 plugins/mailto/init.php:24
+#: classes/feeds.php:82
+#: classes/feeds.php:87
 #: plugins/mail/init.php:76
+#: plugins/mailto/init.php:24
 msgid "Forward by email"
 msgstr "بازارسال از طریق ایمیل"
 
-#: classes/feeds.php:102
-msgid "Feed:"
-msgstr "فید:"
+#: classes/feeds.php:98
+msgid "Delete permanently"
+msgstr ""
 
-#: classes/feeds.php:158 classes/feeds.php:554
+#: classes/feeds.php:151
+#: classes/feeds.php:546
 msgid "Feed not found."
 msgstr "فید یافت نشد."
 
-#: classes/feeds.php:221
+#: classes/feeds.php:216
 msgid "Never"
 msgstr "هرگز"
 
-#: classes/feeds.php:277 classes/feeds.php:1301
+#: classes/feeds.php:277
+#: classes/feeds.php:1301
 msgid "Archived articles"
 msgstr "مقالات آرشیو شده"
 
-#: classes/feeds.php:351
+#: classes/feeds.php:356
 msgid "Collapse article"
 msgstr "مقالات جمع آوری شده"
 
-#: classes/feeds.php:381
+#: classes/feeds.php:373
 #, php-format
 msgid "Imported at %s"
 msgstr "وارد شده در %s"
 
-#: classes/feeds.php:445
+#: classes/feeds.php:437
 msgid "No unread articles found to display."
 msgstr "هیچ مقاله‌ی خوانده نشده‌ای برای نمایش یافت نشد."
 
-#: classes/feeds.php:448
+#: classes/feeds.php:440
 msgid "No updated articles found to display."
 msgstr "هیچ مقاله‌ی به‌روزرسانی شده‌ای برای نمایش یافت نشد."
 
-#: classes/feeds.php:451
+#: classes/feeds.php:443
 msgid "No starred articles found to display."
 msgstr "هیچ مقاله ستاره داری برای نمایش یافت نشد."
 
-#: classes/feeds.php:455
-msgid ""
-"No articles found to display. You can assign articles to labels manually "
-"from article header context menu (applies to all selected articles) or use a "
-"filter."
-msgstr ""
-"هیچ مقاله‌ای برای نمایش یافت نشد. شما می توانید به همه مقالات انتخاب شده یا "
-"فیلتر شده از منوی article header context به صورت دستی برچسب اختصاص دهید."
+#: classes/feeds.php:447
+msgid "No articles found to display. You can assign articles to labels manually from article header context menu (applies to all selected articles) or use a filter."
+msgstr "هیچ مقاله‌ای برای نمایش یافت نشد. شما می توانید به همه مقالات انتخاب شده یا فیلتر شده از منوی article header context به صورت دستی برچسب اختصاص دهید."
 
-#: classes/feeds.php:457
+#: classes/feeds.php:449
 msgid "No articles found to display."
 msgstr "هیچ مقاله‌ای برای نمایش یافت نشد."
 
-#: classes/feeds.php:474 classes/feeds.php:630
+#: classes/feeds.php:466
+#: classes/feeds.php:622
 #, php-format
 msgid "Feeds last updated at %s"
 msgstr "آخرین به‌روزسانی فیدها در: %s"
 
-#: classes/feeds.php:486 classes/feeds.php:642
+#: classes/feeds.php:478
+#: classes/feeds.php:634
 msgid "Some feeds have update errors (click for details)"
 msgstr "در به‌روزرسانی برخی فیدها خطا رخ داده است (برای جزییات کلیک کنید)"
 
-#: classes/feeds.php:619
+#: classes/feeds.php:611
 msgid "No feed selected."
 msgstr "هیچ فیدی انتخاب نشده است."
 
-#: classes/feeds.php:686
+#: classes/feeds.php:678
 msgid "Feed or site URL"
 msgstr "فید یا آدرس URL سایت"
 
-#: classes/feeds.php:703
+#: classes/feeds.php:695
 msgid "Available feeds"
 msgstr "فیدهای موجود"
 
-#: classes/feeds.php:762
+#: classes/feeds.php:755
 #, php-format
 msgid "Search %s..."
 msgstr "در حال جستجوی %s ..."
 
-#: classes/feeds.php:770
+#: classes/feeds.php:763
 msgid "Used for word stemming"
 msgstr "استفاده شده برای ریشه‌ی کلمه"
 
-#: classes/feeds.php:780
+#: classes/feeds.php:773
 msgid "Search syntax"
 msgstr "جستجوی سینتگس"
 
 #: classes/feeds.php:1293
 msgid "Starred articles"
 msgstr "مقالات ستاره‌دار"
-
-#: classes/feeds.php:1295
-msgid "Published articles"
-msgstr "مقالات منتشر شده"
 
 #: classes/feeds.php:1297
 msgid "Fresh articles"
@@ -2123,191 +2222,165 @@ msgstr "مقالات جدید"
 msgid "Special"
 msgstr "مخصوص"
 
-#: classes/feeds.php:1520
+#: classes/feeds.php:1524
 #, php-format
 msgid "Incorrect search syntax: %s."
 msgstr "نوشتار نادرست در جستجو : %s."
 
-#: classes/feeds.php:1710
+#: classes/feeds.php:1714
 #, php-format
 msgid "Search results: %s"
 msgstr "نتایج جستجو: %s"
-
-#: classes/handler/public.php:519 plugins/bookmarklets/init.php:41
-msgid "Share with Tiny Tiny RSS"
-msgstr "اشتراک‌گذاری با Tiny Tiny RSS"
-
-#: classes/handler/public.php:592
-msgid "Title:"
-msgstr "عنوان:"
-
-#: classes/handler/public.php:602
-msgid "Content:"
-msgstr "محتوا:"
-
-#: classes/handler/public.php:607
-msgid "Labels:"
-msgstr "برچسب‌ها:"
-
-#: classes/handler/public.php:617
-msgid "Share"
-msgstr "اشتراک‌گذاری"
-
-#: classes/handler/public.php:619
-msgid "Shared article will appear in the Published feed."
-msgstr "مقالات به اشتراک گذاشته شده در فید منتشر شده نمایش داده می شود."
-
-#: classes/handler/public.php:715
-msgid "Incorrect username or password"
-msgstr "نام کاربری یا رمز عبور نادرست است"
-
-#: classes/handler/public.php:809
-#, php-format
-msgid "Already subscribed to <b>%s</b>."
-msgstr "قبلا با <b>%s</b> به اشتراک گذاشته شده است."
-
-#: classes/handler/public.php:812
-#, php-format
-msgid "Subscribed to <b>%s</b>."
-msgstr "با <b>%s</b> به اشتراک گذاشته شده است."
-
-#: classes/handler/public.php:815
-#, php-format
-msgid "Could not subscribe to <b>%s</b>."
-msgstr "با <b>%s</b> به اشتراک گذاشته نشده است."
-
-#: classes/handler/public.php:818
-#, php-format
-msgid "No feeds found in <b>%s</b>."
-msgstr "هیچ فیدی در <b>%s</b> یافت نشد."
-
-#: classes/handler/public.php:824
-#, php-format
-msgid "Could not subscribe to <b>%s</b>.<br>Can't download the Feed URL."
-msgstr ""
-"با <b>%s</b> به اشتراک گذاشته نشده است. <br> امکان دانلود آدرس url فید را "
-"ندارد."
-
-#: classes/handler/public.php:835
-msgid "Multiple feed URLs found:"
-msgstr "چندین URL فید یافت شد:"
-
-#: classes/handler/public.php:848
-msgid "Subscribe to selected feed"
-msgstr "به اشتراک گذاشتن فیدهای انتخاب شده"
-
-#: classes/handler/public.php:872
-msgid "Edit subscription options"
-msgstr "گزینه های مشترک شده را ویرایش کنید"
-
-#: classes/handler/public.php:925
-msgid "Password recovery"
-msgstr "بازیابی رمز عبور"
-
-#: classes/handler/public.php:968
-msgid ""
-"You will need to provide valid account name and email. Password reset link "
-"will be sent to your email address."
-msgstr ""
-"شما باید نام حساب و ایمیل معتبری ارائه دهید. لینک تنظیم مجدد رمز عبور به "
-"آدرس ایمیل شما ارسال خواهد شد."
-
-#: classes/handler/public.php:988
-#, php-format
-msgid "How much is %d + %d:"
-msgstr "حاصل %d + %d می‌شود:"
-
-#: classes/handler/public.php:1006
-msgid "Some of the required form parameters are missing or incorrect."
-msgstr "برخی پارامترهای مورد نیاز فرم نادرست است یا وجود ندارد."
-
-#: classes/handler/public.php:1010 classes/handler/public.php:1075
-msgid "Go back"
-msgstr "برگشت به عقب"
-
-#: classes/handler/public.php:1051
-msgid "[tt-rss] Password reset request"
-msgstr "[tt-rss] درخواست تنطیم مجدد رمز عبور"
-
-#: classes/handler/public.php:1071
-msgid "Sorry, login and email combination not found."
-msgstr "متاسفیم، ایمیل و اطلاعات ورود به سیستم متناظر یافت نشد."
-
-#: classes/handler/public.php:1094
-msgid "Your access level is insufficient to run this script."
-msgstr "سطح دسترسی شما برای اجرای این اسکریپت کافی نیست."
-
-#: classes/handler/public.php:1135
-msgid "Database Updater"
-msgstr "به‌روزرسانی کننده‌ی دیتابیس"
-
-#: classes/handler/public.php:1146
-#, php-format
-msgid "Performing updates to version %d"
-msgstr "انجام به روز رسانی ها به نسخه %d"
-
-#: classes/handler/public.php:1151
-#, php-format
-msgid "Updating to version %d"
-msgstr "به‌روزرسانی به نسخه‌ی %d"
-
-#: classes/handler/public.php:1164
-msgid "Try again"
-msgstr "تلاش مجدد"
-
-#: classes/handler/public.php:1170
-msgid "Completed."
-msgstr "کامل شد."
-
-#: classes/handler/public.php:1187
-#, php-format
-msgid "Tiny Tiny RSS database needs update to the latest version (%d to %d)."
-msgstr ""
-"دیتابیس Tiny Tiny RSS باید به جدیدترین نسخه، به‌روزرسانی شود. (%d to %d)."
-
-#: classes/handler/public.php:1199
-msgid "Perform updates"
-msgstr "به‌روزرسانی انجام شود"
 
 #: classes/timehelper.php:8
 #, php-format
 msgid "%d min"
 msgstr "%d دقیقه"
 
-#: classes/backend.php:58
-msgid "Shift"
-msgstr "شیفت"
+#: classes/article.php:23
+msgid "Article not found."
+msgstr "مقاله یافت نشد."
 
-#: classes/backend.php:61
-msgid "Ctrl"
-msgstr "کلید CTRL"
+#: classes/article.php:173
+msgid "Tags for this article (separated by commas):"
+msgstr "تگ‌های این مقاله (جدا شده با ویرگول):"
 
-#: plugins/bookmarklets/init.php:23
-msgid "Bookmarklets"
-msgstr "نشانک‌ها"
+#: classes/article.php:276
+#: classes/article.php:548
+msgid "no tags"
+msgstr "بدون تگ"
 
-#: plugins/bookmarklets/init.php:25
-msgid ""
-"Drag the link below to your browser toolbar, open the feed you're interested "
-"in in your browser and click on the link to subscribe to it."
-msgstr ""
-"لینک زیر را به نوار ابزار مرورگر خود بکشید، فید مورد نظر تان را در مرورگر "
-"خود باز کنید و برای عضویت در آن، روی لینک کلیک کنید."
+#: classes/article.php:388
+msgid "unknown type"
+msgstr "فرمت ناشناخته"
 
-#: plugins/bookmarklets/init.php:29
+#: classes/article.php:469
+msgid "Attachments"
+msgstr "پیوست‌ها"
+
+#: plugins/close_button/init.php:25
+msgid "Close article"
+msgstr "مقاله را ببندید"
+
+#: plugins/auth_internal/init.php:80
+msgid "Please enter your one time password:"
+msgstr "لطفاً رمز عبور یکبارمصرف خود را وارد کنید:"
+
+#: plugins/auth_internal/init.php:260
+msgid "Password has been changed."
+msgstr "رمز عبور تغییر کرده است."
+
+#: plugins/auth_internal/init.php:262
+msgid "Old password is incorrect."
+msgstr "رمز عبور قدیمی نادرست است."
+
+#: plugins/vf_shared/init.php:17
+#: plugins/vf_shared/init.php:64
+msgid "Shared articles"
+msgstr "مقاله‌های به اشتراک گذاشته شده"
+
+#: plugins/af_psql_trgm/init.php:31
 #, php-format
-msgid "Subscribe to %s in Tiny Tiny RSS?"
-msgstr "عضویت در %s در Tiny Tiny RSS؟"
+msgid "Data saved (%s, %d)"
+msgstr "داده ذخیره شد (%s، %d)"
 
-#: plugins/bookmarklets/init.php:34
-msgid "Subscribe in Tiny Tiny RSS"
-msgstr "مشترک شدن در Tiny Tiny RSS"
+#: plugins/af_psql_trgm/init.php:121
+msgid "Show related articles"
+msgstr "مقالات مرتبط را نشان بده"
 
-#: plugins/bookmarklets/init.php:37
-msgid "Use this bookmarklet to publish arbitrary pages using Tiny Tiny RSS"
-msgstr ""
-"از این نشانک برای انتشار صفحات دلخواه با استفاده از Tiny Tiny RSS استفاده "
-"کنید"
+#: plugins/af_psql_trgm/init.php:128
+#, fuzzy
+msgid "Mark similar articles as read (af_psql_trgm)"
+msgstr "مقالات مشابه را «خوانده شده» علامت گذاری کن"
+
+#: plugins/af_psql_trgm/init.php:164
+#: plugins/af_readability/init.php:70
+msgid "Global settings"
+msgstr "تنظیمات جهانی"
+
+#: plugins/af_psql_trgm/init.php:170
+msgid "Minimum similarity:"
+msgstr "حداقل تشابه:"
+
+#: plugins/af_psql_trgm/init.php:176
+msgid "PostgreSQL trigram extension returns string similarity as a floating point number (0-1). Setting it too low might produce false positives, zero disables checking."
+msgstr "پسوند trigram در PostgreSQL شباهت رشته را به صورت یک شماره (0-1) برمی‌گرداند. تنظیم کردن یک مقدار اندک برای آن ممکن است سبب تشخیص اشتباه شود، قرار دادن مقدار «صفر» بررسی را غیرفعال می‌کند."
+
+#: plugins/af_psql_trgm/init.php:181
+msgid "Minimum title length:"
+msgstr "حداقل طول عنوان:"
+
+#: plugins/af_psql_trgm/init.php:190
+msgid "Enable for all feeds:"
+msgstr "برای همه‌ی فیدها فعال کن:"
+
+#: plugins/af_psql_trgm/init.php:205
+#: plugins/af_readability/init.php:117
+msgid "Currently enabled for (click to edit):"
+msgstr "در حال حاضر برای موارد زیر فعال شده است (برای ویرایش کلیک کنید):"
+
+#: plugins/af_psql_trgm/init.php:222
+#, fuzzy
+msgid "Similarity (af_psql_trgm)"
+msgstr "تشابه (pg_trgm)"
+
+#: plugins/af_psql_trgm/init.php:231
+msgid "Mark similar articles as read"
+msgstr "مقالات مشابه را «خوانده شده» علامت گذاری کن"
+
+#: plugins/note/init.php:26
+#: plugins/note/note.js:9
+msgid "Edit article note"
+msgstr "ویرایش کردن یادداشت مقاله"
+
+#: plugins/af_proxy_http/init.php:203
+msgid "Image proxy settings (af_proxy_http)"
+msgstr "تنظیمات پروگسی تصویر (af_proxy_http)"
+
+#: plugins/af_proxy_http/init.php:227
+msgid "Enable proxy for all remote images."
+msgstr "پروگسی را برای همه تصاویر از راه دور فعال کنید."
+
+#: plugins/af_proxy_http/init.php:241
+#: plugins/af_redditimgur/init.php:98
+msgid "Configuration saved"
+msgstr "تنظیمات ذخیره شد"
+
+#: plugins/mail/init.php:29
+msgid "Mail addresses saved."
+msgstr "آدرس ایمیل ذخیره شد."
+
+#: plugins/mail/init.php:36
+msgid "Mail plugin"
+msgstr "افزونه‌ی ایمیل"
+
+#: plugins/mail/init.php:38
+msgid "You can set predefined email addressed here (comma-separated list):"
+msgstr "شما می‌توانید در اینجا آدرس ایمیل از پیش تعریف شده، تنظیم کنید (فهرست با کاما جدا شده است):"
+
+#: plugins/mail/init.php:120
+#: plugins/mail/init.php:128
+#: plugins/mailto/init.php:47
+#: plugins/mailto/init.php:55
+msgid "[Forwarded]"
+msgstr "[بازارسال شده]"
+
+#: plugins/mail/init.php:120
+#: plugins/mailto/init.php:47
+msgid "Multiple articles"
+msgstr "چندین مقاله"
+
+#: plugins/mail/init.php:150
+msgid "To:"
+msgstr "به:"
+
+#: plugins/mail/init.php:165
+msgid "Subject:"
+msgstr "عنوان:"
+
+#: plugins/mail/init.php:181
+msgid "Send e-mail"
+msgstr "ارسال ایمیل"
 
 #: plugins/af_readability/init.php:25
 msgid "Data saved."
@@ -2330,18 +2403,9 @@ msgstr "تغییر متن کامل مقاله"
 msgid "Readability settings (af_readability)"
 msgstr "تنظیمات خوانایی (af_readability)"
 
-#: plugins/af_readability/init.php:70 plugins/af_psql_trgm/init.php:166
-msgid "Global settings"
-msgstr "تنظیمات جهانی"
-
 #: plugins/af_readability/init.php:99
-msgid ""
-"Provide full-text services to core code (bookmarklets) and other plugins"
+msgid "Provide full-text services to core code (bookmarklets) and other plugins"
 msgstr "ارائه‌ی خدمات تمام متن به کد اصلی (نشانک‌ها) و سایر پلاگین‌ها"
-
-#: plugins/af_readability/init.php:117 plugins/af_psql_trgm/init.php:207
-msgid "Currently enabled for (click to edit):"
-msgstr "در حال حاضر برای موارد زیر فعال شده است (برای ویرایش کلیک کنید):"
 
 #: plugins/af_readability/init.php:125
 msgid "(append)"
@@ -2359,30 +2423,51 @@ msgstr "محتوای درون خطی مقاله"
 msgid "Append to summary, instead of replacing it"
 msgstr ""
 
-#: plugins/note/init.php:26 plugins/note/note.js:10
-msgid "Edit article note"
-msgstr "ویرایش کردن یادداشت مقاله"
+#: plugins/bookmarklets/init.php:23
+msgid "Bookmarklets"
+msgstr "نشانک‌ها"
 
-#: plugins/auth_internal/init.php:81
-msgid "Please enter your one time password:"
-msgstr "لطفاً رمز عبور یکبارمصرف خود را وارد کنید:"
+#: plugins/bookmarklets/init.php:25
+msgid "Drag the link below to your browser toolbar, open the feed you're interested in in your browser and click on the link to subscribe to it."
+msgstr "لینک زیر را به نوار ابزار مرورگر خود بکشید، فید مورد نظر تان را در مرورگر خود باز کنید و برای عضویت در آن، روی لینک کلیک کنید."
 
-#: plugins/auth_internal/init.php:256
-msgid "Password has been changed."
-msgstr "رمز عبور تغییر کرده است."
+#: plugins/bookmarklets/init.php:29
+#, php-format
+msgid "Subscribe to %s in Tiny Tiny RSS?"
+msgstr "عضویت در %s در Tiny Tiny RSS؟"
 
-#: plugins/auth_internal/init.php:258
-msgid "Old password is incorrect."
-msgstr "رمز عبور قدیمی نادرست است."
+#: plugins/bookmarklets/init.php:34
+msgid "Subscribe in Tiny Tiny RSS"
+msgstr "مشترک شدن در Tiny Tiny RSS"
 
-#: plugins/mailto/init.php:47 plugins/mailto/init.php:55
-#: plugins/mail/init.php:120 plugins/mail/init.php:128
-msgid "[Forwarded]"
-msgstr "[بازارسال شده]"
+#: plugins/bookmarklets/init.php:37
+msgid "Use this bookmarklet to publish arbitrary pages using Tiny Tiny RSS"
+msgstr "از این نشانک برای انتشار صفحات دلخواه با استفاده از Tiny Tiny RSS استفاده کنید"
 
-#: plugins/mailto/init.php:47 plugins/mail/init.php:120
-msgid "Multiple articles"
-msgstr "چندین مقاله"
+#: plugins/af_comics/init.php:51
+msgid "Feeds supported by af_comics"
+msgstr "فیدهای پشتیبانی شده توسط af_comics"
+
+#: plugins/af_comics/init.php:53
+msgid "The following comics are currently supported:"
+msgstr "کمیک های زیر در حال حاضر پشتیبانی میشود:"
+
+#: plugins/nsfw/init.php:30
+#: plugins/nsfw/init.php:42
+msgid "Not work safe (click to toggle)"
+msgstr "به صورت امن کار نمی کند (برای تغییر وضعیت کلیک کنید)"
+
+#: plugins/nsfw/init.php:53
+msgid "NSFW Plugin"
+msgstr "افزونهNSFW"
+
+#: plugins/nsfw/init.php:80
+msgid "Tags to consider NSFW (comma-separated)"
+msgstr "تگ‌ها برای در نظر گرفتن NSFW ( جدا شده با ویرگول)"
+
+#: plugins/nsfw/init.php:101
+msgid "Configuration saved."
+msgstr "تنظیمات ذخیره شد."
 
 #: plugins/mailto/init.php:71
 msgid "Clicking the following link to invoke your mail client:"
@@ -2393,89 +2478,37 @@ msgid "Forward selected article(s) by email."
 msgstr "مقاله های انتخاب شده را از طریق ایمیل ارسال کنید."
 
 #: plugins/mailto/init.php:78
-msgid ""
-"You should be able to edit the message before sending in your mail client."
+msgid "You should be able to edit the message before sending in your mail client."
 msgstr "شما باید قبل از ارسال ایمیلتان بتوانید پیام را ویرایش کنید."
 
 #: plugins/mailto/init.php:83
 msgid "Close this dialog"
 msgstr "این گفتگو را ببندید"
 
-#: plugins/toggle_sidebar/init.php:27
-msgid "Toggle sidebar"
-msgstr "نوار کناری را تغییر دهید"
-
-#: plugins/close_button/init.php:28
-msgid "Close article"
-msgstr "مقاله را ببندید"
-
-#: plugins/af_redditimgur/init.php:33
+#: plugins/af_redditimgur/init.php:35
 msgid "Reddit content settings (af_redditimgur)"
 msgstr "تنظیمات محتوای Reddit (af_redditimgur)"
 
-#: plugins/af_redditimgur/init.php:66
+#: plugins/af_redditimgur/init.php:68
 msgid "Extract missing content using Readability (requires af_readability)"
-msgstr ""
-"استخراج محتوای از دست رفته با استفاده از خوانایی (به af_readability نیاز "
-"دارد)"
+msgstr "استخراج محتوای از دست رفته با استفاده از خوانایی (به af_readability نیاز دارد)"
 
-#: plugins/af_redditimgur/init.php:72
+#: plugins/af_redditimgur/init.php:74
 msgid "Enable additional duplicate checking"
 msgstr "فعال کردن کنترل مضاعف موارد تکراری"
 
-#: plugins/af_redditimgur/init.php:78
+#: plugins/af_redditimgur/init.php:80
 #, php-format
 msgid "Rewrite Reddit URLs to %s"
 msgstr ""
 
-#: plugins/af_redditimgur/init.php:96 plugins/af_proxy_http/init.php:244
-msgid "Configuration saved"
-msgstr "تنظیمات ذخیره شد"
-
-#: plugins/af_psql_trgm/init.php:29
-#, php-format
-msgid "Data saved (%s, %d)"
-msgstr "داده ذخیره شد (%s، %d)"
-
-#: plugins/af_psql_trgm/init.php:120
-msgid "Show related articles"
-msgstr "مقالات مرتبط را نشان بده"
-
-#: plugins/af_psql_trgm/init.php:127 plugins/af_psql_trgm/init.php:236
-msgid "Mark similar articles as read"
-msgstr "مقالات مشابه را «خوانده شده» علامت گذاری کن"
-
-#: plugins/af_psql_trgm/init.php:172
-msgid "Minimum similarity:"
-msgstr "حداقل تشابه:"
-
-#: plugins/af_psql_trgm/init.php:178
-msgid ""
-"PostgreSQL trigram extension returns string similarity as a floating point "
-"number (0-1). Setting it too low might produce false positives, zero "
-"disables checking."
-msgstr ""
-"پسوند trigram در PostgreSQL شباهت رشته را به صورت یک شماره (0-1) برمی‌گرداند. "
-"تنظیم کردن یک مقدار اندک برای آن ممکن است سبب تشخیص اشتباه شود، قرار دادن "
-"مقدار «صفر» بررسی را غیرفعال می‌کند."
-
-#: plugins/af_psql_trgm/init.php:183
-msgid "Minimum title length:"
-msgstr "حداقل طول عنوان:"
-
-#: plugins/af_psql_trgm/init.php:192
-msgid "Enable for all feeds:"
-msgstr "برای همه‌ی فیدها فعال کن:"
-
-#: plugins/af_psql_trgm/init.php:224
-msgid "Similarity (pg_trgm)"
-msgstr "تشابه (pg_trgm)"
+#: plugins/toggle_sidebar/init.php:27
+msgid "Toggle sidebar"
+msgstr "نوار کناری را تغییر دهید"
 
 #: plugins/share/init.php:45
 msgid "You can disable all articles shared by unique URLs here."
-msgstr ""
-"شما تمام مقاله های به اشتراک گذاشته توسط آدرس های URLیونیک را در اینجا می "
-"توانید غیرفعال کنید."
+msgstr "شما تمام مقاله های به اشتراک گذاشته توسط آدرس های URLیونیک را در اینجا می توانید غیرفعال کنید."
 
 #: plugins/share/init.php:48
 msgid "Unshare all articles"
@@ -2493,243 +2526,206 @@ msgstr "شما می‌توانید این مقاله را با URL یکتای ز
 msgid "Unshare article"
 msgstr "لغو اشتراک گذاری مقاله"
 
-#: plugins/nsfw/init.php:30 plugins/nsfw/init.php:42
-msgid "Not work safe (click to toggle)"
-msgstr "به صورت امن کار نمی کند (برای تغییر وضعیت کلیک کنید)"
+#: plugins/share/init.php:130
+msgid "Generate new URL"
+msgstr "تولید URL جدید"
 
-#: plugins/nsfw/init.php:53
-msgid "NSFW Plugin"
-msgstr "افزونهNSFW"
-
-#: plugins/nsfw/init.php:80
-msgid "Tags to consider NSFW (comma-separated)"
-msgstr "تگ‌ها برای در نظر گرفتن NSFW ( جدا شده با ویرگول)"
-
-#: plugins/nsfw/init.php:101
-msgid "Configuration saved."
-msgstr "تنظیمات ذخیره شد."
-
-#: plugins/af_proxy_http/init.php:206
-msgid "Image proxy settings (af_proxy_http)"
-msgstr "تنظیمات پروگسی تصویر (af_proxy_http)"
-
-#: plugins/af_proxy_http/init.php:230
-msgid "Enable proxy for all remote images."
-msgstr "پروگسی را برای همه تصاویر از راه دور فعال کنید."
-
-#: plugins/af_comics/init.php:51
-msgid "Feeds supported by af_comics"
-msgstr "فیدهای پشتیبانی شده توسط af_comics"
-
-#: plugins/af_comics/init.php:53
-msgid "The following comics are currently supported:"
-msgstr "کمیک های زیر در حال حاضر پشتیبانی میشود:"
-
-#: plugins/vf_shared/init.php:17 plugins/vf_shared/init.php:73
-msgid "Shared articles"
-msgstr "مقاله‌های به اشتراک گذاشته شده"
-
-#: plugins/mail/init.php:29
-msgid "Mail addresses saved."
-msgstr "آدرس ایمیل ذخیره شد."
-
-#: plugins/mail/init.php:36
-msgid "Mail plugin"
-msgstr "افزونه‌ی ایمیل"
-
-#: plugins/mail/init.php:38
-msgid "You can set predefined email addressed here (comma-separated list):"
-msgstr ""
-"شما می‌توانید در اینجا آدرس ایمیل از پیش تعریف شده، تنظیم کنید (فهرست با کاما "
-"جدا شده است):"
-
-#: plugins/mail/init.php:150
-msgid "To:"
-msgstr "به:"
-
-#: plugins/mail/init.php:165
-msgid "Subject:"
-msgstr "عنوان:"
-
-#: plugins/mail/init.php:181
-msgid "Send e-mail"
-msgstr "ارسال ایمیل"
-
-#: js/App.js:309
+#: js/App.js:318
 msgid "Help"
 msgstr "راهنمایی"
 
-#: js/App.js:534
-msgid "Error explained"
-msgstr "خطا توضیح داده شد"
-
-#: js/App.js:551
+#: js/App.js:510
 msgid "Fatal error"
 msgstr "خطای بحرانی"
 
-#: js/Article.js:35
+#: js/Article.js:36
 msgid "Please enter new score for selected articles:"
 msgstr "لطفا برای مقالات انتخاب شده امتیاز جدید وارد کنید:"
 
-#: js/Article.js:61 plugins/mailto/init.js:7 plugins/mail/mail.js:7
-#: js/Headlines.js:749 js/Headlines.js:775 js/Headlines.js:787
-#: js/Headlines.js:915 js/Headlines.js:933 js/Headlines.js:951
-#: js/Headlines.js:1092 js/Headlines.js:1128
+#: js/Article.js:62
+#: plugins/mail/mail.js:9
+#: plugins/mailto/init.js:9
+#: js/Headlines.js:767
+#: js/Headlines.js:793
+#: js/Headlines.js:805
+#: js/Headlines.js:933
+#: js/Headlines.js:951
+#: js/Headlines.js:969
+#: js/Headlines.js:1110
 msgid "No articles selected."
 msgstr "هیچ مقاله‌ای انتخاب نشده است."
 
-#: js/Article.js:69
+#: js/Article.js:70
 msgid "Please enter new score for this article:"
 msgstr "لطفا برای این مقاله امتیاز جدید وارد کنید:"
 
-#: js/Article.js:129
+#: js/Article.js:130
 msgid "Article URL:"
 msgstr "آدرس URL مقاله:"
 
-#: js/Article.js:167
+#: js/Article.js:168
 msgid "comments"
 msgstr "دیدگاه‌ها"
 
-#: js/Article.js:170
+#: js/Article.js:171
 msgid "comment"
 msgid_plural "comments"
 msgstr[0] "دیدگاه"
 msgstr[1] "دیدگاه‌ها"
 
-#: js/CommonDialogs.js:12
+#: js/Article.js:256
+msgid "Edit article Tags"
+msgstr "ویرایش تگ‌های مقاله"
+
+#: js/CommonDialogs.js:15
 msgid "Remove stored feed icon?"
 msgstr "آیکون فید ذخیره شده حذف شود؟"
 
-#: js/CommonDialogs.js:39
+#: js/CommonDialogs.js:42
 msgid "Please select an image file to upload."
 msgstr "لطفا یک فایل تصویری برای بارگذاری انتخاب کنید."
 
-#: js/CommonDialogs.js:40
+#: js/CommonDialogs.js:43
 msgid "Upload new icon for this feed?"
 msgstr "آیکون جدید برای این فید آپلود شود؟"
 
-#: js/CommonDialogs.js:89
+#: js/CommonDialogs.js:87
 msgid "Subscribe to Feed"
 msgstr "مشترک شدن در فید"
 
-#: js/CommonDialogs.js:119
-msgid ""
-"Failed to parse output. This can indicate server timeout and/or network "
-"issues. Backend output was logged to browser console."
-msgstr ""
-"پردازش خروجی ناموفق بود. این می‌تواند نشان‌دهنده‌ی timeout شدن سرور یا مشکلات "
-"در شبکه باشد. خروجی بک اند در کنسول مرورگر ثبت شده است."
+#: js/CommonDialogs.js:116
+msgid "Failed to parse output. This can indicate server timeout and/or network issues. Backend output was logged to browser console."
+msgstr "پردازش خروجی ناموفق بود. این می‌تواند نشان‌دهنده‌ی timeout شدن سرور یا مشکلات در شبکه باشد. خروجی بک اند در کنسول مرورگر ثبت شده است."
 
-#: js/CommonDialogs.js:134
+#: js/CommonDialogs.js:131
 #, perl-format
 msgid "Subscribed to %s"
 msgstr "مشترک در %s"
 
-#: js/CommonDialogs.js:143
+#: js/CommonDialogs.js:140
 msgid "Specified URL seems to be invalid."
 msgstr "به نظر می رسد URL مشخص شده نامعتبر است."
 
-#: js/CommonDialogs.js:146
+#: js/CommonDialogs.js:143
 msgid "Specified URL doesn't seem to contain any feeds."
 msgstr "به نظر می رسد URL مشخص شده، هیچ فیدی را شامل نمی‌شود."
 
-#: js/CommonDialogs.js:159
+#: js/CommonDialogs.js:156
 msgid "Expand to select feed"
 msgstr "برای انتخاب فید، گسترش دهید"
 
-#: js/CommonDialogs.js:171
+#: js/CommonDialogs.js:168
 #, perl-format
 msgid "Couldn't download the specified URL: %s"
 msgstr "آدرس url مشخص شذه دانلود نشد:%s"
 
-#: js/CommonDialogs.js:174
+#: js/CommonDialogs.js:171
 #, perl-format
 msgid "XML validation failed: %s"
 msgstr "اعتبارسنجی XML انجام نشد: %s"
 
-#: js/CommonDialogs.js:177
+#: js/CommonDialogs.js:174
 msgid "You are already subscribed to this feed."
 msgstr "قبلا این فید برای شما به اشتراک گذاشته شده است."
 
-#: js/CommonDialogs.js:201
+#: js/CommonDialogs.js:193
 msgid "Feeds with update errors"
 msgstr "فیدهای دارای خطای به‌روزرسانی"
 
-#: js/CommonDialogs.js:210 js/PrefFeedTree.js:383
+#: js/CommonDialogs.js:201
+#: js/PrefFeedTree.js:387
 msgid "Remove selected feeds?"
 msgstr "فیدهای انتخاب شده حذف شوند؟"
 
-#: js/CommonDialogs.js:231 js/CommonDialogs.js:316 js/PrefFeedTree.js:169
-#: js/PrefFeedTree.js:231 js/PrefFeedTree.js:247 js/PrefFeedTree.js:399
+#: js/CommonDialogs.js:222
+#: js/PrefFeedTree.js:172
+#: js/PrefFeedTree.js:234
+#: js/PrefFeedTree.js:250
+#: js/PrefFeedTree.js:406
 msgid "No feeds selected."
 msgstr "هیچ فیدی انتخاب نشده است."
 
-#: js/CommonDialogs.js:256
-msgid "More Feeds"
-msgstr "فیدهای بیشتر"
-
-#: js/CommonDialogs.js:348
-msgid ""
-"Remove selected feeds from the archive? Feeds with stored articles will not "
-"be removed."
-msgstr ""
-"فیدهای انتخاب شده از آرشیو حذف شوند؟ مقالات ذخیره شده دارای فید حذف نخواهند "
-"شد."
-
-#: js/CommonDialogs.js:370
+#: js/CommonDialogs.js:239
 msgid "Please enter label caption:"
 msgstr "لطفا عنوان را وارد نمایید:"
 
-#: js/CommonDialogs.js:394 js/App.js:1208
+#: js/CommonDialogs.js:263
+#: js/CommonDialogs.js:299
+#: js/App.js:1160
 #, perl-format
 msgid "Unsubscribe from %s?"
 msgstr "اشتراک از %s لغو شود؟"
 
-#: js/CommonDialogs.js:422 js/App.js:1057 js/App.js:1188
+#: js/CommonDialogs.js:289
+#: js/App.js:1012
+#: js/App.js:1140
 msgid "You can't edit this kind of feed."
 msgstr "شما نمی‌توانید این نوع فید را ویرایش کنید."
 
-#: js/CommonDialogs.js:436
+#: js/CommonDialogs.js:297
 msgid "Edit Feed"
 msgstr "فید را ویرایش کنید"
 
-#: js/CommonDialogs.js:460
+#: js/CommonDialogs.js:334
 msgid "Generate new syndication address for this feed?"
 msgstr "برای این فید آدرس جدید ایجاد شود؟"
 
-#: js/Feeds.js:231
+#: js/CommonDialogs.js:369
+msgid "Public OPML URL"
+msgstr "URL عمومی OPML"
+
+#: js/CommonFilters.js:119
+msgid "Edit action"
+msgstr "اقدام انجام شده را ویرایش کنید"
+
+#: js/CommonFilters.js:161
+#, fuzzy, perl-format
+msgid "Looking for articles (%d processed, %f found)..."
+msgstr "در حال جستجوی مقالات (٪ d پردازش شده ،٪ f پیدا شده) ..."
+
+#: js/CommonFilters.js:190
+#, perl-format
+msgid "Found %d articles matching this filter:"
+msgstr "%d مقاله مطابق با این فیلتر پیدا شد:"
+
+#: js/CommonFilters.js:246
+msgid "Create Filter"
+msgstr "فیلتر ایجاد کنید.(تعریف کنید)"
+
+#: js/CommonFilters.js:269
+msgid "Remove filter?"
+msgstr "فیلتر حذف شود؟"
+
+#: js/Feeds.js:227
 msgid "Your password is at default value"
 msgstr "مقدار رمز عبور شما مقدار پیش‌فرض است"
 
-#: js/PrefFeedTree.js:37
+#: js/PrefFeedTree.js:38
 msgid "Edit category"
 msgstr "ویرایش کردن دسته‌بندی"
 
-#: js/PrefFeedTree.js:44
+#: js/PrefFeedTree.js:45
 msgid "Remove category"
 msgstr "دسته‌بندی را حذف کنید"
 
-#: js/PrefFeedTree.js:141
+#: js/PrefFeedTree.js:144
 #, perl-format
-msgid ""
-"Remove category %s? Any nested feeds would be placed into Uncategorized."
-msgstr ""
-"دسته‌بندی %s حذف شود؟ فیدهای داخل این دسته‌بندی به حالت «دسته‌بندی نشده» تغییر "
-"خواهند کرد."
+msgid "Remove category %s? Any nested feeds would be placed into Uncategorized."
+msgstr "دسته‌بندی %s حذف شود؟ فیدهای داخل این دسته‌بندی به حالت «دسته‌بندی نشده» تغییر خواهند کرد."
 
-#: js/PrefFeedTree.js:154
+#: js/PrefFeedTree.js:157
 msgid "Unsubscribe from selected feeds?"
 msgstr "فید انتخاب شده غیرقابل اشتراک شود؟"
 
-#: js/PrefFeedTree.js:197
+#: js/PrefFeedTree.js:200
 msgid "Remove selected categories?"
 msgstr "دسته بندی انتخاب شده حذف شود؟"
 
-#: js/PrefFeedTree.js:210
+#: js/PrefFeedTree.js:213
 msgid "No categories selected."
 msgstr "هیچ دسته‌ای انتخاب نشده است."
 
-#: js/PrefFeedTree.js:261
+#: js/PrefFeedTree.js:262
 msgid "Edit Multiple Feeds"
 msgstr "چند فید را ویرایش کنید"
 
@@ -2737,101 +2733,93 @@ msgstr "چند فید را ویرایش کنید"
 msgid "Save changes to selected feeds?"
 msgstr "تغییرات صورت گرفته برای فیدهای انتخاب شده ذخیره شود؟"
 
-#: js/PrefFeedTree.js:316
+#: js/PrefFeedTree.js:322
 msgid "Rename category to:"
 msgstr "تغییرنام طبقه بندی به:"
 
-#: js/PrefFeedTree.js:328
+#: js/PrefFeedTree.js:334
 msgid "Category title:"
 msgstr "عنوان دسته:"
 
-#: js/PrefFeedTree.js:352
+#: js/PrefFeedTree.js:351
 msgid "Subscribing to feeds..."
 msgstr "اشتراک فیدها..."
 
-#: js/PrefFeedTree.js:374
+#: js/PrefFeedTree.js:379
 msgid "Feeds without recent updates"
 msgstr "فیدهایی که اخیراً به‌روزرسانی نشده‌اند"
 
-#: js/PrefFilterTree.js:49
+#: js/PrefFilterTree.js:50
 msgid "Inverse"
 msgstr "معکوس"
 
-#: js/PrefFilterTree.js:108 js/PrefFilterTree.js:124 js/PrefFilterTree.js:235
+#: js/PrefFilterTree.js:110
+#: js/PrefFilterTree.js:126
+#: js/PrefFilterTree.js:156
 msgid "No filters selected."
 msgstr "هیچ فیلتری انتخاب نشد."
 
-#: js/PrefFilterTree.js:112
+#: js/PrefFilterTree.js:114
 msgid "Combine selected filters?"
 msgstr "فیلترهای انتخاب شده ترکیب شوند؟"
 
-#: js/PrefFilterTree.js:129
+#: js/PrefFilterTree.js:131
 msgid "Please select only one filter."
 msgstr "لطفا فقط یک فیلتر انتخاب کنید."
 
-#: js/PrefFilterTree.js:149
-msgid "Edit Filter"
-msgstr "ویرایش فیلتر"
-
-#: js/PrefFilterTree.js:172
-msgid "Remove filter?"
-msgstr "فیلتر حذف شود؟"
-
-#: js/PrefFilterTree.js:222
+#: js/PrefFilterTree.js:143
 msgid "Remove selected filters?"
 msgstr "فیلترهای انتخاب شده حذف شوند؟"
 
-#: js/PrefHelpers.js:19
+#: js/PrefHelpers.js:20
 msgid "Remove selected app passwords?"
 msgstr "رمزهای عبور برنامه انتخاب شده حذف شوند؟"
 
-#: js/PrefHelpers.js:43
+#: js/PrefHelpers.js:44
 msgid "This will invalidate all previously generated feed URLs. Continue?"
-msgstr ""
-"این کار باعث غیر معتبر شدن آدرس های url فیدهای قبلی میشود. ادامه میدهید؟"
+msgstr "این کار باعث غیر معتبر شدن آدرس های url فیدهای قبلی میشود. ادامه میدهید؟"
 
-#: js/PrefHelpers.js:60
+#: js/PrefHelpers.js:76
 msgid "Clear event log?"
 msgstr "گزارش رویداد پاک شود؟"
 
-#: js/PrefHelpers.js:79
+#: js/PrefHelpers.js:89
 msgid "Settings Profiles"
 msgstr "تنظیمات پروفایل ها"
 
-#: js/PrefHelpers.js:88
-msgid ""
-"Remove selected profiles? Active and default profiles will not be removed."
+#: js/PrefHelpers.js:97
+msgid "Remove selected profiles? Active and default profiles will not be removed."
 msgstr "پروفایل انتخاب شده حذف شود؟ پروفایل های فعال و پیش فرض حذف نمی شوند."
 
-#: js/PrefHelpers.js:103
+#: js/PrefHelpers.js:112
 msgid "No profiles selected."
 msgstr "هیچ پروفایلی انتخاب نشده است."
 
-#: js/PrefHelpers.js:110
+#: js/PrefHelpers.js:137
 msgid "Activate selected profile?"
 msgstr "پروفایل انتخاب شده فعال شود؟"
 
-#: js/PrefHelpers.js:119
+#: js/PrefHelpers.js:146
 msgid "Please choose a profile to activate."
 msgstr "لطفا یک پروفایل برای فعال کردن، انتخاب نمایید."
 
-#: js/PrefHelpers.js:175
+#: js/PrefHelpers.js:210
 msgid "Reset to defaults?"
 msgstr "به تنظیمات پیش فرض برگردانده شود؟"
 
-#: js/PrefHelpers.js:183
+#: js/PrefHelpers.js:218
 msgid "Clear stored data for this plugin?"
 msgstr "اطلاعات ذخیره شده برای این افزونه حذف شود؟"
 
-#: js/PrefHelpers.js:202
+#: js/PrefHelpers.js:237
 msgid "Please choose an OPML file first."
 msgstr "لطفا ابتدا یک فایل OPML انتخاب نمایید."
 
-#: js/PrefHelpers.js:226
+#: js/PrefHelpers.js:249
 msgid "OPML Import"
 msgstr "وارد کردن فایل OPML"
 
-#: js/PrefHelpers.js:248
+#: js/PrefHelpers.js:286
 msgid "Replace current OPML publishing address with a new one?"
 msgstr "آدرس OPML منتشر شده فعلی با آدرس جدید جایگزین شود؟"
 
@@ -2839,151 +2827,142 @@ msgstr "آدرس OPML منتشر شده فعلی با آدرس جدید جایگ
 msgid "Click to close"
 msgstr "کلیک کنید تا بسته شود.( جهت بستن کلیلک کنید)"
 
-#: plugins/mailto/init.js:21 plugins/mail/mail.js:21
-msgid "Forward article by email"
-msgstr "مقاله را ایمیل کنید"
-
-#: plugins/af_psql_trgm/init.js:10
+#: plugins/af_psql_trgm/init.js:8
 msgid "Related articles"
 msgstr "مقالات مرتبط"
 
-#: plugins/share/share.js:10
+#: plugins/mail/mail.js:20
+#: plugins/mailto/init.js:20
+msgid "Forward article by email"
+msgstr "مقاله را ایمیل کنید"
+
+#: plugins/mail/mail.js:28
+msgid "Error sending email:"
+msgstr "خطای ارسال ایمیل:"
+
+#: plugins/share/share.js:9
 msgid "Share article by URL"
 msgstr "اشتراک‌گذاری مقاله از طریق URL"
 
-#: plugins/share/share.js:13
+#: plugins/share/share.js:11
 msgid "Generate new share URL for this article?"
 msgstr "برای این مقاله آدرس URL اشتراک جدید ایجاد شود؟"
 
-#: plugins/share/share.js:48
+#: plugins/share/share.js:46
 msgid "Remove sharing for this article?"
 msgstr "قابلیت به اشتراکگذاری این مقاله حذف شود؟"
 
 #: plugins/share/share_prefs.js:3
 msgid "This will invalidate all previously shared article URLs. Continue?"
+msgstr "این کار باعث غیرمعتبر شدن آدرس های URL مقالات به اشتراک گذاشته شده قبلی می شود. ادامه می دهید؟"
+
+#: js/App.js:400
+msgid "Update daemon is not running."
 msgstr ""
-"این کار باعث غیرمعتبر شدن آدرس های URL مقالات به اشتراک گذاشته شده قبلی می "
-"شود. ادامه می دهید؟"
 
-#: plugins/mail/mail.js:30
-msgid "Error sending email:"
-msgstr "خطای ارسال ایمیل:"
+#: js/App.js:413
+#, fuzzy
+msgid "Update daemon is not updating feeds."
+msgstr "<span onclick=\"App.explainError(3)\">به‌روزرسانی daemon منجر به به‌روزرسانی فیدها نشد.</span>"
 
-#: js/App.js:436
-msgid ""
-"<span onclick=\"App.explainError(1)\">Update daemon is not running.</span>"
-msgstr ""
-"<span onclick=\"App.explainError(1)\">به‌روزرسانی daemon در حال اجرا نیست.</"
-"span>"
-
-#: js/App.js:449
-msgid ""
-"<span onclick=\"App.explainError(3)\">Update daemon is not updating feeds.</"
-"span>"
-msgstr ""
-"<span onclick=\"App.explainError(3)\">به‌روزرسانی daemon منجر به به‌روزرسانی "
-"فیدها نشد.</span>"
-
-#: js/App.js:601
+#: js/App.js:557
 msgid "Unhandled exception"
 msgstr "خطای مدیریت نشده"
 
-#: js/App.js:1003
+#: js/App.js:958
 msgid "Please enable mail or mailto plugin first."
 msgstr "لطفا ابتدا ایمیل یا افزونه mailto را فعال کنید."
 
-#: js/App.js:1126
+#: js/App.js:1078
 msgid "Please enable af_readability first."
 msgstr "لطفا ابتدا af_readability را فعال کنید."
 
-#: js/App.js:1139 js/App.js:1229
+#: js/App.js:1091
+#: js/App.js:1181
 msgid "Widescreen is not available in combined mode."
 msgstr "قابلیت صفحه عریض در حالت ترکیبی وجود ندارد."
 
-#: js/App.js:1197
+#: js/App.js:1149
 msgid "Please select some feed first."
 msgstr "لطفا ابتدا چند فید انتخاب کنید."
 
-#: js/App.js:1202
+#: js/App.js:1154
 msgid "You can't unsubscribe from the category."
 msgstr "شما نمی توانید عضویت در این بخش را حذف کنید."
 
-#: js/Article.js:267
-msgid "Edit article Tags"
-msgstr "ویرایش تگ‌های مقاله"
-
-#: js/Article.js:272
+#: js/Article.js:260
 msgid "Saving article tags..."
 msgstr "در حال ذخیره سازی تگ های مقاله ..."
 
-#: js/CommonDialogs.js:13
+#: js/CommonDialogs.js:16
 msgid "Removing feed icon..."
 msgstr "در حال حذف آیکون فید..."
 
-#: js/CommonDialogs.js:18
+#: js/CommonDialogs.js:21
 msgid "Feed icon removed."
 msgstr "آیکون فید حذف شد."
 
-#: js/CommonDialogs.js:41
+#: js/CommonDialogs.js:44
 msgid "Uploading, please wait..."
 msgstr "در حال بارگزاری، منتظر بمانید...."
 
-#: js/CommonDialogs.js:50
+#: js/CommonDialogs.js:53
 msgid "Upload complete."
 msgstr "بارگزاری کامل شد."
 
-#: js/CommonDialogs.js:65
+#: js/CommonDialogs.js:68
 msgid "Upload failed: icon is too big."
 msgstr "بارگزاری انجام نشد: ایکون خیلی بزرگ بود."
 
-#: js/CommonDialogs.js:68
+#: js/CommonDialogs.js:71
 msgid "Upload failed."
 msgstr "بارگزاری انجام نشد."
 
-#: js/CommonDialogs.js:211 js/PrefFeedTree.js:384
+#: js/CommonDialogs.js:202
+#: js/PrefFeedTree.js:388
 msgid "Removing selected feeds..."
 msgstr "در حال حذف فیدهای انتخاب شده..."
 
-#: js/CommonDialogs.js:397
+#: js/CommonDialogs.js:266
 msgid "Removing feed..."
 msgstr "در حال حذف فیدها..."
 
-#: js/CommonDialogs.js:440 js/PrefFeedTree.js:297 js/PrefFilterTree.js:205
-#: js/PrefUsers.js:42
+#: js/CommonDialogs.js:306
+#: js/CommonFilters.js:304
+#: js/PrefFeedTree.js:297
+#: js/PrefUsers.js:36
 msgid "Saving data..."
 msgstr "در حال ذخیره اطلاعات..."
 
-#: js/CommonDialogs.js:462 js/PrefHelpers.js:249
+#: js/CommonDialogs.js:336
+#: js/PrefHelpers.js:287
 msgid "Trying to change address..."
 msgstr "تلاش برای تغییر آدرس..."
 
-#: js/CommonDialogs.js:482 js/PrefHelpers.js:265
+#: js/CommonDialogs.js:356
+#: js/PrefHelpers.js:303
 msgid "Could not change feed URL."
 msgstr "آدرس URL فید تغییر نمی کند."
 
-#: js/CommonFilters.js:132
+#: js/CommonDialogs.js:371
+msgid "Your Public OPML URL is:"
+msgstr "آدرس url عمومی و opml شما این است:"
+
+#: js/CommonDialogs.js:411
+msgid "%s can be accessed via the following secret URL:"
+msgstr "%s توسط URL محرمانه‌ی زیر در دسترس است:"
+
+#: js/CommonFilters.js:97
 msgid "Edit rule"
 msgstr "ویرایش کردن قانون"
 
-#: js/CommonFilters.js:162
-msgid "Edit action"
-msgstr "اقدام انجام شده را ویرایش کنید"
-
-#: js/CommonFilters.js:203
-msgid "Looking for articles (%d processed, %f found)..."
-msgstr "در حال جستجوی مقالات (٪ d پردازش شده ،٪ f پیدا شده) ..."
-
-#: js/CommonFilters.js:232
-msgid "Found %d articles matching this filter:"
-msgstr "%d مقاله مطابق با این فیلتر پیدا شد:"
-
-#: js/CommonFilters.js:243
+#: js/CommonFilters.js:199
 msgid "Error while trying to get filter test results."
 msgstr "بروز خطا حین تلاش برای گرفتن نتایج آزمون فیلتر."
 
-#: js/CommonFilters.js:285
-msgid "Create Filter"
-msgstr "فیلتر ایجاد کنید.(تعریف کنید)"
+#: js/CommonFilters.js:274
+msgid "Removing filter..."
+msgstr "در حال حذف فیلتر..."
 
 #: js/FeedTree.js:102
 msgid "Debug feed"
@@ -2993,210 +2972,201 @@ msgstr "مشکل‌یابی فید"
 msgid "(Un)collapse"
 msgstr "بستن/باز کردن"
 
-#: js/Feeds.js:387
+#: js/Feeds.js:229
+msgid "You are using default tt-rss password. Please change it in the Preferences (Personal data / Authentication)."
+msgstr "شما از رمز عبور پیش‌فرض tt-rss استفاده می‌کنید. لطفا آن را در قسمت اولویت‌ها تغییر دهید (اطلاعات شخصی / احراز هویت)."
+
+#: js/Feeds.js:398
 msgid "Mark all articles as read?"
 msgstr "همه مقالات«خوانده شده» علامگذاری شوند؟"
 
-#: js/Feeds.js:391
+#: js/Feeds.js:402
 msgid "Marking all feeds as read..."
 msgstr "در حال علامت‌گذاری همه فیدها به عنوان «خوانده شده»..."
 
-#: js/Feeds.js:409
+#: js/Feeds.js:420
 msgid "Mark %w in %s older than 1 day as read?"
-msgstr ""
-"%w در %s که بیشتر از یک روز از آن گذشته، به عنوان «خوانده شده» علامت‌گذاری "
-"شود؟"
+msgstr "%w در %s که بیشتر از یک روز از آن گذشته، به عنوان «خوانده شده» علامت‌گذاری شود؟"
 
-#: js/Feeds.js:412
+#: js/Feeds.js:423
 msgid "Mark %w in %s older than 1 week as read?"
-msgstr ""
-"%w در %s که بیشتر از یک هفته از آن گذشته، به عنوان «خوانده شده» علامت‌گذاری "
-"شود؟"
+msgstr "%w در %s که بیشتر از یک هفته از آن گذشته، به عنوان «خوانده شده» علامت‌گذاری شود؟"
 
-#: js/Feeds.js:415
+#: js/Feeds.js:426
 msgid "Mark %w in %s older than 2 weeks as read?"
-msgstr ""
-"%w در %s که بیشتر از دو هفته از آن گذشته، به عنوان «خوانده شده» علامت‌گذاری "
-"شود؟"
+msgstr "%w در %s که بیشتر از دو هفته از آن گذشته، به عنوان «خوانده شده» علامت‌گذاری شود؟"
 
-#: js/Feeds.js:418
+#: js/Feeds.js:429
 msgid "Mark %w in %s as read?"
 msgstr "٪ w را در٪ s «خوانده شده »علامت گذاری کنید؟"
 
-#: js/Feeds.js:421
+#: js/Feeds.js:432
 msgid "search results"
 msgstr "نتایج جستجو"
 
-#: js/Feeds.js:421
+#: js/Feeds.js:432
 msgid "all articles"
 msgstr "همه مقالات"
 
-#: js/Feeds.js:464
+#: js/Feeds.js:475
 msgid "Mark all articles in %s as read?"
 msgstr "همه مقالات را در٪ s «خوانده شده» علامت گذاری کنید؟"
 
-#: js/Headlines.js:629 js/Headlines.js:679 js/Headlines.js:696
+#: js/Headlines.js:647
+#: js/Headlines.js:697
+#: js/Headlines.js:714
 msgid "Click to open next unread feed."
 msgstr "برای باز کردن فید خوانده نشده‌ی بعدی، کلیک کنید."
 
-#: js/Headlines.js:633
+#: js/Headlines.js:651
 msgid "Cancel search"
 msgstr "جستجو را لغو کن"
 
-#: js/Headlines.js:693
+#: js/Headlines.js:711
 msgid "New articles found, reload feed to continue."
 msgstr "مقاله جدید پیدا شد، فید را برای ادامه کار، بارگزاری کنید."
 
-#: js/Headlines.js:886
+#: js/Headlines.js:904
 msgid "%d article selected"
 msgid_plural "%d articles selected"
 msgstr[0] "٪ d مقاله انتخاب شد"
 msgstr[1] "٪ d مقالات انتخاب شد"
 
-#: js/Headlines.js:959
+#: js/Headlines.js:977
 msgid "Delete %d selected article in %s?"
 msgid_plural "Delete %d selected articles in %s?"
 msgstr[0] "%d مقاله‌ی انتخاب شده در %s حذف شود؟"
 msgstr[1] "%d مقاله‌ی انتخاب شده در %s حذف شوند؟"
 
-#: js/Headlines.js:961
+#: js/Headlines.js:979
 msgid "Delete %d selected article?"
 msgid_plural "Delete %d selected articles?"
 msgstr[0] "%d مقاله‌ی انتخاب شده حذف شود؟"
 msgstr[1] "%d مقاله‌ی انتخاب شده حذف شوند؟"
 
-#: js/Headlines.js:1101
-msgid "Archive %d selected article in %s?"
-msgid_plural "Archive %d selected articles in %s?"
-msgstr[0] "%d مقاله‌ی انتخاب شده در %s آرشیو شود؟"
-msgstr[1] "%d مقاله‌ی انتخاب شده در %s آرشیو شوند؟"
-
-#: js/Headlines.js:1104
-msgid "Move %d archived article back?"
-msgid_plural "Move %d archived articles back?"
-msgstr[0] "%d مقاله‌ی آرشیو شده بازگردانی شود؟"
-msgstr[1] "%d مقاله‌ی آرشیو شده بازگردانی شوند؟"
-
-#: js/Headlines.js:1105
-msgid ""
-"Please note that unstarred articles might get purged on next feed update."
-msgstr ""
-"لطفا توجه کنید که مقالات بدون ستاره ممکن است در بروز رسانی فیدهای بعدی حذف "
-"شوند."
-
-#: js/Headlines.js:1134
+#: js/Headlines.js:1116
 msgid "Mark %d selected article in %s as read?"
 msgid_plural "Mark %d selected articles in %s as read?"
 msgstr[0] "%d مقاله‌ی انتخاب شده در %s به صورت «خوانده شده» علامت‌گذاری شود؟"
 msgstr[1] "%d مقاله‌ی انتخاب شده در %s به صورت «خوانده شده» علامت‌گذاری شوند؟"
 
-#: js/Headlines.js:1150
+#: js/Headlines.js:1132
 msgid "No article is selected."
 msgstr "هیچ مقاله ای انتخاب نشده است."
 
-#: js/Headlines.js:1185
+#: js/Headlines.js:1167
 msgid "No articles found to mark"
 msgstr "هیچ مقاله‌ای برای علامت‌گذاری یافت نشد"
 
-#: js/Headlines.js:1187
+#: js/Headlines.js:1169
 msgid "Mark %d article as read?"
 msgid_plural "Mark %d articles as read?"
 msgstr[0] "%d مقاله به صورت «خوانده شده» علامت‌گذاری شود؟"
 msgstr[1] "%d مقاله به صورت «خوانده شده» علامت‌گذاری شوند؟"
 
-#: js/Headlines.js:1237
+#: js/Headlines.js:1214
 msgid "Open original article"
 msgstr "مقاله اصلی را باز کنید"
 
-#: js/Headlines.js:1244
+#: js/Headlines.js:1221
 msgid "Display article URL"
 msgstr "نمایش ادرس url مقاله"
 
-#: js/Headlines.js:1351
+#: js/Headlines.js:1328
 msgid "Assign label"
 msgstr "تخصیص برچسب"
 
-#: js/Headlines.js:1356
+#: js/Headlines.js:1333
 msgid "Remove label"
 msgstr "برچسب را حذف کنید"
 
-#: js/Headlines.js:1393
+#: js/Headlines.js:1370
 msgid "Select articles in group"
 msgstr "مقاله را در گروه انتخاب کنید"
 
-#: js/Headlines.js:1403
+#: js/Headlines.js:1380
 msgid "Mark group as read"
 msgstr "گروه را «خوانده شده» علامت‌گذاری کنید"
 
-#: js/Headlines.js:1415
+#: js/Headlines.js:1392
 msgid "Mark feed as read"
 msgstr "فید را «خوانده شده» علامت‌گذاری کنید"
 
-#: js/PrefFeedTree.js:142
+#: js/PrefFeedTree.js:145
 msgid "Removing category..."
 msgstr "در حال حذف دسته بندی ..."
 
-#: js/PrefFeedTree.js:156
+#: js/PrefFeedTree.js:159
 msgid "Unsubscribing from selected feeds..."
 msgstr "لغو اشتراک فیدهای انتخاب شده ..."
 
-#: js/PrefFeedTree.js:198
+#: js/PrefFeedTree.js:201
 msgid "Removing selected categories..."
 msgstr "در حال حذف دسته های انتخاب شده..."
 
-#: js/PrefFeedTree.js:331
+#: js/PrefFeedTree.js:337
 msgid "Creating category..."
 msgstr "در حال ایجاد دسته(طبقه)..."
 
-#: js/PrefFilterTree.js:113
+#: js/PrefFilterTree.js:115
 msgid "Joining filters..."
 msgstr "در حال اتصال به فیلترها..."
 
-#: js/PrefFilterTree.js:177
-msgid "Removing filter..."
-msgstr "در حال حذف فیلتر..."
-
-#: js/PrefFilterTree.js:223
+#: js/PrefFilterTree.js:144
 msgid "Removing selected filters..."
 msgstr "در حال حذف فیلترهای انتخاب شده..."
 
-#: js/PrefHelpers.js:44 plugins/share/share_prefs.js:4
+#: js/PrefHelpers.js:45
+#: plugins/share/share_prefs.js:4
 msgid "Clearing URLs..."
 msgstr "در حال پاکسازی آدرس های URL..."
 
-#: js/PrefHelpers.js:47
+#: js/PrefHelpers.js:48
 msgid "Generated URLs cleared."
 msgstr "آدرس های URL تولید شده پاک شدند."
 
-#: js/PrefHelpers.js:89
+#: js/PrefHelpers.js:98
 msgid "Removing selected profiles..."
 msgstr "در حال حذف پروفایل های انتخاب شده ..."
 
-#: js/PrefHelpers.js:124
+#: js/PrefHelpers.js:117
 msgid "Creating profile..."
 msgstr "در حال ایجاد پروفایل..."
 
-#: js/PrefHelpers.js:205
+#: js/PrefHelpers.js:175
+msgid "You can override colors, fonts and layout of your currently selected theme with custom CSS declarations here."
+msgstr "در اینجا می‌توانید رنگ‌ها، فونت‌ها و چیدمان تمی که در حال حاضر انتخاب کرده‌اید را با اعلامیه‌های سفارسی CSS بازتعریف کنید."
+
+#: js/PrefHelpers.js:184
+msgid "User CSS has been applied, you might need to reload the page to see all changes."
+msgstr "کدهای CSS کاربر اعمال شد، برای مشاهده‌ی همه‌ی تغییرات صفحه را مجدداً بارگذاری کنید."
+
+#: js/PrefHelpers.js:240
 msgid "Importing, please wait..."
 msgstr "در حال واردکرد، لطف منتظر بمانید..."
 
-#: js/PrefLabelTree.js:70
+#: js/PrefHelpers.js:260
+msgid "If you have imported labels and/or filters, you might need to reload preferences to see your new data."
+msgstr ""
+
+#: js/PrefLabelTree.js:66
 msgid "Label Editor"
 msgstr "ویرایشگر برچسب"
 
-#: js/PrefLabelTree.js:127
+#: js/PrefLabelTree.js:133
 msgid "Reset selected labels to default colors?"
 msgstr "رنگ برچسب‌های انتخاب شده به حالت پیش‌فرض بازگردد؟"
 
-#: js/PrefLabelTree.js:140 js/PrefLabelTree.js:160
+#: js/PrefLabelTree.js:146
+#: js/PrefLabelTree.js:166
 msgid "No labels selected."
 msgstr "هیچ برچسبی انتخاب نشده است."
 
-#: js/PrefLabelTree.js:147
+#: js/PrefLabelTree.js:153
 msgid "Remove selected labels?"
 msgstr "برچسب‌های انتخاب شده حذف شود؟"
 
-#: js/PrefLabelTree.js:148
+#: js/PrefLabelTree.js:154
 msgid "Removing selected labels..."
 msgstr "در حال حذف برچسب‌های انتخاب شده..."
 
@@ -3208,54 +3178,54 @@ msgstr "لطفا نام کاربری را وارد کنید:"
 msgid "Adding user..."
 msgstr "در حال افزودن کاربر..."
 
-#: js/PrefUsers.js:38
+#: js/PrefUsers.js:33
 msgid "User Editor"
 msgstr "ویرایشگر کاربر"
 
-#: js/PrefUsers.js:59 js/PrefUsers.js:98 js/PrefUsers.js:105
+#: js/PrefUsers.js:54
+#: js/PrefUsers.js:93
+#: js/PrefUsers.js:100
 msgid "No users selected."
 msgstr "هیچ کاربری انتخاب نشده است."
 
-#: js/PrefUsers.js:64 js/PrefUsers.js:110
+#: js/PrefUsers.js:59
+#: js/PrefUsers.js:105
 msgid "Please select one user."
 msgstr "لطفاً یک کاربر انتخاب کنید."
 
-#: js/PrefUsers.js:68
+#: js/PrefUsers.js:63
 msgid "Reset password of selected user?"
 msgstr "رمز عبور کاربران انتخاب شده ریست شود؟"
 
-#: js/PrefUsers.js:69
+#: js/PrefUsers.js:64
 msgid "Resetting password for selected user..."
 msgstr "در حال ریست کردن رمز عبور برای کاربر انتخاب شده..."
 
-#: js/PrefUsers.js:84
-msgid ""
-"Remove selected users? Neither default admin nor your account will be "
-"removed."
-msgstr ""
-"کاربرهای انتخاب شده حذف شوند؟ کاربر آدمین پیش‌فرض و یا حساب شما حذف نخواهد شد."
+#: js/PrefUsers.js:79
+msgid "Remove selected users? Neither default admin nor your account will be removed."
+msgstr "کاربرهای انتخاب شده حذف شوند؟ کاربر آدمین پیش‌فرض و یا حساب شما حذف نخواهد شد."
 
-#: js/PrefUsers.js:85
+#: js/PrefUsers.js:80
 msgid "Removing selected users..."
 msgstr "در حال حذف کاربران انتخاب شده..."
+
+#: plugins/note/note.js:12
+msgid "Saving article note..."
+msgstr "در حال ذخیره‌ی یادداشت مقاله..."
 
 #: plugins/af_readability/init.js:29
 msgid "Unable to fetch full text for this article"
 msgstr "بارگذاری متن کامل برای این مقاله امکان‌پذیر نیست"
 
-#: plugins/note/note.js:14
-msgid "Saving article note..."
-msgstr "در حال ذخیره‌ی یادداشت مقاله..."
-
 #: plugins/shorten_expanded/init.js:42
 msgid "Click to expand article"
 msgstr "برای گسترده شدن مقاله کلیک کنید"
 
-#: plugins/share/share.js:15
+#: plugins/share/share.js:13
 msgid "Trying to change URL..."
 msgstr "تلاش برای تغییر آدرس URL..."
 
-#: plugins/share/share.js:40
+#: plugins/share/share.js:38
 msgid "Could not change URL."
 msgstr "آدرس URL نمی‌تواند تغییر کند."
 
@@ -3263,18 +3233,119 @@ msgstr "آدرس URL نمی‌تواند تغییر کند."
 msgid "Shared URLs cleared."
 msgstr "آدرس‌های URL به اشتراک گذاشته شده، پاک شد."
 
+#~ msgid "Create new account"
+#~ msgstr "ایجاد حساب کاربری جدید"
+
+#~ msgid "New user registrations are administratively disabled."
+#~ msgstr "ثبت نام کاربر جدید توسط مدیریت غیرفعال شده است."
+
+#~ msgid "Your temporary password will be sent to the specified email. Accounts, which were not logged in once, are erased automatically 24 hours after temporary password is sent."
+#~ msgstr "رمز عبور موقت شما به ایمیل مشخص شده ارسال می گردد. حساب هایی که 24 ساعت بعد از ارسال رمز عبور موقت، یک بار لاگین نشوند، به صورت اتوماتیک پاک می شوند."
+
+#~ msgid "Desired login:"
+#~ msgstr "ورود به سیستم موردنظر:"
+
+#~ msgid "Check availability"
+#~ msgstr "در دسترس بودن را بررسی کنید"
+
+#~ msgid "How much is two plus two:"
+#~ msgstr "حاصل جمع 2+2 می‌شود:"
+
+#~ msgid "Submit registration"
+#~ msgstr "ارسال ثبت‌نام"
+
+#~ msgid "Your registration information is incomplete."
+#~ msgstr "اطلاعات ثبت نام شما کامل نیست."
+
+#~ msgid "Sorry, this username is already taken."
+#~ msgstr "متاسفانه، این نام کاربری تکراری می باشد."
+
+#~ msgid "Registration failed."
+#~ msgstr "ثبت نام موفقیت آمیز نبود."
+
+#~ msgid "Account created successfully."
+#~ msgstr "حساب کاربری با موفقیت ایجاد شد."
+
+#~ msgid "New user registrations are currently closed."
+#~ msgstr "ثبت نام کاربر جدید در حال حاضر امکانپذیر نمی باشد."
+
+#~ msgid "Tiny Tiny RSS data update script."
+#~ msgstr "اسکرپیت به‌روزرسانی داده Tiny Tiny RSS."
+
+#~ msgid "Safe mode (no plugins)"
+#~ msgstr "حالت امن (بدون پلاگین‌ها)"
+
+#~ msgid "Tag cloud"
+#~ msgstr "تگ کلود"
+
+#~ msgid "Update daemon is enabled in configuration, but daemon process is not running, which prevents all feeds from updating. Please start the daemon process or contact instance owner."
+#~ msgstr "به‌روزرسانی daemon در تنظیمات فعال است، اما هیچ فرآیند daemon در حال اجرا نیست و این موضوع از به‌روزرسانی فیدها جلوگیری می‌کند. لطفاً فرآیند مربوط به daemon را اجرا کنید و یا با مالک تماس بگیرید."
+
+#~ msgid "Last update:"
+#~ msgstr "آخرین به‌روزرسانی:"
+
+#~ msgid "Update daemon is taking too long to perform a feed update. This could indicate a problem like crash or a hang. Please check the daemon process or contact instance owner."
+#~ msgstr "فرآیند به‌روزرسانی daemon برای به‌روزسانی یک فید بسیار طولانی شده است. این می‌تواند نشان‌دهنده‌ی یک اشکال مانند خرابی یا تعلیق باشد. لطفا فرآیند daemon را بررسی کنید یا با مالک تماس بگیرید."
+
+#~ msgid "Open Preferences"
+#~ msgstr "اولویت ها را باز کنید"
+
+#~ msgid "Apply"
+#~ msgstr "اعمال"
+
+#~ msgid "Save and reload"
+#~ msgstr "ذخیره و بارگیری مجدد"
+
+#~ msgid "Selection toggle:"
+#~ msgstr "ضامن انتخاب:"
+
+#~ msgid "Selection:"
+#~ msgstr "انتخاب:"
+
+#~ msgid "Move back"
+#~ msgstr "به عقب برگردید"
+
+#~ msgid "Archive"
+#~ msgstr "آرشیو"
+
+#~ msgid "Feed:"
+#~ msgstr "فید:"
+
+#~ msgid "Error explained"
+#~ msgstr "خطا توضیح داده شد"
+
+#~ msgid "More Feeds"
+#~ msgstr "فیدهای بیشتر"
+
+#~ msgid "Remove selected feeds from the archive? Feeds with stored articles will not be removed."
+#~ msgstr "فیدهای انتخاب شده از آرشیو حذف شوند؟ مقالات ذخیره شده دارای فید حذف نخواهند شد."
+
+#~ msgid "Edit Filter"
+#~ msgstr "ویرایش فیلتر"
+
+#~ msgid "<span onclick=\"App.explainError(1)\">Update daemon is not running.</span>"
+#~ msgstr "<span onclick=\"App.explainError(1)\">به‌روزرسانی daemon در حال اجرا نیست.</span>"
+
+#~ msgid "Archive %d selected article in %s?"
+#~ msgid_plural "Archive %d selected articles in %s?"
+#~ msgstr[0] "%d مقاله‌ی انتخاب شده در %s آرشیو شود؟"
+#~ msgstr[1] "%d مقاله‌ی انتخاب شده در %s آرشیو شوند؟"
+
+#~ msgid "Move %d archived article back?"
+#~ msgid_plural "Move %d archived articles back?"
+#~ msgstr[0] "%d مقاله‌ی آرشیو شده بازگردانی شود؟"
+#~ msgstr[1] "%d مقاله‌ی آرشیو شده بازگردانی شوند؟"
+
+#~ msgid "Please note that unstarred articles might get purged on next feed update."
+#~ msgstr "لطفا توجه کنید که مقالات بدون ستاره ممکن است در بروز رسانی فیدهای بعدی حذف شوند."
+
 #~ msgid "There is no error, the file uploaded with success"
 #~ msgstr "خطایی رخ نداد، فایل با موفقیت بارگذاری شد"
 
-#~ msgid ""
-#~ "The uploaded file exceeds the upload_max_filesize directive in php.ini"
-#~ msgstr ""
-#~ "اندازه فایل بارگذاری شده از حد تعیین شده upload_max_filesize در php.ini "
-#~ "بیشتر است"
+#~ msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
+#~ msgstr "اندازه فایل بارگذاری شده از حد تعیین شده upload_max_filesize در php.ini بیشتر است"
 
-#~ msgid ""
-#~ "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified "
-#~ "in the HTML form"
+#~ msgid "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form"
 #~ msgstr "اندازه فایل از حد تعیین شده MAX_FILE_SIZE در فرم HTML بیشتر است"
 
 #~ msgid "The uploaded file was only partially uploaded"
@@ -3301,9 +3372,5 @@ msgstr "آدرس‌های URL به اشتراک گذاشته شده، پاک ش�
 #~ msgid "Regular expression, without outer delimiters (i.e. slashes)"
 #~ msgstr "عبارت منظم، بدون هیچ جداکننده بیرونی از قبیل /"
 
-#~ msgid ""
-#~ "Could not update headlines (invalid object received - see error console "
-#~ "for details)"
-#~ msgstr ""
-#~ "عناوین قابل بروزرسانی نبودند( شی ها نامعتبر بودند. برای مشاهده جزییات به "
-#~ "صفحه خطا بروید)"
+#~ msgid "Could not update headlines (invalid object received - see error console for details)"
+#~ msgstr "عناوین قابل بروزرسانی نبودند( شی ها نامعتبر بودند. برای مشاهده جزییات به صفحه خطا بروید)"

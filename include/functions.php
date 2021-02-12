@@ -310,7 +310,7 @@
 	}
 
 	function validate_csrf($csrf_token) {
-		return isset($csrf_token) && hash_equals($_SESSION['csrf_token'], $csrf_token);
+		return isset($csrf_token) && hash_equals($_SESSION['csrf_token'] ?? "", $csrf_token);
 	}
 
 	function truncate_string($str, $max_len, $suffix = '&hellip;') {

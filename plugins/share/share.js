@@ -8,7 +8,6 @@ Plugins.Share = {
 		const dialog = new dijit.Dialog({
 			id: "shareArticleDlg",
 			title: __("Share article by URL"),
-			style: "width: 600px",
 			newurl: function () {
 				if (confirm(__("Generate new share URL for this article?"))) {
 

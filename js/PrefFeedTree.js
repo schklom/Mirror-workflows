@@ -259,7 +259,6 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 				const dialog = new dijit.Dialog({
 					id: "feedEditDlg",
 					title: __("Edit Multiple Feeds"),
-					style: "width: 600px",
 					getChildByName: function (name) {
 						let rv = null;
 						this.getChildren().each(
@@ -346,7 +345,6 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			const dialog = new dijit.Dialog({
 				id: "batchSubDlg",
 				title: __("Batch subscribe"),
-				style: "width: 600px",
 				execute: function () {
 					if (this.validate()) {
 						Notify.progress(__("Subscribing to feeds..."), true);
@@ -372,7 +370,6 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			const dialog = new dijit.Dialog({
 				id: "inactiveFeedsDlg",
 				title: __("Feeds without recent updates"),
-				style: "width: 600px",
 				getSelectedFeeds: function () {
 					return Tables.getSelected("inactive-feeds-list");
 				},

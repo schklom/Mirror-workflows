@@ -241,7 +241,6 @@ const	Feeds = {
 					</button>
 				</footer>`,
 				id: 'defaultPasswordDlg',
-				style: "width: 600px",
 				onCancel: function () {
 					return true;
 				},
@@ -273,7 +272,6 @@ const	Feeds = {
 					</footer>
 					`,
 				id: 'safeModeDlg',
-				style: "width: 600px",
 				onCancel: function () {
 					return true;
 				},
@@ -608,7 +606,6 @@ const	Feeds = {
 							id: "searchDlg",
 							content: transport.responseText,
 							title: __("Search"),
-							style: "width: 600px",
 							execute: function () {
 								if (this.validate()) {
 									Feeds._search_query = this.attr('value');

@@ -16,6 +16,11 @@ const App = {
    hotkey_actions: {},
    is_prefs: false,
    LABEL_BASE_INDEX: -1024,
+   FormFields: {
+      hidden: function(name, value) {
+         return `<input dojoType="dijit.form.TextBox" style="display : none" name="${name}" value="${value}"></input>`
+      }
+   },
    Scrollable: {
 		scrollByPages: function (elem, page_offset) {
 			if (!elem) return;
@@ -48,6 +53,9 @@ const App = {
 			return elem.offsetTop + elem.offsetHeight <= ctr.scrollTop + ctr.offsetHeight &&
 				elem.offsetTop >= ctr.scrollTop;
 		}
+   },
+   dialogOf: function (widget) {
+      return dijit.getEnclosingWidget(widget.domNode.closest('.dijitDialog'));
    },
    label_to_feed_id: function(label) {
       return this.LABEL_BASE_INDEX - 1 - Math.abs(label);
@@ -300,20 +308,15 @@ const App = {
       }
    },
    helpDialog: function(topic) {
-		if (dijit.byId("helpDlg"))
-			dijit.byId("helpDlg").destroyRecursive();
+      xhrPost("backend.php", {op: "backend", method: "help", topic: topic}, (transport) => {
+         const dialog = new dijit.Dialog({
+            title: __("Help"),
+            content: transport.responseText,
+         });
 
-	   xhrPost("backend.php", {op: "backend", method: "help", topic: topic}, (transport) => {
-		   const dialog = new dijit.Dialog({
-			   id: "helpDlg",
-			   title: __("Help"),
-			   style: "width: 600px",
-			   content: transport.responseText,
-		   });
-
-		   dialog.show();
-	   });
-	},
+         dialog.show();
+      });
+   },
 	displayDlg: function(title, id, param, callback) {
 		Notify.progress("Loading, please wait...", true);
 
@@ -329,7 +332,6 @@ const App = {
 					dialog = new dijit.Dialog({
 						title: title,
 						id: 'infoBox',
-						style: "width: 600px",
 						onCancel: function () {
 							return true;
 						},
@@ -596,7 +598,6 @@ const App = {
 				const dialog = new dijit.Dialog({
 					id: "exceptionDlg",
 					title: params.title || __("Unhandled exception"),
-					style: "width: 600px",
 					content: content
 				});
 

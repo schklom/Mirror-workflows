@@ -19,7 +19,6 @@ Plugins.Mail = {
 		const dialog = new dijit.Dialog({
 			id: "emailArticleDlg",
 			title: __("Forward article by email"),
-			style: "width: 600px",
 			execute: function () {
 				if (this.validate()) {
 					xhrJson("backend.php", this.attr('value'), (reply) => {

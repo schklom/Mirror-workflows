@@ -1168,7 +1168,9 @@ class Pref_Prefs extends Handler_Protected {
 		$value = get_pref("USER_STYLESHEET");
 		$value = str_replace("<br/>", "\n", $value);
 
-		print_notice(__("You can override colors, fonts and layout of your currently selected theme with custom CSS declarations here."));
+		print json_encode(["value" => $value]);
+
+		/*print_notice(__("You can override colors, fonts and layout of your currently selected theme with custom CSS declarations here."));
 
 		print_hidden("op", "rpc");
 		print_hidden("method", "setpref");
@@ -1188,7 +1190,7 @@ class Pref_Prefs extends Handler_Protected {
 			onclick=\"dijit.byId('cssEditDlg').execute()\">".__('Save and reload')."</button> ";
 		print "<button dojoType='dijit.form.Button'
 			onclick=\"dijit.byId('cssEditDlg').hide()\">".__('Cancel')."</button>";
-		print "</footer>";
+		print "</footer>";*/
 
 	}
 

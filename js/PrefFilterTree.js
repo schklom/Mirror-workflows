@@ -147,8 +147,6 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			const dialog = new dijit.Dialog({
 				id: "filterEditDlg",
 				title: __("Edit Filter"),
-				style: "width: 600px",
-
 				test: function () {
 					Filters.editFilterTest(dojo.formToObject("filter_edit_form"));
 				},

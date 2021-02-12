@@ -108,9 +108,9 @@ class Af_Psql_Trgm extends Plugin {
 
 		}
 
-		print "<footer class='text-center'>";
-		print "<button dojoType='dijit.form.Button' onclick=\"dijit.byId('trgmRelatedDlg').hide()\">".__('Close this window')."</button>";
-		print "</footer>";
+		print "<footer class='text-center'>
+			<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>".__('Close this window')."</button>
+		</footer>";
 
 
 	}

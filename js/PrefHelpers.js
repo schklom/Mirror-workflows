@@ -1,6 +1,6 @@
 'use strict';
 
-/* global __, dijit, dojo, Tables, xhrPost, Notify, xhrJson */
+/* global __, dijit, dojo, Tables, xhrPost, Notify, xhrJson, App */
 
 const	Helpers = {
 	AppPasswords: {
@@ -93,7 +93,6 @@ const	Helpers = {
 		const dialog = new dijit.Dialog({
 			id: "profileEditDlg",
 			title: __("Settings Profiles"),
-			style: "width: 600px",
 			getSelectedProfiles: function () {
 				return Tables.getSelected("pref-profiles-list");
 			},
@@ -159,33 +158,58 @@ const	Helpers = {
 		dialog.show();
 	},
 	customizeCSS: function() {
-		const query = "backend.php?op=pref-prefs&method=customizeCSS";
+		xhrJson("backend.php", {op: "pref-prefs", method: "customizeCSS"}, (reply) => {
 
-		if (dijit.byId("cssEditDlg"))
-			dijit.byId("cssEditDlg").destroyRecursive();
+			const dialog = new dijit.Dialog({
+				title: __("Customize stylesheet"),
+				apply: function() {
+					xhrPost("backend.php", this.attr('value'), () => {
+						new Effect.Appear("css_edit_apply_msg");
+						$("user_css_style").innerText = this.attr('value');
+					});
+				},
+				execute: function () {
+					Notify.progress('Saving data...', true);
 
-		const dialog = new dijit.Dialog({
-			id: "cssEditDlg",
-			title: __("Customize stylesheet"),
-			style: "width: 600px",
-			apply: function() {
-				xhrPost("backend.php", this.attr('value'), () => {
-					new Effect.Appear("css_edit_apply_msg");
-					$("user_css_style").innerText = this.attr('value');
-				});
-			},
-			execute: function () {
-				Notify.progress('Saving data...', true);
+					xhrPost("backend.php", this.attr('value'), () => {
+						window.location.reload();
+					});
+				},
+				content: `
+					<div class='alert alert-info'>
+						${__("You can override colors, fonts and layout of your currently selected theme with custom CSS declarations here.")}
+					</div>
 
-				xhrPost("backend.php", this.attr('value'), () => {
-					window.location.reload();
-				});
+					${App.FormFields.hidden('op', 'rpc')}
+					${App.FormFields.hidden('method', 'setpref')}
+					${App.FormFields.hidden('key', 'USER_STYLESHEET')}
 
-			},
-			href: query
+					<div id='css_edit_apply_msg' style='display : none'>
+						<div class='alert alert-warning'>
+							${__("User CSS has been applied, you might need to reload the page to see all changes.")}
+						</div>
+					</div>
+
+					<textarea class='panel user-css-editor' dojoType='dijit.form.SimpleTextarea'
+						style='font-size : 12px;' name='value'>${reply.value}</textarea>
+
+					<footer>
+						<button dojoType='dijit.form.Button' class='alt-success' onclick="App.dialogOf(this).apply()">
+							${__('Apply')}
+						</button>
+						<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>
+							${__('Save and reload')}
+						</button>
+						<button dojoType='dijit.form.Button' onclick="App.dialogOf(this).hide()">
+							${__('Cancel')}
+						</button>
+					</footer>
+				`
+			});
+
+			dialog.show();
+
 		});
-
-		dialog.show();
 	},
 	confirmReset: function() {
 		if (confirm(__("Reset to defaults?"))) {
@@ -228,7 +252,6 @@ const	Helpers = {
 
 					const dialog = new dijit.Dialog({
 						title: __("OPML Import"),
-						style: "width: 600px",
 						onCancel: function () {
 							window.location.reload();
 						},

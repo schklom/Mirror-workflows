@@ -130,7 +130,6 @@ const	Filters = {
 		const rule_dlg = new dijit.Dialog({
 			id: "filterNewRuleDlg",
 			title: ruleStr ? __("Edit rule") : __("Add rule"),
-			style: "width: 600px",
 			execute: function () {
 				if (this.validate()) {
 					Filters.createNewRuleElement($("filterDlg_Matches"), replaceNode);
@@ -160,7 +159,6 @@ const	Filters = {
 		const rule_dlg = new dijit.Dialog({
 			id: "filterNewActionDlg",
 			title: actionStr ? __("Edit action") : __("Add action"),
-			style: "width: 600px",
 			execute: function () {
 				if (this.validate()) {
 					Filters.createNewActionElement($("filterDlg_Actions"), replaceNode);
@@ -180,7 +178,6 @@ const	Filters = {
 		const test_dlg = new dijit.Dialog({
 			id: "filterTestDlg",
 			title: "Test Filter",
-			style: "width: 600px",
 			results: 0,
 			limit: 100,
 			max_offset: 10000,
@@ -283,7 +280,6 @@ const	Filters = {
 		const dialog = new dijit.Dialog({
 			id: "filterEditDlg",
 			title: __("Create Filter"),
-			style: "width: 600px",
 			test: function () {
 				Filters.editFilterTest(dojo.formToObject("filter_new_form"));
 			},

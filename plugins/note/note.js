@@ -8,7 +8,6 @@ Plugins.Note = {
 		const dialog = new dijit.Dialog({
 			id: "editNoteDlg",
 			title: __("Edit article note"),
-			style: "width: 600px",
 			execute: function () {
 				if (this.validate()) {
 					Notify.progress("Saving article note...", true);

@@ -1697,6 +1697,9 @@ body.ttrss_utility fieldset > label.checkbox {
   border-width: 1px;
   color: #ccc;
 }
+.flat .dijitDialog {
+  width: 600px;
+}
 @font-face {
   font-family: 'Material Icons';
   font-style: normal;

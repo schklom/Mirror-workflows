@@ -123,13 +123,13 @@ class Share extends Plugin {
 
 		print "<footer class='text-center'>";
 
-		print "<button dojoType='dijit.form.Button' onclick=\"return dijit.byId('shareArticleDlg').unshare()\">".
+		print "<button dojoType='dijit.form.Button' onclick=\"return App.dialogOf(this).unshare()\">".
 			__('Unshare article')."</button>";
 
-		print "<button dojoType='dijit.form.Button' onclick=\"return dijit.byId('shareArticleDlg').newurl()\">".
+		print "<button dojoType='dijit.form.Button' onclick=\"return App.dialogOf(this).newurl()\">".
 			__('Generate new URL')."</button>";
 
-		print "<button dojoType='dijit.form.Button' onclick=\"return dijit.byId('shareArticleDlg').hide()\">".
+		print "<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>".
 			__('Close this window')."</button>";
 
 		print "</footer>";

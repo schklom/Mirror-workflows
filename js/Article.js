@@ -258,7 +258,6 @@ const Article = {
 			const dialog = new dijit.Dialog({
 				id: "editTagsDlg",
 				title: __("Edit article Tags"),
-				style: "width: 600px",
 				content: transport.responseText,
 				execute: function () {
 					if (this.validate()) {

@@ -36,7 +36,6 @@ const	Users = {
 		const dialog = new dijit.Dialog({
 			id: "userEditDlg",
 			title: __("User Editor"),
-			style: "width: 600px",
 			execute: function () {
 				if (this.validate()) {
 					Notify.progress("Saving data...", true);

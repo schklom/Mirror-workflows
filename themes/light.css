@@ -1794,6 +1794,9 @@ body.ttrss_utility.share_popup .content {
   border-width: 1px;
   color: #555;
 }
+.flat .dijitDialog {
+  width: 600px;
+}
 @font-face {
   font-family: 'Material Icons';
   font-style: normal;

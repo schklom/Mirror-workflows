@@ -87,7 +87,6 @@ const	CommonDialogs = {
 						const dialog = new dijit.Dialog({
 							id: "feedAddDlg",
 							title: __("Subscribe to Feed"),
-							style: "width: 600px",
 							content: transport.responseText,
 							show_error: function (msg) {
 								const elem = $("fadd_error_message");
@@ -199,7 +198,6 @@ const	CommonDialogs = {
 			const dialog = new dijit.Dialog({
 				id: "errorFeedsDlg",
 				title: __("Feeds with update errors"),
-				style: "width: 600px",
 				getSelectedFeeds: function () {
 					return Tables.getSelected("error-feeds-list");
 				},
@@ -309,7 +307,6 @@ const	CommonDialogs = {
 			const dialog = new dijit.Dialog({
 				id: "feedEditDlg",
 				title: __("Edit Feed"),
-				style: "width: 600px",
 				execute: function () {
 					if (this.validate()) {
 						Notify.progress("Saving data...", true);
@@ -372,7 +369,6 @@ const	CommonDialogs = {
 					const dialog = new dijit.Dialog({
 						title: __("Public OPML URL"),
 						id: 'publicOPMLDlg',
-						style: "width: 600px",
 						onCancel: function () {
 							return true;
 						},
@@ -425,7 +421,6 @@ const	CommonDialogs = {
 					const dialog = new dijit.Dialog({
 						title: __("Show as feed"),
 						id: 'genFeedDlg',
-						style: "width: 600px",
 						onCancel: function () {
 							return true;
 						},

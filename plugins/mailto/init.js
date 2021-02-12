@@ -19,7 +19,6 @@ Plugins.Mailto = {
 		const dialog = new dijit.Dialog({
 			id: "emailArticleDlg",
 			title: __("Forward article by email"),
-			style: "width: 600px",
 			href: query});
 
 		dialog.show();

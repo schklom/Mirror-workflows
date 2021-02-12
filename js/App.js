@@ -321,40 +321,6 @@ const App = {
          dialog.show();
       });
    },
-	displayDlg: function(title, id, param, callback) {
-		Notify.progress("Loading, please wait...", true);
-
-		const query = {op: "dlg", method: id, param: param};
-
-		xhrPost("backend.php", query, (transport) => {
-			try {
-				const content = transport.responseText;
-
-				let dialog = dijit.byId("infoBox");
-
-				if (!dialog) {
-					dialog = new fox.SingleUseDialog({
-						title: title,
-						id: 'infoBox',
-						content: content
-					});
-				} else {
-					dialog.attr('title', title);
-					dialog.attr('content', content);
-				}
-
-				dialog.show();
-
-				Notify.close();
-
-				if (callback) callback(transport);
-			} catch (e) {
-				this.Error.report(e);
-			}
-		});
-
-		return false;
-	},
 	handleRpcJson: function(transport) {
 
 		const netalert = $$("#toolbar .net-alert")[0];
@@ -1082,9 +1048,6 @@ const App = {
          this.hotkey_actions["goto_published"] = () => {
             Feeds.open({feed: -2});
          };
-         this.hotkey_actions["goto_tagcloud"] = () => {
-            this.displayDlg(__("Tag cloud"), "printTagCloud");
-         };
          this.hotkey_actions["goto_prefs"] = () => {
             App.openPreferences();
          };
@@ -1161,9 +1124,6 @@ const App = {
             break;
          case "qmcLogout":
             App.postCurrentWindow("public.php", {op: "logout", csrf_token: __csrf_token});
-            break;
-         case "qmcTagCloud":
-            this.displayDlg(__("Tag cloud"), "printTagCloud");
             break;
          case "qmcSearch":
             Feeds.search();

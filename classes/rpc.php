@@ -638,7 +638,6 @@ class RPC extends Handler_Protected {
 				"goto_marked" => __("Starred"),
 				"goto_published" => __("Published"),
 				"goto_read" => __("Recently read"),
-				"goto_tagcloud" => __("Tag cloud"),
 				"goto_prefs" => __("Preferences")),
 			__("Other") => array(
 				"create_label" => __("Create label"),
@@ -711,7 +710,6 @@ class RPC extends Handler_Protected {
 			"g s" => "goto_marked",
 			"g p" => "goto_published",
 			"g r" => "goto_read",
-			"g t" => "goto_tagcloud",
 			"g P" => "goto_prefs",
 			"r" => "select_article_cursor",
 			"c l" => "create_label",

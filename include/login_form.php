@@ -177,13 +177,7 @@
 
 			<fieldset class="align-right">
 				<label> </label>
-
 				<button dojoType="dijit.form.Button" type="submit" class="alt-primary"><?php echo __('Log in') ?></button>
-
-				<?php if (defined('ENABLE_REGISTRATION') && ENABLE_REGISTRATION) { ?>
-					<button onclick="return UtilityApp.gotoRegForm()" dojoType="dijit.form.Button">
-						<?php echo __("Create new account") ?></button>
-				<?php } ?>
 			</fieldset>
 
 		</form>

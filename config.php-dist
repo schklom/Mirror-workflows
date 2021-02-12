@@ -89,23 +89,6 @@
 	// intervals is disabled and all articles (which are not starred)
 	// older than this amount of days are purged.
 
-	// ***********************************
-	// *** Self-registrations by users ***
-	// ***********************************
-
-	define('ENABLE_REGISTRATION', false);
-	// Allow users to register themselves. Please be aware that allowing
-	// random people to access your tt-rss installation is a security risk
-	// and potentially might lead to data loss or server exploit. Disabled
-	// by default.
-
-	define('REG_NOTIFY_ADDRESS', 'user@your.domain.dom');
-	// Email address to send new user notifications to.
-
-	define('REG_MAX_USERS', 10);
-	// Maximum amount of users which will be allowed to register on this
-	// system. 0 - no limit.
-
 	// **********************************
 	// *** Cookies and login sessions ***
 	// **********************************

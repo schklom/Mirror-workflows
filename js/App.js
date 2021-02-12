@@ -54,8 +54,12 @@ const App = {
 				elem.offsetTop >= ctr.scrollTop;
 		}
    },
-   dialogOf: function (widget) {
-      return dijit.getEnclosingWidget(widget.domNode.closest('.dijitDialog'));
+   dialogOf: function (elem) {
+
+      // elem could be a Dijit widget
+      elem = elem.domNode ? elem.domNode : elem;
+
+      return dijit.getEnclosingWidget(elem.closest('.dijitDialog'));
    },
    label_to_feed_id: function(label) {
       return this.LABEL_BASE_INDEX - 1 - Math.abs(label);

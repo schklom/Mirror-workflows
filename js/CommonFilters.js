@@ -332,7 +332,7 @@ const	Filters = {
 				/* global getSelectionText */
 				const selectedText = getSelectionText();
 
-				const lh = dojo.connect(dialog, "onLoad", function () {
+				const lh = dojo.connect(dialog, "onShow", function () {
 					dojo.disconnect(lh);
 
 					if (selectedText != "") {

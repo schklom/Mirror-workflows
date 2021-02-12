@@ -1,8 +1,4 @@
 <?php
-	if (file_exists("install") && !file_exists("config.php")) {
-		header("Location: install/");
-	}
-
 	set_include_path(dirname(__FILE__) ."/include" . PATH_SEPARATOR .
 		get_include_path());
 

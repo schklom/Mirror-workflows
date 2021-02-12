@@ -8,7 +8,7 @@ class Pref_Prefs extends Handler_Protected {
 	private $profile_blacklist = [];
 
 	function csrf_ignore($method) {
-		$csrf_ignored = array("index", "updateself", "customizecss", "editprefprofiles", "otpqrcode");
+		$csrf_ignored = array("index", "updateself", "editprefprofiles", "otpqrcode");
 
 		return array_search($method, $csrf_ignored) !== false;
 	}

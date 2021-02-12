@@ -359,7 +359,15 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 						});
 					}
 				},
-				href: "backend.php?" + dojo.objectToQuery({op: 'pref-feeds', method: 'batchSubscribe'})
+				content: __("Loading, please wait...")
+			});
+
+			const tmph = dojo.connect(dialog, 'onShow', function () {
+				dojo.disconnect(tmph);
+
+				xhrPost("backend.php", {op: 'pref-feeds', method: 'batchSubscribe'}, (transport) => {
+					dialog.attr('content', transport.responseText);
+				})
 			});
 
 			dialog.show();

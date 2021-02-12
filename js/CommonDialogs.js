@@ -1,6 +1,6 @@
 'use strict'
 
-/* global __, ngettext, dojo, dijit, Notify, App, Feeds, $$, xhrPost, xhrJson, Tables, Effect, fox */
+/* global __, dojo, dijit, Notify, App, Feeds, $$, xhrPost, xhrJson, Tables, Effect, fox */
 
 /* exported CommonDialogs */
 const	CommonDialogs = {
@@ -264,8 +264,6 @@ const	CommonDialogs = {
 				const query = {op: "pref-feeds", quiet: 1, method: "remove", ids: feed_id};
 
 				xhrPost("backend.php", query, () => {
-					if (dijit.byId("feedEditDlg")) dijit.byId("feedEditDlg").hide();
-
 					if (App.isPrefs()) {
 						dijit.byId("feedTree").reload();
 					} else {
@@ -293,6 +291,12 @@ const	CommonDialogs = {
 			const dialog = new fox.SingleUseDialog({
 				id: "feedEditDlg",
 				title: __("Edit Feed"),
+				unsubscribeFeed: function(feed_id, title) {
+					if (confirm(__("Unsubscribe from %s?").replace("%s", title))) {
+						dialog.hide();
+						CommonDialogs.unsubscribeFeed(feed_id);
+               }
+				},
 				execute: function () {
 					if (this.validate()) {
 						Notify.progress("Saving data...", true);
@@ -351,16 +355,6 @@ const	CommonDialogs = {
 				try {
 					const dialog = new fox.SingleUseDialog({
 						title: __("Public OPML URL"),
-						id: 'publicOPMLDlg',
-						onCancel: function () {
-							return true;
-						},
-						onExecute: function () {
-							return true;
-						},
-						onClose: function () {
-							return true;
-						},
 						content: `
 							<header>${__("Your Public OPML URL is:")}</header>
 							<section>
@@ -399,16 +393,6 @@ const	CommonDialogs = {
 
 					const dialog = new fox.SingleUseDialog({
 						title: __("Show as feed"),
-						id: 'genFeedDlg',
-						onCancel: function () {
-							return true;
-						},
-						onExecute: function () {
-							return true;
-						},
-						onClose: function () {
-							return true;
-						},
 						content: `
 							<header>${__("%s can be accessed via the following secret URL:").replace("%s", feed_title)}</header>
 							<section>

@@ -99,12 +99,12 @@ const App = {
 			});
 
 			if (callback) {
-						link.onload = function () {
+						link.onload = function() {
 							document.querySelector("body").removeClassName("css_loading");
 							callback();
 						};
 
-						link.onerror = function(event) {
+						link.onerror = function() {
 							alert("Fatal error while loading application stylesheet: " + link.getAttribute("href"));
 						}
 					}
@@ -336,15 +336,6 @@ const App = {
 					dialog = new fox.SingleUseDialog({
 						title: title,
 						id: 'infoBox',
-						onCancel: function () {
-							return true;
-						},
-						onExecute: function () {
-							return true;
-						},
-						onClose: function () {
-							return true;
-						},
 						content: content
 					});
 				} else {
@@ -471,8 +462,6 @@ const App = {
 	},
 	backendSanityCallback: function(transport) {
 		const reply = JSON.parse(transport.responseText);
-
-		/* global ERRORS */
 
 		if (!reply) {
 			this.Error.fatal(ERRORS[3], {info: transport.responseText});
@@ -677,8 +666,8 @@ const App = {
    },
    initSecondStage: function() {
 
-      document.onkeydown = (event) => { return this.hotkeyHandler(event) };
-      document.onkeypress = (event) => { return this.hotkeyHandler(event) };
+      document.onkeydown = (event) => this.hotkeyHandler(event);
+      document.onkeypress = (event) => this.hotkeyHandler(event);
 
       if (this.is_prefs) {
 

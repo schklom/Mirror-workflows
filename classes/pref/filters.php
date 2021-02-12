@@ -2,8 +2,7 @@
 class Pref_Filters extends Handler_Protected {
 
 	function csrf_ignore($method) {
-		$csrf_ignored = array("index", "getfiltertree", "newrule",
-			"newaction", "savefilterorder");
+		$csrf_ignored = array("index", "getfiltertree", "savefilterorder");
 
 		return array_search($method, $csrf_ignored) !== false;
 	}
@@ -857,10 +856,10 @@ class Pref_Filters extends Handler_Protected {
 		print "<button dojoType='dijit.form.Button' style='float : left' class='alt-info' onclick='window.open(\"https://tt-rss.org/wiki/ContentFilters\")'>
 			<i class='material-icons'>help</i> ".__("More info...")."</button>";
 
-		print "<button dojoType='dijit.form.Button' class='alt-primary' type='submit' onclick=\"return dijit.byId('filterNewRuleDlg').execute()\">".
+		print "<button dojoType='dijit.form.Button' class='alt-primary' type='submit' onclick='App.dialogOf(this).execute()'>".
 			($rule ? __("Save rule") : __('Add rule'))."</button> ";
 
-		print "<button dojoType='dijit.form.Button' onclick=\"return dijit.byId('filterNewRuleDlg').hide()\">".
+		print "<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
 			__('Cancel')."</button>";
 
 		print "</footer>";
@@ -950,10 +949,10 @@ class Pref_Filters extends Handler_Protected {
 
 		print "<footer>";
 
-		print "<button dojoType='dijit.form.Button' class='alt-primary' type='submit' onclick=\"return dijit.byId('filterNewActionDlg').execute()\">".
+		print "<button dojoType='dijit.form.Button' class='alt-primary' type='submit' onclick='App.dialogOf(this).execute()'>".
 			($action ? __("Save action") : __('Add action'))."</button> ";
 
-		print "<button dojoType='dijit.form.Button' onclick=\"return dijit.byId('filterNewActionDlg').hide()\">".
+		print "<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
 			__('Cancel')."</button>";
 
 		print "</footer>";

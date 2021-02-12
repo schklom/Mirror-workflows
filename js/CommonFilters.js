@@ -90,10 +90,7 @@ const	Filters = {
 		});
 	},
 	addFilterRule: function(replaceNode, ruleStr) {
-		if (dijit.byId("filterNewRuleDlg"))
-			dijit.byId("filterNewRuleDlg").destroyRecursive();
-
-		const rule_dlg = new dijit.Dialog({
+		const dialog = new fox.SingleUseDialog({
 			id: "filterNewRuleDlg",
 			title: ruleStr ? __("Edit rule") : __("Add rule"),
 			execute: function () {
@@ -105,41 +102,40 @@ const	Filters = {
 			content: __('Loading, please wait...'),
 		});
 
-		const tmph = dojo.connect(rule_dlg, "onShow", null, function (/* e */) {
+		const tmph = dojo.connect(dialog, "onShow", null, function (/* e */) {
 			dojo.disconnect(tmph);
 
 			xhrPost("backend.php", {op: 'pref-filters', method: 'newrule', rule: ruleStr}, (transport) => {
-				rule_dlg.attr('content', transport.responseText);
+				dialog.attr('content', transport.responseText);
 			});
 		});
 
-		rule_dlg.show();
+		dialog.show();
 	},
 	addFilterAction: function(replaceNode, actionStr) {
-		if (dijit.byId("filterNewActionDlg"))
-			dijit.byId("filterNewActionDlg").destroyRecursive();
-
-		const query = "backend.php?op=pref-filters&method=newaction&action=" +
-			encodeURIComponent(actionStr);
-
-		const rule_dlg = new dijit.Dialog({
-			id: "filterNewActionDlg",
+		const dialog = new fox.SingleUseDialog({
 			title: actionStr ? __("Edit action") : __("Add action"),
 			execute: function () {
 				if (this.validate()) {
 					Filters.createNewActionElement($("filterDlg_Actions"), replaceNode);
 					this.hide();
 				}
-			},
-			href: query
+			}
 		});
 
-		rule_dlg.show();
+		const tmph = dojo.connect(dialog, "onShow", null, function (/* e */) {
+			dojo.disconnect(tmph);
+
+			xhrPost("backend.php", {op: 'pref-filters', method: 'newaction', action: actionStr}, (transport) => {
+				dialog.attr('content', transport.responseText);
+			});
+		});
+
+		dialog.show();
 	},
 	test: function(params) {
 
-		const test_dlg = new fox.SingleUseDialog({
-			id: "filterTestDlg",
+		const dialog = new fox.SingleUseDialog({
 			title: "Test Filter",
 			results: 0,
 			limit: 100,
@@ -147,7 +143,7 @@ const	Filters = {
 			getTestResults: function (params, offset) {
 				params.method = 'testFilterDo';
 				params.offset = offset;
-				params.limit = test_dlg.limit;
+				params.limit = dialog.limit;
 
 				console.log("getTestResults:" + offset);
 
@@ -155,16 +151,16 @@ const	Filters = {
 					try {
 						const result = JSON.parse(transport.responseText);
 
-						if (result && dijit.byId("filterTestDlg") && dijit.byId("filterTestDlg").open) {
-							test_dlg.results += result.length;
+						if (result && dialog && dialog.open) {
+							dialog.results += result.length;
 
 							console.log("got results:" + result.length);
 
 							$("prefFilterProgressMsg").innerHTML = __("Looking for articles (%d processed, %f found)...")
-								.replace("%f", test_dlg.results)
+								.replace("%f", dialog.results)
 								.replace("%d", offset);
 
-							console.log(offset + " " + test_dlg.max_offset);
+							console.log(offset + " " + dialog.max_offset);
 
 							for (let i = 0; i < result.length; i++) {
 								const tmp = dojo.create("table", { innerHTML: result[i]});
@@ -172,11 +168,11 @@ const	Filters = {
 								$("prefFilterTestResultList").innerHTML += tmp.innerHTML;
 							}
 
-							if (test_dlg.results < 30 && offset < test_dlg.max_offset) {
+							if (dialog.results < 30 && offset < dialog.max_offset) {
 
 								// get the next batch
 								window.setTimeout(function () {
-									test_dlg.getTestResults(params, offset + test_dlg.limit);
+									dialog.getTestResults(params, offset + dialog.limit);
 								}, 0);
 
 							} else {
@@ -184,31 +180,27 @@ const	Filters = {
 
 								Element.hide("prefFilterLoadingIndicator");
 
-								if (test_dlg.results == 0) {
+								if (dialog.results == 0) {
 									$("prefFilterTestResultList").innerHTML = `<tr><td align='center'>
 										${__('No recent articles matching this filter have been found.')}</td></tr>`;
 									$("prefFilterProgressMsg").innerHTML = "Articles matching this filter:";
 								} else {
 									$("prefFilterProgressMsg").innerHTML = __("Found %d articles matching this filter:")
-										.replace("%d", test_dlg.results);
+										.replace("%d", dialog.results);
 								}
 
 							}
 
 						} else if (!result) {
 							console.log("getTestResults: can't parse results object");
-
 							Element.hide("prefFilterLoadingIndicator");
-
 							Notify.error("Error while trying to get filter test results.");
-
 						} else {
 							console.log("getTestResults: dialog closed, bailing out.");
 						}
 					} catch (e) {
 						App.Error.report(e);
 					}
-
 				});
 			},
 			content: `
@@ -225,11 +217,11 @@ const	Filters = {
 			`
 		});
 
-		dojo.connect(test_dlg, "onShow", null, function (/* e */) {
-			test_dlg.getTestResults(params, 0);
+		dojo.connect(dialog, "onShow", null, function (/* e */) {
+			dialog.getTestResults(params, 0);
 		});
 
-		test_dlg.show();
+		dialog.show();
 	},
 	edit: function(id) { // if no id, new filter dialog
 		let query;

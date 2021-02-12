@@ -730,9 +730,9 @@ class Feeds extends Handler_Protected {
 
 		print "<footer>";
 		print "<button dojoType='dijit.form.Button' class='alt-primary' type='submit'
-				onclick=\"return dijit.byId('feedAddDlg').execute()\">".__('Subscribe')."</button>";
+				onclick=\"App.dialogOf(this).execute()\">".__('Subscribe')."</button>";
 
-		print "<button dojoType='dijit.form.Button' onclick=\"return dijit.byId('feedAddDlg').hide()\">".__('Cancel')."</button>";
+		print "<button dojoType='dijit.form.Button' onclick=\"App.dialogOf(this).hide()\">".__('Cancel')."</button>";
 		print "</footer>";
 
 		print "</form>";
@@ -744,7 +744,7 @@ class Feeds extends Handler_Protected {
 		$active_feed_id = sprintf("%d", $this->params[0]);
 		$is_cat = $this->params[1] != "false";
 
-		print "<form onsubmit='return false;'>";
+		print "<form onsubmit='return false'>";
 
 		print "<section>";
 
@@ -772,8 +772,9 @@ class Feeds extends Handler_Protected {
 				<i class='material-icons'>help</i> ".__("Search syntax")."</button>";
 		}
 
-		print "<button dojoType='dijit.form.Button' type='submit' class='alt-primary' onclick=\"dijit.byId('searchDlg').execute()\">".__('Search')."</button>
-			<button dojoType='dijit.form.Button' onclick=\"dijit.byId('searchDlg').hide()\">".__('Cancel')."</button>";
+		print "<button dojoType='dijit.form.Button' class='alt-primary'
+				type='submit' onclick='App.dialogOf(this).execute()'>".__('Search')."</button>
+			<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".__('Cancel')."</button>";
 
 		print "</footer>";
 

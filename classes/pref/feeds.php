@@ -809,8 +809,8 @@ class Pref_Feeds extends Handler_Protected {
 			print "<footer>
 				<button style='float : left' class='alt-danger' dojoType='dijit.form.Button' onclick='return CommonDialogs.unsubscribeFeed($feed_id, \"$title\")'>".
 					__('Unsubscribe')."</button>
-				<button dojoType='dijit.form.Button' class='alt-primary' onclick=\"return dijit.byId('feedEditDlg').execute()\">".__('Save')."</button>
-				<button dojoType='dijit.form.Button' onclick=\"return dijit.byId('feedEditDlg').hide()\">".__('Cancel')."</button>
+				<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>".__('Save')."</button>
+				<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".__('Cancel')."</button>
 				</footer>";
 		}
 	}
@@ -972,11 +972,10 @@ class Pref_Feeds extends Handler_Protected {
 		print "</section>";
 
 		print "<footer>
-			<button dojoType='dijit.form.Button' type='submit' class='alt-primary'
-				onclick=\"return dijit.byId('feedEditDlg').execute()\">".
+			<button dojoType='dijit.form.Button' type='submit' class='alt-primary' type='submit'>".
 				__('Save')."</button>
 			<button dojoType='dijit.form.Button'
-			onclick=\"return dijit.byId('feedEditDlg').hide()\">".
+			onclick=\"App.dialogOf(this).hide()\">".
 				__('Cancel')."</button>
 			</footer>";
 

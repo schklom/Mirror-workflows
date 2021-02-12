@@ -594,13 +594,12 @@ const	Feeds = {
 			return tree.model.store.getValue(nuf, 'bare_id');
 	},
 	search: function() {
-		if (dijit.byId("searchDlg"))
-			dijit.byId("searchDlg").destroyRecursive();
-
 		xhrPost("backend.php",
 					{op: "feeds", method: "search",
 						param: Feeds.getActive() + ":" + Feeds.activeIsCat()},
 					(transport) => {
+						if (dijit.byId("searchDlg"))
+							dijit.byId("searchDlg").destroyRecursive();
 
 						const dialog = new dijit.Dialog({
 							id: "searchDlg",

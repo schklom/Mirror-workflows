@@ -184,7 +184,7 @@ class Article extends Handler_Protected {
 		print "<button dojoType='dijit.form.Button'
 			type='submit' class='alt-primary'>".__('Save')."</button> ";
 		print "<button dojoType='dijit.form.Button'
-			onclick=\"dijit.byId('editTagsDlg').hide()\">".__('Cancel')."</button>";
+			onclick='App.dialogOf(this).hide()'>".__('Cancel')."</button>";
 		print "</footer>";
 
 	}

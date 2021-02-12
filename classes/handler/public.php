@@ -44,7 +44,7 @@ class Handler_Public extends Handler {
 
 			$tmppluginhost = new PluginHost();
 			$tmppluginhost->load(PLUGINS, PluginHost::KIND_ALL);
-			$tmppluginhost->load($user_plugins, PluginHost::KIND_USER, $owner_uid);
+			$tmppluginhost->load((string)$user_plugins, PluginHost::KIND_USER, $owner_uid);
 			//$tmppluginhost->load_data();
 
 			$handler = $tmppluginhost->get_feed_handler(

@@ -276,7 +276,7 @@ class RSSUtils {
 			$user_plugins = get_pref("_ENABLED_PLUGINS", $owner_uid);
 
 			$pluginhost->load(PLUGINS, PluginHost::KIND_ALL);
-			$pluginhost->load($user_plugins, PluginHost::KIND_USER, $owner_uid);
+			$pluginhost->load((string)$user_plugins, PluginHost::KIND_USER, $owner_uid);
 			//$pluginhost->load_data();
 
 			$basic_info = [];
@@ -401,7 +401,7 @@ class RSSUtils {
 		$user_plugins = get_pref("_ENABLED_PLUGINS", $owner_uid);
 
 		$pluginhost->load(PLUGINS, PluginHost::KIND_ALL);
-		$pluginhost->load($user_plugins, PluginHost::KIND_USER, $owner_uid);
+		$pluginhost->load((string)$user_plugins, PluginHost::KIND_USER, $owner_uid);
 		//$pluginhost->load_data();
 
 		$rss_hash = false;

@@ -181,11 +181,19 @@ function print_feed_multi_select($id, $default_ids = [],
 	}
 }
 
-function print_feed_cat_select($id, $default_id,
-							   $attributes, $include_all_cats = true, $root_id = null, $nest_level = 0) {
+function print_feed_cat_select($id, $default_id, $attributes, $include_all_cats = true,
+	$root_id = null, $nest_level = 0) {
+
+	print format_feed_cat_select($id, $default_id, $attributes, $include_all_cats, $root_id, $nest_level);
+}
+
+function format_feed_cat_select($id, $default_id, $attributes, $include_all_cats = true,
+	$root_id = null, $nest_level = 0) {
+
+	$ret = "";
 
 	if (!$root_id) {
-		print "<select id=\"$id\" name=\"$id\" default=\"$default_id\" $attributes>";
+		$ret .= "<select id=\"$id\" name=\"$id\" default=\"$default_id\" $attributes>";
 	}
 
 	$pdo = Db::pdo();
@@ -215,18 +223,18 @@ function print_feed_cat_select($id, $default_id,
 			$line["title"] = " " . $line["title"];
 
 		if ($line["title"])
-			printf("<option $is_selected value='%d'>%s</option>",
+			$ret .= sprintf("<option $is_selected value='%d'>%s</option>",
 				$line["id"], htmlspecialchars($line["title"]));
 
 		if ($line["num_children"] > 0)
-			print_feed_cat_select($id, $default_id, $attributes,
+			$ret .= format_feed_cat_select($id, $default_id, $attributes,
 				$include_all_cats, $line["id"], $nest_level+1);
 	}
 
 	if (!$root_id) {
 		if ($include_all_cats) {
 			if ($found > 0) {
-				print "<option disabled=\"1\">―――――――――――――――</option>";
+				$ret .= "<option disabled=\"1\">―――――――――――――――</option>";
 			}
 
 			if ($default_id == 0) {
@@ -235,10 +243,12 @@ function print_feed_cat_select($id, $default_id,
 				$is_selected = "";
 			}
 
-			print "<option $is_selected value=\"0\">".__('Uncategorized')."</option>";
+			$ret .= "<option $is_selected value=\"0\">".__('Uncategorized')."</option>";
 		}
-		print "</select>";
+		$ret .= "</select>";
 	}
+
+	return $ret;
 }
 
 function stylesheet_tag($filename, $id = false) {

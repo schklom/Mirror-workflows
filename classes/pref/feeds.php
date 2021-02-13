@@ -1557,52 +1557,10 @@ class Pref_Feeds extends Handler_Protected {
 	}
 
 	function batchSubscribe() {
-		print "<form onsubmit='return false'>";
-
-		print_hidden("op", "pref-feeds");
-		print_hidden("method", "batchaddfeeds");
-
-		print "<header class='horizontal'>".__("One valid feed per line (no detection is done)")."</header>";
-		print "<section>";
-
-		print "<textarea
-			style='font-size : 12px; width : 98%; height: 200px;'
-			dojoType='fox.form.ValidationTextArea' required='1' name='feeds'></textarea>";
-
-		if (get_pref('ENABLE_FEED_CATS')) {
-			print "<fieldset>";
-			print "<label>" . __('Place in category:') . "</label> ";
-			print_feed_cat_select("cat", false, 'dojoType="fox.form.Select"');
-			print "</fieldset>";
-		}
-
-		print "</section>";
-
-		print "<div id='feedDlg_loginContainer' style='display : none'>";
-
-		print "<header>" . __("Authentication") . "</header>";
-		print "<section>";
-
-		print "<input dojoType='dijit.form.TextBox' name='login' placeHolder=\"".__("Login")."\">
-			<input placeHolder=\"".__("Password")."\" dojoType=\"dijit.form.TextBox\" type='password'
-				autocomplete='new-password' name='pass''></div>";
-
-		print "</section>";
-		print "</div>";
-
-		print "<fieldset class='narrow'>
-			<label class='checkbox'><input type='checkbox' name='need_auth' dojoType='dijit.form.CheckBox'
-					onclick='App.displayIfChecked(this, \"feedDlg_loginContainer\")'> ".
-				__('Feeds require authentication.')."</label></div>";
-		print "</fieldset>";
-
-		print "<footer>
-			<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).execute()' type='submit' class='alt-primary'>".
-				__('Subscribe')."</button>
-			<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".__('Cancel')."</button>
-			</footer>";
-
-		print "</form>";
+		print json_encode([
+			"enable_cats" => (int)get_pref('ENABLE_FEED_CATS'),
+			"cat_select" => format_feed_cat_select("cat", false, 'dojoType="fox.form.Select"')
+		]);
 	}
 
 	function batchAddFeeds() {

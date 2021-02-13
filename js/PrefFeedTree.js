@@ -378,35 +378,77 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 			}
 		},
 		batchSubscribe: function() {
-			const dialog = new fox.SingleUseDialog({
-				id: "batchSubDlg",
-				title: __("Batch subscribe"),
-				execute: function () {
-					if (this.validate()) {
-						Notify.progress(__("Subscribing to feeds..."), true);
+			xhrJson("backend.php", {op: 'pref-feeds', method: 'batchSubscribe'}, (reply) => {
+				const dialog = new fox.SingleUseDialog({
+					id: "batchSubDlg",
+					title: __("Batch subscribe"),
+					execute: function () {
+						if (this.validate()) {
+							Notify.progress(__("Subscribing to feeds..."), true);
 
-						xhrPost("backend.php", this.attr('value'), () => {
-							Notify.close();
+							xhrPost("backend.php", this.attr('value'), () => {
+								Notify.close();
 
-							const tree = dijit.byId("feedTree");
-							if (tree) tree.reload();
+								const tree = dijit.byId("feedTree");
+								if (tree) tree.reload();
 
-							dialog.hide();
-						});
-					}
-				},
-				content: __("Loading, please wait...")
+								dialog.hide();
+							});
+						}
+					},
+					content: `
+						<form onsubmit='return false'>
+							${App.FormFields.hidden("op", "pref-feeds")}
+							${App.FormFields.hidden("method", "batchaddfeeds")}
+
+							<header class='horizontal'>
+								${__("One valid feed per line (no detection is done)")}
+							</header>
+
+							<section>
+								<textarea style='font-size : 12px; width : 98%; height: 200px;'
+									dojoType='fox.form.ValidationTextArea' required='1' name='feeds'></textarea>
+
+								${reply.enable_cats ?
+									`<fieldset>
+											<label>${__('Place in category:')}</label>
+											${reply.cat_select}
+									</fieldset>
+									` : ''
+								}
+							</section>
+
+							<div id='feedDlg_loginContainer' style='display : none'>
+								<header>${__("Authentication")}</header>
+								<section>
+									<input dojoType='dijit.form.TextBox' name='login' placeHolder="${__("Login")}">
+									<input placeHolder="${__("Password")}" dojoType="dijit.form.TextBox" type='password'
+										autocomplete='new-password' name='pass'></div>
+								</section>
+							</div>
+
+							<fieldset class='narrow'>
+								<label class='checkbox'><input type='checkbox' name='need_auth' dojoType='dijit.form.CheckBox'
+										onclick='App.displayIfChecked(this, "feedDlg_loginContainer")'>
+									${__('Feeds require authentication.')}
+								</label>
+							</fieldset>
+
+							<footer>
+								<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).execute()' type='submit' class='alt-primary'>
+									${__('Subscribe')}
+								</button>
+								<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>
+									${__('Cancel')}
+								</button>
+							</footer>
+						</form>
+					`
+				});
+
+				dialog.show();
+
 			});
-
-			const tmph = dojo.connect(dialog, 'onShow', function () {
-				dojo.disconnect(tmph);
-
-				xhrPost("backend.php", {op: 'pref-feeds', method: 'batchSubscribe'}, (transport) => {
-					dialog.attr('content', transport.responseText);
-				})
-			});
-
-			dialog.show();
 		},
 		showInactiveFeeds: function() {
 			xhrJson("backend.php", {op: 'pref-feeds', method: 'inactivefeeds'}, function (reply) {

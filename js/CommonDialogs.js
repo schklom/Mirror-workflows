@@ -188,52 +188,91 @@ const	CommonDialogs = {
 					});
 		},
 		showFeedsWithErrors: function() {
-			const dialog = new fox.SingleUseDialog({
-				id: "errorFeedsDlg",
-				title: __("Feeds with update errors"),
-				getSelectedFeeds: function () {
-					return Tables.getSelected("error-feeds-list");
-				},
-				removeSelected: function () {
-					const sel_rows = this.getSelectedFeeds();
 
-					if (sel_rows.length > 0) {
-						if (confirm(__("Remove selected feeds?"))) {
-							Notify.progress("Removing selected feeds...", true);
+			xhrJson("backend.php", {op: "pref-feeds", method: "feedsWithErrors"}, (reply) => {
 
-							const query = {
-								op: "pref-feeds", method: "remove",
-								ids: sel_rows.toString()
-							};
+				const dialog = new fox.SingleUseDialog({
+					id: "errorFeedsDlg",
+					title: __("Feeds with update errors"),
+					getSelectedFeeds: function () {
+						return Tables.getSelected("error-feeds-list");
+					},
+					removeSelected: function () {
+						const sel_rows = this.getSelectedFeeds();
 
-							xhrPost("backend.php", query, () => {
-								Notify.close();
-								dialog.hide();
+						if (sel_rows.length > 0) {
+							if (confirm(__("Remove selected feeds?"))) {
+								Notify.progress("Removing selected feeds...", true);
 
-								if (App.isPrefs())
-									dijit.byId("feedTree").reload();
-								else
-									Feeds.reload();
+								const query = {
+									op: "pref-feeds", method: "remove",
+									ids: sel_rows.toString()
+								};
 
-							});
+								xhrPost("backend.php", query, () => {
+									Notify.close();
+									dialog.hide();
+
+									if (App.isPrefs())
+										dijit.byId("feedTree").reload();
+									else
+										Feeds.reload();
+
+								});
+							}
+
+						} else {
+							alert(__("No feeds selected."));
 						}
+					},
+					content: `
+						<div dojoType="fox.Toolbar">
+							<div dojoType="fox.form.DropDownButton">
+								<span>${__('Select')}</span>
+								<div dojoType="dijit.Menu" style="display: none">
+									<div onclick="Tables.select('error-feeds-list', true)"
+										dojoType="dijit.MenuItem">${__('All')}</div>
+									<div onclick="Tables.select('error-feeds-list', false)"
+										dojoType="dijit.MenuItem">${__('None')}</div>
+								</div>
+							</div>
+						</div>
 
-					} else {
-						alert(__("No feeds selected."));
-					}
-				},
-				content: __("Loading, please wait...")
-			});
+						<div class='panel panel-scrollable'>
+							<table width='100%' id='error-feeds-list'>
 
-			const tmph = dojo.connect(dialog, 'onShow', function () {
-				dojo.disconnect(tmph);
+							${reply.map((row) => `
+								<tr data-row-id='${row.id}'>
+									<td width='5%' align='center'>
+										<input onclick='Tables.onRowChecked(this)' dojoType="dijit.form.CheckBox"
+											type="checkbox">
+									</td>
+									<td>
+										<a href="#" title="${__("Click to edit feed")}" onclick="CommonDialogs.editFeed(${row.id})">
+											${App.escapeHtml(row.title)}
+										</a>
+									</td>
+									<td class='text-muted small' align='right' width='50%'>
+											${App.escapeHtml(row.last_error)}
+									</td>
+									</tr>
+							`).join("")}
+							</table>
+						</div>
 
-				xhrPost("backend.php", {op: "pref-feeds", method: "feedsWithErrors"}, (transport) => {
-					dialog.attr('content', transport.responseText);
-				})
-			});
+						<footer>
+							<button style='float : left' class='alt-danger' dojoType='dijit.form.Button' onclick='App.dialogOf(this).removeSelected()'>
+								${__('Unsubscribe from selected feeds')}
+							</button>
+							<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>
+								${__('Close this window')}
+							</button>
+						</footer>
+					`
+				});
 
-			dialog.show();
+				dialog.show();
+			})
 		},
 		addLabel: function(select, callback) {
 			const caption = prompt(__("Please enter label caption:"), "");

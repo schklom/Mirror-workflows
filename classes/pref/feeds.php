@@ -1500,58 +1500,13 @@ class Pref_Feeds extends Handler_Protected {
 			FROM ttrss_feeds WHERE last_error != '' AND owner_uid = ?");
 		$sth->execute([$_SESSION['uid']]);
 
-		print "<div dojoType=\"fox.Toolbar\">";
-		print "<div dojoType=\"fox.form.DropDownButton\">".
-				"<span>" . __('Select')."</span>";
-		print "<div dojoType=\"dijit.Menu\" style=\"display: none;\">";
-		print "<div onclick=\"Tables.select('error-feeds-list', true)\"
-			dojoType=\"dijit.MenuItem\">".__('All')."</div>";
-		print "<div onclick=\"Tables.select('error-feeds-list', false)\"
-			dojoType=\"dijit.MenuItem\">".__('None')."</div>";
-		print "</div></div>";
-		print "</div>"; #toolbar
+		$rv = [];
 
-		print "<div class='panel panel-scrollable'>";
-		print "<table width='100%' id='error-feeds-list'>";
-
-		$lnum = 1;
-
-		while ($line = $sth->fetch()) {
-
-			$feed_id = $line["id"];
-
-			print "<tr data-row-id='$feed_id'>";
-
-			print "<td width='5%' align='center'><input
-				onclick='Tables.onRowChecked(this);' dojoType=\"dijit.form.CheckBox\"
-				type=\"checkbox\"></td>";
-			print "<td>";
-
-			print "<a class=\"visibleLink\" href=\"#\" ".
-				"title=\"".__("Click to edit feed")."\" ".
-				"onclick=\"CommonDialogs.editFeed(".$line["id"].")\">".
-				htmlspecialchars($line["title"])."</a>: ";
-
-			print "<span class=\"text-muted\">";
-			print htmlspecialchars($line["last_error"]);
-			print "</span>";
-
-			print "</td>";
-			print "</tr>";
-
-			++$lnum;
+		while ($row = $sth->fetch()) {
+			array_push($rv, $row);
 		}
 
-		print "</table>";
-		print "</div>";
-
-		print "<footer>";
-		print "<button style='float : left' class='alt-danger' dojoType='dijit.form.Button' onclick='App.dialogOf(this).removeSelected()'>"
-			.__('Unsubscribe from selected feeds')."</button> ";
-		print "<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>".
-			__('Close this window')."</button>";
-
-		print "</footer>";
+		print json_encode($rv);
 	}
 
 	private function remove_feed_category($id, $owner_uid) {

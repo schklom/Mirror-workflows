@@ -146,7 +146,7 @@ class Pref_System extends Handler_Protected {
 							<td class='errstr'><?php echo  $line["errstr"] . "\n" .  $line["context"] ?></td>
 							<td class='login'><?php echo  $line["login"] ?></td>
 							<td class='timestamp'>
-								<?php TimeHelper::make_local_datetime($line["created_at"], false) ?>
+								<?php echo TimeHelper::make_local_datetime($line["created_at"], false) ?>
 							</td>
 						</tr>
 					<?php } ?>

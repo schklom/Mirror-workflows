@@ -31,7 +31,7 @@ class Pref_System extends Handler_Protected {
 		$info = ob_get_contents();
 		ob_end_clean();
 
-		print preg_replace( '%^.*<body>(.*)</body>.*$%ms','$1', $info);
+		print preg_replace( '%^.*<body>(.*)</body>.*$%ms','$1', (string)$info);
 	}
 
 	private function log_viewer(int $page, int $severity) {
@@ -71,87 +71,89 @@ class Pref_System extends Handler_Protected {
 			$total_pages = 0;
 		}
 
-		print "<div dojoType='dijit.layout.BorderContainer' gutters='false'>";
+		?>
+		<div dojoType='dijit.layout.BorderContainer' gutters='false'>
+			<div region='top' dojoType='fox.Toolbar'>
 
-		print "<div region='top' dojoType='fox.Toolbar'>";
+				<button dojoType='dijit.form.Button' onclick='Helpers.EventLog.refresh()'>
+					<?php echo __('Refresh') ?>
+				</button>
 
-		print "<button dojoType='dijit.form.Button'
-			onclick='Helpers.EventLog.refresh()'>".__('Refresh')."</button>";
+				<button dojoType='dijit.form.Button' <?php echo ($page <= 0 ? "disabled" : "") ?>
+					onclick='Helpers.EventLog.prevPage()'>
+					<?php echo __('&lt;&lt;') ?>
+				</button>
 
-		$prev_page_disabled = $page <= 0 ? "disabled" : "";
+				<button dojoType='dijit.form.Button' disabled>
+					<?php echo T_sprintf('Page %d of %d', $page+1, $total_pages+1) ?>
+				</button>
 
-		print "<button dojoType='dijit.form.Button' $prev_page_disabled
-			onclick='Helpers.EventLog.prevPage()'>".__('&lt;&lt;')."</button>";
+				<button dojoType='dijit.form.Button' <?php echo ($page >= $total_pages ? "disabled" : "") ?>
+					onclick='Helpers.EventLog.nextPage()'>
+					<?php echo __('&gt;&gt;') ?>
+				</button>
 
-		print "<button dojoType='dijit.form.Button' disabled>".T_sprintf('Page %d of %d', $page+1, $total_pages+1)."</button>";
+				<button dojoType='dijit.form.Button'
+					onclick='Helpers.EventLog.clear()'>
+					<?php echo __('Clear') ?>
+				</button>
 
-		$next_page_disabled = $page >= $total_pages ? "disabled" : "";
+				<div class='pull-right'>
+					<?php echo __("Severity:") ?>
 
-		print "<button dojoType='dijit.form.Button' $next_page_disabled
-			onclick='Helpers.EventLog.nextPage()'>".__('&gt;&gt;')."</button>";
+					<?php print_select_hash("severity", $severity,
+						[
+							E_USER_ERROR => __("Errors"),
+							E_USER_WARNING => __("Warnings"),
+							E_USER_NOTICE => __("Everything")
+						], 'dojoType="fox.form.Select" onchange="Helpers.EventLog.refresh()"') ?>
+				</div>
+			</div>
 
-		print "<button dojoType='dijit.form.Button'
-			onclick='Helpers.EventLog.clear()'>".__('Clear')."</button>";
+			<div style="padding : 0px" dojoType="dijit.layout.ContentPane" region="center">
 
-		print "<div class='pull-right'>";
+				<table width='100%' class='event-log'>
 
-		print __("Severity:") . " ";
-		print_select_hash("severity", $severity,
-			[
-				E_USER_ERROR => __("Errors"),
-				E_USER_WARNING => __("Warnings"),
-				E_USER_NOTICE => __("Everything")
-			], 'dojoType="fox.form.Select" onchange="Helpers.EventLog.refresh()"');
+					<tr class='title'>
+						<td width='5%'><?php echo __("Error") ?></td>
+						<td><?php echo __("Filename") ?></td>
+						<td><?php echo __("Message") ?></td>
+						<td width='5%'><?php echo __("User") ?></td>
+						<td width='5%'><?php echo __("Date") ?></td>
+					</tr>
 
-		print "</div>"; # pull-right
+					<?php
+					$sth = $this->pdo->prepare("SELECT
+							errno, errstr, filename, lineno, created_at, login, context
+						FROM
+							ttrss_error_log LEFT JOIN ttrss_users ON (owner_uid = ttrss_users.id)
+						WHERE
+							$errno_filter_qpart
+						ORDER BY
+							ttrss_error_log.id DESC
+						LIMIT $limit OFFSET $offset");
 
-		print "</div>"; # toolbar
+					$sth->execute($errno_values);
 
-		print '<div style="padding : 0px" dojoType="dijit.layout.ContentPane" region="center">';
-
-		print "<table width='100%' class='event-log'>";
-
-		print "<tr class='title'>
-			<td width='5%'>".__("Error")."</td>
-			<td>".__("Filename")."</td>
-			<td>".__("Message")."</td>
-			<td width='5%'>".__("User")."</td>
-			<td width='5%'>".__("Date")."</td>
-			</tr>";
-
-		$sth = $this->pdo->prepare("SELECT
-				errno, errstr, filename, lineno, created_at, login, context
-			FROM
-				ttrss_error_log LEFT JOIN ttrss_users ON (owner_uid = ttrss_users.id)
-			WHERE
-				$errno_filter_qpart
-			ORDER BY
-				ttrss_error_log.id DESC
-			LIMIT $limit OFFSET $offset");
-
-		$sth->execute($errno_values);
-
-		while ($line = $sth->fetch()) {
-			print "<tr>";
-
-			foreach ($line as $k => $v) {
-				$line[$k] = htmlspecialchars($v);
-			}
-
-			print "<td class='errno'>" . Logger::$errornames[$line["errno"]] . " (" . $line["errno"] . ")</td>";
-			print "<td class='filename'>" . $line["filename"] . ":" . $line["lineno"] . "</td>";
-			print "<td class='errstr'>" . $line["errstr"] . "\n" .  $line["context"] . "</td>";
-			print "<td class='login'>" . $line["login"] . "</td>";
-
-			print "<td class='timestamp'>" .
-				TimeHelper::make_local_datetime($line["created_at"], false) . "</td>";
-
-			print "</tr>";
-		}
-
-		print "</table>";
-		print "</div>";
-		print "</div>";
+					while ($line = $sth->fetch()) {
+						foreach ($line as $k => $v) { $line[$k] = htmlspecialchars($v); }
+						?>
+						<tr>
+							<td class='errno'>
+								<?php echo Logger::$errornames[$line["errno"]] . " (" . $line["errno"] . ")" ?>
+							</td>
+							<td class='filename'><?php echo  $line["filename"] . ":" . $line["lineno"] ?></td>
+							<td class='errstr'><?php echo  $line["errstr"] . "\n" .  $line["context"] ?></td>
+							<td class='login'><?php echo  $line["login"] ?></td>
+							<td class='timestamp'>
+								<?php TimeHelper::make_local_datetime($line["created_at"], false) ?>
+							</td>
+						</tr>
+					<?php } ?>
+				</table>
+			</div>
+		</div>
+		<?php
 	}
 
 	function index() {

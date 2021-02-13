@@ -139,7 +139,7 @@ class Pref_Labels extends Handler_Protected {
 
 					$sth->execute([$caption, $old_caption, $_SESSION['uid']]);
 
-					print clean($_REQUEST["value"]);
+					print clean($_REQUEST["caption"]);
 				} else {
 					print $old_caption;
 				}

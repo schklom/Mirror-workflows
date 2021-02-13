@@ -9,16 +9,16 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-12 19:55+0300\n"
-"PO-Revision-Date: 2021-01-09 04:19+0000\n"
+"PO-Revision-Date: 2021-02-14 03:24+0000\n"
 "Last-Translator: Ptsa Daniel <ptsa1987@gmail.com>\n"
-"Language-Team: Chinese (Simplified) <https://weblate.tt-rss.org/projects/tt-"
-"rss/messages/zh_Hans/>\n"
+"Language-Team: Chinese (Simplified) <https://weblate.tt-rss.org/projects/"
+"tt-rss/messages/zh_Hans/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.4\n"
+"X-Generator: Weblate 4.4.2\n"
 
 #: backend.php:59
 msgid "Use default"
@@ -393,11 +393,11 @@ msgstr "不显示文章中的图片，减少自动刷新。"
 
 #: include/login_form.php:158 js/Feeds.js:247
 msgid "Safe mode"
-msgstr ""
+msgstr "安全模式"
 
 #: include/login_form.php:162
 msgid "Uses default theme and prevents all plugins from loading."
-msgstr ""
+msgstr "使用默认主题，并禁用所有插件。"
 
 #: include/login_form.php:170
 msgid "Remember me"
@@ -1943,9 +1943,8 @@ msgid "Last updated: %s"
 msgstr "上次更新:%s"
 
 #: classes/feeds.php:65
-#, fuzzy
 msgid "Select articles"
-msgstr "选择所有文章"
+msgstr "选择文章"
 
 #: classes/feeds.php:66
 msgid "Select..."
@@ -1966,7 +1965,7 @@ msgstr "通过邮件转发"
 
 #: classes/feeds.php:98
 msgid "Delete permanently"
-msgstr ""
+msgstr "永久删除"
 
 #: classes/feeds.php:151 classes/feeds.php:546
 msgid "Feed not found."
@@ -2123,9 +2122,8 @@ msgid "Show related articles"
 msgstr "显示相关文章"
 
 #: plugins/af_psql_trgm/init.php:128
-#, fuzzy
 msgid "Mark similar articles as read (af_psql_trgm)"
-msgstr "将类似的文章标记为已读"
+msgstr "将类似的文章标记为已读 (af_psql_trgm)"
 
 #: plugins/af_psql_trgm/init.php:164 plugins/af_readability/init.php:70
 msgid "Global settings"
@@ -2157,9 +2155,8 @@ msgid "Currently enabled for (click to edit):"
 msgstr "当前启用（点击编辑）:"
 
 #: plugins/af_psql_trgm/init.php:222
-#, fuzzy
 msgid "Similarity (af_psql_trgm)"
-msgstr "相似度 (pg_trgm)"
+msgstr "相似度(af_psql_trgm)"
 
 #: plugins/af_psql_trgm/init.php:231
 msgid "Mark similar articles as read"
@@ -2509,9 +2506,9 @@ msgid "Looking for articles (%d processed, %f found)..."
 msgstr "搜索文章中 (%d 已处理, %f 已发现)..."
 
 #: js/CommonFilters.js:190
-#, fuzzy, perl-format
+#, perl-format
 msgid "Found %d articles matching this filter:"
-msgstr "找到过滤器匹配的％d篇文章："
+msgstr "找到过滤器匹配的%d篇文章："
 
 #: js/CommonFilters.js:246
 msgid "Create Filter"
@@ -2682,12 +2679,11 @@ msgstr "之前共享文章的 URL 将会回到未认证状态。是否继续？"
 
 #: js/App.js:400
 msgid "Update daemon is not running."
-msgstr ""
+msgstr "更新守护程序未运行。"
 
 #: js/App.js:413
-#, fuzzy
 msgid "Update daemon is not updating feeds."
-msgstr "<span onclick=\"App.explainError(3)\">更新程序未更新订阅源.</span>"
+msgstr "更新程序未更新订阅源."
 
 #: js/App.js:557
 msgid "Unhandled exception"

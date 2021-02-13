@@ -1652,25 +1652,6 @@ class Pref_Feeds extends Handler_Protected {
 		return $c;
 	}
 
-	function getinactivefeeds() {
-		if (DB_TYPE == "pgsql") {
-			$interval_qpart = "NOW() - INTERVAL '3 months'";
-		} else {
-			$interval_qpart = "DATE_SUB(NOW(), INTERVAL 3 MONTH)";
-		}
-
-		$sth = $this->pdo->prepare("SELECT COUNT(id) AS num_inactive FROM ttrss_feeds WHERE
-				(SELECT MAX(updated) FROM ttrss_entries, ttrss_user_entries WHERE
-					ttrss_entries.id = ref_id AND
-						ttrss_user_entries.feed_id = ttrss_feeds.id) < $interval_qpart AND
-			  ttrss_feeds.owner_uid = ?");
-		$sth->execute([$_SESSION['uid']]);
-
-		if ($row = $sth->fetch()) {
-			print (int)$row["num_inactive"];
-		}
-	}
-
 	static function subscribe_to_feed_url() {
 		$url_path = get_self_url_prefix() .
 			"/public.php?op=subscribe&feed_url=%s";

@@ -190,65 +190,62 @@ class Pref_Labels extends Handler_Protected {
 	}
 
 	function index() {
+		?>
+		<div dojoType='dijit.layout.BorderContainer' gutters='false'>
+			<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='top'>
+				<div dojoType='fox.Toolbar'>
+					<div dojoType='fox.form.DropDownButton'>
+						<span><?php echo __('Select') ?></span>
+						<div dojoType='dijit.Menu' style='display: none'>
+						<div onclick="dijit.byId('labelTree').model.setAllChecked(true)"
+							dojoType='dijit.MenuItem'><?php echo('All') ?></div>
+						<div onclick="dijit.byId('labelTree').model.setAllChecked(false)"
+							dojoType='dijit.MenuItem'><?php echo('None') ?></div>
+					</div>
+				</div>
 
-		print "<div dojoType='dijit.layout.BorderContainer' gutters='false'>";
-		print "<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='top'>";
-		print "<div dojoType='fox.Toolbar'>";
+				<button dojoType='dijit.form.Button' onclick='CommonDialogs.addLabel()'>
+					<?php echo('Create label') ?></button dojoType='dijit.form.Button'>
 
-		print "<div dojoType='fox.form.DropDownButton'>".
-				"<span>" . __('Select')."</span>";
-		print "<div dojoType=\"dijit.Menu\" style=\"display: none;\">";
-		print "<div onclick=\"dijit.byId('labelTree').model.setAllChecked(true)\"
-			dojoType=\"dijit.MenuItem\">".__('All')."</div>";
-		print "<div onclick=\"dijit.byId('labelTree').model.setAllChecked(false)\"
-			dojoType=\"dijit.MenuItem\">".__('None')."</div>";
-		print "</div></div>";
+				<button dojoType='dijit.form.Button' onclick="dijit.byId('labelTree').removeSelected()">
+					<?php echo('Remove') ?></button dojoType='dijit.form.Button'>
 
-		print"<button dojoType=\"dijit.form.Button\" onclick=\"CommonDialogs.addLabel()\">".
-			__('Create label')."</button dojoType=\"dijit.form.Button\"> ";
+				<button dojoType='dijit.form.Button' onclick="dijit.byId('labelTree').resetColors()">
+					<?php echo('Clear colors') ?></button dojoType='dijit.form.Button'>
 
-		print "<button dojoType=\"dijit.form.Button\" onclick=\"dijit.byId('labelTree').removeSelected()\">".
-			__('Remove')."</button dojoType=\"dijit.form.Button\"> ";
+				</div>
+			</div>
 
-		print "<button dojoType=\"dijit.form.Button\" onclick=\"dijit.byId('labelTree').resetColors()\">".
-			__('Clear colors')."</button dojoType=\"dijit.form.Button\">";
+			<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='center'>
+				<div id='labellistLoading'>
+					<img src='images/indicator_tiny.gif'><?php echo("Loading, please wait...") ?>
+				</div>
 
+				<div dojoType='dojo.data.ItemFileWriteStore' jsId='labelStore'
+					url='backend.php?op=pref-labels&method=getlabeltree'>
+				</div>
 
-		print "</div>"; #toolbar
-		print "</div>"; #pane
-		print "<div style='padding : 0px' dojoType=\"dijit.layout.ContentPane\" region=\"center\">";
+				<div dojoType='lib.CheckBoxStoreModel' jsId='labelModel' store='labelStore'
+					query="{id:'root'}" rootId='root'
+					childrenAttrs='items' checkboxStrict='false' checkboxAll='false'>
+				</div>
 
-		print "<div id=\"labellistLoading\">
-		<img src='images/indicator_tiny.gif'>".
-		 __("Loading, please wait...")."</div>";
+				<div dojoType='fox.PrefLabelTree' id='labelTree' model='labelModel' openOnClick='true'>
+					<script type='dojo/method' event='onLoad' args='item'>
+						Element.hide('labellistLoading');
+					</script>
+					<script type='dojo/method' event='onClick' args='item'>
+						var id = String(item.id);
+						var bare_id = id.substr(id.indexOf(':')+1);
 
-		print "<div dojoType=\"dojo.data.ItemFileWriteStore\" jsId=\"labelStore\"
-			url=\"backend.php?op=pref-labels&method=getlabeltree\">
+						if (id.match('LABEL:')) {
+							dijit.byId('labelTree').editLabel(bare_id);
+						}
+					</script>
+				</div>
+			</div>
+			<?php PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefLabels") ?>
 		</div>
-		<div dojoType=\"lib.CheckBoxStoreModel\" jsId=\"labelModel\" store=\"labelStore\"
-		query=\"{id:'root'}\" rootId=\"root\"
-			childrenAttrs=\"items\" checkboxStrict=\"false\" checkboxAll=\"false\">
-		</div>
-		<div dojoType=\"fox.PrefLabelTree\" id=\"labelTree\"
-			model=\"labelModel\" openOnClick=\"true\">
-		<script type=\"dojo/method\" event=\"onLoad\" args=\"item\">
-			Element.hide(\"labellistLoading\");
-		</script>
-		<script type=\"dojo/method\" event=\"onClick\" args=\"item\">
-			var id = String(item.id);
-			var bare_id = id.substr(id.indexOf(':')+1);
-
-			if (id.match('LABEL:')) {
-				dijit.byId('labelTree').editLabel(bare_id);
-			}
-		</script>
-		</div>";
-
-		print "</div>"; #pane
-
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefLabels");
-
-		print "</div>"; #container
-
+		<?php
 	}
 }

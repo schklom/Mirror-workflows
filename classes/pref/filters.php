@@ -710,81 +710,70 @@ class Pref_Filters extends Handler_Protected {
 			$filter_search = ($_SESSION["prefs_filter_search"] ?? "");
 		}
 
-		print "<div dojoType='dijit.layout.BorderContainer' gutters='false'>";
-		print "<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='top'>";
-		print "<div dojoType='fox.Toolbar'>";
+		?>
+		<div dojoType='dijit.layout.BorderContainer' gutters='false'>
+			<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='top'>
+				<div dojoType='fox.Toolbar'>
 
-		print "<div style='float : right; padding-right : 4px;'>
-			<input dojoType=\"dijit.form.TextBox\" id=\"filter_search\" size=\"20\" type=\"search\"
-				value=\"$filter_search\">
-			<button dojoType=\"dijit.form.Button\" onclick=\"dijit.byId('filterTree').reload()\">".
-				__('Search')."</button>
-			</div>";
+					<div style='float : right; padding-right : 4px;'>
+						<input dojoType="dijit.form.TextBox" id="filter_search" size="20" type="search"
+							value="<?php echo $filter_search ?>">
+						<button dojoType="dijit.form.Button" onclick="dijit.byId('filterTree').reload()">
+							<?php echo __('Search') ?></button>
+					</div>
 
-		print "<div dojoType=\"fox.form.DropDownButton\">".
-				"<span>" . __('Select')."</span>";
-		print "<div dojoType=\"dijit.Menu\" style=\"display: none;\">";
-		print "<div onclick=\"dijit.byId('filterTree').model.setAllChecked(true)\"
-			dojoType=\"dijit.MenuItem\">".__('All')."</div>";
-		print "<div onclick=\"dijit.byId('filterTree').model.setAllChecked(false)\"
-			dojoType=\"dijit.MenuItem\">".__('None')."</div>";
-		print "</div></div>";
+					<div dojoType="fox.form.DropDownButton">
+						<span><?php echo __('Select') ?></span>
+						<div dojoType="dijit.Menu" style="display: none;">
+							<div onclick="dijit.byId('filterTree').model.setAllChecked(true)"
+								dojoType="dijit.MenuItem"><?php echo __('All') ?></div>
+							<div onclick="dijit.byId('filterTree').model.setAllChecked(false)"
+								dojoType="dijit.MenuItem"><?php echo __('None') ?></div>
+						</div>
+					</div>
 
-		print "<button dojoType=\"dijit.form.Button\" onclick=\"return Filters.edit()\">".
-			__('Create filter')."</button> ";
+					<button dojoType="dijit.form.Button" onclick="return Filters.edit()">
+						<?php echo __('Create filter') ?></button>
+					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').joinSelectedFilters()">
+						<?php echo __('Combine') ?></button>
+					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').editSelectedFilter()">
+						<?php echo __('Edit') ?></button>
+					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').resetFilterOrder()">
+						<?php echo __('Reset sort order') ?></button>
+					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').removeSelectedFilters()">
+						<?php echo __('Remove') ?></button>
 
-		print "<button dojoType=\"dijit.form.Button\" onclick=\"return dijit.byId('filterTree').joinSelectedFilters()\">".
-			__('Combine')."</button> ";
+				</div>
+			</div>
+			<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='center'>
+				<div id='filterlistLoading'>
+					<img src='images/indicator_tiny.gif'> <?php echo __("Loading, please wait...") ?>
+				</div>
+				<div dojoType="fox.PrefFilterStore" jsId="filterStore"
+					url="backend.php?op=pref-filters&method=getfiltertree">
+				</div>
+				<div dojoType="lib.CheckBoxStoreModel" jsId="filterModel" store="filterStore"
+					query="{id:'root'}" rootId="root" rootLabel="Filters"
+					childrenAttrs="items" checkboxStrict="false" checkboxAll="false">
+				</div>
+				<div dojoType="fox.PrefFilterTree" id="filterTree" dndController="dijit.tree.dndSource"
+					betweenThreshold="5" model="filterModel" openOnClick="true">
+					<script type="dojo/method" event="onLoad" args="item">
+						Element.hide("filterlistLoading");
+					</script>
+					<script type="dojo/method" event="onClick" args="item">
+						var id = String(item.id);
+						var bare_id = id.substr(id.indexOf(':')+1);
 
-		print "<button dojoType=\"dijit.form.Button\" onclick=\"return dijit.byId('filterTree').editSelectedFilter()\">".
-			__('Edit')."</button> ";
-
-		print "<button dojoType=\"dijit.form.Button\" onclick=\"return dijit.byId('filterTree').resetFilterOrder()\">".
-			__('Reset sort order')."</button> ";
-
-
-		print "<button dojoType=\"dijit.form.Button\" onclick=\"return dijit.byId('filterTree').removeSelectedFilters()\">".
-			__('Remove')."</button> ";
-
-		print "</div>"; # toolbar
-		print "</div>"; # toolbar-frame
-		print "<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='center'>";
-
-		print "<div id='filterlistLoading'>
-		<img src='images/indicator_tiny.gif'>".
-		 __("Loading, please wait...")."</div>";
-
-		print "<div dojoType=\"fox.PrefFilterStore\" jsId=\"filterStore\"
-			url=\"backend.php?op=pref-filters&method=getfiltertree\">
+						if (id.match('FILTER:')) {
+							Filters.edit(bare_id);
+						}
+					</script>
+				</div>
+			</div>
+			<?php PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefFilters") ?>
 		</div>
-		<div dojoType=\"lib.CheckBoxStoreModel\" jsId=\"filterModel\" store=\"filterStore\"
-			query=\"{id:'root'}\" rootId=\"root\" rootLabel=\"Filters\"
-			childrenAttrs=\"items\" checkboxStrict=\"false\" checkboxAll=\"false\">
-		</div>
-		<div dojoType=\"fox.PrefFilterTree\" id=\"filterTree\"
-			dndController=\"dijit.tree.dndSource\"
-			betweenThreshold=\"5\"
-			model=\"filterModel\" openOnClick=\"true\">
-		<script type=\"dojo/method\" event=\"onLoad\" args=\"item\">
-			Element.hide(\"filterlistLoading\");
-		</script>
-		<script type=\"dojo/method\" event=\"onClick\" args=\"item\">
-			var id = String(item.id);
-			var bare_id = id.substr(id.indexOf(':')+1);
-
-			if (id.match('FILTER:')) {
-				Filters.edit(bare_id);
-			}
-		</script>
-
-		</div>";
-
-		print "</div>"; #pane
-
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefFilters");
-
-		print "</div>"; #container
-
+		<?php
 	}
 
 	function newrule() {

@@ -10,72 +10,14 @@ class Pref_Labels extends Handler_Protected {
 	function edit() {
 		$label_id = clean($_REQUEST['id']);
 
-		$sth = $this->pdo->prepare("SELECT * FROM ttrss_labels2 WHERE
+		$sth = $this->pdo->prepare("SELECT id, caption, fg_color, bg_color FROM ttrss_labels2 WHERE
 			id = ? AND owner_uid = ?");
 		$sth->execute([$label_id, $_SESSION['uid']]);
 
-		if ($line = $sth->fetch()) {
-
-			print_hidden("id", "$label_id");
-			print_hidden("op", "pref-labels");
-			print_hidden("method", "save");
-
-			print "<form onsubmit='return false;'>";
-
-			print "<header>".__("Caption")."</header>";
-
-			print "<section>";
-
-			$fg_color = $line['fg_color'];
-			$bg_color = $line['bg_color'] ? $line['bg_color'] : '#fff7d5';
-
-			print "<input style='font-size : 16px; color : $fg_color; background : $bg_color; transition : background 0.1s linear'
-				id='labelEdit_caption' name='caption' dojoType='dijit.form.ValidationTextBox'
-				required='true' value=\"".htmlspecialchars($line['caption'])."\">";
-
-			print "</section>";
-
-			print "<header>" . __("Colors") . "</header>";
-			print "<section>";
-
-			print "<table>";
-			print "<tr><th style='text-align : left'>".__("Foreground:")."</th><th style='text-align : left'>".__("Background:")."</th></tr>";
-			print "<tr><td style='padding-right : 10px'>";
-
-			print "<input dojoType='dijit.form.TextBox'
-				style='display : none' id='labelEdit_fgColor'
-				name='fg_color' value='$fg_color'>";
-			print "<input dojoType='dijit.form.TextBox'
-				style='display : none' id='labelEdit_bgColor'
-				name='bg_color' value='$bg_color'>";
-
-			print "<div dojoType='dijit.ColorPalette'>
-			<script type='dojo/method' event='onChange' args='fg_color'>
-				dijit.byId('labelEdit_fgColor').attr('value', fg_color);
-				dijit.byId('labelEdit_caption').domNode.setStyle({color: fg_color});
-			</script>
-			</div>";
-
-			print "</td><td>";
-
-			print "<div dojoType='dijit.ColorPalette'>
-			<script type='dojo/method' event='onChange' args='bg_color'>
-				dijit.byId('labelEdit_bgColor').attr('value', bg_color);
-				dijit.byId('labelEdit_caption').domNode.setStyle({backgroundColor: bg_color});
-			</script>
-			</div>";
-
-			print "</td></tr></table>";
-			print "</section>";
-
-			print "<footer>";
-			print "<button dojoType='dijit.form.Button' type='submit' class='alt-primary' onclick='App.dialogOf(this).execute()'>".
-				__('Save')."</button>";
-			print "<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
-				__('Cancel')."</button>";
-			print "</footer>";
-
-			print "</form>";
+		if ($line = $sth->fetch(PDO::FETCH_ASSOC)) {
+			print json_encode($line);
+		} else {
+			print json_encode(["error" => "LABEL_NOT_FOUND"]);
 		}
 	}
 

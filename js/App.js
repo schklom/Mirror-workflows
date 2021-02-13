@@ -18,8 +18,8 @@ const App = {
    is_prefs: false,
    LABEL_BASE_INDEX: -1024,
    FormFields: {
-      hidden: function(name, value) {
-         return `<input dojoType="dijit.form.TextBox" style="display : none" name="${name}" value="${App.escapeHtml(value)}"></input>`
+      hidden: function(name, value, id = "") {
+         return `<input id="${id}" dojoType="dijit.form.TextBox" style="display : none" name="${name}" value="${App.escapeHtml(value)}"></input>`
       }
    },
    Scrollable: {

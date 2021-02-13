@@ -5,7 +5,7 @@ class Article extends Handler_Protected {
 	const ARTICLE_KIND_YOUTUBE = 3;
 
 	function redirect() {
-		$id = clean($_REQUEST['id']);
+		$id = (int) clean($_REQUEST['id'] ?? 0);
 
 		$sth = $this->pdo->prepare("SELECT link FROM ttrss_entries, ttrss_user_entries
 						WHERE id = ? AND id = ref_id AND owner_uid = ?
@@ -13,11 +13,14 @@ class Article extends Handler_Protected {
         $sth->execute([$id, $_SESSION['uid']]);
 
 		if ($row = $sth->fetch()) {
-			$article_url = $row['link'];
-			$article_url = str_replace("\n", "", $article_url);
+			$article_url = UrlHelper::validate(str_replace("\n", "", $row['link']));
 
-			header("Location: $article_url");
-			return;
+			if ($article_url) {
+				header("Location: $article_url");
+			} else {
+				header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+				print "URL of article $id is blank.";
+			}
 
 		} else {
 			print_error(__("Article not found."));
@@ -593,6 +596,21 @@ class Article extends Handler_Protected {
 			<i class='material-icons'>note</i>
 			<div $onclick class='body'>$note</div>
 			</div>";
+	}
+
+	function get_metadata_by_id() {
+		$id = clean($_REQUEST['id']);
+
+		$sth = $this->pdo->prepare("SELECT link, title FROM ttrss_entries, ttrss_user_entries
+			WHERE ref_id = ? AND ref_id = id AND owner_uid = ?");
+		$sth->execute([$id, $_SESSION['uid']]);
+
+		if ($row = $sth->fetch()) {
+			$link = $row['link'];
+			$title = $row['title'];
+
+			echo json_encode(["link" => $link, "title" => $title]);
+		}
 	}
 
 	static function get_article_enclosures($id) {

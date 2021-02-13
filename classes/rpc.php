@@ -382,23 +382,6 @@ class RPC extends Handler_Protected {
 		$sth->execute(array_merge($ids, [$_SESSION['uid']]));
 	}
 
-	function getlinktitlebyid() {
-		$id = clean($_REQUEST['id']);
-
-		$sth = $this->pdo->prepare("SELECT link, title FROM ttrss_entries, ttrss_user_entries
-			WHERE ref_id = ? AND ref_id = id AND owner_uid = ?");
-		$sth->execute([$id, $_SESSION['uid']]);
-
-		if ($row = $sth->fetch()) {
-			$link = $row['link'];
-			$title = $row['title'];
-
-			echo json_encode(array("link" => $link, "title" => $title));
-		} else {
-			echo json_encode(array("error" => "ARTICLE_NOT_FOUND"));
-		}
-	}
-
 	function log() {
 		$msg = clean($_REQUEST['msg']);
 		$file = basename(clean($_REQUEST['file']));

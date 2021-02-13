@@ -123,11 +123,13 @@ const Article = {
 		Article.setActive(0);
 	},
 	displayUrl: function (id) {
-		const query = {op: "rpc", method: "getlinktitlebyid", id: id};
+		const query = {op: "article", method: "get_metadata_by_id", id: id};
 
 		xhrJson("backend.php", query, (reply) => {
 			if (reply && reply.link) {
 				prompt(__("Article URL:"), reply.link);
+			} else {
+				alert(__("No URL could be displayed for this article."));
 			}
 		});
 	},

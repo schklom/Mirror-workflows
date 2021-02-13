@@ -1456,7 +1456,7 @@ body.ttrss_prefs #feedsTab {
 body.ttrss_prefs .dijitDialog #pref-profiles-list .dijitInlineEditBoxDisplayMode {
   padding: 0px;
 }
-body.ttrss_prefs #errorButton {
+body.ttrss_prefs #pref_feeds_errors_btn {
   color: red;
 }
 body.ttrss_prefs .user-css-editor {

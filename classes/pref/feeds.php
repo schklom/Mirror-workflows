@@ -1198,22 +1198,10 @@ class Pref_Feeds extends Handler_Protected {
 	}
 
 	private function index_feeds() {
-		$sth = $this->pdo->prepare("SELECT COUNT(id) AS num_errors
-			FROM ttrss_feeds WHERE last_error != '' AND owner_uid = ?");
-		$sth->execute([$_SESSION['uid']]);
-
-		if ($row = $sth->fetch()) {
-			$num_errors = $row["num_errors"];
-		} else {
-			$num_errors = 0;
-		}
-
-		if ($num_errors > 0) {
-			$error_button = "<button dojoType='dijit.form.Button' onclick='CommonDialogs.showFeedsWithErrors()' id='errorButton'>".
-				__("Feeds with errors")."</button>";
-		} else {
-			$error_button = "";
-		}
+		$error_button = "<button dojoType='dijit.form.Button'
+				id='pref_feeds_errors_btn' style='display : none'
+				onclick='CommonDialogs.showFeedsWithErrors()'>".
+			__("Feeds with errors")."</button>";
 
 		$inactive_button = "<button dojoType='dijit.form.Button'
 				id='pref_feeds_inactive_btn'
@@ -1311,6 +1299,7 @@ class Pref_Feeds extends Handler_Protected {
 					</script>
 					<script type="dojo/method" event="onLoad" args="item">
 						dijit.byId('feedTree').checkInactiveFeeds();
+						dijit.byId('feedTree').checkErrorFeeds();
 					</script>
 				</div>
 			</div>

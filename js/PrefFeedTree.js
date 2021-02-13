@@ -209,6 +209,13 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 
 			return false;
 		},
+		checkErrorFeeds: function() {
+			xhrJson("backend.php", {op: "pref-feeds", method: "feedsWithErrors"}, (reply) => {
+				if (reply.length > 0) {
+					Element.show(dijit.byId("pref_feeds_errors_btn").domNode);
+				}
+			});
+		},
 		checkInactiveFeeds: function() {
 			xhrJson("backend.php", {op: "pref-feeds", method: "inactivefeeds"}, (reply) => {
 				if (reply.length > 0) {

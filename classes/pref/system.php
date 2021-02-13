@@ -150,43 +150,35 @@ class Pref_System extends Handler_Protected {
 		}
 
 		print "</table>";
+		print "</div>";
+		print "</div>";
 	}
 
 	function index() {
 
 		$severity = (int) ($_REQUEST["severity"] ?? E_USER_WARNING);
 		$page = (int) ($_REQUEST["page"] ?? 0);
+		?>
+		<div dojoType='dijit.layout.AccordionContainer' region='center'>
+			<div dojoType='dijit.layout.AccordionPane' style='padding : 0' title='<i class="material-icons">report</i> <?php echo __('Event Log') ?>'>
+				<?php
+					if (LOG_DESTINATION == "sql") {
+						$this->log_viewer($page, $severity);
+					} else {
+						print_notice("Please set LOG_DESTINATION to 'sql' in config.php to enable database logging.");
+					}
+				?>
+			</div>
 
-		print "<div dojoType='dijit.layout.AccordionContainer' region='center'>";
-		print "<div dojoType='dijit.layout.AccordionPane' style='padding : 0'
-			title='<i class=\"material-icons\">report</i> ".__('Event Log')."'>";
+			<div dojoType='dijit.layout.AccordionPane' title='<i class="material-icons">info</i> <?php echo __('PHP Information') ?>'>
+				<script type='dojo/method' event='onSelected' args='evt'>
+					Helpers.System.getPHPInfo(this);
+				</script>
+				<div class='phpinfo'><?php echo __("Loading, please wait...") ?></div>
+			</div>
 
-		if (LOG_DESTINATION == "sql") {
-
-			$this->log_viewer($page, $severity);
-
-		} else {
-			print_notice("Please set LOG_DESTINATION to 'sql' in config.php to enable database logging.");
-		}
-
-		print "</div>"; # content pane
-		print "</div>"; # container
-		print "</div>"; # accordion pane
-
-		print "<div dojoType='dijit.layout.AccordionPane'
-			title='<i class=\"material-icons\">info</i> ".__('PHP Information')."'>";
-
-		print "<script type='dojo/method' event='onSelected' args='evt'>
-			Helpers.System.getPHPInfo(this);
-		</script>";
-
-		print "<div class='phpinfo'>" . __("Loading, please wait...") . "</div>";
-
-		print "</div>"; # accordion pane
-
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefSystem");
-
-		print "</div>"; #container
+			<?php PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefSystem") ?>
+		</div>
+		<?php
 	}
-
 }

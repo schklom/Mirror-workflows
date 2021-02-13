@@ -746,9 +746,6 @@ class Pref_Filters extends Handler_Protected {
 				</div>
 			</div>
 			<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='center'>
-				<div id='filterlistLoading'>
-					<img src='images/indicator_tiny.gif'> <?php echo __("Loading, please wait...") ?>
-				</div>
 				<div dojoType="fox.PrefFilterStore" jsId="filterStore"
 					url="backend.php?op=pref-filters&method=getfiltertree">
 				</div>
@@ -758,9 +755,6 @@ class Pref_Filters extends Handler_Protected {
 				</div>
 				<div dojoType="fox.PrefFilterTree" id="filterTree" dndController="dijit.tree.dndSource"
 					betweenThreshold="5" model="filterModel" openOnClick="true">
-					<script type="dojo/method" event="onLoad" args="item">
-						Element.hide("filterlistLoading");
-					</script>
 					<script type="dojo/method" event="onClick" args="item">
 						var id = String(item.id);
 						var bare_id = id.substr(id.indexOf(':')+1);

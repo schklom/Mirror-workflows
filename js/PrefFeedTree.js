@@ -1,9 +1,44 @@
 /* eslint-disable prefer-rest-params */
 /* global __, lib, dijit, define, dojo, CommonDialogs, Notify, Tables, xhrPost, fox, App */
 
-define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], function (declare, domConstruct) {
+define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_base/array", "dojo/cookie"],
+	function (declare, domConstruct, checkBoxTree, array, cookie) {
 
 	return declare("fox.PrefFeedTree", lib.CheckBoxTree, {
+		// save state in localStorage instead of cookies
+		// reference: https://stackoverflow.com/a/27968996
+		_saveExpandedNodes: function(){
+			if (this.persist && this.cookieName){
+				const ary = [];
+				for (const id in this._openedNodes){
+					ary.push(id);
+				}
+				// Was:
+				// cookie(this.cookieName, ary.join(","), {expires: 365});
+				localStorage.setItem(this.cookieName, ary.join(","));
+			}
+		},
+		_initState: function(){
+			this.cookieName = 'prefs:' + this.cookieName;
+			// summary:
+			//    Load in which nodes should be opened automatically
+			this._openedNodes = {};
+			if (this.persist && this.cookieName){
+				// Was:
+				// var oreo = cookie(this.cookieName);
+				let oreo = localStorage.getItem(this.cookieName);
+				// migrate old data if nothing in localStorage
+				if (oreo == null || oreo === '') {
+					oreo = cookie(this.cookieName);
+					cookie(this.cookieName, null, { expires: -1 });
+				}
+				if (oreo){
+					array.forEach(oreo.split(','), function(item){
+						this._openedNodes[item] = true;
+					}, this);
+				}
+			}
+		},
 		_createTreeNode: function(args) {
 			const tnode = this.inherited(arguments);
 

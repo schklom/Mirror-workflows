@@ -217,10 +217,6 @@ class Pref_Labels extends Handler_Protected {
 			</div>
 
 			<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='center'>
-				<div id='labellistLoading'>
-					<img src='images/indicator_tiny.gif'><?php echo("Loading, please wait...") ?>
-				</div>
-
 				<div dojoType='dojo.data.ItemFileWriteStore' jsId='labelStore'
 					url='backend.php?op=pref-labels&method=getlabeltree'>
 				</div>
@@ -231,9 +227,6 @@ class Pref_Labels extends Handler_Protected {
 				</div>
 
 				<div dojoType='fox.PrefLabelTree' id='labelTree' model='labelModel' openOnClick='true'>
-					<script type='dojo/method' event='onLoad' args='item'>
-						Element.hide('labellistLoading');
-					</script>
 					<script type='dojo/method' event='onClick' args='item'>
 						var id = String(item.id);
 						var bare_id = id.substr(id.indexOf(':')+1);

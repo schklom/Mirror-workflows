@@ -1450,20 +1450,11 @@ body.ttrss_prefs .dijitAccordionTitle i.material-icons {
 body.ttrss_prefs .dijitAccordionTitleSelected i.material-icons {
   color: white;
 }
+body.ttrss_prefs #feedsTab {
+  background: #222;
+}
 body.ttrss_prefs .dijitDialog #pref-profiles-list .dijitInlineEditBoxDisplayMode {
   padding: 0px;
-}
-body.ttrss_prefs div#feedlistLoading,
-body.ttrss_prefs div#filterlistLoading,
-body.ttrss_prefs div#labellistLoading {
-  text-align: center;
-  padding: 5px;
-  color: #ccc;
-}
-body.ttrss_prefs div#feedlistLoading img,
-body.ttrss_prefs div#filterlistLoading img,
-body.ttrss_prefs div#labellistLoading {
-  margin-right: 5px;
 }
 body.ttrss_prefs #errorButton {
   color: red;

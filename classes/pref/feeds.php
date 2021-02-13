@@ -1197,12 +1197,7 @@ class Pref_Feeds extends Handler_Protected {
 		$opml->opml_import($_SESSION["uid"]);
 	}
 
-	function index() {
-
-		print "<div dojoType='dijit.layout.AccordionContainer' region='center'>";
-		print "<div style='padding : 0px' dojoType='dijit.layout.AccordionPane'
-			title=\"<i class='material-icons'>rss_feed</i> ".__('Feeds')."\">";
-
+	private function index_feeds() {
 		$sth = $this->pdo->prepare("SELECT COUNT(id) AS num_errors
 			FROM ttrss_feeds WHERE last_error != '' AND owner_uid = ?");
 		$sth->execute([$_SESSION['uid']]);
@@ -1214,16 +1209,15 @@ class Pref_Feeds extends Handler_Protected {
 		}
 
 		if ($num_errors > 0) {
-			$error_button = "<button dojoType=\"dijit.form.Button\"
-			  		onclick=\"CommonDialogs.showFeedsWithErrors()\" id=\"errorButton\">" .
-				__("Feeds with errors") . "</button>";
+			$error_button = "<button dojoType='dijit.form.Button' onclick='CommonDialogs.showFeedsWithErrors()' id='errorButton'>".
+				__("Feeds with errors")."</button>";
 		} else {
 			$error_button = "";
 		}
 
-		$inactive_button = "<button dojoType=\"dijit.form.Button\"
-				id=\"pref_feeds_inactive_btn\"
-				style=\"display : none\"
+		$inactive_button = "<button dojoType='dijit.form.Button'
+				id='pref_feeds_inactive_btn'
+				style='display : none'
 				onclick=\"dijit.byId('feedTree').showInactiveFeeds()\">" .
 				__("Inactive feeds") . "</button>";
 
@@ -1235,175 +1229,202 @@ class Pref_Feeds extends Handler_Protected {
 			$feed_search = $_SESSION["prefs_feed_search"] ?? "";
 		}
 
-		print '<div dojoType="dijit.layout.BorderContainer" gutters="false">';
+		?>
 
-		print "<div region='top' dojoType=\"fox.Toolbar\">"; #toolbar
+		<div dojoType="dijit.layout.BorderContainer" gutters="false">
+			<div region='top' dojoType="fox.Toolbar">
+				<div style='float : right'>
+					<input dojoType="dijit.form.TextBox" id="feed_search" size="20" type="search"
+						value="<?php echo htmlspecialchars($feed_search) ?>">
+					<button dojoType="dijit.form.Button" onclick="dijit.byId('feedTree').reload()">
+						<?php echo __('Search') ?></button>
+				</div>
 
-		print "<div style='float : right; padding-right : 4px;'>
-			<input dojoType=\"dijit.form.TextBox\" id=\"feed_search\" size=\"20\" type=\"search\"
-				value=\"$feed_search\">
-			<button dojoType=\"dijit.form.Button\" onclick=\"dijit.byId('feedTree').reload()\">".
-				__('Search')."</button>
-			</div>";
+				<div dojoType="fox.form.DropDownButton">
+					<span><?php echo __('Select') ?></span>
+					<div dojoType="dijit.Menu" style="display: none;">
+						<div onclick="dijit.byId('feedTree').model.setAllChecked(true)"
+							dojoType="dijit.MenuItem"><?php echo __('All') ?></div>
+						<div onclick="dijit.byId('feedTree').model.setAllChecked(false)"
+							dojoType="dijit.MenuItem"><?php echo __('None') ?></div>
+					</div>
+				</div>
 
-		print "<div dojoType=\"fox.form.DropDownButton\">".
-				"<span>" . __('Select')."</span>";
-		print "<div dojoType=\"dijit.Menu\" style=\"display: none;\">";
-		print "<div onclick=\"dijit.byId('feedTree').model.setAllChecked(true)\"
-			dojoType=\"dijit.MenuItem\">".__('All')."</div>";
-		print "<div onclick=\"dijit.byId('feedTree').model.setAllChecked(false)\"
-			dojoType=\"dijit.MenuItem\">".__('None')."</div>";
-		print "</div></div>";
+				<div dojoType="fox.form.DropDownButton">
+					<span><?php echo __('Feeds') ?></span>
+					<div dojoType="dijit.Menu" style="display: none">
+						<div onclick="CommonDialogs.quickAddFeed()"
+							dojoType="dijit.MenuItem"><?php echo __('Subscribe to feed') ?></div>
+						<div onclick="dijit.byId('feedTree').editSelectedFeed()"
+							dojoType="dijit.MenuItem"><?php echo __('Edit selected feeds') ?></div>
+						<div onclick="dijit.byId('feedTree').resetFeedOrder()"
+							dojoType="dijit.MenuItem"><?php echo __('Reset sort order') ?></div>
+						<div onclick="dijit.byId('feedTree').batchSubscribe()"
+							dojoType="dijit.MenuItem"><?php echo __('Batch subscribe') ?></div>
+						<div dojoType="dijit.MenuItem" onclick="dijit.byId('feedTree').removeSelectedFeeds()">
+							<?php echo __('Unsubscribe') ?></div>
+					</div>
+				</div>
 
-		print "<div dojoType=\"fox.form.DropDownButton\">".
-				"<span>" . __('Feeds')."</span>";
-		print "<div dojoType=\"dijit.Menu\" style=\"display: none;\">";
-		print "<div onclick=\"CommonDialogs.quickAddFeed()\"
-			dojoType=\"dijit.MenuItem\">".__('Subscribe to feed')."</div>";
-		print "<div onclick=\"dijit.byId('feedTree').editSelectedFeed()\"
-			dojoType=\"dijit.MenuItem\">".__('Edit selected feeds')."</div>";
-		print "<div onclick=\"dijit.byId('feedTree').resetFeedOrder()\"
-			dojoType=\"dijit.MenuItem\">".__('Reset sort order')."</div>";
-		print "<div onclick=\"dijit.byId('feedTree').batchSubscribe()\"
-			dojoType=\"dijit.MenuItem\">".__('Batch subscribe')."</div>";
-		print "<div dojoType=\"dijit.MenuItem\" onclick=\"dijit.byId('feedTree').removeSelectedFeeds()\">"
-			.__('Unsubscribe')."</div> ";
-		print "</div></div>";
+				<?php if (get_pref('ENABLE_FEED_CATS')) { ?>
+					<div dojoType="fox.form.DropDownButton">
+						<span><?php echo __('Categories') ?></span>
+						<div dojoType="dijit.Menu" style="display: none">
+							<div onclick="dijit.byId('feedTree').createCategory()"
+								dojoType="dijit.MenuItem"><?php echo __('Add category') ?></div>
+							<div onclick="dijit.byId('feedTree').resetCatOrder()"
+								dojoType="dijit.MenuItem"><?php echo __('Reset sort order') ?></div>
+							<div onclick="dijit.byId('feedTree').removeSelectedCategories()"
+								dojoType="dijit.MenuItem"><?php echo __('Remove selected') ?></div>
+						</div>
+					</div>
+				<?php } ?>
+				<?php echo $error_button ?>
+				<?php echo $inactive_button ?>
+			</div>
+			<div style="padding : 0px" dojoType="dijit.layout.ContentPane" region="center">
+				<div dojoType="fox.PrefFeedStore" jsId="feedStore"
+					url="backend.php?op=pref-feeds&method=getfeedtree">
+				</div>
 
-		if (get_pref('ENABLE_FEED_CATS')) {
-			print "<div dojoType=\"fox.form.DropDownButton\">".
-					"<span>" . __('Categories')."</span>";
-			print "<div dojoType=\"dijit.Menu\" style=\"display: none;\">";
-			print "<div onclick=\"dijit.byId('feedTree').createCategory()\"
-				dojoType=\"dijit.MenuItem\">".__('Add category')."</div>";
-			print "<div onclick=\"dijit.byId('feedTree').resetCatOrder()\"
-				dojoType=\"dijit.MenuItem\">".__('Reset sort order')."</div>";
-			print "<div onclick=\"dijit.byId('feedTree').removeSelectedCategories()\"
-				dojoType=\"dijit.MenuItem\">".__('Remove selected')."</div>";
-			print "</div></div>";
+				<div dojoType="lib.CheckBoxStoreModel" jsId="feedModel" store="feedStore"
+					query="{id:'root'}" rootId="root" rootLabel="Feeds" childrenAttrs="items"
+					checkboxStrict="false" checkboxAll="false">
+				</div>
 
-		}
+				<div dojoType="fox.PrefFeedTree" id="feedTree"
+					dndController="dijit.tree.dndSource"
+					betweenThreshold="5"
+					autoExpand="<?php echo (!empty($feed_search) ? "true" : "false") ?>"
+					persist="true"
+					model="feedModel"
+					openOnClick="false">
+					<script type="dojo/method" event="onClick" args="item">
+						var id = String(item.id);
+						var bare_id = id.substr(id.indexOf(':')+1);
 
-		print $error_button;
-		print $inactive_button;
-
-		print "</div>"; # toolbar
-
-		//print '</div>';
-		print '<div style="padding : 0px" dojoType="dijit.layout.ContentPane" region="center">';
-
-		print "<div id=\"feedlistLoading\">
-		<img src='images/indicator_tiny.gif'>".
-		 __("Loading, please wait...")."</div>";
-
-		$auto_expand = $feed_search != "" ? "true" : "false";
-
-		print "<div dojoType=\"fox.PrefFeedStore\" jsId=\"feedStore\"
-			url=\"backend.php?op=pref-feeds&method=getfeedtree\">
+						if (id.match('FEED:')) {
+							CommonDialogs.editFeed(bare_id);
+						} else if (id.match('CAT:')) {
+							dijit.byId('feedTree').editCategory(bare_id, item);
+						}
+					</script>
+					<script type="dojo/method" event="onLoad" args="item">
+						dijit.byId('feedTree').checkInactiveFeeds();
+					</script>
+				</div>
+			</div>
 		</div>
-		<div dojoType=\"lib.CheckBoxStoreModel\" jsId=\"feedModel\" store=\"feedStore\"
-		query=\"{id:'root'}\" rootId=\"root\" rootLabel=\"Feeds\"
-			childrenAttrs=\"items\" checkboxStrict=\"false\" checkboxAll=\"false\">
-		</div>
-		<div dojoType=\"fox.PrefFeedTree\" id=\"feedTree\"
-			dndController=\"dijit.tree.dndSource\"
-			betweenThreshold=\"5\"
-			autoExpand='$auto_expand'
-			model=\"feedModel\" openOnClick=\"false\">
-		<script type=\"dojo/method\" event=\"onClick\" args=\"item\">
-			var id = String(item.id);
-			var bare_id = id.substr(id.indexOf(':')+1);
+	<?php
 
-			if (id.match('FEED:')) {
-				CommonDialogs.editFeed(bare_id);
-			} else if (id.match('CAT:')) {
-				dijit.byId('feedTree').editCategory(bare_id, item);
-			}
-		</script>
-		<script type=\"dojo/method\" event=\"onLoad\" args=\"item\">
-			Element.hide(\"feedlistLoading\");
+	}
 
-			dijit.byId('feedTree').checkInactiveFeeds();
-		</script>
-		</div>";
+	private function index_opml() {
+		?>
 
-#		print "<div dojoType=\"dijit.Tooltip\" connectId=\"feedTree\" position=\"below\">
-#			".__('<b>Hint:</b> you can drag feeds and categories around.')."
-#			</div>";
+		<h3><?php echo __("Using OPML you can export and import your feeds, filters, labels and Tiny Tiny RSS settings.") ?></h3>
 
-		print '</div>';
-		print '</div>';
+		<?php print_notice("Only main settings profile can be migrated using OPML.") ?>
 
-		print "</div>"; # feeds pane
-
-		print "<div dojoType='dijit.layout.AccordionPane'
-			title='<i class=\"material-icons\">import_export</i> ".__('OPML')."'>";
-
-		print "<h3>" . __("Using OPML you can export and import your feeds, filters, labels and Tiny Tiny RSS settings.") . "</h3>";
-
-		print_notice("Only main settings profile can be migrated using OPML.");
-
-		print "<form id='opml_import_form' method='post' enctype='multipart/form-data' >
-			<label class='dijitButton'>".__("Choose file...")."
-				<input style='display : none' id='opml_file' name='opml_file' type='file'>&nbsp;
+		<form id='opml_import_form' method='post' enctype='multipart/form-data'>
+			<label class='dijitButton'><?php echo __("Choose file...") ?>
+				<input style='display : none' id='opml_file' name='opml_file' type='file'>
 			</label>
 			<input type='hidden' name='op' value='pref-feeds'>
-			<input type='hidden' name='csrf_token' value='".$_SESSION['csrf_token']."'>
+			<input type='hidden' name='csrf_token' value="<?php echo $_SESSION['csrf_token'] ?>">
 			<input type='hidden' name='method' value='importOpml'>
-			<button dojoType='dijit.form.Button' class='alt-primary' onclick=\"return Helpers.OPML.import();\" type=\"submit\">" .
-			__('Import OPML') . "</button>";
+			<button dojoType='dijit.form.Button' class='alt-primary' onclick="return Helpers.OPML.import()" type="submit">
+				<?php echo __('Import OPML') ?>
+			</button>
+		</form>
 
-		print "</form>";
+		<hr/>
 
-		print "<form dojoType='dijit.form.Form' id='opmlExportForm' style='display : inline-block'>";
+		<form dojoType='dijit.form.Form' id='opmlExportForm' style='display : inline-block'>
+			<button dojoType='dijit.form.Button' onclick='Helpers.OPML.export()'>
+				<?php echo __('Export OPML') ?>
+			</button>
 
-		print "<button dojoType='dijit.form.Button'
-			onclick='Helpers.OPML.export()' >" .
-			__('Export OPML') . "</button>";
+			<label class='checkbox'>
+				<?php print_checkbox("include_settings", true, "1", "") ?>
+				<?php echo __("Include settings") ?>
+			</label>
+		</form>
 
-		print " <label class='checkbox'>";
-		print_checkbox("include_settings", true, "1", "");
-		print " " . __("Include settings");
-		print "</label>";
+		<hr/>
 
-		print "</form>";
+		<h2><?php echo __("Published OPML") ?></h2>
 
-		print "<p/>";
+		<p>
+			<?php echo __('Your OPML can be published publicly and can be subscribed by anyone who knows the URL below.') ?>
+			<?php echo __("Published OPML does not include your Tiny Tiny RSS settings, feeds that require authentication or feeds hidden from Popular feeds.") ?>
+		</p>
 
-		print "<h2>" . __("Published OPML") . "</h2>";
+		<button dojoType='dijit.form.Button' class='alt-primary' onclick="return CommonDialogs.publishedOPML()">
+			<?php echo __('Display published OPML URL') ?>
+		</button>
 
-		print "<p>" . __('Your OPML can be published publicly and can be subscribed by anyone who knows the URL below.') .
-			" " .
-			__("Published OPML does not include your Tiny Tiny RSS settings, feeds that require authentication or feeds hidden from Popular feeds.") . "</p>";
-
-		print "<button dojoType='dijit.form.Button' class='alt-primary' onclick=\"return CommonDialogs.publishedOPML()\">".
-			__('Display published OPML URL')."</button> ";
-
+		<?php
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION, "prefFeedsOPML");
+	}
 
-		print "</div>"; # pane
-
-		print "<div dojoType=\"dijit.layout.AccordionPane\"
-			title=\"<i class='material-icons'>share</i> ".__('Published & shared articles / Generated feeds')."\">";
-
-		print "<h3>" . __('Published articles can be subscribed by anyone who knows the following URL:') . "</h3>";
-
+	private function index_shared() {
 		$rss_url = htmlspecialchars(get_self_url_prefix() .
-				"/public.php?op=rss&id=-2&view-mode=all_articles");;
+			"/public.php?op=rss&id=-2&view-mode=all_articles");
+		?>
 
-		print "<button dojoType='dijit.form.Button' class='alt-primary'
-			onclick='CommonDialogs.generatedFeed(-2, false, \"$rss_url\", \"".__("Published articles")."\")'>".
-			__('Display URL')."</button>
-		<button class='alt-danger' dojoType='dijit.form.Button' onclick='return Helpers.Feeds.clearFeedAccessKeys()'>".
-			__('Clear all generated URLs')."</button> ";
+		<h3><?php echo __('Published articles can be subscribed by anyone who knows the following URL:') ?></h3>
 
+		<button dojoType='dijit.form.Button' class='alt-primary'
+			onclick='CommonDialogs.generatedFeed(-2, false, "<?php echo $rss_url ?>", "<?php echo __("Published articles") ?>")'>
+			<?php echo __('Display URL') ?>
+		</button>
+
+		<button class='alt-danger' dojoType='dijit.form.Button' onclick='return Helpers.Feeds.clearFeedAccessKeys()'>
+			<?php echo __('Clear all generated URLs') ?>
+		</button>
+
+		<?php
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION, "prefFeedsPublishedGenerated");
+	}
 
-		print "</div>"; #pane
+	function index() {
+		?>
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefFeeds");
+		<div dojoType='dijit.layout.TabContainer' tabPosition='left-h'>
+			<div style='padding : 0px' dojoType='dijit.layout.ContentPane'
+				title="<i class='material-icons'>rss_feed</i> <?php echo __('My feeds') ?>">
+				<?php $this->index_feeds() ?>
+			</div>
 
-		print "</div>"; #container
+			<div dojoType='dijit.layout.ContentPane'
+						title="<i class='material-icons'>import_export</i> <?php echo __('OPML') ?>">
+						<?php $this->index_opml() ?>
+					</div>
+
+			<div dojoType="dijit.layout.ContentPane"
+				title="<i class='material-icons'>share</i> <?php echo __('Sharing') ?>">
+				<?php $this->index_shared() ?>
+			</div>
+
+			<?php
+				ob_start();
+				PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefFeeds");
+				$plugin_data = trim((string)ob_get_contents());
+				ob_end_clean();
+			?>
+
+			<?php if ($plugin_data) { ?>
+				<div dojoType='dijit.layout.ContentPane'
+					title="<i class='material-icons'>extension</i> <?php echo __('Plugins') ?>">
+
+					<div dojoType='dijit.layout.AccordionContainer' region='center'>
+						<?php echo $plugin_data ?>
+					</div>
+				</div>
+			<?php } ?>
+		</div>
+		<?php
 	}
 
 	private function feedlist_init_cat($cat_id) {

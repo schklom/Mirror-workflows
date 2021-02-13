@@ -1,5 +1,5 @@
 /* eslint-disable prefer-rest-params */
-/* global __, lib, dijit, define, dojo, CommonDialogs, Notify, Tables, xhrPost, fox, App */
+/* global __, lib, dijit, define, dojo, CommonDialogs, Notify, Tables, xhrPost, xhrJson, fox, App */
 
 define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_base/array", "dojo/cookie"],
 	function (declare, domConstruct, checkBoxTree, array, cookie) {
@@ -409,50 +409,87 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 			dialog.show();
 		},
 		showInactiveFeeds: function() {
-			const dialog = new fox.SingleUseDialog({
-				id: "inactiveFeedsDlg",
-				title: __("Feeds without recent updates"),
-				getSelectedFeeds: function () {
-					return Tables.getSelected("inactive-feeds-list");
-				},
-				removeSelected: function () {
-					const sel_rows = this.getSelectedFeeds();
+			xhrJson("backend.php", {op: 'pref-feeds', method: 'inactivefeeds'}, function (reply) {
 
-					if (sel_rows.length > 0) {
-						if (confirm(__("Remove selected feeds?"))) {
-							Notify.progress("Removing selected feeds...", true);
+				const dialog = new fox.SingleUseDialog({
+					id: "inactiveFeedsDlg",
+					title: __("Feeds without recent updates"),
+					getSelectedFeeds: function () {
+						return Tables.getSelected("inactive-feeds-list");
+					},
+					removeSelected: function () {
+						const sel_rows = this.getSelectedFeeds();
 
-							const query = {
-								op: "pref-feeds", method: "remove",
-								ids: sel_rows.toString()
-							};
+						if (sel_rows.length > 0) {
+							if (confirm(__("Remove selected feeds?"))) {
+								Notify.progress("Removing selected feeds...", true);
 
-							xhrPost("backend.php", query, () => {
-								Notify.close();
+								const query = {
+									op: "pref-feeds", method: "remove",
+									ids: sel_rows.toString()
+								};
 
-								const tree = dijit.byId("feedTree");
-								if (tree) tree.reload();
+								xhrPost("backend.php", query, () => {
+									Notify.close();
 
-								dialog.hide();
-							});
+									const tree = dijit.byId("feedTree");
+									if (tree) tree.reload();
+
+									dialog.hide();
+								});
+							}
+
+						} else {
+							alert(__("No feeds selected."));
 						}
+					},
+					content: `
+						<div dojoType='fox.Toolbar'>
+							<div dojoType='fox.form.DropDownButton'>
+								<span>${__('Select')}</span>
+								<div dojoType='dijit.Menu' style='display: none'>
+								<div onclick="Tables.select('inactive-feeds-list', true)"
+									dojoType='dijit.MenuItem'>${__('All')}</div>
+								<div onclick="Tables.select('inactive-feeds-list', false)"
+									dojoType='dijit.MenuItem'>${__('None')}</div>
+								</div>
+							</div>
+						</div>
 
-					} else {
-						alert(__("No feeds selected."));
-					}
-				},
-				content: __("Loading, please wait...")
+						<div class='panel panel-scrollable'>
+							<table width='100%' id='inactive-feeds-list'>
+								${reply.map((row) => `<tr data-row-id='${row.id}'>
+									<td width='5%' align='center'>
+										<input onclick='Tables.onRowChecked(this)' dojoType='dijit.form.CheckBox' type='checkbox'>
+									</td>
+									<td>
+										<a href='#' "title="${__("Click to edit feed")}" onclick="CommonDialogs.editFeed(${row.id})">
+											${App.escapeHtml(row.title)}
+										</a>
+									</td>
+									<td class='text-muted' align='right'>
+										${row.last_article}
+									</td>
+								</tr>
+								`).join("")}
+							</table>
+						</div>
+
+						<footer>
+							<button style='float : left' class='alt-danger' dojoType='dijit.form.Button' onclick='App.dialogOf(this).removeSelected()'>
+								${__('Unsubscribe from selected feeds')}
+							</button>
+							<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>
+								${__('Close this window')}
+							</button>
+						</footer>
+					`
+				});
+
+				dialog.show();
+
 			});
 
-			const tmph = dojo.connect(dialog, 'onShow', function () {
-				dojo.disconnect(tmph);
-
-				xhrPost("backend.php", {op: "pref-feeds", method: "inactivefeeds"}, (transport) => {
-					dialog.attr('content', transport.responseText);
-				})
-			});
-
-			dialog.show();
 		}
 	});
 });

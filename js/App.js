@@ -20,6 +20,15 @@ const App = {
    FormFields: {
       hidden: function(name, value, id = "") {
          return `<input id="${id}" dojoType="dijit.form.TextBox" style="display : none" name="${name}" value="${App.escapeHtml(value)}"></input>`
+      },
+      select_hash: function(name, value, values, attributes) {
+         return `
+            <select name="${name}" dojoType="fox.form.Select" ${attributes}>
+               ${Object.keys(values).map((vk) =>
+                     `<option name="" ${vk == value ? 'selected="selected"' : ''} value="${App.escapeHtml(vk)}">${App.escapeHtml(values[vk])}</option>`
+               ).join("")}
+            </select>
+         `
       }
    },
    Scrollable: {

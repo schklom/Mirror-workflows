@@ -1,7 +1,7 @@
 <?php
 class Pref_Users extends Handler_Administrative {
 		function csrf_ignore($method) {
-			$csrf_ignored = array("index", "userdetails");
+			$csrf_ignored = array("index");
 
 			return array_search($method, $csrf_ignored) !== false;
 		}
@@ -9,105 +9,19 @@ class Pref_Users extends Handler_Administrative {
 		function edit() {
 			global $access_level_names;
 
-			print "<form id='user_edit_form' onsubmit='return false' dojoType='dijit.form.Form'>";
+			$id = (int)clean($_REQUEST["id"]);
 
-			print '<div dojoType="dijit.layout.TabContainer" style="height : 400px">
-        		<div dojoType="dijit.layout.ContentPane" title="'.__('Edit user').'">';
-
-			//print "<form id=\"user_edit_form\" onsubmit='return false' dojoType=\"dijit.form.Form\">";
-
-			$id = (int) clean($_REQUEST["id"]);
-
-			print_hidden("id", "$id");
-			print_hidden("op", "pref-users");
-			print_hidden("method", "editSave");
-
-			$sth = $this->pdo->prepare("SELECT * FROM ttrss_users WHERE id = ?");
+			$sth = $this->pdo->prepare("SELECT id, login, access_level, email FROM ttrss_users WHERE id = ?");
 			$sth->execute([$id]);
 
-			if ($row = $sth->fetch()) {
-
-				$login = $row["login"];
-				$access_level = $row["access_level"];
-				$email = $row["email"];
-
-				$sel_disabled = ($id == $_SESSION["uid"] || $login == "admin") ? "disabled" : "";
-
-				print "<header>".__("User")."</header>";
-				print "<section>";
-
-				if ($sel_disabled) {
-					print_hidden("login", "$login");
-				}
-
-				print "<fieldset>";
-				print "<label>" . __("Login:") . "</label>";
-				print "<input style='font-size : 16px'
-					dojoType='dijit.form.ValidationTextBox' required='1'
-					$sel_disabled name='login' value=\"$login\">";
-				print "</fieldset>";
-
-				print "</section>";
-
-				print "<header>".__("Authentication")."</header>";
-				print "<section>";
-
-				print "<fieldset>";
-
-				print "<label>" . __('Access level: ') . "</label> ";
-
-				if (!$sel_disabled) {
-					print_select_hash("access_level", $access_level, $access_level_names,
-						"dojoType=\"fox.form.Select\" $sel_disabled");
-				} else {
-					print_select_hash("", $access_level, $access_level_names,
-						"dojoType=\"fox.form.Select\" $sel_disabled");
-					print_hidden("access_level", "$access_level");
-				}
-
-				print "</fieldset>";
-				print "<fieldset>";
-
-				print "<label>" . __("New password:") . "</label> ";
-				print "<input dojoType='dijit.form.TextBox' type='password' size='20' placeholder='Change password'
-					name='password'>";
-
-				print "</fieldset>";
-
-				print "</section>";
-
-				print "<header>".__("Options")."</header>";
-				print "<section>";
-
-				print "<fieldset>";
-				print "<label>" . __("E-mail:") . "</label> ";
-				print "<input dojoType='dijit.form.TextBox' size='30' name='email'
-					value=\"$email\">";
-				print "</fieldset>";
-
-				print "</section>";
-
-				print "</table>";
-
+			if ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+				print json_encode([
+						"user" => $row,
+						"access_level_names" => $access_level_names
+					]);
+			} else {
+				print json_encode(["error" => "USER_NOT_FOUND"]);
 			}
-
-			print '</div>'; #tab
-			print "<div href=\"backend.php?op=pref-users&method=userdetails&id=$id\"
-				dojoType=\"dijit.layout.ContentPane\" title=\"".__('User details')."\">";
-
-			print '</div>';
-			print '</div>';
-
-			print "<footer>
-				<button dojoType='dijit.form.Button' class='alt-primary' type='submit' onclick='App.dialogOf(this).execute()'>".
-				__('Save')."</button>
-				<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
-				__('Cancel')."</button>
-				</footer>";
-
-			print "</form>";
-
-			return;
 		}
 
 		function userdetails() {
@@ -185,6 +99,12 @@ class Pref_Users extends Handler_Administrative {
 			$access_level = (int) clean($_REQUEST["access_level"]);
 			$email = clean($_REQUEST["email"]);
 			$password = clean($_REQUEST["password"]);
+
+			// no blank usernames
+			if (!$login) return;
+
+			// forbid renaming admin
+			if ($uid == 1) $login = "admin";
 
 			if ($password) {
 				$salt = substr(bin2hex(get_random_bytes(125)), 0, 250);

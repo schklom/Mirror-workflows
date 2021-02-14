@@ -246,8 +246,6 @@ class Pref_Users extends Handler_Protected {
 
 				if ($new_uid = UserHelper::find_user_by_login($login)) {
 
-					$new_uid = $row['id'];
-
 					print T_sprintf("Added user %s with password %s",
 						$login, $tmp_user_pwd);
 

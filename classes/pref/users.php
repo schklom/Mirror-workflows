@@ -251,12 +251,8 @@ class Pref_Users extends Handler_Protected {
 					print T_sprintf("Added user %s with password %s",
 						$login, $tmp_user_pwd);
 
-					$this->initialize_user($new_uid);
-
 				} else {
-
 					print T_sprintf("Could not create user %s", $login);
-
 				}
 			} else {
 				print T_sprintf("User %s already exists.", $login);
@@ -303,10 +299,6 @@ class Pref_Users extends Handler_Protected {
 
 			global $access_level_names;
 
-			print "<div dojoType='dijit.layout.BorderContainer' gutters='false'>";
-			print "<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='top'>";
-			print "<div dojoType='fox.Toolbar'>";
-
 			$user_search = clean($_REQUEST["search"] ?? "");
 
 			if (array_key_exists("search", $_REQUEST)) {
@@ -315,136 +307,116 @@ class Pref_Users extends Handler_Protected {
 				$user_search = ($_SESSION["prefs_user_search"] ?? "");
 			}
 
-			print "<div style='float : right; padding-right : 4px;'>
-				<input dojoType='dijit.form.TextBox' id='user_search' size='20' type='search'
-					value=\"$user_search\">
-				<button dojoType='dijit.form.Button' onclick='Users.reload()'>".
-					__('Search')."</button>
-				</div>";
-
 			$sort = clean($_REQUEST["sort"] ?? "");
 
 			if (!$sort || $sort == "undefined") {
 				$sort = "login";
 			}
 
-			print "<div dojoType='fox.form.DropDownButton'>".
-					"<span>" . __('Select')."</span>";
-			print "<div dojoType='dijit.Menu' style='display: none'>";
-			print "<div onclick=\"Tables.select('users-list', true)\"
-				dojoType='dijit.MenuItem'>".__('All')."</div>";
-			print "<div onclick=\"Tables.select('users-list', false)\"
-				dojoType='dijit.MenuItem'>".__('None')."</div>";
-			print "</div></div>";
-
-			print "<button dojoType='dijit.form.Button' onclick='Users.add()'>".__('Create user')."</button>";
-
-			print "
-				<button dojoType='dijit.form.Button' onclick='Users.editSelected()'>".
-				__('Edit')."</button dojoType=\"dijit.form.Button\">
-				<button dojoType='dijit.form.Button' onclick='Users.removeSelected()'>".
-				__('Remove')."</button dojoType=\"dijit.form.Button\">
-				<button dojoType='dijit.form.Button' onclick='Users.resetSelected()'>".
-				__('Reset password')."</button dojoType=\"dijit.form.Button\">";
-
-			PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION, "prefUsersToolbar");
-
-			print "</div>"; #toolbar
-			print "</div>"; #pane
-			print "<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='center'>";
-
 			$sort = $this->validate_field($sort,
 				["login", "access_level", "created", "num_feeds", "created", "last_login"], "login");
 
 			if ($sort != "login") $sort = "$sort DESC";
 
-			$sth = $this->pdo->prepare("SELECT
-					tu.id,
-					login,access_level,email,
-					".SUBSTRING_FOR_DATE."(last_login,1,16) as last_login,
-					".SUBSTRING_FOR_DATE."(created,1,16) as created,
-					(SELECT COUNT(id) FROM ttrss_feeds WHERE owner_uid = tu.id) AS num_feeds
-				FROM
-					ttrss_users tu
-				WHERE
-					(:search = '' OR login LIKE :search) AND tu.id > 0
-				ORDER BY $sort");
-			$sth->execute([":search" => $user_search ? "%$user_search%" : ""]);
+			?>
 
-			print "<table width='100%' class='users-list' id='users-list'>";
+			<div dojoType='dijit.layout.BorderContainer' gutters='false'>
+				<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='top'>
+					<div dojoType='fox.Toolbar'>
 
-			print "<tr class='title'>
-						<td align='center' width='5%'>&nbsp;</td>
-						<td width='20%'><a href='#' onclick=\"Users.reload('login')\">".__('Login')."</a></td>
-						<td width='20%'><a href='#' onclick=\"Users.reload('access_level')\">".__('Access Level')."</a></td>
-						<td width='10%'><a href='#' onclick=\"Users.reload('num_feeds')\">".__('Subscribed feeds')."</a></td>
-						<td width='20%'><a href='#' onclick=\"Users.reload('created')\">".__('Registered')."</a></td>
-						<td width='20%'><a href='#' onclick=\"Users.reload('last_login')\">".__('Last login')."</a></td></tr>";
+						<div style='float : right'>
+							<input dojoType='dijit.form.TextBox' id='user_search' size='20' type='search'
+								value="<?= htmlspecialchars($user_search) ?>">
+							<button dojoType='dijit.form.Button' onclick='Users.reload()'>
+								<?= __('Search') ?>
+							</button>
+						</div>
 
-			$lnum = 0;
+						<div dojoType='fox.form.DropDownButton'>
+							<span><?= __('Select') ?></span>
+							<div dojoType='dijit.Menu' style='display: none'>
+								<div onclick="Tables.select('users-list', true)"
+									dojoType='dijit.MenuItem'><?= __('All') ?></div>
+								<div onclick="Tables.select('users-list', false)"
+									dojoType='dijit.MenuItem'><?= __('None') ?></div>
+								</div>
+							</div>
 
-			while ($line = $sth->fetch()) {
+						<button dojoType='dijit.form.Button' onclick='Users.add()'>
+							<?= __('Create user') ?>
+						</button>
 
-				$uid = $line["id"];
+						<button dojoType='dijit.form.Button' onclick='Users.editSelected()'>
+							<?= __('Edit') ?>
+						</button dojoType="dijit.form.Button">
 
-				print "<tr data-row-id='$uid' onclick='Users.edit($uid)'>";
+						<button dojoType='dijit.form.Button' onclick='Users.removeSelected()'>
+							<?= __('Remove') ?>
+						</button>
 
-				$line["login"] = htmlspecialchars($line["login"]);
-				$line["created"] = TimeHelper::make_local_datetime($line["created"], false);
-				$line["last_login"] = TimeHelper::make_local_datetime($line["last_login"], false);
+						<button dojoType='dijit.form.Button' onclick='Users.resetSelected()'>
+							<?= __('Reset password') ?>
+						</button>
 
-				print "<td align='center'><input onclick='Tables.onRowChecked(this); event.stopPropagation();'
-					dojoType='dijit.form.CheckBox' type='checkbox'></td>";
+						<?php PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION, "prefUsersToolbar") ?>
 
-				print "<td title='".__('Click to edit')."'><i class='material-icons'>person</i> " . $line["login"] . "</td>";
+					</div>
+				</div>
+				<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='center'>
 
-				print "<td>" .	$access_level_names[$line["access_level"]] . "</td>";
-				print "<td>" . $line["num_feeds"] . "</td>";
-				print "<td>" . $line["created"] . "</td>";
-				print "<td>" . $line["last_login"] . "</td>";
+					<table width='100%' class='users-list' id='users-list'>
 
-				print "</tr>";
+						<tr class='title'>
+							<td align='center' width='5%'> </td>
+							<td width='20%'><a href='#' onclick="Users.reload('login')"><?= ('Login') ?></a></td>
+							<td width='20%'><a href='#' onclick="Users.reload('access_level')"><?= ('Access Level') ?></a></td>
+							<td width='10%'><a href='#' onclick="Users.reload('num_feeds')"><?= ('Subscribed feeds') ?></a></td>
+							<td width='20%'><a href='#' onclick="Users.reload('created')"><?= ('Registered') ?></a></td>
+							<td width='20%'><a href='#' onclick="Users.reload('last_login')"><?= ('Last login') ?></a></td>
+						</tr>
 
-				++$lnum;
-			}
+						<?php
+							$sth = $this->pdo->prepare("SELECT
+									tu.id,
+									login,access_level,email,
+									".SUBSTRING_FOR_DATE."(last_login,1,16) as last_login,
+									".SUBSTRING_FOR_DATE."(created,1,16) as created,
+									(SELECT COUNT(id) FROM ttrss_feeds WHERE owner_uid = tu.id) AS num_feeds
+								FROM
+									ttrss_users tu
+								WHERE
+									(:search = '' OR login LIKE :search) AND tu.id > 0
+								ORDER BY $sort");
+							$sth->execute([":search" => $user_search ? "%$user_search%" : ""]);
 
-			print "</table>";
+							while ($row = $sth->fetch()) { ?>
 
-			if ($lnum == 0) {
-				if (!$user_search) {
-					print_warning(__('No users defined.'));
-				} else {
-					print_warning(__('No matching users found.'));
-				}
-			}
+								<tr data-row-id='<?= $row["id"] ?>' onclick='Users.edit(<?= $row["id"] ?>)' title="<?= __('Click to edit') ?>">
+									<td align='center'>
+										<input onclick='Tables.onRowChecked(this); event.stopPropagation();'
+										dojoType='dijit.form.CheckBox' type='checkbox'>
+									</td>
 
-			print "</div>"; #pane
+									<td><i class='material-icons'>person</i> <?= htmlspecialchars($row["login"]) ?></td>
+									<td><?= $access_level_names[$row["access_level"]] ?></td>
+									<td><?= $row["num_feeds"] ?></td>
+									<td><?= TimeHelper::make_local_datetime($row["created"], false) ?></td>
+									<td><?= TimeHelper::make_local_datetime($row["last_login"], false) ?></td>
+								</tr>
+						<?php } ?>
+					</table>
+				</div>
+				<?php PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefUsers") ?>
+			</div>
+		<?php
+	}
 
-			PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefUsers");
-
-			print "</div>"; #container
-
-		}
-
-		function validate_field($string, $allowed, $default = "") {
+	function validate_field($string, $allowed, $default = "") {
 			if (in_array($string, $allowed))
 				return $string;
 			else
 				return $default;
 		}
-
-	// this is called after user is created to initialize default feeds, labels
-	// or whatever else
-	// user preferences are checked on every login, not here
-	static function initialize_user($uid) {
-
-		$pdo = Db::pdo();
-
-		$sth = $pdo->prepare("insert into ttrss_feeds (owner_uid,title,feed_url)
-			values (?, 'Tiny Tiny RSS: Forum',
-				'https://tt-rss.org/forum/rss.php')");
-		$sth->execute([$uid]);
-	}
 
 	static function logout_user() {
 		if (session_status() === PHP_SESSION_ACTIVE)

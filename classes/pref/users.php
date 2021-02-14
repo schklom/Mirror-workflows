@@ -346,10 +346,6 @@ class Pref_Users extends Handler_Protected {
 							<?= __('Create user') ?>
 						</button>
 
-						<button dojoType='dijit.form.Button' onclick='Users.editSelected()'>
-							<?= __('Edit') ?>
-						</button dojoType="dijit.form.Button">
-
 						<button dojoType='dijit.form.Button' onclick='Users.removeSelected()'>
 							<?= __('Remove') ?>
 						</button>

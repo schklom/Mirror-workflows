@@ -119,23 +119,6 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 				});
 			}
 		},
-		editSelectedFilter: function() {
-			const rows = this.getSelectedFilters();
-
-			if (rows.length == 0) {
-				alert(__("No filters selected."));
-				return;
-			}
-
-			if (rows.length > 1) {
-				alert(__("Please select only one filter."));
-				return;
-			}
-
-			Notify.close();
-
-			this.editFilter(rows[0]);
-		},
 		removeSelectedFilters: function() {
 			const sel_rows = this.getSelectedFilters();
 

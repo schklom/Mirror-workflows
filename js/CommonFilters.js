@@ -243,7 +243,7 @@ const	Filters = {
 			try {
 				const dialog = new fox.SingleUseDialog({
 					id: "filterEditDlg",
-					title: __("Create Filter"),
+					title: id ? __("Edit Filter") : __("Create Filter"),
 					test: function () {
 						Filters.test(this.attr('value'));
 					},

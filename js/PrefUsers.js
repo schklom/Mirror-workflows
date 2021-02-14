@@ -93,21 +93,6 @@ const	Users = {
 			alert(__("No users selected."));
 		}
 	},
-	editSelected: function() {
-		const rows = this.getSelection();
-
-		if (rows.length == 0) {
-			alert(__("No users selected."));
-			return;
-		}
-
-		if (rows.length > 1) {
-			alert(__("Please select one user."));
-			return;
-		}
-
-		this.edit(rows[0]);
-	},
 	getSelection :function() {
 		return Tables.getSelected("users-list");
 	}

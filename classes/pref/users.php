@@ -1,16 +1,5 @@
 <?php
-class Pref_Users extends Handler_Protected {
-		function before($method) {
-			if (parent::before($method)) {
-				if ($_SESSION["access_level"] < 10) {
-					print __("Your access level is insufficient to open this tab.");
-					return false;
-				}
-				return true;
-			}
-			return false;
-		}
-
+class Pref_Users extends Handler_Administrative {
 		function csrf_ignore($method) {
 			$csrf_ignored = array("index", "userdetails");
 

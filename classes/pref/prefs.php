@@ -1317,53 +1317,51 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	private function appPasswordList() {
-		print "<div dojoType='fox.Toolbar'>";
-		print "<div dojoType='fox.form.DropDownButton'>" .
-			"<span>" . __('Select') . "</span>";
-		print "<div dojoType='dijit.Menu' style='display: none'>";
-		print "<div onclick=\"Tables.select('app-password-list', true)\"
-				dojoType=\"dijit.MenuItem\">" . __('All') . "</div>";
-		print "<div onclick=\"Tables.select('app-password-list', false)\"
-				dojoType=\"dijit.MenuItem\">" . __('None') . "</div>";
-		print "</div></div>";
-		print "</div>"; #toolbar
+		?>
+		<div dojoType='fox.Toolbar'>
+			<div dojoType='fox.form.DropDownButton'>
+				<span><?= __('Select') ?></span>
+				<div dojoType='dijit.Menu' style='display: none'>
+					<div onclick="Tables.select('app-password-list', true)"
+						dojoType="dijit.MenuItem"><?= __('All') ?></div>
+					<div onclick="Tables.select('app-password-list', false)"
+						dojoType="dijit.MenuItem"><?= __('None') ?></div>
+				</div>
+			</div>
+		</div>
 
-		print "<div class='panel panel-scrollable'>";
-		print "<table width='100%' id='app-password-list'>";
-		print "<tr>";
-		print "<th width='2%'></th>";
-		print "<th align='left'>".__("Description")."</th>";
-		print "<th align='right'>".__("Created")."</th>";
-		print "<th align='right'>".__("Last used")."</th>";
-		print "</tr>";
+		<div class='panel panel-scrollable'>
+			<table width='100%' id='app-password-list'>
+				<tr>
+					<th width='2%'> </th>
+					<th align='left'><?= __("Description") ?></th>
+					<th align='right'><?= __("Created") ?></th>
+					<th align='right'><?= __("Last used") ?></th>
+				</tr>
+				<?php
+				$sth = $this->pdo->prepare("SELECT id, title, created, last_used
+					FROM ttrss_app_passwords WHERE owner_uid = ?");
+				$sth->execute([$_SESSION['uid']]);
 
-		$sth = $this->pdo->prepare("SELECT id, title, created, last_used
-			FROM ttrss_app_passwords WHERE owner_uid = ?");
-		$sth->execute([$_SESSION['uid']]);
-
-		while ($row = $sth->fetch()) {
-
-			$row_id = $row["id"];
-
-			print "<tr data-row-id='$row_id'>";
-
-			print "<td align='center'>
-						<input onclick='Tables.onRowChecked(this)' dojoType='dijit.form.CheckBox' type='checkbox'></td>";
-			print "<td>" . htmlspecialchars($row["title"]) . "</td>";
-
-			print "<td align='right' class='text-muted'>";
-			print TimeHelper::make_local_datetime($row['created'], false);
-			print "</td>";
-
-			print "<td align='right' class='text-muted'>";
-			print TimeHelper::make_local_datetime($row['last_used'], false);
-			print "</td>";
-
-			print "</tr>";
-		}
-
-		print "</table>";
-		print "</div>";
+				while ($row = $sth->fetch()) { ?>
+					<tr data-row-id='<?= $row['id'] ?>'>
+						<td align='center'>
+							<input onclick='Tables.onRowChecked(this)' dojoType='dijit.form.CheckBox' type='checkbox'>
+						</td>
+						<td>
+							<?= htmlspecialchars($row["title"]) ?>
+						</td>
+						<td align='right' class='text-muted'>
+							<?= TimeHelper::make_local_datetime($row['created'], false) ?>
+						</td>
+						<td align='right' class='text-muted'>
+							<?= TimeHelper::make_local_datetime($row['last_used'], false) ?>
+						</td>
+					</tr>
+				<?php } ?>
+			</table>
+		</div>
+		<?php
 	}
 
 	private function encryptAppPassword($password) {

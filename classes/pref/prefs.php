@@ -1032,7 +1032,6 @@ class Pref_Prefs extends Handler_Protected {
 						if (this.domNode.querySelector('.loading'))
 							window.setTimeout(() => {
 								xhrPost("backend.php", {op: 'pref-prefs', method: 'index_auth'}, (transport) => {
-									console.log(this);
 									this.attr('content', transport.responseText);
 								});
 							}, 100);
@@ -1047,7 +1046,6 @@ class Pref_Prefs extends Handler_Protected {
 						if (this.domNode.querySelector('.loading'))
 							window.setTimeout(() => {
 								xhrPost("backend.php", {op: 'pref-prefs', method: 'index_plugins'}, (transport) => {
-									console.log(this);
 									this.attr('content', transport.responseText);
 								});
 							}, 200);

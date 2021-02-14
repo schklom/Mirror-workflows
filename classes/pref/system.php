@@ -173,10 +173,15 @@ class Pref_System extends Handler_Protected {
 			</div>
 
 			<div dojoType='dijit.layout.AccordionPane' title='<i class="material-icons">info</i> <?= __('PHP Information') ?>'>
-				<script type='dojo/method' event='onSelected' args='evt'>
-					Helpers.System.getPHPInfo(this);
-				</script>
-				<div class='phpinfo'><?= __("Loading, please wait...") ?></div>
+					<script type='dojo/method' event='onSelected' args='evt'>
+						if (this.domNode.querySelector('.loading'))
+							window.setTimeout(() => {
+								xhrPost("backend.php", {op: 'pref-system', method: 'getphpinfo'}, (transport) => {
+									this.attr('content', `<div class='phpinfo'>${transport.responseText}</div>`);
+								});
+							}, 200);
+					</script>
+					<span class='loading'><?= __("Loading, please wait...") ?></span>
 			</div>
 
 			<?php PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefSystem") ?>

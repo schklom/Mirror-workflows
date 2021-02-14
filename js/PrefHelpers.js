@@ -54,11 +54,7 @@ const	Helpers = {
 		},
 	},
 	System: {
-		getPHPInfo: function(widget) {
-			xhrPost("backend.php", {op: 'pref-system', method: 'getphpinfo'}, (transport) => {
-				widget.attr('content', transport.responseText);
-			});
-		}
+		//
 	},
 	EventLog: {
 		log_page: 0,

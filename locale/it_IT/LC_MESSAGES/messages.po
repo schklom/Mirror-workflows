@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-12 19:55+0300\n"
-"PO-Revision-Date: 2021-01-11 10:19+0000\n"
+"PO-Revision-Date: 2021-02-15 11:24+0000\n"
 "Last-Translator: Dario Di Ludovico <dario@diludovico.it>\n"
 "Language-Team: Italian <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "it/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4\n"
+"X-Generator: Weblate 4.4.2\n"
 
 #: backend.php:59
 msgid "Use default"
@@ -406,11 +406,11 @@ msgstr "Non mostra le immagini negli articoli, riduce i refresh automatici."
 
 #: include/login_form.php:158 js/Feeds.js:247
 msgid "Safe mode"
-msgstr ""
+msgstr "Modalità sicura"
 
 #: include/login_form.php:162
 msgid "Uses default theme and prevents all plugins from loading."
-msgstr ""
+msgstr "Usa il tema di default e impedisce il caricamento dei plugin."
 
 #: include/login_form.php:170
 msgid "Remember me"
@@ -1408,16 +1408,16 @@ msgstr "Aggiorna"
 
 #: classes/pref/system.php:75
 msgid "&lt;&lt;"
-msgstr ""
+msgstr "&lt;&lt;"
 
 #: classes/pref/system.php:77
 #, php-format
 msgid "Page %d of %d"
-msgstr ""
+msgstr "Pagina %d di %d"
 
 #: classes/pref/system.php:82
 msgid "&gt;&gt;"
-msgstr ""
+msgstr "&gt;&gt;"
 
 #: classes/pref/system.php:89
 msgid "Severity:"
@@ -1988,9 +1988,8 @@ msgid "Last updated: %s"
 msgstr "Ultimo aggiornamento: %s"
 
 #: classes/feeds.php:65
-#, fuzzy
 msgid "Select articles"
-msgstr "Seleziona tutti gli articoli"
+msgstr "Seleziona gli articoli"
 
 #: classes/feeds.php:66
 msgid "Select..."
@@ -2011,7 +2010,7 @@ msgstr "Inoltra per email"
 
 #: classes/feeds.php:98
 msgid "Delete permanently"
-msgstr ""
+msgstr "Elimina definitivamente"
 
 #: classes/feeds.php:151 classes/feeds.php:546
 msgid "Feed not found."
@@ -2172,9 +2171,8 @@ msgid "Show related articles"
 msgstr "Mostra articoli collegati"
 
 #: plugins/af_psql_trgm/init.php:128
-#, fuzzy
 msgid "Mark similar articles as read (af_psql_trgm)"
-msgstr "Segnare tutti gli articoli simili come letti"
+msgstr "Segnare tutti gli articoli simili come letti (af_psql_trgm)"
 
 #: plugins/af_psql_trgm/init.php:164 plugins/af_readability/init.php:70
 msgid "Global settings"
@@ -2208,9 +2206,8 @@ msgid "Currently enabled for (click to edit):"
 msgstr "Attualmente attivo per (clicca per modificare):"
 
 #: plugins/af_psql_trgm/init.php:222
-#, fuzzy
 msgid "Similarity (af_psql_trgm)"
-msgstr "Somiglianza (pg_trgm)"
+msgstr "Somiglianza (af_pg_trgm)"
 
 #: plugins/af_psql_trgm/init.php:231
 msgid "Mark similar articles as read"
@@ -2749,14 +2746,11 @@ msgstr ""
 
 #: js/App.js:400
 msgid "Update daemon is not running."
-msgstr ""
+msgstr "Il daemon di aggiornamento non è in esecuzione."
 
 #: js/App.js:413
-#, fuzzy
 msgid "Update daemon is not updating feeds."
-msgstr ""
-"<span onclick=\"App.explainError(3)\">Il daemon di aggiornamento non sta "
-"aggiornando i notiziari.</span>"
+msgstr "Il daemon di aggiornamento non sta aggiornando i notiziari."
 
 #: js/App.js:557
 msgid "Unhandled exception"

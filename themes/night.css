@@ -527,22 +527,13 @@ body.ttrss_main #feed_browser_spinner {
   height: 18px;
   width: 18px;
 }
-body.ttrss_main #exceptionDlg .dijitDialogTitleBar {
-  background: red;
-  color: white;
-}
-body.ttrss_main #exceptionDlg .dijitDialogPaneContent {
-  background: #fcc;
-}
-body.ttrss_main #exceptionDlg .error-contents .message {
+body.ttrss_main .exception-contents h3 {
   color: red;
 }
-body.ttrss_main #exceptionDlg .error-contents textarea {
+body.ttrss_main .exception-contents textarea {
   width: 99%;
   height: 200px;
-}
-body.ttrss_main #exceptionDlg .error-contents .dlgButtons {
-  text-align: center;
+  font-size: 11px;
 }
 body.ttrss_main #content-wrap {
   padding: 0px;

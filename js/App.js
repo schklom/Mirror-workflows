@@ -542,29 +542,31 @@ const App = {
 			}
 
 			try {
-				let stack_msg = "";
-
-				if (error.stack)
-					stack_msg += `<div><b>Stack trace:</b></div>
-						<textarea name="stack" readonly="1">${error.stack}</textarea>`;
-
-				if (params.info)
-					stack_msg += `<div><b>Additional information:</b></div>
-						<textarea name="stack" readonly="1">${params.info}</textarea>`;
-
-				const content = `<div class="error-contents">
-						<p class="message">${message}</p>
-						${stack_msg}
-						<div class="dlgButtons">
-							<button dojoType="dijit.form.Button"
-								onclick="dijit.byId('exceptionDlg').hide()">${__('Close this window')}</button>
-						</div>
-					</div>`;
-
 				const dialog = new fox.SingleUseDialog({
-					id: "exceptionDlg",
 					title: params.title || __("Unhandled exception"),
-					content: content
+					content: `
+               <div class='exception-contents'>
+                  <h3>${message}</h3>
+
+                  <header>${__('Stack trace')}</header>
+                  <section>
+                     <textarea readonly='readonly'>${error.stack}</textarea>
+                  </section>
+
+                  ${params && params.info ?
+                     `
+                     <header>${__('Additional information')}</header>
+                     <section>
+                        <textarea readonly='readonly'>${params.info}</textarea>
+                     </section>
+                     ` : ''}
+               </div>
+               <footer class='text-center'>
+                  <button dojoType="dijit.form.Button" class='alt-primary' type='submit'>
+                     ${__('Close this window')}
+                  </button>
+               </footer>
+            </div>`
 				});
 
 				dialog.show();

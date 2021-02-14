@@ -81,7 +81,7 @@ class API extends Handler {
 	}
 
 	function logout() {
-		Pref_Users::logout_user();
+		UserHelper::logout();
 		$this->wrap(self::STATUS_OK, array("status" => "OK"));
 	}
 

@@ -286,7 +286,7 @@ class Handler_Public extends Handler {
 
 	function logout() {
 		if (validate_csrf($_POST["csrf_token"])) {
-			Pref_Users::logout_user();
+			UserHelper::logout();
 			header("Location: index.php");
 		} else {
 			header("Content-Type: text/json");

@@ -564,7 +564,7 @@ class Pref_Prefs extends Handler_Protected {
 		}
 	}
 
-	private function index_auth() {
+	function index_auth() {
 		?>
 		<div dojoType='dijit.layout.TabContainer'>
 			<div dojoType='dijit.layout.ContentPane' title="<?= __('Personal data') ?>">
@@ -953,7 +953,7 @@ class Pref_Prefs extends Handler_Protected {
 		}
 	}
 
-	private function index_plugins() {
+	function index_plugins() {
 		?>
 		<form dojoType="dijit.form.Form" id="changePluginsForm">
 			<script type="dojo/method" event="onSubmit" args="evt">
@@ -1028,13 +1028,31 @@ class Pref_Prefs extends Handler_Protected {
 		?>
 			<div dojoType='dijit.layout.AccordionContainer' region='center'>
 				<div dojoType='dijit.layout.AccordionPane' title="<i class='material-icons'>person</i> <?= __('Personal data / Authentication')?>">
-					<?php $this->index_auth() ?>
+					<script type='dojo/method' event='onSelected' args='evt'>
+						if (this.domNode.querySelector('.loading'))
+							window.setTimeout(() => {
+								xhrPost("backend.php", {op: 'pref-prefs', method: 'index_auth'}, (transport) => {
+									console.log(this);
+									this.attr('content', transport.responseText);
+								});
+							}, 100);
+					</script>
+					<span class='loading'><?= __("Loading, please wait...") ?></span>
 				</div>
 				<div dojoType='dijit.layout.AccordionPane' selected='true' title="<i class='material-icons'>settings</i> <?= __('Preferences') ?>">
 					<?php $this->index_prefs() ?>
 				</div>
 				<div dojoType='dijit.layout.AccordionPane' title="<i class='material-icons'>extension</i> <?= __('Plugins') ?>">
-					<?php $this->index_plugins() ?>
+					<script type='dojo/method' event='onSelected' args='evt'>
+						if (this.domNode.querySelector('.loading'))
+							window.setTimeout(() => {
+								xhrPost("backend.php", {op: 'pref-prefs', method: 'index_plugins'}, (transport) => {
+									console.log(this);
+									this.attr('content', transport.responseText);
+								});
+							}, 200);
+					</script>
+					<span class='loading'><?= __("Loading, please wait...") ?></span>
 				</div>
 				<?php PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefPrefs") ?>
 			</div>

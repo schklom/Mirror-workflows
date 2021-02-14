@@ -12,6 +12,11 @@ class MailTo extends Plugin {
 		$this->host = $host;
 
 		$host->add_hook($host::HOOK_ARTICLE_BUTTON, $this);
+		$host->add_hook($host::HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM, $this);
+	}
+
+	function hook_headline_toolbar_select_menu_item($feed_id, $is_cat) {
+		return "<div dojoType='dijit.MenuItem' onclick='Plugins.Mailto.send()'>".__('Forward by email')."</div>";
 	}
 
 	function get_js() {

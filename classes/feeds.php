@@ -16,103 +16,6 @@ class Feeds extends Handler_Protected {
 		return array_search($method, $csrf_ignored) !== false;
 	}
 
-	private function format_headline_subtoolbar($feed_site_url, $feed_title,
-			$feed_id, $is_cat, $search,
-			$error, $feed_last_updated) {
-
-		$cat_q = $is_cat ? "&is_cat=$is_cat" : "";
-
-		if ($search) {
-			$search_q = "&q=$search";
-		} else {
-			$search_q = "";
-		}
-
-		$reply = "";
-
-		$rss_link = htmlspecialchars(get_self_url_prefix() .
-			"/public.php?op=rss&id=${feed_id}${cat_q}${search_q}");
-
-		$reply .= "<span class='left'>";
-
-		$reply .= "<a href=\"#\"
-				title=\"".__("Show as feed")."\"
-				onclick='CommonDialogs.generatedFeed(\"$feed_id\", \"$is_cat\", \"$rss_link\")'>
-				<i class='icon-syndicate material-icons'>rss_feed</i></a>";
-
-		$reply .= "<span id='feed_title'>";
-
-		if ($feed_site_url) {
-			$last_updated = T_sprintf("Last updated: %s", $feed_last_updated);
-
-			$reply .= "<a title=\"$last_updated\" target='_blank' href=\"$feed_site_url\">".
-				truncate_string(strip_tags($feed_title), 30)."</a>";
-		} else {
-			$reply .= strip_tags($feed_title);
-		}
-
-		if ($error)
-			$reply .= " <i title=\"" . htmlspecialchars($error) . "\" class='material-icons icon-error'>error</i>";
-
-		$reply .= "</span>";
-		$reply .= "<span id='feed_current_unread' style='display: none'></span>";
-		$reply .= "</span>";
-
-		$reply .= "<span class=\"right\">";
-		$reply .= "<span id='selected_prompt'></span>";
-		$reply .= "&nbsp;";
-
-		$reply .= "<div dojoType='fox.form.DropDownButton' title='".__('Select articles')."'>
-			<span>".__("Select...")."</span>
-			<div dojoType='dijit.Menu' style='display: none;'>
-			<div dojoType='dijit.MenuItem' onclick='Headlines.select(\"all\")'>".__('All')."</div>
-			<div dojoType='dijit.MenuItem' onclick='Headlines.select(\"unread\")'>".__('Unread')."</div>
-			<div dojoType='dijit.MenuItem' onclick='Headlines.select(\"invert\")'>".__('Invert')."</div>
-			<div dojoType='dijit.MenuItem' onclick='Headlines.select(\"none\")'>".__('None')."</div>
-			<div dojoType='dijit.MenuSeparator'></div>
-			<div dojoType='dijit.MenuItem' onclick='Headlines.selectionToggleUnread()'>".__('Toggle unread')."</div>
-			<div dojoType='dijit.MenuItem' onclick='Headlines.selectionToggleMarked()'>".__('Toggle starred')."</div>
-			<div dojoType='dijit.MenuItem' onclick='Headlines.selectionTogglePublished()'>".__('Toggle published')."</div>
-			<div dojoType='dijit.MenuSeparator'></div>
-			<div dojoType='dijit.MenuItem' onclick='Headlines.catchupSelection()'>".__('Mark as read')."</div>
-			<div dojoType='dijit.MenuItem' onclick='Article.selectionSetScore()'>".__('Set score')."</div>";
-
-		// TODO: move to mail plugin
-		if (PluginHost::getInstance()->get_plugin("mail")) {
-			$reply .= "<div dojoType='dijit.MenuItem' value='Plugins.Mail.send()'>".__('Forward by email')."</div>";
-		}
-
-		// TODO: move to mailto plugin
-		if (PluginHost::getInstance()->get_plugin("mailto")) {
-			$reply .= "<div dojoType='dijit.MenuItem' value='Plugins.Mailto.send()'>".__('Forward by email')."</div>";
-		}
-
-		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM,
-			function ($result) use (&$reply) {
-				$reply .= $result;
-			},
-			$feed_id, $is_cat);
-
-		if ($feed_id == 0 && !$is_cat) {
-			$reply .= "<div dojoType='dijit.MenuSeparator'></div>
-				<div dojoType='dijit.MenuItem' class='text-error' onclick='Headlines.deleteSelection()'>".__('Delete permanently')."</div>";
-		}
-
-		$reply .= "</div>"; /* menu */
-
-		$reply .= "</div>"; /* dropdown */
-
-		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HEADLINE_TOOLBAR_BUTTON,
-			function ($result) use (&$reply) {
-				$reply .= $result;
-			},
-			$feed_id, $is_cat);
-
-		$reply .= "</span>";
-
-		return $reply;
-	}
-
 	private function format_headlines_list($feed, $method, $view_mode, $limit, $cat_view,
 					$offset, $override_order = false, $include_children = false, $check_first_id = false,
 					$skip_first_id_check = false, $order_by = false) {
@@ -222,10 +125,28 @@ class Feeds extends Handler_Protected {
 		$reply['search_query'] = [$search, $search_language];
 		$reply['vfeed_group_enabled'] = $vfeed_group_enabled;
 
-		$reply['toolbar'] = $this->format_headline_subtoolbar($feed_site_url,
-			$feed_title,
-			$feed, $cat_view, $search,
-			$last_error, $last_updated);
+		$plugin_menu_items = "";
+		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM,
+			function ($result) use (&$plugin_menu_items) {
+				$plugin_menu_items .= $result;
+			},
+			$feed, $cat_view);
+
+		$plugin_buttons = "";
+		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HEADLINE_TOOLBAR_BUTTON,
+			function ($result) use (&$plugin_buttons) {
+				$plugin_buttons .= $result;
+			},
+			$feed, $cat_view);
+
+		$reply['toolbar'] = [
+			'site_url' => $feed_site_url,
+			'title' => truncate_string(strip_tags($feed_title), 30),
+			'error' => $last_error,
+			'last_updated' => $last_updated,
+			'plugin_menu_items' => $plugin_menu_items,
+			'plugin_buttons' => $plugin_buttons,
+		];
 
 		$reply['content'] = [];
 

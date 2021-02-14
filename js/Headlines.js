@@ -566,6 +566,58 @@ const Headlines = {
 			}
 		}
 	},
+	renderToolbar: function(headlines) {
+
+		const tb = headlines['toolbar'];
+		const search_query = Feeds._search_query ? Feeds._search_query.query : "";
+		const target = dijit.byId('toolbar-headlines');
+
+		target.attr('innerHTML',
+		`
+			<span class='left'>
+				<a href="#" title="${__("Show as feed")}"
+					onclick='CommonDialogs.generatedFeed("${headlines.id}", ${headlines.is_cat}, "${App.escapeHtml(search_query)}")'>
+					<i class='icon-syndicate material-icons'>rss_feed</i>
+				</a>
+				${tb.site_url ?
+					`<a class="feed_title" target="_blank" href="${App.escapeHtml(tb.site_url)}" title="${tb.last_updated}">${tb.title}</a>`	:
+					`<span class="feed_title">${tb.title}</span>`}
+				${search_query ?
+					`
+					<span class='cancel_search'>(<a href='#' onclick='Feeds.cancelSearch()'>${__("Cancel search")}</a>)</span>
+					` : ''}
+				${tb.error ? `<i title="${App.escapeHtml(tb.error)}" class='material-icons icon-error'>error</i>` : ''}
+				<span id='feed_current_unread' style='display: none'></span>
+			</span>
+			<span class='right'>
+				<span id='selected_prompt'></span>
+				<div dojoType='fox.form.DropDownButton' title='"${__('Select articles')}'>
+					<span>${__("Select...")}</span>
+					<div dojoType='dijit.Menu' style='display: none;'>
+					<div dojoType='dijit.MenuItem' onclick='Headlines.select("all")'>${__('All')}</div>
+					<div dojoType='dijit.MenuItem' onclick='Headlines.select("unread")'>${__('Unread')}</div>
+					<div dojoType='dijit.MenuItem' onclick='Headlines.select("invert")'>${__('Invert')}</div>
+					<div dojoType='dijit.MenuItem' onclick='Headlines.select("none")'>${__('None')}</div>
+					<div dojoType='dijit.MenuSeparator'></div>
+					<div dojoType='dijit.MenuItem' onclick='Headlines.selectionToggleUnread()'>${__('Toggle unread')}</div>
+					<div dojoType='dijit.MenuItem' onclick='Headlines.selectionToggleMarked()'>${__('Toggle starred')}</div>
+					<div dojoType='dijit.MenuItem' onclick='Headlines.selectionTogglePublished()'>${__('Toggle published')}</div>
+					<div dojoType='dijit.MenuSeparator'></div>
+					<div dojoType='dijit.MenuItem' onclick='Headlines.catchupSelection()'>${__('Mark as read')}</div>
+					<div dojoType='dijit.MenuItem' onclick='Article.selectionSetScore()'>${__('Set score')}</div>
+					${tb.plugin_menu_items}
+					${headlines.id === 0 && !headlines.is_cat ?
+						`
+						<div dojoType='dijit.MenuSeparator'></div>
+						<div dojoType='dijit.MenuItem' class='text-error' onclick='Headlines.deleteSelection()'>${__('Delete permanently')}</div>
+						` : ''}
+				</div>
+				${tb.plugin_buttons}
+			</span>
+		`);
+
+		dojo.parser.parse(target.domNode);
+	},
 	onLoaded: function (transport, offset, append) {
 		const reply = App.handleRpcJson(transport);
 
@@ -613,9 +665,11 @@ const Headlines = {
 				this.headlines = [];
 				this.vgroup_last_feed = undefined;
 
-				dojo.html.set($("toolbar-headlines"),
+				/*dojo.html.set($("toolbar-headlines"),
 					reply['headlines']['toolbar'],
-					{parseContent: true});
+					{parseContent: true});*/
+
+				Headlines.renderToolbar(reply['headlines']);
 
 				if (typeof reply['headlines']['content'] == 'string') {
 					$("headlines-frame").innerHTML = reply['headlines']['content'];
@@ -646,11 +700,12 @@ const Headlines = {
 					hsp.innerHTML = "<a href='#' onclick='Feeds.openNextUnread()'>" +
 						__("Click to open next unread feed.") + "</a>";
 
+				/*
 				if (Feeds._search_query) {
 					$("feed_title").innerHTML += "<span id='cancel_search'>" +
 						" (<a href='#' onclick='Feeds.cancelSearch()'>" + __("Cancel search") + "</a>)" +
 						"</span>";
-				}
+				} */
 
 				Headlines.updateCurrentUnread();
 

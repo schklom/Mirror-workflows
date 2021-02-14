@@ -1358,14 +1358,12 @@ class Pref_Feeds extends Handler_Protected {
 	}
 
 	private function index_shared() {
-		$rss_url = htmlspecialchars(get_self_url_prefix() .
-			"/public.php?op=rss&id=-2&view-mode=all_articles");
 		?>
 
 		<h3><?= __('Published articles can be subscribed by anyone who knows the following URL:') ?></h3>
 
 		<button dojoType='dijit.form.Button' class='alt-primary'
-			onclick='CommonDialogs.generatedFeed(-2, false, "<?= $rss_url ?>", "<?= __("Published articles") ?>")'>
+			onclick="CommonDialogs.generatedFeed(-2, false)">
 			<?= __('Display URL') ?>
 		</button>
 
@@ -1603,11 +1601,23 @@ class Pref_Feeds extends Handler_Protected {
 		print json_encode(["link" => $new_key]);
 	}
 
-	function getFeedKey() {
+	function getsharedurl() {
 		$feed_id = clean($_REQUEST['id']);
-		$is_cat = clean($_REQUEST['is_cat']);
+		$is_cat = clean($_REQUEST['is_cat']) == "true";
+		$search = clean($_REQUEST['search']);
 
-		print json_encode(["link" => Feeds::get_feed_access_key($feed_id, $is_cat, $_SESSION["uid"])]);
+		$link = get_self_url_prefix() . "/public.php?" . http_build_query([
+			'op' => 'rss',
+			'id' => $feed_id,
+			'is_cat' => (int)$is_cat,
+			'q' => $search,
+			'key' => Feeds::get_feed_access_key($feed_id, $is_cat, $_SESSION["uid"])
+		]);
+
+		print json_encode([
+			"title" => Feeds::getFeedTitle($feed_id, $is_cat),
+			"link" => $link
+		]);
 	}
 
 	private function update_feed_access_key($feed_id, $is_cat, $owner_uid) {

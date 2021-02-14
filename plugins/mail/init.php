@@ -15,10 +15,15 @@ class Mail extends Plugin {
 
 		$host->add_hook($host::HOOK_ARTICLE_BUTTON, $this);
 		$host->add_hook($host::HOOK_PREFS_TAB, $this);
+		$host->add_hook($host::HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM, $this);
 	}
 
 	function get_js() {
 		return file_get_contents(dirname(__FILE__) . "/mail.js");
+	}
+
+	function hook_headline_toolbar_select_menu_item($feed_id, $is_cat) {
+		return "<div dojoType='dijit.MenuItem' onclick='Plugins.Mail.send()'>".__('Forward by email')."</div>";
 	}
 
 	function save() {
@@ -32,7 +37,7 @@ class Mail extends Plugin {
 	function hook_prefs_tab($args) {
 		if ($args != "prefPrefs") return;
 
-		print "<div dojoType=\"dijit.layout.AccordionPane\" 
+		print "<div dojoType=\"dijit.layout.AccordionPane\"
 			title=\"<i class='material-icons'>mail</i> ".__('Mail plugin')."\">";
 
 		print "<p>" . __("You can set predefined email addressed here (comma-separated list):") . "</p>";

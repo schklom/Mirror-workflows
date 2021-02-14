@@ -176,9 +176,9 @@
 				});
             ?>
 
-            <form id="toolbar-headlines" action="" style="order : 10" onsubmit='return false'>
+            <div id="toolbar-headlines" dojoType="fox.Toolbar" style="order : 10">
 
-            </form>
+            </div>
 
             <form id="toolbar-main" action="" style="order : 20" onsubmit='return false'>
 

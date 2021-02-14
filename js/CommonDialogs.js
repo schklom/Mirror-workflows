@@ -433,24 +433,19 @@ const	CommonDialogs = {
 				}
 			});
 		},
-		generatedFeed: function(feed, is_cat, rss_url, feed_title) {
+		generatedFeed: function(feed, is_cat, search = "") {
 
 			Notify.progress("Loading, please wait...", true);
 
-			xhrJson("backend.php", {op: "pref-feeds", method: "getFeedKey", id: feed, is_cat: is_cat}, (reply) => {
+			xhrJson("backend.php", {op: "pref-feeds", method: "getsharedurl", id: feed, is_cat: is_cat, search: search}, (reply) => {
 				try {
-					if (!feed_title && typeof Feeds != "undefined")
-						feed_title = Feeds.getName(feed, is_cat);
-
-					const secret_url = rss_url + "&key=" + encodeURIComponent(reply.link);
-
 					const dialog = new fox.SingleUseDialog({
 						title: __("Show as feed"),
 						content: `
-							<header>${__("%s can be accessed via the following secret URL:").replace("%s", feed_title)}</header>
+							<header>${__("%s can be accessed via the following secret URL:").replace("%s", App.escapeHtml(reply.title))}</header>
 							<section>
 								<div class='panel text-center'>
-									<a id='gen_feed_url' href="${App.escapeHtml(secret_url)}" target='_blank'>${secret_url}</a>
+									<a id='gen_feed_url' href="${App.escapeHtml(reply.link)}" target='_blank'>${App.escapeHtml(reply.link)}</a>
 								</div>
 							</section>
 							<footer>

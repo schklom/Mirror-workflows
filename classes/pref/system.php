@@ -76,30 +76,30 @@ class Pref_System extends Handler_Protected {
 			<div region='top' dojoType='fox.Toolbar'>
 
 				<button dojoType='dijit.form.Button' onclick='Helpers.EventLog.refresh()'>
-					<?php echo __('Refresh') ?>
+					<?= __('Refresh') ?>
 				</button>
 
-				<button dojoType='dijit.form.Button' <?php echo ($page <= 0 ? "disabled" : "") ?>
+				<button dojoType='dijit.form.Button' <?= ($page <= 0 ? "disabled" : "") ?>
 					onclick='Helpers.EventLog.prevPage()'>
-					<?php echo __('&lt;&lt;') ?>
+					<?= __('&lt;&lt;') ?>
 				</button>
 
 				<button dojoType='dijit.form.Button' disabled>
-					<?php echo T_sprintf('Page %d of %d', $page+1, $total_pages+1) ?>
+					<?= T_sprintf('Page %d of %d', $page+1, $total_pages+1) ?>
 				</button>
 
-				<button dojoType='dijit.form.Button' <?php echo ($page >= $total_pages ? "disabled" : "") ?>
+				<button dojoType='dijit.form.Button' <?= ($page >= $total_pages ? "disabled" : "") ?>
 					onclick='Helpers.EventLog.nextPage()'>
-					<?php echo __('&gt;&gt;') ?>
+					<?= __('&gt;&gt;') ?>
 				</button>
 
 				<button dojoType='dijit.form.Button'
 					onclick='Helpers.EventLog.clear()'>
-					<?php echo __('Clear') ?>
+					<?= __('Clear') ?>
 				</button>
 
 				<div class='pull-right'>
-					<?php echo __("Severity:") ?>
+					<?= __("Severity:") ?>
 
 					<?php print_select_hash("severity", $severity,
 						[
@@ -115,11 +115,11 @@ class Pref_System extends Handler_Protected {
 				<table width='100%' class='event-log'>
 
 					<tr class='title'>
-						<td width='5%'><?php echo __("Error") ?></td>
-						<td><?php echo __("Filename") ?></td>
-						<td><?php echo __("Message") ?></td>
-						<td width='5%'><?php echo __("User") ?></td>
-						<td width='5%'><?php echo __("Date") ?></td>
+						<td width='5%'><?= __("Error") ?></td>
+						<td><?= __("Filename") ?></td>
+						<td><?= __("Message") ?></td>
+						<td width='5%'><?= __("User") ?></td>
+						<td width='5%'><?= __("Date") ?></td>
 					</tr>
 
 					<?php
@@ -140,13 +140,13 @@ class Pref_System extends Handler_Protected {
 						?>
 						<tr>
 							<td class='errno'>
-								<?php echo Logger::$errornames[$line["errno"]] . " (" . $line["errno"] . ")" ?>
+								<?= Logger::$errornames[$line["errno"]] . " (" . $line["errno"] . ")" ?>
 							</td>
-							<td class='filename'><?php echo  $line["filename"] . ":" . $line["lineno"] ?></td>
-							<td class='errstr'><?php echo  $line["errstr"] . "\n" .  $line["context"] ?></td>
-							<td class='login'><?php echo  $line["login"] ?></td>
+							<td class='filename'><?= $line["filename"] . ":" . $line["lineno"] ?></td>
+							<td class='errstr'><?= $line["errstr"] . "\n" .  $line["context"] ?></td>
+							<td class='login'><?= $line["login"] ?></td>
 							<td class='timestamp'>
-								<?php echo TimeHelper::make_local_datetime($line["created_at"], false) ?>
+								<?= TimeHelper::make_local_datetime($line["created_at"], false) ?>
 							</td>
 						</tr>
 					<?php } ?>
@@ -162,7 +162,7 @@ class Pref_System extends Handler_Protected {
 		$page = (int) ($_REQUEST["page"] ?? 0);
 		?>
 		<div dojoType='dijit.layout.AccordionContainer' region='center'>
-			<div dojoType='dijit.layout.AccordionPane' style='padding : 0' title='<i class="material-icons">report</i> <?php echo __('Event Log') ?>'>
+			<div dojoType='dijit.layout.AccordionPane' style='padding : 0' title='<i class="material-icons">report</i> <?= __('Event Log') ?>'>
 				<?php
 					if (LOG_DESTINATION == "sql") {
 						$this->log_viewer($page, $severity);
@@ -172,11 +172,11 @@ class Pref_System extends Handler_Protected {
 				?>
 			</div>
 
-			<div dojoType='dijit.layout.AccordionPane' title='<i class="material-icons">info</i> <?php echo __('PHP Information') ?>'>
+			<div dojoType='dijit.layout.AccordionPane' title='<i class="material-icons">info</i> <?= __('PHP Information') ?>'>
 				<script type='dojo/method' event='onSelected' args='evt'>
 					Helpers.System.getPHPInfo(this);
 				</script>
-				<div class='phpinfo'><?php echo __("Loading, please wait...") ?></div>
+				<div class='phpinfo'><?= __("Loading, please wait...") ?></div>
 			</div>
 
 			<?php PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefSystem") ?>

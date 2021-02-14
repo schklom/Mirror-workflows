@@ -519,7 +519,7 @@ class Handler_Public extends Handler {
 		<!DOCTYPE html>
 		<html>
 		<head>
-			<title><?php echo __("Share with Tiny Tiny RSS") ?></title>
+			<title><?= __("Share with Tiny Tiny RSS") ?></title>
 			<?php
 			echo javascript_tag("lib/prototype.js");
 			echo javascript_tag("lib/dojo/dojo.js");
@@ -592,22 +592,22 @@ class Handler_Public extends Handler {
 					<input type="hidden" name="action" value="share">
 
 					<fieldset>
-						<label><?php echo __("Title:") ?></label>
-						<input style='width : 270px' dojoType='dijit.form.TextBox' name='title' value="<?php echo $title ?>">
+						<label><?= __("Title:") ?></label>
+						<input style='width : 270px' dojoType='dijit.form.TextBox' name='title' value="<?= $title ?>">
 					</fieldset>
 
 					<fieldset>
-						<label><?php echo __("URL:") ?></label>
-						<input style='width : 270px' name='url' dojoType='dijit.form.TextBox' value="<?php echo $url ?>">
+						<label><?= __("URL:") ?></label>
+						<input style='width : 270px' name='url' dojoType='dijit.form.TextBox' value="<?= $url ?>">
 					</fieldset>
 
 					<fieldset>
-						<label><?php echo __("Content:") ?></label>
+						<label><?= __("Content:") ?></label>
 						<input style='width : 270px' name='content' dojoType='dijit.form.TextBox' value="">
 					</fieldset>
 
 					<fieldset>
-						<label><?php echo __("Labels:") ?></label>
+						<label><?= __("Labels:") ?></label>
 						<input style='width : 270px' name='labels' dojoType='dijit.form.TextBox' id="labels_value"
 						   placeholder='Alpha, Beta, Gamma' value="">
 						<div class="autocomplete" id="labels_choices"
@@ -617,9 +617,9 @@ class Handler_Public extends Handler {
 					<hr/>
 
 					<fieldset>
-						<button dojoType='dijit.form.Button' class="alt-primary" type="submit"><?php echo __('Share') ?></button>
-						<button dojoType='dijit.form.Button' onclick="return window.close()"><?php echo __('Cancel') ?></button>
-						<span class="text-muted small"><?php echo __("Shared article will appear in the Published feed.") ?></span>
+						<button dojoType='dijit.form.Button' class="alt-primary" type="submit"><?= __('Share') ?></button>
+						<button dojoType='dijit.form.Button' onclick="return window.close()"><?= __('Cancel') ?></button>
+						<span class="text-muted small"><?= __("Shared article will appear in the Published feed.") ?></span>
 					</fieldset>
 
 				</form>
@@ -635,24 +635,24 @@ class Handler_Public extends Handler {
 
 			<?php print_error("Not logged in"); ?>
 
-			<form action="public.php?return=<?php echo $return ?>" method="post">
+			<form action="public.php?return=<?= $return ?>" method="post">
 
 				<input type="hidden" name="op" value="login">
 
 				<fieldset>
-					<label><?php echo __("Login:") ?></label>
+					<label><?= __("Login:") ?></label>
 					<input name="login" id="login" dojoType="dijit.form.TextBox" type="text"
 						   onchange="fetchProfiles()" onfocus="fetchProfiles()" onblur="fetchProfiles()"
-						   required="1" value="<?php echo $_SESSION["fake_login"] ?>" />
+						   required="1" value="<?= $_SESSION["fake_login"] ?>" />
 				</fieldset>
 
 				<fieldset>
-					<label><?php echo __("Password:") ?></label>
+					<label><?= __("Password:") ?></label>
 
 					<input type="password" name="password" required="1"
 						   dojoType="dijit.form.TextBox"
 						   class="input input-text"
-						   value="<?php echo $_SESSION["fake_password"] ?>"/>
+						   value="<?= $_SESSION["fake_password"] ?>"/>
 				</fieldset>
 
 				<hr/>
@@ -660,7 +660,7 @@ class Handler_Public extends Handler {
 				<fieldset>
 					<label> </label>
 
-					<button dojoType="dijit.form.Button" type="submit" class="alt-primary"><?php echo __('Log in') ?></button>
+					<button dojoType="dijit.form.Button" type="submit" class="alt-primary"><?= __('Log in') ?></button>
 				</fieldset>
 
 			</form>
@@ -781,7 +781,7 @@ class Handler_Public extends Handler {
 				};
 			</script>
 			<div class="container">
-			<h1><?php echo __("Subscribe to feed...") ?></h1>
+			<h1><?= __("Subscribe to feed...") ?></h1>
 			<div class='content'>
 			<?php
 
@@ -792,14 +792,14 @@ class Handler_Public extends Handler {
 					<?php print_hidden("csrf_token", $_SESSION["csrf_token"]) ?>
 					<fieldset>
 						<label>Feed or site URL:</label>
-						<input style="width: 300px" dojoType="dijit.form.ValidationTextBox" required="1" name="feed_url" value="<?php echo htmlspecialchars($feed_url) ?>">
+						<input style="width: 300px" dojoType="dijit.form.ValidationTextBox" required="1" name="feed_url" value="<?= htmlspecialchars($feed_url) ?>">
 					</fieldset>
 
 					<button class="alt-primary" dojoType="dijit.form.Button" type="submit">
-						<?php echo __("Subscribe") ?>
+						<?= __("Subscribe") ?>
 					</button>
 
-					<a href="index.php"><?php echo __("Return to Tiny Tiny RSS") ?></a>
+					<a href="index.php"><?= __("Return to Tiny Tiny RSS") ?></a>
 				</form>
 				<?php
 			} else {
@@ -1105,7 +1105,7 @@ class Handler_Public extends Handler {
 			<head>
 			<title>Database Updater</title>
 			<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-			<?php echo stylesheet_tag("themes/light.css") ?>
+			<?= stylesheet_tag("themes/light.css") ?>
 			<link rel="shortcut icon" type="image/png" href="images/favicon.png">
 			<link rel="icon" type="image/png" sizes="72x72" href="images/favicon-72px.png">
 			<?php
@@ -1135,7 +1135,7 @@ class Handler_Public extends Handler {
 			</script>
 
 			<div class="container">
-			<h1><?php echo __("Database Updater") ?></h1>
+			<h1><?= __("Database Updater") ?></h1>
 
 			<div class="content">
 

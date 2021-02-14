@@ -717,31 +717,31 @@ class Pref_Filters extends Handler_Protected {
 
 					<div style='float : right; padding-right : 4px;'>
 						<input dojoType="dijit.form.TextBox" id="filter_search" size="20" type="search"
-							value="<?php echo htmlspecialchars($filter_search) ?>">
+							value="<?= htmlspecialchars($filter_search) ?>">
 						<button dojoType="dijit.form.Button" onclick="dijit.byId('filterTree').reload()">
-							<?php echo __('Search') ?></button>
+							<?= __('Search') ?></button>
 					</div>
 
 					<div dojoType="fox.form.DropDownButton">
-						<span><?php echo __('Select') ?></span>
+						<span><?= __('Select') ?></span>
 						<div dojoType="dijit.Menu" style="display: none;">
 							<div onclick="dijit.byId('filterTree').model.setAllChecked(true)"
-								dojoType="dijit.MenuItem"><?php echo __('All') ?></div>
+								dojoType="dijit.MenuItem"><?= __('All') ?></div>
 							<div onclick="dijit.byId('filterTree').model.setAllChecked(false)"
-								dojoType="dijit.MenuItem"><?php echo __('None') ?></div>
+								dojoType="dijit.MenuItem"><?= __('None') ?></div>
 						</div>
 					</div>
 
 					<button dojoType="dijit.form.Button" onclick="return Filters.edit()">
-						<?php echo __('Create filter') ?></button>
+						<?= __('Create filter') ?></button>
 					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').joinSelectedFilters()">
-						<?php echo __('Combine') ?></button>
+						<?= __('Combine') ?></button>
 					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').editSelectedFilter()">
-						<?php echo __('Edit') ?></button>
+						<?= __('Edit') ?></button>
 					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').resetFilterOrder()">
-						<?php echo __('Reset sort order') ?></button>
+						<?= __('Reset sort order') ?></button>
 					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').removeSelectedFilters()">
-						<?php echo __('Remove') ?></button>
+						<?= __('Remove') ?></button>
 
 				</div>
 			</div>

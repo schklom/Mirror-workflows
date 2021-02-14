@@ -63,21 +63,21 @@ class Auth_Internal extends Auth_Base {
 								<title>Tiny Tiny RSS</title>
 								<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 							</head>
-							<?php echo stylesheet_tag("themes/light.css") ?>
+							<?= stylesheet_tag("themes/light.css") ?>
 						<body class="ttrss_utility otp">
-						<h1><?php echo __("Authentication") ?></h1>
+						<h1><?= __("Authentication") ?></h1>
 						<div class="content">
-						<form action="public.php?return=<?php echo $return ?>"
+						<form action="public.php?return=<?= $return ?>"
 								method="POST" class="otpform">
 							<input type="hidden" name="op" value="login">
-							<input type="hidden" name="login" value="<?php echo htmlspecialchars($login) ?>">
-							<input type="hidden" name="password" value="<?php echo htmlspecialchars($password) ?>">
-							<input type="hidden" name="bw_limit" value="<?php echo htmlspecialchars($_POST["bw_limit"]) ?>">
-							<input type="hidden" name="remember_me" value="<?php echo htmlspecialchars($_POST["remember_me"]) ?>">
-							<input type="hidden" name="profile" value="<?php echo htmlspecialchars($_POST["profile"]) ?>">
+							<input type="hidden" name="login" value="<?= htmlspecialchars($login) ?>">
+							<input type="hidden" name="password" value="<?= htmlspecialchars($password) ?>">
+							<input type="hidden" name="bw_limit" value="<?= htmlspecialchars($_POST["bw_limit"]) ?>">
+							<input type="hidden" name="remember_me" value="<?= htmlspecialchars($_POST["remember_me"]) ?>">
+							<input type="hidden" name="profile" value="<?= htmlspecialchars($_POST["profile"]) ?>">
 
 							<fieldset>
-								<label><?php echo __("Please enter your one time password:") ?></label>
+								<label><?= __("Please enter your one time password:") ?></label>
 								<input autocomplete="off" size="6" name="otp" value=""/>
 								<input type="submit" value="Continue"/>
 							</fieldset>

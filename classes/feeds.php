@@ -838,14 +838,14 @@ class Feeds extends Handler_Protected {
 		</script>
 
 			<div class="container">
-				<h1>Feed Debugger: <?php echo "$feed_id: " . $this->getFeedTitle($feed_id) ?></h1>
+				<h1>Feed Debugger: <?= "$feed_id: " . $this->getFeedTitle($feed_id) ?></h1>
 				<div class="content">
 					<form method="post" action="">
 						<input type="hidden" name="op" value="feeds">
 						<input type="hidden" name="method" value="update_debugger">
-						<input type="hidden" name="csrf_token" value="<?php echo $csrf_token ?>">
+						<input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
 						<input type="hidden" name="action" value="do_update">
-						<input type="hidden" name="feed_id" value="<?php echo $feed_id ?>">
+						<input type="hidden" name="feed_id" value="<?= $feed_id ?>">
 
 						<fieldset>
 							<label>
@@ -856,11 +856,11 @@ class Feeds extends Handler_Protected {
 						</fieldset>
 
 						<fieldset>
-							<label class="checkbox"><input dojoType="dijit.form.CheckBox" type="checkbox" name="force_refetch" value="1" <?php echo $refetch_checked ?>> Force refetch</label>
+							<label class="checkbox"><input dojoType="dijit.form.CheckBox" type="checkbox" name="force_refetch" value="1" <?= $refetch_checked ?>> Force refetch</label>
 						</fieldset>
 
 						<fieldset class="narrow">
-							<label class="checkbox"><input dojoType="dijit.form.CheckBox" type="checkbox" name="force_rehash" value="1" <?php echo $rehash_checked ?>> Force rehash</label>
+							<label class="checkbox"><input dojoType="dijit.form.CheckBox" type="checkbox" name="force_rehash" value="1" <?= $rehash_checked ?>> Force rehash</label>
 						</fieldset>
 
 						<button type="submit" dojoType="dijit.form.Button" class="alt-primary">Continue</button>

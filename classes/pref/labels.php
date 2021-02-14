@@ -195,23 +195,23 @@ class Pref_Labels extends Handler_Protected {
 			<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='top'>
 				<div dojoType='fox.Toolbar'>
 					<div dojoType='fox.form.DropDownButton'>
-						<span><?php echo __('Select') ?></span>
+						<span><?= __('Select') ?></span>
 						<div dojoType='dijit.Menu' style='display: none'>
 						<div onclick="dijit.byId('labelTree').model.setAllChecked(true)"
-							dojoType='dijit.MenuItem'><?php echo('All') ?></div>
+							dojoType='dijit.MenuItem'><?=('All') ?></div>
 						<div onclick="dijit.byId('labelTree').model.setAllChecked(false)"
-							dojoType='dijit.MenuItem'><?php echo('None') ?></div>
+							dojoType='dijit.MenuItem'><?=('None') ?></div>
 					</div>
 				</div>
 
 				<button dojoType='dijit.form.Button' onclick='CommonDialogs.addLabel()'>
-					<?php echo('Create label') ?></button dojoType='dijit.form.Button'>
+					<?=('Create label') ?></button dojoType='dijit.form.Button'>
 
 				<button dojoType='dijit.form.Button' onclick="dijit.byId('labelTree').removeSelected()">
-					<?php echo('Remove') ?></button dojoType='dijit.form.Button'>
+					<?=('Remove') ?></button dojoType='dijit.form.Button'>
 
 				<button dojoType='dijit.form.Button' onclick="dijit.byId('labelTree').resetColors()">
-					<?php echo('Clear colors') ?></button dojoType='dijit.form.Button'>
+					<?=('Clear colors') ?></button dojoType='dijit.form.Button'>
 
 				</div>
 			</div>

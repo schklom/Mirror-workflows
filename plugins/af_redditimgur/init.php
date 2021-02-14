@@ -648,11 +648,11 @@ class Af_RedditImgur extends Plugin {
 			<form action="backend.php?op=pluginhandler&method=testurl&plugin=af_redditimgur" method="post">
 				<fieldset>
 					<label>URL:</label>
-					<input name="url" size="100" value="<?php echo htmlspecialchars($url) ?>"></input>
+					<input name="url" size="100" value="<?= htmlspecialchars($url) ?>"></input>
 				</fieldset>
 				<fieldset>
 					<label>Article URL:</label>
-					<input name="article_url" size="100" value="<?php echo htmlspecialchars($article_url) ?>"></input>
+					<input name="article_url" size="100" value="<?= htmlspecialchars($article_url) ?>"></input>
 				</fieldset>
 				<fieldset>
 					<button type="submit">Test</button>

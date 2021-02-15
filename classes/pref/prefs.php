@@ -268,7 +268,7 @@ class Pref_Prefs extends Handler_Protected {
 				AND owner_uid = :uid");
 		$sth->execute([":profile" => $_SESSION['profile'], ":uid" => $_SESSION['uid']]);
 
-		$this->initialize_user_prefs($_SESSION["uid"], $_SESSION["profile"]);
+		$this->_init_user_prefs($_SESSION["uid"], $_SESSION["profile"]);
 
 		echo __("Your preferences are now set to default values.");
 	}
@@ -588,9 +588,9 @@ class Pref_Prefs extends Handler_Protected {
 
 		if ($profile) {
 			print_notice(__("Some preferences are only available in default profile."));
-			$this->initialize_user_prefs($_SESSION["uid"], $profile);
+			$this->_init_user_prefs($_SESSION["uid"], $profile);
 		} else {
-			$this->initialize_user_prefs($_SESSION["uid"]);
+			$this->_init_user_prefs($_SESSION["uid"]);
 		}
 
 		$prefs_available = [];
@@ -621,7 +621,7 @@ class Pref_Prefs extends Handler_Protected {
 			}
 
 			$pref_name = $line["pref_name"];
-			$short_desc = $this->getShortDesc($pref_name);
+			$short_desc = $this->_get_short_desc($pref_name);
 
 			if (!$short_desc)
 				continue;
@@ -629,7 +629,7 @@ class Pref_Prefs extends Handler_Protected {
 			$prefs_available[$pref_name] = [
 				'type_name' => $line["type_name"],
 				'value' => $line['value'],
-				'help_text' => $this->getHelpText($pref_name),
+				'help_text' => $this->_get_help_text($pref_name),
 				'short_desc' => $short_desc
 			];
 		}
@@ -1318,14 +1318,14 @@ class Pref_Prefs extends Handler_Protected {
 
 	}
 
-	private function getShortDesc($pref_name) {
+	private function _get_short_desc($pref_name) {
 		if (isset($this->pref_help[$pref_name][0])) {
 			return $this->pref_help[$pref_name][0];
 		}
 		return "";
 	}
 
-	private function getHelpText($pref_name) {
+	private function _get_help_text($pref_name) {
 		if (isset($this->pref_help[$pref_name][1])) {
 			return $this->pref_help[$pref_name][1];
 		}
@@ -1380,7 +1380,7 @@ class Pref_Prefs extends Handler_Protected {
 		<?php
 	}
 
-	private function encryptAppPassword($password) {
+	private function _encrypt_app_password($password) {
 		$salt = substr(bin2hex(get_random_bytes(24)), 0, 24);
 
 		return "SSHA-512:".hash('sha512', $salt . $password). ":$salt";
@@ -1399,7 +1399,7 @@ class Pref_Prefs extends Handler_Protected {
 	function generateAppPassword() {
 		$title = clean($_REQUEST['title']);
 		$new_password = make_password(16);
-		$new_password_hash = $this->encryptAppPassword($new_password);
+		$new_password_hash = $this->_encrypt_app_password($new_password);
 
 		print_warning(T_sprintf("Generated password <strong>%s</strong> for %s. Please remember it for future reference.", $new_password, $title));
 
@@ -1413,7 +1413,7 @@ class Pref_Prefs extends Handler_Protected {
 		$this->appPasswordList();
 	}
 
-	static function initialize_user_prefs($uid, $profile = false) {
+	static function _init_user_prefs($uid, $profile = false) {
 
 		if (get_schema_version() < 63) $profile_qpart = "";
 

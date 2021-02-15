@@ -950,7 +950,7 @@ class Handler_Public extends Handler {
 								WHERE id = ?");
 							$sth->execute([$id]);
 
-							Pref_Users::resetUserPassword($id, true);
+							Pref_Users::_reset_password($id, true);
 
 							print "<p>"."Completed."."</p>";
 

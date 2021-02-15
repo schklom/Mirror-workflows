@@ -166,7 +166,7 @@ class Pref_Users extends Handler_Administrative {
 			}
 		}
 
-		static function resetUserPassword($uid, $format_output = false) {
+		static function _reset_password($uid, $format_output = false) {
 
 			$pdo = Db::pdo();
 
@@ -199,7 +199,7 @@ class Pref_Users extends Handler_Administrative {
 
 		function resetPass() {
 			$uid = clean($_REQUEST["id"]);
-			self::resetUserPassword($uid);
+			self::_reset_password($uid);
 		}
 
 		function index() {
@@ -220,7 +220,7 @@ class Pref_Users extends Handler_Administrative {
 				$sort = "login";
 			}
 
-			$sort = $this->validate_field($sort,
+			$sort = $this->_validate_field($sort,
 				["login", "access_level", "created", "num_feeds", "created", "last_login"], "login");
 
 			if ($sort != "login") $sort = "$sort DESC";
@@ -314,7 +314,7 @@ class Pref_Users extends Handler_Administrative {
 		<?php
 	}
 
-	function validate_field($string, $allowed, $default = "") {
+	private function _validate_field($string, $allowed, $default = "") {
 			if (in_array($string, $allowed))
 				return $string;
 			else

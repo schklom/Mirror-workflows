@@ -23,7 +23,7 @@ class Pref_System extends Handler_Administrative {
 		print preg_replace( '%^.*<body>(.*)</body>.*$%ms','$1', (string)$info);
 	}
 
-	private function log_viewer(int $page, int $severity) {
+	private function _log_viewer(int $page, int $severity) {
 		$errno_values = [];
 
 		switch ($severity) {
@@ -154,7 +154,7 @@ class Pref_System extends Handler_Administrative {
 			<div dojoType='dijit.layout.AccordionPane' style='padding : 0' title='<i class="material-icons">report</i> <?= __('Event Log') ?>'>
 				<?php
 					if (LOG_DESTINATION == "sql") {
-						$this->log_viewer($page, $severity);
+						$this->_log_viewer($page, $severity);
 					} else {
 						print_notice("Please set LOG_DESTINATION to 'sql' in config.php to enable database logging.");
 					}

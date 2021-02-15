@@ -162,7 +162,7 @@ class Pref_Filters extends Handler_Protected {
 		print json_encode($rv);
 	}
 
-	private function getfilterrules_list($filter_id) {
+	private function _get_rules_list($filter_id) {
 		$sth = $this->pdo->prepare("SELECT reg_exp,
 			inverse,
 			match_on,
@@ -250,7 +250,7 @@ class Pref_Filters extends Handler_Protected {
 
 		while ($line = $sth->fetch()) {
 
-			$name = $this->getFilterName($line["id"]);
+			$name = $this->_get_name($line["id"]);
 
 			$match_ok = false;
 			if ($filter_search) {
@@ -292,7 +292,7 @@ class Pref_Filters extends Handler_Protected {
 			$filter['checkbox'] = false;
 			$filter['last_triggered'] = $line["last_triggered"] ? TimeHelper::make_local_datetime($line["last_triggered"], false) : null;
 			$filter['enabled'] = sql_bool_to_bool($line["enabled"]);
-			$filter['rules'] = $this->getfilterrules_list($line['id']);
+			$filter['rules'] = $this->_get_rules_list($line['id']);
 
 			if (!$filter_search || $match_ok) {
 				array_push($folder['items'], $filter);
@@ -391,7 +391,7 @@ class Pref_Filters extends Handler_Protected {
 					$data = htmlspecialchars((string)json_encode($line));
 
 					print "<li><input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
-						<span onclick='App.dialogOf(this).editRule(this)'>".$this->getRuleName($line)."</span>".
+						<span onclick='App.dialogOf(this).editRule(this)'>".$this->_get_rule_name($line)."</span>".
 						format_hidden("rule[]", $data)."</li>";
 				}
 			}
@@ -433,7 +433,7 @@ class Pref_Filters extends Handler_Protected {
 					$data = htmlspecialchars((string)json_encode($line));
 
 					print "<li><input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
-						<span onclick='App.dialogOf(this).editAction(this)'>".$this->getActionName($line)."</span>".
+						<span onclick='App.dialogOf(this).editAction(this)'>".$this->_get_action_name($line)."</span>".
 						format_hidden("action[]", $data)."</li>";
 				}
 			}
@@ -482,7 +482,7 @@ class Pref_Filters extends Handler_Protected {
 		}
 	}
 
-	private function getRuleName($rule) {
+	private function _get_rule_name($rule) {
 		if (!$rule) $rule = json_decode(clean($_REQUEST["rule"]), true);
 
 		$feeds = $rule["feed_id"];
@@ -523,10 +523,10 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	function printRuleName() {
-		print $this->getRuleName(json_decode(clean($_REQUEST["rule"]), true));
+		print $this->_get_rule_name(json_decode(clean($_REQUEST["rule"]), true));
 	}
 
-	private function getActionName($action) {
+	private function _get_action_name($action) {
 		$sth = $this->pdo->prepare("SELECT description FROM
 			ttrss_filter_actions WHERE id = ?");
 		$sth->execute([(int)$action["action_id"]]);
@@ -561,7 +561,7 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	function printActionName() {
-		print $this->getActionName(json_decode(clean($_REQUEST["action"]), true));
+		print $this->_get_action_name(json_decode(clean($_REQUEST["action"]), true));
 	}
 
 	function editSave() {
@@ -581,7 +581,7 @@ class Pref_Filters extends Handler_Protected {
 
 		$sth->execute([$enabled, $match_any_rule, $inverse, $title, $filter_id, $_SESSION['uid']]);
 
-		$this->saveRulesAndActions($filter_id);
+		$this->_save_rules_and_actions($filter_id);
 
 		$this->pdo->commit();
 	}
@@ -596,7 +596,7 @@ class Pref_Filters extends Handler_Protected {
 		$sth->execute(array_merge($ids, [$_SESSION['uid']]));
 	}
 
-	private function saveRulesAndActions($filter_id)
+	private function _save_rules_and_actions($filter_id)
 	{
 
 		$sth = $this->pdo->prepare("DELETE FROM ttrss_filters2_rules WHERE filter_id = ?");
@@ -696,7 +696,7 @@ class Pref_Filters extends Handler_Protected {
 
 		if ($row = $sth->fetch()) {
 			$filter_id = $row['id'];
-			$this->saveRulesAndActions($filter_id);
+			$this->_save_rules_and_actions($filter_id);
 		}
 
 		$this->pdo->commit();
@@ -941,7 +941,7 @@ class Pref_Filters extends Handler_Protected {
 		print "</form>";
 	}
 
-	private function getFilterName($id) {
+	private function _get_name($id) {
 
 		$sth = $this->pdo->prepare(
 			"SELECT title,match_any_rule,f.inverse AS inverse,COUNT(DISTINCT r.id) AS num_rules,COUNT(DISTINCT a.id) AS num_actions
@@ -970,7 +970,7 @@ class Pref_Filters extends Handler_Protected {
 			$actions = "";
 
 			if ($line = $sth->fetch()) {
-				$actions = $this->getActionName($line);
+				$actions = $this->_get_action_name($line);
 
 				$num_actions -= 1;
 			}
@@ -1012,12 +1012,12 @@ class Pref_Filters extends Handler_Protected {
 
 			$this->pdo->commit();
 
-			$this->optimizeFilter($base_id);
+			$this->_optimize($base_id);
 
 		}
 	}
 
-	private function optimizeFilter($id) {
+	private function _optimize($id) {
 
 		$this->pdo->beginTransaction();
 

@@ -52,7 +52,7 @@ class RPC extends Handler_Protected {
 					$profile_id = $row['id'];
 
 					if ($profile_id) {
-						Pref_Prefs::initialize_user_prefs($_SESSION["uid"], $profile_id);
+						Pref_Prefs::_init_user_prefs($_SESSION["uid"], $profile_id);
 					}
 				}
 			}

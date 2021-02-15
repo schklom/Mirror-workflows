@@ -41,7 +41,7 @@ class UserHelper {
 				$_SESSION["user_agent"] = sha1($_SERVER['HTTP_USER_AGENT']);
 				$_SESSION["pwd_hash"] = $row["pwd_hash"];
 
-				Pref_Prefs::initialize_user_prefs($_SESSION["uid"]);
+				Pref_Prefs::_init_user_prefs($_SESSION["uid"]);
 
 				return true;
 			}
@@ -64,7 +64,7 @@ class UserHelper {
 
 			$_SESSION["ip_address"] = UserHelper::get_user_ip();
 
-			Pref_Prefs::initialize_user_prefs($_SESSION["uid"]);
+			Pref_Prefs::_init_user_prefs($_SESSION["uid"]);
 
 			return true;
 		}

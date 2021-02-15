@@ -12,7 +12,7 @@ class Counters {
 		return $data;
 	}
 
-	static private function getCategoryChildrenCounters($cat_id, $owner_uid) {
+	static private function get_cat_children($cat_id, $owner_uid) {
 		$pdo = Db::pdo();
 
 		$sth = $pdo->prepare("SELECT id FROM ttrss_feed_categories WHERE parent_cat = ?
@@ -23,7 +23,7 @@ class Counters {
 		$marked = 0;
 
 		while ($line = $sth->fetch()) {
-			list ($tmp_unread, $tmp_marked) = self::getCategoryChildrenCounters($line["id"], $owner_uid);
+			list ($tmp_unread, $tmp_marked) = self::get_cat_children($line["id"], $owner_uid);
 
 			$unread += $tmp_unread + Feeds::_get_cat_unread($line["id"], $owner_uid);
 			$marked += $tmp_marked + Feeds::_get_cat_marked($line["id"], $owner_uid);
@@ -68,7 +68,7 @@ class Counters {
 
 		while ($line = $sth->fetch()) {
 			if ($line["num_children"] > 0) {
-				list ($child_counter, $child_marked_counter) = self::getCategoryChildrenCounters($line["id"], $_SESSION["uid"]);
+				list ($child_counter, $child_marked_counter) = self::get_cat_children($line["id"], $_SESSION["uid"]);
 			} else {
 				$child_counter = 0;
 				$child_marked_counter = 0;

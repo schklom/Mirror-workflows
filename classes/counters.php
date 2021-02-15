@@ -1,13 +1,13 @@
 <?php
 class Counters {
 
-	static function getAllCounters() {
-		$data = self::getGlobalCounters();
+	static function get_all() {
+		$data = self::get_global();
 
-		$data = array_merge($data, self::getVirtCounters());
-		$data = array_merge($data, self::getLabelCounters());
-		$data = array_merge($data, self::getFeedCounters());
-		$data = array_merge($data, self::getCategoryCounters());
+		$data = array_merge($data, self::get_virt(),
+			self::get_labels(),
+			self::get_feeds(),
+			self::get_cats());
 
 		return $data;
 	}
@@ -32,7 +32,7 @@ class Counters {
 		return [$unread, $marked];
 	}
 
-	static function getCategoryCounters() {
+	private static function get_cats() {
 		$ret = [];
 
 		/* Labels category */
@@ -90,7 +90,7 @@ class Counters {
 	}
 
 
-	static function getFeedCounters($active_feed = false) {
+	private static function get_feeds($active_feed = false) {
 
 		$ret = [];
 
@@ -145,7 +145,7 @@ class Counters {
 		return $ret;
 	}
 
-	static function getGlobalCounters($global_unread = -1) {
+	private static function get_global($global_unread = -1) {
 		$ret = [];
 
 		if ($global_unread == -1) {
@@ -178,7 +178,7 @@ class Counters {
 		return $ret;
 	}
 
-	static function getVirtCounters() {
+	private static function get_virt() {
 
 		$ret = [];
 
@@ -222,7 +222,7 @@ class Counters {
 		return $ret;
 	}
 
-	static function getLabelCounters($descriptions = false) {
+	static function get_labels($descriptions = false) {
 
 		$ret = [];
 

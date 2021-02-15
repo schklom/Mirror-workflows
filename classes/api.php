@@ -102,7 +102,7 @@ class API extends Handler {
 
 	/* Method added for ttrss-reader for Android */
 	function getCounters() {
-		$this->wrap(self::STATUS_OK, Counters::getAllCounters());
+		$this->wrap(self::STATUS_OK, Counters::get_all());
 	}
 
 	function getFeeds() {
@@ -510,7 +510,7 @@ class API extends Handler {
 
 			/* API only: -4 All feeds, including virtual feeds */
 			if ($cat_id == -4 || $cat_id == -2) {
-				$counters = Counters::getLabelCounters(true);
+				$counters = Counters::get_labels(true);
 
 				foreach (array_values($counters) as $cv) {
 

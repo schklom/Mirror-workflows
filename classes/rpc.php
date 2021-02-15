@@ -141,7 +141,7 @@ class RPC extends Handler_Protected {
 		@$seq = (int) $_REQUEST['seq'];
 
 		$reply = [
-			'counters' => Counters::getAllCounters(),
+			'counters' => Counters::get_all(),
 			'seq' => $seq
 		];
 
@@ -222,7 +222,7 @@ class RPC extends Handler_Protected {
 		Feeds::_catchup($feed_id, $is_cat, false, $mode, [$search_query, $search_lang]);
 
 		// return counters here synchronously so that frontend can figure out next unread feed properly
-		print json_encode(['counters' => Counters::getAllCounters()]);
+		print json_encode(['counters' => Counters::get_all()]);
 
 		//print json_encode(array("message" => "UPDATE_COUNTERS"));
 	}

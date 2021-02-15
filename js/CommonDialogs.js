@@ -369,35 +369,6 @@ const	CommonDialogs = {
 
 			dialog.show();
 		},
-		genUrlChangeKey: function(feed, is_cat) {
-			if (confirm(__("Generate new syndication address for this feed?"))) {
-
-				Notify.progress("Trying to change address...", true);
-
-				const query = {op: "pref-feeds", method: "regenFeedKey", id: feed, is_cat: is_cat};
-
-				xhrJson("backend.php", query, (reply) => {
-					const new_link = reply.link;
-					const e = $('gen_feed_url');
-
-					if (new_link) {
-						e.innerHTML = e.innerHTML.replace(/&amp;key=.*$/,
-							"&amp;key=" + new_link);
-
-						e.href = e.href.replace(/&key=.*$/,
-							"&key=" + new_link);
-
-						new Effect.Highlight(e);
-
-						Notify.close();
-
-					} else {
-						Notify.error("Could not change feed URL.");
-					}
-				});
-			}
-			return false;
-		},
 		publishedOPML: function() {
 
 			Notify.progress("Loading, please wait...", true);
@@ -406,15 +377,40 @@ const	CommonDialogs = {
 				try {
 					const dialog = new fox.SingleUseDialog({
 						title: __("Public OPML URL"),
+						regenOPMLKey: function() {
+							if (confirm(__("Replace current OPML publishing address with a new one?"))) {
+								Notify.progress("Trying to change address...", true);
+
+								xhrJson("backend.php", {op: "pref-feeds", method: "regenOPMLKey"}, (reply) => {
+									if (reply) {
+										const new_link = reply.link;
+										const target = this.domNode.querySelector('.generated_url');
+
+										if (new_link && target) {
+											target.href = new_link;
+											target.innerHTML = new_link;
+
+											new Effect.Highlight(target);
+
+											Notify.close();
+
+										} else {
+											Notify.error("Could not change feed URL.");
+										}
+									}
+								});
+							}
+							return false;
+						},
 						content: `
 							<header>${__("Your Public OPML URL is:")}</header>
 							<section>
 								<div class='panel text-center'>
-									<a id='pub_opml_url' href="${App.escapeHtml(reply.link)}" target='_blank'>${reply.link}</a>
+									<a class='generated_url' href="${App.escapeHtml(reply.link)}" target='_blank'>${App.escapeHtml(reply.link)}</a>
 								</div>
 							</section>
 							<footer class='text-center'>
-								<button dojoType='dijit.form.Button' onclick="return Helpers.OPML.changeKey()">
+								<button dojoType='dijit.form.Button' onclick="return App.dialogOf(this).regenOPMLKey()">
 									${__('Generate new URL')}
 								</button>
 								<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>
@@ -441,18 +437,47 @@ const	CommonDialogs = {
 				try {
 					const dialog = new fox.SingleUseDialog({
 						title: __("Show as feed"),
+						regenFeedKey: function(feed, is_cat) {
+							if (confirm(__("Generate new syndication address for this feed?"))) {
+
+								Notify.progress("Trying to change address...", true);
+
+								const query = {op: "pref-feeds", method: "regenFeedKey", id: feed, is_cat: is_cat};
+
+								xhrJson("backend.php", query, (reply) => {
+									const new_link = reply.link;
+									const target = this.domNode.querySelector(".generated_url");
+
+									if (new_link && target) {
+										target.innerHTML = target.innerHTML.replace(/&amp;key=.*$/,
+											"&amp;key=" + new_link);
+
+										target.href = target.href.replace(/&key=.*$/,
+											"&key=" + new_link);
+
+										new Effect.Highlight(target);
+
+										Notify.close();
+
+									} else {
+										Notify.error("Could not change feed URL.");
+									}
+								});
+							}
+							return false;
+						},
 						content: `
 							<header>${__("%s can be accessed via the following secret URL:").replace("%s", App.escapeHtml(reply.title))}</header>
 							<section>
 								<div class='panel text-center'>
-									<a id='gen_feed_url' href="${App.escapeHtml(reply.link)}" target='_blank'>${App.escapeHtml(reply.link)}</a>
+									<a class='generated_url' href="${App.escapeHtml(reply.link)}" target='_blank'>${App.escapeHtml(reply.link)}</a>
 								</div>
 							</section>
 							<footer>
 								<button dojoType='dijit.form.Button' style='float : left' class='alt-info'
 									onclick='window.open("https://tt-rss.org/wiki/GeneratedFeeds")'>
 									<i class='material-icons'>help</i> ${__("More info...")}</button>
-								<button dojoType='dijit.form.Button' onclick="return CommonDialogs.genUrlChangeKey('${feed}', '${is_cat}')">
+								<button dojoType='dijit.form.Button' onclick="return App.dialogOf(this).regenFeedKey('${feed}', '${is_cat}')">
 									${__('Generate new URL')}
 								</button>
 								<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>

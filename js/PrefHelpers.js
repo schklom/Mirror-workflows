@@ -291,30 +291,5 @@ const	Helpers = {
 			console.log("export");
 			window.open("backend.php?op=opml&method=export&" + dojo.formToQuery("opmlExportForm"));
 		},
-		changeKey: function() {
-			if (confirm(__("Replace current OPML publishing address with a new one?"))) {
-				Notify.progress("Trying to change address...", true);
-
-				xhrJson("backend.php", {op: "pref-feeds", method: "regenOPMLKey"}, (reply) => {
-					if (reply) {
-						const new_link = reply.link;
-						const e = $('pub_opml_url');
-
-						if (new_link) {
-							e.href = new_link;
-							e.innerHTML = new_link;
-
-							new Effect.Highlight(e);
-
-							Notify.close();
-
-						} else {
-							Notify.error("Could not change feed URL.");
-						}
-					}
-				});
-			}
-			return false;
-		},
 	}
 };

@@ -332,7 +332,7 @@ const	Filters = {
 
 						} else {
 
-							const query = {op: "article", method: "get_metadata_by_id", id: Article.getActive()};
+							const query = {op: "article", method: "getmetadatabyid", id: Article.getActive()};
 
 							xhrPost("backend.php", query, (transport) => {
 								const reply = JSON.parse(transport.responseText);

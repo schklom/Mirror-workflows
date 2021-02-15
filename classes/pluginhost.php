@@ -47,7 +47,7 @@ class PluginHost {
 	const HOOK_QUERY_HEADLINES = "hook_query_headlines";										// hook_query_headlines($row) (byref)
 	const HOOK_HOUSE_KEEPING = "hook_house_keeping"; //*1										// GLOBAL: hook_house_keeping()
 	const HOOK_SEARCH = "hook_search";																// hook_search($query)
-	const HOOK_FORMAT_ENCLOSURES = "hook_format_enclosures";									// hook_format_enclosures($rv, $result, $id, $always_display_enclosures, $article_content, $hide_images) (byref)
+	const HOOK_FORMAT_ENCLOSURES = "hook_format_enclosures";									// hook__format_enclosures($rv, $result, $id, $always_display_enclosures, $article_content, $hide_images) (byref)
 	const HOOK_SUBSCRIBE_FEED = "hook_subscribe_feed";											// hook_subscribe_feed($contents, $url, $auth_login, $auth_pass) (byref)
 	const HOOK_HEADLINES_BEFORE = "hook_headlines_before";									// hook_headlines_before($feed, $is_cat, $qfh_ret)
 	const HOOK_RENDER_ENCLOSURE = "hook_render_enclosure";									// hook_render_enclosure($entry, $hide_images)

@@ -723,9 +723,9 @@ class RSSUtils {
 				if ($row = $sth->fetch()) {
 					$base_entry_id = $row["id"];
 					$entry_stored_hash = $row["content_hash"];
-					$article_labels = Article::get_article_labels($base_entry_id, $owner_uid);
+					$article_labels = Article::_get_labels($base_entry_id, $owner_uid);
 
-					$existing_tags = Article::get_article_tags($base_entry_id, $owner_uid);
+					$existing_tags = Article::_get_tags($base_entry_id, $owner_uid);
 					$entry_tags = array_unique(array_merge($entry_tags, $existing_tags));
 				} else {
 					$base_entry_id = false;
@@ -739,7 +739,7 @@ class RSSUtils {
 
 				$enclosures = array();
 
-				$encs = $item->get_enclosures();
+				$encs = $item->_get_enclosures();
 
 				if (is_array($encs)) {
 					foreach ($encs as $e) {
@@ -1636,7 +1636,7 @@ class RSSUtils {
 		self::cleanup_feed_icons();
 		self::disable_failed_feeds();
 
-		Article::purge_orphans();
+		Article::_purge_orphans();
 		self::cleanup_counters_cache();
 
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_HOUSE_KEEPING);

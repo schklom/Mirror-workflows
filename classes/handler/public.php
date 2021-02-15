@@ -82,7 +82,7 @@ class Handler_Public extends Handler {
 			while ($line = $result->fetch()) {
 
 				$line["content_preview"] = Sanitizer::sanitize(truncate_string(strip_tags($line["content"]), 100, '...'));
-				$line["tags"] = Article::get_article_tags($line["id"], $owner_uid);
+				$line["tags"] = Article::_get_tags($line["id"], $owner_uid);
 
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_QUERY_HEADLINES,
 					function ($result) use (&$line) {
@@ -131,7 +131,7 @@ class Handler_Public extends Handler {
 					$tpl->addBlock('category');
 				}
 
-				$enclosures = Article::get_enclosures($line["id"]);
+				$enclosures = Article::_get_enclosures($line["id"]);
 
 				if (count($enclosures) > 0) {
 					foreach ($enclosures as $e) {
@@ -151,7 +151,7 @@ class Handler_Public extends Handler {
 					$tpl->setVariable('ARTICLE_ENCLOSURE_LENGTH', null, true);
 				}
 
-				list ($og_image, $og_stream) = Article::get_article_image($enclosures, $line['content'], $feed_site_url);
+				list ($og_image, $og_stream) = Article::_get_image($enclosures, $line['content'], $feed_site_url);
 
 				$tpl->setVariable('ARTICLE_OG_IMAGE', $og_image, true);
 
@@ -184,7 +184,7 @@ class Handler_Public extends Handler {
 			while ($line = $result->fetch()) {
 
 				$line["content_preview"] = Sanitizer::sanitize(truncate_string(strip_tags($line["content_preview"]), 100, '...'));
-				$line["tags"] = Article::get_article_tags($line["id"], $owner_uid);
+				$line["tags"] = Article::_get_tags($line["id"], $owner_uid);
 
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_QUERY_HEADLINES,
 					function ($result) use (&$line) {
@@ -218,7 +218,7 @@ class Handler_Public extends Handler {
 					}
 				}
 
-				$enclosures = Article::get_enclosures($line["id"]);
+				$enclosures = Article::_get_enclosures($line["id"]);
 
 				if (count($enclosures) > 0) {
 					$article['enclosures'] = array();
@@ -341,7 +341,7 @@ class Handler_Public extends Handler {
 
 		if ($line = $sth->fetch()) {
 
-			$line["tags"] = Article::get_article_tags($id, $owner_uid, $line["tag_cache"]);
+			$line["tags"] = Article::_get_tags($id, $owner_uid, $line["tag_cache"]);
 			unset($line["tag_cache"]);
 
 			$line["content"] = Sanitizer::sanitize($line["content"],
@@ -390,8 +390,8 @@ class Handler_Public extends Handler {
 
             $rv .= "</head>";
 
-				$enclosures = Article::get_enclosures($line["id"]);
-            list ($og_image, $og_stream) = Article::get_article_image($enclosures, $line['content'], $line["site_url"]);
+				$enclosures = Article::_get_enclosures($line["id"]);
+            list ($og_image, $og_stream) = Article::_get_image($enclosures, $line['content'], $line["site_url"]);
 
             if ($og_image) {
                 $rv .= "<meta property='og:image' content=\"" . htmlspecialchars($og_image) . "\"/>";
@@ -573,7 +573,7 @@ class Handler_Public extends Handler {
 				$content = strip_tags(clean($_REQUEST["content"]));
 				$labels = strip_tags(clean($_REQUEST["labels"]));
 
-				Article::create_published_article($title, $url, $content, $labels,
+				Article::_create_published_article($title, $url, $content, $labels,
 					$_SESSION["uid"]);
 
 				print "<script type='text/javascript'>";

@@ -316,7 +316,7 @@ class API extends Handler {
 					"guid" => $line["guid"],
 					"title" => $line["title"],
 					"link" => $line["link"],
-					"labels" => Article::get_article_labels($line['id']),
+					"labels" => Article::_get_labels($line['id']),
 					"unread" => self::param_to_bool($line["unread"]),
 					"marked" => self::param_to_bool($line["marked"]),
 					"published" => self::param_to_bool($line["published"]),
@@ -324,7 +324,7 @@ class API extends Handler {
 					"author" => $line["author"],
 					"updated" => (int) strtotime($line["updated"]),
 					"feed_id" => $line["feed_id"],
-					"attachments" => Article::get_enclosures($line['id']),
+					"attachments" => Article::_get_enclosures($line['id']),
 					"score" => (int)$line["score"],
 					"feed_title" => $line["feed_title"],
 					"note" => $line["note"],
@@ -417,7 +417,7 @@ class API extends Handler {
 		$sth->execute([$_SESSION['uid']]);
 
 		if ($article_id)
-			$article_labels = Article::get_article_labels($article_id);
+			$article_labels = Article::_get_labels($article_id);
 		else
 			$article_labels = array();
 
@@ -489,7 +489,7 @@ class API extends Handler {
 		$url = strip_tags(clean($_REQUEST["url"]));
 		$content = strip_tags(clean($_REQUEST["content"]));
 
-		if (Article::create_published_article($title, $url, $content, "", $_SESSION["uid"])) {
+		if (Article::_create_published_article($title, $url, $content, "", $_SESSION["uid"])) {
 			$this->wrap(self::STATUS_OK, array("status" => 'OK'));
 		} else {
 			$this->wrap(self::STATUS_ERR, array("error" => 'Publishing failed'));
@@ -718,7 +718,7 @@ class API extends Handler {
 						}
 					}
 
-					if (!is_array($labels)) $labels = Article::get_article_labels($line["id"]);
+					if (!is_array($labels)) $labels = Article::_get_labels($line["id"]);
 
 					$headline_row = array(
 						"id" => (int)$line["id"],
@@ -734,7 +734,7 @@ class API extends Handler {
 						"tags" => $tags,
 					);
 
-					$enclosures = Article::get_enclosures($line['id']);
+					$enclosures = Article::_get_enclosures($line['id']);
 
 					if ($include_attachments)
 						$headline_row['attachments'] = $enclosures;
@@ -775,7 +775,7 @@ class API extends Handler {
 					if ($show_content) {
 						$hook_object = ["headline" => &$headline_row];
 
-						list ($flavor_image, $flavor_stream, $flavor_kind) = Article::get_article_image($enclosures,
+						list ($flavor_image, $flavor_stream, $flavor_kind) = Article::_get_image($enclosures,
 																												$line["content"], // unsanitized
 																												$line["site_url"]);
 

@@ -119,7 +119,7 @@ class RPC extends Handler_Protected {
 			WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
 		$sth->execute(array_merge($ids, [$_SESSION['uid']]));
 
-		Article::purge_orphans();
+		Article::_purge_orphans();
 
 		print json_encode(array("message" => "UPDATE_COUNTERS"));
 	}
@@ -156,7 +156,7 @@ class RPC extends Handler_Protected {
 		$ids = explode(",", clean($_REQUEST["ids"]));
 		$cmode = (int)clean($_REQUEST["cmode"]);
 
-		Article::catchupArticlesById($ids, $cmode);
+		Article::_catchup_by_id($ids, $cmode);
 
 		print json_encode(array("message" => "UPDATE_COUNTERS", "ids" => $ids));
 	}
@@ -310,7 +310,7 @@ class RPC extends Handler_Protected {
 		}
 
 		// Purge orphans and cleanup tags
-		Article::purge_orphans();
+		Article::_purge_orphans();
 		//cleanup_tags(14, 50000);
 
 		if ($num_updated > 0) {

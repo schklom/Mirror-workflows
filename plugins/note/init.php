@@ -65,7 +65,7 @@ class Note extends Plugin {
 			WHERE ref_id = ? AND owner_uid = ?");
 		$sth->execute([$note, $id, $_SESSION['uid']]);
 
-		$formatted_note = Article::format_article_note($id, $note);
+		$formatted_note = Article::_format_note_html($id, $note);
 
 		print json_encode(array("note" => $formatted_note,
 				"raw_length" => mb_strlen($note)));

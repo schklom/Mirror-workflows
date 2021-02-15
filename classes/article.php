@@ -27,7 +27,7 @@ class Article extends Handler_Protected {
 		}
 	}
 
-	static function create_published_article($title, $url, $content, $labels_str,
+	static function _create_published_article($title, $url, $content, $labels_str,
 			$owner_uid) {
 
 		$guid = 'SHA1:' . sha1("ttshared:" . $url . $owner_uid); // include owner_uid to prevent global GUID clash
@@ -165,7 +165,7 @@ class Article extends Handler_Protected {
 		$id = (int) clean($_REQUEST['id'] ?? 0);
 
 		print json_encode(["id" => $id,
-			"tags" => self::get_article_tags($id)]);
+			"tags" => self::_get_tags($id)]);
 	}
 
 	function setScore() {
@@ -248,8 +248,8 @@ class Article extends Handler_Protected {
 
 		$this->pdo->commit();
 
-		$tags = self::get_article_tags($id);
-		$tags_str = $this->format_tags_string($tags);
+		$tags = self::_get_tags($id);
+		$tags_str = $this->_format_tags_html($tags);
 		$tags_str_full = join(", ", $tags);
 
 		if (!$tags_str_full) $tags_str_full = __("no tags");
@@ -277,14 +277,14 @@ class Article extends Handler_Protected {
 	}
 
 	function assigntolabel() {
-		return $this->labelops(true);
+		return $this->_label_ops(true);
 	}
 
 	function removefromlabel() {
-		return $this->labelops(false);
+		return $this->_label_ops(false);
 	}
 
-	private function labelops($assign) {
+	private function _label_ops($assign) {
 		$reply = array();
 
 		$ids = explode(",", clean($_REQUEST["ids"]));
@@ -303,10 +303,10 @@ class Article extends Handler_Protected {
 				else
 					Labels::remove_article($id, $label, $_SESSION["uid"]);
 
-				$labels = $this->get_article_labels($id, $_SESSION["uid"]);
+				$labels = $this->_get_labels($id, $_SESSION["uid"]);
 
 				array_push($reply["info-for-headlines"],
-				array("id" => $id, "labels" => $this->format_article_labels($labels)));
+				array("id" => $id, "labels" => $this->_format_labels_html($labels)));
 
 			}
 		}
@@ -316,24 +316,12 @@ class Article extends Handler_Protected {
 		print json_encode($reply);
 	}
 
-	function getArticleFeed($id) {
-		$sth = $this->pdo->prepare("SELECT feed_id FROM ttrss_user_entries
-			WHERE ref_id = ? AND owner_uid = ?");
-		$sth->execute([$id, $_SESSION['uid']]);
-
-		if ($row = $sth->fetch()) {
-			return $row["feed_id"];
-		} else {
-			return 0;
-		}
-	}
-
-	static function format_enclosures($id,
+	static function _format_enclosures($id,
 										$always_display_enclosures,
 									   $article_content,
 										$hide_images = false) {
 
-		$enclosures = self::get_enclosures($id);
+		$enclosures = self::_get_enclosures($id);
 		$rv = [];
 		$enclosures_formatted = "";
 
@@ -389,7 +377,7 @@ class Article extends Handler_Protected {
 		return $rv;
 	}
 
-	static function get_article_tags($id, $owner_uid = 0, $tag_cache = false) {
+	static function _get_tags($id, $owner_uid = 0, $tag_cache = false) {
 
 		$a_id = $id;
 
@@ -439,7 +427,7 @@ class Article extends Handler_Protected {
 		return $tags;
 	}
 
-	static function format_tags_string($tags) {
+	static function _format_tags_html($tags) {
 		if (!is_array($tags) || count($tags) == 0) {
 			return __("no tags");
 		} else {
@@ -459,7 +447,7 @@ class Article extends Handler_Protected {
 		}
 	}
 
-	static function format_article_labels($labels) {
+	static function _format_labels_html($labels) {
 
 		if (!is_array($labels)) return '';
 
@@ -475,8 +463,7 @@ class Article extends Handler_Protected {
 
 	}
 
-	static function format_article_note($id, $note, $allow_edit = true) {
-
+	static function _format_note_html($id, $note, $allow_edit = true) {
 		if ($allow_edit) {
 			$onclick = "onclick='Plugins.Note.edit($id)'";
 			$note_class = 'editable';
@@ -491,7 +478,7 @@ class Article extends Handler_Protected {
 			</div>";
 	}
 
-	function get_metadata_by_id() {
+	function getmetadatabyid() {
 		$id = clean($_REQUEST['id']);
 
 		$sth = $this->pdo->prepare("SELECT link, title FROM ttrss_entries, ttrss_user_entries
@@ -506,7 +493,7 @@ class Article extends Handler_Protected {
 		}
 	}
 
-	static function get_enclosures($id) {
+	static function _get_enclosures($id) {
 
 		$pdo = Db::pdo();
 
@@ -530,7 +517,7 @@ class Article extends Handler_Protected {
 		return $rv;
 	}
 
-	static function purge_orphans() {
+	static function _purge_orphans() {
 
         // purge orphaned posts in main content table
 
@@ -549,7 +536,7 @@ class Article extends Handler_Protected {
         }
     }
 
-	static function catchupArticlesById($ids, $cmode, $owner_uid = false) {
+	static function _catchup_by_id($ids, $cmode, $owner_uid = false) {
 
 		if (!$owner_uid) $owner_uid = $_SESSION["uid"];
 
@@ -574,21 +561,7 @@ class Article extends Handler_Protected {
 		$sth->execute(array_merge($ids, [$owner_uid]));
 	}
 
-	static function getLastArticleId() {
-		$pdo = Db::pdo();
-
-		$sth = $pdo->prepare("SELECT ref_id AS id FROM ttrss_user_entries
-			WHERE owner_uid = ? ORDER BY ref_id DESC LIMIT 1");
-		$sth->execute([$_SESSION['uid']]);
-
-		if ($row = $sth->fetch()) {
-			return $row['id'];
-		} else {
-			return -1;
-		}
-	}
-
-	static function get_article_labels($id, $owner_uid = false) {
+	static function _get_labels($id, $owner_uid = false) {
 		$rv = array();
 
 		if (!$owner_uid) $owner_uid = $_SESSION["uid"];
@@ -635,7 +608,7 @@ class Article extends Handler_Protected {
 		return $rv;
 	}
 
-	static function get_article_image($enclosures, $content, $site_url) {
+	static function _get_image($enclosures, $content, $site_url) {
 
 		$article_image = "";
 		$article_stream = "";

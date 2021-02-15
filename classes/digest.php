@@ -68,7 +68,7 @@ class Digest
 
 						if ($rc && $do_catchup) {
 							Debug::log("Marking affected articles as read...");
-							Article::catchupArticlesById($affected_ids, 0, $line["id"]);
+							Article::_catchup_by_id($affected_ids, 0, $line["id"]);
 						}
 					} else {
 						Debug::log("No headlines");
@@ -164,7 +164,7 @@ class Digest
 				$line['feed_title'] = $line['cat_title'] . " / " . $line['feed_title'];
 			}
 
-			$article_labels = Article::get_article_labels($line["ref_id"], $user_id);
+			$article_labels = Article::_get_labels($line["ref_id"], $user_id);
 			$article_labels_formatted = "";
 
 			if (is_array($article_labels) && count($article_labels) > 0) {

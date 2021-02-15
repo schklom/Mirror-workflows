@@ -60,7 +60,7 @@ class Labels
 			self::clear_cache($id);
 
 		if (!$labels)
-			$labels = Article::get_article_labels($id);
+			$labels = Article::_get_labels($id);
 
 		$labels = json_encode($labels);
 

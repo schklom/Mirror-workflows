@@ -123,7 +123,7 @@ const Article = {
 		Article.setActive(0);
 	},
 	displayUrl: function (id) {
-		const query = {op: "article", method: "get_metadata_by_id", id: id};
+		const query = {op: "article", method: "getmetadatabyid", id: id};
 
 		xhrJson("backend.php", query, (reply) => {
 			if (reply && reply.link) {

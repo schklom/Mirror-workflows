@@ -214,10 +214,10 @@ class Feeds extends Handler_Protected {
 					}
 				}
 
-				if (!is_array($labels)) $labels = Article::get_article_labels($id);
+				if (!is_array($labels)) $labels = Article::_get_labels($id);
 
 				$labels_str = "<span class=\"HLLCTR-$id\">";
-				$labels_str .= Article::format_article_labels($labels);
+				$labels_str .= Article::_format_labels_html($labels);
 				$labels_str .= "</span>";
 
 				$line["labels"] = $labels_str;
@@ -265,7 +265,7 @@ class Feeds extends Handler_Protected {
 				$this->_mark_timestamp("   disk_cache_rewrite");
 
 				if ($line['note'])
-					$line['note'] = Article::format_article_note($id, $line['note']);
+					$line['note'] = Article::_format_note_html($id, $line['note']);
 				else
 					$line['note'] = "";
 
@@ -283,7 +283,7 @@ class Feeds extends Handler_Protected {
 
 				$this->_mark_timestamp("   pre-enclosures");
 
-				$line["enclosures"] = Article::format_enclosures($id,
+				$line["enclosures"] = Article::_format_enclosures($id,
 					$line["always_display_enclosures"],
 					$line["content"],
 					$line["hide_images"]);
@@ -303,7 +303,7 @@ class Feeds extends Handler_Protected {
 				else
 					$tags = false;
 
-				$line["tags_str"] = Article::format_tags_string($tags);
+				$line["tags_str"] = Article::_format_tags_html($tags);
 
 				$this->_mark_timestamp("   tags");
 

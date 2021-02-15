@@ -778,20 +778,23 @@ class API extends Handler {
 
 					$hook_object = ["headline" => &$headline_row];
 
-					PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE_API,
-						function ($result) use (&$headline_row) {
-							$headline_row = $result;
-						},
-						$hook_object);
+					if ($show_content) {
+						PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE_API,
+							function ($result) use (&$headline_row) {
+								$headline_row = $result;
+							},
+							$hook_object);
 
-					list ($flavor_image, $flavor_stream, $flavor_kind) = Article::get_article_image($enclosures, $line["content"], $line["site_url"]);
+						list ($flavor_image, $flavor_stream, $flavor_kind) = Article::get_article_image($enclosures,
+							$headline_row["content"], $line["site_url"]);
 
-					$headline_row["flavor_image"] = $flavor_image;
-					$headline_row["flavor_stream"] = $flavor_stream;
+						$headline_row["flavor_image"] = $flavor_image;
+						$headline_row["flavor_stream"] = $flavor_stream;
 
-					/* optional */
-					if ($flavor_kind)
-						$headline_row["flavor_kind"] = $flavor_kind;
+						/* optional */
+						if ($flavor_kind)
+							$headline_row["flavor_kind"] = $flavor_kind;
+					}
 
 					array_push($headlines, $headline_row);
 				}

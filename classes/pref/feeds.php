@@ -109,6 +109,10 @@ class Pref_Feeds extends Handler_Protected {
 		return $items;
 	}
 
+	function _getfeedtree() {
+		print "OK";
+	}
+
 	function getfeedtree() {
 		print json_encode($this->makefeedtree());
 	}

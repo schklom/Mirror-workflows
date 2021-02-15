@@ -16,7 +16,7 @@
 
 	if (!init_plugins()) return;
 
-	$method = $_REQUEST["op"];
+	$method = (string)clean($_REQUEST["op"]);
 
 	$override = PluginHost::getInstance()->lookup_handler("public", $method);
 
@@ -26,6 +26,13 @@
 		$handler = new Handler_Public($_REQUEST);
 	}
 
+	if (strpos($method, "_") === 0) {
+		user_error("Refusing to invoke method $method which starts with underscore.", E_USER_WARNING);
+		header("Content-Type: text/json");
+		print error_json(6);
+		return;
+	}
+
 	if (implements_interface($handler, "IHandler") && $handler->before($method)) {
 		if ($method && method_exists($handler, $method)) {
 			$reflection = new ReflectionMethod($handler, $method);
@@ -33,6 +40,7 @@
 			if ($reflection->getNumberOfRequiredParameters() == 0) {
 				$handler->$method();
 			} else {
+				user_error("Refusing to invoke method $method which has required parameters.", E_USER_WARNING);
 				header("Content-Type: text/json");
 				print error_json(6);
 			}

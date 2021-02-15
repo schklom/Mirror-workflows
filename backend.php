@@ -30,6 +30,9 @@
 	require_once "db.php";
 	require_once "db-prefs.php";
 
+	$op = (string)clean($op);
+	$method = (string)clean($method);
+
 	startup_gettext();
 
 	$script_started = microtime(true);
@@ -92,6 +95,13 @@
 
 	if (class_exists($op) || $override) {
 
+		if (strpos($method, "_") === 0) {
+			user_error("Refusing to invoke method $method of handler $op which starts with underscore.", E_USER_WARNING);
+			header("Content-Type: text/json");
+			print error_json(6);
+			return;
+		}
+
 		if ($override) {
 			$handler = $override;
 		} else {
@@ -110,6 +120,7 @@
 						if ($reflection->getNumberOfRequiredParameters() == 0) {
 							$handler->$method();
 						} else {
+							user_error("Refusing to invoke method $method of handler $op which has required parameters.", E_USER_WARNING);
 							header("Content-Type: text/json");
 							print error_json(6);
 						}
@@ -126,6 +137,7 @@
 					return;
 				}
 			} else {
+				user_error("Refusing to invoke method $method of handler $op with invalid CSRF token.", E_USER_WARNING);
 				header("Content-Type: text/json");
 				print error_json(6);
 				return;

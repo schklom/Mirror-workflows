@@ -567,7 +567,7 @@ class Pref_Filters extends Handler_Protected {
 	function editSave() {
 		$filter_id = clean($_REQUEST["id"]);
 		$enabled = checkbox_to_sql_bool(clean($_REQUEST["enabled"] ?? false));
-		$match_any_rule = checkbox_to_sql_bool(clean($_REQUEST["match_any_rule"]));
+		$match_any_rule = checkbox_to_sql_bool(clean($_REQUEST["match_any_rule"] ?? false));
 		$inverse = checkbox_to_sql_bool(clean($_REQUEST["inverse"] ?? false));
 		$title = clean($_REQUEST["title"]);
 
@@ -675,10 +675,10 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	function add() {
-		$enabled = checkbox_to_sql_bool(clean($_REQUEST["enabled"]));
-		$match_any_rule = checkbox_to_sql_bool(clean($_REQUEST["match_any_rule"]));
+		$enabled = checkbox_to_sql_bool(clean($_REQUEST["enabled"] ?? false));
+		$match_any_rule = checkbox_to_sql_bool(clean($_REQUEST["match_any_rule"] ?? false));
 		$title = clean($_REQUEST["title"]);
-		$inverse = checkbox_to_sql_bool(clean($_REQUEST["inverse"]));
+		$inverse = checkbox_to_sql_bool(clean($_REQUEST["inverse"] ?? false));
 
 		$this->pdo->beginTransaction();
 

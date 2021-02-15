@@ -169,4 +169,34 @@ class UserHelper {
 		session_commit();
 	}
 
+	static function reset_password($uid, $format_output = false) {
+
+		$pdo = Db::pdo();
+
+		$sth = $pdo->prepare("SELECT login FROM ttrss_users WHERE id = ?");
+		$sth->execute([$uid]);
+
+		if ($row = $sth->fetch()) {
+
+			$login = $row["login"];
+
+			$new_salt = substr(bin2hex(get_random_bytes(125)), 0, 250);
+			$tmp_user_pwd = make_password();
+
+			$pwd_hash = encrypt_password($tmp_user_pwd, $new_salt, true);
+
+			$sth = $pdo->prepare("UPDATE ttrss_users
+				  SET pwd_hash = ?, salt = ?, otp_enabled = false
+				WHERE id = ?");
+			$sth->execute([$pwd_hash, $new_salt, $uid]);
+
+			$message = T_sprintf("Changed password of user %s to %s", "<strong>$login</strong>", "<strong>$tmp_user_pwd</strong>");
+
+			if ($format_output)
+				print_notice($message);
+			else
+				print $message;
+
+		}
+	}
 }

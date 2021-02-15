@@ -16,6 +16,12 @@ class Bookmarklets extends Plugin {
     $host->add_hook($host::HOOK_PREFS_TAB, $this);
   }
 
+  private function subscribe_to_feed_url() {
+		$url_path = get_self_url_prefix() .
+			"/public.php?op=subscribe&feed_url=%s";
+		return $url_path;
+	}
+
   function hook_prefs_tab($args) {
     if ($args == "prefFeeds") {
 
@@ -24,7 +30,7 @@ class Bookmarklets extends Plugin {
 
 		print "<h3>" . __("Drag the link below to your browser toolbar, open the feed you're interested in in your browser and click on the link to subscribe to it.") . "</h3>";
 
-		$bm_subscribe_url = str_replace('%s', '', Pref_Feeds::subscribe_to_feed_url());
+		$bm_subscribe_url = str_replace('%s', '', $this->subscribe_to_feed_url());
 
 		$confirm_str = str_replace("'", "\'", __('Subscribe to %s in Tiny Tiny RSS?'));
 

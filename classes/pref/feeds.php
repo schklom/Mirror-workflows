@@ -1655,10 +1655,4 @@ class Pref_Feeds extends Handler_Protected {
 		return $c;
 	}
 
-	static function subscribe_to_feed_url() {
-		$url_path = get_self_url_prefix() .
-			"/public.php?op=subscribe&feed_url=%s";
-		return $url_path;
-	}
-
 }

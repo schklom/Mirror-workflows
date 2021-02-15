@@ -443,7 +443,7 @@ class Article extends Handler_Protected {
 										$encsize .= ' height="' . intval($entry['height']) . '"';
 									if ($entry['width'] > 0)
 										$encsize .= ' width="' . intval($entry['width']) . '"';
-									$rv .= "<p><img
+									$rv .= "<p><img loading=\"lazy\"
 										alt=\"".htmlspecialchars($entry["filename"])."\"
 										src=\"" .htmlspecialchars($entry["url"]) . "\"
 										" . $encsize . " /></p>";

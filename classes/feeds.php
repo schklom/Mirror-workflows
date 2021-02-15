@@ -141,7 +141,7 @@ class Feeds extends Handler_Protected {
 
 		$reply['toolbar'] = [
 			'site_url' => $feed_site_url,
-			'title' => truncate_string(strip_tags($feed_title), 30),
+			'title' => strip_tags($feed_title),
 			'error' => $last_error,
 			'last_updated' => $last_updated,
 			'plugin_menu_items' => $plugin_menu_items,

@@ -192,9 +192,7 @@ class RPC extends Handler_Protected {
 	}
 
 	function sanityCheck() {
-		$_SESSION["hasAudio"] = clean($_REQUEST["hasAudio"]) === "true";
 		$_SESSION["hasSandbox"] = clean($_REQUEST["hasSandbox"]) === "true";
-		$_SESSION["hasMp3"] = clean($_REQUEST["hasMp3"]) === "true";
 		$_SESSION["clientTzOffset"] = clean($_REQUEST["clientTzOffset"]);
 
 		$reply = array();

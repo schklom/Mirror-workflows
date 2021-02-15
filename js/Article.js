@@ -140,6 +140,62 @@ const Article = {
 
 		Headlines.toggleUnread(id, 0);
 	},
+	renderEnclosures: function (enclosures) {
+
+		// enclosure list was handled by backend (HOOK_FORMAT_ENCLOSURES)
+		if (enclosures.formatted)
+			return enclosures.formatted;
+
+		return `
+				${enclosures.can_inline ?
+					`<div class='attachments-inline'>
+						${enclosures.entries.map((enc) => {
+							if (!enclosures.inline_text_only) {
+								if (enc.content_type && enc.content_type.indexOf("image/") != -1) {
+									return `<p>
+										<img loading="lazy"
+											width="${enc.width ? enc.width : ''}"
+											height="${enc.height ? enc.height : ''}"
+											src="${App.escapeHtml(enc.content_url)}"
+											title="${App.escapeHtml(enc.title ? enc.title : enc.content_url)}"/>
+									</p>`
+								} else if (enc.content_type && enc.content_type.indexOf("audio/") != -1 && App.audioCanPlay(enc.content_type)) {
+									return `<p class='inline-player' title="${App.escapeHtml(enc.content_url)}">
+										<audio preload="none" controls="controls">
+											<source type="${App.escapeHtml(enc.content_type)}" src="${App.escapeHtml(enc.content_url)}"/>
+										</audio>
+									</p>
+									`;
+								} else {
+									return `<p>
+										<a target="_blank" href="${App.escapeHtml(enc.content_url)}"
+											title="${App.escapeHtml(enc.title ? enc.title : enc.content_url)}"
+											rel="noopener noreferrer">${App.escapeHtml(enc.content_url)}</a>
+										</p>`
+								}
+							} else {
+								return `<p>
+									<a target="_blank" href="${App.escapeHtml(enc.content_url)}"
+										title="${App.escapeHtml(enc.title ? enc.title : enc.content_url)}"
+										rel="noopener noreferrer">${App.escapeHtml(enc.content_url)}</a>
+									</p>`
+							}
+						}).join("")}
+					</div>` : ''}
+			${enclosures.entries.length > 0 ?
+				`<div class="attachments" dojoType="fox.form.DropDownButton">
+					<span>${__('Attachments')}</span>
+					<div dojoType="dijit.Menu" style="display: none">
+					${enclosures.entries.map((enc) => `
+							<div onclick='Article.popupOpenUrl("${App.escapeHtml(enc.content_url)}")'
+								title="${App.escapeHtml(enc.title ? enc.title : enc.content_url)}" dojoType="dijit.MenuItem">
+									${enc.title ? enc.title : enc.filename}
+							</div>
+						`).join("")}
+					</div>
+				</div>` : ''}
+			`
+	},
 	render: function (article) {
 		App.cleanupMemory("content-insert");
 
@@ -241,7 +297,7 @@ const Article = {
 					<div id="POSTNOTE-${hl.id}">${hl.note}</div>
 					<div class="content" lang="${hl.lang ? hl.lang : 'en'}">
 						${hl.content}
-						${hl.enclosures}
+						${Article.renderEnclosures(hl.enclosures)}
 					</div>
 					</div>`;
 

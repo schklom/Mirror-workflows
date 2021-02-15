@@ -488,7 +488,7 @@ const Headlines = {
 								<img src="${App.getInitParam('icon_indicator_white')}">
 							</div>
 							<div class="intermediate">
-								${hl.enclosures}
+								${Article.renderEnclosures(hl.enclosures)}
 							</div>
 							<div class="footer" onclick="event.stopPropagation()">
 

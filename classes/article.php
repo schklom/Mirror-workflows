@@ -352,145 +352,62 @@ class Article extends Handler_Protected {
 		}
 	}
 
-	static function format_article_enclosures($id, $always_display_enclosures,
-									   $article_content, $hide_images = false) {
+	static function format_enclosures($id,
+										$always_display_enclosures,
+									   $article_content,
+										$hide_images = false) {
 
-		$result = self::get_article_enclosures($id);
-		$rv = '';
+		$enclosures = self::get_enclosures($id);
+		$rv = [];
+		$enclosures_formatted = "";
+
+		/*foreach ($enclosures as &$enc) {
+			array_push($enclosures, [
+				"type" => $enc["content_type"],
+				"filename" => basename($enc["content_url"]),
+				"url" => $enc["content_url"],
+				"title" => $enc["title"],
+				"width" => (int) $enc["width"],
+				"height" => (int) $enc["height"]
+			]);
+		}*/
 
 		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_FORMAT_ENCLOSURES,
-			function ($result) use (&$rv) {
+			function ($result) use (&$enclosures_formatted, &$enclosures) {
 				if (is_array($result)) {
-					$rv = $result[0];
-					$result = $result[1];
+					$enclosures_formatted = $result[0];
+					$enclosures = $result[1];
 				} else {
-					$rv = $result;
+					$enclosures_formatted = $result;
 				}
 			},
-			$rv, $result, $id, $always_display_enclosures, $article_content, $hide_images);
+			$enclosures_formatted, $enclosures, $id, $always_display_enclosures, $article_content, $hide_images);
 
-		if ($rv === '' && !empty($result)) {
-			$entries_html = array();
-			$entries = array();
-			$entries_inline = array();
+		if (!empty($enclosures_formatted)) {
+			$rv['formatted'] = $enclosures_formatted;
+			return $rv;
+		}
 
-			foreach ($result as $line) {
+		$rv['can_inline'] = isset($_SESSION["uid"]) &&
+									empty($_SESSION["bw_limit"]) &&
+									!get_pref("STRIP_IMAGES") &&
+									($always_display_enclosures || !preg_match("/<img/i", $article_content));
 
-				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_ENCLOSURE_ENTRY,
-					function($result) use (&$line) {
-						$line = $result;
-					},
-					$line, $id);
+		$rv['inline_text_only'] = $hide_images && $rv['can_inline'];
 
-				$url = $line["content_url"];
-				$ctype = $line["content_type"];
-				$title = $line["title"];
-				$width = $line["width"];
-				$height = $line["height"];
+		$rv['entries'] = [];
 
-				if (!$ctype) $ctype = __("unknown type");
+		foreach ($enclosures as $enc) {
 
-				//$filename = substr($url, strrpos($url, "/")+1);
-				$filename = basename($url);
+			// this is highly approximate
+			$enc["filename"] = basename($enc["content_url"]);
 
-				$player = format_inline_player($url, $ctype);
-
-				if ($player) array_push($entries_inline, $player);
-
-#				$entry .= " <a target=\"_blank\" href=\"" . htmlspecialchars($url) . "\" rel=\"noopener noreferrer\">" .
-#					$filename . " (" . $ctype . ")" . "</a>";
-
-				$entry = "<div onclick=\"Article.popupOpenUrl('".htmlspecialchars($url)."')\"
-					dojoType=\"dijit.MenuItem\">$filename ($ctype)</div>";
-
-				array_push($entries_html, $entry);
-
-				$entry = array();
-
-				$entry["type"] = $ctype;
-				$entry["filename"] = $filename;
-				$entry["url"] = $url;
-				$entry["title"] = $title;
-				$entry["width"] = $width;
-				$entry["height"] = $height;
-
-				array_push($entries, $entry);
-			}
-
-			if ($_SESSION['uid'] && !get_pref("STRIP_IMAGES") && !$_SESSION["bw_limit"]) {
-				if ($always_display_enclosures ||
-					!preg_match("/<img/i", $article_content)) {
-
-					foreach ($entries as $entry) {
-
-						$retval = null;
-
-						PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ENCLOSURE,
-							function($result) use (&$retval) {
-								$retval = $result;
-							},
-							$entry, $hide_images);
-
-						if (!empty($retval)) {
-							$rv .= $retval;
-						} else {
-
-							if (preg_match("/image/", $entry["type"])) {
-
-								if (!$hide_images) {
-									$encsize = '';
-									if ($entry['height'] > 0)
-										$encsize .= ' height="' . intval($entry['height']) . '"';
-									if ($entry['width'] > 0)
-										$encsize .= ' width="' . intval($entry['width']) . '"';
-									$rv .= "<p><img loading=\"lazy\"
-										alt=\"".htmlspecialchars($entry["filename"])."\"
-										src=\"" .htmlspecialchars($entry["url"]) . "\"
-										" . $encsize . " /></p>";
-								} else {
-									$rv .= "<p><a target=\"_blank\" rel=\"noopener noreferrer\"
-										href=\"".htmlspecialchars($entry["url"])."\"
-										>" .htmlspecialchars($entry["url"]) . "</a></p>";
-								}
-
-								if ($entry['title']) {
-									$rv.= "<div class=\"enclosure_title\">${entry['title']}</div>";
-								}
-							}
-						}
-					}
-				}
-			}
-
-			if (count($entries_inline) > 0) {
-				//$rv .= "<hr clear='both'/>";
-				foreach ($entries_inline as $entry) { $rv .= $entry; };
-				$rv .= "<br clear='both'/>";
-			}
-
-			$rv .= "<div class=\"attachments\" dojoType=\"fox.form.DropDownButton\">".
-				"<span>" . __('Attachments')."</span>";
-
-			$rv .= "<div dojoType=\"dijit.Menu\" style=\"display: none;\">";
-
-			foreach ($entries as $entry) {
-				if ($entry["title"])
-					$title = " &mdash; " . truncate_string($entry["title"], 30);
-				else
-					$title = "";
-
-				if ($entry["filename"])
-					$filename = truncate_middle(htmlspecialchars($entry["filename"]), 60);
-				else
-					$filename = "";
-
-				$rv .= "<div onclick='Article.popupOpenUrl(\"".htmlspecialchars($entry["url"])."\")'
-					dojoType=\"dijit.MenuItem\">".$filename . $title."</div>";
-
-			};
-
-			$rv .= "</div>";
-			$rv .= "</div>";
+			PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_ENCLOSURE_ENTRY,
+				function ($result) use (&$enc) {
+					$enc = $result;
+				},
+				$enc, $id);
+			array_push($rv['entries'], $enc);
 		}
 
 		return $rv;
@@ -613,7 +530,7 @@ class Article extends Handler_Protected {
 		}
 	}
 
-	static function get_article_enclosures($id) {
+	static function get_enclosures($id) {
 
 		$pdo = Db::pdo();
 
@@ -625,7 +542,7 @@ class Article extends Handler_Protected {
 
 		$cache = new DiskCache("images");
 
-		while ($line = $sth->fetch()) {
+		while ($line = $sth->fetch(PDO::FETCH_ASSOC)) {
 
 			if ($cache->exists(sha1($line["content_url"]))) {
 				$line["content_url"] = $cache->getUrl(sha1($line["content_url"]));

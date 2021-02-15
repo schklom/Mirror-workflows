@@ -586,6 +586,10 @@ const App = {
 	isPrefs() {
 		return this.is_prefs;
    },
+   audioCanPlay: function(ctype) {
+      const a = document.createElement('audio');
+      return a.canPlayType(ctype);
+   },
    init: function(parser, is_prefs) {
       this.is_prefs = is_prefs;
       window.onerror = this.Error.onWindowError;
@@ -604,17 +608,11 @@ const App = {
          this.initHotkeyActions();
          this.enableCsrfSupport();
 
-         const a = document.createElement('audio');
-         const hasAudio = !!a.canPlayType;
-         const hasSandbox = "sandbox" in document.createElement("iframe");
-         const hasMp3 = !!(a.canPlayType && a.canPlayType('audio/mpeg;').replace(/no/, ''));
-         const clientTzOffset = new Date().getTimezoneOffset() * 60;
-
          const params = {
-            op: "rpc", method: "sanityCheck", hasAudio: hasAudio,
-            hasMp3: hasMp3,
-            clientTzOffset: clientTzOffset,
-            hasSandbox: hasSandbox
+            op: "rpc",
+            method: "sanityCheck",
+            clientTzOffset: new Date().getTimezoneOffset() * 60,
+            hasSandbox: "sandbox" in document.createElement("iframe")
          };
 
          xhrPost("backend.php", params, (transport) => {

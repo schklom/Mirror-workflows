@@ -311,8 +311,6 @@ class API extends Handler {
 
 			while ($line = $sth->fetch()) {
 
-				$attachments = Article::get_article_enclosures($line['id']);
-
 				$article = array(
 					"id" => $line["id"],
 					"guid" => $line["guid"],
@@ -326,7 +324,7 @@ class API extends Handler {
 					"author" => $line["author"],
 					"updated" => (int) strtotime($line["updated"]),
 					"feed_id" => $line["feed_id"],
-					"attachments" => $attachments,
+					"attachments" => Article::get_enclosures($line['id']),
 					"score" => (int)$line["score"],
 					"feed_title" => $line["feed_title"],
 					"note" => $line["note"],
@@ -736,7 +734,7 @@ class API extends Handler {
 						"tags" => $tags,
 					);
 
-					$enclosures = Article::get_article_enclosures($line['id']);
+					$enclosures = Article::get_enclosures($line['id']);
 
 					if ($include_attachments)
 						$headline_row['attachments'] = $enclosures;

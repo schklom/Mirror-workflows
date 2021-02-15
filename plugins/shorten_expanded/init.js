@@ -1,3 +1,5 @@
+/* global Plugins, __, require, PluginHost */
+
 const _shorten_expanded_threshold = 1.5; //window heights
 
 Plugins.Shorten_Expanded = {
@@ -22,26 +24,23 @@ require(['dojo/_base/kernel', 'dojo/ready'], function  (dojo, ready) {
 			window.setTimeout(function() {
 				if (row) {
 
-					const c_inner = row.select(".content-inner")[0];
-					const c_inter = row.select(".intermediate")[0];
+					const content = row.querySelector(".content-inner");
+					const attachments = row.querySelector(".attachments-inline");
 
-					if (c_inner && c_inter &&
+					if (content && attachments &&
 						row.offsetHeight >= _shorten_expanded_threshold * window.innerHeight) {
 
-						let tmp = document.createElement("div");
-
-						c_inter.select("> *:not([class*='attachments'])").each(function(p) {
-							p.parentNode.removeChild(p);
-							tmp.appendChild(p);
-						});
-
-						c_inner.innerHTML = `<div class="content-shrink-wrap">
-							${c_inner.innerHTML}
-							${tmp.innerHTML}</div>
+						content.innerHTML = `
+							<div class="content-shrink-wrap">
+								${content.innerHTML}
+								${attachments.innerHTML}
+							</div>
 							<button dojoType="dijit.form.Button" class="alt-info expand-prompt" onclick="return Plugins.Shorten_Expanded.expand('${row.id}')" href="#">
 								${__("Click to expand article")}</button>`;
 
-						dojo.parser.parse(c_inner);
+						attachments.innerHTML = "";
+
+						dojo.parser.parse(content);
 					}
 				}
 			}, 150);

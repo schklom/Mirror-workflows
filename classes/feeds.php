@@ -283,8 +283,10 @@ class Feeds extends Handler_Protected {
 
 				$this->mark_timestamp("   pre-enclosures");
 
-				$line["enclosures"] = Article::format_article_enclosures($id, $line["always_display_enclosures"],
-					$line["content"], $line["hide_images"]);
+				$line["enclosures"] = Article::format_enclosures($id,
+					$line["always_display_enclosures"],
+					$line["content"],
+					$line["hide_images"]);
 
 				$this->mark_timestamp("   enclosures");
 

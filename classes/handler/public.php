@@ -131,7 +131,7 @@ class Handler_Public extends Handler {
 					$tpl->addBlock('category');
 				}
 
-				$enclosures = Article::get_article_enclosures($line["id"]);
+				$enclosures = Article::get_enclosures($line["id"]);
 
 				if (count($enclosures) > 0) {
 					foreach ($enclosures as $e) {
@@ -218,7 +218,7 @@ class Handler_Public extends Handler {
 					}
 				}
 
-				$enclosures = Article::get_article_enclosures($line["id"]);
+				$enclosures = Article::get_enclosures($line["id"]);
 
 				if (count($enclosures) > 0) {
 					$article['enclosures'] = array();
@@ -356,9 +356,7 @@ class Handler_Public extends Handler {
 
 			$line['content'] = DiskCache::rewriteUrls($line['content']);
 
-			$enclosures = Article::get_article_enclosures($line["id"]);
-
-            header("Content-Type: text/html");
+			header("Content-Type: text/html");
 
             $rv .= "<!DOCTYPE html>
                     <html><head>
@@ -392,6 +390,7 @@ class Handler_Public extends Handler {
 
             $rv .= "</head>";
 
+				$enclosures = Article::get_enclosures($line["id"]);
             list ($og_image, $og_stream) = Article::get_article_image($enclosures, $line['content'], $line["site_url"]);
 
             if ($og_image) {
@@ -436,10 +435,10 @@ class Handler_Public extends Handler {
 
 			$rv .= $line["content"];
 
-            $rv .= Article::format_article_enclosures($id,
+         /*  $rv .= Article::format_article_enclosures($id,
                 $line["always_display_enclosures"],
                 $line["content"],
-                $line["hide_images"]);
+                $line["hide_images"]); */
 
 			$rv .= "</div>"; # content
 

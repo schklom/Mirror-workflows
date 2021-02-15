@@ -298,37 +298,6 @@ function print_error($msg) {
 	return print format_error($msg);
 }
 
-function format_inline_player($url, $ctype) {
-
-	$entry = "";
-
-	$url = htmlspecialchars($url);
-
-	if (strpos($ctype, "audio/") === 0) {
-
-		$entry .= "<div class='inline-player'>";
-
-		if ($_SESSION["hasAudio"] && (strpos($ctype, "ogg") !== false ||
-				$_SESSION["hasMp3"])) {
-
-			$entry .= "<audio preload=\"none\" controls>
-					<source type=\"$ctype\" src=\"$url\"/>
-					</audio> ";
-
-		}
-
-		if ($entry) $entry .= "<a target=\"_blank\" rel=\"noopener noreferrer\"
-				href=\"$url\">" . basename($url) . "</a>";
-
-		$entry .= "</div>";
-
-		return $entry;
-
-	}
-
-	return "";
-}
-
 function print_label_select($name, $value, $attributes = "") {
 
 	$pdo = Db::pdo();

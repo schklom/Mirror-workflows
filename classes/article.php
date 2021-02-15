@@ -508,7 +508,7 @@ class Article extends Handler_Protected {
 		while ($line = $sth->fetch(PDO::FETCH_ASSOC)) {
 
 			if ($cache->exists(sha1($line["content_url"]))) {
-				$line["content_url"] = $cache->getUrl(sha1($line["content_url"]));
+				$line["content_url"] = $cache->get_url(sha1($line["content_url"]));
 			}
 
 			array_push($rv, $line);
@@ -678,10 +678,10 @@ class Article extends Handler_Protected {
 		$cache = new DiskCache("images");
 
 		if ($article_image && $cache->exists(sha1($article_image)))
-			$article_image = $cache->getUrl(sha1($article_image));
+			$article_image = $cache->get_url(sha1($article_image));
 
 		if ($article_stream && $cache->exists(sha1($article_stream)))
-			$article_stream = $cache->getUrl(sha1($article_stream));
+			$article_stream = $cache->get_url(sha1($article_stream));
 
 		return [$article_image, $article_stream, $article_kind];
 	}

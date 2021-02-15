@@ -1281,7 +1281,7 @@ class RSSUtils {
 	static function cache_enclosures($enclosures, $site_url) {
 		$cache = new DiskCache("images");
 
-		if ($cache->isWritable()) {
+		if ($cache->is_writable()) {
 			foreach ($enclosures as $enc) {
 
 				if (preg_match("/(image|audio|video)/", $enc[1])) {
@@ -1335,7 +1335,7 @@ class RSSUtils {
 			} else {
 				Debug::log("cache_media: failed with $fetch_last_error_code: $fetch_last_error");
 			}
-		} else if ($cache->isWritable($local_filename)) {
+		} else if ($cache->is_writable($local_filename)) {
 			$cache->touch($local_filename);
 		}
 	}
@@ -1344,7 +1344,7 @@ class RSSUtils {
 	static function cache_media($html, $site_url) {
 		$cache = new DiskCache("images");
 
-		if ($html && $cache->isWritable()) {
+		if ($html && $cache->is_writable()) {
 			$doc = new DOMDocument();
 			if (@$doc->loadHTML($html)) {
 				$xpath = new DOMXPath($doc);

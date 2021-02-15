@@ -59,14 +59,14 @@ class Af_Proxy_Http extends Plugin {
 		$local_filename = sha1($url);
 
 		if ($this->cache->exists($local_filename)) {
-			header("Location: " . $this->cache->getUrl($local_filename));
+			header("Location: " . $this->cache->get_url($local_filename));
 			return;
 		} else {
 			$data = UrlHelper::fetch(["url" => $url, "max_size" => MAX_CACHE_FILE_SIZE]);
 
 			if ($data) {
 				if ($this->cache->put($local_filename, $data)) {
-					header("Location: " . $this->cache->getUrl($local_filename));
+					header("Location: " . $this->cache->get_url($local_filename));
 					return;
 				}
 			} else {

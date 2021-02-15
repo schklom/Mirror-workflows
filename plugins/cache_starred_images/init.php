@@ -17,18 +17,18 @@ class Cache_Starred_Images extends Plugin {
 		$this->host = $host;
 		$this->cache = new DiskCache("starred-images");
 
-		if ($this->cache->makeDir())
-			chmod($this->cache->getDir(), 0777);
+		if ($this->cache->make_dir())
+			chmod($this->cache->get_dir(), 0777);
 
 		if (!$this->cache->exists(".no-auto-expiry"))
 			$this->cache->touch(".no-auto-expiry");
 
-		if ($this->cache->isWritable()) {
+		if ($this->cache->is_writable()) {
 			$host->add_hook($host::HOOK_HOUSE_KEEPING, $this);
 			$host->add_hook($host::HOOK_ENCLOSURE_ENTRY, $this);
 			$host->add_hook($host::HOOK_SANITIZE, $this);
 		} else {
-			user_error("Starred cache directory ".$this->cache->getDir()." is not writable.", E_USER_WARNING);
+			user_error("Starred cache directory ".$this->cache->get_dir()." is not writable.", E_USER_WARNING);
 		}
 	}
 
@@ -69,9 +69,9 @@ class Cache_Starred_Images extends Plugin {
 
 		/* actual housekeeping */
 
-		Debug::log("expiring " . $this->cache->getDir() . "...");
+		Debug::log("expiring " . $this->cache->get_dir() . "...");
 
-		$files = glob($this->cache->getDir() . "/*.{png,mp4,status}", GLOB_BRACE);
+		$files = glob($this->cache->get_dir() . "/*.{png,mp4,status}", GLOB_BRACE);
 
 		$last_article_id = 0;
 		$article_exists = 1;
@@ -98,7 +98,7 @@ class Cache_Starred_Images extends Plugin {
 		$local_filename = $article_id . "-" . sha1($enc["content_url"]);
 
 		if ($this->cache->exists($local_filename)) {
-			$enc["content_url"] = $this->cache->getUrl($local_filename);
+			$enc["content_url"] = $this->cache->get_url($local_filename);
 		}
 
 		return $enc;
@@ -117,7 +117,7 @@ class Cache_Starred_Images extends Plugin {
 					$local_filename = $article_id . "-" . sha1($src);
 
 					if ($this->cache->exists($local_filename)) {
-						$entry->setAttribute("src", $this->cache->getUrl($local_filename));
+						$entry->setAttribute("src", $this->cache->get_url($local_filename));
 						$entry->removeAttribute("srcset");
 					}
 				}
@@ -151,7 +151,7 @@ class Cache_Starred_Images extends Plugin {
 		$status_filename = $article_id . "-" . sha1($site_url) . ".status";
 
 		/* housekeeping might run as a separate user, in this case status/media might not be writable */
-		if (!$this->cache->isWritable($status_filename)) {
+		if (!$this->cache->is_writable($status_filename)) {
 			Debug::log("status not writable: $status_filename", Debug::$LOG_VERBOSE);
 			return false;
 		}

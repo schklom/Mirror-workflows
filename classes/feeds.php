@@ -260,7 +260,7 @@ class Feeds extends Handler_Protected {
 
 				$this->_mark_timestamp("   hook_render_cdm");
 
-				$line['content'] = DiskCache::rewriteUrls($line['content']);
+				$line['content'] = DiskCache::rewrite_urls($line['content']);
 
 				$this->_mark_timestamp("   disk_cache_rewrite");
 

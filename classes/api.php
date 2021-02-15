@@ -348,7 +348,7 @@ class API extends Handler {
 					},
 					$hook_object);
 
-				$article['content'] = DiskCache::rewriteUrls($article['content']);
+				$article['content'] = DiskCache::rewrite_urls($article['content']);
 
 				array_push($articles, $article);
 
@@ -792,7 +792,7 @@ class API extends Handler {
 							},
 							$hook_object);
 
-						$headline_row["content"] = DiskCache::rewriteUrls($headline_row['content']);
+						$headline_row["content"] = DiskCache::rewrite_urls($headline_row['content']);
 					}
 
 					array_push($headlines, $headline_row);

@@ -506,6 +506,11 @@ body.ttrss_main .dijitDialog .dlgButtons {
 body.ttrss_main .dijitDialog footer.text-center {
   text-align: center;
 }
+body.ttrss_main .dijitDialog textarea#tags_str {
+  height: 100px;
+  font-size: 12px;
+  width: 98%;
+}
 body.ttrss_main i.icon-label {
   color: #fff7d5;
 }
@@ -853,9 +858,6 @@ body.ttrss_main span.highlight {
 }
 body.ttrss_main #headlines-frame .dijitCheckBox {
   margin-right: 4px;
-}
-body.ttrss_main #editTagsDlg {
-  overflow: visible;
 }
 body.ttrss_main #feedEditDlg img.feedIcon {
   border: 1px solid #ccc;

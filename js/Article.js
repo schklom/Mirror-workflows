@@ -310,9 +310,31 @@ const Article = {
 	},
 	editTags: function (id) {
 		const dialog = new fox.SingleUseDialog({
-			id: "editTagsDlg",
 			title: __("Edit article Tags"),
-			content: __("Loading, please wait..."),
+			content: `
+				${App.FormFields.hidden("id", id.toString())}
+				${App.FormFields.hidden("op", "article")}
+				${App.FormFields.hidden("method", "setArticleTags")}
+
+				<header class='horizontal'>
+					${__("Tags for this article (separated by commas):")}
+				</header>
+
+				<section>
+					<textarea dojoType='dijit.form.SimpleTextarea' rows='4' disabled='true'
+						id='tags_str' name='tags_str'></textarea>
+					<div class='autocomplete' id='tags_choices' style='display:none'></div>
+				</section>
+
+				<footer>
+					<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>
+						${__('Save')}
+					</button>
+					<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>
+						${__('Cancel')}
+					</button>
+				</footer>
+			`,
 			execute: function () {
 				if (this.validate()) {
 					Notify.progress("Saving article tags...", true);
@@ -344,10 +366,13 @@ const Article = {
 		const tmph = dojo.connect(dialog, 'onShow', function () {
 			dojo.disconnect(tmph);
 
-			xhrPost("backend.php", {op: "article", method: "editarticletags", param: id}, (transport) => {
-				dialog.attr('content', transport.responseText);
+			xhrJson("backend.php", {op: "article", method: "printArticleTags", id: id}, (reply) => {
 
-				new Ajax.Autocompleter('tags_str', 'tags_choices',
+				dijit.getEnclosingWidget($("tags_str"))
+					.attr('value', reply.tags.join(", "))
+					.attr('disabled', false);
+
+				new Ajax.Autocompleter("tags_str", "tags_choices",
 					"backend.php?op=article&method=completeTags",
 					{tokens: ',', paramName: "search"});
 			});

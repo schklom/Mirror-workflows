@@ -161,35 +161,11 @@ class Article extends Handler_Protected {
 		return $rc;
 	}
 
-	function editArticleTags() {
+	function printArticleTags() {
+		$id = (int) clean($_REQUEST['id'] ?? 0);
 
-		$param = clean($_REQUEST['param']);
-
-		$tags = self::get_article_tags($param);
-
-		$tags_str = join(", ", $tags);
-
-		print_hidden("id", "$param");
-		print_hidden("op", "article");
-		print_hidden("method", "setArticleTags");
-
-		print "<header class='horizontal'>" . __("Tags for this article (separated by commas):")."</header>";
-
-		print "<section>";
-		print "<textarea dojoType='dijit.form.SimpleTextarea' rows='4'
-			style='height : 100px; font-size : 12px; width : 98%' id='tags_str'
-			name='tags_str'>$tags_str</textarea>
-		<div class='autocomplete' id='tags_choices'
-				style='display:none'></div>";
-		print "</section>";
-
-		print "<footer>";
-		print "<button dojoType='dijit.form.Button'
-			type='submit' class='alt-primary'>".__('Save')."</button> ";
-		print "<button dojoType='dijit.form.Button'
-			onclick='App.dialogOf(this).hide()'>".__('Cancel')."</button>";
-		print "</footer>";
-
+		print json_encode(["id" => $id,
+			"tags" => self::get_article_tags($id)]);
 	}
 
 	function setScore() {

@@ -137,14 +137,6 @@
 				array_push($errors, "PHP support for JSON is required, but was not found.");
 			}
 
-			if (DB_TYPE == "mysql" && !function_exists("mysqli_connect")) {
-				array_push($errors, "PHP support for MySQL is required for configured DB_TYPE in config.php.");
-			}
-
-			if (DB_TYPE == "pgsql" && !function_exists("pg_connect")) {
-				array_push($errors, "PHP support for PostgreSQL is required for configured DB_TYPE in config.php");
-			}
-
 			if (!class_exists("PDO")) {
 				array_push($errors, "PHP support for PDO is required but was not found.");
 			}

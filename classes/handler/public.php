@@ -1143,17 +1143,17 @@ class Handler_Public extends Handler {
 				$updater = new DbUpdater(Db::pdo(), DB_TYPE, SCHEMA_VERSION);
 
 				if ($op == "performupdate") {
-					if ($updater->isUpdateRequired()) {
+					if ($updater->is_update_required()) {
 
 						print "<h2>" . T_sprintf("Performing updates to version %d", SCHEMA_VERSION) . "</h2>";
 
-						for ($i = $updater->getSchemaVersion() + 1; $i <= SCHEMA_VERSION; $i++) {
+						for ($i = $updater->get_schema_version() + 1; $i <= SCHEMA_VERSION; $i++) {
 							print "<ul>";
 
 							print "<li class='text-info'>" . T_sprintf("Updating to version %d", $i) . "</li>";
 
 							print "<li>";
-							$result = $updater->performUpdateTo($i, true);
+							$result = $updater->update_to($i, true);
 							print "</li>";
 
 							if (!$result) {
@@ -1184,10 +1184,10 @@ class Handler_Public extends Handler {
 						print "<a href='index.php'>".__("Return to Tiny Tiny RSS")."</a>";
 					}
 				} else {
-					if ($updater->isUpdateRequired()) {
+					if ($updater->is_update_required()) {
 
 						print "<h2>".T_sprintf("Tiny Tiny RSS database needs update to the latest version (%d to %d).",
-							$updater->getSchemaVersion(), SCHEMA_VERSION)."</h2>";
+							$updater->get_schema_version(), SCHEMA_VERSION)."</h2>";
 
 						if (DB_TYPE == "mysql") {
 							print_error("<strong>READ THIS:</strong> Due to MySQL limitations, your database is not completely protected while updating. ".

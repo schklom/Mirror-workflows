@@ -380,8 +380,8 @@
 
 		$updater = new DbUpdater(Db::pdo(), DB_TYPE, SCHEMA_VERSION);
 
-		if ($updater->isUpdateRequired()) {
-			Debug::log("Schema update required, version " . $updater->getSchemaVersion() . " to " . SCHEMA_VERSION);
+		if ($updater->is_update_required()) {
+			Debug::log("Schema update required, version " . $updater->get_schema_version() . " to " . SCHEMA_VERSION);
 
 			if (DB_TYPE == "mysql")
 				Debug::Log("READ THIS: Due to MySQL limitations, your database is not completely protected while updating.\n".
@@ -400,10 +400,10 @@
 
 			Debug::log("Performing updates to version " . SCHEMA_VERSION . "...");
 
-			for ($i = $updater->getSchemaVersion() + 1; $i <= SCHEMA_VERSION; $i++) {
+			for ($i = $updater->get_schema_version() + 1; $i <= SCHEMA_VERSION; $i++) {
 				Debug::log("* Updating to version $i...");
 
-				$result = $updater->performUpdateTo($i, false);
+				$result = $updater->update_to($i, false);
 
 				if ($result) {
 					Debug::log("* Completed.");

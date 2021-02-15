@@ -581,85 +581,10 @@ class Feeds extends Handler_Protected {
 		return $reply;
 	}
 
-	function quickAddFeed() {
-		print "<form onsubmit='return false'>";
-
-		print_hidden("op", "rpc");
-		print_hidden("method", "addfeed");
-
-		print "<div id='fadd_error_message' style='display : none' class='alert alert-danger'></div>";
-
-		print "<div id='fadd_multiple_notify' style='display : none'>";
-		print_notice("Provided URL is a HTML page referencing multiple feeds, please select required feed from the dropdown menu below.");
-		print "<p></div>";
-
-		print "<section>";
-
-		print "<fieldset>";
-		print "<div style='float : right'><img style='display : none' id='feed_add_spinner' src='images/indicator_white.gif'></div>";
-		print "<input style='font-size : 16px; width : 500px;'
-			placeHolder=\"".__("Feed or site URL")."\"
-			dojoType='dijit.form.ValidationTextBox' required='1' name='feed' id='feedDlg_feedUrl'>";
-
-		print "</fieldset>";
-
-		print "<fieldset>";
-
-		if (get_pref('ENABLE_FEED_CATS')) {
-			print "<label class='inline'>" . __('Place in category:') . "</label> ";
-			print_feed_cat_select("cat", false, 'dojoType="fox.form.Select"');
-		}
-
-		print "</fieldset>";
-
-		print "</section>";
-
-		print '<div id="feedDlg_feedsContainer" style="display : none">
-				<header>' . __('Available feeds') . '</header>
-				<section>
-					<fieldset>
-						<select id="feedDlg_feedContainerSelect"
-							dojoType="fox.form.Select" size="3">
-							<script type="dojo/method" event="onChange" args="value">
-								dijit.byId("feedDlg_feedUrl").attr("value", value);
-							</script>
-						</select>
-					</fieldset>
-				</section>
-			</div>';
-
-		print "<div id='feedDlg_loginContainer' style='display : none'>
-				<section>
-				<fieldset>
-					<input dojoType=\"dijit.form.TextBox\" name='login'\"
-						placeHolder=\"".__("Login")."\"
-						autocomplete=\"new-password\"
-						style=\"width : 10em;\">
-					<input
-						placeHolder=\"".__("Password")."\"
-						dojoType=\"dijit.form.TextBox\" type='password'
-						autocomplete=\"new-password\"
-						style=\"width : 10em;\" name='pass'\">
-				</fieldset>
-				</section>
-			</div>";
-
-		print "<section>";
-		print "<label>
-			<label class='checkbox'><input type='checkbox' name='need_auth' dojoType='dijit.form.CheckBox' id='feedDlg_loginCheck'
-					onclick='App.displayIfChecked(this, \"feedDlg_loginContainer\")'>
-				".__('This feed requires authentication.')."</label>";
-		print "</section>";
-
-		print "<footer>";
-		print "<button dojoType='dijit.form.Button' class='alt-primary' type='submit'
-				onclick='App.dialogOf(this).execute()'>".__('Subscribe')."</button>";
-
-		print "<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
-				__('Cancel')."</button>";
-		print "</footer>";
-
-		print "</form>";
+	function subscribeToFeed() {
+		print json_encode([
+			"cat_select" => format_feed_cat_select("cat", false, 'dojoType="fox.form.Select"')
+		]);
 	}
 
 	function search() {
@@ -1075,6 +1000,18 @@ class Feeds extends Handler_Protected {
 
 			return $row["unread"];
 		}
+	}
+
+	function add() {
+		$feed = clean($_REQUEST['feed']);
+		$cat = clean($_REQUEST['cat']);
+		$need_auth = isset($_REQUEST['need_auth']);
+		$login = $need_auth ? clean($_REQUEST['login']) : '';
+		$pass = $need_auth ? clean($_REQUEST['pass']) : '';
+
+		$rc = Feeds::subscribe_to_feed($feed, $cat, $login, $pass);
+
+		print json_encode(array("result" => $rc));
 	}
 
 	/**

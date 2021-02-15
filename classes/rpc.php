@@ -80,18 +80,6 @@ class RPC extends Handler_Protected {
 		}
 	}
 
-	function addfeed() {
-		$feed = clean($_REQUEST['feed']);
-		$cat = clean($_REQUEST['cat']);
-		$need_auth = isset($_REQUEST['need_auth']);
-		$login = $need_auth ? clean($_REQUEST['login']) : '';
-		$pass = $need_auth ? clean($_REQUEST['pass']) : '';
-
-		$rc = Feeds::subscribe_to_feed($feed, $cat, $login, $pass);
-
-		print json_encode(array("result" => $rc));
-	}
-
 	function togglepref() {
 		$key = clean($_REQUEST["key"]);
 		set_pref($key, !get_pref($key));

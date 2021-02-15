@@ -77,15 +77,93 @@ const	CommonDialogs = {
 
 			return false;
 		},
-		quickAddFeed: function() {
-			xhrPost("backend.php",
-					{op: "feeds", method: "quickAddFeed"},
-					(transport) => {
-
+		subscribeToFeed: function() {
+			xhrJson("backend.php",
+					{op: "feeds", method: "subscribeToFeed"},
+					(reply) => {
 						const dialog = new fox.SingleUseDialog({
-							id: "feedAddDlg",
 							title: __("Subscribe to Feed"),
-							content: transport.responseText,
+							content: `
+								<form onsubmit='return false'>
+
+									${App.FormFields.hidden("op", "feeds")}
+									${App.FormFields.hidden("method", "add")}
+
+									<div id='fadd_error_message' style='display : none' class='alert alert-danger'></div>
+
+									<div id='fadd_multiple_notify' style='display : none'>
+										<div class='alert alert-info'>
+											${__("Provided URL is a HTML page referencing multiple feeds, please select required feed from the dropdown menu below.")}
+										</div>
+									</div>
+
+									<section>
+										<fieldset>
+											<div style='float : right'><img style='display : none' id='feed_add_spinner' src='images/indicator_white.gif'></div>
+											<input style='font-size : 16px; width : 500px;'
+												placeHolder="${__("Feed or site URL")}"
+												dojoType='dijit.form.ValidationTextBox'
+												required='1' name='feed' id='feedDlg_feedUrl'>
+										</fieldset>
+
+										${App.getInitParam('enable_feed_cats') ?
+										`
+											<fieldset>
+												<label class='inline'>${__('Place in category:')}</label>
+												${reply.cat_select}
+											</fieldset>
+										` : ''}
+									</section>
+
+									<div id="feedDlg_feedsContainer" style="display : none">
+										<header>${__('Available feeds')}</header>
+										<section>
+											<fieldset>
+												<select id="feedDlg_feedContainerSelect"
+													dojoType="fox.form.Select" size="3">
+													<script type="dojo/method" event="onChange" args="value">
+														dijit.byId("feedDlg_feedUrl").attr("value", value);
+													</script>
+												</select>
+											</fieldset>
+										</section>
+									</div>
+
+									<div id='feedDlg_loginContainer' style='display : none'>
+										<section>
+											<fieldset>
+												<input dojoType="dijit.form.TextBox" name='login'"
+													placeHolder="${__("Login")}"
+													autocomplete="new-password"
+													style="width : 10em;">
+												<input
+													placeHolder="${__("Password")}"
+													dojoType="dijit.form.TextBox" type='password'
+													autocomplete="new-password"
+													style="width : 10em;" name='pass'">
+											</fieldset>
+										</section>
+									</div>
+
+									<section>
+										<label class='checkbox'>
+											<input type='checkbox' name='need_auth' dojoType='dijit.form.CheckBox' id='feedDlg_loginCheck'
+														onclick='App.displayIfChecked(this, "feedDlg_loginContainer")'>
+													${__('This feed requires authentication.')}
+										</label>
+									</section>
+
+									<footer>
+										<button dojoType='dijit.form.Button' class='alt-primary' type='submit'
+											onclick='App.dialogOf(this).execute()'>
+											${__('Subscribe')}
+										</button>
+										<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>
+											${__('Cancel')}
+										</button>
+									</footer>
+								</form>
+							`,
 							show_error: function (msg) {
 								const elem = $("fadd_error_message");
 
@@ -114,7 +192,7 @@ const	CommonDialogs = {
 											} catch (e) {
 												Element.hide("feed_add_spinner");
 												alert(__("Failed to parse output. This can indicate server timeout and/or network issues. Backend output was logged to browser console."));
-												console.log('quickAddFeed, backend returned:' + transport.responseText);
+												console.log('subscribeToFeed, backend returned:' + transport.responseText);
 												return;
 											}
 

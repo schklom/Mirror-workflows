@@ -838,7 +838,7 @@ const App = {
       if (this.is_prefs) {
 
          this.hotkey_actions["feed_subscribe"] = () => {
-            CommonDialogs.quickAddFeed();
+            CommonDialogs.subscribeToFeed();
          };
 
          this.hotkey_actions["create_label"] = () => {
@@ -994,7 +994,7 @@ const App = {
             Feeds.toggleUnread();
          };
          this.hotkey_actions["feed_subscribe"] = () => {
-            CommonDialogs.quickAddFeed();
+            CommonDialogs.subscribeToFeed();
          };
          this.hotkey_actions["feed_debug_update"] = () => {
             if (!Feeds.activeIsCat() && parseInt(Feeds.getActive()) > 0) {
@@ -1139,7 +1139,7 @@ const App = {
             Feeds.search();
             break;
          case "qmcAddFeed":
-            CommonDialogs.quickAddFeed();
+            CommonDialogs.subscribeToFeed();
             break;
          case "qmcDigest":
             window.location.href = "backend.php?op=digest";

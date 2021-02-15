@@ -1241,7 +1241,7 @@ class Pref_Feeds extends Handler_Protected {
 				<div dojoType="fox.form.DropDownButton">
 					<span><?= __('Feeds') ?></span>
 					<div dojoType="dijit.Menu" style="display: none">
-						<div onclick="CommonDialogs.quickAddFeed()"
+						<div onclick="CommonDialogs.subscribeToFeed()"
 							dojoType="dijit.MenuItem"><?= __('Subscribe to feed') ?></div>
 						<div onclick="dijit.byId('feedTree').editSelectedFeed()"
 							dojoType="dijit.MenuItem"><?= __('Edit selected feeds') ?></div>

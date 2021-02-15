@@ -19,7 +19,6 @@
 	define_default('SPAWN_INTERVAL', DAEMON_SLEEP_INTERVAL); // seconds
 
 	require_once "sanity_check.php";
-	require_once "db.php";
 	require_once "db-prefs.php";
 
 	if (!function_exists('pcntl_fork')) {

@@ -14,7 +14,6 @@
 	define('NO_SESSION_AUTOSTART', true);
 
 	require_once "autoload.php";
-	require_once "db.php";
 	require_once "db-prefs.php";
 	require_once "functions.php";
 	require_once "sessions.php";

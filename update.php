@@ -11,7 +11,6 @@
 	require_once "functions.php";
 	require_once "config.php";
 	require_once "sanity_check.php";
-	require_once "db.php";
 	require_once "db-prefs.php";
 
 	function make_stampfile($filename) {

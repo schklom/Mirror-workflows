@@ -438,7 +438,7 @@ class Feeds extends Handler_Protected {
 		 * when there's nothing to load - e.g. no stuff in fresh feed */
 
 		if ($feed == -5) {
-			print json_encode($this->generate_dashboard_feed());
+			print json_encode($this->_generate_dashboard_feed());
 			return;
 		}
 
@@ -466,7 +466,7 @@ class Feeds extends Handler_Protected {
 		}
 
 		if ($sth && !$sth->fetch()) {
-			print json_encode($this->generate_error_feed(__("Feed not found.")));
+			print json_encode($this->_generate_error_feed(__("Feed not found.")));
 			return;
 		}
 
@@ -523,7 +523,7 @@ class Feeds extends Handler_Protected {
 
 	}
 
-	private function generate_dashboard_feed() {
+	private function _generate_dashboard_feed() {
 		$reply = array();
 
 		$reply['headlines']['id'] = -5;
@@ -565,7 +565,7 @@ class Feeds extends Handler_Protected {
 		return $reply;
 	}
 
-	private function generate_error_feed($error) {
+	private function _generate_error_feed($error) {
 		$reply = array();
 
 		$reply['headlines']['id'] = -7;
@@ -630,7 +630,7 @@ class Feeds extends Handler_Protected {
 		print "</form>";
 	}
 
-	function update_debugger() {
+	function updatedebugger() {
 		header("Content-type: text/html");
 
 		$xdebug = isset($_REQUEST["xdebug"]) ? (int)$_REQUEST["xdebug"] : 1;
@@ -690,7 +690,7 @@ class Feeds extends Handler_Protected {
 				<div class="content">
 					<form method="post" action="">
 						<input type="hidden" name="op" value="feeds">
-						<input type="hidden" name="method" value="update_debugger">
+						<input type="hidden" name="method" value="updatedebugger">
 						<input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
 						<input type="hidden" name="action" value="do_update">
 						<input type="hidden" name="feed_id" value="<?= $feed_id ?>">

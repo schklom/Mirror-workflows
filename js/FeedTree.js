@@ -102,7 +102,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 						label: __("Debug feed"),
 						onClick: function() {
 							/* global __csrf_token */
-							App.postOpenWindow("backend.php", {op: "feeds", method: "update_debugger",
+							App.postOpenWindow("backend.php", {op: "feeds", method: "updatedebugger",
 								feed_id: this.getParent().row_id, csrf_token: __csrf_token});
 						}}));
 				}

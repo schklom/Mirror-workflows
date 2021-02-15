@@ -998,10 +998,9 @@ const App = {
          };
          this.hotkey_actions["feed_debug_update"] = () => {
             if (!Feeds.activeIsCat() && parseInt(Feeds.getActive()) > 0) {
-               //window.open("backend.php?op=feeds&method=update_debugger&feed_id=" + Feeds.getActive());
 
                /* global __csrf_token */
-               App.postOpenWindow("backend.php", {op: "feeds", method: "update_debugger",
+               App.postOpenWindow("backend.php", {op: "feeds", method: "updatedebugger",
                   feed_id: Feeds.getActive(), csrf_token: __csrf_token});
 
             } else {

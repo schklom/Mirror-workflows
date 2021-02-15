@@ -96,7 +96,7 @@ class API extends Handler {
 		if ($feed_id) {
 			$this->wrap(self::STATUS_OK, array("unread" => getFeedUnread($feed_id, $is_cat)));
 		} else {
-			$this->wrap(self::STATUS_OK, array("unread" => Feeds::getGlobalUnread()));
+			$this->wrap(self::STATUS_OK, array("unread" => Feeds::_get_global_unread()));
 		}
 	}
 
@@ -147,7 +147,7 @@ class API extends Handler {
 				$unread = getFeedUnread($line["id"], true);
 
 				if ($enable_nested)
-					$unread += Feeds::getCategoryChildrenUnread($line["id"]);
+					$unread += Feeds::_get_cat_children_unread($line["id"]);
 
 				if ($unread || !$unread_only) {
 					array_push($cats, array("id" => (int) $line["id"],
@@ -165,7 +165,7 @@ class API extends Handler {
 
 				if ($unread || !$unread_only) {
 					array_push($cats, array("id" => $cat_id,
-						"title" => Feeds::getCategoryTitle($cat_id),
+						"title" => Feeds::_get_cat_title($cat_id),
 						"unread" => (int) $unread));
 				}
 			}
@@ -204,7 +204,7 @@ class API extends Handler {
 
 			$_SESSION['hasSandbox'] = $has_sandbox;
 
-			list($override_order, $skip_first_id_check) = Feeds::order_to_override_query(clean($_REQUEST["order_by"] ?? null));
+			list($override_order, $skip_first_id_check) = Feeds::_order_to_override_query(clean($_REQUEST["order_by"] ?? null));
 
 			/* do not rely on params below */
 
@@ -395,7 +395,7 @@ class API extends Handler {
 		if (!in_array($mode, ["all", "1day", "1week", "2week"]))
 			$mode = "all";
 
-		Feeds::catchup_feed($feed_id, $is_cat, $_SESSION["uid"], $mode);
+		Feeds::_catchup($feed_id, $is_cat, $_SESSION["uid"], $mode);
 
 		$this->wrap(self::STATUS_OK, array("status" => "OK"));
 	}
@@ -537,7 +537,7 @@ class API extends Handler {
 					$unread = getFeedUnread($i);
 
 					if ($unread || !$unread_only) {
-						$title = Feeds::getFeedTitle($i);
+						$title = Feeds::_get_title($i);
 
 						$row = array(
 								"id" => $i,
@@ -562,7 +562,7 @@ class API extends Handler {
 
 				while ($line = $sth->fetch()) {
 					$unread = getFeedUnread($line["id"], true) +
-						Feeds::getCategoryChildrenUnread($line["id"]);
+						Feeds::_get_cat_children_unread($line["id"]);
 
 					if ($unread || !$unread_only) {
 						$row = array(
@@ -610,7 +610,7 @@ class API extends Handler {
 
 				$unread = getFeedUnread($line["id"]);
 
-				$has_icon = Feeds::feedHasIcon($line['id']);
+				$has_icon = Feeds::_has_icon($line['id']);
 
 				if ($unread || !$unread_only) {
 
@@ -676,7 +676,7 @@ class API extends Handler {
 				"skip_first_id_check" => $skip_first_id_check
 			);
 
-			$qfh_ret = Feeds::queryFeedHeadlines($params);
+			$qfh_ret = Feeds::_get_headlines($params);
 
 			$result = $qfh_ret[0];
 			$feed_title = $qfh_ret[1];
@@ -826,7 +826,7 @@ class API extends Handler {
 		$password = clean($_REQUEST["password"]);
 
 		if ($feed_url) {
-			$rc = Feeds::subscribe_to_feed($feed_url, $category_id, $login, $password);
+			$rc = Feeds::_subscribe($feed_url, $category_id, $login, $password);
 
 			$this->wrap(self::STATUS_OK, array("status" => $rc));
 		} else {

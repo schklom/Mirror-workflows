@@ -217,7 +217,7 @@
 
 	// @deprecated
 	function getFeedUnread($feed, $is_cat = false) {
-		return Feeds::getFeedArticles($feed, $is_cat, true, $_SESSION["uid"]);
+		return Feeds::_get_counters($feed, $is_cat, true, $_SESSION["uid"]);
 	}
 
 	// @deprecated

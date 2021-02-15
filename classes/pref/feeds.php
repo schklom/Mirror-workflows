@@ -98,7 +98,7 @@ class Pref_Feeds extends Handler_Protected {
 			$feed['checkbox'] = false;
 			$feed['unread'] = -1;
 			$feed['error'] = $feed_line['last_error'];
-			$feed['icon'] = Feeds::getFeedIcon($feed_line['id']);
+			$feed['icon'] = Feeds::_get_icon($feed_line['id']);
 			$feed['param'] = TimeHelper::make_local_datetime(
 				$feed_line['last_updated'], true);
 			$feed['updates_disabled'] = (int)($feed_line['update_interval'] < 0);
@@ -266,7 +266,7 @@ class Pref_Feeds extends Handler_Protected {
 				$feed['name'] = $feed_line['title'];
 				$feed['checkbox'] = false;
 				$feed['error'] = $feed_line['last_error'];
-				$feed['icon'] = Feeds::getFeedIcon($feed_line['id']);
+				$feed['icon'] = Feeds::_get_icon($feed_line['id']);
 				$feed['param'] = TimeHelper::make_local_datetime(
 					$feed_line['last_updated'], true);
 				$feed['unread'] = -1;
@@ -301,7 +301,7 @@ class Pref_Feeds extends Handler_Protected {
 				$feed['name'] = $feed_line['title'];
 				$feed['checkbox'] = false;
 				$feed['error'] = $feed_line['last_error'];
-				$feed['icon'] = Feeds::getFeedIcon($feed_line['id']);
+				$feed['icon'] = Feeds::_get_icon($feed_line['id']);
 				$feed['param'] = TimeHelper::make_local_datetime(
 					$feed_line['last_updated'], true);
 				$feed['unread'] = -1;
@@ -777,7 +777,7 @@ class Pref_Feeds extends Handler_Protected {
 
 			/* Icon */
 
-			print "<img class='feedIcon feed-editor-icon' src=\"".Feeds::getFeedIcon($feed_id)."\">";
+			print "<img class='feedIcon feed-editor-icon' src=\"".Feeds::_get_icon($feed_id)."\">";
 
 			print "<form onsubmit='return false;' id='feed_icon_upload_form'
 				enctype='multipart/form-data' method='POST'>
@@ -1189,7 +1189,7 @@ class Pref_Feeds extends Handler_Protected {
 	function addCat() {
 		$feed_cat = clean($_REQUEST["cat"]);
 
-		Feeds::add_feed_category($feed_cat);
+		Feeds::_add_cat($feed_cat);
 	}
 
 	function importOpml() {
@@ -1420,9 +1420,9 @@ class Pref_Feeds extends Handler_Protected {
 
 		$obj['id'] = 'CAT:' . $cat_id;
 		$obj['items'] = array();
-		$obj['name'] = Feeds::getCategoryTitle($cat_id);
+		$obj['name'] = Feeds::_get_cat_title($cat_id);
 		$obj['type'] = 'category';
-		$obj['unread'] = -1; //(int) Feeds::getCategoryUnread($cat_id);
+		$obj['unread'] = -1; //(int) Feeds::_get_cat_unread($cat_id);
 		$obj['bare_id'] = $cat_id;
 
 		return $obj;
@@ -1433,7 +1433,7 @@ class Pref_Feeds extends Handler_Protected {
 		$feed_id = (int) $feed_id;
 
 		if (!$title)
-			$title = Feeds::getFeedTitle($feed_id, false);
+			$title = Feeds::_get_title($feed_id, false);
 
 		if ($unread === false)
 			$unread = getFeedUnread($feed_id, false);
@@ -1444,7 +1444,7 @@ class Pref_Feeds extends Handler_Protected {
 		$obj['type'] = 'feed';
 		$obj['error'] = $error;
 		$obj['updated'] = $updated;
-		$obj['icon'] = Feeds::getFeedIcon($feed_id);
+		$obj['icon'] = Feeds::_get_icon($feed_id);
 		$obj['bare_id'] = $feed_id;
 		$obj['auxcounter'] = 0;
 
@@ -1611,11 +1611,11 @@ class Pref_Feeds extends Handler_Protected {
 			'id' => $feed_id,
 			'is_cat' => (int)$is_cat,
 			'q' => $search,
-			'key' => Feeds::get_feed_access_key($feed_id, $is_cat, $_SESSION["uid"])
+			'key' => Feeds::_get_access_key($feed_id, $is_cat, $_SESSION["uid"])
 		]);
 
 		print json_encode([
-			"title" => Feeds::getFeedTitle($feed_id, $is_cat),
+			"title" => Feeds::_get_title($feed_id, $is_cat),
 			"link" => $link
 		]);
 	}
@@ -1627,7 +1627,7 @@ class Pref_Feeds extends Handler_Protected {
 			WHERE feed_id = ? AND is_cat = ? AND owner_uid = ?");
 		$sth->execute([$feed_id, bool_to_sql_bool($is_cat), $owner_uid]);
 
-		return Feeds::get_feed_access_key($feed_id, $is_cat, $owner_uid);
+		return Feeds::_get_access_key($feed_id, $is_cat, $owner_uid);
 	}
 
 	// Silent

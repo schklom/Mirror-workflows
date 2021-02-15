@@ -60,7 +60,7 @@ class VF_Shared extends Plugin {
 			"override_vfeed" => "ttrss_feeds.title AS feed_title,"
 		);
 
-		$qfh_ret = Feeds::queryFeedHeadlines($params);
+		$qfh_ret = Feeds::_get_headlines($params);
 		$qfh_ret[1] = __("Shared articles");
 
 		return $qfh_ret;

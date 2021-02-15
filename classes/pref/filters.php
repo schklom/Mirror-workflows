@@ -189,10 +189,10 @@ class Pref_Filters extends Handler_Protected {
 
                     if (strpos($feed_id, "CAT:") === 0) {
                         $feed_id = (int)substr($feed_id, 4);
-                        array_push($feeds_fmt, Feeds::getCategoryTitle($feed_id));
+                        array_push($feeds_fmt, Feeds::_get_cat_title($feed_id));
                     } else {
                         if ($feed_id)
-                            array_push($feeds_fmt, Feeds::getFeedTitle((int)$feed_id));
+                            array_push($feeds_fmt, Feeds::_get_title((int)$feed_id));
                         else
                             array_push($feeds_fmt, __("All feeds"));
                     }
@@ -203,9 +203,9 @@ class Pref_Filters extends Handler_Protected {
             } else {
 
                 $where = $line["cat_filter"] ?
-                    Feeds::getCategoryTitle($line["cat_id"]) :
+                    Feeds::_get_cat_title($line["cat_id"]) :
                     ($line["feed_id"] ?
-                        Feeds::getFeedTitle($line["feed_id"]) : __("All feeds"));
+                        Feeds::_get_title($line["feed_id"]) : __("All feeds"));
             }
 
 #			$where = $line["cat_id"] . "/" . $line["feed_id"];
@@ -494,10 +494,10 @@ class Pref_Filters extends Handler_Protected {
 
             if (strpos($feed_id, "CAT:") === 0) {
                 $feed_id = (int)substr($feed_id, 4);
-                array_push($feeds_fmt, Feeds::getCategoryTitle($feed_id));
+                array_push($feeds_fmt, Feeds::_get_cat_title($feed_id));
             } else {
                 if ($feed_id)
-                    array_push($feeds_fmt, Feeds::getFeedTitle((int)$feed_id));
+                    array_push($feeds_fmt, Feeds::_get_title((int)$feed_id));
                 else
                     array_push($feeds_fmt, __("All feeds"));
             }

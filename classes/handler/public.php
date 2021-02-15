@@ -12,7 +12,7 @@ class Handler_Public extends Handler {
 
 		if (!$limit) $limit = 60;
 
-		list($override_order, $skip_first_id_check) = Feeds::order_to_override_query($order);
+		list($override_order, $skip_first_id_check) = Feeds::_order_to_override_query($order);
 
 		if (!$override_order) {
 			$override_order = "date_entered DESC, updated DESC";
@@ -55,7 +55,7 @@ class Handler_Public extends Handler {
 			}
 
 		} else {
-			$qfh_ret = Feeds::queryFeedHeadlines($params);
+			$qfh_ret = Feeds::_get_headlines($params);
 		}
 
 		$result = $qfh_ret[0];
@@ -65,7 +65,7 @@ class Handler_Public extends Handler {
 
 		$feed_self_url = get_self_url_prefix() .
 			"/public.php?op=rss&id=$feed&key=" .
-			Feeds::get_feed_access_key($feed, false, $owner_uid);
+			Feeds::_get_access_key($feed, false, $owner_uid);
 
 		if (!$feed_site_url) $feed_site_url = get_self_url_prefix();
 
@@ -251,11 +251,11 @@ class Handler_Public extends Handler {
 		$uid = UserHelper::find_user_by_login($login);
 
 		if ($uid) {
-			print Feeds::getGlobalUnread($uid);
+			print Feeds::_get_global_unread($uid);
 
 			if ($fresh) {
 				print ";";
-				print Feeds::getFeedArticles(-3, false, true, $uid);
+				print Feeds::_get_counters(-3, false, true, $uid);
 			}
 		} else {
 			print "-1;User not found";
@@ -803,7 +803,7 @@ class Handler_Public extends Handler {
 				<?php
 			} else {
 
-				$rc = Feeds::subscribe_to_feed($feed_url);
+				$rc = Feeds::_subscribe($feed_url);
 				$feed_urls = false;
 
 				switch ($rc['code']) {

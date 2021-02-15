@@ -122,7 +122,7 @@ class Af_Readability extends Plugin {
 
 					print "<li><i class='material-icons'>rss_feed</i> <a href='#'
 						onclick='CommonDialogs.editFeed($f)'>".
-						Feeds::getFeedTitle($f) . " " . ($is_append ? __("(append)") : "") . "</a></li>";
+						Feeds::_get_title($f) . " " . ($is_append ? __("(append)") : "") . "</a></li>";
 				}
 				print "</ul>";
 			}

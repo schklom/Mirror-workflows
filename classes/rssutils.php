@@ -1239,7 +1239,7 @@ class RSSUtils {
 
 			Debug::log("purging feed...", Debug::$LOG_VERBOSE);
 
-			Feeds::purge_feed($feed, 0);
+			Feeds::_purge($feed, 0);
 
 			$sth = $pdo->prepare("UPDATE ttrss_feeds SET
 				last_updated = NOW(),
@@ -1706,7 +1706,7 @@ class RSSUtils {
 		$filters = array();
 
 		$feed_id = (int) $feed_id;
-		$cat_id = (int)Feeds::getFeedCategory($feed_id);
+		$cat_id = (int)Feeds::_cat_of_feed($feed_id);
 
 		if ($cat_id == 0)
 			$null_cat_qpart = "cat_id IS NULL OR";
@@ -1720,7 +1720,7 @@ class RSSUtils {
 		$sth->execute([$owner_uid]);
 
 		$check_cats = array_merge(
-			Feeds::getParentCategories($cat_id, $owner_uid),
+			Feeds::_get_parent_cats($cat_id, $owner_uid),
 			[$cat_id]);
 
 		$check_cats_str = join(",", $check_cats);

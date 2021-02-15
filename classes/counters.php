@@ -25,8 +25,8 @@ class Counters {
 		while ($line = $sth->fetch()) {
 			list ($tmp_unread, $tmp_marked) = self::getCategoryChildrenCounters($line["id"], $owner_uid);
 
-			$unread += $tmp_unread + Feeds::getCategoryUnread($line["id"], $owner_uid);
-			$marked += $tmp_marked + Feeds::getCategoryMarked($line["id"], $owner_uid);
+			$unread += $tmp_unread + Feeds::_get_cat_unread($line["id"], $owner_uid);
+			$marked += $tmp_marked + Feeds::_get_cat_marked($line["id"], $owner_uid);
 		}
 
 		return [$unread, $marked];
@@ -38,7 +38,7 @@ class Counters {
 		/* Labels category */
 
 		$cv = array("id" => -2, "kind" => "cat",
-			"counter" => Feeds::getCategoryUnread(-2));
+			"counter" => Feeds::_get_cat_unread(-2));
 
 		array_push($ret, $cv);
 
@@ -114,8 +114,8 @@ class Counters {
 			$last_error = htmlspecialchars($line["last_error"]);
 			$last_updated = TimeHelper::make_local_datetime($line['last_updated'], false);
 
-			if (Feeds::feedHasIcon($id)) {
-				$has_img = filemtime(Feeds::getIconFile($id));
+			if (Feeds::_has_icon($id)) {
+				$has_img = filemtime(Feeds::_get_icon_file($id));
 			} else {
 				$has_img = false;
 			}
@@ -149,7 +149,7 @@ class Counters {
 		$ret = [];
 
 		if ($global_unread == -1) {
-			$global_unread = Feeds::getGlobalUnread();
+			$global_unread = Feeds::_get_global_unread();
 		}
 
 		$cv = [
@@ -187,7 +187,7 @@ class Counters {
 			$count = getFeedUnread($i);
 
 			if ($i == 0 || $i == -1 || $i == -2)
-				$auxctr = Feeds::getFeedArticles($i, false);
+				$auxctr = Feeds::_get_counters($i, false);
 			else
 				$auxctr = 0;
 

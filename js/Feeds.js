@@ -501,7 +501,7 @@ const	Feeds = {
 			const tree = dijit.byId("feedTree");
 
 			if (tree && tree.model)
-				return tree.getFeedCategory(feed);
+				return tree._cat_of_feed(feed);
 
 		} catch (e) {
 			//

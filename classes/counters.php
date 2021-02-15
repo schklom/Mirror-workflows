@@ -2,14 +2,13 @@
 class Counters {
 
 	static function get_all() {
-		$data = self::get_global();
-
-		$data = array_merge($data, self::get_virt(),
+		return array_merge(
+			self::get_global(),
+			self::get_virt(),
 			self::get_labels(),
 			self::get_feeds(),
-			self::get_cats());
-
-		return $data;
+			self::get_cats()
+		);
 	}
 
 	static private function get_cat_children($cat_id, $owner_uid) {

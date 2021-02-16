@@ -58,9 +58,9 @@ class Af_RedditImgur extends Plugin {
 			}
 			</script>";
 
-		print_hidden("op", "pluginhandler");
-		print_hidden("method", "save");
-		print_hidden("plugin", "af_redditimgur");
+		print \Controls\hidden_tag("op", "pluginhandler");
+		print \Controls\hidden_tag("method", "save");
+		print \Controls\hidden_tag("plugin", "af_redditimgur");
 
 		print "<fieldset class='narrow'>";
 		print "<label class='checkbox'>";

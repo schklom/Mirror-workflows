@@ -87,9 +87,9 @@ class Af_Readability extends Plugin {
 			}
 			</script>";
 
-			print_hidden("op", "pluginhandler");
-			print_hidden("method", "save");
-			print_hidden("plugin", "af_readability");
+			print \Controls\hidden_tag("op", "pluginhandler");
+			print \Controls\hidden_tag("method", "save");
+			print \Controls\hidden_tag("plugin", "af_readability");
 
 			$enable_share_anything = $this->host->get($this, "enable_share_anything");
 

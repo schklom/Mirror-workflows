@@ -71,9 +71,9 @@ class NSFW extends Plugin {
 			}
 			</script>";
 
-			print_hidden("op", "pluginhandler");
-			print_hidden("method", "save");
-			print_hidden("plugin", "nsfw");
+			print \Controls\hidden_tag("op", "pluginhandler");
+			print \Controls\hidden_tag("method", "save");
+			print \Controls\hidden_tag("plugin", "nsfw");
 
 			print "<table width=\"100%\" class=\"prefPrefsList\">";
 

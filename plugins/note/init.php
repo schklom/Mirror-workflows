@@ -37,10 +37,10 @@ class Note extends Plugin {
 
 			$note = $row['note'];
 
-			print_hidden("id", "$param");
-			print_hidden("op", "pluginhandler");
-			print_hidden("method", "setNote");
-			print_hidden("plugin", "note");
+			print \Controls\hidden_tag("id", "$param");
+			print \Controls\hidden_tag("op", "pluginhandler");
+			print \Controls\hidden_tag("method", "setNote");
+			print \Controls\hidden_tag("plugin", "note");
 
 			print "<textarea dojoType='dijit.form.SimpleTextarea'
 				style='font-size : 12px; width : 98%; height: 100px;'

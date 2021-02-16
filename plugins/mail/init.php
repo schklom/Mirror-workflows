@@ -58,9 +58,9 @@ class Mail extends Plugin {
 			}
 			</script>";
 
-			print_hidden("op", "pluginhandler");
-			print_hidden("method", "save");
-			print_hidden("plugin", "mail");
+			print \Controls\hidden_tag("op", "pluginhandler");
+			print \Controls\hidden_tag("method", "save");
+			print \Controls\hidden_tag("plugin", "mail");
 
 			$addresslist = $this->host->get($this, "addresslist");
 
@@ -86,9 +86,9 @@ class Mail extends Plugin {
 		$ids = explode(",", $_REQUEST['param']);
 		$ids_qmarks = arr_qmarks($ids);
 
-		print_hidden("op", "pluginhandler");
-		print_hidden("plugin", "mail");
-		print_hidden("method", "sendEmail");
+		print \Controls\hidden_tag("op", "pluginhandler");
+		print \Controls\hidden_tag("plugin", "mail");
+		print \Controls\hidden_tag("method", "sendEmail");
 
 		$sth = $this->pdo->prepare("SELECT email, full_name FROM ttrss_users WHERE
 			id = ?");
@@ -105,8 +105,8 @@ class Mail extends Plugin {
 		if (!$user_name)
 			$user_name = $_SESSION['name'];
 
-		print_hidden("from_email", "$user_email");
-		print_hidden("from_name", "$user_name");
+		print \Controls\hidden_tag("from_email", "$user_email");
+		print \Controls\hidden_tag("from_name", "$user_name");
 
 		$tpl = new Templator();
 

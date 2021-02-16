@@ -157,9 +157,9 @@ class Af_Psql_Trgm extends Plugin {
 				}
 				</script>";
 
-			print_hidden("op", "pluginhandler");
-			print_hidden("method", "save");
-			print_hidden("plugin", "af_psql_trgm");
+			print \Controls\hidden_tag("op", "pluginhandler");
+			print \Controls\hidden_tag("method", "save");
+			print \Controls\hidden_tag("plugin", "af_psql_trgm");
 
 			print "<h2>" . __("Global settings") . "</h2>";
 

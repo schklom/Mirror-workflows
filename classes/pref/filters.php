@@ -327,16 +327,16 @@ class Pref_Filters extends Handler_Protected {
 
 			print "<form onsubmit='return false'>";
 
-			print_hidden("op", "pref-filters");
+			print \Controls\hidden_tag("op", "pref-filters");
 
 			if ($filter_id) {
-				print_hidden("id", "$filter_id");
-				print_hidden("method", "editSave");
+				print \Controls\hidden_tag("id", "$filter_id");
+				print \Controls\hidden_tag("method", "editSave");
 			} else {
-				print_hidden("method", "add");
+				print \Controls\hidden_tag("method", "add");
 			}
 
-			print_hidden("csrf_token", $_SESSION['csrf_token']);
+			print \Controls\hidden_tag("csrf_token", $_SESSION['csrf_token']);
 
 			print "<header>".__("Caption")."</header>
 				<section>

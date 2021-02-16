@@ -524,9 +524,9 @@ class Pref_Feeds extends Handler_Protected {
 
 			$title = htmlspecialchars($row["title"]);
 
-			print_hidden("id", "$feed_id");
-			print_hidden("op", "pref-feeds");
-			print_hidden("method", "editSave");
+			print \Controls\hidden_tag("id", "$feed_id");
+			print \Controls\hidden_tag("op", "pref-feeds");
+			print \Controls\hidden_tag("method", "editSave");
 
 			print "<header>".__("Feed")."</header>";
 			print "<section>";
@@ -821,9 +821,9 @@ class Pref_Feeds extends Handler_Protected {
 
 		print "<p>";
 
-		print_hidden("ids", "$feed_ids");
-		print_hidden("op", "pref-feeds");
-		print_hidden("method", "batchEditSave");
+		print \Controls\hidden_tag("ids", "$feed_ids");
+		print \Controls\hidden_tag("op", "pref-feeds");
+		print \Controls\hidden_tag("method", "batchEditSave");
 
 		print "<header>".__("Feed")."</header>";
 		print "<section>";

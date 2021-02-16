@@ -218,9 +218,9 @@ class Af_Proxy_Http extends Plugin {
 			}
 			</script>";
 
-		print_hidden("op", "pluginhandler");
-		print_hidden("method", "save");
-		print_hidden("plugin", "af_proxy_http");
+		print \Controls\hidden_tag("op", "pluginhandler");
+		print \Controls\hidden_tag("method", "save");
+		print \Controls\hidden_tag("plugin", "af_proxy_http");
 
 		$proxy_all = $this->host->get($this, "proxy_all");
 		print_checkbox("proxy_all", $proxy_all);

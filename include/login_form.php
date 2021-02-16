@@ -141,8 +141,8 @@
 			<fieldset class="narrow">
 				<label> </label>
 
-				<label id="bw_limit_label"><input dojoType="dijit.form.CheckBox" name="bw_limit" id="bw_limit"
-					  type="checkbox" onchange="UtilityApp.bwLimitChange(this)">
+				<label id="bw_limit_label">
+					<?= \Controls\checkbox_tag("safe_mode", false, "", "onchange='UtilityApp.bwLimitChange(this)'", 'bw_limit') ?>
 					<?= __("Use less traffic") ?></label>
 			</fieldset>
 
@@ -153,9 +153,10 @@
 			<fieldset class="narrow">
 				<label> </label>
 
-				<label id="safe_mode_label"><input dojoType="dijit.form.CheckBox" name="safe_mode" id="safe_mode"
-					  type="checkbox">
-					<?= __("Safe mode") ?></label>
+				<label id="safe_mode_label">
+					<?= \Controls\checkbox_tag("safe_mode") ?>
+					<?= __("Safe mode") ?>
+				</label>
 			</fieldset>
 
 			<div dojoType="dijit.Tooltip" connectId="safe_mode_label" position="below" style="display:none">
@@ -166,7 +167,7 @@
 				<fieldset class="narrow">
 					<label> </label>
 					<label>
-						<input dojoType="dijit.form.CheckBox" name="remember_me" id="remember_me" type="checkbox">
+						<?= \Controls\checkbox_tag("remember_me") ?>
 						<?= __("Remember me") ?>
 					</label>
 				</fieldset>
@@ -177,7 +178,7 @@
 
 			<fieldset class="align-right">
 				<label> </label>
-				<button dojoType="dijit.form.Button" type="submit" class="alt-primary"><?= __('Log in') ?></button>
+				<?= \Controls\submit_tag(__('Log in')) ?>
 			</fieldset>
 
 		</form>

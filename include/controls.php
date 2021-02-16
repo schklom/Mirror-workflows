@@ -64,12 +64,12 @@
          name=\"".htmlspecialchars($name)."\" value=\"".htmlspecialchars($value)."\">";
    }
 
-   function checkbox_tag(string $name, bool $checked, string $value = "", string $attributes = "", string $id = "") {
+   function checkbox_tag(string $name, bool $checked = false, string $value = "", string $attributes = "", string $id = "") {
       $is_checked = $checked ? "checked" : "";
       $value_str = $value ? "value=\"".htmlspecialchars($value)."\"" : "";
 
       return "<input dojoType='dijit.form.CheckBox' name=\"".htmlspecialchars($name)."\"
-                  $value_str $is_checked $attributes name=\"".htmlspecialchars($id)."\">";
+                  $value_str $is_checked $attributes id=\"".htmlspecialchars($id)."\">";
    }
 
    function select_feeds_cats(string $name, int $default_id = null, string $attributes = "",

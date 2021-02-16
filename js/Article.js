@@ -242,6 +242,8 @@ const Article = {
 
 			container.innerHTML = row.getAttribute("data-content").trim();
 
+			dojo.parser.parse(container);
+
 			// blank content element might screw up onclick selection and keyboard moving
 			if (container.textContent.length == 0)
 				container.innerHTML += "&nbsp;";

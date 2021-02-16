@@ -697,12 +697,12 @@ class Feeds extends Handler_Protected {
 			<div class="container">
 				<h1>Feed Debugger: <?= "$feed_id: " . $this->_get_title($feed_id) ?></h1>
 				<div class="content">
-					<form method="post" action="">
-						<input type="hidden" name="op" value="feeds">
-						<input type="hidden" name="method" value="updatedebugger">
-						<input type="hidden" name="csrf_token" value="<?= $csrf_token ?>">
-						<input type="hidden" name="action" value="do_update">
-						<input type="hidden" name="feed_id" value="<?= $feed_id ?>">
+					<form method="post" action="" dojoType="dijit.form.Form">
+						<?= \Controls\hidden_tag("op", "feeds") ?>
+						<?= \Controls\hidden_tag("method", "updatedebugger") ?>
+						<?= \Controls\hidden_tag("csrf_token", $csrf_token) ?>
+						<?= \Controls\hidden_tag("action", "do_update") ?>
+						<?= \Controls\hidden_tag("feed_id", (string)$feed_id) ?>
 
 						<fieldset>
 							<label>
@@ -719,7 +719,7 @@ class Feeds extends Handler_Protected {
 							<label class="checkbox"><input dojoType="dijit.form.CheckBox" type="checkbox" name="force_rehash" value="1" <?= $rehash_checked ?>> Force rehash</label>
 						</fieldset>
 
-						<button type="submit" dojoType="dijit.form.Button" class="alt-primary">Continue</button>
+						<?= \Controls\submit_tag("Continue") ?>
 					</form>
 
 					<hr>

@@ -1,6 +1,14 @@
 <?php
    namespace Controls;
 
+   function button_tag(string $value, string $type, $attributes = "") {
+      return "<button dojoType=\"dijit.form.Button\" $attributes type=\"$type\">".htmlspecialchars($value)."</button>";
+   }
+
+   function submit_tag(string $value, $attributes = "") {
+      return button_tag($value, "submit", "class=\"alt-primary\" $attributes");
+   }
+
    function select_tag(string $name, $value, array $values, string $attributes = "", string $id = "") {
       $dojo_type = strpos($attributes, "dojoType") === false ? "dojoType='fox.form.Select'" : "";
 

@@ -25,20 +25,23 @@ require(['dojo/_base/kernel', 'dojo/ready'], function  (dojo, ready) {
 				if (row) {
 
 					const content = row.querySelector(".content-inner");
-					const attachments = row.querySelector(".attachments-inline");
 
-					if (content && attachments &&
-						row.offsetHeight >= _shorten_expanded_threshold * window.innerHeight) {
+					//console.log('shorten', row.offsetHeight, 'vs', _shorten_expanded_threshold * window.innerHeight);
+
+					if (content && row.offsetHeight >= _shorten_expanded_threshold * window.innerHeight) {
+
+						const attachments = row.querySelector(".attachments-inline"); // optional
 
 						content.innerHTML = `
 							<div class="content-shrink-wrap">
 								${content.innerHTML}
-								${attachments.innerHTML}
+								${attachments ? attachments.innerHTML : ''}
 							</div>
 							<button dojoType="dijit.form.Button" class="alt-info expand-prompt" onclick="return Plugins.Shorten_Expanded.expand('${row.id}')" href="#">
 								${__("Click to expand article")}</button>`;
 
-						attachments.innerHTML = "";
+						if (attachments)
+							attachments.innerHTML = "";
 
 						dojo.parser.parse(content);
 					}

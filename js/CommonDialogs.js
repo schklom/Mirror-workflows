@@ -352,22 +352,17 @@ const	CommonDialogs = {
 				dialog.show();
 			})
 		},
-		addLabel: function(select, callback) {
+		addLabel: function() {
 			const caption = prompt(__("Please enter label caption:"), "");
 
 			if (caption != undefined && caption.trim().length > 0) {
 
 				const query = {op: "pref-labels", method: "add", caption: caption.trim()};
 
-				if (select)
-					Object.extend(query, {output: "select"});
-
 				Notify.progress("Loading, please wait...", true);
 
-				xhrPost("backend.php", query, (transport) => {
-					if (callback) {
-						callback(transport);
-					} else if (App.isPrefs()) {
+				xhrPost("backend.php", query, () => {
+					if (dijit.byId("labelTree")) {
 						dijit.byId("labelTree").reload();
 					} else {
 						Feeds.reload();

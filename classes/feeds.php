@@ -429,7 +429,7 @@ class Feeds extends Handler_Protected {
 		$cat_view = $_REQUEST["cat"] == "true";
 		$next_unread_feed = $_REQUEST["nuf"] ?? 0;
 		$offset = $_REQUEST["skip"] ?? 0;
-		$order_by = $_REQUEST["order_by"];
+		$order_by = $_REQUEST["order_by"] ?? "";
 		$check_first_id = $_REQUEST["fid"] ?? 0;
 
 		if (is_numeric($feed)) $feed = (int) $feed;

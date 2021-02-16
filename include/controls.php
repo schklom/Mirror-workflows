@@ -61,7 +61,7 @@
 
    function hidden_tag(string $name, string $value) {
       return "<input dojoType=\"dijit.form.TextBox\" style=\"display : none\"
-         name=\"".htmlspecialchars($name)."\" value=\"".htmlspecialchars($value)."\">";
+         name=\"".htmlspecialchars($name)."\" value=\"$value\">";
    }
 
    function checkbox_tag(string $name, bool $checked = false, string $value = "", string $attributes = "", string $id = "") {

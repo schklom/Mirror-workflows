@@ -42,19 +42,18 @@ class Note extends Plugin {
 			print \Controls\hidden_tag("method", "setNote");
 			print \Controls\hidden_tag("plugin", "note");
 
-			print "<textarea dojoType='dijit.form.SimpleTextarea'
+			?>
+			<textarea dojoType='dijit.form.SimpleTextarea'
 				style='font-size : 12px; width : 98%; height: 100px;'
-				name='note'>$note</textarea>";
-
+				name='note'><?= $note ?></textarea>
+			<?php
 		}
-
-		print "<footer class='text-center'>";
-		print "<button dojoType=\"dijit.form.Button\"
-			onclick=\"dijit.byId('editNoteDlg').execute()\">".__('Save')."</button> ";
-		print "<button dojoType=\"dijit.form.Button\"
-			onclick=\"dijit.byId('editNoteDlg').hide()\">".__('Cancel')."</button>";
-		print "</footer>";
-
+		?>
+		<footer class='text-center'>
+			<?= \Controls\submit_tag(__('Save')) ?>
+			<?= \Controls\cancel_dialog_tag(__('Cancel')) ?>
+		</footer>
+		<?php
 	}
 
 	function setNote() {

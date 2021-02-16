@@ -41,14 +41,14 @@ class Share extends Plugin {
 
 	function hook_prefs_tab_section($id) {
 		if ($id == "prefFeedsPublishedGenerated") {
+			?>
+			<hr/>
 
-			print "<hr/>";
+			<h2><?= __("You can disable all articles shared by unique URLs here.") ?></h2>
 
-			print "<h2>" . __("You can disable all articles shared by unique URLs here.") . "</h2>";
-
-			print "<button class='alt-danger' dojoType='dijit.form.Button' onclick=\"return Plugins.Share.clearKeys()\">".
-				__('Unshare all articles')."</button> ";
-
+			<button class='alt-danger' dojoType='dijit.form.Button' onclick="return Plugins.Share.clearKeys()">
+				<?= __('Unshare all articles') ?></button>
+			<?php
 		}
 	}
 
@@ -100,39 +100,33 @@ class Share extends Plugin {
 				$sth->execute([$uuid, $param, $_SESSION['uid']]);
 			}
 
-			print "<header>" . __("You can share this article by the following unique URL:") . "</header>";
+			$url_path = htmlspecialchars(get_self_url_prefix() . "/public.php?op=share&key=$uuid");
 
-			$url_path = get_self_url_prefix();
-			$url_path .= "/public.php?op=share&key=$uuid";
+			?>
 
-			print "<section>
+			<header><?= __("You can share this article by the following unique URL:") ?></header>
+
+
+			<section>
 				<div class='panel text-center'>
-				<a id='gen_article_url' href='$url_path' target='_blank' rel='noopener noreferrer'>$url_path</a>
+					<a id='gen_article_url' href="<?= $url_path ?>"
+						target='_blank' rel='noopener noreferrer'><?= $url_path ?></a>
 				</div>
-				</section>";
+			</section>
 
-			/* if (!label_find_id(__('Shared'), $_SESSION["uid"]))
-				label_create(__('Shared'), $_SESSION["uid"]);
-
-			label_add_article($ref_id, __('Shared'), $_SESSION['uid']); */
-
+			<?php
 
 		} else {
 			print "Article not found.";
 		}
 
-		print "<footer class='text-center'>";
-
-		print "<button dojoType='dijit.form.Button' onclick=\"return App.dialogOf(this).unshare()\">".
-			__('Unshare article')."</button>";
-
-		print "<button dojoType='dijit.form.Button' onclick=\"return App.dialogOf(this).newurl()\">".
-			__('Generate new URL')."</button>";
-
-		print "<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>".
-			__('Close this window')."</button>";
-
-		print "</footer>";
+		?>
+		<footer class='text-center'>
+			<?= \Controls\button_tag(__('Unshare article'), '', ['class' => 'alt-danger', 'onclick' => "App.dialogOf(this).unshare()"]) ?>
+			<?= \Controls\button_tag(__('Generate new URL'), '', ['onclick' => "App.dialogOf(this).newurl()"]) ?>
+			<?= \Controls\submit_tag(__("Close this window")) ?>
+		</footer>
+		<?php
 	}
 
 	function api_version() {

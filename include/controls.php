@@ -19,6 +19,10 @@
       return button_tag($value, "submit", array_merge(["class" => "alt-primary"], $attributes));
    }
 
+   function cancel_dialog_tag(string $value, array $attributes = []) {
+      return button_tag($value, "", array_merge(["onclick" => "App.dialogOf(this).hide()"], $attributes));
+   }
+
    function select_tag(string $name, $value, array $values, array $attributes = [], string $id = "") {
       $attributes_str = attributes_to_string($attributes);
       $dojo_type = strpos($attributes_str, "dojoType") === false ? "dojoType='fox.form.Select'" : "";

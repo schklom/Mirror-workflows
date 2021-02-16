@@ -64,32 +64,33 @@ class Af_RedditImgur extends Plugin {
 
 		print "<fieldset class='narrow'>";
 		print "<label class='checkbox'>";
-		print_checkbox("enable_readability", $enable_readability);
+		print \Controls\checkbox_tag("enable_readability", $enable_readability);
 		print " " . __("Extract missing content using Readability (requires af_readability)") . "</label>";
 		print "</fieldset>";
 
 		print "<fieldset class='narrow'>";
 		print "<label class='checkbox'>";
-		print_checkbox("enable_content_dupcheck", $enable_content_dupcheck);
+		print \Controls\checkbox_tag("enable_content_dupcheck", $enable_content_dupcheck);
 		print " " . __("Enable additional duplicate checking") . "</label>";
 		print "</fieldset>";
 
 		print "<fieldset class='narrow'>";
 		print "<label class='checkbox'>";
-		print_checkbox("reddit_to_teddit", $reddit_to_teddit);
+		print \Controls\checkbox_tag("reddit_to_teddit", $reddit_to_teddit);
 		print " " . T_sprintf("Rewrite Reddit URLs to %s",
 			"<a target=\"_blank\" href=\"https://teddit.net/about\">Teddit</a>") . "</label>";
 
-		print_button("submit", __("Save"), 'class="alt-primary"');
+		print "<hr/>";
+		print \Controls\submit_tag(__("Save"));
 		print "</form>";
 
 		print "</div>";
 	}
 
 	function save() {
-		$enable_readability = checkbox_to_sql_bool($_POST["enable_readability"]);
-		$enable_content_dupcheck = checkbox_to_sql_bool($_POST["enable_content_dupcheck"]);
-		$reddit_to_teddit = checkbox_to_sql_bool($_POST["reddit_to_teddit"]);
+		$enable_readability = checkbox_to_sql_bool($_POST["enable_readability"] ?? "");
+		$enable_content_dupcheck = checkbox_to_sql_bool($_POST["enable_content_dupcheck"] ?? "");
+		$reddit_to_teddit = checkbox_to_sql_bool($_POST["reddit_to_teddit"] ?? "");
 
 		$this->host->set($this, "enable_readability", $enable_readability, false);
 		$this->host->set($this, "reddit_to_teddit", $reddit_to_teddit, false);

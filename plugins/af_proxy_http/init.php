@@ -222,11 +222,13 @@ class Af_Proxy_Http extends Plugin {
 		print \Controls\hidden_tag("method", "save");
 		print \Controls\hidden_tag("plugin", "af_proxy_http");
 
-		$proxy_all = $this->host->get($this, "proxy_all");
-		print_checkbox("proxy_all", $proxy_all);
+		$proxy_all = sql_bool_to_bool($this->host->get($this, "proxy_all"));
+		print \Controls\checkbox_tag("proxy_all", $proxy_all);
 		print "&nbsp;<label for=\"proxy_all\">" . __("Enable proxy for all remote images.") . "</label><br/>";
 
-		print "<p>"; print_button("submit", __("Save"));
+		print "<hr/>";
+
+		print \Controls\submit_tag(__("Save"));
 
 		print "</form>";
 
@@ -234,7 +236,7 @@ class Af_Proxy_Http extends Plugin {
 	}
 
 	function save() {
-		$proxy_all = checkbox_to_sql_bool($_POST["proxy_all"]);
+		$proxy_all = checkbox_to_sql_bool($_POST["proxy_all"] ?? "");
 
 		$this->host->set($this, "proxy_all", $proxy_all);
 

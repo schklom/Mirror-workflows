@@ -18,7 +18,7 @@ class Af_Readability extends Plugin {
 	}
 
 	function save() {
-		$enable_share_anything = checkbox_to_sql_bool($_POST["enable_share_anything"]);
+		$enable_share_anything = checkbox_to_sql_bool($_POST["enable_share_anything"] ?? "");
 
 		$this->host->set($this, "enable_share_anything", $enable_share_anything);
 
@@ -28,11 +28,6 @@ class Af_Readability extends Plugin {
 	function init($host)
 	{
 		$this->host = $host;
-
-		if (version_compare(PHP_VERSION, '7.0.0', '<')) {
-			user_error("af_readability requires PHP 7.0", E_USER_WARNING);
-			return;
-		}
 
 		$host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
 		$host->add_hook($host::HOOK_PREFS_TAB, $this);
@@ -91,16 +86,18 @@ class Af_Readability extends Plugin {
 			print \Controls\hidden_tag("method", "save");
 			print \Controls\hidden_tag("plugin", "af_readability");
 
-			$enable_share_anything = $this->host->get($this, "enable_share_anything");
+			$enable_share_anything = sql_bool_to_bool($this->host->get($this, "enable_share_anything"));
 
 			print "<fieldset>";
 			print "<label class='checkbox'> ";
-			print_checkbox("enable_share_anything", $enable_share_anything);
+			print \Controls\checkbox_tag("enable_share_anything", $enable_share_anything);
 			print " " . __("Provide full-text services to core code (bookmarklets) and other plugins");
 			print "</label>";
 			print "</fieldset>";
 
-			print_button("submit", __("Save"), "class='alt-primary'");
+			print "<hr/>";
+
+			print \Controls\submit_tag(__("Save"));
 			print "</form>";
 
 			/* cleanup */
@@ -114,6 +111,7 @@ class Af_Readability extends Plugin {
 			$this->host->set($this, "append_feeds", $append_feeds);
 
 			if (count($enabled_feeds) > 0) {
+				print "<hr/>";
 				print "<h3>" . __("Currently enabled for (click to edit):") . "</h3>";
 
 				print "<ul class='panel panel-scrollable list list-unstyled'>";

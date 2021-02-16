@@ -139,7 +139,7 @@ class Af_Psql_Trgm extends Plugin {
 
 			$similarity = $this->host->get($this, "similarity", $this->default_similarity);
 			$min_title_length = $this->host->get($this, "min_title_length", $this->default_min_length);
-			$enable_globally = $this->host->get($this, "enable_globally");
+			$enable_globally = sql_bool_to_bool($this->host->get($this, "enable_globally"));
 
 			print "<form dojoType=\"dijit.form.Form\">";
 
@@ -186,13 +186,14 @@ class Af_Psql_Trgm extends Plugin {
 			print "</fieldset><fieldset>";
 
 			print "<label class='checkbox'>";
-			print_checkbox("enable_globally", $enable_globally);
+			print \Controls\checkbox_tag("enable_globally", $enable_globally);
 			print " " . __("Enable for all feeds:");
 			print "</label>";
 
 			print "</fieldset>";
 
-			print_button("submit", __("Save"), "class='alt-primary'");
+			print "<hr/>";
+			print \Controls\submit_tag(__("Save"));
 			print "</form>";
 
 			/* cleanup */
@@ -202,6 +203,7 @@ class Af_Psql_Trgm extends Plugin {
 			$this->host->set($this, "enabled_feeds", $enabled_feeds);
 
 			if (count($enabled_feeds) > 0) {
+				print "<hr/>";
 				print "<h3>" . __("Currently enabled for (click to edit):") . "</h3>";
 
 				print "<ul class=\"panel panel-scrollable list list-unstyled\">";

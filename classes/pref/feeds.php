@@ -1325,7 +1325,7 @@ class Pref_Feeds extends Handler_Protected {
 			</button>
 
 			<label class='checkbox'>
-				<?php print_checkbox("include_settings", true, "1", "") ?>
+				<?= \Controls\checkbox_tag("include_settings", true, "1") ?>
 				<?= __("Include settings") ?>
 			</label>
 		</form>

@@ -889,10 +889,6 @@ class Pref_Filters extends Handler_Protected {
 			id='filterDlg_actionParam' style=\"$param_hidden\"
 			name='action_param' value=\"$action_param\">";
 
-		/*print_label_select("action_param_label", $action_param,
-			"id='filterDlg_actionParamLabel' style=\"$label_param_hidden\"
-			dojoType='fox.form.Select'");*/
-
 		print \Controls\select_labels("action_param_label", $action_param,
 			["style" => $label_param_hidden],
 			"filterDlg_actionParamLabel");

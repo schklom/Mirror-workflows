@@ -2,7 +2,7 @@
 
 // the following is deprecated and will be eventually removed
 
-function print_select($id, $default, $values, $attributes = "", $name = "") {
+/*function print_select($id, $default, $values, $attributes = "", $name = "") {
 	if (!$name) $name = $id;
 
 	print "<select name=\"$name\" id=\"$id\" $attributes>";
@@ -35,8 +35,9 @@ function print_select_hash($id, $default, $values, $attributes = "", $name = "")
 	}
 
 	print "</select>";
-}
+}*/
 
+/*
 function format_hidden($name, $value) {
 	return "<input dojoType=\"dijit.form.TextBox\" style=\"display : none\" name=\"$name\" value=\"$value\">";
 }
@@ -44,6 +45,7 @@ function format_hidden($name, $value) {
 function print_hidden($name, $value) {
 	print format_hidden($name, $value);
 }
+*/
 
 function format_checkbox($id, $checked, $value = "", $attributes = "") {
 	$checked_str = $checked ? "checked" : "";
@@ -56,6 +58,7 @@ function print_checkbox($id, $checked, $value = "", $attributes = "") {
 	print format_checkbox($id, $checked, $value, $attributes);
 }
 
+/*
 function format_button($type, $value, $attributes = "") {
 	return "<button dojoType=\"dijit.form.Button\" $attributes type=\"$type\">$value</button>";
 }
@@ -236,6 +239,7 @@ function format_feed_cat_select($id, $default_id, $attributes, $include_all_cats
 
 	return $ret;
 }
+*/
 
 function stylesheet_tag($filename, $id = false) {
 	$timestamp = filemtime($filename);
@@ -284,6 +288,7 @@ function print_error($msg) {
 	return print format_error($msg);
 }
 
+/*
 function print_label_select($name, $value, $attributes = "") {
 
 	$pdo = Db::pdo();
@@ -310,3 +315,4 @@ function print_label_select($name, $value, $attributes = "") {
 
 
 }
+*/

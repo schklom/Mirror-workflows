@@ -706,4 +706,76 @@ class RPC extends Handler_Protected {
 		return array($prefixes, $hotkeys);
 	}
 
+	function hotkeyHelp() {
+		$info = self::get_hotkeys_info();
+		$imap = self::get_hotkeys_map();
+		$omap = array();
+
+		foreach ($imap[1] as $sequence => $action) {
+			if (!isset($omap[$action])) $omap[$action] = array();
+
+			array_push($omap[$action], $sequence);
+		}
+
+		?>
+		<ul class='panel panel-scrollable hotkeys-help' style='height : 300px'>
+		<?php
+
+		$cur_section = "";
+		foreach ($info as $section => $hotkeys) {
+
+			if ($cur_section) print "<li>&nbsp;</li>";
+			print "<li><h3>" . $section . "</h3></li>";
+			$cur_section = $section;
+
+			foreach ($hotkeys as $action => $description) {
+
+				if (!empty($omap[$action])) {
+					foreach ($omap[$action] as $sequence) {
+						if (strpos($sequence, "|") !== false) {
+							$sequence = substr($sequence,
+								strpos($sequence, "|")+1,
+								strlen($sequence));
+						} else {
+							$keys = explode(" ", $sequence);
+
+							for ($i = 0; $i < count($keys); $i++) {
+								if (strlen($keys[$i]) > 1) {
+									$tmp = '';
+									foreach (str_split($keys[$i]) as $c) {
+										switch ($c) {
+											case '*':
+												$tmp .= __('Shift') . '+';
+												break;
+											case '^':
+												$tmp .= __('Ctrl') . '+';
+												break;
+											default:
+												$tmp .= $c;
+										}
+									}
+									$keys[$i] = $tmp;
+								}
+							}
+							$sequence = join(" ", $keys);
+						}
+
+						?>
+						<li>
+							<div class='hk'><code><?= $sequence ?></code></div>
+							<div class='desc'><?= $description ?></div>
+						</li>
+						<?php
+					}
+				}
+			}
+		}
+		print "</ul>";
+
+	?>
+	<footer class='text-center'>
+		<?= \Controls\submit_tag(__('Close this window')) ?>
+	</footer>
+	<?php
+	}
 }

@@ -321,10 +321,10 @@ const App = {
          Effect.Fade(elemId, {duration : 0.5});
       }
    },
-   helpDialog: function(topic) {
-      xhrPost("backend.php", {op: "backend", method: "help", topic: topic}, (transport) => {
+   hotkeyHelp: function() {
+      xhrPost("backend.php", {op: "rpc", method: "hotkeyHelp"}, (transport) => {
          const dialog = new fox.SingleUseDialog({
-            title: __("Help"),
+            title: __("Keyboard shortcuts"),
             content: transport.responseText,
          });
 
@@ -850,7 +850,7 @@ const App = {
          };
 
          this.hotkey_actions["help_dialog"] = () => {
-            this.helpDialog("main");
+            this.hotkeyHelp();
          };
 
       } else {
@@ -1100,7 +1100,7 @@ const App = {
             }
          };
          this.hotkey_actions["help_dialog"] = () => {
-            this.helpDialog("main");
+            this.hotkeyHelp();
          };
          this.hotkey_actions["toggle_combined_mode"] = () => {
             const value = this.isCombinedMode() ? "false" : "true";

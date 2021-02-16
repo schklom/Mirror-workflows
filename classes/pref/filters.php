@@ -388,11 +388,9 @@ class Pref_Filters extends Handler_Protected {
 					if (!$line["inverse"]) unset($line["inverse"]);
 					unset($line["match_on"]);
 
-					$data = htmlspecialchars((string)json_encode($line));
-
 					print "<li><input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
 						<span onclick='App.dialogOf(this).editRule(this)'>".$this->_get_rule_name($line)."</span>".
-						\Controls\hidden_tag("rule[]", $data)."</li>";
+						\Controls\hidden_tag("rule[]", (string)json_encode($line))."</li>";
 				}
 			}
 
@@ -430,11 +428,9 @@ class Pref_Filters extends Handler_Protected {
 					unset($line["filter_id"]);
 					unset($line["id"]);
 
-					$data = htmlspecialchars((string)json_encode($line));
-
 					print "<li><input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
 						<span onclick='App.dialogOf(this).editAction(this)'>".$this->_get_action_name($line)."</span>".
-						\Controls\hidden_tag("action[]", $data)."</li>";
+						\Controls\hidden_tag("action[]", (string)json_encode($line))."</li>";
 				}
 			}
 

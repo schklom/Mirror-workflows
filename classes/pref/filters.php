@@ -775,12 +775,12 @@ class Pref_Filters extends Handler_Protected {
 			$reg_exp = htmlspecialchars($rule["reg_exp"]);
 			$filter_type = $rule["filter_type"];
 			$feed_id = $rule["feed_id"];
-			$inverse_checked = isset($rule["inverse"]) ? "checked" : "";
+			$inverse_checked = !empty($rule["inverse"]);
 		} else {
 			$reg_exp = "";
 			$filter_type = 1;
 			$feed_id = ["0"];
-			$inverse_checked = "";
+			$inverse_checked = false;
 		}
 
 		print "<form name='filter_new_rule_form' id='filter_new_rule_form' onsubmit='return false;'>";
@@ -808,9 +808,9 @@ class Pref_Filters extends Handler_Protected {
 		print "<div dojoType='dijit.Tooltip' id='filterDlg_regExp_tip' connectId='filterDlg_regExp' position='below'></div>";
 
 		print "<fieldset>";
-		print "<label class='checkbox'><input id='filterDlg_inverse' dojoType='dijit.form.CheckBox'
-			 name='inverse' $inverse_checked/> ".
-		 	__("Inverse regular expression matching")."</label>";
+		print "<label class='checkbox'>".
+		 	\Controls\checkbox_tag("inverse", $inverse_checked) .
+			 __("Inverse regular expression matching")."</label>";
 		print "</fieldset>";
 
 		print "<fieldset>";

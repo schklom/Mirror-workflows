@@ -649,10 +649,6 @@ class Feeds extends Handler_Protected {
 		    print "Access denied.";
 		    return;
         }
-
-		$refetch_checked = isset($_REQUEST["force_refetch"]) ? "checked" : "";
-		$rehash_checked = isset($_REQUEST["force_rehash"]) ? "checked" : "";
-
 		?>
 		<!DOCTYPE html>
 		<html>
@@ -712,11 +708,11 @@ class Feeds extends Handler_Protected {
 						</fieldset>
 
 						<fieldset>
-							<label class="checkbox"><input dojoType="dijit.form.CheckBox" type="checkbox" name="force_refetch" value="1" <?= $refetch_checked ?>> Force refetch</label>
+							<label class="checkbox"><?= \Controls\checkbox_tag("force_refetch", isset($_REQUEST["force_refetch"])) ?> Force refetch</label>
 						</fieldset>
 
 						<fieldset class="narrow">
-							<label class="checkbox"><input dojoType="dijit.form.CheckBox" type="checkbox" name="force_rehash" value="1" <?= $rehash_checked ?>> Force rehash</label>
+							<label class="checkbox"><?= \Controls\checkbox_tag("force_rehash", isset($_REQUEST["force_rehash"])) ?> Force rehash</label>
 						</fieldset>
 
 						<?= \Controls\submit_tag("Continue") ?>

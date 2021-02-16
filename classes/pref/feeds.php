@@ -663,7 +663,7 @@ class Pref_Feeds extends Handler_Protected {
 
 			print "<fieldset>";
 
-			print "<input dojoType='dijit.form.TextBox' id='feedEditDlg_login'
+			print "<input dojoType='dijit.form.TextBox'
 				placeHolder='".__("Login")."'
 				autocomplete='new-password'
 				name='auth_login' value=\"$auth_login\">";
@@ -674,10 +674,6 @@ class Pref_Feeds extends Handler_Protected {
 				autocomplete='new-password'
 				placeHolder='".__("Password")."'
 				value=\"$auth_pass\">";
-
-			print "<div dojoType='dijit.Tooltip' connectId='feedEditDlg_login' position='below'>
-				".__('<b>Hint:</b> you need to fill in your login information if your feed requires authentication, except for Twitter feeds.')."
-				</div>";
 
 			print "</fieldset>";
 

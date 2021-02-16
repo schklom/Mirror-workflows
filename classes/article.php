@@ -322,7 +322,6 @@ class Article extends Handler_Protected {
 										$hide_images = false) {
 
 		$enclosures = self::_get_enclosures($id);
-		$rv = [];
 		$enclosures_formatted = "";
 
 		/*foreach ($enclosures as &$enc) {
@@ -348,9 +347,15 @@ class Article extends Handler_Protected {
 			$enclosures_formatted, $enclosures, $id, $always_display_enclosures, $article_content, $hide_images);
 
 		if (!empty($enclosures_formatted)) {
-			$rv['formatted'] = $enclosures_formatted;
-			return $rv;
+			return [
+					'formatted' => $enclosures_formatted,
+					'entries' => []
+			];
 		}
+
+		$rv = [
+			'entries' => []
+		];
 
 		$rv['can_inline'] = isset($_SESSION["uid"]) &&
 									empty($_SESSION["bw_limit"]) &&
@@ -358,8 +363,6 @@ class Article extends Handler_Protected {
 									($always_display_enclosures || !preg_match("/<img/i", $article_content));
 
 		$rv['inline_text_only'] = $hide_images && $rv['can_inline'];
-
-		$rv['entries'] = [];
 
 		foreach ($enclosures as $enc) {
 

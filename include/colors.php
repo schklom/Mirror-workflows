@@ -1,4 +1,5 @@
 <?php
+namespace Colors;
 
 if (file_exists("lib/floIcon.php")) {
 	require_once "lib/floIcon.php";

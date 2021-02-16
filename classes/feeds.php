@@ -322,9 +322,9 @@ class Feeds extends Handler_Protected {
 
 				if (!isset($rgba_cache[$feed_id])) {
 					if ($fav_color && $fav_color != 'fail') {
-						$rgba_cache[$feed_id] = _color_unpack($fav_color);
+						$rgba_cache[$feed_id] = \Colors\_color_unpack($fav_color);
 					} else {
-						$rgba_cache[$feed_id] = _color_unpack($this->_color_of($line['feed_title']));
+						$rgba_cache[$feed_id] = \Colors\_color_unpack($this->_color_of($line['feed_title']));
 					}
 				}
 

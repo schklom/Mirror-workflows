@@ -610,7 +610,7 @@ class RSSUtils {
 							id = ?");
 					$sth->execute([$feed]);
 
-					$favicon_color = calculate_avg_color($favicon_file);
+					$favicon_color = \Colors\calculate_avg_color($favicon_file);
 
 					$favicon_colorstring = ",favicon_avg_color = " . $pdo->quote($favicon_color);
 

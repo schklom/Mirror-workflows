@@ -583,7 +583,7 @@ class Feeds extends Handler_Protected {
 
 	function subscribeToFeed() {
 		print json_encode([
-			"cat_select" => format_feed_cat_select("cat", false, 'dojoType="fox.form.Select"')
+			"cat_select" => \Controls\select_feeds_cats("cat")
 		]);
 	}
 
@@ -607,8 +607,8 @@ class Feeds extends Handler_Protected {
 		if (DB_TYPE == "pgsql") {
 			print "<fieldset>";
 			print "<label class='inline'>" . __("Language:") . "</label>";
-			print_select("search_language", get_pref('DEFAULT_SEARCH_LANGUAGE'), Pref_Feeds::get_ts_languages(),
-				"dojoType='fox.form.Select' title=\"".__('Used for word stemming')."\"");
+			print \Controls\select_tag("search_language", get_pref('DEFAULT_SEARCH_LANGUAGE'), Pref_Feeds::get_ts_languages(),
+				"title=\"".__('Used for word stemming')."\"");
 			print "</fieldset>";
 		}
 
@@ -668,6 +668,15 @@ class Feeds extends Handler_Protected {
 					display : none;
 				}
 			</style>
+			<script>
+				dojoConfig = {
+					async: true,
+					cacheBust: "<?= get_scripts_timestamp(); ?>",
+					packages: [
+						{ name: "fox", location: "../../js" },
+					]
+				};
+			</script>
 			<?php
 				echo javascript_tag("lib/prototype.js");
 				echo javascript_tag("js/utility.js");
@@ -677,7 +686,7 @@ class Feeds extends Handler_Protected {
 		</head>
 		<body class="flat ttrss_utility feed_debugger css_loading">
 		<script type="text/javascript">
-			require(['dojo/parser', "dojo/ready", 'dijit/form/Button','dijit/form/CheckBox', 'dijit/form/Select', 'dijit/form/Form',
+			require(['dojo/parser', "dojo/ready", 'dijit/form/Button','dijit/form/CheckBox', 'fox/form/Select', 'dijit/form/Form',
 				'dijit/form/Select','dijit/form/TextBox','dijit/form/ValidationTextBox'],function(parser, ready){
 				ready(function() {
 					parser.parse();
@@ -697,9 +706,8 @@ class Feeds extends Handler_Protected {
 
 						<fieldset>
 							<label>
-							<?php print_select_hash("xdebug", $xdebug,
-									[Debug::$LOG_VERBOSE => "LOG_VERBOSE", Debug::$LOG_EXTENDED => "LOG_EXTENDED"],
-									'dojoType="dijit.form.Select"');
+							<?= \Controls\select_hash("xdebug", $xdebug,
+									[Debug::$LOG_VERBOSE => "LOG_VERBOSE", Debug::$LOG_EXTENDED => "LOG_EXTENDED"]);
 							?></label>
 						</fieldset>
 

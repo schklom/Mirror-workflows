@@ -563,15 +563,11 @@ class Pref_Feeds extends Handler_Protected {
 			/* Category */
 
 			if (get_pref('ENABLE_FEED_CATS')) {
-
-				$cat_id = $row["cat_id"];
-
 				print "<fieldset>";
 
 				print "<label>" . __('Place in category:') . "</label> ";
 
-				print_feed_cat_select("cat_id", $cat_id,
-					'dojoType="fox.form.Select"');
+				print \Controls\select_feeds_cats("cat_id", $row["cat_id"]);
 
 				print "</fieldset>";
 			}
@@ -601,8 +597,7 @@ class Pref_Feeds extends Handler_Protected {
 				print "<fieldset>";
 
 				print "<label>" . __('Language:') . "</label> ";
-				print_select("feed_language", $feed_language, $this::get_ts_languages(),
-					'dojoType="fox.form.Select"');
+				print \Controls\select_tag("feed_language", $feed_language, $this::get_ts_languages());
 
 				print "</fieldset>";
 			}
@@ -623,8 +618,7 @@ class Pref_Feeds extends Handler_Protected {
 			$local_update_intervals = $update_intervals;
 			$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[get_pref("DEFAULT_UPDATE_INTERVAL")]);
 
-			print_select_hash("update_interval", $update_interval, $local_update_intervals,
-				'dojoType="fox.form.Select"');
+			print \Controls\select_hash("update_interval", $update_interval, $local_update_intervals);
 
 			print "</fieldset>";
 
@@ -650,8 +644,7 @@ class Pref_Feeds extends Handler_Protected {
 				$local_purge_intervals = [ T_nsprintf('%d day', '%d days', $purge_interval, $purge_interval) ];
 			}
 
-			print_select_hash("purge_interval", $purge_interval, $local_purge_intervals,
-				'dojoType="fox.form.Select" ' .
+			print \Controls\select_hash("purge_interval", $purge_interval, $local_purge_intervals,
 				((FORCE_ARTICLE_PURGE == 0) ? "" : 'disabled="1"'));
 
 			print "</fieldset>";
@@ -857,8 +850,8 @@ class Pref_Feeds extends Handler_Protected {
 			print "<fieldset>";
 
 			print "<label>" . __('Language:') . "</label> ";
-			print_select("feed_language", "", $this::get_ts_languages(),
-				'disabled="1" dojoType="fox.form.Select"');
+			print \Controls\select_tag("feed_language", "", $this::get_ts_languages(),
+				'disabled="1"');
 
 			$this->batch_edit_cbox("feed_language");
 
@@ -879,8 +872,7 @@ class Pref_Feeds extends Handler_Protected {
 		$local_update_intervals = $update_intervals;
 		$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[get_pref("DEFAULT_UPDATE_INTERVAL")]);
 
-		print_select_hash("update_interval", "", $local_update_intervals,
-			'disabled="1" dojoType="fox.form.Select"');
+		print \Controls\select_hash("update_interval", "", $local_update_intervals, 'disabled="1"');
 
 		$this->batch_edit_cbox("update_interval");
 
@@ -902,8 +894,7 @@ class Pref_Feeds extends Handler_Protected {
 			else
 				$local_purge_intervals[0] .= " " . sprintf("(%s)", __("Disabled"));
 
-			print_select_hash("purge_interval", "", $local_purge_intervals,
-				'disabled="1" dojoType="fox.form.Select"');
+			print \Controls\select_hash("purge_interval", "", $local_purge_intervals, 'disabled="1"');
 
 			$this->batch_edit_cbox("purge_interval");
 
@@ -1550,7 +1541,7 @@ class Pref_Feeds extends Handler_Protected {
 	function batchSubscribe() {
 		print json_encode([
 			"enable_cats" => (int)get_pref('ENABLE_FEED_CATS'),
-			"cat_select" => format_feed_cat_select("cat", false, 'dojoType="fox.form.Select"')
+			"cat_select" => \Controls\select_feeds_cats("cat")
 		]);
 	}
 

@@ -90,12 +90,12 @@ class Pref_System extends Handler_Administrative {
 				<div class='pull-right'>
 					<?= __("Severity:") ?>
 
-					<?php print_select_hash("severity", $severity,
+					<?= \Controls\select_hash("severity", $severity,
 						[
 							E_USER_ERROR => __("Errors"),
 							E_USER_WARNING => __("Warnings"),
 							E_USER_NOTICE => __("Everything")
-						], 'dojoType="fox.form.Select" onchange="Helpers.EventLog.refresh()"') ?>
+						], 'onchange="Helpers.EventLog.refresh()"', "severity") ?>
 				</div>
 			</div>
 

@@ -97,7 +97,7 @@
 		<form action="public.php?return=<?= $return ?>"
 			  dojoType="dijit.form.Form" method="POST">
 
-			<?php print_hidden("op", "login"); ?>
+			<?= \Controls\hidden_tag("op", "login"); ?>
 
 			<?php if (!empty($_SESSION["login_error_msg"])) { ?>
 				<?= format_error($_SESSION["login_error_msg"]) ?>

@@ -1,326 +1,133 @@
 <?php
+   namespace Controls;
 
-function print_select($id, $default, $values, $attributes = "", $name = "") {
-	if (!$name) $name = $id;
+   function select_tag(string $name, $value, array $values, string $attributes = "", string $id = "") {
+      $dojo_type = strpos($attributes, "dojoType") === false ? "dojoType='fox.form.Select'" : "";
 
-	print "<select name=\"$name\" id=\"$id\" $attributes>";
-	foreach ($values as $v) {
-		if ($v == $default)
-			$sel = "selected=\"1\"";
-		else
-			$sel = "";
+      $rv = "<select $dojo_type name=\"".htmlspecialchars($name)."\"
+         id=\"".htmlspecialchars($id)."\" name=\"".htmlspecialchars($name)."\" $attributes>";
 
-		$v = trim($v);
+      foreach ($values as $v) {
+         $is_sel = ($v == $value) ? "selected=\"selected\"" : "";
 
-		print "<option value=\"$v\" $sel>$v</option>";
-	}
-	print "</select>";
-}
+         $rv .= "<option value=\"".htmlspecialchars($v)."\" $is_sel>".htmlspecialchars($v)."</option>";
+      }
 
-function print_select_hash($id, $default, $values, $attributes = "", $name = "") {
-	if (!$name) $name = $id;
+      $rv .= "</select>";
 
-	print "<select name=\"$name\" id='$id' $attributes>";
-	foreach (array_keys($values) as $v) {
-		if ($v == $default)
-			$sel = 'selected="selected"';
-		else
-			$sel = "";
+      return $rv;
+   }
 
-		$v = trim($v);
+   function select_labels(string $name, string $value, string $attributes = "", string $id = "") {
+      $pdo = \Db::pdo();
 
-		print "<option $sel value=\"$v\">".$values[$v]."</option>";
-	}
+      $sth = $pdo->prepare("SELECT caption FROM ttrss_labels2
+            WHERE owner_uid = ? ORDER BY caption");
+      $sth->execute([$_SESSION['uid']]);
 
-	print "</select>";
-}
+      $values = [];
 
-function format_hidden($name, $value) {
-	return "<input dojoType=\"dijit.form.TextBox\" style=\"display : none\" name=\"$name\" value=\"$value\">";
-}
+      while ($row = $sth->fetch()) {
+         array_push($values, $row["caption"]);
+      }
 
-function print_hidden($name, $value) {
-	print format_hidden($name, $value);
-}
+      return select_tag($name, $value, $values, $attributes, $id);
+   }
 
-function format_checkbox($id, $checked, $value = "", $attributes = "") {
-	$checked_str = $checked ? "checked" : "";
-	$value_str = $value ? "value=\"$value\"" : "";
+   function select_hash(string $name, $value, array $values, string $attributes = "", string $id = "") {
+      $dojo_type = strpos($attributes, "dojoType") === false ? "dojoType='fox.form.Select'" : "";
 
-	return "<input dojoType=\"dijit.form.CheckBox\" id=\"$id\" $value_str $checked_str $attributes name=\"$id\">";
-}
+      $rv = "<select $dojo_type name=\"".htmlspecialchars($name)."\"
+         id=\"".htmlspecialchars($id)."\" name=\"".htmlspecialchars($name)."\" $attributes>";
 
-function print_checkbox($id, $checked, $value = "", $attributes = "") {
-	print format_checkbox($id, $checked, $value, $attributes);
-}
+      foreach ($values as $k => $v) {
+         $is_sel = ($k == $value) ? "selected=\"selected\"" : "";
 
-function print_button($type, $value, $attributes = "") {
-	print "<p><button dojoType=\"dijit.form.Button\" $attributes type=\"$type\">$value</button>";
-}
+         $rv .= "<option value=\"".htmlspecialchars($k)."\" $is_sel>".htmlspecialchars($v)."</option>";
+      }
 
-function print_radio($id, $default, $true_is, $values, $attributes = "") {
-	foreach ($values as $v) {
+      $rv .= "</select>";
 
-		if ($v == $default)
-			$sel = "checked";
-		else
-			$sel = "";
+      return $rv;
+   }
 
-		if ($v == $true_is) {
-			$sel .= " value=\"1\"";
-		} else {
-			$sel .= " value=\"0\"";
-		}
+   function hidden_tag(string $name, string $value) {
+      return "<input dojoType=\"dijit.form.TextBox\" style=\"display : none\"
+         name=\"".htmlspecialchars($name)."\" value=\"".htmlspecialchars($value)."\">";
+   }
 
-		print "<input class=\"noborder\" dojoType=\"dijit.form.RadioButton\"
-				type=\"radio\" $sel $attributes name=\"$id\">&nbsp;$v&nbsp;";
+   function checkbox_tag(string $name, bool $checked, string $value = "", string $attributes = "", string $id = "") {
+      $is_checked = $checked ? "checked" : "";
+      $value_str = $value ? "value=\"".htmlspecialchars($value)."\"" : "";
 
-	}
-}
+      return "<input dojoType='dijit.form.CheckBox' name=\"".htmlspecialchars($name)."\"
+                  $value_str $is_checked $attributes name=\"".htmlspecialchars($id)."\">";
+   }
 
-function print_feed_multi_select($id, $default_ids = [],
-						   $attributes = "", $include_all_feeds = true,
-						   $root_id = null, $nest_level = 0) {
+   function select_feeds_cats(string $name, int $default_id = null, string $attributes = "",
+                  bool $include_all_cats = true, string $root_id = null, int $nest_level = 0, string $id = "") {
 
-	$pdo = Db::pdo();
+      $ret = "";
 
-	print_r(in_array("CAT:6",$default_ids));
+      if (!$root_id) {
+         $ret .= "<select name=\"".htmlspecialchars($name)."\"
+                        id=\"".htmlspecialchars($id)."\"
+                        default=\"".((string)$default_id)."\"
+                        dojoType=\"fox.form.Select\" $attributes>";
+      }
 
-	if (!$root_id) {
-		print "<select multiple=\true\" id=\"$id\" name=\"$id\" $attributes>";
-		if ($include_all_feeds) {
-			$is_selected = (in_array("0", $default_ids)) ? "selected=\"1\"" : "";
-			print "<option $is_selected value=\"0\">".__('All feeds')."</option>";
-		}
-	}
+      $pdo = \Db::pdo();
 
-	if (get_pref('ENABLE_FEED_CATS')) {
+      if (!$root_id) $root_id = null;
 
-		if (!$root_id) $root_id = null;
+      $sth = $pdo->prepare("SELECT id,title,
+               (SELECT COUNT(id) FROM ttrss_feed_categories AS c2 WHERE
+                  c2.parent_cat = ttrss_feed_categories.id) AS num_children
+               FROM ttrss_feed_categories
+               WHERE owner_uid = :uid AND
+               (parent_cat = :root_id OR (:root_id IS NULL AND parent_cat IS NULL)) ORDER BY title");
+      $sth->execute([":uid" => $_SESSION['uid'], ":root_id" => $root_id]);
 
-		$sth = $pdo->prepare("SELECT id,title,
-				(SELECT COUNT(id) FROM ttrss_feed_categories AS c2 WHERE
-					c2.parent_cat = ttrss_feed_categories.id) AS num_children
-				FROM ttrss_feed_categories
-				WHERE owner_uid = :uid AND
-				(parent_cat = :root_id OR (:root_id IS NULL AND parent_cat IS NULL)) ORDER BY title");
+      $found = 0;
 
-		$sth->execute([":uid" => $_SESSION['uid'], ":root_id" => $root_id]);
+      while ($line = $sth->fetch()) {
+         ++$found;
 
-		while ($line = $sth->fetch()) {
+         if ($line["id"] == $default_id) {
+            $is_selected = "selected=\"1\"";
+         } else {
+            $is_selected = "";
+         }
 
-			for ($i = 0; $i < $nest_level; $i++)
-				$line["title"] = " " . $line["title"];
+         for ($i = 0; $i < $nest_level; $i++)
+            $line["title"] = " " . $line["title"];
+
+         if ($line["title"])
+            $ret .= sprintf("<option $is_selected value='%d'>%s</option>",
+               $line["id"], htmlspecialchars($line["title"]));
+
+         if ($line["num_children"] > 0)
+            $ret .= select_feeds_cats($id, $default_id, $attributes,
+               $include_all_cats, $line["id"], $nest_level+1, $id);
+      }
+
+      if (!$root_id) {
+         if ($include_all_cats) {
+            if ($found > 0) {
+               $ret .= "<option disabled=\"1\">―――――――――――――――</option>";
+            }
+
+            if ($default_id == 0) {
+               $is_selected = "selected=\"1\"";
+            } else {
+               $is_selected = "";
+            }
+
+            $ret .= "<option $is_selected value=\"0\">".__('Uncategorized')."</option>";
+         }
+         $ret .= "</select>";
+      }
+
+      return $ret;
+   }
 
-			$is_selected = in_array("CAT:".$line["id"], $default_ids) ? "selected=\"1\"" : "";
-
-			printf("<option $is_selected value='CAT:%d'>%s</option>",
-				$line["id"], htmlspecialchars($line["title"]));
-
-			if ($line["num_children"] > 0)
-				print_feed_multi_select($id, $default_ids, $attributes,
-					$include_all_feeds, $line["id"], $nest_level+1);
-
-			$f_sth = $pdo->prepare("SELECT id,title FROM ttrss_feeds
-					WHERE cat_id = ? AND owner_uid = ? ORDER BY title");
-
-			$f_sth->execute([$line['id'], $_SESSION['uid']]);
-
-			while ($fline = $f_sth->fetch()) {
-				$is_selected = (in_array($fline["id"], $default_ids)) ? "selected=\"1\"" : "";
-
-				$fline["title"] = " " . $fline["title"];
-
-				for ($i = 0; $i < $nest_level; $i++)
-					$fline["title"] = " " . $fline["title"];
-
-				printf("<option $is_selected value='%d'>%s</option>",
-					$fline["id"], htmlspecialchars($fline["title"]));
-			}
-		}
-
-		if (!$root_id) {
-			$is_selected = in_array("CAT:0", $default_ids) ? "selected=\"1\"" : "";
-
-			printf("<option $is_selected value='CAT:0'>%s</option>",
-				__("Uncategorized"));
-
-			$f_sth = $pdo->prepare("SELECT id,title FROM ttrss_feeds
-					WHERE cat_id IS NULL AND owner_uid = ? ORDER BY title");
-			$f_sth->execute([$_SESSION['uid']]);
-
-			while ($fline = $f_sth->fetch()) {
-				$is_selected = in_array($fline["id"], $default_ids) ? "selected=\"1\"" : "";
-
-				$fline["title"] = " " . $fline["title"];
-
-				for ($i = 0; $i < $nest_level; $i++)
-					$fline["title"] = " " . $fline["title"];
-
-				printf("<option $is_selected value='%d'>%s</option>",
-					$fline["id"], htmlspecialchars($fline["title"]));
-			}
-		}
-
-	} else {
-		$sth = $pdo->prepare("SELECT id,title FROM ttrss_feeds
-				WHERE owner_uid = ? ORDER BY title");
-		$sth->execute([$_SESSION['uid']]);
-
-		while ($line = $sth->fetch()) {
-
-			$is_selected = (in_array($line["id"], $default_ids)) ? "selected=\"1\"" : "";
-
-			printf("<option $is_selected value='%d'>%s</option>",
-				$line["id"], htmlspecialchars($line["title"]));
-		}
-	}
-
-	if (!$root_id) {
-		print "</select>";
-	}
-}
-
-function print_feed_cat_select($id, $default_id, $attributes, $include_all_cats = true,
-	$root_id = null, $nest_level = 0) {
-
-	print format_feed_cat_select($id, $default_id, $attributes, $include_all_cats, $root_id, $nest_level);
-}
-
-function format_feed_cat_select($id, $default_id, $attributes, $include_all_cats = true,
-	$root_id = null, $nest_level = 0) {
-
-	$ret = "";
-
-	if (!$root_id) {
-		$ret .= "<select id=\"$id\" name=\"$id\" default=\"$default_id\" $attributes>";
-	}
-
-	$pdo = Db::pdo();
-
-	if (!$root_id) $root_id = null;
-
-	$sth = $pdo->prepare("SELECT id,title,
-				(SELECT COUNT(id) FROM ttrss_feed_categories AS c2 WHERE
-					c2.parent_cat = ttrss_feed_categories.id) AS num_children
-				FROM ttrss_feed_categories
-				WHERE owner_uid = :uid AND
-				  (parent_cat = :root_id OR (:root_id IS NULL AND parent_cat IS NULL)) ORDER BY title");
-	$sth->execute([":uid" => $_SESSION['uid'], ":root_id" => $root_id]);
-
-	$found = 0;
-
-	while ($line = $sth->fetch()) {
-		++$found;
-
-		if ($line["id"] == $default_id) {
-			$is_selected = "selected=\"1\"";
-		} else {
-			$is_selected = "";
-		}
-
-		for ($i = 0; $i < $nest_level; $i++)
-			$line["title"] = " " . $line["title"];
-
-		if ($line["title"])
-			$ret .= sprintf("<option $is_selected value='%d'>%s</option>",
-				$line["id"], htmlspecialchars($line["title"]));
-
-		if ($line["num_children"] > 0)
-			$ret .= format_feed_cat_select($id, $default_id, $attributes,
-				$include_all_cats, $line["id"], $nest_level+1);
-	}
-
-	if (!$root_id) {
-		if ($include_all_cats) {
-			if ($found > 0) {
-				$ret .= "<option disabled=\"1\">―――――――――――――――</option>";
-			}
-
-			if ($default_id == 0) {
-				$is_selected = "selected=\"1\"";
-			} else {
-				$is_selected = "";
-			}
-
-			$ret .= "<option $is_selected value=\"0\">".__('Uncategorized')."</option>";
-		}
-		$ret .= "</select>";
-	}
-
-	return $ret;
-}
-
-function stylesheet_tag($filename, $id = false) {
-	$timestamp = filemtime($filename);
-
-	$id_part = $id ? "id=\"$id\"" : "";
-
-	return "<link rel=\"stylesheet\" $id_part type=\"text/css\" data-orig-href=\"$filename\" href=\"$filename?$timestamp\"/>\n";
-}
-
-function javascript_tag($filename) {
-	$query = "";
-
-	if (!(strpos($filename, "?") === false)) {
-		$query = substr($filename, strpos($filename, "?")+1);
-		$filename = substr($filename, 0, strpos($filename, "?"));
-	}
-
-	$timestamp = filemtime($filename);
-
-	if ($query) $timestamp .= "&$query";
-
-	return "<script type=\"text/javascript\" charset=\"utf-8\" src=\"$filename?$timestamp\"></script>\n";
-}
-
-function format_warning($msg, $id = "") {
-	return "<div class=\"alert\" id=\"$id\">$msg</div>";
-}
-
-function format_notice($msg, $id = "") {
-	return "<div class=\"alert alert-info\" id=\"$id\">$msg</div>";
-}
-
-function format_error($msg, $id = "") {
-	return "<div class=\"alert alert-danger\" id=\"$id\">$msg</div>";
-}
-
-function print_notice($msg) {
-	return print format_notice($msg);
-}
-
-function print_warning($msg) {
-	return print format_warning($msg);
-}
-
-function print_error($msg) {
-	return print format_error($msg);
-}
-
-function print_label_select($name, $value, $attributes = "") {
-
-	$pdo = Db::pdo();
-
-	$sth = $pdo->prepare("SELECT caption FROM ttrss_labels2
-			WHERE owner_uid = ? ORDER BY caption");
-	$sth->execute([$_SESSION['uid']]);
-
-	print "<select default=\"$value\" name=\"" . htmlspecialchars($name) .
-		"\" $attributes>";
-
-	while ($line = $sth->fetch()) {
-
-		$issel = ($line["caption"] == $value) ? "selected=\"1\"" : "";
-
-		print "<option value=\"".htmlspecialchars($line["caption"])."\"
-				$issel>" . htmlspecialchars($line["caption"]) . "</option>";
-
-	}
-
-#		print "<option value=\"ADD_LABEL\">" .__("Add label...") . "</option>";
-
-	print "</select>";
-
-
-}

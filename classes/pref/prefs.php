@@ -288,8 +288,8 @@ class Pref_Prefs extends Handler_Protected {
 		?>
 		<form dojoType='dijit.form.Form'>
 
-			<?php print_hidden("op", "pref-prefs") ?>
-			<?php print_hidden("method", "changeemail") ?>
+			<?= \Controls\hidden_tag("op", "pref-prefs") ?>
+			<?= \Controls\hidden_tag("method", "changeemail") ?>
 
 			<script type='dojo/method' event='onSubmit' args='evt'>
 				evt.preventDefault();
@@ -347,8 +347,8 @@ class Pref_Prefs extends Handler_Protected {
 
 			<form dojoType='dijit.form.Form'>
 
-				<?php print_hidden("op", "pref-prefs") ?>
-				<?php print_hidden("method", "changepassword") ?>
+				<?= \Controls\hidden_tag("op", "pref-prefs") ?>
+				<?= \Controls\hidden_tag("method", "changepassword") ?>
 
 				<script type='dojo/method' event='onSubmit' args='evt'>
 					evt.preventDefault();
@@ -456,8 +456,8 @@ class Pref_Prefs extends Handler_Protected {
 				?>
 
 				<form dojoType='dijit.form.Form'>
-					<?php print_hidden("op", "pref-prefs") ?>
-					<?php print_hidden("method", "otpdisable") ?>
+					<?= \Controls\hidden_tag("op", "pref-prefs") ?>
+					<?= \Controls\hidden_tag("method", "otpdisable") ?>
 
 					<script type='dojo/method' event='onSubmit' args='evt'>
 						evt.preventDefault();
@@ -511,10 +511,10 @@ class Pref_Prefs extends Handler_Protected {
 				$otp_secret = $this->otpsecret();
 				?>
 
-				<form dojoType='dijit.form.Form' id='changeOtpForm'>
+				<form dojoType='dijit.form.Form'>
 
-					<?php print_hidden("op", "pref-prefs") ?>
-					<?php print_hidden("method", "otpenable") ?>
+					<?= \Controls\hidden_tag("op", "pref-prefs") ?>
+					<?= \Controls\hidden_tag("method", "otpenable") ?>
 
 					<fieldset>
 						<label><?= __("OTP Key:") ?></label>
@@ -663,14 +663,14 @@ class Pref_Prefs extends Handler_Protected {
 					$type_name = $item['type_name'];
 
 					if ($pref_name == "USER_LANGUAGE") {
-						print_select_hash($pref_name, $value, get_translations(),
-							"style='width : 220px; margin : 0px' dojoType='fox.form.Select'");
+						print \Controls\select_hash($pref_name, $value, get_translations(),
+							"style='width : 220px; margin : 0px'");
 
 					} else if ($pref_name == "USER_TIMEZONE") {
 
 						$timezones = explode("\n", file_get_contents("lib/timezones.txt"));
 
-						print_select($pref_name, $value, $timezones, 'dojoType="dijit.form.FilteringSelect"');
+						print \Controls\select_tag($pref_name, $value, $timezones, 'dojoType="dijit.form.FilteringSelect"');
 
 					} else if ($pref_name == "BLACKLISTED_TAGS") { # TODO: other possible <textarea> prefs go here
 
@@ -715,12 +715,11 @@ class Pref_Prefs extends Handler_Protected {
 
 						global $update_intervals_nodefault;
 
-						print_select_hash($pref_name, $value, $update_intervals_nodefault,
-							'dojoType="fox.form.Select"');
+						print \Controls\select_hash($pref_name, $value, $update_intervals_nodefault);
+
 					} else if ($pref_name == "DEFAULT_SEARCH_LANGUAGE") {
 
-						print_select($pref_name, $value, Pref_Feeds::get_ts_languages(),
-							'dojoType="fox.form.Select"');
+						print \Controls\select_tag($pref_name, $value, Pref_Feeds::get_ts_languages());
 
 					} else if ($type_name == "bool") {
 
@@ -799,14 +798,14 @@ class Pref_Prefs extends Handler_Protected {
 				}
 			}
 		}
-		print_hidden("boolean_prefs", htmlspecialchars(join(",", $listed_boolean_prefs)));
+		print \Controls\hidden_tag("boolean_prefs", htmlspecialchars(join(",", $listed_boolean_prefs)));
 	}
 
 	private function index_prefs() {
 		?>
 		<form dojoType='dijit.form.Form' id='changeSettingsForm'>
-			<?php print_hidden("op", "pref-prefs") ?>
-			<?php print_hidden("method", "saveconfig") ?>
+			<?= \Controls\hidden_tag("op", "pref-prefs") ?>
+			<?= \Controls\hidden_tag("method", "saveconfig") ?>
 			<script type='dojo/method' event='onSubmit' args='evt, quit'>
 				if (evt) evt.preventDefault();
 				if (this.validate()) {
@@ -973,8 +972,8 @@ class Pref_Prefs extends Handler_Protected {
 				}
 			</script>
 
-			<?php print_hidden("op", "pref-prefs") ?>
-			<?php print_hidden("method", "setplugins") ?>
+			<?= \Controls\hidden_tag("op", "pref-prefs") ?>
+			<?= \Controls\hidden_tag("method", "setplugins") ?>
 
 			<div dojoType="dijit.layout.BorderContainer" gutters="false">
 				<div dojoType="dijit.layout.ContentPane" region="center" style="overflow-y : auto">

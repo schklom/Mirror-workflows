@@ -203,6 +203,7 @@
 
 	require_once 'db-prefs.php';
 	require_once 'controls.php';
+	require_once 'controls_compat.php';
 
 	define('SELF_USER_AGENT', 'Tiny Tiny RSS/' . get_version() . ' (http://tt-rss.org/)');
 	ini_set('user_agent', SELF_USER_AGENT);

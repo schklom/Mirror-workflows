@@ -392,7 +392,7 @@ class Pref_Filters extends Handler_Protected {
 
 					print "<li><input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
 						<span onclick='App.dialogOf(this).editRule(this)'>".$this->_get_rule_name($line)."</span>".
-						format_hidden("rule[]", $data)."</li>";
+						\Controls\hidden_tag("rule[]", $data)."</li>";
 				}
 			}
 
@@ -434,7 +434,7 @@ class Pref_Filters extends Handler_Protected {
 
 					print "<li><input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
 						<span onclick='App.dialogOf(this).editAction(this)'>".$this->_get_action_name($line)."</span>".
-						format_hidden("action[]", $data)."</li>";
+						\Controls\hidden_tag("action[]", $data)."</li>";
 				}
 			}
 
@@ -815,8 +815,7 @@ class Pref_Filters extends Handler_Protected {
 
 		print "<fieldset>";
 		print "<label style='display : inline'>".  __("on field") . "</label> ";
-		print_select_hash("filter_type", $filter_type, $filter_types,
-			'dojoType="fox.form.Select"');
+		print \Controls\select_hash("filter_type", $filter_type, $filter_types);
 		print "<label style='padding-left : 10px; display : inline'>" . __("in") . "</label> ";
 
 		print "</fieldset>";
@@ -894,9 +893,13 @@ class Pref_Filters extends Handler_Protected {
 			id='filterDlg_actionParam' style=\"$param_hidden\"
 			name='action_param' value=\"$action_param\">";
 
-		print_label_select("action_param_label", $action_param,
+		/*print_label_select("action_param_label", $action_param,
 			"id='filterDlg_actionParamLabel' style=\"$label_param_hidden\"
-			dojoType='fox.form.Select'");
+			dojoType='fox.form.Select'");*/
+
+		print \Controls\select_labels("action_param_label", $action_param,
+			"style=\"$label_param_hidden\"",
+			"filterDlg_actionParamLabel");
 
 		$filter_actions = PluginHost::getInstance()->get_filter_actions();
 		$filter_action_hash = array();
@@ -918,9 +921,9 @@ class Pref_Filters extends Handler_Protected {
 			$filter_plugin_disabled = "";
 		}
 
-		print_select_hash("filterDlg_actionParamPlugin", $action_param, $filter_action_hash,
-			"style=\"$plugin_param_hidden\" dojoType='fox.form.Select' $filter_plugin_disabled",
-			"action_param_plugin");
+		print \Controls\select_hash("action_param_plugin", $action_param, $filter_action_hash,
+			"style=\"$plugin_param_hidden\" $filter_plugin_disabled",
+			"filterDlg_actionParamPlugin");
 
 		print "</span>";
 

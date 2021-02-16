@@ -788,7 +788,7 @@ class Handler_Public extends Handler {
 				?>
 				<form method="post">
 					<input type="hidden" name="op" value="subscribe">
-					<?php print_hidden("csrf_token", $_SESSION["csrf_token"]) ?>
+					<?= \Controls\hidden_tag("csrf_token", $_SESSION["csrf_token"]) ?>
 					<fieldset>
 						<label>Feed or site URL:</label>
 						<input style="width: 300px" dojoType="dijit.form.ValidationTextBox" required="1" name="feed_url" value="<?= htmlspecialchars($feed_url) ?>">
@@ -831,7 +831,7 @@ class Handler_Public extends Handler {
 
 					print "<form action='public.php'>";
 					print "<input type='hidden' name='op' value='subscribe'>";
-					print_hidden("csrf_token", $_SESSION["csrf_token"]);
+					print \Controls\hidden_tag("csrf_token", $_SESSION["csrf_token"]);
 
 					print "<fieldset>";
 					print "<label style='display : inline'>" . __("Multiple feed URLs found:") . "</label>";

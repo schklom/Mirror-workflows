@@ -1,5 +1,53 @@
 <?php
 
+
+function stylesheet_tag($filename, $id = false) {
+	$timestamp = filemtime($filename);
+
+	$id_part = $id ? "id=\"$id\"" : "";
+
+	return "<link rel=\"stylesheet\" $id_part type=\"text/css\" data-orig-href=\"$filename\" href=\"$filename?$timestamp\"/>\n";
+}
+
+function javascript_tag($filename) {
+	$query = "";
+
+	if (!(strpos($filename, "?") === false)) {
+		$query = substr($filename, strpos($filename, "?")+1);
+		$filename = substr($filename, 0, strpos($filename, "?"));
+	}
+
+	$timestamp = filemtime($filename);
+
+	if ($query) $timestamp .= "&$query";
+
+	return "<script type=\"text/javascript\" charset=\"utf-8\" src=\"$filename?$timestamp\"></script>\n";
+}
+
+function format_warning($msg, $id = "") {
+	return "<div class=\"alert\" id=\"$id\">$msg</div>";
+}
+
+function format_notice($msg, $id = "") {
+	return "<div class=\"alert alert-info\" id=\"$id\">$msg</div>";
+}
+
+function format_error($msg, $id = "") {
+	return "<div class=\"alert alert-danger\" id=\"$id\">$msg</div>";
+}
+
+function print_notice($msg) {
+	return print format_notice($msg);
+}
+
+function print_warning($msg) {
+	return print format_warning($msg);
+}
+
+function print_error($msg) {
+	return print format_error($msg);
+}
+
 // the following is deprecated and will be eventually removed
 
 /*function print_select($id, $default, $values, $attributes = "", $name = "") {
@@ -35,9 +83,8 @@ function print_select_hash($id, $default, $values, $attributes = "", $name = "")
 	}
 
 	print "</select>";
-}*/
+}
 
-/*
 function format_hidden($name, $value) {
 	return "<input dojoType=\"dijit.form.TextBox\" style=\"display : none\" name=\"$name\" value=\"$value\">";
 }
@@ -45,7 +92,6 @@ function format_hidden($name, $value) {
 function print_hidden($name, $value) {
 	print format_hidden($name, $value);
 }
-*/
 
 function format_checkbox($id, $checked, $value = "", $attributes = "") {
 	$checked_str = $checked ? "checked" : "";
@@ -58,7 +104,6 @@ function print_checkbox($id, $checked, $value = "", $attributes = "") {
 	print format_checkbox($id, $checked, $value, $attributes);
 }
 
-/*
 function format_button($type, $value, $attributes = "") {
 	return "<button dojoType=\"dijit.form.Button\" $attributes type=\"$type\">$value</button>";
 }
@@ -239,56 +284,7 @@ function format_feed_cat_select($id, $default_id, $attributes, $include_all_cats
 
 	return $ret;
 }
-*/
 
-function stylesheet_tag($filename, $id = false) {
-	$timestamp = filemtime($filename);
-
-	$id_part = $id ? "id=\"$id\"" : "";
-
-	return "<link rel=\"stylesheet\" $id_part type=\"text/css\" data-orig-href=\"$filename\" href=\"$filename?$timestamp\"/>\n";
-}
-
-function javascript_tag($filename) {
-	$query = "";
-
-	if (!(strpos($filename, "?") === false)) {
-		$query = substr($filename, strpos($filename, "?")+1);
-		$filename = substr($filename, 0, strpos($filename, "?"));
-	}
-
-	$timestamp = filemtime($filename);
-
-	if ($query) $timestamp .= "&$query";
-
-	return "<script type=\"text/javascript\" charset=\"utf-8\" src=\"$filename?$timestamp\"></script>\n";
-}
-
-function format_warning($msg, $id = "") {
-	return "<div class=\"alert\" id=\"$id\">$msg</div>";
-}
-
-function format_notice($msg, $id = "") {
-	return "<div class=\"alert alert-info\" id=\"$id\">$msg</div>";
-}
-
-function format_error($msg, $id = "") {
-	return "<div class=\"alert alert-danger\" id=\"$id\">$msg</div>";
-}
-
-function print_notice($msg) {
-	return print format_notice($msg);
-}
-
-function print_warning($msg) {
-	return print format_warning($msg);
-}
-
-function print_error($msg) {
-	return print format_error($msg);
-}
-
-/*
 function print_label_select($name, $value, $attributes = "") {
 
 	$pdo = Db::pdo();

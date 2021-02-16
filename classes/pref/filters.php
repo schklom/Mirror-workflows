@@ -442,13 +442,13 @@ class Pref_Filters extends Handler_Protected {
 				<section>";
 
 			print "<fieldset class='narrow'>
-				<label class='checkbox'>".format_checkbox('enabled', $enabled)." ".__('Enabled')."</label></fieldset>";
+				<label class='checkbox'>".\Controls\checkbox_tag('enabled', $enabled)." ".__('Enabled')."</label></fieldset>";
 
 			print "<fieldset class='narrow'>
-				<label class='checkbox'>".format_checkbox('match_any_rule', $match_any_rule)." ".__('Match any rule')."</label>
+				<label class='checkbox'>".\Controls\checkbox_tag('match_any_rule', $match_any_rule)." ".__('Match any rule')."</label>
 				</fieldset>";
 
-			print "<fieldset class='narrow'><label class='checkbox'>".format_checkbox('inverse', $inverse)." ".__('Inverse matching')."</label>
+			print "<fieldset class='narrow'><label class='checkbox'>".\Controls\checkbox_tag('inverse', $inverse)." ".__('Inverse matching')."</label>
 				</fieldset>";
 
 			print "</section>

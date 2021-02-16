@@ -50,7 +50,7 @@
 	if (!init_plugins()) return;
 
 	if (!empty($_SESSION["uid"])) {
-		if (!validate_session()) {
+		if (!\Sessions\validate_session()) {
 			header("Content-Type: text/json");
 
 			print json_encode(array("seq" => -1,

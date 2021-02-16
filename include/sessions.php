@@ -1,4 +1,6 @@
 <?php
+	namespace Sessions;
+
 	// Original from http://www.daniweb.com/code/snippet43.html
 
 	require_once "config.php";
@@ -23,7 +25,7 @@
 		global $schema_version;
 
 		if (!$schema_version) {
-			$row = Db::pdo()->query("SELECT schema_version FROM ttrss_version")->fetch();
+			$row = \Db::pdo()->query("SELECT schema_version FROM ttrss_version")->fetch();
 
 			$version = $row["schema_version"];
 
@@ -42,7 +44,7 @@
 				__("Session failed to validate (schema version changed)");
 			return false;
 		}
-		  $pdo = Db::pdo();
+		  $pdo = \Db::pdo();
 
 		if (!empty($_SESSION["uid"])) {
 
@@ -85,7 +87,7 @@
 	function ttrss_read ($id){
 		global $session_expire;
 
-		$sth = Db::pdo()->prepare("SELECT data FROM ttrss_sessions WHERE id=?");
+		$sth = \Db::pdo()->prepare("SELECT data FROM ttrss_sessions WHERE id=?");
 		$sth->execute([$id]);
 
 		if ($row = $sth->fetch()) {
@@ -94,7 +96,7 @@
 		} else {
 				$expire = time() + $session_expire;
 
-				$sth = Db::pdo()->prepare("INSERT INTO ttrss_sessions (id, data, expire)
+				$sth = \Db::pdo()->prepare("INSERT INTO ttrss_sessions (id, data, expire)
 					VALUES (?, '', ?)");
 				$sth->execute([$id, $expire]);
 
@@ -110,14 +112,14 @@
 		$data = base64_encode($data);
 		$expire = time() + $session_expire;
 
-		$sth = Db::pdo()->prepare("SELECT id FROM ttrss_sessions WHERE id=?");
+		$sth = \Db::pdo()->prepare("SELECT id FROM ttrss_sessions WHERE id=?");
 		$sth->execute([$id]);
 
 		if ($row = $sth->fetch()) {
-			$sth = Db::pdo()->prepare("UPDATE ttrss_sessions SET data=?, expire=? WHERE id=?");
+			$sth = \Db::pdo()->prepare("UPDATE ttrss_sessions SET data=?, expire=? WHERE id=?");
 			$sth->execute([$data, $expire, $id]);
 		} else {
-			$sth = Db::pdo()->prepare("INSERT INTO ttrss_sessions (id, data, expire)
+			$sth = \Db::pdo()->prepare("INSERT INTO ttrss_sessions (id, data, expire)
 				VALUES (?, ?, ?)");
 			$sth->execute([$id, $data, $expire]);
 		}
@@ -130,22 +132,23 @@
 	}
 
 	function ttrss_destroy($id) {
-		$sth = Db::pdo()->prepare("DELETE FROM ttrss_sessions WHERE id = ?");
+		$sth = \Db::pdo()->prepare("DELETE FROM ttrss_sessions WHERE id = ?");
 		$sth->execute([$id]);
 
 		return true;
 	}
 
 	function ttrss_gc ($expire) {
-		Db::pdo()->query("DELETE FROM ttrss_sessions WHERE expire < " . time());
+		\Db::pdo()->query("DELETE FROM ttrss_sessions WHERE expire < " . time());
 
 		return true;
 	}
 
 	if (!SINGLE_USER_MODE /* && DB_TYPE == "pgsql" */) {
-		session_set_save_handler("ttrss_open",
-			"ttrss_close", "ttrss_read", "ttrss_write",
-			"ttrss_destroy", "ttrss_gc");
+		session_set_save_handler('\Sessions\ttrss_open',
+			'\Sessions\ttrss_close', '\Sessions\ttrss_read',
+			'\Sessions\ttrss_write', '\Sessions\ttrss_destroy',
+			'\Sessions\ttrss_gc');
 		register_shutdown_function('session_write_close');
 	}
 

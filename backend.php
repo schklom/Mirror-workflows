@@ -45,7 +45,7 @@
 	}
 
 	if (!empty($_SESSION["uid"])) {
-		if (!validate_session()) {
+		if (!\Sessions\validate_session()) {
 			header("Content-Type: text/json");
 			print error_json(6);
 			return;

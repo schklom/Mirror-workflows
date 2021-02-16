@@ -167,26 +167,12 @@ class Pref_Labels extends Handler_Protected {
 		$output = clean($_REQUEST["output"]);
 
 		if ($caption) {
-
 			if (Labels::create($caption)) {
 				if (!$output) {
 					print T_sprintf("Created label <b>%s</b>", htmlspecialchars($caption));
 				}
 			}
-
-			if ($output == "select") {
-				header("Content-Type: text/xml");
-
-				print "<rpc-reply><payload>";
-
-				print_label_select("select_label",
-					$caption, "");
-
-				print "</payload></rpc-reply>";
-			}
 		}
-
-		return;
 	}
 
 	function index() {

@@ -1,19 +1,30 @@
 <?php
    namespace Controls;
 
-   function button_tag(string $value, string $type, $attributes = "") {
-      return "<button dojoType=\"dijit.form.Button\" $attributes type=\"$type\">".htmlspecialchars($value)."</button>";
+   function attributes_to_string(array $attributes) {
+      $rv = "";
+
+      foreach ($attributes as $k => $v) {
+         $rv .= "$k=\"" . htmlspecialchars($v) . "\"";
+      }
+
+      return $rv;
    }
 
-   function submit_tag(string $value, $attributes = "") {
-      return button_tag($value, "submit", "class=\"alt-primary\" $attributes");
+   function button_tag(string $value, string $type, array $attributes = []) {
+      return "<button dojoType=\"dijit.form.Button\" ".attributes_to_string($attributes)." type=\"$type\">".htmlspecialchars($value)."</button>";
    }
 
-   function select_tag(string $name, $value, array $values, string $attributes = "", string $id = "") {
-      $dojo_type = strpos($attributes, "dojoType") === false ? "dojoType='fox.form.Select'" : "";
+   function submit_tag(string $value, array $attributes = []) {
+      return button_tag($value, "submit", array_merge(["class" => "alt-primary"], $attributes));
+   }
+
+   function select_tag(string $name, $value, array $values, array $attributes = [], string $id = "") {
+      $attributes_str = attributes_to_string($attributes);
+      $dojo_type = strpos($attributes_str, "dojoType") === false ? "dojoType='fox.form.Select'" : "";
 
       $rv = "<select $dojo_type name=\"".htmlspecialchars($name)."\"
-         id=\"".htmlspecialchars($id)."\" name=\"".htmlspecialchars($name)."\" $attributes>";
+         id=\"".htmlspecialchars($id)."\" name=\"".htmlspecialchars($name)."\" $attributes_str>";
 
       foreach ($values as $v) {
          $is_sel = ($v == $value) ? "selected=\"selected\"" : "";
@@ -26,7 +37,7 @@
       return $rv;
    }
 
-   function select_labels(string $name, string $value, string $attributes = "", string $id = "") {
+   function select_labels(string $name, string $value, array $attributes = [], string $id = "") {
       $pdo = \Db::pdo();
 
       $sth = $pdo->prepare("SELECT caption FROM ttrss_labels2
@@ -42,11 +53,12 @@
       return select_tag($name, $value, $values, $attributes, $id);
    }
 
-   function select_hash(string $name, $value, array $values, string $attributes = "", string $id = "") {
-      $dojo_type = strpos($attributes, "dojoType") === false ? "dojoType='fox.form.Select'" : "";
+   function select_hash(string $name, $value, array $values, array $attributes = [], string $id = "") {
+      $attributes_str = attributes_to_string($attributes);
+      $dojo_type = strpos($attributes_str, "dojoType") === false ? "dojoType='fox.form.Select'" : "";
 
       $rv = "<select $dojo_type name=\"".htmlspecialchars($name)."\"
-         id=\"".htmlspecialchars($id)."\" name=\"".htmlspecialchars($name)."\" $attributes>";
+         id=\"".htmlspecialchars($id)."\" name=\"".htmlspecialchars($name)."\" $attributes_str>";
 
       foreach ($values as $k => $v) {
          $is_sel = ($k == $value) ? "selected=\"selected\"" : "";
@@ -59,20 +71,21 @@
       return $rv;
    }
 
-   function hidden_tag(string $name, string $value) {
+   function hidden_tag(string $name, string $value, array $attributes = []) {
       return "<input dojoType=\"dijit.form.TextBox\" style=\"display : none\"
-         name=\"".htmlspecialchars($name)."\" value=\"".htmlspecialchars($value)."\">";
+               ".attributes_to_string($attributes)." name=\"".htmlspecialchars($name)."\"
+               value=\"".htmlspecialchars($value)."\">";
    }
 
-   function checkbox_tag(string $name, bool $checked = false, string $value = "", string $attributes = "", string $id = "") {
+   function checkbox_tag(string $name, bool $checked = false, string $value = "", array $attributes = [], string $id = "") {
       $is_checked = $checked ? "checked" : "";
       $value_str = $value ? "value=\"".htmlspecialchars($value)."\"" : "";
 
       return "<input dojoType='dijit.form.CheckBox' name=\"".htmlspecialchars($name)."\"
-                  $value_str $is_checked $attributes id=\"".htmlspecialchars($id)."\">";
+                  $value_str $is_checked ".attributes_to_string($attributes)." id=\"".htmlspecialchars($id)."\">";
    }
 
-   function select_feeds_cats(string $name, int $default_id = null, string $attributes = "",
+   function select_feeds_cats(string $name, int $default_id = null, array $attributes = [],
                   bool $include_all_cats = true, string $root_id = null, int $nest_level = 0, string $id = "") {
 
       $ret = "";
@@ -81,7 +94,7 @@
          $ret .= "<select name=\"".htmlspecialchars($name)."\"
                         id=\"".htmlspecialchars($id)."\"
                         default=\"".((string)$default_id)."\"
-                        dojoType=\"fox.form.Select\" $attributes>";
+                        dojoType=\"fox.form.Select\" ".attributes_to_string($attributes).">";
       }
 
       $pdo = \Db::pdo();

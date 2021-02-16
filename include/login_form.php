@@ -142,7 +142,8 @@
 				<label> </label>
 
 				<label id="bw_limit_label">
-					<?= \Controls\checkbox_tag("safe_mode", false, "", "onchange='UtilityApp.bwLimitChange(this)'", 'bw_limit') ?>
+					<?= \Controls\checkbox_tag("bw_limit", false, "",
+									["onchange" => 'UtilityApp.bwLimitChange(this)'], 'bw_limit') ?>
 					<?= __("Use less traffic") ?></label>
 			</fieldset>
 

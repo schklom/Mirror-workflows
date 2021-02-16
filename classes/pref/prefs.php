@@ -664,13 +664,13 @@ class Pref_Prefs extends Handler_Protected {
 
 					if ($pref_name == "USER_LANGUAGE") {
 						print \Controls\select_hash($pref_name, $value, get_translations(),
-							"style='width : 220px; margin : 0px'");
+							["style" => 'width : 220px; margin : 0px']);
 
 					} else if ($pref_name == "USER_TIMEZONE") {
 
 						$timezones = explode("\n", file_get_contents("lib/timezones.txt"));
 
-						print \Controls\select_tag($pref_name, $value, $timezones, 'dojoType="dijit.form.FilteringSelect"');
+						print \Controls\select_tag($pref_name, $value, $timezones, ["dojoType" => "dijit.form.FilteringSelect"]);
 
 					} else if ($pref_name == "BLACKLISTED_TAGS") { # TODO: other possible <textarea> prefs go here
 

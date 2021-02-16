@@ -894,7 +894,7 @@ class Pref_Filters extends Handler_Protected {
 			dojoType='fox.form.Select'");*/
 
 		print \Controls\select_labels("action_param_label", $action_param,
-			"style=\"$label_param_hidden\"",
+			["style" => $label_param_hidden],
 			"filterDlg_actionParamLabel");
 
 		$filter_actions = PluginHost::getInstance()->get_filter_actions();
@@ -909,16 +909,16 @@ class Pref_Filters extends Handler_Protected {
 		}
 
 		if (count($filter_action_hash) == 0) {
-			$filter_plugin_disabled = "disabled";
+			$filter_plugin_disabled = ["disabled" => "1"];
 
 			$filter_action_hash["no-data"] = __("No actions available");
 
 		} else {
-			$filter_plugin_disabled = "";
+			$filter_plugin_disabled = [];
 		}
 
 		print \Controls\select_hash("action_param_plugin", $action_param, $filter_action_hash,
-			"style=\"$plugin_param_hidden\" $filter_plugin_disabled",
+			array_merge(["style" => $plugin_param_hidden], $filter_plugin_disabled),
 			"filterDlg_actionParamPlugin");
 
 		print "</span>";

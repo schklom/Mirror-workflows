@@ -160,7 +160,8 @@ class Mail extends Plugin {
 				style=\"width : 30em;\"
 				name=\"destination\" id=\"emailArticleDlg_destination\">"; */
 
-		print \Controls\select_tag("destination", "", $addresslist, 'style="width: 30em" dojoType="dijit.form.ComboBox"');
+		print \Controls\select_tag("destination", "", $addresslist,
+									["style" => "width: 30em", "dojoType" => "dijit.form.ComboBox"]);
 
 /*		print "<div class=\"autocomplete\" id=\"emailArticleDlg_dst_choices\"
 	style=\"z-index: 30; display : none\"></div>"; */

@@ -50,8 +50,14 @@ class Af_Proxy_Http extends Plugin {
 	public function imgproxy() {
 		$url = UrlHelper::validate(clean($_REQUEST["url"]));
 
-		// called without user context, let's just redirect to original URL
-		if (!$_SESSION["uid"] || $_REQUEST['af_proxy_http_token'] != $_SESSION['af_proxy_http_token']) {
+		// immediately redirect to original URL if:
+		// - url points back to ourselves
+		// - called without user context
+		// - session-spefific token is invalid
+		if (
+			strpos($url, get_self_url_prefix()) === 0 ||
+			empty($_SESSION["uid"]) ||
+			$_REQUEST['af_proxy_http_token'] != $_SESSION['af_proxy_http_token']) {
 			header("Location: $url");
 			return;
 		}
@@ -104,6 +110,11 @@ class Af_Proxy_Http extends Plugin {
 	}
 
 	private function rewrite_url_if_needed($url, $all_remote = false) {
+		/* don't rewrite urls pointing to ourselves */
+
+		if (strpos($url, get_self_url_prefix()) === 0)
+			return $url;
+
 		/* we don't need to handle URLs where local cache already exists, tt-rss rewrites those automatically */
 		if (!$this->cache->exists(sha1($url))) {
 

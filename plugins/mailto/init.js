@@ -21,7 +21,7 @@ Plugins.Mailto = {
 		const tmph = dojo.connect(dialog, 'onShow', function () {
 			dojo.disconnect(tmph);
 
-			xhrPost("backend.php", {op: "pluginhandler", plugin: "mailto", method: "emailArticle", ids: id}, (transport) => {
+			xhrPost("backend.php", App.getPhArgs("mailto", "emailArticle", {ids: id}), (transport) => {
 				dialog.attr('content', transport.responseText);
 			});
 		});

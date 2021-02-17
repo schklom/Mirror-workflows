@@ -611,6 +611,17 @@ class PluginHost {
 					$params));
 	}
 
+	// shortcut syntax (disabled for now)
+	/* function get_method_url(Plugin $sender, string $method, $params)  {
+		return get_self_url_prefix() . "/backend.php?" .
+			http_build_query(
+				array_merge(
+					[
+						"op" => strtolower(get_class($sender) . self::PUBLIC_METHOD_DELIMITER . $method),
+					],
+					$params));
+	} */
+
 	// WARNING: endpoint in public.php, exposed to unauthenticated users
 	function get_public_method_url(Plugin $sender, string $method, $params)  {
 		if ($sender->is_public_method($method)) {
@@ -618,7 +629,7 @@ class PluginHost {
 				http_build_query(
 					array_merge(
 						[
-							"op" => strtolower(get_class($sender) . PluginHost::PUBLIC_METHOD_DELIMITER . $method),
+							"op" => strtolower(get_class($sender) . self::PUBLIC_METHOD_DELIMITER . $method),
 						],
 						$params));
 		} else {

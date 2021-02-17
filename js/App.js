@@ -101,6 +101,9 @@ const App = {
 
       return dijit.getEnclosingWidget(elem.closest('.dijitDialog'));
    },
+   getPhArgs(plugin, method, args = {}) {
+      return {...{op: "pluginhandler", plugin: plugin, method: method}, ...args};
+   },
    label_to_feed_id: function(label) {
       return this.LABEL_BASE_INDEX - 1 - Math.abs(label);
    },

@@ -41,9 +41,7 @@ class Af_RedditImgur extends Plugin {
 
 			<form dojoType='dijit.form.Form'>
 
-				<?= \Controls\hidden_tag("op", "pluginhandler") ?>
-				<?= \Controls\hidden_tag("method", "save") ?>
-				<?= \Controls\hidden_tag("plugin", "af_redditimgur") ?>
+				<?= \Controls\pluginhandler_tags($this, "save") ?>
 
 				<script type='dojo/method' event='onSubmit' args='evt'>
 					evt.preventDefault();
@@ -633,6 +631,10 @@ class Af_RedditImgur extends Plugin {
 		$entry->parentNode->insertBefore($img, $entry);*/
 	}
 
+	function csrf_ignore($method) {
+		return $method === "testurl";
+	}
+
 	function testurl() {
 
 		$url = clean($_POST["url"]);
@@ -651,7 +653,6 @@ class Af_RedditImgur extends Plugin {
 				<input type="hidden" name="op" value="pluginhandler">
 				<input type="hidden" name="method" value="testurl">
 				<input type="hidden" name="plugin" value="af_redditimgur">
-				<input type="hidden" name="csrf_token" value="<?= $_SESSION["csrf_token"] ?>">
 				<fieldset>
 					<label>URL:</label>
 					<input name="url" size="100" value="<?= htmlspecialchars($url) ?>"></input>

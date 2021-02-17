@@ -5,7 +5,7 @@ Plugins.Share = {
 		if (confirm(__("This will invalidate all previously shared article URLs. Continue?"))) {
 			Notify.progress("Clearing URLs...");
 
-			xhrPost("backend.php", {op: "pluginhandler", plugin: "share", method: "clearArticleKeys"}, (transport) => {
+			xhrPost("backend.php", App.getPhArgs("share", "clearArticleKeys"), (transport) => {
 				Notify.info(transport.responseText);
 			});
 		}

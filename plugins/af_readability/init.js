@@ -16,7 +16,7 @@ Plugins.Af_Readability = {
 
         Notify.progress("Loading, please wait...");
 
-        xhrJson("backend.php",{ op: "pluginhandler", plugin: "af_readability", method: "embed", param: id }, (reply) => {
+        xhrJson("backend.php", App.getPhArgs("af_readability", "embed", {id: id}), (reply) => {
 
             if (content && reply.content) {
                 content.setAttribute(self.orig_attr_name, content.innerHTML);

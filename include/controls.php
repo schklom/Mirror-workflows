@@ -11,6 +11,17 @@
       return $rv;
    }
 
+   // shortcut syntax (disabled)
+   /* function pluginhandler_tags(\Plugin $plugin, string $method) {
+      return hidden_tag("op", strtolower(get_class($plugin) . \PluginHost::PUBLIC_METHOD_DELIMITER . $method));
+   } */
+
+   function pluginhandler_tags(\Plugin $plugin, string $method) {
+      return hidden_tag("op", "pluginhandler") .
+               hidden_tag("plugin", strtolower(get_class($plugin))) .
+               hidden_tag("method", $method);
+   }
+
    function button_tag(string $value, string $type, array $attributes = []) {
       return "<button dojoType=\"dijit.form.Button\" ".attributes_to_string($attributes)." type=\"$type\">".htmlspecialchars($value)."</button>";
    }
@@ -155,4 +166,3 @@
 
       return $ret;
    }
-

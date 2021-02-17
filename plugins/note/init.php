@@ -27,17 +27,17 @@ class Note extends Plugin {
 	}
 
 	function edit() {
-		$param = $_REQUEST['param'];
+		$id = clean($_REQUEST['id']);
 
 		$sth = $this->pdo->prepare("SELECT note FROM ttrss_user_entries WHERE
 			ref_id = ? AND owner_uid = ?");
-		$sth->execute([$param, $_SESSION['uid']]);
+		$sth->execute([$id, $_SESSION['uid']]);
 
 		if ($row = $sth->fetch()) {
 
 			$note = $row['note'];
 
-			print \Controls\hidden_tag("id", "$param");
+			print \Controls\hidden_tag("id", $id);
 			print \Controls\hidden_tag("op", "pluginhandler");
 			print \Controls\hidden_tag("method", "setNote");
 			print \Controls\hidden_tag("plugin", "note");

@@ -647,7 +647,11 @@ class Af_RedditImgur extends Plugin {
 				fieldset { border : 0; }
 				label { display : inline-block; min-width : 120px; }
 			</style>
-			<form action="backend.php?op=pluginhandler&method=testurl&plugin=af_redditimgur" method="post">
+			<form action="backend.php" method="post">
+				<input type="hidden" name="op" value="pluginhandler">
+				<input type="hidden" name="method" value="testurl">
+				<input type="hidden" name="plugin" value="af_redditimgur">
+				<input type="hidden" name="csrf_token" value="<?= $_SESSION["csrf_token"] ?>">
 				<fieldset>
 					<label>URL:</label>
 					<input name="url" size="100" value="<?= htmlspecialchars($url) ?>"></input>

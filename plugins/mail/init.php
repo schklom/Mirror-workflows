@@ -19,7 +19,7 @@ class Mail extends Plugin {
 	}
 
 	function get_js() {
-		return file_get_contents(dirname(__FILE__) . "/mail.js");
+		return file_get_contents(__DIR__ . "/mail.js");
 	}
 
 	function hook_headline_toolbar_select_menu_item($feed_id, $is_cat) {
@@ -83,8 +83,10 @@ class Mail extends Plugin {
 
 	function emailArticle() {
 
-		$ids = explode(",", $_REQUEST['param']);
+		$ids = explode(",", clean($_REQUEST['ids']));
 		$ids_qmarks = arr_qmarks($ids);
+
+		print "<form onsubmit=\"return false\">";
 
 		print \Controls\hidden_tag("op", "pluginhandler");
 		print \Controls\hidden_tag("plugin", "mail");
@@ -156,15 +158,8 @@ class Mail extends Plugin {
 
 		print "</td><td>";
 
-/*		print "<input dojoType=\"dijit.form.ValidationTextBox\" required=\"true\"
-				style=\"width : 30em;\"
-				name=\"destination\" id=\"emailArticleDlg_destination\">"; */
-
 		print \Controls\select_tag("destination", "", $addresslist,
-									["style" => "width: 30em", "dojoType" => "dijit.form.ComboBox"]);
-
-/*		print "<div class=\"autocomplete\" id=\"emailArticleDlg_dst_choices\"
-	style=\"z-index: 30; display : none\"></div>"; */
+									["style" => "width: 30em", "required" => 1, "dojoType" => "dijit.form.ComboBox"]);
 
 		print "</td></tr><tr><td>";
 
@@ -184,11 +179,11 @@ class Mail extends Plugin {
 		print "</td></tr></table>";
 
 		print "<footer>";
-		print "<button dojoType='dijit.form.Button' onclick=\"dijit.byId('emailArticleDlg').execute()\">".__('Send e-mail')."</button> ";
-		print "<button dojoType='dijit.form.Button' onclick=\"dijit.byId('emailArticleDlg').hide()\">".__('Cancel')."</button>";
+		print \Controls\submit_tag(__('Send email'));
+		print \Controls\cancel_dialog_tag(__('Cancel'));
 		print "</footer>";
 
-		//return;
+		print "</form>";
 	}
 
 	function sendEmail() {
@@ -228,20 +223,6 @@ class Mail extends Plugin {
 
 		print json_encode($reply);
 	}
-
-	/* function completeEmails() {
-		$search = $_REQUEST["search"];
-
-		print "<ul>";
-
-		foreach ($_SESSION['stored_emails'] as $email) {
-			if (strpos($email, $search) !== false) {
-				print "<li>$email</li>";
-			}
-		}
-
-		print "</ul>";
-	} */
 
 	function api_version() {
 		return 2;

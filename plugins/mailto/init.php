@@ -20,7 +20,7 @@ class MailTo extends Plugin {
 	}
 
 	function get_js() {
-		return file_get_contents(dirname(__FILE__) . "/init.js");
+		return file_get_contents(__DIR__ . "/init.js");
 	}
 
 	function hook_article_button($line) {
@@ -31,7 +31,7 @@ class MailTo extends Plugin {
 
 	function emailArticle() {
 
-		$ids = explode(",", $_REQUEST['param']);
+		$ids = explode(",", clean($_REQUEST['ids']));
 		$ids_qmarks = arr_qmarks($ids);
 
 		$tpl = new Templator();
@@ -85,7 +85,7 @@ class MailTo extends Plugin {
 		print "<p>";
 
 		print "<footer class='text-center'>";
-		print "<button dojoType='dijit.form.Button' onclick=\"dijit.byId('emailArticleDlg').hide()\">".__('Close this dialog')."</button>";
+		print \Controls\submit_tag(__('Close this dialog'));
 		print "</footer>";
 
 		//return;

@@ -1,4 +1,4 @@
-/* global Plugins, Headlines, xhrJson, Notify, fox, __ */
+/* global Plugins, Headlines, dojo, xhrPost, xhrJson, Notify, fox, __ */
 
 Plugins.Mail = {
 	send: function(id) {
@@ -13,10 +13,7 @@ Plugins.Mail = {
 			id = ids.toString();
 		}
 
-		const query = "backend.php?op=pluginhandler&plugin=mail&method=emailArticle&param=" + encodeURIComponent(id);
-
 		const dialog = new fox.SingleUseDialog({
-			id: "emailArticleDlg",
 			title: __("Forward article by email"),
 			execute: function () {
 				if (this.validate()) {
@@ -35,16 +32,16 @@ Plugins.Mail = {
 					});
 				}
 			},
-			href: query
+			content: __("Loading, please wait...")
 		});
 
-		/* var tmph = dojo.connect(dialog, 'onLoad', function() {
-		dojo.disconnect(tmph);
+		const tmph = dojo.connect(dialog, 'onShow', function () {
+			dojo.disconnect(tmph);
 
-		   new Ajax.Autocompleter('emailArticleDlg_destination', 'emailArticleDlg_dst_choices',
-			   "backend.php?op=pluginhandler&plugin=mail&method=completeEmails",
-			   { tokens: '', paramName: "search" });
-		}); */
+			xhrPost("backend.php", {op: "pluginhandler", plugin: "mail", method: "emailArticle", ids: id}, (transport) => {
+				dialog.attr('content', transport.responseText);
+			});
+		});
 
 		dialog.show();
 	},

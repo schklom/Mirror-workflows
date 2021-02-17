@@ -1,11 +1,8 @@
-/* global Plugins, xhrJson, Notify, fox, __ */
+/* global dojo, xhrPost, Plugins, xhrJson, Notify, fox, __ */
 
 Plugins.Note = {
 	edit: function(id) {
-		const query = "backend.php?op=pluginhandler&plugin=note&method=edit&param=" + encodeURIComponent(id);
-
 		const dialog = new fox.SingleUseDialog({
-			id: "editNoteDlg",
 			title: __("Edit article note"),
 			execute: function () {
 				if (this.validate()) {
@@ -30,7 +27,15 @@ Plugins.Note = {
 					});
 				}
 			},
-			href: query,
+			content: __("Loading, please wait...")
+		});
+
+		const tmph = dojo.connect(dialog, 'onShow', function () {
+			dojo.disconnect(tmph);
+
+			xhrPost("backend.php", {op: "pluginhandler", plugin: "note", method: "edit", id: id}, (transport) => {
+				dialog.attr('content', transport.responseText);
+			});
 		});
 
 		dialog.show();

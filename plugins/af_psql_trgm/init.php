@@ -46,7 +46,7 @@ class Af_Psql_Trgm extends Plugin {
 	}
 
 	function showrelated() {
-		$id = (int) $_REQUEST['param'];
+		$id = (int) $_REQUEST['id'];
 		$owner_uid = $_SESSION["uid"];
 
 		$sth = $this->pdo->prepare("SELECT title FROM ttrss_entries, ttrss_user_entries

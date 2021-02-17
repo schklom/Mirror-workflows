@@ -608,7 +608,7 @@ class Feeds extends Handler_Protected {
 			print "<fieldset>";
 			print "<label class='inline'>" . __("Language:") . "</label>";
 			print \Controls\select_tag("search_language", get_pref('DEFAULT_SEARCH_LANGUAGE'), Pref_Feeds::get_ts_languages(),
-										["title" => __('Used for word stemming')]);
+										["title" => __('Used for word stemming')], "search_language");
 			print "</fieldset>";
 		}
 

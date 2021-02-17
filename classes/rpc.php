@@ -507,7 +507,7 @@ class RPC extends Handler_Protected {
 			$sth = $pdo->prepare("SELECT COUNT(id) AS cid
 				FROM ttrss_error_log
 			WHERE
-				errno != 1024 AND
+				errno NOT IN (".E_USER_NOTICE.", ".E_USER_DEPRECATED.") AND
 				$log_interval AND
 				errstr NOT LIKE '%imagecreatefromstring(): Data is not in a recognized format%'");
 			$sth->execute();

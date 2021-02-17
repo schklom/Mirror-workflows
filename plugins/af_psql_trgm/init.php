@@ -15,7 +15,7 @@ class Af_Psql_Trgm extends Plugin {
 	function save() {
 		$similarity = (float) $_POST["similarity"];
 		$min_title_length = (int) $_POST["min_title_length"];
-		$enable_globally = checkbox_to_sql_bool($_POST["enable_globally"]);
+		$enable_globally = checkbox_to_sql_bool($_POST["enable_globally"] ?? "");
 
 		if ($similarity < 0) $similarity = 0;
 		if ($similarity > 1) $similarity = 1;

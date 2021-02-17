@@ -14,7 +14,7 @@ Plugins.Mailto = {
 		}
 
 		const dialog = new fox.SingleUseDialog({
-			title: __("Forward article by email"),
+			title: __("Forward article by email (mailto:)"),
 			content: __("Loading, please wait...")
 		});
 

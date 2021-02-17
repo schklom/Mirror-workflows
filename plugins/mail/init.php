@@ -37,42 +37,44 @@ class Mail extends Plugin {
 	function hook_prefs_tab($args) {
 		if ($args != "prefPrefs") return;
 
-		print "<div dojoType=\"dijit.layout.AccordionPane\"
-			title=\"<i class='material-icons'>mail</i> ".__('Mail plugin')."\">";
+		$addresslist = $this->host->get($this, "addresslist");
 
-		print "<p>" . __("You can set predefined email addressed here (comma-separated list):") . "</p>";
+		?>
 
-		print "<form dojoType=\"dijit.form.Form\">";
+		<div dojoType="dijit.layout.AccordionPane"
+			title="<i class='material-icons'>mail</i> <?= __('Mail plugin') ?>">
 
-		print "<script type=\"dojo/method\" event=\"onSubmit\" args=\"evt\">
-			evt.preventDefault();
-			if (this.validate()) {
-				console.log(dojo.objectToQuery(this.getValues()));
-				new Ajax.Request('backend.php', {
-					parameters: dojo.objectToQuery(this.getValues()),
-					onComplete: function(transport) {
-						Notify.info(transport.responseText);
+			<form dojoType="dijit.form.Form">
+				<?= \Controls\hidden_tag("op", "pluginhandler") ?>
+				<?= \Controls\hidden_tag("method", "save") ?>
+				<?= \Controls\hidden_tag("plugin", "mail") ?>
+
+				<script type="dojo/method" event="onSubmit" args="evt">
+					evt.preventDefault();
+					if (this.validate()) {
+						console.log(dojo.objectToQuery(this.getValues()));
+						new Ajax.Request('backend.php', {
+							parameters: dojo.objectToQuery(this.getValues()),
+							onComplete: function(transport) {
+								Notify.info(transport.responseText);
+							}
+						});
 					}
-				});
-				//this.reset();
-			}
-			</script>";
+					</script>
 
-			print \Controls\hidden_tag("op", "pluginhandler");
-			print \Controls\hidden_tag("method", "save");
-			print \Controls\hidden_tag("plugin", "mail");
+				<header><?= __("You can set predefined email addressed here (comma-separated list):") ?></header>
 
-			$addresslist = $this->host->get($this, "addresslist");
+				<textarea dojoType="dijit.form.SimpleTextarea" style='font-size : 12px; width : 50%' rows="3"
+					name='addresslist'><?= $addresslist ?></textarea>
 
-			print "<textarea dojoType=\"dijit.form.SimpleTextarea\" style='font-size : 12px; width : 50%' rows=\"3\"
-				name='addresslist'>$addresslist</textarea>";
+				<hr/>
 
-			print "<p><button dojoType=\"dijit.form.Button\" type=\"submit\">".
-				__("Save")."</button>";
+				<?= \Controls\submit_tag(__("Save")) ?>
 
-			print "</form>";
+			</form>
 
-		print "</div>";
+		</div>
+		<?php
 	}
 
 	function hook_article_button($line) {
@@ -86,11 +88,6 @@ class Mail extends Plugin {
 		$ids = explode(",", clean($_REQUEST['ids']));
 		$ids_qmarks = arr_qmarks($ids);
 
-		print "<form onsubmit=\"return false\">";
-
-		print \Controls\hidden_tag("op", "pluginhandler");
-		print \Controls\hidden_tag("plugin", "mail");
-		print \Controls\hidden_tag("method", "sendEmail");
 
 		$sth = $this->pdo->prepare("SELECT email, full_name FROM ttrss_users WHERE
 			id = ?");
@@ -106,9 +103,6 @@ class Mail extends Plugin {
 
 		if (!$user_name)
 			$user_name = $_SESSION['name'];
-
-		print \Controls\hidden_tag("from_email", "$user_email");
-		print \Controls\hidden_tag("from_name", "$user_name");
 
 		$tpl = new Templator();
 
@@ -150,40 +144,58 @@ class Mail extends Plugin {
 		$content = "";
 		$tpl->generateOutputToString($content);
 
-		print "<table width='100%'><tr><td>";
-
 		$addresslist = explode(",", $this->host->get($this, "addresslist"));
 
-		print __('To:');
+		?>
 
-		print "</td><td>";
+		<form dojoType='dijit.form.Form'>
 
-		print \Controls\select_tag("destination", "", $addresslist,
-									["style" => "width: 30em", "required" => 1, "dojoType" => "dijit.form.ComboBox"]);
+			<?= \Controls\hidden_tag("op", "pluginhandler") ?>
+			<?= \Controls\hidden_tag("plugin", "mail") ?>
+			<?= \Controls\hidden_tag("method", "sendEmail") ?>
 
-		print "</td></tr><tr><td>";
+			<?= \Controls\hidden_tag("from_email", "$user_email") ?>
+			<?= \Controls\hidden_tag("from_name", "$user_name") ?>
 
-		print __('Subject:');
+			<script type='dojo/method' event='onSubmit' args='evt'>
+				evt.preventDefault();
+				if (this.validate()) {
+					xhrJson("backend.php", this.getValues(), (reply) => {
+						if (reply && reply.error)
+							Notify.error(reply.error);
+						else
+							this.hide();
+					});
+				}
+			</script>
 
-		print "</td><td>";
+			<section>
+				<fieldset class='narrow'>
+					<label><?= __('To:') ?></label>
+					<?= \Controls\select_tag("destination", "", $addresslist,
+											["style" => "width: 380px", "required" => 1, "dojoType" => "dijit.form.ComboBox"]) ?>
+				</fieldset>
+			</section>
 
-		print "<input dojoType='dijit.form.ValidationTextBox' required='true'
-				style='width : 30em;' name='subject' value=\"$subject\" id='subject'>";
+			<section>
+				<fieldset class='narrow'>
+					<label><?= __('Subject:') ?></label>
+					<input dojoType='dijit.form.ValidationTextBox' required='true'
+						style='width : 380px' name='subject' value="<?= htmlspecialchars($subject) ?>" id='subject'>
+				</fieldset>
+			</section>
 
-		print "</td></tr>";
+			<textarea dojoType='dijit.form.SimpleTextarea'
+				style='height : 200px; font-size : 12px; width : 98%' rows="20"
+				name='content'><?= $content ?></textarea>
 
-		print "<tr><td colspan='2'><textarea dojoType='dijit.form.SimpleTextarea'
-			style='height : 200px; font-size : 12px; width : 98%' rows=\"20\"
-			name='content'>$content</textarea>";
+			<footer>
+				<?= \Controls\submit_tag(__('Send email')) ?>
+				<?= \Controls\cancel_dialog_tag(__('Cancel')) ?>
+			</footer>
 
-		print "</td></tr></table>";
-
-		print "<footer>";
-		print \Controls\submit_tag(__('Send email'));
-		print \Controls\cancel_dialog_tag(__('Cancel'));
-		print "</footer>";
-
-		print "</form>";
+		</form>
+		<?php
 	}
 
 	function sendEmail() {

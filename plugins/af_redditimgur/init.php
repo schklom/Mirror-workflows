@@ -31,60 +31,61 @@ class Af_RedditImgur extends Plugin {
 	function hook_prefs_tab($args) {
 		if ($args != "prefFeeds") return;
 
-		print "<div dojoType=\"dijit.layout.AccordionPane\"
-			title=\"<i class='material-icons'>extension</i> ".__('Reddit content settings (af_redditimgur)')."\">";
+			$enable_readability = $this->host->get($this, "enable_readability");
+			$enable_content_dupcheck = $this->host->get($this, "enable_content_dupcheck");
+			$reddit_to_teddit = $this->host->get($this, "reddit_to_teddit");
+		?>
 
-		$enable_readability = $this->host->get($this, "enable_readability");
-		$enable_content_dupcheck = $this->host->get($this, "enable_content_dupcheck");
-		$reddit_to_teddit = $this->host->get($this, "reddit_to_teddit");
+		<div dojoType="dijit.layout.AccordionPane"
+			title="<i class='material-icons'>extension</i> <?= __('Reddit content settings (af_redditimgur)') ?>">
 
-		if (version_compare(PHP_VERSION, '5.6.0', '<')) {
-			print_error("Readability requires PHP version 5.6.");
-		}
+			<form dojoType='dijit.form.Form'>
 
-		print "<form dojoType='dijit.form.Form'>";
+				<?= \Controls\hidden_tag("op", "pluginhandler") ?>
+				<?= \Controls\hidden_tag("method", "save") ?>
+				<?= \Controls\hidden_tag("plugin", "af_redditimgur") ?>
 
-		print "<script type='dojo/method' event='onSubmit' args='evt'>
-			evt.preventDefault();
-			if (this.validate()) {
-				console.log(dojo.objectToQuery(this.getValues()));
-				new Ajax.Request('backend.php', {
-					parameters: dojo.objectToQuery(this.getValues()),
-					onComplete: function(transport) {
-						Notify.info(transport.responseText);
+				<script type='dojo/method' event='onSubmit' args='evt'>
+					evt.preventDefault();
+					if (this.validate()) {
+						console.log(dojo.objectToQuery(this.getValues()));
+						new Ajax.Request('backend.php', {
+							parameters: dojo.objectToQuery(this.getValues()),
+							onComplete: function(transport) {
+								Notify.info(transport.responseText);
+							}
+						});
 					}
-				});
-				//this.reset();
-			}
-			</script>";
+				</script>
 
-		print \Controls\hidden_tag("op", "pluginhandler");
-		print \Controls\hidden_tag("method", "save");
-		print \Controls\hidden_tag("plugin", "af_redditimgur");
+				<fieldset class='narrow'>
+					<label class='checkbox'>
+						<?= \Controls\checkbox_tag("enable_readability", $enable_readability) ?>
+						<?= __("Extract missing content using Readability (requires af_readability)") ?>
+					</label>
+				</fieldset>
 
-		print "<fieldset class='narrow'>";
-		print "<label class='checkbox'>";
-		print \Controls\checkbox_tag("enable_readability", $enable_readability);
-		print " " . __("Extract missing content using Readability (requires af_readability)") . "</label>";
-		print "</fieldset>";
+				<fieldset class='narrow'>
+					<label class='checkbox'>
+						<?= \Controls\checkbox_tag("enable_content_dupcheck", $enable_content_dupcheck) ?>
+						<?= __("Enable additional duplicate checking") ?>
+					</label>
+				</fieldset>
 
-		print "<fieldset class='narrow'>";
-		print "<label class='checkbox'>";
-		print \Controls\checkbox_tag("enable_content_dupcheck", $enable_content_dupcheck);
-		print " " . __("Enable additional duplicate checking") . "</label>";
-		print "</fieldset>";
+				<fieldset class='narrow'>
+					<label class='checkbox'>
+						<?= \Controls\checkbox_tag("reddit_to_teddit", $reddit_to_teddit) ?>
+						<?= T_sprintf("Rewrite Reddit URLs to %s",
+									"<a target=\"_blank\" href=\"https://teddit.net/about\">Teddit</a>") ?>
+					</label>
+				</fieldset>
 
-		print "<fieldset class='narrow'>";
-		print "<label class='checkbox'>";
-		print \Controls\checkbox_tag("reddit_to_teddit", $reddit_to_teddit);
-		print " " . T_sprintf("Rewrite Reddit URLs to %s",
-			"<a target=\"_blank\" href=\"https://teddit.net/about\">Teddit</a>") . "</label>";
+				<hr/>
+				<?= \Controls\submit_tag(__("Save")) ?>
+			</form>
+		</div>
 
-		print "<hr/>";
-		print \Controls\submit_tag(__("Save"));
-		print "</form>";
-
-		print "</div>";
+		<?php
 	}
 
 	function save() {

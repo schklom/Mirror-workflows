@@ -45,7 +45,7 @@ const	Filters = {
 
 				li.innerHTML = `<input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
 						<span onclick='App.dialogOf(this).editRule(this)'>${transport.responseText}</span>
-					${App.FormFields.hidden("rule[]", rule)}`;
+					${App.FormFields.hidden_tag("rule[]", rule)}`;
 
 				dojo.parser.parse(li);
 
@@ -76,7 +76,7 @@ const	Filters = {
 
 				li.innerHTML = `<input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
 						<span onclick='App.dialogOf(this).editAction(this)'>${transport.responseText}</span>
-					${App.FormFields.hidden("action[]", action)}`;
+					${App.FormFields.hidden_tag("action[]", action)}`;
 
 				dojo.parser.parse(li);
 

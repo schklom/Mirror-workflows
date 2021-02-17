@@ -588,46 +588,12 @@ class Feeds extends Handler_Protected {
 	}
 
 	function search() {
-		$this->params = explode(":", $_REQUEST["param"], 2);
-
-		$active_feed_id = sprintf("%d", $this->params[0]);
-		$is_cat = $this->params[1] != "false";
-
-		print "<form onsubmit='return false'>";
-
-		print "<section>";
-
-		print "<fieldset>";
-		print "<input dojoType='dijit.form.ValidationTextBox' id='search_query'
-			style='font-size : 16px; width : 540px;'
-			placeHolder=\"".T_sprintf("Search %s...", $this->_get_title($active_feed_id, $is_cat))."\"
-			name='query' type='search' value=''>";
-		print "</fieldset>";
-
-		if (DB_TYPE == "pgsql") {
-			print "<fieldset>";
-			print "<label class='inline'>" . __("Language:") . "</label>";
-			print \Controls\select_tag("search_language", get_pref('DEFAULT_SEARCH_LANGUAGE'), Pref_Feeds::get_ts_languages(),
-										["title" => __('Used for word stemming')], "search_language");
-			print "</fieldset>";
-		}
-
-		print "</section>";
-
-		print "<footer>";
-
-		if (count(PluginHost::getInstance()->get_hooks(PluginHost::HOOK_SEARCH)) == 0) {
-			print "<button dojoType='dijit.form.Button' style='float : left' class='alt-info' onclick='window.open(\"https://tt-rss.org/wiki/SearchSyntax\")'>
-				<i class='material-icons'>help</i> ".__("Search syntax")."</button>";
-		}
-
-		print "<button dojoType='dijit.form.Button' class='alt-primary'
-				type='submit' onclick='App.dialogOf(this).execute()'>".__('Search')."</button>
-			<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".__('Cancel')."</button>";
-
-		print "</footer>";
-
-		print "</form>";
+		print json_encode([
+			"show_language" => DB_TYPE == "pgsql",
+			"show_syntax_help" => count(PluginHost::getInstance()->get_hooks(PluginHost::HOOK_SEARCH)) == 0,
+			"all_languages" => Pref_Feeds::get_ts_languages(),
+			"default_language" => get_pref('DEFAULT_SEARCH_LANGUAGE')
+		]);
 	}
 
 	function updatedebugger() {

@@ -314,9 +314,9 @@ const Article = {
 		const dialog = new fox.SingleUseDialog({
 			title: __("Edit article Tags"),
 			content: `
-				${App.FormFields.hidden("id", id.toString())}
-				${App.FormFields.hidden("op", "article")}
-				${App.FormFields.hidden("method", "setArticleTags")}
+				${App.FormFields.hidden_tag("id", id.toString())}
+				${App.FormFields.hidden_tag("op", "article")}
+				${App.FormFields.hidden_tag("method", "setArticleTags")}
 
 				<header class='horizontal'>
 					${__("Tags for this article (separated by commas):")}

@@ -133,12 +133,12 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 								value="${App.escapeHtml(reply.caption)}">
 						</section>
 
-						${App.FormFields.hidden('id', id)}
-						${App.FormFields.hidden('op', 'pref-labels')}
-						${App.FormFields.hidden('method', 'save')}
+						${App.FormFields.hidden_tag('id', id)}
+						${App.FormFields.hidden_tag('op', 'pref-labels')}
+						${App.FormFields.hidden_tag('method', 'save')}
 
-						${App.FormFields.hidden('fg_color', fg_color, 'labelEdit_fgColor')}
-						${App.FormFields.hidden('bg_color', bg_color, 'labelEdit_bgColor')}
+						${App.FormFields.hidden_tag('fg_color', fg_color, {}, 'labelEdit_fgColor')}
+						${App.FormFields.hidden_tag('bg_color', bg_color, {}, 'labelEdit_bgColor')}
 
 						<header>${__("Colors")}</header>
 						<section>

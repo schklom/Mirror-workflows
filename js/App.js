@@ -18,14 +18,44 @@ const App = {
    is_prefs: false,
    LABEL_BASE_INDEX: -1024,
    FormFields: {
-      hidden: function(name, value, id = "") {
-         return `<input id="${id}" dojoType="dijit.form.TextBox" style="display : none" name="${name}" value="${App.escapeHtml(value)}"></input>`
+      attributes_to_string: function(attributes) {
+         return Object.keys(attributes).map((k) =>
+            `${App.escapeHtml(k)}="${App.escapeHtml(attributes[k])}"`)
+            .join(" ");
       },
-      select_hash: function(name, value, values, attributes) {
+      hidden_tag: function(name, value, attributes = {}, id = "") {
+         return `<input id="${App.escapeHtml(id)}" dojoType="dijit.form.TextBox" ${this.attributes_to_string(attributes)}
+            style="display : none" name="${name}" value="${App.escapeHtml(value)}"></input>`
+      },
+      // allow html inside because of icons
+      button_tag: function(value, type, attributes = {}) {
+         return `<button dojoType="dijit.form.Button" ${this.attributes_to_string(attributes)}
+            type="${type}">${value}</button>`
+
+      },
+      icon: function(icon, attributes = {}) {
+         return `<i class="material-icons" ${this.attributes_to_string(attributes)}>${icon}</i>`;
+      },
+      submit_tag: function(value, attributes = {}) {
+         return this.button_tag(value, "submit", {...{class: "alt-primary"}, ...attributes});
+      },
+      cancel_dialog_tag: function(value, attributes = {}) {
+         return this.button_tag(value, "", {...{onclick: "App.dialogOf(this).hide()"}, ...attributes});
+      },
+      select_tag: function(name, value, values = [], attributes = {}, id = "") {
          return `
-            <select name="${name}" dojoType="fox.form.Select" ${attributes}>
+            <select name="${name}" dojoType="fox.form.Select" id="${App.escapeHtml(id)}" ${this.attributes_to_string(attributes)}>
+               ${values.map((v) =>
+                  `<option ${v == value ? 'selected="selected"' : ''} value="${App.escapeHtml(v)}">${App.escapeHtml(v)}</option>`
+               ).join("")}
+            </select>
+         `
+      },
+      select_hash: function(name, value, values = {}, attributes = {}, id = "") {
+         return `
+            <select name="${name}" dojoType="fox.form.Select" id="${App.escapeHtml(id)}" ${this.attributes_to_string(attributes)}>
                ${Object.keys(values).map((vk) =>
-                     `<option name="" ${vk == value ? 'selected="selected"' : ''} value="${App.escapeHtml(vk)}">${App.escapeHtml(values[vk])}</option>`
+                     `<option ${vk == value ? 'selected="selected"' : ''} value="${App.escapeHtml(vk)}">${App.escapeHtml(values[vk])}</option>`
                ).join("")}
             </select>
          `

@@ -86,8 +86,8 @@ const	CommonDialogs = {
 							content: `
 								<form onsubmit='return false'>
 
-									${App.FormFields.hidden("op", "feeds")}
-									${App.FormFields.hidden("method", "add")}
+									${App.FormFields.hidden_tag("op", "feeds")}
+									${App.FormFields.hidden_tag("method", "add")}
 
 									<div id='fadd_error_message' style='display : none' class='alert alert-danger'></div>
 

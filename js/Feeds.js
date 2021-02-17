@@ -1,6 +1,6 @@
 'use strict'
 
-/* global __, App, Headlines, xhrPost, dojo, dijit, Form, fox, PluginHost, Notify, $$, fox */
+/* global __, App, Headlines, xhrPost, xhrJson, dojo, dijit, Form, fox, PluginHost, Notify, $$, fox */
 
 const	Feeds = {
 	counters_last_request: 0,
@@ -566,14 +566,42 @@ const	Feeds = {
 			return tree.model.store.getValue(nuf, 'bare_id');
 	},
 	search: function() {
-		xhrPost("backend.php",
-					{op: "feeds", method: "search",
-						param: Feeds.getActive() + ":" + Feeds.activeIsCat()},
-					(transport) => {
+		xhrJson("backend.php",
+					{op: "feeds", method: "search"},
+					(reply) => {
 						try {
 							const dialog = new fox.SingleUseDialog({
-								id: "searchDlg",
-								content: transport.responseText,
+								content: `
+									<form onsubmit='return false'>
+										<section>
+											<fieldset>
+												<input dojoType='dijit.form.ValidationTextBox' id='search_query'
+													style='font-size : 16px; width : 540px;'
+													placeHolder="${__("Search %s...").replace("%s", Feeds.getName(Feeds.getActive(), Feeds.activeIsCat()))}"
+													name='query' type='search' value=''>
+											</fieldset>
+
+											${reply.show_language ?
+												`
+												<fieldset>
+													<label class='inline'>${__("Language:")}</label>
+													${App.FormFields.select_tag("search_language", reply.default_language, reply.all_languages,
+															{title: __('Used for word stemming')}, "search_language")}
+												</fieldset>
+												` : ''}
+										</section>
+
+										<footer>
+											${reply.show_syntax_help ?
+												`${App.FormFields.button_tag(App.FormFields.icon("help") + " " + __("Search syntax"), "",
+													{class: 'alt-info pull-left', onclick: "window.open('https://tt-rss.org/wiki/SearchSyntax')"})}
+													` : ''}
+
+											${App.FormFields.submit_tag(__('Search'), {onclick: "App.dialogOf(this).execute()"})}
+											${App.FormFields.cancel_dialog_tag(__('Cancel'))}
+										</footer>
+									</form>
+								`,
 								title: __("Search"),
 								execute: function () {
 									if (this.validate()) {

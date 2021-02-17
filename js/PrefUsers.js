@@ -29,7 +29,7 @@ const	Users = {
 	edit: function(id) {
 		xhrJson('backend.php', {op: 'pref-users', method: 'edit', id: id}, (reply) => {
 			const user = reply.user;
-			const is_disabled = (user.id == 1) ? "disabled='disabled'" : '';
+			const admin_disabled = (user.id == 1);
 
 			const dialog = new fox.SingleUseDialog({
 				id: "userEditDlg",
@@ -47,9 +47,9 @@ const	Users = {
 				content: `
 					<form onsubmit='return false'>
 
-						${App.FormFields.hidden('id', user.id.toString())}
-						${App.FormFields.hidden('op', 'pref-users')}
-						${App.FormFields.hidden('method', 'editSave')}
+						${App.FormFields.hidden_tag('id', user.id.toString())}
+						${App.FormFields.hidden_tag('op', 'pref-users')}
+						${App.FormFields.hidden_tag('method', 'editSave')}
 
 						<div dojoType="dijit.layout.TabContainer" style="height : 400px">
 							<div dojoType="dijit.layout.ContentPane" title="${__('Edit user')}">
@@ -60,11 +60,11 @@ const	Users = {
 									<fieldset>
 										<label>${__("Login:")}</label>
 										<input style='font-size : 16px'
-											${is_disabled}
+											${admin_disabled ? "disabled='1'" : ''}
 											dojoType='dijit.form.ValidationTextBox' required='1'
 											name='login' value="${App.escapeHtml(user.login)}">
 
-										${is_disabled ? App.FormFields.hidden("login", user.login) : ''}
+										${admin_disabled ? App.FormFields.hidden_tag("login", user.login) : ''}
 									</fieldset>
 								</section>
 
@@ -74,9 +74,9 @@ const	Users = {
 									<fieldset>
 										<label>${__('Access level: ')}</label>
 										${App.FormFields.select_hash("access_level",
-											user.access_level, reply.access_level_names, is_disabled)}
+											user.access_level, reply.access_level_names, {disabled: admin_disabled.toString()})}
 
-										${is_disabled ? App.FormFields.hidden("access_level",
+										${admin_disabled ? App.FormFields.hidden_tag("access_level",
 											user.access_level.toString()) : ''}
 									</fieldset>
 									<fieldset>

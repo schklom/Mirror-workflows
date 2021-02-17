@@ -405,8 +405,8 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 					},
 					content: `
 						<form onsubmit='return false'>
-							${App.FormFields.hidden("op", "pref-feeds")}
-							${App.FormFields.hidden("method", "batchaddfeeds")}
+							${App.FormFields.hidden_tag("op", "pref-feeds")}
+							${App.FormFields.hidden_tag("method", "batchaddfeeds")}
 
 							<header class='horizontal'>
 								${__("One valid feed per line (no detection is done)")}

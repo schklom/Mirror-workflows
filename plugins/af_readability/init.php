@@ -55,79 +55,77 @@ class Af_Readability extends Plugin {
 	function hook_prefs_tab($args) {
 		if ($args != "prefFeeds") return;
 
-		print "<div dojoType='dijit.layout.AccordionPane'
-			title=\"<i class='material-icons'>extension</i> ".__('Readability settings (af_readability)')."\">";
+		$enable_share_anything = sql_bool_to_bool($this->host->get($this, "enable_share_anything"));
 
-		if (version_compare(PHP_VERSION, '7.0.0', '<')) {
-			print_error("This plugin requires PHP 7.0.");
-		} else {
+		?>
+		<div dojoType='dijit.layout.AccordionPane'
+			title="<i class='material-icons'>extension</i> <?= __('Readability settings (af_readability)') ?>">
 
-			print "<h2>" . __("Global settings") . "</h2>";
+			<h2><?= __("Global settings") ?></h2>
 
-			print_notice("Enable for specific feeds in the feed editor.");
+			<?= format_notice("Enable for specific feeds in the feed editor.") ?>
 
-			print "<form dojoType='dijit.form.Form'>";
+			<form dojoType='dijit.form.Form'>
 
-			print "<script type='dojo/method' event='onSubmit' args='evt'>
-			evt.preventDefault();
-			if (this.validate()) {
-				console.log(dojo.objectToQuery(this.getValues()));
-				new Ajax.Request('backend.php', {
-					parameters: dojo.objectToQuery(this.getValues()),
-					onComplete: function(transport) {
-						Notify.info(transport.responseText);
+				<?= \Controls\hidden_tag("op", "pluginhandler") ?>
+				<?= \Controls\hidden_tag("method", "save") ?>
+				<?= \Controls\hidden_tag("plugin", "af_readability") ?>
+
+				<script type='dojo/method' event='onSubmit' args='evt'>
+					evt.preventDefault();
+					if (this.validate()) {
+						console.log(dojo.objectToQuery(this.getValues()));
+						new Ajax.Request('backend.php', {
+							parameters: dojo.objectToQuery(this.getValues()),
+							onComplete: function(transport) {
+								Notify.info(transport.responseText);
+							}
+						});
+						//this.reset();
 					}
-				});
-				//this.reset();
-			}
-			</script>";
+					</script>
 
-			print \Controls\hidden_tag("op", "pluginhandler");
-			print \Controls\hidden_tag("method", "save");
-			print \Controls\hidden_tag("plugin", "af_readability");
+				<fieldset>
+					<label class='checkbox'>
+						<?= \Controls\checkbox_tag("enable_share_anything", $enable_share_anything) ?>
+						<?= __("Provide full-text services to core code (bookmarklets) and other plugins") ?>
+					</label>
+				</fieldset>
 
-			$enable_share_anything = sql_bool_to_bool($this->host->get($this, "enable_share_anything"));
+				<hr/>
 
-			print "<fieldset>";
-			print "<label class='checkbox'> ";
-			print \Controls\checkbox_tag("enable_share_anything", $enable_share_anything);
-			print " " . __("Provide full-text services to core code (bookmarklets) and other plugins");
-			print "</label>";
-			print "</fieldset>";
+				<?= \Controls\submit_tag(__("Save")) ?>
+			</form>
 
-			print "<hr/>";
+			<?php
+				/* cleanup */
+				$enabled_feeds = $this->filter_unknown_feeds(
+					$this->get_stored_array("enabled_feeds"));
 
-			print \Controls\submit_tag(__("Save"));
-			print "</form>";
+				$append_feeds = $this->filter_unknown_feeds(
+					$this->get_stored_array("append_feeds"));
 
-			/* cleanup */
-			$enabled_feeds = $this->filter_unknown_feeds(
-				$this->get_stored_array("enabled_feeds"));
+				$this->host->set($this, "enabled_feeds", $enabled_feeds);
+				$this->host->set($this, "append_feeds", $append_feeds);
+			?>
 
-			$append_feeds = $this->filter_unknown_feeds(
-				$this->get_stored_array("append_feeds"));
+			<?php if (count($enabled_feeds) > 0) { ?>
+				<hr/>
+				<h3><?= __("Currently enabled for (click to edit):") ?></h3>
 
-			$this->host->set($this, "enabled_feeds", $enabled_feeds);
-			$this->host->set($this, "append_feeds", $append_feeds);
-
-			if (count($enabled_feeds) > 0) {
-				print "<hr/>";
-				print "<h3>" . __("Currently enabled for (click to edit):") . "</h3>";
-
-				print "<ul class='panel panel-scrollable list list-unstyled'>";
-				foreach ($enabled_feeds as $f) {
-					$is_append = in_array($f, $append_feeds);
-
-					print "<li><i class='material-icons'>rss_feed</i> <a href='#'
-						onclick='CommonDialogs.editFeed($f)'>".
-						Feeds::_get_title($f) . " " . ($is_append ? __("(append)") : "") . "</a></li>";
-				}
-				print "</ul>";
-			}
-
-		}
-
-		print "</div>";
+				<ul class='panel panel-scrollable list list-unstyled'>
+					<?php foreach ($enabled_feeds as $f) { ?>
+						<li>
+							<i class='material-icons'>rss_feed</i>
+							<a href='#'	onclick="CommonDialogs.editFeed(<?= $f ?>)">
+									<?= Feeds::_get_title($f) . " " . (in_array($f, $append_feeds) ? __("(append)") : "") ?>
+							</a>
+						</li>
+					<?php } ?>
+				</ul>
+			<?php } ?>
+		</div>
+		<?php
 	}
 
 	function hook_prefs_edit_feed($feed_id) {

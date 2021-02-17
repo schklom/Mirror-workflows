@@ -129,26 +129,26 @@ class Af_Readability extends Plugin {
 	}
 
 	function hook_prefs_edit_feed($feed_id) {
-		print "<header>".__("Readability")."</header>";
-		print "<section>";
-
 		$enabled_feeds = $this->get_stored_array("enabled_feeds");
 		$append_feeds = $this->get_stored_array("append_feeds");
+		?>
 
-		$enable_checked = in_array($feed_id, $enabled_feeds) ? "checked" : "";
-		$append_checked = in_array($feed_id, $append_feeds) ? "checked" : "";
-
-		print "<fieldset>";
-
-		print "<label class='checkbox'><input dojoType='dijit.form.CheckBox' type='checkbox' id='af_readability_enabled'
-			name='af_readability_enabled' $enable_checked>&nbsp;".__('Inline article content')."</label>";
-
-		print "</fieldset><fieldset>";
-
-		print "<label class='checkbox'><input dojoType='dijit.form.CheckBox' type='checkbox' id='af_readability_append'
-			name='af_readability_append' $append_checked>&nbsp;".__('Append to summary, instead of replacing it')."</label>";
-
-		print "</section>";
+		<header><?= __("Readability") ?></header>
+		<section>
+			<fieldset>
+				<label class='checkbox'>
+					<?= \Controls\checkbox_tag("af_readability_enabled", in_array($feed_id, $enabled_feeds)) ?>
+					<?= __('Inline article content') ?>
+				</label>
+			</fieldset>
+			<fieldset>
+				<label class='checkbox'>
+					<?= \Controls\checkbox_tag("af_readability_append", in_array($feed_id, $append_feeds)) ?>
+					<?= __('Append to summary, instead of replacing it') ?>
+				</label>
+			</fieldset>
+		</section>
+		<?php
 	}
 
 	function hook_prefs_save_feed($feed_id) {

@@ -96,7 +96,7 @@ class Share extends Plugin {
 				$id = $row["ref_id"];
 				$owner_uid = $row["owner_uid"];
 
-				print $this->format_article($id, $owner_uid);
+				$this->format_article($id, $owner_uid);
 
 				return;
 			}
@@ -125,8 +125,6 @@ class Share extends Plugin {
 			WHERE	id = ? AND ref_id = id AND owner_uid = ?");
 		$sth->execute([$id, $owner_uid]);
 
-		$rv = '';
-
 		if ($line = $sth->fetch()) {
 
 			$line["tags"] = Article::_get_tags($id, $owner_uid, $line["tag_cache"]);
@@ -142,106 +140,90 @@ class Share extends Plugin {
 				},
 				$line);
 
+			$enclosures = Article::_get_enclosures($line["id"]);
+			list ($og_image, $og_stream) = Article::_get_image($enclosures, $line['content'], $line["site_url"]);
+
+			$content_decoded = html_entity_decode($line["title"], ENT_NOQUOTES | ENT_HTML401);
+			$parsed_updated = TimeHelper::make_local_datetime($line["updated"], true, $owner_uid, true);
+
 			$line['content'] = DiskCache::rewrite_urls($line['content']);
 
-			header("Content-Type: text/html");
+			ob_start();
 
-            $rv .= "<!DOCTYPE html>
-                    <html><head>
-                    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
-                    <title>".$line["title"]."</title>".
-					javascript_tag("lib/prototype.js").
-					javascript_tag("js/utility.js")."
+			?>
+			<!DOCTYPE html>
+			<html>
+				<head>
+					<meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
+					<title><?= $line["title"] ?></title>
+					<?= javascript_tag("lib/prototype.js") ?>
+					<?= javascript_tag("js/utility.js") ?>
 					<style type='text/css'>
-                    @media (prefers-color-scheme: dark) {
+						@media (prefers-color-scheme: dark) {
 						body {
 							background : #222;
 						}
 					}
-                    body.css_loading * {
+					body.css_loading * {
 						display : none;
 					}
 					</style>
-                    <link rel='shortcut icon' type='image/png' href='images/favicon.png'>
-                    <link rel='icon' type='image/png' sizes='72x72' href='images/favicon-72px.png'>";
+					<link rel='shortcut icon' type='image/png' href='images/favicon.png'>
+					<link rel='icon' type='image/png' sizes='72x72' href='images/favicon-72px.png'>
 
-            $rv .= "<meta property='og:title' content=\"".htmlspecialchars(html_entity_decode($line["title"], ENT_NOQUOTES | ENT_HTML401))."\"/>\n";
-            $rv .= "<meta property='og:description' content=\"".
-                htmlspecialchars(
-                	truncate_string(
-                		preg_replace("/[\r\n\t]/", "",
+					<meta property='og:title' content="<?= htmlspecialchars($content_decoded) ?>">
+					<meta property='og:description' content="<?= htmlspecialchars(
+						truncate_string(
+							preg_replace("/[\r\n\t]/", "",
 							preg_replace("/ {1,}/", " ",
-								strip_tags(html_entity_decode($line["content"], ENT_NOQUOTES | ENT_HTML401))
+								strip_tags($content_decoded)
 							)
-					), 500, "...")
-				)."\"/>\n";
+						), 500, "...")) ?>">
+				</head>
 
-            $rv .= "</head>";
+				<?php if ($og_image) { ?>
+					<meta property='og:image' content="<?= htmlspecialchars($og_image) ?>">
+				<?php } ?>
 
-				$enclosures = Article::_get_enclosures($line["id"]);
-            list ($og_image, $og_stream) = Article::_get_image($enclosures, $line['content'], $line["site_url"]);
+				<body class='flat ttrss_utility ttrss_zoom css_loading'>
+					<div class='container'>
 
-            if ($og_image) {
-                $rv .= "<meta property='og:image' content=\"" . htmlspecialchars($og_image) . "\"/>";
-            }
+					<?php if (!empty($line["link"])) { ?>
+						<h1>
+							<a target='_blank' rel='noopener noreferrer'
+								href="<?= htmlspecialchars($line["link"]) ?>"><?= htmlspecialchars($line["title"]) ?></a>
+						</h1>
+					<?php } else { ?>
+						<h1><?= $line["title"] ?></h1>
+					<?php } ?>
 
-            $rv .= "<body class='flat ttrss_utility ttrss_zoom css_loading'>";
-            $rv .= "<div class='container'>";
+					<div class='content post'>
+						<div class='header'>
+							<div class='row'>
+								<div><?= $line['author'] ?></div>
+								<div><?= $parsed_updated ?></div>
+							</div>
+						</div>
 
-			if ($line["link"]) {
-				$rv .= "<h1><a target='_blank' rel='noopener noreferrer'
-					title=\"".htmlspecialchars($line['title'])."\"
-					href=\"" .htmlspecialchars($line["link"]) . "\">" .	$line["title"] . "</a></h1>";
-			} else {
-				$rv .= "<h1>" . $line["title"] . "</h1>";
-			}
+						<div class='content' lang="<?= $line['lang'] ? $line['lang'] : "en" ?>">
+							<?= $line["content"] ?>
+						</div>
+					</div>
+				</body>
+			</html>
+			<?php
 
-			$rv .= "<div class='content post'>";
+			$rv = ob_get_contents();
+			ob_end_clean();
 
-			/* header */
-
-			$rv .= "<div class='header'>";
-			$rv .= "<div class='row'>"; # row
-
-			//$entry_author = $line["author"] ? " - " . $line["author"] : "";
-			$parsed_updated = TimeHelper::make_local_datetime($line["updated"], true,
-				$owner_uid, true);
-
-			$rv .= "<div>".$line['author']."</div>";
-            $rv .= "<div>$parsed_updated</div>";
-
-			$rv .= "</div>"; # row
-
-			$rv .= "</div>"; # header
-
-			/* content */
-
-			$lang = $line['lang'] ? $line['lang'] : "en";
-			$rv .= "<div class='content' lang='$lang'>";
-
-			/* content body */
-
-			$rv .= $line["content"];
-
-         /*  $rv .= Article::format_article_enclosures($id,
-                $line["always_display_enclosures"],
-                $line["content"],
-                $line["hide_images"]); */
-
-			$rv .= "</div>"; # content
-
-			$rv .= "</div>"; # post
-
-		}
-
-		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_FORMAT_ARTICLE,
+			PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_FORMAT_ARTICLE,
 			function ($result) use (&$rv) {
 				$rv = $result;
 			},
 			$rv, $line);
 
-		return $rv;
-
+			print $rv;
+		}
 	}
 
 	function shareDialog() {

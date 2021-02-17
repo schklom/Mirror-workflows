@@ -1,9 +1,7 @@
-/* global Plugins, xhrJson, Notify, fox, xhrPost, __ */
+/* global dojo, Effect, Plugins, xhrJson, Notify, fox, xhrPost, __ */
 
 Plugins.Share = {
 	shareArticle: function(id) {
-		const query = "backend.php?op=pluginhandler&plugin=share&method=shareArticle&param=" + encodeURIComponent(id);
-
 		const dialog = new fox.SingleUseDialog({
 			id: "shareArticleDlg",
 			title: __("Share article by URL"),
@@ -17,20 +15,23 @@ Plugins.Share = {
 					xhrJson("backend.php", query, (reply) => {
 						if (reply) {
 							const new_link = reply.link;
-							const e = $('gen_article_url');
+							const target = dialog.domNode.querySelector(".target-url");
 
-							if (new_link) {
+							if (new_link && target) {
 
-								e.innerHTML = e.innerHTML.replace(/\&amp;key=.*$/,
+								target.innerHTML = target.innerHTML.replace(/&amp;key=.*$/,
 									"&amp;key=" + new_link);
 
-								e.href = e.href.replace(/\&key=.*$/,
+								target.href = target.href.replace(/&key=.*$/,
 									"&key=" + new_link);
 
-								new Effect.Highlight(e);
+								// eslint-disable-next-line no-new
+								new Effect.Highlight(target);
 
-								const img = $("SHARE-IMG-" + id);
-								img.addClassName("shared");
+								const icon = document.querySelector(".share-icon-" + id);
+
+								if (icon)
+									icon.addClassName("is-shared");
 
 								Notify.close();
 
@@ -44,32 +45,35 @@ Plugins.Share = {
 			},
 			unshare: function () {
 				if (confirm(__("Remove sharing for this article?"))) {
+					xhrPost("backend.php", {op: "pluginhandler", plugin: "share", method: "unshare", id: id}, (transport) => {
+						Notify.info(transport.responseText);
 
-					const query = {op: "pluginhandler", plugin: "share", method: "unshare", id: id};
+						const icon = document.querySelector(".share-icon-" + id);
 
-					xhrPost("backend.php", query, () => {
-						try {
-							const img = $("SHARE-IMG-" + id);
+						if (icon)
+							icon.removeClassName("is-shared");
 
-							if (img) {
-								img.removeClassName("shared");
-								img.up("div[id*=RROW]").removeClassName("shared");
-							}
-
-							dialog.hide();
-						} catch (e) {
-							console.error(e);
-						}
+						dialog.hide();
 					});
 				}
 
 			},
-			href: query
+			content: __("Loading, please wait...")
+		});
+
+		const tmph = dojo.connect(dialog, 'onShow', function () {
+			dojo.disconnect(tmph);
+
+			xhrPost("backend.php", {op: "pluginhandler", plugin: "share", method: "shareDialog", id: id}, (transport) => {
+				dialog.attr('content', transport.responseText)
+
+				const icon = document.querySelector(".share-icon-" + id);
+
+				if (icon)
+					icon.addClassName("is-shared");
+			});
 		});
 
 		dialog.show();
-
-		const img = $("SHARE-IMG-" + id);
-		img.addClassName("shared");
 	}
 }

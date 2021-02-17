@@ -17,17 +17,16 @@ class Share extends Plugin {
 	}
 
 	function get_js() {
-		return file_get_contents(dirname(__FILE__) . "/share.js");
+		return file_get_contents(__DIR__ . "/share.js");
 	}
 
 	function get_css() {
-		return file_get_contents(dirname(__FILE__) . "/share.css");
+		return file_get_contents(__DIR__ . "/share.css");
 	}
 
 	function get_prefs_js() {
-		return file_get_contents(dirname(__FILE__) . "/share_prefs.js");
+		return file_get_contents(__DIR__ . "/share_prefs.js");
 	}
-
 
 	function unshare() {
 		$id = $_REQUEST['id'];
@@ -36,7 +35,7 @@ class Share extends Plugin {
 			AND owner_uid = ?");
 		$sth->execute([$id, $_SESSION['uid']]);
 
-		print "OK";
+		print __("Article unshared");
 	}
 
 	function hook_prefs_tab_section($id) {
@@ -52,15 +51,13 @@ class Share extends Plugin {
 		}
 	}
 
-	// Silent
 	function clearArticleKeys() {
 		$sth = $this->pdo->prepare("UPDATE ttrss_user_entries SET uuid = '' WHERE
 			owner_uid = ?");
 		$sth->execute([$_SESSION['uid']]);
 
-		return;
+		print __("Shared URLs cleared.");
 	}
-
 
 	function newkey() {
 		$id = $_REQUEST['id'];
@@ -70,26 +67,25 @@ class Share extends Plugin {
 			AND owner_uid = ?");
 		$sth->execute([$uuid, $id, $_SESSION['uid']]);
 
-		print json_encode(array("link" => $uuid));
+		print json_encode(["link" => $uuid]);
 	}
 
 	function hook_article_button($line) {
-		$img_class = $line['uuid'] ? "shared" : "";
+		$icon_class = !empty($line['uuid']) ? "is-shared" : "";
 
-		return "<i id='SHARE-IMG-".$line['int_id']."' class='material-icons icon-share $img_class'
+		return "<i class='material-icons icon-share share-icon-".$line['int_id']." $icon_class'
 			style='cursor : pointer' onclick=\"Plugins.Share.shareArticle(".$line['int_id'].")\"
 			title='".__('Share by URL')."'>link</i>";
 	}
 
-	function shareArticle() {
-		$param = $_REQUEST['param'];
+	function shareDialog() {
+		$id = (int)clean($_REQUEST['id'] ?? 0);
 
 		$sth = $this->pdo->prepare("SELECT uuid FROM ttrss_user_entries WHERE int_id = ?
 			AND owner_uid = ?");
-		$sth->execute([$param, $_SESSION['uid']]);
+		$sth->execute([$id, $_SESSION['uid']]);
 
 		if ($row = $sth->fetch()) {
-
 			$uuid = $row['uuid'];
 
 			if (!$uuid) {
@@ -97,27 +93,26 @@ class Share extends Plugin {
 
 				$sth = $this->pdo->prepare("UPDATE ttrss_user_entries SET uuid = ? WHERE int_id = ?
 					AND owner_uid = ?");
-				$sth->execute([$uuid, $param, $_SESSION['uid']]);
+				$sth->execute([$uuid, $id, $_SESSION['uid']]);
 			}
 
-			$url_path = htmlspecialchars(get_self_url_prefix() . "/public.php?op=share&key=$uuid");
+			$url_path = get_self_url_prefix() . "/public.php?op=share&key=$uuid";
 
 			?>
 
 			<header><?= __("You can share this article by the following unique URL:") ?></header>
 
-
 			<section>
 				<div class='panel text-center'>
-					<a id='gen_article_url' href="<?= $url_path ?>"
-						target='_blank' rel='noopener noreferrer'><?= $url_path ?></a>
+					<a class='target-url' href="<?= htmlspecialchars($url_path) ?>"
+						target='_blank' rel='noopener noreferrer'><?= htmlspecialchars($url_path) ?></a>
 				</div>
 			</section>
 
 			<?php
 
 		} else {
-			print "Article not found.";
+			print format_error(__("Article not found."));
 		}
 
 		?>

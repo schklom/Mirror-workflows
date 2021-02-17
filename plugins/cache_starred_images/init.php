@@ -164,7 +164,7 @@ class Cache_Starred_Images extends Plugin {
 		if ($this->cache->exists($status_filename))
 			$status = json_decode($this->cache->get($status_filename), true);
 		else
-			$status = [];
+			$status = ["attempt" => 0];
 
 		$status["attempt"] += 1;
 

@@ -14,8 +14,8 @@ class PluginHandler extends Handler_Protected {
 				if (validate_csrf($csrf_token)) {
 					$plugin->$method();
 				} else {
-					user_error("Requested ${plugin_name}->${method}() with invalid CSRF token.", E_USER_DEPRECATED);
-					$plugin->$method();
+					user_error("Rejected ${plugin_name}->${method}(): invalid CSRF token.", E_USER_WARNING);
+					print error_json(6);
 				}
 			} else {
 				user_error("Rejected ${plugin_name}->${method}(): unknown method.", E_USER_WARNING);

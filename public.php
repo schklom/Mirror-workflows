@@ -17,6 +17,17 @@
 
 	$method = (string)clean($_REQUEST["op"]);
 
+	// shortcut syntax for public (exposed) methods (?op=plugin--pmethod&...params)
+	if (strpos($method, PluginHost::PUBLIC_METHOD_DELIMITER) !== false) {
+		list ($plugin, $pmethod) = explode(PluginHost::PUBLIC_METHOD_DELIMITER, $method, 2);
+
+		// TODO: better implementation that won't modify $_REQUEST
+		$_REQUEST["plugin"] = $plugin;
+		$_REQUEST["pmethod"] = $pmethod;
+
+		$method = "pluginhandler";
+	}
+
 	$override = PluginHost::getInstance()->lookup_handler("public", $method);
 
 	if ($override) {

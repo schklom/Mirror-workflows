@@ -18,6 +18,7 @@ class PluginHost {
 	private static $instance;
 
 	const API_VERSION = 2;
+	const PUBLIC_METHOD_DELIMITER = "--";
 
 	// Hooks marked with *1 are run in global context and available
 	// to plugins loaded in config.php only
@@ -617,9 +618,7 @@ class PluginHost {
 				http_build_query(
 					array_merge(
 						[
-							"op" => "pluginhandler",
-							"plugin" => strtolower(get_class($sender)),
-							"pmethod" => $method
+							"op" => strtolower(get_class($sender) . PluginHost::PUBLIC_METHOD_DELIMITER . $method),
 						],
 						$params));
 		} else {

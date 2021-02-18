@@ -124,113 +124,117 @@ class Af_Psql_Trgm extends Plugin {
 	function hook_prefs_tab($args) {
 		if ($args != "prefFeeds") return;
 
-		print "<div dojoType=\"dijit.layout.AccordionPane\"
-			title=\"<i class='material-icons'>extension</i> ".__('Mark similar articles as read (af_psql_trgm)')."\">";
+		$similarity = $this->host->get($this, "similarity", $this->default_similarity);
+		$min_title_length = $this->host->get($this, "min_title_length", $this->default_min_length);
+		$enable_globally = sql_bool_to_bool($this->host->get($this, "enable_globally"));
 
-		if (DB_TYPE != "pgsql") {
-			print_error("Database type not supported.");
-		} else {
+		?>
 
-			$res = $this->pdo->query("select 'similarity'::regproc");
+		<div dojoType="dijit.layout.AccordionPane"
+			title="<i class='material-icons'>extension</i> <?= __('Mark similar articles as read (af_psql_trgm)') ?>">
 
-			if (!$res || !$res->fetch()) {
-				print_error("pg_trgm extension not found.");
-			}
+			<?php
+			if (DB_TYPE != "pgsql") {
+				print_error("Database type not supported.");
+			} else {
+				$res = $this->pdo->query("select 'similarity'::regproc");
 
-			$similarity = $this->host->get($this, "similarity", $this->default_similarity);
-			$min_title_length = $this->host->get($this, "min_title_length", $this->default_min_length);
-			$enable_globally = sql_bool_to_bool($this->host->get($this, "enable_globally"));
+				if (!$res || !$res->fetch()) {
+					print_error("pg_trgm extension not found.");
+				}
+			} ?>
 
-			print "<form dojoType=\"dijit.form.Form\">";
+			<form dojoType="dijit.form.Form">
 
-			print "<script type=\"dojo/method\" event=\"onSubmit\" args=\"evt\">
-				evt.preventDefault();
-				if (this.validate()) {
-					console.log(dojo.objectToQuery(this.getValues()));
-					new Ajax.Request('backend.php', {
-						parameters: dojo.objectToQuery(this.getValues()),
-						onComplete: function(transport) {
+				<?= \Controls\pluginhandler_tags($this, "save") ?>
+
+				<script type="dojo/method" event="onSubmit" args="evt">
+					evt.preventDefault();
+					if (this.validate()) {
+						Notify.progress('Saving data...', true);
+						xhrPost("backend.php", this.getValues(), (transport) => {
 							Notify.info(transport.responseText);
-						}
-					});
-					//this.reset();
-				}
-				</script>";
+						})
+					}
+				</script>
 
-			print \Controls\pluginhandler_tags($this, "save");
+				<?= format_notice("Enable for specific feeds in the feed editor.") ?>
 
-			print_notice("Enable for specific feeds in the feed editor.");
+				<fieldset>
+					<label><?= __("Minimum similarity:") ?></label>
+					<input dojoType="dijit.form.NumberSpinner"
+						placeholder="<?= $this->default_similarity ?>"
+						id='psql_trgm_similarity'
+						required="1"
+						name="similarity" value="<?= htmlspecialchars($similarity) ?>">
 
-			print "<fieldset>";
+					<div dojoType='dijit.Tooltip' connectId='psql_trgm_similarity' position='below'>
+						<?= __("PostgreSQL trigram extension returns string similarity as a floating point number (0-1). Setting it too low might produce false positives, zero disables checking.") ?>
+					</div>
+				</fieldset>
 
-			print "<label>" . __("Minimum similarity:") . "</label> ";
-			print "<input dojoType=\"dijit.form.NumberSpinner\"
-				placeholder=\"0.75\" id='psql_trgm_similarity'
-				required=\"1\" name=\"similarity\" value=\"$similarity\">";
+				<fieldset>
+					<label><?= __("Minimum title length:") ?></label>
+					<input dojoType="dijit.form.NumberSpinner"
+						placeholder="<?= $this->default_min_length ?>"
+						required="1"
+						name="min_title_length" value="<?= htmlspecialchars($min_title_length) ?>">
+				</fieldset>
 
-			print "<div dojoType='dijit.Tooltip' connectId='psql_trgm_similarity' position='below'>" .
-				__("PostgreSQL trigram extension returns string similarity as a floating point number (0-1). Setting it too low might produce false positives, zero disables checking.") .
-				"</div>";
+				<fieldset>
+					<label class='checkbox'>
+						<?= \Controls\checkbox_tag("enable_globally", $enable_globally) ?>
+						<?= __("Enable for all feeds.") ?>
+					</label>
+				</fieldset>
 
-			print "</fieldset><fieldset>";
+				<hr/>
 
-			print "<label>" . __("Minimum title length:") . "</label> ";
-			print "<input dojoType=\"dijit.form.NumberSpinner\"
-				placeholder=\"32\"
-				required=\"1\" name=\"min_title_length\" value=\"$min_title_length\">";
+				<?= \Controls\submit_tag(__("Save")) ?>
+			</form>
 
-			print "</fieldset><fieldset>";
+			<?php
+				/* cleanup */
+				$enabled_feeds = $this->filter_unknown_feeds(
+					$this->get_stored_array("enabled_feeds"));
 
-			print "<label class='checkbox'>";
-			print \Controls\checkbox_tag("enable_globally", $enable_globally);
-			print " " . __("Enable for all feeds:");
-			print "</label>";
+				$this->host->set($this, "enabled_feeds", $enabled_feeds);
+			?>
 
-			print "</fieldset>";
+			<?php	if (count($enabled_feeds) > 0) {	?>
+				<hr/>
+				<h3><?= __("Currently enabled for (click to edit):") ?></h3>
 
-			print "<hr/>";
-			print \Controls\submit_tag(__("Save"));
-			print "</form>";
-
-			/* cleanup */
-			$enabled_feeds = $this->filter_unknown_feeds(
-				$this->get_stored_array("enabled_feeds"));
-
-			$this->host->set($this, "enabled_feeds", $enabled_feeds);
-
-			if (count($enabled_feeds) > 0) {
-				print "<hr/>";
-				print "<h3>" . __("Currently enabled for (click to edit):") . "</h3>";
-
-				print "<ul class=\"panel panel-scrollable list list-unstyled\">";
-				foreach ($enabled_feeds as $f) {
-					print "<li>" .
-						"<i class='material-icons'>rss_feed</i> <a href='#'
-							onclick='CommonDialogs.editFeed($f)'>" .
-						Feeds::_get_title($f) . "</a></li>";
-				}
-				print "</ul>";
-			}
-		}
-
-		print "</div>";
+				<ul class="panel panel-scrollable list list-unstyled">
+					<?php foreach ($enabled_feeds as $f) { ?>
+						<li>
+							<i class='material-icons'>rss_feed</i>
+							<a href='#'	onclick="CommonDialogs.editFeed(<?= $f ?>)">
+									<?= Feeds::_get_title($f) ?>
+							</a>
+						</li>
+					<?php } ?>
+				</ul>
+			<?php	} ?>
+		</div>
+		<?php
 	}
 
 	function hook_prefs_edit_feed($feed_id) {
-		print "<header>".__("Similarity (af_psql_trgm)")."</header>";
-		print "<section>";
+			$enabled_feeds = $this->get_stored_array("enabled_feeds");
+		?>
+			<header><?= __("Similarity (af_psql_trgm)") ?></header>
 
-		$enabled_feeds = $this->get_stored_array("enabled_feeds");
-		$checked = in_array($feed_id, $enabled_feeds) ? "checked" : "";
-
-		print "<fieldset>";
-
-		print "<label class='checkbox'><input dojoType='dijit.form.CheckBox' type='checkbox' id='trgm_similarity_enabled'
-			name='trgm_similarity_enabled' $checked> ".__('Mark similar articles as read')."</label>";
-
-		print "</fieldset>";
-
-		print "</section>";
+			<section>
+				<fieldset>
+					<label class="checkbox">
+						<?= \Controls\checkbox_tag("trgm_similarity_enabled", in_array($feed_id, $enabled_feeds)) ?>
+						<?= __('Mark similar articles as read') ?>
+					</label>
+				</fieldset>
+			</section>
+		</section>
+		<?php
 	}
 
 	function hook_prefs_save_feed($feed_id) {

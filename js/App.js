@@ -1234,7 +1234,7 @@ const App = {
             }
             break;
          case "qmcHKhelp":
-            this.helpDialog("main");
+            this.hotkeyHelp();
             break;
          default:
             console.log("quickMenuGo: unknown action: " + opid);

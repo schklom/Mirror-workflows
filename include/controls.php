@@ -23,7 +23,7 @@
    }
 
    function button_tag(string $value, string $type, array $attributes = []) {
-      return "<button dojoType=\"dijit.form.Button\" ".attributes_to_string($attributes)." type=\"$type\">".htmlspecialchars($value)."</button>";
+      return "<button dojoType=\"dijit.form.Button\" ".attributes_to_string($attributes)." type=\"$type\">$value</button>";
    }
 
    function submit_tag(string $value, array $attributes = []) {
@@ -32,6 +32,10 @@
 
    function cancel_dialog_tag(string $value, array $attributes = []) {
       return button_tag($value, "", array_merge(["onclick" => "App.dialogOf(this).hide()"], $attributes));
+   }
+
+   function icon(string $icon, array $attributes = []) {
+      return "<i class=\"material-icons\" ".attributes_to_string($attributes).">$icon</i>";
    }
 
    function select_tag(string $name, $value, array $values, array $attributes = [], string $id = "") {

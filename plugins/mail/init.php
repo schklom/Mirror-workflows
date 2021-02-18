@@ -50,15 +50,12 @@ class Mail extends Plugin {
 				<script type="dojo/method" event="onSubmit" args="evt">
 					evt.preventDefault();
 					if (this.validate()) {
-						console.log(dojo.objectToQuery(this.getValues()));
-						new Ajax.Request('backend.php', {
-							parameters: dojo.objectToQuery(this.getValues()),
-							onComplete: function(transport) {
-								Notify.info(transport.responseText);
-							}
-						});
+						Notify.progress('Saving data...', true);
+						xhrPost("backend.php", this.getValues(), (transport) => {
+							Notify.info(transport.responseText);
+						})
 					}
-					</script>
+				</script>
 
 				<header><?= __("You can set predefined email addressed here (comma-separated list):") ?></header>
 
@@ -70,7 +67,6 @@ class Mail extends Plugin {
 				<?= \Controls\submit_tag(__("Save")) ?>
 
 			</form>
-
 		</div>
 		<?php
 	}

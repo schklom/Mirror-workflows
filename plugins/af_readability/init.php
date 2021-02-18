@@ -69,19 +69,15 @@ class Af_Readability extends Plugin {
 
 				<?= \Controls\pluginhandler_tags($this, "save") ?>
 
-				<script type='dojo/method' event='onSubmit' args='evt'>
+				<script type="dojo/method" event="onSubmit" args="evt">
 					evt.preventDefault();
 					if (this.validate()) {
-						console.log(dojo.objectToQuery(this.getValues()));
-						new Ajax.Request('backend.php', {
-							parameters: dojo.objectToQuery(this.getValues()),
-							onComplete: function(transport) {
-								Notify.info(transport.responseText);
-							}
-						});
-						//this.reset();
+						Notify.progress('Saving data...', true);
+						xhrPost("backend.php", this.getValues(), (transport) => {
+							Notify.info(transport.responseText);
+						})
 					}
-					</script>
+				</script>
 
 				<fieldset>
 					<label class='checkbox'>

@@ -55,12 +55,10 @@ class NSFW extends Plugin {
 				<script type="dojo/method" event="onSubmit" args="evt">
 					evt.preventDefault();
 					if (this.validate()) {
-						new Ajax.Request('backend.php', {
-							parameters: dojo.objectToQuery(this.getValues()),
-							onComplete: function(transport) {
-								Notify.info(transport.responseText);
-							}
-						});
+						Notify.progress('Saving data...', true);
+						xhrPost("backend.php", this.getValues(), (transport) => {
+							Notify.info(transport.responseText);
+						})
 					}
 				</script>
 

@@ -291,18 +291,14 @@ class Pref_Prefs extends Handler_Protected {
 			<?= \Controls\hidden_tag("op", "pref-prefs") ?>
 			<?= \Controls\hidden_tag("method", "changeemail") ?>
 
-			<script type='dojo/method' event='onSubmit' args='evt'>
-				evt.preventDefault();
-				if (this.validate()) {
-					Notify.progress('Saving data...', true);
-
-					new Ajax.Request('backend.php', {
-						parameters: dojo.objectToQuery(this.getValues()),
-						onComplete: function(transport) {
+			<script type="dojo/method" event="onSubmit" args="evt">
+					evt.preventDefault();
+					if (this.validate()) {
+						Notify.progress('Saving data...', true);
+						xhrPost("backend.php", this.getValues(), (transport) => {
 							Notify.info(transport.responseText);
-						}
-					});
-				}
+						})
+					}
 			</script>
 
 			<fieldset>
@@ -350,32 +346,28 @@ class Pref_Prefs extends Handler_Protected {
 				<?= \Controls\hidden_tag("op", "pref-prefs") ?>
 				<?= \Controls\hidden_tag("method", "changepassword") ?>
 
-				<script type='dojo/method' event='onSubmit' args='evt'>
+				<!-- TODO: return JSON the backend call -->
+				<script type="dojo/method" event="onSubmit" args="evt">
 					evt.preventDefault();
 					if (this.validate()) {
-						Notify.progress('Changing password...', true);
+						Notify.progress('Saving data...', true);
+						xhrPost("backend.php", this.getValues(), (transport) => {
+							Notify.close();
+							if (transport.responseText.indexOf('ERROR: ') == 0) {
 
-						new Ajax.Request('backend.php', {
-							parameters: dojo.objectToQuery(this.getValues()),
-							onComplete: function(transport) {
-								Notify.close();
-								if (transport.responseText.indexOf('ERROR: ') == 0) {
+								$('pwd_change_infobox').innerHTML =
+									transport.responseText.replace('ERROR: ', '');
 
-									$('pwd_change_infobox').innerHTML =
-										transport.responseText.replace('ERROR: ', '');
+							} else {
+								$('pwd_change_infobox').innerHTML =
+									transport.responseText.replace('ERROR: ', '');
 
-								} else {
-									$('pwd_change_infobox').innerHTML =
-										transport.responseText.replace('ERROR: ', '');
-
-									const warn = $('default_pass_warning');
-									if (warn) Element.hide(warn);
-								}
-
-								new Effect.Appear('pwd_change_infobox');
+								const warn = $('default_pass_warning');
+								if (warn) Element.hide(warn);
 							}
-						});
-						this.reset();
+
+							new Effect.Appear('pwd_change_infobox');
+						})
 					}
 				</script>
 
@@ -459,23 +451,20 @@ class Pref_Prefs extends Handler_Protected {
 					<?= \Controls\hidden_tag("op", "pref-prefs") ?>
 					<?= \Controls\hidden_tag("method", "otpdisable") ?>
 
-					<script type='dojo/method' event='onSubmit' args='evt'>
+					<!-- TODO: return JSON from the backend call -->
+					<script type="dojo/method" event="onSubmit" args="evt">
 						evt.preventDefault();
 						if (this.validate()) {
-							Notify.progress('Disabling OTP', true);
+							Notify.progress('Saving data...', true);
+							xhrPost("backend.php", this.getValues(), (transport) => {
+								Notify.close();
 
-							new Ajax.Request('backend.php', {
-								parameters: dojo.objectToQuery(this.getValues()),
-								onComplete: function(transport) {
-									Notify.close();
-									if (transport.responseText.indexOf('ERROR: ') == 0) {
-										Notify.error(transport.responseText.replace('ERROR: ', ''));
-									} else {
-										window.location.reload();
-									}
+								if (transport.responseText.indexOf('ERROR: ') == 0) {
+									Notify.error(transport.responseText.replace('ERROR: ', ''));
+								} else {
+									window.location.reload();
 								}
-							});
-							this.reset();
+							})
 						}
 					</script>
 
@@ -521,22 +510,20 @@ class Pref_Prefs extends Handler_Protected {
 						<input dojoType='dijit.form.ValidationTextBox' disabled='disabled' value="<?= $otp_secret ?>" size='32'>
 					</fieldset>
 
-					<script type='dojo/method' event='onSubmit' args='evt'>
+					<!-- TODO: return JSON from the backend call -->
+					<script type="dojo/method" event="onSubmit" args="evt">
 						evt.preventDefault();
 						if (this.validate()) {
 							Notify.progress('Saving data...', true);
+							xhrPost("backend.php", this.getValues(), (transport) => {
+								Notify.close();
 
-							new Ajax.Request('backend.php', {
-								parameters: dojo.objectToQuery(this.getValues()),
-								onComplete: function(transport) {
-									Notify.close();
-									if (transport.responseText.indexOf('ERROR:') == 0) {
-										Notify.error(transport.responseText.replace('ERROR:', ''));
-									} else {
-										window.location.reload();
-									}
+								if (transport.responseText.indexOf('ERROR:') == 0) {
+									Notify.error(transport.responseText.replace('ERROR:', ''));
+								} else {
+									window.location.reload();
 								}
-							});
+							})
 						}
 					</script>
 
@@ -806,26 +793,23 @@ class Pref_Prefs extends Handler_Protected {
 		<form dojoType='dijit.form.Form' id='changeSettingsForm'>
 			<?= \Controls\hidden_tag("op", "pref-prefs") ?>
 			<?= \Controls\hidden_tag("method", "saveconfig") ?>
-			<script type='dojo/method' event='onSubmit' args='evt, quit'>
+
+			<script type="dojo/method" event="onSubmit" args="evt, quit">
 				if (evt) evt.preventDefault();
 				if (this.validate()) {
-					console.log(dojo.objectToQuery(this.getValues()));
+					xhrPost("backend.php", this.getValues(), (transport) => {
+						if (quit) {
+							document.location.href = 'index.php';
+						} else {
+							const msg = transport.responseText;
 
-					new Ajax.Request('backend.php', {
-						parameters: dojo.objectToQuery(this.getValues()),
-						onComplete: function(transport) {
-							var msg = transport.responseText;
-							if (quit) {
-								document.location.href = 'index.php';
+							if (msg == 'PREFS_NEED_RELOAD') {
+								window.location.reload();
 							} else {
-								if (msg == 'PREFS_NEED_RELOAD') {
-									window.location.reload();
-								} else {
-									Notify.info(msg);
-								}
+								Notify.info(msg);
 							}
 						}
-					});
+					})
 				}
 			</script>
 
@@ -956,20 +940,15 @@ class Pref_Prefs extends Handler_Protected {
 		?>
 		<form dojoType="dijit.form.Form" id="changePluginsForm">
 			<script type="dojo/method" event="onSubmit" args="evt">
-				evt.preventDefault();
-				if (this.validate()) {
-					Notify.progress('Saving data...', true);
-
-					new Ajax.Request('backend.php', {
-						parameters: dojo.objectToQuery(this.getValues()),
-						onComplete: function(transport) {
+					evt.preventDefault();
+					if (this.validate()) {
+						xhrPost("backend.php", this.getValues(), (transport) => {
 							Notify.close();
 							if (confirm(__('Selected plugins have been enabled. Reload?'))) {
 								window.location.reload();
 							}
-						}
-					});
-				}
+						})
+					}
 			</script>
 
 			<?= \Controls\hidden_tag("op", "pref-prefs") ?>

@@ -931,10 +931,12 @@ const Headlines = {
 				const row = $("RROW-" + current_id);
 
 				if (row) {
-					const sibling = row.nextSibling;
+					const next = row.nextSibling;
 
-					if (sibling && Element.visible(sibling) && sibling.id == "headlines-spacer") {
-						App.Scrollable.scrollTo(sibling, $("headlines-frame"));
+					// hsp has half-screen height in auto catchup mode therefore we use its first child (normally A element)
+					if (next && Element.visible(next) && next.id == "headlines-spacer" && next.firstChild) {
+						$("headlines-frame").scrollTop = $("headlines-spacer").offsetTop -
+							$("headlines-frame").offsetHeight + next.firstChild.offsetHeight;
 					}
 				}
 			}

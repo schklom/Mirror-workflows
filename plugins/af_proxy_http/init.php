@@ -209,39 +209,37 @@ class Af_Proxy_Http extends Plugin {
 
 	function hook_prefs_tab($args) {
 		if ($args != "prefFeeds") return;
+		?>
 
-		print "<div dojoType=\"dijit.layout.AccordionPane\"
-			title=\"<i class='material-icons'>extension</i> ".__('Image proxy settings (af_proxy_http)')."\">";
+		<div dojoType="dijit.layout.AccordionPane"
+			title="<i class='material-icons'>extension</i> <?= __('Image proxy settings (af_proxy_http)') ?>">
 
-		print "<form dojoType=\"dijit.form.Form\">";
+			<form dojoType="dijit.form.Form">
 
-		print "<script type=\"dojo/method\" event=\"onSubmit\" args=\"evt\">
-			evt.preventDefault();
-			if (this.validate()) {
-				console.log(dojo.objectToQuery(this.getValues()));
-				new Ajax.Request('backend.php', {
-					parameters: dojo.objectToQuery(this.getValues()),
-					onComplete: function(transport) {
-						Notify.info(transport.responseText);
+				<?= \Controls\pluginhandler_tags($this, "save") ?>
+
+				<script type="dojo/method" event="onSubmit" args="evt">
+					evt.preventDefault();
+					if (this.validate()) {
+						xhrPost("backend.php", this.getValues(), (transport) => {
+							Notify.info(transport.responseText);
+						})
 					}
-				});
-				//this.reset();
-			}
-			</script>";
+				</script>
 
-		print \Controls\pluginhandler_tags($this, "save");
+				<fieldset>
+					<label class="checkbox">
+						<?= \Controls\checkbox_tag("proxy_all", $this->host->get($this, "proxy_all")) ?>
+						<?=  __("Enable proxy for all remote images.") ?>
+					</label>
+				</fieldset>
 
-		$proxy_all = sql_bool_to_bool($this->host->get($this, "proxy_all"));
-		print \Controls\checkbox_tag("proxy_all", $proxy_all);
-		print "&nbsp;<label for=\"proxy_all\">" . __("Enable proxy for all remote images.") . "</label><br/>";
+				<hr/>
 
-		print "<hr/>";
-
-		print \Controls\submit_tag(__("Save"));
-
-		print "</form>";
-
-		print "</div>";
+				<?= \Controls\submit_tag(__("Save")) ?>
+			</form>
+		</div>
+		<?php
 	}
 
 	function save() {

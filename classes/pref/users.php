@@ -38,7 +38,6 @@ class Pref_Users extends Handler_Administrative {
 			$sth->execute([$id]);
 
 			if ($row = $sth->fetch()) {
-				print "<table width='100%'>";
 
 				$last_login = TimeHelper::make_local_datetime(
 					$row["last_login"], true);
@@ -48,47 +47,62 @@ class Pref_Users extends Handler_Administrative {
 
 				$stored_articles = $row["stored_articles"];
 
-				print "<tr><td>".__('Registered')."</td><td>$created</td></tr>";
-				print "<tr><td>".__('Last logged in')."</td><td>$last_login</td></tr>";
-
 				$sth = $this->pdo->prepare("SELECT COUNT(id) as num_feeds FROM ttrss_feeds
 					WHERE owner_uid = ?");
 				$sth->execute([$id]);
 				$row = $sth->fetch();
+
 				$num_feeds = $row["num_feeds"];
 
-				print "<tr><td>".__('Subscribed feeds count')."</td><td>$num_feeds</td></tr>";
-				print "<tr><td>".__('Stored articles')."</td><td>$stored_articles</td></tr>";
+				?>
 
-				print "</table>";
+				<fieldset>
+					<label><?= __('Registered') ?>:</label>
+					<?= $created ?>
+				</fieldset>
 
-				print "<h1>".__('Subscribed feeds')."</h1>";
+				<fieldset>
+					<label><?= __('Last logged in') ?>:</label>
+					<?= $last_login ?>
+				</fieldset>
 
-				$sth = $this->pdo->prepare("SELECT id,title,site_url FROM ttrss_feeds
-					WHERE owner_uid = ? ORDER BY title");
-				$sth->execute([$id]);
+				<fieldset>
+					<label><?= __('Subscribed feeds') ?>:</label>
+					<?= $num_feeds ?>
+				</fieldset>
 
-				print "<ul class=\"panel panel-scrollable list list-unstyled\">";
+				<fieldset>
+					<label><?= __('Stored articles') ?>:</label>
+					<?= $stored_articles ?>
+				</fieldset>
 
-				while ($line = $sth->fetch()) {
+				<?php
+					$sth = $this->pdo->prepare("SELECT id,title,site_url FROM ttrss_feeds
+						WHERE owner_uid = ? ORDER BY title");
+					$sth->execute([$id]);
+				?>
 
-					$icon_file = ICONS_URL."/".$line["id"].".ico";
+				<ul class="panel panel-scrollable list list-unstyled">
+					<?php while ($row = $sth->fetch()) { ?>
+						<li>
+							<?php
+								$icon_file = ICONS_URL . "/" . $row["id"] . ".ico";
+								$icon = file_exists($icon_file) ? $icon_file : "images/blank_icon.gif";
+							?>
 
-					if (file_exists($icon_file) && filesize($icon_file) > 0) {
-						$feed_icon = "<img class=\"icon\" src=\"$icon_file\">";
-					} else {
-						$feed_icon = "<img class=\"icon\" src=\"images/blank_icon.gif\">";
-					}
+							<img class="icon" src="<?= $icon_file ?>">
 
-					print "<li>$feed_icon&nbsp;<a href=\"".$line["site_url"]."\">".$line["title"]."</a></li>";
+							<a target="_blank" href="<?= htmlspecialchars($row["site_url"]) ?>">
+								<?= htmlspecialchars($row["title"]) ?>
+							</a>
+						</li>
+					<?php } ?>
+				</ul>
 
-				}
-
-				print "</ul>";
-
+				<?php
 
 			} else {
-				print "<h1>".__('User not found')."</h1>";
+				print_error(__('User not found'));
 			}
 
 		}

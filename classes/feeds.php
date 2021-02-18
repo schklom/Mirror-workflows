@@ -640,7 +640,6 @@ class Feeds extends Handler_Protected {
 				};
 			</script>
 			<?php
-				echo javascript_tag("lib/prototype.js");
 				echo javascript_tag("js/utility.js");
 				echo javascript_tag("lib/dojo/dojo.js");
 				echo javascript_tag("lib/dojo/tt-rss-layer.js");

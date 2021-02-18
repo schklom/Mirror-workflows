@@ -16,10 +16,10 @@ window.addEventListener("load", function() {
         setup_night_mode: function() {
             const mql = window.matchMedia('(prefers-color-scheme: dark)');
 
-            const link = new Element("link", {
-                rel: "stylesheet",
-                id: "theme_auto_css"
-            });
+            const link = document.createElement("link");
+
+            link.rel = "stylesheet";
+            link.id = "theme_auto_css";
 
             link.onload = function() {
                 document.querySelector("body").removeClassName("css_loading");

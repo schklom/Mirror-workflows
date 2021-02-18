@@ -6,10 +6,8 @@
 	<link rel="shortcut icon" type="image/png" href="images/favicon.png">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<?php
-	foreach (array("lib/prototype.js",
-				"lib/dojo/dojo.js",
+	foreach (array("lib/dojo/dojo.js",
 				"lib/dojo/tt-rss-layer.js",
-				"lib/prototype.js",
 			 	"js/common.js",
 				"js/utility.js",
 				"errors.php?mode=js") as $jsfile) {
@@ -67,7 +65,7 @@
 
                         profile.removeOption(profile.getOptions());
 
-                        reply.each((p) => {
+                        reply.forEach((p) => {
                             profile
                                 .attr("disabled", false)
                                 .addOption(p);

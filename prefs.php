@@ -59,8 +59,7 @@
 	</script>
 
 	<?php
-	foreach (array(#"lib/prototype.js",
-				"lib/dojo/dojo.js",
+	foreach (array("lib/dojo/dojo.js",
 				"lib/dojo/tt-rss-layer.js",
 				"js/common.js",
 				"js/prefs.js",

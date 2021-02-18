@@ -156,7 +156,6 @@ class Share extends Plugin {
 				<head>
 					<meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
 					<title><?= $line["title"] ?></title>
-					<?= javascript_tag("lib/prototype.js") ?>
 					<?= javascript_tag("js/utility.js") ?>
 					<style type='text/css'>
 						@media (prefers-color-scheme: dark) {

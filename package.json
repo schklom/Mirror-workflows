@@ -20,6 +20,7 @@
     "cookie": "^0.4.1",
     "feed": "git+https://git.sr.ht/~cadence/nodejs-feed#3dde82f8296d7a6f5659323e497e0c684f03ab71",
     "get-stream": "^6.0.0",
+    "gm": "^1.23.1",
     "is-in-subnet": "^4.0.1",
     "mixin-deep": "^2.0.1",
     "node-dir": "^0.1.17",
@@ -27,7 +28,6 @@
     "pinski": "git+https://git.sr.ht/~cadence/nodejs-pinski#ce07b2e32e79def5938f6cff6ddc28e5a290a0de",
     "pug": "^3.0.0",
     "semver": "^7.3.4",
-    "sharp": "^0.27.1",
     "socks-proxy-agent": "git+https://git.sr.ht/~cadence/nodejs-socks-proxy-agent#5eef50a01667bd5c6b5626fb8e206232152dfbee"
   },
   "optionalDependencies": {

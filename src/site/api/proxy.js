@@ -1,5 +1,4 @@
-const sharp = require("sharp")
-
+const gm = require("gm")
 const constants = require("../../lib/constants")
 const collectors = require("../../lib/collectors")
 const {request} = require("../../lib/utils/request")
@@ -58,36 +57,31 @@ module.exports = [
 			const width = +params.get("width")
 			if (typeof width === "number" && !isNaN(width) && width > 0) {
 				/*
-					This uses sharp to force crop the image to a square.
-					"entropy" seems to currently work better than "attention" on the thumbnail of this shortcode: B55yH20gSl0
-					Some thumbnails aren't square and would otherwise be stretched on the page without this.
-					If I cropped the images client side, it would have to be done with CSS background-image, which means no <img srcset>.
+				  This uses graphicsmagick to force crop the image to a
+				  square. Some thumbnails aren't square and would be
+				  stretched on the page without this. If I cropped the
+				  images client side, it would have to be done with CSS
+				  background-image, which means no <img srcset>.
 				*/
 				return request(verifyResult.url, {}, {log: false}).stream().then(body => {
-					const converter = sharp().resize(width, width, {position: "entropy"})
-					body.on("error", error => {
-						console.error("Response stream emitted an error:", error)
-					})
-					converter.on("error", error => {
-						console.error("Sharp instance emitted an error:", error)
-					})
-					const piped = body.pipe(converter)
-					piped.on("error", error => {
-						console.error("Piped stream emitted an error:", error)
-					})
+					const image = gm(body).gravity("Center").crop(width, width, 0, 0).repage("+")
+					const stream = image.stream("jpg")
 					return {
 						statusCode: 200,
 						contentType: "image/jpeg",
 						headers: {
 							"Cache-Control": constants.caching.image_cache_control
 						},
-						stream: piped
+						stream
 					}
 				})
 			} else {
 				// No specific size was requested, so just stream proxy the file directly.
 				if (params.has("userID")) {
-					// Users get special handling, because we need to update their profile picture if an expired version is cached.
+					/*
+					  Users get special handling, because we need to update
+					  their profile picture if an expired version is cached
+					*/
 					return proxyResource(verifyResult.url.toString(), input.req.headers, () => {
 						// If we get here, we got HTTP 410 GONE.
 						const userID = params.get("userID")

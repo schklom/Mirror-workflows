@@ -4,22 +4,24 @@
 /* eslint-disable no-new */
 
 Element.prototype.hasClassName = function(className) {
-	dojo.hasClass(this, className);
+	return dojo.hasClass(this, className);
 };
 
 Element.prototype.addClassName = function(className) {
-	dojo.addClass(this, className);
+	return dojo.addClass(this, className);
 };
 
 Element.prototype.removeClassName = function(className) {
-	dojo.removeClass(this, className);
+	return dojo.removeClass(this, className);
 };
 
 Element.prototype.toggleClassName = function(className) {
+	console.log(this, className);
+
 	if (this.hasClassName(className))
-		this.removeClassName(className);
+		return this.removeClassName(className);
 	else
-		this.addClassName(className);
+		return this.addClassName(className);
 };
 
 
@@ -77,8 +79,11 @@ Element.toggle = function(elem) {
 	return elem.toggle();
 }
 
-Element.hasClassName = function (id, className) {
-	return document.getElementById(id).hasClassName(className);
+Element.hasClassName = function (elem, className) {
+	if (typeof elem == "string")
+		elem = document.getElementById(elem);
+
+	return elem.hasClassName(className);
 }
 
 /* xhr shorthand helpers */

@@ -152,9 +152,7 @@ const	Helpers = {
 							</div>
 
 							<form onsubmit='return false'>
-
 								<div class='panel panel-scrollable'>
-
 									<table width='100%' id='pref-profiles-list'>
 										${reply.map((profile) => `
 											<tr data-row-id="${profile.id}">
@@ -178,6 +176,7 @@ const	Helpers = {
 										`).join("")}
 									</table>
 								</div>
+
 								<footer>
 									${App.FormFields.button_tag(__('Remove selected profiles'), "",
 										{class: 'pull-left alt-danger', onclick: 'App.dialogOf(this).removeSelected()'})}

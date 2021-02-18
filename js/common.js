@@ -3,6 +3,17 @@
 /* global dijit, __, App, Ajax */
 /* eslint-disable no-new */
 
+function $(id) {
+	console.warn("FIXME: please use App.getById() or document.getElementById() instead of $():", id);
+	return document.getElementById(id);
+}
+
+function $$(query) {
+	console.warn("FIXME: please use App.findAll() or document.querySelectorAll() instead of $():", query);
+	return document.querySelectorAll(query);
+}
+
+
 Element.prototype.hasClassName = function(className) {
 	return dojo.hasClass(this, className);
 };

@@ -41,9 +41,9 @@ Element.prototype.hide = function() {
 
 Element.prototype.toggle = function() {
 	if (this.visible())
-		this.show();
-	else
 		this.hide();
+	else
+		this.show();
 };
 
 Element.prototype.visible = function() {

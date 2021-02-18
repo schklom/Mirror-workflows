@@ -159,8 +159,6 @@ class Af_Psql_Trgm extends Plugin {
 
 			print \Controls\pluginhandler_tags($this, "save");
 
-			print "<h2>" . __("Global settings") . "</h2>";
-
 			print_notice("Enable for specific feeds in the feed editor.");
 
 			print "<fieldset>";

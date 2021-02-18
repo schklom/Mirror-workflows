@@ -61,8 +61,6 @@ class Af_Readability extends Plugin {
 		<div dojoType='dijit.layout.AccordionPane'
 			title="<i class='material-icons'>extension</i> <?= __('Readability settings (af_readability)') ?>">
 
-			<h2><?= __("Global settings") ?></h2>
-
 			<?= format_notice("Enable for specific feeds in the feed editor.") ?>
 
 			<form dojoType='dijit.form.Form'>

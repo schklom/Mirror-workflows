@@ -8,9 +8,10 @@ const TimelineChild = require("./TimelineChild")
 require("../testimports")(collectors, TimelineChild, TimelineBaseMethods)
 
 const rssDescriptionTemplate = compile(`
-each line in caption.split("\\n")
-	= line
-	br
+if caption
+	each line in caption.split("\\n")
+		= line
+		br
 each child in children
 	!= child.getFeedItem()
 `)

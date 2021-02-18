@@ -929,14 +929,18 @@ const Headlines = {
 			} else if (App.isCombinedMode()) {
 				// try to show hsp if no next article exists, in case there's useful information like first_id_changed etc
 				const row = $("RROW-" + current_id);
+				const ctr = $("headlines-frame");
 
 				if (row) {
 					const next = row.nextSibling;
 
 					// hsp has half-screen height in auto catchup mode therefore we use its first child (normally A element)
 					if (next && Element.visible(next) && next.id == "headlines-spacer" && next.firstChild) {
-						$("headlines-frame").scrollTop = $("headlines-spacer").offsetTop -
-							$("headlines-frame").offsetHeight + next.firstChild.offsetHeight;
+						const offset = $("headlines-spacer").offsetTop - $("headlines-frame").offsetHeight + next.firstChild.offsetHeight;
+
+						// don't jump back either
+						if (ctr.scrollTop < offset)
+							ctr.scrollTop = offset;
 					}
 				}
 			}

@@ -54,4 +54,8 @@ abstract class Plugin {
 
 		return vsprintf($this->__($msgid), $args);
 	}
+
+	function csrf_ignore($method) {
+		return false;
+	}
 }

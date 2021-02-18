@@ -229,9 +229,7 @@ class Af_Proxy_Http extends Plugin {
 			}
 			</script>";
 
-		print \Controls\hidden_tag("op", "pluginhandler");
-		print \Controls\hidden_tag("method", "save");
-		print \Controls\hidden_tag("plugin", "af_proxy_http");
+		print \Controls\pluginhandler_tags($this, "save");
 
 		$proxy_all = sql_bool_to_bool($this->host->get($this, "proxy_all"));
 		print \Controls\checkbox_tag("proxy_all", $proxy_all);

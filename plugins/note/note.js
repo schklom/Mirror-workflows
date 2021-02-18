@@ -33,7 +33,7 @@ Plugins.Note = {
 		const tmph = dojo.connect(dialog, 'onShow', function () {
 			dojo.disconnect(tmph);
 
-			xhrPost("backend.php", {op: "pluginhandler", plugin: "note", method: "edit", id: id}, (transport) => {
+			xhrPost("backend.php", App.getPhArgs("note", "edit", {id: id}), (transport) => {
 				dialog.attr('content', transport.responseText);
 			});
 		});

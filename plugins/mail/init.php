@@ -45,9 +45,7 @@ class Mail extends Plugin {
 			title="<i class='material-icons'>mail</i> <?= __('Mail plugin') ?>">
 
 			<form dojoType="dijit.form.Form">
-				<?= \Controls\hidden_tag("op", "pluginhandler") ?>
-				<?= \Controls\hidden_tag("method", "save") ?>
-				<?= \Controls\hidden_tag("plugin", "mail") ?>
+				<?= \Controls\pluginhandler_tags($this, "save") ?>
 
 				<script type="dojo/method" event="onSubmit" args="evt">
 					evt.preventDefault();
@@ -150,12 +148,10 @@ class Mail extends Plugin {
 
 		<form dojoType='dijit.form.Form'>
 
-			<?= \Controls\hidden_tag("op", "pluginhandler") ?>
-			<?= \Controls\hidden_tag("plugin", "mail") ?>
-			<?= \Controls\hidden_tag("method", "sendEmail") ?>
+			<?= \Controls\pluginhandler_tags($this, "sendemail") ?>
 
-			<?= \Controls\hidden_tag("from_email", "$user_email") ?>
-			<?= \Controls\hidden_tag("from_name", "$user_name") ?>
+			<?= \Controls\hidden_tag("from_email", $user_email) ?>
+			<?= \Controls\hidden_tag("from_name", $user_name) ?>
 
 			<script type='dojo/method' event='onSubmit' args='evt'>
 				evt.preventDefault();

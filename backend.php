@@ -88,6 +88,17 @@
 		5 => __("Power User"),
 		10 => __("Administrator"));
 
+	// shortcut syntax for plugin methods (?op=plugin--pmethod&...params)
+	/* if (strpos($op, PluginHost::PUBLIC_METHOD_DELIMITER) !== false) {
+		list ($plugin, $pmethod) = explode(PluginHost::PUBLIC_METHOD_DELIMITER, $op, 2);
+
+		// TODO: better implementation that won't modify $_REQUEST
+		$_REQUEST["plugin"] = $plugin;
+		$method = $pmethod;
+		$op = "pluginhandler";
+	} */
+
+	// TODO: figure out if is this still needed
 	$op = str_replace("-", "_", $op);
 
 	$override = PluginHost::getInstance()->lookup_handler($op, $method);

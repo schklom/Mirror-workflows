@@ -67,9 +67,7 @@ class Af_Readability extends Plugin {
 
 			<form dojoType='dijit.form.Form'>
 
-				<?= \Controls\hidden_tag("op", "pluginhandler") ?>
-				<?= \Controls\hidden_tag("method", "save") ?>
-				<?= \Controls\hidden_tag("plugin", "af_readability") ?>
+				<?= \Controls\pluginhandler_tags($this, "save") ?>
 
 				<script type='dojo/method' event='onSubmit' args='evt'>
 					evt.preventDefault();
@@ -329,7 +327,7 @@ class Af_Readability extends Plugin {
 	}
 
 	function embed() {
-		$article_id = (int) $_REQUEST["param"];
+		$article_id = (int) $_REQUEST["id"];
 
 		$sth = $this->pdo->prepare("SELECT link FROM ttrss_entries WHERE id = ?");
 		$sth->execute([$article_id]);

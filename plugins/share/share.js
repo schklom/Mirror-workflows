@@ -10,9 +10,7 @@ Plugins.Share = {
 
 					Notify.progress("Trying to change URL...", true);
 
-					const query = {op: "pluginhandler", plugin: "share", method: "newkey", id: id};
-
-					xhrJson("backend.php", query, (reply) => {
+					xhrJson("backend.php", App.getPhArgs("share", "newkey", {id: id}), (reply) => {
 						if (reply) {
 							const new_link = reply.link;
 							const target = dialog.domNode.querySelector(".target-url");
@@ -45,7 +43,7 @@ Plugins.Share = {
 			},
 			unshare: function () {
 				if (confirm(__("Remove sharing for this article?"))) {
-					xhrPost("backend.php", {op: "pluginhandler", plugin: "share", method: "unshare", id: id}, (transport) => {
+					xhrPost("backend.php", App.getPhArgs("share", "unshare", {id: id}), (transport) => {
 						Notify.info(transport.responseText);
 
 						const icon = document.querySelector(".share-icon-" + id);
@@ -64,7 +62,7 @@ Plugins.Share = {
 		const tmph = dojo.connect(dialog, 'onShow', function () {
 			dojo.disconnect(tmph);
 
-			xhrPost("backend.php", {op: "pluginhandler", plugin: "share", method: "shareDialog", id: id}, (transport) => {
+			xhrPost("backend.php", App.getPhArgs("share", "shareDialog", {id: id}), (transport) => {
 				dialog.attr('content', transport.responseText)
 
 				const icon = document.querySelector(".share-icon-" + id);

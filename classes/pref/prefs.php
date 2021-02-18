@@ -1219,102 +1219,97 @@ class Pref_Prefs extends Handler_Protected {
 		print json_encode(["value" => $value]);
 	}
 
-	function editPrefProfiles() {
-		print "<div dojoType='fox.Toolbar'>";
+	function activateprofile() {
+		$_SESSION["profile"] = (int) clean($_REQUEST["id"]);
 
-		print "<div dojoType='fox.form.DropDownButton'>".
-				"<span>" . __('Select')."</span>";
-		print "<div dojoType='dijit.Menu' style='display: none'>";
-		print "<div onclick=\"Tables.select('pref-profiles-list', true)\"
-			dojoType='dijit.MenuItem'>".__('All')."</div>";
-		print "<div onclick=\"Tables.select('pref-profiles-list', false)\"
-			dojoType='dijit.MenuItem'>".__('None')."</div>";
-		print "</div></div>";
+		// default value
+		if (!$_SESSION["profile"]) $_SESSION["profile"] = null;
+	}
 
-		print "<div style='float : right'>";
+	function remprofiles() {
+		$ids = explode(",", clean($_REQUEST["ids"]));
 
-		print "<input name='newprofile' dojoType='dijit.form.ValidationTextBox'
-				required='1'>
-			<button dojoType='dijit.form.Button'
-			onclick=\"dijit.byId('profileEditDlg').addProfile()\">".
-				__('Create profile')."</button></div>";
+		foreach ($ids as $id) {
+			if ($_SESSION["profile"] != $id) {
+				$sth = $this->pdo->prepare("DELETE FROM ttrss_settings_profiles WHERE id = ? AND
+							owner_uid = ?");
+				$sth->execute([$id, $_SESSION['uid']]);
+			}
+		}
+	}
 
-		print "</div>";
+	function addprofile() {
+		$title = clean($_REQUEST["title"]);
+
+		if ($title) {
+			$this->pdo->beginTransaction();
+
+			$sth = $this->pdo->prepare("SELECT id FROM ttrss_settings_profiles
+				WHERE title = ? AND owner_uid = ?");
+			$sth->execute([$title, $_SESSION['uid']]);
+
+			if (!$sth->fetch()) {
+
+				$sth = $this->pdo->prepare("INSERT INTO ttrss_settings_profiles (title, owner_uid)
+							VALUES (?, ?)");
+
+				$sth->execute([$title, $_SESSION['uid']]);
+
+				$sth = $this->pdo->prepare("SELECT id FROM ttrss_settings_profiles WHERE
+					title = ? AND owner_uid = ?");
+				$sth->execute([$title, $_SESSION['uid']]);
+
+				if ($row = $sth->fetch()) {
+					$profile_id = $row['id'];
+
+					if ($profile_id) {
+						Pref_Prefs::_init_user_prefs($_SESSION["uid"], $profile_id);
+					}
+				}
+			}
+
+			$this->pdo->commit();
+		}
+	}
+
+	function saveprofile() {
+		$id = clean($_REQUEST["id"]);
+		$title = clean($_REQUEST["title"]);
+
+		if ($id == 0) {
+			print __("Default profile");
+			return;
+		}
+
+		if ($title) {
+			$sth = $this->pdo->prepare("UPDATE ttrss_settings_profiles
+				SET title = ? WHERE id = ? AND
+					owner_uid = ?");
+
+			$sth->execute([$title, $id, $_SESSION['uid']]);
+			print $title;
+		}
+	}
+
+	// TODO: this maybe needs to be unified with Public::getProfiles()
+	function getProfiles() {
+		$rv = [];
 
 		$sth = $this->pdo->prepare("SELECT title,id FROM ttrss_settings_profiles
 			WHERE owner_uid = ? ORDER BY title");
 		$sth->execute([$_SESSION['uid']]);
 
-		print "<form onsubmit='return false'>";
+		array_push($rv, ["title" => __("Default profile"),
+				"id" => 0,
+				"active" => empty($_SESSION["profile"])
+			]);
 
-		print "<div class='panel panel-scrollable'>";
+		while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+			$row["active"] = isset($_SESSION["profile"]) && $_SESSION["profile"] == $row["id"];
+			array_push($rv, $row);
+		};
 
-		print "<table width='100%' id='pref-profiles-list'>";
-
-		print "<tr>"; # data-row-id='0' <-- no point, shouldn't be removed
-
-		print "<td><input onclick='Tables.onRowChecked(this);' dojoType='dijit.form.CheckBox' type='checkbox'></td>";
-
-		if (!isset($_SESSION["profile"])) {
-			$is_active = __("(active)");
-		} else {
-			$is_active = "";
-		}
-
-		print "<td width='100%'><span>" . __("Default profile") . " $is_active</span></td>";
-
-		print "</tr>";
-
-		while ($line = $sth->fetch()) {
-
-			$profile_id = $line["id"];
-
-			print "<tr data-row-id='$profile_id'>";
-
-			$edit_title = htmlspecialchars($line["title"]);
-
-			print "<td><input onclick='Tables.onRowChecked(this);' dojoType='dijit.form.CheckBox' type='checkbox'></td>";
-
-			if (isset($_SESSION["profile"]) && $_SESSION["profile"] == $line["id"]) {
-				$is_active = __("(active)");
-			} else {
-				$is_active = "";
-			}
-
-			print "<td><span dojoType='dijit.InlineEditBox'
-				width='300px' autoSave='false'
-				profile-id='$profile_id'>" . $edit_title .
-				"<script type='dojo/method' event='onChange' args='item'>
-					var elem = this;
-					dojo.xhrPost({
-						url: 'backend.php',
-						content: {op: 'rpc', method: 'saveprofile',
-							value: this.value,
-							id: this.srcNodeRef.getAttribute('profile-id')},
-							load: function(response) {
-								elem.attr('value', response);
-						}
-					});
-				</script>
-			</span> $is_active</td>";
-
-			print "</tr>";
-		}
-
-		print "</table>";
-		print "</div>";
-
-		print "<footer>
-			<button style='float : left' class='alt-danger' dojoType='dijit.form.Button' onclick='App.dialogOf(this).removeSelected()'>".
-				__('Remove selected profiles')."</button>
-			<button dojoType='dijit.form.Button' class='alt-primary' type='submit' onclick='App.dialogOf(this).execute()'>".
-				__('Activate profile')."</button>
-			<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
-				__('Cancel')."</button>";
-		print "</footer>";
-
-		print "</form>";
-
+		print json_encode($rv);
 	}
 
 	private function _get_short_desc($pref_name) {

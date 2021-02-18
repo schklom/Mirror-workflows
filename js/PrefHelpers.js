@@ -104,7 +104,7 @@ const	Helpers = {
 							Notify.progress("Removing selected profiles...", true);
 
 							const query = {
-								op: "rpc", method: "remprofiles",
+								op: "pref-prefs", method: "remprofiles",
 								ids: sel_rows.toString()
 							};
 
@@ -122,7 +122,7 @@ const	Helpers = {
 					if (this.validate()) {
 						Notify.progress("Creating profile...", true);
 
-						const query = {op: "rpc", method: "addprofile", title: dialog.attr('value').newprofile};
+						const query = {op: "pref-prefs", method: "addprofile", title: dialog.attr('value').newprofile};
 
 						xhrPost("backend.php", query, () => {
 							Notify.close();
@@ -132,8 +132,60 @@ const	Helpers = {
 					}
 				},
 				refresh: function() {
-					xhrPost("backend.php", {op: 'pref-prefs', method: 'editPrefProfiles'}, (transport) => {
-						dialog.attr('content', transport.responseText);
+					xhrJson("backend.php", {op: 'pref-prefs', method: 'getprofiles'}, (reply) => {
+						dialog.attr('content', `
+							<div dojoType='fox.Toolbar'>
+								<div dojoType='fox.form.DropDownButton'>
+									<span>${__('Select')}</span>
+									<div dojoType='dijit.Menu' style='display: none'>
+										<div onclick="Tables.select('pref-profiles-list', true)"
+											dojoType='dijit.MenuItem'>${__('All')}</div>
+										<div onclick="Tables.select('pref-profiles-list', false)"
+											dojoType='dijit.MenuItem'>${__('None')}</div>
+									</div>
+								</div>
+
+								<div class="pull-right">
+									<input name='newprofile' dojoType='dijit.form.ValidationTextBox' required='1'>
+									${App.FormFields.button_tag(__('Create profile'), "", {onclick: 'App.dialogOf(this).addProfile()'})}
+								</div>
+							</div>
+
+							<form onsubmit='return false'>
+
+								<div class='panel panel-scrollable'>
+
+									<table width='100%' id='pref-profiles-list'>
+										${reply.map((profile) => `
+											<tr data-row-id="${profile.id}">
+												<td width='5%'>
+													${App.FormFields.checkbox_tag("", false, "", {onclick: 'Tables.onRowChecked(this)'})}
+												</td>
+												<td>
+													${profile.id > 0 ?
+														`<span dojoType='dijit.InlineEditBox' width='300px' autoSave='false'
+															profile-id='${profile.id}'>${profile.title}
+																<script type='dojo/method' event='onChange' args='value'>
+																	xhrPost("backend.php",
+																		{op: 'pref-prefs', method: 'saveprofile', value: value, id: this.attr('profile-id')}, (transport) => {
+																			//
+																		});
+																</script>
+														</span>` : `${profile.title}`}
+													${profile.active ? __("(active)") : ""}
+												</td>
+											</tr>
+										`).join("")}
+									</table>
+								</div>
+								<footer>
+									${App.FormFields.button_tag(__('Remove selected profiles'), "",
+										{class: 'pull-left alt-danger', onclick: 'App.dialogOf(this).removeSelected()'})}
+									${App.FormFields.submit_tag(__('Activate profile'), {onclick: 'App.dialogOf(this).execute()'})}
+									${App.FormFields.cancel_dialog_tag(__('Cancel'))}
+								</footer>
+							</form>
+						`);
 					});
 				},
 				execute: function () {
@@ -143,7 +195,7 @@ const	Helpers = {
 						if (confirm(__("Activate selected profile?"))) {
 							Notify.progress("Loading, please wait...");
 
-							xhrPost("backend.php", {op: "rpc", method: "setprofile", id: sel_rows.toString()}, () => {
+							xhrPost("backend.php", {op: "pref-prefs", method: "activateprofile", id: sel_rows.toString()}, () => {
 								window.location.reload();
 							});
 						}

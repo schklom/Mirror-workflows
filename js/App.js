@@ -42,6 +42,12 @@ const App = {
       cancel_dialog_tag: function(value, attributes = {}) {
          return this.button_tag(value, "", {...{onclick: "App.dialogOf(this).hide()"}, ...attributes});
       },
+      checkbox_tag: function(name, checked = false, value = "", attributes = {}, id = "") {
+         return `<input dojoType="dijit.form.CheckBox" type="checkbox" name="${App.escapeHtml(name)}"
+                     ${checked ? "checked" : ""}
+                     ${value ? `value="${App.escapeHtml(value)}"` : ""}
+                     ${this.attributes_to_string(attributes)} id="${App.escapeHtml(id)}">`
+      },
       select_tag: function(name, value, values = [], attributes = {}, id = "") {
          return `
             <select name="${name}" dojoType="fox.form.Select" id="${App.escapeHtml(id)}" ${this.attributes_to_string(attributes)}>

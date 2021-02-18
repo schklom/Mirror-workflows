@@ -2,82 +2,9 @@
 class RPC extends Handler_Protected {
 
 	function csrf_ignore($method) {
-		$csrf_ignored = array("completelabels", "saveprofile");
+		$csrf_ignored = array("completelabels");
 
 		return array_search($method, $csrf_ignored) !== false;
-	}
-
-	function setprofile() {
-		$_SESSION["profile"] = (int) clean($_REQUEST["id"]);
-
-		// default value
-		if (!$_SESSION["profile"]) $_SESSION["profile"] = null;
-	}
-
-	function remprofiles() {
-		$ids = explode(",", clean($_REQUEST["ids"]));
-
-		foreach ($ids as $id) {
-			if ($_SESSION["profile"] != $id) {
-				$sth = $this->pdo->prepare("DELETE FROM ttrss_settings_profiles WHERE id = ? AND
-							owner_uid = ?");
-				$sth->execute([$id, $_SESSION['uid']]);
-			}
-		}
-	}
-
-	// Silent
-	function addprofile() {
-		$title = clean($_REQUEST["title"]);
-
-		if ($title) {
-			$this->pdo->beginTransaction();
-
-			$sth = $this->pdo->prepare("SELECT id FROM ttrss_settings_profiles
-				WHERE title = ? AND owner_uid = ?");
-			$sth->execute([$title, $_SESSION['uid']]);
-
-			if (!$sth->fetch()) {
-
-				$sth = $this->pdo->prepare("INSERT INTO ttrss_settings_profiles (title, owner_uid)
-							VALUES (?, ?)");
-
-				$sth->execute([$title, $_SESSION['uid']]);
-
-				$sth = $this->pdo->prepare("SELECT id FROM ttrss_settings_profiles WHERE
-					title = ? AND owner_uid = ?");
-				$sth->execute([$title, $_SESSION['uid']]);
-
-				if ($row = $sth->fetch()) {
-					$profile_id = $row['id'];
-
-					if ($profile_id) {
-						Pref_Prefs::_init_user_prefs($_SESSION["uid"], $profile_id);
-					}
-				}
-			}
-
-			$this->pdo->commit();
-		}
-	}
-
-	function saveprofile() {
-		$id = clean($_REQUEST["id"]);
-		$title = clean($_REQUEST["value"]);
-
-		if ($id == 0) {
-			print __("Default profile");
-			return;
-		}
-
-		if ($title) {
-			$sth = $this->pdo->prepare("UPDATE ttrss_settings_profiles
-				SET title = ? WHERE id = ? AND
-					owner_uid = ?");
-
-			$sth->execute([$title, $id, $_SESSION['uid']]);
-			print $title;
-		}
 	}
 
 	function togglepref() {

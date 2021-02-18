@@ -184,27 +184,6 @@ const App = {
 			if (callback) callback();
 		}
 	},
-	/*enableCsrfSupport: function() {
-		const _this = this;
-
-		Ajax.Base.prototype.initialize = Ajax.Base.prototype.initialize.wrap(
-			function (callOriginal, options) {
-
-				if (_this.getInitParam("csrf_token") != undefined) {
-					Object.extend(options, options || { });
-
-					if (Object.isString(options.parameters))
-						options.parameters = options.parameters.toQueryParams();
-					else if (Object.isHash(options.parameters))
-						options.parameters = options.parameters.toObject();
-
-					options.parameters["csrf_token"] = _this.getInitParam("csrf_token");
-				}
-
-				return callOriginal(options);
-			}
-		);
-   }, */
    postCurrentWindow: function(target, params) {
       const form = document.createElement("form");
 
@@ -663,7 +642,6 @@ const App = {
 
          this.setLoadingProgress(30);
          this.initHotkeyActions();
-         //this.enableCsrfSupport();
 
          const params = {
             op: "rpc",

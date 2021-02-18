@@ -15,6 +15,14 @@ Element.prototype.removeClassName = function(className) {
 	dojo.removeClass(this, className);
 };
 
+Element.prototype.toggleClassName = function(className) {
+	if (this.hasClassName(className))
+		this.removeClassName(className);
+	else
+		this.addClassName(className);
+};
+
+
 Element.prototype.setStyle = function(args) {
 	Object.keys(args).forEach((k) => {
 		this.style[k] = args[k];

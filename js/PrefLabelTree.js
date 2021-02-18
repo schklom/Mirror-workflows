@@ -48,7 +48,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 			const items = tree.model.getCheckedItems();
 			const rv = [];
 
-			items.each(function(item) {
+			items.forEach(function(item) {
 				rv.push(tree.model.store.getValue(item, 'bare_id'));
 			});
 
@@ -87,7 +87,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 							color = bg;
 						}
 
-						const e = $("icon-label-" + id);
+						const e = App.byId("icon-label-" + id);
 
 						if (e) {
 							if (bg) e.style.color = bg;

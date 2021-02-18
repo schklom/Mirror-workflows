@@ -2,7 +2,7 @@
 
 /* TODO: this should probably be something like night_mode.js since it does nothing specific to utility scripts */
 
-Event.observe(window, "load", function() {
+window.addEventListener("load", function() {
     const UtilityJS = {
         apply_night_mode: function (is_night, link) {
             console.log("night mode changed to", is_night);

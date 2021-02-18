@@ -70,13 +70,20 @@ require(["dojo/_base/kernel",
 
 /* exported hash_get */
 function hash_get(key) {
-	const kv = window.location.hash.substring(1).toQueryParams();
-	return kv[key];
+	console.warn("FIXME: hash_get", key);
+
+	//const kv = window.location.hash.substring(1).toQueryParams();
+	//return kv[key];
+	console.warn("FIXME: hash_get", key);
 }
 
 /* exported hash_set */
 function hash_set(key, value) {
-	const kv = window.location.hash.substring(1).toQueryParams();
+	console.warn("FIXME: hash_set", key, value);
+
+	/*const kv = window.location.hash.substring(1).toQueryParams();
 	kv[key] = value;
-	window.location.hash = $H(kv).toQueryString();
+	window.location.hash = $H(kv).toQueryString();*/
+
+	console.warn("FIXME: hash_set", key);
 }

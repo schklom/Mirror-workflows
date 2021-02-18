@@ -362,7 +362,6 @@ class Handler_Public extends Handler {
 			echo javascript_tag("lib/dojo/dojo.js");
 			echo javascript_tag("js/utility.js");
 			echo javascript_tag("lib/dojo/tt-rss-layer.js");
-			echo javascript_tag("lib/scriptaculous/scriptaculous.js?load=effects,controls")
 			?>
 			<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 			<link rel="shortcut icon" type="image/png" href="images/favicon.png">
@@ -388,10 +387,10 @@ class Handler_Public extends Handler {
 						ready(function() {
 							parser.parse();
 
-							new Ajax.Autocompleter('labels_value', 'labels_choices',
+							/* new Ajax.Autocompleter('labels_value', 'labels_choices',
 								"backend.php?op=rpc&method=completeLabels",
 								{ tokens: ',', paramName: "search" });
-							});
+							}); */
 				  	});
 				}
 			};

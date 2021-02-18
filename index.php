@@ -76,8 +76,7 @@
 	</script>
 
 	<?php
-	foreach (array("lib/prototype.js",
-				"lib/scriptaculous/scriptaculous.js?load=effects,controls",
+	foreach (array(#"lib/_prototype.js",
 				"lib/dojo/dojo.js",
 				"lib/dojo/tt-rss-layer.js",
 				"js/tt-rss.js",

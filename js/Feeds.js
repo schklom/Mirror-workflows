@@ -117,7 +117,7 @@ const	Feeds = {
 	toggle: function() {
 		Element.toggle("feeds-holder");
 
-		const splitter = $("feeds-holder_splitter");
+		const splitter = App.byId("feeds-holder_splitter");
 
 		Element.visible("feeds-holder") ? splitter.show() : splitter.hide();
 
@@ -180,7 +180,7 @@ const	Feeds = {
 				dojo.disconnect(tmph);
 			});
 
-			$("feeds-holder").appendChild(tree.domNode);
+			App.byId("feeds-holder").appendChild(tree.domNode);
 
 			const tmph2 = dojo.connect(tree, 'onLoad', function () {
 				dojo.disconnect(tmph2);
@@ -284,8 +284,8 @@ const	Feeds = {
 		this._active_feed_id = id;
 		this._active_feed_is_cat = is_cat;
 
-		$("headlines-frame").setAttribute("feed-id", id);
-		$("headlines-frame").setAttribute("is-cat", is_cat ? 1 : 0);
+		App.byId("headlines-frame").setAttribute("feed-id", id);
+		App.byId("headlines-frame").setAttribute("is-cat", is_cat ? 1 : 0);
 
 		this.select(id, is_cat);
 
@@ -310,8 +310,8 @@ const	Feeds = {
 		if (tree)
 			return tree.hideRead(hide, App.getInitParam("hide_read_shows_special"));*/
 
-		$$("body")[0].setAttribute("hide-read-feeds", !!hide);
-		$$("body")[0].setAttribute("hide-read-shows-special", !!App.getInitParam("hide_read_shows_special"));
+		App.findAll("body")[0].setAttribute("hide-read-feeds", !!hide);
+		App.findAll("body")[0].setAttribute("hide-read-shows-special", !!App.getInitParam("hide_read_shows_special"));
 	},
 	open: function(params) {
 		const feed = params.feed;
@@ -339,7 +339,7 @@ const	Feeds = {
 			}, 10 * 1000);
 		}
 
-		Form.enable("toolbar-main");
+		//Form.enable("toolbar-main");
 
 		let query = Object.assign({op: "feeds", method: "view", feed: feed},
 			dojo.formToObject("toolbar-main"));
@@ -362,7 +362,7 @@ const	Feeds = {
 			query.m = "ForceUpdate";
 		}
 
-		Form.enable("toolbar-main");
+		//Form.enable("toolbar-main");
 
 		if (!delayed)
 			if (!this.setExpando(feed, is_cat,
@@ -476,9 +476,9 @@ const	Feeds = {
 
 		if (App.getInitParam("confirm_feed_catchup") != 1 || confirm(str)) {
 
-			const rows = $$("#headlines-frame > div[id*=RROW][class*=Unread][data-orig-feed-id='" + id + "']");
+			const rows = App.findAll("#headlines-frame > div[id*=RROW][class*=Unread][data-orig-feed-id='" + id + "']");
 
-			rows.each((row) => {
+			rows.forEach((row) => {
 				row.removeClassName("Unread");
 			})
 		}

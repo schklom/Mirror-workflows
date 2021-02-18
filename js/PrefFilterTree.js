@@ -80,14 +80,14 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			const items = tree.model.getCheckedItems();
 			const rv = [];
 
-			items.each(function (item) {
+			items.forEach(function (item) {
 				rv.push(tree.model.store.getValue(item, 'bare_id'));
 			});
 
 			return rv;
 		},
 		reload: function() {
-			const user_search = $("filter_search");
+			const user_search = App.byId("filter_search");
 			let search = "";
 			if (user_search) { search = user_search.value; }
 

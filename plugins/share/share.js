@@ -23,9 +23,6 @@ Plugins.Share = {
 								target.href = target.href.replace(/&key=.*$/,
 									"&key=" + new_link);
 
-								// eslint-disable-next-line no-new
-								new Effect.Highlight(target);
-
 								const icon = document.querySelector(".share-icon-" + id);
 
 								if (icon)

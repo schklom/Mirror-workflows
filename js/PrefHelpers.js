@@ -9,7 +9,7 @@ const	Helpers = {
 			return Tables.getSelected("app-password-list");
 		},
 		updateContent: function(data) {
-			$("app_passwords_holder").innerHTML = data;
+			App.byId("app_passwords_holder").innerHTML = data;
 			dojo.parser.parse("app_passwords_holder");
 		},
 		removeSelected: function() {
@@ -218,8 +218,8 @@ const	Helpers = {
 					title: __("Customize stylesheet"),
 					apply: function() {
 						xhrPost("backend.php", this.attr('value'), () => {
-							new Effect.Appear("css_edit_apply_msg");
-							$("user_css_style").innerText = this.attr('value');
+							Element.show("css_edit_apply_msg");
+							App.byId("user_css_style").innerText = this.attr('value');
 						});
 					},
 					execute: function () {
@@ -291,7 +291,7 @@ const	Helpers = {
 	},
 	OPML: {
 		import: function() {
-			const opml_file = $("opml_file");
+			const opml_file = App.byId("opml_file");
 
 			if (opml_file.value.length == 0) {
 				alert(__("Please choose an OPML file first."));
@@ -333,7 +333,7 @@ const	Helpers = {
 					dialog.show();
 				};
 
-				xhr.send(new FormData($("opml_import_form")));
+				xhr.send(new FormData(App.byId("opml_import_form")));
 
 				return false;
 			}

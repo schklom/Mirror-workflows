@@ -3,35 +3,117 @@
 /* global dijit, __, App, Ajax */
 /* eslint-disable no-new */
 
-/* error reporting shim */
-// TODO: deprecated; remove
-/* function exception_error(e, e_compat, filename, lineno, colno) {
-	if (typeof e == "string")
-		e = e_compat;
+Element.prototype.hasClassName = function(className) {
+	dojo.hasClass(this, className);
+};
 
-	App.Error.report(e, {filename: filename, lineno: lineno, colno: colno});
-} */
+Element.prototype.addClassName = function(className) {
+	dojo.addClass(this, className);
+};
+
+Element.prototype.removeClassName = function(className) {
+	dojo.removeClass(this, className);
+};
+
+Element.prototype.setStyle = function(args) {
+	Object.keys(args).forEach((k) => {
+		this.style[k] = args[k];
+	});
+};
+
+Element.prototype.show = function() {
+	this.style.display = "";
+};
+
+Element.prototype.hide = function() {
+	this.style.display = "none";
+};
+
+Element.prototype.toggle = function() {
+	if (this.visible())
+		this.show();
+	else
+		this.hide();
+};
+
+Element.prototype.visible = function() {
+	// TODO: should we actually check for offsetWidth/offsetHeight == 0?
+	return this.style.display != "none";
+}
+
+Element.visible = function(elem) {
+	if (typeof elem == "string")
+		elem = document.getElementById(elem);
+
+	return elem.visible();
+}
+
+Element.show = function(elem) {
+	if (typeof elem == "string")
+		elem = document.getElementById(elem);
+
+	return elem.show();
+}
+
+Element.hide = function(elem) {
+	if (typeof elem == "string")
+		elem = document.getElementById(elem);
+
+	return elem.hide();
+}
+
+Element.toggle = function(elem) {
+	if (typeof elem == "string")
+		elem = document.getElementById(elem);
+
+	return elem.toggle();
+}
+
+Element.hasClassName = function (id, className) {
+	return document.getElementById(id).hasClassName(className);
+}
 
 /* xhr shorthand helpers */
 
 /* exported xhrPost */
-function xhrPost(url, params, complete) {
+function xhrPost(url, params = {}, complete = undefined) {
 	console.log("xhrPost:", params);
 
 	return new Promise((resolve, reject) => {
-		new Ajax.Request(url, {
-			parameters: params,
-			onComplete: function(reply) {
-				if (complete != undefined) complete(reply);
+		if (typeof __csrf_token != "undefined")
+			params = {...params, ...{csrf_token: __csrf_token}};
 
-				resolve(reply);
-			}
-		});
+		dojo.xhrPost({url: url,
+			postData: dojo.objectToQuery(params),
+			handleAs: "text",
+			error: function(error) {
+				reject(error);
+			},
+			load: function(data, ioargs) {
+				if (complete != undefined)
+					complete(ioargs.xhr);
+
+				resolve(ioargs.xhr)
+			}});
 	});
 }
 
+Array.prototype.remove = function(s) {
+	for (let i=0; i < this.length; i++) {
+		if (s == this[i]) this.splice(i, 1);
+	}
+};
+
+Array.prototype.uniq = function() {
+	return this.filter((v, i, a) => a.indexOf(v) === i);
+};
+
+String.prototype.stripTags = function() {
+	return this.replace(/<\w+(\s+("[^"]*"|'[^']*'|[^>])+)?(\/)?>|<\/\w+>/gi, '');
+}
+
 /* exported xhrJson */
-function xhrJson(url, params, complete) {
+function xhrJson(url, params = {}, complete = undefined) {
 	return new Promise((resolve, reject) =>
 		xhrPost(url, params).then((reply) => {
 			let obj = null;
@@ -48,13 +130,6 @@ function xhrJson(url, params, complete) {
 		}));
 }
 
-/* add method to remove element from array */
-Array.prototype.remove = function(s) {
-	for (let i=0; i < this.length; i++) {
-		if (s == this[i]) this.splice(i, 1);
-	}
-};
-
 /* common helpers not worthy of separate Dojo modules */
 
 /* exported Lists */
@@ -70,8 +145,8 @@ const Lists = {
 			checked ? row.addClassName("Selected") : row.removeClassName("Selected");
 	},
 	select: function(elemId, selected) {
-		$(elemId).select("li").each((row) => {
-			const checkNode = row.select(".dijitCheckBox,input[type=checkbox]")[0];
+		$(elemId).querySelectorAll("li").forEach((row) => {
+			const checkNode = row.querySelector(".dijitCheckBox,input[type=checkbox]");
 			if (checkNode) {
 				const widget = dijit.getEnclosingWidget(checkNode);
 
@@ -101,8 +176,8 @@ const Tables = {
 
 	},
 	select: function(elemId, selected) {
-		$(elemId).select("tr").each((row) => {
-			const checkNode = row.select(".dijitCheckBox,input[type=checkbox]")[0];
+		$(elemId).querySelector("tr").forEach((row) => {
+			const checkNode = row.querySelector(".dijitCheckBox,input[type=checkbox]");
 			if (checkNode) {
 				const widget = dijit.getEnclosingWidget(checkNode);
 
@@ -119,7 +194,7 @@ const Tables = {
 	getSelected: function(elemId) {
 		const rv = [];
 
-		$(elemId).select("tr").each((row) => {
+		$(elemId).querySelector("tr").forEach((row) => {
 			if (row.hasClassName("Selected")) {
 				// either older prefix-XXX notation or separate attribute
 				const rowId = row.getAttribute("data-row-id") || row.id.replace(/^[A-Z]*?-/, "");
@@ -173,7 +248,7 @@ const Notify = {
 		kind = kind || this.KIND_GENERIC;
 		keep = keep || false;
 
-		const notify = $("notify");
+		const notify = App.byId("notify");
 
 		window.clearTimeout(this.timeout);
 

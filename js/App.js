@@ -109,6 +109,15 @@ const App = {
          }
       }
    },
+   byId: function(id) {
+      return document.getElementById(id);
+   },
+   find: function(query) {
+      return document.querySelector(query)
+   },
+   findAll: function(query) {
+      return document.querySelectorAll(query);
+   },
    dialogOf: function (elem) {
 
       // elem could be a Dijit widget
@@ -140,21 +149,20 @@ const App = {
 		}
 	},
 	setupNightModeDetection: function(callback) {
-		if (!$("theme_css")) {
+		if (!App.byId("theme_css")) {
 			const mql = window.matchMedia('(prefers-color-scheme: dark)');
 
 			try {
 				mql.addEventListener("change", () => {
-					this.nightModeChanged(mql.matches, $("theme_auto_css"));
+					this.nightModeChanged(mql.matches, App.byId("theme_auto_css"));
 				});
 			} catch (e) {
 				console.warn("exception while trying to set MQL event listener");
 			}
 
-			const link = new Element("link", {
-				rel: "stylesheet",
-				id: "theme_auto_css"
-			});
+			const link = document.createElement("link");
+         link.rel = "stylesheet";
+         link.id = "theme_auto_css";
 
 			if (callback) {
 						link.onload = function() {
@@ -176,7 +184,7 @@ const App = {
 			if (callback) callback();
 		}
 	},
-	enableCsrfSupport: function() {
+	/*enableCsrfSupport: function() {
 		const _this = this;
 
 		Ajax.Base.prototype.initialize = Ajax.Base.prototype.initialize.wrap(
@@ -196,7 +204,7 @@ const App = {
 				return callOriginal(options);
 			}
 		);
-   },
+   }, */
    postCurrentWindow: function(target, params) {
       const form = document.createElement("form");
 
@@ -245,8 +253,13 @@ const App = {
 		}
 
    },
-	urlParam: function(param) {
-		return String(window.location.href).parseQuery()[param];
+	urlParam: function(name) {
+		try {
+         const results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+         return decodeURIComponent(results[1].replace(/\+/g, " ")) || 0;
+      } catch (e) {
+         return 0;
+      }
 	},
 	next_seq: function() {
 		this._rpc_seq += 1;
@@ -262,7 +275,7 @@ const App = {
 			dijit.byId("loading_bar").update({progress: this._loading_progress});
 
 		if (this._loading_progress >= 90) {
-			$("overlay").hide();
+			App.byId("overlay").hide();
 		}
 
 	},
@@ -293,7 +306,7 @@ const App = {
 		if (!this.hotkey_prefix && hotkeys_map[0].indexOf(keychar) != -1) {
 
 			this.hotkey_prefix = keychar;
-			$("cmdline").innerHTML = keychar;
+			App.byId("cmdline").innerHTML = keychar;
 			Element.show("cmdline");
 
 			window.clearTimeout(this.hotkey_prefix_timeout);
@@ -342,11 +355,11 @@ const App = {
 	cleanupMemory: function(root) {
 		const dijits = dojo.query("[widgetid]", dijit.byId(root).domNode).map(dijit.byNode);
 
-		dijits.each(function (d) {
+		dijits.forEach(function (d) {
 			dojo.destroy(d.domNode);
 		});
 
-		$$("#" + root + " *").each(function (i) {
+		App.findAll("#" + root + " *").forEach(function (i) {
 			i.parentNode ? i.parentNode.removeChild(i) : true;
 		});
    },
@@ -364,9 +377,9 @@ const App = {
    },
    displayIfChecked: function(checkbox, elemId) {
       if (checkbox.checked) {
-         Effect.Appear(elemId, {duration : 0.5});
+         Element.show(elemId);
       } else {
-         Effect.Fade(elemId, {duration : 0.5});
+         Element.hide(elemId);
       }
    },
    hotkeyHelp: function() {
@@ -381,7 +394,7 @@ const App = {
    },
 	handleRpcJson: function(transport) {
 
-		const netalert = $$("#toolbar .net-alert")[0];
+		const netalert = App.findAll("#toolbar .net-alert")[0];
 
 		try {
 			const reply = JSON.parse(transport.responseText);
@@ -459,7 +472,7 @@ const App = {
 				}
 
 				if (k == "recent_log_events") {
-					const alert = $$(".log-alert")[0];
+					const alert = App.findAll(".log-alert")[0];
 
 					if (alert) {
 						v > 0 ? alert.show() : alert.hide();
@@ -516,7 +529,7 @@ const App = {
 							break;
 						case "cdm_auto_catchup":
 							if (params[k] == 1) {
-								const hl = $("headlines-frame");
+								const hl = App.byId("headlines-frame");
 								if (hl) hl.addClassName("auto_catchup");
 							}
 							break;
@@ -562,7 +575,7 @@ const App = {
 			}
 
 			return this.report(error,
-				Object.extend({title: __("Fatal error")}, params));
+				{...{title: __("Fatal error")}, ...params});
 		},
 		report: function(error, params = {}) {
 			if (!error) return;
@@ -650,7 +663,7 @@ const App = {
 
          this.setLoadingProgress(30);
          this.initHotkeyActions();
-         this.enableCsrfSupport();
+         //this.enableCsrfSupport();
 
          const params = {
             op: "rpc",
@@ -671,7 +684,7 @@ const App = {
    checkBrowserFeatures: function() {
       let errorMsg = "";
 
-      ['MutationObserver'].each(function(wf) {
+      ['MutationObserver'].forEach(function(wf) {
          if (!(wf in window)) {
             errorMsg = `Browser feature check failed: <code>window.${wf}</code> not found.`;
             throw new Error(errorMsg);
@@ -794,9 +807,9 @@ const App = {
             console.log('update reply', reply);
 
             if (reply.id) {
-               $("updates-available").show();
+               App.byId("updates-available").show();
             } else {
-               $("updates-available").hide();
+               App.byId("updates-available").hide();
             }
          });
    },
@@ -812,7 +825,7 @@ const App = {
    onViewModeChanged: function() {
       const view_mode = document.forms["toolbar-main"].view_mode.value;
 
-      $$("body")[0].setAttribute("view-mode", view_mode);
+      App.findAll("body")[0].setAttribute("view-mode", view_mode);
 
       return Feeds.reloadCurrent('');
    },
@@ -851,8 +864,8 @@ const App = {
                {width: Cookie.get("ttrss_ci_width") + "px" });
          }
 
-         $("headlines-frame").setStyle({ borderBottomWidth: '0px' });
-         $("headlines-frame").addClassName("wide");
+         App.byId("headlines-frame").setStyle({ borderBottomWidth: '0px' });
+         App.byId("headlines-frame").addClassName("wide");
 
       } else {
 
@@ -867,8 +880,8 @@ const App = {
                {height: Cookie.get("ttrss_ci_height") + "px" });
          }
 
-         $("headlines-frame").setStyle({ borderBottomWidth: '1px' });
-         $("headlines-frame").removeClassName("wide");
+         App.byId("headlines-frame").setStyle({ borderBottomWidth: '1px' });
+         App.byId("headlines-frame").removeClassName("wide");
 
       }
 
@@ -1107,7 +1120,7 @@ const App = {
          this.hotkey_actions["select_article_cursor"] = () => {
             const id = Article.getUnderPointer();
             if (id) {
-               const row = $("RROW-" + id);
+               const row = App.byId("RROW-" + id);
 
                if (row)
                   row.toggleClassName("Selected");
@@ -1234,7 +1247,7 @@ const App = {
             }
             break;
          case "qmcHKhelp":
-            this.hotkeyHelp();
+            this.helpDialog("main");
             break;
          default:
             console.log("quickMenuGo: unknown action: " + opid);

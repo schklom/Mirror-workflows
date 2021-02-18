@@ -25,7 +25,7 @@ const	CommonDialogs = {
 					else
 						Feeds.reload();
 
-					const icon = $$(".feed-editor-icon")[0];
+					const icon = App.findAll(".feed-editor-icon")[0];
 
 					if (icon)
 						icon.src = icon.src.replace(/\?[0-9]+$/, "?" + new Date().getTime());
@@ -36,7 +36,7 @@ const	CommonDialogs = {
 			return false;
 		},
 		uploadFeedIcon: function() {
-			const file = $("icon_file");
+			const file = App.byId("icon_file");
 
 			if (file.value.length == 0) {
 				alert(__("Please select an image file to upload."));
@@ -57,7 +57,7 @@ const	CommonDialogs = {
 								else
 									Feeds.reload();
 
-								const icon = $$(".feed-editor-icon")[0];
+								const icon = App.findAll(".feed-editor-icon")[0];
 
 								if (icon)
 									icon.src = icon.src.replace(/\?[0-9]+$/, "?" + new Date().getTime());
@@ -72,7 +72,7 @@ const	CommonDialogs = {
 							break;
 					}
 				};
-				xhr.send(new FormData($("feed_icon_upload_form")));
+				xhr.send(new FormData(App.byId("feed_icon_upload_form")));
 			}
 
 			return false;
@@ -165,13 +165,11 @@ const	CommonDialogs = {
 								</form>
 							`,
 							show_error: function (msg) {
-								const elem = $("fadd_error_message");
+								const elem = App.byId("fadd_error_message");
 
 								elem.innerHTML = msg;
 
-								if (!Element.visible(elem))
-									new Effect.Appear(elem);
-
+								Element.show(elem);
 							},
 							execute: function () {
 								if (this.validate()) {
@@ -239,7 +237,7 @@ const	CommonDialogs = {
 															}
 														}
 
-														Effect.Appear('feedDlg_feedsContainer', {duration: 0.5});
+														Element.show('feedDlg_feedsContainer');
 													}
 													break;
 												case 5:
@@ -463,8 +461,6 @@ const	CommonDialogs = {
 											target.href = new_link;
 											target.innerHTML = new_link;
 
-											new Effect.Highlight(target);
-
 											Notify.close();
 
 										} else {
@@ -527,8 +523,6 @@ const	CommonDialogs = {
 
 										target.href = target.href.replace(/&key=.*$/,
 											"&key=" + new_link);
-
-										new Effect.Highlight(target);
 
 										Notify.close();
 

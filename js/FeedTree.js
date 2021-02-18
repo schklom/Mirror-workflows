@@ -286,7 +286,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 
 				// focus headlines to route key events there
 				setTimeout(() => {
-					$("headlines-frame").focus();
+					App.byId("headlines-frame").focus();
 
 					if (treeNode) {
 						const node = treeNode.rowNode;
@@ -295,7 +295,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 						if (node && tree) {
 							// scroll tree to selection if needed
 							if (node.offsetTop < tree.scrollTop || node.offsetTop > tree.scrollTop + tree.clientHeight) {
-								$("feedTree").scrollTop = node.offsetTop;
+								App.byId("feedTree").scrollTop = node.offsetTop;
 							}
 						}
 					}

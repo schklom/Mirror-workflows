@@ -366,7 +366,7 @@ class Pref_Prefs extends Handler_Protected {
 								if (warn) Element.hide(warn);
 							}
 
-							new Effect.Appear('pwd_change_infobox');
+							Element.show('pwd_change_infobox');
 						})
 					}
 				</script>

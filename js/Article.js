@@ -36,19 +36,19 @@ const Article = {
 			const score = prompt(__("Please enter new score for selected articles:"));
 
 			if (!isNaN(parseInt(score))) {
-				ids.each((id) => {
-					const row = $("RROW-" + id);
+				ids.forEach((id) => {
+					const row = App.byId("RROW-" + id);
 
 					if (row) {
 						row.setAttribute("data-score", score);
 
-						const pic = row.select(".icon-score")[0];
+						const pic = row.querySelector(".icon-score");
 
 						pic.innerHTML = Article.getScorePic(score);
 						pic.setAttribute("title", score);
 
 						["score-low", "score-high", "score-half-low", "score-half-high", "score-neutral"]
-							.each(function(scl) {
+							.forEach(function(scl) {
 								if (row.hasClassName(scl))
 									row.removeClassName(scl);
 							});
@@ -72,13 +72,13 @@ const Article = {
 			if (!isNaN(parseInt(score))) {
 				row.setAttribute("data-score", score);
 
-				const pic = row.select(".icon-score")[0];
+				const pic = row.querySelector(".icon-score");
 
 				pic.innerHTML = Article.getScorePic(score);
 				pic.setAttribute("title", score);
 
 				["score-low", "score-high", "score-half-low", "score-half-high", "score-neutral"]
-					.each(function(scl) {
+					.forEach(function(scl) {
 						if (row.hasClassName(scl))
 							row.removeClassName(scl);
 					});
@@ -104,7 +104,7 @@ const Article = {
 		}
 	}, */
 	cdmUnsetActive: function (event) {
-		const row = $("RROW-" + Article.getActive());
+		const row = App.byId("RROW-" + Article.getActive());
 
 		if (row) {
 			row.removeClassName("active");
@@ -249,7 +249,7 @@ const Article = {
 				container.innerHTML += "&nbsp;";
 
 			// in expandable mode, save content for later, so that we can pack unfocused rows back
-			if (App.isCombinedMode() && $("main").hasClassName("expandable"))
+			if (App.isCombinedMode() && App.byId("main").hasClassName("expandable"))
 				row.setAttribute("data-content-original", row.getAttribute("data-content"));
 
 			row.removeAttribute("data-content");
@@ -351,7 +351,7 @@ const Article = {
 							if (data) {
 								const id = data.id;
 
-								const tags = $("ATSTR-" + id);
+								const tags = App.byId("ATSTR-" + id);
 								const tooltip = dijit.byId("ATSTRTIP-" + id);
 
 								if (tags) tags.innerHTML = data.content;
@@ -370,13 +370,13 @@ const Article = {
 
 			xhrJson("backend.php", {op: "article", method: "printArticleTags", id: id}, (reply) => {
 
-				dijit.getEnclosingWidget($("tags_str"))
+				dijit.getEnclosingWidget(App.byId("tags_str"))
 					.attr('value', reply.tags.join(", "))
 					.attr('disabled', false);
 
-				new Ajax.Autocompleter("tags_str", "tags_choices",
+				/* new Ajax.Autocompleter("tags_str", "tags_choices",
 					"backend.php?op=article&method=completeTags",
-					{tokens: ',', paramName: "search"});
+					{tokens: ',', paramName: "search"}); */
 			});
 		});
 
@@ -386,8 +386,8 @@ const Article = {
 	cdmMoveToId: function (id, params = {}) {
 		const force_to_top = params.force_to_top || false;
 
-		const ctr = $("headlines-frame");
-		const row = $("RROW-" + id);
+		const ctr = App.byId("headlines-frame");
+		const row = App.byId("RROW-" + id);
 
 		if (!row || !ctr) return;
 
@@ -399,12 +399,12 @@ const Article = {
 		if (id != Article.getActive()) {
 			console.log("setActive", id, "was", Article.getActive());
 
-			$$("div[id*=RROW][class*=active]").each((row) => {
+			App.findAll("div[id*=RROW][class*=active]").forEach((row) => {
 				row.removeClassName("active");
 				Article.pack(row);
 			});
 
-			const row = $("RROW-" + id);
+			const row = App.byId("RROW-" + id);
 
 			if (row) {
 				Article.unpack(row);
@@ -425,10 +425,10 @@ const Article = {
 			return 0;
 	},
 	scrollByPages: function (page_offset) {
-		App.Scrollable.scrollByPages($("content-insert"), page_offset);
+		App.Scrollable.scrollByPages(App.byId("content-insert"), page_offset);
 	},
 	scroll: function (offset) {
-		App.Scrollable.scroll($("content-insert"), offset);
+		App.Scrollable.scroll(App.byId("content-insert"), offset);
 	},
 	mouseIn: function (id) {
 		this.post_under_pointer = id;

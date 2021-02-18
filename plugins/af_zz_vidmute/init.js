@@ -3,7 +3,7 @@ require(['dojo/_base/kernel', 'dojo/ready'], function  (dojo, ready) {
 		PluginHost.register(PluginHost.HOOK_ARTICLE_RENDERED_CDM, function (row) {
 			if (row) {
 
-				row.select("video").each(function (v) {
+				row.querySelectorAll("video").forEach(function (v) {
 					v.muted = true;
 				});
 			}
@@ -14,7 +14,7 @@ require(['dojo/_base/kernel', 'dojo/ready'], function  (dojo, ready) {
 		PluginHost.register(PluginHost.HOOK_ARTICLE_RENDERED, function (row) {
 			if (row) {
 
-				row.select("video").each(function (v) {
+				row.querySelectorAll("video").forEach(function (v) {
 					v.muted = true;
 				});
 			}

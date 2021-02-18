@@ -9,7 +9,7 @@ const	Filters = {
 	filterDlgCheckAction: function(sender) {
 		const action = sender.value;
 
-		const action_param = $("filterDlg_paramBox");
+		const action_param = App.byId("filterDlg_paramBox");
 
 		if (!action_param) {
 			console.log("filterDlgCheckAction: can't find action param box!");
@@ -18,7 +18,7 @@ const	Filters = {
 
 		// if selected action supports parameters, enable params field
 		if (action == 4 || action == 6 || action == 7 || action == 9) {
-			new Effect.Appear(action_param, {duration: 0.5});
+			Element.show(action_param);
 
 			Element.hide(dijit.byId("filterDlg_actionParam").domNode);
 			Element.hide(dijit.byId("filterDlg_actionParamLabel").domNode);
@@ -97,7 +97,7 @@ const	Filters = {
 			title: ruleStr ? __("Edit rule") : __("Add rule"),
 			execute: function () {
 				if (this.validate()) {
-					Filters.createNewRuleElement($("filterDlg_Matches"), replaceNode);
+					Filters.createNewRuleElement(App.byId("filterDlg_Matches"), replaceNode);
 					this.hide();
 				}
 			},
@@ -119,7 +119,7 @@ const	Filters = {
 			title: actionStr ? __("Edit action") : __("Add action"),
 			execute: function () {
 				if (this.validate()) {
-					Filters.createNewActionElement($("filterDlg_Actions"), replaceNode);
+					Filters.createNewActionElement(App.byId("filterDlg_Actions"), replaceNode);
 					this.hide();
 				}
 			}
@@ -158,7 +158,7 @@ const	Filters = {
 
 							console.log("got results:" + result.length);
 
-							$("prefFilterProgressMsg").innerHTML = __("Looking for articles (%d processed, %f found)...")
+							App.byId("prefFilterProgressMsg").innerHTML = __("Looking for articles (%d processed, %f found)...")
 								.replace("%f", dialog.results)
 								.replace("%d", offset);
 
@@ -167,7 +167,7 @@ const	Filters = {
 							for (let i = 0; i < result.length; i++) {
 								const tmp = dojo.create("table", { innerHTML: result[i]});
 
-								$("prefFilterTestResultList").innerHTML += tmp.innerHTML;
+								App.byId("prefFilterTestResultList").innerHTML += tmp.innerHTML;
 							}
 
 							if (dialog.results < 30 && offset < dialog.max_offset) {
@@ -183,11 +183,11 @@ const	Filters = {
 								Element.hide("prefFilterLoadingIndicator");
 
 								if (dialog.results == 0) {
-									$("prefFilterTestResultList").innerHTML = `<tr><td align='center'>
+									App.byId("prefFilterTestResultList").innerHTML = `<tr><td align='center'>
 										${__('No recent articles matching this filter have been found.')}</td></tr>`;
-									$("prefFilterProgressMsg").innerHTML = "Articles matching this filter:";
+									App.byId("prefFilterProgressMsg").innerHTML = "Articles matching this filter:";
 								} else {
-									$("prefFilterProgressMsg").innerHTML = __("Found %d articles matching this filter:")
+									App.byId("prefFilterProgressMsg").innerHTML = __("Found %d articles matching this filter:")
 										.replace("%d", dialog.results);
 								}
 
@@ -289,12 +289,12 @@ const	Filters = {
 						Filters.addFilterRule();
 					},
 					deleteAction: function () {
-						$$("#filterDlg_Actions li[class*=Selected]").each(function (e) {
+						App.findAll("#filterDlg_Actions li[class*=Selected]").forEach(function (e) {
 							e.parentNode.removeChild(e)
 						});
 					},
 					deleteRule: function () {
-						$$("#filterDlg_Matches li[class*=Selected]").each(function (e) {
+						App.findAll("#filterDlg_Matches li[class*=Selected]").forEach(function (e) {
 							e.parentNode.removeChild(e)
 						});
 					},

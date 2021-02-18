@@ -126,7 +126,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 			return (!item || this.model.store.getValue(item, 'type') == 'category') ? (opened ? "dijitFolderOpened" : "dijitFolderClosed") : "feed-icon";
 		},
 		reload: function() {
-			const searchElem = $("feed_search");
+			const searchElem = App.byId("feed_search");
 			const search = (searchElem) ? searchElem.value : "";
 
 			xhrPost("backend.php", { op: "pref-feeds", search: search }, (transport) => {
@@ -228,7 +228,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 			const items = tree.model.getCheckedItems();
 			const rv = [];
 
-			items.each(function (item) {
+			items.forEach(function (item) {
 				if (item.id[0].match("CAT:"))
 					rv.push(tree.model.store.getValue(item, 'bare_id'));
 			});
@@ -262,7 +262,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 			const items = tree.model.getCheckedItems();
 			const rv = [];
 
-			items.each(function (item) {
+			items.forEach(function (item) {
 				if (item.id[0].match("FEED:"))
 					rv.push(tree.model.store.getValue(item, 'bare_id'));
 			});
@@ -304,7 +304,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 						title: __("Edit Multiple Feeds"),
 						getChildByName: function (name) {
 							let rv = null;
-							this.getChildren().each(
+							this.getChildren().forEach(
 								function (child) {
 									if (child.name == name) {
 										rv = child;
@@ -329,7 +329,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 
 								/* normalize unchecked checkboxes because [] is not serialized */
 
-								Object.keys(query).each((key) => {
+								Object.keys(query).forEach((key) => {
 									const val = query[key];
 
 									if (typeof val == "object" && val.length == 0)

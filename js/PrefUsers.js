@@ -5,7 +5,7 @@
 
 const	Users = {
 	reload: function(sort) {
-		const user_search = $("user_search");
+		const user_search = App.byId("user_search");
 		const search = user_search ? user_search.value : "";
 
 		xhrPost("backend.php", { op: "pref-users", sort: sort, search: search }, (transport) => {

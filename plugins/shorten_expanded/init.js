@@ -7,8 +7,8 @@ Plugins.Shorten_Expanded = {
 		const row = $(id);
 
 		if (row) {
-			const content = row.select(".content-shrink-wrap")[0];
-			const link = row.select(".expand-prompt")[0];
+			const content = row.querySelector(".content-shrink-wrap");
+			const link = row.querySelector(".expand-prompt");
 
 			if (content) content.removeClassName("content-shrink-wrap");
 			if (link) Element.hide(link);

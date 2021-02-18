@@ -383,9 +383,7 @@ const Article = {
 		dialog.show();
 
 	},
-	cdmMoveToId: function (id, params) {
-		params = params || {};
-
+	cdmMoveToId: function (id, params = {}) {
 		const force_to_top = params.force_to_top || false;
 
 		const ctr = $("headlines-frame");

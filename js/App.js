@@ -98,7 +98,16 @@ const App = {
 
 			return elem.offsetTop + elem.offsetHeight <= ctr.scrollTop + ctr.offsetHeight &&
 				elem.offsetTop >= ctr.scrollTop;
-		}
+		},
+      scrollTo: function (elem, ctr, params = {}) {
+         const force_to_top = params.force_to_top || false;
+
+         if (!elem || !ctr) return;
+
+         if (force_to_top || !App.Scrollable.fitsInContainer(elem, ctr)) {
+            ctr.scrollTop = elem.offsetTop;
+         }
+      }
    },
    dialogOf: function (elem) {
 
@@ -541,9 +550,7 @@ const App = {
 		this.initSecondStage();
 	},
 	Error: {
-		fatal: function (error, params) {
-			params = params || {};
-
+		fatal: function (error, params = {}) {
 			if (params.code) {
 				if (params.code == 6) {
 					window.location.href = "index.php";
@@ -557,9 +564,7 @@ const App = {
 			return this.report(error,
 				Object.extend({title: __("Fatal error")}, params));
 		},
-		report: function(error, params) {
-			params = params || {};
-
+		report: function(error, params = {}) {
 			if (!error) return;
 
 			console.error("[Error.report]", error, params);

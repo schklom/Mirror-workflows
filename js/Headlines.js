@@ -814,9 +814,7 @@ const Headlines = {
 
 		Feeds.reloadCurrent();
 	},
-	selectionToggleUnread: function (params) {
-		params = params || {};
-
+	selectionToggleUnread: function (params = {}) {
 		const cmode = params.cmode != undefined ? params.cmode : 2;
 		const no_error = params.no_error || false;
 		const ids = params.ids || Headlines.getSelected();
@@ -882,9 +880,7 @@ const Headlines = {
 		if (row)
 			row.toggleClassName("published");
 	},
-	move: function (mode, params) {
-		params = params || {};
-
+	move: function (mode, params = {}) {
 		const no_expand = params.no_expand || false;
 		const force_previous = params.force_previous || this.default_force_previous;
 		const force_to_top = params.force_to_top || this.default_force_to_top;
@@ -929,6 +925,17 @@ const Headlines = {
 					});
 				} else {
 					Article.view(next_id, no_expand);
+				}
+			} else if (App.isCombinedMode()) {
+				// try to show hsp if no next article exists, in case there's useful information like first_id_changed etc
+				const row = $("RROW-" + current_id);
+
+				if (row) {
+					const sibling = row.nextSibling;
+
+					if (sibling && Element.visible(sibling) && sibling.id == "headlines-spacer") {
+						App.Scrollable.scrollTo(sibling, $("headlines-frame"));
+					}
 				}
 			}
 		} else if (mode === "prev") {

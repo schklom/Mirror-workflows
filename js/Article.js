@@ -37,7 +37,7 @@ const Article = {
 
 			if (!isNaN(parseInt(score))) {
 				ids.forEach((id) => {
-					const row = App.byId("RROW-" + id);
+					const row = App.byId(`RROW-${id}`);
 
 					if (row) {
 						row.setAttribute("data-score", score);
@@ -94,7 +94,7 @@ const Article = {
 		w.location = url;
 	},
 	cdmUnsetActive: function (event) {
-		const row = App.byId("RROW-" + Article.getActive());
+		const row = App.byId(`RROW-${Article.getActive()}`);
 
 		if (row) {
 			row.removeClassName("active");
@@ -381,7 +381,7 @@ const Article = {
 		const force_to_top = params.force_to_top || false;
 
 		const ctr = App.byId("headlines-frame");
-		const row = App.byId("RROW-" + id);
+		const row = App.byId(`RROW-${id}`);
 
 		if (!row || !ctr) return;
 
@@ -398,7 +398,7 @@ const Article = {
 				Article.pack(row);
 			});
 
-			const row = App.byId("RROW-" + id);
+			const row = App.byId(`RROW-${id}`);
 
 			if (row) {
 				Article.unpack(row);

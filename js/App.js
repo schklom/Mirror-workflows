@@ -1091,7 +1091,7 @@ const App = {
          this.hotkey_actions["select_article_cursor"] = () => {
             const id = Article.getUnderPointer();
             if (id) {
-               const row = App.byId("RROW-" + id);
+               const row = App.byId(`RROW-${id}`);
 
                if (row)
                   row.toggleClassName("Selected");

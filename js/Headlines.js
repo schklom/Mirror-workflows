@@ -211,7 +211,7 @@ const Headlines = {
 
 					Headlines.select('none');
 
-					const scroll_position_A = App.byId("RROW-" + id).offsetTop - App.byId("headlines-frame").scrollTop;
+					const scroll_position_A = App.byId(`RROW-${id}`).offsetTop - App.byId("headlines-frame").scrollTop;
 
 					Article.setActive(id);
 
@@ -222,7 +222,7 @@ const Headlines = {
 
 						Headlines.toggleUnread(id, 0);
 					} else {
-						const scroll_position_B = App.byId("RROW-" + id).offsetTop - App.byId("headlines-frame").scrollTop;
+						const scroll_position_B = App.byId(`RROW-${id}`).offsetTop - App.byId("headlines-frame").scrollTop;
 
 						// this would only work if there's enough space
 						App.byId("headlines-frame").scrollTop -= scroll_position_A-scroll_position_B;
@@ -824,7 +824,7 @@ const Headlines = {
 		}
 
 		ids.forEach((id) => {
-			const row = App.byId("RROW-" + id);
+			const row = App.byId(`RROW-${id}`);
 
 			if (row) {
 				switch (cmode) {
@@ -865,14 +865,14 @@ const Headlines = {
 		});
 	},
 	toggleMark: function (id) {
-		const row = App.byId("RROW-" + id);
+		const row = App.byId(`RROW-${id}`);
 
 		if (row)
 			row.toggleClassName("marked");
 
 	},
 	togglePub: function (id) {
-		const row = App.byId("RROW-" + id);
+		const row = App.byId(`RROW-${id}`);
 
 		if (row)
 			row.toggleClassName("published");
@@ -886,7 +886,7 @@ const Headlines = {
 		let next_id = false;
 		let current_id = Article.getActive();
 
-		if (!Headlines.isChildVisible(App.byId("RROW-" + current_id))) {
+		if (!Headlines.isChildVisible(App.byId(`RROW-${current_id}`))) {
 			console.log('active article is obscured, resetting to first visible...');
 			current_id = Headlines.firstVisible();
 			prev_id = current_id;
@@ -925,7 +925,7 @@ const Headlines = {
 				}
 			} else if (App.isCombinedMode()) {
 				// try to show hsp if no next article exists, in case there's useful information like first_id_changed etc
-				const row = App.byId("RROW-" + current_id);
+				const row = App.byId(`RROW-${current_id}`);
 				const ctr = App.byId("headlines-frame");
 
 				if (row) {
@@ -945,7 +945,7 @@ const Headlines = {
 			if (prev_id || current_id) {
 				if (App.isCombinedMode()) {
 					window.requestAnimationFrame(() => {
-						const row = App.byId("RROW-" + current_id);
+						const row = App.byId(`RROW-${current_id}`);
 						const ctr = App.byId("headlines-frame");
 						const delta_px = Math.round(row.offsetTop) - Math.round(ctr.scrollTop);
 
@@ -977,7 +977,7 @@ const Headlines = {
 		}
 	},
 	toggleUnread: function (id, cmode) {
-		const row = App.byId("RROW-" + id);
+		const row = App.byId(`RROW-${id}`);
 
 		if (row) {
 			if (typeof cmode == "undefined") cmode = 2;
@@ -1203,7 +1203,7 @@ const Headlines = {
 		if (!below) {
 			for (let i = 0; i < visible_ids.length; i++) {
 				if (visible_ids[i] != id) {
-					const e = App.byId("RROW-" + visible_ids[i]);
+					const e = App.byId(`RROW-${visible_ids[i]}`);
 
 					if (e && e.hasClassName("Unread")) {
 						ids_to_mark.push(visible_ids[i]);
@@ -1215,7 +1215,7 @@ const Headlines = {
 		} else {
 			for (let i = visible_ids.length - 1; i >= 0; i--) {
 				if (visible_ids[i] != id) {
-					const e = App.byId("RROW-" + visible_ids[i]);
+					const e = App.byId(`RROW-${visible_ids[i]}`);
 
 					if (e && e.hasClassName("Unread")) {
 						ids_to_mark.push(visible_ids[i]);
@@ -1234,7 +1234,7 @@ const Headlines = {
 			if (App.getInitParam("confirm_feed_catchup") != 1 || confirm(msg)) {
 
 				for (let i = 0; i < ids_to_mark.length; i++) {
-					const e = App.byId("RROW-" + ids_to_mark[i]);
+					const e = App.byId(`RROW-${ids_to_mark[i]}`);
 					e.removeClassName("Unread");
 				}
 			}
@@ -1256,7 +1256,7 @@ const Headlines = {
 	},
 	scrollToArticleId: function (id) {
 		const container = App.byId("headlines-frame");
-		const row = App.byId("RROW-" + id);
+		const row = App.byId(`RROW-${id}`);
 
 		if (!container || !row) return;
 

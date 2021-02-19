@@ -63,8 +63,6 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 		editLabel: function(id) {
 			xhr.json("backend.php", {op: "pref-labels", method: "edit", id: id}, (reply) => {
 
-				console.log(reply);
-
 				const fg_color = reply['fg_color'];
 				const bg_color = reply['bg_color'] ? reply['bg_color'] : '#fff7d5';
 
@@ -87,7 +85,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 							color = bg;
 						}
 
-						const e = App.byId("icon-label-" + id);
+						const e = App.byId(`icon-label-${id}`);
 
 						if (e) {
 							if (bg) e.style.color = bg;

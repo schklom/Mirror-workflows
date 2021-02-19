@@ -248,7 +248,8 @@ class Article extends Handler_Protected {
 
 		$this->pdo->commit();
 
-		print json_encode(["id" => (int)$id, "tags" => $tags]);
+		// get latest tags from the database, original $tags is sometimes JSON-encoded as a hash ({}) - ???
+		print json_encode(["id" => (int)$id, "tags" => $this->_get_tags($id)]);
 	}
 
 

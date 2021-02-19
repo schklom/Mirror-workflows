@@ -164,7 +164,7 @@ const Lists = {
 		// account for dojo checkboxes
 		elem = elem.domNode || elem;
 
-		const row = elem.up("li");
+		const row = elem.closest("li");
 
 		if (row)
 			checked ? row.addClassName("Selected") : row.removeClassName("Selected");
@@ -194,7 +194,7 @@ const Tables = {
 		const checked = elem.domNode ? elem.attr("checked") : elem.checked;
 		elem = elem.domNode || elem;
 
-		const row = elem.up("tr");
+		const row = elem.closest("tr");
 
 		if (row)
 			checked ? row.addClassName("Selected") : row.removeClassName("Selected");

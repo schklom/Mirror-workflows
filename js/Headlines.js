@@ -1093,7 +1093,7 @@ const Headlines = {
 		return rv;
 	},
 	onRowChecked: function (elem) {
-		const row = elem.domNode.up("div[id*=RROW]");
+		const row = elem.domNode.closest("div[id*=RROW]");
 
 		// do not allow unchecking active article checkbox
 		if (row.hasClassName("active")) {

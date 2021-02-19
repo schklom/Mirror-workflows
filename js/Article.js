@@ -63,7 +63,7 @@ const Article = {
 		}
 	},
 	setScore: function (id, pic) {
-		const row = pic.up("div[id*=RROW]");
+		const row = pic.closest("div[id*=RROW]");
 
 		if (row) {
 			const score_old = row.getAttribute("data-score");

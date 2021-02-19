@@ -4,7 +4,7 @@
 /* eslint-disable no-new */
 
 function $(id) {
-	console.warn("FIXME: please use App.getById() or document.getElementById() instead of $():", id);
+	console.warn("FIXME: please use App.byId() or document.getElementById() instead of $():", id);
 	return document.getElementById(id);
 }
 

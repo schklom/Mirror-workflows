@@ -93,16 +93,6 @@ const Article = {
 		w.opener = null;
 		w.location = url;
 	},
-	/* popupOpenArticle: function(id) {
-		const w = window.open("",
-			"ttrss_article_popup",
-			"height=900,width=900,resizable=yes,status=no,location=no,menubar=no,directories=no,scrollbars=yes,toolbar=no");
-
-		if (w) {
-			w.opener = null;
-			w.location = "backend.php?op=article&method=view&mode=raw&html=1&zoom=1&id=" + id + "&csrf_token=" + App.getInitParam("csrf_token");
-		}
-	}, */
 	cdmUnsetActive: function (event) {
 		const row = App.byId("RROW-" + Article.getActive());
 

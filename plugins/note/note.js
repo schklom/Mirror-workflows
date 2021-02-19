@@ -13,7 +13,7 @@ Plugins.Note = {
 						dialog.hide();
 
 						if (reply) {
-							const elem = $("POSTNOTE-" + id);
+							const elem = App.byId("POSTNOTE-" + id);
 
 							if (elem) {
 								elem.innerHTML = reply.note;

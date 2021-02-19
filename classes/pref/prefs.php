@@ -355,14 +355,14 @@ class Pref_Prefs extends Handler_Protected {
 							Notify.close();
 							if (transport.responseText.indexOf('ERROR: ') == 0) {
 
-								$('pwd_change_infobox').innerHTML =
+								App.byId('pwd_change_infobox').innerHTML =
 									transport.responseText.replace('ERROR: ', '');
 
 							} else {
-								$('pwd_change_infobox').innerHTML =
+								App.byId('pwd_change_infobox').innerHTML =
 									transport.responseText.replace('ERROR: ', '');
 
-								const warn = $('default_pass_warning');
+								const warn = App.byId('default_pass_warning');
 								if (warn) Element.hide(warn);
 							}
 

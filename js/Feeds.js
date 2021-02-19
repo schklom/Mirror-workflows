@@ -317,7 +317,6 @@ const	Feeds = {
 		const feed = params.feed;
 		const is_cat = !!params.is_cat || false;
 		const offset = params.offset || 0;
-		const viewfeed_debug = params.viewfeed_debug;
 		const append = params.append || false;
 		const method = params.method;
 		// this is used to quickly switch between feeds, sets active but xhr is on a timeout
@@ -372,13 +371,6 @@ const	Feeds = {
 		query.cat = is_cat;
 
 		this.setActive(feed, is_cat);
-
-		if (viewfeed_debug) {
-			window.open("backend.php?" +
-				dojo.objectToQuery(
-					Object.assign({csrf_token: App.getInitParam("csrf_token")}, query)
-				));
-		}
 
 		window.clearTimeout(this._viewfeed_wait_timeout);
 		this._viewfeed_wait_timeout = window.setTimeout(() => {

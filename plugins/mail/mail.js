@@ -17,7 +17,7 @@ Plugins.Mail = {
 			title: __("Forward article by email"),
 			execute: function () {
 				if (this.validate()) {
-					xhrJson("backend.php", this.attr('value'), (reply) => {
+					xhr.json("backend.php", this.attr('value'), (reply) => {
 						if (reply) {
 							const error = reply['error'];
 

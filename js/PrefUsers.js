@@ -27,7 +27,7 @@ const	Users = {
 		}
 	},
 	edit: function(id) {
-		xhrJson('backend.php', {op: 'pref-users', method: 'edit', id: id}, (reply) => {
+		xhr.json('backend.php', {op: 'pref-users', method: 'edit', id: id}, (reply) => {
 			const user = reply.user;
 			const admin_disabled = (user.id == 1);
 

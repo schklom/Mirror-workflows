@@ -152,7 +152,7 @@ class Mail extends Plugin {
 			<script type='dojo/method' event='onSubmit' args='evt'>
 				evt.preventDefault();
 				if (this.validate()) {
-					xhrJson("backend.php", this.getValues(), (reply) => {
+					xhr.json("backend.php", this.getValues(), (reply) => {
 						if (reply && reply.error)
 							Notify.error(reply.error);
 						else

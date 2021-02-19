@@ -61,7 +61,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 			});
 		},
 		editLabel: function(id) {
-			xhrJson("backend.php", {op: "pref-labels", method: "edit", id: id}, (reply) => {
+			xhr.json("backend.php", {op: "pref-labels", method: "edit", id: id}, (reply) => {
 
 				console.log(reply);
 

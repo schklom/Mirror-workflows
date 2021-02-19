@@ -10,7 +10,7 @@ Plugins.Share = {
 
 					Notify.progress("Trying to change URL...", true);
 
-					xhrJson("backend.php", App.getPhArgs("share", "newkey", {id: id}), (reply) => {
+					xhr.json("backend.php", App.getPhArgs("share", "newkey", {id: id}), (reply) => {
 						if (reply) {
 							const new_link = reply.link;
 							const target = dialog.domNode.querySelector(".target-url");

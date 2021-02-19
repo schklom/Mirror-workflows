@@ -558,7 +558,7 @@ const	Feeds = {
 			return tree.model.store.getValue(nuf, 'bare_id');
 	},
 	search: function() {
-		xhrJson("backend.php",
+		xhr.json("backend.php",
 					{op: "feeds", method: "search"},
 					(reply) => {
 						try {

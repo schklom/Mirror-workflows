@@ -132,7 +132,7 @@ const	Helpers = {
 					}
 				},
 				refresh: function() {
-					xhrJson("backend.php", {op: 'pref-prefs', method: 'getprofiles'}, (reply) => {
+					xhr.json("backend.php", {op: 'pref-prefs', method: 'getprofiles'}, (reply) => {
 						dialog.attr('content', `
 							<div dojoType='fox.Toolbar'>
 								<div dojoType='fox.form.DropDownButton'>
@@ -212,7 +212,7 @@ const	Helpers = {
 	},
 	Prefs: {
 		customizeCSS: function() {
-			xhrJson("backend.php", {op: "pref-prefs", method: "customizeCSS"}, (reply) => {
+			xhr.json("backend.php", {op: "pref-prefs", method: "customizeCSS"}, (reply) => {
 
 				const dialog = new fox.SingleUseDialog({
 					title: __("Customize stylesheet"),

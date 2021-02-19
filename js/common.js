@@ -143,7 +143,7 @@ String.prototype.stripTags = function() {
 
 const xhr = {
 	post: function(url, params = {}, complete = undefined) {
-		console.log("xhr.post:", params);
+		console.log('xhr.post', '>>>', params);
 
 		return new Promise((resolve, reject) => {
 			if (typeof __csrf_token != "undefined")
@@ -156,6 +156,8 @@ const xhr = {
 					reject(error);
 				},
 				load: function(data, ioargs) {
+					//console.log('xhr.post', '<<<', data, ioargs);
+
 					if (complete != undefined)
 						complete(data, ioargs.xhr);
 
@@ -175,6 +177,8 @@ const xhr = {
 					console.error("xhr.json", e, xhr);
 					reject(e);
 				}
+
+				console.log('xhr.json', '<<<', obj);
 
 				if (complete != undefined) complete(obj);
 
@@ -209,21 +213,7 @@ function xhrPost(url, params = {}, complete = undefined) {
 
 /* exported xhrJson */
 function xhrJson(url, params = {}, complete = undefined) {
-	return new Promise((resolve, reject) =>
-		xhrPost(url, params).then((reply) => {
-			let obj = null;
-
-			try {
-				obj = JSON.parse(reply.responseText);
-			} catch (e) {
-				console.error("xhrJson", e, reply);
-				reject(e);
-			}
-
-			if (complete != undefined) complete(obj);
-
-			resolve(obj);
-		}));
+	return xhr.json(url, params, complete);
 }
 
 /* common helpers not worthy of separate Dojo modules */

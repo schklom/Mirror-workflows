@@ -775,7 +775,7 @@ const App = {
    checkForUpdates: function() {
       console.log('checking for updates...');
 
-      xhrJson("backend.php", {op: 'rpc', method: 'checkforupdates'})
+      xhr.json("backend.php", {op: 'rpc', method: 'checkforupdates'})
          .then((reply) => {
             console.log('update reply', reply);
 

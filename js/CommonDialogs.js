@@ -78,7 +78,7 @@ const	CommonDialogs = {
 			return false;
 		},
 		subscribeToFeed: function() {
-			xhrJson("backend.php",
+			xhr.json("backend.php",
 					{op: "feeds", method: "subscribeToFeed"},
 					(reply) => {
 						const dialog = new fox.SingleUseDialog({
@@ -265,7 +265,7 @@ const	CommonDialogs = {
 		},
 		showFeedsWithErrors: function() {
 
-			xhrJson("backend.php", {op: "pref-feeds", method: "feedsWithErrors"}, (reply) => {
+			xhr.json("backend.php", {op: "pref-feeds", method: "feedsWithErrors"}, (reply) => {
 
 				const dialog = new fox.SingleUseDialog({
 					id: "errorFeedsDlg",
@@ -446,7 +446,7 @@ const	CommonDialogs = {
 
 			Notify.progress("Loading, please wait...", true);
 
-			xhrJson("backend.php", {op: "pref-feeds", method: "getOPMLKey"}, (reply) => {
+			xhr.json("backend.php", {op: "pref-feeds", method: "getOPMLKey"}, (reply) => {
 				try {
 					const dialog = new fox.SingleUseDialog({
 						title: __("Public OPML URL"),
@@ -454,7 +454,7 @@ const	CommonDialogs = {
 							if (confirm(__("Replace current OPML publishing address with a new one?"))) {
 								Notify.progress("Trying to change address...", true);
 
-								xhrJson("backend.php", {op: "pref-feeds", method: "regenOPMLKey"}, (reply) => {
+								xhr.json("backend.php", {op: "pref-feeds", method: "regenOPMLKey"}, (reply) => {
 									if (reply) {
 										const new_link = reply.link;
 										const target = this.domNode.querySelector('.generated_url');
@@ -504,7 +504,7 @@ const	CommonDialogs = {
 
 			Notify.progress("Loading, please wait...", true);
 
-			xhrJson("backend.php", {op: "pref-feeds", method: "getsharedurl", id: feed, is_cat: is_cat, search: search}, (reply) => {
+			xhr.json("backend.php", {op: "pref-feeds", method: "getsharedurl", id: feed, is_cat: is_cat, search: search}, (reply) => {
 				try {
 					const dialog = new fox.SingleUseDialog({
 						title: __("Show as feed"),
@@ -515,7 +515,7 @@ const	CommonDialogs = {
 
 								const query = {op: "pref-feeds", method: "regenFeedKey", id: feed, is_cat: is_cat};
 
-								xhrJson("backend.php", query, (reply) => {
+								xhr.json("backend.php", query, (reply) => {
 									const new_link = reply.link;
 									const target = this.domNode.querySelector(".generated_url");
 

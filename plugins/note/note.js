@@ -8,7 +8,7 @@ Plugins.Note = {
 				if (this.validate()) {
 					Notify.progress("Saving article note...", true);
 
-					xhrJson("backend.php", this.attr('value'), (reply) => {
+					xhr.json("backend.php", this.attr('value'), (reply) => {
 						Notify.close();
 						dialog.hide();
 

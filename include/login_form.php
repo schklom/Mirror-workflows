@@ -59,7 +59,7 @@
 	        if (login && login != this.previousLogin) {
                 this.previousLogin = login;
 
-                xhrJson("public.php", {op: "getprofiles", login: login},
+                xhr.json("public.php", {op: "getprofiles", login: login},
                     (reply) => {
                         const profile = dijit.byId('profile');
 

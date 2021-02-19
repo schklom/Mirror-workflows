@@ -115,7 +115,7 @@ const Article = {
 	displayUrl: function (id) {
 		const query = {op: "article", method: "getmetadatabyid", id: id};
 
-		xhrJson("backend.php", query, (reply) => {
+		xhr.json("backend.php", query, (reply) => {
 			if (reply && reply.link) {
 				prompt(__("Article URL:"), reply.link);
 			} else {
@@ -358,7 +358,7 @@ const Article = {
 		const tmph = dojo.connect(dialog, 'onShow', function () {
 			dojo.disconnect(tmph);
 
-			xhrJson("backend.php", {op: "article", method: "printArticleTags", id: id}, (reply) => {
+			xhr.json("backend.php", {op: "article", method: "printArticleTags", id: id}, (reply) => {
 
 				dijit.getEnclosingWidget(App.byId("tags_str"))
 					.attr('value', reply.tags.join(", "))

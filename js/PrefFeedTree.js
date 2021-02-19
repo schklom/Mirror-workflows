@@ -210,14 +210,14 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 			return false;
 		},
 		checkErrorFeeds: function() {
-			xhrJson("backend.php", {op: "pref-feeds", method: "feedsWithErrors"}, (reply) => {
+			xhr.json("backend.php", {op: "pref-feeds", method: "feedsWithErrors"}, (reply) => {
 				if (reply.length > 0) {
 					Element.show(dijit.byId("pref_feeds_errors_btn").domNode);
 				}
 			});
 		},
 		checkInactiveFeeds: function() {
-			xhrJson("backend.php", {op: "pref-feeds", method: "inactivefeeds"}, (reply) => {
+			xhr.json("backend.php", {op: "pref-feeds", method: "inactivefeeds"}, (reply) => {
 				if (reply.length > 0) {
 					Element.show(dijit.byId("pref_feeds_inactive_btn").domNode);
 				}
@@ -385,7 +385,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 			}
 		},
 		batchSubscribe: function() {
-			xhrJson("backend.php", {op: 'pref-feeds', method: 'batchSubscribe'}, (reply) => {
+			xhr.json("backend.php", {op: 'pref-feeds', method: 'batchSubscribe'}, (reply) => {
 				const dialog = new fox.SingleUseDialog({
 					id: "batchSubDlg",
 					title: __("Batch subscribe"),
@@ -458,7 +458,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 			});
 		},
 		showInactiveFeeds: function() {
-			xhrJson("backend.php", {op: 'pref-feeds', method: 'inactivefeeds'}, function (reply) {
+			xhr.json("backend.php", {op: 'pref-feeds', method: 'inactivefeeds'}, function (reply) {
 
 				const dialog = new fox.SingleUseDialog({
 					id: "inactiveFeedsDlg",

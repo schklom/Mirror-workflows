@@ -1,6 +1,6 @@
 'use strict'
 
-/* global __, App, Headlines, xhrPost, xhrJson, dojo, dijit, Form, fox, PluginHost, Notify, $$, fox */
+/* global __, App, Headlines, xhrPost, xhr, dojo, dijit, fox, PluginHost, Notify, fox */
 
 const	Feeds = {
 	counters_last_request: 0,
@@ -299,7 +299,7 @@ const	Feeds = {
 	toggleUnread: function() {
 		const hide = !App.getInitParam("hide_read_feeds");
 
-		xhrPost("backend.php", {op: "rpc", method: "setpref", key: "HIDE_READ_FEEDS", value: hide}, () => {
+		xhr.post("backend.php", {op: "rpc", method: "setpref", key: "HIDE_READ_FEEDS", value: hide}, () => {
 			this.hideOrShowFeeds(hide);
 			App.setInitParam("hide_read_feeds", hide);
 		});
@@ -393,7 +393,7 @@ const	Feeds = {
 
 			Notify.progress("Marking all feeds as read...");
 
-			xhrPost("backend.php", {op: "feeds", method: "catchupAll"}, () => {
+			xhr.post("backend.php", {op: "feeds", method: "catchupAll"}, () => {
 				this.requestCounters(true);
 				this.reloadCurrent();
 			});

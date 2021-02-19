@@ -1,7 +1,7 @@
 'use strict'
 
 /* eslint-disable no-new */
-/* global __, ngettext, App, Headlines, xhrPost, xhrJson, dojo, dijit, PluginHost, Notify, fox */
+/* global __, ngettext, App, Headlines, xhr, dojo, dijit, PluginHost, Notify, fox */
 
 const Article = {
 	_scroll_reset_timeout: false,
@@ -331,12 +331,10 @@ const Article = {
 				if (this.validate()) {
 					Notify.progress("Saving article tags...", true);
 
-					xhrPost("backend.php", this.attr('value'), (transport) => {
+					xhr.json("backend.php", this.attr('value'), (data) => {
 						try {
 							Notify.close();
 							dialog.hide();
-
-							const data = JSON.parse(transport.responseText);
 
 							if (data) {
 								const id = data.id;

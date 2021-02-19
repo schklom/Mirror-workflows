@@ -1,5 +1,5 @@
 /* eslint-disable prefer-rest-params */
-/* global __, lib, dijit, define, dojo, CommonDialogs, Notify, Tables, xhrPost, xhrJson, fox, App */
+/* global __, lib, dijit, define, dojo, CommonDialogs, Notify, Tables, xhrPost, xhr, fox, App */
 
 define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_base/array", "dojo/cookie"],
 	function (declare, domConstruct, checkBoxTree, array, cookie) {
@@ -164,14 +164,14 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 		resetFeedOrder: function() {
 			Notify.progress("Loading, please wait...");
 
-			xhrPost("backend.php", {op: "pref-feeds", method: "feedsortreset"}, () => {
+			xhr.post("backend.php", {op: "pref-feeds", method: "feedsortreset"}, () => {
 				this.reload();
 			});
 		},
 		resetCatOrder: function() {
 			Notify.progress("Loading, please wait...");
 
-			xhrPost("backend.php", {op: "pref-feeds", method: "catsortreset"}, () => {
+			xhr.post("backend.php", {op: "pref-feeds", method: "catsortreset"}, () => {
 				this.reload();
 			});
 		},
@@ -179,7 +179,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 			if (confirm(__("Remove category %s? Any nested feeds would be placed into Uncategorized.").replace("%s", item.name))) {
 				Notify.progress("Removing category...");
 
-				xhrPost("backend.php", {op: "pref-feeds", method: "removeCat", ids: id}, () => {
+				xhr.post("backend.php", {op: "pref-feeds", method: "removeCat", ids: id}, () => {
 					Notify.close();
 					this.reload();
 				});
@@ -198,7 +198,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 						ids: sel_rows.toString()
 					};
 
-					xhrPost("backend.php", query, () => {
+					xhr.post("backend.php", query, () => {
 						this.reload();
 					});
 				}
@@ -247,7 +247,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 						ids: sel_rows.toString()
 					};
 
-					xhrPost("backend.php", query, () => {
+					xhr.post("backend.php", query, () => {
 						this.reload();
 					});
 				}
@@ -338,7 +338,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 
 								Notify.progress("Saving data...", true);
 
-								xhrPost("backend.php", query, () => {
+								xhr.post("backend.php", query, () => {
 									dialog.hide();
 
 									const tree = dijit.byId("feedTree");
@@ -367,7 +367,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 
 				Notify.progress("Loading, please wait...");
 
-				xhrPost("backend.php", { op: 'pref-feeds', method: 'renamecat', id: id, title: new_name }, () => {
+				xhr.post("backend.php", { op: 'pref-feeds', method: 'renamecat', id: id, title: new_name }, () => {
 					this.reload();
 				});
 			}
@@ -378,7 +378,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 			if (title) {
 				Notify.progress("Creating category...");
 
-				xhrPost("backend.php", {op: "pref-feeds", method: "addCat", cat: title}, () => {
+				xhr.post("backend.php", {op: "pref-feeds", method: "addCat", cat: title}, () => {
 					Notify.close();
 					this.reload();
 				});
@@ -393,7 +393,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 						if (this.validate()) {
 							Notify.progress(__("Subscribing to feeds..."), true);
 
-							xhrPost("backend.php", this.attr('value'), () => {
+							xhr.post("backend.php", this.attr('value'), () => {
 								Notify.close();
 
 								const tree = dijit.byId("feedTree");
@@ -478,7 +478,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 									ids: sel_rows.toString()
 								};
 
-								xhrPost("backend.php", query, () => {
+								xhr.post("backend.php", query, () => {
 									Notify.close();
 
 									const tree = dijit.byId("feedTree");

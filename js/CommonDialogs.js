@@ -3,7 +3,7 @@
 /* eslint-disable new-cap */
 /* eslint-disable no-new */
 
-/* global __, dojo, dijit, Notify, App, Feeds, xhrPost, xhrJson, Tables, fox */
+/* global __, dojo, dijit, Notify, App, Feeds, xhrPost, xhr, Tables, fox */
 
 /* exported CommonDialogs */
 const	CommonDialogs = {
@@ -17,7 +17,7 @@ const	CommonDialogs = {
 
 				const query = {op: "pref-feeds", method: "removeicon", feed_id: id};
 
-				xhrPost("backend.php", query, () => {
+				xhr.post("backend.php", query, () => {
 					Notify.info("Feed icon removed.");
 
 					if (App.isPrefs())
@@ -180,17 +180,12 @@ const	CommonDialogs = {
 									Element.show("feed_add_spinner");
 									Element.hide("fadd_error_message");
 
-									xhrPost("backend.php", this.attr('value'), (transport) => {
+									xhr.json("backend.php", this.attr('value'), (reply) => {
 										try {
 
-											let reply;
-
-											try {
-												reply = JSON.parse(transport.responseText);
-											} catch (e) {
+											if (!reply) {
 												Element.hide("feed_add_spinner");
 												alert(__("Failed to parse output. This can indicate server timeout and/or network issues. Backend output was logged to browser console."));
-												console.log('subscribeToFeed, backend returned:' + transport.responseText);
 												return;
 											}
 
@@ -285,7 +280,7 @@ const	CommonDialogs = {
 									ids: sel_rows.toString()
 								};
 
-								xhrPost("backend.php", query, () => {
+								xhr.post("backend.php", query, () => {
 									Notify.close();
 									dialog.hide();
 
@@ -359,7 +354,7 @@ const	CommonDialogs = {
 
 				Notify.progress("Loading, please wait...", true);
 
-				xhrPost("backend.php", query, () => {
+				xhr.post("backend.php", query, () => {
 					if (dijit.byId("labelTree")) {
 						dijit.byId("labelTree").reload();
 					} else {
@@ -377,7 +372,7 @@ const	CommonDialogs = {
 
 				const query = {op: "pref-feeds", quiet: 1, method: "remove", ids: feed_id};
 
-				xhrPost("backend.php", query, () => {
+				xhr.post("backend.php", query, () => {
 					if (App.isPrefs()) {
 						dijit.byId("feedTree").reload();
 					} else {
@@ -415,7 +410,7 @@ const	CommonDialogs = {
 					if (this.validate()) {
 						Notify.progress("Saving data...", true);
 
-						xhrPost("backend.php", dialog.attr('value'), () => {
+						xhr.post("backend.php", dialog.attr('value'), () => {
 							dialog.hide();
 							Notify.close();
 

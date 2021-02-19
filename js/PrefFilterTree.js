@@ -1,5 +1,5 @@
 /* eslint-disable prefer-rest-params */
-/* global __, define, lib, dijit, dojo, xhrPost, Notify */
+/* global __, define, lib, dijit, dojo, xhr, Notify */
 
 define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], function (declare, domConstruct) {
 
@@ -99,7 +99,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 		resetFilterOrder: function() {
 			Notify.progress("Loading, please wait...");
 
-			xhrPost("backend.php", {op: "pref-filters", method: "filtersortreset"}, () => {
+			xhr.post("backend.php", {op: "pref-filters", method: "filtersortreset"}, () => {
 				this.reload();
 			});
 		},
@@ -114,7 +114,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			if (confirm(__("Combine selected filters?"))) {
 				Notify.progress("Joining filters...");
 
-				xhrPost("backend.php", {op: "pref-filters", method: "join", ids: rows.toString()}, () => {
+				xhr.post("backend.php", {op: "pref-filters", method: "join", ids: rows.toString()}, () => {
 					this.reload();
 				});
 			}
@@ -131,7 +131,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 						ids: sel_rows.toString()
 					};
 
-					xhrPost("backend.php", query, () => {
+					xhr.post("backend.php", query, () => {
 						this.reload();
 					});
 				}

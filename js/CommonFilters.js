@@ -3,7 +3,7 @@
 /* eslint-disable no-new */
 
 /* global __, App, Article, Lists, fox */
-/* global xhrPost, dojo, dijit, Notify, Feeds */
+/* global xhr, dojo, dijit, Notify, Feeds */
 
 const	Filters = {
 	filterDlgCheckAction: function(sender) {
@@ -275,7 +275,7 @@ const	Filters = {
 
 							const query = {op: "pref-filters", method: "remove", ids: this.attr('value').id};
 
-							xhrPost("backend.php", query, () => {
+							xhr.post("backend.php", query, () => {
 								const tree = dijit.byId("filterTree");
 
 								if (tree) tree.reload();
@@ -303,7 +303,7 @@ const	Filters = {
 
 							Notify.progress("Saving data...", true);
 
-							xhrPost("backend.php", this.attr('value'), () => {
+							xhr.post("backend.php", this.attr('value'), () => {
 								dialog.hide();
 
 								const tree = dijit.byId("filterTree");

@@ -165,8 +165,8 @@ class Pref_System extends Handler_Administrative {
 					<script type='dojo/method' event='onSelected' args='evt'>
 						if (this.domNode.querySelector('.loading'))
 							window.setTimeout(() => {
-								xhrPost("backend.php", {op: 'pref-system', method: 'getphpinfo'}, (transport) => {
-									this.attr('content', `<div class='phpinfo'>${transport.responseText}</div>`);
+								xhr.post("backend.php", {op: 'pref-system', method: 'getphpinfo'}, (reply) => {
+									this.attr('content', `<div class='phpinfo'>${reply}</div>`);
 								});
 							}, 200);
 					</script>

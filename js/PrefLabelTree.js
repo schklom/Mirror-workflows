@@ -1,5 +1,5 @@
 /* eslint-disable prefer-rest-params */
-/* global __, define, lib, dijit, dojo, xhrPost, Notify, fox, App */
+/* global __, define, lib, dijit, dojo, xhr, Notify, fox, App */
 
 define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/form/DropDownButton"], function (declare, domConstruct) {
 
@@ -98,7 +98,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 							ids: id, fg: fg, bg: bg, color: color
 						};
 
-						xhrPost("backend.php", query, () => {
+						xhr.post("backend.php", query, () => {
 							const tree = dijit.byId("filterTree");
 							if (tree) tree.reload(); // maybe there's labels in there
 						});
@@ -114,7 +114,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 							this.setLabelColor(id, fg_color, bg_color);
 							this.hide();
 
-							xhrPost("backend.php", this.attr('value'), () => {
+							xhr.post("backend.php", this.attr('value'), () => {
 								const tree = dijit.byId("filterTree");
 								if (tree) tree.reload(); // maybe there's labels in there
 							});
@@ -196,7 +196,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 						ids: labels.toString()
 					};
 
-					xhrPost("backend.php", query, () => {
+					xhr.post("backend.php", query, () => {
 						this.reload();
 					});
 				}
@@ -217,7 +217,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 						ids: sel_rows.toString()
 					};
 
-					xhrPost("backend.php", query, () => {
+					xhr.post("backend.php", query, () => {
 						this.reload();
 					});
 				}

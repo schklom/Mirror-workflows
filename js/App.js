@@ -2,7 +2,7 @@
 
 /* eslint-disable new-cap */
 /* global __, Article, Headlines, Filters, fox */
-/* global xhrPost, xhrJson, dojo, dijit, PluginHost, Notify, Feeds, Cookie */
+/* global xhrPost, xhr, dojo, dijit, PluginHost, Notify, Feeds, Cookie */
 /* global CommonDialogs, Plugins */
 
 const App = {
@@ -362,10 +362,10 @@ const App = {
       }
    },
    hotkeyHelp: function() {
-      xhrPost("backend.php", {op: "rpc", method: "hotkeyHelp"}, (transport) => {
+      xhr.post("backend.php", {op: "rpc", method: "hotkeyHelp"}, (reply) => {
          const dialog = new fox.SingleUseDialog({
             title: __("Keyboard shortcuts"),
-            content: transport.responseText,
+            content: reply,
          });
 
          dialog.show();
@@ -474,11 +474,9 @@ const App = {
 
 		PluginHost.run(PluginHost.HOOK_RUNTIME_INFO_LOADED, data);
 	},
-	backendSanityCallback: function(transport) {
-		const reply = JSON.parse(transport.responseText);
-
+	backendSanityCallback: function(reply) {
 		if (!reply) {
-			this.Error.fatal(ERRORS[3], {info: transport.responseText});
+			this.Error.fatal(ERRORS[3]);
 			return;
 		}
 
@@ -559,14 +557,14 @@ const App = {
 			const message = params.message ? params.message : error.toString();
 
 			try {
-				xhrPost("backend.php",
+				xhr.post("backend.php",
 					{op: "rpc", method: "log",
 						file: params.filename ? params.filename : error.fileName,
 						line: params.lineno ? params.lineno : error.lineNumber,
 						msg: message,
 						context: error.stack},
-					(transport) => {
-						console.warn("[Error.report] log response", transport.responseText);
+					(reply) => {
+						console.warn("[Error.report] log response", reply);
 					});
 			} catch (re) {
 				console.error("[Error.report] exception while saving logging error on server", re);
@@ -645,9 +643,9 @@ const App = {
             hasSandbox: "sandbox" in document.createElement("iframe")
          };
 
-         xhrPost("backend.php", params, (transport) => {
+         xhr.json("backend.php", params, (reply) => {
             try {
-               this.backendSanityCallback(transport);
+               this.backendSanityCallback(reply);
             } catch (e) {
                this.Error.report(e);
             }
@@ -862,7 +860,7 @@ const App = {
 
       if (article_id) Article.view(article_id);
 
-      xhrPost("backend.php", {op: "rpc", method: "setpanelmode", wide: wide ? 1 : 0});
+      xhr.post("backend.php", {op: "rpc", method: "setpanelmode", wide: wide ? 1 : 0});
    },
    initHotkeyActions: function() {
       if (this.is_prefs) {
@@ -1058,7 +1056,7 @@ const App = {
             Headlines.reverse();
          };
          this.hotkey_actions["feed_toggle_vgroup"] = () => {
-            xhrPost("backend.php", {op: "rpc", method: "togglepref", key: "VFEED_GROUP_BY_FEED"}, () => {
+            xhr.post("backend.php", {op: "rpc", method: "togglepref", key: "VFEED_GROUP_BY_FEED"}, () => {
                Feeds.reloadCurrent();
             })
          };
@@ -1133,7 +1131,7 @@ const App = {
          this.hotkey_actions["toggle_combined_mode"] = () => {
             const value = this.isCombinedMode() ? "false" : "true";
 
-            xhrPost("backend.php", {op: "rpc", method: "setpref", key: "COMBINED_DISPLAY_MODE", value: value}, () => {
+            xhr.post("backend.php", {op: "rpc", method: "setpref", key: "COMBINED_DISPLAY_MODE", value: value}, () => {
                this.setInitParam("combined_display_mode",
                   !this.getInitParam("combined_display_mode"));
 
@@ -1144,7 +1142,7 @@ const App = {
          this.hotkey_actions["toggle_cdm_expanded"] = () => {
             const value = this.getInitParam("cdm_expanded") ? "false" : "true";
 
-            xhrPost("backend.php", {op: "rpc", method: "setpref", key: "CDM_EXPANDED", value: value}, () => {
+            xhr.post("backend.php", {op: "rpc", method: "setpref", key: "CDM_EXPANDED", value: value}, () => {
                this.setInitParam("cdm_expanded", !this.getInitParam("cdm_expanded"));
                Headlines.renderAgain();
             });

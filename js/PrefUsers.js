@@ -1,7 +1,7 @@
 'use strict'
 
 /* global __  */
-/* global xhrPost, xhrJson, dijit, Notify, Tables, App, fox */
+/* global xhrPost, xhr, dijit, Notify, Tables, App, fox */
 
 const	Users = {
 	reload: function(sort) {
@@ -38,7 +38,7 @@ const	Users = {
 					if (this.validate()) {
 						Notify.progress("Saving data...", true);
 
-						xhrPost("backend.php", this.attr('value'), () => {
+						xhr.post("backend.php", this.attr('value'), () => {
 							dialog.hide();
 							Users.reload();
 						});
@@ -160,7 +160,7 @@ const	Users = {
 					ids: sel_rows.toString()
 				};
 
-				xhrPost("backend.php", query, () => {
+				xhr.post("backend.php", query, () => {
 					this.reload();
 				});
 			}

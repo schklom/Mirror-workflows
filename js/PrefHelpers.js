@@ -1,7 +1,7 @@
 'use strict';
 
 /* eslint-disable no-new */
-/* global __, dijit, dojo, Tables, xhrPost, Notify, xhrJson, App, fox */
+/* global __, dijit, dojo, Tables, xhrPost, Notify, xhr, App, fox */
 
 const	Helpers = {
 	AppPasswords: {
@@ -45,7 +45,7 @@ const	Helpers = {
 			if (confirm(__("This will invalidate all previously generated feed URLs. Continue?"))) {
 				Notify.progress("Clearing URLs...");
 
-				xhrPost("backend.php", {op: "pref-feeds", method: "clearKeys"}, () => {
+				xhr.post("backend.php", {op: "pref-feeds", method: "clearKeys"}, () => {
 					Notify.info("Generated URLs cleared.");
 				});
 			}
@@ -82,7 +82,7 @@ const	Helpers = {
 
 				Notify.progress("Loading, please wait...");
 
-				xhrPost("backend.php", {op: "pref-system", method: "clearLog"}, () => {
+				xhr.post("backend.php", {op: "pref-system", method: "clearLog"}, () => {
 					Helpers.EventLog.refresh();
 				});
 			}
@@ -108,7 +108,7 @@ const	Helpers = {
 								ids: sel_rows.toString()
 							};
 
-							xhrPost("backend.php", query, () => {
+							xhr.post("backend.php", query, () => {
 								Notify.close();
 								dialog.refresh();
 							});
@@ -124,7 +124,7 @@ const	Helpers = {
 
 						const query = {op: "pref-prefs", method: "addprofile", title: dialog.attr('value').newprofile};
 
-						xhrPost("backend.php", query, () => {
+						xhr.post("backend.php", query, () => {
 							Notify.close();
 							dialog.refresh();
 						});
@@ -194,7 +194,7 @@ const	Helpers = {
 						if (confirm(__("Activate selected profile?"))) {
 							Notify.progress("Loading, please wait...");
 
-							xhrPost("backend.php", {op: "pref-prefs", method: "activateprofile", id: sel_rows.toString()}, () => {
+							xhr.post("backend.php", {op: "pref-prefs", method: "activateprofile", id: sel_rows.toString()}, () => {
 								window.location.reload();
 							});
 						}
@@ -217,7 +217,7 @@ const	Helpers = {
 				const dialog = new fox.SingleUseDialog({
 					title: __("Customize stylesheet"),
 					apply: function() {
-						xhrPost("backend.php", this.attr('value'), () => {
+						xhr.post("backend.php", this.attr('value'), () => {
 							Element.show("css_edit_apply_msg");
 							App.byId("user_css_style").innerText = this.attr('value');
 						});
@@ -225,7 +225,7 @@ const	Helpers = {
 					execute: function () {
 						Notify.progress('Saving data...', true);
 
-						xhrPost("backend.php", this.attr('value'), () => {
+						xhr.post("backend.php", this.attr('value'), () => {
 							window.location.reload();
 						});
 					},
@@ -277,7 +277,7 @@ const	Helpers = {
 			if (confirm(__("Clear stored data for this plugin?"))) {
 				Notify.progress("Loading, please wait...");
 
-				xhrPost("backend.php", {op: "pref-prefs", method: "clearplugindata", name: name}, () => {
+				xhr.post("backend.php", {op: "pref-prefs", method: "clearplugindata", name: name}, () => {
 					Helpers.Prefs.refresh();
 				});
 			}

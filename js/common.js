@@ -140,7 +140,6 @@ String.prototype.stripTags = function() {
 }
 
 /* exported xhr */
-
 const xhr = {
 	post: function(url, params = {}, complete = undefined) {
 		console.log('xhr.post', '>>>', params);

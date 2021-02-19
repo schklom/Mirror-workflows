@@ -107,7 +107,7 @@ class UserHelper {
 				if (empty($_SESSION["uid"])) {
 					UserHelper::logout();
 
-					Handler_Public::render_login_form();
+					Handler_Public::_render_login_form();
 					exit;
 				}
 

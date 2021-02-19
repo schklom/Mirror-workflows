@@ -16,6 +16,10 @@
       return hidden_tag("op", strtolower(get_class($plugin) . \PluginHost::PUBLIC_METHOD_DELIMITER . $method));
    } */
 
+   function public_method_tags(\Plugin $plugin, string $method) {
+      return hidden_tag("op", strtolower(get_class($plugin) . \PluginHost::PUBLIC_METHOD_DELIMITER . $method));
+   }
+
    function pluginhandler_tags(\Plugin $plugin, string $method) {
       return hidden_tag("op", "pluginhandler") .
                hidden_tag("plugin", strtolower(get_class($plugin))) .

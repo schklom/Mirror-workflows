@@ -98,7 +98,7 @@ class Handler_Public extends Handler {
 
 				$tpl->setVariable('ARTICLE_ID',
 					htmlspecialchars($orig_guid ? $line['link'] :
-							$this->make_article_tag_uri($line['id'], $line['date_entered'])), true);
+							$this->_make_article_tag_uri($line['id'], $line['date_entered'])), true);
 				$tpl->setVariable('ARTICLE_LINK', htmlspecialchars($line['link']), true);
 				$tpl->setVariable('ARTICLE_TITLE', htmlspecialchars($line['title']), true);
 				$tpl->setVariable('ARTICLE_EXCERPT', $line["content_preview"], true);
@@ -346,165 +346,6 @@ class Handler_Public extends Handler {
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK);
 	}
 
-	function sharepopup() {
-		if (SINGLE_USER_MODE) {
-			UserHelper::login_sequence();
-		}
-
-		header('Content-Type: text/html; charset=utf-8');
-		?>
-		<!DOCTYPE html>
-		<html>
-		<head>
-			<title><?= __("Share with Tiny Tiny RSS") ?></title>
-			<?php
-			echo javascript_tag("lib/dojo/dojo.js");
-			echo javascript_tag("js/utility.js");
-			echo javascript_tag("lib/dojo/tt-rss-layer.js");
-			?>
-			<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-			<link rel="shortcut icon" type="image/png" href="images/favicon.png">
-			<link rel="icon" type="image/png" sizes="72x72" href="images/favicon-72px.png">
-			<style type="text/css">
-				@media (prefers-color-scheme: dark) {
-					body {
-						background : #303030;
-					}
-				}
-
-				body.css_loading * {
-					display : none;
-				}
-			</style>
-		</head>
-		<body class='flat ttrss_utility share_popup css_loading'>
-		<script type="text/javascript">
-			const UtilityApp = {
-				init: function() {
-				  	require(['dojo/parser', "dojo/ready", 'dijit/form/Button','dijit/form/CheckBox', 'dijit/form/Form',
-						'dijit/form/Select','dijit/form/TextBox','dijit/form/ValidationTextBox'], function(parser, ready){
-						ready(function() {
-							parser.parse();
-
-							/* new Ajax.Autocompleter('labels_value', 'labels_choices',
-								"backend.php?op=rpc&method=completeLabels",
-								{ tokens: ',', paramName: "search" });
-							}); */
-				  	});
-				}
-			};
-		</script>
-		<div class="content">
-
-		<?php
-
-		$action = clean($_REQUEST["action"]);
-
-		if ($_SESSION["uid"]) {
-
-			if ($action == 'share') {
-
-				$title = strip_tags(clean($_REQUEST["title"]));
-				$url = strip_tags(clean($_REQUEST["url"]));
-				$content = strip_tags(clean($_REQUEST["content"]));
-				$labels = strip_tags(clean($_REQUEST["labels"]));
-
-				Article::_create_published_article($title, $url, $content, $labels,
-					$_SESSION["uid"]);
-
-				print "<script type='text/javascript'>";
-				print "window.close();";
-				print "</script>";
-
-			} else {
-				$title = htmlspecialchars(clean($_REQUEST["title"]));
-				$url = htmlspecialchars(clean($_REQUEST["url"]));
-
-				?>
-				<form id='share_form' name='share_form'>
-
-					<input type="hidden" name="op" value="sharepopup">
-					<input type="hidden" name="action" value="share">
-
-					<fieldset>
-						<label><?= __("Title:") ?></label>
-						<input style='width : 270px' dojoType='dijit.form.TextBox' name='title' value="<?= $title ?>">
-					</fieldset>
-
-					<fieldset>
-						<label><?= __("URL:") ?></label>
-						<input style='width : 270px' name='url' dojoType='dijit.form.TextBox' value="<?= $url ?>">
-					</fieldset>
-
-					<fieldset>
-						<label><?= __("Content:") ?></label>
-						<input style='width : 270px' name='content' dojoType='dijit.form.TextBox' value="">
-					</fieldset>
-
-					<fieldset>
-						<label><?= __("Labels:") ?></label>
-						<input style='width : 270px' name='labels' dojoType='dijit.form.TextBox' id="labels_value"
-						   placeholder='Alpha, Beta, Gamma' value="">
-						<div class="autocomplete" id="labels_choices"
-							 style="display : block"></div>
-					</fieldset>
-
-					<hr/>
-
-					<fieldset>
-						<button dojoType='dijit.form.Button' class="alt-primary" type="submit"><?= __('Share') ?></button>
-						<button dojoType='dijit.form.Button' onclick="return window.close()"><?= __('Cancel') ?></button>
-						<span class="text-muted small"><?= __("Shared article will appear in the Published feed.") ?></span>
-					</fieldset>
-
-				</form>
-				<?php
-
-			}
-
-		} else {
-
-			$return = urlencode(make_self_url());
-
-			?>
-
-			<?php print_error("Not logged in"); ?>
-
-			<form action="public.php?return=<?= $return ?>" method="post">
-
-				<input type="hidden" name="op" value="login">
-
-				<fieldset>
-					<label><?= __("Login:") ?></label>
-					<input name="login" id="login" dojoType="dijit.form.TextBox" type="text"
-						   onchange="fetchProfiles()" onfocus="fetchProfiles()" onblur="fetchProfiles()"
-						   required="1" value="<?= $_SESSION["fake_login"] ?>" />
-				</fieldset>
-
-				<fieldset>
-					<label><?= __("Password:") ?></label>
-
-					<input type="password" name="password" required="1"
-						   dojoType="dijit.form.TextBox"
-						   class="input input-text"
-						   value="<?= $_SESSION["fake_password"] ?>"/>
-				</fieldset>
-
-				<hr/>
-
-				<fieldset>
-					<label> </label>
-
-					<button dojoType="dijit.form.Button" type="submit" class="alt-primary"><?= __('Log in') ?></button>
-				</fieldset>
-
-			</form>
-			<?php
-		}
-
-		print "</div></body></html>";
-	}
-
 	function login() {
 		if (!SINGLE_USER_MODE) {
 
@@ -562,160 +403,6 @@ class Handler_Public extends Handler {
 			} else {
 				header("Location: " . get_self_url_prefix());
 			}
-		}
-	}
-
-	function subscribe() {
-		if (SINGLE_USER_MODE) {
-			UserHelper::login_sequence();
-		}
-
-		if (!empty($_SESSION["uid"])) {
-
-			$feed_url = clean($_REQUEST["feed_url"] ?? "");
-			$csrf_token = clean($_POST["csrf_token"] ?? "");
-
-			header('Content-Type: text/html; charset=utf-8');
-			?>
-			<!DOCTYPE html>
-			<html>
-			<head>
-				<title>Tiny Tiny RSS</title>
-				<?php
-					echo javascript_tag("js/utility.js");
-					echo javascript_tag("lib/dojo/dojo.js");
-					echo javascript_tag("lib/dojo/tt-rss-layer.js");
-				?>
-				<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-				<link rel="shortcut icon" type="image/png" href="images/favicon.png">
-				<link rel="icon" type="image/png" sizes="72x72" href="images/favicon-72px.png">
-				<style type="text/css">
-					@media (prefers-color-scheme: dark) {
-						body {
-							background : #303030;
-						}
-					}
-
-					body.css_loading * {
-						display : none;
-					}
-				</style>
-			</head>
-			<body class='flat ttrss_utility css_loading'>
-			<script type="text/javascript">
-				const UtilityApp = {
-					init: function() {
-                        require(['dojo/parser', "dojo/ready", 'dijit/form/Button','dijit/form/CheckBox', 'dijit/form/Form',
-                            'dijit/form/Select','dijit/form/TextBox','dijit/form/ValidationTextBox'], function(parser, ready){
-                            ready(function() {
-                                parser.parse();
-                            });
-                        });
-					}
-				};
-			</script>
-			<div class="container">
-			<h1><?= __("Subscribe to feed...") ?></h1>
-			<div class='content'>
-			<?php
-
-			if (!$feed_url || !validate_csrf($csrf_token)) {
-				?>
-				<form method="post">
-					<input type="hidden" name="op" value="subscribe">
-					<?= \Controls\hidden_tag("csrf_token", $_SESSION["csrf_token"]) ?>
-					<fieldset>
-						<label>Feed or site URL:</label>
-						<input style="width: 300px" dojoType="dijit.form.ValidationTextBox" required="1" name="feed_url" value="<?= htmlspecialchars($feed_url) ?>">
-					</fieldset>
-
-					<button class="alt-primary" dojoType="dijit.form.Button" type="submit">
-						<?= __("Subscribe") ?>
-					</button>
-
-					<a href="index.php"><?= __("Return to Tiny Tiny RSS") ?></a>
-				</form>
-				<?php
-			} else {
-
-				$rc = Feeds::_subscribe($feed_url);
-				$feed_urls = false;
-
-				switch ($rc['code']) {
-					case 0:
-						print_warning(T_sprintf("Already subscribed to <b>%s</b>.", $feed_url));
-						break;
-					case 1:
-						print_notice(T_sprintf("Subscribed to <b>%s</b>.", $feed_url));
-						break;
-					case 2:
-						print_error(T_sprintf("Could not subscribe to <b>%s</b>.", $feed_url));
-						break;
-					case 3:
-						print_error(T_sprintf("No feeds found in <b>%s</b>.", $feed_url));
-						break;
-					case 4:
-						$feed_urls = $rc["feeds"];
-						break;
-					case 5:
-						print_error(T_sprintf("Could not subscribe to <b>%s</b>.<br>Can't download the Feed URL.", $feed_url));
-						break;
-				}
-
-				if ($feed_urls) {
-
-					print "<form action='public.php'>";
-					print "<input type='hidden' name='op' value='subscribe'>";
-					print \Controls\hidden_tag("csrf_token", $_SESSION["csrf_token"]);
-
-					print "<fieldset>";
-					print "<label style='display : inline'>" . __("Multiple feed URLs found:") . "</label>";
-					print "<select name='feed_url' dojoType='dijit.form.Select'>";
-
-					foreach ($feed_urls as $url => $name) {
-						$url = htmlspecialchars($url);
-						$name = htmlspecialchars($name);
-
-						print "<option value=\"$url\">$name</option>";
-					}
-
-					print "</select>";
-					print "</fieldset>";
-
-					print "<button class='alt-primary' dojoType='dijit.form.Button' type='submit'>".__("Subscribe to selected feed")."</button>";
-					print "<a href='index.php'>".__("Return to Tiny Tiny RSS")."</a>";
-
-					print "</form>";
-				}
-
-				$tp_uri = get_self_url_prefix() . "/prefs.php";
-
-				if ($rc['code'] <= 2){
-					$sth = $this->pdo->prepare("SELECT id FROM ttrss_feeds WHERE
-					feed_url = ? AND owner_uid = ?");
-					$sth->execute([$feed_url, $_SESSION['uid']]);
-					$row = $sth->fetch();
-
-					$feed_id = $row["id"];
-				} else {
-					$feed_id = 0;
-				}
-
-				if ($feed_id) {
-					print "<form method='GET' action=\"$tp_uri\">
-					<input type='hidden' name='tab' value='feeds'>
-					<input type='hidden' name='method' value='editfeed'>
-					<input type='hidden' name='methodparam' value='$feed_id'>
-					<button dojoType='dijit.form.Button' class='alt-info' type='submit'>".__("Edit subscription options")."</button>
-					<a href='index.php'>".__("Return to Tiny Tiny RSS")."</a>
-					</form>";
-				}
-			}
-
-			print "</div></div></body></html>";
-
-		} else {
-			$this->render_login_form();
 		}
 	}
 
@@ -928,7 +615,7 @@ class Handler_Public extends Handler {
 
 		if (!SINGLE_USER_MODE && $_SESSION["access_level"] < 10) {
 			$_SESSION["login_error_msg"] = __("Your access level is insufficient to run this script.");
-			$this->render_login_form();
+			$this->_render_login_form();
 			exit;
 		}
 
@@ -1066,7 +753,7 @@ class Handler_Public extends Handler {
 		}
 	}
 
-	private function make_article_tag_uri($id, $timestamp) {
+	private function _make_article_tag_uri($id, $timestamp) {
 
 		$timestamp = date("Y-m-d", strtotime($timestamp));
 
@@ -1108,7 +795,7 @@ class Handler_Public extends Handler {
 		}
 	}
 
-	static function render_login_form() {
+	static function _render_login_form() {
 		header('Cache-Control: public');
 
 		require_once "login_form.php";

@@ -599,7 +599,7 @@ class PluginHost {
 	}
 
 	// handled by classes/pluginhandler.php, requires valid session
-	function get_method_url(Plugin $sender, string $method, $params)  {
+	function get_method_url(Plugin $sender, string $method, $params = [])  {
 		return get_self_url_prefix() . "/backend.php?" .
 			http_build_query(
 				array_merge(
@@ -623,7 +623,7 @@ class PluginHost {
 	} */
 
 	// WARNING: endpoint in public.php, exposed to unauthenticated users
-	function get_public_method_url(Plugin $sender, string $method, $params)  {
+	function get_public_method_url(Plugin $sender, string $method, $params = [])  {
 		if ($sender->is_public_method($method)) {
 			return get_self_url_prefix() . "/public.php?" .
 				http_build_query(

@@ -201,7 +201,7 @@ const Tables = {
 
 	},
 	select: function(elemId, selected) {
-		$(elemId).querySelector("tr").forEach((row) => {
+		$(elemId).querySelectorAll("tr").forEach((row) => {
 			const checkNode = row.querySelector(".dijitCheckBox,input[type=checkbox]");
 			if (checkNode) {
 				const widget = dijit.getEnclosingWidget(checkNode);
@@ -219,7 +219,7 @@ const Tables = {
 	getSelected: function(elemId) {
 		const rv = [];
 
-		$(elemId).querySelector("tr").forEach((row) => {
+		$(elemId).querySelectorAll("tr").forEach((row) => {
 			if (row.hasClassName("Selected")) {
 				// either older prefix-XXX notation or separate attribute
 				const rowId = row.getAttribute("data-row-id") || row.id.replace(/^[A-Z]*?-/, "");

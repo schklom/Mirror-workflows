@@ -803,7 +803,7 @@ class Pref_Feeds extends Handler_Protected {
 				<button style='float : left' class='alt-danger' dojoType='dijit.form.Button'
 					onclick='App.dialogOf(this).unsubscribeFeed($feed_id, \"$title\")'>".
 					__('Unsubscribe')."</button>
-				<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>".__('Save')."</button>
+				<button dojoType='dijit.form.Button' class='alt-primary' onclick='return App.dialogOf(this).execute()' type='submit'>".__('Save')."</button>
 				<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".__('Cancel')."</button>
 				</footer>";
 		}

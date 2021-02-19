@@ -425,7 +425,9 @@ const	CommonDialogs = {
 								Feeds.reload();
 
 						});
+						return true;
 					}
+					return false;
 				},
 				content: __("Loading, please wait...")
 			});

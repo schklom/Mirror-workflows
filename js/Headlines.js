@@ -462,7 +462,7 @@ const Headlines = {
 								<a class="title" title="${App.escapeHtml(hl.title)}" target="_blank" rel="noopener noreferrer" href="${App.escapeHtml(hl.link)}">
 									${hl.title}</a>
 								<span class="author">${hl.author}</span>
-								${hl.labels}
+								${Article.renderLabels(hl.id, hl.labels)}
 								${hl.cdm_excerpt ? hl.cdm_excerpt : ""}
 							</span>
 
@@ -527,7 +527,7 @@ const Headlines = {
 				<span data-article-id="${hl.id}" class="hl-content hlMenuAttach">
 					<a class="title" href="${App.escapeHtml(hl.link)}">${hl.title} <span class="preview">${hl.content_preview}</span></a>
 					<span class="author">${hl.author}</span>
-					${hl.labels}
+					${Article.renderLabels(hl.id, hl.labels)}
 				</span>
 			</div>
 					<span class="feed">
@@ -1240,11 +1240,16 @@ const Headlines = {
 			}
 		}
 	},
+	// TODO: maybe this should cause article to be rendered again, although it might cause flicker etc
 	onLabelsUpdated: function (data) {
 		if (data) {
-			data['info-for-headlines'].forEach(function (elem) {
-				App.findAll(".HLLCTR-" + elem.id).forEach(function (ctr) {
-					ctr.innerHTML = elem.labels;
+			data["labels-for"].forEach((row) => {
+				if (this.headlines[row.id]) {
+					this.headlines[row.id].labels = row.labels;
+				}
+
+				App.findAll(`span[data-labels-for="${row.id}"]`).forEach((ctr) => {
+					ctr.innerHTML = Article.renderLabels(row.id, row.labels);
 				});
 			});
 		}

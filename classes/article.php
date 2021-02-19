@@ -292,22 +292,17 @@ class Article extends Handler_Protected {
 
 		$label = Labels::find_caption($label_id, $_SESSION["uid"]);
 
-		$reply["info-for-headlines"] = array();
+		$reply["labels-for"] = [];
 
 		if ($label) {
-
 			foreach ($ids as $id) {
-
 				if ($assign)
 					Labels::add_article($id, $label, $_SESSION["uid"]);
 				else
 					Labels::remove_article($id, $label, $_SESSION["uid"]);
 
-				$labels = $this->_get_labels($id, $_SESSION["uid"]);
-
-				array_push($reply["info-for-headlines"],
-				array("id" => $id, "labels" => $this->_format_labels_html($labels)));
-
+				array_push($reply["labels-for"],
+					["id" => (int)$id, "labels" => $this->_get_labels($id)]);
 			}
 		}
 

@@ -216,11 +216,7 @@ class Feeds extends Handler_Protected {
 
 				if (!is_array($labels)) $labels = Article::_get_labels($id);
 
-				$labels_str = "<span class=\"HLLCTR-$id\">";
-				$labels_str .= Article::_format_labels_html($labels);
-				$labels_str .= "</span>";
-
-				$line["labels"] = $labels_str;
+				$line["labels"] = Article::_get_labels($id);
 
 				if (count($topmost_article_ids) < 3) {
 					array_push($topmost_article_ids, $id);

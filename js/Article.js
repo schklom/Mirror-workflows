@@ -130,6 +130,12 @@ const Article = {
 
 		Headlines.toggleUnread(id, 0);
 	},
+	renderLabels: function(id, labels) {
+		return `<span class="labels" data-labels-for="${id}">${labels.map((label) => `
+			<span class="label" data-label-id="${label[0]}"
+					style="color : ${label[2]}; background-color : ${label[3]}">${App.escapeHtml(label[1])}</span>`
+		).join("")}</span>`;
+	},
 	renderEnclosures: function (enclosures) {
 
 		// enclosure list was handled by backend (HOOK_FORMAT_ENCLOSURES)

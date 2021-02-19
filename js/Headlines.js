@@ -495,7 +495,7 @@ const Headlines = {
 								<div class="left">
 									${hl.buttons_left}
 									<i class="material-icons">label_outline</i>
-									<span id="ATSTR-${hl.id}">${hl.tags_str}</span>
+									${Article.renderTags(hl.id, hl.tags)}
 									<a title="${__("Edit tags for this article")}" href="#"
 										onclick="Article.editTags(${hl.id})">(+)</a>
 									${comments}

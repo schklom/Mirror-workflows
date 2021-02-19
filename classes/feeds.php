@@ -299,7 +299,7 @@ class Feeds extends Handler_Protected {
 				else
 					$tags = false;
 
-				$line["tags_str"] = Article::_format_tags_html($tags);
+				$line["tags"] = Article::_get_tags($line["id"], false, $line["tag_cache"]);
 
 				$this->_mark_timestamp("   tags");
 

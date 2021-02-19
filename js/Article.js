@@ -130,6 +130,14 @@ const Article = {
 
 		Headlines.toggleUnread(id, 0);
 	},
+	renderTags: function (id, tags) {
+		const tags_short = tags.length > 5 ? tags.slice(0, 5) : tags;
+
+		return `<span class="tags" title="${tags.join(", ")}" data-tags-for="${id}">
+			${tags_short.length > 0 ? tags_short.map((tag) => `
+				<a href="#" onclick="Feeds.open({feed: '${tag.trim()}'})" class="tag">${tag}</a>`
+			).join(", ") : `${__("no tags")}`}</span>`;
+	},
 	renderLabels: function(id, labels) {
 		return `<span class="labels" data-labels-for="${id}">${labels.map((label) => `
 			<span class="label" data-label-id="${label[0]}"
@@ -286,7 +294,7 @@ const Article = {
 							<div class="comments">${comments}</div>
 							<div class="author">${hl.author}</div>
 							<i class="material-icons">label_outline</i>
-							<span id="ATSTR-${hl.id}">${hl.tags_str}</span>
+							${Article.renderTags(hl.id, hl.tags)}
 							&nbsp;<a title="${__("Edit tags for this article")}" href="#"
 								onclick="Article.editTags(${hl.id})">(+)</a>
 							<div class="buttons right">${hl.buttons}</div>
@@ -343,13 +351,13 @@ const Article = {
 							dialog.hide();
 
 							if (data) {
-								const id = data.id;
+								if (Headlines.headlines[data.id]) {
+									Headlines.headlines[data.id].tags = data.tags;
+								}
 
-								const tags = App.byId("ATSTR-" + id);
-								const tooltip = dijit.byId("ATSTRTIP-" + id);
-
-								if (tags) tags.innerHTML = data.content;
-								if (tooltip) tooltip.attr('label', data.content_full);
+								App.findAll(`span[data-tags-for="${data.id}"`).forEach((ctr) => {
+									ctr.innerHTML = Article.renderTags(data.id, data.tags);
+								});
 							}
 						} catch (e) {
 							App.Error.report(e);

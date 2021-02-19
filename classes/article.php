@@ -199,8 +199,10 @@ class Article extends Handler_Protected {
 
 		$id = clean($_REQUEST["id"]);
 
-		$tags_str = clean($_REQUEST["tags_str"]);
-		$tags = array_unique(array_map('trim', explode(",", $tags_str)));
+		//$tags_str = clean($_REQUEST["tags_str"]);
+		//$tags = array_unique(array_map('trim', explode(",", $tags_str)));
+
+		$tags = FeedItem_Common::normalize_categories(explode(",", clean($_REQUEST["tags_str"])));
 
 		$this->pdo->beginTransaction();
 
@@ -225,8 +227,6 @@ class Article extends Handler_Protected {
 				(post_int_id, owner_uid, tag_name)
 				VALUES (?, ?, ?)");
 
-			$tags = FeedItem_Common::normalize_categories($tags);
-
 			foreach ($tags as $tag) {
 				$csth->execute([$int_id, $_SESSION['uid'], $tag]);
 
@@ -248,14 +248,7 @@ class Article extends Handler_Protected {
 
 		$this->pdo->commit();
 
-		$tags = self::_get_tags($id);
-		$tags_str = $this->_format_tags_html($tags);
-		$tags_str_full = join(", ", $tags);
-
-		if (!$tags_str_full) $tags_str_full = __("no tags");
-
-		print json_encode(array("id" => (int)$id,
-				"content" => $tags_str, "content_full" => $tags_str_full));
+		print json_encode(["id" => (int)$id, "tags" => $tags]);
 	}
 
 
@@ -423,42 +416,6 @@ class Article extends Handler_Protected {
 		}
 
 		return $tags;
-	}
-
-	static function _format_tags_html($tags) {
-		if (!is_array($tags) || count($tags) == 0) {
-			return __("no tags");
-		} else {
-			$maxtags = min(5, count($tags));
-			$tags_str = "";
-
-			for ($i = 0; $i < $maxtags; $i++) {
-				$tags_str .= "<a class=\"tag\" href=\"#\" onclick=\"Feeds.open({feed:'".$tags[$i]."'})\">" . $tags[$i] . "</a>, ";
-			}
-
-			$tags_str = mb_substr($tags_str, 0, mb_strlen($tags_str)-2);
-
-			if (count($tags) > $maxtags)
-				$tags_str .= ", &hellip;";
-
-			return $tags_str;
-		}
-	}
-
-	static function _format_labels_html($labels) {
-
-		if (!is_array($labels)) return '';
-
-		$labels_str = "";
-
-		foreach ($labels as $l) {
-			$labels_str .= sprintf("<div class='label'
-				style='color : %s; background-color : %s'>%s</div>",
-				$l[2], $l[3], $l[1]);
-		}
-
-		return $labels_str;
-
 	}
 
 	static function _format_note_html($id, $note, $allow_edit = true) {

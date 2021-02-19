@@ -47,8 +47,8 @@ class Af_RedditImgur extends Plugin {
 					evt.preventDefault();
 					if (this.validate()) {
 						Notify.progress('Saving data...', true);
-						xhrPost("backend.php", this.getValues(), (transport) => {
-							Notify.info(transport.responseText);
+						xhr.post("backend.php", this.getValues(), (reply) => {
+							Notify.info(reply);
 						})
 					}
 				</script>

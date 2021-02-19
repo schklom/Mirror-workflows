@@ -1,7 +1,7 @@
 'use strict';
 
 /* global __, ngettext, Article, App */
-/* global xhrPost, dojo, dijit, PluginHost, Notify, $$, Feeds */
+/* global dojo, dijit, PluginHost, Notify, xhr, Feeds */
 /* global CommonDialogs */
 
 const Headlines = {
@@ -149,26 +149,26 @@ const Headlines = {
 		const promises = [];
 
 		if (ops.tmark.length != 0)
-			promises.push(xhrPost("backend.php",
+			promises.push(xhr.post("backend.php",
 				{op: "rpc", method: "markSelected", ids: ops.tmark.toString(), cmode: 2}));
 
 		if (ops.tpub.length != 0)
-			promises.push(xhrPost("backend.php",
+			promises.push(xhr.post("backend.php",
 				{op: "rpc", method: "publishSelected", ids: ops.tpub.toString(), cmode: 2}));
 
 		if (ops.read.length != 0)
-			promises.push(xhrPost("backend.php",
+			promises.push(xhr.post("backend.php",
 				{op: "rpc", method: "catchupSelected", ids: ops.read.toString(), cmode: 0}));
 
 		if (ops.unread.length != 0)
-			promises.push(xhrPost("backend.php",
+			promises.push(xhr.post("backend.php",
 				{op: "rpc", method: "catchupSelected", ids: ops.unread.toString(), cmode: 1}));
 
 		const scores = Object.keys(ops.rescore);
 
 		if (scores.length != 0) {
 			scores.forEach((score) => {
-				promises.push(xhrPost("backend.php",
+				promises.push(xhr.post("backend.php",
 					{op: "article", method: "setScore", id: ops.rescore[score].toString(), score: score}));
 			});
 		}
@@ -622,9 +622,7 @@ const Headlines = {
 
 		dojo.parser.parse(target.domNode);
 	},
-	onLoaded: function (transport, offset, append) {
-		const reply = App.handleRpcJson(transport);
-
+	onLoaded: function (reply, offset, append) {
 		console.log("Headlines.onLoaded: offset=", offset, "append=", append);
 
 		let is_cat = false;
@@ -785,7 +783,6 @@ const Headlines = {
 				});
 
 		} else {
-			console.error("Invalid object received: " + transport.responseText);
 			dijit.byId("headlines-frame").attr('content', "<div class='whiteBox'>" +
 				__('Could not update headlines (invalid object received - see error console for details)') +
 				"</div>");
@@ -1011,9 +1008,8 @@ const Headlines = {
 			ids: ids.toString(), lid: id
 		};
 
-		xhrPost("backend.php", query, (transport) => {
-			App.handleRpcJson(transport);
-			this.onLabelsUpdated(transport);
+		xhr.json("backend.php", query, (reply) => {
+			this.onLabelsUpdated(reply);
 		});
 	},
 	selectionAssignLabel: function (id, ids) {
@@ -1029,9 +1025,8 @@ const Headlines = {
 			ids: ids.toString(), lid: id
 		};
 
-		xhrPost("backend.php", query, (transport) => {
-			App.handleRpcJson(transport);
-			this.onLabelsUpdated(transport);
+		xhr.json("backend.php", query, (reply) => {
+			this.onLabelsUpdated(reply);
 		});
 	},
 	deleteSelection: function () {
@@ -1060,8 +1055,7 @@ const Headlines = {
 
 		const query = {op: "rpc", method: "delete", ids: rows.toString()};
 
-		xhrPost("backend.php", query, (transport) => {
-			App.handleRpcJson(transport);
+		xhr.json("backend.php", query, () => {
 			Feeds.reloadCurrent();
 		});
 	},
@@ -1246,9 +1240,7 @@ const Headlines = {
 			}
 		}
 	},
-	onLabelsUpdated: function (transport) {
-		const data = JSON.parse(transport.responseText);
-
+	onLabelsUpdated: function (data) {
 		if (data) {
 			data['info-for-headlines'].forEach(function (elem) {
 				App.findAll(".HLLCTR-" + elem.id).forEach(function (ctr) {

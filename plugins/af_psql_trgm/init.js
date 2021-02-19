@@ -1,4 +1,4 @@
-/* global dijit, dojo, Plugins, xhrPost, __ */
+/* global dijit, dojo, Plugins, xhr, __ */
 
 Plugins.Psql_Trgm = {
 	showRelated: function (id) {
@@ -10,8 +10,8 @@ Plugins.Psql_Trgm = {
 		const tmph = dojo.connect(dialog, "onShow", null, function (/* e */) {
 			dojo.disconnect(tmph);
 
-			xhrPost("backend.php", {op: 'pluginhandler', plugin: 'af_psql_trgm', method: 'showrelated', id: id}, (transport) => {
-				dialog.attr('content', transport.responseText);
+			xhr.post("backend.php", {op: 'pluginhandler', plugin: 'af_psql_trgm', method: 'showrelated', id: id}, (reply) => {
+				dialog.attr('content', reply);
 			});
 		});
 

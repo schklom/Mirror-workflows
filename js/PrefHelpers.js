@@ -19,8 +19,8 @@ const	Helpers = {
 				alert("No passwords selected.");
 			} else if (confirm(__("Remove selected app passwords?"))) {
 
-				xhrPost("backend.php", {op: "pref-prefs", method: "deleteAppPassword", ids: rows.toString()}, (transport) => {
-					this.updateContent(transport.responseText);
+				xhr.post("backend.php", {op: "pref-prefs", method: "deleteAppPassword", ids: rows.toString()}, (reply) => {
+					this.updateContent(reply);
 					Notify.close();
 				});
 
@@ -31,8 +31,8 @@ const	Helpers = {
 			const title = prompt("Password description:")
 
 			if (title) {
-				xhrPost("backend.php", {op: "pref-prefs", method: "generateAppPassword", title: title}, (transport) => {
-					this.updateContent(transport.responseText);
+				xhr.post("backend.php", {op: "pref-prefs", method: "generateAppPassword", title: title}, (reply) => {
+					this.updateContent(reply);
 					Notify.close();
 				});
 
@@ -63,8 +63,13 @@ const	Helpers = {
 			this.update();
 		},
 		update: function() {
-			xhrPost("backend.php", { op: "pref-system", severity: dijit.byId("severity").attr('value'), page: Helpers.EventLog.log_page }, (transport) => {
-				dijit.byId('systemTab').attr('content', transport.responseText);
+			xhr.post("backend.php", {
+						op: "pref-system",
+						severity: dijit.byId("severity").attr('value'),
+						page: Helpers.EventLog.log_page
+					}, (reply) => {
+
+				dijit.byId('systemTab').attr('content', reply);
 				Notify.close();
 			});
 		},
@@ -164,8 +169,8 @@ const	Helpers = {
 														`<span dojoType='dijit.InlineEditBox' width='300px' autoSave='false'
 															profile-id='${profile.id}'>${profile.title}
 																<script type='dojo/method' event='onChange' args='value'>
-																	xhrPost("backend.php",
-																		{op: 'pref-prefs', method: 'saveprofile', value: value, id: this.attr('profile-id')}, (transport) => {
+																	xhr.post("backend.php",
+																		{op: 'pref-prefs', method: 'saveprofile', value: value, id: this.attr('profile-id')}, () => {
 																			//
 																		});
 																</script>
@@ -267,9 +272,9 @@ const	Helpers = {
 		},
 		confirmReset: function() {
 			if (confirm(__("Reset to defaults?"))) {
-				xhrPost("backend.php", {op: "pref-prefs", method: "resetconfig"}, (transport) => {
+				xhr.post("backend.php", {op: "pref-prefs", method: "resetconfig"}, (reply) => {
 					Helpers.Prefs.refresh();
-					Notify.info(transport.responseText);
+					Notify.info(reply);
 				});
 			}
 		},
@@ -283,8 +288,8 @@ const	Helpers = {
 			}
 		},
 		refresh: function() {
-			xhrPost("backend.php", { op: "pref-prefs" }, (transport) => {
-				dijit.byId('prefsTab').attr('content', transport.responseText);
+			xhr.post("backend.php", { op: "pref-prefs" }, (reply) => {
+				dijit.byId('prefsTab').attr('content', reply);
 				Notify.close();
 			});
 		},

@@ -129,8 +129,8 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 			const searchElem = App.byId("feed_search");
 			const search = (searchElem) ? searchElem.value : "";
 
-			xhrPost("backend.php", { op: "pref-feeds", search: search }, (transport) => {
-				dijit.byId('feedsTab').attr('content', transport.responseText);
+			xhr.post("backend.php", { op: "pref-feeds", search: search }, (reply) => {
+				dijit.byId('feedsTab').attr('content', reply);
 				Notify.close();
 			});
 		},
@@ -295,7 +295,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 
 			Notify.progress("Loading, please wait...");
 
-			xhrPost("backend.php", {op: "pref-feeds", method: "editfeeds", ids: rows.toString()}, (transport) => {
+			xhr.post("backend.php", {op: "pref-feeds", method: "editfeeds", ids: rows.toString()}, (reply) => {
 				Notify.close();
 
 				try {
@@ -347,7 +347,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 								});
 							}
 						},
-						content: transport.responseText
+						content: reply
 					});
 
 					dialog.show();

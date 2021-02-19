@@ -1,4 +1,4 @@
-/* global dojo, xhrPost, Plugins, xhrJson, Notify, fox, __ */
+/* global dojo, Plugins, xhr, App, Notify, fox, __ */
 
 Plugins.Note = {
 	edit: function(id) {
@@ -33,8 +33,8 @@ Plugins.Note = {
 		const tmph = dojo.connect(dialog, 'onShow', function () {
 			dojo.disconnect(tmph);
 
-			xhrPost("backend.php", App.getPhArgs("note", "edit", {id: id}), (transport) => {
-				dialog.attr('content', transport.responseText);
+			xhr.post("backend.php", App.getPhArgs("note", "edit", {id: id}), (reply) => {
+				dialog.attr('content', reply);
 			});
 		});
 

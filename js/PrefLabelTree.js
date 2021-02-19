@@ -55,8 +55,8 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 			return rv;
 		},
 		reload: function() {
-			xhrPost("backend.php", { op: "pref-labels" }, (transport) => {
-				dijit.byId('labelsTab').attr('content', transport.responseText);
+			xhr.post("backend.php", { op: "pref-labels" }, (reply) => {
+				dijit.byId('labelsTab').attr('content', reply);
 				Notify.close();
 			});
 		},

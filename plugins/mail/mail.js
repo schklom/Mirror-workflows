@@ -1,4 +1,4 @@
-/* global Plugins, Headlines, dojo, xhrPost, xhrJson, Notify, fox, __ */
+/* global Plugins, Headlines, dojo, App, xhr, Notify, fox, __ */
 
 Plugins.Mail = {
 	send: function(id) {
@@ -38,8 +38,8 @@ Plugins.Mail = {
 		const tmph = dojo.connect(dialog, 'onShow', function () {
 			dojo.disconnect(tmph);
 
-			xhrPost("backend.php", App.getPhArgs("mail", "emailArticle", {ids: id}), (transport) => {
-				dialog.attr('content', transport.responseText);
+			xhr.post("backend.php", App.getPhArgs("mail", "emailArticle", {ids: id}), (reply) => {
+				dialog.attr('content', reply);
 			});
 		});
 

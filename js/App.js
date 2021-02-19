@@ -2,7 +2,7 @@
 
 /* eslint-disable new-cap */
 /* global __, Article, Headlines, Filters, fox */
-/* global xhrPost, xhr, dojo, dijit, PluginHost, Notify, Feeds, Cookie */
+/* global xhr, dojo, dijit, PluginHost, Notify, Feeds, Cookie */
 /* global CommonDialogs, Plugins */
 
 const App = {
@@ -371,72 +371,57 @@ const App = {
          dialog.show();
       });
    },
-	handleRpcJson: function(transport) {
+	handleRpcJson: function(reply) {
 
-		const netalert = App.findAll("#toolbar .net-alert")[0];
+		const netalert = App.find(".net-alert");
 
-		try {
-			const reply = JSON.parse(transport.responseText);
+      if (reply) {
+         const error = reply['error'];
+         const seq = reply['seq'];
+         const message = reply['message'];
+         const counters = reply['counters'];
+         const runtime_info = reply['runtime-info'];
 
-			if (reply) {
-				const error = reply['error'];
+         if (error) {
+            const code = error['code'];
 
-				if (error) {
-					const code = error['code'];
-					const msg = error['message'];
+            if (code && code != 0) {
+               const msg = error['message'];
 
-					console.warn("[handleRpcJson] received fatal error ", code, msg);
+               console.warn("[handleRpcJson] received fatal error ", code, msg);
 
-					if (code != 0) {
-						/* global ERRORS */
-						this.Error.fatal(ERRORS[code], {info: msg, code: code});
-						return false;
-					}
-				}
+               /* global ERRORS */
+               this.Error.fatal(ERRORS[code], {info: msg, code: code});
+               return false;
+            }
+         }
 
-				const seq = reply['seq'];
+         if (seq && this.get_seq() != seq) {
+            console.warn("[handleRpcJson] sequence mismatch: ", seq, '!=', this.get_seq());
+            return;
+         }
 
-				if (seq && this.get_seq() != seq) {
-					console.log("[handleRpcJson] sequence mismatch: ", seq, '!=', this.get_seq());
-					return true;
-				}
+         // not in preferences
+         if (typeof Feeds != "undefined") {
+            if (message == "UPDATE_COUNTERS") {
+               console.log("need to refresh counters...");
+               Feeds.requestCounters(true);
+            }
 
-				const message = reply['message'];
+            if (counters)
+               Feeds.parseCounters(counters);
+         }
 
-				if (message == "UPDATE_COUNTERS") {
-					console.log("need to refresh counters...");
-					Feeds.requestCounters(true);
-				}
+         if (runtime_info)
+            this.parseRuntimeInfo(runtime_info);
 
-				const counters = reply['counters'];
+         if (netalert) netalert.hide();
 
-				if (counters)
-					Feeds.parseCounters(counters);
+      } else {
+         if (netalert) netalert.show();
 
-				const runtime_info = reply['runtime-info'];
-
-				if (runtime_info)
-					this.parseRuntimeInfo(runtime_info);
-
-				if (netalert) netalert.hide();
-
-				return reply;
-
-			} else {
-				if (netalert) netalert.show();
-
-				Notify.error("Communication problem with server.");
-			}
-
-		} catch (e) {
-			if (netalert) netalert.show();
-
-			Notify.error("Communication problem with server.");
-
-			console.error(e);
+         Notify.error("Communication problem with server.");
 		}
-
-		return false;
 	},
 	parseRuntimeInfo: function(data) {
 		Object.keys(data).forEach((k) => {
@@ -450,7 +435,7 @@ const App = {
          }
 
          if (k == "recent_log_events") {
-            const alert = App.findAll(".log-alert")[0];
+            const alert = App.find(".log-alert");
 
             if (alert) {
                v > 0 ? alert.show() : alert.hide();
@@ -462,10 +447,12 @@ const App = {
             return;
          }
 
-         if (k == "max_feed_id" || k == "num_feeds") {
-            if (this.getInitParam(k) != v) {
-               console.log("feed count changed, need to reload feedlist.");
-               Feeds.reload();
+         if (typeof Feeds != "undefined") {
+            if (k == "max_feed_id" || k == "num_feeds") {
+               if (this.getInitParam(k) && this.getInitParam(k) != v) {
+                  console.log("feed count changed, need to reload feedlist:", this.getInitParam(k), v);
+                  Feeds.reload();
+               }
             }
          }
 
@@ -668,6 +655,11 @@ const App = {
 
       return errorMsg == "";
    },
+   updateRuntimeInfo: function() {
+      xhr.json("backend.php", {op: "rpc", method: "getruntimeinfo"}, () => {
+         // handled by xhr.json()
+      });
+   },
    initSecondStage: function() {
 
       document.onkeydown = (event) => this.hotkeyHandler(event);
@@ -685,14 +677,18 @@ const App = {
             if (tab) {
                dijit.byId("pref-tabs").selectChild(tab);
 
-               switch (this.urlParam('method')) {
-                  case "editfeed":
-                     window.setTimeout(() => {
-                        CommonDialogs.editFeed(this.urlParam('methodparam'))
-                     }, 100);
-                     break;
-                  default:
-                     console.warn("initSecondStage, unknown method:", this.urlParam("method"));
+               const method = this.urlParam("method");
+
+               if (method) {
+                  switch (method) {
+                     case "editfeed":
+                        window.setTimeout(() => {
+                           CommonDialogs.editFeed(this.urlParam('methodparam'))
+                        }, 100);
+                        break;
+                     default:
+                        console.warn("initSecondStage, unknown method:", method);
+                  }
                }
             }
          } else {
@@ -708,7 +704,13 @@ const App = {
 
          dojo.connect(dijit.byId("pref-tabs"), "selectChild", function (elem) {
             localStorage.setItem("ttrss:prefs-tab", elem.id);
+            App.updateRuntimeInfo();
          });
+
+         if (!this.getInitParam("bw_limit"))
+            window.setInterval(() => {
+               App.updateRuntimeInfo();
+            }, 60 * 1000)
 
       } else {
 

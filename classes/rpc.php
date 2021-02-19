@@ -64,6 +64,14 @@ class RPC extends Handler_Protected {
 		print json_encode(array("message" => "UPDATE_COUNTERS"));
 	}
 
+	function getRuntimeInfo() {
+		$reply = [
+			'runtime-info' => $this->make_runtime_info()
+		];
+
+		print json_encode($reply);
+	}
+
 	function getAllCounters() {
 		@$seq = (int) $_REQUEST['seq'];
 

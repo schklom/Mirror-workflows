@@ -155,7 +155,7 @@ const xhr = {
 					reject(error);
 				},
 				load: function(data, ioargs) {
-					//console.log('xhr.post', '<<<', data, ioargs);
+					console.log('xhr.post', '<<<', ioargs.xhr);
 
 					if (complete != undefined)
 						complete(data, ioargs.xhr);
@@ -178,6 +178,9 @@ const xhr = {
 				}
 
 				console.log('xhr.json', '<<<', obj);
+
+				if (obj && typeof App != "undefined")
+					App.handleRpcJson(obj);
 
 				if (complete != undefined) complete(obj);
 

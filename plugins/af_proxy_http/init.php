@@ -221,8 +221,8 @@ class Af_Proxy_Http extends Plugin {
 				<script type="dojo/method" event="onSubmit" args="evt">
 					evt.preventDefault();
 					if (this.validate()) {
-						xhrPost("backend.php", this.getValues(), (transport) => {
-							Notify.info(transport.responseText);
+						xhr.post("backend.php", this.getValues(), (reply) => {
+							Notify.info(reply);
 						})
 					}
 				</script>

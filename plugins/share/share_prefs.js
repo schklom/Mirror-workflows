@@ -1,12 +1,12 @@
-/* global Plugins, Notify, xhrPost */
+/* global Plugins, Notify, xhr, App */
 
 Plugins.Share = {
 	clearKeys: function() {
 		if (confirm(__("This will invalidate all previously shared article URLs. Continue?"))) {
 			Notify.progress("Clearing URLs...");
 
-			xhrPost("backend.php", App.getPhArgs("share", "clearArticleKeys"), (transport) => {
-				Notify.info(transport.responseText);
+			xhr.post("backend.php", App.getPhArgs("share", "clearArticleKeys"), (reply) => {
+				Notify.info(reply);
 			});
 		}
 

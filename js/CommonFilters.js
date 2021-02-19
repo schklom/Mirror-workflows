@@ -39,12 +39,12 @@ const	Filters = {
 	createNewRuleElement: function(parentNode, replaceNode) {
 		const rule = dojo.formToJson("filter_new_rule_form");
 
-		xhrPost("backend.php", {op: "pref-filters", method: "printrulename", rule: rule}, (transport) => {
+		xhr.post("backend.php", {op: "pref-filters", method: "printrulename", rule: rule}, (reply) => {
 			try {
 				const li = document.createElement('li');
 
 				li.innerHTML = `<input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
-						<span onclick='App.dialogOf(this).editRule(this)'>${transport.responseText}</span>
+						<span onclick='App.dialogOf(this).editRule(this)'>${reply}</span>
 					${App.FormFields.hidden_tag("rule[]", rule)}`;
 
 				dojo.parser.parse(li);
@@ -70,12 +70,12 @@ const	Filters = {
 
 		const action = dojo.formToJson(form);
 
-		xhrPost("backend.php", { op: "pref-filters", method: "printactionname", action: action }, (transport) => {
+		xhr.post("backend.php", { op: "pref-filters", method: "printactionname", action: action }, (reply) => {
 			try {
 				const li = document.createElement('li');
 
 				li.innerHTML = `<input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
-						<span onclick='App.dialogOf(this).editAction(this)'>${transport.responseText}</span>
+						<span onclick='App.dialogOf(this).editAction(this)'>${reply}</span>
 					${App.FormFields.hidden_tag("action[]", action)}`;
 
 				dojo.parser.parse(li);
@@ -107,8 +107,8 @@ const	Filters = {
 		const tmph = dojo.connect(dialog, "onShow", null, function (/* e */) {
 			dojo.disconnect(tmph);
 
-			xhrPost("backend.php", {op: 'pref-filters', method: 'newrule', rule: ruleStr}, (transport) => {
-				dialog.attr('content', transport.responseText);
+			xhr.post("backend.php", {op: 'pref-filters', method: 'newrule', rule: ruleStr}, (reply) => {
+				dialog.attr('content', reply);
 			});
 		});
 
@@ -128,8 +128,8 @@ const	Filters = {
 		const tmph = dojo.connect(dialog, "onShow", null, function (/* e */) {
 			dojo.disconnect(tmph);
 
-			xhrPost("backend.php", {op: 'pref-filters', method: 'newaction', action: actionStr}, (transport) => {
-				dialog.attr('content', transport.responseText);
+			xhr.post("backend.php", {op: 'pref-filters', method: 'newaction', action: actionStr}, (reply) => {
+				dialog.attr('content', reply);
 			});
 		});
 
@@ -149,10 +149,8 @@ const	Filters = {
 
 				console.log("getTestResults:" + offset);
 
-				xhrPost("backend.php", params, (transport) => {
+				xhr.json("backend.php", params, (result) => {
 					try {
-						const result = JSON.parse(transport.responseText);
-
 						if (result && dialog && dialog.open) {
 							dialog.results += result.length;
 
@@ -239,7 +237,7 @@ const	Filters = {
 
 		console.log('Filters.edit', query);
 
-		xhrPost("backend.php", query, function (transport) {
+		xhr.post("backend.php", query, function (reply) {
 			try {
 				const dialog = new fox.SingleUseDialog({
 					id: "filterEditDlg",
@@ -311,7 +309,7 @@ const	Filters = {
 							});
 						}
 					},
-					content: transport.responseText
+					content: reply
 				});
 
 				if (!App.isPrefs()) {
@@ -334,9 +332,7 @@ const	Filters = {
 
 							const query = {op: "article", method: "getmetadatabyid", id: Article.getActive()};
 
-							xhrPost("backend.php", query, (transport) => {
-								const reply = JSON.parse(transport.responseText);
-
+							xhr.json("backend.php", query, (reply) => {
 								let title = false;
 
 								if (reply && reply.title) title = reply.title;

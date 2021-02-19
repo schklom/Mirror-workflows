@@ -8,8 +8,8 @@ const	Users = {
 		const user_search = App.byId("user_search");
 		const search = user_search ? user_search.value : "";
 
-		xhrPost("backend.php", { op: "pref-users", sort: sort, search: search }, (transport) => {
-			dijit.byId('usersTab').attr('content', transport.responseText);
+		xhr.post("backend.php", { op: "pref-users", sort: sort, search: search }, (reply) => {
+			dijit.byId('usersTab').attr('content', reply);
 			Notify.close();
 		});
 	},
@@ -19,8 +19,8 @@ const	Users = {
 		if (login) {
 			Notify.progress("Adding user...");
 
-			xhrPost("backend.php", {op: "pref-users", method: "add", login: login}, (transport) => {
-				alert(transport.responseText);
+			xhr.post("backend.php", {op: "pref-users", method: "add", login: login}, (reply) => {
+				alert(reply);
 				Users.reload();
 			});
 
@@ -99,8 +99,8 @@ const	Users = {
 							<div dojoType="dijit.layout.ContentPane" title="${__('User details')}">
 								<script type='dojo/method' event='onShow' args='evt'>
 									if (this.domNode.querySelector('.loading')) {
-										xhrPost("backend.php", {op: 'pref-users', method: 'userdetails', id: ${user.id}}, (transport) => {
-											this.attr('content', transport.responseText);
+										xhr.post("backend.php", {op: 'pref-users', method: 'userdetails', id: ${user.id}}, (reply) => {
+											this.attr('content', reply);
 										});
 									}
 								</script>
@@ -141,9 +141,9 @@ const	Users = {
 
 			const id = rows[0];
 
-			xhrPost("backend.php", {op: "pref-users", method: "resetPass", id: id}, (transport) => {
+			xhr.post("backend.php", {op: "pref-users", method: "resetPass", id: id}, (reply) => {
 				Notify.close();
-				Notify.info(transport.responseText, true);
+				Notify.info(reply, true);
 			});
 
 		}

@@ -754,6 +754,17 @@ body.ttrss_main #header {
   top: 0px;
   z-index: 5;
 }
+body.ttrss_main #header i.net-alert,
+body.ttrss_main #header .left i.icon-error {
+  color: red;
+}
+body.ttrss_main #header i.log-alert {
+  color: #ddba1c;
+  cursor: pointer;
+}
+body.ttrss_main #header i {
+  margin: 0 4px;
+}
 body.ttrss_main #content-insert {
   padding: 0px;
   border-color: #ddd;

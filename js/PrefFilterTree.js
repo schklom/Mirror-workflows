@@ -1,5 +1,5 @@
 /* eslint-disable prefer-rest-params */
-/* global __, define, lib, dijit, dojo, xhr, Notify */
+/* global __, define, lib, dijit, dojo, xhr, App, Notify */
 
 define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], function (declare, domConstruct) {
 
@@ -91,8 +91,8 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			let search = "";
 			if (user_search) { search = user_search.value; }
 
-			xhrPost("backend.php", { op: "pref-filters", search: search }, (transport) => {
-				dijit.byId('filtersTab').attr('content', transport.responseText);
+			xhr.post("backend.php", { op: "pref-filters", search: search }, (reply) => {
+				dijit.byId('filtersTab').attr('content', reply);
 				Notify.close();
 			});
 		},

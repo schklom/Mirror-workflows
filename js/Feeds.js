@@ -130,8 +130,8 @@ const	Feeds = {
 		this.reloadCurrent();
 	},
 	requestCounters: function() {
-		xhrPost("backend.php", {op: "rpc", method: "getAllCounters", seq: App.next_seq()}, (transport) => {
-			App.handleRpcJson(transport);
+		xhr.json("backend.php", {op: "rpc", method: "getAllCounters", seq: App.next_seq()}, () => {
+			//
 		});
 	},
 	reload: function() {
@@ -260,7 +260,7 @@ const	Feeds = {
 
 		// bw_limit disables timeout() so we request initial counters separately
 		if (App.getInitParam("bw_limit")) {
-			this.requestCounters(true);
+			App.requestCounters(true);
 		} else {
 			setTimeout(() => {
 				this.requestCounters(true);
@@ -361,8 +361,6 @@ const	Feeds = {
 			query.m = "ForceUpdate";
 		}
 
-		//Form.enable("toolbar-main");
-
 		if (!delayed)
 			if (!this.setExpando(feed, is_cat,
 				(is_cat) ? 'images/indicator_tiny.gif' : 'images/indicator_white.gif'))
@@ -374,11 +372,11 @@ const	Feeds = {
 
 		window.clearTimeout(this._viewfeed_wait_timeout);
 		this._viewfeed_wait_timeout = window.setTimeout(() => {
-			xhrPost("backend.php", query, (transport) => {
+			xhr.json("backend.php", query, (reply) => {
 				try {
 					window.clearTimeout(this._infscroll_timeout);
 					this.setExpando(feed, is_cat, 'images/blank_icon.gif');
-					Headlines.onLoaded(transport, offset, append);
+					Headlines.onLoaded(reply, offset, append);
 					PluginHost.run(PluginHost.HOOK_FEED_LOADED, [feed, is_cat]);
 				} catch (e) {
 					App.Error.report(e);
@@ -439,9 +437,7 @@ const	Feeds = {
 
 		Notify.progress("Loading, please wait...", true);
 
-		xhrPost("backend.php", catchup_query, (transport) => {
-			App.handleRpcJson(transport);
-
+		xhr.json("backend.php", catchup_query, () => {
 			const show_next_feed = App.getInitParam("on_catchup_show_next_feed");
 
 			// only select next unread feed if catching up entirely (as opposed to last week etc)
@@ -633,8 +629,8 @@ const	Feeds = {
 	updateRandom: function() {
 		console.log("in update_random_feed");
 
-		xhrPost("backend.php", {op: "rpc", method: "updaterandomfeed"}, (transport) => {
-			App.handleRpcJson(transport, true);
+		xhr.json("backend.php", {op: "rpc", method: "updaterandomfeed"}, () => {
+			//
 		});
 	},
 };

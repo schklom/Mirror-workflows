@@ -430,8 +430,8 @@ const	CommonDialogs = {
 			const tmph = dojo.connect(dialog, 'onShow', function () {
 				dojo.disconnect(tmph);
 
-				xhrPost("backend.php", {op: "pref-feeds", method: "editfeed", id: feed}, (transport) => {
-					dialog.attr('content', transport.responseText);
+				xhr.post("backend.php", {op: "pref-feeds", method: "editfeed", id: feed}, (reply) => {
+					dialog.attr('content', reply);
 				})
 			});
 

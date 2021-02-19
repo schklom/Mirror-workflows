@@ -124,7 +124,10 @@
 </div>
 
 <div id="header">
-	<!-- <a href='#' onclick="showHelp()"><?= __("Keyboard shortcuts") ?></a> | -->
+	<i class="material-icons net-alert" style="display : none"
+   	title="<?= __("Communication problem with server.") ?>">error_outline</i>
+	<i class="material-icons log-alert" style="display : none" onclick="App.openPreferences('system')"
+		title="<?= __("Recent entries found in event log.") ?>">warning</i>
 	<a href="#" onclick="document.location.href = 'index.php'"><?= __('Exit preferences') ?></a>
 </div>
 

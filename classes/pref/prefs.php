@@ -295,8 +295,8 @@ class Pref_Prefs extends Handler_Protected {
 					evt.preventDefault();
 					if (this.validate()) {
 						Notify.progress('Saving data...', true);
-						xhrPost("backend.php", this.getValues(), (transport) => {
-							Notify.info(transport.responseText);
+						xhr.post("backend.php", this.getValues(), (reply) => {
+							Notify.info(reply);
 						})
 					}
 			</script>
@@ -351,16 +351,16 @@ class Pref_Prefs extends Handler_Protected {
 					evt.preventDefault();
 					if (this.validate()) {
 						Notify.progress('Saving data...', true);
-						xhrPost("backend.php", this.getValues(), (transport) => {
+						xhr.post("backend.php", this.getValues(), (reply) => {
 							Notify.close();
-							if (transport.responseText.indexOf('ERROR: ') == 0) {
+							if (reply.indexOf('ERROR: ') == 0) {
 
 								App.byId('pwd_change_infobox').innerHTML =
-									transport.responseText.replace('ERROR: ', '');
+								reply.replace('ERROR: ', '');
 
 							} else {
 								App.byId('pwd_change_infobox').innerHTML =
-									transport.responseText.replace('ERROR: ', '');
+								reply.replace('ERROR: ', '');
 
 								const warn = App.byId('default_pass_warning');
 								if (warn) Element.hide(warn);
@@ -456,11 +456,11 @@ class Pref_Prefs extends Handler_Protected {
 						evt.preventDefault();
 						if (this.validate()) {
 							Notify.progress('Saving data...', true);
-							xhrPost("backend.php", this.getValues(), (transport) => {
+							xhr.post("backend.php", this.getValues(), (reply) => {
 								Notify.close();
 
-								if (transport.responseText.indexOf('ERROR: ') == 0) {
-									Notify.error(transport.responseText.replace('ERROR: ', ''));
+								if (reply.indexOf('ERROR: ') == 0) {
+									Notify.error(reply.replace('ERROR: ', ''));
 								} else {
 									window.location.reload();
 								}
@@ -515,11 +515,11 @@ class Pref_Prefs extends Handler_Protected {
 						evt.preventDefault();
 						if (this.validate()) {
 							Notify.progress('Saving data...', true);
-							xhrPost("backend.php", this.getValues(), (transport) => {
+							xhr.post("backend.php", this.getValues(), (reply) => {
 								Notify.close();
 
-								if (transport.responseText.indexOf('ERROR:') == 0) {
-									Notify.error(transport.responseText.replace('ERROR:', ''));
+								if (reply.indexOf('ERROR:') == 0) {
+									Notify.error(reply.replace('ERROR:', ''));
 								} else {
 									window.location.reload();
 								}
@@ -797,16 +797,14 @@ class Pref_Prefs extends Handler_Protected {
 			<script type="dojo/method" event="onSubmit" args="evt, quit">
 				if (evt) evt.preventDefault();
 				if (this.validate()) {
-					xhrPost("backend.php", this.getValues(), (transport) => {
+					xhr.post("backend.php", this.getValues(), (reply) => {
 						if (quit) {
 							document.location.href = 'index.php';
 						} else {
-							const msg = transport.responseText;
-
-							if (msg == 'PREFS_NEED_RELOAD') {
+							if (reply == 'PREFS_NEED_RELOAD') {
 								window.location.reload();
 							} else {
-								Notify.info(msg);
+								Notify.info(reply);
 							}
 						}
 					})
@@ -942,7 +940,7 @@ class Pref_Prefs extends Handler_Protected {
 			<script type="dojo/method" event="onSubmit" args="evt">
 					evt.preventDefault();
 					if (this.validate()) {
-						xhrPost("backend.php", this.getValues(), (transport) => {
+						xhr.post("backend.php", this.getValues(), () => {
 							Notify.close();
 							if (confirm(__('Selected plugins have been enabled. Reload?'))) {
 								window.location.reload();
@@ -1009,8 +1007,8 @@ class Pref_Prefs extends Handler_Protected {
 					<script type='dojo/method' event='onSelected' args='evt'>
 						if (this.domNode.querySelector('.loading'))
 							window.setTimeout(() => {
-								xhrPost("backend.php", {op: 'pref-prefs', method: 'index_auth'}, (transport) => {
-									this.attr('content', transport.responseText);
+								xhr.post("backend.php", {op: 'pref-prefs', method: 'index_auth'}, (reply) => {
+									this.attr('content', reply);
 								});
 							}, 100);
 					</script>
@@ -1023,8 +1021,8 @@ class Pref_Prefs extends Handler_Protected {
 					<script type='dojo/method' event='onSelected' args='evt'>
 						if (this.domNode.querySelector('.loading'))
 							window.setTimeout(() => {
-								xhrPost("backend.php", {op: 'pref-prefs', method: 'index_plugins'}, (transport) => {
-									this.attr('content', transport.responseText);
+								xhr.post("backend.php", {op: 'pref-prefs', method: 'index_plugins'}, (reply) => {
+									this.attr('content', reply);
 								});
 							}, 200);
 					</script>

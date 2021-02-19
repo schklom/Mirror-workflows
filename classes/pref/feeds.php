@@ -832,8 +832,7 @@ class Pref_Feeds extends Handler_Protected {
 
 			print "<label>" . __('Place in category:') . "</label> ";
 
-			print_feed_cat_select("cat_id", false,
-				'disabled="1" dojoType="fox.form.Select"');
+			print \Controls\select_feeds_cats("cat_id", null, ['disabled' => '1']);
 
 			$this->batch_edit_cbox("cat_id");
 

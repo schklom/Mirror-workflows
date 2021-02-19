@@ -1,4 +1,4 @@
-/* global dojo, Effect, Plugins, xhrJson, Notify, fox, xhrPost, __ */
+/* global dojo, Plugins, App, Notify, fox, xhr, __ */
 
 Plugins.Share = {
 	shareArticle: function(id) {
@@ -40,8 +40,8 @@ Plugins.Share = {
 			},
 			unshare: function () {
 				if (confirm(__("Remove sharing for this article?"))) {
-					xhrPost("backend.php", App.getPhArgs("share", "unshare", {id: id}), (transport) => {
-						Notify.info(transport.responseText);
+					xhr.post("backend.php", App.getPhArgs("share", "unshare", {id: id}), (reply) => {
+						Notify.info(reply);
 
 						const icon = document.querySelector(".share-icon-" + id);
 
@@ -59,8 +59,8 @@ Plugins.Share = {
 		const tmph = dojo.connect(dialog, 'onShow', function () {
 			dojo.disconnect(tmph);
 
-			xhrPost("backend.php", App.getPhArgs("share", "shareDialog", {id: id}), (transport) => {
-				dialog.attr('content', transport.responseText)
+			xhr.post("backend.php", App.getPhArgs("share", "shareDialog", {id: id}), (reply) => {
+				dialog.attr('content', reply)
 
 				const icon = document.querySelector(".share-icon-" + id);
 

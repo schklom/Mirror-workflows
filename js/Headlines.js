@@ -372,7 +372,7 @@ const Headlines = {
 		App.byId("main").removeClassName("expanded");
 
 		if (App.isCombinedMode())
-			App.byId("main").addClassName(App.getInitParam("cdm_expanded") ? " expanded" : " expandable");
+			App.byId("main").addClassName(App.getInitParam("cdm_expanded") ? "expanded" : "expandable");
 	},
 	renderAgain: function () {
 		// TODO: wrap headline elements into a knockoutjs model to prevent all this stuff

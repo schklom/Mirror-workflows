@@ -1,6 +1,6 @@
 'use strict'
 
-/* global require, App, $H */
+/* global require, App, dojo */
 
 /* exported Plugins */
 const Plugins = {};

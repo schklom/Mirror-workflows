@@ -2,8 +2,8 @@
 
 /* eslint-disable no-new */
 
-/* global __, App, Article, Lists, Effect, fox */
-/* global xhrPost, dojo, dijit, Notify, $$, Feeds */
+/* global __, App, Article, Lists, fox */
+/* global xhrPost, dojo, dijit, Notify, Feeds */
 
 const	Filters = {
 	filterDlgCheckAction: function(sender) {

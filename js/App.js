@@ -1,9 +1,9 @@
 'use strict';
 
 /* eslint-disable new-cap */
-/* global __, Article, Ajax, Headlines, Filters, fox */
-/* global xhrPost, xhrJson, dojo, dijit, PluginHost, Notify, $$, Feeds, Cookie */
-/* global CommonDialogs, Plugins, Effect */
+/* global __, Article, Headlines, Filters, fox */
+/* global xhrPost, xhrJson, dojo, dijit, PluginHost, Notify, Feeds, Cookie */
+/* global CommonDialogs, Plugins */
 
 const App = {
    _initParams: [],
@@ -234,7 +234,7 @@ const App = {
    },
 	urlParam: function(name) {
 		try {
-         const results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+         const results = new RegExp('[?&]' + name + '=([^&#]*)').exec(window.location.href);
          return decodeURIComponent(results[1].replace(/\+/g, " ")) || 0;
       } catch (e) {
          return 0;
@@ -439,40 +439,38 @@ const App = {
 		return false;
 	},
 	parseRuntimeInfo: function(data) {
-		for (const k in data) {
-			if (data.hasOwnProperty(k)) {
-				const v = data[k];
+		Object.keys(data).forEach((k) => {
+         const v = data[k];
 
-				console.log("RI:", k, "=>", v);
+         console.log("RI:", k, "=>", v);
 
-				if (k == "daemon_is_running" && v != 1) {
-					Notify.error("Update daemon is not running.", true);
-					return;
-				}
+         if (k == "daemon_is_running" && v != 1) {
+            Notify.error("Update daemon is not running.", true);
+            return;
+         }
 
-				if (k == "recent_log_events") {
-					const alert = App.findAll(".log-alert")[0];
+         if (k == "recent_log_events") {
+            const alert = App.findAll(".log-alert")[0];
 
-					if (alert) {
-						v > 0 ? alert.show() : alert.hide();
-					}
-				}
+            if (alert) {
+               v > 0 ? alert.show() : alert.hide();
+            }
+         }
 
-				if (k == "daemon_stamp_ok" && v != 1) {
-					Notify.error("Update daemon is not updating feeds.", true);
-					return;
-				}
+         if (k == "daemon_stamp_ok" && v != 1) {
+            Notify.error("Update daemon is not updating feeds.", true);
+            return;
+         }
 
-				if (k == "max_feed_id" || k == "num_feeds") {
-					if (this.getInitParam(k) != v) {
-						console.log("feed count changed, need to reload feedlist.");
-						Feeds.reload();
-					}
-				}
+         if (k == "max_feed_id" || k == "num_feeds") {
+            if (this.getInitParam(k) != v) {
+               console.log("feed count changed, need to reload feedlist.");
+               Feeds.reload();
+            }
+         }
 
-				this.setInitParam(k, v);
-			}
-		}
+         this.setInitParam(k, v);
+		});
 
 		PluginHost.run(PluginHost.HOOK_RUNTIME_INFO_LOADED, data);
 	},
@@ -500,39 +498,36 @@ const App = {
 		if (params) {
 			console.log('reading init-params...');
 
-			for (const k in params) {
-				if (params.hasOwnProperty(k)) {
-					switch (k) {
-						case "label_base_index":
-							this.LABEL_BASE_INDEX = parseInt(params[k]);
-							break;
-						case "cdm_auto_catchup":
-							if (params[k] == 1) {
-								const hl = App.byId("headlines-frame");
-								if (hl) hl.addClassName("auto_catchup");
-							}
-							break;
-						case "hotkeys":
-							// filter mnemonic definitions (used for help panel) from hotkeys map
-							// i.e. *(191)|Ctrl-/ -> *(191)
-                     {
-                        const tmp = [];
-                        for (const sequence in params[k][1]) {
-                           if (params[k][1].hasOwnProperty(sequence)) {
-                              const filtered = sequence.replace(/\|.*$/, "");
-                              tmp[filtered] = params[k][1][sequence];
-                           }
-                        }
+			Object.keys(params).forEach((k) => {
+            switch (k) {
+               case "label_base_index":
+                  this.LABEL_BASE_INDEX = parseInt(params[k]);
+                  break;
+               case "cdm_auto_catchup":
+                  if (params[k] == 1) {
+                     const hl = App.byId("headlines-frame");
+                     if (hl) hl.addClassName("auto_catchup");
+                  }
+                  break;
+               case "hotkeys":
+                  // filter mnemonic definitions (used for help panel) from hotkeys map
+                  // i.e. *(191)|Ctrl-/ -> *(191)
+                  {
+                     const tmp = [];
 
-                        params[k][1] = tmp;
-                     }
-							break;
-					}
+                     Object.keys(params[k][1]).forEach((sequence) => {
+                        const filtered = sequence.replace(/\|.*$/, "");
+                        tmp[filtered] = params[k][1][sequence];
+                     });
 
-					console.log("IP:", k, "=>", params[k]);
-					this.setInitParam(k, params[k]);
-				}
-			}
+                     params[k][1] = tmp;
+                  }
+                  break;
+            }
+
+            console.log("IP:", k, "=>", params[k]);
+            this.setInitParam(k, params[k]);
+			});
 
 			// PluginHost might not be available on non-index pages
 			if (typeof PluginHost !== 'undefined')

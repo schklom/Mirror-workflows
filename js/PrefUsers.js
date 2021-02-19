@@ -1,7 +1,7 @@
 'use strict'
 
 /* global __  */
-/* global xhrPost, xhrJson, dojo, dijit, Notify, Tables, App, fox */
+/* global xhrPost, xhrJson, dijit, Notify, Tables, App, fox */
 
 const	Users = {
 	reload: function(sort) {

@@ -1,6 +1,6 @@
 'use strict';
 
-/* global dijit, __, App, Ajax */
+/* global dijit, __, App, dojo, __csrf_token */
 /* eslint-disable no-new */
 
 function $(id) {
@@ -111,6 +111,8 @@ String.prototype.stripTags = function() {
 
 /* xhr shorthand helpers */
 
+// TODO: this should become xhr { Post: ..., Json: ... }
+
 /* exported xhrPost */
 function xhrPost(url, params = {}, complete = undefined) {
 	console.log("xhrPost:", params);
@@ -144,6 +146,7 @@ function xhrJson(url, params = {}, complete = undefined) {
 				obj = JSON.parse(reply.responseText);
 			} catch (e) {
 				console.error("xhrJson", e, reply);
+				reject(e);
 			}
 
 			if (complete != undefined) complete(obj);

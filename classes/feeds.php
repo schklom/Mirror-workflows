@@ -260,11 +260,6 @@ class Feeds extends Handler_Protected {
 
 				$this->_mark_timestamp("   disk_cache_rewrite");
 
-				if ($line['note'])
-					$line['note'] = Article::_format_note_html($id, $line['note']);
-				else
-					$line['note'] = "";
-
 				$this->_mark_timestamp("   note");
 
 				if (!get_pref("CDM_EXPANDED")) {

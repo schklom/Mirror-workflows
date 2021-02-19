@@ -483,7 +483,7 @@ const Headlines = {
 						</div>
 
 						<div class="content" onclick="return Headlines.click(event, ${hl.id}, true);">
-							<div id="POSTNOTE-${hl.id}">${hl.note}</div>
+							${Article.renderNote(hl.id, hl.note)}
 							<div class="content-inner" lang="${hl.lang ? hl.lang : 'en'}">
 								<img src="${App.getInitParam('icon_indicator_white')}">
 							</div>

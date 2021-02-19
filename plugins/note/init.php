@@ -55,17 +55,14 @@ class Note extends Plugin {
 	}
 
 	function setNote() {
-		$id = $_REQUEST["id"];
-		$note = trim(strip_tags($_REQUEST["note"]));
+		$id = (int)clean($_REQUEST["id"]);
+		$note = clean($_REQUEST["note"]);
 
 		$sth = $this->pdo->prepare("UPDATE ttrss_user_entries SET note = ?
 			WHERE ref_id = ? AND owner_uid = ?");
 		$sth->execute([$note, $id, $_SESSION['uid']]);
 
-		$formatted_note = Article::_format_note_html($id, $note);
-
-		print json_encode(array("note" => $formatted_note,
-				"raw_length" => mb_strlen($note)));
+		print json_encode(["id" => $id, "note" => $note]);
 	}
 
 	function api_version() {

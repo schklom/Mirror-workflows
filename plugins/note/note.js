@@ -13,16 +13,14 @@ Plugins.Note = {
 						dialog.hide();
 
 						if (reply) {
-							const elem = App.byId("POSTNOTE-" + id);
+							App.findAll(`div[data-note-for="${reply.id}"]`).forEach((elem) => {
+								elem.querySelector(".body").innerHTML = reply.note;
 
-							if (elem) {
-								elem.innerHTML = reply.note;
-
-								if (reply.raw_length != 0)
-									Element.show(elem);
+								if (reply.note)
+									elem.show();
 								else
-									Element.hide(elem);
-							}
+									elem.hide();
+							});
 						}
 					});
 				}

@@ -419,21 +419,6 @@ class Article extends Handler_Protected {
 		return $tags;
 	}
 
-	static function _format_note_html($id, $note, $allow_edit = true) {
-		if ($allow_edit) {
-			$onclick = "onclick='Plugins.Note.edit($id)'";
-			$note_class = 'editable';
-		} else {
-			$onclick = '';
-			$note_class = '';
-		}
-
-		return "<div class='article-note $note_class'>
-			<i class='material-icons'>note</i>
-			<div $onclick class='body'>$note</div>
-			</div>";
-	}
-
 	function getmetadatabyid() {
 		$id = clean($_REQUEST['id']);
 

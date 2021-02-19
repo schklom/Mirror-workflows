@@ -71,9 +71,9 @@ Element.prototype.fadeOut = function() {
 	}());
 };
 
-Element.prototype.fadeIn = function(display){
+Element.prototype.fadeIn = function(display = undefined){
 	this.style.opacity = 0;
-	this.style.display = display || "block";
+	this.style.display = display == undefined ? "block" : display;
 	const self = this;
 
 	(function fade() {

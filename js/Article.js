@@ -130,6 +130,11 @@ const Article = {
 
 		Headlines.toggleUnread(id, 0);
 	},
+	renderNote: function (id, note) {
+		return `<div class="article-note" data-note-for="${id}" style="display : ${note ? "" : "none"}">
+				${App.FormFields.icon('note')} <div onclick class='body'>${note ? App.escapeHtml(note) : ""}</div>
+			</div>`;
+	},
 	renderTags: function (id, tags) {
 		const tags_short = tags.length > 5 ? tags.slice(0, 5) : tags;
 
@@ -300,7 +305,7 @@ const Article = {
 							<div class="buttons right">${hl.buttons}</div>
 						</div>
 					</div>
-					<div id="POSTNOTE-${hl.id}">${hl.note}</div>
+					${Article.renderNote(hl.id, hl.note)}
 					<div class="content" lang="${hl.lang ? hl.lang : 'en'}">
 						${hl.content}
 						${Article.renderEnclosures(hl.enclosures)}

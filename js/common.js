@@ -27,8 +27,6 @@ Element.prototype.removeClassName = function(className) {
 };
 
 Element.prototype.toggleClassName = function(className) {
-	console.log(this, className);
-
 	if (this.hasClassName(className))
 		return this.removeClassName(className);
 	else
@@ -97,6 +95,20 @@ Element.hasClassName = function (elem, className) {
 	return elem.hasClassName(className);
 }
 
+Array.prototype.remove = function(s) {
+	for (let i=0; i < this.length; i++) {
+		if (s == this[i]) this.splice(i, 1);
+	}
+};
+
+Array.prototype.uniq = function() {
+	return this.filter((v, i, a) => a.indexOf(v) === i);
+};
+
+String.prototype.stripTags = function() {
+	return this.replace(/<\w+(\s+("[^"]*"|'[^']*'|[^>])+)?(\/)?>|<\/\w+>/gi, '');
+}
+
 /* xhr shorthand helpers */
 
 /* exported xhrPost */
@@ -120,20 +132,6 @@ function xhrPost(url, params = {}, complete = undefined) {
 				resolve(ioargs.xhr)
 			}});
 	});
-}
-
-Array.prototype.remove = function(s) {
-	for (let i=0; i < this.length; i++) {
-		if (s == this[i]) this.splice(i, 1);
-	}
-};
-
-Array.prototype.uniq = function() {
-	return this.filter((v, i, a) => a.indexOf(v) === i);
-};
-
-String.prototype.stripTags = function() {
-	return this.replace(/<\w+(\s+("[^"]*"|'[^']*'|[^>])+)?(\/)?>|<\/\w+>/gi, '');
 }
 
 /* exported xhrJson */

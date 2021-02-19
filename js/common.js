@@ -3,13 +3,15 @@
 /* global dijit, __, App, dojo, __csrf_token */
 /* eslint-disable no-new */
 
+/* exported $ */
 function $(id) {
 	console.warn("FIXME: please use App.byId() or document.getElementById() instead of $():", id);
 	return document.getElementById(id);
 }
 
+/* exported $$ */
 function $$(query) {
-	console.warn("FIXME: please use App.findAll() or document.querySelectorAll() instead of $():", query);
+	console.warn("FIXME: please use App.findAll() or document.querySelectorAll() instead of $$():", query);
 	return document.querySelectorAll(query);
 }
 
@@ -53,6 +55,34 @@ Element.prototype.toggle = function() {
 		this.hide();
 	else
 		this.show();
+};
+
+// https://gist.github.com/alirezas/c4f9f43e9fe1abba9a4824dd6fc60a55
+Element.prototype.fadeOut = function() {
+	this.style.opacity = 1;
+	const self = this;
+
+	(function fade() {
+		if ((self.style.opacity -= 0.1) < 0) {
+			self.style.display = "none";
+		} else {
+			requestAnimationFrame(fade);
+		}
+	}());
+};
+
+Element.prototype.fadeIn = function(display){
+	this.style.opacity = 0;
+	this.style.display = display || "block";
+	const self = this;
+
+	(function fade() {
+		let val = parseFloat(self.style.opacity);
+		if (!((val += 0.1) > 1)) {
+			self.style.opacity = val;
+			requestAnimationFrame(fade);
+		}
+	}());
 };
 
 Element.prototype.visible = function() {
@@ -109,9 +139,50 @@ String.prototype.stripTags = function() {
 	return this.replace(/<\w+(\s+("[^"]*"|'[^']*'|[^>])+)?(\/)?>|<\/\w+>/gi, '');
 }
 
-/* xhr shorthand helpers */
+/* exported xhr */
 
-// TODO: this should become xhr { Post: ..., Json: ... }
+const xhr = {
+	post: function(url, params = {}, complete = undefined) {
+		console.log("xhr.post:", params);
+
+		return new Promise((resolve, reject) => {
+			if (typeof __csrf_token != "undefined")
+				params = {...params, ...{csrf_token: __csrf_token}};
+
+			dojo.xhrPost({url: url,
+				postData: dojo.objectToQuery(params),
+				handleAs: "text",
+				error: function(error) {
+					reject(error);
+				},
+				load: function(data, ioargs) {
+					if (complete != undefined)
+						complete(data, ioargs.xhr);
+
+					resolve(data)
+				}}
+			);
+		});
+	},
+	json: function(url, params = {}, complete = undefined) {
+		return new Promise((resolve, reject) =>
+			this.post(url, params).then((data) => {
+				let obj = null;
+
+				try {
+					obj = JSON.parse(data);
+				} catch (e) {
+					console.error("xhr.json", e, xhr);
+					reject(e);
+				}
+
+				if (complete != undefined) complete(obj);
+
+				resolve(obj);
+			}
+		));
+	}
+};
 
 /* exported xhrPost */
 function xhrPost(url, params = {}, complete = undefined) {

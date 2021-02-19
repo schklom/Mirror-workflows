@@ -1133,7 +1133,7 @@ const Headlines = {
 		// mode = all,none,unread,invert,marked,published
 		let query = "#headlines-frame > div[id*=RROW]";
 
-		if (articleId) query += "[data-article-id=" + articleId + "]";
+		if (articleId) query += `[data-article-id="${articleId}"]`;
 
 		switch (mode) {
 			case "none":

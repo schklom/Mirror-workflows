@@ -423,7 +423,7 @@ const Headlines = {
 
 		if (headlines.vfeed_group_enabled && hl.feed_title && this.vgroup_last_feed != hl.feed_id) {
 			const vgrhdr = `<div data-feed-id='${hl.feed_id}' class='feed-title'>
-				<div style='float : right'>${hl.feed_icon}</div>
+				<div style='float : right'>${Feeds.renderIcon(hl.feed_id, hl.has_icon)}</div>
 				<a class="title" href="#" onclick="Feeds.open({feed:${hl.feed_id}})">${hl.feed_title}
 				<a class="catchup" title="${__('mark feed as read')}" onclick="Feeds.catchupFeedInGroup(${hl.feed_id})" href="#"><i class="icon-done material-icons">done_all</i></a>
 				</div>`
@@ -477,7 +477,8 @@ const Headlines = {
 								<i class="material-icons icon-score" title="${hl.score}" onclick="Article.setScore(${hl.id}, this)">${Article.getScorePic(hl.score)}</i>
 
 								<span style="cursor : pointer" title="${App.escapeHtml(hl.feed_title)}" onclick="Feeds.open({feed:${hl.feed_id}})">
-									${hl.feed_icon}</span>
+									${Feeds.renderIcon(hl.feed_id, hl.has_icon)}
+								</span>
 							</div>
 
 						</div>
@@ -538,7 +539,7 @@ const Headlines = {
 			</div>
 			<div class="right">
 				<i class="material-icons icon-score" title="${hl.score}" onclick="Article.setScore(${hl.id}, this)">${Article.getScorePic(hl.score)}</i>
-				<span onclick="Feeds.open({feed:${hl.feed_id}})" style="cursor : pointer" title="${App.escapeHtml(hl.feed_title)}">${hl.feed_icon}</span>
+				<span onclick="Feeds.open({feed:${hl.feed_id}})" style="cursor : pointer" title="${App.escapeHtml(hl.feed_title)}">${Feeds.renderIcon(hl.feed_id, hl.has_icon)}</span>
 			</div>
 			</div>
 		`;

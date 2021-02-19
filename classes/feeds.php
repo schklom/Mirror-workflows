@@ -298,11 +298,7 @@ class Feeds extends Handler_Protected {
 
 				$this->_mark_timestamp("   tags");
 
-				if (self::_has_icon($feed_id)) {
-					$line['feed_icon'] = "<img class=\"icon\" src=\"".ICONS_URL."/$feed_id.ico\" alt=\"\">";
-				} else {
-					$line['feed_icon'] = "<i class='icon-no-feed material-icons'>rss_feed</i>";
-				}
+				$line['has_icon'] = self::_has_icon($feed_id);
 
 			    //setting feed headline background color, needs to change text color based on dark/light
 				$fav_color = $line['favicon_avg_color'] ?? false;

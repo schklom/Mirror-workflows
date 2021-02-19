@@ -633,4 +633,9 @@ const	Feeds = {
 			//
 		});
 	},
+	renderIcon: function(feed_id, exists) {
+		return feed_id && exists ?
+			`<img class="icon" src="${App.escapeHtml(App.getInitParam("icons_url"))}/${feed_id}.ico">` :
+				`<i class='icon-no-feed material-icons'>rss_feed</i>`;
+	}
 };

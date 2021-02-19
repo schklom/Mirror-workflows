@@ -350,15 +350,7 @@ const Article = {
 							Notify.close();
 							dialog.hide();
 
-							if (data) {
-								if (Headlines.headlines[data.id]) {
-									Headlines.headlines[data.id].tags = data.tags;
-								}
-
-								App.findAll(`span[data-tags-for="${data.id}"`).forEach((ctr) => {
-									ctr.innerHTML = Article.renderTags(data.id, data.tags);
-								});
-							}
+							Headlines.onTagsUpdated(data);
 						} catch (e) {
 							App.Error.report(e);
 						}

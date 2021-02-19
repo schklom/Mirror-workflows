@@ -1240,6 +1240,17 @@ const Headlines = {
 			}
 		}
 	},
+	onTagsUpdated: function (data) {
+		if (data) {
+			if (this.headlines[data.id]) {
+				this.headlines[data.id].tags = data.tags;
+			}
+
+			App.findAll(`span[data-tags-for="${data.id}"`).forEach((ctr) => {
+				ctr.innerHTML = Article.renderTags(data.id, data.tags);
+			});
+		}
+	},
 	// TODO: maybe this should cause article to be rendered again, although it might cause flicker etc
 	onLabelsUpdated: function (data) {
 		if (data) {

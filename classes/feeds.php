@@ -626,11 +626,10 @@ class Feeds extends Handler_Protected {
 					]
 				};
 			</script>
-			<?php
-				echo javascript_tag("js/utility.js");
-				echo javascript_tag("lib/dojo/dojo.js");
-				echo javascript_tag("lib/dojo/tt-rss-layer.js");
-			?>
+			<?= javascript_tag("js/utility.js") ?>
+			<?= javascript_tag("js/common.js") ?>
+			<?= javascript_tag("lib/dojo/dojo.js") ?>
+			<?= javascript_tag("lib/dojo/tt-rss-layer.js") ?>
 		</head>
 		<body class="flat ttrss_utility feed_debugger css_loading">
 		<script type="text/javascript">

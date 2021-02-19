@@ -17,15 +17,15 @@ function $$(query) {
 
 
 Element.prototype.hasClassName = function(className) {
-	return dojo.hasClass(this, className);
+	return this.classList.contains(className);
 };
 
 Element.prototype.addClassName = function(className) {
-	return dojo.addClass(this, className);
+	return this.classList.add(className);
 };
 
 Element.prototype.removeClassName = function(className) {
-	return dojo.removeClass(this, className);
+	return this.classList.remove(className);
 };
 
 Element.prototype.toggleClassName = function(className) {

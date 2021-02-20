@@ -860,7 +860,7 @@ class Pref_Filters extends Handler_Protected {
 
 		print "<section>";
 
-		print "<select name='action_id' dojoType='fox.form.Select'
+		print "<select id=\"filterDlg_actionSelect\" name='action_id' dojoType='fox.form.Select'
 			onchange='App.dialogOf(this).hideOrShowActionParam(this)'>";
 
 		$res = $this->pdo->query("SELECT id,description FROM ttrss_filter_actions
@@ -873,17 +873,17 @@ class Pref_Filters extends Handler_Protected {
 
 		print "</select>";
 
-		$param_box_hidden = ($action_id == 7 || $action_id == 4 || $action_id == 6 || $action_id == 9) ?
-			"" : "display : none";
+		#$param_box_hidden = ($action_id == 7 || $action_id == 4 || $action_id == 6 || $action_id == 9) ?
+		#	"" : "display : none";
 
-		$param_hidden = ($action_id == 4 || $action_id == 6) ?
-			"" : "display : none";
+		#$param_hidden = ($action_id == 4 || $action_id == 6) ?
+		#	"" : "display : none";
 
-		$label_param_hidden = ($action_id == 7) ?	"" : "display : none";
-		$plugin_param_hidden = ($action_id == 9) ?	"" : "display : none";
+		#$label_param_hidden = ($action_id == 7) ?	"" : "display : none";
+		#$plugin_param_hidden = ($action_id == 9) ?	"" : "display : none";
 
-		print "<span id='filterDlg_paramBox' style=\"$param_box_hidden\">";
-		print " ";
+		#print "<span id='filterDlg_paramBox' style=\"$param_box_hidden\">";
+		#print " ";
 		//print " " . __("with parameters:") . " ";
 		print "<input dojoType='dijit.form.TextBox'
 			id='filterDlg_actionParam' style=\"$param_hidden\"
@@ -917,7 +917,7 @@ class Pref_Filters extends Handler_Protected {
 			array_merge(["style" => $plugin_param_hidden], $filter_plugin_disabled),
 			"filterDlg_actionParamPlugin");
 
-		print "</span>";
+		#print "</span>";
 
 		print "&nbsp;"; // tiny layout hack
 

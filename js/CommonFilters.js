@@ -22,6 +22,11 @@ const	Filters = {
 		const dialog = new fox.SingleUseDialog({
 			id: "filterEditDlg",
 			title: id ? __("Edit Filter") : __("Create Filter"),
+			ACTION_TAG: 4,
+			ACTION_SCORE: 6,
+			ACTION_LABEL: 7,
+			ACTION_PLUGIN: 9,
+			PARAM_ACTIONS: [4, 6, 7, 9],
 			test: function() {
 				const test_dialog = new fox.SingleUseDialog({
 					title: "Test Filter",
@@ -193,36 +198,21 @@ const	Filters = {
 				const edit_action_dialog = new fox.SingleUseDialog({
 					title: actionStr ? __("Edit action") : __("Add action"),
 					hideOrShowActionParam: function(sender) {
-						const action = sender.value;
+						const action = parseInt(sender.value);
 
-						const action_param = App.byId("filterDlg_paramBox");
-
-						if (!action_param) {
-							console.log("hideOrShowActionParam: can't find action param box!");
-							return;
-						}
+						dijit.byId("filterDlg_actionParam").domNode.hide();
+						dijit.byId("filterDlg_actionParamLabel").domNode.hide();
+						dijit.byId("filterDlg_actionParamPlugin").domNode.hide();
 
 						// if selected action supports parameters, enable params field
-						if (action == 4 || action == 6 || action == 7 || action == 9) {
-							Element.show(action_param);
-
-							Element.hide(dijit.byId("filterDlg_actionParam").domNode);
-							Element.hide(dijit.byId("filterDlg_actionParamLabel").domNode);
-							Element.hide(dijit.byId("filterDlg_actionParamPlugin").domNode);
-
-							if (action == 7) {
-								Element.show(dijit.byId("filterDlg_actionParamLabel").domNode);
-							} else if (action == 9) {
-								Element.show(dijit.byId("filterDlg_actionParamPlugin").domNode);
-							} else {
-								Element.show(dijit.byId("filterDlg_actionParam").domNode);
-							}
-
-						} else {
-							Element.hide(action_param);
+						if (action == dialog.ACTION_LABEL) {
+							dijit.byId("filterDlg_actionParamLabel").domNode.show();
+						} else if (action == dialog.ACTION_PLUGIN) {
+							dijit.byId("filterDlg_actionParamPlugin").domNode.show();
+						} else if (dialog.PARAM_ACTIONS.indexOf(action) != -1) {
+							dijit.byId("filterDlg_actionParam").domNode.show();
 						}
 					},
-
 					execute: function () {
 						if (this.validate()) {
 							dialog.createNewActionElement(App.byId("filterDlg_Actions"), replaceNode);
@@ -236,6 +226,10 @@ const	Filters = {
 
 					xhr.post("backend.php", {op: 'pref-filters', method: 'newaction', action: actionStr}, (reply) => {
 						edit_action_dialog.attr('content', reply);
+
+						setTimeout(() => {
+							edit_action_dialog.hideOrShowActionParam(dijit.byId("filterDlg_actionSelect").attr('value'));
+						}, 250);
 					});
 				});
 
@@ -308,6 +302,8 @@ const	Filters = {
 			content: __("Loading, please wait...")
 		});
 
+
+
 		const tmph = dojo.connect(dialog, 'onShow', function () {
 			dojo.disconnect(tmph);
 
@@ -345,6 +341,7 @@ const	Filters = {
 				}
 			});
 		});
+
 		dialog.show();
 	},
 };

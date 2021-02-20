@@ -1099,6 +1099,18 @@ class Feeds extends Handler_Protected {
 		return false;
 	}
 
+	static function _find_by_url($feed_url, $owner_uid) {
+		$sth = Db::pdo()->prepare("SELECT id FROM ttrss_feeds WHERE
+			feed_url = ? AND owner_uid = ?");
+		$sth->execute([$feed_url, $owner_uid]);
+
+		if ($row = $sth->fetch()) {
+			return $row["id"];
+		}
+
+		return false;
+	}
+
 	static function _get_title($id, $cat = false) {
 	    $pdo = Db::pdo();
 

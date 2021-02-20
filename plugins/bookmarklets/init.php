@@ -118,56 +118,54 @@ class Bookmarklets extends Plugin {
 				}
 
 				if ($feed_urls) {
+					?>
+					<form method='post' action='public.php'>
+						<?= \Controls\public_method_tags($this, "subscribe") ?>
+						<?= \Controls\hidden_tag("csrf_token", $_SESSION["csrf_token"]) ?>
 
-					print "<form method='post' action='public.php'>";
-					print \Controls\public_method_tags($this, "subscribe");
-					print \Controls\hidden_tag("csrf_token", $_SESSION["csrf_token"]);
+						<fieldset>
+							<label style='display : inline'><?= __("Multiple feed URLs found:") ?></label>
+							<select name='feed_url' dojoType='dijit.form.Select'>
+							<?php foreach ($feed_urls as $url => $name) { ?>
+								<option value="<?= htmlspecialchars($url) ?>"><?= htmlspecialchars($name) ?></option>
+							<?php } ?>
+							</select>
+						</fieldset>
 
-					print "<fieldset>";
-					print "<label style='display : inline'>" . __("Multiple feed URLs found:") . "</label>";
-					print "<select name='feed_url' dojoType='dijit.form.Select'>";
-
-					foreach ($feed_urls as $url => $name) {
-						$url = htmlspecialchars($url);
-						$name = htmlspecialchars($name);
-
-						print "<option value=\"$url\">$name</option>";
-					}
-
-					print "</select>";
-					print "</fieldset>";
-
-					print "<button class='alt-primary' dojoType='dijit.form.Button' type='submit'>".__("Subscribe to selected feed")."</button>";
-					print "<a href='index.php'>".__("Return to Tiny Tiny RSS")."</a>";
-
-					print "</form>";
+						<button class='alt-primary' dojoType='dijit.form.Button' type='submit'><?= __("Subscribe to selected feed") ?></button>
+						<a href='index.php'><?= __("Return to Tiny Tiny RSS") ?></a>
+					</form>
+					<?php
 				}
 
-				$tp_uri = get_self_url_prefix() . "/prefs.php";
-
-				if ($rc['code'] <= 2){
-					$sth = $this->pdo->prepare("SELECT id FROM ttrss_feeds WHERE
-					feed_url = ? AND owner_uid = ?");
-					$sth->execute([$feed_url, $_SESSION['uid']]);
-					$row = $sth->fetch();
-
-					$feed_id = $row["id"];
+				if ($rc['code'] <= 2) {
+					$feed_id = Feeds::_find_by_url($feed_url, $_SESSION["uid"]);
 				} else {
 					$feed_id = 0;
 				}
 
 				if ($feed_id) {
-					print "<form method='GET' action=\"$tp_uri\">
-					<input type='hidden' name='tab' value='feeds'>
-					<input type='hidden' name='method' value='editfeed'>
-					<input type='hidden' name='methodparam' value='$feed_id'>
-					<button dojoType='dijit.form.Button' class='alt-info' type='submit'>".__("Edit subscription options")."</button>
-					<a href='index.php'>".__("Return to Tiny Tiny RSS")."</a>
-					</form>";
+					?>
+					<form method='GET' action="<?= htmlspecialchars(get_self_url_prefix() . "/prefs.php") ?>">
+						<input type='hidden' name='tab' value='feeds'>
+						<input type='hidden' name='method' value='editfeed'>
+						<input type='hidden' name='methodparam' value="<?= $feed_id ?>">
+						<button dojoType='dijit.form.Button' class='alt-info' type='submit'><?= __("Edit subscription options") ?></button>
+						<a href='index.php'><?= __("Return to Tiny Tiny RSS") ?></a>
+					</form>
+					<?php
+				} else {
+					?>
+					<a href='index.php'><?= __("Return to Tiny Tiny RSS") ?></a>
+					<?php
 				}
 			}
-
-			print "</div></div></body></html>";
+			?>
+			</div>
+		</div>
+		</body>
+		</html>
+			<?php
 		} else {
 			Handler_Public::_render_login_form();
 		}
@@ -237,9 +235,11 @@ class Bookmarklets extends Plugin {
 					Article::_create_published_article($title, $url, $content, $labels,
 						$_SESSION["uid"]);
 
-					print "<script type='text/javascript'>";
-					print "window.close();";
-					print "</script>";
+					?>
+					<script type="text/javascript">
+						window.close();
+					</script>
+					<?php
 
 				} else {
 					$title = htmlspecialchars(clean($_REQUEST["title"]));
@@ -326,7 +326,7 @@ class Bookmarklets extends Plugin {
 		?>
 		</div>
 		</body>
-		</html>";
+		</html>
 		<?php
 	}
 
@@ -342,12 +342,6 @@ class Bookmarklets extends Plugin {
 
 			$bm_subscribe_url = htmlspecialchars("javascript:{if(confirm('$confirm_str'.replace('%s',window.location.href)))window.location.href='$bm_subscribe_url&feed_url='+encodeURIComponent(window.location.href)}");
 			$bm_share_url = htmlspecialchars("javascript:(function(){var d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f='$bm_share_url',l=d.location,e=encodeURIComponent,g=f+'&title='+((e(s))?e(s):e(document.title))+'&url='+e(l.href);function a(){if(!w.open(g,'t','toolbar=0,resizable=0,scrollbars=1,status=1,width=500,height=250')){l.href=g;}}a();})()");
-
-			//$bm_subscribe_url = str_replace('%s', '', $this->subscribe_to_feed_url());
-			//$confirm_str = str_replace("'", "\'", __('Subscribe to %s in Tiny Tiny RSS?'));
-			//$bm_subscribe_url = htmlspecialchars("javascript:{if(confirm('$confirm_str'.replace('%s',window.location.href)))window.location.href='$bm_subscribe_url'+encodeURIComponent(window.location.href)}");
-
-			//$bm_share_url = htmlspecialchars("javascript:(function(){var d=document,w=window,e=w.getSelection,k=d.getSelection,x=d.selection,s=(e?e():(k)?k():(x?x.createRange().text:0)),f='".get_self_url_prefix()."/public.php?op=sharepopup',l=d.location,e=encodeURIComponent,g=f+'&title='+((e(s))?e(s):e(document.title))+'&url='+e(l.href);function a(){if(!w.open(g,'t','toolbar=0,resizable=0,scrollbars=1,status=1,width=500,height=250')){l.href=g;}}a();})()");
 		?>
 
 		<div dojoType="dijit.layout.AccordionPane"

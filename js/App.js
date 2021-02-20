@@ -343,16 +343,20 @@ const App = {
 		});
    },
    // htmlspecialchars()-alike for headlines data-content attribute
-   escapeHtml: function(text) {
-      const map = {
-         '&': '&amp;',
-         '<': '&lt;',
-         '>': '&gt;',
-         '"': '&quot;',
-         "'": '&#039;'
-      };
+   escapeHtml: function(p) {
+      if (typeof p == "string") {
+         const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+         };
 
-      return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+         return p.replace(/[&<>"']/g, function(m) { return map[m]; });
+      } else {
+         return p;
+      }
    },
    displayIfChecked: function(checkbox, elemId) {
       if (checkbox.checked) {

@@ -389,19 +389,20 @@ const	CommonDialogs = {
 
 			return false;
 		},
-		editFeed: function (feed) {
-			if (feed <= 0)
+		editFeed: function (feed_id) {
+			if (feed_id <= 0)
 				return alert(__("You can't edit this kind of feed."));
 
-			const query = {op: "pref-feeds", method: "editfeed", id: feed};
+			const query = {op: "pref-feeds", method: "editfeed", id: feed_id};
 
 			console.log("editFeed", query);
 
 			const dialog = new fox.SingleUseDialog({
 				id: "feedEditDlg",
 				title: __("Edit Feed"),
-				unsubscribeFeed: function(feed_id, title) {
-					if (confirm(__("Unsubscribe from %s?").replace("%s", title))) {
+				feed_title: "",
+				unsubscribe: function() {
+					if (confirm(__("Unsubscribe from %s?").replace("%s", this.feed_title))) {
 						dialog.hide();
 						CommonDialogs.unsubscribeFeed(feed_id);
                }
@@ -430,8 +431,212 @@ const	CommonDialogs = {
 			const tmph = dojo.connect(dialog, 'onShow', function () {
 				dojo.disconnect(tmph);
 
-				xhr.post("backend.php", {op: "pref-feeds", method: "editfeed", id: feed}, (reply) => {
-					dialog.attr('content', reply);
+				xhr.json("backend.php", {op: "pref-feeds", method: "editfeed", id: feed_id}, (reply) => {
+					const feed = reply.feed;
+
+					// for unsub prompt
+					dialog.feed_title = feed.title;
+
+					dialog.attr('content',
+					`
+					<div dojoType="dijit.layout.TabContainer" style="height : 450px">
+						<div dojoType="dijit.layout.ContentPane" title="${__('General')}">
+
+							${App.FormFields.hidden_tag("id", feed_id)}
+							${App.FormFields.hidden_tag("op", "pref-feeds")}
+							${App.FormFields.hidden_tag("method", "editSave")}
+
+							<section>
+								<fieldset>
+									<input dojoType='dijit.form.ValidationTextBox' required='1'
+										placeHolder="${__("Feed Title")}"
+										style='font-size : 16px; width: 500px' name='title' value="${App.escapeHtml(feed.title)}">
+								</fieldset>
+
+								<fieldset>
+									<label>${__('URL:')}</label>
+									<input dojoType='dijit.form.ValidationTextBox' required='1'
+										placeHolder="${__("Feed URL")}"
+										regExp='^(http|https)://.*' style='width : 300px'
+										name='feed_url' value="${App.escapeHtml(feed.feed_url)}">
+
+									${feed.last_error ?
+										`<i class="material-icons"
+											title="${App.escapeHtml(feed.last_error)}">error</i>
+										` : ""}
+								</fieldset>
+
+								${reply.cats.enabled ?
+									`
+									<fieldset>
+										<label>${__('Place in category:')}</label>
+										${reply.cats.select}
+									</fieldset>
+									` : ""}
+
+								<fieldset>
+									<label>${__('Site URL:')}</label>
+									<input dojoType='dijit.form.ValidationTextBox' required='1'
+										placeHolder="${__("Site URL")}"
+										regExp='^(http|https)://.*' style='width : 300px'
+										name='site_url' value="${App.escapeHtml(feed.site_url)}">
+								</fieldset>
+
+								${reply.lang.enabled ?
+									`
+									<fieldset>
+										<label>${__('Language:')}</label>
+										${App.FormFields.select_tag("feed_language", feed.feed_language, reply.lang.all)}
+									</fieldset>
+									` : ""}
+
+								<hr/>
+
+								<fieldset>
+									<label>${__("Update interval:")}</label>
+									${App.FormFields.select_hash("update_interval", feed.update_interval, reply.intervals.update)}
+								</fieldset>
+								<fieldset>
+									<label>${__('Article purging:')}</label>
+
+									${App.FormFields.select_hash("purge_interval",
+																feed.purge_interval,
+																reply.intervals.purge,
+																reply.force_purge ? {disabled: 1} : {})}
+
+								</fieldset>
+							</section>
+						</div>
+						<div dojoType="dijit.layout.ContentPane" title="${__('Authentication')}">
+							<section>
+								<fieldset>
+									<label>${__("Login:")}</label>
+									<input dojoType='dijit.form.TextBox'
+										autocomplete='new-password'
+										name='auth_login' value="${App.escapeHtml(feed.auth_login)}">
+								</fieldset>
+								<fieldset>
+								<label>${__("Password:")}</label>
+									<input dojoType='dijit.form.TextBox' type='password' name='auth_pass'
+										autocomplete='new-password'
+										value="${App.escapeHtml(feed.auth_pass)}">
+								</fieldset>
+							</section>
+						</div>
+						<div dojoType="dijit.layout.ContentPane" title="'.__('Options').'">
+
+						<section class='narrow'>
+
+						$include_in_digest = $row["include_in_digest"];
+
+						if ($include_in_digest) {
+							$checked = "checked="1"
+						} else {
+							$checked = "
+						}
+
+						<fieldset class='narrow'>
+
+						<label class='checkbox'><input dojoType="dijit.form.CheckBox" type="checkbox" id="include_in_digest"
+							name="include_in_digest"
+							$checked> ".__('Include in e-mail digest')."</label>
+
+						</fieldset>
+
+						$always_display_enclosures = $row["always_display_enclosures"];
+
+						if ($always_display_enclosures) {
+							$checked = "checked
+						} else {
+							$checked = "
+						}
+
+						<fieldset class='narrow'>
+
+						<label class='checkbox'><input dojoType="dijit.form.CheckBox" type="checkbox" id="always_display_enclosures"
+							name="always_display_enclosures"
+							$checked> ".__('Always display image attachments')."</label>
+
+						</fieldset>
+
+						$hide_images = $row["hide_images"];
+
+						if ($hide_images) {
+							$checked = "checked="1"
+						} else {
+							$checked = "
+						}
+
+						<fieldset class='narrow'>
+
+						<label class='checkbox'><input dojoType='dijit.form.CheckBox' type='checkbox' id='hide_images'
+							name='hide_images' $checked> ".__('Do not embed media')."</label>
+
+						</fieldset>
+
+						$cache_images = $row["cache_images"];
+
+						if ($cache_images) {
+							$checked = "checked="1"
+						} else {
+							$checked = "
+						}
+
+						<fieldset class='narrow'>
+
+						<label class='checkbox'><input dojoType='dijit.form.CheckBox' type='checkbox' id='cache_images'
+							name='cache_images' $checked> ". __('Cache media')."</label>
+
+						</fieldset>
+
+						$mark_unread_on_update = $row["mark_unread_on_update"];
+
+						if ($mark_unread_on_update) {
+							$checked = "checked
+						} else {
+							$checked = "
+						}
+
+						<fieldset class='narrow'>
+
+						<label class='checkbox'><input dojoType='dijit.form.CheckBox' type='checkbox' id='mark_unread_on_update'
+							name='mark_unread_on_update' $checked> ".__('Mark updated articles as unread')."</label>
+
+						</fieldset>
+
+						</div>
+
+						<div dojoType="dijit.layout.ContentPane" title="${__('Icon')}">
+
+							<img class='feedIcon feed-editor-icon' src="${feed.icon ? App.escapeHtml(feed.icon) : ""}">
+
+							<form onsubmit="return false" id="feed_icon_upload_form" enctype="multipart/form-data" method="post">
+								<label class="dijitButton">${__("Choose file...")}
+									<input style="display: none" id="icon_file" size="10" name="icon_file" type="file">
+								</label>
+
+								${App.FormFields.hidden_tag("op", "pref-feeds")}
+								${App.FormFields.hidden_tag("feed_id", feed_id)}
+								${App.FormFields.hidden_tag("method", "uploadIcon")}
+								${App.FormFields.hidden_tag("csrf_token", App.getInitParam("csrf_token"))}
+
+								${App.FormFields.submit_tag(__("Replace"), {onclick: "return CommonDialogs.uploadFeedIcon()"})}
+								${App.FormFields.submit_tag(__("Remove"), {class: "alt-danger", onclick: "return CommonDialogs.removeFeedIcon("+feed_id+")"})}
+							</form>
+						</div>
+
+						<div dojoType="dijit.layout.ContentPane" title="${__('Plugins')}">
+							${reply.plugin_data}
+						</div>
+
+						</div>
+
+					<footer>
+						${App.FormFields.button_tag(__("Unsubscribe"), "", {class: "pull-left alt-danger", onclick: "App.dialogOf(this).unsubscribe()"})}
+						${App.FormFields.submit_tag(__("Save"), {onclick: "return App.dialogOf(this).execute()"})}
+						${App.FormFields.cancel_dialog_tag(__("Cancel"))}
+					</footer>
+					`);
 				})
 			});
 

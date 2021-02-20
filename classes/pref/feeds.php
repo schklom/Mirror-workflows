@@ -464,8 +464,10 @@ class Pref_Feeds extends Handler_Protected {
 		if (is_uploaded_file($_FILES['icon_file']['tmp_name'])) {
 			$tmp_file = tempnam(CACHE_DIR . '/upload', 'icon');
 
-			$result = move_uploaded_file($_FILES['icon_file']['tmp_name'],
-				$tmp_file);
+			if (!$tmp_file)
+				return;
+
+			$result = move_uploaded_file($_FILES['icon_file']['tmp_name'], $tmp_file);
 
 			if (!$result) {
 				return;
@@ -478,7 +480,7 @@ class Pref_Feeds extends Handler_Protected {
 		$feed_id = clean($_REQUEST["feed_id"]);
 		$rc = 2; // failed
 
-		if (is_file($icon_file) && $feed_id) {
+		if ($icon_file && is_file($icon_file) && $feed_id) {
 			if (filesize($icon_file) < 65535) {
 
 				$sth = $this->pdo->prepare("SELECT id FROM ttrss_feeds
@@ -486,8 +488,12 @@ class Pref_Feeds extends Handler_Protected {
 				$sth->execute([$feed_id, $_SESSION['uid']]);
 
 				if ($row = $sth->fetch()) {
-					@unlink(ICONS_DIR . "/$feed_id.ico");
-					if (rename($icon_file, ICONS_DIR . "/$feed_id.ico")) {
+					$new_filename = ICONS_DIR . "/$feed_id.ico";
+
+					if (file_exists($new_filename)) unlink($new_filename);
+
+					if (rename($icon_file, $new_filename)) {
+						chmod($new_filename, 644);
 
 						$sth = $this->pdo->prepare("UPDATE ttrss_feeds SET
 							favicon_avg_color = ''
@@ -502,7 +508,9 @@ class Pref_Feeds extends Handler_Protected {
 			}
 		}
 
-		if (is_file($icon_file)) @unlink($icon_file);
+		if ($icon_file && is_file($icon_file)) {
+			unlink($icon_file);
+		}
 
 		print $rc;
 		return;
@@ -512,11 +520,61 @@ class Pref_Feeds extends Handler_Protected {
 		global $purge_intervals;
 		global $update_intervals;
 
-		$feed_id = clean($_REQUEST["id"]);
+		$feed_id = (int)clean($_REQUEST["id"]);
 
 		$sth = $this->pdo->prepare("SELECT * FROM ttrss_feeds WHERE id = ? AND
 				owner_uid = ?");
 		$sth->execute([$feed_id, $_SESSION['uid']]);
+
+		if ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+
+			ob_start();
+			PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_EDIT_FEED, $feed_id);
+			$plugin_data = trim((string)ob_get_contents());
+			ob_end_clean();
+
+			$row["icon"] = Feeds::_get_icon($feed_id);
+
+			$local_update_intervals = $update_intervals;
+			$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[get_pref("DEFAULT_UPDATE_INTERVAL")]);
+
+			if (FORCE_ARTICLE_PURGE == 0) {
+				$local_purge_intervals = $purge_intervals;
+				$default_purge_interval = get_pref("PURGE_OLD_DAYS");
+
+				if ($default_purge_interval > 0)
+				$local_purge_intervals[0] .= " " . T_nsprintf('(%d day)', '(%d days)', $default_purge_interval, $default_purge_interval);
+			else
+				$local_purge_intervals[0] .= " " . sprintf("(%s)", __("Disabled"));
+
+			} else {
+				$purge_interval = FORCE_ARTICLE_PURGE;
+				$local_purge_intervals = [ T_nsprintf('%d day', '%d days', $purge_interval, $purge_interval) ];
+			}
+
+			print json_encode([
+				"feed" => $row,
+				"cats" => [
+					"enabled" => get_pref('ENABLE_FEED_CATS'),
+					"select" => \Controls\select_feeds_cats("cat_id", $row["cat_id"]),
+				],
+				"plugin_data" => $plugin_data,
+				"force_purge" => (int)FORCE_ARTICLE_PURGE,
+				"intervals" => [
+					"update" => $local_update_intervals,
+					"purge" => $local_purge_intervals,
+				],
+				"lang" => [
+					"enabled" => DB_TYPE == "pgsql",
+					"default" => get_pref('DEFAULT_SEARCH_LANGUAGE'),
+					"all" => $this::get_ts_languages(),
+					]
+				]);
+		} else {
+			print json_encode(["error" => "FEED_NOT_FOUND"]);
+		}
+
+		return;
 
 		if ($row = $sth->fetch()) {
 			print '<div dojoType="dijit.layout.TabContainer" style="height : 450px">

@@ -843,7 +843,7 @@ class API extends Handler {
 		$_REQUEST['force_show_empty'] = $include_empty;
 
 		$this->_wrap(self::STATUS_OK,
-			array("categories" => $pf->makefeedtree()));
+			array("categories" => $pf->_makefeedtree()));
 	}
 
 	// only works for labels or uncategorized for the time being

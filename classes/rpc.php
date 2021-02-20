@@ -150,7 +150,7 @@ class RPC extends Handler_Protected {
 	function catchupFeed() {
 		$feed_id = clean($_REQUEST['feed_id']);
 		$is_cat = clean($_REQUEST['is_cat']) == "true";
-		$mode = clean($_REQUEST['mode']);
+		$mode = clean($_REQUEST['mode'] ?? '');
 		$search_query = clean($_REQUEST['search_query']);
 		$search_lang = clean($_REQUEST['search_lang']);
 

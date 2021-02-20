@@ -358,6 +358,27 @@ const App = {
          return p;
       }
    },
+   // http://stackoverflow.com/questions/6251937/how-to-get-selecteduser-highlighted-text-in-contenteditable-element-and-replac
+   getSelectedText: function() {
+      let text = "";
+
+      if (typeof window.getSelection != "undefined") {
+         const sel = window.getSelection();
+         if (sel.rangeCount) {
+            const container = document.createElement("div");
+            for (let i = 0, len = sel.rangeCount; i < len; ++i) {
+               container.appendChild(sel.getRangeAt(i).cloneContents());
+            }
+            text = container.innerHTML;
+         }
+      } else if (typeof document.selection != "undefined") {
+         if (document.selection.type == "Text") {
+            text = document.selection.createRange().textText;
+         }
+      }
+
+      return text.stripTags();
+   },
    displayIfChecked: function(checkbox, elemId) {
       if (checkbox.checked) {
          Element.show(elemId);

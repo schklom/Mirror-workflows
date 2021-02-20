@@ -5,7 +5,8 @@
 /* global __, App, Article, Lists, fox */
 /* global xhr, dojo, dijit, Notify, Feeds */
 
-const	Filters = {	
+/* exported Filters */
+const	Filters = {
 	edit: function(id) { // if no id, new filter dialog
 		let query;
 
@@ -112,36 +113,6 @@ const	Filters = {
 
 						test_dialog.show();
 					},
-					hideOrShowActionParam: function(sender) {
-						const action = sender.value;
-
-						const action_param = App.byId("filterDlg_paramBox");
-
-						if (!action_param) {
-							console.log("hideOrShowActionParam: can't find action param box!");
-							return;
-						}
-
-						// if selected action supports parameters, enable params field
-						if (action == 4 || action == 6 || action == 7 || action == 9) {
-							Element.show(action_param);
-
-							Element.hide(dijit.byId("filterDlg_actionParam").domNode);
-							Element.hide(dijit.byId("filterDlg_actionParamLabel").domNode);
-							Element.hide(dijit.byId("filterDlg_actionParamPlugin").domNode);
-
-							if (action == 7) {
-								Element.show(dijit.byId("filterDlg_actionParamLabel").domNode);
-							} else if (action == 9) {
-								Element.show(dijit.byId("filterDlg_actionParamPlugin").domNode);
-							} else {
-								Element.show(dijit.byId("filterDlg_actionParam").domNode);
-							}
-
-						} else {
-							Element.hide(action_param);
-						}
-					},
 					createNewRuleElement: function(parentNode, replaceNode) {
 						const rule = dojo.formToJson("filter_new_rule_form");
 
@@ -150,7 +121,7 @@ const	Filters = {
 								const li = document.createElement('li');
 
 								li.innerHTML = `<input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
-										<span onclick='App.dialogOf(this).editRule(this)'>${reply}</span>
+										<span onclick='App.dialogOf(this).onRuleClicked(this)'>${reply}</span>
 									${App.FormFields.hidden_tag("rule[]", rule)}`;
 
 								dojo.parser.parse(li);
@@ -181,7 +152,7 @@ const	Filters = {
 								const li = document.createElement('li');
 
 								li.innerHTML = `<input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
-										<span onclick='App.dialogOf(this).editAction(this)'>${reply}</span>
+										<span onclick='App.dialogOf(this).onActionClicked(this)'>${reply}</span>
 									${App.FormFields.hidden_tag("action[]", action)}`;
 
 								dojo.parser.parse(li);
@@ -197,8 +168,8 @@ const	Filters = {
 							}
 						});
 					},
-					addFilterRule: function(replaceNode, ruleStr) {
-						const add_dialog = new fox.SingleUseDialog({
+					editRule: function(replaceNode, ruleStr) {
+						const edit_rule_dialog = new fox.SingleUseDialog({
 							id: "filterNewRuleDlg",
 							title: ruleStr ? __("Edit rule") : __("Add rule"),
 							execute: function () {
@@ -210,19 +181,50 @@ const	Filters = {
 							content: __('Loading, please wait...'),
 						});
 
-						const tmph = dojo.connect(add_dialog, "onShow", null, function (/* e */) {
+						const tmph = dojo.connect(edit_rule_dialog, "onShow", null, function (/* e */) {
 							dojo.disconnect(tmph);
 
 							xhr.post("backend.php", {op: 'pref-filters', method: 'newrule', rule: ruleStr}, (reply) => {
-								add_dialog.attr('content', reply);
+								edit_rule_dialog.attr('content', reply);
 							});
 						});
 
-						add_dialog.show();
+						edit_rule_dialog.show();
 					},
-					addFilterAction: function(replaceNode, actionStr) {
-						const add_dialog = new fox.SingleUseDialog({
+					editAction: function(replaceNode, actionStr) {
+						const edit_action_dialog = new fox.SingleUseDialog({
 							title: actionStr ? __("Edit action") : __("Add action"),
+							hideOrShowActionParam: function(sender) {
+								const action = sender.value;
+
+								const action_param = App.byId("filterDlg_paramBox");
+
+								if (!action_param) {
+									console.log("hideOrShowActionParam: can't find action param box!");
+									return;
+								}
+
+								// if selected action supports parameters, enable params field
+								if (action == 4 || action == 6 || action == 7 || action == 9) {
+									Element.show(action_param);
+
+									Element.hide(dijit.byId("filterDlg_actionParam").domNode);
+									Element.hide(dijit.byId("filterDlg_actionParamLabel").domNode);
+									Element.hide(dijit.byId("filterDlg_actionParamPlugin").domNode);
+
+									if (action == 7) {
+										Element.show(dijit.byId("filterDlg_actionParamLabel").domNode);
+									} else if (action == 9) {
+										Element.show(dijit.byId("filterDlg_actionParamPlugin").domNode);
+									} else {
+										Element.show(dijit.byId("filterDlg_actionParam").domNode);
+									}
+
+								} else {
+									Element.hide(action_param);
+								}
+							},
+
 							execute: function () {
 								if (this.validate()) {
 									dialog.createNewActionElement(App.byId("filterDlg_Actions"), replaceNode);
@@ -231,15 +233,15 @@ const	Filters = {
 							}
 						});
 
-						const tmph = dojo.connect(add_dialog, "onShow", null, function (/* e */) {
+						const tmph = dojo.connect(edit_action_dialog, "onShow", null, function (/* e */) {
 							dojo.disconnect(tmph);
 
 							xhr.post("backend.php", {op: 'pref-filters', method: 'newaction', action: actionStr}, (reply) => {
-								add_dialog.attr('content', reply);
+								edit_action_dialog.attr('content', reply);
 							});
 						});
 
-						add_dialog.show();
+						edit_action_dialog.show();
 					},
 					selectRules: function (select) {
 						Lists.select("filterDlg_Matches", select);
@@ -247,17 +249,17 @@ const	Filters = {
 					selectActions: function (select) {
 						Lists.select("filterDlg_Actions", select);
 					},
-					editRule: function (e) {
+					onRuleClicked: function (e) {
 						const li = e.closest('li');
 						const rule = li.querySelector('input[name="rule[]"]').value
 
-						this.addFilterRule(li, rule);
+						this.editRule(li, rule);
 					},
-					editAction: function (e) {
+					onActionClicked: function (e) {
 						const li = e.closest('li');
 						const action = li.querySelector('input[name="action[]"]').value
 
-						this.addFilterAction(li, action);
+						this.editAction(li, action);
 					},
 					removeFilter: function () {
 						const msg = __("Remove filter?");
@@ -277,10 +279,10 @@ const	Filters = {
 						}
 					},
 					addAction: function () {
-						this.addFilterAction();
+						this.editAction();
 					},
 					addRule: function () {
-						this.addFilterRule();
+						this.editRule();
 					},
 					deleteAction: function () {
 						App.findAll("#filterDlg_Actions li[class*=Selected]").forEach(function (e) {
@@ -322,7 +324,7 @@ const	Filters = {
 
 							const rule = {reg_exp: selectedText, feed_id: [feed_id], filter_type: 1};
 
-							dialog.addFilterRule(null, dojo.toJson(rule));
+							dialog.editRule(null, dojo.toJson(rule));
 
 						} else {
 
@@ -342,7 +344,7 @@ const	Filters = {
 
 									const rule = {reg_exp: title, feed_id: [feed_id], filter_type: 1};
 
-									dialog.addFilterRule(null, dojo.toJson(rule));
+									dialog.editRule(null, dojo.toJson(rule));
 								}
 							});
 						}

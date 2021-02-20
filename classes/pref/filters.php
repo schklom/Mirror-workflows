@@ -389,7 +389,7 @@ class Pref_Filters extends Handler_Protected {
 					unset($line["match_on"]);
 
 					print "<li><input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
-						<span onclick='App.dialogOf(this).editRule(this)'>".$this->_get_rule_name($line)."</span>".
+						<span onclick='App.dialogOf(this).onRuleClicked(this)'>".$this->_get_rule_name($line)."</span>".
 						\Controls\hidden_tag("rule[]", (string)json_encode($line))."</li>";
 				}
 			}
@@ -429,7 +429,7 @@ class Pref_Filters extends Handler_Protected {
 					unset($line["id"]);
 
 					print "<li><input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
-						<span onclick='App.dialogOf(this).editAction(this)'>".$this->_get_action_name($line)."</span>".
+						<span onclick='App.dialogOf(this).onActionClicked(this)'>".$this->_get_action_name($line)."</span>".
 						\Controls\hidden_tag("action[]", (string)json_encode($line))."</li>";
 				}
 			}
@@ -861,7 +861,7 @@ class Pref_Filters extends Handler_Protected {
 		print "<section>";
 
 		print "<select name='action_id' dojoType='fox.form.Select'
-			onchange='Filters.hideOrShowActionParam(this)'>";
+			onchange='App.dialogOf(this).hideOrShowActionParam(this)'>";
 
 		$res = $this->pdo->query("SELECT id,description FROM ttrss_filter_actions
 			ORDER BY name");

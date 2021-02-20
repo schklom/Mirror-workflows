@@ -253,7 +253,7 @@ class Article extends Handler_Protected {
 	}
 
 
-	function completeTags() {
+	/*function completeTags() {
 		$search = clean($_REQUEST["search"]);
 
 		$sth = $this->pdo->prepare("SELECT DISTINCT tag_name FROM ttrss_tags
@@ -268,7 +268,7 @@ class Article extends Handler_Protected {
 			print "<li>" . $line["tag_name"] . "</li>";
 		}
 		print "</ul>";
-	}
+	}*/
 
 	function assigntolabel() {
 		return $this->_label_ops(true);

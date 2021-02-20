@@ -3,6 +3,7 @@
 /* global __, App, Headlines, xhrPost, xhr, dojo, dijit, fox, PluginHost, Notify, fox */
 
 const	Feeds = {
+	_default_feed_id: -3,
 	counters_last_request: 0,
 	_active_feed_id: undefined,
 	_active_feed_is_cat: false,
@@ -108,6 +109,9 @@ const	Feeds = {
 			this.open({feed: this.getActive(), is_cat: this.activeIsCat(), method: method});
 		}
 		return false; // block unneeded form submits
+	},
+	openDefaultFeed: function() {
+		this.open({feed: this._default_feed_id});
 	},
 	openNextUnread: function() {
 		const is_cat = this.activeIsCat();
@@ -215,7 +219,7 @@ const	Feeds = {
 		if (hash_feed_id != undefined) {
 			this.open({feed: hash_feed_id, is_cat: hash_feed_is_cat});
 		} else {
-			this.open({feed: -3});
+			this.openDefaultFeed();
 		}
 
 		this.hideOrShowFeeds(App.getInitParam("hide_read_feeds"));

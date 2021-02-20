@@ -861,7 +861,7 @@ class Pref_Filters extends Handler_Protected {
 		print "<section>";
 
 		print "<select name='action_id' dojoType='fox.form.Select'
-			onchange='Filters.filterDlgCheckAction(this)'>";
+			onchange='Filters.hideOrShowActionParam(this)'>";
 
 		$res = $this->pdo->query("SELECT id,description FROM ttrss_filter_actions
 			ORDER BY name");

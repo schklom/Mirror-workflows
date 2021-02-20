@@ -1,11 +1,11 @@
 <?php
 class RPC extends Handler_Protected {
 
-	function csrf_ignore($method) {
+	/*function csrf_ignore($method) {
 		$csrf_ignored = array("completelabels");
 
 		return array_search($method, $csrf_ignored) !== false;
-	}
+	}*/
 
 	function togglepref() {
 		$key = clean($_REQUEST["key"]);
@@ -130,7 +130,7 @@ class RPC extends Handler_Protected {
 		print json_encode($reply);
 	}
 
-	function completeLabels() {
+	/*function completeLabels() {
 		$search = clean($_REQUEST["search"]);
 
 		$sth = $this->pdo->prepare("SELECT DISTINCT caption FROM
@@ -145,7 +145,7 @@ class RPC extends Handler_Protected {
 			print "<li>" . $line["caption"] . "</li>";
 		}
 		print "</ul>";
-	}
+	}*/
 
 	function catchupFeed() {
 		$feed_id = clean($_REQUEST['feed_id']);

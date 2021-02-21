@@ -301,7 +301,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 				try {
 					const dialog = new fox.SingleUseDialog({
 						title: __("Edit Multiple Feeds"),
-						getChildByName: function (name) {
+						/*getChildByName: function (name) {
 							let rv = null;
 							this.getChildren().forEach(
 								function (child) {
@@ -311,7 +311,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 									}
 								});
 							return rv;
-						},
+						},*/
 						toggleField: function (checkbox) {
 							const name = checkbox.attr("data-control-for");
 							const target = dijit.getEnclosingWidget(dialog.domNode.querySelector(`input[name="${name}"]`));

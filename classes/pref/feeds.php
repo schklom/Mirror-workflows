@@ -1329,14 +1329,14 @@ class Pref_Feeds extends Handler_Protected {
 	}
 
 	function getOPMLKey() {
-		print json_encode(["link" => OPML::opml_publish_url()]);
+		print json_encode(["link" => OPML::get_publish_url()]);
 	}
 
 	function regenOPMLKey() {
 		$this->update_feed_access_key('OPML:Publish',
 			false, $_SESSION["uid"]);
 
-		print json_encode(["link" => OPML::opml_publish_url()]);
+		print json_encode(["link" => OPML::get_publish_url()]);
 	}
 
 	function regenFeedKey() {

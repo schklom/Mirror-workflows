@@ -634,13 +634,10 @@ class OPML extends Handler_Protected {
 		print "$msg<br/>";
 	}
 
-	static function opml_publish_url(){
-
-		$url_path = get_self_url_prefix();
-		$url_path .= "/opml.php?op=publish&key=" .
+	static function get_publish_url(){
+		return get_self_url_prefix() .
+			"/public.php?op=publishOpml&key=" .
 			Feeds::_get_access_key('OPML:Publish', false, $_SESSION["uid"]);
-
-		return $url_path;
 	}
 
 	function get_feed_category($feed_cat, $parent_cat_id = false) {

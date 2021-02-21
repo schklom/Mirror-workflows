@@ -656,12 +656,10 @@ class RPC extends Handler_Protected {
 		<ul class='panel panel-scrollable hotkeys-help' style='height : 300px'>
 		<?php
 
-		$cur_section = "";
 		foreach ($info as $section => $hotkeys) {
-
-			if ($cur_section) print "<li>&nbsp;</li>";
-			print "<li><h3>" . $section . "</h3></li>";
-			$cur_section = $section;
+			?>
+			<li><h3><?= $section ?></h3></li>
+			<?php
 
 			foreach ($hotkeys as $action => $description) {
 
@@ -705,9 +703,8 @@ class RPC extends Handler_Protected {
 				}
 			}
 		}
-		print "</ul>";
-
-	?>
+		?>
+		</ul>
 	<footer class='text-center'>
 		<?= \Controls\submit_tag(__('Close this window')) ?>
 	</footer>

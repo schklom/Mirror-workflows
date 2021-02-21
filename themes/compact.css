@@ -898,12 +898,14 @@ body.ttrss_main .dijitTooltipBelow .dijitTooltipConnector {
 body.ttrss_main .dijitTooltipAbove .dijitTooltipConnector {
   border-top-color: #1c5c7d;
 }
-body.ttrss_main .dijitDialog h1:first-of-type,
-body.ttrss_main .dijitDialog h2:first-of-type,
-body.ttrss_main .dijitDialog h3:first-of-type,
-body.ttrss_main .dijitDialog h4:first-of-type {
-  margin-top: 0px;
-}
+/*body.ttrss_main .dijitDialog {
+	h1:first-of-type,
+	h2:first-of-type,
+	h3:first-of-type,
+	h4:first-of-type {
+		margin-top: 0px;
+	}
+}*/
 body.ttrss_main[view-mode="marked"] #feeds-holder #feedTree .dijitTreeRow.Has_Marked .dijitTreeLabel {
   color: #257aa7;
 }
@@ -1413,6 +1415,13 @@ body.ttrss_prefs {
   background-color: #f5f5f5;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
+  /*.dijitContentPane {
+		h1:first-of-type,
+		h2:first-of-type,
+		h3:first-of-type {
+			margin-top: 0px;
+		}
+	}*/
 }
 body.ttrss_prefs h1,
 body.ttrss_prefs h2,
@@ -1421,11 +1430,6 @@ body.ttrss_prefs h4 {
   font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 600;
   color: #555;
-}
-body.ttrss_prefs .dijitContentPane h1:first-of-type,
-body.ttrss_prefs .dijitContentPane h2:first-of-type,
-body.ttrss_prefs .dijitContentPane h3:first-of-type {
-  margin-top: 0px;
 }
 body.ttrss_prefs #footer,
 body.ttrss_prefs #header {

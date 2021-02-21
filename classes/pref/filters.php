@@ -328,7 +328,8 @@ class Pref_Filters extends Handler_Protected {
 				"rules" => [],
 				"actions" => [],
 				"filter_types" => [],
-				"filter_actions" => [],
+				"action_types" => [],
+				"plugin_actions" => [],
 				"labels" => Labels::get_all($_SESSION["uid"])
 			];
 
@@ -343,7 +344,17 @@ class Pref_Filters extends Handler_Protected {
 				ORDER BY name");
 
 			while ($line = $res->fetch()) {
-				$rv["filter_actions"][$line["id"]] = __($line["description"]);
+				$rv["action_types"][$line["id"]] = __($line["description"]);
+			}
+
+			$filter_actions = PluginHost::getInstance()->get_filter_actions();
+
+			foreach ($filter_actions as $fclass => $factions) {
+				foreach ($factions as $faction) {
+
+					$rv["plugin_actions"][$fclass . ":" . $faction["action"]] =
+						$fclass . ": " . $faction["description"];
+				}
 			}
 
 			if ($filter_id) {
@@ -393,167 +404,6 @@ class Pref_Filters extends Handler_Protected {
 			}
 			print json_encode($rv);
 		}
-
-		/*return;
-
-		if (empty($filter_id) || $row = $sth->fetch()) {
-
-			$enabled = $row["enabled"] ?? true;
-			$match_any_rule = $row["match_any_rule"] ?? false;
-			$inverse = $row["inverse"] ?? false;
-			$title = htmlspecialchars($row["title"] ?? "");
-
-			print "<form onsubmit='return false'>";
-
-			print \Controls\hidden_tag("op", "pref-filters");
-
-			if ($filter_id) {
-				print \Controls\hidden_tag("id", "$filter_id");
-				print \Controls\hidden_tag("method", "editSave");
-			} else {
-				print \Controls\hidden_tag("method", "add");
-			}
-
-			print \Controls\hidden_tag("csrf_token", $_SESSION['csrf_token']);
-
-			print "<header>".__("Caption")."</header>
-				<section>
-					<input required='true' dojoType='dijit.form.ValidationTextBox' style='width : 20em;' name=\"title\" value=\"$title\">
-				</section>
-				<header class='horizontal'>".__("Match")."</header>
-				<section>
-					<div dojoType='fox.Toolbar'>
-						<div dojoType='fox.form.DropDownButton'>
-							<span>" . __('Select')."</span>
-							<div dojoType='dijit.Menu' style='display: none;'>
-								<!-- can't use App.dialogOf() here because DropDownButton is not a child of the Dialog -->
-								<div onclick='dijit.byId(\"filterEditDlg\").selectRules(true)'
-									dojoType='dijit.MenuItem'>".__('All')."</div>
-								<div onclick='dijit.byId(\"filterEditDlg\").selectRules(false)'
-									dojoType='dijit.MenuItem'>".__('None')."</div>
-							</div>
-						</div>
-					<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).addRule()'>".
-						__('Add')."</button>
-					<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).deleteRule()'>".
-						__('Delete')."</button>
-					</div>";
-
-			print "<ul id='filterDlg_Matches'>";
-
-			if ($filter_id) {
-				$rules_sth = $this->pdo->prepare("SELECT * FROM ttrss_filters2_rules
-					WHERE filter_id = ? ORDER BY reg_exp, id");
-		 		$rules_sth->execute([$filter_id]);
-
-				while ($line = $rules_sth->fetch()) {
-					if ($line["match_on"]) {
-						$line["feed_id"] = json_decode($line["match_on"], true);
-					} else {
-						if ($line["cat_filter"]) {
-							$feed_id = "CAT:" . (int)$line["cat_id"];
-						} else {
-							$feed_id = (int)$line["feed_id"];
-						}
-
-						$line["feed_id"] = ["" . $feed_id]; // set item type to string for in_array()
-					}
-
-					unset($line["cat_filter"]);
-					unset($line["cat_id"]);
-					unset($line["filter_id"]);
-					unset($line["id"]);
-					if (!$line["inverse"]) unset($line["inverse"]);
-					unset($line["match_on"]);
-
-					print "<li><input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
-						<span onclick='App.dialogOf(this).onRuleClicked(this)'>".$this->_get_rule_name($line)."</span>".
-						\Controls\hidden_tag("rule[]", (string)json_encode($line))."</li>";
-				}
-			}
-
-			print "</ul>
-				</section>";
-
-			print "<header class='horizontal'>".__("Apply actions")."</header>
-				<section>
-					<div dojoType='fox.Toolbar'>
-						<div dojoType='fox.form.DropDownButton'>
-							<span>".__('Select')."</span>
-							<div dojoType='dijit.Menu' style='display: none'>
-								<div onclick='dijit.byId(\"filterEditDlg\").selectActions(true)'
-									dojoType='dijit.MenuItem'>".__('All')."</div>
-								<div onclick='dijit.byId(\"filterEditDlg\").selectActions(false)'
-									dojoType='dijit.MenuItem'>".__('None')."</div>
-								</div>
-							</div>
-						<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).addAction()'>".
-							__('Add')."</button>
-						<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).deleteAction()'>".
-						__('Delete')."</button>
-					</div>";
-
-			print "<ul id='filterDlg_Actions'>";
-
-			if ($filter_id) {
-				$actions_sth = $this->pdo->prepare("SELECT * FROM ttrss_filters2_actions
-					WHERE filter_id = ? ORDER BY id");
-				$actions_sth->execute([$filter_id]);
-
-				while ($line = $actions_sth->fetch()) {
-					$line["action_param_label"] = $line["action_param"];
-
-					unset($line["filter_id"]);
-					unset($line["id"]);
-
-					print "<li><input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
-						<span onclick='App.dialogOf(this).onActionClicked(this)'>".$this->_get_action_name($line)."</span>".
-						\Controls\hidden_tag("action[]", (string)json_encode($line))."</li>";
-				}
-			}
-
-			print "</ul>";
-
-			print "</section>";
-
-			print "<header>".__("Options")."</header>
-				<section>";
-
-			print "<fieldset class='narrow'>
-				<label class='checkbox'>".\Controls\checkbox_tag('enabled', $enabled)." ".__('Enabled')."</label></fieldset>";
-
-			print "<fieldset class='narrow'>
-				<label class='checkbox'>".\Controls\checkbox_tag('match_any_rule', $match_any_rule)." ".__('Match any rule')."</label>
-				</fieldset>";
-
-			print "<fieldset class='narrow'><label class='checkbox'>".\Controls\checkbox_tag('inverse', $inverse)." ".__('Inverse matching')."</label>
-				</fieldset>";
-
-			print "</section>
-				<footer>";
-
-			if ($filter_id) {
-				print "<div style='float : left'>
-					<button dojoType='dijit.form.Button' class='alt-danger' onclick='App.dialogOf(this).removeFilter()'>".
-						__('Remove')."</button>
-					</div>
-					<button dojoType='dijit.form.Button' class='alt-info' onclick='App.dialogOf(this).test()'>".
-						__('Test')."</button>
-					<button dojoType='dijit.form.Button' type='submit' class='alt-primary' onclick='App.dialogOf(this).execute()'>".
-						__('Save')."</button>
-					<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
-						__('Cancel')."</button>";
-			} else {
-				print "<button dojoType='dijit.form.Button' class='alt-info' onclick='App.dialogOf(this).test()'>".
-						__('Test')."</button>
-					<button dojoType='dijit.form.Button' type='submit' class='alt-primary' onclick='App.dialogOf(this).execute()'>".
-						__('Create')."</button>
-					<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
-						__('Cancel')."</button>";
-			}
-
-			print "</footer></form>";
-		} */
 	}
 
 	private function _get_rule_name($rule) {
@@ -845,180 +695,8 @@ class Pref_Filters extends Handler_Protected {
 		$feed_ids = explode(",", clean($_REQUEST["ids"]));
 
 		print json_encode([
-			"multiselect" => $this->feed_multi_select("feed_id", $feed_ids, 'style="width : 500px; height : 300px" dojoType="dijit.form.MultiSelect"')
+			"multiselect" => $this->_feed_multi_select("feed_id", $feed_ids, 'style="width : 540px; height : 300px" dojoType="dijit.form.MultiSelect"')
 		]);
-
-		/*return;
-
-		$rule = json_decode(clean($_REQUEST["rule"]), true);
-
-		if ($rule) {
-			$reg_exp = htmlspecialchars($rule["reg_exp"]);
-			$filter_type = $rule["filter_type"];
-			$feed_id = $rule["feed_id"];
-			$inverse_checked = !empty($rule["inverse"]);
-		} else {
-			$reg_exp = "";
-			$filter_type = 1;
-			$feed_id = ["0"];
-			$inverse_checked = false;
-		}
-
-		print "<form name='filter_new_rule_form' id='filter_new_rule_form' onsubmit='return false;'>";
-
-		$res = $this->pdo->query("SELECT id,description
-			FROM ttrss_filter_types WHERE id != 5 ORDER BY description");
-
-		$filter_types = array();
-
-		while ($line = $res->fetch()) {
-			$filter_types[$line["id"]] = __($line["description"]);
-		}
-
-		print "<header>".__("Match")."</header>";
-
-		print "<section>";
-
-		print "<textarea dojoType='fox.form.ValidationTextArea'
-			 required='true' id='filterDlg_regExp'
-			 ValidRegExp='true'
-			 rows='4'
-			 style='font-size : 14px; width : 490px; word-break: break-all'
-			 name='reg_exp'>$reg_exp</textarea>";
-
-		print "<div dojoType='dijit.Tooltip' id='filterDlg_regExp_tip' connectId='filterDlg_regExp' position='below'></div>";
-
-		print "<fieldset>";
-		print "<label class='checkbox'>".
-		 	\Controls\checkbox_tag("inverse", $inverse_checked) .
-			 __("Inverse regular expression matching")."</label>";
-		print "</fieldset>";
-
-		print "<fieldset>";
-		print "<label style='display : inline'>".  __("on field") . "</label> ";
-		print \Controls\select_hash("filter_type", $filter_type, $filter_types);
-		print "<label style='padding-left : 10px; display : inline'>" . __("in") . "</label> ";
-
-		print "</fieldset>";
-
-		print "<fieldset>";
-		print "<span id='filterDlg_feeds'>";
-		print $this->feed_multi_select("feed_id",
-			$feed_id,
-			'style="width : 500px; height : 300px" dojoType="dijit.form.MultiSelect"');
-		print "</span>";
-
-		print "</fieldset>";
-
-		print "</section>";
-
-		print "<footer>";
-
-		print "<button dojoType='dijit.form.Button' style='float : left' class='alt-info' onclick='window.open(\"https://tt-rss.org/wiki/ContentFilters\")'>
-			<i class='material-icons'>help</i> ".__("More info...")."</button>";
-
-		print "<button dojoType='dijit.form.Button' class='alt-primary' type='submit' onclick='App.dialogOf(this).execute()'>".
-			($rule ? __("Save rule") : __('Add rule'))."</button> ";
-
-		print "<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
-			__('Cancel')."</button>";
-
-		print "</footer>";
-
-		print "</form>";*/
-	}
-
-	function newaction() {
-		$action = json_decode(clean($_REQUEST["action"]), true);
-
-		if ($action) {
-			$action_param = $action["action_param"];
-			$action_id = (int)$action["action_id"];
-		} else {
-			$action_param = "";
-			$action_id = 0;
-		}
-
-		print "<form name='filter_new_action_form' id='filter_new_action_form' onsubmit='return false;'>";
-
-		print "<header>".__("Perform Action")."</header>";
-
-		print "<section>";
-
-		print "<select id=\"filterDlg_actionSelect\" name='action_id' dojoType='fox.form.Select'
-			onchange='App.dialogOf(this).hideOrShowActionParam(this)'>";
-
-		$res = $this->pdo->query("SELECT id,description FROM ttrss_filter_actions
-			ORDER BY name");
-
-		while ($line = $res->fetch()) {
-			$is_selected = ($line["id"] == $action_id) ? "selected='1'" : "";
-			printf("<option $is_selected value='%d'>%s</option>", $line["id"], __($line["description"]));
-		}
-
-		print "</select>";
-
-		#$param_box_hidden = ($action_id == 7 || $action_id == 4 || $action_id == 6 || $action_id == 9) ?
-		#	"" : "display : none";
-
-		#$param_hidden = ($action_id == 4 || $action_id == 6) ?
-		#	"" : "display : none";
-
-		#$label_param_hidden = ($action_id == 7) ?	"" : "display : none";
-		#$plugin_param_hidden = ($action_id == 9) ?	"" : "display : none";
-
-		#print "<span id='filterDlg_paramBox' style=\"$param_box_hidden\">";
-		#print " ";
-		//print " " . __("with parameters:") . " ";
-		print "<input dojoType='dijit.form.TextBox'
-			id='filterDlg_actionParam' style=\"$param_hidden\"
-			name='action_param' value=\"$action_param\">";
-
-		print \Controls\select_labels("action_param_label", $action_param,
-			["style" => $label_param_hidden],
-			"filterDlg_actionParamLabel");
-
-		$filter_actions = PluginHost::getInstance()->get_filter_actions();
-		$filter_action_hash = array();
-
-		foreach ($filter_actions as $fclass => $factions) {
-			foreach ($factions as $faction) {
-
-				$filter_action_hash[$fclass . ":" . $faction["action"]] =
-					$fclass . ": " . $faction["description"];
-			}
-		}
-
-		if (count($filter_action_hash) == 0) {
-			$filter_plugin_disabled = ["disabled" => "1"];
-
-			$filter_action_hash["no-data"] = __("No actions available");
-
-		} else {
-			$filter_plugin_disabled = [];
-		}
-
-		print \Controls\select_hash("action_param_plugin", $action_param, $filter_action_hash,
-			array_merge(["style" => $plugin_param_hidden], $filter_plugin_disabled),
-			"filterDlg_actionParamPlugin");
-
-		#print "</span>";
-
-		print "&nbsp;"; // tiny layout hack
-
-		print "</section>";
-
-		print "<footer>";
-
-		print "<button dojoType='dijit.form.Button' class='alt-primary' type='submit' onclick='App.dialogOf(this).execute()'>".
-			($action ? __("Save action") : __('Add action'))."</button> ";
-
-		print "<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
-			__('Cancel')."</button>";
-
-		print "</footer>";
-
-		print "</form>";
 	}
 
 	private function _get_name($id) {
@@ -1152,7 +830,7 @@ class Pref_Filters extends Handler_Protected {
 		$this->pdo->commit();
 	}
 
-	private function feed_multi_select($id, $default_ids = [],
+	private function _feed_multi_select($id, $default_ids = [],
 						   $attributes = "", $include_all_feeds = true,
 						   $root_id = null, $nest_level = 0) {
 
@@ -1194,7 +872,7 @@ class Pref_Filters extends Handler_Protected {
 					$line["id"], htmlspecialchars($line["title"]));
 
 				if ($line["num_children"] > 0)
-					$rv .= $this->feed_multi_select($id, $default_ids, $attributes,
+					$rv .= $this->_feed_multi_select($id, $default_ids, $attributes,
 						$include_all_feeds, $line["id"], $nest_level+1);
 
 				$f_sth = $pdo->prepare("SELECT id,title FROM ttrss_feeds

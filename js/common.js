@@ -86,8 +86,7 @@ Element.prototype.fadeIn = function(display = undefined){
 };
 
 Element.prototype.visible = function() {
-	// TODO: should we actually check for offsetWidth/offsetHeight == 0?
-	return this.style.display != "none";
+	return this.style.display != "none" && this.offsetHeight != 0 && this.offsetWidth != 0;
 }
 
 Element.visible = function(elem) {

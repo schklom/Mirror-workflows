@@ -587,64 +587,6 @@ const	CommonDialogs = {
 
 			dialog.show();
 		},
-		publishedOPML: function() {
-
-			Notify.progress("Loading, please wait...", true);
-
-			xhr.json("backend.php", {op: "pref-feeds", method: "getOPMLKey"}, (reply) => {
-				try {
-					const dialog = new fox.SingleUseDialog({
-						title: __("Public OPML URL"),
-						regenOPMLKey: function() {
-							if (confirm(__("Replace current OPML publishing address with a new one?"))) {
-								Notify.progress("Trying to change address...", true);
-
-								xhr.json("backend.php", {op: "pref-feeds", method: "regenOPMLKey"}, (reply) => {
-									if (reply) {
-										const new_link = reply.link;
-										const target = this.domNode.querySelector('.generated_url');
-
-										if (new_link && target) {
-											target.href = new_link;
-											target.innerHTML = new_link;
-
-											Notify.close();
-
-										} else {
-											Notify.error("Could not change feed URL.");
-										}
-									}
-								});
-							}
-							return false;
-						},
-						content: `
-							<header>${__("Your Public OPML URL is:")}</header>
-							<section>
-								<div class='panel text-center'>
-									<a class='generated_url' href="${App.escapeHtml(reply.link)}" target='_blank'>${App.escapeHtml(reply.link)}</a>
-								</div>
-							</section>
-							<footer class='text-center'>
-								<button dojoType='dijit.form.Button' onclick="return App.dialogOf(this).regenOPMLKey()">
-									${__('Generate new URL')}
-								</button>
-								<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>
-									${__('Close this window')}
-								</button>
-							</footer>
-						`
-					});
-
-					dialog.show();
-
-					Notify.close();
-
-				} catch (e) {
-					App.Error.report(e);
-				}
-			});
-		},
 		generatedFeed: function(feed, is_cat, search = "") {
 
 			Notify.progress("Loading, please wait...", true);

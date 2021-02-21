@@ -1043,7 +1043,7 @@ class Pref_Feeds extends Handler_Protected {
 			<?= __("Published OPML does not include your Tiny Tiny RSS settings, feeds that require authentication or feeds hidden from Popular feeds.") ?>
 		</p>
 
-		<button dojoType='dijit.form.Button' class='alt-primary' onclick="return CommonDialogs.publishedOPML()">
+		<button dojoType='dijit.form.Button' class='alt-primary' onclick="return Helpers.OPML.publish()">
 			<?= __('Display published OPML URL') ?>
 		</button>
 

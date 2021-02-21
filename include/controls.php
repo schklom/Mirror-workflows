@@ -5,6 +5,11 @@
       $rv = "";
 
       foreach ($attributes as $k => $v) {
+
+         // special handling for "disabled"
+         if ($k === "disabled" && !sql_bool_to_bool($v))
+            continue;
+
          $rv .= "$k=\"" . htmlspecialchars($v) . "\"";
       }
 
@@ -28,6 +33,18 @@
 
    function button_tag(string $value, string $type, array $attributes = []) {
       return "<button dojoType=\"dijit.form.Button\" ".attributes_to_string($attributes)." type=\"$type\">$value</button>";
+   }
+
+   function input_tag(string $name, string $value, string $type = "text", array $attributes = [], string $id = "") {
+      $attributes_str = attributes_to_string($attributes);
+      $dojo_type = strpos($attributes_str, "dojoType") === false ? "dojoType='dijit.form.TextBox'" : "";
+
+      return "<input name=\"".htmlspecialchars($name)."\" $dojo_type ".attributes_to_string($attributes)." id=\"".htmlspecialchars($id)."\"
+         type=\"$type\" value=\"".htmlspecialchars($value)."\">";
+   }
+
+   function number_spinner_tag(string $name, string $value, array $attributes = [], string $id = "") {
+      return input_tag($name, $value, "text", array_merge(["dojoType" => "dijit.form.NumberSpinner"], $attributes), $id);
    }
 
    function submit_tag(string $value, array $attributes = []) {

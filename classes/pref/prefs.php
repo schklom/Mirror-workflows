@@ -712,59 +712,50 @@ class Pref_Prefs extends Handler_Protected {
 
 						array_push($listed_boolean_prefs, $pref_name);
 
-						$is_checked = ($value == "true") ? "checked=\"checked\"" : "";
-
 						if ($pref_name == "PURGE_UNREAD_ARTICLES" && FORCE_ARTICLE_PURGE != 0) {
-							$is_disabled = "disabled=\"1\"";
-							$is_checked = "checked=\"checked\"";
+							$is_disabled = true;
+							$is_checked = true;
 						} else {
-							$is_disabled = "";
+							$is_disabled = false;
+							$is_checked = ($value == "true");
 						}
 
-						print "<input type='checkbox' name='$pref_name' $is_checked $is_disabled
-							dojoType='dijit.form.CheckBox' id='CB_$pref_name' value='1'>";
+						print \Controls\checkbox_tag($pref_name, $is_checked, "true",
+							["disabled" => $is_disabled], "CB_$pref_name");
 
 					} else if (in_array($pref_name, ['FRESH_ARTICLE_MAX_AGE',
 							'PURGE_OLD_DAYS', 'LONG_DATE_FORMAT', 'SHORT_DATE_FORMAT'])) {
 
-						$regexp = ($type_name == 'integer') ? 'regexp="^\d*$"' : '';
-
 						if ($pref_name == "PURGE_OLD_DAYS" && FORCE_ARTICLE_PURGE != 0) {
-							$is_disabled = "disabled='1'";
+							$attributes = ["disabled" => true, "required" => true];
 							$value = FORCE_ARTICLE_PURGE;
 						} else {
-							$is_disabled = "";
+							$attributes = ["required" => true];
 						}
 
 						if ($type_name == 'integer')
-							print "<input dojoType=\"dijit.form.NumberSpinner\"
-								required='1' $is_disabled
-								name=\"$pref_name\" value=\"$value\">";
+							print \Controls\number_spinner_tag($pref_name, $value, $attributes);
 						else
-							print "<input dojoType=\"dijit.form.TextBox\"
-								required='1' $regexp $is_disabled
-								name=\"$pref_name\" value=\"$value\">";
+							print \Controls\input_tag($pref_name, $value, "text", $attributes);
 
 					} else if ($pref_name == "SSL_CERT_SERIAL") {
 
-						print "<input dojoType='dijit.form.ValidationTextBox'
-							id='SSL_CERT_SERIAL' readonly='1'
-							name=\"$pref_name\" value=\"$value\">";
+						print \Controls\input_tag($pref_name, $value, "text", ["readonly" => true], "SSL_CERT_SERIAL");
 
 						$cert_serial = htmlspecialchars(get_ssl_certificate_id());
-						$has_serial = ($cert_serial) ? "false" : "true";
+						$has_serial = ($cert_serial) ? true : false;
 
-						print "<button dojoType='dijit.form.Button' disabled='$has_serial'
-							onclick=\"dijit.byId('SSL_CERT_SERIAL').attr('value', '$cert_serial')\">" .
-							__('Register') . "</button>";
+						print \Controls\button_tag(__('Register'), "", [
+							"disabled" => !$has_serial,
+							"onclick" => "dijit.byId('SSL_CERT_SERIAL').attr('value', '$cert_serial')"]);
 
-						print "<button dojoType='dijit.form.Button' class='alt-danger'
-							onclick=\"dijit.byId('SSL_CERT_SERIAL').attr('value', '')\">" .
-							__('Clear') . "</button>";
+						print \Controls\button_tag(__('Clear'), "", [
+							"class" => "alt-danger",
+							"onclick" => "dijit.byId('SSL_CERT_SERIAL').attr('value', '')"]);
 
-						print "<button dojoType='dijit.form.Button' class='alt-info'
-							onclick='window.open(\"https://tt-rss.org/wiki/SSL%20Certificate%20Authentication\")'>
-							<i class='material-icons'>help</i> ".__("More info...")."</button>";
+						print \Controls\button_tag(\Controls\icon("help") . " " . __("More info..."), "", [
+							"class" => "alt-info",
+							"onclick" => "window.open('https://tt-rss.org/wiki/SSL%20Certificate%20Authentication')"]);
 
 					} else if ($pref_name == 'DIGEST_PREFERRED_TIME') {
 						print "<input dojoType=\"dijit.form.ValidationTextBox\"

@@ -1,0 +1,17 @@
+parameters:
+   level: 5
+   ignoreErrors:
+      - '#Constant.*not found#'
+      - '#Call to an undefined method DOMNode::getAttribute\(\).#'
+      - '#PHPDoc tag @param has invalid value#'
+      - message: '##'
+        paths:
+          - lib/*
+          - vendor/*
+          - plugins/*/vendor/*
+          - plugins.local/*/vendor/*
+
+   excludePaths:
+      - node_modules/*
+   paths:
+      - .

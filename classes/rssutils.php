@@ -1652,15 +1652,19 @@ class RSSUtils {
 		}
 
 		// Limiting to "image" type misses those served with text/plain
-		$contents = UrlHelper::fetch(['url' => $favicon_url]); // , "image");
+		$contents = UrlHelper::fetch([
+			'url' => $favicon_url,
+			'max_size' => MAX_FAVICON_FILE_SIZE,
+			//'type' => 'image',
+		]);
 		if (!$contents) {
 			Debug::log("fetching favicon $favicon_url failed", Debug::$LOG_VERBOSE);
 			return false;
 		}
 
-		$original_contents = file_exists($icon_file) ? file_get_contents($icon_file) : null;
-		if ($original_contents) {
-			if (strcmp($contents, $original_contents) === 0) {
+		$original_contents_md5 = file_exists($icon_file) ? md5_file($icon_file) : null;
+		if ($original_contents_md5) {
+			if (md5($contents) == $original_contents_md5) {
 				Debug::log("favicon content has not changed", Debug::$LOG_VERBOSE);
 				return $icon_file;
 			}

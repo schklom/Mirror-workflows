@@ -823,16 +823,18 @@ body.ttrss_main #headlines-spacer a:hover {
 }
 body.ttrss_main ul#filterDlg_Matches,
 body.ttrss_main ul#filterDlg_Actions {
-  max-height: 100px;
-  overflow: auto;
   list-style-type: none;
-  border-style: solid;
-  border-color: #222;
-  border-width: 1px 1px 1px 1px;
-  background-color: #333;
-  margin: 0px 0px 5px 0px;
-  padding: 4px;
-  min-height: 16px;
+  margin: 0;
+  padding: 0;
+  /*max-height : 100px;
+		overflow : auto;
+		border-style : solid;
+		border-color : @border-default;
+		border-width : 1px 1px 1px 1px;
+		background-color : @default-bg;
+		margin : 0px 0px 5px 0px;
+		padding : 4px;
+		min-height : 16px;*/
 }
 body.ttrss_main ul#filterDlg_Matches li,
 body.ttrss_main ul#filterDlg_Actions li {

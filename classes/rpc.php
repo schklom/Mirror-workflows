@@ -399,7 +399,7 @@ class RPC extends Handler_Protected {
 
 		$params["icon_indicator_white"] = $this->image_to_base64("images/indicator_white.gif");
 
-		$params["labels"] = Labels::get_all_labels($_SESSION["uid"]);
+		$params["labels"] = Labels::get_all($_SESSION["uid"]);
 
 		return $params;
 	}
@@ -430,7 +430,7 @@ class RPC extends Handler_Protected {
 		$data["max_feed_id"] = (int) $max_feed_id;
 		$data["num_feeds"] = (int) $num_feeds;
 		$data['cdm_expanded'] = get_pref('CDM_EXPANDED');
-		$data["labels"] = Labels::get_all_labels($_SESSION["uid"]);
+		$data["labels"] = Labels::get_all($_SESSION["uid"]);
 
 		if (LOG_DESTINATION == 'sql' && $_SESSION['access_level'] >= 10) {
 			if (DB_TYPE == 'pgsql') {

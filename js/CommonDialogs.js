@@ -312,7 +312,7 @@ const	CommonDialogs = {
 					} else {
 						if (feed_id == Feeds.getActive())
 							setTimeout(() => {
-									Feeds.open({feed: -5})
+									Feeds.openDefaultFeed();
 								},
 								100);
 

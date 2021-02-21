@@ -300,7 +300,6 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 
 				try {
 					const dialog = new fox.SingleUseDialog({
-						id: "feedEditDlg",
 						title: __("Edit Multiple Feeds"),
 						getChildByName: function (name) {
 							let rv = null;
@@ -313,15 +312,21 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 								});
 							return rv;
 						},
-						toggleField: function (checkbox, elem, label) {
-							this.getChildByName(elem).attr('disabled', !checkbox.checked);
+						toggleField: function (checkbox) {
+							const name = checkbox.attr("data-control-for");
+							const target = dijit.getEnclosingWidget(dialog.domNode.querySelector(`input[name="${name}"]`));
 
-							if ($(label))
-								if (checkbox.checked)
-									$(label).removeClassName('text-muted');
+							target.attr('disabled', !checkbox.attr('checked'));
+							console.log(target, target.attr('type'));
+
+							if (target.attr('type') == "checkbox") {
+								const label = checkbox.domNode.closest("label");
+
+								if (checkbox.attr('checked'))
+									label.removeClassName('text-muted');
 								else
-									$(label).addClassName('text-muted');
-
+									label.addClassName('text-muted');
+							}
 						},
 						execute: function () {
 							if (this.validate() && confirm(__("Save changes to selected feeds?"))) {

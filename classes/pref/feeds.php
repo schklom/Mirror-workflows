@@ -22,11 +22,6 @@ class Pref_Feeds extends Handler_Protected {
 		return $rv;
 	}
 
-	function batch_edit_cbox($elem, $label = false) {
-		print "<input type=\"checkbox\" title=\"".__("Check to enable field")."\"
-			onchange=\"App.dialogOf(this).toggleField(this, '$elem', '$label')\">";
-	}
-
 	function renamecat() {
 		$title = clean($_REQUEST['title']);
 		$id = clean($_REQUEST['id']);
@@ -571,165 +566,117 @@ class Pref_Feeds extends Handler_Protected {
 		}
 	}
 
+	private function _batch_toggle_checkbox($name) {
+		return \Controls\checkbox_tag("", false, "",
+					["data-control-for" => $name, "title" => __("Check to enable field"), "onchange" => "App.dialogOf(this).toggleField(this)"]);
+	}
+
 	function editfeeds() {
 		global $purge_intervals;
 		global $update_intervals;
 
 		$feed_ids = clean($_REQUEST["ids"]);
 
-		print_notice("Enable the options you wish to apply using checkboxes on the right:");
-
-		print \Controls\hidden_tag("ids", "$feed_ids");
-		print \Controls\hidden_tag("op", "pref-feeds");
-		print \Controls\hidden_tag("method", "batchEditSave");
-
-		print "<header>".__("Feed")."</header>";
-		print "<section>";
-
-		/* Category */
-
-		if (get_pref('ENABLE_FEED_CATS')) {
-
-			print "<fieldset>";
-
-			print "<label>" . __('Place in category:') . "</label> ";
-
-			print \Controls\select_feeds_cats("cat_id", null, ['disabled' => '1']);
-
-			$this->batch_edit_cbox("cat_id");
-
-			print "</fieldset>";
-		}
-
-		/* FTS Stemming Language */
-
-		if (DB_TYPE == "pgsql") {
-			print "<fieldset>";
-
-			print "<label>" . __('Language:') . "</label> ";
-			print \Controls\select_tag("feed_language", "", $this::get_ts_languages(), ["disabled"=> 1]);
-
-			$this->batch_edit_cbox("feed_language");
-
-			print "</fieldset>";
-		}
-
-		print "</section>";
-
-		print "<header>".__("Update")."</header>";
-		print "<section>";
-
-		/* Update Interval */
-
-		print "<fieldset>";
-
-		print "<label>".__("Interval:")."</label> ";
-
 		$local_update_intervals = $update_intervals;
 		$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[get_pref("DEFAULT_UPDATE_INTERVAL")]);
 
-		print \Controls\select_hash("update_interval", "", $local_update_intervals, ["disabled" => 1]);
+		$local_purge_intervals = $purge_intervals;
+		$default_purge_interval = get_pref("PURGE_OLD_DAYS");
 
-		$this->batch_edit_cbox("update_interval");
+		if ($default_purge_interval > 0)
+			$local_purge_intervals[0] .= " " . T_sprintf("(%d days)", $default_purge_interval);
+		else
+			$local_purge_intervals[0] .= " " . sprintf("(%s)", __("Disabled"));
 
-		print "</fieldset>";
+		$options = [
+			"include_in_digest" => __('Include in e-mail digest'),
+			"always_display_enclosures" => __('Always display image attachments'),
+			"hide_images" => __('Do not embed media'),
+			"cache_images" => __('Cache media'),
+			"mark_unread_on_update" => __('Mark updated articles as unread')
+		];
 
-		/* Purge intl */
+		print_notice("Enable the options you wish to apply using checkboxes on the right.");
+		?>
 
-		if (FORCE_ARTICLE_PURGE == 0) {
+		<?= \Controls\hidden_tag("ids", $feed_ids) ?>
+		<?= \Controls\hidden_tag("op", "pref-feeds") ?>
+		<?= \Controls\hidden_tag("method", "batchEditSave") ?>
 
-			print "<fieldset>";
+		<div dojoType="dijit.layout.TabContainer" style="height : 450px">
+			<div dojoType="dijit.layout.ContentPane" title="<?= __('General') ?>">
+				<section>
+				<?php if (get_pref('ENABLE_FEED_CATS')) { ?>
+					<fieldset>
+						<label><?= __('Place in category:') ?></label>
+						<?= \Controls\select_feeds_cats("cat_id", null, ['disabled' => '1']) ?>
+						<?= $this->_batch_toggle_checkbox("cat_id") ?>
+					</fieldset>
+				<?php } ?>
 
-			print "<label>" . __('Article purging:') . "</label> ";
+				<?php	if (DB_TYPE == "pgsql") { ?>
+					<fieldset>
+						<label><?= __('Language:') ?></label>
+						<?= \Controls\select_tag("feed_language", "", $this::get_ts_languages(), ["disabled"=> 1]) ?>
+						<?= $this->_batch_toggle_checkbox("feed_language") ?>
+					</fieldset>
+				<?php } ?>
+				</section>
 
-			$local_purge_intervals = $purge_intervals;
-			$default_purge_interval = get_pref("PURGE_OLD_DAYS");
+				<hr/>
 
-			if ($default_purge_interval > 0)
-				$local_purge_intervals[0] .= " " . T_sprintf("(%d days)", $default_purge_interval);
-			else
-				$local_purge_intervals[0] .= " " . sprintf("(%s)", __("Disabled"));
+				<section>
+					<fieldset>
+						<label><?= __("Update interval:") ?></label>
+						<?= \Controls\select_hash("update_interval", "", $local_update_intervals, ["disabled" => 1]) ?>
+						<?= $this->_batch_toggle_checkbox("update_interval") ?>
+					</fieldset>
 
-			print \Controls\select_hash("purge_interval", "", $local_purge_intervals, ["disabled" => 1]);
+					<?php if (FORCE_ARTICLE_PURGE == 0) { ?>
+						<fieldset>
+							<label><?= __('Article purging:') ?></label>
+							<?= \Controls\select_hash("purge_interval", "", $local_purge_intervals, ["disabled" => 1]) ?>
+							<?= $this->_batch_toggle_checkbox("purge_interval") ?>
+						</fieldset>
+					<?php } ?>
+				</section>
+			</div>
+			<div dojoType="dijit.layout.ContentPane" title="<?= __('Authentication') ?>">
+				<section>
+					<fieldset>
+						<label><?= __("Login:") ?></label>
+						<input dojoType='dijit.form.TextBox'
+							disabled='1' autocomplete='new-password' name='auth_login' value=''>
+						<?= $this->_batch_toggle_checkbox("auth_login") ?>
+					</fieldset>
+					<fieldset>
+						<label><?= __("Password:") ?></label>
+						<input dojoType='dijit.form.TextBox' type='password' name='auth_pass'
+							autocomplete='new-password' disabled='1' value=''>
+						<?= $this->_batch_toggle_checkbox("auth_pass") ?>
+					</fieldset>
+				</section>
+			</div>
+			<div dojoType="dijit.layout.ContentPane" title="<?= __('Options') ?>">
+			<?php
+				foreach ($options as $name => $caption) {
+					?>
+						<fieldset class='narrow'>
+							<label class="checkbox text-muted">
+								<?= \Controls\checkbox_tag($name, false, "", ["disabled" => "1"]) ?>
+								<?= $caption ?>
+								<?= $this->_batch_toggle_checkbox($name) ?>
+							</label>
+						</fieldset>
+			<?php } ?>
+			</div>
+		</div>
 
-			$this->batch_edit_cbox("purge_interval");
-
-			print "</fieldset>";
-		}
-
-		print "</section>";
-		print "<header>".__("Authentication")."</header>";
-		print "<section>";
-
-		print "<fieldset>";
-
-		print "<input dojoType='dijit.form.TextBox'
-			placeHolder=\"".__("Login")."\" disabled='1'
-			autocomplete='new-password'
-			name='auth_login' value=''>";
-
-		$this->batch_edit_cbox("auth_login");
-
-		print "<input dojoType='dijit.form.TextBox' type='password' name='auth_pass'
-			autocomplete='new-password'
-			placeHolder=\"".__("Password")."\" disabled='1'
-			value=''>";
-
-		$this->batch_edit_cbox("auth_pass");
-
-		print "</fieldset>";
-
-		print "</section>";
-		print "<header>".__("Options")."</header>";
-		print "<section>";
-
-		print "<fieldset class='narrow'>";
-		print "<label class='checkbox'><input disabled='1' type='checkbox' id='include_in_digest'
-			name='include_in_digest' dojoType='dijit.form.CheckBox'>&nbsp;".__('Include in e-mail digest')."</label>";
-
-		print "&nbsp;"; $this->batch_edit_cbox("include_in_digest", "include_in_digest_l");
-
-		print "</fieldset><fieldset class='narrow'>";
-
-		print "<label class='checkbox'><input disabled='1' type='checkbox' id='always_display_enclosures'
-			name='always_display_enclosures' dojoType='dijit.form.CheckBox'>&nbsp;".__('Always display image attachments')."</label>";
-
-		print "&nbsp;"; $this->batch_edit_cbox("always_display_enclosures", "always_display_enclosures_l");
-
-		print "</fieldset><fieldset class='narrow'>";
-
-		print "<label class='checkbox'><input disabled='1' type='checkbox' id='hide_images'
-			name='hide_images' dojoType='dijit.form.CheckBox'>&nbsp;". __('Do not embed media')."</label>";
-
-		print "&nbsp;"; $this->batch_edit_cbox("hide_images", "hide_images_l");
-
-		print "</fieldset><fieldset class='narrow'>";
-
-		print "<label class='checkbox'><input disabled='1' type='checkbox' id='cache_images'
-			name='cache_images' dojoType='dijit.form.CheckBox'>&nbsp;".__('Cache media')."</label>";
-
-		print "&nbsp;"; $this->batch_edit_cbox("cache_images", "cache_images_l");
-
-		print "</fieldset><fieldset class='narrow'>";
-
-		print "<label class='checkbox'><input disabled='1' type='checkbox' id='mark_unread_on_update'
-			name='mark_unread_on_update' dojoType='dijit.form.CheckBox'>&nbsp;".__('Mark updated articles as unread')."</label>";
-
-		print "&nbsp;"; $this->batch_edit_cbox("mark_unread_on_update", "mark_unread_on_update_l");
-
-		print "</fieldset>";
-
-		print "</section>";
-
-		print "<footer>
-			<button dojoType='dijit.form.Button' type='submit' class='alt-primary' type='submit'>".
-				__('Save')."</button>
-			<button dojoType='dijit.form.Button'
-			onclick='App.dialogOf(this).hide()'>".
-				__('Cancel')."</button>
-			</footer>";
-
-		return;
+		<footer>
+			<?= \Controls\submit_tag(__("Save")) ?>
+			<?= \Controls\cancel_dialog_tag(__("Cancel")) ?>
+		</footer>
+		<?php
 	}
 
 	function batchEditSave() {

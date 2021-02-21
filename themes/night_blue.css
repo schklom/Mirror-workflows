@@ -457,6 +457,7 @@ body.ttrss_main .dijitDialog .dlgSecCont {
   margin: 10px 20px;
 }
 body.ttrss_main .dijitDialog header.horizontal + section,
+body.ttrss_main .dijitDialog section.horizontal,
 body.ttrss_main .dijitDialog .dlgSecHoriz + .dlgSecCont {
   margin: 10px 0;
 }

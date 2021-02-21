@@ -423,8 +423,8 @@ const	Filters = {
 						${App.FormFields.hidden_tag("method", filter_id ? "editSave" : "add")}
 						${App.FormFields.hidden_tag("csrf_token", App.getInitParam('csrf_token'))}
 
-						<section>
-							<input required="true" dojoType="dijit.form.ValidationTextBox" style="width : 530px"
+						<section class="horizontal">
+							<input required="true" dojoType="dijit.form.ValidationTextBox" style="width : 100%"
 								placeholder="${__("Title")}" name="title" value="${App.escapeHtml(filter.title)}">
 						</section>
 
@@ -496,9 +496,7 @@ const	Filters = {
 							</div>
 						</div>
 
-						<br/>
-
-						<section class="narrow">
+						<section class="horizontal">
 							${Object.keys(options).map((name) =>
 								`
 								<fieldset class='narrow'>

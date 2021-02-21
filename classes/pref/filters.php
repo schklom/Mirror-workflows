@@ -319,6 +319,84 @@ class Pref_Filters extends Handler_Protected {
 		$sth->execute([$filter_id, $_SESSION['uid']]);
 
 		if (empty($filter_id) || $row = $sth->fetch()) {
+			$rv = [
+				"id" => $filter_id,
+				"enabled" => $row["enabled"] ?? true,
+				"match_any_rule" => $row["match_any_rule"] ?? false,
+				"inverse" => $row["inverse"] ?? false,
+				"title" => $row["title"] ?? "",
+				"rules" => [],
+				"actions" => [],
+				"filter_types" => [],
+				"filter_actions" => [],
+				"labels" => Labels::get_all($_SESSION["uid"])
+			];
+
+			$res = $this->pdo->query("SELECT id,description
+				FROM ttrss_filter_types WHERE id != 5 ORDER BY description");
+
+			while ($line = $res->fetch()) {
+				$rv["filter_types"][$line["id"]] = __($line["description"]);
+			}
+
+			$res = $this->pdo->query("SELECT id,description FROM ttrss_filter_actions
+				ORDER BY name");
+
+			while ($line = $res->fetch()) {
+				$rv["filter_actions"][$line["id"]] = __($line["description"]);
+			}
+
+			if ($filter_id) {
+				$rules_sth = $this->pdo->prepare("SELECT * FROM ttrss_filters2_rules
+					WHERE filter_id = ? ORDER BY reg_exp, id");
+				$rules_sth->execute([$filter_id]);
+
+				while ($rrow = $rules_sth->fetch(PDO::FETCH_ASSOC)) {
+					if ($rrow["match_on"]) {
+						$rrow["feed_id"] = json_decode($rrow["match_on"], true);
+					} else {
+						if ($rrow["cat_filter"]) {
+							$feed_id = "CAT:" . (int)$rrow["cat_id"];
+						} else {
+							$feed_id = (int)$rrow["feed_id"];
+						}
+
+						$rrow["feed_id"] = ["" . $feed_id]; // set item type to string for in_array()
+					}
+
+					unset($rrow["cat_filter"]);
+					unset($rrow["cat_id"]);
+					unset($rrow["filter_id"]);
+					unset($rrow["id"]);
+					if (!$rrow["inverse"]) unset($rrow["inverse"]);
+					unset($rrow["match_on"]);
+
+					$rrow["name"] = $this->_get_rule_name($rrow);
+
+					array_push($rv["rules"], $rrow);
+				}
+
+				$actions_sth = $this->pdo->prepare("SELECT * FROM ttrss_filters2_actions
+					WHERE filter_id = ? ORDER BY id");
+				$actions_sth->execute([$filter_id]);
+
+				while ($arow = $actions_sth->fetch(PDO::FETCH_ASSOC)) {
+					$arow["action_param_label"] = $arow["action_param"];
+
+					unset($arow["filter_id"]);
+					unset($arow["id"]);
+
+					$arow["name"] = $this->_get_action_name($arow);
+
+					array_push($rv["actions"], $arow);
+				}
+			}
+			print json_encode($rv);
+		}
+
+		/*return;
+
+		if (empty($filter_id) || $row = $sth->fetch()) {
 
 			$enabled = $row["enabled"] ?? true;
 			$match_any_rule = $row["match_any_rule"] ?? false;
@@ -475,7 +553,7 @@ class Pref_Filters extends Handler_Protected {
 			}
 
 			print "</footer></form>";
-		}
+		} */
 	}
 
 	private function _get_rule_name($rule) {
@@ -592,8 +670,7 @@ class Pref_Filters extends Handler_Protected {
 		$sth->execute(array_merge($ids, [$_SESSION['uid']]));
 	}
 
-	private function _save_rules_and_actions($filter_id)
-	{
+	private function _save_rules_and_actions($filter_id) {
 
 		$sth = $this->pdo->prepare("DELETE FROM ttrss_filters2_rules WHERE filter_id = ?");
 		$sth->execute([$filter_id]);
@@ -670,7 +747,7 @@ class Pref_Filters extends Handler_Protected {
 		}
 	}
 
-	function add() {
+	function add () {
 		$enabled = checkbox_to_sql_bool(clean($_REQUEST["enabled"] ?? false));
 		$match_any_rule = checkbox_to_sql_bool(clean($_REQUEST["match_any_rule"] ?? false));
 		$title = clean($_REQUEST["title"]);
@@ -764,7 +841,15 @@ class Pref_Filters extends Handler_Protected {
 		<?php
 	}
 
-	function newrule() {
+	function editrule() {
+		$feed_ids = explode(",", clean($_REQUEST["ids"]));
+
+		print json_encode([
+			"multiselect" => $this->feed_multi_select("feed_id", $feed_ids, 'style="width : 500px; height : 300px" dojoType="dijit.form.MultiSelect"')
+		]);
+
+		/*return;
+
 		$rule = json_decode(clean($_REQUEST["rule"]), true);
 
 		if ($rule) {
@@ -818,7 +903,7 @@ class Pref_Filters extends Handler_Protected {
 
 		print "<fieldset>";
 		print "<span id='filterDlg_feeds'>";
-		$this->feed_multi_select("feed_id",
+		print $this->feed_multi_select("feed_id",
 			$feed_id,
 			'style="width : 500px; height : 300px" dojoType="dijit.form.MultiSelect"');
 		print "</span>";
@@ -840,7 +925,7 @@ class Pref_Filters extends Handler_Protected {
 
 		print "</footer>";
 
-		print "</form>";
+		print "</form>";*/
 	}
 
 	function newaction() {
@@ -1071,102 +1156,106 @@ class Pref_Filters extends Handler_Protected {
 						   $attributes = "", $include_all_feeds = true,
 						   $root_id = null, $nest_level = 0) {
 
-	$pdo = Db::pdo();
+		$pdo = Db::pdo();
 
-	//	print_r(in_array("CAT:6",$default_ids));
+		$rv = "";
 
-	if (!$root_id) {
-		print "<select multiple=\true\" id=\"$id\" name=\"$id\" $attributes>";
-		if ($include_all_feeds) {
-			$is_selected = (in_array("0", $default_ids)) ? "selected=\"1\"" : "";
-			print "<option $is_selected value=\"0\">".__('All feeds')."</option>";
+		//	print_r(in_array("CAT:6",$default_ids));
+
+		if (!$root_id) {
+			$rv .= "<select multiple=\true\" id=\"$id\" name=\"$id\" $attributes>";
+			if ($include_all_feeds) {
+				$is_selected = (in_array("0", $default_ids)) ? "selected=\"1\"" : "";
+				$rv .= "<option $is_selected value=\"0\">".__('All feeds')."</option>";
+			}
 		}
-	}
 
-	if (get_pref('ENABLE_FEED_CATS')) {
+		if (get_pref('ENABLE_FEED_CATS')) {
 
-		if (!$root_id) $root_id = null;
+			if (!$root_id) $root_id = null;
 
-		$sth = $pdo->prepare("SELECT id,title,
-				(SELECT COUNT(id) FROM ttrss_feed_categories AS c2 WHERE
-					c2.parent_cat = ttrss_feed_categories.id) AS num_children
-				FROM ttrss_feed_categories
-				WHERE owner_uid = :uid AND
-				(parent_cat = :root_id OR (:root_id IS NULL AND parent_cat IS NULL)) ORDER BY title");
+			$sth = $pdo->prepare("SELECT id,title,
+					(SELECT COUNT(id) FROM ttrss_feed_categories AS c2 WHERE
+						c2.parent_cat = ttrss_feed_categories.id) AS num_children
+					FROM ttrss_feed_categories
+					WHERE owner_uid = :uid AND
+					(parent_cat = :root_id OR (:root_id IS NULL AND parent_cat IS NULL)) ORDER BY title");
 
-		$sth->execute([":uid" => $_SESSION['uid'], ":root_id" => $root_id]);
+			$sth->execute([":uid" => $_SESSION['uid'], ":root_id" => $root_id]);
 
-		while ($line = $sth->fetch()) {
-
-			for ($i = 0; $i < $nest_level; $i++)
-				$line["title"] = " " . $line["title"];
-
-			$is_selected = in_array("CAT:".$line["id"], $default_ids) ? "selected=\"1\"" : "";
-
-			printf("<option $is_selected value='CAT:%d'>%s</option>",
-				$line["id"], htmlspecialchars($line["title"]));
-
-			if ($line["num_children"] > 0)
-				$this->feed_multi_select($id, $default_ids, $attributes,
-					$include_all_feeds, $line["id"], $nest_level+1);
-
-			$f_sth = $pdo->prepare("SELECT id,title FROM ttrss_feeds
-					WHERE cat_id = ? AND owner_uid = ? ORDER BY title");
-
-			$f_sth->execute([$line['id'], $_SESSION['uid']]);
-
-			while ($fline = $f_sth->fetch()) {
-				$is_selected = (in_array($fline["id"], $default_ids)) ? "selected=\"1\"" : "";
-
-				$fline["title"] = " " . $fline["title"];
+			while ($line = $sth->fetch()) {
 
 				for ($i = 0; $i < $nest_level; $i++)
+					$line["title"] = " " . $line["title"];
+
+				$is_selected = in_array("CAT:".$line["id"], $default_ids) ? "selected=\"1\"" : "";
+
+				$rv .= sprintf("<option $is_selected value='CAT:%d'>%s</option>",
+					$line["id"], htmlspecialchars($line["title"]));
+
+				if ($line["num_children"] > 0)
+					$rv .= $this->feed_multi_select($id, $default_ids, $attributes,
+						$include_all_feeds, $line["id"], $nest_level+1);
+
+				$f_sth = $pdo->prepare("SELECT id,title FROM ttrss_feeds
+						WHERE cat_id = ? AND owner_uid = ? ORDER BY title");
+
+				$f_sth->execute([$line['id'], $_SESSION['uid']]);
+
+				while ($fline = $f_sth->fetch()) {
+					$is_selected = (in_array($fline["id"], $default_ids)) ? "selected=\"1\"" : "";
+
 					$fline["title"] = " " . $fline["title"];
 
-				printf("<option $is_selected value='%d'>%s</option>",
-					$fline["id"], htmlspecialchars($fline["title"]));
+					for ($i = 0; $i < $nest_level; $i++)
+						$fline["title"] = " " . $fline["title"];
+
+					$rv .= sprintf("<option $is_selected value='%d'>%s</option>",
+						$fline["id"], htmlspecialchars($fline["title"]));
+				}
+			}
+
+			if (!$root_id) {
+				$is_selected = in_array("CAT:0", $default_ids) ? "selected=\"1\"" : "";
+
+				$rv .= sprintf("<option $is_selected value='CAT:0'>%s</option>",
+					__("Uncategorized"));
+
+				$f_sth = $pdo->prepare("SELECT id,title FROM ttrss_feeds
+						WHERE cat_id IS NULL AND owner_uid = ? ORDER BY title");
+				$f_sth->execute([$_SESSION['uid']]);
+
+				while ($fline = $f_sth->fetch()) {
+					$is_selected = in_array($fline["id"], $default_ids) ? "selected=\"1\"" : "";
+
+					$fline["title"] = " " . $fline["title"];
+
+					for ($i = 0; $i < $nest_level; $i++)
+						$fline["title"] = " " . $fline["title"];
+
+					$rv .= sprintf("<option $is_selected value='%d'>%s</option>",
+						$fline["id"], htmlspecialchars($fline["title"]));
+				}
+			}
+
+		} else {
+			$sth = $pdo->prepare("SELECT id,title FROM ttrss_feeds
+					WHERE owner_uid = ? ORDER BY title");
+			$sth->execute([$_SESSION['uid']]);
+
+			while ($line = $sth->fetch()) {
+
+				$is_selected = (in_array($line["id"], $default_ids)) ? "selected=\"1\"" : "";
+
+				$rv .= sprintf("<option $is_selected value='%d'>%s</option>",
+					$line["id"], htmlspecialchars($line["title"]));
 			}
 		}
 
 		if (!$root_id) {
-			$is_selected = in_array("CAT:0", $default_ids) ? "selected=\"1\"" : "";
-
-			printf("<option $is_selected value='CAT:0'>%s</option>",
-				__("Uncategorized"));
-
-			$f_sth = $pdo->prepare("SELECT id,title FROM ttrss_feeds
-					WHERE cat_id IS NULL AND owner_uid = ? ORDER BY title");
-			$f_sth->execute([$_SESSION['uid']]);
-
-			while ($fline = $f_sth->fetch()) {
-				$is_selected = in_array($fline["id"], $default_ids) ? "selected=\"1\"" : "";
-
-				$fline["title"] = " " . $fline["title"];
-
-				for ($i = 0; $i < $nest_level; $i++)
-					$fline["title"] = " " . $fline["title"];
-
-				printf("<option $is_selected value='%d'>%s</option>",
-					$fline["id"], htmlspecialchars($fline["title"]));
-			}
+			$rv .= "</select>";
 		}
 
-	} else {
-		$sth = $pdo->prepare("SELECT id,title FROM ttrss_feeds
-				WHERE owner_uid = ? ORDER BY title");
-		$sth->execute([$_SESSION['uid']]);
-
-		while ($line = $sth->fetch()) {
-
-			$is_selected = (in_array($line["id"], $default_ids)) ? "selected=\"1\"" : "";
-
-			printf("<option $is_selected value='%d'>%s</option>",
-				$line["id"], htmlspecialchars($line["title"]));
-		}
+		return $rv;
 	}
-
-	if (!$root_id) {
-		print "</select>";
-	}
-}
 }

@@ -7,26 +7,17 @@
 
 /* exported Filters */
 const	Filters = {
-	edit: function(id) { // if no id, new filter dialog
-		let query;
-
-		if (!App.isPrefs()) {
-			query = {
-				op: "pref-filters", method: "edit",
-				feed: Feeds.getActive(), is_cat: Feeds.activeIsCat()
-			};
-		} else {
-			query = {op: "pref-filters", method: "edit", id: id};
-		}
+	edit: function(filter_id = null) { // if no id, new filter dialog
 
 		const dialog = new fox.SingleUseDialog({
 			id: "filterEditDlg",
-			title: id ? __("Edit Filter") : __("Create Filter"),
+			title: filter_id ? __("Edit Filter") : __("Create Filter"),
 			ACTION_TAG: 4,
 			ACTION_SCORE: 6,
 			ACTION_LABEL: 7,
 			ACTION_PLUGIN: 9,
 			PARAM_ACTIONS: [4, 6, 7, 9],
+			filter_info: {},
 			test: function() {
 				const test_dialog = new fox.SingleUseDialog({
 					title: "Test Filter",
@@ -116,16 +107,17 @@ const	Filters = {
 
 				test_dialog.show();
 			},
-			createNewRuleElement: function(parentNode, replaceNode) {
+			insertRule: function(parentNode, replaceNode) {
 				const rule = dojo.formToJson("filter_new_rule_form");
 
 				xhr.post("backend.php", {op: "pref-filters", method: "printrulename", rule: rule}, (reply) => {
 					try {
 						const li = document.createElement('li');
+						li.addClassName("rule");
 
-						li.innerHTML = `<input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
-								<span onclick='App.dialogOf(this).onRuleClicked(this)'>${reply}</span>
-							${App.FormFields.hidden_tag("rule[]", rule)}`;
+						li.innerHTML = `${App.FormFields.checkbox_tag("", false, {onclick: 'Lists.onRowChecked(this)'})}
+								<span class="name" onclick='App.dialogOf(this).onRuleClicked(this)'>${reply}</span>
+								<span class="payload" >${App.FormFields.hidden_tag("rule[]", rule)}</span>`;
 
 						dojo.parser.parse(li);
 
@@ -139,7 +131,7 @@ const	Filters = {
 					}
 				});
 			},
-			createNewActionElement: function(parentNode, replaceNode) {
+			insertAction: function(parentNode, replaceNode) {
 				const form = document.forms["filter_new_action_form"];
 
 				if (form.action_id.value == 7) {
@@ -153,10 +145,11 @@ const	Filters = {
 				xhr.post("backend.php", { op: "pref-filters", method: "printactionname", action: action }, (reply) => {
 					try {
 						const li = document.createElement('li');
+						li.addClassName("action");
 
-						li.innerHTML = `<input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
-								<span onclick='App.dialogOf(this).onActionClicked(this)'>${reply}</span>
-							${App.FormFields.hidden_tag("action[]", action)}`;
+						li.innerHTML = `${App.FormFields.checkbox_tag("", false, {onclick: 'Lists.onRowChecked(this)'})}
+								<span class="name" onclick='App.dialogOf(this).onActionClicked(this)'>${reply}</span>
+								<span class="payload">${App.FormFields.hidden_tag("action[]", action)}</span>`;
 
 						dojo.parser.parse(li);
 
@@ -171,30 +164,84 @@ const	Filters = {
 					}
 				});
 			},
-			editRule: function(replaceNode, ruleStr) {
+			editRule: function(replaceNode, ruleStr = null) {
 				const edit_rule_dialog = new fox.SingleUseDialog({
 					id: "filterNewRuleDlg",
 					title: ruleStr ? __("Edit rule") : __("Add rule"),
 					execute: function () {
 						if (this.validate()) {
-							dialog.createNewRuleElement(App.byId("filterDlg_Matches"), replaceNode);
+							dialog.insertRule(App.byId("filterDlg_Matches"), replaceNode);
 							this.hide();
 						}
 					},
 					content: __('Loading, please wait...'),
 				});
 
-				const tmph = dojo.connect(edit_rule_dialog, "onShow", null, function (/* e */) {
+				const tmph = dojo.connect(edit_rule_dialog, "onShow", null, function () {
 					dojo.disconnect(tmph);
 
-					xhr.post("backend.php", {op: 'pref-filters', method: 'newrule', rule: ruleStr}, (reply) => {
-						edit_rule_dialog.attr('content', reply);
+					let rule;
+
+					if (ruleStr) {
+						rule = JSON.parse(ruleStr);
+					} else {
+						rule = {
+							reg_exp: "",
+							filter_type: 1,
+							feed_id: ["0"],
+							inverse: false,
+						};
+					}
+
+					console.log(rule, dialog.filter_info);
+
+					xhr.json("backend.php", {op: "pref-filters", method: "editrule", ids: rule.feed_id.join(",")}, function (editrule) {
+						edit_rule_dialog.attr('content',
+							`
+							<form name="filter_new_rule_form" id="filter_new_rule_form" onsubmit="return false">
+
+								<section>
+									<textarea dojoType="fox.form.ValidationTextArea"
+										required="true" id="filterDlg_regExp" ValidRegExp="true"
+										rows="4" style="font-size : 14px; width : 530px; word-break: break-all"
+										name="reg_exp">${rule.reg_exp}</textarea>
+
+									<div dojoType="dijit.Tooltip" id="filterDlg_regExp_tip" connectId="filterDlg_regExp" position="below"></div>
+
+									<fieldset>
+										<label class="checkbox">".
+											${App.FormFields.checkbox_tag("inverse", rule.inverse)}
+											${__("Inverse regular expression matching")}
+										</label>
+									</fieldset>
+									<fieldset>
+										<label style="display : inline">${__("on field")}</label>
+										${App.FormFields.select_hash("filter_type", rule.filter_type, dialog.filter_info.filter_types)}
+										<label style="padding-left : 10px; display : inline">${__("in")}</label>
+									</fieldset>
+									<fieldset>
+										<span id="filterDlg_feeds">
+											${editrule.multiselect}
+										</span>
+									</fieldset>
+								</section>
+
+								<footer>
+									${App.FormFields.button_tag(App.FormFields.icon("help") + " " + __("More info"), "", {class: 'pull-left alt-info',
+										onclick: "window.open('https://tt-rss.org/wiki/ContentFilters')"})}
+									${App.FormFields.submit_tag(__("Save rule"), {onclick: "App.dialogOf(this).execute()"})}
+									${App.FormFields.cancel_dialog_tag(__("Cancel"))}
+								</footer>
+
+							</form>
+						`);
 					});
+
 				});
 
 				edit_rule_dialog.show();
 			},
-			editAction: function(replaceNode, actionStr) {
+			/*editAction: function(replaceNode, actionStr) {
 				const edit_action_dialog = new fox.SingleUseDialog({
 					title: actionStr ? __("Edit action") : __("Add action"),
 					hideOrShowActionParam: function(sender) {
@@ -221,7 +268,7 @@ const	Filters = {
 					}
 				});
 
-				const tmph = dojo.connect(edit_action_dialog, "onShow", null, function (/* e */) {
+				const tmph = dojo.connect(edit_action_dialog, "onShow", null, function () {
 					dojo.disconnect(tmph);
 
 					xhr.post("backend.php", {op: 'pref-filters', method: 'newaction', action: actionStr}, (reply) => {
@@ -234,22 +281,65 @@ const	Filters = {
 				});
 
 				edit_action_dialog.show();
-			},
+			}, */
+			/*editAction: function(replaceNode, actionStr) {
+				const edit_action_dialog = new fox.SingleUseDialog({
+					title: actionStr ? __("Edit action") : __("Add action"),
+					hideOrShowActionParam: function(sender) {
+						const action = parseInt(sender.value);
+
+						dijit.byId("filterDlg_actionParam").domNode.hide();
+						dijit.byId("filterDlg_actionParamLabel").domNode.hide();
+						dijit.byId("filterDlg_actionParamPlugin").domNode.hide();
+
+						// if selected action supports parameters, enable params field
+						if (action == dialog.ACTION_LABEL) {
+							dijit.byId("filterDlg_actionParamLabel").domNode.show();
+						} else if (action == dialog.ACTION_PLUGIN) {
+							dijit.byId("filterDlg_actionParamPlugin").domNode.show();
+						} else if (dialog.PARAM_ACTIONS.indexOf(action) != -1) {
+							dijit.byId("filterDlg_actionParam").domNode.show();
+						}
+					},
+					execute: function () {
+						if (this.validate()) {
+							dialog.createNewActionElement(App.byId("filterDlg_Actions"), replaceNode);
+							this.hide();
+						}
+					}
+				});
+
+				const tmph = dojo.connect(edit_action_dialog, "onShow", null, function () {
+					dojo.disconnect(tmph);
+
+					xhr.post("backend.php", {op: 'pref-filters', method: 'newaction', action: actionStr}, (reply) => {
+						edit_action_dialog.attr('content', reply);
+
+						setTimeout(() => {
+							edit_action_dialog.hideOrShowActionParam(dijit.byId("filterDlg_actionSelect").attr('value'));
+						}, 250);
+					});
+				});
+
+				edit_action_dialog.show();
+			},*/
 			selectRules: function (select) {
 				Lists.select("filterDlg_Matches", select);
 			},
 			selectActions: function (select) {
 				Lists.select("filterDlg_Actions", select);
 			},
-			onRuleClicked: function (e) {
-				const li = e.closest('li');
-				const rule = li.querySelector('input[name="rule[]"]').value
+			onRuleClicked: function (elem) {
+
+				const li = elem.closest('li');
+				const rule = li.querySelector('input[name="rule[]"]').value;
 
 				this.editRule(li, rule);
 			},
-			onActionClicked: function (e) {
-				const li = e.closest('li');
-				const action = li.querySelector('input[name="action[]"]').value
+			onActionClicked: function (elem) {
+
+				const li = elem.closest('li');
+				const action = li.querySelector('input[name="action[]"]').value;
 
 				this.editAction(li, action);
 			},
@@ -302,13 +392,141 @@ const	Filters = {
 			content: __("Loading, please wait...")
 		});
 
-
-
 		const tmph = dojo.connect(dialog, 'onShow', function () {
 			dojo.disconnect(tmph);
 
-			xhr.post("backend.php", query, function (reply) {
-				dialog.attr('content', reply);
+			const query = {op: "pref-filters", method: "edit", id: filter_id};
+
+			/*if (!App.isPrefs()) {
+				query = {
+					op: "pref-filters", method: "edit",
+					feed: Feeds.getActive(), is_cat: Feeds.activeIsCat()
+				};
+			} else {
+				query = {op: "pref-filters", method: "edit", id: id};
+			}*/
+
+			xhr.json("backend.php", query, function (filter) {
+
+				dialog.filter_info = filter;
+
+				const options = {
+					enabled: [ filter.enabled, __('Enabled') ],
+					match_any_rule: [ filter.match_any_rule, __('Match any rule') ],
+					inverse: [ filter.inverse, __('Inverse matching') ],
+				};
+
+				dialog.attr('content',
+				`
+					<form onsubmit='return false'>
+
+						${App.FormFields.hidden_tag("op", "pref-filters")}
+						${App.FormFields.hidden_tag("id", filter_id)}
+						${App.FormFields.hidden_tag("method", filter_id ? "editSave" : "add")}
+						${App.FormFields.hidden_tag("csrf_token", App.getInitParam('csrf_token'))}
+
+						<section>
+							<input required="true" dojoType="dijit.form.ValidationTextBox" style="width : 530px"
+								placeholder="${__("Title")}" name="title" value="${App.escapeHtml(filter.title)}">
+						</section>
+
+						<div dojoType="dijit.layout.TabContainer" style="height : 300px">
+							<div dojoType="dijit.layout.ContentPane" title="${__('Match')}">
+								<div style="padding : 0" dojoType="dijit.layout.BorderContainer" gutters="false">
+									<div dojoType="fox.Toolbar" region="top">
+										<div dojoType="fox.form.DropDownButton">
+											<span>${__("Select")}</span>
+											<div dojoType="dijit.Menu" style="display: none;">
+												<!-- can"t use App.dialogOf() here because DropDownButton is not a child of the Dialog -->
+												<div onclick="dijit.byId('filterEditDlg').selectRules(true)"
+													dojoType="dijit.MenuItem">${__("All")}</div>
+												<div onclick="dijit.byId('filterEditDlg').selectRules(false)"
+													dojoType="dijit.MenuItem">${__("None")}</div>
+											</div>
+										</div>
+										<button dojoType="dijit.form.Button" onclick="App.dialogOf(this).addRule()">
+											${__("Add")}
+										</button>
+										<button dojoType="dijit.form.Button" onclick="App.dialogOf(this).deleteRule()">
+											${__("Delete")}
+										</button>
+									</div>
+									<div dojoType="dijit.layout.ContentPane" region="center">
+										<ul id="filterDlg_Matches">
+											${filter.rules.map((rule) => `
+												<li class='rule'>
+													${App.FormFields.checkbox_tag("", false, "", {onclick: 'Lists.onRowChecked(this)'})}
+													<span class='name' onclick='App.dialogOf(this).onRuleClicked(this)'>${rule.name}</span>
+													<span class='payload'>${App.FormFields.hidden_tag("rule[]", JSON.stringify(rule))}</span>
+												</li>
+											`).join("")}
+										</ul>
+									</div>
+								</div>
+							</div>
+							<div dojoType="dijit.layout.ContentPane" title="${__('Apply actions')}">
+								<div style="padding : 0" dojoType="dijit.layout.BorderContainer" gutters="false">
+									<div dojoType="fox.Toolbar" region="top">
+										<div dojoType="fox.form.DropDownButton">
+											<span>${__("Select")}</span>
+											<div dojoType="dijit.Menu" style="display: none">
+												<div onclick="dijit.byId('filterEditDlg').selectActions(true)"
+													dojoType="dijit.MenuItem">${__("All")}</div>
+												<div onclick="dijit.byId('filterEditDlg').selectActions(false)"
+													dojoType="dijit.MenuItem">${__("None")}</div>
+												</div>
+											</div>
+										<button dojoType="dijit.form.Button" onclick="App.dialogOf(this).addAction()">".
+											${__("Add")}
+										</button>
+										<button dojoType="dijit.form.Button" onclick="App.dialogOf(this).deleteAction()">".
+											${__("Delete")}
+										</button>
+									</div>
+									<div dojoType="dijit.layout.ContentPane" region="center">
+										<ul id="filterDlg_Actions">
+											${filter.actions.map((action) => `
+											<li class='rule'>
+												${App.FormFields.checkbox_tag("", false, "", {onclick: 'Lists.onRowChecked(this)'})}
+												<span class='name' onclick='App.dialogOf(this).onRuleClicked(this)'>${App.escapeHtml(action.name)}</span>
+												<span class='payload'>${App.FormFields.hidden_tag("action[]", JSON.stringify(action))}</span>
+											</li>
+											`).join("")}
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<br/>
+
+						<section class="narrow">
+							${Object.keys(options).map((name) =>
+								`
+								<fieldset class='narrow'>
+									<label class="checkbox">
+										${App.FormFields.checkbox_tag(name, options[name][0])}
+										${options[name][1]}
+									</label>
+								</fieldset>
+								`).join("")}
+						</section>
+
+						<footer>
+							${filter_id ?
+							`
+								${App.FormFields.button_tag(__("Remove"), "", {class: "pull-left alt-danger", onclick: "App.dialogOf(this).removeFilter()"})}
+								${App.FormFields.button_tag(__("Test"), "", {class: "alt-info", onclick: "App.dialogOf(this).test()"})}
+								${App.FormFields.submit_tag(__("Save"), {onclick: "App.dialogOf(this).execute()"})}
+								${App.FormFields.cancel_dialog_tag(__("Cancel"))}
+							` : `
+								${App.FormFields.button_tag(__("Test"), "", {class: "alt-info", onclick: "App.dialogOf(this).test()"})}
+								${App.FormFields.submit_tag(__("Create"), {onclick: "App.dialogOf(this).execute()"})}
+								${App.FormFields.cancel_dialog_tag(__("Cancel"))}
+							`}
+						</footer>
+					</form>
+				`);
 
 				if (!App.isPrefs()) {
 					const selectedText = App.getSelectedText();

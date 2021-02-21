@@ -60,21 +60,11 @@
       return $rv;
    }
 
-   function select_labels(string $name, string $value, array $attributes = [], string $id = "") {
-      $pdo = \Db::pdo();
-
-      $sth = $pdo->prepare("SELECT caption FROM ttrss_labels2
-            WHERE owner_uid = ? ORDER BY caption");
-      $sth->execute([$_SESSION['uid']]);
-
-      $values = [];
-
-      while ($row = $sth->fetch()) {
-         array_push($values, $row["caption"]);
-      }
+   /*function select_labels(string $name, string $value, array $attributes = [], string $id = "") {
+      $values = \Labels::get_as_hash($_SESSION["uid"]);
 
       return select_tag($name, $value, $values, $attributes, $id);
-   }
+   }*/
 
    function select_hash(string $name, $value, array $values, array $attributes = [], string $id = "") {
       $attributes_str = attributes_to_string($attributes);

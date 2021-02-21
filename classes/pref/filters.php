@@ -695,7 +695,7 @@ class Pref_Filters extends Handler_Protected {
 		$feed_ids = explode(",", clean($_REQUEST["ids"]));
 
 		print json_encode([
-			"multiselect" => $this->_feed_multi_select("feed_id", $feed_ids, 'style="width : 540px; height : 300px" dojoType="dijit.form.MultiSelect"')
+			"multiselect" => $this->_feed_multi_select("feed_id", $feed_ids, 'required="1" style="width : 540px; height : 300px" dojoType="fox.form.ValidationMultiSelect"')
 		]);
 	}
 

@@ -349,7 +349,7 @@ class DiskCache {
 
 				if ($files) {
 					foreach ($files as $file) {
-						if (time() - filemtime($file) > 86400*CACHE_MAX_DAYS) {
+						if (time() - filemtime($file) > 86400*Config::get(Config::CACHE_MAX_DAYS)) {
 							unlink($file);
 
 							++$num_deleted;

@@ -17,7 +17,6 @@
 		get_include_path());
 
 	require_once "autoload.php";
-
 	require_once "sessions.php";
 	require_once "functions.php";
 	require_once "sanity_check.php";
@@ -44,8 +43,8 @@
 		}
 	} ?>
 
-	<?php if (theme_exists(LOCAL_OVERRIDE_STYLESHEET)) {
-		echo stylesheet_tag(get_theme_path(LOCAL_OVERRIDE_STYLESHEET));
+	<?php if (theme_exists(Config::get(Config::LOCAL_OVERRIDE_STYLESHEET))) {
+		echo stylesheet_tag(get_theme_path(Config::get(Config::LOCAL_OVERRIDE_STYLESHEET)));
 	} ?>
 
 	<script type="text/javascript">

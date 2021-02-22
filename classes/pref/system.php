@@ -153,10 +153,10 @@ class Pref_System extends Handler_Administrative {
 		<div dojoType='dijit.layout.AccordionContainer' region='center'>
 			<div dojoType='dijit.layout.AccordionPane' style='padding : 0' title='<i class="material-icons">report</i> <?= __('Event Log') ?>'>
 				<?php
-					if (LOG_DESTINATION == "sql") {
+					if (Config::get(Config::LOG_DESTINATION) == "sql") {
 						$this->_log_viewer($page, $severity);
 					} else {
-						print_notice("Please set LOG_DESTINATION to 'sql' in config.php to enable database logging.");
+						print_notice("Please set Config::get(Config::LOG_DESTINATION) to 'sql' in config.php to enable database logging.");
 					}
 				?>
 			</div>

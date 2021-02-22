@@ -48,11 +48,11 @@ class Digest
 
 						$mailer = new Mailer();
 
-						//$rc = $mail->quickMail($line["email"], $line["login"], DIGEST_SUBJECT, $digest, $digest_text);
+						//$rc = $mail->quickMail($line["email"], $line["login"], Config::get(Config::DIGEST_SUBJECT), $digest, $digest_text);
 
 						$rc = $mailer->mail(["to_name" => $line["login"],
 							"to_address" => $line["email"],
-							"subject" => DIGEST_SUBJECT,
+							"subject" => Config::get(Config::DIGEST_SUBJECT),
 							"message" => $digest_text,
 							"message_html" => $digest]);
 
@@ -91,11 +91,11 @@ class Digest
 
 		$tpl->setVariable('CUR_DATE', date('Y/m/d', $local_ts));
 		$tpl->setVariable('CUR_TIME', date('G:i', $local_ts));
-		$tpl->setVariable('TTRSS_HOST', Config::get(Config.Config::get(Config::SELF_URL_PATH)));
+		$tpl->setVariable('TTRSS_HOST', Config::get(Config::get(Config::SELF_URL_PATH)));
 
 		$tpl_t->setVariable('CUR_DATE', date('Y/m/d', $local_ts));
 		$tpl_t->setVariable('CUR_TIME', date('G:i', $local_ts));
-		$tpl_t->setVariable('TTRSS_HOST', Config::get(Config.Config::get(Config::SELF_URL_PATH)));
+		$tpl_t->setVariable('TTRSS_HOST', Config::get(Config::get(Config::SELF_URL_PATH)));
 
 		$affected_ids = array();
 

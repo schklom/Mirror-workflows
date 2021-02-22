@@ -11,13 +11,6 @@
 	require_once "autoload.php";
 	require_once "functions.php";
 	require_once "config.php";
-
-	// defaults
-	if (!defined('PURGE_INTERVAL')) 						define('PURGE_INTERVAL', 3600); // seconds
-	if (!defined('MAX_CHILD_RUNTIME')) 					define('MAX_CHILD_RUNTIME', 1800); // seconds
-	if (!defined('MAX_JOBS')) 								define('MAX_JOBS', 2);
-	if (!defined('SPAWN_INTERVAL')) 						define('SPAWN_INTERVAL', DAEMON_SLEEP_INTERVAL); // seconds
-
 	require_once "sanity_check.php";
 	require_once "db-prefs.php";
 
@@ -78,7 +71,7 @@
 		foreach (array_keys($ctimes) as $pid) {
 			$started = $ctimes[$pid];
 
-			if (time() - $started > MAX_CHILD_RUNTIME) {
+			if (time() - $started > Config::get(Config::DAEMON_MAX_CHILD_RUNTIME)) {
 				Debug::log("Child process with PID $pid seems to be stuck, aborting...");
 				posix_kill($pid, SIGKILL);
 			}
@@ -143,9 +136,9 @@
 		print "  --log FILE           - log messages to FILE\n";
         print "  --log-level N        - log verbosity level\n";
 		print "  --tasks N            - amount of update tasks to spawn\n";
-		print "                         default: " . MAX_JOBS . "\n";
+		print "                         default: " . Config::get(Config::DAEMON_MAX_JOBS) . "\n";
 		print "  --interval N         - task spawn interval\n";
-		print "                         default: " . SPAWN_INTERVAL . " seconds.\n";
+		print "                         default: " . Config::get(Config::DAEMON_SLEEP_INTERVAL) . " seconds.\n";
 		print "  --quiet              - don't output messages to stdout\n";
 		return;
 	}
@@ -170,14 +163,14 @@
 		Debug::log("Set to spawn " . $options["tasks"] . " children.");
 		$max_jobs = $options["tasks"];
 	} else {
-		$max_jobs = MAX_JOBS;
+		$max_jobs = Config::get(Config::DAEMON_MAX_JOBS);
 	}
 
 	if (isset($options["interval"])) {
 		Debug::log("Spawn interval: " . $options["interval"] . " seconds.");
 		$spawn_interval = $options["interval"];
 	} else {
-		$spawn_interval = SPAWN_INTERVAL;
+		$spawn_interval = Config::get(Config::DAEMON_SLEEP_INTERVAL);
 	}
 
 	// let's enforce a minimum spawn interval as to not forkbomb the host

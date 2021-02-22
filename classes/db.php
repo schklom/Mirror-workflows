@@ -41,8 +41,8 @@ class Db
 		} else if (Config::get(Config::DB_TYPE) == "mysql") {
 			$pdo->query("SET time_zone = '+0:0'");
 
-			if (defined('MYSQL_CHARSET') && MYSQL_CHARSET) {
-				$pdo->query("SET NAMES " . MYSQL_CHARSET);
+			if (defined('Config::get(Config::MYSQL_CHARSET)') && Config::get(Config::MYSQL_CHARSET)) {
+				$pdo->query("SET NAMES " . Config::get(Config::MYSQL_CHARSET));
 			}
 		}
 

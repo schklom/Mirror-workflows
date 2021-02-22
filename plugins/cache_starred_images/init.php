@@ -136,7 +136,7 @@ class Cache_Starred_Images extends Plugin {
 		if (!$this->cache->exists($local_filename)) {
 			Debug::log("cache_images: downloading: $url to $local_filename", Debug::$LOG_VERBOSE);
 
-			$data = UrlHelper::fetch(["url" => $url, "max_size" => MAX_CACHE_FILE_SIZE]);
+			$data = UrlHelper::fetch(["url" => $url, "max_size" => Config::get(Config::MAX_CACHE_FILE_SIZE)]);
 
 			if ($data)
 				return $this->cache->put($local_filename, $data);;

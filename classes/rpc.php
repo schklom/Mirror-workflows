@@ -165,8 +165,9 @@ class RPC extends Handler_Protected {
 	function setpanelmode() {
 		$wide = (int) clean($_REQUEST["wide"]);
 
+		// FIXME should this use SESSION_COOKIE_LIFETIME and be renewed periodically?
 		setcookie("ttrss_widescreen", (string)$wide,
-			time() + COOKIE_LIFETIME_LONG);
+			time() + 86400*365);
 
 		print json_encode(array("wide" => $wide));
 	}
@@ -328,7 +329,7 @@ class RPC extends Handler_Protected {
 
 		get_version($git_commit, $git_timestamp);
 
-		if (defined('CHECK_FOR_UPDATES') && CHECK_FOR_UPDATES && $_SESSION["access_level"] >= 10 && $git_timestamp) {
+		if (defined('Config::get(Config::CHECK_FOR_UPDATES)') && Config::get(Config::CHECK_FOR_UPDATES) && $_SESSION["access_level"] >= 10 && $git_timestamp) {
 			$content = @UrlHelper::fetch(["url" => "https://tt-rss.org/version.json"]);
 
 			if ($content) {
@@ -359,8 +360,8 @@ class RPC extends Handler_Protected {
 		}
 
 		$params["safe_mode"] = !empty($_SESSION["safe_mode"]);
-		$params["check_for_updates"] = CHECK_FOR_UPDATES;
-		$params["icons_url"] = ICONS_URL;
+		$params["check_for_updates"] = Config::get(Config::CHECK_FOR_UPDATES);
+		$params["icons_url"] = Config::get(Config::ICONS_URL);
 		$params["cookie_lifetime"] = Config::get(Config::SESSION_COOKIE_LIFETIME);
 		$params["default_view_mode"] = get_pref("_DEFAULT_VIEW_MODE");
 		$params["default_view_limit"] = (int) get_pref("_DEFAULT_VIEW_LIMIT");
@@ -390,15 +391,10 @@ class RPC extends Handler_Protected {
 		$params["self_url_prefix"] = get_self_url_prefix();
 		$params["max_feed_id"] = (int) $max_feed_id;
 		$params["num_feeds"] = (int) $num_feeds;
-
 		$params["hotkeys"] = $this->get_hotkeys_map();
-
 		$params["widescreen"] = (int) ($_COOKIE["ttrss_widescreen"] ?? 0);
-
-		$params['simple_update'] = SIMPLE_UPDATE_MODE;
-
+		$params['simple_update'] = Config::get(Config::SIMPLE_UPDATE_MODE);
 		$params["icon_indicator_white"] = $this->image_to_base64("images/indicator_white.gif");
-
 		$params["labels"] = Labels::get_all($_SESSION["uid"]);
 
 		return $params;
@@ -432,7 +428,7 @@ class RPC extends Handler_Protected {
 		$data['cdm_expanded'] = get_pref('CDM_EXPANDED');
 		$data["labels"] = Labels::get_all($_SESSION["uid"]);
 
-		if (LOG_DESTINATION == 'sql' && $_SESSION['access_level'] >= 10) {
+		if (Config::get(Config::LOG_DESTINATION) == 'sql' && $_SESSION['access_level'] >= 10) {
 			if (Config::get(Config::DB_TYPE) == 'pgsql') {
 				$log_interval = "created_at > NOW() - interval '1 hour'";
 			} else {

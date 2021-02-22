@@ -441,7 +441,7 @@ class Pref_Feeds extends Handler_Protected {
 		$sth->execute([$feed_id, $_SESSION['uid']]);
 
 		if ($row = $sth->fetch()) {
-			@unlink(ICONS_DIR . "/$feed_id.ico");
+			@unlink(Config::get(Config::ICONS_DIR) . "/$feed_id.ico");
 
 			$sth = $this->pdo->prepare("UPDATE ttrss_feeds SET favicon_avg_color = NULL, favicon_last_checked = '1970-01-01'
 				where id = ?");
@@ -479,7 +479,7 @@ class Pref_Feeds extends Handler_Protected {
 				$sth->execute([$feed_id, $_SESSION['uid']]);
 
 				if ($row = $sth->fetch()) {
-					$new_filename = ICONS_DIR . "/$feed_id.ico";
+					$new_filename = Config::get(Config::ICONS_DIR) . "/$feed_id.ico";
 
 					if (file_exists($new_filename)) unlink($new_filename);
 
@@ -1228,8 +1228,8 @@ class Pref_Feeds extends Handler_Protected {
 
 			$pdo->commit();
 
-			if (file_exists(ICONS_DIR . "/$id.ico")) {
-				unlink(ICONS_DIR . "/$id.ico");
+			if (file_exists(Config::get(Config::ICONS_DIR) . "/$id.ico")) {
+				unlink(Config::get(Config::ICONS_DIR) . "/$id.ico");
 			}
 
 		} else {

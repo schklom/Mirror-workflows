@@ -86,7 +86,7 @@ class Pref_Users extends Handler_Administrative {
 					<?php while ($row = $sth->fetch()) { ?>
 						<li>
 							<?php
-								$icon_file = ICONS_URL . "/" . $row["id"] . ".ico";
+								$icon_file = Config::get(Config::ICONS_URL) . "/" . $row["id"] . ".ico";
 								$icon = file_exists($icon_file) ? $icon_file : "images/blank_icon.gif";
 							?>
 

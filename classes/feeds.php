@@ -1056,11 +1056,11 @@ class Feeds extends Handler_Protected {
 	}
 
 	static function _get_icon_file($feed_id) {
-		return ICONS_DIR . "/$feed_id.ico";
+		return Config::get(Config::ICONS_DIR) . "/$feed_id.ico";
 	}
 
 	static function _has_icon($id) {
-		return is_file(ICONS_DIR . "/$id.ico") && filesize(ICONS_DIR . "/$id.ico") > 0;
+		return is_file(Config::get(Config::ICONS_DIR) . "/$id.ico") && filesize(Config::get(Config::ICONS_DIR) . "/$id.ico") > 0;
 	}
 
 	static function _get_icon($id) {
@@ -1084,7 +1084,7 @@ class Feeds extends Handler_Protected {
 					$icon = self::_get_icon_file($id);
 
                     if ($icon && file_exists($icon)) {
-						return ICONS_URL . "/" . basename($icon) . "?" . filemtime($icon);
+						return Config::get(Config::ICONS_URL) . "/" . basename($icon) . "?" . filemtime($icon);
 					}
 				}
 				break;

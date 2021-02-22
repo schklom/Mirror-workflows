@@ -103,8 +103,8 @@
 				}
 			}
 
-			if (!is_writable(ICONS_DIR)) {
-				array_push($errors, "ICONS_DIR defined in config.php is not writable (chmod -R 777 ".ICONS_DIR.").\n");
+			if (!is_writable(Config::get(Config::ICONS_DIR))) {
+				array_push($errors, "ICONS_DIR defined in config.php is not writable (chmod -R 777 ".Config::get(Config::ICONS_DIR).").\n");
 			}
 
 			if (!is_writable(Config::get(Config::LOCK_DIRECTORY))) {

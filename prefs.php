@@ -34,8 +34,8 @@
 		}
 	} ?>
 
-	<?php if (theme_exists(LOCAL_OVERRIDE_STYLESHEET)) {
-		echo stylesheet_tag(get_theme_path(LOCAL_OVERRIDE_STYLESHEET));
+	<?php if (theme_exists(Config::get(Config::LOCAL_OVERRIDE_STYLESHEET))) {
+		echo stylesheet_tag(get_theme_path(Config::get(Config::LOCAL_OVERRIDE_STYLESHEET)));
 	} ?>
 
 	<script type="text/javascript">

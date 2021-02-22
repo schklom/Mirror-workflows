@@ -212,7 +212,7 @@
 	}
 
 	if (isset($options["feeds"])) {
-		RSSUtils::update_daemon_common(DAEMON_FEED_LIMIT, $options);
+		RSSUtils::update_daemon_common(Config::get(Config::DAEMON_FEED_LIMIT), $options);
 		RSSUtils::housekeeping_common();
 
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK, $options);
@@ -227,7 +227,7 @@
 			passthru(Config::get(Config::PHP_EXECUTABLE) . " " . $argv[0] ." --daemon-loop $quiet $log $log_level");
 
 			// let's enforce a minimum spawn interval as to not forkbomb the host
-			$spawn_interval = max(60, DAEMON_SLEEP_INTERVAL);
+			$spawn_interval = max(60, Config::get(Config::DAEMON_SLEEP_INTERVAL));
 
 			Debug::log("Sleeping for $spawn_interval seconds...");
 			sleep($spawn_interval);
@@ -255,7 +255,7 @@
 			Debug::log("warning: unable to create stampfile\n");
 		}
 
-		RSSUtils::update_daemon_common(isset($options["pidlock"]) ? 50 : DAEMON_FEED_LIMIT, $options);
+		RSSUtils::update_daemon_common(isset($options["pidlock"]) ? 50 : Config::get(Config::DAEMON_FEED_LIMIT), $options);
 
 		if (!isset($options["pidlock"]) || $options["task"] == 0)
 			RSSUtils::housekeeping_common();

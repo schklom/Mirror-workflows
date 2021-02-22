@@ -68,7 +68,7 @@ class Af_Proxy_Http extends Plugin {
 			header("Location: " . $this->cache->get_url($local_filename));
 			return;
 		} else {
-			$data = UrlHelper::fetch(["url" => $url, "max_size" => MAX_CACHE_FILE_SIZE]);
+			$data = UrlHelper::fetch(["url" => $url, "max_size" => Config::get(Config::MAX_CACHE_FILE_SIZE)]);
 
 			if ($data) {
 				if ($this->cache->put($local_filename, $data)) {

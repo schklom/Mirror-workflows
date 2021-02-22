@@ -13,10 +13,10 @@
 	require_once "config.php";
 
 	// defaults
-	define_default('PURGE_INTERVAL', 3600); // seconds
-	define_default('MAX_CHILD_RUNTIME', 1800); // seconds
-	define_default('MAX_JOBS', 2);
-	define_default('SPAWN_INTERVAL', DAEMON_SLEEP_INTERVAL); // seconds
+	if (!defined('PURGE_INTERVAL')) 						define('PURGE_INTERVAL', 3600); // seconds
+	if (!defined('MAX_CHILD_RUNTIME')) 					define('MAX_CHILD_RUNTIME', 1800); // seconds
+	if (!defined('MAX_JOBS')) 								define('MAX_JOBS', 2);
+	if (!defined('SPAWN_INTERVAL')) 						define('SPAWN_INTERVAL', DAEMON_SLEEP_INTERVAL); // seconds
 
 	require_once "sanity_check.php";
 	require_once "db-prefs.php";

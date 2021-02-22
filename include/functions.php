@@ -39,49 +39,42 @@
 
 	require_once 'config.php';
 
-	/**
-	 * Define a constant if not already defined
-	 */
-	function define_default($name, $value) {
-		defined($name) or define($name, $value);
-	}
-
 	/* Some tunables you can override in config.php using define():	*/
 
-	define_default('FEED_FETCH_TIMEOUT', 45);
+	if (!defined('FEED_FETCH_TIMEOUT')) 					define('FEED_FETCH_TIMEOUT', 45);
 	// How may seconds to wait for response when requesting feed from a site
-	define_default('FEED_FETCH_NO_CACHE_TIMEOUT', 15);
+	if (!defined('FEED_FETCH_NO_CACHE_TIMEOUT')) 		define('FEED_FETCH_NO_CACHE_TIMEOUT', 15);
 	// How may seconds to wait for response when requesting feed from a
 	// site when that feed wasn't cached before
-	define_default('FILE_FETCH_TIMEOUT', 45);
+	if (!defined('FILE_FETCH_TIMEOUT')) 					define('FILE_FETCH_TIMEOUT', 45);
 	// Default timeout when fetching files from remote sites
-	define_default('FILE_FETCH_CONNECT_TIMEOUT', 15);
+	if (!defined('FILE_FETCH_CONNECT_TIMEOUT')) 			define('FILE_FETCH_CONNECT_TIMEOUT', 15);
 	// How many seconds to wait for initial response from website when
 	// fetching files from remote sites
-	define_default('DAEMON_UPDATE_LOGIN_LIMIT', 30);
+	if (!defined('DAEMON_UPDATE_LOGIN_LIMIT'))			define('DAEMON_UPDATE_LOGIN_LIMIT', 30);
 	// stop updating feeds if users haven't logged in for X days
-	define_default('DAEMON_FEED_LIMIT', 500);
+	if (!defined('DAEMON_FEED_LIMIT'))						define('DAEMON_FEED_LIMIT', 500);
 	// feed limit for one update batch
-	define_default('DAEMON_SLEEP_INTERVAL', 120);
+	if (!defined('DAEMON_SLEEP_INTERVAL'))					define('DAEMON_SLEEP_INTERVAL', 120);
 	// default sleep interval between feed updates (sec)
-	define_default('MAX_CACHE_FILE_SIZE', 64*1024*1024);
+	if (!defined('MAX_CACHE_FILE_SIZE'))					define('MAX_CACHE_FILE_SIZE', 64*1024*1024);
 	// do not cache files larger than that (bytes)
-	define_default('MAX_DOWNLOAD_FILE_SIZE', 16*1024*1024);
+	if (!defined('MAX_DOWNLOAD_FILE_SIZE'))				define('MAX_DOWNLOAD_FILE_SIZE', 16*1024*1024);
 	// do not download general files larger than that (bytes)
-	define_default('MAX_FAVICON_FILE_SIZE', 1*1024*1024);
+	if (!defined('MAX_FAVICON_FILE_SIZE'))					define('MAX_FAVICON_FILE_SIZE', 1*1024*1024);
 	// do not download favicon files larger than that (bytes)
-	define_default('CACHE_MAX_DAYS', 7);
+	if (!defined('CACHE_MAX_DAYS'))							define('CACHE_MAX_DAYS', 7);
 	// max age in days for various automatically cached (temporary) files
-	define_default('MAX_CONDITIONAL_INTERVAL', 3600*12);
+	if (!defined('MAX_CONDITIONAL_INTERVAL'))				define('MAX_CONDITIONAL_INTERVAL', 3600*12);
 	// max interval between forced unconditional updates for servers
 	// not complying with http if-modified-since (seconds)
-	// define_default('MAX_FETCH_REQUESTS_PER_HOST', 25);
+	// if (!defined('MAX_FETCH_REQUESTS_PER_HOST')) define('MAX_FETCH_REQUESTS_PER_HOST', 25);
 	// a maximum amount of allowed HTTP requests per destination host
 	// during a single update (i.e. within PHP process lifetime)
 	// this is used to not cause excessive load on the origin server on
 	// e.g. feed subscription when all articles are being processes
 	// (not implemented)
-	define_default('DAEMON_UNSUCCESSFUL_DAYS_LIMIT', 30);
+	if (!defined('DAEMON_UNSUCCESSFUL_DAYS_LIMIT'))		define('DAEMON_UNSUCCESSFUL_DAYS_LIMIT', 30);
 	// automatically disable updates for feeds which failed to
 	// update for this amount of days; 0 disables
 

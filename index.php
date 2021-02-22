@@ -1,11 +1,5 @@
 <?php
 
-	if (!file_exists("config.php")) {
-		print "<b>Fatal Error</b>: You forgot to copy
-		<b>config.php-dist</b> to <b>config.php</b> and edit it.\n";
-		exit;
-	}
-
 	// we need a separate check here because functions.php might get parsed
 	// incorrectly before 5.3 because of :: syntax.
 	if (version_compare(PHP_VERSION, '7.0.0', '<')) {
@@ -20,7 +14,6 @@
 	require_once "sessions.php";
 	require_once "functions.php";
 	require_once "sanity_check.php";
-	require_once "config.php";
 	require_once "db-prefs.php";
 
 	if (!init_plugins()) return;

@@ -1,8 +1,6 @@
 <?php
 	error_reporting(E_ERROR | E_PARSE);
 
-	require_once "../config.php";
-
 	set_include_path(__DIR__ . PATH_SEPARATOR .
 		dirname(__DIR__) . PATH_SEPARATOR .
 		dirname(__DIR__) . "/include" . PATH_SEPARATOR .

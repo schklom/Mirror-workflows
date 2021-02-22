@@ -207,7 +207,7 @@ class Af_RedditImgur extends Plugin {
 		$found = false;
 
 		// embed before reddit <table> post layout
-		$anchor = $xpath->query('//_body/*')->item(0);
+		$anchor = $xpath->query('//body/*')->item(0);
 
 		// deal with json-provided media content first
 		if ($article["link"] && $anchor) {

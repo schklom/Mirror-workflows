@@ -2,9 +2,7 @@
 class Config {
 	private const _ENVVAR_PREFIX = "TTRSS_";
 
-	// TODO: this should be extensible so plugins could add their own global directives (with defaults)
-
-	// overriding defaults (defined below in _DEFAULTS[]) via environment: DB_TYPE becomes TTRSS_DB_TYPE, etc
+	// override defaults, defined below in _DEFAULTS[], via environment: DB_TYPE becomes TTRSS_DB_TYPE, etc
 
 	const DB_TYPE = "DB_TYPE";
 	const DB_HOST = "DB_HOST";
@@ -114,20 +112,28 @@ class Config {
 			if (strpos($const, "_") !== 0) {
 				$override = getenv($this::_ENVVAR_PREFIX . $const);
 
-				if (!empty($override)) {
-					$this->params[$cvalue] = $override;
-				} else {
-					$this->params[$cvalue] = $this::_DEFAULTS[$const];
-				}
+				$this->params[$cvalue] = !empty($override) ? $override : $this::_DEFAULTS[$const];
 			}
 		}
 	}
 
-	private function _get($param) {
+	private function _get(string $param) {
 		return $this->params[$param];
 	}
 
-	static function get($param) {
+	private function _add(string $param, string $default) {
+		$override = getenv($this::_ENVVAR_PREFIX . $param);
+
+		$this->params[$param] = !empty($override) ? $override : $default;
+	}
+
+	static function add(string $param, string $default) {
+		$instance = self::get_instance();
+
+		return $instance->_add($param, $default);
+	}
+
+	static function get(string $param) {
 		$instance = self::get_instance();
 
 		return $instance->_get($param);

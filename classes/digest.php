@@ -1,12 +1,6 @@
 <?php
 class Digest
 {
-
-	/**
-	 * Send by mail a digest of last articles.
-	 *
-	 * @return boolean Return false if digests are not enabled.
-	 */
 	static function send_headlines_digests() {
 
 		$user_limit = 15; // amount of users to process (e.g. emails to send out)
@@ -81,9 +75,7 @@ class Digest
 				}
 			}
 		}
-
 		Debug::log("All done.");
-
 	}
 
 	static function prepare_headlines_digest($user_id, $days = 1, $limit = 1000) {
@@ -210,5 +202,4 @@ class Digest
 
 		return array($tmp, $headlines_count, $affected_ids, $tmp_t);
 	}
-
 }

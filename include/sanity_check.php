@@ -40,8 +40,6 @@
 			array_push($errors, "Configuration file not found. Looks like you forgot to copy config.php-dist to config.php and edit it.");
 		} else {
 
-			require_once "sanity_config.php";
-
 			if (!file_exists("config.php")) {
 				array_push($errors, "Please copy config.php-dist to config.php");
 			}
@@ -78,12 +76,14 @@
 				array_push($errors, "Data export cache is not writable (chmod -R 777 ".CACHE_DIR."/export)");
 			}
 
+			require_once "sanity_config.php";
+
 			if (GENERATED_CONFIG_CHECK != EXPECTED_CONFIG_VERSION) {
 				array_push($errors,
 					"Configuration option checker sanity_config.php is outdated, please recreate it using ./utils/regen_config_checks.sh");
 			}
 
-			foreach ($required_defines as $d) {
+			foreach (get_required_defines() as $d) {
 				if (!defined($d)) {
 					array_push($errors,
 						"Required configuration file parameter $d is not defined in config.php. You might need to copy it from config.php-dist.");

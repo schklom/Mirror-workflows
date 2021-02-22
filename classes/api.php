@@ -292,7 +292,7 @@ class API extends Handler {
 		$sanitize_content = !isset($_REQUEST["sanitize"]) ||
 			self::_param_to_bool($_REQUEST["sanitize"]);
 
-		if ($article_ids) {
+		if (count($article_ids) > 0) {
 
 			$article_qmarks = arr_qmarks($article_ids);
 

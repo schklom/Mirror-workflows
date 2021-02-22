@@ -146,9 +146,9 @@ class Handler_Public extends Handler {
 						$tpl->addBlock('enclosure');
 					}
 				} else {
-					$tpl->setVariable('ARTICLE_ENCLOSURE_URL', null, true);
-					$tpl->setVariable('ARTICLE_ENCLOSURE_TYPE', null, true);
-					$tpl->setVariable('ARTICLE_ENCLOSURE_LENGTH', null, true);
+					$tpl->setVariable('ARTICLE_ENCLOSURE_URL', "", true);
+					$tpl->setVariable('ARTICLE_ENCLOSURE_TYPE', "", true);
+					$tpl->setVariable('ARTICLE_ENCLOSURE_LENGTH', "", true);
 				}
 
 				list ($og_image, $og_stream) = Article::_get_image($enclosures, $line['content'], $feed_site_url);
@@ -207,8 +207,8 @@ class Handler_Public extends Handler {
 				$article['content'] = Sanitizer::sanitize($line["content"], false, $owner_uid, $feed_site_url, false, $line["id"]);
 				$article['updated'] = date('c', strtotime($line["updated"]));
 
-				if ($line['note']) $article['note'] = $line['note'];
-				if ($article['author']) $article['author'] = $line['author'];
+				if (!empty($line['note'])) $article['note'] = $line['note'];
+				if (!empty($line['author'])) $article['author'] = $line['author'];
 
 				if (count($line["tags"]) > 0) {
 					$article['tags'] = array();

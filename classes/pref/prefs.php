@@ -311,13 +311,6 @@ class Pref_Prefs extends Handler_Protected {
 				<input dojoType='dijit.form.ValidationTextBox' name='email' required='1' value="<?= $email ?>">
 			</fieldset>
 
-			<?php if (!SINGLE_USER_MODE && !empty($_SESSION["hide_hello"])) { ?>
-				<fieldset>
-					<label><?= __('Access level:') ?></label>
-					<?= $access_level_names[$row["access_level"]] ?>
-				</fieldset>
-			<?php } ?>
-
 			<hr/>
 
 			<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>

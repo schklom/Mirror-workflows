@@ -1067,22 +1067,16 @@ class Feeds extends Handler_Protected {
 		switch ($id) {
 			case 0:
 				return "archive";
-				break;
 			case -1:
 				return "star";
-				break;
 			case -2:
 				return "rss_feed";
-				break;
 			case -3:
 				return "whatshot";
-				break;
 			case -4:
 				return "inbox";
-				break;
 			case -6:
 				return "restore";
-				break;
 			default:
 				if ($id < LABEL_BASE_INDEX) {
 					return "label";

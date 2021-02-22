@@ -19,9 +19,7 @@ class Af_Fsckportal extends Plugin {
 
 			$doc = new DOMDocument();
 
-			@$doc->loadHTML('<?xml encoding="UTF-8">' . $article["content"]);
-
-			if ($doc) {
+			if (@$doc->loadHTML('<?xml encoding="UTF-8">' . $article["content"])) {
 				$xpath = new DOMXPath($doc);
 				$entries = $xpath->query('(//img[@src]|//a[@href])');
 
@@ -34,7 +32,6 @@ class Af_Fsckportal extends Plugin {
 				}
 
 				$article["content"] = $doc->saveHTML();
-
 		}
 
 		return $article;

@@ -34,8 +34,8 @@
 		error_reporting(E_ALL & ~E_NOTICE);
 	}
 
-	ini_set('display_errors', 0);
-	ini_set('display_startup_errors', 0);
+	ini_set('display_errors', "false");
+	ini_set('display_startup_errors', "false");
 
 	require_once 'config.php';
 
@@ -281,7 +281,7 @@
 		} else if (is_string($param)) {
 			return trim(strip_tags($param));
 		} else {
-			return trim($param);
+			return $param;
 		}
 	}
 
@@ -430,7 +430,7 @@
 	}
 
 	function uniqid_short() {
-		return uniqid(base_convert(rand(), 10, 36));
+		return uniqid(base_convert((string)rand(), 10, 36));
 	}
 
 	function T_sprintf() {

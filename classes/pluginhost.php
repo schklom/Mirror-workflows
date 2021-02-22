@@ -108,8 +108,9 @@ class PluginHost {
 		return false;
 	}
 
+	// needed for compatibility with API 2 (?)
 	function get_dbh() {
-		return Db::get();
+		return false;
 	}
 
 	function get_pdo(): PDO {

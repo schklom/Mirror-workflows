@@ -207,7 +207,7 @@ class Af_RedditImgur extends Plugin {
 		$found = false;
 
 		// embed before reddit <table> post layout
-		$anchor = $xpath->query('//body/*')->item(0);
+		$anchor = $xpath->query('//_body/*')->item(0);
 
 		// deal with json-provided media content first
 		if ($article["link"] && $anchor) {
@@ -217,6 +217,7 @@ class Af_RedditImgur extends Plugin {
 
 			$this->fallback_preview_urls = [];
 
+			// @phpstan-ignore-next-line
 			if ($tmp && $anchor) {
 				$json = json_decode($tmp, true);
 
@@ -346,6 +347,8 @@ class Af_RedditImgur extends Plugin {
 
 				if (strpos($source_stream, "imgur.com") !== false)
 					$poster_url = str_replace(".mp4", "h.jpg", $source_stream);
+				else
+					$poster_url = false;
 
 				$this->handle_as_video($doc, $entry, $source_stream, $poster_url);
 

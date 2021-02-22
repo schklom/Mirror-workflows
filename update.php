@@ -32,7 +32,7 @@
 
 		if (DB_TYPE == "pgsql") {
 			$interval_query = "date_updated < NOW() - INTERVAL '$days days'";
-		} else if (DB_TYPE == "mysql") {
+		} else /*if (DB_TYPE == "mysql") */ {
 			$interval_query = "date_updated < DATE_SUB(NOW(), INTERVAL $days DAY)";
 		}
 
@@ -459,7 +459,7 @@
 
 	if (isset($options["list-plugins"])) {
 		$tmppluginhost = new PluginHost();
-		$tmppluginhost->load_all($tmppluginhost::KIND_ALL, false);
+		$tmppluginhost->load_all($tmppluginhost::KIND_ALL);
 		$enabled = array_map("trim", explode(",", PLUGINS));
 
 		echo "List of all available plugins:\n";

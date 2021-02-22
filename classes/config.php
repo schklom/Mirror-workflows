@@ -2,7 +2,9 @@
 class Config {
 	private const _ENVVAR_PREFIX = "TTRSS_";
 
-	/* overriding defaults (defined below in _DEFAULTS[]) via environment: DB_TYPE becomes TTRSS_DB_TYPE, etc */
+	// TODO: this should be extensible so plugins could add their own global directives (with defaults)
+
+	// overriding defaults (defined below in _DEFAULTS[]) via environment: DB_TYPE becomes TTRSS_DB_TYPE, etc
 
 	const DB_TYPE = "DB_TYPE";
 	const DB_HOST = "DB_HOST";

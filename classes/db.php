@@ -17,8 +17,8 @@ class Db
 	// normal usage is Db::pdo()->prepare(...) etc
 	public function pdo_connect() {
 
-		$db_port = defined('DB_PORT') && DB_PORT ? ';port=' . DB_PORT : '';
-		$db_host = defined('DB_HOST') && DB_HOST ? ';host=' . DB_HOST : '';
+		$db_port = Config::get(Config::DB_PORT) ? ';port=' . Config::get(Config::DB_PORT) : '';
+		$db_host = Config::get(Config::DB_HOST) ? ';host=' . Config::get(Config::DB_HOST) : '';
 
 		try {
 			$pdo = new PDO(Config::get(Config::DB_TYPE) . ':dbname=' . Config::get(Config::DB_NAME) . $db_host . $db_port,

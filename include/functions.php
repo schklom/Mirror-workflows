@@ -30,7 +30,10 @@
 	ini_set('display_errors', "false");
 	ini_set('display_startup_errors', "false");
 
-	require_once "config.php";
+	// config.php is optional
+	if (stream_resolve_include_path("config.php"))
+		require_once "config.php";
+
 	require_once "autoload.php";
 
 	if (Config::get(Config::DB_TYPE) == "pgsql") {

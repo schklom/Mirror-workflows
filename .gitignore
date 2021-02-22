@@ -11,7 +11,7 @@ Thumbs.db
 .idea/*
 plugins.local/*
 themes.local/*
-config.php
+/config.php
 feed-icons/*
 cache/*/*
 lock/*

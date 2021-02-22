@@ -51,11 +51,11 @@ class PluginHost {
 	const HOOK_FORMAT_ENCLOSURES = "hook_format_enclosures";									// hook__format_enclosures($rv, $result, $id, $always_display_enclosures, $article_content, $hide_images) (byref)
 	const HOOK_SUBSCRIBE_FEED = "hook_subscribe_feed";											// hook_subscribe_feed($contents, $url, $auth_login, $auth_pass) (byref)
 	const HOOK_HEADLINES_BEFORE = "hook_headlines_before";									// hook_headlines_before($feed, $is_cat, $qfh_ret)
-	const HOOK_RENDER_ENCLOSURE = "hook_render_enclosure";									// hook_render_enclosure($entry, $hide_images)
+	const HOOK_RENDER_ENCLOSURE = "hook_render_enclosure";									// hook_render_enclosure($entry, $id, $rv)
 	const HOOK_ARTICLE_FILTER_ACTION = "hook_article_filter_action";						// hook_article_filter_action($article, $action)
 	const HOOK_ARTICLE_EXPORT_FEED = "hook_article_export_feed";							// hook_article_export_feed($line, $feed, $is_cat, $owner_uid) (byref)
 	const HOOK_MAIN_TOOLBAR_BUTTON = "hook_main_toolbar_button";							// hook_main_toolbar_button()
-	const HOOK_ENCLOSURE_ENTRY = "hook_enclosure_entry";										// hook_enclosure_entry($row, $id) (byref)
+	const HOOK_ENCLOSURE_ENTRY = "hook_enclosure_entry";										// hook_enclosure_entry($entry, $id, $rv) (byref)
 	const HOOK_FORMAT_ARTICLE = "hook_format_article";											// hook_format_article($html, $row)
 	const HOOK_FORMAT_ARTICLE_CDM = "hook_format_article_cdm"; /* RIP */
 	const HOOK_FEED_BASIC_INFO = "hook_feed_basic_info";										// hook_feed_basic_info($basic_info, $fetch_url, $owner_uid, $feed_id, $auth_login, $auth_pass) (byref)

@@ -23,9 +23,9 @@ class Af_Youtube_Embed extends Plugin {
 
 		$matches = array();
 
-		if (preg_match("/\/\/www\.youtube\.com\/v\/([\w-]+)/", $entry["url"], $matches) ||
-			preg_match("/\/\/www\.youtube\.com\/watch?v=([\w-]+)/", $entry["url"], $matches) ||
-			preg_match("/\/\/youtu.be\/([\w-]+)/", $entry["url"], $matches)) {
+		if (preg_match("/\/\/www\.youtube\.com\/v\/([\w-]+)/", $entry["content_url"], $matches) ||
+			preg_match("/\/\/www\.youtube\.com\/watch?v=([\w-]+)/", $entry["content_url"], $matches) ||
+			preg_match("/\/\/youtu.be\/([\w-]+)/", $entry["content_url"], $matches)) {
 
 			$vid_id = $matches[1];
 

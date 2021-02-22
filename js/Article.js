@@ -150,12 +150,8 @@ const Article = {
 		).join("")}</span>`;
 	},
 	renderEnclosures: function (enclosures) {
-
-		// enclosure list was handled by backend (HOOK_FORMAT_ENCLOSURES)
-		if (enclosures.formatted)
-			return enclosures.formatted;
-
 		return `
+				${enclosures.formatted}
 				${enclosures.can_inline ?
 					`<div class='attachments-inline'>
 						${enclosures.entries.map((enc) => {

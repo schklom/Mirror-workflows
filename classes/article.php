@@ -343,6 +343,7 @@ class Article extends Handler_Protected {
 		}
 
 		$rv = [
+			'formatted' => '',
 			'entries' => []
 		];
 
@@ -358,12 +359,24 @@ class Article extends Handler_Protected {
 			// this is highly approximate
 			$enc["filename"] = basename($enc["content_url"]);
 
-			PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_ENCLOSURE_ENTRY,
-				function ($result) use (&$enc) {
-					$enc = $result;
+			$rendered_enc = "";
+			PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ENCLOSURE,
+				function ($result) use (&$rendered_enc) {
+					$rendered_enc = $result;
 				},
-				$enc, $id);
-			array_push($rv['entries'], $enc);
+				$enc, $id, $rv);
+
+			if ($rendered_enc) {
+				$rv['formatted'] .= $rendered_enc;
+			} else {
+				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_ENCLOSURE_ENTRY,
+					function ($result) use (&$enc) {
+						$enc = $result;
+					},
+					$enc, $id, $rv);
+
+				array_push($rv['entries'], $enc);
+			}
 		}
 
 		return $rv;

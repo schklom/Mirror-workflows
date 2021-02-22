@@ -17,7 +17,7 @@ class Note extends Plugin {
 	}
 
 	function get_js() {
-		return file_get_contents(dirname(__FILE__) . "/note.js");
+		return file_get_contents(__DIR__ . "/note.js");
 	}
 
 

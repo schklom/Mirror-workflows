@@ -620,7 +620,7 @@
 		$ttrss_version['version'] = "UNKNOWN (Unsupported)";
 
 		date_default_timezone_set('UTC');
-		$root_dir = dirname(dirname(__FILE__));
+		$root_dir = dirname(__DIR__);
 
 		if (PHP_OS === "Darwin") {
 			$ttrss_version['version'] = "UNKNOWN (Unsupported, Darwin)";

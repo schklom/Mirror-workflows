@@ -274,8 +274,8 @@ class PluginHost {
 			$class = trim($class);
 			$class_file = strtolower(basename(clean($class)));
 
-			if (!is_dir(__DIR__."/../plugins/$class_file") &&
-					!is_dir(__DIR__."/../plugins.local/$class_file")) continue;
+			if (!is_dir(__DIR__ . "/../plugins/$class_file") &&
+					!is_dir(__DIR__ . "/../plugins.local/$class_file")) continue;
 
 			// try system plugin directory first
 			$file = __DIR__ . "/../plugins/$class_file/init.php";

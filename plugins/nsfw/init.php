@@ -19,7 +19,7 @@ class NSFW extends Plugin {
 	}
 
 	function get_js() {
-		return file_get_contents(dirname(__FILE__) . "/init.js");
+		return file_get_contents(__DIR__ . "/init.js");
 	}
 
 	function hook_render_article($article) {

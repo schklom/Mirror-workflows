@@ -530,7 +530,7 @@ class Af_RedditImgur extends Plugin {
 						$entry_guid = $article["guid_hashed"];
 						$owner_uid = $article["owner_uid"];
 
-						if (DB_TYPE == "pgsql") {
+						if (Config::get(Config::DB_TYPE) == "pgsql") {
 							$interval_qpart = "date_entered < NOW() - INTERVAL '1 day'";
 						} else {
 							$interval_qpart = "date_entered < DATE_SUB(NOW(), INTERVAL 1 DAY)";

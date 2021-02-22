@@ -61,8 +61,8 @@ class RSSUtils {
 
 		$pdo = Db::pdo();
 
-		if (!SINGLE_USER_MODE && DAEMON_UPDATE_LOGIN_LIMIT > 0) {
-			if (DB_TYPE == "pgsql") {
+		if (!Config::get(Config::SINGLE_USER_MODE) && DAEMON_UPDATE_LOGIN_LIMIT > 0) {
+			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$login_thresh_qpart = "AND ttrss_users.last_login >= NOW() - INTERVAL '".DAEMON_UPDATE_LOGIN_LIMIT." days'";
 			} else {
 				$login_thresh_qpart = "AND ttrss_users.last_login >= DATE_SUB(NOW(), INTERVAL ".DAEMON_UPDATE_LOGIN_LIMIT." DAY)";
@@ -71,7 +71,7 @@ class RSSUtils {
 			$login_thresh_qpart = "";
 		}
 
-		if (DB_TYPE == "pgsql") {
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$update_limit_qpart = "AND ((
 					ttrss_feeds.update_interval = 0
 					AND ttrss_user_prefs.value != '-1'
@@ -96,7 +96,7 @@ class RSSUtils {
 		}
 
 		// Test if feed is currently being updated by another process.
-		if (DB_TYPE == "pgsql") {
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$updstart_thresh_qpart = "AND (last_update_started IS NULL OR last_update_started < NOW() - INTERVAL '10 minutes')";
 		} else {
 			$updstart_thresh_qpart = "AND (last_update_started IS NULL OR last_update_started < DATE_SUB(NOW(), INTERVAL 10 MINUTE))";
@@ -106,7 +106,7 @@ class RSSUtils {
 
 		// Update the least recently updated feeds first
 		$query_order = "ORDER BY last_updated";
-		if (DB_TYPE == "pgsql") $query_order .= " NULLS FIRST";
+		if (Config::get(Config::DB_TYPE) == "pgsql") $query_order .= " NULLS FIRST";
 
 		$query = "SELECT DISTINCT ttrss_feeds.feed_url, ttrss_feeds.last_updated
 			FROM
@@ -182,7 +182,7 @@ class RSSUtils {
 				if (self::function_enabled('passthru')) {
 					$exit_code = 0;
 
-					passthru(PHP_EXECUTABLE . " update.php --update-feed " . $tline["id"] . " --pidlock feed-" . $tline["id"] . " $quiet $log $log_level", $exit_code);
+					passthru(Config::get(Config::PHP_EXECUTABLE) . " update.php --update-feed " . $tline["id"] . " --pidlock feed-" . $tline["id"] . " $quiet $log $log_level", $exit_code);
 
 					Debug::log(sprintf("<= %.4f (sec) exit code: %d", microtime(true) - $fstarted, $exit_code));
 
@@ -275,7 +275,7 @@ class RSSUtils {
 			$pluginhost = new PluginHost();
 			$user_plugins = get_pref("_ENABLED_PLUGINS", $owner_uid);
 
-			$pluginhost->load(PLUGINS, PluginHost::KIND_ALL);
+			$pluginhost->load(Config::get(Config::PLUGINS), PluginHost::KIND_ALL);
 			$pluginhost->load((string)$user_plugins, PluginHost::KIND_USER, $owner_uid);
 			//$pluginhost->load_data();
 
@@ -395,12 +395,12 @@ class RSSUtils {
 
 		$date_feed_processed = date('Y-m-d H:i');
 
-		$cache_filename = CACHE_DIR . "/feeds/" . sha1($fetch_url) . ".xml";
+		$cache_filename = Config::get(Config::CACHE_DIR) . "/feeds/" . sha1($fetch_url) . ".xml";
 
 		$pluginhost = new PluginHost();
 		$user_plugins = get_pref("_ENABLED_PLUGINS", $owner_uid);
 
-		$pluginhost->load(PLUGINS, PluginHost::KIND_ALL);
+		$pluginhost->load(Config::get(Config::PLUGINS), PluginHost::KIND_ALL);
 		$pluginhost->load((string)$user_plugins, PluginHost::KIND_USER, $owner_uid);
 		//$pluginhost->load_data();
 
@@ -488,7 +488,7 @@ class RSSUtils {
 			}
 
 			// cache vanilla feed data for re-use
-			if ($feed_data && !$auth_pass && !$auth_login && is_writable(CACHE_DIR . "/feeds")) {
+			if ($feed_data && !$auth_pass && !$auth_login && is_writable(Config::get(Config::CACHE_DIR) . "/feeds")) {
 				$new_rss_hash = sha1($feed_data);
 
 				if ($new_rss_hash != $rss_hash) {
@@ -561,7 +561,7 @@ class RSSUtils {
 			Debug::log("language: $feed_language", Debug::$LOG_VERBOSE);
 			Debug::log("processing feed data...", Debug::$LOG_VERBOSE);
 
-			if (DB_TYPE == "pgsql") {
+			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$favicon_interval_qpart = "favicon_last_checked < NOW() - INTERVAL '12 hour'";
 			} else {
 				$favicon_interval_qpart = "favicon_last_checked < DATE_SUB(NOW(), INTERVAL 12 HOUR)";
@@ -755,7 +755,7 @@ class RSSUtils {
 							$e->type, $e->length, $e->title, $e->width, $e->height);
 
 						// Yet another episode of "mysql utf8_general_ci is gimped"
-						if (DB_TYPE == "mysql" && MYSQL_CHARSET != "UTF8MB4") {
+						if (Config::get(Config::DB_TYPE) == "mysql" && MYSQL_CHARSET != "UTF8MB4") {
 							for ($i = 0; $i < count($e_item); $i++) {
 								if (is_string($e_item[$i])) {
 									$e_item[$i] = self::strip_utf8mb4($e_item[$i]);
@@ -833,7 +833,7 @@ class RSSUtils {
 				Debug::log("plugin data: $entry_plugin_data", Debug::$LOG_VERBOSE);
 
 				// Workaround: 4-byte unicode requires utf8mb4 in MySQL. See https://tt-rss.org/forum/viewtopic.php?f=1&t=3377&p=20077#p20077
-				if (DB_TYPE == "mysql" && MYSQL_CHARSET != "UTF8MB4") {
+				if (Config::get(Config::DB_TYPE) == "mysql" && MYSQL_CHARSET != "UTF8MB4") {
 					foreach ($article as $k => $v) {
 						// i guess we'll have to take the risk of 4byte unicode labels & tags here
 						if (is_string($article[$k])) {
@@ -1079,7 +1079,7 @@ class RSSUtils {
 
 					Debug::log("resulting RID: $entry_ref_id, IID: $entry_int_id", Debug::$LOG_VERBOSE);
 
-					if (DB_TYPE == "pgsql")
+					if (Config::get(Config::DB_TYPE) == "pgsql")
 						$tsvector_qpart = "tsvector_combined = to_tsvector(:ts_lang, :ts_content),";
 					else
 						$tsvector_qpart = "";
@@ -1107,7 +1107,7 @@ class RSSUtils {
 						":lang" => $entry_language,
 						":id" => $ref_id];
 
-					if (DB_TYPE == "pgsql") {
+					if (Config::get(Config::DB_TYPE) == "pgsql") {
 						$params[":ts_lang"] = $feed_language;
 						$params[":ts_content"] = mb_substr(strip_tags($entry_title . " " . $entry_content), 0, 900000);
 					}
@@ -1375,7 +1375,7 @@ class RSSUtils {
 
 		$pdo = Db::pdo();
 
-		if (DB_TYPE == "pgsql") {
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$pdo->query("DELETE FROM ttrss_error_log
 				WHERE created_at < NOW() - INTERVAL '7 days'");
 		} else {
@@ -1396,8 +1396,8 @@ class RSSUtils {
 
 		$num_deleted = 0;
 
-		if (is_writable(LOCK_DIRECTORY)) {
-			$files = glob(LOCK_DIRECTORY . "/*.lock");
+		if (is_writable(Config::get(Config::LOCK_DIRECTORY))) {
+			$files = glob(Config::get(Config::LOCK_DIRECTORY) . "/*.lock");
 
 			if ($files) {
 				foreach ($files as $file) {
@@ -1589,9 +1589,9 @@ class RSSUtils {
 
 			$days = DAEMON_UNSUCCESSFUL_DAYS_LIMIT;
 
-			if (DB_TYPE == "pgsql") {
+			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$interval_query = "last_successful_update < NOW() - INTERVAL '$days days' AND last_updated > NOW() - INTERVAL '1 days'";
-			} else /* if (DB_TYPE == "mysql") */ {
+			} else /* if (Config::get(Config::DB_TYPE) == "mysql") */ {
 				$interval_query = "last_successful_update < DATE_SUB(NOW(), INTERVAL $days DAY) AND last_updated > DATE_SUB(NOW(), INTERVAL 1 DAY)";
 			}
 

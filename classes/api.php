@@ -57,7 +57,7 @@ class API extends Handler {
 		$password = clean($_REQUEST["password"]);
 		$password_base64 = base64_decode(clean($_REQUEST["password"]));
 
-		if (SINGLE_USER_MODE) $login = "admin";
+		if (Config::get(Config::SINGLE_USER_MODE)) $login = "admin";
 
 		if ($uid = UserHelper::find_user_by_login($login)) {
 			if (get_pref("ENABLE_API_ACCESS", $uid)) {
@@ -361,9 +361,10 @@ class API extends Handler {
 	}
 
 	function getConfig() {
-		$config = array(
-			"icons_dir" => ICONS_DIR,
-			"icons_url" => ICONS_URL);
+		$config = [
+			"icons_dir" => Config::get(Config::ICONS_DIR),
+			"icons_url" => Config::get(Config::ICONS_URL)
+		];
 
 		$config["daemon_is_running"] = file_is_locked("update_daemon.lock");
 

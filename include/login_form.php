@@ -79,7 +79,7 @@
     	},
         bwLimitChange: function(elem) {
         	Cookie.set("ttrss_bwlimit", elem.checked,
-				<?php print SESSION_COOKIE_LIFETIME ?>);
+				<?php print Config::get(Config::SESSION_COOKIE_LIFETIME) ?>);
 	    }
     };
 
@@ -122,7 +122,7 @@
 					   onblur="UtilityApp.fetchProfiles()"
 					   value="<?= $_SESSION["fake_password"] ?? "" ?>"/>
 			</fieldset>
-			<?php if (strpos(PLUGINS, "auth_internal") !== false) { ?>
+			<?php if (strpos(Config::get(Config::PLUGINS), "auth_internal") !== false) { ?>
 				<fieldset class="align-right">
 					<a href="public.php?op=forgotpass"><?= __("I forgot my password") ?></a>
 				</fieldset>
@@ -161,7 +161,7 @@
 			<div dojoType="dijit.Tooltip" connectId="safe_mode_label" position="below" style="display:none">
 				<?= __("Uses default theme and prevents all plugins from loading."); ?>
 			</div>
-			<?php if (SESSION_COOKIE_LIFETIME > 0) { ?>
+			<?php if (Config::get(Config::SESSION_COOKIE_LIFETIME) > 0) { ?>
 
 				<fieldset class="narrow">
 					<label> </label>

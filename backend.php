@@ -40,7 +40,7 @@
 
 	header("Content-Type: text/json; charset=utf-8");
 
-	if (SINGLE_USER_MODE) {
+	if (Config::get(Config::SINGLE_USER_MODE)) {
 		UserHelper::authenticate( "admin", null);
 	}
 

@@ -98,9 +98,9 @@
 
 	function shutdown($caller_pid) {
 		if ($caller_pid == posix_getpid()) {
-			if (file_exists(LOCK_DIRECTORY . "/update_daemon.lock")) {
+			if (file_exists(Config::get(Config::LOCK_DIRECTORY) . "/update_daemon.lock")) {
 				Debug::log("Removing lockfile (master)...");
-				unlink(LOCK_DIRECTORY . "/update_daemon.lock");
+				unlink(Config::get(Config::LOCK_DIRECTORY) . "/update_daemon.lock");
 			}
 		}
 	}
@@ -108,9 +108,9 @@
 	function task_shutdown() {
 		$pid = posix_getpid();
 
-		if (file_exists(LOCK_DIRECTORY . "/update_daemon-$pid.lock")) {
+		if (file_exists(Config::get(Config::LOCK_DIRECTORY) . "/update_daemon-$pid.lock")) {
 			Debug::log("Removing task lockfile for PID $pid...");
-			unlink(LOCK_DIRECTORY . "/update_daemon-$pid.lock");
+			unlink(Config::get(Config::LOCK_DIRECTORY) . "/update_daemon-$pid.lock");
 		}
 	}
 
@@ -249,7 +249,7 @@
 
 					$my_pid = posix_getpid();
 
-					passthru(PHP_EXECUTABLE . " update.php --daemon-loop $quiet $log --task $j --pidlock $my_pid");
+					passthru(Config::get(Config::PHP_EXECUTABLE) . " update.php --daemon-loop $quiet $log --task $j --pidlock $my_pid");
 
 					sleep(1);
 

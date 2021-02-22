@@ -85,7 +85,7 @@ class Article extends Handler_Protected {
 					content = ?, content_hash = ? WHERE id = ?");
 				$sth->execute([$content, $content_hash, $ref_id]);
 
-				if (DB_TYPE == "pgsql"){
+				if (Config::get(Config::DB_TYPE) == "pgsql") {
 					$sth = $pdo->prepare("UPDATE ttrss_entries
 					SET tsvector_combined = to_tsvector( :ts_content)
 					WHERE id = :id");
@@ -130,7 +130,7 @@ class Article extends Handler_Protected {
 
 			if ($row = $sth->fetch()) {
 				$ref_id = $row["id"];
-				if (DB_TYPE == "pgsql"){
+				if (Config::get(Config::DB_TYPE) == "pgsql"){
 					$sth = $pdo->prepare("UPDATE ttrss_entries
 					SET tsvector_combined = to_tsvector( :ts_content)
 					WHERE id = :id");
@@ -475,7 +475,7 @@ class Article extends Handler_Protected {
 
         // purge orphaned posts in main content table
 
-        if (DB_TYPE == "mysql")
+        if (Config::get(Config::DB_TYPE) == "mysql")
             $limit_qpart = "LIMIT 5000";
         else
             $limit_qpart = "";

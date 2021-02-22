@@ -174,7 +174,7 @@ class RPC extends Handler_Protected {
 	static function updaterandomfeed_real() {
 
 		// Test if the feed need a update (update interval exceded).
-		if (DB_TYPE == "pgsql") {
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$update_limit_qpart = "AND ((
 					ttrss_feeds.update_interval = 0
 					AND ttrss_feeds.last_updated < NOW() - CAST((ttrss_user_prefs.value || ' minutes') AS INTERVAL)
@@ -199,7 +199,7 @@ class RPC extends Handler_Protected {
 		}
 
 		// Test if feed is currently being updated by another process.
-		if (DB_TYPE == "pgsql") {
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$updstart_thresh_qpart = "AND (ttrss_feeds.last_update_started IS NULL OR ttrss_feeds.last_update_started < NOW() - INTERVAL '5 minutes')";
 		} else {
 			$updstart_thresh_qpart = "AND (ttrss_feeds.last_update_started IS NULL OR ttrss_feeds.last_update_started < DATE_SUB(NOW(), INTERVAL 5 MINUTE))";
@@ -361,7 +361,7 @@ class RPC extends Handler_Protected {
 		$params["safe_mode"] = !empty($_SESSION["safe_mode"]);
 		$params["check_for_updates"] = CHECK_FOR_UPDATES;
 		$params["icons_url"] = ICONS_URL;
-		$params["cookie_lifetime"] = SESSION_COOKIE_LIFETIME;
+		$params["cookie_lifetime"] = Config::get(Config::SESSION_COOKIE_LIFETIME);
 		$params["default_view_mode"] = get_pref("_DEFAULT_VIEW_MODE");
 		$params["default_view_limit"] = (int) get_pref("_DEFAULT_VIEW_LIMIT");
 		$params["default_view_order_by"] = get_pref("_DEFAULT_VIEW_ORDER_BY");
@@ -433,7 +433,7 @@ class RPC extends Handler_Protected {
 		$data["labels"] = Labels::get_all($_SESSION["uid"]);
 
 		if (LOG_DESTINATION == 'sql' && $_SESSION['access_level'] >= 10) {
-			if (DB_TYPE == 'pgsql') {
+			if (Config::get(Config::DB_TYPE) == 'pgsql') {
 				$log_interval = "created_at > NOW() - interval '1 hour'";
 			} else {
 				$log_interval = "created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)";
@@ -452,13 +452,13 @@ class RPC extends Handler_Protected {
 			}
 		}
 
-		if (file_exists(LOCK_DIRECTORY . "/update_daemon.lock")) {
+		if (file_exists(Config::get(Config::LOCK_DIRECTORY) . "/update_daemon.lock")) {
 
 			$data['daemon_is_running'] = (int) file_is_locked("update_daemon.lock");
 
 			if (time() - ($_SESSION["daemon_stamp_check"] ?? 0) > 30) {
 
-				$stamp = (int) @file_get_contents(LOCK_DIRECTORY . "/update_daemon.stamp");
+				$stamp = (int) @file_get_contents(Config::get(Config::LOCK_DIRECTORY) . "/update_daemon.stamp");
 
 				if ($stamp) {
 					$stamp_delta = time() - $stamp;

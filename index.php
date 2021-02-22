@@ -1,4 +1,5 @@
 <?php
+
 	if (!file_exists("config.php")) {
 		print "<b>Fatal Error</b>: You forgot to copy
 		<b>config.php-dist</b> to <b>config.php</b> and edit it.\n";
@@ -16,6 +17,7 @@
 		get_include_path());
 
 	require_once "autoload.php";
+
 	require_once "sessions.php";
 	require_once "functions.php";
 	require_once "sanity_check.php";

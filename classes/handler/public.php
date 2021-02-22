@@ -43,7 +43,7 @@ class Handler_Public extends Handler {
 			$user_plugins = get_pref("_ENABLED_PLUGINS", $owner_uid);
 
 			$tmppluginhost = new PluginHost();
-			$tmppluginhost->load(PLUGINS, PluginHost::KIND_ALL);
+			$tmppluginhost->load(Config::get(Config::PLUGINS), PluginHost::KIND_ALL);
 			$tmppluginhost->load((string)$user_plugins, PluginHost::KIND_USER, $owner_uid);
 			//$tmppluginhost->load_data();
 
@@ -309,7 +309,7 @@ class Handler_Public extends Handler {
 		$format = clean($_REQUEST['format'] ?? "atom");
 		$orig_guid = clean($_REQUEST["orig_guid"] ?? false);
 
-		if (SINGLE_USER_MODE) {
+		if (Config::get(Config::SINGLE_USER_MODE)) {
 			UserHelper::authenticate("admin", null);
 		}
 
@@ -347,7 +347,7 @@ class Handler_Public extends Handler {
 	}
 
 	function login() {
-		if (!SINGLE_USER_MODE) {
+		if (!Config::get(Config::SINGLE_USER_MODE)) {
 
 			$login = clean($_POST["login"]);
 			$password = clean($_POST["password"]);
@@ -355,7 +355,7 @@ class Handler_Public extends Handler {
 			$safe_mode = checkbox_to_sql_bool(clean($_POST["safe_mode"] ?? false));
 
 			if ($remember_me) {
-				@session_set_cookie_params(SESSION_COOKIE_LIFETIME);
+				@session_set_cookie_params(Config::get(Config::SESSION_COOKIE_LIFETIME));
 			} else {
 				@session_set_cookie_params(0);
 			}
@@ -398,7 +398,7 @@ class Handler_Public extends Handler {
 
 			$return = clean($_REQUEST['return']);
 
-			if ($_REQUEST['return'] && mb_strpos($return, SELF_URL_PATH) === 0) {
+			if ($_REQUEST['return'] && mb_strpos($return, Config::get(Config::SELF_URL_PATH)) === 0) {
 				header("Location: " . clean($_REQUEST['return']));
 			} else {
 				header("Location: " . get_self_url_prefix());
@@ -559,7 +559,7 @@ class Handler_Public extends Handler {
 
 						$tpl->setVariable('LOGIN', $login);
 						$tpl->setVariable('RESETPASS_LINK', $resetpass_link);
-						$tpl->setVariable('TTRSS_HOST', SELF_URL_PATH);
+						$tpl->setVariable('TTRSS_HOST', Config::get(Config::SELF_URL_PATH));
 
 						$tpl->addBlock('message');
 
@@ -613,7 +613,7 @@ class Handler_Public extends Handler {
 	function dbupdate() {
 		startup_gettext();
 
-		if (!SINGLE_USER_MODE && $_SESSION["access_level"] < 10) {
+		if (!Config::get(Config::SINGLE_USER_MODE) && $_SESSION["access_level"] < 10) {
 			$_SESSION["login_error_msg"] = __("Your access level is insufficient to run this script.");
 			$this->_render_login_form();
 			exit;
@@ -660,7 +660,7 @@ class Handler_Public extends Handler {
 
 			<?php
 				@$op = clean($_REQUEST["subop"]);
-				$updater = new DbUpdater(Db::pdo(), DB_TYPE, SCHEMA_VERSION);
+				$updater = new DbUpdater(Db::pdo(), Config::get(Config::DB_TYPE), SCHEMA_VERSION);
 
 				if ($op == "performupdate") {
 					if ($updater->is_update_required()) {
@@ -709,7 +709,7 @@ class Handler_Public extends Handler {
 						print "<h2>".T_sprintf("Tiny Tiny RSS database needs update to the latest version (%d to %d).",
 							$updater->get_schema_version(), SCHEMA_VERSION)."</h2>";
 
-						if (DB_TYPE == "mysql") {
+						if (Config::get(Config::DB_TYPE) == "mysql") {
 							print_error("<strong>READ THIS:</strong> Due to MySQL limitations, your database is not completely protected while updating. ".
 								"Errors may put it in an inconsistent state requiring manual rollback. <strong>BACKUP YOUR DATABASE BEFORE CONTINUING.</strong>");
 						} else {

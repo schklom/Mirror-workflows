@@ -186,7 +186,7 @@ class Feeds extends Handler_Protected {
 				$id = $line["id"];
 
 				// frontend doesn't expect pdo returning booleans as strings on mysql
-				if (DB_TYPE == "mysql") {
+				if (Config::get(Config::DB_TYPE) == "mysql") {
 					foreach (["unread", "marked", "published"] as $k) {
 						$line[$k] = $line[$k] === "1";
 					}
@@ -576,7 +576,7 @@ class Feeds extends Handler_Protected {
 
 	function search() {
 		print json_encode([
-			"show_language" => DB_TYPE == "pgsql",
+			"show_language" => Config::get(Config::DB_TYPE) == "pgsql",
 			"show_syntax_help" => count(PluginHost::getInstance()->get_hooks(PluginHost::HOOK_SEARCH)) == 0,
 			"all_languages" => Pref_Feeds::get_ts_languages(),
 			"default_language" => get_pref('DEFAULT_SEARCH_LANGUAGE')
@@ -716,21 +716,21 @@ class Feeds extends Handler_Protected {
 
 		switch ($mode) {
 			case "1day":
-				if (DB_TYPE == "pgsql") {
+				if (Config::get(Config::DB_TYPE) == "pgsql") {
 					$date_qpart = "date_entered < NOW() - INTERVAL '1 day' ";
 				} else {
 					$date_qpart = "date_entered < DATE_SUB(NOW(), INTERVAL 1 DAY) ";
 				}
 				break;
 			case "1week":
-				if (DB_TYPE == "pgsql") {
+				if (Config::get(Config::DB_TYPE) == "pgsql") {
 					$date_qpart = "date_entered < NOW() - INTERVAL '1 week' ";
 				} else {
 					$date_qpart = "date_entered < DATE_SUB(NOW(), INTERVAL 1 WEEK) ";
 				}
 				break;
 			case "2week":
-				if (DB_TYPE == "pgsql") {
+				if (Config::get(Config::DB_TYPE) == "pgsql") {
 					$date_qpart = "date_entered < NOW() - INTERVAL '2 week' ";
 				} else {
 					$date_qpart = "date_entered < DATE_SUB(NOW(), INTERVAL 2 WEEK) ";
@@ -807,7 +807,7 @@ class Feeds extends Handler_Protected {
 
 					$intl = (int) get_pref("FRESH_ARTICLE_MAX_AGE");
 
-					if (DB_TYPE == "pgsql") {
+					if (Config::get(Config::DB_TYPE) == "pgsql") {
 						$match_part = "date_entered > NOW() - INTERVAL '$intl hour' ";
 					} else {
 						$match_part = "date_entered > DATE_SUB(NOW(),
@@ -900,7 +900,7 @@ class Feeds extends Handler_Protected {
 
 			$intl = (int) get_pref("FRESH_ARTICLE_MAX_AGE", $owner_uid);
 
-			if (DB_TYPE == "pgsql") {
+			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$match_part .= " AND date_entered > NOW() - INTERVAL '$intl hour' ";
 			} else {
 				$match_part .= " AND date_entered > DATE_SUB(NOW(), INTERVAL $intl HOUR) ";
@@ -1332,7 +1332,7 @@ class Feeds extends Handler_Protected {
 				list($search_query_part, $search_words) = self::_search_to_sql($search, $search_language, $owner_uid);
 			}
 
-			if (DB_TYPE == "pgsql") {
+			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$test_sth = $pdo->prepare("select $search_query_part
 					FROM ttrss_entries, ttrss_user_entries WHERE id = ref_id limit 1");
 
@@ -1469,7 +1469,7 @@ class Feeds extends Handler_Protected {
 		} else if ($feed == -6) { // recently read
 			$query_strategy_part = "unread = false AND last_read IS NOT NULL";
 
-			if (DB_TYPE == "pgsql") {
+			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$query_strategy_part .= " AND last_read > NOW() - INTERVAL '1 DAY' ";
 			} else {
 				$query_strategy_part .= " AND last_read > DATE_SUB(NOW(), INTERVAL 1 DAY) ";
@@ -1486,7 +1486,7 @@ class Feeds extends Handler_Protected {
 
 			$intl = (int) get_pref("FRESH_ARTICLE_MAX_AGE", $owner_uid);
 
-			if (DB_TYPE == "pgsql") {
+			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$query_strategy_part .= " AND date_entered > NOW() - INTERVAL '$intl hour' ";
 			} else {
 				$query_strategy_part .= " AND date_entered > DATE_SUB(NOW(), INTERVAL $intl HOUR) ";
@@ -1605,7 +1605,7 @@ class Feeds extends Handler_Protected {
 			if ($feed == -3)
 				$first_id_query_strategy_part = "true";
 
-			if (DB_TYPE == "pgsql") {
+			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$sanity_interval_qpart = "date_entered >= NOW() - INTERVAL '1 hour' AND";
 				$yyiw_qpart = "to_char(date_entered, 'IYYY-IW') AS yyiw";
 
@@ -1705,7 +1705,7 @@ class Feeds extends Handler_Protected {
 		} else {
 			// browsing by tag
 
-			if (DB_TYPE == "pgsql") {
+			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$distinct_columns = str_replace("desc", "", strtolower($order_by));
 				$distinct_qpart = "DISTINCT ON (id, $distinct_columns)";
 			} else {
@@ -1948,10 +1948,10 @@ class Feeds extends Handler_Protected {
 		if ($row = $sth->fetch()) {
 			$owner_uid = $row["owner_uid"];
 
-			if (FORCE_ARTICLE_PURGE != 0) {
-				Debug::log("purge_feed: FORCE_ARTICLE_PURGE is set, overriding interval to " . FORCE_ARTICLE_PURGE, Debug::$LOG_VERBOSE);
+			if (Config::get(Config::FORCE_ARTICLE_PURGE) != 0) {
+				Debug::log("purge_feed: FORCE_ARTICLE_PURGE is set, overriding interval to " . Config::get(Config::FORCE_ARTICLE_PURGE), Debug::$LOG_VERBOSE);
 				$purge_unread = true;
-				$purge_interval = FORCE_ARTICLE_PURGE;
+				$purge_interval = Config::get(Config::FORCE_ARTICLE_PURGE);
 			} else {
 				$purge_unread = get_pref("PURGE_UNREAD_ARTICLES", $owner_uid, false);
 			}
@@ -1970,7 +1970,7 @@ class Feeds extends Handler_Protected {
 			else
 				$query_limit = "";
 
-			if (DB_TYPE == "pgsql") {
+			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$sth = $pdo->prepare("DELETE FROM ttrss_user_entries
 					USING ttrss_entries
 					WHERE ttrss_entries.id = ref_id AND
@@ -2153,7 +2153,7 @@ class Feeds extends Handler_Protected {
 						array_push($query_keywords, "(".SUBSTRING_FOR_DATE."(updated,1,LENGTH('$k')) $not = '$k')");
 					} else {
 
-						if (DB_TYPE == "pgsql") {
+						if (Config::get(Config::DB_TYPE) == "pgsql") {
 							$k = mb_strtolower($k);
 							array_push($search_query_leftover, $not ? "!$k" : $k);
 						} else {
@@ -2168,7 +2168,7 @@ class Feeds extends Handler_Protected {
 
 		if (count($search_query_leftover) > 0) {
 
-			if (DB_TYPE == "pgsql") {
+			if (Config::get(Config::DB_TYPE) == "pgsql") {
 
 				// if there's no joiners consider this a "simple" search and
 				// concatenate everything with &, otherwise don't try to mess with tsquery syntax

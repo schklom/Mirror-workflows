@@ -2,7 +2,7 @@
 class UserHelper {
 
 	static function authenticate(string $login = null, string $password = null, bool $check_only = false, string $service = null) {
-		if (!SINGLE_USER_MODE) {
+		if (!Config::get(Config::SINGLE_USER_MODE)) {
 			$user_id = false;
 			$auth_module = false;
 
@@ -88,7 +88,7 @@ class UserHelper {
 	static function login_sequence() {
 		$pdo = Db::pdo();
 
-		if (SINGLE_USER_MODE) {
+		if (Config::get(Config::SINGLE_USER_MODE)) {
 			@session_start();
 			self::authenticate("admin", null);
 			startup_gettext();
@@ -98,7 +98,7 @@ class UserHelper {
 
 			if (empty($_SESSION["uid"])) {
 
-				if (AUTH_AUTO_LOGIN && self::authenticate(null, null)) {
+				if (Config::get(Config::AUTH_AUTO_LOGIN) && self::authenticate(null, null)) {
 					$_SESSION["ref_schema_version"] = get_schema_version(true);
 				} else {
 					 self::authenticate(null, null, true);

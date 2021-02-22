@@ -21,7 +21,7 @@ class Bookmarklets extends Plugin {
 	}
 
 	function subscribe() {
-		if (SINGLE_USER_MODE) {
+		if (Config::get(Config::SINGLE_USER_MODE)) {
 			UserHelper::login_sequence();
 		}
 
@@ -172,7 +172,7 @@ class Bookmarklets extends Plugin {
 	}
 
 	function sharepopup() {
-		if (SINGLE_USER_MODE) {
+		if (Config::get(Config::SINGLE_USER_MODE)) {
 			UserHelper::login_sequence();
 		}
 

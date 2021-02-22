@@ -80,7 +80,9 @@
 
 	/* tunables end here */
 
-	if (DB_TYPE == "pgsql") {
+	require_once "autoload.php";
+
+	if (Config::get(Config::DB_TYPE) == "pgsql") {
 		define('SUBSTRING_FOR_DATE', 'SUBSTRING_FOR_DATE');
 	} else {
 		define('SUBSTRING_FOR_DATE', 'SUBSTRING');
@@ -375,9 +377,9 @@
 	}
 
 	function file_is_locked($filename) {
-		if (file_exists(LOCK_DIRECTORY . "/$filename")) {
+		if (file_exists(Config::get(Config::LOCK_DIRECTORY) . "/$filename")) {
 			if (function_exists('flock')) {
-				$fp = @fopen(LOCK_DIRECTORY . "/$filename", "r");
+				$fp = @fopen(Config::get(Config::LOCK_DIRECTORY) . "/$filename", "r");
 				if ($fp) {
 					if (flock($fp, LOCK_EX | LOCK_NB)) {
 						flock($fp, LOCK_UN);
@@ -397,11 +399,11 @@
 	}
 
 	function make_lockfile($filename) {
-		$fp = fopen(LOCK_DIRECTORY . "/$filename", "w");
+		$fp = fopen(Config::get(Config::LOCK_DIRECTORY) . "/$filename", "w");
 
 		if ($fp && flock($fp, LOCK_EX | LOCK_NB)) {
 			$stat_h = fstat($fp);
-			$stat_f = stat(LOCK_DIRECTORY . "/$filename");
+			$stat_f = stat(Config::get(Config::LOCK_DIRECTORY) . "/$filename");
 
 			if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
 				if ($stat_h["ino"] != $stat_f["ino"] ||
@@ -444,15 +446,15 @@
 	}
 
 	function is_prefix_https() {
-		return parse_url(SELF_URL_PATH, PHP_URL_SCHEME) == 'https';
+		return parse_url(Config::get(Config::SELF_URL_PATH), PHP_URL_SCHEME) == 'https';
 	}
 
-	// this returns SELF_URL_PATH sans ending slash
+	// this returns Config::get(Config::SELF_URL_PATH) sans ending slash
 	function get_self_url_prefix() {
-		if (strrpos(SELF_URL_PATH, "/") === strlen(SELF_URL_PATH)-1) {
-			return substr(SELF_URL_PATH, 0, strlen(SELF_URL_PATH)-1);
+		if (strrpos(Config::get(Config::SELF_URL_PATH), "/") === strlen(Config::get(Config::SELF_URL_PATH))-1) {
+			return substr(Config::get(Config::SELF_URL_PATH), 0, strlen(Config::get(Config::SELF_URL_PATH))-1);
 		} else {
-			return SELF_URL_PATH;
+			return Config::get(Config::SELF_URL_PATH);
 		}
 	}
 
@@ -467,7 +469,7 @@
 	} // function encrypt_password
 
 	function init_plugins() {
-		PluginHost::getInstance()->load(PLUGINS, PluginHost::KIND_ALL);
+		PluginHost::getInstance()->load(Config::get(Config::PLUGINS), PluginHost::KIND_ALL);
 
 		return true;
 	}

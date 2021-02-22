@@ -1662,15 +1662,6 @@ class RSSUtils {
 			return false;
 		}
 
-		$original_contents_md5 = file_exists($icon_file) ? md5_file($icon_file) : null;
-		if ($original_contents_md5) {
-			if (md5($contents) == $original_contents_md5) {
-				Debug::log("favicon content has not changed", Debug::$LOG_VERBOSE);
-				return $icon_file;
-			}
-			Debug::log("favicon content has changed", Debug::$LOG_VERBOSE);
-		}
-
 		// Crude image type matching.
 		// Patterns gleaned from the file(1) source code.
 		if (preg_match('/^\x00\x00\x01\x00/', $contents)) {

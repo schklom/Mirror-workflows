@@ -55,3 +55,18 @@ button {
 button:active {
     background-color: #318f2f;
 }
+
+#center{
+    width: 100%;
+    border: 1px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+}
+
+#map {
+    margin-top: 40px;
+    height: 250px;
+    width: 80%;
+}

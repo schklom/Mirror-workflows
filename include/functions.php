@@ -68,6 +68,8 @@
 	// do not cache files larger than that (bytes)
 	define_default('MAX_DOWNLOAD_FILE_SIZE', 16*1024*1024);
 	// do not download general files larger than that (bytes)
+	define_default('MAX_FAVICON_FILE_SIZE', 1*1024*1024);
+	// do not download favicon files larger than that (bytes)
 	define_default('CACHE_MAX_DAYS', 7);
 	// max age in days for various automatically cached (temporary) files
 	define_default('MAX_CONDITIONAL_INTERVAL', 3600*12);

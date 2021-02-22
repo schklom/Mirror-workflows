@@ -104,11 +104,11 @@ class jimIcon {
                 }
 
                 // See if we can parse it (might be PNG format here)
-                $i = @imagecreatefromstring($data);
-
-                if ($i) {
-                        imagesavealpha($i, true);
-                        return $i;
+                if (self::has_parsable_image_type($data)) {
+                        if ($i = @imagecreatefromstring($data)) {
+                                imagesavealpha($i, true);
+                                return $i;
+                        }
                 }
 
                 // Must be a BMP.  Parse it ourselves.
@@ -266,6 +266,13 @@ class jimIcon {
                                 $offset++;
                 }
                 return $img;
+        }
+
+        // Checks whether the data is a type parsable by imagecreatefromstring()
+        private function has_parsable_image_type($image_data) {
+                $size = getimagesizefromstring($image_data);
+                return $size && in_array($size[2],
+                        [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_GIF, IMAGETYPE_BMP, IMAGETYPE_WBMP, IMAGETYPE_WEBP]);
         }
 }
 ?>

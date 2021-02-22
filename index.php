@@ -14,7 +14,6 @@
 	require_once "sessions.php";
 	require_once "functions.php";
 	require_once "sanity_check.php";
-	require_once "db-prefs.php";
 
 	if (!init_plugins()) return;
 

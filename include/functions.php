@@ -42,6 +42,14 @@
 		define('SUBSTRING_FOR_DATE', 'SUBSTRING');
 	}
 
+	function get_pref($pref_name, $user_id = false, $die_on_error = false) {
+		return Db_Prefs::get()->read($pref_name, $user_id, $die_on_error);
+	}
+
+	function set_pref($pref_name, $value, $user_id = false, $strip_tags = true) {
+		return Db_Prefs::get()->write($pref_name, $value, $user_id, $strip_tags);
+	}
+
 	function get_translations() {
 		$t = array(
 					"auto"  => __("Detect automatically"),
@@ -152,7 +160,6 @@
 		}
 	}
 
-	require_once 'db-prefs.php';
 	require_once 'controls.php';
 	require_once 'controls_compat.php';
 

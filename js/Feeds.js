@@ -264,7 +264,7 @@ const	Feeds = {
 
 		// bw_limit disables timeout() so we request initial counters separately
 		if (App.getInitParam("bw_limit")) {
-			App.requestCounters(true);
+			this.requestCounters(true);
 		} else {
 			setTimeout(() => {
 				this.requestCounters(true);

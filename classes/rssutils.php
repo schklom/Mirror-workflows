@@ -1583,13 +1583,13 @@ class RSSUtils {
 	}
 
 	static function disable_failed_feeds() {
-		if (defined('DAEMON_UNSUCCESSFUL_DAYS_LIMIT') && DAEMON_UNSUCCESSFUL_DAYS_LIMIT > 0) {
+		if (Config::get(Config::DAEMON_UNSUCCESSFUL_DAYS_LIMIT) > 0) {
 
 			$pdo = Db::pdo();
 
 			$pdo->beginTransaction();
 
-			$days = DAEMON_UNSUCCESSFUL_DAYS_LIMIT;
+			$days = Config::get(Config::DAEMON_UNSUCCESSFUL_DAYS_LIMIT);
 
 			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$interval_query = "last_successful_update < NOW() - INTERVAL '$days days' AND last_updated > NOW() - INTERVAL '1 days'";
@@ -1606,10 +1606,10 @@ class RSSUtils {
 			while ($row = $sth->fetch()) {
 				Logger::get()->log(E_USER_NOTICE,
 					sprintf("Auto disabling feed %d (%s, UID: %d) because it failed to update for %d days.",
-						$row["id"], clean($row["title"]), $row["owner_uid"], DAEMON_UNSUCCESSFUL_DAYS_LIMIT));
+						$row["id"], clean($row["title"]), $row["owner_uid"], Config::get(Config::DAEMON_UNSUCCESSFUL_DAYS_LIMIT)));
 
 				Debug::log(sprintf("Auto-disabling feed %d (%s) (failed to update for %d days).", $row["id"],
-					clean($row["title"]), DAEMON_UNSUCCESSFUL_DAYS_LIMIT));
+					clean($row["title"]), Config::get(Config::DAEMON_UNSUCCESSFUL_DAYS_LIMIT)));
 			}
 
 			$sth = $pdo->prepare("UPDATE ttrss_feeds SET update_interval = -1 WHERE

@@ -123,9 +123,9 @@ class UrlHelper {
 					 'protocol_version'=> 1.1)
 				);
 
-			if (defined('_HTTP_PROXY')) {
+			if (Config::get(Config::HTTP_PROXY)) {
 				$context_options['http']['request_fulluri'] = true;
-				$context_options['http']['proxy'] = _HTTP_PROXY;
+				$context_options['http']['proxy'] = Config::get(Config::HTTP_PROXY);
 			}
 
 			$context = stream_context_create($context_options);
@@ -231,7 +231,7 @@ class UrlHelper {
 			return false;
 		}
 
-		if (!defined('NO_CURL') && function_exists('curl_init') && !ini_get("open_basedir")) {
+		if (function_exists('curl_init') && !ini_get("open_basedir")) {
 
 			$fetch_curl_used = true;
 
@@ -283,8 +283,8 @@ class UrlHelper {
 				curl_setopt($ch, CURLOPT_COOKIEJAR, "/dev/null");
 			}
 
-			if (defined('_HTTP_PROXY')) {
-				curl_setopt($ch, CURLOPT_PROXY, _HTTP_PROXY);
+			if (Config::get(Config::HTTP_PROXY)) {
+				curl_setopt($ch, CURLOPT_PROXY, Config::get(Config::HTTP_PROXY));
 			}
 
 			if ($post_query) {
@@ -408,9 +408,9 @@ class UrlHelper {
 			if ($http_referrer)
 				array_push($context_options['http']['header'], "Referer: $http_referrer");
 
-			if (defined('_HTTP_PROXY')) {
+			if (Config::get(Config::HTTP_PROXY)) {
 				$context_options['http']['request_fulluri'] = true;
-				$context_options['http']['proxy'] = _HTTP_PROXY;
+				$context_options['http']['proxy'] = Config::get(Config::HTTP_PROXY);
 			}
 
 			$context = stream_context_create($context_options);

@@ -701,7 +701,7 @@ class Af_RedditImgur extends Plugin {
 	private function get_header($url, $header, $useragent = SELF_USER_AGENT) {
 		$ret = false;
 
-		if (function_exists("curl_init") && !defined("NO_CURL")) {
+		if (function_exists("curl_init")) {
 			$ch = curl_init($url);
 			curl_setopt($ch, CURLOPT_TIMEOUT, 5);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -727,7 +727,7 @@ class Af_RedditImgur extends Plugin {
 
 	private function readability($article, $url, $doc, $xpath, $debug = false) {
 
-		if (!defined('NO_CURL') && function_exists("curl_init") && $this->host->get($this, "enable_readability") &&
+		if (function_exists("curl_init") && $this->host->get($this, "enable_readability") &&
 			mb_strlen(strip_tags($article["content"])) <= 150) {
 
 			// do not try to embed posts linking back to other reddit posts

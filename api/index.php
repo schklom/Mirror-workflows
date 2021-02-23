@@ -8,7 +8,6 @@
 
 	chdir("..");
 
-	define('TTRSS_SESSION_NAME', 'ttrss_api_sid');
 	define('NO_SESSION_AUTOSTART', true);
 
 	require_once "autoload.php";
@@ -20,25 +19,10 @@
 
 	ob_start();
 
-	$input = file_get_contents("php://input");
-
-	if (defined('_API_DEBUG_HTTP_ENABLED') && _API_DEBUG_HTTP_ENABLED) {
-		// Override $_REQUEST with JSON-encoded data if available
-		// fallback on HTTP parameters
-		if ($input) {
-			$input = json_decode($input, true);
-			if ($input) $_REQUEST = $input;
-		}
-	} else {
-		// Accept JSON only
-		$input = json_decode((string)$input, true);
-		$_REQUEST = $input;
-	}
+	$_REQUEST = json_decode((string)file_get_contents("php://input"), true);
 
 	if (!empty($_REQUEST["sid"])) {
 		session_id($_REQUEST["sid"]);
-		@session_start();
-	} else if (defined('_API_DEBUG_HTTP_ENABLED')) {
 		@session_start();
 	}
 

@@ -47,6 +47,9 @@ class Config {
 	const MAX_CONDITIONAL_INTERVAL = "MAX_CONDITIONAL_INTERVAL";
 	const DAEMON_UNSUCCESSFUL_DAYS_LIMIT = "DAEMON_UNSUCCESSFUL_DAYS_LIMIT";
 	const LOG_SENT_MAIL = "LOG_SENT_MAIL";
+	const HTTP_PROXY = "HTTP_PROXY";
+	const FORBID_PASSWORD_CHANGES = "FORBID_PASSWORD_CHANGES";
+	const TTRSS_SESSION_NAME = "TTRSS_SESSION_NAME";
 
 	private const _DEFAULTS = [
 		Config::DB_TYPE => "pgsql",
@@ -92,6 +95,9 @@ class Config {
 		Config::MAX_CONDITIONAL_INTERVAL => 3600*12,
 		Config::DAEMON_UNSUCCESSFUL_DAYS_LIMIT => 30,
 		Config::LOG_SENT_MAIL => "",
+		Config::HTTP_PROXY => "",
+		Config::FORBID_PASSWORD_CHANGES => "",
+		Config::TTRSS_SESSION_NAME => "ttrss_sid",
 	];
 
 	private static $instance;

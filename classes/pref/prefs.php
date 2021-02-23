@@ -123,8 +123,8 @@ class Pref_Prefs extends Handler_Protected {
 
 	function changepassword() {
 
-		if (defined('_TTRSS_DEMO_INSTANCE')) {
-			print "ERROR: ".format_error("Disabled in demo version.");
+		if (Config::get(Config::FORBID_PASSWORD_CHANGES)) {
+			print "ERROR: ".format_error("Access forbidden.");
 			return;
 		}
 

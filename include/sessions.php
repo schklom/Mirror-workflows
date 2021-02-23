@@ -1,15 +1,13 @@
 <?php
 	namespace Sessions;
 
-	// Original from http://www.daniweb.com/code/snippet43.html
-
 	require_once "autoload.php";
 	require_once "functions.php";
 	require_once "errorhandler.php";
 	require_once "lib/gettext/gettext.inc.php";
 
 	$session_expire = min(2147483647 - time() - 1, max(\Config::get(\Config::SESSION_COOKIE_LIFETIME), 86400));
-	$session_name = (!defined('TTRSS_SESSION_NAME')) ? "ttrss_sid" : TTRSS_SESSION_NAME;
+	$session_name = \Config::get(\Config::TTRSS_SESSION_NAME);
 
 	if (is_server_https()) {
 		ini_set("session.cookie_secure", "true");
@@ -48,7 +46,7 @@
 
 		if (!empty($_SESSION["uid"])) {
 
-			if (!defined('_SESSION_SKIP_UA_CHECKS') && $_SESSION["user_agent"] != sha1($_SERVER['HTTP_USER_AGENT'])) {
+			if ($_SESSION["user_agent"] != sha1($_SERVER['HTTP_USER_AGENT'])) {
 				$_SESSION["login_error_msg"] = __("Session failed to validate (UA changed).");
 				return false;
 			}

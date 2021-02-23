@@ -52,7 +52,7 @@ class Config {
 	const LOG_SENT_MAIL = "LOG_SENT_MAIL";
 	const HTTP_PROXY = "HTTP_PROXY";
 	const FORBID_PASSWORD_CHANGES = "FORBID_PASSWORD_CHANGES";
-	const TTRSS_SESSION_NAME = "TTRSS_SESSION_NAME";
+	const SESSION_NAME = "SESSION_NAME";
 
 	private const _DEFAULTS = [
 		Config::DB_TYPE => [ "pgsql", 									Config::T_STRING ],
@@ -101,7 +101,7 @@ class Config {
 		Config::LOG_SENT_MAIL => [ "",									Config::T_BOOL ],
 		Config::HTTP_PROXY => [ "",										Config::T_STRING ],
 		Config::FORBID_PASSWORD_CHANGES => [ "",						Config::T_BOOL ],
-		Config::TTRSS_SESSION_NAME => [ "ttrss_sid",					Config::T_STRING ],
+		Config::SESSION_NAME => [ "ttrss_sid",							Config::T_STRING ],
 	];
 
 	private static $instance;

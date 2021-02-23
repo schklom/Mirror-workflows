@@ -8,9 +8,9 @@ class Digest
 
 		Debug::log("Sending digests, batch of max $user_limit users, headline limit = $limit");
 
-		if (DB_TYPE == "pgsql") {
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$interval_qpart = "last_digest_sent < NOW() - INTERVAL '1 days'";
-		} else /* if (DB_TYPE == "mysql") */ {
+		} else /* if (Config::get(Config::DB_TYPE) == "mysql") */ {
 			$interval_qpart = "last_digest_sent < DATE_SUB(NOW(), INTERVAL 1 DAY)";
 		}
 
@@ -48,11 +48,11 @@ class Digest
 
 						$mailer = new Mailer();
 
-						//$rc = $mail->quickMail($line["email"], $line["login"], DIGEST_SUBJECT, $digest, $digest_text);
+						//$rc = $mail->quickMail($line["email"], $line["login"], Config::get(Config::DIGEST_SUBJECT), $digest, $digest_text);
 
 						$rc = $mailer->mail(["to_name" => $line["login"],
 							"to_address" => $line["email"],
-							"subject" => DIGEST_SUBJECT,
+							"subject" => Config::get(Config::DIGEST_SUBJECT),
 							"message" => $digest_text,
 							"message_html" => $digest]);
 
@@ -91,19 +91,19 @@ class Digest
 
 		$tpl->setVariable('CUR_DATE', date('Y/m/d', $local_ts));
 		$tpl->setVariable('CUR_TIME', date('G:i', $local_ts));
-		$tpl->setVariable('TTRSS_HOST', SELF_URL_PATH);
+		$tpl->setVariable('TTRSS_HOST', Config::get(Config::get(Config::SELF_URL_PATH)));
 
 		$tpl_t->setVariable('CUR_DATE', date('Y/m/d', $local_ts));
 		$tpl_t->setVariable('CUR_TIME', date('G:i', $local_ts));
-		$tpl_t->setVariable('TTRSS_HOST', SELF_URL_PATH);
+		$tpl_t->setVariable('TTRSS_HOST', Config::get(Config::get(Config::SELF_URL_PATH)));
 
 		$affected_ids = array();
 
 		$days = (int) $days;
 
-		if (DB_TYPE == "pgsql") {
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$interval_qpart = "ttrss_entries.date_updated > NOW() - INTERVAL '$days days'";
-		} else /* if (DB_TYPE == "mysql") */ {
+		} else /* if (Config::get(Config::DB_TYPE) == "mysql") */ {
 			$interval_qpart = "ttrss_entries.date_updated > DATE_SUB(NOW(), INTERVAL $days DAY)";
 		}
 

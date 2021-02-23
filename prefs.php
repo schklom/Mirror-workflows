@@ -2,18 +2,10 @@
 	set_include_path(__DIR__ ."/include" . PATH_SEPARATOR .
 		get_include_path());
 
-	if (!file_exists("config.php")) {
-		print "<b>Fatal Error</b>: You forgot to copy
-		<b>config.php-dist</b> to <b>config.php</b> and edit it.\n";
-		exit;
-	}
-
 	require_once "autoload.php";
 	require_once "sessions.php";
 	require_once "functions.php";
 	require_once "sanity_check.php";
-	require_once "config.php";
-	require_once "db-prefs.php";
 
 	if (!init_plugins()) return;
 
@@ -34,8 +26,8 @@
 		}
 	} ?>
 
-	<?php if (theme_exists(LOCAL_OVERRIDE_STYLESHEET)) {
-		echo stylesheet_tag(get_theme_path(LOCAL_OVERRIDE_STYLESHEET));
+	<?php if (theme_exists(Config::get(Config::LOCAL_OVERRIDE_STYLESHEET))) {
+		echo stylesheet_tag(get_theme_path(Config::get(Config::LOCAL_OVERRIDE_STYLESHEET)));
 	} ?>
 
 	<script type="text/javascript">

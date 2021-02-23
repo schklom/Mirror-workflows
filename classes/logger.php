@@ -42,7 +42,7 @@ class Logger {
 	}
 
 	function __construct() {
-		switch (LOG_DESTINATION) {
+		switch (Config::get(Config::LOG_DESTINATION)) {
 		case "sql":
 			$this->adapter = new Logger_SQL();
 			break;

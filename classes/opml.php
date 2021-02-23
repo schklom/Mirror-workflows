@@ -594,7 +594,7 @@ class OPML extends Handler_Protected {
 		}
 
 		if (is_uploaded_file($_FILES['opml_file']['tmp_name'])) {
-			$tmp_file = (string)tempnam(CACHE_DIR . '/upload', 'opml');
+			$tmp_file = (string)tempnam(Config::get(Config::CACHE_DIR) . '/upload', 'opml');
 
 			$result = move_uploaded_file($_FILES['opml_file']['tmp_name'],
 				$tmp_file);

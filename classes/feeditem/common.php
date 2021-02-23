@@ -179,7 +179,7 @@ abstract class FeedItem_Common extends FeedItem {
 
 			$cat = preg_replace('/[,\'\"]/', "", $cat);
 
-			if (DB_TYPE == "mysql") {
+			if (Config::get(Config::DB_TYPE) == "mysql") {
 				$cat = preg_replace('/[\x{10000}-\x{10FFFF}]/u', "\xEF\xBF\xBD", $cat);
 			}
 

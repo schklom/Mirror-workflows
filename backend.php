@@ -26,8 +26,6 @@
 	require_once "autoload.php";
 	require_once "sessions.php";
 	require_once "functions.php";
-	require_once "config.php";
-	require_once "db-prefs.php";
 
 	$op = (string)clean($op);
 	$method = (string)clean($method);
@@ -40,7 +38,7 @@
 
 	header("Content-Type: text/json; charset=utf-8");
 
-	if (SINGLE_USER_MODE) {
+	if (Config::get(Config::SINGLE_USER_MODE)) {
 		UserHelper::authenticate( "admin", null);
 	}
 

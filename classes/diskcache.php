@@ -191,7 +191,7 @@ class DiskCache {
 	];
 
 	public function __construct($dir) {
-		$this->dir = CACHE_DIR . "/" . basename(clean($dir));
+		$this->dir = Config::get(Config::CACHE_DIR) . "/" . basename(clean($dir));
 	}
 
 	public function get_dir() {
@@ -339,7 +339,7 @@ class DiskCache {
 	}
 
 	static function expire() {
-		$dirs = array_filter(glob(CACHE_DIR . "/*"), "is_dir");
+		$dirs = array_filter(glob(Config::get(Config::CACHE_DIR) . "/*"), "is_dir");
 
 		foreach ($dirs as $cache_dir) {
 			$num_deleted = 0;
@@ -349,7 +349,7 @@ class DiskCache {
 
 				if ($files) {
 					foreach ($files as $file) {
-						if (time() - filemtime($file) > 86400*CACHE_MAX_DAYS) {
+						if (time() - filemtime($file) > 86400*Config::get(Config::CACHE_MAX_DAYS)) {
 							unlink($file);
 
 							++$num_deleted;
@@ -396,7 +396,7 @@ class DiskCache {
 
 			$tmppluginhost = new PluginHost();
 
-			$tmppluginhost->load(PLUGINS, PluginHost::KIND_SYSTEM);
+			$tmppluginhost->load(Config::get(Config::PLUGINS), PluginHost::KIND_SYSTEM);
 			//$tmppluginhost->load_data();
 
 			if ($tmppluginhost->run_hooks_until(PluginHost::HOOK_SEND_LOCAL_FILE, true, $filename))

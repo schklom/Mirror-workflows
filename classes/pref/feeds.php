@@ -9,7 +9,7 @@ class Pref_Feeds extends Handler_Protected {
 	public static function get_ts_languages() {
 		$rv = [];
 
-		if (DB_TYPE == "pgsql") {
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$dbh = Db::pdo();
 
 			$res = $dbh->query("SELECT cfgname FROM pg_ts_config");
@@ -441,7 +441,7 @@ class Pref_Feeds extends Handler_Protected {
 		$sth->execute([$feed_id, $_SESSION['uid']]);
 
 		if ($row = $sth->fetch()) {
-			@unlink(ICONS_DIR . "/$feed_id.ico");
+			@unlink(Config::get(Config::ICONS_DIR) . "/$feed_id.ico");
 
 			$sth = $this->pdo->prepare("UPDATE ttrss_feeds SET favicon_avg_color = NULL, favicon_last_checked = '1970-01-01'
 				where id = ?");
@@ -453,7 +453,7 @@ class Pref_Feeds extends Handler_Protected {
 		header("Content-type: text/html");
 
 		if (is_uploaded_file($_FILES['icon_file']['tmp_name'])) {
-			$tmp_file = tempnam(CACHE_DIR . '/upload', 'icon');
+			$tmp_file = tempnam(Config::get(Config::CACHE_DIR) . '/upload', 'icon');
 
 			if (!$tmp_file)
 				return;
@@ -479,7 +479,7 @@ class Pref_Feeds extends Handler_Protected {
 				$sth->execute([$feed_id, $_SESSION['uid']]);
 
 				if ($row = $sth->fetch()) {
-					$new_filename = ICONS_DIR . "/$feed_id.ico";
+					$new_filename = Config::get(Config::ICONS_DIR) . "/$feed_id.ico";
 
 					if (file_exists($new_filename)) unlink($new_filename);
 
@@ -529,7 +529,7 @@ class Pref_Feeds extends Handler_Protected {
 			$local_update_intervals = $update_intervals;
 			$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[get_pref("DEFAULT_UPDATE_INTERVAL")]);
 
-			if (FORCE_ARTICLE_PURGE == 0) {
+			if (Config::get(Config::FORCE_ARTICLE_PURGE) == 0) {
 				$local_purge_intervals = $purge_intervals;
 				$default_purge_interval = get_pref("PURGE_OLD_DAYS");
 
@@ -539,7 +539,7 @@ class Pref_Feeds extends Handler_Protected {
 				$local_purge_intervals[0] .= " " . sprintf("(%s)", __("Disabled"));
 
 			} else {
-				$purge_interval = FORCE_ARTICLE_PURGE;
+				$purge_interval = Config::get(Config::FORCE_ARTICLE_PURGE);
 				$local_purge_intervals = [ T_nsprintf('%d day', '%d days', $purge_interval, $purge_interval) ];
 			}
 
@@ -550,13 +550,13 @@ class Pref_Feeds extends Handler_Protected {
 					"select" => \Controls\select_feeds_cats("cat_id", $row["cat_id"]),
 				],
 				"plugin_data" => $plugin_data,
-				"force_purge" => (int)FORCE_ARTICLE_PURGE,
+				"force_purge" => (int)Config::get(Config::FORCE_ARTICLE_PURGE),
 				"intervals" => [
 					"update" => $local_update_intervals,
 					"purge" => $local_purge_intervals,
 				],
 				"lang" => [
-					"enabled" => DB_TYPE == "pgsql",
+					"enabled" => Config::get(Config::DB_TYPE) == "pgsql",
 					"default" => get_pref('DEFAULT_SEARCH_LANGUAGE'),
 					"all" => $this::get_ts_languages(),
 					]
@@ -614,7 +614,7 @@ class Pref_Feeds extends Handler_Protected {
 					</fieldset>
 				<?php } ?>
 
-				<?php	if (DB_TYPE == "pgsql") { ?>
+				<?php	if (Config::get(Config::DB_TYPE) == "pgsql") { ?>
 					<fieldset>
 						<label><?= __('Language:') ?></label>
 						<?= \Controls\select_tag("feed_language", "", $this::get_ts_languages(), ["disabled"=> 1]) ?>
@@ -632,7 +632,7 @@ class Pref_Feeds extends Handler_Protected {
 						<?= $this->_batch_toggle_checkbox("update_interval") ?>
 					</fieldset>
 
-					<?php if (FORCE_ARTICLE_PURGE == 0) { ?>
+					<?php if (Config::get(Config::FORCE_ARTICLE_PURGE) == 0) { ?>
 						<fieldset>
 							<label><?= __('Article purging:') ?></label>
 							<?= \Controls\select_hash("purge_interval", "", $local_purge_intervals, ["disabled" => 1]) ?>
@@ -1147,7 +1147,7 @@ class Pref_Feeds extends Handler_Protected {
 
 	function inactiveFeeds() {
 
-		if (DB_TYPE == "pgsql") {
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$interval_qpart = "NOW() - INTERVAL '3 months'";
 		} else {
 			$interval_qpart = "DATE_SUB(NOW(), INTERVAL 3 MONTH)";
@@ -1228,8 +1228,8 @@ class Pref_Feeds extends Handler_Protected {
 
 			$pdo->commit();
 
-			if (file_exists(ICONS_DIR . "/$id.ico")) {
-				unlink(ICONS_DIR . "/$id.ico");
+			if (file_exists(Config::get(Config::ICONS_DIR) . "/$id.ico")) {
+				unlink(Config::get(Config::ICONS_DIR) . "/$id.ico");
 			}
 
 		} else {

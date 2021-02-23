@@ -3,12 +3,12 @@
 
 	// Original from http://www.daniweb.com/code/snippet43.html
 
-	require_once "config.php";
 	require_once "autoload.php";
+	require_once "functions.php";
 	require_once "errorhandler.php";
 	require_once "lib/gettext/gettext.inc.php";
 
-	$session_expire = min(2147483647 - time() - 1, max(SESSION_COOKIE_LIFETIME, 86400));
+	$session_expire = min(2147483647 - time() - 1, max(\Config::get(\Config::SESSION_COOKIE_LIFETIME), 86400));
 	$session_name = (!defined('TTRSS_SESSION_NAME')) ? "ttrss_sid" : TTRSS_SESSION_NAME;
 
 	if (is_server_https()) {
@@ -37,7 +37,7 @@
 	}
 
 	function validate_session() {
-		if (SINGLE_USER_MODE) return true;
+		if (\Config::get(\Config::SINGLE_USER_MODE)) return true;
 
 		if (isset($_SESSION["ref_schema_version"]) && $_SESSION["ref_schema_version"] != session_get_schema_version()) {
 			$_SESSION["login_error_msg"] =
@@ -144,7 +144,7 @@
 		return true;
 	}
 
-	if (!SINGLE_USER_MODE /* && DB_TYPE == "pgsql" */) {
+	if (!\Config::get(\Config::SINGLE_USER_MODE)) {
 		session_set_save_handler('\Sessions\ttrss_open',
 			'\Sessions\ttrss_close', '\Sessions\ttrss_read',
 			'\Sessions\ttrss_write', '\Sessions\ttrss_destroy',

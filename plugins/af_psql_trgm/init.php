@@ -134,7 +134,7 @@ class Af_Psql_Trgm extends Plugin {
 			title="<i class='material-icons'>extension</i> <?= __('Mark similar articles as read (af_psql_trgm)') ?>">
 
 			<?php
-			if (DB_TYPE != "pgsql") {
+			if (Config::get(Config::DB_TYPE) != "pgsql") {
 				print_error("Database type not supported.");
 			} else {
 				$res = $this->pdo->query("select 'similarity'::regproc");
@@ -258,7 +258,7 @@ class Af_Psql_Trgm extends Plugin {
 
 	function hook_article_filter($article) {
 
-		if (DB_TYPE != "pgsql") return $article;
+		if (Config::get(Config::DB_TYPE) != "pgsql") return $article;
 
 		$res = $this->pdo->query("select 'similarity'::regproc");
 		if (!$res || !$res->fetch()) return $article;

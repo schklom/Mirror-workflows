@@ -1,15 +1,8 @@
 <?php
-	define('EXPECTED_CONFIG_VERSION', 26);
 	define('SCHEMA_VERSION', 140);
 
 	define('LABEL_BASE_INDEX', -1024);
 	define('PLUGIN_FEED_BASE_INDEX', -128);
-
-	define('COOKIE_LIFETIME_LONG', 86400*365);
-
-	// this CSS file is included for everyone (if it exists in themes.local)
-	// on login, registration, and main (index and prefs) pages
-	define('LOCAL_OVERRIDE_STYLESHEET', '.local-overrides.css');
 
 	$fetch_last_error = false;
 	$fetch_last_error_code = false;
@@ -37,53 +30,24 @@
 	ini_set('display_errors', "false");
 	ini_set('display_startup_errors', "false");
 
-	require_once 'config.php';
+	// config.php is optional
+	if (stream_resolve_include_path("config.php"))
+		require_once "config.php";
 
-	/* Some tunables you can override in config.php using define():	*/
+	require_once "autoload.php";
 
-	if (!defined('FEED_FETCH_TIMEOUT')) 					define('FEED_FETCH_TIMEOUT', 45);
-	// How may seconds to wait for response when requesting feed from a site
-	if (!defined('FEED_FETCH_NO_CACHE_TIMEOUT')) 		define('FEED_FETCH_NO_CACHE_TIMEOUT', 15);
-	// How may seconds to wait for response when requesting feed from a
-	// site when that feed wasn't cached before
-	if (!defined('FILE_FETCH_TIMEOUT')) 					define('FILE_FETCH_TIMEOUT', 45);
-	// Default timeout when fetching files from remote sites
-	if (!defined('FILE_FETCH_CONNECT_TIMEOUT')) 			define('FILE_FETCH_CONNECT_TIMEOUT', 15);
-	// How many seconds to wait for initial response from website when
-	// fetching files from remote sites
-	if (!defined('DAEMON_UPDATE_LOGIN_LIMIT'))			define('DAEMON_UPDATE_LOGIN_LIMIT', 30);
-	// stop updating feeds if users haven't logged in for X days
-	if (!defined('DAEMON_FEED_LIMIT'))						define('DAEMON_FEED_LIMIT', 500);
-	// feed limit for one update batch
-	if (!defined('DAEMON_SLEEP_INTERVAL'))					define('DAEMON_SLEEP_INTERVAL', 120);
-	// default sleep interval between feed updates (sec)
-	if (!defined('MAX_CACHE_FILE_SIZE'))					define('MAX_CACHE_FILE_SIZE', 64*1024*1024);
-	// do not cache files larger than that (bytes)
-	if (!defined('MAX_DOWNLOAD_FILE_SIZE'))				define('MAX_DOWNLOAD_FILE_SIZE', 16*1024*1024);
-	// do not download general files larger than that (bytes)
-	if (!defined('MAX_FAVICON_FILE_SIZE'))					define('MAX_FAVICON_FILE_SIZE', 1*1024*1024);
-	// do not download favicon files larger than that (bytes)
-	if (!defined('CACHE_MAX_DAYS'))							define('CACHE_MAX_DAYS', 7);
-	// max age in days for various automatically cached (temporary) files
-	if (!defined('MAX_CONDITIONAL_INTERVAL'))				define('MAX_CONDITIONAL_INTERVAL', 3600*12);
-	// max interval between forced unconditional updates for servers
-	// not complying with http if-modified-since (seconds)
-	// if (!defined('MAX_FETCH_REQUESTS_PER_HOST')) define('MAX_FETCH_REQUESTS_PER_HOST', 25);
-	// a maximum amount of allowed HTTP requests per destination host
-	// during a single update (i.e. within PHP process lifetime)
-	// this is used to not cause excessive load on the origin server on
-	// e.g. feed subscription when all articles are being processes
-	// (not implemented)
-	if (!defined('DAEMON_UNSUCCESSFUL_DAYS_LIMIT'))		define('DAEMON_UNSUCCESSFUL_DAYS_LIMIT', 30);
-	// automatically disable updates for feeds which failed to
-	// update for this amount of days; 0 disables
-
-	/* tunables end here */
-
-	if (DB_TYPE == "pgsql") {
+	if (Config::get(Config::DB_TYPE) == "pgsql") {
 		define('SUBSTRING_FOR_DATE', 'SUBSTRING_FOR_DATE');
 	} else {
 		define('SUBSTRING_FOR_DATE', 'SUBSTRING');
+	}
+
+	function get_pref($pref_name, $user_id = false, $die_on_error = false) {
+		return Db_Prefs::get()->read($pref_name, $user_id, $die_on_error);
+	}
+
+	function set_pref($pref_name, $value, $user_id = false, $strip_tags = true) {
+		return Db_Prefs::get()->write($pref_name, $value, $user_id, $strip_tags);
 	}
 
 	function get_translations() {
@@ -196,7 +160,6 @@
 		}
 	}
 
-	require_once 'db-prefs.php';
 	require_once 'controls.php';
 	require_once 'controls_compat.php';
 
@@ -375,9 +338,9 @@
 	}
 
 	function file_is_locked($filename) {
-		if (file_exists(LOCK_DIRECTORY . "/$filename")) {
+		if (file_exists(Config::get(Config::LOCK_DIRECTORY) . "/$filename")) {
 			if (function_exists('flock')) {
-				$fp = @fopen(LOCK_DIRECTORY . "/$filename", "r");
+				$fp = @fopen(Config::get(Config::LOCK_DIRECTORY) . "/$filename", "r");
 				if ($fp) {
 					if (flock($fp, LOCK_EX | LOCK_NB)) {
 						flock($fp, LOCK_UN);
@@ -397,11 +360,11 @@
 	}
 
 	function make_lockfile($filename) {
-		$fp = fopen(LOCK_DIRECTORY . "/$filename", "w");
+		$fp = fopen(Config::get(Config::LOCK_DIRECTORY) . "/$filename", "w");
 
 		if ($fp && flock($fp, LOCK_EX | LOCK_NB)) {
 			$stat_h = fstat($fp);
-			$stat_f = stat(LOCK_DIRECTORY . "/$filename");
+			$stat_f = stat(Config::get(Config::LOCK_DIRECTORY) . "/$filename");
 
 			if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
 				if ($stat_h["ino"] != $stat_f["ino"] ||
@@ -444,15 +407,15 @@
 	}
 
 	function is_prefix_https() {
-		return parse_url(SELF_URL_PATH, PHP_URL_SCHEME) == 'https';
+		return parse_url(Config::get(Config::SELF_URL_PATH), PHP_URL_SCHEME) == 'https';
 	}
 
-	// this returns SELF_URL_PATH sans ending slash
+	// this returns Config::get(Config::SELF_URL_PATH) sans ending slash
 	function get_self_url_prefix() {
-		if (strrpos(SELF_URL_PATH, "/") === strlen(SELF_URL_PATH)-1) {
-			return substr(SELF_URL_PATH, 0, strlen(SELF_URL_PATH)-1);
+		if (strrpos(Config::get(Config::SELF_URL_PATH), "/") === strlen(Config::get(Config::SELF_URL_PATH))-1) {
+			return substr(Config::get(Config::SELF_URL_PATH), 0, strlen(Config::get(Config::SELF_URL_PATH))-1);
 		} else {
-			return SELF_URL_PATH;
+			return Config::get(Config::SELF_URL_PATH);
 		}
 	}
 
@@ -467,7 +430,7 @@
 	} // function encrypt_password
 
 	function init_plugins() {
-		PluginHost::getInstance()->load(PLUGINS, PluginHost::KIND_ALL);
+		PluginHost::getInstance()->load(Config::get(Config::PLUGINS), PluginHost::KIND_ALL);
 
 		return true;
 	}

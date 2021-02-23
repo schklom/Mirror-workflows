@@ -236,7 +236,7 @@ class Pref_Prefs extends Handler_Protected {
 
 				$tpl->setVariable('LOGIN', $row["login"]);
 				$tpl->setVariable('NEWMAIL', $email);
-				$tpl->setVariable('TTRSS_HOST', SELF_URL_PATH);
+				$tpl->setVariable('TTRSS_HOST', Config::get(Config::SELF_URL_PATH));
 
 				$tpl->addBlock('message');
 
@@ -625,7 +625,7 @@ class Pref_Prefs extends Handler_Protected {
 					continue;
 				}
 
-				if ($pref_name == "DEFAULT_SEARCH_LANGUAGE" && DB_TYPE != "pgsql") {
+				if ($pref_name == "DEFAULT_SEARCH_LANGUAGE" && Config::get(Config::DB_TYPE) != "pgsql") {
 					continue;
 				}
 
@@ -705,7 +705,7 @@ class Pref_Prefs extends Handler_Protected {
 
 						array_push($listed_boolean_prefs, $pref_name);
 
-						if ($pref_name == "PURGE_UNREAD_ARTICLES" && FORCE_ARTICLE_PURGE != 0) {
+						if ($pref_name == "PURGE_UNREAD_ARTICLES" && Config::get(Config::FORCE_ARTICLE_PURGE) != 0) {
 							$is_disabled = true;
 							$is_checked = true;
 						} else {
@@ -719,9 +719,9 @@ class Pref_Prefs extends Handler_Protected {
 					} else if (in_array($pref_name, ['FRESH_ARTICLE_MAX_AGE',
 							'PURGE_OLD_DAYS', 'LONG_DATE_FORMAT', 'SHORT_DATE_FORMAT'])) {
 
-						if ($pref_name == "PURGE_OLD_DAYS" && FORCE_ARTICLE_PURGE != 0) {
+						if ($pref_name == "PURGE_OLD_DAYS" && Config::get(Config::FORCE_ARTICLE_PURGE) != 0) {
 							$attributes = ["disabled" => true, "required" => true];
-							$value = FORCE_ARTICLE_PURGE;
+							$value = Config::get(Config::FORCE_ARTICLE_PURGE);
 						} else {
 							$attributes = ["required" => true];
 						}
@@ -829,7 +829,7 @@ class Pref_Prefs extends Handler_Protected {
 	private function index_plugins_system() {
 		print_notice("System plugins are enabled in <strong>config.php</strong> for all users.");
 
-		$system_enabled = array_map("trim", explode(",", (string)PLUGINS));
+		$system_enabled = array_map("trim", explode(",", (string)Config::get(Config::PLUGINS)));
 
 		$tmppluginhost = new PluginHost();
 		$tmppluginhost->load_all($tmppluginhost::KIND_ALL, $_SESSION["uid"], true);
@@ -862,7 +862,7 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	private function index_plugins_user() {
-		$system_enabled = array_map("trim", explode(",", (string)PLUGINS));
+		$system_enabled = array_map("trim", explode(",", (string)Config::get(Config::PLUGINS)));
 		$user_enabled = array_map("trim", explode(",", get_pref("_ENABLED_PLUGINS")));
 
 		$tmppluginhost = new PluginHost();
@@ -1135,7 +1135,7 @@ class Pref_Prefs extends Handler_Protected {
 				$tpl->readTemplateFromFile("otp_disabled_template.txt");
 
 				$tpl->setVariable('LOGIN', $row["login"]);
-				$tpl->setVariable('TTRSS_HOST', SELF_URL_PATH);
+				$tpl->setVariable('TTRSS_HOST', Config::get(Config::SELF_URL_PATH));
 
 				$tpl->addBlock('message');
 

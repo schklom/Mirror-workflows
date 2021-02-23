@@ -9,12 +9,10 @@
 
 	require_once "autoload.php";
 	require_once "functions.php";
-	require_once "config.php";
 	require_once "sanity_check.php";
-	require_once "db-prefs.php";
 
 	function make_stampfile($filename) {
-		$fp = fopen(LOCK_DIRECTORY . "/$filename", "w");
+		$fp = fopen(Config::get(Config::LOCK_DIRECTORY) . "/$filename", "w");
 
 		if (flock($fp, LOCK_EX | LOCK_NB)) {
 			fwrite($fp, time() . "\n");
@@ -30,9 +28,9 @@
 
 		$days = (int) $days;
 
-		if (DB_TYPE == "pgsql") {
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$interval_query = "date_updated < NOW() - INTERVAL '$days days'";
-		} else /*if (DB_TYPE == "mysql") */ {
+		} else /*if (Config::get(Config::DB_TYPE) == "mysql") */ {
 			$interval_query = "date_updated < DATE_SUB(NOW(), INTERVAL $days DAY)";
 		}
 
@@ -212,7 +210,7 @@
 	}
 
 	if (isset($options["feeds"])) {
-		RSSUtils::update_daemon_common(DAEMON_FEED_LIMIT, $options);
+		RSSUtils::update_daemon_common(Config::get(Config::DAEMON_FEED_LIMIT), $options);
 		RSSUtils::housekeeping_common();
 
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK, $options);
@@ -224,10 +222,10 @@
 			$log = isset($options['log']) ? '--log '.$options['log'] : '';
 			$log_level = isset($options['log-level']) ? '--log-level '.$options['log-level'] : '';
 
-			passthru(PHP_EXECUTABLE . " " . $argv[0] ." --daemon-loop $quiet $log $log_level");
+			passthru(Config::get(Config::PHP_EXECUTABLE) . " " . $argv[0] ." --daemon-loop $quiet $log $log_level");
 
 			// let's enforce a minimum spawn interval as to not forkbomb the host
-			$spawn_interval = max(60, DAEMON_SLEEP_INTERVAL);
+			$spawn_interval = max(60, Config::get(Config::DAEMON_SLEEP_INTERVAL));
 
 			Debug::log("Sleeping for $spawn_interval seconds...");
 			sleep($spawn_interval);
@@ -255,7 +253,7 @@
 			Debug::log("warning: unable to create stampfile\n");
 		}
 
-		RSSUtils::update_daemon_common(isset($options["pidlock"]) ? 50 : DAEMON_FEED_LIMIT, $options);
+		RSSUtils::update_daemon_common(isset($options["pidlock"]) ? 50 : Config::get(Config::DAEMON_FEED_LIMIT), $options);
 
 		if (!isset($options["pidlock"]) || $options["task"] == 0)
 			RSSUtils::housekeeping_common();
@@ -277,7 +275,7 @@
 
 		Debug::log("clearing existing indexes...");
 
-		if (DB_TYPE == "pgsql") {
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$sth = $pdo->query( "SELECT relname FROM
 				pg_catalog.pg_class WHERE relname LIKE 'ttrss_%'
 					AND relname NOT LIKE '%_pkey'
@@ -288,7 +286,7 @@
 		}
 
 		while ($line = $sth->fetch()) {
-			if (DB_TYPE == "pgsql") {
+			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$statement = "DROP INDEX " . $line["relname"];
 				Debug::log($statement);
 			} else {
@@ -299,9 +297,9 @@
 			$pdo->query($statement);
 		}
 
-		Debug::log("reading indexes from schema for: " . DB_TYPE);
+		Debug::log("reading indexes from schema for: " . Config::get(Config::DB_TYPE));
 
-		$fp = fopen("schema/ttrss_schema_" . DB_TYPE . ".sql", "r");
+		$fp = fopen("schema/ttrss_schema_" . Config::get(Config::DB_TYPE) . ".sql", "r");
 		if ($fp) {
 			while ($line = fgets($fp)) {
 				$matches = array();
@@ -375,14 +373,14 @@
 	}
 
 	if (isset($options["update-schema"])) {
-		Debug::log("Checking for updates (" . DB_TYPE . ")...");
+		Debug::log("Checking for updates (" . Config::get(Config::DB_TYPE) . ")...");
 
-		$updater = new DbUpdater(Db::pdo(), DB_TYPE, SCHEMA_VERSION);
+		$updater = new DbUpdater(Db::pdo(), Config::get(Config::DB_TYPE), SCHEMA_VERSION);
 
 		if ($updater->is_update_required()) {
 			Debug::log("Schema update required, version " . $updater->get_schema_version() . " to " . SCHEMA_VERSION);
 
-			if (DB_TYPE == "mysql")
+			if (Config::get(Config::DB_TYPE) == "mysql")
 				Debug::Log("READ THIS: Due to MySQL limitations, your database is not completely protected while updating.\n".
 					"Errors may put it in an inconsistent state requiring manual rollback.\nBACKUP YOUR DATABASE BEFORE CONTINUING.");
 			else
@@ -460,7 +458,7 @@
 	if (isset($options["list-plugins"])) {
 		$tmppluginhost = new PluginHost();
 		$tmppluginhost->load_all($tmppluginhost::KIND_ALL);
-		$enabled = array_map("trim", explode(",", PLUGINS));
+		$enabled = array_map("trim", explode(",", Config::get(Config::PLUGINS)));
 
 		echo "List of all available plugins:\n";
 
@@ -515,8 +513,8 @@
 
 	PluginHost::getInstance()->run_commands($options);
 
-	if (file_exists(LOCK_DIRECTORY . "/$lock_filename"))
+	if (file_exists(Config::get(Config::LOCK_DIRECTORY) . "/$lock_filename"))
 		if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN')
 			fclose($lock_handle);
-		unlink(LOCK_DIRECTORY . "/$lock_filename");
+		unlink(Config::get(Config::LOCK_DIRECTORY) . "/$lock_filename");
 ?>

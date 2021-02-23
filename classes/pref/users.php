@@ -19,8 +19,6 @@ class Pref_Users extends Handler_Administrative {
 						"user" => $row,
 						"access_level_names" => $access_level_names
 					]);
-			} else {
-				print json_encode(["error" => "USER_NOT_FOUND"]);
 			}
 		}
 

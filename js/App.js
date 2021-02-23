@@ -407,23 +407,15 @@ const App = {
          const counters = reply['counters'];
          const runtime_info = reply['runtime-info'];
 
-         if (error) {
-            const code = error['code'];
-
-            if (code && code != 0) {
-               const msg = error['message'];
-
-               console.warn("[handleRpcJson] received fatal error ", code, msg);
-
-               /* global ERRORS */
-               this.Error.fatal(ERRORS[code], {info: msg, code: code});
-               return false;
-            }
+         if (error && error.code && error.code != App.Error.E_SUCCESS) {
+            console.warn("handleRpcJson: fatal error", error);
+            this.Error.fatal(error.code);
+            return false;
          }
 
          if (seq && this.get_seq() != seq) {
-            console.warn("[handleRpcJson] sequence mismatch: ", seq, '!=', this.get_seq());
-            return;
+            console.warn("handleRpcJson: sequence mismatch: ", seq, '!=', this.get_seq());
+            return false;
          }
 
          // not in preferences
@@ -442,10 +434,13 @@ const App = {
 
          if (netalert) netalert.hide();
 
+         return true;
       } else {
          if (netalert) netalert.show();
 
          Notify.error("Communication problem with server.");
+
+         return false;
 		}
 	},
 	parseRuntimeInfo: function(data) {
@@ -487,20 +482,6 @@ const App = {
 		PluginHost.run(PluginHost.HOOK_RUNTIME_INFO_LOADED, data);
 	},
 	backendSanityCallback: function(reply) {
-		if (!reply) {
-			this.Error.fatal(ERRORS[3]);
-			return;
-		}
-
-		if (reply['error']) {
-			const code = reply['error']['code'];
-
-			if (code && code != 0) {
-				return this.Error.fatal(ERRORS[code],
-					{code: code, info: reply['error']['message']});
-			}
-		}
-
 		console.log("sanity check ok");
 
 		const params = reply['init-params'];
@@ -547,24 +528,25 @@ const App = {
 		this.initSecondStage();
 	},
 	Error: {
+      E_SUCCESS: "E_SUCCESS",
+      E_UNAUTHORIZED: "E_UNAUTHORIZED",
+      E_SCHEMA_MISMATCH: "E_SCHEMA_MISMATCH",
 		fatal: function (error, params = {}) {
-			if (params.code) {
-				if (params.code == 6) {
-					window.location.href = "index.php";
-					return;
-				} else if (params.code == 5) {
-					window.location.href = "public.php?op=dbupdate";
-					return;
-				}
-			}
+         if (error == App.Error.E_UNAUTHORIZED) {
+            window.location.href = "index.php";
+            return;
+         } else if (error == App.Error.E_SCHEMA_MISMATCH) {
+            window.location.href = "public.php?op=dbupdate";
+            return;
+         }
 
-			return this.report(error,
+			return this.report(__("Fatal error: %s").replace("%s", error),
 				{...{title: __("Fatal error")}, ...params});
 		},
 		report: function(error, params = {}) {
 			if (!error) return;
 
-			console.error("[Error.report]", error, params);
+			console.error("error.report:", error, params);
 
 			const message = params.message ? params.message : error.toString();
 

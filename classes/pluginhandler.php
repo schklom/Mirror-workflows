@@ -15,15 +15,15 @@ class PluginHandler extends Handler_Protected {
 					$plugin->$method();
 				} else {
 					user_error("Rejected ${plugin_name}->${method}(): invalid CSRF token.", E_USER_WARNING);
-					print error_json(6);
+					print Errors::to_json(Errors::E_UNAUTHORIZED);
 				}
 			} else {
 				user_error("Rejected ${plugin_name}->${method}(): unknown method.", E_USER_WARNING);
-				print error_json(13);
+				print Errors::to_json(Errors::E_UNKNOWN_METHOD);
 			}
 		} else {
 			user_error("Rejected ${plugin_name}->${method}(): unknown plugin.", E_USER_WARNING);
-			print error_json(14);
+			print Errors::to_json(Errors::E_UNKNOWN_PLUGIN);
 		}
 	}
 }

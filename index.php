@@ -69,11 +69,10 @@
 	</script>
 
 	<?php
-	foreach (array("lib/dojo/dojo.js",
+	foreach (["lib/dojo/dojo.js",
 				"lib/dojo/tt-rss-layer.js",
 				"js/tt-rss.js",
-				"js/common.js",
-				"errors.php?mode=js") as $jsfile) {
+				"js/common.js"] as $jsfile) {
 
 		echo javascript_tag($jsfile);
 

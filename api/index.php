@@ -34,9 +34,11 @@
 		if (!\Sessions\validate_session()) {
 			header("Content-Type: text/json");
 
-			print json_encode(array("seq" => -1,
-				"status" => 1,
-				"content" => array("error" => "NOT_LOGGED_IN")));
+			print json_encode([
+						"seq" => -1,
+						"status" => API::STATUS_ERR,
+						"content" => [ "error" => API::E_NOT_LOGGED_IN ]
+					]);
 
 			return;
 		}

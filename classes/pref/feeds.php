@@ -561,8 +561,6 @@ class Pref_Feeds extends Handler_Protected {
 					"all" => $this::get_ts_languages(),
 					]
 				]);
-		} else {
-			print json_encode(["error" => "FEED_NOT_FOUND"]);
 		}
 	}
 

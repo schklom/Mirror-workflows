@@ -6,6 +6,13 @@ class API extends Handler {
 	const STATUS_OK  = 0;
 	const STATUS_ERR = 1;
 
+	const E_API_DISABLED = "API_DISABLED";
+	const E_NOT_LOGGED_IN = "NOT_LOGGED_IN";
+	const E_LOGIN_ERROR = "LOGIN_ERROR";
+	const E_INCORRECT_USAGE = "INCORRECT_USAGE";
+	const E_UNKNOWN_METHOD = "UNKNOWN_METHOD";
+	const E_OPERATION_FAILED = "E_OPERATION_FAILED";
+
 	private $seq;
 
 	private static function _param_to_bool($p) {
@@ -13,9 +20,11 @@ class API extends Handler {
 	}
 
 	private function _wrap($status, $reply) {
-		print json_encode(array("seq" => $this->seq,
-			"status" => $status,
-			"content" => $reply));
+		print json_encode([
+					"seq" => $this->seq,
+					"status" => $status,
+					"content" => $reply
+				]);
 	}
 
 	function before($method) {
@@ -23,12 +32,12 @@ class API extends Handler {
 			header("Content-Type: text/json");
 
 			if (empty($_SESSION["uid"]) && $method != "login" && $method != "isloggedin") {
-				$this->_wrap(self::STATUS_ERR, array("error" => 'NOT_LOGGED_IN'));
+				$this->_wrap(self::STATUS_ERR, array("error" => self::E_NOT_LOGGED_IN));
 				return false;
 			}
 
 			if (!empty($_SESSION["uid"]) && $method != "logout" && !get_pref('ENABLE_API_ACCESS')) {
-				$this->_wrap(self::STATUS_ERR, array("error" => 'API_DISABLED'));
+				$this->_wrap(self::STATUS_ERR, array("error" => self::E_API_DISABLED));
 				return false;
 			}
 
@@ -69,13 +78,13 @@ class API extends Handler {
 						"api_level" => self::API_LEVEL));
 				} else {                                                         // else we are not logged in
 					user_error("Failed login attempt for $login from " . UserHelper::get_user_ip(), E_USER_WARNING);
-					$this->_wrap(self::STATUS_ERR, array("error" => "LOGIN_ERROR"));
+					$this->_wrap(self::STATUS_ERR, array("error" => self::E_LOGIN_ERROR));
 				}
 			} else {
-				$this->_wrap(self::STATUS_ERR, array("error" => "API_DISABLED"));
+				$this->_wrap(self::STATUS_ERR, array("error" => self::E_API_DISABLED));
 			}
 		} else {
-			$this->_wrap(self::STATUS_ERR, array("error" => "LOGIN_ERROR"));
+			$this->_wrap(self::STATUS_ERR, array("error" => self::E_LOGIN_ERROR));
 			return;
 		}
 	}
@@ -221,7 +230,7 @@ class API extends Handler {
 				$this->_wrap(self::STATUS_OK, $headlines);
 			}
 		} else {
-			$this->_wrap(self::STATUS_ERR, array("error" => 'INCORRECT_USAGE'));
+			$this->_wrap(self::STATUS_ERR, array("error" => self::E_INCORRECT_USAGE));
 		}
 	}
 
@@ -281,7 +290,7 @@ class API extends Handler {
 				"updated" => $num_updated));
 
 		} else {
-			$this->_wrap(self::STATUS_ERR, array("error" => 'INCORRECT_USAGE'));
+			$this->_wrap(self::STATUS_ERR, array("error" => self::E_INCORRECT_USAGE));
 		}
 
 	}
@@ -356,7 +365,7 @@ class API extends Handler {
 
 			$this->_wrap(self::STATUS_OK, $articles);
 		} else {
-			$this->_wrap(self::STATUS_ERR, array("error" => 'INCORRECT_USAGE'));
+			$this->_wrap(self::STATUS_ERR, array("error" => self::E_INCORRECT_USAGE));
 		}
 	}
 
@@ -481,7 +490,7 @@ class API extends Handler {
 			$this->_wrap($reply[0], $reply[1]);
 
 		} else {
-			$this->_wrap(self::STATUS_ERR, array("error" => 'UNKNOWN_METHOD', "method" => $method));
+			$this->_wrap(self::STATUS_ERR, array("error" => self::E_UNKNOWN_METHOD, "method" => $method));
 		}
 	}
 
@@ -493,7 +502,7 @@ class API extends Handler {
 		if (Article::_create_published_article($title, $url, $content, "", $_SESSION["uid"])) {
 			$this->_wrap(self::STATUS_OK, array("status" => 'OK'));
 		} else {
-			$this->_wrap(self::STATUS_ERR, array("error" => 'Publishing failed'));
+			$this->_wrap(self::STATUS_ERR, array("error" => self::E_OPERATION_FAILED));
 		}
 	}
 
@@ -816,7 +825,7 @@ class API extends Handler {
 			Pref_Feeds::remove_feed($feed_id, $_SESSION["uid"]);
 			$this->_wrap(self::STATUS_OK, array("status" => "OK"));
 		} else {
-			$this->_wrap(self::STATUS_ERR, array("error" => "FEED_NOT_FOUND"));
+			$this->_wrap(self::STATUS_ERR, array("error" => self::E_OPERATION_FAILED));
 		}
 	}
 
@@ -831,7 +840,7 @@ class API extends Handler {
 
 			$this->_wrap(self::STATUS_OK, array("status" => $rc));
 		} else {
-			$this->_wrap(self::STATUS_ERR, array("error" => 'INCORRECT_USAGE'));
+			$this->_wrap(self::STATUS_ERR, array("error" => self::E_INCORRECT_USAGE));
 		}
 	}
 

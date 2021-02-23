@@ -1063,7 +1063,7 @@ class Pref_Prefs extends Handler_Protected {
 			}
 		} else {
 			header("Content-Type: text/json");
-			print error_json(6);
+			print Errors::to_json(Errors::E_UNAUTHORIZED);
 		}
 	}
 

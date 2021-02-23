@@ -179,7 +179,10 @@ const xhr = {
 				console.log('xhr.json', '<<<', obj);
 
 				if (obj && typeof App != "undefined")
-					App.handleRpcJson(obj);
+					if (!App.handleRpcJson(obj)) {
+						reject(obj);
+						return;
+					}
 
 				if (complete != undefined) complete(obj);
 

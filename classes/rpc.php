@@ -118,16 +118,22 @@ class RPC extends Handler_Protected {
 		$_SESSION["hasSandbox"] = clean($_REQUEST["hasSandbox"]) === "true";
 		$_SESSION["clientTzOffset"] = clean($_REQUEST["clientTzOffset"]);
 
-		$reply = array();
+		$error = Errors::E_SUCCESS;
 
-		$reply['error'] = sanity_check();
-
-		if ($reply['error']['code'] == 0) {
-			$reply['init-params'] = $this->make_init_params();
-			$reply['runtime-info'] = $this->make_runtime_info();
+		if (get_schema_version(true) != SCHEMA_VERSION) {
+			$error = Errors::E_SCHEMA_MISMATCH;
 		}
 
-		print json_encode($reply);
+		if ($error == Errors::E_SUCCESS) {
+			$reply = [];
+
+			$reply['init-params'] = $this->make_init_params();
+			$reply['runtime-info'] = $this->make_runtime_info();
+
+			print json_encode($reply);
+		} else {
+			print Errors::to_json($error);
+		}
 	}
 
 	/*function completeLabels() {
@@ -315,10 +321,7 @@ class RPC extends Handler_Protected {
 				$msg, 'client-js:' . $file, $line, $context);
 
 			echo json_encode(array("message" => "HOST_ERROR_LOGGED"));
-		} else {
-			echo json_encode(array("error" => "MESSAGE_NOT_FOUND"));
 		}
-
 	}
 
 	function checkforupdates() {

@@ -45,7 +45,7 @@
 	if (!empty($_SESSION["uid"])) {
 		if (!\Sessions\validate_session()) {
 			header("Content-Type: text/json");
-			print error_json(6);
+			print Errors::to_json(Errors::E_UNAUTHORIZED);
 			return;
 		}
 		UserHelper::load_user_plugins($_SESSION["uid"]);
@@ -106,7 +106,7 @@
 		if (strpos($method, "_") === 0) {
 			user_error("Refusing to invoke method $method of handler $op which starts with underscore.", E_USER_WARNING);
 			header("Content-Type: text/json");
-			print error_json(6);
+			print Errors::to_json(Errors::E_UNAUTHORIZED);
 			return;
 		}
 
@@ -130,7 +130,7 @@
 						} else {
 							user_error("Refusing to invoke method $method of handler $op which has required parameters.", E_USER_WARNING);
 							header("Content-Type: text/json");
-							print error_json(6);
+							print Errors::to_json(Errors::E_UNAUTHORIZED);
 						}
 					} else {
 						if (method_exists($handler, "catchall")) {
@@ -141,19 +141,19 @@
 					return;
 				} else {
 					header("Content-Type: text/json");
-					print error_json(6);
+					print Errors::to_json(Errors::E_UNAUTHORIZED);
 					return;
 				}
 			} else {
 				user_error("Refusing to invoke method $method of handler $op with invalid CSRF token.", E_USER_WARNING);
 				header("Content-Type: text/json");
-				print error_json(6);
+				print Errors::to_json(Errors::E_UNAUTHORIZED);
 				return;
 			}
 		}
 	}
 
 	header("Content-Type: text/json");
-	print error_json(13);
+	print Errors::to_json(Errors::E_UNKNOWN_METHOD);
 
 ?>

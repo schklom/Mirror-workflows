@@ -240,7 +240,7 @@ class Handler_Public extends Handler {
 
 		} else {
 			header("Content-Type: text/plain; charset=utf-8");
-			print json_encode(array("error" => array("message" => "Unknown format")));
+			print "Unknown format: $format.";
 		}
 	}
 
@@ -290,7 +290,7 @@ class Handler_Public extends Handler {
 			header("Location: index.php");
 		} else {
 			header("Content-Type: text/json");
-			print error_json(6);
+			print Errors::to_json(Errors::E_UNAUTHORIZED);
 		}
 	}
 
@@ -408,7 +408,7 @@ class Handler_Public extends Handler {
 
 	function index() {
 		header("Content-Type: text/plain");
-		print error_json(13);
+		print Errors::to_json(Errors::E_UNKNOWN_METHOD);
 	}
 
 	function forgotpass() {
@@ -659,7 +659,7 @@ class Handler_Public extends Handler {
 			<div class="content">
 
 			<?php
-				@$op = clean($_REQUEST["subop"]);
+				@$op = clean($_REQUEST["subop"] ?? "");
 				$updater = new DbUpdater(Db::pdo(), Config::get(Config::DB_TYPE), SCHEMA_VERSION);
 
 				if ($op == "performupdate") {
@@ -802,17 +802,17 @@ class Handler_Public extends Handler {
 				} else {
 					user_error("PluginHandler[PUBLIC]: Requested private method '$method' of plugin '$plugin_name'.", E_USER_WARNING);
 					header("Content-Type: text/json");
-					print error_json(6);
+					print Errors::to_json(Errors::E_UNAUTHORIZED);
 				}
 			} else {
 				user_error("PluginHandler[PUBLIC]: Requested unknown method '$method' of plugin '$plugin_name'.", E_USER_WARNING);
 				header("Content-Type: text/json");
-				print error_json(13);
+				print Errors::to_json(Errors::E_UNKNOWN_METHOD);
 			}
 		} else {
 			user_error("PluginHandler[PUBLIC]: Requested method '$method' of unknown plugin '$plugin_name'.", E_USER_WARNING);
 			header("Content-Type: text/json");
-			print error_json(14);
+			print Errors::to_json(Errors::E_UNKNOWN_PLUGIN);
 		}
 	}
 

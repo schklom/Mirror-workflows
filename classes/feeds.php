@@ -499,15 +499,7 @@ class Feeds extends Handler_Protected {
 		// this is parsed by handleRpcJson() on first viewfeed() to set cdm expanded, etc
 		$reply['runtime-info'] = RPC::make_runtime_info();
 
-		$reply_json = json_encode($reply);
-
-		if (!$reply_json) {
-		    $reply_json = json_encode(["error" => ["code" => 15,
-                "message" => json_last_error_msg()]]);
-        }
-
-		print $reply_json;
-
+		print json_encode($reply);
 	}
 
 	private function _generate_dashboard_feed() {

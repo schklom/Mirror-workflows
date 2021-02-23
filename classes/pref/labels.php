@@ -16,8 +16,6 @@ class Pref_Labels extends Handler_Protected {
 
 		if ($line = $sth->fetch(PDO::FETCH_ASSOC)) {
 			print json_encode($line);
-		} else {
-			print json_encode(["error" => "LABEL_NOT_FOUND"]);
 		}
 	}
 

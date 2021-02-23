@@ -323,20 +323,6 @@
 		}
 	}
 
-	function sanity_check() {
-		require_once 'errors.php';
-		$ERRORS = get_error_types();
-
-		$error_code = 0;
-		$schema_version = get_schema_version(true);
-
-		if ($schema_version != SCHEMA_VERSION) {
-			$error_code = 5;
-		}
-
-		return array("code" => $error_code, "message" => $ERRORS[$error_code]);
-	}
-
 	function file_is_locked($filename) {
 		if (file_exists(Config::get(Config::LOCK_DIRECTORY) . "/$filename")) {
 			if (function_exists('flock')) {
@@ -531,20 +517,6 @@
 
 	function theme_exists($theme) {
 		return file_exists("themes/$theme") || file_exists("themes.local/$theme");
-	}
-
-	/**
-	 * @SuppressWarnings(unused)
-	 */
-	function error_json($code) {
-		require_once "errors.php";
-		$ERRORS = get_error_types();
-
-		@$message = $ERRORS[$code];
-
-		return json_encode(array("error" =>
-			array("code" => $code, "message" => $message)));
-
 	}
 
 	function arr_qmarks($arr) {

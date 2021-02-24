@@ -99,9 +99,6 @@ class RPC extends Handler_Protected {
 			'seq' => $seq
 		];
 
-		if ($seq % 2)
-			$reply['runtime-info'] = $this->make_runtime_info();
-
 		print json_encode($reply);
 	}
 

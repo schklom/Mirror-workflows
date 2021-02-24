@@ -714,11 +714,6 @@ const App = {
             App.updateRuntimeInfo();
          });
 
-         if (!this.getInitParam("bw_limit"))
-            window.setInterval(() => {
-               App.updateRuntimeInfo();
-            }, 60 * 1000)
-
       } else {
 
          Feeds.reload();
@@ -772,11 +767,15 @@ const App = {
             }, 3600 * 1000);
          }
 
-         console.log("second stage ok");
-
          PluginHost.run(PluginHost.HOOK_INIT_COMPLETE, null);
-
       }
+
+      if (!this.getInitParam("bw_limit"))
+         window.setInterval(() => {
+            App.updateRuntimeInfo();
+         }, 60 * 1000)
+
+      console.log("second stage ok");
 
    },
    checkForUpdates: function() {

@@ -1,4 +1,4 @@
-/* global Plugins, Headlines, fox, __ */
+/* global Plugins, Headlines, xhr, dojo, fox, __ */
 
 Plugins.Mailto = {
 	send: function (id) {
@@ -13,12 +13,19 @@ Plugins.Mailto = {
 			id = ids.toString();
 		}
 
-		const query = "backend.php?op=pluginhandler&plugin=mailto&method=emailArticle&param=" + encodeURIComponent(id);
-
 		const dialog = new fox.SingleUseDialog({
-			id: "emailArticleDlg",
-			title: __("Forward article by email"),
-			href: query});
+			title: __("Forward article by email (mailto:)"),
+			content: __("Loading, please wait...")
+		});
+
+		const tmph = dojo.connect(dialog, 'onShow', function () {
+			dojo.disconnect(tmph);
+
+			xhr.post("backend.php", App.getPhArgs("mailto", "emailArticle", {ids: id}), (reply) => {
+				dialog.attr('content', reply);
+			});
+		});
+
 
 		dialog.show();
 	}

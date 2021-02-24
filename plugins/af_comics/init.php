@@ -47,11 +47,6 @@ class Af_Comics extends Plugin {
 	function hook_prefs_tab($args) {
 		if ($args != "prefFeeds") return;
 
-		print "<div dojoType=\"dijit.layout.AccordionPane\" 
-			title=\"<i class='material-icons'>photo</i> ".__('Feeds supported by af_comics')."\">";
-
-		print "<p>" . __("The following comics are currently supported:") . "</p>";
-
 		$comics = [];
 
 		foreach ($this->filters as $f) {
@@ -62,17 +57,22 @@ class Af_Comics extends Plugin {
 
 		asort($comics);
 
-		print "<ul class='panel panel-scrollable list list-unstyled'>";
-		foreach ($comics as $comic) {
-			print "<li>$comic</li>";
-		}
-		print "</ul>";
+		?>
+		<div dojoType="dijit.layout.AccordionPane"
+			title="<i class='material-icons'>photo</i> <?= __('Feeds supported by af_comics') ?>">
 
-		print_notice("To subscribe to GoComics use the comic's regular web page as the feed URL (e.g. for the <em>Garfield</em> comic use <code>http://www.gocomics.com/garfield</code>).");
+			<h3><?= __("The following comics are currently supported:") ?></h3>
 
-		print_notice('Drop any updated filters into <code>filters.local</code> in plugin directory.');
+			<ul class='panel panel-scrollable list list-unstyled'>
+				<?php foreach ($comics as $comic) { ?>
+					<li><?= htmlspecialchars($comic) ?></li>
+				<?php } ?>
+			</ul>
 
-		print "</div>";
+			<?= format_notice("To subscribe to GoComics use the comic's regular web page as the feed URL (e.g. for the <em>Garfield</em> comic use <code>http://www.gocomics.com/garfield</code>).") ?>
+			<?= format_notice('Drop any updated filters into <code>filters.local</code> in plugin directory.') ?>
+		</div>
+		<?php
 	}
 
 	function hook_article_filter($article) {

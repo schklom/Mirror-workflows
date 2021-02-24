@@ -191,23 +191,23 @@ class DiskCache {
 	];
 
 	public function __construct($dir) {
-		$this->dir = CACHE_DIR . "/" . basename(clean($dir));
+		$this->dir = Config::get(Config::CACHE_DIR) . "/" . basename(clean($dir));
 	}
 
-	public function getDir() {
+	public function get_dir() {
 		return $this->dir;
 	}
 
-	public function makeDir() {
+	public function make_dir() {
 		if (!is_dir($this->dir)) {
 			return mkdir($this->dir);
 		}
 	}
 
-	public function isWritable($filename = "") {
+	public function is_writable($filename = "") {
 		if ($filename) {
-			if (file_exists($this->getFullPath($filename)))
-				return is_writable($this->getFullPath($filename));
+			if (file_exists($this->get_full_path($filename)))
+				return is_writable($this->get_full_path($filename));
 			else
 				return is_writable($this->dir);
 		} else {
@@ -216,44 +216,44 @@ class DiskCache {
 	}
 
 	public function exists($filename) {
-		return file_exists($this->getFullPath($filename));
+		return file_exists($this->get_full_path($filename));
 	}
 
-	public function getSize($filename) {
+	public function get_size($filename) {
 		if ($this->exists($filename))
-			return filesize($this->getFullPath($filename));
+			return filesize($this->get_full_path($filename));
 		else
 			return -1;
 	}
 
-	public function getFullPath($filename) {
+	public function get_full_path($filename) {
 		return $this->dir . "/" . basename(clean($filename));
 	}
 
 	public function put($filename, $data) {
-		return file_put_contents($this->getFullPath($filename), $data);
+		return file_put_contents($this->get_full_path($filename), $data);
 	}
 
 	public function touch($filename) {
-		return touch($this->getFullPath($filename));
+		return touch($this->get_full_path($filename));
 	}
 
 	public function get($filename) {
 		if ($this->exists($filename))
-			return file_get_contents($this->getFullPath($filename));
+			return file_get_contents($this->get_full_path($filename));
 		else
 			return null;
 	}
 
-	public function getMimeType($filename) {
+	public function get_mime_type($filename) {
 		if ($this->exists($filename))
-			return mime_content_type($this->getFullPath($filename));
+			return mime_content_type($this->get_full_path($filename));
 		else
 			return null;
 	}
 
-	public function getFakeExtension($filename) {
-		$mimetype = $this->getMimeType($filename);
+	public function get_fake_extension($filename) {
+		$mimetype = $this->get_mime_type($filename);
 
 		if ($mimetype)
 			return isset($this->mimeMap[$mimetype]) ? $this->mimeMap[$mimetype] : "";
@@ -262,25 +262,25 @@ class DiskCache {
 	}
 
 	public function send($filename) {
-		$fake_extension = $this->getFakeExtension($filename);
+		$fake_extension = $this->get_fake_extension($filename);
 
 		if ($fake_extension)
 			$fake_extension = ".$fake_extension";
 
 		header("Content-Disposition: inline; filename=\"${filename}${fake_extension}\"");
 
-		return $this->send_local_file($this->getFullPath($filename));
+		return $this->send_local_file($this->get_full_path($filename));
 	}
 
-	public function getUrl($filename) {
-		return get_self_url_prefix() . "/public.php?op=cached_url&file=" . basename($this->dir) . "/" . basename($filename);
+	public function get_url($filename) {
+		return get_self_url_prefix() . "/public.php?op=cached&file=" . basename($this->dir) . "/" . basename($filename);
 	}
 
 	// check for locally cached (media) URLs and rewrite to local versions
 	// this is called separately after sanitize() and plugin render article hooks to allow
 	// plugins work on original source URLs used before caching
 	// NOTE: URLs should be already absolutized because this is called after sanitize()
-	static public function rewriteUrls($str)
+	static public function rewrite_urls($str)
 	{
 		$res = trim($str);
 		if (!$res) return '';
@@ -301,7 +301,7 @@ class DiskCache {
 						$cached_filename = sha1($url);
 
 						if ($cache->exists($cached_filename)) {
-							$url = $cache->getUrl($cached_filename);
+							$url = $cache->get_url($cached_filename);
 
 							$entry->setAttribute($attr, $url);
 							$entry->removeAttribute("srcset");
@@ -318,7 +318,7 @@ class DiskCache {
 						$cached_filename = sha1($matches[$i]["url"]);
 
 						if ($cache->exists($cached_filename)) {
-							$matches[$i]["url"] = $cache->getUrl($cached_filename);
+							$matches[$i]["url"] = $cache->get_url($cached_filename);
 
 							$need_saving = true;
 						}
@@ -339,7 +339,7 @@ class DiskCache {
 	}
 
 	static function expire() {
-		$dirs = array_filter(glob(CACHE_DIR . "/*"), "is_dir");
+		$dirs = array_filter(glob(Config::get(Config::CACHE_DIR) . "/*"), "is_dir");
 
 		foreach ($dirs as $cache_dir) {
 			$num_deleted = 0;
@@ -349,7 +349,7 @@ class DiskCache {
 
 				if ($files) {
 					foreach ($files as $file) {
-						if (time() - filemtime($file) > 86400*CACHE_MAX_DAYS) {
+						if (time() - filemtime($file) > 86400*Config::get(Config::CACHE_MAX_DAYS)) {
 							unlink($file);
 
 							++$num_deleted;
@@ -396,7 +396,7 @@ class DiskCache {
 
 			$tmppluginhost = new PluginHost();
 
-			$tmppluginhost->load(PLUGINS, PluginHost::KIND_SYSTEM);
+			$tmppluginhost->load(Config::get(Config::PLUGINS), PluginHost::KIND_SYSTEM);
 			//$tmppluginhost->load_data();
 
 			if ($tmppluginhost->run_hooks_until(PluginHost::HOOK_SEND_LOCAL_FILE, true, $filename))

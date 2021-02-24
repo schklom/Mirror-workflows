@@ -123,9 +123,9 @@ class UrlHelper {
 					 'protocol_version'=> 1.1)
 				);
 
-			if (defined('_HTTP_PROXY')) {
+			if (Config::get(Config::HTTP_PROXY)) {
 				$context_options['http']['request_fulluri'] = true;
-				$context_options['http']['proxy'] = _HTTP_PROXY;
+				$context_options['http']['proxy'] = Config::get(Config::HTTP_PROXY);
 			}
 
 			$context = stream_context_create($context_options);
@@ -209,7 +209,7 @@ class UrlHelper {
 		$last_modified = isset($options["last_modified"]) ? $options["last_modified"] : "";
 		$useragent = isset($options["useragent"]) ? $options["useragent"] : false;
 		$followlocation = isset($options["followlocation"]) ? $options["followlocation"] : true;
-		$max_size = isset($options["max_size"]) ? $options["max_size"] : MAX_DOWNLOAD_FILE_SIZE; // in bytes
+		$max_size = isset($options["max_size"]) ? $options["max_size"] : Config::get(Config::MAX_DOWNLOAD_FILE_SIZE); // in bytes
 		$http_accept = isset($options["http_accept"]) ? $options["http_accept"] : false;
 		$http_referrer = isset($options["http_referrer"]) ? $options["http_referrer"] : false;
 
@@ -231,7 +231,7 @@ class UrlHelper {
 			return false;
 		}
 
-		if (!defined('NO_CURL') && function_exists('curl_init') && !ini_get("open_basedir")) {
+		if (function_exists('curl_init') && !ini_get("open_basedir")) {
 
 			$fetch_curl_used = true;
 
@@ -250,8 +250,8 @@ class UrlHelper {
 			if (count($curl_http_headers) > 0)
 				curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_http_headers);
 
-			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout ? $timeout : FILE_FETCH_CONNECT_TIMEOUT);
-			curl_setopt($ch, CURLOPT_TIMEOUT, $timeout ? $timeout : FILE_FETCH_TIMEOUT);
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout ? $timeout : Config::get(Config::FILE_FETCH_CONNECT_TIMEOUT));
+			curl_setopt($ch, CURLOPT_TIMEOUT, $timeout ? $timeout : Config::get(Config::FILE_FETCH_TIMEOUT));
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, !ini_get("open_basedir") && $followlocation);
 			curl_setopt($ch, CURLOPT_MAXREDIRS, 20);
 			curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
@@ -283,8 +283,8 @@ class UrlHelper {
 				curl_setopt($ch, CURLOPT_COOKIEJAR, "/dev/null");
 			}
 
-			if (defined('_HTTP_PROXY')) {
-				curl_setopt($ch, CURLOPT_PROXY, _HTTP_PROXY);
+			if (Config::get(Config::HTTP_PROXY)) {
+				curl_setopt($ch, CURLOPT_PROXY, Config::get(Config::HTTP_PROXY));
 			}
 
 			if ($post_query) {
@@ -395,7 +395,7 @@ class UrlHelper {
 						),
 						'method' => 'GET',
 						'ignore_errors' => true,
-						'timeout' => $timeout ? $timeout : FILE_FETCH_TIMEOUT,
+						'timeout' => $timeout ? $timeout : Config::get(Config::FILE_FETCH_TIMEOUT),
 						'protocol_version'=> 1.1)
 				  );
 
@@ -408,16 +408,16 @@ class UrlHelper {
 			if ($http_referrer)
 				array_push($context_options['http']['header'], "Referer: $http_referrer");
 
-			if (defined('_HTTP_PROXY')) {
+			if (Config::get(Config::HTTP_PROXY)) {
 				$context_options['http']['request_fulluri'] = true;
-				$context_options['http']['proxy'] = _HTTP_PROXY;
+				$context_options['http']['proxy'] = Config::get(Config::HTTP_PROXY);
 			}
 
 			$context = stream_context_create($context_options);
 
 			$old_error = error_get_last();
 
-			$fetch_effective_url = self::resolve_redirects($url, $timeout ? $timeout : FILE_FETCH_CONNECT_TIMEOUT);
+			$fetch_effective_url = self::resolve_redirects($url, $timeout ? $timeout : Config::get(Config::FILE_FETCH_CONNECT_TIMEOUT));
 
 			if (!self::validate($fetch_effective_url, true)) {
 				$fetch_last_error = "URL received after redirection failed extended validation.";

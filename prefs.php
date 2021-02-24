@@ -1,19 +1,11 @@
 <?php
-	set_include_path(dirname(__FILE__) ."/include" . PATH_SEPARATOR .
+	set_include_path(__DIR__ ."/include" . PATH_SEPARATOR .
 		get_include_path());
-
-	if (!file_exists("config.php")) {
-		print "<b>Fatal Error</b>: You forgot to copy
-		<b>config.php-dist</b> to <b>config.php</b> and edit it.\n";
-		exit;
-	}
 
 	require_once "autoload.php";
 	require_once "sessions.php";
 	require_once "functions.php";
 	require_once "sanity_check.php";
-	require_once "config.php";
-	require_once "db-prefs.php";
 
 	if (!init_plugins()) return;
 
@@ -24,7 +16,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Tiny Tiny RSS : <?php echo __("Preferences") ?></title>
+	<title>Tiny Tiny RSS : <?= __("Preferences") ?></title>
     <meta name="viewport" content="initial-scale=1,width=device-width" />
 
 	<?php if ($_SESSION["uid"] && empty($_SESSION["safe_mode"])) {
@@ -34,12 +26,12 @@
 		}
 	} ?>
 
-	<?php if (theme_exists(LOCAL_OVERRIDE_STYLESHEET)) {
-		echo stylesheet_tag(get_theme_path(LOCAL_OVERRIDE_STYLESHEET));
+	<?php if (theme_exists(Config::get(Config::LOCAL_OVERRIDE_STYLESHEET))) {
+		echo stylesheet_tag(get_theme_path(Config::get(Config::LOCAL_OVERRIDE_STYLESHEET)));
 	} ?>
 
 	<script type="text/javascript">
-		const __csrf_token = "<?php echo $_SESSION["csrf_token"]; ?>";
+		const __csrf_token = "<?= $_SESSION["csrf_token"]; ?>";
 	</script>
 
 	<?php UserHelper::print_user_stylesheet() ?>
@@ -50,7 +42,7 @@
 	<script>
 		dojoConfig = {
 			async: true,
-			cacheBust: "<?php echo get_scripts_timestamp(); ?>",
+			cacheBust: "<?= get_scripts_timestamp(); ?>",
 			packages: [
 				{ name: "lib", location: "../" },
 				{ name: "fox", location: "../../js" },
@@ -59,13 +51,10 @@
 	</script>
 
 	<?php
-	foreach (array("lib/prototype.js",
-				"lib/scriptaculous/scriptaculous.js?load=effects,controls",
-				"lib/dojo/dojo.js",
+	foreach (["lib/dojo/dojo.js",
 				"lib/dojo/tt-rss-layer.js",
 				"js/common.js",
-				"js/prefs.js",
-				"errors.php?mode=js") as $jsfile) {
+				"js/prefs.js"] as $jsfile) {
 
 		echo javascript_tag($jsfile);
 
@@ -117,7 +106,7 @@
 
 <div id="overlay">
 	<div id="overlay_inner">
-		<?php echo __("Loading, please wait...") ?>
+		<?= __("Loading, please wait...") ?>
 		<div dojoType="dijit.ProgressBar" places="0" style="width : 300px" id="loading_bar"
 	     progress="0" maximum="100">
 		</div>
@@ -126,34 +115,37 @@
 </div>
 
 <div id="header">
-	<!-- <a href='#' onclick="showHelp()"><?php echo __("Keyboard shortcuts") ?></a> | -->
-	<a href="#" onclick="document.location.href = 'index.php'"><?php echo __('Exit preferences') ?></a>
+	<i class="material-icons net-alert" style="display : none"
+   	title="<?= __("Communication problem with server.") ?>">error_outline</i>
+	<i class="material-icons log-alert" style="display : none" onclick="App.openPreferences('system')"
+		title="<?= __("Recent entries found in event log.") ?>">warning</i>
+	<a href="#" onclick="document.location.href = 'index.php'"><?= __('Exit preferences') ?></a>
 </div>
 
 <div id="main" dojoType="dijit.layout.BorderContainer">
     <div dojoType="dijit.layout.TabContainer" region="center" id="pref-tabs">
         <div id="prefsTab" dojoType="dijit.layout.ContentPane"
             href="backend.php?op=pref-prefs"
-            title="<i class='material-icons'>settings</i> <?php echo __('Preferences') ?>"></div>
+            title="<i class='material-icons'>settings</i> <?= __('Preferences') ?>"></div>
         <div id="feedsTab" dojoType="dijit.layout.ContentPane"
             href="backend.php?op=pref-feeds"
-            title="<i class='material-icons'>rss_feed</i>  <?php echo __('Feeds') ?>"></div>
+            title="<i class='material-icons'>rss_feed</i>  <?= __('Feeds') ?>"></div>
         <div id="filtersTab" dojoType="dijit.layout.ContentPane"
             style="padding : 0px"
             href="backend.php?op=pref-filters"
-            title="<i class='material-icons'>filter_list1</i> <?php echo __('Filters') ?>"></div>
+            title="<i class='material-icons'>filter_list1</i> <?= __('Filters') ?>"></div>
         <div id="labelsTab" dojoType="dijit.layout.ContentPane"
             style="padding : 0px"
             href="backend.php?op=pref-labels"
-            title="<i class='material-icons'>label_outline1</i> <?php echo __('Labels') ?>"></div>
+            title="<i class='material-icons'>label_outline1</i> <?= __('Labels') ?>"></div>
         <?php if ($_SESSION["access_level"] >= 10) { ?>
             <div id="usersTab" dojoType="dijit.layout.ContentPane"
                 style="padding : 0px"
                 href="backend.php?op=pref-users"
-                title="<i class='material-icons'>person</i> <?php echo __('Users') ?>"></div>
+                title="<i class='material-icons'>person</i> <?= __('Users') ?>"></div>
             <div id="systemTab" dojoType="dijit.layout.ContentPane"
                 href="backend.php?op=pref-system"
-                title="<i class='material-icons'>info_outline</i> <?php echo __('System') ?>"></div>
+                title="<i class='material-icons'>info_outline</i> <?= __('System') ?>"></div>
         <?php } ?>
         <?php
             PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TABS);
@@ -162,8 +154,8 @@
 		<?php $version = get_version($git_commit, $git_timestamp, $last_error); ?>
 		<div id="footer" dojoType="dijit.layout.ContentPane" region="bottom">
 		<a class="text-muted" target="_blank" href="https://tt-rss.org/">Tiny Tiny RSS</a>
-			<span title="<?php echo htmlspecialchars($last_error) ?>">v<?php echo $version ?></span>
-        &copy; 2005-<?php echo date('Y') ?>
+			<span title="<?= htmlspecialchars($last_error) ?>">v<?= $version ?></span>
+        &copy; 2005-<?= date('Y') ?>
         <a class="text-muted" target="_blank"
         href="https://fakecake.org/">Andrew Dolgov</a>
     </div> <!-- footer -->

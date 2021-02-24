@@ -12,21 +12,26 @@ class MailTo extends Plugin {
 		$this->host = $host;
 
 		$host->add_hook($host::HOOK_ARTICLE_BUTTON, $this);
+		$host->add_hook($host::HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM, $this);
+	}
+
+	function hook_headline_toolbar_select_menu_item($feed_id, $is_cat) {
+		return "<div dojoType='dijit.MenuItem' onclick='Plugins.Mailto.send()'>".__('Forward by email (mailto:)')."</div>";
 	}
 
 	function get_js() {
-		return file_get_contents(dirname(__FILE__) . "/init.js");
+		return file_get_contents(__DIR__ . "/init.js");
 	}
 
 	function hook_article_button($line) {
 		return "<i class='material-icons' style=\"cursor : pointer\"
 					onclick=\"Plugins.Mailto.send(".$line["id"].")\"
-					title='".__('Forward by email')."'>mail_outline</i>";
+					title='".__('Forward by email (mailto:)')."'>mail_outline</i>";
 	}
 
 	function emailArticle() {
 
-		$ids = explode(",", $_REQUEST['param']);
+		$ids = explode(",", clean($_REQUEST['ids']));
 		$ids_qmarks = arr_qmarks($ids);
 
 		$tpl = new Templator();
@@ -36,7 +41,6 @@ class MailTo extends Plugin {
 		$tpl->setVariable('USER_NAME', $_SESSION["name"], true);
 		//$tpl->setVariable('USER_EMAIL', $user_email, true);
 		$tpl->setVariable('TTRSS_HOST', $_SERVER["HTTP_HOST"], true);
-
 
 		$sth = $this->pdo->prepare("SELECT DISTINCT link, content, title
 			FROM ttrss_user_entries, ttrss_entries WHERE id = ref_id AND
@@ -65,25 +69,23 @@ class MailTo extends Plugin {
 		$content = "";
 		$tpl->generateOutputToString($content);
 
-		$mailto_link = htmlspecialchars("mailto:?subject=".rawurlencode($subject).
-			"&body=".rawurlencode($content));
+		$mailto_link = "mailto:?subject=".rawurlencode($subject)."&body=".rawurlencode($content);
 
-		print __("Clicking the following link to invoke your mail client:");
+		?>
 
-		print "<div class='panel text-center'>";
-		print "<a target=\"_blank\" href=\"$mailto_link\">".
-			__("Forward selected article(s) by email.")."</a>";
-		print "</div>";
+		<section>
+			<div class='panel text-center'>
+				<a target="_blank" href="<?= htmlspecialchars($mailto_link) ?>">
+					<?= __("Click to open your mail client") ?>
+				</a>
+			</div>
+		</section>
 
-		print __("You should be able to edit the message before sending in your mail client.");
+		<footer class='text-center'>
+			<?= \Controls\submit_tag(__('Close this dialog')) ?>
+		</footer>
 
-		print "<p>";
-
-		print "<footer class='text-center'>";
-		print "<button dojoType='dijit.form.Button' onclick=\"dijit.byId('emailArticleDlg').hide()\">".__('Close this dialog')."</button>";
-		print "</footer>";
-
-		//return;
+		<?php
 	}
 
 	function api_version() {

@@ -12,7 +12,7 @@ class Handler_Public extends Handler {
 
 		if (!$limit) $limit = 60;
 
-		list($override_order, $skip_first_id_check) = Feeds::order_to_override_query($order);
+		list($override_order, $skip_first_id_check) = Feeds::_order_to_override_query($order);
 
 		if (!$override_order) {
 			$override_order = "date_entered DESC, updated DESC";
@@ -43,7 +43,7 @@ class Handler_Public extends Handler {
 			$user_plugins = get_pref("_ENABLED_PLUGINS", $owner_uid);
 
 			$tmppluginhost = new PluginHost();
-			$tmppluginhost->load(PLUGINS, PluginHost::KIND_ALL);
+			$tmppluginhost->load(Config::get(Config::PLUGINS), PluginHost::KIND_ALL);
 			$tmppluginhost->load((string)$user_plugins, PluginHost::KIND_USER, $owner_uid);
 			//$tmppluginhost->load_data();
 
@@ -55,7 +55,7 @@ class Handler_Public extends Handler {
 			}
 
 		} else {
-			$qfh_ret = Feeds::queryFeedHeadlines($params);
+			$qfh_ret = Feeds::_get_headlines($params);
 		}
 
 		$result = $qfh_ret[0];
@@ -65,7 +65,7 @@ class Handler_Public extends Handler {
 
 		$feed_self_url = get_self_url_prefix() .
 			"/public.php?op=rss&id=$feed&key=" .
-			Feeds::get_feed_access_key($feed, false, $owner_uid);
+			Feeds::_get_access_key($feed, false, $owner_uid);
 
 		if (!$feed_site_url) $feed_site_url = get_self_url_prefix();
 
@@ -82,7 +82,7 @@ class Handler_Public extends Handler {
 			while ($line = $result->fetch()) {
 
 				$line["content_preview"] = Sanitizer::sanitize(truncate_string(strip_tags($line["content"]), 100, '...'));
-				$line["tags"] = Article::get_article_tags($line["id"], $owner_uid);
+				$line["tags"] = Article::_get_tags($line["id"], $owner_uid);
 
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_QUERY_HEADLINES,
 					function ($result) use (&$line) {
@@ -98,7 +98,7 @@ class Handler_Public extends Handler {
 
 				$tpl->setVariable('ARTICLE_ID',
 					htmlspecialchars($orig_guid ? $line['link'] :
-							$this->make_article_tag_uri($line['id'], $line['date_entered'])), true);
+							$this->_make_article_tag_uri($line['id'], $line['date_entered'])), true);
 				$tpl->setVariable('ARTICLE_LINK', htmlspecialchars($line['link']), true);
 				$tpl->setVariable('ARTICLE_TITLE', htmlspecialchars($line['title']), true);
 				$tpl->setVariable('ARTICLE_EXCERPT', $line["content_preview"], true);
@@ -106,7 +106,7 @@ class Handler_Public extends Handler {
 				$content = Sanitizer::sanitize($line["content"], false, $owner_uid,
 					$feed_site_url, false, $line["id"]);
 
-				$content = DiskCache::rewriteUrls($content);
+				$content = DiskCache::rewrite_urls($content);
 
 				if ($line['note']) {
 					$content = "<div style=\"$note_style\">Article note: " . $line['note'] . "</div>" .
@@ -131,7 +131,7 @@ class Handler_Public extends Handler {
 					$tpl->addBlock('category');
 				}
 
-				$enclosures = Article::get_article_enclosures($line["id"]);
+				$enclosures = Article::_get_enclosures($line["id"]);
 
 				if (count($enclosures) > 0) {
 					foreach ($enclosures as $e) {
@@ -146,12 +146,12 @@ class Handler_Public extends Handler {
 						$tpl->addBlock('enclosure');
 					}
 				} else {
-					$tpl->setVariable('ARTICLE_ENCLOSURE_URL', null, true);
-					$tpl->setVariable('ARTICLE_ENCLOSURE_TYPE', null, true);
-					$tpl->setVariable('ARTICLE_ENCLOSURE_LENGTH', null, true);
+					$tpl->setVariable('ARTICLE_ENCLOSURE_URL', "", true);
+					$tpl->setVariable('ARTICLE_ENCLOSURE_TYPE', "", true);
+					$tpl->setVariable('ARTICLE_ENCLOSURE_LENGTH', "", true);
 				}
 
-				list ($og_image, $og_stream) = Article::get_article_image($enclosures, $line['content'], $feed_site_url);
+				list ($og_image, $og_stream) = Article::_get_image($enclosures, $line['content'], $feed_site_url);
 
 				$tpl->setVariable('ARTICLE_OG_IMAGE', $og_image, true);
 
@@ -163,7 +163,7 @@ class Handler_Public extends Handler {
 			$tpl->addBlock('feed');
 			$tpl->generateOutputToString($tmp);
 
-			if (@!clean($_REQUEST["noxml"])) {
+			if (empty($_REQUEST["noxml"])) {
 				header("Content-Type: text/xml; charset=utf-8");
 			} else {
 				header("Content-Type: text/plain; charset=utf-8");
@@ -184,7 +184,7 @@ class Handler_Public extends Handler {
 			while ($line = $result->fetch()) {
 
 				$line["content_preview"] = Sanitizer::sanitize(truncate_string(strip_tags($line["content_preview"]), 100, '...'));
-				$line["tags"] = Article::get_article_tags($line["id"], $owner_uid);
+				$line["tags"] = Article::_get_tags($line["id"], $owner_uid);
 
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_QUERY_HEADLINES,
 					function ($result) use (&$line) {
@@ -207,8 +207,8 @@ class Handler_Public extends Handler {
 				$article['content'] = Sanitizer::sanitize($line["content"], false, $owner_uid, $feed_site_url, false, $line["id"]);
 				$article['updated'] = date('c', strtotime($line["updated"]));
 
-				if ($line['note']) $article['note'] = $line['note'];
-				if ($article['author']) $article['author'] = $line['author'];
+				if (!empty($line['note'])) $article['note'] = $line['note'];
+				if (!empty($line['author'])) $article['author'] = $line['author'];
 
 				if (count($line["tags"]) > 0) {
 					$article['tags'] = array();
@@ -218,7 +218,7 @@ class Handler_Public extends Handler {
 					}
 				}
 
-				$enclosures = Article::get_article_enclosures($line["id"]);
+				$enclosures = Article::_get_enclosures($line["id"]);
 
 				if (count($enclosures) > 0) {
 					$article['enclosures'] = array();
@@ -240,7 +240,7 @@ class Handler_Public extends Handler {
 
 		} else {
 			header("Content-Type: text/plain; charset=utf-8");
-			print json_encode(array("error" => array("message" => "Unknown format")));
+			print "Unknown format: $format.";
 		}
 	}
 
@@ -251,11 +251,11 @@ class Handler_Public extends Handler {
 		$uid = UserHelper::find_user_by_login($login);
 
 		if ($uid) {
-			print Feeds::getGlobalUnread($uid);
+			print Feeds::_get_global_unread($uid);
 
 			if ($fresh) {
 				print ";";
-				print Feeds::getFeedArticles(-3, false, true, $uid);
+				print Feeds::_get_counters(-3, false, true, $uid);
 			}
 		} else {
 			print "-1;User not found";
@@ -286,195 +286,30 @@ class Handler_Public extends Handler {
 
 	function logout() {
 		if (validate_csrf($_POST["csrf_token"])) {
-			Pref_Users::logout_user();
+			UserHelper::logout();
 			header("Location: index.php");
 		} else {
 			header("Content-Type: text/json");
-			print error_json(6);
+			print Errors::to_json(Errors::E_UNAUTHORIZED);
 		}
-	}
-
-	function share() {
-		$uuid = clean($_REQUEST["key"]);
-
-		if ($uuid) {
-			$sth = $this->pdo->prepare("SELECT ref_id, owner_uid
-						FROM ttrss_user_entries WHERE uuid = ?");
-			$sth->execute([$uuid]);
-
-			if ($row = $sth->fetch()) {
-				header("Content-Type: text/html");
-
-				$id = $row["ref_id"];
-				$owner_uid = $row["owner_uid"];
-
-				print $this->format_article($id, $owner_uid);
-
-				return;
-			}
-		}
-
-		header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
-		print "Article not found.";
-	}
-
-	private function format_article($id, $owner_uid) {
-
-		$pdo = Db::pdo();
-
-		$sth = $pdo->prepare("SELECT id,title,link,content,feed_id,comments,int_id,lang,
-			".SUBSTRING_FOR_DATE."(updated,1,16) as updated,
-			(SELECT site_url FROM ttrss_feeds WHERE id = feed_id) as site_url,
-			(SELECT title FROM ttrss_feeds WHERE id = feed_id) as feed_title,
-			(SELECT hide_images FROM ttrss_feeds WHERE id = feed_id) as hide_images,
-			(SELECT always_display_enclosures FROM ttrss_feeds WHERE id = feed_id) as always_display_enclosures,
-			num_comments,
-			tag_cache,
-			author,
-			guid,
-			note
-			FROM ttrss_entries,ttrss_user_entries
-			WHERE	id = ? AND ref_id = id AND owner_uid = ?");
-		$sth->execute([$id, $owner_uid]);
-
-		$rv = '';
-
-		if ($line = $sth->fetch()) {
-
-			$line["tags"] = Article::get_article_tags($id, $owner_uid, $line["tag_cache"]);
-			unset($line["tag_cache"]);
-
-			$line["content"] = Sanitizer::sanitize($line["content"],
-				$line['hide_images'],
-				$owner_uid, $line["site_url"], false, $line["id"]);
-
-			PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE,
-				function ($result) use (&$line) {
-					$line = $result;
-				},
-				$line);
-
-			$line['content'] = DiskCache::rewriteUrls($line['content']);
-
-			$enclosures = Article::get_article_enclosures($line["id"]);
-
-            header("Content-Type: text/html");
-
-            $rv .= "<!DOCTYPE html>
-                    <html><head>
-                    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
-                    <title>".$line["title"]."</title>".
-					javascript_tag("lib/prototype.js").
-					javascript_tag("js/utility.js")."
-					<style type='text/css'>
-                    @media (prefers-color-scheme: dark) {
-						body {
-							background : #222;
-						}
-					}
-                    body.css_loading * {
-						display : none;
-					}
-					</style>
-                    <link rel='shortcut icon' type='image/png' href='images/favicon.png'>
-                    <link rel='icon' type='image/png' sizes='72x72' href='images/favicon-72px.png'>";
-
-            $rv .= "<meta property='og:title' content=\"".htmlspecialchars(html_entity_decode($line["title"], ENT_NOQUOTES | ENT_HTML401))."\"/>\n";
-            $rv .= "<meta property='og:description' content=\"".
-                htmlspecialchars(
-                	truncate_string(
-                		preg_replace("/[\r\n\t]/", "",
-							preg_replace("/ {1,}/", " ",
-								strip_tags(html_entity_decode($line["content"], ENT_NOQUOTES | ENT_HTML401))
-							)
-					), 500, "...")
-				)."\"/>\n";
-
-            $rv .= "</head>";
-
-            list ($og_image, $og_stream) = Article::get_article_image($enclosures, $line['content'], $line["site_url"]);
-
-            if ($og_image) {
-                $rv .= "<meta property='og:image' content=\"" . htmlspecialchars($og_image) . "\"/>";
-            }
-
-            $rv .= "<body class='flat ttrss_utility ttrss_zoom css_loading'>";
-            $rv .= "<div class='container'>";
-
-			if ($line["link"]) {
-				$rv .= "<h1><a target='_blank' rel='noopener noreferrer'
-					title=\"".htmlspecialchars($line['title'])."\"
-					href=\"" .htmlspecialchars($line["link"]) . "\">" .	$line["title"] . "</a></h1>";
-			} else {
-				$rv .= "<h1>" . $line["title"] . "</h1>";
-			}
-
-			$rv .= "<div class='content post'>";
-
-			/* header */
-
-			$rv .= "<div class='header'>";
-			$rv .= "<div class='row'>"; # row
-
-			//$entry_author = $line["author"] ? " - " . $line["author"] : "";
-			$parsed_updated = TimeHelper::make_local_datetime($line["updated"], true,
-				$owner_uid, true);
-
-			$rv .= "<div>".$line['author']."</div>";
-            $rv .= "<div>$parsed_updated</div>";
-
-			$rv .= "</div>"; # row
-
-			$rv .= "</div>"; # header
-
-			/* content */
-
-			$lang = $line['lang'] ? $line['lang'] : "en";
-			$rv .= "<div class='content' lang='$lang'>";
-
-			/* content body */
-
-			$rv .= $line["content"];
-
-            $rv .= Article::format_article_enclosures($id,
-                $line["always_display_enclosures"],
-                $line["content"],
-                $line["hide_images"]);
-
-			$rv .= "</div>"; # content
-
-			$rv .= "</div>"; # post
-
-		}
-
-		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_FORMAT_ARTICLE,
-			function ($result) use (&$rv) {
-				$rv = $result;
-			},
-			$rv, $line);
-
-		return $rv;
-
 	}
 
 	function rss() {
 		$feed = clean($_REQUEST["id"]);
 		$key = clean($_REQUEST["key"]);
-		$is_cat = clean($_REQUEST["is_cat"]);
-		$limit = (int)clean($_REQUEST["limit"]);
-		$offset = (int)clean($_REQUEST["offset"]);
+		$is_cat = clean($_REQUEST["is_cat"] ?? false);
+		$limit = (int)clean($_REQUEST["limit"] ?? 0);
+		$offset = (int)clean($_REQUEST["offset"] ?? 0);
 
-		$search = clean($_REQUEST["q"]);
-		$view_mode = clean($_REQUEST["view-mode"]);
-		$order = clean($_REQUEST["order"]);
-		$start_ts = clean($_REQUEST["ts"]);
+		$search = clean($_REQUEST["q"] ?? "");
+		$view_mode = clean($_REQUEST["view-mode"] ?? "");
+		$order = clean($_REQUEST["order"] ?? "");
+		$start_ts = (int)clean($_REQUEST["ts"] ?? 0);
 
-		$format = clean($_REQUEST['format']);
-		$orig_guid = clean($_REQUEST["orig_guid"]);
+		$format = clean($_REQUEST['format'] ?? "atom");
+		$orig_guid = clean($_REQUEST["orig_guid"] ?? false);
 
-		if (!$format) $format = 'atom';
-
-		if (SINGLE_USER_MODE) {
+		if (Config::get(Config::SINGLE_USER_MODE)) {
 			UserHelper::authenticate("admin", null);
 		}
 
@@ -511,169 +346,8 @@ class Handler_Public extends Handler {
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK);
 	}
 
-	function sharepopup() {
-		if (SINGLE_USER_MODE) {
-			UserHelper::login_sequence();
-		}
-
-		header('Content-Type: text/html; charset=utf-8');
-		?>
-		<!DOCTYPE html>
-		<html>
-		<head>
-			<title><?php echo __("Share with Tiny Tiny RSS") ?></title>
-			<?php
-			echo javascript_tag("lib/prototype.js");
-			echo javascript_tag("lib/dojo/dojo.js");
-			echo javascript_tag("js/utility.js");
-			echo javascript_tag("lib/dojo/tt-rss-layer.js");
-			echo javascript_tag("lib/scriptaculous/scriptaculous.js?load=effects,controls")
-			?>
-			<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-			<link rel="shortcut icon" type="image/png" href="images/favicon.png">
-			<link rel="icon" type="image/png" sizes="72x72" href="images/favicon-72px.png">
-			<style type="text/css">
-				@media (prefers-color-scheme: dark) {
-					body {
-						background : #303030;
-					}
-				}
-
-				body.css_loading * {
-					display : none;
-				}
-			</style>
-		</head>
-		<body class='flat ttrss_utility share_popup css_loading'>
-		<script type="text/javascript">
-			const UtilityApp = {
-				init: function() {
-				  	require(['dojo/parser', "dojo/ready", 'dijit/form/Button','dijit/form/CheckBox', 'dijit/form/Form',
-						'dijit/form/Select','dijit/form/TextBox','dijit/form/ValidationTextBox'], function(parser, ready){
-						ready(function() {
-							parser.parse();
-
-							new Ajax.Autocompleter('labels_value', 'labels_choices',
-								"backend.php?op=rpc&method=completeLabels",
-								{ tokens: ',', paramName: "search" });
-							});
-				  	});
-				}
-			};
-		</script>
-		<div class="content">
-
-		<?php
-
-		$action = clean($_REQUEST["action"]);
-
-		if ($_SESSION["uid"]) {
-
-			if ($action == 'share') {
-
-				$title = strip_tags(clean($_REQUEST["title"]));
-				$url = strip_tags(clean($_REQUEST["url"]));
-				$content = strip_tags(clean($_REQUEST["content"]));
-				$labels = strip_tags(clean($_REQUEST["labels"]));
-
-				Article::create_published_article($title, $url, $content, $labels,
-					$_SESSION["uid"]);
-
-				print "<script type='text/javascript'>";
-				print "window.close();";
-				print "</script>";
-
-			} else {
-				$title = htmlspecialchars(clean($_REQUEST["title"]));
-				$url = htmlspecialchars(clean($_REQUEST["url"]));
-
-				?>
-				<form id='share_form' name='share_form'>
-
-					<input type="hidden" name="op" value="sharepopup">
-					<input type="hidden" name="action" value="share">
-
-					<fieldset>
-						<label><?php echo __("Title:") ?></label>
-						<input style='width : 270px' dojoType='dijit.form.TextBox' name='title' value="<?php echo $title ?>">
-					</fieldset>
-
-					<fieldset>
-						<label><?php echo __("URL:") ?></label>
-						<input style='width : 270px' name='url' dojoType='dijit.form.TextBox' value="<?php echo $url ?>">
-					</fieldset>
-
-					<fieldset>
-						<label><?php echo __("Content:") ?></label>
-						<input style='width : 270px' name='content' dojoType='dijit.form.TextBox' value="">
-					</fieldset>
-
-					<fieldset>
-						<label><?php echo __("Labels:") ?></label>
-						<input style='width : 270px' name='labels' dojoType='dijit.form.TextBox' id="labels_value"
-						   placeholder='Alpha, Beta, Gamma' value="">
-						<div class="autocomplete" id="labels_choices"
-							 style="display : block"></div>
-					</fieldset>
-
-					<hr/>
-
-					<fieldset>
-						<button dojoType='dijit.form.Button' class="alt-primary" type="submit"><?php echo __('Share') ?></button>
-						<button dojoType='dijit.form.Button' onclick="return window.close()"><?php echo __('Cancel') ?></button>
-						<span class="text-muted small"><?php echo __("Shared article will appear in the Published feed.") ?></span>
-					</fieldset>
-
-				</form>
-				<?php
-
-			}
-
-		} else {
-
-			$return = urlencode(make_self_url());
-
-			?>
-
-			<?php print_error("Not logged in"); ?>
-
-			<form action="public.php?return=<?php echo $return ?>" method="post">
-
-				<input type="hidden" name="op" value="login">
-
-				<fieldset>
-					<label><?php echo __("Login:") ?></label>
-					<input name="login" id="login" dojoType="dijit.form.TextBox" type="text"
-						   onchange="fetchProfiles()" onfocus="fetchProfiles()" onblur="fetchProfiles()"
-						   required="1" value="<?php echo $_SESSION["fake_login"] ?>" />
-				</fieldset>
-
-				<fieldset>
-					<label><?php echo __("Password:") ?></label>
-
-					<input type="password" name="password" required="1"
-						   dojoType="dijit.form.TextBox"
-						   class="input input-text"
-						   value="<?php echo $_SESSION["fake_password"] ?>"/>
-				</fieldset>
-
-				<hr/>
-
-				<fieldset>
-					<label> </label>
-
-					<button dojoType="dijit.form.Button" type="submit" class="alt-primary"><?php echo __('Log in') ?></button>
-				</fieldset>
-
-			</form>
-			<?php
-		}
-
-		print "</div></body></html>";
-	}
-
 	function login() {
-		if (!SINGLE_USER_MODE) {
+		if (!Config::get(Config::SINGLE_USER_MODE)) {
 
 			$login = clean($_POST["login"]);
 			$password = clean($_POST["password"]);
@@ -681,7 +355,7 @@ class Handler_Public extends Handler {
 			$safe_mode = checkbox_to_sql_bool(clean($_POST["safe_mode"] ?? false));
 
 			if ($remember_me) {
-				@session_set_cookie_params(SESSION_COOKIE_LIFETIME);
+				@session_set_cookie_params(Config::get(Config::SESSION_COOKIE_LIFETIME));
 			} else {
 				@session_set_cookie_params(0);
 			}
@@ -724,7 +398,7 @@ class Handler_Public extends Handler {
 
 			$return = clean($_REQUEST['return']);
 
-			if ($_REQUEST['return'] && mb_strpos($return, SELF_URL_PATH) === 0) {
+			if ($_REQUEST['return'] && mb_strpos($return, Config::get(Config::SELF_URL_PATH)) === 0) {
 				header("Location: " . clean($_REQUEST['return']));
 			} else {
 				header("Location: " . get_self_url_prefix());
@@ -732,164 +406,9 @@ class Handler_Public extends Handler {
 		}
 	}
 
-	function subscribe() {
-		if (SINGLE_USER_MODE) {
-			UserHelper::login_sequence();
-		}
-
-		if (!empty($_SESSION["uid"])) {
-
-			$feed_url = clean($_REQUEST["feed_url"] ?? "");
-			$csrf_token = clean($_POST["csrf_token"] ?? "");
-
-			header('Content-Type: text/html; charset=utf-8');
-			?>
-			<!DOCTYPE html>
-			<html>
-			<head>
-				<title>Tiny Tiny RSS</title>
-				<?php
-					echo javascript_tag("lib/prototype.js");
-					echo javascript_tag("js/utility.js");
-					echo javascript_tag("lib/dojo/dojo.js");
-					echo javascript_tag("lib/dojo/tt-rss-layer.js");
-				?>
-				<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-				<link rel="shortcut icon" type="image/png" href="images/favicon.png">
-				<link rel="icon" type="image/png" sizes="72x72" href="images/favicon-72px.png">
-				<style type="text/css">
-					@media (prefers-color-scheme: dark) {
-						body {
-							background : #303030;
-						}
-					}
-
-					body.css_loading * {
-						display : none;
-					}
-				</style>
-			</head>
-			<body class='flat ttrss_utility css_loading'>
-			<script type="text/javascript">
-				const UtilityApp = {
-					init: function() {
-                        require(['dojo/parser', "dojo/ready", 'dijit/form/Button','dijit/form/CheckBox', 'dijit/form/Form',
-                            'dijit/form/Select','dijit/form/TextBox','dijit/form/ValidationTextBox'], function(parser, ready){
-                            ready(function() {
-                                parser.parse();
-                            });
-                        });
-					}
-				};
-			</script>
-			<div class="container">
-			<h1><?php echo __("Subscribe to feed...") ?></h1>
-			<div class='content'>
-			<?php
-
-			if (!$feed_url || !validate_csrf($csrf_token)) {
-				?>
-				<form method="post">
-					<input type="hidden" name="op" value="subscribe">
-					<?php print_hidden("csrf_token", $_SESSION["csrf_token"]) ?>
-					<fieldset>
-						<label>Feed or site URL:</label>
-						<input style="width: 300px" dojoType="dijit.form.ValidationTextBox" required="1" name="feed_url" value="<?php echo htmlspecialchars($feed_url) ?>">
-					</fieldset>
-
-					<button class="alt-primary" dojoType="dijit.form.Button" type="submit">
-						<?php echo __("Subscribe") ?>
-					</button>
-
-					<a href="index.php"><?php echo __("Return to Tiny Tiny RSS") ?></a>
-				</form>
-				<?php
-			} else {
-
-				$rc = Feeds::subscribe_to_feed($feed_url);
-				$feed_urls = false;
-
-				switch ($rc['code']) {
-					case 0:
-						print_warning(T_sprintf("Already subscribed to <b>%s</b>.", $feed_url));
-						break;
-					case 1:
-						print_notice(T_sprintf("Subscribed to <b>%s</b>.", $feed_url));
-						break;
-					case 2:
-						print_error(T_sprintf("Could not subscribe to <b>%s</b>.", $feed_url));
-						break;
-					case 3:
-						print_error(T_sprintf("No feeds found in <b>%s</b>.", $feed_url));
-						break;
-					case 4:
-						$feed_urls = $rc["feeds"];
-						break;
-					case 5:
-						print_error(T_sprintf("Could not subscribe to <b>%s</b>.<br>Can't download the Feed URL.", $feed_url));
-						break;
-				}
-
-				if ($feed_urls) {
-
-					print "<form action='public.php'>";
-					print "<input type='hidden' name='op' value='subscribe'>";
-					print_hidden("csrf_token", $_SESSION["csrf_token"]);
-
-					print "<fieldset>";
-					print "<label style='display : inline'>" . __("Multiple feed URLs found:") . "</label>";
-					print "<select name='feed_url' dojoType='dijit.form.Select'>";
-
-					foreach ($feed_urls as $url => $name) {
-						$url = htmlspecialchars($url);
-						$name = htmlspecialchars($name);
-
-						print "<option value=\"$url\">$name</option>";
-					}
-
-					print "</select>";
-					print "</fieldset>";
-
-					print "<button class='alt-primary' dojoType='dijit.form.Button' type='submit'>".__("Subscribe to selected feed")."</button>";
-					print "<a href='index.php'>".__("Return to Tiny Tiny RSS")."</a>";
-
-					print "</form>";
-				}
-
-				$tp_uri = get_self_url_prefix() . "/prefs.php";
-
-				if ($rc['code'] <= 2){
-					$sth = $this->pdo->prepare("SELECT id FROM ttrss_feeds WHERE
-					feed_url = ? AND owner_uid = ?");
-					$sth->execute([$feed_url, $_SESSION['uid']]);
-					$row = $sth->fetch();
-
-					$feed_id = $row["id"];
-				} else {
-					$feed_id = 0;
-				}
-
-				if ($feed_id) {
-					print "<form method='GET' action=\"$tp_uri\">
-					<input type='hidden' name='tab' value='feeds'>
-					<input type='hidden' name='method' value='editfeed'>
-					<input type='hidden' name='methodparam' value='$feed_id'>
-					<button dojoType='dijit.form.Button' class='alt-info' type='submit'>".__("Edit subscription options")."</button>
-					<a href='index.php'>".__("Return to Tiny Tiny RSS")."</a>
-					</form>";
-				}
-			}
-
-			print "</div></div></body></html>";
-
-		} else {
-			$this->render_login_form();
-		}
-	}
-
 	function index() {
 		header("Content-Type: text/plain");
-		print error_json(13);
+		print Errors::to_json(Errors::E_UNKNOWN_METHOD);
 	}
 
 	function forgotpass() {
@@ -909,7 +428,6 @@ class Handler_Public extends Handler {
 			<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 			<?php
 				echo stylesheet_tag("themes/light.css");
-				echo javascript_tag("lib/prototype.js");
 				echo javascript_tag("lib/dojo/dojo.js");
 				echo javascript_tag("lib/dojo/tt-rss-layer.js");
 			?>
@@ -953,7 +471,7 @@ class Handler_Public extends Handler {
 								WHERE id = ?");
 							$sth->execute([$id]);
 
-							Pref_Users::resetUserPassword($id, true);
+							UserHelper::reset_password($id, true);
 
 							print "<p>"."Completed."."</p>";
 
@@ -1041,7 +559,7 @@ class Handler_Public extends Handler {
 
 						$tpl->setVariable('LOGIN', $login);
 						$tpl->setVariable('RESETPASS_LINK', $resetpass_link);
-						$tpl->setVariable('TTRSS_HOST', SELF_URL_PATH);
+						$tpl->setVariable('TTRSS_HOST', Config::get(Config::SELF_URL_PATH));
 
 						$tpl->addBlock('message');
 
@@ -1095,9 +613,9 @@ class Handler_Public extends Handler {
 	function dbupdate() {
 		startup_gettext();
 
-		if (!SINGLE_USER_MODE && $_SESSION["access_level"] < 10) {
+		if (!Config::get(Config::SINGLE_USER_MODE) && $_SESSION["access_level"] < 10) {
 			$_SESSION["login_error_msg"] = __("Your access level is insufficient to run this script.");
-			$this->render_login_form();
+			$this->_render_login_form();
 			exit;
 		}
 
@@ -1107,12 +625,11 @@ class Handler_Public extends Handler {
 			<head>
 			<title>Database Updater</title>
 			<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-			<?php echo stylesheet_tag("themes/light.css") ?>
+			<?= stylesheet_tag("themes/light.css") ?>
 			<link rel="shortcut icon" type="image/png" href="images/favicon.png">
 			<link rel="icon" type="image/png" sizes="72x72" href="images/favicon-72px.png">
 			<?php
 				echo stylesheet_tag("themes/light.css");
-				echo javascript_tag("lib/prototype.js");
 				echo javascript_tag("lib/dojo/dojo.js");
 				echo javascript_tag("lib/dojo/tt-rss-layer.js");
 			?>
@@ -1137,26 +654,26 @@ class Handler_Public extends Handler {
 			</script>
 
 			<div class="container">
-			<h1><?php echo __("Database Updater") ?></h1>
+			<h1><?= __("Database Updater") ?></h1>
 
 			<div class="content">
 
 			<?php
-				@$op = clean($_REQUEST["subop"]);
-				$updater = new DbUpdater(Db::pdo(), DB_TYPE, SCHEMA_VERSION);
+				@$op = clean($_REQUEST["subop"] ?? "");
+				$updater = new DbUpdater(Db::pdo(), Config::get(Config::DB_TYPE), SCHEMA_VERSION);
 
 				if ($op == "performupdate") {
-					if ($updater->isUpdateRequired()) {
+					if ($updater->is_update_required()) {
 
 						print "<h2>" . T_sprintf("Performing updates to version %d", SCHEMA_VERSION) . "</h2>";
 
-						for ($i = $updater->getSchemaVersion() + 1; $i <= SCHEMA_VERSION; $i++) {
+						for ($i = $updater->get_schema_version() + 1; $i <= SCHEMA_VERSION; $i++) {
 							print "<ul>";
 
 							print "<li class='text-info'>" . T_sprintf("Updating to version %d", $i) . "</li>";
 
 							print "<li>";
-							$result = $updater->performUpdateTo($i, true);
+							$result = $updater->update_to($i, true);
 							print "</li>";
 
 							if (!$result) {
@@ -1187,12 +704,12 @@ class Handler_Public extends Handler {
 						print "<a href='index.php'>".__("Return to Tiny Tiny RSS")."</a>";
 					}
 				} else {
-					if ($updater->isUpdateRequired()) {
+					if ($updater->is_update_required()) {
 
 						print "<h2>".T_sprintf("Tiny Tiny RSS database needs update to the latest version (%d to %d).",
-							$updater->getSchemaVersion(), SCHEMA_VERSION)."</h2>";
+							$updater->get_schema_version(), SCHEMA_VERSION)."</h2>";
 
-						if (DB_TYPE == "mysql") {
+						if (Config::get(Config::DB_TYPE) == "mysql") {
 							print_error("<strong>READ THIS:</strong> Due to MySQL limitations, your database is not completely protected while updating. ".
 								"Errors may put it in an inconsistent state requiring manual rollback. <strong>BACKUP YOUR DATABASE BEFORE CONTINUING.</strong>");
 						} else {
@@ -1220,7 +737,28 @@ class Handler_Public extends Handler {
 		<?php
 	}
 
-	function cached_url() {
+	function publishOpml() {
+		$key = clean($_REQUEST["key"]);
+		$pdo = Db::pdo();
+
+		$sth = $pdo->prepare( "SELECT owner_uid
+				FROM ttrss_access_keys WHERE
+				access_key = ? AND feed_id = 'OPML:Publish'");
+		$sth->execute([$key]);
+
+		if ($row = $sth->fetch()) {
+			$owner_uid = $row['owner_uid'];
+
+			$opml = new OPML($_REQUEST);
+			$opml->opml_export("published.opml", $owner_uid, true, false);
+
+		} else {
+			header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+			echo "File not found.";
+		}
+	}
+
+	function cached() {
 		list ($cache_dir, $filename) = explode("/", $_GET["file"], 2);
 
 		// we do not allow files with extensions at the moment
@@ -1236,7 +774,7 @@ class Handler_Public extends Handler {
 		}
 	}
 
-	private function make_article_tag_uri($id, $timestamp) {
+	private function _make_article_tag_uri($id, $timestamp) {
 
 		$timestamp = date("Y-m-d", strtotime($timestamp));
 
@@ -1264,21 +802,21 @@ class Handler_Public extends Handler {
 				} else {
 					user_error("PluginHandler[PUBLIC]: Requested private method '$method' of plugin '$plugin_name'.", E_USER_WARNING);
 					header("Content-Type: text/json");
-					print error_json(6);
+					print Errors::to_json(Errors::E_UNAUTHORIZED);
 				}
 			} else {
 				user_error("PluginHandler[PUBLIC]: Requested unknown method '$method' of plugin '$plugin_name'.", E_USER_WARNING);
 				header("Content-Type: text/json");
-				print error_json(13);
+				print Errors::to_json(Errors::E_UNKNOWN_METHOD);
 			}
 		} else {
 			user_error("PluginHandler[PUBLIC]: Requested method '$method' of unknown plugin '$plugin_name'.", E_USER_WARNING);
 			header("Content-Type: text/json");
-			print error_json(14);
+			print Errors::to_json(Errors::E_UNKNOWN_PLUGIN);
 		}
 	}
 
-	static function render_login_form() {
+	static function _render_login_form() {
 		header('Cache-Control: public');
 
 		require_once "login_form.php";

@@ -1,36 +1,39 @@
-/* global Plugins, xhrJson, Notify, fox, __ */
+/* global dojo, Plugins, xhr, App, Notify, fox, __ */
 
 Plugins.Note = {
 	edit: function(id) {
-		const query = "backend.php?op=pluginhandler&plugin=note&method=edit&param=" + encodeURIComponent(id);
-
 		const dialog = new fox.SingleUseDialog({
-			id: "editNoteDlg",
 			title: __("Edit article note"),
 			execute: function () {
 				if (this.validate()) {
 					Notify.progress("Saving article note...", true);
 
-					xhrJson("backend.php", this.attr('value'), (reply) => {
+					xhr.json("backend.php", this.attr('value'), (reply) => {
 						Notify.close();
 						dialog.hide();
 
 						if (reply) {
-							const elem = $("POSTNOTE-" + id);
+							App.findAll(`div[data-note-for="${reply.id}"]`).forEach((elem) => {
+								elem.querySelector(".body").innerHTML = reply.note;
 
-							if (elem) {
-								elem.innerHTML = reply.note;
-
-								if (reply.raw_length != 0)
-									Element.show(elem);
+								if (reply.note)
+									elem.show();
 								else
-									Element.hide(elem);
-							}
+									elem.hide();
+							});
 						}
 					});
 				}
 			},
-			href: query,
+			content: __("Loading, please wait...")
+		});
+
+		const tmph = dojo.connect(dialog, 'onShow', function () {
+			dojo.disconnect(tmph);
+
+			xhr.post("backend.php", App.getPhArgs("note", "edit", {id: id}), (reply) => {
+				dialog.attr('content', reply);
+			});
 		});
 
 		dialog.show();

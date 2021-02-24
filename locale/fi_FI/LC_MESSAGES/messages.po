@@ -9,11 +9,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tt-rss 1.7.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-12 19:55+0300\n"
+"POT-Creation-Date: 2021-02-24 19:54+0300\n"
 "PO-Revision-Date: 2019-12-10 18:38+0000\n"
 "Last-Translator: Nikolay Korotkiy <sikmir@gmail.com>\n"
-"Language-Team: Finnish <https://weblate.tt-rss.org/projects/tt-rss/messages/"
-"fi/>\n"
+"Language-Team: Finnish <https://weblate.tt-rss.org/projects/tt-rss/messages/fi/>\n"
 "Language: fi_FI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,1415 +20,1280 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.7.1\n"
 
-#: backend.php:59
+#: backend.php:55
 msgid "Use default"
 msgstr "Oletus"
 
-#: backend.php:60
+#: backend.php:56
 msgid "Never purge"
 msgstr "Älä poista koskaan"
 
-#: backend.php:61
+#: backend.php:57
 msgid "1 week old"
 msgstr "Viikkoa vanhemmat"
 
-#: backend.php:62
+#: backend.php:58
 msgid "2 weeks old"
 msgstr "2 viikkoa vanhemmat"
 
-#: backend.php:63
+#: backend.php:59
 msgid "1 month old"
 msgstr "Kuukautta vanhemmat"
 
-#: backend.php:64
+#: backend.php:60
 msgid "2 months old"
 msgstr "2 kuukautta vanhemmat"
 
-#: backend.php:65
+#: backend.php:61
 msgid "3 months old"
 msgstr "3 kuukautta vanhemmat"
 
-#: backend.php:68
+#: backend.php:64
 msgid "Default interval"
 msgstr "Oletusaikaväli"
 
-#: backend.php:69 backend.php:79
+#: backend.php:65
+#: backend.php:75
 msgid "Disable updates"
 msgstr "Ei päivitystä"
 
-#: backend.php:70 backend.php:80
+#: backend.php:66
+#: backend.php:76
 msgid "15 minutes"
 msgstr "15 minuuttia"
 
-#: backend.php:71 backend.php:81
+#: backend.php:67
+#: backend.php:77
 msgid "30 minutes"
 msgstr "30 minuuttia"
 
-#: backend.php:72 backend.php:82
+#: backend.php:68
+#: backend.php:78
 msgid "Hourly"
 msgstr "Kerran tunnissa"
 
-#: backend.php:73 backend.php:83
+#: backend.php:69
+#: backend.php:79
 msgid "4 hours"
 msgstr "4 tuntia"
 
-#: backend.php:74 backend.php:84
+#: backend.php:70
+#: backend.php:80
 msgid "12 hours"
 msgstr "12 tuntia"
 
-#: backend.php:75 backend.php:85
+#: backend.php:71
+#: backend.php:81
 msgid "Daily"
 msgstr "Päivittäin"
 
-#: backend.php:76 backend.php:86
+#: backend.php:72
+#: backend.php:82
 msgid "Weekly"
 msgstr "Viikoittain"
 
-#: backend.php:89 classes/pref/system.php:109 classes/pref/users.php:47
+#: backend.php:85
+#: classes/pref/system.php:110
+#: js/PrefUsers.js:57
 msgid "User"
 msgstr "Käyttäjä"
 
-#: backend.php:90
+#: backend.php:86
 msgid "Power User"
 msgstr "Edistynyt käyttäjä"
 
-#: backend.php:91
+#: backend.php:87
 msgid "Administrator"
 msgstr "Ylläpitäjä"
 
-#: errors.php:10
-msgid ""
-"This program requires XmlHttpRequest to function properly. Your browser "
-"doesn't seem to support it."
-msgstr ""
-"Tämä sovellus edellyttää XmlHttpRequest-toimintoa. Selaimesi ei vaikuta "
-"tukevan sitä."
-
-#: errors.php:13
-msgid ""
-"This program requires cookies to function properly. Your browser doesn't "
-"seem to support them."
-msgstr ""
-"Tämä sovellus edellyttää evästeiden toimivan oikein. Selaimesi ei vaikuta "
-"tukevan evästeitä."
-
-#: errors.php:16
-msgid "Backend sanity check failed."
-msgstr ""
-
-#: errors.php:18
-msgid "Frontend sanity check failed."
-msgstr ""
-
-#: errors.php:20
-msgid ""
-"Incorrect database schema version. &lt;a href='db-updater.php'&gt;Please "
-"update&lt;/a&gt;."
-msgstr ""
-
-#: errors.php:22
-msgid "Request not authorized."
-msgstr "Pyyntö ei ole sallittu."
-
-#: errors.php:24
-msgid "No operation to perform."
-msgstr ""
-
-#: errors.php:26
-msgid ""
-"Could not display feed: query failed. Please check label match syntax or "
-"local configuration."
-msgstr ""
-
-#: errors.php:28
-msgid "Denied. Your access level is insufficient to access this page."
-msgstr "Käyttäjäoikeutesi eivät riitä tämän sivun näyttämiseen."
-
-#: errors.php:30
-msgid "Configuration check failed"
-msgstr "Konfiguraation tarkastus epäonnistui"
-
-#: errors.php:32
-msgid ""
-"Your version of MySQL is not currently supported. Please see official site "
-"for more information."
-msgstr ""
-"MySQL-versiotasi ei tällä hetkellä tueta. Katso lisätietoja viralliselta "
-"sivustolta."
-
-#: errors.php:36
-msgid "SQL escaping test failed, check your database and PHP configuration"
-msgstr ""
-
-#: errors.php:38
-msgid "Method not found"
-msgstr "Metodia ei löydy"
-
-#: errors.php:40
-msgid "Plugin not found"
-msgstr "Lisäosaa ei löydy"
-
-#: errors.php:42
-msgid "Encoding data as JSON failed"
-msgstr ""
-
-#: index.php:135 index.php:150 index.php:274 prefs.php:120
-#: classes/pref/labels.php:281 classes/pref/filters.php:755
-#: classes/pref/feeds.php:1297 js/Article.js:257 js/CommonDialogs.js:225
-#: js/CommonDialogs.js:320 js/PrefFeedTree.js:363 js/PrefFeedTree.js:409
-#: js/CommonDialogs.js:248 js/CommonDialogs.js:364 js/CommonDialogs.js:399
-#: js/Feeds.js:370 js/Feeds.js:448 js/Headlines.js:327 js/PrefFeedTree.js:130
-#: js/PrefFeedTree.js:137 js/PrefFeedTree.js:254 js/PrefFeedTree.js:326
-#: js/PrefFilterTree.js:100 js/PrefHelpers.js:27 js/PrefHelpers.js:39
-#: js/PrefHelpers.js:78 js/PrefHelpers.js:138 js/PrefHelpers.js:219
-#: js/PrefLabelTree.js:116 plugins/af_readability/init.js:17
+#: index.php:125
+#: index.php:140
+#: index.php:264
+#: prefs.php:109
+#: classes/pref/prefs.php:999
+#: classes/pref/prefs.php:1013
+#: classes/pref/system.php:173
+#: js/CommonDialogs.js:442
+#: js/CommonFilters.js:177
+#: js/CommonFilters.js:401
+#: plugins/af_psql_trgm/init.js:7
+#: plugins/note/note.js:28
+#: plugins/mail/mail.js:35
+#: plugins/mailto/init.js:18
+#: plugins/share/share.js:56
+#: js/CommonDialogs.js:289
+#: js/CommonDialogs.js:592
+#: js/CommonFilters.js:273
+#: js/Feeds.js:395
+#: js/Feeds.js:465
+#: js/Headlines.js:344
+#: js/PrefFeedTree.js:165
+#: js/PrefFeedTree.js:172
+#: js/PrefFeedTree.js:296
+#: js/PrefFeedTree.js:373
+#: js/PrefFilterTree.js:100
+#: js/PrefHelpers.js:27
+#: js/PrefHelpers.js:39
+#: js/PrefHelpers.js:88
+#: js/PrefHelpers.js:200
+#: js/PrefHelpers.js:283
+#: js/PrefHelpers.js:351
+#: js/PrefUsers.js:107
+#: plugins/af_readability/init.js:19
 msgid "Loading, please wait..."
 msgstr "Ladataan, odota..."
 
-#: index.php:164 js/App.js:379 js/App.js:385
+#: index.php:154
+#: prefs.php:119
+#: js/App.js:441
 msgid "Communication problem with server."
 msgstr "Palvelimeen ei saada yhteyttä."
 
-#: index.php:167
+#: index.php:157
+#: prefs.php:121
 msgid "Recent entries found in event log."
 msgstr ""
 
-#: index.php:170
+#: index.php:160
 msgid "Updates are available from Git."
 msgstr "Päivityksiä saatavilla Gitistä."
 
-#: index.php:185
+#: index.php:175
 msgid "Show articles"
 msgstr "Näytä artikkelit"
 
-#: index.php:188
+#: index.php:178
 msgid "Adaptive"
 msgstr "Mukautuva"
 
-#: index.php:189
+#: index.php:179
 msgid "All Articles"
 msgstr "Kaikki artikkelit"
 
-#: index.php:190 classes/rpc.php:638
+#: index.php:180
+#: classes/rpc.php:562
 msgid "Starred"
 msgstr "Tähdelliset"
 
-#: index.php:191 classes/rpc.php:639
+#: index.php:181
+#: classes/rpc.php:563
 msgid "Published"
 msgstr "Julkiset"
 
-#: index.php:192 classes/feeds.php:69
+#: index.php:182
 msgid "Unread"
 msgstr "Lukemattomat"
 
-#: index.php:193
+#: index.php:183
 msgid "With Note"
 msgstr "Huomattavat"
 
-#: index.php:194
+#: index.php:184
 msgid "Ignore Scoring"
 msgstr "Ohita pisteytys"
 
-#: index.php:197
+#: index.php:187
 msgid "Sort articles"
 msgstr "Järjestä artikkelit"
 
-#: index.php:201
+#: index.php:191
 msgid "Default"
 msgstr "Oletus"
 
-#: index.php:202
+#: index.php:192
 msgid "Newest first"
 msgstr "Uusin ensin"
 
-#: index.php:203
+#: index.php:193
 msgid "Oldest first"
 msgstr "Vanhin ensin"
 
-#: index.php:204
+#: index.php:194
 msgid "Title"
 msgstr "Otsikko"
 
-#: index.php:216 index.php:250 classes/rpc.php:626 classes/feeds.php:77
-#: js/FeedTree.js:89 js/FeedTree.js:119
+#: index.php:206
+#: index.php:240
+#: classes/rpc.php:550
+#: js/FeedTree.js:89
+#: js/FeedTree.js:119
 msgid "Mark as read"
 msgstr "Merkitse luetuiksi"
 
-#: index.php:219
+#: index.php:209
 msgid "Older than one day"
 msgstr "1 pv vanhemmat"
 
-#: index.php:222
+#: index.php:212
 msgid "Older than one week"
 msgstr "1 vko vanhemmat"
 
-#: index.php:225
+#: index.php:215
 msgid "Older than two weeks"
 msgstr "2 vko vanhemmat"
 
-#: index.php:240
+#: index.php:230
 msgid "Actions..."
 msgstr "Toiminnot..."
 
-#: index.php:243
+#: index.php:233
 msgid "Preferences..."
 msgstr "Asetukset…"
 
-#: index.php:244
+#: index.php:234
 msgid "Search..."
 msgstr "Etsi..."
 
-#: index.php:245
+#: index.php:235
 msgid "Feed actions:"
 msgstr "Syötetoiminnot:"
 
-#: index.php:246 classes/handler/public.php:786
+#: index.php:236
+#: plugins/bookmarklets/init.php:38
+#: plugins/bookmarklets/init.php:72
 msgid "Subscribe to feed..."
 msgstr "Tilaa syöte..."
 
-#: index.php:247
+#: index.php:237
 msgid "Edit this feed..."
 msgstr "Muokkaa tätä syötettä..."
 
-#: index.php:248 classes/pref/feeds.php:810 classes/pref/feeds.php:1270
-#: js/PrefFeedTree.js:64
+#: index.php:238
+#: classes/pref/feeds.php:945
+#: js/PrefFeedTree.js:99
+#: js/CommonDialogs.js:579
 msgid "Unsubscribe"
 msgstr "Peru tilaus"
 
-#: index.php:249
+#: index.php:239
 msgid "All feeds:"
 msgstr "Kaikki syötteet:"
 
-#: index.php:251
+#: index.php:241
 msgid "(Un)hide read feeds"
 msgstr "Piilota/näytä luetut syötteet"
 
-#: index.php:252
+#: index.php:242
 msgid "Other actions:"
 msgstr "Muut toiminnot:"
 
-#: index.php:253 classes/rpc.php:612
+#: index.php:243
+#: classes/rpc.php:536
 msgid "Toggle widescreen mode"
 msgstr "Vaihda näkymä"
 
-#: index.php:254
+#: index.php:244
 msgid "Keyboard shortcuts help"
 msgstr "Näytä pikanäppäimet"
 
-#: index.php:263
+#: index.php:253
 msgid "Logout"
 msgstr "Kirjaudu ulos"
 
-#: prefs.php:27 prefs.php:137 classes/rpc.php:641 classes/pref/prefs.php:567
+#: prefs.php:19
+#: prefs.php:129
+#: classes/rpc.php:565
+#: classes/pref/prefs.php:1001
 msgid "Preferences"
 msgstr "Asetukset"
 
-#: prefs.php:129
-msgid "Keyboard shortcuts"
-msgstr "Pikanäppäimet"
-
-#: prefs.php:130
+#: prefs.php:122
 msgid "Exit preferences"
 msgstr "Poistu asetuksista"
 
-#: prefs.php:140 classes/pref/prefs.php:28 classes/pref/feeds.php:125
-#: classes/pref/feeds.php:1204 classes/pref/feeds.php:1259
+#: prefs.php:132
+#: classes/pref/prefs.php:29
+#: classes/pref/feeds.php:120
+#: classes/pref/feeds.php:934
 msgid "Feeds"
 msgstr "Syötteet"
 
-#: prefs.php:144 classes/pref/filters.php:228
+#: prefs.php:136
+#: classes/pref/filters.php:228
 msgid "Filters"
 msgstr "Suodattimet"
 
-#: prefs.php:148 classes/pref/labels.php:85 classes/feeds.php:1431
+#: prefs.php:140
+#: classes/pref/labels.php:25
+#: classes/feeds.php:1246
 msgid "Labels"
 msgstr "Tunnisteet"
 
-#: prefs.php:153
+#: prefs.php:145
 msgid "Users"
 msgstr "Käyttäjät"
 
-#: prefs.php:156
+#: prefs.php:148
 msgid "System"
 msgstr "Järjestelmä"
 
-#: include/controls.php:93 classes/pref/filters.php:197
-#: classes/pref/filters.php:208 classes/pref/filters.php:502
-msgid "All feeds"
-msgstr "Kaikki syötteet"
-
-#: include/controls.php:146 include/controls.php:238 classes/pref/feeds.php:245
-#: classes/digest.php:122 classes/opml.php:545 classes/feeds.php:1443
+#: include/controls.php:177
+#: classes/pref/filters.php:900
+#: classes/pref/feeds.php:240
+#: classes/digest.php:114
+#: classes/opml.php:545
+#: classes/feeds.php:1258
 msgid "Uncategorized"
 msgstr "Luokittelemattomat"
 
-#: include/functions.php:102
+#: include/functions.php:55
 msgid "Detect automatically"
 msgstr "Tunnista automaattisesti"
 
-#: include/login_form.php:108 classes/handler/public.php:645
-#: classes/handler/public.php:980 classes/pref/users.php:55
+#: include/login_form.php:105
+#: classes/handler/public.php:498
+#: classes/pref/feeds.php:645
+#: plugins/bookmarklets/init.php:300
+#: js/CommonDialogs.js:539
+#: js/PrefUsers.js:61
 msgid "Login:"
 msgstr "Käyttäjätunnus:"
 
-#: include/login_form.php:117 classes/handler/public.php:652
+#: include/login_form.php:114
+#: classes/pref/feeds.php:651
+#: plugins/bookmarklets/init.php:307
+#: js/CommonDialogs.js:545
 msgid "Password:"
 msgstr "Salasana:"
 
-#: include/login_form.php:129
+#: include/login_form.php:126
 msgid "I forgot my password"
 msgstr "Unohdin salasanani"
 
-#: include/login_form.php:134
+#: include/login_form.php:131
 msgid "Profile:"
 msgstr "Profiili:"
 
-#: include/login_form.php:137 classes/rpc.php:69 classes/handler/public.php:274
-#: classes/pref/prefs.php:1216
+#: include/login_form.php:134
+#: classes/handler/public.php:274
+#: classes/pref/prefs.php:1241
+#: classes/pref/prefs.php:1263
 msgid "Default profile"
 msgstr "Oletusprofiili"
 
-#: include/login_form.php:146
+#: include/login_form.php:144
 msgid "Use less traffic"
 msgstr "Käytä vähemmän dataliikennettä"
 
-#: include/login_form.php:150
+#: include/login_form.php:148
 msgid "Does not display images in articles, reduces automatic refreshes."
 msgstr "Ei näytetä kuvia artikkeleissa, vähentää automaattipäivityksiä."
 
-#: include/login_form.php:158 js/Feeds.js:247
+#: include/login_form.php:156
+#: js/Feeds.js:275
 msgid "Safe mode"
 msgstr ""
 
-#: include/login_form.php:162
+#: include/login_form.php:161
 msgid "Uses default theme and prevents all plugins from loading."
 msgstr ""
 
-#: include/login_form.php:170
+#: include/login_form.php:169
 msgid "Remember me"
 msgstr "Muista kirjautumiseni"
 
-#: include/login_form.php:180 classes/handler/public.php:665
+#: include/login_form.php:179
+#: plugins/bookmarklets/init.php:320
 msgid "Log in"
 msgstr "Kirjaudu sisään"
 
-#: include/sessions.php:44
+#: include/sessions.php:42
 msgid "Session failed to validate (schema version changed)"
 msgstr "Istunnon validointi epäonnistui (tietokantakaava muuttunut)"
 
-#: include/sessions.php:52
+#: include/sessions.php:50
 msgid "Session failed to validate (UA changed)."
 msgstr "Session validointi epäonnistui (UA vaihtunut)."
 
-#: include/sessions.php:66
+#: include/sessions.php:64
 msgid "Session failed to validate (password changed)"
 msgstr "Session validointi epäonnistui (salasana vaihtunut)"
 
-#: include/sessions.php:73
+#: include/sessions.php:71
 msgid "Session failed to validate (user not found)"
 msgstr "Istunnon validointi epäonnistui (käyttäjää ei löydy)"
 
-#: classes/rpc.php:583
+#: classes/rpc.php:507
 msgid "Navigation"
 msgstr "Valikko"
 
-#: classes/rpc.php:584
+#: classes/rpc.php:508
 msgid "Open next feed"
 msgstr "Avaa seuraava syöte"
 
-#: classes/rpc.php:585
+#: classes/rpc.php:509
 msgid "Open previous feed"
 msgstr "Avaa edellinen syöte"
 
-#: classes/rpc.php:586
+#: classes/rpc.php:510
 #, fuzzy
 msgid "Open next article (in combined mode, scroll down)"
 msgstr "Avaa seuraava artikkeli (älä vieritä pitkiä artikkeleita)"
 
-#: classes/rpc.php:587
+#: classes/rpc.php:511
 #, fuzzy
 msgid "Open previous article (in combined mode, scroll up)"
 msgstr "Avaa edellinen artikkeli (älä vieritä pitkiä artikkeleita)"
 
-#: classes/rpc.php:588
+#: classes/rpc.php:512
 #, fuzzy
 msgid "Scroll headlines by one page down"
 msgstr "Valitse osoittimen kohdalla oleva artikkeli"
 
-#: classes/rpc.php:589
+#: classes/rpc.php:513
 #, fuzzy
 msgid "Scroll headlines by one page up"
 msgstr "Valitse osoittimen kohdalla oleva artikkeli"
 
-#: classes/rpc.php:590
+#: classes/rpc.php:514
 msgid "Open next article"
 msgstr "Avaa seuraava artikkeli"
 
-#: classes/rpc.php:591
+#: classes/rpc.php:515
 msgid "Open previous article"
 msgstr "Avaa edellinen artikkeli"
 
-#: classes/rpc.php:592
+#: classes/rpc.php:516
 #, fuzzy
 msgid "Move to next article (don't expand)"
 msgstr "Siirry seuraavaan artikkeliin (älä laajenna tai merkitse luetuksi)"
 
-#: classes/rpc.php:593
+#: classes/rpc.php:517
 #, fuzzy
 msgid "Move to previous article (don't expand)"
 msgstr "Siirry edelliseen artikkeliin (älä laajenna tai merkitse luetuksi)"
 
-#: classes/rpc.php:594
+#: classes/rpc.php:518
 msgid "Show search dialog"
 msgstr "Näytä hakudialogi"
 
-#: classes/rpc.php:595
+#: classes/rpc.php:519
 #, fuzzy
 msgid "Cancel active search"
 msgstr "Peru haku"
 
-#: classes/rpc.php:596
+#: classes/rpc.php:520
 msgid "Article"
 msgstr "Artikkeli"
 
-#: classes/rpc.php:597 classes/feeds.php:74 js/Headlines.js:1243
+#: classes/rpc.php:521
+#: js/Headlines.js:1338
 msgid "Toggle starred"
 msgstr "Lisää/Poista tähti"
 
-#: classes/rpc.php:598 classes/feeds.php:75 js/Headlines.js:1255
+#: classes/rpc.php:522
+#: js/Headlines.js:1350
 msgid "Toggle published"
 msgstr "Vaihda julkinen-tilaa"
 
-#: classes/rpc.php:599 classes/feeds.php:73 js/Headlines.js:1230
+#: classes/rpc.php:523
+#: js/Headlines.js:1325
 msgid "Toggle unread"
 msgstr "Vaihda luettu/lukematon"
 
-#: classes/rpc.php:600
+#: classes/rpc.php:524
 msgid "Edit tags"
 msgstr "Muokkaa avainsanoja"
 
-#: classes/rpc.php:601
+#: classes/rpc.php:525
 msgid "Open in new window"
 msgstr "Avaa uudessa ikkunassa"
 
-#: classes/rpc.php:602 js/Headlines.js:1276
+#: classes/rpc.php:526
+#: js/Headlines.js:1371
 msgid "Mark below as read"
 msgstr "Merkitse alla olevat luetuiksi"
 
-#: classes/rpc.php:603 js/Headlines.js:1269
+#: classes/rpc.php:527
+#: js/Headlines.js:1364
 msgid "Mark above as read"
 msgstr "Merkitse yllä olevat luetuiksi"
 
-#: classes/rpc.php:604
+#: classes/rpc.php:528
 msgid "Scroll down"
 msgstr "Vieritä alas"
 
-#: classes/rpc.php:605
+#: classes/rpc.php:529
 msgid "Scroll up"
 msgstr "Vieritä ylös"
 
-#: classes/rpc.php:606
+#: classes/rpc.php:530
 #, fuzzy
 msgid "Scroll down page"
 msgstr "Vieritä alas"
 
-#: classes/rpc.php:607
+#: classes/rpc.php:531
 #, fuzzy
 msgid "Scroll up page"
 msgstr "Vieritä ylös"
 
-#: classes/rpc.php:608
+#: classes/rpc.php:532
 msgid "Select article under cursor"
 msgstr "Valitse osoittimen kohdalla oleva artikkeli"
 
-#: classes/rpc.php:609
+#: classes/rpc.php:533
 msgid "Email article"
 msgstr "Lähetä artikkeli sähköpostilla"
 
-#: classes/rpc.php:610
+#: classes/rpc.php:534
 msgid "Close/collapse article"
 msgstr "Piilota/näytä artikkeli"
 
-#: classes/rpc.php:611
+#: classes/rpc.php:535
 #, fuzzy
 msgid "Toggle article expansion (combined mode)"
 msgstr "Vaihda automaattilaajennuksen tila (yhdistelmänäkymässä)"
 
-#: classes/rpc.php:613
+#: classes/rpc.php:537
 msgid "Toggle full article text via Readability"
 msgstr ""
 
-#: classes/rpc.php:614
+#: classes/rpc.php:538
 msgid "Article selection"
 msgstr "Artikkelin valinta"
 
-#: classes/rpc.php:615
+#: classes/rpc.php:539
 msgid "Select all articles"
 msgstr "Valitse kaikki artikkelit"
 
-#: classes/rpc.php:616
+#: classes/rpc.php:540
 msgid "Select unread"
 msgstr "Valitse lukemattomat"
 
-#: classes/rpc.php:617
+#: classes/rpc.php:541
 msgid "Select starred"
 msgstr "Valitse tähdellä merkityt"
 
-#: classes/rpc.php:618
+#: classes/rpc.php:542
 msgid "Select published"
 msgstr "Valitse julkaistu"
 
-#: classes/rpc.php:619
+#: classes/rpc.php:543
 msgid "Invert selection"
 msgstr "Vaihda valittujen tila"
 
-#: classes/rpc.php:620
+#: classes/rpc.php:544
 msgid "Deselect everything"
 msgstr "Poista valinnat"
 
-#: classes/rpc.php:621 classes/pref/feeds.php:527 classes/pref/feeds.php:831
+#: classes/rpc.php:545
 msgid "Feed"
 msgstr "Syöte"
 
-#: classes/rpc.php:622
+#: classes/rpc.php:546
 msgid "Refresh current feed"
 msgstr "Päivitä tämänhetkinen syöte"
 
-#: classes/rpc.php:623
+#: classes/rpc.php:547
 msgid "Un/hide read feeds"
 msgstr "Piilota/näytä luetut syötteet"
 
-#: classes/rpc.php:624 classes/pref/feeds.php:1262
+#: classes/rpc.php:548
+#: classes/pref/feeds.php:937
 msgid "Subscribe to feed"
 msgstr "Tilaa syöte"
 
-#: classes/rpc.php:625 js/PrefFeedTree.js:58 js/FeedTree.js:96
-#: js/Headlines.js:1399
+#: classes/rpc.php:549
+#: js/Headlines.js:1494
+#: js/PrefFeedTree.js:93
+#: js/FeedTree.js:96
 msgid "Edit feed"
 msgstr "Muokkaa syötettä"
 
-#: classes/rpc.php:627
+#: classes/rpc.php:551
 msgid "Reverse headlines"
 msgstr "Otsikot käänteisjärjestyksessä"
 
-#: classes/rpc.php:628
+#: classes/rpc.php:552
 msgid "Toggle headline grouping"
 msgstr ""
 
-#: classes/rpc.php:629
+#: classes/rpc.php:553
 msgid "Debug feed update"
 msgstr "Syötepäivityksen vianetsintä"
 
-#: classes/rpc.php:630
+#: classes/rpc.php:554
 #, fuzzy
 msgid "Debug viewfeed()"
 msgstr "Syötepäivityksen vianetsintä"
 
-#: classes/rpc.php:631 js/FeedTree.js:144
+#: classes/rpc.php:555
+#: js/FeedTree.js:144
 msgid "Mark all feeds as read"
 msgstr "Merkitse kaikki syötteet luetuiksi"
 
-#: classes/rpc.php:632
+#: classes/rpc.php:556
 msgid "Un/collapse current category"
 msgstr "Piilota/näytä tämänhetkinen kansio"
 
-#: classes/rpc.php:633
+#: classes/rpc.php:557
 msgid "Toggle auto expand in combined mode"
 msgstr "Vaihda automaattilaajennuksen tila yhdistelmänäkymässä"
 
-#: classes/rpc.php:634
+#: classes/rpc.php:558
 msgid "Toggle combined mode"
 msgstr "Vaihda yhdistelmänäkymän tila"
 
-#: classes/rpc.php:635
+#: classes/rpc.php:559
 msgid "Go to"
 msgstr "Mene"
 
-#: classes/rpc.php:636 classes/feeds.php:1299
+#: classes/rpc.php:560
+#: classes/feeds.php:1114
 msgid "All articles"
 msgstr "Kaikki artikkelit"
 
-#: classes/rpc.php:637
+#: classes/rpc.php:561
 msgid "Fresh"
 msgstr "Päivitä"
 
-#: classes/rpc.php:640 classes/feeds.php:1303
+#: classes/rpc.php:564
+#: classes/feeds.php:1118
 msgid "Recently read"
 msgstr "Viimeksi luetut"
 
-#: classes/rpc.php:642
+#: classes/rpc.php:566
 msgid "Other"
 msgstr "Muu"
 
-#: classes/rpc.php:643 classes/pref/labels.php:266
+#: classes/rpc.php:567
 msgid "Create label"
 msgstr "Luo tunniste"
 
-#: classes/rpc.php:644 classes/pref/filters.php:734
+#: classes/rpc.php:568
+#: classes/pref/filters.php:659
 msgid "Create filter"
 msgstr "Luo suodatin"
 
-#: classes/rpc.php:645
+#: classes/rpc.php:569
 msgid "Un/collapse sidebar"
 msgstr "Piilota/näytä sivupalkki"
 
-#: classes/rpc.php:646
+#: classes/rpc.php:570
 msgid "Show help dialog"
 msgstr "Näytä ohjeikkuna"
 
-#: classes/backend.php:58
+#: classes/rpc.php:701
 msgid "Shift"
 msgstr "Shift"
 
-#: classes/backend.php:61
+#: classes/rpc.php:704
 msgid "Ctrl"
 msgstr "Ctrl"
 
-#: classes/backend.php:86 classes/pref/feeds.php:1514
-#: classes/pref/feeds.php:1573 plugins/af_psql_trgm/init.php:112
-#: plugins/share/init.php:133
+#: classes/rpc.php:729
+#: plugins/af_psql_trgm/init.php:112
+#: plugins/share/init.php:269
 msgid "Close this window"
 msgstr "Sulje ikkuna"
 
-#: classes/handler/public.php:524 plugins/bookmarklets/init.php:41
-msgid "Share with Tiny Tiny RSS"
-msgstr "Jaa Tiny Tiny RSS:llä"
-
-#: classes/handler/public.php:597
-msgid "Title:"
-msgstr "Otsikko:"
-
-#: classes/handler/public.php:602 classes/pref/feeds.php:546
-msgid "URL:"
-msgstr "URL:"
-
-#: classes/handler/public.php:607
-msgid "Content:"
-msgstr "Sisältö:"
-
-#: classes/handler/public.php:612
-msgid "Labels:"
-msgstr "Tunnisteet:"
-
-#: classes/handler/public.php:622
-msgid "Share"
-msgstr "Jaa"
-
-#: classes/handler/public.php:623 classes/pref/labels.php:75
-#: classes/pref/prefs.php:1265 classes/pref/filters.php:471
-#: classes/pref/filters.php:478 classes/pref/filters.php:863
-#: classes/pref/filters.php:956 classes/pref/users.php:116
-#: classes/pref/feeds.php:812 classes/pref/feeds.php:978
-#: classes/pref/feeds.php:1668 classes/feeds.php:736 classes/feeds.php:778
-#: classes/article.php:187 plugins/note/init.php:55 plugins/mail/init.php:182
-msgid "Cancel"
-msgstr "Peru"
-
-#: classes/handler/public.php:624
-msgid "Shared article will appear in the Published feed."
-msgstr "Jaetut artikkelit näkyvät 'Julkisissa syötteissä'."
-
-#: classes/handler/public.php:720
+#: classes/handler/public.php:394
 msgid "Incorrect username or password"
 msgstr "Väärä käyttäjätunnus tai salasana"
 
-#: classes/handler/public.php:801 classes/pref/feeds.php:1667
-#: classes/feeds.php:733
-msgid "Subscribe"
-msgstr "Tilaa"
-
-#: classes/handler/public.php:804 classes/handler/public.php:854
-#: classes/handler/public.php:878 classes/handler/public.php:970
-#: classes/handler/public.php:1000 classes/handler/public.php:1073
-#: classes/handler/public.php:1170 classes/handler/public.php:1182
-#: classes/handler/public.php:1187 classes/handler/public.php:1211
-msgid "Return to Tiny Tiny RSS"
-msgstr "Takaisin Tiny Tiny RSS:ään"
-
-#: classes/handler/public.php:814
-#, php-format
-msgid "Already subscribed to <b>%s</b>."
-msgstr "Olet jo tilannut syötteen <b>%s</b>."
-
-#: classes/handler/public.php:817
-#, php-format
-msgid "Subscribed to <b>%s</b>."
-msgstr "Tilattu syöte <b>%s</b>."
-
-#: classes/handler/public.php:820
-#, php-format
-msgid "Could not subscribe to <b>%s</b>."
-msgstr "Tätä syötettä ei voitu tilata <b>%s</b>."
-
-#: classes/handler/public.php:823
-#, php-format
-msgid "No feeds found in <b>%s</b>."
-msgstr "<b>%s</b> ei sisällä syötteitä."
-
-#: classes/handler/public.php:829
-#, php-format
-msgid "Could not subscribe to <b>%s</b>.<br>Can't download the Feed URL."
-msgstr "Syötettä <b>%s</b> ei voitu tilata.<br>Osoitetta ei voi ladata."
-
-#: classes/handler/public.php:840
-msgid "Multiple feed URLs found:"
-msgstr "Useita syöteosoitteita löytyi:"
-
-#: classes/handler/public.php:853
-msgid "Subscribe to selected feed"
-msgstr "Tilaa valittu syöte"
-
-#: classes/handler/public.php:877
-msgid "Edit subscription options"
-msgstr "Muokkaa syötteen asetuksia"
-
-#: classes/handler/public.php:930
+#: classes/handler/public.php:448
 msgid "Password recovery"
 msgstr "Salasanan palautus"
 
-#: classes/handler/public.php:973
-#, fuzzy
-msgid ""
-"You will need to provide valid account name and email. Password reset link "
-"will be sent to your email address."
-msgstr ""
-"Syötä tilisi sähköpostiosoite. Uusi salasana lähetetään sinulle "
-"sähköpostilla."
+#: classes/handler/public.php:488
+#: classes/handler/public.php:518
+#: classes/handler/public.php:591
+#: classes/handler/public.php:687
+#: classes/handler/public.php:699
+#: classes/handler/public.php:704
+#: classes/handler/public.php:728
+#: plugins/bookmarklets/init.php:91
+#: plugins/bookmarklets/init.php:136
+#: plugins/bookmarklets/init.php:154
+#: plugins/bookmarklets/init.php:159
+msgid "Return to Tiny Tiny RSS"
+msgstr "Takaisin Tiny Tiny RSS:ään"
 
-#: classes/handler/public.php:985
+#: classes/handler/public.php:491
+#, fuzzy
+msgid "You will need to provide valid account name and email. Password reset link will be sent to your email address."
+msgstr "Syötä tilisi sähköpostiosoite. Uusi salasana lähetetään sinulle sähköpostilla."
+
+#: classes/handler/public.php:503
 msgid "Email:"
 msgstr "Sähköposti:"
 
-#: classes/handler/public.php:993
+#: classes/handler/public.php:511
 #, php-format
 msgid "How much is %d + %d:"
 msgstr "Paljonko on %d + %d:"
 
-#: classes/handler/public.php:999 classes/pref/users.php:348
+#: classes/handler/public.php:517
+#: classes/pref/users.php:241
 msgid "Reset password"
 msgstr "Palauta salasana"
 
-#: classes/handler/public.php:1011
+#: classes/handler/public.php:529
 msgid "Some of the required form parameters are missing or incorrect."
 msgstr "Jotkin vaadituista parametreistä puuttuvat tai ovat väärin."
 
-#: classes/handler/public.php:1015 classes/handler/public.php:1080
+#: classes/handler/public.php:533
+#: classes/handler/public.php:598
 msgid "Go back"
 msgstr "Takaisin"
 
-#: classes/handler/public.php:1056
+#: classes/handler/public.php:574
 msgid "[tt-rss] Password reset request"
 msgstr "[tt-rss] Salasanan vaihtopyyntö"
 
-#: classes/handler/public.php:1076
+#: classes/handler/public.php:594
 msgid "Sorry, login and email combination not found."
 msgstr "Tätä käyttäjätunnus-sähköposti -yhdistelmää ei valitettavasti löydy."
 
 # Better this way...
-#: classes/handler/public.php:1099
+#: classes/handler/public.php:617
 msgid "Your access level is insufficient to run this script."
 msgstr "Käyttäjäoikeutesi eivät riitä päivitysscriptin suorittamiseen."
 
-#: classes/handler/public.php:1140
+#: classes/handler/public.php:657
 msgid "Database Updater"
 msgstr "Tietokannan päivitys"
 
-#: classes/handler/public.php:1151
+#: classes/handler/public.php:668
 #, fuzzy, php-format
 msgid "Performing updates to version %d"
 msgstr "Suorita päivityksiä"
 
-#: classes/handler/public.php:1156
+#: classes/handler/public.php:673
 #, php-format
 msgid "Updating to version %d"
 msgstr ""
 
-#: classes/handler/public.php:1169
+#: classes/handler/public.php:686
 msgid "Try again"
 msgstr "Yritä uudelleen"
 
-#: classes/handler/public.php:1175
+#: classes/handler/public.php:692
 #, fuzzy
 msgid "Completed."
 msgstr "Lataus valmis."
 
-#: classes/handler/public.php:1192
+#: classes/handler/public.php:709
 #, fuzzy, php-format
 msgid "Tiny Tiny RSS database needs update to the latest version (%d to %d)."
 msgstr "Tiny Tiny RSS:n datapäivitysskripti."
 
-#: classes/handler/public.php:1204
+#: classes/handler/public.php:721
 msgid "Perform updates"
 msgstr "Suorita päivityksiä"
 
-#: classes/pref/labels.php:25 classes/pref/filters.php:341
-msgid "Caption"
-msgstr "Nimi"
-
-#: classes/pref/labels.php:38
-msgid "Colors"
-msgstr "Värit"
-
-#: classes/pref/labels.php:42
-msgid "Foreground:"
-msgstr "Kirjasin:"
-
-#: classes/pref/labels.php:42
-msgid "Background:"
-msgstr "Tausta:"
-
-#: classes/pref/labels.php:73 classes/pref/filters.php:469
-#: classes/pref/users.php:114 classes/pref/feeds.php:811
-#: classes/pref/feeds.php:975 classes/article.php:185
-#: plugins/af_psql_trgm/init.php:195 plugins/note/init.php:53
-#: plugins/af_proxy_http/init.php:229 plugins/mail/init.php:66
-#: plugins/af_readability/init.php:103 plugins/nsfw/init.php:86
-#: plugins/af_redditimgur/init.php:83
-msgid "Save"
-msgstr "Tallenna"
-
-#: classes/pref/labels.php:231
+#: classes/pref/labels.php:170
 #, php-format
 msgid "Created label <b>%s</b>"
 msgstr "Luotiin tunniste <b>%s</b>"
 
-#: classes/pref/labels.php:257 classes/pref/prefs.php:1178
-#: classes/pref/prefs.php:1289 classes/pref/filters.php:349
-#: classes/pref/filters.php:406 classes/pref/filters.php:725
-#: classes/pref/users.php:332 classes/pref/feeds.php:1250
-#: classes/pref/feeds.php:1469 classes/pref/feeds.php:1526
+#: classes/pref/labels.php:182
+#: classes/pref/prefs.php:1294
+#: classes/pref/filters.php:649
+#: classes/pref/users.php:223
+#: classes/pref/feeds.php:924
+#: js/CommonDialogs.js:236
+#: js/CommonFilters.js:436
+#: js/CommonFilters.js:469
 msgid "Select"
 msgstr "Valitse"
 
-#: classes/pref/labels.php:260 classes/pref/prefs.php:1181
-#: classes/pref/prefs.php:1292 classes/pref/filters.php:353
-#: classes/pref/filters.php:409 classes/pref/filters.php:728
-#: classes/pref/users.php:335 classes/pref/feeds.php:1253
-#: classes/pref/feeds.php:1472 classes/pref/feeds.php:1529 classes/feeds.php:68
-msgid "All"
-msgstr "Kaikki"
-
-#: classes/pref/labels.php:262 classes/pref/prefs.php:1183
-#: classes/pref/prefs.php:1294 classes/pref/filters.php:355
-#: classes/pref/filters.php:411 classes/pref/filters.php:730
-#: classes/pref/users.php:337 classes/pref/feeds.php:1255
-#: classes/pref/feeds.php:1474 classes/pref/feeds.php:1531 classes/feeds.php:71
-msgid "None"
-msgstr "Ei mikään"
-
-#: classes/pref/labels.php:269 classes/pref/filters.php:464
-#: classes/pref/filters.php:747 classes/pref/users.php:346
-#: classes/pref/feeds.php:794
-msgid "Remove"
-msgstr "Poista"
-
-#: classes/pref/labels.php:272
-msgid "Clear colors"
-msgstr "Poista värit"
-
-#: classes/pref/prefs.php:20 classes/pref/feeds.php:519
+#: classes/pref/prefs.php:21
+#: classes/pref/feeds.php:605
 msgid "General"
 msgstr "Yleinen"
 
-#: classes/pref/prefs.php:41
+#: classes/pref/prefs.php:42
 msgid "Articles"
 msgstr "Artikkelit"
 
-#: classes/pref/prefs.php:54
+#: classes/pref/prefs.php:55
 msgid "Digest"
 msgstr "Yhteenveto"
 
-#: classes/pref/prefs.php:59
+#: classes/pref/prefs.php:60
 msgid "Advanced"
 msgstr "Lisäasetukset"
 
-#: classes/pref/prefs.php:70
+#: classes/pref/prefs.php:71
 msgid "Never apply these tags automatically (comma-separated list)."
 msgstr ""
 
-#: classes/pref/prefs.php:74
+#: classes/pref/prefs.php:75
 msgid "Allow duplicate articles"
 msgstr "Salli artikkeleiden kaksoiskappaleet"
 
-#: classes/pref/prefs.php:75
+#: classes/pref/prefs.php:76
 msgid "Blacklisted tags"
 msgstr "Estetyt avainsanat"
 
-#: classes/pref/prefs.php:76
+#: classes/pref/prefs.php:77
 msgid "Default language"
 msgstr "Oletuskieli"
 
-#: classes/pref/prefs.php:76
+#: classes/pref/prefs.php:77
 msgid "Used for full-text search"
 msgstr ""
 
-#: classes/pref/prefs.php:77
+#: classes/pref/prefs.php:78
 #, fuzzy
 msgid "Mark read on scroll"
 msgstr "Merkitäänkö kaikki artikkelit luetuksi?"
 
-#: classes/pref/prefs.php:77
+#: classes/pref/prefs.php:78
 #, fuzzy
 msgid "Mark articles as read as you scroll past them"
 msgstr "Merkitäänkö kaikki artikkelit luetuksi?"
 
-#: classes/pref/prefs.php:78
+#: classes/pref/prefs.php:79
 #, fuzzy
 msgid "Always expand articles"
 msgstr "Napsauta nähdäksesi koko artikkelin"
 
-#: classes/pref/prefs.php:79
+#: classes/pref/prefs.php:80
 #, fuzzy
 msgid "Combined mode"
 msgstr "Vaihda yhdistelmänäkymän tila"
 
-#: classes/pref/prefs.php:79
+#: classes/pref/prefs.php:80
 #, fuzzy
 msgid "Show flat list of articles instead of separate panels"
-msgstr ""
-"Näytä artikkeliluettelo laajennettuna erillisten otsikko- ja "
-"artikkelinäkymien sijasta"
+msgstr "Näytä artikkeliluettelo laajennettuna erillisten otsikko- ja artikkelinäkymien sijasta"
 
-#: classes/pref/prefs.php:80
+#: classes/pref/prefs.php:81
 #, fuzzy
 msgid "Confirm marking feeds as read"
 msgstr "Varmista syötteen merkitseminen luetuksi"
 
-#: classes/pref/prefs.php:81
+#: classes/pref/prefs.php:82
 msgid "Amount of articles to display at once"
 msgstr "Kerralla näytettävien artikkeleiden määrä"
 
-#: classes/pref/prefs.php:82
+#: classes/pref/prefs.php:83
 #, fuzzy
 msgid "Default update interval"
 msgstr "Oletusaikaväli"
 
-#: classes/pref/prefs.php:83
+#: classes/pref/prefs.php:84
 #, fuzzy
 msgid "Mark sent articles as read"
 msgstr "Merkitäänkö kaikki artikkelit luetuksi?"
 
-#: classes/pref/prefs.php:84
+#: classes/pref/prefs.php:85
 #, fuzzy
 msgid "Enable digest"
 msgstr "Aktivoi sähköpostitiivistelmän lähetys"
 
-#: classes/pref/prefs.php:84
+#: classes/pref/prefs.php:85
 #, fuzzy
 msgid "Send daily digest of new (and unread) headlines to your e-mail address"
-msgstr ""
-"Sähköpostiisi lähetetään päivittäin otsikot uusista (lukemattomista) "
-"artikkeleista"
+msgstr "Sähköpostiisi lähetetään päivittäin otsikot uusista (lukemattomista) artikkeleista"
 
-#: classes/pref/prefs.php:85
+#: classes/pref/prefs.php:86
 #, fuzzy
 msgid "Try to send around this time"
 msgstr "Pyri lähettämään kooste tiettyyn aikaan"
 
-#: classes/pref/prefs.php:85
+#: classes/pref/prefs.php:86
 #, fuzzy
 msgid "Time in UTC"
 msgstr "Aikavyöhyke"
 
-#: classes/pref/prefs.php:86
+#: classes/pref/prefs.php:87
 msgid "Enable API"
 msgstr "Ota API käyttöön"
 
-#: classes/pref/prefs.php:86
+#: classes/pref/prefs.php:87
 #, fuzzy
 msgid "Allows accessing this account through the API"
 msgstr "Sallii pääsyn ulkoisille ohjelmille APIn kautta"
 
-#: classes/pref/prefs.php:87
+#: classes/pref/prefs.php:88
 msgid "Enable categories"
 msgstr "Käytä kansioita"
 
-#: classes/pref/prefs.php:88
+#: classes/pref/prefs.php:89
 msgid "Sort feeds by unread articles count"
 msgstr "Järjestä syötteet lukemattomien artikkelien määrän perusteella"
 
-#: classes/pref/prefs.php:89
+#: classes/pref/prefs.php:90
 #, fuzzy
 msgid "Maximum age of fresh articles"
 msgstr "Enimmäisikä tuoreille artikkeleille (tunneissa)"
 
-#: classes/pref/prefs.php:89
+#: classes/pref/prefs.php:90
 msgid "hours"
 msgstr "tuntia"
 
-#: classes/pref/prefs.php:90
+#: classes/pref/prefs.php:91
 #, fuzzy
 msgid "Hide read feeds"
 msgstr "Piilota/näytä luetut syötteet"
 
-#: classes/pref/prefs.php:91
+#: classes/pref/prefs.php:92
 msgid "Always show special feeds"
 msgstr ""
 
-#: classes/pref/prefs.php:91
+#: classes/pref/prefs.php:92
 #, fuzzy
 msgid "While hiding read feeds"
 msgstr "Näytä erikoissyötteet kun luetut artikkelit piilotetaan"
 
-#: classes/pref/prefs.php:92
+#: classes/pref/prefs.php:93
 msgid "Long date format"
 msgstr "Päiväyksen pitempi muoto"
 
-#: classes/pref/prefs.php:92
-#, fuzzy
-msgid ""
-"Syntax is identical to PHP <a href='http://php.net/manual/function.date."
-"php'>date()</a> function."
-msgstr ""
-"Syntaksi on sama kuin PHP:n <a href='http://php.net/manual/function.date."
-"php'>date()</a>-funktiossa."
-
 #: classes/pref/prefs.php:93
+#, fuzzy
+msgid "Syntax is identical to PHP <a href='http://php.net/manual/function.date.php'>date()</a> function."
+msgstr "Syntaksi on sama kuin PHP:n <a href='http://php.net/manual/function.date.php'>date()</a>-funktiossa."
+
+#: classes/pref/prefs.php:94
 #, fuzzy
 msgid "Automatically show next feed"
 msgstr "Näytä automaattisesti seuraava syöte"
 
-#: classes/pref/prefs.php:93
+#: classes/pref/prefs.php:94
 #, fuzzy
 msgid "After marking one as read"
 msgstr "Varmista syötteen merkitseminen luetuksi"
 
-#: classes/pref/prefs.php:94
+#: classes/pref/prefs.php:95
 #, fuzzy
 msgid "Purge articles older than"
 msgstr "Siivoa lukemattomat artikkelit"
 
-#: classes/pref/prefs.php:94
+#: classes/pref/prefs.php:95
 msgid "<strong>days</strong> (0 disables)"
 msgstr ""
 
-#: classes/pref/prefs.php:95
+#: classes/pref/prefs.php:96
 msgid "Purge unread articles"
 msgstr "Siivoa lukemattomat artikkelit"
 
-#: classes/pref/prefs.php:96
+#: classes/pref/prefs.php:97
 msgid "Reverse headline order (oldest first)"
 msgstr "Käänteinen otsikkojärjestys (vanhimmat ensin)"
 
-#: classes/pref/prefs.php:97
+#: classes/pref/prefs.php:98
 msgid "Short date format"
 msgstr "Päiväyksen lyhyempi muoto"
 
-#: classes/pref/prefs.php:98
+#: classes/pref/prefs.php:99
 #, fuzzy
 msgid "Show content preview in headlines"
 msgstr "Näytä sisällön esikatselu otsikkoluettelossa"
 
-#: classes/pref/prefs.php:99
+#: classes/pref/prefs.php:100
 msgid "Sort headlines by feed date"
 msgstr "Järjestä otsikot syötteen päivämäärän mukaan"
 
-#: classes/pref/prefs.php:99
+#: classes/pref/prefs.php:100
 msgid "Use feed-specified date to sort headlines instead of local import date."
 msgstr ""
 
-#: classes/pref/prefs.php:100
+#: classes/pref/prefs.php:101
 #, fuzzy
 msgid "SSL client certificate"
 msgstr "Kirjaudu SSL-varmenteella"
 
-#: classes/pref/prefs.php:101 classes/pref/feeds.php:742
-#: classes/pref/feeds.php:951
+#: classes/pref/prefs.php:102
+#: classes/pref/feeds.php:592
+#: js/CommonDialogs.js:458
 #, fuzzy
 msgid "Do not embed media"
 msgstr "Älä näytä kuvia"
 
-#: classes/pref/prefs.php:102
+#: classes/pref/prefs.php:103
 msgid "Strip unsafe tags from articles"
 msgstr "Poista vaaralliset koodit artikkeleista"
 
-#: classes/pref/prefs.php:102
+#: classes/pref/prefs.php:103
 msgid "Strip all but most common HTML tags when reading articles."
 msgstr "Karsi erikoiset HTML-koodit artikkeleita luettaessa."
 
-#: classes/pref/prefs.php:103 js/PrefHelpers.js:159
+#: classes/pref/prefs.php:104
+#: js/PrefHelpers.js:223
 msgid "Customize stylesheet"
 msgstr "Muokkaa CSS-tyylitiedostoa"
 
-#: classes/pref/prefs.php:104
+#: classes/pref/prefs.php:105
 msgid "Time zone"
 msgstr "Aikavyöhyke"
 
-#: classes/pref/prefs.php:105
+#: classes/pref/prefs.php:106
 msgid "Group by feed"
 msgstr ""
 
-#: classes/pref/prefs.php:105
+#: classes/pref/prefs.php:106
 msgid "Group multiple-feed output by originating feed"
 msgstr ""
 
-#: classes/pref/prefs.php:106
+#: classes/pref/prefs.php:107
 msgid "Language"
 msgstr "Kieli"
 
-#: classes/pref/prefs.php:107
+#: classes/pref/prefs.php:108
 msgid "Theme"
 msgstr "Teema"
 
-#: classes/pref/prefs.php:213
+#: classes/pref/prefs.php:214
 msgid "The configuration was saved."
 msgstr "Asetukset tallennettiin."
 
-#: classes/pref/prefs.php:256
+#: classes/pref/prefs.php:257
 msgid "Your personal data has been saved."
 msgstr "Tietosi tallennettiin."
 
-#: classes/pref/prefs.php:272
+#: classes/pref/prefs.php:273
 msgid "Your preferences are now set to default values."
 msgstr "Asetuksesi ovat nyt oletusarvoissaan."
 
-#: classes/pref/prefs.php:283
-msgid "Personal data / Authentication"
-msgstr "Omat tiedot / Tunnistautuminen"
-
-#: classes/pref/prefs.php:286
-msgid "Personal data"
-msgstr "Omat tiedot"
-
-#: classes/pref/prefs.php:315
+#: classes/pref/prefs.php:305
 msgid "Full name:"
 msgstr "Koko nimi:"
 
-#: classes/pref/prefs.php:320 classes/pref/users.php:94
+#: classes/pref/prefs.php:310
+#: js/PrefUsers.js:93
 msgid "E-mail:"
 msgstr "Sähköposti:"
 
-#: classes/pref/prefs.php:328
-msgid "Access level:"
-msgstr "Käyttöoikeustaso:"
-
-#: classes/pref/prefs.php:339
+#: classes/pref/prefs.php:317
 msgid "Save data"
 msgstr "Tallenna tiedot"
 
-#: classes/pref/prefs.php:351 classes/pref/feeds.php:678
-#: classes/pref/feeds.php:924 classes/pref/feeds.php:1653 classes/feeds.php:716
-msgid "Password"
-msgstr "Salasana"
-
-#: classes/pref/prefs.php:389
+#: classes/pref/prefs.php:368
 msgid "Changing your current password will disable OTP."
-msgstr ""
-"Salasanan vaihtaminen poistaa kertakäyttösalasanatunnistautumisen käytöstä."
+msgstr "Salasanan vaihtaminen poistaa kertakäyttösalasanatunnistautumisen käytöstä."
 
-#: classes/pref/prefs.php:393
+#: classes/pref/prefs.php:372
 msgid "Old password:"
 msgstr "Vanha salasana:"
 
-#: classes/pref/prefs.php:398 classes/pref/users.php:82
+#: classes/pref/prefs.php:377
+#: js/PrefUsers.js:83
 msgid "New password:"
 msgstr "Uusi salasana:"
 
-#: classes/pref/prefs.php:403
+#: classes/pref/prefs.php:382
 msgid "Confirm password:"
 msgstr "Vahvista salasana:"
 
-#: classes/pref/prefs.php:413
+#: classes/pref/prefs.php:389
 msgid "Change password"
 msgstr "Vaihda salasana"
 
-#: classes/pref/prefs.php:418
+#: classes/pref/prefs.php:396
 #, php-format
-msgid ""
-"Authentication module used for this session (<b>%s</b>) does not provide an "
-"ability to set passwords."
+msgid "Authentication module used for this session (<b>%s</b>) does not provide an ability to set passwords."
 msgstr ""
 
-#: classes/pref/prefs.php:424
-#, fuzzy
-msgid "App passwords"
-msgstr "Vanha salasana:"
-
-#: classes/pref/prefs.php:436
+#: classes/pref/prefs.php:412
 #, fuzzy
 msgid "Generate new password"
 msgstr "Luo uusi URL"
 
-#: classes/pref/prefs.php:440
+#: classes/pref/prefs.php:417
 #, fuzzy
 msgid "Remove selected passwords"
 msgstr "Poista valitut profiilit"
 
-#: classes/pref/prefs.php:444
-msgid "One time passwords / Authenticator"
-msgstr "Kertakäyttösalasanat"
-
-#: classes/pref/prefs.php:474 classes/pref/prefs.php:535
+#: classes/pref/prefs.php:465
+#: classes/pref/prefs.php:524
 msgid "Your password:"
 msgstr "Salasanasi:"
 
-#: classes/pref/prefs.php:484
+#: classes/pref/prefs.php:472
 msgid "Disable OTP"
 msgstr "Poista OTP käytöstä"
 
-#: classes/pref/prefs.php:494
+#: classes/pref/prefs.php:485
 #, fuzzy
-msgid ""
-"Scan the following code by the Authenticator application or copy the key "
-"manually"
+msgid "Scan the following code by the Authenticator application or copy the key manually"
 msgstr "Skannaa tämä koodi autentikointiohjelmalla:"
 
-#: classes/pref/prefs.php:500
+#: classes/pref/prefs.php:490
 #, fuzzy
 msgid "Use the following OTP key with a compatible Authenticator application"
 msgstr "Skannaa tämä koodi autentikointiohjelmalla:"
 
-#: classes/pref/prefs.php:508
+#: classes/pref/prefs.php:502
 msgid "OTP Key:"
 msgstr ""
 
-#: classes/pref/prefs.php:541
+#: classes/pref/prefs.php:529
 msgid "One time password:"
 msgstr "Kertakäyttöinen salasana:"
 
-#: classes/pref/prefs.php:548
+#: classes/pref/prefs.php:536
 msgid "Enable OTP"
 msgstr "Aktivoi kertakäyttösalasana"
 
-#: classes/pref/prefs.php:600
+#: classes/pref/prefs.php:550
+msgid "Personal data"
+msgstr "Omat tiedot"
+
+#: classes/pref/prefs.php:553
+msgid "Password"
+msgstr "Salasana"
+
+#: classes/pref/prefs.php:556
+#, fuzzy
+msgid "App passwords"
+msgstr "Vanha salasana:"
+
+#: classes/pref/prefs.php:559
+#, fuzzy
+msgid "Authenticator (OTP)"
+msgstr "Tunnistautuminen"
+
+#: classes/pref/prefs.php:570
 msgid "Some preferences are only available in default profile."
 msgstr "Jotkut asetukset ovat saatavilla vain oletusprofiilissa."
 
-#: classes/pref/prefs.php:708
+#: classes/pref/prefs.php:679
 msgid "default"
 msgstr "oletus"
 
-#: classes/pref/prefs.php:718
+#: classes/pref/prefs.php:689
 msgid "Customize"
 msgstr "Muokkaa"
 
-#: classes/pref/prefs.php:721
+#: classes/pref/prefs.php:692
 msgid "More themes..."
 msgstr "Lisää teemoja…"
 
-#: classes/pref/prefs.php:782
+#: classes/pref/prefs.php:741
 msgid "Register"
 msgstr "Rekisteröi"
 
-#: classes/pref/prefs.php:786 classes/pref/system.php:85
+#: classes/pref/prefs.php:745
+#: classes/pref/system.php:87
 msgid "Clear"
 msgstr "Tyhjennä"
 
-#: classes/pref/prefs.php:790 classes/pref/prefs.php:899
-#: classes/pref/prefs.php:933 classes/pref/prefs.php:979
-#: classes/pref/prefs.php:994 classes/pref/filters.php:857
-#: plugins/bookmarklets/init.php:45 js/CommonDialogs.js:420
+#: classes/pref/prefs.php:749
+#: classes/pref/prefs.php:852
+#: classes/pref/prefs.php:908
+#: classes/pref/prefs.php:960
+#: classes/pref/prefs.php:976
+#: plugins/bookmarklets/init.php:362
+#: js/CommonDialogs.js:635
 msgid "More info..."
 msgstr "Lisätietoja…"
 
-#: classes/pref/prefs.php:797
+#: classes/pref/prefs.php:758
 #, php-format
 msgid "Current server time: %s"
 msgstr "Palvelimen aika: %s"
 
-#: classes/pref/prefs.php:825
+#: classes/pref/prefs.php:806
 msgid "Save configuration"
 msgstr "Tallenna asetukset"
 
-#: classes/pref/prefs.php:829
+#: classes/pref/prefs.php:809
 msgid "Save and exit preferences"
 msgstr "Tallenna ja poistu asetuksista"
 
-#: classes/pref/prefs.php:834
+#: classes/pref/prefs.php:815
 msgid "Manage profiles"
 msgstr "Hallitse profiileita"
 
-#: classes/pref/prefs.php:837
+#: classes/pref/prefs.php:819
 msgid "Reset to defaults"
 msgstr "Palauta oletusarvot"
 
-#: classes/pref/prefs.php:850 classes/pref/feeds.php:799
-msgid "Plugins"
-msgstr "Lisäosat"
-
-#: classes/pref/prefs.php:897
-#, php-format
-msgid ""
-"The following plugins use per-feed content hooks. This may cause excessive "
-"data usage and origin server load resulting in a ban of your instance: <b>"
-"%s</b>"
-msgstr ""
-
-#: classes/pref/prefs.php:903
-msgid "System plugins"
-msgstr "Järjestelmän lisäosat"
-
-#: classes/pref/prefs.php:937 classes/pref/prefs.php:983
+#: classes/pref/prefs.php:856
+#: classes/pref/prefs.php:912
 #, php-format
 msgid "v%.2f, by %s"
 msgstr ""
 
-#: classes/pref/prefs.php:945
-msgid "User plugins"
-msgstr "Käyttäjän lisäosat"
-
-#: classes/pref/prefs.php:972
+#: classes/pref/prefs.php:901
 msgid "Clear data"
 msgstr "Tyhjennä tiedot"
 
-#: classes/pref/prefs.php:997
+#: classes/pref/prefs.php:958
+#, php-format
+msgid "The following plugins use per-feed content hooks. This may cause excessive data usage and origin server load resulting in a ban of your instance: <b>%s</b>"
+msgstr ""
+
+#: classes/pref/prefs.php:965
+msgid "System plugins"
+msgstr "Järjestelmän lisäosat"
+
+#: classes/pref/prefs.php:969
+msgid "User plugins"
+msgstr "Käyttäjän lisäosat"
+
+#: classes/pref/prefs.php:979
 msgid "Enable selected plugins"
 msgstr "Aktivoi valitut lisäosat"
 
-#: classes/pref/prefs.php:1088
+#: classes/pref/prefs.php:990
+msgid "Personal data / Authentication"
+msgstr "Omat tiedot / Tunnistautuminen"
+
+#: classes/pref/prefs.php:1004
+#: classes/pref/feeds.php:1098
+msgid "Plugins"
+msgstr "Lisäosat"
+
+#: classes/pref/prefs.php:1097
 msgid "Incorrect one time password"
 msgstr "Väärä kertakäyttösalasana"
 
-#: classes/pref/prefs.php:1093 classes/pref/prefs.php:1147
+#: classes/pref/prefs.php:1102
+#: classes/pref/prefs.php:1156
 msgid "Incorrect password"
 msgstr "Väärä salasana"
 
-#: classes/pref/prefs.php:1192
-msgid "Create profile"
-msgstr "Luo profiili"
+#: classes/pref/prefs.php:1297
+#: classes/pref/filters.php:652
+#: classes/pref/users.php:226
+#: classes/pref/feeds.php:927
+#: js/CommonDialogs.js:239
+#: js/CommonFilters.js:472
+#: js/PrefFeedTree.js:506
+#: js/CommonFilters.js:440
+msgid "All"
+msgstr "Kaikki"
 
-#: classes/pref/prefs.php:1211 classes/pref/prefs.php:1231
-msgid "(active)"
-msgstr "(aktiivinen)"
+#: classes/pref/prefs.php:1299
+#: classes/pref/filters.php:654
+#: classes/pref/users.php:228
+#: classes/pref/feeds.php:929
+#: js/CommonDialogs.js:241
+#: js/CommonFilters.js:474
+#: js/PrefFeedTree.js:508
+#: js/CommonFilters.js:442
+msgid "None"
+msgstr "Ei mikään"
 
-#: classes/pref/prefs.php:1261
-msgid "Remove selected profiles"
-msgstr "Poista valitut profiilit"
-
-#: classes/pref/prefs.php:1263
-msgid "Activate profile"
-msgstr "Aktivoi profiili"
-
-#: classes/pref/prefs.php:1302
+#: classes/pref/prefs.php:1308
 msgid "Description"
 msgstr "Kuvaus"
 
-#: classes/pref/prefs.php:1303
+#: classes/pref/prefs.php:1309
 #, fuzzy
 msgid "Created"
 msgstr "Luo"
 
-#: classes/pref/prefs.php:1304
+#: classes/pref/prefs.php:1310
 #, fuzzy
 msgid "Last used"
 msgstr "Viimeksi päivitetty:"
 
-#: classes/pref/prefs.php:1357
+#: classes/pref/prefs.php:1359
 #, php-format
-msgid ""
-"Generated password <strong>%s</strong> for %s. Please remember it for future "
-"reference."
+msgid "Generated password <strong>%s</strong> for %s. Please remember it for future reference."
 msgstr ""
 
-#: classes/pref/system.php:10 classes/pref/users.php:6
-msgid "Your access level is insufficient to open this tab."
-msgstr "Käyttäjäoikeutesi eivät ole riittävät tämän alasivun avaamiseen."
-
-#: classes/pref/system.php:70
+#: classes/pref/system.php:68
 msgid "Refresh"
 msgstr "Päivitä"
 
-#: classes/pref/system.php:75
+#: classes/pref/system.php:73
 msgid "&lt;&lt;"
 msgstr ""
 
@@ -1442,505 +1306,380 @@ msgstr ""
 msgid "&gt;&gt;"
 msgstr ""
 
-#: classes/pref/system.php:89
+#: classes/pref/system.php:91
 msgid "Severity:"
 msgstr ""
 
-#: classes/pref/system.php:92
+#: classes/pref/system.php:95
 #, fuzzy
 msgid "Errors"
 msgstr "Virhe"
 
-#: classes/pref/system.php:93
+#: classes/pref/system.php:96
 msgid "Warnings"
 msgstr ""
 
-#: classes/pref/system.php:94
+#: classes/pref/system.php:97
 #, fuzzy
 msgid "Everything"
 msgstr "Poista valinnat"
 
-#: classes/pref/system.php:106
+#: classes/pref/system.php:107
 msgid "Error"
 msgstr "Virhe"
 
-#: classes/pref/system.php:107
+#: classes/pref/system.php:108
 msgid "Filename"
 msgstr "Tiedosto"
 
-#: classes/pref/system.php:108
+#: classes/pref/system.php:109
 msgid "Message"
 msgstr "Viesti"
 
-#: classes/pref/system.php:110
+#: classes/pref/system.php:111
 msgid "Date"
 msgstr "Päiväys"
 
-#: classes/pref/system.php:153
+#: classes/pref/system.php:154
 msgid "Event Log"
 msgstr "Tapahtumaloki"
 
-#: classes/pref/system.php:168
+#: classes/pref/system.php:164
 msgid "PHP Information"
 msgstr "Tietoja PHP:stä"
 
-#: classes/pref/filters.php:219 classes/pref/filters.php:522
+#: classes/pref/filters.php:197
+#: classes/pref/filters.php:208
+#: classes/pref/filters.php:426
+#: classes/pref/filters.php:847
+msgid "All feeds"
+msgstr "Kaikki syötteet"
+
+#: classes/pref/filters.php:219
+#: classes/pref/filters.php:446
 msgid "(inverse)"
 msgstr "(käänteinen)"
 
-#: classes/pref/filters.php:215 classes/pref/filters.php:521
+#: classes/pref/filters.php:215
+#: classes/pref/filters.php:445
 #, php-format
 msgid "%s on %s in %s %s"
 msgstr ""
 
-#: classes/pref/filters.php:345 classes/pref/filters.php:816
-msgid "Match"
-msgstr "Täsmäys"
-
-#: classes/pref/filters.php:359 classes/pref/filters.php:415
-msgid "Add"
-msgstr "Lisää"
-
-#: classes/pref/filters.php:361 classes/pref/filters.php:417
-msgid "Delete"
-msgstr "Poista"
-
-#: classes/pref/filters.php:402
-msgid "Apply actions"
-msgstr "Suorita toiminnot"
-
-#: classes/pref/filters.php:445 classes/pref/users.php:90
-#: classes/pref/feeds.php:695 classes/pref/feeds.php:932
-msgid "Options"
-msgstr "Valinnat"
-
-#: classes/pref/filters.php:449
-msgid "Enabled"
-msgstr "Aktivoitu"
-
-#: classes/pref/filters.php:452
-msgid "Match any rule"
-msgstr "Täsmää ainakin yhteen säännöistä"
-
-#: classes/pref/filters.php:455
-msgid "Inverse matching"
-msgstr "Käänteinen täsmäys"
-
-#: classes/pref/filters.php:467 classes/pref/filters.php:474
-msgid "Test"
-msgstr "Kokeilu"
-
-#: classes/pref/filters.php:476
-msgid "Create"
-msgstr "Luo"
-
-#: classes/pref/filters.php:721 classes/pref/users.php:322
-#: classes/pref/feeds.php:1246 classes/feeds.php:777 js/Feeds.js:577
+#: classes/pref/filters.php:645
+#: classes/pref/users.php:218
+#: classes/pref/feeds.php:920
+#: js/Feeds.js:620
 msgid "Search"
 msgstr "Etsi"
 
-#: classes/pref/filters.php:737
+#: classes/pref/filters.php:661
 msgid "Combine"
 msgstr "Yhdistä"
 
-#: classes/pref/filters.php:740 classes/pref/users.php:344
-msgid "Edit"
-msgstr "Muokkaa"
-
-#: classes/pref/filters.php:743 classes/pref/feeds.php:1266
-#: classes/pref/feeds.php:1280
+#: classes/pref/filters.php:663
+#: classes/pref/feeds.php:941
+#: classes/pref/feeds.php:956
 msgid "Reset sort order"
 msgstr "Järjestä oletuksen mukaisesti"
 
-#: classes/pref/filters.php:832
-msgid "Inverse regular expression matching"
-msgstr "Käänteinen täsmäys säännöllisellä lausekkeella"
+#: classes/pref/filters.php:665
+#: classes/pref/users.php:237
+#: js/CommonDialogs.js:572
+#: js/CommonFilters.js:514
+msgid "Remove"
+msgstr "Poista"
 
-#: classes/pref/filters.php:836
-msgid "on field"
-msgstr "kentässä"
-
-#: classes/pref/filters.php:839 js/PrefFilterTree.js:47
-msgid "in"
-msgstr "kansiossa"
-
-#: classes/pref/filters.php:860
-msgid "Save rule"
-msgstr "Tallenna sääntö"
-
-#: classes/pref/filters.php:860 js/CommonFilters.js:97
-msgid "Add rule"
-msgstr "Lisää sääntö"
-
-#: classes/pref/filters.php:883
-msgid "Perform Action"
-msgstr "Suorita toiminto"
-
-#: classes/pref/filters.php:934
-#, fuzzy
-msgid "No actions available"
-msgstr "Uusi versio saatavilla!"
-
-#: classes/pref/filters.php:953
-msgid "Save action"
-msgstr "Tallenna toiminto"
-
-#: classes/pref/filters.php:953 js/CommonFilters.js:119
-msgid "Add action"
-msgstr "Lisää toiminto"
-
-#: classes/pref/filters.php:981
+#: classes/pref/filters.php:720
 #, fuzzy
 msgid "[No caption]"
 msgstr "Nimi"
 
-#: classes/pref/filters.php:983
+#: classes/pref/filters.php:722
 #, php-format
 msgid "%s (%d rule)"
 msgid_plural "%s (%d rules)"
 msgstr[0] "%s (%d sääntö)"
 msgstr[1] "%s (%d sääntöä)"
 
-#: classes/pref/filters.php:997
+#: classes/pref/filters.php:736
 #, fuzzy
 msgid "matches any rule"
 msgstr "Täsmää ainakin yhteen säännöistä"
 
-#: classes/pref/filters.php:998
+#: classes/pref/filters.php:737
 #, fuzzy
 msgid "inverse"
 msgstr "(käänteinen)"
 
-#: classes/pref/filters.php:1001
+#: classes/pref/filters.php:740
 #, php-format
 msgid "%s (+%d action)"
 msgid_plural "%s (+%d actions)"
 msgstr[0] "%s (+%d toiminto)"
 msgstr[1] "%s (+%d toimintoa)"
 
-#: classes/pref/users.php:26
-msgid "Edit user"
-msgstr "Muokkaa käyttäjää"
-
-#: classes/pref/users.php:63 classes/pref/feeds.php:664
-#: classes/pref/feeds.php:910 classes/pref/feeds.php:1649
-#: plugins/auth_internal/init.php:68
-msgid "Authentication"
-msgstr "Tunnistautuminen"
-
-#: classes/pref/users.php:68
-msgid "Access level: "
-msgstr "Käyttäjäoikeudet: "
-
-#: classes/pref/users.php:107
-msgid "User details"
-msgstr "Käyttäjätiedot"
-
-#: classes/pref/users.php:148 classes/pref/users.php:381
+#: classes/pref/users.php:58
 msgid "Registered"
 msgstr "Rekisteröity"
 
-#: classes/pref/users.php:149
+#: classes/pref/users.php:63
 msgid "Last logged in"
 msgstr "Viimeksi kirjautunut"
 
-#: classes/pref/users.php:157
-msgid "Subscribed feeds count"
-msgstr "Tilattujen syötteiden määrä"
-
-#: classes/pref/users.php:158
-msgid "Stored articles"
-msgstr "Tallennetut artikkelit"
-
-#: classes/pref/users.php:162 classes/pref/users.php:380
+#: classes/pref/users.php:68
 msgid "Subscribed feeds"
 msgstr "Tilatut syötteet"
 
-#: classes/pref/users.php:188
+#: classes/pref/users.php:73
+msgid "Stored articles"
+msgstr "Tallennetut artikkelit"
+
+#: classes/pref/users.php:103
 msgid "User not found"
 msgstr "Käyttäjätunnusta ei löydy"
 
-#: classes/pref/users.php:251
+#: classes/pref/users.php:170
 #, fuzzy, php-format
 msgid "Added user %s with password %s"
 msgstr "Käyttäjätunnus <b>%s</b> lisätty salasanalla <b>%s</b>"
 
-#: classes/pref/users.php:258
+#: classes/pref/users.php:174
 #, php-format
 msgid "Could not create user %s"
 msgstr "Käyttäjää %s ei voitu luoda"
 
-#: classes/pref/users.php:262
+#: classes/pref/users.php:177
 #, php-format
 msgid "User %s already exists."
 msgstr "Käyttäjätunnus %s on jo olemassa."
 
-#: classes/pref/users.php:287
-#, fuzzy, php-format
-msgid "Changed password of user %s to %s"
-msgstr "Käyttäjän <b>%s</b> salasanaksi vaihdettu <b>%s</b>"
-
-#: classes/pref/users.php:340
+#: classes/pref/users.php:233
 msgid "Create user"
 msgstr "Luo käyttäjätunnus"
 
-#: classes/pref/users.php:378 classes/pref/feeds.php:670
-#: classes/pref/feeds.php:916 classes/pref/feeds.php:1652 classes/feeds.php:712
-msgid "Login"
-msgstr "Käyttäjätunnus"
-
-#: classes/pref/users.php:379
-msgid "Access Level"
-msgstr "Käyttäjäoikeudet"
-
-#: classes/pref/users.php:382
-msgid "Last login"
-msgstr "Viimeisin kirjautuminen"
-
-#: classes/pref/users.php:399
+#: classes/pref/users.php:277
 msgid "Click to edit"
 msgstr "Napsauta muokataksesi"
 
-#: classes/pref/users.php:415
-msgid "No users defined."
-msgstr "Käyttäjätunnuksia ei määritelty."
-
-#: classes/pref/users.php:417
-msgid "No matching users found."
-msgstr "Hakua vastaavia käyttäjätunnuksia ei löytynyt."
-
-#: classes/pref/feeds.php:26
-msgid "Check to enable field"
-msgstr "Valitse aktivoidaksesi kenttä"
-
-#: classes/pref/feeds.php:75 classes/pref/feeds.php:231
-#: classes/pref/feeds.php:279 classes/pref/feeds.php:285
-#: classes/pref/feeds.php:314
+#: classes/pref/feeds.php:70
+#: classes/pref/feeds.php:226
+#: classes/pref/feeds.php:274
+#: classes/pref/feeds.php:280
+#: classes/pref/feeds.php:309
 #, php-format
 msgid "(%d feed)"
 msgid_plural "(%d feeds)"
 msgstr[0] "(%d syöte)"
 msgstr[1] "(%d syötettä)"
 
-#: classes/pref/feeds.php:535
-msgid "Feed Title"
-msgstr "Syötteen otsikko"
-
-#: classes/pref/feeds.php:548
-msgid "Feed URL"
-msgstr "Syötteen osoite"
-
-#: classes/pref/feeds.php:567 classes/pref/feeds.php:840
-#: classes/pref/feeds.php:1640 classes/feeds.php:686
-msgid "Place in category:"
-msgstr "Siirrä kansioon:"
-
-#: classes/pref/feeds.php:581
-msgid "Site URL:"
-msgstr "Sivuston URL-osoite:"
-
-#: classes/pref/feeds.php:583
-msgid "Site URL"
-msgstr "Sivuston URL-osoite"
-
-#: classes/pref/feeds.php:599 classes/pref/feeds.php:855 classes/feeds.php:761
-msgid "Language:"
-msgstr "Kieli:"
-
-#: classes/pref/feeds.php:608 classes/pref/feeds.php:866
-msgid "Update"
-msgstr "Päivitä"
-
-#: classes/pref/feeds.php:617 classes/pref/feeds.php:873
-msgid "Interval:"
-msgstr "Aikaväli:"
-
-#: classes/pref/feeds.php:633 classes/pref/feeds.php:891
-msgid "Article purging:"
-msgstr "Artikkeleiden siivous:"
-
-#: classes/pref/feeds.php:640
+#: classes/pref/feeds.php:537
 #, fuzzy, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
 msgstr[0] "(%d syöte)"
 msgstr[1] "(%d syötettä)"
 
-#: classes/pref/feeds.php:642 classes/pref/feeds.php:899
+#: classes/pref/feeds.php:539
+#: classes/pref/feeds.php:587
 #, fuzzy
 msgid "Disabled"
 msgstr "Poista OTP käytöstä"
 
-#: classes/pref/feeds.php:646
+#: classes/pref/feeds.php:543
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: classes/pref/feeds.php:682
-msgid ""
-"<b>Hint:</b> you need to fill in your login information if your feed "
-"requires authentication, except for Twitter feeds."
-msgstr ""
-"<b>Vinkki:</b> sinun on annettava kirjautumistiedot jos syöte vaatii "
-"kirjautumisen, paitsi Twitter-syötteet."
+#: classes/pref/feeds.php:569
+msgid "Check to enable field"
+msgstr "Valitse aktivoidaksesi kenttä"
 
-#: classes/pref/feeds.php:693 classes/feeds.php:728
-msgid "This feed requires authentication."
-msgstr "Tämä syöte vaatii kirjautumisen."
-
-#: classes/pref/feeds.php:711 classes/pref/feeds.php:937
-msgid "Include in e-mail digest"
-msgstr "Sisällytä sähköpostitiivistelmään"
-
-#: classes/pref/feeds.php:727 classes/pref/feeds.php:944
-msgid "Always display image attachments"
-msgstr "Näytä aina liitetyt kuvat"
-
-#: classes/pref/feeds.php:757 classes/pref/feeds.php:958
-msgid "Cache media"
-msgstr ""
-
-#: classes/pref/feeds.php:772 classes/pref/feeds.php:965
-msgid "Mark updated articles as unread"
-msgstr "Merkitse päivitetyt artikkelit lukemattomiksi"
-
-#: classes/pref/feeds.php:776
-msgid "Icon"
-msgstr "Suosikkikuvake"
-
-#: classes/pref/feeds.php:784 classes/pref/feeds.php:1347
-msgid "Choose file..."
-msgstr "Valitse tiedosto…"
-
-#: classes/pref/feeds.php:792
-msgid "Replace"
-msgstr "Vaihda"
-
-#: classes/pref/feeds.php:897
+#: classes/pref/feeds.php:585
 #, fuzzy, php-format
 msgid "(%d days)"
 msgstr "(%d syöte)"
 
-#: classes/pref/feeds.php:1219
+#: classes/pref/feeds.php:590
+#: js/CommonDialogs.js:456
+msgid "Include in e-mail digest"
+msgstr "Sisällytä sähköpostitiivistelmään"
+
+#: classes/pref/feeds.php:591
+#: js/CommonDialogs.js:457
+msgid "Always display image attachments"
+msgstr "Näytä aina liitetyt kuvat"
+
+#: classes/pref/feeds.php:593
+#: js/CommonDialogs.js:459
+msgid "Cache media"
+msgstr ""
+
+#: classes/pref/feeds.php:594
+#: js/CommonDialogs.js:460
+msgid "Mark updated articles as unread"
+msgstr "Merkitse päivitetyt artikkelit lukemattomiksi"
+
+#: classes/pref/feeds.php:609
+#: js/CommonDialogs.js:46
+#: js/PrefFeedTree.js:426
+msgid "Place in category:"
+msgstr "Siirrä kansioon:"
+
+#: classes/pref/feeds.php:617
+#: js/Feeds.js:602
+msgid "Language:"
+msgstr "Kieli:"
+
+#: classes/pref/feeds.php:628
+#: js/CommonDialogs.js:522
+#, fuzzy
+msgid "Update interval:"
+msgstr "Oletusaikaväli"
+
+#: classes/pref/feeds.php:635
+msgid "Article purging:"
+msgstr "Artikkeleiden siivous:"
+
+#: classes/pref/feeds.php:642
+#: plugins/auth_internal/init.php:68
+#: js/PrefFeedTree.js:434
+#: js/PrefUsers.js:71
+msgid "Authentication"
+msgstr "Tunnistautuminen"
+
+#: classes/pref/feeds.php:658
+#: js/PrefUsers.js:89
+msgid "Options"
+msgstr "Valinnat"
+
+#: classes/pref/feeds.php:674
+#: plugins/af_psql_trgm/init.php:193
+#: plugins/note/init.php:51
+#: plugins/af_proxy_http/init.php:239
+#: plugins/mail/init.php:67
+#: plugins/af_readability/init.php:89
+#: plugins/nsfw/init.php:75
+#: plugins/af_redditimgur/init.php:79
+#: js/CommonDialogs.js:580
+#: js/CommonFilters.js:516
+msgid "Save"
+msgstr "Tallenna"
+
+#: classes/pref/feeds.php:675
+#: plugins/note/init.php:52
+#: plugins/mail/init.php:186
+#: plugins/bookmarklets/init.php:282
+#: js/PrefFeedTree.js:454
+#: js/CommonDialogs.js:581
+#: js/CommonFilters.js:233
+#: js/CommonFilters.js:317
+#: js/CommonFilters.js:517
+#: js/CommonFilters.js:521
+msgid "Cancel"
+msgstr "Peru"
+
+#: classes/pref/feeds.php:896
 msgid "Feeds with errors"
 msgstr "Virheelliset syötteet"
 
-#: classes/pref/feeds.php:1228
+#: classes/pref/feeds.php:902
 msgid "Inactive feeds"
 msgstr "Passiiviset syötteet"
 
-#: classes/pref/feeds.php:1264
+#: classes/pref/feeds.php:939
 msgid "Edit selected feeds"
 msgstr "Muokkaa valittuja syötteitä"
 
-#: classes/pref/feeds.php:1268 js/PrefFeedTree.js:348
+#: classes/pref/feeds.php:943
+#: js/PrefFeedTree.js:396
 msgid "Batch subscribe"
 msgstr "Tilaa useita"
 
-#: classes/pref/feeds.php:1275
+#: classes/pref/feeds.php:951
 msgid "Categories"
 msgstr "Kansiot"
 
-#: classes/pref/feeds.php:1278
+#: classes/pref/feeds.php:954
 msgid "Add category"
 msgstr "Lisää kansio"
 
-#: classes/pref/feeds.php:1282
+#: classes/pref/feeds.php:958
 msgid "Remove selected"
 msgstr "Poista valittu"
 
-#: classes/pref/feeds.php:1340
-msgid "OPML"
-msgstr "OPML"
+#: classes/pref/feeds.php:1006
+msgid "Using OPML you can export and import your feeds, filters, labels and Tiny Tiny RSS settings."
+msgstr "OPML:ää käyttäen voit viedä ja tuoda syötteitä, suodattimia, tunnisteita ja Tiny Tiny RSS:n asetuksia."
 
-#: classes/pref/feeds.php:1342
-msgid ""
-"Using OPML you can export and import your feeds, filters, labels and Tiny "
-"Tiny RSS settings."
-msgstr ""
-"OPML:ää käyttäen voit viedä ja tuoda syötteitä, suodattimia, tunnisteita ja "
-"Tiny Tiny RSS:n asetuksia."
+#: classes/pref/feeds.php:1011
+msgid "Choose file..."
+msgstr "Valitse tiedosto…"
 
-#: classes/pref/feeds.php:1354
+#: classes/pref/feeds.php:1018
 msgid "Import OPML"
 msgstr "Tuo OPML"
 
-#: classes/pref/feeds.php:1362
+#: classes/pref/feeds.php:1026
 msgid "Export OPML"
 msgstr "Vie OMPL"
 
-#: classes/pref/feeds.php:1366
+#: classes/pref/feeds.php:1031
 msgid "Include settings"
 msgstr "Sisältäen asetukset"
 
-#: classes/pref/feeds.php:1373
+#: classes/pref/feeds.php:1037
 msgid "Published OPML"
 msgstr "Julkaistu OPML"
 
-#: classes/pref/feeds.php:1375
-msgid ""
-"Your OPML can be published publicly and can be subscribed by anyone who "
-"knows the URL below."
-msgstr ""
-"OPML:si voidaan julkaista ja kuka vain voi tilata ne käyttäen alla olevaa "
-"osoitetta."
+#: classes/pref/feeds.php:1040
+msgid "Your OPML can be published publicly and can be subscribed by anyone who knows the URL below."
+msgstr "OPML:si voidaan julkaista ja kuka vain voi tilata ne käyttäen alla olevaa osoitetta."
 
-#: classes/pref/feeds.php:1377
-msgid ""
-"Published OPML does not include your Tiny Tiny RSS settings, feeds that "
-"require authentication or feeds hidden from Popular feeds."
-msgstr ""
-"Julkaistu OPML ei sisällä Tiny Tiny RSS -asetuksiasi, autentikointia "
-"vaativia syötteitä tai suosituista syötteistä piilotettuja syötteitä."
+#: classes/pref/feeds.php:1041
+msgid "Published OPML does not include your Tiny Tiny RSS settings, feeds that require authentication or feeds hidden from Popular feeds."
+msgstr "Julkaistu OPML ei sisällä Tiny Tiny RSS -asetuksiasi, autentikointia vaativia syötteitä tai suosituista syötteistä piilotettuja syötteitä."
 
-#: classes/pref/feeds.php:1380
+#: classes/pref/feeds.php:1045
 msgid "Display published OPML URL"
 msgstr "Näytä julkaistu OPML URL"
 
-#: classes/pref/feeds.php:1387
-msgid "Published & shared articles / Generated feeds"
-msgstr "Julkaistut ja jaetut artikkelit / Luodut syötteet"
-
-#: classes/pref/feeds.php:1389
+#: classes/pref/feeds.php:1055
 #, fuzzy
-msgid ""
-"Published articles can be subscribed by anyone who knows the following URL:"
-msgstr ""
-"OPML:si voidaan julkaista ja kuka vain voi tilata ne käyttäen alla olevaa "
-"osoitetta."
+msgid "Published articles can be subscribed by anyone who knows the following URL:"
+msgstr "OPML:si voidaan julkaista ja kuka vain voi tilata ne käyttäen alla olevaa osoitetta."
 
-#: classes/pref/feeds.php:1395 classes/feeds.php:1295
-msgid "Published articles"
-msgstr "Julkiset artikkelit"
-
-#: classes/pref/feeds.php:1396
+#: classes/pref/feeds.php:1059
 msgid "Display URL"
 msgstr "Näytä osoite"
 
-#: classes/pref/feeds.php:1398
+#: classes/pref/feeds.php:1063
 msgid "Clear all generated URLs"
 msgstr "Poista kaikki luodut osoitteet"
 
-#: classes/pref/feeds.php:1495 classes/pref/feeds.php:1552
-msgid "Click to edit feed"
-msgstr "Napsauta muokataksesi syötettä"
-
-#: classes/pref/feeds.php:1512 classes/pref/feeds.php:1571
-msgid "Unsubscribe from selected feeds"
-msgstr "Lopeta valittujen syötteiden tilaukset"
-
-#: classes/pref/feeds.php:1631
+#: classes/pref/feeds.php:1075
 #, fuzzy
-msgid "One valid feed per line (no detection is done)"
-msgstr "Lisää RSS-syötteitä riveittäin (syötteitä ei yritetä tunnistaa)"
+msgid "My feeds"
+msgstr "Lisää syötteitä"
 
-#: classes/pref/feeds.php:1662
-msgid "Feeds require authentication."
-msgstr "Syötteet vaativat kirjautumisen."
+#: classes/pref/feeds.php:1080
+msgid "OPML"
+msgstr "OPML"
 
-#: classes/opml.php:28 classes/opml.php:32
+#: classes/pref/feeds.php:1085
+#, fuzzy
+msgid "Sharing"
+msgstr "Jaa"
+
+#: classes/userhelper.php:193
+#, fuzzy, php-format
+msgid "Changed password of user %s to %s"
+msgstr "Käyttäjän <b>%s</b> salasanaksi vaihdettu <b>%s</b>"
+
+#: classes/opml.php:28
+#: classes/opml.php:32
 msgid "OPML Utility"
 msgstr "OPML-työkalu"
 
@@ -2010,142 +1749,87 @@ msgstr "Virhe: siirretty OPML-tiedosto katosi."
 msgid "Error while parsing document."
 msgstr "Virhe tulkitessa dokumenttia."
 
-#: classes/feeds.php:39 js/CommonDialogs.js:409
-#, fuzzy
-msgid "Show as feed"
-msgstr "Tämä syöte"
-
-#: classes/feeds.php:46
-#, php-format
-msgid "Last updated: %s"
-msgstr "Päivitetty viimeksi: %s"
-
-#: classes/feeds.php:65
-#, fuzzy
-msgid "Select articles"
-msgstr "Valitse kaikki artikkelit"
-
-#: classes/feeds.php:66
-msgid "Select..."
-msgstr "Valitse…"
-
-#: classes/feeds.php:70
-msgid "Invert"
-msgstr "Käännä"
-
-#: classes/feeds.php:78
-msgid "Set score"
-msgstr "Pisteytä"
-
-#: classes/feeds.php:82 classes/feeds.php:87 plugins/mail/init.php:76
-#: plugins/mailto/init.php:24
-msgid "Forward by email"
-msgstr "Lähetä sähköpostilla"
-
-#: classes/feeds.php:98
-msgid "Delete permanently"
-msgstr ""
-
-#: classes/feeds.php:151 classes/feeds.php:546
+#: classes/feeds.php:54
+#: classes/feeds.php:458
 msgid "Feed not found."
 msgstr "Syötettä ei löydy."
 
-#: classes/feeds.php:216
+#: classes/feeds.php:119
 msgid "Never"
 msgstr "Ei koskaan"
 
-#: classes/feeds.php:277 classes/feeds.php:1301
+#: classes/feeds.php:198
+#: classes/feeds.php:1116
 msgid "Archived articles"
 msgstr "Arkistoidut artikkelit"
 
-#: classes/feeds.php:356
+#: classes/feeds.php:268
 msgid "Collapse article"
 msgstr "Sulje artikkeli"
 
-#: classes/feeds.php:373
+#: classes/feeds.php:287
 #, php-format
 msgid "Imported at %s"
 msgstr "Tuotu %s"
 
-#: classes/feeds.php:437
+#: classes/feeds.php:347
 msgid "No unread articles found to display."
 msgstr "Lukemattomia artikkeleita ei ole näytettäväksi."
 
-#: classes/feeds.php:440
+#: classes/feeds.php:350
 msgid "No updated articles found to display."
 msgstr "Päivitettyjä artikkeleita ei ole näytettäväksi."
 
-#: classes/feeds.php:443
+#: classes/feeds.php:353
 msgid "No starred articles found to display."
 msgstr "Tähdellä merkittyjä artikkeleita ei ole näytettäväksi."
 
-#: classes/feeds.php:447
+#: classes/feeds.php:357
 #, fuzzy
-msgid ""
-"No articles found to display. You can assign articles to labels manually "
-"from article header context menu (applies to all selected articles) or use a "
-"filter."
-msgstr ""
-"Ei näytettäviä artikkeleita. Voit merkitä artikkeleita tunnisteilla käsin "
-"(Toiminnot-valikko yläreunassa) tai käytää suodattimia."
+msgid "No articles found to display. You can assign articles to labels manually from article header context menu (applies to all selected articles) or use a filter."
+msgstr "Ei näytettäviä artikkeleita. Voit merkitä artikkeleita tunnisteilla käsin (Toiminnot-valikko yläreunassa) tai käytää suodattimia."
 
-#: classes/feeds.php:449
+#: classes/feeds.php:359
 msgid "No articles found to display."
 msgstr "Ei näytettäviä artikkeleita."
 
-#: classes/feeds.php:466 classes/feeds.php:622
+#: classes/feeds.php:376
+#: classes/feeds.php:526
 #, php-format
 msgid "Feeds last updated at %s"
 msgstr "Syötteet päivitetty viimeksi %s"
 
-#: classes/feeds.php:478 classes/feeds.php:634
+#: classes/feeds.php:388
+#: classes/feeds.php:538
 msgid "Some feeds have update errors (click for details)"
-msgstr ""
-"Osassa syötteistä oli päivitysongelmia (napsauta nähdäksesi lisätietoja)"
+msgstr "Osassa syötteistä oli päivitysongelmia (napsauta nähdäksesi lisätietoja)"
 
-#: classes/feeds.php:611
+#: classes/feeds.php:515
 msgid "No feed selected."
 msgstr "Yhtään syötettä ei ole valittuna."
 
-#: classes/feeds.php:678
-msgid "Feed or site URL"
-msgstr "Syötteen/sivuston osoite"
-
-#: classes/feeds.php:695
-msgid "Available feeds"
-msgstr "Saatavilla olevat syötteet"
-
-#: classes/feeds.php:755
-#, php-format
-msgid "Search %s..."
-msgstr "Etsi %s…"
-
-#: classes/feeds.php:763
-msgid "Used for word stemming"
-msgstr ""
-
-#: classes/feeds.php:773
-msgid "Search syntax"
-msgstr "Haun syntaksi"
-
-#: classes/feeds.php:1293
+#: classes/feeds.php:1108
 msgid "Starred articles"
 msgstr "Tähdelliset artikkelit"
 
-#: classes/feeds.php:1297
+#: classes/feeds.php:1110
+msgid "Published articles"
+msgstr "Julkiset artikkelit"
+
+#: classes/feeds.php:1112
 msgid "Fresh articles"
 msgstr "Tuoreet artikkelit"
 
-#: classes/feeds.php:1429
+#: classes/feeds.php:1244
 msgid "Special"
 msgstr "Erikoiset"
 
-#: classes/feeds.php:1524
+#: classes/feeds.php:1339
 #, php-format
 msgid "Incorrect search syntax: %s."
 msgstr ""
 
-#: classes/feeds.php:1714
+#: classes/feeds.php:1529
 #, php-format
 msgid "Search results: %s"
 msgstr "Hakutulokset: %s"
@@ -2155,25 +1839,10 @@ msgstr "Hakutulokset: %s"
 msgid "%d min"
 msgstr "%d min"
 
-#: classes/article.php:23
+#: classes/article.php:26
+#: plugins/share/init.php:262
 msgid "Article not found."
 msgstr "Artikkelia ei löytynyt."
-
-#: classes/article.php:173
-msgid "Tags for this article (separated by commas):"
-msgstr "Tämän syötteen avainsanat (pilkulla erotettuina):"
-
-#: classes/article.php:276 classes/article.php:548
-msgid "no tags"
-msgstr "ei avainsanoja"
-
-#: classes/article.php:388
-msgid "unknown type"
-msgstr "tuntematon tyyppi"
-
-#: classes/article.php:469
-msgid "Attachments"
-msgstr "Litteet"
 
 #: plugins/close_button/init.php:25
 msgid "Close article"
@@ -2191,7 +1860,8 @@ msgstr "Salasana on vaihdettu."
 msgid "Old password is incorrect."
 msgstr "Vanha salasana on virheellinen."
 
-#: plugins/vf_shared/init.php:17 plugins/vf_shared/init.php:64
+#: plugins/vf_shared/init.php:17
+#: plugins/vf_shared/init.php:64
 msgid "Shared articles"
 msgstr "Jaetut artikkelit"
 
@@ -2205,222 +1875,291 @@ msgstr "Tiedot talletettu (%s, %d)"
 msgid "Show related articles"
 msgstr "Tähdelliset artikkelit"
 
-#: plugins/af_psql_trgm/init.php:128
+#: plugins/af_psql_trgm/init.php:134
 #, fuzzy
 msgid "Mark similar articles as read (af_psql_trgm)"
 msgstr "Merkitäänkö samankaltaiset artikkelit luetuksi?"
 
-#: plugins/af_psql_trgm/init.php:164 plugins/af_readability/init.php:70
-msgid "Global settings"
-msgstr "Yleiset asetukset"
-
-#: plugins/af_psql_trgm/init.php:170
+#: plugins/af_psql_trgm/init.php:164
 msgid "Minimum similarity:"
 msgstr ""
 
-#: plugins/af_psql_trgm/init.php:176
-msgid ""
-"PostgreSQL trigram extension returns string similarity as a floating point "
-"number (0-1). Setting it too low might produce false positives, zero "
-"disables checking."
+#: plugins/af_psql_trgm/init.php:172
+msgid "PostgreSQL trigram extension returns string similarity as a floating point number (0-1). Setting it too low might produce false positives, zero disables checking."
 msgstr ""
 
-#: plugins/af_psql_trgm/init.php:181
+#: plugins/af_psql_trgm/init.php:177
 msgid "Minimum title length:"
 msgstr ""
 
-#: plugins/af_psql_trgm/init.php:190
+#: plugins/af_psql_trgm/init.php:187
 #, fuzzy
-msgid "Enable for all feeds:"
+msgid "Enable for all feeds."
 msgstr "Käytä syötekansioita"
 
-#: plugins/af_psql_trgm/init.php:205 plugins/af_readability/init.php:117
+#: plugins/af_psql_trgm/init.php:206
+#: plugins/af_readability/init.php:106
 msgid "Currently enabled for (click to edit):"
 msgstr ""
 
-#: plugins/af_psql_trgm/init.php:222
+#: plugins/af_psql_trgm/init.php:226
 #, fuzzy
 msgid "Similarity (af_psql_trgm)"
 msgstr "Samankaltaisuus (pg_trgm)"
 
-#: plugins/af_psql_trgm/init.php:231
+#: plugins/af_psql_trgm/init.php:232
 msgid "Mark similar articles as read"
 msgstr "Merkitäänkö samankaltaiset artikkelit luetuksi?"
 
-#: plugins/note/init.php:26 plugins/note/note.js:9
+#: plugins/note/init.php:26
+#: plugins/note/note.js:6
 msgid "Edit article note"
 msgstr "Muokkaa artikkelin muistiinpanoa"
 
-#: plugins/af_proxy_http/init.php:203
+#: plugins/af_proxy_http/init.php:215
 msgid "Image proxy settings (af_proxy_http)"
 msgstr ""
 
-#: plugins/af_proxy_http/init.php:227
+#: plugins/af_proxy_http/init.php:233
 #, fuzzy
 msgid "Enable proxy for all remote images."
 msgstr "Käytä syötekansioita"
 
-#: plugins/af_proxy_http/init.php:241 plugins/af_redditimgur/init.php:98
+#: plugins/af_proxy_http/init.php:250
+#: plugins/af_redditimgur/init.php:95
 msgid "Configuration saved"
 msgstr "Asetukset tallennettiin"
 
-#: plugins/mail/init.php:29
+#: plugins/mail/init.php:26
+#: plugins/mail/init.php:77
+msgid "Forward by email"
+msgstr "Lähetä sähköpostilla"
+
+#: plugins/mail/init.php:34
 msgid "Mail addresses saved."
 msgstr "Sähköpostiosoite on tallennettu."
 
-#: plugins/mail/init.php:36
+#: plugins/mail/init.php:45
 msgid "Mail plugin"
 msgstr "Sähköpostilisäosa"
 
-#: plugins/mail/init.php:38
+#: plugins/mail/init.php:60
 msgid "You can set predefined email addressed here (comma-separated list):"
 msgstr "Voit listata sähköpostiosoitteita tähän (pilkulla erotettuna):"
 
-#: plugins/mail/init.php:120 plugins/mail/init.php:128
-#: plugins/mailto/init.php:47 plugins/mailto/init.php:55
+#: plugins/mail/init.php:115
+#: plugins/mail/init.php:123
+#: plugins/mailto/init.php:51
+#: plugins/mailto/init.php:59
 msgid "[Forwarded]"
 msgstr ""
 
-#: plugins/mail/init.php:120 plugins/mailto/init.php:47
+#: plugins/mail/init.php:115
+#: plugins/mailto/init.php:51
 msgid "Multiple articles"
 msgstr "Monta artikkelia"
 
-#: plugins/mail/init.php:150
+#: plugins/mail/init.php:166
 msgid "To:"
 msgstr "Vastaanottaja:"
 
-#: plugins/mail/init.php:165
+#: plugins/mail/init.php:174
 msgid "Subject:"
 msgstr "Otsikko:"
 
-#: plugins/mail/init.php:181
-msgid "Send e-mail"
+#: plugins/mail/init.php:185
+#, fuzzy
+msgid "Send email"
 msgstr "Lähetä sähköposti"
 
 #: plugins/af_readability/init.php:25
 msgid "Data saved."
 msgstr "Tiedot tallennettu."
 
-#: plugins/af_readability/init.php:47
+#: plugins/af_readability/init.php:42
 #, fuzzy
 msgid "Inline content"
 msgstr "Muokkaa artikkelin muistiinpanoa"
 
-#: plugins/af_readability/init.php:48
+#: plugins/af_readability/init.php:43
 #, fuzzy
 msgid "Append content"
 msgstr "Muokkaa artikkelin muistiinpanoa"
 
-#: plugins/af_readability/init.php:57
+#: plugins/af_readability/init.php:52
 #, fuzzy
 msgid "Toggle full article text"
 msgstr "Muokkaa artikkelin muistiinpanoa"
 
-#: plugins/af_readability/init.php:64
+#: plugins/af_readability/init.php:62
 msgid "Readability settings (af_readability)"
 msgstr ""
 
-#: plugins/af_readability/init.php:99
-msgid ""
-"Provide full-text services to core code (bookmarklets) and other plugins"
+#: plugins/af_readability/init.php:83
+msgid "Provide full-text services to core code (bookmarklets) and other plugins"
 msgstr ""
 
-#: plugins/af_readability/init.php:125
+#: plugins/af_readability/init.php:113
 msgid "(append)"
 msgstr ""
 
-#: plugins/af_readability/init.php:136
+#: plugins/af_readability/init.php:128
 msgid "Readability"
 msgstr "Luettavuus"
 
-#: plugins/af_readability/init.php:148
+#: plugins/af_readability/init.php:133
 #, fuzzy
 msgid "Inline article content"
 msgstr "Muokkaa artikkelin muistiinpanoa"
 
-#: plugins/af_readability/init.php:153
+#: plugins/af_readability/init.php:139
 msgid "Append to summary, instead of replacing it"
 msgstr ""
 
-#: plugins/bookmarklets/init.php:23
-msgid "Bookmarklets"
-msgstr ""
+#: plugins/bookmarklets/init.php:88
+#: js/CommonDialogs.js:93
+msgid "Subscribe"
+msgstr "Tilaa"
 
-#: plugins/bookmarklets/init.php:25
-msgid ""
-"Drag the link below to your browser toolbar, open the feed you're interested "
-"in in your browser and click on the link to subscribe to it."
-msgstr ""
-"Raahaa allaoleva linkki selaimesi työkaluriville, avaa syöte josta olet "
-"kiinnsotunut selaimessasi ja klikkaa linkkiä tilataksesi syötteen."
+#: plugins/bookmarklets/init.php:101
+#, php-format
+msgid "Already subscribed to <b>%s</b>."
+msgstr "Olet jo tilannut syötteen <b>%s</b>."
 
-#: plugins/bookmarklets/init.php:29
+#: plugins/bookmarklets/init.php:104
+#, php-format
+msgid "Subscribed to <b>%s</b>."
+msgstr "Tilattu syöte <b>%s</b>."
+
+#: plugins/bookmarklets/init.php:107
+#, php-format
+msgid "Could not subscribe to <b>%s</b>."
+msgstr "Tätä syötettä ei voitu tilata <b>%s</b>."
+
+#: plugins/bookmarklets/init.php:110
+#, php-format
+msgid "No feeds found in <b>%s</b>."
+msgstr "<b>%s</b> ei sisällä syötteitä."
+
+#: plugins/bookmarklets/init.php:116
+#, php-format
+msgid "Could not subscribe to <b>%s</b>.<br>Can't download the Feed URL."
+msgstr "Syötettä <b>%s</b> ei voitu tilata.<br>Osoitetta ei voi ladata."
+
+#: plugins/bookmarklets/init.php:127
+msgid "Multiple feed URLs found:"
+msgstr "Useita syöteosoitteita löytyi:"
+
+#: plugins/bookmarklets/init.php:135
+msgid "Subscribe to selected feed"
+msgstr "Tilaa valittu syöte"
+
+#: plugins/bookmarklets/init.php:153
+msgid "Edit subscription options"
+msgstr "Muokkaa syötteen asetuksia"
+
+#: plugins/bookmarklets/init.php:184
+#: plugins/bookmarklets/init.php:359
+msgid "Share with Tiny Tiny RSS"
+msgstr "Jaa Tiny Tiny RSS:llä"
+
+#: plugins/bookmarklets/init.php:256
+msgid "Title:"
+msgstr "Otsikko:"
+
+#: plugins/bookmarklets/init.php:261
+msgid "URL:"
+msgstr "URL:"
+
+#: plugins/bookmarklets/init.php:266
+msgid "Content:"
+msgstr "Sisältö:"
+
+#: plugins/bookmarklets/init.php:271
+msgid "Labels:"
+msgstr "Tunnisteet:"
+
+#: plugins/bookmarklets/init.php:281
+msgid "Share"
+msgstr "Jaa"
+
+#: plugins/bookmarklets/init.php:283
+msgid "Shared article will appear in the Published feed."
+msgstr "Jaetut artikkelit näkyvät 'Julkisissa syötteissä'."
+
+#: plugins/bookmarklets/init.php:341
 #, php-format
 msgid "Subscribe to %s in Tiny Tiny RSS?"
 msgstr "TIlataanko %s Tiny Tiny RSS:ssä?"
 
-#: plugins/bookmarklets/init.php:34
+#: plugins/bookmarklets/init.php:348
+msgid "Bookmarklets"
+msgstr ""
+
+#: plugins/bookmarklets/init.php:350
+msgid "Drag the link below to your browser toolbar, open the feed you're interested in in your browser and click on the link to subscribe to it."
+msgstr "Raahaa allaoleva linkki selaimesi työkaluriville, avaa syöte josta olet kiinnsotunut selaimessasi ja klikkaa linkkiä tilataksesi syötteen."
+
+#: plugins/bookmarklets/init.php:353
 msgid "Subscribe in Tiny Tiny RSS"
 msgstr "Tilaa Tiny Tiny RSS:ssä"
 
-#: plugins/bookmarklets/init.php:37
+#: plugins/bookmarklets/init.php:356
 msgid "Use this bookmarklet to publish arbitrary pages using Tiny Tiny RSS"
 msgstr "Käytä tätä kirjanmerkkiä tilataksesi sivuja Tiny Tiny RSS:ää käyttäen"
 
-#: plugins/af_comics/init.php:51
+#: plugins/af_comics/init.php:62
 msgid "Feeds supported by af_comics"
 msgstr "af_comics:n tukemat syötteet"
 
-#: plugins/af_comics/init.php:53
+#: plugins/af_comics/init.php:64
 msgid "The following comics are currently supported:"
 msgstr "Seuraavat sarjakuvat ovat tuettuja:"
 
-#: plugins/nsfw/init.php:30 plugins/nsfw/init.php:42
+#: plugins/nsfw/init.php:31
 msgid "Not work safe (click to toggle)"
 msgstr ""
 
-#: plugins/nsfw/init.php:53
+#: plugins/nsfw/init.php:50
 msgid "NSFW Plugin"
 msgstr "NSFW lisäosa"
 
-#: plugins/nsfw/init.php:80
-msgid "Tags to consider NSFW (comma-separated)"
+#: plugins/nsfw/init.php:65
+msgid "Tags to consider NSFW (comma-separated):"
 msgstr ""
 
-#: plugins/nsfw/init.php:101
+#: plugins/nsfw/init.php:87
 msgid "Configuration saved."
 msgstr "Asetukset tallennettiin."
 
-#: plugins/mailto/init.php:71
-msgid "Clicking the following link to invoke your mail client:"
-msgstr ""
+#: plugins/mailto/init.php:19
+#: plugins/mailto/init.php:29
+#, fuzzy
+msgid "Forward by email (mailto:)"
+msgstr "Lähetä sähköpostilla"
 
-#: plugins/mailto/init.php:75
-msgid "Forward selected article(s) by email."
-msgstr "Lähetä valitut artikkeli(t) sähköpostitse."
+#: plugins/mailto/init.php:79
+#, fuzzy
+msgid "Click to open your mail client"
+msgstr "Napsauta nähdäksesi koko artikkelin"
 
-#: plugins/mailto/init.php:78
-msgid ""
-"You should be able to edit the message before sending in your mail client."
-msgstr ""
-
-#: plugins/mailto/init.php:83
+#: plugins/mailto/init.php:85
 msgid "Close this dialog"
 msgstr "Sulje"
 
-#: plugins/af_redditimgur/init.php:35
+#: plugins/af_redditimgur/init.php:40
 msgid "Reddit content settings (af_redditimgur)"
 msgstr ""
 
-#: plugins/af_redditimgur/init.php:68
+#: plugins/af_redditimgur/init.php:59
 msgid "Extract missing content using Readability (requires af_readability)"
 msgstr ""
 
-#: plugins/af_redditimgur/init.php:74
+#: plugins/af_redditimgur/init.php:66
 msgid "Enable additional duplicate checking"
 msgstr ""
 
-#: plugins/af_redditimgur/init.php:80
+#: plugins/af_redditimgur/init.php:73
 #, php-format
 msgid "Rewrite Reddit URLs to %s"
 msgstr ""
@@ -2430,48 +2169,77 @@ msgstr ""
 msgid "Toggle sidebar"
 msgstr "Lisää/Poista tähti"
 
-#: plugins/share/init.php:45
-msgid "You can disable all articles shared by unique URLs here."
-msgstr ""
-"Tässä voit perua kaikki osoitteen kautta jaettujen artikkeleiden "
-"julkistukset."
+#: plugins/share/init.php:42
+#, fuzzy
+msgid "Article unshared"
+msgstr "Osoitteen kautta jaetut artikkelit"
 
-#: plugins/share/init.php:48
+#: plugins/share/init.php:50
+msgid "You can disable all articles shared by unique URLs here."
+msgstr "Tässä voit perua kaikki osoitteen kautta jaettujen artikkeleiden julkistukset."
+
+#: plugins/share/init.php:53
 msgid "Unshare all articles"
 msgstr "Poista kaikkien artikkeleiden jako"
 
-#: plugins/share/init.php:81
+#: plugins/share/init.php:63
+msgid "Shared URLs cleared."
+msgstr "Jaetut osoitteet poistettiin."
+
+#: plugins/share/init.php:82
 msgid "Share by URL"
 msgstr "Jaa osoitteella"
 
-#: plugins/share/init.php:103
+#: plugins/share/init.php:250
 msgid "You can share this article by the following unique URL:"
 msgstr "Voit jakaa tämän artikkelin seuraavalla uniikilla osoitteella:"
 
-#: plugins/share/init.php:127
+#: plugins/share/init.php:267
 msgid "Unshare article"
 msgstr "Poista artikkelin jako"
 
-#: plugins/share/init.php:130
+#: plugins/share/init.php:268
+#: js/CommonDialogs.js:637
 msgid "Generate new URL"
 msgstr "Luo uusi URL"
 
-#: js/App.js:318
-msgid "Help"
-msgstr "Apua"
+#: js/App.js:392
+msgid "Keyboard shortcuts"
+msgstr "Pikanäppäimet"
 
-#: js/App.js:510
+#: js/App.js:543
+#, fuzzy, perl-format
+msgid "Fatal error: %s"
+msgstr "Kohtalokas virhe"
+
+#: js/App.js:544
 msgid "Fatal error"
 msgstr "Kohtalokas virhe"
+
+#: js/App.js:1120
+#, fuzzy
+msgid "Please enable af_readability first."
+msgstr "Aktivoi ensin email-lisäosa."
+
+#: js/App.js:1133
+#: js/App.js:1223
+msgid "Widescreen is not available in combined mode."
+msgstr "Leveä näyttö ei käytössä yhdistelmätilassa."
 
 #: js/Article.js:36
 msgid "Please enter new score for selected articles:"
 msgstr "Anna uusi pistemäärä valituille artikkeleille:"
 
-#: js/Article.js:62 plugins/mail/mail.js:9 plugins/mailto/init.js:9
-#: js/Headlines.js:767 js/Headlines.js:793 js/Headlines.js:805
-#: js/Headlines.js:933 js/Headlines.js:951 js/Headlines.js:969
-#: js/Headlines.js:1110
+#: js/Article.js:62
+#: js/Headlines.js:865
+#: js/Headlines.js:877
+#: js/Headlines.js:1020
+#: js/Headlines.js:1037
+#: js/Headlines.js:1054
+#: js/Headlines.js:1191
+#: plugins/mail/mail.js:9
+#: plugins/mailto/init.js:9
+#: js/Headlines.js:839
 #, fuzzy
 msgid "No articles selected."
 msgstr "Yhtään artikkelia ei ole valittuna."
@@ -2480,200 +2248,247 @@ msgstr "Yhtään artikkelia ei ole valittuna."
 msgid "Please enter new score for this article:"
 msgstr "Anna uusi pistemäärä tälle artikkelille:"
 
-#: js/Article.js:130
+#: js/Article.js:120
 msgid "Article URL:"
 msgstr "Artikkelin osoite:"
 
-#: js/Article.js:168
+#: js/Article.js:122
+#, fuzzy
+msgid "No URL could be displayed for this article."
+msgstr "Poistetaanko tämän artikkelin jakaminen?"
+
+#: js/Article.js:144
+msgid "no tags"
+msgstr "ei avainsanoja"
+
+#: js/Article.js:231
 msgid "comments"
 msgstr "kommentit"
 
-#: js/Article.js:171
+#: js/Article.js:234
 msgid "comment"
 msgid_plural "comments"
 msgstr[0] "kommentti"
 msgstr[1] "kommenttia"
 
-#: js/Article.js:256
+#: js/Article.js:320
 msgid "Edit article Tags"
 msgstr "Muokkaa artikkelin avainsanoja"
 
-#: js/CommonDialogs.js:15
-msgid "Remove stored feed icon?"
-msgstr "Poista suosikkikuvake?"
-
-#: js/CommonDialogs.js:42
-msgid "Please select an image file to upload."
-msgstr "Valitse ladattava kuvatiedosto."
-
-#: js/CommonDialogs.js:43
-msgid "Upload new icon for this feed?"
-msgstr "Ladataanko uusi suosikkikuvake tälle syötteelle?"
-
-#: js/CommonDialogs.js:87
+#: js/CommonDialogs.js:19
 msgid "Subscribe to Feed"
 msgstr "Tilaa syöte"
 
-#: js/CommonDialogs.js:116
-msgid ""
-"Failed to parse output. This can indicate server timeout and/or network "
-"issues. Backend output was logged to browser console."
-msgstr ""
+#: js/CommonDialogs.js:53
+msgid "Available feeds"
+msgstr "Saatavilla olevat syötteet"
 
-#: js/CommonDialogs.js:131
-#, perl-format
-msgid "Subscribed to %s"
-msgstr "Tilattiin syöte %s"
+#: js/CommonDialogs.js:86
+msgid "This feed requires authentication."
+msgstr "Tämä syöte vaatii kirjautumisen."
 
-#: js/CommonDialogs.js:140
-msgid "Specified URL seems to be invalid."
-msgstr "Antamasi osoite on viallinen."
-
-#: js/CommonDialogs.js:143
-msgid "Specified URL doesn't seem to contain any feeds."
-msgstr "Antamassasi osoitteessa ei ole syötteitä."
-
-#: js/CommonDialogs.js:156
-#, fuzzy
-msgid "Expand to select feed"
-msgstr "Muokkaa valittuja syötteitä"
-
-#: js/CommonDialogs.js:168
-#, perl-format
-msgid "Couldn't download the specified URL: %s"
-msgstr "Osoitteen %s lataaminen epäonnistui"
-
-#: js/CommonDialogs.js:171
-#, perl-format
-msgid "XML validation failed: %s"
-msgstr "XML-tarkistus epäonnistui: %s"
-
-#: js/CommonDialogs.js:174
-msgid "You are already subscribed to this feed."
-msgstr "Olet jo tilannut tämän syötteen."
-
-#: js/CommonDialogs.js:193
-msgid "Feeds with update errors"
-msgstr "Virheelliset syötteet"
-
-#: js/CommonDialogs.js:201 js/PrefFeedTree.js:387
-msgid "Remove selected feeds?"
-msgstr "Poistetaanko valitut syötteet?"
-
-#: js/CommonDialogs.js:222 js/PrefFeedTree.js:172 js/PrefFeedTree.js:234
-#: js/PrefFeedTree.js:250 js/PrefFeedTree.js:406
-msgid "No feeds selected."
-msgstr "Yhtään syötettä ei ole valittuna."
-
-#: js/CommonDialogs.js:239
+#: js/CommonDialogs.js:283
 msgid "Please enter label caption:"
 msgstr "Syötä tunnisteen nimi:"
 
-#: js/CommonDialogs.js:263 js/CommonDialogs.js:299 js/App.js:1160
+#: js/CommonDialogs.js:302
+#: js/CommonDialogs.js:339
+#: js/App.js:1202
 #, perl-format
 msgid "Unsubscribe from %s?"
 msgstr "Perutaanko syötteen %s tilaus?"
 
-#: js/CommonDialogs.js:289 js/App.js:1012 js/App.js:1140
+#: js/CommonDialogs.js:328
+#: js/App.js:1054
+#: js/App.js:1182
 msgid "You can't edit this kind of feed."
 msgstr "Et voi muokata tämäntyyppistä syötettä."
 
-#: js/CommonDialogs.js:297
+#: js/CommonDialogs.js:336
 msgid "Edit Feed"
 msgstr "Muokkaa syötettä"
 
-#: js/CommonDialogs.js:334
-msgid "Generate new syndication address for this feed?"
-msgstr ""
+#: js/CommonDialogs.js:349
+#, fuzzy
+msgid "Please select an image file."
+msgstr "Valitse ladattava kuvatiedosto."
 
-#: js/CommonDialogs.js:369
-msgid "Public OPML URL"
-msgstr "Julkinen OPML URL"
+#: js/CommonDialogs.js:400
+msgid "Remove stored feed icon?"
+msgstr "Poista suosikkikuvake?"
 
-#: js/CommonFilters.js:119
-msgid "Edit action"
-msgstr "Muokkaa toimintoa"
+#: js/CommonFilters.js:170
+msgid "Edit rule"
+msgstr "Muokkaa sääntöä"
 
-#: js/CommonFilters.js:161
-#, perl-format
-msgid "Looking for articles (%d processed, %f found)..."
-msgstr ""
+#: js/CommonFilters.js:170
+msgid "Add rule"
+msgstr "Lisää sääntö"
 
-#: js/CommonFilters.js:190
-#, fuzzy, perl-format
-msgid "Found %d articles matching this filter:"
-msgstr "Suodatinta vastaavat artikkelit:"
+#: js/CommonFilters.js:412
+msgid "Enabled"
+msgstr "Aktivoitu"
 
-#: js/CommonFilters.js:246
-msgid "Create Filter"
-msgstr "Luo suodatin"
+#: js/CommonFilters.js:413
+msgid "Match any rule"
+msgstr "Täsmää ainakin yhteen säännöistä"
 
-#: js/CommonFilters.js:269
-msgid "Remove filter?"
-msgstr "Poista suodatin?"
+#: js/CommonFilters.js:414
+msgid "Inverse matching"
+msgstr "Käänteinen täsmäys"
 
-#: js/Feeds.js:227
+#: js/CommonFilters.js:478
+#: js/CommonFilters.js:446
+msgid "Add"
+msgstr "Lisää"
+
+#: js/Feeds.js:255
 #, fuzzy
 msgid "Your password is at default value"
 msgstr "Käytät vieläkin oletussalasanaa, se kannattaa vaihtaa."
 
-#: js/PrefFeedTree.js:38
+#: js/Headlines.js:991
+#, perl-format
+msgid "%d article selected"
+msgid_plural "%d articles selected"
+msgstr[0] "%d artikkeli valittu"
+msgstr[1] "%d artikkelia valittu"
+
+#: js/Headlines.js:1062
+#, perl-format
+msgid "Delete %d selected article in %s?"
+msgid_plural "Delete %d selected articles in %s?"
+msgstr[0] "Poista %d valittu artikkeli syötteessä %s?"
+msgstr[1] "Poista %d valittua artikkelia syötteessä %s?"
+
+#: js/Headlines.js:1064
+#, perl-format
+msgid "Delete %d selected article?"
+msgid_plural "Delete %d selected articles?"
+msgstr[0] "Poista %d valittu artikkeli?"
+msgstr[1] "Poista %d valittua artikkelia?"
+
+#: js/Headlines.js:1197
+#, perl-format
+msgid "Mark %d selected article in %s as read?"
+msgid_plural "Mark %d selected articles in %s as read?"
+msgstr[0] "Merkitäänkö %d valittu artikkeli syötteessä %s luetuksi?"
+msgstr[1] "Merkitäänkö %d valittua artikkelia syötteessä %s luetuiksi?"
+
+#: js/Headlines.js:1213
+msgid "No article is selected."
+msgstr "Yhtään artikkelia ei ole valittuna."
+
+#: js/Headlines.js:1248
+msgid "No articles found to mark"
+msgstr "Artikkeleita ei ole merkittäväksi"
+
+#: js/Headlines.js:1250
+#, perl-format
+msgid "Mark %d article as read?"
+msgid_plural "Mark %d articles as read?"
+msgstr[0] "Merkitäänkö %d artikkeli luetuksi?"
+msgstr[1] "Merkitäänkö %d artikkelia luetuiksi?"
+
+#: js/Headlines.js:1309
+msgid "Open original article"
+msgstr "Avaa alkuperäinen artikkeli"
+
+#: js/Headlines.js:1316
+msgid "Display article URL"
+msgstr "Näytä artikkelin osoite"
+
+#: js/Headlines.js:1423
+msgid "Assign label"
+msgstr "Liitä tunniste"
+
+#: js/Headlines.js:1428
+msgid "Remove label"
+msgstr "Poista tunniste"
+
+#: js/Headlines.js:1465
+#, fuzzy
+msgid "Select articles in group"
+msgstr "Valitse osoittimen kohdalla oleva artikkeli"
+
+#: js/Headlines.js:1475
+msgid "Mark group as read"
+msgstr "Merkitse ryhmä luetuiksi"
+
+#: js/Headlines.js:1487
+msgid "Mark feed as read"
+msgstr "Merkitse syöte luetuksi"
+
+#: js/PrefFeedTree.js:73
 msgid "Edit category"
 msgstr "Muokkaa kansiota"
 
-#: js/PrefFeedTree.js:45
+#: js/PrefFeedTree.js:80
 msgid "Remove category"
 msgstr "Poista kansio"
 
-#: js/PrefFeedTree.js:144
+#: js/PrefFeedTree.js:179
 #, perl-format
-msgid ""
-"Remove category %s? Any nested feeds would be placed into Uncategorized."
+msgid "Remove category %s? Any nested feeds would be placed into Uncategorized."
 msgstr ""
 
-#: js/PrefFeedTree.js:157
+#: js/PrefFeedTree.js:192
 msgid "Unsubscribe from selected feeds?"
 msgstr "Perutaanko valittujen syötteiden tilaukset?"
 
-#: js/PrefFeedTree.js:200
+#: js/PrefFeedTree.js:207
+#: js/PrefFeedTree.js:276
+#: js/PrefFeedTree.js:292
+#: js/CommonDialogs.js:230
+#: js/PrefFeedTree.js:497
+msgid "No feeds selected."
+msgstr "Yhtään syötettä ei ole valittuna."
+
+#: js/PrefFeedTree.js:242
 msgid "Remove selected categories?"
 msgstr "Haluatko poistaa valitun kansion?"
 
-#: js/PrefFeedTree.js:213
+#: js/PrefFeedTree.js:255
 #, fuzzy
 msgid "No categories selected."
 msgstr "Yhtään kansiota ei ole valittuna."
 
-#: js/PrefFeedTree.js:262
+#: js/PrefFeedTree.js:303
 msgid "Edit Multiple Feeds"
 msgstr "Muokkaa useampaa syötettä"
 
-#: js/PrefFeedTree.js:285
+#: js/PrefFeedTree.js:332
 msgid "Save changes to selected feeds?"
 msgstr "Tallenna valittujen syötteiden muutokset?"
 
-#: js/PrefFeedTree.js:322
+#: js/PrefFeedTree.js:369
 #, fuzzy
 msgid "Rename category to:"
 msgstr "Poista kansio"
 
-#: js/PrefFeedTree.js:334
+#: js/PrefFeedTree.js:381
 msgid "Category title:"
 msgstr "Kansion nimi:"
 
-#: js/PrefFeedTree.js:351
+#: js/PrefFeedTree.js:399
 msgid "Subscribing to feeds..."
 msgstr "Tilataan syötteet..."
 
-#: js/PrefFeedTree.js:379
-msgid "Feeds without recent updates"
-msgstr "Syötteet joissa ei ole tuoreita artikkeleita"
+#: js/PrefFeedTree.js:520
+msgid "Click to edit feed"
+msgstr "Napsauta muokataksesi syötettä"
+
+#: js/PrefFilterTree.js:47
+#: js/CommonFilters.js:220
+msgid "in"
+msgstr "kansiossa"
 
 #: js/PrefFilterTree.js:50
 msgid "Inverse"
 msgstr "Käänteiset valinnat"
 
-#: js/PrefFilterTree.js:110 js/PrefFilterTree.js:126 js/PrefFilterTree.js:156
+#: js/PrefFilterTree.js:110
+#: js/PrefFilterTree.js:139
 #, fuzzy
 msgid "No filters selected."
 msgstr "Yhtään suodatinta ei ole valittuna."
@@ -2682,11 +2497,7 @@ msgstr "Yhtään suodatinta ei ole valittuna."
 msgid "Combine selected filters?"
 msgstr "Yhdistetäänkö valitut suodattimet?"
 
-#: js/PrefFilterTree.js:131
-msgid "Please select only one filter."
-msgstr "Valitse vain yksi syöte."
-
-#: js/PrefFilterTree.js:143
+#: js/PrefFilterTree.js:126
 msgid "Remove selected filters?"
 msgstr "Poistetaanko valitut suodattimet?"
 
@@ -2695,196 +2506,301 @@ msgstr "Poistetaanko valitut suodattimet?"
 msgid "Remove selected app passwords?"
 msgstr "Haluatko poistaa valitun kansion?"
 
-#: js/PrefHelpers.js:44
+#: js/PrefHelpers.js:45
 msgid "This will invalidate all previously generated feed URLs. Continue?"
 msgstr "Kaikki luodut syöteosoitteet poistetaan. Jatketaanko?"
 
-#: js/PrefHelpers.js:76
+#: js/PrefHelpers.js:86
 #, fuzzy
 msgid "Clear event log?"
 msgstr "Tyhjennä loki"
 
-#: js/PrefHelpers.js:89
+#: js/PrefHelpers.js:100
 msgid "Settings Profiles"
 msgstr "Profiilien asetukset"
 
-#: js/PrefHelpers.js:97
-msgid ""
-"Remove selected profiles? Active and default profiles will not be removed."
-msgstr ""
-"Poistetaanko valitut profiilit? Aktiivisia ja oletusprofiilia ei poisteta."
+#: js/PrefHelpers.js:108
+msgid "Remove selected profiles? Active and default profiles will not be removed."
+msgstr "Poistetaanko valitut profiilit? Aktiivisia ja oletusprofiilia ei poisteta."
 
-#: js/PrefHelpers.js:112
+#: js/PrefHelpers.js:123
 #, fuzzy
 msgid "No profiles selected."
 msgstr "Yhtään profiilia ei ole valittuna."
 
-#: js/PrefHelpers.js:137
-msgid "Activate selected profile?"
-msgstr "Aktivoidaanko valittu profiili?"
+#: js/PrefLabelTree.js:71
+msgid "Label Editor"
+msgstr "Tunnisteiden muokkaus"
 
-#: js/PrefHelpers.js:146
-msgid "Please choose a profile to activate."
-msgstr "Valitse profiili jonka haluat aktivoida."
+#: js/PrefLabelTree.js:190
+msgid "Reset selected labels to default colors?"
+msgstr "Palautetaanko oletusväri valituille tunnisteille?"
 
-#: js/PrefHelpers.js:210
-msgid "Reset to defaults?"
-msgstr "Palautetaanko oletusasetukset?"
+#: js/PrefLabelTree.js:203
+#: js/PrefLabelTree.js:223
+msgid "No labels selected."
+msgstr "Yhtään tunnistetta ei ole valittuna."
 
-#: js/PrefHelpers.js:218
-msgid "Clear stored data for this plugin?"
-msgstr "Poistetaanko kaikki tämän lisäosan tallentamat tiedot?"
+#: js/PrefLabelTree.js:210
+msgid "Remove selected labels?"
+msgstr "Poistetaanko valitut tunnisteet?"
 
-#: js/PrefHelpers.js:237
-msgid "Please choose an OPML file first."
-msgstr "Valitse ensin OPML-tiedosto."
-
-#: js/PrefHelpers.js:249
-msgid "OPML Import"
-msgstr "OPML-tuonti"
-
-#: js/PrefHelpers.js:286
-msgid "Replace current OPML publishing address with a new one?"
-msgstr "Korvataanko nykyinen OPML-julkaisuosoite uudella?"
-
-#: js/common.js:216
+#: js/common.js:381
 msgid "Click to close"
 msgstr "Sulje napsauttamalla"
 
-#: plugins/af_psql_trgm/init.js:8
+#: plugins/af_psql_trgm/init.js:6
 msgid "Related articles"
 msgstr "Liittyvät artikkelit"
 
-#: plugins/mail/mail.js:20 plugins/mailto/init.js:20
+#: plugins/mail/mail.js:17
 msgid "Forward article by email"
 msgstr "Lähetä sähköpostilla"
 
-#: plugins/mail/mail.js:28
+#: plugins/mail/mail.js:25
 msgid "Error sending email:"
 msgstr "Virhe lähtettäessä sähköpostia:"
 
-#: plugins/share/share.js:9
+#: plugins/mailto/init.js:17
+#, fuzzy
+msgid "Forward article by email (mailto:)"
+msgstr "Lähetä sähköpostilla"
+
+#: plugins/share/share.js:7
 msgid "Share article by URL"
 msgstr "Jaa artikkeli URL:lla"
 
-#: plugins/share/share.js:11
+#: plugins/share/share.js:9
 msgid "Generate new share URL for this article?"
 msgstr "Luodaanko uusi jako-URL tälle artikkelille?"
 
-#: plugins/share/share.js:46
+#: plugins/share/share.js:42
 msgid "Remove sharing for this article?"
 msgstr "Poistetaanko tämän artikkelin jakaminen?"
 
-#: plugins/share/share_prefs.js:3
+#: plugins/share/share_prefs.js:5
 msgid "This will invalidate all previously shared article URLs. Continue?"
 msgstr "Kaikki jaettujen artikkeleiden osoitteet poistetaan. Jatketaanko?"
 
-#: js/App.js:400
+#: js/App.js:453
 msgid "Update daemon is not running."
 msgstr ""
 
-#: js/App.js:413
+#: js/App.js:466
 msgid "Update daemon is not updating feeds."
 msgstr ""
 
-#: js/App.js:557
+#: js/App.js:569
 msgid "Unhandled exception"
 msgstr "Käsittelemätön poikkeus"
 
-#: js/App.js:958
+#: js/App.js:1003
 #, fuzzy
 msgid "Please enable mail or mailto plugin first."
 msgstr "Aktivoi ensin email-lisäosa."
 
-#: js/App.js:1078
-#, fuzzy
-msgid "Please enable af_readability first."
-msgstr "Aktivoi ensin email-lisäosa."
-
-#: js/App.js:1091 js/App.js:1181
-msgid "Widescreen is not available in combined mode."
-msgstr "Leveä näyttö ei käytössä yhdistelmätilassa."
-
-#: js/App.js:1149
+#: js/App.js:1191
 msgid "Please select some feed first."
 msgstr "Valitse syötteet ensin."
 
-#: js/App.js:1154
+#: js/App.js:1196
 msgid "You can't unsubscribe from the category."
 msgstr "Et voi perua tämän kansion tilausta."
 
-#: js/Article.js:260
+#: js/Article.js:327
+msgid "Tags for this article (separated by commas):"
+msgstr "Tämän syötteen avainsanat (pilkulla erotettuina):"
+
+#: js/Article.js:347
 msgid "Saving article tags..."
 msgstr "Tallennetaan artikkelin avainsanat..."
 
-#: js/CommonDialogs.js:16
-msgid "Removing feed icon..."
-msgstr "Poistetaan suosikkikuvake..."
+#: js/CommonDialogs.js:30
+msgid "Provided URL is a HTML page referencing multiple feeds, please select required feed from the dropdown menu below."
+msgstr ""
 
-#: js/CommonDialogs.js:21
-msgid "Feed icon removed."
-msgstr "Suosikkikuvake poistettu."
+#: js/CommonDialogs.js:122
+msgid "Failed to parse output. This can indicate server timeout and/or network issues. Backend output was logged to browser console."
+msgstr ""
 
-#: js/CommonDialogs.js:44
-msgid "Uploading, please wait..."
-msgstr "Ladataan, odota..."
+#: js/CommonDialogs.js:136
+msgid "Subscribed to %s"
+msgstr "Tilattiin syöte %s"
 
-#: js/CommonDialogs.js:53
-msgid "Upload complete."
-msgstr "Lataus valmis."
+#: js/CommonDialogs.js:145
+msgid "Specified URL seems to be invalid."
+msgstr "Antamasi osoite on viallinen."
 
-#: js/CommonDialogs.js:68
+#: js/CommonDialogs.js:148
+msgid "Specified URL doesn't seem to contain any feeds."
+msgstr "Antamassasi osoitteessa ei ole syötteitä."
+
+#: js/CommonDialogs.js:161
+#, fuzzy
+msgid "Expand to select feed"
+msgstr "Muokkaa valittuja syötteitä"
+
+#: js/CommonDialogs.js:173
+msgid "Couldn't download the specified URL: %s"
+msgstr "Osoitteen %s lataaminen epäonnistui"
+
+#: js/CommonDialogs.js:176
+msgid "XML validation failed: %s"
+msgstr "XML-tarkistus epäonnistui: %s"
+
+#: js/CommonDialogs.js:179
+msgid "You are already subscribed to this feed."
+msgstr "Olet jo tilannut tämän syötteen."
+
+#: js/CommonDialogs.js:201
+msgid "Feeds with update errors"
+msgstr "Virheelliset syötteet"
+
+#: js/CommonDialogs.js:209
+#: js/PrefFeedTree.js:478
+msgid "Remove selected feeds?"
+msgstr "Poistetaanko valitut syötteet?"
+
+#: js/CommonDialogs.js:210
+#: js/PrefFeedTree.js:479
+msgid "Removing selected feeds..."
+msgstr "Poistetaan valitut syötteet..."
+
+#: js/CommonDialogs.js:305
+msgid "Removing feed..."
+msgstr "Poistetaan syöte..."
+
+#: js/CommonDialogs.js:369
 #, fuzzy
 msgid "Upload failed: icon is too big."
 msgstr "Lähettäminen epäonnistui virhekoodilla %d"
 
-#: js/CommonDialogs.js:71
+#: js/CommonDialogs.js:372
 #, fuzzy
 msgid "Upload failed."
 msgstr "Lataus valmis."
 
-#: js/CommonDialogs.js:202 js/PrefFeedTree.js:388
-msgid "Removing selected feeds..."
-msgstr "Poistetaan valitut syötteet..."
+#: js/CommonDialogs.js:376
+msgid "Upload complete."
+msgstr "Lataus valmis."
 
-#: js/CommonDialogs.js:266
-msgid "Removing feed..."
-msgstr "Poistetaan syöte..."
+#: js/CommonDialogs.js:401
+msgid "Removing feed icon..."
+msgstr "Poistetaan suosikkikuvake..."
 
-#: js/CommonDialogs.js:306 js/CommonFilters.js:304 js/PrefFeedTree.js:297
-#: js/PrefUsers.js:36
+#: js/CommonDialogs.js:406
+msgid "Feed icon removed."
+msgstr "Suosikkikuvake poistettu."
+
+#: js/CommonDialogs.js:426
+#: js/CommonFilters.js:391
+#: js/PrefFeedTree.js:344
+#: js/PrefUsers.js:39
 msgid "Saving data..."
 msgstr "Tallennetaan tiedot..."
 
-#: js/CommonDialogs.js:336 js/PrefHelpers.js:287
+#: js/CommonDialogs.js:568
+#, fuzzy
+msgid "Upload new icon..."
+msgstr "Ladataanko uusi suosikkikuvake tälle syötteelle?"
+
+#: js/CommonDialogs.js:597
+#, fuzzy
+msgid "Show as feed"
+msgstr "Tämä syöte"
+
+#: js/CommonDialogs.js:599
+msgid "Generate new syndication address for this feed?"
+msgstr ""
+
+#: js/CommonDialogs.js:601
+#: js/PrefHelpers.js:359
 msgid "Trying to change address..."
 msgstr "Vaihdetaan osoitetta..."
 
-#: js/CommonDialogs.js:356 js/PrefHelpers.js:303
+#: js/CommonDialogs.js:619
+#: js/PrefHelpers.js:373
 #, fuzzy
 msgid "Could not change feed URL."
 msgstr "Käyttäjää <b>%s</b> ei voitu luoda"
 
-#: js/CommonDialogs.js:371
-msgid "Your Public OPML URL is:"
-msgstr "Julkinen OPML URL:isi on:"
-
-#: js/CommonDialogs.js:411
+#: js/CommonDialogs.js:626
 #, fuzzy
 msgid "%s can be accessed via the following secret URL:"
 msgstr "Voit jakaa tämän artikkelin seuraavalla uniikilla osoitteella:"
 
-#: js/CommonFilters.js:97
-msgid "Edit rule"
-msgstr "Muokkaa sääntöä"
+#: js/CommonFilters.js:14
+msgid "Edit Filter"
+msgstr "Muokkaa suodatinta"
 
-#: js/CommonFilters.js:199
+#: js/CommonFilters.js:14
+msgid "Create Filter"
+msgstr "Luo suodatin"
+
+#: js/CommonFilters.js:41
+msgid "Looking for articles (%d processed, %f found)..."
+msgstr ""
+
+#: js/CommonFilters.js:70
+#, fuzzy
+msgid "Found %d articles matching this filter:"
+msgstr "Suodatinta vastaavat artikkelit:"
+
+#: js/CommonFilters.js:79
 msgid "Error while trying to get filter test results."
 msgstr ""
 
-#: js/CommonFilters.js:274
+#: js/CommonFilters.js:214
+msgid "Inverse regular expression matching"
+msgstr "Käänteinen täsmäys säännöllisellä lausekkeella"
+
+#: js/CommonFilters.js:218
+#, fuzzy
+msgid "on"
+msgstr "Ei mikään"
+
+#: js/CommonFilters.js:230
+#, fuzzy
+msgid "More info"
+msgstr "lisätietoja"
+
+#: js/CommonFilters.js:232
+msgid "Save rule"
+msgstr "Tallenna sääntö"
+
+#: js/CommonFilters.js:246
+msgid "Edit action"
+msgstr "Muokkaa toimintoa"
+
+#: js/CommonFilters.js:246
+msgid "Add action"
+msgstr "Lisää toiminto"
+
+#: js/CommonFilters.js:316
+msgid "Save action"
+msgstr "Tallenna toiminto"
+
+#: js/CommonFilters.js:356
+msgid "Remove filter?"
+msgstr "Poista suodatin?"
+
+#: js/CommonFilters.js:361
 msgid "Removing filter..."
 msgstr "Poistetaan suodatin..."
+
+#: js/CommonFilters.js:449
+#: js/CommonFilters.js:481
+msgid "Delete"
+msgstr "Poista"
+
+#: js/CommonFilters.js:515
+#: js/CommonFilters.js:519
+msgid "Test"
+msgstr "Kokeilu"
+
+#: js/CommonFilters.js:520
+msgid "Create"
+msgstr "Luo"
 
 #: js/FeedTree.js:102
 #, fuzzy
@@ -2896,218 +2812,196 @@ msgstr "Syötepäivityksen vianetsintä"
 msgid "(Un)collapse"
 msgstr "Piilota/näytä sivupalkki"
 
-#: js/Feeds.js:229
-msgid ""
-"You are using default tt-rss password. Please change it in the Preferences "
-"(Personal data / Authentication)."
+#: js/Feeds.js:257
+msgid "You are using default tt-rss password. Please change it in the Preferences (Personal data / Authentication)."
 msgstr ""
 
-#: js/Feeds.js:398
+#: js/Feeds.js:416
 msgid "Mark all articles as read?"
 msgstr "Merkitäänkö kaikki artikkelit luetuksi?"
 
-#: js/Feeds.js:402
+#: js/Feeds.js:420
 msgid "Marking all feeds as read..."
 msgstr "Merkitään kaikki syötteet luetuiksi..."
 
-#: js/Feeds.js:420
+#: js/Feeds.js:437
 #, fuzzy
 msgid "Mark %w in %s older than 1 day as read?"
-msgstr ""
-"Merkitäänkö kaikki päivää vanhemmat artikkelit syötteessä %s luetuiksi?"
+msgstr "Merkitäänkö kaikki päivää vanhemmat artikkelit syötteessä %s luetuiksi?"
 
-#: js/Feeds.js:423
+#: js/Feeds.js:440
 #, fuzzy
 msgid "Mark %w in %s older than 1 week as read?"
-msgstr ""
-"Merkitäänkö kaikki viikkoa vanhemmat artikkelit syötteessä %s luetuiksi?"
+msgstr "Merkitäänkö kaikki viikkoa vanhemmat artikkelit syötteessä %s luetuiksi?"
 
-#: js/Feeds.js:426
+#: js/Feeds.js:443
 #, fuzzy
 msgid "Mark %w in %s older than 2 weeks as read?"
-msgstr ""
-"Merkitäänkö kaikki kahta viikkoa vanhemmat artikkelit syötteessä %s "
-"luetuiksi?"
+msgstr "Merkitäänkö kaikki kahta viikkoa vanhemmat artikkelit syötteessä %s luetuiksi?"
 
-#: js/Feeds.js:429
+#: js/Feeds.js:446
 msgid "Mark %w in %s as read?"
 msgstr "Merkitäänkö %w syötteessä %s luetuiksi?"
 
-#: js/Feeds.js:432
+#: js/Feeds.js:449
 msgid "search results"
 msgstr "hakutulokset"
 
-#: js/Feeds.js:432
+#: js/Feeds.js:449
 msgid "all articles"
 msgstr "kaikki artikkelit"
 
-#: js/Feeds.js:475
+#: js/Feeds.js:490
 msgid "Mark all articles in %s as read?"
 msgstr "Merkitäänkö kaikki artikkelit syötteessä %s luetuiksi?"
 
-#: js/Headlines.js:647 js/Headlines.js:697 js/Headlines.js:714
-msgid "Click to open next unread feed."
-msgstr "Napsauta avataksesi seuraavan lukemattoman syötteen."
+#: js/Feeds.js:611
+msgid "Search syntax"
+msgstr "Haun syntaksi"
 
-#: js/Headlines.js:651
+#: js/Headlines.js:606
 msgid "Cancel search"
 msgstr "Peru haku"
 
-#: js/Headlines.js:711
+#: js/Headlines.js:614
+msgid "Select..."
+msgstr "Valitse…"
+
+#: js/Headlines.js:721
+#: js/Headlines.js:772
+#: js/Headlines.js:789
+msgid "Click to open next unread feed."
+msgstr "Napsauta avataksesi seuraavan lukemattoman syötteen."
+
+#: js/Headlines.js:786
 #, fuzzy
 msgid "New articles found, reload feed to continue."
 msgstr "Ei näytettäviä artikkeleita."
 
-#: js/Headlines.js:904
-msgid "%d article selected"
-msgid_plural "%d articles selected"
-msgstr[0] "%d artikkeli valittu"
-msgstr[1] "%d artikkelia valittu"
-
-#: js/Headlines.js:977
-msgid "Delete %d selected article in %s?"
-msgid_plural "Delete %d selected articles in %s?"
-msgstr[0] "Poista %d valittu artikkeli syötteessä %s?"
-msgstr[1] "Poista %d valittua artikkelia syötteessä %s?"
-
-#: js/Headlines.js:979
-msgid "Delete %d selected article?"
-msgid_plural "Delete %d selected articles?"
-msgstr[0] "Poista %d valittu artikkeli?"
-msgstr[1] "Poista %d valittua artikkelia?"
-
-#: js/Headlines.js:1116
-msgid "Mark %d selected article in %s as read?"
-msgid_plural "Mark %d selected articles in %s as read?"
-msgstr[0] "Merkitäänkö %d valittu artikkeli syötteessä %s luetuksi?"
-msgstr[1] "Merkitäänkö %d valittua artikkelia syötteessä %s luetuiksi?"
-
-#: js/Headlines.js:1132
-msgid "No article is selected."
-msgstr "Yhtään artikkelia ei ole valittuna."
-
-#: js/Headlines.js:1167
-msgid "No articles found to mark"
-msgstr "Artikkeleita ei ole merkittäväksi"
-
-#: js/Headlines.js:1169
-msgid "Mark %d article as read?"
-msgid_plural "Mark %d articles as read?"
-msgstr[0] "Merkitäänkö %d artikkeli luetuksi?"
-msgstr[1] "Merkitäänkö %d artikkelia luetuiksi?"
-
-#: js/Headlines.js:1214
-msgid "Open original article"
-msgstr "Avaa alkuperäinen artikkeli"
-
-#: js/Headlines.js:1221
-msgid "Display article URL"
-msgstr "Näytä artikkelin osoite"
-
-#: js/Headlines.js:1328
-msgid "Assign label"
-msgstr "Liitä tunniste"
-
-#: js/Headlines.js:1333
-msgid "Remove label"
-msgstr "Poista tunniste"
-
-#: js/Headlines.js:1370
-#, fuzzy
-msgid "Select articles in group"
-msgstr "Valitse osoittimen kohdalla oleva artikkeli"
-
-#: js/Headlines.js:1380
-msgid "Mark group as read"
-msgstr "Merkitse ryhmä luetuiksi"
-
-#: js/Headlines.js:1392
-msgid "Mark feed as read"
-msgstr "Merkitse syöte luetuksi"
-
-#: js/PrefFeedTree.js:145
+#: js/PrefFeedTree.js:180
 msgid "Removing category..."
 msgstr "Poistetaan kansio..."
 
-#: js/PrefFeedTree.js:159
+#: js/PrefFeedTree.js:194
 msgid "Unsubscribing from selected feeds..."
 msgstr "Perutaan valittujen syötteiden tilaukset..."
 
-#: js/PrefFeedTree.js:201
+#: js/PrefFeedTree.js:243
 msgid "Removing selected categories..."
 msgstr "Poistetaan valitut kansiot..."
 
-#: js/PrefFeedTree.js:337
+#: js/PrefFeedTree.js:384
 msgid "Creating category..."
 msgstr "Luodaan kansio..."
+
+#: js/PrefFeedTree.js:417
+#, fuzzy
+msgid "One valid feed per line (no detection is done)"
+msgstr "Lisää RSS-syötteitä riveittäin (syötteitä ei yritetä tunnistaa)"
+
+#: js/PrefFeedTree.js:470
+msgid "Feeds without recent updates"
+msgstr "Syötteet joissa ei ole tuoreita artikkeleita"
 
 #: js/PrefFilterTree.js:115
 msgid "Joining filters..."
 msgstr "Yhdistetään suodattimet..."
 
-#: js/PrefFilterTree.js:144
+#: js/PrefFilterTree.js:127
 msgid "Removing selected filters..."
 msgstr "Poistetaan valitut suodattimet..."
 
-#: js/PrefHelpers.js:45 plugins/share/share_prefs.js:4
+#: js/PrefHelpers.js:46
+#: plugins/share/share_prefs.js:6
 msgid "Clearing URLs..."
 msgstr "Poistetaan osoitteita..."
 
-#: js/PrefHelpers.js:48
+#: js/PrefHelpers.js:49
 msgid "Generated URLs cleared."
 msgstr "Luodut osoitteet poistettiin."
 
-#: js/PrefHelpers.js:98
+#: js/PrefHelpers.js:109
 msgid "Removing selected profiles..."
 msgstr "Poistetaan valitut profiilit..."
 
-#: js/PrefHelpers.js:117
+#: js/PrefHelpers.js:128
 msgid "Creating profile..."
 msgstr "Luodaan profiili..."
 
-#: js/PrefHelpers.js:175
+#: js/PrefHelpers.js:178
+msgid "(active)"
+msgstr "(aktiivinen)"
+
+#: js/PrefHelpers.js:199
+msgid "Activate selected profile?"
+msgstr "Aktivoidaanko valittu profiili?"
+
+#: js/PrefHelpers.js:208
+msgid "Please choose a profile to activate."
+msgstr "Valitse profiili jonka haluat aktivoida."
+
+#: js/PrefHelpers.js:239
 #, fuzzy
-msgid ""
-"You can override colors, fonts and layout of your currently selected theme "
-"with custom CSS declarations here."
-msgstr ""
-"Kirjoita tähän ne CSS-määrittelyt, jotka korvaavat tämänhetkisen teemasi "
-"värejä, fontteja ja sijoittelua. Voit käyttää pohjana <a target=\"_blank\" "
-"class=\"visibleLink\" href=\"%s\">tätä tiedostoa.</a>"
+msgid "You can override colors, fonts and layout of your currently selected theme with custom CSS declarations here."
+msgstr "Kirjoita tähän ne CSS-määrittelyt, jotka korvaavat tämänhetkisen teemasi värejä, fontteja ja sijoittelua. Voit käyttää pohjana <a target=\"_blank\" class=\"visibleLink\" href=\"%s\">tätä tiedostoa.</a>"
 
-#: js/PrefHelpers.js:184
-msgid ""
-"User CSS has been applied, you might need to reload the page to see all "
-"changes."
+#: js/PrefHelpers.js:248
+msgid "User CSS has been applied, you might need to reload the page to see all changes."
 msgstr ""
 
-#: js/PrefHelpers.js:240
+#: js/PrefHelpers.js:274
+msgid "Reset to defaults?"
+msgstr "Palautetaanko oletusasetukset?"
+
+#: js/PrefHelpers.js:282
+msgid "Clear stored data for this plugin?"
+msgstr "Poistetaanko kaikki tämän lisäosan tallentamat tiedot?"
+
+#: js/PrefHelpers.js:302
+msgid "Please choose an OPML file first."
+msgstr "Valitse ensin OPML-tiedosto."
+
+#: js/PrefHelpers.js:305
 msgid "Importing, please wait..."
 msgstr "Importoidaan, odota..."
 
-#: js/PrefHelpers.js:260
-msgid ""
-"If you have imported labels and/or filters, you might need to reload "
-"preferences to see your new data."
+#: js/PrefHelpers.js:314
+msgid "OPML Import"
+msgstr "OPML-tuonti"
+
+#: js/PrefHelpers.js:325
+msgid "If you have imported labels and/or filters, you might need to reload preferences to see your new data."
 msgstr ""
 
-#: js/PrefLabelTree.js:66
-msgid "Label Editor"
-msgstr "Tunnisteiden muokkaus"
+#: js/PrefHelpers.js:356
+msgid "Public OPML URL"
+msgstr "Julkinen OPML URL"
 
-#: js/PrefLabelTree.js:133
-msgid "Reset selected labels to default colors?"
-msgstr "Palautetaanko oletusväri valituille tunnisteille?"
+#: js/PrefHelpers.js:358
+msgid "Replace current OPML publishing address with a new one?"
+msgstr "Korvataanko nykyinen OPML-julkaisuosoite uudella?"
 
-#: js/PrefLabelTree.js:146 js/PrefLabelTree.js:166
-msgid "No labels selected."
-msgstr "Yhtään tunnistetta ei ole valittuna."
+#: js/PrefHelpers.js:381
+msgid "Your Public OPML URL is:"
+msgstr "Julkinen OPML URL:isi on:"
 
-#: js/PrefLabelTree.js:153
-msgid "Remove selected labels?"
-msgstr "Poistetaanko valitut tunnisteet?"
+#: js/PrefLabelTree.js:124
+msgid "Caption"
+msgstr "Nimi"
 
-#: js/PrefLabelTree.js:154
+#: js/PrefLabelTree.js:141
+msgid "Colors"
+msgstr "Värit"
+
+#: js/PrefLabelTree.js:145
+msgid "Foreground:"
+msgstr "Kirjasin:"
+
+#: js/PrefLabelTree.js:146
+msgid "Background:"
+msgstr "Tausta:"
+
+#: js/PrefLabelTree.js:211
 msgid "Removing selected labels..."
 msgstr "Poistetaan valitut tunnisteet..."
 
@@ -3120,64 +3014,225 @@ msgstr "Syötä käyttäjätunnus:"
 msgid "Adding user..."
 msgstr "Lisätään käyttäjä…"
 
-#: js/PrefUsers.js:33
+#: js/PrefUsers.js:36
 msgid "User Editor"
 msgstr "Käyttäjätunnusten muokkaus"
 
-#: js/PrefUsers.js:54 js/PrefUsers.js:93 js/PrefUsers.js:100
+#: js/PrefUsers.js:130
+#: js/PrefUsers.js:169
 #, fuzzy
 msgid "No users selected."
 msgstr "Käyttäjätunnuksia ei ole valittu."
 
-#: js/PrefUsers.js:59 js/PrefUsers.js:105
+#: js/PrefUsers.js:135
 #, fuzzy
 msgid "Please select one user."
 msgstr "Valitse ainakin yksi käyttäjätunnus."
 
-#: js/PrefUsers.js:63
+#: js/PrefUsers.js:139
 msgid "Reset password of selected user?"
 msgstr "Nollaa valittujen käyttäjien salasanat?"
 
-#: js/PrefUsers.js:64
+#: js/PrefUsers.js:140
 msgid "Resetting password for selected user..."
 msgstr "Nollataan valittujen käyttäjien salasanat..."
 
-#: js/PrefUsers.js:79
-msgid ""
-"Remove selected users? Neither default admin nor your account will be "
-"removed."
-msgstr ""
-"Poistetaanko valitut käyttäjät? Ylläpitäjän tai sinun tunnustasi ei poisteta."
+#: js/PrefUsers.js:155
+msgid "Remove selected users? Neither default admin nor your account will be removed."
+msgstr "Poistetaanko valitut käyttäjät? Ylläpitäjän tai sinun tunnustasi ei poisteta."
 
-#: js/PrefUsers.js:80
+#: js/PrefUsers.js:156
 msgid "Removing selected users..."
 msgstr "Poistetaan valitut käyttäjätunnukset..."
 
-#: plugins/note/note.js:12
+#: plugins/note/note.js:9
 msgid "Saving article note..."
 msgstr ""
 
-#: plugins/af_readability/init.js:29
+#: plugins/af_readability/init.js:31
 #, fuzzy
 msgid "Unable to fetch full text for this article"
 msgstr "Anna uusi pistemäärä tälle artikkelille:"
 
-#: plugins/shorten_expanded/init.js:42
+#: plugins/shorten_expanded/init.js:41
 msgid "Click to expand article"
 msgstr "Napsauta nähdäksesi koko artikkelin"
 
-#: plugins/share/share.js:13
+#: plugins/share/share.js:11
 msgid "Trying to change URL..."
 msgstr "Vaihdetaan osoitetta..."
 
-#: plugins/share/share.js:38
+#: plugins/share/share.js:34
 #, fuzzy
 msgid "Could not change URL."
 msgstr "Vaihdetaan osoitetta..."
 
-#: plugins/share/share_prefs.js:9
-msgid "Shared URLs cleared."
-msgstr "Jaetut osoitteet poistettiin."
+#~ msgid "This program requires XmlHttpRequest to function properly. Your browser doesn't seem to support it."
+#~ msgstr "Tämä sovellus edellyttää XmlHttpRequest-toimintoa. Selaimesi ei vaikuta tukevan sitä."
+
+#~ msgid "This program requires cookies to function properly. Your browser doesn't seem to support them."
+#~ msgstr "Tämä sovellus edellyttää evästeiden toimivan oikein. Selaimesi ei vaikuta tukevan evästeitä."
+
+#~ msgid "Request not authorized."
+#~ msgstr "Pyyntö ei ole sallittu."
+
+#~ msgid "Denied. Your access level is insufficient to access this page."
+#~ msgstr "Käyttäjäoikeutesi eivät riitä tämän sivun näyttämiseen."
+
+#~ msgid "Configuration check failed"
+#~ msgstr "Konfiguraation tarkastus epäonnistui"
+
+#~ msgid "Your version of MySQL is not currently supported. Please see official site for more information."
+#~ msgstr "MySQL-versiotasi ei tällä hetkellä tueta. Katso lisätietoja viralliselta sivustolta."
+
+#~ msgid "Method not found"
+#~ msgstr "Metodia ei löydy"
+
+#~ msgid "Plugin not found"
+#~ msgstr "Lisäosaa ei löydy"
+
+#~ msgid "Access level:"
+#~ msgstr "Käyttöoikeustaso:"
+
+#~ msgid "Match"
+#~ msgstr "Täsmäys"
+
+#~ msgid "Apply actions"
+#~ msgstr "Suorita toiminnot"
+
+#~ msgid "on field"
+#~ msgstr "kentässä"
+
+#~ msgid "Perform Action"
+#~ msgstr "Suorita toiminto"
+
+#, fuzzy
+#~ msgid "No actions available"
+#~ msgstr "Uusi versio saatavilla!"
+
+#~ msgid "Feed Title"
+#~ msgstr "Syötteen otsikko"
+
+#~ msgid "Feed URL"
+#~ msgstr "Syötteen osoite"
+
+#~ msgid "Site URL:"
+#~ msgstr "Sivuston URL-osoite:"
+
+#~ msgid "Site URL"
+#~ msgstr "Sivuston URL-osoite"
+
+#~ msgid "Update"
+#~ msgstr "Päivitä"
+
+#~ msgid "Interval:"
+#~ msgstr "Aikaväli:"
+
+#~ msgid "Login"
+#~ msgstr "Käyttäjätunnus"
+
+#~ msgid "Icon"
+#~ msgstr "Suosikkikuvake"
+
+#~ msgid "Replace"
+#~ msgstr "Vaihda"
+
+#~ msgid "Uploading, please wait..."
+#~ msgstr "Ladataan, odota..."
+
+#~ msgid "Clear colors"
+#~ msgstr "Poista värit"
+
+#~ msgid "One time passwords / Authenticator"
+#~ msgstr "Kertakäyttösalasanat"
+
+#~ msgid "Create profile"
+#~ msgstr "Luo profiili"
+
+#~ msgid "Remove selected profiles"
+#~ msgstr "Poista valitut profiilit"
+
+#~ msgid "Activate profile"
+#~ msgstr "Aktivoi profiili"
+
+#~ msgid "Your access level is insufficient to open this tab."
+#~ msgstr "Käyttäjäoikeutesi eivät ole riittävät tämän alasivun avaamiseen."
+
+#~ msgid "Edit"
+#~ msgstr "Muokkaa"
+
+#~ msgid "Edit user"
+#~ msgstr "Muokkaa käyttäjää"
+
+#~ msgid "Access level: "
+#~ msgstr "Käyttäjäoikeudet: "
+
+#~ msgid "User details"
+#~ msgstr "Käyttäjätiedot"
+
+#~ msgid "Subscribed feeds count"
+#~ msgstr "Tilattujen syötteiden määrä"
+
+#~ msgid "Access Level"
+#~ msgstr "Käyttäjäoikeudet"
+
+#~ msgid "Last login"
+#~ msgstr "Viimeisin kirjautuminen"
+
+#~ msgid "No users defined."
+#~ msgstr "Käyttäjätunnuksia ei määritelty."
+
+#~ msgid "No matching users found."
+#~ msgstr "Hakua vastaavia käyttäjätunnuksia ei löytynyt."
+
+#~ msgid "<b>Hint:</b> you need to fill in your login information if your feed requires authentication, except for Twitter feeds."
+#~ msgstr "<b>Vinkki:</b> sinun on annettava kirjautumistiedot jos syöte vaatii kirjautumisen, paitsi Twitter-syötteet."
+
+#~ msgid "Published & shared articles / Generated feeds"
+#~ msgstr "Julkaistut ja jaetut artikkelit / Luodut syötteet"
+
+#~ msgid "Unsubscribe from selected feeds"
+#~ msgstr "Lopeta valittujen syötteiden tilaukset"
+
+#~ msgid "Feeds require authentication."
+#~ msgstr "Syötteet vaativat kirjautumisen."
+
+#~ msgid "Last updated: %s"
+#~ msgstr "Päivitetty viimeksi: %s"
+
+#, fuzzy
+#~ msgid "Select articles"
+#~ msgstr "Valitse kaikki artikkelit"
+
+#~ msgid "Invert"
+#~ msgstr "Käännä"
+
+#~ msgid "Set score"
+#~ msgstr "Pisteytä"
+
+#~ msgid "Feed or site URL"
+#~ msgstr "Syötteen/sivuston osoite"
+
+#~ msgid "Search %s..."
+#~ msgstr "Etsi %s…"
+
+#~ msgid "unknown type"
+#~ msgstr "tuntematon tyyppi"
+
+#~ msgid "Attachments"
+#~ msgstr "Litteet"
+
+#~ msgid "Global settings"
+#~ msgstr "Yleiset asetukset"
+
+#~ msgid "Forward selected article(s) by email."
+#~ msgstr "Lähetä valitut artikkeli(t) sähköpostitse."
+
+#~ msgid "Help"
+#~ msgstr "Apua"
+
+#~ msgid "Please select only one filter."
+#~ msgstr "Valitse vain yksi syöte."
 
 #~ msgid "Create new account"
 #~ msgstr "Luo uusi käyttäjätili"
@@ -3253,15 +3308,8 @@ msgstr "Jaetut osoitteet poistettiin."
 #~ msgid "More Feeds"
 #~ msgstr "Lisää syötteitä"
 
-#~ msgid ""
-#~ "Remove selected feeds from the archive? Feeds with stored articles will "
-#~ "not be removed."
-#~ msgstr ""
-#~ "Poistetaanko valitut syötteet arkistosta? Syötteitä joissa on "
-#~ "tallennettuja artikkeleita ei poisteta."
-
-#~ msgid "Edit Filter"
-#~ msgstr "Muokkaa suodatinta"
+#~ msgid "Remove selected feeds from the archive? Feeds with stored articles will not be removed."
+#~ msgstr "Poistetaanko valitut syötteet arkistosta? Syötteitä joissa on tallennettuja artikkeleita ei poisteta."
 
 #~ msgid "Archive %d selected article in %s?"
 #~ msgid_plural "Archive %d selected articles in %s?"
@@ -3339,12 +3387,8 @@ msgstr "Jaetut osoitteet poistettiin."
 #~ msgid "Hide from Popular feeds"
 #~ msgstr "Piilota suosituista syötteistä"
 
-#~ msgid ""
-#~ "These feeds have not been updated with new content for 3 months (oldest "
-#~ "first):"
-#~ msgstr ""
-#~ "Näihin syötteisiin ei ole tullut uusia artikkeleita 3 kuukauteen "
-#~ "(vanhimmat ensin):"
+#~ msgid "These feeds have not been updated with new content for 3 months (oldest first):"
+#~ msgstr "Näihin syötteisiin ei ole tullut uusia artikkeleita 3 kuukauteen (vanhimmat ensin):"
 
 #~ msgid "Plugin"
 #~ msgstr "Lisäosa"
@@ -3354,12 +3398,6 @@ msgstr "Jaetut osoitteet poistettiin."
 
 #~ msgid "Author"
 #~ msgstr "Tekijä"
-
-#~ msgid "more info"
-#~ msgstr "lisätietoja"
-
-#~ msgid "More feeds"
-#~ msgstr "Lisää syötteitä"
 
 #~ msgid "Popular feeds"
 #~ msgstr "Suositut syötteet"
@@ -3376,9 +3414,7 @@ msgstr "Jaetut osoitteet poistettiin."
 
 #, fuzzy
 #~ msgid "Automatically opens next unread feed after marking one as read"
-#~ msgstr ""
-#~ "Avaa automaattisesti seuraava lukemattomia artikkeleita sisältävä syöte "
-#~ "kun edellinen on merkitty luetuksi"
+#~ msgstr "Avaa automaattisesti seuraava lukemattomia artikkeleita sisältävä syöte kun edellinen on merkitty luetuksi"
 
 #~ msgid "Other interface tips are available in the Tiny Tiny RSS wiki."
 #~ msgstr "Lisää käyttövinkkejä löydät Tiny Tiny RSS -wikistä."
@@ -3396,12 +3432,8 @@ msgstr "Jaetut osoitteet poistettiin."
 #~ msgid "Interface"
 #~ msgstr "Käyttöliittymä"
 
-#~ msgid ""
-#~ "When auto-detecting tags in articles these tags will not be applied "
-#~ "(comma-separated list)."
-#~ msgstr ""
-#~ "Näitä avainsanoja ei liitetä automaattisesti (pilkulla eroteltujen "
-#~ "luettelo)."
+#~ msgid "When auto-detecting tags in articles these tags will not be applied (comma-separated list)."
+#~ msgstr "Näitä avainsanoja ei liitetä automaattisesti (pilkulla eroteltujen luettelo)."
 
 #~ msgid "Automatically mark articles as read"
 #~ msgstr "Merkitse syötteet automaattisesti luetuksi"
@@ -3434,11 +3466,8 @@ msgstr "Jaetut osoitteet poistettiin."
 #~ msgid "Group headlines in virtual feeds"
 #~ msgstr "Ryhmittele otsikot virtuaalisyötteiksi"
 
-#~ msgid ""
-#~ "Special feeds, labels, and categories are grouped by originating feeds"
-#~ msgstr ""
-#~ "Erikoiset-syötteet, tunnisteet ja kansiot ryhmitellään alkuperäisen "
-#~ "syötteen mukaan"
+#~ msgid "Special feeds, labels, and categories are grouped by originating feeds"
+#~ msgstr "Erikoiset-syötteet, tunnisteet ja kansiot ryhmitellään alkuperäisen syötteen mukaan"
 
 #~ msgid "Feeds to subscribe, One per line"
 #~ msgstr "Tilattavat syötteet, yksi syöte riviä kohden"
@@ -3446,18 +3475,11 @@ msgstr "Jaetut osoitteet poistettiin."
 #~ msgid "Look for"
 #~ msgstr "Etsi"
 
-#~ msgid ""
-#~ "This option enables marking articles as read automatically while you "
-#~ "scroll article list."
-#~ msgstr ""
-#~ "Artikkelit merkitään automaattisesti luetuiksi kun artikkeliluetteloa "
-#~ "vieritetään."
+#~ msgid "This option enables marking articles as read automatically while you scroll article list."
+#~ msgstr "Artikkelit merkitään automaattisesti luetuiksi kun artikkeliluetteloa vieritetään."
 
-#~ msgid ""
-#~ "Shortest interval at which a feed will be checked for updates regardless "
-#~ "of update method"
-#~ msgstr ""
-#~ "Lyhyin aikaväli millä syötettä tarkistetaan riippumatta päivitystavasta"
+#~ msgid "Shortest interval at which a feed will be checked for updates regardless of update method"
+#~ msgstr "Lyhyin aikaväli millä syötettä tarkistetaan riippumatta päivitystavasta"
 
 #~ msgid "Uses UTC timezone"
 #~ msgstr "Käyttää UTC-aikavyöhykettä"
@@ -3477,22 +3499,14 @@ msgstr "Jaetut osoitteet poistettiin."
 #~ msgid "Access level"
 #~ msgstr "Käyttäjäoikeudet"
 
-#~ msgid ""
-#~ "One time passwords are currently enabled. Enter your current password "
-#~ "below to disable."
-#~ msgstr ""
-#~ "Kertakäyttösalasanat on käytössä. Anna nykyinen salasana poistaaksesi "
-#~ "käytöstä."
+#~ msgid "One time passwords are currently enabled. Enter your current password below to disable."
+#~ msgstr "Kertakäyttösalasanat on käytössä. Anna nykyinen salasana poistaaksesi käytöstä."
 
 #~ msgid "Enter your password"
 #~ msgstr "Syötä salasanasi"
 
-#~ msgid ""
-#~ "You will need a compatible Authenticator to use this. Changing your "
-#~ "password would automatically disable OTP."
-#~ msgstr ""
-#~ "Tarvitset yhteensopivan autentikointiohjelman. Salasanan vaihtaminen "
-#~ "poistaa kertakäyttösalasanat käytöstä."
+#~ msgid "You will need a compatible Authenticator to use this. Changing your password would automatically disable OTP."
+#~ msgstr "Tarvitset yhteensopivan autentikointiohjelman. Salasanan vaihtaminen poistaa kertakäyttösalasanat käytöstä."
 
 #~ msgid "Enter the generated one time password"
 #~ msgstr "Syötä luotu kertakäyttösalasana"
@@ -3520,16 +3534,11 @@ msgstr "Jaetut osoitteet poistettiin."
 #~ msgid "mark feed as read"
 #~ msgstr "Merkitse syöte luetuksi"
 
-#~ msgid ""
-#~ "You will need to reload Tiny Tiny RSS for plugin changes to take effect."
+#~ msgid "You will need to reload Tiny Tiny RSS for plugin changes to take effect."
 #~ msgstr "Päivitä sivu aktivoidaksesi lisäosiin tehdyt muutokset."
 
-#~ msgid ""
-#~ "Published articles are exported as a public RSS feed and can be "
-#~ "subscribed by anyone who knows the URL specified below."
-#~ msgstr ""
-#~ "Julkistetut artikkelit näkyvät julkisena RSS-syötteenä ja niitä voi lukea "
-#~ "ja tilata jokainen, joka tietää alla annetun osoitteen"
+#~ msgid "Published articles are exported as a public RSS feed and can be subscribed by anyone who knows the URL specified below."
+#~ msgstr "Julkistetut artikkelit näkyvät julkisena RSS-syötteenä ja niitä voi lukea ja tilata jokainen, joka tietää alla annetun osoitteen"
 
 #~ msgid "Trying to unshare..."
 #~ msgstr "Poistetaan jakaminen..."
@@ -3588,12 +3597,8 @@ msgstr "Jaetut osoitteet poistettiin."
 #~ msgid "Firefox integration"
 #~ msgstr "Firefox-integraatio"
 
-#~ msgid ""
-#~ "This Tiny Tiny RSS site can be used as a Firefox Feed Reader by clicking "
-#~ "the link below."
-#~ msgstr ""
-#~ "Tiny Tiny RSS -sivustoa voidaan käyttää Firefoxin syötelukijana "
-#~ "klikkaamalla alla olevaa linkkiä"
+#~ msgid "This Tiny Tiny RSS site can be used as a Firefox Feed Reader by clicking the link below."
+#~ msgstr "Tiny Tiny RSS -sivustoa voidaan käyttää Firefoxin syötelukijana klikkaamalla alla olevaa linkkiä"
 
 #~ msgid "Click here to register this site as a feed reader."
 #~ msgstr "Klikkaa tästä rekisteröidäksesi tämän sivuston syötelukijaksi."
@@ -3638,8 +3643,7 @@ msgstr "Jaetut osoitteet poistettiin."
 #~ msgstr "Uudelleenpisteytetään valitut syötteet..."
 
 #~ msgid "Rescore all articles? This operation may take a lot of time."
-#~ msgstr ""
-#~ "Uudelleenpisteytetäänkö kaikki artikkelit? Toiminto voi kestää kauan."
+#~ msgstr "Uudelleenpisteytetäänkö kaikki artikkelit? Toiminto voi kestää kauan."
 
 #~ msgid "Rescoring feeds..."
 #~ msgstr "Uudelleenpisteytetään syötteet..."
@@ -3656,16 +3660,8 @@ msgstr "Jaetut osoitteet poistettiin."
 #~ msgid "Publish article"
 #~ msgstr "Julkista artikkeli"
 
-#~ msgid ""
-#~ "Download more plugins at tt-rss.org <a class=\"visibleLink\" target="
-#~ "\"_blank\" href=\"http://tt-rss.org/forum/viewforum.php?f=22\">forums</a> "
-#~ "or <a target=\"_blank\" class=\"visibleLink\" href=\"http://tt-rss.org/"
-#~ "wiki/Plugins\">wiki</a>."
-#~ msgstr ""
-#~ "Lataa lisää lisäosia tt-rss.org:n <a class=\"visibleLink\" target=\"_blank"
-#~ "\" href=\"http://tt-rss.org/forum/viewforum.php?f=22\">foorumeilta</a> "
-#~ "tai <a target=\"_blank\" class=\"visibleLink\" href=\"http://tt-rss.org/"
-#~ "wiki/Plugins\">wikistä</a>."
+#~ msgid "Download more plugins at tt-rss.org <a class=\"visibleLink\" target=\"_blank\" href=\"http://tt-rss.org/forum/viewforum.php?f=22\">forums</a> or <a target=\"_blank\" class=\"visibleLink\" href=\"http://tt-rss.org/wiki/Plugins\">wiki</a>."
+#~ msgstr "Lataa lisää lisäosia tt-rss.org:n <a class=\"visibleLink\" target=\"_blank\" href=\"http://tt-rss.org/forum/viewforum.php?f=22\">foorumeilta</a> tai <a target=\"_blank\" class=\"visibleLink\" href=\"http://tt-rss.org/wiki/Plugins\">wikistä</a>."
 
 #~ msgid "Linked"
 #~ msgstr "Linkitetty"
@@ -3694,14 +3690,8 @@ msgstr "Jaetut osoitteet poistettiin."
 #~ msgid "Report to tt-rss.org"
 #~ msgstr "Ilmoita tt-rss.org:lle"
 
-#~ msgid ""
-#~ "Are you sure to report this exception to tt-rss.org? The report will "
-#~ "include information about your web browser and tt-rss configuration. Your "
-#~ "IP will be saved in the database."
-#~ msgstr ""
-#~ "Haluatko varmasti ilmoittaa tämän poikkeaman tt-rss.org:lle? Raportti "
-#~ "sisältää tietoja web-selaimestaasi ja tt-rss-konfiguraatiosta. IP-"
-#~ "osoitteesi talletetaan tietokantaan."
+#~ msgid "Are you sure to report this exception to tt-rss.org? The report will include information about your web browser and tt-rss configuration. Your IP will be saved in the database."
+#~ msgstr "Haluatko varmasti ilmoittaa tämän poikkeaman tt-rss.org:lle? Raportti sisältää tietoja web-selaimestaasi ja tt-rss-konfiguraatiosta. IP-osoitteesi talletetaan tietokantaan."
 
 #~ msgid "More..."
 #~ msgstr "Lisää..."
@@ -3835,9 +3825,6 @@ msgstr "Jaetut osoitteet poistettiin."
 #~ msgid "Published articles and generated feeds"
 #~ msgstr "Julkaistut artikkelit ja luodut syötteet"
 
-#~ msgid "Articles shared by URL"
-#~ msgstr "Osoitteen kautta jaetut artikkelit"
-
 #~ msgid "These feeds have not been updated because of errors:"
 #~ msgstr "Näitä syötteitä ei ole päivitetty virheiden vuoksi:"
 
@@ -3893,9 +3880,7 @@ msgstr "Jaetut osoitteet poistettiin."
 #~ msgid "Enable external API"
 #~ msgstr "Aktivoi ulkoinen API"
 
-#~ msgid ""
-#~ "When this option is enabled, headlines in Special feeds and Labels are "
-#~ "grouped by feeds"
+#~ msgid "When this option is enabled, headlines in Special feeds and Labels are grouped by feeds"
 #~ msgstr "Otsikot Erikoissyötteissä ja Tunnisteissa ryhmitellään syötteittäin"
 
 #~ msgid "Title or Content"

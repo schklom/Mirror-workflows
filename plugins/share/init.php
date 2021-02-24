@@ -16,18 +16,21 @@ class Share extends Plugin {
 		$host->add_hook($host::HOOK_PREFS_TAB_SECTION, $this);
 	}
 
+	function is_public_method($method) {
+		return $method == "get";
+	}
+
 	function get_js() {
-		return file_get_contents(dirname(__FILE__) . "/share.js");
+		return file_get_contents(__DIR__ . "/share.js");
 	}
 
 	function get_css() {
-		return file_get_contents(dirname(__FILE__) . "/share.css");
+		return file_get_contents(__DIR__ . "/share.css");
 	}
 
 	function get_prefs_js() {
-		return file_get_contents(dirname(__FILE__) . "/share_prefs.js");
+		return file_get_contents(__DIR__ . "/share_prefs.js");
 	}
-
 
 	function unshare() {
 		$id = $_REQUEST['id'];
@@ -36,31 +39,29 @@ class Share extends Plugin {
 			AND owner_uid = ?");
 		$sth->execute([$id, $_SESSION['uid']]);
 
-		print "OK";
+		print __("Article unshared");
 	}
 
 	function hook_prefs_tab_section($id) {
 		if ($id == "prefFeedsPublishedGenerated") {
+			?>
+			<hr/>
 
-			print "<h3>" . __("You can disable all articles shared by unique URLs here.") . "</h3>";
+			<h2><?= __("You can disable all articles shared by unique URLs here.") ?></h2>
 
-			print "<button class='alt-danger' dojoType='dijit.form.Button' onclick=\"return Plugins.Share.clearKeys()\">".
-				__('Unshare all articles')."</button> ";
-
-			print "</p>";
-
+			<button class='alt-danger' dojoType='dijit.form.Button' onclick="return Plugins.Share.clearKeys()">
+				<?= __('Unshare all articles') ?></button>
+			<?php
 		}
 	}
 
-	// Silent
 	function clearArticleKeys() {
 		$sth = $this->pdo->prepare("UPDATE ttrss_user_entries SET uuid = '' WHERE
 			owner_uid = ?");
 		$sth->execute([$_SESSION['uid']]);
 
-		return;
+		print __("Shared URLs cleared.");
 	}
-
 
 	function newkey() {
 		$id = $_REQUEST['id'];
@@ -70,26 +71,169 @@ class Share extends Plugin {
 			AND owner_uid = ?");
 		$sth->execute([$uuid, $id, $_SESSION['uid']]);
 
-		print json_encode(array("link" => $uuid));
+		print json_encode(["link" => $uuid]);
 	}
 
 	function hook_article_button($line) {
-		$img_class = $line['uuid'] ? "shared" : "";
+		$icon_class = !empty($line['uuid']) ? "is-shared" : "";
 
-		return "<i id='SHARE-IMG-".$line['int_id']."' class='material-icons icon-share $img_class'
+		return "<i class='material-icons icon-share share-icon-".$line['int_id']." $icon_class'
 			style='cursor : pointer' onclick=\"Plugins.Share.shareArticle(".$line['int_id'].")\"
 			title='".__('Share by URL')."'>link</i>";
 	}
 
-	function shareArticle() {
-		$param = $_REQUEST['param'];
+	function get() {
+		$uuid = clean($_REQUEST["key"] ?? "");
+
+		if ($uuid) {
+			$sth = $this->pdo->prepare("SELECT ref_id, owner_uid
+						FROM ttrss_user_entries WHERE uuid = ?");
+			$sth->execute([$uuid]);
+
+			if ($row = $sth->fetch()) {
+				header("Content-Type: text/html");
+
+				$id = $row["ref_id"];
+				$owner_uid = $row["owner_uid"];
+
+				$this->format_article($id, $owner_uid);
+
+				return;
+			}
+		}
+
+		header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+		print "Article not found.";
+	}
+
+	private function format_article($id, $owner_uid) {
+
+		$pdo = Db::pdo();
+
+		$sth = $pdo->prepare("SELECT id,title,link,content,feed_id,comments,int_id,lang,
+			".SUBSTRING_FOR_DATE."(updated,1,16) as updated,
+			(SELECT site_url FROM ttrss_feeds WHERE id = feed_id) as site_url,
+			(SELECT title FROM ttrss_feeds WHERE id = feed_id) as feed_title,
+			(SELECT hide_images FROM ttrss_feeds WHERE id = feed_id) as hide_images,
+			(SELECT always_display_enclosures FROM ttrss_feeds WHERE id = feed_id) as always_display_enclosures,
+			num_comments,
+			tag_cache,
+			author,
+			guid,
+			note
+			FROM ttrss_entries,ttrss_user_entries
+			WHERE	id = ? AND ref_id = id AND owner_uid = ?");
+		$sth->execute([$id, $owner_uid]);
+
+		if ($line = $sth->fetch()) {
+
+			$line["tags"] = Article::_get_tags($id, $owner_uid, $line["tag_cache"]);
+			unset($line["tag_cache"]);
+
+			$line["content"] = Sanitizer::sanitize($line["content"],
+				$line['hide_images'],
+				$owner_uid, $line["site_url"], false, $line["id"]);
+
+			PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE,
+				function ($result) use (&$line) {
+					$line = $result;
+				},
+				$line);
+
+			$enclosures = Article::_get_enclosures($line["id"]);
+			list ($og_image, $og_stream) = Article::_get_image($enclosures, $line['content'], $line["site_url"]);
+
+			$content_decoded = html_entity_decode($line["title"], ENT_NOQUOTES | ENT_HTML401);
+			$parsed_updated = TimeHelper::make_local_datetime($line["updated"], true, $owner_uid, true);
+
+			$line['content'] = DiskCache::rewrite_urls($line['content']);
+
+			ob_start();
+
+			?>
+			<!DOCTYPE html>
+			<html>
+				<head>
+					<meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
+					<title><?= $line["title"] ?></title>
+					<?= javascript_tag("js/common.js") ?>
+					<?= javascript_tag("js/utility.js") ?>
+					<style type='text/css'>
+						@media (prefers-color-scheme: dark) {
+						body {
+							background : #222;
+						}
+					}
+					body.css_loading * {
+						display : none;
+					}
+					</style>
+					<link rel='shortcut icon' type='image/png' href='images/favicon.png'>
+					<link rel='icon' type='image/png' sizes='72x72' href='images/favicon-72px.png'>
+
+					<meta property='og:title' content="<?= htmlspecialchars($content_decoded) ?>">
+					<meta property='og:description' content="<?= htmlspecialchars(
+						truncate_string(
+							preg_replace("/[\r\n\t]/", "",
+							preg_replace("/ {1,}/", " ",
+								strip_tags($content_decoded)
+							)
+						), 500, "...")) ?>">
+				</head>
+
+				<?php if ($og_image) { ?>
+					<meta property='og:image' content="<?= htmlspecialchars($og_image) ?>">
+				<?php } ?>
+
+				<body class='flat ttrss_utility ttrss_zoom css_loading'>
+					<div class='container'>
+
+					<?php if (!empty($line["link"])) { ?>
+						<h1>
+							<a target='_blank' rel='noopener noreferrer'
+								href="<?= htmlspecialchars($line["link"]) ?>"><?= htmlspecialchars($line["title"]) ?></a>
+						</h1>
+					<?php } else { ?>
+						<h1><?= $line["title"] ?></h1>
+					<?php } ?>
+
+					<div class='content post'>
+						<div class='header'>
+							<div class='row'>
+								<div><?= $line['author'] ?></div>
+								<div><?= $parsed_updated ?></div>
+							</div>
+						</div>
+
+						<div class='content' lang="<?= $line['lang'] ? $line['lang'] : "en" ?>">
+							<?= $line["content"] ?>
+						</div>
+					</div>
+				</body>
+			</html>
+			<?php
+
+			$rv = ob_get_contents();
+			ob_end_clean();
+
+			PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_FORMAT_ARTICLE,
+			function ($result) use (&$rv) {
+				$rv = $result;
+			},
+			$rv, $line);
+
+			print $rv;
+		}
+	}
+
+	function shareDialog() {
+		$id = (int)clean($_REQUEST['id'] ?? 0);
 
 		$sth = $this->pdo->prepare("SELECT uuid FROM ttrss_user_entries WHERE int_id = ?
 			AND owner_uid = ?");
-		$sth->execute([$param, $_SESSION['uid']]);
+		$sth->execute([$id, $_SESSION['uid']]);
 
 		if ($row = $sth->fetch()) {
-
 			$uuid = $row['uuid'];
 
 			if (!$uuid) {
@@ -97,42 +241,34 @@ class Share extends Plugin {
 
 				$sth = $this->pdo->prepare("UPDATE ttrss_user_entries SET uuid = ? WHERE int_id = ?
 					AND owner_uid = ?");
-				$sth->execute([$uuid, $param, $_SESSION['uid']]);
+				$sth->execute([$uuid, $id, $_SESSION['uid']]);
 			}
 
-			print "<header>" . __("You can share this article by the following unique URL:") . "</header>";
+			$url_path = $this->host->get_public_method_url($this, "get", ["key" => $uuid]);
+			?>
 
-			$url_path = get_self_url_prefix();
-			$url_path .= "/public.php?op=share&key=$uuid";
+			<header><?= __("You can share this article by the following unique URL:") ?></header>
 
-			print "<section>
+			<section>
 				<div class='panel text-center'>
-				<a id='gen_article_url' href='$url_path' target='_blank' rel='noopener noreferrer'>$url_path</a>
+					<a class='target-url' href="<?= htmlspecialchars($url_path) ?>"
+						target='_blank' rel='noopener noreferrer'><?= htmlspecialchars($url_path) ?></a>
 				</div>
-				</section>";
+			</section>
 
-			/* if (!label_find_id(__('Shared'), $_SESSION["uid"]))
-				label_create(__('Shared'), $_SESSION["uid"]);
-
-			label_add_article($ref_id, __('Shared'), $_SESSION['uid']); */
-
+			<?php
 
 		} else {
-			print "Article not found.";
+			print format_error(__("Article not found."));
 		}
 
-		print "<footer class='text-center'>";
-
-		print "<button dojoType='dijit.form.Button' onclick=\"return App.dialogOf(this).unshare()\">".
-			__('Unshare article')."</button>";
-
-		print "<button dojoType='dijit.form.Button' onclick=\"return App.dialogOf(this).newurl()\">".
-			__('Generate new URL')."</button>";
-
-		print "<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>".
-			__('Close this window')."</button>";
-
-		print "</footer>";
+		?>
+		<footer class='text-center'>
+			<?= \Controls\button_tag(__('Unshare article'), '', ['class' => 'alt-danger', 'onclick' => "App.dialogOf(this).unshare()"]) ?>
+			<?= \Controls\button_tag(__('Generate new URL'), '', ['onclick' => "App.dialogOf(this).newurl()"]) ?>
+			<?= \Controls\submit_tag(__("Close this window")) ?>
+		</footer>
+		<?php
 	}
 
 	function api_version() {

@@ -11,7 +11,7 @@ class Af_Comics_Gocomics extends Af_ComicFilter {
 
 	public function on_subscribe($url) {
 		if (preg_match('#^https?://www\.gocomics\.com/([-a-z0-9]+)$#i', $url))
-			return '<?xml version="1.0" encoding="utf-8"?>'; // Get is_html() to return false.
+			return '<?xml version="1.0" encoding="utf-8"?>'; // Get _is_html() to return false.
 		else
 			return false;
 	}

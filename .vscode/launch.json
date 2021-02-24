@@ -1,0 +1,23 @@
+{
+   "version": "0.2.0",
+   "configurations": [
+      {
+         "name": "Launch Chrome",
+         "request": "launch",
+         "type": "chrome",
+         "pathMapping": {
+            "/tt-rss/": "${workspaceFolder}"
+         },
+         "urlFilter": "*/tt-rss/*",
+         "runtimeExecutable": "chrome.exe",
+      },
+      {
+      "name": "Listen for XDebug",
+      "type": "php",
+      "request": "launch",
+      "pathMappings": {
+         "/var/www/html/tt-rss": "${workspaceRoot}",
+      },
+      "port": 9000
+  }]
+}

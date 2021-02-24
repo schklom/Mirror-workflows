@@ -1,19 +1,8 @@
 <?php
 
-class Pref_System extends Handler_Protected {
+class Pref_System extends Handler_Administrative {
 
 	private $log_page_limit = 15;
-
-	function before($method) {
-		if (parent::before($method)) {
-			if ($_SESSION["access_level"] < 10) {
-				print __("Your access level is insufficient to open this tab.");
-				return false;
-			}
-			return true;
-		}
-		return false;
-	}
 
 	function csrf_ignore($method) {
 		$csrf_ignored = array("index");
@@ -25,7 +14,16 @@ class Pref_System extends Handler_Protected {
 		$this->pdo->query("DELETE FROM ttrss_error_log");
 	}
 
-	private function log_viewer(int $page, int $severity) {
+	function getphpinfo() {
+		ob_start();
+		phpinfo();
+		$info = ob_get_contents();
+		ob_end_clean();
+
+		print preg_replace( '%^.*<body>(.*)</body>.*$%ms','$1', (string)$info);
+	}
+
+	private function _log_viewer(int $page, int $severity) {
 		$errno_values = [];
 
 		switch ($severity) {
@@ -62,125 +60,121 @@ class Pref_System extends Handler_Protected {
 			$total_pages = 0;
 		}
 
-		print "<div dojoType='dijit.layout.BorderContainer' gutters='false'>";
+		?>
+		<div dojoType='dijit.layout.BorderContainer' gutters='false'>
+			<div region='top' dojoType='fox.Toolbar'>
 
-		print "<div region='top' dojoType='fox.Toolbar'>";
+				<button dojoType='dijit.form.Button' onclick='Helpers.EventLog.refresh()'>
+					<?= __('Refresh') ?>
+				</button>
 
-		print "<button dojoType='dijit.form.Button'
-			onclick='Helpers.EventLog.refresh()'>".__('Refresh')."</button>";
+				<button dojoType='dijit.form.Button' <?= ($page <= 0 ? "disabled" : "") ?>
+					onclick='Helpers.EventLog.prevPage()'>
+					<?= __('&lt;&lt;') ?>
+				</button>
 
-		$prev_page_disabled = $page <= 0 ? "disabled" : "";
+				<button dojoType='dijit.form.Button' disabled>
+					<?= T_sprintf('Page %d of %d', $page+1, $total_pages+1) ?>
+				</button>
 
-		print "<button dojoType='dijit.form.Button' $prev_page_disabled
-			onclick='Helpers.EventLog.prevPage()'>".__('&lt;&lt;')."</button>";
+				<button dojoType='dijit.form.Button' <?= ($page >= $total_pages ? "disabled" : "") ?>
+					onclick='Helpers.EventLog.nextPage()'>
+					<?= __('&gt;&gt;') ?>
+				</button>
 
-		print "<button dojoType='dijit.form.Button' disabled>".T_sprintf('Page %d of %d', $page+1, $total_pages+1)."</button>";
+				<button dojoType='dijit.form.Button'
+					onclick='Helpers.EventLog.clear()'>
+					<?= __('Clear') ?>
+				</button>
 
-		$next_page_disabled = $page >= $total_pages ? "disabled" : "";
+				<div class='pull-right'>
+					<label><?= __("Severity:") ?></label>
 
-		print "<button dojoType='dijit.form.Button' $next_page_disabled
-			onclick='Helpers.EventLog.nextPage()'>".__('&gt;&gt;')."</button>";
+					<?= \Controls\select_hash("severity", $severity,
+						[
+							E_USER_ERROR => __("Errors"),
+							E_USER_WARNING => __("Warnings"),
+							E_USER_NOTICE => __("Everything")
+						], ["onchange"=> "Helpers.EventLog.refresh()"], "severity") ?>
+				</div>
+			</div>
 
-		print "<button dojoType='dijit.form.Button'
-			onclick='Helpers.EventLog.clear()'>".__('Clear')."</button>";
+			<div style="padding : 0px" dojoType="dijit.layout.ContentPane" region="center">
 
-		print "<div class='pull-right'>";
+				<table width='100%' class='event-log'>
 
-		print __("Severity:") . " ";
-		print_select_hash("severity", $severity,
-			[
-				E_USER_ERROR => __("Errors"),
-				E_USER_WARNING => __("Warnings"),
-				E_USER_NOTICE => __("Everything")
-			], 'dojoType="fox.form.Select" onchange="Helpers.EventLog.refresh()"');
+					<tr class='title'>
+						<td width='5%'><?= __("Error") ?></td>
+						<td><?= __("Filename") ?></td>
+						<td><?= __("Message") ?></td>
+						<td width='5%'><?= __("User") ?></td>
+						<td width='5%'><?= __("Date") ?></td>
+					</tr>
 
-		print "</div>"; # pull-right
+					<?php
+					$sth = $this->pdo->prepare("SELECT
+							errno, errstr, filename, lineno, created_at, login, context
+						FROM
+							ttrss_error_log LEFT JOIN ttrss_users ON (owner_uid = ttrss_users.id)
+						WHERE
+							$errno_filter_qpart
+						ORDER BY
+							ttrss_error_log.id DESC
+						LIMIT $limit OFFSET $offset");
 
-		print "</div>"; # toolbar
+					$sth->execute($errno_values);
 
-		print '<div style="padding : 0px" dojoType="dijit.layout.ContentPane" region="center">';
-
-		print "<table width='100%' class='event-log'>";
-
-		print "<tr class='title'>
-			<td width='5%'>".__("Error")."</td>
-			<td>".__("Filename")."</td>
-			<td>".__("Message")."</td>
-			<td width='5%'>".__("User")."</td>
-			<td width='5%'>".__("Date")."</td>
-			</tr>";
-
-		$sth = $this->pdo->prepare("SELECT
-				errno, errstr, filename, lineno, created_at, login, context
-			FROM
-				ttrss_error_log LEFT JOIN ttrss_users ON (owner_uid = ttrss_users.id)
-			WHERE
-				$errno_filter_qpart
-			ORDER BY
-				ttrss_error_log.id DESC
-			LIMIT $limit OFFSET $offset");
-
-		$sth->execute($errno_values);
-
-		while ($line = $sth->fetch()) {
-			print "<tr>";
-
-			foreach ($line as $k => $v) {
-				$line[$k] = htmlspecialchars($v);
-			}
-
-			print "<td class='errno'>" . Logger::$errornames[$line["errno"]] . " (" . $line["errno"] . ")</td>";
-			print "<td class='filename'>" . $line["filename"] . ":" . $line["lineno"] . "</td>";
-			print "<td class='errstr'>" . $line["errstr"] . "\n" .  $line["context"] . "</td>";
-			print "<td class='login'>" . $line["login"] . "</td>";
-
-			print "<td class='timestamp'>" .
-				TimeHelper::make_local_datetime($line["created_at"], false) . "</td>";
-
-			print "</tr>";
-		}
-
-		print "</table>";
+					while ($line = $sth->fetch()) {
+						foreach ($line as $k => $v) { $line[$k] = htmlspecialchars($v); }
+						?>
+						<tr>
+							<td class='errno'>
+								<?= Logger::$errornames[$line["errno"]] . " (" . $line["errno"] . ")" ?>
+							</td>
+							<td class='filename'><?= $line["filename"] . ":" . $line["lineno"] ?></td>
+							<td class='errstr'><?= $line["errstr"] . "\n" .  $line["context"] ?></td>
+							<td class='login'><?= $line["login"] ?></td>
+							<td class='timestamp'>
+								<?= TimeHelper::make_local_datetime($line["created_at"], false) ?>
+							</td>
+						</tr>
+					<?php } ?>
+				</table>
+			</div>
+		</div>
+		<?php
 	}
 
 	function index() {
 
 		$severity = (int) ($_REQUEST["severity"] ?? E_USER_WARNING);
 		$page = (int) ($_REQUEST["page"] ?? 0);
+		?>
+		<div dojoType='dijit.layout.AccordionContainer' region='center'>
+			<div dojoType='dijit.layout.AccordionPane' style='padding : 0' title='<i class="material-icons">report</i> <?= __('Event Log') ?>'>
+				<?php
+					if (Config::get(Config::LOG_DESTINATION) == "sql") {
+						$this->_log_viewer($page, $severity);
+					} else {
+						print_notice("Please set Config::get(Config::LOG_DESTINATION) to 'sql' in config.php to enable database logging.");
+					}
+				?>
+			</div>
 
-		print "<div dojoType='dijit.layout.AccordionContainer' region='center'>";
-		print "<div dojoType='dijit.layout.AccordionPane' style='padding : 0'
-			title='<i class=\"material-icons\">report</i> ".__('Event Log')."'>";
+			<div dojoType='dijit.layout.AccordionPane' title='<i class="material-icons">info</i> <?= __('PHP Information') ?>'>
+					<script type='dojo/method' event='onSelected' args='evt'>
+						if (this.domNode.querySelector('.loading'))
+							window.setTimeout(() => {
+								xhr.post("backend.php", {op: 'pref-system', method: 'getphpinfo'}, (reply) => {
+									this.attr('content', `<div class='phpinfo'>${reply}</div>`);
+								});
+							}, 200);
+					</script>
+					<span class='loading'><?= __("Loading, please wait...") ?></span>
+			</div>
 
-		if (LOG_DESTINATION == "sql") {
-
-			$this->log_viewer($page, $severity);
-
-		} else {
-			print_notice("Please set LOG_DESTINATION to 'sql' in config.php to enable database logging.");
-		}
-
-		print "</div>"; # content pane
-		print "</div>"; # container
-		print "</div>"; # accordion pane
-
-		print "<div dojoType='dijit.layout.AccordionPane'
-			title='<i class=\"material-icons\">info</i> ".__('PHP Information')."'>";
-
-		ob_start();
-		phpinfo();
-		$info = ob_get_contents();
-		ob_end_clean();
-
-		print "<div class='phpinfo'>";
-		print preg_replace( '%^.*<body>(.*)</body>.*$%ms','$1', $info);
-		print "</div>";
-
-		print "</div>"; # accordion pane
-
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefSystem");
-
-		print "</div>"; #container
+			<?php PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefSystem") ?>
+		</div>
+		<?php
 	}
-
 }

@@ -1,9 +1,11 @@
+/* global xhr, App, Plugins, Article, Notify */
+
 Plugins.Af_Readability = {
     orig_attr_name: 'data-readability-orig-content',
     self: this,
     embed: function(id) {
-        const content = $$(App.isCombinedMode() ? ".cdm[data-article-id=" + id + "] .content-inner" :
-            ".post[data-article-id=" + id + "] .content")[0];
+        const content = App.find(App.isCombinedMode() ? `.cdm[data-article-id="${id}"] .content-inner` :
+            `.post[data-article-id="${id}"] .content`);
 
         if (content.hasAttribute(self.orig_attr_name)) {
             content.innerHTML = content.getAttribute(self.orig_attr_name);
@@ -16,7 +18,7 @@ Plugins.Af_Readability = {
 
         Notify.progress("Loading, please wait...");
 
-        xhrJson("backend.php",{ op: "pluginhandler", plugin: "af_readability", method: "embed", param: id }, (reply) => {
+        xhr.json("backend.php", App.getPhArgs("af_readability", "embed", {id: id}), (reply) => {
 
             if (content && reply.content) {
                 content.setAttribute(self.orig_attr_name, content.innerHTML);

@@ -1,7 +1,12 @@
-function nsfwShow(elem) {
-	let content = elem.parentNode.getElementsBySelector("div.nswf.content")[0];
+/* global Plugins */
 
-	if (content) {
-		Element.toggle(content);
+Plugins.NSFW = {
+	toggle: function(elem) {
+		const content = elem.domNode.parentNode.querySelector(".nswf.content");
+
+		if (content) {
+			Element.toggle(content);
+		}
 	}
 }
+

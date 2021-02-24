@@ -19,6 +19,7 @@ class Auto_Assign_Labels extends Plugin {
 	function get_all_labels_filter_format($owner_uid) {
 		$rv = array();
 
+		// TODO: use Labels::get_all()
 		$sth = $this->pdo->prepare("SELECT id, fg_color, bg_color, caption FROM ttrss_labels2 WHERE owner_uid = ?");
 		$sth->execute([$owner_uid]);
 

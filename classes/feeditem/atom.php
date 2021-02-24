@@ -119,7 +119,7 @@ class FeedItem_Atom extends FeedItem_Common {
 		return $this->normalize_categories($cats);
 	}
 
-	function get_enclosures() {
+	function _get_enclosures() {
 		$links = $this->elem->getElementsByTagName("link");
 
 		$encs = array();
@@ -138,7 +138,7 @@ class FeedItem_Atom extends FeedItem_Common {
 			}
 		}
 
-		$encs = array_merge($encs, parent::get_enclosures());
+		$encs = array_merge($encs, parent::_get_enclosures());
 
 		return $encs;
 	}

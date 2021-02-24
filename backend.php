@@ -1,5 +1,5 @@
 <?php
-	set_include_path(dirname(__FILE__) ."/include" . PATH_SEPARATOR .
+	set_include_path(__DIR__ ."/include" . PATH_SEPARATOR .
 		get_include_path());
 
 	$op = $_REQUEST["op"];
@@ -26,9 +26,9 @@
 	require_once "autoload.php";
 	require_once "sessions.php";
 	require_once "functions.php";
-	require_once "config.php";
-	require_once "db.php";
-	require_once "db-prefs.php";
+
+	$op = (string)clean($op);
+	$method = (string)clean($method);
 
 	startup_gettext();
 
@@ -38,18 +38,14 @@
 
 	header("Content-Type: text/json; charset=utf-8");
 
-	if (ENABLE_GZIP_OUTPUT && function_exists("ob_gzhandler")) {
-		ob_start("ob_gzhandler");
-	}
-
-	if (SINGLE_USER_MODE) {
+	if (Config::get(Config::SINGLE_USER_MODE)) {
 		UserHelper::authenticate( "admin", null);
 	}
 
-	if ($_SESSION["uid"]) {
-		if (!validate_session()) {
+	if (!empty($_SESSION["uid"])) {
+		if (!\Sessions\validate_session()) {
 			header("Content-Type: text/json");
-			print error_json(6);
+			print Errors::to_json(Errors::E_UNAUTHORIZED);
 			return;
 		}
 		UserHelper::load_user_plugins($_SESSION["uid"]);
@@ -90,11 +86,29 @@
 		5 => __("Power User"),
 		10 => __("Administrator"));
 
+	// shortcut syntax for plugin methods (?op=plugin--pmethod&...params)
+	/* if (strpos($op, PluginHost::PUBLIC_METHOD_DELIMITER) !== false) {
+		list ($plugin, $pmethod) = explode(PluginHost::PUBLIC_METHOD_DELIMITER, $op, 2);
+
+		// TODO: better implementation that won't modify $_REQUEST
+		$_REQUEST["plugin"] = $plugin;
+		$method = $pmethod;
+		$op = "pluginhandler";
+	} */
+
+	// TODO: figure out if is this still needed
 	$op = str_replace("-", "_", $op);
 
 	$override = PluginHost::getInstance()->lookup_handler($op, $method);
 
 	if (class_exists($op) || $override) {
+
+		if (strpos($method, "_") === 0) {
+			user_error("Refusing to invoke method $method of handler $op which starts with underscore.", E_USER_WARNING);
+			header("Content-Type: text/json");
+			print Errors::to_json(Errors::E_UNAUTHORIZED);
+			return;
+		}
 
 		if ($override) {
 			$handler = $override;
@@ -114,8 +128,9 @@
 						if ($reflection->getNumberOfRequiredParameters() == 0) {
 							$handler->$method();
 						} else {
+							user_error("Refusing to invoke method $method of handler $op which has required parameters.", E_USER_WARNING);
 							header("Content-Type: text/json");
-							print error_json(6);
+							print Errors::to_json(Errors::E_UNAUTHORIZED);
 						}
 					} else {
 						if (method_exists($handler, "catchall")) {
@@ -126,18 +141,19 @@
 					return;
 				} else {
 					header("Content-Type: text/json");
-					print error_json(6);
+					print Errors::to_json(Errors::E_UNAUTHORIZED);
 					return;
 				}
 			} else {
+				user_error("Refusing to invoke method $method of handler $op with invalid CSRF token.", E_USER_WARNING);
 				header("Content-Type: text/json");
-				print error_json(6);
+				print Errors::to_json(Errors::E_UNAUTHORIZED);
 				return;
 			}
 		}
 	}
 
 	header("Content-Type: text/json");
-	print error_json(13);
+	print Errors::to_json(Errors::E_UNKNOWN_METHOD);
 
 ?>

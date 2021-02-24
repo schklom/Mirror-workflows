@@ -6,9 +6,8 @@ class Db_Prefs {
 
 	function __construct() {
 		$this->pdo = Db::pdo();
-		$this->cache = array();
-
-		if (!empty($_SESSION["uid"])) $this->cache();
+		$this->cache = [];
+		$this->cache_prefs();
 	}
 
 	private function __clone() {
@@ -22,31 +21,30 @@ class Db_Prefs {
 		return self::$instance;
 	}
 
-	function cache() {
-		$user_id = $_SESSION["uid"];
-		$profile = $_SESSION["profile"] ?? false;
+	private function cache_prefs() {
+		if (!empty($_SESSION["uid"])) {
+			$profile = $_SESSION["profile"] ?? false;
 
-		if (!is_numeric($profile) || !$profile || get_schema_version() < 63) $profile = null;
+			if (!is_numeric($profile) || !$profile || get_schema_version() < 63) $profile = null;
 
-		$sth = $this->pdo->prepare("SELECT
-			value,ttrss_prefs_types.type_name as type_name,ttrss_prefs.pref_name AS pref_name
-			FROM
-				ttrss_user_prefs,ttrss_prefs,ttrss_prefs_types
-			WHERE
-				(profile = :profile OR (:profile IS NULL AND profile IS NULL)) AND
-				ttrss_prefs.pref_name NOT LIKE '_MOBILE%' AND
-				ttrss_prefs_types.id = type_id AND
-				owner_uid = :uid AND
-				ttrss_user_prefs.pref_name = ttrss_prefs.pref_name");
+			$sth = $this->pdo->prepare("SELECT up.pref_name, pt.type_name, up.value
+				 FROM	ttrss_user_prefs up
+					JOIN ttrss_prefs p ON (up.pref_name = p.pref_name)
+					JOIN ttrss_prefs_types pt ON (p.type_id = pt.id)
+				WHERE
+					up.pref_name NOT LIKE '_MOBILE%' AND
+					(profile = :profile OR (:profile IS NULL AND profile IS NULL)) AND
+					owner_uid = :uid");
 
-		$sth->execute([":profile" => $profile, ":uid" => $user_id]);
+			$sth->execute([":profile" => $profile, ":uid" => $_SESSION["uid"]]);
 
-		while ($line = $sth->fetch()) {
-			if ($user_id == $_SESSION["uid"]) {
-				$pref_name = $line["pref_name"];
+			while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+				$pref_name = $row["pref_name"];
 
-				$this->cache[$pref_name]["type"] = $line["type_name"];
-				$this->cache[$pref_name]["value"] = $line["value"];
+				$this->cache[$pref_name] = [
+					"type" => $row["type_name"],
+					"value" => $row["value"]
+				];
 			}
 		}
 	}
@@ -67,35 +65,37 @@ class Db_Prefs {
 
 		if (!is_numeric($profile) || !$profile || get_schema_version() < 63) $profile = null;
 
-		$sth = $this->pdo->prepare("SELECT
-			value,ttrss_prefs_types.type_name as type_name
-			FROM
-				ttrss_user_prefs,ttrss_prefs,ttrss_prefs_types
+		$sth = $this->pdo->prepare("SELECT up.pref_name, pt.type_name, up.value
+			FROM ttrss_user_prefs up
+				JOIN ttrss_prefs p ON (up.pref_name = p.pref_name)
+				JOIN ttrss_prefs_types pt ON (p.type_id = pt.id)
 			WHERE
+				up.pref_name = :pref_name AND
 				(profile = :profile OR (:profile IS NULL AND profile IS NULL)) AND
-				ttrss_user_prefs.pref_name = :pref_name AND
-				ttrss_prefs_types.id = type_id AND
-				owner_uid = :uid AND
-				ttrss_user_prefs.pref_name = ttrss_prefs.pref_name");
+				owner_uid = :uid");
+
 		$sth->execute([":uid" => $user_id, ":profile" => $profile, ":pref_name" => $pref_name]);
 
-		if ($row = $sth->fetch()) {
+		if ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
 			$value = $row["value"];
 			$type_name = $row["type_name"];
 
 			if ($user_id == ($_SESSION["uid"] ?? false)) {
-				$this->cache[$pref_name]["type"] = $type_name;
-				$this->cache[$pref_name]["value"] = $value;
+				$this->cache[$pref_name] = [
+					"type" => $row["type_name"],
+					"value" => $row["value"]
+				];
 			}
 
 			return $this->convert($value, $type_name);
 
 		} else if ($die_on_error) {
-			user_error("Fatal error, unknown preferences key: $pref_name (owner: $user_id)", E_USER_ERROR);
-			return null;
+			user_error("Failed retrieving preference $pref_name for user $user_id", E_USER_ERROR);
 		} else {
-			return null;
+			user_error("Failed retrieving preference $pref_name for user $user_id", E_USER_WARNING);
 		}
+
+		return null;
 	}
 
 	function convert($value, $type_name) {

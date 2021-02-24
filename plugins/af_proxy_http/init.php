@@ -50,8 +50,14 @@ class Af_Proxy_Http extends Plugin {
 	public function imgproxy() {
 		$url = UrlHelper::validate(clean($_REQUEST["url"]));
 
-		// called without user context, let's just redirect to original URL
-		if (!$_SESSION["uid"] || $_REQUEST['af_proxy_http_token'] != $_SESSION['af_proxy_http_token']) {
+		// immediately redirect to original URL if:
+		// - url points back to ourselves
+		// - called without user context
+		// - session-spefific token is invalid
+		if (
+			strpos($url, get_self_url_prefix()) === 0 ||
+			empty($_SESSION["uid"]) ||
+			$_REQUEST['af_proxy_http_token'] != $_SESSION['af_proxy_http_token']) {
 			header("Location: $url");
 			return;
 		}
@@ -59,14 +65,14 @@ class Af_Proxy_Http extends Plugin {
 		$local_filename = sha1($url);
 
 		if ($this->cache->exists($local_filename)) {
-			header("Location: " . $this->cache->getUrl($local_filename));
+			header("Location: " . $this->cache->get_url($local_filename));
 			return;
 		} else {
-			$data = UrlHelper::fetch(["url" => $url, "max_size" => MAX_CACHE_FILE_SIZE]);
+			$data = UrlHelper::fetch(["url" => $url, "max_size" => Config::get(Config::MAX_CACHE_FILE_SIZE)]);
 
 			if ($data) {
 				if ($this->cache->put($local_filename, $data)) {
-					header("Location: " . $this->cache->getUrl($local_filename));
+					header("Location: " . $this->cache->get_url($local_filename));
 					return;
 				}
 			} else {
@@ -104,6 +110,11 @@ class Af_Proxy_Http extends Plugin {
 	}
 
 	private function rewrite_url_if_needed($url, $all_remote = false) {
+		/* don't rewrite urls pointing to ourselves */
+
+		if (strpos($url, get_self_url_prefix()) === 0)
+			return $url;
+
 		/* we don't need to handle URLs where local cache already exists, tt-rss rewrites those automatically */
 		if (!$this->cache->exists(sha1($url))) {
 
@@ -198,43 +209,41 @@ class Af_Proxy_Http extends Plugin {
 
 	function hook_prefs_tab($args) {
 		if ($args != "prefFeeds") return;
+		?>
 
-		print "<div dojoType=\"dijit.layout.AccordionPane\"
-			title=\"<i class='material-icons'>extension</i> ".__('Image proxy settings (af_proxy_http)')."\">";
+		<div dojoType="dijit.layout.AccordionPane"
+			title="<i class='material-icons'>extension</i> <?= __('Image proxy settings (af_proxy_http)') ?>">
 
-		print "<form dojoType=\"dijit.form.Form\">";
+			<form dojoType="dijit.form.Form">
 
-		print "<script type=\"dojo/method\" event=\"onSubmit\" args=\"evt\">
-			evt.preventDefault();
-			if (this.validate()) {
-				console.log(dojo.objectToQuery(this.getValues()));
-				new Ajax.Request('backend.php', {
-					parameters: dojo.objectToQuery(this.getValues()),
-					onComplete: function(transport) {
-						Notify.info(transport.responseText);
+				<?= \Controls\pluginhandler_tags($this, "save") ?>
+
+				<script type="dojo/method" event="onSubmit" args="evt">
+					evt.preventDefault();
+					if (this.validate()) {
+						xhr.post("backend.php", this.getValues(), (reply) => {
+							Notify.info(reply);
+						})
 					}
-				});
-				//this.reset();
-			}
-			</script>";
+				</script>
 
-		print_hidden("op", "pluginhandler");
-		print_hidden("method", "save");
-		print_hidden("plugin", "af_proxy_http");
+				<fieldset>
+					<label class="checkbox">
+						<?= \Controls\checkbox_tag("proxy_all", $this->host->get($this, "proxy_all")) ?>
+						<?=  __("Enable proxy for all remote images.") ?>
+					</label>
+				</fieldset>
 
-		$proxy_all = $this->host->get($this, "proxy_all");
-		print_checkbox("proxy_all", $proxy_all);
-		print "&nbsp;<label for=\"proxy_all\">" . __("Enable proxy for all remote images.") . "</label><br/>";
+				<hr/>
 
-		print "<p>"; print_button("submit", __("Save"));
-
-		print "</form>";
-
-		print "</div>";
+				<?= \Controls\submit_tag(__("Save")) ?>
+			</form>
+		</div>
+		<?php
 	}
 
 	function save() {
-		$proxy_all = checkbox_to_sql_bool($_POST["proxy_all"]);
+		$proxy_all = checkbox_to_sql_bool($_POST["proxy_all"] ?? "");
 
 		$this->host->set($this, "proxy_all", $proxy_all);
 

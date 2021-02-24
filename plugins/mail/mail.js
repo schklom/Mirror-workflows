@@ -1,4 +1,4 @@
-/* global Plugins, Headlines, xhrJson, Notify, fox, __ */
+/* global Plugins, Headlines, dojo, App, xhr, Notify, fox, __ */
 
 Plugins.Mail = {
 	send: function(id) {
@@ -13,14 +13,11 @@ Plugins.Mail = {
 			id = ids.toString();
 		}
 
-		const query = "backend.php?op=pluginhandler&plugin=mail&method=emailArticle&param=" + encodeURIComponent(id);
-
 		const dialog = new fox.SingleUseDialog({
-			id: "emailArticleDlg",
 			title: __("Forward article by email"),
 			execute: function () {
 				if (this.validate()) {
-					xhrJson("backend.php", this.attr('value'), (reply) => {
+					xhr.json("backend.php", this.attr('value'), (reply) => {
 						if (reply) {
 							const error = reply['error'];
 
@@ -35,16 +32,16 @@ Plugins.Mail = {
 					});
 				}
 			},
-			href: query
+			content: __("Loading, please wait...")
 		});
 
-		/* var tmph = dojo.connect(dialog, 'onLoad', function() {
-		dojo.disconnect(tmph);
+		const tmph = dojo.connect(dialog, 'onShow', function () {
+			dojo.disconnect(tmph);
 
-		   new Ajax.Autocompleter('emailArticleDlg_destination', 'emailArticleDlg_dst_choices',
-			   "backend.php?op=pluginhandler&plugin=mail&method=completeEmails",
-			   { tokens: '', paramName: "search" });
-		}); */
+			xhr.post("backend.php", App.getPhArgs("mail", "emailArticle", {ids: id}), (reply) => {
+				dialog.attr('content', reply);
+			});
+		});
 
 		dialog.show();
 	},

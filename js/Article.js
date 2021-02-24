@@ -1,7 +1,7 @@
 'use strict'
 
 /* eslint-disable no-new */
-/* global __, ngettext, App, Headlines, xhrPost, xhrJson, dojo, dijit, PluginHost, Notify, $$, Ajax, fox */
+/* global __, ngettext, App, Headlines, xhr, dojo, dijit, PluginHost, Notify, fox */
 
 const Article = {
 	_scroll_reset_timeout: false,
@@ -36,19 +36,19 @@ const Article = {
 			const score = prompt(__("Please enter new score for selected articles:"));
 
 			if (!isNaN(parseInt(score))) {
-				ids.each((id) => {
-					const row = $("RROW-" + id);
+				ids.forEach((id) => {
+					const row = App.byId(`RROW-${id}`);
 
 					if (row) {
 						row.setAttribute("data-score", score);
 
-						const pic = row.select(".icon-score")[0];
+						const pic = row.querySelector(".icon-score");
 
 						pic.innerHTML = Article.getScorePic(score);
 						pic.setAttribute("title", score);
 
 						["score-low", "score-high", "score-half-low", "score-half-high", "score-neutral"]
-							.each(function(scl) {
+							.forEach(function(scl) {
 								if (row.hasClassName(scl))
 									row.removeClassName(scl);
 							});
@@ -63,7 +63,7 @@ const Article = {
 		}
 	},
 	setScore: function (id, pic) {
-		const row = pic.up("div[id*=RROW]");
+		const row = pic.closest("div[id*=RROW]");
 
 		if (row) {
 			const score_old = row.getAttribute("data-score");
@@ -72,13 +72,13 @@ const Article = {
 			if (!isNaN(parseInt(score))) {
 				row.setAttribute("data-score", score);
 
-				const pic = row.select(".icon-score")[0];
+				const pic = row.querySelector(".icon-score");
 
 				pic.innerHTML = Article.getScorePic(score);
 				pic.setAttribute("title", score);
 
 				["score-low", "score-high", "score-half-low", "score-half-high", "score-neutral"]
-					.each(function(scl) {
+					.forEach(function(scl) {
 						if (row.hasClassName(scl))
 							row.removeClassName(scl);
 					});
@@ -93,18 +93,8 @@ const Article = {
 		w.opener = null;
 		w.location = url;
 	},
-	/* popupOpenArticle: function(id) {
-		const w = window.open("",
-			"ttrss_article_popup",
-			"height=900,width=900,resizable=yes,status=no,location=no,menubar=no,directories=no,scrollbars=yes,toolbar=no");
-
-		if (w) {
-			w.opener = null;
-			w.location = "backend.php?op=article&method=view&mode=raw&html=1&zoom=1&id=" + id + "&csrf_token=" + App.getInitParam("csrf_token");
-		}
-	}, */
 	cdmUnsetActive: function (event) {
-		const row = $("RROW-" + Article.getActive());
+		const row = App.byId(`RROW-${Article.getActive()}`);
 
 		if (row) {
 			row.removeClassName("active");
@@ -123,11 +113,13 @@ const Article = {
 		Article.setActive(0);
 	},
 	displayUrl: function (id) {
-		const query = {op: "rpc", method: "getlinktitlebyid", id: id};
+		const query = {op: "article", method: "getmetadatabyid", id: id};
 
-		xhrJson("backend.php", query, (reply) => {
+		xhr.json("backend.php", query, (reply) => {
 			if (reply && reply.link) {
 				prompt(__("Article URL:"), reply.link);
+			} else {
+				alert(__("No URL could be displayed for this article."));
 			}
 		});
 	},
@@ -137,6 +129,77 @@ const Article = {
 			{ "op": "article", "method": "redirect", "id": id, "csrf_token": __csrf_token });
 
 		Headlines.toggleUnread(id, 0);
+	},
+	renderNote: function (id, note) {
+		return `<div class="article-note" data-note-for="${id}" style="display : ${note ? "" : "none"}">
+				${App.FormFields.icon('note')} <div onclick class='body'>${note ? App.escapeHtml(note) : ""}</div>
+			</div>`;
+	},
+	renderTags: function (id, tags) {
+		const tags_short = tags.length > 5 ? tags.slice(0, 5) : tags;
+
+		return `<span class="tags" title="${tags.join(", ")}" data-tags-for="${id}">
+			${tags_short.length > 0 ? tags_short.map((tag) => `
+				<a href="#" onclick="Feeds.open({feed: '${tag.trim()}'})" class="tag">${tag}</a>`
+			).join(", ") : `${__("no tags")}`}</span>`;
+	},
+	renderLabels: function(id, labels) {
+		return `<span class="labels" data-labels-for="${id}">${labels.map((label) => `
+			<span class="label" data-label-id="${label[0]}"
+					style="color : ${label[2]}; background-color : ${label[3]}">${App.escapeHtml(label[1])}</span>`
+		).join("")}</span>`;
+	},
+	renderEnclosures: function (enclosures) {
+		return `
+				${enclosures.formatted}
+				${enclosures.can_inline ?
+					`<div class='attachments-inline'>
+						${enclosures.entries.map((enc) => {
+							if (!enclosures.inline_text_only) {
+								if (enc.content_type && enc.content_type.indexOf("image/") != -1) {
+									return `<p>
+										<img loading="lazy"
+											width="${enc.width ? enc.width : ''}"
+											height="${enc.height ? enc.height : ''}"
+											src="${App.escapeHtml(enc.content_url)}"
+											title="${App.escapeHtml(enc.title ? enc.title : enc.content_url)}"/>
+									</p>`
+								} else if (enc.content_type && enc.content_type.indexOf("audio/") != -1 && App.audioCanPlay(enc.content_type)) {
+									return `<p class='inline-player' title="${App.escapeHtml(enc.content_url)}">
+										<audio preload="none" controls="controls">
+											<source type="${App.escapeHtml(enc.content_type)}" src="${App.escapeHtml(enc.content_url)}"/>
+										</audio>
+									</p>
+									`;
+								} else {
+									return `<p>
+										<a target="_blank" href="${App.escapeHtml(enc.content_url)}"
+											title="${App.escapeHtml(enc.title ? enc.title : enc.content_url)}"
+											rel="noopener noreferrer">${App.escapeHtml(enc.content_url)}</a>
+										</p>`
+								}
+							} else {
+								return `<p>
+									<a target="_blank" href="${App.escapeHtml(enc.content_url)}"
+										title="${App.escapeHtml(enc.title ? enc.title : enc.content_url)}"
+										rel="noopener noreferrer">${App.escapeHtml(enc.content_url)}</a>
+									</p>`
+							}
+						}).join("")}
+					</div>` : ''}
+			${enclosures.entries.length > 0 ?
+				`<div class="attachments" dojoType="fox.form.DropDownButton">
+					<span>${__('Attachments')}</span>
+					<div dojoType="dijit.Menu" style="display: none">
+					${enclosures.entries.map((enc) => `
+							<div onclick='Article.popupOpenUrl("${App.escapeHtml(enc.content_url)}")'
+								title="${App.escapeHtml(enc.title ? enc.title : enc.content_url)}" dojoType="dijit.MenuItem">
+									${enc.title ? enc.title : enc.filename}
+							</div>
+						`).join("")}
+					</div>
+				</div>` : ''}
+			`
 	},
 	render: function (article) {
 		App.cleanupMemory("content-insert");
@@ -184,12 +247,14 @@ const Article = {
 
 			container.innerHTML = row.getAttribute("data-content").trim();
 
+			dojo.parser.parse(container);
+
 			// blank content element might screw up onclick selection and keyboard moving
 			if (container.textContent.length == 0)
 				container.innerHTML += "&nbsp;";
 
 			// in expandable mode, save content for later, so that we can pack unfocused rows back
-			if (App.isCombinedMode() && $("main").hasClassName("expandable"))
+			if (App.isCombinedMode() && App.byId("main").hasClassName("expandable"))
 				row.setAttribute("data-content-original", row.getAttribute("data-content"));
 
 			row.removeAttribute("data-content");
@@ -230,16 +295,16 @@ const Article = {
 							<div class="comments">${comments}</div>
 							<div class="author">${hl.author}</div>
 							<i class="material-icons">label_outline</i>
-							<span id="ATSTR-${hl.id}">${hl.tags_str}</span>
+							${Article.renderTags(hl.id, hl.tags)}
 							&nbsp;<a title="${__("Edit tags for this article")}" href="#"
 								onclick="Article.editTags(${hl.id})">(+)</a>
 							<div class="buttons right">${hl.buttons}</div>
 						</div>
 					</div>
-					<div id="POSTNOTE-${hl.id}">${hl.note}</div>
+					${Article.renderNote(hl.id, hl.note)}
 					<div class="content" lang="${hl.lang ? hl.lang : 'en'}">
 						${hl.content}
-						${hl.enclosures}
+						${Article.renderEnclosures(hl.enclosures)}
 					</div>
 					</div>`;
 
@@ -252,29 +317,41 @@ const Article = {
 	},
 	editTags: function (id) {
 		const dialog = new fox.SingleUseDialog({
-			id: "editTagsDlg",
 			title: __("Edit article Tags"),
-			content: __("Loading, please wait..."),
+			content: `
+				${App.FormFields.hidden_tag("id", id.toString())}
+				${App.FormFields.hidden_tag("op", "article")}
+				${App.FormFields.hidden_tag("method", "setArticleTags")}
+
+				<header class='horizontal'>
+					${__("Tags for this article (separated by commas):")}
+				</header>
+
+				<section>
+					<textarea dojoType='dijit.form.SimpleTextarea' rows='4' disabled='true'
+						id='tags_str' name='tags_str'></textarea>
+					<div class='autocomplete' id='tags_choices' style='display:none'></div>
+				</section>
+
+				<footer>
+					<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>
+						${__('Save')}
+					</button>
+					<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>
+						${__('Cancel')}
+					</button>
+				</footer>
+			`,
 			execute: function () {
 				if (this.validate()) {
 					Notify.progress("Saving article tags...", true);
 
-					xhrPost("backend.php", this.attr('value'), (transport) => {
+					xhr.json("backend.php", this.attr('value'), (data) => {
 						try {
 							Notify.close();
 							dialog.hide();
 
-							const data = JSON.parse(transport.responseText);
-
-							if (data) {
-								const id = data.id;
-
-								const tags = $("ATSTR-" + id);
-								const tooltip = dijit.byId("ATSTRTIP-" + id);
-
-								if (tags) tags.innerHTML = data.content;
-								if (tooltip) tooltip.attr('label', data.content_full);
-							}
+							Headlines.onTagsUpdated(data);
 						} catch (e) {
 							App.Error.report(e);
 						}
@@ -286,25 +363,26 @@ const Article = {
 		const tmph = dojo.connect(dialog, 'onShow', function () {
 			dojo.disconnect(tmph);
 
-			xhrPost("backend.php", {op: "article", method: "editarticletags", param: id}, (transport) => {
-				dialog.attr('content', transport.responseText);
+			xhr.json("backend.php", {op: "article", method: "printArticleTags", id: id}, (reply) => {
 
-				new Ajax.Autocompleter('tags_str', 'tags_choices',
+				dijit.getEnclosingWidget(App.byId("tags_str"))
+					.attr('value', reply.tags.join(", "))
+					.attr('disabled', false);
+
+				/* new Ajax.Autocompleter("tags_str", "tags_choices",
 					"backend.php?op=article&method=completeTags",
-					{tokens: ',', paramName: "search"});
+					{tokens: ',', paramName: "search"}); */
 			});
 		});
 
 		dialog.show();
 
 	},
-	cdmMoveToId: function (id, params) {
-		params = params || {};
-
+	cdmMoveToId: function (id, params = {}) {
 		const force_to_top = params.force_to_top || false;
 
-		const ctr = $("headlines-frame");
-		const row = $("RROW-" + id);
+		const ctr = App.byId("headlines-frame");
+		const row = App.byId(`RROW-${id}`);
 
 		if (!row || !ctr) return;
 
@@ -316,12 +394,12 @@ const Article = {
 		if (id != Article.getActive()) {
 			console.log("setActive", id, "was", Article.getActive());
 
-			$$("div[id*=RROW][class*=active]").each((row) => {
+			App.findAll("div[id*=RROW][class*=active]").forEach((row) => {
 				row.removeClassName("active");
 				Article.pack(row);
 			});
 
-			const row = $("RROW-" + id);
+			const row = App.byId(`RROW-${id}`);
 
 			if (row) {
 				Article.unpack(row);
@@ -342,10 +420,10 @@ const Article = {
 			return 0;
 	},
 	scrollByPages: function (page_offset) {
-		App.Scrollable.scrollByPages($("content-insert"), page_offset);
+		App.Scrollable.scrollByPages(App.byId("content-insert"), page_offset);
 	},
 	scroll: function (offset) {
-		App.Scrollable.scroll($("content-insert"), offset);
+		App.Scrollable.scroll(App.byId("content-insert"), offset);
 	},
 	mouseIn: function (id) {
 		this.post_under_pointer = id;

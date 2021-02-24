@@ -11,16 +11,16 @@ class DbUpdater {
 		$this->need_version = (int) $need_version;
 	}
 
-	function getSchemaVersion() {
+	function get_schema_version() {
 		$row = $this->pdo->query("SELECT schema_version FROM ttrss_version")->fetch();
 		return (int) $row['schema_version'];
 	}
 
-	function isUpdateRequired() {
-		return $this->getSchemaVersion() < $this->need_version;
+	function is_update_required() {
+		return $this->get_schema_version() < $this->need_version;
 	}
 
-	function getSchemaLines($version) {
+	function get_schema_lines($version) {
 		$filename = "schema/versions/".$this->db_type."/$version.sql";
 
 		if (file_exists($filename)) {
@@ -31,10 +31,10 @@ class DbUpdater {
 		}
 	}
 
-	function performUpdateTo($version, $html_output = true) {
-		if ($this->getSchemaVersion() == $version - 1) {
+	function update_to($version, $html_output = true) {
+		if ($this->get_schema_version() == $version - 1) {
 
-			$lines = $this->getSchemaLines($version);
+			$lines = $this->get_schema_lines($version);
 
 			if (is_array($lines)) {
 
@@ -63,7 +63,7 @@ class DbUpdater {
 					}
 				}
 
-				$db_version = $this->getSchemaVersion();
+				$db_version = $this->get_schema_version();
 
 				if ($db_version == $version) {
 					$this->pdo->commit();

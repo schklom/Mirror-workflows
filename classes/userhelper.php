@@ -2,7 +2,7 @@
 class UserHelper {
 
 	static function authenticate(string $login = null, string $password = null, bool $check_only = false, string $service = null) {
-		if (!SINGLE_USER_MODE) {
+		if (!Config::get(Config::SINGLE_USER_MODE)) {
 			$user_id = false;
 			$auth_module = false;
 
@@ -41,7 +41,7 @@ class UserHelper {
 				$_SESSION["user_agent"] = sha1($_SERVER['HTTP_USER_AGENT']);
 				$_SESSION["pwd_hash"] = $row["pwd_hash"];
 
-				Pref_Prefs::initialize_user_prefs($_SESSION["uid"]);
+				Pref_Prefs::_init_user_prefs($_SESSION["uid"]);
 
 				return true;
 			}
@@ -64,7 +64,7 @@ class UserHelper {
 
 			$_SESSION["ip_address"] = UserHelper::get_user_ip();
 
-			Pref_Prefs::initialize_user_prefs($_SESSION["uid"]);
+			Pref_Prefs::_init_user_prefs($_SESSION["uid"]);
 
 			return true;
 		}
@@ -88,26 +88,26 @@ class UserHelper {
 	static function login_sequence() {
 		$pdo = Db::pdo();
 
-		if (SINGLE_USER_MODE) {
+		if (Config::get(Config::SINGLE_USER_MODE)) {
 			@session_start();
 			self::authenticate("admin", null);
 			startup_gettext();
 			self::load_user_plugins($_SESSION["uid"]);
 		} else {
-			if (!validate_session()) $_SESSION["uid"] = false;
+			if (!\Sessions\validate_session()) $_SESSION["uid"] = false;
 
 			if (empty($_SESSION["uid"])) {
 
-				if (AUTH_AUTO_LOGIN && self::authenticate(null, null)) {
+				if (Config::get(Config::AUTH_AUTO_LOGIN) && self::authenticate(null, null)) {
 					$_SESSION["ref_schema_version"] = get_schema_version(true);
 				} else {
 					 self::authenticate(null, null, true);
 				}
 
 				if (empty($_SESSION["uid"])) {
-					Pref_Users::logout_user();
+					UserHelper::logout();
 
-					Handler_Public::render_login_form();
+					Handler_Public::_render_login_form();
 					exit;
 				}
 
@@ -156,5 +156,47 @@ class UserHelper {
 		}
 
 		return false;
+	}
+
+	static function logout() {
+		if (session_status() === PHP_SESSION_ACTIVE)
+			session_destroy();
+
+		if (isset($_COOKIE[session_name()])) {
+		   setcookie(session_name(), '', time()-42000, '/');
+
+		}
+		session_commit();
+	}
+
+	static function reset_password($uid, $format_output = false) {
+
+		$pdo = Db::pdo();
+
+		$sth = $pdo->prepare("SELECT login FROM ttrss_users WHERE id = ?");
+		$sth->execute([$uid]);
+
+		if ($row = $sth->fetch()) {
+
+			$login = $row["login"];
+
+			$new_salt = substr(bin2hex(get_random_bytes(125)), 0, 250);
+			$tmp_user_pwd = make_password();
+
+			$pwd_hash = encrypt_password($tmp_user_pwd, $new_salt, true);
+
+			$sth = $pdo->prepare("UPDATE ttrss_users
+				  SET pwd_hash = ?, salt = ?, otp_enabled = false
+				WHERE id = ?");
+			$sth->execute([$pwd_hash, $new_salt, $uid]);
+
+			$message = T_sprintf("Changed password of user %s to %s", "<strong>$login</strong>", "<strong>$tmp_user_pwd</strong>");
+
+			if ($format_output)
+				print_notice($message);
+			else
+				print $message;
+
+		}
 	}
 }

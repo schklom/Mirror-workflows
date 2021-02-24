@@ -1,4 +1,5 @@
 <?php
+namespace Colors;
 
 if (file_exists("lib/floIcon.php")) {
 	require_once "lib/floIcon.php";
@@ -297,7 +298,7 @@ function hsl2rgb($arr) {
 
 			if (class_exists("floIcon")) {
 
-				$ico = new floIcon();
+				$ico = new \floIcon();
 				@$ico->readICO($imageFile);
 
 				if(count($ico->images)==0)

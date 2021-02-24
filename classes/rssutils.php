@@ -34,9 +34,9 @@ class RSSUtils {
 		$pdo = Db::pdo();
 		$sth = $pdo->prepare("SELECT id FROM ttrss_feeds WHERE id = ?");
 
-		// check icon files once every CACHE_MAX_DAYS days
-		$icon_files = array_filter(glob(ICONS_DIR . "/*.ico"),
-			function($f) { return filemtime($f) < time() - 86400*CACHE_MAX_DAYS; });
+		// check icon files once every Config::get(Config::CACHE_MAX_DAYS) days
+		$icon_files = array_filter(glob(Config::get(Config::ICONS_DIR) . "/*.ico"),
+			function($f) { return filemtime($f) < time() - 86400 * Config::get(Config::CACHE_MAX_DAYS); });
 
 		foreach ($icon_files as $icon) {
 			$feed_id = basename($icon, ".ico");
@@ -52,8 +52,10 @@ class RSSUtils {
 		}
 	}
 
-	static function update_daemon_common($limit = DAEMON_FEED_LIMIT, $options = []) {
+	static function update_daemon_common($limit = null, $options = []) {
 		$schema_version = get_schema_version();
+
+		if (!$limit) $limit = Config::get(Config::DAEMON_FEED_LIMIT);
 
 		if ($schema_version != SCHEMA_VERSION) {
 			die("Schema version is wrong, please upgrade the database.\n");
@@ -61,17 +63,17 @@ class RSSUtils {
 
 		$pdo = Db::pdo();
 
-		if (!SINGLE_USER_MODE && DAEMON_UPDATE_LOGIN_LIMIT > 0) {
-			if (DB_TYPE == "pgsql") {
-				$login_thresh_qpart = "AND ttrss_users.last_login >= NOW() - INTERVAL '".DAEMON_UPDATE_LOGIN_LIMIT." days'";
+		if (!Config::get(Config::SINGLE_USER_MODE) && Config::get(Config::DAEMON_UPDATE_LOGIN_LIMIT) > 0) {
+			if (Config::get(Config::DB_TYPE) == "pgsql") {
+				$login_thresh_qpart = "AND ttrss_users.last_login >= NOW() - INTERVAL '".Config::get(Config::DAEMON_UPDATE_LOGIN_LIMIT)." days'";
 			} else {
-				$login_thresh_qpart = "AND ttrss_users.last_login >= DATE_SUB(NOW(), INTERVAL ".DAEMON_UPDATE_LOGIN_LIMIT." DAY)";
+				$login_thresh_qpart = "AND ttrss_users.last_login >= DATE_SUB(NOW(), INTERVAL ".Config::get(Config::DAEMON_UPDATE_LOGIN_LIMIT)." DAY)";
 			}
 		} else {
 			$login_thresh_qpart = "";
 		}
 
-		if (DB_TYPE == "pgsql") {
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$update_limit_qpart = "AND ((
 					ttrss_feeds.update_interval = 0
 					AND ttrss_user_prefs.value != '-1'
@@ -96,7 +98,7 @@ class RSSUtils {
 		}
 
 		// Test if feed is currently being updated by another process.
-		if (DB_TYPE == "pgsql") {
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$updstart_thresh_qpart = "AND (last_update_started IS NULL OR last_update_started < NOW() - INTERVAL '10 minutes')";
 		} else {
 			$updstart_thresh_qpart = "AND (last_update_started IS NULL OR last_update_started < DATE_SUB(NOW(), INTERVAL 10 MINUTE))";
@@ -106,7 +108,7 @@ class RSSUtils {
 
 		// Update the least recently updated feeds first
 		$query_order = "ORDER BY last_updated";
-		if (DB_TYPE == "pgsql") $query_order .= " NULLS FIRST";
+		if (Config::get(Config::DB_TYPE) == "pgsql") $query_order .= " NULLS FIRST";
 
 		$query = "SELECT DISTINCT ttrss_feeds.feed_url, ttrss_feeds.last_updated
 			FROM
@@ -182,7 +184,7 @@ class RSSUtils {
 				if (self::function_enabled('passthru')) {
 					$exit_code = 0;
 
-					passthru(PHP_EXECUTABLE . " update.php --update-feed " . $tline["id"] . " --pidlock feed-" . $tline["id"] . " $quiet $log $log_level", $exit_code);
+					passthru(Config::get(Config::PHP_EXECUTABLE) . " update.php --update-feed " . $tline["id"] . " --pidlock feed-" . $tline["id"] . " $quiet $log $log_level", $exit_code);
 
 					Debug::log(sprintf("<= %.4f (sec) exit code: %d", microtime(true) - $fstarted, $exit_code));
 
@@ -275,7 +277,7 @@ class RSSUtils {
 			$pluginhost = new PluginHost();
 			$user_plugins = get_pref("_ENABLED_PLUGINS", $owner_uid);
 
-			$pluginhost->load(PLUGINS, PluginHost::KIND_ALL);
+			$pluginhost->load(Config::get(Config::PLUGINS), PluginHost::KIND_ALL);
 			$pluginhost->load((string)$user_plugins, PluginHost::KIND_USER, $owner_uid);
 			//$pluginhost->load_data();
 
@@ -288,7 +290,7 @@ class RSSUtils {
 			if (!$basic_info) {
 				$feed_data = UrlHelper::fetch($fetch_url, false,
 					$auth_login, $auth_pass, false,
-					FEED_FETCH_TIMEOUT,
+					Config::get(Config::FEED_FETCH_TIMEOUT),
 					0);
 
 				$feed_data = trim($feed_data);
@@ -395,12 +397,12 @@ class RSSUtils {
 
 		$date_feed_processed = date('Y-m-d H:i');
 
-		$cache_filename = CACHE_DIR . "/feeds/" . sha1($fetch_url) . ".xml";
+		$cache_filename = Config::get(Config::CACHE_DIR) . "/feeds/" . sha1($fetch_url) . ".xml";
 
 		$pluginhost = new PluginHost();
 		$user_plugins = get_pref("_ENABLED_PLUGINS", $owner_uid);
 
-		$pluginhost->load(PLUGINS, PluginHost::KIND_ALL);
+		$pluginhost->load(Config::get(Config::PLUGINS), PluginHost::KIND_ALL);
 		$pluginhost->load((string)$user_plugins, PluginHost::KIND_USER, $owner_uid);
 		//$pluginhost->load_data();
 
@@ -455,7 +457,7 @@ class RSSUtils {
 				Debug::log("not using CURL due to open_basedir restrictions", Debug::$LOG_VERBOSE);
 			}
 
-			if (time() - strtotime($last_unconditional) > MAX_CONDITIONAL_INTERVAL) {
+			if (time() - strtotime($last_unconditional) > Config::get(Config::MAX_CONDITIONAL_INTERVAL)) {
 				Debug::log("maximum allowed interval for conditional requests exceeded, forcing refetch", Debug::$LOG_VERBOSE);
 
 				$force_refetch = true;
@@ -469,7 +471,7 @@ class RSSUtils {
 				"url" => $fetch_url,
 				"login" => $auth_login,
 				"pass" => $auth_pass,
-				"timeout" => $no_cache ? FEED_FETCH_NO_CACHE_TIMEOUT : FEED_FETCH_TIMEOUT,
+				"timeout" => $no_cache ? Config::get(Config::FEED_FETCH_NO_CACHE_TIMEOUT) : Config::get(Config::FEED_FETCH_TIMEOUT),
 				"last_modified" => $force_refetch ? "" : $stored_last_modified
 			]);
 
@@ -488,7 +490,7 @@ class RSSUtils {
 			}
 
 			// cache vanilla feed data for re-use
-			if ($feed_data && !$auth_pass && !$auth_login && is_writable(CACHE_DIR . "/feeds")) {
+			if ($feed_data && !$auth_pass && !$auth_login && is_writable(Config::get(Config::CACHE_DIR) . "/feeds")) {
 				$new_rss_hash = sha1($feed_data);
 
 				if ($new_rss_hash != $rss_hash) {
@@ -561,7 +563,7 @@ class RSSUtils {
 			Debug::log("language: $feed_language", Debug::$LOG_VERBOSE);
 			Debug::log("processing feed data...", Debug::$LOG_VERBOSE);
 
-			if (DB_TYPE == "pgsql") {
+			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$favicon_interval_qpart = "favicon_last_checked < NOW() - INTERVAL '12 hour'";
 			} else {
 				$favicon_interval_qpart = "favicon_last_checked < DATE_SUB(NOW(), INTERVAL 12 HOUR)";
@@ -591,10 +593,10 @@ class RSSUtils {
 				/* terrible hack: if we crash on floicon shit here, we won't check
 				 * the icon avgcolor again (unless the icon got updated) */
 
-				$favicon_file = ICONS_DIR . "/$feed.ico";
+				$favicon_file = Config::get(Config::ICONS_DIR) . "/$feed.ico";
 				$favicon_modified = file_exists($favicon_file) ? filemtime($favicon_file) : -1;
 
-				Debug::log("checking favicon...", Debug::$LOG_VERBOSE);
+				Debug::log("checking favicon for feed $feed...", Debug::$LOG_VERBOSE);
 
 				self::check_feed_favicon($site_url, $feed);
 				$favicon_modified_new = file_exists($favicon_file) ? filemtime($favicon_file) : -1;
@@ -610,7 +612,7 @@ class RSSUtils {
 							id = ?");
 					$sth->execute([$feed]);
 
-					$favicon_color = calculate_avg_color($favicon_file);
+					$favicon_color = \Colors\calculate_avg_color($favicon_file);
 
 					$favicon_colorstring = ",favicon_avg_color = " . $pdo->quote($favicon_color);
 
@@ -723,9 +725,9 @@ class RSSUtils {
 				if ($row = $sth->fetch()) {
 					$base_entry_id = $row["id"];
 					$entry_stored_hash = $row["content_hash"];
-					$article_labels = Article::get_article_labels($base_entry_id, $owner_uid);
+					$article_labels = Article::_get_labels($base_entry_id, $owner_uid);
 
-					$existing_tags = Article::get_article_tags($base_entry_id, $owner_uid);
+					$existing_tags = Article::_get_tags($base_entry_id, $owner_uid);
 					$entry_tags = array_unique(array_merge($entry_tags, $existing_tags));
 				} else {
 					$base_entry_id = false;
@@ -739,7 +741,7 @@ class RSSUtils {
 
 				$enclosures = array();
 
-				$encs = $item->get_enclosures();
+				$encs = $item->_get_enclosures();
 
 				if (is_array($encs)) {
 					foreach ($encs as $e) {
@@ -755,7 +757,7 @@ class RSSUtils {
 							$e->type, $e->length, $e->title, $e->width, $e->height);
 
 						// Yet another episode of "mysql utf8_general_ci is gimped"
-						if (DB_TYPE == "mysql" && MYSQL_CHARSET != "UTF8MB4") {
+						if (Config::get(Config::DB_TYPE) == "mysql" && Config::get(Config::MYSQL_CHARSET) != "UTF8MB4") {
 							for ($i = 0; $i < count($e_item); $i++) {
 								if (is_string($e_item[$i])) {
 									$e_item[$i] = self::strip_utf8mb4($e_item[$i]);
@@ -833,7 +835,7 @@ class RSSUtils {
 				Debug::log("plugin data: $entry_plugin_data", Debug::$LOG_VERBOSE);
 
 				// Workaround: 4-byte unicode requires utf8mb4 in MySQL. See https://tt-rss.org/forum/viewtopic.php?f=1&t=3377&p=20077#p20077
-				if (DB_TYPE == "mysql" && MYSQL_CHARSET != "UTF8MB4") {
+				if (Config::get(Config::DB_TYPE) == "mysql" && Config::get(Config::MYSQL_CHARSET) != "UTF8MB4") {
 					foreach ($article as $k => $v) {
 						// i guess we'll have to take the risk of 4byte unicode labels & tags here
 						if (is_string($article[$k])) {
@@ -1079,7 +1081,7 @@ class RSSUtils {
 
 					Debug::log("resulting RID: $entry_ref_id, IID: $entry_int_id", Debug::$LOG_VERBOSE);
 
-					if (DB_TYPE == "pgsql")
+					if (Config::get(Config::DB_TYPE) == "pgsql")
 						$tsvector_qpart = "tsvector_combined = to_tsvector(:ts_lang, :ts_content),";
 					else
 						$tsvector_qpart = "";
@@ -1107,7 +1109,7 @@ class RSSUtils {
 						":lang" => $entry_language,
 						":id" => $ref_id];
 
-					if (DB_TYPE == "pgsql") {
+					if (Config::get(Config::DB_TYPE) == "pgsql") {
 						$params[":ts_lang"] = $feed_language;
 						$params[":ts_content"] = mb_substr(strip_tags($entry_title . " " . $entry_content), 0, 900000);
 					}
@@ -1239,7 +1241,7 @@ class RSSUtils {
 
 			Debug::log("purging feed...", Debug::$LOG_VERBOSE);
 
-			Feeds::purge_feed($feed, 0);
+			Feeds::_purge($feed, 0);
 
 			$sth = $pdo->prepare("UPDATE ttrss_feeds SET
 				last_updated = NOW(),
@@ -1281,7 +1283,7 @@ class RSSUtils {
 	static function cache_enclosures($enclosures, $site_url) {
 		$cache = new DiskCache("images");
 
-		if ($cache->isWritable()) {
+		if ($cache->is_writable()) {
 			foreach ($enclosures as $enc) {
 
 				if (preg_match("/(image|audio|video)/", $enc[1])) {
@@ -1298,7 +1300,7 @@ class RSSUtils {
 
 						$file_content = UrlHelper::fetch(array("url" => $src,
 							"http_referrer" => $src,
-							"max_size" => MAX_CACHE_FILE_SIZE));
+							"max_size" => Config::get(Config::MAX_CACHE_FILE_SIZE)));
 
 						if ($file_content) {
 							$cache->put($local_filename, $file_content);
@@ -1328,14 +1330,14 @@ class RSSUtils {
 
 			$file_content = UrlHelper::fetch(array("url" => $url,
 				"http_referrer" => $url,
-				"max_size" => MAX_CACHE_FILE_SIZE));
+				"max_size" => Config::get(Config::MAX_CACHE_FILE_SIZE)));
 
 			if ($file_content) {
 				$cache->put($local_filename, $file_content);
 			} else {
 				Debug::log("cache_media: failed with $fetch_last_error_code: $fetch_last_error");
 			}
-		} else if ($cache->isWritable($local_filename)) {
+		} else if ($cache->is_writable($local_filename)) {
 			$cache->touch($local_filename);
 		}
 	}
@@ -1344,7 +1346,7 @@ class RSSUtils {
 	static function cache_media($html, $site_url) {
 		$cache = new DiskCache("images");
 
-		if ($html && $cache->isWritable()) {
+		if ($html && $cache->is_writable()) {
 			$doc = new DOMDocument();
 			if (@$doc->loadHTML($html)) {
 				$xpath = new DOMXPath($doc);
@@ -1375,7 +1377,7 @@ class RSSUtils {
 
 		$pdo = Db::pdo();
 
-		if (DB_TYPE == "pgsql") {
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$pdo->query("DELETE FROM ttrss_error_log
 				WHERE created_at < NOW() - INTERVAL '7 days'");
 		} else {
@@ -1396,8 +1398,8 @@ class RSSUtils {
 
 		$num_deleted = 0;
 
-		if (is_writable(LOCK_DIRECTORY)) {
-			$files = glob(LOCK_DIRECTORY . "/*.lock");
+		if (is_writable(Config::get(Config::LOCK_DIRECTORY))) {
+			$files = glob(Config::get(Config::LOCK_DIRECTORY) . "/*.lock");
 
 			if ($files) {
 				foreach ($files as $file) {
@@ -1581,17 +1583,17 @@ class RSSUtils {
 	}
 
 	static function disable_failed_feeds() {
-		if (defined('DAEMON_UNSUCCESSFUL_DAYS_LIMIT') && DAEMON_UNSUCCESSFUL_DAYS_LIMIT > 0) {
+		if (Config::get(Config::DAEMON_UNSUCCESSFUL_DAYS_LIMIT) > 0) {
 
 			$pdo = Db::pdo();
 
 			$pdo->beginTransaction();
 
-			$days = DAEMON_UNSUCCESSFUL_DAYS_LIMIT;
+			$days = Config::get(Config::DAEMON_UNSUCCESSFUL_DAYS_LIMIT);
 
-			if (DB_TYPE == "pgsql") {
+			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$interval_query = "last_successful_update < NOW() - INTERVAL '$days days' AND last_updated > NOW() - INTERVAL '1 days'";
-			} else /* if (DB_TYPE == "mysql") */ {
+			} else /* if (Config::get(Config::DB_TYPE) == "mysql") */ {
 				$interval_query = "last_successful_update < DATE_SUB(NOW(), INTERVAL $days DAY) AND last_updated > DATE_SUB(NOW(), INTERVAL 1 DAY)";
 			}
 
@@ -1604,10 +1606,10 @@ class RSSUtils {
 			while ($row = $sth->fetch()) {
 				Logger::get()->log(E_USER_NOTICE,
 					sprintf("Auto disabling feed %d (%s, UID: %d) because it failed to update for %d days.",
-						$row["id"], clean($row["title"]), $row["owner_uid"], DAEMON_UNSUCCESSFUL_DAYS_LIMIT));
+						$row["id"], clean($row["title"]), $row["owner_uid"], Config::get(Config::DAEMON_UNSUCCESSFUL_DAYS_LIMIT)));
 
 				Debug::log(sprintf("Auto-disabling feed %d (%s) (failed to update for %d days).", $row["id"],
-					clean($row["title"]), DAEMON_UNSUCCESSFUL_DAYS_LIMIT));
+					clean($row["title"]), Config::get(Config::DAEMON_UNSUCCESSFUL_DAYS_LIMIT)));
 			}
 
 			$sth = $pdo->prepare("UPDATE ttrss_feeds SET update_interval = -1 WHERE
@@ -1636,65 +1638,74 @@ class RSSUtils {
 		self::cleanup_feed_icons();
 		self::disable_failed_feeds();
 
-		Article::purge_orphans();
+		Article::_purge_orphans();
 		self::cleanup_counters_cache();
 
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_HOUSE_KEEPING);
 	}
 
 	static function check_feed_favicon($site_url, $feed) {
-		#		print "FAVICON [$site_url]: $favicon_url\n";
+		$icon_file = Config::get(Config::ICONS_DIR) . "/$feed.ico";
 
-		$icon_file = ICONS_DIR . "/$feed.ico";
-
-		if (!file_exists($icon_file)) {
-			$favicon_url = self::get_favicon_url($site_url);
-
-			if ($favicon_url) {
-				// Limiting to "image" type misses those served with text/plain
-				$contents = UrlHelper::fetch($favicon_url); // , "image");
-
-				if ($contents) {
-					// Crude image type matching.
-					// Patterns gleaned from the file(1) source code.
-					if (preg_match('/^\x00\x00\x01\x00/', $contents)) {
-						// 0       string  \000\000\001\000        MS Windows icon resource
-						//error_log("check_feed_favicon: favicon_url=$favicon_url isa MS Windows icon resource");
-					}
-					elseif (preg_match('/^GIF8/', $contents)) {
-						// 0       string          GIF8            GIF image data
-						//error_log("check_feed_favicon: favicon_url=$favicon_url isa GIF image");
-					}
-					elseif (preg_match('/^\x89PNG\x0d\x0a\x1a\x0a/', $contents)) {
-						// 0       string          \x89PNG\x0d\x0a\x1a\x0a         PNG image data
-						//error_log("check_feed_favicon: favicon_url=$favicon_url isa PNG image");
-					}
-					elseif (preg_match('/^\xff\xd8/', $contents)) {
-						// 0       beshort         0xffd8          JPEG image data
-						//error_log("check_feed_favicon: favicon_url=$favicon_url isa JPG image");
-					}
-					elseif (preg_match('/^BM/', $contents)) {
-						// 0	string		BM	PC bitmap (OS2, Windows BMP files)
-						//error_log("check_feed_favicon, favicon_url=$favicon_url isa BMP image");
-					}
-					else {
-						//error_log("check_feed_favicon: favicon_url=$favicon_url isa UNKNOWN type");
-						$contents = "";
-					}
-				}
-
-				if ($contents) {
-					$fp = @fopen($icon_file, "w");
-
-					if ($fp) {
-						fwrite($fp, $contents);
-						fclose($fp);
-						chmod($icon_file, 0644);
-					}
-				}
-			}
-			return $icon_file;
+		$favicon_url = self::get_favicon_url($site_url);
+		if (!$favicon_url) {
+			Debug::log("couldn't find favicon URL in $site_url", Debug::$LOG_VERBOSE);
+			return false;
 		}
+
+		// Limiting to "image" type misses those served with text/plain
+		$contents = UrlHelper::fetch([
+			'url' => $favicon_url,
+			'max_size' => Config::get(Config::MAX_FAVICON_FILE_SIZE),
+			//'type' => 'image',
+		]);
+		if (!$contents) {
+			Debug::log("fetching favicon $favicon_url failed", Debug::$LOG_VERBOSE);
+			return false;
+		}
+
+		// Crude image type matching.
+		// Patterns gleaned from the file(1) source code.
+		if (preg_match('/^\x00\x00\x01\x00/', $contents)) {
+			// 0       string  \000\000\001\000        MS Windows icon resource
+			//error_log("check_feed_favicon: favicon_url=$favicon_url isa MS Windows icon resource");
+		}
+		elseif (preg_match('/^GIF8/', $contents)) {
+			// 0       string          GIF8            GIF image data
+			//error_log("check_feed_favicon: favicon_url=$favicon_url isa GIF image");
+		}
+		elseif (preg_match('/^\x89PNG\x0d\x0a\x1a\x0a/', $contents)) {
+			// 0       string          \x89PNG\x0d\x0a\x1a\x0a         PNG image data
+			//error_log("check_feed_favicon: favicon_url=$favicon_url isa PNG image");
+		}
+		elseif (preg_match('/^\xff\xd8/', $contents)) {
+			// 0       beshort         0xffd8          JPEG image data
+			//error_log("check_feed_favicon: favicon_url=$favicon_url isa JPG image");
+		}
+		elseif (preg_match('/^BM/', $contents)) {
+			// 0	string		BM	PC bitmap (OS2, Windows BMP files)
+			//error_log("check_feed_favicon, favicon_url=$favicon_url isa BMP image");
+		}
+		else {
+			//error_log("check_feed_favicon: favicon_url=$favicon_url isa UNKNOWN type");
+			Debug::log("favicon $favicon_url type is unknown (not updating)", Debug::$LOG_VERBOSE);
+			return false;
+		}
+
+		Debug::log("setting contents of $icon_file", Debug::$LOG_VERBOSE);
+
+		$fp = @fopen($icon_file, "w");
+		if (!$fp) {
+			Debug::log("failed to open $icon_file for writing", Debug::$LOG_VERBOSE);
+			return false;
+		}
+
+		fwrite($fp, $contents);
+		fclose($fp);
+		chmod($icon_file, 0644);
+		clearstatcache();
+
+		return $icon_file;
 	}
 
 	static function is_gzipped($feed_data) {
@@ -1706,7 +1717,7 @@ class RSSUtils {
 		$filters = array();
 
 		$feed_id = (int) $feed_id;
-		$cat_id = (int)Feeds::getFeedCategory($feed_id);
+		$cat_id = (int)Feeds::_cat_of_feed($feed_id);
 
 		if ($cat_id == 0)
 			$null_cat_qpart = "cat_id IS NULL OR";
@@ -1720,7 +1731,7 @@ class RSSUtils {
 		$sth->execute([$owner_uid]);
 
 		$check_cats = array_merge(
-			Feeds::getParentCategories($cat_id, $owner_uid),
+			Feeds::_get_parent_cats($cat_id, $owner_uid),
 			[$cat_id]);
 
 		$check_cats_str = join(",", $check_cats);

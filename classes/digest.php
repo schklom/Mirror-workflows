@@ -1,12 +1,6 @@
 <?php
 class Digest
 {
-
-	/**
-	 * Send by mail a digest of last articles.
-	 *
-	 * @return boolean Return false if digests are not enabled.
-	 */
 	static function send_headlines_digests() {
 
 		$user_limit = 15; // amount of users to process (e.g. emails to send out)
@@ -14,9 +8,9 @@ class Digest
 
 		Debug::log("Sending digests, batch of max $user_limit users, headline limit = $limit");
 
-		if (DB_TYPE == "pgsql") {
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$interval_qpart = "last_digest_sent < NOW() - INTERVAL '1 days'";
-		} else /* if (DB_TYPE == "mysql") */ {
+		} else /* if (Config::get(Config::DB_TYPE) == "mysql") */ {
 			$interval_qpart = "last_digest_sent < DATE_SUB(NOW(), INTERVAL 1 DAY)";
 		}
 
@@ -54,11 +48,11 @@ class Digest
 
 						$mailer = new Mailer();
 
-						//$rc = $mail->quickMail($line["email"], $line["login"], DIGEST_SUBJECT, $digest, $digest_text);
+						//$rc = $mail->quickMail($line["email"], $line["login"], Config::get(Config::DIGEST_SUBJECT), $digest, $digest_text);
 
 						$rc = $mailer->mail(["to_name" => $line["login"],
 							"to_address" => $line["email"],
-							"subject" => DIGEST_SUBJECT,
+							"subject" => Config::get(Config::DIGEST_SUBJECT),
 							"message" => $digest_text,
 							"message_html" => $digest]);
 
@@ -68,7 +62,7 @@ class Digest
 
 						if ($rc && $do_catchup) {
 							Debug::log("Marking affected articles as read...");
-							Article::catchupArticlesById($affected_ids, 0, $line["id"]);
+							Article::_catchup_by_id($affected_ids, 0, $line["id"]);
 						}
 					} else {
 						Debug::log("No headlines");
@@ -81,9 +75,7 @@ class Digest
 				}
 			}
 		}
-
 		Debug::log("All done.");
-
 	}
 
 	static function prepare_headlines_digest($user_id, $days = 1, $limit = 1000) {
@@ -99,19 +91,19 @@ class Digest
 
 		$tpl->setVariable('CUR_DATE', date('Y/m/d', $local_ts));
 		$tpl->setVariable('CUR_TIME', date('G:i', $local_ts));
-		$tpl->setVariable('TTRSS_HOST', SELF_URL_PATH);
+		$tpl->setVariable('TTRSS_HOST', Config::get(Config::get(Config::SELF_URL_PATH)));
 
 		$tpl_t->setVariable('CUR_DATE', date('Y/m/d', $local_ts));
 		$tpl_t->setVariable('CUR_TIME', date('G:i', $local_ts));
-		$tpl_t->setVariable('TTRSS_HOST', SELF_URL_PATH);
+		$tpl_t->setVariable('TTRSS_HOST', Config::get(Config::get(Config::SELF_URL_PATH)));
 
 		$affected_ids = array();
 
 		$days = (int) $days;
 
-		if (DB_TYPE == "pgsql") {
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$interval_qpart = "ttrss_entries.date_updated > NOW() - INTERVAL '$days days'";
-		} else /* if (DB_TYPE == "mysql") */ {
+		} else /* if (Config::get(Config::DB_TYPE) == "mysql") */ {
 			$interval_qpart = "ttrss_entries.date_updated > DATE_SUB(NOW(), INTERVAL $days DAY)";
 		}
 
@@ -164,7 +156,7 @@ class Digest
 				$line['feed_title'] = $line['cat_title'] . " / " . $line['feed_title'];
 			}
 
-			$article_labels = Article::get_article_labels($line["ref_id"], $user_id);
+			$article_labels = Article::_get_labels($line["ref_id"], $user_id);
 			$article_labels_formatted = "";
 
 			if (is_array($article_labels) && count($article_labels) > 0) {
@@ -210,5 +202,4 @@ class Digest
 
 		return array($tmp, $headlines_count, $affected_ids, $tmp_t);
 	}
-
 }

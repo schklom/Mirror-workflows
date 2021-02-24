@@ -9,7 +9,7 @@ abstract class FeedItem {
 	abstract function get_comments_url();
 	abstract function get_comments_count();
 	abstract function get_categories();
-	abstract function get_enclosures();
+	abstract function _get_enclosures();
 	abstract function get_author();
 	abstract function get_language();
 }

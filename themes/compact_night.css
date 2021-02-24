@@ -456,6 +456,7 @@ body.ttrss_main .dijitDialog .dlgSecCont {
   margin: 10px 20px;
 }
 body.ttrss_main .dijitDialog header.horizontal + section,
+body.ttrss_main .dijitDialog section.horizontal,
 body.ttrss_main .dijitDialog .dlgSecHoriz + .dlgSecCont {
   margin: 10px 0;
 }
@@ -506,6 +507,11 @@ body.ttrss_main .dijitDialog .dlgButtons {
 body.ttrss_main .dijitDialog footer.text-center {
   text-align: center;
 }
+body.ttrss_main .dijitDialog textarea#tags_str {
+  height: 100px;
+  font-size: 12px;
+  width: 98%;
+}
 body.ttrss_main i.icon-label {
   color: #fff7d5;
 }
@@ -526,22 +532,13 @@ body.ttrss_main #feed_browser_spinner {
   height: 18px;
   width: 18px;
 }
-body.ttrss_main #exceptionDlg .dijitDialogTitleBar {
-  background: red;
-  color: white;
-}
-body.ttrss_main #exceptionDlg .dijitDialogPaneContent {
-  background: #fcc;
-}
-body.ttrss_main #exceptionDlg .error-contents .message {
+body.ttrss_main .exception-contents h3 {
   color: red;
 }
-body.ttrss_main #exceptionDlg .error-contents textarea {
+body.ttrss_main .exception-contents textarea {
   width: 99%;
   height: 200px;
-}
-body.ttrss_main #exceptionDlg .error-contents .dlgButtons {
-  text-align: center;
+  font-size: 11px;
 }
 body.ttrss_main #content-wrap {
   padding: 0px;
@@ -713,6 +710,8 @@ body.ttrss_main #toolbar-frame #toolbar i {
   margin: 0 4px;
 }
 body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines {
+  font-size: 12px;
+  background: transparent;
   padding-right: 4px;
   flex-grow: 2;
   display: flex;
@@ -722,7 +721,8 @@ body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines .left {
   display: flex;
   align-items: center;
 }
-body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines .left #feed_title {
+body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines .left .feed_title,
+body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines .left .cancel_search {
   margin-left: 4px;
 }
 body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines .right {
@@ -754,6 +754,17 @@ body.ttrss_main #header {
   right: 0px;
   top: 0px;
   z-index: 5;
+}
+body.ttrss_main #header i.net-alert,
+body.ttrss_main #header .left i.icon-error {
+  color: red;
+}
+body.ttrss_main #header i.log-alert {
+  color: #ddba1c;
+  cursor: pointer;
+}
+body.ttrss_main #header i {
+  margin: 0 4px;
 }
 body.ttrss_main #content-insert {
   padding: 0px;
@@ -812,16 +823,18 @@ body.ttrss_main #headlines-spacer a:hover {
 }
 body.ttrss_main ul#filterDlg_Matches,
 body.ttrss_main ul#filterDlg_Actions {
-  max-height: 100px;
-  overflow: auto;
   list-style-type: none;
-  border-style: solid;
-  border-color: #222;
-  border-width: 1px 1px 1px 1px;
-  background-color: #333;
-  margin: 0px 0px 5px 0px;
-  padding: 4px;
-  min-height: 16px;
+  margin: 0;
+  padding: 0;
+  /*max-height : 100px;
+		overflow : auto;
+		border-style : solid;
+		border-color : @border-default;
+		border-width : 1px 1px 1px 1px;
+		background-color : @default-bg;
+		margin : 0px 0px 5px 0px;
+		padding : 4px;
+		min-height : 16px;*/
 }
 body.ttrss_main ul#filterDlg_Matches li,
 body.ttrss_main ul#filterDlg_Actions li {
@@ -860,9 +873,6 @@ body.ttrss_main span.highlight {
 body.ttrss_main #headlines-frame .dijitCheckBox {
   margin-right: 4px;
 }
-body.ttrss_main #editTagsDlg {
-  overflow: visible;
-}
 body.ttrss_main #feedEditDlg img.feedIcon {
   border: 1px solid #ccc;
   padding: 5px;
@@ -888,12 +898,14 @@ body.ttrss_main .dijitTooltipBelow .dijitTooltipConnector {
 body.ttrss_main .dijitTooltipAbove .dijitTooltipConnector {
   border-top-color: #d29745;
 }
-body.ttrss_main .dijitDialog h1:first-of-type,
-body.ttrss_main .dijitDialog h2:first-of-type,
-body.ttrss_main .dijitDialog h3:first-of-type,
-body.ttrss_main .dijitDialog h4:first-of-type {
-  margin-top: 0px;
-}
+/*body.ttrss_main .dijitDialog {
+	h1:first-of-type,
+	h2:first-of-type,
+	h3:first-of-type,
+	h4:first-of-type {
+		margin-top: 0px;
+	}
+}*/
 body.ttrss_main[view-mode="marked"] #feeds-holder #feedTree .dijitTreeRow.Has_Marked .dijitTreeLabel {
   color: #b87d2c;
 }
@@ -1403,6 +1415,13 @@ body.ttrss_prefs {
   background-color: #222;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
+  /*.dijitContentPane {
+		h1:first-of-type,
+		h2:first-of-type,
+		h3:first-of-type {
+			margin-top: 0px;
+		}
+	}*/
 }
 body.ttrss_prefs h1,
 body.ttrss_prefs h2,
@@ -1411,11 +1430,6 @@ body.ttrss_prefs h4 {
   font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 600;
   color: #ccc;
-}
-body.ttrss_prefs .dijitContentPane h1:first-of-type,
-body.ttrss_prefs .dijitContentPane h2:first-of-type,
-body.ttrss_prefs .dijitContentPane h3:first-of-type {
-  margin-top: 0px;
 }
 body.ttrss_prefs #footer,
 body.ttrss_prefs #header {
@@ -1450,22 +1464,13 @@ body.ttrss_prefs .dijitAccordionTitle i.material-icons {
 body.ttrss_prefs .dijitAccordionTitleSelected i.material-icons {
   color: white;
 }
+body.ttrss_prefs #feedsTab {
+  background: #222;
+}
 body.ttrss_prefs .dijitDialog #pref-profiles-list .dijitInlineEditBoxDisplayMode {
   padding: 0px;
 }
-body.ttrss_prefs div#feedlistLoading,
-body.ttrss_prefs div#filterlistLoading,
-body.ttrss_prefs div#labellistLoading {
-  text-align: center;
-  padding: 5px;
-  color: #ccc;
-}
-body.ttrss_prefs div#feedlistLoading img,
-body.ttrss_prefs div#filterlistLoading img,
-body.ttrss_prefs div#labellistLoading {
-  margin-right: 5px;
-}
-body.ttrss_prefs #errorButton {
+body.ttrss_prefs #pref_feeds_errors_btn {
   color: red;
 }
 body.ttrss_prefs .user-css-editor {
@@ -1603,6 +1608,13 @@ body.ttrss_utility fieldset > label.checkbox {
 .flat .dijitToolbar {
   font-size: 13px;
   padding: 0px;
+}
+.flat .dijitToolbar .dijitTextBox .dijitInputInner {
+  line-height: 10px;
+}
+.flat .dijitToolbar label {
+  position: relative;
+  top: 2px;
 }
 .flat .dijitAccordionContainer {
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);

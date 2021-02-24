@@ -516,7 +516,6 @@ body.ttrss_main {
 	}
 
 	.dijitDialog {
-
 		header,
 		.dlgSec, .dlgSecHoriz {
 			font-size : 16px;
@@ -531,6 +530,7 @@ body.ttrss_main {
 		}
 
 		header.horizontal + section,
+		section.horizontal,
 		.dlgSecHoriz + .dlgSecCont {
 			margin : 10px 0;
 		}
@@ -584,6 +584,12 @@ body.ttrss_main {
 		footer.text-center {
 			text-align: center;
 		}
+
+		textarea#tags_str {
+			height : 100px;
+			font-size : 12px;
+			width : 98%;
+		}
 	}
 
 	i.icon-label {
@@ -609,28 +615,14 @@ body.ttrss_main {
 		width : 18px;
 	}
 
-	#exceptionDlg {
-		.dijitDialogTitleBar {
-			background : red;
-			color : white;
+	.exception-contents {
+		h3 {
+			color : red;
 		}
-
-		.dijitDialogPaneContent {
-			background : #fcc;
-		}
-
-		.error-contents {
-			.message {
-				color : red;
-			}
-
-			textarea {
-				width : 99%;
-				height : 200px;
-			}
-			.dlgButtons {
-				text-align : center;
-			}
+		textarea {
+			width : 99%;
+			height : 200px;
+			font-size : 11px;
 		}
 	}
 
@@ -834,6 +826,8 @@ body.ttrss_main {
 			}
 
 			#toolbar-headlines {
+				font-size : 12px;
+				background: transparent;
 				padding-right : 4px;
 				flex-grow : 2;
 				display : flex;
@@ -843,7 +837,7 @@ body.ttrss_main {
 					display : flex;
 					align-items : center;
 
-					#feed_title {
+					.feed_title, .cancel_search {
 						margin-left : 4px;
 					}
 				}
@@ -884,6 +878,19 @@ body.ttrss_main {
 		right : 0px;
 		top : 0px;
 		z-index : 5;
+
+		i.net-alert, .left i.icon-error {
+			color : red;
+		}
+
+		i.log-alert {
+			color : #ddba1c;
+			cursor : pointer;
+		}
+
+		i {
+			margin : 0 4px;
+		}
 	}
 
 	#content-insert {
@@ -949,16 +956,18 @@ body.ttrss_main {
 	}
 
 	ul#filterDlg_Matches, ul#filterDlg_Actions {
-		max-height : 100px;
-		overflow : auto;
 		list-style-type : none;
+		margin : 0;
+		padding: 0;
+		/*max-height : 100px;
+		overflow : auto;
 		border-style : solid;
 		border-color : @border-default;
 		border-width : 1px 1px 1px 1px;
 		background-color : @default-bg;
 		margin : 0px 0px 5px 0px;
 		padding : 4px;
-		min-height : 16px;
+		min-height : 16px;*/
 	}
 
 	ul#filterDlg_Matches li, ul#filterDlg_Actions li {
@@ -1004,16 +1013,8 @@ body.ttrss_main {
 		color : #cc90cc;
 	}
 
-	div.enclosure_title {
-
-	}
-
 	#headlines-frame .dijitCheckBox {
 		margin-right : 4px;
-	}
-
-	#editTagsDlg{
-		overflow: visible;
 	}
 
 	#feedEditDlg img.feedIcon {
@@ -1048,14 +1049,14 @@ body.ttrss_main {
 	}
 }
 
-body.ttrss_main .dijitDialog {
+/*body.ttrss_main .dijitDialog {
 	h1:first-of-type,
 	h2:first-of-type,
 	h3:first-of-type,
 	h4:first-of-type {
 		margin-top: 0px;
 	}
-}
+}*/
 
 body.ttrss_main[view-mode="marked"] #feeds-holder #feedTree {
 	.dijitTreeRow.Has_Marked .dijitTreeLabel {

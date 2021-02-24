@@ -1,7 +1,7 @@
 <?php
 class Pref_Feeds extends Handler_Protected {
 	function csrf_ignore($method) {
-		$csrf_ignored = array("index", "getfeedtree", "savefeedorder", "uploadicon");
+		$csrf_ignored = array("index", "getfeedtree", "savefeedorder");
 
 		return array_search($method, $csrf_ignored) !== false;
 	}
@@ -9,7 +9,7 @@ class Pref_Feeds extends Handler_Protected {
 	public static function get_ts_languages() {
 		$rv = [];
 
-		if (DB_TYPE == "pgsql") {
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$dbh = Db::pdo();
 
 			$res = $dbh->query("SELECT cfgname FROM pg_ts_config");
@@ -20,11 +20,6 @@ class Pref_Feeds extends Handler_Protected {
 		}
 
 		return $rv;
-	}
-
-	function batch_edit_cbox($elem, $label = false) {
-		print "<input type=\"checkbox\" title=\"".__("Check to enable field")."\"
-			onchange=\"App.dialogOf(this).toggleField(this, '$elem', '$label')\">";
 	}
 
 	function renamecat() {
@@ -98,7 +93,7 @@ class Pref_Feeds extends Handler_Protected {
 			$feed['checkbox'] = false;
 			$feed['unread'] = -1;
 			$feed['error'] = $feed_line['last_error'];
-			$feed['icon'] = Feeds::getFeedIcon($feed_line['id']);
+			$feed['icon'] = Feeds::_get_icon($feed_line['id']);
 			$feed['param'] = TimeHelper::make_local_datetime(
 				$feed_line['last_updated'], true);
 			$feed['updates_disabled'] = (int)($feed_line['update_interval'] < 0);
@@ -110,10 +105,10 @@ class Pref_Feeds extends Handler_Protected {
 	}
 
 	function getfeedtree() {
-		print json_encode($this->makefeedtree());
+		print json_encode($this->_makefeedtree());
 	}
 
-	function makefeedtree() {
+	function _makefeedtree() {
 
 		if (clean($_REQUEST['mode'] ?? 0) != 2)
 			$search = $_SESSION["prefs_feed_search"] ?? "";
@@ -266,7 +261,7 @@ class Pref_Feeds extends Handler_Protected {
 				$feed['name'] = $feed_line['title'];
 				$feed['checkbox'] = false;
 				$feed['error'] = $feed_line['last_error'];
-				$feed['icon'] = Feeds::getFeedIcon($feed_line['id']);
+				$feed['icon'] = Feeds::_get_icon($feed_line['id']);
 				$feed['param'] = TimeHelper::make_local_datetime(
 					$feed_line['last_updated'], true);
 				$feed['unread'] = -1;
@@ -301,7 +296,7 @@ class Pref_Feeds extends Handler_Protected {
 				$feed['name'] = $feed_line['title'];
 				$feed['checkbox'] = false;
 				$feed['error'] = $feed_line['last_error'];
-				$feed['icon'] = Feeds::getFeedIcon($feed_line['id']);
+				$feed['icon'] = Feeds::_get_icon($feed_line['id']);
 				$feed['param'] = TimeHelper::make_local_datetime(
 					$feed_line['last_updated'], true);
 				$feed['unread'] = -1;
@@ -446,7 +441,7 @@ class Pref_Feeds extends Handler_Protected {
 		$sth->execute([$feed_id, $_SESSION['uid']]);
 
 		if ($row = $sth->fetch()) {
-			@unlink(ICONS_DIR . "/$feed_id.ico");
+			@unlink(Config::get(Config::ICONS_DIR) . "/$feed_id.ico");
 
 			$sth = $this->pdo->prepare("UPDATE ttrss_feeds SET favicon_avg_color = NULL, favicon_last_checked = '1970-01-01'
 				where id = ?");
@@ -458,10 +453,12 @@ class Pref_Feeds extends Handler_Protected {
 		header("Content-type: text/html");
 
 		if (is_uploaded_file($_FILES['icon_file']['tmp_name'])) {
-			$tmp_file = tempnam(CACHE_DIR . '/upload', 'icon');
+			$tmp_file = tempnam(Config::get(Config::CACHE_DIR) . '/upload', 'icon');
 
-			$result = move_uploaded_file($_FILES['icon_file']['tmp_name'],
-				$tmp_file);
+			if (!$tmp_file)
+				return;
+
+			$result = move_uploaded_file($_FILES['icon_file']['tmp_name'], $tmp_file);
 
 			if (!$result) {
 				return;
@@ -474,7 +471,7 @@ class Pref_Feeds extends Handler_Protected {
 		$feed_id = clean($_REQUEST["feed_id"]);
 		$rc = 2; // failed
 
-		if (is_file($icon_file) && $feed_id) {
+		if ($icon_file && is_file($icon_file) && $feed_id) {
 			if (filesize($icon_file) < 65535) {
 
 				$sth = $this->pdo->prepare("SELECT id FROM ttrss_feeds
@@ -482,15 +479,19 @@ class Pref_Feeds extends Handler_Protected {
 				$sth->execute([$feed_id, $_SESSION['uid']]);
 
 				if ($row = $sth->fetch()) {
-					@unlink(ICONS_DIR . "/$feed_id.ico");
-					if (rename($icon_file, ICONS_DIR . "/$feed_id.ico")) {
+					$new_filename = Config::get(Config::ICONS_DIR) . "/$feed_id.ico";
+
+					if (file_exists($new_filename)) unlink($new_filename);
+
+					if (rename($icon_file, $new_filename)) {
+						chmod($new_filename, 644);
 
 						$sth = $this->pdo->prepare("UPDATE ttrss_feeds SET
 							favicon_avg_color = ''
 							WHERE id = ?");
 						$sth->execute([$feed_id]);
 
-						$rc = 0;
+						$rc = Feeds::_get_icon($feed_id);
 					}
 				}
 			} else {
@@ -498,7 +499,9 @@ class Pref_Feeds extends Handler_Protected {
 			}
 		}
 
-		if (is_file($icon_file)) @unlink($icon_file);
+		if ($icon_file && is_file($icon_file)) {
+			unlink($icon_file);
+		}
 
 		print $rc;
 		return;
@@ -508,131 +511,25 @@ class Pref_Feeds extends Handler_Protected {
 		global $purge_intervals;
 		global $update_intervals;
 
-		$feed_id = clean($_REQUEST["id"]);
+		$feed_id = (int)clean($_REQUEST["id"]);
 
 		$sth = $this->pdo->prepare("SELECT * FROM ttrss_feeds WHERE id = ? AND
 				owner_uid = ?");
 		$sth->execute([$feed_id, $_SESSION['uid']]);
 
-		if ($row = $sth->fetch()) {
-			print '<div dojoType="dijit.layout.TabContainer" style="height : 450px">
-        		<div dojoType="dijit.layout.ContentPane" title="'.__('General').'">';
+		if ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
 
-			$title = htmlspecialchars($row["title"]);
+			ob_start();
+			PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_EDIT_FEED, $feed_id);
+			$plugin_data = trim((string)ob_get_contents());
+			ob_end_clean();
 
-			print_hidden("id", "$feed_id");
-			print_hidden("op", "pref-feeds");
-			print_hidden("method", "editSave");
-
-			print "<header>".__("Feed")."</header>";
-			print "<section>";
-
-			/* Title */
-
-			print "<fieldset>";
-
-			print "<input dojoType='dijit.form.ValidationTextBox' required='1'
-				placeHolder=\"".__("Feed Title")."\"
-				style='font-size : 16px; width: 500px' name='title' value=\"$title\">";
-
-			print "</fieldset>";
-
-			/* Feed URL */
-
-			$feed_url = htmlspecialchars($row["feed_url"]);
-
-			print "<fieldset>";
-
-			print "<label>" . __('URL:') . "</label> ";
-			print "<input dojoType='dijit.form.ValidationTextBox' required='1'
-				placeHolder=\"".__("Feed URL")."\"
-				regExp='^(http|https)://.*' style='width : 300px'
-				name='feed_url' value=\"$feed_url\">";
-
-			if (!empty($row["last_error"])) {
-				print "&nbsp;<i class=\"material-icons\"
-					title=\"".htmlspecialchars($row["last_error"])."\">error</i>";
-			}
-
-			print "</fieldset>";
-
-			/* Category */
-
-			if (get_pref('ENABLE_FEED_CATS')) {
-
-				$cat_id = $row["cat_id"];
-
-				print "<fieldset>";
-
-				print "<label>" . __('Place in category:') . "</label> ";
-
-				print_feed_cat_select("cat_id", $cat_id,
-					'dojoType="fox.form.Select"');
-
-				print "</fieldset>";
-			}
-
-			/* Site URL  */
-
-			$site_url = htmlspecialchars($row["site_url"]);
-
-			print "<fieldset>";
-
-			print "<label>" . __('Site URL:') . "</label> ";
-			print "<input dojoType='dijit.form.ValidationTextBox' required='1'
-				placeHolder=\"".__("Site URL")."\"
-				regExp='^(http|https)://.*' style='width : 300px'
-				name='site_url' value=\"$site_url\">";
-
-			print "</fieldset>";
-
-			/* FTS Stemming Language */
-
-			if (DB_TYPE == "pgsql") {
-				$feed_language = $row["feed_language"];
-
-				if (!$feed_language)
-					$feed_language = get_pref('DEFAULT_SEARCH_LANGUAGE');
-
-				print "<fieldset>";
-
-				print "<label>" . __('Language:') . "</label> ";
-				print_select("feed_language", $feed_language, $this::get_ts_languages(),
-					'dojoType="fox.form.Select"');
-
-				print "</fieldset>";
-			}
-
-			print "</section>";
-
-			print "<header>".__("Update")."</header>";
-			print "<section>";
-
-			/* Update Interval */
-
-			$update_interval = $row["update_interval"];
-
-			print "<fieldset>";
-
-			print "<label>".__("Interval:")."</label> ";
+			$row["icon"] = Feeds::_get_icon($feed_id);
 
 			$local_update_intervals = $update_intervals;
 			$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[get_pref("DEFAULT_UPDATE_INTERVAL")]);
 
-			print_select_hash("update_interval", $update_interval, $local_update_intervals,
-				'dojoType="fox.form.Select"');
-
-			print "</fieldset>";
-
-			/* Purge intl */
-
-			$purge_interval = $row["purge_interval"];
-
-			print "<fieldset>";
-
-			print "<label>" . __('Article purging:') . "</label> ";
-
-			if (FORCE_ARTICLE_PURGE == 0) {
+			if (Config::get(Config::FORCE_ARTICLE_PURGE) == 0) {
 				$local_purge_intervals = $purge_intervals;
 				$default_purge_interval = get_pref("PURGE_OLD_DAYS");
 
@@ -642,176 +539,34 @@ class Pref_Feeds extends Handler_Protected {
 				$local_purge_intervals[0] .= " " . sprintf("(%s)", __("Disabled"));
 
 			} else {
-				$purge_interval = FORCE_ARTICLE_PURGE;
+				$purge_interval = Config::get(Config::FORCE_ARTICLE_PURGE);
 				$local_purge_intervals = [ T_nsprintf('%d day', '%d days', $purge_interval, $purge_interval) ];
 			}
 
-			print_select_hash("purge_interval", $purge_interval, $local_purge_intervals,
-				'dojoType="fox.form.Select" ' .
-				((FORCE_ARTICLE_PURGE == 0) ? "" : 'disabled="1"'));
-
-			print "</fieldset>";
-
-			print "</section>";
-
-			$auth_login = htmlspecialchars($row["auth_login"]);
-			$auth_pass = htmlspecialchars($row["auth_pass"]);
-
-			$auth_enabled = $auth_login !== '' || $auth_pass !== '';
-
-			$auth_style = $auth_enabled ? '' : 'display: none';
-			print "<div id='feedEditDlg_loginContainer' style='$auth_style'>";
-			print "<header>".__("Authentication")."</header>";
-			print "<section>";
-
-			print "<fieldset>";
-
-			print "<input dojoType='dijit.form.TextBox' id='feedEditDlg_login'
-				placeHolder='".__("Login")."'
-				autocomplete='new-password'
-				name='auth_login' value=\"$auth_login\">";
-
-			print "</fieldset><fieldset>";
-
-			print "<input dojoType='dijit.form.TextBox' type='password' name='auth_pass'
-				autocomplete='new-password'
-				placeHolder='".__("Password")."'
-				value=\"$auth_pass\">";
-
-			print "<div dojoType='dijit.Tooltip' connectId='feedEditDlg_login' position='below'>
-				".__('<b>Hint:</b> you need to fill in your login information if your feed requires authentication, except for Twitter feeds.')."
-				</div>";
-
-			print "</fieldset>";
-
-			print "</section></div>";
-
-			$auth_checked = $auth_enabled ? 'checked' : '';
-			print "<label class='checkbox'>
-				<input type='checkbox' $auth_checked name='need_auth' dojoType='dijit.form.CheckBox' id='feedEditDlg_loginCheck'
-						onclick='App.displayIfChecked(this, \"feedEditDlg_loginContainer\")'>
-					".__('This feed requires authentication.')."</label>";
-
-			print '</div><div dojoType="dijit.layout.ContentPane" title="'.__('Options').'">';
-
-			print "<section class='narrow'>";
-
-			$include_in_digest = $row["include_in_digest"];
-
-			if ($include_in_digest) {
-				$checked = "checked=\"1\"";
-			} else {
-				$checked = "";
-			}
-
-			print "<fieldset class='narrow'>";
-
-			print "<label class='checkbox'><input dojoType=\"dijit.form.CheckBox\" type=\"checkbox\" id=\"include_in_digest\"
-				name=\"include_in_digest\"
-				$checked> ".__('Include in e-mail digest')."</label>";
-
-			print "</fieldset>";
-
-			$always_display_enclosures = $row["always_display_enclosures"];
-
-			if ($always_display_enclosures) {
-				$checked = "checked";
-			} else {
-				$checked = "";
-			}
-
-			print "<fieldset class='narrow'>";
-
-			print "<label class='checkbox'><input dojoType=\"dijit.form.CheckBox\" type=\"checkbox\" id=\"always_display_enclosures\"
-				name=\"always_display_enclosures\"
-				$checked> ".__('Always display image attachments')."</label>";
-
-			print "</fieldset>";
-
-			$hide_images = $row["hide_images"];
-
-			if ($hide_images) {
-				$checked = "checked=\"1\"";
-			} else {
-				$checked = "";
-			}
-
-			print "<fieldset class='narrow'>";
-
-			print "<label class='checkbox'><input dojoType='dijit.form.CheckBox' type='checkbox' id='hide_images'
-				name='hide_images' $checked> ".__('Do not embed media')."</label>";
-
-			print "</fieldset>";
-
-			$cache_images = $row["cache_images"];
-
-			if ($cache_images) {
-				$checked = "checked=\"1\"";
-			} else {
-				$checked = "";
-			}
-
-			print "<fieldset class='narrow'>";
-
-			print "<label class='checkbox'><input dojoType='dijit.form.CheckBox' type='checkbox' id='cache_images'
-				name='cache_images' $checked> ". __('Cache media')."</label>";
-
-			print "</fieldset>";
-
-			$mark_unread_on_update = $row["mark_unread_on_update"];
-
-			if ($mark_unread_on_update) {
-				$checked = "checked";
-			} else {
-				$checked = "";
-			}
-
-			print "<fieldset class='narrow'>";
-
-			print "<label class='checkbox'><input dojoType='dijit.form.CheckBox' type='checkbox' id='mark_unread_on_update'
-				name='mark_unread_on_update' $checked> ".__('Mark updated articles as unread')."</label>";
-
-			print "</fieldset>";
-
-			print '</div><div dojoType="dijit.layout.ContentPane" title="'.__('Icon').'">';
-
-			/* Icon */
-
-			print "<img class='feedIcon feed-editor-icon' src=\"".Feeds::getFeedIcon($feed_id)."\">";
-
-			print "<form onsubmit='return false;' id='feed_icon_upload_form'
-				enctype='multipart/form-data' method='POST'>
-			<label class='dijitButton'>".__("Choose file...")."
-				<input style='display: none' id='icon_file' size='10' name='icon_file' type='file'>
-			</label>
-			<input type='hidden' name='op' value='pref-feeds'>
-			<input type='hidden' name='csrf_token' value='".$_SESSION['csrf_token']."'>
-			<input type='hidden' name='feed_id' value='$feed_id'>
-			<input type='hidden' name='method' value='uploadicon'>
-			<button dojoType='dijit.form.Button' onclick=\"return CommonDialogs.uploadFeedIcon();\"
-				type='submit'>".__('Replace')."</button>
-			<button class='alt-danger' dojoType='dijit.form.Button' onclick=\"return CommonDialogs.removeFeedIcon($feed_id);\"
-				type='submit'>".__('Remove')."</button>
-			</form>";
-
-			print "</section>";
-
-			print '</div><div dojoType="dijit.layout.ContentPane" title="'.__('Plugins').'">';
-
-			PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_EDIT_FEED, $feed_id);
-
-			print "</div></div>";
-
-			$title = htmlspecialchars($title, ENT_QUOTES);
-
-			print "<footer>
-				<button style='float : left' class='alt-danger' dojoType='dijit.form.Button'
-					onclick='App.dialogOf(this).unsubscribeFeed($feed_id, \"$title\")'>".
-					__('Unsubscribe')."</button>
-				<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>".__('Save')."</button>
-				<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".__('Cancel')."</button>
-				</footer>";
+			print json_encode([
+				"feed" => $row,
+				"cats" => [
+					"enabled" => get_pref('ENABLE_FEED_CATS'),
+					"select" => \Controls\select_feeds_cats("cat_id", $row["cat_id"]),
+				],
+				"plugin_data" => $plugin_data,
+				"force_purge" => (int)Config::get(Config::FORCE_ARTICLE_PURGE),
+				"intervals" => [
+					"update" => $local_update_intervals,
+					"purge" => $local_purge_intervals,
+				],
+				"lang" => [
+					"enabled" => Config::get(Config::DB_TYPE) == "pgsql",
+					"default" => get_pref('DEFAULT_SEARCH_LANGUAGE'),
+					"all" => $this::get_ts_languages(),
+					]
+				]);
 		}
+	}
+
+	private function _batch_toggle_checkbox($name) {
+		return \Controls\checkbox_tag("", false, "",
+					["data-control-for" => $name, "title" => __("Check to enable field"), "onchange" => "App.dialogOf(this).toggleField(this)"]);
 	}
 
 	function editfeeds() {
@@ -820,165 +575,106 @@ class Pref_Feeds extends Handler_Protected {
 
 		$feed_ids = clean($_REQUEST["ids"]);
 
-		print_notice("Enable the options you wish to apply using checkboxes on the right:");
-
-		print "<p>";
-
-		print_hidden("ids", "$feed_ids");
-		print_hidden("op", "pref-feeds");
-		print_hidden("method", "batchEditSave");
-
-		print "<header>".__("Feed")."</header>";
-		print "<section>";
-
-		/* Category */
-
-		if (get_pref('ENABLE_FEED_CATS')) {
-
-			print "<fieldset>";
-
-			print "<label>" . __('Place in category:') . "</label> ";
-
-			print_feed_cat_select("cat_id", false,
-				'disabled="1" dojoType="fox.form.Select"');
-
-			$this->batch_edit_cbox("cat_id");
-
-			print "</fieldset>";
-		}
-
-		/* FTS Stemming Language */
-
-		if (DB_TYPE == "pgsql") {
-			print "<fieldset>";
-
-			print "<label>" . __('Language:') . "</label> ";
-			print_select("feed_language", "", $this::get_ts_languages(),
-				'disabled="1" dojoType="fox.form.Select"');
-
-			$this->batch_edit_cbox("feed_language");
-
-			print "</fieldset>";
-		}
-
-		print "</section>";
-
-		print "<header>".__("Update")."</header>";
-		print "<section>";
-
-		/* Update Interval */
-
-		print "<fieldset>";
-
-		print "<label>".__("Interval:")."</label> ";
-
 		$local_update_intervals = $update_intervals;
 		$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[get_pref("DEFAULT_UPDATE_INTERVAL")]);
 
-		print_select_hash("update_interval", "", $local_update_intervals,
-			'disabled="1" dojoType="fox.form.Select"');
+		$local_purge_intervals = $purge_intervals;
+		$default_purge_interval = get_pref("PURGE_OLD_DAYS");
 
-		$this->batch_edit_cbox("update_interval");
+		if ($default_purge_interval > 0)
+			$local_purge_intervals[0] .= " " . T_sprintf("(%d days)", $default_purge_interval);
+		else
+			$local_purge_intervals[0] .= " " . sprintf("(%s)", __("Disabled"));
 
-		print "</fieldset>";
+		$options = [
+			"include_in_digest" => __('Include in e-mail digest'),
+			"always_display_enclosures" => __('Always display image attachments'),
+			"hide_images" => __('Do not embed media'),
+			"cache_images" => __('Cache media'),
+			"mark_unread_on_update" => __('Mark updated articles as unread')
+		];
 
-		/* Purge intl */
+		print_notice("Enable the options you wish to apply using checkboxes on the right.");
+		?>
 
-		if (FORCE_ARTICLE_PURGE == 0) {
+		<?= \Controls\hidden_tag("ids", $feed_ids) ?>
+		<?= \Controls\hidden_tag("op", "pref-feeds") ?>
+		<?= \Controls\hidden_tag("method", "batchEditSave") ?>
 
-			print "<fieldset>";
+		<div dojoType="dijit.layout.TabContainer" style="height : 450px">
+			<div dojoType="dijit.layout.ContentPane" title="<?= __('General') ?>">
+				<section>
+				<?php if (get_pref('ENABLE_FEED_CATS')) { ?>
+					<fieldset>
+						<label><?= __('Place in category:') ?></label>
+						<?= \Controls\select_feeds_cats("cat_id", null, ['disabled' => '1']) ?>
+						<?= $this->_batch_toggle_checkbox("cat_id") ?>
+					</fieldset>
+				<?php } ?>
 
-			print "<label>" . __('Article purging:') . "</label> ";
+				<?php	if (Config::get(Config::DB_TYPE) == "pgsql") { ?>
+					<fieldset>
+						<label><?= __('Language:') ?></label>
+						<?= \Controls\select_tag("feed_language", "", $this::get_ts_languages(), ["disabled"=> 1]) ?>
+						<?= $this->_batch_toggle_checkbox("feed_language") ?>
+					</fieldset>
+				<?php } ?>
+				</section>
 
-			$local_purge_intervals = $purge_intervals;
-			$default_purge_interval = get_pref("PURGE_OLD_DAYS");
+				<hr/>
 
-			if ($default_purge_interval > 0)
-				$local_purge_intervals[0] .= " " . T_sprintf("(%d days)", $default_purge_interval);
-			else
-				$local_purge_intervals[0] .= " " . sprintf("(%s)", __("Disabled"));
+				<section>
+					<fieldset>
+						<label><?= __("Update interval:") ?></label>
+						<?= \Controls\select_hash("update_interval", "", $local_update_intervals, ["disabled" => 1]) ?>
+						<?= $this->_batch_toggle_checkbox("update_interval") ?>
+					</fieldset>
 
-			print_select_hash("purge_interval", "", $local_purge_intervals,
-				'disabled="1" dojoType="fox.form.Select"');
+					<?php if (Config::get(Config::FORCE_ARTICLE_PURGE) == 0) { ?>
+						<fieldset>
+							<label><?= __('Article purging:') ?></label>
+							<?= \Controls\select_hash("purge_interval", "", $local_purge_intervals, ["disabled" => 1]) ?>
+							<?= $this->_batch_toggle_checkbox("purge_interval") ?>
+						</fieldset>
+					<?php } ?>
+				</section>
+			</div>
+			<div dojoType="dijit.layout.ContentPane" title="<?= __('Authentication') ?>">
+				<section>
+					<fieldset>
+						<label><?= __("Login:") ?></label>
+						<input dojoType='dijit.form.TextBox'
+							disabled='1' autocomplete='new-password' name='auth_login' value=''>
+						<?= $this->_batch_toggle_checkbox("auth_login") ?>
+					</fieldset>
+					<fieldset>
+						<label><?= __("Password:") ?></label>
+						<input dojoType='dijit.form.TextBox' type='password' name='auth_pass'
+							autocomplete='new-password' disabled='1' value=''>
+						<?= $this->_batch_toggle_checkbox("auth_pass") ?>
+					</fieldset>
+				</section>
+			</div>
+			<div dojoType="dijit.layout.ContentPane" title="<?= __('Options') ?>">
+			<?php
+				foreach ($options as $name => $caption) {
+					?>
+						<fieldset class='narrow'>
+							<label class="checkbox text-muted">
+								<?= \Controls\checkbox_tag($name, false, "", ["disabled" => "1"]) ?>
+								<?= $caption ?>
+								<?= $this->_batch_toggle_checkbox($name) ?>
+							</label>
+						</fieldset>
+			<?php } ?>
+			</div>
+		</div>
 
-			$this->batch_edit_cbox("purge_interval");
-
-			print "</fieldset>";
-		}
-
-		print "</section>";
-		print "<header>".__("Authentication")."</header>";
-		print "<section>";
-
-		print "<fieldset>";
-
-		print "<input dojoType='dijit.form.TextBox'
-			placeHolder=\"".__("Login")."\" disabled='1'
-			autocomplete='new-password'
-			name='auth_login' value=''>";
-
-		$this->batch_edit_cbox("auth_login");
-
-		print "<input dojoType='dijit.form.TextBox' type='password' name='auth_pass'
-			autocomplete='new-password'
-			placeHolder=\"".__("Password")."\" disabled='1'
-			value=''>";
-
-		$this->batch_edit_cbox("auth_pass");
-
-		print "</fieldset>";
-
-		print "</section>";
-		print "<header>".__("Options")."</header>";
-		print "<section>";
-
-		print "<fieldset class='narrow'>";
-		print "<label class='checkbox'><input disabled='1' type='checkbox' id='include_in_digest'
-			name='include_in_digest' dojoType='dijit.form.CheckBox'>&nbsp;".__('Include in e-mail digest')."</label>";
-
-		print "&nbsp;"; $this->batch_edit_cbox("include_in_digest", "include_in_digest_l");
-
-		print "</fieldset><fieldset class='narrow'>";
-
-		print "<label class='checkbox'><input disabled='1' type='checkbox' id='always_display_enclosures'
-			name='always_display_enclosures' dojoType='dijit.form.CheckBox'>&nbsp;".__('Always display image attachments')."</label>";
-
-		print "&nbsp;"; $this->batch_edit_cbox("always_display_enclosures", "always_display_enclosures_l");
-
-		print "</fieldset><fieldset class='narrow'>";
-
-		print "<label class='checkbox'><input disabled='1' type='checkbox' id='hide_images'
-			name='hide_images' dojoType='dijit.form.CheckBox'>&nbsp;". __('Do not embed media')."</label>";
-
-		print "&nbsp;"; $this->batch_edit_cbox("hide_images", "hide_images_l");
-
-		print "</fieldset><fieldset class='narrow'>";
-
-		print "<label class='checkbox'><input disabled='1' type='checkbox' id='cache_images'
-			name='cache_images' dojoType='dijit.form.CheckBox'>&nbsp;".__('Cache media')."</label>";
-
-		print "&nbsp;"; $this->batch_edit_cbox("cache_images", "cache_images_l");
-
-		print "</fieldset><fieldset class='narrow'>";
-
-		print "<label class='checkbox'><input disabled='1' type='checkbox' id='mark_unread_on_update'
-			name='mark_unread_on_update' dojoType='dijit.form.CheckBox'>&nbsp;".__('Mark updated articles as unread')."</label>";
-
-		print "&nbsp;"; $this->batch_edit_cbox("mark_unread_on_update", "mark_unread_on_update_l");
-
-		print "</fieldset>";
-
-		print "</section>";
-
-		print "<footer>
-			<button dojoType='dijit.form.Button' type='submit' class='alt-primary' type='submit'>".
-				__('Save')."</button>
-			<button dojoType='dijit.form.Button'
-			onclick='App.dialogOf(this).hide()'>".
-				__('Cancel')."</button>
-			</footer>";
-
-		return;
+		<footer>
+			<?= \Controls\submit_tag(__("Save")) ?>
+			<?= \Controls\cancel_dialog_tag(__("Cancel")) ?>
+		</footer>
+		<?php
 	}
 
 	function batchEditSave() {
@@ -989,7 +685,7 @@ class Pref_Feeds extends Handler_Protected {
 		return $this->editsaveops(false);
 	}
 
-	function editsaveops($batch) {
+	private function editsaveops($batch) {
 
 		$feed_title = clean($_POST["title"]);
 		$feed_url = clean($_POST["feed_url"]);
@@ -1017,10 +713,6 @@ class Pref_Feeds extends Handler_Protected {
 		$feed_language = clean($_POST["feed_language"]);
 
 		if (!$batch) {
-			if (clean($_POST["need_auth"] ?? "") !== 'on') {
-				$auth_login = '';
-				$auth_pass = '';
-			}
 
 			/* $sth = $this->pdo->prepare("SELECT feed_url FROM ttrss_feeds WHERE id = ?");
 			$sth->execute([$feed_id]);
@@ -1189,7 +881,7 @@ class Pref_Feeds extends Handler_Protected {
 	function addCat() {
 		$feed_cat = clean($_REQUEST["cat"]);
 
-		Feeds::add_feed_category($feed_cat);
+		Feeds::_add_cat($feed_cat);
 	}
 
 	function importOpml() {
@@ -1197,33 +889,15 @@ class Pref_Feeds extends Handler_Protected {
 		$opml->opml_import($_SESSION["uid"]);
 	}
 
-	function index() {
+	private function index_feeds() {
+		$error_button = "<button dojoType='dijit.form.Button'
+				id='pref_feeds_errors_btn' style='display : none'
+				onclick='CommonDialogs.showFeedsWithErrors()'>".
+			__("Feeds with errors")."</button>";
 
-		print "<div dojoType='dijit.layout.AccordionContainer' region='center'>";
-		print "<div style='padding : 0px' dojoType='dijit.layout.AccordionPane'
-			title=\"<i class='material-icons'>rss_feed</i> ".__('Feeds')."\">";
-
-		$sth = $this->pdo->prepare("SELECT COUNT(id) AS num_errors
-			FROM ttrss_feeds WHERE last_error != '' AND owner_uid = ?");
-		$sth->execute([$_SESSION['uid']]);
-
-		if ($row = $sth->fetch()) {
-			$num_errors = $row["num_errors"];
-		} else {
-			$num_errors = 0;
-		}
-
-		if ($num_errors > 0) {
-			$error_button = "<button dojoType=\"dijit.form.Button\"
-			  		onclick=\"CommonDialogs.showFeedsWithErrors()\" id=\"errorButton\">" .
-				__("Feeds with errors") . "</button>";
-		} else {
-			$error_button = "";
-		}
-
-		$inactive_button = "<button dojoType=\"dijit.form.Button\"
-				id=\"pref_feeds_inactive_btn\"
-				style=\"display : none\"
+		$inactive_button = "<button dojoType='dijit.form.Button'
+				id='pref_feeds_inactive_btn'
+				style='display : none'
 				onclick=\"dijit.byId('feedTree').showInactiveFeeds()\">" .
 				__("Inactive feeds") . "</button>";
 
@@ -1235,175 +909,201 @@ class Pref_Feeds extends Handler_Protected {
 			$feed_search = $_SESSION["prefs_feed_search"] ?? "";
 		}
 
-		print '<div dojoType="dijit.layout.BorderContainer" gutters="false">';
+		?>
 
-		print "<div region='top' dojoType=\"fox.Toolbar\">"; #toolbar
+		<div dojoType="dijit.layout.BorderContainer" gutters="false">
+			<div region='top' dojoType="fox.Toolbar">
+				<div style='float : right'>
+					<input dojoType="dijit.form.TextBox" id="feed_search" size="20" type="search"
+						value="<?= htmlspecialchars($feed_search) ?>">
+					<button dojoType="dijit.form.Button" onclick="dijit.byId('feedTree').reload()">
+						<?= __('Search') ?></button>
+				</div>
 
-		print "<div style='float : right; padding-right : 4px;'>
-			<input dojoType=\"dijit.form.TextBox\" id=\"feed_search\" size=\"20\" type=\"search\"
-				value=\"$feed_search\">
-			<button dojoType=\"dijit.form.Button\" onclick=\"dijit.byId('feedTree').reload()\">".
-				__('Search')."</button>
-			</div>";
+				<div dojoType="fox.form.DropDownButton">
+					<span><?= __('Select') ?></span>
+					<div dojoType="dijit.Menu" style="display: none;">
+						<div onclick="dijit.byId('feedTree').model.setAllChecked(true)"
+							dojoType="dijit.MenuItem"><?= __('All') ?></div>
+						<div onclick="dijit.byId('feedTree').model.setAllChecked(false)"
+							dojoType="dijit.MenuItem"><?= __('None') ?></div>
+					</div>
+				</div>
 
-		print "<div dojoType=\"fox.form.DropDownButton\">".
-				"<span>" . __('Select')."</span>";
-		print "<div dojoType=\"dijit.Menu\" style=\"display: none;\">";
-		print "<div onclick=\"dijit.byId('feedTree').model.setAllChecked(true)\"
-			dojoType=\"dijit.MenuItem\">".__('All')."</div>";
-		print "<div onclick=\"dijit.byId('feedTree').model.setAllChecked(false)\"
-			dojoType=\"dijit.MenuItem\">".__('None')."</div>";
-		print "</div></div>";
+				<div dojoType="fox.form.DropDownButton">
+					<span><?= __('Feeds') ?></span>
+					<div dojoType="dijit.Menu" style="display: none">
+						<div onclick="CommonDialogs.subscribeToFeed()"
+							dojoType="dijit.MenuItem"><?= __('Subscribe to feed') ?></div>
+						<div onclick="dijit.byId('feedTree').editSelectedFeed()"
+							dojoType="dijit.MenuItem"><?= __('Edit selected feeds') ?></div>
+						<div onclick="dijit.byId('feedTree').resetFeedOrder()"
+							dojoType="dijit.MenuItem"><?= __('Reset sort order') ?></div>
+						<div onclick="dijit.byId('feedTree').batchSubscribe()"
+							dojoType="dijit.MenuItem"><?= __('Batch subscribe') ?></div>
+						<div dojoType="dijit.MenuItem" onclick="dijit.byId('feedTree').removeSelectedFeeds()">
+							<?= __('Unsubscribe') ?></div>
+					</div>
+				</div>
 
-		print "<div dojoType=\"fox.form.DropDownButton\">".
-				"<span>" . __('Feeds')."</span>";
-		print "<div dojoType=\"dijit.Menu\" style=\"display: none;\">";
-		print "<div onclick=\"CommonDialogs.quickAddFeed()\"
-			dojoType=\"dijit.MenuItem\">".__('Subscribe to feed')."</div>";
-		print "<div onclick=\"dijit.byId('feedTree').editSelectedFeed()\"
-			dojoType=\"dijit.MenuItem\">".__('Edit selected feeds')."</div>";
-		print "<div onclick=\"dijit.byId('feedTree').resetFeedOrder()\"
-			dojoType=\"dijit.MenuItem\">".__('Reset sort order')."</div>";
-		print "<div onclick=\"dijit.byId('feedTree').batchSubscribe()\"
-			dojoType=\"dijit.MenuItem\">".__('Batch subscribe')."</div>";
-		print "<div dojoType=\"dijit.MenuItem\" onclick=\"dijit.byId('feedTree').removeSelectedFeeds()\">"
-			.__('Unsubscribe')."</div> ";
-		print "</div></div>";
+				<?php if (get_pref('ENABLE_FEED_CATS')) { ?>
+					<div dojoType="fox.form.DropDownButton">
+						<span><?= __('Categories') ?></span>
+						<div dojoType="dijit.Menu" style="display: none">
+							<div onclick="dijit.byId('feedTree').createCategory()"
+								dojoType="dijit.MenuItem"><?= __('Add category') ?></div>
+							<div onclick="dijit.byId('feedTree').resetCatOrder()"
+								dojoType="dijit.MenuItem"><?= __('Reset sort order') ?></div>
+							<div onclick="dijit.byId('feedTree').removeSelectedCategories()"
+								dojoType="dijit.MenuItem"><?= __('Remove selected') ?></div>
+						</div>
+					</div>
+				<?php } ?>
+				<?= $error_button ?>
+				<?= $inactive_button ?>
+			</div>
+			<div style="padding : 0px" dojoType="dijit.layout.ContentPane" region="center">
+				<div dojoType="fox.PrefFeedStore" jsId="feedStore"
+					url="backend.php?op=pref-feeds&method=getfeedtree">
+				</div>
 
-		if (get_pref('ENABLE_FEED_CATS')) {
-			print "<div dojoType=\"fox.form.DropDownButton\">".
-					"<span>" . __('Categories')."</span>";
-			print "<div dojoType=\"dijit.Menu\" style=\"display: none;\">";
-			print "<div onclick=\"dijit.byId('feedTree').createCategory()\"
-				dojoType=\"dijit.MenuItem\">".__('Add category')."</div>";
-			print "<div onclick=\"dijit.byId('feedTree').resetCatOrder()\"
-				dojoType=\"dijit.MenuItem\">".__('Reset sort order')."</div>";
-			print "<div onclick=\"dijit.byId('feedTree').removeSelectedCategories()\"
-				dojoType=\"dijit.MenuItem\">".__('Remove selected')."</div>";
-			print "</div></div>";
+				<div dojoType="lib.CheckBoxStoreModel" jsId="feedModel" store="feedStore"
+					query="{id:'root'}" rootId="root" rootLabel="Feeds" childrenAttrs="items"
+					checkboxStrict="false" checkboxAll="false">
+				</div>
 
-		}
+				<div dojoType="fox.PrefFeedTree" id="feedTree"
+					dndController="dijit.tree.dndSource"
+					betweenThreshold="5"
+					autoExpand="<?= (!empty($feed_search) ? "true" : "false") ?>"
+					persist="true"
+					model="feedModel"
+					openOnClick="false">
+					<script type="dojo/method" event="onClick" args="item">
+						var id = String(item.id);
+						var bare_id = id.substr(id.indexOf(':')+1);
 
-		print $error_button;
-		print $inactive_button;
-
-		print "</div>"; # toolbar
-
-		//print '</div>';
-		print '<div style="padding : 0px" dojoType="dijit.layout.ContentPane" region="center">';
-
-		print "<div id=\"feedlistLoading\">
-		<img src='images/indicator_tiny.gif'>".
-		 __("Loading, please wait...")."</div>";
-
-		$auto_expand = $feed_search != "" ? "true" : "false";
-
-		print "<div dojoType=\"fox.PrefFeedStore\" jsId=\"feedStore\"
-			url=\"backend.php?op=pref-feeds&method=getfeedtree\">
+						if (id.match('FEED:')) {
+							CommonDialogs.editFeed(bare_id);
+						} else if (id.match('CAT:')) {
+							dijit.byId('feedTree').editCategory(bare_id, item);
+						}
+					</script>
+					<script type="dojo/method" event="onLoad" args="item">
+						dijit.byId('feedTree').checkInactiveFeeds();
+						dijit.byId('feedTree').checkErrorFeeds();
+					</script>
+				</div>
+			</div>
 		</div>
-		<div dojoType=\"lib.CheckBoxStoreModel\" jsId=\"feedModel\" store=\"feedStore\"
-		query=\"{id:'root'}\" rootId=\"root\" rootLabel=\"Feeds\"
-			childrenAttrs=\"items\" checkboxStrict=\"false\" checkboxAll=\"false\">
-		</div>
-		<div dojoType=\"fox.PrefFeedTree\" id=\"feedTree\"
-			dndController=\"dijit.tree.dndSource\"
-			betweenThreshold=\"5\"
-			autoExpand='$auto_expand'
-			model=\"feedModel\" openOnClick=\"false\">
-		<script type=\"dojo/method\" event=\"onClick\" args=\"item\">
-			var id = String(item.id);
-			var bare_id = id.substr(id.indexOf(':')+1);
+	<?php
 
-			if (id.match('FEED:')) {
-				CommonDialogs.editFeed(bare_id);
-			} else if (id.match('CAT:')) {
-				dijit.byId('feedTree').editCategory(bare_id, item);
-			}
-		</script>
-		<script type=\"dojo/method\" event=\"onLoad\" args=\"item\">
-			Element.hide(\"feedlistLoading\");
+	}
 
-			dijit.byId('feedTree').checkInactiveFeeds();
-		</script>
-		</div>";
+	private function index_opml() {
+		?>
 
-#		print "<div dojoType=\"dijit.Tooltip\" connectId=\"feedTree\" position=\"below\">
-#			".__('<b>Hint:</b> you can drag feeds and categories around.')."
-#			</div>";
+		<h3><?= __("Using OPML you can export and import your feeds, filters, labels and Tiny Tiny RSS settings.") ?></h3>
 
-		print '</div>';
-		print '</div>';
+		<?php print_notice("Only main settings profile can be migrated using OPML.") ?>
 
-		print "</div>"; # feeds pane
-
-		print "<div dojoType='dijit.layout.AccordionPane'
-			title='<i class=\"material-icons\">import_export</i> ".__('OPML')."'>";
-
-		print "<h3>" . __("Using OPML you can export and import your feeds, filters, labels and Tiny Tiny RSS settings.") . "</h3>";
-
-		print_notice("Only main settings profile can be migrated using OPML.");
-
-		print "<form id='opml_import_form' method='post' enctype='multipart/form-data' >
-			<label class='dijitButton'>".__("Choose file...")."
-				<input style='display : none' id='opml_file' name='opml_file' type='file'>&nbsp;
+		<form id='opml_import_form' method='post' enctype='multipart/form-data'>
+			<label class='dijitButton'><?= __("Choose file...") ?>
+				<input style='display : none' id='opml_file' name='opml_file' type='file'>
 			</label>
 			<input type='hidden' name='op' value='pref-feeds'>
-			<input type='hidden' name='csrf_token' value='".$_SESSION['csrf_token']."'>
+			<input type='hidden' name='csrf_token' value="<?= $_SESSION['csrf_token'] ?>">
 			<input type='hidden' name='method' value='importOpml'>
-			<button dojoType='dijit.form.Button' class='alt-primary' onclick=\"return Helpers.OPML.import();\" type=\"submit\">" .
-			__('Import OPML') . "</button>";
+			<button dojoType='dijit.form.Button' class='alt-primary' onclick="return Helpers.OPML.import()" type="submit">
+				<?= __('Import OPML') ?>
+			</button>
+		</form>
 
-		print "</form>";
+		<hr/>
 
-		print "<form dojoType='dijit.form.Form' id='opmlExportForm' style='display : inline-block'>";
+		<form dojoType='dijit.form.Form' id='opmlExportForm' style='display : inline-block'>
+			<button dojoType='dijit.form.Button' onclick='Helpers.OPML.export()'>
+				<?= __('Export OPML') ?>
+			</button>
 
-		print "<button dojoType='dijit.form.Button'
-			onclick='Helpers.OPML.export()' >" .
-			__('Export OPML') . "</button>";
+			<label class='checkbox'>
+				<?= \Controls\checkbox_tag("include_settings", true, "1") ?>
+				<?= __("Include settings") ?>
+			</label>
+		</form>
 
-		print " <label class='checkbox'>";
-		print_checkbox("include_settings", true, "1", "");
-		print " " . __("Include settings");
-		print "</label>";
+		<hr/>
 
-		print "</form>";
+		<h2><?= __("Published OPML") ?></h2>
 
-		print "<p/>";
+		<p>
+			<?= __('Your OPML can be published publicly and can be subscribed by anyone who knows the URL below.') ?>
+			<?= __("Published OPML does not include your Tiny Tiny RSS settings, feeds that require authentication or feeds hidden from Popular feeds.") ?>
+		</p>
 
-		print "<h2>" . __("Published OPML") . "</h2>";
+		<button dojoType='dijit.form.Button' class='alt-primary' onclick="return Helpers.OPML.publish()">
+			<?= __('Display published OPML URL') ?>
+		</button>
 
-		print "<p>" . __('Your OPML can be published publicly and can be subscribed by anyone who knows the URL below.') .
-			" " .
-			__("Published OPML does not include your Tiny Tiny RSS settings, feeds that require authentication or feeds hidden from Popular feeds.") . "</p>";
-
-		print "<button dojoType='dijit.form.Button' class='alt-primary' onclick=\"return CommonDialogs.publishedOPML()\">".
-			__('Display published OPML URL')."</button> ";
-
+		<?php
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION, "prefFeedsOPML");
+	}
 
-		print "</div>"; # pane
+	private function index_shared() {
+		?>
 
-		print "<div dojoType=\"dijit.layout.AccordionPane\"
-			title=\"<i class='material-icons'>share</i> ".__('Published & shared articles / Generated feeds')."\">";
+		<h3><?= __('Published articles can be subscribed by anyone who knows the following URL:') ?></h3>
 
-		print "<h3>" . __('Published articles can be subscribed by anyone who knows the following URL:') . "</h3>";
+		<button dojoType='dijit.form.Button' class='alt-primary'
+			onclick="CommonDialogs.generatedFeed(-2, false)">
+			<?= __('Display URL') ?>
+		</button>
 
-		$rss_url = htmlspecialchars(get_self_url_prefix() .
-				"/public.php?op=rss&id=-2&view-mode=all_articles");;
+		<button class='alt-danger' dojoType='dijit.form.Button' onclick='return Helpers.Feeds.clearFeedAccessKeys()'>
+			<?= __('Clear all generated URLs') ?>
+		</button>
 
-		print "<button dojoType='dijit.form.Button' class='alt-primary'
-			onclick='CommonDialogs.generatedFeed(-2, false, \"$rss_url\", \"".__("Published articles")."\")'>".
-			__('Display URL')."</button>
-		<button class='alt-danger' dojoType='dijit.form.Button' onclick='return Helpers.clearFeedAccessKeys()'>".
-			__('Clear all generated URLs')."</button> ";
-
+		<?php
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION, "prefFeedsPublishedGenerated");
+	}
 
-		print "</div>"; #pane
+	function index() {
+		?>
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefFeeds");
+		<div dojoType='dijit.layout.TabContainer' tabPosition='left-h'>
+			<div style='padding : 0px' dojoType='dijit.layout.ContentPane'
+				title="<i class='material-icons'>rss_feed</i> <?= __('My feeds') ?>">
+				<?php $this->index_feeds() ?>
+			</div>
 
-		print "</div>"; #container
+			<div dojoType='dijit.layout.ContentPane'
+						title="<i class='material-icons'>import_export</i> <?= __('OPML') ?>">
+						<?php $this->index_opml() ?>
+					</div>
+
+			<div dojoType="dijit.layout.ContentPane"
+				title="<i class='material-icons'>share</i> <?= __('Sharing') ?>">
+				<?php $this->index_shared() ?>
+			</div>
+
+			<?php
+				ob_start();
+				PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefFeeds");
+				$plugin_data = trim((string)ob_get_contents());
+				ob_end_clean();
+			?>
+
+			<?php if ($plugin_data) { ?>
+				<div dojoType='dijit.layout.ContentPane'
+					title="<i class='material-icons'>extension</i> <?= __('Plugins') ?>">
+
+					<div dojoType='dijit.layout.AccordionContainer' region='center'>
+						<?= $plugin_data ?>
+					</div>
+				</div>
+			<?php } ?>
+		</div>
+		<?php
 	}
 
 	private function feedlist_init_cat($cat_id) {
@@ -1412,9 +1112,9 @@ class Pref_Feeds extends Handler_Protected {
 
 		$obj['id'] = 'CAT:' . $cat_id;
 		$obj['items'] = array();
-		$obj['name'] = Feeds::getCategoryTitle($cat_id);
+		$obj['name'] = Feeds::_get_cat_title($cat_id);
 		$obj['type'] = 'category';
-		$obj['unread'] = -1; //(int) Feeds::getCategoryUnread($cat_id);
+		$obj['unread'] = -1; //(int) Feeds::_get_cat_unread($cat_id);
 		$obj['bare_id'] = $cat_id;
 
 		return $obj;
@@ -1425,7 +1125,7 @@ class Pref_Feeds extends Handler_Protected {
 		$feed_id = (int) $feed_id;
 
 		if (!$title)
-			$title = Feeds::getFeedTitle($feed_id, false);
+			$title = Feeds::_get_title($feed_id, false);
 
 		if ($unread === false)
 			$unread = getFeedUnread($feed_id, false);
@@ -1436,7 +1136,7 @@ class Pref_Feeds extends Handler_Protected {
 		$obj['type'] = 'feed';
 		$obj['error'] = $error;
 		$obj['updated'] = $updated;
-		$obj['icon'] = Feeds::getFeedIcon($feed_id);
+		$obj['icon'] = Feeds::_get_icon($feed_id);
 		$obj['bare_id'] = $feed_id;
 		$obj['auxcounter'] = 0;
 
@@ -1445,7 +1145,7 @@ class Pref_Feeds extends Handler_Protected {
 
 	function inactiveFeeds() {
 
-		if (DB_TYPE == "pgsql") {
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$interval_qpart = "NOW() - INTERVAL '3 months'";
 		} else {
 			$interval_qpart = "DATE_SUB(NOW(), INTERVAL 3 MONTH)";
@@ -1464,56 +1164,14 @@ class Pref_Feeds extends Handler_Protected {
 			ORDER BY last_article");
 		$sth->execute([$_SESSION['uid']]);
 
-		print "<div dojoType='fox.Toolbar'>";
-		print "<div dojoType='fox.form.DropDownButton'>".
-				"<span>" . __('Select')."</span>";
-		print "<div dojoType='dijit.Menu' style='display: none'>";
-		print "<div onclick=\"Tables.select('inactive-feeds-list', true)\"
-			dojoType='dijit.MenuItem'>".__('All')."</div>";
-		print "<div onclick=\"Tables.select('inactive-feeds-list', false)\"
-			dojoType='dijit.MenuItem'>".__('None')."</div>";
-		print "</div></div>";
-		print "</div>"; #toolbar
+		$rv = [];
 
-		print "<div class='panel panel-scrollable'>";
-		print "<table width='100%' id='inactive-feeds-list'>";
-
-		$lnum = 1;
-
-		while ($line = $sth->fetch()) {
-
-			$feed_id = $line["id"];
-
-			print "<tr data-row-id='$feed_id'>";
-
-			print "<td width='5%' align='center'><input
-				onclick='Tables.onRowChecked(this);' dojoType='dijit.form.CheckBox'
-				type='checkbox'></td>";
-			print "<td>";
-
-			print "<a href='#' ".
-				"title=\"".__("Click to edit feed")."\" ".
-				"onclick=\"CommonDialogs.editFeed(".$line["id"].")\">".
-				htmlspecialchars($line["title"])."</a>";
-
-			print "</td><td class='text-muted' align='right'>";
-			print TimeHelper::make_local_datetime($line['last_article'], false);
-			print "</td>";
-			print "</tr>";
-
-			++$lnum;
+		while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+			$row['last_article'] = TimeHelper::make_local_datetime($row['last_article'], false);
+			array_push($rv, $row);
 		}
 
-		print "</table>";
-		print "</div>";
-
-		print "<footer>
-			<button style='float : left' class='alt-danger' dojoType='dijit.form.Button' onclick='App.dialogOf(this).removeSelected()'>"
-			.__('Unsubscribe from selected feeds')."</button>
-			<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>"
-			.__('Close this window')."</button>
-			</footer>";
-
+		print json_encode($rv);
 	}
 
 	function feedsWithErrors() {
@@ -1521,58 +1179,13 @@ class Pref_Feeds extends Handler_Protected {
 			FROM ttrss_feeds WHERE last_error != '' AND owner_uid = ?");
 		$sth->execute([$_SESSION['uid']]);
 
-		print "<div dojoType=\"fox.Toolbar\">";
-		print "<div dojoType=\"fox.form.DropDownButton\">".
-				"<span>" . __('Select')."</span>";
-		print "<div dojoType=\"dijit.Menu\" style=\"display: none;\">";
-		print "<div onclick=\"Tables.select('error-feeds-list', true)\"
-			dojoType=\"dijit.MenuItem\">".__('All')."</div>";
-		print "<div onclick=\"Tables.select('error-feeds-list', false)\"
-			dojoType=\"dijit.MenuItem\">".__('None')."</div>";
-		print "</div></div>";
-		print "</div>"; #toolbar
+		$rv = [];
 
-		print "<div class='panel panel-scrollable'>";
-		print "<table width='100%' id='error-feeds-list'>";
-
-		$lnum = 1;
-
-		while ($line = $sth->fetch()) {
-
-			$feed_id = $line["id"];
-
-			print "<tr data-row-id='$feed_id'>";
-
-			print "<td width='5%' align='center'><input
-				onclick='Tables.onRowChecked(this);' dojoType=\"dijit.form.CheckBox\"
-				type=\"checkbox\"></td>";
-			print "<td>";
-
-			print "<a class=\"visibleLink\" href=\"#\" ".
-				"title=\"".__("Click to edit feed")."\" ".
-				"onclick=\"CommonDialogs.editFeed(".$line["id"].")\">".
-				htmlspecialchars($line["title"])."</a>: ";
-
-			print "<span class=\"text-muted\">";
-			print htmlspecialchars($line["last_error"]);
-			print "</span>";
-
-			print "</td>";
-			print "</tr>";
-
-			++$lnum;
+		while ($row = $sth->fetch()) {
+			array_push($rv, $row);
 		}
 
-		print "</table>";
-		print "</div>";
-
-		print "<footer>";
-		print "<button style='float : left' class='alt-danger' dojoType='dijit.form.Button' onclick='App.dialogOf(this).removeSelected()'>"
-			.__('Unsubscribe from selected feeds')."</button> ";
-		print "<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>".
-			__('Close this window')."</button>";
-
-		print "</footer>";
+		print json_encode($rv);
 	}
 
 	private function remove_feed_category($id, $owner_uid) {
@@ -1613,8 +1226,8 @@ class Pref_Feeds extends Handler_Protected {
 
 			$pdo->commit();
 
-			if (file_exists(ICONS_DIR . "/$id.ico")) {
-				unlink(ICONS_DIR . "/$id.ico");
+			if (file_exists(Config::get(Config::ICONS_DIR) . "/$id.ico")) {
+				unlink(Config::get(Config::ICONS_DIR) . "/$id.ico");
 			}
 
 		} else {
@@ -1623,52 +1236,10 @@ class Pref_Feeds extends Handler_Protected {
 	}
 
 	function batchSubscribe() {
-		print "<form onsubmit='return false'>";
-
-		print_hidden("op", "pref-feeds");
-		print_hidden("method", "batchaddfeeds");
-
-		print "<header class='horizontal'>".__("One valid feed per line (no detection is done)")."</header>";
-		print "<section>";
-
-		print "<textarea
-			style='font-size : 12px; width : 98%; height: 200px;'
-			dojoType='fox.form.ValidationTextArea' required='1' name='feeds'></textarea>";
-
-		if (get_pref('ENABLE_FEED_CATS')) {
-			print "<fieldset>";
-			print "<label>" . __('Place in category:') . "</label> ";
-			print_feed_cat_select("cat", false, 'dojoType="fox.form.Select"');
-			print "</fieldset>";
-		}
-
-		print "</section>";
-
-		print "<div id='feedDlg_loginContainer' style='display : none'>";
-
-		print "<header>" . __("Authentication") . "</header>";
-		print "<section>";
-
-		print "<input dojoType='dijit.form.TextBox' name='login' placeHolder=\"".__("Login")."\">
-			<input placeHolder=\"".__("Password")."\" dojoType=\"dijit.form.TextBox\" type='password'
-				autocomplete='new-password' name='pass''></div>";
-
-		print "</section>";
-		print "</div>";
-
-		print "<fieldset class='narrow'>
-			<label class='checkbox'><input type='checkbox' name='need_auth' dojoType='dijit.form.CheckBox'
-					onclick='App.displayIfChecked(this, \"feedDlg_loginContainer\")'> ".
-				__('Feeds require authentication.')."</label></div>";
-		print "</fieldset>";
-
-		print "<footer>
-			<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).execute()' type='submit' class='alt-primary'>".
-				__('Subscribe')."</button>
-			<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".__('Cancel')."</button>
-			</footer>";
-
-		print "</form>";
+		print json_encode([
+			"enable_cats" => (int)get_pref('ENABLE_FEED_CATS'),
+			"cat_select" => \Controls\select_feeds_cats("cat")
+		]);
 	}
 
 	function batchAddFeeds() {
@@ -1703,14 +1274,14 @@ class Pref_Feeds extends Handler_Protected {
 	}
 
 	function getOPMLKey() {
-		print json_encode(["link" => OPML::opml_publish_url()]);
+		print json_encode(["link" => OPML::get_publish_url()]);
 	}
 
 	function regenOPMLKey() {
 		$this->update_feed_access_key('OPML:Publish',
 			false, $_SESSION["uid"]);
 
-		print json_encode(["link" => OPML::opml_publish_url()]);
+		print json_encode(["link" => OPML::get_publish_url()]);
 	}
 
 	function regenFeedKey() {
@@ -1722,11 +1293,23 @@ class Pref_Feeds extends Handler_Protected {
 		print json_encode(["link" => $new_key]);
 	}
 
-	function getFeedKey() {
+	function getsharedurl() {
 		$feed_id = clean($_REQUEST['id']);
-		$is_cat = clean($_REQUEST['is_cat']);
+		$is_cat = clean($_REQUEST['is_cat']) == "true";
+		$search = clean($_REQUEST['search']);
 
-		print json_encode(["link" => Feeds::get_feed_access_key($feed_id, $is_cat, $_SESSION["uid"])]);
+		$link = get_self_url_prefix() . "/public.php?" . http_build_query([
+			'op' => 'rss',
+			'id' => $feed_id,
+			'is_cat' => (int)$is_cat,
+			'q' => $search,
+			'key' => Feeds::_get_access_key($feed_id, $is_cat, $_SESSION["uid"])
+		]);
+
+		print json_encode([
+			"title" => Feeds::_get_title($feed_id, $is_cat),
+			"link" => $link
+		]);
 	}
 
 	private function update_feed_access_key($feed_id, $is_cat, $owner_uid) {
@@ -1736,7 +1319,7 @@ class Pref_Feeds extends Handler_Protected {
 			WHERE feed_id = ? AND is_cat = ? AND owner_uid = ?");
 		$sth->execute([$feed_id, bool_to_sql_bool($is_cat), $owner_uid]);
 
-		return Feeds::get_feed_access_key($feed_id, $is_cat, $owner_uid);
+		return Feeds::_get_access_key($feed_id, $is_cat, $owner_uid);
 	}
 
 	// Silent
@@ -1758,31 +1341,6 @@ class Pref_Feeds extends Handler_Protected {
 		}
 
 		return $c;
-	}
-
-	function getinactivefeeds() {
-		if (DB_TYPE == "pgsql") {
-			$interval_qpart = "NOW() - INTERVAL '3 months'";
-		} else {
-			$interval_qpart = "DATE_SUB(NOW(), INTERVAL 3 MONTH)";
-		}
-
-		$sth = $this->pdo->prepare("SELECT COUNT(id) AS num_inactive FROM ttrss_feeds WHERE
-				(SELECT MAX(updated) FROM ttrss_entries, ttrss_user_entries WHERE
-					ttrss_entries.id = ref_id AND
-						ttrss_user_entries.feed_id = ttrss_feeds.id) < $interval_qpart AND
-			  ttrss_feeds.owner_uid = ?");
-		$sth->execute([$_SESSION['uid']]);
-
-		if ($row = $sth->fetch()) {
-			print (int)$row["num_inactive"];
-		}
-	}
-
-	static function subscribe_to_feed_url() {
-		$url_path = get_self_url_prefix() .
-			"/public.php?op=subscribe&feed_url=%s";
-		return $url_path;
 	}
 
 }

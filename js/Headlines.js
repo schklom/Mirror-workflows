@@ -1,13 +1,13 @@
 'use strict';
 
 /* global __, ngettext, Article, App */
-/* global xhrPost, dojo, dijit, PluginHost, Notify, $$, Feeds */
+/* global dojo, dijit, PluginHost, Notify, xhr, Feeds */
 /* global CommonDialogs */
 
 const Headlines = {
 	vgroup_last_feed: undefined,
 	_headlines_scroll_timeout: 0,
-	_observer_counters_timeout: 0,
+	//_observer_counters_timeout: 0,
 	headlines: [],
 	current_first_id: 0,
 	_scroll_reset_timeout: false,
@@ -44,7 +44,7 @@ const Headlines = {
 	row_observer: new MutationObserver((mutations) => {
 		const modified = [];
 
-		mutations.each((m) => {
+		mutations.forEach((m) => {
 			if (m.type == 'attributes' && ['class', 'data-score'].indexOf(m.attributeName) != -1) {
 
 				const row = m.target;
@@ -54,7 +54,7 @@ const Headlines = {
 					const hl = Headlines.headlines[id];
 
 					if (hl) {
-						const hl_old = Object.extend({}, hl);
+						const hl_old = {...{}, ...hl};
 
 						hl.unread = row.hasClassName("Unread");
 						hl.marked = row.hasClassName("marked");
@@ -94,7 +94,7 @@ const Headlines = {
 			rescore: {},
 		};
 
-		modified.each(function (m) {
+		modified.forEach(function (m) {
 			if (m.old.marked != m.new.marked)
 				ops.tmark.push(m.id);
 
@@ -118,29 +118,29 @@ const Headlines = {
 			}
 		});
 
-		ops.select.each((row) => {
-			const cb = dijit.getEnclosingWidget(row.select(".rchk")[0]);
+		ops.select.forEach((row) => {
+			const cb = dijit.getEnclosingWidget(row.querySelector(".rchk"));
 
 			if (cb)
 				cb.attr('checked', true);
 		});
 
-		ops.deselect.each((row) => {
-			const cb = dijit.getEnclosingWidget(row.select(".rchk")[0]);
+		ops.deselect.forEach((row) => {
+			const cb = dijit.getEnclosingWidget(row.querySelector(".rchk"));
 
 			if (cb && !row.hasClassName("active"))
 				cb.attr('checked', false);
 		});
 
-		ops.activate.each((row) => {
-			const cb = dijit.getEnclosingWidget(row.select(".rchk")[0]);
+		ops.activate.forEach((row) => {
+			const cb = dijit.getEnclosingWidget(row.querySelector(".rchk"));
 
 			if (cb)
 				cb.attr('checked', true);
 		});
 
-		ops.deactivate.each((row) => {
-			const cb = dijit.getEnclosingWidget(row.select(".rchk")[0]);
+		ops.deactivate.forEach((row) => {
+			const cb = dijit.getEnclosingWidget(row.querySelector(".rchk"));
 
 			if (cb && !row.hasClassName("Selected"))
 				cb.attr('checked', false);
@@ -149,39 +149,56 @@ const Headlines = {
 		const promises = [];
 
 		if (ops.tmark.length != 0)
-			promises.push(xhrPost("backend.php",
-				{op: "rpc", method: "markSelected", ids: ops.tmark.toString(), cmode: 2}));
+			promises.push(xhr.post("backend.php",
+				{op: "rpc", method: "markSelected", "ids[]": ops.tmark, cmode: 2}));
 
 		if (ops.tpub.length != 0)
-			promises.push(xhrPost("backend.php",
-				{op: "rpc", method: "publishSelected", ids: ops.tpub.toString(), cmode: 2}));
+			promises.push(xhr.post("backend.php",
+				{op: "rpc", method: "publishSelected", "ids[]": ops.tpub, cmode: 2}));
 
 		if (ops.read.length != 0)
-			promises.push(xhrPost("backend.php",
-				{op: "rpc", method: "catchupSelected", ids: ops.read.toString(), cmode: 0}));
+			promises.push(xhr.post("backend.php",
+				{op: "rpc", method: "catchupSelected", "ids[]": ops.read, cmode: 0}));
 
 		if (ops.unread.length != 0)
-			promises.push(xhrPost("backend.php",
-				{op: "rpc", method: "catchupSelected", ids: ops.unread.toString(), cmode: 1}));
+			promises.push(xhr.post("backend.php",
+				{op: "rpc", method: "catchupSelected", "ids[]": ops.unread, cmode: 1}));
 
 		const scores = Object.keys(ops.rescore);
 
 		if (scores.length != 0) {
-			scores.each((score) => {
-				promises.push(xhrPost("backend.php",
-					{op: "article", method: "setScore", id: ops.rescore[score].toString(), score: score}));
+			scores.forEach((score) => {
+				promises.push(xhr.post("backend.php",
+					{op: "article", method: "setScore", "ids[]": ops.rescore[score].toString(), score: score}));
 			});
 		}
 
-		if (promises.length > 0)
-			Promise.all([promises]).then(() => {
-				window.clearTimeout(this._observer_counters_timeout);
+		Promise.all(promises).then((results) => {
+			let feeds = [];
+			let labels = [];
 
-				this._observer_counters_timeout = setTimeout(() => {
-					Feeds.requestCounters(true);
-				}, 1000);
+			results.forEach((res) => {
+				if (res) {
+					try {
+						const obj = JSON.parse(res);
+
+						if (obj.feeds)
+							feeds = feeds.concat(obj.feeds);
+
+						if (obj.labels)
+							labels = labels.concat(obj.labels);
+
+					} catch (e) {
+						console.warn(e, res);
+					}
+				}
 			});
 
+			if (feeds.length > 0) {
+				console.log('requesting counters for', feeds, labels);
+				Feeds.requestCounters(feeds, labels);
+			}
+		});
 	},
 	click: function (event, id, in_body) {
 		in_body = in_body || false;
@@ -211,7 +228,7 @@ const Headlines = {
 
 					Headlines.select('none');
 
-					const scroll_position_A = $("RROW-" + id).offsetTop - $("headlines-frame").scrollTop;
+					const scroll_position_A = App.byId(`RROW-${id}`).offsetTop - App.byId("headlines-frame").scrollTop;
 
 					Article.setActive(id);
 
@@ -222,10 +239,10 @@ const Headlines = {
 
 						Headlines.toggleUnread(id, 0);
 					} else {
-						const scroll_position_B = $("RROW-" + id).offsetTop - $("headlines-frame").scrollTop;
+						const scroll_position_B = App.byId(`RROW-${id}`).offsetTop - App.byId("headlines-frame").scrollTop;
 
 						// this would only work if there's enough space
-						$("headlines-frame").scrollTop -= scroll_position_A-scroll_position_B;
+						App.byId("headlines-frame").scrollTop -= scroll_position_A-scroll_position_B;
 
 						Article.cdmMoveToId(id);
 					}
@@ -252,7 +269,7 @@ const Headlines = {
 		return false;
 	},
 	initScrollHandler: function () {
-		$("headlines-frame").onscroll = (event) => {
+		App.byId("headlines-frame").onscroll = (event) => {
 			clearTimeout(this._headlines_scroll_timeout);
 			this._headlines_scroll_timeout = window.setTimeout(function () {
 				//console.log('done scrolling', event);
@@ -262,8 +279,8 @@ const Headlines = {
 	},
 	loadMore: function () {
 		const view_mode = document.forms["toolbar-main"].view_mode.value;
-		const unread_in_buffer = $$("#headlines-frame > div[id*=RROW][class*=Unread]").length;
-		const num_all = $$("#headlines-frame > div[id*=RROW]").length;
+		const unread_in_buffer = App.findAll("#headlines-frame > div[id*=RROW][class*=Unread]").length;
+		const num_all = App.findAll("#headlines-frame > div[id*=RROW]").length;
 		const num_unread = Feeds.getUnread(Feeds.getActive(), Feeds.activeIsCat());
 
 		// TODO implement marked & published
@@ -289,10 +306,10 @@ const Headlines = {
 		Feeds.open({feed: Feeds.getActive(), is_cat: Feeds.activeIsCat(), offset: offset, append: true});
 	},
 	isChildVisible: function (elem) {
-		return App.Scrollable.isChildVisible(elem, $("headlines-frame"));
+		return App.Scrollable.isChildVisible(elem, App.byId("headlines-frame"));
 	},
 	firstVisible: function () {
-		const rows = $$("#headlines-frame > div[id*=RROW]");
+		const rows = App.findAll("#headlines-frame > div[id*=RROW]");
 
 		for (let i = 0; i < rows.length; i++) {
 			const row = rows[i];
@@ -303,7 +320,7 @@ const Headlines = {
 		}
 	},
 	unpackVisible: function(container) {
-		const rows = $$("#headlines-frame > div[id*=RROW][data-content].cdm");
+		const rows = App.findAll("#headlines-frame > div[id*=RROW][data-content].cdm");
 
 		for (let i = 0; i < rows.length; i++) {
 			if (App.Scrollable.isChildVisible(rows[i], container)) {
@@ -315,8 +332,8 @@ const Headlines = {
 	scrollHandler: function (/*event*/) {
 		try {
 			if (!Feeds.infscroll_disabled && !Feeds.infscroll_in_progress) {
-				const hsp = $("headlines-spacer");
-				const container = $("headlines-frame");
+				const hsp = App.byId("headlines-spacer");
+				const container = App.byId("headlines-frame");
 
 				if (hsp && hsp.previousSibling) {
 					const last_row = hsp.previousSibling;
@@ -333,7 +350,7 @@ const Headlines = {
 			}
 
 			if (App.isCombinedMode() && App.getInitParam("cdm_expanded")) {
-				const container = $("headlines-frame")
+				const container = App.byId("headlines-frame")
 
 				/* don't do anything until there was some scrolling */
 				if (container.scrollTop > 0)
@@ -342,12 +359,12 @@ const Headlines = {
 
 			if (App.getInitParam("cdm_auto_catchup")) {
 
-				const rows = $$("#headlines-frame > div[id*=RROW][class*=Unread]");
+				const rows = App.findAll("#headlines-frame > div[id*=RROW][class*=Unread]");
 
 				for (let i = 0; i < rows.length; i++) {
 					const row = rows[i];
 
-					if ($("headlines-frame").scrollTop > (row.offsetTop + row.offsetHeight / 2)) {
+					if (App.byId("headlines-frame").scrollTop > (row.offsetTop + row.offsetHeight / 2)) {
 						row.removeClassName("Unread");
 					} else {
 						break;
@@ -362,23 +379,23 @@ const Headlines = {
 		return this.headlines[id];
 	},
 	setCommonClasses: function () {
-		$("headlines-frame").removeClassName("cdm");
-		$("headlines-frame").removeClassName("normal");
+		App.byId("headlines-frame").removeClassName("cdm");
+		App.byId("headlines-frame").removeClassName("normal");
 
-		$("headlines-frame").addClassName(App.isCombinedMode() ? "cdm" : "normal");
+		App.byId("headlines-frame").addClassName(App.isCombinedMode() ? "cdm" : "normal");
 
 		// for floating title because it's placed outside of headlines-frame
-		$("main").removeClassName("expandable");
-		$("main").removeClassName("expanded");
+		App.byId("main").removeClassName("expandable");
+		App.byId("main").removeClassName("expanded");
 
 		if (App.isCombinedMode())
-			$("main").addClassName(App.getInitParam("cdm_expanded") ? " expanded" : " expandable");
+			App.byId("main").addClassName(App.getInitParam("cdm_expanded") ? "expanded" : "expandable");
 	},
 	renderAgain: function () {
 		// TODO: wrap headline elements into a knockoutjs model to prevent all this stuff
 		Headlines.setCommonClasses();
 
-		$$("#headlines-frame > div[id*=RROW]").each((row) => {
+		App.findAll("#headlines-frame > div[id*=RROW]").forEach((row) => {
 			const id = row.getAttribute("data-article-id");
 			const hl = this.headlines[id];
 
@@ -401,12 +418,12 @@ const Headlines = {
 			}
 		});
 
-		$$(".cdm .header-sticky-guard").each((e) => {
+		App.findAll(".cdm .header-sticky-guard").forEach((e) => {
 			this.sticky_header_observer.observe(e)
 		});
 
 		if (App.getInitParam("cdm_expanded"))
-			$$("#headlines-frame > div[id*=RROW].cdm").each((e) => {
+			App.findAll("#headlines-frame > div[id*=RROW].cdm").forEach((e) => {
 				this.unpack_observer.observe(e)
 			});
 
@@ -423,7 +440,7 @@ const Headlines = {
 
 		if (headlines.vfeed_group_enabled && hl.feed_title && this.vgroup_last_feed != hl.feed_id) {
 			const vgrhdr = `<div data-feed-id='${hl.feed_id}' class='feed-title'>
-				<div style='float : right'>${hl.feed_icon}</div>
+				<div style='float : right'>${Feeds.renderIcon(hl.feed_id, hl.has_icon)}</div>
 				<a class="title" href="#" onclick="Feeds.open({feed:${hl.feed_id}})">${hl.feed_title}
 				<a class="catchup" title="${__('mark feed as read')}" onclick="Feeds.catchupFeedInGroup(${hl.feed_id})" href="#"><i class="icon-done material-icons">done_all</i></a>
 				</div>`
@@ -431,7 +448,7 @@ const Headlines = {
 			const tmp = document.createElement("div");
 			tmp.innerHTML = vgrhdr;
 
-			$("headlines-frame").appendChild(tmp.firstChild);
+			App.byId("headlines-frame").appendChild(tmp.firstChild);
 
 			this.vgroup_last_feed = hl.feed_id;
 		}
@@ -462,7 +479,7 @@ const Headlines = {
 								<a class="title" title="${App.escapeHtml(hl.title)}" target="_blank" rel="noopener noreferrer" href="${App.escapeHtml(hl.link)}">
 									${hl.title}</a>
 								<span class="author">${hl.author}</span>
-								${hl.labels}
+								${Article.renderLabels(hl.id, hl.labels)}
 								${hl.cdm_excerpt ? hl.cdm_excerpt : ""}
 							</span>
 
@@ -477,25 +494,26 @@ const Headlines = {
 								<i class="material-icons icon-score" title="${hl.score}" onclick="Article.setScore(${hl.id}, this)">${Article.getScorePic(hl.score)}</i>
 
 								<span style="cursor : pointer" title="${App.escapeHtml(hl.feed_title)}" onclick="Feeds.open({feed:${hl.feed_id}})">
-									${hl.feed_icon}</span>
+									${Feeds.renderIcon(hl.feed_id, hl.has_icon)}
+								</span>
 							</div>
 
 						</div>
 
 						<div class="content" onclick="return Headlines.click(event, ${hl.id}, true);">
-							<div id="POSTNOTE-${hl.id}">${hl.note}</div>
+							${Article.renderNote(hl.id, hl.note)}
 							<div class="content-inner" lang="${hl.lang ? hl.lang : 'en'}">
 								<img src="${App.getInitParam('icon_indicator_white')}">
 							</div>
 							<div class="intermediate">
-								${hl.enclosures}
+								${Article.renderEnclosures(hl.enclosures)}
 							</div>
 							<div class="footer" onclick="event.stopPropagation()">
 
 								<div class="left">
 									${hl.buttons_left}
 									<i class="material-icons">label_outline</i>
-									<span id="ATSTR-${hl.id}">${hl.tags_str}</span>
+									${Article.renderTags(hl.id, hl.tags)}
 									<a title="${__("Edit tags for this article")}" href="#"
 										onclick="Article.editTags(${hl.id})">(+)</a>
 									${comments}
@@ -527,7 +545,7 @@ const Headlines = {
 				<span data-article-id="${hl.id}" class="hl-content hlMenuAttach">
 					<a class="title" href="${App.escapeHtml(hl.link)}">${hl.title} <span class="preview">${hl.content_preview}</span></a>
 					<span class="author">${hl.author}</span>
-					${hl.labels}
+					${Article.renderLabels(hl.id, hl.labels)}
 				</span>
 			</div>
 					<span class="feed">
@@ -538,7 +556,7 @@ const Headlines = {
 			</div>
 			<div class="right">
 				<i class="material-icons icon-score" title="${hl.score}" onclick="Article.setScore(${hl.id}, this)">${Article.getScorePic(hl.score)}</i>
-				<span onclick="Feeds.open({feed:${hl.feed_id}})" style="cursor : pointer" title="${App.escapeHtml(hl.feed_title)}">${hl.feed_icon}</span>
+				<span onclick="Feeds.open({feed:${hl.feed_id}})" style="cursor : pointer" title="${App.escapeHtml(hl.feed_title)}">${Feeds.renderIcon(hl.feed_id, hl.has_icon)}</span>
 			</div>
 			</div>
 		`;
@@ -555,20 +573,74 @@ const Headlines = {
 		return tmp.firstChild;
 	},
 	updateCurrentUnread: function () {
-		if ($("feed_current_unread")) {
+		if (App.byId("feed_current_unread")) {
 			const feed_unread = Feeds.getUnread(Feeds.getActive(), Feeds.activeIsCat());
 
 			if (feed_unread > 0 && !Element.visible("feeds-holder")) {
-				$("feed_current_unread").innerText = feed_unread;
+				App.byId("feed_current_unread").innerText = feed_unread;
 				Element.show("feed_current_unread");
 			} else {
 				Element.hide("feed_current_unread");
 			}
 		}
 	},
-	onLoaded: function (transport, offset, append) {
-		const reply = App.handleRpcJson(transport);
+	renderToolbar: function(headlines) {
 
+		const tb = headlines['toolbar'];
+		const search_query = Feeds._search_query ? Feeds._search_query.query : "";
+		const target = dijit.byId('toolbar-headlines');
+
+		if (tb && typeof tb == 'object') {
+			target.attr('innerHTML',
+			`
+				<span class='left'>
+					<a href="#" title="${__("Show as feed")}"
+						onclick='CommonDialogs.generatedFeed("${headlines.id}", ${headlines.is_cat}, "${App.escapeHtml(search_query)}")'>
+						<i class='icon-syndicate material-icons'>rss_feed</i>
+					</a>
+					${tb.site_url ?
+						`<a class="feed_title" target="_blank" href="${App.escapeHtml(tb.site_url)}" title="${tb.last_updated}">${tb.title}</a>`	:
+						`<span class="feed_title">${tb.title}</span>`}
+					${search_query ?
+						`
+						<span class='cancel_search'>(<a href='#' onclick='Feeds.cancelSearch()'>${__("Cancel search")}</a>)</span>
+						` : ''}
+					${tb.error ? `<i title="${App.escapeHtml(tb.error)}" class='material-icons icon-error'>error</i>` : ''}
+					<span id='feed_current_unread' style='display: none'></span>
+				</span>
+				<span class='right'>
+					<span id='selected_prompt'></span>
+					<div dojoType='fox.form.DropDownButton' title='"${__('Select articles')}'>
+						<span>${__("Select...")}</span>
+						<div dojoType='dijit.Menu' style='display: none;'>
+						<div dojoType='dijit.MenuItem' onclick='Headlines.select("all")'>${__('All')}</div>
+						<div dojoType='dijit.MenuItem' onclick='Headlines.select("unread")'>${__('Unread')}</div>
+						<div dojoType='dijit.MenuItem' onclick='Headlines.select("invert")'>${__('Invert')}</div>
+						<div dojoType='dijit.MenuItem' onclick='Headlines.select("none")'>${__('None')}</div>
+						<div dojoType='dijit.MenuSeparator'></div>
+						<div dojoType='dijit.MenuItem' onclick='Headlines.selectionToggleUnread()'>${__('Toggle unread')}</div>
+						<div dojoType='dijit.MenuItem' onclick='Headlines.selectionToggleMarked()'>${__('Toggle starred')}</div>
+						<div dojoType='dijit.MenuItem' onclick='Headlines.selectionTogglePublished()'>${__('Toggle published')}</div>
+						<div dojoType='dijit.MenuSeparator'></div>
+						<div dojoType='dijit.MenuItem' onclick='Headlines.catchupSelection()'>${__('Mark as read')}</div>
+						<div dojoType='dijit.MenuItem' onclick='Article.selectionSetScore()'>${__('Set score')}</div>
+						${tb.plugin_menu_items}
+						${headlines.id === 0 && !headlines.is_cat ?
+							`
+							<div dojoType='dijit.MenuSeparator'></div>
+							<div dojoType='dijit.MenuItem' class='text-error' onclick='Headlines.deleteSelection()'>${__('Delete permanently')}</div>
+							` : ''}
+					</div>
+					${tb.plugin_buttons}
+				</span>
+			`);
+		} else {
+			target.attr('innerHTML', '');
+		}
+
+		dojo.parser.parse(target.domNode);
+	},
+	onLoaded: function (reply, offset, append) {
 		console.log("Headlines.onLoaded: offset=", offset, "append=", append);
 
 		let is_cat = false;
@@ -597,15 +669,15 @@ const Headlines = {
 				// also called in renderAgain() after view mode switch
 				Headlines.setCommonClasses();
 
-				$("headlines-frame").setAttribute("is-vfeed",
+				App.byId("headlines-frame").setAttribute("is-vfeed",
 					reply['headlines']['is_vfeed'] ? 1 : 0);
 
 				Article.setActive(0);
 
 				try {
-					$("headlines-frame").removeClassName("smooth-scroll");
-					$("headlines-frame").scrollTop = 0;
-					$("headlines-frame").addClassName("smooth-scroll");
+					App.byId("headlines-frame").removeClassName("smooth-scroll");
+					App.byId("headlines-frame").scrollTop = 0;
+					App.byId("headlines-frame").addClassName("smooth-scroll");
 				} catch (e) {
 					console.warn(e);
 				}
@@ -613,25 +685,27 @@ const Headlines = {
 				this.headlines = [];
 				this.vgroup_last_feed = undefined;
 
-				dojo.html.set($("toolbar-headlines"),
+				/*dojo.html.set(App.byId("toolbar-headlines"),
 					reply['headlines']['toolbar'],
-					{parseContent: true});
+					{parseContent: true});*/
+
+				Headlines.renderToolbar(reply['headlines']);
 
 				if (typeof reply['headlines']['content'] == 'string') {
-					$("headlines-frame").innerHTML = reply['headlines']['content'];
+					App.byId("headlines-frame").innerHTML = reply['headlines']['content'];
 				} else {
-					$("headlines-frame").innerHTML = '';
+					App.byId("headlines-frame").innerHTML = '';
 
 					for (let i = 0; i < reply['headlines']['content'].length; i++) {
 						const hl = reply['headlines']['content'][i];
 
-						$("headlines-frame").appendChild(this.render(reply['headlines'], hl));
+						App.byId("headlines-frame").appendChild(this.render(reply['headlines'], hl));
 
 						this.headlines[parseInt(hl.id)] = hl;
 					}
 				}
 
-				let hsp = $("headlines-spacer");
+				let hsp = App.byId("headlines-spacer");
 
 				if (!hsp) {
 					hsp = document.createElement("div");
@@ -646,18 +720,19 @@ const Headlines = {
 					hsp.innerHTML = "<a href='#' onclick='Feeds.openNextUnread()'>" +
 						__("Click to open next unread feed.") + "</a>";
 
+				/*
 				if (Feeds._search_query) {
-					$("feed_title").innerHTML += "<span id='cancel_search'>" +
+					App.byId("feed_title").innerHTML += "<span id='cancel_search'>" +
 						" (<a href='#' onclick='Feeds.cancelSearch()'>" + __("Cancel search") + "</a>)" +
 						"</span>";
-				}
+				} */
 
 				Headlines.updateCurrentUnread();
 
 			} else if (headlines_count > 0 && feed_id == Feeds.getActive() && is_cat == Feeds.activeIsCat()) {
 				const c = dijit.byId("headlines-frame");
 
-				let hsp = $("headlines-spacer");
+				let hsp = App.byId("headlines-spacer");
 
 				if (hsp)
 					c.domNode.removeChild(hsp);
@@ -665,13 +740,13 @@ const Headlines = {
 				let headlines_appended = 0;
 
 				if (typeof reply['headlines']['content'] == 'string') {
-					$("headlines-frame").innerHTML = reply['headlines']['content'];
+					App.byId("headlines-frame").innerHTML = reply['headlines']['content'];
 				} else {
 					for (let i = 0; i < reply['headlines']['content'].length; i++) {
 						const hl = reply['headlines']['content'][i];
 
 						if (!this.headlines[parseInt(hl.id)]) {
-							$("headlines-frame").appendChild(this.render(reply['headlines'], hl));
+							App.byId("headlines-frame").appendChild(this.render(reply['headlines'], hl));
 
 							this.headlines[parseInt(hl.id)] = hl;
 							++headlines_appended;
@@ -703,7 +778,7 @@ const Headlines = {
 
 				console.log("no headlines received, infscroll_disabled=", Feeds.infscroll_disabled, 'first_id_changed=', first_id_changed);
 
-				const hsp = $("headlines-spacer");
+				const hsp = App.byId("headlines-spacer");
 
 				if (hsp) {
 					if (first_id_changed) {
@@ -716,17 +791,16 @@ const Headlines = {
 				}
 			}
 
-			$$(".cdm .header-sticky-guard").each((e) => {
+			App.findAll(".cdm .header-sticky-guard").forEach((e) => {
 				this.sticky_header_observer.observe(e)
 			});
 
 			if (App.getInitParam("cdm_expanded"))
-				$$("#headlines-frame > div[id*=RROW].cdm").each((e) => {
+				App.findAll("#headlines-frame > div[id*=RROW].cdm").forEach((e) => {
 					this.unpack_observer.observe(e)
 				});
 
 		} else {
-			console.error("Invalid object received: " + transport.responseText);
 			dijit.byId("headlines-frame").attr('content', "<div class='whiteBox'>" +
 				__('Could not update headlines (invalid object received - see error console for details)') +
 				"</div>");
@@ -755,9 +829,7 @@ const Headlines = {
 
 		Feeds.reloadCurrent();
 	},
-	selectionToggleUnread: function (params) {
-		params = params || {};
-
+	selectionToggleUnread: function (params = {}) {
 		const cmode = params.cmode != undefined ? params.cmode : 2;
 		const no_error = params.no_error || false;
 		const ids = params.ids || Headlines.getSelected();
@@ -769,8 +841,8 @@ const Headlines = {
 			return;
 		}
 
-		ids.each((id) => {
-			const row = $("RROW-" + id);
+		ids.forEach((id) => {
+			const row = App.byId(`RROW-${id}`);
 
 			if (row) {
 				switch (cmode) {
@@ -794,7 +866,7 @@ const Headlines = {
 			return;
 		}
 
-		ids.each((id) => {
+		ids.forEach((id) => {
 			this.toggleMark(id);
 		});
 	},
@@ -806,26 +878,24 @@ const Headlines = {
 			return;
 		}
 
-		ids.each((id) => {
+		ids.forEach((id) => {
 			this.togglePub(id);
 		});
 	},
 	toggleMark: function (id) {
-		const row = $("RROW-" + id);
+		const row = App.byId(`RROW-${id}`);
 
 		if (row)
 			row.toggleClassName("marked");
 
 	},
 	togglePub: function (id) {
-		const row = $("RROW-" + id);
+		const row = App.byId(`RROW-${id}`);
 
 		if (row)
 			row.toggleClassName("published");
 	},
-	move: function (mode, params) {
-		params = params || {};
-
+	move: function (mode, params = {}) {
 		const no_expand = params.no_expand || false;
 		const force_previous = params.force_previous || this.default_force_previous;
 		const force_to_top = params.force_to_top || this.default_force_to_top;
@@ -834,7 +904,7 @@ const Headlines = {
 		let next_id = false;
 		let current_id = Article.getActive();
 
-		if (!Headlines.isChildVisible($("RROW-" + current_id))) {
+		if (!Headlines.isChildVisible(App.byId(`RROW-${current_id}`))) {
 			console.log('active article is obscured, resetting to first visible...');
 			current_id = Headlines.firstVisible();
 			prev_id = current_id;
@@ -871,13 +941,30 @@ const Headlines = {
 				} else {
 					Article.view(next_id, no_expand);
 				}
+			} else if (App.isCombinedMode()) {
+				// try to show hsp if no next article exists, in case there's useful information like first_id_changed etc
+				const row = App.byId(`RROW-${current_id}`);
+				const ctr = App.byId("headlines-frame");
+
+				if (row) {
+					const next = row.nextSibling;
+
+					// hsp has half-screen height in auto catchup mode therefore we use its first child (normally A element)
+					if (next && Element.visible(next) && next.id == "headlines-spacer" && next.firstChild) {
+						const offset = App.byId("headlines-spacer").offsetTop - App.byId("headlines-frame").offsetHeight + next.firstChild.offsetHeight;
+
+						// don't jump back either
+						if (ctr.scrollTop < offset)
+							ctr.scrollTop = offset;
+					}
+				}
 			}
 		} else if (mode === "prev") {
 			if (prev_id || current_id) {
 				if (App.isCombinedMode()) {
 					window.requestAnimationFrame(() => {
-						const row = $("RROW-" + current_id);
-						const ctr = $("headlines-frame");
+						const row = App.byId(`RROW-${current_id}`);
+						const ctr = App.byId("headlines-frame");
 						const delta_px = Math.round(row.offsetTop) - Math.round(ctr.scrollTop);
 
 						console.log('moving back, delta_px', delta_px);
@@ -898,7 +985,7 @@ const Headlines = {
 	},
 	updateSelectedPrompt: function () {
 		const count = Headlines.getSelected().length;
-		const elem = $("selected_prompt");
+		const elem = App.byId("selected_prompt");
 
 		if (elem) {
 			elem.innerHTML = ngettext("%d article selected",
@@ -908,7 +995,7 @@ const Headlines = {
 		}
 	},
 	toggleUnread: function (id, cmode) {
-		const row = $("RROW-" + id);
+		const row = App.byId(`RROW-${id}`);
 
 		if (row) {
 			if (typeof cmode == "undefined") cmode = 2;
@@ -939,9 +1026,8 @@ const Headlines = {
 			ids: ids.toString(), lid: id
 		};
 
-		xhrPost("backend.php", query, (transport) => {
-			App.handleRpcJson(transport);
-			this.onLabelsUpdated(transport);
+		xhr.json("backend.php", query, (reply) => {
+			this.onLabelsUpdated(reply);
 		});
 	},
 	selectionAssignLabel: function (id, ids) {
@@ -957,9 +1043,8 @@ const Headlines = {
 			ids: ids.toString(), lid: id
 		};
 
-		xhrPost("backend.php", query, (transport) => {
-			App.handleRpcJson(transport);
-			this.onLabelsUpdated(transport);
+		xhr.json("backend.php", query, (reply) => {
+			this.onLabelsUpdated(reply);
 		});
 	},
 	deleteSelection: function () {
@@ -988,15 +1073,14 @@ const Headlines = {
 
 		const query = {op: "rpc", method: "delete", ids: rows.toString()};
 
-		xhrPost("backend.php", query, (transport) => {
-			App.handleRpcJson(transport);
+		xhr.json("backend.php", query, () => {
 			Feeds.reloadCurrent();
 		});
 	},
 	getSelected: function () {
 		const rv = [];
 
-		$$("#headlines-frame > div[id*=RROW][class*=Selected]").each(
+		App.findAll("#headlines-frame > div[id*=RROW][class*=Selected]").forEach(
 			function (child) {
 				rv.push(child.getAttribute("data-article-id"));
 			});
@@ -1010,9 +1094,9 @@ const Headlines = {
 	getLoaded: function () {
 		const rv = [];
 
-		const children = $$("#headlines-frame > div[id*=RROW-]");
+		const children = App.findAll("#headlines-frame > div[id*=RROW-]");
 
-		children.each(function (child) {
+		children.forEach(function (child) {
 			if (Element.visible(child)) {
 				rv.push(child.getAttribute("data-article-id"));
 			}
@@ -1021,7 +1105,7 @@ const Headlines = {
 		return rv;
 	},
 	onRowChecked: function (elem) {
-		const row = elem.domNode.up("div[id*=RROW]");
+		const row = elem.domNode.closest("div[id*=RROW]");
 
 		// do not allow unchecking active article checkbox
 		if (row.hasClassName("active")) {
@@ -1039,7 +1123,7 @@ const Headlines = {
 		if (start == stop)
 			return [start];
 
-		const rows = $$("#headlines-frame > div[id*=RROW]");
+		const rows = App.findAll("#headlines-frame > div[id*=RROW]");
 		const results = [];
 		let collecting = false;
 
@@ -1066,7 +1150,7 @@ const Headlines = {
 		// mode = all,none,unread,invert,marked,published
 		let query = "#headlines-frame > div[id*=RROW]";
 
-		if (articleId) query += "[data-article-id=" + articleId + "]";
+		if (articleId) query += `[data-article-id="${articleId}"]`;
 
 		switch (mode) {
 			case "none":
@@ -1086,10 +1170,7 @@ const Headlines = {
 				console.warn("select: unknown mode", mode);
 		}
 
-		const rows = $$(query);
-
-		for (let i = 0; i < rows.length; i++) {
-			const row = rows[i];
+		App.findAll(query).forEach((row) => {
 
 			switch (mode) {
 				case "none":
@@ -1101,7 +1182,7 @@ const Headlines = {
 				default:
 					row.addClassName("Selected");
 			}
-		}
+		});
 	},
 	catchupSelection: function () {
 		const rows = Headlines.getSelected();
@@ -1140,7 +1221,7 @@ const Headlines = {
 		if (!below) {
 			for (let i = 0; i < visible_ids.length; i++) {
 				if (visible_ids[i] != id) {
-					const e = $("RROW-" + visible_ids[i]);
+					const e = App.byId(`RROW-${visible_ids[i]}`);
 
 					if (e && e.hasClassName("Unread")) {
 						ids_to_mark.push(visible_ids[i]);
@@ -1152,7 +1233,7 @@ const Headlines = {
 		} else {
 			for (let i = visible_ids.length - 1; i >= 0; i--) {
 				if (visible_ids[i] != id) {
-					const e = $("RROW-" + visible_ids[i]);
+					const e = App.byId(`RROW-${visible_ids[i]}`);
 
 					if (e && e.hasClassName("Unread")) {
 						ids_to_mark.push(visible_ids[i]);
@@ -1171,26 +1252,40 @@ const Headlines = {
 			if (App.getInitParam("confirm_feed_catchup") != 1 || confirm(msg)) {
 
 				for (let i = 0; i < ids_to_mark.length; i++) {
-					const e = $("RROW-" + ids_to_mark[i]);
+					const e = App.byId(`RROW-${ids_to_mark[i]}`);
 					e.removeClassName("Unread");
 				}
 			}
 		}
 	},
-	onLabelsUpdated: function (transport) {
-		const data = JSON.parse(transport.responseText);
-
+	onTagsUpdated: function (data) {
 		if (data) {
-			data['info-for-headlines'].each(function (elem) {
-				$$(".HLLCTR-" + elem.id).each(function (ctr) {
-					ctr.innerHTML = elem.labels;
+			if (this.headlines[data.id]) {
+				this.headlines[data.id].tags = data.tags;
+			}
+
+			App.findAll(`span[data-tags-for="${data.id}"`).forEach((ctr) => {
+				ctr.innerHTML = Article.renderTags(data.id, data.tags);
+			});
+		}
+	},
+	// TODO: maybe this should cause article to be rendered again, although it might cause flicker etc
+	onLabelsUpdated: function (data) {
+		if (data) {
+			data["labels-for"].forEach((row) => {
+				if (this.headlines[row.id]) {
+					this.headlines[row.id].labels = row.labels;
+				}
+
+				App.findAll(`span[data-labels-for="${row.id}"]`).forEach((ctr) => {
+					ctr.innerHTML = Article.renderLabels(row.id, row.labels);
 				});
 			});
 		}
 	},
 	scrollToArticleId: function (id) {
-		const container = $("headlines-frame");
-		const row = $("RROW-" + id);
+		const container = App.byId("headlines-frame");
+		const row = App.byId(`RROW-${id}`);
 
 		if (!container || !row) return;
 
@@ -1289,7 +1384,7 @@ const Headlines = {
 			const labelAddMenu = new dijit.Menu({ownerMenu: menu});
 			const labelDelMenu = new dijit.Menu({ownerMenu: menu});
 
-			labels.each(function (label) {
+			labels.forEach(function (label) {
 				const bare_id = label.id;
 				const name = label.caption;
 
@@ -1337,10 +1432,10 @@ const Headlines = {
 		}
 	},
 	scrollByPages: function (page_offset) {
-		App.Scrollable.scrollByPages($("headlines-frame"), page_offset);
+		App.Scrollable.scrollByPages(App.byId("headlines-frame"), page_offset);
 	},
 	scroll: function (offset) {
-		App.Scrollable.scroll($("headlines-frame"), offset);
+		App.Scrollable.scroll(App.byId("headlines-frame"), offset);
 	},
 	initHeadlinesMenu: function () {
 		if (!dijit.byId("headlinesMenu")) {

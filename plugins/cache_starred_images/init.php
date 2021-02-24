@@ -5,7 +5,7 @@ class Cache_Starred_Images extends Plugin {
 	private $host;
 	/* @var DiskCache $cache */
 	private $cache;
-    private $max_cache_attempts = 5; // per-article
+	private $max_cache_attempts = 5; // per-article
 
 	function about() {
 		return array(1.0,
@@ -17,18 +17,18 @@ class Cache_Starred_Images extends Plugin {
 		$this->host = $host;
 		$this->cache = new DiskCache("starred-images");
 
-		if ($this->cache->makeDir())
-			chmod($this->cache->getDir(), 0777);
+		if ($this->cache->make_dir())
+			chmod($this->cache->get_dir(), 0777);
 
 		if (!$this->cache->exists(".no-auto-expiry"))
 			$this->cache->touch(".no-auto-expiry");
 
-		if ($this->cache->isWritable()) {
+		if ($this->cache->is_writable()) {
 			$host->add_hook($host::HOOK_HOUSE_KEEPING, $this);
 			$host->add_hook($host::HOOK_ENCLOSURE_ENTRY, $this);
 			$host->add_hook($host::HOOK_SANITIZE, $this);
 		} else {
-			user_error("Starred cache directory ".$this->cache->getDir()." is not writable.", E_USER_WARNING);
+			user_error("Starred cache directory ".$this->cache->get_dir()." is not writable.", E_USER_WARNING);
 		}
 	}
 
@@ -38,13 +38,13 @@ class Cache_Starred_Images extends Plugin {
 		Debug::log("caching media of starred articles for user " . $this->host->get_owner_uid() . "...");
 
 		$sth = $this->pdo->prepare("SELECT content, ttrss_entries.title,
-       		ttrss_user_entries.owner_uid, link, site_url, ttrss_entries.id, plugin_data
+				ttrss_user_entries.owner_uid, link, site_url, ttrss_entries.id, plugin_data
 			FROM ttrss_entries, ttrss_user_entries LEFT JOIN ttrss_feeds ON
 				(ttrss_user_entries.feed_id = ttrss_feeds.id)
 			WHERE ref_id = ttrss_entries.id AND
 				marked = true AND
 				site_url != '' AND
-			    ttrss_user_entries.owner_uid = ? AND
+				ttrss_user_entries.owner_uid = ? AND
 				plugin_data NOT LIKE '%starred_cache_images%'
 			ORDER BY ".Db::sql_random_function()." LIMIT 100");
 
@@ -59,7 +59,7 @@ class Cache_Starred_Images extends Plugin {
 					$success = $this->cache_article_images($line["content"], $line["site_url"], $line["owner_uid"], $line["id"]);
 
 					if ($success) {
-						$plugin_data = "starred_cache_images,${line['owner_uid']}:" . $line["plugin_data"];
+						$plugin_data = "starred_cache_images," . $line["owner_uid"] . ":" . $line["plugin_data"];
 
 						$usth->execute([$plugin_data, $line['id']]);
 					}
@@ -69,9 +69,12 @@ class Cache_Starred_Images extends Plugin {
 
 		/* actual housekeeping */
 
-		Debug::log("expiring " . $this->cache->getDir() . "...");
+		Debug::log("expiring " . $this->cache->get_dir() . "...");
 
-		$files = glob($this->cache->getDir() . "/*.{png,mp4,status}", GLOB_BRACE);
+		$files = array_merge(
+				glob($this->cache->get_dir() . "/*.png"),
+				glob($this->cache->get_dir() . "/*.mp4"),
+				glob($this->cache->get_dir() . "/*.status"));
 
 		$last_article_id = 0;
 		$article_exists = 1;
@@ -98,14 +101,14 @@ class Cache_Starred_Images extends Plugin {
 		$local_filename = $article_id . "-" . sha1($enc["content_url"]);
 
 		if ($this->cache->exists($local_filename)) {
-			$enc["content_url"] = $this->cache->getUrl($local_filename);
+			$enc["content_url"] = $this->cache->get_url($local_filename);
 		}
 
 		return $enc;
 	}
 
 	function hook_sanitize($doc, $site_url, $allowed_elements, $disallowed_attributes, $article_id) {
-		$xpath = new DOMXpath($doc);
+		$xpath = new DOMXPath($doc);
 
 		if ($article_id) {
 			$entries = $xpath->query('(//img[@src])|(//video/source[@src])');
@@ -117,7 +120,7 @@ class Cache_Starred_Images extends Plugin {
 					$local_filename = $article_id . "-" . sha1($src);
 
 					if ($this->cache->exists($local_filename)) {
-						$entry->setAttribute("src", $this->cache->getUrl($local_filename));
+						$entry->setAttribute("src", $this->cache->get_url($local_filename));
 						$entry->removeAttribute("srcset");
 					}
 				}
@@ -133,7 +136,7 @@ class Cache_Starred_Images extends Plugin {
 		if (!$this->cache->exists($local_filename)) {
 			Debug::log("cache_images: downloading: $url to $local_filename", Debug::$LOG_VERBOSE);
 
-			$data = UrlHelper::fetch(["url" => $url, "max_size" => MAX_CACHE_FILE_SIZE]);
+			$data = UrlHelper::fetch(["url" => $url, "max_size" => Config::get(Config::MAX_CACHE_FILE_SIZE)]);
 
 			if ($data)
 				return $this->cache->put($local_filename, $data);;
@@ -151,37 +154,37 @@ class Cache_Starred_Images extends Plugin {
 		$status_filename = $article_id . "-" . sha1($site_url) . ".status";
 
 		/* housekeeping might run as a separate user, in this case status/media might not be writable */
-		if (!$this->cache->isWritable($status_filename)) {
+		if (!$this->cache->is_writable($status_filename)) {
 			Debug::log("status not writable: $status_filename", Debug::$LOG_VERBOSE);
 			return false;
 		}
 
 		Debug::log("status: $status_filename", Debug::$LOG_VERBOSE);
 
-        if ($this->cache->exists($status_filename))
-            $status = json_decode($this->cache->get($status_filename), true);
-        else
-            $status = [];
+		if ($this->cache->exists($status_filename))
+			$status = json_decode($this->cache->get($status_filename), true);
+		else
+			$status = ["attempt" => 0];
 
-        $status["attempt"] += 1;
+		$status["attempt"] += 1;
 
-        // only allow several download attempts for article
-        if ($status["attempt"] > $this->max_cache_attempts) {
-            Debug::log("too many attempts for $site_url", Debug::$LOG_VERBOSE);
-            return false;
-        }
+		// only allow several download attempts for article
+		if ($status["attempt"] > $this->max_cache_attempts) {
+			Debug::log("too many attempts for $site_url", Debug::$LOG_VERBOSE);
+			return false;
+		}
 
-        if (!$this->cache->put($status_filename, json_encode($status))) {
-            user_error("unable to write status file: $status_filename", E_USER_WARNING);
-            return false;
-        }
+		if (!$this->cache->put($status_filename, json_encode($status))) {
+			user_error("unable to write status file: $status_filename", E_USER_WARNING);
+			return false;
+		}
 
 		$doc = new DOMDocument();
 
 		$has_images = false;
 		$success = false;
 
-        if (@$doc->loadHTML('<?xml encoding="UTF-8">' . $content)) {
+		if (@$doc->loadHTML('<?xml encoding="UTF-8">' . $content)) {
 			$xpath = new DOMXPath($doc);
 			$entries = $xpath->query('(//img[@src])|(//video/source[@src])');
 
@@ -203,11 +206,11 @@ class Cache_Starred_Images extends Plugin {
 		$esth = $this->pdo->prepare("SELECT content_url FROM ttrss_enclosures WHERE post_id = ? AND
 			(content_type LIKE '%image%' OR content_type LIKE '%video%')");
 
-        if ($esth->execute([$article_id])) {
-        	while ($enc = $esth->fetch()) {
+		if ($esth->execute([$article_id])) {
+			while ($enc = $esth->fetch()) {
 
-        		$has_images = true;
-        		$url = rewrite_relative_url($site_url, $enc["content_url"]);
+				$has_images = true;
+				$url = rewrite_relative_url($site_url, $enc["content_url"]);
 
 				if ($this->cache_url($article_id, $url)) {
 					$success = true;

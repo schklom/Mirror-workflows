@@ -21,7 +21,7 @@ class Af_Unburn extends Plugin {
 	function hook_article_filter($article) {
 		$owner_uid = $article["owner_uid"];
 
-		if (defined('NO_CURL') || !function_exists("curl_init") || ini_get("open_basedir"))
+		if (!function_exists("curl_init") || ini_get("open_basedir"))
 			return $article;
 
 		if ((strpos($article["link"], "feedproxy.google.com") !== false ||
@@ -37,8 +37,8 @@ class Af_Unburn extends Plugin {
 				curl_setopt($ch, CURLOPT_NOBODY, true);
 				curl_setopt($ch, CURLOPT_USERAGENT, SELF_USER_AGENT);
 
-				if (defined('_CURL_HTTP_PROXY')) {
-					curl_setopt($ch, CURLOPT_PROXY, _CURL_HTTP_PROXY);
+				if (Config::get(Config::HTTP_PROXY)) {
+					curl_setopt($ch, CURLOPT_PROXY, Config::get(Config::HTTP_PROXY));
 				}
 
 				@curl_exec($ch);

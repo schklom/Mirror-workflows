@@ -9,13 +9,13 @@ body.ttrss_prefs {
 		color : @default-text;
 	}
 
-	.dijitContentPane {
+	/*.dijitContentPane {
 		h1:first-of-type,
 		h2:first-of-type,
 		h3:first-of-type {
 			margin-top: 0px;
 		}
-	}
+	}*/
 
 	#footer, #header {
 		padding : 8px;
@@ -57,21 +57,15 @@ body.ttrss_prefs {
 		color : white;
 	}
 
+	#feedsTab {
+		background : @color-panel-bg;
+	}
+
 	.dijitDialog #pref-profiles-list .dijitInlineEditBoxDisplayMode {
 		padding : 0px;
 	}
 
-	div#feedlistLoading, div#filterlistLoading, div#labellistLoading {
-		text-align : center;
-		padding : 5px;
-		color : @default-text;
-	}
-
-	div#feedlistLoading img, div#filterlistLoading img, div#labellistLoading {
-		margin-right : 5px;
-	}
-
-	#errorButton {
+	#pref_feeds_errors_btn {
 		color : red;
 	}
 

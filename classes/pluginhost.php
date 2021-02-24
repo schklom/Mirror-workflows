@@ -18,6 +18,7 @@ class PluginHost {
 	private static $instance;
 
 	const API_VERSION = 2;
+	const PUBLIC_METHOD_DELIMITER = "--";
 
 	// Hooks marked with *1 are run in global context and available
 	// to plugins loaded in config.php only
@@ -47,14 +48,14 @@ class PluginHost {
 	const HOOK_QUERY_HEADLINES = "hook_query_headlines";										// hook_query_headlines($row) (byref)
 	const HOOK_HOUSE_KEEPING = "hook_house_keeping"; //*1										// GLOBAL: hook_house_keeping()
 	const HOOK_SEARCH = "hook_search";																// hook_search($query)
-	const HOOK_FORMAT_ENCLOSURES = "hook_format_enclosures";									// hook_format_enclosures($rv, $result, $id, $always_display_enclosures, $article_content, $hide_images) (byref)
+	const HOOK_FORMAT_ENCLOSURES = "hook_format_enclosures";									// hook__format_enclosures($rv, $result, $id, $always_display_enclosures, $article_content, $hide_images) (byref)
 	const HOOK_SUBSCRIBE_FEED = "hook_subscribe_feed";											// hook_subscribe_feed($contents, $url, $auth_login, $auth_pass) (byref)
 	const HOOK_HEADLINES_BEFORE = "hook_headlines_before";									// hook_headlines_before($feed, $is_cat, $qfh_ret)
-	const HOOK_RENDER_ENCLOSURE = "hook_render_enclosure";									// hook_render_enclosure($entry, $hide_images)
+	const HOOK_RENDER_ENCLOSURE = "hook_render_enclosure";									// hook_render_enclosure($entry, $id, $rv)
 	const HOOK_ARTICLE_FILTER_ACTION = "hook_article_filter_action";						// hook_article_filter_action($article, $action)
 	const HOOK_ARTICLE_EXPORT_FEED = "hook_article_export_feed";							// hook_article_export_feed($line, $feed, $is_cat, $owner_uid) (byref)
 	const HOOK_MAIN_TOOLBAR_BUTTON = "hook_main_toolbar_button";							// hook_main_toolbar_button()
-	const HOOK_ENCLOSURE_ENTRY = "hook_enclosure_entry";										// hook_enclosure_entry($row, $id) (byref)
+	const HOOK_ENCLOSURE_ENTRY = "hook_enclosure_entry";										// hook_enclosure_entry($entry, $id, $rv) (byref)
 	const HOOK_FORMAT_ARTICLE = "hook_format_article";											// hook_format_article($html, $row)
 	const HOOK_FORMAT_ARTICLE_CDM = "hook_format_article_cdm"; /* RIP */
 	const HOOK_FEED_BASIC_INFO = "hook_feed_basic_info";										// hook_feed_basic_info($basic_info, $fetch_url, $owner_uid, $feed_id, $auth_login, $auth_pass) (byref)
@@ -107,8 +108,9 @@ class PluginHost {
 		return false;
 	}
 
+	// needed for compatibility with API 2 (?)
 	function get_dbh() {
-		return Db::get();
+		return false;
 	}
 
 	function get_pdo(): PDO {
@@ -272,8 +274,8 @@ class PluginHost {
 			$class = trim($class);
 			$class_file = strtolower(basename(clean($class)));
 
-			if (!is_dir(__DIR__."/../plugins/$class_file") &&
-					!is_dir(__DIR__."/../plugins.local/$class_file")) continue;
+			if (!is_dir(__DIR__ . "/../plugins/$class_file") &&
+					!is_dir(__DIR__ . "/../plugins.local/$class_file")) continue;
 
 			// try system plugin directory first
 			$file = __DIR__ . "/../plugins/$class_file/init.php";
@@ -598,7 +600,7 @@ class PluginHost {
 	}
 
 	// handled by classes/pluginhandler.php, requires valid session
-	function get_method_url(Plugin $sender, string $method, $params)  {
+	function get_method_url(Plugin $sender, string $method, $params = [])  {
 		return get_self_url_prefix() . "/backend.php?" .
 			http_build_query(
 				array_merge(
@@ -610,16 +612,25 @@ class PluginHost {
 					$params));
 	}
 
+	// shortcut syntax (disabled for now)
+	/* function get_method_url(Plugin $sender, string $method, $params)  {
+		return get_self_url_prefix() . "/backend.php?" .
+			http_build_query(
+				array_merge(
+					[
+						"op" => strtolower(get_class($sender) . self::PUBLIC_METHOD_DELIMITER . $method),
+					],
+					$params));
+	} */
+
 	// WARNING: endpoint in public.php, exposed to unauthenticated users
-	function get_public_method_url(Plugin $sender, string $method, $params)  {
+	function get_public_method_url(Plugin $sender, string $method, $params = [])  {
 		if ($sender->is_public_method($method)) {
 			return get_self_url_prefix() . "/public.php?" .
 				http_build_query(
 					array_merge(
 						[
-							"op" => "pluginhandler",
-							"plugin" => strtolower(get_class($sender)),
-							"pmethod" => $method
+							"op" => strtolower(get_class($sender) . self::PUBLIC_METHOD_DELIMITER . $method),
 						],
 						$params));
 		} else {

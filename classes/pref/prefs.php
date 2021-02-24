@@ -4,6 +4,7 @@ class Pref_Prefs extends Handler_Protected {
 
 	private $pref_help = [];
 	private $pref_item_map = [];
+	private $pref_help_bottom = [];
 	private $pref_blacklist = [];
 	private $profile_blacklist = [];
 
@@ -122,8 +123,8 @@ class Pref_Prefs extends Handler_Protected {
 
 	function changepassword() {
 
-		if (defined('_TTRSS_DEMO_INSTANCE')) {
-			print "ERROR: ".format_error("Disabled in demo version.");
+		if (Config::get(Config::FORBID_PASSWORD_CHANGES)) {
+			print "ERROR: ".format_error("Access forbidden.");
 			return;
 		}
 
@@ -235,7 +236,7 @@ class Pref_Prefs extends Handler_Protected {
 
 				$tpl->setVariable('LOGIN', $row["login"]);
 				$tpl->setVariable('NEWMAIL', $email);
-				$tpl->setVariable('TTRSS_HOST', SELF_URL_PATH);
+				$tpl->setVariable('TTRSS_HOST', Config::get(Config::SELF_URL_PATH));
 
 				$tpl->addBlock('message');
 
@@ -267,39 +268,12 @@ class Pref_Prefs extends Handler_Protected {
 				AND owner_uid = :uid");
 		$sth->execute([":profile" => $_SESSION['profile'], ":uid" => $_SESSION['uid']]);
 
-		$this->initialize_user_prefs($_SESSION["uid"], $_SESSION["profile"]);
+		$this->_init_user_prefs($_SESSION["uid"], $_SESSION["profile"]);
 
 		echo __("Your preferences are now set to default values.");
 	}
 
-	function index() {
-
-		global $access_level_names;
-
-		$_SESSION["prefs_op_result"] = "";
-
-		print "<div dojoType='dijit.layout.AccordionContainer' region='center'>";
-		print "<div dojoType='dijit.layout.AccordionPane'
-			title=\"<i class='material-icons'>person</i> ".__('Personal data / Authentication')."\">";
-
-		print "<div dojoType='dijit.layout.TabContainer'>";
-		print "<div dojoType='dijit.layout.ContentPane' title=\"".__('Personal data')."\">";
-
-		print "<form dojoType='dijit.form.Form' id='changeUserdataForm'>";
-
-		print "<script type='dojo/method' event='onSubmit' args='evt'>
-		evt.preventDefault();
-		if (this.validate()) {
-			Notify.progress('Saving data...', true);
-
-			new Ajax.Request('backend.php', {
-				parameters: dojo.objectToQuery(this.getValues()),
-				onComplete: function(transport) {
-					notify_callback2(transport);
-			} });
-
-		}
-		</script>";
+	private function index_auth_personal() {
 
 		$sth = $this->pdo->prepare("SELECT email,full_name,otp_enabled,
 			access_level FROM ttrss_users
@@ -311,179 +285,196 @@ class Pref_Prefs extends Handler_Protected {
 		$full_name = htmlspecialchars($row["full_name"]);
 		$otp_enabled = sql_bool_to_bool($row["otp_enabled"]);
 
-		print "<fieldset>";
-		print "<label>".__('Full name:')."</label>";
-		print "<input dojoType='dijit.form.ValidationTextBox' name='full_name' required='1' value='$full_name'>";
-		print "</fieldset>";
+		?>
+		<form dojoType='dijit.form.Form'>
 
-		print "<fieldset>";
-		print "<label>".__('E-mail:')."</label>";
-		print "<input dojoType='dijit.form.ValidationTextBox' name='email' required='1' value='$email'>";
-		print "</fieldset>";
+			<?= \Controls\hidden_tag("op", "pref-prefs") ?>
+			<?= \Controls\hidden_tag("method", "changeemail") ?>
 
-		if (!SINGLE_USER_MODE && !empty($_SESSION["hide_hello"])) {
+			<script type="dojo/method" event="onSubmit" args="evt">
+					evt.preventDefault();
+					if (this.validate()) {
+						Notify.progress('Saving data...', true);
+						xhr.post("backend.php", this.getValues(), (reply) => {
+							Notify.info(reply);
+						})
+					}
+			</script>
 
-			$access_level = $row["access_level"];
-			print "<fieldset>";
-			print "<label>".__('Access level:')."</label>";
-			print $access_level_names[$access_level];
-			print "</fieldset>";
-		}
+			<fieldset>
+				<label><?= __('Full name:') ?></label>
+				<input dojoType='dijit.form.ValidationTextBox' name='full_name' required='1' value="<?= $full_name ?>">
+			</fieldset>
 
-		print_hidden("op", "pref-prefs");
-		print_hidden("method", "changeemail");
+			<fieldset>
+				<label><?= __('E-mail:') ?></label>
+				<input dojoType='dijit.form.ValidationTextBox' name='email' required='1' value="<?= $email ?>">
+			</fieldset>
 
-		print "<hr/>";
+			<hr/>
 
-		print "<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>".
-			__("Save data")."</button>";
+			<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>
+				<?= __("Save data") ?>
+			</button>
+		</form>
+		<?php
+	}
 
-		print "</form>";
-
-		print "</div>"; # content pane
-
+	private function index_auth_password() {
 		if ($_SESSION["auth_module"]) {
 			$authenticator = PluginHost::getInstance()->get_plugin($_SESSION["auth_module"]);
 		} else {
 			$authenticator = false;
 		}
 
-		print "<div dojoType='dijit.layout.ContentPane' title=\"" . __('Password') . "\">";
+		$otp_enabled = $this->is_otp_enabled();
 
 		if ($authenticator && method_exists($authenticator, "change_password")) {
+			?>
 
-			print "<div style='display : none' id='pwd_change_infobox'></div>";
+			<div style='display : none' id='pwd_change_infobox'></div>
 
-			print "<form dojoType='dijit.form.Form'>";
+			<form dojoType='dijit.form.Form'>
 
-			print "<script type='dojo/method' event='onSubmit' args='evt'>
-			evt.preventDefault();
-			if (this.validate()) {
-				Notify.progress('Changing password...', true);
+				<?= \Controls\hidden_tag("op", "pref-prefs") ?>
+				<?= \Controls\hidden_tag("method", "changepassword") ?>
 
-				new Ajax.Request('backend.php', {
-					parameters: dojo.objectToQuery(this.getValues()),
-					onComplete: function(transport) {
-						Notify.close();
-						if (transport.responseText.indexOf('ERROR: ') == 0) {
+				<!-- TODO: return JSON the backend call -->
+				<script type="dojo/method" event="onSubmit" args="evt">
+					evt.preventDefault();
+					if (this.validate()) {
+						Notify.progress('Saving data...', true);
+						xhr.post("backend.php", this.getValues(), (reply) => {
+							Notify.close();
+							if (reply.indexOf('ERROR: ') == 0) {
 
-							$('pwd_change_infobox').innerHTML =
-								transport.responseText.replace('ERROR: ', '');
+								App.byId('pwd_change_infobox').innerHTML =
+								reply.replace('ERROR: ', '');
 
-						} else {
-							$('pwd_change_infobox').innerHTML =
-								transport.responseText.replace('ERROR: ', '');
+							} else {
+								App.byId('pwd_change_infobox').innerHTML =
+								reply.replace('ERROR: ', '');
 
-							var warn = $('default_pass_warning');
-							if (warn) Element.hide(warn);
-						}
+								const warn = App.byId('default_pass_warning');
+								if (warn) Element.hide(warn);
+							}
 
-						new Effect.Appear('pwd_change_infobox');
+							Element.show('pwd_change_infobox');
+						})
+					}
+				</script>
 
-				}});
-				this.reset();
-			}
-			</script>";
+				<?php if ($otp_enabled) {
+					print_notice(__("Changing your current password will disable OTP."));
+				} ?>
 
-			if ($otp_enabled) {
-				print_notice(__("Changing your current password will disable OTP."));
-			}
+				<fieldset>
+					<label><?= __("Old password:") ?></label>
+					<input dojoType='dijit.form.ValidationTextBox' type='password' required='1' name='old_password'>
+				</fieldset>
 
-			print "<fieldset>";
-			print "<label>" . __("Old password:") . "</label>";
-			print "<input dojoType='dijit.form.ValidationTextBox' type='password' required='1' name='old_password'>";
-			print "</fieldset>";
+				<fieldset>
+					<label><?= __("New password:") ?></label>
+					<input dojoType='dijit.form.ValidationTextBox' type='password' regexp='^[^<>]+' required='1' name='new_password'>
+				</fieldset>
 
-			print "<fieldset>";
-			print "<label>" . __("New password:") . "</label>";
-			print "<input dojoType='dijit.form.ValidationTextBox' type='password' regexp='^[^<>]+' required='1' name='new_password'>";
-			print "</fieldset>";
+				<fieldset>
+					<label><?= __("Confirm password:") ?></label>
+					<input dojoType='dijit.form.ValidationTextBox' type='password' regexp='^[^<>]+' required='1' name='confirm_password'>
+				</fieldset>
 
-			print "<fieldset>";
-			print "<label>" . __("Confirm password:") . "</label>";
-			print "<input dojoType='dijit.form.ValidationTextBox' type='password' regexp='^[^<>]+' required='1' name='confirm_password'>";
-			print "</fieldset>";
+				<hr/>
 
-			print_hidden("op", "pref-prefs");
-			print_hidden("method", "changepassword");
+				<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>
+					<?= __("Change password") ?>
+				</button>
+			</form>
 
-			print "<hr/>";
-
-			print "<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>" .
-				__("Change password") . "</button>";
-
-			print "</form>";
+			<?php
 
 		} else {
 			print_notice(T_sprintf("Authentication module used for this session (<b>%s</b>) does not provide an ability to set passwords.",
 				$_SESSION["auth_module"]));
 		}
+	}
 
-		print "</div>"; # content pane
-
-		print "<div dojoType='dijit.layout.ContentPane' title=\"" . __('App passwords') . "\">";
-
+	private function index_auth_app_passwords() {
 		print_notice("You can create separate passwords for API clients. Using one is required if you enable OTP.");
+		?>
 
-		print "<div id='app_passwords_holder'>";
-		$this->appPasswordList();
-		print "</div>";
+		<div id='app_passwords_holder'>
+			<?php $this->appPasswordList() ?>
+		</div>
 
-		print "<hr>";
+		<hr>
 
-		print "<button style='float : left' class='alt-primary' dojoType='dijit.form.Button'
-			onclick=\"Helpers.AppPasswords.generate()\">" .
-			__('Generate new password') . "</button> ";
+		<button style='float : left' class='alt-primary' dojoType='dijit.form.Button' onclick="Helpers.AppPasswords.generate()">
+			<?= __('Generate new password') ?>
+		</button>
 
-		print "<button style='float : left' class='alt-danger' dojoType='dijit.form.Button'
-			onclick=\"Helpers.AppPasswords.removeSelected()\">" .
-			__('Remove selected passwords') . "</button>";
+		<button style='float : left' class='alt-danger' dojoType='dijit.form.Button'
+			onclick="Helpers.AppPasswords.removeSelected()">
+			<?= __('Remove selected passwords') ?>
+		</button>
 
-		print "</div>"; # content pane
+		<?php
+	}
 
-		print "<div dojoType='dijit.layout.ContentPane' title=\"".__('One time passwords / Authenticator')."\">";
+	private function is_otp_enabled() {
+		$sth = $this->pdo->prepare("SELECT otp_enabled FROM ttrss_users
+			WHERE id = ?");
+		$sth->execute([$_SESSION["uid"]]);
+
+		if ($row = $sth->fetch()) {
+			return sql_bool_to_bool($row["otp_enabled"]);
+		}
+
+		return false;
+	}
+
+	private function index_auth_2fa() {
+		$otp_enabled = $this->is_otp_enabled();
 
 		if ($_SESSION["auth_module"] == "auth_internal") {
-
 			if ($otp_enabled) {
-
 				print_warning("One time passwords are currently enabled. Enter your current password below to disable.");
+				?>
 
-				print "<form dojoType='dijit.form.Form'>";
+				<form dojoType='dijit.form.Form'>
+					<?= \Controls\hidden_tag("op", "pref-prefs") ?>
+					<?= \Controls\hidden_tag("method", "otpdisable") ?>
 
-				print "<script type='dojo/method' event='onSubmit' args='evt'>
-				evt.preventDefault();
-				if (this.validate()) {
-					Notify.progress('Disabling OTP', true);
+					<!-- TODO: return JSON from the backend call -->
+					<script type="dojo/method" event="onSubmit" args="evt">
+						evt.preventDefault();
+						if (this.validate()) {
+							Notify.progress('Saving data...', true);
+							xhr.post("backend.php", this.getValues(), (reply) => {
+								Notify.close();
 
-					new Ajax.Request('backend.php', {
-						parameters: dojo.objectToQuery(this.getValues()),
-						onComplete: function(transport) {
-							Notify.close();
-							if (transport.responseText.indexOf('ERROR: ') == 0) {
-								Notify.error(transport.responseText.replace('ERROR: ', ''));
-							} else {
-								window.location.reload();
-							}
-					}});
-					this.reset();
-				}
-				</script>";
+								if (reply.indexOf('ERROR: ') == 0) {
+									Notify.error(reply.replace('ERROR: ', ''));
+								} else {
+									window.location.reload();
+								}
+							})
+						}
+					</script>
 
-				print "<fieldset>";
-				print "<label>".__("Your password:")."</label>";
-				print "<input dojoType='dijit.form.ValidationTextBox' type='password' required='1' name='password'>";
-				print "</fieldset>";
+					<fieldset>
+						<label><?= __("Your password:") ?></label>
+						<input dojoType='dijit.form.ValidationTextBox' type='password' required='1' name='password'>
+					</fieldset>
 
-				print_hidden("op", "pref-prefs");
-				print_hidden("method", "otpdisable");
+					<hr/>
 
-				print "<hr/>";
+					<button dojoType='dijit.form.Button' type='submit' class='alt-danger'>
+						<?= __("Disable OTP") ?>
+					</button>
 
-				print "<button dojoType='dijit.form.Button' type='submit'>".
-					__("Disable OTP")."</button>";
+				</form>
 
-				print "</form>";
+				<?php
 
 			} else {
 
@@ -492,7 +483,6 @@ class Pref_Prefs extends Handler_Protected {
 
 				if (function_exists("imagecreatefromstring")) {
 					print "<h3>" . __("Scan the following code by the Authenticator application or copy the key manually") . "</h3>";
-
 					$csrf_token_hash = sha1($_SESSION["csrf_token"]);
 					print "<img alt='otp qr-code' src='backend.php?op=pref-prefs&method=otpqrcode&csrf_token_hash=$csrf_token_hash'>";
 				} else {
@@ -500,108 +490,87 @@ class Pref_Prefs extends Handler_Protected {
 					print "<h3>" . __("Use the following OTP key with a compatible Authenticator application") . "</h3>";
 				}
 
-				print "<form dojoType='dijit.form.Form' id='changeOtpForm'>";
-
 				$otp_secret = $this->otpsecret();
+				?>
 
-				print "<fieldset>";
-				print "<label>".__("OTP Key:")."</label>";
-				print "<input dojoType='dijit.form.ValidationTextBox' disabled='disabled' value='$otp_secret' size='32'>";
-				print "</fieldset>";
+				<form dojoType='dijit.form.Form'>
 
-				print_hidden("op", "pref-prefs");
-				print_hidden("method", "otpenable");
+					<?= \Controls\hidden_tag("op", "pref-prefs") ?>
+					<?= \Controls\hidden_tag("method", "otpenable") ?>
 
-				print "<script type='dojo/method' event='onSubmit' args='evt'>
-				evt.preventDefault();
-				if (this.validate()) {
-					Notify.progress('Saving data...', true);
+					<fieldset>
+						<label><?= __("OTP Key:") ?></label>
+						<input dojoType='dijit.form.ValidationTextBox' disabled='disabled' value="<?= $otp_secret ?>" size='32'>
+					</fieldset>
 
-					new Ajax.Request('backend.php', {
-						parameters: dojo.objectToQuery(this.getValues()),
-						onComplete: function(transport) {
-							Notify.close();
-							if (transport.responseText.indexOf('ERROR:') == 0) {
-								Notify.error(transport.responseText.replace('ERROR:', ''));
-							} else {
-								window.location.reload();
-							}
-					} });
+					<!-- TODO: return JSON from the backend call -->
+					<script type="dojo/method" event="onSubmit" args="evt">
+						evt.preventDefault();
+						if (this.validate()) {
+							Notify.progress('Saving data...', true);
+							xhr.post("backend.php", this.getValues(), (reply) => {
+								Notify.close();
 
-				}
-				</script>";
+								if (reply.indexOf('ERROR:') == 0) {
+									Notify.error(reply.replace('ERROR:', ''));
+								} else {
+									window.location.reload();
+								}
+							})
+						}
+					</script>
 
-				print "<fieldset>";
-				print "<label>".__("Your password:")."</label>";
-				print "<input dojoType='dijit.form.ValidationTextBox' type='password' required='1'
-					name='password'>";
-				print "</fieldset>";
+					<fieldset>
+						<label><?= __("Your password:") ?></label>
+						<input dojoType='dijit.form.ValidationTextBox' type='password' required='1' name='password'>
+					</fieldset>
 
-				print "<fieldset>";
-				print "<label>".__("One time password:")."</label>";
-				print "<input dojoType='dijit.form.ValidationTextBox' autocomplete='off'
-					required='1' name='otp'>";
-				print "</fieldset>";
+					<fieldset>
+						<label><?= __("One time password:") ?></label>
+						<input dojoType='dijit.form.ValidationTextBox' autocomplete='off' required='1' name='otp'>
+					</fieldset>
 
-				print "<hr/>";
-				print "<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>".
-					__("Enable OTP")."</button>";
+					<hr/>
 
-				print "</form>";
+					<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>
+						<?= __("Enable OTP") ?>
+					</button>
 
+				</form>
+				<?php
 			}
-
 		} else {
 			print_notice("OTP is only available when using <b>auth_internal</b> authentication module.");
 		}
+	}
 
-		print "</div>"; # content pane
+	function index_auth() {
+		?>
+		<div dojoType='dijit.layout.TabContainer'>
+			<div dojoType='dijit.layout.ContentPane' title="<?= __('Personal data') ?>">
+				<?php $this->index_auth_personal() ?>
+			</div>
+			<div dojoType='dijit.layout.ContentPane' title="<?= __('Password') ?>">
+				<?php $this->index_auth_password() ?>
+			</div>
+			<div dojoType='dijit.layout.ContentPane' title="<?= __('App passwords') ?>">
+				<?php $this->index_auth_app_passwords() ?>
+			</div>
+			<div dojoType='dijit.layout.ContentPane' title="<?= __('Authenticator (OTP)') ?>">
+				<?php $this->index_auth_2fa() ?>
+			</div>
+		</div>
+		<?php
+	}
 
-		print "</div>"; # tab container
-
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION, "prefPrefsAuth");
-
-		print "</div>"; #pane
-
-		print "<div dojoType='dijit.layout.AccordionPane' selected='true'
-			title=\"<i class='material-icons'>settings</i> ".__('Preferences')."\">";
-
-		print "<form dojoType='dijit.form.Form' id='changeSettingsForm'>";
-
-		print "<script type='dojo/method' event='onSubmit' args='evt, quit'>
-		if (evt) evt.preventDefault();
-		if (this.validate()) {
-			console.log(dojo.objectToQuery(this.getValues()));
-
-			new Ajax.Request('backend.php', {
-				parameters: dojo.objectToQuery(this.getValues()),
-				onComplete: function(transport) {
-					var msg = transport.responseText;
-					if (quit) {
-						document.location.href = 'index.php';
-					} else {
-						if (msg == 'PREFS_NEED_RELOAD') {
-							window.location.reload();
-						} else {
-							Notify.info(msg);
-						}
-					}
-			} });
-		}
-		</script>";
-
-		print '<div dojoType="dijit.layout.BorderContainer" gutters="false">';
-
-		print '<div dojoType="dijit.layout.ContentPane" region="center" style="overflow-y : auto">';
-
+	private function index_prefs_list() {
 		$profile = $_SESSION["profile"] ?? null;
 
 		if ($profile) {
 			print_notice(__("Some preferences are only available in default profile."));
-
-			$this->initialize_user_prefs($_SESSION["uid"], $profile);
+			$this->_init_user_prefs($_SESSION["uid"], $profile);
 		} else {
-			$this->initialize_user_prefs($_SESSION["uid"]);
+			$this->_init_user_prefs($_SESSION["uid"]);
 		}
 
 		$prefs_available = [];
@@ -632,7 +601,7 @@ class Pref_Prefs extends Handler_Protected {
 			}
 
 			$pref_name = $line["pref_name"];
-			$short_desc = $this->getShortDesc($pref_name);
+			$short_desc = $this->_get_short_desc($pref_name);
 
 			if (!$short_desc)
 				continue;
@@ -640,7 +609,7 @@ class Pref_Prefs extends Handler_Protected {
 			$prefs_available[$pref_name] = [
 				'type_name' => $line["type_name"],
 				'value' => $line['value'],
-				'help_text' => $this->getHelpText($pref_name),
+				'help_text' => $this->_get_help_text($pref_name),
 				'short_desc' => $short_desc
 			];
 		}
@@ -656,11 +625,13 @@ class Pref_Prefs extends Handler_Protected {
 					continue;
 				}
 
-				if ($pref_name == "DEFAULT_SEARCH_LANGUAGE" && DB_TYPE != "pgsql") {
+				if ($pref_name == "DEFAULT_SEARCH_LANGUAGE" && Config::get(Config::DB_TYPE) != "pgsql") {
 					continue;
 				}
 
-				if (isset($prefs_available[$pref_name]) &&$item = $prefs_available[$pref_name]) {
+				if (isset($prefs_available[$pref_name])) {
+
+					$item = $prefs_available[$pref_name];
 
 					print "<fieldset class='prefs'>";
 
@@ -672,14 +643,14 @@ class Pref_Prefs extends Handler_Protected {
 					$type_name = $item['type_name'];
 
 					if ($pref_name == "USER_LANGUAGE") {
-						print_select_hash($pref_name, $value, get_translations(),
-							"style='width : 220px; margin : 0px' dojoType='fox.form.Select'");
+						print \Controls\select_hash($pref_name, $value, get_translations(),
+							["style" => 'width : 220px; margin : 0px']);
 
 					} else if ($pref_name == "USER_TIMEZONE") {
 
 						$timezones = explode("\n", file_get_contents("lib/timezones.txt"));
 
-						print_select($pref_name, $value, $timezones, 'dojoType="dijit.form.FilteringSelect"');
+						print \Controls\select_tag($pref_name, $value, $timezones, ["dojoType" => "dijit.form.FilteringSelect"]);
 
 					} else if ($pref_name == "BLACKLISTED_TAGS") { # TODO: other possible <textarea> prefs go here
 
@@ -715,7 +686,7 @@ class Pref_Prefs extends Handler_Protected {
 						print "</select>";
 
 						print " <button dojoType=\"dijit.form.Button\" class='alt-info'
-							onclick=\"Helpers.customizeCSS()\">" . __('Customize') . "</button>";
+							onclick=\"Helpers.Prefs.customizeCSS()\">" . __('Customize') . "</button>";
 
 						print " <button dojoType='dijit.form.Button' onclick='window.open(\"https://tt-rss.org/wiki/Themes\")'>
 							<i class='material-icons'>open_in_new</i> ".__("More themes...")."</button>";
@@ -724,70 +695,60 @@ class Pref_Prefs extends Handler_Protected {
 
 						global $update_intervals_nodefault;
 
-						print_select_hash($pref_name, $value, $update_intervals_nodefault,
-							'dojoType="fox.form.Select"');
+						print \Controls\select_hash($pref_name, $value, $update_intervals_nodefault);
+
 					} else if ($pref_name == "DEFAULT_SEARCH_LANGUAGE") {
 
-						print_select($pref_name, $value, Pref_Feeds::get_ts_languages(),
-							'dojoType="fox.form.Select"');
+						print \Controls\select_tag($pref_name, $value, Pref_Feeds::get_ts_languages());
 
 					} else if ($type_name == "bool") {
 
 						array_push($listed_boolean_prefs, $pref_name);
 
-						$checked = ($value == "true") ? "checked=\"checked\"" : "";
-
-						if ($pref_name == "PURGE_UNREAD_ARTICLES" && FORCE_ARTICLE_PURGE != 0) {
-							$disabled = "disabled=\"1\"";
-							$checked = "checked=\"checked\"";
+						if ($pref_name == "PURGE_UNREAD_ARTICLES" && Config::get(Config::FORCE_ARTICLE_PURGE) != 0) {
+							$is_disabled = true;
+							$is_checked = true;
 						} else {
-							$disabled = "";
+							$is_disabled = false;
+							$is_checked = ($value == "true");
 						}
 
-						print "<input type='checkbox' name='$pref_name' $checked $disabled
-							dojoType='dijit.form.CheckBox' id='CB_$pref_name' value='1'>";
+						print \Controls\checkbox_tag($pref_name, $is_checked, "true",
+							["disabled" => $is_disabled], "CB_$pref_name");
 
 					} else if (in_array($pref_name, ['FRESH_ARTICLE_MAX_AGE',
 							'PURGE_OLD_DAYS', 'LONG_DATE_FORMAT', 'SHORT_DATE_FORMAT'])) {
 
-						$regexp = ($type_name == 'integer') ? 'regexp="^\d*$"' : '';
-
-						if ($pref_name == "PURGE_OLD_DAYS" && FORCE_ARTICLE_PURGE != 0) {
-							$disabled = "disabled='1'";
-							$value = FORCE_ARTICLE_PURGE;
+						if ($pref_name == "PURGE_OLD_DAYS" && Config::get(Config::FORCE_ARTICLE_PURGE) != 0) {
+							$attributes = ["disabled" => true, "required" => true];
+							$value = Config::get(Config::FORCE_ARTICLE_PURGE);
 						} else {
-							$disabled = "";
+							$attributes = ["required" => true];
 						}
 
 						if ($type_name == 'integer')
-							print "<input dojoType=\"dijit.form.NumberSpinner\"
-								required='1' $disabled
-								name=\"$pref_name\" value=\"$value\">";
+							print \Controls\number_spinner_tag($pref_name, $value, $attributes);
 						else
-							print "<input dojoType=\"dijit.form.TextBox\"
-								required='1' $regexp $disabled
-								name=\"$pref_name\" value=\"$value\">";
+							print \Controls\input_tag($pref_name, $value, "text", $attributes);
 
 					} else if ($pref_name == "SSL_CERT_SERIAL") {
 
-						print "<input dojoType='dijit.form.ValidationTextBox'
-							id='SSL_CERT_SERIAL' readonly='1'
-							name=\"$pref_name\" value=\"$value\">";
+						print \Controls\input_tag($pref_name, $value, "text", ["readonly" => true], "SSL_CERT_SERIAL");
 
 						$cert_serial = htmlspecialchars(get_ssl_certificate_id());
-						$has_serial = ($cert_serial) ? "false" : "true";
+						$has_serial = ($cert_serial) ? true : false;
 
-						print "<button dojoType='dijit.form.Button' disabled='$has_serial'
-							onclick=\"dijit.byId('SSL_CERT_SERIAL').attr('value', '$cert_serial')\">" .
-							__('Register') . "</button>";
+						print \Controls\button_tag(__('Register'), "", [
+							"disabled" => !$has_serial,
+							"onclick" => "dijit.byId('SSL_CERT_SERIAL').attr('value', '$cert_serial')"]);
 
-						print "<button dojoType='dijit.form.Button' class='alt-danger'
-							onclick=\"dijit.byId('SSL_CERT_SERIAL').attr('value', '')\">" .
-							__('Clear') . "</button>";
+						print \Controls\button_tag(__('Clear'), "", [
+							"class" => "alt-danger",
+							"onclick" => "dijit.byId('SSL_CERT_SERIAL').attr('value', '')"]);
 
-						print "<button dojoType='dijit.form.Button' class='alt-info'
-							onclick='window.open(\"https://tt-rss.org/wiki/SSL%20Certificate%20Authentication\")'>
-							<i class='material-icons'>help</i> ".__("More info...")."</button>";
+						print \Controls\button_tag(\Controls\icon("help") . " " . __("More info..."), "", [
+							"class" => "alt-info",
+							"onclick" => "window.open('https://tt-rss.org/wiki/SSL%20Certificate%20Authentication')"]);
 
 					} else if ($pref_name == 'DIGEST_PREFERRED_TIME') {
 						print "<input dojoType=\"dijit.form.ValidationTextBox\"
@@ -808,204 +769,252 @@ class Pref_Prefs extends Handler_Protected {
 				}
 			}
 		}
+		print \Controls\hidden_tag("boolean_prefs", htmlspecialchars(join(",", $listed_boolean_prefs)));
+	}
 
-		$listed_boolean_prefs = htmlspecialchars(join(",", $listed_boolean_prefs));
+	private function index_prefs() {
+		?>
+		<form dojoType='dijit.form.Form' id='changeSettingsForm'>
+			<?= \Controls\hidden_tag("op", "pref-prefs") ?>
+			<?= \Controls\hidden_tag("method", "saveconfig") ?>
 
-		print_hidden("boolean_prefs", "$listed_boolean_prefs");
+			<script type="dojo/method" event="onSubmit" args="evt, quit">
+				if (evt) evt.preventDefault();
+				if (this.validate()) {
+					xhr.post("backend.php", this.getValues(), (reply) => {
+						if (quit) {
+							document.location.href = 'index.php';
+						} else {
+							if (reply == 'PREFS_NEED_RELOAD') {
+								window.location.reload();
+							} else {
+								Notify.info(reply);
+							}
+						}
+					})
+				}
+			</script>
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION, "prefPrefsPrefsInside");
+			<div dojoType="dijit.layout.BorderContainer" gutters="false">
+				<div dojoType="dijit.layout.ContentPane" region="center" style="overflow-y : auto">
+					<?php $this->index_prefs_list() ?>
+					<?php PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION, "prefPrefsPrefsInside") ?>
+				</div>
+				<div dojoType="dijit.layout.ContentPane" region="bottom">
 
-		print '</div>'; # inside pane
-		print '<div dojoType="dijit.layout.ContentPane" region="bottom">';
+					<div dojoType="fox.form.ComboButton" type="submit" class="alt-primary">
+						<span><?= __('Save configuration') ?></span>
+						<div dojoType="dijit.DropDownMenu">
+							<div dojoType="dijit.MenuItem" onclick="dijit.byId('changeSettingsForm').onSubmit(null, true)">
+								<?= __("Save and exit preferences") ?>
+							</div>
+						</div>
+					</div>
 
-		print_hidden("op", "pref-prefs");
-		print_hidden("method", "saveconfig");
+					<button dojoType="dijit.form.Button" onclick="return Helpers.Profiles.edit()">
+						<?= __('Manage profiles') ?>
+					</button>
 
-		print "<div dojoType=\"fox.form.ComboButton\" type=\"submit\" class=\"alt-primary\">
-			<span>".__('Save configuration')."</span>
-			<div dojoType=\"dijit.DropDownMenu\">
-				<div dojoType=\"dijit.MenuItem\"
-					onclick=\"dijit.byId('changeSettingsForm').onSubmit(null, true)\">".
-				__("Save and exit preferences")."</div>
+					<button dojoType="dijit.form.Button" class="alt-danger" onclick="return Helpers.Prefs.confirmReset()">
+						<?= __('Reset to defaults') ?>
+					</button>
+
+					<?php PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION, "prefPrefsPrefsOutside") ?>
+				</div>
 			</div>
-			</div>";
+		</form>
+		<?php
+	}
 
-		print "<button dojoType=\"dijit.form.Button\" onclick=\"return Helpers.editProfiles()\">".
-			__('Manage profiles')."</button> ";
-
-		print "<button dojoType=\"dijit.form.Button\" class=\"alt-danger\" onclick=\"return Helpers.confirmReset()\">".
-			__('Reset to defaults')."</button>";
-
-		print "&nbsp;";
-
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION, "prefPrefsPrefsOutside");
-
-		print "</form>";
-		print '</div>'; # inner pane
-		print '</div>'; # border container
-
-		print "</div>"; #pane
-
-		print "<div dojoType=\"dijit.layout.AccordionPane\"
-			title=\"<i class='material-icons'>extension</i> ".__('Plugins')."\">";
-
-		print "<form dojoType=\"dijit.form.Form\" id=\"changePluginsForm\">";
-
-		print "<script type=\"dojo/method\" event=\"onSubmit\" args=\"evt\">
-		evt.preventDefault();
-		if (this.validate()) {
-			Notify.progress('Saving data...', true);
-
-			new Ajax.Request('backend.php', {
-				parameters: dojo.objectToQuery(this.getValues()),
-				onComplete: function(transport) {
-					Notify.close();
-					if (confirm(__('Selected plugins have been enabled. Reload?'))) {
-						window.location.reload();
-					}
-			} });
-
-		}
-		</script>";
-
-		print_hidden("op", "pref-prefs");
-		print_hidden("method", "setplugins");
-
-		print '<div dojoType="dijit.layout.BorderContainer" gutters="false">';
-		print '<div dojoType="dijit.layout.ContentPane" region="center" style="overflow-y : auto">';
-
-		if (ini_get("open_basedir") && function_exists("curl_init") && !defined("NO_CURL")) {
-			print_warning("Your PHP configuration has open_basedir restrictions enabled. Some plugins relying on CURL for functionality may not work correctly.");
-		}
-
-		if ($_SESSION["safe_mode"]) {
-			print_error("You have logged in using safe mode, no user plugins will be actually enabled until you login again.");
-		}
-
-		$feed_handler_whitelist = [ "Af_Comics" ];
-
-		$feed_handlers = array_merge(
-			PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FEED_FETCHED),
-			PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FEED_PARSED),
-			PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FETCH_FEED));
-
-		$feed_handlers = array_filter($feed_handlers, function($plugin) use ($feed_handler_whitelist) {
-			return in_array(get_class($plugin), $feed_handler_whitelist) === false; });
-
-		if (count($feed_handlers) > 0) {
-			print_error(
-				T_sprintf("The following plugins use per-feed content hooks. This may cause excessive data usage and origin server load resulting in a ban of your instance: <b>%s</b>" ,
-					implode(", ", array_map(function($plugin) { return get_class($plugin); }, $feed_handlers))
-				) . " (<a href='https://tt-rss.org/wiki/FeedHandlerPlugins' target='_blank'>".__("More info...")."</a>)"
-			);
-		}
-
-		print "<h2>".__("System plugins")."</h2>";
+	private function index_plugins_system() {
 		print_notice("System plugins are enabled in <strong>config.php</strong> for all users.");
 
-		$system_enabled = array_map("trim", explode(",", PLUGINS));
-		$user_enabled = array_map("trim", explode(",", get_pref("_ENABLED_PLUGINS")));
+		$system_enabled = array_map("trim", explode(",", (string)Config::get(Config::PLUGINS)));
 
 		$tmppluginhost = new PluginHost();
 		$tmppluginhost->load_all($tmppluginhost::KIND_ALL, $_SESSION["uid"], true);
-		//$tmppluginhost->load_data(true);
 
 		foreach ($tmppluginhost->get_plugins() as $name => $plugin) {
 			$about = $plugin->about();
 
 			if ($about[3] ?? false) {
-				if (in_array($name, $system_enabled)) {
-					$checked = "checked='1'";
-				} else {
-					$checked = "";
-				}
+				$is_checked = in_array($name, $system_enabled) ? "checked" : "";
+				?>
+				<fieldset class='prefs plugin'>
+					<label><?= $name ?>:</label>
+					<label class='checkbox description text-muted' id="PLABEL-<?= htmlspecialchars($name) ?>">
+						<input disabled='1' dojoType='dijit.form.CheckBox' <?= $is_checked ?> type='checkbox'><?= htmlspecialchars($about[1]) ?>
+					</label>
 
-				print "<fieldset class='prefs plugin'>
-					<label>$name:</label>
-					<label class='checkbox description text-muted' id='PLABEL-$name'>
-						<input disabled='1'
-							dojoType='dijit.form.CheckBox' $checked type='checkbox'>
-						".htmlspecialchars($about[1]). "</label>";
+					<?php if ($about[4] ?? false) { ?>
+						<button dojoType='dijit.form.Button' class='alt-info'
+							onclick='window.open("<?= htmlspecialchars($about[4]) ?>")'>
+								<i class='material-icons'>open_in_new</i> <?= __("More info...") ?></button>
+					<?php } ?>
 
-					if ($about[4] ?? false) {
-						print "<button dojoType='dijit.form.Button' class='alt-info'
-							onclick='window.open(\"".htmlspecialchars($about[4])."\")'>
-								<i class='material-icons'>open_in_new</i> ".__("More info...")."</button>";
-					}
-
-					print "<div dojoType='dijit.Tooltip' connectId='PLABEL-$name' position='after'>".
-						htmlspecialchars(T_sprintf("v%.2f, by %s", $about[0], $about[2])).
-						"</div>";
-
-				print "</fieldset>";
-
+					<div dojoType='dijit.Tooltip' connectId='PLABEL-<?= htmlspecialchars($name) ?>' position='after'>
+						<?= htmlspecialchars(T_sprintf("v%.2f, by %s", $about[0], $about[2])) ?>
+					</div>
+				</fieldset>
+				<?php
 			}
 		}
+	}
 
-		print "<h2>".__("User plugins")."</h2>";
+	private function index_plugins_user() {
+		$system_enabled = array_map("trim", explode(",", (string)Config::get(Config::PLUGINS)));
+		$user_enabled = array_map("trim", explode(",", get_pref("_ENABLED_PLUGINS")));
+
+		$tmppluginhost = new PluginHost();
+		$tmppluginhost->load_all($tmppluginhost::KIND_ALL, $_SESSION["uid"], true);
 
 		foreach ($tmppluginhost->get_plugins() as $name => $plugin) {
 			$about = $plugin->about();
 
 			if (empty($about[3]) || $about[3] == false) {
 
-				$checked = "";
-				$disabled = "";
+				$is_checked = "";
+				$is_disabled = "";
 
 				if (in_array($name, $system_enabled)) {
-					$checked = "checked='1'";
-					$disabled = "disabled='1'";
+					$is_checked = "checked='1'";
+					$is_disabled = "disabled='1'";
 				} else if (in_array($name, $user_enabled)) {
-					$checked = "checked='1'";
+					$is_checked = "checked='1'";
 				}
 
-				print "<fieldset class='prefs plugin'>
-					<label>$name:</label>
-					<label class='checkbox description text-muted' id='PLABEL-$name'>
-						<input name='plugins[]' value='$name' dojoType='dijit.form.CheckBox' $checked $disabled type='checkbox'>
-						".htmlspecialchars($about[1])."</label>";
+				?>
 
-				if (count($tmppluginhost->get_all($plugin)) > 0) {
-					if (in_array($name, $system_enabled) || in_array($name, $user_enabled)) {
-						print " <button dojoType='dijit.form.Button'
-							onclick=\"Helpers.clearPluginData('$name')\">
-								<i class='material-icons'>clear</i> ".__("Clear data")."</button>";
-					}
-				}
+				<fieldset class='prefs plugin'>
+					<label><?= $name ?>:</label>
+					<label class='checkbox description text-muted' id="PLABEL-<?= htmlspecialchars($name) ?>">
+						<input name='plugins[]' value="<?= htmlspecialchars($name) ?>"
+							dojoType='dijit.form.CheckBox' <?= $is_checked ?> <?= $is_disabled ?> type='checkbox'>
+							<?= htmlspecialchars($about[1]) ?>
+						</input>
+					</label>
 
-				if ($about[4] ?? false) {
-					print " <button dojoType='dijit.form.Button' class='alt-info'
-							onclick='window.open(\"".htmlspecialchars($about[4])."\")'>
-								<i class='material-icons'>open_in_new</i> ".__("More info...")."</button>";
-				}
+					<?php if (count($tmppluginhost->get_all($plugin)) > 0) {
+						if (in_array($name, $system_enabled) || in_array($name, $user_enabled)) { ?>
+							<button dojoType='dijit.form.Button'
+								onclick='Helpers.Prefs.clearPluginData("<?= htmlspecialchars($name) ?>")'>
+									<i class='material-icons'>clear</i> <?= __("Clear data") ?></button>
+					<?php }
+					} ?>
 
-				print "<div dojoType='dijit.Tooltip' connectId='PLABEL-$name' position='after'>".
-					htmlspecialchars(T_sprintf("v%.2f, by %s", $about[0], $about[2])).
-					"</div>";
+					<?php if ($about[4] ?? false) { ?>
+						<button dojoType='dijit.form.Button' class='alt-info'
+								onclick='window.open("<?= htmlspecialchars($about[4]) ?>")'>
+									<i class='material-icons'>open_in_new</i> <?= __("More info...") ?></button>
+					<?php } ?>
 
-				print "</fieldset>";
+					<div dojoType='dijit.Tooltip' connectId="PLABEL-<?= htmlspecialchars($name) ?>" position='after'>
+						<?= htmlspecialchars(T_sprintf("v%.2f, by %s", $about[0], $about[2])) ?>
+					</div>
+
+				</fieldset>
+				<?php
 			}
 		}
+	}
 
-		print "</div>"; #content-pane
-		print '<div dojoType="dijit.layout.ContentPane" region="bottom">';
+	function index_plugins() {
+		?>
+		<form dojoType="dijit.form.Form" id="changePluginsForm">
+			<script type="dojo/method" event="onSubmit" args="evt">
+					evt.preventDefault();
+					if (this.validate()) {
+						xhr.post("backend.php", this.getValues(), () => {
+							Notify.close();
+							if (confirm(__('Selected plugins have been enabled. Reload?'))) {
+								window.location.reload();
+							}
+						})
+					}
+			</script>
 
-		print "<button dojoType='dijit.form.Button' style='float : left' class='alt-info' onclick='window.open(\"https://tt-rss.org/wiki/Plugins\")'>
-			<i class='material-icons'>help</i> ".__("More info...")."</button>";
+			<?= \Controls\hidden_tag("op", "pref-prefs") ?>
+			<?= \Controls\hidden_tag("method", "setplugins") ?>
 
-		print "<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>".
-			__("Enable selected plugins")."</button>";
-		print "</div>"; #pane
+			<div dojoType="dijit.layout.BorderContainer" gutters="false">
+				<div dojoType="dijit.layout.ContentPane" region="center" style="overflow-y : auto">
+					<?php
+						if (!empty($_SESSION["safe_mode"])) {
+							print_error("You have logged in using safe mode, no user plugins will be actually enabled until you login again.");
+						}
 
-		print "</div>"; #pane
-		print "</div>"; #border-container
+						$feed_handler_whitelist = [ "Af_Comics" ];
 
-		print "</form>";
+						$feed_handlers = array_merge(
+							PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FEED_FETCHED),
+							PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FEED_PARSED),
+							PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FETCH_FEED));
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefPrefs");
+						$feed_handlers = array_filter($feed_handlers, function($plugin) use ($feed_handler_whitelist) {
+							return in_array(get_class($plugin), $feed_handler_whitelist) === false; });
 
-		print "</div>"; #container
+						if (count($feed_handlers) > 0) {
+							print_error(
+								T_sprintf("The following plugins use per-feed content hooks. This may cause excessive data usage and origin server load resulting in a ban of your instance: <b>%s</b>" ,
+									implode(", ", array_map(function($plugin) { return get_class($plugin); }, $feed_handlers))
+								) . " (<a href='https://tt-rss.org/wiki/FeedHandlerPlugins' target='_blank'>".__("More info...")."</a>)"
+							);
+						}
+					?>
 
+					<h2><?= __("System plugins") ?></h2>
+
+					<?php $this->index_plugins_system() ?>
+
+					<h2><?= __("User plugins") ?></h2>
+
+					<?php $this->index_plugins_user() ?>
+
+				</div>
+				<div dojoType="dijit.layout.ContentPane" region="bottom">
+					<button dojoType='dijit.form.Button' style='float : left' class='alt-info' onclick='window.open("https://tt-rss.org/wiki/Plugins")'>
+						<i class='material-icons'>help</i> <?= __("More info...") ?>
+					</button>
+					<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>
+						<?= __("Enable selected plugins") ?>
+					</button>
+				</div>
+			</div>
+		</form>
+		<?php
+	}
+
+	function index() {
+		?>
+			<div dojoType='dijit.layout.AccordionContainer' region='center'>
+				<div dojoType='dijit.layout.AccordionPane' title="<i class='material-icons'>person</i> <?= __('Personal data / Authentication')?>">
+					<script type='dojo/method' event='onSelected' args='evt'>
+						if (this.domNode.querySelector('.loading'))
+							window.setTimeout(() => {
+								xhr.post("backend.php", {op: 'pref-prefs', method: 'index_auth'}, (reply) => {
+									this.attr('content', reply);
+								});
+							}, 100);
+					</script>
+					<span class='loading'><?= __("Loading, please wait...") ?></span>
+				</div>
+				<div dojoType='dijit.layout.AccordionPane' selected='true' title="<i class='material-icons'>settings</i> <?= __('Preferences') ?>">
+					<?php $this->index_prefs() ?>
+				</div>
+				<div dojoType='dijit.layout.AccordionPane' title="<i class='material-icons'>extension</i> <?= __('Plugins') ?>">
+					<script type='dojo/method' event='onSelected' args='evt'>
+						if (this.domNode.querySelector('.loading'))
+							window.setTimeout(() => {
+								xhr.post("backend.php", {op: 'pref-prefs', method: 'index_plugins'}, (reply) => {
+									this.attr('content', reply);
+								});
+							}, 200);
+					</script>
+					<span class='loading'><?= __("Loading, please wait...") ?></span>
+				</div>
+				<?php PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefPrefs") ?>
+			</div>
+		<?php
 	}
 
 	function toggleAdvanced() {
@@ -1054,7 +1063,7 @@ class Pref_Prefs extends Handler_Protected {
 			}
 		} else {
 			header("Content-Type: text/json");
-			print error_json(6);
+			print Errors::to_json(Errors::E_UNAUTHORIZED);
 		}
 	}
 
@@ -1126,7 +1135,7 @@ class Pref_Prefs extends Handler_Protected {
 				$tpl->readTemplateFromFile("otp_disabled_template.txt");
 
 				$tpl->setVariable('LOGIN', $row["login"]);
-				$tpl->setVariable('TTRSS_HOST', SELF_URL_PATH);
+				$tpl->setVariable('TTRSS_HOST', Config::get(Config::SELF_URL_PATH));
 
 				$tpl->addBlock('message');
 
@@ -1171,112 +1180,107 @@ class Pref_Prefs extends Handler_Protected {
 		print json_encode(["value" => $value]);
 	}
 
-	function editPrefProfiles() {
-		print "<div dojoType='fox.Toolbar'>";
+	function activateprofile() {
+		$_SESSION["profile"] = (int) clean($_REQUEST["id"]);
 
-		print "<div dojoType='fox.form.DropDownButton'>".
-				"<span>" . __('Select')."</span>";
-		print "<div dojoType='dijit.Menu' style='display: none'>";
-		print "<div onclick=\"Tables.select('pref-profiles-list', true)\"
-			dojoType='dijit.MenuItem'>".__('All')."</div>";
-		print "<div onclick=\"Tables.select('pref-profiles-list', false)\"
-			dojoType='dijit.MenuItem'>".__('None')."</div>";
-		print "</div></div>";
+		// default value
+		if (!$_SESSION["profile"]) $_SESSION["profile"] = null;
+	}
 
-		print "<div style='float : right'>";
+	function remprofiles() {
+		$ids = explode(",", clean($_REQUEST["ids"]));
 
-		print "<input name='newprofile' dojoType='dijit.form.ValidationTextBox'
-				required='1'>
-			<button dojoType='dijit.form.Button'
-			onclick=\"dijit.byId('profileEditDlg').addProfile()\">".
-				__('Create profile')."</button></div>";
+		foreach ($ids as $id) {
+			if ($_SESSION["profile"] != $id) {
+				$sth = $this->pdo->prepare("DELETE FROM ttrss_settings_profiles WHERE id = ? AND
+							owner_uid = ?");
+				$sth->execute([$id, $_SESSION['uid']]);
+			}
+		}
+	}
 
-		print "</div>";
+	function addprofile() {
+		$title = clean($_REQUEST["title"]);
+
+		if ($title) {
+			$this->pdo->beginTransaction();
+
+			$sth = $this->pdo->prepare("SELECT id FROM ttrss_settings_profiles
+				WHERE title = ? AND owner_uid = ?");
+			$sth->execute([$title, $_SESSION['uid']]);
+
+			if (!$sth->fetch()) {
+
+				$sth = $this->pdo->prepare("INSERT INTO ttrss_settings_profiles (title, owner_uid)
+							VALUES (?, ?)");
+
+				$sth->execute([$title, $_SESSION['uid']]);
+
+				$sth = $this->pdo->prepare("SELECT id FROM ttrss_settings_profiles WHERE
+					title = ? AND owner_uid = ?");
+				$sth->execute([$title, $_SESSION['uid']]);
+
+				if ($row = $sth->fetch()) {
+					$profile_id = $row['id'];
+
+					if ($profile_id) {
+						Pref_Prefs::_init_user_prefs($_SESSION["uid"], $profile_id);
+					}
+				}
+			}
+
+			$this->pdo->commit();
+		}
+	}
+
+	function saveprofile() {
+		$id = clean($_REQUEST["id"]);
+		$title = clean($_REQUEST["title"]);
+
+		if ($id == 0) {
+			print __("Default profile");
+			return;
+		}
+
+		if ($title) {
+			$sth = $this->pdo->prepare("UPDATE ttrss_settings_profiles
+				SET title = ? WHERE id = ? AND
+					owner_uid = ?");
+
+			$sth->execute([$title, $id, $_SESSION['uid']]);
+			print $title;
+		}
+	}
+
+	// TODO: this maybe needs to be unified with Public::getProfiles()
+	function getProfiles() {
+		$rv = [];
 
 		$sth = $this->pdo->prepare("SELECT title,id FROM ttrss_settings_profiles
 			WHERE owner_uid = ? ORDER BY title");
 		$sth->execute([$_SESSION['uid']]);
 
-		print "<form onsubmit='return false'>";
+		array_push($rv, ["title" => __("Default profile"),
+				"id" => 0,
+				"active" => empty($_SESSION["profile"])
+			]);
 
-		print "<div class='panel panel-scrollable'>";
+		while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+			$row["active"] = isset($_SESSION["profile"]) && $_SESSION["profile"] == $row["id"];
+			array_push($rv, $row);
+		};
 
-		print "<table width='100%' id='pref-profiles-list'>";
-
-		print "<tr>"; # data-row-id='0' <-- no point, shouldn't be removed
-
-		print "<td><input onclick='Tables.onRowChecked(this);' dojoType='dijit.form.CheckBox' type='checkbox'></td>";
-
-		if (!isset($_SESSION["profile"])) {
-			$is_active = __("(active)");
-		} else {
-			$is_active = "";
-		}
-
-		print "<td width='100%'><span>" . __("Default profile") . " $is_active</span></td>";
-
-		print "</tr>";
-
-		while ($line = $sth->fetch()) {
-
-			$profile_id = $line["id"];
-
-			print "<tr data-row-id='$profile_id'>";
-
-			$edit_title = htmlspecialchars($line["title"]);
-
-			print "<td><input onclick='Tables.onRowChecked(this);' dojoType='dijit.form.CheckBox' type='checkbox'></td>";
-
-			if (isset($_SESSION["profile"]) && $_SESSION["profile"] == $line["id"]) {
-				$is_active = __("(active)");
-			} else {
-				$is_active = "";
-			}
-
-			print "<td><span dojoType='dijit.InlineEditBox'
-				width='300px' autoSave='false'
-				profile-id='$profile_id'>" . $edit_title .
-				"<script type='dojo/method' event='onChange' args='item'>
-					var elem = this;
-					dojo.xhrPost({
-						url: 'backend.php',
-						content: {op: 'rpc', method: 'saveprofile',
-							value: this.value,
-							id: this.srcNodeRef.getAttribute('profile-id')},
-							load: function(response) {
-								elem.attr('value', response);
-						}
-					});
-				</script>
-			</span> $is_active</td>";
-
-			print "</tr>";
-		}
-
-		print "</table>";
-		print "</div>";
-
-		print "<footer>
-			<button style='float : left' class='alt-danger' dojoType='dijit.form.Button' onclick='App.dialogOf(this).removeSelected()'>".
-				__('Remove selected profiles')."</button>
-			<button dojoType='dijit.form.Button' class='alt-primary' type='submit' onclick='App.dialogOf(this).execute()'>".
-				__('Activate profile')."</button>
-			<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
-				__('Cancel')."</button>";
-		print "</footer>";
-
-		print "</form>";
-
+		print json_encode($rv);
 	}
 
-	private function getShortDesc($pref_name) {
+	private function _get_short_desc($pref_name) {
 		if (isset($this->pref_help[$pref_name][0])) {
 			return $this->pref_help[$pref_name][0];
 		}
 		return "";
 	}
 
-	private function getHelpText($pref_name) {
+	private function _get_help_text($pref_name) {
 		if (isset($this->pref_help[$pref_name][1])) {
 			return $this->pref_help[$pref_name][1];
 		}
@@ -1284,56 +1288,54 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	private function appPasswordList() {
-		print "<div dojoType='fox.Toolbar'>";
-		print "<div dojoType='fox.form.DropDownButton'>" .
-			"<span>" . __('Select') . "</span>";
-		print "<div dojoType='dijit.Menu' style='display: none'>";
-		print "<div onclick=\"Tables.select('app-password-list', true)\"
-				dojoType=\"dijit.MenuItem\">" . __('All') . "</div>";
-		print "<div onclick=\"Tables.select('app-password-list', false)\"
-				dojoType=\"dijit.MenuItem\">" . __('None') . "</div>";
-		print "</div></div>";
-		print "</div>"; #toolbar
+		?>
+		<div dojoType='fox.Toolbar'>
+			<div dojoType='fox.form.DropDownButton'>
+				<span><?= __('Select') ?></span>
+				<div dojoType='dijit.Menu' style='display: none'>
+					<div onclick="Tables.select('app-password-list', true)"
+						dojoType="dijit.MenuItem"><?= __('All') ?></div>
+					<div onclick="Tables.select('app-password-list', false)"
+						dojoType="dijit.MenuItem"><?= __('None') ?></div>
+				</div>
+			</div>
+		</div>
 
-		print "<div class='panel panel-scrollable'>";
-		print "<table width='100%' id='app-password-list'>";
-		print "<tr>";
-		print "<th width='2%'></th>";
-		print "<th align='left'>".__("Description")."</th>";
-		print "<th align='right'>".__("Created")."</th>";
-		print "<th align='right'>".__("Last used")."</th>";
-		print "</tr>";
+		<div class='panel panel-scrollable'>
+			<table width='100%' id='app-password-list'>
+				<tr>
+					<th width='2%'> </th>
+					<th align='left'><?= __("Description") ?></th>
+					<th align='right'><?= __("Created") ?></th>
+					<th align='right'><?= __("Last used") ?></th>
+				</tr>
+				<?php
+				$sth = $this->pdo->prepare("SELECT id, title, created, last_used
+					FROM ttrss_app_passwords WHERE owner_uid = ?");
+				$sth->execute([$_SESSION['uid']]);
 
-		$sth = $this->pdo->prepare("SELECT id, title, created, last_used
-			FROM ttrss_app_passwords WHERE owner_uid = ?");
-		$sth->execute([$_SESSION['uid']]);
-
-		while ($row = $sth->fetch()) {
-
-			$row_id = $row["id"];
-
-			print "<tr data-row-id='$row_id'>";
-
-			print "<td align='center'>
-						<input onclick='Tables.onRowChecked(this)' dojoType='dijit.form.CheckBox' type='checkbox'></td>";
-			print "<td>" . htmlspecialchars($row["title"]) . "</td>";
-
-			print "<td align='right' class='text-muted'>";
-			print TimeHelper::make_local_datetime($row['created'], false);
-			print "</td>";
-
-			print "<td align='right' class='text-muted'>";
-			print TimeHelper::make_local_datetime($row['last_used'], false);
-			print "</td>";
-
-			print "</tr>";
-		}
-
-		print "</table>";
-		print "</div>";
+				while ($row = $sth->fetch()) { ?>
+					<tr data-row-id='<?= $row['id'] ?>'>
+						<td align='center'>
+							<input onclick='Tables.onRowChecked(this)' dojoType='dijit.form.CheckBox' type='checkbox'>
+						</td>
+						<td>
+							<?= htmlspecialchars($row["title"]) ?>
+						</td>
+						<td align='right' class='text-muted'>
+							<?= TimeHelper::make_local_datetime($row['created'], false) ?>
+						</td>
+						<td align='right' class='text-muted'>
+							<?= TimeHelper::make_local_datetime($row['last_used'], false) ?>
+						</td>
+					</tr>
+				<?php } ?>
+			</table>
+		</div>
+		<?php
 	}
 
-	private function encryptAppPassword($password) {
+	private function _encrypt_app_password($password) {
 		$salt = substr(bin2hex(get_random_bytes(24)), 0, 24);
 
 		return "SSHA-512:".hash('sha512', $salt . $password). ":$salt";
@@ -1352,7 +1354,7 @@ class Pref_Prefs extends Handler_Protected {
 	function generateAppPassword() {
 		$title = clean($_REQUEST['title']);
 		$new_password = make_password(16);
-		$new_password_hash = $this->encryptAppPassword($new_password);
+		$new_password_hash = $this->_encrypt_app_password($new_password);
 
 		print_warning(T_sprintf("Generated password <strong>%s</strong> for %s. Please remember it for future reference.", $new_password, $title));
 
@@ -1366,7 +1368,7 @@ class Pref_Prefs extends Handler_Protected {
 		$this->appPasswordList();
 	}
 
-	static function initialize_user_prefs($uid, $profile = false) {
+	static function _init_user_prefs($uid, $profile = false) {
 
 		if (get_schema_version() < 63) $profile_qpart = "";
 

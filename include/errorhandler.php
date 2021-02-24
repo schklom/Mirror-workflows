@@ -48,7 +48,7 @@ function ttrss_error_handler($errno, $errstr, $file, $line) {
 
 	if (error_reporting() == 0 || !$errno) return false;
 
-	$file = substr(str_replace(dirname(dirname(__FILE__)), "", $file), 1);
+	$file = substr(str_replace(dirname(__DIR__), "", $file), 1);
 
 	$context = format_backtrace(debug_backtrace());
 	$errstr = truncate_middle($errstr, 16384, " (...) ");
@@ -72,7 +72,7 @@ function ttrss_fatal_handler() {
 
 		$context = format_backtrace(debug_backtrace());
 
-		$file = substr(str_replace(dirname(dirname(__FILE__)), "", $file), 1);
+		$file = substr(str_replace(dirname(__DIR__), "", $file), 1);
 
 		if ($last_query) $errstr .= " [Last query: $last_query]";
 

@@ -1,96 +1,11 @@
 <?php
 class RPC extends Handler_Protected {
 
-	function csrf_ignore($method) {
-		$csrf_ignored = array("completelabels", "saveprofile");
+	/*function csrf_ignore($method) {
+		$csrf_ignored = array("completelabels");
 
 		return array_search($method, $csrf_ignored) !== false;
-	}
-
-	function setprofile() {
-		$_SESSION["profile"] = (int) clean($_REQUEST["id"]);
-
-		// default value
-		if (!$_SESSION["profile"]) $_SESSION["profile"] = null;
-	}
-
-	function remprofiles() {
-		$ids = explode(",", clean($_REQUEST["ids"]));
-
-		foreach ($ids as $id) {
-			if ($_SESSION["profile"] != $id) {
-				$sth = $this->pdo->prepare("DELETE FROM ttrss_settings_profiles WHERE id = ? AND
-							owner_uid = ?");
-				$sth->execute([$id, $_SESSION['uid']]);
-			}
-		}
-	}
-
-	// Silent
-	function addprofile() {
-		$title = clean($_REQUEST["title"]);
-
-		if ($title) {
-			$this->pdo->beginTransaction();
-
-			$sth = $this->pdo->prepare("SELECT id FROM ttrss_settings_profiles
-				WHERE title = ? AND owner_uid = ?");
-			$sth->execute([$title, $_SESSION['uid']]);
-
-			if (!$sth->fetch()) {
-
-				$sth = $this->pdo->prepare("INSERT INTO ttrss_settings_profiles (title, owner_uid)
-							VALUES (?, ?)");
-
-				$sth->execute([$title, $_SESSION['uid']]);
-
-				$sth = $this->pdo->prepare("SELECT id FROM ttrss_settings_profiles WHERE
-					title = ? AND owner_uid = ?");
-				$sth->execute([$title, $_SESSION['uid']]);
-
-				if ($row = $sth->fetch()) {
-					$profile_id = $row['id'];
-
-					if ($profile_id) {
-						Pref_Prefs::initialize_user_prefs($_SESSION["uid"], $profile_id);
-					}
-				}
-			}
-
-			$this->pdo->commit();
-		}
-	}
-
-	function saveprofile() {
-		$id = clean($_REQUEST["id"]);
-		$title = clean($_REQUEST["value"]);
-
-		if ($id == 0) {
-			print __("Default profile");
-			return;
-		}
-
-		if ($title) {
-			$sth = $this->pdo->prepare("UPDATE ttrss_settings_profiles
-				SET title = ? WHERE id = ? AND
-					owner_uid = ?");
-
-			$sth->execute([$title, $id, $_SESSION['uid']]);
-			print $title;
-		}
-	}
-
-	function addfeed() {
-		$feed = clean($_REQUEST['feed']);
-		$cat = clean($_REQUEST['cat']);
-		$need_auth = isset($_REQUEST['need_auth']);
-		$login = $need_auth ? clean($_REQUEST['login']) : '';
-		$pass = $need_auth ? clean($_REQUEST['pass']) : '';
-
-		$rc = Feeds::subscribe_to_feed($feed, $cat, $login, $pass);
-
-		print json_encode(array("result" => $rc));
-	}
+	}*/
 
 	function togglepref() {
 		$key = clean($_REQUEST["key"]);
@@ -131,7 +46,7 @@ class RPC extends Handler_Protected {
 			WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
 		$sth->execute(array_merge($ids, [$_SESSION['uid']]));
 
-		Article::purge_orphans();
+		Article::_purge_orphans();
 
 		print json_encode(array("message" => "UPDATE_COUNTERS"));
 	}
@@ -149,67 +64,100 @@ class RPC extends Handler_Protected {
 		print json_encode(array("message" => "UPDATE_COUNTERS"));
 	}
 
+	function getRuntimeInfo() {
+		$reply = [
+			'runtime-info' => $this->make_runtime_info()
+		];
+
+		print json_encode($reply);
+	}
+
 	function getAllCounters() {
 		@$seq = (int) $_REQUEST['seq'];
 
+		$feed_id_count = (int)$_REQUEST["feed_id_count"];
+		$label_id_count = (int)$_REQUEST["label_id_count"];
+
+		// it seems impossible to distinguish empty array [] from a null - both become unset in $_REQUEST
+		// so, count is >= 0 means we had an array, -1 means null
+		// we need null because it means "return all counters"; [] would return nothing
+		if ($feed_id_count == -1)
+			$feed_ids = null;
+		else
+			$feed_ids = array_map("intval", clean($_REQUEST["feed_ids"] ?? []));
+
+		if ($label_id_count == -1)
+			$label_ids = null;
+		else
+			$label_ids = array_map("intval", clean($_REQUEST["label_ids"] ?? []));
+
+		// @phpstan-ignore-next-line
+		$counters = is_array($feed_ids) ? Counters::get_conditional($feed_ids, $label_ids) : Counters::get_all();
+
 		$reply = [
-			'counters' => Counters::getAllCounters(),
+			'counters' => $counters,
 			'seq' => $seq
 		];
-
-		if ($seq % 2 == 0)
-			$reply['runtime-info'] = $this->make_runtime_info();
 
 		print json_encode($reply);
 	}
 
 	/* GET["cmode"] = 0 - mark as read, 1 - as unread, 2 - toggle */
 	function catchupSelected() {
-		$ids = explode(",", clean($_REQUEST["ids"]));
+		$ids = array_map("intval", clean($_REQUEST["ids"] ?? []));
 		$cmode = (int)clean($_REQUEST["cmode"]);
 
-		Article::catchupArticlesById($ids, $cmode);
+		if (count($ids) > 0)
+			Article::_catchup_by_id($ids, $cmode);
 
-		print json_encode(array("message" => "UPDATE_COUNTERS", "ids" => $ids));
+		print json_encode(["message" => "UPDATE_COUNTERS",
+			"labels" => Article::_labels_of($ids),
+			"feeds" => Article::_feeds_of($ids)]);
 	}
 
 	function markSelected() {
-		$ids = explode(",", clean($_REQUEST["ids"]));
+		$ids = array_map("intval", clean($_REQUEST["ids"] ?? []));
 		$cmode = (int)clean($_REQUEST["cmode"]);
 
-		$this->markArticlesById($ids, $cmode);
+		if (count($ids) > 0)
+			$this->markArticlesById($ids, $cmode);
 
-		print json_encode(array("message" => "UPDATE_COUNTERS"));
+		print json_encode(["message" => "UPDATE_COUNTERS", "feeds" => Article::_feeds_of($ids)]);
 	}
 
 	function publishSelected() {
-		$ids = explode(",", clean($_REQUEST["ids"]));
+		$ids = array_map("intval", clean($_REQUEST["ids"] ?? []));
 		$cmode = (int)clean($_REQUEST["cmode"]);
 
-		$this->publishArticlesById($ids, $cmode);
+		if (count($ids) > 0)
+			$this->publishArticlesById($ids, $cmode);
 
-		print json_encode(array("message" => "UPDATE_COUNTERS"));
+		print json_encode(["message" => "UPDATE_COUNTERS", "feeds" => Article::_feeds_of($ids)]);
 	}
 
 	function sanityCheck() {
-		$_SESSION["hasAudio"] = clean($_REQUEST["hasAudio"]) === "true";
 		$_SESSION["hasSandbox"] = clean($_REQUEST["hasSandbox"]) === "true";
-		$_SESSION["hasMp3"] = clean($_REQUEST["hasMp3"]) === "true";
 		$_SESSION["clientTzOffset"] = clean($_REQUEST["clientTzOffset"]);
 
-		$reply = array();
+		$error = Errors::E_SUCCESS;
 
-		$reply['error'] = sanity_check();
-
-		if ($reply['error']['code'] == 0) {
-			$reply['init-params'] = $this->make_init_params();
-			$reply['runtime-info'] = $this->make_runtime_info();
+		if (get_schema_version(true) != SCHEMA_VERSION) {
+			$error = Errors::E_SCHEMA_MISMATCH;
 		}
 
-		print json_encode($reply);
+		if ($error == Errors::E_SUCCESS) {
+			$reply = [];
+
+			$reply['init-params'] = $this->make_init_params();
+			$reply['runtime-info'] = $this->make_runtime_info();
+
+			print json_encode($reply);
+		} else {
+			print Errors::to_json($error);
+		}
 	}
 
-	function completeLabels() {
+	/*function completeLabels() {
 		$search = clean($_REQUEST["search"]);
 
 		$sth = $this->pdo->prepare("SELECT DISTINCT caption FROM
@@ -224,19 +172,19 @@ class RPC extends Handler_Protected {
 			print "<li>" . $line["caption"] . "</li>";
 		}
 		print "</ul>";
-	}
+	}*/
 
 	function catchupFeed() {
 		$feed_id = clean($_REQUEST['feed_id']);
 		$is_cat = clean($_REQUEST['is_cat']) == "true";
-		$mode = clean($_REQUEST['mode']);
+		$mode = clean($_REQUEST['mode'] ?? '');
 		$search_query = clean($_REQUEST['search_query']);
 		$search_lang = clean($_REQUEST['search_lang']);
 
-		Feeds::catchup_feed($feed_id, $is_cat, false, $mode, [$search_query, $search_lang]);
+		Feeds::_catchup($feed_id, $is_cat, false, $mode, [$search_query, $search_lang]);
 
 		// return counters here synchronously so that frontend can figure out next unread feed properly
-		print json_encode(['counters' => Counters::getAllCounters()]);
+		print json_encode(['counters' => Counters::get_all()]);
 
 		//print json_encode(array("message" => "UPDATE_COUNTERS"));
 	}
@@ -244,8 +192,9 @@ class RPC extends Handler_Protected {
 	function setpanelmode() {
 		$wide = (int) clean($_REQUEST["wide"]);
 
+		// FIXME should this use SESSION_COOKIE_LIFETIME and be renewed periodically?
 		setcookie("ttrss_widescreen", (string)$wide,
-			time() + COOKIE_LIFETIME_LONG);
+			time() + 86400*365);
 
 		print json_encode(array("wide" => $wide));
 	}
@@ -253,7 +202,7 @@ class RPC extends Handler_Protected {
 	static function updaterandomfeed_real() {
 
 		// Test if the feed need a update (update interval exceded).
-		if (DB_TYPE == "pgsql") {
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$update_limit_qpart = "AND ((
 					ttrss_feeds.update_interval = 0
 					AND ttrss_feeds.last_updated < NOW() - CAST((ttrss_user_prefs.value || ' minutes') AS INTERVAL)
@@ -278,7 +227,7 @@ class RPC extends Handler_Protected {
 		}
 
 		// Test if feed is currently being updated by another process.
-		if (DB_TYPE == "pgsql") {
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$updstart_thresh_qpart = "AND (ttrss_feeds.last_update_started IS NULL OR ttrss_feeds.last_update_started < NOW() - INTERVAL '5 minutes')";
 		} else {
 			$updstart_thresh_qpart = "AND (ttrss_feeds.last_update_started IS NULL OR ttrss_feeds.last_update_started < DATE_SUB(NOW(), INTERVAL 5 MINUTE))";
@@ -324,7 +273,7 @@ class RPC extends Handler_Protected {
 		}
 
 		// Purge orphans and cleanup tags
-		Article::purge_orphans();
+		Article::_purge_orphans();
 		//cleanup_tags(14, 50000);
 
 		if ($num_updated > 0) {
@@ -382,23 +331,6 @@ class RPC extends Handler_Protected {
 		$sth->execute(array_merge($ids, [$_SESSION['uid']]));
 	}
 
-	function getlinktitlebyid() {
-		$id = clean($_REQUEST['id']);
-
-		$sth = $this->pdo->prepare("SELECT link, title FROM ttrss_entries, ttrss_user_entries
-			WHERE ref_id = ? AND ref_id = id AND owner_uid = ?");
-		$sth->execute([$id, $_SESSION['uid']]);
-
-		if ($row = $sth->fetch()) {
-			$link = $row['link'];
-			$title = $row['title'];
-
-			echo json_encode(array("link" => $link, "title" => $title));
-		} else {
-			echo json_encode(array("error" => "ARTICLE_NOT_FOUND"));
-		}
-	}
-
 	function log() {
 		$msg = clean($_REQUEST['msg']);
 		$file = basename(clean($_REQUEST['file']));
@@ -410,10 +342,7 @@ class RPC extends Handler_Protected {
 				$msg, 'client-js:' . $file, $line, $context);
 
 			echo json_encode(array("message" => "HOST_ERROR_LOGGED"));
-		} else {
-			echo json_encode(array("error" => "MESSAGE_NOT_FOUND"));
 		}
-
 	}
 
 	function checkforupdates() {
@@ -424,7 +353,7 @@ class RPC extends Handler_Protected {
 
 		get_version($git_commit, $git_timestamp);
 
-		if (defined('CHECK_FOR_UPDATES') && CHECK_FOR_UPDATES && $_SESSION["access_level"] >= 10 && $git_timestamp) {
+		if (Config::get(Config::CHECK_FOR_UPDATES) && $_SESSION["access_level"] >= 10 && $git_timestamp) {
 			$content = @UrlHelper::fetch(["url" => "https://tt-rss.org/version.json"]);
 
 			if ($content) {
@@ -455,9 +384,9 @@ class RPC extends Handler_Protected {
 		}
 
 		$params["safe_mode"] = !empty($_SESSION["safe_mode"]);
-		$params["check_for_updates"] = CHECK_FOR_UPDATES;
-		$params["icons_url"] = ICONS_URL;
-		$params["cookie_lifetime"] = SESSION_COOKIE_LIFETIME;
+		$params["check_for_updates"] = Config::get(Config::CHECK_FOR_UPDATES);
+		$params["icons_url"] = Config::get(Config::ICONS_URL);
+		$params["cookie_lifetime"] = Config::get(Config::SESSION_COOKIE_LIFETIME);
 		$params["default_view_mode"] = get_pref("_DEFAULT_VIEW_MODE");
 		$params["default_view_limit"] = (int) get_pref("_DEFAULT_VIEW_LIMIT");
 		$params["default_view_order_by"] = get_pref("_DEFAULT_VIEW_ORDER_BY");
@@ -486,16 +415,11 @@ class RPC extends Handler_Protected {
 		$params["self_url_prefix"] = get_self_url_prefix();
 		$params["max_feed_id"] = (int) $max_feed_id;
 		$params["num_feeds"] = (int) $num_feeds;
-
 		$params["hotkeys"] = $this->get_hotkeys_map();
-
 		$params["widescreen"] = (int) ($_COOKIE["ttrss_widescreen"] ?? 0);
-
-		$params['simple_update'] = SIMPLE_UPDATE_MODE;
-
+		$params['simple_update'] = Config::get(Config::SIMPLE_UPDATE_MODE);
 		$params["icon_indicator_white"] = $this->image_to_base64("images/indicator_white.gif");
-
-		$params["labels"] = Labels::get_all_labels($_SESSION["uid"]);
+		$params["labels"] = Labels::get_all($_SESSION["uid"]);
 
 		return $params;
 	}
@@ -526,10 +450,10 @@ class RPC extends Handler_Protected {
 		$data["max_feed_id"] = (int) $max_feed_id;
 		$data["num_feeds"] = (int) $num_feeds;
 		$data['cdm_expanded'] = get_pref('CDM_EXPANDED');
-		$data["labels"] = Labels::get_all_labels($_SESSION["uid"]);
+		$data["labels"] = Labels::get_all($_SESSION["uid"]);
 
-		if (LOG_DESTINATION == 'sql' && $_SESSION['access_level'] >= 10) {
-			if (DB_TYPE == 'pgsql') {
+		if (Config::get(Config::LOG_DESTINATION) == 'sql' && $_SESSION['access_level'] >= 10) {
+			if (Config::get(Config::DB_TYPE) == 'pgsql') {
 				$log_interval = "created_at > NOW() - interval '1 hour'";
 			} else {
 				$log_interval = "created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)";
@@ -538,7 +462,7 @@ class RPC extends Handler_Protected {
 			$sth = $pdo->prepare("SELECT COUNT(id) AS cid
 				FROM ttrss_error_log
 			WHERE
-				errno != 1024 AND
+				errno NOT IN (".E_USER_NOTICE.", ".E_USER_DEPRECATED.") AND
 				$log_interval AND
 				errstr NOT LIKE '%imagecreatefromstring(): Data is not in a recognized format%'");
 			$sth->execute();
@@ -548,13 +472,13 @@ class RPC extends Handler_Protected {
 			}
 		}
 
-		if (file_exists(LOCK_DIRECTORY . "/update_daemon.lock")) {
+		if (file_exists(Config::get(Config::LOCK_DIRECTORY) . "/update_daemon.lock")) {
 
 			$data['daemon_is_running'] = (int) file_is_locked("update_daemon.lock");
 
 			if (time() - ($_SESSION["daemon_stamp_check"] ?? 0) > 30) {
 
-				$stamp = (int) @file_get_contents(LOCK_DIRECTORY . "/update_daemon.stamp");
+				$stamp = (int) @file_get_contents(Config::get(Config::LOCK_DIRECTORY) . "/update_daemon.stamp");
 
 				if ($stamp) {
 					$stamp_delta = time() - $stamp;
@@ -737,4 +661,73 @@ class RPC extends Handler_Protected {
 		return array($prefixes, $hotkeys);
 	}
 
+	function hotkeyHelp() {
+		$info = self::get_hotkeys_info();
+		$imap = self::get_hotkeys_map();
+		$omap = array();
+
+		foreach ($imap[1] as $sequence => $action) {
+			if (!isset($omap[$action])) $omap[$action] = array();
+
+			array_push($omap[$action], $sequence);
+		}
+
+		?>
+		<ul class='panel panel-scrollable hotkeys-help' style='height : 300px'>
+		<?php
+
+		foreach ($info as $section => $hotkeys) {
+			?>
+			<li><h3><?= $section ?></h3></li>
+			<?php
+
+			foreach ($hotkeys as $action => $description) {
+
+				if (!empty($omap[$action])) {
+					foreach ($omap[$action] as $sequence) {
+						if (strpos($sequence, "|") !== false) {
+							$sequence = substr($sequence,
+								strpos($sequence, "|")+1,
+								strlen($sequence));
+						} else {
+							$keys = explode(" ", $sequence);
+
+							for ($i = 0; $i < count($keys); $i++) {
+								if (strlen($keys[$i]) > 1) {
+									$tmp = '';
+									foreach (str_split($keys[$i]) as $c) {
+										switch ($c) {
+											case '*':
+												$tmp .= __('Shift') . '+';
+												break;
+											case '^':
+												$tmp .= __('Ctrl') . '+';
+												break;
+											default:
+												$tmp .= $c;
+										}
+									}
+									$keys[$i] = $tmp;
+								}
+							}
+							$sequence = join(" ", $keys);
+						}
+
+						?>
+						<li>
+							<div class='hk'><code><?= $sequence ?></code></div>
+							<div class='desc'><?= $description ?></div>
+						</li>
+						<?php
+					}
+				}
+			}
+		}
+		?>
+		</ul>
+	<footer class='text-center'>
+		<?= \Controls\submit_tag(__('Close this window')) ?>
+	</footer>
+	<?php
+	}
 }

@@ -1,0 +1,20 @@
+parameters:
+   level: 5
+   ignoreErrors:
+#      - '#Constant.*not found#'
+      - '#Constant.*\b(SUBSTRING_FOR_DATE|SCHEMA_VERSION|SELF_USER_AGENT|LABEL_BASE_INDEX|PLUGIN_FEED_BASE_INDEX)\b.*not found#'
+      - '#Comparison operation ">" between int<1, max> and 0 is always true.#'
+      - '#Access to an undefined property DOMNode::\$tagName.#'
+      - '#Call to an undefined method DOMNode::(get|remove|set)Attribute\(\).#'
+      - '#PHPDoc tag @param has invalid value#'
+      - message: '##'
+        paths:
+          - lib/*
+          - vendor/*
+          - plugins/*/vendor/*
+          - plugins.local/*/vendor/*
+
+   excludePaths:
+      - node_modules/*
+   paths:
+      - .

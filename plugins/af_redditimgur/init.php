@@ -31,65 +31,62 @@ class Af_RedditImgur extends Plugin {
 	function hook_prefs_tab($args) {
 		if ($args != "prefFeeds") return;
 
-		print "<div dojoType=\"dijit.layout.AccordionPane\"
-			title=\"<i class='material-icons'>extension</i> ".__('Reddit content settings (af_redditimgur)')."\">";
+			$enable_readability = $this->host->get($this, "enable_readability");
+			$enable_content_dupcheck = $this->host->get($this, "enable_content_dupcheck");
+			$reddit_to_teddit = $this->host->get($this, "reddit_to_teddit");
+		?>
 
-		$enable_readability = $this->host->get($this, "enable_readability");
-		$enable_content_dupcheck = $this->host->get($this, "enable_content_dupcheck");
-		$reddit_to_teddit = $this->host->get($this, "reddit_to_teddit");
+		<div dojoType="dijit.layout.AccordionPane"
+			title="<i class='material-icons'>extension</i> <?= __('Reddit content settings (af_redditimgur)') ?>">
 
-		if (version_compare(PHP_VERSION, '5.6.0', '<')) {
-			print_error("Readability requires PHP version 5.6.");
-		}
+			<form dojoType='dijit.form.Form'>
 
-		print "<form dojoType='dijit.form.Form'>";
+				<?= \Controls\pluginhandler_tags($this, "save") ?>
 
-		print "<script type='dojo/method' event='onSubmit' args='evt'>
-			evt.preventDefault();
-			if (this.validate()) {
-				console.log(dojo.objectToQuery(this.getValues()));
-				new Ajax.Request('backend.php', {
-					parameters: dojo.objectToQuery(this.getValues()),
-					onComplete: function(transport) {
-						Notify.info(transport.responseText);
+				<script type="dojo/method" event="onSubmit" args="evt">
+					evt.preventDefault();
+					if (this.validate()) {
+						Notify.progress('Saving data...', true);
+						xhr.post("backend.php", this.getValues(), (reply) => {
+							Notify.info(reply);
+						})
 					}
-				});
-				//this.reset();
-			}
-			</script>";
+				</script>
 
-		print_hidden("op", "pluginhandler");
-		print_hidden("method", "save");
-		print_hidden("plugin", "af_redditimgur");
+				<fieldset class='narrow'>
+					<label class='checkbox'>
+						<?= \Controls\checkbox_tag("enable_readability", $enable_readability) ?>
+						<?= __("Extract missing content using Readability (requires af_readability)") ?>
+					</label>
+				</fieldset>
 
-		print "<fieldset class='narrow'>";
-		print "<label class='checkbox'>";
-		print_checkbox("enable_readability", $enable_readability);
-		print " " . __("Extract missing content using Readability (requires af_readability)") . "</label>";
-		print "</fieldset>";
+				<fieldset class='narrow'>
+					<label class='checkbox'>
+						<?= \Controls\checkbox_tag("enable_content_dupcheck", $enable_content_dupcheck) ?>
+						<?= __("Enable additional duplicate checking") ?>
+					</label>
+				</fieldset>
 
-		print "<fieldset class='narrow'>";
-		print "<label class='checkbox'>";
-		print_checkbox("enable_content_dupcheck", $enable_content_dupcheck);
-		print " " . __("Enable additional duplicate checking") . "</label>";
-		print "</fieldset>";
+				<fieldset class='narrow'>
+					<label class='checkbox'>
+						<?= \Controls\checkbox_tag("reddit_to_teddit", $reddit_to_teddit) ?>
+						<?= T_sprintf("Rewrite Reddit URLs to %s",
+									"<a target=\"_blank\" href=\"https://teddit.net/about\">Teddit</a>") ?>
+					</label>
+				</fieldset>
 
-		print "<fieldset class='narrow'>";
-		print "<label class='checkbox'>";
-		print_checkbox("reddit_to_teddit", $reddit_to_teddit);
-		print " " . T_sprintf("Rewrite Reddit URLs to %s",
-			"<a target=\"_blank\" href=\"https://teddit.net/about\">Teddit</a>") . "</label>";
+				<hr/>
+				<?= \Controls\submit_tag(__("Save")) ?>
+			</form>
+		</div>
 
-		print_button("submit", __("Save"), 'class="alt-primary"');
-		print "</form>";
-
-		print "</div>";
+		<?php
 	}
 
 	function save() {
-		$enable_readability = checkbox_to_sql_bool($_POST["enable_readability"]);
-		$enable_content_dupcheck = checkbox_to_sql_bool($_POST["enable_content_dupcheck"]);
-		$reddit_to_teddit = checkbox_to_sql_bool($_POST["reddit_to_teddit"]);
+		$enable_readability = checkbox_to_sql_bool($_POST["enable_readability"] ?? "");
+		$enable_content_dupcheck = checkbox_to_sql_bool($_POST["enable_content_dupcheck"] ?? "");
+		$reddit_to_teddit = checkbox_to_sql_bool($_POST["reddit_to_teddit"] ?? "");
 
 		$this->host->set($this, "enable_readability", $enable_readability, false);
 		$this->host->set($this, "reddit_to_teddit", $reddit_to_teddit, false);
@@ -220,6 +217,7 @@ class Af_RedditImgur extends Plugin {
 
 			$this->fallback_preview_urls = [];
 
+			// @phpstan-ignore-next-line
 			if ($tmp && $anchor) {
 				$json = json_decode($tmp, true);
 
@@ -349,6 +347,8 @@ class Af_RedditImgur extends Plugin {
 
 				if (strpos($source_stream, "imgur.com") !== false)
 					$poster_url = str_replace(".mp4", "h.jpg", $source_stream);
+				else
+					$poster_url = false;
 
 				$this->handle_as_video($doc, $entry, $source_stream, $poster_url);
 
@@ -530,7 +530,7 @@ class Af_RedditImgur extends Plugin {
 						$entry_guid = $article["guid_hashed"];
 						$owner_uid = $article["owner_uid"];
 
-						if (DB_TYPE == "pgsql") {
+						if (Config::get(Config::DB_TYPE) == "pgsql") {
 							$interval_qpart = "date_entered < NOW() - INTERVAL '1 day'";
 						} else {
 							$interval_qpart = "date_entered < DATE_SUB(NOW(), INTERVAL 1 DAY)";
@@ -631,6 +631,10 @@ class Af_RedditImgur extends Plugin {
 		$entry->parentNode->insertBefore($img, $entry);*/
 	}
 
+	function csrf_ignore($method) {
+		return $method === "testurl";
+	}
+
 	function testurl() {
 
 		$url = clean($_POST["url"]);
@@ -645,14 +649,17 @@ class Af_RedditImgur extends Plugin {
 				fieldset { border : 0; }
 				label { display : inline-block; min-width : 120px; }
 			</style>
-			<form action="backend.php?op=pluginhandler&method=testurl&plugin=af_redditimgur" method="post">
+			<form action="backend.php" method="post">
+				<input type="hidden" name="op" value="pluginhandler">
+				<input type="hidden" name="method" value="testurl">
+				<input type="hidden" name="plugin" value="af_redditimgur">
 				<fieldset>
 					<label>URL:</label>
-					<input name="url" size="100" value="<?php echo htmlspecialchars($url) ?>"></input>
+					<input name="url" size="100" value="<?= htmlspecialchars($url) ?>"></input>
 				</fieldset>
 				<fieldset>
 					<label>Article URL:</label>
-					<input name="article_url" size="100" value="<?php echo htmlspecialchars($article_url) ?>"></input>
+					<input name="article_url" size="100" value="<?= htmlspecialchars($article_url) ?>"></input>
 				</fieldset>
 				<fieldset>
 					<button type="submit">Test</button>
@@ -694,7 +701,7 @@ class Af_RedditImgur extends Plugin {
 	private function get_header($url, $header, $useragent = SELF_USER_AGENT) {
 		$ret = false;
 
-		if (function_exists("curl_init") && !defined("NO_CURL")) {
+		if (function_exists("curl_init")) {
 			$ch = curl_init($url);
 			curl_setopt($ch, CURLOPT_TIMEOUT, 5);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -720,7 +727,7 @@ class Af_RedditImgur extends Plugin {
 
 	private function readability($article, $url, $doc, $xpath, $debug = false) {
 
-		if (!defined('NO_CURL') && function_exists("curl_init") && $this->host->get($this, "enable_readability") &&
+		if (function_exists("curl_init") && $this->host->get($this, "enable_readability") &&
 			mb_strlen(strip_tags($article["content"])) <= 150) {
 
 			// do not try to embed posts linking back to other reddit posts

@@ -2,12 +2,12 @@ module.exports = {
     "env": {
         "browser": true,
         "es6": true,
-		 "jquery": true,
-		 "webextensions": true
+        "jquery": false,
+		"webextensions": false
     },
     "extends": "eslint:recommended",
     "parserOptions": {
-        "ecmaVersion": 2017
+        "ecmaVersion": 2018
     },
     "rules": {
         "accessor-pairs": "error",
@@ -106,7 +106,7 @@ module.exports = {
         "no-catch-shadow": "off",
         "no-confusing-arrow": "error",
         "no-continue": "off",
-		  "no-console": "off",
+        "no-console": "off",
         "no-div-regex": "error",
         "no-duplicate-imports": "error",
         "no-else-return": "off",
@@ -187,7 +187,7 @@ module.exports = {
         "no-trailing-spaces": "error",
         "no-undef-init": "error",
         "no-undefined": "off",
-		  "no-undef": "warn",
+        "no-undef": "warn",
         "no-underscore-dangle": "off",
         "no-unmodified-loop-condition": "error",
         "no-unneeded-ternary": [
@@ -197,7 +197,7 @@ module.exports = {
             }
         ],
         "no-unused-expressions": "off",
-		  "no-unused-vars": "warn",
+        "no-unused-vars": "warn",
         "no-use-before-define": "off",
         "no-useless-call": "error",
         "no-useless-computed-key": "error",

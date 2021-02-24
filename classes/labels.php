@@ -37,7 +37,18 @@ class Labels
 		}
 	}
 
-	static function get_all_labels($owner_uid)	{
+	static function get_as_hash($owner_uid) {
+		$rv = [];
+		$labels = Labels::get_all($owner_uid);
+
+		foreach ($labels as $i => $label) {
+			$rv[$label["id"]] = $labels[$i];
+		}
+
+		return $rv;
+	}
+
+	static function get_all($owner_uid)	{
 		$rv = array();
 
 		$pdo = Db::pdo();
@@ -46,7 +57,7 @@ class Labels
 			WHERE owner_uid = ? ORDER BY caption");
 		$sth->execute([$owner_uid]);
 
-		while ($line = $sth->fetch()) {
+		while ($line = $sth->fetch(PDO::FETCH_ASSOC)) {
 			array_push($rv, $line);
 		}
 
@@ -60,7 +71,7 @@ class Labels
 			self::clear_cache($id);
 
 		if (!$labels)
-			$labels = Article::get_article_labels($id);
+			$labels = Article::_get_labels($id);
 
 		$labels = json_encode($labels);
 

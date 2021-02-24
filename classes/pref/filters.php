@@ -162,7 +162,7 @@ class Pref_Filters extends Handler_Protected {
 		print json_encode($rv);
 	}
 
-	private function getfilterrules_list($filter_id) {
+	private function _get_rules_list($filter_id) {
 		$sth = $this->pdo->prepare("SELECT reg_exp,
 			inverse,
 			match_on,
@@ -189,10 +189,10 @@ class Pref_Filters extends Handler_Protected {
 
                     if (strpos($feed_id, "CAT:") === 0) {
                         $feed_id = (int)substr($feed_id, 4);
-                        array_push($feeds_fmt, Feeds::getCategoryTitle($feed_id));
+                        array_push($feeds_fmt, Feeds::_get_cat_title($feed_id));
                     } else {
                         if ($feed_id)
-                            array_push($feeds_fmt, Feeds::getFeedTitle((int)$feed_id));
+                            array_push($feeds_fmt, Feeds::_get_title((int)$feed_id));
                         else
                             array_push($feeds_fmt, __("All feeds"));
                     }
@@ -203,9 +203,9 @@ class Pref_Filters extends Handler_Protected {
             } else {
 
                 $where = $line["cat_filter"] ?
-                    Feeds::getCategoryTitle($line["cat_id"]) :
+                    Feeds::_get_cat_title($line["cat_id"]) :
                     ($line["feed_id"] ?
-                        Feeds::getFeedTitle($line["feed_id"]) : __("All feeds"));
+                        Feeds::_get_title($line["feed_id"]) : __("All feeds"));
             }
 
 #			$where = $line["cat_id"] . "/" . $line["feed_id"];
@@ -250,7 +250,7 @@ class Pref_Filters extends Handler_Protected {
 
 		while ($line = $sth->fetch()) {
 
-			$name = $this->getFilterName($line["id"]);
+			$name = $this->_get_name($line["id"]);
 
 			$match_ok = false;
 			if ($filter_search) {
@@ -292,7 +292,7 @@ class Pref_Filters extends Handler_Protected {
 			$filter['checkbox'] = false;
 			$filter['last_triggered'] = $line["last_triggered"] ? TimeHelper::make_local_datetime($line["last_triggered"], false) : null;
 			$filter['enabled'] = sql_bool_to_bool($line["enabled"]);
-			$filter['rules'] = $this->getfilterrules_list($line['id']);
+			$filter['rules'] = $this->_get_rules_list($line['id']);
 
 			if (!$filter_search || $match_ok) {
 				array_push($folder['items'], $filter);
@@ -319,170 +319,94 @@ class Pref_Filters extends Handler_Protected {
 		$sth->execute([$filter_id, $_SESSION['uid']]);
 
 		if (empty($filter_id) || $row = $sth->fetch()) {
+			$rv = [
+				"id" => $filter_id,
+				"enabled" => $row["enabled"] ?? true,
+				"match_any_rule" => $row["match_any_rule"] ?? false,
+				"inverse" => $row["inverse"] ?? false,
+				"title" => $row["title"] ?? "",
+				"rules" => [],
+				"actions" => [],
+				"filter_types" => [],
+				"action_types" => [],
+				"plugin_actions" => [],
+				"labels" => Labels::get_all($_SESSION["uid"])
+			];
 
-			$enabled = $row["enabled"] ?? true;
-			$match_any_rule = $row["match_any_rule"] ?? false;
-			$inverse = $row["inverse"] ?? false;
-			$title = htmlspecialchars($row["title"] ?? "");
+			$res = $this->pdo->query("SELECT id,description
+				FROM ttrss_filter_types WHERE id != 5 ORDER BY description");
 
-			print "<form onsubmit='return false'>";
-
-			print_hidden("op", "pref-filters");
-
-			if ($filter_id) {
-				print_hidden("id", "$filter_id");
-				print_hidden("method", "editSave");
-			} else {
-				print_hidden("method", "add");
+			while ($line = $res->fetch()) {
+				$rv["filter_types"][$line["id"]] = __($line["description"]);
 			}
 
-			print_hidden("csrf_token", $_SESSION['csrf_token']);
+			$res = $this->pdo->query("SELECT id,description FROM ttrss_filter_actions
+				ORDER BY name");
 
-			print "<header>".__("Caption")."</header>
-				<section>
-					<input required='true' dojoType='dijit.form.ValidationTextBox' style='width : 20em;' name=\"title\" value=\"$title\">
-				</section>
-				<header class='horizontal'>".__("Match")."</header>
-				<section>
-					<div dojoType='fox.Toolbar'>
-						<div dojoType='fox.form.DropDownButton'>
-							<span>" . __('Select')."</span>
-							<div dojoType='dijit.Menu' style='display: none;'>
-								<!-- can't use App.dialogOf() here because DropDownButton is not a child of the Dialog -->
-								<div onclick='dijit.byId(\"filterEditDlg\").selectRules(true)'
-									dojoType='dijit.MenuItem'>".__('All')."</div>
-								<div onclick='dijit.byId(\"filterEditDlg\").selectRules(false)'
-									dojoType='dijit.MenuItem'>".__('None')."</div>
-							</div>
-						</div>
-					<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).addRule()'>".
-						__('Add')."</button>
-					<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).deleteRule()'>".
-						__('Delete')."</button>
-					</div>";
+			while ($line = $res->fetch()) {
+				$rv["action_types"][$line["id"]] = __($line["description"]);
+			}
 
-			print "<ul id='filterDlg_Matches'>";
+			$filter_actions = PluginHost::getInstance()->get_filter_actions();
+
+			foreach ($filter_actions as $fclass => $factions) {
+				foreach ($factions as $faction) {
+
+					$rv["plugin_actions"][$fclass . ":" . $faction["action"]] =
+						$fclass . ": " . $faction["description"];
+				}
+			}
 
 			if ($filter_id) {
 				$rules_sth = $this->pdo->prepare("SELECT * FROM ttrss_filters2_rules
 					WHERE filter_id = ? ORDER BY reg_exp, id");
-		 		$rules_sth->execute([$filter_id]);
+				$rules_sth->execute([$filter_id]);
 
-				while ($line = $rules_sth->fetch()) {
-					if ($line["match_on"]) {
-						$line["feed_id"] = json_decode($line["match_on"], true);
+				while ($rrow = $rules_sth->fetch(PDO::FETCH_ASSOC)) {
+					if ($rrow["match_on"]) {
+						$rrow["feed_id"] = json_decode($rrow["match_on"], true);
 					} else {
-						if ($line["cat_filter"]) {
-							$feed_id = "CAT:" . (int)$line["cat_id"];
+						if ($rrow["cat_filter"]) {
+							$feed_id = "CAT:" . (int)$rrow["cat_id"];
 						} else {
-							$feed_id = (int)$line["feed_id"];
+							$feed_id = (int)$rrow["feed_id"];
 						}
 
-						$line["feed_id"] = ["" . $feed_id]; // set item type to string for in_array()
+						$rrow["feed_id"] = ["" . $feed_id]; // set item type to string for in_array()
 					}
 
-					unset($line["cat_filter"]);
-					unset($line["cat_id"]);
-					unset($line["filter_id"]);
-					unset($line["id"]);
-					if (!$line["inverse"]) unset($line["inverse"]);
-					unset($line["match_on"]);
+					unset($rrow["cat_filter"]);
+					unset($rrow["cat_id"]);
+					unset($rrow["filter_id"]);
+					unset($rrow["id"]);
+					if (!$rrow["inverse"]) unset($rrow["inverse"]);
+					unset($rrow["match_on"]);
 
-					$data = htmlspecialchars((string)json_encode($line));
+					$rrow["name"] = $this->_get_rule_name($rrow);
 
-					print "<li><input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
-						<span onclick='App.dialogOf(this).editRule(this)'>".$this->getRuleName($line)."</span>".
-						format_hidden("rule[]", $data)."</li>";
+					array_push($rv["rules"], $rrow);
 				}
-			}
 
-			print "</ul>
-				</section>";
-
-			print "<header class='horizontal'>".__("Apply actions")."</header>
-				<section>
-					<div dojoType='fox.Toolbar'>
-						<div dojoType='fox.form.DropDownButton'>
-							<span>".__('Select')."</span>
-							<div dojoType='dijit.Menu' style='display: none'>
-								<div onclick='dijit.byId(\"filterEditDlg\").selectActions(true)'
-									dojoType='dijit.MenuItem'>".__('All')."</div>
-								<div onclick='dijit.byId(\"filterEditDlg\").selectActions(false)'
-									dojoType='dijit.MenuItem'>".__('None')."</div>
-								</div>
-							</div>
-						<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).addAction()'>".
-							__('Add')."</button>
-						<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).deleteAction()'>".
-						__('Delete')."</button>
-					</div>";
-
-			print "<ul id='filterDlg_Actions'>";
-
-			if ($filter_id) {
 				$actions_sth = $this->pdo->prepare("SELECT * FROM ttrss_filters2_actions
 					WHERE filter_id = ? ORDER BY id");
 				$actions_sth->execute([$filter_id]);
 
-				while ($line = $actions_sth->fetch()) {
-					$line["action_param_label"] = $line["action_param"];
+				while ($arow = $actions_sth->fetch(PDO::FETCH_ASSOC)) {
+					$arow["action_param_label"] = $arow["action_param"];
 
-					unset($line["filter_id"]);
-					unset($line["id"]);
+					unset($arow["filter_id"]);
+					unset($arow["id"]);
 
-					$data = htmlspecialchars((string)json_encode($line));
+					$arow["name"] = $this->_get_action_name($arow);
 
-					print "<li><input dojoType='dijit.form.CheckBox' type='checkbox' onclick='Lists.onRowChecked(this)'>
-						<span onclick='App.dialogOf(this).editAction(this)'>".$this->getActionName($line)."</span>".
-						format_hidden("action[]", $data)."</li>";
+					array_push($rv["actions"], $arow);
 				}
 			}
-
-			print "</ul>";
-
-			print "</section>";
-
-			print "<header>".__("Options")."</header>
-				<section>";
-
-			print "<fieldset class='narrow'>
-				<label class='checkbox'>".format_checkbox('enabled', $enabled)." ".__('Enabled')."</label></fieldset>";
-
-			print "<fieldset class='narrow'>
-				<label class='checkbox'>".format_checkbox('match_any_rule', $match_any_rule)." ".__('Match any rule')."</label>
-				</fieldset>";
-
-			print "<fieldset class='narrow'><label class='checkbox'>".format_checkbox('inverse', $inverse)." ".__('Inverse matching')."</label>
-				</fieldset>";
-
-			print "</section>
-				<footer>";
-
-			if ($filter_id) {
-				print "<div style='float : left'>
-					<button dojoType='dijit.form.Button' class='alt-danger' onclick='App.dialogOf(this).removeFilter()'>".
-						__('Remove')."</button>
-					</div>
-					<button dojoType='dijit.form.Button' class='alt-info' onclick='App.dialogOf(this).test()'>".
-						__('Test')."</button>
-					<button dojoType='dijit.form.Button' type='submit' class='alt-primary' onclick='App.dialogOf(this).execute()'>".
-						__('Save')."</button>
-					<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
-						__('Cancel')."</button>";
-			} else {
-				print "<button dojoType='dijit.form.Button' class='alt-info' onclick='App.dialogOf(this).test()'>".
-						__('Test')."</button>
-					<button dojoType='dijit.form.Button' type='submit' class='alt-primary' onclick='App.dialogOf(this).execute()'>".
-						__('Create')."</button>
-					<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
-						__('Cancel')."</button>";
-			}
-
-			print "</footer></form>";
+			print json_encode($rv);
 		}
 	}
 
-	private function getRuleName($rule) {
+	private function _get_rule_name($rule) {
 		if (!$rule) $rule = json_decode(clean($_REQUEST["rule"]), true);
 
 		$feeds = $rule["feed_id"];
@@ -494,10 +418,10 @@ class Pref_Filters extends Handler_Protected {
 
             if (strpos($feed_id, "CAT:") === 0) {
                 $feed_id = (int)substr($feed_id, 4);
-                array_push($feeds_fmt, Feeds::getCategoryTitle($feed_id));
+                array_push($feeds_fmt, Feeds::_get_cat_title($feed_id));
             } else {
                 if ($feed_id)
-                    array_push($feeds_fmt, Feeds::getFeedTitle((int)$feed_id));
+                    array_push($feeds_fmt, Feeds::_get_title((int)$feed_id));
                 else
                     array_push($feeds_fmt, __("All feeds"));
             }
@@ -523,10 +447,10 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	function printRuleName() {
-		print $this->getRuleName(json_decode(clean($_REQUEST["rule"]), true));
+		print $this->_get_rule_name(json_decode(clean($_REQUEST["rule"]), true));
 	}
 
-	private function getActionName($action) {
+	private function _get_action_name($action) {
 		$sth = $this->pdo->prepare("SELECT description FROM
 			ttrss_filter_actions WHERE id = ?");
 		$sth->execute([(int)$action["action_id"]]);
@@ -561,13 +485,13 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	function printActionName() {
-		print $this->getActionName(json_decode(clean($_REQUEST["action"]), true));
+		print $this->_get_action_name(json_decode(clean($_REQUEST["action"]), true));
 	}
 
 	function editSave() {
 		$filter_id = clean($_REQUEST["id"]);
 		$enabled = checkbox_to_sql_bool(clean($_REQUEST["enabled"] ?? false));
-		$match_any_rule = checkbox_to_sql_bool(clean($_REQUEST["match_any_rule"]));
+		$match_any_rule = checkbox_to_sql_bool(clean($_REQUEST["match_any_rule"] ?? false));
 		$inverse = checkbox_to_sql_bool(clean($_REQUEST["inverse"] ?? false));
 		$title = clean($_REQUEST["title"]);
 
@@ -581,7 +505,7 @@ class Pref_Filters extends Handler_Protected {
 
 		$sth->execute([$enabled, $match_any_rule, $inverse, $title, $filter_id, $_SESSION['uid']]);
 
-		$this->saveRulesAndActions($filter_id);
+		$this->_save_rules_and_actions($filter_id);
 
 		$this->pdo->commit();
 	}
@@ -596,8 +520,7 @@ class Pref_Filters extends Handler_Protected {
 		$sth->execute(array_merge($ids, [$_SESSION['uid']]));
 	}
 
-	private function saveRulesAndActions($filter_id)
-	{
+	private function _save_rules_and_actions($filter_id) {
 
 		$sth = $this->pdo->prepare("DELETE FROM ttrss_filters2_rules WHERE filter_id = ?");
 		$sth->execute([$filter_id]);
@@ -674,11 +597,11 @@ class Pref_Filters extends Handler_Protected {
 		}
 	}
 
-	function add() {
-		$enabled = checkbox_to_sql_bool(clean($_REQUEST["enabled"]));
-		$match_any_rule = checkbox_to_sql_bool(clean($_REQUEST["match_any_rule"]));
+	function add () {
+		$enabled = checkbox_to_sql_bool(clean($_REQUEST["enabled"] ?? false));
+		$match_any_rule = checkbox_to_sql_bool(clean($_REQUEST["match_any_rule"] ?? false));
 		$title = clean($_REQUEST["title"]);
-		$inverse = checkbox_to_sql_bool(clean($_REQUEST["inverse"]));
+		$inverse = checkbox_to_sql_bool(clean($_REQUEST["inverse"] ?? false));
 
 		$this->pdo->beginTransaction();
 
@@ -696,7 +619,7 @@ class Pref_Filters extends Handler_Protected {
 
 		if ($row = $sth->fetch()) {
 			$filter_id = $row['id'];
-			$this->saveRulesAndActions($filter_id);
+			$this->_save_rules_and_actions($filter_id);
 		}
 
 		$this->pdo->commit();
@@ -710,257 +633,73 @@ class Pref_Filters extends Handler_Protected {
 			$filter_search = ($_SESSION["prefs_filter_search"] ?? "");
 		}
 
-		print "<div dojoType='dijit.layout.BorderContainer' gutters='false'>";
-		print "<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='top'>";
-		print "<div dojoType='fox.Toolbar'>";
+		?>
+		<div dojoType='dijit.layout.BorderContainer' gutters='false'>
+			<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='top'>
+				<div dojoType='fox.Toolbar'>
 
-		print "<div style='float : right; padding-right : 4px;'>
-			<input dojoType=\"dijit.form.TextBox\" id=\"filter_search\" size=\"20\" type=\"search\"
-				value=\"$filter_search\">
-			<button dojoType=\"dijit.form.Button\" onclick=\"dijit.byId('filterTree').reload()\">".
-				__('Search')."</button>
-			</div>";
+					<div style='float : right; padding-right : 4px;'>
+						<input dojoType="dijit.form.TextBox" id="filter_search" size="20" type="search"
+							value="<?= htmlspecialchars($filter_search) ?>">
+						<button dojoType="dijit.form.Button" onclick="dijit.byId('filterTree').reload()">
+							<?= __('Search') ?></button>
+					</div>
 
-		print "<div dojoType=\"fox.form.DropDownButton\">".
-				"<span>" . __('Select')."</span>";
-		print "<div dojoType=\"dijit.Menu\" style=\"display: none;\">";
-		print "<div onclick=\"dijit.byId('filterTree').model.setAllChecked(true)\"
-			dojoType=\"dijit.MenuItem\">".__('All')."</div>";
-		print "<div onclick=\"dijit.byId('filterTree').model.setAllChecked(false)\"
-			dojoType=\"dijit.MenuItem\">".__('None')."</div>";
-		print "</div></div>";
+					<div dojoType="fox.form.DropDownButton">
+						<span><?= __('Select') ?></span>
+						<div dojoType="dijit.Menu" style="display: none;">
+							<div onclick="dijit.byId('filterTree').model.setAllChecked(true)"
+								dojoType="dijit.MenuItem"><?= __('All') ?></div>
+							<div onclick="dijit.byId('filterTree').model.setAllChecked(false)"
+								dojoType="dijit.MenuItem"><?= __('None') ?></div>
+						</div>
+					</div>
 
-		print "<button dojoType=\"dijit.form.Button\" onclick=\"return Filters.edit()\">".
-			__('Create filter')."</button> ";
+					<button dojoType="dijit.form.Button" onclick="return Filters.edit()">
+						<?= __('Create filter') ?></button>
+					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').joinSelectedFilters()">
+						<?= __('Combine') ?></button>
+					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').resetFilterOrder()">
+						<?= __('Reset sort order') ?></button>
+					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').removeSelectedFilters()">
+						<?= __('Remove') ?></button>
 
-		print "<button dojoType=\"dijit.form.Button\" onclick=\"return dijit.byId('filterTree').joinSelectedFilters()\">".
-			__('Combine')."</button> ";
+				</div>
+			</div>
+			<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='center'>
+				<div dojoType="fox.PrefFilterStore" jsId="filterStore"
+					url="backend.php?op=pref-filters&method=getfiltertree">
+				</div>
+				<div dojoType="lib.CheckBoxStoreModel" jsId="filterModel" store="filterStore"
+					query="{id:'root'}" rootId="root" rootLabel="Filters"
+					childrenAttrs="items" checkboxStrict="false" checkboxAll="false">
+				</div>
+				<div dojoType="fox.PrefFilterTree" id="filterTree" dndController="dijit.tree.dndSource"
+					betweenThreshold="5" model="filterModel" openOnClick="true">
+					<script type="dojo/method" event="onClick" args="item">
+						var id = String(item.id);
+						var bare_id = id.substr(id.indexOf(':')+1);
 
-		print "<button dojoType=\"dijit.form.Button\" onclick=\"return dijit.byId('filterTree').editSelectedFilter()\">".
-			__('Edit')."</button> ";
-
-		print "<button dojoType=\"dijit.form.Button\" onclick=\"return dijit.byId('filterTree').resetFilterOrder()\">".
-			__('Reset sort order')."</button> ";
-
-
-		print "<button dojoType=\"dijit.form.Button\" onclick=\"return dijit.byId('filterTree').removeSelectedFilters()\">".
-			__('Remove')."</button> ";
-
-		print "</div>"; # toolbar
-		print "</div>"; # toolbar-frame
-		print "<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='center'>";
-
-		print "<div id='filterlistLoading'>
-		<img src='images/indicator_tiny.gif'>".
-		 __("Loading, please wait...")."</div>";
-
-		print "<div dojoType=\"fox.PrefFilterStore\" jsId=\"filterStore\"
-			url=\"backend.php?op=pref-filters&method=getfiltertree\">
+						if (id.match('FILTER:')) {
+							Filters.edit(bare_id);
+						}
+					</script>
+				</div>
+			</div>
+			<?php PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefFilters") ?>
 		</div>
-		<div dojoType=\"lib.CheckBoxStoreModel\" jsId=\"filterModel\" store=\"filterStore\"
-			query=\"{id:'root'}\" rootId=\"root\" rootLabel=\"Filters\"
-			childrenAttrs=\"items\" checkboxStrict=\"false\" checkboxAll=\"false\">
-		</div>
-		<div dojoType=\"fox.PrefFilterTree\" id=\"filterTree\"
-			dndController=\"dijit.tree.dndSource\"
-			betweenThreshold=\"5\"
-			model=\"filterModel\" openOnClick=\"true\">
-		<script type=\"dojo/method\" event=\"onLoad\" args=\"item\">
-			Element.hide(\"filterlistLoading\");
-		</script>
-		<script type=\"dojo/method\" event=\"onClick\" args=\"item\">
-			var id = String(item.id);
-			var bare_id = id.substr(id.indexOf(':')+1);
-
-			if (id.match('FILTER:')) {
-				Filters.edit(bare_id);
-			}
-		</script>
-
-		</div>";
-
-		print "</div>"; #pane
-
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefFilters");
-
-		print "</div>"; #container
-
+		<?php
 	}
 
-	function newrule() {
-		$rule = json_decode(clean($_REQUEST["rule"]), true);
+	function editrule() {
+		$feed_ids = explode(",", clean($_REQUEST["ids"]));
 
-		if ($rule) {
-			$reg_exp = htmlspecialchars($rule["reg_exp"]);
-			$filter_type = $rule["filter_type"];
-			$feed_id = $rule["feed_id"];
-			$inverse_checked = isset($rule["inverse"]) ? "checked" : "";
-		} else {
-			$reg_exp = "";
-			$filter_type = 1;
-			$feed_id = ["0"];
-			$inverse_checked = "";
-		}
-
-		print "<form name='filter_new_rule_form' id='filter_new_rule_form' onsubmit='return false;'>";
-
-		$res = $this->pdo->query("SELECT id,description
-			FROM ttrss_filter_types WHERE id != 5 ORDER BY description");
-
-		$filter_types = array();
-
-		while ($line = $res->fetch()) {
-			$filter_types[$line["id"]] = __($line["description"]);
-		}
-
-		print "<header>".__("Match")."</header>";
-
-		print "<section>";
-
-		print "<textarea dojoType='fox.form.ValidationTextArea'
-			 required='true' id='filterDlg_regExp'
-			 ValidRegExp='true'
-			 rows='4'
-			 style='font-size : 14px; width : 490px; word-break: break-all'
-			 name='reg_exp'>$reg_exp</textarea>";
-
-		print "<div dojoType='dijit.Tooltip' id='filterDlg_regExp_tip' connectId='filterDlg_regExp' position='below'></div>";
-
-		print "<fieldset>";
-		print "<label class='checkbox'><input id='filterDlg_inverse' dojoType='dijit.form.CheckBox'
-			 name='inverse' $inverse_checked/> ".
-		 	__("Inverse regular expression matching")."</label>";
-		print "</fieldset>";
-
-		print "<fieldset>";
-		print "<label style='display : inline'>".  __("on field") . "</label> ";
-		print_select_hash("filter_type", $filter_type, $filter_types,
-			'dojoType="fox.form.Select"');
-		print "<label style='padding-left : 10px; display : inline'>" . __("in") . "</label> ";
-
-		print "</fieldset>";
-
-		print "<fieldset>";
-		print "<span id='filterDlg_feeds'>";
-		print_feed_multi_select("feed_id",
-			$feed_id,
-			'style="width : 500px; height : 300px" dojoType="dijit.form.MultiSelect"');
-		print "</span>";
-
-		print "</fieldset>";
-
-		print "</section>";
-
-		print "<footer>";
-
-		print "<button dojoType='dijit.form.Button' style='float : left' class='alt-info' onclick='window.open(\"https://tt-rss.org/wiki/ContentFilters\")'>
-			<i class='material-icons'>help</i> ".__("More info...")."</button>";
-
-		print "<button dojoType='dijit.form.Button' class='alt-primary' type='submit' onclick='App.dialogOf(this).execute()'>".
-			($rule ? __("Save rule") : __('Add rule'))."</button> ";
-
-		print "<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
-			__('Cancel')."</button>";
-
-		print "</footer>";
-
-		print "</form>";
+		print json_encode([
+			"multiselect" => $this->_feed_multi_select("feed_id", $feed_ids, 'required="1" style="width : 100%; height : 300px" dojoType="fox.form.ValidationMultiSelect"')
+		]);
 	}
 
-	function newaction() {
-		$action = json_decode(clean($_REQUEST["action"]), true);
-
-		if ($action) {
-			$action_param = $action["action_param"];
-			$action_id = (int)$action["action_id"];
-		} else {
-			$action_param = "";
-			$action_id = 0;
-		}
-
-		print "<form name='filter_new_action_form' id='filter_new_action_form' onsubmit='return false;'>";
-
-		print "<header>".__("Perform Action")."</header>";
-
-		print "<section>";
-
-		print "<select name='action_id' dojoType='fox.form.Select'
-			onchange='Filters.filterDlgCheckAction(this)'>";
-
-		$res = $this->pdo->query("SELECT id,description FROM ttrss_filter_actions
-			ORDER BY name");
-
-		while ($line = $res->fetch()) {
-			$is_selected = ($line["id"] == $action_id) ? "selected='1'" : "";
-			printf("<option $is_selected value='%d'>%s</option>", $line["id"], __($line["description"]));
-		}
-
-		print "</select>";
-
-		$param_box_hidden = ($action_id == 7 || $action_id == 4 || $action_id == 6 || $action_id == 9) ?
-			"" : "display : none";
-
-		$param_hidden = ($action_id == 4 || $action_id == 6) ?
-			"" : "display : none";
-
-		$label_param_hidden = ($action_id == 7) ?	"" : "display : none";
-		$plugin_param_hidden = ($action_id == 9) ?	"" : "display : none";
-
-		print "<span id='filterDlg_paramBox' style=\"$param_box_hidden\">";
-		print " ";
-		//print " " . __("with parameters:") . " ";
-		print "<input dojoType='dijit.form.TextBox'
-			id='filterDlg_actionParam' style=\"$param_hidden\"
-			name='action_param' value=\"$action_param\">";
-
-		print_label_select("action_param_label", $action_param,
-			"id='filterDlg_actionParamLabel' style=\"$label_param_hidden\"
-			dojoType='fox.form.Select'");
-
-		$filter_actions = PluginHost::getInstance()->get_filter_actions();
-		$filter_action_hash = array();
-
-		foreach ($filter_actions as $fclass => $factions) {
-			foreach ($factions as $faction) {
-
-				$filter_action_hash[$fclass . ":" . $faction["action"]] =
-					$fclass . ": " . $faction["description"];
-			}
-		}
-
-		if (count($filter_action_hash) == 0) {
-			$filter_plugin_disabled = "disabled";
-
-			$filter_action_hash["no-data"] = __("No actions available");
-
-		} else {
-			$filter_plugin_disabled = "";
-		}
-
-		print_select_hash("filterDlg_actionParamPlugin", $action_param, $filter_action_hash,
-			"style=\"$plugin_param_hidden\" dojoType='fox.form.Select' $filter_plugin_disabled",
-			"action_param_plugin");
-
-		print "</span>";
-
-		print "&nbsp;"; // tiny layout hack
-
-		print "</section>";
-
-		print "<footer>";
-
-		print "<button dojoType='dijit.form.Button' class='alt-primary' type='submit' onclick='App.dialogOf(this).execute()'>".
-			($action ? __("Save action") : __('Add action'))."</button> ";
-
-		print "<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>".
-			__('Cancel')."</button>";
-
-		print "</footer>";
-
-		print "</form>";
-	}
-
-	private function getFilterName($id) {
+	private function _get_name($id) {
 
 		$sth = $this->pdo->prepare(
 			"SELECT title,match_any_rule,f.inverse AS inverse,COUNT(DISTINCT r.id) AS num_rules,COUNT(DISTINCT a.id) AS num_actions
@@ -989,7 +728,7 @@ class Pref_Filters extends Handler_Protected {
 			$actions = "";
 
 			if ($line = $sth->fetch()) {
-				$actions = $this->getActionName($line);
+				$actions = $this->_get_action_name($line);
 
 				$num_actions -= 1;
 			}
@@ -1031,12 +770,12 @@ class Pref_Filters extends Handler_Protected {
 
 			$this->pdo->commit();
 
-			$this->optimizeFilter($base_id);
+			$this->_optimize($base_id);
 
 		}
 	}
 
-	private function optimizeFilter($id) {
+	private function _optimize($id) {
 
 		$this->pdo->beginTransaction();
 
@@ -1089,5 +828,112 @@ class Pref_Filters extends Handler_Protected {
 		}
 
 		$this->pdo->commit();
+	}
+
+	private function _feed_multi_select($id, $default_ids = [],
+						   $attributes = "", $include_all_feeds = true,
+						   $root_id = null, $nest_level = 0) {
+
+		$pdo = Db::pdo();
+
+		$rv = "";
+
+		//	print_r(in_array("CAT:6",$default_ids));
+
+		if (!$root_id) {
+			$rv .= "<select multiple=\true\" id=\"$id\" name=\"$id\" $attributes>";
+			if ($include_all_feeds) {
+				$is_selected = (in_array("0", $default_ids)) ? "selected=\"1\"" : "";
+				$rv .= "<option $is_selected value=\"0\">".__('All feeds')."</option>";
+			}
+		}
+
+		if (get_pref('ENABLE_FEED_CATS')) {
+
+			if (!$root_id) $root_id = null;
+
+			$sth = $pdo->prepare("SELECT id,title,
+					(SELECT COUNT(id) FROM ttrss_feed_categories AS c2 WHERE
+						c2.parent_cat = ttrss_feed_categories.id) AS num_children
+					FROM ttrss_feed_categories
+					WHERE owner_uid = :uid AND
+					(parent_cat = :root_id OR (:root_id IS NULL AND parent_cat IS NULL)) ORDER BY title");
+
+			$sth->execute([":uid" => $_SESSION['uid'], ":root_id" => $root_id]);
+
+			while ($line = $sth->fetch()) {
+
+				for ($i = 0; $i < $nest_level; $i++)
+					$line["title"] = " " . $line["title"];
+
+				$is_selected = in_array("CAT:".$line["id"], $default_ids) ? "selected=\"1\"" : "";
+
+				$rv .= sprintf("<option $is_selected value='CAT:%d'>%s</option>",
+					$line["id"], htmlspecialchars($line["title"]));
+
+				if ($line["num_children"] > 0)
+					$rv .= $this->_feed_multi_select($id, $default_ids, $attributes,
+						$include_all_feeds, $line["id"], $nest_level+1);
+
+				$f_sth = $pdo->prepare("SELECT id,title FROM ttrss_feeds
+						WHERE cat_id = ? AND owner_uid = ? ORDER BY title");
+
+				$f_sth->execute([$line['id'], $_SESSION['uid']]);
+
+				while ($fline = $f_sth->fetch()) {
+					$is_selected = (in_array($fline["id"], $default_ids)) ? "selected=\"1\"" : "";
+
+					$fline["title"] = " " . $fline["title"];
+
+					for ($i = 0; $i < $nest_level; $i++)
+						$fline["title"] = " " . $fline["title"];
+
+					$rv .= sprintf("<option $is_selected value='%d'>%s</option>",
+						$fline["id"], htmlspecialchars($fline["title"]));
+				}
+			}
+
+			if (!$root_id) {
+				$is_selected = in_array("CAT:0", $default_ids) ? "selected=\"1\"" : "";
+
+				$rv .= sprintf("<option $is_selected value='CAT:0'>%s</option>",
+					__("Uncategorized"));
+
+				$f_sth = $pdo->prepare("SELECT id,title FROM ttrss_feeds
+						WHERE cat_id IS NULL AND owner_uid = ? ORDER BY title");
+				$f_sth->execute([$_SESSION['uid']]);
+
+				while ($fline = $f_sth->fetch()) {
+					$is_selected = in_array($fline["id"], $default_ids) ? "selected=\"1\"" : "";
+
+					$fline["title"] = " " . $fline["title"];
+
+					for ($i = 0; $i < $nest_level; $i++)
+						$fline["title"] = " " . $fline["title"];
+
+					$rv .= sprintf("<option $is_selected value='%d'>%s</option>",
+						$fline["id"], htmlspecialchars($fline["title"]));
+				}
+			}
+
+		} else {
+			$sth = $pdo->prepare("SELECT id,title FROM ttrss_feeds
+					WHERE owner_uid = ? ORDER BY title");
+			$sth->execute([$_SESSION['uid']]);
+
+			while ($line = $sth->fetch()) {
+
+				$is_selected = (in_array($line["id"], $default_ids)) ? "selected=\"1\"" : "";
+
+				$rv .= sprintf("<option $is_selected value='%d'>%s</option>",
+					$line["id"], htmlspecialchars($line["title"]));
+			}
+		}
+
+		if (!$root_id) {
+			$rv .= "</select>";
+		}
+
+		return $rv;
 	}
 }

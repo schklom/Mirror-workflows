@@ -10,6 +10,8 @@ class floIconIcon {
 }
 
 class floIcon {
+	public $images = array();
+
         function readICO($file) {
                 $jim = new jimIcon();
                 $icon = new floIconIcon();

@@ -17,7 +17,7 @@ class Note extends Plugin {
 	}
 
 	function get_js() {
-		return file_get_contents(dirname(__FILE__) . "/note.js");
+		return file_get_contents(__DIR__ . "/note.js");
 	}
 
 
@@ -27,48 +27,42 @@ class Note extends Plugin {
 	}
 
 	function edit() {
-		$param = $_REQUEST['param'];
+		$id = clean($_REQUEST['id']);
 
 		$sth = $this->pdo->prepare("SELECT note FROM ttrss_user_entries WHERE
 			ref_id = ? AND owner_uid = ?");
-		$sth->execute([$param, $_SESSION['uid']]);
+		$sth->execute([$id, $_SESSION['uid']]);
 
 		if ($row = $sth->fetch()) {
 
 			$note = $row['note'];
 
-			print_hidden("id", "$param");
-			print_hidden("op", "pluginhandler");
-			print_hidden("method", "setNote");
-			print_hidden("plugin", "note");
+			print \Controls\hidden_tag("id", $id);
+			print \Controls\pluginhandler_tags($this, "setnote");
 
-			print "<textarea dojoType='dijit.form.SimpleTextarea'
+			?>
+			<textarea dojoType='dijit.form.SimpleTextarea'
 				style='font-size : 12px; width : 98%; height: 100px;'
-				name='note'>$note</textarea>";
-
+				name='note'><?= $note ?></textarea>
+			<?php
 		}
-
-		print "<footer class='text-center'>";
-		print "<button dojoType=\"dijit.form.Button\"
-			onclick=\"dijit.byId('editNoteDlg').execute()\">".__('Save')."</button> ";
-		print "<button dojoType=\"dijit.form.Button\"
-			onclick=\"dijit.byId('editNoteDlg').hide()\">".__('Cancel')."</button>";
-		print "</footer>";
-
+		?>
+		<footer class='text-center'>
+			<?= \Controls\submit_tag(__('Save')) ?>
+			<?= \Controls\cancel_dialog_tag(__('Cancel')) ?>
+		</footer>
+		<?php
 	}
 
 	function setNote() {
-		$id = $_REQUEST["id"];
-		$note = trim(strip_tags($_REQUEST["note"]));
+		$id = (int)clean($_REQUEST["id"]);
+		$note = clean($_REQUEST["note"]);
 
 		$sth = $this->pdo->prepare("UPDATE ttrss_user_entries SET note = ?
 			WHERE ref_id = ? AND owner_uid = ?");
 		$sth->execute([$note, $id, $_SESSION['uid']]);
 
-		$formatted_note = Article::format_article_note($id, $note);
-
-		print json_encode(array("note" => $formatted_note,
-				"raw_length" => mb_strlen($note)));
+		print json_encode(["id" => $id, "note" => $note]);
 	}
 
 	function api_version() {

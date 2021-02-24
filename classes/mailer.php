@@ -11,15 +11,15 @@ class Mailer {
 		$subject = $params["subject"];
 		$message = $params["message"];
 		$message_html = $params["message_html"];
-		$from_name = $params["from_name"] ? $params["from_name"] : SMTP_FROM_NAME;
-		$from_address = $params["from_address"] ? $params["from_address"] : SMTP_FROM_ADDRESS;
+		$from_name = $params["from_name"] ? $params["from_name"] : Config::get(Config::SMTP_FROM_NAME);
+		$from_address = $params["from_address"] ? $params["from_address"] : Config::get(Config::SMTP_FROM_ADDRESS);
 
 		$additional_headers = $params["headers"] ? $params["headers"] : [];
 
 		$from_combined = $from_name ? "$from_name <$from_address>" : $from_address;
 		$to_combined = $to_name ? "$to_name <$to_address>" : $to_address;
 
-		if (defined('_LOG_SENT_MAIL') && _LOG_SENT_MAIL)
+		if (Config::get(Config::LOG_SENT_MAIL))
 			Logger::get()->log(E_USER_NOTICE, "Sending mail from $from_combined to $to_combined [$subject]: $message");
 
 		// HOOK_SEND_MAIL plugin instructions:

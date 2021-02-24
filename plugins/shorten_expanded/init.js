@@ -1,3 +1,5 @@
+/* global Plugins, __, require, PluginHost */
+
 const _shorten_expanded_threshold = 1.5; //window heights
 
 Plugins.Shorten_Expanded = {
@@ -5,8 +7,8 @@ Plugins.Shorten_Expanded = {
 		const row = $(id);
 
 		if (row) {
-			const content = row.select(".content-shrink-wrap")[0];
-			const link = row.select(".expand-prompt")[0];
+			const content = row.querySelector(".content-shrink-wrap");
+			const link = row.querySelector(".expand-prompt");
 
 			if (content) content.removeClassName("content-shrink-wrap");
 			if (link) Element.hide(link);
@@ -22,26 +24,26 @@ require(['dojo/_base/kernel', 'dojo/ready'], function  (dojo, ready) {
 			window.setTimeout(function() {
 				if (row) {
 
-					const c_inner = row.select(".content-inner")[0];
-					const c_inter = row.select(".intermediate")[0];
+					const content = row.querySelector(".content-inner");
 
-					if (c_inner && c_inter &&
-						row.offsetHeight >= _shorten_expanded_threshold * window.innerHeight) {
+					//console.log('shorten', row.offsetHeight, 'vs', _shorten_expanded_threshold * window.innerHeight);
 
-						let tmp = document.createElement("div");
+					if (content && row.offsetHeight >= _shorten_expanded_threshold * window.innerHeight) {
 
-						c_inter.select("> *:not([class*='attachments'])").each(function(p) {
-							p.parentNode.removeChild(p);
-							tmp.appendChild(p);
-						});
+						const attachments = row.querySelector(".attachments-inline"); // optional
 
-						c_inner.innerHTML = `<div class="content-shrink-wrap">
-							${c_inner.innerHTML}
-							${tmp.innerHTML}</div>
+						content.innerHTML = `
+							<div class="content-shrink-wrap">
+								${content.innerHTML}
+								${attachments ? attachments.innerHTML : ''}
+							</div>
 							<button dojoType="dijit.form.Button" class="alt-info expand-prompt" onclick="return Plugins.Shorten_Expanded.expand('${row.id}')" href="#">
 								${__("Click to expand article")}</button>`;
 
-						dojo.parser.parse(c_inner);
+						if (attachments)
+							attachments.innerHTML = "";
+
+						dojo.parser.parse(content);
 					}
 				}
 			}, 150);

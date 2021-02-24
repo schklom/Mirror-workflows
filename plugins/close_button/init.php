@@ -15,7 +15,7 @@ class Close_Button extends Plugin {
 	}
 
 	function get_css() {
-		return "i.icon-close-article { color : red; }";
+		return ".post .header .buttons i.material-icons.icon-close-article { color : red; }";
 	}
 
 	function hook_article_button($line) {

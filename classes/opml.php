@@ -31,7 +31,7 @@ class OPML extends Handler_Protected {
 			<body class='claro ttrss_utility'>
 			<h1>".__('OPML Utility')."</h1><div class='content'>";
 
-		Feeds::add_feed_category("Imported feeds");
+		Feeds::_add_cat("Imported feeds");
 
 		$this->opml_notice(__("Importing OPML..."));
 
@@ -205,7 +205,7 @@ class OPML extends Handler_Protected {
 
 					if (!$tmp_line["match_on"]) {
                         if ($cat_filter && $tmp_line["cat_id"] || $tmp_line["feed_id"]) {
-                            $tmp_line["feed"] = Feeds::getFeedTitle(
+                            $tmp_line["feed"] = Feeds::_get_title(
                                 $cat_filter ? $tmp_line["cat_id"] : $tmp_line["feed_id"],
                                 $cat_filter);
                         } else {
@@ -218,13 +218,13 @@ class OPML extends Handler_Protected {
                             if (strpos($feed_id, "CAT:") === 0) {
                                 $feed_id = (int)substr($feed_id, 4);
                                 if ($feed_id) {
-                                    array_push($match, [Feeds::getCategoryTitle($feed_id), true, false]);
+                                    array_push($match, [Feeds::_get_cat_title($feed_id), true, false]);
                                 } else {
                                     array_push($match, [0, true, true]);
                                 }
                             } else {
                                 if ($feed_id) {
-                                    array_push($match, [Feeds::getFeedTitle((int)$feed_id), false, false]);
+                                    array_push($match, [Feeds::_get_title((int)$feed_id), false, false]);
                                 } else {
                                     array_push($match, [0, false, true]);
                                 }
@@ -523,7 +523,7 @@ class OPML extends Handler_Protected {
 					$order_id = (int) $root_node->attributes->getNamedItem('ttrssSortOrder')->nodeValue;
 					if (!$order_id) $order_id = 0;
 
-					Feeds::add_feed_category($cat_title, $parent_id, $order_id);
+					Feeds::_add_cat($cat_title, $parent_id, $order_id);
 					$cat_id = $this->get_feed_category($cat_title, $parent_id);
 				}
 
@@ -594,7 +594,7 @@ class OPML extends Handler_Protected {
 		}
 
 		if (is_uploaded_file($_FILES['opml_file']['tmp_name'])) {
-			$tmp_file = (string)tempnam(CACHE_DIR . '/upload', 'opml');
+			$tmp_file = (string)tempnam(Config::get(Config::CACHE_DIR) . '/upload', 'opml');
 
 			$result = move_uploaded_file($_FILES['opml_file']['tmp_name'],
 				$tmp_file);
@@ -634,13 +634,10 @@ class OPML extends Handler_Protected {
 		print "$msg<br/>";
 	}
 
-	static function opml_publish_url(){
-
-		$url_path = get_self_url_prefix();
-		$url_path .= "/opml.php?op=publish&key=" .
-			Feeds::get_feed_access_key('OPML:Publish', false, $_SESSION["uid"]);
-
-		return $url_path;
+	static function get_publish_url(){
+		return get_self_url_prefix() .
+			"/public.php?op=publishOpml&key=" .
+			Feeds::_get_access_key('OPML:Publish', false, $_SESSION["uid"]);
 	}
 
 	function get_feed_category($feed_cat, $parent_cat_id = false) {

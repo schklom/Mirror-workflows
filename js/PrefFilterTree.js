@@ -1,5 +1,5 @@
 /* eslint-disable prefer-rest-params */
-/* global __, define, lib, dijit, dojo, xhrPost, Notify */
+/* global __, define, lib, dijit, dojo, xhr, App, Notify */
 
 define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], function (declare, domConstruct) {
 
@@ -80,26 +80,26 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			const items = tree.model.getCheckedItems();
 			const rv = [];
 
-			items.each(function (item) {
+			items.forEach(function (item) {
 				rv.push(tree.model.store.getValue(item, 'bare_id'));
 			});
 
 			return rv;
 		},
 		reload: function() {
-			const user_search = $("filter_search");
+			const user_search = App.byId("filter_search");
 			let search = "";
 			if (user_search) { search = user_search.value; }
 
-			xhrPost("backend.php", { op: "pref-filters", search: search }, (transport) => {
-				dijit.byId('filtersTab').attr('content', transport.responseText);
+			xhr.post("backend.php", { op: "pref-filters", search: search }, (reply) => {
+				dijit.byId('filtersTab').attr('content', reply);
 				Notify.close();
 			});
 		},
 		resetFilterOrder: function() {
 			Notify.progress("Loading, please wait...");
 
-			xhrPost("backend.php", {op: "pref-filters", method: "filtersortreset"}, () => {
+			xhr.post("backend.php", {op: "pref-filters", method: "filtersortreset"}, () => {
 				this.reload();
 			});
 		},
@@ -114,27 +114,10 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			if (confirm(__("Combine selected filters?"))) {
 				Notify.progress("Joining filters...");
 
-				xhrPost("backend.php", {op: "pref-filters", method: "join", ids: rows.toString()}, () => {
+				xhr.post("backend.php", {op: "pref-filters", method: "join", ids: rows.toString()}, () => {
 					this.reload();
 				});
 			}
-		},
-		editSelectedFilter: function() {
-			const rows = this.getSelectedFilters();
-
-			if (rows.length == 0) {
-				alert(__("No filters selected."));
-				return;
-			}
-
-			if (rows.length > 1) {
-				alert(__("Please select only one filter."));
-				return;
-			}
-
-			Notify.close();
-
-			this.editFilter(rows[0]);
 		},
 		removeSelectedFilters: function() {
 			const sel_rows = this.getSelectedFilters();
@@ -148,7 +131,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 						ids: sel_rows.toString()
 					};
 
-					xhrPost("backend.php", query, () => {
+					xhr.post("backend.php", query, () => {
 						this.reload();
 					});
 				}

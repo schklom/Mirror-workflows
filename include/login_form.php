@@ -6,20 +6,17 @@
 	<link rel="shortcut icon" type="image/png" href="images/favicon.png">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<?php
-	foreach (array("lib/prototype.js",
-				"lib/dojo/dojo.js",
+	foreach (["lib/dojo/dojo.js",
 				"lib/dojo/tt-rss-layer.js",
-				"lib/prototype.js",
 			 	"js/common.js",
-				"js/utility.js",
-				"errors.php?mode=js") as $jsfile) {
+				"js/utility.js"] as $jsfile) {
 
 		echo javascript_tag($jsfile);
 
 	} ?>
 
-	<?php if (theme_exists(LOCAL_OVERRIDE_STYLESHEET)) {
-		echo stylesheet_tag(get_theme_path(LOCAL_OVERRIDE_STYLESHEET));
+	<?php if (theme_exists(Config::get(Config::LOCAL_OVERRIDE_STYLESHEET))) {
+		echo stylesheet_tag(get_theme_path(Config::get(Config::LOCAL_OVERRIDE_STYLESHEET)));
 	} ?>
 
 	<style type="text/css">
@@ -61,13 +58,13 @@
 	        if (login && login != this.previousLogin) {
                 this.previousLogin = login;
 
-                xhrJson("public.php", {op: "getprofiles", login: login},
+                xhr.json("public.php", {op: "getprofiles", login: login},
                     (reply) => {
                         const profile = dijit.byId('profile');
 
                         profile.removeOption(profile.getOptions());
 
-                        reply.each((p) => {
+                        reply.forEach((p) => {
                             profile
                                 .attr("disabled", false)
                                 .addOption(p);
@@ -81,7 +78,7 @@
     	},
         bwLimitChange: function(elem) {
         	Cookie.set("ttrss_bwlimit", elem.checked,
-				<?php print SESSION_COOKIE_LIFETIME ?>);
+				<?php print Config::get(Config::SESSION_COOKIE_LIFETIME) ?>);
 	    }
     };
 
@@ -92,29 +89,29 @@
 
 <div class="container">
 
-	<h1><?php echo "Authentication" ?></h1>
+	<h1><?= "Authentication" ?></h1>
 	<div class="content">
-		<form action="public.php?return=<?php echo $return ?>"
+		<form action="public.php?return=<?= $return ?>"
 			  dojoType="dijit.form.Form" method="POST">
 
-			<?php print_hidden("op", "login"); ?>
+			<?= \Controls\hidden_tag("op", "login"); ?>
 
 			<?php if (!empty($_SESSION["login_error_msg"])) { ?>
-				<?php echo format_error($_SESSION["login_error_msg"]) ?>
+				<?= format_error($_SESSION["login_error_msg"]) ?>
 				<?php $_SESSION["login_error_msg"] = ""; ?>
 			<?php } ?>
 
 			<fieldset>
-				<label><?php echo __("Login:") ?></label>
+				<label><?= __("Login:") ?></label>
 				<input name="login" id="login" dojoType="dijit.form.TextBox" type="text"
 					   onchange="UtilityApp.fetchProfiles()"
 					   onfocus="UtilityApp.fetchProfiles()"
 					   onblur="UtilityApp.fetchProfiles()"
-					   required="1" value="<?php echo $_SESSION["fake_login"] ?? "" ?>" />
+					   required="1" value="<?= $_SESSION["fake_login"] ?? "" ?>" />
 			</fieldset>
 
 			<fieldset>
-				<label><?php echo __("Password:") ?></label>
+				<label><?= __("Password:") ?></label>
 
 				<input type="password" name="password" required="1"
 					   dojoType="dijit.form.TextBox"
@@ -122,52 +119,54 @@
 					   onchange="UtilityApp.fetchProfiles()"
 					   onfocus="UtilityApp.fetchProfiles()"
 					   onblur="UtilityApp.fetchProfiles()"
-					   value="<?php echo $_SESSION["fake_password"] ?? "" ?>"/>
+					   value="<?= $_SESSION["fake_password"] ?? "" ?>"/>
 			</fieldset>
-			<?php if (strpos(PLUGINS, "auth_internal") !== false) { ?>
+			<?php if (strpos(Config::get(Config::PLUGINS), "auth_internal") !== false) { ?>
 				<fieldset class="align-right">
-					<a href="public.php?op=forgotpass"><?php echo __("I forgot my password") ?></a>
+					<a href="public.php?op=forgotpass"><?= __("I forgot my password") ?></a>
 				</fieldset>
 			<?php } ?>
 
 			<fieldset>
-				<label><?php echo __("Profile:") ?></label>
+				<label><?= __("Profile:") ?></label>
 
 				<select disabled='disabled' name="profile" id="profile" dojoType='dijit.form.Select'>
-					<option><?php echo __("Default profile") ?></option>
+					<option><?= __("Default profile") ?></option>
 				</select>
 			</fieldset>
 
 			<fieldset class="narrow">
 				<label> </label>
 
-				<label id="bw_limit_label"><input dojoType="dijit.form.CheckBox" name="bw_limit" id="bw_limit"
-					  type="checkbox" onchange="UtilityApp.bwLimitChange(this)">
-					<?php echo __("Use less traffic") ?></label>
+				<label id="bw_limit_label">
+					<?= \Controls\checkbox_tag("bw_limit", false, "",
+									["onchange" => 'UtilityApp.bwLimitChange(this)'], 'bw_limit') ?>
+					<?= __("Use less traffic") ?></label>
 			</fieldset>
 
 			<div dojoType="dijit.Tooltip" connectId="bw_limit_label" position="below" style="display:none">
-				<?php echo __("Does not display images in articles, reduces automatic refreshes."); ?>
+				<?= __("Does not display images in articles, reduces automatic refreshes."); ?>
 			</div>
 
 			<fieldset class="narrow">
 				<label> </label>
 
-				<label id="safe_mode_label"><input dojoType="dijit.form.CheckBox" name="safe_mode" id="safe_mode"
-					  type="checkbox">
-					<?php echo __("Safe mode") ?></label>
+				<label id="safe_mode_label">
+					<?= \Controls\checkbox_tag("safe_mode") ?>
+					<?= __("Safe mode") ?>
+				</label>
 			</fieldset>
 
 			<div dojoType="dijit.Tooltip" connectId="safe_mode_label" position="below" style="display:none">
-				<?php echo __("Uses default theme and prevents all plugins from loading."); ?>
+				<?= __("Uses default theme and prevents all plugins from loading."); ?>
 			</div>
-			<?php if (SESSION_COOKIE_LIFETIME > 0) { ?>
+			<?php if (Config::get(Config::SESSION_COOKIE_LIFETIME) > 0) { ?>
 
 				<fieldset class="narrow">
 					<label> </label>
 					<label>
-						<input dojoType="dijit.form.CheckBox" name="remember_me" id="remember_me" type="checkbox">
-						<?php echo __("Remember me") ?>
+						<?= \Controls\checkbox_tag("remember_me") ?>
+						<?= __("Remember me") ?>
 					</label>
 				</fieldset>
 
@@ -177,7 +176,7 @@
 
 			<fieldset class="align-right">
 				<label> </label>
-				<button dojoType="dijit.form.Button" type="submit" class="alt-primary"><?php echo __('Log in') ?></button>
+				<?= \Controls\submit_tag(__('Log in')) ?>
 			</fieldset>
 
 		</form>
@@ -185,7 +184,7 @@
 
 	<div class="footer">
 		<a href="https://tt-rss.org/">Tiny Tiny RSS</a>
-		&copy; 2005&ndash;<?php echo date('Y') ?> <a href="https://fakecake.org/">Andrew Dolgov</a>
+		&copy; 2005&ndash;<?= date('Y') ?> <a href="https://fakecake.org/">Andrew Dolgov</a>
 	</div>
 
 </div>

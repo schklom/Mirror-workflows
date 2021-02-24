@@ -150,19 +150,19 @@ const Headlines = {
 
 		if (ops.tmark.length != 0)
 			promises.push(xhr.post("backend.php",
-				{op: "rpc", method: "markSelected", ids: ops.tmark.toString(), cmode: 2}));
+				{op: "rpc", method: "markSelected", "ids[]": ops.tmark, cmode: 2}));
 
 		if (ops.tpub.length != 0)
 			promises.push(xhr.post("backend.php",
-				{op: "rpc", method: "publishSelected", ids: ops.tpub.toString(), cmode: 2}));
+				{op: "rpc", method: "publishSelected", "ids[]": ops.tpub, cmode: 2}));
 
 		if (ops.read.length != 0)
 			promises.push(xhr.post("backend.php",
-				{op: "rpc", method: "catchupSelected", ids: ops.read.toString(), cmode: 0}));
+				{op: "rpc", method: "catchupSelected", "ids[]": ops.read, cmode: 0}));
 
 		if (ops.unread.length != 0)
 			promises.push(xhr.post("backend.php",
-				{op: "rpc", method: "catchupSelected", ids: ops.unread.toString(), cmode: 1}));
+				{op: "rpc", method: "catchupSelected", "ids[]": ops.unread, cmode: 1}));
 
 		const scores = Object.keys(ops.rescore);
 

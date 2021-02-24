@@ -134,7 +134,7 @@ const	Feeds = {
 		this.reloadCurrent();
 	},
 	requestCounters: function(feed_ids = null) {
-		xhr.json("backend.php", {op: "rpc", method: "getAllCounters", feed_ids: feed_ids, seq: App.next_seq()}, () => {
+		xhr.json("backend.php", {op: "rpc", method: "getAllCounters", "feed_ids[]": feed_ids, seq: App.next_seq()}, () => {
 			//
 		});
 	},

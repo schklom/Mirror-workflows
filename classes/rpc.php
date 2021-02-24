@@ -73,10 +73,7 @@ class RPC extends Handler_Protected {
 	}
 
 	function getAllCounters() {
-		$feed_ids = array_map("intval",
-			explode(",",
-				clean($_REQUEST["feed_ids"])));
-
+		$feed_ids = array_map("intval", clean($_REQUEST["feed_ids"] ?? []));
 		@$seq = (int) $_REQUEST['seq'];
 
 		// @phpstan-ignore-next-line
@@ -95,10 +92,7 @@ class RPC extends Handler_Protected {
 
 	/* GET["cmode"] = 0 - mark as read, 1 - as unread, 2 - toggle */
 	function catchupSelected() {
-		$ids = array_map("intval",
-			explode(",",
-				clean($_REQUEST["ids"])));
-
+		$ids = array_map("intval", clean($_REQUEST["ids"] ?? []));
 		$cmode = (int)clean($_REQUEST["cmode"]);
 
 		Article::_catchup_by_id($ids, $cmode);
@@ -107,10 +101,7 @@ class RPC extends Handler_Protected {
 	}
 
 	function markSelected() {
-		$ids = array_map("intval",
-			explode(",",
-				clean($_REQUEST["ids"])));
-
+		$ids = array_map("intval", clean($_REQUEST["ids"] ?? []));
 		$cmode = (int)clean($_REQUEST["cmode"]);
 
 		$this->markArticlesById($ids, $cmode);
@@ -119,10 +110,7 @@ class RPC extends Handler_Protected {
 	}
 
 	function publishSelected() {
-		$ids = array_map("intval",
-			explode(",",
-				clean($_REQUEST["ids"])));
-
+		$ids = array_map("intval", clean($_REQUEST["ids"] ?? []));
 		$cmode = (int)clean($_REQUEST["cmode"]);
 
 		$this->publishArticlesById($ids, $cmode);

@@ -1794,8 +1794,9 @@ class Feeds extends Handler_Protected {
 
 		$feeds_qmarks = arr_qmarks($feeds);
 
-		$sth = $pdo->prepare("SELECT DISTINCT cat_id FROM ttrss_feeds
-				WHERE id IN ($feeds_qmarks)");
+		$sth = $pdo->prepare("SELECT DISTINCT cat_id, fc.parent_cat FROM ttrss_feeds f LEFT JOIN ttrss_feed_categories fc
+				ON (fc.id = f.cat_id)
+				WHERE f.id IN ($feeds_qmarks)");
 		$sth->execute($feeds);
 
 		$rv = [];
@@ -1803,7 +1804,7 @@ class Feeds extends Handler_Protected {
 		if ($row = $sth->fetch()) {
 			array_push($rv, (int)$row["cat_id"]);
 
-			if ($with_parents)
+			if ($with_parents && $row["parent_cat"])
 				$rv = array_merge($rv,
 							self::_get_parent_cats($row["cat_id"], $owner_uid));
 		}

@@ -1798,8 +1798,8 @@ class Feeds extends Handler_Protected {
 
 		$sth = $pdo->prepare("SELECT DISTINCT cat_id, fc.parent_cat FROM ttrss_feeds f LEFT JOIN ttrss_feed_categories fc
 				ON (fc.id = f.cat_id)
-				WHERE f.id IN ($feeds_qmarks)");
-		$sth->execute($feeds);
+				WHERE f.owner_uid = ? AND f.id IN ($feeds_qmarks)");
+		$sth->execute(array_merge([$owner_uid], $feeds));
 
 		$rv = [];
 

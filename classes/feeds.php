@@ -1765,7 +1765,7 @@ class Feeds extends Handler_Protected {
 		$sth->execute([$cat, $owner_uid]);
 
 		while ($line = $sth->fetch()) {
-			array_push($rv, $line["parent_cat"]);
+			array_push($rv, (int)$line["parent_cat"]);
 			$rv = array_merge($rv, self::_get_parent_cats($line["parent_cat"], $owner_uid));
 		}
 
@@ -1785,6 +1785,30 @@ class Feeds extends Handler_Protected {
 			array_push($rv, $line["id"]);
 			$rv = array_merge($rv, self::_get_child_cats($line["id"], $owner_uid));
 		}
+
+		return $rv;
+	}
+
+	static function _cats_of(array $feeds, int $owner_uid, bool $with_parents = false) {
+		$pdo = Db::pdo();
+
+		$feeds_qmarks = arr_qmarks($feeds);
+
+		$sth = $pdo->prepare("SELECT DISTINCT cat_id FROM ttrss_feeds
+				WHERE id IN ($feeds_qmarks)");
+		$sth->execute($feeds);
+
+		$rv = [];
+
+		if ($row = $sth->fetch()) {
+			array_push($rv, (int)$row["cat_id"]);
+
+			if ($with_parents)
+				$rv = array_merge($rv,
+							self::_get_parent_cats($row["cat_id"], $owner_uid));
+		}
+
+		$rv = array_unique($rv);
 
 		return $rv;
 	}

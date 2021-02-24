@@ -11,6 +11,15 @@ class Counters {
 		);
 	}
 
+	static function get_for_feeds($feed_ids) {
+		return array_merge(
+			self::get_global(),
+			self::get_virt(),
+			self::get_labels(),
+			self::get_feeds($feed_ids),
+			self::get_cats(Feeds::_cats_of($feed_ids, $_SESSION["uid"], true)));
+	}
+
 	static private function get_cat_children($cat_id, $owner_uid) {
 		$pdo = Db::pdo();
 
@@ -31,7 +40,7 @@ class Counters {
 		return [$unread, $marked];
 	}
 
-	private static function get_cats() {
+	private static function get_cats(array $cat_ids = []) {
 		$ret = [];
 
 		/* Labels category */
@@ -43,27 +52,57 @@ class Counters {
 
 		$pdo = Db::pdo();
 
-		$sth = $pdo->prepare("SELECT fc.id,
-				SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
-       			SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
-       			(SELECT COUNT(id) FROM ttrss_feed_categories fcc
-       			WHERE fcc.parent_cat = fc.id) AS num_children
-			FROM ttrss_feed_categories fc
-    			LEFT JOIN ttrss_feeds f ON (f.cat_id = fc.id)
-    			LEFT JOIN ttrss_user_entries ue ON (ue.feed_id = f.id)
-			WHERE fc.owner_uid = :uid
-			GROUP BY fc.id
-		UNION
-			SELECT 0,
-				SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
-			   	SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
-			   	0
-			FROM ttrss_feeds f, ttrss_user_entries ue
-			WHERE f.cat_id IS NULL AND
-			    ue.feed_id = f.id AND
-			    ue.owner_uid = :uid");
+		if (count($cat_ids) == 0) {
+			$sth = $pdo->prepare("SELECT fc.id,
+					SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
+						SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
+						(SELECT COUNT(id) FROM ttrss_feed_categories fcc
+						WHERE fcc.parent_cat = fc.id) AS num_children
+				FROM ttrss_feed_categories fc
+					LEFT JOIN ttrss_feeds f ON (f.cat_id = fc.id)
+					LEFT JOIN ttrss_user_entries ue ON (ue.feed_id = f.id)
+				WHERE fc.owner_uid = :uid
+				GROUP BY fc.id
+			UNION
+				SELECT 0,
+					SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
+						SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
+						0
+				FROM ttrss_feeds f, ttrss_user_entries ue
+				WHERE f.cat_id IS NULL AND
+					ue.feed_id = f.id AND
+					ue.owner_uid = :uid");
 
-		$sth->execute(["uid" => $_SESSION['uid']]);
+			$sth->execute(["uid" => $_SESSION['uid']]);
+		} else {
+			$cat_ids_qmarks = arr_qmarks($cat_ids);
+
+			$sth = $pdo->prepare("SELECT fc.id,
+					SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
+						SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
+						(SELECT COUNT(id) FROM ttrss_feed_categories fcc
+						WHERE fcc.parent_cat = fc.id) AS num_children
+				FROM ttrss_feed_categories fc
+					LEFT JOIN ttrss_feeds f ON (f.cat_id = fc.id)
+					LEFT JOIN ttrss_user_entries ue ON (ue.feed_id = f.id)
+				WHERE fc.owner_uid = ? AND fc.id IN ($cat_ids_qmarks)
+				GROUP BY fc.id
+			UNION
+				SELECT 0,
+					SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
+						SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
+						0
+				FROM ttrss_feeds f, ttrss_user_entries ue
+				WHERE f.cat_id IS NULL AND
+					ue.feed_id = f.id AND
+					ue.owner_uid = ?");
+
+			$sth->execute(array_merge(
+				[$_SESSION['uid']],
+				$cat_ids,
+				[$_SESSION['uid']]
+			));
+		}
 
 		while ($line = $sth->fetch()) {
 			if ($line["num_children"] > 0) {
@@ -83,29 +122,42 @@ class Counters {
 			array_push($ret, $cv);
 		}
 
-		array_push($ret, $cv);
-
 		return $ret;
 	}
 
-
-	private static function get_feeds($active_feed = false) {
+	private static function get_feeds(array $feed_ids = []) {
 
 		$ret = [];
 
 		$pdo = Db::pdo();
 
-		$sth = $pdo->prepare("SELECT f.id,
-				f.title,
-				".SUBSTRING_FOR_DATE."(f.last_updated,1,19) AS last_updated,
-				f.last_error,
-				SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
-				SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked
-			FROM ttrss_feeds f, ttrss_user_entries ue
-			WHERE f.id = ue.feed_id AND ue.owner_uid = :uid
-			GROUP BY f.id");
+		if (count($feed_ids) == 0) {
+			$sth = $pdo->prepare("SELECT f.id,
+					f.title,
+					".SUBSTRING_FOR_DATE."(f.last_updated,1,19) AS last_updated,
+					f.last_error,
+					SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
+					SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked
+				FROM ttrss_feeds f, ttrss_user_entries ue
+				WHERE f.id = ue.feed_id AND ue.owner_uid = :uid
+				GROUP BY f.id");
 
-		$sth->execute(["uid" => $_SESSION['uid']]);
+			$sth->execute(["uid" => $_SESSION['uid']]);
+		} else {
+			$feed_ids_qmarks = arr_qmarks($feed_ids);
+
+			$sth = $pdo->prepare("SELECT f.id,
+					f.title,
+					".SUBSTRING_FOR_DATE."(f.last_updated,1,19) AS last_updated,
+					f.last_error,
+					SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
+					SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked
+				FROM ttrss_feeds f, ttrss_user_entries ue
+				WHERE f.id = ue.feed_id AND ue.owner_uid = ? AND f.id IN ($feed_ids_qmarks)
+				GROUP BY f.id");
+
+			$sth->execute(array_merge([$_SESSION['uid']], $feed_ids));
+		}
 
 		while ($line = $sth->fetch()) {
 

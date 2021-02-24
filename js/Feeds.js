@@ -133,8 +133,8 @@ const	Feeds = {
 		this._search_query = "";
 		this.reloadCurrent();
 	},
-	requestCounters: function() {
-		xhr.json("backend.php", {op: "rpc", method: "getAllCounters", seq: App.next_seq()}, () => {
+	requestCounters: function(feed_ids = null) {
+		xhr.json("backend.php", {op: "rpc", method: "getAllCounters", feed_ids: feed_ids, seq: App.next_seq()}, () => {
 			//
 		});
 	},
@@ -264,10 +264,10 @@ const	Feeds = {
 
 		// bw_limit disables timeout() so we request initial counters separately
 		if (App.getInitParam("bw_limit")) {
-			this.requestCounters(true);
+			this.requestCounters();
 		} else {
 			setTimeout(() => {
-				this.requestCounters(true);
+				this.requestCounters();
 				setInterval(() => { this.requestCounters(); }, 60 * 1000)
 			}, 250);
 		}
@@ -396,7 +396,7 @@ const	Feeds = {
 			Notify.progress("Marking all feeds as read...");
 
 			xhr.post("backend.php", {op: "feeds", method: "catchupAll"}, () => {
-				this.requestCounters(true);
+				this.requestCounters();
 				this.reloadCurrent();
 			});
 

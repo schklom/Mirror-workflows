@@ -7,7 +7,7 @@
 const Headlines = {
 	vgroup_last_feed: undefined,
 	_headlines_scroll_timeout: 0,
-	_observer_counters_timeout: 0,
+	//_observer_counters_timeout: 0,
 	headlines: [],
 	current_first_id: 0,
 	_scroll_reset_timeout: false,
@@ -149,38 +149,38 @@ const Headlines = {
 		const promises = [];
 
 		if (ops.tmark.length != 0)
-			promises.push(xhr.post("backend.php",
+			promises.push(xhr.json("backend.php",
 				{op: "rpc", method: "markSelected", ids: ops.tmark.toString(), cmode: 2}));
 
 		if (ops.tpub.length != 0)
-			promises.push(xhr.post("backend.php",
+			promises.push(xhr.json("backend.php",
 				{op: "rpc", method: "publishSelected", ids: ops.tpub.toString(), cmode: 2}));
 
 		if (ops.read.length != 0)
-			promises.push(xhr.post("backend.php",
+			promises.push(xhr.json("backend.php",
 				{op: "rpc", method: "catchupSelected", ids: ops.read.toString(), cmode: 0}));
 
 		if (ops.unread.length != 0)
-			promises.push(xhr.post("backend.php",
+			promises.push(xhr.json("backend.php",
 				{op: "rpc", method: "catchupSelected", ids: ops.unread.toString(), cmode: 1}));
 
 		const scores = Object.keys(ops.rescore);
 
 		if (scores.length != 0) {
 			scores.forEach((score) => {
-				promises.push(xhr.post("backend.php",
+				promises.push(xhr.json("backend.php",
 					{op: "article", method: "setScore", id: ops.rescore[score].toString(), score: score}));
 			});
 		}
 
-		if (promises.length > 0)
+		/*if (promises.length > 0)
 			Promise.all([promises]).then(() => {
 				window.clearTimeout(this._observer_counters_timeout);
 
 				this._observer_counters_timeout = setTimeout(() => {
-					Feeds.requestCounters(true);
+					Feeds.requestCounters();
 				}, 1000);
-			});
+			});*/
 
 	},
 	click: function (event, id, in_body) {

@@ -73,14 +73,21 @@ class RPC extends Handler_Protected {
 	}
 
 	function getAllCounters() {
+		$feed_ids = array_map("intval",
+			explode(",",
+				clean($_REQUEST["feed_ids"])));
+
 		@$seq = (int) $_REQUEST['seq'];
 
+		// @phpstan-ignore-next-line
+		$counters = count($feed_ids) > 0 ? Counters::get_for_feeds($feed_ids) : Counters::get_all();
+
 		$reply = [
-			'counters' => Counters::get_all(),
+			'counters' => $counters,
 			'seq' => $seq
 		];
 
-		if ($seq % 2 == 0)
+		if ($seq % 2)
 			$reply['runtime-info'] = $this->make_runtime_info();
 
 		print json_encode($reply);
@@ -88,30 +95,39 @@ class RPC extends Handler_Protected {
 
 	/* GET["cmode"] = 0 - mark as read, 1 - as unread, 2 - toggle */
 	function catchupSelected() {
-		$ids = explode(",", clean($_REQUEST["ids"]));
+		$ids = array_map("intval",
+			explode(",",
+				clean($_REQUEST["ids"])));
+
 		$cmode = (int)clean($_REQUEST["cmode"]);
 
 		Article::_catchup_by_id($ids, $cmode);
 
-		print json_encode(array("message" => "UPDATE_COUNTERS", "ids" => $ids));
+		print json_encode(["message" => "UPDATE_COUNTERS", "feeds" => Article::_feeds_of($ids)]);
 	}
 
 	function markSelected() {
-		$ids = explode(",", clean($_REQUEST["ids"]));
+		$ids = array_map("intval",
+			explode(",",
+				clean($_REQUEST["ids"])));
+
 		$cmode = (int)clean($_REQUEST["cmode"]);
 
 		$this->markArticlesById($ids, $cmode);
 
-		print json_encode(array("message" => "UPDATE_COUNTERS"));
+		print json_encode(["message" => "UPDATE_COUNTERS", "feeds" => Article::_feeds_of($ids)]);
 	}
 
 	function publishSelected() {
-		$ids = explode(",", clean($_REQUEST["ids"]));
+		$ids = array_map("intval",
+			explode(",",
+				clean($_REQUEST["ids"])));
+
 		$cmode = (int)clean($_REQUEST["cmode"]);
 
 		$this->publishArticlesById($ids, $cmode);
 
-		print json_encode(array("message" => "UPDATE_COUNTERS"));
+		print json_encode(["message" => "UPDATE_COUNTERS", "feeds" => Article::_feeds_of($ids)]);
 	}
 
 	function sanityCheck() {

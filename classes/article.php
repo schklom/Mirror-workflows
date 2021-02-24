@@ -640,4 +640,20 @@ class Article extends Handler_Protected {
 		return [$article_image, $article_stream, $article_kind];
 	}
 
+	static function _feeds_of(array $article_ids) {
+		$id_qmarks = arr_qmarks($article_ids);
+
+		$sth = DB::pdo()->prepare("SELECT DISTINCT feed_id FROM ttrss_entries e, ttrss_user_entries ue
+					WHERE ue.ref_id = e.id AND id IN ($id_qmarks)");
+
+		$sth->execute($article_ids);
+
+		$rv = [];
+
+		while ($row = $sth->fetch()) {
+			array_push($rv, $row["feed_id"]);
+		}
+
+		return $rv;
+	}
 }

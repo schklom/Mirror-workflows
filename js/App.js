@@ -421,8 +421,8 @@ const App = {
          // not in preferences
          if (typeof Feeds != "undefined") {
             if (message == "UPDATE_COUNTERS") {
-               console.log("need to refresh counters...");
-               Feeds.requestCounters(true);
+               console.log("need to refresh counters for", reply.feeds);
+               Feeds.requestCounters(reply.feeds);
             }
 
             if (counters)

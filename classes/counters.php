@@ -162,7 +162,6 @@ class Counters {
 		while ($line = $sth->fetch()) {
 
 			$id = $line["id"];
-			$last_error = htmlspecialchars($line["last_error"]);
 			$last_updated = TimeHelper::make_local_datetime($line['last_updated'], false);
 
 			if (Feeds::_has_icon($id)) {
@@ -183,11 +182,8 @@ class Counters {
 				"has_img" => (int) $has_img
 			];
 
-			if ($last_error)
-				$cv["error"] = $last_error;
-
-			if ($active_feed && $id == $active_feed)
-				$cv["title"] = truncate_string($line["title"], 30);
+			$cv["error"] = $line["last_error"];
+			$cv["title"] = truncate_string($line["title"], 30);
 
 			array_push($ret, $cv);
 

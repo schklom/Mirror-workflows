@@ -189,12 +189,11 @@ const Headlines = {
 				}
 			});
 
-			if (feeds.length > 0)
+			if (feeds.length > 0) {
 				console.log('requesting counters for', feeds);
 				Feeds.requestCounters(feeds);
 			}
-		);
-
+		});
 	},
 	click: function (event, id, in_body) {
 		in_body = in_body || false;

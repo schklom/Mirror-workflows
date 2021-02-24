@@ -520,7 +520,7 @@ class API extends Handler {
 
 			/* API only: -4 All feeds, including virtual feeds */
 			if ($cat_id == -4 || $cat_id == -2) {
-				$counters = Counters::get_labels(true);
+				$counters = Counters::get_labels();
 
 				foreach (array_values($counters) as $cv) {
 

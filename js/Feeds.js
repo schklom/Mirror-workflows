@@ -133,10 +133,15 @@ const	Feeds = {
 		this._search_query = "";
 		this.reloadCurrent();
 	},
-	requestCounters: function(feed_ids = null) {
-		xhr.json("backend.php", {op: "rpc", method: "getAllCounters", "feed_ids[]": feed_ids, seq: App.next_seq()}, () => {
-			//
-		});
+	// null = get all data, [] would give empty response for specific type
+	requestCounters: function(feed_ids = null, label_ids = null) {
+		xhr.json("backend.php", {op: "rpc",
+							method: "getAllCounters",
+							"feed_ids[]": feed_ids,
+							"feed_id_count": feed_ids ? feed_ids.length : -1,
+							"label_ids[]": label_ids,
+							"label_id_count": label_ids ? label_ids.length : -1,
+							seq: App.next_seq()});
 	},
 	reload: function() {
 		try {

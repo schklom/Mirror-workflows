@@ -640,10 +640,41 @@ class Article extends Handler_Protected {
 		return [$article_image, $article_stream, $article_kind];
 	}
 
-	static function _feeds_of(array $article_ids) {
+	// only cached, returns label ids (not label feed ids)
+	static function _labels_of(array $article_ids) {
+		if (count($article_ids) == 0)
+			return [];
+
 		$id_qmarks = arr_qmarks($article_ids);
 
-		$sth = DB::pdo()->prepare("SELECT DISTINCT feed_id FROM ttrss_entries e, ttrss_user_entries ue
+		$sth = Db::pdo()->prepare("SELECT DISTINCT label_cache FROM ttrss_entries e, ttrss_user_entries ue
+					WHERE ue.ref_id = e.id AND id IN ($id_qmarks)");
+
+		$sth->execute($article_ids);
+
+		$rv = [];
+
+		while ($row = $sth->fetch()) {
+			$labels = json_decode($row["label_cache"]);
+
+			if (isset($labels) && is_array($labels)) {
+				foreach ($labels as $label) {
+					if (empty($label["no-labels"]))
+						array_push($rv, Labels::feed_to_label_id($label[0]));
+				}
+			}
+		}
+
+		return array_unique($rv);
+	}
+
+	static function _feeds_of(array $article_ids) {
+		if (count($article_ids) == 0)
+			return [];
+
+		$id_qmarks = arr_qmarks($article_ids);
+
+		$sth = Db::pdo()->prepare("SELECT DISTINCT feed_id FROM ttrss_entries e, ttrss_user_entries ue
 					WHERE ue.ref_id = e.id AND id IN ($id_qmarks)");
 
 		$sth->execute($article_ids);

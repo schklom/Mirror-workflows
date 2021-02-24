@@ -1792,6 +1792,9 @@ class Feeds extends Handler_Protected {
 	}
 
 	static function _cats_of(array $feeds, int $owner_uid, bool $with_parents = false) {
+		if (count($feeds) == 0)
+			return [];
+
 		$pdo = Db::pdo();
 
 		$feeds_qmarks = arr_qmarks($feeds);

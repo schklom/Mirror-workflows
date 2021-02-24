@@ -73,11 +73,26 @@ class RPC extends Handler_Protected {
 	}
 
 	function getAllCounters() {
-		$feed_ids = array_map("intval", clean($_REQUEST["feed_ids"] ?? []));
 		@$seq = (int) $_REQUEST['seq'];
 
+		$feed_id_count = (int)$_REQUEST["feed_id_count"];
+		$label_id_count = (int)$_REQUEST["label_id_count"];
+
+		// it seems impossible to distinguish empty array [] from a null - both become unset in $_REQUEST
+		// so, count is >= 0 means we had an array, -1 means null
+		// we need null because it means "return all counters"; [] would return nothing
+		if ($feed_id_count == -1)
+			$feed_ids = null;
+		else
+			$feed_ids = array_map("intval", clean($_REQUEST["feed_ids"] ?? []));
+
+		if ($label_id_count == -1)
+			$label_ids = null;
+		else
+			$label_ids = array_map("intval", clean($_REQUEST["label_ids"] ?? []));
+
 		// @phpstan-ignore-next-line
-		$counters = count($feed_ids) > 0 ? Counters::get_for_feeds($feed_ids) : Counters::get_all();
+		$counters = is_array($feed_ids) ? Counters::get_conditional($feed_ids, $label_ids) : Counters::get_all();
 
 		$reply = [
 			'counters' => $counters,
@@ -95,16 +110,20 @@ class RPC extends Handler_Protected {
 		$ids = array_map("intval", clean($_REQUEST["ids"] ?? []));
 		$cmode = (int)clean($_REQUEST["cmode"]);
 
-		Article::_catchup_by_id($ids, $cmode);
+		if (count($ids) > 0)
+			Article::_catchup_by_id($ids, $cmode);
 
-		print json_encode(["message" => "UPDATE_COUNTERS", "feeds" => Article::_feeds_of($ids)]);
+		print json_encode(["message" => "UPDATE_COUNTERS",
+			"labels" => Article::_labels_of($ids),
+			"feeds" => Article::_feeds_of($ids)]);
 	}
 
 	function markSelected() {
 		$ids = array_map("intval", clean($_REQUEST["ids"] ?? []));
 		$cmode = (int)clean($_REQUEST["cmode"]);
 
-		$this->markArticlesById($ids, $cmode);
+		if (count($ids) > 0)
+			$this->markArticlesById($ids, $cmode);
 
 		print json_encode(["message" => "UPDATE_COUNTERS", "feeds" => Article::_feeds_of($ids)]);
 	}
@@ -113,7 +132,8 @@ class RPC extends Handler_Protected {
 		$ids = array_map("intval", clean($_REQUEST["ids"] ?? []));
 		$cmode = (int)clean($_REQUEST["cmode"]);
 
-		$this->publishArticlesById($ids, $cmode);
+		if (count($ids) > 0)
+			$this->publishArticlesById($ids, $cmode);
 
 		print json_encode(["message" => "UPDATE_COUNTERS", "feeds" => Article::_feeds_of($ids)]);
 	}

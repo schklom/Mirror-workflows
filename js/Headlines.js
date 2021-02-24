@@ -175,6 +175,7 @@ const Headlines = {
 
 		Promise.all(promises).then((results) => {
 			let feeds = [];
+			let labels = [];
 
 			results.forEach((res) => {
 				if (res) {
@@ -183,6 +184,10 @@ const Headlines = {
 
 						if (obj.feeds)
 							feeds = feeds.concat(obj.feeds);
+
+						if (obj.labels)
+							labels = labels.concat(obj.labels);
+
 					} catch (e) {
 						console.warn(e, res);
 					}
@@ -190,8 +195,8 @@ const Headlines = {
 			});
 
 			if (feeds.length > 0) {
-				console.log('requesting counters for', feeds);
-				Feeds.requestCounters(feeds);
+				console.log('requesting counters for', feeds, labels);
+				Feeds.requestCounters(feeds, labels);
 			}
 		});
 	},

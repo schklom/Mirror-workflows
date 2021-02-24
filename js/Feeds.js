@@ -395,8 +395,7 @@ const	Feeds = {
 
 			Notify.progress("Marking all feeds as read...");
 
-			xhr.post("backend.php", {op: "feeds", method: "catchupAll"}, () => {
-				this.requestCounters();
+			xhr.json("backend.php", {op: "feeds", method: "catchupAll"}, () => {
 				this.reloadCurrent();
 			});
 

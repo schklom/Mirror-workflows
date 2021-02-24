@@ -404,6 +404,8 @@ class Feeds extends Handler_Protected {
 		$sth = $this->pdo->prepare("UPDATE ttrss_user_entries SET
 						last_read = NOW(), unread = false WHERE unread = true AND owner_uid = ?");
 		$sth->execute([$_SESSION['uid']]);
+
+		print json_encode(array("message" => "UPDATE_COUNTERS"));
 	}
 
 	function view() {

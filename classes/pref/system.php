@@ -88,7 +88,7 @@ class Pref_System extends Handler_Administrative {
 				</button>
 
 				<div class='pull-right'>
-					<?= __("Severity:") ?>
+					<label><?= __("Severity:") ?></label>
 
 					<?= \Controls\select_hash("severity", $severity,
 						[

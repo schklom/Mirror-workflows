@@ -149,38 +149,51 @@ const Headlines = {
 		const promises = [];
 
 		if (ops.tmark.length != 0)
-			promises.push(xhr.json("backend.php",
+			promises.push(xhr.post("backend.php",
 				{op: "rpc", method: "markSelected", ids: ops.tmark.toString(), cmode: 2}));
 
 		if (ops.tpub.length != 0)
-			promises.push(xhr.json("backend.php",
+			promises.push(xhr.post("backend.php",
 				{op: "rpc", method: "publishSelected", ids: ops.tpub.toString(), cmode: 2}));
 
 		if (ops.read.length != 0)
-			promises.push(xhr.json("backend.php",
+			promises.push(xhr.post("backend.php",
 				{op: "rpc", method: "catchupSelected", ids: ops.read.toString(), cmode: 0}));
 
 		if (ops.unread.length != 0)
-			promises.push(xhr.json("backend.php",
+			promises.push(xhr.post("backend.php",
 				{op: "rpc", method: "catchupSelected", ids: ops.unread.toString(), cmode: 1}));
 
 		const scores = Object.keys(ops.rescore);
 
 		if (scores.length != 0) {
 			scores.forEach((score) => {
-				promises.push(xhr.json("backend.php",
+				promises.push(xhr.post("backend.php",
 					{op: "article", method: "setScore", id: ops.rescore[score].toString(), score: score}));
 			});
 		}
 
-		/*if (promises.length > 0)
-			Promise.all([promises]).then(() => {
-				window.clearTimeout(this._observer_counters_timeout);
+		Promise.all(promises).then((results) => {
+			let feeds = [];
 
-				this._observer_counters_timeout = setTimeout(() => {
-					Feeds.requestCounters();
-				}, 1000);
-			});*/
+			results.forEach((res) => {
+				if (res) {
+					try {
+						const obj = JSON.parse(res);
+
+						if (obj.feeds)
+							feeds = feeds.concat(obj.feeds);
+					} catch (e) {
+						console.warn(e, res);
+					}
+				}
+			});
+
+			if (feeds.length > 0)
+				console.log('requesting counters for', feeds);
+				Feeds.requestCounters(feeds);
+			}
+		);
 
 	},
 	click: function (event, id, in_body) {

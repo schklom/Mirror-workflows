@@ -169,7 +169,7 @@ class Article extends Handler_Protected {
 	}
 
 	function setScore() {
-		$ids = explode(",", clean($_REQUEST['id']));
+		$ids = array_map("intval", clean($_REQUEST['ids'] ?? []));
 		$score = (int)clean($_REQUEST['score']);
 
 		$ids_qmarks = arr_qmarks($ids);

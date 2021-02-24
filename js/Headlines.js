@@ -169,7 +169,7 @@ const Headlines = {
 		if (scores.length != 0) {
 			scores.forEach((score) => {
 				promises.push(xhr.post("backend.php",
-					{op: "article", method: "setScore", id: ops.rescore[score].toString(), score: score}));
+					{op: "article", method: "setScore", "ids[]": ops.rescore[score].toString(), score: score}));
 			});
 		}
 

@@ -51,53 +51,43 @@ msgstr "منذ ٣ أشهر"
 msgid "Default interval"
 msgstr "المدة الإفتراضية"
 
-#: backend.php:65
-#: backend.php:75
+#: backend.php:65 backend.php:75
 msgid "Disable updates"
 msgstr "عطّل التحديثات"
 
-#: backend.php:66
-#: backend.php:76
+#: backend.php:66 backend.php:76
 #, fuzzy
 msgid "15 minutes"
 msgstr "كل ١٥ دقيقة"
 
-#: backend.php:67
-#: backend.php:77
+#: backend.php:67 backend.php:77
 #, fuzzy
 msgid "30 minutes"
 msgstr "كل ٣٠ دقيقة"
 
-#: backend.php:68
-#: backend.php:78
+#: backend.php:68 backend.php:78
 msgid "Hourly"
 msgstr "كل ساعة"
 
-#: backend.php:69
-#: backend.php:79
+#: backend.php:69 backend.php:79
 #, fuzzy
 msgid "4 hours"
 msgstr "كل ٤ ساعات"
 
-#: backend.php:70
-#: backend.php:80
+#: backend.php:70 backend.php:80
 #, fuzzy
 msgid "12 hours"
 msgstr "كل ١٢ ساعة"
 
-#: backend.php:71
-#: backend.php:81
+#: backend.php:71 backend.php:81
 msgid "Daily"
 msgstr "يومياً"
 
-#: backend.php:72
-#: backend.php:82
+#: backend.php:72 backend.php:82
 msgid "Weekly"
 msgstr "أسبوعياً"
 
-#: backend.php:85
-#: classes/pref/system.php:110
-#: js/PrefUsers.js:57
+#: backend.php:85 classes/pref/system.php:110 js/PrefUsers.js:57
 msgid "User"
 msgstr "المستخدم"
 
@@ -109,51 +99,26 @@ msgstr "المستخدم الضليع"
 msgid "Administrator"
 msgstr "المسؤول"
 
-#: index.php:125
-#: index.php:140
-#: index.php:264
-#: prefs.php:109
-#: classes/pref/prefs.php:999
-#: classes/pref/prefs.php:1013
-#: classes/pref/system.php:173
-#: js/CommonDialogs.js:442
-#: js/CommonFilters.js:177
-#: js/CommonFilters.js:401
-#: plugins/af_psql_trgm/init.js:7
-#: plugins/note/note.js:28
-#: plugins/mail/mail.js:35
-#: plugins/mailto/init.js:18
-#: plugins/share/share.js:56
-#: js/CommonDialogs.js:289
-#: js/CommonDialogs.js:592
-#: js/CommonFilters.js:273
-#: js/Feeds.js:395
-#: js/Feeds.js:465
-#: js/Headlines.js:344
-#: js/PrefFeedTree.js:165
-#: js/PrefFeedTree.js:172
-#: js/PrefFeedTree.js:296
-#: js/PrefFeedTree.js:373
-#: js/PrefFilterTree.js:100
-#: js/PrefHelpers.js:27
-#: js/PrefHelpers.js:39
-#: js/PrefHelpers.js:88
-#: js/PrefHelpers.js:200
-#: js/PrefHelpers.js:283
-#: js/PrefHelpers.js:351
-#: js/PrefUsers.js:107
+#: index.php:125 index.php:140 index.php:264 prefs.php:109
+#: classes/pref/prefs.php:999 classes/pref/prefs.php:1013
+#: classes/pref/system.php:173 js/CommonDialogs.js:442 js/CommonFilters.js:177
+#: js/CommonFilters.js:401 plugins/af_psql_trgm/init.js:7
+#: plugins/note/note.js:28 plugins/mail/mail.js:35 plugins/mailto/init.js:18
+#: plugins/share/share.js:56 js/CommonDialogs.js:289 js/CommonDialogs.js:592
+#: js/CommonFilters.js:273 js/Feeds.js:395 js/Feeds.js:465 js/Headlines.js:344
+#: js/PrefFeedTree.js:165 js/PrefFeedTree.js:172 js/PrefFeedTree.js:296
+#: js/PrefFeedTree.js:373 js/PrefFilterTree.js:100 js/PrefHelpers.js:27
+#: js/PrefHelpers.js:39 js/PrefHelpers.js:88 js/PrefHelpers.js:200
+#: js/PrefHelpers.js:283 js/PrefHelpers.js:351 js/PrefUsers.js:107
 #: plugins/af_readability/init.js:19
 msgid "Loading, please wait..."
 msgstr "التحميل جارٍ.  فضلاً انتظر..."
 
-#: index.php:154
-#: prefs.php:119
-#: js/App.js:441
+#: index.php:154 prefs.php:119 js/App.js:441
 msgid "Communication problem with server."
 msgstr "مشكلة في الاتصال بالخادم"
 
-#: index.php:157
-#: prefs.php:121
+#: index.php:157 prefs.php:121
 msgid "Recent entries found in event log."
 msgstr ""
 
@@ -173,13 +138,11 @@ msgstr "العرض التكيُّفي/الأمثل"
 msgid "All Articles"
 msgstr "كل البنود"
 
-#: index.php:180
-#: classes/rpc.php:562
+#: index.php:180 classes/rpc.php:562
 msgid "Starred"
 msgstr "معلَّم بنجمة"
 
-#: index.php:181
-#: classes/rpc.php:563
+#: index.php:181 classes/rpc.php:563
 msgid "Published"
 msgstr "منشور"
 
@@ -215,10 +178,7 @@ msgstr "الأقدم أولاً"
 msgid "Title"
 msgstr "العنوان"
 
-#: index.php:206
-#: index.php:240
-#: classes/rpc.php:550
-#: js/FeedTree.js:89
+#: index.php:206 index.php:240 classes/rpc.php:550 js/FeedTree.js:89
 #: js/FeedTree.js:119
 msgid "Mark as read"
 msgstr "ضع علامة مقروء"
@@ -251,8 +211,7 @@ msgstr "بحث..."
 msgid "Feed actions:"
 msgstr "إجراءات الخلاصة:"
 
-#: index.php:236
-#: plugins/bookmarklets/init.php:38
+#: index.php:236 plugins/bookmarklets/init.php:38
 #: plugins/bookmarklets/init.php:72
 msgid "Subscribe to feed..."
 msgstr "إشترك في الخلاصة..."
@@ -261,9 +220,7 @@ msgstr "إشترك في الخلاصة..."
 msgid "Edit this feed..."
 msgstr "تحرير هذه الخلاصة..."
 
-#: index.php:238
-#: classes/pref/feeds.php:945
-#: js/PrefFeedTree.js:99
+#: index.php:238 classes/pref/feeds.php:945 js/PrefFeedTree.js:99
 #: js/CommonDialogs.js:579
 msgid "Unsubscribe"
 msgstr "إلغاء الاشتراك"
@@ -280,8 +237,7 @@ msgstr "إظهار/إخفاء الخلاصات المقروءة"
 msgid "Other actions:"
 msgstr "إجراءات أخرى:"
 
-#: index.php:243
-#: classes/rpc.php:536
+#: index.php:243 classes/rpc.php:536
 msgid "Toggle widescreen mode"
 msgstr "بدِّل وضع الشاشة العريضة"
 
@@ -293,10 +249,7 @@ msgstr "مساعدة اختصارات لوحة المفاتيح"
 msgid "Logout"
 msgstr "الخروج"
 
-#: prefs.php:19
-#: prefs.php:129
-#: classes/rpc.php:565
-#: classes/pref/prefs.php:1001
+#: prefs.php:19 prefs.php:129 classes/rpc.php:565 classes/pref/prefs.php:1001
 msgid "Preferences"
 msgstr "خيارات"
 
@@ -304,21 +257,16 @@ msgstr "خيارات"
 msgid "Exit preferences"
 msgstr "أخرج من الخيارات"
 
-#: prefs.php:132
-#: classes/pref/prefs.php:29
-#: classes/pref/feeds.php:120
+#: prefs.php:132 classes/pref/prefs.php:29 classes/pref/feeds.php:120
 #: classes/pref/feeds.php:934
 msgid "Feeds"
 msgstr "الخلاصات"
 
-#: prefs.php:136
-#: classes/pref/filters.php:228
+#: prefs.php:136 classes/pref/filters.php:228
 msgid "Filters"
 msgstr "المرشِّحات"
 
-#: prefs.php:140
-#: classes/pref/labels.php:25
-#: classes/feeds.php:1246
+#: prefs.php:140 classes/pref/labels.php:25 classes/feeds.php:1246
 msgid "Labels"
 msgstr "الأسماء"
 
@@ -330,11 +278,8 @@ msgstr "المستخدمون"
 msgid "System"
 msgstr "النظام"
 
-#: include/controls.php:177
-#: classes/pref/filters.php:900
-#: classes/pref/feeds.php:240
-#: classes/digest.php:114
-#: classes/opml.php:545
+#: include/controls.php:177 classes/pref/filters.php:900
+#: classes/pref/feeds.php:240 classes/digest.php:114 classes/opml.php:545
 #: classes/feeds.php:1258
 msgid "Uncategorized"
 msgstr "غير مصنَّفة"
@@ -343,19 +288,14 @@ msgstr "غير مصنَّفة"
 msgid "Detect automatically"
 msgstr ""
 
-#: include/login_form.php:105
-#: classes/handler/public.php:498
-#: classes/pref/feeds.php:645
-#: plugins/bookmarklets/init.php:300
-#: js/CommonDialogs.js:539
-#: js/PrefUsers.js:61
+#: include/login_form.php:105 classes/handler/public.php:498
+#: classes/pref/feeds.php:645 plugins/bookmarklets/init.php:300
+#: js/CommonDialogs.js:539 js/PrefUsers.js:61
 msgid "Login:"
 msgstr "الدخول:"
 
-#: include/login_form.php:114
-#: classes/pref/feeds.php:651
-#: plugins/bookmarklets/init.php:307
-#: js/CommonDialogs.js:545
+#: include/login_form.php:114 classes/pref/feeds.php:651
+#: plugins/bookmarklets/init.php:307 js/CommonDialogs.js:545
 msgid "Password:"
 msgstr "كلمة المرور:"
 
@@ -367,10 +307,8 @@ msgstr "نسيت كلمة المرور"
 msgid "Profile:"
 msgstr "الملف الشخصي:"
 
-#: include/login_form.php:134
-#: classes/handler/public.php:274
-#: classes/pref/prefs.php:1241
-#: classes/pref/prefs.php:1263
+#: include/login_form.php:134 classes/handler/public.php:274
+#: classes/pref/prefs.php:1241 classes/pref/prefs.php:1263
 msgid "Default profile"
 msgstr "الملف الشخصي الافتراضي"
 
@@ -382,8 +320,7 @@ msgstr "حركة بيانات أقل"
 msgid "Does not display images in articles, reduces automatic refreshes."
 msgstr "لا يعرض الصور في البنود ، و يقلّل التحديثات الآلية."
 
-#: include/login_form.php:156
-#: js/Feeds.js:275
+#: include/login_form.php:156 js/Feeds.js:275
 msgid "Safe mode"
 msgstr ""
 
@@ -395,8 +332,7 @@ msgstr ""
 msgid "Remember me"
 msgstr "تذكَّرني"
 
-#: include/login_form.php:179
-#: plugins/bookmarklets/init.php:320
+#: include/login_form.php:179 plugins/bookmarklets/init.php:320
 msgid "Log in"
 msgstr "الدخول"
 
@@ -480,18 +416,15 @@ msgstr "ألغ البحث"
 msgid "Article"
 msgstr "بَنْد"
 
-#: classes/rpc.php:521
-#: js/Headlines.js:1338
+#: classes/rpc.php:521 js/Headlines.js:1338
 msgid "Toggle starred"
 msgstr "إقلب المعلَّم بنجمة"
 
-#: classes/rpc.php:522
-#: js/Headlines.js:1350
+#: classes/rpc.php:522 js/Headlines.js:1350
 msgid "Toggle published"
 msgstr "إقلب المنشور"
 
-#: classes/rpc.php:523
-#: js/Headlines.js:1325
+#: classes/rpc.php:523 js/Headlines.js:1325
 msgid "Toggle unread"
 msgstr "إقلب غير المقروء"
 
@@ -503,13 +436,11 @@ msgstr "حرِّر العلامات"
 msgid "Open in new window"
 msgstr "فتح في نافذة جديدة"
 
-#: classes/rpc.php:526
-#: js/Headlines.js:1371
+#: classes/rpc.php:526 js/Headlines.js:1371
 msgid "Mark below as read"
 msgstr "علِّم أسفله مقروءاً"
 
-#: classes/rpc.php:527
-#: js/Headlines.js:1364
+#: classes/rpc.php:527 js/Headlines.js:1364
 msgid "Mark above as read"
 msgstr "علِّم أعلاه مقروءاً"
 
@@ -591,14 +522,11 @@ msgstr "تحديث الخلاصة الحاليَّة"
 msgid "Un/hide read feeds"
 msgstr "إعرض/أخفِ الخلاصات المقروءة"
 
-#: classes/rpc.php:548
-#: classes/pref/feeds.php:937
+#: classes/rpc.php:548 classes/pref/feeds.php:937
 msgid "Subscribe to feed"
 msgstr "إشترك في خلاصة"
 
-#: classes/rpc.php:549
-#: js/Headlines.js:1494
-#: js/PrefFeedTree.js:93
+#: classes/rpc.php:549 js/Headlines.js:1494 js/PrefFeedTree.js:93
 #: js/FeedTree.js:96
 msgid "Edit feed"
 msgstr "حرِّر خلاصة"
@@ -620,8 +548,7 @@ msgstr "تصحيح أخطاء تحديث الخلاصة"
 msgid "Debug viewfeed()"
 msgstr "تصحيح أخطاء تحديث الخلاصة"
 
-#: classes/rpc.php:555
-#: js/FeedTree.js:144
+#: classes/rpc.php:555 js/FeedTree.js:144
 msgid "Mark all feeds as read"
 msgstr "علِّم كل الخلاصات مقروءة"
 
@@ -641,8 +568,7 @@ msgstr "تبديل وضع التجميع"
 msgid "Go to"
 msgstr "إذهب إلى"
 
-#: classes/rpc.php:560
-#: classes/feeds.php:1114
+#: classes/rpc.php:560 classes/feeds.php:1114
 msgid "All articles"
 msgstr "كل البنود"
 
@@ -650,8 +576,7 @@ msgstr "كل البنود"
 msgid "Fresh"
 msgstr "طازج"
 
-#: classes/rpc.php:564
-#: classes/feeds.php:1118
+#: classes/rpc.php:564 classes/feeds.php:1118
 msgid "Recently read"
 msgstr "قُرِأَت حديثاً"
 
@@ -663,8 +588,7 @@ msgstr "أخرى"
 msgid "Create label"
 msgstr "أنشئ تسمية"
 
-#: classes/rpc.php:568
-#: classes/pref/filters.php:659
+#: classes/rpc.php:568 classes/pref/filters.php:659
 msgid "Create filter"
 msgstr "أنشئ مرشِّح"
 
@@ -684,8 +608,7 @@ msgstr "مفتاح عالي"
 msgid "Ctrl"
 msgstr "مفتاح تحكم"
 
-#: classes/rpc.php:729
-#: plugins/af_psql_trgm/init.php:112
+#: classes/rpc.php:729 plugins/af_psql_trgm/init.php:112
 #: plugins/share/init.php:269
 msgid "Close this window"
 msgstr "أغلق هذه النافذة"
@@ -698,24 +621,23 @@ msgstr "خطأ في اسم المستخدم أو كلمة المرور"
 msgid "Password recovery"
 msgstr "إستعادة كلمة المرور"
 
-#: classes/handler/public.php:488
-#: classes/handler/public.php:518
-#: classes/handler/public.php:591
-#: classes/handler/public.php:687
-#: classes/handler/public.php:699
-#: classes/handler/public.php:704
-#: classes/handler/public.php:728
-#: plugins/bookmarklets/init.php:91
-#: plugins/bookmarklets/init.php:136
-#: plugins/bookmarklets/init.php:154
+#: classes/handler/public.php:488 classes/handler/public.php:518
+#: classes/handler/public.php:591 classes/handler/public.php:687
+#: classes/handler/public.php:699 classes/handler/public.php:704
+#: classes/handler/public.php:728 plugins/bookmarklets/init.php:91
+#: plugins/bookmarklets/init.php:136 plugins/bookmarklets/init.php:154
 #: plugins/bookmarklets/init.php:159
 msgid "Return to Tiny Tiny RSS"
 msgstr "عُد إلى Tiny Tiny RSS"
 
 #: classes/handler/public.php:491
 #, fuzzy
-msgid "You will need to provide valid account name and email. Password reset link will be sent to your email address."
-msgstr "ستحتاج إلى إدخال اسم مستخدم وبريد إلكتروني صحيحين.  سيتم إرسال رابط إعادة تعيين كلمة المرور إلى عنوان بريدك الإلكتروني."
+msgid ""
+"You will need to provide valid account name and email. Password reset link "
+"will be sent to your email address."
+msgstr ""
+"ستحتاج إلى إدخال اسم مستخدم وبريد إلكتروني صحيحين.  سيتم إرسال رابط إعادة "
+"تعيين كلمة المرور إلى عنوان بريدك الإلكتروني."
 
 #: classes/handler/public.php:503
 msgid "Email:"
@@ -726,8 +648,7 @@ msgstr "بريد إلكتروني:"
 msgid "How much is %d + %d:"
 msgstr "كم حاصل إثنان زائد إثنان:"
 
-#: classes/handler/public.php:517
-#: classes/pref/users.php:241
+#: classes/handler/public.php:517 classes/pref/users.php:241
 msgid "Reset password"
 msgstr "إعادة تعيين كلمة المرور"
 
@@ -735,8 +656,7 @@ msgstr "إعادة تعيين كلمة المرور"
 msgid "Some of the required form parameters are missing or incorrect."
 msgstr "بعض وسائط النموذج اللازمة مفقودة أو غير صحيحة."
 
-#: classes/handler/public.php:533
-#: classes/handler/public.php:598
+#: classes/handler/public.php:533 classes/handler/public.php:598
 msgid "Go back"
 msgstr "الرجوع للخلف"
 
@@ -789,19 +709,14 @@ msgstr "ثبِّت التحديثات"
 msgid "Created label <b>%s</b>"
 msgstr "تم إنشاء التسمية <b>%s</b>"
 
-#: classes/pref/labels.php:182
-#: classes/pref/prefs.php:1294
-#: classes/pref/filters.php:649
-#: classes/pref/users.php:223
-#: classes/pref/feeds.php:924
-#: js/CommonDialogs.js:236
-#: js/CommonFilters.js:436
+#: classes/pref/labels.php:182 classes/pref/prefs.php:1294
+#: classes/pref/filters.php:649 classes/pref/users.php:223
+#: classes/pref/feeds.php:924 js/CommonDialogs.js:236 js/CommonFilters.js:436
 #: js/CommonFilters.js:469
 msgid "Select"
 msgstr "إختر"
 
-#: classes/pref/prefs.php:21
-#: classes/pref/feeds.php:605
+#: classes/pref/prefs.php:21 classes/pref/feeds.php:605
 msgid "General"
 msgstr "عام"
 
@@ -862,7 +777,8 @@ msgstr "تبديل وضع التجميع"
 #: classes/pref/prefs.php:80
 #, fuzzy
 msgid "Show flat list of articles instead of separate panels"
-msgstr "إعرض قائمة موسَّعة لبنود الخلاصات عوضاً عن عرض العناوين مستقلة عن محتوى البنود"
+msgstr ""
+"إعرض قائمة موسَّعة لبنود الخلاصات عوضاً عن عرض العناوين مستقلة عن محتوى البنود"
 
 #: classes/pref/prefs.php:81
 #, fuzzy
@@ -891,7 +807,9 @@ msgstr "تمكين رسالة موجز عبر البريد الإلكتروني"
 #: classes/pref/prefs.php:85
 #, fuzzy
 msgid "Send daily digest of new (and unread) headlines to your e-mail address"
-msgstr "يتيح هذا الخيار إرسال موجز يوميّ بالعناوين الجديدة (وغير المقروءة) إلى عنوان بريد إلكتروني تدخله في النظام."
+msgstr ""
+"يتيح هذا الخيار إرسال موجز يوميّ بالعناوين الجديدة (وغير المقروءة) إلى عنوان "
+"بريد إلكتروني تدخله في النظام."
 
 #: classes/pref/prefs.php:86
 #, fuzzy
@@ -911,7 +829,8 @@ msgstr "تمكين كلمات المرور ذات الاستخدام الواح�
 #: classes/pref/prefs.php:87
 #, fuzzy
 msgid "Allows accessing this account through the API"
-msgstr "السماح لبرامج قراءة خارج النظام بالوصول لهذا الحساب عبر واجهة التطبيقات (API)"
+msgstr ""
+"السماح لبرامج قراءة خارج النظام بالوصول لهذا الحساب عبر واجهة التطبيقات (API)"
 
 #: classes/pref/prefs.php:88
 #, fuzzy
@@ -952,8 +871,12 @@ msgstr "الصيغة الطويلة للتاريخ"
 
 #: classes/pref/prefs.php:93
 #, fuzzy
-msgid "Syntax is identical to PHP <a href='http://php.net/manual/function.date.php'>date()</a> function."
-msgstr "النحو المستخدم مماثل لدالة PHP <a href='http://php.net/manual/function.date.php'>date()</a> ."
+msgid ""
+"Syntax is identical to PHP <a href='http://php.net/manual/function.date."
+"php'>date()</a> function."
+msgstr ""
+"النحو المستخدم مماثل لدالة PHP <a href='http://php.net/manual/function.date."
+"php'>date()</a> ."
 
 #: classes/pref/prefs.php:94
 #, fuzzy
@@ -997,15 +920,16 @@ msgstr "رتب العناوين حسب تاريخ الخلاصة"
 
 #: classes/pref/prefs.php:100
 msgid "Use feed-specified date to sort headlines instead of local import date."
-msgstr "استخدم التاريخ المحدد للخلاصة لترتيب العناوين بدلاً عن التاريخ المحلّي للاستيراد"
+msgstr ""
+"استخدم التاريخ المحدد للخلاصة لترتيب العناوين بدلاً عن التاريخ المحلّي "
+"للاستيراد"
 
 #: classes/pref/prefs.php:101
 #, fuzzy
 msgid "SSL client certificate"
 msgstr "الدخول بشهادة SSL"
 
-#: classes/pref/prefs.php:102
-#: classes/pref/feeds.php:592
+#: classes/pref/prefs.php:102 classes/pref/feeds.php:592
 #: js/CommonDialogs.js:458
 #, fuzzy
 msgid "Do not embed media"
@@ -1019,8 +943,7 @@ msgstr "نزع الوسوم غير الآمنة من البنود"
 msgid "Strip all but most common HTML tags when reading articles."
 msgstr "نزع كل وسوم HTML عدا الشائع منها عند قراءة البنود."
 
-#: classes/pref/prefs.php:104
-#: js/PrefHelpers.js:223
+#: classes/pref/prefs.php:104 js/PrefHelpers.js:223
 msgid "Customize stylesheet"
 msgstr "تخصيص صفحات الطُّرُز"
 
@@ -1061,8 +984,7 @@ msgstr "تم ضبط تفضيلاتك الآن على القيم الإفتراض
 msgid "Full name:"
 msgstr "الاسم الكامل"
 
-#: classes/pref/prefs.php:310
-#: js/PrefUsers.js:93
+#: classes/pref/prefs.php:310 js/PrefUsers.js:93
 #, fuzzy
 msgid "E-mail:"
 msgstr "البريد الإلكتروني"
@@ -1073,15 +995,15 @@ msgstr "إحفظ البيانات"
 
 #: classes/pref/prefs.php:368
 msgid "Changing your current password will disable OTP."
-msgstr "تغيير كلمة المرور الحالية سيعطّل كلمة المرور ذات الإستخدام الواحد (OTP)."
+msgstr ""
+"تغيير كلمة المرور الحالية سيعطّل كلمة المرور ذات الإستخدام الواحد (OTP)."
 
 #: classes/pref/prefs.php:372
 #, fuzzy
 msgid "Old password:"
 msgstr "كلمة المرور السابقة"
 
-#: classes/pref/prefs.php:377
-#: js/PrefUsers.js:83
+#: classes/pref/prefs.php:377 js/PrefUsers.js:83
 #, fuzzy
 msgid "New password:"
 msgstr "كلمة المرور الجديدة"
@@ -1097,7 +1019,9 @@ msgstr "غيِّر كلمة المرور"
 
 #: classes/pref/prefs.php:396
 #, php-format
-msgid "Authentication module used for this session (<b>%s</b>) does not provide an ability to set passwords."
+msgid ""
+"Authentication module used for this session (<b>%s</b>) does not provide an "
+"ability to set passwords."
 msgstr ""
 
 #: classes/pref/prefs.php:412
@@ -1110,8 +1034,7 @@ msgstr "توليد عنوان URL جديد"
 msgid "Remove selected passwords"
 msgstr "حذف الملفات الشخصية المحدَّدة"
 
-#: classes/pref/prefs.php:465
-#: classes/pref/prefs.php:524
+#: classes/pref/prefs.php:465 classes/pref/prefs.php:524
 #, fuzzy
 msgid "Your password:"
 msgstr "أكِّد كلمة المرور"
@@ -1122,7 +1045,9 @@ msgstr "عطِّل OTP"
 
 #: classes/pref/prefs.php:485
 #, fuzzy
-msgid "Scan the following code by the Authenticator application or copy the key manually"
+msgid ""
+"Scan the following code by the Authenticator application or copy the key "
+"manually"
 msgstr "إمسح الشفرة التالية بتطبيق المُصدِّق:"
 
 #: classes/pref/prefs.php:490
@@ -1183,17 +1108,13 @@ msgstr "إجراءات أكثر..."
 msgid "Register"
 msgstr "سجِّل"
 
-#: classes/pref/prefs.php:745
-#: classes/pref/system.php:87
+#: classes/pref/prefs.php:745 classes/pref/system.php:87
 msgid "Clear"
 msgstr "إمسح"
 
-#: classes/pref/prefs.php:749
-#: classes/pref/prefs.php:852
-#: classes/pref/prefs.php:908
-#: classes/pref/prefs.php:960
-#: classes/pref/prefs.php:976
-#: plugins/bookmarklets/init.php:362
+#: classes/pref/prefs.php:749 classes/pref/prefs.php:852
+#: classes/pref/prefs.php:908 classes/pref/prefs.php:960
+#: classes/pref/prefs.php:976 plugins/bookmarklets/init.php:362
 #: js/CommonDialogs.js:635
 #, fuzzy
 msgid "More info..."
@@ -1220,8 +1141,7 @@ msgstr "إدارة الملفات الشخصية"
 msgid "Reset to defaults"
 msgstr "إعادة التعيين إلى الافتراضي"
 
-#: classes/pref/prefs.php:856
-#: classes/pref/prefs.php:912
+#: classes/pref/prefs.php:856 classes/pref/prefs.php:912
 #, php-format
 msgid "v%.2f, by %s"
 msgstr ""
@@ -1232,7 +1152,10 @@ msgstr "إمسح البيانات"
 
 #: classes/pref/prefs.php:958
 #, php-format
-msgid "The following plugins use per-feed content hooks. This may cause excessive data usage and origin server load resulting in a ban of your instance: <b>%s</b>"
+msgid ""
+"The following plugins use per-feed content hooks. This may cause excessive "
+"data usage and origin server load resulting in a ban of your instance: <b>"
+"%s</b>"
 msgstr ""
 
 #: classes/pref/prefs.php:965
@@ -1251,8 +1174,7 @@ msgstr "تمكين الإضافات المختارة"
 msgid "Personal data / Authentication"
 msgstr "البيانات الشخصية / الإستيثاق"
 
-#: classes/pref/prefs.php:1004
-#: classes/pref/feeds.php:1098
+#: classes/pref/prefs.php:1004 classes/pref/feeds.php:1098
 msgid "Plugins"
 msgstr "إضافات"
 
@@ -1260,29 +1182,20 @@ msgstr "إضافات"
 msgid "Incorrect one time password"
 msgstr "كلمة المرور ذات الاستخدام الواحد خاطئة"
 
-#: classes/pref/prefs.php:1102
-#: classes/pref/prefs.php:1156
+#: classes/pref/prefs.php:1102 classes/pref/prefs.php:1156
 msgid "Incorrect password"
 msgstr "كلمة المرور خاطئة"
 
-#: classes/pref/prefs.php:1297
-#: classes/pref/filters.php:652
-#: classes/pref/users.php:226
-#: classes/pref/feeds.php:927
-#: js/CommonDialogs.js:239
-#: js/CommonFilters.js:472
-#: js/PrefFeedTree.js:506
+#: classes/pref/prefs.php:1297 classes/pref/filters.php:652
+#: classes/pref/users.php:226 classes/pref/feeds.php:927
+#: js/CommonDialogs.js:239 js/CommonFilters.js:472 js/PrefFeedTree.js:506
 #: js/CommonFilters.js:440
 msgid "All"
 msgstr "الكل"
 
-#: classes/pref/prefs.php:1299
-#: classes/pref/filters.php:654
-#: classes/pref/users.php:228
-#: classes/pref/feeds.php:929
-#: js/CommonDialogs.js:241
-#: js/CommonFilters.js:474
-#: js/PrefFeedTree.js:508
+#: classes/pref/prefs.php:1299 classes/pref/filters.php:654
+#: classes/pref/users.php:228 classes/pref/feeds.php:929
+#: js/CommonDialogs.js:241 js/CommonFilters.js:474 js/PrefFeedTree.js:508
 #: js/CommonFilters.js:442
 msgid "None"
 msgstr "لاشيء"
@@ -1303,7 +1216,9 @@ msgstr "آخر تحديث:"
 
 #: classes/pref/prefs.php:1359
 #, php-format
-msgid "Generated password <strong>%s</strong> for %s. Please remember it for future reference."
+msgid ""
+"Generated password <strong>%s</strong> for %s. Please remember it for future "
+"reference."
 msgstr ""
 
 #: classes/pref/system.php:68
@@ -1366,28 +1281,22 @@ msgstr ""
 msgid "PHP Information"
 msgstr "القيام بإجراء"
 
-#: classes/pref/filters.php:197
-#: classes/pref/filters.php:208
-#: classes/pref/filters.php:426
-#: classes/pref/filters.php:847
+#: classes/pref/filters.php:197 classes/pref/filters.php:208
+#: classes/pref/filters.php:426 classes/pref/filters.php:847
 msgid "All feeds"
 msgstr "كل الخلاصات"
 
-#: classes/pref/filters.php:219
-#: classes/pref/filters.php:446
+#: classes/pref/filters.php:219 classes/pref/filters.php:446
 msgid "(inverse)"
 msgstr "(إعكس)"
 
-#: classes/pref/filters.php:215
-#: classes/pref/filters.php:445
+#: classes/pref/filters.php:215 classes/pref/filters.php:445
 #, php-format
 msgid "%s on %s in %s %s"
 msgstr "%s على %s في %s %s"
 
-#: classes/pref/filters.php:645
-#: classes/pref/users.php:218
-#: classes/pref/feeds.php:920
-#: js/Feeds.js:620
+#: classes/pref/filters.php:645 classes/pref/users.php:218
+#: classes/pref/feeds.php:920 js/Feeds.js:620
 msgid "Search"
 msgstr "إبحث"
 
@@ -1395,16 +1304,13 @@ msgstr "إبحث"
 msgid "Combine"
 msgstr "جمِّع"
 
-#: classes/pref/filters.php:663
-#: classes/pref/feeds.php:941
+#: classes/pref/filters.php:663 classes/pref/feeds.php:941
 #: classes/pref/feeds.php:956
 msgid "Reset sort order"
 msgstr "أعد تعيين ترتيب الفرز"
 
-#: classes/pref/filters.php:665
-#: classes/pref/users.php:237
-#: js/CommonDialogs.js:572
-#: js/CommonFilters.js:514
+#: classes/pref/filters.php:665 classes/pref/users.php:237
+#: js/CommonDialogs.js:572 js/CommonFilters.js:514
 msgid "Remove"
 msgstr "إحذف"
 
@@ -1480,10 +1386,8 @@ msgstr "أنشئ مستخدم"
 msgid "Click to edit"
 msgstr "أنقر للتحرير"
 
-#: classes/pref/feeds.php:70
-#: classes/pref/feeds.php:226
-#: classes/pref/feeds.php:274
-#: classes/pref/feeds.php:280
+#: classes/pref/feeds.php:70 classes/pref/feeds.php:226
+#: classes/pref/feeds.php:274 classes/pref/feeds.php:280
 #: classes/pref/feeds.php:309
 #, php-format
 msgid "(%d feed)"
@@ -1498,8 +1402,7 @@ msgid_plural "(%d days)"
 msgstr[0] "(الخلاصة %d)"
 msgstr[1] "(الخلاصات %d)"
 
-#: classes/pref/feeds.php:539
-#: classes/pref/feeds.php:587
+#: classes/pref/feeds.php:539 classes/pref/feeds.php:587
 #, fuzzy
 msgid "Disabled"
 msgstr "عطِّل OTP"
@@ -1520,40 +1423,32 @@ msgstr "ضع علامة اختيار لتفعيل الحقل"
 msgid "(%d days)"
 msgstr "(الخلاصة %d)"
 
-#: classes/pref/feeds.php:590
-#: js/CommonDialogs.js:456
+#: classes/pref/feeds.php:590 js/CommonDialogs.js:456
 msgid "Include in e-mail digest"
 msgstr "ضمِّن هذا في رسالة الموجز"
 
-#: classes/pref/feeds.php:591
-#: js/CommonDialogs.js:457
+#: classes/pref/feeds.php:591 js/CommonDialogs.js:457
 msgid "Always display image attachments"
 msgstr "إعرض الصور المرفقة دائماً"
 
-#: classes/pref/feeds.php:593
-#: js/CommonDialogs.js:459
+#: classes/pref/feeds.php:593 js/CommonDialogs.js:459
 msgid "Cache media"
 msgstr ""
 
-#: classes/pref/feeds.php:594
-#: js/CommonDialogs.js:460
+#: classes/pref/feeds.php:594 js/CommonDialogs.js:460
 msgid "Mark updated articles as unread"
 msgstr "علِّم البنود المحدَّثة بـ غير مقروءة"
 
-#: classes/pref/feeds.php:609
-#: js/CommonDialogs.js:46
-#: js/PrefFeedTree.js:426
+#: classes/pref/feeds.php:609 js/CommonDialogs.js:46 js/PrefFeedTree.js:426
 msgid "Place in category:"
 msgstr "ضعه في التصنيف:"
 
-#: classes/pref/feeds.php:617
-#: js/Feeds.js:602
+#: classes/pref/feeds.php:617 js/Feeds.js:602
 #, fuzzy
 msgid "Language:"
 msgstr "اللغة"
 
-#: classes/pref/feeds.php:628
-#: js/CommonDialogs.js:522
+#: classes/pref/feeds.php:628 js/CommonDialogs.js:522
 #, fuzzy
 msgid "Update interval:"
 msgstr "المدة الافتراضية لتحديث الخلاصة"
@@ -1562,41 +1457,27 @@ msgstr "المدة الافتراضية لتحديث الخلاصة"
 msgid "Article purging:"
 msgstr "تنظيف البند:"
 
-#: classes/pref/feeds.php:642
-#: plugins/auth_internal/init.php:68
-#: js/PrefFeedTree.js:434
-#: js/PrefUsers.js:71
+#: classes/pref/feeds.php:642 plugins/auth_internal/init.php:68
+#: js/PrefFeedTree.js:434 js/PrefUsers.js:71
 msgid "Authentication"
 msgstr "الإستيثاق"
 
-#: classes/pref/feeds.php:658
-#: js/PrefUsers.js:89
+#: classes/pref/feeds.php:658 js/PrefUsers.js:89
 msgid "Options"
 msgstr "خيارات"
 
-#: classes/pref/feeds.php:674
-#: plugins/af_psql_trgm/init.php:193
-#: plugins/note/init.php:51
-#: plugins/af_proxy_http/init.php:239
-#: plugins/mail/init.php:67
-#: plugins/af_readability/init.php:89
-#: plugins/nsfw/init.php:75
-#: plugins/af_redditimgur/init.php:79
-#: js/CommonDialogs.js:580
-#: js/CommonFilters.js:516
+#: classes/pref/feeds.php:674 plugins/af_psql_trgm/init.php:193
+#: plugins/note/init.php:51 plugins/af_proxy_http/init.php:239
+#: plugins/mail/init.php:67 plugins/af_readability/init.php:89
+#: plugins/nsfw/init.php:75 plugins/af_redditimgur/init.php:79
+#: js/CommonDialogs.js:580 js/CommonFilters.js:516
 msgid "Save"
 msgstr "إحفظ"
 
-#: classes/pref/feeds.php:675
-#: plugins/note/init.php:52
-#: plugins/mail/init.php:186
-#: plugins/bookmarklets/init.php:282
-#: js/PrefFeedTree.js:454
-#: js/CommonDialogs.js:581
-#: js/CommonFilters.js:233
-#: js/CommonFilters.js:317
-#: js/CommonFilters.js:517
-#: js/CommonFilters.js:521
+#: classes/pref/feeds.php:675 plugins/note/init.php:52
+#: plugins/mail/init.php:186 plugins/bookmarklets/init.php:282
+#: js/PrefFeedTree.js:454 js/CommonDialogs.js:581 js/CommonFilters.js:233
+#: js/CommonFilters.js:317 js/CommonFilters.js:517 js/CommonFilters.js:521
 msgid "Cancel"
 msgstr "ألغ"
 
@@ -1612,8 +1493,7 @@ msgstr "الخلاصات الخاملة"
 msgid "Edit selected feeds"
 msgstr "حرّر الخلاصات المختارة"
 
-#: classes/pref/feeds.php:943
-#: js/PrefFeedTree.js:396
+#: classes/pref/feeds.php:943 js/PrefFeedTree.js:396
 msgid "Batch subscribe"
 msgstr "إشتراك بالجملة"
 
@@ -1630,8 +1510,12 @@ msgid "Remove selected"
 msgstr "إحذف المختارة"
 
 #: classes/pref/feeds.php:1006
-msgid "Using OPML you can export and import your feeds, filters, labels and Tiny Tiny RSS settings."
-msgstr "باستخدام لغة تأشير معالجة المخططات (OPML) يمكنك تصدير واستيراد خلاصاتك ، مرشحاتك ، أسماءك  وإعدادات Tiny Tiny RSS أيضاً."
+msgid ""
+"Using OPML you can export and import your feeds, filters, labels and Tiny "
+"Tiny RSS settings."
+msgstr ""
+"باستخدام لغة تأشير معالجة المخططات (OPML) يمكنك تصدير واستيراد خلاصاتك ، "
+"مرشحاتك ، أسماءك  وإعدادات Tiny Tiny RSS أيضاً."
 
 #: classes/pref/feeds.php:1011
 #, fuzzy
@@ -1657,12 +1541,20 @@ msgid "Published OPML"
 msgstr "منشور"
 
 #: classes/pref/feeds.php:1040
-msgid "Your OPML can be published publicly and can be subscribed by anyone who knows the URL below."
-msgstr "يمكن نشر OPML الخاص بك للعامة ، كما يمكن لأي أحد الإشتراك فيه إذا كان عنوان URL أدناه معروفاً."
+msgid ""
+"Your OPML can be published publicly and can be subscribed by anyone who "
+"knows the URL below."
+msgstr ""
+"يمكن نشر OPML الخاص بك للعامة ، كما يمكن لأي أحد الإشتراك فيه إذا كان عنوان "
+"URL أدناه معروفاً."
 
 #: classes/pref/feeds.php:1041
-msgid "Published OPML does not include your Tiny Tiny RSS settings, feeds that require authentication or feeds hidden from Popular feeds."
-msgstr "الـ OPML المنشورة لاتتضمن إعدادات Tiny Tiny RSS الخاصة بك ، ولا الخلاصات التي تتطلب الإستيثاق أو الخلاصات المخفية من الخلاصات الشعبية."
+msgid ""
+"Published OPML does not include your Tiny Tiny RSS settings, feeds that "
+"require authentication or feeds hidden from Popular feeds."
+msgstr ""
+"الـ OPML المنشورة لاتتضمن إعدادات Tiny Tiny RSS الخاصة بك ، ولا الخلاصات "
+"التي تتطلب الإستيثاق أو الخلاصات المخفية من الخلاصات الشعبية."
 
 #: classes/pref/feeds.php:1045
 msgid "Display published OPML URL"
@@ -1670,8 +1562,11 @@ msgstr "إعرض عنوان URL المنشور لـ OPML"
 
 #: classes/pref/feeds.php:1055
 #, fuzzy
-msgid "Published articles can be subscribed by anyone who knows the following URL:"
-msgstr "يمكن نشر OPML الخاص بك للعامة ، كما يمكن لأي أحد الإشتراك فيه إذا كان عنوان URL أدناه معروفاً."
+msgid ""
+"Published articles can be subscribed by anyone who knows the following URL:"
+msgstr ""
+"يمكن نشر OPML الخاص بك للعامة ، كما يمكن لأي أحد الإشتراك فيه إذا كان عنوان "
+"URL أدناه معروفاً."
 
 #: classes/pref/feeds.php:1059
 msgid "Display URL"
@@ -1700,8 +1595,7 @@ msgstr "شارِك"
 msgid "Changed password of user %s to %s"
 msgstr "تم تغيير كلمة مرور المستخدم <b>%s</b> إلى <b>%s</b>"
 
-#: classes/opml.php:28
-#: classes/opml.php:32
+#: classes/opml.php:28 classes/opml.php:32
 msgid "OPML Utility"
 msgstr "أداة OPML"
 
@@ -1769,8 +1663,7 @@ msgstr "خطأ: لم أعثر على ملف الـ OPML المنقول."
 msgid "Error while parsing document."
 msgstr "خطأ أثناء تفسير المستند."
 
-#: classes/feeds.php:54
-#: classes/feeds.php:458
+#: classes/feeds.php:54 classes/feeds.php:458
 msgid "Feed not found."
 msgstr "لم أجد الخلاصة."
 
@@ -1778,8 +1671,7 @@ msgstr "لم أجد الخلاصة."
 msgid "Never"
 msgstr "أبداً"
 
-#: classes/feeds.php:198
-#: classes/feeds.php:1116
+#: classes/feeds.php:198 classes/feeds.php:1116
 msgid "Archived articles"
 msgstr "البنود المحفوظة"
 
@@ -1805,21 +1697,24 @@ msgid "No starred articles found to display."
 msgstr "لم أجد بنوداً معلَّمة بنجمة لأعرضها."
 
 #: classes/feeds.php:357
-msgid "No articles found to display. You can assign articles to labels manually from article header context menu (applies to all selected articles) or use a filter."
-msgstr "لم أجد بنوداً للعرض.  يمكنك إسناد بنود للتسميات يدوياً من قائمة سياق ترويسة البند (هذا ينطبق على جميع البنود المختارة) أو استخدام مرشِّح."
+msgid ""
+"No articles found to display. You can assign articles to labels manually "
+"from article header context menu (applies to all selected articles) or use a "
+"filter."
+msgstr ""
+"لم أجد بنوداً للعرض.  يمكنك إسناد بنود للتسميات يدوياً من قائمة سياق ترويسة "
+"البند (هذا ينطبق على جميع البنود المختارة) أو استخدام مرشِّح."
 
 #: classes/feeds.php:359
 msgid "No articles found to display."
 msgstr "لم أجد بنوداًلأعرضها."
 
-#: classes/feeds.php:376
-#: classes/feeds.php:526
+#: classes/feeds.php:376 classes/feeds.php:526
 #, php-format
 msgid "Feeds last updated at %s"
 msgstr "آخر تحديث للخلاصات في %s"
 
-#: classes/feeds.php:388
-#: classes/feeds.php:538
+#: classes/feeds.php:388 classes/feeds.php:538
 msgid "Some feeds have update errors (click for details)"
 msgstr "توجد أخطاء في تحديث بعض الخلاصات (أنقر للتفاصيل)"
 
@@ -1858,8 +1753,7 @@ msgstr "نتائج البحث: %s"
 msgid "%d min"
 msgstr ""
 
-#: classes/article.php:26
-#: plugins/share/init.php:262
+#: classes/article.php:26 plugins/share/init.php:262
 msgid "Article not found."
 msgstr "البند غير موجود"
 
@@ -1879,8 +1773,7 @@ msgstr "تم تغيير كلمة المرور."
 msgid "Old password is incorrect."
 msgstr "كلمة المرور القديمة غير صحيحة."
 
-#: plugins/vf_shared/init.php:17
-#: plugins/vf_shared/init.php:64
+#: plugins/vf_shared/init.php:17 plugins/vf_shared/init.php:64
 msgid "Shared articles"
 msgstr "البنود المشارَكة"
 
@@ -1904,7 +1797,10 @@ msgid "Minimum similarity:"
 msgstr ""
 
 #: plugins/af_psql_trgm/init.php:172
-msgid "PostgreSQL trigram extension returns string similarity as a floating point number (0-1). Setting it too low might produce false positives, zero disables checking."
+msgid ""
+"PostgreSQL trigram extension returns string similarity as a floating point "
+"number (0-1). Setting it too low might produce false positives, zero "
+"disables checking."
 msgstr ""
 
 #: plugins/af_psql_trgm/init.php:177
@@ -1916,8 +1812,7 @@ msgstr ""
 msgid "Enable for all feeds."
 msgstr "تمكين تصنيفات الخلاصات"
 
-#: plugins/af_psql_trgm/init.php:206
-#: plugins/af_readability/init.php:106
+#: plugins/af_psql_trgm/init.php:206 plugins/af_readability/init.php:106
 msgid "Currently enabled for (click to edit):"
 msgstr ""
 
@@ -1930,8 +1825,7 @@ msgstr ""
 msgid "Mark similar articles as read"
 msgstr "أعلّم جميع البنود بـ مقروءة؟"
 
-#: plugins/note/init.php:26
-#: plugins/note/note.js:6
+#: plugins/note/init.php:26 plugins/note/note.js:6
 msgid "Edit article note"
 msgstr "حرّر ملاحظة للبند"
 
@@ -1944,14 +1838,12 @@ msgstr ""
 msgid "Enable proxy for all remote images."
 msgstr "تمكين تصنيفات الخلاصات"
 
-#: plugins/af_proxy_http/init.php:250
-#: plugins/af_redditimgur/init.php:95
+#: plugins/af_proxy_http/init.php:250 plugins/af_redditimgur/init.php:95
 #, fuzzy
 msgid "Configuration saved"
 msgstr "حُفظت الإعدادات."
 
-#: plugins/mail/init.php:26
-#: plugins/mail/init.php:77
+#: plugins/mail/init.php:26 plugins/mail/init.php:77
 msgid "Forward by email"
 msgstr "أعد التوجيه بالبريد"
 
@@ -1967,15 +1859,12 @@ msgstr "إضافة البريد"
 msgid "You can set predefined email addressed here (comma-separated list):"
 msgstr "يمكنك تحديد عناوين بريد معرَّف مسبقاً هنا (قائمة مفصولة بفواصل):"
 
-#: plugins/mail/init.php:115
-#: plugins/mail/init.php:123
-#: plugins/mailto/init.php:51
-#: plugins/mailto/init.php:59
+#: plugins/mail/init.php:115 plugins/mail/init.php:123
+#: plugins/mailto/init.php:51 plugins/mailto/init.php:59
 msgid "[Forwarded]"
 msgstr "[إعادة توجيه]"
 
-#: plugins/mail/init.php:115
-#: plugins/mailto/init.php:51
+#: plugins/mail/init.php:115 plugins/mailto/init.php:51
 msgid "Multiple articles"
 msgstr "بنود متعددة"
 
@@ -2016,7 +1905,8 @@ msgid "Readability settings (af_readability)"
 msgstr ""
 
 #: plugins/af_readability/init.php:83
-msgid "Provide full-text services to core code (bookmarklets) and other plugins"
+msgid ""
+"Provide full-text services to core code (bookmarklets) and other plugins"
 msgstr ""
 
 #: plugins/af_readability/init.php:113
@@ -2037,8 +1927,7 @@ msgstr "حرّر ملاحظة للبند"
 msgid "Append to summary, instead of replacing it"
 msgstr ""
 
-#: plugins/bookmarklets/init.php:88
-#: js/CommonDialogs.js:93
+#: plugins/bookmarklets/init.php:88 js/CommonDialogs.js:93
 msgid "Subscribe"
 msgstr "إشترك"
 
@@ -2065,7 +1954,8 @@ msgstr "لم أجد خلاصات في <b>%s</b>."
 #: plugins/bookmarklets/init.php:116
 #, php-format
 msgid "Could not subscribe to <b>%s</b>.<br>Can't download the Feed URL."
-msgstr "لم أتمكن من الإشتراك في <b>%s</b>.  <br>لايمكن تنزيل عنوان URL للخلاصة."
+msgstr ""
+"لم أتمكن من الإشتراك في <b>%s</b>.  <br>لايمكن تنزيل عنوان URL للخلاصة."
 
 #: plugins/bookmarklets/init.php:127
 #, fuzzy
@@ -2080,8 +1970,7 @@ msgstr "إشترك في الخلاصة المختارة"
 msgid "Edit subscription options"
 msgstr "عدّل خيارات الإشتراك"
 
-#: plugins/bookmarklets/init.php:184
-#: plugins/bookmarklets/init.php:359
+#: plugins/bookmarklets/init.php:184 plugins/bookmarklets/init.php:359
 msgid "Share with Tiny Tiny RSS"
 msgstr "شارك مع/عبر Tiny Tiny RSS"
 
@@ -2119,8 +2008,12 @@ msgid "Bookmarklets"
 msgstr "علامات مرجعية"
 
 #: plugins/bookmarklets/init.php:350
-msgid "Drag the link below to your browser toolbar, open the feed you're interested in in your browser and click on the link to subscribe to it."
-msgstr "إسحب الرابط أدناه إلى شريط أدوات مستعرضك ، إفتح الخلاصة التي تقصدها في المستعرض وانقر على الرابط للاشتراك فيها."
+msgid ""
+"Drag the link below to your browser toolbar, open the feed you're interested "
+"in in your browser and click on the link to subscribe to it."
+msgstr ""
+"إسحب الرابط أدناه إلى شريط أدوات مستعرضك ، إفتح الخلاصة التي تقصدها في "
+"المستعرض وانقر على الرابط للاشتراك فيها."
 
 #: plugins/bookmarklets/init.php:353
 msgid "Subscribe in Tiny Tiny RSS"
@@ -2128,7 +2021,8 @@ msgstr "إشترك في Tiny Tiny RSS"
 
 #: plugins/bookmarklets/init.php:356
 msgid "Use this bookmarklet to publish arbitrary pages using Tiny Tiny RSS"
-msgstr "استخدم العلامة المرجعية التالية لتنشر صفحات عشوائية باستخدام Tiny Tiny RSS"
+msgstr ""
+"استخدم العلامة المرجعية التالية لتنشر صفحات عشوائية باستخدام Tiny Tiny RSS"
 
 #: plugins/af_comics/init.php:62
 msgid "Feeds supported by af_comics"
@@ -2155,8 +2049,7 @@ msgstr "العلامات المعتبرة غير آمنة في العمل (NSFW)
 msgid "Configuration saved."
 msgstr "حُفظت الإعدادات."
 
-#: plugins/mailto/init.php:19
-#: plugins/mailto/init.php:29
+#: plugins/mailto/init.php:19 plugins/mailto/init.php:29
 #, fuzzy
 msgid "Forward by email (mailto:)"
 msgstr "أعد التوجيه بالبريد"
@@ -2221,8 +2114,7 @@ msgstr "يمكنك مشاركة هذا البند بعنوان URL الفريد 
 msgid "Unshare article"
 msgstr "إلغاء مشاركة البند"
 
-#: plugins/share/init.php:268
-#: js/CommonDialogs.js:637
+#: plugins/share/init.php:268 js/CommonDialogs.js:637
 msgid "Generate new URL"
 msgstr "توليد عنوان URL جديد"
 
@@ -2244,8 +2136,7 @@ msgstr ""
 msgid "Please enable af_readability first."
 msgstr "فضلاً فعِّل إضافة البريد قبل البدء."
 
-#: js/App.js:1133
-#: js/App.js:1223
+#: js/App.js:1133 js/App.js:1223
 msgid "Widescreen is not available in combined mode."
 msgstr ""
 
@@ -2253,15 +2144,9 @@ msgstr ""
 msgid "Please enter new score for selected articles:"
 msgstr "فضلاً أدخل نقطة جديدة للبنود المختارة:"
 
-#: js/Article.js:62
-#: js/Headlines.js:865
-#: js/Headlines.js:877
-#: js/Headlines.js:1020
-#: js/Headlines.js:1037
-#: js/Headlines.js:1054
-#: js/Headlines.js:1191
-#: plugins/mail/mail.js:9
-#: plugins/mailto/init.js:9
+#: js/Article.js:62 js/Headlines.js:865 js/Headlines.js:877
+#: js/Headlines.js:1020 js/Headlines.js:1037 js/Headlines.js:1054
+#: js/Headlines.js:1191 plugins/mail/mail.js:9 plugins/mailto/init.js:9
 #: js/Headlines.js:839
 #, fuzzy
 msgid "No articles selected."
@@ -2314,16 +2199,12 @@ msgstr "هذه الخلاصة تتطلب الإستيثاق."
 msgid "Please enter label caption:"
 msgstr "فضلاً أدخل عنوان التسمية:"
 
-#: js/CommonDialogs.js:302
-#: js/CommonDialogs.js:339
-#: js/App.js:1202
+#: js/CommonDialogs.js:302 js/CommonDialogs.js:339 js/App.js:1202
 #, perl-format
 msgid "Unsubscribe from %s?"
 msgstr "إلغاء الإشتراك في %s ؟"
 
-#: js/CommonDialogs.js:328
-#: js/App.js:1054
-#: js/App.js:1182
+#: js/CommonDialogs.js:328 js/App.js:1054 js/App.js:1182
 msgid "You can't edit this kind of feed."
 msgstr "لايمكنك تحرير هذا النوع من الخلاصات."
 
@@ -2360,8 +2241,7 @@ msgstr "طابق أي قاعدة"
 msgid "Inverse matching"
 msgstr "مطابقة عكسيَّة"
 
-#: js/CommonFilters.js:478
-#: js/CommonFilters.js:446
+#: js/CommonFilters.js:478 js/CommonFilters.js:446
 msgid "Add"
 msgstr "أضِف"
 
@@ -2451,18 +2331,16 @@ msgstr "إحذف التصنيف"
 
 #: js/PrefFeedTree.js:179
 #, perl-format
-msgid "Remove category %s? Any nested feeds would be placed into Uncategorized."
+msgid ""
+"Remove category %s? Any nested feeds would be placed into Uncategorized."
 msgstr "أحذف التصنيف %s ؟ ستوضع أي خلاصة ضمن هذا التصنيف في \"غير مصنَّف\""
 
 #: js/PrefFeedTree.js:192
 msgid "Unsubscribe from selected feeds?"
 msgstr "ألغي الإشتراك في الخلاصات المختارة؟"
 
-#: js/PrefFeedTree.js:207
-#: js/PrefFeedTree.js:276
-#: js/PrefFeedTree.js:292
-#: js/CommonDialogs.js:230
-#: js/PrefFeedTree.js:497
+#: js/PrefFeedTree.js:207 js/PrefFeedTree.js:276 js/PrefFeedTree.js:292
+#: js/CommonDialogs.js:230 js/PrefFeedTree.js:497
 #, fuzzy
 msgid "No feeds selected."
 msgstr "لم تختر خلاصة."
@@ -2501,8 +2379,7 @@ msgstr "يجري الاشتراك في الخلاصات..."
 msgid "Click to edit feed"
 msgstr "أنقر لتحرير الخلاصة"
 
-#: js/PrefFilterTree.js:47
-#: js/CommonFilters.js:220
+#: js/PrefFilterTree.js:47 js/CommonFilters.js:220
 msgid "in"
 msgstr "في"
 
@@ -2510,8 +2387,7 @@ msgstr "في"
 msgid "Inverse"
 msgstr "العكس"
 
-#: js/PrefFilterTree.js:110
-#: js/PrefFilterTree.js:139
+#: js/PrefFilterTree.js:110 js/PrefFilterTree.js:139
 #, fuzzy
 msgid "No filters selected."
 msgstr "لم يتم اختيار مرشِّحات."
@@ -2543,8 +2419,10 @@ msgid "Settings Profiles"
 msgstr "ملفات شخصية للضبط"
 
 #: js/PrefHelpers.js:108
-msgid "Remove selected profiles? Active and default profiles will not be removed."
-msgstr "هل ترغب حذف الملفات الشخصية المختارة ؟ الملفات الفعالة والافتراضية لن تحذف."
+msgid ""
+"Remove selected profiles? Active and default profiles will not be removed."
+msgstr ""
+"هل ترغب حذف الملفات الشخصية المختارة ؟ الملفات الفعالة والافتراضية لن تحذف."
 
 #: js/PrefHelpers.js:123
 #, fuzzy
@@ -2559,8 +2437,7 @@ msgstr "محرر التسميات"
 msgid "Reset selected labels to default colors?"
 msgstr "أعيد تعيين الألوان الافتراضية للأسماء المختارة ؟"
 
-#: js/PrefLabelTree.js:203
-#: js/PrefLabelTree.js:223
+#: js/PrefLabelTree.js:203 js/PrefLabelTree.js:223
 #, fuzzy
 msgid "No labels selected."
 msgstr "لم يتم اختيار أسماء."
@@ -2641,12 +2518,19 @@ msgid "Saving article tags..."
 msgstr "يجري حفظ علامات البند..."
 
 #: js/CommonDialogs.js:30
-msgid "Provided URL is a HTML page referencing multiple feeds, please select required feed from the dropdown menu below."
+msgid ""
+"Provided URL is a HTML page referencing multiple feeds, please select "
+"required feed from the dropdown menu below."
 msgstr ""
 
 #: js/CommonDialogs.js:122
-msgid "Failed to parse output. This can indicate server timeout and/or network issues. Backend output was logged to browser console."
-msgstr "فشل تفسير الخَرج.  قد يشير هذا إلى انتهاء مهلة الخادم و/أو مشكلة في الشبكة.  تم تسجيل خرج برنامج الخلفية في وحدة تحكّم المستعرض ( التفضيلات-> النظام -> سجل الأخطاء )."
+msgid ""
+"Failed to parse output. This can indicate server timeout and/or network "
+"issues. Backend output was logged to browser console."
+msgstr ""
+"فشل تفسير الخَرج.  قد يشير هذا إلى انتهاء مهلة الخادم و/أو مشكلة في الشبكة.  "
+"تم تسجيل خرج برنامج الخلفية في وحدة تحكّم المستعرض ( التفضيلات-> النظام -> "
+"سجل الأخطاء )."
 
 #: js/CommonDialogs.js:136
 msgid "Subscribed to %s"
@@ -2681,13 +2565,11 @@ msgstr "أنت مشترك بالفعل في هذه الخلاصة."
 msgid "Feeds with update errors"
 msgstr "الخلاصات التي حصلت أخطاء أثناء تحديثها"
 
-#: js/CommonDialogs.js:209
-#: js/PrefFeedTree.js:478
+#: js/CommonDialogs.js:209 js/PrefFeedTree.js:478
 msgid "Remove selected feeds?"
 msgstr "أحذف الخلاصات المختارة؟"
 
-#: js/CommonDialogs.js:210
-#: js/PrefFeedTree.js:479
+#: js/CommonDialogs.js:210 js/PrefFeedTree.js:479
 msgid "Removing selected feeds..."
 msgstr "يجري حذف الخلاصات المختارة..."
 
@@ -2717,9 +2599,7 @@ msgstr "جارٍ حذف رمز الخلاصة..."
 msgid "Feed icon removed."
 msgstr "حذف رمز الخلاصة."
 
-#: js/CommonDialogs.js:426
-#: js/CommonFilters.js:391
-#: js/PrefFeedTree.js:344
+#: js/CommonDialogs.js:426 js/CommonFilters.js:391 js/PrefFeedTree.js:344
 #: js/PrefUsers.js:39
 msgid "Saving data..."
 msgstr "أحفظُ البيانات..."
@@ -2738,13 +2618,11 @@ msgstr "هذه الخلاصة"
 msgid "Generate new syndication address for this feed?"
 msgstr "توليد عنوان "
 
-#: js/CommonDialogs.js:601
-#: js/PrefHelpers.js:359
+#: js/CommonDialogs.js:601 js/PrefHelpers.js:359
 msgid "Trying to change address..."
 msgstr "محاولة تغيير العنوان..."
 
-#: js/CommonDialogs.js:619
-#: js/PrefHelpers.js:373
+#: js/CommonDialogs.js:619 js/PrefHelpers.js:373
 #, fuzzy
 msgid "Could not change feed URL."
 msgstr "لم أتمكن من إنشاء المستخدم <b>%s</b>"
@@ -2813,13 +2691,11 @@ msgstr "أحذف المرشِّح؟"
 msgid "Removing filter..."
 msgstr "يجري حذف المرشِّح..."
 
-#: js/CommonFilters.js:449
-#: js/CommonFilters.js:481
+#: js/CommonFilters.js:449 js/CommonFilters.js:481
 msgid "Delete"
 msgstr "إحذف"
 
-#: js/CommonFilters.js:515
-#: js/CommonFilters.js:519
+#: js/CommonFilters.js:515 js/CommonFilters.js:519
 msgid "Test"
 msgstr "إختبر"
 
@@ -2838,7 +2714,9 @@ msgid "(Un)collapse"
 msgstr "طيّ/بَسْط الشريط الجانبي"
 
 #: js/Feeds.js:257
-msgid "You are using default tt-rss password. Please change it in the Preferences (Personal data / Authentication)."
+msgid ""
+"You are using default tt-rss password. Please change it in the Preferences "
+"(Personal data / Authentication)."
 msgstr ""
 
 #: js/Feeds.js:416
@@ -2896,9 +2774,7 @@ msgstr "ألغ البحث"
 msgid "Select..."
 msgstr "إختر"
 
-#: js/Headlines.js:721
-#: js/Headlines.js:772
-#: js/Headlines.js:789
+#: js/Headlines.js:721 js/Headlines.js:772 js/Headlines.js:789
 #, fuzzy
 msgid "Click to open next unread feed."
 msgstr "أنقر لتحرير الخلاصة"
@@ -2941,8 +2817,7 @@ msgstr "يجري دمج المرشِّحات..."
 msgid "Removing selected filters..."
 msgstr "يجري حذف المرشِّحات المختارة..."
 
-#: js/PrefHelpers.js:46
-#: plugins/share/share_prefs.js:6
+#: js/PrefHelpers.js:46 plugins/share/share_prefs.js:6
 msgid "Clearing URLs..."
 msgstr "يجري مسح عناوين URL..."
 
@@ -2972,11 +2847,18 @@ msgstr "فضلاً إختر الملف الشخصي للتفعيل."
 
 #: js/PrefHelpers.js:239
 #, fuzzy
-msgid "You can override colors, fonts and layout of your currently selected theme with custom CSS declarations here."
-msgstr "إذا كتبت تعليمات CSS مخصصة هنا فسيمكنك تجاوز ألوان وخطوط وتخطيط السمة المختارة حالياً.  <a target=\"_blank\" class=\"visibleLink\" href=\"%s\">هذا الملف</a>يمكن استخدامه أساساً والتعديل كما تريد."
+msgid ""
+"You can override colors, fonts and layout of your currently selected theme "
+"with custom CSS declarations here."
+msgstr ""
+"إذا كتبت تعليمات CSS مخصصة هنا فسيمكنك تجاوز ألوان وخطوط وتخطيط السمة "
+"المختارة حالياً.  <a target=\"_blank\" class=\"visibleLink\" href=\"%s\">هذا "
+"الملف</a>يمكن استخدامه أساساً والتعديل كما تريد."
 
 #: js/PrefHelpers.js:248
-msgid "User CSS has been applied, you might need to reload the page to see all changes."
+msgid ""
+"User CSS has been applied, you might need to reload the page to see all "
+"changes."
 msgstr ""
 
 #: js/PrefHelpers.js:274
@@ -3000,8 +2882,12 @@ msgid "OPML Import"
 msgstr "إستيراد OPML"
 
 #: js/PrefHelpers.js:325
-msgid "If you have imported labels and/or filters, you might need to reload preferences to see your new data."
-msgstr "إذا كنت قد استوردت تسميات و/أو مرشحات ، قد تحتاج إلى إعادة تحميل التفضيلات لتشاهد بياناتك الجديدة."
+msgid ""
+"If you have imported labels and/or filters, you might need to reload "
+"preferences to see your new data."
+msgstr ""
+"إذا كنت قد استوردت تسميات و/أو مرشحات ، قد تحتاج إلى إعادة تحميل التفضيلات "
+"لتشاهد بياناتك الجديدة."
 
 #: js/PrefHelpers.js:356
 msgid "Public OPML URL"
@@ -3048,8 +2934,7 @@ msgstr "تتم إضافة المستخدم..."
 msgid "User Editor"
 msgstr "محرِّر المستخدم"
 
-#: js/PrefUsers.js:130
-#: js/PrefUsers.js:169
+#: js/PrefUsers.js:130 js/PrefUsers.js:169
 #, fuzzy
 msgid "No users selected."
 msgstr "لم يتم اختيار مستخدمين."
@@ -3068,7 +2953,9 @@ msgid "Resetting password for selected user..."
 msgstr "تجري إعادة ضبط كلمة مرور المستخدم الذي اخترت..."
 
 #: js/PrefUsers.js:155
-msgid "Remove selected users? Neither default admin nor your account will be removed."
+msgid ""
+"Remove selected users? Neither default admin nor your account will be "
+"removed."
 msgstr "أحذف المستخدمين المختارين؟ لن يُحذَف المسؤول الافتراضي ولا حسابك."
 
 #: js/PrefUsers.js:156
@@ -3097,11 +2984,19 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 msgid "Could not change URL."
 msgstr "المحاولة جارية لتغيير العنوان..."
 
-#~ msgid "This program requires XmlHttpRequest to function properly. Your browser doesn't seem to support it."
-#~ msgstr "يتطلب هذا البرنامج XmlHttpRequest ليعمل بشكل صحيح.  يبدو أن المستعرض لديك لايدعم XmlHttpRequest."
+#~ msgid ""
+#~ "This program requires XmlHttpRequest to function properly. Your browser "
+#~ "doesn't seem to support it."
+#~ msgstr ""
+#~ "يتطلب هذا البرنامج XmlHttpRequest ليعمل بشكل صحيح.  يبدو أن المستعرض لديك "
+#~ "لايدعم XmlHttpRequest."
 
-#~ msgid "This program requires cookies to function properly. Your browser doesn't seem to support them."
-#~ msgstr "يتطلب هذا البرنامج ملفات تعريف الارتباط (الكوكيز) ليعمل بشكل صحيح.  يبدو أن المستعرض لديك لايدعمها."
+#~ msgid ""
+#~ "This program requires cookies to function properly. Your browser doesn't "
+#~ "seem to support them."
+#~ msgstr ""
+#~ "يتطلب هذا البرنامج ملفات تعريف الارتباط (الكوكيز) ليعمل بشكل صحيح.  يبدو "
+#~ "أن المستعرض لديك لايدعمها."
 
 #~ msgid "Backend sanity check failed."
 #~ msgstr "فشل فحص السلامة في الخلفية"
@@ -3109,8 +3004,12 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "Frontend sanity check failed."
 #~ msgstr "فشل فحص السلامة الأمامي"
 
-#~ msgid "Incorrect database schema version. &lt;a href='db-updater.php'&gt;Please update&lt;/a&gt;."
-#~ msgstr "إصدار مختطة قاعدة البيانات غير صحيح.  &lt;a href='db-updater.php'&gt;يرجى التحديث&lt;/a&gt;."
+#~ msgid ""
+#~ "Incorrect database schema version. &lt;a href='db-updater.php'&gt;Please "
+#~ "update&lt;/a&gt;."
+#~ msgstr ""
+#~ "إصدار مختطة قاعدة البيانات غير صحيح.  &lt;a href='db-updater.php'&gt;يرجى "
+#~ "التحديث&lt;/a&gt;."
 
 #~ msgid "Request not authorized."
 #~ msgstr "الطلب غير مخوَّل."
@@ -3118,8 +3017,12 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "No operation to perform."
 #~ msgstr "لاتوجد عملية للتنفيذ."
 
-#~ msgid "Could not display feed: query failed. Please check label match syntax or local configuration."
-#~ msgstr "لم يمكن عرض الخلاصة: فشل الاستعلام.  فضلاً افحص قواعد مطابقة التسمية أو الإعدادات المحليّة."
+#~ msgid ""
+#~ "Could not display feed: query failed. Please check label match syntax or "
+#~ "local configuration."
+#~ msgstr ""
+#~ "لم يمكن عرض الخلاصة: فشل الاستعلام.  فضلاً افحص قواعد مطابقة التسمية أو "
+#~ "الإعدادات المحليّة."
 
 #~ msgid "Denied. Your access level is insufficient to access this page."
 #~ msgstr "مرفوض.  مستوى الوصول الخاص بك غير كافٍ للوصول إلى هذه الصفحة."
@@ -3127,8 +3030,12 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "Configuration check failed"
 #~ msgstr "فشل فحص الإعدادات"
 
-#~ msgid "Your version of MySQL is not currently supported. Please see official site for more information."
-#~ msgstr "إصدار الـ MySQL الموجود لديك غير مدعوم حالياً.  فضلاً أنظر الموقع الرسمي للمزيد من المعلومات."
+#~ msgid ""
+#~ "Your version of MySQL is not currently supported. Please see official "
+#~ "site for more information."
+#~ msgstr ""
+#~ "إصدار الـ MySQL الموجود لديك غير مدعوم حالياً.  فضلاً أنظر الموقع الرسمي "
+#~ "للمزيد من المعلومات."
 
 #~ msgid "SQL escaping test failed, check your database and PHP configuration"
 #~ msgstr "فشل فحص هروب شفرة SQL ، تحقق من إعدادات قاعدة البيانات و PHP لديك."
@@ -3240,8 +3147,12 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "No matching users found."
 #~ msgstr "لم يتم العثور على مستخدمين مطابقين"
 
-#~ msgid "<b>Hint:</b> you need to fill in your login information if your feed requires authentication, except for Twitter feeds."
-#~ msgstr "<b>تلميح:</b> لابد من تعبئة معلومات الدخول إذا كانت الخلاصة المرغوبة تتطلب الاستيثاق ، إلا لخلاصات تويتر."
+#~ msgid ""
+#~ "<b>Hint:</b> you need to fill in your login information if your feed "
+#~ "requires authentication, except for Twitter feeds."
+#~ msgstr ""
+#~ "<b>تلميح:</b> لابد من تعبئة معلومات الدخول إذا كانت الخلاصة المرغوبة "
+#~ "تتطلب الاستيثاق ، إلا لخلاصات تويتر."
 
 #~ msgid "Published & shared articles / Generated feeds"
 #~ msgstr "البنود المنشورة والمشارَكة / الخلاصات المولَّدة"
@@ -3285,7 +3196,8 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "Forward selected article(s) by email."
 #~ msgstr "إعادة توجيه البنود المختارة عبر البريد."
 
-#~ msgid "You should be able to edit the message before sending in your mail client."
+#~ msgid ""
+#~ "You should be able to edit the message before sending in your mail client."
 #~ msgstr "ستتمكن من تحرير الرسالة في برنامج البريد لديك قبل إرسالها."
 
 #~ msgid "Help"
@@ -3300,8 +3212,14 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "New user registrations are administratively disabled."
 #~ msgstr "عطَّل المسؤول إنشاء حسابات مستخدمين جدد"
 
-#~ msgid "Your temporary password will be sent to the specified email. Accounts, which were not logged in once, are erased automatically 24 hours after temporary password is sent."
-#~ msgstr "كلمة المرور المؤقتة الخاصة بك ستُرسل إلى البريد المحدَّد.  الحسابات التي لم يُدخَل إليها و لا مرة واحدة يتم حذفها آليّاً بعد ٢٤ ساعة من إرسال كلمة المرور المؤقتة."
+#~ msgid ""
+#~ "Your temporary password will be sent to the specified email. Accounts, "
+#~ "which were not logged in once, are erased automatically 24 hours after "
+#~ "temporary password is sent."
+#~ msgstr ""
+#~ "كلمة المرور المؤقتة الخاصة بك ستُرسل إلى البريد المحدَّد.  الحسابات التي لم "
+#~ "يُدخَل إليها و لا مرة واحدة يتم حذفها آليّاً بعد ٢٤ ساعة من إرسال كلمة المرور "
+#~ "المؤقتة."
 
 #~ msgid "Desired login:"
 #~ msgstr "اسم الدخول المرغوب:"
@@ -3340,14 +3258,25 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "Tag cloud"
 #~ msgstr "سحابة العلامات"
 
-#~ msgid "Update daemon is enabled in configuration, but daemon process is not running, which prevents all feeds from updating. Please start the daemon process or contact instance owner."
-#~ msgstr "ناطر التحديث مفعَّل في الإعدادات إلا أن مهمته ليست جارية ، وهذا يمنع تحديث جميع الخلاصات.  فضلاً إبدأ عملية الناطر أو اتصل بمالك المثيلة (البرنامج)."
+#~ msgid ""
+#~ "Update daemon is enabled in configuration, but daemon process is not "
+#~ "running, which prevents all feeds from updating. Please start the daemon "
+#~ "process or contact instance owner."
+#~ msgstr ""
+#~ "ناطر التحديث مفعَّل في الإعدادات إلا أن مهمته ليست جارية ، وهذا يمنع تحديث "
+#~ "جميع الخلاصات.  فضلاً إبدأ عملية الناطر أو اتصل بمالك المثيلة (البرنامج)."
 
 #~ msgid "Last update:"
 #~ msgstr "آخر تحديث:"
 
-#~ msgid "Update daemon is taking too long to perform a feed update. This could indicate a problem like crash or a hang. Please check the daemon process or contact instance owner."
-#~ msgstr "ناطر التحديث يستغرق وقتاً طويلا جداً للقيام بتحديث الخلاصة.  هذا قد يشير لمشكلة انهيار أو تعليق.  فضلاً إفحص عملية الناطر أو اتصل بمالك المثيلة(البرنامج)."
+#~ msgid ""
+#~ "Update daemon is taking too long to perform a feed update. This could "
+#~ "indicate a problem like crash or a hang. Please check the daemon process "
+#~ "or contact instance owner."
+#~ msgstr ""
+#~ "ناطر التحديث يستغرق وقتاً طويلا جداً للقيام بتحديث الخلاصة.  هذا قد يشير "
+#~ "لمشكلة انهيار أو تعليق.  فضلاً إفحص عملية الناطر أو اتصل بمالك "
+#~ "المثيلة(البرنامج)."
 
 #, fuzzy
 #~ msgid "Open Preferences"
@@ -3378,8 +3307,12 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "More Feeds"
 #~ msgstr "خلاصات أكثر"
 
-#~ msgid "Remove selected feeds from the archive? Feeds with stored articles will not be removed."
-#~ msgstr "هل ترغب حذف الخلاصات المختارة من المحفوظات ؟ لن تحذف الخلاصات ذات البنود المخزَّنة."
+#~ msgid ""
+#~ "Remove selected feeds from the archive? Feeds with stored articles will "
+#~ "not be removed."
+#~ msgstr ""
+#~ "هل ترغب حذف الخلاصات المختارة من المحفوظات ؟ لن تحذف الخلاصات ذات البنود "
+#~ "المخزَّنة."
 
 #~ msgid "Archive %d selected article in %s?"
 #~ msgid_plural "Archive %d selected articles in %s?"
@@ -3391,8 +3324,11 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgstr[0] "استعادة البند المحفوظ  %d ؟"
 #~ msgstr[1] "استعادة البنود المحفوظة  %d ؟"
 
-#~ msgid "Please note that unstarred articles might get purged on next feed update."
-#~ msgstr "يرجى ملاحظة أن البنود غير المعلّمة بنجمة قد يتم تنظيفها في تحديث الخلاصات القادم."
+#~ msgid ""
+#~ "Please note that unstarred articles might get purged on next feed update."
+#~ msgstr ""
+#~ "يرجى ملاحظة أن البنود غير المعلّمة بنجمة قد يتم تنظيفها في تحديث الخلاصات "
+#~ "القادم."
 
 #, fuzzy
 #~ msgid "No file was uploaded"
@@ -3418,8 +3354,12 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "Import and export"
 #~ msgstr "إستيراد وتصدير"
 
-#~ msgid "You can export and import your Starred and Archived articles for safekeeping or when migrating between tt-rss instances of same version."
-#~ msgstr "بإمكانك تصدير واستيراد بنودك المعلّمة بنجمة و المحفوظة للإبقاء عليها أو حال ترحيل البيانات بين مثيلات tt-rss من الإصدار نفسه."
+#~ msgid ""
+#~ "You can export and import your Starred and Archived articles for "
+#~ "safekeeping or when migrating between tt-rss instances of same version."
+#~ msgstr ""
+#~ "بإمكانك تصدير واستيراد بنودك المعلّمة بنجمة و المحفوظة للإبقاء عليها أو "
+#~ "حال ترحيل البيانات بين مثيلات tt-rss من الإصدار نفسه."
 
 #~ msgid "Export my data"
 #~ msgstr "صدّر بياناتي"
@@ -3467,10 +3407,18 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "Export Data"
 #~ msgstr "صدِّر البيانات"
 
-#~ msgid "Finished, exported %d article. You can download the data <a class='visibleLink' href='%u'>here</a>."
-#~ msgid_plural "Finished, exported %d articles. You can download the data <a class='visibleLink' href='%u'>here</a>."
-#~ msgstr[0] "إنتهيت من تصدير البند %d .  يمكنك تنزيل البيانات <a class='visibleLink' href='%u'>من هنا</a>."
-#~ msgstr[1] "إنتهيت من تصدير البنود %d .  يمكنك تنزيل البيانات <a class='visibleLink' href='%u'>من هنا</a>."
+#~ msgid ""
+#~ "Finished, exported %d article. You can download the data <a "
+#~ "class='visibleLink' href='%u'>here</a>."
+#~ msgid_plural ""
+#~ "Finished, exported %d articles. You can download the data <a "
+#~ "class='visibleLink' href='%u'>here</a>."
+#~ msgstr[0] ""
+#~ "إنتهيت من تصدير البند %d .  يمكنك تنزيل البيانات <a class='visibleLink' "
+#~ "href='%u'>من هنا</a>."
+#~ msgstr[1] ""
+#~ "إنتهيت من تصدير البنود %d .  يمكنك تنزيل البيانات <a class='visibleLink' "
+#~ "href='%u'>من هنا</a>."
 
 #~ msgid "Data Import"
 #~ msgstr "إستيراد البيانات"
@@ -3492,7 +3440,8 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 
 #, fuzzy
 #~ msgid "Sending new password of user %s to %s"
-#~ msgstr "يجري إرسال كلمة المرور الجديدة للمستخدم <b>%s</b> إلى العنوان <b>%s</b>"
+#~ msgstr ""
+#~ "يجري إرسال كلمة المرور الجديدة للمستخدم <b>%s</b> إلى العنوان <b>%s</b>"
 
 #~ msgid "[tt-rss] Password change notification"
 #~ msgstr "[tt-rss] إشعار تغيُّر كلمة المرور"
@@ -3500,7 +3449,9 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "Hide from Popular feeds"
 #~ msgstr "خبئها من بين الخلاصات الشَّعبية"
 
-#~ msgid "These feeds have not been updated with new content for 3 months (oldest first):"
+#~ msgid ""
+#~ "These feeds have not been updated with new content for 3 months (oldest "
+#~ "first):"
 #~ msgstr "هذه الخلاصات لم تحدَّث بمحتوى جديد منذ ٣ أشهر (الأقدم أولاً):"
 
 #~ msgid "Plugin"
@@ -3527,7 +3478,9 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 
 #, fuzzy
 #~ msgid "Automatically opens next unread feed after marking one as read"
-#~ msgstr "فتح الخلاصة التالية ذات البنود غير المقروءة تلقائياً بعد تعليم خلاصة ما مقروءة"
+#~ msgstr ""
+#~ "فتح الخلاصة التالية ذات البنود غير المقروءة تلقائياً بعد تعليم خلاصة ما "
+#~ "مقروءة"
 
 #~ msgid "Other interface tips are available in the Tiny Tiny RSS wiki."
 #~ msgstr "توجد تلميحات أخرى عن الواجهة على ويكي Tiny Tiny RSS."
@@ -3536,7 +3489,8 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgstr "موضوع مساعدة غير موجود."
 
 #~ msgid "Only main settings profile can be migrated using OPML."
-#~ msgstr "الملف الشخصي الأساسي للإعدادات فقط هو الذي يمكن ترحيله باستخدام OPML."
+#~ msgstr ""
+#~ "الملف الشخصي الأساسي للإعدادات فقط هو الذي يمكن ترحيله باستخدام OPML."
 
 #~ msgid "Wiki: Filters"
 #~ msgstr "ويكي:المرشحات"
@@ -3544,8 +3498,12 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "Interface"
 #~ msgstr "واجهة"
 
-#~ msgid "When auto-detecting tags in articles these tags will not be applied (comma-separated list)."
-#~ msgstr "عند الاكتشاف التلقائي للعلامات في البنود فإن العلامات التالية لن يتم تطبيقها (قائمة مفصولة بفواصل)."
+#~ msgid ""
+#~ "When auto-detecting tags in articles these tags will not be applied "
+#~ "(comma-separated list)."
+#~ msgstr ""
+#~ "عند الاكتشاف التلقائي للعلامات في البنود فإن العلامات التالية لن يتم "
+#~ "تطبيقها (قائمة مفصولة بفواصل)."
 
 #~ msgid "Automatically mark articles as read"
 #~ msgstr "علِّم البنود مقروءة تلقائياً"
@@ -3575,8 +3533,11 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "Group headlines in virtual feeds"
 #~ msgstr "جمع العناوين في خلاصات ظاهرية"
 
-#~ msgid "Special feeds, labels, and categories are grouped by originating feeds"
-#~ msgstr "يتم جمع الخلاصات الخاصة و التسميات والتصنيفات من مصدرها من الخلاصات المصدرية"
+#~ msgid ""
+#~ "Special feeds, labels, and categories are grouped by originating feeds"
+#~ msgstr ""
+#~ "يتم جمع الخلاصات الخاصة و التسميات والتصنيفات من مصدرها من الخلاصات "
+#~ "المصدرية"
 
 #~ msgid "Feeds to subscribe, One per line"
 #~ msgstr "الخلاصات المرغوب الاشتراك فيها ، واحدة لكل سطر"
@@ -3584,10 +3545,15 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "Look for"
 #~ msgstr "إبحث عن"
 
-#~ msgid "This option enables marking articles as read automatically while you scroll article list."
-#~ msgstr "هذا الخيار يتيح تعليم البنود مقروءة تلقائياً أثناء تمريرك في قائمة البنود."
+#~ msgid ""
+#~ "This option enables marking articles as read automatically while you "
+#~ "scroll article list."
+#~ msgstr ""
+#~ "هذا الخيار يتيح تعليم البنود مقروءة تلقائياً أثناء تمريرك في قائمة البنود."
 
-#~ msgid "Shortest interval at which a feed will be checked for updates regardless of update method"
+#~ msgid ""
+#~ "Shortest interval at which a feed will be checked for updates regardless "
+#~ "of update method"
 #~ msgstr "أقصر مدة يتم فيها/بعدها فحص تحديثات الخلاصة أياً كانت طريقة التحديث"
 
 #~ msgid "Uses UTC timezone"
@@ -3605,14 +3571,22 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "Access level"
 #~ msgstr "مستوى الوصول"
 
-#~ msgid "One time passwords are currently enabled. Enter your current password below to disable."
-#~ msgstr "كلمات المرور ذات الاستخدام الواح مفعَّلة حالياً.  أدخل كلمة المرور الحالية أدناه للتعطيل."
+#~ msgid ""
+#~ "One time passwords are currently enabled. Enter your current password "
+#~ "below to disable."
+#~ msgstr ""
+#~ "كلمات المرور ذات الاستخدام الواح مفعَّلة حالياً.  أدخل كلمة المرور الحالية "
+#~ "أدناه للتعطيل."
 
 #~ msgid "Enter your password"
 #~ msgstr "أدخل كلمة المرور"
 
-#~ msgid "You will need a compatible Authenticator to use this. Changing your password would automatically disable OTP."
-#~ msgstr "ستحتاج إلى برنامج مصدِّق متوافق لاستخدام هذه الخاصية.  تغيير كلمة المرور الخاصة بك سيعطِّل تلقائياً خاصَّية كلمات المرور ذات الاستخدام الواحد (OTP)."
+#~ msgid ""
+#~ "You will need a compatible Authenticator to use this. Changing your "
+#~ "password would automatically disable OTP."
+#~ msgstr ""
+#~ "ستحتاج إلى برنامج مصدِّق متوافق لاستخدام هذه الخاصية.  تغيير كلمة المرور "
+#~ "الخاصة بك سيعطِّل تلقائياً خاصَّية كلمات المرور ذات الاستخدام الواحد (OTP)."
 
 #~ msgid "Enter the generated one time password"
 #~ msgstr "أدخل كلمة المرور ذات الاستخدام الواحد التي تم توليدها"
@@ -3645,11 +3619,17 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "mark feed as read"
 #~ msgstr "علِّم الخلاصة مقروءة"
 
-#~ msgid "You will need to reload Tiny Tiny RSS for plugin changes to take effect."
-#~ msgstr "ستحتاج إعادة تحميل Tiny Tiny RSS لتصبح تغييرات الإضافات نافذة المفعول."
+#~ msgid ""
+#~ "You will need to reload Tiny Tiny RSS for plugin changes to take effect."
+#~ msgstr ""
+#~ "ستحتاج إعادة تحميل Tiny Tiny RSS لتصبح تغييرات الإضافات نافذة المفعول."
 
-#~ msgid "Published articles are exported as a public RSS feed and can be subscribed by anyone who knows the URL specified below."
-#~ msgstr "البنود المنشورة يتم تصديرها كخلاصة RSS متاحة للعامة يمكن الإشتراك بها لأي أحد يعرف عنوان URL المحدد أدناه."
+#~ msgid ""
+#~ "Published articles are exported as a public RSS feed and can be "
+#~ "subscribed by anyone who knows the URL specified below."
+#~ msgstr ""
+#~ "البنود المنشورة يتم تصديرها كخلاصة RSS متاحة للعامة يمكن الإشتراك بها لأي "
+#~ "أحد يعرف عنوان URL المحدد أدناه."
 
 #~ msgid "Trying to unshare..."
 #~ msgstr "أحاول إلغاء المشاركة..."
@@ -3709,8 +3689,12 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "Firefox integration"
 #~ msgstr "التكامل مع فيرفوكس"
 
-#~ msgid "This Tiny Tiny RSS site can be used as a Firefox Feed Reader by clicking the link below."
-#~ msgstr "يمكن استخدام موقع Tiny Tiny RSS هذا في فيرفوكس كقارئ خلاصات بالنقر على الرابط أدناه."
+#~ msgid ""
+#~ "This Tiny Tiny RSS site can be used as a Firefox Feed Reader by clicking "
+#~ "the link below."
+#~ msgstr ""
+#~ "يمكن استخدام موقع Tiny Tiny RSS هذا في فيرفوكس كقارئ خلاصات بالنقر على "
+#~ "الرابط أدناه."
 
 #~ msgid "Click here to register this site as a feed reader."
 #~ msgstr "أنقر هنا لتسجيل هذا الموقع كقارئ خلاصات."
@@ -3755,7 +3739,8 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgstr "إعادة حساب نقاط الخلاصات المختارة..."
 
 #~ msgid "Rescore all articles? This operation may take a lot of time."
-#~ msgstr "هل تريد حقاً إعادة حساب نقاط كل البنود؟ قد تستغرق هذه العملية وقتاً طويلاً."
+#~ msgstr ""
+#~ "هل تريد حقاً إعادة حساب نقاط كل البنود؟ قد تستغرق هذه العملية وقتاً طويلاً."
 
 #~ msgid "Rescoring feeds..."
 #~ msgstr "إعادة حساب نقاط الخلاصات..."
@@ -3778,8 +3763,16 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "Resets PubSubHubbub subscription status for push-enabled feeds."
 #~ msgstr "إعادة تعيين حالة اشتراك PubSubHubbub للخلاصات المُفعَّل دفعها."
 
-#~ msgid "Download more plugins at tt-rss.org <a class=\"visibleLink\" target=\"_blank\" href=\"http://tt-rss.org/forum/viewforum.php?f=22\">forums</a> or <a target=\"_blank\" class=\"visibleLink\" href=\"http://tt-rss.org/wiki/Plugins\">wiki</a>."
-#~ msgstr "يمكن تنزيل المزيد من الإضافات من <a class=\"visibleLink\" target=\"_blank\" href=\"http://tt-rss.org/forum/viewforum.php?f=22\">منتدى</a> أو <a target=\"_blank\" class=\"visibleLink\" href=\"http://tt-rss.org/wiki/Plugins\">ويكي</a>  tt-موقع rss.org ."
+#~ msgid ""
+#~ "Download more plugins at tt-rss.org <a class=\"visibleLink\" target="
+#~ "\"_blank\" href=\"http://tt-rss.org/forum/viewforum.php?f=22\">forums</a> "
+#~ "or <a target=\"_blank\" class=\"visibleLink\" href=\"http://tt-rss.org/"
+#~ "wiki/Plugins\">wiki</a>."
+#~ msgstr ""
+#~ "يمكن تنزيل المزيد من الإضافات من <a class=\"visibleLink\" target=\"_blank"
+#~ "\" href=\"http://tt-rss.org/forum/viewforum.php?f=22\">منتدى</a> أو <a "
+#~ "target=\"_blank\" class=\"visibleLink\" href=\"http://tt-rss.org/wiki/"
+#~ "Plugins\">ويكي</a>  tt-موقع rss.org ."
 
 #~ msgid "Linked"
 #~ msgstr "مرتبط"
@@ -3805,8 +3798,12 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "Link instance"
 #~ msgstr "ربط مثيلة"
 
-#~ msgid "You can connect other instances of Tiny Tiny RSS to this one to share Popular feeds. Link to this instance of Tiny Tiny RSS by using this URL:"
-#~ msgstr "يمكنك ربط مثيلات Tiny Tiny RSS أخرى للموجودة هنا لمشاركة الخلاصات الشعبية.  إربط بمثيلة Tiny Tiny RSS باستخدام عنوان URL التالي:"
+#~ msgid ""
+#~ "You can connect other instances of Tiny Tiny RSS to this one to share "
+#~ "Popular feeds. Link to this instance of Tiny Tiny RSS by using this URL:"
+#~ msgstr ""
+#~ "يمكنك ربط مثيلات Tiny Tiny RSS أخرى للموجودة هنا لمشاركة الخلاصات "
+#~ "الشعبية.  إربط بمثيلة Tiny Tiny RSS باستخدام عنوان URL التالي:"
 
 #~ msgid "Last connected"
 #~ msgstr "آخر اتصال"
@@ -3820,8 +3817,12 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "Create link"
 #~ msgstr "أنشئ رابط"
 
-#~ msgid "Reset subscription? Tiny Tiny RSS will try to subscribe to the notification hub again on next feed update."
-#~ msgstr "إعادة تعيين الإشتراك ؟ Tiny Tiny RSS سوف يحاول الإشتراك ثانية لدى موزع الإشعارات عند التحديث القادم للخلاصة."
+#~ msgid ""
+#~ "Reset subscription? Tiny Tiny RSS will try to subscribe to the "
+#~ "notification hub again on next feed update."
+#~ msgstr ""
+#~ "إعادة تعيين الإشتراك ؟ Tiny Tiny RSS سوف يحاول الإشتراك ثانية لدى موزع "
+#~ "الإشعارات عند التحديث القادم للخلاصة."
 
 #~ msgid "Subscription reset."
 #~ msgstr "إعادة تعيين الإشتراك."
@@ -3847,8 +3848,14 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "The error will be reported to the configured log destination."
 #~ msgstr "سيتم الرفع بالتقرير لوجهة السجل المذكورة في الإعدادات."
 
-#~ msgid "Are you sure to report this exception to tt-rss.org? The report will include information about your web browser and tt-rss configuration. Your IP will be saved in the database."
-#~ msgstr "هل أنت متأكد من رغبتك إرسال تقرير عن هذا الإستثناء لـ tt-rss.org ؟ سيتضمن التقرير معلوماتٍ عن مستعرض الإنترنت لديك وإعدادات tt-rss .  سيتم حفظ عنوان IP الخاص بك في قاعدة البيانات."
+#~ msgid ""
+#~ "Are you sure to report this exception to tt-rss.org? The report will "
+#~ "include information about your web browser and tt-rss configuration. Your "
+#~ "IP will be saved in the database."
+#~ msgstr ""
+#~ "هل أنت متأكد من رغبتك إرسال تقرير عن هذا الإستثناء لـ tt-rss.org ؟ سيتضمن "
+#~ "التقرير معلوماتٍ عن مستعرض الإنترنت لديك وإعدادات tt-rss .  سيتم حفظ عنوان "
+#~ "IP الخاص بك في قاعدة البيانات."
 
 #~ msgid "More..."
 #~ msgstr "المزيد..."
@@ -3918,8 +3925,12 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "Limit search to:"
 #~ msgstr "ضيِّق البحث إلى:"
 
-#~ msgid "Complex expressions might not give results while testing due to issues with database server regexp implementation."
-#~ msgstr "التعبيرات المعقدة قد لاتُظهر نتائج أثناء الاختبار نظراً لبعض المشاكل في برمجة التعبيرات العادية على خادم قواعد البيانات."
+#~ msgid ""
+#~ "Complex expressions might not give results while testing due to issues "
+#~ "with database server regexp implementation."
+#~ msgstr ""
+#~ "التعبيرات المعقدة قد لاتُظهر نتائج أثناء الاختبار نظراً لبعض المشاكل في "
+#~ "برمجة التعبيرات العادية على خادم قواعد البيانات."
 
 #~ msgid "Old password cannot be blank."
 #~ msgstr "كلمة المرور السابقة لا يمكن أن تكون فارغة."
@@ -3969,8 +3980,12 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "New version of Tiny Tiny RSS is available (%s)."
 #~ msgstr "يوجد إصدار جديد لـ Tiny Tiny RSS (%s)."
 
-#~ msgid "You can update using built-in updater in the Preferences or by using update.php"
-#~ msgstr "تستطيع التحديث عبر وظيفة التحديث المضمَّنة في التفضيلات أو باستخدام update.php . "
+#~ msgid ""
+#~ "You can update using built-in updater in the Preferences or by using "
+#~ "update.php"
+#~ msgstr ""
+#~ "تستطيع التحديث عبر وظيفة التحديث المضمَّنة في التفضيلات أو باستخدام update."
+#~ "php . "
 
 #~ msgid "See the release notes"
 #~ msgstr "شاهد ملاحظات الإصدار"
@@ -3999,8 +4014,14 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "Your database will not be modified."
 #~ msgstr "لن يتم تعديل قاعدة البيانات."
 
-#~ msgid "Your current tt-rss installation directory will not be modified. It will be renamed and left in the parent directory. You will be able to migrate all your customized files after update finishes."
-#~ msgstr "لن يتم تعديل مجلد تثبيت tt-rss الحالي.  ستتم إعادة تسميته ويوضع في الدليل الأب (parent directory).  ستتمكن من ترحيل كل ملفاتك المعدّلة بعد انتهاء التحديث."
+#~ msgid ""
+#~ "Your current tt-rss installation directory will not be modified. It will "
+#~ "be renamed and left in the parent directory. You will be able to migrate "
+#~ "all your customized files after update finishes."
+#~ msgstr ""
+#~ "لن يتم تعديل مجلد تثبيت tt-rss الحالي.  ستتم إعادة تسميته ويوضع في الدليل "
+#~ "الأب (parent directory).  ستتمكن من ترحيل كل ملفاتك المعدّلة بعد انتهاء "
+#~ "التحديث."
 
 #~ msgid "Ready to update."
 #~ msgstr "جاهز للتحديث."
@@ -4008,8 +4029,12 @@ msgstr "المحاولة جارية لتغيير العنوان..."
 #~ msgid "Start update"
 #~ msgstr "إبدأ التحديث"
 
-#~ msgid "Backup your tt-rss directory before continuing. Please type 'yes' to continue."
-#~ msgstr "أنشئ نسخة احتياطية لمجلد tt-rss الخاص بك قبل التقدم.  فضلاً أكتب 'yes' للإستمرار."
+#~ msgid ""
+#~ "Backup your tt-rss directory before continuing. Please type 'yes' to "
+#~ "continue."
+#~ msgstr ""
+#~ "أنشئ نسخة احتياطية لمجلد tt-rss الخاص بك قبل التقدم.  فضلاً أكتب 'yes' "
+#~ "للإستمرار."
 
 #~ msgid "LibXML error %s at line %d (column %d): %s"
 #~ msgstr "خطأ LibXML %s في السطر %d (العمود %d(: %s"

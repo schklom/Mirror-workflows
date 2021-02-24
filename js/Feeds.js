@@ -1,6 +1,6 @@
 'use strict'
 
-/* global __, App, Headlines, xhrPost, xhr, dojo, dijit, fox, PluginHost, Notify, fox */
+/* global __, App, Headlines, xhr, dojo, dijit, fox, PluginHost, Notify, fox */
 
 const	Feeds = {
 	_default_feed_id: -3,
@@ -13,6 +13,19 @@ const	Feeds = {
 	_search_query: false,
 	last_search_query: [],
 	_viewfeed_wait_timeout: false,
+	_feeds_holder_observer: new IntersectionObserver(
+		(entries/*, observer*/) => {
+			entries.forEach((entry) => {
+				//console.log('feeds',entry.target, entry.intersectionRatio);
+
+				if (entry.intersectionRatio == 0)
+					Feeds.onHide(entry);
+				else
+					Feeds.onShow(entry);
+			});
+		},
+		{threshold: [0, 1], root: document.querySelector("body")}
+	),
 	_counters_prev: [],
 	// NOTE: this implementation is incomplete
 	// for general objects but good enough for counters
@@ -120,14 +133,6 @@ const	Feeds = {
 	},
 	toggle: function() {
 		Element.toggle("feeds-holder");
-
-		const splitter = App.byId("feeds-holder_splitter");
-
-		Element.visible("feeds-holder") ? splitter.show() : splitter.hide();
-
-		dijit.byId("main").resize();
-
-		Headlines.updateCurrentUnread();
 	},
 	cancelSearch: function() {
 		this._search_query = "";
@@ -208,8 +213,22 @@ const	Feeds = {
 			App.Error.report(e);
 		}
 	},
+	onHide: function() {
+		App.byId("feeds-holder_splitter").hide();
+
+		dijit.byId("main").resize();
+		Headlines.updateCurrentUnread();
+	},
+	onShow: function() {
+		App.byId("feeds-holder_splitter").show();
+
+		dijit.byId("main").resize();
+		Headlines.updateCurrentUnread();
+	},
 	init: function() {
 		console.log("in feedlist init");
+
+		this._feeds_holder_observer.observe(App.byId("feeds-holder"));
 
 		App.setLoadingProgress(50);
 

@@ -162,6 +162,9 @@ class Prefs {
 			$owner_uid = (int) $_SESSION["uid"];
 			$profile_id = $_SESSION["profile"] ?? null;
 
+
+			$in_nested_tr = false;
+
 			$this->migrate($owner_uid, $profile_id);
 			$this->cache_all($owner_uid, $profile_id);
 		};
@@ -352,6 +355,14 @@ class Prefs {
 
 		if (!$this->_get(Prefs::_PREFS_MIGRATED, $owner_uid, $profile_id)) {
 
+			$in_nested_tr = false;
+
+			try {
+				$this->pdo->beginTransaction();
+			} catch (PDOException $e) {
+				$in_nested_tr = true;
+			}
+
 			$sth = $this->pdo->prepare("SELECT pref_name, value FROM ttrss_user_prefs
 				WHERE owner_uid = :uid AND
 					(profile = :profile OR (:profile IS NULL AND profile IS NULL))");
@@ -370,6 +381,11 @@ class Prefs {
 			}
 
 			$this->_set(Prefs::_PREFS_MIGRATED, "1", $owner_uid, $profile_id);
+
+			if (!$in_nested_tr)
+				$this->pdo->commit();
+
+			Logger::log(E_USER_NOTICE, sprintf("Migrated preferences of user %d (profile %d)", $owner_uid, $profile_id));
 		}
 	}
 

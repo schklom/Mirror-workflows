@@ -1370,6 +1370,8 @@ class Pref_Prefs extends Handler_Protected {
 
 	static function _init_user_prefs($uid, $profile = false) {
 
+		Prefs::initialize($uid, $profile);
+
 		if (get_schema_version() < 63) $profile_qpart = "";
 
 		$pdo = Db::pdo();

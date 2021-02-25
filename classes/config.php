@@ -124,12 +124,12 @@ class Config {
 
 				list ($defval, $deftype) = $this::_DEFAULTS[$const];
 
-				$this->params[$cvalue] = [ $this->cast_to(!empty($override) ? $override : $defval, $deftype), $deftype ];
+				$this->params[$cvalue] = [ self::cast_to(!empty($override) ? $override : $defval, $deftype), $deftype ];
 			}
 		}
 	}
 
-	private function cast_to(string $value, int $type_hint) {
+	static function cast_to(string $value, int $type_hint) {
 		switch ($type_hint) {
 			case self::T_BOOL:
 				return sql_bool_to_bool($value);
@@ -149,7 +149,7 @@ class Config {
 	private function _add(string $param, string $default, int $type_hint) {
 		$override = getenv($this::_ENVVAR_PREFIX . $param);
 
-		$this->params[$param] = [ $this->cast_to(!empty($override) ? $override : $default, $type_hint), $type_hint ];
+		$this->params[$param] = [ self::cast_to(!empty($override) ? $override : $default, $type_hint), $type_hint ];
 	}
 
 	static function add(string $param, string $default, int $type_hint = Config::T_STRING) {

@@ -354,10 +354,12 @@ class Handler_Public extends Handler {
 			$remember_me = clean($_POST["remember_me"] ?? false);
 			$safe_mode = checkbox_to_sql_bool(clean($_POST["safe_mode"] ?? false));
 
-			if ($remember_me) {
-				@session_set_cookie_params(Config::get(Config::SESSION_COOKIE_LIFETIME));
-			} else {
-				@session_set_cookie_params(0);
+			if (session_status() != PHP_SESSION_ACTIVE) {
+				if ($remember_me) {
+					session_set_cookie_params(Config::get(Config::SESSION_COOKIE_LIFETIME));
+				} else {
+					session_set_cookie_params(0);
+				}
 			}
 
 			if (UserHelper::authenticate($login, $password)) {

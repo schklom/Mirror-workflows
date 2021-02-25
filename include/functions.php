@@ -43,13 +43,11 @@
 	}
 
 	function get_pref(string $pref_name, int $owner_uid = null) {
-		return Prefs::get($pref_name, $owner_uid ? $owner_uid : $_SESSION["uid"]);
-		//return Db_Prefs::get()->read($pref_name, $user_id, $die_on_error);
+		return Prefs::get($pref_name, $owner_uid ? $owner_uid : $_SESSION["uid"], $_SESSION["profile"] ?? null);
 	}
 
 	function set_pref(string $pref_name, $value, int $owner_uid = null, bool $strip_tags = true) {
 		return Prefs::set($pref_name, $value, $owner_uid ? $owner_uid : $_SESSION["uid"], $_SESSION["profile"] ?? null, $strip_tags);
-		//return Db_Prefs::get()->write($pref_name, $value, $user_id, $strip_tags);
 	}
 
 	function get_translations() {

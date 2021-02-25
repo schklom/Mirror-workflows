@@ -46,7 +46,7 @@ class UserHelper {
 				return true;
 			}
 
-			if (!$user_id)
+			if ($login && $password && !$user_id && !$check_only)
 				Logger::log(E_USER_WARNING, "Failed login attempt for $login (service: $service) from " . UserHelper::get_user_ip());
 
 			return false;

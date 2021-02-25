@@ -319,17 +319,8 @@ create table ttrss_settings_profiles(id integer primary key auto_increment,
 create table ttrss_prefs_types (id integer not null primary key,
 	type_name varchar(100) not null) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
-insert into ttrss_prefs_types (id, type_name) values (1, 'bool');
-insert into ttrss_prefs_types (id, type_name) values (2, 'string');
-insert into ttrss_prefs_types (id, type_name) values (3, 'integer');
-
 create table ttrss_prefs_sections (id integer not null primary key,
 	order_id integer not null) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
-
-insert into ttrss_prefs_sections (id, order_id) values (1, 0);
-insert into ttrss_prefs_sections (id, order_id) values (2, 1);
-insert into ttrss_prefs_sections (id, order_id) values (3, 3);
-insert into ttrss_prefs_sections (id, order_id) values (4, 2);
 
 create table ttrss_prefs (pref_name varchar(250) not null primary key,
 	type_id integer not null,
@@ -338,69 +329,6 @@ create table ttrss_prefs (pref_name varchar(250) not null primary key,
 	def_value text not null,
 	foreign key (type_id) references ttrss_prefs_types(id),
 	foreign key (section_id) references ttrss_prefs_sections(id)) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
-
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('PURGE_OLD_DAYS', 3, '60', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('DEFAULT_UPDATE_INTERVAL', 3, '30', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('DEFAULT_ARTICLE_LIMIT', 3, '30', 2);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('ALLOW_DUPLICATE_POSTS', 1, 'false', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('ENABLE_FEED_CATS', 1, 'true', 2);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('SHOW_CONTENT_PREVIEW', 1, 'true', 2);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('SHORT_DATE_FORMAT', 2, 'M d, G:i', 3);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('LONG_DATE_FORMAT', 2, 'D, M d Y - G:i', 3);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('COMBINED_DISPLAY_MODE', 1, 'true', 2);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('HIDE_READ_FEEDS', 1, 'false', 2);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('ON_CATCHUP_SHOW_NEXT_FEED', 1, 'false', 2);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('FEEDS_SORT_BY_UNREAD', 1, 'false', 2);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('REVERSE_HEADLINES', 1, 'false', 2);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('DIGEST_ENABLE', 1, 'false', 4);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('CONFIRM_FEED_CATCHUP', 1, 'true', 2);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('CDM_AUTO_CATCHUP', 1, 'false', 2);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('_DEFAULT_VIEW_MODE', 2, 'adaptive', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('_DEFAULT_VIEW_LIMIT', 3, '30', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('_PREFS_ACTIVE_TAB', 2, '', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('STRIP_UNSAFE_TAGS', 1, 'true', 3);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('BLACKLISTED_TAGS', 2, 'main, generic, misc, uncategorized, blog, blogroll, general, news', 3);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('FRESH_ARTICLE_MAX_AGE', 3, '24', 2);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('DIGEST_CATCHUP', 1, 'false', 4);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('CDM_EXPANDED', 1, 'true', 2);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('PURGE_UNREAD_ARTICLES', 1, 'true', 3);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('HIDE_READ_SHOWS_SPECIAL', 1, 'true', 2);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('VFEED_GROUP_BY_FEED', 1, 'false', 2);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('STRIP_IMAGES', 1, 'false', 2);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('_DEFAULT_VIEW_ORDER_BY', 2, 'default', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('ENABLE_API_ACCESS', 1, 'false', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('_COLLAPSED_SPECIAL', 1, 'false', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('_COLLAPSED_LABELS', 1, 'false', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('_COLLAPSED_UNCAT', 1, 'false', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('_COLLAPSED_FEEDLIST', 1, 'false', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('_MOBILE_ENABLE_CATS', 1, 'false', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('_MOBILE_SHOW_IMAGES', 1, 'false', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('_MOBILE_HIDE_READ', 1, 'false', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('_MOBILE_SORT_FEEDS_UNREAD', 1, 'false', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('_THEME_ID', 2, '0', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('USER_TIMEZONE', 2, 'Automatic', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('USER_STYLESHEET', 2, '', 2);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('SORT_HEADLINES_BY_FEED_DATE', 1, 'false', 2);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('_MOBILE_BROWSE_CATS', 1, 'true', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('SSL_CERT_SERIAL', 2, '', 3);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('DIGEST_PREFERRED_TIME', 2, '00:00', 4);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('_PREFS_SHOW_EMPTY_CATS', 1, 'false', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('_DEFAULT_INCLUDE_CHILDREN', 1, 'false', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('AUTO_ASSIGN_LABELS', 1, 'false', 3);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('_ENABLED_PLUGINS', 2, '', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('_MOBILE_REVERSE_HEADLINES', 1, 'false', 1);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('USER_CSS_THEME', 2, '', 2);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('USER_LANGUAGE', 2, '', 2);
-insert into ttrss_prefs (pref_name,type_id,def_value,section_id) values('DEFAULT_SEARCH_LANGUAGE', 2, '', 2);
-
-update ttrss_prefs set access_level = 1 where pref_name in ('ON_CATCHUP_SHOW_NEXT_FEED',
-	'SORT_HEADLINES_BY_FEED_DATE',
-	'VFEED_GROUP_BY_FEED',
-	'FRESH_ARTICLE_MAX_AGE',
-	'CDM_EXPANDED',
-	'SHOW_CONTENT_PREVIEW',
-	'AUTO_ASSIGN_LABELS',
-	'HIDE_READ_SHOWS_SPECIAL');
 
 create table ttrss_user_prefs (
    owner_uid integer not null,

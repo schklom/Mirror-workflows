@@ -20,7 +20,7 @@ class RPC extends Handler_Protected {
 		$key = clean($_REQUEST['key']);
 		$value = $_REQUEST['value'];
 
-		set_pref($key, $value, false, $key != 'USER_STYLESHEET');
+		set_pref($key, $value, $_SESSION["uid"], $key != 'USER_STYLESHEET');
 
 		print json_encode(array("param" =>$key, "value" => $value));
 	}
@@ -393,7 +393,7 @@ class RPC extends Handler_Protected {
 		$params["is_default_pw"] = Pref_Prefs::isdefaultpassword();
 		$params["label_base_index"] = LABEL_BASE_INDEX;
 
-		$theme = get_pref("USER_CSS_THEME", false);
+		$theme = get_pref("USER_CSS_THEME");
 		$params["theme"] = theme_exists($theme) ? $theme : "";
 
 		$params["plugins"] = implode(", ", PluginHost::getInstance()->get_plugin_names());

@@ -208,15 +208,19 @@ class Feeds extends Handler_Protected {
 
 					if ($label_cache) {
 						if ($label_cache["no-labels"] ?? false == 1)
-							$labels = array();
+							$labels = [];
 						else
 							$labels = $label_cache;
 					}
+
+					$line["labels"] = $labels;
+				} else {
+					$line["labels"] = [];
 				}
 
-				if (!is_array($labels)) $labels = Article::_get_labels($id);
+				/*if (!is_array($labels)) $labels = Article::_get_labels($id);
 
-				$line["labels"] = Article::_get_labels($id);
+				$line["labels"] = Article::_get_labels($id);*/
 
 				if (count($topmost_article_ids) < 3) {
 					array_push($topmost_article_ids, $id);
@@ -274,10 +278,14 @@ class Feeds extends Handler_Protected {
 
 				$this->_mark_timestamp("   pre-enclosures");
 
-				$line["enclosures"] = Article::_format_enclosures($id,
-					$line["always_display_enclosures"],
-					$line["content"],
-					$line["hide_images"]);
+				if ($line["num_enclosures"] > 0) {
+					$line["enclosures"] = Article::_format_enclosures($id,
+						$line["always_display_enclosures"],
+						$line["content"],
+						$line["hide_images"]);
+				} else {
+					$line["enclosures"] = [ 'formatted' => '', 'entries' => [] ];
+				}
 
 				$this->_mark_timestamp("   enclosures");
 
@@ -292,9 +300,11 @@ class Feeds extends Handler_Protected {
 				if ($line["tag_cache"])
 					$tags = explode(",", $line["tag_cache"]);
 				else
-					$tags = false;
+					$tags = [];
 
-				$line["tags"] = Article::_get_tags($line["id"], false, $line["tag_cache"]);
+				$line["tags"] = $tags;
+
+				//$line["tags"] = Article::_get_tags($line["id"], false, $line["tag_cache"]);
 
 				$this->_mark_timestamp("   tags");
 
@@ -1583,7 +1593,7 @@ class Feeds extends Handler_Protected {
 			}
 
 			if (!$allow_archived) {
-				$from_qpart = "${ext_tables_part}ttrss_entries LEFT JOIN ttrss_user_entries ON (ref_id = ttrss_entries.id),ttrss_feeds";
+				$from_qpart = "${ext_tables_part}ttrss_entries LEFT JOIN ttrss_user_entries ON (ref_id = ttrss_entries.id), ttrss_feeds";
 				$feed_check_qpart = "ttrss_user_entries.feed_id = ttrss_feeds.id AND";
 
 			} else {
@@ -1675,7 +1685,8 @@ class Feeds extends Handler_Protected {
 						last_marked, last_published,
 						$vfeed_query_part
 						$content_query_part
-						author,score
+						author,score,
+						(SELECT count(id) FROM ttrss_enclosures WHERE post_id = ttrss_entries.id) AS num_enclosures
 					FROM
 						$from_qpart
 					WHERE

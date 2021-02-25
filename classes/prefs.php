@@ -235,15 +235,12 @@ class Prefs {
 
 			list ($def_val, $type_hint) = self::_DEFAULTS[$pref_name];
 
-			if (get_schema_version() < 141) {
-				return Config::cast_to($def_val, $type_hint);
-			}
-
 			$cached_value = $this->_get_cache($pref_name, $owner_uid, $profile_id);
 
-			if (!empty($cached_value)) {
+			if ($this->_is_cached($pref_name, $owner_uid, $profile_id)) {
+				$cached_value = $this->_get_cache($pref_name, $owner_uid, $profile_id);
 				return Config::cast_to($cached_value, $type_hint);
-			} else {
+			} else if (get_schema_version() >= 141) {
 				$sth = $this->pdo->prepare("SELECT value FROM ttrss_user_prefs2
 								WHERE pref_name = :name AND owner_uid = :uid AND
 								(profile = :profile OR (:profile IS NULL AND profile IS NULL))");
@@ -259,12 +256,20 @@ class Prefs {
 
 					return $def_val;
 				}
+			} else {
+				return Config::cast_to($def_val, $type_hint);
+
 			}
 		} else {
 			user_error("Attempt to get invalid preference key: $pref_name (UID: $owner_uid, profile: $profile_id)", E_USER_WARNING);
 		}
 
 		return null;
+	}
+
+	private function _is_cached(string $pref_name, int $owner_uid, int $profile_id = null) {
+		$cache_key = sprintf("%d/%d/%s", $owner_uid, $profile_id, $pref_name);
+		return isset($this->cache[$cache_key]);
 	}
 
 	private function _get_cache(string $pref_name, int $owner_uid, int $profile_id = null) {

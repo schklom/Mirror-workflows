@@ -9,16 +9,16 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-24 19:54+0300\n"
-"PO-Revision-Date: 2021-01-09 04:19+0000\n"
+"PO-Revision-Date: 2021-02-26 09:46+0000\n"
 "Last-Translator: Ptsa Daniel <ptsa1987@gmail.com>\n"
-"Language-Team: Chinese (Simplified) <https://weblate.tt-rss.org/projects/tt-"
-"rss/messages/zh_Hans/>\n"
+"Language-Team: Chinese (Simplified) <https://weblate.tt-rss.org/projects/"
+"tt-rss/messages/zh_Hans/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 4.5\n"
 
 #: backend.php:55
 msgid "Use default"
@@ -206,7 +206,7 @@ msgstr "搜索..."
 
 #: index.php:235
 msgid "Feed actions:"
-msgstr "信息源操作："
+msgstr "订阅源动作："
 
 #: index.php:236 plugins/bookmarklets/init.php:38
 #: plugins/bookmarklets/init.php:72
@@ -215,7 +215,7 @@ msgstr "订阅信息源..."
 
 #: index.php:237
 msgid "Edit this feed..."
-msgstr "编辑信息源..."
+msgstr "编辑订阅源..."
 
 #: index.php:238 classes/pref/feeds.php:945 js/PrefFeedTree.js:99
 #: js/CommonDialogs.js:579
@@ -224,7 +224,7 @@ msgstr "取消订阅"
 
 #: index.php:239
 msgid "All feeds:"
-msgstr "全部信息源："
+msgstr "全部订阅源："
 
 #: index.php:241
 msgid "(Un)hide read feeds"
@@ -257,7 +257,7 @@ msgstr "退出偏好设置"
 #: prefs.php:132 classes/pref/prefs.php:29 classes/pref/feeds.php:120
 #: classes/pref/feeds.php:934
 msgid "Feeds"
-msgstr "信息源"
+msgstr "订阅源"
 
 #: prefs.php:136 classes/pref/filters.php:228
 msgid "Filters"
@@ -355,11 +355,11 @@ msgstr "导航"
 
 #: classes/rpc.php:508
 msgid "Open next feed"
-msgstr "显示下一个信息源"
+msgstr "显示下一个订阅源"
 
 #: classes/rpc.php:509
 msgid "Open previous feed"
-msgstr "显示前一个信息源"
+msgstr "显示前一个订阅源"
 
 #: classes/rpc.php:510
 msgid "Open next article (in combined mode, scroll down)"
@@ -499,11 +499,11 @@ msgstr "取消全选"
 
 #: classes/rpc.php:545
 msgid "Feed"
-msgstr "信息源"
+msgstr "订阅源"
 
 #: classes/rpc.php:546
 msgid "Refresh current feed"
-msgstr "刷新当前信息源"
+msgstr "刷新当前订阅源"
 
 #: classes/rpc.php:547
 msgid "Un/hide read feeds"
@@ -516,7 +516,7 @@ msgstr "订阅信息源"
 #: classes/rpc.php:549 js/Headlines.js:1494 js/PrefFeedTree.js:93
 #: js/FeedTree.js:96
 msgid "Edit feed"
-msgstr "编辑信息源"
+msgstr "编辑订阅源"
 
 #: classes/rpc.php:551
 msgid "Reverse headlines"
@@ -528,7 +528,7 @@ msgstr "切换标题分组"
 
 #: classes/rpc.php:553
 msgid "Debug feed update"
-msgstr "信息源更新调试"
+msgstr "调试订阅源更新"
 
 #: classes/rpc.php:554
 msgid "Debug viewfeed()"
@@ -536,7 +536,7 @@ msgstr "调试 viewfeed()"
 
 #: classes/rpc.php:555 js/FeedTree.js:144
 msgid "Mark all feeds as read"
-msgstr "标记所有信息源为已读"
+msgstr "标记所有订阅源为已读"
 
 #: classes/rpc.php:556
 msgid "Un/collapse current category"
@@ -756,7 +756,7 @@ msgstr "将文章列表展开显示，而不是将标题和内容分别显示"
 
 #: classes/pref/prefs.php:81
 msgid "Confirm marking feeds as read"
-msgstr "标记信息源为已读之前弹出确认"
+msgstr "标记订阅源为已读之前弹出确认"
 
 #: classes/pref/prefs.php:82
 msgid "Amount of articles to display at once"
@@ -800,7 +800,7 @@ msgstr "启用类别"
 
 #: classes/pref/prefs.php:89
 msgid "Sort feeds by unread articles count"
-msgstr "以未读文章数量排序信息源"
+msgstr "以未读文章数量排序订阅源"
 
 #: classes/pref/prefs.php:90
 msgid "Maximum age of fresh articles"
@@ -816,11 +816,11 @@ msgstr "显示/隐藏 已读信息"
 
 #: classes/pref/prefs.php:92
 msgid "Always show special feeds"
-msgstr "始终显示特殊信息源"
+msgstr "始终显示特殊订阅源"
 
 #: classes/pref/prefs.php:92
 msgid "While hiding read feeds"
-msgstr "隐藏已读信息源"
+msgstr "隐藏已读订阅源"
 
 #: classes/pref/prefs.php:93
 msgid "Long date format"
@@ -836,11 +836,11 @@ msgstr ""
 
 #: classes/pref/prefs.php:94
 msgid "Automatically show next feed"
-msgstr "自动显示下一个信息源"
+msgstr "自动显示下一个订阅源"
 
 #: classes/pref/prefs.php:94
 msgid "After marking one as read"
-msgstr "将这个信息源标记为已读以后"
+msgstr "标记为已读后"
 
 #: classes/pref/prefs.php:95
 msgid "Purge articles older than"
@@ -868,11 +868,11 @@ msgstr "在标题中显示内容预览"
 
 #: classes/pref/prefs.php:100
 msgid "Sort headlines by feed date"
-msgstr "以信息源的日期排序"
+msgstr "以订阅源的日期排序"
 
 #: classes/pref/prefs.php:100
 msgid "Use feed-specified date to sort headlines instead of local import date."
-msgstr "使用信息源中定义的时间，而非本地导入的时间来排序。"
+msgstr "使用订阅源中定义的时间，而非本地导入的时间来排序。"
 
 #: classes/pref/prefs.php:101
 msgid "SSL client certificate"
@@ -901,7 +901,7 @@ msgstr "时区"
 
 #: classes/pref/prefs.php:106
 msgid "Group by feed"
-msgstr "分组显示信息源"
+msgstr "分组显示订阅源"
 
 #: classes/pref/prefs.php:106
 msgid "Group multiple-feed output by originating feed"
@@ -1017,9 +1017,8 @@ msgid "App passwords"
 msgstr "APP密码"
 
 #: classes/pref/prefs.php:559
-#, fuzzy
 msgid "Authenticator (OTP)"
-msgstr "登录认证"
+msgstr "认证 (OTP)"
 
 #: classes/pref/prefs.php:570
 msgid "Some preferences are only available in default profile."
@@ -1213,7 +1212,7 @@ msgstr "PHP信息"
 #: classes/pref/filters.php:197 classes/pref/filters.php:208
 #: classes/pref/filters.php:426 classes/pref/filters.php:847
 msgid "All feeds"
-msgstr "全部信息源"
+msgstr "全部订阅源"
 
 #: classes/pref/filters.php:219 classes/pref/filters.php:446
 msgid "(inverse)"
@@ -1316,7 +1315,7 @@ msgstr "点击进行编辑"
 #, php-format
 msgid "(%d feed)"
 msgid_plural "(%d feeds)"
-msgstr[0] "(%d 个信息源)"
+msgstr[0] "(%d 个订阅源)"
 
 #: classes/pref/feeds.php:537
 #, php-format
@@ -1368,9 +1367,8 @@ msgid "Language:"
 msgstr "语言："
 
 #: classes/pref/feeds.php:628 js/CommonDialogs.js:522
-#, fuzzy
 msgid "Update interval:"
-msgstr "默认更新间隔"
+msgstr "更新间隔："
 
 #: classes/pref/feeds.php:635
 msgid "Article purging:"
@@ -1402,15 +1400,15 @@ msgstr "取消"
 
 #: classes/pref/feeds.php:896
 msgid "Feeds with errors"
-msgstr "有错误的信息源"
+msgstr "有错误的订阅源"
 
 #: classes/pref/feeds.php:902
 msgid "Inactive feeds"
-msgstr "未活动的信息源"
+msgstr "未活动的订阅源"
 
 #: classes/pref/feeds.php:939
 msgid "Edit selected feeds"
-msgstr "编辑选定的信息源"
+msgstr "编辑选定的订阅源"
 
 #: classes/pref/feeds.php:943 js/PrefFeedTree.js:396
 msgid "Batch subscribe"
@@ -1432,7 +1430,7 @@ msgstr "移除选中"
 msgid ""
 "Using OPML you can export and import your feeds, filters, labels and Tiny "
 "Tiny RSS settings."
-msgstr "使用OPML你可以导出或导入信息源feeds列表、过滤器、标签以及设置。"
+msgstr "使用OPML，您可以导出和导入订阅源，过滤器，标签和设置。"
 
 #: classes/pref/feeds.php:1011
 msgid "Choose file..."
@@ -1464,9 +1462,7 @@ msgstr "您可以公开发布您的 OPML 。网上的任何人都可以通过如
 msgid ""
 "Published OPML does not include your Tiny Tiny RSS settings, feeds that "
 "require authentication or feeds hidden from Popular feeds."
-msgstr ""
-"已发布的OPML中不包括您的Tiny Tiny RSS设置，需要身份验证的信息源或者最受欢迎的"
-"信息源中隐藏的信息源."
+msgstr "已发布的OPML中不包括您的Tiny Tiny RSS设置，需要身份验证的订阅源或者最受欢迎的订阅源中隐藏的订阅源."
 
 #: classes/pref/feeds.php:1045
 msgid "Display published OPML URL"
@@ -1486,16 +1482,14 @@ msgid "Clear all generated URLs"
 msgstr "清空所有生成的 URL"
 
 #: classes/pref/feeds.php:1075
-#, fuzzy
 msgid "My feeds"
-msgstr "我的信息源"
+msgstr "我的订阅源"
 
 #: classes/pref/feeds.php:1080
 msgid "OPML"
 msgstr "OPML"
 
 #: classes/pref/feeds.php:1085
-#, fuzzy
 msgid "Sharing"
 msgstr "分享"
 
@@ -1519,12 +1513,12 @@ msgstr "返回偏好设置"
 #: classes/opml.php:321
 #, php-format
 msgid "Adding feed: %s"
-msgstr "添加信息源: %s"
+msgstr "添加订阅源: %s"
 
 #: classes/opml.php:341
 #, php-format
 msgid "Duplicate feed: %s"
-msgstr "重复的信息源:%s"
+msgstr "重复的订阅源:%s"
 
 #: classes/opml.php:355
 #, php-format
@@ -1574,7 +1568,7 @@ msgstr "解析文档时发生错误。"
 
 #: classes/feeds.php:54 classes/feeds.php:458
 msgid "Feed not found."
-msgstr "找不到信息源。"
+msgstr "找不到订阅源。"
 
 #: classes/feeds.php:119
 msgid "Never"
@@ -1619,15 +1613,15 @@ msgstr "暂时没有文章。"
 #: classes/feeds.php:376 classes/feeds.php:526
 #, php-format
 msgid "Feeds last updated at %s"
-msgstr "上次信息源更新时间：%s"
+msgstr "订阅源最后更新时间：%s"
 
 #: classes/feeds.php:388 classes/feeds.php:538
 msgid "Some feeds have update errors (click for details)"
-msgstr "部分信息源更新错误（点击了解详情）"
+msgstr "部分订阅源更新错误（点击了解详情）"
 
 #: classes/feeds.php:515
 msgid "No feed selected."
-msgstr "没有选中的信息源。"
+msgstr "未选择订阅源。"
 
 #: classes/feeds.php:1108
 msgid "Starred articles"
@@ -1694,7 +1688,6 @@ msgid "Show related articles"
 msgstr "显示相关文章"
 
 #: plugins/af_psql_trgm/init.php:134
-#, fuzzy
 msgid "Mark similar articles as read (af_psql_trgm)"
 msgstr "将类似的文章标记为已读 (af_psql_trgm)"
 
@@ -1716,16 +1709,14 @@ msgid "Minimum title length:"
 msgstr "最短标题长度："
 
 #: plugins/af_psql_trgm/init.php:187
-#, fuzzy
 msgid "Enable for all feeds."
-msgstr "启用所有信息源:"
+msgstr "为所有订阅源启用。"
 
 #: plugins/af_psql_trgm/init.php:206 plugins/af_readability/init.php:106
 msgid "Currently enabled for (click to edit):"
 msgstr "当前启用（点击编辑）:"
 
 #: plugins/af_psql_trgm/init.php:226
-#, fuzzy
 msgid "Similarity (af_psql_trgm)"
 msgstr "相似度(af_psql_trgm)"
 
@@ -1783,7 +1774,6 @@ msgid "Subject:"
 msgstr "主题："
 
 #: plugins/mail/init.php:185
-#, fuzzy
 msgid "Send email"
 msgstr "发送邮件"
 
@@ -1850,20 +1840,20 @@ msgstr "无法订阅到 <b>%s</b>。"
 #: plugins/bookmarklets/init.php:110
 #, php-format
 msgid "No feeds found in <b>%s</b>."
-msgstr "在 <b>%s</b> 中没有找到信息源。"
+msgstr "在 <b>%s</b> 中没有找到订阅源。"
 
 #: plugins/bookmarklets/init.php:116
 #, php-format
 msgid "Could not subscribe to <b>%s</b>.<br>Can't download the Feed URL."
-msgstr "无法订阅 <b>%s</b>。<br>无法下载信息源的 URL。"
+msgstr "无法订阅 <b>%s</b>。<br>无法下载订阅源的 URL。"
 
 #: plugins/bookmarklets/init.php:127
 msgid "Multiple feed URLs found:"
-msgstr "发现了多个信息源:"
+msgstr "发现了多个订阅源:"
 
 #: plugins/bookmarklets/init.php:135
 msgid "Subscribe to selected feed"
-msgstr "订阅选中的信息源"
+msgstr "订阅选中的订阅源"
 
 #: plugins/bookmarklets/init.php:153
 msgid "Edit subscription options"
@@ -1895,7 +1885,7 @@ msgstr "分享"
 
 #: plugins/bookmarklets/init.php:283
 msgid "Shared article will appear in the Published feed."
-msgstr "被分享的文章将会出现在已发布信息源中。"
+msgstr "分享的文章将会出现在已发布的订阅源中。"
 
 #: plugins/bookmarklets/init.php:341
 #, php-format
@@ -1910,9 +1900,7 @@ msgstr "小书签"
 msgid ""
 "Drag the link below to your browser toolbar, open the feed you're interested "
 "in in your browser and click on the link to subscribe to it."
-msgstr ""
-"将以下链接拖拽至您的浏览器工具条，在浏览器中打开您想看的信息源，然后点击链接"
-"以订阅。"
+msgstr "将以下链接拖拽至您的浏览器书签，在浏览器中打开您想看的订阅源，然后点击链接以订阅。"
 
 #: plugins/bookmarklets/init.php:353
 msgid "Subscribe in Tiny Tiny RSS"
@@ -1939,23 +1927,20 @@ msgid "NSFW Plugin"
 msgstr "NSFW 插件"
 
 #: plugins/nsfw/init.php:65
-#, fuzzy
 msgid "Tags to consider NSFW (comma-separated):"
-msgstr "不宜在工作场所观看的标签（多个标签以逗号分隔）"
+msgstr "不宜在工作场所观看的标签（以逗号分隔）："
 
 #: plugins/nsfw/init.php:87
 msgid "Configuration saved."
 msgstr "设置已保存."
 
 #: plugins/mailto/init.php:19 plugins/mailto/init.php:29
-#, fuzzy
 msgid "Forward by email (mailto:)"
-msgstr "通过邮件转发"
+msgstr "通过邮件转发(mailto:)"
 
 #: plugins/mailto/init.php:79
-#, fuzzy
 msgid "Click to open your mail client"
-msgstr "点击下面链接来启动你的邮件客户端："
+msgstr "单击打开邮件客户端"
 
 #: plugins/mailto/init.php:85
 msgid "Close this dialog"
@@ -1983,9 +1968,8 @@ msgid "Toggle sidebar"
 msgstr "切换侧边栏"
 
 #: plugins/share/init.php:42
-#, fuzzy
 msgid "Article unshared"
-msgstr "通过 URL 分享的文章"
+msgstr "未共享文章"
 
 #: plugins/share/init.php:50
 msgid "You can disable all articles shared by unique URLs here."
@@ -2020,9 +2004,9 @@ msgid "Keyboard shortcuts"
 msgstr "快捷键"
 
 #: js/App.js:543
-#, fuzzy, perl-format
+#, perl-format
 msgid "Fatal error: %s"
-msgstr "致命错误"
+msgstr "致命错误：%s"
 
 #: js/App.js:544
 msgid "Fatal error"
@@ -2056,9 +2040,8 @@ msgid "Article URL:"
 msgstr "文章网址："
 
 #: js/Article.js:122
-#, fuzzy
 msgid "No URL could be displayed for this article."
-msgstr "不再分享此文章？"
+msgstr "无法显示此文章的URL。"
 
 #: js/Article.js:144
 msgid "no tags"
@@ -2083,11 +2066,11 @@ msgstr "订阅信息源"
 
 #: js/CommonDialogs.js:53
 msgid "Available feeds"
-msgstr "可用的信息源"
+msgstr "可用的订阅源"
 
 #: js/CommonDialogs.js:86
 msgid "This feed requires authentication."
-msgstr "这个信息源需要认证."
+msgstr "这个订阅源需要认证."
 
 #: js/CommonDialogs.js:283
 msgid "Please enter label caption:"
@@ -2100,20 +2083,19 @@ msgstr "从 %s 取消订阅？"
 
 #: js/CommonDialogs.js:328 js/App.js:1054 js/App.js:1182
 msgid "You can't edit this kind of feed."
-msgstr "您无法编辑这种类型的信息源。"
+msgstr "您无法编辑这种类型的订阅源。"
 
 #: js/CommonDialogs.js:336
 msgid "Edit Feed"
-msgstr "编辑信息源"
+msgstr "编辑订阅源"
 
 #: js/CommonDialogs.js:349
-#, fuzzy
 msgid "Please select an image file."
 msgstr "请选择图片文件上传。"
 
 #: js/CommonDialogs.js:400
 msgid "Remove stored feed icon?"
-msgstr "移除已保存的信息源图标？"
+msgstr "移除已保存的订阅源图标？"
 
 #: js/CommonFilters.js:170
 msgid "Edit rule"
@@ -2207,7 +2189,7 @@ msgstr "将分类标记为已读"
 
 #: js/Headlines.js:1487
 msgid "Mark feed as read"
-msgstr "标记信息源为已读"
+msgstr "标记订阅源为已读"
 
 #: js/PrefFeedTree.js:73
 msgid "Edit category"
@@ -2225,12 +2207,12 @@ msgstr "删除类别 %s？该类别下的源将被归入未分类中。"
 
 #: js/PrefFeedTree.js:192
 msgid "Unsubscribe from selected feeds?"
-msgstr "从选中的信息源取消订阅？"
+msgstr "退订选择订阅源？"
 
 #: js/PrefFeedTree.js:207 js/PrefFeedTree.js:276 js/PrefFeedTree.js:292
 #: js/CommonDialogs.js:230 js/PrefFeedTree.js:497
 msgid "No feeds selected."
-msgstr "没有选中信息源。"
+msgstr "没有选中订阅源。"
 
 #: js/PrefFeedTree.js:242
 msgid "Remove selected categories?"
@@ -2242,11 +2224,11 @@ msgstr "没有选中分类。"
 
 #: js/PrefFeedTree.js:303
 msgid "Edit Multiple Feeds"
-msgstr "编辑多个信息源"
+msgstr "编辑多个订阅源"
 
 #: js/PrefFeedTree.js:332
 msgid "Save changes to selected feeds?"
-msgstr "保存对信息源的更改？"
+msgstr "保存对订阅源的更改？"
 
 #: js/PrefFeedTree.js:369
 msgid "Rename category to:"
@@ -2258,11 +2240,11 @@ msgstr "分类标题:"
 
 #: js/PrefFeedTree.js:399
 msgid "Subscribing to feeds..."
-msgstr "订阅至信息源.."
+msgstr "订阅信息源.."
 
 #: js/PrefFeedTree.js:520
 msgid "Click to edit feed"
-msgstr "点击以编辑信息源"
+msgstr "点击以编辑订阅源"
 
 #: js/PrefFilterTree.js:47 js/CommonFilters.js:220
 msgid "in"
@@ -2290,7 +2272,7 @@ msgstr "删除所选的APP密码？"
 
 #: js/PrefHelpers.js:45
 msgid "This will invalidate all previously generated feed URLs. Continue?"
-msgstr "之前生成的信息源 URL 将会回到未认证状态。是否继续？"
+msgstr "这将使之前生成的信息源 URL 将会回到未认证状态。是否继续？"
 
 #: js/PrefHelpers.js:86
 msgid "Clear event log?"
@@ -2342,9 +2324,8 @@ msgid "Error sending email:"
 msgstr "邮件发送错误："
 
 #: plugins/mailto/init.js:17
-#, fuzzy
 msgid "Forward article by email (mailto:)"
-msgstr "用邮件转发文章"
+msgstr "通过邮件转发文章（mailto:）"
 
 #: plugins/share/share.js:7
 msgid "Share article by URL"
@@ -2367,7 +2348,6 @@ msgid "Update daemon is not running."
 msgstr "更新守护程序未运行。"
 
 #: js/App.js:466
-#, fuzzy
 msgid "Update daemon is not updating feeds."
 msgstr "更新程序未更新订阅源."
 
@@ -2381,7 +2361,7 @@ msgstr "请先启用邮件或邮件插件。"
 
 #: js/App.js:1191
 msgid "Please select some feed first."
-msgstr "请选择信息源。"
+msgstr "请先选择订阅源。"
 
 #: js/App.js:1196
 msgid "You can't unsubscribe from the category."
@@ -2399,7 +2379,7 @@ msgstr "保存文章标签..."
 msgid ""
 "Provided URL is a HTML page referencing multiple feeds, please select "
 "required feed from the dropdown menu below."
-msgstr ""
+msgstr "提供的URL是引用多个订阅源的HTML页面，请从下面的下拉菜单中选择所需的订阅源。"
 
 #: js/CommonDialogs.js:122
 msgid ""
@@ -2419,11 +2399,11 @@ msgstr "指定的 URL 无效。"
 
 #: js/CommonDialogs.js:148
 msgid "Specified URL doesn't seem to contain any feeds."
-msgstr "指定的 URL 没有包含任何信息源。"
+msgstr "指定的 URL 没有包含任何订阅源。"
 
 #: js/CommonDialogs.js:161
 msgid "Expand to select feed"
-msgstr "展开选择的信息源"
+msgstr "展开选择的订阅源"
 
 #: js/CommonDialogs.js:173
 msgid "Couldn't download the specified URL: %s"
@@ -2435,19 +2415,19 @@ msgstr "XML 验证失败：%s"
 
 #: js/CommonDialogs.js:179
 msgid "You are already subscribed to this feed."
-msgstr "您已经订阅过这个信息源啦。"
+msgstr "您已经订阅过这个订阅源啦。"
 
 #: js/CommonDialogs.js:201
 msgid "Feeds with update errors"
-msgstr "更新错误的信息源"
+msgstr "订阅源更新错误"
 
 #: js/CommonDialogs.js:209 js/PrefFeedTree.js:478
 msgid "Remove selected feeds?"
-msgstr "移除选中的信息源？"
+msgstr "移除选中的订阅源？"
 
 #: js/CommonDialogs.js:210 js/PrefFeedTree.js:479
 msgid "Removing selected feeds..."
-msgstr "正在移除选中的信息源..."
+msgstr "正在移除选中的订阅源..."
 
 #: js/CommonDialogs.js:305
 msgid "Removing feed..."
@@ -2467,11 +2447,11 @@ msgstr "上传完成。"
 
 #: js/CommonDialogs.js:401
 msgid "Removing feed icon..."
-msgstr "移除信息源图标..."
+msgstr "移除订阅源图标..."
 
 #: js/CommonDialogs.js:406
 msgid "Feed icon removed."
-msgstr "信息源图标已删除."
+msgstr "订阅源图标已删除."
 
 #: js/CommonDialogs.js:426 js/CommonFilters.js:391 js/PrefFeedTree.js:344
 #: js/PrefUsers.js:39
@@ -2479,17 +2459,16 @@ msgid "Saving data..."
 msgstr "正在保存数据.."
 
 #: js/CommonDialogs.js:568
-#, fuzzy
 msgid "Upload new icon..."
-msgstr "为本信息源上传一个新的图标？"
+msgstr "上载新图示..."
 
 #: js/CommonDialogs.js:597
 msgid "Show as feed"
-msgstr "以信息源显示"
+msgstr "以订阅源显示"
 
 #: js/CommonDialogs.js:599
 msgid "Generate new syndication address for this feed?"
-msgstr "为本信息源生成新的群地址？"
+msgstr "为本订阅源生成新的群地址？"
 
 #: js/CommonDialogs.js:601 js/PrefHelpers.js:359
 msgid "Trying to change address..."
@@ -2497,7 +2476,7 @@ msgstr "尝试更改地址..."
 
 #: js/CommonDialogs.js:619 js/PrefHelpers.js:373
 msgid "Could not change feed URL."
-msgstr "无法更改信息源网址。"
+msgstr "无法更改订阅源网址。"
 
 #: js/CommonDialogs.js:626
 msgid "%s can be accessed via the following secret URL:"
@@ -2516,7 +2495,6 @@ msgid "Looking for articles (%d processed, %f found)..."
 msgstr "搜索文章中 (%d 已处理, %f 已发现)..."
 
 #: js/CommonFilters.js:70
-#, fuzzy
 msgid "Found %d articles matching this filter:"
 msgstr "找到过滤器匹配的％d篇文章："
 
@@ -2534,7 +2512,6 @@ msgid "on"
 msgstr "无"
 
 #: js/CommonFilters.js:230
-#, fuzzy
 msgid "More info"
 msgstr "更多信息"
 
@@ -2576,7 +2553,7 @@ msgstr "创建"
 
 #: js/FeedTree.js:102
 msgid "Debug feed"
-msgstr "调试信息源"
+msgstr "调试订阅源"
 
 #: js/FeedTree.js:125
 msgid "(Un)collapse"
@@ -2595,7 +2572,7 @@ msgstr "将所有文章标记为已读？"
 
 #: js/Feeds.js:420
 msgid "Marking all feeds as read..."
-msgstr "标记所有信息源为已读..."
+msgstr "标记所有订阅源为已读..."
 
 #: js/Feeds.js:437
 msgid "Mark %w in %s older than 1 day as read?"
@@ -2639,7 +2616,7 @@ msgstr "选择..."
 
 #: js/Headlines.js:721 js/Headlines.js:772 js/Headlines.js:789
 msgid "Click to open next unread feed."
-msgstr "点击打开下一个未读信息源。"
+msgstr "点击打开下一个未读订阅源。"
 
 #: js/Headlines.js:786
 msgid "New articles found, reload feed to continue."
@@ -2651,7 +2628,7 @@ msgstr "删除分类..."
 
 #: js/PrefFeedTree.js:194
 msgid "Unsubscribing from selected feeds..."
-msgstr "取消订阅选中的信息源..."
+msgstr "取消订阅选中的订阅源..."
 
 #: js/PrefFeedTree.js:243
 msgid "Removing selected categories..."
@@ -2667,7 +2644,7 @@ msgstr "每行添加一条RSS源（未进行检测）"
 
 #: js/PrefFeedTree.js:470
 msgid "Feeds without recent updates"
-msgstr "最近没更新的信息源"
+msgstr "最近没更新的订阅源"
 
 #: js/PrefFilterTree.js:115
 msgid "Joining filters..."

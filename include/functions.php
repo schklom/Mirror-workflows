@@ -578,7 +578,7 @@
 					$git_commit = $commit;
 					$git_timestamp = $timestamp;
 
-					$ttrss_version['version'] = strftime("%y.%m", $timestamp) . "-$commit";
+					$ttrss_version['version'] = strftime("%y.%m", (int)$timestamp) . "-$commit";
 					$ttrss_version['commit'] = $commit;
 					$ttrss_version['timestamp'] = $timestamp;
 				}

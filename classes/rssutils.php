@@ -290,7 +290,7 @@ class RSSUtils {
 			$fetch_url = $row["feed_url"];
 
 			$pluginhost = new PluginHost();
-			$user_plugins = get_pref("_ENABLED_PLUGINS", $owner_uid);
+			$user_plugins = get_pref(Prefs::_ENABLED_PLUGINS, $owner_uid);
 
 			$pluginhost->load(Config::get(Config::PLUGINS), PluginHost::KIND_ALL);
 			$pluginhost->load((string)$user_plugins, PluginHost::KIND_USER, $owner_uid);
@@ -401,7 +401,7 @@ class RSSUtils {
 			$feed_language = mb_strtolower($row["feed_language"]);
 
 			if (!$feed_language)
-				$feed_language = mb_strtolower(get_pref('DEFAULT_SEARCH_LANGUAGE', $owner_uid));
+				$feed_language = mb_strtolower(get_pref(Prefs::DEFAULT_SEARCH_LANGUAGE, $owner_uid));
 
 			if (!$feed_language)
 				$feed_language = 'simple';
@@ -415,7 +415,7 @@ class RSSUtils {
 		$cache_filename = Config::get(Config::CACHE_DIR) . "/feeds/" . sha1($fetch_url) . ".xml";
 
 		$pluginhost = new PluginHost();
-		$user_plugins = get_pref("_ENABLED_PLUGINS", $owner_uid);
+		$user_plugins = get_pref(Prefs::_ENABLED_PLUGINS, $owner_uid);
 
 		$pluginhost->load(Config::get(Config::PLUGINS), PluginHost::KIND_ALL);
 		$pluginhost->load((string)$user_plugins, PluginHost::KIND_USER, $owner_uid);
@@ -1208,7 +1208,7 @@ class RSSUtils {
 
 				$boring_tags = array_map('trim',
 						explode(",", mb_strtolower(
-							get_pref('BLACKLISTED_TAGS', $owner_uid))));
+							get_pref(Prefs::BLACKLISTED_TAGS, $owner_uid))));
 
 				$entry_tags = FeedItem_Common::normalize_categories(
 					array_unique(

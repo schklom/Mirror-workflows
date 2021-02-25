@@ -36,7 +36,7 @@ class API extends Handler {
 				return false;
 			}
 
-			if (!empty($_SESSION["uid"]) && $method != "logout" && !get_pref('ENABLE_API_ACCESS')) {
+			if (!empty($_SESSION["uid"]) && $method != "logout" && !get_pref(Prefs::ENABLE_API_ACCESS)) {
 				$this->_wrap(self::STATUS_ERR, array("error" => self::E_API_DISABLED));
 				return false;
 			}
@@ -69,7 +69,7 @@ class API extends Handler {
 		if (Config::get(Config::SINGLE_USER_MODE)) $login = "admin";
 
 		if ($uid = UserHelper::find_user_by_login($login)) {
-			if (get_pref("ENABLE_API_ACCESS", $uid)) {
+			if (get_pref(Prefs::ENABLE_API_ACCESS, $uid)) {
 				if (UserHelper::authenticate($login, $password, false,  Auth_Base::AUTH_SERVICE_API)) {               // try login with normal password
 					$this->_wrap(self::STATUS_OK, array("session_id" => session_id(),
 						"api_level" => self::API_LEVEL));

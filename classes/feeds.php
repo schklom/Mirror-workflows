@@ -108,7 +108,7 @@ class Feeds extends Handler_Protected {
 
 		$this->_mark_timestamp("db query");
 
-		$vfeed_group_enabled = get_pref("VFEED_GROUP_BY_FEED") &&
+		$vfeed_group_enabled = get_pref(Prefs::VFEED_GROUP_BY_FEED) &&
 			!(in_array($feed, self::NEVER_GROUP_FEEDS) && !$cat_view);
 
 		$result = $qfh_ret[0]; // this could be either a PDO query result or a -1 if first id changed
@@ -167,7 +167,7 @@ class Feeds extends Handler_Protected {
 
 				++$headlines_count;
 
-				if (!get_pref('SHOW_CONTENT_PREVIEW')) {
+				if (!get_pref(Prefs::SHOW_CONTENT_PREVIEW)) {
 					$line["content_preview"] = "";
 				} else {
 					$line["content_preview"] =  "&mdash; " . truncate_string(strip_tags($line["content"]), 250);
@@ -262,12 +262,12 @@ class Feeds extends Handler_Protected {
 
 				$this->_mark_timestamp("   note");
 
-				if (!get_pref("CDM_EXPANDED")) {
+				if (!get_pref(Prefs::CDM_EXPANDED)) {
 					$line["cdm_excerpt"] = "<span class='collapse'>
 						<i class='material-icons' onclick='return Article.cdmUnsetActive(event)'
 								title=\"" . __("Collapse article") . "\">remove_circle</i></span>";
 
-					if (get_pref('SHOW_CONTENT_PREVIEW')) {
+					if (get_pref(Prefs::SHOW_CONTENT_PREVIEW)) {
 						$line["cdm_excerpt"] .= "<span class='excerpt'>" . $line["content_preview"] . "</span>";
 					}
 				}
@@ -459,8 +459,8 @@ class Feeds extends Handler_Protected {
 			return;
 		}
 
-		set_pref("_DEFAULT_VIEW_MODE", $view_mode);
-		set_pref("_DEFAULT_VIEW_ORDER_BY", $order_by);
+		set_pref(Prefs::_DEFAULT_VIEW_MODE, $view_mode);
+		set_pref(Prefs::_DEFAULT_VIEW_ORDER_BY, $order_by);
 
 		/* bump login timestamp if needed */
 		if (time() - $_SESSION["last_login_update"] > 3600) {
@@ -573,7 +573,7 @@ class Feeds extends Handler_Protected {
 			"show_language" => Config::get(Config::DB_TYPE) == "pgsql",
 			"show_syntax_help" => count(PluginHost::getInstance()->get_hooks(PluginHost::HOOK_SEARCH)) == 0,
 			"all_languages" => Pref_Feeds::get_ts_languages(),
-			"default_language" => get_pref('DEFAULT_SEARCH_LANGUAGE')
+			"default_language" => get_pref(Prefs::DEFAULT_SEARCH_LANGUAGE)
 		]);
 	}
 
@@ -799,7 +799,7 @@ class Feeds extends Handler_Protected {
 
 				if ($feed == -3) {
 
-					$intl = (int) get_pref("FRESH_ARTICLE_MAX_AGE");
+					$intl = (int) get_pref(Prefs::FRESH_ARTICLE_MAX_AGE);
 
 					if (Config::get(Config::DB_TYPE) == "pgsql") {
 						$match_part = "date_entered > NOW() - INTERVAL '$intl hour' ";
@@ -892,7 +892,7 @@ class Feeds extends Handler_Protected {
 		} else if ($n_feed == -3) {
 			$match_part = "unread = true AND score >= 0";
 
-			$intl = (int) get_pref("FRESH_ARTICLE_MAX_AGE", $owner_uid);
+			$intl = (int) get_pref(Prefs::FRESH_ARTICLE_MAX_AGE, $owner_uid);
 
 			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$match_part .= " AND date_entered > NOW() - INTERVAL '$intl hour' ";
@@ -1478,7 +1478,7 @@ class Feeds extends Handler_Protected {
 		} else if ($feed == -3) { // fresh virtual feed
 			$query_strategy_part = "unread = true AND score >= 0";
 
-			$intl = (int) get_pref("FRESH_ARTICLE_MAX_AGE", $owner_uid);
+			$intl = (int) get_pref(Prefs::FRESH_ARTICLE_MAX_AGE, $owner_uid);
 
 			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$query_strategy_part .= " AND date_entered > NOW() - INTERVAL '$intl hour' ";
@@ -1566,7 +1566,7 @@ class Feeds extends Handler_Protected {
 
 		if (is_numeric($feed)) {
 			// proper override_order applied above
-			if ($vfeed_query_part && !$ignore_vfeed_group && get_pref('VFEED_GROUP_BY_FEED', $owner_uid)) {
+			if ($vfeed_query_part && !$ignore_vfeed_group && get_pref(Prefs::VFEED_GROUP_BY_FEED, $owner_uid)) {
 
 				if (!(in_array($feed, self::NEVER_GROUP_BY_DATE) && !$cat_view)) {
 					$yyiw_desc = $order_by == "date_reverse" ? "" : "desc";
@@ -2058,7 +2058,7 @@ class Feeds extends Handler_Protected {
 		if ($search_language)
 			$search_language = $pdo->quote(mb_strtolower($search_language));
 		else
-			$search_language = $pdo->quote(mb_strtolower(get_pref('DEFAULT_SEARCH_LANGUAGE', $owner_uid)));
+			$search_language = $pdo->quote(mb_strtolower(get_pref(Prefs::DEFAULT_SEARCH_LANGUAGE, $owner_uid)));
 
 		foreach ($keywords as $k) {
 			if (strpos($k, "-") === 0) {
@@ -2166,7 +2166,7 @@ class Feeds extends Handler_Protected {
 				default:
 					if (strpos($k, "@") === 0) {
 
-						$user_tz_string = get_pref('USER_TIMEZONE', $_SESSION['uid']);
+						$user_tz_string = get_pref(Prefs::USER_TIMEZONE, $_SESSION['uid']);
 						$orig_ts = strtotime(substr($k, 1));
 						$k = date("Y-m-d", TimeHelper::convert_timestamp($orig_ts, $user_tz_string, 'UTC'));
 

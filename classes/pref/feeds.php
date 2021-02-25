@@ -122,7 +122,7 @@ class Pref_Feeds extends Handler_Protected {
 		$root['param'] = 0;
 		$root['type'] = 'category';
 
-		$enable_cats = get_pref('ENABLE_FEED_CATS');
+		$enable_cats = get_pref(Prefs::ENABLE_FEED_CATS);
 
 		if (clean($_REQUEST['mode'] ?? 0) == 2) {
 
@@ -171,7 +171,7 @@ class Pref_Feeds extends Handler_Protected {
 				ttrss_labels2 WHERE owner_uid = ? ORDER by caption");
 			$sth->execute([$_SESSION['uid']]);
 
-			if (get_pref('ENABLE_FEED_CATS')) {
+			if (get_pref(Prefs::ENABLE_FEED_CATS)) {
 				$cat = $this->feedlist_init_cat(-2);
 			} else {
 				$cat['items'] = array();
@@ -527,11 +527,11 @@ class Pref_Feeds extends Handler_Protected {
 			$row["icon"] = Feeds::_get_icon($feed_id);
 
 			$local_update_intervals = $update_intervals;
-			$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[get_pref("DEFAULT_UPDATE_INTERVAL")]);
+			$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[get_pref(Prefs::DEFAULT_UPDATE_INTERVAL)]);
 
 			if (Config::get(Config::FORCE_ARTICLE_PURGE) == 0) {
 				$local_purge_intervals = $purge_intervals;
-				$default_purge_interval = get_pref("PURGE_OLD_DAYS");
+				$default_purge_interval = get_pref(Prefs::PURGE_OLD_DAYS);
 
 				if ($default_purge_interval > 0)
 				$local_purge_intervals[0] .= " " . T_nsprintf('(%d day)', '(%d days)', $default_purge_interval, $default_purge_interval);
@@ -546,7 +546,7 @@ class Pref_Feeds extends Handler_Protected {
 			print json_encode([
 				"feed" => $row,
 				"cats" => [
-					"enabled" => get_pref('ENABLE_FEED_CATS'),
+					"enabled" => get_pref(Prefs::ENABLE_FEED_CATS),
 					"select" => \Controls\select_feeds_cats("cat_id", $row["cat_id"]),
 				],
 				"plugin_data" => $plugin_data,
@@ -557,7 +557,7 @@ class Pref_Feeds extends Handler_Protected {
 				],
 				"lang" => [
 					"enabled" => Config::get(Config::DB_TYPE) == "pgsql",
-					"default" => get_pref('DEFAULT_SEARCH_LANGUAGE'),
+					"default" => get_pref(Prefs::DEFAULT_SEARCH_LANGUAGE),
 					"all" => $this::get_ts_languages(),
 					]
 				]);
@@ -576,10 +576,10 @@ class Pref_Feeds extends Handler_Protected {
 		$feed_ids = clean($_REQUEST["ids"]);
 
 		$local_update_intervals = $update_intervals;
-		$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[get_pref("DEFAULT_UPDATE_INTERVAL")]);
+		$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[get_pref(Prefs::DEFAULT_UPDATE_INTERVAL)]);
 
 		$local_purge_intervals = $purge_intervals;
-		$default_purge_interval = get_pref("PURGE_OLD_DAYS");
+		$default_purge_interval = get_pref(Prefs::PURGE_OLD_DAYS);
 
 		if ($default_purge_interval > 0)
 			$local_purge_intervals[0] .= " " . T_sprintf("(%d days)", $default_purge_interval);
@@ -604,7 +604,7 @@ class Pref_Feeds extends Handler_Protected {
 		<div dojoType="dijit.layout.TabContainer" style="height : 450px">
 			<div dojoType="dijit.layout.ContentPane" title="<?= __('General') ?>">
 				<section>
-				<?php if (get_pref('ENABLE_FEED_CATS')) { ?>
+				<?php if (get_pref(Prefs::ENABLE_FEED_CATS)) { ?>
 					<fieldset>
 						<label><?= __('Place in category:') ?></label>
 						<?= \Controls\select_feeds_cats("cat_id", null, ['disabled' => '1']) ?>
@@ -830,7 +830,7 @@ class Pref_Feeds extends Handler_Protected {
 						break;
 
 					case "cat_id":
-						if (get_pref('ENABLE_FEED_CATS')) {
+						if (get_pref(Prefs::ENABLE_FEED_CATS)) {
 							if ($cat_id) {
 								$qpart = "cat_id = " . $this->pdo->quote($cat_id);
 							} else {
@@ -946,7 +946,7 @@ class Pref_Feeds extends Handler_Protected {
 					</div>
 				</div>
 
-				<?php if (get_pref('ENABLE_FEED_CATS')) { ?>
+				<?php if (get_pref(Prefs::ENABLE_FEED_CATS)) { ?>
 					<div dojoType="fox.form.DropDownButton">
 						<span><?= __('Categories') ?></span>
 						<div dojoType="dijit.Menu" style="display: none">
@@ -1237,7 +1237,7 @@ class Pref_Feeds extends Handler_Protected {
 
 	function batchSubscribe() {
 		print json_encode([
-			"enable_cats" => (int)get_pref('ENABLE_FEED_CATS'),
+			"enable_cats" => (int)get_pref(Prefs::ENABLE_FEED_CATS),
 			"cat_select" => \Controls\select_feeds_cats("cat")
 		]);
 	}

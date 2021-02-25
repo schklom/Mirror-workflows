@@ -106,9 +106,15 @@ class Pref_Prefs extends Handler_Protected {
 			Prefs::USER_CSS_THEME => array(__("Theme"))
 		];
 
-		$this->pref_blacklist = [Prefs::ALLOW_DUPLICATE_POSTS, Prefs::REVERSE_HEADLINES,
-			Prefs::SORT_HEADLINES_BY_FEED_DATE, Prefs::DEFAULT_ARTICLE_LIMIT,
-			Prefs::FEEDS_SORT_BY_UNREAD, Prefs::USER_STYLESHEET];
+		// hidden in the main prefs UI
+		$this->pref_blacklist = [
+			Prefs::ALLOW_DUPLICATE_POSTS,
+			Prefs::REVERSE_HEADLINES,
+			Prefs::SORT_HEADLINES_BY_FEED_DATE,
+			Prefs::DEFAULT_ARTICLE_LIMIT,
+			Prefs::FEEDS_SORT_BY_UNREAD,
+			Prefs::USER_STYLESHEET
+		];
 	}
 
 	function changepassword() {
@@ -830,7 +836,7 @@ class Pref_Prefs extends Handler_Protected {
 
 	private function index_plugins_user() {
 		$system_enabled = array_map("trim", explode(",", (string)Config::get(Config::PLUGINS)));
-		$user_enabled = array_map("trim", explode(",", get_pref("_ENABLED_PLUGINS")));
+		$user_enabled = array_map("trim", explode(",", get_pref(Prefs::_ENABLED_PLUGINS)));
 
 		$tmppluginhost = new PluginHost();
 		$tmppluginhost->load_all($tmppluginhost::KIND_ALL, $_SESSION["uid"], true);
@@ -1131,7 +1137,7 @@ class Pref_Prefs extends Handler_Protected {
 		else
 			$plugins = "";
 
-		set_pref("_ENABLED_PLUGINS", $plugins);
+		set_pref(Prefs::_ENABLED_PLUGINS, $plugins);
 	}
 
 	function clearplugindata() {
@@ -1141,7 +1147,7 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	function customizeCSS() {
-		$value = get_pref("USER_STYLESHEET");
+		$value = get_pref(Prefs::USER_STYLESHEET);
 		$value = str_replace("<br/>", "\n", $value);
 
 		print json_encode(["value" => $value]);

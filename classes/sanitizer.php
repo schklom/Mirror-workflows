@@ -95,7 +95,7 @@ class Sanitizer {
 			}
 
 			if ($entry->hasAttribute('src') &&
-					($owner && get_pref("STRIP_IMAGES", $owner)) || $force_remove_images || ($_SESSION["bw_limit"] ?? false)) {
+					($owner && get_pref(Prefs::STRIP_IMAGES, $owner)) || $force_remove_images || ($_SESSION["bw_limit"] ?? false)) {
 
 				$p = $doc->createElement('p');
 

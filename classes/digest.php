@@ -21,8 +21,8 @@ class Digest
 
 		while ($line = $res->fetch()) {
 
-			if (get_pref('DIGEST_ENABLE', $line['id'])) {
-				$preferred_ts = strtotime(get_pref('DIGEST_PREFERRED_TIME', $line['id']));
+			if (get_pref(Prefs::DIGEST_ENABLE, $line['id'])) {
+				$preferred_ts = strtotime(get_pref(Prefs::DIGEST_PREFERRED_TIME, $line['id']));
 
 				// try to send digests within 2 hours of preferred time
 				if ($preferred_ts && time() >= $preferred_ts &&
@@ -31,7 +31,7 @@ class Digest
 
 					Debug::log("Sending digest for UID:" . $line['id'] . " - " . $line["email"]);
 
-					$do_catchup = get_pref('DIGEST_CATCHUP', $line['id']);
+					$do_catchup = get_pref(Prefs::DIGEST_CATCHUP, $line['id']);
 
 					global $tz_offset;
 
@@ -86,7 +86,7 @@ class Digest
 		$tpl->readTemplateFromFile("digest_template_html.txt");
 		$tpl_t->readTemplateFromFile("digest_template.txt");
 
-		$user_tz_string = get_pref('USER_TIMEZONE', $user_id);
+		$user_tz_string = get_pref(Prefs::USER_TIMEZONE, $user_id);
 		$local_ts = TimeHelper::convert_timestamp(time(), 'UTC', $user_tz_string);
 
 		$tpl->setVariable('CUR_DATE', date('Y/m/d', $local_ts));
@@ -152,7 +152,7 @@ class Digest
 			$updated = TimeHelper::make_local_datetime($line['last_updated'], false,
 				$user_id);
 
-			if (get_pref('ENABLE_FEED_CATS', $user_id)) {
+			if (get_pref(Prefs::ENABLE_FEED_CATS, $user_id)) {
 				$line['feed_title'] = $line['cat_title'] . " / " . $line['feed_title'];
 			}
 

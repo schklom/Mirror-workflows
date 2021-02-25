@@ -7,16 +7,16 @@ class TimeHelper {
 		if ($eta_min && time() + $tz_offset - $timestamp < 3600) {
 			return T_sprintf("%d min", date("i", time() + $tz_offset - $timestamp));
 		} else if (date("Y.m.d", $timestamp) == date("Y.m.d", time() + $tz_offset)) {
-			$format = get_pref('SHORT_DATE_FORMAT', $owner_uid);
+			$format = get_pref(Prefs::SHORT_DATE_FORMAT, $owner_uid);
 			if (strpos((strtolower($format)), "a") === false)
 				return date("G:i", $timestamp);
 			else
 				return date("g:i a", $timestamp);
 		} else if (date("Y", $timestamp) == date("Y", time() + $tz_offset)) {
-			$format = get_pref('SHORT_DATE_FORMAT', $owner_uid);
+			$format = get_pref(Prefs::SHORT_DATE_FORMAT, $owner_uid);
 			return date($format, $timestamp);
 		} else {
-			$format = get_pref('LONG_DATE_FORMAT', $owner_uid);
+			$format = get_pref(Prefs::LONG_DATE_FORMAT, $owner_uid);
 			return date($format, $timestamp);
 		}
 	}
@@ -37,7 +37,7 @@ class TimeHelper {
 		# We store date in UTC internally
 		$dt = new DateTime($timestamp, $utc_tz);
 
-		$user_tz_string = get_pref('USER_TIMEZONE', $owner_uid);
+		$user_tz_string = get_pref(Prefs::USER_TIMEZONE, $owner_uid);
 
 		if ($user_tz_string != 'Automatic') {
 
@@ -59,9 +59,9 @@ class TimeHelper {
 				$tz_offset, $owner_uid, $eta_min);
 		} else {
 			if ($long)
-				$format = get_pref('LONG_DATE_FORMAT', $owner_uid);
+				$format = get_pref(Prefs::LONG_DATE_FORMAT, $owner_uid);
 			else
-				$format = get_pref('SHORT_DATE_FORMAT', $owner_uid);
+				$format = get_pref(Prefs::SHORT_DATE_FORMAT, $owner_uid);
 
 			return date($format, $user_timestamp);
 		}

@@ -392,14 +392,14 @@ class RPC extends Handler_Protected {
 		$params["check_for_updates"] = Config::get(Config::CHECK_FOR_UPDATES);
 		$params["icons_url"] = Config::get(Config::ICONS_URL);
 		$params["cookie_lifetime"] = Config::get(Config::SESSION_COOKIE_LIFETIME);
-		$params["default_view_mode"] = get_pref("_DEFAULT_VIEW_MODE");
-		$params["default_view_limit"] = (int) get_pref("_DEFAULT_VIEW_LIMIT");
-		$params["default_view_order_by"] = get_pref("_DEFAULT_VIEW_ORDER_BY");
+		$params["default_view_mode"] = get_pref(Prefs::_DEFAULT_VIEW_MODE);
+		$params["default_view_limit"] = (int) get_pref(Prefs::_DEFAULT_VIEW_LIMIT);
+		$params["default_view_order_by"] = get_pref(Prefs::_DEFAULT_VIEW_ORDER_BY);
 		$params["bw_limit"] = (int) $_SESSION["bw_limit"];
 		$params["is_default_pw"] = Pref_Prefs::isdefaultpassword();
 		$params["label_base_index"] = LABEL_BASE_INDEX;
 
-		$theme = get_pref("USER_CSS_THEME");
+		$theme = get_pref(Prefs::USER_CSS_THEME);
 		$params["theme"] = theme_exists($theme) ? $theme : "";
 
 		$params["plugins"] = implode(", ", PluginHost::getInstance()->get_plugin_names());
@@ -454,7 +454,7 @@ class RPC extends Handler_Protected {
 
 		$data["max_feed_id"] = (int) $max_feed_id;
 		$data["num_feeds"] = (int) $num_feeds;
-		$data['cdm_expanded'] = get_pref('CDM_EXPANDED');
+		$data['cdm_expanded'] = get_pref(Prefs::CDM_EXPANDED);
 		$data["labels"] = Labels::get_all($_SESSION["uid"]);
 
 		if (Config::get(Config::LOG_DESTINATION) == 'sql' && $_SESSION['access_level'] >= 10) {

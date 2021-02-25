@@ -40,7 +40,7 @@ class Handler_Public extends Handler {
 
 		if (!$is_cat && is_numeric($feed) && $feed < PLUGIN_FEED_BASE_INDEX && $feed > LABEL_BASE_INDEX) {
 
-			$user_plugins = get_pref("_ENABLED_PLUGINS", $owner_uid);
+			$user_plugins = get_pref(Prefs::_ENABLED_PLUGINS, $owner_uid);
 
 			$tmppluginhost = new PluginHost();
 			$tmppluginhost->load(Config::get(Config::PLUGINS), PluginHost::KIND_ALL);
@@ -366,7 +366,7 @@ class Handler_Public extends Handler {
 				$_POST["password"] = "";
 
 				if (get_schema_version() >= 120) {
-					$_SESSION["language"] = get_pref("USER_LANGUAGE", $_SESSION["uid"]);
+					$_SESSION["language"] = get_pref(Prefs::USER_LANGUAGE, $_SESSION["uid"]);
 				}
 
 				$_SESSION["ref_schema_version"] = get_schema_version(true);

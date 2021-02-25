@@ -128,7 +128,7 @@ function print_feed_multi_select($id, $default_ids = [],
 		}
 	}
 
-	if (get_pref('ENABLE_FEED_CATS')) {
+	if (get_pref(Prefs::ENABLE_FEED_CATS)) {
 
 		if (!$root_id) $root_id = null;
 

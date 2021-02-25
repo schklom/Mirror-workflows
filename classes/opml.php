@@ -153,7 +153,7 @@ class OPML extends Handler_Protected {
 		if ($include_settings) {
 			$out .= "<outline text=\"tt-rss-prefs\" schema-version=\"".SCHEMA_VERSION."\">";
 
-			$sth = $this->pdo->prepare("SELECT pref_name, value FROM ttrss_user_prefs WHERE
+			$sth = $this->pdo->prepare("SELECT pref_name, value FROM ttrss_user_prefs2 WHERE
 			   profile IS NULL AND owner_uid = ? ORDER BY pref_name");
 			$sth->execute([$owner_uid]);
 

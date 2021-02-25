@@ -185,7 +185,7 @@ class Pref_Prefs extends Handler_Protected {
 					if (get_pref('DIGEST_PREFERRED_TIME') != $value) {
 
 						$sth = $this->pdo->prepare("UPDATE ttrss_users SET
-						last_digest_sent = NULL WHERE id = ?");
+							last_digest_sent = NULL WHERE id = ?");
 						$sth->execute([$_SESSION['uid']]);
 
 					}
@@ -205,7 +205,9 @@ class Pref_Prefs extends Handler_Protected {
 					break;
 			}
 
-			set_pref($pref_name, $value);
+			if (Prefs::is_valid($pref_name)) {
+				Prefs::set($pref_name, $value, $_SESSION["uid"], $_SESSION["profile"] ?? null);
+			}
 		}
 
 		if ($need_reload) {
@@ -260,17 +262,9 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	function resetconfig() {
+		Prefs::reset($_SESSION["uid"], $_SESSION["profile"]);
 
-		$_SESSION["prefs_op_result"] = "reset-to-defaults";
-
-		$sth = $this->pdo->prepare("DELETE FROM ttrss_user_prefs
-			WHERE (profile = :profile OR (:profile IS NULL AND profile IS NULL))
-				AND owner_uid = :uid");
-		$sth->execute([":profile" => $_SESSION['profile'], ":uid" => $_SESSION['uid']]);
-
-		$this->_init_user_prefs($_SESSION["uid"], $_SESSION["profile"]);
-
-		echo __("Your preferences are now set to default values.");
+		print "PREFS_NEED_RELOAD";
 	}
 
 	private function index_auth_personal() {
@@ -568,14 +562,11 @@ class Pref_Prefs extends Handler_Protected {
 
 		if ($profile) {
 			print_notice(__("Some preferences are only available in default profile."));
-			$this->_init_user_prefs($_SESSION["uid"], $profile);
-		} else {
-			$this->_init_user_prefs($_SESSION["uid"]);
 		}
 
 		$prefs_available = [];
 
-		$sth = $this->pdo->prepare("SELECT DISTINCT
+		/*$sth = $this->pdo->prepare("SELECT DISTINCT
 			ttrss_user_prefs.pref_name,value,type_name,
 			ttrss_prefs_sections.order_id,
 			def_value,section_id
@@ -586,17 +577,17 @@ class Pref_Prefs extends Handler_Protected {
 				ttrss_user_prefs.pref_name = ttrss_prefs.pref_name AND
 				owner_uid = :uid
 			ORDER BY ttrss_prefs_sections.order_id,pref_name");
-		$sth->execute([":uid" => $_SESSION['uid'], ":profile" => $profile]);
+		$sth->execute([":uid" => $_SESSION['uid'], ":profile" => $profile]);*/
 
 		$listed_boolean_prefs = [];
 
-		while ($line = $sth->fetch()) {
+		foreach (Prefs::get_all($_SESSION["uid"], $profile) as $line) {
 
 			if (in_array($line["pref_name"], $this->pref_blacklist)) {
 				continue;
 			}
 
-			if ($profile && in_array($line["pref_name"], $this->profile_blacklist)) {
+			if ($profile && in_array($line["pref_name"], Prefs::_PROFILE_BLACKLIST)) {
 				continue;
 			}
 
@@ -607,7 +598,7 @@ class Pref_Prefs extends Handler_Protected {
 				continue;
 
 			$prefs_available[$pref_name] = [
-				'type_name' => $line["type_name"],
+				'type_hint' => $line['type_hint'],
 				'value' => $line['value'],
 				'help_text' => $this->_get_help_text($pref_name),
 				'short_desc' => $short_desc
@@ -640,7 +631,7 @@ class Pref_Prefs extends Handler_Protected {
 					print "</label>";
 
 					$value = $item['value'];
-					$type_name = $item['type_name'];
+					$type_hint = $item['type_hint'];
 
 					if ($pref_name == "USER_LANGUAGE") {
 						print \Controls\select_hash($pref_name, $value, get_translations(),
@@ -701,7 +692,7 @@ class Pref_Prefs extends Handler_Protected {
 
 						print \Controls\select_tag($pref_name, $value, Pref_Feeds::get_ts_languages());
 
-					} else if ($type_name == "bool") {
+					} else if ($type_hint == Config::T_BOOL) {
 
 						array_push($listed_boolean_prefs, $pref_name);
 
@@ -726,7 +717,7 @@ class Pref_Prefs extends Handler_Protected {
 							$attributes = ["required" => true];
 						}
 
-						if ($type_name == 'integer')
+						if ($type_hint == Config::T_INT)
 							print \Controls\number_spinner_tag($pref_name, $value, $attributes);
 						else
 							print \Controls\input_tag($pref_name, $value, "text", $attributes);
@@ -757,7 +748,7 @@ class Pref_Prefs extends Handler_Protected {
 
 						$item['help_text'] .= ". " . T_sprintf("Current server time: %s", date("H:i"));
 					} else {
-						$regexp = ($type_name == 'integer') ? 'regexp="^\d*$"' : '';
+						$regexp = ($type_hint == Config::T_INT) ? 'regexp="^\d*$"' : '';
 
 						print "<input dojoType=\"dijit.form.ValidationTextBox\" $regexp name=\"$pref_name\" value=\"$value\">";
 					}
@@ -1369,8 +1360,6 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	static function _init_user_prefs($uid, $profile = false) {
-
-		Prefs::initialize($uid, $profile);
 
 		if (get_schema_version() < 63) $profile_qpart = "";
 

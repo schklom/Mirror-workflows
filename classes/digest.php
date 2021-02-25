@@ -21,8 +21,8 @@ class Digest
 
 		while ($line = $res->fetch()) {
 
-			if (@get_pref('DIGEST_ENABLE', $line['id'], false)) {
-				$preferred_ts = strtotime(get_pref('DIGEST_PREFERRED_TIME', $line['id'], '00:00'));
+			if (get_pref('DIGEST_ENABLE', $line['id'])) {
+				$preferred_ts = strtotime(get_pref('DIGEST_PREFERRED_TIME', $line['id']));
 
 				// try to send digests within 2 hours of preferred time
 				if ($preferred_ts && time() >= $preferred_ts &&
@@ -31,7 +31,7 @@ class Digest
 
 					Debug::log("Sending digest for UID:" . $line['id'] . " - " . $line["email"]);
 
-					$do_catchup = get_pref('DIGEST_CATCHUP', $line['id'], false);
+					$do_catchup = get_pref('DIGEST_CATCHUP', $line['id']);
 
 					global $tz_offset;
 

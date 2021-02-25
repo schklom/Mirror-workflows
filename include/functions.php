@@ -42,12 +42,14 @@
 		define('SUBSTRING_FOR_DATE', 'SUBSTRING');
 	}
 
-	function get_pref($pref_name, $user_id = false, $die_on_error = false) {
-		return Db_Prefs::get()->read($pref_name, $user_id, $die_on_error);
+	function get_pref(string $pref_name, int $owner_uid = null) {
+		return Prefs::get($pref_name, $owner_uid ? $owner_uid : $_SESSION["uid"]);
+		//return Db_Prefs::get()->read($pref_name, $user_id, $die_on_error);
 	}
 
-	function set_pref($pref_name, $value, $user_id = false, $strip_tags = true) {
-		return Db_Prefs::get()->write($pref_name, $value, $user_id, $strip_tags);
+	function set_pref(string $pref_name, $value, int $owner_uid = null, bool $strip_tags = true) {
+		return Prefs::set($pref_name, $value, $owner_uid ? $owner_uid : $_SESSION["uid"], $_SESSION["profile"] ?? null, $strip_tags);
+		//return Db_Prefs::get()->write($pref_name, $value, $user_id, $strip_tags);
 	}
 
 	function get_translations() {

@@ -114,7 +114,7 @@ class Prefs {
 		Prefs::_PREFS_MIGRATED => [ false, Config::T_BOOL ],
 	];
 
-	private const _PROFILE_BLACKLIST = [
+	const _PROFILE_BLACKLIST = [
 		Prefs::ALLOW_DUPLICATE_POSTS,
 		Prefs::PURGE_OLD_DAYS,
 		Prefs::PURGE_UNREAD_ARTICLES,
@@ -143,18 +143,73 @@ class Prefs {
 		return self::$instance;
 	}
 
+	static function is_valid(string $pref_name) {
+		return isset(self::_DEFAULTS[$pref_name]);
+	}
+
 	function __construct() {
 		$this->pdo = Db::pdo();
 
-		/*$ref = new ReflectionClass(get_class($this));
+		if (!empty($_SESSION["uid"])) {
+			$owner_uid = (int) $_SESSION["uid"];
+			$profile_id = $_SESSION["profile"] ?? null;
+
+			$this->migrate($owner_uid, $profile_id);
+			$this->cache_all($owner_uid, $profile_id);
+		};
+	}
+
+	static function get_all(int $owner_uid, int $profile_id = null) {
+		return self::get_instance()->_get_all($owner_uid, $profile_id);
+	}
+
+	private function _get_all(int $owner_uid, int $profile_id = null) {
+		$rv = [];
+
+		$ref = new ReflectionClass(get_class($this));
 
 		foreach ($ref->getConstants() as $const => $cvalue) {
 			if (isset($this::_DEFAULTS[$const])) {
-				list ($defval, $deftype) = $this::_DEFAULTS[$const];
+				list ($def_val, $type_hint) = $this::_DEFAULTS[$const];
 
-				$this->cache[$cvalue] = [ Config::cast_to($defval, $deftype), $deftype ];
+				array_push($rv, [
+					"pref_name" => $const,
+					"value" => $this->_get($const, $owner_uid, $profile_id),
+					"type_hint" => $type_hint,
+				]);
 			}
-		}*/
+		}
+
+		return $rv;
+	}
+
+	private function cache_all(int $owner_uid, $profile_id = null) {
+		if (!$profile_id) $profile_id = null;
+
+		// fill cache with defaults
+		$ref = new ReflectionClass(get_class($this));
+		foreach ($ref->getConstants() as $const => $cvalue) {
+			if (isset($this::_DEFAULTS[$const])) {
+				list ($def_val, $type_hint) = $this::_DEFAULTS[$const];
+
+				$this->_set_cache($const, $def_val, $owner_uid, $profile_id);
+			}
+		}
+
+		// fill in any overrides from the database
+		$sth = $this->pdo->prepare("SELECT pref_name, value FROM ttrss_user_prefs2
+								WHERE owner_uid = :uid AND
+									(profile = :profile OR (:profile IS NULL AND profile IS NULL))");
+
+		$sth->execute(["uid" => $owner_uid, "profile" => $profile_id]);
+
+		while ($row = $sth->fetch()) {
+			$this->_set_cache($row["pref_name"], $row["value"], $owner_uid, $profile_id);
+		}
+	}
+
+	static function get(string $pref_name, int $owner_uid, int $profile_id = null) {
+		return self::get_instance()->_get($pref_name, $owner_uid, $profile_id);
 	}
 
 	private function _get(string $pref_name, int $owner_uid, int $profile_id = null) {
@@ -184,6 +239,8 @@ class Prefs {
 					return $def_val;
 				}
 			}
+		} else {
+			user_error("Attempt to get invalid preference key: $pref_name (UID: $owner_uid, profile: $profile_id)", E_USER_WARNING);
 		}
 
 		return null;
@@ -204,13 +261,38 @@ class Prefs {
 		$this->cache[$cache_key] = $value;
 	}
 
-	private function _set(string $pref_name, $value, int $owner_uid, int $profile_id = null) {
+	static function set(string $pref_name, $value, int $owner_uid, int $profile_id = null, bool $strip_tags = true) {
+		return self::get_instance()->_set($pref_name, $value, $owner_uid, $profile_id);
+	}
+
+	private function _delete(string $pref_name, int $owner_uid, int $profile_id = null) {
+		$sth = $this->pdo->prepare("DELETE FROM ttrss_user_prefs2
+			WHERE pref_name = :name AND owner_uid = :uid AND
+				(profile = :profile OR (:profile IS NULL AND profile IS NULL))");
+
+		return $sth->execute(["uid" => $owner_uid, "profile" => $profile_id, "name" => $pref_name ]);
+	}
+
+	private function _set(string $pref_name, $value, int $owner_uid, int $profile_id = null, bool $strip_tags = true) {
 		if (!$profile_id) $profile_id = null;
 
 		if ($profile_id && in_array($pref_name, self::_PROFILE_BLACKLIST))
 			return false;
 
 		if (isset(self::_DEFAULTS[$pref_name])) {
+			list ($def_val, $type_hint) = self::_DEFAULTS[$pref_name];
+
+			if ($strip_tags)
+				$value = trim(strip_tags($value));
+
+			$value = Config::cast_to($value, $type_hint);
+
+			// is this a good idea or not? probably not (user-set value remains user-set even if its at default)
+			//if ($value == $def_val)
+			//	return $this->_delete($pref_name, $owner_uid, $profile_id);
+
+			if ($value == $this->_get($pref_name, $owner_uid, $profile_id))
+				return false;
 
 			$this->_set_cache($pref_name, $value, $owner_uid, $profile_id);
 
@@ -237,6 +319,8 @@ class Prefs {
 					return $sth->execute(["uid" => $owner_uid, "profile" => $profile_id, "name" => $pref_name, "value" => $value ]);
 				}
 			}
+		} else {
+			user_error("Attempt to set invalid preference key: $pref_name (UID: $owner_uid, profile: $profile_id)", E_USER_WARNING);
 		}
 
 		return false;
@@ -271,9 +355,13 @@ class Prefs {
 		}
 	}
 
-	static function initialize(int $owner_uid, int $profile_id = null) {
-		$instance = self::get_instance();
+	static function reset(int $owner_uid, int $profile_id = null) {
+		if (!$profile_id) $profile_id = null;
 
-		$instance->migrate($owner_uid, $profile_id);
+		$sth = Db::pdo()->prepare("DELETE FROM ttrss_user_prefs2
+								WHERE owner_uid = :uid AND pref_name != :mig_key AND
+								(profile = :profile OR (:profile IS NULL AND profile IS NULL))");
+
+		$sth->execute(["uid" => $owner_uid, "mig_key" => self::_PREFS_MIGRATED, "profile" => $profile_id]);
 	}
 }

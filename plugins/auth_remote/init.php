@@ -21,7 +21,7 @@ class Auth_Remote extends Auth_Base {
 		$cert_serial = get_ssl_certificate_id();
 
 		if ($cert_serial) {
-			$sth = $this->pdo->prepare("SELECT login FROM ttrss_user_prefs, ttrss_users
+			$sth = $this->pdo->prepare("SELECT login FROM ttrss_user_prefs2, ttrss_users
 				WHERE pref_name = 'SSL_CERT_SERIAL' AND value = ? AND
 				owner_uid = ttrss_users.id");
 			$sth->execute([$cert_serial]);

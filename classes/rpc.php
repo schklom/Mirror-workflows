@@ -91,7 +91,6 @@ class RPC extends Handler_Protected {
 		else
 			$label_ids = array_map("intval", clean($_REQUEST["label_ids"] ?? []));
 
-		// @phpstan-ignore-next-line
 		$counters = is_array($feed_ids) ? Counters::get_conditional($feed_ids, $label_ids) : Counters::get_all();
 
 		$reply = [
@@ -394,7 +393,7 @@ class RPC extends Handler_Protected {
 		$params["is_default_pw"] = Pref_Prefs::isdefaultpassword();
 		$params["label_base_index"] = LABEL_BASE_INDEX;
 
-		$theme = get_pref( "USER_CSS_THEME", false, false);
+		$theme = get_pref("USER_CSS_THEME", false);
 		$params["theme"] = theme_exists($theme) ? $theme : "";
 
 		$params["plugins"] = implode(", ", PluginHost::getInstance()->get_plugin_names());

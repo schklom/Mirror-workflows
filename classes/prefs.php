@@ -157,39 +157,66 @@ class Prefs {
 		}*/
 	}
 
-	private function _get($pref_name, int $owner_uid, int $profile_id = null) {
+	private function _get(string $pref_name, int $owner_uid, int $profile_id = null) {
 		if (isset(self::_DEFAULTS[$pref_name])) {
 			if (!$profile_id || in_array($pref_name, self::_PROFILE_BLACKLIST)) $profile_id = null;
 
-			$sth = $this->pdo->prepare("SELECT value FROM ttrss_user_prefs2
-							WHERE pref_name = :name AND owner_uid = :uid AND
-							(profile = :profile OR (:profile IS NULL AND profile IS NULL))");
-
-			$sth->execute(["uid" => $owner_uid, "profile" => $profile_id, "name" => $pref_name ]);
-
 			list ($def_val, $type_hint) = self::_DEFAULTS[$pref_name];
 
-			if ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
-				return Config::cast_to($row["value"], $type_hint);
+			$cached_value = $this->_get_cache($pref_name, $owner_uid, $profile_id);
+
+			if (!empty($cached_value)) {
+				return Config::cast_to($cached_value, $type_hint);
 			} else {
-				return $def_val;
+				$sth = $this->pdo->prepare("SELECT value FROM ttrss_user_prefs2
+								WHERE pref_name = :name AND owner_uid = :uid AND
+								(profile = :profile OR (:profile IS NULL AND profile IS NULL))");
+
+				$sth->execute(["uid" => $owner_uid, "profile" => $profile_id, "name" => $pref_name ]);
+
+				if ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+					$this->_set_cache($pref_name, $row["value"], $owner_uid, $profile_id);
+
+					return Config::cast_to($row["value"], $type_hint);
+				} else {
+					$this->_set_cache($pref_name, $def_val, $owner_uid, $profile_id);
+
+					return $def_val;
+				}
 			}
 		}
 
 		return null;
 	}
 
-	private function _set($pref_name, $value, int $owner_uid, int $profile_id = null) {
+	private function _get_cache(string $pref_name, int $owner_uid, int $profile_id = null) {
+		$cache_key = sprintf("%d/%d/%s", $owner_uid, $profile_id, $pref_name);
+
+		if (isset($this->cache[$cache_key]))
+			return $this->cache[$cache_key];
+
+		return null;
+	}
+
+	private function _set_cache(string $pref_name, $value, int $owner_uid, int $profile_id = null) {
+		$cache_key = sprintf("%d/%d/%s", $owner_uid, $profile_id, $pref_name);
+
+		$this->cache[$cache_key] = $value;
+	}
+
+	private function _set(string $pref_name, $value, int $owner_uid, int $profile_id = null) {
 		if (!$profile_id) $profile_id = null;
 
 		if ($profile_id && in_array($pref_name, self::_PROFILE_BLACKLIST))
 			return false;
 
 		if (isset(self::_DEFAULTS[$pref_name])) {
-			$sth = $this->pdo->prepare("SELECT COUNT(pref_name) AS count FROM ttrss_user_prefs2
-			WHERE pref_name = :name AND owner_uid = :uid AND
-			(profile = :profile OR (:profile IS NULL AND profile IS NULL))");
 
+			$this->_set_cache($pref_name, $value, $owner_uid, $profile_id);
+
+			$sth = $this->pdo->prepare("SELECT COUNT(pref_name) AS count FROM ttrss_user_prefs2
+				WHERE pref_name = :name AND owner_uid = :uid AND
+				(profile = :profile OR (:profile IS NULL AND profile IS NULL))");
 			$sth->execute(["uid" => $owner_uid, "profile" => $profile_id, "name" => $pref_name ]);
 
 			if ($row = $sth->fetch()) {
@@ -216,6 +243,9 @@ class Prefs {
 	}
 
 	function migrate(int $owner_uid, int $profile_id = null) {
+		if (get_schema_version(true) < 141)
+			return;
+
 		if (!$profile_id) $profile_id = null;
 
 		if (!$this->_get(Prefs::_PREFS_MIGRATED, $owner_uid, $profile_id)) {
@@ -239,11 +269,9 @@ class Prefs {
 
 			$this->_set(Prefs::_PREFS_MIGRATED, "1", $owner_uid, $profile_id);
 		}
-
-		die;
 	}
 
-	static function initialize($owner_uid, int $profile_id = null) {
+	static function initialize(int $owner_uid, int $profile_id = null) {
 		$instance = self::get_instance();
 
 		$instance->migrate($owner_uid, $profile_id);

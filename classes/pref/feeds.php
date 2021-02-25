@@ -710,7 +710,7 @@ class Pref_Feeds extends Handler_Protected {
 		$mark_unread_on_update = checkbox_to_sql_bool(
 			clean($_POST["mark_unread_on_update"] ?? ""));
 
-		$feed_language = clean($_POST["feed_language"]);
+		$feed_language = clean($_POST["feed_language"] ?? "");
 
 		if (!$batch) {
 

@@ -203,15 +203,17 @@ class Prefs {
 			}
 		}
 
-		// fill in any overrides from the database
-		$sth = $this->pdo->prepare("SELECT pref_name, value FROM ttrss_user_prefs2
-								WHERE owner_uid = :uid AND
-									(profile = :profile OR (:profile IS NULL AND profile IS NULL))");
+		if (get_schema_version(true) >= 141) {
+			// fill in any overrides from the database
+			$sth = $this->pdo->prepare("SELECT pref_name, value FROM ttrss_user_prefs2
+									WHERE owner_uid = :uid AND
+										(profile = :profile OR (:profile IS NULL AND profile IS NULL))");
 
-		$sth->execute(["uid" => $owner_uid, "profile" => $profile_id]);
+			$sth->execute(["uid" => $owner_uid, "profile" => $profile_id]);
 
-		while ($row = $sth->fetch()) {
-			$this->_set_cache($row["pref_name"], $row["value"], $owner_uid, $profile_id);
+			while ($row = $sth->fetch()) {
+				$this->_set_cache($row["pref_name"], $row["value"], $owner_uid, $profile_id);
+			}
 		}
 	}
 
@@ -224,6 +226,10 @@ class Prefs {
 			if (!$profile_id || in_array($pref_name, self::_PROFILE_BLACKLIST)) $profile_id = null;
 
 			list ($def_val, $type_hint) = self::_DEFAULTS[$pref_name];
+
+			if (get_schema_version(true) < 141) {
+				return Config::cast_to($def_val, $type_hint);
+			}
 
 			$cached_value = $this->_get_cache($pref_name, $owner_uid, $profile_id);
 

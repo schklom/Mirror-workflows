@@ -152,6 +152,7 @@
 
 	if (!defined('NO_SESSION_AUTOSTART')) {
 		if (isset($_COOKIE[session_name()])) {
-			@session_start();
+			if (session_status() != PHP_SESSION_ACTIVE)
+					session_start();
 		}
 	}

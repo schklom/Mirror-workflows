@@ -59,8 +59,12 @@ class API extends Handler {
 	}
 
 	function login() {
-		@session_destroy();
-		@session_start();
+
+		if (session_status() == PHP_SESSION_ACTIVE) {
+			session_destroy();
+		}
+
+		session_start();
 
 		$login = clean($_REQUEST["user"]);
 		$password = clean($_REQUEST["password"]);

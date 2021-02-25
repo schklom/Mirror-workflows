@@ -23,7 +23,7 @@
 
 	if (!empty($_REQUEST["sid"])) {
 		session_id($_REQUEST["sid"]);
-		@session_start();
+		session_start();
 	}
 
 	startup_gettext();

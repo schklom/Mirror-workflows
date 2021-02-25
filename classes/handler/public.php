@@ -390,7 +390,8 @@ class Handler_Public extends Handler {
 			} else {
 
 				// start an empty session to deliver login error message
-				@session_start();
+				if (session_status() != PHP_SESSION_ACTIVE)
+					session_start();
 
 				if (!isset($_SESSION["login_error_msg"]))
 					$_SESSION["login_error_msg"] = __("Incorrect username or password");

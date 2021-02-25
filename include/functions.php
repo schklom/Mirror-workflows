@@ -305,22 +305,14 @@
 		return $s ? 1 : 0;
 	}
 
-	// Session caching removed due to causing wrong redirects to upgrade
-	// script when get_schema_version() is called on an obsolete session
-	// created on a previous schema version.
-	function get_schema_version($nocache = false) {
-		global $schema_version;
-
+	function get_schema_version() {
 		$pdo = Db::pdo();
 
-		if (!$schema_version && !$nocache) {
-			$row = $pdo->query("SELECT schema_version FROM ttrss_version")->fetch();
-			$version = $row["schema_version"];
-			$schema_version = $version;
-			return $version;
-		} else {
-			return $schema_version;
-		}
+		$row = $pdo->query("SELECT schema_version FROM ttrss_version")->fetch();
+		$version = $row["schema_version"];
+		$schema_version = $version;
+
+		return $version;
 	}
 
 	function file_is_locked($filename) {

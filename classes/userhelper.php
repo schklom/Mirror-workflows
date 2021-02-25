@@ -87,7 +87,9 @@ class UserHelper {
 		$pdo = Db::pdo();
 
 		if (Config::get(Config::SINGLE_USER_MODE)) {
-			@session_start();
+			if (session_status() != PHP_SESSION_ACTIVE)
+					session_start();
+
 			self::authenticate("admin", null);
 			startup_gettext();
 			self::load_user_plugins($_SESSION["uid"]);

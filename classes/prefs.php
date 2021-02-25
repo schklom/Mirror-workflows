@@ -137,7 +137,7 @@ class Prefs {
 	/** @var PDO */
 	private $pdo;
 
-	public static function get_instance() {
+	public static function get_instance() : Prefs {
 		if (self::$instance == null)
 			self::$instance = new self();
 

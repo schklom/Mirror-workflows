@@ -12,8 +12,7 @@ class DbUpdater {
 	}
 
 	function get_schema_version() {
-		$row = $this->pdo->query("SELECT schema_version FROM ttrss_version")->fetch();
-		return (int) $row['schema_version'];
+		return Config::get_schema_version(true);
 	}
 
 	function is_update_required() {

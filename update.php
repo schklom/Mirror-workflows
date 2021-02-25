@@ -145,9 +145,7 @@
 	}
 
 	if (!isset($options['update-schema'])) {
-		$schema_version = get_schema_version();
-
-		if ($schema_version != SCHEMA_VERSION) {
+		if (get_schema_version() != SCHEMA_VERSION) {
 			die("Schema version is wrong, please upgrade the database (--update-schema).\n");
 		}
 	}

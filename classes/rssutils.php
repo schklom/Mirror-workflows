@@ -53,11 +53,9 @@ class RSSUtils {
 	}
 
 	static function update_daemon_common($limit = null, $options = []) {
-		$schema_version = get_schema_version();
-
 		if (!$limit) $limit = Config::get(Config::DAEMON_FEED_LIMIT);
 
-		if ($schema_version != SCHEMA_VERSION) {
+		if (get_schema_version() != SCHEMA_VERSION) {
 			die("Schema version is wrong, please upgrade the database.\n");
 		}
 

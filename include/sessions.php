@@ -19,25 +19,10 @@
 	ini_set("session.gc_maxlifetime", $session_expire);
 	ini_set("session.cookie_lifetime", "0");
 
-	function session_get_schema_version() {
-		global $schema_version;
-
-		if (!$schema_version) {
-			$row = \Db::pdo()->query("SELECT schema_version FROM ttrss_version")->fetch();
-
-			$version = $row["schema_version"];
-
-			$schema_version = $version;
-			return $version;
-		} else {
-			return $schema_version;
-		}
-	}
-
 	function validate_session() {
 		if (\Config::get(\Config::SINGLE_USER_MODE)) return true;
 
-		if (isset($_SESSION["ref_schema_version"]) && $_SESSION["ref_schema_version"] != session_get_schema_version()) {
+		if (isset($_SESSION["ref_schema_version"]) && $_SESSION["ref_schema_version"] != \Config::get_schema_version()) {
 			$_SESSION["login_error_msg"] =
 				__("Session failed to validate (schema version changed)");
 			return false;

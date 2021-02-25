@@ -188,9 +188,7 @@
 			"Maybe another daemon is already running.\n");
 	}
 
-	$schema_version = get_schema_version();
-
-	if ($schema_version != SCHEMA_VERSION) {
+	if (get_schema_version() != SCHEMA_VERSION) {
 		die("Schema version is wrong, please upgrade the database.\n");
 	}
 

@@ -107,8 +107,9 @@ class Config {
 	private static $instance;
 
 	private $params = [];
+	private $schema_version = null;
 
-	public static function get_instance() {
+	public static function get_instance() : Config {
 		if (self::$instance == null)
 			self::$instance = new self();
 
@@ -131,6 +132,20 @@ class Config {
 				$this->params[$cvalue] = [ self::cast_to(!empty($override) ? $override : $defval, $deftype), $deftype ];
 			}
 		}
+	}
+
+	static function get_schema_version(bool $nocache = false) {
+		return self::get_instance()->_schema_version($nocache);
+	}
+
+	function _schema_version(bool $nocache = false) {
+		if (empty($this->schema_version) || $nocache) {
+			$row = Db::pdo()->query("SELECT schema_version FROM ttrss_version")->fetch();
+
+			$this->schema_version = (int) $row["schema_version"];
+		}
+
+		return $this->schema_version;
 	}
 
 	static function cast_to(string $value, int $type_hint) {

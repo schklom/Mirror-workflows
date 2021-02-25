@@ -166,8 +166,6 @@
 	define('SELF_USER_AGENT', 'Tiny Tiny RSS/' . get_version() . ' (http://tt-rss.org/)');
 	ini_set('user_agent', SELF_USER_AGENT);
 
-	$schema_version = false;
-
 	/* compat shims */
 
 	function _debug($msg) {
@@ -306,13 +304,7 @@
 	}
 
 	function get_schema_version() {
-		$pdo = Db::pdo();
-
-		$row = $pdo->query("SELECT schema_version FROM ttrss_version")->fetch();
-		$version = $row["schema_version"];
-		$schema_version = $version;
-
-		return $version;
+		return Config::get_schema_version();
 	}
 
 	function file_is_locked($filename) {

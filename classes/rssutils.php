@@ -160,6 +160,7 @@ class RSSUtils {
 		$user_query = "SELECT f.id,
 				last_updated,
 				f.owner_uid,
+				u.login AS owner,
 				f.title
 			FROM ttrss_feeds f, ttrss_users u LEFT JOIN ttrss_user_prefs2 p ON
 					(p.owner_uid = u.id AND profile IS NULL AND pref_name = 'DEFAULT_UPDATE_INTERVAL')
@@ -181,7 +182,8 @@ class RSSUtils {
 			$usth->execute(["feed" => $feed]);
 
 			if ($tline = $usth->fetch()) {
-				Debug::log(sprintf("=> %s (ID: %d, UID: %d), last updated: %s", $tline["title"], $tline["id"], $tline["owner_uid"],
+				Debug::log(sprintf("=> %s (ID: %d, U: %s [%d]), last updated: %s", $tline["title"], $tline["id"],
+					$tline["owner"], $tline["owner_uid"],
 					$tline["last_updated"] ? $tline["last_updated"] : "never"));
 
 				if (!in_array($tline["owner_uid"], $batch_owners))

@@ -15,6 +15,7 @@ drop table if exists ttrss_filters;
 drop table if exists ttrss_filter_types;
 drop table if exists ttrss_filter_actions;
 drop table if exists ttrss_user_prefs;
+drop table if exists ttrss_user_prefs2;
 drop table if exists ttrss_prefs;
 drop table if exists ttrss_prefs_types;
 drop table if exists ttrss_prefs_sections;
@@ -279,7 +280,7 @@ create index ttrss_tags_post_int_id_idx on ttrss_tags(post_int_id);
 
 create table ttrss_version (schema_version int not null);
 
-insert into ttrss_version values (140);
+insert into ttrss_version values (141);
 
 create table ttrss_enclosures (id serial not null primary key,
 	content_url text not null,
@@ -390,6 +391,16 @@ create table ttrss_user_prefs (
 create index ttrss_user_prefs_owner_uid_index on ttrss_user_prefs(owner_uid);
 create index ttrss_user_prefs_pref_name_idx on ttrss_user_prefs(pref_name);
 -- create index ttrss_user_prefs_value_index on ttrss_user_prefs(value);
+
+create table ttrss_user_prefs2 (
+	owner_uid integer not null references ttrss_users(id) ON DELETE CASCADE,
+	pref_name varchar(250) not null,
+	profile integer references ttrss_settings_profiles(id) ON DELETE CASCADE,
+	value text not null);
+
+create index ttrss_user_prefs2_owner_uid_index on ttrss_user_prefs2(owner_uid);
+create index ttrss_user_prefs2_pref_name_idx on ttrss_user_prefs2(pref_name);
+create unique index ttrss_user_prefs2_composite_idx on ttrss_user_prefs2(pref_name, owner_uid, coalesce(profile, -1));
 
 create table ttrss_sessions (id varchar(250) not null primary key,
 	data text,

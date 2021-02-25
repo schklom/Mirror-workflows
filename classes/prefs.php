@@ -147,6 +147,13 @@ class Prefs {
 		return isset(self::_DEFAULTS[$pref_name]);
 	}
 
+	static function get_default(string $pref_name) {
+		if (self::is_valid($pref_name))
+			return self::_DEFAULTS[$pref_name][0];
+		else
+			return null;
+	}
+
 	function __construct() {
 		$this->pdo = Db::pdo();
 

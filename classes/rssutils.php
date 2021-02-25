@@ -64,37 +64,45 @@ class RSSUtils {
 		$pdo = Db::pdo();
 
 		if (!Config::get(Config::SINGLE_USER_MODE) && Config::get(Config::DAEMON_UPDATE_LOGIN_LIMIT) > 0) {
+			$login_limit = (int) Config::get(Config::DAEMON_UPDATE_LOGIN_LIMIT);
+
 			if (Config::get(Config::DB_TYPE) == "pgsql") {
-				$login_thresh_qpart = "AND ttrss_users.last_login >= NOW() - INTERVAL '".Config::get(Config::DAEMON_UPDATE_LOGIN_LIMIT)." days'";
+				$login_thresh_qpart = "AND last_login >= NOW() - INTERVAL '$login_limit days'";
 			} else {
-				$login_thresh_qpart = "AND ttrss_users.last_login >= DATE_SUB(NOW(), INTERVAL ".Config::get(Config::DAEMON_UPDATE_LOGIN_LIMIT)." DAY)";
+				$login_thresh_qpart = "AND last_login >= DATE_SUB(NOW(), INTERVAL $login_limit DAY)";
 			}
 		} else {
 			$login_thresh_qpart = "";
 		}
 
+		$default_interval = (int) Prefs::get_default(Prefs::DEFAULT_UPDATE_INTERVAL);
+
 		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$update_limit_qpart = "AND ((
-					ttrss_feeds.update_interval = 0
-					AND ttrss_user_prefs.value != '-1'
-					AND last_updated < NOW() - CAST((ttrss_user_prefs.value || ' minutes') AS INTERVAL)
+					update_interval = 0
+						AND p.value != '-1'
+						AND last_updated < NOW() - CAST((COALESCE(p.value, '$default_interval') || ' minutes') AS INTERVAL)
 				) OR (
-					ttrss_feeds.update_interval > 0
-					AND last_updated < NOW() - CAST((ttrss_feeds.update_interval || ' minutes') AS INTERVAL)
-				) OR ((last_updated = '1970-01-01 00:00:00' OR last_updated IS NULL)
-					AND ttrss_feeds.update_interval >= 0
-					AND ttrss_user_prefs.value != '-1'))";
+					update_interval > 0
+					AND last_updated < NOW() - CAST((update_interval || ' minutes') AS INTERVAL)
+				) OR (
+					update_interval >= 0
+						AND p.value != '-1'
+						AND (last_updated = '1970-01-01 00:00:00' OR last_updated IS NULL)
+				))";
 		} else {
 			$update_limit_qpart = "AND ((
-					ttrss_feeds.update_interval = 0
-					AND ttrss_user_prefs.value != '-1'
-					AND last_updated < DATE_SUB(NOW(), INTERVAL CONVERT(ttrss_user_prefs.value, SIGNED INTEGER) MINUTE)
+					update_interval = 0
+						AND p.value != '-1'
+						AND last_updated < DATE_SUB(NOW(), INTERVAL CONVERT(COALESCE(p.value, '$default_interval'), SIGNED INTEGER) MINUTE)
 				) OR (
-					ttrss_feeds.update_interval > 0
-					AND last_updated < DATE_SUB(NOW(), INTERVAL ttrss_feeds.update_interval MINUTE)
-				) OR ((last_updated = '1970-01-01 00:00:00' OR last_updated IS NULL)
-					AND ttrss_feeds.update_interval >= 0
-					AND ttrss_user_prefs.value != '-1'))";
+					update_interval > 0
+						AND last_updated < DATE_SUB(NOW(), INTERVAL update_interval MINUTE)
+				) OR (
+					update_interval >= 0
+						AND p.value != '-1'
+						AND (last_updated = '1970-01-01 00:00:00' OR last_updated IS NULL)
+				))";
 		}
 
 		// Test if feed is currently being updated by another process.
@@ -108,19 +116,22 @@ class RSSUtils {
 
 		// Update the least recently updated feeds first
 		$query_order = "ORDER BY last_updated";
-		if (Config::get(Config::DB_TYPE) == "pgsql") $query_order .= " NULLS FIRST";
 
-		$query = "SELECT DISTINCT ttrss_feeds.feed_url, ttrss_feeds.last_updated
+		if (Config::get(Config::DB_TYPE) == "pgsql")
+			$query_order .= " NULLS FIRST";
+
+		$query = "SELECT f.feed_url, f.last_updated
 			FROM
-				ttrss_feeds, ttrss_users, ttrss_user_prefs
+				ttrss_feeds f, ttrss_users u LEFT JOIN ttrss_user_prefs2 p ON
+					(p.owner_uid = u.id AND profile IS NULL AND pref_name = 'DEFAULT_UPDATE_INTERVAL')
 			WHERE
-				ttrss_feeds.owner_uid = ttrss_users.id
-				AND ttrss_user_prefs.profile IS NULL
-				AND ttrss_users.id = ttrss_user_prefs.owner_uid
-				AND ttrss_user_prefs.pref_name = 'DEFAULT_UPDATE_INTERVAL'
-				$login_thresh_qpart $update_limit_qpart
+				f.owner_uid = u.id
+				$login_thresh_qpart
+				$update_limit_qpart
 				$updstart_thresh_qpart
 				$query_order $query_limit";
+
+		//print "$query\n";
 
 		$res = $pdo->query($query);
 
@@ -144,34 +155,36 @@ class RSSUtils {
 		$nf = 0;
 		$bstarted = microtime(true);
 
-		$batch_owners = array();
+		$batch_owners = [];
 
-		// since we have the data cached, we can deal with other feeds with the same url
-		$usth = $pdo->prepare("SELECT
-			DISTINCT ttrss_feeds.id,
+		$user_query = "SELECT f.id,
 				last_updated,
-				ttrss_feeds.owner_uid,
-				ttrss_feeds.title
-			FROM ttrss_feeds, ttrss_users, ttrss_user_prefs WHERE
-				ttrss_user_prefs.owner_uid = ttrss_feeds.owner_uid AND
-				ttrss_users.id = ttrss_user_prefs.owner_uid AND
-				ttrss_user_prefs.pref_name = 'DEFAULT_UPDATE_INTERVAL' AND
-				ttrss_user_prefs.profile IS NULL AND
-				feed_url = ?
-				$update_limit_qpart
+				f.owner_uid,
+				f.title
+			FROM ttrss_feeds f, ttrss_users u LEFT JOIN ttrss_user_prefs2 p ON
+					(p.owner_uid = u.id AND profile IS NULL AND pref_name = 'DEFAULT_UPDATE_INTERVAL')
+			WHERE
+				f.owner_uid = u.id
+				AND feed_url = :feed
 				$login_thresh_qpart
-			ORDER BY ttrss_feeds.id $query_limit");
+				$update_limit_qpart
+			ORDER BY f.id $query_limit";
+
+		//print "$user_query\n";
+
+		// since we have feed xml cached, we can deal with other feeds with the same url
+		$usth = $pdo->prepare($user_query);
 
 		foreach ($feeds_to_update as $feed) {
 			Debug::log("Base feed: $feed");
 
-			$usth->execute([$feed]);
+			$usth->execute(["feed" => $feed]);
 
 			if ($tline = $usth->fetch()) {
 				Debug::log(sprintf("=> %s (ID: %d, UID: %d), last updated: %s", $tline["title"], $tline["id"], $tline["owner_uid"],
 					$tline["last_updated"] ? $tline["last_updated"] : "never"));
 
-				if (array_search($tline["owner_uid"], $batch_owners) === false)
+				if (!in_array($tline["owner_uid"], $batch_owners))
 					array_push($batch_owners, $tline["owner_uid"]);
 
 				$fstarted = microtime(true);

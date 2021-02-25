@@ -200,36 +200,42 @@ class RPC extends Handler_Protected {
 
 	static function updaterandomfeed_real() {
 
+		$default_interval = (int) Prefs::get_default(Prefs::DEFAULT_UPDATE_INTERVAL);
+
 		// Test if the feed need a update (update interval exceded).
 		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$update_limit_qpart = "AND ((
-					ttrss_feeds.update_interval = 0
-					AND ttrss_feeds.last_updated < NOW() - CAST((ttrss_user_prefs.value || ' minutes') AS INTERVAL)
+					update_interval = 0
+						AND p.value != '-1'
+						AND last_updated < NOW() - CAST((COALESCE(p.value, '$default_interval') || ' minutes') AS INTERVAL)
 				) OR (
-					ttrss_feeds.update_interval > 0
-					AND ttrss_feeds.last_updated < NOW() - CAST((ttrss_feeds.update_interval || ' minutes') AS INTERVAL)
+					update_interval > 0
+						AND last_updated < NOW() - CAST((update_interval || ' minutes') AS INTERVAL)
 				) OR (
-					ttrss_feeds.update_interval >= 0
-					AND (last_updated = '1970-01-01 00:00:00' OR last_updated IS NULL)
+					update_interval >= 0
+						AND p.value != '-1'
+						AND (last_updated = '1970-01-01 00:00:00' OR last_updated IS NULL)
 				))";
 		} else {
 			$update_limit_qpart = "AND ((
-					ttrss_feeds.update_interval = 0
-					AND ttrss_feeds.last_updated < DATE_SUB(NOW(), INTERVAL CONVERT(ttrss_user_prefs.value, SIGNED INTEGER) MINUTE)
+					update_interval = 0
+						AND p.value != '-1'
+						AND last_updated < DATE_SUB(NOW(), INTERVAL CONVERT(COALESCE(p.value, '$default_interval'), SIGNED INTEGER) MINUTE)
 				) OR (
-					ttrss_feeds.update_interval > 0
-					AND ttrss_feeds.last_updated < DATE_SUB(NOW(), INTERVAL ttrss_feeds.update_interval MINUTE)
+					update_interval > 0
+						AND last_updated < DATE_SUB(NOW(), INTERVAL update_interval MINUTE)
 				) OR (
-					ttrss_feeds.update_interval >= 0
-					AND (last_updated = '1970-01-01 00:00:00' OR last_updated IS NULL)
+					update_interval >= 0
+						AND p.value != '-1'
+						AND (last_updated = '1970-01-01 00:00:00' OR last_updated IS NULL)
 				))";
 		}
 
 		// Test if feed is currently being updated by another process.
 		if (Config::get(Config::DB_TYPE) == "pgsql") {
-			$updstart_thresh_qpart = "AND (ttrss_feeds.last_update_started IS NULL OR ttrss_feeds.last_update_started < NOW() - INTERVAL '5 minutes')";
+			$updstart_thresh_qpart = "AND (last_update_started IS NULL OR last_update_started < NOW() - INTERVAL '5 minutes')";
 		} else {
-			$updstart_thresh_qpart = "AND (ttrss_feeds.last_update_started IS NULL OR ttrss_feeds.last_update_started < DATE_SUB(NOW(), INTERVAL 5 MINUTE))";
+			$updstart_thresh_qpart = "AND (last_update_started IS NULL OR last_update_started < DATE_SUB(NOW(), INTERVAL 5 MINUTE))";
 		}
 
 		$random_qpart = Db::sql_random_function();
@@ -237,24 +243,24 @@ class RPC extends Handler_Protected {
 		$pdo = Db::pdo();
 
 		// we could be invoked from public.php with no active session
-		if ($_SESSION["uid"]) {
-			$owner_check_qpart = "AND ttrss_feeds.owner_uid = ".$pdo->quote($_SESSION["uid"]);
+		if (!empty($_SESSION["uid"])) {
+			$owner_check_qpart = "AND f.owner_uid = ".$pdo->quote($_SESSION["uid"]);
 		} else {
 			$owner_check_qpart = "";
 		}
 
-		// We search for feed needing update.
-		$res = $pdo->query("SELECT ttrss_feeds.feed_url,ttrss_feeds.id
+		$query = "SELECT f.feed_url,f.id
 			FROM
-				ttrss_feeds, ttrss_users, ttrss_user_prefs
+				ttrss_feeds f, ttrss_users u LEFT JOIN ttrss_user_prefs2 p ON
+					(p.owner_uid = u.id AND profile IS NULL AND pref_name = 'DEFAULT_UPDATE_INTERVAL')
 			WHERE
-				ttrss_feeds.owner_uid = ttrss_users.id
-				AND ttrss_users.id = ttrss_user_prefs.owner_uid
-				AND ttrss_user_prefs.pref_name = 'DEFAULT_UPDATE_INTERVAL'
+				f.owner_uid = u.id
 				$owner_check_qpart
 				$update_limit_qpart
 				$updstart_thresh_qpart
-			ORDER BY $random_qpart LIMIT 30");
+			ORDER BY $random_qpart LIMIT 30";
+
+		$res = $pdo->query($query);
 
 		$num_updated = 0;
 

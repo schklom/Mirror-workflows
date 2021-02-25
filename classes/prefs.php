@@ -162,11 +162,8 @@ class Prefs {
 			$owner_uid = (int) $_SESSION["uid"];
 			$profile_id = $_SESSION["profile"] ?? null;
 
-
-			$in_nested_tr = false;
-
-			$this->migrate($owner_uid, $profile_id);
 			$this->cache_all($owner_uid, $profile_id);
+			$this->migrate($owner_uid, $profile_id);
 		};
 	}
 

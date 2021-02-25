@@ -6,7 +6,6 @@ class Pref_Prefs extends Handler_Protected {
 	private $pref_item_map = [];
 	private $pref_help_bottom = [];
 	private $pref_blacklist = [];
-	private $profile_blacklist = [];
 
 	function csrf_ignore($method) {
 		$csrf_ignored = array("index", "updateself", "otpqrcode");
@@ -19,106 +18,97 @@ class Pref_Prefs extends Handler_Protected {
 
 		$this->pref_item_map = [
 			__('General') => [
-				'USER_LANGUAGE',
-				'USER_TIMEZONE',
+				Prefs::USER_LANGUAGE,
+				Prefs::USER_TIMEZONE,
 				'BLOCK_SEPARATOR',
-				'USER_CSS_THEME',
+				Prefs::USER_CSS_THEME,
 				'BLOCK_SEPARATOR',
-				'ENABLE_API_ACCESS',
+				Prefs::ENABLE_API_ACCESS,
 			],
 			__('Feeds') => [
-				'DEFAULT_UPDATE_INTERVAL',
-				'FRESH_ARTICLE_MAX_AGE',
-				'DEFAULT_SEARCH_LANGUAGE',
+				Prefs::DEFAULT_UPDATE_INTERVAL,
+				Prefs::FRESH_ARTICLE_MAX_AGE,
+				Prefs::DEFAULT_SEARCH_LANGUAGE,
 				'BLOCK_SEPARATOR',
-				'ENABLE_FEED_CATS',
+				Prefs::ENABLE_FEED_CATS,
 				'BLOCK_SEPARATOR',
-				'CONFIRM_FEED_CATCHUP',
-				'ON_CATCHUP_SHOW_NEXT_FEED',
+				Prefs::CONFIRM_FEED_CATCHUP,
+				Prefs::ON_CATCHUP_SHOW_NEXT_FEED,
 				'BLOCK_SEPARATOR',
-				'HIDE_READ_FEEDS',
-				'HIDE_READ_SHOWS_SPECIAL',
+				Prefs::HIDE_READ_FEEDS,
+				Prefs::HIDE_READ_SHOWS_SPECIAL,
 			],
 			__('Articles') => [
-				'PURGE_OLD_DAYS',
-				'PURGE_UNREAD_ARTICLES',
+				Prefs::PURGE_OLD_DAYS,
+				Prefs::PURGE_UNREAD_ARTICLES,
 				'BLOCK_SEPARATOR',
-				'COMBINED_DISPLAY_MODE',
-				'CDM_EXPANDED',
+				Prefs::COMBINED_DISPLAY_MODE,
+				Prefs::CDM_EXPANDED,
 				'BLOCK_SEPARATOR',
-				'CDM_AUTO_CATCHUP',
-				'VFEED_GROUP_BY_FEED',
+				Prefs::CDM_AUTO_CATCHUP,
+				Prefs::VFEED_GROUP_BY_FEED,
 				'BLOCK_SEPARATOR',
-				'SHOW_CONTENT_PREVIEW',
-				'STRIP_IMAGES',
+				Prefs::SHOW_CONTENT_PREVIEW,
+				Prefs::STRIP_IMAGES,
 			],
 			__('Digest') => [
-				'DIGEST_ENABLE',
-				'DIGEST_CATCHUP',
-				'DIGEST_PREFERRED_TIME',
+				Prefs::DIGEST_ENABLE,
+				Prefs::DIGEST_CATCHUP,
+				Prefs::DIGEST_PREFERRED_TIME,
 			],
 			__('Advanced') => [
-				'BLACKLISTED_TAGS',
+				Prefs::BLACKLISTED_TAGS,
 				'BLOCK_SEPARATOR',
-				'LONG_DATE_FORMAT',
-				'SHORT_DATE_FORMAT',
+				Prefs::LONG_DATE_FORMAT,
+				Prefs::SHORT_DATE_FORMAT,
 				'BLOCK_SEPARATOR',
-				'SSL_CERT_SERIAL',
+				Prefs::SSL_CERT_SERIAL,
 			]
 		];
 
 		$this->pref_help_bottom = [
-			"BLACKLISTED_TAGS" => __("Never apply these tags automatically (comma-separated list)."),
+			Prefs::BLACKLISTED_TAGS => __("Never apply these tags automatically (comma-separated list)."),
 		];
 
 		$this->pref_help = [
-			"ALLOW_DUPLICATE_POSTS" => array(__("Allow duplicate articles"), ""),
-			"BLACKLISTED_TAGS" => array(__("Blacklisted tags"), ""),
-			"DEFAULT_SEARCH_LANGUAGE" => array(__("Default language"), __("Used for full-text search")),
-			"CDM_AUTO_CATCHUP" => array(__("Mark read on scroll"), __("Mark articles as read as you scroll past them")),
-			"CDM_EXPANDED" => array(__("Always expand articles")),
-			"COMBINED_DISPLAY_MODE" => array(__("Combined mode"), __("Show flat list of articles instead of separate panels")),
-			"CONFIRM_FEED_CATCHUP" => array(__("Confirm marking feeds as read")),
-			"DEFAULT_ARTICLE_LIMIT" => array(__("Amount of articles to display at once")),
-			"DEFAULT_UPDATE_INTERVAL" => array(__("Default update interval")),
-			"DIGEST_CATCHUP" => array(__("Mark sent articles as read")),
-			"DIGEST_ENABLE" => array(__("Enable digest"), __("Send daily digest of new (and unread) headlines to your e-mail address")),
-			"DIGEST_PREFERRED_TIME" => array(__("Try to send around this time"), __("Time in UTC")),
-			"ENABLE_API_ACCESS" => array(__("Enable API"), __("Allows accessing this account through the API")),
-			"ENABLE_FEED_CATS" => array(__("Enable categories")),
-			"FEEDS_SORT_BY_UNREAD" => array(__("Sort feeds by unread articles count"), ""),
-			"FRESH_ARTICLE_MAX_AGE" => array(__("Maximum age of fresh articles"), "<strong>" . __("hours") . "</strong>"),
-			"HIDE_READ_FEEDS" => array(__("Hide read feeds")),
-			"HIDE_READ_SHOWS_SPECIAL" => array(__("Always show special feeds"), __("While hiding read feeds")),
-			"LONG_DATE_FORMAT" => array(__("Long date format"), __("Syntax is identical to PHP <a href='http://php.net/manual/function.date.php'>date()</a> function.")),
-			"ON_CATCHUP_SHOW_NEXT_FEED" => array(__("Automatically show next feed"), __("After marking one as read")),
-			"PURGE_OLD_DAYS" => array(__("Purge articles older than"), __("<strong>days</strong> (0 disables)")),
-			"PURGE_UNREAD_ARTICLES" => array(__("Purge unread articles")),
-			"REVERSE_HEADLINES" => array(__("Reverse headline order (oldest first)")),
-			"SHORT_DATE_FORMAT" => array(__("Short date format")),
-			"SHOW_CONTENT_PREVIEW" => array(__("Show content preview in headlines")),
-			"SORT_HEADLINES_BY_FEED_DATE" => array(__("Sort headlines by feed date"), __("Use feed-specified date to sort headlines instead of local import date.")),
-			"SSL_CERT_SERIAL" => array(__("SSL client certificate")),
-			"STRIP_IMAGES" => array(__("Do not embed media")),
-			"STRIP_UNSAFE_TAGS" => array(__("Strip unsafe tags from articles"), __("Strip all but most common HTML tags when reading articles.")),
-			"USER_STYLESHEET" => array(__("Customize stylesheet")),
-			"USER_TIMEZONE" => array(__("Time zone")),
-			"VFEED_GROUP_BY_FEED" => array(__("Group by feed"), __("Group multiple-feed output by originating feed")),
-			"USER_LANGUAGE" => array(__("Language")),
-			"USER_CSS_THEME" => array(__("Theme"))
+			Prefs::ALLOW_DUPLICATE_POSTS => array(__("Allow duplicate articles"), ""),
+			Prefs::BLACKLISTED_TAGS => array(__("Blacklisted tags"), ""),
+			Prefs::DEFAULT_SEARCH_LANGUAGE => array(__("Default language"), __("Used for full-text search")),
+			Prefs::CDM_AUTO_CATCHUP => array(__("Mark read on scroll"), __("Mark articles as read as you scroll past them")),
+			Prefs::CDM_EXPANDED => array(__("Always expand articles")),
+			Prefs::COMBINED_DISPLAY_MODE => array(__("Combined mode"), __("Show flat list of articles instead of separate panels")),
+			Prefs::CONFIRM_FEED_CATCHUP => array(__("Confirm marking feeds as read")),
+			Prefs::DEFAULT_ARTICLE_LIMIT => array(__("Amount of articles to display at once")),
+			Prefs::DEFAULT_UPDATE_INTERVAL => array(__("Default update interval")),
+			Prefs::DIGEST_CATCHUP => array(__("Mark sent articles as read")),
+			Prefs::DIGEST_ENABLE => array(__("Enable digest"), __("Send daily digest of new (and unread) headlines to your e-mail address")),
+			Prefs::DIGEST_PREFERRED_TIME => array(__("Try to send around this time"), __("Time in UTC")),
+			Prefs::ENABLE_API_ACCESS => array(__("Enable API"), __("Allows accessing this account through the API")),
+			Prefs::ENABLE_FEED_CATS => array(__("Enable categories")),
+			Prefs::FEEDS_SORT_BY_UNREAD => array(__("Sort feeds by unread articles count"), ""),
+			Prefs::FRESH_ARTICLE_MAX_AGE => array(__("Maximum age of fresh articles"), "<strong>" . __("hours") . "</strong>"),
+			Prefs::HIDE_READ_FEEDS => array(__("Hide read feeds")),
+			Prefs::HIDE_READ_SHOWS_SPECIAL => array(__("Always show special feeds"), __("While hiding read feeds")),
+			Prefs::LONG_DATE_FORMAT => array(__("Long date format"), __("Syntax is identical to PHP <a href='http://php.net/manual/function.date.php'>date()</a> function.")),
+			Prefs::ON_CATCHUP_SHOW_NEXT_FEED => array(__("Automatically show next feed"), __("After marking one as read")),
+			Prefs::PURGE_OLD_DAYS => array(__("Purge articles older than"), __("<strong>days</strong> (0 disables)")),
+			Prefs::PURGE_UNREAD_ARTICLES => array(__("Purge unread articles")),
+			Prefs::REVERSE_HEADLINES => array(__("Reverse headline order (oldest first)")),
+			Prefs::SHORT_DATE_FORMAT => array(__("Short date format")),
+			Prefs::SHOW_CONTENT_PREVIEW => array(__("Show content preview in headlines")),
+			Prefs::SORT_HEADLINES_BY_FEED_DATE => array(__("Sort headlines by feed date"), __("Use feed-specified date to sort headlines instead of local import date.")),
+			Prefs::SSL_CERT_SERIAL => array(__("SSL client certificate")),
+			Prefs::STRIP_IMAGES => array(__("Do not embed media")),
+			Prefs::USER_STYLESHEET => array(__("Customize stylesheet")),
+			Prefs::USER_TIMEZONE => array(__("Time zone")),
+			Prefs::VFEED_GROUP_BY_FEED => array(__("Group by feed"), __("Group multiple-feed output by originating feed")),
+			Prefs::USER_LANGUAGE => array(__("Language")),
+			Prefs::USER_CSS_THEME => array(__("Theme"))
 		];
 
-		$this->pref_blacklist = ["ALLOW_DUPLICATE_POSTS", "STRIP_UNSAFE_TAGS", "REVERSE_HEADLINES",
-			"SORT_HEADLINES_BY_FEED_DATE", "DEFAULT_ARTICLE_LIMIT",
-			"FEEDS_SORT_BY_UNREAD", "USER_STYLESHEET"];
-
-		/* "FEEDS_SORT_BY_UNREAD", "HIDE_READ_FEEDS", "REVERSE_HEADLINES" */
-
-		$this->profile_blacklist = ["ALLOW_DUPLICATE_POSTS", "PURGE_OLD_DAYS",
-			"PURGE_UNREAD_ARTICLES", "DIGEST_ENABLE", "DIGEST_CATCHUP",
-			"BLACKLISTED_TAGS", "ENABLE_API_ACCESS", "UPDATE_POST_ON_CHECKSUM_CHANGE",
-			"DEFAULT_UPDATE_INTERVAL", "USER_TIMEZONE", "SORT_HEADLINES_BY_FEED_DATE",
-			"SSL_CERT_SERIAL", "DIGEST_PREFERRED_TIME"];
+		$this->pref_blacklist = [Prefs::ALLOW_DUPLICATE_POSTS, Prefs::REVERSE_HEADLINES,
+			Prefs::SORT_HEADLINES_BY_FEED_DATE, Prefs::DEFAULT_ARTICLE_LIMIT,
+			Prefs::FEEDS_SORT_BY_UNREAD, Prefs::USER_STYLESHEET];
 	}
 
 	function changepassword() {
@@ -181,8 +171,8 @@ class Pref_Prefs extends Handler_Protected {
 			$value = $_POST[$pref_name];
 
 			switch ($pref_name) {
-				case 'DIGEST_PREFERRED_TIME':
-					if (get_pref('DIGEST_PREFERRED_TIME') != $value) {
+				case Prefs::DIGEST_PREFERRED_TIME:
+					if (get_pref(Prefs::DIGEST_PREFERRED_TIME) != $value) {
 
 						$sth = $this->pdo->prepare("UPDATE ttrss_users SET
 							last_digest_sent = NULL WHERE id = ?");
@@ -190,15 +180,15 @@ class Pref_Prefs extends Handler_Protected {
 
 					}
 					break;
-				case 'USER_LANGUAGE':
+				case Prefs::USER_LANGUAGE:
 					if (!$need_reload) $need_reload = $_SESSION["language"] != $value;
 					break;
 
-				case 'USER_CSS_THEME':
+				case Prefs::USER_CSS_THEME:
 					if (!$need_reload) $need_reload = get_pref($pref_name) != $value;
 					break;
 
-				case 'BLACKLISTED_TAGS':
+				case Prefs::BLACKLISTED_TAGS:
 					$cats = FeedItem_Common::normalize_categories(explode(",", $value));
 					asort($cats);
 					$value = implode(", ", $cats);

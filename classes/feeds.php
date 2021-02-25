@@ -1975,7 +1975,7 @@ class Feeds extends Handler_Protected {
 				$purge_unread = true;
 				$purge_interval = Config::get(Config::FORCE_ARTICLE_PURGE);
 			} else {
-				$purge_unread = get_pref("PURGE_UNREAD_ARTICLES", $owner_uid, false);
+				$purge_unread = get_pref(Prefs::PURGE_UNREAD_ARTICLES, $owner_uid);
 			}
 
 			$purge_interval = (int) $purge_interval;
@@ -2038,7 +2038,7 @@ class Feeds extends Handler_Protected {
 			$owner_uid = $row["owner_uid"];
 
 			if ($purge_interval == 0)
-				$purge_interval = get_pref('PURGE_OLD_DAYS', $owner_uid, false);
+				$purge_interval = get_pref(Prefs::PURGE_OLD_DAYS, $owner_uid);
 
 			return $purge_interval;
 		} else {

@@ -21,7 +21,7 @@ class Prefs {
 	const _DEFAULT_VIEW_MODE = "_DEFAULT_VIEW_MODE";
 	const _DEFAULT_VIEW_LIMIT = "_DEFAULT_VIEW_LIMIT";
 	//const _PREFS_ACTIVE_TAB = "_PREFS_ACTIVE_TAB";
-	const STRIP_UNSAFE_TAGS = "STRIP_UNSAFE_TAGS";
+	//const STRIP_UNSAFE_TAGS = "STRIP_UNSAFE_TAGS";
 	const BLACKLISTED_TAGS = "BLACKLISTED_TAGS";
 	const FRESH_ARTICLE_MAX_AGE = "FRESH_ARTICLE_MAX_AGE";
 	const DIGEST_CATCHUP = "DIGEST_CATCHUP";
@@ -77,7 +77,7 @@ class Prefs {
 		Prefs::_DEFAULT_VIEW_MODE => [ "adaptive", Config::T_BOOL ],
 		Prefs::_DEFAULT_VIEW_LIMIT => [ 30, Config::T_INT ],
 		//Prefs::_PREFS_ACTIVE_TAB => [ "", Config::T_STRING ],
-		Prefs::STRIP_UNSAFE_TAGS => [ true, Config::T_BOOL ],
+		//Prefs::STRIP_UNSAFE_TAGS => [ true, Config::T_BOOL ],
 		Prefs::BLACKLISTED_TAGS => [ 'main, generic, misc, uncategorized, blog, blogroll, general, news', Config::T_STRING ],
 		Prefs::FRESH_ARTICLE_MAX_AGE => [ 24, Config::T_INT ],
 		Prefs::DIGEST_CATCHUP => [ false, Config::T_BOOL ],

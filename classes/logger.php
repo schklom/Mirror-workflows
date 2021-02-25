@@ -57,7 +57,7 @@ class Logger {
 		}
 	}
 
-	public static function get() {
+	public static function get() : Logger {
 		if (self::$instance == null)
 			self::$instance = new self();
 

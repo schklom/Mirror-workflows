@@ -46,6 +46,9 @@ class UserHelper {
 				return true;
 			}
 
+			if (!$user_id)
+				Logger::get()->log(E_USER_WARNING, "Failed login attempt for $login (service: $service) from " . UserHelper::get_user_ip());
+
 			return false;
 
 		} else {

@@ -68,20 +68,15 @@ class API extends Handler {
 
 		$login = clean($_REQUEST["user"]);
 		$password = clean($_REQUEST["password"]);
-		$password_base64 = base64_decode(clean($_REQUEST["password"]));
 
 		if (Config::get(Config::SINGLE_USER_MODE)) $login = "admin";
 
 		if ($uid = UserHelper::find_user_by_login($login)) {
 			if (get_pref(Prefs::ENABLE_API_ACCESS, $uid)) {
-				if (UserHelper::authenticate($login, $password, false,  Auth_Base::AUTH_SERVICE_API)) {               // try login with normal password
+				if (UserHelper::authenticate($login, $password, false,  Auth_Base::AUTH_SERVICE_API)) {
 					$this->_wrap(self::STATUS_OK, array("session_id" => session_id(),
 						"api_level" => self::API_LEVEL));
-				} else if (UserHelper::authenticate($login, $password_base64, false, Auth_Base::AUTH_SERVICE_API)) { // else try with base64_decoded password
-					$this->_wrap(self::STATUS_OK,	array("session_id" => session_id(),
-						"api_level" => self::API_LEVEL));
-				} else {                                                         // else we are not logged in
-					user_error("Failed login attempt for $login from " . UserHelper::get_user_ip(), E_USER_WARNING);
+				} else {
 					$this->_wrap(self::STATUS_ERR, array("error" => self::E_LOGIN_ERROR));
 				}
 			} else {

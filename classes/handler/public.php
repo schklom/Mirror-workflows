@@ -395,8 +395,6 @@ class Handler_Public extends Handler {
 
 				if (!isset($_SESSION["login_error_msg"]))
 					$_SESSION["login_error_msg"] = __("Incorrect username or password");
-
-				user_error("Failed login attempt for $login from " . UserHelper::get_user_ip(), E_USER_WARNING);
 			}
 
 			$return = clean($_REQUEST['return']);

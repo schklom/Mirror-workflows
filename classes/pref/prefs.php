@@ -71,21 +71,18 @@ class Pref_Prefs extends Handler_Protected {
 		];
 
 		$this->pref_help = [
-			Prefs::ALLOW_DUPLICATE_POSTS => array(__("Allow duplicate articles"), ""),
 			Prefs::BLACKLISTED_TAGS => array(__("Blacklisted tags"), ""),
 			Prefs::DEFAULT_SEARCH_LANGUAGE => array(__("Default language"), __("Used for full-text search")),
 			Prefs::CDM_AUTO_CATCHUP => array(__("Mark read on scroll"), __("Mark articles as read as you scroll past them")),
 			Prefs::CDM_EXPANDED => array(__("Always expand articles")),
 			Prefs::COMBINED_DISPLAY_MODE => array(__("Combined mode"), __("Show flat list of articles instead of separate panels")),
 			Prefs::CONFIRM_FEED_CATCHUP => array(__("Confirm marking feeds as read")),
-			Prefs::DEFAULT_ARTICLE_LIMIT => array(__("Amount of articles to display at once")),
 			Prefs::DEFAULT_UPDATE_INTERVAL => array(__("Default update interval")),
 			Prefs::DIGEST_CATCHUP => array(__("Mark sent articles as read")),
 			Prefs::DIGEST_ENABLE => array(__("Enable digest"), __("Send daily digest of new (and unread) headlines to your e-mail address")),
 			Prefs::DIGEST_PREFERRED_TIME => array(__("Try to send around this time"), __("Time in UTC")),
 			Prefs::ENABLE_API_ACCESS => array(__("Enable API"), __("Allows accessing this account through the API")),
 			Prefs::ENABLE_FEED_CATS => array(__("Enable categories")),
-			Prefs::FEEDS_SORT_BY_UNREAD => array(__("Sort feeds by unread articles count"), ""),
 			Prefs::FRESH_ARTICLE_MAX_AGE => array(__("Maximum age of fresh articles"), "<strong>" . __("hours") . "</strong>"),
 			Prefs::HIDE_READ_FEEDS => array(__("Hide read feeds")),
 			Prefs::HIDE_READ_SHOWS_SPECIAL => array(__("Always show special feeds"), __("While hiding read feeds")),
@@ -93,27 +90,19 @@ class Pref_Prefs extends Handler_Protected {
 			Prefs::ON_CATCHUP_SHOW_NEXT_FEED => array(__("Automatically show next feed"), __("After marking one as read")),
 			Prefs::PURGE_OLD_DAYS => array(__("Purge articles older than"), __("<strong>days</strong> (0 disables)")),
 			Prefs::PURGE_UNREAD_ARTICLES => array(__("Purge unread articles")),
-			Prefs::REVERSE_HEADLINES => array(__("Reverse headline order (oldest first)")),
 			Prefs::SHORT_DATE_FORMAT => array(__("Short date format")),
 			Prefs::SHOW_CONTENT_PREVIEW => array(__("Show content preview in headlines")),
-			Prefs::SORT_HEADLINES_BY_FEED_DATE => array(__("Sort headlines by feed date"), __("Use feed-specified date to sort headlines instead of local import date.")),
 			Prefs::SSL_CERT_SERIAL => array(__("SSL client certificate")),
 			Prefs::STRIP_IMAGES => array(__("Do not embed media")),
-			Prefs::USER_STYLESHEET => array(__("Customize stylesheet")),
 			Prefs::USER_TIMEZONE => array(__("Time zone")),
 			Prefs::VFEED_GROUP_BY_FEED => array(__("Group by feed"), __("Group multiple-feed output by originating feed")),
 			Prefs::USER_LANGUAGE => array(__("Language")),
 			Prefs::USER_CSS_THEME => array(__("Theme"))
 		];
 
-		// hidden in the main prefs UI
+		// hidden in the main prefs UI (use to hide things that have description set above)
 		$this->pref_blacklist = [
-			Prefs::ALLOW_DUPLICATE_POSTS,
-			Prefs::REVERSE_HEADLINES,
-			Prefs::SORT_HEADLINES_BY_FEED_DATE,
-			Prefs::DEFAULT_ARTICLE_LIMIT,
-			Prefs::FEEDS_SORT_BY_UNREAD,
-			Prefs::USER_STYLESHEET
+			//
 		];
 	}
 

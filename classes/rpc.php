@@ -380,10 +380,11 @@ class RPC extends Handler_Protected {
 	private function make_init_params() {
 		$params = array();
 
-		foreach (array("ON_CATCHUP_SHOW_NEXT_FEED", "HIDE_READ_FEEDS",
-					 "ENABLE_FEED_CATS", "FEEDS_SORT_BY_UNREAD", "CONFIRM_FEED_CATCHUP",
-					 "CDM_AUTO_CATCHUP", "FRESH_ARTICLE_MAX_AGE",
-					 "HIDE_READ_SHOWS_SPECIAL", "COMBINED_DISPLAY_MODE") as $param) {
+		foreach ([Prefs::ON_CATCHUP_SHOW_NEXT_FEED, Prefs::HIDE_READ_FEEDS,
+			Prefs::ENABLE_FEED_CATS, Prefs::FEEDS_SORT_BY_UNREAD,
+			Prefs::CONFIRM_FEED_CATCHUP,  Prefs::CDM_AUTO_CATCHUP,
+			Prefs::FRESH_ARTICLE_MAX_AGE, Prefs::HIDE_READ_SHOWS_SPECIAL,
+			Prefs::COMBINED_DISPLAY_MODE] as $param) {
 
 			$params[strtolower($param)] = (int) get_pref($param);
 		}

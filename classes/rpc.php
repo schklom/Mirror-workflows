@@ -140,7 +140,7 @@ class RPC extends Handler_Protected {
 
 		$error = Errors::E_SUCCESS;
 
-		if (get_schema_version(true) != SCHEMA_VERSION) {
+		if (get_schema_version() != SCHEMA_VERSION) {
 			$error = Errors::E_SCHEMA_MISMATCH;
 		}
 
@@ -343,7 +343,7 @@ class RPC extends Handler_Protected {
 		$context = clean($_REQUEST['context']);
 
 		if ($msg) {
-			Logger::get()->log_error(E_USER_WARNING,
+			Logger::log_error(E_USER_WARNING,
 				$msg, 'client-js:' . $file, $line, $context);
 
 			echo json_encode(array("message" => "HOST_ERROR_LOGGED"));

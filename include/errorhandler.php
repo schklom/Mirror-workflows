@@ -54,7 +54,7 @@ function ttrss_error_handler($errno, $errstr, $file, $line) {
 	$errstr = truncate_middle($errstr, 16384, " (...) ");
 
 	if (class_exists("Logger"))
-		return Logger::get()->log_error($errno, $errstr, $file, $line, $context);
+		return Logger::log_error($errno, $errstr, $file, $line, $context);
 }
 
 function ttrss_fatal_handler() {
@@ -77,7 +77,7 @@ function ttrss_fatal_handler() {
 		if ($last_query) $errstr .= " [Last query: $last_query]";
 
 		if (class_exists("Logger"))
-			return Logger::get()->log_error($errno, $errstr, $file, $line, $context);
+			return Logger::log_error($errno, $errstr, $file, $line, $context);
 	}
 
 	return false;

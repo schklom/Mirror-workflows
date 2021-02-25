@@ -47,7 +47,7 @@ class UserHelper {
 			}
 
 			if (!$user_id)
-				Logger::get()->log(E_USER_WARNING, "Failed login attempt for $login (service: $service) from " . UserHelper::get_user_ip());
+				Logger::log(E_USER_WARNING, "Failed login attempt for $login (service: $service) from " . UserHelper::get_user_ip());
 
 			return false;
 
@@ -102,7 +102,7 @@ class UserHelper {
 			if (empty($_SESSION["uid"])) {
 
 				if (Config::get(Config::AUTH_AUTO_LOGIN) && self::authenticate(null, null)) {
-					$_SESSION["ref_schema_version"] = get_schema_version(true);
+					$_SESSION["ref_schema_version"] = get_schema_version();
 				} else {
 					 self::authenticate(null, null, true);
 				}

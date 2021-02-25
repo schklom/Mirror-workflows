@@ -216,7 +216,7 @@ class RSSUtils {
 
 						Debug::log("!! Last error: $error_message");
 
-						Logger::get()->log(E_USER_NOTICE,
+						Logger::log(E_USER_NOTICE,
 							sprintf("Update process for feed %d (%s, owner UID: %d) failed with exit code: %d (%s).",
 								$tline["id"], clean($tline["title"]), $tline["owner_uid"], $exit_code, clean($error_message)));
 
@@ -233,7 +233,7 @@ class RSSUtils {
 						if (!self::update_rss_feed($tline["id"], true)) {
 							global $fetch_last_error;
 
-							Logger::get()->log(E_USER_NOTICE,
+							Logger::log(E_USER_NOTICE,
 								sprintf("Update request for feed %d (%s, owner UID: %d) failed: %s.",
 									$tline["id"], clean($tline["title"]), $tline["owner_uid"], clean($fetch_last_error)));
 						}
@@ -241,7 +241,7 @@ class RSSUtils {
 						Debug::log(sprintf("<= %.4f (sec) (not using a separate process)", microtime(true) - $fstarted));
 
 					} catch (PDOException $e) {
-						Logger::get()->log_error(E_USER_WARNING, $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString());
+						Logger::log_error(E_USER_WARNING, $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString());
 
 						try {
 							$pdo->rollback();
@@ -1619,7 +1619,7 @@ class RSSUtils {
 			$sth->execute();
 
 			while ($row = $sth->fetch()) {
-				Logger::get()->log(E_USER_NOTICE,
+				Logger::log(E_USER_NOTICE,
 					sprintf("Auto disabling feed %d (%s, UID: %d) because it failed to update for %d days.",
 						$row["id"], clean($row["title"]), $row["owner_uid"], Config::get(Config::DAEMON_UNSUCCESSFUL_DAYS_LIMIT)));
 

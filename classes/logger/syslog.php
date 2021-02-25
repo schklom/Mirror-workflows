@@ -21,7 +21,7 @@ class Logger_Syslog {
 			$priority = LOG_INFO;
 		}
 
-		$errname = Logger::$errornames[$errno] . " ($errno)";
+		$errname = Logger::ERROR_NAMES[$errno] . " ($errno)";
 
 		syslog($priority, "[tt-rss] $errname ($file:$line) $errstr");
 

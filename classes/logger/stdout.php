@@ -21,7 +21,7 @@ class Logger_Stdout {
 			$priority = LOG_INFO;
 		}
 
-		$errname = Logger::$errornames[$errno] . " ($errno)";
+		$errname = Logger::ERROR_NAMES[$errno] . " ($errno)";
 
 		print "[EEE] $priority $errname ($file:$line) $errstr\n";
 

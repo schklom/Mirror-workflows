@@ -115,6 +115,10 @@ class Config {
 		return self::$instance;
 	}
 
+	private function __clone() {
+		//
+	}
+
 	function __construct() {
 		$ref = new ReflectionClass(get_class($this));
 

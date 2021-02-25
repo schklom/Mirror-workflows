@@ -369,7 +369,7 @@ class Handler_Public extends Handler {
 					$_SESSION["language"] = get_pref(Prefs::USER_LANGUAGE, $_SESSION["uid"]);
 				}
 
-				$_SESSION["ref_schema_version"] = get_schema_version(true);
+				$_SESSION["ref_schema_version"] = get_schema_version();
 				$_SESSION["bw_limit"] = !!clean($_POST["bw_limit"] ?? false);
 				$_SESSION["safe_mode"] = $safe_mode;
 

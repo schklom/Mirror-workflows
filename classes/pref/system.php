@@ -129,7 +129,7 @@ class Pref_System extends Handler_Administrative {
 						?>
 						<tr>
 							<td class='errno'>
-								<?= Logger::$errornames[$line["errno"]] . " (" . $line["errno"] . ")" ?>
+								<?= Logger::ERROR_NAMES[$line["errno"]] . " (" . $line["errno"] . ")" ?>
 							</td>
 							<td class='filename'><?= $line["filename"] . ":" . $line["lineno"] ?></td>
 							<td class='errstr'><?= $line["errstr"] . "\n" .  $line["context"] ?></td>

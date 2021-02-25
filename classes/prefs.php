@@ -167,6 +167,10 @@ class Prefs {
 		};
 	}
 
+	private function __clone() {
+		//
+	}
+
 	static function get_all(int $owner_uid, int $profile_id = null) {
 		return self::get_instance()->_get_all($owner_uid, $profile_id);
 	}
@@ -204,7 +208,7 @@ class Prefs {
 			}
 		}
 
-		if (get_schema_version(true) >= 141) {
+		if (get_schema_version() >= 141) {
 			// fill in any overrides from the database
 			$sth = $this->pdo->prepare("SELECT pref_name, value FROM ttrss_user_prefs2
 									WHERE owner_uid = :uid AND
@@ -228,7 +232,7 @@ class Prefs {
 
 			list ($def_val, $type_hint) = self::_DEFAULTS[$pref_name];
 
-			if (get_schema_version(true) < 141) {
+			if (get_schema_version() < 141) {
 				return Config::cast_to($def_val, $type_hint);
 			}
 
@@ -341,7 +345,7 @@ class Prefs {
 	}
 
 	function migrate(int $owner_uid, int $profile_id = null) {
-		if (get_schema_version(true) < 141)
+		if (get_schema_version() < 141)
 			return;
 
 		if (!$profile_id) $profile_id = null;

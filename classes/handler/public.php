@@ -614,7 +614,7 @@ class Handler_Public extends Handler {
 	function dbupdate() {
 		startup_gettext();
 
-		if (!Config::get(Config::SINGLE_USER_MODE) && $_SESSION["access_level"] < 10) {
+		if (!Config::get(Config::SINGLE_USER_MODE) && ($_SESSION["access_level"] ?? 0) < 10) {
 			$_SESSION["login_error_msg"] = __("Your access level is insufficient to run this script.");
 			$this->_render_login_form();
 			exit;

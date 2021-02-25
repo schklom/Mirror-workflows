@@ -1,7 +1,7 @@
 <?php
-class Logger_Stdout {
+class Logger_Stdout implements Logger_Adapter {
 
-	function log_error($errno, $errstr, $file, $line, $context) {
+	function log_error(int $errno, string $errstr, string $file, int $line, $context) {
 
 		switch ($errno) {
 		case E_ERROR:

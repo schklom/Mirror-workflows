@@ -63,6 +63,9 @@ class Logger {
 		default:
 			$this->adapter = false;
 		}
+
+		if ($this->adapter && !implements_interface($this->adapter, "Logger_Adapter"))
+			user_error("Adapter for LOG_DESTINATION: " . Config::LOG_DESTINATION . " does not implement required interface.", E_USER_ERROR);
 	}
 
 	private static function get_instance() : Logger {

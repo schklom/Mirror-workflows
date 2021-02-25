@@ -40,13 +40,13 @@ function format_backtrace($trace) {
 }
 
 function ttrss_error_handler($errno, $errstr, $file, $line) {
-	if (version_compare(PHP_VERSION, '8.0.0', '<')) {
+	/*if (version_compare(PHP_VERSION, '8.0.0', '<')) {
 		if (error_reporting() == 0 || !$errno) return false;
 	} else {
 		if (!(error_reporting() & $errno)) return false;
 	}
 
-	if (error_reporting() == 0 || !$errno) return false;
+	if (error_reporting() == 0 || !$errno) return false;*/
 
 	$file = substr(str_replace(dirname(__DIR__), "", $file), 1);
 
@@ -54,12 +54,10 @@ function ttrss_error_handler($errno, $errstr, $file, $line) {
 	$errstr = truncate_middle($errstr, 16384, " (...) ");
 
 	if (class_exists("Logger"))
-		return Logger::log_error($errno, $errstr, $file, $line, $context);
+		return Logger::log_error((int)$errno, $errstr, $file, (int)$line, $context);
 }
 
 function ttrss_fatal_handler() {
-	global $last_query;
-
 	$error = error_get_last();
 
 	if ($error !== NULL) {
@@ -74,10 +72,8 @@ function ttrss_fatal_handler() {
 
 		$file = substr(str_replace(dirname(__DIR__), "", $file), 1);
 
-		if ($last_query) $errstr .= " [Last query: $last_query]";
-
 		if (class_exists("Logger"))
-			return Logger::log_error($errno, $errstr, $file, $line, $context);
+			return Logger::log_error((int)$errno, $errstr, $file, (int)$line, $context);
 	}
 
 	return false;

@@ -565,20 +565,6 @@ class Pref_Prefs extends Handler_Protected {
 		}
 
 		$prefs_available = [];
-
-		/*$sth = $this->pdo->prepare("SELECT DISTINCT
-			ttrss_user_prefs.pref_name,value,type_name,
-			ttrss_prefs_sections.order_id,
-			def_value,section_id
-			FROM ttrss_prefs,ttrss_prefs_types,ttrss_prefs_sections,ttrss_user_prefs
-			WHERE type_id = ttrss_prefs_types.id AND
-				(profile = :profile OR (:profile IS NULL AND profile IS NULL)) AND
-				section_id = ttrss_prefs_sections.id AND
-				ttrss_user_prefs.pref_name = ttrss_prefs.pref_name AND
-				owner_uid = :uid
-			ORDER BY ttrss_prefs_sections.order_id,pref_name");
-		$sth->execute([":uid" => $_SESSION['uid'], ":profile" => $profile]);*/
-
 		$listed_boolean_prefs = [];
 
 		foreach (Prefs::get_all($_SESSION["uid"], $profile) as $line) {
@@ -1210,14 +1196,6 @@ class Pref_Prefs extends Handler_Protected {
 				$sth = $this->pdo->prepare("SELECT id FROM ttrss_settings_profiles WHERE
 					title = ? AND owner_uid = ?");
 				$sth->execute([$title, $_SESSION['uid']]);
-
-				if ($row = $sth->fetch()) {
-					$profile_id = $row['id'];
-
-					if ($profile_id) {
-						Pref_Prefs::_init_user_prefs($_SESSION["uid"], $profile_id);
-					}
-				}
 			}
 
 			$this->pdo->commit();
@@ -1358,57 +1336,4 @@ class Pref_Prefs extends Handler_Protected {
 
 		$this->appPasswordList();
 	}
-
-	static function _init_user_prefs($uid, $profile = false) {
-
-		if (get_schema_version() < 63) $profile_qpart = "";
-
-		$pdo = Db::pdo();
-		$in_nested_tr = false;
-
-		try {
-			$pdo->beginTransaction();
-		} catch (Exception $e) {
-			$in_nested_tr = true;
-		}
-
-		$sth = $pdo->query("SELECT pref_name,def_value FROM ttrss_prefs");
-
-		if (!is_numeric($profile) || !$profile || get_schema_version() < 63) $profile = null;
-
-		$u_sth = $pdo->prepare("SELECT pref_name
-			FROM ttrss_user_prefs WHERE owner_uid = :uid AND
-				(profile = :profile OR (:profile IS NULL AND profile IS NULL))");
-		$u_sth->execute([':uid' => $uid, ':profile' => $profile]);
-
-		$active_prefs = array();
-
-		while ($line = $u_sth->fetch()) {
-			array_push($active_prefs, $line["pref_name"]);
-		}
-
-		while ($line = $sth->fetch()) {
-			if (array_search($line["pref_name"], $active_prefs) === false) {
-//				print "adding " . $line["pref_name"] . "<br>";
-
-				if (get_schema_version() < 63) {
-					$i_sth = $pdo->prepare("INSERT INTO ttrss_user_prefs
-						(owner_uid,pref_name,value) VALUES
-						(?, ?, ?)");
-					$i_sth->execute([$uid, $line["pref_name"], $line["def_value"]]);
-
-				} else {
-					$i_sth = $pdo->prepare("INSERT INTO ttrss_user_prefs
-						(owner_uid,pref_name,value, profile) VALUES
-						(?, ?, ?, ?)");
-					$i_sth->execute([$uid, $line["pref_name"], $line["def_value"], $profile]);
-				}
-
-			}
-		}
-
-		if (!$in_nested_tr) $pdo->commit();
-
-	}
-
 }

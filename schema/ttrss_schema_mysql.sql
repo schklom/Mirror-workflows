@@ -18,6 +18,7 @@ drop table if exists ttrss_filters;
 drop table if exists ttrss_filter_types;
 drop table if exists ttrss_filter_actions;
 drop table if exists ttrss_user_prefs;
+drop table if exists ttrss_user_prefs2;
 drop table if exists ttrss_prefs;
 drop table if exists ttrss_prefs_types;
 drop table if exists ttrss_prefs_sections;
@@ -297,7 +298,7 @@ create table ttrss_tags (id integer primary key auto_increment,
 
 create table ttrss_version (schema_version int not null) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
-insert into ttrss_version values (140);
+insert into ttrss_version values (141);
 
 create table ttrss_enclosures (id integer primary key auto_increment,
 	content_url text not null,
@@ -410,6 +411,14 @@ create table ttrss_user_prefs (
   	foreign key (profile) references ttrss_settings_profiles(id) ON DELETE CASCADE,
  	foreign key (owner_uid) references ttrss_users(id) ON DELETE CASCADE,
 	foreign key (pref_name) references ttrss_prefs(pref_name) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+
+create table ttrss_user_prefs2 (
+	owner_uid integer not null,
+	pref_name varchar(250),
+	profile integer null,
+	value longtext not null,
+	foreign key (profile) references ttrss_settings_profiles(id) ON DELETE CASCADE,
+ 	foreign key (owner_uid) references ttrss_users(id) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 create table ttrss_sessions (id varchar(250) not null primary key,
 	data text,

@@ -1,5 +1,5 @@
 <?php
-	define('SCHEMA_VERSION', 140);
+	define('SCHEMA_VERSION', 141);
 
 	define('LABEL_BASE_INDEX', -1024);
 	define('PLUGIN_FEED_BASE_INDEX', -128);

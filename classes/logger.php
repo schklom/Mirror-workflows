@@ -38,7 +38,7 @@ class Logger {
 		return self::get_instance()->_log($errno, $errstr, $context);
 	}
 
-	private function _log($errno, $errstr, $context = "") {
+	private function _log(int $errno, string $errstr, $context = "") {
 		if ($this->adapter)
 			return $this->adapter->log_error($errno, $errstr, '', 0, $context);
 		else

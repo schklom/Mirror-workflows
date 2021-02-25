@@ -32,10 +32,14 @@ class Logger_SQL implements Logger_Adapter {
 			$errstr = UConverter::transcode($errstr, 'UTF-8', 'UTF-8');
 			$context = UConverter::transcode($context, 'UTF-8', 'UTF-8');
 
+			// can't use $_SESSION["uid"] ?? null because what if its, for example, false? or zero?
+			// this would cause a PDOException on insert below
+			$owner_uid = !empty($_SESSION["uid"]) ? $_SESSION["uid"] : null;
+
 			$sth = $this->pdo->prepare("INSERT INTO ttrss_error_log
 				(errno, errstr, filename, lineno, context, owner_uid, created_at) VALUES
 				(?, ?, ?, ?, ?, ?, NOW())");
-			$sth->execute([$errno, $errstr, $file, $line, $context, $_SESSION["uid"] ?? null]);
+			$sth->execute([$errno, $errstr, $file, (int)$line, $context, $owner_uid]);
 
 			return $sth->rowCount();
 		}

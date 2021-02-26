@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-24 19:54+0300\n"
-"PO-Revision-Date: 2021-01-11 10:19+0000\n"
+"PO-Revision-Date: 2021-02-26 09:46+0000\n"
 "Last-Translator: Dario Di Ludovico <dario@diludovico.it>\n"
 "Language-Team: Italian <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "it/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4.2\n"
+"X-Generator: Weblate 4.5\n"
 
 #: backend.php:55
 msgid "Use default"
@@ -1032,9 +1032,8 @@ msgid "App passwords"
 msgstr "Password dell'app"
 
 #: classes/pref/prefs.php:559
-#, fuzzy
 msgid "Authenticator (OTP)"
-msgstr "Autenticazione"
+msgstr "Generatore Token (OTP)"
 
 #: classes/pref/prefs.php:570
 msgid "Some preferences are only available in default profile."
@@ -1391,9 +1390,8 @@ msgid "Language:"
 msgstr "Lingua:"
 
 #: classes/pref/feeds.php:628 js/CommonDialogs.js:522
-#, fuzzy
 msgid "Update interval:"
-msgstr "Intervallo predefinito di aggiornamento"
+msgstr "Intervallo di aggiornamento:"
 
 #: classes/pref/feeds.php:635
 msgid "Article purging:"
@@ -1515,7 +1513,6 @@ msgid "Clear all generated URLs"
 msgstr "Cancella tutti gli URL generati"
 
 #: classes/pref/feeds.php:1075
-#, fuzzy
 msgid "My feeds"
 msgstr "Notiziari"
 
@@ -1524,7 +1521,6 @@ msgid "OPML"
 msgstr "OPML"
 
 #: classes/pref/feeds.php:1085
-#, fuzzy
 msgid "Sharing"
 msgstr "Condividi"
 
@@ -1727,7 +1723,6 @@ msgid "Show related articles"
 msgstr "Mostra articoli collegati"
 
 #: plugins/af_psql_trgm/init.php:134
-#, fuzzy
 msgid "Mark similar articles as read (af_psql_trgm)"
 msgstr "Segnare tutti gli articoli simili come letti (af_psql_trgm)"
 
@@ -1751,16 +1746,14 @@ msgid "Minimum title length:"
 msgstr "Lunghezza del titolo minima:"
 
 #: plugins/af_psql_trgm/init.php:187
-#, fuzzy
 msgid "Enable for all feeds."
-msgstr "Attiva per tutti i notiziari:"
+msgstr "Attiva per tutti i notiziari."
 
 #: plugins/af_psql_trgm/init.php:206 plugins/af_readability/init.php:106
 msgid "Currently enabled for (click to edit):"
 msgstr "Attualmente attivo per (clicca per modificare):"
 
 #: plugins/af_psql_trgm/init.php:226
-#, fuzzy
 msgid "Similarity (af_psql_trgm)"
 msgstr "Somiglianza (af_pg_trgm)"
 
@@ -1819,7 +1812,6 @@ msgid "Subject:"
 msgstr "Oggetto:"
 
 #: plugins/mail/init.php:185
-#, fuzzy
 msgid "Send email"
 msgstr "Invia email"
 
@@ -1981,23 +1973,20 @@ msgid "NSFW Plugin"
 msgstr "Plugin NSFW"
 
 #: plugins/nsfw/init.php:65
-#, fuzzy
 msgid "Tags to consider NSFW (comma-separated):"
-msgstr "Tag da considerare NSFW (divisi da virgole)"
+msgstr "Tag da considerare NSFW (divisi da virgole):"
 
 #: plugins/nsfw/init.php:87
 msgid "Configuration saved."
 msgstr "La configurazione è stata salvata."
 
 #: plugins/mailto/init.php:19 plugins/mailto/init.php:29
-#, fuzzy
 msgid "Forward by email (mailto:)"
-msgstr "Inoltra per email"
+msgstr "Inoltra per email (mailto:)"
 
 #: plugins/mailto/init.php:79
-#, fuzzy
 msgid "Click to open your mail client"
-msgstr "Clicca il link seguente per aprire il tuo client di posta:"
+msgstr "Clicca per aprire il tuo client di posta"
 
 #: plugins/mailto/init.php:85
 msgid "Close this dialog"
@@ -2026,9 +2015,8 @@ msgid "Toggle sidebar"
 msgstr "Attiva la sidebar"
 
 #: plugins/share/init.php:42
-#, fuzzy
 msgid "Article unshared"
-msgstr "Data dell&apos;articolo"
+msgstr "Articolo non condiviso"
 
 #: plugins/share/init.php:50
 msgid "You can disable all articles shared by unique URLs here."
@@ -2063,9 +2051,9 @@ msgid "Keyboard shortcuts"
 msgstr "Scorciatoie da tastiera"
 
 #: js/App.js:543
-#, fuzzy, perl-format
+#, perl-format
 msgid "Fatal error: %s"
-msgstr "Errore fatale"
+msgstr "Errore fatale: %s"
 
 #: js/App.js:544
 msgid "Fatal error"
@@ -2099,9 +2087,8 @@ msgid "Article URL:"
 msgstr "URL dell'articolo:"
 
 #: js/Article.js:122
-#, fuzzy
 msgid "No URL could be displayed for this article."
-msgstr "Togliere la condivisione per questo articolo?"
+msgstr "L'URL di questo article non può essere visualizzata."
 
 #: js/Article.js:144
 msgid "no tags"
@@ -2151,9 +2138,8 @@ msgid "Edit Feed"
 msgstr "Modifica notiziario"
 
 #: js/CommonDialogs.js:349
-#, fuzzy
 msgid "Please select an image file."
-msgstr "Selezionare un file immagine da caricare."
+msgstr "Selezionare un file immagine."
 
 #: js/CommonDialogs.js:400
 msgid "Remove stored feed icon?"
@@ -2397,9 +2383,8 @@ msgid "Error sending email:"
 msgstr "Errore nell'invio email:"
 
 #: plugins/mailto/init.js:17
-#, fuzzy
 msgid "Forward article by email (mailto:)"
-msgstr "Inoltra l'articolo per email"
+msgstr "Inoltra l'articolo per email (mailto:)"
 
 #: plugins/share/share.js:7
 msgid "Share article by URL"
@@ -2424,11 +2409,8 @@ msgid "Update daemon is not running."
 msgstr "Il daemon di aggiornamento non è in esecuzione."
 
 #: js/App.js:466
-#, fuzzy
 msgid "Update daemon is not updating feeds."
-msgstr ""
-"<span onclick=\"App.explainError(3)\">Il daemon di aggiornamento non sta "
-"aggiornando i notiziari.</span>"
+msgstr "Il daemon di aggiornamento non sta aggiornando i notiziari."
 
 #: js/App.js:569
 msgid "Unhandled exception"
@@ -2459,6 +2441,8 @@ msgid ""
 "Provided URL is a HTML page referencing multiple feeds, please select "
 "required feed from the dropdown menu below."
 msgstr ""
+"L'URL fornita è una pagina HTML contenente numerosi feed, per favore "
+"seleziona il feed richiesto tramite il menu sottostante."
 
 #: js/CommonDialogs.js:122
 msgid ""
@@ -2539,9 +2523,8 @@ msgid "Saving data..."
 msgstr "Salvando dati..."
 
 #: js/CommonDialogs.js:568
-#, fuzzy
 msgid "Upload new icon..."
-msgstr "Caricare una nuova icona per questo notiziario?"
+msgstr "Caricare una nuova icona..."
 
 #: js/CommonDialogs.js:597
 msgid "Show as feed"
@@ -2588,12 +2571,10 @@ msgid "Inverse regular expression matching"
 msgstr "Corrispondenza inversa delle espressioni regolari"
 
 #: js/CommonFilters.js:218
-#, fuzzy
 msgid "on"
-msgstr "Nessuno"
+msgstr "attivo"
 
 #: js/CommonFilters.js:230
-#, fuzzy
 msgid "More info"
 msgstr "Ulteriori informazioni"
 

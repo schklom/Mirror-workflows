@@ -52,8 +52,9 @@ const App = {
          return this.button_tag(value, "", {...{onclick: "App.dialogOf(this).hide()"}, ...attributes});
       },
       checkbox_tag: function(name, checked = false, value = "", attributes = {}, id = "") {
+         // checked !== '0' prevents mysql "boolean" false to be implicitly cast as true
          return `<input dojoType="dijit.form.CheckBox" type="checkbox" name="${App.escapeHtml(name)}"
-                     ${checked ? "checked" : ""}
+                     ${checked !== '0' && checked ? "checked" : ""}
                      ${value ? `value="${App.escapeHtml(value)}"` : ""}
                      ${this.attributes_to_string(attributes)} id="${App.escapeHtml(id)}">`
       },

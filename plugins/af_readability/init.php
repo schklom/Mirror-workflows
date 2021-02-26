@@ -1,4 +1,6 @@
 <?php
+require "vendor/autoload.php";
+
 use andreskrey\Readability\Readability;
 use andreskrey\Readability\Configuration;
 

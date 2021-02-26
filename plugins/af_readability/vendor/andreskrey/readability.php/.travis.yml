@@ -1,0 +1,48 @@
+language: bash
+services: docker
+
+env:
+  matrix:
+    - PHP_VERSION=7.3 LIBXML_VERSION=2.9.9
+    - PHP_VERSION=7.3 LIBXML_VERSION=2.9.8
+    - PHP_VERSION=7.3 LIBXML_VERSION=2.9.7
+    - PHP_VERSION=7.3 LIBXML_VERSION=2.9.6
+    - PHP_VERSION=7.3 LIBXML_VERSION=2.9.5
+    - PHP_VERSION=7.3 LIBXML_VERSION=2.9.4
+    - PHP_VERSION=7.2 LIBXML_VERSION=2.9.9
+    - PHP_VERSION=7.2 LIBXML_VERSION=2.9.8
+    - PHP_VERSION=7.2 LIBXML_VERSION=2.9.7
+    - PHP_VERSION=7.2 LIBXML_VERSION=2.9.6
+    - PHP_VERSION=7.2 LIBXML_VERSION=2.9.5
+    - PHP_VERSION=7.2 LIBXML_VERSION=2.9.4
+    - PHP_VERSION=7.1 LIBXML_VERSION=2.9.9
+    - PHP_VERSION=7.1 LIBXML_VERSION=2.9.8
+    - PHP_VERSION=7.1 LIBXML_VERSION=2.9.7
+    - PHP_VERSION=7.1 LIBXML_VERSION=2.9.6
+    - PHP_VERSION=7.1 LIBXML_VERSION=2.9.5
+    - PHP_VERSION=7.1 LIBXML_VERSION=2.9.4
+    - PHP_VERSION=7.0 LIBXML_VERSION=2.9.9
+    - PHP_VERSION=7.0 LIBXML_VERSION=2.9.8
+    - PHP_VERSION=7.0 LIBXML_VERSION=2.9.7
+    - PHP_VERSION=7.0 LIBXML_VERSION=2.9.6
+    - PHP_VERSION=7.0 LIBXML_VERSION=2.9.5
+    - PHP_VERSION=7.0 LIBXML_VERSION=2.9.4
+
+matrix:
+  allow_failures:
+    - env: LIBXML_VERSION=2.9.9
+    - env: LIBXML_VERSION=2.9.8
+    - env: LIBXML_VERSION=2.9.7
+    - env: LIBXML_VERSION=2.9.6
+    - env: LIBXML_VERSION=2.9.5
+
+install:
+  - docker run --rm --volume $PWD:/app --workdir="/app" composer install
+
+script:
+  - docker build --build-arg PHP_VERSION=${PHP_VERSION} --build-arg LIBXML_VERSION=${LIBXML_VERSION} -t travis-build - < ./docker/php/Dockerfile
+  - docker run --volume $PWD:/app --workdir="/app" travis-build php ./vendor/bin/phpunit --coverage-clover /app/test/clover.xml
+
+after_script:
+  - docker run --volume $PWD:/app --workdir="/app" composer require php-coveralls/php-coveralls:^2.0
+  - docker run --volume $PWD:/app --workdir="/app" --env TRAVIS=${TRAVIS} --env TRAVIS_JOB_ID=${TRAVIS_JOB_ID} travis-build php ./vendor/php-coveralls/php-coveralls/bin/php-coveralls -v

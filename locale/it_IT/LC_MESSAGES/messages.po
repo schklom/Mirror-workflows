@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-26 13:06+0300\n"
-"PO-Revision-Date: 2021-02-26 09:46+0000\n"
+"PO-Revision-Date: 2021-02-26 10:23+0000\n"
 "Last-Translator: Dario Di Ludovico <dario@diludovico.it>\n"
 "Language-Team: Italian <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "it/>\n"
@@ -659,7 +659,7 @@ msgstr "Avanzate"
 
 #: classes/pref/prefs.php:69
 msgid "Debugging"
-msgstr ""
+msgstr "Debug"
 
 #: classes/pref/prefs.php:75
 msgid "Never apply these tags automatically (comma-separated list)."
@@ -831,22 +831,19 @@ msgstr "Tema"
 
 #: classes/pref/prefs.php:106
 msgid "Don't enforce DISTINCT headlines"
-msgstr ""
+msgstr "Non imporre titoli DISTINTI"
 
 #: classes/pref/prefs.php:106
-#, fuzzy
 msgid "May produce duplicate entries"
-msgstr "Permetti articoli duplicati"
+msgstr "Potrebbe causare inserimenti duplicati"
 
 #: classes/pref/prefs.php:107
-#, fuzzy
 msgid "Show article and feed IDs"
-msgstr "Mostra articoli"
+msgstr "Mostra ID di articoli e notiziari"
 
 #: classes/pref/prefs.php:107
-#, fuzzy
 msgid "In the headlines buffer"
-msgstr "Ordinare i titoli per data del notiziario"
+msgstr "Nel buffer dei titoli"
 
 #: classes/pref/prefs.php:208
 msgid "The configuration was saved."
@@ -2856,15 +2853,16 @@ msgid ""
 "Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. "
 "You will need to log out and back in to disable it."
 msgstr ""
+"Tiny Tiny RSS è in modalità sicura. Tutti i temi e plugin sono disabilitati. "
+"Per disabilitarlo devi effettuare il logout."
 
 #: js/Feeds.js:604
 msgid "Used for word stemming"
 msgstr "Usato per determinare la radice delle parole"
 
 #: js/App.js:597
-#, fuzzy
 msgid "Additional information"
-msgstr "Informazioni del classificatore"
+msgstr "Informazioni aggiuntive"
 
 #: js/PrefFeedTree.js:369
 msgid "Rename category to:"
@@ -2908,7 +2906,7 @@ msgstr "Imposta punteggio"
 
 #: js/Headlines.js:635
 msgid "Delete permanently"
-msgstr ""
+msgstr "Elimina permanentemente"
 
 #: js/Headlines.js:809
 msgid ""

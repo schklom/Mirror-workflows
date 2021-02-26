@@ -143,7 +143,7 @@ class UserHelper {
 
 	}
 
-	static function get_user_ip() : string {
+	static function get_user_ip() {
 		foreach (["HTTP_X_REAL_IP", "REMOTE_ADDR"] as $hdr) {
 			if (isset($_SERVER[$hdr]))
 				return $_SERVER[$hdr];
@@ -152,7 +152,7 @@ class UserHelper {
 		return null;
 	}
 
-	static function get_login_by_id(int $id) : string {
+	static function get_login_by_id(int $id) {
 		$pdo = Db::pdo();
 
 		$sth = $pdo->prepare("SELECT login FROM ttrss_users WHERE id = ?");
@@ -165,7 +165,7 @@ class UserHelper {
 		return null;
 	}
 
-	static function find_user_by_login(string $login) : int {
+	static function find_user_by_login(string $login) {
 		$pdo = Db::pdo();
 
 		$sth = $pdo->prepare("SELECT id FROM ttrss_users WHERE
@@ -264,7 +264,7 @@ class UserHelper {
 		return false;
 	}
 
-	static function get_otp_secret(int $owner_uid, bool $show_if_enabled = false) : string {
+	static function get_otp_secret(int $owner_uid, bool $show_if_enabled = false) {
 		$sth = Db::pdo()->prepare("SELECT salt, otp_enabled FROM ttrss_users WHERE id = ?");
 		$sth->execute([$owner_uid]);
 

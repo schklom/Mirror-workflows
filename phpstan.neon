@@ -13,8 +13,14 @@ parameters:
           - vendor/*
           - plugins/*/vendor/*
           - plugins.local/*/vendor/*
-
    excludePaths:
       - node_modules/*
+      - vendor/**/tests/*
+      - vendor/**/test/*
+      - plugins/**/tests/*
+      - plugins/**/Test/*
+      - plugins.local/**/tests/*
+      - plugins/**/test/*
+      - plugins.local/**/test/*
    paths:
       - .

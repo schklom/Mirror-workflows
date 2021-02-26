@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-26 13:06+0300\n"
-"PO-Revision-Date: 2021-02-26 09:55+0000\n"
+"PO-Revision-Date: 2021-02-26 10:23+0000\n"
 "Last-Translator: Andrew Dolgov <fox@fakecake.org>\n"
 "Language-Team: Russian <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "ru/>\n"
@@ -403,7 +403,7 @@ msgstr "Переключить растяжение статьи (комбини
 
 #: classes/rpc.php:574
 msgid "Toggle full article text via Readability"
-msgstr ""
+msgstr "Получить полный текст с помощью Readability"
 
 #: classes/rpc.php:575
 msgid "Article selection"
@@ -668,7 +668,7 @@ msgstr "Расширенные"
 
 #: classes/pref/prefs.php:69
 msgid "Debugging"
-msgstr ""
+msgstr "Отладка"
 
 #: classes/pref/prefs.php:75
 msgid "Never apply these tags automatically (comma-separated list)."
@@ -903,6 +903,8 @@ msgid ""
 "Authentication module used for this session (<b>%s</b>) does not provide an "
 "ability to set passwords."
 msgstr ""
+"Модуль авторизации для этой сессии (<b>%s</b>) не предоставляет возможность "
+"смены паролей."
 
 #: classes/pref/prefs.php:398
 #, fuzzy
@@ -936,7 +938,7 @@ msgstr "Просканируйте следующий код в программ
 
 #: classes/pref/prefs.php:488
 msgid "OTP Key:"
-msgstr ""
+msgstr "Ключ OTP:"
 
 #: classes/pref/prefs.php:515
 msgid "One time password:"
@@ -1095,6 +1097,7 @@ msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
 "reference."
 msgstr ""
+"Сгенерирован пароль <strong>%s</strong> для %s. Пожалуйста запомните его."
 
 #: classes/pref/system.php:68
 msgid "Refresh"
@@ -1107,7 +1110,7 @@ msgstr ""
 #: classes/pref/system.php:77
 #, php-format
 msgid "Page %d of %d"
-msgstr ""
+msgstr "Страница %d из %d"
 
 #: classes/pref/system.php:82
 msgid "&gt;&gt;"
@@ -1115,7 +1118,7 @@ msgstr ""
 
 #: classes/pref/system.php:91
 msgid "Severity:"
-msgstr ""
+msgstr "Строгость:"
 
 #: classes/pref/system.php:95
 #, fuzzy
@@ -1124,7 +1127,7 @@ msgstr "Ошибка"
 
 #: classes/pref/system.php:96
 msgid "Warnings"
-msgstr ""
+msgstr "Предупреждения"
 
 #: classes/pref/system.php:97
 #, fuzzy
@@ -1292,9 +1295,9 @@ msgstr "Отключить одноразовый пароль"
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d день"
+msgstr[1] "%d дня"
+msgstr[2] "%d дней"
 
 #: classes/pref/feeds.php:569
 msgid "Check to enable field"
@@ -1800,7 +1803,7 @@ msgstr ""
 
 #: plugins/af_readability/init.php:113
 msgid "(append)"
-msgstr ""
+msgstr "(добавить)"
 
 #: plugins/af_readability/init.php:128
 msgid "Readability"
@@ -1812,7 +1815,7 @@ msgstr "Встроить содержимое статьи"
 
 #: plugins/af_readability/init.php:139
 msgid "Append to summary, instead of replacing it"
-msgstr ""
+msgstr "Добавить к краткому содержанию, а не заменить его"
 
 #: plugins/bookmarklets/init.php:88 js/CommonDialogs.js:93
 msgid "Subscribe"
@@ -1968,7 +1971,7 @@ msgstr "Включить дополнительную проверку дубл�
 #: plugins/af_redditimgur/init.php:73
 #, php-format
 msgid "Rewrite Reddit URLs to %s"
-msgstr ""
+msgstr "Переписать ссылки с Reddit на %s"
 
 #: plugins/toggle_sidebar/init.php:27
 msgid "Toggle sidebar"
@@ -2033,7 +2036,7 @@ msgstr "Безопасный режим"
 
 #: include/login_form.php:161
 msgid "Uses default theme and prevents all plugins from loading."
-msgstr ""
+msgstr "Использует тему по умолчанию и отключает все плагины."
 
 #: include/login_form.php:169
 msgid "Remember me"
@@ -2312,6 +2315,8 @@ msgid ""
 "Provided URL is a HTML page referencing multiple feeds, please select "
 "required feed from the dropdown menu below."
 msgstr ""
+"Эта ссылка - HTML страница, которая включает в себя несколько каналов. "
+"Выберите нужный из списка внизу."
 
 #: js/CommonDialogs.js:122
 msgid ""
@@ -2496,6 +2501,8 @@ msgid ""
 "User CSS has been applied, you might need to reload the page to see all "
 "changes."
 msgstr ""
+"Пользовательский CSS был применен, чтобы увидеть изменения может "
+"потребоваться перезагрузка страницы."
 
 #: js/PrefHelpers.js:274
 msgid "Reset to defaults?"
@@ -2897,6 +2904,8 @@ msgid ""
 "Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. "
 "You will need to log out and back in to disable it."
 msgstr ""
+"Tiny Tiny RSS работает в безопасном режиме. Все темы и плагины отключены. "
+"Чтобы отключить этот режим, нужно выйти и войти снова."
 
 #: js/Feeds.js:604
 msgid "Used for word stemming"
@@ -2937,7 +2946,7 @@ msgstr "Активировать профиль"
 
 #: js/PrefHelpers.js:257
 msgid "Apply"
-msgstr ""
+msgstr "Применить"
 
 #: js/Headlines.js:622
 msgid "Invert"
@@ -2949,7 +2958,7 @@ msgstr "Оценить"
 
 #: js/Headlines.js:635
 msgid "Delete permanently"
-msgstr ""
+msgstr "Удалить навсегда"
 
 #: js/Headlines.js:809
 msgid ""

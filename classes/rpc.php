@@ -14,6 +14,8 @@ class RPC extends Handler_Protected {
 		$rv = [];
 
 		foreach (array_keys($text_domains) as $domain) {
+
+			/** @var gettext_reader $l10n */
 			$l10n = _get_reader($domain);
 
 			for ($i = 0; $i < $l10n->total; $i++) {

@@ -5,6 +5,9 @@ xgettext -kT_sprintf -kT_nsprintf:1,2 -k_ngettext:1,2 -kT_ngettext:1,2 -k__ \
 	-L PHP -o $TEMPLATE *.php `find classes plugins include -iname '*.php'`
 
 xgettext --from-code utf-8 -k__ -kNotify.info -kNotify.error -kNotify.progress \
+	-kngettext:1,2 -L Java -j -o $TEMPLATE `find js plugins -iname '*.js'`
+
+xgettext --from-code utf-8 -k__ -kNotify.info -kNotify.error -kNotify.progress \
 	-kngettext:1,2 -L JavaScript -j -o $TEMPLATE `find js plugins -iname '*.js'`
 
 exit

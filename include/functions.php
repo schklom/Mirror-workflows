@@ -455,42 +455,6 @@
 		}
 	}
 
-	function init_js_translations() {
-
-		print 'var T_messages = new Object();
-
-			function __(msg) {
-				if (T_messages[msg]) {
-					return T_messages[msg];
-				} else {
-					return msg;
-				}
-			}
-
-			function ngettext(msg1, msg2, n) {
-				return __((parseInt(n) > 1) ? msg2 : msg1);
-			}';
-
-		global $text_domains;
-
-		foreach (array_keys($text_domains) as $domain) {
-			$l10n = _get_reader($domain);
-
-			for ($i = 0; $i < $l10n->total; $i++) {
-				$orig = $l10n->get_original_string($i);
-				if(strpos($orig, "\000") !== false) { // Plural forms
-					$key = explode(chr(0), $orig);
-					print T_js_decl($key[0], _ngettext($key[0], $key[1], 1)); // Singular
-					print T_js_decl($key[1], _ngettext($key[0], $key[1], 2)); // Plural
-				} else {
-					$translation = _dgettext($domain,$orig);
-					print T_js_decl($orig, $translation);
-				}
-			}
-
-		}
-	}
-
 	function get_theme_path($theme) {
 		$check = "themes/$theme";
 		if (file_exists($check)) return $check;

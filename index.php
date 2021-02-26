@@ -97,8 +97,6 @@
 				}
 			}
 		}
-
-		init_js_translations();
 	?>
 	</script>
 

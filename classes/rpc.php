@@ -7,6 +7,38 @@ class RPC extends Handler_Protected {
 		return array_search($method, $csrf_ignored) !== false;
 	}*/
 
+	private function _translations_as_array() {
+
+		global $text_domains;
+
+		$rv = [];
+
+		foreach (array_keys($text_domains) as $domain) {
+			$l10n = _get_reader($domain);
+
+			for ($i = 0; $i < $l10n->total; $i++) {
+				if (isset($l10n->table_originals[$i * 2 + 2]) && $orig = $l10n->get_original_string($i)) {
+					if(strpos($orig, "\000") !== false) { // Plural forms
+						$key = explode(chr(0), $orig);
+						//print T_js_decl($key[0], _ngettext($key[0], $key[1], 1)); // Singular
+						//print T_js_decl($key[1], _ngettext($key[0], $key[1], 2)); // Plural
+
+						$rv[$key[0]] = _ngettext($key[0], $key[1], 1); // Singular
+						$rv[$key[1]] = _ngettext($key[0], $key[1], 2); // Plural
+
+					} else {
+						$translation = _dgettext($domain,$orig);
+						//print T_js_decl($orig, $translation);
+						$rv[$orig] = $translation;
+					}
+				}
+			}
+		}
+
+		return $rv;
+	}
+
+
 	function togglepref() {
 		$key = clean($_REQUEST["key"]);
 		set_pref($key, !get_pref($key));
@@ -66,7 +98,7 @@ class RPC extends Handler_Protected {
 
 	function getRuntimeInfo() {
 		$reply = [
-			'runtime-info' => $this->make_runtime_info()
+			'runtime-info' => $this->_make_runtime_info()
 		];
 
 		print json_encode($reply);
@@ -147,8 +179,9 @@ class RPC extends Handler_Protected {
 		if ($error == Errors::E_SUCCESS) {
 			$reply = [];
 
-			$reply['init-params'] = $this->make_init_params();
-			$reply['runtime-info'] = $this->make_runtime_info();
+			$reply['init-params'] = $this->_make_init_params();
+			$reply['runtime-info'] = $this->_make_runtime_info();
+			$reply['translations'] = $this->_translations_as_array();
 
 			print json_encode($reply);
 		} else {
@@ -377,7 +410,7 @@ class RPC extends Handler_Protected {
 		print json_encode($rv);
 	}
 
-	private function make_init_params() {
+	private function _make_init_params() {
 		$params = array();
 
 		foreach ([Prefs::ON_CATCHUP_SHOW_NEXT_FEED, Prefs::HIDE_READ_FEEDS,
@@ -440,7 +473,7 @@ class RPC extends Handler_Protected {
 		}
 	}
 
-	static function make_runtime_info() {
+	static function _make_runtime_info() {
 		$data = array();
 
 		$pdo = Db::pdo();

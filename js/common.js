@@ -1,7 +1,21 @@
 'use strict';
 
-/* global dijit, __, App, dojo, __csrf_token */
+/* global dijit, App, dojo, __csrf_token */
 /* eslint-disable no-new */
+
+/* exported __ */
+function __(msg) {
+	if (typeof App != "undefined") {
+		return App.l10n.__(msg);
+	} else {
+		return msg;
+	}
+}
+
+/* exported ngettext */
+function ngettext(msg1, msg2, n) {
+	return __((parseInt(n) > 1) ? msg2 : msg1);
+}
 
 /* exported $ */
 function $(id) {

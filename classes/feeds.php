@@ -509,7 +509,7 @@ class Feeds extends Handler_Protected {
             						"disable_cache" => (bool) $disable_cache];
 
 		// this is parsed by handleRpcJson() on first viewfeed() to set cdm expanded, etc
-		$reply['runtime-info'] = RPC::make_runtime_info();
+		$reply['runtime-info'] = RPC::_make_runtime_info();
 
 		print json_encode($reply);
 	}

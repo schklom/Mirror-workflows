@@ -17,6 +17,15 @@ const App = {
    hotkey_actions: {},
    is_prefs: false,
    LABEL_BASE_INDEX: -1024,
+   _translations: {},
+   l10n: {
+      ngettext: function(msg1, msg2, n) {
+         return self.__((parseInt(n) > 1) ? msg2 : msg1);
+      },
+      __: function(msg) {
+         return App._translations[msg] ? App._translations[msg] : msg;
+      }
+   },
    FormFields: {
       attributes_to_string: function(attributes) {
          return Object.keys(attributes).map((k) =>
@@ -524,6 +533,13 @@ const App = {
 			if (typeof PluginHost !== 'undefined')
 				PluginHost.run(PluginHost.HOOK_PARAMS_LOADED, this._initParams);
 		}
+
+      const translations = reply['translations'];
+
+      if (translations) {
+         console.log('reading translations...');
+         App._translations = translations;
+      }
 
 		this.initSecondStage();
 	},

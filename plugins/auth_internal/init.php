@@ -72,9 +72,10 @@ class Auth_Internal extends Auth_Base {
 							<input type="hidden" name="op" value="login">
 							<input type="hidden" name="login" value="<?= htmlspecialchars($login) ?>">
 							<input type="hidden" name="password" value="<?= htmlspecialchars($password) ?>">
-							<input type="hidden" name="bw_limit" value="<?= htmlspecialchars($_POST["bw_limit"]) ?>">
-							<input type="hidden" name="remember_me" value="<?= htmlspecialchars($_POST["remember_me"]) ?>">
-							<input type="hidden" name="profile" value="<?= htmlspecialchars($_POST["profile"]) ?>">
+							<input type="hidden" name="bw_limit" value="<?= htmlspecialchars($_POST["bw_limit"] ?? "") ?>">
+							<input type="hidden" name="safe_mode" value="<?= htmlspecialchars($_POST["safe_mode"] ?? "") ?>">
+							<input type="hidden" name="remember_me" value="<?= htmlspecialchars($_POST["remember_me"] ?? "") ?>">
+							<input type="hidden" name="profile" value="<?= htmlspecialchars($_POST["profile"] ?? "") ?>">
 
 							<fieldset>
 								<label><?= __("Please enter your one time password:") ?></label>

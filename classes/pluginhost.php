@@ -514,6 +514,14 @@ class PluginHost {
 		}
 	}
 
+	function get_array(Plugin $sender, string $name, array $default_value = []) {
+		$tmp = $this->get($sender, $name);
+
+		if (!is_array($tmp)) $tmp = $default_value;
+
+		return $tmp;
+	}
+
 	function get_all($sender) {
 		$idx = get_class($sender);
 

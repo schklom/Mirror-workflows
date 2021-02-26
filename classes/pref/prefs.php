@@ -63,6 +63,7 @@ class Pref_Prefs extends Handler_Protected {
 				Prefs::SHORT_DATE_FORMAT,
 				'BLOCK_SEPARATOR',
 				Prefs::SSL_CERT_SERIAL,
+				Prefs::HEADLINES_NO_DISTINCT,
 			]
 		];
 
@@ -97,7 +98,8 @@ class Pref_Prefs extends Handler_Protected {
 			Prefs::USER_TIMEZONE => array(__("Time zone")),
 			Prefs::VFEED_GROUP_BY_FEED => array(__("Group by feed"), __("Group multiple-feed output by originating feed")),
 			Prefs::USER_LANGUAGE => array(__("Language")),
-			Prefs::USER_CSS_THEME => array(__("Theme"))
+			Prefs::USER_CSS_THEME => array(__("Theme")),
+			Prefs::HEADLINES_NO_DISTINCT => array(__("Don't enforce DISTINCT headlines"), __("May produce duplicate entries")),
 		];
 
 		// hidden in the main prefs UI (use to hide things that have description set above)

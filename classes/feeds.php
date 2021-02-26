@@ -1621,6 +1621,11 @@ class Feeds extends Handler_Protected {
 				$distinct_qpart = "DISTINCT"; //fallback
 			}
 
+			// except for Labels category
+			if (get_pref(Prefs::HEADLINES_NO_DISTINCT) && !($feed == -2 && $cat_view)) {
+				$distinct_qpart = "";
+			}
+
 			if (!$search && !$skip_first_id_check) {
 				// if previous topmost article id changed that means our current pagination is no longer valid
 				$query = "SELECT

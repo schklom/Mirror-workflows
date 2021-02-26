@@ -23,78 +23,81 @@ class Auth_Internal extends Auth_Base {
 		$pwd_hash2 = encrypt_password($password, $login);
 		$otp = (int) ($_REQUEST["otp"] ?? 0);
 
-		if (get_schema_version() > 96) {
+		// don't bother with null/null logins for auth_external etc
+		if ($login && get_schema_version() > 96) {
 
-			$sth = $this->pdo->prepare("SELECT otp_enabled,salt FROM ttrss_users WHERE
-				LOWER(login) = LOWER(?)");
-			$sth->execute([$login]);
+			$user_id = UserHelper::find_user_by_login($login);
 
-			if ($row = $sth->fetch()) {
-				$otp_enabled = $row['otp_enabled'];
+			if ($user_id && UserHelper::is_otp_enabled($user_id)) {
 
-				if ($otp_enabled) {
-
-					// only allow app password checking if OTP is enabled
-					if ($service && get_schema_version() > 138) {
-						return $this->check_app_password($login, $password, $service);
-					}
-
-					if ($otp) {
-						$base32 = new \OTPHP\Base32();
-
-						$secret = $base32->encode(mb_substr(sha1($row["salt"]), 0, 12), false);
-						$secret_legacy = $base32->encode(sha1($row["salt"]));
-
-						$totp = new \OTPHP\TOTP($secret);
-						$otp_check = $totp->now();
-
-						$totp_legacy = new \OTPHP\TOTP($secret_legacy);
-						$otp_check_legacy = $totp_legacy->now();
-
-						if ($otp !== $otp_check && $otp !== $otp_check_legacy) {
-							return false;
-						}
-					} else {
-						$return = urlencode($_REQUEST["return"]);
-						?>
-						<!DOCTYPE html>
-						<html>
-							<head>
-								<title>Tiny Tiny RSS</title>
-								<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-							</head>
-							<?= stylesheet_tag("themes/light.css") ?>
-						<body class="ttrss_utility otp">
-						<h1><?= __("Authentication") ?></h1>
-						<div class="content">
-						<form action="public.php?return=<?= $return ?>"
-								method="POST" class="otpform">
-							<input type="hidden" name="op" value="login">
-							<input type="hidden" name="login" value="<?= htmlspecialchars($login) ?>">
-							<input type="hidden" name="password" value="<?= htmlspecialchars($password) ?>">
-							<input type="hidden" name="bw_limit" value="<?= htmlspecialchars($_POST["bw_limit"] ?? "") ?>">
-							<input type="hidden" name="safe_mode" value="<?= htmlspecialchars($_POST["safe_mode"] ?? "") ?>">
-							<input type="hidden" name="remember_me" value="<?= htmlspecialchars($_POST["remember_me"] ?? "") ?>">
-							<input type="hidden" name="profile" value="<?= htmlspecialchars($_POST["profile"] ?? "") ?>">
-
-							<fieldset>
-								<label><?= __("Please enter your one time password:") ?></label>
-								<input autocomplete="off" size="6" name="otp" value=""/>
-								<input type="submit" value="Continue"/>
-							</fieldset>
-						</form></div>
-						<script type="text/javascript">
-							document.forms[0].otp.focus();
-						</script>
-						<?php
-						exit;
-					}
+				// only allow app passwords for service logins if OTP is enabled
+				if ($service && get_schema_version() > 138) {
+					return $this->check_app_password($login, $password, $service);
 				}
+
+				if ($otp) {
+
+					/*$base32 = new \OTPHP\Base32();
+
+					$secret = $base32->encode(mb_substr(sha1($row["salt"]), 0, 12), false);
+					$secret_legacy = $base32->encode(sha1($row["salt"]));
+
+					$totp = new \OTPHP\TOTP($secret);
+					$otp_check = $totp->now();
+
+					$totp_legacy = new \OTPHP\TOTP($secret_legacy);
+					$otp_check_legacy = $totp_legacy->now();
+
+					if ($otp !== $otp_check && $otp !== $otp_check_legacy) {
+						return false;
+					} */
+
+					if (UserHelper::check_otp($user_id, $otp))
+						return $user_id;
+					else
+						return false;
+
+				} else {
+					$return = urlencode($_REQUEST["return"]);
+					?>
+					<!DOCTYPE html>
+					<html>
+						<head>
+							<title>Tiny Tiny RSS</title>
+							<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+						</head>
+						<?= stylesheet_tag("themes/light.css") ?>
+					<body class="ttrss_utility otp">
+					<h1><?= __("Authentication") ?></h1>
+					<div class="content">
+					<form action="public.php?return=<?= $return ?>"
+							method="POST" class="otpform">
+						<input type="hidden" name="op" value="login">
+						<input type="hidden" name="login" value="<?= htmlspecialchars($login) ?>">
+						<input type="hidden" name="password" value="<?= htmlspecialchars($password) ?>">
+						<input type="hidden" name="bw_limit" value="<?= htmlspecialchars($_POST["bw_limit"] ?? "") ?>">
+						<input type="hidden" name="safe_mode" value="<?= htmlspecialchars($_POST["safe_mode"] ?? "") ?>">
+						<input type="hidden" name="remember_me" value="<?= htmlspecialchars($_POST["remember_me"] ?? "") ?>">
+						<input type="hidden" name="profile" value="<?= htmlspecialchars($_POST["profile"] ?? "") ?>">
+
+						<fieldset>
+							<label><?= __("Please enter your one time password:") ?></label>
+							<input autocomplete="off" size="6" name="otp" value=""/>
+							<input type="submit" value="Continue"/>
+						</fieldset>
+					</form></div>
+					<script type="text/javascript">
+						document.forms[0].otp.focus();
+					</script>
+					<?php
+					exit;
+				}
+
 			}
 		}
 
-		// check app passwords first but allow regular password as a fallback for the time being
-		// if OTP is not enabled
+		// service logins: check app passwords first but allow regular password
+		// as a fallback if OTP is not enabled
 
 		if ($service && get_schema_version() > 138) {
 			$user_id = $this->check_app_password($login, $password, $service);

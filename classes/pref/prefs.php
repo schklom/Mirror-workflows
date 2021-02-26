@@ -1,4 +1,5 @@
 <?php
+use chillerlan\QRCode;
 
 class Pref_Prefs extends Handler_Protected {
 
@@ -313,7 +314,7 @@ class Pref_Prefs extends Handler_Protected {
 			$authenticator = false;
 		}
 
-		$otp_enabled = $this->is_otp_enabled();
+		$otp_enabled = UserHelper::is_otp_enabled($_SESSION["uid"]);
 
 		if ($authenticator && method_exists($authenticator, "change_password")) {
 			?>
@@ -406,20 +407,8 @@ class Pref_Prefs extends Handler_Protected {
 		<?php
 	}
 
-	private function is_otp_enabled() {
-		$sth = $this->pdo->prepare("SELECT otp_enabled FROM ttrss_users
-			WHERE id = ?");
-		$sth->execute([$_SESSION["uid"]]);
-
-		if ($row = $sth->fetch()) {
-			return sql_bool_to_bool($row["otp_enabled"]);
-		}
-
-		return false;
-	}
-
 	private function index_auth_2fa() {
-		$otp_enabled = $this->is_otp_enabled();
+		$otp_enabled = UserHelper::is_otp_enabled($_SESSION["uid"]);
 
 		if ($_SESSION["auth_module"] == "auth_internal") {
 			if ($otp_enabled) {
@@ -469,14 +458,13 @@ class Pref_Prefs extends Handler_Protected {
 
 				if (function_exists("imagecreatefromstring")) {
 					print "<h3>" . __("Scan the following code by the Authenticator application or copy the key manually") . "</h3>";
-					$csrf_token_hash = sha1($_SESSION["csrf_token"]);
-					print "<img alt='otp qr-code' src='backend.php?op=pref-prefs&method=otpqrcode&csrf_token_hash=$csrf_token_hash'>";
+					print "<img src=".($this->_get_otp_qrcode_img()).">";
 				} else {
 					print_error("PHP GD functions are required to generate QR codes.");
 					print "<h3>" . __("Use the following OTP key with a compatible Authenticator application") . "</h3>";
 				}
 
-				$otp_secret = $this->otpsecret();
+				$otp_secret = UserHelper::get_otp_secret($_SESSION["uid"]);
 				?>
 
 				<form dojoType='dijit.form.Form'>
@@ -990,90 +978,39 @@ class Pref_Prefs extends Handler_Protected {
 		$_SESSION["prefs_show_advanced"] = !$_SESSION["prefs_show_advanced"];
 	}
 
-	function otpsecret() {
-		$sth = $this->pdo->prepare("SELECT salt, otp_enabled
-			FROM ttrss_users
-			WHERE id = ?");
-		$sth->execute([$_SESSION['uid']]);
+	function _get_otp_qrcode_img() {
+		$secret = UserHelper::get_otp_secret($_SESSION["uid"]);
+		$login = UserHelper::get_login_by_id($_SESSION["uid"]);
 
-		if ($row = $sth->fetch()) {
-			$otp_enabled = sql_bool_to_bool($row["otp_enabled"]);
+		if ($secret && $login) {
+			$qrcode = new \chillerlan\QRCode\QRCode();
 
-			if (!$otp_enabled) {
-				$base32 = new \OTPHP\Base32();
-				$secret = $base32->encode(mb_substr(sha1($row["salt"]), 0, 12), false);
+			$otpurl = "otpauth://totp/".urlencode($login)."?secret=$secret&issuer=".urlencode("Tiny Tiny RSS");
 
-				return $secret;
-			}
+			return $qrcode->render($otpurl);
 		}
 
 		return false;
 	}
 
-	function otpqrcode() {
-		$csrf_token_hash = clean($_REQUEST["csrf_token_hash"]);
-
-		if (sha1($_SESSION["csrf_token"]) === $csrf_token_hash) {
-			require_once "lib/phpqrcode/phpqrcode.php";
-
-			$sth = $this->pdo->prepare("SELECT login
-				FROM ttrss_users
-				WHERE id = ?");
-			$sth->execute([$_SESSION['uid']]);
-
-			if ($row = $sth->fetch()) {
-				$secret = $this->otpsecret();
-				$login = $row['login'];
-
-				if ($secret) {
-					QRcode::png("otpauth://totp/".urlencode($login).
-						"?secret=$secret&issuer=".urlencode("Tiny Tiny RSS"));
-				}
-			}
-		} else {
-			header("Content-Type: text/json");
-			print Errors::to_json(Errors::E_UNAUTHORIZED);
-		}
-	}
-
 	function otpenable() {
-
 		$password = clean($_REQUEST["password"]);
-		$otp = clean($_REQUEST["otp"]);
+		$otp_check = clean($_REQUEST["otp"]);
 
 		$authenticator = PluginHost::getInstance()->get_plugin($_SESSION["auth_module"]);
 
 		if ($authenticator->check_password($_SESSION["uid"], $password)) {
-
-			$secret = $this->otpsecret();
-
-			if ($secret) {
-
-				$base32 = new \OTPHP\Base32();
-
-				$topt = new \OTPHP\TOTP($secret);
-
-				$otp_check = $topt->now();
-
-				if ($otp == $otp_check) {
-					$sth = $this->pdo->prepare("UPDATE ttrss_users
-					SET otp_enabled = true WHERE id = ?");
-
-					$sth->execute([$_SESSION['uid']]);
-
-					print "OK";
-				} else {
-					print "ERROR:".__("Incorrect one time password");
-				}
+			if (UserHelper::enable_otp($_SESSION["uid"], $otp_check)) {
+				print "OK";
+			} else {
+				print "ERROR:".__("Incorrect one time password");
 			}
-
 		} else {
 			print "ERROR:".__("Incorrect password");
 		}
-
 	}
 
-	static function isdefaultpassword() {
+	static function _is_default_password() {
 		$authenticator = PluginHost::getInstance()->get_plugin($_SESSION["auth_module"]);
 
 		if ($authenticator &&
@@ -1116,9 +1053,7 @@ class Pref_Prefs extends Handler_Protected {
 					"message" => $message]);
 			}
 
-			$sth = $this->pdo->prepare("UPDATE ttrss_users SET otp_enabled = false WHERE
-				id = ?");
-			$sth->execute([$_SESSION['uid']]);
+			UserHelper::disable_otp($_SESSION["uid"]);
 
 			print "OK";
 		} else {

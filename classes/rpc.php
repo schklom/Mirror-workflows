@@ -439,7 +439,7 @@ class RPC extends Handler_Protected {
 		$params["default_view_limit"] = (int) get_pref(Prefs::_DEFAULT_VIEW_LIMIT);
 		$params["default_view_order_by"] = get_pref(Prefs::_DEFAULT_VIEW_ORDER_BY);
 		$params["bw_limit"] = (int) $_SESSION["bw_limit"];
-		$params["is_default_pw"] = Pref_Prefs::isdefaultpassword();
+		$params["is_default_pw"] = Pref_Prefs::_is_default_password();
 		$params["label_base_index"] = LABEL_BASE_INDEX;
 
 		$theme = get_pref(Prefs::USER_CSS_THEME);

@@ -1,4 +1,6 @@
 <?php
+use OTPHP\TOTP;
+
 class UserHelper {
 
 	static function authenticate(string $login = null, string $password = null, bool $check_only = false, string $service = null) {
@@ -141,14 +143,29 @@ class UserHelper {
 
 	}
 
-	static function get_user_ip() {
+	static function get_user_ip() : string {
 		foreach (["HTTP_X_REAL_IP", "REMOTE_ADDR"] as $hdr) {
 			if (isset($_SERVER[$hdr]))
 				return $_SERVER[$hdr];
 		}
+
+		return null;
 	}
 
-	static function find_user_by_login(string $login) {
+	static function get_login_by_id(int $id) : string {
+		$pdo = Db::pdo();
+
+		$sth = $pdo->prepare("SELECT login FROM ttrss_users WHERE id = ?");
+		$sth->execute([$id]);
+
+		if ($row = $sth->fetch()) {
+			return $row["login"];
+		}
+
+		return null;
+	}
+
+	static function find_user_by_login(string $login) : int {
 		$pdo = Db::pdo();
 
 		$sth = $pdo->prepare("SELECT id FROM ttrss_users WHERE
@@ -159,7 +176,7 @@ class UserHelper {
 			return $row["id"];
 		}
 
-		return false;
+		return null;
 	}
 
 	static function logout() {
@@ -202,5 +219,61 @@ class UserHelper {
 				print $message;
 
 		}
+	}
+
+	static function check_otp(int $owner_uid, int $otp_check) : bool {
+		$otp = TOTP::create(self::get_otp_secret($owner_uid, true));
+
+		return $otp->now()  == $otp_check;
+	}
+
+	static function disable_otp(int $owner_uid) : bool {
+		$sth = Db::pdo()->prepare("UPDATE ttrss_users SET otp_enabled = false WHERE id = ?");
+		$sth->execute([$owner_uid]);
+
+		return true;
+	}
+
+	static function enable_otp(int $owner_uid, int $otp_check) : bool {
+		$secret = self::get_otp_secret($owner_uid);
+
+		if ($secret) {
+			$otp = TOTP::create($secret);
+
+			if ($otp->now() == $otp_check) {
+				$sth = Db::pdo()->prepare("UPDATE ttrss_users
+					SET otp_enabled = true WHERE id = ?");
+
+				$sth->execute([$owner_uid]);
+
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	static function is_otp_enabled(int $owner_uid) : bool {
+		$sth = Db::pdo()->prepare("SELECT otp_enabled FROM ttrss_users	WHERE id = ?");
+		$sth->execute([$owner_uid]);
+
+		if ($row = $sth->fetch()) {
+			return sql_bool_to_bool($row["otp_enabled"]);
+		}
+
+		return false;
+	}
+
+	static function get_otp_secret(int $owner_uid, bool $show_if_enabled = false) : string {
+		$sth = Db::pdo()->prepare("SELECT salt, otp_enabled FROM ttrss_users WHERE id = ?");
+		$sth->execute([$owner_uid]);
+
+		if ($row = $sth->fetch()) {
+			if (!sql_bool_to_bool($row["otp_enabled"]) || $show_if_enabled) {
+				return \ParagonIE\ConstantTime\Base32::encodeUpperUnpadded(mb_substr(sha1($row["salt"]), 0, 12));
+			}
+		}
+
+		return null;
 	}
 }

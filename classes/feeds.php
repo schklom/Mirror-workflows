@@ -423,7 +423,7 @@ class Feeds extends Handler_Protected {
 
 		$feed = $_REQUEST["feed"];
 		$method = $_REQUEST["m"] ?? "";
-		$view_mode = $_REQUEST["view_mode"];
+		$view_mode = $_REQUEST["view_mode"] ?? "";
 		$limit = 30;
 		$cat_view = $_REQUEST["cat"] == "true";
 		$next_unread_feed = $_REQUEST["nuf"] ?? 0;

@@ -11,11 +11,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tiny Tiny RSS sv_SE\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-24 19:54+0300\n"
+"POT-Creation-Date: 2021-02-26 12:57+0300\n"
 "PO-Revision-Date: 2018-12-27 20:12+0000\n"
 "Last-Translator: Dennis Öberg <deob83@gmail.com>\n"
-"Language-Team: Swedish <https://weblate.tt-rss.org/projects/tt-rss/messages/"
-"sv/>\n"
+"Language-Team: Swedish <https://weblate.tt-rss.org/projects/tt-rss/messages/sv/>\n"
 "Language: sv_SE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -56,39 +55,49 @@ msgstr "3 månader"
 msgid "Default interval"
 msgstr "Standardintervall"
 
-#: backend.php:65 backend.php:75
+#: backend.php:65
+#: backend.php:75
 msgid "Disable updates"
 msgstr "Inaktivera uppdateringar"
 
-#: backend.php:66 backend.php:76
+#: backend.php:66
+#: backend.php:76
 msgid "15 minutes"
 msgstr "Varje kvart"
 
-#: backend.php:67 backend.php:77
+#: backend.php:67
+#: backend.php:77
 msgid "30 minutes"
 msgstr "Varje halvtimme"
 
-#: backend.php:68 backend.php:78
+#: backend.php:68
+#: backend.php:78
 msgid "Hourly"
 msgstr "Varje timma"
 
-#: backend.php:69 backend.php:79
+#: backend.php:69
+#: backend.php:79
 msgid "4 hours"
 msgstr "Var fjärde timme"
 
-#: backend.php:70 backend.php:80
+#: backend.php:70
+#: backend.php:80
 msgid "12 hours"
 msgstr "Var tolfte timme"
 
-#: backend.php:71 backend.php:81
+#: backend.php:71
+#: backend.php:81
 msgid "Daily"
 msgstr "Dagligen"
 
-#: backend.php:72 backend.php:82
+#: backend.php:72
+#: backend.php:82
 msgid "Weekly"
 msgstr "Veckovis"
 
-#: backend.php:85 classes/pref/system.php:110 js/PrefUsers.js:57
+#: backend.php:85
+#: classes/pref/system.php:110
+#: js/PrefUsers.js:57
 msgid "User"
 msgstr "Användare"
 
@@ -100,610 +109,589 @@ msgstr "Superanvändare"
 msgid "Administrator"
 msgstr "Administratör"
 
-#: index.php:125 index.php:140 index.php:264 prefs.php:109
-#: classes/pref/prefs.php:999 classes/pref/prefs.php:1013
-#: classes/pref/system.php:173 js/CommonDialogs.js:442 js/CommonFilters.js:177
-#: js/CommonFilters.js:401 plugins/af_psql_trgm/init.js:7
-#: plugins/note/note.js:28 plugins/mail/mail.js:35 plugins/mailto/init.js:18
-#: plugins/share/share.js:56 js/CommonDialogs.js:289 js/CommonDialogs.js:592
-#: js/CommonFilters.js:273 js/Feeds.js:395 js/Feeds.js:465 js/Headlines.js:344
-#: js/PrefFeedTree.js:165 js/PrefFeedTree.js:172 js/PrefFeedTree.js:296
-#: js/PrefFeedTree.js:373 js/PrefFilterTree.js:100 js/PrefHelpers.js:27
-#: js/PrefHelpers.js:39 js/PrefHelpers.js:88 js/PrefHelpers.js:200
-#: js/PrefHelpers.js:283 js/PrefHelpers.js:351 js/PrefUsers.js:107
-#: plugins/af_readability/init.js:19
+#: index.php:123
+#: index.php:138
+#: index.php:262
+#: prefs.php:107
+#: classes/pref/prefs.php:968
+#: classes/pref/prefs.php:982
+#: classes/pref/system.php:173
+#: js/CommonDialogs.js:442
+#: js/Headlines.js:344
+#: js/CommonFilters.js:273
+#: plugins/af_psql_trgm/init.js:7
+#: plugins/note/note.js:28
+#: plugins/mail/mail.js:35
+#: plugins/mailto/init.js:18
+#: plugins/share/share.js:56
 msgid "Loading, please wait..."
 msgstr "Laddar, vänta..."
 
-#: index.php:154 prefs.php:119 js/App.js:441
+#: index.php:152
+#: prefs.php:117
 msgid "Communication problem with server."
 msgstr "Kommunikationsproblem med servern."
 
-#: index.php:157 prefs.php:121
+#: index.php:155
+#: prefs.php:119
 msgid "Recent entries found in event log."
 msgstr "Nyliga poster funna i händelseloggen."
 
-#: index.php:160
+#: index.php:158
 msgid "Updates are available from Git."
 msgstr "Uppdateringar tillgängliga via Git."
 
-#: index.php:175
+#: index.php:173
 msgid "Show articles"
 msgstr "Visa artiklarna"
 
-#: index.php:178
+#: index.php:176
 msgid "Adaptive"
 msgstr "Adaptivt"
 
-#: index.php:179
+#: index.php:177
 msgid "All Articles"
 msgstr "Alla artiklar"
 
-#: index.php:180 classes/rpc.php:562
+#: index.php:178
+#: classes/rpc.php:599
 msgid "Starred"
 msgstr "Stjärnmärkta"
 
-#: index.php:181 classes/rpc.php:563
+#: index.php:179
+#: classes/rpc.php:600
 msgid "Published"
 msgstr "Publicerade"
 
-#: index.php:182
+#: index.php:180
 msgid "Unread"
 msgstr "Olästa"
 
-#: index.php:183
+#: index.php:181
 msgid "With Note"
 msgstr "Med notering"
 
-#: index.php:184
+#: index.php:182
 msgid "Ignore Scoring"
 msgstr "Ignorera poängsättningen"
 
-#: index.php:187
+#: index.php:185
 msgid "Sort articles"
 msgstr "Sortera artiklar"
 
-#: index.php:191
+#: index.php:189
 msgid "Default"
 msgstr "Standard"
 
-#: index.php:192
+#: index.php:190
 msgid "Newest first"
 msgstr "Nyast först"
 
-#: index.php:193
+#: index.php:191
 msgid "Oldest first"
 msgstr "Äldst först"
 
-#: index.php:194
+#: index.php:192
 msgid "Title"
 msgstr "Titel"
 
-#: index.php:206 index.php:240 classes/rpc.php:550 js/FeedTree.js:89
+#: index.php:204
+#: index.php:238
+#: classes/rpc.php:587
+#: js/FeedTree.js:89
 #: js/FeedTree.js:119
 msgid "Mark as read"
 msgstr "Markera som läst"
 
-#: index.php:209
+#: index.php:207
 msgid "Older than one day"
 msgstr "Äldre än en dag"
 
-#: index.php:212
+#: index.php:210
 msgid "Older than one week"
 msgstr "Äldre än en vecka"
 
-#: index.php:215
+#: index.php:213
 msgid "Older than two weeks"
 msgstr "Äldre än två veckor"
 
-#: index.php:230
+#: index.php:228
 msgid "Actions..."
 msgstr "Åtgärder..."
 
-#: index.php:233
+#: index.php:231
 msgid "Preferences..."
 msgstr "Inställningar..."
 
-#: index.php:234
+#: index.php:232
 msgid "Search..."
 msgstr "Sök..."
 
-#: index.php:235
+#: index.php:233
 msgid "Feed actions:"
 msgstr "Flödesåtgärder:"
 
-#: index.php:236 plugins/bookmarklets/init.php:38
+#: index.php:234
+#: plugins/bookmarklets/init.php:38
 #: plugins/bookmarklets/init.php:72
 msgid "Subscribe to feed..."
 msgstr "Prenumerera på flöde..."
 
-#: index.php:237
+#: index.php:235
 msgid "Edit this feed..."
 msgstr "Redigera detta flöde..."
 
-#: index.php:238 classes/pref/feeds.php:945 js/PrefFeedTree.js:99
-#: js/CommonDialogs.js:579
+#: index.php:236
+#: classes/pref/feeds.php:945
+#: js/PrefFeedTree.js:99
 msgid "Unsubscribe"
 msgstr "Avsluta prenumeration"
 
-#: index.php:239
+#: index.php:237
 msgid "All feeds:"
 msgstr "Alla flöden:"
 
-#: index.php:241
+#: index.php:239
 msgid "(Un)hide read feeds"
 msgstr "Visa/dölj lästa flöden"
 
-#: index.php:242
+#: index.php:240
 msgid "Other actions:"
 msgstr "Andra aktiviteter:"
 
-#: index.php:243 classes/rpc.php:536
+#: index.php:241
+#: classes/rpc.php:573
 msgid "Toggle widescreen mode"
 msgstr "Växla widescreenläge"
 
-#: index.php:244
+#: index.php:242
 msgid "Keyboard shortcuts help"
 msgstr "Kortkommandohjälp"
 
-#: index.php:253
+#: index.php:251
 msgid "Logout"
 msgstr "Logga ut"
 
-#: prefs.php:19 prefs.php:129 classes/rpc.php:565 classes/pref/prefs.php:1001
+#: prefs.php:19
+#: prefs.php:127
+#: classes/rpc.php:602
+#: classes/pref/prefs.php:970
 msgid "Preferences"
 msgstr "Inställningar"
 
-#: prefs.php:122
+#: prefs.php:120
 msgid "Exit preferences"
 msgstr "Lämna inställningarna"
 
-#: prefs.php:132 classes/pref/prefs.php:29 classes/pref/feeds.php:120
+#: prefs.php:130
+#: classes/pref/prefs.php:28
+#: classes/pref/feeds.php:120
 #: classes/pref/feeds.php:934
 msgid "Feeds"
 msgstr "Flöden"
 
-#: prefs.php:136 classes/pref/filters.php:228
+#: prefs.php:134
+#: classes/pref/filters.php:228
 msgid "Filters"
 msgstr "Filter"
 
-#: prefs.php:140 classes/pref/labels.php:25 classes/feeds.php:1246
+#: prefs.php:138
+#: classes/pref/labels.php:25
+#: classes/feeds.php:1256
 msgid "Labels"
 msgstr "Etiketter"
 
-#: prefs.php:145
+#: prefs.php:143
 msgid "Users"
 msgstr "Användare"
 
-#: prefs.php:148
+#: prefs.php:146
 msgid "System"
 msgstr "System"
 
-#: include/controls.php:177 classes/pref/filters.php:900
-#: classes/pref/feeds.php:240 classes/digest.php:114 classes/opml.php:545
-#: classes/feeds.php:1258
-msgid "Uncategorized"
-msgstr "Okategoriserat"
-
-#: include/functions.php:55
-msgid "Detect automatically"
-msgstr ""
-
-#: include/login_form.php:105 classes/handler/public.php:498
-#: classes/pref/feeds.php:645 plugins/bookmarklets/init.php:300
-#: js/CommonDialogs.js:539 js/PrefUsers.js:61
-msgid "Login:"
-msgstr "Användarnamn:"
-
-#: include/login_form.php:114 classes/pref/feeds.php:651
-#: plugins/bookmarklets/init.php:307 js/CommonDialogs.js:545
-msgid "Password:"
-msgstr "Lösenord:"
-
-#: include/login_form.php:126
-msgid "I forgot my password"
-msgstr "Jag har glömt mitt lösenord"
-
-#: include/login_form.php:131
-msgid "Profile:"
-msgstr "Profil:"
-
-#: include/login_form.php:134 classes/handler/public.php:274
-#: classes/pref/prefs.php:1241 classes/pref/prefs.php:1263
-msgid "Default profile"
-msgstr "Standardprofil"
-
-#: include/login_form.php:144
-msgid "Use less traffic"
-msgstr "Använd mindre datatrafik"
-
-#: include/login_form.php:148
-msgid "Does not display images in articles, reduces automatic refreshes."
-msgstr "Visar inte bilder i artiklar, reducerar automatiska omladdningar."
-
-#: include/login_form.php:156 js/Feeds.js:275
-msgid "Safe mode"
-msgstr ""
-
-#: include/login_form.php:161
-msgid "Uses default theme and prevents all plugins from loading."
-msgstr ""
-
-#: include/login_form.php:169
-msgid "Remember me"
-msgstr "Kom ihåg mig"
-
-#: include/login_form.php:179 plugins/bookmarklets/init.php:320
-msgid "Log in"
-msgstr "Logga in"
-
-#: include/sessions.php:42
-msgid "Session failed to validate (schema version changed)"
-msgstr "Sessionen kunde inte valideras (ändrad schemaversion)"
-
-#: include/sessions.php:50
-msgid "Session failed to validate (UA changed)."
-msgstr "Sessionen kunde inte valideras (förändrad UA)."
-
-#: include/sessions.php:64
-msgid "Session failed to validate (password changed)"
-msgstr "Sessionen kunde inte valideras (ändrat lösenord)"
-
-#: include/sessions.php:71
-msgid "Session failed to validate (user not found)"
-msgstr "Sessionen kunde inte valideras (användare hittades inte)"
-
-#: classes/rpc.php:507
+#: classes/rpc.php:544
 msgid "Navigation"
 msgstr "Navigation"
 
-#: classes/rpc.php:508
+#: classes/rpc.php:545
 msgid "Open next feed"
 msgstr "Öppna nästa flöde"
 
-#: classes/rpc.php:509
+#: classes/rpc.php:546
 msgid "Open previous feed"
 msgstr "Öppna föregående flöde"
 
-#: classes/rpc.php:510
+#: classes/rpc.php:547
 #, fuzzy
 msgid "Open next article (in combined mode, scroll down)"
 msgstr "Öppna nästa artikel (skrolla inte långa artiklar)"
 
-#: classes/rpc.php:511
+#: classes/rpc.php:548
 #, fuzzy
 msgid "Open previous article (in combined mode, scroll up)"
 msgstr "Öppna föregående artikel (skrolla inte långa artiklar)"
 
-#: classes/rpc.php:512
+#: classes/rpc.php:549
 #, fuzzy
 msgid "Scroll headlines by one page down"
 msgstr "Välj artiklar i grupp"
 
-#: classes/rpc.php:513
+#: classes/rpc.php:550
 #, fuzzy
 msgid "Scroll headlines by one page up"
 msgstr "Välj artiklar i grupp"
 
-#: classes/rpc.php:514
+#: classes/rpc.php:551
 msgid "Open next article"
 msgstr "Öppna näst artikel"
 
-#: classes/rpc.php:515
+#: classes/rpc.php:552
 msgid "Open previous article"
 msgstr "Öppna föregående artikel"
 
-#: classes/rpc.php:516
+#: classes/rpc.php:553
 #, fuzzy
 msgid "Move to next article (don't expand)"
 msgstr "Gå till nästa artikel (expandera inte eller markera som läst)"
 
-#: classes/rpc.php:517
+#: classes/rpc.php:554
 #, fuzzy
 msgid "Move to previous article (don't expand)"
 msgstr "Gå till föregående artikel (expandera inte eller markera som läst)"
 
-#: classes/rpc.php:518
+#: classes/rpc.php:555
 msgid "Show search dialog"
 msgstr "Visa sökdialogen"
 
-#: classes/rpc.php:519
+#: classes/rpc.php:556
 #, fuzzy
 msgid "Cancel active search"
 msgstr "Avbryt sökning"
 
-#: classes/rpc.php:520
+#: classes/rpc.php:557
 msgid "Article"
 msgstr "Artikel"
 
-#: classes/rpc.php:521 js/Headlines.js:1338
+#: classes/rpc.php:558
+#: js/Headlines.js:626
+#: js/Headlines.js:1342
 msgid "Toggle starred"
 msgstr "Växla stjärnmarkering"
 
-#: classes/rpc.php:522 js/Headlines.js:1350
+#: classes/rpc.php:559
+#: js/Headlines.js:1354
 msgid "Toggle published"
 msgstr "Växla publicering"
 
-#: classes/rpc.php:523 js/Headlines.js:1325
+#: classes/rpc.php:560
+#: js/Headlines.js:1329
 msgid "Toggle unread"
 msgstr "Växla olästa"
 
-#: classes/rpc.php:524
+#: classes/rpc.php:561
 msgid "Edit tags"
 msgstr "Redigera taggar"
 
-#: classes/rpc.php:525
+#: classes/rpc.php:562
 msgid "Open in new window"
 msgstr "Öppna i nytt fönster"
 
-#: classes/rpc.php:526 js/Headlines.js:1371
+#: classes/rpc.php:563
+#: js/Headlines.js:1375
 msgid "Mark below as read"
 msgstr "Märk nedanstående som lästa"
 
-#: classes/rpc.php:527 js/Headlines.js:1364
+#: classes/rpc.php:564
+#: js/Headlines.js:1368
 msgid "Mark above as read"
 msgstr "Märk ovanstående som lästa"
 
-#: classes/rpc.php:528
+#: classes/rpc.php:565
 msgid "Scroll down"
 msgstr "Skrolla ned"
 
-#: classes/rpc.php:529
+#: classes/rpc.php:566
 msgid "Scroll up"
 msgstr "Skrolla upp"
 
-#: classes/rpc.php:530
+#: classes/rpc.php:567
 #, fuzzy
 msgid "Scroll down page"
 msgstr "Skrolla ned"
 
-#: classes/rpc.php:531
+#: classes/rpc.php:568
 #, fuzzy
 msgid "Scroll up page"
 msgstr "Skrolla upp"
 
-#: classes/rpc.php:532
+#: classes/rpc.php:569
 msgid "Select article under cursor"
 msgstr "Välj artikel under pekare"
 
-#: classes/rpc.php:533
+#: classes/rpc.php:570
 msgid "Email article"
 msgstr "Skicka artikel med e-post"
 
-#: classes/rpc.php:534
+#: classes/rpc.php:571
 msgid "Close/collapse article"
 msgstr "Stäng/minimera artikel"
 
-#: classes/rpc.php:535
+#: classes/rpc.php:572
 msgid "Toggle article expansion (combined mode)"
 msgstr "Växla expanderat artikelläge (kombinerat läge)"
 
-#: classes/rpc.php:537
+#: classes/rpc.php:574
 msgid "Toggle full article text via Readability"
 msgstr ""
 
-#: classes/rpc.php:538
+#: classes/rpc.php:575
 msgid "Article selection"
 msgstr "Artikelval"
 
-#: classes/rpc.php:539
+#: classes/rpc.php:576
 msgid "Select all articles"
 msgstr "Välj alla artiklar"
 
-#: classes/rpc.php:540
+#: classes/rpc.php:577
 msgid "Select unread"
 msgstr "Välj olästa"
 
-#: classes/rpc.php:541
+#: classes/rpc.php:578
 msgid "Select starred"
 msgstr "Välj markerade"
 
-#: classes/rpc.php:542
+#: classes/rpc.php:579
 msgid "Select published"
 msgstr "Välj publicerade"
 
-#: classes/rpc.php:543
+#: classes/rpc.php:580
 msgid "Invert selection"
 msgstr "Invertera val"
 
-#: classes/rpc.php:544
+#: classes/rpc.php:581
 msgid "Deselect everything"
 msgstr "Avmarkera allt"
 
-#: classes/rpc.php:545
+#: classes/rpc.php:582
 msgid "Feed"
 msgstr "Flöde"
 
-#: classes/rpc.php:546
+#: classes/rpc.php:583
 msgid "Refresh current feed"
 msgstr "Uppdatera aktuellt flöde"
 
-#: classes/rpc.php:547
+#: classes/rpc.php:584
 msgid "Un/hide read feeds"
 msgstr "Visa/dölj lästa flöden"
 
-#: classes/rpc.php:548 classes/pref/feeds.php:937
+#: classes/rpc.php:585
+#: classes/pref/feeds.php:937
 msgid "Subscribe to feed"
 msgstr "Prenumerera på flöde"
 
-#: classes/rpc.php:549 js/Headlines.js:1494 js/PrefFeedTree.js:93
+#: classes/rpc.php:586
+#: js/PrefFeedTree.js:93
+#: js/Headlines.js:1498
 #: js/FeedTree.js:96
 msgid "Edit feed"
 msgstr "Redigera flöde"
 
-#: classes/rpc.php:551
+#: classes/rpc.php:588
 msgid "Reverse headlines"
 msgstr "Omvänd sortering på rubrik"
 
-#: classes/rpc.php:552
+#: classes/rpc.php:589
 msgid "Toggle headline grouping"
 msgstr "Växla gruppering av rubriker"
 
-#: classes/rpc.php:553
+#: classes/rpc.php:590
 msgid "Debug feed update"
 msgstr "Felsök flödesuppdatering"
 
-#: classes/rpc.php:554
+#: classes/rpc.php:591
 msgid "Debug viewfeed()"
 msgstr "Felsök viewfeed()"
 
-#: classes/rpc.php:555 js/FeedTree.js:144
+#: classes/rpc.php:592
+#: js/FeedTree.js:144
 msgid "Mark all feeds as read"
 msgstr "Märk alla flöden som lästa"
 
-#: classes/rpc.php:556
+#: classes/rpc.php:593
 msgid "Un/collapse current category"
 msgstr "Fäll ihop/ut aktuell kategori"
 
-#: classes/rpc.php:557
+#: classes/rpc.php:594
 msgid "Toggle auto expand in combined mode"
 msgstr "Aktivera automatisk expandering i kombinerat läge"
 
-#: classes/rpc.php:558
+#: classes/rpc.php:595
 msgid "Toggle combined mode"
 msgstr "Växla komboläge"
 
-#: classes/rpc.php:559
+#: classes/rpc.php:596
 msgid "Go to"
 msgstr "Gå till"
 
-#: classes/rpc.php:560 classes/feeds.php:1114
+#: classes/rpc.php:597
+#: classes/feeds.php:1124
 msgid "All articles"
 msgstr "Alla artiklar"
 
-#: classes/rpc.php:561
+#: classes/rpc.php:598
 msgid "Fresh"
 msgstr "Nya"
 
-#: classes/rpc.php:564 classes/feeds.php:1118
+#: classes/rpc.php:601
+#: classes/feeds.php:1128
 msgid "Recently read"
 msgstr "Nyligen lästa"
 
-#: classes/rpc.php:566
+#: classes/rpc.php:603
 msgid "Other"
 msgstr "Övriga"
 
-#: classes/rpc.php:567
+#: classes/rpc.php:604
 msgid "Create label"
 msgstr "Skapa etikett"
 
-#: classes/rpc.php:568 classes/pref/filters.php:659
+#: classes/rpc.php:605
+#: classes/pref/filters.php:659
 msgid "Create filter"
 msgstr "Skapa filter"
 
-#: classes/rpc.php:569
+#: classes/rpc.php:606
 msgid "Un/collapse sidebar"
 msgstr "Visa/dölj sidofält"
 
-#: classes/rpc.php:570
+#: classes/rpc.php:607
 msgid "Show help dialog"
 msgstr "Visa hjälpfönster"
 
-#: classes/rpc.php:701
+#: classes/rpc.php:738
 msgid "Shift"
 msgstr "Shift"
 
-#: classes/rpc.php:704
+#: classes/rpc.php:741
 msgid "Ctrl"
 msgstr "Ctrl"
 
-#: classes/rpc.php:729 plugins/af_psql_trgm/init.php:112
+#: classes/rpc.php:766
+#: plugins/af_psql_trgm/init.php:112
 #: plugins/share/init.php:269
+#: js/Feeds.js:265
+#: js/App.js:605
+#: js/CommonDialogs.js:273
+#: js/PrefHelpers.js:332
 msgid "Close this window"
 msgstr "Stäng fönstret"
 
-#: classes/handler/public.php:394
+#: classes/handler/public.php:274
+#: classes/pref/prefs.php:1202
+#: classes/pref/prefs.php:1224
+#: include/login_form.php:134
+msgid "Default profile"
+msgstr "Standardprofil"
+
+#: classes/handler/public.php:397
 msgid "Incorrect username or password"
 msgstr "Felaktigt användarnamn eller lösenord"
 
-#: classes/handler/public.php:448
+#: classes/handler/public.php:449
 msgid "Password recovery"
 msgstr "Återställning av lösenord"
 
-#: classes/handler/public.php:488 classes/handler/public.php:518
-#: classes/handler/public.php:591 classes/handler/public.php:687
-#: classes/handler/public.php:699 classes/handler/public.php:704
-#: classes/handler/public.php:728 plugins/bookmarklets/init.php:91
-#: plugins/bookmarklets/init.php:136 plugins/bookmarklets/init.php:154
+#: classes/handler/public.php:489
+#: classes/handler/public.php:519
+#: classes/handler/public.php:592
+#: classes/handler/public.php:688
+#: classes/handler/public.php:700
+#: classes/handler/public.php:705
+#: classes/handler/public.php:729
+#: plugins/bookmarklets/init.php:91
+#: plugins/bookmarklets/init.php:136
+#: plugins/bookmarklets/init.php:154
 #: plugins/bookmarklets/init.php:159
 msgid "Return to Tiny Tiny RSS"
 msgstr "Återgå till Tiny Tiny RSS"
 
-#: classes/handler/public.php:491
+#: classes/handler/public.php:492
 #, fuzzy
-msgid ""
-"You will need to provide valid account name and email. Password reset link "
-"will be sent to your email address."
-msgstr ""
-"Du måste ange ett giltigt kontonamn och e-postadress. Ett nytt lösenord "
-"kommer att skickas till din e-postadress."
+msgid "You will need to provide valid account name and email. Password reset link will be sent to your email address."
+msgstr "Du måste ange ett giltigt kontonamn och e-postadress. Ett nytt lösenord kommer att skickas till din e-postadress."
 
-#: classes/handler/public.php:503
+#: classes/handler/public.php:499
+#: classes/pref/feeds.php:645
+#: plugins/bookmarklets/init.php:300
+#: include/login_form.php:105
+#: js/CommonDialogs.js:539
+msgid "Login:"
+msgstr "Användarnamn:"
+
+#: classes/handler/public.php:504
 msgid "Email:"
 msgstr "E-post:"
 
-#: classes/handler/public.php:511
+#: classes/handler/public.php:512
 #, fuzzy, php-format
 msgid "How much is %d + %d:"
 msgstr "Hur mycket är två plus två?:"
 
-#: classes/handler/public.php:517 classes/pref/users.php:241
+#: classes/handler/public.php:518
+#: classes/pref/users.php:241
 msgid "Reset password"
 msgstr "Återställ lösenord"
 
-#: classes/handler/public.php:529
+#: classes/handler/public.php:530
 msgid "Some of the required form parameters are missing or incorrect."
-msgstr ""
-"Vissa av dom obligatoriska formulärparametrarna saknas eller är inkorrekta."
+msgstr "Vissa av dom obligatoriska formulärparametrarna saknas eller är inkorrekta."
 
-#: classes/handler/public.php:533 classes/handler/public.php:598
+#: classes/handler/public.php:534
+#: classes/handler/public.php:599
 msgid "Go back"
 msgstr "Gå tillbaka"
 
-#: classes/handler/public.php:574
+#: classes/handler/public.php:575
 msgid "[tt-rss] Password reset request"
 msgstr "[tt-rss] Begäran om nollställning av lösenord"
 
-#: classes/handler/public.php:594
+#: classes/handler/public.php:595
 msgid "Sorry, login and email combination not found."
-msgstr ""
-"Beklagar, kombinationen av användarnamn och e-postadress kunde inte hittas."
+msgstr "Beklagar, kombinationen av användarnamn och e-postadress kunde inte hittas."
 
-#: classes/handler/public.php:617
+#: classes/handler/public.php:618
 msgid "Your access level is insufficient to run this script."
 msgstr "Du har inte behörighet att köra detta skript."
 
-#: classes/handler/public.php:657
+#: classes/handler/public.php:658
 msgid "Database Updater"
 msgstr "Databasuppdatering"
 
-#: classes/handler/public.php:668
+#: classes/handler/public.php:669
 #, fuzzy, php-format
 msgid "Performing updates to version %d"
 msgstr "Uppdatering pågår..."
 
-#: classes/handler/public.php:673
+#: classes/handler/public.php:674
 #, fuzzy, php-format
 msgid "Updating to version %d"
 msgstr "Uppdaterar till version %d..."
 
-#: classes/handler/public.php:686
+#: classes/handler/public.php:687
 msgid "Try again"
 msgstr ""
 
-#: classes/handler/public.php:692
+#: classes/handler/public.php:693
 #, fuzzy
 msgid "Completed."
 msgstr "Uppladdning klar."
 
-#: classes/handler/public.php:709
+#: classes/handler/public.php:710
 #, fuzzy, php-format
 msgid "Tiny Tiny RSS database needs update to the latest version (%d to %d)."
-msgstr ""
-"Din Tiny Tiny RSS-databas behöver uppdateras till den senaste versionen (<b>"
-"%d</b> till <b>%d</b>)."
+msgstr "Din Tiny Tiny RSS-databas behöver uppdateras till den senaste versionen (<b>%d</b> till <b>%d</b>)."
 
-#: classes/handler/public.php:721
+#: classes/handler/public.php:722
 msgid "Perform updates"
 msgstr "Utför uppdatering"
 
@@ -712,200 +700,185 @@ msgstr "Utför uppdatering"
 msgid "Created label <b>%s</b>"
 msgstr "Skapade etikett <b>%s</b>"
 
-#: classes/pref/labels.php:182 classes/pref/prefs.php:1294
-#: classes/pref/filters.php:649 classes/pref/users.php:223
-#: classes/pref/feeds.php:924 js/CommonDialogs.js:236 js/CommonFilters.js:436
-#: js/CommonFilters.js:469
+#: classes/pref/labels.php:182
+#: classes/pref/prefs.php:1255
+#: classes/pref/filters.php:649
+#: classes/pref/users.php:223
+#: classes/pref/feeds.php:924
+#: js/CommonDialogs.js:236
+#: js/PrefHelpers.js:144
+#: js/CommonFilters.js:436
 msgid "Select"
 msgstr "Markera"
 
-#: classes/pref/prefs.php:21 classes/pref/feeds.php:605
+#: classes/pref/prefs.php:20
+#: classes/pref/feeds.php:605
 msgid "General"
 msgstr "Generellt"
 
-#: classes/pref/prefs.php:42
+#: classes/pref/prefs.php:41
 #, fuzzy
 msgid "Articles"
 msgstr "Artikel"
 
-#: classes/pref/prefs.php:55
+#: classes/pref/prefs.php:54
 msgid "Digest"
 msgstr "Sammanställning"
 
-#: classes/pref/prefs.php:60
+#: classes/pref/prefs.php:59
 msgid "Advanced"
 msgstr "Avancerat"
 
-#: classes/pref/prefs.php:71
-msgid "Never apply these tags automatically (comma-separated list)."
+#: classes/pref/prefs.php:69
+msgid "Debugging"
 msgstr ""
 
 #: classes/pref/prefs.php:75
-msgid "Allow duplicate articles"
-msgstr "Tillåt dubbletter av artiklar"
+msgid "Never apply these tags automatically (comma-separated list)."
+msgstr ""
 
-#: classes/pref/prefs.php:76
+#: classes/pref/prefs.php:79
 msgid "Blacklisted tags"
 msgstr "Svartlistade taggar"
 
-#: classes/pref/prefs.php:77
+#: classes/pref/prefs.php:80
 #, fuzzy
 msgid "Default language"
 msgstr "Standardprofil"
 
-#: classes/pref/prefs.php:77
+#: classes/pref/prefs.php:80
 msgid "Used for full-text search"
 msgstr ""
 
-#: classes/pref/prefs.php:78
+#: classes/pref/prefs.php:81
 #, fuzzy
 msgid "Mark read on scroll"
 msgstr "Flagga alla artiklar som lästa?"
 
-#: classes/pref/prefs.php:78
+#: classes/pref/prefs.php:81
 #, fuzzy
 msgid "Mark articles as read as you scroll past them"
 msgstr "Flagga alla artiklar som lästa?"
 
-#: classes/pref/prefs.php:79
+#: classes/pref/prefs.php:82
 #, fuzzy
 msgid "Always expand articles"
 msgstr "Klicka för att expandera artikeln"
 
-#: classes/pref/prefs.php:80
+#: classes/pref/prefs.php:83
 #, fuzzy
 msgid "Combined mode"
 msgstr "Växla komboläge"
 
-#: classes/pref/prefs.php:80
+#: classes/pref/prefs.php:83
 #, fuzzy
 msgid "Show flat list of articles instead of separate panels"
-msgstr ""
-"Visa expanderad lista med artiklar, istället för olika visningar för "
-"rubriker och artikeltext"
+msgstr "Visa expanderad lista med artiklar, istället för olika visningar för rubriker och artikeltext"
 
-#: classes/pref/prefs.php:81
+#: classes/pref/prefs.php:84
 #, fuzzy
 msgid "Confirm marking feeds as read"
 msgstr "Bekräfta markera flöde som läst"
 
-#: classes/pref/prefs.php:82
-msgid "Amount of articles to display at once"
-msgstr "Antal artiklar att visa samtidigt"
-
-#: classes/pref/prefs.php:83
+#: classes/pref/prefs.php:85
 #, fuzzy
 msgid "Default update interval"
 msgstr "Standardintervall för flödesuppdatering"
 
-#: classes/pref/prefs.php:84
+#: classes/pref/prefs.php:86
 #, fuzzy
 msgid "Mark sent articles as read"
 msgstr "Flagga alla artiklar som lästa?"
 
-#: classes/pref/prefs.php:85
+#: classes/pref/prefs.php:87
 #, fuzzy
 msgid "Enable digest"
 msgstr "Aktivera e-postsammanfattning"
 
-#: classes/pref/prefs.php:85
+#: classes/pref/prefs.php:87
 #, fuzzy
 msgid "Send daily digest of new (and unread) headlines to your e-mail address"
-msgstr ""
-"Skicka dagliga sammanställningar över nya (och olästa) rubriker till din e-"
-"post"
+msgstr "Skicka dagliga sammanställningar över nya (och olästa) rubriker till din e-post"
 
-#: classes/pref/prefs.php:86
+#: classes/pref/prefs.php:88
 #, fuzzy
 msgid "Try to send around this time"
 msgstr "Skicka sammanfattningar runt specificerad tid"
 
-#: classes/pref/prefs.php:86
+#: classes/pref/prefs.php:88
 #, fuzzy
 msgid "Time in UTC"
 msgstr "Tidszon"
 
-#: classes/pref/prefs.php:87
+#: classes/pref/prefs.php:89
 #, fuzzy
 msgid "Enable API"
 msgstr "Aktivera OTP"
 
-#: classes/pref/prefs.php:87
+#: classes/pref/prefs.php:89
 #, fuzzy
 msgid "Allows accessing this account through the API"
 msgstr "Tillåter externa klienter att få tillgång till detta konto via API"
 
-#: classes/pref/prefs.php:88
+#: classes/pref/prefs.php:90
 msgid "Enable categories"
 msgstr "Aktivera kategorier"
 
-#: classes/pref/prefs.php:89
-msgid "Sort feeds by unread articles count"
-msgstr "Sortera flöde efter antal olästa artiklar"
-
-#: classes/pref/prefs.php:90
+#: classes/pref/prefs.php:91
 #, fuzzy
 msgid "Maximum age of fresh articles"
 msgstr "Maximal ålder för nya artiklar (i timmar)"
 
-#: classes/pref/prefs.php:90
+#: classes/pref/prefs.php:91
 #, fuzzy
 msgid "hours"
 msgstr "Var fjärde timme"
 
-#: classes/pref/prefs.php:91
+#: classes/pref/prefs.php:92
 #, fuzzy
 msgid "Hide read feeds"
 msgstr "Visa/dölj lästa flöden"
 
-#: classes/pref/prefs.php:92
+#: classes/pref/prefs.php:93
 msgid "Always show special feeds"
 msgstr ""
 
-#: classes/pref/prefs.php:92
+#: classes/pref/prefs.php:93
 #, fuzzy
 msgid "While hiding read feeds"
 msgstr "Visa specialflöden när lästa feeds är dolda"
 
-#: classes/pref/prefs.php:93
+#: classes/pref/prefs.php:94
 msgid "Long date format"
 msgstr "Långa datum"
 
-#: classes/pref/prefs.php:93
-#, fuzzy
-msgid ""
-"Syntax is identical to PHP <a href='http://php.net/manual/function.date."
-"php'>date()</a> function."
-msgstr ""
-"Den syntax som används är identisk med <a href='http://php.net/manual/"
-"function.date.php'>date()</a>-funktinen i PHP."
-
 #: classes/pref/prefs.php:94
+#, fuzzy
+msgid "Syntax is identical to PHP <a href='http://php.net/manual/function.date.php'>date()</a> function."
+msgstr "Den syntax som används är identisk med <a href='http://php.net/manual/function.date.php'>date()</a>-funktinen i PHP."
+
+#: classes/pref/prefs.php:95
 #, fuzzy
 msgid "Automatically show next feed"
 msgstr "Visa nästa flöde när vi är ikapp"
 
-#: classes/pref/prefs.php:94
+#: classes/pref/prefs.php:95
 #, fuzzy
 msgid "After marking one as read"
 msgstr "Bekräfta markera flöde som läst"
 
-#: classes/pref/prefs.php:95
+#: classes/pref/prefs.php:96
 #, fuzzy
 msgid "Purge articles older than"
 msgstr "Rensa olästa artiklar"
 
-#: classes/pref/prefs.php:95
+#: classes/pref/prefs.php:96
 msgid "<strong>days</strong> (0 disables)"
 msgstr ""
 
-#: classes/pref/prefs.php:96
+#: classes/pref/prefs.php:97
 msgid "Purge unread articles"
 msgstr "Rensa olästa artiklar"
-
-#: classes/pref/prefs.php:97
-msgid "Reverse headline order (oldest first)"
-msgstr "Omvänd sortering (äldsta överst)"
 
 #: classes/pref/prefs.php:98
 msgid "Short date format"
@@ -917,308 +890,306 @@ msgid "Show content preview in headlines"
 msgstr "Förhandsgranska text i rubriklistan"
 
 #: classes/pref/prefs.php:100
-msgid "Sort headlines by feed date"
-msgstr "Sortera rubriker efter flödets datum"
-
-#: classes/pref/prefs.php:100
-msgid "Use feed-specified date to sort headlines instead of local import date."
-msgstr ""
-"Använd det datum som anges av flödet, istället för lokalt importdatum, för "
-"att sortera rubriker."
-
-#: classes/pref/prefs.php:101
 #, fuzzy
 msgid "SSL client certificate"
 msgstr "Logga in med SSL-certifikat"
 
-#: classes/pref/prefs.php:102 classes/pref/feeds.php:592
+#: classes/pref/prefs.php:101
+#: classes/pref/feeds.php:592
 #: js/CommonDialogs.js:458
 msgid "Do not embed media"
 msgstr "Bädda inte in media"
 
-#: classes/pref/prefs.php:103
-msgid "Strip unsafe tags from articles"
-msgstr "Ta bort osäkra taggar från artiklar"
-
-#: classes/pref/prefs.php:103
-msgid "Strip all but most common HTML tags when reading articles."
-msgstr "Ta bort alla utom de vanligast HTML-taggarna från artiklarna."
-
-#: classes/pref/prefs.php:104 js/PrefHelpers.js:223
-msgid "Customize stylesheet"
-msgstr "Anpassa stilmall"
-
-#: classes/pref/prefs.php:105
+#: classes/pref/prefs.php:102
 msgid "Time zone"
 msgstr "Tidszon"
 
-#: classes/pref/prefs.php:106
+#: classes/pref/prefs.php:103
 #, fuzzy
 msgid "Group by feed"
 msgstr "Topp 25 kanaler"
 
-#: classes/pref/prefs.php:106
+#: classes/pref/prefs.php:103
 msgid "Group multiple-feed output by originating feed"
 msgstr ""
 
-#: classes/pref/prefs.php:107
+#: classes/pref/prefs.php:104
 msgid "Language"
 msgstr "Språk"
 
-#: classes/pref/prefs.php:108
+#: classes/pref/prefs.php:105
 msgid "Theme"
 msgstr "Tema"
 
-#: classes/pref/prefs.php:214
+#: classes/pref/prefs.php:106
+msgid "Don't enforce DISTINCT headlines"
+msgstr ""
+
+#: classes/pref/prefs.php:106
+#, fuzzy
+msgid "May produce duplicate entries"
+msgstr "Tillåt dubbletter av artiklar"
+
+#: classes/pref/prefs.php:107
+#, fuzzy
+msgid "Show article and feed IDs"
+msgstr "Visa artiklarna"
+
+#: classes/pref/prefs.php:107
+#, fuzzy
+msgid "In the headlines buffer"
+msgstr "Sortera rubriker efter flödets datum"
+
+#: classes/pref/prefs.php:208
 msgid "The configuration was saved."
 msgstr "Konfiguration sparad."
 
-#: classes/pref/prefs.php:257
+#: classes/pref/prefs.php:251
 msgid "Your personal data has been saved."
 msgstr "Dina personliga data sparas."
 
-#: classes/pref/prefs.php:273
-msgid "Your preferences are now set to default values."
-msgstr "Dina inställningar är nu satta till standardvärdena."
-
-#: classes/pref/prefs.php:305
+#: classes/pref/prefs.php:291
 #, fuzzy
 msgid "Full name:"
 msgstr "Fullständigt namn"
 
-#: classes/pref/prefs.php:310 js/PrefUsers.js:93
+#: classes/pref/prefs.php:296
 #, fuzzy
 msgid "E-mail:"
 msgstr "E-post: "
 
-#: classes/pref/prefs.php:317
+#: classes/pref/prefs.php:303
 msgid "Save data"
 msgstr "Spara"
 
-#: classes/pref/prefs.php:368
+#: classes/pref/prefs.php:354
 msgid "Changing your current password will disable OTP."
 msgstr "Att ändra nuvarande lösenord kommer att inaktivera OTP."
 
-#: classes/pref/prefs.php:372
+#: classes/pref/prefs.php:358
 #, fuzzy
 msgid "Old password:"
 msgstr "Gammalt lösenord"
 
-#: classes/pref/prefs.php:377 js/PrefUsers.js:83
+#: classes/pref/prefs.php:363
 #, fuzzy
 msgid "New password:"
 msgstr "Nytt lösenord"
 
-#: classes/pref/prefs.php:382
+#: classes/pref/prefs.php:368
 #, fuzzy
 msgid "Confirm password:"
 msgstr "Bekräfta lösenord"
 
-#: classes/pref/prefs.php:389
+#: classes/pref/prefs.php:375
 msgid "Change password"
 msgstr "Byt lösenord"
 
-#: classes/pref/prefs.php:396
+#: classes/pref/prefs.php:382
 #, php-format
-msgid ""
-"Authentication module used for this session (<b>%s</b>) does not provide an "
-"ability to set passwords."
+msgid "Authentication module used for this session (<b>%s</b>) does not provide an ability to set passwords."
 msgstr ""
 
-#: classes/pref/prefs.php:412
+#: classes/pref/prefs.php:398
 #, fuzzy
 msgid "Generate new password"
 msgstr "Skapa ny URL"
 
-#: classes/pref/prefs.php:417
+#: classes/pref/prefs.php:403
 #, fuzzy
 msgid "Remove selected passwords"
 msgstr "Radera markerade profiler"
 
-#: classes/pref/prefs.php:465 classes/pref/prefs.php:524
+#: classes/pref/prefs.php:451
+#: classes/pref/prefs.php:510
 #, fuzzy
 msgid "Your password:"
 msgstr "Bekräfta lösenord"
 
-#: classes/pref/prefs.php:472
+#: classes/pref/prefs.php:458
 msgid "Disable OTP"
 msgstr "Stäng av OTP"
 
-#: classes/pref/prefs.php:485
+#: classes/pref/prefs.php:471
 #, fuzzy
-msgid ""
-"Scan the following code by the Authenticator application or copy the key "
-"manually"
+msgid "Scan the following code by the Authenticator application or copy the key manually"
 msgstr "Läs in följande QR-kod med autentifikator-applikationen:"
 
-#: classes/pref/prefs.php:490
+#: classes/pref/prefs.php:476
 #, fuzzy
 msgid "Use the following OTP key with a compatible Authenticator application"
 msgstr "Läs in följande QR-kod med autentifikator-applikationen:"
 
-#: classes/pref/prefs.php:502
+#: classes/pref/prefs.php:488
 msgid "OTP Key:"
 msgstr ""
 
-#: classes/pref/prefs.php:529
+#: classes/pref/prefs.php:515
 #, fuzzy
 msgid "One time password:"
 msgstr "Felaktigt engångslösenord"
 
-#: classes/pref/prefs.php:536
+#: classes/pref/prefs.php:522
 msgid "Enable OTP"
 msgstr "Aktivera OTP"
 
-#: classes/pref/prefs.php:550
+#: classes/pref/prefs.php:536
 msgid "Personal data"
 msgstr "Personlig information"
 
-#: classes/pref/prefs.php:553
+#: classes/pref/prefs.php:539
 msgid "Password"
 msgstr "Lösenord"
 
-#: classes/pref/prefs.php:556
+#: classes/pref/prefs.php:542
 #, fuzzy
 msgid "App passwords"
 msgstr "Gammalt lösenord"
 
-#: classes/pref/prefs.php:559
+#: classes/pref/prefs.php:545
 #, fuzzy
 msgid "Authenticator (OTP)"
 msgstr "Autentisering"
 
-#: classes/pref/prefs.php:570
+#: classes/pref/prefs.php:556
 msgid "Some preferences are only available in default profile."
 msgstr "Vissa inställningar är endast tillgängliga i standardprofilen."
 
-#: classes/pref/prefs.php:679
+#: classes/pref/prefs.php:648
 msgid "default"
 msgstr "standard"
 
-#: classes/pref/prefs.php:689
+#: classes/pref/prefs.php:658
 msgid "Customize"
 msgstr "Anpassa"
 
-#: classes/pref/prefs.php:692
+#: classes/pref/prefs.php:661
 #, fuzzy
 msgid "More themes..."
 msgstr "Fler åtgärder..."
 
-#: classes/pref/prefs.php:741
+#: classes/pref/prefs.php:710
 msgid "Register"
 msgstr "Registrera"
 
-#: classes/pref/prefs.php:745 classes/pref/system.php:87
+#: classes/pref/prefs.php:714
+#: classes/pref/system.php:87
 msgid "Clear"
 msgstr "Rensa"
 
-#: classes/pref/prefs.php:749 classes/pref/prefs.php:852
-#: classes/pref/prefs.php:908 classes/pref/prefs.php:960
-#: classes/pref/prefs.php:976 plugins/bookmarklets/init.php:362
-#: js/CommonDialogs.js:635
+#: classes/pref/prefs.php:718
+#: classes/pref/prefs.php:821
+#: classes/pref/prefs.php:877
+#: classes/pref/prefs.php:929
+#: classes/pref/prefs.php:945
+#: plugins/bookmarklets/init.php:362
 #, fuzzy
 msgid "More info..."
 msgstr "mer info"
 
-#: classes/pref/prefs.php:758
+#: classes/pref/prefs.php:727
 #, fuzzy, php-format
 msgid "Current server time: %s"
 msgstr "Aktuell servertid: %s (UTC)"
 
-#: classes/pref/prefs.php:806
+#: classes/pref/prefs.php:775
 msgid "Save configuration"
 msgstr "Spara konfiguration"
 
-#: classes/pref/prefs.php:809
+#: classes/pref/prefs.php:778
 msgid "Save and exit preferences"
 msgstr "Spara och lämna inställningarna"
 
-#: classes/pref/prefs.php:815
+#: classes/pref/prefs.php:784
 msgid "Manage profiles"
 msgstr "Hantera profiler"
 
-#: classes/pref/prefs.php:819
+#: classes/pref/prefs.php:788
 msgid "Reset to defaults"
 msgstr "Återställ till standard"
 
-#: classes/pref/prefs.php:856 classes/pref/prefs.php:912
+#: classes/pref/prefs.php:825
+#: classes/pref/prefs.php:881
 #, php-format
 msgid "v%.2f, by %s"
 msgstr ""
 
-#: classes/pref/prefs.php:901
+#: classes/pref/prefs.php:870
 msgid "Clear data"
 msgstr "Rensa data"
 
-#: classes/pref/prefs.php:958
+#: classes/pref/prefs.php:927
 #, php-format
-msgid ""
-"The following plugins use per-feed content hooks. This may cause excessive "
-"data usage and origin server load resulting in a ban of your instance: <b>"
-"%s</b>"
+msgid "The following plugins use per-feed content hooks. This may cause excessive data usage and origin server load resulting in a ban of your instance: <b>%s</b>"
 msgstr ""
 
-#: classes/pref/prefs.php:965
+#: classes/pref/prefs.php:934
 msgid "System plugins"
 msgstr "Systemtillägg"
 
-#: classes/pref/prefs.php:969
+#: classes/pref/prefs.php:938
 msgid "User plugins"
 msgstr "Användartillägg"
 
-#: classes/pref/prefs.php:979
+#: classes/pref/prefs.php:948
 msgid "Enable selected plugins"
 msgstr "Aktivera valda tillägg"
 
-#: classes/pref/prefs.php:990
+#: classes/pref/prefs.php:959
 msgid "Personal data / Authentication"
 msgstr "Personlig information / Autentisering"
 
-#: classes/pref/prefs.php:1004 classes/pref/feeds.php:1098
+#: classes/pref/prefs.php:973
+#: classes/pref/feeds.php:1098
 msgid "Plugins"
 msgstr "Tillägg"
 
-#: classes/pref/prefs.php:1097
+#: classes/pref/prefs.php:1066
 msgid "Incorrect one time password"
 msgstr "Felaktigt engångslösenord"
 
-#: classes/pref/prefs.php:1102 classes/pref/prefs.php:1156
+#: classes/pref/prefs.php:1071
+#: classes/pref/prefs.php:1125
 msgid "Incorrect password"
 msgstr "Felaktigt lösenord"
 
-#: classes/pref/prefs.php:1297 classes/pref/filters.php:652
-#: classes/pref/users.php:226 classes/pref/feeds.php:927
-#: js/CommonDialogs.js:239 js/CommonFilters.js:472 js/PrefFeedTree.js:506
-#: js/CommonFilters.js:440
+#: classes/pref/prefs.php:1258
+#: classes/pref/filters.php:652
+#: classes/pref/users.php:226
+#: classes/pref/feeds.php:927
+#: js/PrefFeedTree.js:506
+#: js/Headlines.js:620
+#: js/CommonFilters.js:472
 msgid "All"
 msgstr "Alla"
 
-#: classes/pref/prefs.php:1299 classes/pref/filters.php:654
-#: classes/pref/users.php:228 classes/pref/feeds.php:929
-#: js/CommonDialogs.js:241 js/CommonFilters.js:474 js/PrefFeedTree.js:508
+#: classes/pref/prefs.php:1260
+#: classes/pref/filters.php:654
+#: classes/pref/users.php:228
+#: classes/pref/feeds.php:929
+#: js/CommonDialogs.js:241
+#: js/PrefHelpers.js:149
 #: js/CommonFilters.js:442
 msgid "None"
 msgstr "Ingen"
 
-#: classes/pref/prefs.php:1308
+#: classes/pref/prefs.php:1269
 msgid "Description"
 msgstr "Beskrivning"
 
-#: classes/pref/prefs.php:1309
+#: classes/pref/prefs.php:1270
 #, fuzzy
 msgid "Created"
 msgstr "Skapa"
 
-#: classes/pref/prefs.php:1310
+#: classes/pref/prefs.php:1271
 #, fuzzy
 msgid "Last used"
 msgstr "Senaste uppdatering:"
 
-#: classes/pref/prefs.php:1359
+#: classes/pref/prefs.php:1320
 #, php-format
-msgid ""
-"Generated password <strong>%s</strong> for %s. Please remember it for future "
-"reference."
+msgid "Generated password <strong>%s</strong> for %s. Please remember it for future reference."
 msgstr ""
 
 #: classes/pref/system.php:68
@@ -1281,22 +1252,29 @@ msgstr "Händelselogg"
 msgid "PHP Information"
 msgstr "Utför aktivitet"
 
-#: classes/pref/filters.php:197 classes/pref/filters.php:208
-#: classes/pref/filters.php:426 classes/pref/filters.php:847
+#: classes/pref/filters.php:197
+#: classes/pref/filters.php:208
+#: classes/pref/filters.php:426
+#: classes/pref/filters.php:847
 msgid "All feeds"
 msgstr "Alla flöden"
 
-#: classes/pref/filters.php:219 classes/pref/filters.php:446
+#: classes/pref/filters.php:219
+#: classes/pref/filters.php:446
 msgid "(inverse)"
 msgstr "(invertera)"
 
-#: classes/pref/filters.php:215 classes/pref/filters.php:445
+#: classes/pref/filters.php:215
+#: classes/pref/filters.php:445
 #, php-format
 msgid "%s on %s in %s %s"
 msgstr "%s på %s i %s %s"
 
-#: classes/pref/filters.php:645 classes/pref/users.php:218
-#: classes/pref/feeds.php:920 js/Feeds.js:620
+#: classes/pref/filters.php:645
+#: classes/pref/users.php:218
+#: classes/pref/feeds.php:920
+#: js/Feeds.js:615
+#: js/Feeds.js:620
 msgid "Search"
 msgstr "Sök"
 
@@ -1304,13 +1282,16 @@ msgstr "Sök"
 msgid "Combine"
 msgstr "Kombinera"
 
-#: classes/pref/filters.php:663 classes/pref/feeds.php:941
+#: classes/pref/filters.php:663
+#: classes/pref/feeds.php:941
 #: classes/pref/feeds.php:956
 msgid "Reset sort order"
 msgstr "Återställ sorteringsordning"
 
-#: classes/pref/filters.php:665 classes/pref/users.php:237
-#: js/CommonDialogs.js:572 js/CommonFilters.js:514
+#: classes/pref/filters.php:665
+#: classes/pref/users.php:237
+#: js/CommonDialogs.js:572
+#: js/CommonFilters.js:514
 msgid "Remove"
 msgstr "Ta bort"
 
@@ -1340,6 +1321,15 @@ msgid "%s (+%d action)"
 msgid_plural "%s (+%d actions)"
 msgstr[0] "Lägg till aktivitet"
 msgstr[1] "Lägg till aktivitet"
+
+#: classes/pref/filters.php:900
+#: classes/pref/feeds.php:240
+#: classes/digest.php:114
+#: classes/opml.php:545
+#: classes/feeds.php:1268
+#: include/controls.php:177
+msgid "Uncategorized"
+msgstr "Okategoriserat"
 
 #: classes/pref/users.php:58
 msgid "Registered"
@@ -1384,8 +1374,10 @@ msgstr "Skapa användare"
 msgid "Click to edit"
 msgstr "Klicka för att redigera"
 
-#: classes/pref/feeds.php:70 classes/pref/feeds.php:226
-#: classes/pref/feeds.php:274 classes/pref/feeds.php:280
+#: classes/pref/feeds.php:70
+#: classes/pref/feeds.php:226
+#: classes/pref/feeds.php:274
+#: classes/pref/feeds.php:280
 #: classes/pref/feeds.php:309
 #, fuzzy, php-format
 msgid "(%d feed)"
@@ -1400,7 +1392,8 @@ msgid_plural "(%d days)"
 msgstr[0] "(%d kanaler)"
 msgstr[1] "(%d kanaler)"
 
-#: classes/pref/feeds.php:539 classes/pref/feeds.php:587
+#: classes/pref/feeds.php:539
+#: classes/pref/feeds.php:587
 #, fuzzy
 msgid "Disabled"
 msgstr "Stäng av OTP"
@@ -1421,60 +1414,92 @@ msgstr "Markera för att aktivera"
 msgid "(%d days)"
 msgstr "(%d kanaler)"
 
-#: classes/pref/feeds.php:590 js/CommonDialogs.js:456
+#: classes/pref/feeds.php:590
+#: js/CommonDialogs.js:456
 msgid "Include in e-mail digest"
 msgstr "Inkludera i e-postsammanfattning"
 
-#: classes/pref/feeds.php:591 js/CommonDialogs.js:457
+#: classes/pref/feeds.php:591
+#: js/CommonDialogs.js:457
 msgid "Always display image attachments"
 msgstr "Visa alltid bilder"
 
-#: classes/pref/feeds.php:593 js/CommonDialogs.js:459
+#: classes/pref/feeds.php:593
+#: js/CommonDialogs.js:459
 msgid "Cache media"
 msgstr "Cacha media"
 
-#: classes/pref/feeds.php:594 js/CommonDialogs.js:460
+#: classes/pref/feeds.php:594
+#: js/CommonDialogs.js:460
 msgid "Mark updated articles as unread"
 msgstr "Makera uppdaterade artiklar som olästa"
 
-#: classes/pref/feeds.php:609 js/CommonDialogs.js:46 js/PrefFeedTree.js:426
+#: classes/pref/feeds.php:609
+#: js/PrefFeedTree.js:426
+#: js/CommonDialogs.js:496
 msgid "Place in category:"
 msgstr "Placera i kategori:"
 
-#: classes/pref/feeds.php:617 js/Feeds.js:602
+#: classes/pref/feeds.php:617
+#: js/CommonDialogs.js:512
 msgid "Language:"
 msgstr "Språk:"
 
-#: classes/pref/feeds.php:628 js/CommonDialogs.js:522
+#: classes/pref/feeds.php:628
+#: js/CommonDialogs.js:522
 #, fuzzy
 msgid "Update interval:"
 msgstr "Standardintervall för flödesuppdatering"
 
 #: classes/pref/feeds.php:635
+#: js/CommonDialogs.js:526
 msgid "Article purging:"
 msgstr "Artikelrensning:"
 
-#: classes/pref/feeds.php:642 plugins/auth_internal/init.php:68
-#: js/PrefFeedTree.js:434 js/PrefUsers.js:71
+#: classes/pref/feeds.php:642
+#: plugins/auth_internal/init.php:68
+#: js/PrefUsers.js:71
 msgid "Authentication"
 msgstr "Autentisering"
 
-#: classes/pref/feeds.php:658 js/PrefUsers.js:89
+#: classes/pref/feeds.php:651
+#: plugins/bookmarklets/init.php:307
+#: include/login_form.php:114
+#: js/CommonDialogs.js:545
+msgid "Password:"
+msgstr "Lösenord:"
+
+#: classes/pref/feeds.php:658
+#: js/PrefUsers.js:89
 msgid "Options"
 msgstr "Alternativ"
 
-#: classes/pref/feeds.php:674 plugins/af_psql_trgm/init.php:193
-#: plugins/note/init.php:51 plugins/af_proxy_http/init.php:239
-#: plugins/mail/init.php:67 plugins/af_readability/init.php:89
-#: plugins/nsfw/init.php:75 plugins/af_redditimgur/init.php:79
-#: js/CommonDialogs.js:580 js/CommonFilters.js:516
+#: classes/pref/feeds.php:674
+#: plugins/af_psql_trgm/init.php:193
+#: plugins/note/init.php:51
+#: plugins/af_proxy_http/init.php:239
+#: plugins/mail/init.php:67
+#: plugins/af_readability/init.php:89
+#: plugins/nsfw/init.php:75
+#: plugins/af_redditimgur/init.php:79
+#: js/PrefLabelTree.js:171
+#: js/PrefUsers.js:113
+#: js/CommonFilters.js:516
 msgid "Save"
 msgstr "Spara"
 
-#: classes/pref/feeds.php:675 plugins/note/init.php:52
-#: plugins/mail/init.php:186 plugins/bookmarklets/init.php:282
-#: js/PrefFeedTree.js:454 js/CommonDialogs.js:581 js/CommonFilters.js:233
-#: js/CommonFilters.js:317 js/CommonFilters.js:517 js/CommonFilters.js:521
+#: classes/pref/feeds.php:675
+#: plugins/note/init.php:52
+#: plugins/mail/init.php:186
+#: plugins/bookmarklets/init.php:282
+#: js/Feeds.js:616
+#: js/PrefFeedTree.js:454
+#: js/PrefHelpers.js:189
+#: js/PrefHelpers.js:263
+#: js/Article.js:341
+#: js/CommonFilters.js:233
+#: js/CommonFilters.js:517
+#: js/CommonFilters.js:521
 msgid "Cancel"
 msgstr "Avbryt"
 
@@ -1490,7 +1515,8 @@ msgstr "Inaktiva flöden"
 msgid "Edit selected feeds"
 msgstr "Redigera valda flöden"
 
-#: classes/pref/feeds.php:943 js/PrefFeedTree.js:396
+#: classes/pref/feeds.php:943
+#: js/PrefFeedTree.js:396
 msgid "Batch subscribe"
 msgstr "Massprenumerera"
 
@@ -1507,12 +1533,8 @@ msgid "Remove selected"
 msgstr "Ta bort markerade"
 
 #: classes/pref/feeds.php:1006
-msgid ""
-"Using OPML you can export and import your feeds, filters, labels and Tiny "
-"Tiny RSS settings."
-msgstr ""
-"Genom att använda OPML kan du exporta och importera dina flöden, filter, "
-"etiketter och Tiny Tiny RSS-inställningar."
+msgid "Using OPML you can export and import your feeds, filters, labels and Tiny Tiny RSS settings."
+msgstr "Genom att använda OPML kan du exporta och importera dina flöden, filter, etiketter och Tiny Tiny RSS-inställningar."
 
 #: classes/pref/feeds.php:1011
 msgid "Choose file..."
@@ -1535,30 +1557,20 @@ msgid "Published OPML"
 msgstr "Publicerade OPML"
 
 #: classes/pref/feeds.php:1040
-msgid ""
-"Your OPML can be published publicly and can be subscribed by anyone who "
-"knows the URL below."
-msgstr ""
-"Din OPML-fil kan publiceras publikt och bli prenumererad på av alla som "
-"känner till URL:en nedan."
+msgid "Your OPML can be published publicly and can be subscribed by anyone who knows the URL below."
+msgstr "Din OPML-fil kan publiceras publikt och bli prenumererad på av alla som känner till URL:en nedan."
 
 #: classes/pref/feeds.php:1041
-msgid ""
-"Published OPML does not include your Tiny Tiny RSS settings, feeds that "
-"require authentication or feeds hidden from Popular feeds."
-msgstr ""
-"Publicerad OPML inkluderar inte dina Tiny Tiny RSS-inställningar, flöden som "
-"kräver autentisering eller flöden som är dolda under populära flöden."
+msgid "Published OPML does not include your Tiny Tiny RSS settings, feeds that require authentication or feeds hidden from Popular feeds."
+msgstr "Publicerad OPML inkluderar inte dina Tiny Tiny RSS-inställningar, flöden som kräver autentisering eller flöden som är dolda under populära flöden."
 
 #: classes/pref/feeds.php:1045
 msgid "Display published OPML URL"
 msgstr "Visa publicerad OPML-URL"
 
 #: classes/pref/feeds.php:1055
-msgid ""
-"Published articles can be subscribed by anyone who knows the following URL:"
-msgstr ""
-"Publicerade artiklar kan prenumereras på av den som känner till följande URL:"
+msgid "Published articles can be subscribed by anyone who knows the following URL:"
+msgstr "Publicerade artiklar kan prenumereras på av den som känner till följande URL:"
 
 #: classes/pref/feeds.php:1059
 msgid "Display URL"
@@ -1582,12 +1594,13 @@ msgstr "OPML"
 msgid "Sharing"
 msgstr "Dela"
 
-#: classes/userhelper.php:193
+#: classes/userhelper.php:197
 #, php-format
 msgid "Changed password of user %s to %s"
 msgstr "Lösenord för användare %s ändrat till %s"
 
-#: classes/opml.php:28 classes/opml.php:32
+#: classes/opml.php:28
+#: classes/opml.php:32
 msgid "OPML Utility"
 msgstr "OPML-verktyg"
 
@@ -1655,7 +1668,8 @@ msgstr "Fel: kunde inte hitta flyttad OPML-fil."
 msgid "Error while parsing document."
 msgstr "Fel vid tolkning av dokument."
 
-#: classes/feeds.php:54 classes/feeds.php:458
+#: classes/feeds.php:54
+#: classes/feeds.php:468
 msgid "Feed not found."
 msgstr "Kunde inte hitta flöde."
 
@@ -1663,80 +1677,77 @@ msgstr "Kunde inte hitta flöde."
 msgid "Never"
 msgstr "Aldrig"
 
-#: classes/feeds.php:198 classes/feeds.php:1116
+#: classes/feeds.php:198
+#: classes/feeds.php:1126
 msgid "Archived articles"
 msgstr "Arkiverade artiklar"
 
-#: classes/feeds.php:268
+#: classes/feeds.php:272
 msgid "Collapse article"
 msgstr "Minimera artikel"
 
-#: classes/feeds.php:287
+#: classes/feeds.php:295
 #, php-format
 msgid "Imported at %s"
 msgstr "Importerad kl. %s"
 
-#: classes/feeds.php:347
+#: classes/feeds.php:357
 msgid "No unread articles found to display."
 msgstr "Hittade inga olästa artiklar."
 
-#: classes/feeds.php:350
+#: classes/feeds.php:360
 msgid "No updated articles found to display."
 msgstr "Hittade inga uppdaterade artiklar."
 
-#: classes/feeds.php:353
+#: classes/feeds.php:363
 msgid "No starred articles found to display."
 msgstr "Hittade inga stjärnmarkerade artiklar."
 
-#: classes/feeds.php:357
-msgid ""
-"No articles found to display. You can assign articles to labels manually "
-"from article header context menu (applies to all selected articles) or use a "
-"filter."
-msgstr ""
-"Hittade inga artiklar att visa. Du kan ge artiklar etiketter manuellt  via "
-"snabbmenyn för artiklar (gäller alla valda artiklar) eller genom att använda "
-"filter."
+#: classes/feeds.php:367
+msgid "No articles found to display. You can assign articles to labels manually from article header context menu (applies to all selected articles) or use a filter."
+msgstr "Hittade inga artiklar att visa. Du kan ge artiklar etiketter manuellt  via snabbmenyn för artiklar (gäller alla valda artiklar) eller genom att använda filter."
 
-#: classes/feeds.php:359
+#: classes/feeds.php:369
 msgid "No articles found to display."
 msgstr "Hittade inga artiklar att visa."
 
-#: classes/feeds.php:376 classes/feeds.php:526
+#: classes/feeds.php:386
+#: classes/feeds.php:536
 #, php-format
 msgid "Feeds last updated at %s"
 msgstr "Flöden senast uppdaterade %s"
 
-#: classes/feeds.php:388 classes/feeds.php:538
+#: classes/feeds.php:398
+#: classes/feeds.php:548
 msgid "Some feeds have update errors (click for details)"
 msgstr "Vissa flöden har uppdateringsfel (klicka för detaljer)"
 
-#: classes/feeds.php:515
+#: classes/feeds.php:525
 msgid "No feed selected."
 msgstr "Inget flöde valt."
 
-#: classes/feeds.php:1108
+#: classes/feeds.php:1118
 msgid "Starred articles"
 msgstr "Stjärnmärkta artiklar"
 
-#: classes/feeds.php:1110
+#: classes/feeds.php:1120
 msgid "Published articles"
 msgstr "Publicerade artiklar"
 
-#: classes/feeds.php:1112
+#: classes/feeds.php:1122
 msgid "Fresh articles"
 msgstr "Nya artiklar"
 
-#: classes/feeds.php:1244
+#: classes/feeds.php:1254
 msgid "Special"
 msgstr "Special"
 
-#: classes/feeds.php:1339
+#: classes/feeds.php:1349
 #, php-format
 msgid "Incorrect search syntax: %s."
 msgstr ""
 
-#: classes/feeds.php:1529
+#: classes/feeds.php:1539
 #, php-format
 msgid "Search results: %s"
 msgstr "Sökresultat: %s"
@@ -1746,7 +1757,8 @@ msgstr "Sökresultat: %s"
 msgid "%d min"
 msgstr "%d min"
 
-#: classes/article.php:26 plugins/share/init.php:262
+#: classes/article.php:26
+#: plugins/share/init.php:262
 msgid "Article not found."
 msgstr "Hittar inte artikel."
 
@@ -1766,7 +1778,8 @@ msgstr "Lösenord uppdaterat."
 msgid "Old password is incorrect."
 msgstr "Felaktigt gammalt lösenord."
 
-#: plugins/vf_shared/init.php:17 plugins/vf_shared/init.php:64
+#: plugins/vf_shared/init.php:17
+#: plugins/vf_shared/init.php:64
 msgid "Shared articles"
 msgstr "Delade artiklar"
 
@@ -1790,14 +1803,8 @@ msgstr "Minsta likhet:"
 
 #: plugins/af_psql_trgm/init.php:172
 #, fuzzy
-msgid ""
-"PostgreSQL trigram extension returns string similarity as a floating point "
-"number (0-1). Setting it too low might produce false positives, zero "
-"disables checking."
-msgstr ""
-"Trigram-tillägget för PostgreSQL returnerar ett flyttal (0-1) för "
-"stränglikhet. Sätts det för lågt kan det ge falska positiva resultat; sätts "
-"det till noll inaktiveras kontroll."
+msgid "PostgreSQL trigram extension returns string similarity as a floating point number (0-1). Setting it too low might produce false positives, zero disables checking."
+msgstr "Trigram-tillägget för PostgreSQL returnerar ett flyttal (0-1) för stränglikhet. Sätts det för lågt kan det ge falska positiva resultat; sätts det till noll inaktiveras kontroll."
 
 #: plugins/af_psql_trgm/init.php:177
 msgid "Minimum title length:"
@@ -1808,7 +1815,8 @@ msgstr "Minsta titellängd:"
 msgid "Enable for all feeds."
 msgstr "Aktivera för alla flöden:"
 
-#: plugins/af_psql_trgm/init.php:206 plugins/af_readability/init.php:106
+#: plugins/af_psql_trgm/init.php:206
+#: plugins/af_readability/init.php:106
 msgid "Currently enabled for (click to edit):"
 msgstr "För närvarande aktiverat för (klicka för att redigera):"
 
@@ -1821,7 +1829,8 @@ msgstr "Likhet (pg_trgm)"
 msgid "Mark similar articles as read"
 msgstr "Markera liknande artilar som lästa"
 
-#: plugins/note/init.php:26 plugins/note/note.js:6
+#: plugins/note/init.php:26
+#: plugins/note/note.js:6
 msgid "Edit article note"
 msgstr "Redigera artikelnotering"
 
@@ -1834,11 +1843,13 @@ msgstr "Bildproxyinställningar (af_zz_imgproxy)"
 msgid "Enable proxy for all remote images."
 msgstr "Aktivera proxy för alla icke-lokala bilder."
 
-#: plugins/af_proxy_http/init.php:250 plugins/af_redditimgur/init.php:95
+#: plugins/af_proxy_http/init.php:250
+#: plugins/af_redditimgur/init.php:95
 msgid "Configuration saved"
 msgstr "Inställningar sparade"
 
-#: plugins/mail/init.php:26 plugins/mail/init.php:77
+#: plugins/mail/init.php:26
+#: plugins/mail/init.php:77
 msgid "Forward by email"
 msgstr "Skicka med e-post"
 
@@ -1852,15 +1863,17 @@ msgstr "E-post-tillägg"
 
 #: plugins/mail/init.php:60
 msgid "You can set predefined email addressed here (comma-separated list):"
-msgstr ""
-"Du kan ställa in fördefinierade e-postadresser här (kommaseparerad lista):"
+msgstr "Du kan ställa in fördefinierade e-postadresser här (kommaseparerad lista):"
 
-#: plugins/mail/init.php:115 plugins/mail/init.php:123
-#: plugins/mailto/init.php:51 plugins/mailto/init.php:59
+#: plugins/mail/init.php:115
+#: plugins/mail/init.php:123
+#: plugins/mailto/init.php:51
+#: plugins/mailto/init.php:59
 msgid "[Forwarded]"
 msgstr "[Vidarebefordrat]"
 
-#: plugins/mail/init.php:115 plugins/mailto/init.php:51
+#: plugins/mail/init.php:115
+#: plugins/mailto/init.php:51
 msgid "Multiple articles"
 msgstr "Flera artiklar"
 
@@ -1900,8 +1913,7 @@ msgid "Readability settings (af_readability)"
 msgstr "Readability-inställningar (af_readability)"
 
 #: plugins/af_readability/init.php:83
-msgid ""
-"Provide full-text services to core code (bookmarklets) and other plugins"
+msgid "Provide full-text services to core code (bookmarklets) and other plugins"
 msgstr ""
 
 #: plugins/af_readability/init.php:113
@@ -1920,7 +1932,8 @@ msgstr "Inbäddat artikelinnehåll"
 msgid "Append to summary, instead of replacing it"
 msgstr ""
 
-#: plugins/bookmarklets/init.php:88 js/CommonDialogs.js:93
+#: plugins/bookmarklets/init.php:88
+#: js/CommonDialogs.js:93
 msgid "Subscribe"
 msgstr "Prenumerera"
 
@@ -1962,7 +1975,8 @@ msgstr "Prenumerera på valt flöde"
 msgid "Edit subscription options"
 msgstr "Redigera prenumerationsinställningar"
 
-#: plugins/bookmarklets/init.php:184 plugins/bookmarklets/init.php:359
+#: plugins/bookmarklets/init.php:184
+#: plugins/bookmarklets/init.php:359
 msgid "Share with Tiny Tiny RSS"
 msgstr "Dela med Tiny Tiny RSS"
 
@@ -1990,6 +2004,11 @@ msgstr "Dela"
 msgid "Shared article will appear in the Published feed."
 msgstr "Delad artikel visas i 'Publicerade artiklar'."
 
+#: plugins/bookmarklets/init.php:320
+#: include/login_form.php:179
+msgid "Log in"
+msgstr "Logga in"
+
 #: plugins/bookmarklets/init.php:341
 #, php-format
 msgid "Subscribe to %s in Tiny Tiny RSS?"
@@ -2000,12 +2019,8 @@ msgid "Bookmarklets"
 msgstr "Bookmarklets"
 
 #: plugins/bookmarklets/init.php:350
-msgid ""
-"Drag the link below to your browser toolbar, open the feed you're interested "
-"in in your browser and click on the link to subscribe to it."
-msgstr ""
-"Dra länken nedan till din webbläsares verktygsrad, öppna det flöde du är "
-"intresserad av i webbläsaren och klicka på länken för att prenumerara på det."
+msgid "Drag the link below to your browser toolbar, open the feed you're interested in in your browser and click on the link to subscribe to it."
+msgstr "Dra länken nedan till din webbläsares verktygsrad, öppna det flöde du är intresserad av i webbläsaren och klicka på länken för att prenumerara på det."
 
 #: plugins/bookmarklets/init.php:353
 msgid "Subscribe in Tiny Tiny RSS"
@@ -2013,8 +2028,7 @@ msgstr "Prenumerera i Tiny Tiny RSS"
 
 #: plugins/bookmarklets/init.php:356
 msgid "Use this bookmarklet to publish arbitrary pages using Tiny Tiny RSS"
-msgstr ""
-"Använd denna bookmarklet för att publicera webbsidor genom Tiny Tiny RSS"
+msgstr "Använd denna bookmarklet för att publicera webbsidor genom Tiny Tiny RSS"
 
 #: plugins/af_comics/init.php:62
 msgid "Feeds supported by af_comics"
@@ -2041,7 +2055,8 @@ msgstr "Lista NSFW-taggar (kommaseparerade)"
 msgid "Configuration saved."
 msgstr "Inställningar sparade."
 
-#: plugins/mailto/init.php:19 plugins/mailto/init.php:29
+#: plugins/mailto/init.php:19
+#: plugins/mailto/init.php:29
 #, fuzzy
 msgid "Forward by email (mailto:)"
 msgstr "Skicka med e-post"
@@ -2107,211 +2122,202 @@ msgstr "Du kan dela denna artikel genom följande unika URL:"
 msgid "Unshare article"
 msgstr "Sluta dela artikel"
 
-#: plugins/share/init.php:268 js/CommonDialogs.js:637
+#: plugins/share/init.php:268
+#: js/CommonDialogs.js:637
+#: js/PrefHelpers.js:389
 msgid "Generate new URL"
 msgstr "Skapa ny URL"
 
-#: js/App.js:392
-msgid "Keyboard shortcuts"
-msgstr "Kortkommandon"
+#: include/login_form.php:126
+msgid "I forgot my password"
+msgstr "Jag har glömt mitt lösenord"
 
-#: js/App.js:543
-#, fuzzy, perl-format
-msgid "Fatal error: %s"
-msgstr "Ödesdigert fel"
+#: include/login_form.php:131
+msgid "Profile:"
+msgstr "Profil:"
 
-#: js/App.js:544
-msgid "Fatal error"
-msgstr "Ödesdigert fel"
+#: include/login_form.php:144
+msgid "Use less traffic"
+msgstr "Använd mindre datatrafik"
 
-#: js/App.js:1120
-#, fuzzy
-msgid "Please enable af_readability first."
-msgstr "Vänligen aktivera mail- eller mailto-tillägget först."
+#: include/login_form.php:148
+msgid "Does not display images in articles, reduces automatic refreshes."
+msgstr "Visar inte bilder i artiklar, reducerar automatiska omladdningar."
 
-#: js/App.js:1133 js/App.js:1223
-msgid "Widescreen is not available in combined mode."
-msgstr "Bredbild inte tillänglig i kombinerat läge."
+#: include/login_form.php:156
+#: js/Feeds.js:275
+msgid "Safe mode"
+msgstr ""
 
-#: js/Article.js:36
-msgid "Please enter new score for selected articles:"
-msgstr "Ange ny poäng för markerade artiklar:"
+#: include/login_form.php:161
+msgid "Uses default theme and prevents all plugins from loading."
+msgstr ""
 
-#: js/Article.js:62 js/Headlines.js:865 js/Headlines.js:877
-#: js/Headlines.js:1020 js/Headlines.js:1037 js/Headlines.js:1054
-#: js/Headlines.js:1191 plugins/mail/mail.js:9 plugins/mailto/init.js:9
-#: js/Headlines.js:839
-msgid "No articles selected."
-msgstr "Inga artiklar valda."
+#: include/login_form.php:169
+msgid "Remember me"
+msgstr "Kom ihåg mig"
 
-#: js/Article.js:70
-msgid "Please enter new score for this article:"
-msgstr "Ange ny poäng för denna artikel:"
+#: include/sessions.php:27
+msgid "Session failed to validate (schema version changed)"
+msgstr "Sessionen kunde inte valideras (ändrad schemaversion)"
 
-#: js/Article.js:120
-msgid "Article URL:"
-msgstr "URL för artikel:"
+#: include/sessions.php:35
+msgid "Session failed to validate (UA changed)."
+msgstr "Sessionen kunde inte valideras (förändrad UA)."
 
-#: js/Article.js:122
-#, fuzzy
-msgid "No URL could be displayed for this article."
-msgstr "Sluta dela denna artiklar?"
+#: include/sessions.php:49
+msgid "Session failed to validate (password changed)"
+msgstr "Sessionen kunde inte valideras (ändrat lösenord)"
 
-#: js/Article.js:144
-msgid "no tags"
-msgstr "Inga taggar"
+#: include/sessions.php:56
+msgid "Session failed to validate (user not found)"
+msgstr "Sessionen kunde inte valideras (användare hittades inte)"
 
-#: js/Article.js:231
-msgid "comments"
-msgstr "kommentarer"
-
-#: js/Article.js:234
-#, fuzzy
-msgid "comment"
-msgid_plural "comments"
-msgstr[0] "Kommentarer?"
-msgstr[1] "Kommentarer?"
-
-#: js/Article.js:320
-msgid "Edit article Tags"
-msgstr "Redigera artikeltaggar"
-
-#: js/CommonDialogs.js:19
-msgid "Subscribe to Feed"
-msgstr "Prenumerera på flöde"
-
-#: js/CommonDialogs.js:53
-msgid "Available feeds"
-msgstr "Tillgängliga flöden"
-
-#: js/CommonDialogs.js:86
-msgid "This feed requires authentication."
-msgstr "Detta flöde kräver autentisering."
-
-#: js/CommonDialogs.js:283
-msgid "Please enter label caption:"
-msgstr "Ange titel för etikett:"
-
-#: js/CommonDialogs.js:302 js/CommonDialogs.js:339 js/App.js:1202
-#, perl-format
-msgid "Unsubscribe from %s?"
-msgstr "Säg upp prenumeration på %s?"
-
-#: js/CommonDialogs.js:328 js/App.js:1054 js/App.js:1182
-msgid "You can't edit this kind of feed."
-msgstr "Detta typ av flöde kan inte redigeras."
-
-#: js/CommonDialogs.js:336
-msgid "Edit Feed"
-msgstr "Redigera flöde"
-
-#: js/CommonDialogs.js:349
-#, fuzzy
-msgid "Please select an image file."
-msgstr "Välj en bild att ladda upp."
-
-#: js/CommonDialogs.js:400
-msgid "Remove stored feed icon?"
-msgstr "Ta bort sparad ikon för flöden?"
-
-#: js/CommonFilters.js:170
-msgid "Edit rule"
-msgstr "Redigera regel"
-
-#: js/CommonFilters.js:170
-msgid "Add rule"
-msgstr "Tillämpa regel"
-
-#: js/CommonFilters.js:412
-msgid "Enabled"
-msgstr "Aktiverat"
-
-#: js/CommonFilters.js:413
-msgid "Match any rule"
-msgstr "Matcha alla regler"
-
-#: js/CommonFilters.js:414
-msgid "Inverse matching"
-msgstr "Invertera matchning"
-
-#: js/CommonFilters.js:478 js/CommonFilters.js:446
-msgid "Add"
-msgstr "Lägg till"
+#: include/functions.php:55
+msgid "Detect automatically"
+msgstr ""
 
 #: js/Feeds.js:255
 msgid "Your password is at default value"
 msgstr "Ditt lösenord är standardlösenordet"
 
-#: js/Headlines.js:991
-#, perl-format
-msgid "%d article selected"
-msgid_plural "%d articles selected"
-msgstr[0] "%d artikel vald"
-msgstr[1] "%d artiklar valda"
+#: js/Feeds.js:257
+msgid "You are using default tt-rss password. Please change it in the Preferences (Personal data / Authentication)."
+msgstr "Du använder standardlösenordet för tt-rss. Vänligen ändra det i Inställningen (Personliga data / Autentisering)."
 
-#: js/Headlines.js:1062
-#, perl-format
-msgid "Delete %d selected article in %s?"
-msgid_plural "Delete %d selected articles in %s?"
-msgstr[0] "Radera %d vald artikel i %s?"
-msgstr[1] "Radera %d valda artiklar i %s?"
+#: js/Feeds.js:277
+msgid "Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. You will need to log out and back in to disable it."
+msgstr ""
 
-#: js/Headlines.js:1064
-#, perl-format
-msgid "Delete %d selected article?"
-msgid_plural "Delete %d selected articles?"
-msgstr[0] "Radera %d vald artikel?"
-msgstr[1] "Radera %d valda artiklar?"
+#: js/Feeds.js:416
+msgid "Mark all articles as read?"
+msgstr "Flagga alla artiklar som lästa?"
 
-#: js/Headlines.js:1197
-#, perl-format
-msgid "Mark %d selected article in %s as read?"
-msgid_plural "Mark %d selected articles in %s as read?"
-msgstr[0] "Markera %d vald artikel i %s som läst?"
-msgstr[1] "Markera %d valda artiklar i %s som läst?"
+#: js/Feeds.js:437
+msgid "Mark %w in %s older than 1 day as read?"
+msgstr "Markera %w i %s äldre än 1 dag som lästa?"
 
-#: js/Headlines.js:1213
-msgid "No article is selected."
-msgstr "Ingen artikel vald."
+#: js/Feeds.js:440
+msgid "Mark %w in %s older than 1 week as read?"
+msgstr "Markera %w i %s äldre än 1 vecka som lästa?"
 
-#: js/Headlines.js:1248
-msgid "No articles found to mark"
-msgstr "Hittade inga artiklar att flagga"
+#: js/Feeds.js:443
+msgid "Mark %w in %s older than 2 weeks as read?"
+msgstr "Markera %w i %s äldre än 2 veckor som lästa?"
 
-#: js/Headlines.js:1250
-#, perl-format
-msgid "Mark %d article as read?"
-msgid_plural "Mark %d articles as read?"
-msgstr[0] "Markera %d artikel som läst?"
-msgstr[1] "Markera %d artiklar som lästa?"
+#: js/Feeds.js:446
+msgid "Mark %w in %s as read?"
+msgstr "Märk %w i %s som lästa?"
 
-#: js/Headlines.js:1309
-msgid "Open original article"
-msgstr "Öppna orginalartikeln"
+#: js/Feeds.js:449
+msgid "search results"
+msgstr "sökresultat"
 
-#: js/Headlines.js:1316
-msgid "Display article URL"
-msgstr "Visa artikel-URL"
+#: js/Feeds.js:449
+msgid "all articles"
+msgstr "alla artiklar"
 
-#: js/Headlines.js:1423
-msgid "Assign label"
-msgstr "Ange etikett"
+#: js/Feeds.js:490
+#, javascript-format
+msgid "Mark all articles in %s as read?"
+msgstr "Märk alla artiklar i %s som lästa?"
 
-#: js/Headlines.js:1428
-msgid "Remove label"
-msgstr "Ta bort etikett"
+#: js/Feeds.js:604
+msgid "Used for word stemming"
+msgstr "Används för att hitta ordstammar"
 
-#: js/Headlines.js:1465
-msgid "Select articles in group"
-msgstr "Välj artiklar i grupp"
+#: js/Feeds.js:611
+msgid "Search syntax"
+msgstr "Söksyntax"
 
-#: js/Headlines.js:1475
-msgid "Mark group as read"
-msgstr "Markera grupp som läst"
+#: js/common.js:395
+msgid "Click to close"
+msgstr "Klicka för att stänga"
 
-#: js/Headlines.js:1487
-msgid "Mark feed as read"
-msgstr "Flagga kanal som läst"
+#: js/PrefLabelTree.js:71
+msgid "Label Editor"
+msgstr "Etikettseditor"
+
+#: js/PrefLabelTree.js:124
+msgid "Caption"
+msgstr "Titel"
+
+#: js/PrefLabelTree.js:141
+msgid "Colors"
+msgstr "Färger"
+
+#: js/PrefLabelTree.js:146
+msgid "Background:"
+msgstr "Bakgrund:"
+
+#: js/PrefLabelTree.js:190
+msgid "Reset selected labels to default colors?"
+msgstr "Återställ valda etiketter till standardfärger?"
+
+#: js/PrefLabelTree.js:203
+#: js/PrefLabelTree.js:223
+msgid "No labels selected."
+msgstr "Inga etiketter valda."
+
+#: js/PrefLabelTree.js:210
+msgid "Remove selected labels?"
+msgstr "Radera markerade etiketter?"
+
+#: js/App.js:401
+msgid "Keyboard shortcuts"
+msgstr "Kortkommandon"
+
+#: js/App.js:559
+#, fuzzy, javascript-format
+msgid "Fatal error: %s"
+msgstr "Ödesdigert fel"
+
+#: js/App.js:560
+msgid "Fatal error"
+msgstr "Ödesdigert fel"
+
+#: js/App.js:585
+msgid "Unhandled exception"
+msgstr "Ohanterat undantag"
+
+#: js/App.js:597
+msgid "Additional information"
+msgstr ""
+
+#: js/App.js:1019
+msgid "Please enable mail or mailto plugin first."
+msgstr "Vänligen aktivera mail- eller mailto-tillägget först."
+
+#: js/App.js:1070
+#: js/App.js:1198
+#: js/CommonDialogs.js:328
+msgid "You can't edit this kind of feed."
+msgstr "Detta typ av flöde kan inte redigeras."
+
+#: js/App.js:1136
+#, fuzzy
+msgid "Please enable af_readability first."
+msgstr "Vänligen aktivera mail- eller mailto-tillägget först."
+
+#: js/App.js:1149
+#: js/App.js:1239
+msgid "Widescreen is not available in combined mode."
+msgstr "Bredbild inte tillänglig i kombinerat läge."
+
+#: js/App.js:1207
+msgid "Please select some feed first."
+msgstr "Välj några flöden först."
+
+#: js/App.js:1212
+msgid "You can't unsubscribe from the category."
+msgstr "Du kan inte säga upp prenumeration på kategorin."
+
+#: js/App.js:1218
+#: js/CommonDialogs.js:302
+#: js/CommonDialogs.js:339
+#, javascript-format
+msgid "Unsubscribe from %s?"
+msgstr "Säg upp prenumeration på %s?"
 
 #: js/PrefFeedTree.js:73
 msgid "Edit category"
@@ -2322,17 +2328,18 @@ msgid "Remove category"
 msgstr "Ta bort kategori"
 
 #: js/PrefFeedTree.js:179
-#, perl-format
-msgid ""
-"Remove category %s? Any nested feeds would be placed into Uncategorized."
+#, javascript-format
+msgid "Remove category %s? Any nested feeds would be placed into Uncategorized."
 msgstr "Radera kategori %s? Nästlade flöden placeras i Okategoriserat."
 
 #: js/PrefFeedTree.js:192
 msgid "Unsubscribe from selected feeds?"
 msgstr "Avsluta prenumeration på markerade flöden?"
 
-#: js/PrefFeedTree.js:207 js/PrefFeedTree.js:276 js/PrefFeedTree.js:292
-#: js/CommonDialogs.js:230 js/PrefFeedTree.js:497
+#: js/PrefFeedTree.js:207
+#: js/PrefFeedTree.js:276
+#: js/PrefFeedTree.js:292
+#: js/CommonDialogs.js:230
 msgid "No feeds selected."
 msgstr "Inga flöden valda."
 
@@ -2364,29 +2371,95 @@ msgstr "Kategorinamn:"
 msgid "Subscribing to feeds..."
 msgstr "Prenumererar på flöden..."
 
+#: js/PrefFeedTree.js:417
+#, fuzzy
+msgid "One valid feed per line (no detection is done)"
+msgstr "Lägg till ett giltigt RSS-flöde per rad (ingen flödesupptäckt görs)"
+
 #: js/PrefFeedTree.js:520
 msgid "Click to edit feed"
 msgstr "Klicka för att redigera flöde"
 
-#: js/PrefFilterTree.js:47 js/CommonFilters.js:220
-msgid "in"
-msgstr "i"
+#: js/PrefFeedTree.js:534
+msgid "Unsubscribe from selected feeds"
+msgstr "Ta bort prenumeration för valda flöden"
 
-#: js/PrefFilterTree.js:50
-msgid "Inverse"
-msgstr "Invertera"
+#: js/CommonDialogs.js:19
+msgid "Subscribe to Feed"
+msgstr "Prenumerera på flöde"
 
-#: js/PrefFilterTree.js:110 js/PrefFilterTree.js:139
-msgid "No filters selected."
-msgstr "Inga filter valda."
+#: js/CommonDialogs.js:53
+msgid "Available feeds"
+msgstr "Tillgängliga flöden"
 
-#: js/PrefFilterTree.js:114
-msgid "Combine selected filters?"
-msgstr "Slå ihop markerade filter?"
+#: js/CommonDialogs.js:86
+msgid "This feed requires authentication."
+msgstr "Detta flöde kräver autentisering."
 
-#: js/PrefFilterTree.js:126
-msgid "Remove selected filters?"
-msgstr "Radera markerade filter?"
+#: js/CommonDialogs.js:122
+#, fuzzy
+msgid "Failed to parse output. This can indicate server timeout and/or network issues. Backend output was logged to browser console."
+msgstr "Misslyckades med att tolka utmatning. Detta kan indikera timeout för servern och/eller nätverksproblem. Utmatning från backend loggades till webbläsarkonsolen."
+
+#: js/CommonDialogs.js:136
+#, javascript-format
+msgid "Subscribed to %s"
+msgstr "Prenumererar på %s"
+
+#: js/CommonDialogs.js:145
+msgid "Specified URL seems to be invalid."
+msgstr "Den angivna URLen verkar vara felaktig."
+
+#: js/CommonDialogs.js:148
+msgid "Specified URL doesn't seem to contain any feeds."
+msgstr "Den angivna URLen verkar inte innehålla något flöde."
+
+#: js/CommonDialogs.js:161
+msgid "Expand to select feed"
+msgstr "Expandera för att välja flöde"
+
+#: js/CommonDialogs.js:173
+#, javascript-format
+msgid "Couldn't download the specified URL: %s"
+msgstr "Kunde inte ladda ned följande URL: %s"
+
+#: js/CommonDialogs.js:176
+#, javascript-format
+msgid "XML validation failed: %s"
+msgstr "Validering av XML misslyckades: %s"
+
+#: js/CommonDialogs.js:179
+msgid "You are already subscribed to this feed."
+msgstr "Du prenumererar redan på detta flöde."
+
+#: js/CommonDialogs.js:201
+msgid "Feeds with update errors"
+msgstr "Flöden med uppdateringsfel"
+
+#: js/CommonDialogs.js:209
+msgid "Remove selected feeds?"
+msgstr "Ta bort markerade flöden?"
+
+#: js/CommonDialogs.js:283
+msgid "Please enter label caption:"
+msgstr "Ange titel för etikett:"
+
+#: js/CommonDialogs.js:336
+msgid "Edit Feed"
+msgstr "Redigera flöde"
+
+#: js/CommonDialogs.js:349
+#, fuzzy
+msgid "Please select an image file."
+msgstr "Välj en bild att ladda upp."
+
+#: js/CommonDialogs.js:400
+msgid "Remove stored feed icon?"
+msgstr "Ta bort sparad ikon för flöden?"
+
+#: js/CommonDialogs.js:502
+msgid "Site URL:"
+msgstr "URL för sajt:"
 
 #: js/PrefHelpers.js:20
 #, fuzzy
@@ -2406,33 +2479,328 @@ msgid "Settings Profiles"
 msgstr "Inställningsprofiler"
 
 #: js/PrefHelpers.js:108
-msgid ""
-"Remove selected profiles? Active and default profiles will not be removed."
+msgid "Remove selected profiles? Active and default profiles will not be removed."
 msgstr "Radera markerade profiler? Aktiva profiler tas inte bort."
 
 #: js/PrefHelpers.js:123
 msgid "No profiles selected."
 msgstr "Inga profiler valda."
 
-#: js/PrefLabelTree.js:71
-msgid "Label Editor"
-msgstr "Etikettseditor"
+#: js/PrefHelpers.js:178
+msgid "(active)"
+msgstr "(aktiva)"
 
-#: js/PrefLabelTree.js:190
-msgid "Reset selected labels to default colors?"
-msgstr "Återställ valda etiketter till standardfärger?"
+#: js/PrefHelpers.js:186
+msgid "Remove selected profiles"
+msgstr "Radera markerade profiler"
 
-#: js/PrefLabelTree.js:203 js/PrefLabelTree.js:223
-msgid "No labels selected."
-msgstr "Inga etiketter valda."
+#: js/PrefHelpers.js:188
+msgid "Activate profile"
+msgstr "Aktivera profil"
 
-#: js/PrefLabelTree.js:210
-msgid "Remove selected labels?"
-msgstr "Radera markerade etiketter?"
+#: js/PrefHelpers.js:199
+msgid "Activate selected profile?"
+msgstr "Aktivera markerad profil?"
 
-#: js/common.js:381
-msgid "Click to close"
-msgstr "Klicka för att stänga"
+#: js/PrefHelpers.js:208
+msgid "Please choose a profile to activate."
+msgstr "Välj en profil att aktivera."
+
+#: js/PrefHelpers.js:223
+msgid "Customize stylesheet"
+msgstr "Anpassa stilmall"
+
+#: js/PrefHelpers.js:239
+msgid "You can override colors, fonts and layout of your currently selected theme with custom CSS declarations here."
+msgstr "Du kan åsidosätta färger, typsnitt och layout för ditt valda tema med anpassade CSS-regler här."
+
+#: js/PrefHelpers.js:257
+msgid "Apply"
+msgstr ""
+
+#: js/PrefHelpers.js:274
+msgid "Reset to defaults?"
+msgstr "Återställ till standardvärden?"
+
+#: js/PrefHelpers.js:282
+msgid "Clear stored data for this plugin?"
+msgstr "Radera lagrad data för detta tillägg?"
+
+#: js/PrefHelpers.js:302
+msgid "Please choose an OPML file first."
+msgstr "Välj en OPML-fil först."
+
+#: js/PrefHelpers.js:314
+msgid "OPML Import"
+msgstr "OPML-import"
+
+#: js/PrefHelpers.js:325
+msgid "If you have imported labels and/or filters, you might need to reload preferences to see your new data."
+msgstr "Om du har importerat etiketter och/eller filter kan du behöva ladda om inställningarna för att se din nya data."
+
+#: js/PrefHelpers.js:356
+msgid "Public OPML URL"
+msgstr "Publik OPML-URL"
+
+#: js/PrefHelpers.js:358
+msgid "Replace current OPML publishing address with a new one?"
+msgstr "Byt nuvarande OPML-adress med en ny?"
+
+#: js/PrefHelpers.js:381
+msgid "Your Public OPML URL is:"
+msgstr "Din publika OPML-URL är:"
+
+#: js/Headlines.js:610
+msgid "Cancel search"
+msgstr "Avbryt sökning"
+
+#: js/Headlines.js:622
+msgid "Invert"
+msgstr "Invertera"
+
+#: js/Headlines.js:630
+msgid "Set score"
+msgstr "Ange poäng"
+
+#: js/Headlines.js:635
+msgid "Delete permanently"
+msgstr ""
+
+#: js/Headlines.js:776
+#: js/Headlines.js:793
+msgid "Click to open next unread feed."
+msgstr "Klicka för att öppna nästa olästa flöde."
+
+#: js/Headlines.js:790
+msgid "New articles found, reload feed to continue."
+msgstr "Nya artiklar hittades, ladda om flöde för att fortsätta."
+
+#: js/Headlines.js:809
+msgid "Could not update headlines (invalid object received - see error console for details)"
+msgstr ""
+
+#: js/Headlines.js:843
+#: js/Headlines.js:869
+#: js/Headlines.js:881
+#: js/Headlines.js:1024
+#: js/Headlines.js:1041
+#: js/Headlines.js:1058
+#: js/Headlines.js:1195
+#: js/Article.js:62
+#: plugins/mail/mail.js:9
+#: plugins/mailto/init.js:9
+msgid "No articles selected."
+msgstr "Inga artiklar valda."
+
+#: js/Headlines.js:995
+#, javascript-format
+msgid "%d article selected"
+msgid_plural "%d articles selected"
+msgstr[0] "%d artikel vald"
+msgstr[1] "%d artiklar valda"
+
+#: js/Headlines.js:1066
+#, javascript-format
+msgid "Delete %d selected article in %s?"
+msgid_plural "Delete %d selected articles in %s?"
+msgstr[0] "Radera %d vald artikel i %s?"
+msgstr[1] "Radera %d valda artiklar i %s?"
+
+#: js/Headlines.js:1068
+#, javascript-format
+msgid "Delete %d selected article?"
+msgid_plural "Delete %d selected articles?"
+msgstr[0] "Radera %d vald artikel?"
+msgstr[1] "Radera %d valda artiklar?"
+
+#: js/Headlines.js:1201
+#, javascript-format
+msgid "Mark %d selected article in %s as read?"
+msgid_plural "Mark %d selected articles in %s as read?"
+msgstr[0] "Markera %d vald artikel i %s som läst?"
+msgstr[1] "Markera %d valda artiklar i %s som läst?"
+
+#: js/Headlines.js:1217
+msgid "No article is selected."
+msgstr "Ingen artikel vald."
+
+#: js/Headlines.js:1252
+msgid "No articles found to mark"
+msgstr "Hittade inga artiklar att flagga"
+
+#: js/Headlines.js:1254
+#, javascript-format
+msgid "Mark %d article as read?"
+msgid_plural "Mark %d articles as read?"
+msgstr[0] "Markera %d artikel som läst?"
+msgstr[1] "Markera %d artiklar som lästa?"
+
+#: js/Headlines.js:1313
+msgid "Open original article"
+msgstr "Öppna orginalartikeln"
+
+#: js/Headlines.js:1320
+msgid "Display article URL"
+msgstr "Visa artikel-URL"
+
+#: js/Headlines.js:1427
+msgid "Assign label"
+msgstr "Ange etikett"
+
+#: js/Headlines.js:1432
+msgid "Remove label"
+msgstr "Ta bort etikett"
+
+#: js/Headlines.js:1469
+msgid "Select articles in group"
+msgstr "Välj artiklar i grupp"
+
+#: js/Headlines.js:1479
+msgid "Mark group as read"
+msgstr "Markera grupp som läst"
+
+#: js/Headlines.js:1491
+msgid "Mark feed as read"
+msgstr "Flagga kanal som läst"
+
+#: js/PrefFilterTree.js:47
+#: js/CommonFilters.js:220
+msgid "in"
+msgstr "i"
+
+#: js/PrefFilterTree.js:50
+msgid "Inverse"
+msgstr "Invertera"
+
+#: js/PrefFilterTree.js:110
+#: js/PrefFilterTree.js:139
+msgid "No filters selected."
+msgstr "Inga filter valda."
+
+#: js/PrefFilterTree.js:114
+msgid "Combine selected filters?"
+msgstr "Slå ihop markerade filter?"
+
+#: js/PrefFilterTree.js:126
+msgid "Remove selected filters?"
+msgstr "Radera markerade filter?"
+
+#: js/Article.js:36
+msgid "Please enter new score for selected articles:"
+msgstr "Ange ny poäng för markerade artiklar:"
+
+#: js/Article.js:70
+msgid "Please enter new score for this article:"
+msgstr "Ange ny poäng för denna artikel:"
+
+#: js/Article.js:120
+msgid "Article URL:"
+msgstr "URL för artikel:"
+
+#: js/Article.js:122
+#, fuzzy
+msgid "No URL could be displayed for this article."
+msgstr "Sluta dela denna artiklar?"
+
+#: js/Article.js:192
+msgid "Attachments"
+msgstr "Bilagor"
+
+#: js/Article.js:231
+msgid "comments"
+msgstr "kommentarer"
+
+#: js/Article.js:234
+#, fuzzy
+msgid "comment"
+msgid_plural "comments"
+msgstr[0] "Kommentarer?"
+msgstr[1] "Kommentarer?"
+
+#: js/FeedTree.js:102
+#, fuzzy
+msgid "Debug feed"
+msgstr "Felsök viewfeed()"
+
+#: js/FeedTree.js:125
+msgid "(Un)collapse"
+msgstr "Fäll ut/ihop"
+
+#: js/PrefUsers.js:17
+msgid "Please enter username:"
+msgstr "Vänligen ange användarnamn:"
+
+#: js/PrefUsers.js:36
+msgid "User Editor"
+msgstr "Användareditor"
+
+#: js/PrefUsers.js:130
+#: js/PrefUsers.js:169
+msgid "No users selected."
+msgstr "Inga användare valda."
+
+#: js/PrefUsers.js:135
+msgid "Please select one user."
+msgstr "Vänligen markera en användare."
+
+#: js/PrefUsers.js:139
+msgid "Reset password of selected user?"
+msgstr "Återställ lösenordet för markerad användare?"
+
+#: js/PrefUsers.js:155
+msgid "Remove selected users? Neither default admin nor your account will be removed."
+msgstr "Radera markerade användare? Varken admin eller ditt konto kan raderas."
+
+#: js/CommonFilters.js:14
+msgid "Edit Filter"
+msgstr "Redigera filter"
+
+#: js/CommonFilters.js:14
+msgid "Create Filter"
+msgstr "Skapa filter"
+
+#: js/CommonFilters.js:41
+#, javascript-format
+msgid "Looking for articles (%d processed, %f found)..."
+msgstr "Letar efter artiklar (%d behandlade, %f hittade)..."
+
+#: js/CommonFilters.js:67
+msgid "No recent articles matching this filter have been found."
+msgstr "Inga nya artiklar som matchar detta filter funna."
+
+#: js/CommonFilters.js:70
+#, javascript-format
+msgid "Found %d articles matching this filter:"
+msgstr "Hittade %d artiklar som matchar detta filter:"
+
+#: js/CommonFilters.js:232
+msgid "Save rule"
+msgstr "Spara regel"
+
+#: js/CommonFilters.js:246
+msgid "Edit action"
+msgstr "Redigera åtgärd"
+
+#: js/CommonFilters.js:246
+msgid "Add action"
+msgstr "Lägg till aktivitet"
+
+#: js/CommonFilters.js:449
+msgid "Delete"
+msgstr "Radera"
+
+#: js/CommonFilters.js:478
+msgid "Add"
+msgstr "Lägg till"
+
+#: js/CommonFilters.js:515
+#: js/CommonFilters.js:519
+msgid "Test"
+msgstr "Test"
+
+#: js/CommonFilters.js:520
+msgid "Create"
+msgstr "Skapa"
 
 #: plugins/af_psql_trgm/init.js:6
 msgid "Related articles"
@@ -2467,501 +2835,202 @@ msgstr "Sluta dela denna artiklar?"
 msgid "This will invalidate all previously shared article URLs. Continue?"
 msgstr "Detta tar bort alla tidigare delade artikel-URLer. Fortsätt?"
 
-#: js/App.js:453
-msgid "Update daemon is not running."
-msgstr ""
+#~ msgid "Amount of articles to display at once"
+#~ msgstr "Antal artiklar att visa samtidigt"
 
-#: js/App.js:466
+#~ msgid "Sort feeds by unread articles count"
+#~ msgstr "Sortera flöde efter antal olästa artiklar"
+
+#~ msgid "Reverse headline order (oldest first)"
+#~ msgstr "Omvänd sortering (äldsta överst)"
+
+#~ msgid "Use feed-specified date to sort headlines instead of local import date."
+#~ msgstr "Använd det datum som anges av flödet, istället för lokalt importdatum, för att sortera rubriker."
+
+#~ msgid "Strip unsafe tags from articles"
+#~ msgstr "Ta bort osäkra taggar från artiklar"
+
+#~ msgid "Strip all but most common HTML tags when reading articles."
+#~ msgstr "Ta bort alla utom de vanligast HTML-taggarna från artiklarna."
+
+#~ msgid "Your preferences are now set to default values."
+#~ msgstr "Dina inställningar är nu satta till standardvärdena."
+
+#~ msgid "no tags"
+#~ msgstr "Inga taggar"
+
+#~ msgid "Edit article Tags"
+#~ msgstr "Redigera artikeltaggar"
+
+#~ msgid "Edit rule"
+#~ msgstr "Redigera regel"
+
+#~ msgid "Add rule"
+#~ msgstr "Tillämpa regel"
+
+#~ msgid "Enabled"
+#~ msgstr "Aktiverat"
+
+#~ msgid "Match any rule"
+#~ msgstr "Matcha alla regler"
+
+#~ msgid "Inverse matching"
+#~ msgstr "Invertera matchning"
+
 #, fuzzy
-msgid "Update daemon is not updating feeds."
-msgstr ""
-"<span onclick=\"App.explainError(3)\">Uppdaterings-daemonen uppdaterar inte "
-"flöden.</span>"
+#~ msgid "Update daemon is not updating feeds."
+#~ msgstr "<span onclick=\"App.explainError(3)\">Uppdaterings-daemonen uppdaterar inte flöden.</span>"
 
-#: js/App.js:569
-msgid "Unhandled exception"
-msgstr "Ohanterat undantag"
+#~ msgid "Tags for this article (separated by commas):"
+#~ msgstr "Taggar för denna artikel (kommaseparerade):"
 
-#: js/App.js:1003
-msgid "Please enable mail or mailto plugin first."
-msgstr "Vänligen aktivera mail- eller mailto-tillägget först."
+#~ msgid "Saving article tags..."
+#~ msgstr "Sparar artikeltaggar..."
 
-#: js/App.js:1191
-msgid "Please select some feed first."
-msgstr "Välj några flöden först."
+#~ msgid "Removing selected feeds..."
+#~ msgstr "Tar bort valda flöden..."
 
-#: js/App.js:1196
-msgid "You can't unsubscribe from the category."
-msgstr "Du kan inte säga upp prenumeration på kategorin."
+#~ msgid "Removing feed..."
+#~ msgstr "Tar bort flöde..."
 
-#: js/Article.js:327
-msgid "Tags for this article (separated by commas):"
-msgstr "Taggar för denna artikel (kommaseparerade):"
+#~ msgid "Upload failed: icon is too big."
+#~ msgstr "Uppladdningen misslyckades: ikonen är för stor."
 
-#: js/Article.js:347
-msgid "Saving article tags..."
-msgstr "Sparar artikeltaggar..."
+#~ msgid "Upload failed."
+#~ msgstr "Uppladdningen misslyckades."
 
-#: js/CommonDialogs.js:30
-msgid ""
-"Provided URL is a HTML page referencing multiple feeds, please select "
-"required feed from the dropdown menu below."
-msgstr ""
+#~ msgid "Upload complete."
+#~ msgstr "Uppladdning klar."
 
-#: js/CommonDialogs.js:122
+#~ msgid "Removing feed icon..."
+#~ msgstr "Tar bort flödesikon..."
+
+#~ msgid "Feed icon removed."
+#~ msgstr "Flödesikon borttagen."
+
+#~ msgid "Saving data..."
+#~ msgstr "Sparar data..."
+
 #, fuzzy
-msgid ""
-"Failed to parse output. This can indicate server timeout and/or network "
-"issues. Backend output was logged to browser console."
-msgstr ""
-"Misslyckades med att tolka utmatning. Detta kan indikera timeout för servern "
-"och/eller nätverksproblem. Utmatning från backend loggades till "
-"webbläsarkonsolen."
+#~ msgid "Upload new icon..."
+#~ msgstr "Ladda upp ny ikon för detta flöde?"
 
-#: js/CommonDialogs.js:136
-msgid "Subscribed to %s"
-msgstr "Prenumererar på %s"
+#~ msgid "Show as feed"
+#~ msgstr "Visa som flöde"
 
-#: js/CommonDialogs.js:145
-msgid "Specified URL seems to be invalid."
-msgstr "Den angivna URLen verkar vara felaktig."
+#~ msgid "Generate new syndication address for this feed?"
+#~ msgstr "Generera en ny syndikeringsadress för detta flöde?"
 
-#: js/CommonDialogs.js:148
-msgid "Specified URL doesn't seem to contain any feeds."
-msgstr "Den angivna URLen verkar inte innehålla något flöde."
+#~ msgid "Trying to change address..."
+#~ msgstr "Försöker ändra adress..."
 
-#: js/CommonDialogs.js:161
-msgid "Expand to select feed"
-msgstr "Expandera för att välja flöde"
+#~ msgid "Could not change feed URL."
+#~ msgstr "Kunde inte ändra URL för flödet."
 
-#: js/CommonDialogs.js:173
-msgid "Couldn't download the specified URL: %s"
-msgstr "Kunde inte ladda ned följande URL: %s"
+#~ msgid "%s can be accessed via the following secret URL:"
+#~ msgstr "%s kan nås genom följande hemliga URL:"
 
-#: js/CommonDialogs.js:176
-msgid "XML validation failed: %s"
-msgstr "Validering av XML misslyckades: %s"
+#~ msgid "Error while trying to get filter test results."
+#~ msgstr "Fel inträffade vid hämtning av testresultaten för filtret."
 
-#: js/CommonDialogs.js:179
-msgid "You are already subscribed to this feed."
-msgstr "Du prenumererar redan på detta flöde."
+#~ msgid "Inverse regular expression matching"
+#~ msgstr "Invertera matchning av regulära uttryck"
 
-#: js/CommonDialogs.js:201
-msgid "Feeds with update errors"
-msgstr "Flöden med uppdateringsfel"
-
-#: js/CommonDialogs.js:209 js/PrefFeedTree.js:478
-msgid "Remove selected feeds?"
-msgstr "Ta bort markerade flöden?"
-
-#: js/CommonDialogs.js:210 js/PrefFeedTree.js:479
-msgid "Removing selected feeds..."
-msgstr "Tar bort valda flöden..."
-
-#: js/CommonDialogs.js:305
-msgid "Removing feed..."
-msgstr "Tar bort flöde..."
-
-#: js/CommonDialogs.js:369
-msgid "Upload failed: icon is too big."
-msgstr "Uppladdningen misslyckades: ikonen är för stor."
-
-#: js/CommonDialogs.js:372
-msgid "Upload failed."
-msgstr "Uppladdningen misslyckades."
-
-#: js/CommonDialogs.js:376
-msgid "Upload complete."
-msgstr "Uppladdning klar."
-
-#: js/CommonDialogs.js:401
-msgid "Removing feed icon..."
-msgstr "Tar bort flödesikon..."
-
-#: js/CommonDialogs.js:406
-msgid "Feed icon removed."
-msgstr "Flödesikon borttagen."
-
-#: js/CommonDialogs.js:426 js/CommonFilters.js:391 js/PrefFeedTree.js:344
-#: js/PrefUsers.js:39
-msgid "Saving data..."
-msgstr "Sparar data..."
-
-#: js/CommonDialogs.js:568
 #, fuzzy
-msgid "Upload new icon..."
-msgstr "Ladda upp ny ikon för detta flöde?"
+#~ msgid "on"
+#~ msgstr "Ingen"
 
-#: js/CommonDialogs.js:597
-msgid "Show as feed"
-msgstr "Visa som flöde"
-
-#: js/CommonDialogs.js:599
-msgid "Generate new syndication address for this feed?"
-msgstr "Generera en ny syndikeringsadress för detta flöde?"
-
-#: js/CommonDialogs.js:601 js/PrefHelpers.js:359
-msgid "Trying to change address..."
-msgstr "Försöker ändra adress..."
-
-#: js/CommonDialogs.js:619 js/PrefHelpers.js:373
-msgid "Could not change feed URL."
-msgstr "Kunde inte ändra URL för flödet."
-
-#: js/CommonDialogs.js:626
-msgid "%s can be accessed via the following secret URL:"
-msgstr "%s kan nås genom följande hemliga URL:"
-
-#: js/CommonFilters.js:14
-msgid "Edit Filter"
-msgstr "Redigera filter"
-
-#: js/CommonFilters.js:14
-msgid "Create Filter"
-msgstr "Skapa filter"
-
-#: js/CommonFilters.js:41
-msgid "Looking for articles (%d processed, %f found)..."
-msgstr "Letar efter artiklar (%d behandlade, %f hittade)..."
-
-#: js/CommonFilters.js:70
-msgid "Found %d articles matching this filter:"
-msgstr "Hittade %d artiklar som matchar detta filter:"
-
-#: js/CommonFilters.js:79
-msgid "Error while trying to get filter test results."
-msgstr "Fel inträffade vid hämtning av testresultaten för filtret."
-
-#: js/CommonFilters.js:214
-msgid "Inverse regular expression matching"
-msgstr "Invertera matchning av regulära uttryck"
-
-#: js/CommonFilters.js:218
 #, fuzzy
-msgid "on"
-msgstr "Ingen"
+#~ msgid "More info"
+#~ msgstr "mer info"
 
-#: js/CommonFilters.js:230
+#~ msgid "Save action"
+#~ msgstr "Spara aktivitet"
+
+#~ msgid "Remove filter?"
+#~ msgstr "Radera filter?"
+
+#~ msgid "Removing filter..."
+#~ msgstr "Tar bort filter..."
+
+#~ msgid "Marking all feeds as read..."
+#~ msgstr "Markerar alla flöden som lästa..."
+
+#~ msgid "Select..."
+#~ msgstr "Välj..."
+
+#~ msgid "Removing category..."
+#~ msgstr "Tar bort kategori..."
+
+#~ msgid "Unsubscribing from selected feeds..."
+#~ msgstr "Tar bort prenumeration för valda flöden..."
+
+#~ msgid "Removing selected categories..."
+#~ msgstr "Raderar valda kategorier..."
+
+#~ msgid "Creating category..."
+#~ msgstr "Skapar kategori..."
+
+#~ msgid "Feeds without recent updates"
+#~ msgstr "Flöden som inte uppdaterats på länge"
+
+#~ msgid "Joining filters..."
+#~ msgstr "Slår ihop filter..."
+
+#~ msgid "Removing selected filters..."
+#~ msgstr "Tar bort valda filter..."
+
+#~ msgid "Clearing URLs..."
+#~ msgstr "Rensar URLer..."
+
+#~ msgid "Generated URLs cleared."
+#~ msgstr "Genererade URLer rensade."
+
+#~ msgid "Removing selected profiles..."
+#~ msgstr "Raderar valda profiler...."
+
+#~ msgid "Creating profile..."
+#~ msgstr "Skapar profil..."
+
+#~ msgid "Importing, please wait..."
+#~ msgstr "Importerar, vänligen vänta..."
+
+#~ msgid "Foreground:"
+#~ msgstr "Förgrund:"
+
+#~ msgid "Removing selected labels..."
+#~ msgstr "Tar bort valda etiketter..."
+
+#~ msgid "Adding user..."
+#~ msgstr "Lägger till användare..."
+
+#~ msgid "Resetting password for selected user..."
+#~ msgstr "Återställer lösenord för vald användare..."
+
+#~ msgid "Removing selected users..."
+#~ msgstr "Tar bort valda användare..."
+
+#~ msgid "Saving article note..."
+#~ msgstr "Sparar artikelnotering..."
+
 #, fuzzy
-msgid "More info"
-msgstr "mer info"
+#~ msgid "Unable to fetch full text for this article"
+#~ msgstr "Ange ny poäng för denna artikel:"
 
-#: js/CommonFilters.js:232
-msgid "Save rule"
-msgstr "Spara regel"
+#~ msgid "Click to expand article"
+#~ msgstr "Klicka för att expandera artikeln"
 
-#: js/CommonFilters.js:246
-msgid "Edit action"
-msgstr "Redigera åtgärd"
+#~ msgid "Trying to change URL..."
+#~ msgstr "Försöker ändra URL..."
 
-#: js/CommonFilters.js:246
-msgid "Add action"
-msgstr "Lägg till aktivitet"
+#~ msgid "Could not change URL."
+#~ msgstr "Kunde inte ändra URL."
 
-#: js/CommonFilters.js:316
-msgid "Save action"
-msgstr "Spara aktivitet"
+#~ msgid "This program requires XmlHttpRequest to function properly. Your browser doesn't seem to support it."
+#~ msgstr "Denna sida behöver XmlHttpRequest för att kunna köras. Din webbläsare verkar inte stöda det."
 
-#: js/CommonFilters.js:356
-msgid "Remove filter?"
-msgstr "Radera filter?"
-
-#: js/CommonFilters.js:361
-msgid "Removing filter..."
-msgstr "Tar bort filter..."
-
-#: js/CommonFilters.js:449 js/CommonFilters.js:481
-msgid "Delete"
-msgstr "Radera"
-
-#: js/CommonFilters.js:515 js/CommonFilters.js:519
-msgid "Test"
-msgstr "Test"
-
-#: js/CommonFilters.js:520
-msgid "Create"
-msgstr "Skapa"
-
-#: js/FeedTree.js:102
-#, fuzzy
-msgid "Debug feed"
-msgstr "Felsök viewfeed()"
-
-#: js/FeedTree.js:125
-msgid "(Un)collapse"
-msgstr "Fäll ut/ihop"
-
-#: js/Feeds.js:257
-msgid ""
-"You are using default tt-rss password. Please change it in the Preferences "
-"(Personal data / Authentication)."
-msgstr ""
-"Du använder standardlösenordet för tt-rss. Vänligen ändra det i "
-"Inställningen (Personliga data / Autentisering)."
-
-#: js/Feeds.js:416
-msgid "Mark all articles as read?"
-msgstr "Flagga alla artiklar som lästa?"
-
-#: js/Feeds.js:420
-msgid "Marking all feeds as read..."
-msgstr "Markerar alla flöden som lästa..."
-
-#: js/Feeds.js:437
-msgid "Mark %w in %s older than 1 day as read?"
-msgstr "Markera %w i %s äldre än 1 dag som lästa?"
-
-#: js/Feeds.js:440
-msgid "Mark %w in %s older than 1 week as read?"
-msgstr "Markera %w i %s äldre än 1 vecka som lästa?"
-
-#: js/Feeds.js:443
-msgid "Mark %w in %s older than 2 weeks as read?"
-msgstr "Markera %w i %s äldre än 2 veckor som lästa?"
-
-#: js/Feeds.js:446
-msgid "Mark %w in %s as read?"
-msgstr "Märk %w i %s som lästa?"
-
-#: js/Feeds.js:449
-msgid "search results"
-msgstr "sökresultat"
-
-#: js/Feeds.js:449
-msgid "all articles"
-msgstr "alla artiklar"
-
-#: js/Feeds.js:490
-msgid "Mark all articles in %s as read?"
-msgstr "Märk alla artiklar i %s som lästa?"
-
-#: js/Feeds.js:611
-msgid "Search syntax"
-msgstr "Söksyntax"
-
-#: js/Headlines.js:606
-msgid "Cancel search"
-msgstr "Avbryt sökning"
-
-#: js/Headlines.js:614
-msgid "Select..."
-msgstr "Välj..."
-
-#: js/Headlines.js:721 js/Headlines.js:772 js/Headlines.js:789
-msgid "Click to open next unread feed."
-msgstr "Klicka för att öppna nästa olästa flöde."
-
-#: js/Headlines.js:786
-msgid "New articles found, reload feed to continue."
-msgstr "Nya artiklar hittades, ladda om flöde för att fortsätta."
-
-#: js/PrefFeedTree.js:180
-msgid "Removing category..."
-msgstr "Tar bort kategori..."
-
-#: js/PrefFeedTree.js:194
-msgid "Unsubscribing from selected feeds..."
-msgstr "Tar bort prenumeration för valda flöden..."
-
-#: js/PrefFeedTree.js:243
-msgid "Removing selected categories..."
-msgstr "Raderar valda kategorier..."
-
-#: js/PrefFeedTree.js:384
-msgid "Creating category..."
-msgstr "Skapar kategori..."
-
-#: js/PrefFeedTree.js:417
-#, fuzzy
-msgid "One valid feed per line (no detection is done)"
-msgstr "Lägg till ett giltigt RSS-flöde per rad (ingen flödesupptäckt görs)"
-
-#: js/PrefFeedTree.js:470
-msgid "Feeds without recent updates"
-msgstr "Flöden som inte uppdaterats på länge"
-
-#: js/PrefFilterTree.js:115
-msgid "Joining filters..."
-msgstr "Slår ihop filter..."
-
-#: js/PrefFilterTree.js:127
-msgid "Removing selected filters..."
-msgstr "Tar bort valda filter..."
-
-#: js/PrefHelpers.js:46 plugins/share/share_prefs.js:6
-msgid "Clearing URLs..."
-msgstr "Rensar URLer..."
-
-#: js/PrefHelpers.js:49
-msgid "Generated URLs cleared."
-msgstr "Genererade URLer rensade."
-
-#: js/PrefHelpers.js:109
-msgid "Removing selected profiles..."
-msgstr "Raderar valda profiler...."
-
-#: js/PrefHelpers.js:128
-msgid "Creating profile..."
-msgstr "Skapar profil..."
-
-#: js/PrefHelpers.js:178
-msgid "(active)"
-msgstr "(aktiva)"
-
-#: js/PrefHelpers.js:199
-msgid "Activate selected profile?"
-msgstr "Aktivera markerad profil?"
-
-#: js/PrefHelpers.js:208
-msgid "Please choose a profile to activate."
-msgstr "Välj en profil att aktivera."
-
-#: js/PrefHelpers.js:239
-msgid ""
-"You can override colors, fonts and layout of your currently selected theme "
-"with custom CSS declarations here."
-msgstr ""
-"Du kan åsidosätta färger, typsnitt och layout för ditt valda tema med "
-"anpassade CSS-regler här."
-
-#: js/PrefHelpers.js:248
-msgid ""
-"User CSS has been applied, you might need to reload the page to see all "
-"changes."
-msgstr ""
-
-#: js/PrefHelpers.js:274
-msgid "Reset to defaults?"
-msgstr "Återställ till standardvärden?"
-
-#: js/PrefHelpers.js:282
-msgid "Clear stored data for this plugin?"
-msgstr "Radera lagrad data för detta tillägg?"
-
-#: js/PrefHelpers.js:302
-msgid "Please choose an OPML file first."
-msgstr "Välj en OPML-fil först."
-
-#: js/PrefHelpers.js:305
-msgid "Importing, please wait..."
-msgstr "Importerar, vänligen vänta..."
-
-#: js/PrefHelpers.js:314
-msgid "OPML Import"
-msgstr "OPML-import"
-
-#: js/PrefHelpers.js:325
-msgid ""
-"If you have imported labels and/or filters, you might need to reload "
-"preferences to see your new data."
-msgstr ""
-"Om du har importerat etiketter och/eller filter kan du behöva ladda om "
-"inställningarna för att se din nya data."
-
-#: js/PrefHelpers.js:356
-msgid "Public OPML URL"
-msgstr "Publik OPML-URL"
-
-#: js/PrefHelpers.js:358
-msgid "Replace current OPML publishing address with a new one?"
-msgstr "Byt nuvarande OPML-adress med en ny?"
-
-#: js/PrefHelpers.js:381
-msgid "Your Public OPML URL is:"
-msgstr "Din publika OPML-URL är:"
-
-#: js/PrefLabelTree.js:124
-msgid "Caption"
-msgstr "Titel"
-
-#: js/PrefLabelTree.js:141
-msgid "Colors"
-msgstr "Färger"
-
-#: js/PrefLabelTree.js:145
-msgid "Foreground:"
-msgstr "Förgrund:"
-
-#: js/PrefLabelTree.js:146
-msgid "Background:"
-msgstr "Bakgrund:"
-
-#: js/PrefLabelTree.js:211
-msgid "Removing selected labels..."
-msgstr "Tar bort valda etiketter..."
-
-#: js/PrefUsers.js:17
-msgid "Please enter username:"
-msgstr "Vänligen ange användarnamn:"
-
-#: js/PrefUsers.js:20
-msgid "Adding user..."
-msgstr "Lägger till användare..."
-
-#: js/PrefUsers.js:36
-msgid "User Editor"
-msgstr "Användareditor"
-
-#: js/PrefUsers.js:130 js/PrefUsers.js:169
-msgid "No users selected."
-msgstr "Inga användare valda."
-
-#: js/PrefUsers.js:135
-msgid "Please select one user."
-msgstr "Vänligen markera en användare."
-
-#: js/PrefUsers.js:139
-msgid "Reset password of selected user?"
-msgstr "Återställ lösenordet för markerad användare?"
-
-#: js/PrefUsers.js:140
-msgid "Resetting password for selected user..."
-msgstr "Återställer lösenord för vald användare..."
-
-#: js/PrefUsers.js:155
-msgid ""
-"Remove selected users? Neither default admin nor your account will be "
-"removed."
-msgstr "Radera markerade användare? Varken admin eller ditt konto kan raderas."
-
-#: js/PrefUsers.js:156
-msgid "Removing selected users..."
-msgstr "Tar bort valda användare..."
-
-#: plugins/note/note.js:9
-msgid "Saving article note..."
-msgstr "Sparar artikelnotering..."
-
-#: plugins/af_readability/init.js:31
-#, fuzzy
-msgid "Unable to fetch full text for this article"
-msgstr "Ange ny poäng för denna artikel:"
-
-#: plugins/shorten_expanded/init.js:41
-msgid "Click to expand article"
-msgstr "Klicka för att expandera artikeln"
-
-#: plugins/share/share.js:11
-msgid "Trying to change URL..."
-msgstr "Försöker ändra URL..."
-
-#: plugins/share/share.js:34
-msgid "Could not change URL."
-msgstr "Kunde inte ändra URL."
-
-#~ msgid ""
-#~ "This program requires XmlHttpRequest to function properly. Your browser "
-#~ "doesn't seem to support it."
-#~ msgstr ""
-#~ "Denna sida behöver XmlHttpRequest för att kunna köras. Din webbläsare "
-#~ "verkar inte stöda det."
-
-#~ msgid ""
-#~ "This program requires cookies to function properly. Your browser doesn't "
-#~ "seem to support them."
-#~ msgstr ""
-#~ "Denna sida behöver cookies för att fungera. Din webbläsare verkar inte "
-#~ "stöda det."
+#~ msgid "This program requires cookies to function properly. Your browser doesn't seem to support them."
+#~ msgstr "Denna sida behöver cookies för att fungera. Din webbläsare verkar inte stöda det."
 
 #~ msgid "Backend sanity check failed."
 #~ msgstr "Sanitetskontroll för \"backend\" misslyckades."
@@ -2969,12 +3038,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Frontend sanity check failed."
 #~ msgstr "Sanitetskontroll för \"frontend\" misslyckades."
 
-#~ msgid ""
-#~ "Incorrect database schema version. &lt;a href='db-updater.php'&gt;Please "
-#~ "update&lt;/a&gt;."
-#~ msgstr ""
-#~ "Felaktig version för databasshema. &lt;a href='db-updater.php'&gt;"
-#~ "Vänligen uppdatera&lt;/a&gt;."
+#~ msgid "Incorrect database schema version. &lt;a href='db-updater.php'&gt;Please update&lt;/a&gt;."
+#~ msgstr "Felaktig version för databasshema. &lt;a href='db-updater.php'&gt;Vänligen uppdatera&lt;/a&gt;."
 
 #~ msgid "Request not authorized."
 #~ msgstr "Förfrågan ej tillåten."
@@ -2982,12 +3047,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "No operation to perform."
 #~ msgstr "Ingen aktivtet vald."
 
-#~ msgid ""
-#~ "Could not display feed: query failed. Please check label match syntax or "
-#~ "local configuration."
-#~ msgstr ""
-#~ "Kunde inte visa flöde: sökning misslyckades. Vänligen kontrollera "
-#~ "syntaxen för etikettmatchning eller den lokal konfiguration."
+#~ msgid "Could not display feed: query failed. Please check label match syntax or local configuration."
+#~ msgstr "Kunde inte visa flöde: sökning misslyckades. Vänligen kontrollera syntaxen för etikettmatchning eller den lokal konfiguration."
 
 #~ msgid "Denied. Your access level is insufficient to access this page."
 #~ msgstr "Nekad. Din behörighetsnivå är för låg för att ladda denna sida."
@@ -2995,17 +3056,11 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Configuration check failed"
 #~ msgstr "Kontrollen av konfiguration misslyckades"
 
-#~ msgid ""
-#~ "Your version of MySQL is not currently supported. Please see official "
-#~ "site for more information."
-#~ msgstr ""
-#~ "Din version av MySQL stöds inte för närvarande. Vänligen se den "
-#~ "officiella webbplatsen för mer information."
+#~ msgid "Your version of MySQL is not currently supported. Please see official site for more information."
+#~ msgstr "Din version av MySQL stöds inte för närvarande. Vänligen se den officiella webbplatsen för mer information."
 
 #~ msgid "SQL escaping test failed, check your database and PHP configuration"
-#~ msgstr ""
-#~ "Test för \"SQL escaping\" misslyckades, kontrollera databas och PHP-"
-#~ "konfiguration"
+#~ msgstr "Test för \"SQL escaping\" misslyckades, kontrollera databas och PHP-konfiguration"
 
 #~ msgid "Method not found"
 #~ msgstr "Hittade inte metod"
@@ -3038,9 +3093,6 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Feed URL"
 #~ msgstr "URL för flöde"
 
-#~ msgid "Site URL:"
-#~ msgstr "URL för sajt:"
-
 #~ msgid "Site URL"
 #~ msgstr "URL för sajt"
 
@@ -3072,12 +3124,6 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Create profile"
 #~ msgstr "Skapa profil"
 
-#~ msgid "Remove selected profiles"
-#~ msgstr "Radera markerade profiler"
-
-#~ msgid "Activate profile"
-#~ msgstr "Aktivera profil"
-
 #~ msgid "Your access level is insufficient to open this tab."
 #~ msgstr "Din behörighetsnivå är otillräcklig för att öppna denna flik."
 
@@ -3108,18 +3154,11 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "No matching users found."
 #~ msgstr "Hittade inga matchande användare."
 
-#~ msgid ""
-#~ "<b>Hint:</b> you need to fill in your login information if your feed "
-#~ "requires authentication, except for Twitter feeds."
-#~ msgstr ""
-#~ "<b>Tips:</b> du måste ange din inloggningsuppgifter om ditt flöde kräver "
-#~ "autentisering, dock ej för Twitter-flöden."
+#~ msgid "<b>Hint:</b> you need to fill in your login information if your feed requires authentication, except for Twitter feeds."
+#~ msgstr "<b>Tips:</b> du måste ange din inloggningsuppgifter om ditt flöde kräver autentisering, dock ej för Twitter-flöden."
 
 #~ msgid "Published & shared articles / Generated feeds"
 #~ msgstr "Publicerade och delade artiklar / Genererade flöden"
-
-#~ msgid "Unsubscribe from selected feeds"
-#~ msgstr "Ta bort prenumeration för valda flöden"
 
 #~ msgid "Feeds require authentication."
 #~ msgstr "Flödet kräver inloggning."
@@ -3131,12 +3170,6 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Select articles"
 #~ msgstr "Välj alla artiklar"
 
-#~ msgid "Invert"
-#~ msgstr "Invertera"
-
-#~ msgid "Set score"
-#~ msgstr "Ange poäng"
-
 #~ msgid "Feed or site URL"
 #~ msgstr "URL för flöde eller webbplats"
 
@@ -3144,14 +3177,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Search %s..."
 #~ msgstr "Sök..."
 
-#~ msgid "Used for word stemming"
-#~ msgstr "Används för att hitta ordstammar"
-
 #~ msgid "unknown type"
 #~ msgstr "Okänd typ"
-
-#~ msgid "Attachments"
-#~ msgstr "Bilagor"
 
 #~ msgid "Global settings"
 #~ msgstr "Globala inställningar"
@@ -3159,10 +3186,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Forward selected article(s) by email."
 #~ msgstr "Vidarebefordra markerade artiklar med e-post."
 
-#~ msgid ""
-#~ "You should be able to edit the message before sending in your mail client."
-#~ msgstr ""
-#~ "Du bör kunna redigera meddelandet i din e-postklient innan det skickas."
+#~ msgid "You should be able to edit the message before sending in your mail client."
+#~ msgstr "Du bör kunna redigera meddelandet i din e-postklient innan det skickas."
 
 #~ msgid "Help"
 #~ msgstr "Hjälp"
@@ -3177,13 +3202,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgstr "Nyregistrering av användare är inaktiverat."
 
 #, fuzzy
-#~ msgid ""
-#~ "Your temporary password will be sent to the specified email. Accounts, "
-#~ "which were not logged in once, are erased automatically 24 hours after "
-#~ "temporary password is sent."
-#~ msgstr ""
-#~ "Ditt tillfälliga lösenord kommer att skickas till angiven e-postadress. "
-#~ "Om du inte loggar in inom 24 timmar kommer kontot automatiskt att raderas."
+#~ msgid "Your temporary password will be sent to the specified email. Accounts, which were not logged in once, are erased automatically 24 hours after temporary password is sent."
+#~ msgstr "Ditt tillfälliga lösenord kommer att skickas till angiven e-postadress. Om du inte loggar in inom 24 timmar kommer kontot automatiskt att raderas."
 
 #~ msgid "Desired login:"
 #~ msgstr "Önskat användarnamn:"
@@ -3222,26 +3242,14 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Tag cloud"
 #~ msgstr "Taggmoln"
 
-#~ msgid ""
-#~ "Update daemon is enabled in configuration, but daemon process is not "
-#~ "running, which prevents all feeds from updating. Please start the daemon "
-#~ "process or contact instance owner."
-#~ msgstr ""
-#~ "Uppdateringsdemon är aktiverad i konfigurationen, men processen körs "
-#~ "inte. Detta förhindrar alla flöden från att uppdateras. Starta om "
-#~ "processen eller kontakta den som administrerar instansen."
+#~ msgid "Update daemon is enabled in configuration, but daemon process is not running, which prevents all feeds from updating. Please start the daemon process or contact instance owner."
+#~ msgstr "Uppdateringsdemon är aktiverad i konfigurationen, men processen körs inte. Detta förhindrar alla flöden från att uppdateras. Starta om processen eller kontakta den som administrerar instansen."
 
 #~ msgid "Last update:"
 #~ msgstr "Senaste uppdatering:"
 
-#~ msgid ""
-#~ "Update daemon is taking too long to perform a feed update. This could "
-#~ "indicate a problem like crash or a hang. Please check the daemon process "
-#~ "or contact instance owner."
-#~ msgstr ""
-#~ "Uppdateringsprocessen tar för lång tid på sig att uppdatera. Detta kan "
-#~ "indikera en låsning eller hängning. Kontrollera processen eller kontakta "
-#~ "administratören."
+#~ msgid "Update daemon is taking too long to perform a feed update. This could indicate a problem like crash or a hang. Please check the daemon process or contact instance owner."
+#~ msgstr "Uppdateringsprocessen tar för lång tid på sig att uppdatera. Detta kan indikera en låsning eller hängning. Kontrollera processen eller kontakta administratören."
 
 #~ msgid "Open Preferences"
 #~ msgstr "Öppna Inställningar"
@@ -3271,18 +3279,11 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "More Feeds"
 #~ msgstr "Fler flöden"
 
-#~ msgid ""
-#~ "Remove selected feeds from the archive? Feeds with stored articles will "
-#~ "not be removed."
-#~ msgstr ""
-#~ "Radera markerade flöden från arkivet? Flöden med sparade artiklar kommer "
-#~ "inte raderas."
+#~ msgid "Remove selected feeds from the archive? Feeds with stored articles will not be removed."
+#~ msgstr "Radera markerade flöden från arkivet? Flöden med sparade artiklar kommer inte raderas."
 
-#~ msgid ""
-#~ "<span onclick=\"App.explainError(1)\">Update daemon is not running.</span>"
-#~ msgstr ""
-#~ "<span onclick=\"App.explainError(1)\">Uppdaterings-daemonen körs inte.</"
-#~ "span>"
+#~ msgid "<span onclick=\"App.explainError(1)\">Update daemon is not running.</span>"
+#~ msgstr "<span onclick=\"App.explainError(1)\">Uppdaterings-daemonen körs inte.</span>"
 
 #~ msgid "Archive %d selected article in %s?"
 #~ msgid_plural "Archive %d selected articles in %s?"
@@ -3294,26 +3295,17 @@ msgstr "Kunde inte ändra URL."
 #~ msgstr[0] "Flytta tillbaka %d arkiverad artikel?"
 #~ msgstr[1] "Flytta tillbaka %d arkiverade artiklar?"
 
-#~ msgid ""
-#~ "Please note that unstarred articles might get purged on next feed update."
-#~ msgstr ""
-#~ "Vänligen notera att icke stjärnmärkta artiklar kanske rensas vid nästa "
-#~ "flödesuppdatering."
+#~ msgid "Please note that unstarred articles might get purged on next feed update."
+#~ msgstr "Vänligen notera att icke stjärnmärkta artiklar kanske rensas vid nästa flödesuppdatering."
 
 #~ msgid "There is no error, the file uploaded with success"
 #~ msgstr "Inget fel, filen uppladdades framgångsrikt"
 
-#~ msgid ""
-#~ "The uploaded file exceeds the upload_max_filesize directive in php.ini"
-#~ msgstr ""
-#~ "Den uppladdade filen överskriver direktivet upload_max_filesize i php.ini"
+#~ msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini"
+#~ msgstr "Den uppladdade filen överskriver direktivet upload_max_filesize i php.ini"
 
-#~ msgid ""
-#~ "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified "
-#~ "in the HTML form"
-#~ msgstr ""
-#~ "Den uppladdade filen överskriver direktivet MAX_FILE_SIZE som "
-#~ "specifierades i HTML-formuläret"
+#~ msgid "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form"
+#~ msgstr "Den uppladdade filen överskriver direktivet MAX_FILE_SIZE som specifierades i HTML-formuläret"
 
 #~ msgid "The uploaded file was only partially uploaded"
 #~ msgstr "Den uppaddade filen uppladdades endast delvis"
@@ -3342,21 +3334,11 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Toggle embed original"
 #~ msgstr "Stäng av/sätt på inbäddade original"
 
-#~ msgid ""
-#~ "To subscribe to GoComics use the comic's regular web page as the feed URL "
-#~ "(e.g. for the <em>Garfield</em> comic use <code>http://www.gocomics.com/"
-#~ "garfield</code>)."
-#~ msgstr ""
-#~ "För att prenumerera på GoComics: använd seriens vanliga webbsida som "
-#~ "flödes-URL (ex.: för <em>Garfield</em>, använd <code>http://www.gocomics."
-#~ "com/garfield</code>)."
+#~ msgid "To subscribe to GoComics use the comic's regular web page as the feed URL (e.g. for the <em>Garfield</em> comic use <code>http://www.gocomics.com/garfield</code>)."
+#~ msgstr "För att prenumerera på GoComics: använd seriens vanliga webbsida som flödes-URL (ex.: för <em>Garfield</em>, använd <code>http://www.gocomics.com/garfield</code>)."
 
-#~ msgid ""
-#~ "Drop any updated filters into <code>filters.local</code> in plugin "
-#~ "directory."
-#~ msgstr ""
-#~ "Lägg alla uppdaterade filter i <code>filters.local</code> i plugin-"
-#~ "katalogen."
+#~ msgid "Drop any updated filters into <code>filters.local</code> in plugin directory."
+#~ msgstr "Lägg alla uppdaterade filter i <code>filters.local</code> i plugin-katalogen."
 
 #~ msgid "Please enable embed_original plugin first."
 #~ msgstr "Vänligen aktivera tillägget embed_original först."
@@ -3367,12 +3349,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Import and export"
 #~ msgstr "Importera och exportera"
 
-#~ msgid ""
-#~ "You can export and import your Starred and Archived articles for "
-#~ "safekeeping or when migrating between tt-rss instances of same version."
-#~ msgstr ""
-#~ "Du kan exporta och importera dina stjärnmärkta och arkiverade artiklar så "
-#~ "att du har en backup eller för att flytta mellan tt-rss-instanser."
+#~ msgid "You can export and import your Starred and Archived articles for safekeeping or when migrating between tt-rss instances of same version."
+#~ msgstr "Du kan exporta och importera dina stjärnmärkta och arkiverade artiklar så att du har en backup eller för att flytta mellan tt-rss-instanser."
 
 #~ msgid "Export my data"
 #~ msgstr "Exportera min data"
@@ -3419,18 +3397,10 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Export Data"
 #~ msgstr "Exportera data"
 
-#~ msgid ""
-#~ "Finished, exported %d article. You can download the data <a "
-#~ "class='visibleLink' href='%u'>here</a>."
-#~ msgid_plural ""
-#~ "Finished, exported %d articles. You can download the data <a "
-#~ "class='visibleLink' href='%u'>here</a>."
-#~ msgstr[0] ""
-#~ "Klart, %d artikel exporterades. Du kan ladda ner datan <a "
-#~ "class='visibleLink' href='%u'>här</a>."
-#~ msgstr[1] ""
-#~ "Klart, %d artiklar exporterades. Du kan ladda ner datan <a "
-#~ "class='visibleLink' href='%u'>här</a>."
+#~ msgid "Finished, exported %d article. You can download the data <a class='visibleLink' href='%u'>here</a>."
+#~ msgid_plural "Finished, exported %d articles. You can download the data <a class='visibleLink' href='%u'>here</a>."
+#~ msgstr[0] "Klart, %d artikel exporterades. Du kan ladda ner datan <a class='visibleLink' href='%u'>här</a>."
+#~ msgstr[1] "Klart, %d artiklar exporterades. Du kan ladda ner datan <a class='visibleLink' href='%u'>här</a>."
 
 #~ msgid "Data Import"
 #~ msgstr "Importera data"
@@ -3466,17 +3436,11 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Hide from Popular feeds"
 #~ msgstr "Dölj från populära flöden"
 
-#~ msgid ""
-#~ "These feeds have not been updated with new content for 3 months (oldest "
-#~ "first):"
-#~ msgstr ""
-#~ "Följande flöden har inte uppdaterats med nytt innehåll på 3 månader "
-#~ "(äldst först):"
+#~ msgid "These feeds have not been updated with new content for 3 months (oldest first):"
+#~ msgstr "Följande flöden har inte uppdaterats med nytt innehåll på 3 månader (äldst först):"
 
-#~ msgid ""
-#~ "System plugins are enabled in <strong>config.php</strong> for all users."
-#~ msgstr ""
-#~ "Systemtillägg aktiveras i <strong>config.php</strong> för alla användare."
+#~ msgid "System plugins are enabled in <strong>config.php</strong> for all users."
+#~ msgstr "Systemtillägg aktiveras i <strong>config.php</strong> för alla användare."
 
 #~ msgid "Plugin"
 #~ msgstr "Tillägg"
@@ -3507,9 +3471,7 @@ msgstr "Kunde inte ändra URL."
 
 #, fuzzy
 #~ msgid "Automatically opens next unread feed after marking one as read"
-#~ msgstr ""
-#~ "Öppna automatiskt nästa flöde som har olästa artiklar efter att du "
-#~ "markerat ett som läst"
+#~ msgstr "Öppna automatiskt nästa flöde som har olästa artiklar efter att du markerat ett som läst"
 
 #~ msgid "Other interface tips are available in the Tiny Tiny RSS wiki."
 #~ msgstr "Fler tips finns i wikin."
@@ -3526,12 +3488,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Interface"
 #~ msgstr "Visning"
 
-#~ msgid ""
-#~ "When auto-detecting tags in articles these tags will not be applied "
-#~ "(comma-separated list)."
-#~ msgstr ""
-#~ "Använd inte följande taggar för automatisk taggning av artiklar (komma-"
-#~ "separerad lista)."
+#~ msgid "When auto-detecting tags in articles these tags will not be applied (comma-separated list)."
+#~ msgstr "Använd inte följande taggar för automatisk taggning av artiklar (komma-separerad lista)."
 
 #~ msgid "Automatically mark articles as read"
 #~ msgstr "Märk artiklar som lästa automatiskt"
@@ -3563,11 +3521,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Group headlines in virtual feeds"
 #~ msgstr "Gruppera rubriker i virtuella flöden"
 
-#~ msgid ""
-#~ "Special feeds, labels, and categories are grouped by originating feeds"
-#~ msgstr ""
-#~ "Speciella flöden, etiketter och kategorier är grupperade efter "
-#~ "ursprungsflöden"
+#~ msgid "Special feeds, labels, and categories are grouped by originating feeds"
+#~ msgstr "Speciella flöden, etiketter och kategorier är grupperade efter ursprungsflöden"
 
 #~ msgid "Feeds to subscribe, One per line"
 #~ msgstr "Flöden att prenumerera på, ett per rad"
@@ -3578,19 +3533,11 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "in %s"
 #~ msgstr "i %s"
 
-#~ msgid ""
-#~ "This option enables marking articles as read automatically while you "
-#~ "scroll article list."
-#~ msgstr ""
-#~ "Detta val aktiverar att artiklar automatiskt markeras som lästa när du "
-#~ "skrollar artikellistan."
+#~ msgid "This option enables marking articles as read automatically while you scroll article list."
+#~ msgstr "Detta val aktiverar att artiklar automatiskt markeras som lästa när du skrollar artikellistan."
 
-#~ msgid ""
-#~ "Shortest interval at which a feed will be checked for updates regardless "
-#~ "of update method"
-#~ msgstr ""
-#~ "Kortaste intervall som ett flöde kommer att kontrolleras för "
-#~ "uppdateringar oavsett uppdateringsmetod"
+#~ msgid "Shortest interval at which a feed will be checked for updates regardless of update method"
+#~ msgstr "Kortaste intervall som ett flöde kommer att kontrolleras för uppdateringar oavsett uppdateringsmetod"
 
 #~ msgid "Uses UTC timezone"
 #~ msgstr "Använder tidszonen UTC"
@@ -3610,22 +3557,14 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Access level"
 #~ msgstr "Behörighetsnivå"
 
-#~ msgid ""
-#~ "One time passwords are currently enabled. Enter your current password "
-#~ "below to disable."
-#~ msgstr ""
-#~ "Engångslösenord är för närvarande aktiverade. Ange ditt nuvarande "
-#~ "lösenord nedan för att inaktivera."
+#~ msgid "One time passwords are currently enabled. Enter your current password below to disable."
+#~ msgstr "Engångslösenord är för närvarande aktiverade. Ange ditt nuvarande lösenord nedan för att inaktivera."
 
 #~ msgid "Enter your password"
 #~ msgstr "Ange lösenord"
 
-#~ msgid ""
-#~ "You will need a compatible Authenticator to use this. Changing your "
-#~ "password would automatically disable OTP."
-#~ msgstr ""
-#~ "Du behöver en kompatibel autentifikator för att använda detta. Att byta "
-#~ "lösenord inaktiverar automatiskt OTP."
+#~ msgid "You will need a compatible Authenticator to use this. Changing your password would automatically disable OTP."
+#~ msgstr "Du behöver en kompatibel autentifikator för att använda detta. Att byta lösenord inaktiverar automatiskt OTP."
 
 #~ msgid "Enter the generated one time password"
 #~ msgstr "Ange det genererade engångslösenordet"
@@ -3658,18 +3597,11 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "mark feed as read"
 #~ msgstr "Flagga kanal som läst"
 
-#~ msgid ""
-#~ "You will need to reload Tiny Tiny RSS for plugin changes to take effect."
-#~ msgstr ""
-#~ "Du kommer behöva ladda om Tiny Tiny RSS för att ändringarna för tillägg "
-#~ "ska träda i kraft."
+#~ msgid "You will need to reload Tiny Tiny RSS for plugin changes to take effect."
+#~ msgstr "Du kommer behöva ladda om Tiny Tiny RSS för att ändringarna för tillägg ska träda i kraft."
 
-#~ msgid ""
-#~ "Published articles are exported as a public RSS feed and can be "
-#~ "subscribed by anyone who knows the URL specified below."
-#~ msgstr ""
-#~ "Publicerade artiklar exporteras som ett publikt RSS-flöde och kan "
-#~ "prenumeras på av alla som har URLen nedan."
+#~ msgid "Published articles are exported as a public RSS feed and can be subscribed by anyone who knows the URL specified below."
+#~ msgstr "Publicerade artiklar exporteras som ett publikt RSS-flöde och kan prenumeras på av alla som har URLen nedan."
 
 #, fuzzy
 #~ msgid "Trying to unshare..."
@@ -3731,12 +3663,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Firefox integration"
 #~ msgstr "Firefox-integration"
 
-#~ msgid ""
-#~ "This Tiny Tiny RSS site can be used as a Firefox Feed Reader by clicking "
-#~ "the link below."
-#~ msgstr ""
-#~ "Denna Tiny Tiny RSS-webbplats kan användas som en flödesläsare för "
-#~ "Firefox genom att klicka på länken nedan."
+#~ msgid "This Tiny Tiny RSS site can be used as a Firefox Feed Reader by clicking the link below."
+#~ msgstr "Denna Tiny Tiny RSS-webbplats kan användas som en flödesläsare för Firefox genom att klicka på länken nedan."
 
 #~ msgid "Click here to register this site as a feed reader."
 #~ msgstr "Klicka här för att registrera denna webbplats som en flödesläsare."
@@ -3804,16 +3732,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Resets PubSubHubbub subscription status for push-enabled feeds."
 #~ msgstr "Återställ PubSubHubbub-prenumerationer för push-uppdaterade feeds."
 
-#~ msgid ""
-#~ "Download more plugins at tt-rss.org <a class=\"visibleLink\" target="
-#~ "\"_blank\" href=\"http://tt-rss.org/forum/viewforum.php?f=22\">forums</a> "
-#~ "or <a target=\"_blank\" class=\"visibleLink\" href=\"http://tt-rss.org/"
-#~ "wiki/Plugins\">wiki</a>."
-#~ msgstr ""
-#~ "Ladda ner fler tillägg via tt-rss.org <a class=\"visibleLink\" target="
-#~ "\"_blank\" href=\"http://tt-rss.org/forum/viewforum.php?f=22\">forum</a> "
-#~ "eller <a target=\"_blank\" class=\"visibleLink\" href=\"http://tt-rss.org/"
-#~ "wiki/Plugins\">wiki</a>."
+#~ msgid "Download more plugins at tt-rss.org <a class=\"visibleLink\" target=\"_blank\" href=\"http://tt-rss.org/forum/viewforum.php?f=22\">forums</a> or <a target=\"_blank\" class=\"visibleLink\" href=\"http://tt-rss.org/wiki/Plugins\">wiki</a>."
+#~ msgstr "Ladda ner fler tillägg via tt-rss.org <a class=\"visibleLink\" target=\"_blank\" href=\"http://tt-rss.org/forum/viewforum.php?f=22\">forum</a> eller <a target=\"_blank\" class=\"visibleLink\" href=\"http://tt-rss.org/wiki/Plugins\">wiki</a>."
 
 #~ msgid "Linked"
 #~ msgstr "Länkad"
@@ -3839,12 +3759,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Link instance"
 #~ msgstr "Länka instanser"
 
-#~ msgid ""
-#~ "You can connect other instances of Tiny Tiny RSS to this one to share "
-#~ "Popular feeds. Link to this instance of Tiny Tiny RSS by using this URL:"
-#~ msgstr ""
-#~ "Du kan ansluta till andra instanser av Tiny Tiny RSS för att dela "
-#~ "populära flöde. Länka till denna instans genom att använd följande URL:"
+#~ msgid "You can connect other instances of Tiny Tiny RSS to this one to share Popular feeds. Link to this instance of Tiny Tiny RSS by using this URL:"
+#~ msgstr "Du kan ansluta till andra instanser av Tiny Tiny RSS för att dela populära flöde. Länka till denna instans genom att använd följande URL:"
 
 #~ msgid "Last connected"
 #~ msgstr "Senast ansluten"
@@ -3858,12 +3774,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Create link"
 #~ msgstr "Skapa länk"
 
-#~ msgid ""
-#~ "Reset subscription? Tiny Tiny RSS will try to subscribe to the "
-#~ "notification hub again on next feed update."
-#~ msgstr ""
-#~ "Återställ prenumeration? Tiny Tiny RSS kommer försöka prenumerera på "
-#~ "notifikationshubben igen vid nästa flödesuppdatering."
+#~ msgid "Reset subscription? Tiny Tiny RSS will try to subscribe to the notification hub again on next feed update."
+#~ msgstr "Återställ prenumeration? Tiny Tiny RSS kommer försöka prenumerera på notifikationshubben igen vid nästa flödesuppdatering."
 
 #~ msgid "Subscription reset."
 #~ msgstr "Prenumeration återställd."
@@ -3890,13 +3802,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgstr "Felet kommer att skrivas ut i konfigurerad loggfil."
 
 #, fuzzy
-#~ msgid ""
-#~ "Are you sure to report this exception to tt-rss.org? The report will "
-#~ "include information about your web browser and tt-rss configuration. Your "
-#~ "IP will be saved in the database."
-#~ msgstr ""
-#~ "Vill du rapportera detta fel till tt-rss.org? Rapporten kommer innehålla "
-#~ "information om din webbläsare och din ip-adress."
+#~ msgid "Are you sure to report this exception to tt-rss.org? The report will include information about your web browser and tt-rss configuration. Your IP will be saved in the database."
+#~ msgstr "Vill du rapportera detta fel till tt-rss.org? Rapporten kommer innehålla information om din webbläsare och din ip-adress."
 
 #~ msgid "More..."
 #~ msgstr "Mer..."
@@ -3912,9 +3819,6 @@ msgstr "Kunde inte ändra URL."
 
 #~ msgid "Details"
 #~ msgstr "Detaljer"
-
-#~ msgid "No recent articles matching this filter have been found."
-#~ msgstr "Inga nya artiklar som matchar detta filter funna."
 
 #~ msgid "All done. %d out of %d articles imported."
 #~ msgstr "Allt klart. %d av %d artiklar importerade."
@@ -3966,12 +3870,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Limit search to:"
 #~ msgstr "Begränsa sökning till:"
 
-#~ msgid ""
-#~ "Complex expressions might not give results while testing due to issues "
-#~ "with database server regexp implementation."
-#~ msgstr ""
-#~ "Komplexa uttryck kanske inte ger några testresultat på grund av problem "
-#~ "med databasens regexpimplementation"
+#~ msgid "Complex expressions might not give results while testing due to issues with database server regexp implementation."
+#~ msgstr "Komplexa uttryck kanske inte ger några testresultat på grund av problem med databasens regexpimplementation"
 
 #~ msgid "Old password cannot be blank."
 #~ msgstr "Föregående lösenord kan inte vara tomt."
@@ -4022,12 +3922,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "New version of Tiny Tiny RSS is available (%s)."
 #~ msgstr "Ny version av Tiny Tiny RSS tillgänglig(%s)."
 
-#~ msgid ""
-#~ "You can update using built-in updater in the Preferences or by using "
-#~ "update.php"
-#~ msgstr ""
-#~ "Du kan uppdatera med din inbyggda uppdateraren under Inställningar eller "
-#~ "med update.php"
+#~ msgid "You can update using built-in updater in the Preferences or by using update.php"
+#~ msgstr "Du kan uppdatera med din inbyggda uppdateraren under Inställningar eller med update.php"
 
 #~ msgid "See the release notes"
 #~ msgstr "Se releasenoteringar"
@@ -4057,15 +3953,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Your database will not be modified."
 #~ msgstr "Din databas kommer inte att modifieras."
 
-#~ msgid ""
-#~ "Your current tt-rss installation directory will not be modified. It will "
-#~ "be renamed and left in the parent directory. You will be able to migrate "
-#~ "all your customized files after update finishes."
-#~ msgstr ""
-#~ "Katalogen för din nuvarande tt-rss-installation kommer inte att "
-#~ "modifieras. Den kommer att döpas om och lämnas i moderkatalogen. Du "
-#~ "kommer att kunna migrera alla dina anpassade filer när uppdateringen är "
-#~ "klar."
+#~ msgid "Your current tt-rss installation directory will not be modified. It will be renamed and left in the parent directory. You will be able to migrate all your customized files after update finishes."
+#~ msgstr "Katalogen för din nuvarande tt-rss-installation kommer inte att modifieras. Den kommer att döpas om och lämnas i moderkatalogen. Du kommer att kunna migrera alla dina anpassade filer när uppdateringen är klar."
 
 #~ msgid "Ready to update."
 #~ msgstr "Redo att uppdatera."
@@ -4073,12 +3962,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Start update"
 #~ msgstr "Starta uppdateringen"
 
-#~ msgid ""
-#~ "Backup your tt-rss directory before continuing. Please type 'yes' to "
-#~ "continue."
-#~ msgstr ""
-#~ "Ta backup på din tt-rss-katalog innan du fortsätter. Skriv 'yes' för att "
-#~ "fortsätta."
+#~ msgid "Backup your tt-rss directory before continuing. Please type 'yes' to continue."
+#~ msgstr "Ta backup på din tt-rss-katalog innan du fortsätter. Skriv 'yes' för att fortsätta."
 
 #~ msgid "LibXML error %s at line %d (column %d): %s"
 #~ msgstr "LibXML-fel %s på rad %d (kolumn %d): %s"
@@ -4104,12 +3989,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "These feeds have not been updated because of errors:"
 #~ msgstr "Följande flöden har inte blivit uppdaterade pga fel:"
 
-#~ msgid ""
-#~ "Your browser doesn't support Javascript, which is required for this "
-#~ "application to function properly. Please check your browser settings."
-#~ msgstr ""
-#~ "Din webbläsare stöder inte Javascript som krävs för att denna applikation "
-#~ "ska fungera som den ska. Kontrollera dina webbläsarinställningar."
+#~ msgid "Your browser doesn't support Javascript, which is required for this application to function properly. Please check your browser settings."
+#~ msgstr "Din webbläsare stöder inte Javascript som krävs för att denna applikation ska fungera som den ska. Kontrollera dina webbläsarinställningar."
 
 #~ msgid "Hello,"
 #~ msgstr "Hej,"
@@ -4206,13 +4087,9 @@ msgstr "Kunde inte ändra URL."
 #~ msgstr "FEL!"
 
 #~ msgid "Finished. Performed <b>%d</b> update up to schema version <b>%d</b>."
-#~ msgid_plural ""
-#~ "Finished. Performed <b>%d</b> updates up to schema version <b>%d</b>."
-#~ msgstr[0] ""
-#~ "Klart. Genomförde <b>%d</b> uppdatering upp till schemaversion <b>%d</b>."
-#~ msgstr[1] ""
-#~ "Klart. Genomförde <b>%d</b> uppdateringar upp till schemaversion <b>%d</"
-#~ "b>."
+#~ msgid_plural "Finished. Performed <b>%d</b> updates up to schema version <b>%d</b>."
+#~ msgstr[0] "Klart. Genomförde <b>%d</b> uppdatering upp till schemaversion <b>%d</b>."
+#~ msgstr[1] "Klart. Genomförde <b>%d</b> uppdateringar upp till schemaversion <b>%d</b>."
 
 #~ msgid "Your database schema is from a newer version of Tiny Tiny RSS."
 #~ msgstr "Ditt databasschema är för en nyare Tiny Tiny RSS Version."
@@ -4220,12 +4097,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Found schema version: <b>%d</b>, required: <b>%d</b>."
 #~ msgstr "Fann schemaversion: <b>%d</b>, behöver version: <b>%d</b>."
 
-#~ msgid ""
-#~ "Schema upgrade impossible. Please update Tiny Tiny RSS files to the newer "
-#~ "version and continue."
-#~ msgstr ""
-#~ "Kan inte uppdatera schema. Uppdatera Tiny Tiny RSS på filsystemet till en "
-#~ "ny version "
+#~ msgid "Schema upgrade impossible. Please update Tiny Tiny RSS files to the newer version and continue."
+#~ msgstr "Kan inte uppdatera schema. Uppdatera Tiny Tiny RSS på filsystemet till en ny version "
 
 #~ msgid "Switch to digest..."
 #~ msgstr "Byt läge till sammanfattning..."
@@ -4254,12 +4127,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "I have scanned the code and would like to enable OTP"
 #~ msgstr "Jag har läst av bilden och vill aktivera OTP"
 
-#~ msgid ""
-#~ "Could not upload file. You might need to adjust upload_max_filesize in "
-#~ "PHP.ini (current value = %s)"
-#~ msgstr ""
-#~ "Filen kunde inte laddas upp. Kontrollera upload_max_filesize i PHP.ini "
-#~ "(nuvarande inställning = %s)"
+#~ msgid "Could not upload file. You might need to adjust upload_max_filesize in PHP.ini (current value = %s)"
+#~ msgstr "Filen kunde inte laddas upp. Kontrollera upload_max_filesize i PHP.ini (nuvarande inställning = %s)"
 
 #~ msgid "Playing..."
 #~ msgstr "Spelar..."
@@ -4297,18 +4166,10 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Modify score"
 #~ msgstr "Redigera poäng"
 
-#~ msgid ""
-#~ "This option is useful when you are reading several planet-type "
-#~ "aggregators with partially colliding userbase. When disabled, it forces "
-#~ "same posts from different feeds to appear only once."
-#~ msgstr ""
-#~ "Detta är användbart när du läser flera sammanslagna kanaler som har "
-#~ "delvis samma användarbas. När inaktiverad så visas samma artikel från "
-#~ "flera olika kanaler endast en gång."
+#~ msgid "This option is useful when you are reading several planet-type aggregators with partially colliding userbase. When disabled, it forces same posts from different feeds to appear only once."
+#~ msgstr "Detta är användbart när du läser flera sammanslagna kanaler som har delvis samma användarbas. När inaktiverad så visas samma artikel från flera olika kanaler endast en gång."
 
-#~ msgid ""
-#~ "When this option is enabled, headlines in Special feeds and Labels are "
-#~ "grouped by feeds"
+#~ msgid "When this option is enabled, headlines in Special feeds and Labels are grouped by feeds"
 #~ msgstr "Gruppera rubriker efter kanaler i Etiketter och Specialkanaler"
 
 #~ msgid "Enable external API"
@@ -4371,11 +4232,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Date syntax is incorrect."
 #~ msgstr "Datumsyntaxen är felaktig."
 
-#~ msgid ""
-#~ "This will clear your stored authentication information for Twitter. "
-#~ "Continue?"
-#~ msgstr ""
-#~ "Detta raderar din lagrade inloggningsinformation till Twitter. Fortsätt?"
+#~ msgid "This will clear your stored authentication information for Twitter. Continue?"
+#~ msgstr "Detta raderar din lagrade inloggningsinformation till Twitter. Fortsätt?"
 
 #~ msgid "Mark all visible articles in %s as read?"
 #~ msgstr "Flagga alla artiklar i %s som lästa?"
@@ -4447,12 +4305,8 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Focus search (if present)"
 #~ msgstr "Fokusera sökning (om vald)"
 
-#~ msgid ""
-#~ "<b>Note:</b> not all actions may be available, depending on Tiny Tiny RSS "
-#~ "configuration and your access level."
-#~ msgstr ""
-#~ "<b>OBS:</b> Beroende på konfiguration och behörigheter så kanske inte "
-#~ "alla alternativ är tillgängliga."
+#~ msgid "<b>Note:</b> not all actions may be available, depending on Tiny Tiny RSS configuration and your access level."
+#~ msgstr "<b>OBS:</b> Beroende på konfiguration och behörigheter så kanske inte alla alternativ är tillgängliga."
 
 #~ msgid "Open article in new tab"
 #~ msgstr "Öppna artikel i ny flik"
@@ -4527,8 +4381,7 @@ msgstr "Kunde inte ändra URL."
 #~ msgstr "Registera hos Twitter"
 
 #~ msgid "Could not connect to Twitter. Refresh the page or try again later."
-#~ msgstr ""
-#~ "Kunde inte ansluta till Twitter. Ladda om sidan eller försök igen senare."
+#~ msgstr "Kunde inte ansluta till Twitter. Ladda om sidan eller försök igen senare."
 
 #~ msgid "Congratulations! You have successfully registered with Twitter."
 #~ msgstr "Grattis! Du är nu registrerad med Twitter."
@@ -4560,19 +4413,11 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Twitter"
 #~ msgstr "Twitter"
 
-#~ msgid ""
-#~ "Before you can update your Twitter feeds, you must register this instance "
-#~ "of Tiny Tiny RSS with Twitter.com."
-#~ msgstr ""
-#~ "Innan du kan uppdatera dina Twitterkanaler måste du registrera denna "
-#~ "instans av Tiny Tiny RSS hos Twitter."
+#~ msgid "Before you can update your Twitter feeds, you must register this instance of Tiny Tiny RSS with Twitter.com."
+#~ msgstr "Innan du kan uppdatera dina Twitterkanaler måste du registrera denna instans av Tiny Tiny RSS hos Twitter."
 
-#~ msgid ""
-#~ "You have been successfully registered with Twitter.com and should be able "
-#~ "to access your Twitter feeds."
-#~ msgstr ""
-#~ "Du är registerad hos Twitter och ska nu ha åtkomst till dina "
-#~ "Twitterkanaler "
+#~ msgid "You have been successfully registered with Twitter.com and should be able to access your Twitter feeds."
+#~ msgstr "Du är registerad hos Twitter och ska nu ha åtkomst till dina Twitterkanaler "
 
 #~ msgid "Register with Twitter.com"
 #~ msgstr "Registrera hos Twitter"
@@ -4592,9 +4437,5 @@ msgstr "Kunde inte ändra URL."
 #~ msgid "Filter Test Results"
 #~ msgstr "Filtertestresultat"
 
-#~ msgid ""
-#~ "When \"Mark as read\" button is clicked in toolbar, automatically open "
-#~ "next feed with unread articles."
-#~ msgstr ""
-#~ "Växla automatiskt till nästa kanal när du klickar på \"Markera alla som "
-#~ "lästa\"i verktygsraden."
+#~ msgid "When \"Mark as read\" button is clicked in toolbar, automatically open next feed with unread articles."
+#~ msgstr "Växla automatiskt till nästa kanal när du klickar på \"Markera alla som lästa\"i verktygsraden."

@@ -10,6 +10,9 @@ xgettext --from-code utf-8 -k__ -kNotify.info -kNotify.error -kNotify.progress \
 xgettext --from-code utf-8 -k__ -kNotify.info -kNotify.error -kNotify.progress \
 	-kngettext:1,2 -L JavaScript -j -o $TEMPLATE `find js plugins -iname '*.js'`
 
+# leave weblate to deal with .po/.mo files
+exit 0
+
 update_lang() {
 	if [ -f $1.po ]; then
 		msgmerge --no-wrap --width 1 -U $1.po $TEMPLATE

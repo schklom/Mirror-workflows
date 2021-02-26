@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-26 12:57+0300\n"
+"POT-Creation-Date: 2021-02-26 13:06+0300\n"
 "PO-Revision-Date: 2019-07-20 18:11+0000\n"
 "Last-Translator: Roberto Michán Sánchez <robertoms258@gmail.com>\n"
 "Language-Team: Spanish <https://weblate.tt-rss.org/projects/tt-rss/messages/"
@@ -97,14 +97,20 @@ msgstr "Administrador"
 
 #: index.php:123 index.php:138 index.php:262 prefs.php:107
 #: classes/pref/prefs.php:968 classes/pref/prefs.php:982
-#: classes/pref/system.php:173 js/CommonDialogs.js:442 js/Headlines.js:344
-#: js/CommonFilters.js:273 plugins/af_psql_trgm/init.js:7
-#: plugins/note/note.js:28 plugins/mail/mail.js:35 plugins/mailto/init.js:18
-#: plugins/share/share.js:56
+#: classes/pref/system.php:173 js/Feeds.js:395 js/Feeds.js:465
+#: js/PrefFeedTree.js:165 js/PrefFeedTree.js:172 js/PrefFeedTree.js:296
+#: js/PrefFeedTree.js:373 js/CommonDialogs.js:289 js/CommonDialogs.js:442
+#: js/CommonDialogs.js:592 js/PrefHelpers.js:27 js/PrefHelpers.js:39
+#: js/PrefHelpers.js:88 js/PrefHelpers.js:200 js/PrefHelpers.js:283
+#: js/PrefHelpers.js:351 js/Headlines.js:344 js/PrefFilterTree.js:100
+#: js/PrefUsers.js:107 js/CommonFilters.js:273 js/CommonFilters.js:401
+#: plugins/af_psql_trgm/init.js:7 plugins/note/note.js:28
+#: plugins/mail/mail.js:35 plugins/af_readability/init.js:19
+#: plugins/mailto/init.js:18 plugins/share/share.js:56
 msgid "Loading, please wait..."
 msgstr "Cargando. Por favor, espere..."
 
-#: index.php:152 prefs.php:117
+#: index.php:152 prefs.php:117 js/App.js:450
 msgid "Communication problem with server."
 msgstr "Problema de comunicación con el servidor."
 
@@ -211,6 +217,7 @@ msgid "Edit this feed..."
 msgstr "Editar esta fuente..."
 
 #: index.php:236 classes/pref/feeds.php:945 js/PrefFeedTree.js:99
+#: js/CommonDialogs.js:579
 msgid "Unsubscribe"
 msgstr "Cancelar la suscripción"
 
@@ -330,7 +337,7 @@ msgstr "Cancelar búsqueda"
 msgid "Article"
 msgstr "Artículo"
 
-#: classes/rpc.php:558 js/Headlines.js:626 js/Headlines.js:1342
+#: classes/rpc.php:558 js/Headlines.js:1342 js/Headlines.js:626
 msgid "Toggle starred"
 msgstr "Alternar favoritos"
 
@@ -560,7 +567,7 @@ msgstr ""
 
 #: classes/handler/public.php:499 classes/pref/feeds.php:645
 #: plugins/bookmarklets/init.php:300 include/login_form.php:105
-#: js/CommonDialogs.js:539
+#: js/CommonDialogs.js:539 js/PrefUsers.js:61
 msgid "Login:"
 msgstr "Nombre de usuario:"
 
@@ -637,8 +644,8 @@ msgstr "Se ha creado la etiqueta <b>%s</b>"
 
 #: classes/pref/labels.php:182 classes/pref/prefs.php:1255
 #: classes/pref/filters.php:649 classes/pref/users.php:223
-#: classes/pref/feeds.php:924 js/CommonDialogs.js:236 js/PrefHelpers.js:144
-#: js/CommonFilters.js:436
+#: classes/pref/feeds.php:924 js/CommonFilters.js:436 js/CommonFilters.js:469
+#: js/CommonDialogs.js:236 js/PrefHelpers.js:144
 msgid "Select"
 msgstr "Seleccionar"
 
@@ -861,7 +868,7 @@ msgstr "Sus datos personales han sido guardados."
 msgid "Full name:"
 msgstr "Nombre completo:"
 
-#: classes/pref/prefs.php:296
+#: classes/pref/prefs.php:296 js/PrefUsers.js:93
 msgid "E-mail:"
 msgstr "Correo electrónico:"
 
@@ -878,7 +885,7 @@ msgstr ""
 msgid "Old password:"
 msgstr "Contraseña antigua:"
 
-#: classes/pref/prefs.php:363
+#: classes/pref/prefs.php:363 js/PrefUsers.js:83
 msgid "New password:"
 msgstr "Nueva contraseña:"
 
@@ -984,6 +991,7 @@ msgstr "Limpiar"
 #: classes/pref/prefs.php:718 classes/pref/prefs.php:821
 #: classes/pref/prefs.php:877 classes/pref/prefs.php:929
 #: classes/pref/prefs.php:945 plugins/bookmarklets/init.php:362
+#: js/CommonDialogs.js:635
 msgid "More info..."
 msgstr "Más información..."
 
@@ -1054,14 +1062,16 @@ msgid "Incorrect password"
 msgstr "Contraseña incorrecta"
 
 #: classes/pref/prefs.php:1258 classes/pref/filters.php:652
-#: classes/pref/users.php:226 classes/pref/feeds.php:927 js/PrefFeedTree.js:506
-#: js/Headlines.js:620 js/CommonFilters.js:472
+#: classes/pref/users.php:226 classes/pref/feeds.php:927
+#: js/CommonFilters.js:440 js/CommonFilters.js:472 js/PrefFeedTree.js:506
+#: js/Headlines.js:620
 msgid "All"
 msgstr "Todo"
 
 #: classes/pref/prefs.php:1260 classes/pref/filters.php:654
 #: classes/pref/users.php:228 classes/pref/feeds.php:929
-#: js/CommonDialogs.js:241 js/PrefHelpers.js:149 js/CommonFilters.js:442
+#: js/CommonFilters.js:442 js/CommonFilters.js:474 js/CommonDialogs.js:241
+#: js/PrefHelpers.js:149
 msgid "None"
 msgstr "Nada"
 
@@ -1160,7 +1170,7 @@ msgid "%s on %s in %s %s"
 msgstr "%s en %s en %s %s"
 
 #: classes/pref/filters.php:645 classes/pref/users.php:218
-#: classes/pref/feeds.php:920 js/Feeds.js:615 js/Feeds.js:620
+#: classes/pref/feeds.php:920 js/Feeds.js:620 js/Feeds.js:615
 msgid "Search"
 msgstr "Buscar"
 
@@ -1310,7 +1320,7 @@ msgstr "Marcar los artículos actualizados como sin leer"
 msgid "Place in category:"
 msgstr "Categoría:"
 
-#: classes/pref/feeds.php:617 js/CommonDialogs.js:512
+#: classes/pref/feeds.php:617 js/Feeds.js:602 js/CommonDialogs.js:512
 msgid "Language:"
 msgstr "Idioma:"
 
@@ -1324,7 +1334,7 @@ msgid "Article purging:"
 msgstr "Purga de artículos:"
 
 #: classes/pref/feeds.php:642 plugins/auth_internal/init.php:68
-#: js/PrefUsers.js:71
+#: js/PrefFeedTree.js:434 js/PrefUsers.js:71
 msgid "Authentication"
 msgstr "Autenticación"
 
@@ -1341,15 +1351,17 @@ msgstr "Opciones"
 #: plugins/note/init.php:51 plugins/af_proxy_http/init.php:239
 #: plugins/mail/init.php:67 plugins/af_readability/init.php:89
 #: plugins/nsfw/init.php:75 plugins/af_redditimgur/init.php:79
-#: js/PrefLabelTree.js:171 js/PrefUsers.js:113 js/CommonFilters.js:516
+#: js/CommonDialogs.js:580 js/CommonFilters.js:516 js/PrefLabelTree.js:171
+#: js/PrefUsers.js:113
 msgid "Save"
 msgstr "Guardar"
 
 #: classes/pref/feeds.php:675 plugins/note/init.php:52
-#: plugins/mail/init.php:186 plugins/bookmarklets/init.php:282 js/Feeds.js:616
+#: plugins/mail/init.php:186 plugins/bookmarklets/init.php:282
+#: js/CommonDialogs.js:581 js/CommonFilters.js:233 js/CommonFilters.js:317
+#: js/CommonFilters.js:517 js/CommonFilters.js:521 js/Feeds.js:616
 #: js/PrefFeedTree.js:454 js/PrefHelpers.js:189 js/PrefHelpers.js:263
-#: js/Article.js:341 js/CommonFilters.js:233 js/CommonFilters.js:517
-#: js/CommonFilters.js:521
+#: js/Article.js:341
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -2057,15 +2069,13 @@ msgstr ""
 "Está utilizando el password por defecto de tt-rss. Por favor, debe cambiarlo "
 "en Preferencias (Datos personales / Auntentificación)."
 
-#: js/Feeds.js:277
-msgid ""
-"Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. "
-"You will need to log out and back in to disable it."
-msgstr ""
-
 #: js/Feeds.js:416
 msgid "Mark all articles as read?"
 msgstr "¿Marcar todos los artículos como leídos?"
+
+#: js/Feeds.js:420
+msgid "Marking all feeds as read..."
+msgstr "Marcando todas las fuentes como leídas..."
 
 #: js/Feeds.js:437
 msgid "Mark %w in %s older than 1 day as read?"
@@ -2096,12 +2106,6 @@ msgstr "todos los artículos"
 msgid "Mark all articles in %s as read?"
 msgstr "¿Marcar todos los artículos de %s como leídos?"
 
-#: js/Feeds.js:604
-msgid "Used for word stemming"
-msgstr ""
-"Utilizado para <a href=\"https://es.wikipedia.org/wiki/Stemming\">stemming</"
-"a> de palabras"
-
 #: js/Feeds.js:611
 msgid "Search syntax"
 msgstr "Sintaxis de búsqueda"
@@ -2122,6 +2126,10 @@ msgstr "Leyenda"
 msgid "Colors"
 msgstr "Colores"
 
+#: js/PrefLabelTree.js:145
+msgid "Foreground:"
+msgstr "Primer plano:"
+
 #: js/PrefLabelTree.js:146
 msgid "Background:"
 msgstr "Fondo:"
@@ -2138,9 +2146,27 @@ msgstr "Ninguna etiqueta seleccionada."
 msgid "Remove selected labels?"
 msgstr "¿Borrar los marcadores seleccionados?"
 
+#: js/PrefLabelTree.js:211
+msgid "Removing selected labels..."
+msgstr "Eliminando las etiquetas seleccionadas..."
+
 #: js/App.js:401
 msgid "Keyboard shortcuts"
 msgstr "Atajos de teclado"
+
+#: js/App.js:462
+#, fuzzy
+msgid "Update daemon is not running."
+msgstr ""
+"<span onclick=\"App.explainError(3)\">El demonio de actualización no está "
+"actualizando las fuentes.</span>"
+
+#: js/App.js:475
+#, fuzzy
+msgid "Update daemon is not updating feeds."
+msgstr ""
+"<span onclick=\"App.explainError(3)\">El demonio de actualización no está "
+"actualizando las fuentes.</span>"
 
 #: js/App.js:559
 #, fuzzy, javascript-format
@@ -2154,11 +2180,6 @@ msgstr "Error crítico"
 #: js/App.js:585
 msgid "Unhandled exception"
 msgstr "Excepción no controlada"
-
-#: js/App.js:597
-#, fuzzy
-msgid "Additional information"
-msgstr "Mostrar información adicional en la lista de fuentes"
 
 #: js/App.js:1019
 msgid "Please enable mail or mailto plugin first."
@@ -2205,18 +2226,30 @@ msgid ""
 msgstr ""
 "¿Borrar la categoría %s? Cualquier subcategoría será movida a Sin Categoría."
 
+#: js/PrefFeedTree.js:180
+msgid "Removing category..."
+msgstr "Borrando categoría..."
+
 #: js/PrefFeedTree.js:192
 msgid "Unsubscribe from selected feeds?"
 msgstr "¿Cancelar la suscripción a las fuentes seleccionadas?"
 
+#: js/PrefFeedTree.js:194
+msgid "Unsubscribing from selected feeds..."
+msgstr "Cancelando la suscripción a las fuentes seleccionadas..."
+
 #: js/PrefFeedTree.js:207 js/PrefFeedTree.js:276 js/PrefFeedTree.js:292
-#: js/CommonDialogs.js:230
+#: js/PrefFeedTree.js:497 js/CommonDialogs.js:230
 msgid "No feeds selected."
 msgstr "Ninguna fuente seleccionada."
 
 #: js/PrefFeedTree.js:242
 msgid "Remove selected categories?"
 msgstr "¿Eliminar las categorías seleccionadas?"
+
+#: js/PrefFeedTree.js:243
+msgid "Removing selected categories..."
+msgstr "Eliminando las categorías seleccionadas..."
 
 #: js/PrefFeedTree.js:255
 msgid "No categories selected."
@@ -2230,13 +2263,18 @@ msgstr "Editar múltiples fuentes"
 msgid "Save changes to selected feeds?"
 msgstr "¿Guardar los cambios de las fuentes seleccionadas?"
 
-#: js/PrefFeedTree.js:369
-msgid "Rename category to:"
-msgstr "Cambiar el nombre de la categoría a:"
+#: js/PrefFeedTree.js:344 js/CommonDialogs.js:426 js/PrefUsers.js:39
+#: js/CommonFilters.js:391
+msgid "Saving data..."
+msgstr "Guardando datos..."
 
 #: js/PrefFeedTree.js:381
 msgid "Category title:"
 msgstr "Nombre de la categoría:"
+
+#: js/PrefFeedTree.js:384
+msgid "Creating category..."
+msgstr "Creando categoría..."
 
 #: js/PrefFeedTree.js:399
 msgid "Subscribing to feeds..."
@@ -2246,25 +2284,31 @@ msgstr "Suscribiéndose a las fuentes..."
 msgid "One valid feed per line (no detection is done)"
 msgstr "Una fuente válida por línea (no se realizará detección)"
 
+#: js/PrefFeedTree.js:470
+msgid "Feeds without recent updates"
+msgstr "Fuentes sin actualizaciones recientes"
+
+#: js/PrefFeedTree.js:478 js/CommonDialogs.js:209
+msgid "Remove selected feeds?"
+msgstr "¿Borrar fuentes seleccionadas?"
+
+#: js/PrefFeedTree.js:479 js/CommonDialogs.js:210
+msgid "Removing selected feeds..."
+msgstr "Borrando fuentes seleccionadas..."
+
 #: js/PrefFeedTree.js:520
 msgid "Click to edit feed"
 msgstr "Pulse para editar fuente"
-
-#: js/PrefFeedTree.js:534
-msgid "Unsubscribe from selected feeds"
-msgstr "Cancelar la suscripción a las fuentes seleccionadas"
 
 #: js/CommonDialogs.js:19
 msgid "Subscribe to Feed"
 msgstr "Suscribirse a fuente"
 
-#: js/CommonDialogs.js:53
-msgid "Available feeds"
-msgstr "Fuentes disponibles"
-
-#: js/CommonDialogs.js:86
-msgid "This feed requires authentication."
-msgstr "Esta fuente requiere autenticación."
+#: js/CommonDialogs.js:30
+msgid ""
+"Provided URL is a HTML page referencing multiple feeds, please select "
+"required feed from the dropdown menu below."
+msgstr ""
 
 #: js/CommonDialogs.js:122
 msgid ""
@@ -2310,13 +2354,13 @@ msgstr "Ya está suscrito a esta fuente."
 msgid "Feeds with update errors"
 msgstr "Fuentes con errores de actualización"
 
-#: js/CommonDialogs.js:209
-msgid "Remove selected feeds?"
-msgstr "¿Borrar fuentes seleccionadas?"
-
 #: js/CommonDialogs.js:283
 msgid "Please enter label caption:"
 msgstr "Por favor, introduzca el nombre del marcador:"
+
+#: js/CommonDialogs.js:305
+msgid "Removing feed..."
+msgstr "Eliminando la fuente..."
 
 #: js/CommonDialogs.js:336
 msgid "Edit Feed"
@@ -2327,13 +2371,54 @@ msgstr "Editar fuente"
 msgid "Please select an image file."
 msgstr "Seleccione un archivo de imagen para cargar."
 
+#: js/CommonDialogs.js:369
+msgid "Upload failed: icon is too big."
+msgstr "La subida falló: el icono es demasiado grande."
+
+#: js/CommonDialogs.js:372
+msgid "Upload failed."
+msgstr "Subida fallida."
+
+#: js/CommonDialogs.js:376
+msgid "Upload complete."
+msgstr "Subida completa."
+
 #: js/CommonDialogs.js:400
 msgid "Remove stored feed icon?"
 msgstr "¿Borrar el icono de la fuente?"
 
-#: js/CommonDialogs.js:502
-msgid "Site URL:"
-msgstr "URL del sitio:"
+#: js/CommonDialogs.js:401
+msgid "Removing feed icon..."
+msgstr "Borrando el icono de la fuente..."
+
+#: js/CommonDialogs.js:406
+msgid "Feed icon removed."
+msgstr "Icono de la fuente borrado."
+
+#: js/CommonDialogs.js:568
+#, fuzzy
+msgid "Upload new icon..."
+msgstr "¿Cargar un nuevo icono para esta fuente?"
+
+#: js/CommonDialogs.js:597
+msgid "Show as feed"
+msgstr "Mostrar como fuente"
+
+#: js/CommonDialogs.js:599
+msgid "Generate new syndication address for this feed?"
+msgstr "¿Generar nueva dirección de sindicación para esta fuente?"
+
+#: js/CommonDialogs.js:601 js/PrefHelpers.js:359
+msgid "Trying to change address..."
+msgstr "Intentando cambiar la dirección..."
+
+#: js/CommonDialogs.js:619 js/PrefHelpers.js:373
+msgid "Could not change feed URL."
+msgstr "No se puede cambiar la URL de la fuente."
+
+#: js/CommonDialogs.js:626
+msgid "%s can be accessed via the following secret URL:"
+msgstr "%s puede ser accedido desde la siguiente URL secreta:"
 
 #: js/PrefHelpers.js:20
 #, fuzzy
@@ -2343,6 +2428,14 @@ msgstr "¿Eliminar los usuarios seleccionados?"
 #: js/PrefHelpers.js:45
 msgid "This will invalidate all previously generated feed URLs. Continue?"
 msgstr "Se invalidarán todas las URLs generadas previamente. ¿Continuar?"
+
+#: js/PrefHelpers.js:46 plugins/share/share_prefs.js:6
+msgid "Clearing URLs..."
+msgstr "Limpiando URLs..."
+
+#: js/PrefHelpers.js:49
+msgid "Generated URLs cleared."
+msgstr "Borradas todas las URLs generadas."
 
 #: js/PrefHelpers.js:86
 msgid "Clear event log?"
@@ -2359,21 +2452,21 @@ msgstr ""
 "¿Borrar los perfiles seleccionados? El perfil activo y el perfil por defecto "
 "no serán borrados."
 
+#: js/PrefHelpers.js:109
+msgid "Removing selected profiles..."
+msgstr "Borrando los perfiles seleccionados..."
+
 #: js/PrefHelpers.js:123
 msgid "No profiles selected."
 msgstr "Ningún perfil seleccionado."
 
+#: js/PrefHelpers.js:128
+msgid "Creating profile..."
+msgstr "Creando perfil..."
+
 #: js/PrefHelpers.js:178
 msgid "(active)"
 msgstr "(activo)"
-
-#: js/PrefHelpers.js:186
-msgid "Remove selected profiles"
-msgstr "Borrar los perfiles seleccionados"
-
-#: js/PrefHelpers.js:188
-msgid "Activate profile"
-msgstr "Activar perfil"
 
 #: js/PrefHelpers.js:199
 msgid "Activate selected profile?"
@@ -2395,8 +2488,10 @@ msgstr ""
 "Puede sobrescribir los colores, las fuentes y el diseño del tema actualmente "
 "seleccionado con declaraciones CSS personalizadas aquí."
 
-#: js/PrefHelpers.js:257
-msgid "Apply"
+#: js/PrefHelpers.js:248
+msgid ""
+"User CSS has been applied, you might need to reload the page to see all "
+"changes."
 msgstr ""
 
 #: js/PrefHelpers.js:274
@@ -2410,6 +2505,10 @@ msgstr "¿Borrar los datos guardados por esta extensión?"
 #: js/PrefHelpers.js:302
 msgid "Please choose an OPML file first."
 msgstr "Por favor, seleccione un archivo OPML."
+
+#: js/PrefHelpers.js:305
+msgid "Importing, please wait..."
+msgstr "Importando, espere por favor..."
 
 #: js/PrefHelpers.js:314
 msgid "OPML Import"
@@ -2441,19 +2540,11 @@ msgstr "La URL de su archivo OPML público es:"
 msgid "Cancel search"
 msgstr "Cancelar búsqueda"
 
-#: js/Headlines.js:622
-msgid "Invert"
-msgstr "Invertir"
+#: js/Headlines.js:618
+msgid "Select..."
+msgstr "Seleccionar..."
 
-#: js/Headlines.js:630
-msgid "Set score"
-msgstr "Definir puntuación"
-
-#: js/Headlines.js:635
-msgid "Delete permanently"
-msgstr ""
-
-#: js/Headlines.js:776 js/Headlines.js:793
+#: js/Headlines.js:725 js/Headlines.js:776 js/Headlines.js:793
 msgid "Click to open next unread feed."
 msgstr "Pulse abrir la siguiente fuente sin leer."
 
@@ -2462,14 +2553,6 @@ msgid "New articles found, reload feed to continue."
 msgstr ""
 "No se han encontrado artículos nuevos, vuelve a cargar la fuente para "
 "continuar."
-
-#: js/Headlines.js:809
-msgid ""
-"Could not update headlines (invalid object received - see error console for "
-"details)"
-msgstr ""
-"No se pudieron actualizar los titulares (objeto inválido recibido - vea la "
-"consola de errores para más detalles)"
 
 #: js/Headlines.js:843 js/Headlines.js:869 js/Headlines.js:881
 #: js/Headlines.js:1024 js/Headlines.js:1041 js/Headlines.js:1058
@@ -2565,9 +2648,17 @@ msgstr "Ningún filtro seleccionado."
 msgid "Combine selected filters?"
 msgstr "¿Combinar los filtros seleccionados?"
 
+#: js/PrefFilterTree.js:115
+msgid "Joining filters..."
+msgstr "Uniendo filtros..."
+
 #: js/PrefFilterTree.js:126
 msgid "Remove selected filters?"
 msgstr "¿Eliminar los filtros seleccionados?"
+
+#: js/PrefFilterTree.js:127
+msgid "Removing selected filters..."
+msgstr "Eliminando los filtros seleccionados..."
 
 #: js/Article.js:36
 msgid "Please enter new score for selected articles:"
@@ -2586,9 +2677,9 @@ msgstr "URL del artículo:"
 msgid "No URL could be displayed for this article."
 msgstr "¿No compartir este artículo?"
 
-#: js/Article.js:192
-msgid "Attachments"
-msgstr "Adjuntos"
+#: js/Article.js:144
+msgid "no tags"
+msgstr "sin etiquetas"
 
 #: js/Article.js:231
 msgid "comments"
@@ -2599,6 +2690,18 @@ msgid "comment"
 msgid_plural "comments"
 msgstr[0] "comentario"
 msgstr[1] "comentarios"
+
+#: js/Article.js:320
+msgid "Edit article Tags"
+msgstr "Editar las etiquetas del artículo"
+
+#: js/Article.js:327
+msgid "Tags for this article (separated by commas):"
+msgstr "Etiquetas para este artículo (separadas por comas):"
+
+#: js/Article.js:347
+msgid "Saving article tags..."
+msgstr "Guardando las etiquetas del artículo..."
 
 #: js/FeedTree.js:102
 msgid "Debug feed"
@@ -2611,6 +2714,10 @@ msgstr "(Des)plegar"
 #: js/PrefUsers.js:17
 msgid "Please enter username:"
 msgstr "Por favor, introduzca el nombre de usuario:"
+
+#: js/PrefUsers.js:20
+msgid "Adding user..."
+msgstr "Añadiendo usuario..."
 
 #: js/PrefUsers.js:36
 msgid "User Editor"
@@ -2628,6 +2735,10 @@ msgstr "Por favor, seleccione un solo usuario."
 msgid "Reset password of selected user?"
 msgstr "¿Restaurar la contraseña del usuario seleccionado?"
 
+#: js/PrefUsers.js:140
+msgid "Resetting password for selected user..."
+msgstr "Reajustando la contraseña del usuario seleccionado..."
+
 #: js/PrefUsers.js:155
 msgid ""
 "Remove selected users? Neither default admin nor your account will be "
@@ -2635,6 +2746,10 @@ msgid ""
 msgstr ""
 "¿Borrar los usuarios seleccionados? Su cuenta y la cuenta del administrador "
 "por defecto no serán borradas."
+
+#: js/PrefUsers.js:156
+msgid "Removing selected users..."
+msgstr "Eliminando los usuarios seleccionados..."
 
 #: js/CommonFilters.js:14
 msgid "Edit Filter"
@@ -2649,14 +2764,37 @@ msgstr "Crear filtro"
 msgid "Looking for articles (%d processed, %f found)..."
 msgstr "Buscando artículos (%d procesados, %f encontrados)..."
 
-#: js/CommonFilters.js:67
-msgid "No recent articles matching this filter have been found."
-msgstr "No se han encontrado artículos recientes que coincidan con el filtro."
-
 #: js/CommonFilters.js:70
 #, javascript-format
 msgid "Found %d articles matching this filter:"
 msgstr "Encontrados %d artículos coincidentes con este filtro:"
+
+#: js/CommonFilters.js:79
+msgid "Error while trying to get filter test results."
+msgstr ""
+"Error mientras se intentaba obtener los resultados de la prueba del filtro."
+
+#: js/CommonFilters.js:170
+msgid "Edit rule"
+msgstr "Editar regla"
+
+#: js/CommonFilters.js:170
+msgid "Add rule"
+msgstr "Añadir regla"
+
+#: js/CommonFilters.js:214
+msgid "Inverse regular expression matching"
+msgstr "Coincidencia inversa con la expresión regular"
+
+#: js/CommonFilters.js:218
+#, fuzzy
+msgid "on"
+msgstr "Nada"
+
+#: js/CommonFilters.js:230
+#, fuzzy
+msgid "More info"
+msgstr "más información"
 
 #: js/CommonFilters.js:232
 msgid "Save rule"
@@ -2670,13 +2808,25 @@ msgstr "Editar acción"
 msgid "Add action"
 msgstr "Añadir acción"
 
-#: js/CommonFilters.js:449
-msgid "Delete"
-msgstr "Borrar"
+#: js/CommonFilters.js:316
+msgid "Save action"
+msgstr "Guardar acción"
 
-#: js/CommonFilters.js:478
+#: js/CommonFilters.js:356
+msgid "Remove filter?"
+msgstr "¿Borrar el filtro?"
+
+#: js/CommonFilters.js:361
+msgid "Removing filter..."
+msgstr "Eliminando el filtro..."
+
+#: js/CommonFilters.js:446 js/CommonFilters.js:478
 msgid "Add"
 msgstr "Añadir"
+
+#: js/CommonFilters.js:449 js/CommonFilters.js:481
+msgid "Delete"
+msgstr "Borrar"
 
 #: js/CommonFilters.js:515 js/CommonFilters.js:519
 msgid "Test"
@@ -2690,18 +2840,27 @@ msgstr "Crear"
 msgid "Related articles"
 msgstr "Artículos relacionados"
 
+#: plugins/note/note.js:9
+msgid "Saving article note..."
+msgstr "Guardando nota del artículo..."
+
 #: plugins/mail/mail.js:17
 msgid "Forward article by email"
 msgstr "Enviar artículo por correo"
 
-#: plugins/mail/mail.js:25
-msgid "Error sending email:"
-msgstr "Error al enviar el correo electrónico:"
+#: plugins/af_readability/init.js:31
+#, fuzzy
+msgid "Unable to fetch full text for this article"
+msgstr "Por favor, introduzca puntuación para este artículo:"
 
 #: plugins/mailto/init.js:17
 #, fuzzy
 msgid "Forward article by email (mailto:)"
 msgstr "Enviar artículo por correo"
+
+#: plugins/shorten_expanded/init.js:41
+msgid "Click to expand article"
+msgstr "Desplegar el artículo"
 
 #: plugins/share/share.js:7
 msgid "Share article by URL"
@@ -2711,6 +2870,14 @@ msgstr "Compartir artículo mediante URL"
 msgid "Generate new share URL for this article?"
 msgstr "¿Generar una nueva URL para compartir este artículo?"
 
+#: plugins/share/share.js:11
+msgid "Trying to change URL..."
+msgstr "Intentando cambiar la URL..."
+
+#: plugins/share/share.js:34
+msgid "Could not change URL."
+msgstr "No se pudo cambiar la URL."
+
 #: plugins/share/share.js:42
 msgid "Remove sharing for this article?"
 msgstr "¿No compartir este artículo?"
@@ -2718,6 +2885,87 @@ msgstr "¿No compartir este artículo?"
 #: plugins/share/share_prefs.js:5
 msgid "This will invalidate all previously shared article URLs. Continue?"
 msgstr "Se invalidarán todas las URLs de artículos compartidos. ¿Continuar?"
+
+#: js/Feeds.js:277
+msgid ""
+"Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. "
+"You will need to log out and back in to disable it."
+msgstr ""
+
+#: js/Feeds.js:604
+msgid "Used for word stemming"
+msgstr ""
+"Utilizado para <a href=\"https://es.wikipedia.org/wiki/Stemming\">stemming</"
+"a> de palabras"
+
+#: js/App.js:597
+#, fuzzy
+msgid "Additional information"
+msgstr "Mostrar información adicional en la lista de fuentes"
+
+#: js/PrefFeedTree.js:369
+msgid "Rename category to:"
+msgstr "Cambiar el nombre de la categoría a:"
+
+#: js/PrefFeedTree.js:534
+msgid "Unsubscribe from selected feeds"
+msgstr "Cancelar la suscripción a las fuentes seleccionadas"
+
+#: js/CommonDialogs.js:53
+msgid "Available feeds"
+msgstr "Fuentes disponibles"
+
+#: js/CommonDialogs.js:86
+msgid "This feed requires authentication."
+msgstr "Esta fuente requiere autenticación."
+
+#: js/CommonDialogs.js:502
+msgid "Site URL:"
+msgstr "URL del sitio:"
+
+#: js/PrefHelpers.js:186
+msgid "Remove selected profiles"
+msgstr "Borrar los perfiles seleccionados"
+
+#: js/PrefHelpers.js:188
+msgid "Activate profile"
+msgstr "Activar perfil"
+
+#: js/PrefHelpers.js:257
+msgid "Apply"
+msgstr ""
+
+#: js/Headlines.js:622
+msgid "Invert"
+msgstr "Invertir"
+
+#: js/Headlines.js:630
+msgid "Set score"
+msgstr "Definir puntuación"
+
+#: js/Headlines.js:635
+msgid "Delete permanently"
+msgstr ""
+
+#: js/Headlines.js:809
+msgid ""
+"Could not update headlines (invalid object received - see error console for "
+"details)"
+msgstr ""
+"No se pudieron actualizar los titulares (objeto inválido recibido - vea la "
+"consola de errores para más detalles)"
+
+#: js/Article.js:192
+msgid "Attachments"
+msgstr "Adjuntos"
+
+#: js/CommonFilters.js:67
+msgid "No recent articles matching this filter have been found."
+msgstr "No se han encontrado artículos recientes que coincidan con el filtro."
+
+#: plugins/mail/mail.js:25
+msgid "Error sending email:"
+msgstr "Error al enviar el correo electrónico:"
 
 #~ msgid "Amount of articles to display at once"
 #~ msgstr "Número de artículos que se muestran simultáneamente"
@@ -2745,18 +2993,6 @@ msgstr "Se invalidarán todas las URLs de artículos compartidos. ¿Continuar?"
 #~ msgid "Your preferences are now set to default values."
 #~ msgstr "Se han establecido los valores por defecto en las preferencias."
 
-#~ msgid "no tags"
-#~ msgstr "sin etiquetas"
-
-#~ msgid "Edit article Tags"
-#~ msgstr "Editar las etiquetas del artículo"
-
-#~ msgid "Edit rule"
-#~ msgstr "Editar regla"
-
-#~ msgid "Add rule"
-#~ msgstr "Añadir regla"
-
 #~ msgid "Enabled"
 #~ msgstr "Habilitado"
 
@@ -2765,159 +3001,6 @@ msgstr "Se invalidarán todas las URLs de artículos compartidos. ¿Continuar?"
 
 #~ msgid "Inverse matching"
 #~ msgstr "Coincidencia inversa"
-
-#, fuzzy
-#~ msgid "Update daemon is not updating feeds."
-#~ msgstr ""
-#~ "<span onclick=\"App.explainError(3)\">El demonio de actualización no está "
-#~ "actualizando las fuentes.</span>"
-
-#~ msgid "Tags for this article (separated by commas):"
-#~ msgstr "Etiquetas para este artículo (separadas por comas):"
-
-#~ msgid "Saving article tags..."
-#~ msgstr "Guardando las etiquetas del artículo..."
-
-#~ msgid "Removing selected feeds..."
-#~ msgstr "Borrando fuentes seleccionadas..."
-
-#~ msgid "Removing feed..."
-#~ msgstr "Eliminando la fuente..."
-
-#~ msgid "Upload failed: icon is too big."
-#~ msgstr "La subida falló: el icono es demasiado grande."
-
-#~ msgid "Upload failed."
-#~ msgstr "Subida fallida."
-
-#~ msgid "Upload complete."
-#~ msgstr "Subida completa."
-
-#~ msgid "Removing feed icon..."
-#~ msgstr "Borrando el icono de la fuente..."
-
-#~ msgid "Feed icon removed."
-#~ msgstr "Icono de la fuente borrado."
-
-#~ msgid "Saving data..."
-#~ msgstr "Guardando datos..."
-
-#, fuzzy
-#~ msgid "Upload new icon..."
-#~ msgstr "¿Cargar un nuevo icono para esta fuente?"
-
-#~ msgid "Show as feed"
-#~ msgstr "Mostrar como fuente"
-
-#~ msgid "Generate new syndication address for this feed?"
-#~ msgstr "¿Generar nueva dirección de sindicación para esta fuente?"
-
-#~ msgid "Trying to change address..."
-#~ msgstr "Intentando cambiar la dirección..."
-
-#~ msgid "Could not change feed URL."
-#~ msgstr "No se puede cambiar la URL de la fuente."
-
-#~ msgid "%s can be accessed via the following secret URL:"
-#~ msgstr "%s puede ser accedido desde la siguiente URL secreta:"
-
-#~ msgid "Error while trying to get filter test results."
-#~ msgstr ""
-#~ "Error mientras se intentaba obtener los resultados de la prueba del "
-#~ "filtro."
-
-#~ msgid "Inverse regular expression matching"
-#~ msgstr "Coincidencia inversa con la expresión regular"
-
-#, fuzzy
-#~ msgid "on"
-#~ msgstr "Nada"
-
-#, fuzzy
-#~ msgid "More info"
-#~ msgstr "más información"
-
-#~ msgid "Save action"
-#~ msgstr "Guardar acción"
-
-#~ msgid "Remove filter?"
-#~ msgstr "¿Borrar el filtro?"
-
-#~ msgid "Removing filter..."
-#~ msgstr "Eliminando el filtro..."
-
-#~ msgid "Marking all feeds as read..."
-#~ msgstr "Marcando todas las fuentes como leídas..."
-
-#~ msgid "Select..."
-#~ msgstr "Seleccionar..."
-
-#~ msgid "Removing category..."
-#~ msgstr "Borrando categoría..."
-
-#~ msgid "Unsubscribing from selected feeds..."
-#~ msgstr "Cancelando la suscripción a las fuentes seleccionadas..."
-
-#~ msgid "Removing selected categories..."
-#~ msgstr "Eliminando las categorías seleccionadas..."
-
-#~ msgid "Creating category..."
-#~ msgstr "Creando categoría..."
-
-#~ msgid "Feeds without recent updates"
-#~ msgstr "Fuentes sin actualizaciones recientes"
-
-#~ msgid "Joining filters..."
-#~ msgstr "Uniendo filtros..."
-
-#~ msgid "Removing selected filters..."
-#~ msgstr "Eliminando los filtros seleccionados..."
-
-#~ msgid "Clearing URLs..."
-#~ msgstr "Limpiando URLs..."
-
-#~ msgid "Generated URLs cleared."
-#~ msgstr "Borradas todas las URLs generadas."
-
-#~ msgid "Removing selected profiles..."
-#~ msgstr "Borrando los perfiles seleccionados..."
-
-#~ msgid "Creating profile..."
-#~ msgstr "Creando perfil..."
-
-#~ msgid "Importing, please wait..."
-#~ msgstr "Importando, espere por favor..."
-
-#~ msgid "Foreground:"
-#~ msgstr "Primer plano:"
-
-#~ msgid "Removing selected labels..."
-#~ msgstr "Eliminando las etiquetas seleccionadas..."
-
-#~ msgid "Adding user..."
-#~ msgstr "Añadiendo usuario..."
-
-#~ msgid "Resetting password for selected user..."
-#~ msgstr "Reajustando la contraseña del usuario seleccionado..."
-
-#~ msgid "Removing selected users..."
-#~ msgstr "Eliminando los usuarios seleccionados..."
-
-#~ msgid "Saving article note..."
-#~ msgstr "Guardando nota del artículo..."
-
-#, fuzzy
-#~ msgid "Unable to fetch full text for this article"
-#~ msgstr "Por favor, introduzca puntuación para este artículo:"
-
-#~ msgid "Click to expand article"
-#~ msgstr "Desplegar el artículo"
-
-#~ msgid "Trying to change URL..."
-#~ msgstr "Intentando cambiar la URL..."
-
-#~ msgid "Could not change URL."
-#~ msgstr "No se pudo cambiar la URL."
 
 #~ msgid ""
 #~ "This program requires XmlHttpRequest to function properly. Your browser "

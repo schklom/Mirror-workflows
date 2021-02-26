@@ -1,8 +1,8 @@
 <?php
-require "vendor/autoload.php";
+require_once __DIR__ . "/vendor/autoload.php";
 
-use andreskrey\Readability\Readability;
-use andreskrey\Readability\Configuration;
+use \andreskrey\Readability\Readability;
+use \andreskrey\Readability\Configuration;
 
 class Af_Readability extends Plugin {
 

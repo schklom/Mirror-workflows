@@ -22,5 +22,6 @@ parameters:
       - plugins.local/**/tests/*
       - plugins/**/test/*
       - plugins.local/**/test/*
+      - plugins.local/*/vendor/intervention/*
    paths:
       - .

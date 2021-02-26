@@ -1574,6 +1574,12 @@ class Feeds extends Handler_Protected {
 
 		$first_id = 0;
 
+		if (Config::get(Config::DB_TYPE) == "pgsql") {
+			$yyiw_qpart = "to_char(date_entered, 'IYYY-IW') AS yyiw";
+		} else {
+			$yyiw_qpart = "date_format(date_entered, '%Y-%u') AS yyiw";
+		}
+
 		if (is_numeric($feed)) {
 			// proper override_order applied above
 			if ($vfeed_query_part && !$ignore_vfeed_group && get_pref(Prefs::VFEED_GROUP_BY_FEED, $owner_uid)) {
@@ -1611,13 +1617,11 @@ class Feeds extends Handler_Protected {
 
 			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$sanity_interval_qpart = "date_entered >= NOW() - INTERVAL '1 hour' AND";
-				$yyiw_qpart = "to_char(date_entered, 'IYYY-IW') AS yyiw";
 
 				$distinct_columns = str_replace("desc", "", strtolower($order_by));
 				$distinct_qpart = "DISTINCT ON (id, $distinct_columns)";
 			} else {
 				$sanity_interval_qpart = "date_entered >= DATE_SUB(NOW(), INTERVAL 1 hour) AND";
-				$yyiw_qpart = "date_format(date_entered, '%Y-%u') AS yyiw";
 				$distinct_qpart = "DISTINCT"; //fallback
 			}
 
@@ -1715,41 +1719,45 @@ class Feeds extends Handler_Protected {
 		} else {
 			// browsing by tag
 
-			if (Config::get(Config::DB_TYPE) == "pgsql") {
-				$distinct_columns = str_replace("desc", "", strtolower($order_by));
-				$distinct_qpart = "DISTINCT ON (id, $distinct_columns)";
+			if (get_pref(Prefs::HEADLINES_NO_DISTINCT, $owner_uid)) {
+				$distinct_qpart = "";
 			} else {
-				$distinct_qpart = "DISTINCT"; //fallback
+				if (Config::get(Config::DB_TYPE) == "pgsql") {
+					$distinct_columns = str_replace("desc", "", strtolower($order_by));
+					$distinct_qpart = "DISTINCT ON (id, $distinct_columns)";
+				} else {
+					$distinct_qpart = "DISTINCT"; //fallback
+				}
 			}
 
 			$query = "SELECT $distinct_qpart
+							ttrss_entries.id AS id,
 							date_entered,
+							$yyiw_qpart,
 							guid,
-							note,
-							ttrss_entries.id as id,
-							title,
+							ttrss_entries.title,
 							updated,
-							unread,
-							feed_id,
-							marked,
-							published,
+							label_cache,
+							tag_cache,
+							always_display_enclosures,
+							site_url,
+							note,
 							num_comments,
 							comments,
 							int_id,
-							tag_cache,
-							label_cache,
-							link,
-							lang,
 							uuid,
-							last_read,
-							(SELECT hide_images FROM ttrss_feeds WHERE id = feed_id) AS hide_images,
+							lang,
+							hide_images,
+							unread,feed_id,marked,published,link,last_read,
 							last_marked, last_published,
 							$since_id_part
 							$vfeed_query_part
 							$content_query_part
-							author, score
-						FROM ttrss_entries, ttrss_user_entries, ttrss_tags
+							author, score,
+							(SELECT count(id) FROM ttrss_enclosures WHERE post_id = ttrss_entries.id) AS num_enclosures
+						FROM ttrss_entries, ttrss_user_entries, ttrss_tags, ttrss_feeds
 						WHERE
+							ttrss_feeds.id = ttrss_user_entries.feed_id AND
 							ref_id = ttrss_entries.id AND
 							ttrss_user_entries.owner_uid = ".$pdo->quote($owner_uid)." AND
 							post_int_id = int_id AND

@@ -76,7 +76,7 @@ class Prefs {
 		Prefs::DIGEST_ENABLE => [ false, Config::T_BOOL ],
 		Prefs::CONFIRM_FEED_CATCHUP => [ true, Config::T_BOOL ],
 		Prefs::CDM_AUTO_CATCHUP => [ false, Config::T_BOOL ],
-		Prefs::_DEFAULT_VIEW_MODE => [ "adaptive", Config::T_BOOL ],
+		Prefs::_DEFAULT_VIEW_MODE => [ "adaptive", Config::T_STRING ],
 		Prefs::_DEFAULT_VIEW_LIMIT => [ 30, Config::T_INT ],
 		//Prefs::_PREFS_ACTIVE_TAB => [ "", Config::T_STRING ],
 		//Prefs::STRIP_UNSAFE_TAGS => [ true, Config::T_BOOL ],

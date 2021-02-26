@@ -20,15 +20,11 @@ class RPC extends Handler_Protected {
 				if (isset($l10n->table_originals[$i * 2 + 2]) && $orig = $l10n->get_original_string($i)) {
 					if(strpos($orig, "\000") !== false) { // Plural forms
 						$key = explode(chr(0), $orig);
-						//print T_js_decl($key[0], _ngettext($key[0], $key[1], 1)); // Singular
-						//print T_js_decl($key[1], _ngettext($key[0], $key[1], 2)); // Plural
 
 						$rv[$key[0]] = _ngettext($key[0], $key[1], 1); // Singular
 						$rv[$key[1]] = _ngettext($key[0], $key[1], 2); // Plural
-
 					} else {
 						$translation = _dgettext($domain,$orig);
-						//print T_js_decl($orig, $translation);
 						$rv[$orig] = $translation;
 					}
 				}

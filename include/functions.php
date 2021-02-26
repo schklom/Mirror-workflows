@@ -443,18 +443,6 @@
 		return in_array($interface, class_implements($class));
 	}
 
-	function T_js_decl($s1, $s2) {
-		if ($s1 && $s2) {
-			$s1 = preg_replace("/\n/", "", $s1);
-			$s2 = preg_replace("/\n/", "", $s2);
-
-			$s1 = preg_replace("/\"/", "\\\"", $s1);
-			$s2 = preg_replace("/\"/", "\\\"", $s2);
-
-			return "T_messages[\"$s1\"] = \"$s2\";\n";
-		}
-	}
-
 	function get_theme_path($theme) {
 		$check = "themes/$theme";
 		if (file_exists($check)) return $check;

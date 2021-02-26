@@ -10,8 +10,6 @@ xgettext --from-code utf-8 -k__ -kNotify.info -kNotify.error -kNotify.progress \
 xgettext --from-code utf-8 -k__ -kNotify.info -kNotify.error -kNotify.progress \
 	-kngettext:1,2 -L JavaScript -j -o $TEMPLATE `find js plugins -iname '*.js'`
 
-exit
-
 update_lang() {
 	if [ -f $1.po ]; then
 		msgmerge --no-wrap --width 1 -U $1.po $TEMPLATE
@@ -21,10 +19,14 @@ update_lang() {
 	fi
 }
 
+compile_po() {
+	msgfmt --statistics $1.po -o $1.mo
+}
+
 LANGS=`find locale -name 'messages.po'`
 
 for lang in $LANGS; do
 	echo Updating $lang...
 	PO_BASENAME=`echo $lang | sed s/.po//`
-	update_lang $PO_BASENAME
+	compile_po $PO_BASENAME
 done

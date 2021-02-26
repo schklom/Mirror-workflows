@@ -418,7 +418,7 @@ const App = {
 
          if (error && error.code && error.code != App.Error.E_SUCCESS) {
             console.warn("handleRpcJson: fatal error", error);
-            this.Error.fatal(error.code);
+            this.Error.fatal(error.code, error.params);
             return false;
          }
 
@@ -547,6 +547,7 @@ const App = {
       E_SUCCESS: "E_SUCCESS",
       E_UNAUTHORIZED: "E_UNAUTHORIZED",
       E_SCHEMA_MISMATCH: "E_SCHEMA_MISMATCH",
+      E_URL_SCHEME_MISMATCH: "E_URL_SCHEME_MISMATCH",
 		fatal: function (error, params = {}) {
          if (error == App.Error.E_UNAUTHORIZED) {
             window.location.href = "index.php";
@@ -554,9 +555,14 @@ const App = {
          } else if (error == App.Error.E_SCHEMA_MISMATCH) {
             window.location.href = "public.php?op=dbupdate";
             return;
+         } else if (error == App.Error.E_URL_SCHEME_MISMATCH) {
+            params.description = __("URL scheme reported by your browser (%a) doesn't match server-configured SELF_URL_PATH (%b), check X-Forwarded-Proto.")
+               .replace("%a", params.client_scheme)
+               .replace("%b", params.server_scheme);
+            params.info = `SELF_URL_PATH: ${params.self_url_path}\nCLIENT_LOCATION: ${document.location.href}`
          }
 
-			return this.report(__("Fatal error: %s").replace("%s", error),
+			return this.report(error,
 				{...{title: __("Fatal error")}, ...params});
 		},
 		report: function(error, params = {}) {
@@ -587,10 +593,13 @@ const App = {
                <div class='exception-contents'>
                   <h3>${message}</h3>
 
-                  <header>${__('Stack trace')}</header>
+                  ${params.description ? `<p>${params.description}</p>` : ''}
+
+                  ${error.stack ?
+                  `<header>${__('Stack trace')}</header>
                   <section>
                      <textarea readonly='readonly'>${error.stack}</textarea>
-                  </section>
+                  </section>` : ''}
 
                   ${params && params.info ?
                      `
@@ -650,7 +659,8 @@ const App = {
             op: "rpc",
             method: "sanityCheck",
             clientTzOffset: new Date().getTimezoneOffset() * 60,
-            hasSandbox: "sandbox" in document.createElement("iframe")
+            hasSandbox: "sandbox" in document.createElement("iframe"),
+            clientLocation: window.location.href
          };
 
          xhr.json("backend.php", params, (reply) => {

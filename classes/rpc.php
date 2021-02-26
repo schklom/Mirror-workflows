@@ -168,10 +168,21 @@ class RPC extends Handler_Protected {
 		$_SESSION["hasSandbox"] = clean($_REQUEST["hasSandbox"]) === "true";
 		$_SESSION["clientTzOffset"] = clean($_REQUEST["clientTzOffset"]);
 
+		$client_location = $_REQUEST["clientLocation"];
+
 		$error = Errors::E_SUCCESS;
+		$error_params = [];
+
+		$client_scheme = parse_url($client_location, PHP_URL_SCHEME);
+		$server_scheme = parse_url(get_self_url_prefix(), PHP_URL_SCHEME);
 
 		if (get_schema_version() != SCHEMA_VERSION) {
 			$error = Errors::E_SCHEMA_MISMATCH;
+		} else if ($client_scheme != $server_scheme) {
+			$error = Errors::E_URL_SCHEME_MISMATCH;
+			$error_params["client_scheme"] = $client_scheme;
+			$error_params["server_scheme"] = $server_scheme;
+			$error_params["self_url_path"] = get_self_url_prefix();
 		}
 
 		if ($error == Errors::E_SUCCESS) {
@@ -183,7 +194,7 @@ class RPC extends Handler_Protected {
 
 			print json_encode($reply);
 		} else {
-			print Errors::to_json($error);
+			print Errors::to_json($error, $error_params);
 		}
 	}
 

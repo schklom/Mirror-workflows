@@ -440,10 +440,12 @@ const Headlines = {
 
 		if (headlines.vfeed_group_enabled && hl.feed_title && this.vgroup_last_feed != hl.feed_id) {
 			const vgrhdr = `<div data-feed-id='${hl.feed_id}' class='feed-title'>
-				<div style='float : right'>${Feeds.renderIcon(hl.feed_id, hl.has_icon)}</div>
-				<a class="title" href="#" onclick="Feeds.open({feed:${hl.feed_id}})">${hl.feed_title}
-				<a class="catchup" title="${__('mark feed as read')}" onclick="Feeds.catchupFeedInGroup(${hl.feed_id})" href="#"><i class="icon-done material-icons">done_all</i></a>
-				</div>`
+									<div class="pull-right">${Feeds.renderIcon(hl.feed_id, hl.has_icon)}</div>
+									<a class="title" href="#" onclick="Feeds.open({feed:${hl.feed_id}})">${hl.feed_title}</a>
+									<a class="catchup" title="${__('mark feed as read')}" onclick="Feeds.catchupFeedInGroup(${hl.feed_id})" href="#">
+										<i class="icon-done material-icons">done_all</i>
+									</a>
+								</div>`
 
 			const tmp = document.createElement("div");
 			tmp.innerHTML = vgrhdr;
@@ -476,6 +478,7 @@ const Headlines = {
 							</div>
 
 							<span onclick="return Headlines.click(event, ${hl.id});" data-article-id="${hl.id}" class="titleWrap hlMenuAttach">
+								${App.getInitParam("debug_headline_ids") ? `<span class="text-muted small">A: ${hl.id} F: ${hl.feed_id}</span>` : ""}
 								<a class="title" title="${App.escapeHtml(hl.title)}" target="_blank" rel="noopener noreferrer" href="${App.escapeHtml(hl.link)}">
 									${hl.title}</a>
 								<span class="author">${hl.author}</span>
@@ -542,6 +545,7 @@ const Headlines = {
 					<i class="pub-pic pub-${hl.id} material-icons" onclick="Headlines.togglePub(${hl.id})">rss_feed</i>
 			</div>
 			<div onclick="return Headlines.click(event, ${hl.id})" class="title">
+				${App.getInitParam("debug_headline_ids") ? `<span class="text-muted small">A: ${hl.id} F: ${hl.feed_id}</span>` : ""}
 				<span data-article-id="${hl.id}" class="hl-content hlMenuAttach">
 					<a class="title" href="${App.escapeHtml(hl.link)}">${hl.title} <span class="preview">${hl.content_preview}</span></a>
 					<span class="author">${hl.author}</span>

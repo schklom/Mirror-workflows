@@ -415,7 +415,7 @@ class RPC extends Handler_Protected {
 			Prefs::ENABLE_FEED_CATS, Prefs::FEEDS_SORT_BY_UNREAD,
 			Prefs::CONFIRM_FEED_CATCHUP,  Prefs::CDM_AUTO_CATCHUP,
 			Prefs::FRESH_ARTICLE_MAX_AGE, Prefs::HIDE_READ_SHOWS_SPECIAL,
-			Prefs::COMBINED_DISPLAY_MODE] as $param) {
+			Prefs::COMBINED_DISPLAY_MODE, Prefs::DEBUG_HEADLINE_IDS] as $param) {
 
 			$params[strtolower($param)] = (int) get_pref($param);
 		}

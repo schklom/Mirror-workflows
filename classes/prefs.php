@@ -57,6 +57,7 @@ class Prefs {
 	const DEFAULT_SEARCH_LANGUAGE = "DEFAULT_SEARCH_LANGUAGE";
 	const _PREFS_MIGRATED = "_PREFS_MIGRATED";
 	const HEADLINES_NO_DISTINCT = "HEADLINES_NO_DISTINCT";
+	const DEBUG_HEADLINE_IDS = "DEBUG_HEADLINE_IDS";
 
 	private const _DEFAULTS = [
 		Prefs::PURGE_OLD_DAYS => [ 60, Config::T_INT ],
@@ -114,6 +115,7 @@ class Prefs {
 		Prefs::DEFAULT_SEARCH_LANGUAGE => [ "" , Config::T_STRING ],
 		Prefs::_PREFS_MIGRATED => [ false, Config::T_BOOL ],
 		Prefs::HEADLINES_NO_DISTINCT => [ false, Config::T_BOOL ],
+		Prefs::DEBUG_HEADLINE_IDS => [ false, Config::T_BOOL ],
 	];
 
 	const _PROFILE_BLACKLIST = [

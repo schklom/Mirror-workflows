@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-24 19:54+0300\n"
-"PO-Revision-Date: 2019-12-10 18:38+0000\n"
-"Last-Translator: Nikolay Korotkiy <sikmir@gmail.com>\n"
+"PO-Revision-Date: 2021-02-26 09:55+0000\n"
+"Last-Translator: Andrew Dolgov <fox@fakecake.org>\n"
 "Language-Team: Russian <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "ru/>\n"
 "Language: ru_RU\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 3.7.1\n"
+"X-Generator: Weblate 4.5\n"
 
 #: backend.php:55
 msgid "Use default"
@@ -321,7 +321,7 @@ msgstr ""
 
 #: include/login_form.php:156 js/Feeds.js:275
 msgid "Safe mode"
-msgstr ""
+msgstr "Безопасный режим"
 
 #: include/login_form.php:161
 msgid "Uses default theme and prevents all plugins from loading."
@@ -2709,7 +2709,7 @@ msgstr "Отметить все статьи в %s как прочитанные
 
 #: js/Feeds.js:611
 msgid "Search syntax"
-msgstr "Искать метку"
+msgstr "Синтаксис запросов"
 
 #: js/Headlines.js:606
 msgid "Cancel search"

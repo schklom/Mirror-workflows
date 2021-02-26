@@ -63,6 +63,7 @@ class Pref_Prefs extends Handler_Protected {
 				Prefs::SHORT_DATE_FORMAT,
 				'BLOCK_SEPARATOR',
 				Prefs::SSL_CERT_SERIAL,
+				'BLOCK_SEPARATOR',
 				Prefs::HEADLINES_NO_DISTINCT,
 			]
 		];

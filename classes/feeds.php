@@ -1622,7 +1622,7 @@ class Feeds extends Handler_Protected {
 			}
 
 			// except for Labels category
-			if (get_pref(Prefs::HEADLINES_NO_DISTINCT) && !($feed == -2 && $cat_view)) {
+			if (get_pref(Prefs::HEADLINES_NO_DISTINCT, $owner_uid) && !($feed == -2 && $cat_view)) {
 				$distinct_qpart = "";
 			}
 

@@ -78,27 +78,27 @@ class RSSUtils {
 		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$update_limit_qpart = "AND ((
 					update_interval = 0
-						AND p.value != '-1'
+						AND (p.value IS NULL OR p.value != '-1')
 						AND last_updated < NOW() - CAST((COALESCE(p.value, '$default_interval') || ' minutes') AS INTERVAL)
 				) OR (
 					update_interval > 0
 					AND last_updated < NOW() - CAST((update_interval || ' minutes') AS INTERVAL)
 				) OR (
 					update_interval >= 0
-						AND p.value != '-1'
+						AND (p.value IS NULL OR p.value != '-1')
 						AND (last_updated = '1970-01-01 00:00:00' OR last_updated IS NULL)
 				))";
 		} else {
 			$update_limit_qpart = "AND ((
 					update_interval = 0
-						AND p.value != '-1'
+						AND (p.value IS NULL OR p.value != '-1')
 						AND last_updated < DATE_SUB(NOW(), INTERVAL CONVERT(COALESCE(p.value, '$default_interval'), SIGNED INTEGER) MINUTE)
 				) OR (
 					update_interval > 0
 						AND last_updated < DATE_SUB(NOW(), INTERVAL update_interval MINUTE)
 				) OR (
 					update_interval >= 0
-						AND p.value != '-1'
+						AND (p.value IS NULL OR p.value != '-1')
 						AND (last_updated = '1970-01-01 00:00:00' OR last_updated IS NULL)
 				))";
 		}

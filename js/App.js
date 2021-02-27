@@ -812,10 +812,23 @@ const App = {
          .then((reply) => {
             console.log('update reply', reply);
 
-            if (reply.id) {
-               App.byId("updates-available").show();
+            const icon = App.byId("updates-available");
+
+            if (reply.changeset.id || reply.plugins.length > 0) {
+               icon.show();
+
+               const tips = [];
+
+               if (reply.changeset.id)
+                  tips.push(__("Updates for Tiny Tiny RSS are available."));
+
+               if (reply.plugins.length > 0)
+                  tips.push(__("Updates for some local plugins are available."));
+
+               icon.setAttribute("title", tips.join("\n"));
+
             } else {
-               App.byId("updates-available").hide();
+               icon.hide();
             }
          });
    },

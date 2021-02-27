@@ -763,6 +763,10 @@ body.ttrss_main #header i.log-alert {
   color: #ddba1c;
   cursor: pointer;
 }
+body.ttrss_main #header #updates-available {
+  color: #69C671;
+  padding-right: 4px;
+}
 body.ttrss_main #header i {
   margin: 0 4px;
 }

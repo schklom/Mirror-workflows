@@ -394,7 +394,7 @@ class RPC extends Handler_Protected {
 	}
 
 	function checkforupdates() {
-		$rv = [];
+		$rv = ["changeset" => [], "plugins" => []];
 
 		$git_timestamp = false;
 		$git_commit = false;
@@ -411,10 +411,12 @@ class RPC extends Handler_Protected {
 					if ($git_timestamp < (int)$content["changeset"]["timestamp"] &&
 						$git_commit != $content["changeset"]["id"]) {
 
-						$rv = $content["changeset"];
+						$rv["changeset"] = $content["changeset"];
 					}
 				}
 			}
+
+			$rv["plugins"] = Pref_Prefs::_get_updated_plugins();
 		}
 
 		print json_encode($rv);

@@ -1093,7 +1093,28 @@ class Pref_Prefs extends Handler_Protected {
 		set_pref(Prefs::_ENABLED_PLUGINS, $plugins);
 	}
 
-	private function _plugin_needs_update($root_dir, $plugin_name) {
+	static function _get_updated_plugins() {
+		$root_dir = dirname(dirname(__DIR__)); # we're in classes/pref/
+		$plugin_dirs = array_filter(glob("$root_dir/plugins.local/*"), "is_dir");
+
+		$rv = [];
+
+		foreach ($plugin_dirs as $dir) {
+			if (is_dir("$dir/.git")) {
+				$plugin_name = basename($dir);
+
+				array_push($rv, ["plugin" => $plugin_name, "rv" => self::_plugin_needs_update($root_dir, $plugin_name)]);
+			}
+		}
+
+		$rv = array_values(array_filter($rv, function ($item) {
+			return !empty($item["rv"]["o"]);
+		}));
+
+		return $rv;
+	}
+
+	private static function _plugin_needs_update($root_dir, $plugin_name) {
 		$plugin_dir = "$root_dir/plugins.local/" . basename($plugin_name);
 		$rv = [];
 
@@ -1150,23 +1171,12 @@ class Pref_Prefs extends Handler_Protected {
 		if ($_SESSION["access_level"] >= 10) {
 			$plugin_name = $_REQUEST["name"] ?? "";
 
-			# we're in classes/pref/
-			$root_dir = dirname(dirname(__DIR__));
-
-			$rv = [];
+			$root_dir = dirname(dirname(__DIR__)); # we're in classes/pref/
 
 			if (!empty($plugin_name)) {
-				array_push($rv, ["plugin" => $plugin_name, "rv" => $this->_plugin_needs_update($root_dir, $plugin_name)]);
+				$rv = ["plugin" => $plugin_name, "rv" => self::_plugin_needs_update($root_dir, $plugin_name)];
 			} else {
-				$plugin_dirs = array_filter(glob("$root_dir/plugins.local/*"), "is_dir");
-
-				foreach ($plugin_dirs as $dir) {
-					if (is_dir("$dir/.git")) {
-						$plugin_name = basename($dir);
-
-						array_push($rv, ["plugin" => $plugin_name, "rv" => $this->_plugin_needs_update($root_dir, $plugin_name)]);
-					}
-				}
+				$rv = self::_get_updated_plugins();
 			}
 
 			print json_encode($rv);
@@ -1191,7 +1201,7 @@ class Pref_Prefs extends Handler_Protected {
 					if (is_dir("$dir/.git")) {
 						$plugin_name = basename($dir);
 
-						$test = $this->_plugin_needs_update($root_dir, $plugin_name);
+						$test = self::_plugin_needs_update($root_dir, $plugin_name);
 
 						if (!empty($test["o"]))
 							array_push($rv, ["plugin" => $plugin_name, "rv" => $this->_update_plugin($root_dir, $plugin_name)]);

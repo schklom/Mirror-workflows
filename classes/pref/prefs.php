@@ -900,7 +900,7 @@ class Pref_Prefs extends Handler_Protected {
 					}
 			</script>
 
-			<?php if ($_SESSION["access_level"] >= 10) { ?>
+			<?php if (Config::get(Config::CHECK_FOR_UPDATES) && $_SESSION["access_level"] >= 10) { ?>
 				<script type="dojo/method" event="onShow" args="evt">
 						Helpers.Plugins.checkForUpdate();
 				</script>

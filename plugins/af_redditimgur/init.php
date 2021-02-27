@@ -1,7 +1,7 @@
 <?php
 class Af_RedditImgur extends Plugin {
 
-	/* @var PluginHost $host */
+	/** @var PluginHost $host */
 	private $host;
 	private $domain_blacklist = [ "github.com" ];
 	private $dump_json_data = false;
@@ -34,6 +34,7 @@ class Af_RedditImgur extends Plugin {
 			$enable_readability = $this->host->get($this, "enable_readability");
 			$enable_content_dupcheck = $this->host->get($this, "enable_content_dupcheck");
 			$reddit_to_teddit = $this->host->get($this, "reddit_to_teddit");
+			$apply_nsfw_tags = $this->host->get_array($this, "apply_nsfw_tags");
 		?>
 
 		<div dojoType="dijit.layout.AccordionPane"
@@ -52,6 +53,14 @@ class Af_RedditImgur extends Plugin {
 						})
 					}
 				</script>
+
+				<fieldset class='narrow'>
+					<label>
+						<?= __("Apply tags to NSFW posts (comma-separated list):") ?>
+					</label>
+					<input dojoType="dijit.form.TextBox" name="apply_nsfw_tags" size="20"
+						value="<?= htmlspecialchars(implode(", ", $apply_nsfw_tags)) ?>">
+				</fieldset>
 
 				<fieldset class='narrow'>
 					<label class='checkbox'>
@@ -87,10 +96,12 @@ class Af_RedditImgur extends Plugin {
 		$enable_readability = checkbox_to_sql_bool($_POST["enable_readability"] ?? "");
 		$enable_content_dupcheck = checkbox_to_sql_bool($_POST["enable_content_dupcheck"] ?? "");
 		$reddit_to_teddit = checkbox_to_sql_bool($_POST["reddit_to_teddit"] ?? "");
+		$apply_nsfw_tags = FeedItem_Common::normalize_categories(explode(",", $_POST["apply_nsfw_tags"] ?? ""));
 
 		$this->host->set($this, "enable_readability", $enable_readability, false);
 		$this->host->set($this, "reddit_to_teddit", $reddit_to_teddit, false);
 		$this->host->set($this, "enable_content_dupcheck", $enable_content_dupcheck);
+		$this->host->set($this, "apply_nsfw_tags", $apply_nsfw_tags);
 
 		echo __("Configuration saved");
 	}
@@ -202,9 +213,11 @@ class Af_RedditImgur extends Plugin {
 		return $found;
 	}
 
-	private function inline_stuff($article, &$doc, $xpath) {
+	private function inline_stuff(&$article, &$doc, $xpath) {
 
 		$found = false;
+		$post_is_nsfw = false;
+		$apply_nsfw_tags = FeedItem_Common::normalize_categories($this->host->get_array($this, "apply_nsfw_tags", []));
 
 		// embed before reddit <table> post layout
 		$anchor = $xpath->query('//body/*')->item(0);
@@ -230,6 +243,12 @@ class Af_RedditImgur extends Plugin {
 						foreach ($listing["data"]["children"] as $child) {
 
 							$data = $child["data"];
+							$over_18 = $data["over_18"] ?? 0 == 1;
+
+							if ($over_18) {
+								Debug::log("JSON: post is NSFW", Debug::$LOG_EXTENDED);
+								$post_is_nsfw = true;
+							}
 
 							if (isset($data["crosspost_parent_list"])) {
 								Debug::log("JSON: processing child crosspost_parent_list", Debug::$LOG_EXTENDED);
@@ -263,6 +282,10 @@ class Af_RedditImgur extends Plugin {
 			}
 		} else if (!$anchor) {
 			Debug::log("JSON: anchor element not found, unable to embed", Debug::$LOG_EXTENDED);
+		}
+
+		if ($post_is_nsfw && count($apply_nsfw_tags) > 0) {
+			$article["tags"] = array_merge($article["tags"], $apply_nsfw_tags);
 		}
 
 		if ($found) {
@@ -680,7 +703,9 @@ class Af_RedditImgur extends Plugin {
 		@$doc->loadHTML("<html><body><table><tr><td><a href=\"$url\">[link]</a></td></tr></table></body>");
 		$xpath = new DOMXPath($doc);
 
-		$found = $this->inline_stuff(["link" => $article_url], $doc, $xpath);
+		$article = ["link" => $article_url, "tags" => []];
+
+		$found = $this->inline_stuff($article, $doc, $xpath);
 
 		Debug::log("Inline result: $found", Debug::$LOG_VERBOSE);
 

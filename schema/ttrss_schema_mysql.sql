@@ -298,7 +298,7 @@ create table ttrss_tags (id integer primary key auto_increment,
 
 create table ttrss_version (schema_version int not null) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
-insert into ttrss_version values (141);
+insert into ttrss_version values (142);
 
 create table ttrss_enclosures (id integer primary key auto_increment,
 	content_url text not null,
@@ -372,6 +372,9 @@ create table ttrss_user_labels2 (label_id integer not null,
 	foreign key (label_id) references ttrss_labels2(id) ON DELETE CASCADE,
 	foreign key (article_id) references ttrss_entries(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+
+create index ttrss_user_labels2_article_id_idx on ttrss_user_labels2(article_id);
+create index ttrss_user_labels2_label_id_idx on ttrss_user_labels2(label_id);
 
 create table ttrss_access_keys (id integer not null primary key auto_increment,
 	access_key varchar(250) not null,

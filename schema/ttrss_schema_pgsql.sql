@@ -280,7 +280,7 @@ create index ttrss_tags_post_int_id_idx on ttrss_tags(post_int_id);
 
 create table ttrss_version (schema_version int not null);
 
-insert into ttrss_version values (141);
+insert into ttrss_version values (142);
 
 create table ttrss_enclosures (id serial not null primary key,
 	content_url text not null,
@@ -354,6 +354,9 @@ create table ttrss_user_labels2 (
 	label_id integer not null references ttrss_labels2(id) ON DELETE CASCADE,
 	article_id integer not null references ttrss_entries(id) ON DELETE CASCADE
 );
+
+create index ttrss_user_labels2_article_id_idx on ttrss_user_labels2(article_id);
+create index ttrss_user_labels2_label_id_idx on ttrss_user_labels2(label_id);
 
 create table ttrss_access_keys (id serial not null primary key,
 	access_key varchar(250) not null,

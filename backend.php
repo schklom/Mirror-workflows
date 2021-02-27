@@ -135,6 +135,9 @@
 					} else {
 						if (method_exists($handler, "catchall")) {
 							$handler->catchall($method);
+						} else {
+							header("Content-Type: text/json");
+							print Errors::to_json(Errors::E_UNKNOWN_METHOD, ["info" => get_class($handler) . "->$method"]);
 						}
 					}
 					$handler->after();
@@ -154,6 +157,6 @@
 	}
 
 	header("Content-Type: text/json");
-	print Errors::to_json(Errors::E_UNKNOWN_METHOD);
+	print Errors::to_json(Errors::E_UNKNOWN_METHOD, ["info" => get_class($handler) . "->$method"]);
 
 ?>

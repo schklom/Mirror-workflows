@@ -278,20 +278,72 @@ const	Helpers = {
 				});
 			}
 		},
-		clearPluginData: function(name) {
-			if (confirm(__("Clear stored data for this plugin?"))) {
-				Notify.progress("Loading, please wait...");
-
-				xhr.post("backend.php", {op: "pref-prefs", method: "clearplugindata", name: name}, () => {
-					Helpers.Prefs.refresh();
-				});
-			}
-		},
 		refresh: function() {
 			xhr.post("backend.php", { op: "pref-prefs" }, (reply) => {
 				dijit.byId('prefsTab').attr('content', reply);
 				Notify.close();
 			});
+		},
+	},
+	Plugins: {
+		clearPluginData: function(name) {
+			if (confirm(__("Clear stored data for this plugin?"))) {
+				Notify.progress("Loading, please wait...");
+
+				xhr.post("backend.php", {op: "pref-prefs", method: "clearPluginData", name: name}, () => {
+					Helpers.Prefs.refresh();
+				});
+			}
+		},
+		updateLocal: function(name = null) {
+			const msg = name ? __("Update %p using git?").replace("%p", name) :
+				__("Update all local plugins using git?");
+
+			if (confirm(msg)) {
+
+				const dialog = new fox.SingleUseDialog({
+					title: __("Plugin Updater"),
+					content: `
+						<ul class="panel panel-scrollable update-results">
+							<li>${__("Loading, please wait...")}</li>
+						</ul>
+
+						<footer class="text-center">
+							${App.FormFields.submit_tag(__("Close this window"))}
+						</footer>
+					`,
+				});
+
+				const tmph = dojo.connect(dialog, 'onShow', function () {
+					dojo.disconnect(tmph);
+
+					xhr.json("backend.php", {op: "pref-prefs", method: "updateLocalPlugins", name: name}, (reply) => {
+						const container = dialog.domNode.querySelector(".update-results");
+
+						if (!reply) {
+							container.innerHTML = __("Operation failed: check event log.");
+						} else {
+							container.innerHTML = "";
+
+							reply.forEach((p) => {
+								container.innerHTML +=
+								`
+								<li><h3 style="margin-top: 0">${p.plugin}</h3>
+									${p.rv.e ? `<pre class="small text-error">${p.rv.e}</pre>` : ''}
+									${p.rv.o ? `<pre class="small text-success">${p.rv.o}</pre>` : ''}
+									<p class="small">
+										${p.rv.s ? __("Exited with RC: %d").replace("%d", p.rv.s) : __("OK")}
+									</p>
+								</li>
+								`
+							});
+						}
+					});
+
+				});
+
+				dialog.show();
+			}
 		},
 	},
 	OPML: {

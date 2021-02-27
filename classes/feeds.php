@@ -963,7 +963,7 @@ class Feeds extends Handler_Protected {
 
 	function add() {
 		$feed = clean($_REQUEST['feed']);
-		$cat = clean($_REQUEST['cat']);
+		$cat = clean($_REQUEST['cat'] ?? '');
 		$need_auth = isset($_REQUEST['need_auth']);
 		$login = $need_auth ? clean($_REQUEST['login']) : '';
 		$pass = $need_auth ? clean($_REQUEST['pass']) : '';

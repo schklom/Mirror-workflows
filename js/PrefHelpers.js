@@ -330,6 +330,9 @@ const	Helpers = {
 
 				const dialog = new fox.SingleUseDialog({
 					title: __("Plugin Updater"),
+					execute: function() {
+						Helpers.Prefs.refresh();
+					},
 					content: `
 						<ul class="panel panel-scrollable update-results">
 							<li>${__("Loading, please wait...")}</li>

@@ -295,7 +295,34 @@ const	Helpers = {
 				});
 			}
 		},
-		updateLocal: function(name = null) {
+		checkForUpdate: function(name = null) {
+			Notify.progress("Checking for plugin updates...");
+
+			xhr.json("backend.php", {op: "pref-prefs", method: "checkForPluginUpdates", name: name}, (reply) => {
+				Notify.close();
+
+				if (reply) {
+					let plugins_with_updates = 0;
+
+					reply.forEach((p) => {
+						if (p.rv.o) {
+							const button = dijit.getEnclosingWidget(App.find(`*[data-update-btn-for-plugin="${p.plugin}"]`));
+
+							if (button) {
+								button.domNode.show();
+								++plugins_with_updates;
+							}
+						}
+					});
+
+					if (plugins_with_updates > 0)
+						App.find(".update-all-plugins-btn").show();
+				} else {
+					Notify.error("Unable to check for plugin updates.");
+				}
+			});
+		},
+		update: function(name = null) {
 			const msg = name ? __("Update %p using git?").replace("%p", name) :
 				__("Update all local plugins using git?");
 

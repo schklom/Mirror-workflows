@@ -841,9 +841,6 @@ class Pref_Prefs extends Handler_Protected {
 				} else if (in_array($name, $user_enabled)) {
 					$is_checked = "checked='1'";
 				}
-
-				$can_update = is_dir(dirname(dirname(__DIR__)) . "/plugins.local/$name/.git");
-
 				?>
 
 				<fieldset class='prefs plugin'>
@@ -855,8 +852,10 @@ class Pref_Prefs extends Handler_Protected {
 						</input>
 					</label>
 
-					<?php if ($_SESSION["access_level"] >= 10 && $can_update) { ?>
-						<button dojoType='dijit.form.Button' onclick='Helpers.Plugins.updateLocal("<?= htmlspecialchars($name) ?>")'>
+					<?php if ($_SESSION["access_level"] >= 10) { ?>
+						<button style="display : none"
+								data-update-btn-for-plugin="<?= htmlspecialchars($name) ?>" dojoType='dijit.form.Button'
+								onclick='Helpers.Plugins.update("<?= htmlspecialchars($name) ?>")'>
 							<?= \Controls\icon("update") ?>
 							<?= __("Update") ?>
 						</button>
@@ -901,6 +900,12 @@ class Pref_Prefs extends Handler_Protected {
 					}
 			</script>
 
+			<?php if ($_SESSION["access_level"] >= 10) { ?>
+				<script type="dojo/method" event="onShow" args="evt">
+						Helpers.Plugins.checkForUpdate();
+				</script>
+			<?php } ?>
+
 			<?= \Controls\hidden_tag("op", "pref-prefs") ?>
 			<?= \Controls\hidden_tag("method", "setplugins") ?>
 
@@ -940,14 +945,14 @@ class Pref_Prefs extends Handler_Protected {
 
 				</div>
 				<div dojoType="dijit.layout.ContentPane" region="bottom">
-					<button dojoType='dijit.form.Button' style='float : left' class='alt-info' onclick='window.open("https://tt-rss.org/wiki/Plugins")'>
+					<button dojoType='dijit.form.Button' class="alt-info pull-left" onclick='window.open("https://tt-rss.org/wiki/Plugins")'>
 						<i class='material-icons'>help</i> <?= __("More info...") ?>
 					</button>
 					<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>
 						<?= __("Enable selected plugins") ?>
 					</button>
 					<?php if ($_SESSION["access_level"] >= 10) { ?>
-						<button dojoType='dijit.form.Button' onclick="Helpers.Plugins.updateLocal()">
+						<button class="update-all-plugins-btn" style="display : none" dojoType='dijit.form.Button' onclick="Helpers.Plugins.update()">
 							<?= \Controls\icon("update") ?>
 							<?= __("Update local plugins") ?>
 						</button>
@@ -1088,7 +1093,7 @@ class Pref_Prefs extends Handler_Protected {
 		set_pref(Prefs::_ENABLED_PLUGINS, $plugins);
 	}
 
-	private function _update_plugin($root_dir, $plugin_name) {
+	private function _plugin_needs_update($root_dir, $plugin_name) {
 		$plugin_dir = "$root_dir/plugins.local/" . basename($plugin_name);
 		$rv = [];
 
@@ -1096,12 +1101,12 @@ class Pref_Prefs extends Handler_Protected {
 			$pipes = [];
 
 			$descriptorspec = [
-				0 => ["pipe", "r"], // STDIN
+				//0 => ["pipe", "r"], // STDIN
 				1 => ["pipe", "w"], // STDOUT
 				2 => ["pipe", "w"], // STDERR
 			];
 
-			$proc = proc_open("git pull --ff-only -q origin master", $descriptorspec, $pipes, $plugin_dir);
+			$proc = proc_open("git fetch -q origin -a && git log HEAD..origin/master --oneline", $descriptorspec, $pipes, $plugin_dir);
 
 			if (is_resource($proc)) {
 				$rv["o"] = stream_get_contents($pipes[1]);
@@ -1112,6 +1117,60 @@ class Pref_Prefs extends Handler_Protected {
 		}
 
 		return $rv;
+	}
+
+
+	private function _update_plugin($root_dir, $plugin_name) {
+		$plugin_dir = "$root_dir/plugins.local/" . basename($plugin_name);
+		$rv = [];
+
+		if (is_dir($plugin_dir) && is_dir("$plugin_dir/.git")) {
+			$pipes = [];
+
+			$descriptorspec = [
+				//0 => ["pipe", "r"], // STDIN
+				1 => ["pipe", "w"], // STDOUT
+				2 => ["pipe", "w"], // STDERR
+			];
+
+			$proc = proc_open("git fetch origin -a && git log HEAD..origin/master --oneline && git pull --ff-only origin master", $descriptorspec, $pipes, $plugin_dir);
+
+			if (is_resource($proc)) {
+				$rv["o"] = stream_get_contents($pipes[1]);
+				$rv["e"] = stream_get_contents($pipes[2]);
+				$status = proc_close($proc);
+				$rv["s"] = $status;
+			}
+		}
+
+		return $rv;
+	}
+
+	function checkForPluginUpdates() {
+		if ($_SESSION["access_level"] >= 10) {
+			$plugin_name = $_REQUEST["name"] ?? "";
+
+			# we're in classes/pref/
+			$root_dir = dirname(dirname(__DIR__));
+
+			$rv = [];
+
+			if (!empty($plugin_name)) {
+				array_push($rv, ["plugin" => $plugin_name, "rv" => $this->_plugin_needs_update($root_dir, $plugin_name)]);
+			} else {
+				$plugin_dirs = array_filter(glob("$root_dir/plugins.local/*"), "is_dir");
+
+				foreach ($plugin_dirs as $dir) {
+					if (is_dir("$dir/.git")) {
+						$plugin_name = basename($dir);
+
+						array_push($rv, ["plugin" => $plugin_name, "rv" => $this->_plugin_needs_update($root_dir, $plugin_name)]);
+					}
+				}
+			}
+
+			print json_encode($rv);
+		}
 	}
 
 	function updateLocalPlugins() {

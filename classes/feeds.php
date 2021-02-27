@@ -200,27 +200,27 @@ class Feeds extends Handler_Protected {
 
 				$feed_id = $line["feed_id"];
 
-				$label_cache = $line["label_cache"];
-				$labels = false;
-
-				if ($label_cache) {
-					$label_cache = json_decode($label_cache, true);
+				if ($line["num_labels"] > 0) {
+					$label_cache = $line["label_cache"];
+					$labels = false;
 
 					if ($label_cache) {
-						if ($label_cache["no-labels"] ?? false == 1)
-							$labels = [];
-						else
-							$labels = $label_cache;
+						$label_cache = json_decode($label_cache, true);
+
+						if ($label_cache) {
+							if ($label_cache["no-labels"] ?? 0 == 1)
+								$labels = [];
+							else
+								$labels = $label_cache;
+						}
+					} else {
+						$labels = Article::_get_labels($id);
 					}
 
 					$line["labels"] = $labels;
 				} else {
 					$line["labels"] = [];
 				}
-
-				/*if (!is_array($labels)) $labels = Article::_get_labels($id);
-
-				$line["labels"] = Article::_get_labels($id);*/
 
 				if (count($topmost_article_ids) < 3) {
 					array_push($topmost_article_ids, $id);
@@ -1695,6 +1695,7 @@ class Feeds extends Handler_Protected {
 						$vfeed_query_part
 						$content_query_part
 						author,score,
+						(SELECT count(label_id) FROM ttrss_user_labels2 WHERE article_id = ttrss_entries.id) AS num_labels,
 						(SELECT count(id) FROM ttrss_enclosures WHERE post_id = ttrss_entries.id) AS num_enclosures
 					FROM
 						$from_qpart
@@ -1754,6 +1755,7 @@ class Feeds extends Handler_Protected {
 							$vfeed_query_part
 							$content_query_part
 							author, score,
+							(SELECT count(label_id) FROM ttrss_user_labels2 WHERE article_id = ttrss_entries.id) AS num_labels,
 							(SELECT count(id) FROM ttrss_enclosures WHERE post_id = ttrss_entries.id) AS num_enclosures
 						FROM ttrss_entries, ttrss_user_entries, ttrss_tags, ttrss_feeds
 						WHERE

@@ -1191,7 +1191,10 @@ class Pref_Prefs extends Handler_Protected {
 					if (is_dir("$dir/.git")) {
 						$plugin_name = basename($dir);
 
-						array_push($rv, ["plugin" => $plugin_name, "rv" => $this->_update_plugin($root_dir, $plugin_name)]);
+						$test = $this->_plugin_needs_update($root_dir, $plugin_name);
+
+						if (!empty($test["o"]))
+							array_push($rv, ["plugin" => $plugin_name, "rv" => $this->_update_plugin($root_dir, $plugin_name)]);
 					}
 				}
 			}

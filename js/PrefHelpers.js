@@ -339,7 +339,7 @@ const	Helpers = {
 						</ul>
 
 						<footer class="text-center">
-							${App.FormFields.submit_tag(__("Close this window"))}
+							${App.FormFields.submit_tag(__("Reload preferences"))}
 						</footer>
 					`,
 				});

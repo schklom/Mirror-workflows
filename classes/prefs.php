@@ -58,6 +58,7 @@ class Prefs {
 	const _PREFS_MIGRATED = "_PREFS_MIGRATED";
 	const HEADLINES_NO_DISTINCT = "HEADLINES_NO_DISTINCT";
 	const DEBUG_HEADLINE_IDS = "DEBUG_HEADLINE_IDS";
+	const DISABLE_CONDITIONAL_COUNTERS = "DISABLE_CONDITIONAL_COUNTERS";
 
 	private const _DEFAULTS = [
 		Prefs::PURGE_OLD_DAYS => [ 60, Config::T_INT ],
@@ -116,6 +117,7 @@ class Prefs {
 		Prefs::_PREFS_MIGRATED => [ false, Config::T_BOOL ],
 		Prefs::HEADLINES_NO_DISTINCT => [ false, Config::T_BOOL ],
 		Prefs::DEBUG_HEADLINE_IDS => [ false, Config::T_BOOL ],
+		Prefs::DISABLE_CONDITIONAL_COUNTERS => [ false, Config::T_BOOL ],
 	];
 
 	const _PROFILE_BLACKLIST = [

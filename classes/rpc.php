@@ -121,7 +121,8 @@ class RPC extends Handler_Protected {
 		else
 			$label_ids = array_map("intval", clean($_REQUEST["label_ids"] ?? []));
 
-		$counters = is_array($feed_ids) ? Counters::get_conditional($feed_ids, $label_ids) : Counters::get_all();
+		$counters = is_array($feed_ids) && !get_pref(Prefs::DISABLE_CONDITIONAL_COUNTERS) ?
+			Counters::get_conditional($feed_ids, $label_ids) : Counters::get_all();
 
 		$reply = [
 			'counters' => $counters,

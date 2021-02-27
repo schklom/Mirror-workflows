@@ -65,6 +65,7 @@ class Pref_Prefs extends Handler_Protected {
 				'BLOCK_SEPARATOR',
 				Prefs::SSL_CERT_SERIAL,
 				'BLOCK_SEPARATOR',
+				Prefs::DISABLE_CONDITIONAL_COUNTERS,
 				Prefs::HEADLINES_NO_DISTINCT,
 			],
 			__('Debugging') => [
@@ -106,6 +107,7 @@ class Pref_Prefs extends Handler_Protected {
 			Prefs::USER_CSS_THEME => array(__("Theme")),
 			Prefs::HEADLINES_NO_DISTINCT => array(__("Don't enforce DISTINCT headlines"), __("May produce duplicate entries")),
 			Prefs::DEBUG_HEADLINE_IDS => array(__("Show article and feed IDs"), __("In the headlines buffer")),
+			Prefs::DISABLE_CONDITIONAL_COUNTERS => array(__("Disable conditional counter updates"), __("May increase server load")),
 		];
 
 		// hidden in the main prefs UI (use to hide things that have description set above)

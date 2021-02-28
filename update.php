@@ -253,7 +253,7 @@
 
 		RSSUtils::update_daemon_common(isset($options["pidlock"]) ? 50 : Config::get(Config::DAEMON_FEED_LIMIT), $options);
 
-		if (!isset($options["pidlock"]) || $options["task"] == 0)
+		if (!isset($options["pidlock"]) || $options["task"] == "0")
 			RSSUtils::housekeeping_common();
 
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK, $options);

@@ -1,7 +1,7 @@
 'use strict';
 
 /* eslint-disable no-new */
-/* global __, dijit, dojo, Tables, xhrPost, Notify, xhr, App, fox */
+/* global __, dijit, dojo, Tables, Notify, xhr, App, fox */
 
 const	Helpers = {
 	AppPasswords: {
@@ -327,6 +327,7 @@ const	Helpers = {
 			const dialog = new fox.SingleUseDialog({
 				title: __("Plugin Updater"),
 				need_refresh: false,
+				plugins_to_update: [],
 				onHide: function() {
 					if (this.need_refresh) {
 						Helpers.Prefs.refresh();
@@ -335,10 +336,12 @@ const	Helpers = {
 				performUpdate: function() {
 					const container = dialog.domNode.querySelector(".update-results");
 
+					console.log('updating', dialog.plugins_to_update);
+
 					container.innerHTML = `<li class='text-center'>${__("Updating, please wait...")}</li>`;
 					let enable_update_btn = false;
 
-					xhr.json("backend.php", {op: "pref-prefs", method: "updateLocalPlugins", name: name}, (reply) => {
+					xhr.json("backend.php", {op: "pref-prefs", method: "updateLocalPlugins", plugins: dialog.plugins_to_update.join(",")}, (reply) => {
 
 						if (!reply) {
 							container.innerHTML = `<li class='text-center text-error'>${__("Operation failed: check event log.")}</li>`;
@@ -392,9 +395,13 @@ const	Helpers = {
 					} else {
 						container.innerHTML = "";
 
+						dialog.plugins_to_update = [];
+
 						reply.forEach((p) => {
-							if (p.rv.s == 0)
+							if (p.rv.s == 0) {
 								enable_update_btn = true;
+								dialog.plugins_to_update.push(p.plugin);
+							}
 
 							container.innerHTML +=
 							`

@@ -363,6 +363,7 @@ class API extends Handler {
 			}
 
 			$this->_wrap(self::STATUS_OK, $articles);
+		// @phpstan-ignore-next-line
 		} else {
 			$this->_wrap(self::STATUS_ERR, array("error" => self::E_INCORRECT_USAGE));
 		}

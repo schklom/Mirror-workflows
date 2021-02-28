@@ -1185,15 +1185,18 @@ class Pref_Prefs extends Handler_Protected {
 
 	function updateLocalPlugins() {
 		if ($_SESSION["access_level"] >= 10) {
-			$plugin_name = $_REQUEST["name"] ?? "";
+			$plugins = explode(",", $_REQUEST["plugins"] ?? "");
 
 			# we're in classes/pref/
 			$root_dir = dirname(dirname(__DIR__));
 
 			$rv = [];
 
-			if (!empty($plugin_name)) {
-				array_push($rv, ["plugin" => $plugin_name, "rv" => $this->_update_plugin($root_dir, $plugin_name)]);
+			if (count($plugins) > 0) {
+				foreach ($plugins as $plugin_name) {
+					array_push($rv, ["plugin" => $plugin_name, "rv" => $this->_update_plugin($root_dir, $plugin_name)]);
+				}
+			// @phpstan-ignore-next-line
 			} else {
 				$plugin_dirs = array_filter(glob("$root_dir/plugins.local/*"), "is_dir");
 

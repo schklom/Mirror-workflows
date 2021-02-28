@@ -51,6 +51,11 @@
 		UserHelper::load_user_plugins($_SESSION["uid"]);
 	}
 
+	if (Config::get_schema_version() !== SCHEMA_VERSION) {
+		print Errors::to_json(Errors::E_SCHEMA_MISMATCH);
+		return;
+	}
+
 	$purge_intervals = array(
 		0  => __("Use default"),
 		-1 => __("Never purge"),

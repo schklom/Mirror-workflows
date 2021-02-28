@@ -1174,7 +1174,7 @@ class Pref_Prefs extends Handler_Protected {
 			$root_dir = dirname(dirname(__DIR__)); # we're in classes/pref/
 
 			if (!empty($plugin_name)) {
-				$rv = ["plugin" => $plugin_name, "rv" => self::_plugin_needs_update($root_dir, $plugin_name)];
+				$rv = [["plugin" => $plugin_name, "rv" => self::_plugin_needs_update($root_dir, $plugin_name)]];
 			} else {
 				$rv = self::_get_updated_plugins();
 			}

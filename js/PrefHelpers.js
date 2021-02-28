@@ -323,39 +323,30 @@ const	Helpers = {
 			});
 		},
 		update: function(name = null) {
-			const msg = name ? __("Update %p using git?").replace("%p", name) :
-				__("Update all local plugins using git?");
 
-			if (confirm(msg)) {
-
-				const dialog = new fox.SingleUseDialog({
-					title: __("Plugin Updater"),
-					execute: function() {
+			const dialog = new fox.SingleUseDialog({
+				title: __("Plugin Updater"),
+				need_refresh: false,
+				onHide: function() {
+					if (this.need_refresh) {
 						Helpers.Prefs.refresh();
-					},
-					content: `
-						<ul class="panel panel-scrollable update-results">
-							<li>${__("Loading, please wait...")}</li>
-						</ul>
+					}
+				},
+				performUpdate: function() {
+					const container = dialog.domNode.querySelector(".update-results");
 
-						<footer class="text-center">
-							${App.FormFields.submit_tag(__("Reload preferences"))}
-						</footer>
-					`,
-				});
-
-				const tmph = dojo.connect(dialog, 'onShow', function () {
-					dojo.disconnect(tmph);
+					container.innerHTML = `<li>${__("Loading, please wait...")}</li>`;
 
 					xhr.json("backend.php", {op: "pref-prefs", method: "updateLocalPlugins", name: name}, (reply) => {
-						const container = dialog.domNode.querySelector(".update-results");
 
 						if (!reply) {
-							container.innerHTML = __("Operation failed: check event log.");
+							container.innerHTML = `<li>${__("Operation failed: check event log.")}</li>`;
 						} else {
 							container.innerHTML = "";
 
 							reply.forEach((p) => {
+								if (p.rv.s == 0) dialog.need_refresh = true;
+
 								container.innerHTML +=
 								`
 								<li><h3 style="margin-top: 0">${p.plugin}</h3>
@@ -369,11 +360,48 @@ const	Helpers = {
 							});
 						}
 					});
+				},
+				content: `
+					<ul class="panel panel-scrollable update-results">
+						<li>${__("Loading, please wait...")}</li>
+					</ul>
 
+					<footer>
+						${App.FormFields.button_tag(__("Update"), "", {class: "alt-primary", onclick: "App.dialogOf(this).performUpdate()"})}
+						${App.FormFields.cancel_dialog_tag(__("Close"))}
+					</footer>
+				`,
+			});
+
+			const tmph = dojo.connect(dialog, 'onShow', function () {
+				dojo.disconnect(tmph);
+
+				xhr.json("backend.php", {op: "pref-prefs", method: "checkForPluginUpdates", name: name}, (reply) => {
+					const container = dialog.domNode.querySelector(".update-results");
+
+					if (!reply) {
+						container.innerHTML = `<li>${__("Operation failed: check event log.")}</li>`;
+					} else {
+						container.innerHTML = "";
+
+						reply.forEach((p) => {
+							container.innerHTML +=
+							`
+							<li><h3 style="margin-top: 0">${p.plugin}</h3>
+								${p.rv.e ? `<pre class="small text-error">${p.rv.e}</pre>` : ''}
+								${p.rv.o ? `<pre class="small text-success">${p.rv.o}</pre>` : ''}
+								<p class="small">
+									${p.rv.s ? __("Exited with RC: %d").replace("%d", p.rv.s) : __("OK")}
+								</p>
+							</li>
+							`
+						});
+					}
 				});
 
-				dialog.show();
-			}
+			});
+
+			dialog.show();
 		},
 	},
 	OPML: {

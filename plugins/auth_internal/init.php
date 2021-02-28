@@ -65,34 +65,63 @@ class Auth_Internal extends Auth_Base {
 						<head>
 							<title>Tiny Tiny RSS</title>
 							<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-						</head>
-						<?= stylesheet_tag("themes/light.css") ?>
-					<body class="ttrss_utility otp">
-					<h1><?= __("Authentication") ?></h1>
-					<div class="content">
-					<form action="public.php?return=<?= $return ?>"
-							method="POST" class="otpform">
-						<input type="hidden" name="op" value="login">
-						<input type="hidden" name="login" value="<?= htmlspecialchars($login) ?>">
-						<input type="hidden" name="password" value="<?= htmlspecialchars($password) ?>">
-						<input type="hidden" name="bw_limit" value="<?= htmlspecialchars($_POST["bw_limit"] ?? "") ?>">
-						<input type="hidden" name="safe_mode" value="<?= htmlspecialchars($_POST["safe_mode"] ?? "") ?>">
-						<input type="hidden" name="remember_me" value="<?= htmlspecialchars($_POST["remember_me"] ?? "") ?>">
-						<input type="hidden" name="profile" value="<?= htmlspecialchars($_POST["profile"] ?? "") ?>">
+							<?php foreach (["lib/dojo/dojo.js",
+								"lib/dojo/tt-rss-layer.js",
+								"js/common.js",
+								"js/utility.js"] as $jsfile) {
+									echo javascript_tag($jsfile);
+								} ?>
+								<style type="text/css">
+									@media (prefers-color-scheme: dark) {
+										body {
+											background : #303030;
+										}
+									}
 
-						<fieldset>
-							<label><?= __("Please enter your one time password:") ?></label>
-							<input autocomplete="off" size="6" name="otp" value=""/>
-							<input type="submit" value="Continue"/>
-						</fieldset>
-					</form></div>
-					<script type="text/javascript">
-						document.forms[0].otp.focus();
-					</script>
+									body.css_loading * {
+										display : none;
+									}
+								</style>
+
+								<script type="text/javascript">
+									require({cache:{}});
+
+									const UtilityApp = {
+										init: function() {
+											require(['dojo/parser', "dojo/ready", 'dijit/form/Button', 'dijit/form/Form',
+													'dijit/form/TextBox','dijit/form/ValidationTextBox'],function(parser, ready){
+	                						ready(function() {
+													parser.parse();
+													dijit.byId("otp").focus();
+												});
+											});
+										},
+									};
+								</script>
+							</head>
+							<body class="flat ttrss_utility otp css_loading">
+								<h1><?= __("Authentication") ?></h1>
+								<div class="content">
+									<form dojoType="dijit.form.Form" action="public.php?return=<?= $return ?>" method="post" class="otpform">
+
+										<?php foreach (["login", "password", "bw_limit", "safe_mode", "remember_me", "profile"] as $key) {
+											print \Controls\hidden_tag($key, $_POST[$key] ?? "");
+										} ?>
+
+										<?= \Controls\hidden_tag("op", "login") ?>
+
+										<fieldset>
+											<label><?= __("Please enter your one time password:") ?></label>
+											<input id="otp" dojoType="dijit.form.ValidationTextBox" required="1" autocomplete="off" size="6" name="otp" value=""/>
+											<?= \Controls\submit_tag(__("Continue")) ?>
+										</fieldset>
+									</form>
+								</div>
+							</body>
+						</html>
 					<?php
 					exit;
 				}
-
 			}
 		}
 

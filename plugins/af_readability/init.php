@@ -190,8 +190,6 @@ class Af_Readability extends Plugin {
 
 	public function extract_content($url) {
 
-		global $fetch_effective_url;
-
 		$tmp = UrlHelper::fetch([
 			"url" => $url,
 			"http_accept" => "text/*",
@@ -224,13 +222,13 @@ class Af_Readability extends Plugin {
 					foreach ($entries as $entry) {
 						if ($entry->hasAttribute("href")) {
 							$entry->setAttribute("href",
-									rewrite_relative_url($fetch_effective_url, $entry->getAttribute("href")));
+									rewrite_relative_url(UrlHelper::$fetch_effective_url, $entry->getAttribute("href")));
 
 						}
 
 						if ($entry->hasAttribute("src")) {
 							$entry->setAttribute("src",
-									rewrite_relative_url($fetch_effective_url, $entry->getAttribute("src")));
+									rewrite_relative_url(UrlHelper::$fetch_effective_url, $entry->getAttribute("src")));
 
 						}
 					}

@@ -76,10 +76,6 @@ class Af_Proxy_Http extends Plugin {
 					return;
 				}
 			} else {
-				global $fetch_last_error;
-				global $fetch_last_error_code;
-				global $fetch_last_error_content;
-
 				if (function_exists("imagecreate") && !isset($_REQUEST["text"])) {
 					$img = imagecreate(450, 75);
 
@@ -90,7 +86,7 @@ class Af_Proxy_Http extends Plugin {
 
 					imagestring($img, 5, 5, 5, "Proxy request failed", $textcolor);
 					imagestring($img, 5, 5, 30, truncate_middle($url, 46, "..."), $textcolor);
-					imagestring($img, 5, 5, 55, "HTTP Code: $fetch_last_error_code", $textcolor);
+					imagestring($img, 5, 5, 55, "HTTP Code: ".UrlHelper::$fetch_last_error_code, $textcolor);
 
 					header("Content-type: image/png");
 					print imagepng($img);
@@ -102,7 +98,7 @@ class Af_Proxy_Http extends Plugin {
 					http_response_code(400);
 
 					print "Proxy request failed.\n".
-						"Fetch error $fetch_last_error ($fetch_last_error_code)\n".
+						"Fetch error ".UrlHelper::$fetch_last_error." (".UrlHelper::$fetch_last_error_code.")\n".
 						"Requested URL: $url";
 				}
 			}

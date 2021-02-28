@@ -229,11 +229,9 @@ class RSSUtils {
 				} else {
 					try {
 						if (!self::update_rss_feed($tline["id"], true)) {
-							global $fetch_last_error;
-
 							Logger::log(E_USER_NOTICE,
 								sprintf("Update request for feed %d (%s, owner UID: %d) failed: %s.",
-									$tline["id"], clean($tline["title"]), $tline["owner_uid"], clean($fetch_last_error)));
+									$tline["id"], clean($tline["title"]), $tline["owner_uid"], clean(UrlHelper::$fetch_last_error)));
 						}
 
 						Debug::log(sprintf("<= %.4f (sec) (not using a separate process)", microtime(true) - $fstarted));
@@ -490,11 +488,8 @@ class RSSUtils {
 
 			$feed_data = trim($feed_data);
 
-			global $fetch_effective_url;
-			global $fetch_effective_ip_addr;
-
 			Debug::log("fetch done.", Debug::$LOG_VERBOSE);
-			Debug::log("effective URL (after redirects): " . clean($fetch_effective_url) . " (IP: $fetch_effective_ip_addr)", Debug::$LOG_VERBOSE);
+			Debug::log("effective URL (after redirects): " . clean(UrlHelper::$fetch_effective_url) . " (IP: ".UrlHelper::$fetch_effective_ip_addr.")", Debug::$LOG_VERBOSE);
 			Debug::log("source last modified: " . $fetch_last_modified, Debug::$LOG_VERBOSE);
 
 			if ($feed_data && $fetch_last_modified != $stored_last_modified) {
@@ -514,13 +509,10 @@ class RSSUtils {
 		}
 
 		if (!$feed_data) {
-			global $fetch_last_error;
-			global $fetch_last_error_code;
-
-			Debug::log("unable to fetch: $fetch_last_error [$fetch_last_error_code]", Debug::$LOG_VERBOSE);
+			Debug::log("unable to fetch: ".UrlHelper::$fetch_last_error." [".UrlHelper::$fetch_last_error_code."]", Debug::$LOG_VERBOSE);
 
 			// If-Modified-Since
-			if ($fetch_last_error_code == 304) {
+			if (UrlHelper::$fetch_last_error_code == 304) {
 				Debug::log("source claims data not modified, nothing to do.", Debug::$LOG_VERBOSE);
 				$error_message = "";
 
@@ -529,7 +521,7 @@ class RSSUtils {
 					last_updated = NOW() WHERE id = ?");
 
 			} else {
-				$error_message = $fetch_last_error;
+				$error_message = UrlHelper::$fetch_last_error;
 
 				$sth = $pdo->prepare("UPDATE ttrss_feeds SET last_error = ?,
 					last_updated = NOW() WHERE id = ?");
@@ -1307,10 +1299,6 @@ class RSSUtils {
 					Debug::log("cache_enclosures: downloading: $src to $local_filename", Debug::$LOG_VERBOSE);
 
 					if (!$cache->exists($local_filename)) {
-
-						global $fetch_last_error_code;
-						global $fetch_last_error;
-
 						$file_content = UrlHelper::fetch(array("url" => $src,
 							"http_referrer" => $src,
 							"max_size" => Config::get(Config::MAX_CACHE_FILE_SIZE)));
@@ -1318,7 +1306,7 @@ class RSSUtils {
 						if ($file_content) {
 							$cache->put($local_filename, $file_content);
 						} else {
-							Debug::log("cache_enclosures: failed with $fetch_last_error_code: $fetch_last_error");
+							Debug::log("cache_enclosures: failed with ".UrlHelper::$fetch_last_error_code.": ".UrlHelper::$fetch_last_error);
 						}
 					} else if (is_writable($local_filename)) {
 						$cache->touch($local_filename);
@@ -1338,9 +1326,6 @@ class RSSUtils {
 		if (!$cache->exists($local_filename)) {
 			Debug::log("cache_media: downloading: $url to $local_filename", Debug::$LOG_VERBOSE);
 
-			global $fetch_last_error_code;
-			global $fetch_last_error;
-
 			$file_content = UrlHelper::fetch(array("url" => $url,
 				"http_referrer" => $url,
 				"max_size" => Config::get(Config::MAX_CACHE_FILE_SIZE)));
@@ -1348,7 +1333,7 @@ class RSSUtils {
 			if ($file_content) {
 				$cache->put($local_filename, $file_content);
 			} else {
-				Debug::log("cache_media: failed with $fetch_last_error_code: $fetch_last_error");
+				Debug::log("cache_media: failed with ".UrlHelper::$fetch_last_error_code.": ".UrlHelper::$fetch_last_error);
 			}
 		} else if ($cache->is_writable($local_filename)) {
 			$cache->touch($local_filename);

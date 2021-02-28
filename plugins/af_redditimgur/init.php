@@ -276,8 +276,7 @@ class Af_RedditImgur extends Plugin {
 				}
 			} else {
 				if (!$tmp) {
-					global $fetch_last_error;
-					Debug::log("JSON: failed to fetch post:" . $fetch_last_error, Debug::$LOG_EXTENDED);
+					Debug::log("JSON: failed to fetch post:" . UrlHelper::$fetch_last_error, Debug::$LOG_EXTENDED);
 				}
 			}
 		} else if (!$anchor) {

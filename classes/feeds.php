@@ -989,10 +989,6 @@ class Feeds extends Handler_Protected {
 	static function _subscribe($url, $cat_id = 0,
 							   $auth_login = '', $auth_pass = '') {
 
-		global $fetch_last_error;
-		global $fetch_last_error_content;
-		global $fetch_last_content_type;
-
 		$pdo = Db::pdo();
 
 		$url = UrlHelper::validate($url);
@@ -1008,14 +1004,14 @@ class Feeds extends Handler_Protected {
 			$contents, $url, $auth_login, $auth_pass);
 
 		if (empty($contents)) {
-			if (preg_match("/cloudflare\.com/", $fetch_last_error_content)) {
-				$fetch_last_error .= " (feed behind Cloudflare)";
+			if (preg_match("/cloudflare\.com/", UrlHelper::$fetch_last_error_content)) {
+				UrlHelper::$fetch_last_error .= " (feed behind Cloudflare)";
 			}
 
-			return array("code" => 5, "message" => $fetch_last_error);
+			return array("code" => 5, "message" => UrlHelper::$fetch_last_error);
 		}
 
-		if (mb_strpos($fetch_last_content_type, "html") !== false && self::_is_html($contents)) {
+		if (mb_strpos(UrlHelper::$fetch_last_content_type, "html") !== false && self::_is_html($contents)) {
 			$feedUrls = self::_get_feeds_from_html($url, $contents);
 
 			if (count($feedUrls) == 0) {

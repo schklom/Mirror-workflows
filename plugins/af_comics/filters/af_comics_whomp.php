@@ -12,10 +12,8 @@ class Af_Comics_Whomp extends Af_ComicFilter {
 				 false, false, 0,
 				 "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)");
 
-			global $fetch_last_error_content;
-
-			if (!$res && $fetch_last_error_content)
-				$res = $fetch_last_error_content;
+			if (!$res && UrlHelper::$fetch_last_error_content)
+				$res = UrlHelper::$fetch_last_error_content;
 
 			$doc = new DOMDocument();
 

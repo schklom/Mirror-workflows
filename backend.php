@@ -157,6 +157,6 @@
 	}
 
 	header("Content-Type: text/json");
-	print Errors::to_json(Errors::E_UNKNOWN_METHOD, ["info" => get_class($handler) . "->$method"]);
+	print Errors::to_json(Errors::E_UNKNOWN_METHOD, [ "info" => (isset($handler) ? get_class($handler) : "UNKNOWN:".$_REQUEST["op"]) . "->$method"]);
 
 ?>

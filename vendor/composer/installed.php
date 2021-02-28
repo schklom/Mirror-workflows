@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'bc4475b6698f5a74e475674aa7af43253c459892',
+    'reference' => 'bada1601fc231ecde54a528a545611429d60af21',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'bc4475b6698f5a74e475674aa7af43253c459892',
+      'reference' => 'bada1601fc231ecde54a528a545611429d60af21',
     ),
     'beberlei/assert' => 
     array (
@@ -46,6 +46,15 @@
       array (
       ),
       'reference' => 'b9b0431dffd74102ee92348a63b4c33fc8ba639b',
+    ),
+    'mervick/material-design-icons' => 
+    array (
+      'pretty_version' => '2.2.0',
+      'version' => '2.2.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '635435c8d3df3a6da3241648caf8a65d1c07cc1a',
     ),
     'paragonie/constant_time_encoding' => 
     array (

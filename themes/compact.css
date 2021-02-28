@@ -1817,9 +1817,9 @@ body.ttrss_utility.share_popup .content {
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
-  src: url(../lib/iconfont/MaterialIcons-Regular.eot);
+  src: url(../vendor/mervick/material-design-icons/fonts/MaterialIcons-Regular.eot);
   /* For IE6-8 */
-  src: local('Material Icons'), local('MaterialIcons-Regular'), url(../lib/iconfont/MaterialIcons-Regular.woff2) format('woff2'), url(../lib/iconfont/MaterialIcons-Regular.woff) format('woff'), url(../lib/iconfont/MaterialIcons-Regular.ttf) format('truetype');
+  src: local('Material Icons'), local('MaterialIcons-Regular'), url(../vendor/mervick/material-design-icons/fonts/MaterialIcons-Regular.woff2) format('woff2'), url(../vendor/mervick/material-design-icons/fonts/MaterialIcons-Regular.woff) format('woff'), url(../vendor/mervick/material-design-icons/fonts/MaterialIcons-Regular.ttf) format('truetype');
 }
 .material-icons {
   font-family: 'Material Icons';

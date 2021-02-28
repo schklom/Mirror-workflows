@@ -1,6 +1,7 @@
 {
     "require": {
         "spomky-labs/otphp": "^10.0",
-        "chillerlan/php-qrcode": "^3.3"
+        "chillerlan/php-qrcode": "^3.3",
+        "mervick/material-design-icons": "^2.2"
     }
 }

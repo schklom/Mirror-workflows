@@ -335,17 +335,21 @@ const	Helpers = {
 				performUpdate: function() {
 					const container = dialog.domNode.querySelector(".update-results");
 
-					container.innerHTML = `<li>${__("Loading, please wait...")}</li>`;
+					container.innerHTML = `<li class='text-center'>${__("Updating, please wait...")}</li>`;
+					let enable_update_btn = false;
 
 					xhr.json("backend.php", {op: "pref-prefs", method: "updateLocalPlugins", name: name}, (reply) => {
 
 						if (!reply) {
-							container.innerHTML = `<li>${__("Operation failed: check event log.")}</li>`;
+							container.innerHTML = `<li class='text-center text-error'>${__("Operation failed: check event log.")}</li>`;
 						} else {
 							container.innerHTML = "";
 
 							reply.forEach((p) => {
-								if (p.rv.s == 0) dialog.need_refresh = true;
+								if (p.rv.s == 0)
+									dialog.need_refresh = true;
+								else
+									enable_update_btn = true;
 
 								container.innerHTML +=
 								`
@@ -353,21 +357,24 @@ const	Helpers = {
 									${p.rv.e ? `<pre class="small text-error">${p.rv.e}</pre>` : ''}
 									${p.rv.o ? `<pre class="small text-success">${p.rv.o}</pre>` : ''}
 									<p class="small">
-										${p.rv.s ? __("Exited with RC: %d").replace("%d", p.rv.s) : __("OK")}
-									</p>
+										${p.rv.s ? App.FormFields.icon("error_outline") + " " + __("Exited with RC: %d").replace("%d", p.rv.s) :
+											App.FormFields.icon("check") + " " + __("Update done.")}
+								</p>
 								</li>
 								`
 							});
 						}
+
+						dijit.getEnclosingWidget(dialog.domNode.querySelector(".update-btn")).attr('disabled', !enable_update_btn);
 					});
 				},
 				content: `
 					<ul class="panel panel-scrollable update-results">
-						<li>${__("Loading, please wait...")}</li>
+						<li class='text-center'>${__("Looking for changes...")}</li>
 					</ul>
 
 					<footer>
-						${App.FormFields.button_tag(__("Update"), "", {class: "alt-primary", onclick: "App.dialogOf(this).performUpdate()"})}
+						${App.FormFields.button_tag(__("Update"), "", {disabled: true, class: "update-btn alt-primary", onclick: "App.dialogOf(this).performUpdate()"})}
 						${App.FormFields.cancel_dialog_tag(__("Close"))}
 					</footer>
 				`,
@@ -378,25 +385,33 @@ const	Helpers = {
 
 				xhr.json("backend.php", {op: "pref-prefs", method: "checkForPluginUpdates", name: name}, (reply) => {
 					const container = dialog.domNode.querySelector(".update-results");
+					let enable_update_btn = false;
 
 					if (!reply) {
-						container.innerHTML = `<li>${__("Operation failed: check event log.")}</li>`;
+						container.innerHTML = `<li class='text-center text-error'>${__("Operation failed: check event log.")}</li>`;
 					} else {
 						container.innerHTML = "";
 
 						reply.forEach((p) => {
+							if (p.rv.s == 0)
+								enable_update_btn = true;
+
 							container.innerHTML +=
 							`
 							<li><h3 style="margin-top: 0">${p.plugin}</h3>
 								${p.rv.e ? `<pre class="small text-error">${p.rv.e}</pre>` : ''}
 								${p.rv.o ? `<pre class="small text-success">${p.rv.o}</pre>` : ''}
 								<p class="small">
-									${p.rv.s ? __("Exited with RC: %d").replace("%d", p.rv.s) : __("OK")}
+									${p.rv.s ? App.FormFields.icon("error_outline") + " " + __("Exited with RC: %d").replace("%d", p.rv.s) :
+									App.FormFields.icon("check") + " " + __("Ready to update")}
 								</p>
 							</li>
 							`
 						});
 					}
+
+					dijit.getEnclosingWidget(dialog.domNode.querySelector(".update-btn")).attr('disabled', !enable_update_btn);
+
 				});
 
 			});

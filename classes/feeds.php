@@ -474,8 +474,9 @@ class Feeds extends Handler_Protected {
 
 		/* bump login timestamp if needed */
 		if (time() - $_SESSION["last_login_update"] > 3600) {
-			$sth = $this->pdo->prepare("UPDATE ttrss_users SET last_login = NOW() WHERE id = ?");
-			$sth->execute([$_SESSION['uid']]);
+			$user = ORM::for_table('ttrss_users')->find_one($_SESSION["uid"]);
+			$user->last_login = 'NOW()';
+			$user->save();
 
 			$_SESSION["last_login_update"] = time();
 		}

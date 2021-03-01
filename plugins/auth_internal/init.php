@@ -146,19 +146,13 @@ class Auth_Internal extends Auth_Base {
 
 	function check_password(int $owner_uid, string $password, string $service = '') {
 
-		if (get_schema_version() > 87) {
-			$sth = $this->pdo->prepare("SELECT login,pwd_hash,salt FROM ttrss_users WHERE id = ?");
-		} else {
-			$sth = $this->pdo->prepare("SELECT login,pwd_hash FROM ttrss_users WHERE id = ?");
-		}
+		$user = ORM::for_table('ttrss_users')->find_one($owner_uid);
 
-		$sth->execute([$owner_uid]);
+		if ($user) {
 
-		if ($row = $sth->fetch()) {
-
-			$salt = $row['salt'] ?? "";
-			$login = $row['login'];
-			$pwd_hash = $row['pwd_hash'];
+			$salt = $user['salt'] ?? "";
+			$login = $user['login'];
+			$pwd_hash = $user['pwd_hash'];
 
 			list ($pwd_algo, $raw_hash) = explode(":", $pwd_hash, 2);
 
@@ -194,33 +188,31 @@ class Auth_Internal extends Auth_Base {
 			$new_salt = UserHelper::get_salt();
 			$new_password_hash = UserHelper::hash_password($new_password, $new_salt, UserHelper::HASH_ALGOS[0]);
 
-			$sth = $this->pdo->prepare("UPDATE ttrss_users SET
-				pwd_hash = ?, salt = ?, otp_enabled = false
-					WHERE id = ?");
-			$sth->execute([$new_password_hash, $new_salt, $owner_uid]);
+			$user = ORM::for_table('ttrss_users')->find_one($owner_uid);
+
+			$user->salt = $new_salt;
+			$user->pwd_hash = $new_password_hash;
+			$user->save();
 
 			if ($_SESSION["uid"] ?? 0 == $owner_uid)
 				$_SESSION["pwd_hash"] = $new_password_hash;
 
-			$sth = $this->pdo->prepare("SELECT email, login FROM ttrss_users WHERE id = ?");
-			$sth->execute([$owner_uid]);
-
-			if ($row = $sth->fetch()) {
+			if ($user->email) {
 				$mailer = new Mailer();
 
 				$tpl = new Templator();
 
 				$tpl->readTemplateFromFile("password_change_template.txt");
 
-				$tpl->setVariable('LOGIN', $row["login"]);
+				$tpl->setVariable('LOGIN', $user->login);
 				$tpl->setVariable('TTRSS_HOST', Config::get(Config::SELF_URL_PATH));
 
 				$tpl->addBlock('message');
 
 				$tpl->generateOutputToString($message);
 
-				$mailer->mail(["to_name" => $row["login"],
-					"to_address" => $row["email"],
+				$mailer->mail(["to_name" => $user->login,
+					"to_address" => $user->email,
 					"subject" => "[tt-rss] Password change notification",
 					"message" => $message]);
 
@@ -244,20 +236,21 @@ class Auth_Internal extends Auth_Base {
 			$test_hash = UserHelper::hash_password($password, $salt, $pwd_algo);
 
 			if (hash_equals("$pwd_algo:$raw_hash", $test_hash)) {
-				$usth = $this->pdo->prepare("UPDATE ttrss_app_passwords SET last_used = NOW() WHERE id = ?");
-				$usth->execute([$row['id']]);
+				$pass = ORM::for_table('ttrss_app_passwords')->find_one($row["id"]);
+				$pass->last_used = 'NOW()';
 
 				if ($pwd_algo != UserHelper::HASH_ALGOS[0]) {
 					// upgrade password to current algo
 					Logger::log(E_USER_NOTICE, "Upgrading app password of user $login to " . UserHelper::HASH_ALGOS[0]);
 
-					$new_hash = UserHelper::hash_password($password, $salt, UserHelper::HASH_ALGOS[0]);
+					$new_hash = UserHelper::hash_password($password, $salt);
 
 					if ($new_hash) {
-						$usth = $this->pdo->prepare("UPDATE ttrss_app_passwords SET pwd_hash = ? WHERE id = ?");
-						$usth->execute(["$new_hash:$salt", $row['id']]);
+						$pass->pwd_hash = "$new_hash:$salt";
 					}
 				}
+
+				$pass->save();
 
 				return $row['uid'];
 			}

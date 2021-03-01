@@ -113,7 +113,7 @@ class Pref_Users extends Handler_Administrative {
 				if ($id == 1) $login = "admin";
 				if (!$login) return;
 
-				$user->login = $login;
+				$user->login = mb_strtolower($login);
 				$user->access_level = (int) clean($_REQUEST["access_level"]);
 				$user->email = clean($_REQUEST["email"]);
 
@@ -144,30 +144,25 @@ class Pref_Users extends Handler_Administrative {
 
 		function add() {
 			$login = clean($_REQUEST["login"]);
-			$tmp_user_pwd = make_password();
-			$salt = UserHelper::get_salt();
 
 			if (!$login) return; // no blank usernames
 
 			if (!UserHelper::find_user_by_login($login)) {
 
+				$new_password = make_password();
+
 				$user = ORM::for_table('ttrss_users')->create();
 
-				$tmp_user_pwd = make_password();
-				$salt = UserHelper::get_salt();
-
-				$user->login = $login;
-				$user->pwd_hash = UserHelper::hash_password($tmp_user_pwd, $salt);
+				$user->salt = UserHelper::get_salt();
+				$user->login = mb_strtolower($login);
+				$user->pwd_hash = UserHelper::hash_password($new_password, $user->salt);
 				$user->access_level = 0;
-				$user->salt = $salt;
 				$user->created = 'NOW()';
 				$user->save();
 
 				if ($new_uid = UserHelper::find_user_by_login($login)) {
-
 					print T_sprintf("Added user %s with password %s",
-						$login, $tmp_user_pwd);
-
+						$login, $new_password);
 				} else {
 					print T_sprintf("Could not create user %s", $login);
 				}

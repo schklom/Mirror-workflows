@@ -36,27 +36,21 @@
 				return false;
 			}
 
-			$sth = $pdo->prepare("SELECT pwd_hash FROM ttrss_users WHERE id = ?");
-			$sth->execute([$_SESSION['uid']]);
+			$user = \ORM::for_table('ttrss_users')->find_one($_SESSION["uid"]);
 
-			// user not found
-			if ($row = $sth->fetch()) {
-					 $pwd_hash = $row["pwd_hash"];
+			if ($user) {
+				if ($user->pwd_hash != $_SESSION["pwd_hash"]) {
 
-					 if ($pwd_hash != $_SESSION["pwd_hash"]) {
+					$_SESSION["login_error_msg"] =
+						__("Session failed to validate (password changed)");
 
-						  $_SESSION["login_error_msg"] =
-								__("Session failed to validate (password changed)");
-
-						  return false;
-					 }
+					return false;
+				}
 			} else {
+				$_SESSION["login_error_msg"] =
+					__("Session failed to validate (user not found)");
 
-					 $_SESSION["login_error_msg"] =
-						  __("Session failed to validate (user not found)");
-
-					 return false;
-
+				return false;
 			}
 		}
 

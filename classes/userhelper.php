@@ -131,8 +131,9 @@ class UserHelper {
 
 			} else {
 				/* bump login timestamp */
-				$sth = $pdo->prepare("UPDATE ttrss_users SET last_login = NOW() WHERE id = ?");
-				$sth->execute([$_SESSION['uid']]);
+				$user = ORM::for_table('ttrss_users')->find_one($_SESSION["uid"]);
+				$user->last_login = 'NOW()';
+				$user->save();
 
 				$_SESSION["last_login_update"] = time();
 			}
@@ -202,38 +203,31 @@ class UserHelper {
 
 	static function reset_password($uid, $format_output = false, $new_password = "") {
 
-		$pdo = Db::pdo();
+		$user = ORM::for_table('ttrss_users')->find_one($uid);
+		$message = "";
 
-		$sth = $pdo->prepare("SELECT login FROM ttrss_users WHERE id = ?");
-		$sth->execute([$uid]);
+		if ($user) {
 
-		if ($row = $sth->fetch()) {
-
-			$login = $row["login"];
+			$login = $user->login;
 
 			$new_salt = self::get_salt();
 			$tmp_user_pwd = $new_password ? $new_password : make_password();
 
 			$pwd_hash = self::hash_password($tmp_user_pwd, $new_salt, self::HASH_ALGOS[0]);
 
-			$user = ORM::for_table('ttrss_users')->find_one($uid);
+			$user->pwd_hash = $pwd_hash;
+			$user->salt = $new_salt;
+			$user->save();
 
-			if ($user) {
-				$user->pwd_hash = $pwd_hash;
-				$user->salt = $new_salt;
-				$user->save();
-
-				$message = T_sprintf("Changed password of user %s to %s", "<strong>$login</strong>", "<strong>$tmp_user_pwd</strong>");
-			} else {
-				$message = T_sprintf("User not found: %s", $login);
-			}
-
-			if ($format_output)
-				print_notice($message);
-			else
-				print $message;
-
+			$message = T_sprintf("Changed password of user %s to %s", "<strong>$login</strong>", "<strong>$tmp_user_pwd</strong>");
+		} else {
+			$message = __("User not found");
 		}
+
+		if ($format_output)
+			print_notice($message);
+		else
+			print $message;
 	}
 
 	static function check_otp(int $owner_uid, int $otp_check) : bool {

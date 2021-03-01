@@ -33,7 +33,7 @@ class Af_Comics_Gocomics_FarSide extends Af_ComicFilter {
 			$tpl->readTemplateFromFile('templates/generated_feed.txt');
 
 			$tpl->setVariable('FEED_TITLE', "The Far Side", true);
-			$tpl->setVariable('VERSION', get_version(), true);
+			$tpl->setVariable('VERSION', Config::get_version(), true);
 			$tpl->setVariable('FEED_URL', htmlspecialchars($url), true);
 			$tpl->setVariable('SELF_URL', htmlspecialchars($url), true);
 

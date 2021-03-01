@@ -108,6 +108,7 @@ class Config {
 
 	private $params = [];
 	private $schema_version = null;
+	private $version = [];
 
 	public static function get_instance() : Config {
 		if (self::$instance == null)
@@ -132,6 +133,78 @@ class Config {
 				$this->params[$cvalue] = [ self::cast_to(!empty($override) ? $override : $defval, $deftype), $deftype ];
 			}
 		}
+	}
+
+	/* package maintainers who don't use git: if version_static.txt exists in tt-rss root
+		directory, its contents are displayed instead of git commit-based version, this could be generated
+		based on source git tree commit used when creating the package */
+
+	static function get_version(bool $as_string = true) {
+		return self::get_instance()->_get_version($as_string);
+	}
+
+	private function _get_version(bool $as_string = true) {
+		$root_dir = dirname(__DIR__);
+
+		if (empty($this->version)) {
+			$this->version["status"] = -1;
+
+			if (PHP_OS === "Darwin") {
+				$ttrss_version["version"] = "UNKNOWN (Unsupported, Darwin)";
+			} else if (file_exists("$root_dir/version_static.txt")) {
+				$this->version["version"] = trim(file_get_contents("$root_dir/version_static.txt")) . " (Unsupported)";
+			} else if (is_dir("$root_dir/.git")) {
+				$this->version = self::get_version_from_git($root_dir);
+
+				if ($this->version["status"] != 0) {
+					user_error("Unable to determine version: " . $this->version["version"], E_USER_WARNING);
+
+					$this->version["version"] = "UNKNOWN (Unsupported, Git error)";
+				}
+			} else {
+				$this->version["version"] = "UNKNOWN (Unsupported)";
+			}
+		}
+
+		return $as_string ? $this->version["version"] : $this->version;
+	}
+
+	static function get_version_from_git(string $dir) {
+		$descriptorspec = [
+			1 => ["pipe", "w"], // STDOUT
+			2 => ["pipe", "w"], // STDERR
+		];
+
+		$rv = [
+			"status" => -1,
+			"version" => "",
+			"commit" => "",
+			"timestamp" => 0,
+		];
+
+		$proc = proc_open("git --no-pager log --pretty=\"%ct %h\" -n1 HEAD",
+						$descriptorspec, $pipes, $dir);
+
+		if (is_resource($proc)) {
+			$stdout = trim(stream_get_contents($pipes[1]));
+			$stderr = trim(stream_get_contents($pipes[2]));
+			$status = proc_close($proc);
+
+			$rv["status"] = $status;
+
+			if ($status == 0) {
+				list($timestamp, $commit) = explode(" ", $stdout);
+
+				$rv["version"] = strftime("%y.%m", (int)$timestamp) . "-$commit";
+				$rv["commit"] = $commit;
+				$rv["timestamp"] = $timestamp;
+
+			} else {
+				$rv["version"] = T_sprintf("Git error [RC=%d]: %s", $status, $stderr);
+			}
+		}
+
+		return $rv;
 	}
 
 	static function get_schema_version(bool $nocache = false) {

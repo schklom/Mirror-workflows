@@ -458,8 +458,6 @@ class RSSUtils {
 			Debug::log("local cache will not be used for this feed", Debug::$LOG_VERBOSE);
 		}
 
-		global $fetch_last_modified;
-
 		// fetch feed from source
 		if (!$feed_data) {
 			Debug::log("last unconditional update request: $last_unconditional", Debug::$LOG_VERBOSE);
@@ -490,11 +488,11 @@ class RSSUtils {
 
 			Debug::log("fetch done.", Debug::$LOG_VERBOSE);
 			Debug::log("effective URL (after redirects): " . clean(UrlHelper::$fetch_effective_url) . " (IP: ".UrlHelper::$fetch_effective_ip_addr.")", Debug::$LOG_VERBOSE);
-			Debug::log("source last modified: " . $fetch_last_modified, Debug::$LOG_VERBOSE);
+			Debug::log("source last modified: " . UrlHelper::$fetch_last_modified, Debug::$LOG_VERBOSE);
 
-			if ($feed_data && $fetch_last_modified != $stored_last_modified) {
+			if ($feed_data && UrlHelper::$fetch_last_modified != $stored_last_modified) {
 				$sth = $pdo->prepare("UPDATE ttrss_feeds SET last_modified = ? WHERE id = ?");
-				$sth->execute([substr($fetch_last_modified, 0, 245), $feed]);
+				$sth->execute([substr(UrlHelper::$fetch_last_modified, 0, 245), $feed]);
 			}
 
 			// cache vanilla feed data for re-use

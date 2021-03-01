@@ -49,7 +49,7 @@ class API extends Handler {
 	}
 
 	function getVersion() {
-		$rv = array("version" => get_version());
+		$rv = array("version" => Config::get_version());
 		$this->_wrap(self::STATUS_OK, $rv);
 	}
 

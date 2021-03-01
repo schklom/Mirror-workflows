@@ -396,10 +396,10 @@ class RPC extends Handler_Protected {
 	function checkforupdates() {
 		$rv = ["changeset" => [], "plugins" => []];
 
-		$git_timestamp = false;
-		$git_commit = false;
+		$version = Config::get_version();
 
-		get_version($git_commit, $git_timestamp);
+		$git_timestamp = $version["timestamp"] ?? false;
+		$git_commit = $version["commit"] ?? false;
 
 		if (Config::get(Config::CHECK_FOR_UPDATES) && $_SESSION["access_level"] >= 10 && $git_timestamp) {
 			$content = @UrlHelper::fetch(["url" => "https://tt-rss.org/version.json"]);

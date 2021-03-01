@@ -167,17 +167,6 @@ class UrlHelper {
 	public static function fetch($options /* previously: 0: $url , 1: $type = false, 2: $login = false, 3: $pass = false,
 				4: $post_query = false, 5: $timeout = false, 6: $timestamp = 0, 7: $useragent = false*/) {
 
-		/*
-		global $fetch_last_error;
-		global $fetch_last_error_code;
-		global $fetch_last_error_content;
-		global $fetch_last_content_type;
-		global $fetch_last_modified;
-		global $fetch_effective_url;
-		global $fetch_effective_ip_addr;
-		global $fetch_curl_used;
-		*/
-
 		self::$fetch_last_error = false;
 		self::$fetch_last_error_code = -1;
 		self::$fetch_last_error_content = "";

@@ -49,6 +49,10 @@ class Sanitizer {
 		return false;
 	}
 
+	private static function is_prefix_https() {
+		return parse_url(Config::get(Config::SELF_URL_PATH), PHP_URL_SCHEME) == 'https';
+	}
+
 	public static function sanitize($str, $force_remove_images = false, $owner = false, $site_url = false, $highlight_words = false, $article_id = false) {
 
 		if (!$owner && isset($_SESSION["uid"]))
@@ -125,7 +129,7 @@ class Sanitizer {
 			if (!self::iframe_whitelisted($entry)) {
 				$entry->setAttribute('sandbox', 'allow-scripts');
 			} else {
-				if (is_prefix_https()) {
+				if (self::is_prefix_https()) {
 					$entry->setAttribute("src",
 						str_replace("http://", "https://",
 							$entry->getAttribute("src")));

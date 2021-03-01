@@ -10,7 +10,8 @@
 
 	require_once "autoload.php";
 	require_once "functions.php";
-	require_once "sanity_check.php";
+
+	Config::sanity_check();
 
 	if (!function_exists('pcntl_fork')) {
 		die("error: This script requires PHP compiled with PCNTL module.\n");

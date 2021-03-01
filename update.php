@@ -9,7 +9,8 @@
 
 	require_once "autoload.php";
 	require_once "functions.php";
-	require_once "sanity_check.php";
+
+	Config::sanity_check();
 
 	function make_stampfile($filename) {
 		$fp = fopen(Config::get(Config::LOCK_DIRECTORY) . "/$filename", "w");

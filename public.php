@@ -5,7 +5,8 @@
 	require_once "autoload.php";
 	require_once "sessions.php";
 	require_once "functions.php";
-	require_once "sanity_check.php";
+
+	Config::sanity_check();
 
 	startup_gettext();
 

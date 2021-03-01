@@ -9,7 +9,7 @@
 	$session_expire = min(2147483647 - time() - 1, max(\Config::get(\Config::SESSION_COOKIE_LIFETIME), 86400));
 	$session_name = \Config::get(\Config::SESSION_NAME);
 
-	if (is_server_https()) {
+	if (\Config::is_server_https()) {
 		ini_set("session.cookie_secure", "true");
 	}
 

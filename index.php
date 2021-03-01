@@ -13,14 +13,14 @@
 	require_once "autoload.php";
 	require_once "sessions.php";
 	require_once "functions.php";
-	require_once "sanity_check.php";
+
+	Config::sanity_check();
 
 	if (!init_plugins()) return;
 
 	UserHelper::login_sequence();
 
 	header('Content-Type: text/html; charset=utf-8');
-
 ?>
 <!DOCTYPE html>
 <html>

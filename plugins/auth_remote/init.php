@@ -18,7 +18,7 @@ class Auth_Remote extends Auth_Base {
 	}
 
 	function get_login_by_ssl_certificate() {
-		$cert_serial = get_ssl_certificate_id();
+		$cert_serial = Pref_Prefs::_get_ssl_certificate_id();
 
 		if ($cert_serial) {
 			$sth = $this->pdo->prepare("SELECT login FROM ttrss_user_prefs2, ttrss_users

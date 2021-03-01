@@ -183,4 +183,217 @@ class Config {
 		return $instance->_get($param);
 	}
 
+	// this returns Config::SELF_URL_PATH sans ending slash
+	static function get_self_url() {
+		$self_url_path = self::get(Config::SELF_URL_PATH);
+
+		if (substr($self_url_path, -1) === "/") {
+			return substr($self_url_path, 0, -1);
+		} else {
+			return $self_url_path;
+		}
+	}
+
+	static function is_server_https() {
+		return (!empty($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] != 'off')) ||
+			(!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https');
+	}
+
+	static function make_self_url() {
+		$proto = self::is_server_https() ? 'https' : 'http';
+
+		return $proto . '://' . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+	}
+
+	/* sanity check stuff */
+
+	private static function make_self_url_path() {
+		if (!isset($_SERVER["HTTP_HOST"])) return false;
+
+		$proto = self::is_server_https() ? 'https' : 'http';
+		$url_path = $proto . '://' . $_SERVER["HTTP_HOST"] . parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+
+		return $url_path;
+	}
+
+	private static function check_mysql_tables() {
+		$pdo = Db::pdo();
+
+		$sth = $pdo->prepare("SELECT engine, table_name FROM information_schema.tables WHERE
+				table_schema = ? AND table_name LIKE 'ttrss_%' AND engine != 'InnoDB'");
+		$sth->execute([self::get(Config::DB_NAME)]);
+
+		$bad_tables = [];
+
+		while ($line = $sth->fetch()) {
+			array_push($bad_tables, $line);
+		}
+
+		return $bad_tables;
+	}
+
+	static function sanity_check() {
+
+		$errors = array();
+
+		if (strpos(self::get(Config::PLUGINS), "auth_") === false) {
+			array_push($errors, "Please enable at least one authentication module via PLUGINS");
+		}
+
+		if (function_exists('posix_getuid') && posix_getuid() == 0) {
+			array_push($errors, "Please don't run this script as root.");
+		}
+
+		if (version_compare(PHP_VERSION, '7.1.0', '<')) {
+			array_push($errors, "PHP version 7.1.0 or newer required. You're using " . PHP_VERSION . ".");
+		}
+
+		if (!class_exists("UConverter")) {
+			array_push($errors, "PHP UConverter class is missing, it's provided by the Internationalization (intl) module.");
+		}
+
+		if (!is_writable(self::get(Config::CACHE_DIR) . "/images")) {
+			array_push($errors, "Image cache is not writable (chmod -R 777 ".self::get(Config::CACHE_DIR)."/images)");
+		}
+
+		if (!is_writable(self::get(Config::CACHE_DIR) . "/upload")) {
+			array_push($errors, "Upload cache is not writable (chmod -R 777 ".self::get(Config::CACHE_DIR)."/upload)");
+		}
+
+		if (!is_writable(self::get(Config::CACHE_DIR) . "/export")) {
+			array_push($errors, "Data export cache is not writable (chmod -R 777 ".self::get(Config::CACHE_DIR)."/export)");
+		}
+
+		if (self::get(Config::SINGLE_USER_MODE) && class_exists("PDO")) {
+			if (UserHelper::get_login_by_id(1) != "admin") {
+				array_push($errors, "SINGLE_USER_MODE is enabled but default admin account (ID: 1) is not found.");
+			}
+		}
+
+		if (php_sapi_name() != "cli") {
+			$ref_self_url_path = self::make_self_url_path();
+
+			if ($ref_self_url_path) {
+				$ref_self_url_path = preg_replace("/\w+\.php$/", "", $ref_self_url_path);
+			}
+
+			if (self::get(Config::SELF_URL_PATH) == "http://example.org/tt-rss/") {
+				$hint = $ref_self_url_path ? "(possible value: <b>$ref_self_url_path</b>)" : "";
+				array_push($errors,
+						"Please set SELF_URL_PATH to the correct value for your server: $hint");
+			}
+
+			if ($ref_self_url_path &&
+				(!defined('_SKIP_SELF_URL_PATH_CHECKS') || !_SKIP_SELF_URL_PATH_CHECKS) &&
+				self::get(Config::SELF_URL_PATH) != $ref_self_url_path && self::get(Config::SELF_URL_PATH) != mb_substr($ref_self_url_path, 0, mb_strlen($ref_self_url_path)-1)) {
+				array_push($errors,
+					"Please set SELF_URL_PATH to the correct value detected for your server: <b>$ref_self_url_path</b> (you're using: <b>" . self::get(Config::SELF_URL_PATH) . "</b>)");
+			}
+		}
+
+		if (!is_writable(self::get(Config::ICONS_DIR))) {
+			array_push($errors, "ICONS_DIR defined in config.php is not writable (chmod -R 777 ".self::get(Config::ICONS_DIR).").\n");
+		}
+
+		if (!is_writable(self::get(Config::LOCK_DIRECTORY))) {
+			array_push($errors, "LOCK_DIRECTORY is not writable (chmod -R 777 ".self::get(Config::LOCK_DIRECTORY).").\n");
+		}
+
+		if (!function_exists("curl_init") && !ini_get("allow_url_fopen")) {
+			array_push($errors, "PHP configuration option allow_url_fopen is disabled, and CURL functions are not present. Either enable allow_url_fopen or install PHP extension for CURL.");
+		}
+
+		if (!function_exists("json_encode")) {
+			array_push($errors, "PHP support for JSON is required, but was not found.");
+		}
+
+		if (!class_exists("PDO")) {
+			array_push($errors, "PHP support for PDO is required but was not found.");
+		}
+
+		if (!function_exists("mb_strlen")) {
+			array_push($errors, "PHP support for mbstring functions is required but was not found.");
+		}
+
+		if (!function_exists("hash")) {
+			array_push($errors, "PHP support for hash() function is required but was not found.");
+		}
+
+		if (ini_get("safe_mode")) {
+			array_push($errors, "PHP safe mode setting is obsolete and not supported by tt-rss.");
+		}
+
+		if (!function_exists("mime_content_type")) {
+			array_push($errors, "PHP function mime_content_type() is missing, try enabling fileinfo module.");
+		}
+
+		if (!class_exists("DOMDocument")) {
+			array_push($errors, "PHP support for DOMDocument is required, but was not found.");
+		}
+
+		if (self::get(Config::DB_TYPE) == "mysql") {
+			$bad_tables = self::check_mysql_tables();
+
+			if (count($bad_tables) > 0) {
+				$bad_tables_fmt = [];
+
+				foreach ($bad_tables as $bt) {
+					array_push($bad_tables_fmt, sprintf("%s (%s)", $bt['table_name'], $bt['engine']));
+				}
+
+				$msg = "<p>The following tables use an unsupported MySQL engine: <b>" .
+					implode(", ", $bad_tables_fmt) . "</b>.</p>";
+
+				$msg .= "<p>The only supported engine on MySQL is InnoDB. MyISAM lacks functionality to run
+					tt-rss.
+					Please backup your data (via OPML) and re-import the schema before continuing.</p>
+					<p><b>WARNING: importing the schema would mean LOSS OF ALL YOUR DATA.</b></p>";
+
+
+				array_push($errors, $msg);
+			}
+		}
+
+		if (count($errors) > 0 && php_sapi_name() != "cli") { ?>
+			<!DOCTYPE html>
+			<html>
+				<head>
+					<title>Startup failed</title>
+					<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+					<link rel="stylesheet" type="text/css" href="themes/light.css">
+				</head>
+				<body class="sanity_failed flat ttrss_utility">
+					<div class="content">
+						<h1>Startup failed</h1>
+
+						<p>Please fix errors indicated by the following messages:</p>
+
+						<?php foreach ($errors as $error) { echo self::format_error($error); } ?>
+
+						<p>You might want to check tt-rss <a target="_blank" href="https://tt-rss.org/wiki.php">wiki</a> or the
+							<a target="_blank" href="https://community.tt-rss.org/">forums</a> for more information. Please search the forums before creating new topic
+							for your question.</p>
+					</div>
+				</body>
+			</html>
+
+		<?php
+			die;
+		} else if (count($errors) > 0) {
+			echo "Please fix errors indicated by the following messages:\n\n";
+
+			foreach ($errors as $error) {
+				echo " * " . strip_tags($error)."\n";
+			}
+
+			echo "\nYou might want to check tt-rss wiki or the forums for more information.\n";
+			echo "Please search the forums before creating new topic for your question.\n";
+
+			exit(1);
+		}
+	}
+
+	private static function format_error($msg) {
+		return "<div class=\"alert alert-danger\">$msg</div>";
+	}
 }

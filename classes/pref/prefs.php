@@ -694,7 +694,7 @@ class Pref_Prefs extends Handler_Protected {
 
 						print \Controls\input_tag($pref_name, $value, "text", ["readonly" => true], "SSL_CERT_SERIAL");
 
-						$cert_serial = htmlspecialchars(get_ssl_certificate_id());
+						$cert_serial = htmlspecialchars(self::_get_ssl_certificate_id());
 						$has_serial = ($cert_serial) ? true : false;
 
 						print \Controls\button_tag(__('Register'), "", [
@@ -1407,5 +1407,21 @@ class Pref_Prefs extends Handler_Protected {
 		$sth->execute([$title, $new_password_hash, Auth_Base::AUTH_SERVICE_API, $_SESSION['uid']]);
 
 		$this->appPasswordList();
+	}
+
+	static function _get_ssl_certificate_id() {
+		if ($_SERVER["REDIRECT_SSL_CLIENT_M_SERIAL"] ?? false) {
+			return sha1($_SERVER["REDIRECT_SSL_CLIENT_M_SERIAL"] .
+				$_SERVER["REDIRECT_SSL_CLIENT_V_START"] .
+				$_SERVER["REDIRECT_SSL_CLIENT_V_END"] .
+				$_SERVER["REDIRECT_SSL_CLIENT_S_DN"]);
+		}
+		if ($_SERVER["SSL_CLIENT_M_SERIAL"] ?? false) {
+			return sha1($_SERVER["SSL_CLIENT_M_SERIAL"] .
+				$_SERVER["SSL_CLIENT_V_START"] .
+				$_SERVER["SSL_CLIENT_V_END"] .
+				$_SERVER["SSL_CLIENT_S_DN"]);
+		}
+		return "";
 	}
 }

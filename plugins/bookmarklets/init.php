@@ -292,7 +292,7 @@ class Bookmarklets extends Plugin {
 				print_error("Not logged in");
 			?>
 
-			<form action="public.php?return=<?= urlencode(make_self_url()) ?>" method="post">
+			<form action="public.php?return=<?= urlencode(Config::make_self_url()) ?>" method="post">
 
 				<input type="hidden" name="op" value="login">
 

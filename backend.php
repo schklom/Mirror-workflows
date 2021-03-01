@@ -101,7 +101,6 @@
 		$op = "pluginhandler";
 	} */
 
-	// TODO: figure out if is this still needed
 	$op = str_replace("-", "_", $op);
 
 	$override = PluginHost::getInstance()->lookup_handler($op, $method);

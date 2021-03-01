@@ -168,67 +168,63 @@
 
 	/* compat shims */
 
+	/** function is @deprecated */
+	function get_schema_version() {
+		return Config::get_schema_version();
+	}
+
+	/** function is @deprecated */
 	function _debug($msg) {
 	    Debug::log($msg);
 	}
 
-	// @deprecated
+	/** function is @deprecated */
 	function getFeedUnread($feed, $is_cat = false) {
 		return Feeds::_get_counters($feed, $is_cat, true, $_SESSION["uid"]);
 	}
 
-	// @deprecated
+	/** function is @deprecated */
 	function sanitize($str, $force_remove_images = false, $owner = false, $site_url = false, $highlight_words = false, $article_id = false) {
 		return Sanitizer::sanitize($str, $force_remove_images, $owner, $site_url, $highlight_words, $article_id);
 	}
 
-	// @deprecated
+	/** function is @deprecated */
 	function fetch_file_contents($params) {
 		return UrlHelper::fetch($params);
 	}
 
-	// @deprecated
+	/** function is @deprecated */
 	function rewrite_relative_url($url, $rel_url) {
 		return UrlHelper::rewrite_relative($url, $rel_url);
 	}
 
-	// @deprecated
+	/** function is @deprecated */
 	function validate_url($url) {
 		return UrlHelper::validate($url);
 	}
 
-	// @deprecated
+	/** function is @deprecated */
 	function authenticate_user($login, $password, $check_only = false, $service = false) {
 		return UserHelper::authenticate($login, $password, $check_only, $service);
 	}
 
-	// @deprecated
+	/** function is @deprecated */
 	function smart_date_time($timestamp, $tz_offset = 0, $owner_uid = false, $eta_min = false) {
 		return TimeHelper::smart_date_time($timestamp, $tz_offset, $owner_uid, $eta_min);
 	}
 
-	// @deprecated
+	/** function is @deprecated */
 	function make_local_datetime($timestamp, $long, $owner_uid = false, $no_smart_dt = false, $eta_min = false) {
 		return TimeHelper::make_local_datetime($timestamp, $long, $owner_uid, $no_smart_dt, $eta_min);
 	}
 
-	/* end compat shims */
-
-	function get_ssl_certificate_id() {
-		if ($_SERVER["REDIRECT_SSL_CLIENT_M_SERIAL"] ?? false) {
-			return sha1($_SERVER["REDIRECT_SSL_CLIENT_M_SERIAL"] .
-				$_SERVER["REDIRECT_SSL_CLIENT_V_START"] .
-				$_SERVER["REDIRECT_SSL_CLIENT_V_END"] .
-				$_SERVER["REDIRECT_SSL_CLIENT_S_DN"]);
-		}
-		if ($_SERVER["SSL_CLIENT_M_SERIAL"] ?? false) {
-			return sha1($_SERVER["SSL_CLIENT_M_SERIAL"] .
-				$_SERVER["SSL_CLIENT_V_START"] .
-				$_SERVER["SSL_CLIENT_V_END"] .
-				$_SERVER["SSL_CLIENT_S_DN"]);
-		}
-		return "";
+	// this returns Config::SELF_URL_PATH sans ending slash
+	/** function is @deprecated */
+	function get_self_url_prefix() {
+		return Config::get_self_url();
 	}
+
+	/* end compat shims */
 
 	// this is used for user http parameters unless HTML code is actually needed
 	function clean($param) {
@@ -303,10 +299,6 @@
 		return $s ? 1 : 0;
 	}
 
-	function get_schema_version() {
-		return Config::get_schema_version();
-	}
-
 	function file_is_locked($filename) {
 		if (file_exists(Config::get(Config::LOCK_DIRECTORY) . "/$filename")) {
 			if (function_exists('flock')) {
@@ -369,24 +361,6 @@
 	function T_nsprintf() {
 		$args = func_get_args();
 		return vsprintf(_ngettext(array_shift($args), array_shift($args), array_shift($args)), $args);
-	}
-
-	function is_server_https() {
-		return (!empty($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] != 'off')) ||
-			(!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https');
-	}
-
-	function is_prefix_https() {
-		return parse_url(Config::get(Config::SELF_URL_PATH), PHP_URL_SCHEME) == 'https';
-	}
-
-	// this returns Config::get(Config::SELF_URL_PATH) sans ending slash
-	function get_self_url_prefix() {
-		if (strrpos(Config::get(Config::SELF_URL_PATH), "/") === strlen(Config::get(Config::SELF_URL_PATH))-1) {
-			return substr(Config::get(Config::SELF_URL_PATH), 0, strlen(Config::get(Config::SELF_URL_PATH))-1);
-		} else {
-			return Config::get(Config::SELF_URL_PATH);
-		}
 	}
 
 	function encrypt_password($pass, $salt = '', $mode2 = false) {

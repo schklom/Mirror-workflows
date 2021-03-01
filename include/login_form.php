@@ -85,7 +85,7 @@
 
 </script>
 
-<?php $return = urlencode(make_self_url()) ?>
+<?php $return = urlencode(Config::make_self_url()) ?>
 
 <div class="container">
 

@@ -149,7 +149,7 @@ class Auth_Internal extends Auth_Base {
 		if (get_schema_version() > 87) {
 			$sth = $this->pdo->prepare("SELECT salt,login,otp_enabled,pwd_hash FROM ttrss_users WHERE id = ?");
 		} else {
-			$sth = $this->pdo->prepare("SELECT login,otp_enabled,pwd_hash FROM ttrss_users WHERE id = ?");
+			$sth = $this->pdo->prepare("SELECT login,pwd_hash FROM ttrss_users WHERE id = ?");
 		}
 
 		$sth->execute([$owner_uid]);

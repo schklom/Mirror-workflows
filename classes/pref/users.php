@@ -14,9 +14,9 @@ class Pref_Users extends Handler_Administrative {
 			$sth = $this->pdo->prepare("SELECT id, login, access_level, email FROM ttrss_users WHERE id = ?");
 			$sth->execute([$id]);
 
-			if ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+			if ($user = $sth->fetch(PDO::FETCH_ASSOC)) {
 				print json_encode([
-						"user" => $row,
+						"user" => $user,
 						"access_level_names" => $access_level_names
 					]);
 			}
@@ -106,21 +106,22 @@ class Pref_Users extends Handler_Administrative {
 		}
 
 		function editSave() {
-			$login = clean($_REQUEST["login"]);
-			$uid = (int) clean($_REQUEST["id"]);
-			$access_level = (int) clean($_REQUEST["access_level"]);
-			$email = clean($_REQUEST["email"]);
+			$id = (int)$_REQUEST['id'];
 			$password = clean($_REQUEST["password"]);
+			$user = ORM::for_table('ttrss_users')->find_one($id);
 
-			// no blank usernames
-			if (!$login) return;
+			if ($user) {
+				$login = clean($_REQUEST["login"]);
 
-			// forbid renaming admin
-			if ($uid == 1) $login = "admin";
+				if ($id == 1) $login = "admin";
+				if (!$login) return;
 
-			$sth = $this->pdo->prepare("UPDATE ttrss_users SET login = LOWER(?),
-					access_level = ?, email = ?, otp_enabled = false WHERE id = ?");
-			$sth->execute([$login, $access_level, $email, $uid]);
+				$user->login = $login;
+				$user->access_level = (int) clean($_REQUEST["access_level"]);
+				$user->email = clean($_REQUEST["email"]);
+
+				$user->save();
+			}
 
 			if ($password) {
 				UserHelper::reset_password($uid, false, $password);
@@ -194,11 +195,10 @@ class Pref_Users extends Handler_Administrative {
 				$sort = "login";
 			}
 
-			$sort = $this->_validate_field($sort,
-				["login", "access_level", "created", "num_feeds", "created", "last_login"], "login");
+			if (!in_array($sort, ["login", "access_level", "created", "num_feeds", "created", "last_login"]))
+				$sort = "login";
 
 			if ($sort != "login") $sort = "$sort DESC";
-
 			?>
 
 			<div dojoType='dijit.layout.BorderContainer' gutters='false'>
@@ -253,32 +253,28 @@ class Pref_Users extends Handler_Administrative {
 						</tr>
 
 						<?php
-							$sth = $this->pdo->prepare("SELECT
-									tu.id,
-									login,access_level,email,
-									".SUBSTRING_FOR_DATE."(last_login,1,16) as last_login,
-									".SUBSTRING_FOR_DATE."(created,1,16) as created,
-									(SELECT COUNT(id) FROM ttrss_feeds WHERE owner_uid = tu.id) AS num_feeds
-								FROM
-									ttrss_users tu
-								WHERE
-									(:search = '' OR login LIKE :search) AND tu.id > 0
-								ORDER BY $sort");
-							$sth->execute([":search" => $user_search ? "%$user_search%" : ""]);
+							$users = ORM::for_table('ttrss_users')
+								->table_alias('u')
+								->left_outer_join("ttrss_feeds", ["owner_uid", "=", "u.id"], 'f')
+									->select_expr('u.*,COUNT(f.id) AS num_feeds')
+									->where_like("login", $user_search ? "%$user_search%" : "%")
+									->order_by_expr($sort)
+									->group_by_expr('u.id')
+									->find_many();
 
-							while ($row = $sth->fetch()) { ?>
+							foreach ($users as $user) { ?>
 
-								<tr data-row-id='<?= $row["id"] ?>' onclick='Users.edit(<?= $row["id"] ?>)' title="<?= __('Click to edit') ?>">
+								<tr data-row-id='<?= $user["id"] ?>' onclick='Users.edit(<?= $user["id"] ?>)' title="<?= __('Click to edit') ?>">
 									<td align='center'>
 										<input onclick='Tables.onRowChecked(this); event.stopPropagation();'
 										dojoType='dijit.form.CheckBox' type='checkbox'>
 									</td>
 
-									<td><i class='material-icons'>person</i> <?= htmlspecialchars($row["login"]) ?></td>
-									<td><?= $access_level_names[$row["access_level"]] ?></td>
-									<td><?= $row["num_feeds"] ?></td>
-									<td><?= TimeHelper::make_local_datetime($row["created"], false) ?></td>
-									<td><?= TimeHelper::make_local_datetime($row["last_login"], false) ?></td>
+									<td><i class='material-icons'>person</i> <?= htmlspecialchars($user["login"]) ?></td>
+									<td><?= $access_level_names[$user["access_level"]] ?></td>
+									<td><?= $user["num_feeds"] ?></td>
+									<td><?= TimeHelper::make_local_datetime($user["created"], false) ?></td>
+									<td><?= TimeHelper::make_local_datetime($user["last_login"], false) ?></td>
 								</tr>
 						<?php } ?>
 					</table>
@@ -287,12 +283,5 @@ class Pref_Users extends Handler_Administrative {
 			</div>
 		<?php
 	}
-
-	private function _validate_field($string, $allowed, $default = "") {
-			if (in_array($string, $allowed))
-				return $string;
-			else
-				return $default;
-		}
 
 }

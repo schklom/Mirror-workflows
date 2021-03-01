@@ -11,3 +11,4 @@ Thumbs.db
 /cache/*/*
 /lock/*
 /.vscode/settings.json
+/vendor/**/.git

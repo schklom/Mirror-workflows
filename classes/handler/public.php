@@ -1,9 +1,10 @@
 <?php
 class Handler_Public extends Handler {
 
-	private function generate_syndicated_feed($owner_uid, $feed, $is_cat,
-		$limit, $offset, $search,
-		$view_mode = false, $format = 'atom', $order = false, $orig_guid = false, $start_ts = false) {
+	// $feed may be a tag
+	private function generate_syndicated_feed(int $owner_uid, string $feed, bool $is_cat,
+		int $limit, int $offset, string $search, string $view_mode = "",
+		string $format = 'atom', string $order = "", string $orig_guid = "", string $start_ts = "") {
 
 		$note_style = 	"background-color : #fff7d5;
 			border-width : 1px; ".
@@ -48,10 +49,10 @@ class Handler_Public extends Handler {
 			//$tmppluginhost->load_data();
 
 			$handler = $tmppluginhost->get_feed_handler(
-				PluginHost::feed_to_pfeed_id($feed));
+				PluginHost::feed_to_pfeed_id((int)$feed));
 
 			if ($handler) {
-				$qfh_ret = $handler->get_headlines(PluginHost::feed_to_pfeed_id($feed), $params);
+				$qfh_ret = $handler->get_headlines(PluginHost::feed_to_pfeed_id((int)$feed), $params);
 			}
 
 		} else {
@@ -304,7 +305,7 @@ class Handler_Public extends Handler {
 		$search = clean($_REQUEST["q"] ?? "");
 		$view_mode = clean($_REQUEST["view-mode"] ?? "");
 		$order = clean($_REQUEST["order"] ?? "");
-		$start_ts = (int)clean($_REQUEST["ts"] ?? 0);
+		$start_ts = clean($_REQUEST["ts"] ?? "");
 
 		$format = clean($_REQUEST['format'] ?? "atom");
 		$orig_guid = clean($_REQUEST["orig_guid"] ?? false);

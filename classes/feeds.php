@@ -1843,18 +1843,13 @@ class Feeds extends Handler_Protected {
 	}
 
 	static function _cat_of_feed($feed) {
-		$pdo = Db::pdo();
+		$feed = ORM::for_table('ttrss_feeds')->find_one($feed);
 
-	    $sth = $pdo->prepare("SELECT cat_id FROM ttrss_feeds
-				WHERE id = ?");
-	    $sth->execute([$feed]);
-
-		if ($row = $sth->fetch()) {
-			return $row["cat_id"];
+		if ($feed) {
+			return $feed->cat_id;
 		} else {
-			return false;
+			return null;
 		}
-
 	}
 
     private function _color_of($name) {
@@ -1905,6 +1900,15 @@ class Feeds extends Handler_Protected {
 		return preg_match("/<html|DOCTYPE html/i", substr($content, 0, 8192)) !== 0;
 	}
 
+	static function _remove_cat(int $id, int $owner_uid) {
+		$cat = ORM::for_table('ttrss_feed_categories')
+			->where('owner_uid', $owner_uid)
+			->find_one($id);
+
+		if ($cat)
+			$cat->delete();
+	}
+
 	static function _add_cat($feed_cat, $parent_cat_id = false, $order_id = 0) {
 
 		if (!$feed_cat) return false;
@@ -1942,42 +1946,31 @@ class Feeds extends Handler_Protected {
 		return false;
 	}
 
-	static function _get_access_key($feed_id, $is_cat, $owner_uid = false) {
-
+	static function _get_access_key($feed_id, bool $is_cat, int $owner_uid = 0) {
 		if (!$owner_uid) $owner_uid = $_SESSION["uid"];
 
-		$is_cat = bool_to_sql_bool($is_cat);
+		$key = ORM::for_table('ttrss_access_keys')
+			->where('owner_uid', $owner_uid)
+			->where('feed_id', $feed_id)
+			->where('is_cat', $is_cat)
+			->find_one();
 
-		$pdo = Db::pdo();
-
-		$sth = $pdo->prepare("SELECT access_key FROM ttrss_access_keys
-				WHERE feed_id = ? AND is_cat = ?
-				AND owner_uid = ?");
-		$sth->execute([$feed_id, $is_cat, $owner_uid]);
-
-		if ($row = $sth->fetch()) {
-			return $row["access_key"];
+		if ($key) {
+			return $key->access_key;
 		} else {
-			$key = uniqid_short();
+			$key = ORM::for_table('ttrss_access_keys')->create();
 
-			$sth = $pdo->prepare("INSERT INTO ttrss_access_keys
-					(access_key, feed_id, is_cat, owner_uid)
-					VALUES (?, ?, ?, ?)");
+			$key->owner_uid = $owner_uid;
+			$key->feed_id = $feed_id;
+			$key->is_cat = $is_cat;
+			$key->access_key = uniqid_short();
 
-			$sth->execute([$key, $feed_id, $is_cat, $owner_uid]);
-
-			return $key;
+			if ($key->save()) {
+				return $key->access_key;
+			}
 		}
 	}
 
-	/**
-	 * Purge a feed old posts.
-	 *
-	 * @param mixed $feed_id The id of the purged feed.
-	 * @param mixed $purge_interval Olderness of purged posts.
-	 * @access public
-	 * @return mixed
-	 */
 	static function _purge($feed_id, $purge_interval) {
 
 		if (!$purge_interval) $purge_interval = self::_get_purge_interval($feed_id);
@@ -2049,21 +2042,15 @@ class Feeds extends Handler_Protected {
 	}
 
 	private static function _get_purge_interval($feed_id) {
+		$feed = ORM::for_table('ttrss_feeds')->find_one($feed_id);
 
-		$pdo = Db::pdo();
+		if ($feed) {
 
-		$sth = $pdo->prepare("SELECT purge_interval, owner_uid FROM ttrss_feeds
-			WHERE id = ?");
-		$sth->execute([$feed_id]);
+			if ($feed->purge_interval != 0)
+				return $feed->purge_interval;
+			else
+				return get_pref(Prefs::PURGE_OLD_DAYS, $feed->owner_uid);
 
-		if ($row = $sth->fetch()) {
-			$purge_interval = $row["purge_interval"];
-			$owner_uid = $row["owner_uid"];
-
-			if ($purge_interval == 0)
-				$purge_interval = get_pref(Prefs::PURGE_OLD_DAYS, $owner_uid);
-
-			return $purge_interval;
 		} else {
 			return -1;
 		}

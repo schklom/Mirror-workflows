@@ -22,14 +22,16 @@ class Pref_Feeds extends Handler_Protected {
 		return $rv;
 	}
 
-	function renamecat() {
-		$title = clean($_REQUEST['title']);
-		$id = clean($_REQUEST['id']);
+	function renameCat() {
+		$cat = ORM::for_table("ttrss_feed_categories")
+			->where("owner_uid", $_SESSION["uid"])
+			->find_one($_REQUEST['id']);
 
-		if ($title) {
-			$sth = $this->pdo->prepare("UPDATE ttrss_feed_categories SET
-				title = ? WHERE id = ? AND owner_uid = ?");
-			$sth->execute([$title, $id, $_SESSION['uid']]);
+		$title = clean($_REQUEST['title']);
+
+		if ($cat && $title) {
+			$cat->title = $title;
+			$cat->save();
 		}
 	}
 
@@ -513,11 +515,11 @@ class Pref_Feeds extends Handler_Protected {
 
 		$feed_id = (int)clean($_REQUEST["id"]);
 
-		$sth = $this->pdo->prepare("SELECT * FROM ttrss_feeds WHERE id = ? AND
-				owner_uid = ?");
-		$sth->execute([$feed_id, $_SESSION['uid']]);
+		$row = ORM::for_table('ttrss_feeds')
+			->where("owner_uid", $_SESSION["uid"])
+			->find_one($feed_id)->as_array();
 
-		if ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+		if ($row) {
 
 			ob_start();
 			PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_EDIT_FEED, $feed_id);
@@ -720,48 +722,32 @@ class Pref_Feeds extends Handler_Protected {
 
 			$reset_basic_info = $orig_feed_url != $feed_url; */
 
-			$sth = $this->pdo->prepare("UPDATE ttrss_feeds SET
-				cat_id = :cat_id,
-				title = :title,
-				feed_url = :feed_url,
-				site_url = :site_url,
-				update_interval = :upd_intl,
-				purge_interval = :purge_intl,
-				auth_login = :auth_login,
-				auth_pass = :auth_pass,
-				auth_pass_encrypted = false,
-				private = :private,
-				cache_images = :cache_images,
-				hide_images = :hide_images,
-				include_in_digest = :include_in_digest,
-				always_display_enclosures = :always_display_enclosures,
-				mark_unread_on_update = :mark_unread_on_update,
-				feed_language = :feed_language
-			WHERE id = :id AND owner_uid = :uid");
+			$feed = ORM::for_table('ttrss_feeds')
+				->where('owner_uid', $_SESSION['uid'])
+				->find_one($feed_id);
 
-			$sth->execute([":title" => $feed_title,
-					":cat_id" => $cat_id ? $cat_id : null,
-					":feed_url" => $feed_url,
-					":site_url" => $site_url,
-					":upd_intl" => $upd_intl,
-					":purge_intl" => $purge_intl,
-					":auth_login" => $auth_login,
-					":auth_pass" => $auth_pass,
-					":private" => (int)$private,
-					":cache_images" => (int)$cache_images,
-					":hide_images" => (int)$hide_images,
-					":include_in_digest" => (int)$include_in_digest,
-					":always_display_enclosures" => (int)$always_display_enclosures,
-					":mark_unread_on_update" => (int)$mark_unread_on_update,
-					":feed_language" => $feed_language,
-					":id" => $feed_id,
-					":uid" => $_SESSION['uid']]);
+			if ($feed) {
 
-/*			if ($reset_basic_info) {
-				RSSUtils::set_basic_feed_info($feed_id);
-			} */
+				$feed->title = 							$feed_title;
+				$feed->cat_id = 							$cat_id ? $cat_id : null;
+				$feed->feed_url = 						$feed_url;
+				$feed->site_url = 						$site_url;
+				$feed->update_interval =				$upd_intl;
+				$feed->purge_interval =					$purge_intl;
+				$feed->auth_login = 						$auth_login;
+				$feed->auth_pass = 						$auth_pass;
+				$feed->private = 							(int)$private;
+				$feed->cache_images = 					(int)$cache_images;
+				$feed->hide_images = 					(int)$hide_images;
+				$feed->feed_language = 					$feed_language;
+				$feed->include_in_digest = 			(int)$include_in_digest;
+				$feed->always_display_enclosures =	(int)$always_display_enclosures;
+				$feed->mark_unread_on_update = 		(int)$mark_unread_on_update;
 
-			PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_SAVE_FEED, $feed_id);
+				$feed->save();
+
+				PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_SAVE_FEED, $feed_id);
+			}
 
 		} else {
 			$feed_data = array();
@@ -874,7 +860,7 @@ class Pref_Feeds extends Handler_Protected {
 	function removeCat() {
 		$ids = explode(",", clean($_REQUEST["ids"]));
 		foreach ($ids as $id) {
-			$this->remove_feed_category($id, $_SESSION["uid"]);
+			Feeds::_remove_cat((int)$id, $_SESSION["uid"]);
 		}
 	}
 
@@ -1186,12 +1172,6 @@ class Pref_Feeds extends Handler_Protected {
 		}
 
 		print json_encode($rv);
-	}
-
-	private function remove_feed_category($id, $owner_uid) {
-		$sth = $this->pdo->prepare("DELETE FROM ttrss_feed_categories
-			WHERE id = ? AND owner_uid = ?");
-		$sth->execute([$id, $owner_uid]);
 	}
 
 	static function remove_feed($id, $owner_uid) {

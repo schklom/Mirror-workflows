@@ -147,7 +147,7 @@ class Auth_Internal extends Auth_Base {
 	function check_password(int $owner_uid, string $password, string $service = '') {
 
 		if (get_schema_version() > 87) {
-			$sth = $this->pdo->prepare("SELECT salt,login,otp_enabled,pwd_hash FROM ttrss_users WHERE id = ?");
+			$sth = $this->pdo->prepare("SELECT login,pwd_hash,salt FROM ttrss_users WHERE id = ?");
 		} else {
 			$sth = $this->pdo->prepare("SELECT login,pwd_hash FROM ttrss_users WHERE id = ?");
 		}

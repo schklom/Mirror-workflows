@@ -8,7 +8,7 @@ class Af_RedditImgur extends Plugin {
 	private $fallback_preview_urls = [];
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Inline images (and other content) in Reddit RSS feeds",
 			"fox");
 	}

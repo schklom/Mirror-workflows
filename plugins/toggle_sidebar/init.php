@@ -4,7 +4,7 @@ class Toggle_Sidebar extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Adds a main toolbar button to toggle sidebar",
 			"fox");
 	}

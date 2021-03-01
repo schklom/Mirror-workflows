@@ -5,7 +5,7 @@ class Af_Comics extends Plugin {
 	private $filters = array();
 
 	function about() {
-		return array(2.0,
+		return array(null,
 			"Fixes RSS feeds of assorted comic strips",
 			"fox");
 	}

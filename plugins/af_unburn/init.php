@@ -3,7 +3,7 @@ class Af_Unburn extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Resolves feedburner and similar feed redirector URLs (requires CURL)",
 			"fox");
 	}

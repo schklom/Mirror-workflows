@@ -8,7 +8,7 @@ class Cache_Starred_Images extends Plugin {
 	private $max_cache_attempts = 5; // per-article
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Automatically cache media files in Starred articles",
 			"fox");
 	}

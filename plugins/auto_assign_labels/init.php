@@ -5,7 +5,7 @@ class Auto_Assign_Labels extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Assign labels automatically based on article title, content, and tags",
 			"fox");
 	}

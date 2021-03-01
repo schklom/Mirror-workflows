@@ -3,7 +3,7 @@ class MailTo extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Share article via email (using mailto: links, invoking your mail client)",
 			"fox");
 	}

@@ -9,7 +9,7 @@ class Close_Button extends Plugin {
 	}
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Adds a button to close article panel",
 			"fox");
 	}

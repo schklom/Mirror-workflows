@@ -10,7 +10,7 @@ class Af_Readability extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Try to inline article content using Readability",
 			"fox");
 	}

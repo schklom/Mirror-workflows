@@ -3,7 +3,7 @@ class No_URL_Hashes extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Disable URL hash usage (e.g. #f=10, etc)",
 			"fox");
 	}

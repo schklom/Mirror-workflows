@@ -5,7 +5,7 @@ class VF_Shared extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Feed for all articles actively shared by URL",
 			"fox",
 			false);

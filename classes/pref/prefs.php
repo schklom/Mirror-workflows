@@ -795,6 +795,7 @@ class Pref_Prefs extends Handler_Protected {
 
 		foreach ($tmppluginhost->get_plugins() as $name => $plugin) {
 			$about = $plugin->about();
+			$version = htmlspecialchars($this->_get_plugin_version($plugin));
 
 			if ($about[3] ?? false) {
 				$is_checked = in_array($name, $system_enabled) ? "checked" : "";
@@ -811,9 +812,11 @@ class Pref_Prefs extends Handler_Protected {
 								<i class='material-icons'>open_in_new</i> <?= __("More info...") ?></button>
 					<?php } ?>
 
-					<div dojoType='dijit.Tooltip' connectId='PLABEL-<?= htmlspecialchars($name) ?>' position='after'>
-						<?= htmlspecialchars(T_sprintf("v%.2f, by %s", $about[0], $about[2])) ?>
-					</div>
+					<?php if ($version) { ?>
+						<div dojoType='dijit.Tooltip' connectId='PLABEL-<?= htmlspecialchars($name) ?>' position='after'>
+							<?= $version ?>
+						</div>
+					<?php } ?>
 				</fieldset>
 				<?php
 			}
@@ -829,6 +832,7 @@ class Pref_Prefs extends Handler_Protected {
 
 		foreach ($tmppluginhost->get_plugins() as $name => $plugin) {
 			$about = $plugin->about();
+			$version = htmlspecialchars($this->_get_plugin_version($plugin));
 
 			if (empty($about[3]) || $about[3] == false) {
 
@@ -875,9 +879,11 @@ class Pref_Prefs extends Handler_Protected {
 									<i class='material-icons'>open_in_new</i> <?= __("More info...") ?></button>
 					<?php } ?>
 
-					<div dojoType='dijit.Tooltip' connectId="PLABEL-<?= htmlspecialchars($name) ?>" position='after'>
-						<?= htmlspecialchars(T_sprintf("v%.2f, by %s", $about[0], $about[2])) ?>
-					</div>
+					<?php if ($version) { ?>
+						<div dojoType='dijit.Tooltip' connectId='PLABEL-<?= htmlspecialchars($name) ?>' position='after'>
+							<?= $version ?>
+						</div>
+					<?php } ?>
 
 				</fieldset>
 				<?php
@@ -1091,6 +1097,49 @@ class Pref_Prefs extends Handler_Protected {
 			$plugins = "";
 
 		set_pref(Prefs::_ENABLED_PLUGINS, $plugins);
+	}
+
+	function _get_version_from_git(string $dir) {
+		$descriptorspec = [
+			1 => ["pipe", "w"], // STDOUT
+			2 => ["pipe", "w"], // STDERR
+		];
+
+		$proc = proc_open("git --no-pager log --pretty=\"%ct %h\" -n1 HEAD",
+						$descriptorspec, $pipes, $dir);
+
+		if (is_resource($proc)) {
+			$stdout = stream_get_contents($pipes[1]);
+			$stderr = stream_get_contents($pipes[2]);
+			$status = proc_close($proc);
+
+			if ($status == 0) {
+				list($timestamp, $commit) = explode(" ", $stdout);
+				return trim(strftime("%y.%m", (int)$timestamp) . "-$commit");
+			} else {
+				return T_sprintf("Git error [RC=%d]: %s", $status, $stderr);
+			}
+		}
+	}
+
+	function _get_plugin_version(Plugin $plugin) {
+		$about = $plugin->about();
+
+		if (!empty($about[0])) {
+			return T_sprintf("v%.2f, by %s", $about[0], $about[2]);
+		} else {
+			$ref = new ReflectionClass(get_class($plugin));
+
+			$plugin_dir = dirname($ref->getFileName());
+
+			if (basename($plugin_dir) == "plugins") {
+				return "";
+			}
+
+			if (is_dir("$plugin_dir/.git")) {
+				return T_sprintf("v%s, by %s", $this->_get_version_from_git($plugin_dir), $about[2]);
+			}
+		}
 	}
 
 	static function _get_updated_plugins() {

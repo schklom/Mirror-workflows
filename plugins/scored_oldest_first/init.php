@@ -21,7 +21,7 @@ class Scored_Oldest_First extends Plugin {
 	}
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Consider article score while sorting by oldest first",
 			"fox",
 			false,

@@ -3,7 +3,7 @@ class Share extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Share article by unique URL",
 			"fox");
 	}

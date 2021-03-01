@@ -3,7 +3,7 @@ class Af_Zz_VidMute extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Mute audio in HTML5 videos",
 			"fox");
 	}

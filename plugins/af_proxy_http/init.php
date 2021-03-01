@@ -8,7 +8,7 @@ class Af_Proxy_Http extends Plugin {
 	private $cache;
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Loads media served over plain HTTP via built-in secure proxy",
 			"fox");
 	}

@@ -3,7 +3,7 @@ class Bookmarklets extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Easy feed subscription and web page sharing using bookmarklets",
 			"fox",
 			false,

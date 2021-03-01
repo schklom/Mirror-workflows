@@ -4,7 +4,7 @@ class Af_Fsckportal extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Remove feedsportal spamlinks from article content",
 			"fox");
 	}

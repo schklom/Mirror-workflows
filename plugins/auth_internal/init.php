@@ -4,7 +4,7 @@ class Auth_Internal extends Auth_Base {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Authenticates against internal tt-rss database",
 			"fox",
 			true);

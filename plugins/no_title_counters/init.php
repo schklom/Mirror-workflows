@@ -3,7 +3,7 @@ class No_Title_Counters extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Remove counters from window title (prevents tab flashing on new articles)",
 			"fox");
 	}

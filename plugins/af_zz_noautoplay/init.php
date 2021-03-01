@@ -3,7 +3,7 @@ class Af_Zz_NoAutoPlay extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Don't autoplay HTML5 videos",
 			"fox");
 	}

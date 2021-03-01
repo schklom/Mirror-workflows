@@ -7,7 +7,7 @@ class Af_Psql_Trgm extends Plugin {
 	private $default_min_length = 32;
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Marks similar articles as read (requires pg_trgm)",
 			"fox");
 	}

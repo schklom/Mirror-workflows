@@ -4,7 +4,7 @@ class Auth_Remote extends Auth_Base {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Authenticates against remote password (e.g. supplied by Apache)",
 			"fox",
 			true);

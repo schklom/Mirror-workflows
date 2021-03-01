@@ -3,7 +3,7 @@ class No_Iframes extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Remove embedded iframes (unless whitelisted)",
 			"fox");
 	}

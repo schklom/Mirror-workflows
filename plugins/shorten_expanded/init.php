@@ -3,7 +3,7 @@ class Shorten_Expanded extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Shorten overly long articles in CDM/expanded",
 			"fox");
 	}

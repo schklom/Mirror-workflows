@@ -3,7 +3,7 @@ class NSFW extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(null,
 			"Hide article content based on tags",
 			"fox",
 			false);

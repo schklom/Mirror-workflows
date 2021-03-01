@@ -1,24 +1,21 @@
 <?php
 class Pref_Users extends Handler_Administrative {
 		function csrf_ignore($method) {
-			$csrf_ignored = array("index");
-
-			return array_search($method, $csrf_ignored) !== false;
+			return $method == "index";
 		}
 
 		function edit() {
+			$user = ORM::for_table('ttrss_users')
+				->find_one((int)$_REQUEST["id"])
+				->as_array();
+
 			global $access_level_names;
 
-			$id = (int)clean($_REQUEST["id"]);
-
-			$sth = $this->pdo->prepare("SELECT id, login, access_level, email FROM ttrss_users WHERE id = ?");
-			$sth->execute([$id]);
-
-			if ($user = $sth->fetch(PDO::FETCH_ASSOC)) {
+			if ($user) {
 				print json_encode([
-						"user" => $user,
-						"access_level_names" => $access_level_names
-					]);
+					"user" => $user,
+					"access_level_names" => $access_level_names
+				]);
 			}
 		}
 
@@ -124,7 +121,7 @@ class Pref_Users extends Handler_Administrative {
 			}
 
 			if ($password) {
-				UserHelper::reset_password($uid, false, $password);
+				UserHelper::reset_password($id, false, $password);
 			}
 		}
 
@@ -149,16 +146,22 @@ class Pref_Users extends Handler_Administrative {
 			$login = clean($_REQUEST["login"]);
 			$tmp_user_pwd = make_password();
 			$salt = UserHelper::get_salt();
-			$pwd_hash = UserHelper::hash_password($tmp_user_pwd, $salt, UserHelper::HASH_ALGOS[0]);
 
 			if (!$login) return; // no blank usernames
 
 			if (!UserHelper::find_user_by_login($login)) {
 
-				$sth = $this->pdo->prepare("INSERT INTO ttrss_users
-					(login,pwd_hash,access_level,last_login,created, salt)
-					VALUES (LOWER(?), ?, 0, null, NOW(), ?)");
-				$sth->execute([$login, $pwd_hash, $salt]);
+				$user = ORM::for_table('ttrss_users')->create();
+
+				$tmp_user_pwd = make_password();
+				$salt = UserHelper::get_salt();
+
+				$user->login = $login;
+				$user->pwd_hash = UserHelper::hash_password($tmp_user_pwd, $salt);
+				$user->access_level = 0;
+				$user->salt = $salt;
+				$user->created = 'NOW()';
+				$user->save();
 
 				if ($new_uid = UserHelper::find_user_by_login($login)) {
 

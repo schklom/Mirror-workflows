@@ -39,27 +39,25 @@ class UserHelper {
 
 				session_regenerate_id(true);
 
-				$_SESSION["uid"] = $user_id;
-				$_SESSION["auth_module"] = $auth_module;
+				$user = ORM::for_table('ttrss_users')->find_one($user_id);
 
-				$pdo = Db::pdo();
-				$sth = $pdo->prepare("SELECT login,access_level,pwd_hash FROM ttrss_users
-					WHERE id = ?");
-				$sth->execute([$user_id]);
-				$row = $sth->fetch();
+				if ($user) {
+					$_SESSION["uid"] = $user_id;
+					$_SESSION["auth_module"] = $auth_module;
+					$_SESSION["name"] = $user->login;
+					$_SESSION["access_level"] = $user->access_level;
+					$_SESSION["csrf_token"] = bin2hex(get_random_bytes(16));
+					$_SESSION["ip_address"] = UserHelper::get_user_ip();
+					$_SESSION["user_agent"] = sha1($_SERVER['HTTP_USER_AGENT']);
+					$_SESSION["pwd_hash"] = $user->pwd_hash;
 
-				$_SESSION["name"] = $row["login"];
-				$_SESSION["access_level"] = $row["access_level"];
-				$_SESSION["csrf_token"] = bin2hex(get_random_bytes(16));
+					$user->last_login = 'NOW()';
+					$user->save();
 
-				$usth = $pdo->prepare("UPDATE ttrss_users SET last_login = NOW() WHERE id = ?");
-				$usth->execute([$user_id]);
+					return true;
+				}
 
-				$_SESSION["ip_address"] = UserHelper::get_user_ip();
-				$_SESSION["user_agent"] = sha1($_SERVER['HTTP_USER_AGENT']);
-				$_SESSION["pwd_hash"] = $row["pwd_hash"];
-
-				return true;
+				return false;
 			}
 
 			if ($login && $password && !$user_id && !$check_only)
@@ -167,30 +165,24 @@ class UserHelper {
 	}
 
 	static function get_login_by_id(int $id) {
-		$pdo = Db::pdo();
+		$user = ORM::for_table('ttrss_users')
+			->find_one($id);
 
-		$sth = $pdo->prepare("SELECT login FROM ttrss_users WHERE id = ?");
-		$sth->execute([$id]);
-
-		if ($row = $sth->fetch()) {
-			return $row["login"];
-		}
-
-		return null;
+		if ($user)
+			return $user->login;
+		else
+			return null;
 	}
 
 	static function find_user_by_login(string $login) {
-		$pdo = Db::pdo();
+		$user = ORM::for_table('ttrss_users')
+			->where('login', $login)
+			->find_one();
 
-		$sth = $pdo->prepare("SELECT id FROM ttrss_users WHERE
-			LOWER(login) = LOWER(?)");
-		$sth->execute([$login]);
-
-		if ($row = $sth->fetch()) {
-			return $row["id"];
-		}
-
-		return null;
+		if ($user)
+			return $user->id;
+		else
+			return null;
 	}
 
 	static function logout() {
@@ -224,12 +216,17 @@ class UserHelper {
 
 			$pwd_hash = self::hash_password($tmp_user_pwd, $new_salt, self::HASH_ALGOS[0]);
 
-			$sth = $pdo->prepare("UPDATE ttrss_users
-				  SET pwd_hash = ?, salt = ?, otp_enabled = false
-				WHERE id = ?");
-			$sth->execute([$pwd_hash, $new_salt, $uid]);
+			$user = ORM::for_table('ttrss_users')->find_one($uid);
 
-			$message = T_sprintf("Changed password of user %s to %s", "<strong>$login</strong>", "<strong>$tmp_user_pwd</strong>");
+			if ($user) {
+				$user->pwd_hash = $pwd_hash;
+				$user->salt = $new_salt;
+				$user->save();
+
+				$message = T_sprintf("Changed password of user %s to %s", "<strong>$login</strong>", "<strong>$tmp_user_pwd</strong>");
+			} else {
+				$message = T_sprintf("User not found: %s", $login);
+			}
 
 			if ($format_output)
 				print_notice($message);
@@ -246,10 +243,16 @@ class UserHelper {
 	}
 
 	static function disable_otp(int $owner_uid) : bool {
-		$sth = Db::pdo()->prepare("UPDATE ttrss_users SET otp_enabled = false WHERE id = ?");
-		$sth->execute([$owner_uid]);
+		$user = ORM::for_table('ttrss_users')->find_one($owner_uid);
 
-		return true;
+		if ($user) {
+			$user->otp_enabled = false;
+			$user->save();
+
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	static function enable_otp(int $owner_uid, int $otp_check) : bool {
@@ -257,12 +260,12 @@ class UserHelper {
 
 		if ($secret) {
 			$otp = TOTP::create($secret);
+			$user = ORM::for_table('ttrss_users')->find_one($owner_uid);
 
-			if ($otp->now() == $otp_check) {
-				$sth = Db::pdo()->prepare("UPDATE ttrss_users
-					SET otp_enabled = true WHERE id = ?");
+			if ($otp->now() == $otp_check && $user) {
 
-				$sth->execute([$owner_uid]);
+				$user->otp_enabled = true;
+				$user->save();
 
 				return true;
 			}
@@ -272,24 +275,21 @@ class UserHelper {
 
 
 	static function is_otp_enabled(int $owner_uid) : bool {
-		$sth = Db::pdo()->prepare("SELECT otp_enabled FROM ttrss_users	WHERE id = ?");
-		$sth->execute([$owner_uid]);
+		$user = ORM::for_table('ttrss_users')->find_one($owner_uid);
 
-		if ($row = $sth->fetch()) {
-			return sql_bool_to_bool($row["otp_enabled"]);
+		if ($user) {
+			return $user->otp_enabled;
+		} else {
+			return false;
 		}
-
-		return false;
 	}
 
 	static function get_otp_secret(int $owner_uid, bool $show_if_enabled = false) {
-		$sth = Db::pdo()->prepare("SELECT salt, otp_enabled FROM ttrss_users WHERE id = ?");
-		$sth->execute([$owner_uid]);
+		$user = ORM::for_table('ttrss_users')->find_one($owner_uid);
 
-		if ($row = $sth->fetch()) {
-			if (!sql_bool_to_bool($row["otp_enabled"]) || $show_if_enabled) {
-				return \ParagonIE\ConstantTime\Base32::encodeUpperUnpadded(mb_substr(sha1($row["salt"]), 0, 12));
-			}
+		if ($user) {
+			if (!$user->otp_enabled || $show_if_enabled)
+				return \ParagonIE\ConstantTime\Base32::encodeUpperUnpadded(mb_substr(sha1($user->salt), 0, 12));
 		}
 
 		return null;
@@ -307,7 +307,10 @@ class UserHelper {
 		return false;
 	}
 
-	static function hash_password(string $pass, string $salt, string $algo) {
+	static function hash_password(string $pass, string $salt, string $algo = "") {
+
+		if (!$algo) $algo = self::HASH_ALGOS[0];
+
 		$pass_hash = "";
 
 		switch ($algo) {

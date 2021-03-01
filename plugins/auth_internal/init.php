@@ -19,8 +19,6 @@ class Auth_Internal extends Auth_Base {
 
 	function authenticate($login, $password, $service = '') {
 
-		$pwd_hash1 = encrypt_password($password);
-		$pwd_hash2 = encrypt_password($password, $login);
 		$otp = (int) ($_REQUEST["otp"] ?? 0);
 
 		// don't bother with null/null logins for auth_external etc
@@ -135,117 +133,54 @@ class Auth_Internal extends Auth_Base {
 				return $user_id;
 		}
 
-		if (get_schema_version() > 87) {
+		if ($login) {
+			$try_user_id = $this->find_user_by_login($login);
 
-			$sth = $this->pdo->prepare("SELECT salt FROM ttrss_users WHERE LOWER(login) = LOWER(?)");
-			$sth->execute([$login]);
-
-			if ($row = $sth->fetch()) {
-				$salt = $row['salt'];
-
-				if ($salt == "") {
-
-					$sth = $this->pdo->prepare("SELECT id FROM ttrss_users WHERE
-						LOWER(login) = LOWER(?) AND (pwd_hash = ? OR pwd_hash = ?)");
-
-					$sth->execute([$login, $pwd_hash1, $pwd_hash2]);
-
-					// verify and upgrade password to new salt base
-
-					if ($row = $sth->fetch()) {
-						// upgrade password to MODE2
-
-						$user_id = $row['id'];
-
-						$salt = substr(bin2hex(get_random_bytes(125)), 0, 250);
-						$pwd_hash = encrypt_password($password, $salt, true);
-
-						$sth = $this->pdo->prepare("UPDATE ttrss_users SET
-							pwd_hash = ?, salt = ? WHERE LOWER(login) = LOWER(?)");
-
-						$sth->execute([$pwd_hash, $salt, $login]);
-
-						return $user_id;
-
-					} else {
-						return false;
-					}
-
-				} else {
-					$pwd_hash = encrypt_password($password, $salt, true);
-
-					$sth = $this->pdo->prepare("SELECT id
-						  FROM ttrss_users WHERE
-						  LOWER(login) = LOWER(?) AND pwd_hash = ?");
-					$sth->execute([$login, $pwd_hash]);
-
-					if ($row = $sth->fetch()) {
-						return $row['id'];
-					}
-				}
-
-			} else {
-				$sth = $this->pdo->prepare("SELECT id
-					FROM ttrss_users WHERE
-					  LOWER(login) = LOWER(?) AND (pwd_hash = ? OR pwd_hash = ?)");
-
-				$sth->execute([$login, $pwd_hash1, $pwd_hash2]);
-
-				if ($row = $sth->fetch()) {
-					return $row['id'];
-				}
-			}
-		} else {
-			$sth = $this->pdo->prepare("SELECT id
-					FROM ttrss_users WHERE
-					  LOWER(login) = LOWER(?) AND (pwd_hash = ? OR pwd_hash = ?)");
-
-			$sth->execute([$login, $pwd_hash1, $pwd_hash2]);
-
-			if ($row = $sth->fetch()) {
-				return $row['id'];
+			if ($try_user_id) {
+				return $this->check_password($try_user_id, $password);
 			}
 		}
 
 		return false;
 	}
 
-	function check_password($owner_uid, $password, $service = '') {
+	function check_password(int $owner_uid, string $password, string $service = '') {
 
-		$sth = $this->pdo->prepare("SELECT salt,login,otp_enabled FROM ttrss_users WHERE
-			id = ?");
+		if (get_schema_version() > 87) {
+			$sth = $this->pdo->prepare("SELECT salt,login,otp_enabled,pwd_hash FROM ttrss_users WHERE id = ?");
+		} else {
+			$sth = $this->pdo->prepare("SELECT login,otp_enabled,pwd_hash FROM ttrss_users WHERE id = ?");
+		}
+
 		$sth->execute([$owner_uid]);
 
 		if ($row = $sth->fetch()) {
 
-			$salt = $row['salt'];
+			$salt = $row['salt'] ?? "";
 			$login = $row['login'];
+			$pwd_hash = $row['pwd_hash'];
+
+			list ($pwd_algo, $raw_hash) = explode(":", $pwd_hash, 2);
 
 			// check app password only if service is specified
 			if ($service && get_schema_version() > 138) {
 				return $this->check_app_password($login, $password, $service);
 			}
 
-			if (!$salt) {
-				$password_hash1 = encrypt_password($password);
-				$password_hash2 = encrypt_password($password, $login);
+			$test_hash = UserHelper::hash_password($password, $salt, $pwd_algo);
 
-				$sth = $this->pdo->prepare("SELECT id FROM ttrss_users WHERE
-					id = ? AND (pwd_hash = ? OR pwd_hash = ?)");
+			if (hash_equals($pwd_hash, $test_hash)) {
+				if ($pwd_algo != UserHelper::HASH_ALGOS[0]) {
+					Logger::log(E_USER_NOTICE, "Upgrading password of user $login to " . UserHelper::HASH_ALGOS[0]);
 
-				$sth->execute([$owner_uid, $password_hash1, $password_hash2]);
+					$new_hash = UserHelper::hash_password($password, $salt, UserHelper::HASH_ALGOS[0]);
 
-				return $sth->fetch();
-
-			} else {
-				$password_hash = encrypt_password($password, $salt, true);
-
-				$sth = $this->pdo->prepare("SELECT id FROM ttrss_users WHERE
-					id = ? AND pwd_hash = ?");
-
-				$sth->execute([$owner_uid, $password_hash]);
-
-				return $sth->fetch();
+					if ($new_hash) {
+						$usth = $this->pdo->prepare("UPDATE ttrss_users SET pwd_hash = ? WHERE id = ?");
+						$usth->execute([$new_hash, $owner_uid]);
+					}
+				}
+				return $owner_uid;
 			}
 		}
 
@@ -256,15 +191,16 @@ class Auth_Internal extends Auth_Base {
 
 		if ($this->check_password($owner_uid, $old_password)) {
 
-			$new_salt = substr(bin2hex(get_random_bytes(125)), 0, 250);
-			$new_password_hash = encrypt_password($new_password, $new_salt, true);
+			$new_salt = UserHelper::get_salt();
+			$new_password_hash = UserHelper::hash_password($new_password, $new_salt, UserHelper::HASH_ALGOS[0]);
 
 			$sth = $this->pdo->prepare("UPDATE ttrss_users SET
 				pwd_hash = ?, salt = ?, otp_enabled = false
 					WHERE id = ?");
 			$sth->execute([$new_password_hash, $new_salt, $owner_uid]);
 
-			$_SESSION["pwd_hash"] = $new_password_hash;
+			if ($_SESSION["uid"] ?? 0 == $owner_uid)
+				$_SESSION["pwd_hash"] = $new_password_hash;
 
 			$sth = $this->pdo->prepare("SELECT email, login FROM ttrss_users WHERE id = ?");
 			$sth->execute([$owner_uid]);
@@ -303,19 +239,27 @@ class Auth_Internal extends Auth_Base {
 		$sth->execute([$login, $service]);
 
 		while ($row = $sth->fetch()) {
-			list ($algo, $hash, $salt) = explode(":", $row["pwd_hash"]);
+			list ($pwd_algo, $raw_hash, $salt) = explode(":", $row["pwd_hash"]);
 
-			if ($algo == "SSHA-512") {
-				$test_hash = hash('sha512', $salt . $password);
+			$test_hash = UserHelper::hash_password($password, $salt, $pwd_algo);
 
-				if ($test_hash == $hash) {
-					$usth = $this->pdo->prepare("UPDATE ttrss_app_passwords SET last_used = NOW() WHERE id = ?");
-					$usth->execute([$row['id']]);
+			if (hash_equals("$pwd_algo:$raw_hash", $test_hash)) {
+				$usth = $this->pdo->prepare("UPDATE ttrss_app_passwords SET last_used = NOW() WHERE id = ?");
+				$usth->execute([$row['id']]);
 
-					return $row['uid'];
+				if ($pwd_algo != UserHelper::HASH_ALGOS[0]) {
+					// upgrade password to current algo
+					Logger::log(E_USER_NOTICE, "Upgrading app password of user $login to " . UserHelper::HASH_ALGOS[0]);
+
+					$new_hash = UserHelper::hash_password($password, $salt, UserHelper::HASH_ALGOS[0]);
+
+					if ($new_hash) {
+						$usth = $this->pdo->prepare("UPDATE ttrss_app_passwords SET pwd_hash = ? WHERE id = ?");
+						$usth->execute(["$new_hash:$salt", $row['id']]);
+					}
 				}
-			} else {
-				user_error("Got unknown algo of app password for user $login: $algo");
+
+				return $row['uid'];
 			}
 		}
 

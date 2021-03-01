@@ -361,16 +361,6 @@
 		return vsprintf(_ngettext(array_shift($args), array_shift($args), array_shift($args)), $args);
 	}
 
-	function encrypt_password($pass, $salt = '', $mode2 = false) {
-		if ($salt && $mode2) {
-			return "MODE2:" . hash('sha256', $salt . $pass);
-		} else if ($salt) {
-			return "SHA1X:" . sha1("$salt:$pass");
-		} else {
-			return "SHA1:" . sha1($pass);
-		}
-	} // function encrypt_password
-
 	function init_plugins() {
 		PluginHost::getInstance()->load(Config::get(Config::PLUGINS), PluginHost::KIND_ALL);
 

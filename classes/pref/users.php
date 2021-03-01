@@ -107,7 +107,7 @@ class Pref_Users extends Handler_Administrative {
 
 		function editSave() {
 			$login = clean($_REQUEST["login"]);
-			$uid = clean($_REQUEST["id"]);
+			$uid = (int) clean($_REQUEST["id"]);
 			$access_level = (int) clean($_REQUEST["access_level"]);
 			$email = clean($_REQUEST["email"]);
 			$password = clean($_REQUEST["password"]);
@@ -118,19 +118,13 @@ class Pref_Users extends Handler_Administrative {
 			// forbid renaming admin
 			if ($uid == 1) $login = "admin";
 
-			if ($password) {
-				$salt = substr(bin2hex(get_random_bytes(125)), 0, 250);
-				$pwd_hash = encrypt_password($password, $salt, true);
-				$pass_query_part = "pwd_hash = ".$this->pdo->quote($pwd_hash).",
-					salt = ".$this->pdo->quote($salt).",";
-			} else {
-				$pass_query_part = "";
-			}
-
-			$sth = $this->pdo->prepare("UPDATE ttrss_users SET $pass_query_part login = LOWER(?),
-				access_level = ?, email = ?, otp_enabled = false WHERE id = ?");
+			$sth = $this->pdo->prepare("UPDATE ttrss_users SET login = LOWER(?),
+					access_level = ?, email = ?, otp_enabled = false WHERE id = ?");
 			$sth->execute([$login, $access_level, $email, $uid]);
 
+			if ($password) {
+				UserHelper::reset_password($uid, false, $password);
+			}
 		}
 
 		function remove() {
@@ -153,8 +147,8 @@ class Pref_Users extends Handler_Administrative {
 		function add() {
 			$login = clean($_REQUEST["login"]);
 			$tmp_user_pwd = make_password();
-			$salt = substr(bin2hex(get_random_bytes(125)), 0, 250);
-			$pwd_hash = encrypt_password($tmp_user_pwd, $salt, true);
+			$salt = UserHelper::get_salt();
+			$pwd_hash = UserHelper::hash_password($tmp_user_pwd, $salt, UserHelper::HASH_ALGOS[0]);
 
 			if (!$login) return; // no blank usernames
 

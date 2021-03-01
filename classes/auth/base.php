@@ -23,8 +23,8 @@ abstract class Auth_Base extends Plugin implements IAuthModule {
 
 				if (!$password) $password = make_password();
 
-				$salt = substr(bin2hex(get_random_bytes(125)), 0, 250);
-				$pwd_hash = encrypt_password($password, $salt, true);
+				$salt = UserHelper::get_salt();
+				$pwd_hash = UserHelper::hash_password($password, $salt, UserHelper::HASH_ALGOS[0]);
 
 				$sth = $this->pdo->prepare("INSERT INTO ttrss_users
 						(login,access_level,last_login,created,pwd_hash,salt)

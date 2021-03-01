@@ -1,16 +1,18 @@
 'use strict'
 
-/* global __  */
-/* global xhrPost, xhr, dijit, Notify, Tables, App, fox */
+/* global __, xhr, dijit, Notify, Tables, App, fox */
 
 const	Users = {
 	reload: function(sort) {
-		const user_search = App.byId("user_search");
-		const search = user_search ? user_search.value : "";
+		return new Promise((resolve, reject) => {
+			const user_search = App.byId("user_search");
+			const search = user_search ? user_search.value : "";
 
-		xhr.post("backend.php", { op: "pref-users", sort: sort, search: search }, (reply) => {
-			dijit.byId('usersTab').attr('content', reply);
-			Notify.close();
+			xhr.post("backend.php", { op: "pref-users", sort: sort, search: search }, (reply) => {
+				dijit.byId('usersTab').attr('content', reply);
+				Notify.close();
+				resolve();
+			}, (e) => { reject(e) });
 		});
 	},
 	add: function() {
@@ -20,8 +22,9 @@ const	Users = {
 			Notify.progress("Adding user...");
 
 			xhr.post("backend.php", {op: "pref-users", method: "add", login: login}, (reply) => {
-				alert(reply);
-				Users.reload();
+				Users.reload().then(() => {
+					Notify.info(reply);
+				})
 			});
 
 		}
@@ -38,9 +41,11 @@ const	Users = {
 					if (this.validate()) {
 						Notify.progress("Saving data...", true);
 
-						xhr.post("backend.php", this.attr('value'), () => {
+						xhr.post("backend.php", this.attr('value'), (reply) => {
 							dialog.hide();
-							Users.reload();
+							Users.reload().then(() => {
+								Notify.info(reply);
+							});
 						});
 					}
 				},

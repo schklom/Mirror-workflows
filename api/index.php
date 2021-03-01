@@ -46,7 +46,7 @@
 		UserHelper::load_user_plugins($_SESSION["uid"]);
 	}
 
-	$method = strtolower($_REQUEST["op"]);
+	$method = strtolower($_REQUEST["op"] ?? "");
 
 	$handler = new API($_REQUEST);
 

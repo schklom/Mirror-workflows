@@ -154,7 +154,7 @@ String.prototype.stripTags = function() {
 
 /* exported xhr */
 const xhr = {
-	post: function(url, params = {}, complete = undefined) {
+	post: function(url, params = {}, complete = undefined, failed = undefined) {
 		console.log('xhr.post', '>>>', params);
 
 		return new Promise((resolve, reject) => {
@@ -165,6 +165,9 @@ const xhr = {
 				postData: dojo.objectToQuery(params),
 				handleAs: "text",
 				error: function(error) {
+					if (failed != undefined)
+						failed(error);
+
 					reject(error);
 				},
 				load: function(data, ioargs) {
@@ -178,7 +181,7 @@ const xhr = {
 			);
 		});
 	},
-	json: function(url, params = {}, complete = undefined) {
+	json: function(url, params = {}, complete = undefined, failed = undefined) {
 		return new Promise((resolve, reject) =>
 			this.post(url, params).then((data) => {
 				let obj = null;
@@ -187,6 +190,10 @@ const xhr = {
 					obj = JSON.parse(data);
 				} catch (e) {
 					console.error("xhr.json", e, xhr);
+
+					if (failed != undefined)
+						failed(e);
+
 					reject(e);
 				}
 
@@ -194,6 +201,10 @@ const xhr = {
 
 				if (obj && typeof App != "undefined")
 					if (!App.handleRpcJson(obj)) {
+
+						if (failed != undefined)
+							failed(obj);
+
 						reject(obj);
 						return;
 					}

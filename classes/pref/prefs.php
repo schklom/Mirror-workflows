@@ -1038,19 +1038,6 @@ class Pref_Prefs extends Handler_Protected {
 		}
 	}
 
-	static function _is_default_password() {
-		$authenticator = PluginHost::getInstance()->get_plugin($_SESSION["auth_module"]);
-
-		if ($authenticator &&
-                method_exists($authenticator, "check_password") &&
-                $authenticator->check_password($_SESSION["uid"], "password")) {
-
-			return true;
-		}
-
-		return false;
-	}
-
 	function otpdisable() {
 		$password = clean($_REQUEST["password"]);
 
@@ -1404,12 +1391,6 @@ class Pref_Prefs extends Handler_Protected {
 		<?php
 	}
 
-	private function _encrypt_app_password($password) {
-		$salt = substr(bin2hex(get_random_bytes(24)), 0, 24);
-
-		return "SSHA-512:".hash('sha512', $salt . $password). ":$salt";
-	}
-
 	function deleteAppPassword() {
 		$ids = explode(",", clean($_REQUEST['ids']));
 		$ids_qmarks = arr_qmarks($ids);
@@ -1423,7 +1404,8 @@ class Pref_Prefs extends Handler_Protected {
 	function generateAppPassword() {
 		$title = clean($_REQUEST['title']);
 		$new_password = make_password(16);
-		$new_password_hash = $this->_encrypt_app_password($new_password);
+		$new_salt = UserHelper::get_salt();
+		$new_password_hash = UserHelper::hash_password($new_password, $new_salt, UserHelper::HASH_ALGOS[0]);
 
 		print_warning(T_sprintf("Generated password <strong>%s</strong> for %s. Please remember it for future reference.", $new_password, $title));
 
@@ -1432,7 +1414,7 @@ class Pref_Prefs extends Handler_Protected {
     		 VALUES
     		    (?, ?, ?, NOW(), ?)");
 
-		$sth->execute([$title, $new_password_hash, Auth_Base::AUTH_SERVICE_API, $_SESSION['uid']]);
+		$sth->execute([$title, "$new_password_hash:$new_salt", Auth_Base::AUTH_SERVICE_API, $_SESSION['uid']]);
 
 		$this->appPasswordList();
 	}

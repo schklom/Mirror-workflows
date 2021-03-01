@@ -3,6 +3,20 @@ use OTPHP\TOTP;
 
 class UserHelper {
 
+	const HASH_ALGO_SSHA512 = 'SSHA-512';
+	const HASH_ALGO_SSHA256 = 'SSHA-256';
+	const HASH_ALGO_MODE2   = 'MODE2';
+	const HASH_ALGO_SHA1X   = 'SHA1X';
+	const HASH_ALGO_SHA1    = 'SHA1';
+
+	const HASH_ALGOS = [
+		self::HASH_ALGO_SSHA512,
+		self::HASH_ALGO_SSHA256,
+		self::HASH_ALGO_MODE2,
+		self::HASH_ALGO_SHA1X,
+		self::HASH_ALGO_SHA1
+	];
+
 	static function authenticate(string $login = null, string $password = null, bool $check_only = false, string $service = null) {
 		if (!Config::get(Config::SINGLE_USER_MODE)) {
 			$user_id = false;
@@ -190,7 +204,11 @@ class UserHelper {
 		session_commit();
 	}
 
-	static function reset_password($uid, $format_output = false) {
+	static function get_salt() {
+		return substr(bin2hex(get_random_bytes(125)), 0, 250);
+	}
+
+	static function reset_password($uid, $format_output = false, $new_password = "") {
 
 		$pdo = Db::pdo();
 
@@ -201,10 +219,10 @@ class UserHelper {
 
 			$login = $row["login"];
 
-			$new_salt = substr(bin2hex(get_random_bytes(125)), 0, 250);
-			$tmp_user_pwd = make_password();
+			$new_salt = self::get_salt();
+			$tmp_user_pwd = $new_password ? $new_password : make_password();
 
-			$pwd_hash = encrypt_password($tmp_user_pwd, $new_salt, true);
+			$pwd_hash = self::hash_password($tmp_user_pwd, $new_salt, self::HASH_ALGOS[0]);
 
 			$sth = $pdo->prepare("UPDATE ttrss_users
 				  SET pwd_hash = ?, salt = ?, otp_enabled = false
@@ -275,5 +293,44 @@ class UserHelper {
 		}
 
 		return null;
+	}
+
+	static function is_default_password() {
+		$authenticator = PluginHost::getInstance()->get_plugin($_SESSION["auth_module"]);
+
+		if ($authenticator &&
+                method_exists($authenticator, "check_password") &&
+                $authenticator->check_password($_SESSION["uid"], "password")) {
+
+			return true;
+		}
+		return false;
+	}
+
+	static function hash_password(string $pass, string $salt, string $algo) {
+		$pass_hash = "";
+
+		switch ($algo) {
+			case self::HASH_ALGO_SHA1:
+				$pass_hash = sha1($pass);
+				break;
+			case self::HASH_ALGO_SHA1X:
+				$pass_hash = sha1("$salt:$pass");
+				break;
+			case self::HASH_ALGO_MODE2:
+			case self::HASH_ALGO_SSHA256:
+				$pass_hash = hash('sha256', $salt . $pass);
+				break;
+			case self::HASH_ALGO_SSHA512:
+				$pass_hash = hash('sha512', $salt . $pass);
+				break;
+			default:
+				user_error("hash_password: unknown hash algo: $algo", E_USER_ERROR);
+		}
+
+		if ($pass_hash)
+			return "$algo:$pass_hash";
+		else
+			return false;
 	}
 }

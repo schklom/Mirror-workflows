@@ -4,13 +4,6 @@
 	define('LABEL_BASE_INDEX', -1024);
 	define('PLUGIN_FEED_BASE_INDEX', -128);
 
-	UrlHelper::$fetch_last_error = false;
-	UrlHelper::$fetch_last_error_code = false;
-	UrlHelper::$fetch_last_content_type = false;
-	UrlHelper::$fetch_last_error_content = false; // curl only for the time being
-	UrlHelper::$fetch_effective_url = false;
-	UrlHelper::$fetch_curl_used = false;
-
 	if (version_compare(PHP_VERSION, '8.0.0', '<')) {
 		libxml_disable_entity_loader(true);
 	}

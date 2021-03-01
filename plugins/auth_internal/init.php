@@ -237,7 +237,7 @@ class Auth_Internal extends Auth_Base {
 
 			if (hash_equals("$pwd_algo:$raw_hash", $test_hash)) {
 				$pass = ORM::for_table('ttrss_app_passwords')->find_one($row["id"]);
-				$pass->last_used = 'NOW()';
+				$pass->last_used = Db::NOW();
 
 				if ($pwd_algo != UserHelper::HASH_ALGOS[0]) {
 					// upgrade password to current algo

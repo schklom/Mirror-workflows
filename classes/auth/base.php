@@ -29,7 +29,7 @@ abstract class Auth_Base extends Plugin implements IAuthModule {
 				$user->login = mb_strtolower($login);
 				$user->pwd_hash = UserHelper::hash_password($password, $user->salt);
 				$user->access_level = 0;
-				$user->created = 'NOW()';
+				$user->created = Db::NOW();
 				$user->save();
 
 				return UserHelper::find_user_by_login($login);

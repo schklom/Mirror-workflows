@@ -157,7 +157,7 @@ class Pref_Users extends Handler_Administrative {
 				$user->login = mb_strtolower($login);
 				$user->pwd_hash = UserHelper::hash_password($new_password, $user->salt);
 				$user->access_level = 0;
-				$user->created = 'NOW()';
+				$user->created = Db::NOW();
 				$user->save();
 
 				if ($new_uid = UserHelper::find_user_by_login($login)) {

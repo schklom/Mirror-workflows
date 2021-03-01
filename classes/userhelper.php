@@ -51,7 +51,7 @@ class UserHelper {
 					$_SESSION["user_agent"] = sha1($_SERVER['HTTP_USER_AGENT']);
 					$_SESSION["pwd_hash"] = $user->pwd_hash;
 
-					$user->last_login = 'NOW()';
+					$user->last_login = Db::NOW();
 					$user->save();
 
 					return true;
@@ -132,7 +132,7 @@ class UserHelper {
 			} else {
 				/* bump login timestamp */
 				$user = ORM::for_table('ttrss_users')->find_one($_SESSION["uid"]);
-				$user->last_login = 'NOW()';
+				$user->last_login = Db::NOW();
 				$user->save();
 
 				$_SESSION["last_login_update"] = time();

@@ -16,6 +16,10 @@ class Db
 		ORM::configure('return_result_sets', true);
 	}
 
+	static function NOW() {
+		return date("Y-m-d H:i:s", time());
+	}
+
 	private function __clone() {
 		//
 	}

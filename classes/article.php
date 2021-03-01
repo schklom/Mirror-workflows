@@ -182,19 +182,6 @@ class Article extends Handler_Protected {
 		print json_encode(["id" => $ids, "score" => $score]);
 	}
 
-	function getScore() {
-		$id = clean($_REQUEST['id']);
-
-		$sth = $this->pdo->prepare("SELECT score FROM ttrss_user_entries WHERE ref_id = ? AND owner_uid = ?");
-		$sth->execute([$id, $_SESSION['uid']]);
-		$row = $sth->fetch();
-
-		$score = $row['score'];
-
-		print json_encode(["id" => $id, "score" => (int)$score]);
-	}
-
-
 	function setArticleTags() {
 
 		$id = clean($_REQUEST["id"]);

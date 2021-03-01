@@ -1848,7 +1848,7 @@ class Feeds extends Handler_Protected {
 		if ($feed) {
 			return $feed->cat_id;
 		} else {
-			return null;
+			return false;
 		}
 	}
 

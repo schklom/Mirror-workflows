@@ -182,7 +182,7 @@ class Config {
 			"timestamp" => 0,
 		];
 
-		$proc = proc_open("git --no-pager log --pretty=\"%ct %h\" -n1 HEAD",
+		$proc = proc_open("git --no-pager log --pretty=\"%ct-%h\" -n1 HEAD",
 						$descriptorspec, $pipes, $dir);
 
 		if (is_resource($proc)) {
@@ -193,7 +193,7 @@ class Config {
 			$rv["status"] = $status;
 
 			if ($status == 0) {
-				list($timestamp, $commit) = explode(" ", $stdout);
+				list($timestamp, $commit) = explode("-", $stdout);
 
 				$rv["version"] = strftime("%y.%m", (int)$timestamp) . "-$commit";
 				$rv["commit"] = $commit;

@@ -867,7 +867,7 @@ class Pref_Feeds extends Handler_Protected {
 	function addCat() {
 		$feed_cat = clean($_REQUEST["cat"]);
 
-		Feeds::_add_cat($feed_cat);
+		Feeds::_add_cat($feed_cat, $_SESSION['uid']);
 	}
 
 	function importOpml() {

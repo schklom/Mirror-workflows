@@ -1909,39 +1909,26 @@ class Feeds extends Handler_Protected {
 			$cat->delete();
 	}
 
-	static function _add_cat($feed_cat, $parent_cat_id = false, $order_id = 0) {
+	static function _add_cat(string $title, int $owner_uid, int $parent_cat = null, int $order_id = 0) {
 
-		if (!$feed_cat) return false;
+		$cat = ORM::for_table('ttrss_feed_categories')
+			->where('owner_uid', $owner_uid)
+			->where('parent_cat', $parent_cat)
+			->where('title', $title)
+			->find_one();
 
-		$feed_cat = mb_substr($feed_cat, 0, 250);
-		if (!$parent_cat_id) $parent_cat_id = null;
+		if (!$cat) {
+			$cat = ORM::for_table('ttrss_feed_categories')->create();
 
-		$pdo = Db::pdo();
-		$tr_in_progress = false;
+			$cat->set([
+				'owner_uid' => $owner_uid,
+				'parent_cat' => $parent_cat,
+				'order_id' => $order_id,
+				'title' => $title,
+			]);
 
-		try {
-			$pdo->beginTransaction();
-		} catch (Exception $e) {
-			$tr_in_progress = true;
+			return $cat->save();
 		}
-
-		$sth = $pdo->prepare("SELECT id FROM ttrss_feed_categories
-				WHERE (parent_cat = :parent OR (:parent IS NULL AND parent_cat IS NULL))
-				AND title = :title AND owner_uid = :uid");
-		$sth->execute([':parent' => $parent_cat_id, ':title' => $feed_cat, ':uid' => $_SESSION['uid']]);
-
-		if (!$sth->fetch()) {
-
-			$sth = $pdo->prepare("INSERT INTO ttrss_feed_categories (owner_uid,title,parent_cat,order_id)
-					VALUES (?, ?, ?, ?)");
-			$sth->execute([$_SESSION['uid'], $feed_cat, $parent_cat_id, (int)$order_id]);
-
-			if (!$tr_in_progress) $pdo->commit();
-
-			return true;
-		}
-
-		$pdo->commit();
 
 		return false;
 	}

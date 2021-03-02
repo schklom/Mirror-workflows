@@ -31,7 +31,7 @@ class OPML extends Handler_Protected {
 			<body class='claro ttrss_utility'>
 			<h1>".__('OPML Utility')."</h1><div class='content'>";
 
-		Feeds::_add_cat("Imported feeds");
+		Feeds::_add_cat("Imported feeds", $owner_uid);
 
 		$this->opml_notice(__("Importing OPML..."));
 
@@ -521,9 +521,8 @@ class OPML extends Handler_Protected {
 
 				if ($cat_id === false) {
 					$order_id = (int) $root_node->attributes->getNamedItem('ttrssSortOrder')->nodeValue;
-					if (!$order_id) $order_id = 0;
 
-					Feeds::_add_cat($cat_title, $parent_id, $order_id);
+					Feeds::_add_cat($cat_title, $_SESSION['uid'], $parent_id ? $parent_id : null, (int)$order_id);
 					$cat_id = $this->get_feed_category($cat_title, $parent_id);
 				}
 

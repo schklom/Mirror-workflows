@@ -21,21 +21,20 @@ class Counters {
 		);
 	}
 
-	static private function get_cat_children($cat_id, $owner_uid) {
-		$pdo = Db::pdo();
-
-		$sth = $pdo->prepare("SELECT id FROM ttrss_feed_categories WHERE parent_cat = ?
-				AND owner_uid = ?");
-		$sth->execute([$cat_id, $owner_uid]);
-
+	static private function get_cat_children(int $cat_id, int $owner_uid) {
 		$unread = 0;
 		$marked = 0;
 
-		while ($line = $sth->fetch()) {
-			list ($tmp_unread, $tmp_marked) = self::get_cat_children($line["id"], $owner_uid);
+		$cats = ORM::for_table('ttrss_feed_categories')
+					->where('owner_uid', $owner_uid)
+					->where('parent_cat', $cat_id)
+					->find_many();
 
-			$unread += $tmp_unread + Feeds::_get_cat_unread($line["id"], $owner_uid);
-			$marked += $tmp_marked + Feeds::_get_cat_marked($line["id"], $owner_uid);
+		foreach ($cats as $cat) {
+			list ($tmp_unread, $tmp_marked) = self::get_cat_children($cat->id, $owner_uid);
+
+			$unread += $tmp_unread + Feeds::_get_cat_unread($cat->id, $owner_uid);
+			$marked += $tmp_marked + Feeds::_get_cat_marked($cat->id, $owner_uid);
 		}
 
 		return [$unread, $marked];
@@ -178,7 +177,7 @@ class Counters {
 				$has_img = false;
 			}
 
-			// hide default un-updated timestamp i.e. 1980-01-01 (?) -fox
+			// hide default un-updated timestamp i.e. 1970-01-01 (?) -fox
 			if ((int)date('Y') - (int)date('Y', strtotime($line['last_updated'])) > 2)
 				$last_updated = '';
 
@@ -200,35 +199,22 @@ class Counters {
 		return $ret;
 	}
 
-	private static function get_global($global_unread = -1) {
-		$ret = [];
-
-		if ($global_unread == -1) {
-			$global_unread = Feeds::_get_global_unread();
-		}
-
-		$cv = [
-			"id" => "global-unread",
-			"counter" => (int) $global_unread
+	private static function get_global() {
+		$ret = [
+			[
+				"id" => "global-unread",
+				"counter" => (int) Feeds::_get_global_unread()
+			]
 		];
 
-		array_push($ret, $cv);
+		$subcribed_feeds = ORM::for_table('ttrss_feeds')
+			->where('owner_uid', $_SESSION['uid'])
+			->count();
 
-		$pdo = Db::pdo();
-
-		$sth = $pdo->prepare("SELECT COUNT(id) AS fn FROM
-			ttrss_feeds WHERE owner_uid = ?");
-		$sth->execute([$_SESSION['uid']]);
-		$row = $sth->fetch();
-
-		$subscribed_feeds = $row["fn"];
-
-		$cv = [
+		array_push($ret, [
 			"id" => "subscribed-feeds",
-			"counter" => (int) $subscribed_feeds
-		];
-
-		array_push($ret, $cv);
+			"counter" => $subcribed_feeds
+		]);
 
 		return $ret;
 	}

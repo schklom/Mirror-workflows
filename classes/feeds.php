@@ -1228,7 +1228,7 @@ class Feeds extends Handler_Protected {
 		return $unread;
 	}
 
-	static function _get_global_unread($user_id = false) {
+	static function _get_global_unread(int $user_id = 0) {
 
 		if (!$user_id) $user_id = $_SESSION["uid"];
 
@@ -1244,25 +1244,23 @@ class Feeds extends Handler_Protected {
 		return $row["count"];
 	}
 
-	static function _get_cat_title($cat_id) {
-
-		if ($cat_id == -1) {
-			return __("Special");
-		} else if ($cat_id == -2) {
-			return __("Labels");
-		} else {
-
-		    $pdo = Db::pdo();
-
-			$sth = $pdo->prepare("SELECT title FROM ttrss_feed_categories WHERE
-				id = ?");
-			$sth->execute([$cat_id]);
-
-			if ($row = $sth->fetch()) {
-				return $row["title"];
-			} else {
+	static function _get_cat_title(int $cat_id) {
+		switch ($cat_id) {
+			case 0:
 				return __("Uncategorized");
-			}
+			case -1:
+				return __("Special");
+			case -2:
+				return __("Labels");
+			default:
+				$cat = ORM::for_table('ttrss_feed_categories')
+					->find_one($cat_id);
+
+				if ($cat) {
+					return $cat->title;
+				} else {
+					return "UNKNOWN";
+				}
 		}
 	}
 

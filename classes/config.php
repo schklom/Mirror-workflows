@@ -182,7 +182,7 @@ class Config {
 			"timestamp" => 0,
 		];
 
-		$proc = proc_open("git --no-pager log --pretty=\"%ct-%h\" -n1 HEAD",
+		$proc = proc_open("git --no-pager log --pretty=\"version-%ct-%h\" -n1 HEAD",
 						$descriptorspec, $pipes, $dir);
 
 		if (is_resource($proc)) {
@@ -192,12 +192,19 @@ class Config {
 
 			$rv["status"] = $status;
 
-			if ($status == 0) {
-				list($timestamp, $commit) = explode("-", $stdout);
+			list($check, $timestamp, $commit) = explode("-", $stdout);
+
+			if ($check == "version") {
 
 				$rv["version"] = strftime("%y.%m", (int)$timestamp) . "-$commit";
 				$rv["commit"] = $commit;
 				$rv["timestamp"] = $timestamp;
+
+				// proc_close() may return -1 even if command completed successfully
+				// so if it looks like we got valid data, we ignore it
+
+				if ($rv["status"] == -1)
+					$rv["status"] = 0;
 
 			} else {
 				$rv["version"] = T_sprintf("Git error [RC=%d]: %s", $status, $stderr);

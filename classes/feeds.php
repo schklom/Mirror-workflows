@@ -1946,9 +1946,23 @@ class Feeds extends Handler_Protected {
 		return false;
 	}
 
-	static function _get_access_key($feed_id, bool $is_cat, int $owner_uid = 0) {
-		if (!$owner_uid) $owner_uid = $_SESSION["uid"];
+	static function _clear_access_keys(int $owner_uid) {
+		$key = ORM::for_table('ttrss_access_keys')
+			->where('owner_uid', $owner_uid)
+			->delete_many();
+	}
 
+	static function _update_access_key(string $feed_id, bool $is_cat, int $owner_uid) {
+		$key = ORM::for_table('ttrss_access_keys')
+			->where('owner_uid', $owner_uid)
+			->where('feed_id', $feed_id)
+			->where('is_cat', $is_cat)
+			->delete_many();
+
+		return self::_get_access_key($feed_id, $is_cat, $owner_uid);
+	}
+
+	static function _get_access_key(string $feed_id, bool $is_cat, int $owner_uid) {
 		$key = ORM::for_table('ttrss_access_keys')
 			->where('owner_uid', $owner_uid)
 			->where('feed_id', $feed_id)

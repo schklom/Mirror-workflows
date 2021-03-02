@@ -1253,12 +1253,16 @@ class Pref_Feeds extends Handler_Protected {
 		}
 	}
 
+	function clearKeys() {
+		return Feeds::_clear_access_keys($_SESSION['uid']);
+	}
+
 	function getOPMLKey() {
 		print json_encode(["link" => OPML::get_publish_url()]);
 	}
 
 	function regenOPMLKey() {
-		$this->update_feed_access_key('OPML:Publish',
+		Feeds::_update_access_key('OPML:Publish',
 			false, $_SESSION["uid"]);
 
 		print json_encode(["link" => OPML::get_publish_url()]);
@@ -1268,12 +1272,12 @@ class Pref_Feeds extends Handler_Protected {
 		$feed_id = clean($_REQUEST['id']);
 		$is_cat = clean($_REQUEST['is_cat']);
 
-		$new_key = $this->update_feed_access_key($feed_id, $is_cat, $_SESSION["uid"]);
+		$new_key = Feeds::_update_access_key($feed_id, $is_cat, $_SESSION["uid"]);
 
 		print json_encode(["link" => $new_key]);
 	}
 
-	function getsharedurl() {
+	function getSharedURL() {
 		$feed_id = clean($_REQUEST['id']);
 		$is_cat = clean($_REQUEST['is_cat']) == "true";
 		$search = clean($_REQUEST['search']);
@@ -1290,23 +1294,6 @@ class Pref_Feeds extends Handler_Protected {
 			"title" => Feeds::_get_title($feed_id, $is_cat),
 			"link" => $link
 		]);
-	}
-
-	private function update_feed_access_key($feed_id, $is_cat, $owner_uid) {
-
-		// clear old value and generate new one
-		$sth = $this->pdo->prepare("DELETE FROM ttrss_access_keys
-			WHERE feed_id = ? AND is_cat = ? AND owner_uid = ?");
-		$sth->execute([$feed_id, bool_to_sql_bool($is_cat), $owner_uid]);
-
-		return Feeds::_get_access_key($feed_id, $is_cat, $owner_uid);
-	}
-
-	// Silent
-	function clearKeys() {
-		$sth = $this->pdo->prepare("DELETE FROM ttrss_access_keys WHERE
-			owner_uid = ?");
-		$sth->execute([$_SESSION['uid']]);
 	}
 
 	private function calculate_children_count($cat) {

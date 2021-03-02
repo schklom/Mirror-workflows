@@ -59,8 +59,6 @@ const	Users = {
 						<div dojoType="dijit.layout.TabContainer" style="height : 400px">
 							<div dojoType="dijit.layout.ContentPane" title="${__('Edit user')}">
 
-								<header>${__("User")}</header>
-
 								<section>
 									<fieldset>
 										<label>${__("Login:")}</label>
@@ -71,11 +69,9 @@ const	Users = {
 
 										${admin_disabled ? App.FormFields.hidden_tag("login", user.login) : ''}
 									</fieldset>
-								</section>
 
-								<header>${__("Authentication")}</header>
+									<hr/>
 
-								<section>
 									<fieldset>
 										<label>${__('Access level: ')}</label>
 										${App.FormFields.select_hash("access_level",
@@ -89,11 +85,15 @@ const	Users = {
 										<input dojoType='dijit.form.TextBox' type='password' size='20'
 											placeholder='${__("Change password")}' name='password'>
 									</fieldset>
-								</section>
+									<fieldset>
+									<label></label>
+									<label class="checkbox">
+										${App.FormFields.checkbox_tag("otp_enabled", user.otp_enabled)}
+										${__('OTP enabled')}
+									</fieldset>
 
-								<header>${__("Options")}</header>
+									<hr/>
 
-								<section>
 									<fieldset>
 										<label>${__("E-mail:")}</label>
 										<input dojoType='dijit.form.TextBox' size='30' name='email'

@@ -116,6 +116,7 @@ class Pref_Users extends Handler_Administrative {
 				$user->login = mb_strtolower($login);
 				$user->access_level = (int) clean($_REQUEST["access_level"]);
 				$user->email = clean($_REQUEST["email"]);
+				$user->otp_enabled = checkbox_to_sql_bool($_REQUEST["otp_enabled"]);
 
 				$user->save();
 			}

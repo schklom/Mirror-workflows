@@ -98,8 +98,8 @@ class API extends Handler {
 	}
 
 	function getUnread() {
-		$feed_id = clean($_REQUEST["feed_id"]);
-		$is_cat = clean($_REQUEST["is_cat"]);
+		$feed_id = clean($_REQUEST["feed_id"] ?? "");
+		$is_cat = clean($_REQUEST["is_cat"] ?? "");
 
 		if ($feed_id) {
 			$this->_wrap(self::STATUS_OK, array("unread" => getFeedUnread($feed_id, $is_cat)));
@@ -188,15 +188,15 @@ class API extends Handler {
 
 			if (is_numeric($feed_id)) $feed_id = (int) $feed_id;
 
-			$limit = (int)clean($_REQUEST["limit"]);
+			$limit = (int)clean($_REQUEST["limit"] ?? "");
 
 			if (!$limit || $limit >= 200) $limit = 200;
 
-			$offset = (int)clean($_REQUEST["skip"]);
+			$offset = (int)clean($_REQUEST["skip"] ?? "");
 			$filter = clean($_REQUEST["filter"] ?? "");
 			$is_cat = self::_param_to_bool(clean($_REQUEST["is_cat"] ?? false));
 			$show_excerpt = self::_param_to_bool(clean($_REQUEST["show_excerpt"] ?? false));
-			$show_content = self::_param_to_bool(clean($_REQUEST["show_content"]));
+			$show_content = self::_param_to_bool(clean($_REQUEST["show_content"] ?? false));
 			/* all_articles, unread, adaptive, marked, updated */
 			$view_mode = clean($_REQUEST["view_mode"] ?? null);
 			$include_attachments = self::_param_to_bool(clean($_REQUEST["include_attachments"] ?? false));

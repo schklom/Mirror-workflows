@@ -1842,13 +1842,14 @@ class Feeds extends Handler_Protected {
 		return $rv;
 	}
 
-	static function _cat_of_feed($feed) {
+	// returns Uncategorized as 0
+	static function _cat_of($feed) : int {
 		$feed = ORM::for_table('ttrss_feeds')->find_one($feed);
 
 		if ($feed) {
-			return $feed->cat_id;
+			return (int)$feed->cat_id;
 		} else {
-			return false;
+			return -1;
 		}
 	}
 

@@ -1713,7 +1713,7 @@ class RSSUtils {
 		$filters = array();
 
 		$feed_id = (int) $feed_id;
-		$cat_id = (int)Feeds::_cat_of_feed($feed_id);
+		$cat_id = Feeds::_cat_of($feed_id);
 
 		if (!$cat_id)
 			$null_cat_qpart = "cat_id IS NULL OR";

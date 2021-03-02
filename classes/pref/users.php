@@ -6,6 +6,7 @@ class Pref_Users extends Handler_Administrative {
 
 		function edit() {
 			$user = ORM::for_table('ttrss_users')
+				->select_expr("id,login,access_level,email,full_name,otp_enabled")
 				->find_one((int)$_REQUEST["id"])
 				->as_array();
 

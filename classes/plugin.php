@@ -2,11 +2,10 @@
 abstract class Plugin {
 	const API_VERSION_COMPAT = 1;
 
-	/** @var PDO */
+	/** @var PDO $pdo */
 	protected $pdo;
 
-	/* @var PluginHost $host */
-	abstract function init($host);
+	abstract function init(PluginHost $host);
 
 	abstract function about();
 	// return array(1.0, "plugin", "No description", "No author", false);
@@ -23,6 +22,10 @@ abstract class Plugin {
 	}
 
 	function is_public_method($method) {
+		return false;
+	}
+
+	function csrf_ignore($method) {
 		return false;
 	}
 
@@ -55,7 +58,4 @@ abstract class Plugin {
 		return vsprintf($this->__($msgid), $args);
 	}
 
-	function csrf_ignore($method) {
-		return false;
-	}
 }

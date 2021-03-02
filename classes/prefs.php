@@ -59,6 +59,7 @@ class Prefs {
 	const HEADLINES_NO_DISTINCT = "HEADLINES_NO_DISTINCT";
 	const DEBUG_HEADLINE_IDS = "DEBUG_HEADLINE_IDS";
 	const DISABLE_CONDITIONAL_COUNTERS = "DISABLE_CONDITIONAL_COUNTERS";
+	const WIDESCREEN_MODE = "WIDESCREEN_MODE";
 
 	private const _DEFAULTS = [
 		Prefs::PURGE_OLD_DAYS => [ 60, Config::T_INT ],
@@ -118,6 +119,7 @@ class Prefs {
 		Prefs::HEADLINES_NO_DISTINCT => [ false, Config::T_BOOL ],
 		Prefs::DEBUG_HEADLINE_IDS => [ false, Config::T_BOOL ],
 		Prefs::DISABLE_CONDITIONAL_COUNTERS => [ false, Config::T_BOOL ],
+		Prefs::WIDESCREEN_MODE => [ false, Config::T_BOOL ],
 	];
 
 	const _PROFILE_BLACKLIST = [

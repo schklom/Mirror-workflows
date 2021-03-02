@@ -235,14 +235,12 @@ class RPC extends Handler_Protected {
 		//print json_encode(array("message" => "UPDATE_COUNTERS"));
 	}
 
-	function setpanelmode() {
+	function setWidescreen() {
 		$wide = (int) clean($_REQUEST["wide"]);
 
-		// FIXME should this use SESSION_COOKIE_LIFETIME and be renewed periodically?
-		setcookie("ttrss_widescreen", (string)$wide,
-			time() + 86400*365);
+		set_pref(Prefs::WIDESCREEN_MODE, $wide);
 
-		print json_encode(array("wide" => $wide));
+		print json_encode(["wide" => $wide]);
 	}
 
 	static function updaterandomfeed_real() {
@@ -471,7 +469,7 @@ class RPC extends Handler_Protected {
 		$params["max_feed_id"] = (int) $max_feed_id;
 		$params["num_feeds"] = (int) $num_feeds;
 		$params["hotkeys"] = $this->get_hotkeys_map();
-		$params["widescreen"] = (int) ($_COOKIE["ttrss_widescreen"] ?? 0);
+		$params["widescreen"] = (int) get_pref(Prefs::WIDESCREEN_MODE);
 		$params['simple_update'] = Config::get(Config::SIMPLE_UPDATE_MODE);
 		$params["icon_indicator_white"] = $this->image_to_base64("images/indicator_white.gif");
 		$params["labels"] = Labels::get_all($_SESSION["uid"]);

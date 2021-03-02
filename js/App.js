@@ -779,7 +779,7 @@ const App = {
          this.setLoadingProgress(50);
 
          this._widescreen_mode = this.getInitParam("widescreen");
-         this.switchPanelMode(this._widescreen_mode);
+         this.setWidescreen(this._widescreen_mode);
 
          Headlines.initScrollHandler();
 
@@ -867,7 +867,7 @@ const App = {
          }
       }
    },
-   switchPanelMode: function(wide) {
+   setWidescreen: function(wide) {
       const article_id = Article.getActive();
 
       if (wide) {
@@ -908,7 +908,7 @@ const App = {
 
       if (article_id) Article.view(article_id);
 
-      xhr.post("backend.php", {op: "rpc", method: "setpanelmode", wide: wide ? 1 : 0});
+      xhr.post("backend.php", {op: "rpc", method: "setWidescreen", wide: wide ? 1 : 0});
    },
    initHotkeyActions: function() {
       if (this.is_prefs) {
@@ -1168,7 +1168,7 @@ const App = {
                Cookie.set("ttrss_ci_width", 0);
                Cookie.set("ttrss_ci_height", 0);
 
-               this.switchPanelMode(this._widescreen_mode);
+               this.setWidescreen(this._widescreen_mode);
             } else {
                alert(__("Widescreen is not available in combined mode."));
             }
@@ -1258,7 +1258,7 @@ const App = {
                Cookie.set("ttrss_ci_width", 0);
                Cookie.set("ttrss_ci_height", 0);
 
-               this.switchPanelMode(this._widescreen_mode);
+               this.setWidescreen(this._widescreen_mode);
             } else {
                alert(__("Widescreen is not available in combined mode."));
             }

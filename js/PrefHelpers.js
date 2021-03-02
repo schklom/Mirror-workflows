@@ -19,7 +19,7 @@ const	Helpers = {
 				alert("No passwords selected.");
 			} else if (confirm(__("Remove selected app passwords?"))) {
 
-				xhr.post("backend.php", {op: "pref-prefs", method: "deleteAppPassword", ids: rows.toString()}, (reply) => {
+				xhr.post("backend.php", {op: "pref-prefs", method: "deleteAppPasswords", "ids[]": rows}, (reply) => {
 					this.updateContent(reply);
 					Notify.close();
 				});

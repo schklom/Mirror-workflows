@@ -1366,23 +1366,25 @@ class Pref_Prefs extends Handler_Protected {
 					<th align='right'><?= __("Last used") ?></th>
 				</tr>
 				<?php
-				$sth = $this->pdo->prepare("SELECT id, title, created, last_used
-					FROM ttrss_app_passwords WHERE owner_uid = ?");
-				$sth->execute([$_SESSION['uid']]);
 
-				while ($row = $sth->fetch()) { ?>
-					<tr data-row-id='<?= $row['id'] ?>'>
+				$passwords = ORM::for_table('ttrss_app_passwords')
+					->where('owner_uid', $_SESSION['uid'])
+					->order_by_asc('title')
+					->find_many();
+
+				foreach ($passwords as $pass) { ?>
+					<tr data-row-id='<?= $pass['id'] ?>'>
 						<td align='center'>
 							<input onclick='Tables.onRowChecked(this)' dojoType='dijit.form.CheckBox' type='checkbox'>
 						</td>
 						<td>
-							<?= htmlspecialchars($row["title"]) ?>
+							<?= htmlspecialchars($pass["title"]) ?>
 						</td>
 						<td align='right' class='text-muted'>
-							<?= TimeHelper::make_local_datetime($row['created'], false) ?>
+							<?= TimeHelper::make_local_datetime($pass['created'], false) ?>
 						</td>
 						<td align='right' class='text-muted'>
-							<?= TimeHelper::make_local_datetime($row['last_used'], false) ?>
+							<?= TimeHelper::make_local_datetime($pass['last_used'], false) ?>
 						</td>
 					</tr>
 				<?php } ?>
@@ -1391,12 +1393,11 @@ class Pref_Prefs extends Handler_Protected {
 		<?php
 	}
 
-	function deleteAppPassword() {
-		$ids = explode(",", clean($_REQUEST['ids']));
-		$ids_qmarks = arr_qmarks($ids);
-
-		$sth = $this->pdo->prepare("DELETE FROM ttrss_app_passwords WHERE id IN ($ids_qmarks) AND owner_uid = ?");
-		$sth->execute(array_merge($ids, [$_SESSION['uid']]));
+	function deleteAppPasswords() {
+		$passwords = ORM::for_table('ttrss_app_passwords')
+			->where('owner_uid', $_SESSION['uid'])
+			->where_in('id', $_REQUEST['ids'] ?? [])
+			->delete_many();
 
 		$this->appPasswordList();
 	}
@@ -1409,12 +1410,15 @@ class Pref_Prefs extends Handler_Protected {
 
 		print_warning(T_sprintf("Generated password <strong>%s</strong> for %s. Please remember it for future reference.", $new_password, $title));
 
-		$sth = $this->pdo->prepare("INSERT INTO ttrss_app_passwords
-    			(title, pwd_hash, service, created, owner_uid)
-    		 VALUES
-    		    (?, ?, ?, NOW(), ?)");
+		$password = ORM::for_table('ttrss_app_passwords')->create();
 
-		$sth->execute([$title, "$new_password_hash:$new_salt", Auth_Base::AUTH_SERVICE_API, $_SESSION['uid']]);
+		$password->title = $title;
+		$password->owner_uid = $_SESSION['uid'];
+		$password->pwd_hash = "$new_password_hash:$new_salt";
+		$password->service = Auth_Base::AUTH_SERVICE_API;
+		$password->created = Db::NOW();
+
+		$password->save();
 
 		$this->appPasswordList();
 	}

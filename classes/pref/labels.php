@@ -8,14 +8,12 @@ class Pref_Labels extends Handler_Protected {
 	}
 
 	function edit() {
-		$label_id = clean($_REQUEST['id']);
+		$label = ORM::for_table('ttrss_labels2')
+			->where('owner_uid', $_SESSION['uid'])
+			->find_one($_REQUEST['id']);
 
-		$sth = $this->pdo->prepare("SELECT id, caption, fg_color, bg_color FROM ttrss_labels2 WHERE
-			id = ? AND owner_uid = ?");
-		$sth->execute([$label_id, $_SESSION['uid']]);
-
-		if ($line = $sth->fetch(PDO::FETCH_ASSOC)) {
-			print json_encode($line);
+		if ($label) {
+			print json_encode($label->as_array());
 		}
 	}
 

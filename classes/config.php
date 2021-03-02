@@ -314,9 +314,12 @@ class Config {
 
 	static function sanity_check() {
 
-		/* we don't actually need the DB object right now but some checks below might ORM which won't be initialized
-			because it is set up in the Db constructor, which is why it's a good idea to do that as early as possible
-			it is a bit of a hack, maybe ORM should be initialized somewhere else (functions.php?) */
+		/*
+			we don't actually need the DB object right now but some checks below might use ORM which won't be initialized
+			because it is set up in the Db constructor, which is why it's a good idea to invoke it as early as possible
+
+			it is a bit of a hack, maybe ORM should be initialized somewhere else (functions.php?)
+		*/
 
 		$pdo = Db::pdo();
 

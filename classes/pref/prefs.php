@@ -664,6 +664,10 @@ class Pref_Prefs extends Handler_Protected {
 						print \Controls\checkbox_tag($pref_name, $is_checked, "true",
 							["disabled" => $is_disabled], "CB_$pref_name");
 
+						if ($pref_name == Prefs::DIGEST_ENABLE) {
+							print \Controls\button_tag(__('Preview'), '', ['onclick' => 'Helpers.Digest.preview()', 'style' => 'margin-left : 10px']);
+						}
+
 					} else if (in_array($pref_name, ['FRESH_ARTICLE_MAX_AGE',
 							'PURGE_OLD_DAYS', 'LONG_DATE_FORMAT', 'SHORT_DATE_FORMAT'])) {
 
@@ -698,11 +702,10 @@ class Pref_Prefs extends Handler_Protected {
 							"class" => "alt-info",
 							"onclick" => "window.open('https://tt-rss.org/wiki/SSL%20Certificate%20Authentication')"]);
 
-					} else if ($pref_name == 'DIGEST_PREFERRED_TIME') {
+					} else if ($pref_name == Prefs::DIGEST_PREFERRED_TIME) {
 						print "<input dojoType=\"dijit.form.ValidationTextBox\"
 							id=\"$pref_name\" regexp=\"[012]?\d:\d\d\" placeHolder=\"12:00\"
 							name=\"$pref_name\" value=\"$value\">";
-
 						$item['help_text'] .= ". " . T_sprintf("Current server time: %s", date("H:i"));
 					} else {
 						$regexp = ($type_hint == Config::T_INT) ? 'regexp="^\d*$"' : '';
@@ -1406,6 +1409,10 @@ class Pref_Prefs extends Handler_Protected {
 		$password->save();
 
 		$this->appPasswordList();
+	}
+
+	function previewDigest() {
+		print json_encode(Digest::prepare_headlines_digest($_SESSION["uid"], 1, 16));
 	}
 
 	static function _get_ssl_certificate_id() {

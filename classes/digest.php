@@ -78,7 +78,7 @@ class Digest
 		Debug::log("All done.");
 	}
 
-	static function prepare_headlines_digest($user_id, $days = 1, $limit = 1000) {
+	static function prepare_headlines_digest(int $user_id, int $days = 1, int $limit = 1000) {
 
 		$tpl = new Templator();
 		$tpl_t = new Templator();
@@ -87,19 +87,21 @@ class Digest
 		$tpl_t->readTemplateFromFile("digest_template.txt");
 
 		$user_tz_string = get_pref(Prefs::USER_TIMEZONE, $user_id);
+
+		if ($user_tz_string == 'Automatic')
+			$user_tz_string = 'GMT';
+
 		$local_ts = TimeHelper::convert_timestamp(time(), 'UTC', $user_tz_string);
 
 		$tpl->setVariable('CUR_DATE', date('Y/m/d', $local_ts));
 		$tpl->setVariable('CUR_TIME', date('G:i', $local_ts));
-		$tpl->setVariable('TTRSS_HOST', Config::get(Config::get(Config::SELF_URL_PATH)));
+		$tpl->setVariable('TTRSS_HOST', Config::get(Config::SELF_URL_PATH));
 
 		$tpl_t->setVariable('CUR_DATE', date('Y/m/d', $local_ts));
 		$tpl_t->setVariable('CUR_TIME', date('G:i', $local_ts));
-		$tpl_t->setVariable('TTRSS_HOST', Config::get(Config::get(Config::SELF_URL_PATH)));
+		$tpl_t->setVariable('TTRSS_HOST', Config::get(Config::SELF_URL_PATH));
 
 		$affected_ids = array();
-
-		$days = (int) $days;
 
 		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$interval_qpart = "ttrss_entries.date_updated > NOW() - INTERVAL '$days days'";
@@ -131,9 +133,7 @@ class Digest
 				AND score >= 0
 			ORDER BY ttrss_feed_categories.title, ttrss_feeds.title, score DESC, date_updated DESC
 			LIMIT :limit");
-		$sth->bindParam(':user_id', intval($user_id, 10), PDO::PARAM_INT);
-		$sth->bindParam(':limit', intval($limit, 10), PDO::PARAM_INT);
-		$sth->execute();
+		$sth->execute([':user_id' => $user_id, ':limit' => $limit]);
 
 		$headlines_count = 0;
 		$headlines = array();

@@ -53,6 +53,33 @@ const	Helpers = {
 			return false;
 		},
 	},
+	Digest: {
+		preview: function() {
+			const dialog = new fox.SingleUseDialog({
+				title: __("Digest Preview"),
+				content: `
+					<div class='panel panel-scrollable digest-preview'>
+						<div class='text-center'>${__("Loading, please wait...")}</div>
+					</div>
+
+					<footer class='text-center'>
+						${App.FormFields.submit_tag(__('Close this window'))}
+					</footer>
+				`
+			});
+
+			const tmph = dojo.connect(dialog, 'onShow', function () {
+				dojo.disconnect(tmph);
+
+				xhr.json("backend.php", {op: "pref-prefs", method: "previewDigest"}, (reply) => {
+					dialog.domNode.querySelector('.digest-preview').innerHTML = reply[0];
+				});
+			});
+
+			dialog.show();
+
+		}
+	},
 	System: {
 		//
 	},

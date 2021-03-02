@@ -5,26 +5,23 @@ class Article extends Handler_Protected {
 	const ARTICLE_KIND_YOUTUBE = 3;
 
 	function redirect() {
-		$id = (int) clean($_REQUEST['id'] ?? 0);
+		$article = ORM::for_table('ttrss_entries')
+			->table_alias('e')
+			->join('ttrss_user_entries', [ 'ref_id', '=', 'e.id'], 'ue')
+				->where('ue.owner_uid', $_SESSION['uid'])
+				->find_one($_REQUEST['id']);
 
-		$sth = $this->pdo->prepare("SELECT link FROM ttrss_entries, ttrss_user_entries
-						WHERE id = ? AND id = ref_id AND owner_uid = ?
-						LIMIT 1");
-        $sth->execute([$id, $_SESSION['uid']]);
-
-		if ($row = $sth->fetch()) {
-			$article_url = UrlHelper::validate(str_replace("\n", "", $row['link']));
+		if ($article) {
+			$article_url = UrlHelper::validate($article->link);
 
 			if ($article_url) {
 				header("Location: $article_url");
-			} else {
-				header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
-				print "URL of article $id is blank.";
+				return;
 			}
-
-		} else {
-			print_error(__("Article not found."));
 		}
+
+		header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+		print "Article not found or has an empty URL.";
 	}
 
 	static function _create_published_article($title, $url, $content, $labels_str,

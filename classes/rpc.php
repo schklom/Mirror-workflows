@@ -396,7 +396,7 @@ class RPC extends Handler_Protected {
 	function checkforupdates() {
 		$rv = ["changeset" => [], "plugins" => []];
 
-		$version = Config::get_version();
+		$version = Config::get_version(false);
 
 		$git_timestamp = $version["timestamp"] ?? false;
 		$git_commit = $version["commit"] ?? false;

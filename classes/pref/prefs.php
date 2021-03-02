@@ -212,48 +212,45 @@ class Pref_Prefs extends Handler_Protected {
 		}
 	}
 
-	function changeemail() {
+	function changePersonalData() {
 
-		$email = clean($_POST["email"]);
-		$full_name = clean($_POST["full_name"]);
-		$active_uid = $_SESSION["uid"];
+		$user = ORM::for_table('ttrss_users')->find_one($_SESSION['uid']);
+		$new_email = clean($_POST['email']);
 
-		$sth = $this->pdo->prepare("SELECT email, login, full_name FROM ttrss_users WHERE id = ?");
-		$sth->execute([$active_uid]);
+		if ($user) {
+			$user->full_name = clean($_POST['full_name']);
 
-		if ($row = $sth->fetch()) {
-			$old_email = $row["email"];
+			if ($user->email != $new_email)
+				Logger::log(E_USER_NOTICE, "Email address of user ".$user->login." has been changed to ${new_email}.");
 
-			if ($old_email != $email) {
+			if ($user->email && $user->email != $new_email) {
+
 				$mailer = new Mailer();
 
 				$tpl = new Templator();
 
 				$tpl->readTemplateFromFile("mail_change_template.txt");
 
-				$tpl->setVariable('LOGIN', $row["login"]);
-				$tpl->setVariable('NEWMAIL', $email);
+				$tpl->setVariable('LOGIN', $user->login);
+				$tpl->setVariable('NEWMAIL', $new_email);
 				$tpl->setVariable('TTRSS_HOST', Config::get(Config::SELF_URL_PATH));
 
 				$tpl->addBlock('message');
 
 				$tpl->generateOutputToString($message);
 
-				$mailer->mail(["to_name" => $row["login"],
-					"to_address" => $row["email"],
-					"subject" => "[tt-rss] Mail address change notification",
+				$mailer->mail(["to_name" => $user->login,
+					"to_address" => $user->email,
+					"subject" => "[tt-rss] Email address change notification",
 					"message" => $message]);
 
+				$user->email = $new_email;
 			}
+
+			$user->save();
 		}
 
-		$sth = $this->pdo->prepare("UPDATE ttrss_users SET email = ?,
-			full_name = ? WHERE id = ?");
-		$sth->execute([$email, $full_name, $active_uid]);
-
 		print __("Your personal data has been saved.");
-
-		return;
 	}
 
 	function resetconfig() {
@@ -264,21 +261,13 @@ class Pref_Prefs extends Handler_Protected {
 
 	private function index_auth_personal() {
 
-		$sth = $this->pdo->prepare("SELECT email,full_name,otp_enabled,
-			access_level FROM ttrss_users
-			WHERE id = ?");
-		$sth->execute([$_SESSION["uid"]]);
-		$row = $sth->fetch();
-
-		$email = htmlspecialchars($row["email"]);
-		$full_name = htmlspecialchars($row["full_name"]);
-		$otp_enabled = sql_bool_to_bool($row["otp_enabled"]);
+		$user = ORM::for_table('ttrss_users')->find_one($_SESSION['uid']);
 
 		?>
 		<form dojoType='dijit.form.Form'>
 
 			<?= \Controls\hidden_tag("op", "pref-prefs") ?>
-			<?= \Controls\hidden_tag("method", "changeemail") ?>
+			<?= \Controls\hidden_tag("method", "changePersonalData") ?>
 
 			<script type="dojo/method" event="onSubmit" args="evt">
 					evt.preventDefault();
@@ -292,12 +281,12 @@ class Pref_Prefs extends Handler_Protected {
 
 			<fieldset>
 				<label><?= __('Full name:') ?></label>
-				<input dojoType='dijit.form.ValidationTextBox' name='full_name' required='1' value="<?= $full_name ?>">
+				<input dojoType='dijit.form.ValidationTextBox' name='full_name' required='1' value="<?= htmlspecialchars($user->full_name) ?>">
 			</fieldset>
 
 			<fieldset>
 				<label><?= __('E-mail:') ?></label>
-				<input dojoType='dijit.form.ValidationTextBox' name='email' required='1' value="<?= $email ?>">
+				<input dojoType='dijit.form.ValidationTextBox' name='email' required='1' value="<?= htmlspecialchars($user->email) ?>">
 			</fieldset>
 
 			<hr/>

@@ -188,11 +188,11 @@ class API extends Handler {
 
 			if (is_numeric($feed_id)) $feed_id = (int) $feed_id;
 
-			$limit = (int)clean($_REQUEST["limit"] ?? "");
+			$limit = (int)clean($_REQUEST["limit"] ?? 0 );
 
 			if (!$limit || $limit >= 200) $limit = 200;
 
-			$offset = (int)clean($_REQUEST["skip"] ?? "");
+			$offset = (int)clean($_REQUEST["skip"] ?? 0);
 			$filter = clean($_REQUEST["filter"] ?? "");
 			$is_cat = self::_param_to_bool(clean($_REQUEST["is_cat"] ?? false));
 			$show_excerpt = self::_param_to_bool(clean($_REQUEST["show_excerpt"] ?? false));

@@ -660,14 +660,14 @@ class Handler_Public extends Handler {
 
 			<?php
 				@$op = clean($_REQUEST["subop"] ?? "");
-				$updater = new DbUpdater(Db::pdo(), Config::get(Config::DB_TYPE), SCHEMA_VERSION);
+				$updater = new Db_Updater(Db::pdo(), Config::get(Config::DB_TYPE));
 
 				if ($op == "performupdate") {
-					if ($updater->is_update_required()) {
+					if (Db_Updater::is_update_required()) {
 
-						print "<h2>" . T_sprintf("Performing updates to version %d", SCHEMA_VERSION) . "</h2>";
+						print "<h2>" . T_sprintf("Performing updates to version %d", Db_Updater::SCHEMA_VERSION) . "</h2>";
 
-						for ($i = $updater->get_schema_version() + 1; $i <= SCHEMA_VERSION; $i++) {
+						for ($i = Config::get_schema_version(true) + 1; $i <= Db_Updater::SCHEMA_VERSION; $i++) {
 							print "<ul>";
 
 							print "<li class='text-info'>" . T_sprintf("Updating to version %d", $i) . "</li>";
@@ -704,10 +704,10 @@ class Handler_Public extends Handler {
 						print "<a href='index.php'>".__("Return to Tiny Tiny RSS")."</a>";
 					}
 				} else {
-					if ($updater->is_update_required()) {
+					if (Db_Updater::is_update_required()) {
 
 						print "<h2>".T_sprintf("Tiny Tiny RSS database needs update to the latest version (%d to %d).",
-							$updater->get_schema_version(), SCHEMA_VERSION)."</h2>";
+							Config::get_schema_version(true), Db_Updater::SCHEMA_VERSION)."</h2>";
 
 						if (Config::get(Config::DB_TYPE) == "mysql") {
 							print_error("<strong>READ THIS:</strong> Due to MySQL limitations, your database is not completely protected while updating. ".

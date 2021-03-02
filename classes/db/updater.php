@@ -1,22 +1,22 @@
 <?php
-class DbUpdater {
+class Db_Updater {
+	const SCHEMA_VERSION = 142;
 
 	private $pdo;
 	private $db_type;
-	private $need_version;
 
-	function __construct($pdo, $db_type, $need_version) {
+	function __construct($pdo, $db_type) {
 		$this->pdo = $pdo;
 		$this->db_type = $db_type;
-		$this->need_version = (int) $need_version;
 	}
 
-	function get_schema_version() {
+	/** always returns actual (=uncached) value */
+	private static function get_schema_version() {
 		return Config::get_schema_version(true);
 	}
 
-	function is_update_required() {
-		return $this->get_schema_version() < $this->need_version;
+	static function is_update_required() {
+		return self::get_schema_version() < self::SCHEMA_VERSION;
 	}
 
 	function get_schema_lines($version) {
@@ -62,7 +62,7 @@ class DbUpdater {
 					}
 				}
 
-				$db_version = $this->get_schema_version();
+				$db_version = self::get_schema_version();
 
 				if ($db_version == $version) {
 					$this->pdo->commit();

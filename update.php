@@ -146,7 +146,7 @@
 	}
 
 	if (!isset($options['update-schema'])) {
-		if (get_schema_version() != SCHEMA_VERSION) {
+		if (Db_Updater::is_update_required()) {
 			die("Schema version is wrong, please upgrade the database (--update-schema).\n");
 		}
 	}
@@ -374,10 +374,10 @@
 	if (isset($options["update-schema"])) {
 		Debug::log("Checking for updates (" . Config::get(Config::DB_TYPE) . ")...");
 
-		$updater = new DbUpdater(Db::pdo(), Config::get(Config::DB_TYPE), SCHEMA_VERSION);
+		$updater = new Db_Updater(Db::pdo(), Config::get(Config::DB_TYPE));
 
-		if ($updater->is_update_required()) {
-			Debug::log("Schema update required, version " . $updater->get_schema_version() . " to " . SCHEMA_VERSION);
+		if (Db_Updater::is_update_required()) {
+			Debug::log("Schema update required, version " . Config::get_schema_version(true) . " to " . Db_Updater::SCHEMA_VERSION);
 
 			if (Config::get(Config::DB_TYPE) == "mysql")
 				Debug::Log("READ THIS: Due to MySQL limitations, your database is not completely protected while updating.\n".
@@ -394,9 +394,9 @@
 				Debug::log("Proceeding to update without confirmation...");
 			}
 
-			Debug::log("Performing updates to version " . SCHEMA_VERSION . "...");
+			Debug::log("Performing updates to version " . Db_Updater::SCHEMA_VERSION . "...");
 
-			for ($i = $updater->get_schema_version() + 1; $i <= SCHEMA_VERSION; $i++) {
+			for ($i = Config::get_schema_version(true) + 1; $i <= Db_Updater::SCHEMA_VERSION; $i++) {
 				Debug::log("* Updating to version $i...");
 
 				$result = $updater->update_to($i, false);

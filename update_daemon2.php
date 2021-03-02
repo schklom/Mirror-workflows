@@ -189,7 +189,7 @@
 			"Maybe another daemon is already running.\n");
 	}
 
-	if (get_schema_version() != SCHEMA_VERSION) {
+	if (Db_Updater::is_update_required()) {
 		die("Schema version is wrong, please upgrade the database.\n");
 	}
 

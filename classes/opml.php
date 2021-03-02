@@ -151,7 +151,7 @@ class OPML extends Handler_Protected {
 		# export tt-rss settings
 
 		if ($include_settings) {
-			$out .= "<outline text=\"tt-rss-prefs\" schema-version=\"".SCHEMA_VERSION."\">";
+			$out .= "<outline text=\"tt-rss-prefs\" schema-version=\"".Db_Updater::SCHEMA_VERSION."\">";
 
 			$sth = $this->pdo->prepare("SELECT pref_name, value FROM ttrss_user_prefs2 WHERE
 			   profile IS NULL AND owner_uid = ? ORDER BY pref_name");
@@ -166,7 +166,7 @@ class OPML extends Handler_Protected {
 
 			$out .= "</outline>";
 
-			$out .= "<outline text=\"tt-rss-labels\" schema-version=\"".SCHEMA_VERSION."\">";
+			$out .= "<outline text=\"tt-rss-labels\" schema-version=\"".Db_Updater::SCHEMA_VERSION."\">";
 
 			$sth = $this->pdo->prepare("SELECT * FROM ttrss_labels2 WHERE
 				owner_uid = ?");
@@ -183,7 +183,7 @@ class OPML extends Handler_Protected {
 
 			$out .= "</outline>";
 
-			$out .= "<outline text=\"tt-rss-filters\" schema-version=\"".SCHEMA_VERSION."\">";
+			$out .= "<outline text=\"tt-rss-filters\" schema-version=\"".Db_Updater::SCHEMA_VERSION."\">";
 
 			$sth = $this->pdo->prepare("SELECT * FROM ttrss_filters2
 				WHERE owner_uid = ? ORDER BY id");

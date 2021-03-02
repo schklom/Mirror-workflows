@@ -51,7 +51,7 @@
 		UserHelper::load_user_plugins($_SESSION["uid"]);
 	}
 
-	if (Config::get_schema_version() !== SCHEMA_VERSION) {
+	if (Db_Updater::is_update_required()) {
 		print Errors::to_json(Errors::E_SCHEMA_MISMATCH);
 		return;
 	}

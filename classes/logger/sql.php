@@ -3,12 +3,18 @@ class Logger_SQL implements Logger_Adapter {
 
 	private $pdo;
 
+	function __construct() {
+		$conn = get_class($this);
+
+		ORM::configure(Db::get_dsn(), null, $conn);
+		ORM::configure('username', Config::get(Config::DB_USER), $conn);
+		ORM::configure('password', Config::get(Config::DB_PASS), $conn);
+		ORM::configure('return_result_sets', true, $conn);
+	}
+
 	function log_error(int $errno, string $errstr, string $file, int $line, $context) {
 
-		// separate PDO connection object is used for logging
-		if (!$this->pdo) $this->pdo = Db::instance()->pdo_connect();
-
-		if ($this->pdo && get_schema_version() > 117) {
+		if (Config::get_schema_version() > 117) {
 
 			// limit context length, DOMDocument dumps entire XML in here sometimes, which may be huge
 			$context = mb_substr($context, 0, 8192);
@@ -36,7 +42,7 @@ class Logger_SQL implements Logger_Adapter {
 			// this would cause a PDOException on insert below
 			$owner_uid = !empty($_SESSION["uid"]) ? $_SESSION["uid"] : null;
 
-			$entry = ORM::for_table('ttrss_error_log')->create();
+			$entry = ORM::for_table('ttrss_error_log', get_class($this))->create();
 
 			$entry->set([
 				'errno' => $errno,

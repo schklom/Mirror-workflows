@@ -1002,10 +1002,6 @@ class Pref_Prefs extends Handler_Protected {
 		<?php
 	}
 
-	function toggleAdvanced() {
-		$_SESSION["prefs_show_advanced"] = !$_SESSION["prefs_show_advanced"];
-	}
-
 	function _get_otp_qrcode_img() {
 		$secret = UserHelper::get_otp_secret($_SESSION["uid"]);
 		$login = UserHelper::get_login_by_id($_SESSION["uid"]);

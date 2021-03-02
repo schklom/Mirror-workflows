@@ -217,6 +217,7 @@ class Af_RedditImgur extends Plugin {
 
 		$found = false;
 		$post_is_nsfw = false;
+		$num_comments = 0;
 		$apply_nsfw_tags = FeedItem_Common::normalize_categories($this->host->get_array($this, "apply_nsfw_tags", []));
 
 		// embed before reddit <table> post layout
@@ -244,6 +245,8 @@ class Af_RedditImgur extends Plugin {
 
 							$data = $child["data"];
 							$over_18 = $data["over_18"] ?? 0 == 1;
+
+							$num_comments += $data["num_comments"] ?? 0;
 
 							if ($over_18) {
 								Debug::log("JSON: post is NSFW", Debug::$LOG_EXTENDED);
@@ -286,6 +289,8 @@ class Af_RedditImgur extends Plugin {
 		if ($post_is_nsfw && count($apply_nsfw_tags) > 0) {
 			$article["tags"] = array_merge($article["tags"], $apply_nsfw_tags);
 		}
+
+		$article["num_comments"] = $num_comments;
 
 		if ($found) {
 			Debug::log("JSON: found media data, skipping further processing of content", Debug::$LOG_VERBOSE);

@@ -217,7 +217,7 @@
 	}
 
 	// this returns Config::SELF_URL_PATH sans ending slash
-	/** function is @deprecated */
+	/** function is @deprecated by Config::get_self_url() */
 	function get_self_url_prefix() {
 		return Config::get_self_url();
 	}

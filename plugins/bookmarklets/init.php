@@ -146,7 +146,7 @@ class Bookmarklets extends Plugin {
 
 				if ($feed_id) {
 					?>
-					<form method='GET' action="<?= htmlspecialchars(get_self_url_prefix() . "/prefs.php") ?>">
+					<form method='GET' action="<?= htmlspecialchars(Config::get_self_url() . "/prefs.php") ?>">
 						<input type='hidden' name='tab' value='feeds'>
 						<input type='hidden' name='method' value='editfeed'>
 						<input type='hidden' name='methodparam' value="<?= $feed_id ?>">

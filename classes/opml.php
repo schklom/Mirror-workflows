@@ -635,7 +635,7 @@ class OPML extends Handler_Protected {
 	}
 
 	static function get_publish_url(){
-		return get_self_url_prefix() .
+		return Config::get_self_url() .
 			"/public.php?op=publishOpml&key=" .
 			Feeds::_get_access_key('OPML:Publish', false, $_SESSION["uid"]);
 	}

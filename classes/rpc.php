@@ -175,7 +175,7 @@ class RPC extends Handler_Protected {
 		$error_params = [];
 
 		$client_scheme = parse_url($client_location, PHP_URL_SCHEME);
-		$server_scheme = parse_url(get_self_url_prefix(), PHP_URL_SCHEME);
+		$server_scheme = parse_url(Config::get_self_url(), PHP_URL_SCHEME);
 
 		if (get_schema_version() != SCHEMA_VERSION) {
 			$error = Errors::E_SCHEMA_MISMATCH;
@@ -183,7 +183,7 @@ class RPC extends Handler_Protected {
 			$error = Errors::E_URL_SCHEME_MISMATCH;
 			$error_params["client_scheme"] = $client_scheme;
 			$error_params["server_scheme"] = $server_scheme;
-			$error_params["self_url_path"] = get_self_url_prefix();
+			$error_params["self_url_path"] = Config::get_self_url();
 		}
 
 		if ($error == Errors::E_SUCCESS) {
@@ -463,7 +463,7 @@ class RPC extends Handler_Protected {
 		$max_feed_id = $row["mid"];
 		$num_feeds = $row["nf"];
 
-		$params["self_url_prefix"] = get_self_url_prefix();
+		$params["self_url_prefix"] = Config::get_self_url();
 		$params["max_feed_id"] = (int) $max_feed_id;
 		$params["num_feeds"] = (int) $num_feeds;
 		$params["hotkeys"] = $this->get_hotkeys_map();

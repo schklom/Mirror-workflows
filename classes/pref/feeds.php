@@ -1278,7 +1278,7 @@ class Pref_Feeds extends Handler_Protected {
 		$is_cat = clean($_REQUEST['is_cat']) == "true";
 		$search = clean($_REQUEST['search']);
 
-		$link = get_self_url_prefix() . "/public.php?" . http_build_query([
+		$link = Config::get_self_url() . "/public.php?" . http_build_query([
 			'op' => 'rss',
 			'id' => $feed_id,
 			'is_cat' => (int)$is_cat,

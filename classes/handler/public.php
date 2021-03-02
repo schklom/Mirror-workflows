@@ -64,7 +64,7 @@ class Handler_Public extends Handler {
 		$feed_site_url = $qfh_ret[2];
 		/* $last_error = $qfh_ret[3]; */
 
-		$feed_self_url = get_self_url_prefix() .
+		$feed_self_url = Config::get_self_url() .
 			"/public.php?op=rss&id=$feed&key=" .
 			Feeds::_get_access_key($feed, false, $owner_uid);
 
@@ -177,10 +177,8 @@ class Handler_Public extends Handler {
 
 			$feed['title'] = $feed_title;
 			$feed['feed_url'] = $feed_self_url;
-
-			$feed['self_url'] = get_self_url_prefix();
-
-			$feed['articles'] = array();
+			$feed['self_url'] = Config::get_self_url();
+			$feed['articles'] = [];
 
 			while ($line = $result->fetch()) {
 
@@ -403,7 +401,7 @@ class Handler_Public extends Handler {
 			if ($_REQUEST['return'] && mb_strpos($return, Config::get(Config::SELF_URL_PATH)) === 0) {
 				header("Location: " . clean($_REQUEST['return']));
 			} else {
-				header("Location: " . get_self_url_prefix());
+				header("Location: " . Config::get_self_url());
 			}
 		}
 	}
@@ -780,7 +778,7 @@ class Handler_Public extends Handler {
 
 		$timestamp = date("Y-m-d", strtotime($timestamp));
 
-		return "tag:" . parse_url(get_self_url_prefix(), PHP_URL_HOST) . ",$timestamp:/$id";
+		return "tag:" . parse_url(Config::get_self_url(), PHP_URL_HOST) . ",$timestamp:/$id";
 	}
 
 	// this should be used very carefully because this endpoint is exposed to unauthenticated users

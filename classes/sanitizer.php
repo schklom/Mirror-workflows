@@ -64,7 +64,9 @@ class Sanitizer {
 		$doc->loadHTML('<?xml encoding="UTF-8">' . $res);
 		$xpath = new DOMXPath($doc);
 
-		$rewrite_base_url = $site_url ? $site_url : get_self_url_prefix();
+		// is it a good idea to possibly rewrite urls to our own prefix?
+		// $rewrite_base_url = $site_url ? $site_url : Config::get_self_url();
+		$rewrite_base_url = $site_url ? $site_url : "http://domain.invalid/";
 
 		$entries = $xpath->query('(//a[@href]|//img[@src]|//source[@srcset|@src])');
 

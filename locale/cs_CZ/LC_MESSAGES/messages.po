@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: TT-RSS CZech\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-26 13:06+0300\n"
-"PO-Revision-Date: 2020-07-31 16:23+0000\n"
+"PO-Revision-Date: 2021-03-03 16:30+0000\n"
 "Last-Translator: Marek Pavelka <mara.pavelka@gmail.com>\n"
 "Language-Team: Czech <https://weblate.tt-rss.org/projects/tt-rss/messages/cs/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.0.4\n"
+"X-Generator: Weblate 4.5\n"
 
 #: backend.php:55
 msgid "Use default"
@@ -295,14 +295,12 @@ msgid "Open previous article (in combined mode, scroll up)"
 msgstr "Otevřít předchozí článek (v kombinovaném režimu, posouvat nahoru)"
 
 #: classes/rpc.php:549
-#, fuzzy
 msgid "Scroll headlines by one page down"
-msgstr "Posunout článek o stránku dolů"
+msgstr "Posunout nadpisy o stránku dolů"
 
 #: classes/rpc.php:550
-#, fuzzy
 msgid "Scroll headlines by one page up"
-msgstr "Posunout článek o stránku nahoru"
+msgstr "Posunout nadpisy o stránku nahoru"
 
 #: classes/rpc.php:551
 msgid "Open next article"
@@ -313,24 +311,20 @@ msgid "Open previous article"
 msgstr "Otevřít předchozí článek"
 
 #: classes/rpc.php:553
-#, fuzzy
 msgid "Move to next article (don't expand)"
-msgstr "Přejít na další článek (nerozbalovat ani neoznačovat jako přečtené)"
+msgstr "Přejít na další článek (nerozbalovat)"
 
 #: classes/rpc.php:554
-#, fuzzy
 msgid "Move to previous article (don't expand)"
-msgstr ""
-"Přejít na předchozí článek (nerozbalovat ani neoznačovat jako přečtené)"
+msgstr "Přejít na předchozí článek (nerozbalovat)"
 
 #: classes/rpc.php:555
 msgid "Show search dialog"
 msgstr "Zobrazit dialogové okno hledání"
 
 #: classes/rpc.php:556
-#, fuzzy
 msgid "Cancel active search"
-msgstr "Zrušit hledání"
+msgstr "Zrušit aktivní hledání"
 
 #: classes/rpc.php:557
 msgid "Article"
@@ -662,7 +656,7 @@ msgstr "Rozšířené"
 
 #: classes/pref/prefs.php:69
 msgid "Debugging"
-msgstr ""
+msgstr "Ladění"
 
 #: classes/pref/prefs.php:75
 msgid "Never apply these tags automatically (comma-separated list)."
@@ -832,22 +826,19 @@ msgstr "Motiv"
 
 #: classes/pref/prefs.php:106
 msgid "Don't enforce DISTINCT headlines"
-msgstr ""
+msgstr "Nevynucovat JEDINEČNÉ nadpisy"
 
 #: classes/pref/prefs.php:106
-#, fuzzy
 msgid "May produce duplicate entries"
-msgstr "Povolit duplicitní články"
+msgstr "Může vytvářet duplicitní položky"
 
 #: classes/pref/prefs.php:107
-#, fuzzy
 msgid "Show article and feed IDs"
-msgstr "Zobrazit články"
+msgstr "Zobrazit identifikátory článků a kanálů"
 
 #: classes/pref/prefs.php:107
-#, fuzzy
 msgid "In the headlines buffer"
-msgstr "Seřadit nadpisy podle data kanálu"
+msgstr "Ve vyrovnávací paměti nadpisů"
 
 #: classes/pref/prefs.php:208
 msgid "The configuration was saved."
@@ -949,9 +940,8 @@ msgid "App passwords"
 msgstr "Hesla aplikace"
 
 #: classes/pref/prefs.php:545
-#, fuzzy
 msgid "Authenticator (OTP)"
-msgstr "Ověření"
+msgstr "Ověřovací aplikace (Jednorázové heslo)"
 
 #: classes/pref/prefs.php:556
 msgid "Some preferences are only available in default profile."
@@ -1094,34 +1084,32 @@ msgstr "Obnovit"
 
 #: classes/pref/system.php:73
 msgid "&lt;&lt;"
-msgstr ""
+msgstr "&lt;&lt;"
 
 #: classes/pref/system.php:77
 #, php-format
 msgid "Page %d of %d"
-msgstr ""
+msgstr "Stránka %d z %d"
 
 #: classes/pref/system.php:82
 msgid "&gt;&gt;"
-msgstr ""
+msgstr "&gt;&gt;"
 
 #: classes/pref/system.php:91
 msgid "Severity:"
-msgstr ""
+msgstr "Závažnost:"
 
 #: classes/pref/system.php:95
-#, fuzzy
 msgid "Errors"
-msgstr "Chyba"
+msgstr "Chyby"
 
 #: classes/pref/system.php:96
 msgid "Warnings"
-msgstr ""
+msgstr "Upozornění"
 
 #: classes/pref/system.php:97
-#, fuzzy
 msgid "Everything"
-msgstr "Zrušit výběr všeho"
+msgstr "Vše"
 
 #: classes/pref/system.php:107
 msgid "Error"
@@ -1268,34 +1256,33 @@ msgstr[1] "(%d kanály)"
 msgstr[2] "(%d kanálů)"
 
 #: classes/pref/feeds.php:537
-#, fuzzy, php-format
+#, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
-msgstr[0] "(%d kanál)"
-msgstr[1] "(%d kanály)"
-msgstr[2] "(%d kanálů)"
+msgstr[0] "(%d den)"
+msgstr[1] "(%d dny)"
+msgstr[2] "(%d dní)"
 
 #: classes/pref/feeds.php:539 classes/pref/feeds.php:587
-#, fuzzy
 msgid "Disabled"
-msgstr "Zakázat jednorázové heslo"
+msgstr "Zakázáno"
 
 #: classes/pref/feeds.php:543
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d den"
+msgstr[1] "%d dny"
+msgstr[2] "%d dní"
 
 #: classes/pref/feeds.php:569
 msgid "Check to enable field"
 msgstr "Zaškrtněte pro povolení pole"
 
 #: classes/pref/feeds.php:585
-#, fuzzy, php-format
+#, php-format
 msgid "(%d days)"
-msgstr "(%d kanál)"
+msgstr "(%d dní)"
 
 #: classes/pref/feeds.php:590 js/CommonDialogs.js:456
 msgid "Include in e-mail digest"
@@ -1322,9 +1309,8 @@ msgid "Language:"
 msgstr "Jazyk:"
 
 #: classes/pref/feeds.php:628 js/CommonDialogs.js:522
-#, fuzzy
 msgid "Update interval:"
-msgstr "Výchozí interval aktualizace"
+msgstr "Interval aktualizace:"
 
 #: classes/pref/feeds.php:635 js/CommonDialogs.js:526
 msgid "Article purging:"
@@ -1453,18 +1439,16 @@ msgid "Clear all generated URLs"
 msgstr "Vymazat všechny vygenerované URL"
 
 #: classes/pref/feeds.php:1075
-#, fuzzy
 msgid "My feeds"
-msgstr "Více kanálů"
+msgstr "Mé kanály"
 
 #: classes/pref/feeds.php:1080
 msgid "OPML"
 msgstr "OPML"
 
 #: classes/pref/feeds.php:1085
-#, fuzzy
 msgid "Sharing"
-msgstr "Sdílet"
+msgstr "Sdílení"
 
 #: classes/userhelper.php:197
 #, php-format
@@ -1664,9 +1648,8 @@ msgid "Show related articles"
 msgstr "Zobrazit související články"
 
 #: plugins/af_psql_trgm/init.php:134
-#, fuzzy
 msgid "Mark similar articles as read (af_psql_trgm)"
-msgstr "Označit podobné články jako přečtené"
+msgstr "Označit podobné články jako přečtené (af_psql_trgm)"
 
 #: plugins/af_psql_trgm/init.php:164
 msgid "Minimum similarity:"
@@ -1687,18 +1670,16 @@ msgid "Minimum title length:"
 msgstr "Minimální délka názvu:"
 
 #: plugins/af_psql_trgm/init.php:187
-#, fuzzy
 msgid "Enable for all feeds."
-msgstr "Povolit pro všechny kanály:"
+msgstr "Povolit pro všechny kanály."
 
 #: plugins/af_psql_trgm/init.php:206 plugins/af_readability/init.php:106
 msgid "Currently enabled for (click to edit):"
 msgstr "Aktuálně povoleno pro (klikněte pro úpravu):"
 
 #: plugins/af_psql_trgm/init.php:226
-#, fuzzy
 msgid "Similarity (af_psql_trgm)"
-msgstr "Podobnost (pg_trgm)"
+msgstr "Podobnost (af_psql_trgm)"
 
 #: plugins/af_psql_trgm/init.php:232
 msgid "Mark similar articles as read"
@@ -1756,7 +1737,6 @@ msgid "Subject:"
 msgstr "Předmět:"
 
 #: plugins/mail/init.php:185
-#, fuzzy
 msgid "Send email"
 msgstr "Odeslat e-mail"
 
@@ -1769,9 +1749,8 @@ msgid "Inline content"
 msgstr "Vložený obsah"
 
 #: plugins/af_readability/init.php:43
-#, fuzzy
 msgid "Append content"
-msgstr "Vložený obsah"
+msgstr "Připojit obsah"
 
 #: plugins/af_readability/init.php:52
 msgid "Toggle full article text"
@@ -1789,7 +1768,7 @@ msgstr ""
 
 #: plugins/af_readability/init.php:113
 msgid "(append)"
-msgstr ""
+msgstr "(připojit)"
 
 #: plugins/af_readability/init.php:128
 msgid "Readability"
@@ -1801,7 +1780,7 @@ msgstr "Vložený obsah článku"
 
 #: plugins/af_readability/init.php:139
 msgid "Append to summary, instead of replacing it"
-msgstr ""
+msgstr "Připojit k souhrnu namísto jeho nahrazení"
 
 #: plugins/bookmarklets/init.php:88 js/CommonDialogs.js:93
 msgid "Subscribe"
@@ -1921,23 +1900,20 @@ msgid "NSFW Plugin"
 msgstr "Modul Neotvírat v práci"
 
 #: plugins/nsfw/init.php:65
-#, fuzzy
 msgid "Tags to consider NSFW (comma-separated):"
-msgstr "Značky považované za Neotvírat v práci (oddělené čárkami)"
+msgstr "Značky považované za Neotvírat v práci (oddělené čárkami):"
 
 #: plugins/nsfw/init.php:87
 msgid "Configuration saved."
 msgstr "Konfigurace uložena."
 
 #: plugins/mailto/init.php:19 plugins/mailto/init.php:29
-#, fuzzy
 msgid "Forward by email (mailto:)"
-msgstr "Přeposlat e-mailem"
+msgstr "Přeposlat e-mailem (mailto:)"
 
 #: plugins/mailto/init.php:79
-#, fuzzy
 msgid "Click to open your mail client"
-msgstr "Klikněte na následující odkaz pro spuštění poštovního klienta:"
+msgstr "Klikněte pro spuštění poštovního klienta"
 
 #: plugins/mailto/init.php:85
 msgid "Close this dialog"
@@ -1959,16 +1935,15 @@ msgstr "Povolit dodatečnou kontrolu duplicit"
 #: plugins/af_redditimgur/init.php:73
 #, php-format
 msgid "Rewrite Reddit URLs to %s"
-msgstr ""
+msgstr "Přepsat adresy URL Redditu na %s"
 
 #: plugins/toggle_sidebar/init.php:27
 msgid "Toggle sidebar"
 msgstr "Přepnout postranní panel"
 
 #: plugins/share/init.php:42
-#, fuzzy
 msgid "Article unshared"
-msgstr "Články sdílené pomocí URL"
+msgstr "Články nejsou sdíleny"
 
 #: plugins/share/init.php:50
 msgid "You can disable all articles shared by unique URLs here."
@@ -2016,11 +1991,11 @@ msgstr "Nezobrazuje obrázky v článcích, snižuje automatická obnovení."
 
 #: include/login_form.php:156 js/Feeds.js:275
 msgid "Safe mode"
-msgstr ""
+msgstr "Bezpečný režim"
 
 #: include/login_form.php:161
 msgid "Uses default theme and prevents all plugins from loading."
-msgstr ""
+msgstr "Používá výchozí motiv a brání všem modulům v načtení."
 
 #: include/login_form.php:169
 msgid "Remember me"
@@ -2144,23 +2119,17 @@ msgid "Keyboard shortcuts"
 msgstr "Klávesové zkratky"
 
 #: js/App.js:462
-#, fuzzy
 msgid "Update daemon is not running."
-msgstr ""
-"<span onclick=\"App.explainError(3)\">Démon aktualizací neaktualizuje kanály."
-"</span>"
+msgstr "Démon aktualizací není spuštěný."
 
 #: js/App.js:475
-#, fuzzy
 msgid "Update daemon is not updating feeds."
-msgstr ""
-"<span onclick=\"App.explainError(3)\">Démon aktualizací neaktualizuje kanály."
-"</span>"
+msgstr "Démon aktualizací neaktualizuje kanály."
 
 #: js/App.js:559
-#, fuzzy, javascript-format
+#, javascript-format
 msgid "Fatal error: %s"
-msgstr "Závažná chyba"
+msgstr "Závažná chyba: %s"
 
 #: js/App.js:560
 msgid "Fatal error"
@@ -2298,6 +2267,8 @@ msgid ""
 "Provided URL is a HTML page referencing multiple feeds, please select "
 "required feed from the dropdown menu below."
 msgstr ""
+"Zadaná adresa URL je stránka HTML odkazující na více kanálů, vyberte "
+"požadovaný kanál z níže uvedené rozevírací nabídky."
 
 #: js/CommonDialogs.js:122
 msgid ""
@@ -2356,9 +2327,8 @@ msgid "Edit Feed"
 msgstr "Upravit kanál"
 
 #: js/CommonDialogs.js:349
-#, fuzzy
 msgid "Please select an image file."
-msgstr "Vyberte soubor obrázku k nahrání."
+msgstr "Vyberte soubor obrázku."
 
 #: js/CommonDialogs.js:369
 msgid "Upload failed: icon is too big."
@@ -2385,9 +2355,8 @@ msgid "Feed icon removed."
 msgstr "Ikona kanálu odebrána."
 
 #: js/CommonDialogs.js:568
-#, fuzzy
 msgid "Upload new icon..."
-msgstr "Nahrát novou ikonu pro tento kanál?"
+msgstr "Nahrát novou ikonu…"
 
 #: js/CommonDialogs.js:597
 msgid "Show as feed"
@@ -2662,9 +2631,8 @@ msgid "Article URL:"
 msgstr "URL článku:"
 
 #: js/Article.js:122
-#, fuzzy
 msgid "No URL could be displayed for this article."
-msgstr "Odebrat sdílení pro tento článek?"
+msgstr "Pro tento článek nemůže být zobrazena žádná adresa URL."
 
 #: js/Article.js:144
 msgid "no tags"
@@ -2776,14 +2744,12 @@ msgid "Inverse regular expression matching"
 msgstr "Inverzní porovnání regulárního výrazu"
 
 #: js/CommonFilters.js:218
-#, fuzzy
 msgid "on"
-msgstr "Žádný"
+msgstr "zapnuto"
 
 #: js/CommonFilters.js:230
-#, fuzzy
 msgid "More info"
-msgstr "více informací"
+msgstr "Více informací"
 
 #: js/CommonFilters.js:232
 msgid "Save rule"
@@ -2842,9 +2808,8 @@ msgid "Unable to fetch full text for this article"
 msgstr "Nelze načíst úplný text pro tento článek"
 
 #: plugins/mailto/init.js:17
-#, fuzzy
 msgid "Forward article by email (mailto:)"
-msgstr "Přeposlat článek e-mailem"
+msgstr "Přeposlat článek e-mailem (mailto:)"
 
 #: plugins/shorten_expanded/init.js:41
 msgid "Click to expand article"
@@ -2879,6 +2844,8 @@ msgid ""
 "Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. "
 "You will need to log out and back in to disable it."
 msgstr ""
+"Tiny Tiny RSS běží v nouzovém režimu. Všechny motivy a moduly jsou zakázány. "
+"Pro jeho vypnutí se budete muset odhlásit a znovu přihlásit."
 
 #: js/Feeds.js:604
 msgid "Used for word stemming"
@@ -2886,7 +2853,7 @@ msgstr "Použito pro rozklad slov"
 
 #: js/App.js:597
 msgid "Additional information"
-msgstr ""
+msgstr "Dodatečné informace"
 
 #: js/PrefFeedTree.js:369
 msgid "Rename category to:"
@@ -2930,7 +2897,7 @@ msgstr "Nastavit hodnocení"
 
 #: js/Headlines.js:635
 msgid "Delete permanently"
-msgstr ""
+msgstr "Trvale odstranit"
 
 #: js/Headlines.js:809
 msgid ""

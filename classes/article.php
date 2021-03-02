@@ -417,42 +417,39 @@ class Article extends Handler_Protected {
 	}
 
 	function getmetadatabyid() {
-		$id = clean($_REQUEST['id']);
+		$article = ORM::for_table('ttrss_entries')
+			->join('ttrss_user_entries', ['ref_id', '=', 'id'], 'ue')
+			->where('ue.owner_uid', $_SESSION['uid'])
+			->find_one((int)$_REQUEST['id']);
 
-		$sth = $this->pdo->prepare("SELECT link, title FROM ttrss_entries, ttrss_user_entries
-			WHERE ref_id = ? AND ref_id = id AND owner_uid = ?");
-		$sth->execute([$id, $_SESSION['uid']]);
-
-		if ($row = $sth->fetch()) {
-			$link = $row['link'];
-			$title = $row['title'];
-
-			echo json_encode(["link" => $link, "title" => $title]);
+		if ($article) {
+			echo json_encode(["link" => $article->link, "title" => $article->title]);
+		} else {
+			echo json_encode([]);
 		}
 	}
 
 	static function _get_enclosures($id) {
+		$encs = ORM::for_table('ttrss_enclosures')
+			->where('post_id', $id)
+			->find_many();
 
-		$pdo = Db::pdo();
-
-		$sth = $pdo->prepare("SELECT * FROM ttrss_enclosures
-			WHERE post_id = ? AND content_url != ''");
-		$sth->execute([$id]);
-
-		$rv = array();
+		$rv = [];
 
 		$cache = new DiskCache("images");
 
-		while ($line = $sth->fetch(PDO::FETCH_ASSOC)) {
+		foreach ($encs as $enc) {
+			$cache_key = sha1($enc->content_url);
 
-			if ($cache->exists(sha1($line["content_url"]))) {
-				$line["content_url"] = $cache->get_url(sha1($line["content_url"]));
+			if ($cache->exists($cache_key)) {
+				$enc->content_url = $cache->get_url($cache_key);
 			}
 
-			array_push($rv, $line);
+			array_push($rv, $enc->as_array());
 		}
 
 		return $rv;
+
 	}
 
 	static function _purge_orphans() {
@@ -629,17 +626,16 @@ class Article extends Handler_Protected {
 		if (count($article_ids) == 0)
 			return [];
 
-		$id_qmarks = arr_qmarks($article_ids);
-
-		$sth = Db::pdo()->prepare("SELECT DISTINCT label_cache FROM ttrss_entries e, ttrss_user_entries ue
-					WHERE ue.ref_id = e.id AND id IN ($id_qmarks)");
-
-		$sth->execute($article_ids);
+		$entries = ORM::for_table('ttrss_entries')
+			->table_alias('e')
+			->join('ttrss_user_entries', ['ref_id', '=', 'id'], 'ue')
+			->where_in('id', $article_ids)
+			->find_many();
 
 		$rv = [];
 
-		while ($row = $sth->fetch()) {
-			$labels = json_decode($row["label_cache"]);
+		foreach ($entries as $entry) {
+			$labels = json_decode($entry->label_cache);
 
 			if (isset($labels) && is_array($labels)) {
 				foreach ($labels as $label) {
@@ -656,19 +652,18 @@ class Article extends Handler_Protected {
 		if (count($article_ids) == 0)
 			return [];
 
-		$id_qmarks = arr_qmarks($article_ids);
-
-		$sth = Db::pdo()->prepare("SELECT DISTINCT feed_id FROM ttrss_entries e, ttrss_user_entries ue
-					WHERE ue.ref_id = e.id AND id IN ($id_qmarks)");
-
-		$sth->execute($article_ids);
+		$entries = ORM::for_table('ttrss_entries')
+			->table_alias('e')
+			->join('ttrss_user_entries', ['ref_id', '=', 'id'], 'ue')
+			->where_in('id', $article_ids)
+			->find_many();
 
 		$rv = [];
 
-		while ($row = $sth->fetch()) {
-			array_push($rv, $row["feed_id"]);
+		foreach ($entries as $entry) {
+			array_push($rv, $entry->feed_id);
 		}
 
-		return $rv;
+		return array_unique($rv);
 	}
 }

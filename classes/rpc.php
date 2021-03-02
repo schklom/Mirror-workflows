@@ -152,7 +152,9 @@ class RPC extends Handler_Protected {
 		if (count($ids) > 0)
 			$this->markArticlesById($ids, $cmode);
 
-		print json_encode(["message" => "UPDATE_COUNTERS", "feeds" => Article::_feeds_of($ids)]);
+		print json_encode(["message" => "UPDATE_COUNTERS",
+		"labels" => Article::_labels_of($ids),
+			"feeds" => Article::_feeds_of($ids)]);
 	}
 
 	function publishSelected() {
@@ -162,7 +164,9 @@ class RPC extends Handler_Protected {
 		if (count($ids) > 0)
 			$this->publishArticlesById($ids, $cmode);
 
-		print json_encode(["message" => "UPDATE_COUNTERS", "feeds" => Article::_feeds_of($ids)]);
+		print json_encode(["message" => "UPDATE_COUNTERS",
+			"labels" => Article::_labels_of($ids),
+			"feeds" => Article::_feeds_of($ids)]);
 	}
 
 	function sanityCheck() {

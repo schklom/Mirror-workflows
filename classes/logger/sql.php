@@ -36,12 +36,19 @@ class Logger_SQL implements Logger_Adapter {
 			// this would cause a PDOException on insert below
 			$owner_uid = !empty($_SESSION["uid"]) ? $_SESSION["uid"] : null;
 
-			$sth = $this->pdo->prepare("INSERT INTO ttrss_error_log
-				(errno, errstr, filename, lineno, context, owner_uid, created_at) VALUES
-				(?, ?, ?, ?, ?, ?, NOW())");
-			$sth->execute([$errno, $errstr, $file, (int)$line, $context, $owner_uid]);
+			$entry = ORM::for_table('ttrss_error_log')->create();
 
-			return $sth->rowCount();
+			$entry->set([
+				'errno' => $errno,
+				'errstr' => $errstr,
+				'filename' => $file,
+				'lineno' => (int)$line,
+				'context' => $context,
+				'owner_uid' => $owner_uid,
+				'created_at' => Db::NOW(),
+			]);
+
+			return $entry->save();
 		}
 
 		return false;

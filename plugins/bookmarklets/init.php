@@ -154,7 +154,7 @@ class Bookmarklets extends Plugin {
 						<a href='index.php'><?= __("Return to Tiny Tiny RSS") ?></a>
 					</form>
 					<?php
-				} else {
+				} else if (!$feed_urls) {
 					?>
 					<a href='index.php'><?= __("Return to Tiny Tiny RSS") ?></a>
 					<?php

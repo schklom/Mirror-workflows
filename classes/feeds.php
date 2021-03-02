@@ -986,17 +986,18 @@ class Feeds extends Handler_Protected {
 	 *                     to get all possible feeds.
 	 *                 5 - Couldn't download the URL content.
 	 *                 6 - Content is an invalid XML.
+	 *                 7 - Error while creating feed database entry.
 	 */
 	static function _subscribe($url, $cat_id = 0,
-							   $auth_login = '', $auth_pass = '') {
+							   $auth_login = '', $auth_pass = '') : array {
 
 		$pdo = Db::pdo();
 
 		$url = UrlHelper::validate($url);
 
-		if (!$url) return array("code" => 2);
+		if (!$url) return ["code" => 2];
 
-		$contents = @UrlHelper::fetch($url, false, $auth_login, $auth_pass);
+		$contents = UrlHelper::fetch($url, false, $auth_login, $auth_pass);
 
 		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_SUBSCRIBE_FEED,
 			function ($result) use (&$contents) {
@@ -1024,35 +1025,33 @@ class Feeds extends Handler_Protected {
 			$url = key($feedUrls);
 		}
 
-		if (!$cat_id) $cat_id = null;
+		$feed = ORM::for_table('ttrss_feeds')
+			->where('feed_url', $url)
+			->where('owner_uid', $_SESSION['uid'])
+			->find_one();
 
-		$sth = $pdo->prepare("SELECT id FROM ttrss_feeds
-			WHERE feed_url = ? AND owner_uid = ?");
-		$sth->execute([$url, $_SESSION['uid']]);
-
-		if ($row = $sth->fetch()) {
-			return array("code" => 0, "feed_id" => (int) $row["id"]);
+		if ($feed) {
+			return ["code" => 0, "feed_id" => $feed->id];
 		} else {
-			$sth = $pdo->prepare(
-				"INSERT INTO ttrss_feeds
-					(owner_uid,feed_url,title,cat_id, auth_login,auth_pass,update_method,auth_pass_encrypted)
-				VALUES (?, ?, ?, ?, ?, ?, 0, false)");
+			$feed = ORM::for_table('ttrss_feeds')->create();
 
-			$sth->execute([$_SESSION['uid'], $url, "[Unknown]", $cat_id, (string)$auth_login, (string)$auth_pass]);
+			$feed->set([
+				'owner_uid' => $_SESSION['uid'],
+				'feed_url' => $url,
+				'title' => "[Unknown]",
+				'cat_id' => $cat_id ? $cat_id : null,
+				'auth_login' => (string)$auth_login,
+				'auth_pass' => (string)$auth_pass,
+				'update_method' => 0,
+				'auth_pass_encrypted' => false,
+			]);
 
-			$sth = $pdo->prepare("SELECT id FROM ttrss_feeds WHERE feed_url = ?
-					AND owner_uid = ?");
-			$sth->execute([$url, $_SESSION['uid']]);
-			$row = $sth->fetch();
-
-			$feed_id = $row["id"];
-
-			if ($feed_id) {
-				RSSUtils::set_basic_feed_info($feed_id);
+			if ($feed->save()) {
+				RSSUtils::set_basic_feed_info($feed->id);
+				return ["code" => 1, "feed_id" => (int) $feed->id];
 			}
 
-			return array("code" => 1, "feed_id" => (int) $feed_id);
-
+			return ["code" => 7];
 		}
 	}
 

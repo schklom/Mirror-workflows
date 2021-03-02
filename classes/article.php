@@ -9,7 +9,7 @@ class Article extends Handler_Protected {
 			->table_alias('e')
 			->join('ttrss_user_entries', [ 'ref_id', '=', 'e.id'], 'ue')
 				->where('ue.owner_uid', $_SESSION['uid'])
-				->find_one($_REQUEST['id']);
+				->find_one((int)$_REQUEST['id']);
 
 		if ($article) {
 			$article_url = UrlHelper::validate($article->link);

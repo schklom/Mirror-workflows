@@ -154,7 +154,10 @@ String.prototype.stripTags = function() {
 
 /* exported xhr */
 const xhr = {
+	_ts: 0,
 	post: function(url, params = {}, complete = undefined, failed = undefined) {
+		this._ts = new Date().getTime();
+
 		console.log('xhr.post', '>>>', params);
 
 		return new Promise((resolve, reject) => {
@@ -171,7 +174,7 @@ const xhr = {
 					reject(error);
 				},
 				load: function(data, ioargs) {
-					console.log('xhr.post', '<<<', ioargs.xhr);
+					console.log('xhr.post', '<<<', ioargs.xhr, (new Date().getTime() - xhr._ts) + " ms");
 
 					if (complete != undefined)
 						complete(data, ioargs.xhr);
@@ -197,7 +200,7 @@ const xhr = {
 					reject(e);
 				}
 
-				console.log('xhr.json', '<<<', obj);
+				console.log('xhr.json', '<<<', obj, (new Date().getTime() - xhr._ts) + " ms");
 
 				if (obj && typeof App != "undefined")
 					if (!App.handleRpcJson(obj)) {

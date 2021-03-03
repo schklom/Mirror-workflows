@@ -796,6 +796,7 @@ class Pref_Prefs extends Handler_Protected {
 
 		foreach ($tmppluginhost->get_plugins() as $name => $plugin) {
 			$about = $plugin->about();
+			$is_local = $tmppluginhost->is_local($plugin);
 			$version = htmlspecialchars($this->_get_plugin_version($plugin));
 
 			if ($about[3] ?? false) {
@@ -822,6 +823,14 @@ class Pref_Prefs extends Handler_Protected {
 								<i class='material-icons'>open_in_new</i> <?= __("More info...") ?></button>
 					<?php } ?>
 
+					<?php if ($_SESSION["access_level"] >= 10 && $is_local) { ?>
+						<button dojoType='dijit.form.Button'
+								onclick='Helpers.Plugins.uninstall("<?= htmlspecialchars($name) ?>")'>
+							<?= \Controls\icon("delete") ?>
+							<?= __("Uninstall") ?>
+						</button>
+					<?php } ?>
+
 					<?php if ($version) { ?>
 						<div dojoType='dijit.Tooltip' connectId='PLABEL-<?= htmlspecialchars($name) ?>' position='after'>
 							<?= $version ?>
@@ -842,6 +851,7 @@ class Pref_Prefs extends Handler_Protected {
 
 		foreach ($tmppluginhost->get_plugins() as $name => $plugin) {
 			$about = $plugin->about();
+			$is_local = $tmppluginhost->is_local($plugin);
 			$version = htmlspecialchars($this->_get_plugin_version($plugin));
 
 			if (empty($about[3]) || $about[3] == false) {
@@ -887,6 +897,14 @@ class Pref_Prefs extends Handler_Protected {
 						<button dojoType='dijit.form.Button' class='alt-info'
 								onclick='window.open("<?= htmlspecialchars($about[4]) ?>")'>
 									<i class='material-icons'>open_in_new</i> <?= __("More info...") ?></button>
+					<?php } ?>
+
+					<?php if ($_SESSION["access_level"] >= 10 && $is_local) { ?>
+						<button dojoType='dijit.form.Button'
+								onclick='Helpers.Plugins.uninstall("<?= htmlspecialchars($name) ?>")'>
+							<?= \Controls\icon("delete") ?>
+							<?= __("Uninstall") ?>
+						</button>
 					<?php } ?>
 
 					<?php if ($version) { ?>
@@ -1235,9 +1253,24 @@ class Pref_Prefs extends Handler_Protected {
 		}
 	}
 
+	function uninstallPlugin() {
+		if ($_SESSION["access_level"] >= 10) {
+			$plugin_name = basename(clean($_REQUEST['plugin']));
+			$status = 0;
+
+			$plugin_dir = dirname(dirname(__DIR__)) . "/plugins.local/$plugin_name";
+
+			if (is_dir($plugin_dir)) {
+				$status = $this->_recursive_rmdir($plugin_dir);
+			}
+
+			print json_encode(['status' => $status]);
+		}
+	}
+
 	function installPlugin() {
 		if ($_SESSION["access_level"] >= 10 && Config::get(Config::ENABLE_PLUGIN_INSTALLER)) {
-			$plugin_name = clean($_REQUEST['plugin']);
+			$plugin_name = basename(clean($_REQUEST['plugin']));
 			$all_plugins = $this->_get_available_plugins();
 			$plugin_dir = dirname(dirname(__DIR__)) . "/plugins.local";
 

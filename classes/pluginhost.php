@@ -623,4 +623,10 @@ class PluginHost {
 			user_error("get_public_method_url: requested method '$method' of '" . get_class($sender) . "' is private.");
 		}
 	}
+
+	function is_local(Plugin $plugin) {
+		$ref = new ReflectionClass(get_class($plugin));
+
+		return basename(dirname(dirname($ref->getFileName()))) == "plugins.local";
+	}
 }

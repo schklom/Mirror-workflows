@@ -349,6 +349,22 @@ const	Helpers = {
 				}
 			});
 		},
+		uninstall: function(plugin) {
+			const msg = __("Uninstall plugin %s?").replace("%s", plugin);
+
+			if (confirm(msg)) {
+				Notify.progress("Loading, please wait...");
+
+				xhr.json("backend.php", {op: "pref-prefs", method: "uninstallPlugin", plugin: plugin}, (reply) => {
+					if (reply && reply.status == 1)
+						Helpers.Prefs.refresh();
+					else {
+						Notify.error("Plugin uninstallation failed.");
+					}
+				});
+
+			}
+		},
 		install: function() {
 			const dialog = new fox.SingleUseDialog({
 				PI_RES_ALREADY_INSTALLED: "PI_RES_ALREADY_INSTALLED",

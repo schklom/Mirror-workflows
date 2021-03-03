@@ -16,7 +16,7 @@ const	CommonDialogs = {
 					{op: "feeds", method: "subscribeToFeed"},
 					(reply) => {
 						const dialog = new fox.SingleUseDialog({
-							title: __("Subscribe to Feed"),
+							title: __("Subscribe to feed"),
 							content: `
 								<form onsubmit='return false'>
 
@@ -333,7 +333,7 @@ const	CommonDialogs = {
 
 			const dialog = new fox.SingleUseDialog({
 				id: "feedEditDlg",
-				title: __("Edit Feed"),
+				title: __("Edit feed"),
 				feed_title: "",
 				unsubscribe: function() {
 					if (confirm(__("Unsubscribe from %s?").replace("%s", this.feed_title))) {
@@ -473,7 +473,7 @@ const	CommonDialogs = {
 								<section>
 									<fieldset>
 										<input dojoType='dijit.form.ValidationTextBox' required='1'
-											placeHolder="${__("Feed Title")}"
+											placeHolder="${__("Feed title")}"
 											style='font-size : 16px; width: 500px' name='title' value="${App.escapeHtml(feed.title)}">
 									</fieldset>
 

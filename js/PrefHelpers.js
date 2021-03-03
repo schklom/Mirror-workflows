@@ -56,7 +56,7 @@ const	Helpers = {
 	Digest: {
 		preview: function() {
 			const dialog = new fox.SingleUseDialog({
-				title: __("Digest Preview"),
+				title: __("Digest preview"),
 				content: `
 					<div class='panel panel-scrollable digest-preview'>
 						<div class='text-center'>${__("Loading, please wait...")}</div>
@@ -124,7 +124,7 @@ const	Helpers = {
 		edit: function() {
 			const dialog = new fox.SingleUseDialog({
 				id: "profileEditDlg",
-				title: __("Settings Profiles"),
+				title: __("Manage profiles"),
 				getSelectedProfiles: function () {
 					return Tables.getSelected("pref-profiles-list");
 				},

@@ -300,7 +300,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 
 				try {
 					const dialog = new fox.SingleUseDialog({
-						title: __("Edit Multiple Feeds"),
+						title: __("Edit multiple feeds"),
 						/*getChildByName: function (name) {
 							let rv = null;
 							this.getChildren().forEach(

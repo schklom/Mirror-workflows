@@ -36,7 +36,7 @@ const	Users = {
 
 			const dialog = new fox.SingleUseDialog({
 				id: "userEditDlg",
-				title: __("User Editor"),
+				title: __("Edit user"),
 				execute: function () {
 					if (this.validate()) {
 						Notify.progress("Saving data...", true);

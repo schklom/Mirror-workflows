@@ -165,7 +165,7 @@ class Pref_System extends Handler_Administrative {
 		$page = (int) ($_REQUEST["page"] ?? 0);
 		?>
 		<div dojoType='dijit.layout.AccordionContainer' region='center'>
-			<div dojoType='dijit.layout.AccordionPane' style='padding : 0' title='<i class="material-icons">report</i> <?= __('Event Log') ?>'>
+			<div dojoType='dijit.layout.AccordionPane' style='padding : 0' title='<i class="material-icons">report</i> <?= __('Event log') ?>'>
 				<?php
 					if (Config::get(Config::LOG_DESTINATION) == "sql") {
 						$this->_log_viewer($page, $severity);
@@ -175,7 +175,7 @@ class Pref_System extends Handler_Administrative {
 				?>
 			</div>
 
-			<div dojoType='dijit.layout.AccordionPane' style='padding : 0' title='<i class="material-icons">mail</i> <?= __('Mail Configuration') ?>'>
+			<div dojoType='dijit.layout.AccordionPane' style='padding : 0' title='<i class="material-icons">mail</i> <?= __('Mail configuration') ?>'>
 				<div dojoType="dijit.layout.ContentPane">
 
 					<form dojoType="dijit.form.Form">

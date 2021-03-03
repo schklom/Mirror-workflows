@@ -11,7 +11,7 @@ const	Filters = {
 
 		const dialog = new fox.SingleUseDialog({
 			id: "filterEditDlg",
-			title: filter_id ? __("Edit Filter") : __("Create Filter"),
+			title: filter_id ? __("Edit filter") : __("Create new filter"),
 			ACTION_TAG: 4,
 			ACTION_SCORE: 6,
 			ACTION_LABEL: 7,

@@ -68,7 +68,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 
 				const dialog = new fox.SingleUseDialog({
 					id: "labelEditDlg",
-					title: __("Label Editor"),
+					title: __("Edit label"),
 					style: "width: 650px",
 					setLabelColor: function (id, fg, bg) {
 

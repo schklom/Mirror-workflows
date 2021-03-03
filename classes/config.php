@@ -263,8 +263,8 @@ class Config {
 		return $instance->_get($param);
 	}
 
-	// this returns Config::SELF_URL_PATH sans ending slash
-	static function get_self_url() {
+	/** this returns Config::SELF_URL_PATH sans trailing slash */
+	static function get_self_url() : string {
 		$self_url_path = self::get(Config::SELF_URL_PATH);
 
 		if (substr($self_url_path, -1) === "/") {
@@ -274,27 +274,24 @@ class Config {
 		}
 	}
 
-	static function is_server_https() {
+	static function is_server_https() : bool {
 		return (!empty($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] != 'off')) ||
 			(!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https');
 	}
 
-	static function make_self_url() {
+	/** generates reference self_url_path (no trailing slash) */
+	static function make_self_url() : string {
 		$proto = self::is_server_https() ? 'https' : 'http';
+		$self_url_path = $proto . '://' . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 
-		return $proto . '://' . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+		if (substr($self_url_path, -1) === "/") {
+			return substr($self_url_path, 0, -1);
+		} else {
+			return $self_url_path;
+		}
 	}
 
 	/* sanity check stuff */
-
-	private static function make_self_url_path() {
-		if (!isset($_SERVER["HTTP_HOST"])) return false;
-
-		$proto = self::is_server_https() ? 'https' : 'http';
-		$url_path = $proto . '://' . $_SERVER["HTTP_HOST"] . parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
-
-		return $url_path;
-	}
 
 	private static function check_mysql_tables() {
 		$pdo = Db::pdo();
@@ -360,23 +357,21 @@ class Config {
 		}
 
 		if (php_sapi_name() != "cli") {
-			$ref_self_url_path = self::make_self_url_path();
+			$ref_self_url_path = self::make_self_url();
 
 			if ($ref_self_url_path) {
 				$ref_self_url_path = preg_replace("/\w+\.php$/", "", $ref_self_url_path);
 			}
 
-			if (self::get(Config::SELF_URL_PATH) == "http://example.org/tt-rss/") {
+			if (self::get_self_url() == "http://example.org/tt-rss") {
 				$hint = $ref_self_url_path ? "(possible value: <b>$ref_self_url_path</b>)" : "";
 				array_push($errors,
 						"Please set SELF_URL_PATH to the correct value for your server: $hint");
 			}
 
-			if ($ref_self_url_path &&
-				(!defined('_SKIP_SELF_URL_PATH_CHECKS') || !_SKIP_SELF_URL_PATH_CHECKS) &&
-				self::get(Config::SELF_URL_PATH) != $ref_self_url_path && self::get(Config::SELF_URL_PATH) != mb_substr($ref_self_url_path, 0, mb_strlen($ref_self_url_path)-1)) {
+			if (self::get_self_url() != $ref_self_url_path) {
 				array_push($errors,
-					"Please set SELF_URL_PATH to the correct value detected for your server: <b>$ref_self_url_path</b> (you're using: <b>" . self::get(Config::SELF_URL_PATH) . "</b>)");
+					"Please set SELF_URL_PATH to the correct value detected for your server: <b>$ref_self_url_path</b> (you're using: <b>" . self::get_self_url() . "</b>)");
 			}
 		}
 

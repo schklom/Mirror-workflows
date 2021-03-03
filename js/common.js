@@ -262,8 +262,11 @@ const Lists = {
 		if (row)
 			checked ? row.addClassName("Selected") : row.removeClassName("Selected");
 	},
-	select: function(elemId, selected) {
-		$(elemId).querySelectorAll("li").forEach((row) => {
+	select: function(elem, selected) {
+		if (typeof elem == "string")
+			elem = document.getElementById(elem);
+
+		elem.querySelectorAll("li").forEach((row) => {
 			const checkNode = row.querySelector(".dijitCheckBox,input[type=checkbox]");
 			if (checkNode) {
 				const widget = dijit.getEnclosingWidget(checkNode);
@@ -278,6 +281,30 @@ const Lists = {
 			}
 		});
 	},
+	getSelected: function(elem) {
+		const rv = [];
+
+		if (typeof elem == "string")
+			elem = document.getElementById(elem);
+
+		elem.querySelectorAll("li").forEach((row) => {
+			if (row.hasClassName("Selected")) {
+				const rowVal = row.getAttribute("data-row-value");
+
+				if (rowVal) {
+					rv.push(rowVal);
+				} else {
+					// either older prefix-XXX notation or separate attribute
+					const rowId = row.getAttribute("data-row-id") || row.id.replace(/^[A-Z]*?-/, "");
+
+					if (!isNaN(rowId))
+						rv.push(parseInt(rowId));
+				}
+			}
+		});
+
+		return rv;
+	}
 };
 
 /* exported Tables */
@@ -293,8 +320,11 @@ const Tables = {
 			checked ? row.addClassName("Selected") : row.removeClassName("Selected");
 
 	},
-	select: function(elemId, selected) {
-		$(elemId).querySelectorAll("tr").forEach((row) => {
+	select: function(elem, selected) {
+		if (typeof elem == "string")
+			elem = document.getElementById(elem);
+
+		elem.querySelectorAll("tr").forEach((row) => {
 			const checkNode = row.querySelector(".dijitCheckBox,input[type=checkbox]");
 			if (checkNode) {
 				const widget = dijit.getEnclosingWidget(checkNode);
@@ -309,16 +339,25 @@ const Tables = {
 			}
 		});
 	},
-	getSelected: function(elemId) {
+	getSelected: function(elem) {
 		const rv = [];
 
-		$(elemId).querySelectorAll("tr").forEach((row) => {
-			if (row.hasClassName("Selected")) {
-				// either older prefix-XXX notation or separate attribute
-				const rowId = row.getAttribute("data-row-id") || row.id.replace(/^[A-Z]*?-/, "");
+		if (typeof elem == "string")
+			elem = document.getElementById(elem);
 
-				if (!isNaN(rowId))
-					rv.push(parseInt(rowId));
+		elem.querySelectorAll("tr").forEach((row) => {
+			if (row.hasClassName("Selected")) {
+				const rowVal = row.getAttribute("data-row-value");
+
+				if (rowVal) {
+					rv.push(rowVal);
+				} else {
+					// either older prefix-XXX notation or separate attribute
+					const rowId = row.getAttribute("data-row-id") || row.id.replace(/^[A-Z]*?-/, "");
+
+					if (!isNaN(rowId))
+						rv.push(parseInt(rowId));
+				}
 			}
 		});
 

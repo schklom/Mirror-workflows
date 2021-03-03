@@ -53,6 +53,8 @@ class Config {
 	const HTTP_PROXY = "HTTP_PROXY";
 	const FORBID_PASSWORD_CHANGES = "FORBID_PASSWORD_CHANGES";
 	const SESSION_NAME = "SESSION_NAME";
+	const CHECK_FOR_PLUGIN_UPDATES = "CHECK_FOR_PLUGIN_UPDATES";
+	const ENABLE_PLUGIN_INSTALLER = "ENABLE_PLUGIN_INSTALLER";
 
 	private const _DEFAULTS = [
 		Config::DB_TYPE => [ "pgsql", 									Config::T_STRING ],
@@ -102,6 +104,8 @@ class Config {
 		Config::HTTP_PROXY => [ "",										Config::T_STRING ],
 		Config::FORBID_PASSWORD_CHANGES => [ "",						Config::T_BOOL ],
 		Config::SESSION_NAME => [ "ttrss_sid",							Config::T_STRING ],
+		Config::CHECK_FOR_PLUGIN_UPDATES => [ "true",				Config::T_BOOL ],
+		Config::ENABLE_PLUGIN_INSTALLER => [ "true",					Config::T_BOOL ],
 	];
 
 	private static $instance;

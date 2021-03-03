@@ -8,6 +8,15 @@ class Pref_Prefs extends Handler_Protected {
 	private $pref_help_bottom = [];
 	private $pref_blacklist = [];
 
+	const PI_RES_ALREADY_INSTALLED = "PI_RES_ALREADY_INSTALLED";
+	const PI_RES_SUCCESS = "PI_RES_SUCCESS";
+	const PI_ERR_NO_CLASS = "PI_ERR_NO_CLASS";
+	const PI_ERR_NO_INIT_PHP = "PI_ERR_NO_INIT_PHP";
+	const PI_ERR_EXEC_FAILED = "PI_ERR_EXEC_FAILED";
+	const PI_ERR_NO_TEMPDIR = "PI_ERR_NO_TEMPDIR";
+	const PI_ERR_PLUGIN_NOT_FOUND = "PI_ERR_PLUGIN_NOT_FOUND";
+	const PI_ERR_NO_WORKDIR = "PI_ERR_NO_WORKDIR";
+
 	function csrf_ignore($method) {
 		$csrf_ignored = array("index", "updateself", "otpqrcode");
 
@@ -907,7 +916,7 @@ class Pref_Prefs extends Handler_Protected {
 					}
 			</script>
 
-			<?php if (Config::get(Config::CHECK_FOR_UPDATES) && $_SESSION["access_level"] >= 10) { ?>
+			<?php if (Config::get(Config::CHECK_FOR_UPDATES) && Config::get(Config::CHECK_FOR_PLUGIN_UPDATES) && $_SESSION["access_level"] >= 10) { ?>
 				<script type="dojo/method" event="onShow" args="evt">
 						Helpers.Plugins.checkForUpdate();
 				</script>
@@ -963,6 +972,13 @@ class Pref_Prefs extends Handler_Protected {
 							<?= \Controls\icon("update") ?>
 							<?= __("Update local plugins") ?>
 						</button>
+
+						<?php if (Config::get(Config::ENABLE_PLUGIN_INSTALLER)) { ?>
+							<button dojoType='dijit.form.Button' onclick="Helpers.Plugins.install()">
+								<?= \Controls\icon("add") ?>
+								<?= __("Install plugin") ?>
+							</button>
+						<?php } ?>
 					<?php } ?>
 				</div>
 			</div>
@@ -1179,8 +1195,144 @@ class Pref_Prefs extends Handler_Protected {
 		return $rv;
 	}
 
-	function checkForPluginUpdates() {
+	// https://gist.github.com/mindplay-dk/a4aad91f5a4f1283a5e2#gistcomment-2036828
+	private function _recursive_rmdir(string $dir, bool $keep_root = false) {
+		// Handle bad arguments.
+		if (empty($dir) || !file_exists($dir)) {
+			 return true; // No such file/dir$dir exists.
+		} elseif (is_file($dir) || is_link($dir)) {
+			 return unlink($dir); // Delete file/link.
+		}
+
+		// Delete all children.
+		$files = new \RecursiveIteratorIterator(
+			 new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
+			 \RecursiveIteratorIterator::CHILD_FIRST
+		);
+
+		foreach ($files as $fileinfo) {
+			 $action = $fileinfo->isDir() ? 'rmdir' : 'unlink';
+			 if (!$action($fileinfo->getRealPath())) {
+				  return false; // Abort due to the failure.
+			 }
+		}
+
+		return $keep_root ? true : rmdir($dir);
+	}
+
+	// https://stackoverflow.com/questions/7153000/get-class-name-from-file
+	private function _get_class_name_from_file($file) {
+		$tokens = token_get_all(file_get_contents($file));
+
+		for ($i = 0; $i < count($tokens); $i++) {
+			if (isset($tokens[$i][0]) && $tokens[$i][0] == T_CLASS) {
+				for ($j = $i+1; $j < count($tokens); $j++) {
+					if (isset($tokens[$j][1]) && $tokens[$j][1] != " ") {
+						return $tokens[$j][1];
+					}
+				}
+			}
+		}
+	}
+
+	function installPlugin() {
+		if ($_SESSION["access_level"] >= 10 && Config::get(Config::ENABLE_PLUGIN_INSTALLER)) {
+			$plugin_name = clean($_REQUEST['plugin']);
+			$all_plugins = $this->_get_available_plugins();
+			$plugin_dir = dirname(dirname(__DIR__)) . "/plugins.local";
+
+			$work_dir = "$plugin_dir/plugin-installer";
+
+			$rv = [ ];
+
+			if (is_dir($work_dir) || mkdir($work_dir)) {
+				foreach ($all_plugins as $plugin) {
+					if ($plugin['name'] == $plugin_name) {
+
+						$tmp_dir = tempnam($work_dir, $plugin_name);
+
+						if (file_exists($tmp_dir)) {
+							unlink($tmp_dir);
+
+							$pipes = [];
+
+							$descriptorspec = [
+								1 => ["pipe", "w"], // STDOUT
+								2 => ["pipe", "w"], // STDERR
+							];
+
+							$proc = proc_open("git clone " . escapeshellarg($plugin['clone_url']) . " " . $tmp_dir,
+											$descriptorspec, $pipes, sys_get_temp_dir());
+
+							$status = 0;
+
+							if (is_resource($proc)) {
+								$rv["stdout"] = stream_get_contents($pipes[1]);
+								$rv["stderr"] = stream_get_contents($pipes[2]);
+								$status = proc_close($proc);
+								$rv["git_status"] = $status;
+
+								// yeah I know about mysterious RC = -1
+								if (file_exists("$tmp_dir/init.php")) {
+									$class_name = strtolower(basename($this->_get_class_name_from_file("$tmp_dir/init.php")));
+
+									if ($class_name) {
+										$dst_dir = "$plugin_dir/$class_name";
+
+										if (is_dir($dst_dir)) {
+											$rv['result'] = self::PI_RES_ALREADY_INSTALLED;
+										} else {
+											if (rename($tmp_dir, "$plugin_dir/$class_name")) {
+												$rv['result'] = self::PI_RES_SUCCESS;
+											}
+										}
+									} else {
+										$rv['result'] = self::PI_ERR_NO_CLASS;
+									}
+								} else {
+									$rv['result'] = self::PI_ERR_NO_INIT_PHP;
+								}
+
+							} else {
+								$rv['result'] = self::PI_ERR_EXEC_FAILED;
+							}
+						} else {
+							$rv['result'] = self::PI_ERR_NO_TEMPDIR;
+						}
+
+						// cleanup after failure
+						if ($tmp_dir && is_dir($tmp_dir)) {
+							$this->_recursive_rmdir($tmp_dir);
+						}
+
+						break;
+					}
+				}
+
+				if (empty($rv['result']))
+					$rv['result'] = self::PI_ERR_PLUGIN_NOT_FOUND;
+
+			} else {
+				$rv["result"] = self::PI_ERR_NO_WORKDIR;
+			}
+
+			print json_encode($rv);
+		}
+	}
+
+	private function _get_available_plugins() {
+		if ($_SESSION["access_level"] >= 10 && Config::get(Config::ENABLE_PLUGIN_INSTALLER)) {
+			return json_decode(UrlHelper::fetch(['url' => 'https://tt-rss.org/plugins.json']), true);
+		}
+	}
+	function getAvailablePlugins() {
 		if ($_SESSION["access_level"] >= 10) {
+			print json_encode($this->_get_available_plugins());
+		}
+	}
+
+	function checkForPluginUpdates() {
+		if ($_SESSION["access_level"] >= 10 && Config::get(Config::CHECK_FOR_UPDATES) && Config::get(Config::CHECK_FOR_PLUGIN_UPDATES)) {
 			$plugin_name = $_REQUEST["name"] ?? "";
 
 			$root_dir = dirname(dirname(__DIR__)); # we're in classes/pref/

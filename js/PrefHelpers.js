@@ -349,10 +349,128 @@ const	Helpers = {
 				}
 			});
 		},
+		install: function() {
+			const dialog = new fox.SingleUseDialog({
+				PI_RES_ALREADY_INSTALLED: "PI_RES_ALREADY_INSTALLED",
+				PI_RES_SUCCESS: "PI_RES_SUCCESS",
+				PI_ERR_NO_CLASS: "PI_ERR_NO_CLASS",
+				PI_ERR_NO_INIT_PHP: "PI_ERR_NO_INIT_PHP",
+				PI_ERR_EXEC_FAILED: "PI_ERR_EXEC_FAILED",
+				PI_ERR_NO_TEMPDIR: "PI_ERR_NO_TEMPDIR",
+				PI_ERR_PLUGIN_NOT_FOUND: "PI_ERR_PLUGIN_NOT_FOUND",
+				PI_ERR_NO_WORKDIR: "PI_ERR_NO_WORKDIR",
+				title: __("List of plugins"),
+				need_refresh: false,
+				onHide: function() {
+					if (this.need_refresh) {
+						Helpers.Prefs.refresh();
+					}
+				},
+				performInstall: function(plugin) {
+
+					const install_dialog = new fox.SingleUseDialog({
+						title: __("Plugin installer"),
+						content: `
+						<ul class="panel panel-scrollable contents">
+						<li class='text-center'>${__("Installing %s, please wait...").replace("%s", plugin)}</li>
+						</ul>
+
+						<footer class='text-center'>
+							${App.FormFields.submit_tag(__("Close this window"))}
+						</footer>`
+					});
+
+					const tmph = dojo.connect(install_dialog, 'onShow', function () {
+						dojo.disconnect(tmph);
+
+						const container = install_dialog.domNode.querySelector(".contents");
+
+						xhr.json("backend.php", {op: "pref-prefs", method: "installPlugin", plugin: plugin}, (reply) => {
+							if (!reply) {
+								container.innerHTML = `<li class='text-center text-error'>${__("Operation failed: check event log.")}</li>`;
+							} else {
+								switch (reply.result) {
+									case dialog.PI_RES_SUCCESS:
+										container.innerHTML = `<li class='text-success text-center'>${__("Plugin has been installed.")}</li>`
+										dialog.need_refresh = true;
+										break;
+									case dialog.PI_RES_ALREADY_INSTALLED:
+										container.innerHTML =  `<li class='text-success text-center'>${__("Plugin is already installed.")}</li>`
+										break;
+									default:
+										container.innerHTML = `
+											<li>
+												<h3 style="margin-top: 0">${plugin}</h3>
+												${reply.stderr ? `<pre class="small text-error">${reply.stderr}</pre>` : ''}
+												${reply.stdour ? `<pre class="small text-success">${reply.stdout}</pre>` : ''}
+												<p class="small">
+													${App.FormFields.icon("error_outline") + " " + __("Exited with RC: %d").replace("%d", reply.git_status)}
+												</p>
+											</li>
+										`;
+								}
+							}
+						});
+					});
+
+					install_dialog.show();
+
+				},
+				refresh: function() {
+					const container = dialog.domNode.querySelector(".contents");
+					container.innerHTML = `<li class='text-center'>${__("Looking for plugins...")}</li>`;
+
+					xhr.json("backend.php", {op: "pref-prefs", method: "getAvailablePlugins"}, (reply) => {
+
+						if (!reply) {
+							container.innerHTML = `<li class='text-center text-error'>${__("Operation failed: check event log.")}</li>`;
+						} else {
+							container.innerHTML = "";
+
+							reply.forEach((plugin) => {
+								container.innerHTML += `
+									<li data-row-value="${App.escapeHtml(plugin.name)}">
+										<h3 style="margin-top: 0">${plugin.name}
+											<a target="_blank" href="${App.escapeHtml(plugin.html_url)}">
+												${App.FormFields.icon("open_in_new_window")}
+											</a>
+										</h3>
+
+										<p>${plugin.description}</p>
+
+										${App.FormFields.button_tag(__('Install plugin'), "", {class: 'alt-primary',
+											onclick: `App.dialogOf(this).performInstall("${App.escapeHtml(plugin.name)}")`})}
+
+										<hr/>
+									</li>
+									`
+							});
+
+							dojo.parser.parse(container);
+						}
+					});
+				},
+				content: `
+					<ul class="panel panel-scrollable contents"> </ul>
+
+					<footer>
+						${App.FormFields.button_tag(__("Refresh"), "", {class: 'alt-primary', onclick: 'App.dialogOf(this).refresh()'})}
+						${App.FormFields.cancel_dialog_tag(__("Close"))}
+					</footer>
+				`,
+			});
+
+			const tmph = dojo.connect(dialog, 'onShow', function () {
+				dojo.disconnect(tmph);
+				dialog.refresh();
+			});
+
+			dialog.show();
+		},
 		update: function(name = null) {
 
 			const dialog = new fox.SingleUseDialog({
-				title: __("Plugin Updater"),
+				title: __("Update plugins"),
 				need_refresh: false,
 				plugins_to_update: [],
 				onHide: function() {

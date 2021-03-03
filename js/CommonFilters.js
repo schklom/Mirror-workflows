@@ -115,7 +115,7 @@ const	Filters = {
 						const li = document.createElement('li');
 						li.addClassName("rule");
 
-						li.innerHTML = `${App.FormFields.checkbox_tag("", false, {onclick: 'Lists.onRowChecked(this)'})}
+						li.innerHTML = `${App.FormFields.checkbox_tag("", false, "", {onclick: 'Lists.onRowChecked(this)'})}
 								<span class="name" onclick='App.dialogOf(this).onRuleClicked(this)'>${reply}</span>
 								<span class="payload" >${App.FormFields.hidden_tag("rule[]", rule)}</span>`;
 
@@ -147,7 +147,7 @@ const	Filters = {
 						const li = document.createElement('li');
 						li.addClassName("action");
 
-						li.innerHTML = `${App.FormFields.checkbox_tag("", false, {onclick: 'Lists.onRowChecked(this)'})}
+						li.innerHTML = `${App.FormFields.checkbox_tag("", false, "", {onclick: 'Lists.onRowChecked(this)'})}
 								<span class="name" onclick='App.dialogOf(this).onActionClicked(this)'>${reply}</span>
 								<span class="payload">${App.FormFields.hidden_tag("action[]", action)}</span>`;
 

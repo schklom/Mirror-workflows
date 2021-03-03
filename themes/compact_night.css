@@ -1034,6 +1034,10 @@ body.ttrss_main .pull-left,
 body.ttrss_utility .pull-left {
   float: left;
 }
+body.ttrss_main .pre-wrap,
+body.ttrss_utility .pre-wrap {
+  white-space: pre-wrap;
+}
 body.ttrss_main .text-error,
 body.ttrss_utility .text-error {
   color: #b94a48;

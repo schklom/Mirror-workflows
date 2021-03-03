@@ -401,8 +401,9 @@ const	Helpers = {
 										container.innerHTML = `
 											<li>
 												<h3 style="margin-top: 0">${plugin}</h3>
-												${reply.stderr ? `<pre class="small text-error">${reply.stderr}</pre>` : ''}
-												${reply.stdour ? `<pre class="small text-success">${reply.stdout}</pre>` : ''}
+												<div class='text-error'>${reply.result}</div>
+												${reply.stderr ? `<pre class="small text-error pre-wrap">${reply.stderr}</pre>` : ''}
+												${reply.stdour ? `<pre class="small text-success pre-wrap">${reply.stdout}</pre>` : ''}
 												<p class="small">
 													${App.FormFields.icon("error_outline") + " " + __("Exited with RC: %d").replace("%d", reply.git_status)}
 												</p>
@@ -502,8 +503,8 @@ const	Helpers = {
 								container.innerHTML +=
 								`
 								<li><h3 style="margin-top: 0">${p.plugin}</h3>
-									${p.rv.e ? `<pre class="small text-error">${p.rv.e}</pre>` : ''}
-									${p.rv.o ? `<pre class="small text-success">${p.rv.o}</pre>` : ''}
+									${p.rv.e ? `<pre class="small text-error pre-wrap">${p.rv.e}</pre>` : ''}
+									${p.rv.o ? `<pre class="small text-success pre-wrap">${p.rv.o}</pre>` : ''}
 									<p class="small">
 										${p.rv.s ? App.FormFields.icon("error_outline") + " " + __("Exited with RC: %d").replace("%d", p.rv.s) :
 											App.FormFields.icon("check") + " " + __("Update done.")}
@@ -551,8 +552,8 @@ const	Helpers = {
 							container.innerHTML +=
 							`
 							<li><h3 style="margin-top: 0">${p.plugin}</h3>
-								${p.rv.e ? `<pre class="small text-error">${p.rv.e}</pre>` : ''}
-								${p.rv.o ? `<pre class="small text-success">${p.rv.o}</pre>` : ''}
+								${p.rv.e ? `<pre class="small text-error pre-wrap">${p.rv.e}</pre>` : ''}
+								${p.rv.o ? `<pre class="small text-success pre-wrap">${p.rv.o}</pre>` : ''}
 								<p class="small">
 									${p.rv.s ? App.FormFields.icon("error_outline") + " " + __("Exited with RC: %d").replace("%d", p.rv.s) :
 									App.FormFields.icon("check") + " " + __("Ready to update")}

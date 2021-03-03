@@ -284,7 +284,7 @@ class Config {
 		$proto = self::is_server_https() ? 'https' : 'http';
 		$self_url_path = $proto . '://' . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 
-		$self_url_path = preg_replace("/\w+\.php$/", "", $self_url_path);
+		$self_url_path = preg_replace("/\w+\.php(\?.*$)?$/", "", $self_url_path);
 
 		if (substr($self_url_path, -1) === "/") {
 			return substr($self_url_path, 0, -1);

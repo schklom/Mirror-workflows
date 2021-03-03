@@ -1,8 +1,6 @@
 <?php
 class Mailer {
-	// TODO: support HTML mail (i.e. MIME messages)
-
-	private $last_error = "Unable to send mail: check local configuration.";
+	private $last_error = "";
 
 	function mail($params) {
 
@@ -39,11 +37,18 @@ class Mailer {
 
 		$headers = [ "From: $from_combined", "Content-Type: text/plain; charset=UTF-8" ];
 
-		return mail($to_combined, $subject, $message, implode("\r\n", array_merge($headers, $additional_headers)));
+		$rc = mail($to_combined, $subject, $message, implode("\r\n", array_merge($headers, $additional_headers)));
+
+		if (!$rc) {
+			$this->set_error(error_get_last()['message']);
+		}
+
+		return $rc;
 	}
 
 	function set_error($message) {
 		$this->last_error = $message;
+		user_error("Error sending mail: $message", E_USER_WARNING);
 	}
 
 	function error() {

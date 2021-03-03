@@ -14,6 +14,20 @@ class Pref_System extends Handler_Administrative {
 		$this->pdo->query("DELETE FROM ttrss_error_log");
 	}
 
+	function sendTestEmail() {
+		$mail_address = clean($_REQUEST["mail_address"]);
+
+		$mailer = new Mailer();
+
+		$rc = $mailer->mail(["to_name" => "",
+			"to_address" => $mail_address,
+			"subject" => __("Test message from tt-rss"),
+			"message" => ("This message confirms that tt-rss can send outgoing mail.")
+			]);
+
+		print json_encode(['rc' => $rc, 'error' => $mailer->error()]);
+	}
+
 	function getphpinfo() {
 		ob_start();
 		phpinfo();
@@ -161,6 +175,41 @@ class Pref_System extends Handler_Administrative {
 				?>
 			</div>
 
+			<div dojoType='dijit.layout.AccordionPane' style='padding : 0' title='<i class="material-icons">mail</i> <?= __('Mail Configuration') ?>'>
+				<div dojoType="dijit.layout.ContentPane">
+
+					<form dojoType="dijit.form.Form">
+						<script type="dojo/method" event="onSubmit" args="evt">
+							evt.preventDefault();
+							if (this.validate()) {
+								xhr.json("backend.php", this.getValues(), (reply) => {
+									const msg = App.byId("mail-test-result");
+
+									if (reply.rc) {
+										msg.innerHTML = __("Mail sent.");
+										msg.className = 'alert alert-success';
+									} else {
+										msg.innerHTML = reply.error;
+										msg.className = 'alert alert-danger';
+									}
+
+									msg.show();
+								})
+							}
+						</script>
+
+						<?= \Controls\hidden_tag("op", "pref-system") ?>
+						<?= \Controls\hidden_tag("method", "sendTestEmail") ?>
+
+						<fieldset>
+							<label><?= __("To:") ?></label>
+							<?= \Controls\input_tag("mail_address", "", "text", ['required' => 1]) ?>
+							<?= \Controls\submit_tag(__("Send test email")) ?>
+							<span style="display: none; margin-left : 10px" class="alert alert-error" id="mail-test-result">...</span>
+						</fieldset>
+					</form>
+				</div>
+			</div>
 			<div dojoType='dijit.layout.AccordionPane' title='<i class="material-icons">info</i> <?= __('PHP Information') ?>'>
 					<script type='dojo/method' event='onSelected' args='evt'>
 						if (this.domNode.querySelector('.loading'))

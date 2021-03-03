@@ -61,7 +61,7 @@ class PluginHost {
 	const HOOK_FEED_BASIC_INFO = "hook_feed_basic_info";										// hook_feed_basic_info($basic_info, $fetch_url, $owner_uid, $feed_id, $auth_login, $auth_pass) (byref)
 	const HOOK_SEND_LOCAL_FILE = "hook_send_local_file";										// hook_send_local_file($filename)
 	const HOOK_UNSUBSCRIBE_FEED = "hook_unsubscribe_feed";									// hook_unsubscribe_feed($feed_id, $owner_uid)
-	const HOOK_SEND_MAIL = "hook_send_mail";														// hook_send_mail($mailer, $params)
+	const HOOK_SEND_MAIL = "hook_send_mail";														// hook_send_mail(Mailer $mailer, $params)
 	const HOOK_FILTER_TRIGGERED = "hook_filter_triggered";									// hook_filter_triggered($feed_id, $owner_uid, $article, $matched_filters, $matched_rules, $article_filters)
 	const HOOK_GET_FULL_TEXT = "hook_get_full_text";											// hook_get_full_text($url)
 	const HOOK_ARTICLE_IMAGE = "hook_article_image";											// hook_article_image($enclosures, $content, $site_url)

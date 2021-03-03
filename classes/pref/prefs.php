@@ -798,6 +798,15 @@ class Pref_Prefs extends Handler_Protected {
 						<input disabled='1' dojoType='dijit.form.CheckBox' <?= $is_checked ?> type='checkbox'><?= htmlspecialchars($about[1]) ?>
 					</label>
 
+					<?php if ($_SESSION["access_level"] >= 10) { ?>
+						<button style="display : none"
+								data-update-btn-for-plugin="<?= htmlspecialchars($name) ?>" dojoType='dijit.form.Button'
+								onclick='Helpers.Plugins.update("<?= htmlspecialchars($name) ?>")'>
+							<?= \Controls\icon("update") ?>
+							<?= __("Update") ?>
+						</button>
+					<?php } ?>
+
 					<?php if ($about[4] ?? false) { ?>
 						<button dojoType='dijit.form.Button' class='alt-info'
 							onclick='window.open("<?= htmlspecialchars($about[4]) ?>")'>

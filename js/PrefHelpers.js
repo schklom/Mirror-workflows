@@ -452,6 +452,9 @@ const	Helpers = {
 
 								container.innerHTML += `
 									<li data-row-value="${App.escapeHtml(plugin.name)}">
+										${App.FormFields.button_tag(__('Install plugin'), "", {class: 'alt-primary pull-right',
+											onclick: `App.dialogOf(this).performInstall("${App.escapeHtml(plugin.name)}")`})}
+
 										<h3 style="margin-top: 0">${plugin.name}
 											<a target="_blank" href="${App.escapeHtml(plugin.html_url)}">
 												${App.FormFields.icon("open_in_new_window")}
@@ -459,9 +462,6 @@ const	Helpers = {
 										</h3>
 
 										<p>${plugin.description}</p>
-
-										${App.FormFields.button_tag(__('Install plugin'), "", {class: 'alt-primary',
-											onclick: `App.dialogOf(this).performInstall("${App.escapeHtml(plugin.name)}")`})}
 
 										<hr/>
 									</li>

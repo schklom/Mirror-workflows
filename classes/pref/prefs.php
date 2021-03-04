@@ -1427,66 +1427,61 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	function activateprofile() {
-		$_SESSION["profile"] = (int) clean($_REQUEST["id"]);
+		$id = (int) $_REQUEST['id'] ?? 0;
 
-		// default value
-		if (!$_SESSION["profile"]) $_SESSION["profile"] = null;
+		$profile = ORM::for_table('ttrss_settings_profiles')
+			->where('owner_uid', $_SESSION['uid'])
+			->find_one($id);
+
+		if ($profile) {
+			$_SESSION["profile"] = $id;
+		} else {
+			$_SESSION["profile"] = null;
+		}
 	}
 
 	function remprofiles() {
-		$ids = explode(",", clean($_REQUEST["ids"]));
+		$ids = $_REQUEST["ids"] ?? [];
 
-		foreach ($ids as $id) {
-			if ($_SESSION["profile"] != $id) {
-				$sth = $this->pdo->prepare("DELETE FROM ttrss_settings_profiles WHERE id = ? AND
-							owner_uid = ?");
-				$sth->execute([$id, $_SESSION['uid']]);
-			}
-		}
+		ORM::for_table('ttrss_settings_profiles')
+			->where('owner_uid', $_SESSION['uid'])
+			->where_in('id', $ids)
+			->where_not_equal('id', $_SESSION['profile'] ?? 0)
+			->delete_many();
 	}
 
 	function addprofile() {
 		$title = clean($_REQUEST["title"]);
 
 		if ($title) {
-			$this->pdo->beginTransaction();
+			$profile = ORM::for_table('ttrss_settings_profiles')
+				->where('owner_uid', $_SESSION['uid'])
+				->where('title', $title)
+				->find_one();
 
-			$sth = $this->pdo->prepare("SELECT id FROM ttrss_settings_profiles
-				WHERE title = ? AND owner_uid = ?");
-			$sth->execute([$title, $_SESSION['uid']]);
+			if (!$profile) {
+				$profile = ORM::for_table('ttrss_settings_profiles')->create();
 
-			if (!$sth->fetch()) {
-
-				$sth = $this->pdo->prepare("INSERT INTO ttrss_settings_profiles (title, owner_uid)
-							VALUES (?, ?)");
-
-				$sth->execute([$title, $_SESSION['uid']]);
-
-				$sth = $this->pdo->prepare("SELECT id FROM ttrss_settings_profiles WHERE
-					title = ? AND owner_uid = ?");
-				$sth->execute([$title, $_SESSION['uid']]);
+				$profile->title = $title;
+				$profile->owner_uid = $_SESSION['uid'];
+				$profile->save();
 			}
-
-			$this->pdo->commit();
 		}
 	}
 
 	function saveprofile() {
-		$id = clean($_REQUEST["id"]);
-		$title = clean($_REQUEST["title"]);
+		$id = (int)$_REQUEST["id"];
+		$title = clean($_REQUEST["value"]);
 
-		if ($id == 0) {
-			print __("Default profile");
-			return;
-		}
+		if ($title && $id) {
+			$profile = ORM::for_table('ttrss_settings_profiles')
+								->where('owner_uid', $_SESSION['uid'])
+								->find_one($id);
 
-		if ($title) {
-			$sth = $this->pdo->prepare("UPDATE ttrss_settings_profiles
-				SET title = ? WHERE id = ? AND
-					owner_uid = ?");
-
-			$sth->execute([$title, $id, $_SESSION['uid']]);
-			print $title;
+			if ($profile) {
+				$profile->title = $title;
+				$profile->save();
+			}
 		}
 	}
 
@@ -1494,18 +1489,19 @@ class Pref_Prefs extends Handler_Protected {
 	function getProfiles() {
 		$rv = [];
 
-		$sth = $this->pdo->prepare("SELECT title,id FROM ttrss_settings_profiles
-			WHERE owner_uid = ? ORDER BY title");
-		$sth->execute([$_SESSION['uid']]);
+		$profiles = ORM::for_table('ttrss_settings_profiles')
+							->where('owner_uid', $_SESSION['uid'])
+							->order_by_expr('title')
+							->find_many();
 
 		array_push($rv, ["title" => __("Default profile"),
 				"id" => 0,
 				"active" => empty($_SESSION["profile"])
 			]);
 
-		while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
-			$row["active"] = isset($_SESSION["profile"]) && $_SESSION["profile"] == $row["id"];
-			array_push($rv, $row);
+		foreach ($profiles as $profile) {
+			$profile['active'] = ($_SESSION["profile"] ?? 0) == $profile->id;
+			array_push($rv, $profile->as_array());
 		};
 
 		print json_encode($rv);

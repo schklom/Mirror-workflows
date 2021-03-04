@@ -135,12 +135,7 @@ const	Helpers = {
 						if (confirm(__("Remove selected profiles? Active and default profiles will not be removed."))) {
 							Notify.progress("Removing selected profiles...", true);
 
-							const query = {
-								op: "pref-prefs", method: "remprofiles",
-								ids: sel_rows.toString()
-							};
-
-							xhr.post("backend.php", query, () => {
+							xhr.post("backend.php", {op: "pref-prefs", method: "remprofiles", "ids[]": sel_rows}, () => {
 								Notify.close();
 								dialog.refresh();
 							});

@@ -802,7 +802,7 @@ class Pref_Prefs extends Handler_Protected {
 			if ($about[3] ?? false) {
 				$is_checked = in_array($name, $system_enabled) ? "checked" : "";
 				?>
-				<fieldset class='prefs plugin'>
+				<fieldset class='prefs plugin' data-plugin-name='<?= htmlspecialchars($name) ?>'>
 					<label><?= $name ?>:</label>
 					<label class='checkbox description text-muted' id="PLABEL-<?= htmlspecialchars($name) ?>">
 						<input disabled='1' dojoType='dijit.form.CheckBox' <?= $is_checked ?> type='checkbox'><?= htmlspecialchars($about[1]) ?>
@@ -867,7 +867,7 @@ class Pref_Prefs extends Handler_Protected {
 				}
 				?>
 
-				<fieldset class='prefs plugin'>
+					<fieldset class='prefs plugin' data-plugin-name='<?= htmlspecialchars($name) ?>'>
 					<label><?= $name ?>:</label>
 					<label class='checkbox description text-muted' id="PLABEL-<?= htmlspecialchars($name) ?>">
 						<input name='plugins[]' value="<?= htmlspecialchars($name) ?>"
@@ -1353,14 +1353,20 @@ class Pref_Prefs extends Handler_Protected {
 		}
 	}
 
-	private function _get_available_plugins() {
+	private function _get_available_plugins(array $installed = []) {
 		if ($_SESSION["access_level"] >= 10 && Config::get(Config::ENABLE_PLUGIN_INSTALLER)) {
-			return json_decode(UrlHelper::fetch(['url' => 'https://tt-rss.org/plugins.json']), true);
+			$obj = json_decode(UrlHelper::fetch(['url' => 'https://tt-rss.org/plugins.json']));
+
+			// TODO: filter installed, we'll need class names in the plugins.json
+
+			return $obj;
 		}
 	}
 	function getAvailablePlugins() {
+		$installed = $_REQUEST['installed'];
+
 		if ($_SESSION["access_level"] >= 10) {
-			print json_encode($this->_get_available_plugins());
+			print json_encode($this->_get_available_plugins($installed));
 		}
 	}
 

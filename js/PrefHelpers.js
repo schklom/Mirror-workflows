@@ -370,8 +370,10 @@ const	Helpers = {
 				PI_ERR_NO_TEMPDIR: "PI_ERR_NO_TEMPDIR",
 				PI_ERR_PLUGIN_NOT_FOUND: "PI_ERR_PLUGIN_NOT_FOUND",
 				PI_ERR_NO_WORKDIR: "PI_ERR_NO_WORKDIR",
-				title: __("List of plugins"),
+				title: __("Available plugins"),
 				need_refresh: false,
+				entries: false,
+				search_query: "",
 				onHide: function() {
 					if (this.need_refresh) {
 						Helpers.Prefs.refresh();
@@ -428,18 +430,26 @@ const	Helpers = {
 					install_dialog.show();
 
 				},
-				refresh: function() {
+				search: function() {
+					this.search_query = this.attr('value').search.toLowerCase();
+					this.render_contents();
+				},
+				render_contents: function() {
 					const container = dialog.domNode.querySelector(".contents");
-					container.innerHTML = `<li class='text-center'>${__("Looking for plugins...")}</li>`;
 
-					xhr.json("backend.php", {op: "pref-prefs", method: "getAvailablePlugins"}, (reply) => {
+					if (!dialog.entries) {
+						container.innerHTML = `<li class='text-center text-error'>${__("Operation failed: check event log.")}</li>`;
+					} else {
+						container.innerHTML = "";
 
-						if (!reply) {
-							container.innerHTML = `<li class='text-center text-error'>${__("Operation failed: check event log.")}</li>`;
-						} else {
-							container.innerHTML = "";
+						let results_rendered = 0;
 
-							reply.forEach((plugin) => {
+						dialog.entries.forEach((plugin) => {
+							if (!dialog.search_query ||
+									(plugin.name.toLowerCase().indexOf(dialog.search_query) != -1 || plugin.description.toLowerCase().indexOf(dialog.search_query) != -1)) {
+
+								++results_rendered;
+
 								container.innerHTML += `
 									<li data-row-value="${App.escapeHtml(plugin.name)}">
 										<h3 style="margin-top: 0">${plugin.name}
@@ -456,17 +466,39 @@ const	Helpers = {
 										<hr/>
 									</li>
 									`
-							});
+							}
+						});
 
-							dojo.parser.parse(container);
+						if (results_rendered == 0) {
+							container.innerHTML = `<li class='text-center text-info'>${__("Could not find any plugins for this search query.")}</li>`;
 						}
+
+						dojo.parser.parse(container);
+					}
+				},
+				reload: function() {
+					const container = dialog.domNode.querySelector(".contents");
+					container.innerHTML = `<li class='text-center'>${__("Looking for plugins...")}</li>`;
+
+					const installed = [...document.querySelectorAll('*[data-plugin-name]')].map((p) => p.getAttribute('data-plugin-name'));
+
+					xhr.json("backend.php", {op: "pref-prefs", method: "getAvailablePlugins", 'installed[]': installed}, (reply) => {
+						dialog.entries = reply;
+						dialog.render_contents();
 					});
 				},
 				content: `
-					<ul class="panel panel-scrollable contents"> </ul>
+					<div dojoType='fox.Toolbar'>
+						<div class='pull-right'>
+							<input name="search" placeholder="${__("Search...")}" type="search" dojoType="dijit.form.TextBox" onkeyup="App.dialogOf(this).search()">
+						</div>
+						<div style='height : 16px'>&nbsp;</div> <!-- disgusting -->
+					</div>
+
+					<ul style='clear : both' class="panel panel-scrollable-400px contents"> </ul>
 
 					<footer>
-						${App.FormFields.button_tag(__("Refresh"), "", {class: 'alt-primary', onclick: 'App.dialogOf(this).refresh()'})}
+						${App.FormFields.button_tag(__("Refresh"), "", {class: 'alt-primary', onclick: 'App.dialogOf(this).reload()'})}
 						${App.FormFields.cancel_dialog_tag(__("Close"))}
 					</footer>
 				`,
@@ -474,7 +506,7 @@ const	Helpers = {
 
 			const tmph = dojo.connect(dialog, 'onShow', function () {
 				dojo.disconnect(tmph);
-				dialog.refresh();
+				dialog.reload();
 			});
 
 			dialog.show();

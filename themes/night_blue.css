@@ -989,6 +989,10 @@ body.ttrss_main .panel-scrollable {
   overflow: auto;
   height: 200px;
 }
+body.ttrss_main .panel-scrollable-400px {
+  overflow: auto;
+  height: 400px;
+}
 body.ttrss_main ul.list li {
   padding: 2px;
 }
@@ -1618,8 +1622,12 @@ body.ttrss_utility fieldset > label.checkbox {
   font-size: 13px;
   padding: 0px;
 }
-.flat .dijitToolbar .dijitTextBox .dijitInputInner {
+.flat .dijitToolbar .dijitTextBox .dijitInputContainer .dijitInputInner {
   line-height: 10px;
+}
+.flat .dijitToolbar .dijitTextBox .dijitInputContainer .dijitPlaceHolder {
+  line-height: 15px;
+  margin-left: 0;
 }
 .flat .dijitToolbar label {
   position: relative;

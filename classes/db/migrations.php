@@ -5,26 +5,28 @@ class Db_Migrations {
 	private $base_path;
 	private $migrations_path;
 	private $migrations_table;
+	private $base_is_latest;
 	private $pdo;
 
 	private $cached_version;
 	private $cached_max_version;
 
-	function initialize_for_plugin(Plugin $plugin, string $schema_suffix = "sql") {
-		$plugin_dir = PluginHost::getInstance()->get_plugin_dir($plugin);
-		$this->initialize($plugin_dir . "/${schema_suffix}",
-			strtolower("ttrss_migrations_plugin_" . get_class($plugin)));
-	}
-
-	function initialize(string $root_path, string $migrations_table) {
-		$this->base_path = "$root_path/" . Config::get(Config::DB_TYPE);
-		$this->migrations_path = $this->base_path . "/migrations";
-
-		$this->migrations_table = $migrations_table;
-	}
-
 	function __construct() {
 		$this->pdo = Db::pdo();
+	}
+
+	function initialize_for_plugin(Plugin $plugin, bool $base_is_latest = true, string $schema_suffix = "sql") {
+		$plugin_dir = PluginHost::getInstance()->get_plugin_dir($plugin);
+		$this->initialize($plugin_dir . "/${schema_suffix}",
+			strtolower("ttrss_migrations_plugin_" . get_class($plugin)),
+			$base_is_latest);
+	}
+
+	function initialize(string $root_path, string $migrations_table, bool $base_is_latest = true) {
+		$this->base_path = "$root_path/" . Config::get(Config::DB_TYPE);
+		$this->migrations_path = $this->base_path . "/migrations";
+		$this->migrations_table = $migrations_table;
+		$this->base_is_latest = $base_is_latest;
 	}
 
 	private function set_version(int $version) {
@@ -72,7 +74,10 @@ class Db_Migrations {
 				$this->pdo->query($line);
 			}
 
-			$this->set_version($version);
+			if ($version == 0 && $this->base_is_latest)
+				$this->set_version($this->get_max_version());
+			else
+				$this->set_version($version);
 
 			$this->pdo->commit();
 		} catch (PDOException $e) {

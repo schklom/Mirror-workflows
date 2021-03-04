@@ -108,6 +108,8 @@ class Db_Migrations {
 					$this->pdo->commit();
 
 				Debug::log("Migration finished, current version: " . $this->get_version(), Debug::LOG_VERBOSE);
+
+				Logger::log(E_USER_NOTICE, "Applied migration to version $version for {$this->migrations_table}");
 			} else {
 				Debug::log("Migration failed: schema file is empty or missing.", Debug::LOG_VERBOSE);
 			}

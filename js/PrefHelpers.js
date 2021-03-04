@@ -444,9 +444,16 @@ const	Helpers = {
 
 						let results_rendered = 0;
 
+						const search_tokens = dialog.search_query
+							.split(/ {1,}/)
+							.filter((stoken) => (stoken.length > 0 ? stoken : null));
+
 						dialog.entries.forEach((plugin) => {
-							if (!dialog.search_query ||
-									(plugin.name.toLowerCase().indexOf(dialog.search_query) != -1 || plugin.description.toLowerCase().indexOf(dialog.search_query) != -1)) {
+							if (search_tokens.length == 0 ||
+									Object.values(plugin).filter((pval) =>
+										search_tokens.filter((stoken) =>
+											(pval.indexOf(stoken) != -1 ? stoken : null)
+										).length == search_tokens.length).length > 0) {
 
 								++results_rendered;
 

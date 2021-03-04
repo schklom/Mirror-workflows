@@ -1355,7 +1355,7 @@ class Pref_Prefs extends Handler_Protected {
 
 	private function _get_available_plugins(array $installed = []) {
 		if ($_SESSION["access_level"] >= 10 && Config::get(Config::ENABLE_PLUGIN_INSTALLER)) {
-			$obj = json_decode(UrlHelper::fetch(['url' => 'https://tt-rss.org/plugins.json']));
+			$obj = json_decode(UrlHelper::fetch(['url' => 'https://tt-rss.org/plugins.json']), true);
 
 			// TODO: filter installed, we'll need class names in the plugins.json
 

@@ -181,7 +181,7 @@ class RPC extends Handler_Protected {
 		$client_scheme = parse_url($client_location, PHP_URL_SCHEME);
 		$server_scheme = parse_url(Config::get_self_url(), PHP_URL_SCHEME);
 
-		if (Db_Updater::is_update_required()) {
+		if (Config::is_migration_needed()) {
 			$error = Errors::E_SCHEMA_MISMATCH;
 		} else if ($client_scheme != $server_scheme) {
 			$error = Errors::E_URL_SCHEME_MISMATCH;

@@ -51,7 +51,7 @@
 		UserHelper::load_user_plugins($_SESSION["uid"]);
 	}
 
-	if (Db_Updater::is_update_required()) {
+	if (Config::is_migration_needed()) {
 		print Errors::to_json(Errors::E_SCHEMA_MISMATCH);
 		return;
 	}

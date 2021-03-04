@@ -6,6 +6,8 @@ class Config {
 	const T_STRING = 2;
 	const T_INT = 3;
 
+	const SCHEMA_VERSION = 142;
+
 	// override defaults, defined below in _DEFAULTS[], via environment: DB_TYPE becomes TTRSS_DB_TYPE, etc
 
 	const DB_TYPE = "DB_TYPE";
@@ -228,7 +230,7 @@ class Config {
 	private function _get_migrations() : Db_Migrations {
 		if (empty($this->migrations)) {
 			$this->migrations = new Db_Migrations();
-			$this->migrations->initialize(dirname(__DIR__) . "/sql", "ttrss_version", true);
+			$this->migrations->initialize(dirname(__DIR__) . "/sql", "ttrss_version", true, self::SCHEMA_VERSION);
 		}
 
 		return $this->migrations;
@@ -336,7 +338,7 @@ class Config {
 
 		$pdo = Db::pdo();
 
-		$errors = array();
+		$errors = [];
 
 		if (strpos(self::get(Config::PLUGINS), "auth_") === false) {
 			array_push($errors, "Please enable at least one authentication module via PLUGINS");
@@ -373,6 +375,11 @@ class Config {
 		}
 
 		if (php_sapi_name() != "cli") {
+
+			if (self::get_schema_version() < 0) {
+				array_push($errors, "Base database schema is missing. Either load it manually or perform a migration (<code>update.php --update-schema</code>)");
+			}
+
 			$ref_self_url_path = self::make_self_url();
 
 			if ($ref_self_url_path) {

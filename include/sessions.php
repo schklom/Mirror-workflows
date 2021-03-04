@@ -122,17 +122,19 @@
 		return true;
 	}
 
-	if (!\Config::get(\Config::SINGLE_USER_MODE)) {
-		session_set_save_handler('\Sessions\ttrss_open',
-			'\Sessions\ttrss_close', '\Sessions\ttrss_read',
-			'\Sessions\ttrss_write', '\Sessions\ttrss_destroy',
-			'\Sessions\ttrss_gc');
-		register_shutdown_function('session_write_close');
-	}
+	if (\Config::get_schema_version() >= 0) {
+		if (!\Config::get(\Config::SINGLE_USER_MODE)) {
+			session_set_save_handler('\Sessions\ttrss_open',
+				'\Sessions\ttrss_close', '\Sessions\ttrss_read',
+				'\Sessions\ttrss_write', '\Sessions\ttrss_destroy',
+				'\Sessions\ttrss_gc');
+			register_shutdown_function('session_write_close');
+		}
 
-	if (!defined('NO_SESSION_AUTOSTART')) {
-		if (isset($_COOKIE[session_name()])) {
-			if (session_status() != PHP_SESSION_ACTIVE)
-					session_start();
+		if (!defined('NO_SESSION_AUTOSTART')) {
+			if (isset($_COOKIE[session_name()])) {
+				if (session_status() != PHP_SESSION_ACTIVE)
+						session_start();
+			}
 		}
 	}

@@ -2,8 +2,8 @@
 	define('LABEL_BASE_INDEX', -1024);
 	define('PLUGIN_FEED_BASE_INDEX', -128);
 
-	/** constant is @deprecated, use Db_Updater::SCHEMA_VERSION instead */
-	define('SCHEMA_VERSION', Db_Updater::SCHEMA_VERSION);
+	/** constant is @deprecated, use Config::SCHEMA_VERSION instead */
+	define('SCHEMA_VERSION', Config::SCHEMA_VERSION);
 
 	if (version_compare(PHP_VERSION, '8.0.0', '<')) {
 		libxml_disable_entity_loader(true);

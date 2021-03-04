@@ -378,7 +378,7 @@
 				if (read_stdin() != 'yes')
 					exit;
 			} else {
-				Debug::log("Proceeding to update without confirmation...");
+				Debug::log("Proceeding to update without confirmation.");
 			}
 
 			if (!isset($options["log-level"])) {
@@ -386,57 +386,11 @@
 			}
 
 			$migrations = Config::get_migrations();
-
-			Debug::log("Migrating schema to version " . $migrations->get_max_version());
-
 			$migrations->migrate();
 
 		} else {
 			Debug::log("Database schema is already at latest version.");
 		}
-
-		/*Debug::log("Checking for updates (" . Config::get(Config::DB_TYPE) . ")...");
-
-		$updater = new Db_Updater(Db::pdo(), Config::get(Config::DB_TYPE));
-
-		if (Db_Updater::is_update_required()) {
-			Debug::log("Schema update required, version " . Config::get_schema_version(true) . " to " . Db_Updater::SCHEMA_VERSION);
-
-			if (Config::get(Config::DB_TYPE) == "mysql")
-				Debug::Log("READ THIS: Due to MySQL limitations, your database is not completely protected while updating.\n".
-					"Errors may put it in an inconsistent state requiring manual rollback.\nBACKUP YOUR DATABASE BEFORE CONTINUING.");
-			else
-				Debug::log("WARNING: please backup your database before continuing.");
-
-			if ($options["update-schema"] != "force-yes") {
-				Debug::log("Type 'yes' to continue.");
-
-				if (read_stdin() != 'yes')
-					exit;
-			} else {
-				Debug::log("Proceeding to update without confirmation...");
-			}
-
-			Debug::log("Performing updates to version " . Db_Updater::SCHEMA_VERSION . "...");
-
-			for ($i = Config::get_schema_version(true) + 1; $i <= Db_Updater::SCHEMA_VERSION; $i++) {
-				Debug::log("* Updating to version $i...");
-
-				$result = $updater->update_to($i, false);
-
-				if ($result) {
-					Debug::log("* Completed.");
-				} else {
-					Debug::log("One of the updates failed. Either retry the process or perform updates manually.");
-					return;
-				}
-			}
-
-			Debug::log("All done.");
-		} else {
-			Debug::log("Database schema is already at latest version.");
-		} */
-
 	}
 
 	if (isset($options["gen-search-idx"])) {

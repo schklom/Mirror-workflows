@@ -623,33 +623,57 @@ class Handler_Public extends Handler {
 		<!DOCTYPE html>
 		<html>
 			<head>
-			<title>Database Updater</title>
+			<title>Tiny Tiny RSS: Database Updater</title>
 			<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-			<?= stylesheet_tag("themes/light.css") ?>
-			<link rel="shortcut icon" type="image/png" href="images/favicon.png">
 			<link rel="icon" type="image/png" sizes="72x72" href="images/favicon-72px.png">
+			<link rel="shortcut icon" type="image/png" href="images/favicon.png">
+			<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 			<?php
-				echo stylesheet_tag("themes/light.css");
-				echo javascript_tag("lib/dojo/dojo.js");
-				echo javascript_tag("lib/dojo/tt-rss-layer.js");
-			?>
+			foreach (["lib/dojo/dojo.js",
+						"lib/dojo/tt-rss-layer.js",
+						"js/common.js",
+						"js/utility.js"] as $jsfile) {
+
+				echo javascript_tag($jsfile);
+
+			} ?>
+
+			<?php if (theme_exists(Config::get(Config::LOCAL_OVERRIDE_STYLESHEET))) {
+				echo stylesheet_tag(get_theme_path(Config::get(Config::LOCAL_OVERRIDE_STYLESHEET)));
+			} ?>
+
 			<style type="text/css">
-				span.ok { color : #009000; font-weight : bold; }
-				span.err { color : #ff0000; font-weight : bold; }
+				@media (prefers-color-scheme: dark) {
+					body {
+						background : #303030;
+					}
+				}
+
+				body.css_loading * {
+					display : none;
+				}
 			</style>
-		</head>
-		<body class="flat ttrss_utility">
 
 			<script type="text/javascript">
-				require(['dojo/parser', "dojo/ready", 'dijit/form/Button','dijit/form/CheckBox', 'dijit/form/Form',
-					'dijit/form/Select','dijit/form/TextBox','dijit/form/ValidationTextBox'],function(parser, ready){
-					ready(function() {
-						parser.parse();
-					});
-				});
+				require({cache:{}});
+			</script>
+		</head>
+		<body class="flat ttrss_utility css_loading">
 
-				function confirmOP() {
-					return confirm("Update the database?");
+			<script type="text/javascript">
+				const UtilityApp = {
+					init: function() {
+						require(['dojo/parser', "dojo/ready", 'dijit/form/Button','dijit/form/CheckBox', 'dijit/form/Form',
+							'dijit/form/Select','dijit/form/TextBox','dijit/form/ValidationTextBox'],function(parser, ready){
+							ready(function() {
+								parser.parse();
+							});
+						});
+					}
+				}
+
+				function confirmDbUpdate() {
+					return confirm(__("Proceed with update?"));
 				}
 			</script>
 
@@ -660,72 +684,66 @@ class Handler_Public extends Handler {
 
 			<?php
 				@$op = clean($_REQUEST["subop"] ?? "");
-				$updater = new Db_Updater(Db::pdo(), Config::get(Config::DB_TYPE));
+
+				$migrations = Config::get_migrations();
 
 				if ($op == "performupdate") {
-					if (Db_Updater::is_update_required()) {
+					if ($migrations->is_migration_needed()) {
+						?>
 
-						print "<h2>" . T_sprintf("Performing updates to version %d", Db_Updater::SCHEMA_VERSION) . "</h2>";
+						<h2><?= T_sprintf("Performing updates to version %d", Config::SCHEMA_VERSION) ?></h2>
 
-						for ($i = Config::get_schema_version(true) + 1; $i <= Db_Updater::SCHEMA_VERSION; $i++) {
-							print "<ul>";
+						<code><pre class="small pre-wrap"><?php
+							Debug::set_enabled(true);
+							Debug::set_loglevel(Debug::LOG_VERBOSE);
+							$result = $migrations->migrate();
+							Debug::set_loglevel(Debug::LOG_NORMAL);
+							Debug::set_enabled(false);
+						?></pre></code>
 
-							print "<li class='text-info'>" . T_sprintf("Updating to version %d", $i) . "</li>";
+						<?php if (!$result) { ?>
+							<?= format_error("One of migrations failed. Either retry the process or perform updates manually.") ?>
 
-							print "<li>";
-							$result = $updater->update_to($i, true);
-							print "</li>";
+							<form method="post">
+								<?= \Controls\hidden_tag('subop', 'performupdate') ?>
+								<?= \Controls\submit_tag(__("Update"), ["onclick" => "return confirmDbUpdate()"]) ?>
+							</form>
+						<?php } else { ?>
+							<?= format_notice("Update successful.") ?>
 
-							if (!$result) {
-								print "</ul>";
+							<a href="index.php"><?= __("Return to Tiny Tiny RSS") ?></a>
+						<?php }
 
-								print_error("One of the updates failed. Either retry the process or perform updates manually.");
+					} else { ?>
 
-								print "<form method='POST'>
-									<input type='hidden' name='subop' value='performupdate'>
-									<button type='submit' dojoType='dijit.form.Button' class='alt-danger' onclick='return confirmOP()'>".__("Try again")."</button>
-									<a href='index.php'>".__("Return to Tiny Tiny RSS")."</a>
-								</form>";
+						<?= format_notice("Database is already up to date.") ?>
 
-								return;
-							} else {
-								print "<li class='text-success'>" . __("Completed.") . "</li>";
-								print "</ul>";
-							}
-						}
+						<a href="index.php"><?= __("Return to Tiny Tiny RSS") ?></a>
 
-						print_notice("Your Tiny Tiny RSS database is now updated to the latest version.");
-
-						print "<a href='index.php'>".__("Return to Tiny Tiny RSS")."</a>";
-
-					} else {
-						print_notice("Tiny Tiny RSS database is up to date.");
-
-						print "<a href='index.php'>".__("Return to Tiny Tiny RSS")."</a>";
+						<?php
 					}
 				} else {
-					if (Db_Updater::is_update_required()) {
+					if ($migrations->is_migration_needed()) {
 
-						print "<h2>".T_sprintf("Tiny Tiny RSS database needs update to the latest version (%d to %d).",
-							Config::get_schema_version(true), Db_Updater::SCHEMA_VERSION)."</h2>";
+						?>
+						<h2><?= T_sprintf("Database schema needs update to the latest version (%d to %d).",
+							Config::get_schema_version(), Config::SCHEMA_VERSION) ?></h2>
 
-						if (Config::get(Config::DB_TYPE) == "mysql") {
-							print_error("<strong>READ THIS:</strong> Due to MySQL limitations, your database is not completely protected while updating. ".
-								"Errors may put it in an inconsistent state requiring manual rollback. <strong>BACKUP YOUR DATABASE BEFORE CONTINUING.</strong>");
-						} else {
-							print_warning("Please backup your database before proceeding.");
-						}
+						<?= format_warning("Please backup your database before proceeding.") ?>
 
-						print "<form method='POST'>
-							<input type='hidden' name='subop' value='performupdate'>
-							<button type='submit' dojoType='dijit.form.Button' class='alt-danger' onclick='return confirmOP()'>".__("Perform updates")."</button>
-						</form>";
+						<form method="post">
+							<?= \Controls\hidden_tag('subop', 'performupdate') ?>
+							<?= \Controls\submit_tag(__("Update"), ["onclick" => "return confirmDbUpdate()"]) ?>
+						</form>
 
-					} else {
+						<?php
+					} else { ?>
 
-						print_notice("Tiny Tiny RSS database is up to date.");
+						<?= format_notice("Database is already up to date.") ?>
 
-						print "<a href='index.php'>".__("Return to Tiny Tiny RSS")."</a>";
+						<a href="index.php"><?= __("Return to Tiny Tiny RSS") ?></a>
+
+						<?php
 					}
 				}
 			?>

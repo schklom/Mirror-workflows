@@ -89,7 +89,7 @@ class Db_Migrations {
 				try {
 					$this->pdo->query($line);
 				} catch (PDOException $e) {
-					Debug::log("Failed on line: $line");
+					Debug::log("Failed on line: $line", Debug::LOG_VERBOSE);
 					throw $e;
 				}
 			}

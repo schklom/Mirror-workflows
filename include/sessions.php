@@ -22,12 +22,13 @@
 	function validate_session() {
 		if (\Config::get(\Config::SINGLE_USER_MODE)) return true;
 
-		if (isset($_SESSION["ref_schema_version"]) && $_SESSION["ref_schema_version"] != \Config::get_schema_version()) {
+		/* if (isset($_SESSION["ref_schema_version"]) && $_SESSION["ref_schema_version"] != \Config::get_schema_version()) {
 			$_SESSION["login_error_msg"] =
 				__("Session failed to validate (schema version changed)");
 			return false;
-		}
-		  $pdo = \Db::pdo();
+		} */
+
+		$pdo = \Db::pdo();
 
 		if (!empty($_SESSION["uid"])) {
 

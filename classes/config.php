@@ -114,6 +114,9 @@ class Config {
 	private $schema_version = null;
 	private $version = [];
 
+	/** @var Db_Migrations $migrations */
+	private $migrations;
+
 	public static function get_instance() : Config {
 		if (self::$instance == null)
 			self::$instance = new self();
@@ -218,18 +221,25 @@ class Config {
 		return $rv;
 	}
 
-	static function get_schema_version(bool $nocache = false) {
-		return self::get_instance()->_schema_version($nocache);
+	static function get_migrations() : Db_Migrations {
+		return self::get_instance()->_get_migrations();
 	}
 
-	function _schema_version(bool $nocache = false) {
-		if (empty($this->schema_version) || $nocache) {
-			$row = Db::pdo()->query("SELECT schema_version FROM ttrss_version")->fetch();
-
-			$this->schema_version = (int) $row["schema_version"];
+	private function _get_migrations() : Db_Migrations {
+		if (empty($this->migrations)) {
+			$this->migrations = new Db_Migrations();
+			$this->migrations->initialize(dirname(__DIR__) . "/sql", "ttrss_version", true);
 		}
 
-		return $this->schema_version;
+		return $this->migrations;
+	}
+
+	static function is_migration_needed() : bool {
+		return self::get_migrations()->is_migration_needed();
+	}
+
+	static function get_schema_version() : int {
+		return self::get_migrations()->get_version();
 	}
 
 	static function cast_to(string $value, int $type_hint) {

@@ -145,10 +145,8 @@
 		require_once "errorhandler.php";
 	}
 
-	if (!isset($options['update-schema'])) {
-		if (Db_Updater::is_update_required()) {
-			die("Schema version is wrong, please upgrade the database (--update-schema).\n");
-		}
+	if (!isset($options['update-schema']) && Config::is_migration_needed()) {
+		die("Schema version is wrong, please upgrade the database (--update-schema).\n");
 	}
 
 	Debug::set_enabled(true);
@@ -372,7 +370,32 @@
 	}
 
 	if (isset($options["update-schema"])) {
-		Debug::log("Checking for updates (" . Config::get(Config::DB_TYPE) . ")...");
+		if (Config::is_migration_needed()) {
+
+			if ($options["update-schema"] != "force-yes") {
+				Debug::log("Type 'yes' to continue.");
+
+				if (read_stdin() != 'yes')
+					exit;
+			} else {
+				Debug::log("Proceeding to update without confirmation...");
+			}
+
+			if (!isset($options["log-level"])) {
+				Debug::set_loglevel(Debug::$LOG_VERBOSE);
+			}
+
+			$migrations = Config::get_migrations();
+
+			Debug::log("Migrating schema to version " . $migrations->get_max_version());
+
+			$migrations->migrate();
+
+		} else {
+			Debug::log("Database schema is already at latest version.");
+		}
+
+		/*Debug::log("Checking for updates (" . Config::get(Config::DB_TYPE) . ")...");
 
 		$updater = new Db_Updater(Db::pdo(), Config::get(Config::DB_TYPE));
 
@@ -412,7 +435,7 @@
 			Debug::log("All done.");
 		} else {
 			Debug::log("Database schema is already at latest version.");
-		}
+		} */
 
 	}
 

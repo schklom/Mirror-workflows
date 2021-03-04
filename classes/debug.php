@@ -1,5 +1,10 @@
 <?php
 class Debug {
+	const LOG_DISABLED = -1;
+    const LOG_NORMAL = 0;
+    const LOG_VERBOSE = 1;
+    const LOG_EXTENDED = 2;
+
 	public static $LOG_DISABLED = -1;
     public static $LOG_NORMAL = 0;
     public static $LOG_VERBOSE = 1;

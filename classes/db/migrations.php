@@ -10,6 +10,7 @@ class Db_Migrations {
 
 	private $cached_version;
 	private $cached_max_version;
+	private $max_version_override;
 
 	function __construct() {
 		$this->pdo = Db::pdo();
@@ -22,14 +23,17 @@ class Db_Migrations {
 			$base_is_latest);
 	}
 
-	function initialize(string $root_path, string $migrations_table, bool $base_is_latest = true) {
+	function initialize(string $root_path, string $migrations_table, bool $base_is_latest = true, int $max_version_override = 0) {
 		$this->base_path = "$root_path/" . Config::get(Config::DB_TYPE);
 		$this->migrations_path = $this->base_path . "/migrations";
 		$this->migrations_table = $migrations_table;
 		$this->base_is_latest = $base_is_latest;
+		$this->max_version_override =  $max_version_override;
 	}
 
 	private function set_version(int $version) {
+		Debug::log("Updating table {$this->migrations_table} with version ${version}...", Debug::LOG_EXTENDED);
+
 		$sth = $this->pdo->query("SELECT * FROM {$this->migrations_table}");
 
 		if ($res = $sth->fetch()) {
@@ -43,7 +47,7 @@ class Db_Migrations {
 		$this->cached_version = $version;
 	}
 
-	private function get_version() : int {
+	function get_version() : int {
 		if (isset($this->cached_version))
 			return $this->cached_version;
 
@@ -68,10 +72,26 @@ class Db_Migrations {
 
 	private function migrate_to(int $version) {
 		try {
+			if ($version <= $this->get_version()) {
+				Debug::log("Refusing to apply version $version: current version is higher", Debug::LOG_VERBOSE);
+				return false;
+			}
+
+			if ($version == 0)
+				Debug::log("Loading base database schema...", Debug::LOG_VERBOSE);
+			else
+				Debug::log("Starting migration to $version...", Debug::LOG_VERBOSE);
+
 			$this->pdo->beginTransaction();
 
 			foreach ($this->get_lines($version) as $line) {
-				$this->pdo->query($line);
+				Debug::log($line, Debug::LOG_EXTENDED);
+				try {
+					$this->pdo->query($line);
+				} catch (PDOException $e) {
+					Debug::log("Failed on line: $line");
+					throw $e;
+				}
 			}
 
 			if ($version == 0 && $this->base_is_latest)
@@ -80,7 +100,10 @@ class Db_Migrations {
 				$this->set_version($version);
 
 			$this->pdo->commit();
+			Debug::log("Migration finished, current version: " . $this->get_version(), Debug::LOG_VERBOSE);
+
 		} catch (PDOException $e) {
+			Debug::log("Migration failed: " . $e->getMessage(), Debug::LOG_VERBOSE);
 			try {
 				$this->pdo->rollback();
 			} catch (PDOException $ie) {
@@ -90,7 +113,10 @@ class Db_Migrations {
 		}
 	}
 
-	private function get_max_version() : int {
+	function get_max_version() : int {
+		if ($this->max_version_override > 0)
+			return $this->max_version_override;
+
 		if (isset($this->cached_max_version))
 			return $this->cached_max_version;
 
@@ -108,17 +134,32 @@ class Db_Migrations {
 		return $this->cached_max_version;
 	}
 
+	function is_migration_needed() : bool {
+		return $this->get_version() != $this->get_max_version();
+	}
+
 	function migrate() : bool {
 
-		for ($i = $this->get_version() + 1; $i <= $this->get_max_version(); $i++)
+		if ($this->get_version() == -1) {
+			try {
+				$this->migrate_to(0);
+			} catch (PDOException $e) {
+				user_error("Failed to load base schema for {$this->migrations_table}: " . $e->getMessage(), E_USER_WARNING);
+				return false;
+			}
+		}
+
+		for ($i = $this->get_version() + 1; $i <= $this->get_max_version(); $i++) {
 			try {
 				$this->migrate_to($i);
 			} catch (PDOException $e) {
-				user_error("Failed applying migration $i on table {$this->migrations_table}: " . $e->getMessage(), E_USER_WARNING);
+				user_error("Failed to apply migration ${i} for {$this->migrations_table}: " . $e->getMessage(), E_USER_WARNING);
+				return false;
 				//throw $e;
 			}
+		}
 
-		return $this->get_version() == $this->get_max_version();
+		return !$this->is_migration_needed();
 	}
 
 	private function get_lines(int $version) : array {
@@ -134,11 +175,11 @@ class Db_Migrations {
 							});
 
 			return array_filter(explode(";", implode("", $lines)), function ($line) {
-				return strlen(trim($line)) > 0;
+				return strlen(trim($line)) > 0 && !in_array(strtolower($line), ["begin", "commit"]);
 			});
 
 		} else {
-			user_error(E_USER_ERROR, "[migrations] requested schema file ${filename} not found.");
+			user_error("Requested schema file ${filename} not found.", E_USER_ERROR);
 			return [];
 		}
 	}

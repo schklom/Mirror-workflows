@@ -82,29 +82,35 @@ class Db_Migrations {
 			else
 				Debug::log("Starting migration to $version...", Debug::LOG_VERBOSE);
 
-			// mysql doesn't support transactions for DDL statements
-			if (Config::get(Config::DB_TYPE) != "mysql")
-				$this->pdo->beginTransaction();
+			$lines = $this->get_lines($version);
 
-			foreach ($this->get_lines($version) as $line) {
-				Debug::log($line, Debug::LOG_EXTENDED);
-				try {
-					$this->pdo->query($line);
-				} catch (PDOException $e) {
-					Debug::log("Failed on line: $line", Debug::LOG_VERBOSE);
-					throw $e;
+			if (count($lines) > 0) {
+				// mysql doesn't support transactions for DDL statements
+				if (Config::get(Config::DB_TYPE) != "mysql")
+					$this->pdo->beginTransaction();
+
+				foreach ($lines as $line) {
+					Debug::log($line, Debug::LOG_EXTENDED);
+					try {
+						$this->pdo->query($line);
+					} catch (PDOException $e) {
+						Debug::log("Failed on line: $line", Debug::LOG_VERBOSE);
+						throw $e;
+					}
 				}
+
+				if ($version == 0 && $this->base_is_latest)
+					$this->set_version($this->get_max_version());
+				else
+					$this->set_version($version);
+
+				if (Config::get(Config::DB_TYPE) != "mysql")
+					$this->pdo->commit();
+
+				Debug::log("Migration finished, current version: " . $this->get_version(), Debug::LOG_VERBOSE);
+			} else {
+				Debug::log("Migration failed: schema file is empty or missing.", Debug::LOG_VERBOSE);
 			}
-
-			if ($version == 0 && $this->base_is_latest)
-				$this->set_version($this->get_max_version());
-			else
-				$this->set_version($version);
-
-			if (Config::get(Config::DB_TYPE) != "mysql")
-				$this->pdo->commit();
-
-			Debug::log("Migration finished, current version: " . $this->get_version(), Debug::LOG_VERBOSE);
 
 		} catch (PDOException $e) {
 			Debug::log("Migration failed: " . $e->getMessage(), Debug::LOG_VERBOSE);

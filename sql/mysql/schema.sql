@@ -9,7 +9,6 @@ drop table if exists ttrss_access_keys;
 drop table if exists ttrss_user_labels2;
 drop table if exists ttrss_labels2;
 drop table if exists ttrss_feedbrowser_cache;
-drop table if exists ttrss_version;
 drop table if exists ttrss_labels;
 drop table if exists ttrss_filters2_actions;
 drop table if exists ttrss_filters2_rules;
@@ -295,10 +294,6 @@ create table ttrss_tags (id integer primary key auto_increment,
 	foreign key (post_int_id) references ttrss_user_entries(int_id) ON DELETE CASCADE,
 	index (owner_uid),
 	foreign key (owner_uid) references ttrss_users(id) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
-
-create table ttrss_version (schema_version int not null) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
-
-insert into ttrss_version values (142);
 
 create table ttrss_enclosures (id integer primary key auto_increment,
 	content_url text not null,

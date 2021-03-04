@@ -6,7 +6,6 @@ drop table if exists ttrss_access_keys;
 drop table if exists ttrss_user_labels2;
 drop table if exists ttrss_labels2;
 drop table if exists ttrss_feedbrowser_cache;
-drop table if exists ttrss_version;
 drop table if exists ttrss_labels;
 drop table if exists ttrss_filters2_rules;
 drop table if exists ttrss_filters2_actions;
@@ -277,10 +276,6 @@ create table ttrss_tags (id serial not null primary key,
 
 create index ttrss_tags_owner_uid_index on ttrss_tags(owner_uid);
 create index ttrss_tags_post_int_id_idx on ttrss_tags(post_int_id);
-
-create table ttrss_version (schema_version int not null);
-
-insert into ttrss_version values (142);
 
 create table ttrss_enclosures (id serial not null primary key,
 	content_url text not null,

@@ -1516,6 +1516,9 @@ body.ttrss_prefs fieldset.plugin label.description .dijitCheckBox {
 body.ttrss_prefs .users-list td {
   cursor: pointer;
 }
+body.ttrss_prefs .plugin-installer-list .plugin-installed {
+  opacity: 0.5;
+}
 body.ttrss_prefs .event-log tr td {
   font-size: 10px;
   padding: 8px;

@@ -374,6 +374,7 @@ const	Helpers = {
 				need_refresh: false,
 				entries: false,
 				search_query: "",
+				installed_plugins: [],
 				onHide: function() {
 					if (this.need_refresh) {
 						Helpers.Prefs.refresh();
@@ -449,6 +450,9 @@ const	Helpers = {
 							.filter((stoken) => (stoken.length > 0 ? stoken : null));
 
 						dialog.entries.forEach((plugin) => {
+							const is_installed = (dialog.installed_plugins
+								.filter((p) => plugin.topics.map((t) => t.replace(/-/, "_")).includes(p))).length > 0;
+
 							if (search_tokens.length == 0 ||
 									Object.values(plugin).filter((pval) =>
 										search_tokens.filter((stoken) =>
@@ -458,8 +462,9 @@ const	Helpers = {
 								++results_rendered;
 
 								container.innerHTML += `
-									<li data-row-value="${App.escapeHtml(plugin.name)}">
-										${App.FormFields.button_tag(__('Install'), "", {class: 'alt-primary pull-right',
+									<li data-row-value="${App.escapeHtml(plugin.name)}" class="${is_installed ? "plugin-installed" : ""}">
+										${App.FormFields.button_tag(is_installed ? __("Already installed") : __('Install'), "", {class: 'alt-primary pull-right',
+											disabled: is_installed,
 											onclick: `App.dialogOf(this).performInstall("${App.escapeHtml(plugin.name)}")`})}
 
 										<h3 style="margin-top: 0">${plugin.name}
@@ -487,9 +492,7 @@ const	Helpers = {
 					const container = dialog.domNode.querySelector(".contents");
 					container.innerHTML = `<li class='text-center'>${__("Looking for plugins...")}</li>`;
 
-					const installed = [...document.querySelectorAll('*[data-plugin-name]')].map((p) => p.getAttribute('data-plugin-name'));
-
-					xhr.json("backend.php", {op: "pref-prefs", method: "getAvailablePlugins", 'installed[]': installed}, (reply) => {
+					xhr.json("backend.php", {op: "pref-prefs", method: "getAvailablePlugins"}, (reply) => {
 						dialog.entries = reply;
 						dialog.render_contents();
 					});
@@ -502,7 +505,7 @@ const	Helpers = {
 						<div style='height : 16px'>&nbsp;</div> <!-- disgusting -->
 					</div>
 
-					<ul style='clear : both' class="panel panel-scrollable-400px contents"> </ul>
+					<ul style='clear : both' class="panel panel-scrollable-400px contents plugin-installer-list"> </ul>
 
 					<footer>
 						${App.FormFields.button_tag(__("Refresh"), "", {class: 'alt-primary', onclick: 'App.dialogOf(this).reload()'})}
@@ -513,6 +516,9 @@ const	Helpers = {
 
 			const tmph = dojo.connect(dialog, 'onShow', function () {
 				dojo.disconnect(tmph);
+
+				dialog.installed_plugins = [...document.querySelectorAll('*[data-plugin-name]')].map((p) => p.getAttribute('data-plugin-name'));
+
 				dialog.reload();
 			});
 

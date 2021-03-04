@@ -1357,20 +1357,14 @@ class Pref_Prefs extends Handler_Protected {
 		}
 	}
 
-	private function _get_available_plugins(array $installed = []) {
+	private function _get_available_plugins() {
 		if ($_SESSION["access_level"] >= 10 && Config::get(Config::ENABLE_PLUGIN_INSTALLER)) {
-			$obj = json_decode(UrlHelper::fetch(['url' => 'https://tt-rss.org/plugins.json']), true);
-
-			// TODO: filter installed, we'll need class names in the plugins.json
-
-			return $obj;
+			return json_decode(UrlHelper::fetch(['url' => 'https://tt-rss.org/plugins.json']), true);
 		}
 	}
 	function getAvailablePlugins() {
-		$installed = $_REQUEST['installed'];
-
 		if ($_SESSION["access_level"] >= 10) {
-			print json_encode($this->_get_available_plugins($installed));
+			print json_encode($this->_get_available_plugins());
 		}
 	}
 

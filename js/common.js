@@ -100,7 +100,7 @@ Element.prototype.fadeIn = function(display = undefined){
 };
 
 Element.prototype.visible = function() {
-	return this.style.display != "none" && this.offsetHeight != 0 && this.offsetWidth != 0;
+	return window.getComputedStyle(this).display != "none"; //&& this.offsetHeight != 0 && this.offsetWidth != 0;
 }
 
 Element.visible = function(elem) {

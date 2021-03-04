@@ -167,7 +167,7 @@ class Bookmarklets extends Plugin {
 		</html>
 			<?php
 		} else {
-			Handler_Public::_render_login_form();
+			Handler_Public::_render_login_form($this->host->get_public_method_url($this, "subscribe"));
 		}
 	}
 
@@ -289,10 +289,12 @@ class Bookmarklets extends Plugin {
 				}
 
 			} else {
-				print_error("Not logged in");
+				$return_to = $this->host->get_public_method_url($this, "sharepopup");
 			?>
 
-			<form action="public.php?return=<?= urlencode(Config::make_self_url()) ?>" method="post">
+			<?= format_error("Not logged in") ?>
+
+			<form action="public.php?return=<?= urlencode($return_to) ?>" method="post">
 
 				<input type="hidden" name="op" value="login">
 

@@ -834,8 +834,11 @@ class Handler_Public extends Handler {
 		}
 	}
 
-	static function _render_login_form() {
+	static function _render_login_form(string $return_to = "") {
 		header('Cache-Control: public');
+
+		if ($return_to)
+			$_REQUEST['return'] = $return_to;
 
 		require_once "login_form.php";
 		exit;

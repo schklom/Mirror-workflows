@@ -236,6 +236,14 @@
 		}
 	}
 
+	function with_trailing_slash(string $str) : string {
+		if (substr($str, -1) === "/") {
+			return $str;
+		} else {
+			return "$str/";
+		}
+	}
+
 	function make_password($length = 12) {
 		$password = "";
 		$possible = "0123456789abcdfghjkmnpqrstvwxyzABCDFGHJKMNPQRSTVWXYZ*%+^";

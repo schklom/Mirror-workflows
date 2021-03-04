@@ -71,7 +71,7 @@ module.exports = [
 							message: "This user doesn't exist.",
 							withInstancesLink: false
 						})
-					} else if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN || error === constants.symbols.RATE_LIMITED) {
+					} else if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN || error === constants.symbols.RATE_LIMITED || error === constants.symbols.INSTAGRAM_BLOCK_TYPE_DECEMBER) {
 						return {
 							statusCode: 503,
 							contentType: "text/html",
@@ -79,10 +79,8 @@ module.exports = [
 								"Cache-Control": `public, max-age=${userRequestCache.getTtl("user/"+fill[0], 1000)}`,
 								"Retry-After": userRequestCache.getTtl("user/"+fill[0], 1000)
 							},
-							content: pugCache.get("pug/blocked.pug").web({
+							content: pugCache.get("pug/blocked_december.pug").web({
 								website_origin: constants.website_origin,
-								username: fill[0],
-								expiresMinutes: userRequestCache.getTtl("user/"+fill[0], 1000*60),
 								getStaticURL
 							})
 						}

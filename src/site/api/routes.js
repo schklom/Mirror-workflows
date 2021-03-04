@@ -138,23 +138,7 @@ module.exports = [
 						withInstancesLink: false,
 						settings
 					})
-				} else if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN) {
-					return {
-						statusCode: 503,
-						contentType: "text/html",
-						headers: {
-							"Retry-After": userRequestCache.getTtl("user/"+username, 1000)
-						},
-						content: pugCache.get("pug/blocked.pug").web({
-							website_origin: constants.website_origin,
-							username,
-							expiresMinutes: userRequestCache.getTtl("user/"+username, 1000*60),
-							getStaticURL,
-							settings,
-							lang
-						})
-					}
-				} else if (error === constants.symbols.INSTAGRAM_BLOCK_TYPE_DECEMBER) {
+				} else if (error === constants.symbols.INSTAGRAM_DEMANDS_LOGIN || error === constants.symbols.INSTAGRAM_BLOCK_TYPE_DECEMBER) {
 					return render(503, "pug/blocked_december.pug")
 				} else if (error === constants.symbols.RATE_LIMITED) {
 					return render(503, "pug/blocked_graphql.pug")

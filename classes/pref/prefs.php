@@ -808,26 +808,32 @@ class Pref_Prefs extends Handler_Protected {
 						<input disabled='1' dojoType='dijit.form.CheckBox' <?= $is_checked ?> type='checkbox'><?= htmlspecialchars($about[1]) ?>
 					</label>
 
+					<?php if (count($tmppluginhost->get_all($plugin)) > 0) {
+						if (in_array($name, $system_enabled)) { ?>
+							<button dojoType='dijit.form.Button' title="<?= __("Clear data") ?>"
+								onclick='Helpers.Plugins.clearPluginData("<?= htmlspecialchars($name) ?>")'>
+									<i class='material-icons'>clear</i></button>
+						<?php }
+					} ?>
+
+					<?php if ($about[4] ?? false) { ?>
+						<button dojoType='dijit.form.Button' class='alt-info' title="<?= __("More info...") ?>"
+								onclick='window.open("<?= htmlspecialchars($about[4]) ?>")'>
+									<i class='material-icons'>help</i></button>
+					<?php } ?>
+
 					<?php if ($_SESSION["access_level"] >= 10) { ?>
-						<button style="display : none"
+						<button style="display : none" class='alt-warning' title="<?= __("Update") ?>"
 								data-update-btn-for-plugin="<?= htmlspecialchars($name) ?>" dojoType='dijit.form.Button'
 								onclick='Helpers.Plugins.update("<?= htmlspecialchars($name) ?>")'>
 							<?= \Controls\icon("update") ?>
-							<?= __("Update") ?>
 						</button>
 					<?php } ?>
 
-					<?php if ($about[4] ?? false) { ?>
-						<button dojoType='dijit.form.Button' class='alt-info'
-							onclick='window.open("<?= htmlspecialchars($about[4]) ?>")'>
-								<i class='material-icons'>open_in_new</i> <?= __("More info...") ?></button>
-					<?php } ?>
-
 					<?php if ($_SESSION["access_level"] >= 10 && $is_local) { ?>
-						<button dojoType='dijit.form.Button'
+						<button dojoType='dijit.form.Button' title="<?= __("Uninstall") ?>"
 								onclick='Helpers.Plugins.uninstall("<?= htmlspecialchars($name) ?>")'>
 							<?= \Controls\icon("delete") ?>
-							<?= __("Uninstall") ?>
 						</button>
 					<?php } ?>
 
@@ -876,34 +882,32 @@ class Pref_Prefs extends Handler_Protected {
 						</input>
 					</label>
 
-					<?php if ($_SESSION["access_level"] >= 10) { ?>
-						<button style="display : none"
-								data-update-btn-for-plugin="<?= htmlspecialchars($name) ?>" dojoType='dijit.form.Button'
-								onclick='Helpers.Plugins.update("<?= htmlspecialchars($name) ?>")'>
-							<?= \Controls\icon("update") ?>
-							<?= __("Update") ?>
-						</button>
-					<?php } ?>
-
 					<?php if (count($tmppluginhost->get_all($plugin)) > 0) {
 						if (in_array($name, $system_enabled) || in_array($name, $user_enabled)) { ?>
-							<button dojoType='dijit.form.Button'
+							<button dojoType='dijit.form.Button' title="<?= __("Clear data") ?>"
 								onclick='Helpers.Plugins.clearPluginData("<?= htmlspecialchars($name) ?>")'>
-									<i class='material-icons'>clear</i> <?= __("Clear data") ?></button>
+									<i class='material-icons'>clear</i></button>
 						<?php }
 					} ?>
 
 					<?php if ($about[4] ?? false) { ?>
-						<button dojoType='dijit.form.Button' class='alt-info'
+						<button dojoType='dijit.form.Button' class='alt-info' title="<?= __("More info...") ?>"
 								onclick='window.open("<?= htmlspecialchars($about[4]) ?>")'>
-									<i class='material-icons'>open_in_new</i> <?= __("More info...") ?></button>
+									<i class='material-icons'>help</i></button>
+					<?php } ?>
+
+					<?php if ($_SESSION["access_level"] >= 10) { ?>
+						<button style="display : none" class='alt-warning' title="<?= __("Update") ?>"
+								data-update-btn-for-plugin="<?= htmlspecialchars($name) ?>" dojoType='dijit.form.Button'
+								onclick='Helpers.Plugins.update("<?= htmlspecialchars($name) ?>")'>
+							<?= \Controls\icon("update") ?>
+						</button>
 					<?php } ?>
 
 					<?php if ($_SESSION["access_level"] >= 10 && $is_local) { ?>
-						<button dojoType='dijit.form.Button'
+						<button dojoType='dijit.form.Button' title="<?= __("Uninstall") ?>"
 								onclick='Helpers.Plugins.uninstall("<?= htmlspecialchars($name) ?>")'>
 							<?= \Controls\icon("delete") ?>
-							<?= __("Uninstall") ?>
 						</button>
 					<?php } ?>
 
@@ -986,7 +990,7 @@ class Pref_Prefs extends Handler_Protected {
 						<?= __("Enable selected plugins") ?>
 					</button>
 					<?php if ($_SESSION["access_level"] >= 10) { ?>
-						<button class="update-all-plugins-btn" style="display : none" dojoType='dijit.form.Button' onclick="Helpers.Plugins.update()">
+						<button class="update-all-plugins-btn alt-warning" style="display : none" dojoType='dijit.form.Button' onclick="Helpers.Plugins.update()">
 							<?= \Controls\icon("update") ?>
 							<?= __("Update local plugins") ?>
 						</button>

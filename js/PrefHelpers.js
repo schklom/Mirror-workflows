@@ -452,7 +452,7 @@ const	Helpers = {
 
 								container.innerHTML += `
 									<li data-row-value="${App.escapeHtml(plugin.name)}">
-										${App.FormFields.button_tag(__('Install plugin'), "", {class: 'alt-primary pull-right',
+										${App.FormFields.button_tag(__('Install'), "", {class: 'alt-primary pull-right',
 											onclick: `App.dialogOf(this).performInstall("${App.escapeHtml(plugin.name)}")`})}
 
 										<h3 style="margin-top: 0">${plugin.name}

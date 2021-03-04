@@ -443,7 +443,7 @@ class RPC extends Handler_Protected {
 		$params["default_view_mode"] = get_pref(Prefs::_DEFAULT_VIEW_MODE);
 		$params["default_view_limit"] = (int) get_pref(Prefs::_DEFAULT_VIEW_LIMIT);
 		$params["default_view_order_by"] = get_pref(Prefs::_DEFAULT_VIEW_ORDER_BY);
-		$params["bw_limit"] = (int) $_SESSION["bw_limit"];
+		$params["bw_limit"] = (int) ($_SESSION["bw_limit"] ?? false);
 		$params["is_default_pw"] = UserHelper::is_default_password();
 		$params["label_base_index"] = LABEL_BASE_INDEX;
 

@@ -16,7 +16,9 @@ class Af_Comics_Tfd extends Af_ComicFilter {
 
 			$doc = new DOMDocument();
 
-			if (@$doc->loadHTML(UrlHelper::fetch($article["link"]))) {
+			$res = UrlHelper::fetch($article["link"]);
+
+			if ($res && $doc->loadHTML($res)) {
 				$xpath = new DOMXPath($doc);
 				$basenode = $xpath->query('//img[contains(@src, ".gif")]')->item(0);
 

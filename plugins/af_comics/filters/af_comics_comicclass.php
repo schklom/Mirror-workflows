@@ -17,7 +17,7 @@ class Af_Comics_ComicClass extends Af_ComicFilter {
 
 				$doc = new DOMDocument();
 
-				if (@$doc->loadHTML($res)) {
+				if ($res && $doc->loadHTML($res)) {
 					$xpath = new DOMXPath($doc);
 					$basenode = $xpath->query('//div[@class="comic"]')->item(0);
 

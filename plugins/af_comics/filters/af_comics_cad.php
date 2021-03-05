@@ -17,7 +17,7 @@ class Af_Comics_Cad extends Af_ComicFilter {
 				if (!$res && UrlHelper::$fetch_last_error_content)
 					$res = UrlHelper::$fetch_last_error_content;
 
-				if (@$doc->loadHTML($res)) {
+				if ($res && $doc->loadHTML($res)) {
 					$xpath = new DOMXPath($doc);
 					$basenode = $xpath->query('//div[@class="comicpage"]/a/img')->item(0);
 

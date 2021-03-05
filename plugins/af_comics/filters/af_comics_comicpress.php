@@ -23,7 +23,7 @@ class Af_Comics_ComicPress extends Af_ComicFilter {
 
 				$doc = new DOMDocument();
 
-				if (@$doc->loadHTML($res)) {
+				if ($res && $doc->loadHTML($res)) {
 					$xpath = new DOMXPath($doc);
 					$basenode = $xpath->query('//div[@id="comic"]')->item(0);
 

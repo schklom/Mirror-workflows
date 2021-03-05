@@ -14,7 +14,7 @@ class Af_Comics_Pvp extends Af_ComicFilter {
 
 				$doc = new DOMDocument();
 
-				if (@$doc->loadHTML($res)) {
+				if ($res && $doc->loadHTML($res)) {
 					$xpath = new DOMXPath($doc);
 					$basenode = $xpath->query('//section[@class="comic-art"]')->item(0);
 

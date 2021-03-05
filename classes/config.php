@@ -87,7 +87,7 @@ class Config {
 		Config::LOG_DESTINATION => [ "sql",								Config::T_STRING ],
 		Config::LOCAL_OVERRIDE_STYLESHEET => [ "local-overrides.css",
 																					Config::T_STRING ],
-		Config::DAEMON_MAX_CHILD_RUNTIME => [ 1800,					Config::T_STRING ],
+		Config::DAEMON_MAX_CHILD_RUNTIME => [ 1800,					Config::T_INT ],
 		Config::DAEMON_MAX_JOBS => [ 2,									Config::T_INT ],
 		Config::FEED_FETCH_TIMEOUT => [ 45,								Config::T_INT ],
 		Config::FEED_FETCH_NO_CACHE_TIMEOUT => [ 15,					Config::T_INT ],

@@ -85,7 +85,7 @@
 
 </script>
 
-<?php $return = urlencode($_REQUEST['return'] ? $_REQUEST['return'] : with_trailing_slash(Config::make_self_url())) ?>
+<?php $return = urlencode(!empty($_REQUEST['return']) ? $_REQUEST['return'] : with_trailing_slash(Config::make_self_url())) ?>
 
 <div class="container">
 

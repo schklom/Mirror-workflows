@@ -240,6 +240,12 @@ class UserHelper {
 
 		if ($user) {
 			$user->otp_enabled = false;
+
+			// force new OTP secret when next enabled
+			if (Config::get_schema_version() >= 143) {
+				$user->otp_secret = null;
+			}
+
 			$user->save();
 
 			return true;
@@ -281,8 +287,32 @@ class UserHelper {
 		$user = ORM::for_table('ttrss_users')->find_one($owner_uid);
 
 		if ($user) {
-			if (!$user->otp_enabled || $show_if_enabled)
-				return \ParagonIE\ConstantTime\Base32::encodeUpperUnpadded(mb_substr(sha1($user->salt), 0, 12));
+
+			$salt_based_secret = mb_substr(sha1($user->salt), 0, 12);
+
+			if (Config::get_schema_version() >= 143) {
+				$secret = $user->otp_secret;
+
+				if (empty($secret)) {
+
+					/* migrate secret if OTP is already enabled, otherwise make a new one */
+					if ($user->otp_enabled) {
+						$user->otp_secret = $salt_based_secret;
+					} else {
+						$user->otp_secret = bin2hex(get_random_bytes(6));
+					}
+
+					$user->save();
+
+					$secret = $user->otp_secret;
+				}
+			} else {
+				$secret = $salt_based_secret;
+			}
+
+			if (!$user->otp_enabled || $show_if_enabled) {
+				return \ParagonIE\ConstantTime\Base32::encodeUpperUnpadded($secret);
+			}
 		}
 
 		return null;

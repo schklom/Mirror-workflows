@@ -352,10 +352,6 @@ class Pref_Prefs extends Handler_Protected {
 					}
 				</script>
 
-				<?php if ($otp_enabled) {
-					print_notice(__("Changing your current password will disable OTP."));
-				} ?>
-
 				<fieldset>
 					<label><?= __("Old password:") ?></label>
 					<input dojoType='dijit.form.ValidationTextBox' type='password' required='1' name='old_password'>
@@ -458,7 +454,6 @@ class Pref_Prefs extends Handler_Protected {
 
 			} else {
 
-				print_warning("You will need a compatible Authenticator to use this. Changing your password would automatically disable OTP.");
 				print_notice("You will need to generate app passwords for the API clients if you enable OTP.");
 
 				if (function_exists("imagecreatefromstring")) {
@@ -479,7 +474,7 @@ class Pref_Prefs extends Handler_Protected {
 
 					<fieldset>
 						<label><?= __("OTP Key:") ?></label>
-						<input dojoType='dijit.form.ValidationTextBox' disabled='disabled' value="<?= $otp_secret ?>" size='32'>
+						<input dojoType='dijit.form.ValidationTextBox' disabled='disabled' value="<?= $otp_secret ?>" style='width : 215px'>
 					</fieldset>
 
 					<!-- TODO: return JSON from the backend call -->

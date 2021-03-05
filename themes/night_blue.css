@@ -1428,13 +1428,6 @@ body.ttrss_prefs {
   background-color: #222;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
-  /*.dijitContentPane {
-		h1:first-of-type,
-		h2:first-of-type,
-		h3:first-of-type {
-			margin-top: 0px;
-		}
-	}*/
 }
 body.ttrss_prefs h1,
 body.ttrss_prefs h2,
@@ -1443,6 +1436,11 @@ body.ttrss_prefs h4 {
   font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 600;
   color: #ccc;
+}
+body.ttrss_prefs .dijitContentPane > h1:first-of-type,
+body.ttrss_prefs .dijitContentPane > h2:first-of-type,
+body.ttrss_prefs .dijitContentPane > h3:first-of-type {
+  margin-top: 0;
 }
 body.ttrss_prefs #footer,
 body.ttrss_prefs #header {

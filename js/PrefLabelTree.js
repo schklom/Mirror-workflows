@@ -69,7 +69,6 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 				const dialog = new fox.SingleUseDialog({
 					id: "labelEditDlg",
 					title: __("Edit label"),
-					style: "width: 650px",
 					setLabelColor: function (id, fg, bg) {
 
 						let kind = '';
@@ -121,10 +120,10 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 					content: `
 						<form onsubmit='return false'>
 
-						<header>${__("Caption")}</header>
 						<section>
-							<input style='font-size : 16px; color : ${fg_color}; background : ${bg_color}; transition : background 0.1s linear'
+							<input style='font-size : 16px; width : 550px; color : ${fg_color}; background : ${bg_color}; transition : background 0.1s linear'
 								id='labelEdit_caption'
+								placeholder="${__("Caption")}"
 								name='caption'
 								dojoType='dijit.form.ValidationTextBox'
 								required='true'
@@ -138,7 +137,6 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 						${App.FormFields.hidden_tag('fg_color', fg_color, {}, 'labelEdit_fgColor')}
 						${App.FormFields.hidden_tag('bg_color', bg_color, {}, 'labelEdit_bgColor')}
 
-						<header>${__("Colors")}</header>
 						<section>
 							<table width='100%'>
 								<tr>
@@ -168,6 +166,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 
 						<footer>
 							<button dojoType='dijit.form.Button' type='submit' class='alt-primary' onclick='App.dialogOf(this).execute()'>
+								${App.FormFields.icon("save")}
 								${__('Save')}
 							</button>
 							<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>

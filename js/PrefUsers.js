@@ -115,6 +115,7 @@ const	Users = {
 
 						<footer>
 							<button dojoType='dijit.form.Button' class='alt-primary' type='submit' onclick='App.dialogOf(this).execute()'>
+								${App.FormFields.icon("save")}
 								${__('Save')}
 							</button>
 							<button dojoType='dijit.form.Button' onclick='App.dialogOf(this).hide()'>

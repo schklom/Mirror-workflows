@@ -301,7 +301,8 @@ class Pref_Prefs extends Handler_Protected {
 			<hr/>
 
 			<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>
-				<?= __("Save data") ?>
+				<?= \Controls\icon("save") ?>
+				<?= __("Save") ?>
 			</button>
 		</form>
 		<?php
@@ -373,6 +374,7 @@ class Pref_Prefs extends Handler_Protected {
 				<hr/>
 
 				<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>
+					<?= \Controls\icon("security") ?>
 					<?= __("Change password") ?>
 				</button>
 			</form>
@@ -396,12 +398,14 @@ class Pref_Prefs extends Handler_Protected {
 		<hr>
 
 		<button style='float : left' class='alt-primary' dojoType='dijit.form.Button' onclick="Helpers.AppPasswords.generate()">
-			<?= __('Generate new password') ?>
+		<?= \Controls\icon("add") ?>
+			<?= __('Generate password') ?>
 		</button>
 
 		<button style='float : left' class='alt-danger' dojoType='dijit.form.Button'
 			onclick="Helpers.AppPasswords.removeSelected()">
-			<?= __('Remove selected passwords') ?>
+			<?= \Controls\icon("delete") ?>
+			<?= __('Remove selected') ?>
 		</button>
 
 		<?php
@@ -444,6 +448,7 @@ class Pref_Prefs extends Handler_Protected {
 					<hr/>
 
 					<button dojoType='dijit.form.Button' type='submit' class='alt-danger'>
+						<?= \Controls\icon("lock_open") ?>
 						<?= __("Disable OTP") ?>
 					</button>
 
@@ -507,6 +512,7 @@ class Pref_Prefs extends Handler_Protected {
 					<hr/>
 
 					<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>
+						<?= \Controls\icon("lock") ?>
 						<?= __("Enable OTP") ?>
 					</button>
 
@@ -623,30 +629,27 @@ class Pref_Prefs extends Handler_Protected {
 
 					} else if ($pref_name == "USER_CSS_THEME") {
 
-						$themes = array_merge(glob("themes/*.php"), glob("themes/*.css"), glob("themes.local/*.css"));
-						$themes = array_map("basename", $themes);
-						$themes = array_filter($themes, "theme_exists");
-						asort($themes);
+						$theme_files = array_map("basename",
+							array_merge(glob("themes/*.php"),
+								glob("themes/*.css"),
+								glob("themes.local/*.css")));
 
-						if (!theme_exists($value)) $value = "";
+						asort($theme_files);
 
-						print "<select name='$pref_name' id='$pref_name' dojoType='fox.form.Select'>";
+						$themes = [ "" => __("default") ];
 
-						$issel = $value == "" ? "selected='selected'" : "";
-						print "<option $issel value=''>".__("default")."</option>";
-
-						foreach ($themes as $theme) {
-							$issel = $value == $theme ? "selected='selected'" : "";
-							print "<option $issel value='$theme'>$theme</option>";
+						foreach ($theme_files as $file) {
+							$themes[$file] = basename($file, ".css");
 						}
+						?>
 
-						print "</select>";
+						<?= \Controls\select_hash($pref_name, $value, $themes) ?>
+						<?= \Controls\button_tag(\Controls\icon("palette") . " " . __("Customize"), "",
+								["onclick" => "Helpers.Prefs.customizeCSS()"]) ?>
+						<?= \Controls\button_tag(\Controls\icon("open_in_new") . " " . __("More themes..."), "",
+								["class" => "alt-info", "onclick" => "window.open(\"https://tt-rss.org/wiki/Themes\")"]) ?>
 
-						print " <button dojoType=\"dijit.form.Button\" class='alt-info'
-							onclick=\"Helpers.Prefs.customizeCSS()\">" . __('Customize') . "</button>";
-
-						print " <button dojoType='dijit.form.Button' onclick='window.open(\"https://tt-rss.org/wiki/Themes\")'>
-							<i class='material-icons'>open_in_new</i> ".__("More themes...")."</button>";
+						<?php
 
 					} else if ($pref_name == "DEFAULT_UPDATE_INTERVAL") {
 
@@ -674,7 +677,8 @@ class Pref_Prefs extends Handler_Protected {
 							["disabled" => $is_disabled], "CB_$pref_name");
 
 						if ($pref_name == Prefs::DIGEST_ENABLE) {
-							print \Controls\button_tag(__('Preview'), '', ['onclick' => 'Helpers.Digest.preview()', 'style' => 'margin-left : 10px']);
+							print \Controls\button_tag(\Controls\icon("info") . " " . __('Preview'), '',
+								['onclick' => 'Helpers.Digest.preview()', 'style' => 'margin-left : 10px']);
 						}
 
 					} else if (in_array($pref_name, ['FRESH_ARTICLE_MAX_AGE',
@@ -699,11 +703,11 @@ class Pref_Prefs extends Handler_Protected {
 						$cert_serial = htmlspecialchars(self::_get_ssl_certificate_id());
 						$has_serial = ($cert_serial) ? true : false;
 
-						print \Controls\button_tag(__('Register'), "", [
+						print \Controls\button_tag(\Controls\icon("security") . " " . __('Register'), "", [
 							"disabled" => !$has_serial,
 							"onclick" => "dijit.byId('SSL_CERT_SERIAL').attr('value', '$cert_serial')"]);
 
-						print \Controls\button_tag(__('Clear'), "", [
+						print \Controls\button_tag(\Controls\icon("clear") . " " . __('Clear'), "", [
 							"class" => "alt-danger",
 							"onclick" => "dijit.byId('SSL_CERT_SERIAL').attr('value', '')"]);
 
@@ -763,19 +767,21 @@ class Pref_Prefs extends Handler_Protected {
 				<div dojoType="dijit.layout.ContentPane" region="bottom">
 
 					<div dojoType="fox.form.ComboButton" type="submit" class="alt-primary">
-						<span><?= __('Save configuration') ?></span>
+						<span>	<?= __('Save configuration') ?></span>
 						<div dojoType="dijit.DropDownMenu">
 							<div dojoType="dijit.MenuItem" onclick="dijit.byId('changeSettingsForm').onSubmit(null, true)">
-								<?= __("Save and exit preferences") ?>
+								<?= __("Save and exit") ?>
 							</div>
 						</div>
 					</div>
 
 					<button dojoType="dijit.form.Button" onclick="return Helpers.Profiles.edit()">
+						<?= \Controls\icon("settings") ?>
 						<?= __('Manage profiles') ?>
 					</button>
 
 					<button dojoType="dijit.form.Button" class="alt-danger" onclick="return Helpers.Prefs.confirmReset()">
+						<?= \Controls\icon("clear") ?>
 						<?= __('Reset to defaults') ?>
 					</button>
 
@@ -978,9 +984,12 @@ class Pref_Prefs extends Handler_Protected {
 				</div>
 				<div dojoType="dijit.layout.ContentPane" region="bottom">
 					<button dojoType='dijit.form.Button' class="alt-info pull-left" onclick='window.open("https://tt-rss.org/wiki/Plugins")'>
-						<i class='material-icons'>help</i> <?= __("More info...") ?>
+						<i class='material-icons'>help</i>
+						<?= __("More info...") ?>
 					</button>
+
 					<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>
+						<?= \Controls\icon("save") ?>
 						<?= __("Enable selected") ?>
 					</button>
 					<?php if ($_SESSION["access_level"] >= 10) { ?>

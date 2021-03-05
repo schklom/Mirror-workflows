@@ -474,7 +474,7 @@ const	CommonDialogs = {
 									<fieldset>
 										<input dojoType='dijit.form.ValidationTextBox' required='1'
 											placeHolder="${__("Feed title")}"
-											style='font-size : 16px; width: 500px' name='title' value="${App.escapeHtml(feed.title)}">
+											style='font-size : 16px; width: 530px' name='title' value="${App.escapeHtml(feed.title)}">
 									</fieldset>
 
 									<fieldset>
@@ -565,19 +565,21 @@ const	CommonDialogs = {
 							<div dojoType="dijit.layout.ContentPane" title="${__('Icon')}">
 								<div><img class='feedIcon' style="${feed.icon ? "" : "display : none"}" src="${feed.icon ? App.escapeHtml(feed.icon) : ""}"></div>
 
-								<label class="dijitButton">${__("Upload new icon...")}
+								<label class="dijitButton">
+									${App.FormFields.icon("file_upload")}
+									${__("Upload new icon...")}
 									<input style="display: none" type="file" onchange="App.dialogOf(this).uploadIcon(this)">
 								</label>
 
-								${App.FormFields.submit_tag(__("Remove"), {class: "alt-danger", onclick: "App.dialogOf(this).removeIcon("+feed_id+")"})}
+								${App.FormFields.submit_tag(App.FormFields.icon("delete") + " " + __("Remove"), {class: "alt-danger", onclick: "App.dialogOf(this).removeIcon("+feed_id+")"})}
 							</div>
 							<div dojoType="dijit.layout.ContentPane" title="${__('Plugins')}">
 								${reply.plugin_data}
 							</div>
 						</div>
 						<footer>
-							${App.FormFields.button_tag(__("Unsubscribe"), "", {class: "pull-left alt-danger", onclick: "App.dialogOf(this).unsubscribe()"})}
-							${App.FormFields.submit_tag(__("Save"), {onclick: "App.dialogOf(this).execute()"})}
+							${App.FormFields.button_tag(App.FormFields.icon("delete") + " " + __("Unsubscribe"), "", {class: "pull-left alt-danger", onclick: "App.dialogOf(this).unsubscribe()"})}
+							${App.FormFields.submit_tag(App.FormFields.icon("save") + " " + __("Save"), {onclick: "App.dialogOf(this).execute()"})}
 							${App.FormFields.cancel_dialog_tag(__("Cancel"))}
 						</footer>
 					</form>

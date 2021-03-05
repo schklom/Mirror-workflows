@@ -938,12 +938,6 @@ class Pref_Prefs extends Handler_Protected {
 					}
 			</script>
 
-			<?php if (Config::get(Config::CHECK_FOR_UPDATES) && Config::get(Config::CHECK_FOR_PLUGIN_UPDATES) && $_SESSION["access_level"] >= 10) { ?>
-				<script type="dojo/method" event="onShow" args="evt">
-						Helpers.Plugins.checkForUpdate();
-				</script>
-			<?php } ?>
-
 			<?= \Controls\hidden_tag("op", "pref-prefs") ?>
 			<?= \Controls\hidden_tag("method", "setplugins") ?>
 
@@ -987,13 +981,21 @@ class Pref_Prefs extends Handler_Protected {
 						<i class='material-icons'>help</i> <?= __("More info...") ?>
 					</button>
 					<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>
-						<?= __("Enable selected plugins") ?>
+						<?= __("Enable selected") ?>
 					</button>
 					<?php if ($_SESSION["access_level"] >= 10) { ?>
-						<button class="update-all-plugins-btn alt-warning" style="display : none" dojoType='dijit.form.Button' onclick="Helpers.Plugins.update()">
-							<?= \Controls\icon("update") ?>
-							<?= __("Update local plugins") ?>
-						</button>
+						<?php if (Config::get(Config::CHECK_FOR_UPDATES) && Config::get(Config::CHECK_FOR_PLUGIN_UPDATES)) { ?>
+
+							<button dojoType='dijit.form.Button' onclick="Helpers.Plugins.checkForUpdate()">
+								<?= \Controls\icon("update") ?>
+								<?= __("Check for updates") ?>
+							</button>
+
+							<button class="update-all-plugins-btn alt-warning" style="display : none" dojoType='dijit.form.Button' onclick="Helpers.Plugins.update()">
+								<?= \Controls\icon("update") ?>
+								<?= __("Update plugins") ?>
+							</button>
+						<?php } ?>
 
 						<?php if (Config::get(Config::ENABLE_PLUGIN_INSTALLER)) { ?>
 							<button dojoType='dijit.form.Button' onclick="Helpers.Plugins.install()">

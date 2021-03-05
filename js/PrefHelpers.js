@@ -339,6 +339,9 @@ const	Helpers = {
 
 					if (plugins_with_updates > 0)
 						App.find(".update-all-plugins-btn").show();
+					else
+						Notify.info("All local plugins are up-to-date.");
+
 				} else {
 					Notify.error("Unable to check for plugin updates.");
 				}

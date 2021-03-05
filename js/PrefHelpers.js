@@ -454,7 +454,7 @@ const	Helpers = {
 
 						dialog.entries.forEach((plugin) => {
 							const is_installed = (dialog.installed_plugins
-								.filter((p) => plugin.topics.map((t) => t.replace(/-/, "_")).includes(p))).length > 0;
+								.filter((p) => plugin.topics.map((t) => t.replace(/-/g, "_")).includes(p))).length > 0;
 
 							if (search_tokens.length == 0 ||
 									Object.values(plugin).filter((pval) =>

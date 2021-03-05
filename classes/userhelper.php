@@ -48,7 +48,6 @@ class UserHelper {
 					$_SESSION["access_level"] = $user->access_level;
 					$_SESSION["csrf_token"] = bin2hex(get_random_bytes(16));
 					$_SESSION["ip_address"] = UserHelper::get_user_ip();
-					$_SESSION["user_agent"] = sha1($_SERVER['HTTP_USER_AGENT']);
 					$_SESSION["pwd_hash"] = $user->pwd_hash;
 
 					$user->last_login = Db::NOW();

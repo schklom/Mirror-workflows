@@ -22,35 +22,18 @@
 	function validate_session() {
 		if (\Config::get(\Config::SINGLE_USER_MODE)) return true;
 
-		/* if (isset($_SESSION["ref_schema_version"]) && $_SESSION["ref_schema_version"] != \Config::get_schema_version()) {
-			$_SESSION["login_error_msg"] =
-				__("Session failed to validate (schema version changed)");
-			return false;
-		} */
-
 		$pdo = \Db::pdo();
 
 		if (!empty($_SESSION["uid"])) {
-
-			if ($_SESSION["user_agent"] != sha1($_SERVER['HTTP_USER_AGENT'])) {
-				$_SESSION["login_error_msg"] = __("Session failed to validate (UA changed).");
-				return false;
-			}
-
 			$user = \ORM::for_table('ttrss_users')->find_one($_SESSION["uid"]);
 
 			if ($user) {
 				if ($user->pwd_hash != $_SESSION["pwd_hash"]) {
-
-					$_SESSION["login_error_msg"] =
-						__("Session failed to validate (password changed)");
-
+					$_SESSION["login_error_msg"] = __("Session failed to validate (password changed)");
 					return false;
 				}
 			} else {
-				$_SESSION["login_error_msg"] =
-					__("Session failed to validate (user not found)");
-
+				$_SESSION["login_error_msg"] = __("Session failed to validate (user not found)");
 				return false;
 			}
 		}

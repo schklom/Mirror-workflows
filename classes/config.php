@@ -6,7 +6,7 @@ class Config {
 	const T_STRING = 2;
 	const T_INT = 3;
 
-	const SCHEMA_VERSION = 142;
+	const SCHEMA_VERSION = 143;
 
 	// override defaults, defined below in _DEFAULTS[], via environment: DB_TYPE becomes TTRSS_DB_TYPE, etc
 

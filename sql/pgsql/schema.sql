@@ -50,6 +50,7 @@ create table ttrss_users (id serial not null primary key,
 	salt varchar(250) not null default '',
 	twitter_oauth text default null,
 	otp_enabled boolean not null default false,
+	otp_secret varchar(250) default null,
 	resetpass_token varchar(250) default null,
 	created timestamp default null);
 

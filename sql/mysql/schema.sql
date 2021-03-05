@@ -53,6 +53,7 @@ create table ttrss_users (id integer primary key not null auto_increment,
 	created datetime default null,
 	twitter_oauth longtext default null,
 	otp_enabled boolean not null default false,
+	otp_secret varchar(250) default null,
 	resetpass_token varchar(250) default null) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 insert into ttrss_users (login,pwd_hash,access_level) values ('admin',

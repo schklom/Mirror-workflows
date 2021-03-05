@@ -473,6 +473,8 @@ const	Helpers = {
 											</a>
 										</h3>
 
+										<div class='text-muted'>${__("Updated: %s").replace("%s", plugin.last_update)}</div>
+
 										<p>${plugin.description}</p>
 
 										<hr/>

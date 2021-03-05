@@ -744,7 +744,7 @@ class RSSUtils {
 
 				$enclosures = array();
 
-				$encs = $item->_get_enclosures();
+				$encs = $item->get_enclosures();
 
 				if (is_array($encs)) {
 					foreach ($encs as $e) {

@@ -78,7 +78,7 @@ abstract class FeedItem_Common extends FeedItem {
 	}
 
 	// this is common for both Atom and RSS types and deals with various media: elements
-	function _get_enclosures() {
+	function get_enclosures() {
 		$encs = [];
 
 		$enclosures = $this->xpath->query("media:content", $this->elem);

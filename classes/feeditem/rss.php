@@ -112,7 +112,7 @@ class FeedItem_RSS extends FeedItem_Common {
 		return $this->normalize_categories($cats);
 	}
 
-	function _get_enclosures() {
+	function get_enclosures() {
 		$enclosures = $this->elem->getElementsByTagName("enclosure");
 
 		$encs = array();
@@ -129,7 +129,7 @@ class FeedItem_RSS extends FeedItem_Common {
 			array_push($encs, $enc);
 		}
 
-		$encs = array_merge($encs, parent::_get_enclosures());
+		$encs = array_merge($encs, parent::get_enclosures());
 
 		return $encs;
 	}

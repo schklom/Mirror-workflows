@@ -248,13 +248,13 @@ class Pref_Users extends Handler_Administrative {
 
 					<table width='100%' class='users-list' id='users-list'>
 
-						<tr class='title'>
-							<td align='center' width='5%'> </td>
-							<td width='20%'><a href='#' onclick="Users.reload('login')"><?= ('Login') ?></a></td>
-							<td width='20%'><a href='#' onclick="Users.reload('access_level')"><?= ('Access Level') ?></a></td>
-							<td width='10%'><a href='#' onclick="Users.reload('num_feeds')"><?= ('Subscribed feeds') ?></a></td>
-							<td width='20%'><a href='#' onclick="Users.reload('created')"><?= ('Registered') ?></a></td>
-							<td width='20%'><a href='#' onclick="Users.reload('last_login')"><?= ('Last login') ?></a></td>
+						<tr>
+							<th></th>
+							<th><a href='#' onclick="Users.reload('login')"><?= ('Login') ?></a></th>
+							<th><a href='#' onclick="Users.reload('access_level')"><?= ('Access Level') ?></a></th>
+							<th><a href='#' onclick="Users.reload('num_feeds')"><?= ('Subscribed feeds') ?></a></th>
+							<th><a href='#' onclick="Users.reload('created')"><?= ('Registered') ?></a></th>
+							<th><a href='#' onclick="Users.reload('last_login')"><?= ('Last login') ?></a></th>
 						</tr>
 
 						<?php
@@ -270,16 +270,19 @@ class Pref_Users extends Handler_Administrative {
 							foreach ($users as $user) { ?>
 
 								<tr data-row-id='<?= $user["id"] ?>' onclick='Users.edit(<?= $user["id"] ?>)' title="<?= __('Click to edit') ?>">
-									<td align='center'>
+									<td class='checkbox'>
 										<input onclick='Tables.onRowChecked(this); event.stopPropagation();'
 										dojoType='dijit.form.CheckBox' type='checkbox'>
 									</td>
 
-									<td><i class='material-icons'>person</i> <?= htmlspecialchars($user["login"]) ?></td>
+									<td width='30%'>
+										<i class='material-icons'>person</i>
+										<strong><?= htmlspecialchars($user["login"]) ?></strong>
+									</td>
 									<td><?= $access_level_names[$user["access_level"]] ?></td>
 									<td><?= $user["num_feeds"] ?></td>
-									<td><?= TimeHelper::make_local_datetime($user["created"], false) ?></td>
-									<td><?= TimeHelper::make_local_datetime($user["last_login"], false) ?></td>
+									<td class='text-muted'><?= TimeHelper::make_local_datetime($user["created"], false) ?></td>
+									<td class='text-muted'><?= TimeHelper::make_local_datetime($user["last_login"], false) ?></td>
 								</tr>
 						<?php } ?>
 					</table>

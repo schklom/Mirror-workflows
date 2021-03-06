@@ -183,7 +183,7 @@ const	Helpers = {
 									<table width='100%' id='pref-profiles-list'>
 										${reply.map((profile) => `
 											<tr data-row-id="${profile.id}">
-												<td width='5%'>
+												<td class='checkbox'>
 													${App.FormFields.checkbox_tag("", false, "", {onclick: 'Tables.onRowChecked(this)'})}
 												</td>
 												<td>
@@ -533,17 +533,15 @@ const	Helpers = {
 											disabled: is_installed,
 											onclick: `App.dialogOf(this).performInstall("${App.escapeHtml(plugin.name)}")`})}
 
-										<h3 style="margin-top: 0">${plugin.name}
+										<h3>${plugin.name}
 											<a target="_blank" href="${App.escapeHtml(plugin.html_url)}">
 												${App.FormFields.icon("open_in_new_window")}
 											</a>
 										</h3>
 
-										<div class='text-muted'>${__("Updated: %s").replace("%s", plugin.last_update)}</div>
+										<div class='small text-muted'>${__("Updated: %s").replace("%s", plugin.last_update)}</div>
 
-										<p>${plugin.description}</p>
-
-										<hr/>
+										<div class='description'>${plugin.description}</div>
 									</li>
 									`
 							}
@@ -626,13 +624,14 @@ const	Helpers = {
 
 								container.innerHTML +=
 								`
-								<li><h3 style="margin-top: 0">${p.plugin}</h3>
+								<li>
+									<h3>${p.plugin}</h3>
 									${p.rv.e ? `<pre class="small text-error pre-wrap">${p.rv.e}</pre>` : ''}
 									${p.rv.o ? `<pre class="small text-success pre-wrap">${p.rv.o}</pre>` : ''}
-									<p class="small">
+									<div class="small">
 										${p.rv.s ? App.FormFields.icon("error_outline") + " " + __("Exited with RC: %d").replace("%d", p.rv.s) :
 											App.FormFields.icon("check") + " " + __("Update done.")}
-								</p>
+									</div>
 								</li>
 								`
 							});
@@ -642,7 +641,7 @@ const	Helpers = {
 					});
 				},
 				content: `
-					<ul class="panel panel-scrollable update-results">
+					<ul class="panel panel-scrollable plugin-updater-list update-results">
 						<li class='text-center'>${__("Looking for changes...")}</li>
 					</ul>
 
@@ -681,13 +680,13 @@ const	Helpers = {
 
 							container.innerHTML +=
 							`
-							<li><h3 style="margin-top: 0">${p.plugin}</h3>
+							<li><h3>${p.plugin}</h3>
 								${p.rv.e ? `<pre class="small text-error pre-wrap">${p.rv.e}</pre>` : ''}
 								${p.rv.o ? `<pre class="small text-success pre-wrap">${p.rv.o}</pre>` : ''}
-								<p class="small">
+								<div class="small">
 									${p.rv.s ? App.FormFields.icon("error_outline") + " " + __("Exited with RC: %d").replace("%d", p.rv.s) :
 									App.FormFields.icon("check") + " " + __("Ready to update")}
-								</p>
+								</div>
 							</li>
 							`
 						});

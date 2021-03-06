@@ -1511,8 +1511,12 @@ body.ttrss_prefs fieldset.plugin label.description {
 body.ttrss_prefs fieldset.plugin label.description .dijitCheckBox {
   margin-right: 10px;
 }
-body.ttrss_prefs .users-list td {
-  cursor: pointer;
+body.ttrss_prefs table th {
+  text-align: left;
+}
+body.ttrss_prefs table td.checkbox {
+  text-align: center;
+  width: 32px;
 }
 body.ttrss_prefs ul.prefs-plugin-list {
   margin: 0;
@@ -1521,17 +1525,20 @@ body.ttrss_prefs ul.prefs-plugin-list {
 body.ttrss_prefs ul.prefs-plugin-list li {
   display: flex;
   align-items: center;
-  line-height: 30px;
   border-bottom: #222 1px solid;
+  line-height: 16px;
+}
+body.ttrss_prefs ul.prefs-plugin-list li.text-center {
+  border: 0;
+  display: block;
 }
 body.ttrss_prefs ul.prefs-plugin-list li > * {
-  padding: 4px;
+  padding: 8px;
 }
 body.ttrss_prefs ul.prefs-plugin-list li label.checkbox {
   display: flex;
   align-items: center;
   min-width: 200px;
-  margin-right: 16px;
   cursor: pointer;
 }
 body.ttrss_prefs ul.prefs-plugin-list li label.checkbox.system {
@@ -1551,16 +1558,41 @@ body.ttrss_prefs ul.prefs-plugin-list li .version {
   min-width: 200px;
   text-align: right;
 }
-body.ttrss_prefs .plugin-installer-list .plugin-installed {
+body.ttrss_prefs .plugin-installer-list li,
+body.ttrss_prefs .plugin-updater-list li {
+  border-bottom: #222 1px solid;
+}
+body.ttrss_prefs .plugin-installer-list li > *,
+body.ttrss_prefs .plugin-updater-list li > * {
+  padding: 8px 4px;
+}
+body.ttrss_prefs .plugin-installer-list li > pre,
+body.ttrss_prefs .plugin-updater-list li > pre {
+  margin: 0;
+}
+body.ttrss_prefs .plugin-installer-list li h3,
+body.ttrss_prefs .plugin-updater-list li h3 {
+  margin: 0;
+}
+body.ttrss_prefs .plugin-installer-list li.text-center,
+body.ttrss_prefs .plugin-updater-list li.text-center {
+  border: 0;
+}
+body.ttrss_prefs .plugin-installer-list .plugin-installed > *,
+body.ttrss_prefs .plugin-updater-list .plugin-installed > * {
   opacity: 0.5;
 }
-body.ttrss_prefs .event-log tr td {
-  font-size: 10px;
+body.ttrss_prefs .users-list td,
+body.ttrss_prefs .event-log td,
+body.ttrss_prefs .users-list th,
+body.ttrss_prefs .event-log th {
+  cursor: pointer;
   padding: 8px;
+  border-bottom: #222 1px solid;
+}
+body.ttrss_prefs .event-log tr td,
+body.ttrss_prefs .event-log tr th {
   vertical-align: top;
-  border-width: 0 0 1px 0;
-  border-style: solid;
-  border-color: #222;
 }
 body.ttrss_prefs .event-log tr .errno {
   font-style: italic;

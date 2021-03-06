@@ -117,12 +117,12 @@ class Pref_System extends Handler_Administrative {
 
 				<table width='100%' class='event-log'>
 
-					<tr class='title'>
-						<td width='5%'><?= __("Error") ?></td>
-						<td><?= __("Filename") ?></td>
-						<td><?= __("Message") ?></td>
-						<td width='5%'><?= __("User") ?></td>
-						<td width='5%'><?= __("Date") ?></td>
+					<tr>
+						<th width='5%'><?= __("Error") ?></th>
+						<th><?= __("Filename") ?></th>
+						<th><?= __("Message") ?></th>
+						<th width='5%'><?= __("User") ?></th>
+						<th width='5%'><?= __("Date") ?></th>
 					</tr>
 
 					<?php

@@ -878,7 +878,7 @@ class Pref_Prefs extends Handler_Protected {
 					?> -->
 
 					<ul id="prefs-plugin-list" class="prefs-plugin-list list-unstyled">
-						<li><?= __("Loading, please wait...") ?></li>
+						<li class='text-center'><?= __("Loading, please wait...") ?></li>
 					</ul>
 
 				</div>

@@ -513,7 +513,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 						<div class='panel panel-scrollable'>
 							<table width='100%' id='inactive-feeds-list'>
 								${reply.map((row) => `<tr data-row-id='${row.id}'>
-									<td width='5%' align='center'>
+									<td class='checkbox'>
 										<input onclick='Tables.onRowChecked(this)' dojoType='dijit.form.CheckBox' type='checkbox'>
 									</td>
 									<td>

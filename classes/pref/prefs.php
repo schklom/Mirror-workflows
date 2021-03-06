@@ -787,164 +787,73 @@ class Pref_Prefs extends Handler_Protected {
 		<?php
 	}
 
-	private function index_plugins_system() {
-		print_notice("System plugins are enabled in <strong>config.php</strong> for all users.");
-
-		$system_enabled = array_map("trim", explode(",", (string)Config::get(Config::PLUGINS)));
-
-		$tmppluginhost = new PluginHost();
-		$tmppluginhost->load_all($tmppluginhost::KIND_ALL, $_SESSION["uid"], true);
-
-		foreach ($tmppluginhost->get_plugins() as $name => $plugin) {
-			$about = $plugin->about();
-			$is_local = $tmppluginhost->is_local($plugin);
-			$version = htmlspecialchars($this->_get_plugin_version($plugin));
-
-			if ($about[3] ?? false) {
-				$is_checked = in_array($name, $system_enabled) ? "checked" : "";
-				?>
-				<fieldset class='prefs plugin' data-plugin-name='<?= htmlspecialchars($name) ?>'>
-					<label><?= $name ?>:</label>
-					<label class='checkbox description text-muted' id="PLABEL-<?= htmlspecialchars($name) ?>">
-						<input disabled='1' dojoType='dijit.form.CheckBox' <?= $is_checked ?> type='checkbox'><?= htmlspecialchars($about[1]) ?>
-					</label>
-
-					<?php if (count($tmppluginhost->get_all($plugin)) > 0) {
-						if (in_array($name, $system_enabled)) { ?>
-							<button dojoType='dijit.form.Button' title="<?= __("Clear data") ?>"
-								onclick='Helpers.Plugins.clearPluginData("<?= htmlspecialchars($name) ?>")'>
-									<i class='material-icons'>clear</i></button>
-						<?php }
-					} ?>
-
-					<?php if ($about[4] ?? false) { ?>
-						<button dojoType='dijit.form.Button' class='alt-info' title="<?= __("More info...") ?>"
-								onclick='window.open("<?= htmlspecialchars($about[4]) ?>")'>
-									<i class='material-icons'>help</i></button>
-					<?php } ?>
-
-					<?php if ($_SESSION["access_level"] >= 10) { ?>
-						<button style="display : none" class='alt-warning' title="<?= __("Update") ?>"
-								data-update-btn-for-plugin="<?= htmlspecialchars($name) ?>" dojoType='dijit.form.Button'
-								onclick='Helpers.Plugins.update("<?= htmlspecialchars($name) ?>")'>
-							<?= \Controls\icon("update") ?>
-						</button>
-					<?php } ?>
-
-					<?php if ($_SESSION["access_level"] >= 10 && $is_local) { ?>
-						<button dojoType='dijit.form.Button' title="<?= __("Uninstall") ?>"
-								onclick='Helpers.Plugins.uninstall("<?= htmlspecialchars($name) ?>")'>
-							<?= \Controls\icon("delete") ?>
-						</button>
-					<?php } ?>
-
-					<?php if ($version) { ?>
-						<div dojoType='dijit.Tooltip' connectId='PLABEL-<?= htmlspecialchars($name) ?>' position='after'>
-							<?= $version ?>
-						</div>
-					<?php } ?>
-				</fieldset>
-				<?php
-			}
-		}
-	}
-
-	private function index_plugins_user() {
+	function getPluginsList() {
 		$system_enabled = array_map("trim", explode(",", (string)Config::get(Config::PLUGINS)));
 		$user_enabled = array_map("trim", explode(",", get_pref(Prefs::_ENABLED_PLUGINS)));
 
 		$tmppluginhost = new PluginHost();
 		$tmppluginhost->load_all($tmppluginhost::KIND_ALL, $_SESSION["uid"], true);
 
+		$rv = [];
+
 		foreach ($tmppluginhost->get_plugins() as $name => $plugin) {
 			$about = $plugin->about();
 			$is_local = $tmppluginhost->is_local($plugin);
 			$version = htmlspecialchars($this->_get_plugin_version($plugin));
 
-			if (empty($about[3]) || $about[3] == false) {
-
-				$is_checked = "";
-				$is_disabled = "";
-
-				if (in_array($name, $system_enabled)) {
-					$is_checked = "checked='1'";
-					$is_disabled = "disabled='1'";
-				} else if (in_array($name, $user_enabled)) {
-					$is_checked = "checked='1'";
-				}
-				?>
-
-					<fieldset class='prefs plugin' data-plugin-name='<?= htmlspecialchars($name) ?>'>
-					<label><?= $name ?>:</label>
-					<label class='checkbox description text-muted' id="PLABEL-<?= htmlspecialchars($name) ?>">
-						<input name='plugins[]' value="<?= htmlspecialchars($name) ?>"
-							dojoType='dijit.form.CheckBox' <?= $is_checked ?> <?= $is_disabled ?> type='checkbox'>
-							<?= htmlspecialchars($about[1]) ?>
-						</input>
-					</label>
-
-					<?php if (count($tmppluginhost->get_all($plugin)) > 0) {
-						if (in_array($name, $system_enabled) || in_array($name, $user_enabled)) { ?>
-							<button dojoType='dijit.form.Button' title="<?= __("Clear data") ?>"
-								onclick='Helpers.Plugins.clearPluginData("<?= htmlspecialchars($name) ?>")'>
-									<i class='material-icons'>clear</i></button>
-						<?php }
-					} ?>
-
-					<?php if ($about[4] ?? false) { ?>
-						<button dojoType='dijit.form.Button' class='alt-info' title="<?= __("More info...") ?>"
-								onclick='window.open("<?= htmlspecialchars($about[4]) ?>")'>
-									<i class='material-icons'>help</i></button>
-					<?php } ?>
-
-					<?php if ($_SESSION["access_level"] >= 10) { ?>
-						<button style="display : none" class='alt-warning' title="<?= __("Update") ?>"
-								data-update-btn-for-plugin="<?= htmlspecialchars($name) ?>" dojoType='dijit.form.Button'
-								onclick='Helpers.Plugins.update("<?= htmlspecialchars($name) ?>")'>
-							<?= \Controls\icon("update") ?>
-						</button>
-					<?php } ?>
-
-					<?php if ($_SESSION["access_level"] >= 10 && $is_local) { ?>
-						<button dojoType='dijit.form.Button' title="<?= __("Uninstall") ?>"
-								onclick='Helpers.Plugins.uninstall("<?= htmlspecialchars($name) ?>")'>
-							<?= \Controls\icon("delete") ?>
-						</button>
-					<?php } ?>
-
-					<?php if ($version) { ?>
-						<div dojoType='dijit.Tooltip' connectId='PLABEL-<?= htmlspecialchars($name) ?>' position='after'>
-							<?= $version ?>
-						</div>
-					<?php } ?>
-
-				</fieldset>
-				<?php
-			}
+			array_push($rv, [
+				"name" => $name,
+				"is_local" => $is_local,
+				"system_enabled" => in_array($name, $system_enabled),
+				"user_enabled" => in_array($name, $user_enabled),
+				"has_data" => count($tmppluginhost->get_all($plugin)) > 0,
+				"is_system" => (bool)($about[3] ?? false),
+				"version" => $version,
+				"author" => $about[2] ?? "",
+				"description" => $about[1] ?? "",
+				"more_info" => $about[4] ?? "",
+			]);
 		}
+
+		usort($rv, function($a, $b) { return strcmp($a["name"], $b["name"]); });
+
+		print json_encode(['plugins' => $rv, 'is_admin' => $_SESSION['access_level'] >= 10]);
 	}
 
 	function index_plugins() {
 		?>
 		<form dojoType="dijit.form.Form" id="changePluginsForm">
-			<script type="dojo/method" event="onSubmit" args="evt">
-					evt.preventDefault();
-					if (this.validate()) {
-						xhr.post("backend.php", this.getValues(), () => {
-							Notify.close();
-							if (confirm(__('Selected plugins have been enabled. Reload?'))) {
-								window.location.reload();
-							}
-						})
-					}
-			</script>
 
 			<?= \Controls\hidden_tag("op", "pref-prefs") ?>
 			<?= \Controls\hidden_tag("method", "setplugins") ?>
 
 			<div dojoType="dijit.layout.BorderContainer" gutters="false">
+				<div region="top" dojoType='fox.Toolbar'>
+					<div class='pull-right'>
+						<input name="search" type="search" onkeyup='Helpers.Plugins.search()' dojoType="dijit.form.TextBox">
+						<button dojoType='dijit.form.Button' onclick='Helpers.Plugins.search()'>
+							<?= __('Search') ?>
+						</button>
+					</div>
+
+					<div dojoType='fox.form.DropDownButton'>
+						<span><?= __('Select') ?></span>
+						<div dojoType='dijit.Menu' style='display: none'>
+							<div onclick="Lists.select('prefs-plugin-list', true)"
+								dojoType='dijit.MenuItem'><?= __('All') ?></div>
+							<div onclick="Lists.select('prefs-plugin-list', false)"
+								dojoType='dijit.MenuItem'><?= __('None') ?></div>
+						</div>
+					</div>
+				</div>
+
 				<div dojoType="dijit.layout.ContentPane" region="center" style="overflow-y : auto">
-					<?php
+
+					<script type="dojo/method" event="onShow">
+						Helpers.Plugins.reload();
+					</script>
+
+					<!-- <?php
 						if (!empty($_SESSION["safe_mode"])) {
 							print_error("You have logged in using safe mode, no user plugins will be actually enabled until you login again.");
 						}
@@ -966,38 +875,31 @@ class Pref_Prefs extends Handler_Protected {
 								) . " (<a href='https://tt-rss.org/wiki/FeedHandlerPlugins' target='_blank'>".__("More info...")."</a>)"
 							);
 						}
-					?>
+					?> -->
 
-					<h2><?= __("System plugins") ?></h2>
-
-					<?php $this->index_plugins_system() ?>
-
-					<h2><?= __("User plugins") ?></h2>
-
-					<?php $this->index_plugins_user() ?>
+					<ul id="prefs-plugin-list" class="prefs-plugin-list list-unstyled">
+						<li><?= __("Loading, please wait...") ?></li>
+					</ul>
 
 				</div>
 				<div dojoType="dijit.layout.ContentPane" region="bottom">
-					<button dojoType='dijit.form.Button' class="alt-info pull-left" onclick='window.open("https://tt-rss.org/wiki/Plugins")'>
+
+					<button dojoType='dijit.form.Button' class="alt-info pull-right" onclick='window.open("https://tt-rss.org/wiki/Plugins")'>
 						<i class='material-icons'>help</i>
-						<?= __("More info...") ?>
+						<?= __("More info") ?>
 					</button>
 
-					<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>
-						<?= \Controls\icon("save") ?>
-						<?= __("Enable selected") ?>
-					</button>
+					<?= \Controls\button_tag(\Controls\icon("check") . " " .__("Enable selected"), "", ["class" => "alt-primary",
+						"onclick" => "Helpers.Plugins.enableSelected()"]) ?>
+
+					<?= \Controls\button_tag(\Controls\icon("refresh"), "", ["title" => __("Reload"), "onclick" => "Helpers.Plugins.reload()"]) ?>
+
 					<?php if ($_SESSION["access_level"] >= 10) { ?>
 						<?php if (Config::get(Config::CHECK_FOR_UPDATES) && Config::get(Config::CHECK_FOR_PLUGIN_UPDATES)) { ?>
 
-							<button dojoType='dijit.form.Button' onclick="Helpers.Plugins.checkForUpdate()">
+							<button class='alt-warning' dojoType='dijit.form.Button' onclick="Helpers.Plugins.update()">
 								<?= \Controls\icon("update") ?>
 								<?= __("Check for updates") ?>
-							</button>
-
-							<button class="update-all-plugins-btn alt-warning" style="display : none" dojoType='dijit.form.Button' onclick="Helpers.Plugins.update()">
-								<?= \Controls\icon("update") ?>
-								<?= __("Update plugins") ?>
 							</button>
 						<?php } ?>
 
@@ -1031,16 +933,8 @@ class Pref_Prefs extends Handler_Protected {
 				<div dojoType='dijit.layout.AccordionPane' selected='true' title="<i class='material-icons'>settings</i> <?= __('Preferences') ?>">
 					<?php $this->index_prefs() ?>
 				</div>
-				<div dojoType='dijit.layout.AccordionPane' title="<i class='material-icons'>extension</i> <?= __('Plugins') ?>">
-					<script type='dojo/method' event='onSelected' args='evt'>
-						if (this.domNode.querySelector('.loading'))
-							window.setTimeout(() => {
-								xhr.post("backend.php", {op: 'pref-prefs', method: 'index_plugins'}, (reply) => {
-									this.attr('content', reply);
-								});
-							}, 200);
-					</script>
-					<span class='loading'><?= __("Loading, please wait...") ?></span>
+				<div dojoType='dijit.layout.AccordionPane' style='padding : 0' title="<i class='material-icons'>extension</i> <?= __('Plugins') ?>">
+				<?php $this->index_plugins() ?>
 				</div>
 				<?php PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefPrefs") ?>
 			</div>
@@ -1119,12 +1013,9 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	function setplugins() {
-		if (is_array(clean($_REQUEST["plugins"])))
-			$plugins = join(",", clean($_REQUEST["plugins"]));
-		else
-			$plugins = "";
+		$plugins = array_filter($_REQUEST["plugins"], 'clean') ?? [];
 
-		set_pref(Prefs::_ENABLED_PLUGINS, $plugins);
+		set_pref(Prefs::_ENABLED_PLUGINS, implode(",", $plugins));
 	}
 
 	function _get_plugin_version(Plugin $plugin) {

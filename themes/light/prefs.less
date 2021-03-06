@@ -112,6 +112,51 @@ body.ttrss_prefs {
 		}
 	}
 
+	ul.prefs-plugin-list {
+		margin : 0;
+		padding : 0;
+
+		li {
+			display : flex;
+			align-items : center;
+			line-height : 30px;
+			border-bottom: @border-default 1px solid;
+
+			> * {
+				padding : 4px;
+			}
+
+			label.checkbox {
+				display : flex;
+				align-items : center;
+				min-width : 200px;
+				margin-right : 16px;
+				cursor : pointer;
+
+				&.system {
+					cursor : auto;
+				}
+
+				.name {
+					flex-grow: 2;
+					display: inline-block;
+					text-align: right;
+					font-weight : bold;
+				}
+			}
+
+			.actions {
+				flex-grow : 2;
+				text-align: right;
+			}
+
+			.version {
+				min-width: 200px;
+				text-align: right;
+			}
+		}
+	}
+
 	.plugin-installer-list {
 		.plugin-installed {
 			opacity : 0.5;

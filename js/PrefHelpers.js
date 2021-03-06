@@ -308,44 +308,101 @@ const	Helpers = {
 		},
 	},
 	Plugins: {
-		clearPluginData: function(name) {
-			if (confirm(__("Clear stored data for this plugin?"))) {
+		_list_of_plugins: [],
+		_search_query: "",
+		enableSelected: function() {
+			const form = dijit.byId("changePluginsForm");
+
+			if (form.validate()) {
+				xhr.post("backend.php", form.getValues(), () => {
+					Notify.close();
+					if (confirm(__('Selected plugins have been enabled. Reload?'))) {
+						window.location.reload();
+					}
+				})
+			}
+		},
+		search: function() {
+			this._search_query = dijit.byId("changePluginsForm").getValues().search;
+			this.render_contents();
+		},
+		reload: function() {
+			xhr.json("backend.php", {op: "pref-prefs", method: "getPluginsList"}, (reply) => {
+				this._list_of_plugins = reply;
+				this.render_contents();
+			});
+		},
+		render_contents: function() {
+			const container = document.querySelector(".prefs-plugin-list");
+
+			container.innerHTML = "";
+			let results_rendered = 0;
+
+			const is_admin = this._list_of_plugins.is_admin;
+
+			const search_tokens = this._search_query
+							.split(/ {1,}/)
+							.filter((stoken) => (stoken.length > 0 ? stoken : null));
+
+			this._list_of_plugins.plugins.forEach((plugin) => {
+
+				if (search_tokens.length == 0 ||
+					Object.values(plugin).filter((pval) =>
+						search_tokens.filter((stoken) =>
+							(pval.toString().indexOf(stoken) != -1 ? stoken : null)
+						).length == search_tokens.length).length > 0) {
+
+						++results_rendered;
+
+						container.innerHTML += `
+							<li data-row-value="${App.escapeHtml(plugin.name)}" data-plugin-name="${App.escapeHtml(plugin.name)}" title="${plugin.is_system ? __("System plugins are enabled using global configuration.") : ""}">
+								<label class="checkbox ${plugin.is_system ? "system text-info" : ""}">
+									${App.FormFields.checkbox_tag("plugins[]", plugin.user_enabled || plugin.system_enabled, plugin.name,
+										{disabled: plugin.is_system})}</div>
+									<span class='name'>${plugin.name}:</span>
+								</label>
+								<div class="description ${plugin.is_system ? "text-info" : ""}">
+									${plugin.description}
+								</div>
+								<div class='actions'>
+									${plugin.is_system ?
+										App.FormFields.button_tag(App.FormFields.icon("security"), "",
+											{disabled: true}) : ''}
+									${plugin.more_info ?
+											App.FormFields.button_tag(App.FormFields.icon("help"), "",
+												{class: 'alt-info', onclick: `window.open("${App.escapeHtml(plugin.more_info)}")`}) : ''}
+									${is_admin && plugin.is_local ?
+										App.FormFields.button_tag(App.FormFields.icon("update"), "",
+											{title: __("Update"), class: 'alt-warning', "data-update-btn-for-plugin": plugin.name, style: 'display : none',
+												onclick: `Helpers.Plugins.update("${App.escapeHtml(plugin.name)}")`}) : ''}
+									${is_admin && plugin.has_data ?
+										App.FormFields.button_tag(App.FormFields.icon("clear"), "",
+											{title: __("Clear data"), onclick: `Helpers.Plugins.clearData("${App.escapeHtml(plugin.name)}")`}) : ''}
+									${is_admin && plugin.is_local ?
+										App.FormFields.button_tag(App.FormFields.icon("delete"), "",
+											{title: __("Uninstall"), onclick: `Helpers.Plugins.uninstall("${App.escapeHtml(plugin.name)}")`}) : ''}
+								</div>
+								<div class='version text-muted'>${plugin.version}</div>
+							</li>
+						`;
+					}
+			});
+
+			if (results_rendered == 0) {
+				container.innerHTML = `<li class='text-center text-info'>${__("Could not find any plugins for this search query.")}</li>`;
+			}
+
+			dojo.parser.parse(container);
+
+		},
+		clearData: function(name) {
+			if (confirm(__("Clear stored data for %s?").replace("%s", name))) {
 				Notify.progress("Loading, please wait...");
 
 				xhr.post("backend.php", {op: "pref-prefs", method: "clearPluginData", name: name}, () => {
 					Helpers.Prefs.refresh();
 				});
 			}
-		},
-		checkForUpdate: function(name = null) {
-			Notify.progress("Checking for plugin updates...");
-
-			xhr.json("backend.php", {op: "pref-prefs", method: "checkForPluginUpdates", name: name}, (reply) => {
-				Notify.close();
-
-				if (reply) {
-					let plugins_with_updates = 0;
-
-					reply.forEach((p) => {
-						if (p.rv.o) {
-							const button = dijit.getEnclosingWidget(App.find(`*[data-update-btn-for-plugin="${p.plugin}"]`));
-
-							if (button) {
-								button.domNode.show();
-								++plugins_with_updates;
-							}
-						}
-					});
-
-					if (plugins_with_updates > 0)
-						App.find(".update-all-plugins-btn").show();
-					else
-						Notify.info("All local plugins are up-to-date.");
-
-				} else {
-					Notify.error("Unable to check for plugin updates.");
-				}
-			});
 		},
 		uninstall: function(plugin) {
 			const msg = __("Uninstall plugin %s?").replace("%s", plugin);
@@ -436,7 +493,13 @@ const	Helpers = {
 				},
 				search: function() {
 					this.search_query = this.attr('value').search.toLowerCase();
-					this.render_contents();
+
+					if ('requestIdleCallback' in window)
+						window.requestIdleCallback(() => {
+							this.render_contents();
+						});
+					else
+						this.render_contents();
 				},
 				render_contents: function() {
 					const container = dialog.domNode.querySelector(".contents");
@@ -610,6 +673,12 @@ const	Helpers = {
 								dialog.plugins_to_update.push(p.plugin);
 							}
 
+							const update_button = dijit.getEnclosingWidget(
+									App.find(`*[data-update-btn-for-plugin="${p.plugin}"]`));
+
+							if (update_button)
+								update_button.domNode.show();
+
 							container.innerHTML +=
 							`
 							<li><h3 style="margin-top: 0">${p.plugin}</h3>
@@ -622,6 +691,11 @@ const	Helpers = {
 							</li>
 							`
 						});
+
+						if (!enable_update_btn) {
+							container.innerHTML = `<li class='text-center text-info'>${name ? __("Plugin %s is up-to-date").replace("%s", name) :
+								__("All local plugins are up-to-date.")}</li>`;
+						}
 					}
 
 					dijit.getEnclosingWidget(dialog.domNode.querySelector(".update-btn")).attr('disabled', !enable_update_btn);

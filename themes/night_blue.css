@@ -1515,6 +1515,43 @@ body.ttrss_prefs fieldset.plugin label.description .dijitCheckBox {
 body.ttrss_prefs .users-list td {
   cursor: pointer;
 }
+body.ttrss_prefs ul.prefs-plugin-list {
+  margin: 0;
+  padding: 0;
+}
+body.ttrss_prefs ul.prefs-plugin-list li {
+  display: flex;
+  align-items: center;
+  line-height: 30px;
+  border-bottom: #222 1px solid;
+}
+body.ttrss_prefs ul.prefs-plugin-list li > * {
+  padding: 4px;
+}
+body.ttrss_prefs ul.prefs-plugin-list li label.checkbox {
+  display: flex;
+  align-items: center;
+  min-width: 200px;
+  margin-right: 16px;
+  cursor: pointer;
+}
+body.ttrss_prefs ul.prefs-plugin-list li label.checkbox.system {
+  cursor: auto;
+}
+body.ttrss_prefs ul.prefs-plugin-list li label.checkbox .name {
+  flex-grow: 2;
+  display: inline-block;
+  text-align: right;
+  font-weight: bold;
+}
+body.ttrss_prefs ul.prefs-plugin-list li .actions {
+  flex-grow: 2;
+  text-align: right;
+}
+body.ttrss_prefs ul.prefs-plugin-list li .version {
+  min-width: 200px;
+  text-align: right;
+}
 body.ttrss_prefs .plugin-installer-list .plugin-installed {
   opacity: 0.5;
 }

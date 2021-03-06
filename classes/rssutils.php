@@ -585,6 +585,7 @@ class RSSUtils {
 
 		// because chain_hooks_callback() accepts variables by value
 		$pff_owner_uid = $feed_obj->owner_uid;
+		$pff_feed_url = $feed_obj->feed_url;
 
 		$start_ts = microtime(true);
 		$pluginhost->chain_hooks_callback(PluginHost::HOOK_FEED_FETCHED,
@@ -592,7 +593,7 @@ class RSSUtils {
 				$feed_data = $result;
 				Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)), Debug::$LOG_VERBOSE);
 			},
-			$feed_data, $fetch_url, $pff_owner_uid, $feed);
+			$feed_data, $pff_feed_url, $pff_owner_uid, $feed);
 
 		if (md5($feed_data) != $feed_data_checksum) {
 			Debug::log("feed data has been modified by a plugin.", Debug::$LOG_VERBOSE);
@@ -619,7 +620,7 @@ class RSSUtils {
 			Debug::log("language: $feed_language", Debug::$LOG_VERBOSE);
 			Debug::log("processing feed data...", Debug::$LOG_VERBOSE);
 
-			$site_url = mb_substr(rewrite_relative_url($fetch_url, clean($rss->get_link())), 0, 245);
+			$site_url = mb_substr(rewrite_relative_url($feed_obj->feed_url, clean($rss->get_link())), 0, 245);
 
 			Debug::log("site_url: $site_url", Debug::$LOG_VERBOSE);
 			Debug::log("feed_title: {$rss->get_title()}", Debug::$LOG_VERBOSE);
@@ -833,7 +834,7 @@ class RSSUtils {
 					"num_comments" => $num_comments,
 					"enclosures" => $enclosures,
 					"feed" => array("id" => $feed,
-						"fetch_url" => $fetch_url,
+						"fetch_url" => $feed_obj->feed_url,
 						"site_url" => $site_url,
 						"cache_images" => $feed_obj->cache_images)
 				);

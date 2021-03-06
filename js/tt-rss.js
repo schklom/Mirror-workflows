@@ -69,15 +69,3 @@ require(["dojo/_base/kernel",
 	});
 });
 
-/* exported hash_get */
-function hash_get(key) {
-	const obj = dojo.queryToObject(window.location.hash.substring(1));
-	return obj[key];
-}
-
-/* exported hash_set */
-function hash_set(key, value) {
-	const obj = dojo.queryToObject(window.location.hash.substring(1));
-	obj[key] = value;
-	window.location.hash = dojo.objectToQuery(obj);
-}

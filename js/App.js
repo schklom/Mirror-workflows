@@ -18,6 +18,15 @@ const App = {
    is_prefs: false,
    LABEL_BASE_INDEX: -1024,
    _translations: {},
+   Hash: {
+      get: function() {
+         return dojo.queryToObject(window.location.hash.substring(1));
+      },
+      set: function(params) {
+         const obj = dojo.queryToObject(window.location.hash.substring(1));
+         window.location.hash = dojo.objectToQuery({...obj, ...params});
+      }
+   },
    l10n: {
       ngettext: function(msg1, msg2, n) {
          return self.__((parseInt(n) > 1) ? msg2 : msg1);
@@ -1269,6 +1278,6 @@ const App = {
          default:
             console.log("quickMenuGo: unknown action: " + opid);
       }
-   }
+   },
 }
 

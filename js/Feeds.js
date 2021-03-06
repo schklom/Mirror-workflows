@@ -236,12 +236,12 @@ const	Feeds = {
 		//document.onkeypress = (event) => { return App.hotkeyHandler(event) };
 		window.onresize = () => { Headlines.scrollHandler(); }
 
-		/* global hash_get */
-		const hash_feed_id = hash_get('f');
-		const hash_feed_is_cat = hash_get('c') == "1";
+		const hash = App.Hash.get();
 
-		if (hash_feed_id != undefined) {
-			this.open({feed: hash_feed_id, is_cat: hash_feed_is_cat});
+		console.log('got hash', hash);
+
+		if (hash.f != undefined) {
+			this.open({feed: parseInt(hash.f), is_cat: parseInt(hash.c)});
 		} else {
 			this.openDefaultFeed();
 		}
@@ -305,9 +305,12 @@ const	Feeds = {
 	setActive: function(id, is_cat) {
 		console.log('setActive', id, is_cat);
 
-		/* global hash_set */
-		hash_set('f', id);
-		hash_set('c', is_cat ? 1 : 0);
+		if ('requestIdleCallback' in window)
+			window.requestIdleCallback(() => {
+				App.Hash.set({f: id, c: is_cat ? 1 : 0});
+			});
+		else
+			App.Hash.set({f: id, c: is_cat ? 1 : 0});
 
 		this._active_feed_id = id;
 		this._active_feed_is_cat = is_cat;

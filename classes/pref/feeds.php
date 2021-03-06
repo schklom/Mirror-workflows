@@ -983,10 +983,6 @@ class Pref_Feeds extends Handler_Protected {
 	private function index_opml() {
 		?>
 
-		<h3><?= __("Using OPML you can export and import your feeds, filters, labels and Tiny Tiny RSS settings.") ?></h3>
-
-		<?php print_notice("Only main settings profile can be migrated using OPML.") ?>
-
 		<form id='opml_import_form' method='post' enctype='multipart/form-data'>
 			<label class='dijitButton'><?= __("Choose file...") ?>
 				<input style='display : none' id='opml_file' name='opml_file' type='file'>
@@ -995,20 +991,24 @@ class Pref_Feeds extends Handler_Protected {
 			<input type='hidden' name='csrf_token' value="<?= $_SESSION['csrf_token'] ?>">
 			<input type='hidden' name='method' value='importOpml'>
 			<button dojoType='dijit.form.Button' class='alt-primary' onclick="return Helpers.OPML.import()" type="submit">
+			<?= \Controls\icon("file_upload") ?>
 				<?= __('Import OPML') ?>
 			</button>
 		</form>
 
 		<hr/>
 
+		<?php print_notice("Only main settings profile can be migrated using OPML.") ?>
+
 		<form dojoType='dijit.form.Form' id='opmlExportForm' style='display : inline-block'>
 			<button dojoType='dijit.form.Button' onclick='Helpers.OPML.export()'>
+				<?= \Controls\icon("file_download") ?>
 				<?= __('Export OPML') ?>
 			</button>
 
 			<label class='checkbox'>
 				<?= \Controls\checkbox_tag("include_settings", true, "1") ?>
-				<?= __("Include settings") ?>
+				<?= __("Include tt-rss settings") ?>
 			</label>
 		</form>
 
@@ -1016,12 +1016,10 @@ class Pref_Feeds extends Handler_Protected {
 
 		<h2><?= __("Published OPML") ?></h2>
 
-		<p>
-			<?= __('Your OPML can be published publicly and can be subscribed by anyone who knows the URL below.') ?>
-			<?= __("Published OPML does not include your Tiny Tiny RSS settings, feeds that require authentication or feeds hidden from Popular feeds.") ?>
-		</p>
+		<?= format_notice("Your OPML can be published and then subscribed by anyone who knows the URL below. This won't include your settings nor authenticated feeds.") ?>
 
 		<button dojoType='dijit.form.Button' class='alt-primary' onclick="return Helpers.OPML.publish()">
+			<?= \Controls\icon("share") ?>
 			<?= __('Display published OPML URL') ?>
 		</button>
 
@@ -1032,14 +1030,16 @@ class Pref_Feeds extends Handler_Protected {
 	private function index_shared() {
 		?>
 
-		<h3><?= __('Published articles can be subscribed by anyone who knows the following URL:') ?></h3>
+		<?= format_notice('Published articles can be subscribed by anyone who knows the following URL:') ?></h3>
 
 		<button dojoType='dijit.form.Button' class='alt-primary'
 			onclick="CommonDialogs.generatedFeed(-2, false)">
+			<?= \Controls\icon('share') ?>
 			<?= __('Display URL') ?>
 		</button>
 
 		<button class='alt-danger' dojoType='dijit.form.Button' onclick='return Helpers.Feeds.clearFeedAccessKeys()'>
+			<?= \Controls\icon('delete') ?>
 			<?= __('Clear all generated URLs') ?>
 		</button>
 

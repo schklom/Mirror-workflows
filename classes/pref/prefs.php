@@ -384,7 +384,7 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	private function index_auth_app_passwords() {
-		print_notice("You can create separate passwords for API clients. Using one is required if you enable OTP.");
+		print_notice("Separate passwords used for API clients. Required if you enable OTP.");
 		?>
 
 		<div id='app_passwords_holder'>
@@ -454,15 +454,9 @@ class Pref_Prefs extends Handler_Protected {
 
 			} else {
 
-				print_notice("You will need to generate app passwords for the API clients if you enable OTP.");
+				print "<img src=".($this->_get_otp_qrcode_img()).">";
 
-				if (function_exists("imagecreatefromstring")) {
-					print "<h3>" . __("Scan the following code by the Authenticator application or copy the key manually") . "</h3>";
-					print "<img src=".($this->_get_otp_qrcode_img()).">";
-				} else {
-					print_error("PHP GD functions are required to generate QR codes.");
-					print "<h3>" . __("Use the following OTP key with a compatible Authenticator application") . "</h3>";
-				}
+				print_notice("You will need to generate app passwords for API clients if you enable OTP.");
 
 				$otp_secret = UserHelper::get_otp_secret($_SESSION["uid"]);
 				?>

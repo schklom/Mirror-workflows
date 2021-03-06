@@ -47,9 +47,10 @@ class Share extends Plugin {
 			?>
 			<hr/>
 
-			<h2><?= __("You can disable all articles shared by unique URLs here.") ?></h2>
+			<?= format_notice("You can disable all articles shared by unique URLs here.") ?></h2>
 
 			<button class='alt-danger' dojoType='dijit.form.Button' onclick="return Plugins.Share.clearKeys()">
+				<?= \Controls\icon('delete') ?>
 				<?= __('Unshare all articles') ?></button>
 			<?php
 		}

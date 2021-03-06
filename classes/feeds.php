@@ -1093,19 +1093,20 @@ class Feeds extends Handler_Protected {
 		return false;
 	}
 
-	static function _find_by_url($feed_url, $owner_uid) {
-		$sth = Db::pdo()->prepare("SELECT id FROM ttrss_feeds WHERE
-			feed_url = ? AND owner_uid = ?");
-		$sth->execute([$feed_url, $owner_uid]);
+	static function _find_by_url(string $feed_url, int $owner_uid) {
+		$feed = ORM::for_table('ttrss_feeds')
+			->where('owner_uid', $owner_uid)
+			->where('feed_url', $feed_url)
+			->find_one();
 
-		if ($row = $sth->fetch()) {
-			return $row["id"];
+		if ($feed) {
+			return $feed->id;
+		} else {
+			return false;
 		}
-
-		return false;
 	}
 
-	static function _get_title($id, $cat = false) {
+	static function _get_title($id, bool $cat = false) {
 	    $pdo = Db::pdo();
 
 		if ($cat) {
@@ -1152,7 +1153,7 @@ class Feeds extends Handler_Protected {
 	}
 
 	// only real cats
-	static function _get_cat_marked($cat, $owner_uid = false) {
+	static function _get_cat_marked(int $cat, int $owner_uid = 0) {
 
 		if (!$owner_uid) $owner_uid = $_SESSION["uid"];
 
@@ -1175,7 +1176,7 @@ class Feeds extends Handler_Protected {
 		}
 	}
 
-	static function _get_cat_unread($cat, $owner_uid = false) {
+	static function _get_cat_unread(int $cat, int $owner_uid = 0) {
 
 		if (!$owner_uid) $owner_uid = $_SESSION["uid"];
 
@@ -1209,7 +1210,7 @@ class Feeds extends Handler_Protected {
 	}
 
 	// only accepts real cats (>= 0)
-	static function _get_cat_children_unread($cat, $owner_uid = false) {
+	static function _get_cat_children_unread(int $cat, int $owner_uid = 0) {
 		if (!$owner_uid) $owner_uid = $_SESSION["uid"];
 
 		$pdo = Db::pdo();
@@ -1264,7 +1265,7 @@ class Feeds extends Handler_Protected {
 		}
 	}
 
-	private static function _get_label_unread($label_id, $owner_uid = false) {
+	private static function _get_label_unread($label_id, int $owner_uid = 0) {
 		if (!$owner_uid) $owner_uid = $_SESSION["uid"];
 
 		$pdo = Db::pdo();
@@ -1777,7 +1778,7 @@ class Feeds extends Handler_Protected {
 
 	}
 
-	static function _get_parent_cats($cat, $owner_uid) {
+	static function _get_parent_cats(int $cat, int $owner_uid) {
 		$rv = array();
 
 		$pdo = Db::pdo();
@@ -1794,7 +1795,7 @@ class Feeds extends Handler_Protected {
 		return $rv;
 	}
 
-	static function _get_child_cats($cat, $owner_uid) {
+	static function _get_child_cats(int $cat, int $owner_uid) {
 		$rv = array();
 
 		$pdo = Db::pdo();
@@ -1840,7 +1841,7 @@ class Feeds extends Handler_Protected {
 	}
 
 	// returns Uncategorized as 0
-	static function _cat_of($feed) : int {
+	static function _cat_of(int $feed) : int {
 		$feed = ORM::for_table('ttrss_feeds')->find_one($feed);
 
 		if ($feed) {
@@ -1970,7 +1971,7 @@ class Feeds extends Handler_Protected {
 		}
 	}
 
-	static function _purge($feed_id, $purge_interval) {
+	static function _purge(int $feed_id, int $purge_interval) {
 
 		if (!$purge_interval) $purge_interval = self::_get_purge_interval($feed_id);
 
@@ -2040,16 +2041,14 @@ class Feeds extends Handler_Protected {
 		return $rows_deleted;
 	}
 
-	private static function _get_purge_interval($feed_id) {
+	private static function _get_purge_interval(int $feed_id) {
 		$feed = ORM::for_table('ttrss_feeds')->find_one($feed_id);
 
 		if ($feed) {
-
 			if ($feed->purge_interval != 0)
 				return $feed->purge_interval;
 			else
 				return get_pref(Prefs::PURGE_OLD_DAYS, $feed->owner_uid);
-
 		} else {
 			return -1;
 		}

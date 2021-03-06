@@ -1526,7 +1526,7 @@ body.ttrss_prefs ul.prefs-plugin-list li {
   display: flex;
   align-items: center;
   border-bottom: #222 1px solid;
-  line-height: 16px;
+  line-height: 30px;
 }
 body.ttrss_prefs ul.prefs-plugin-list li.text-center {
   border: 0;

@@ -9,6 +9,8 @@ const data = {
 	"go_button": "MISSING STRING: go_button",
 	"about_bibliogram_header": "MISSING STRING: about_bibliogram_header",
 	"pug_about_bibliogram_content": locals => "MISSING TEMPLATE: pug_about_bibliogram_content",
+	"experiencing_problems_header": "MISSING STRING: experiencing_problems_header",
+	"t_read_more_here": "MISSING STRING: t_read_more_here",
 	"about_this_instance_header": "MISSING STRING: about_this_instance_header",
 	"onion_site_available": "MISSING STRING: onion_site_available",
 	"t_settings": "MISSING STRING: t_settings",

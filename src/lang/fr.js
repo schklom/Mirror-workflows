@@ -26,6 +26,8 @@ if (!constants.language_dev) Object.assign(data, require("./en.js"))
 			Bibliogram #[em ne] vous permet #[em pas] de poster anonymement, d'aimer les publications, de les commenter, de s'abonner ou voir des profils privés.
 			Les posts supprimés ne sont pas conservés.
 	`)
+	data.experiencing_problems_header = "Rencontrez-vous des problèmes avec Bibliogram\u202f?"
+	data.t_read_more_here = "En savoir plus ici."
 	data.about_this_instance_header = "À propos de cette instance"
 	data.onion_site_available = "Un site Onion est disponible"
 	data.t_settings = "Paramètres"

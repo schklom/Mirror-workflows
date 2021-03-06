@@ -19,6 +19,8 @@ const {pug} = require("./utils/functions")
 			Bibliogram does #[em not] allow you to anonymously post, like, comment, follow, or view private profiles.
 			It does not preserve deleted posts.
 	`)
+	data.experiencing_problems_header = "Experiencing problems with Bibliogram?"
+	data.t_read_more_here = "Read more here."
 	data.about_this_instance_header = "About this instance"
 	data.onion_site_available = "Onion site available"
 	data.t_settings = "Settings"

@@ -461,7 +461,7 @@ class UrlHelper {
 			if (self::$fetch_last_error_code != 200) {
 				$error = error_get_last();
 
-				if ($error['message'] != $old_error['message']) {
+				if (($error['message'] ?? '') != ($old_error['message'] ?? '')) {
 					self::$fetch_last_error .= "; " . $error["message"];
 				}
 

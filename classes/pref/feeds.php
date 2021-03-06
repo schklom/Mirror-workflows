@@ -1,5 +1,10 @@
 <?php
 class Pref_Feeds extends Handler_Protected {
+	const E_ICON_FILE_TOO_LARGE = 'E_ICON_FILE_TOO_LARGE';
+	const E_ICON_RENAME_FAILED = 'E_ICON_RENAME_FAILED';
+	const E_ICON_UPLOAD_FAILED = 'E_ICON_UPLOAD_FAILED';
+	const E_ICON_UPLOAD_SUCCESS = 'E_ICON_UPLOAD_SUCCESS';
+
 	function csrf_ignore($method) {
 		$csrf_ignored = array("index", "getfeedtree", "savefeedorder");
 
@@ -435,78 +440,67 @@ class Pref_Feeds extends Handler_Protected {
 		}
 	}
 
-	function removeicon() {
-		$feed_id = clean($_REQUEST["feed_id"]);
+	function removeIcon() {
+		$feed_id = (int) $_REQUEST["feed_id"];
+		$icon_file = Config::get(Config::ICONS_DIR) . "/$feed_id.ico";
 
-		$sth = $this->pdo->prepare("SELECT id FROM ttrss_feeds
-			WHERE id = ? AND owner_uid = ?");
-		$sth->execute([$feed_id, $_SESSION['uid']]);
+		$feed = ORM::for_table('ttrss_feeds')
+			->where('owner_uid', $_SESSION['uid'])
+			->find_one($feed_id);
 
-		if ($row = $sth->fetch()) {
-			@unlink(Config::get(Config::ICONS_DIR) . "/$feed_id.ico");
-
-			$sth = $this->pdo->prepare("UPDATE ttrss_feeds SET favicon_avg_color = NULL, favicon_last_checked = '1970-01-01'
-				where id = ?");
-			$sth->execute([$feed_id]);
+		if ($feed && file_exists($icon_file)) {
+			if (unlink($icon_file)) {
+				$feed->set([
+					'favicon_avg_color' => null,
+					'favicon_last_checked' => '1970-01-01',
+					'favicon_is_custom' => false,
+				]);
+				$feed->save();
+			}
 		}
 	}
 
-	function uploadicon() {
-		header("Content-type: text/html");
+	function uploadIcon() {
+		$feed_id = (int) $_REQUEST['feed_id'];
+		$tmp_file = tempnam(Config::get(Config::CACHE_DIR) . '/upload', 'icon');
 
-		if (is_uploaded_file($_FILES['icon_file']['tmp_name'])) {
-			$tmp_file = tempnam(Config::get(Config::CACHE_DIR) . '/upload', 'icon');
+		// default value
+		$rc = self::E_ICON_UPLOAD_FAILED;
 
-			if (!$tmp_file)
-				return;
+		$feed = ORM::for_table('ttrss_feeds')
+			->where('owner_uid', $_SESSION['uid'])
+			->find_one($feed_id);
 
-			$result = move_uploaded_file($_FILES['icon_file']['tmp_name'], $tmp_file);
+		if ($feed && $tmp_file && move_uploaded_file($_FILES['icon_file']['tmp_name'], $tmp_file)) {
+			if (filesize($tmp_file) < Config::get(Config::MAX_FAVICON_FILE_SIZE)) {
 
-			if (!$result) {
-				return;
-			}
-		} else {
-			return;
-		}
+				$new_filename = Config::get(Config::ICONS_DIR) . "/$feed_id.ico";
 
-		$icon_file = $tmp_file;
-		$feed_id = clean($_REQUEST["feed_id"]);
-		$rc = 2; // failed
+				if (file_exists($new_filename)) unlink($new_filename);
+					if (rename($tmp_file, $new_filename)) {
+						chmod($new_filename, 0644);
 
-		if ($icon_file && is_file($icon_file) && $feed_id) {
-			if (filesize($icon_file) < 65535) {
+						$feed->set([
+							'favicon_avg_color' => null,
+							'favicon_is_custom' => true,
+						]);
 
-				$sth = $this->pdo->prepare("SELECT id FROM ttrss_feeds
-					WHERE id = ? AND owner_uid = ?");
-				$sth->execute([$feed_id, $_SESSION['uid']]);
+						if ($feed->save()) {
+							$rc = self::E_ICON_UPLOAD_SUCCESS;
+						}
 
-				if ($row = $sth->fetch()) {
-					$new_filename = Config::get(Config::ICONS_DIR) . "/$feed_id.ico";
-
-					if (file_exists($new_filename)) unlink($new_filename);
-
-					if (rename($icon_file, $new_filename)) {
-						chmod($new_filename, 644);
-
-						$sth = $this->pdo->prepare("UPDATE ttrss_feeds SET
-							favicon_avg_color = ''
-							WHERE id = ?");
-						$sth->execute([$feed_id]);
-
-						$rc = Feeds::_get_icon($feed_id);
+					} else {
+						$rc = self::E_ICON_RENAME_FAILED;
 					}
-				}
 			} else {
-				$rc = 1;
+				$rc = self::E_ICON_FILE_TOO_LARGE;
 			}
 		}
 
-		if ($icon_file && is_file($icon_file)) {
-			unlink($icon_file);
-		}
+		if (file_exists($tmp_file))
+			unlink($tmp_file);
 
-		print $rc;
-		return;
+		print json_encode(['rc' => $rc, 'icon_url' => Feeds::_get_icon($feed_id)]);
 	}
 
 	function editfeed() {

@@ -3,7 +3,7 @@
 /* eslint-disable new-cap */
 /* eslint-disable no-new */
 
-/* global __, dojo, dijit, Notify, App, Feeds, xhrPost, xhr, Tables, fox */
+/* global __, dojo, dijit, Notify, App, Feeds, xhr, Tables, fox */
 
 /* exported CommonDialogs */
 const	CommonDialogs = {
@@ -181,7 +181,7 @@ const	CommonDialogs = {
 											}
 
 										} catch (e) {
-											console.error(transport.responseText);
+											console.error(reply);
 											App.Error.report(e);
 										}
 									});
@@ -335,6 +335,10 @@ const	CommonDialogs = {
 				id: "feedEditDlg",
 				title: __("Edit feed"),
 				feed_title: "",
+				E_ICON_FILE_TOO_LARGE: 'E_ICON_FILE_TOO_LARGE',
+				E_ICON_RENAME_FAILED: 'E_ICON_RENAME_FAILED',
+				E_ICON_UPLOAD_FAILED: 'E_ICON_UPLOAD_FAILED',
+				E_ICON_UPLOAD_SUCCESS: 'E_ICON_UPLOAD_SUCCESS',
 				unsubscribe: function() {
 					if (confirm(__("Unsubscribe from %s?").replace("%s", this.feed_title))) {
 						dialog.hide();
@@ -361,20 +365,18 @@ const	CommonDialogs = {
 
 						xhr.open( 'POST', 'backend.php', true );
 						xhr.onload = function () {
-							console.log(this.responseText);
+							const ret = JSON.parse(this.responseText);
 
 							// TODO: make a notice box within panel content
-							switch (parseInt(this.responseText)) {
-								case 1:
-									Notify.error("Upload failed: icon is too big.");
+							switch (ret.rc) {
+								case dialog.E_ICON_FILE_TOO_LARGE:
+									alert(__("Icon file is too large."));
 									break;
-								case 2:
-									Notify.error("Upload failed.");
+								case dialog.E_ICON_UPLOAD_FAILED:
+									alert(__("Upload failed."));
 									break;
-								default:
+								case dialog.E_ICON_UPLOAD_SUCCESS:
 									{
-										Notify.info("Upload complete.");
-
 										if (App.isPrefs())
 											dijit.byId("feedTree").reload();
 										else
@@ -383,12 +385,16 @@ const	CommonDialogs = {
 										const icon = dialog.domNode.querySelector(".feedIcon");
 
 										if (icon) {
-											icon.src = this.responseText;
+											icon.src = ret.icon_url;
 											icon.show();
 										}
 
 										input.value = "";
 									}
+									break;
+								default:
+									alert(this.responseText);
+									break;
 							}
 						};
 
@@ -400,9 +406,7 @@ const	CommonDialogs = {
 					if (confirm(__("Remove stored feed icon?"))) {
 						Notify.progress("Removing feed icon...", true);
 
-						const query = {op: "pref-feeds", method: "removeicon", feed_id: id};
-
-						xhr.post("backend.php", query, () => {
+						xhr.post("backend.php", {op: "pref-feeds", method: "removeicon", feed_id: id}, () => {
 							Notify.info("Feed icon removed.");
 
 							if (App.isPrefs())

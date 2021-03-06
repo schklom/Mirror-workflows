@@ -205,9 +205,9 @@ const	Helpers = {
 								</div>
 
 								<footer>
-									${App.FormFields.button_tag(__('Remove selected profiles'), "",
+									${App.FormFields.button_tag(App.FormFields.icon("delete") + " " +__('Remove selected profiles'), "",
 										{class: 'pull-left alt-danger', onclick: 'App.dialogOf(this).removeSelected()'})}
-									${App.FormFields.submit_tag(__('Activate profile'), {onclick: 'App.dialogOf(this).execute()'})}
+									${App.FormFields.submit_tag(App.FormFields.icon("check") + " " + __('Activate profile'), {onclick: 'App.dialogOf(this).execute()'})}
 									${App.FormFields.cancel_dialog_tag(__('Cancel'))}
 								</footer>
 							</form>
@@ -276,9 +276,11 @@ const	Helpers = {
 
 						<footer>
 							<button dojoType='dijit.form.Button' class='alt-success' onclick="App.dialogOf(this).apply()">
+								${App.FormFields.icon("check")}
 								${__('Apply')}
 							</button>
 							<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>
+								${App.FormFields.icon("refresh")}
 								${__('Save and reload')}
 							</button>
 							<button dojoType='dijit.form.Button' onclick="App.dialogOf(this).hide()">
@@ -529,7 +531,9 @@ const	Helpers = {
 
 								container.innerHTML += `
 									<li data-row-value="${App.escapeHtml(plugin.name)}" class="${is_installed ? "plugin-installed" : ""}">
-										${App.FormFields.button_tag(is_installed ? __("Already installed") : __('Install'), "", {class: 'alt-primary pull-right',
+										${App.FormFields.button_tag((is_installed ?
+												App.FormFields.icon("check") + " " +__("Already installed") :
+												App.FormFields.icon("file_download") + " " +__('Install')), "", {class: 'alt-primary pull-right',
 											disabled: is_installed,
 											onclick: `App.dialogOf(this).performInstall("${App.escapeHtml(plugin.name)}")`})}
 
@@ -574,7 +578,7 @@ const	Helpers = {
 					<ul style='clear : both' class="panel panel-scrollable-400px contents plugin-installer-list"> </ul>
 
 					<footer>
-						${App.FormFields.button_tag(__("Refresh"), "", {class: 'alt-primary', onclick: 'App.dialogOf(this).reload()'})}
+						${App.FormFields.button_tag(App.FormFields.icon("refresh") + " " +__("Refresh"), "", {class: 'alt-primary', onclick: 'App.dialogOf(this).reload()'})}
 						${App.FormFields.cancel_dialog_tag(__("Close"))}
 					</footer>
 				`,
@@ -646,7 +650,7 @@ const	Helpers = {
 					</ul>
 
 					<footer>
-						${App.FormFields.button_tag(__("Update"), "", {disabled: true, class: "update-btn alt-primary", onclick: "App.dialogOf(this).performUpdate()"})}
+						${App.FormFields.button_tag(App.FormFields.icon("update") + " " + __("Update"), "", {disabled: true, class: "update-btn alt-primary", onclick: "App.dialogOf(this).performUpdate()"})}
 						${App.FormFields.cancel_dialog_tag(__("Close"))}
 					</footer>
 				`,
@@ -798,6 +802,7 @@ const	Helpers = {
 							</section>
 							<footer class='text-center'>
 								<button dojoType='dijit.form.Button' onclick="return App.dialogOf(this).regenOPMLKey()">
+									${App.FormFields.icon("refresh")}
 									${__('Generate new URL')}
 								</button>
 								<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>

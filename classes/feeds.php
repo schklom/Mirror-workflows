@@ -1047,7 +1047,7 @@ class Feeds extends Handler_Protected {
 			]);
 
 			if ($feed->save()) {
-				RSSUtils::set_basic_feed_info($feed->id);
+				RSSUtils::update_basic_info($feed->id);
 				return ["code" => 1, "feed_id" => (int) $feed->id];
 			}
 

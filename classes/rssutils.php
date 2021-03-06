@@ -21,7 +21,7 @@ class RSSUtils {
 	}
 
 	// Strips utf8mb4 characters (i.e. emoji) for mysql
-	static function strip_utf8mb4($str) {
+	static function strip_utf8mb4(string $str) {
 		return preg_replace('/[\x{10000}-\x{10FFFF}]/u', "\xEF\xBF\xBD", $str);
 	}
 
@@ -52,7 +52,7 @@ class RSSUtils {
 		}
 	}
 
-	static function update_daemon_common($limit = null, $options = []) {
+	static function update_daemon_common(int $limit = 0, array $options = []) {
 		if (!$limit) $limit = Config::get(Config::DAEMON_FEED_LIMIT);
 
 		if (Config::get_schema_version() != Config::SCHEMA_VERSION) {
@@ -269,12 +269,11 @@ class RSSUtils {
 		return $nf;
 	}
 
-	// this is used when subscribing
-	static function set_basic_feed_info($feed) {
+	/** this is used when subscribing; TODO: update to ORM */
+	static function update_basic_info(int $feed) {
 
 		$pdo = Db::pdo();
 
-		// TODO: ORM
 		$sth = $pdo->prepare("SELECT owner_uid,feed_url,auth_pass,auth_login
 				FROM ttrss_feeds WHERE id = ?");
 		$sth->execute([$feed]);
@@ -345,23 +344,11 @@ class RSSUtils {
 		}
 	}
 
-	static function update_rss_feed($feed, $no_cache = false) {
+	static function update_rss_feed(int $feed, bool $no_cache = false) : bool {
 
-		Debug::log("start", Debug::$LOG_VERBOSE);
+		Debug::log("start", Debug::LOG_VERBOSE);
 
 		$pdo = Db::pdo();
-
-		/*$sth = $pdo->prepare("SELECT title, site_url FROM ttrss_feeds WHERE id = ?");
-		$sth->execute([$feed]);
-
-		if (!$row = $sth->fetch()) {
-			Debug::log("feed $feed not found, skipping.");
-			user_error("Attempt to update unknown/invalid feed $feed", E_USER_WARNING);
-			return false;
-		} */
-
-		//$title = $row["title"];
-		//$site_url = $row["site_url"];
 
 		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$favicon_interval_qpart = "favicon_last_checked < NOW() - INTERVAL '12 hour'";
@@ -387,52 +374,15 @@ class RSSUtils {
 
 		} else {
 			Debug::log("error: feeds table record not found for feed: $feed");
-			return;
+			return false;
 		}
 
 		// feed was batch-subscribed or something, we need to get basic info
 		// this is not optimal currently as it fetches stuff separately TODO: optimize
 		if ($feed_obj->title == "[Unknown]" || empty($feed_obj->title) || empty($feed_obj->site_url)) {
 			Debug::log("setting basic feed info for $feed...");
-			self::set_basic_feed_info($feed);
+			self::update_basic_info($feed);
 		}
-
-		/*$sth = $pdo->prepare("SELECT id,update_interval,auth_login,
-			feed_url,auth_pass,cache_images,
-			mark_unread_on_update, owner_uid,
-			auth_pass_encrypted, feed_language,
-			last_modified,
-			".SUBSTRING_FOR_DATE."(last_unconditional, 1, 19) AS last_unconditional
-			FROM ttrss_feeds WHERE id = ?");
-		$sth->execute([$feed]);
-
-		if ($row = $sth->fetch()) {
-
-			$owner_uid = $row["owner_uid"];
-			$mark_unread_on_update = $row["mark_unread_on_update"];
-
-			$sth = $pdo->prepare("UPDATE ttrss_feeds SET last_update_started = NOW()
-				WHERE id = ?");
-			$sth->execute([$feed]);
-
-			$auth_login = $row["auth_login"];
-			$auth_pass = $row["auth_pass"];
-			$stored_last_modified = $row["last_modified"];
-			$last_unconditional = $row["last_unconditional"];
-			$cache_images = $row["cache_images"];
-			$fetch_url = $row["feed_url"];
-
-			$feed_language = mb_strtolower($row["feed_language"]);
-
-			if (!$feed_language)
-				$feed_language = mb_strtolower(get_pref(Prefs::DEFAULT_SEARCH_LANGUAGE, $owner_uid));
-
-			if (!$feed_language)
-				$feed_language = 'simple';
-
-		} else {
-			return false;
-		} */
 
 		$date_feed_processed = date('Y-m-d H:i');
 
@@ -443,14 +393,13 @@ class RSSUtils {
 
 		$pluginhost->load(Config::get(Config::PLUGINS), PluginHost::KIND_ALL);
 		$pluginhost->load((string)$user_plugins, PluginHost::KIND_USER, $feed_obj->owner_uid);
-		//$pluginhost->load_data();
 
 		$rss_hash = false;
 
 		$force_refetch = isset($_REQUEST["force_refetch"]);
 		$feed_data = "";
 
-		Debug::log("running HOOK_FETCH_FEED handlers...", Debug::$LOG_VERBOSE);
+		Debug::log("running HOOK_FETCH_FEED handlers...", Debug::LOG_VERBOSE);
 
 		$start_ts = microtime(true);
 		$last_article_timestamp = 0;
@@ -461,24 +410,23 @@ class RSSUtils {
 		$pluginhost->chain_hooks_callback(PluginHost::HOOK_FETCH_FEED,
 			function ($result, $plugin) use (&$feed_data, $start_ts) {
 				$feed_data = $result;
-				Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)), Debug::$LOG_VERBOSE);
+				Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)), Debug::LOG_VERBOSE);
 			},
 			$feed_data, $hff_feed_url, $hff_owner_uid, $feed, $last_article_timestamp, $auth_login, $auth_pass);
 
 		if ($feed_data) {
-			Debug::log("feed data has been modified by a plugin.", Debug::$LOG_VERBOSE);
+			Debug::log("feed data has been modified by a plugin.", Debug::LOG_VERBOSE);
 		} else {
-			Debug::log("feed data has not been modified by a plugin.", Debug::$LOG_VERBOSE);
+			Debug::log("feed data has not been modified by a plugin.", Debug::LOG_VERBOSE);
 		}
 
 		// try cache
 		if (!$feed_data &&
-			file_exists($cache_filename) &&
 			is_readable($cache_filename) &&
 			!$feed_obj->auth_login && !$feed_obj->auth_pass &&
 			filemtime($cache_filename) > time() - 30) {
 
-			Debug::log("using local cache: {$cache_filename}.", Debug::$LOG_VERBOSE);
+			Debug::log("using local cache: {$cache_filename}.", Debug::LOG_VERBOSE);
 
 			$feed_data = file_get_contents($cache_filename);
 
@@ -487,26 +435,26 @@ class RSSUtils {
 			}
 
 		} else {
-			Debug::log("local cache will not be used for this feed", Debug::$LOG_VERBOSE);
+			Debug::log("local cache will not be used for this feed", Debug::LOG_VERBOSE);
 		}
 
 		// fetch feed from source
 		if (!$feed_data) {
-			Debug::log("last unconditional update request: {$feed_obj->last_unconditional}", Debug::$LOG_VERBOSE);
+			Debug::log("last unconditional update request: {$feed_obj->last_unconditional}", Debug::LOG_VERBOSE);
 
 			if (ini_get("open_basedir") && function_exists("curl_init")) {
-				Debug::log("not using CURL due to open_basedir restrictions", Debug::$LOG_VERBOSE);
+				Debug::log("not using CURL due to open_basedir restrictions", Debug::LOG_VERBOSE);
 			}
 
 			if (time() - strtotime($feed_obj->last_unconditional) > Config::get(Config::MAX_CONDITIONAL_INTERVAL)) {
-				Debug::log("maximum allowed interval for conditional requests exceeded, forcing refetch", Debug::$LOG_VERBOSE);
+				Debug::log("maximum allowed interval for conditional requests exceeded, forcing refetch", Debug::LOG_VERBOSE);
 
 				$force_refetch = true;
 			} else {
-				Debug::log("stored last modified for conditional request: {$feed_obj->last_modified}", Debug::$LOG_VERBOSE);
+				Debug::log("stored last modified for conditional request: {$feed_obj->last_modified}", Debug::LOG_VERBOSE);
 			}
 
-			Debug::log("fetching {$feed_obj->feed_url} (force_refetch: $force_refetch)...", Debug::$LOG_VERBOSE);
+			Debug::log("fetching {$feed_obj->feed_url} (force_refetch: $force_refetch)...", Debug::LOG_VERBOSE);
 
 			$feed_data = UrlHelper::fetch([
 				"url" => $feed_obj->feed_url,
@@ -518,16 +466,13 @@ class RSSUtils {
 
 			$feed_data = trim($feed_data);
 
-			Debug::log("fetch done.", Debug::$LOG_VERBOSE);
-			Debug::log(sprintf("effective URL (after redirects): %s (IP: %s) ", UrlHelper::$fetch_effective_url, UrlHelper::$fetch_effective_ip_addr), Debug::$LOG_VERBOSE);
-			Debug::log("server last modified: " . UrlHelper::$fetch_last_modified, Debug::$LOG_VERBOSE);
+			Debug::log("fetch done.", Debug::LOG_VERBOSE);
+			Debug::log(sprintf("effective URL (after redirects): %s (IP: %s) ", UrlHelper::$fetch_effective_url, UrlHelper::$fetch_effective_ip_addr), Debug::LOG_VERBOSE);
+			Debug::log("server last modified: " . UrlHelper::$fetch_last_modified, Debug::LOG_VERBOSE);
 
 			if ($feed_data && UrlHelper::$fetch_last_modified != $feed_obj->last_modified) {
 				$feed_obj->last_modified = substr(UrlHelper::$fetch_last_modified, 0, 245);
 				$feed_obj->save();
-
-				/* $sth = $pdo->prepare("UPDATE ttrss_feeds SET last_modified = ? WHERE id = ?");
-				$sth->execute([substr(UrlHelper::$fetch_last_modified, 0, 245), $feed]); */
 			}
 
 			// cache vanilla feed data for re-use
@@ -535,18 +480,18 @@ class RSSUtils {
 				$new_rss_hash = sha1($feed_data);
 
 				if ($new_rss_hash != $rss_hash) {
-					Debug::log("saving to local cache: $cache_filename", Debug::$LOG_VERBOSE);
+					Debug::log("saving to local cache: $cache_filename", Debug::LOG_VERBOSE);
 					file_put_contents($cache_filename, $feed_data);
 				}
 			}
 		}
 
 		if (!$feed_data) {
-			Debug::log(sprintf("unable to fetch: %s [%s]", UrlHelper::$fetch_last_error, UrlHelper::$fetch_last_error_code), Debug::$LOG_VERBOSE);
+			Debug::log(sprintf("unable to fetch: %s [%s]", UrlHelper::$fetch_last_error, UrlHelper::$fetch_last_error_code), Debug::LOG_VERBOSE);
 
 			// If-Modified-Since
 			if (UrlHelper::$fetch_last_error_code == 304) {
-				Debug::log("source claims data not modified, nothing to do.", Debug::$LOG_VERBOSE);
+				Debug::log("source claims data not modified, nothing to do.", Debug::LOG_VERBOSE);
 				$error_message = "";
 
 				$feed_obj->set([
@@ -557,10 +502,6 @@ class RSSUtils {
 
 				$feed_obj->save();
 
-				/* $sth = $pdo->prepare("UPDATE ttrss_feeds SET last_error = ?,
-					last_successful_update = NOW(),
-					last_updated = NOW() WHERE id = ?"); */
-
 			} else {
 				$error_message = UrlHelper::$fetch_last_error;
 
@@ -570,17 +511,12 @@ class RSSUtils {
 				]);
 
 				$feed_obj->save();
-
-				/*$sth = $pdo->prepare("UPDATE ttrss_feeds SET last_error = ?,
-					last_updated = NOW() WHERE id = ?"); */
 			}
-
-			//$sth->execute([$error_message, $feed]);
 
 			return $error_message == "";
 		}
 
-		Debug::log("running HOOK_FEED_FETCHED handlers...", Debug::$LOG_VERBOSE);
+		Debug::log("running HOOK_FEED_FETCHED handlers...", Debug::LOG_VERBOSE);
 		$feed_data_checksum = md5($feed_data);
 
 		// because chain_hooks_callback() accepts variables by value
@@ -591,14 +527,14 @@ class RSSUtils {
 		$pluginhost->chain_hooks_callback(PluginHost::HOOK_FEED_FETCHED,
 			function ($result, $plugin) use (&$feed_data, $start_ts) {
 				$feed_data = $result;
-				Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)), Debug::$LOG_VERBOSE);
+				Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)), Debug::LOG_VERBOSE);
 			},
 			$feed_data, $pff_feed_url, $pff_owner_uid, $feed);
 
 		if (md5($feed_data) != $feed_data_checksum) {
-			Debug::log("feed data has been modified by a plugin.", Debug::$LOG_VERBOSE);
+			Debug::log("feed data has been modified by a plugin.", Debug::LOG_VERBOSE);
 		} else {
-			Debug::log("feed data has not been modified by a plugin.", Debug::$LOG_VERBOSE);
+			Debug::log("feed data has not been modified by a plugin.", Debug::LOG_VERBOSE);
 		}
 
 		$rss = new FeedParser($feed_data);
@@ -606,27 +542,27 @@ class RSSUtils {
 
 		if (!$rss->error()) {
 
-			Debug::log("running HOOK_FEED_PARSED handlers...", Debug::$LOG_VERBOSE);
+			Debug::log("running HOOK_FEED_PARSED handlers...", Debug::LOG_VERBOSE);
 
 			// We use local pluginhost here because we need to load different per-user feed plugins
 
 			$start_ts = microtime(true);
 			$pluginhost->chain_hooks_callback(PluginHost::HOOK_FEED_PARSED,
 				function($result, $plugin) use ($start_ts) {
-					Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)), Debug::$LOG_VERBOSE);
+					Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)), Debug::LOG_VERBOSE);
 				},
 				$rss, $feed);
 
-			Debug::log("language: $feed_language", Debug::$LOG_VERBOSE);
-			Debug::log("processing feed data...", Debug::$LOG_VERBOSE);
+			Debug::log("language: $feed_language", Debug::LOG_VERBOSE);
+			Debug::log("processing feed data...", Debug::LOG_VERBOSE);
 
 			$site_url = mb_substr(rewrite_relative_url($feed_obj->feed_url, clean($rss->get_link())), 0, 245);
 
-			Debug::log("site_url: $site_url", Debug::$LOG_VERBOSE);
-			Debug::log("feed_title: {$rss->get_title()}", Debug::$LOG_VERBOSE);
+			Debug::log("site_url: $site_url", Debug::LOG_VERBOSE);
+			Debug::log("feed_title: {$rss->get_title()}", Debug::LOG_VERBOSE);
 
 			Debug::log("favicon: needs check: {$feed_obj->favicon_needs_check} is custom: {$feed_obj->favicon_is_custom} avg color: {$feed_obj->favicon_avg_color}",
-				Debug::$LOG_VERBOSE);
+				Debug::LOG_VERBOSE);
 
 			if ($feed_obj->favicon_needs_check || $force_refetch) {
 
@@ -637,17 +573,17 @@ class RSSUtils {
 				$favicon_modified = file_exists($favicon_file) ? filemtime($favicon_file) : -1;
 
 				if (!$feed_obj->favicon_is_custom) {
-					Debug::log("favicon: trying to update favicon...", Debug::$LOG_VERBOSE);
-					self::check_feed_favicon($site_url, $feed);
+					Debug::log("favicon: trying to update favicon...", Debug::LOG_VERBOSE);
+					self::update_favicon($site_url, $feed);
 
 					if ((file_exists($favicon_file) ? filemtime($favicon_file) : -1) > $favicon_modified)
 						$feed_obj->favicon_avg_color = null;
 				}
 
-				if (file_exists($favicon_file) && function_exists("imagecreatefromstring") && empty($feed_obj->favicon_avg_color)) {
+				if (is_readable($favicon_file) && function_exists("imagecreatefromstring") && empty($feed_obj->favicon_avg_color)) {
 					require_once "colors.php";
 
-					Debug::log("favicon: trying to calculate average color...", Debug::$LOG_VERBOSE);
+					Debug::log("favicon: trying to calculate average color...", Debug::LOG_VERBOSE);
 
 					$feed_obj->favicon_avg_color = 'fail';
 					$feed_obj->save();
@@ -655,31 +591,27 @@ class RSSUtils {
 					$feed_obj->favicon_avg_color = \Colors\calculate_avg_color($favicon_file);
 					$feed_obj->save();
 
-					Debug::log("favicon: avg color: {$feed_obj->favicon_avg_color}", Debug::$LOG_VERBOSE);
+					Debug::log("favicon: avg color: {$feed_obj->favicon_avg_color}", Debug::LOG_VERBOSE);
 
 				} else if ($feed_obj->favicon_avg_color == 'fail') {
-					Debug::log("floicon failed $favicon_file, not trying to recalculate avg color", Debug::$LOG_VERBOSE);
+					Debug::log("floicon failed $favicon_file, not trying to recalculate avg color", Debug::LOG_VERBOSE);
 				}
 			}
 
-			Debug::log("loading filters & labels...", Debug::$LOG_VERBOSE);
+			Debug::log("loading filters & labels...", Debug::LOG_VERBOSE);
 
 			$filters = self::load_filters($feed, $feed_obj->owner_uid);
 
-			if (Debug::get_loglevel() >= Debug::$LOG_EXTENDED) {
+			if (Debug::get_loglevel() >= Debug::LOG_EXTENDED) {
 				print_r($filters);
 			}
 
-			Debug::log("" . count($filters) . " filters loaded.", Debug::$LOG_VERBOSE);
+			Debug::log("" . count($filters) . " filters loaded.", Debug::LOG_VERBOSE);
 
 			$items = $rss->get_items();
 
 			if (!is_array($items)) {
-				Debug::log("no articles found.", Debug::$LOG_VERBOSE);
-
-				/*$sth = $pdo->prepare("UPDATE ttrss_feeds
-					SET last_updated = NOW(), last_unconditional = NOW(), last_error = '' WHERE id = ?");
-				$sth->execute([$feed]);*/
+				Debug::log("no articles found.", Debug::LOG_VERBOSE);
 
 				$feed_obj->set([
 					'last_updated' => Db::NOW(),
@@ -692,7 +624,7 @@ class RSSUtils {
 				return true; // no articles
 			}
 
-			Debug::log("processing articles...", Debug::$LOG_VERBOSE);
+			Debug::log("processing articles...", Debug::LOG_VERBOSE);
 
 			$tstart = time();
 
@@ -700,14 +632,14 @@ class RSSUtils {
 				$pdo->beginTransaction();
 
 				Debug::log("=================================================================================================================================",
-					Debug::$LOG_VERBOSE);
+					Debug::LOG_VERBOSE);
 
 				if (Debug::get_loglevel() >= 3) {
 					print_r($item);
 				}
 
 				if (ini_get("max_execution_time") > 0 && time() - $tstart >= ini_get("max_execution_time") * 0.7) {
-					Debug::log("looks like there's too many articles to process at once, breaking out.", Debug::$LOG_VERBOSE);
+					Debug::log("looks like there's too many articles to process at once, breaking out.", Debug::LOG_VERBOSE);
 					$pdo->commit();
 					break;
 				}
@@ -725,12 +657,12 @@ class RSSUtils {
 				$entry_guid_hashed = json_encode(["ver" => 2, "uid" => $feed_obj->owner_uid, "hash" => 'SHA1:' . sha1($entry_guid)]);
 				$entry_guid = "$feed_obj->owner_uid,$entry_guid";
 
-				Debug::log("guid $entry_guid (hash: $entry_guid_hashed compat: $entry_guid_hashed_compat)", Debug::$LOG_VERBOSE);
+				Debug::log("guid $entry_guid (hash: $entry_guid_hashed compat: $entry_guid_hashed_compat)", Debug::LOG_VERBOSE);
 
 				$entry_timestamp = (int)$item->get_date();
 
 				Debug::log(sprintf("orig date: %s (%s)", $item->get_date(), date("Y-m-d H:i:s", $item->get_date())),
-					Debug::$LOG_VERBOSE);
+					Debug::LOG_VERBOSE);
 
 				$entry_title = strip_tags($item->get_title());
 
@@ -738,9 +670,9 @@ class RSSUtils {
 
 				$entry_language = mb_substr(trim($item->get_language()), 0, 2);
 
-				Debug::log("title $entry_title", Debug::$LOG_VERBOSE);
-				Debug::log("link $entry_link", Debug::$LOG_VERBOSE);
-				Debug::log("language $entry_language", Debug::$LOG_VERBOSE);
+				Debug::log("title $entry_title", Debug::LOG_VERBOSE);
+				Debug::log("link $entry_link", Debug::LOG_VERBOSE);
+				Debug::log("language $entry_language", Debug::LOG_VERBOSE);
 
 				if (!$entry_title) $entry_title = date("Y-m-d H:i:s", $entry_timestamp);;
 
@@ -759,13 +691,13 @@ class RSSUtils {
 				$entry_author = strip_tags($item->get_author());
 				$entry_guid = mb_substr($entry_guid, 0, 245);
 
-				Debug::log("author $entry_author", Debug::$LOG_VERBOSE);
-				Debug::log("looking for tags...", Debug::$LOG_VERBOSE);
+				Debug::log("author $entry_author", Debug::LOG_VERBOSE);
+				Debug::log("looking for tags...", Debug::LOG_VERBOSE);
 
 				$entry_tags = $item->get_categories();
-				Debug::log("tags found: " . join(", ", $entry_tags), Debug::$LOG_VERBOSE);
+				Debug::log("tags found: " . join(", ", $entry_tags), Debug::LOG_VERBOSE);
 
-				Debug::log("done collecting data.", Debug::$LOG_VERBOSE);
+				Debug::log("done collecting data.", Debug::LOG_VERBOSE);
 
 				$sth = $pdo->prepare("SELECT id, content_hash, lang FROM ttrss_entries
 					WHERE guid IN (?, ?, ?)");
@@ -784,7 +716,7 @@ class RSSUtils {
 					$article_labels = array();
 				}
 
-				Debug::log("looking for enclosures...", Debug::$LOG_VERBOSE);
+				Debug::log("looking for enclosures...", Debug::LOG_VERBOSE);
 
 				// enclosures
 
@@ -842,10 +774,10 @@ class RSSUtils {
 				$entry_plugin_data = "";
 				$entry_current_hash = self::calculate_article_hash($article, $pluginhost);
 
-				Debug::log("article hash: $entry_current_hash [stored=$entry_stored_hash]", Debug::$LOG_VERBOSE);
+				Debug::log("article hash: $entry_current_hash [stored=$entry_stored_hash]", Debug::LOG_VERBOSE);
 
 				if ($entry_current_hash == $entry_stored_hash && !isset($_REQUEST["force_rehash"])) {
-					Debug::log("stored article seems up to date [IID: $base_entry_id], updating timestamp only.", Debug::$LOG_VERBOSE);
+					Debug::log("stored article seems up to date [IID: $base_entry_id], updating timestamp only.", Debug::LOG_VERBOSE);
 
 					// we keep encountering the entry in feeds, so we need to
 					// update date_updated column so that we don't get horrible
@@ -857,15 +789,12 @@ class RSSUtils {
 						->set('date_updated', Db::NOW())
 						->save();
 
-					/* $sth = $pdo->prepare("UPDATE ttrss_entries SET date_updated = NOW()
-						WHERE id = ?");
-					$sth->execute([$base_entry_id]); */
-
 					$pdo->commit();
+
 					continue;
 				}
 
-				Debug::log("hash differs, running HOOK_ARTICLE_FILTER handlers...", Debug::$LOG_VERBOSE);
+				Debug::log("hash differs, running HOOK_ARTICLE_FILTER handlers...", Debug::LOG_VERBOSE);
 
 				$start_ts = microtime(true);
 
@@ -876,7 +805,7 @@ class RSSUtils {
 						$entry_plugin_data .= mb_strtolower(get_class($plugin)) . ",";
 
 						Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)),
-							Debug::$LOG_VERBOSE);
+							Debug::LOG_VERBOSE);
 					},
 					$article);
 
@@ -886,7 +815,7 @@ class RSSUtils {
 					print "\n";
 				}
 
-				Debug::log("plugin data: {$entry_plugin_data}", Debug::$LOG_VERBOSE);
+				Debug::log("plugin data: {$entry_plugin_data}", Debug::LOG_VERBOSE);
 
 				// Workaround: 4-byte unicode requires utf8mb4 in MySQL. See https://tt-rss.org/forum/viewtopic.php?f=1&t=3377&p=20077#p20077
 				if (Config::get(Config::DB_TYPE) == "mysql" && Config::get(Config::MYSQL_CHARSET) != "UTF8MB4") {
@@ -922,29 +851,22 @@ class RSSUtils {
 						$filter_obj->set('last_triggered', Db::NOW());
 						$filter_obj->save();
 					}
-
-					/*$filter_ids_qmarks = arr_qmarks($matched_filter_ids);
-
-					$fsth = $pdo->prepare("UPDATE ttrss_filters2 SET last_triggered = NOW() WHERE
-							   id IN ($filter_ids_qmarks) AND owner_uid = ?");
-
-					$fsth->execute(array_merge($matched_filter_ids, [$feed_obj->owner_uid]));*/
 				}
 
-				if (Debug::get_loglevel() >= Debug::$LOG_EXTENDED) {
-					Debug::log("matched filters: ", Debug::$LOG_VERBOSE);
+				if (Debug::get_loglevel() >= Debug::LOG_EXTENDED) {
+					Debug::log("matched filters: ", Debug::LOG_VERBOSE);
 
 					if (count($matched_filters) != 0) {
 						print_r($matched_filters);
 					}
 
-					Debug::log("matched filter rules: ", Debug::$LOG_VERBOSE);
+					Debug::log("matched filter rules: ", Debug::LOG_VERBOSE);
 
 					if (count($matched_rules) != 0) {
 						print_r($matched_rules);
 					}
 
-					Debug::log("filter actions: ", Debug::$LOG_VERBOSE);
+					Debug::log("filter actions: ", Debug::LOG_VERBOSE);
 
 					if (count($article_filters) != 0) {
 						print_r($article_filters);
@@ -955,7 +877,7 @@ class RSSUtils {
 				$plugin_filter_actions = $pluginhost->get_filter_actions();
 
 				if (count($plugin_filter_names) > 0) {
-					Debug::log("applying plugin filter actions...", Debug::$LOG_VERBOSE);
+					Debug::log("applying plugin filter actions...", Debug::LOG_VERBOSE);
 
 					foreach ($plugin_filter_names as $pfn) {
 						list($pfclass,$pfaction) = explode(":", $pfn["param"]);
@@ -963,18 +885,18 @@ class RSSUtils {
 						if (isset($plugin_filter_actions[$pfclass])) {
 							$plugin = $pluginhost->get_plugin($pfclass);
 
-							Debug::log("... $pfclass: $pfaction", Debug::$LOG_VERBOSE);
+							Debug::log("... $pfclass: $pfaction", Debug::LOG_VERBOSE);
 
 							if ($plugin) {
 								$start = microtime(true);
 								$article = $plugin->hook_article_filter_action($article, $pfaction);
 
-								Debug::log(sprintf("=== %.4f (sec)", microtime(true) - $start), Debug::$LOG_VERBOSE);
+								Debug::log(sprintf("=== %.4f (sec)", microtime(true) - $start), Debug::LOG_VERBOSE);
 							} else {
-								Debug::log("??? $pfclass: plugin object not found.", Debug::$LOG_VERBOSE);
+								Debug::log("??? $pfclass: plugin object not found.", Debug::LOG_VERBOSE);
 							}
 						} else {
-							Debug::log("??? $pfclass: filter plugin not registered.", Debug::$LOG_VERBOSE);
+							Debug::log("??? $pfclass: filter plugin not registered.", Debug::LOG_VERBOSE);
 						}
 					}
 				}
@@ -998,18 +920,18 @@ class RSSUtils {
 
 				$entry_timestamp_fmt = strftime("%Y/%m/%d %H:%M:%S", $entry_timestamp);
 
-				Debug::log("date: $entry_timestamp ($entry_timestamp_fmt)", Debug::$LOG_VERBOSE);
-				Debug::log("num_comments: $num_comments", Debug::$LOG_VERBOSE);
+				Debug::log("date: $entry_timestamp ($entry_timestamp_fmt)", Debug::LOG_VERBOSE);
+				Debug::log("num_comments: $num_comments", Debug::LOG_VERBOSE);
 
-				if (Debug::get_loglevel() >= Debug::$LOG_EXTENDED) {
-					Debug::log("article labels:", Debug::$LOG_VERBOSE);
+				if (Debug::get_loglevel() >= Debug::LOG_EXTENDED) {
+					Debug::log("article labels:", Debug::LOG_VERBOSE);
 
 					if (count($article_labels) != 0) {
 						print_r($article_labels);
 					}
 				}
 
-				Debug::log("force catchup: $entry_force_catchup", Debug::$LOG_VERBOSE);
+				Debug::log("force catchup: $entry_force_catchup", Debug::LOG_VERBOSE);
 
 				if ($feed_obj->cache_images)
 					self::cache_media($entry_content, $site_url);
@@ -1020,7 +942,7 @@ class RSSUtils {
 
 				if (!$row = $csth->fetch()) {
 
-					Debug::log("base guid [$entry_guid or $entry_guid_hashed] not found, creating...", Debug::$LOG_VERBOSE);
+					Debug::log("base guid [$entry_guid or $entry_guid_hashed] not found, creating...", Debug::LOG_VERBOSE);
 
 					// base post entry does not exist, create it
 
@@ -1068,20 +990,20 @@ class RSSUtils {
 
 				if ($row = $csth->fetch()) {
 
-					Debug::log("base guid found, checking for user record", Debug::$LOG_VERBOSE);
+					Debug::log("base guid found, checking for user record", Debug::LOG_VERBOSE);
 
 					$ref_id = $row['id'];
 					$entry_ref_id = $ref_id;
 
 					if (self::find_article_filter($article_filters, "filter")) {
-						Debug::log("article is filtered out, nothing to do.", Debug::$LOG_VERBOSE);
+						Debug::log("article is filtered out, nothing to do.", Debug::LOG_VERBOSE);
 						$pdo->commit();
 						continue;
 					}
 
 					$score = self::calculate_article_score($article_filters) + $entry_score_modifier;
 
-					Debug::log("initial score: $score [including plugin modifier: $entry_score_modifier]", Debug::$LOG_VERBOSE);
+					Debug::log("initial score: $score [including plugin modifier: $entry_score_modifier]", Debug::LOG_VERBOSE);
 
 					// check for user post link to main table
 
@@ -1094,10 +1016,10 @@ class RSSUtils {
 						$entry_ref_id = $row["ref_id"];
 						$entry_int_id = $row["int_id"];
 
-						Debug::log("user record FOUND: RID: $entry_ref_id, IID: $entry_int_id", Debug::$LOG_VERBOSE);
+						Debug::log("user record FOUND: RID: $entry_ref_id, IID: $entry_int_id", Debug::LOG_VERBOSE);
 					} else {
 
-						Debug::log("user record not found, creating...", Debug::$LOG_VERBOSE);
+						Debug::log("user record not found, creating...", Debug::LOG_VERBOSE);
 
 						if ($score >= -500 && !self::find_article_filter($article_filters, 'catchup') && !$entry_force_catchup) {
 							$unread = 1;
@@ -1142,7 +1064,7 @@ class RSSUtils {
 							$entry_int_id = $row['int_id'];
 					}
 
-					Debug::log("resulting RID: $entry_ref_id, IID: $entry_int_id", Debug::$LOG_VERBOSE);
+					Debug::log("resulting RID: $entry_ref_id, IID: $entry_int_id", Debug::LOG_VERBOSE);
 
 					if (Config::get(Config::DB_TYPE) == "pgsql")
 						$tsvector_qpart = "tsvector_combined = to_tsvector(:ts_lang, :ts_content),";
@@ -1188,23 +1110,23 @@ class RSSUtils {
 						!$entry_force_catchup &&
 						!self::find_article_filter($article_filters, 'catchup')) {
 
-						Debug::log("article updated, marking unread as requested.", Debug::$LOG_VERBOSE);
+						Debug::log("article updated, marking unread as requested.", Debug::LOG_VERBOSE);
 
 						$sth = $pdo->prepare("UPDATE ttrss_user_entries
 							SET last_read = null, unread = true WHERE ref_id = ?");
 						$sth->execute([$ref_id]);
 					} else {
-						Debug::log("article updated, but we're forbidden to mark it unread.", Debug::$LOG_VERBOSE);
+						Debug::log("article updated, but we're forbidden to mark it unread.", Debug::LOG_VERBOSE);
 					}
 				}
 
-				Debug::log("assigning labels [other]...", Debug::$LOG_VERBOSE);
+				Debug::log("assigning labels [other]...", Debug::LOG_VERBOSE);
 
 				foreach ($article_labels as $label) {
 					Labels::add_article($entry_ref_id, $label[1], $feed_obj->owner_uid);
 				}
 
-				Debug::log("assigning labels [filters]...", Debug::$LOG_VERBOSE);
+				Debug::log("assigning labels [filters]...", Debug::LOG_VERBOSE);
 
 				self::assign_article_to_label_filters($entry_ref_id, $article_filters,
 					$feed_obj->owner_uid, $article_labels);
@@ -1212,8 +1134,8 @@ class RSSUtils {
 				if ($feed_obj->cache_images)
 					self::cache_enclosures($enclosures, $site_url);
 
-				if (Debug::get_loglevel() >= Debug::$LOG_EXTENDED) {
-					Debug::log("article enclosures:", Debug::$LOG_VERBOSE);
+				if (Debug::get_loglevel() >= Debug::LOG_EXTENDED) {
+					Debug::log("article enclosures:", Debug::LOG_VERBOSE);
 					print_r($enclosures);
 				}
 
@@ -1262,7 +1184,7 @@ class RSSUtils {
 					array_unique(
 						array_diff($entry_tags, $boring_tags)));
 
-				Debug::log("filtered tags: " . implode(", ", $entry_tags), Debug::$LOG_VERBOSE);
+				Debug::log("filtered tags: " . implode(", ", $entry_tags), Debug::LOG_VERBOSE);
 
 				// Save article tags in the database
 
@@ -1297,15 +1219,15 @@ class RSSUtils {
 					]);
 				}
 
-				Debug::log("article processed.", Debug::$LOG_VERBOSE);
+				Debug::log("article processed.", Debug::LOG_VERBOSE);
 
 				$pdo->commit();
 			}
 
 			Debug::log("=================================================================================================================================",
-					Debug::$LOG_VERBOSE);
+					Debug::LOG_VERBOSE);
 
-			Debug::log("purging feed...", Debug::$LOG_VERBOSE);
+			Debug::log("purging feed...", Debug::LOG_VERBOSE);
 
 			Feeds::_purge($feed, 0);
 
@@ -1318,30 +1240,17 @@ class RSSUtils {
 
 			$feed_obj->save();
 
-			/* $sth = $pdo->prepare("UPDATE ttrss_feeds SET
-				last_updated = NOW(),
-				last_unconditional = NOW(),
-				last_successful_update = NOW(),
-				last_error = '' WHERE id = ?");
-			$sth->execute([$feed]); */
-
 		} else {
 
 			$error_msg = mb_substr($rss->error(), 0, 245);
 
-			Debug::log("fetch error: $error_msg", Debug::$LOG_VERBOSE);
+			Debug::log("fetch error: $error_msg", Debug::LOG_VERBOSE);
 
 			if (count($rss->errors()) > 1) {
 				foreach ($rss->errors() as $error) {
-					Debug::log("+ $error", Debug::$LOG_VERBOSE);
+					Debug::log("+ $error", Debug::LOG_VERBOSE);
 				}
 			}
-
-			/* $sth = $pdo->prepare("UPDATE ttrss_feeds SET
-				last_error = ?,
-				last_updated = NOW(),
-				last_unconditional = NOW() WHERE id = ?");
-			$sth->execute([$error_msg, $feed]);*/
 
 			$feed_obj->set([
 				'last_updated' => Db::NOW(),
@@ -1353,11 +1262,11 @@ class RSSUtils {
 
 			unset($rss);
 
-			Debug::log("update failed.", Debug::$LOG_VERBOSE);
+			Debug::log("update failed.", Debug::LOG_VERBOSE);
 			return false;
 		}
 
-		Debug::log("update done.", Debug::$LOG_VERBOSE);
+		Debug::log("update done.", Debug::LOG_VERBOSE);
 		return true;
 	}
 
@@ -1373,7 +1282,7 @@ class RSSUtils {
 
 					$local_filename = sha1($src);
 
-					Debug::log("cache_enclosures: downloading: $src to $local_filename", Debug::$LOG_VERBOSE);
+					Debug::log("cache_enclosures: downloading: $src to $local_filename", Debug::LOG_VERBOSE);
 
 					if (!$cache->exists($local_filename)) {
 						$file_content = UrlHelper::fetch(array("url" => $src,
@@ -1398,10 +1307,10 @@ class RSSUtils {
 		$url = rewrite_relative_url($site_url, $url);
 		$local_filename = sha1($url);
 
-		Debug::log("cache_media: checking $url", Debug::$LOG_VERBOSE);
+		Debug::log("cache_media: checking $url", Debug::LOG_VERBOSE);
 
 		if (!$cache->exists($local_filename)) {
-			Debug::log("cache_media: downloading: $url to $local_filename", Debug::$LOG_VERBOSE);
+			Debug::log("cache_media: downloading: $url to $local_filename", Debug::LOG_VERBOSE);
 
 			$file_content = UrlHelper::fetch(array("url" => $url,
 				"http_referrer" => $url,
@@ -1469,7 +1378,7 @@ class RSSUtils {
 	}
 
 	static function expire_lock_files() {
-		Debug::log("Removing old lock files...", Debug::$LOG_VERBOSE);
+		Debug::log("Removing old lock files...", Debug::LOG_VERBOSE);
 
 		$num_deleted = 0;
 
@@ -1719,12 +1628,12 @@ class RSSUtils {
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_HOUSE_KEEPING);
 	}
 
-	static function check_feed_favicon($site_url, $feed) {
+	static function update_favicon(string $site_url, int $feed) {
 		$icon_file = Config::get(Config::ICONS_DIR) . "/$feed.ico";
 
 		$favicon_url = self::get_favicon_url($site_url);
 		if (!$favicon_url) {
-			Debug::log("favicon: couldn't find favicon URL in $site_url", Debug::$LOG_VERBOSE);
+			Debug::log("favicon: couldn't find favicon URL in $site_url", Debug::LOG_VERBOSE);
 			return false;
 		}
 
@@ -1735,7 +1644,7 @@ class RSSUtils {
 			//'type' => 'image',
 		]);
 		if (!$contents) {
-			Debug::log("favicon: fetching $favicon_url failed", Debug::$LOG_VERBOSE);
+			Debug::log("favicon: fetching $favicon_url failed", Debug::LOG_VERBOSE);
 			return false;
 		}
 
@@ -1743,35 +1652,35 @@ class RSSUtils {
 		// Patterns gleaned from the file(1) source code.
 		if (preg_match('/^\x00\x00\x01\x00/', $contents)) {
 			// 0       string  \000\000\001\000        MS Windows icon resource
-			//error_log("check_feed_favicon: favicon_url=$favicon_url isa MS Windows icon resource");
+			//error_log("update_favicon: favicon_url=$favicon_url isa MS Windows icon resource");
 		}
 		elseif (preg_match('/^GIF8/', $contents)) {
 			// 0       string          GIF8            GIF image data
-			//error_log("check_feed_favicon: favicon_url=$favicon_url isa GIF image");
+			//error_log("update_favicon: favicon_url=$favicon_url isa GIF image");
 		}
 		elseif (preg_match('/^\x89PNG\x0d\x0a\x1a\x0a/', $contents)) {
 			// 0       string          \x89PNG\x0d\x0a\x1a\x0a         PNG image data
-			//error_log("check_feed_favicon: favicon_url=$favicon_url isa PNG image");
+			//error_log("update_favicon: favicon_url=$favicon_url isa PNG image");
 		}
 		elseif (preg_match('/^\xff\xd8/', $contents)) {
 			// 0       beshort         0xffd8          JPEG image data
-			//error_log("check_feed_favicon: favicon_url=$favicon_url isa JPG image");
+			//error_log("update_favicon: favicon_url=$favicon_url isa JPG image");
 		}
 		elseif (preg_match('/^BM/', $contents)) {
 			// 0	string		BM	PC bitmap (OS2, Windows BMP files)
-			//error_log("check_feed_favicon, favicon_url=$favicon_url isa BMP image");
+			//error_log("update_favicon, favicon_url=$favicon_url isa BMP image");
 		}
 		else {
-			//error_log("check_feed_favicon: favicon_url=$favicon_url isa UNKNOWN type");
-			Debug::log("favicon $favicon_url type is unknown (not updating)", Debug::$LOG_VERBOSE);
+			//error_log("update_favicon: favicon_url=$favicon_url isa UNKNOWN type");
+			Debug::log("favicon $favicon_url type is unknown (not updating)", Debug::LOG_VERBOSE);
 			return false;
 		}
 
-		Debug::log("favicon: saving to $icon_file", Debug::$LOG_VERBOSE);
+		Debug::log("favicon: saving to $icon_file", Debug::LOG_VERBOSE);
 
 		$fp = @fopen($icon_file, "w");
 		if (!$fp) {
-			Debug::log("favicon: failed to open $icon_file for writing", Debug::$LOG_VERBOSE);
+			Debug::log("favicon: failed to open $icon_file for writing", Debug::LOG_VERBOSE);
 			return false;
 		}
 
@@ -1788,7 +1697,7 @@ class RSSUtils {
 				"\x1f" . "\x8b" . "\x08", 0) === 0;
 	}
 
-	static function load_filters($feed_id, $owner_uid) {
+	static function load_filters(int $feed_id, int $owner_uid) {
 		$filters = array();
 
 		$feed_id = (int) $feed_id;
@@ -1907,7 +1816,7 @@ class RSSUtils {
 	 * @access public
 	 * @return mixed The favicon URL, or false if none was found.
 	 */
-	static function get_favicon_url($url) {
+	static function get_favicon_url(string $url) {
 
 		$favicon_url = false;
 

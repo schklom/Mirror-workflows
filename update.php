@@ -232,7 +232,7 @@
 	if (isset($options["update-feed"])) {
 		try {
 
-			if (!RSSUtils::update_rss_feed($options["update-feed"], true))
+			if (!RSSUtils::update_rss_feed((int)$options["update-feed"], true))
 				exit(100);
 
 		} catch (PDOException $e) {
@@ -454,7 +454,7 @@
 	}
 
 	if (isset($options["debug-feed"])) {
-		$feed = $options["debug-feed"];
+		$feed = (int) $options["debug-feed"];
 
 		if (isset($options["force-refetch"])) $_REQUEST["force_refetch"] = true;
 		if (isset($options["force-rehash"])) $_REQUEST["force_rehash"] = true;

@@ -5,15 +5,22 @@ class Debug {
     const LOG_VERBOSE = 1;
     const LOG_EXTENDED = 2;
 
-	public static $LOG_DISABLED = -1;
-    public static $LOG_NORMAL = 0;
-    public static $LOG_VERBOSE = 1;
-    public static $LOG_EXTENDED = 2;
+	/** @deprecated */
+	public static $LOG_DISABLED = self::LOG_DISABLED;
+
+	/** @deprecated */
+    public static $LOG_NORMAL = self::LOG_NORMAL;
+
+	/** @deprecated */
+    public static $LOG_VERBOSE = self::LOG_VERBOSE;
+
+	/** @deprecated */
+    public static $LOG_EXTENDED = self::LOG_EXTENDED;
 
     private static $enabled = false;
     private static $quiet = false;
     private static $logfile = false;
-    private static $loglevel = 0;
+    private static $loglevel = self::LOG_NORMAL;
 
 	public static function set_logfile($logfile) {
         self::$logfile = $logfile;
@@ -39,7 +46,7 @@ class Debug {
         return self::$loglevel;
     }
 
-    public static function log($message, $level = 0) {
+    public static function log($message, int $level = 0) {
 
         if (!self::$enabled || self::$loglevel < $level) return false;
 

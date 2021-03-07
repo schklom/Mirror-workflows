@@ -84,7 +84,7 @@ class Config {
 																					Config::T_STRING ],
 		Config::CHECK_FOR_UPDATES => [ "true",							Config::T_BOOL ],
 		Config::PLUGINS => [ "auth_internal",							Config::T_STRING ],
-		Config::LOG_DESTINATION => [ "sql",								Config::T_STRING ],
+		Config::LOG_DESTINATION => [ Logger::LOG_DEST_SQL,			Config::T_STRING ],
 		Config::LOCAL_OVERRIDE_STYLESHEET => [ "local-overrides.css",
 																					Config::T_STRING ],
 		Config::DAEMON_MAX_CHILD_RUNTIME => [ 1800,					Config::T_INT ],

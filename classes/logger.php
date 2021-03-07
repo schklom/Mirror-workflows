@@ -3,6 +3,10 @@ class Logger {
 	private static $instance;
 	private $adapter;
 
+	const LOG_DEST_SQL = "sql";
+	const LOG_DEST_STDOUT = "stdout";
+	const LOG_DEST_SYSLOG = "syslog";
+
 	const ERROR_NAMES = [
 		1			=> 'E_ERROR',
 		2			=> 'E_WARNING',
@@ -51,13 +55,13 @@ class Logger {
 
 	function __construct() {
 		switch (Config::get(Config::LOG_DESTINATION)) {
-		case "sql":
+		case self::LOG_DEST_SQL:
 			$this->adapter = new Logger_SQL();
 			break;
-		case "syslog":
+		case self::LOG_DEST_SYSLOG:
 			$this->adapter = new Logger_Syslog();
 			break;
-		case "stdout":
+		case self::LOG_DEST_STDOUT:
 			$this->adapter = new Logger_Stdout();
 			break;
 		default:

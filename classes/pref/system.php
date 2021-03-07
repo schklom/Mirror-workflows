@@ -165,7 +165,7 @@ class Pref_System extends Handler_Administrative {
 		$page = (int) ($_REQUEST["page"] ?? 0);
 		?>
 		<div dojoType='dijit.layout.AccordionContainer' region='center'>
-			<?php if (Config::get(Config::LOG_DESTINATION) == "sql") { ?>
+			<?php if (Config::get(Config::LOG_DESTINATION) == Logger::LOG_DEST_SQL) { ?>
 				<div dojoType='dijit.layout.AccordionPane' style='padding : 0' title='<i class="material-icons">report</i> <?= __('Event log') ?>'>
 					<?php
 						$this->_log_viewer($page, $severity);

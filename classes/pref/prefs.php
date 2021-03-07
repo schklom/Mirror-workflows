@@ -1049,7 +1049,7 @@ class Pref_Prefs extends Handler_Protected {
 		}
 
 		$rv = array_values(array_filter($rv, function ($item) {
-			return !empty($item["rv"]["o"]);
+			return $item["rv"]["need_update"];
 		}));
 
 		return $rv;
@@ -1071,10 +1071,10 @@ class Pref_Prefs extends Handler_Protected {
 			$proc = proc_open("git fetch -q origin -a && git log HEAD..origin/master --oneline", $descriptorspec, $pipes, $plugin_dir);
 
 			if (is_resource($proc)) {
-				$rv["o"] = stream_get_contents($pipes[1]);
-				$rv["e"] = stream_get_contents($pipes[2]);
-				$status = proc_close($proc);
-				$rv["s"] = $status;
+				$rv["stdout"] = stream_get_contents($pipes[1]);
+				$rv["stderr"] = stream_get_contents($pipes[2]);
+				$rv["git_status"] = proc_close($proc);
+				$rv["need_update"] = !empty($rv["stdout"]);
 			}
 		}
 
@@ -1098,10 +1098,9 @@ class Pref_Prefs extends Handler_Protected {
 			$proc = proc_open("git fetch origin -a && git log HEAD..origin/master --oneline && git pull --ff-only origin master", $descriptorspec, $pipes, $plugin_dir);
 
 			if (is_resource($proc)) {
-				$rv["o"] = stream_get_contents($pipes[1]);
-				$rv["e"] = stream_get_contents($pipes[2]);
-				$status = proc_close($proc);
-				$rv["s"] = $status;
+				$rv["stdout"] = stream_get_contents($pipes[1]);
+				$rv["stderr"] = stream_get_contents($pipes[2]);
+				$rv["git_status"] = proc_close($proc);
 			}
 		}
 

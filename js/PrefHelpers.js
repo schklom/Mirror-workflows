@@ -358,7 +358,7 @@ const	Helpers = {
 
 						// only user-enabled actually counts in the checkbox when saving because system plugin checkboxes are disabled (see below)
 						container.innerHTML += `
-							<li data-row-value="${App.escapeHtml(plugin.name)}" data-plugin-name="${App.escapeHtml(plugin.name)}" title="${plugin.is_system ? __("System plugins are enabled using global configuration.") : ""}">
+							<li data-row-value="${App.escapeHtml(plugin.name)}" data-plugin-local="${plugin.is_local}" data-plugin-name="${App.escapeHtml(plugin.name)}" title="${plugin.is_system ? __("System plugins are enabled using global configuration.") : ""}">
 								<label class="checkbox ${plugin.is_system ? "system text-info" : ""}">
 									${App.FormFields.checkbox_tag("plugins[]", plugin.user_enabled || plugin.system_enabled, plugin.name,
 										{disabled: plugin.is_system})}</div>
@@ -604,6 +604,7 @@ const	Helpers = {
 				title: __("Update plugins"),
 				need_refresh: false,
 				plugins_to_update: [],
+				plugins_to_check: [],
 				onHide: function() {
 					if (this.need_refresh) {
 						Helpers.Prefs.refresh();
@@ -634,10 +635,10 @@ const	Helpers = {
 								`
 								<li>
 									<h3>${p.plugin}</h3>
-									${p.rv.e ? `<pre class="small text-error pre-wrap">${p.rv.e}</pre>` : ''}
-									${p.rv.o ? `<pre class="small text-success pre-wrap">${p.rv.o}</pre>` : ''}
+									${p.rv.stderr ? `<pre class="small text-error pre-wrap">${p.rv.stderr}</pre>` : ''}
+									${p.rv.stdout ? `<pre class="small text-success pre-wrap">${p.rv.stdout}</pre>` : ''}
 									<div class="small">
-										${p.rv.s ? App.FormFields.icon("error_outline") + " " + __("Exited with RC: %d").replace("%d", p.rv.s) :
+										${p.rv.git_status ? App.FormFields.icon("error_outline") + " " + __("Exited with RC: %d").replace("%d", p.rv.git_status) :
 											App.FormFields.icon("check") + " " + __("Update done.")}
 									</div>
 								</li>
@@ -648,9 +649,74 @@ const	Helpers = {
 						dijit.getEnclosingWidget(dialog.domNode.querySelector(".update-btn")).attr('disabled', !enable_update_btn);
 					});
 				},
+				checkNextPlugin: function() {
+					const name = dialog.plugins_to_check.shift();
+
+					if (name) {
+						this.checkUpdates(name);
+					} else {
+						const num_updated = dialog.plugins_to_update.length;
+
+						if (num_updated > 0)
+							dialog.attr('title',
+								App.l10n.ngettext('Updates pending for %d plugin', 'Updates pending for %d plugins', num_updated)
+									.replace("%d", num_updated));
+						else
+							dialog.attr('title', __("No updates available"));
+
+						dijit.getEnclosingWidget(dialog.domNode.querySelector(".update-btn"))
+									.attr('disabled', num_updated == 0);
+
+					}
+				},
+				checkUpdates: function(name) {
+					console.log('checkUpdates', name);
+
+					const container = dialog.domNode.querySelector(".update-results");
+
+					dialog.attr('title', __("Checking: %s").replace("%s", name));
+
+					//container.innerHTML = `<li class='text-center'>${__("Checking: %s...").replace("%s", name)}</li>`;
+
+					xhr.json("backend.php", {op: "pref-prefs", method: "checkForPluginUpdates", name: name}, (reply) => {
+
+						if (!reply) {
+							container.innerHTML += `<li class='text-error'>${__("%s: Operation failed: check event log.").replace("%s", name)}</li>`;
+						} else {
+
+							reply.forEach((p) => {
+								if (p.rv.need_update) {
+									dialog.plugins_to_update.push(p.plugin);
+
+									const update_button = dijit.getEnclosingWidget(
+										App.find(`*[data-update-btn-for-plugin="${p.plugin}"]`));
+
+									if (update_button)
+										update_button.domNode.show();
+								}
+
+								if (p.rv.need_update || p.rv.git_status != 0) {
+									container.innerHTML +=
+									`
+									<li><h3>${p.plugin}</h3>
+										${p.rv.stderr ? `<pre class="small text-error pre-wrap">${p.rv.stderr}</pre>` : ''}
+										${p.rv.stdout ? `<pre class="small text-success pre-wrap">${p.rv.stdout}</pre>` : ''}
+										<div class="small">
+											${p.rv.git_status ? App.FormFields.icon("error_outline") + " " + __("Exited with RC: %d").replace("%d", p.rv.git_status) :
+												App.FormFields.icon("check") + " " + __("Ready to update")}
+										</div>
+									</li>
+									`
+								}
+								dialog.checkNextPlugin();
+							});
+						}
+
+					});
+
+				},
 				content: `
 					<ul class="panel panel-scrollable plugin-updater-list update-results">
-						<li class='text-center'>${__("Looking for changes...")}</li>
 					</ul>
 
 					<footer>
@@ -663,52 +729,14 @@ const	Helpers = {
 			const tmph = dojo.connect(dialog, 'onShow', function () {
 				dojo.disconnect(tmph);
 
-				xhr.json("backend.php", {op: "pref-prefs", method: "checkForPluginUpdates", name: name}, (reply) => {
-					const container = dialog.domNode.querySelector(".update-results");
-					let enable_update_btn = false;
+				dialog.plugins_to_update = [];
 
-					if (!reply) {
-						container.innerHTML = `<li class='text-center text-error'>${__("Operation failed: check event log.")}</li>`;
-					} else {
-						container.innerHTML = "";
-
-						dialog.plugins_to_update = [];
-
-						reply.forEach((p) => {
-							if (p.rv.s == 0) {
-								enable_update_btn = true;
-								dialog.plugins_to_update.push(p.plugin);
-							}
-
-							const update_button = dijit.getEnclosingWidget(
-									App.find(`*[data-update-btn-for-plugin="${p.plugin}"]`));
-
-							if (update_button)
-								update_button.domNode.show();
-
-							container.innerHTML +=
-							`
-							<li><h3>${p.plugin}</h3>
-								${p.rv.e ? `<pre class="small text-error pre-wrap">${p.rv.e}</pre>` : ''}
-								${p.rv.o ? `<pre class="small text-success pre-wrap">${p.rv.o}</pre>` : ''}
-								<div class="small">
-									${p.rv.s ? App.FormFields.icon("error_outline") + " " + __("Exited with RC: %d").replace("%d", p.rv.s) :
-									App.FormFields.icon("check") + " " + __("Ready to update")}
-								</div>
-							</li>
-							`
-						});
-
-						if (!enable_update_btn) {
-							container.innerHTML = `<li class='text-center text-info'>${name ? __("Plugin %s is up-to-date").replace("%s", name) :
-								__("All local plugins are up-to-date.")}</li>`;
-						}
-					}
-
-					dijit.getEnclosingWidget(dialog.domNode.querySelector(".update-btn")).attr('disabled', !enable_update_btn);
-
-				});
-
+				if (name) {
+					dialog.checkUpdates(name);
+				} else {
+					dialog.plugins_to_check = [...document.querySelectorAll('*[data-plugin-name][data-plugin-local=true]')].map((p) => p.getAttribute('data-plugin-name'));
+					dialog.checkNextPlugin();
+				}
 			});
 
 			dialog.show();

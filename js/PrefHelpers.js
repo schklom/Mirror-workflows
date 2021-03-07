@@ -614,6 +614,7 @@ const	Helpers = {
 					const container = dialog.domNode.querySelector(".update-results");
 
 					console.log('updating', dialog.plugins_to_update);
+					dialog.attr('title', __('Updating...'));
 
 					container.innerHTML = `<li class='text-center'>${__("Updating, please wait...")}</li>`;
 					let enable_update_btn = false;
@@ -626,7 +627,7 @@ const	Helpers = {
 							container.innerHTML = "";
 
 							reply.forEach((p) => {
-								if (p.rv.s == 0)
+								if (p.rv.git_status == 0)
 									dialog.need_refresh = true;
 								else
 									enable_update_btn = true;
@@ -646,6 +647,7 @@ const	Helpers = {
 							});
 						}
 
+						dialog.attr('title', __('Updates complete'));
 						dijit.getEnclosingWidget(dialog.domNode.querySelector(".update-btn")).attr('disabled', !enable_update_btn);
 					});
 				},

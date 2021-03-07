@@ -12,9 +12,11 @@ class NSFW extends Plugin {
 	function init($host) {
 		$this->host = $host;
 
-		$host->add_hook($host::HOOK_RENDER_ARTICLE, $this);
-		$host->add_hook($host::HOOK_RENDER_ARTICLE_CDM, $this);
-		$host->add_hook($host::HOOK_PREFS_TAB, $this);
+		$host->add_hook(PluginHost::HOOK_RENDER_ARTICLE, $this);
+		$host->add_hook(PluginHost::HOOK_RENDER_ARTICLE_CDM, $this);
+		$host->add_hook(PluginHost::HOOK_RENDER_ARTICLE_API, $this);
+		$host->add_hook(PluginHost::HOOK_ARTICLE_IMAGE, $this);
+		$host->add_hook(PluginHost::HOOK_PREFS_TAB, $this);
 
 	}
 
@@ -22,22 +24,46 @@ class NSFW extends Plugin {
 		return file_get_contents(__DIR__ . "/init.js");
 	}
 
-	function hook_render_article($article) {
-		$tags = array_map("trim", explode(",", $this->host->get($this, "tags")));
-		$a_tags = array_map("trim", explode(",", $article["tag_cache"]));
+	function hook_article_image($enclosures, $content, $site_url, $article) {
+		$tags = explode(",", $this->host->get($this, "tags"));
+		$article_tags = $article["tags"];
 
-		if (count(array_intersect($tags, $a_tags)) > 0) {
-			$article["content"] = "<div class='nswf wrapper'>".
+		if (count(array_intersect($tags, $article_tags)) > 0) {
+			return [Config::get_self_url() . "/plugins/nsfw/nsfw.png", "", "nsfw", []];
+		} else {
+			return ["", "", $content];
+		}
+	}
+
+	private function rewrite_contents($article, bool $add_api_js = false) {
+		$tags = explode(",", $this->host->get($this, "tags"));
+		$article_tags = $article["tags"];
+
+		if (count(array_intersect($tags, $article_tags)) > 0) {
+			$article["content"] = "<div class='nsfw-wrapper'>".
 					\Controls\button_tag(__("Not work safe (click to toggle)"), '', ['onclick' => 'Plugins.NSFW.toggle(this)']).
-					"<div class='nswf content' style='display : none'>".$article["content"]."</div>
+					"<div class='nsfw-content' style='display : none'>".$article["content"]."</div>
 				</div>";
+
+			if ($add_api_js) {
+				$article["content"] .= "<script type='text/javascript'>const Plugins = {}; " . $this->get_js() . "</script>";
+			}
 		}
 
 		return $article;
 	}
 
+	function hook_render_article_api($row) {
+		$article = isset($row['headline']) ? $row['headline'] : $row['article'];
+		return $this->rewrite_contents($article, true);
+	}
+
+	function hook_render_article($article) {
+		return $this->rewrite_contents($article);
+	}
+
 	function hook_render_article_cdm($article) {
-		return $this->hook_render_article($article);
+		return $this->rewrite_contents($article);
 	}
 
 	function hook_prefs_tab($args) {

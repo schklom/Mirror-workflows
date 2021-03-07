@@ -251,21 +251,6 @@ class Feeds extends Handler_Protected {
 
 				$this->_mark_timestamp("   sanitize");
 
-				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE_CDM,
-					function ($result, $plugin) use (&$line) {
-						$line = $result;
-						$this->_mark_timestamp("       hook_render_cdm: " . get_class($plugin));
-					},
-					$line);
-
-				$this->_mark_timestamp("   hook_render_cdm");
-
-				$line['content'] = DiskCache::rewrite_urls($line['content']);
-
-				$this->_mark_timestamp("   disk_cache_rewrite");
-
-				$this->_mark_timestamp("   note");
-
 				if (!get_pref(Prefs::CDM_EXPANDED)) {
 					$line["cdm_excerpt"] = "<span class='collapse'>
 						<i class='material-icons' onclick='return Article.cdmUnsetActive(event)'
@@ -330,6 +315,20 @@ class Feeds extends Handler_Protected {
 				}
 
 				$this->_mark_timestamp("   color");
+				$this->_mark_timestamp("   pre-hook_render_cdm");
+
+				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE_CDM,
+					function ($result, $plugin) use (&$line) {
+						$line = $result;
+						$this->_mark_timestamp("       hook: " . get_class($plugin));
+					},
+					$line);
+
+				$this->_mark_timestamp("   hook_render_cdm");
+
+				$line['content'] = DiskCache::rewrite_urls($line['content']);
+
+				$this->_mark_timestamp("   disk_cache_rewrite");
 
 				/* we don't need those */
 

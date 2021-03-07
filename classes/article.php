@@ -543,7 +543,7 @@ class Article extends Handler_Protected {
 		return $rv;
 	}
 
-	static function _get_image($enclosures, $content, $site_url) {
+	static function _get_image(array $enclosures, string $content, string $site_url, array $headline) {
 
 		$article_image = "";
 		$article_stream = "";
@@ -553,7 +553,7 @@ class Article extends Handler_Protected {
 			function ($result) use (&$article_image, &$article_stream, &$content) {
 				list ($article_image, $article_stream, $content) = $result;
 			},
-			$enclosures, $content, $site_url);
+			$enclosures, $content, $site_url, $headline);
 
 		if (!$article_image && !$article_stream) {
 			$tmpdoc = new DOMDocument();

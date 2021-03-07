@@ -356,6 +356,7 @@ const	Helpers = {
 
 						++results_rendered;
 
+						// only user-enabled actually counts in the checkbox when saving because system plugin checkboxes are disabled (see below)
 						container.innerHTML += `
 							<li data-row-value="${App.escapeHtml(plugin.name)}" data-plugin-name="${App.escapeHtml(plugin.name)}" title="${plugin.is_system ? __("System plugins are enabled using global configuration.") : ""}">
 								<label class="checkbox ${plugin.is_system ? "system text-info" : ""}">
@@ -387,11 +388,14 @@ const	Helpers = {
 								<div class='version text-muted'>${plugin.version}</div>
 							</li>
 						`;
+					} else {
+						// if plugin is outside of search scope, keep current value in case of saving (only user-enabled is needed)
+						container.innerHTML += App.FormFields.checkbox_tag("plugins[]", plugin.user_enabled, plugin.name, {style: 'display : none'});
 					}
 			});
 
 			if (results_rendered == 0) {
-				container.innerHTML = `<li class='text-center text-info'>${__("Could not find any plugins for this search query.")}</li>`;
+				container.innerHTML += `<li class='text-center text-info'>${__("Could not find any plugins for this search query.")}</li>`;
 			}
 
 			dojo.parser.parse(container);

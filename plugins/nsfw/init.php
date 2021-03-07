@@ -29,7 +29,7 @@ class NSFW extends Plugin {
 		$article_tags = $article["tags"];
 
 		if (count(array_intersect($tags, $article_tags)) > 0) {
-			return [Config::get_self_url() . "/plugins/nsfw/nsfw.png", "", "nsfw", []];
+			return [Config::get_self_url() . "/plugins/nsfw/nsfw.png", "", "nsfw"];
 		} else {
 			return ["", "", $content];
 		}
@@ -116,5 +116,5 @@ class NSFW extends Plugin {
 	function api_version() {
 		return 2;
 	}
-
 }
+

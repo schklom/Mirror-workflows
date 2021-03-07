@@ -144,10 +144,15 @@ const Article = {
 			).join(", ") : `${__("no tags")}`}</span>`;
 	},
 	renderLabels: function(id, labels) {
-		return `<span class="labels" data-labels-for="${id}">${labels.map((label) => `
-			<span class="label" data-label-id="${label[0]}"
-					style="color : ${label[2]}; background-color : ${label[3]}">${App.escapeHtml(label[1])}</span>`
-		).join("")}</span>`;
+		return `<span class="labels" data-labels-for="${id}">
+			${labels.map((label) => `
+				<a href="#" class="label" data-label-id="${label[0]}"
+					style="color : ${label[2]}; background-color : ${label[3]}"
+					onclick="event.stopPropagation(); Feeds.open({feed:'${label[0]}'})">
+						${App.escapeHtml(label[1])}
+				</a>`
+			).join("")}
+		</span>`;
 	},
 	renderEnclosures: function (enclosures) {
 		return `

@@ -469,7 +469,7 @@ class PluginHost {
 		}
 	}
 
-	function set(Plugin $sender, string $name, $value, bool $sync = true) {
+	function set(Plugin $sender, string $name, $value) {
 		$idx = get_class($sender);
 
 		if (!isset($this->storage[$idx]))
@@ -477,7 +477,19 @@ class PluginHost {
 
 		$this->storage[$idx][$name] = $value;
 
-		if ($sync) $this->save_data(get_class($sender));
+		$this->save_data(get_class($sender));
+	}
+
+	function set_array(Plugin $sender, array $params) {
+		$idx = get_class($sender);
+
+		if (!isset($this->storage[$idx]))
+			$this->storage[$idx] = array();
+
+		foreach ($params as $name => $value)
+			$this->storage[$idx][$name] = $value;
+
+		$this->save_data(get_class($sender));
 	}
 
 	function get(Plugin $sender, string $name, $default_value = false) {

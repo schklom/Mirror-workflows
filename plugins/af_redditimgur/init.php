@@ -6,6 +6,7 @@ class Af_RedditImgur extends Plugin {
 	private $domain_blacklist = [ "github.com" ];
 	private $dump_json_data = false;
 	private $fallback_preview_urls = [];
+	private $default_max_score = 100;
 
 	function about() {
 		return array(null,
@@ -35,6 +36,8 @@ class Af_RedditImgur extends Plugin {
 			$enable_content_dupcheck = $this->host->get($this, "enable_content_dupcheck");
 			$reddit_to_teddit = $this->host->get($this, "reddit_to_teddit");
 			$apply_nsfw_tags = $this->host->get_array($this, "apply_nsfw_tags");
+			$max_score = $this->host->get($this, "max_score", $this->default_max_score);
+			$import_score = $this->host->get($this, "import_score");
 		?>
 
 		<div dojoType="dijit.layout.AccordionPane"
@@ -84,6 +87,15 @@ class Af_RedditImgur extends Plugin {
 					</label>
 				</fieldset>
 
+				<fieldset class='narrow'>
+					<label class='checkbox'>
+						<?= \Controls\checkbox_tag("import_score", $import_score) ?>
+						<?= __("Import score, limit maximum to:") ?>
+						<input dojoType="dijit.form.TextBox" name="max_score" size="20"
+							placeholder="<?= $this->default_max_score ?>" value="<?= $max_score ?>">
+					</label>
+				</fieldset>
+
 				<hr/>
 				<?= \Controls\submit_tag(__("Save")) ?>
 			</form>
@@ -97,11 +109,17 @@ class Af_RedditImgur extends Plugin {
 		$enable_content_dupcheck = checkbox_to_sql_bool($_POST["enable_content_dupcheck"] ?? "");
 		$reddit_to_teddit = checkbox_to_sql_bool($_POST["reddit_to_teddit"] ?? "");
 		$apply_nsfw_tags = FeedItem_Common::normalize_categories(explode(",", $_POST["apply_nsfw_tags"] ?? ""));
+		$import_score = checkbox_to_sql_bool($_POST["import_score"] ?? "");
+		$max_score = (int) $_POST['max_score'];
 
-		$this->host->set($this, "enable_readability", $enable_readability, false);
-		$this->host->set($this, "reddit_to_teddit", $reddit_to_teddit, false);
-		$this->host->set($this, "enable_content_dupcheck", $enable_content_dupcheck);
-		$this->host->set($this, "apply_nsfw_tags", $apply_nsfw_tags);
+		$this->host->set_array($this, [
+			"enable_readability" => $enable_readability,
+			"reddit_to_teddit" => $reddit_to_teddit,
+			"enable_content_dupcheck" => $enable_content_dupcheck,
+			"apply_nsfw_tags" => $apply_nsfw_tags,
+			"import_score" => $import_score,
+			"max_score" => $max_score
+			]);
 
 		echo __("Configuration saved");
 	}
@@ -213,11 +231,19 @@ class Af_RedditImgur extends Plugin {
 		return $found;
 	}
 
+	/* function score_convert(int $value, int $from1, int $from2, int $to1, int $to2) {
+		return ($value - $from1) / ($from2 - $from1) * ($to2 - $to1) + $to1;
+	} */
+
 	private function inline_stuff(&$article, &$doc, $xpath) {
+
+		$max_score = (int) $this->host->get($this, "max_score", $this->default_max_score);
+		$import_score = (bool) $this->host->get($this, "import_score", $this->default_max_score);
 
 		$found = false;
 		$post_is_nsfw = false;
 		$num_comments = 0;
+		$score = 0;
 		$apply_nsfw_tags = FeedItem_Common::normalize_categories($this->host->get_array($this, "apply_nsfw_tags", []));
 
 		// embed before reddit <table> post layout
@@ -246,6 +272,7 @@ class Af_RedditImgur extends Plugin {
 							$data = $child["data"];
 							$over_18 = $data["over_18"] ?? 0 == 1;
 
+							$score += $data['score'] ?? 0;
 							$num_comments += $data["num_comments"] ?? 0;
 
 							if ($over_18) {
@@ -291,6 +318,9 @@ class Af_RedditImgur extends Plugin {
 		}
 
 		$article["num_comments"] = $num_comments;
+
+		if ($import_score && $score > 0)
+			$article["score_modifier"] = ($article["score_modifier"] ?? 0) + ($score > $max_score ? $max_score : $score);
 
 		if ($found) {
 			Debug::log("JSON: found media data, skipping further processing of content", Debug::$LOG_VERBOSE);

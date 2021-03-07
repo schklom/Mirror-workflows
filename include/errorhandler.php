@@ -55,6 +55,8 @@ function ttrss_error_handler($errno, $errstr, $file, $line) {
 
 	if (class_exists("Logger"))
 		return Logger::log_error((int)$errno, $errstr, $file, (int)$line, $context);
+	else
+		return false;
 }
 
 function ttrss_fatal_handler() {

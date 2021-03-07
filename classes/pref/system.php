@@ -165,16 +165,13 @@ class Pref_System extends Handler_Administrative {
 		$page = (int) ($_REQUEST["page"] ?? 0);
 		?>
 		<div dojoType='dijit.layout.AccordionContainer' region='center'>
-			<div dojoType='dijit.layout.AccordionPane' style='padding : 0' title='<i class="material-icons">report</i> <?= __('Event log') ?>'>
-				<?php
-					if (Config::get(Config::LOG_DESTINATION) == "sql") {
+			<?php if (Config::get(Config::LOG_DESTINATION) == "sql") { ?>
+				<div dojoType='dijit.layout.AccordionPane' style='padding : 0' title='<i class="material-icons">report</i> <?= __('Event log') ?>'>
+					<?php
 						$this->_log_viewer($page, $severity);
-					} else {
-						print_notice("Please set Config::get(Config::LOG_DESTINATION) to 'sql' in config.php to enable database logging.");
-					}
-				?>
-			</div>
-
+					?>
+				</div>
+			<?php } ?>
 			<div dojoType='dijit.layout.AccordionPane' style='padding : 0' title='<i class="material-icons">mail</i> <?= __('Mail configuration') ?>'>
 				<div dojoType="dijit.layout.ContentPane">
 

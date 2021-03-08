@@ -239,60 +239,70 @@ const	Helpers = {
 	},
 	Prefs: {
 		customizeCSS: function() {
-			xhr.json("backend.php", {op: "pref-prefs", method: "customizeCSS"}, (reply) => {
+			const dialog = new fox.SingleUseDialog({
+				title: __("Customize stylesheet"),
+				apply: function() {
+					xhr.post("backend.php", this.attr('value'), () => {
+						Element.show("css_edit_apply_msg");
+						App.byId("user_css_style").innerText = this.attr('value');
+					});
+				},
+				execute: function () {
+					Notify.progress('Saving data...', true);
 
-				const dialog = new fox.SingleUseDialog({
-					title: __("Customize stylesheet"),
-					apply: function() {
-						xhr.post("backend.php", this.attr('value'), () => {
-							Element.show("css_edit_apply_msg");
-							App.byId("user_css_style").innerText = this.attr('value');
-						});
-					},
-					execute: function () {
-						Notify.progress('Saving data...', true);
+					xhr.post("backend.php", this.attr('value'), () => {
+						window.location.reload();
+					});
+				},
+				content: `
+					<div class='alert alert-info'>
+						${__("You can override colors, fonts and layout of your currently selected theme with custom CSS declarations here.")}
+					</div>
 
-						xhr.post("backend.php", this.attr('value'), () => {
-							window.location.reload();
-						});
-					},
-					content: `
-						<div class='alert alert-info'>
-							${__("You can override colors, fonts and layout of your currently selected theme with custom CSS declarations here.")}
+					${App.FormFields.hidden_tag('op', 'rpc')}
+					${App.FormFields.hidden_tag('method', 'setpref')}
+					${App.FormFields.hidden_tag('key', 'USER_STYLESHEET')}
+
+					<div id='css_edit_apply_msg' style='display : none'>
+						<div class='alert alert-warning'>
+							${__("User CSS has been applied, you might need to reload the page to see all changes.")}
 						</div>
+					</div>
 
-						${App.FormFields.hidden_tag('op', 'rpc')}
-						${App.FormFields.hidden_tag('method', 'setpref')}
-						${App.FormFields.hidden_tag('key', 'USER_STYLESHEET')}
+					<textarea class='panel user-css-editor' disabled='true' dojoType='dijit.form.SimpleTextarea'
+						style='font-size : 12px;' name='value'>${__("Loading, please wait...")}</textarea>
 
-						<div id='css_edit_apply_msg' style='display : none'>
-							<div class='alert alert-warning'>
-								${__("User CSS has been applied, you might need to reload the page to see all changes.")}
-							</div>
-						</div>
+					<footer>
+						<button dojoType='dijit.form.Button' class='alt-success' onclick="App.dialogOf(this).apply()">
+							${App.FormFields.icon("check")}
+							${__('Apply')}
+						</button>
+						<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>
+							${App.FormFields.icon("refresh")}
+							${__('Save and reload')}
+						</button>
+						<button dojoType='dijit.form.Button' onclick="App.dialogOf(this).hide()">
+							${__('Cancel')}
+						</button>
+					</footer>
+				`
+			});
 
-						<textarea class='panel user-css-editor' dojoType='dijit.form.SimpleTextarea'
-							style='font-size : 12px;' name='value'>${reply.value}</textarea>
+			const tmph = dojo.connect(dialog, 'onShow', function () {
+				dojo.disconnect(tmph);
 
-						<footer>
-							<button dojoType='dijit.form.Button' class='alt-success' onclick="App.dialogOf(this).apply()">
-								${App.FormFields.icon("check")}
-								${__('Apply')}
-							</button>
-							<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>
-								${App.FormFields.icon("refresh")}
-								${__('Save and reload')}
-							</button>
-							<button dojoType='dijit.form.Button' onclick="App.dialogOf(this).hide()">
-								${__('Cancel')}
-							</button>
-						</footer>
-					`
+				xhr.json("backend.php", {op: "pref-prefs", method: "customizeCSS"}, (reply) => {
+
+					const editor = dijit.getEnclosingWidget(dialog.domNode.querySelector(".user-css-editor"));
+
+					editor.attr('value', reply.value);
+					editor.attr('disabled', false);
 				});
 
-				dialog.show();
-
 			});
+
+			dialog.show();
+
 		},
 		confirmReset: function() {
 			if (confirm(__("Reset to defaults?"))) {

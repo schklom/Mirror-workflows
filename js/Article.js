@@ -322,7 +322,7 @@ const Article = {
 	},
 	editTags: function (id) {
 		const dialog = new fox.SingleUseDialog({
-			title: __("Edit article Tags"),
+			title: __("Article tags"),
 			content: `
 				${App.FormFields.hidden_tag("id", id.toString())}
 				${App.FormFields.hidden_tag("op", "article")}
@@ -334,7 +334,7 @@ const Article = {
 
 				<section>
 					<textarea dojoType='dijit.form.SimpleTextarea' rows='4' disabled='true'
-						id='tags_str' name='tags_str'></textarea>
+						id='tags_str' name='tags_str'>${__("Loading, please wait...")}</textarea>
 					<div class='autocomplete' id='tags_choices' style='display:none'></div>
 				</section>
 

@@ -618,7 +618,7 @@ const	Feeds = {
 													{class: 'alt-info pull-left', onclick: "window.open('https://tt-rss.org/wiki/SearchSyntax')"})}
 													` : ''}
 
-											${App.FormFields.submit_tag(__('Search'), {onclick: "App.dialogOf(this).execute()"})}
+											${App.FormFields.submit_tag(App.FormFields.icon("search") + " " + __('Search'), {onclick: "App.dialogOf(this).execute()"})}
 											${App.FormFields.cancel_dialog_tag(__('Cancel'))}
 										</footer>
 									</form>

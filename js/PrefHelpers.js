@@ -697,28 +697,30 @@ const	Helpers = {
 						} else {
 
 							reply.forEach((p) => {
-								if (p.rv.need_update) {
-									dialog.plugins_to_update.push(p.plugin);
+								if (p.rv) {
+									if (p.rv.need_update) {
+										dialog.plugins_to_update.push(p.plugin);
 
-									const update_button = dijit.getEnclosingWidget(
-										App.find(`*[data-update-btn-for-plugin="${p.plugin}"]`));
+										const update_button = dijit.getEnclosingWidget(
+											App.find(`*[data-update-btn-for-plugin="${p.plugin}"]`));
 
-									if (update_button)
-										update_button.domNode.show();
-								}
+										if (update_button)
+											update_button.domNode.show();
+									}
 
-								if (p.rv.need_update || p.rv.git_status != 0) {
-									container.innerHTML +=
-									`
-									<li><h3>${p.plugin}</h3>
-										${p.rv.stderr ? `<pre class="small text-error pre-wrap">${p.rv.stderr}</pre>` : ''}
-										${p.rv.stdout ? `<pre class="small text-success pre-wrap">${p.rv.stdout}</pre>` : ''}
-										<div class="small">
-											${p.rv.git_status ? App.FormFields.icon("error_outline") + " " + __("Exited with RC: %d").replace("%d", p.rv.git_status) :
-												App.FormFields.icon("check") + " " + __("Ready to update")}
-										</div>
-									</li>
-									`
+									if (p.rv.need_update || p.rv.git_status != 0) {
+										container.innerHTML +=
+										`
+										<li><h3>${p.plugin}</h3>
+											${p.rv.stderr ? `<pre class="small text-error pre-wrap">${p.rv.stderr}</pre>` : ''}
+											${p.rv.stdout ? `<pre class="small text-success pre-wrap">${p.rv.stdout}</pre>` : ''}
+											<div class="small">
+												${p.rv.git_status ? App.FormFields.icon("error_outline") + " " + __("Exited with RC: %d").replace("%d", p.rv.git_status) :
+													App.FormFields.icon("check") + " " + __("Ready to update")}
+											</div>
+										</li>
+										`
+									}
 								}
 								dialog.checkNextPlugin();
 							});

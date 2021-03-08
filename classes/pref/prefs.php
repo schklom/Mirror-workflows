@@ -1057,7 +1057,7 @@ class Pref_Prefs extends Handler_Protected {
 
 	private static function _plugin_needs_update($root_dir, $plugin_name) {
 		$plugin_dir = "$root_dir/plugins.local/" . basename($plugin_name);
-		$rv = [];
+		$rv = null;
 
 		if (is_dir($plugin_dir) && is_dir("$plugin_dir/.git")) {
 			$pipes = [];
@@ -1071,9 +1071,11 @@ class Pref_Prefs extends Handler_Protected {
 			$proc = proc_open("git fetch -q origin -a && git log HEAD..origin/master --oneline", $descriptorspec, $pipes, $plugin_dir);
 
 			if (is_resource($proc)) {
-				$rv["stdout"] = stream_get_contents($pipes[1]);
-				$rv["stderr"] = stream_get_contents($pipes[2]);
-				$rv["git_status"] = proc_close($proc);
+				$rv = [
+					"stdout" => stream_get_contents($pipes[1]),
+					"stderr" => stream_get_contents($pipes[2]),
+					"git_status" => proc_close($proc),
+				];
 				$rv["need_update"] = !empty($rv["stdout"]);
 			}
 		}

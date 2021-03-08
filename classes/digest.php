@@ -119,7 +119,7 @@ class Digest
 				link,
 				score,
 				content,
-				" . SUBSTRING_FOR_DATE . "(last_updated,1,19) AS last_updated
+				".SUBSTRING_FOR_DATE."(last_updated,1,19) AS last_updated
 			FROM
 				ttrss_user_entries,ttrss_entries,ttrss_feeds
 			LEFT JOIN
@@ -132,8 +132,8 @@ class Digest
 				AND unread = true
 				AND score >= 0
 			ORDER BY ttrss_feed_categories.title, ttrss_feeds.title, score DESC, date_updated DESC
-			LIMIT :limit");
-		$sth->execute([':user_id' => $user_id, ':limit' => $limit]);
+			LIMIT " . (int)$limit);
+		$sth->execute([':user_id' => $user_id]);
 
 		$headlines_count = 0;
 		$headlines = array();

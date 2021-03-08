@@ -2,13 +2,13 @@
 TEMPLATE=messages.pot
 
 xgettext -kT_sprintf -kT_nsprintf:1,2 -k_ngettext:1,2 -kT_ngettext:1,2 -k__ \
-	-L PHP -o $TEMPLATE *.php `find classes plugins include -iname '*.php'`
+	-L PHP -o $TEMPLATE *.php `find classes plugins include -iname '*.php' -type f -not -path '*/vendor/*'`
 
 xgettext --from-code utf-8 -k__ -kNotify.info -kNotify.error -kNotify.progress \
-	-kngettext:1,2 -L Java -j -o $TEMPLATE `find js plugins -iname '*.js'`
+	-kngettext:1,2 -L Java -j -o $TEMPLATE `find js plugins -iname '*.js' -type f -not -path '*/vendor/*'`
 
 xgettext --from-code utf-8 -k__ -kNotify.info -kNotify.error -kNotify.progress \
-	-kngettext:1,2 -L JavaScript -j -o $TEMPLATE `find js plugins -iname '*.js'`
+	-kngettext:1,2 -L JavaScript -j -o $TEMPLATE `find js plugins -iname '*.js' -type f -not -path '*/vendor/*'`
 
 # leave weblate to deal with .po/.mo files
 exit 0

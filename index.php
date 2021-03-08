@@ -168,10 +168,10 @@
 
             </div>
 
-            <form id="toolbar-main" action="" style="order : 20" onsubmit='return false'>
+            <form id="toolbar-main" dojoType="dijit.form.Form" action="" style="order : 20" onsubmit="return false">
 
             <select name="view_mode" title="<?= __('Show articles') ?>"
-                onchange="App.onViewModeChanged()"
+                onchange="Feeds.onViewModeChanged()"
                 dojoType="fox.form.Select">
                 <option selected="selected" value="adaptive"><?= __('Adaptive') ?></option>
                 <option value="all_articles"><?= __('All Articles') ?></option>
@@ -179,11 +179,10 @@
                 <option value="published"><?= __('Published') ?></option>
                 <option value="unread"><?= __('Unread') ?></option>
                 <option value="has_note"><?= __('With Note') ?></option>
-                <!-- <option value="noscores"><?= __('Ignore Scoring') ?></option> -->
             </select>
 
 			<select title="<?= __('Sort articles') ?>"
-                onchange="App.onViewModeChanged()"
+                onchange="Feeds.onViewModeChanged()"
                 dojoType="fox.form.Select" name="order_by">
 
 				<option selected="selected" value="default"><?= __('Default') ?></option>

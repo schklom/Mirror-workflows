@@ -777,13 +777,10 @@ const App = {
                }
             });
 
-         const toolbar = document.forms["toolbar-main"];
-
-         dijit.getEnclosingWidget(toolbar.view_mode).attr('value',
-            this.getInitParam("default_view_mode"));
-
-         dijit.getEnclosingWidget(toolbar.order_by).attr('value',
-            this.getInitParam("default_view_order_by"));
+         dijit.byId('toolbar-main').setValues({
+            view_mode: this.getInitParam("default_view_mode"),
+            order_by: this.getInitParam("default_view_order_by")
+         });
 
          this.setLoadingProgress(50);
 
@@ -849,13 +846,6 @@ const App = {
       }
 
       document.title = tmp;
-   },
-   onViewModeChanged: function() {
-      const view_mode = document.forms["toolbar-main"].view_mode.value;
-
-      App.findAll("body")[0].setAttribute("view-mode", view_mode);
-
-      return Feeds.reloadCurrent('');
    },
    hotkeyHandler: function(event) {
       if (event.target.nodeName == "INPUT" || event.target.nodeName == "TEXTAREA") return;

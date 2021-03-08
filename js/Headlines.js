@@ -278,7 +278,7 @@ const Headlines = {
 		}
 	},
 	loadMore: function () {
-		const view_mode = document.forms["toolbar-main"].view_mode.value;
+		const view_mode = dijit.byId("toolbar-main").getValues().view_mode;
 		const unread_in_buffer = App.findAll("#headlines-frame > div[id*=RROW][class*=Unread]").length;
 		const num_all = App.findAll("#headlines-frame > div[id*=RROW]").length;
 		const num_unread = Feeds.getUnread(Feeds.getActive(), Feeds.activeIsCat());
@@ -819,19 +819,15 @@ const Headlines = {
 		Notify.close();
 	},
 	reverse: function () {
-		const toolbar = document.forms["toolbar-main"];
-		const order_by = dijit.getEnclosingWidget(toolbar.order_by);
+		const toolbar = dijit.byId("toolbar-main");
+		let order_by = toolbar.getValues().order_by;
 
-		let value = order_by.attr('value');
-
-		if (value != "date_reverse")
-			value = "date_reverse";
+		if (order_by != "date_reverse")
+			order_by = "date_reverse";
 		else
-			value = "default";
+			order_by = App.getInitParam("default_view_order_by");
 
-		order_by.attr('value', value);
-
-		Feeds.reloadCurrent();
+		toolbar.setValues({order_by: order_by});
 	},
 	selectionToggleUnread: function (params = {}) {
 		const cmode = params.cmode != undefined ? params.cmode : 2;

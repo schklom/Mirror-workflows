@@ -117,15 +117,21 @@ const	Feeds = {
 	},
 	reloadCurrent: function(method) {
 		if (this.getActive() != undefined) {
-			console.log("reloadCurrent: " + method);
+			console.log("reloadCurrent", this.getActive(), this.activeIsCat(), method);
 
 			this.open({feed: this.getActive(), is_cat: this.activeIsCat(), method: method});
 		}
-		return false; // block unneeded form submits
 	},
 	openDefaultFeed: function() {
 		this.open({feed: this._default_feed_id});
 	},
+   onViewModeChanged: function() {
+		// TODO: is this still needed?
+      App.find("body").setAttribute("view-mode",
+			dijit.byId("toolbar-main").getValues().view_mode);
+
+      return Feeds.reloadCurrent('');
+   },
 	openNextUnread: function() {
 		const is_cat = this.activeIsCat();
 		const nuf = this.getNextUnread(this.getActive(), is_cat);
@@ -369,10 +375,7 @@ const	Feeds = {
 			}, 10 * 1000);
 		}
 
-		//Form.enable("toolbar-main");
-
-		let query = Object.assign({op: "feeds", method: "view", feed: feed},
-			dojo.formToObject("toolbar-main"));
+		let query = {...{op: "feeds", method: "view", feed: feed}, ...dojo.formToObject("toolbar-main")};
 
 		if (method) query.m = method;
 

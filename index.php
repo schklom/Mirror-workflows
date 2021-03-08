@@ -31,7 +31,7 @@
 	<?php if ($_SESSION["uid"] && empty($_SESSION["safe_mode"])) {
 		$theme = get_pref(Prefs::USER_CSS_THEME);
 		if ($theme && theme_exists("$theme")) {
-			echo stylesheet_tag(get_theme_path($theme), 'theme_css');
+			echo stylesheet_tag(get_theme_path($theme), ['id' => 'theme_css']);
 		}
 	} ?>
 

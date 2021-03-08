@@ -2,7 +2,7 @@
    namespace Controls;
 
    function attributes_to_string(array $attributes) {
-      $rv = "";
+      $rv = [];
 
       foreach ($attributes as $k => $v) {
 
@@ -10,10 +10,10 @@
          if ($k === "disabled" && !sql_bool_to_bool($v))
             continue;
 
-         $rv .= "$k=\"" . htmlspecialchars($v) . "\"";
+         array_push($rv, "$k=\"" . htmlspecialchars($v) . "\"");
       }
 
-      return $rv;
+      return implode(" ", $rv);
    }
 
    // shortcut syntax (disabled)

@@ -382,10 +382,10 @@ class RPC extends Handler_Protected {
 	}
 
 	function log() {
-		$msg = clean($_REQUEST['msg']);
-		$file = basename(clean($_REQUEST['file']));
-		$line = (int) clean($_REQUEST['line']);
-		$context = clean($_REQUEST['context']);
+		$msg = clean($_REQUEST['msg'] ?? "");
+		$file = basename(clean($_REQUEST['file'] ?? ""));
+		$line = (int) clean($_REQUEST['line'] ?? 0);
+		$context = clean($_REQUEST['context'] ?? "");
 
 		if ($msg) {
 			Logger::log_error(E_USER_WARNING,

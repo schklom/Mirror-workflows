@@ -690,7 +690,7 @@ class Pref_Feeds extends Handler_Protected {
 		$purge_intl = (int) clean($_POST["purge_interval"] ?? 0);
 		$feed_id = (int) clean($_POST["id"] ?? 0); /* editSave */
 		$feed_ids = explode(",", clean($_POST["ids"] ?? "")); /* batchEditSave */
-		$cat_id = (int) clean($_POST["cat_id"]);
+		$cat_id = (int) clean($_POST["cat_id"] ?? 0);
 		$auth_login = clean($_POST["auth_login"]);
 		$auth_pass = clean($_POST["auth_pass"]);
 		$private = checkbox_to_sql_bool(clean($_POST["private"] ?? ""));

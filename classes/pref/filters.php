@@ -51,8 +51,8 @@ class Pref_Filters extends Handler_Protected {
 		$filter = array();
 
 		$filter["enabled"] = true;
-		$filter["match_any_rule"] = checkbox_to_sql_bool(clean($_REQUEST["match_any_rule"]));
-		$filter["inverse"] = checkbox_to_sql_bool(clean($_REQUEST["inverse"]));
+		$filter["match_any_rule"] = checkbox_to_sql_bool(clean($_REQUEST["match_any_rule"] ?? false));
+		$filter["inverse"] = checkbox_to_sql_bool(clean($_REQUEST["inverse"] ?? false));
 
 		$filter["rules"] = array();
 		$filter["actions"] = array("dummy-action");

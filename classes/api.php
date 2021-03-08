@@ -1,7 +1,7 @@
 <?php
 class API extends Handler {
 
-	const API_LEVEL  = 15;
+	const API_LEVEL  = 16;
 
 	const STATUS_OK  = 0;
 	const STATUS_ERR = 1;
@@ -258,6 +258,10 @@ class API extends Handler {
 				break;
 			case 3:
 				$field = "note";
+				break;
+			case 4:
+				$field = "score";
+				break;
 		};
 
 		switch ($mode) {
@@ -273,6 +277,7 @@ class API extends Handler {
 		}
 
 		if ($field == "note") $set_to = $this->pdo->quote($data);
+		if ($field == "score") $set_to = (int) $data;
 
 		if ($field && $set_to && count($article_ids) > 0) {
 

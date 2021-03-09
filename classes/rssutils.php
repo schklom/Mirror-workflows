@@ -1422,8 +1422,8 @@ class RSSUtils {
 		$matches = array();
 
 		foreach ($filters as $filter) {
-			$match_any_rule = $filter["match_any_rule"];
-			$inverse = $filter["inverse"];
+			$match_any_rule = $filter["match_any_rule"] ?? false;
+			$inverse = $filter["inverse"] ?? false;
 			$filter_match = false;
 			$last_processed_rule = false;
 

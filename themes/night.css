@@ -1604,6 +1604,9 @@ body.ttrss_prefs .event-log tr .errstr {
   word-break: break-all;
   white-space: pre-wrap;
 }
+body.ttrss_prefs .event-log tr .filename {
+  word-break: break-all;
+}
 body.ttrss_prefs .event-log tr .filename,
 body.ttrss_prefs .event-log tr .login,
 body.ttrss_prefs .event-log tr .timestamp {

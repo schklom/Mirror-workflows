@@ -113,7 +113,7 @@ const	Feeds = {
 		this.hideOrShowFeeds(App.getInitParam("hide_read_feeds"));
 		this._counters_prev = elems;
 
-		PluginHost.run(PluginHost.HOOK_COUNTERS_PROCESSED);
+		PluginHost.run(PluginHost.HOOK_COUNTERS_PROCESSED, elems);
 	},
 	reloadCurrent: function(method) {
 		if (this.getActive() != undefined) {

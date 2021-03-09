@@ -72,6 +72,8 @@ const Headlines = {
 			}
 		});
 
+		PluginHost.run(PluginHost.HOOK_HEADLINE_MUTATIONS, mutations);
+
 		Headlines.updateSelectedPrompt();
 
 		if ('requestIdleCallback' in window)
@@ -198,6 +200,8 @@ const Headlines = {
 				console.log('requesting counters for', feeds, labels);
 				Feeds.requestCounters(feeds, labels);
 			}
+
+			PluginHost.run(PluginHost.HOOK_HEADLINE_MUTATIONS_SYNCED, results);
 		});
 	},
 	click: function (event, id, in_body) {

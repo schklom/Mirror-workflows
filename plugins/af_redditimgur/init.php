@@ -244,6 +244,7 @@ class Af_RedditImgur extends Plugin {
 		$post_is_nsfw = false;
 		$num_comments = 0;
 		$score = 0;
+		$link_flairs = [];
 		$apply_nsfw_tags = FeedItem_Common::normalize_categories($this->host->get_array($this, "apply_nsfw_tags", []));
 
 		// embed before reddit <table> post layout
@@ -274,6 +275,10 @@ class Af_RedditImgur extends Plugin {
 
 							$score += $data['score'] ?? 0;
 							$num_comments += $data["num_comments"] ?? 0;
+
+							if (!empty($data["link_flair_text"])) {
+								array_push($link_flairs, $data["link_flair_text"]);
+							}
 
 							if ($over_18) {
 								Debug::log("JSON: post is NSFW", Debug::$LOG_EXTENDED);
@@ -315,6 +320,10 @@ class Af_RedditImgur extends Plugin {
 
 		if ($post_is_nsfw && count($apply_nsfw_tags) > 0) {
 			$article["tags"] = array_merge($article["tags"], $apply_nsfw_tags);
+		}
+
+		if (count($link_flairs) > 0) {
+			$article["tags"] = array_merge($article["tags"], FeedItem_Common::normalize_categories($link_flairs));
 		}
 
 		$article["num_comments"] = $num_comments;
@@ -694,8 +703,8 @@ class Af_RedditImgur extends Plugin {
 
 	function testurl() {
 
-		$url = clean($_POST["url"]);
-		$article_url = clean($_POST["article_url"]);
+		$url = clean($_POST["url"] ?? "");
+		$article_url = clean($_POST["article_url"] ?? "");
 
 		$this->dump_json_data = true;
 
@@ -742,6 +751,8 @@ class Af_RedditImgur extends Plugin {
 		$found = $this->inline_stuff($article, $doc, $xpath);
 
 		Debug::log("Inline result: $found", Debug::$LOG_VERBOSE);
+
+		print_r($article);
 
 		if (!$found) {
 			Debug::log("Readability result:", Debug::$LOG_VERBOSE);

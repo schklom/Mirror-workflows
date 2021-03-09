@@ -82,6 +82,9 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 			}
 
 			if (id.match("FEED:")) {
+				tnode.rowNode.setAttribute('data-feed-id', bare_id);
+				tnode.rowNode.setAttribute('data-is-cat', "false");
+
 				const menu = new dijit.Menu();
 				menu.row_id = bare_id;
 
@@ -132,6 +135,9 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 			}
 
 			if (id.match("CAT:")) {
+				tnode.rowNode.setAttribute('data-feed-id', bare_id);
+				tnode.rowNode.setAttribute('data-is-cat', "true");
+
 				tnode.loadingNode = dojo.create('img', { className: 'loadingNode', src: 'images/blank_icon.gif'});
 				domConstruct.place(tnode.loadingNode, tnode.labelNode, 'after');
 			}

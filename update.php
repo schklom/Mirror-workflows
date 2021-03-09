@@ -74,31 +74,34 @@
 
 	init_plugins();
 
-	$longopts = array("feeds",
-			"daemon",
-			"daemon-loop",
-			"update-feed:",
-			"send-digests",
-			"task:",
-			"cleanup-tags",
-			"quiet",
-			"log:",
-			"log-level:",
-			"indexes",
-			"pidlock:",
-			"update-schema::",
-			"convert-filters",
-			"force-update",
-			"gen-search-idx",
-			"list-plugins",
-			"debug-feed:",
-			"force-refetch",
-			"force-rehash",
-			"opml-export:",
-			"help");
+	$options_map = [
+		"feeds" => "update all pending feeds",
+		"daemon" => "start single-process update daemon",
+		"daemon-loop" => "",
+		"update-feed:" => "",
+		"send-digests" =>  "send pending email digests",
+		"task:" => "",
+		"cleanup-tags" => "perform maintenance on tags table",
+		"quiet" => "don't output messages to stdout",
+		"log:" => ["FILE", "log messages to FILE"],
+		"log-level:" => ["N", "set log verbosity level (0-2)"],
+		"pidlock:" => "",
+		"update-schema::" => ["[force-yes]", "update database schema, optionally without prompting"],
+		"force-update" => "mark all feeds as pending update",
+		"gen-search-idx" => "generate basic PostgreSQL fulltext search index",
+		"plugins-list" => "list installed plugins",
+		"debug-feed:" => ["N", "update specified feed with debug output enabled"],
+		"debug-force-refetch" => "debug update: force refetch feed data",
+		"debug-force-rehash" => "debug update: force rehash articles",
+		"opml-export:" => ["USER:FILE", "export OPML of USER to FILE"],
+		"user-list" => "list all users",
+#		"user-add:" => ["USER[:PASSWORD]", "add USER, optionally without prompting for PASSWORD"],
+#		"user-remove:" => ["USERNAME", "remove specified user"],
+		"help" => "",
+	];
 
 	foreach (PluginHost::getInstance()->get_commands() as $command => $data) {
-		array_push($longopts, $command . $data["suffix"]);
+		$options_map[$command . $data["suffix"]] = [ $data["arghelp"] ?? "", $data["description"] ];
 	}
 
 	if (php_sapi_name() != "cli") {
@@ -107,35 +110,32 @@
 		exit;
 	}
 
-	$options = getopt("", $longopts);
+	$options = getopt("", array_keys($options_map));
 
 	if (count($options) == 0 || isset($options["help"]) ) {
-		print "Tiny Tiny RSS data update script.\n\n";
-		print "Options:\n";
-		print "  --feeds                     - update feeds\n";
-		print "  --daemon                    - start single-process update daemon\n";
-		print "  --task N                    - create lockfile using this task id\n";
-		print "  --cleanup-tags              - perform tags table maintenance\n";
-		print "  --quiet                     - don't output messages to stdout\n";
-		print "  --log FILE                  - log messages to FILE\n";
-		print "  --log-level N               - log verbosity level\n";
-		print "  --indexes                   - recreate missing schema indexes\n";
-		print "  --update-schema[=force-yes] - update database schema (without prompting)\n";
-		print "  --gen-search-idx            - generate basic PostgreSQL fulltext search index\n";
-		print "  --convert-filters           - convert type1 filters to type2\n";
-		print "  --send-digests              - send pending email digests\n";
-		print "  --force-update              - force update of all feeds\n";
-		print "  --list-plugins              - list all available plugins\n";
-		print "  --debug-feed N              - perform debug update of feed N\n";
-		print "  --force-refetch             - debug update: force refetch feed data\n";
-		print "  --force-rehash              - debug update: force rehash articles\n";
-		print "  --opml-export \"USER FILE\"   - export feeds of selected user to OPML\n";
-		print "  --help                      - show this help\n";
-		print "Plugin options:\n";
+		print "Tiny Tiny RSS CLI management tool\n";
+		print "=================================\n";
+		print "Options:\n\n";
 
-		foreach (PluginHost::getInstance()->get_commands() as $command => $data) {
-			$args = $data['arghelp'];
-			printf(" --%-26s - %s\n", "$command $args", $data["description"]);
+		$options_help = [];
+
+		foreach ($options_map as $option => $descr) {
+			if (substr($option, -1) === ":")
+				$option = substr($option, 0, -1);
+
+			$help_key = trim(sprintf("--%s %s",
+								$option, is_array($descr) ? $descr[0] : ""));
+			$help_value = is_array($descr) ? $descr[1] : $descr;
+
+			if ($help_value)
+				$options_help[$help_key] = $help_value;
+		}
+
+		$max_key_len = array_reduce(array_keys($options_help),
+			function ($carry, $item) { $len = strlen($item); return $len > $carry ? strlen($item) : $carry; });
+
+		foreach ($options_help as $option => $help_text) {
+			printf("  %s %s\n", str_pad($option, $max_key_len + 5), $help_text);
 		}
 
 		return;
@@ -263,112 +263,6 @@
 		Debug::log("$rc tags deleted.\n");
 	}
 
-	if (isset($options["indexes"])) {
-		Debug::log("PLEASE BACKUP YOUR DATABASE BEFORE PROCEEDING!");
-		Debug::log("Type 'yes' to continue.");
-
-		if (read_stdin() != 'yes')
-			exit;
-
-		Debug::log("clearing existing indexes...");
-
-		if (Config::get(Config::DB_TYPE) == "pgsql") {
-			$sth = $pdo->query( "SELECT relname FROM
-				pg_catalog.pg_class WHERE relname LIKE 'ttrss_%'
-					AND relname NOT LIKE '%_pkey'
-				AND relkind = 'i'");
-		} else {
-			$sth = $pdo->query( "SELECT index_name,table_name FROM
-				information_schema.statistics WHERE index_name LIKE 'ttrss_%'");
-		}
-
-		while ($line = $sth->fetch()) {
-			if (Config::get(Config::DB_TYPE) == "pgsql") {
-				$statement = "DROP INDEX " . $line["relname"];
-				Debug::log($statement);
-			} else {
-				$statement = "ALTER TABLE ".
-					$line['table_name']." DROP INDEX ".$line['index_name'];
-				Debug::log($statement);
-			}
-			$pdo->query($statement);
-		}
-
-		Debug::log("reading indexes from schema for: " . Config::get(Config::DB_TYPE));
-
-		$fp = fopen("schema/ttrss_schema_" . Config::get(Config::DB_TYPE) . ".sql", "r");
-		if ($fp) {
-			while ($line = fgets($fp)) {
-				$matches = array();
-
-				if (preg_match("/^create index ([^ ]+) on ([^ ]+)$/i", $line, $matches)) {
-					$index = $matches[1];
-					$table = $matches[2];
-
-					$statement = "CREATE INDEX $index ON $table";
-
-					Debug::log($statement);
-					$pdo->query($statement);
-				}
-			}
-			fclose($fp);
-		} else {
-			Debug::log("unable to open schema file.");
-		}
-		Debug::log("all done.");
-	}
-
-	if (isset($options["convert-filters"])) {
-		Debug::log("WARNING: this will remove all existing type2 filters.");
-		Debug::log("Type 'yes' to continue.");
-
-		if (read_stdin() != 'yes')
-			exit;
-
-		Debug::log("converting filters...");
-
-		$pdo->query("DELETE FROM ttrss_filters2");
-
-		$res = $pdo->query("SELECT * FROM ttrss_filters ORDER BY id");
-
-		while ($line = $res->fetch()) {
-			$owner_uid = $line["owner_uid"];
-
-			// date filters are removed
-			if ($line["filter_type"] != 5) {
-				$filter = array();
-
-				if (sql_bool_to_bool($line["cat_filter"])) {
-					$feed_id = "CAT:" . (int)$line["cat_id"];
-				} else {
-					$feed_id = (int)$line["feed_id"];
-				}
-
-				$filter["enabled"] = $line["enabled"] ? "on" : "off";
-				$filter["rule"] = array(
-					json_encode(array(
-						"reg_exp" => $line["reg_exp"],
-						"feed_id" => $feed_id,
-						"filter_type" => $line["filter_type"])));
-
-				$filter["action"] = array(
-					json_encode(array(
-						"action_id" => $line["action_id"],
-						"action_param_label" => $line["action_param"],
-						"action_param" => $line["action_param"])));
-
-				// Oh god it's full of hacks
-
-				$_REQUEST = $filter;
-				$_SESSION["uid"] = $owner_uid;
-
-				$filters = new Pref_Filters($_REQUEST);
-				$filters->add();
-			}
-		}
-
-	}
-
 	if (isset($options["update-schema"])) {
 		if (Config::is_migration_needed()) {
 
@@ -431,7 +325,7 @@
 		}
 	}
 
-	if (isset($options["list-plugins"])) {
+	if (isset($options["plugins-list"])) {
 		$tmppluginhost = new PluginHost();
 		$tmppluginhost->load_all($tmppluginhost::KIND_ALL);
 		$enabled = array_map("trim", explode(",", Config::get(Config::PLUGINS)));
@@ -470,8 +364,19 @@
 		Digest::send_headlines_digests();
 	}
 
+	if (isset($options["user-list"])) {
+		$users = ORM::for_table('ttrss_users')
+			->order_by_expr('id')
+			->find_many();
+
+		foreach ($users as $user) {
+			printf ("%-4d\t%-15s\t%-20s\t%-20s\n",
+				$user->id, $user->login, $user->full_name, $user->email);
+		}
+	}
+
 	if (isset($options["opml-export"])) {
-		list ($user, $filename) = explode(" ", $options["opml-export"], 2);
+		list ($user, $filename) = explode(":", $options["opml-export"], 2);
 
 		Debug::log("Exporting feeds of user $user to $filename as OPML...");
 

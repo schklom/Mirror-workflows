@@ -589,6 +589,7 @@ body.ttrss_main #feeds-holder #feedTree .counterNode {
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeRow[data-feed-id="-3"][data-is-cat="false"] .counterNode.unread {
   background-color: #3ea447;
+  border-color: #307f37;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .loadingExpando {
   left: -3px;

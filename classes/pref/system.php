@@ -42,10 +42,10 @@ class Pref_System extends Handler_Administrative {
 
 		switch ($severity) {
 			case E_USER_ERROR:
-				$errno_values = [ E_ERROR, E_USER_ERROR, E_PARSE ];
+				$errno_values = [ E_ERROR, E_USER_ERROR, E_PARSE, E_COMPILE_ERROR ];
 				break;
 			case E_USER_WARNING:
-				$errno_values = [ E_ERROR, E_USER_ERROR, E_PARSE, E_WARNING, E_USER_WARNING, E_DEPRECATED, E_USER_DEPRECATED ];
+				$errno_values = [ E_ERROR, E_USER_ERROR, E_PARSE, E_COMPILE_ERROR, E_WARNING, E_USER_WARNING, E_DEPRECATED, E_USER_DEPRECATED ];
 				break;
 		}
 

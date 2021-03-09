@@ -1434,10 +1434,10 @@ class Pref_Prefs extends Handler_Protected {
 		<div class='panel panel-scrollable'>
 			<table width='100%' id='app-password-list'>
 				<tr>
-					<th width='2%'> </th>
-					<th align='left'><?= __("Description") ?></th>
-					<th align='right'><?= __("Created") ?></th>
-					<th align='right'><?= __("Last used") ?></th>
+					<th class="checkbox"> </th>
+					<th width='50%'><?= __("Description") ?></th>
+					<th><?= __("Created") ?></th>
+					<th><?= __("Last used") ?></th>
 				</tr>
 				<?php
 
@@ -1448,16 +1448,16 @@ class Pref_Prefs extends Handler_Protected {
 
 				foreach ($passwords as $pass) { ?>
 					<tr data-row-id='<?= $pass['id'] ?>'>
-						<td align='center'>
+						<td class="checkbox">
 							<input onclick='Tables.onRowChecked(this)' dojoType='dijit.form.CheckBox' type='checkbox'>
 						</td>
 						<td>
 							<?= htmlspecialchars($pass["title"]) ?>
 						</td>
-						<td align='right' class='text-muted'>
+						<td class='text-muted'>
 							<?= TimeHelper::make_local_datetime($pass['created'], false) ?>
 						</td>
-						<td align='right' class='text-muted'>
+						<td class='text-muted'>
 							<?= TimeHelper::make_local_datetime($pass['last_used'], false) ?>
 						</td>
 					</tr>

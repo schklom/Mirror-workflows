@@ -758,7 +758,7 @@ body.ttrss_main {
 	@media screen and (min-width: 1500px) {
 		#headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] {
 			display : grid;
-			grid-template-columns: repeat(2, 0.5fr);
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 			background-color: @color-panel-bg;
 			grid-gap : 8px;
 			padding : 8px;

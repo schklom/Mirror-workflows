@@ -651,7 +651,7 @@ body.ttrss_main #headlines-frame[data-is-vfeed="false"] .header .feed {
 @media screen and (min-width: 1500px) {
   body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] {
     display: grid;
-    grid-template-columns: repeat(2, 0.5fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     background-color: #222;
     grid-gap: 8px;
     padding: 8px;

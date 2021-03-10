@@ -768,8 +768,22 @@ body.ttrss_main {
 			}
 
 			.cdm.expanded {
-				background : @default-bg;
-				border : 1px solid @border-default;
+
+				.header, .content {
+					background : @default-bg;
+					border : 1px solid @border-default;
+					overflow : hidden;
+				}
+
+				.content {
+					border-top-width : 0;
+					padding : 0 4px 4px 4px;
+				}
+
+				.header {
+					border-bottom-width : 0;
+					padding : 4px;
+				}
 
 				.footer {
 					border : 0;

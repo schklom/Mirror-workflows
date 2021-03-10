@@ -311,12 +311,9 @@ const	Feeds = {
 	setActive: function(id, is_cat) {
 		console.log('setActive', id, is_cat);
 
-		if ('requestIdleCallback' in window)
-			window.requestIdleCallback(() => {
-				App.Hash.set({f: id, c: is_cat ? 1 : 0});
-			});
-		else
+		window.requestIdleCallback(() => {
 			App.Hash.set({f: id, c: is_cat ? 1 : 0});
+		});
 
 		this._active_feed_id = id;
 		this._active_feed_is_cat = is_cat;

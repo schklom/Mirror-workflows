@@ -688,15 +688,16 @@ const App = {
    checkBrowserFeatures: function() {
       let errorMsg = "";
 
-      ['MutationObserver'].forEach(function(wf) {
-         if (!(wf in window)) {
-            errorMsg = `Browser feature check failed: <code>window.${wf}</code> not found.`;
+      ['MutationObserver', 'requestIdleCallback'].forEach((t) => {
+         if (!(t in window)) {
+            errorMsg = `Browser check failed: <code>window.${t}</code> not found.`;
             throw new Error(errorMsg);
          }
       });
 
-      if (errorMsg) {
-         this.Error.fatal(errorMsg, {info: navigator.userAgent});
+      if (typeof Promise.allSettled == "undefined") {
+         errorMsg = `Browser check failed: <code>Promise.allSettled</code> is not defined.`;
+         throw new Error(errorMsg);
       }
 
       return errorMsg == "";

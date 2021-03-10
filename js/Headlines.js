@@ -76,12 +76,9 @@ const Headlines = {
 
 		Headlines.updateSelectedPrompt();
 
-		if ('requestIdleCallback' in window)
-			window.requestIdleCallback(() => {
-				Headlines.syncModified(modified);
-			});
-		else
+		window.requestIdleCallback(() => {
 			Headlines.syncModified(modified);
+		});
 	}),
 	syncModified: function (modified) {
 		const ops = {
@@ -175,7 +172,7 @@ const Headlines = {
 			});
 		}
 
-		Promise.all(promises).then((results) => {
+		Promise.allSettled(promises).then((results) => {
 			let feeds = [];
 			let labels = [];
 

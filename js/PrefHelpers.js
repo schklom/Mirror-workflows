@@ -510,12 +510,10 @@ const	Helpers = {
 				search: function() {
 					this.search_query = this.attr('value').search.toLowerCase();
 
-					if ('requestIdleCallback' in window)
-						window.requestIdleCallback(() => {
-							this.render_contents();
-						});
-					else
+					window.requestIdleCallback(() => {
 						this.render_contents();
+					});
+
 				},
 				render_contents: function() {
 					const container = dialog.domNode.querySelector(".contents");

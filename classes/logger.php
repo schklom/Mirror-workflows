@@ -46,7 +46,7 @@ class Logger {
 		if ($this->adapter)
 			return $this->adapter->log_error($errno, $errstr, '', 0, $context);
 		else
-			return false;
+			return user_error($errstr, $errno);
 	}
 
 	private function __clone() {

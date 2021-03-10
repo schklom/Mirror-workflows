@@ -682,9 +682,11 @@ body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"
 }
 body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded .footer .left,
 body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded .footer .right {
+  white-space: nowrap;
+}
+body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded .footer .left {
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded .content-inner,
 body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded .intermediate {

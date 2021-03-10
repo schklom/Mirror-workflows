@@ -383,10 +383,13 @@ const Headlines = {
 		return this.headlines[id];
 	},
 	setCommonClasses: function () {
-		App.byId("headlines-frame").removeClassName("cdm");
-		App.byId("headlines-frame").removeClassName("normal");
+		const container = App.byId("headlines-frame");
 
-		App.byId("headlines-frame").addClassName(App.isCombinedMode() ? "cdm" : "normal");
+		container.removeClassName("cdm");
+		container.removeClassName("normal");
+
+		container.addClassName(App.isCombinedMode() ? "cdm" : "normal");
+		container.setAttribute("data-enable-grid", App.getInitParam("cdm_enable_grid") ? "true" : "false");
 
 		// for floating title because it's placed outside of headlines-frame
 		App.byId("main").removeClassName("expandable");

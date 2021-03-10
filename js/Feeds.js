@@ -330,7 +330,6 @@ const	Feeds = {
 
 		container.setAttribute("data-feed-id", id);
 		container.setAttribute("data-is-cat", is_cat ? "true" : "false");
-		container.setAttribute("data-enable-grid", App.getInitParam("cdm_enable_grid") ? "true" : "false");
 
 		this.select(id, is_cat);
 

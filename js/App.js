@@ -1102,6 +1102,12 @@ const App = {
          this.hotkey_actions["feed_reverse"] = () => {
             Headlines.reverse();
          };
+         this.hotkey_actions["feed_toggle_grid"] = () => {
+            xhr.json("backend.php", {op: "rpc", method: "togglepref", key: "CDM_ENABLE_GRID"}, (reply) => {
+               App.setInitParam("cdm_enable_grid", reply.value);
+               Headlines.renderAgain();
+            })
+         };
          this.hotkey_actions["feed_toggle_vgroup"] = () => {
             xhr.post("backend.php", {op: "rpc", method: "togglepref", key: "VFEED_GROUP_BY_FEED"}, () => {
                Feeds.reloadCurrent();

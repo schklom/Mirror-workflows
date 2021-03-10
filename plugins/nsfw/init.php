@@ -20,10 +20,6 @@ class NSFW extends Plugin {
 
 	}
 
-	function get_js() {
-		return file_get_contents(__DIR__ . "/init.js");
-	}
-
 	function hook_article_image($enclosures, $content, $site_url, $article) {
 		$tags = explode(",", $this->host->get($this, "tags"));
 		$article_tags = $article["tags"];
@@ -35,19 +31,12 @@ class NSFW extends Plugin {
 		}
 	}
 
-	private function rewrite_contents($article, bool $add_api_js = false) {
+	private function rewrite_contents($article) {
 		$tags = explode(",", $this->host->get($this, "tags"));
 		$article_tags = $article["tags"];
 
 		if (count(array_intersect($tags, $article_tags)) > 0) {
-			$article["content"] = "<div class='nsfw-wrapper'>".
-					\Controls\button_tag(__("Not work safe (click to toggle)"), '', ['onclick' => 'Plugins.NSFW.toggle(this)']).
-					"<div class='nsfw-content' style='display : none'>".$article["content"]."</div>
-				</div>";
-
-			if ($add_api_js) {
-				$article["content"] .= "<script type='text/javascript'>const Plugins = {}; " . $this->get_js() . "</script>";
-			}
+			$article["content"] = "<details><summary>" . __("Not safe for work (click to toggle)") . "</summary>" . $article["content"] . "</details>";
 		}
 
 		return $article;
@@ -55,7 +44,7 @@ class NSFW extends Plugin {
 
 	function hook_render_article_api($row) {
 		$article = isset($row['headline']) ? $row['headline'] : $row['article'];
-		return $this->rewrite_contents($article, true);
+		return $this->rewrite_contents($article);
 	}
 
 	function hook_render_article($article) {

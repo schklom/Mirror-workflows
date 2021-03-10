@@ -773,6 +773,10 @@ body.ttrss_main {
 		}
 
 		.cdm.expanded {
+			// 2 because #headlines-spacer is the actual last child
+			&:nth-last-child(2):nth-child(odd) {
+				grid-column : 1 e("/") -1;
+			}
 
 			.header, .content {
 				background : @default-bg;

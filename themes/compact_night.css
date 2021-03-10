@@ -664,6 +664,9 @@ body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"
 body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .feed-title {
   grid-column: 1 / -1;
 }
+body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded:nth-last-child(2):nth-child(odd) {
+  grid-column: 1 / -1;
+}
 body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded .header,
 body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded .content {
   background: #333;

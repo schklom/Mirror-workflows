@@ -854,8 +854,8 @@ body.ttrss_main .player:hover {
   background: #222;
   cursor: pointer;
 }
-body.ttrss_main #headlines-frame.auto_catchup #headlines-spacer {
-  height: 100%;
+body.ttrss_main #headlines-frame[data-auto-catchup="true"] #headlines-spacer {
+  height: 100vh;
 }
 body.ttrss_main #headlines-spacer {
   margin-left: 1px;

@@ -1,7 +1,8 @@
 .content-shrink-wrap {
 	overflow : hidden;
 	text-overflow: ellipsis;
-	height : 800px;
+	height : 80vh;
+	margin-bottom : 8px;
 }
 
 .expand-prompt {

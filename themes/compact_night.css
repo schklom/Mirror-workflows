@@ -51,7 +51,7 @@ body.ttrss_main div.post div.header img,
 body.ttrss_main div.post div.header i.material-icons {
   margin: 0px 4px;
   vertical-align: middle;
-  color: #777;
+  color: #999;
 }
 body.ttrss_main div.post div.header .title {
   flex-grow: 2;
@@ -226,7 +226,7 @@ body.ttrss_main .hl .right i.material-icons {
   font-size: 21px;
 }
 body.ttrss_main .hl .right i.material-icons {
-  color: #777;
+  color: #999;
 }
 body.ttrss_main .hl div.title {
   cursor: pointer;
@@ -982,6 +982,11 @@ body.ttrss_main:not([view-mode="marked"])[hide-read-feeds="true"][hide-read-show
 body.ttrss_main:not([view-mode="marked"])[hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree .dijitTreeRow:not(.Unread):not(.AlwaysVisible) {
   display: none;
 }
+body.ttrss_main {
+  /*.score-neutral i.icon-score {
+		opacity : 0.5;
+	}*/
+}
 body.ttrss_main #toolbar-headlines i.icon-syndicate {
   color: #ff7c4b;
   margin-right: 8px;
@@ -1018,11 +1023,9 @@ body.ttrss_main .score-high i.icon-score {
 body.ttrss_main .score-low i.icon-score {
   color: #500;
 }
-body.ttrss_main .score-neutral i.icon-score {
-  opacity: 0.5;
-}
 body.ttrss_main i.icon-score {
   cursor: pointer;
+  color: #999;
 }
 body.ttrss_main .panel {
   border: 1px solid #222;
@@ -1206,8 +1209,10 @@ body.ttrss_utility div.autocomplete ul li {
 video::-webkit-media-controls-overlay-play-button {
   display: none;
 }
-.cdm i.material-icons {
-  color: #777;
+.cdm {
+  /*i.material-icons {
+		color : @color-icon;
+	}*/
 }
 .cdm .header {
   position: sticky;
@@ -1268,6 +1273,9 @@ video::-webkit-media-controls-overlay-play-button {
   color: #ccc;
   clear: both;
   align-items: center;
+}
+.cdm .footer i.material-icons {
+  color: #999;
 }
 .cdm .footer .left {
   flex-grow: 2;

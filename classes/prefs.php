@@ -60,6 +60,7 @@ class Prefs {
 	const DEBUG_HEADLINE_IDS = "DEBUG_HEADLINE_IDS";
 	const DISABLE_CONDITIONAL_COUNTERS = "DISABLE_CONDITIONAL_COUNTERS";
 	const WIDESCREEN_MODE = "WIDESCREEN_MODE";
+	const CDM_ENABLE_GRID = "CDM_ENABLE_GRID";
 
 	private const _DEFAULTS = [
 		Prefs::PURGE_OLD_DAYS => [ 60, Config::T_INT ],
@@ -120,6 +121,7 @@ class Prefs {
 		Prefs::DEBUG_HEADLINE_IDS => [ false, Config::T_BOOL ],
 		Prefs::DISABLE_CONDITIONAL_COUNTERS => [ false, Config::T_BOOL ],
 		Prefs::WIDESCREEN_MODE => [ false, Config::T_BOOL ],
+		Prefs::CDM_ENABLE_GRID => [ false, Config::T_BOOL ],
 	];
 
 	const _PROFILE_BLACKLIST = [

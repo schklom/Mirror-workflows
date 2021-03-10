@@ -431,6 +431,8 @@ const Headlines = {
 				this.unpack_observer.observe(e)
 			});
 
+		dijit.byId('main').resize();
+
 	},
 	render: function (headlines, hl) {
 		let row = null;
@@ -458,6 +460,11 @@ const Headlines = {
 
 			this.vgroup_last_feed = hl.feed_id;
 		}
+
+		const container = App.byId("headlines-frame");
+
+		container.setAttribute("data-is-cdm", App.isCombinedMode() ? "true" : "false");
+		container.setAttribute("data-is-cdm-expanded", App.getInitParam("cdm_expanded"));
 
 		if (App.isCombinedMode()) {
 			row_class += App.getInitParam("cdm_expanded") ? " expanded" : " expandable";
@@ -677,8 +684,12 @@ const Headlines = {
 				// also called in renderAgain() after view mode switch
 				Headlines.setCommonClasses();
 
+				/** TODO: remove @deprecated */
 				App.byId("headlines-frame").setAttribute("is-vfeed",
 					reply['headlines']['is_vfeed'] ? 1 : 0);
+
+				App.byId("headlines-frame").setAttribute("data-is-vfeed",
+					reply['headlines']['is_vfeed'] ? "true" : "false");
 
 				Article.setActive(0);
 
@@ -819,6 +830,8 @@ const Headlines = {
 		// this is used to auto-catchup articles if needed after infscroll request has finished,
 		// unpack visible articles, fill buffer more, etc
 		this.scrollHandler();
+
+		dijit.byId('main').resize();
 
 		Notify.close();
 	},

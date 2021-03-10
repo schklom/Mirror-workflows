@@ -321,8 +321,16 @@ const	Feeds = {
 		this._active_feed_id = id;
 		this._active_feed_is_cat = is_cat;
 
-		App.byId("headlines-frame").setAttribute("feed-id", id);
-		App.byId("headlines-frame").setAttribute("is-cat", is_cat ? 1 : 0);
+		const container = App.byId("headlines-frame");
+
+		// TODO @deprecated: these two should be removed (replaced with data- attributes below)
+		container.setAttribute("feed-id", id);
+		container.setAttribute("is-cat", is_cat ? 1 : 0);
+		// ^
+
+		container.setAttribute("data-feed-id", id);
+		container.setAttribute("data-is-cat", is_cat ? "true" : "false");
+		container.setAttribute("data-enable-grid", App.getInitParam("cdm_enable_grid") ? "true" : "false");
 
 		this.select(id, is_cat);
 

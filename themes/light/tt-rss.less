@@ -751,8 +751,31 @@ body.ttrss_main {
 		border-width : 0px;
 	}
 
-	#headlines-frame[is-vfeed="0"] .header .feed {
+	#headlines-frame[data-is-vfeed="false"] .header .feed {
 		display : none;
+	}
+
+	@media screen and (min-width: 1500px) {
+		#headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] {
+			display : grid;
+			grid-template-columns: repeat(2, 0.5fr);
+			background-color: @color-panel-bg;
+			grid-gap : 8px;
+			padding : 8px;
+
+			.header[stuck] {
+				top : -8px;
+			}
+
+			.cdm.expanded {
+				background : @default-bg;
+				border : 1px solid @border-default;
+
+				.footer {
+					border : 0;
+				}
+			}
+		}
 	}
 
 	#headlines-frame {

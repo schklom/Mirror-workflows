@@ -645,8 +645,27 @@ body.ttrss_main #headlines-wrap-inner {
   margin: 0px;
   border-width: 0px;
 }
-body.ttrss_main #headlines-frame[is-vfeed="0"] .header .feed {
+body.ttrss_main #headlines-frame[data-is-vfeed="false"] .header .feed {
   display: none;
+}
+@media screen and (min-width: 1500px) {
+  body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] {
+    display: grid;
+    grid-template-columns: repeat(2, 0.5fr);
+    background-color: #222;
+    grid-gap: 8px;
+    padding: 8px;
+  }
+  body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .header[stuck] {
+    top: -8px;
+  }
+  body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded {
+    background: #333;
+    border: 1px solid #222;
+  }
+  body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded .footer {
+    border: 0;
+  }
 }
 body.ttrss_main #headlines-frame {
   padding: 0px;

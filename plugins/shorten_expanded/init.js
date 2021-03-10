@@ -41,6 +41,10 @@ Plugins.Shorten_Expanded = {
 
 		[...row.querySelectorAll("img, video")].forEach((img) => {
 			const promise = new Promise((resolve, reject) => {
+
+				// lazy load breaks our calculations
+				img.removeAttribute('loading');
+
 				img.onload = () => resolve(img);
 				img.onloadeddata = () => resolve(img);
 				img.error = () => reject(new Error("unable to load video"));

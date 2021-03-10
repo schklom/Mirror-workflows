@@ -679,6 +679,9 @@ body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"
 body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded .footer {
   border: 0;
   padding: 4px;
+}
+body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded .footer .left,
+body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded .footer .right {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

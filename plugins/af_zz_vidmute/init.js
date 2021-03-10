@@ -1,24 +1,18 @@
+/* global require, PluginHost */
+
 require(['dojo/_base/kernel', 'dojo/ready'], function  (dojo, ready) {
+	function mute(row) {
+		[...row.querySelectorAll("video")].forEach((vid) => { vid.muted = true; });
+	}
+
 	ready(function () {
 		PluginHost.register(PluginHost.HOOK_ARTICLE_RENDERED_CDM, function (row) {
-			if (row) {
-
-				row.querySelectorAll("video").forEach(function (v) {
-					v.muted = true;
-				});
-			}
-
+			mute(row);
 			return true;
 		});
 
 		PluginHost.register(PluginHost.HOOK_ARTICLE_RENDERED, function (row) {
-			if (row) {
-
-				row.querySelectorAll("video").forEach(function (v) {
-					v.muted = true;
-				});
-			}
-
+			mute(row);
 			return true;
 		});
 	});

@@ -20,10 +20,10 @@ const Headlines = {
 				const header = entry.target.nextElementSibling;
 
 				if (entry.intersectionRatio == 0) {
-					header.setAttribute("stuck", "1");
+					header.setAttribute("data-is-stuck", "true");
 
 				} else if (entry.intersectionRatio == 1) {
-					header.removeAttribute("stuck");
+					header.removeAttribute("data-is-stuck");
 				}
 
 				//console.log(entry.target, header, entry.intersectionRatio);

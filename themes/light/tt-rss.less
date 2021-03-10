@@ -763,10 +763,6 @@ body.ttrss_main {
 			grid-gap : 8px;
 			padding : 8px;
 
-			.header[stuck] {
-				top : -8px;
-			}
-
 			.cdm.expanded {
 
 				.header, .content {
@@ -778,6 +774,11 @@ body.ttrss_main {
 				.content {
 					border-top-width : 0;
 					padding : 0 4px 4px 4px;
+				}
+
+				.header[data-is-stuck] {
+					top : -8px;
+					border-bottom-width: 1px;
 				}
 
 				.header {

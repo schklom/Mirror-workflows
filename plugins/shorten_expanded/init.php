@@ -10,22 +10,6 @@ class Shorten_Expanded extends Plugin {
 
 	function init($host) {
 		$this->host = $host;
-
-		$host->add_hook($host::HOOK_SANITIZE, $this);
-	}
-
-	// native lazy loading messes with plugin height calculation because images get loaded
-	// after headline is actually rendered (off screen) so we force disable it
-	function hook_sanitize($doc) {
-		$xpath = new DOMXPath($doc);
-
-		$entries = $xpath->query('(//*[@loading="lazy"])');
-
-		foreach ($entries as $entry) {
-			$entry->removeAttribute("loading");
-		}
-
-		return $doc;
 	}
 
 	function get_css() {

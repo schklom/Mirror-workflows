@@ -762,6 +762,16 @@ body.ttrss_main {
 		grid-gap : 8px;
 		padding : 8px;
 
+		&[data-headlines-count="1"] {
+			#headlines-spacer, .whiteBox, .feed-title {
+				grid-column: 1;
+			}
+		}
+
+		#headlines-spacer, .whiteBox, .feed-title {
+			grid-column : 1 e("/") -1;
+		}
+
 		.cdm.expanded {
 
 			.header, .content {
@@ -806,10 +816,6 @@ body.ttrss_main {
 			.content-inner, .intermediate {
 				word-break: break-all;
 			}
-		}
-
-		#headlines-spacer, .whiteBox, .feed-title {
-			grid-column : 1 e("/") -1;
 		}
 	}
 

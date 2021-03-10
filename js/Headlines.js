@@ -379,7 +379,7 @@ const Headlines = {
 	objectById: function (id) {
 		return this.headlines[id];
 	},
-	setCommonClasses: function () {
+	setCommonClasses: function (headlines_count) {
 		const container = App.byId("headlines-frame");
 
 		container.removeClassName("cdm");
@@ -387,6 +387,7 @@ const Headlines = {
 
 		container.addClassName(App.isCombinedMode() ? "cdm" : "normal");
 		container.setAttribute("data-enable-grid", App.getInitParam("cdm_enable_grid") ? "true" : "false");
+		container.setAttribute("data-headlines-count", parseInt(headlines_count));
 
 		// for floating title because it's placed outside of headlines-frame
 		App.byId("main").removeClassName("expandable");
@@ -397,7 +398,7 @@ const Headlines = {
 	},
 	renderAgain: function () {
 		// TODO: wrap headline elements into a knockoutjs model to prevent all this stuff
-		Headlines.setCommonClasses();
+		Headlines.setCommonClasses(this.headlines.filter((h) => h.id).length);
 
 		App.findAll("#headlines-frame > div[id*=RROW]").forEach((row) => {
 			const id = row.getAttribute("data-article-id");
@@ -682,7 +683,7 @@ const Headlines = {
 				console.log('infscroll_disabled=', Feeds.infscroll_disabled);
 
 				// also called in renderAgain() after view mode switch
-				Headlines.setCommonClasses();
+				Headlines.setCommonClasses(headlines_count);
 
 				/** TODO: remove @deprecated */
 				App.byId("headlines-frame").setAttribute("is-vfeed",

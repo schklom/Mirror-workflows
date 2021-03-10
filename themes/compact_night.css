@@ -654,6 +654,16 @@ body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"
   grid-gap: 8px;
   padding: 8px;
 }
+body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"][data-headlines-count="1"] #headlines-spacer,
+body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"][data-headlines-count="1"] .whiteBox,
+body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"][data-headlines-count="1"] .feed-title {
+  grid-column: 1;
+}
+body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] #headlines-spacer,
+body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .whiteBox,
+body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .feed-title {
+  grid-column: 1 / -1;
+}
 body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded .header,
 body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded .content {
   background: #333;
@@ -690,11 +700,6 @@ body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"
 body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded .content-inner,
 body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded .intermediate {
   word-break: break-all;
-}
-body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] #headlines-spacer,
-body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .whiteBox,
-body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .feed-title {
-  grid-column: 1 / -1;
 }
 body.ttrss_main #headlines-frame {
   padding: 0px;

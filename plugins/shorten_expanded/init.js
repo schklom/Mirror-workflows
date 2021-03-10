@@ -51,7 +51,7 @@ Plugins.Shorten_Expanded = {
 				const id = setTimeout(() => {
 					clearTimeout(id);
 					reject(new Error("timed out"));
-				}, 250)
+				}, 2000)
 			})
 
 			promises.push(Promise.race([promise, timeout]));

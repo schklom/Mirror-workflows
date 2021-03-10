@@ -514,7 +514,13 @@ const App = {
                   this.LABEL_BASE_INDEX = parseInt(params[k]);
                   break;
                case "cdm_auto_catchup":
-                  App.byId("headlines-frame").setAttribute("data-auto-catchup", params[k] ? "true" : "false");
+                  {
+                     const headlines = App.byId("headlines-frame");
+
+                  // we could be in preferences
+                     if (headlines)
+                        headlines.setAttribute("data-auto-catchup", params[k] ? "true" : "false");
+                  }
                   break;
                case "hotkeys":
                   // filter mnemonic definitions (used for help panel) from hotkeys map

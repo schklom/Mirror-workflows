@@ -179,7 +179,7 @@ const Headlines = {
 			results.forEach((res) => {
 				if (res) {
 					try {
-						const obj = JSON.parse(res);
+						const obj = JSON.parse(res.value);
 
 						if (obj.feeds)
 							feeds = feeds.concat(obj.feeds);

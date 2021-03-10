@@ -1323,9 +1323,6 @@ div.cdm.expanded div.header a.title {
   text-rendering: optimizelegibility;
   font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-div.cdm.expanded.active {
-  background: white;
-}
 div.cdm.expanded.active div.header a.title {
   color: #257aa7;
 }

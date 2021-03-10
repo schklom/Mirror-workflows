@@ -1324,9 +1324,6 @@ div.cdm.expanded div.header a.title {
   text-rendering: optimizelegibility;
   font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-div.cdm.expanded.active {
-  background: white;
-}
 div.cdm.expanded.active div.header a.title {
   color: #257aa7;
 }
@@ -2101,6 +2098,11 @@ body.flat.ttrss_main #feeds-holder #feedTree .dijitTreeRowSelected .dijitTreeLab
 body.flat.ttrss_main #feeds-holder #feedTree i.icon.icon-inbox {
   color: #999999;
 }
+body.flat.ttrss_main #headlines-frame {
+  /*.cdm.expanded {
+			background: @default-bg;
+		}*/
+}
 body.flat.ttrss_main #headlines-frame .hl:not(.active):not(.Selected):not(.Unread),
 body.flat.ttrss_main #headlines-frame .cdm.expandable:not(.active):not(.Selected):not(.Unread) {
   background: #333;
@@ -2108,9 +2110,6 @@ body.flat.ttrss_main #headlines-frame .cdm.expandable:not(.active):not(.Selected
 body.flat.ttrss_main #headlines-frame .hl.Unread:not(.active):not(.Selected),
 body.flat.ttrss_main #headlines-frame .cdm.expandable.Unread:not(.active):not(.Selected) {
   background: #222;
-}
-body.flat.ttrss_main #headlines-frame .cdm.expanded {
-  background: #333;
 }
 body.flat.ttrss_main #headlines-frame .hl.Unread .title,
 body.flat.ttrss_main #headlines-frame .cdm.Unread .title {

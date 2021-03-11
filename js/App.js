@@ -872,40 +872,43 @@ const App = {
    },
    setWidescreen: function(wide) {
       const article_id = Article.getActive();
+      const headlines_frame = App.byId("headlines-frame");
+      const content_insert = dijit.byId("content-insert");
+
+      // TODO: setStyle stuff should probably be handled by CSS
 
       if (wide) {
          dijit.byId("headlines-wrap-inner").attr("design", 'sidebar');
-         dijit.byId("content-insert").attr("region", "trailing");
+         content_insert.attr("region", "trailing");
 
-         dijit.byId("content-insert").domNode.setStyle({width: '50%',
+         content_insert.domNode.setStyle({width: '50%',
             height: 'auto',
             borderTopWidth: '0px' });
 
          if (parseInt(Cookie.get("ttrss_ci_width")) > 0) {
-            dijit.byId("content-insert").domNode.setStyle(
+            content_insert.domNode.setStyle(
                {width: Cookie.get("ttrss_ci_width") + "px" });
          }
 
-         App.byId("headlines-frame").setStyle({ borderBottomWidth: '0px' });
-         App.byId("headlines-frame").addClassName("wide");
+         headlines_frame.setStyle({ borderBottomWidth: '0px' });
 
       } else {
 
-         dijit.byId("content-insert").attr("region", "bottom");
+         content_insert.attr("region", "bottom");
 
-         dijit.byId("content-insert").domNode.setStyle({width: 'auto',
+         content_insert.domNode.setStyle({width: 'auto',
             height: '50%',
             borderTopWidth: '0px'});
 
          if (parseInt(Cookie.get("ttrss_ci_height")) > 0) {
-            dijit.byId("content-insert").domNode.setStyle(
+            content_insert.domNode.setStyle(
                {height: Cookie.get("ttrss_ci_height") + "px" });
          }
 
-         App.byId("headlines-frame").setStyle({ borderBottomWidth: '1px' });
-         App.byId("headlines-frame").removeClassName("wide");
-
+         headlines_frame.setStyle({ borderBottomWidth: '1px' });
       }
+
+      headlines_frame.setAttribute("data-is-wide-screen", wide ? "true" : "false");
 
       Article.close();
 

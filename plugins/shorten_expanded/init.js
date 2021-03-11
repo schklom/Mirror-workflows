@@ -2,6 +2,13 @@
 
 Plugins.Shorten_Expanded = {
 	threshold: 1.5, // of window height
+	observer: new ResizeObserver((entries) => {
+		entries.forEach((entry) => {
+			const row = entry.target;
+
+			Plugins.Shorten_Expanded.shorten_if_needed(row);
+		});
+	}),
 	shorten_if_needed: function(row) {
 
 		const content = row.querySelector(".content");
@@ -9,7 +16,9 @@ Plugins.Shorten_Expanded = {
 
 		console.log('shorten_expanded', row.id, content.offsetHeight, 'vs', this.threshold * window.innerHeight);
 
-		if (content && content_inner && content.offsetHeight >= this.threshold * window.innerHeight) {
+		if (content && content_inner && !row.hasAttribute('data-already-shortened') && content.offsetHeight >= this.threshold * window.innerHeight) {
+
+			row.setAttribute('data-already-shortened', true);
 
 			const attachments = row.querySelector(".attachments-inline"); // optional
 
@@ -37,33 +46,7 @@ Plugins.Shorten_Expanded = {
 		if (this.shorten_if_needed(row))
 			return;
 
-		const promises = [];
-
-		[...row.querySelectorAll("img, video")].forEach((img) => {
-			const promise = new Promise((resolve, reject) => {
-
-				// lazy load breaks our calculations
-				img.removeAttribute('loading');
-
-				img.onload = () => resolve(img);
-				img.onloadeddata = () => resolve(img);
-				img.error = () => reject(new Error("unable to load video"));
-				img.onerror = () => reject(new Error("unable to load image"));
-			});
-
-			const timeout = new Promise((resolve, reject) => {
-				const id = setTimeout(() => {
-					clearTimeout(id);
-					reject(new Error("timed out"));
-				}, 2000)
-			})
-
-			promises.push(Promise.race([promise, timeout]));
-		});
-
-		Promise.allSettled(promises).then(() => {
-			this.shorten_if_needed(row);
-		});
+		this.observer.observe(row);
 	},
 	expand: function(id) {
 		const row = App.byId(id);

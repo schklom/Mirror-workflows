@@ -436,6 +436,7 @@ const Headlines = {
 
 		dijit.byId('main').resize();
 
+		PluginHost.run(PluginHost.HOOK_HEADLINES_RENDERED);
 	},
 	render: function (headlines, hl) {
 		let row = null;
@@ -831,6 +832,8 @@ const Headlines = {
 		this.scrollHandler();
 
 		dijit.byId('main').resize();
+
+		PluginHost.run(PluginHost.HOOK_HEADLINES_RENDERED);
 
 		Notify.close();
 	},

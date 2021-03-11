@@ -19,6 +19,7 @@ const PluginHost = {
 	HOOK_COUNTERS_PROCESSED: 14,
 	HOOK_HEADLINE_MUTATIONS: 15,
 	HOOK_HEADLINE_MUTATIONS_SYNCED: 16,
+	HOOK_HEADLINES_RENDERED: 17,
 	hooks: [],
 	register: function (name, callback) {
 		if (typeof(this.hooks[name]) == 'undefined')

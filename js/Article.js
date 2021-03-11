@@ -103,6 +103,7 @@ const Article = {
 			else
 				row.style.gridColumn = '';
 
+			this.setActive(id);
 			this.cdmMoveToId(id);
 		}
 	},

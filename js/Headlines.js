@@ -624,7 +624,7 @@ const Headlines = {
 				</span>
 				<span class='right'>
 					<span id='selected_prompt'></span>
-					<div dojoType='fox.form.DropDownButton' title='"${__('Select articles')}'>
+					<div class='select-articles-dropdown' dojoType='fox.form.DropDownButton' title='"${__('Select articles')}'>
 						<span>${__("Select...")}</span>
 						<div dojoType='dijit.Menu' style='display: none;'>
 						<div dojoType='dijit.MenuItem' onclick='Headlines.select("all")'>${__('All')}</div>

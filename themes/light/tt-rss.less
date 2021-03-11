@@ -887,6 +887,12 @@ body.ttrss_main {
 					.feed_title, .cancel_search {
 						margin-left : 4px;
 					}
+
+					@media (max-width: @breakpoint-md) {
+						.feed_title, i.icon-syndicate {
+							display : none;
+						}
+					}
 				}
 
 				.right {
@@ -907,11 +913,19 @@ body.ttrss_main {
 				color : @color-accent;
 			}
 
-			@media (max-width: 992px) {
+			@media (max-width: @breakpoint-md) {
 				#selected_prompt {
 					display : none;
 				}
 			}
+
+			@media (max-width: @breakpoint-sm) {
+				.select-articles-dropdown,
+				.catchup-button {
+					display : none;
+				}
+			}
+
 		}
 	}
 

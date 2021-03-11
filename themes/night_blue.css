@@ -767,6 +767,12 @@ body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines .left .feed_title,
 body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines .left .cancel_search {
   margin-left: 4px;
 }
+@media (max-width: 768px) {
+  body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines .left .feed_title,
+  body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines .left i.icon-syndicate {
+    display: none;
+  }
+}
 body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines .right {
   display: flex;
   align-items: center;
@@ -781,8 +787,14 @@ body.ttrss_main #toolbar-frame #toolbar #selected_prompt {
   margin-right: 4px;
   color: #257aa7;
 }
-@media (max-width: 992px) {
+@media (max-width: 768px) {
   body.ttrss_main #toolbar-frame #toolbar #selected_prompt {
+    display: none;
+  }
+}
+@media (max-width: 576px) {
+  body.ttrss_main #toolbar-frame #toolbar .select-articles-dropdown,
+  body.ttrss_main #toolbar-frame #toolbar .catchup-button {
     display: none;
   }
 }
@@ -1557,6 +1569,14 @@ body.ttrss_prefs ul.prefs-plugin-list li label.checkbox .name {
   display: inline-block;
   text-align: right;
   font-weight: bold;
+}
+@media (max-width: 992px) {
+  body.ttrss_prefs ul.prefs-plugin-list li label.checkbox {
+    min-width: 200px ! important;
+  }
+  body.ttrss_prefs ul.prefs-plugin-list li .version {
+    display: none;
+  }
 }
 body.ttrss_prefs ul.prefs-plugin-list li .actions {
   flex-grow: 2;

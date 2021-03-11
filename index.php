@@ -197,7 +197,7 @@
 				?>
             </select>
 
-            <div dojoType="fox.form.ComboButton" onclick="Feeds.catchupCurrent()">
+            <div class="catchup-button" dojoType="fox.form.ComboButton" onclick="Feeds.catchupCurrent()">
                 <span><?= __('Mark as read') ?></span>
                 <div dojoType="dijit.DropDownMenu">
                     <div dojoType="dijit.MenuItem" onclick="Feeds.catchupCurrent('1day')">

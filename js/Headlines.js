@@ -388,6 +388,8 @@ const Headlines = {
 		container.addClassName(App.isCombinedMode() ? "cdm" : "normal");
 		container.setAttribute("data-enable-grid", App.getInitParam("cdm_enable_grid") ? "true" : "false");
 		container.setAttribute("data-headlines-count", parseInt(headlines_count));
+		container.setAttribute("data-is-cdm", App.isCombinedMode() ? "true" : "false");
+		container.setAttribute("data-is-cdm-expanded", App.getInitParam("cdm_expanded"));
 
 		// for floating title because it's placed outside of headlines-frame
 		App.byId("main").removeClassName("expandable");
@@ -461,11 +463,6 @@ const Headlines = {
 
 			this.vgroup_last_feed = hl.feed_id;
 		}
-
-		const container = App.byId("headlines-frame");
-
-		container.setAttribute("data-is-cdm", App.isCombinedMode() ? "true" : "false");
-		container.setAttribute("data-is-cdm-expanded", App.getInitParam("cdm_expanded"));
 
 		if (App.isCombinedMode()) {
 			row_class += App.getInitParam("cdm_expanded") ? " expanded" : " expandable";

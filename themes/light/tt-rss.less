@@ -9,11 +9,11 @@ body.ttrss_main {
 		outline: none;
 	}
 
-	div.post {
-		padding : 0px;
+	.post {
+		padding : 0;
 		font-size : 13px;
 
-		div.header {
+		.header {
 			padding : 5px;
 			color : #909090;
 			border: 0px solid @border-default;
@@ -273,7 +273,7 @@ body.ttrss_main {
 		span.author {
 			white-space : nowrap;
 			color : @default-text;
-			font-size : 11px;
+			font-size : @font-size-small;
 			font-weight : normal;
 		}
 
@@ -285,7 +285,7 @@ body.ttrss_main {
 			border-radius : 4px;
 			display : inline-block;
 			padding : 1px 4px;
-			font-size : 11px;
+			font-size : @font-size-small;
 			font-style : italic;
 			font-weight : normal;
 			color : @default-text;
@@ -298,7 +298,7 @@ body.ttrss_main {
 		span.updated {
 			color : @default-text;
 			text-align : right;
-			font-size : 11px;
+			font-size : @font-size-small;
 			padding-left : 10px;
 		}
 
@@ -413,7 +413,7 @@ body.ttrss_main {
 		display : inline-block;
 		vertical-align: middle;
 		background-color : #fff7d5;
-		font-size : 9px;
+		font-size : @font-size-tiny;
 		color : @default-fg;
 		font-weight : normal;
 		margin-left : 2px;
@@ -499,7 +499,7 @@ body.ttrss_main {
 		margin-left : 1px;
 		text-align : center;
 		padding : 1em 1em 0px 1em;
-		font-size : 11px;
+		font-size : @font-size-small;
 		border: 0px solid @border-default;
 		border-bottom-width: 1px;
 	}
@@ -600,7 +600,7 @@ body.ttrss_main {
 		position : absolute;
 		left : 5px;
 		bottom : 5px;
-		font-size : 11px;
+		font-size : @font-size-small;
 		color : @default-text;
 		font-weight : bold;
 		background-color : @default-bg;
@@ -622,14 +622,15 @@ body.ttrss_main {
 		textarea {
 			width : 99%;
 			height : 200px;
-			font-size : 11px;
+			font-size : @font-size-small;
 		}
 	}
 
+	#headlines-wrap-inner,
 	#content-wrap {
-		padding : 0px;
-		border-width : 0px;
-		margin : 0px;
+		padding : 0;
+		border : 0;
+		margin : 0;
 	}
 
 	#feeds-holder {
@@ -660,7 +661,7 @@ body.ttrss_main {
 			.counterNode {
 				font-weight : bold;
 				display : none;
-				font-size : 9px;
+				font-size : @font-size-tiny;
 				text-align : center;
 				border : 1px solid lighten(@color-accent, 5%);;
 				color : white;
@@ -745,17 +746,78 @@ body.ttrss_main {
 		}
 	}
 
-	#headlines-wrap-inner {
-		padding : 0px;
-		margin : 0px;
-		border-width : 0px;
+	#headlines-frame:not([data-headlines-count="0"])[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] {
+		display : grid;
+		grid-template-columns: repeat(auto-fit, minmax(@cdm-grid-col-width, 1fr));
+		padding : @cdm-grid-padding;
+		grid-gap : @cdm-grid-padding;
+		background-color: @color-panel-bg;
+
+		> * {
+			// 2 = because #headlines-spacer is the actual last child
+			//     only if odd to deal with 1) single article and 2) not break any previous rows
+			// 1 = spacer
+			//
+			// this is outside of .cdm selector because of #headlines-spacer etc
+			&:nth-last-child(2):nth-child(odd),
+			&:nth-last-child(1) {
+				grid-column : 1 e("/") -1;
+			}
+		}
+
+		.cdm.expanded {
+
+			.header, .content {
+				background : @default-bg;
+				border : 1px solid @border-default;
+				overflow : hidden;
+			}
+
+			.content {
+				border-top-width : 0;
+				padding : 0 4px 4px 4px;
+			}
+
+			.header[data-is-stuck] {
+				top : -@cdm-grid-padding;
+				border-bottom-width: 1px;
+			}
+
+			.header {
+				border-bottom-width : 0;
+				padding : 4px;
+
+				.icon-grid-span {
+					display : inline;
+				}
+
+				.feed {
+					display : none;
+				}
+			}
+
+			.footer {
+				border : 0;
+				padding : 4px;
+
+				.left, .right {
+					white-space: nowrap;
+				}
+
+				.left {
+					overflow: hidden;
+					text-overflow: ellipsis;
+				}
+			}
+
+			.content-inner,
+			.intermediate {
+				word-break: break-all;
+			}
+		}
 	}
 
-	#headlines-frame[data-is-vfeed="false"] .header .feed {
-		display : none;
-	}
-
-	#headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] {
+	/*#headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] {
 		display : grid;
 		grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
 		background-color: @color-panel-bg;
@@ -819,38 +881,68 @@ body.ttrss_main {
 				word-break: break-all;
 			}
 		}
-	}
+	}*/
 
 	#headlines-frame {
-		padding : 0px;
-		border: 0px @border-default;
-		margin-top : 0px;
+		padding : 0;
+		border: 0;
+		margin-top : 0;
+
 		-webkit-overflow-scrolling : touch;
 		-webkit-transform: translateZ(0);
+		transform: translateZ(0);
 		-webkit-backface-visibility: hidden;
+		backface-visibility: hidden;
 
-		div.feed-title {
+		&[data-is-vfeed="false"] .header .feed {
+			display : none;
+		}
+
+		&[data-auto-catchup="true"] #headlines-spacer {
+			height : 100vh;
+		}
+
+		#headlines-spacer {
+			margin-left : 1px;
+			text-align : center;
+			color : @default-text;
+			font-size : @font-size-small;
+			font-style : italic;
+
+			a, span {
+				color : @default-text;
+				padding : 10px;
+				display : block;
+			}
+
+			a:hover {
+				color : @color-accent;
+			}
+		}
+
+		.feed-title {
 			border: 0px solid @color-link;
 			border-bottom-width: 1px;
 			padding: 5px 8px;
-		}
 
-		div.feed-title a.title {
-			color: @default-text;
-			font-weight: bold;
-		}
+			a.title {
+				color: @default-text;
+				font-weight: bold;
+			}
 
-		div.feed-title a {
-			color: @default-text;
-		}
+			a {
+				color: @default-text;
+			}
 
-		div.feed-title a:hover {
-			color: @color-link;
+			a:hover {
+				color: @color-link;
+			}
 		}
 
 		span.hlMenuAttach {
 			-webkit-touch-callout: none;
 			-webkit-user-select: none;
+			user-select: none;
 		}
 	}
 
@@ -859,15 +951,15 @@ body.ttrss_main {
 	}
 
 	#toolbar-frame {
-		padding : 0px;
-		margin : 0px;
-		border-width : 0px;
+		padding : 0;
+		margin : 0;
+		border : 0;
 		white-space: nowrap;
-		font-size : 12px;
+		font-size : @font-size-toolbar;
 
 		#toolbar {
 			background : white;
-			border: 0px solid @border-default;
+			border: 0 solid @border-default;
 			border-bottom-width: 1px;
 			padding-left : 4px;
 			height : 32px;
@@ -875,7 +967,7 @@ body.ttrss_main {
 			flex-direction : row;
 			flex-wrap : nowrap;
 			color : @default-text;
-			font-size : 12px;
+			font-size : @font-size-toolbar;
 			align-items : center;
 
 			.dijitSelect,
@@ -898,7 +990,7 @@ body.ttrss_main {
 			}
 
 			#toolbar-headlines {
-				font-size : 12px;
+				font-size : @font-size-toolbar;
 				background: transparent;
 				padding-right : 4px;
 				flex-grow : 2;
@@ -941,7 +1033,7 @@ body.ttrss_main {
 	}
 
 	#header {
-		border-width : 0px;
+		border : 0;
 		text-align : right;
 		color : @default-text;
 		padding : 5px 5px 0px 0px;
@@ -971,9 +1063,8 @@ body.ttrss_main {
 	}
 
 	#content-insert {
-		padding : 0px;
-		border-color : @border-default;
-		border-width : 0px;
+		padding : 0;
+		border : 0;
 		line-height: 1.5;
 		overflow : auto;
 		-webkit-overflow-scrolling : touch;
@@ -990,7 +1081,7 @@ body.ttrss_main {
 	.player {
 		display : inline-block;
 		color : @default-text;
-		font-size : 11px;
+		font-size : @font-size-small;
 		font-family : sans-serif;
 		border : 1px solid @default-text;
 		padding : 0px 4px 0px 4px;
@@ -1008,28 +1099,6 @@ body.ttrss_main {
 	.player:hover {
 		background : @color-panel-bg;
 		cursor : pointer;
-	}
-
-	#headlines-frame[data-auto-catchup="true"] #headlines-spacer {
-		height : 100vh;
-	}
-
-	#headlines-spacer {
-		margin-left : 1px;
-		text-align : center;
-		color : @default-text;
-		font-size : 11px;
-		font-style : italic;
-
-		a, span {
-			color : @default-text;
-			padding : 10px;
-			display : block;
-		}
-
-		a:hover {
-			color : @color-accent;
-		}
 	}
 
 	ul#filterDlg_Matches, ul#filterDlg_Actions {
@@ -1382,8 +1451,8 @@ body.ttrss_main, body.ttrss_utility {
 		color : @default-text;
 	}
 
-	.small {
-		font-size : 11px;
+	.text-small, .small {
+		font-size : @font-size-small;
 	}
 
 	div.autocomplete {

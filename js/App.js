@@ -1204,6 +1204,9 @@ const App = {
                Headlines.renderAgain();
             });
          };
+         this.hotkey_actions["article_span_grid"] = () => {
+            Article.cdmToggleGridSpan(Article.getActive());
+         };
       }
    },
    openPreferences: function(tab) {

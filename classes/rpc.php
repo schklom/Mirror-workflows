@@ -664,6 +664,7 @@ class RPC extends Handler_Protected {
 			"a e" => "toggle_full_text",
 			"e" => "email_article",
 			"a q" => "close_article",
+			"a s" => "article_span_grid",
 			"a a" => "select_all",
 			"a u" => "select_unread",
 			"a U" => "select_marked",

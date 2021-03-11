@@ -792,6 +792,10 @@ body.ttrss_main {
 				border-bottom-width : 0;
 				padding : 4px;
 
+				.icon-grid-span {
+					display : inline;
+				}
+
 				.feed {
 					display : none;
 				}
@@ -1220,9 +1224,14 @@ body.ttrss_main {
 		opacity : 0.5;
 	}*/
 
-	i.icon-score {
+	i.icon-score, i.icon-grid-span {
 		cursor : pointer;
 		color : @color-icon;
+	}
+
+	// only shown in grid mode
+	.icon-grid-span {
+		display : none;
 	}
 
 	.panel {

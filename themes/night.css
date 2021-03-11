@@ -681,6 +681,9 @@ body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"
   border-bottom-width: 0;
   padding: 4px;
 }
+body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded .header .icon-grid-span {
+  display: inline;
+}
 body.ttrss_main #headlines-frame[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] .cdm.expanded .header .feed {
   display: none;
 }
@@ -1032,9 +1035,13 @@ body.ttrss_main .score-high i.icon-score {
 body.ttrss_main .score-low i.icon-score {
   color: #500;
 }
-body.ttrss_main i.icon-score {
+body.ttrss_main i.icon-score,
+body.ttrss_main i.icon-grid-span {
   cursor: pointer;
   color: #999;
+}
+body.ttrss_main .icon-grid-span {
+  display: none;
 }
 body.ttrss_main .panel {
   border: 1px solid #222;

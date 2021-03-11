@@ -506,6 +506,7 @@ const Headlines = {
 							<span class="updated" title="${hl.imported}">${hl.updated}</span>
 
 							<div class="right">
+								<i class="material-icons icon-grid-span" title="${__("Span all columns")}" onclick="Article.cdmToggleGridSpan(${hl.id})">fullscreen</i>
 								<i class="material-icons icon-score" title="${hl.score}" onclick="Article.setScore(${hl.id}, this)">${Article.getScorePic(hl.score)}</i>
 
 								<span style="cursor : pointer" title="${App.escapeHtml(hl.feed_title)}" onclick="Feeds.open({feed:${hl.feed_id}})">

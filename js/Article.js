@@ -93,6 +93,19 @@ const Article = {
 		w.opener = null;
 		w.location = url;
 	},
+	cdmToggleGridSpan: function(id) {
+		const row = App.byId(`RROW-${id}`);
+
+		if (row) {
+
+			if (row.style.gridColumn != '1 / -1')
+				row.style.gridColumn = '1 / -1';
+			else
+				row.style.gridColumn = '';
+
+			this.cdmMoveToId(id);
+		}
+	},
 	cdmUnsetActive: function (event) {
 		const row = App.byId(`RROW-${Article.getActive()}`);
 
@@ -389,10 +402,12 @@ const Article = {
 		const ctr = App.byId("headlines-frame");
 		const row = App.byId(`RROW-${id}`);
 
-		if (!row || !ctr) return;
+		if (ctr && row) {
+			const grid_gap = parseInt(window.getComputedStyle(ctr).gridGap) || 0;
 
-		if (force_to_top || !App.Scrollable.fitsInContainer(row, ctr)) {
-			ctr.scrollTop = row.offsetTop;
+			if (force_to_top || !App.Scrollable.fitsInContainer(row, ctr)) {
+				ctr.scrollTop = row.offsetTop - grid_gap;
+			}
 		}
 	},
 	setActive: function (id) {

@@ -420,6 +420,8 @@
 
 		$check = "themes.local/$theme";
 		if (file_exists($check)) return $check;
+
+		return "";
 	}
 
 	function theme_exists($theme) {

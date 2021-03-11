@@ -27,9 +27,7 @@
 		}
 	} ?>
 
-	<?php if (theme_exists(Config::get(Config::LOCAL_OVERRIDE_STYLESHEET))) {
-		echo stylesheet_tag(get_theme_path(Config::get(Config::LOCAL_OVERRIDE_STYLESHEET)));
-	} ?>
+	<?= Config::get_override_links() ?>
 
 	<script type="text/javascript">
 		const __csrf_token = "<?= $_SESSION["csrf_token"]; ?>";

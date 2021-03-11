@@ -98,7 +98,10 @@ class Config {
 	// available options: sql (default, event log), syslog, stdout (for debugging)
 
 	const LOCAL_OVERRIDE_STYLESHEET = "LOCAL_OVERRIDE_STYLESHEET";
-	// link this stylesheet on all pages
+	// link this stylesheet on all pages (if it exists), should be placed in themes.local
+
+	const LOCAL_OVERRIDE_JS = "LOCAL_OVERRIDE_JS";
+	// same but this javascript file (you can use that for polyfills), should be placed in themes.local
 
 	const DAEMON_MAX_CHILD_RUNTIME = "DAEMON_MAX_CHILD_RUNTIME";
 	// in seconds, terminate update tasks that ran longer than this interval
@@ -193,6 +196,8 @@ class Config {
 		Config::PLUGINS => [ "auth_internal",							Config::T_STRING ],
 		Config::LOG_DESTINATION => [ Logger::LOG_DEST_SQL,			Config::T_STRING ],
 		Config::LOCAL_OVERRIDE_STYLESHEET => [ "local-overrides.css",
+																					Config::T_STRING ],
+		Config::LOCAL_OVERRIDE_JS => [ "local-overrides.js",
 																					Config::T_STRING ],
 		Config::DAEMON_MAX_CHILD_RUNTIME => [ 1800,					Config::T_INT ],
 		Config::DAEMON_MAX_JOBS => [ 2,									Config::T_INT ],
@@ -609,5 +614,15 @@ class Config {
 
 	private static function format_error($msg) {
 		return "<div class=\"alert alert-danger\">$msg</div>";
+	}
+
+	static function get_override_links() {
+		$rv = "";
+
+		$local_css = get_theme_path(self::get(self::LOCAL_OVERRIDE_STYLESHEET));
+		if ($local_css) $rv .= stylesheet_tag($local_css);
+
+		$local_js = get_theme_path(self::get(self::LOCAL_OVERRIDE_JS));
+		if ($local_js) $rv .= javascript_tag($local_js);
 	}
 }

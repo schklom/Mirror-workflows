@@ -638,9 +638,7 @@ class Handler_Public extends Handler {
 
 			} ?>
 
-			<?php if (theme_exists(Config::get(Config::LOCAL_OVERRIDE_STYLESHEET))) {
-				echo stylesheet_tag(get_theme_path(Config::get(Config::LOCAL_OVERRIDE_STYLESHEET)));
-			} ?>
+			<?= Config::get_override_links() ?>
 
 			<style type="text/css">
 				@media (prefers-color-scheme: dark) {

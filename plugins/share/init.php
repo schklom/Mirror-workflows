@@ -189,17 +189,18 @@ class Share extends Plugin {
 				<body class='flat ttrss_utility ttrss_zoom css_loading'>
 					<div class='container'>
 
-					<?php if (!empty($line["link"])) { ?>
-						<h1>
-							<a target='_blank' rel='noopener noreferrer'
-								href="<?= htmlspecialchars($line["link"]) ?>"><?= htmlspecialchars($line["title"]) ?></a>
-						</h1>
-					<?php } else { ?>
-						<h1><?= $line["title"] ?></h1>
-					<?php } ?>
-
 					<div class='content post'>
 						<div class='header'>
+							<div class='row'>
+								<?php if (!empty($line["link"])) { ?>
+									<h1>
+										<a rel='noopener noreferrer'
+											href="<?= htmlspecialchars($line["link"]) ?>"><?= htmlspecialchars($line["title"]) ?></a>
+									</h1>
+								<?php } else { ?>
+									<h1><?= $line["title"] ?></h1>
+								<?php } ?>
+							</div>
 							<div class='row'>
 								<div><?= $line['author'] ?></div>
 								<div><?= $parsed_updated ?></div>

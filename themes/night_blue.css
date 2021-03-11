@@ -1977,8 +1977,8 @@ body.ttrss_zoom div.post .attachments {
   display: none;
 }
 body.ttrss_zoom div.post div.header {
-  padding-bottom: 10px;
-  border: 0px solid #222;
+  padding-bottom: 8px;
+  border: 0 solid #222;
   border-bottom-width: 1px;
   background: #333;
   font-size: 13px;
@@ -1991,11 +1991,16 @@ body.ttrss_zoom div.post div.header .row {
   align-items: center;
   justify-content: space-between;
 }
+body.ttrss_zoom div.post div.header .row h1 {
+  margin-top: 0;
+  margin-bottom: 8px;
+}
 body.ttrss_zoom div.post .content {
   font-size: 15px;
   line-height: 1.5;
   border-width: 0;
   padding: 0;
+  padding-top: 8px;
 }
 body.ttrss_zoom div.post .content img,
 body.ttrss_zoom div.post .content video {
@@ -2005,7 +2010,7 @@ body.ttrss_zoom div.post .content video {
 body.ttrss_zoom div.post .content blockquote {
   margin: 5px 0px 5px 0px;
   color: #ccc;
-  padding-left: 10px;
+  padding-left: 8px;
   border: 0px solid #222;
   border-left-width: 4px;
 }
@@ -2015,8 +2020,7 @@ body.ttrss_zoom div.post .content code {
   font-size: 12px;
 }
 body.ttrss_zoom div.post .content pre {
-  margin: 5px 0px 5px 0px;
-  padding: 10px;
+  padding: 8px;
   color: #ccc;
   font-family: monospace;
   font-size: 12px;

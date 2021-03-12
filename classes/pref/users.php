@@ -117,7 +117,7 @@ class Pref_Users extends Handler_Administrative {
 				$user->login = mb_strtolower($login);
 				$user->access_level = (int) clean($_REQUEST["access_level"]);
 				$user->email = clean($_REQUEST["email"]);
-				$user->otp_enabled = checkbox_to_sql_bool($_REQUEST["otp_enabled"]);
+				$user->otp_enabled = checkbox_to_sql_bool($_REQUEST["otp_enabled"] ?? "");
 
 				// force new OTP secret when next enabled
 				if (Config::get_schema_version() >= 143 && !$user->otp_enabled) {

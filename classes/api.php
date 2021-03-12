@@ -792,7 +792,7 @@ class API extends Handler {
 
 						list ($flavor_image, $flavor_stream, $flavor_kind) = Article::_get_image($enclosures,
 																												$line["content"], // unsanitized
-																												$line["site_url"],
+																												$line["site_url"] ?? "", // could be null if archived article
 																												$headline_row);
 
 						$headline_row["flavor_image"] = $flavor_image;

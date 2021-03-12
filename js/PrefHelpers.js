@@ -368,15 +368,16 @@ const	Helpers = {
 
 						// only user-enabled actually counts in the checkbox when saving because system plugin checkboxes are disabled (see below)
 						container.innerHTML += `
-							<li data-row-value="${App.escapeHtml(plugin.name)}" data-plugin-local="${plugin.is_local}" data-plugin-name="${App.escapeHtml(plugin.name)}" title="${plugin.is_system ? __("System plugins are enabled using global configuration.") : ""}">
+							<li data-row-value="${App.escapeHtml(plugin.name)}" data-plugin-local="${plugin.is_local}"
+								data-plugin-name="${App.escapeHtml(plugin.name)}" title="${plugin.is_system ? __("System plugins are enabled using global configuration.") : ""}">
 								<label class="checkbox ${plugin.is_system ? "system text-info" : ""}">
 									${App.FormFields.checkbox_tag("plugins[]", plugin.user_enabled || plugin.system_enabled, plugin.name,
 										{disabled: plugin.is_system})}</div>
 									<span class='name'>${plugin.name}:</span>
+									<span class="description ${plugin.is_system ? "text-info" : ""}">
+										${plugin.description}
+									</span>
 								</label>
-								<div class="description ${plugin.is_system ? "text-info" : ""}">
-									${plugin.description}
-								</div>
 								<div class='actions'>
 									${plugin.is_system ?
 										App.FormFields.button_tag(App.FormFields.icon("security"), "",

@@ -94,18 +94,6 @@ body.ttrss_prefs {
 		}
 	}
 
-	fieldset.plugin {
-		label.description {
-			width : 550px;
-			margin-right : 150px;
-			display : inline-block;
-
-			.dijitCheckBox {
-				margin-right : 10px;
-			}
-		}
-	}
-
 	table {
 		th {
 			text-align : left;
@@ -140,7 +128,6 @@ body.ttrss_prefs {
 			label.checkbox {
 				display : flex;
 				align-items : center;
-				min-width : 300px;
 				cursor : pointer;
 
 				&.system {
@@ -148,15 +135,17 @@ body.ttrss_prefs {
 				}
 
 				.name {
+					min-width : 300px;
 					flex-grow: 2;
 					display: inline-block;
 					text-align: right;
 					font-weight : bold;
+					margin-right : 20px;
 				}
 			}
 
 			@media (max-width: @breakpoint-lg) {
-				label.checkbox {
+				label.checkbox .name {
 					min-width : 200px ! important;
 				}
 

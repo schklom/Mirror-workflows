@@ -1526,14 +1526,6 @@ body.ttrss_prefs fieldset.prefs .help-text {
 body.ttrss_prefs fieldset.prefs .help-text-bottom {
   margin-top: 10px;
 }
-body.ttrss_prefs fieldset.plugin label.description {
-  width: 550px;
-  margin-right: 150px;
-  display: inline-block;
-}
-body.ttrss_prefs fieldset.plugin label.description .dijitCheckBox {
-  margin-right: 10px;
-}
 body.ttrss_prefs table th {
   text-align: left;
 }
@@ -1561,20 +1553,21 @@ body.ttrss_prefs ul.prefs-plugin-list li > * {
 body.ttrss_prefs ul.prefs-plugin-list li label.checkbox {
   display: flex;
   align-items: center;
-  min-width: 300px;
   cursor: pointer;
 }
 body.ttrss_prefs ul.prefs-plugin-list li label.checkbox.system {
   cursor: auto;
 }
 body.ttrss_prefs ul.prefs-plugin-list li label.checkbox .name {
+  min-width: 300px;
   flex-grow: 2;
   display: inline-block;
   text-align: right;
   font-weight: bold;
+  margin-right: 20px;
 }
 @media (max-width: 992px) {
-  body.ttrss_prefs ul.prefs-plugin-list li label.checkbox {
+  body.ttrss_prefs ul.prefs-plugin-list li label.checkbox .name {
     min-width: 200px ! important;
   }
   body.ttrss_prefs ul.prefs-plugin-list li .version {

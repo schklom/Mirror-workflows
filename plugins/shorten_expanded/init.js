@@ -14,7 +14,7 @@ Plugins.Shorten_Expanded = {
 		const content = row.querySelector(".content");
 		const content_inner = row.querySelector(".content-inner");
 
-		console.log('shorten_expanded', row.id, content.offsetHeight, 'vs', this.threshold * window.innerHeight);
+		//console.log('shorten_expanded', row.id, content.offsetHeight, 'vs', this.threshold * window.innerHeight);
 
 		if (content && content_inner && !row.hasAttribute('data-already-shortened') && content.offsetHeight >= this.threshold * window.innerHeight) {
 

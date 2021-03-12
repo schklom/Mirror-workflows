@@ -382,6 +382,9 @@ const Headlines = {
 					}
 				}
 			}
+
+			PluginHost.run(PluginHost.HOOK_HEADLINES_SCROLL_HANDLER);
+
 		} catch (e) {
 			console.warn("scrollHandler", e);
 		}

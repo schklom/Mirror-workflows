@@ -163,7 +163,7 @@ class Auth_Internal extends Auth_Base {
 						if (session_status() != PHP_SESSION_ACTIVE)
 							session_start();
 
-						$_SESSION["login_error_msg"] = "Too many authentication attempts, throttled.";
+						$_SESSION["login_error_msg"] = __("Too many authentication attempts, throttled.");
 
 						$user->last_auth_attempt = Db::NOW();
 						$user->save();

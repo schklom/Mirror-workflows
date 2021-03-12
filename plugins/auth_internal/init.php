@@ -150,6 +150,32 @@ class Auth_Internal extends Auth_Base {
 
 		if ($user) {
 
+			// don't throttle app passwords
+			if (!$service && get_schema_version() >= 145) {
+
+				if ($user->last_auth_attempt) {
+					$last_auth_attempt = strtotime($user->last_auth_attempt);
+
+					if ($last_auth_attempt && time() - $last_auth_attempt < Config::get(Config::AUTH_MIN_INTERVAL)) {
+						Logger::log(E_USER_NOTICE, "Too many authentication attempts for {$user->login}, throttled.");
+
+						// start an empty session to deliver login error message
+						if (session_status() != PHP_SESSION_ACTIVE)
+							session_start();
+
+						$_SESSION["login_error_msg"] = "Too many authentication attempts, throttled.";
+
+						$user->last_auth_attempt = Db::NOW();
+						$user->save();
+
+						return false;
+					}
+				}
+
+				$user->last_auth_attempt = Db::NOW();
+				$user->save();
+			}
+
 			$salt = $user['salt'] ?? "";
 			$login = $user['login'];
 			$pwd_hash = $user['pwd_hash'];

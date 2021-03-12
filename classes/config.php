@@ -167,6 +167,9 @@ class Config {
 	const ENABLE_PLUGIN_INSTALLER = "ENABLE_PLUGIN_INSTALLER";
 	// allow installing first party plugins using plugin installer in prefs
 
+	const AUTH_MIN_INTERVAL = "AUTH_MIN_INTERVAL";
+	// minimum amount of seconds required between authentication attempts
+
 	// default values for all of the above:
 	private const _DEFAULTS = [
 		Config::DB_TYPE => [ "pgsql", 									Config::T_STRING ],
@@ -220,6 +223,7 @@ class Config {
 		Config::SESSION_NAME => [ "ttrss_sid",							Config::T_STRING ],
 		Config::CHECK_FOR_PLUGIN_UPDATES => [ "true",				Config::T_BOOL ],
 		Config::ENABLE_PLUGIN_INSTALLER => [ "true",					Config::T_BOOL ],
+		Config::AUTH_MIN_INTERVAL => [ 5,								Config::T_INT ],
 	];
 
 	private static $instance;

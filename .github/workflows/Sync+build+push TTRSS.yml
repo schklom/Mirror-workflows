@@ -23,7 +23,7 @@ jobs:
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         run: |
-          echo "::set-output name=SETREMOTE::$(git ls-remote https://git.tt-rss.org/fox/tt-rss.git HEAD | awk '{ print $1 }')"
+          echo "::set-output name=SETREMOTE::$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose.git HEAD | awk '{ print $1 }')"
           echo "::set-output name=SETLOCAL::$(cat last_sync_with_original_repo_commit_id)"
   
   repo_sync:

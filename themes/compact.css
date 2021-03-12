@@ -602,9 +602,13 @@ body.ttrss_main #headlines-frame:not([data-headlines-count="0"])[data-is-cdm="tr
   /* 2 = because #headlines-spacer is the actual last child
 			     only if odd to deal with 1) single article and 2) not break any previous rows;
 				1 = spacer;
+
 				this is outside of .cdm selector because of #headlines-spacer etc
+
+				.grid-span-row is manually expanded RROWs
 			*/
 }
+body.ttrss_main #headlines-frame:not([data-headlines-count="0"])[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] > *.grid-span-row,
 body.ttrss_main #headlines-frame:not([data-headlines-count="0"])[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] > *:nth-last-child(2):nth-child(odd),
 body.ttrss_main #headlines-frame:not([data-headlines-count="0"])[data-is-cdm="true"][data-is-cdm-expanded="true"][data-enable-grid="true"] > *:nth-last-child(1) {
   grid-column: 1 / -1;

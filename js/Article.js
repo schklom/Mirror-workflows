@@ -97,11 +97,7 @@ const Article = {
 		const row = App.byId(`RROW-${id}`);
 
 		if (row) {
-
-			if (row.style.gridColumn != '1 / -1')
-				row.style.gridColumn = '1 / -1';
-			else
-				row.style.gridColumn = '';
+			row.toggleClassName('grid-span-row');
 
 			this.setActive(id);
 			this.cdmMoveToId(id);

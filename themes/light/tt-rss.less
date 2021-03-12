@@ -692,8 +692,12 @@ body.ttrss_main {
 			/* 2 = because #headlines-spacer is the actual last child
 			     only if odd to deal with 1) single article and 2) not break any previous rows;
 				1 = spacer;
+
 				this is outside of .cdm selector because of #headlines-spacer etc
+
+				.grid-span-row is manually expanded RROWs
 			*/
+			&.grid-span-row,
 			&:nth-last-child(2):nth-child(odd),
 			&:nth-last-child(1) {
 				grid-column : 1 e("/") -1;

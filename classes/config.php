@@ -624,5 +624,7 @@ class Config {
 
 		$local_js = get_theme_path(self::get(self::LOCAL_OVERRIDE_JS));
 		if ($local_js) $rv .= javascript_tag($local_js);
+
+		return $rv;
 	}
 }

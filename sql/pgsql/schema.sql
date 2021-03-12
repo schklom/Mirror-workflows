@@ -52,6 +52,7 @@ create table ttrss_users (id serial not null primary key,
 	otp_enabled boolean not null default false,
 	otp_secret varchar(250) default null,
 	resetpass_token varchar(250) default null,
+	last_auth_attempt timestamp default null,
 	created timestamp default null);
 
 insert into ttrss_users (login,pwd_hash,access_level) values ('admin',

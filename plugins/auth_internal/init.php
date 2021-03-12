@@ -50,7 +50,7 @@ class Auth_Internal extends Auth_Base {
 						return false;
 					} */
 
-					if (UserHelper::check_otp($user_id, $otp))
+					if ($this->check_password($user_id, $password) && UserHelper::check_otp($user_id, $otp))
 						return $user_id;
 					else
 						return false;

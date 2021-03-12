@@ -17,17 +17,27 @@ const Headlines = {
 	sticky_header_observer: new IntersectionObserver(
 		(entries, observer) => {
 			entries.forEach((entry) => {
-				const header = entry.target.nextElementSibling;
+				const header = entry.target.closest('.cdm').querySelector(".header");
 
-				if (entry.intersectionRatio == 0) {
-					header.setAttribute("data-is-stuck", "true");
-
-				} else if (entry.intersectionRatio == 1) {
+				if (entry.isIntersecting) {
 					header.removeAttribute("data-is-stuck");
+				} else {
+					header.setAttribute("data-is-stuck", "true");
 				}
 
-				//console.log(entry.target, header, entry.intersectionRatio);
+				//console.log(entry.target, entry.intersectionRatio, entry.isIntersecting, entry.boundingClientRect.top);
+			});
+		},
+		{threshold: [0, 1], root: document.querySelector("#headlines-frame")}
+	),
+	sticky_content_observer: new IntersectionObserver(
+		(entries, observer) => {
+			entries.forEach((entry) => {
+				const header = entry.target.closest('.cdm').querySelector(".header");
 
+				header.style.position = entry.isIntersecting ? "sticky" : "unset";
+
+				//console.log(entry.target, entry.intersectionRatio, entry.isIntersecting, entry.boundingClientRect.top);
 			});
 		},
 		{threshold: [0, 1], root: document.querySelector("#headlines-frame")}
@@ -429,6 +439,10 @@ const Headlines = {
 			this.sticky_header_observer.observe(e)
 		});
 
+		App.findAll(".cdm .content").forEach((e) => {
+			this.sticky_content_observer.observe(e)
+		});
+
 		if (App.getInitParam("cdm_expanded"))
 			App.findAll("#headlines-frame > div[id*=RROW].cdm").forEach((e) => {
 				this.unpack_observer.observe(e)
@@ -812,6 +826,10 @@ const Headlines = {
 
 			App.findAll(".cdm .header-sticky-guard").forEach((e) => {
 				this.sticky_header_observer.observe(e)
+			});
+
+			App.findAll(".cdm .content").forEach((e) => {
+				this.sticky_content_observer.observe(e)
 			});
 
 			if (App.getInitParam("cdm_expanded"))

@@ -768,8 +768,13 @@ body.ttrss_main {
 		-webkit-backface-visibility: hidden;
 		backface-visibility: hidden;
 
-		&[data-is-vfeed="false"] .header .feed {
-			display : none;
+		&[data-is-vfeed="false"] {
+			.header,
+			.hl {
+				.feed, .icon-feed {
+					display : none;
+				}
+			}
 		}
 
 		&[data-auto-catchup="true"] #headlines-spacer {
@@ -1169,6 +1174,10 @@ body.ttrss_main {
 	// only shown in grid mode
 	.icon-grid-span {
 		display : none;
+	}
+
+	.icon-feed {
+		cursor : pointer;
 	}
 
 	.panel {

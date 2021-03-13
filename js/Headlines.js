@@ -524,7 +524,7 @@ const Headlines = {
 								<i class="material-icons icon-grid-span" title="${__("Span all columns")}" onclick="Article.cdmToggleGridSpan(${hl.id})">fullscreen</i>
 								<i class="material-icons icon-score" title="${hl.score}" onclick="Article.setScore(${hl.id}, this)">${Article.getScorePic(hl.score)}</i>
 
-								<span style="cursor : pointer" title="${App.escapeHtml(hl.feed_title)}" onclick="Feeds.open({feed:${hl.feed_id}})">
+								<span class="icon-feed" title="${App.escapeHtml(hl.feed_title)}" onclick="Feeds.open({feed:${hl.feed_id}})">
 									${Feeds.renderIcon(hl.feed_id, hl.has_icon)}
 								</span>
 							</div>
@@ -588,7 +588,7 @@ const Headlines = {
 			</div>
 			<div class="right">
 				<i class="material-icons icon-score" title="${hl.score}" onclick="Article.setScore(${hl.id}, this)">${Article.getScorePic(hl.score)}</i>
-				<span onclick="Feeds.open({feed:${hl.feed_id}})" style="cursor : pointer" title="${App.escapeHtml(hl.feed_title)}">${Feeds.renderIcon(hl.feed_id, hl.has_icon)}</span>
+				<span onclick="Feeds.open({feed:${hl.feed_id}})" class="icon-feed" title="${App.escapeHtml(hl.feed_title)}">${Feeds.renderIcon(hl.feed_id, hl.has_icon)}</span>
 			</div>
 			</div>
 		`;

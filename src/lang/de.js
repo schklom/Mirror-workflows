@@ -21,6 +21,8 @@ if (!constants.language_dev) Object.assign(data, require("./en.js"))
 			Bibliogram erlaubt es Ihnen #[em nicht] anonym zu posten, zu liken, zu kommentieren, zu folgen oder private
 			Profile anzusehen.
 	`)
+	data.experiencing_problems_header = "Hast du Probleme mit Bibliogram?"
+	data.t_read_more_here = "Lies hier für mehr Informationen."
 	data.about_this_instance_header = "Über diese Instanz"
 	data.onion_site_available = "Onion Seite verfügbar"
 	data.t_settings = "Einstellungen"

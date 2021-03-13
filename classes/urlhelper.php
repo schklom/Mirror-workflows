@@ -271,10 +271,15 @@ class UrlHelper {
 
 				// holy shit closures in php
 				// download & upload are *expected* sizes respectively, could be zero
-				curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, function($curl_handle, $download_size, $downloaded, $upload_size, $uploaded) use( &$max_size) {
-					Debug::log("[curl progressfunction] $downloaded $max_size", Debug::$LOG_EXTENDED);
+				curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, function($curl_handle, $download_size, $downloaded, $upload_size, $uploaded) use(&$max_size, $url) {
+					//Debug::log("[curl progressfunction] $downloaded $max_size", Debug::$LOG_EXTENDED);
 
-					return ($downloaded > $max_size) ? 1 : 0; // if max size is set, abort when exceeding it
+					if ($downloaded > $max_size) {
+						Debug::log("curl: reached max size of $max_size bytes requesting $url, aborting.", Debug::LOG_VERBOSE);
+						return 1;
+					}
+
+					return 0;
 				});
 
 			}

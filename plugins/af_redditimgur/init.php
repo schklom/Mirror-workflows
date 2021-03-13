@@ -132,7 +132,7 @@ class Af_RedditImgur extends Plugin {
 				if (!empty($media["s"]["u"])) {
 					$media_url = htmlspecialchars_decode($media["s"]["u"]);
 
-					Debug::log("found media_metadata (gallery): $media_url", Debug::$LOG_VERBOSE);
+					Debug::log("found media_metadata (gallery): $media_url", Debug::LOG_VERBOSE);
 
 					if ($media_url) {
 						$this->handle_as_image($doc, $anchor, $media_url);
@@ -153,7 +153,7 @@ class Af_RedditImgur extends Plugin {
 					else
 						$poster_url = "";
 
-					Debug::log("found stream fallback_url: $stream_url / poster $poster_url", Debug::$LOG_VERBOSE);
+					Debug::log("found stream fallback_url: $stream_url / poster $poster_url", Debug::LOG_VERBOSE);
 
 					$this->handle_as_video($doc, $anchor, $stream_url, $poster_url);
 				}
@@ -172,12 +172,12 @@ class Af_RedditImgur extends Plugin {
 			else
 				$poster_url = "";
 
-			Debug::log("found hosted video url: $media_url / poster $poster_url, looking up fallback url...", Debug::$LOG_VERBOSE);
+			Debug::log("found hosted video url: $media_url / poster $poster_url, looking up fallback url...", Debug::LOG_VERBOSE);
 
 			$fallback_url = $data["media"]["reddit_video"]["fallback_url"];
 
 			if ($fallback_url) {
-				Debug::log("found video fallback_url: $fallback_url", Debug::$LOG_VERBOSE);
+				Debug::log("found video fallback_url: $fallback_url", Debug::LOG_VERBOSE);
 				$this->handle_as_video($doc, $anchor, $fallback_url, $poster_url);
 
 				$found = 1;
@@ -192,7 +192,7 @@ class Af_RedditImgur extends Plugin {
 			else
 				$poster_url = "";
 
-			Debug::log("found video url: $media_url / poster $poster_url", Debug::$LOG_VERBOSE);
+			Debug::log("found video url: $media_url / poster $poster_url", Debug::LOG_VERBOSE);
 			$this->handle_as_video($doc, $anchor, $media_url, $poster_url);
 
 			$found = 1;
@@ -201,7 +201,7 @@ class Af_RedditImgur extends Plugin {
 		if (!$found && $post_hint == "image") {
 			$media_url = $data["url"];
 
-			Debug::log("found image url: $media_url", Debug::$LOG_VERBOSE);
+			Debug::log("found image url: $media_url", Debug::LOG_VERBOSE);
 			$this->handle_as_image($doc, $anchor, $media_url);
 
 			$found = 1;
@@ -215,12 +215,12 @@ class Af_RedditImgur extends Plugin {
 
 					if ($media_url) {
 						if ($post_hint == "self") {
-							Debug::log("found preview image url: $media_url (link: $target_url)", Debug::$LOG_VERBOSE);
+							Debug::log("found preview image url: $media_url (link: $target_url)", Debug::LOG_VERBOSE);
 							$this->handle_as_image($doc, $anchor, $media_url, $target_url);
 
 							$found = 1;
 						} else { // gonna use this later if nothing is found using generic link processing
-							Debug::log("found fallback preview image url: $media_url (link: $target_url);", Debug::$LOG_VERBOSE);
+							Debug::log("found fallback preview image url: $media_url (link: $target_url);", Debug::LOG_VERBOSE);
 							array_push($this->fallback_preview_urls, $media_url);
 						}
 					}
@@ -247,12 +247,12 @@ class Af_RedditImgur extends Plugin {
 		$link_flairs = [];
 		$apply_nsfw_tags = FeedItem_Common::normalize_categories($this->host->get_array($this, "apply_nsfw_tags", []));
 
-		// embed before reddit <table> post layout
+		// embed anchor element, before reddit <table> post layout
 		$anchor = $xpath->query('//body/*')->item(0);
 
 		// deal with json-provided media content first
 		if ($article["link"] && $anchor) {
-			Debug::log("JSON: requesting from URL: " . $article["link"] . "/.json", Debug::$LOG_VERBOSE);
+			Debug::log("JSON: requesting from URL: " . $article["link"] . "/.json", Debug::LOG_VERBOSE);
 
 			$tmp = UrlHelper::fetch($article["link"] . "/.json");
 
@@ -263,7 +263,7 @@ class Af_RedditImgur extends Plugin {
 				$json = json_decode($tmp, true);
 
 				if ($json) {
-					Debug::log("JSON: processing media elements...", Debug::$LOG_EXTENDED);
+					Debug::log("JSON: processing media elements...", Debug::LOG_EXTENDED);
 
 					if ($this->dump_json_data) print_r($json);
 
@@ -281,12 +281,12 @@ class Af_RedditImgur extends Plugin {
 							}
 
 							if ($over_18) {
-								Debug::log("JSON: post is NSFW", Debug::$LOG_EXTENDED);
+								Debug::log("JSON: post is NSFW", Debug::LOG_EXTENDED);
 								$post_is_nsfw = true;
 							}
 
 							if (isset($data["crosspost_parent_list"])) {
-								Debug::log("JSON: processing child crosspost_parent_list", Debug::$LOG_EXTENDED);
+								Debug::log("JSON: processing child crosspost_parent_list", Debug::LOG_EXTENDED);
 
 								foreach ($data["crosspost_parent_list"] as $parent) {
 									if ($this->process_post_media($parent, $doc, $xpath, $anchor)) {
@@ -297,7 +297,7 @@ class Af_RedditImgur extends Plugin {
 								}
 							}
 
-							Debug::log("JSON: processing child data element...", Debug::$LOG_EXTENDED);
+							Debug::log("JSON: processing child data element...", Debug::LOG_EXTENDED);
 
 							if (!$found && $this->process_post_media($data, $doc, $xpath, $anchor)) {
 								$found = 1;
@@ -307,15 +307,15 @@ class Af_RedditImgur extends Plugin {
 						}
 					}
 				} else {
-					Debug::log("JSON: failed to parse received data.", Debug::$LOG_EXTENDED);
+					Debug::log("JSON: failed to parse received data.", Debug::LOG_EXTENDED);
 				}
 			} else {
 				if (!$tmp) {
-					Debug::log("JSON: failed to fetch post:" . UrlHelper::$fetch_last_error, Debug::$LOG_EXTENDED);
+					Debug::log("JSON: failed to fetch post:" . UrlHelper::$fetch_last_error, Debug::LOG_EXTENDED);
 				}
 			}
 		} else if (!$anchor) {
-			Debug::log("JSON: anchor element not found, unable to embed", Debug::$LOG_EXTENDED);
+			Debug::log("JSON: anchor element not found, unable to embed", Debug::LOG_EXTENDED);
 		}
 
 		if ($post_is_nsfw && count($apply_nsfw_tags) > 0) {
@@ -332,7 +332,7 @@ class Af_RedditImgur extends Plugin {
 			$article["score_modifier"] = ($article["score_modifier"] ?? 0) + ($score > $max_score ? $max_score : $score);
 
 		if ($found) {
-			Debug::log("JSON: found media data, skipping further processing of content", Debug::$LOG_VERBOSE);
+			Debug::log("JSON: found media data, skipping further processing of content", Debug::LOG_VERBOSE);
 			$this->remove_post_thumbnail($doc, $xpath);
 			return true;
 		}
@@ -346,14 +346,14 @@ class Af_RedditImgur extends Plugin {
 
 			/* skip links going back to reddit (and any other blacklisted stuff) */
 			if (!$found && $this->is_blacklisted($entry_href, ["reddit.com"])) {
-				Debug::log("BODY: domain of $entry_href is blacklisted, skipping", Debug::$LOG_EXTENDED);
+				Debug::log("BODY: domain of $entry_href is blacklisted, skipping", Debug::LOG_EXTENDED);
 				continue;
 			}
 
-			Debug::log("BODY: processing URL: " . $entry_href, Debug::$LOG_VERBOSE);
+			Debug::log("BODY: processing URL: " . $entry_href, Debug::LOG_VERBOSE);
 
 			if (!$found && preg_match("/^https?:\/\/twitter.com\/(.*?)\/status\/(.*)/", $entry_href, $matches)) {
-				Debug::log("handling as twitter: " . $matches[1] . " " . $matches[2], Debug::$LOG_VERBOSE);
+				Debug::log("handling as twitter: " . $matches[1] . " " . $matches[2], Debug::LOG_VERBOSE);
 
 				$oembed_result = UrlHelper::fetch("https://publish.twitter.com/oembed?url=" . urlencode($entry_href));
 
@@ -385,7 +385,7 @@ class Af_RedditImgur extends Plugin {
 
 			if (!$found && preg_match("/https?:\/\/(www\.)?gfycat.com\/([a-z]+)$/i", $entry_href, $matches)) {
 
-				Debug::log("Handling as Gfycat", Debug::$LOG_VERBOSE);
+				Debug::log("Handling as Gfycat", Debug::LOG_VERBOSE);
 
 				$source_stream = 'https://giant.gfycat.com/' . $matches[2] . '.mp4';
 				$poster_url = 'https://thumbs.gfycat.com/' . $matches[2] . '-mobile.jpg';
@@ -400,14 +400,14 @@ class Af_RedditImgur extends Plugin {
 
 			// imgur .gif -> .gifv
 			if (!$found && preg_match("/i\.imgur\.com\/(.*?)\.gif$/i", $entry_href)) {
-				Debug::log("Handling as imgur gif (->gifv)", Debug::$LOG_VERBOSE);
+				Debug::log("Handling as imgur gif (->gifv)", Debug::LOG_VERBOSE);
 
 				$entry->setAttribute("href",
 					str_replace(".gif", ".gifv", $entry_href));
 			}
 
 			if (!$found && preg_match("/\.(gifv|mp4)$/i", $entry_href)) {
-				Debug::log("Handling as imgur gifv", Debug::$LOG_VERBOSE);
+				Debug::log("Handling as imgur gifv", Debug::LOG_VERBOSE);
 
 				$source_stream = str_replace(".gifv", ".mp4", $entry_href);
 
@@ -430,7 +430,7 @@ class Af_RedditImgur extends Plugin {
 
 				$vid_id = $matches[1];
 
-				Debug::log("Handling as youtube: $vid_id", Debug::$LOG_VERBOSE);
+				Debug::log("Handling as youtube: $vid_id", Debug::LOG_VERBOSE);
 
 				$iframe = $doc->createElement("iframe");
 				$iframe->setAttribute("class", "youtube-player");
@@ -441,9 +441,15 @@ class Af_RedditImgur extends Plugin {
 				$iframe->setAttribute("allowfullscreen", "1");
 				$iframe->setAttribute("frameborder", "0");
 
-				$br = $doc->createElement('br');
-				$entry->parentNode->insertBefore($iframe, $entry);
-				$entry->parentNode->insertBefore($br, $entry);
+				//$br = $doc->createElement('br');
+				//$entry->parentNode->insertBefore($iframe, $entry);
+				//$entry->parentNode->insertBefore($br, $entry);
+
+				// reparent generated iframe because it doesn't scale well inside <td>
+				if ($anchor)
+					$anchor->parentNode->insertBefore($iframe, $anchor);
+				else
+					$entry->parentNode->insertBefore($iframe, $entry);
 
 				$found = true;
 			}
@@ -452,7 +458,7 @@ class Af_RedditImgur extends Plugin {
 				/* mb_strpos($entry_href, "i.reddituploads.com") !== false || */
 				mb_strpos($this->get_content_type($entry_href), "image/") !== false)) {
 
-				Debug::log("Handling as a picture", Debug::$LOG_VERBOSE);
+				Debug::log("Handling as a picture", Debug::LOG_VERBOSE);
 
 				$img = $doc->createElement('img');
 				$img->setAttribute("src", $entry_href);
@@ -467,7 +473,7 @@ class Af_RedditImgur extends Plugin {
 			// imgur via link rel="image_src" href="..."
 			if (!$found && preg_match("/imgur/", $entry_href)) {
 
-				Debug::log("handling as imgur page/whatever", Debug::$LOG_VERBOSE);
+				Debug::log("handling as imgur page/whatever", Debug::LOG_VERBOSE);
 
 				$content = UrlHelper::fetch(["url" => $entry_href,
 					"http_accept" => "text/*"]);
@@ -499,7 +505,7 @@ class Af_RedditImgur extends Plugin {
 			if (!$found && preg_match("/^https?:\/\/gyazo\.com\/([^\.\/]+$)/", $entry_href, $matches)) {
 				$img_id = $matches[1];
 
-				Debug::log("handling as gyazo: $img_id", Debug::$LOG_VERBOSE);
+				Debug::log("handling as gyazo: $img_id", Debug::LOG_VERBOSE);
 
 				$img = $doc->createElement('img');
 				$img->setAttribute("src", "https://i.gyazo.com/$img_id.jpg");
@@ -513,7 +519,7 @@ class Af_RedditImgur extends Plugin {
 
 			// let's try meta properties
 			if (!$found) {
-				Debug::log("looking for meta og:image", Debug::$LOG_VERBOSE);
+				Debug::log("looking for meta og:image", Debug::LOG_VERBOSE);
 
 				$content = UrlHelper::fetch(["url" => $entry_href,
 					"http_accept" => "text/*"]);
@@ -564,7 +570,7 @@ class Af_RedditImgur extends Plugin {
 		}
 
 		if (!$found && $anchor && count($this->fallback_preview_urls) > 0) {
-			Debug::log("JSON: processing fallback preview urls...", Debug::$LOG_VERBOSE);
+			Debug::log("JSON: processing fallback preview urls...", Debug::LOG_VERBOSE);
 
 			foreach ($this->fallback_preview_urls as $media_url) {
 				$this->handle_as_image($doc, $anchor, $media_url);
@@ -671,7 +677,7 @@ class Af_RedditImgur extends Plugin {
 
 	private function handle_as_video($doc, $entry, $source_stream, $poster_url = false) {
 
-		Debug::log("handle_as_video: $source_stream", Debug::$LOG_VERBOSE);
+		Debug::log("handle_as_video: $source_stream", Debug::LOG_VERBOSE);
 
 		$video = $doc->createElement('video');
 		$video->setAttribute("autoplay", "1");
@@ -705,10 +711,11 @@ class Af_RedditImgur extends Plugin {
 
 		$url = clean($_POST["url"] ?? "");
 		$article_url = clean($_POST["article_url"] ?? "");
+		$article_id = clean($_POST["article_id"] ?? "");
 
 		$this->dump_json_data = true;
 
-		if (!$url && !$article_url) {
+		if (!$url && !$article_url && !$article_id) {
 			header("Content-type: text/html");
 			?>
 			<style type="text/css">
@@ -720,11 +727,16 @@ class Af_RedditImgur extends Plugin {
 				<input type="hidden" name="method" value="testurl">
 				<input type="hidden" name="plugin" value="af_redditimgur">
 				<fieldset>
-					<label>URL:</label>
+					<label>Test URL:</label>
 					<input name="url" size="100" value="<?= htmlspecialchars($url) ?>"></input>
 				</fieldset>
+				<hr/>
 				<fieldset>
-					<label>Article URL:</label>
+					<label>Article ID:</label>
+					<input name="article_id" size="10" value="<?= htmlspecialchars($article_id) ?>"></input>
+				</fieldset>
+				<fieldset>
+					<label>or Article URL:</label>
 					<input name="article_url" size="100" value="<?= htmlspecialchars($article_url) ?>"></input>
 				</fieldset>
 				<fieldset>
@@ -738,30 +750,51 @@ class Af_RedditImgur extends Plugin {
 		header("Content-type: text/plain");
 
 		Debug::set_enabled(true);
-		Debug::set_loglevel(Debug::$LOG_EXTENDED);
+		Debug::set_loglevel(Debug::LOG_EXTENDED);
 
-		Debug::log("URL: $url", Debug::$LOG_VERBOSE);
+		if ($article_id) {
+			$stored_article = ORM::for_table('ttrss_entries')
+				->table_alias('e')
+				->join('ttrss_user_entries', [ 'ref_id', '=', 'e.id'], 'ue')
+					->where('ue.owner_uid', $_SESSION['uid'])
+					->find_one($article_id);
+
+			if (!$stored_article) {
+				Debug::log("Article not found: $article_id", Debug::LOG_VERBOSE);
+				return;
+			}
+
+			$article = [
+				"link" => $stored_article->link,
+				"content" => $stored_article->content,
+				"tags" => explode(",", $stored_article->tag_cache)
+			];
+
+		} else {
+			$article = [
+				"link" => $article_url,
+				"content" => "<html><body><table><tr><td><a href=\"$url\">[link]</a></td></tr></table></body>",
+				"tags" => []];
+		}
 
 		$doc = new DOMDocument();
-		@$doc->loadHTML("<html><body><table><tr><td><a href=\"$url\">[link]</a></td></tr></table></body>");
+		@$doc->loadHTML($article["content"]);
 		$xpath = new DOMXPath($doc);
-
-		$article = ["link" => $article_url, "tags" => []];
 
 		$found = $this->inline_stuff($article, $doc, $xpath);
 
-		Debug::log("Inline result: $found", Debug::$LOG_VERBOSE);
+		Debug::log("Inline result: $found", Debug::LOG_VERBOSE);
 
 		print_r($article);
 
 		if (!$found) {
-			Debug::log("Readability result:", Debug::$LOG_VERBOSE);
+			Debug::log("Readability result:", Debug::LOG_VERBOSE);
 
 			$article = $this->readability([], $url, $doc, $xpath);
 
 			print_r($article);
 		} else {
-			Debug::log("Resulting HTML:", Debug::$LOG_VERBOSE);
+			Debug::log("Resulting HTML:", Debug::LOG_VERBOSE);
 
 			print $doc->saveHTML();
 		}

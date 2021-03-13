@@ -31,7 +31,7 @@ services:
       - TTRSS_DB_NAME=abcd
       - TTRSS_DB_USER=abcd
       - TTRSS_DB_PASS=abcd
-      # don't change this line below if you want file-logging
+      # don't change this line below if you want filelogging
       - TTRSS_LOG_DESTINATION=
       # replace TTRSS_SELF_URL_PATH here with the url you will use to access ttrss
       - TTRSS_SELF_URL_PATH=http://192.168.0.1:8280/tt-rss/

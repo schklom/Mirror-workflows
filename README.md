@@ -1,7 +1,5 @@
-# Mirror-workflows
+# TTRSS image with file logging
 
-Each branch mirrors a repo (easier to build with Actions than having one repo for each repo I want to mirror).
-
-Actions synchronize the branches to repos, build Dockerfiles into images, and push these images to Docker Hub.
-
-The Actions are defined in the directory .github/workflows. Secrets are used for sensitive information.
+The original image doesn't record the errors to a file, but displays it in the container instead (to /dev/stderr).
+This image records the logs in `/var/log/error.log` instead, when the container `app` is run with the environment variable `- TTRSS_LOG_DESTINATION=` (set to empty).
+The `app` container will not have any error logs anymorewhen running `docker logs app`.

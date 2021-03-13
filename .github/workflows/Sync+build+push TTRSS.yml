@@ -121,8 +121,8 @@ jobs:
             schklom/ttrss-web-nginx:latest
 
   build_push_filelogging:
-    #needs: [build_push]
-    needs: [get_commits]
+    needs: [build_push]
+    #needs: [get_commits]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

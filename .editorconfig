@@ -4,3 +4,6 @@ insert_final_newline = true
 
 [*.php]
 indent_style = tab
+
+[*.js]
+indent_style = tab

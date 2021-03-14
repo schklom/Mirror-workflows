@@ -67,8 +67,8 @@ jobs:
       #    commit_message: Updated web Dockerfile to work with Raspberry Pi 4
 
   build_push:
-    #needs: [repo_sync]
-    needs: [get_commits]
+    needs: [repo_sync]
+    #needs: [get_commits]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

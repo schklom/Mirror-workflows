@@ -14,6 +14,9 @@ class Db
 		ORM::configure('username', Config::get(Config::DB_USER));
 		ORM::configure('password', Config::get(Config::DB_PASS));
 		ORM::configure('return_result_sets', true);
+		if (Config::get(Config::DB_TYPE) == "mysql" && Config::get(Config::MYSQL_CHARSET)) {
+			ORM::configure('driver_options', array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . Config::get(Config::MYSQL_CHARSET)));
+		}
 	}
 
 	static function NOW() {
@@ -27,8 +30,13 @@ class Db
 	public static function get_dsn() {
 		$db_port = Config::get(Config::DB_PORT) ? ';port=' . Config::get(Config::DB_PORT) : '';
 		$db_host = Config::get(Config::DB_HOST) ? ';host=' . Config::get(Config::DB_HOST) : '';
+		if (Config::get(Config::DB_TYPE) == "mysql" && Config::get(Config::MYSQL_CHARSET)) {
+			$db_charset = ';charset=' . Config::get(Config::MYSQL_CHARSET);
+		} else {
+			$db_charset = '';
+		}
 
-		return Config::get(Config::DB_TYPE) . ':dbname=' . Config::get(Config::DB_NAME) . $db_host . $db_port;
+		return Config::get(Config::DB_TYPE) . ':dbname=' . Config::get(Config::DB_NAME) . $db_host . $db_port . $db_charset;
 	}
 
 	// this really shouldn't be used unless a separate PDO connection is needed

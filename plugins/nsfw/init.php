@@ -36,10 +36,18 @@ class NSFW extends Plugin {
 		$article_tags = $article["tags"];
 
 		if (count(array_intersect($tags, $article_tags)) > 0) {
-			$article["content"] = "<details><summary>" . __("Not safe for work (click to toggle)") . "</summary>" . $article["content"] . "</details>";
+			$article["content"] = "<details class='nsfw'><summary>" . __("Not safe for work (click to toggle)") . "</summary>" . $article["content"] . "</details>";
 		}
 
 		return $article;
+	}
+
+	function get_css() {
+		return
+			'details.nsfw {
+				cursor : pointer;
+				user-select : none;
+			}';
 	}
 
 	function hook_render_article_api($row) {

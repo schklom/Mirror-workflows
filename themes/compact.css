@@ -511,7 +511,17 @@ body.ttrss_main #feeds-holder #feedTree {
   text-rendering: optimizelegibility;
   font-family: "Segoe UI", Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-body.ttrss_main #feeds-holder #feedTree .counterNode {
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .loadingExpando {
+  left: -3px;
+  height: 22px;
+  position: relative;
+  top: -3px;
+}
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow {
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .counterNode {
   font-weight: bold;
   display: none;
   font-size: 9px;
@@ -529,63 +539,54 @@ body.ttrss_main #feeds-holder #feedTree .counterNode {
   min-width: 23px;
   height: 14px;
 }
-body.ttrss_main #feeds-holder #feedTree .counterNode.aux,
-body.ttrss_main #feeds-holder #feedTree .counterNode.marked {
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .counterNode.aux,
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .counterNode.marked {
   background: #f5f5f5;
   color: #6f6f6f;
   border-color: #dcdcdc;
 }
-body.ttrss_main #feeds-holder #feedTree .counterNode.marked {
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .counterNode.marked {
   border-color: #257aa7;
   background: #ffffff;
 }
-body.ttrss_main #feeds-holder #feedTree .dijitTreeRow[data-feed-id="-3"][data-is-cat="false"] .counterNode.unread {
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow[data-feed-id="-3"][data-is-cat="false"] .counterNode.unread {
   background-color: #3ea447;
   border-color: #307f37;
 }
-body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .loadingExpando {
-  left: -3px;
-  height: 22px;
-  position: relative;
-  top: -3px;
-}
-body.ttrss_main #feeds-holder #feedTree .dijitTreeRow .dijitTreeLabel.Unread {
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .dijitTreeLabel.Unread {
   font-weight: bold;
 }
-body.ttrss_main #feeds-holder #feedTree .dijitTreeRow.Error .dijitTreeLabel {
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Error .dijitTreeLabel {
   color: red;
 }
-body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow {
-  border: 1px solid transparent;
-}
-body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRowSelected {
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.dijitTreeRowSelected {
   box-shadow: -1px 0px 2px -1px rgba(0, 0, 0, 0.1);
   border-color: #ddd transparent;
   background: white;
   color: #333;
 }
-body.ttrss_main #feeds-holder #feedTree .dijitIcon.feed-icon {
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .dijitIcon.feed-icon {
   margin-right: 2px;
 }
-body.ttrss_main #feeds-holder #feedTree i.icon.icon-inbox {
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow i.icon.icon-inbox {
   color: #555;
 }
-body.ttrss_main #feeds-holder #feedTree i.icon.icon-archive {
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow i.icon.icon-archive {
   color: #c77b2e;
 }
-body.ttrss_main #feeds-holder #feedTree i.icon.icon-star {
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow i.icon.icon-star {
   position: relative;
   color: #ffc069;
   font-size: 21px;
   left: -2px;
 }
-body.ttrss_main #feeds-holder #feedTree i.icon.icon-rss_feed {
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow i.icon.icon-rss_feed {
   color: #ff7c4b;
 }
-body.ttrss_main #feeds-holder #feedTree i.icon.icon-whatshot {
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow i.icon.icon-whatshot {
   color: #69C671;
 }
-body.ttrss_main #feeds-holder #feedTree i.icon.icon-restore {
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow i.icon.icon-restore {
   position: relative;
   top: -1px;
   font-weight: bold;

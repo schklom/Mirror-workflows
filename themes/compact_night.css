@@ -1632,9 +1632,11 @@ body.ttrss_prefs .event-log tr .errno {
 body.ttrss_prefs .event-log tr .errstr {
   word-break: break-all;
   white-space: pre-wrap;
+  width: 30%;
 }
 body.ttrss_prefs .event-log tr .filename {
   word-break: break-all;
+  width: 20%;
 }
 body.ttrss_prefs .event-log tr .filename,
 body.ttrss_prefs .event-log tr .login,

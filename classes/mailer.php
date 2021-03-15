@@ -4,7 +4,7 @@ class Mailer {
 
 	function mail($params) {
 
-		$to_name = $params["to_name"];
+		$to_name = $params["to_name"] ?? "";
 		$to_address = $params["to_address"];
 		$subject = $params["subject"];
 		$message = $params["message"];

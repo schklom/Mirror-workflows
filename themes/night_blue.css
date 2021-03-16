@@ -2107,6 +2107,9 @@ body.flat.ttrss_main #feeds-holder #feedTree .dijitTreeRow .dijitTreeRowSelected
 body.flat.ttrss_main #feeds-holder #feedTree .dijitTreeRow i.icon.icon-inbox {
   color: #999999;
 }
+body.flat.ttrss_main #feeds-holder #feedTree .dijitTreeRow .loadingNode {
+  filter: invert(1);
+}
 body.flat.ttrss_main #headlines-frame {
   /*.cdm.expanded {
 			background: @default-bg;

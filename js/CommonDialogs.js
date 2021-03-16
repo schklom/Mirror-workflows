@@ -33,7 +33,7 @@ const	CommonDialogs = {
 
 									<section>
 										<fieldset>
-											<div style='float : right'><img style='display : none' id='feed_add_spinner' src='images/indicator_white.gif'></div>
+											<div class='pull-right'><img style='display : none' id='feed_add_spinner' src='${App.getInitParam('icon_oval')}'></div>
 											<input style='font-size : 16px; width : 500px;'
 												placeHolder="${__("Feed or site URL")}"
 												dojoType='dijit.form.ValidationTextBox'

@@ -1376,6 +1376,10 @@ body.ttrss_utility hr {
 .cdm .feed-title a:hover {
   color: #b87d2c;
 }
+.cdm .content-inner .icon-unpack-pending {
+  width: 18px;
+  height: 18px;
+}
 .cdm .content-inner .embed-responsive {
   overflow: hidden;
   padding-bottom: 56.25%;

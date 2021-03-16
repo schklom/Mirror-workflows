@@ -283,7 +283,9 @@ const Article = {
 			row.setAttribute("data-content", row.getAttribute("data-content-original"));
 			row.removeAttribute("data-content-original");
 
-			row.querySelector(".content-inner").innerHTML = "&nbsp;";
+			row.querySelector(".content-inner").innerHTML = `<div class="text-center">
+				<img class="icon-unpack-pending" src="${App.getInitParam('icon_three_dots')}">
+			</div>`
 		}
 	},
 	view: function (id, no_expand) {

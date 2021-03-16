@@ -534,7 +534,9 @@ const Headlines = {
 						<div class="content" onclick="return Headlines.click(event, ${hl.id}, true);">
 							${Article.renderNote(hl.id, hl.note)}
 							<div class="content-inner" lang="${hl.lang ? hl.lang : 'en'}">
-								<img src="${App.getInitParam('icon_indicator_white')}">
+								<div class="text-center">
+									<img class="icon-unpack-pending" src="${App.getInitParam('icon_three_dots')}">
+								</div>
 							</div>
 							<div class="intermediate">
 								${Article.renderEnclosures(hl.enclosures)}

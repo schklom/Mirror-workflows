@@ -2305,3 +2305,6 @@ body.flat.ttrss_main #filterNewRuleDlg .dijitValidationTextAreaError {
 body.flat.ttrss_main #filterNewRuleDlg .dijitValidationTextArea:not(.dijitValidationTextAreaError) {
   background: #305030;
 }
+body.flat.ttrss_main .dijitDialog #feed_add_spinner {
+  filter: invert(1);
+}

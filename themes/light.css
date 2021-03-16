@@ -563,7 +563,7 @@ body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.dijitTreeRo
   box-shadow: -1px 0px 2px -1px rgba(0, 0, 0, 0.1);
   border-color: #ddd transparent;
   background: white;
-  color: #333;
+  color: #555;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .dijitIcon.feed-icon {
   margin-right: 2px;

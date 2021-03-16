@@ -65,28 +65,30 @@ body.flat.ttrss_main {
 		box-shadow : inset -1px 0px 2px -1px @border-light;
 
 		#feedTree {
-			.counterNode.aux, .counterNode.marked {
-				background: @color-panel-bg;
-				color: @default-text;
-				border-color: @default-bg;
-			}
+			.dijitTreeRow {
+				.counterNode.aux, .counterNode.marked {
+					background: @color-panel-bg;
+					color: @default-text;
+					border-color: @default-bg;
+				}
 
-			.counterNode.marked {
-				border-color : @color-accent-marked;
-			}
+				.counterNode.marked {
+					border-color : @color-accent-marked;
+				}
 
-			.dijitTreeRowSelected {
-				background : @default-bg;
-				border-color : @default-bg transparent;
-				color : @fg-light;
-			}
+				.dijitTreeRowSelected {
+					background : @default-bg;
+					border-color : @default-bg transparent;
+					color : @fg-light;
+				}
 
-			.dijitTreeRowSelected .dijitTreeLabel {
-				text-shadow : none;
-			}
+				.dijitTreeRowSelected .dijitTreeLabel {
+					text-shadow : none;
+				}
 
-			i.icon.icon-inbox {
-				color : darken(@default-text, 20%);
+				i.icon.icon-inbox {
+					color : darken(@default-text, 20%);
+				}
 			}
 		}
 	}

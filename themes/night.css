@@ -570,10 +570,10 @@ body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .dijitIcon.
   margin-right: 2px;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow i.icon.icon-inbox {
-  color: #555;
+  color: #ffffff;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow i.icon.icon-archive {
-  color: #c77b2e;
+  color: #cf7800;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow i.icon.icon-star {
   position: relative;
@@ -2070,24 +2070,24 @@ body.flat.ttrss_main #feeds-holder {
   background: #222;
   box-shadow: inset -1px 0px 2px -1px #666;
 }
-body.flat.ttrss_main #feeds-holder #feedTree .counterNode.aux,
-body.flat.ttrss_main #feeds-holder #feedTree .counterNode.marked {
+body.flat.ttrss_main #feeds-holder #feedTree .dijitTreeRow .counterNode.aux,
+body.flat.ttrss_main #feeds-holder #feedTree .dijitTreeRow .counterNode.marked {
   background: #222;
   color: #ccc;
   border-color: #333;
 }
-body.flat.ttrss_main #feeds-holder #feedTree .counterNode.marked {
+body.flat.ttrss_main #feeds-holder #feedTree .dijitTreeRow .counterNode.marked {
   border-color: #b87d2c;
 }
-body.flat.ttrss_main #feeds-holder #feedTree .dijitTreeRowSelected {
+body.flat.ttrss_main #feeds-holder #feedTree .dijitTreeRow .dijitTreeRowSelected {
   background: #333;
   border-color: #333 transparent;
   color: #e6e6e6;
 }
-body.flat.ttrss_main #feeds-holder #feedTree .dijitTreeRowSelected .dijitTreeLabel {
+body.flat.ttrss_main #feeds-holder #feedTree .dijitTreeRow .dijitTreeRowSelected .dijitTreeLabel {
   text-shadow: none;
 }
-body.flat.ttrss_main #feeds-holder #feedTree i.icon.icon-inbox {
+body.flat.ttrss_main #feeds-holder #feedTree .dijitTreeRow i.icon.icon-inbox {
   color: #999999;
 }
 body.flat.ttrss_main #headlines-frame {

@@ -352,7 +352,7 @@ class PluginHost {
 		$method = strtolower($method);
 
 		if ($this->is_system($sender)) {
-			if (!is_array($this->handlers[$handler])) {
+			if (!isset($this->handlers[$handler])) {
 				$this->handlers[$handler] = array();
 			}
 

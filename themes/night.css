@@ -512,15 +512,22 @@ body.ttrss_main #feeds-holder #feedTree {
   text-rendering: optimizelegibility;
   font-family: "Segoe UI", Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .loadingExpando {
-  left: -3px;
-  height: 22px;
-  position: relative;
-  top: -3px;
-}
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow {
   border: 1px solid transparent;
   cursor: pointer;
+}
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .loadingNode {
+  opacity: 0;
+}
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .loadingNode.visible {
+  opacity: 1;
+}
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Feed .loadingNode {
+  left: -3px;
+  height: 20px;
+  width: 20px;
+  position: relative;
+  top: -2px;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .counterNode {
   font-weight: bold;

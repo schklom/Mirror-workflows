@@ -584,16 +584,27 @@ body.ttrss_main {
 			font-family : @fonts-ui;
 
 			.dijitTreeNode {
-				.loadingExpando {
-					left : -3px;
-					height : 22px;
-					position : relative;
-					top : -3px;
-				}
-
 				.dijitTreeRow {
 					border : 1px solid transparent;
 					cursor : pointer;
+
+					.loadingNode {
+						opacity : 0;
+
+						&.visible {
+							opacity : 1;
+						}
+					}
+
+					&.Is_Feed {
+						.loadingNode {
+							left : -3px;
+							height : 20px;
+							width : 20px;
+							position : relative;
+							top : -2px;
+						}
+					}
 
 					.counterNode {
 						font-weight : bold;

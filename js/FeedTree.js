@@ -138,8 +138,13 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 				tnode.rowNode.setAttribute('data-feed-id', bare_id);
 				tnode.rowNode.setAttribute('data-is-cat', "true");
 
-				tnode.loadingNode = dojo.create('img', { className: 'loadingNode', src: 'images/blank_icon.gif'});
+				tnode.loadingNode = dojo.create('img', { className: 'loadingNode', src: 'images/indicator_tiny.gif'});
 				domConstruct.place(tnode.loadingNode, tnode.labelNode, 'after');
+			}
+
+			if (id.match("FEED:")) {
+				tnode.loadingNode = dojo.create('img', { className: 'loadingNode', src: 'images/indicator_white.gif'});
+				domConstruct.place(tnode.loadingNode, tnode.expandoNode, 'only');
 			}
 
 			if (id.match("CAT:") && bare_id == -1) {
@@ -200,6 +205,11 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 			let rc = "dijitTreeRow";
 
 			const is_cat = String(item.id).indexOf('CAT:') != -1;
+
+			if (is_cat)
+				rc += " Is_Cat";
+			else
+				rc += " Is_Feed";
 
 			if (!is_cat && item.error != '') rc += " Error";
 			if (item.unread > 0) rc += " Unread";
@@ -309,7 +319,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 				}, 0);
 			}
 		},
-		setFeedIcon: function(feed, is_cat, src) {
+		setIcon: function(feed, is_cat, src) {
 			let treeNode;
 
 			if (is_cat)
@@ -319,13 +329,19 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 
 			if (treeNode) {
 				treeNode = treeNode[0];
-				const icon = dojo.create('img', { src: src, className: 'icon' });
-				domConstruct.place(icon, treeNode.iconNode, 'only');
-				return true;
+
+				// could be <i material>
+				const icon = treeNode.iconNode.querySelector('img.icon');
+
+				if (icon) {
+					icon.src = src;
+
+					return true;
+				}
 			}
 			return false;
 		},
-		setFeedExpandoIcon: function(feed, is_cat, src) {
+		showLoading: function(feed, is_cat, show) {
 			let treeNode;
 
 			if (is_cat)
@@ -335,14 +351,13 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 
 			if (treeNode) {
 				treeNode = treeNode[0];
-				if (treeNode.loadingNode) {
-					treeNode.loadingNode.src = src;
-					return true;
-				} else {
-					const icon = dojo.create('img', { src: src, className: 'loadingExpando' });
-					domConstruct.place(icon, treeNode.expandoNode, 'only');
-					return true;
-				}
+
+				if (show)
+					treeNode.loadingNode.addClassName("visible");
+				else
+					treeNode.loadingNode.removeClassName("visible");
+
+				return true
 			}
 
 			return false;

@@ -399,21 +399,20 @@ const	Feeds = {
 			query.m = "ForceUpdate";
 		}
 
-		if (!delayed)
-			if (!this.setExpando(feed, is_cat,
-				(is_cat) ? 'images/indicator_tiny.gif' : 'images/indicator_white.gif'))
-				Notify.progress("Loading, please wait...", true);
-
 		query.cat = is_cat;
 
 		this.setActive(feed, is_cat);
 
 		window.clearTimeout(this._viewfeed_wait_timeout);
 		this._viewfeed_wait_timeout = window.setTimeout(() => {
+
+			this.showLoading(feed, is_cat, true);
+			//Notify.progress("Loading, please wait...", true);*/
+
 			xhr.json("backend.php", query, (reply) => {
 				try {
 					window.clearTimeout(this._infscroll_timeout);
-					this.setExpando(feed, is_cat, 'images/blank_icon.gif');
+					this.showLoading(feed, is_cat, false);
 					Headlines.onLoaded(reply, offset, append);
 					PluginHost.run(PluginHost.HOOK_FEED_LOADED, [feed, is_cat]);
 				} catch (e) {
@@ -574,12 +573,12 @@ const	Feeds = {
 	setIcon: function(feed, is_cat, src) {
 		const tree = dijit.byId("feedTree");
 
-		if (tree) return tree.setFeedIcon(feed, is_cat, src);
+		if (tree) return tree.setIcon(feed, is_cat, src);
 	},
-	setExpando: function(feed, is_cat, src) {
+	showLoading: function(feed, is_cat, show) {
 		const tree = dijit.byId("feedTree");
 
-		if (tree) return tree.setFeedExpandoIcon(feed, is_cat, src);
+		if (tree) return tree.showLoading(feed, is_cat, show);
 
 		return false;
 	},

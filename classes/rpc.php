@@ -472,6 +472,8 @@ class RPC extends Handler_Protected {
 		$params["widescreen"] = (int) get_pref(Prefs::WIDESCREEN_MODE);
 		$params['simple_update'] = Config::get(Config::SIMPLE_UPDATE_MODE);
 		$params["icon_indicator_white"] = $this->image_to_base64("images/indicator_white.gif");
+		$params["icon_oval"] = $this->image_to_base64("images/oval.svg");
+		$params["icon_three_dots"] = $this->image_to_base64("images/three-dots.svg");
 		$params["labels"] = Labels::get_all($_SESSION["uid"]);
 
 		return $params;
@@ -480,6 +482,8 @@ class RPC extends Handler_Protected {
 	private function image_to_base64($filename) {
 		if (file_exists($filename)) {
 			$ext = pathinfo($filename, PATHINFO_EXTENSION);
+
+			if ($ext == "svg") $ext = "svg+xml";
 
 			return "data:image/$ext;base64," . base64_encode((string)file_get_contents($filename));
 		} else {

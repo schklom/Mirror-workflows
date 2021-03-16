@@ -183,6 +183,11 @@ body.ttrss_main .notify.notify_progress {
   border-color: #d7c47a;
   background-color: #fff7d5;
 }
+body.ttrss_main .notify.notify_progress img {
+  width: 18px;
+  height: 18px;
+  filter: saturate(0);
+}
 body.ttrss_main .notify.notify_info {
   border-color: #257aa7;
   background-color: #d5ebf6;
@@ -524,10 +529,15 @@ body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .loadingNod
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Feed .loadingNode {
   left: -3px;
-  height: 20px;
-  width: 20px;
+  height: 14px;
+  width: 14px;
   position: relative;
-  top: -2px;
+  top: -1px;
+}
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Cat .loadingNode {
+  height: 11px;
+  width: 18px;
+  margin-left: 4px;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .counterNode {
   font-weight: bold;

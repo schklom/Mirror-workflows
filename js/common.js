@@ -432,7 +432,7 @@ const Notify = {
 				break;
 			case this.KIND_PROGRESS:
 				notify.addClassName("notify_progress");
-				icon = App.getInitParam("icon_indicator_white")
+				icon = App.getInitParam("icon_oval")
 				break;
 			default:
 				icon = "notifications";

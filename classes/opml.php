@@ -633,12 +633,6 @@ class OPML extends Handler_Protected {
 		print "$msg<br/>";
 	}
 
-	static function get_publish_url(){
-		return Config::get_self_url() .
-			"/public.php?op=publishOpml&key=" .
-			Feeds::_get_access_key('OPML:Publish', false, $_SESSION["uid"]);
-	}
-
 	function get_feed_category($feed_cat, $parent_cat_id = false) {
 
 		$parent_cat_id = (int) $parent_cat_id;

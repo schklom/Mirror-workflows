@@ -1012,17 +1012,6 @@ class Pref_Feeds extends Handler_Protected {
 			</label>
 		</form>
 
-		<hr/>
-
-		<h2><?= __("Published OPML") ?></h2>
-
-		<?= format_notice("Your OPML can be published and then subscribed by anyone who knows the URL below. This won't include your settings nor authenticated feeds.") ?>
-
-		<button dojoType='dijit.form.Button' class='alt-primary' onclick="return Helpers.OPML.publish()">
-			<?= \Controls\icon("share") ?>
-			<?= __('Display published OPML URL') ?>
-		</button>
-
 		<?php
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB_SECTION, "prefFeedsOPML");
 	}
@@ -1249,17 +1238,6 @@ class Pref_Feeds extends Handler_Protected {
 
 	function clearKeys() {
 		return Feeds::_clear_access_keys($_SESSION['uid']);
-	}
-
-	function getOPMLKey() {
-		print json_encode(["link" => OPML::get_publish_url()]);
-	}
-
-	function regenOPMLKey() {
-		Feeds::_update_access_key('OPML:Publish',
-			false, $_SESSION["uid"]);
-
-		print json_encode(["link" => OPML::get_publish_url()]);
 	}
 
 	function regenFeedKey() {

@@ -753,27 +753,6 @@ class Handler_Public extends Handler {
 		<?php
 	}
 
-	function publishOpml() {
-		$key = clean($_REQUEST["key"]);
-		$pdo = Db::pdo();
-
-		$sth = $pdo->prepare( "SELECT owner_uid
-				FROM ttrss_access_keys WHERE
-				access_key = ? AND feed_id = 'OPML:Publish'");
-		$sth->execute([$key]);
-
-		if ($row = $sth->fetch()) {
-			$owner_uid = $row['owner_uid'];
-
-			$opml = new OPML($_REQUEST);
-			$opml->opml_export("published.opml", $owner_uid, true, false);
-
-		} else {
-			header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
-			echo "File not found.";
-		}
-	}
-
 	function cached() {
 		list ($cache_dir, $filename) = explode("/", $_GET["file"], 2);
 

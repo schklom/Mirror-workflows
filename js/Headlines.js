@@ -351,8 +351,7 @@ const Headlines = {
 
 					// invoke lazy load if last article in buffer is nearly visible OR is active
 					if (Article.getActive() == last_row.getAttribute("data-article-id") || last_row.offsetTop - 250 <= container.scrollTop + container.offsetHeight) {
-						hsp.innerHTML = "<span class='loading'><img src='images/indicator_tiny.gif'> " +
-							__("Loading, please wait...") + "</span>";
+						hsp.innerHTML = `<span class='text-muted text-small text-center'><img class="icon-three-dots" src="${App.getInitParam('icon_three_dots')}"> ${__("Loading, please wait...")}</span>`;
 
 						Headlines.loadMore();
 						return;

@@ -131,9 +131,10 @@
 
 <div id="main" dojoType="dijit.layout.BorderContainer">
     <div id="feeds-holder" dojoType="dijit.layout.ContentPane" region="leading" style="width : 20%" splitter="true">
-        <div id="feedlistLoading">
-            <img src='images/indicator_tiny.gif'/>
-            <?= __("Loading, please wait..."); ?></div>
+        <div id="feedlistLoading" class="text-center text-muted text-small">
+			  	<img class="icon-three-dots" src="images/three-dots.svg?2">
+				<?= __("Loading, please wait..."); ?>
+			</div>
         <?php
 			 PluginHost::getInstance()->run_hooks_callback(PluginHost::HOOK_FEED_TREE, function ($result) {
 				 echo $result;

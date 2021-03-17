@@ -266,19 +266,19 @@ class Handler_Public extends Handler {
 		$rv = [];
 
 		if ($login) {
-			$sth = $this->pdo->prepare("SELECT ttrss_settings_profiles.* FROM ttrss_settings_profiles,ttrss_users
-			WHERE ttrss_users.id = ttrss_settings_profiles.owner_uid AND LOWER(login) = LOWER(?) ORDER BY title");
-			$sth->execute([$login]);
+			$profiles = ORM::for_table('ttrss_settings_profiles')
+				->table_alias('p')
+				->join('ttrss_users', ['p.owner_uid', '=', 'u.id'], 'u')
+				->where_raw('LOWER(u.login) = LOWER(?)', [$login])
+				->order_by_asc('title')
+				->find_many();
 
 			$rv = [ [ "value" => 0, "label" => __("Default profile") ] ];
 
-			while ($line = $sth->fetch()) {
-				$id = $line["id"];
-				$title = $line["title"];
-
-				array_push($rv, [ "label" => $title, "value" => $id ]);
+			foreach ($profiles as $profile) {
+				array_push($rv, [ "label" => $profile->title, "value" => $profile->id ]);
 			}
-	    }
+		}
 
 		print json_encode($rv);
 	}

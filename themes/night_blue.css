@@ -521,10 +521,10 @@ body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow {
   border: 1px solid transparent;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .loadingNode {
-  opacity: 0;
+  display: none;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .loadingNode.visible {
-  opacity: 1;
+  display: inline;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Feed .loadingNode {
   left: 2px;
@@ -1060,8 +1060,7 @@ body.ttrss_main .dijitDialog #feed_add_spinner {
   width: 18px;
   height: 18px;
 }
-body.ttrss_main .icon-three-dots,
-.cdm .content-inner .icon-unpack-pending {
+body.ttrss_main .icon-three-dots {
   width: 18px;
   height: 18px;
   vertical-align: middle;

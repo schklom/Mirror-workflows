@@ -533,8 +533,8 @@ const Headlines = {
 						<div class="content" onclick="return Headlines.click(event, ${hl.id}, true);">
 							${Article.renderNote(hl.id, hl.note)}
 							<div class="content-inner" lang="${hl.lang ? hl.lang : 'en'}">
-								<div class="text-center">
-									<img class="icon-unpack-pending" src="${App.getInitParam('icon_three_dots')}">
+								<div class="text-center text-muted">
+									${__("Loading, please wait...")}
 								</div>
 							</div>
 							<div class="intermediate">
@@ -749,6 +749,9 @@ const Headlines = {
 					hsp.id = "headlines-spacer";
 				}
 
+				// clear out hsp contents in case there's a power-hungry svg icon rotating there
+				hsp.innerHTML = "";
+
 				dijit.byId('headlines-frame').domNode.appendChild(hsp);
 
 				this.initHeadlinesMenu();
@@ -799,6 +802,9 @@ const Headlines = {
 					hsp = document.createElement("div");
 					hsp.id = "headlines-spacer";
 				}
+
+				// clear out hsp contents in case there's a power-hungry svg icon rotating there
+				hsp.innerHTML = "";
 
 				c.domNode.appendChild(hsp);
 

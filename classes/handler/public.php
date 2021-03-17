@@ -268,6 +268,7 @@ class Handler_Public extends Handler {
 		if ($login) {
 			$profiles = ORM::for_table('ttrss_settings_profiles')
 				->table_alias('p')
+				->select_many('title' , ['profile_id' => 'p.id'])
 				->join('ttrss_users', ['p.owner_uid', '=', 'u.id'], 'u')
 				->where_raw('LOWER(u.login) = LOWER(?)', [$login])
 				->order_by_asc('title')
@@ -276,7 +277,7 @@ class Handler_Public extends Handler {
 			$rv = [ [ "value" => 0, "label" => __("Default profile") ] ];
 
 			foreach ($profiles as $profile) {
-				array_push($rv, [ "label" => $profile->title, "value" => $profile->id ]);
+				array_push($rv, [ "label" => $profile->title, "value" => $profile->profile_id ]);
 			}
 		}
 
@@ -370,18 +371,13 @@ class Handler_Public extends Handler {
 				$_SESSION["safe_mode"] = $safe_mode;
 
 				if (!empty($_POST["profile"])) {
-
 					$profile = (int) clean($_POST["profile"]);
 
-					$sth = $this->pdo->prepare("SELECT id FROM ttrss_settings_profiles
-						WHERE id = ? AND owner_uid = ?");
-					$sth->execute([$profile, $_SESSION['uid']]);
+					$profile_obj = ORM::for_table('ttrss_settings_profiles')
+						->where(['id' => $profile, 'owner_uid' => $_SESSION['uid']])
+						->find_one();
 
-					if ($sth->fetch()) {
-						$_SESSION["profile"] = $profile;
- 					} else {
-						$_SESSION["profile"] = null;
-					}
+					$_SESSION["profile"] = $profile_obj ? $profile : null;
 				}
 			} else {
 

@@ -592,7 +592,6 @@ body.ttrss_main {
 			.dijitTreeNode {
 				.dijitTreeRow {
 					border : 1px solid transparent;
-					cursor : pointer;
 
 					.loadingNode {
 						opacity : 0;
@@ -656,8 +655,12 @@ body.ttrss_main {
 						border-color: darken(@color-checked, 25%);
 					}
 
-					.dijitTreeLabel.Unread {
-						font-weight : bold;
+					.dijitTreeLabel {
+						cursor : pointer;
+
+						&.Unread {
+							font-weight : bold;
+						}
 					}
 
 					&.Error .dijitTreeLabel {

@@ -519,7 +519,6 @@ body.ttrss_main #feeds-holder #feedTree {
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow {
   border: 1px solid transparent;
-  cursor: pointer;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .loadingNode {
   opacity: 0;
@@ -570,6 +569,9 @@ body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .counterNod
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow[data-feed-id="-3"][data-is-cat="false"] .counterNode.unread {
   background-color: #3ea447;
   border-color: #307f37;
+}
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .dijitTreeLabel {
+  cursor: pointer;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .dijitTreeLabel.Unread {
   font-weight: bold;

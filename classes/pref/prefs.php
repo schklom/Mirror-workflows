@@ -231,29 +231,29 @@ class Pref_Prefs extends Handler_Protected {
 		if ($user) {
 			$user->full_name = clean($_POST['full_name']);
 
-			if ($user->email != $new_email)
+			if ($user->email != $new_email) {
 				Logger::log(E_USER_NOTICE, "Email address of user ".$user->login." has been changed to ${new_email}.");
 
-			if ($user->email && $user->email != $new_email) {
+				if ($user->email) {
+					$mailer = new Mailer();
 
-				$mailer = new Mailer();
+					$tpl = new Templator();
 
-				$tpl = new Templator();
+					$tpl->readTemplateFromFile("mail_change_template.txt");
 
-				$tpl->readTemplateFromFile("mail_change_template.txt");
+					$tpl->setVariable('LOGIN', $user->login);
+					$tpl->setVariable('NEWMAIL', $new_email);
+					$tpl->setVariable('TTRSS_HOST', Config::get(Config::SELF_URL_PATH));
 
-				$tpl->setVariable('LOGIN', $user->login);
-				$tpl->setVariable('NEWMAIL', $new_email);
-				$tpl->setVariable('TTRSS_HOST', Config::get(Config::SELF_URL_PATH));
+					$tpl->addBlock('message');
 
-				$tpl->addBlock('message');
+					$tpl->generateOutputToString($message);
 
-				$tpl->generateOutputToString($message);
-
-				$mailer->mail(["to_name" => $user->login,
-					"to_address" => $user->email,
-					"subject" => "[tt-rss] Email address change notification",
-					"message" => $message]);
+					$mailer->mail(["to_name" => $user->login,
+						"to_address" => $user->email,
+						"subject" => "[tt-rss] Email address change notification",
+						"message" => $message]);
+				}
 
 				$user->email = $new_email;
 			}

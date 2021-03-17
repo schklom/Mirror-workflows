@@ -269,40 +269,33 @@ class RSSUtils {
 		return $nf;
 	}
 
-	/** this is used when subscribing; TODO: update to ORM */
-	static function update_basic_info(int $feed) {
+	/** this is used when subscribing */
+	static function update_basic_info(int $feed_id) {
+		$feed = ORM::for_table('ttrss_feeds')
+			->select_many('id', 'owner_uid', 'feed_url', 'auth_pass', 'auth_login', 'title', 'site_url')
+			->find_one($feed_id);
 
-		$pdo = Db::pdo();
-
-		$sth = $pdo->prepare("SELECT owner_uid,feed_url,auth_pass,auth_login
-				FROM ttrss_feeds WHERE id = ?");
-		$sth->execute([$feed]);
-
-		if ($row = $sth->fetch()) {
-
-			$owner_uid = $row["owner_uid"];
-			$auth_login = $row["auth_login"];
-			$auth_pass = $row["auth_pass"];
-			$fetch_url = $row["feed_url"];
-
+		if ($feed) {
 			$pluginhost = new PluginHost();
-			$user_plugins = get_pref(Prefs::_ENABLED_PLUGINS, $owner_uid);
+			$user_plugins = get_pref(Prefs::_ENABLED_PLUGINS, $feed->owner_uid);
 
 			$pluginhost->load(Config::get(Config::PLUGINS), PluginHost::KIND_ALL);
-			$pluginhost->load((string)$user_plugins, PluginHost::KIND_USER, $owner_uid);
+			$pluginhost->load((string)$user_plugins, PluginHost::KIND_USER, $feed->owner_uid);
 			//$pluginhost->load_data();
 
 			$basic_info = [];
 
 			$pluginhost->run_hooks_callback(PluginHost::HOOK_FEED_BASIC_INFO, function ($result) use (&$basic_info) {
 				$basic_info = $result;
-			}, $basic_info, $fetch_url, $owner_uid, $feed, $auth_login, $auth_pass);
+			}, $basic_info, $feed->feed_url, $feed->owner_uid, $feed_id, $feed->auth_login, $feed->auth_pass);
 
 			if (!$basic_info) {
-				$feed_data = UrlHelper::fetch($fetch_url, false,
-					$auth_login, $auth_pass, false,
-					Config::get(Config::FEED_FETCH_TIMEOUT),
-					0);
+				$feed_data = UrlHelper::fetch([
+					'url' => $feed->feed_url,
+					'login' => $feed->auth_login,
+					'pass' => $feed->auth_pass,
+					'timeout' => Config::get(Config::FEED_FETCH_TIMEOUT),
+				]);
 
 				$feed_data = trim($feed_data);
 
@@ -310,36 +303,23 @@ class RSSUtils {
 				$rss->init();
 
 				if (!$rss->error()) {
-					$basic_info = array(
+					$basic_info = [
 						'title' => mb_substr(clean($rss->get_title()), 0, 199),
-						'site_url' => mb_substr(rewrite_relative_url($fetch_url, clean($rss->get_link())), 0, 245)
-					);
+						'site_url' => mb_substr(UrlHelper::rewrite_relative($feed->feed_url, clean($rss->get_link())), 0, 245),
+					];
 				}
 			}
 
 			if ($basic_info && is_array($basic_info)) {
-				$sth = $pdo->prepare("SELECT title, site_url FROM ttrss_feeds WHERE id = ?");
-				$sth->execute([$feed]);
-
-				if ($row = $sth->fetch()) {
-
-					$registered_title = $row["title"];
-					$orig_site_url = $row["site_url"];
-
-					if ($basic_info['title'] && (!$registered_title || $registered_title == "[Unknown]")) {
-
-						$sth = $pdo->prepare("UPDATE ttrss_feeds SET
-							title = ? WHERE id = ?");
-						$sth->execute([$basic_info['title'], $feed]);
-					}
-
-					if ($basic_info['site_url'] && $orig_site_url != $basic_info['site_url']) {
-						$sth = $pdo->prepare("UPDATE ttrss_feeds SET
-							site_url = ? WHERE id = ?");
-						$sth->execute([$basic_info['site_url'], $feed]);
-					}
-
+				if (!empty($basic_info['title']) && (!$feed->title || $feed->title == '[Unknown]')) {
+					$feed->title = $basic_info['title'];
 				}
+
+				if (!empty($basic_info['site_url']) && $feed->site_url != $basic_info['site_url']) {
+					$feed->site_url = $basic_info['site_url'];
+				}
+
+				$feed->save();
 			}
 		}
 	}

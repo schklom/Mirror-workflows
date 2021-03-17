@@ -312,23 +312,20 @@ class Handler_Public extends Handler {
 			UserHelper::authenticate("admin", null);
 		}
 
-		$owner_id = false;
-
 		if ($key) {
-			$sth = $this->pdo->prepare("SELECT owner_uid FROM
-				ttrss_access_keys WHERE access_key = ? AND feed_id = ?");
-			$sth->execute([$key, $feed]);
+			$access_key = ORM::for_table('ttrss_access_keys')
+				->select('owner_uid')
+				->where(['access_key' => $key, 'feed_id' => $feed])
+				->find_one();
 
-			if ($row = $sth->fetch())
-				$owner_id = $row["owner_uid"];
+			if ($access_key) {
+				$this->generate_syndicated_feed($access_key->owner_uid, $feed, $is_cat, $limit,
+					$offset, $search, $view_mode, $format, $order, $orig_guid, $start_ts);
+				return;
+			}
 		}
 
-		if ($owner_id) {
-			$this->generate_syndicated_feed($owner_id, $feed, $is_cat, $limit,
-				$offset, $search, $view_mode, $format, $order, $orig_guid, $start_ts);
-		} else {
-			header('HTTP/1.1 403 Forbidden');
-		}
+		header('HTTP/1.1 403 Forbidden');
 	}
 
 	function updateTask() {

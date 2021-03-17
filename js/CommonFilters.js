@@ -38,16 +38,19 @@ const	Filters = {
 
 									console.log("got results:" + result.length);
 
-									App.byId("prefFilterProgressMsg").innerHTML = __("Looking for articles (%d processed, %f found)...")
-										.replace("%f", test_dialog.results)
-										.replace("%d", offset);
+									const loading_message = test_dialog.domNode.querySelector(".loading-message");
+									const results_list = test_dialog.domNode.querySelector(".filter-results-list");
+
+									loading_message.innerHTML = __("Looking for articles (%d processed, %f found)...")
+											.replace("%f", test_dialog.results)
+											.replace("%d", offset);
 
 									console.log(offset + " " + test_dialog.max_offset);
 
 									for (let i = 0; i < result.length; i++) {
-										const tmp = dojo.create("table", { innerHTML: result[i]});
+										const tmp = dojo.create("div", { innerHTML: result[i]});
 
-										App.byId("prefFilterTestResultList").innerHTML += tmp.innerHTML;
+										results_list.innerHTML += tmp.innerHTML;
 									}
 
 									if (test_dialog.results < 30 && offset < test_dialog.max_offset) {
@@ -60,14 +63,15 @@ const	Filters = {
 									} else {
 										// all done
 
-										Element.hide("prefFilterLoadingIndicator");
+										test_dialog.domNode.querySelector(".loading-indicator").hide();
 
 										if (test_dialog.results == 0) {
-											App.byId("prefFilterTestResultList").innerHTML = `<tr><td align='center'>
-												${__('No recent articles matching this filter have been found.')}</td></tr>`;
-											App.byId("prefFilterProgressMsg").innerHTML = "Articles matching this filter:";
+											results_list.innerHTML = `<li class="text-center text-muted">
+												${__('No recent articles matching this filter have been found.')}</li>`;
+
+											loading_message.innerHTML = __("Articles matching this filter:");
 										} else {
-											App.byId("prefFilterProgressMsg").innerHTML = __("Found %d articles matching this filter:")
+											loading_message.innerHTML = __("Found %d articles matching this filter:")
 												.replace("%d", test_dialog.results);
 										}
 
@@ -75,7 +79,7 @@ const	Filters = {
 
 								} else if (!result) {
 									console.log("getTestResults: can't parse results object");
-									Element.hide("prefFilterLoadingIndicator");
+									test_dialog.domNode.querySelector(".loading-indicator").hide();
 									Notify.error("Error while trying to get filter test results.");
 								} else {
 									console.log("getTestResults: dialog closed, bailing out.");
@@ -86,12 +90,12 @@ const	Filters = {
 						});
 					},
 					content: `
-						<div>
-							<img id='prefFilterLoadingIndicator' src='images/indicator_tiny.gif'>&nbsp;
-							<span id='prefFilterProgressMsg'>Looking for articles...</span>
+						<div class="text-muted">
+							<img class="loading-indicator icon-three-dots" src="${App.getInitParam("icon_three_dots")}">
+							<span class="loading-message">${__("Looking for articles...")}</span>
 						</div>
 
-						<ul class='panel panel-scrollable list list-unstyled' id='prefFilterTestResultList'></ul>
+						<ul class='panel panel-scrollable list list-unstyled filter-results-list'></ul>
 
 						<footer class='text-center'>
 							<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>${__('Close this window')}</button>

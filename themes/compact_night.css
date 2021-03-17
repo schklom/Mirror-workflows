@@ -1045,14 +1045,23 @@ body.ttrss_main .text-right {
 body.ttrss_main .text-left {
   text-align: left;
 }
-body.ttrss_main #prefFilterTestResultList .preview {
+body.ttrss_main .dijitDialog .filter-results-list .preview {
   margin: 8px;
 }
-body.ttrss_main #prefFilterTestResultList .title {
+body.ttrss_main .dijitDialog .filter-results-list .title {
   font-weight: bold;
 }
-body.ttrss_main #prefFilterTestResultList .feed {
-  color: #b87d2c;
+body.ttrss_main .dijitDialog #feed_add_spinner {
+  position: relative;
+  top: 5px;
+  width: 18px;
+  height: 18px;
+}
+body.ttrss_main .icon-three-dots,
+.cdm .content-inner .icon-unpack-pending {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
 }
 body.ttrss_main,
 body.ttrss_utility {
@@ -1185,17 +1194,6 @@ body.ttrss_main hr,
 body.ttrss_utility hr {
   border: 0px solid #ccc;
   border-bottom-width: 1px;
-}
-.dijitDialog #feed_add_spinner {
-  position: relative;
-  top: 5px;
-  width: 18px;
-  height: 18px;
-}
-.icon-three-dots {
-  width: 18px;
-  height: 18px;
-  vertical-align: middle;
 }
 ::selection {
   background: #b87d2c;
@@ -1384,11 +1382,6 @@ body.ttrss_utility hr {
 }
 .cdm .feed-title a:hover {
   color: #b87d2c;
-}
-.cdm .content-inner .icon-unpack-pending {
-  width: 18px;
-  height: 18px;
-  vertical-align: middle;
 }
 .cdm .content-inner .embed-responsive {
   overflow: hidden;

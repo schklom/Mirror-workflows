@@ -1251,20 +1251,30 @@ body.ttrss_main {
 		text-align : left;
 	}
 
-	#prefFilterTestResultList {
-		.preview {
-			margin : 8px;
+	.dijitDialog {
+		.filter-results-list {
+			.preview {
+				margin : 8px;
+			}
+
+			.title {
+				font-weight: bold;
+			}
 		}
 
-		.title {
-			font-weight: bold;
-		}
-
-		.feed {
-			color : @color-accent;
+		#feed_add_spinner {
+			position : relative;
+			top : 5px;
+			width : 18px;
+			height : 18px;
 		}
 	}
 
+	.icon-three-dots {
+		width : 18px;
+		height : 18px;
+		vertical-align : middle;
+	}
 }
 
 body.ttrss_main, body.ttrss_utility {
@@ -1392,21 +1402,6 @@ body.ttrss_main, body.ttrss_utility {
 			cursor : pointer;
 		}
 	}*/
-}
-
-.dijitDialog {
-	#feed_add_spinner {
-		position : relative;
-		top : 5px;
-		width : 18px;
-		height : 18px;
-	}
-}
-
-.icon-three-dots {
-	width : 18px;
-	height : 18px;
-	vertical-align : middle;
 }
 
 ::selection {

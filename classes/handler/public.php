@@ -408,7 +408,7 @@ class Handler_Public extends Handler {
 		startup_gettext();
 		session_start();
 
-		@$hash = clean($_REQUEST["hash"]);
+		$hash = clean($_REQUEST["hash"] ?? '');
 
 		header('Content-Type: text/html; charset=utf-8');
 		?>
@@ -441,7 +441,7 @@ class Handler_Public extends Handler {
 		print "<h1>".__("Password recovery")."</h1>";
 		print "<div class='content'>";
 
-		@$method = clean($_POST['method']);
+		$method = clean($_POST['method'] ?? '');
 
 		if ($hash) {
 			$login = clean($_REQUEST["login"]);

@@ -268,16 +268,16 @@ class Handler_Public extends Handler {
 		if ($login) {
 			$profiles = ORM::for_table('ttrss_settings_profiles')
 				->table_alias('p')
-				->select_many('title' , ['profile_id' => 'p.id'])
-				->join('ttrss_users', ['p.owner_uid', '=', 'u.id'], 'u')
-				->where_raw('LOWER(u.login) = LOWER(?)', [$login])
+				->select_many('title' , 'p.id')
+				->join('ttrss_users', ['owner_uid', '=', 'u.id'], 'u')
+				->where_raw('LOWER(login) = LOWER(?)', [$login])
 				->order_by_asc('title')
 				->find_many();
 
 			$rv = [ [ "value" => 0, "label" => __("Default profile") ] ];
 
 			foreach ($profiles as $profile) {
-				array_push($rv, [ "label" => $profile->title, "value" => $profile->profile_id ]);
+				array_push($rv, [ "label" => $profile->title, "value" => $profile->id ]);
 			}
 		}
 

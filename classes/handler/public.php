@@ -266,19 +266,20 @@ class Handler_Public extends Handler {
 		$rv = [];
 
 		if ($login) {
-			$sth = $this->pdo->prepare("SELECT ttrss_settings_profiles.* FROM ttrss_settings_profiles,ttrss_users
-			WHERE ttrss_users.id = ttrss_settings_profiles.owner_uid AND LOWER(login) = LOWER(?) ORDER BY title");
-			$sth->execute([$login]);
+			$profiles = ORM::for_table('ttrss_settings_profiles')
+				->table_alias('p')
+				->select_many('title' , 'p.id')
+				->join('ttrss_users', ['owner_uid', '=', 'u.id'], 'u')
+				->where_raw('LOWER(login) = LOWER(?)', [$login])
+				->order_by_asc('title')
+				->find_many();
 
 			$rv = [ [ "value" => 0, "label" => __("Default profile") ] ];
 
-			while ($line = $sth->fetch()) {
-				$id = $line["id"];
-				$title = $line["title"];
-
-				array_push($rv, [ "label" => $title, "value" => $id ]);
+			foreach ($profiles as $profile) {
+				array_push($rv, [ "label" => $profile->title, "value" => $profile->id ]);
 			}
-	    }
+		}
 
 		print json_encode($rv);
 	}
@@ -312,23 +313,20 @@ class Handler_Public extends Handler {
 			UserHelper::authenticate("admin", null);
 		}
 
-		$owner_id = false;
-
 		if ($key) {
-			$sth = $this->pdo->prepare("SELECT owner_uid FROM
-				ttrss_access_keys WHERE access_key = ? AND feed_id = ?");
-			$sth->execute([$key, $feed]);
+			$access_key = ORM::for_table('ttrss_access_keys')
+				->select('owner_uid')
+				->where(['access_key' => $key, 'feed_id' => $feed])
+				->find_one();
 
-			if ($row = $sth->fetch())
-				$owner_id = $row["owner_uid"];
+			if ($access_key) {
+				$this->generate_syndicated_feed($access_key->owner_uid, $feed, $is_cat, $limit,
+					$offset, $search, $view_mode, $format, $order, $orig_guid, $start_ts);
+				return;
+			}
 		}
 
-		if ($owner_id) {
-			$this->generate_syndicated_feed($owner_id, $feed, $is_cat, $limit,
-				$offset, $search, $view_mode, $format, $order, $orig_guid, $start_ts);
-		} else {
-			header('HTTP/1.1 403 Forbidden');
-		}
+		header('HTTP/1.1 403 Forbidden');
 	}
 
 	function updateTask() {
@@ -373,18 +371,13 @@ class Handler_Public extends Handler {
 				$_SESSION["safe_mode"] = $safe_mode;
 
 				if (!empty($_POST["profile"])) {
-
 					$profile = (int) clean($_POST["profile"]);
 
-					$sth = $this->pdo->prepare("SELECT id FROM ttrss_settings_profiles
-						WHERE id = ? AND owner_uid = ?");
-					$sth->execute([$profile, $_SESSION['uid']]);
+					$profile_obj = ORM::for_table('ttrss_settings_profiles')
+						->where(['id' => $profile, 'owner_uid' => $_SESSION['uid']])
+						->find_one();
 
-					if ($sth->fetch()) {
-						$_SESSION["profile"] = $profile;
- 					} else {
-						$_SESSION["profile"] = null;
-					}
+					$_SESSION["profile"] = $profile_obj ? $profile : null;
 				}
 			} else {
 
@@ -415,7 +408,7 @@ class Handler_Public extends Handler {
 		startup_gettext();
 		session_start();
 
-		@$hash = clean($_REQUEST["hash"]);
+		$hash = clean($_REQUEST["hash"] ?? '');
 
 		header('Content-Type: text/html; charset=utf-8');
 		?>
@@ -448,30 +441,27 @@ class Handler_Public extends Handler {
 		print "<h1>".__("Password recovery")."</h1>";
 		print "<div class='content'>";
 
-		@$method = clean($_POST['method']);
+		$method = clean($_POST['method'] ?? '');
 
 		if ($hash) {
 			$login = clean($_REQUEST["login"]);
 
 			if ($login) {
-				$sth = $this->pdo->prepare("SELECT id, resetpass_token FROM ttrss_users
-					WHERE LOWER(login) = LOWER(?)");
-				$sth->execute([$login]);
+				$user = ORM::for_table('ttrss_users')
+					->select('id', 'resetpass_token')
+					->where_raw('LOWER(login) = LOWER(?)', [$login])
+					->find_one();
 
-				if ($row = $sth->fetch()) {
-					$id = $row["id"];
-					$resetpass_token_full = $row["resetpass_token"];
-					list($timestamp, $resetpass_token) = explode(":", $resetpass_token_full);
+				if ($user) {
+					list($timestamp, $resetpass_token) = explode(":", $user->resetpass_token);
 
 					if ($timestamp && $resetpass_token &&
 						$timestamp >= time() - 15*60*60 &&
 						$resetpass_token === $hash) {
+							$user->resetpass_token = null;
+							$user->save();
 
-							$sth = $this->pdo->prepare("UPDATE ttrss_users SET resetpass_token = NULL
-								WHERE id = ?");
-							$sth->execute([$id]);
-
-							UserHelper::reset_password($id, true);
+							UserHelper::reset_password($user->id, true);
 
 							print "<p>"."Completed."."</p>";
 
@@ -520,7 +510,6 @@ class Handler_Public extends Handler {
 
 				</form>";
 		} else if ($method == 'do') {
-
 			$login = clean($_POST["login"]);
 			$email = clean($_POST["email"]);
 			$test = clean($_POST["test"]);
@@ -532,64 +521,51 @@ class Handler_Public extends Handler {
 					<input type='hidden' name='op' value='forgotpass'>
 					<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>".__("Go back")."</button>
 					</form>";
-
 			} else {
-
 				// prevent submitting this form multiple times
 				$_SESSION["pwdreset:testvalue1"] = rand(1, 1000);
 				$_SESSION["pwdreset:testvalue2"] = rand(1, 1000);
 
-				$sth = $this->pdo->prepare("SELECT id FROM ttrss_users
-					WHERE LOWER(login) = LOWER(?) AND email = ?");
-				$sth->execute([$login, $email]);
+				$user = ORM::for_table('ttrss_users')
+					->select('id')
+					->where_raw('LOWER(login) = LOWER(?)', [$login])
+					->where('email', $email)
+					->find_one();
 
-				if ($row = $sth->fetch()) {
+				if ($user) {
 					print_notice("Password reset instructions are being sent to your email address.");
 
-					$id = $row["id"];
+					$resetpass_token = sha1(get_random_bytes(128));
+					$resetpass_link = get_self_url_prefix() . "/public.php?op=forgotpass&hash=" . $resetpass_token .
+						"&login=" . urlencode($login);
 
-					if ($id) {
-						$resetpass_token = sha1(get_random_bytes(128));
-						$resetpass_link = get_self_url_prefix() . "/public.php?op=forgotpass&hash=" . $resetpass_token .
-							"&login=" . urlencode($login);
+					$tpl = new Templator();
 
-						$tpl = new Templator();
+					$tpl->readTemplateFromFile("resetpass_link_template.txt");
 
-						$tpl->readTemplateFromFile("resetpass_link_template.txt");
+					$tpl->setVariable('LOGIN', $login);
+					$tpl->setVariable('RESETPASS_LINK', $resetpass_link);
+					$tpl->setVariable('TTRSS_HOST', Config::get(Config::SELF_URL_PATH));
 
-						$tpl->setVariable('LOGIN', $login);
-						$tpl->setVariable('RESETPASS_LINK', $resetpass_link);
-						$tpl->setVariable('TTRSS_HOST', Config::get(Config::SELF_URL_PATH));
+					$tpl->addBlock('message');
 
-						$tpl->addBlock('message');
+					$message = "";
 
-						$message = "";
+					$tpl->generateOutputToString($message);
 
-						$tpl->generateOutputToString($message);
+					$mailer = new Mailer();
 
-						$mailer = new Mailer();
+					$rc = $mailer->mail(["to_name" => $login,
+						"to_address" => $email,
+						"subject" => __("[tt-rss] Password reset request"),
+						"message" => $message]);
 
-						$rc = $mailer->mail(["to_name" => $login,
-							"to_address" => $email,
-							"subject" => __("[tt-rss] Password reset request"),
-							"message" => $message]);
+					if (!$rc) print_error($mailer->error());
 
-						if (!$rc) print_error($mailer->error());
-
-						$resetpass_token_full = time() . ":" . $resetpass_token;
-
-						$sth = $this->pdo->prepare("UPDATE ttrss_users
-							SET resetpass_token = ?
-							WHERE LOWER(login) = LOWER(?) AND email = ?");
-
-						$sth->execute([$resetpass_token_full, $login, $email]);
-
-					} else {
-						print_error("User ID not found.");
-					}
+					$user->resetpass_token = time() . ":" . $resetpass_token;
+					$user->save();
 
 					print "<a href='index.php'>".__("Return to Tiny Tiny RSS")."</a>";
-
 				} else {
 					print_error(__("Sorry, login and email combination not found."));
 
@@ -597,17 +573,14 @@ class Handler_Public extends Handler {
 						<input type='hidden' name='op' value='forgotpass'>
 						<button dojoType='dijit.form.Button' type='submit'>".__("Go back")."</button>
 						</form>";
-
 				}
 			}
-
 		}
 
 		print "</div>";
 		print "</div>";
 		print "</body>";
 		print "</html>";
-
 	}
 
 	function dbupdate() {

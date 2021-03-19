@@ -584,10 +584,10 @@ const	Feeds = {
 	},
 	getNextUnread: function(feed, is_cat) {
 		const tree = dijit.byId("feedTree");
-		const nuf = tree.model.getNextUnreadFeed(feed, is_cat);
 
-		if (nuf)
-			return tree.model.store.getValue(nuf, 'bare_id');
+		if (tree) return tree.getNextUnread(feed, is_cat);
+
+		return false;
 	},
 	search: function() {
 		xhr.json("backend.php",

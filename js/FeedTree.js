@@ -381,7 +381,10 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 
 			}
 		},
-		getNextFeed: function (feed, is_cat) {
+		getNextUnread: function(feed, is_cat) {
+			return this.getNextFeed(feed, is_cat, true);
+		},
+		getNextFeed: function (feed, is_cat, unread_only = false) {
 			let treeItem;
 
 			if (is_cat) {
@@ -399,8 +402,9 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 					for (let j = i+1; j < items.length; j++) {
 						const id = String(items[j].id);
 						const box = this._itemNodesMap[id];
+						const unread = parseInt(items[j].unread);
 
-						if (box) {
+						if (box && (!unread_only || unread > 0)) {
 							const row = box[0].rowNode;
 							const cat = box[0].rowNode.parentNode.parentNode;
 

@@ -132,49 +132,48 @@ class API extends Handler {
 
 		// TODO do not return empty categories, return Uncategorized and standard virtual cats
 
-		if ($enable_nested)
-			$nested_qpart = "parent_cat IS NULL";
-		else
-			$nested_qpart = "true";
+		$categories = ORM::for_table('ttrss_feed_categories')
+			->select_many('id', 'title', 'order_id')
+			->select_many_expr([
+				'num_feeds' => '(SELECT COUNT(id) FROM ttrss_feeds WHERE ttrss_feed_categories.id IS NOT NULL AND cat_id = ttrss_feed_categories.id)',
+				'num_cats' => '(SELECT COUNT(id) FROM ttrss_feed_categories AS c2 WHERE c2.parent_cat = ttrss_feed_categories.id)',
+			])
+			->where('owner_uid', $_SESSION['uid']);
 
-		$sth = $this->pdo->prepare("SELECT
-				id, title, order_id, (SELECT COUNT(id) FROM
-				ttrss_feeds WHERE
-				ttrss_feed_categories.id IS NOT NULL AND cat_id = ttrss_feed_categories.id) AS num_feeds,
-			(SELECT COUNT(id) FROM
-				ttrss_feed_categories AS c2 WHERE
-				c2.parent_cat = ttrss_feed_categories.id) AS num_cats
-			FROM ttrss_feed_categories
-			WHERE $nested_qpart AND owner_uid = ?");
-		$sth->execute([$_SESSION['uid']]);
+		if ($enable_nested) {
+			$categories->where_null('parent_cat');
+		}
 
-		$cats = array();
+		$cats = [];
 
-		while ($line = $sth->fetch()) {
-			if ($include_empty || $line["num_feeds"] > 0 || $line["num_cats"] > 0) {
-				$unread = getFeedUnread($line["id"], true);
+		foreach ($categories->find_many() as $category) {
+			if ($include_empty || $category->num_feeds > 0 || $category->num_cats > 0) {
+				$unread = getFeedUnread($category->id, true);
 
 				if ($enable_nested)
-					$unread += Feeds::_get_cat_children_unread($line["id"]);
+					$unread += Feeds::_get_cat_children_unread($category->id);
 
 				if ($unread || !$unread_only) {
-					array_push($cats, array("id" => (int) $line["id"],
-						"title" => $line["title"],
-						"unread" => (int) $unread,
-						"order_id" => (int) $line["order_id"],
-					));
+					array_push($cats, [
+						'id' => (int) $category->id,
+						'title' => $category->title,
+						'unread' => (int) $unread,
+						'order_id' => (int) $category->order_id,
+					]);
 				}
 			}
 		}
 
-		foreach (array(-2,-1,0) as $cat_id) {
+		foreach ([-2,-1,0] as $cat_id) {
 			if ($include_empty || !$this->_is_cat_empty($cat_id)) {
 				$unread = getFeedUnread($cat_id, true);
 
 				if ($unread || !$unread_only) {
-					array_push($cats, array("id" => $cat_id,
-						"title" => Feeds::_get_cat_title($cat_id),
-						"unread" => (int) $unread));
+					array_push($cats, [
+						'id' => $cat_id,
+						'title' => Feeds::_get_cat_title($cat_id),
+						'unread' => (int) $unread,
+					]);
 				}
 			}
 		}
@@ -300,60 +299,58 @@ class API extends Handler {
 	}
 
 	function getArticle() {
+		$article_ids = explode(',', clean($_REQUEST['article_id'] ?? ''));
+		$sanitize_content = self::_param_to_bool($_REQUEST['sanitize'] ?? true);
 
-		$article_ids = explode(",", clean($_REQUEST["article_id"]));
-		$sanitize_content = !isset($_REQUEST["sanitize"]) ||
-			self::_param_to_bool($_REQUEST["sanitize"]);
+		if (count($article_ids)) {
+			$entries = ORM::for_table('ttrss_entries')
+				->table_alias('e')
+				->select_many('e.id', 'e.guid', 'e.title', 'e.link', 'e.author', 'e.content', 'e.lang', 'e.comments',
+					'ue.feed_id', 'ue.int_id', 'ue.marked', 'ue.unread', 'ue.published', 'ue.score', 'ue.note')
+				->select_many_expr([
+					'updated' => SUBSTRING_FOR_DATE.'(updated,1,16)',
+					'feed_title' => '(SELECT title FROM ttrss_feeds WHERE id = ue.feed_id)',
+					'site_url' => '(SELECT site_url FROM ttrss_feeds WHERE id = ue.feed_id)',
+					'hide_images' => '(SELECT hide_images FROM ttrss_feeds WHERE id = feed_id)',
+				])
+				->join('ttrss_user_entries', [ 'ue.ref_id', '=', 'e.id'], 'ue')
+				->where_in('e.id', array_map('intval', $article_ids))
+				->where('ue.owner_uid', $_SESSION['uid'])
+				->find_many();
 
-		if (count($article_ids) > 0) {
+			$articles = [];
 
-			$article_qmarks = arr_qmarks($article_ids);
-
-			$sth = $this->pdo->prepare("SELECT id,guid,title,link,content,feed_id,comments,int_id,
-				marked,unread,published,score,note,lang,
-				".SUBSTRING_FOR_DATE."(updated,1,16) as updated,
-				author,(SELECT title FROM ttrss_feeds WHERE id = feed_id) AS feed_title,
-				(SELECT site_url FROM ttrss_feeds WHERE id = feed_id) AS site_url,
-				(SELECT hide_images FROM ttrss_feeds WHERE id = feed_id) AS hide_images
-				FROM ttrss_entries,ttrss_user_entries
-				WHERE id IN ($article_qmarks) AND ref_id = id AND owner_uid = ?");
-
-			$sth->execute(array_merge($article_ids, [$_SESSION['uid']]));
-
-			$articles = array();
-
-			while ($line = $sth->fetch()) {
-
-				$article = array(
-					"id" => $line["id"],
-					"guid" => $line["guid"],
-					"title" => $line["title"],
-					"link" => $line["link"],
-					"labels" => Article::_get_labels($line['id']),
-					"unread" => self::_param_to_bool($line["unread"]),
-					"marked" => self::_param_to_bool($line["marked"]),
-					"published" => self::_param_to_bool($line["published"]),
-					"comments" => $line["comments"],
-					"author" => $line["author"],
-					"updated" => (int) strtotime($line["updated"]),
-					"feed_id" => $line["feed_id"],
-					"attachments" => Article::_get_enclosures($line['id']),
-					"score" => (int)$line["score"],
-					"feed_title" => $line["feed_title"],
-					"note" => $line["note"],
-					"lang" => $line["lang"]
-				);
+			foreach ($entries as $entry) {
+				$article = [
+					'id' => $entry->id,
+					'guid' => $entry->guid,
+					'title' => $entry->title,
+					'link' => $entry->link,
+					'labels' => Article::_get_labels($entry->id),
+					'unread' => self::_param_to_bool($entry->unread),
+					'marked' => self::_param_to_bool($entry->marked),
+					'published' => self::_param_to_bool($entry->published),
+					'comments' => $entry->comments,
+					'author' => $entry->author,
+					'updated' => (int) strtotime($entry->updated),
+					'feed_id' => $entry->feed_id,
+					'attachments' => Article::_get_enclosures($entry->id),
+					'score' => (int) $entry->score,
+					'feed_title' => $entry->feed_title,
+					'note' => $entry->note,
+					'lang' => $entry->lang,
+				];
 
 				if ($sanitize_content) {
-					$article["content"] = Sanitizer::sanitize(
-						$line["content"],
-						self::_param_to_bool($line['hide_images']),
-						false, $line["site_url"], false, $line["id"]);
+					$article['content'] = Sanitizer::sanitize(
+						$entry->content,
+						self::_param_to_bool($entry->hide_images),
+						false, $entry->site_url, false, $entry->id);
 				} else {
-					$article["content"] = $line["content"];
+					$article['content'] = $entry->content;
 				}
 
-				$hook_object = ["article" => &$article];
+				$hook_object = ['article' => &$article];
 
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE_API,
 					function ($result) use (&$article) {
@@ -364,13 +361,12 @@ class API extends Handler {
 				$article['content'] = DiskCache::rewrite_urls($article['content']);
 
 				array_push($articles, $article);
-
 			}
 
 			$this->_wrap(self::STATUS_OK, $articles);
 		// @phpstan-ignore-next-line
 		} else {
-			$this->_wrap(self::STATUS_ERR, array("error" => self::E_INCORRECT_USAGE));
+			$this->_wrap(self::STATUS_ERR, ['error' => self::E_INCORRECT_USAGE]);
 		}
 	}
 
@@ -382,12 +378,9 @@ class API extends Handler {
 
 		$config["daemon_is_running"] = file_is_locked("update_daemon.lock");
 
-		$sth = $this->pdo->prepare("SELECT COUNT(*) AS cf FROM
-			ttrss_feeds WHERE owner_uid = ?");
-		$sth->execute([$_SESSION['uid']]);
-		$row = $sth->fetch();
-
-		$config["num_feeds"] = $row["cf"];
+		$config["num_feeds"] = ORM::for_table('ttrss_feeds')
+			->where('owner_uid', $_SESSION['uid'])
+			->count();
 
 		$this->_wrap(self::STATUS_OK, $config);
 	}
@@ -422,36 +415,36 @@ class API extends Handler {
 	}
 
 	function getLabels() {
-		$article_id = (int)clean($_REQUEST['article_id']);
+		$article_id = (int)clean($_REQUEST['article_id'] ?? -1);
 
-		$rv = array();
+		$rv = [];
 
-		$sth = $this->pdo->prepare("SELECT id, caption, fg_color, bg_color
-			FROM ttrss_labels2
-			WHERE owner_uid = ? ORDER BY caption");
-		$sth->execute([$_SESSION['uid']]);
+		$labels = ORM::for_table('ttrss_labels2')
+			->where('owner_uid', $_SESSION['uid'])
+			->order_by_asc('caption')
+			->find_many();
 
 		if ($article_id)
 			$article_labels = Article::_get_labels($article_id);
 		else
-			$article_labels = array();
+			$article_labels = [];
 
-		while ($line = $sth->fetch()) {
-
+		foreach ($labels as $label) {
 			$checked = false;
 			foreach ($article_labels as $al) {
-				if (Labels::feed_to_label_id($al[0]) == $line['id']) {
+				if (Labels::feed_to_label_id($al[0]) == $label->id) {
 					$checked = true;
 					break;
 				}
 			}
 
-			array_push($rv, array(
-				"id" => (int)Labels::label_to_feed_id($line['id']),
-				"caption" => $line['caption'],
-				"fg_color" => $line['fg_color'],
-				"bg_color" => $line['bg_color'],
-				"checked" => $checked));
+			array_push($rv, [
+				'id' => (int) Labels::label_to_feed_id($label->id),
+				'caption' => $label->caption,
+				'fg_color' => $label->fg_color,
+				'bg_color' => $label->bg_color,
+				'checked' => $checked,
+			]);
 		}
 
 		$this->_wrap(self::STATUS_OK, $rv);
@@ -512,10 +505,7 @@ class API extends Handler {
 	}
 
 	private static function _api_get_feeds($cat_id, $unread_only, $limit, $offset, $include_nested = false) {
-
-			$feeds = array();
-
-			$pdo = Db::pdo();
+			$feeds = [];
 
 			$limit = (int) $limit;
 			$offset = (int) $offset;
@@ -528,17 +518,15 @@ class API extends Handler {
 				$counters = Counters::get_labels();
 
 				foreach (array_values($counters) as $cv) {
-
-					$unread = $cv["counter"];
+					$unread = $cv['counter'];
 
 					if ($unread || !$unread_only) {
-
-						$row = array(
-								"id" => (int) $cv["id"],
-								"title" => $cv["description"],
-								"unread" => $cv["counter"],
-								"cat_id" => -2,
-							);
+						$row = [
+							'id' => (int) $cv['id'],
+							'title' => $cv['description'],
+							'unread' => $cv['counter'],
+							'cat_id' => -2,
+						];
 
 						array_push($feeds, $row);
 					}
@@ -548,45 +536,45 @@ class API extends Handler {
 			/* Virtual feeds */
 
 			if ($cat_id == -4 || $cat_id == -1) {
-				foreach (array(-1, -2, -3, -4, -6, 0) as $i) {
+				foreach ([-1, -2, -3, -4, -6, 0] as $i) {
 					$unread = getFeedUnread($i);
 
 					if ($unread || !$unread_only) {
 						$title = Feeds::_get_title($i);
 
-						$row = array(
-								"id" => $i,
-								"title" => $title,
-								"unread" => $unread,
-								"cat_id" => -1,
-							);
+						$row = [
+							'id' => $i,
+							'title' => $title,
+							'unread' => $unread,
+							'cat_id' => -1,
+						];
+
 						array_push($feeds, $row);
 					}
-
 				}
 			}
 
 			/* Child cats */
 
 			if ($include_nested && $cat_id) {
-				$sth = $pdo->prepare("SELECT
-					id, title, order_id FROM ttrss_feed_categories
-					WHERE parent_cat = ? AND owner_uid = ? ORDER BY order_id, title");
+				$categories = ORM::for_table('ttrss_feed_categories')
+					->where(['parent_cat' => $cat_id, 'owner_uid' => $_SESSION['uid']])
+					->order_by_asc('order_id')
+					->order_by_asc('title')
+					->find_many();
 
-				$sth->execute([$cat_id, $_SESSION['uid']]);
-
-				while ($line = $sth->fetch()) {
-					$unread = getFeedUnread($line["id"], true) +
-						Feeds::_get_cat_children_unread($line["id"]);
+				foreach ($categories as $category) {
+					$unread = getFeedUnread($category->id, true) +
+						Feeds::_get_cat_children_unread($category->id);
 
 					if ($unread || !$unread_only) {
-						$row = array(
-								"id" => (int) $line["id"],
-								"title" => $line["title"],
-								"unread" => $unread,
-								"is_cat" => true,
-                                "order_id" => (int) $line["order_id"]
-							);
+						$row = [
+							'id' => (int) $category->id,
+							'title' => $category->title,
+							'unread' => $unread,
+							'is_cat' => true,
+							'order_id' => (int) $category->order_id,
+						];
 						array_push($feeds, $row);
 					}
 				}
@@ -594,51 +582,36 @@ class API extends Handler {
 
 			/* Real feeds */
 
-			if ($limit) {
-				$limit_qpart = "LIMIT $limit OFFSET $offset";
-			} else {
-				$limit_qpart = "";
-			}
-
 			/* API only: -3 All feeds, excluding virtual feeds (e.g. Labels and such) */
-			if ($cat_id == -4 || $cat_id == -3) {
-				$sth = $pdo->prepare("SELECT
-					id, feed_url, cat_id, title, order_id, ".
-						SUBSTRING_FOR_DATE."(last_updated,1,19) AS last_updated
-						FROM ttrss_feeds WHERE owner_uid = ?
-						ORDER BY order_id, title " . $limit_qpart);
-				$sth->execute([$_SESSION['uid']]);
+			$feeds_obj = ORM::for_table('ttrss_feeds')
+				->select_many('id', 'feed_url', 'cat_id', 'title', 'order_id')
+				->select_expr(SUBSTRING_FOR_DATE.'(last_updated,1,19)', 'last_updated')
+				->where('owner_uid', $_SESSION['uid'])
+				->order_by_asc('order_id')
+				->order_by_asc('title');
 
-			} else {
+			if ($limit) $feeds_obj->limit($limit);
+			if ($offset) $feeds_obj->offset($offset);
 
-				$sth = $pdo->prepare("SELECT
-					id, feed_url, cat_id, title, order_id, ".
-						SUBSTRING_FOR_DATE."(last_updated,1,19) AS last_updated
-						FROM ttrss_feeds WHERE
-						(cat_id = :cat OR (:cat = 0 AND cat_id IS NULL))
-						AND owner_uid = :uid
-						ORDER BY order_id, title " . $limit_qpart);
-				$sth->execute([":uid" => $_SESSION['uid'], ":cat" => $cat_id]);
+			if ($cat_id != -3 && $cat_id != -4) {
+				$feeds_obj->where_raw('(cat_id = ? OR (? = 0 AND cat_id IS NULL))', [$cat_id, $cat_id]);
 			}
 
-			while ($line = $sth->fetch()) {
-
-				$unread = getFeedUnread($line["id"]);
-
-				$has_icon = Feeds::_has_icon($line['id']);
+			foreach ($feeds_obj->find_many() as $feed) {
+				$unread = getFeedUnread($feed->id);
+				$has_icon = Feeds::_has_icon($feed->id);
 
 				if ($unread || !$unread_only) {
-
-					$row = array(
-							"feed_url" => $line["feed_url"],
-							"title" => $line["title"],
-							"id" => (int)$line["id"],
-							"unread" => (int)$unread,
-							"has_icon" => $has_icon,
-							"cat_id" => (int)$line["cat_id"],
-							"last_updated" => (int) strtotime($line["last_updated"]),
-							"order_id" => (int) $line["order_id"],
-						);
+					$row = [
+						'feed_url' => $feed->feed_url,
+						'title' => $feed->title,
+						'id' => (int) $feed->id,
+						'unread' => (int) $unread,
+						'has_icon' => $has_icon,
+						'cat_id' => (int) $feed->cat_id,
+						'last_updated' => (int) strtotime($feed->last_updated),
+						'order_id' => (int) $feed->order_id,
+					];
 
 					array_push($feeds, $row);
 				}
@@ -653,26 +626,24 @@ class API extends Handler {
 				$search = "", $include_nested = false, $sanitize_content = true,
 				$force_update = false, $excerpt_length = 100, $check_first_id = false, $skip_first_id_check = false) {
 
-			$pdo = Db::pdo();
-
 			if ($force_update && $feed_id > 0 && is_numeric($feed_id)) {
 				// Update the feed if required with some basic flood control
 
-				$sth = $pdo->prepare(
-					"SELECT cache_images,".SUBSTRING_FOR_DATE."(last_updated,1,19) AS last_updated
-						FROM ttrss_feeds WHERE id = ?");
-				$sth->execute([$feed_id]);
+				$feed = ORM::for_table('ttrss_feeds')
+					->select_many('id', 'cache_images')
+					->select_expr(SUBSTRING_FOR_DATE.'(last_updated,1,19)', 'last_updated')
+					->find_one($feed_id);
 
-				if ($row = $sth->fetch()) {
-					$last_updated = strtotime($row["last_updated"]);
-					$cache_images = self::_param_to_bool($row["cache_images"]);
+				if ($feed) {
+					$last_updated = strtotime($feed->last_updated);
+					$cache_images = self::_param_to_bool($feed->cache_images);
 
 					if (!$cache_images && time() - $last_updated > 120) {
 						RSSUtils::update_rss_feed($feed_id, true);
 					} else {
-						$sth = $pdo->prepare("UPDATE ttrss_feeds SET last_updated = '1970-01-01', last_update_started = '1970-01-01'
-							WHERE id = ?");
-						$sth->execute([$feed_id]);
+						$feed->last_updated = '1970-01-01';
+						$feed->last_update_started = '1970-01-01';
+						$feed->save();
 					}
 				}
 			}
@@ -823,15 +794,15 @@ class API extends Handler {
 	function unsubscribeFeed() {
 		$feed_id = (int) clean($_REQUEST["feed_id"]);
 
-		$sth = $this->pdo->prepare("SELECT id FROM ttrss_feeds WHERE
-			id = ? AND owner_uid = ?");
-		$sth->execute([$feed_id, $_SESSION['uid']]);
+		$feed_exists = ORM::for_table('ttrss_feeds')
+			->where(['id' => $feed_id, 'owner_uid' => $_SESSION['uid']])
+			->count();
 
-		if ($row = $sth->fetch()) {
-			Pref_Feeds::remove_feed($feed_id, $_SESSION["uid"]);
-			$this->_wrap(self::STATUS_OK, array("status" => "OK"));
+		if ($feed_exists) {
+			Pref_Feeds::remove_feed($feed_id, $_SESSION['uid']);
+			$this->_wrap(self::STATUS_OK, ['status' => 'OK']);
 		} else {
-			$this->_wrap(self::STATUS_ERR, array("error" => self::E_OPERATION_FAILED));
+			$this->_wrap(self::STATUS_ERR, ['error' => self::E_OPERATION_FAILED]);
 		}
 	}
 
@@ -864,27 +835,21 @@ class API extends Handler {
 
 	// only works for labels or uncategorized for the time being
 	private function _is_cat_empty($id) {
-
 		if ($id == -2) {
-			$sth = $this->pdo->prepare("SELECT COUNT(id) AS count FROM ttrss_labels2
-				WHERE owner_uid = ?");
-			$sth->execute([$_SESSION['uid']]);
-			$row = $sth->fetch();
+			$label_count = ORM::for_table('ttrss_labels2')
+				->where('owner_uid', $_SESSION['uid'])
+				->count();
 
-			return $row["count"] == 0;
-
+			return $label_count == 0;
 		} else if ($id == 0) {
-			$sth = $this->pdo->prepare("SELECT COUNT(id) AS count FROM ttrss_feeds
-				WHERE cat_id IS NULL AND owner_uid = ?");
-			$sth->execute([$_SESSION['uid']]);
-			$row = $sth->fetch();
+			$uncategorized_count = ORM::for_table('ttrss_feeds')
+				->where_null('cat_id')
+				->where('owner_uid', $_SESSION['uid'])
+				->count();
 
-			return $row["count"] == 0;
-
+			return $uncategorized_count == 0;
 		}
 
 		return false;
 	}
-
-
 }

@@ -526,11 +526,10 @@ body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .loadingNod
   display: inline;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Feed .loadingNode {
-  left: 2px;
+  left: -2px;
   height: 14px;
   width: 14px;
   position: relative;
-  top: -1px;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Cat .loadingNode {
   height: 11px;
@@ -538,6 +537,7 @@ body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Cat .loa
   margin-left: 4px;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .counterNode {
+  order: 2;
   font-weight: bold;
   display: none;
   font-size: 9px;
@@ -569,8 +569,17 @@ body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow[data-feed-i
   background-color: #3ea447;
   border-color: #307f37;
 }
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .dijitTreeContent {
+  display: flex;
+  align-items: center;
+  flex-grow: 2;
+  min-width: 0;
+}
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .dijitTreeLabel {
   cursor: pointer;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .dijitTreeLabel.Unread {
   font-weight: bold;
@@ -1820,11 +1829,15 @@ body.ttrss_utility.share_popup .content {
   border-width: 0;
   box-shadow: none;
 }
+.flat {
+  /*#feedTree {
+		.dijitTreeContent .dijitInline {
+			vertical-align : baseline;
+		}
+	}*/
+}
 .flat li {
   padding: 2px;
-}
-.flat #feedTree .dijitTreeContent .dijitInline {
-  vertical-align: baseline;
 }
 .flat .dijitButton i.material-icons {
   position: relative;
@@ -1897,6 +1910,17 @@ body.ttrss_utility.share_popup .content {
 .flat .dijitAccordionInnerContainer:not(.dijitSelected) i.material-icons {
   color: #257aa7;
 }
+.flat .dijitTree {
+  /*.dijitTreeRow .dijitTreeExpando {
+			position : relative;
+			top : -2px;
+		}*/
+}
+.flat .dijitTree .dijitTreeRowFlex {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
 .flat .dijitTree .dijitFolderClosed,
 .flat .dijitTree .dijitFolderOpened {
   display: none;
@@ -1909,10 +1933,6 @@ body.ttrss_utility.share_popup .content {
 }
 .flat .dijitTree .dijitTreeNode .dijitTreeRow.dijitTreeRowSelected {
   color: white;
-}
-.flat .dijitTree .dijitTreeRow .dijitTreeExpando {
-  position: relative;
-  top: -2px;
 }
 .flat .dijitTree .labelParam {
   float: right;

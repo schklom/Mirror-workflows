@@ -202,7 +202,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 			return (item.unread <= 0) ? "dijitTreeLabel" : "dijitTreeLabel Unread";
 		},
 		getRowClass: function (item/*, opened */) {
-			let rc = "dijitTreeRow dijitTreeRowFlex";
+			let rc = "dijitTreeRow";
 
 			const is_cat = String(item.id).indexOf('CAT:') != -1;
 

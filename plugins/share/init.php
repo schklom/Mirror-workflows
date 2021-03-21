@@ -149,6 +149,9 @@ class Share extends Plugin {
 
 			$line['content'] = DiskCache::rewrite_urls($line['content']);
 
+			if (!$og_image)
+				$og_image = Config::get_self_url() . "/images/favicon-512px.png";
+
 			ob_start();
 
 			?>
@@ -180,11 +183,11 @@ class Share extends Plugin {
 								strip_tags($content_decoded)
 							)
 						), 500, "...")) ?>">
-				</head>
 
-				<?php if ($og_image) { ?>
-					<meta property='og:image' content="<?= htmlspecialchars($og_image) ?>">
-				<?php } ?>
+					<?php if ($og_image) { ?>
+						<meta property='og:image' content="<?= htmlspecialchars($og_image) ?>">
+					<?php } ?>
+				</head>
 
 				<body class='flat ttrss_utility ttrss_zoom css_loading'>
 					<div class='container'>

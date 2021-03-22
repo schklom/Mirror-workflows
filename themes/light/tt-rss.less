@@ -603,11 +603,10 @@ body.ttrss_main {
 
 					&.Is_Feed {
 						.loadingNode {
-							left : 2px;
+							left : -2px;
 							height : 14px;
 							width : 14px;
 							position : relative;
-							top : -1px;
 						}
 					}
 
@@ -620,6 +619,7 @@ body.ttrss_main {
 					}
 
 					.counterNode {
+						order : 2;
 						font-weight : bold;
 						display : none;
 						font-size : @font-size-tiny;
@@ -655,8 +655,18 @@ body.ttrss_main {
 						border-color: darken(@color-checked, 25%);
 					}
 
+					.dijitTreeContent {
+						display : flex;
+						align-items : center;
+						flex-grow : 2;
+						min-width : 0;
+					}
+
 					.dijitTreeLabel {
 						cursor : pointer;
+						min-width : 0;
+						overflow : hidden;
+						text-overflow: ellipsis;
 
 						&.Unread {
 							font-weight : bold;

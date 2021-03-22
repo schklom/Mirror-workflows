@@ -583,12 +583,26 @@ const	Feeds = {
 
 		return false;
 	},
+	getNextFeed: function(feed, is_cat) {
+		const tree = dijit.byId("feedTree");
+
+		if (tree) return tree.getNextFeed(feed, is_cat, false);
+
+		return [false, false];
+	},
+	getPreviousFeed: function(feed, is_cat) {
+		const tree = dijit.byId("feedTree");
+
+		if (tree) return tree.getPreviousFeed(feed, is_cat);
+
+		return [false, false];
+	},
 	getNextUnread: function(feed, is_cat) {
 		const tree = dijit.byId("feedTree");
 
 		if (tree) return tree.getNextUnread(feed, is_cat);
 
-		return false;
+		return [false, false];
 	},
 	search: function() {
 		xhr.json("backend.php",

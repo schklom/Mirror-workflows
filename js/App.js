@@ -938,16 +938,16 @@ const App = {
       } else {
 
          this.hotkey_actions["next_feed"] = () => {
-            const rv = dijit.byId("feedTree").getNextFeed(
+            const [feed, is_cat] = Feeds.getNextFeed(
                Feeds.getActive(), Feeds.activeIsCat());
 
-            if (rv) Feeds.open({feed: rv[0], is_cat: rv[1], delayed: true})
+            Feeds.open({feed: feed, is_cat: is_cat, delayed: true})
          };
          this.hotkey_actions["prev_feed"] = () => {
-            const rv = dijit.byId("feedTree").getPreviousFeed(
+            const [feed, is_cat] = Feeds.getPreviousFeed(
                Feeds.getActive(), Feeds.activeIsCat());
 
-            if (rv) Feeds.open({feed: rv[0], is_cat: rv[1], delayed: true})
+				Feeds.open({feed: feed, is_cat: is_cat, delayed: true})
          };
          this.hotkey_actions["next_article_or_scroll"] = (event) => {
             if (this.isCombinedMode())

@@ -520,22 +520,25 @@ body.ttrss_main #feeds-holder #feedTree {
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow {
   border: 1px solid transparent;
 }
-body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .loadingNode {
-  display: none;
-}
-body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .loadingNode.visible {
-  display: inline;
-}
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Feed .loadingNode {
   left: -2px;
   height: 14px;
   width: 14px;
   position: relative;
 }
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Feed .loadingNode.visible {
+  content: url('../images/oval.svg?1616419112860');
+}
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Cat .loadingNode {
   height: 11px;
   width: 18px;
   margin-left: 4px;
+  position: relative;
+  top: 2px;
+}
+body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Cat .loadingNode.visible {
+  display: inline;
+  content: url('../images/three-dots.svg?1616419112860');
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .counterNode {
   order: 2;
@@ -547,12 +550,8 @@ body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .counterNod
   color: white;
   background: #cd8b31;
   border-radius: 4px;
-  vertical-align: middle;
-  float: right;
-  position: relative;
   line-height: 14px;
   margin-right: 8px;
-  margin-top: 2px;
   min-width: 23px;
   height: 14px;
 }
@@ -581,6 +580,8 @@ body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .dijitTreeL
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  position: relative;
+  top: -0.5px;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .dijitTreeLabel.Unread {
   font-weight: bold;
@@ -616,8 +617,6 @@ body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow i.icon.icon
   color: #69C671;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow i.icon.icon-restore {
-  position: relative;
-  top: -1px;
   font-weight: bold;
   color: #b87d2c;
 }
@@ -1823,6 +1822,14 @@ body.ttrss_utility fieldset > label.checkbox {
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+.flat .dijitTree .dijitTreeRowFlex .dijitTreeIcon {
+  font-size: inherit;
+  height: auto;
+}
+.flat .dijitTree .dijitTreeRowFlex .dijitTreeExpando {
+  height: auto;
+  line-height: 0;
 }
 .flat .dijitTree .dijitFolderClosed,
 .flat .dijitTree .dijitFolderOpened {

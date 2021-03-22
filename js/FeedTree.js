@@ -138,12 +138,12 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 				tnode.rowNode.setAttribute('data-feed-id', bare_id);
 				tnode.rowNode.setAttribute('data-is-cat', "true");
 
-				tnode.loadingNode = dojo.create('img', { className: 'loadingNode', src: App.getInitParam('icon_three_dots')});
+				tnode.loadingNode = dojo.create('img', { className: 'loadingNode', src: App.getInitParam('icon_blank')});
 				domConstruct.place(tnode.loadingNode, tnode.labelNode, 'after');
 			}
 
 			if (id.match("FEED:")) {
-				tnode.loadingNode = dojo.create('img', { className: 'loadingNode', src: App.getInitParam('icon_oval')});
+				tnode.loadingNode = dojo.create('img', { className: 'loadingNode', src: App.getInitParam('icon_blank')});
 				domConstruct.place(tnode.loadingNode, tnode.expandoNode, 'only');
 			}
 

@@ -13,7 +13,7 @@ gulp.task('less', function(cb) {
   gulp
     .src(['themes/compact.less', 'themes/compact_night.less',
          'themes/light.less', 'themes/night_blue.less', 'themes/night.less'])
-    .pipe(less())
+    .pipe(less({javascriptEnabled: true}))
     .on('error', swallowError)
     .pipe(
       gulp.dest(function(f) {

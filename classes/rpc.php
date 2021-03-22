@@ -474,6 +474,7 @@ class RPC extends Handler_Protected {
 		$params["icon_indicator_white"] = $this->image_to_base64("images/indicator_white.gif");
 		$params["icon_oval"] = $this->image_to_base64("images/oval.svg");
 		$params["icon_three_dots"] = $this->image_to_base64("images/three-dots.svg");
+		$params["icon_blank"] = $this->image_to_base64("images/blank_icon.gif");
 		$params["labels"] = Labels::get_all($_SESSION["uid"]);
 
 		return $params;

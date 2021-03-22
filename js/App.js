@@ -941,13 +941,15 @@ const App = {
             const [feed, is_cat] = Feeds.getNextFeed(
                Feeds.getActive(), Feeds.activeIsCat());
 
-            Feeds.open({feed: feed, is_cat: is_cat, delayed: true})
+				if (feed !== false)
+					Feeds.open({feed: feed, is_cat: is_cat, delayed: true})
          };
          this.hotkey_actions["prev_feed"] = () => {
             const [feed, is_cat] = Feeds.getPreviousFeed(
                Feeds.getActive(), Feeds.activeIsCat());
 
-				Feeds.open({feed: feed, is_cat: is_cat, delayed: true})
+				if (feed !== false)
+					Feeds.open({feed: feed, is_cat: is_cat, delayed: true})
          };
          this.hotkey_actions["next_article_or_scroll"] = (event) => {
             if (this.isCombinedMode())

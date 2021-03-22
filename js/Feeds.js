@@ -133,9 +133,10 @@ const	Feeds = {
       return Feeds.reloadCurrent('');
    },
 	openNextUnread: function() {
-		const is_cat = this.activeIsCat();
-		const nuf = this.getNextUnread(this.getActive(), is_cat);
-		if (nuf) this.open({feed: nuf, is_cat: is_cat});
+		const [feed, is_cat] = this.getNextUnread(this.getActive(), this.activeIsCat());
+
+		if (feed !== false)
+			this.open({feed: feed, is_cat: is_cat});
 	},
 	toggle: function() {
 		Element.toggle("feeds-holder");

@@ -394,7 +394,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 			}
 
 			const items = this.model.store._arrayOfAllItems;
-			let item = items[0];
+			let item = false;
 
 			for (let i = 0; i < items.length; i++) {
 				if (items[i] == treeItem) {
@@ -422,7 +422,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 				return [this.model.store.getValue(item, 'bare_id'),
 					!this.model.store.getValue(item, 'id').match('FEED:')];
 			} else {
-				return false;
+				return [false, false];
 			}
 		},
 		getPreviousFeed: function (feed, is_cat) {

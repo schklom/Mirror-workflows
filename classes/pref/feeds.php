@@ -140,7 +140,7 @@ class Pref_Feeds extends Handler_Protected {
 			}
 
 			foreach (array(-4, -3, -1, -2, 0, -6) as $i) {
-				array_push($cat['items'], $this->feedlist_init_feed($i));
+				array_push($cat['items'], $this->feedlist_init_feed($i, false, 0));
 			}
 
 			/* Plugin feeds for -1 */

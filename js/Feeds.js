@@ -3,6 +3,7 @@
 /* global __, App, Headlines, xhr, dojo, dijit, fox, PluginHost, Notify, fox */
 
 const	Feeds = {
+	_max_counter_value: 9999,
 	_default_feed_id: -3,
 	counters_last_request: 0,
 	_active_feed_id: undefined,
@@ -69,7 +70,7 @@ const	Feeds = {
 
 			const id = elems[l].id;
 			const kind = elems[l].kind;
-			const ctr = parseInt(elems[l].counter);
+			const ctr = Math.min(this._max_counter_value, parseInt(elems[l].counter));
 			const error = elems[l].error;
 			const has_img = elems[l].has_img;
 			const updated = elems[l].updated;
@@ -90,8 +91,10 @@ const	Feeds = {
 			}*/
 
 			this.setUnread(id, (kind == "cat"), ctr);
-			this.setValue(id, (kind == "cat"), 'auxcounter', parseInt(elems[l].auxcounter));
-			this.setValue(id, (kind == "cat"), 'markedcounter', parseInt(elems[l].markedcounter));
+			this.setValue(id, (kind == "cat"), 'auxcounter',
+				Math.min(this._max_counter_value, parseInt(elems[l].auxcounter)));
+			this.setValue(id, (kind == "cat"), 'markedcounter',
+				Math.min(this._max_counter_value, parseInt(elems[l].markedcounter)));
 
 			if (kind != "cat") {
 				this.setValue(id, false, 'error', error);

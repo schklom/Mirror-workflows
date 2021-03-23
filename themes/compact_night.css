@@ -526,7 +526,7 @@ body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Feed .lo
   position: relative;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Feed .loadingNode.visible {
-  content: url('../images/oval.svg?1616489513933');
+  content: url('../images/oval.svg?1616521489086');
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Cat .loadingNode {
   height: 11px;
@@ -537,7 +537,7 @@ body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Cat .loa
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Cat .loadingNode.visible {
   display: inline;
-  content: url('../images/three-dots.svg?1616489513933');
+  content: url('../images/three-dots.svg?1616521489087');
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .counterNode {
   order: 2;

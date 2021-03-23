@@ -69,7 +69,7 @@ body.ttrss_main .post .header .title {
   font-size: 15px;
   font-weight: 600;
   text-rendering: optimizelegibility;
-  font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 body.ttrss_main .post div.content {
   padding: 10px;
@@ -290,7 +290,7 @@ body.ttrss_main .hl .updated div {
 body.ttrss_main .hl div.title a {
   font-weight: 600;
   text-rendering: optimizelegibility;
-  font-family: "Segoe UI", Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Segoe UI", Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #555;
 }
 body.ttrss_main .hl a.title.high,
@@ -411,7 +411,7 @@ body.ttrss_main .dijitDialog .dlgSecHoriz {
   font-size: 16px;
   font-weight: 600;
   color: #ccc;
-  font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 body.ttrss_main .dijitDialog section,
 body.ttrss_main .dijitDialog .dlgSecCont {
@@ -515,7 +515,7 @@ body.ttrss_main #feeds-holder #feedTree {
   height: 100%;
   overflow-x: hidden;
   text-rendering: optimizelegibility;
-  font-family: "Segoe UI", Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Segoe UI", Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow {
   border: 1px solid transparent;
@@ -527,7 +527,7 @@ body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Feed .lo
   position: relative;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Feed .loadingNode.visible {
-  content: url('../images/oval.svg?1616521489213');
+  content: url('../images/oval.svg?1616522734858');
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Cat .loadingNode {
   height: 11px;
@@ -538,7 +538,7 @@ body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Cat .loa
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Is_Cat .loadingNode.visible {
   display: inline;
-  content: url('../images/three-dots.svg?1616521489213');
+  content: url('../images/three-dots.svg?1616522734858');
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .counterNode {
   order: 2;
@@ -1361,7 +1361,7 @@ body.ttrss_utility hr {
   font-weight: 600;
   transition: color 0.2s, background 0.2s;
   text-rendering: optimizelegibility;
-  font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .cdm.expanded.active .content,
 .cdm.expanded.Unread .content {
@@ -1454,7 +1454,7 @@ body.ttrss_utility hr {
   font-size: 14px;
   transition: color 0.2s, background 0.2s;
   text-rendering: optimizelegibility;
-  font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .cdm.expandable.Unread div.header a.title {
   color: black;
@@ -1471,7 +1471,7 @@ body.ttrss_utility hr {
   font-size: 16px;
   font-weight: 600;
   text-rendering: optimizelegibility;
-  font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .cdm.expandable:not(.active) {
   cursor: pointer;
@@ -1498,7 +1498,7 @@ body.ttrss_prefs h1,
 body.ttrss_prefs h2,
 body.ttrss_prefs h3,
 body.ttrss_prefs h4 {
-  font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 600;
   color: #ccc;
 }
@@ -1765,7 +1765,7 @@ body.ttrss_utility fieldset > label.checkbox {
 }
 .flat .dijitToolbar {
   font-size: 13px;
-  font-family: "Segoe UI", Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Segoe UI", Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 0;
 }
 .flat .dijitToolbar .dijitTextBox .dijitInputContainer .dijitInputInner {
@@ -1789,7 +1789,7 @@ body.ttrss_utility fieldset > label.checkbox {
 .flat .dijitMenu .dijitMenuItem .dijitMenuItemLabel {
   padding: 4px 8px;
   font-size: 13px;
-  font-family: "Segoe UI", Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Segoe UI", Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .flat .dijitMenu .dijitMenuItem.dijitDisabled:not(.dijitMenuItemSelected) .dijitMenuItemLabel {
   color: #2e99d1;
@@ -1807,7 +1807,7 @@ body.ttrss_utility fieldset > label.checkbox {
 }
 .flat .dijitTab,
 .flat .dijitAccordionTitle {
-  font-family: "Segoe UI", Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Segoe UI", Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .flat .dijitTab i.material-icons,
 .flat .dijitAccordionInnerContainer:not(.dijitSelected) i.material-icons {
@@ -1949,7 +1949,7 @@ body.ttrss_utility .content h2,
 body.ttrss_utility .content h3,
 body.ttrss_utility .content h4 {
   color: #257aa7;
-  font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 body.ttrss_utility .content h2 {
   font-size: 18px;
@@ -1968,7 +1968,7 @@ body.ttrss_utility a:focus {
 }
 body.ttrss_utility h1 {
   color: gray;
-  font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Segoe WP Semibold", "Segoe UI Semibold", "Segoe UI Web Semibold", "Segoe UI", Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 18px;
   margin: 10px 0 0 0;
 }

@@ -352,10 +352,14 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 			if (treeNode) {
 				treeNode = treeNode[0];
 
-				if (show)
+				if (show) {
 					treeNode.loadingNode.addClassName("visible");
-				else
+					treeNode.loadingNode.setAttribute("src",
+						is_cat ? App.getInitParam("icon_three_dots") : App.getInitParam("icon_oval"));
+				} else {
 					treeNode.loadingNode.removeClassName("visible");
+					treeNode.loadingNode.setAttribute("src", App.getInitParam("icon_blank"))
+				}
 
 				return true
 			}

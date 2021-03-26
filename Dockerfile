@@ -8,5 +8,6 @@ RUN npm install --no-optional
 FROM node:14.5.0-alpine as app
 WORKDIR /app
 COPY --from=build /app /app
+RUN apk add --no-cache graphicsmagick
 EXPOSE 10407
 CMD ["npm", "start"]

@@ -18,6 +18,12 @@ controller['POST /create'] = async (data, ctx) => {
 		noitemsiserror: false,
 		inserterrorsasitems: true
 	}
+	if (e.title.length > 255) {
+		e.title = e.title.substr(0, 255);
+	}
+	if (e.description && e.description.length > 255) {
+		e.description = e.description.substr(0, 255);
+	}
 	let res = await FeedRepo.createFeed(e);
 	ctx.session.url = null;
 	ctx.session.loadParams = null;

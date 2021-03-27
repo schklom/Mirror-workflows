@@ -52,6 +52,17 @@
 				</label>
 			</div>
 		</div>
+		<div class="pure-control-group" v-if="feeds.length > 0">
+			Copy from feed:
+			<select v-model="copyFromVal">
+				<option>
+					-
+				</option>
+				<option v-for="entry of feeds" :key="entry.uid" :value="entry.uid">
+					{{ entry.title }}
+				</option>
+			</select>
+		</div>
 		<div class="pure-control-group">
 			<input type="submit" class="pure-button" value="Load" @click.prevent="submit" :disabled="loading" />
 		</div>
@@ -61,8 +72,12 @@
 import { ajax, EventHub } from '../util.js';
 export default {
 	name: 'Loader',
+	props: {
+		feeds: Array
+	},
 	data() {
 		return {
+			copyFromVal: null,
 			url: '',
 			cookies: '',
 			loadScripts: false,
@@ -79,7 +94,29 @@ export default {
 			this.loadScripts = false;
 			this.waitForTime = 500;
 			this.waitForSelector = '';
+			this.copyFromVal = null;
 		});
+	},
+	computed: {
+		feedLoadOptions() {
+			return Object.fromEntries(this.feeds.map(e => {
+				return [
+					e.uid,
+					e.title
+				]
+			}))
+		}
+	},
+	watch: {
+		copyFromVal(nv) {
+			if (!nv) return;
+			let entry = this.feeds.find(e => e.uid === nv);
+			if (!entry) return;
+			let params = entry.loadparams;
+			['url', 'cookies', 'loadScripts', 'waitFor', 'waitForSelector', 'waitForTime'].forEach(key => {
+				this[key] = params[key];
+			});
+		}
 	},
 	methods: {
 		submit() {

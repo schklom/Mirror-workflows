@@ -69,6 +69,29 @@
 					/>
 					(found <input readonly class="pure-input-1-5" style="width: 64px" v-model="found" />)
 				</div>
+				<!--
+					PTA: <input type="text"
+						class="pure-input-1-2"
+						:value="pathTitleAbsolute"
+					/>
+					<br/>
+					PDA: <input type="text"
+						class="pure-input-1-2"
+						:value="pathDescriptionAbsolute"
+					/>
+				-->
+			</div>
+
+			<div class="pure-control-group" v-if="feeds.length > 0">
+				Copy from feed:
+				<select v-model="copyFromVal">
+					<option>
+						-
+					</option>
+					<option v-for="entry of feeds" :key="entry.uid" :value="entry.uid">
+						{{ entry.title }}
+					</option>
+				</select>
 			</div>
 
 			<button class="pure-button pure-button-primary btn-next" @click.prevent="submit" :disabled="!canSubmit">Next</button>
@@ -81,8 +104,12 @@ import { EventHub, sendEvent, send, ajax } from '../util.js';
 
 export default {
 	name: 'Selector',
+	props: {
+		feeds: Array
+	},
 	data() {
 		let initial = {
+			copyFromVal: null,
 			expertMode: false,
 			pathTitleAbsolute: '',
 			pathDescriptionAbsolute: '',
@@ -123,6 +150,21 @@ export default {
 		},
 		canSubmit() {
 			return this.found > 0 && this.pathTitle.length > 0 && this.pathEntry.length > 0;
+		}
+	},
+	watch: {
+		copyFromVal(nv) {
+			if (!nv) return;
+			let entry = this.feeds.find(e => e.uid === nv);
+			if (!entry) return;
+			let params = entry.selectors;
+			['pathDescription', 'pathEntry', 'pathLink', 'pathTitle'].forEach(key => {
+				this[key] = params[key];
+			});
+			this.pathTitleAbsolute = this.pathEntry + this.pathTitle.substr(1);
+			this.pathTitleAbsolute = this.pathTitleAbsolute.replace('/text()', '');
+			this.pathDescriptionAbsolute = this.pathDescription ? this.pathEntry + this.pathDescription.substr(1) : '';
+			this.highlight('.');
 		}
 	},
 	methods: {

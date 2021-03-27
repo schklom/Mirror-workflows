@@ -111,9 +111,14 @@ import { ajax, EventHub } from '../util.js';
 
 export default {
 	name: 'FeedList',
+	props: {
+		feeds: {
+			type: Array,
+			required: true
+		}
+	},
 	data() {
 		return {
-			feeds: [],
 			errors: null,
 			edit: null
 		}
@@ -126,8 +131,6 @@ export default {
 		}
 	},
 	created() {
-		this.refresh();
-		EventHub.$on('refreshFeeds', this.refresh.bind(this));
 	},
 	computed: {
 		link(item) {
@@ -135,12 +138,6 @@ export default {
 		}
 	},
 	methods: {
-		refresh() {
-			return ajax('/api/feed/list')
-				.then(res => {
-					this.feeds = res;
-				});
-		},
 		async deleteFeed() {
 			let res = await ajax('/api/feed/delete', { uid: this.edit.uid }, true)
 			let idx = this.feeds.findIndex(f => f.uid === this.edit.uid);

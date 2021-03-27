@@ -22,7 +22,7 @@
 	  				Load target page
 	  			</label>
 	  			<main>
-	  				<form-loader @next="startStep2" />
+	  				<form-loader @next="startStep2" :feeds="feeds" />
 	  			</main>
 	  		</article>
 	  		<article>
@@ -31,7 +31,7 @@
 	  				Select items
 	  			</label>
 	  			<main>
-	  				<form-selector @next="startStep3" />
+	  				<form-selector @next="startStep3" :feeds="feeds" />
 	  			</main>
 	  		</article>
 	  		<article>
@@ -49,7 +49,7 @@
 	  				Manage Feeds
 	  			</label>
 	  			<main>
-	  				<feed-list />
+	  				<feed-list :feeds="feeds" />
 	  			</main>
 	  		</article>
 		</div>
@@ -63,7 +63,7 @@ import Loader from './components/loader.vue';
 import Selector from './components/selector.vue';
 import Preview from './components/preview.vue';
 import List from './components/list.vue';
-import { EventHub } from './util.js';
+import { ajax, EventHub } from './util.js';
 
 export default {
 	name: 'App',
@@ -75,6 +75,7 @@ export default {
 	},
 	data() {
 		return {
+			feeds: [],
 			accordion: 0,
 			error: null
 		}
@@ -84,6 +85,8 @@ export default {
 			this.error = e;
 			this.accordion = -1;
 		})
+		this.refreshFeeds();
+		EventHub.$on('refreshFeeds', this.refreshFeeds.bind(this));
 	},
 	methods: {
 		startStep2() {
@@ -97,7 +100,13 @@ export default {
 			this.accordion = 4;
 			EventHub.$emit('refreshFeeds');
 			EventHub.$emit('reset');
-		}
+		},
+		refreshFeeds() {
+			return ajax('/api/feed/list')
+				.then(res => {
+					this.feeds = res;
+				});
+		},
 	}
 }
 </script>

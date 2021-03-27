@@ -39,6 +39,9 @@ controller['POST /delete'] = async (data) => {
 
 controller['GET /list'] = async () => {
 	let list = await FeedRepo.getAllFeeds();
+	list.sort((a, b) => {
+		return a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1;
+	});
 	return list;
 };
 

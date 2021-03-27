@@ -76,3 +76,7 @@ Running electron on a server requires some workarounds with Xvfb. See docker-ent
 ### 2021-01-31
 
 - fixed feed item dates. before now they were all set to the date the database was created
+
+### 2021-03-27
+
+- can now copy load and select parameters from other feeds for faster feed editing

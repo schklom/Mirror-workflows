@@ -2054,8 +2054,7 @@ class Feeds extends Handler_Protected {
 	}
 
 	private static function _search_to_sql($search, $search_language, $owner_uid) {
-
-		$keywords = str_getcsv(trim($search), " ");
+		$keywords = str_getcsv(preg_replace('/(-?\w+)\:"(\w+)/', '"${1}:${2}', trim($search)), ' ');
 		$query_keywords = array();
 		$search_words = array();
 		$search_query_leftover = array();

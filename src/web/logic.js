@@ -14,14 +14,24 @@ function init() {
 }
 
 function locate(){
-    var lonLat = new OpenLayers.LonLat( -0.1279688 ,51.5077286 )
-          .transform(
-            new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-            map.getProjectionObject() // to Spherical Mercator Projection
-          );
+    idInput = document.getElementById('fmdid');
 
-    var zoom=16;
-    markers.clearMarkers();
-    markers.addMarker(new OpenLayers.Marker(lonLat));
-    map.setCenter (lonLat, zoom);
+    fetch("/location/" + idInput.value)
+        .then(function(response) {
+
+            return response.json();
+        })
+        .then(function(json) {
+            var lonLat = new OpenLayers.LonLat( json.lat , json.lon )
+                .transform(
+                new OpenLayers.Projection("EPSG:4326"),
+                map.getProjectionObject()
+                );
+
+            var zoom=16;
+            markers.clearMarkers();
+            markers.addMarker(new OpenLayers.Marker(lonLat));
+            map.setCenter (lonLat, zoom);
+        })
+
 }

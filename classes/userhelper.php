@@ -299,7 +299,7 @@ class UserHelper {
 					if ($user->otp_enabled) {
 						$user->otp_secret = $salt_based_secret;
 					} else {
-						$user->otp_secret = bin2hex(get_random_bytes(6));
+						$user->otp_secret = bin2hex(get_random_bytes(10));
 					}
 
 					$user->save();

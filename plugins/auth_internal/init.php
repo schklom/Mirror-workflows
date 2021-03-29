@@ -109,7 +109,7 @@ class Auth_Internal extends Auth_Base {
 										<?= \Controls\hidden_tag("op", "login") ?>
 
 										<fieldset>
-											<label><?= __("Please enter your one time password:") ?></label>
+											<label><?= __("Please enter verification code (OTP):") ?></label>
 											<input id="otp" dojoType="dijit.form.ValidationTextBox" required="1" autocomplete="off" size="6" name="otp" value=""/>
 											<?= \Controls\submit_tag(__("Continue")) ?>
 										</fieldset>

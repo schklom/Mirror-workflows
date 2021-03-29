@@ -469,8 +469,8 @@ class Pref_Prefs extends Handler_Protected {
 					<?= \Controls\hidden_tag("method", "otpenable") ?>
 
 					<fieldset>
-						<label><?= __("OTP Key:") ?></label>
-						<input dojoType='dijit.form.ValidationTextBox' disabled='disabled' value="<?= $otp_secret ?>" style='width : 215px'>
+						<label><?= __("OTP secret:") ?></label>
+						<code><?= $this->format_otp_secret($otp_secret) ?></code>
 					</fieldset>
 
 					<!-- TODO: return JSON from the backend call -->
@@ -496,7 +496,7 @@ class Pref_Prefs extends Handler_Protected {
 					</fieldset>
 
 					<fieldset>
-						<label><?= __("One time password:") ?></label>
+						<label><?= __("Verification code:") ?></label>
 						<input dojoType='dijit.form.ValidationTextBox' autocomplete='off' required='1' name='otp'>
 					</fieldset>
 
@@ -1517,5 +1517,9 @@ class Pref_Prefs extends Handler_Protected {
 				$_SERVER["SSL_CLIENT_S_DN"]);
 		}
 		return "";
+	}
+
+	private function format_otp_secret($secret) {
+		return implode(" ", str_split($secret, 4));
 	}
 }

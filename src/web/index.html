@@ -4,11 +4,10 @@
         <title>FMD</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="./style.css">
-        <link rel = "stylesheet" href = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
-        <script src = "./logic.js"></script>
-    </head>
-    <body> 
+        <script src="https://openlayers.org/api/OpenLayers.js"></script>
+        <script src="./logic.js"></script>
 
+    <body onload="init();">
         <div id="center">
             <h2>Find My Device</h2>
         </div>
@@ -21,12 +20,9 @@
             <input type="text" id="fmdid" name="fmdid"><br><br>
         </div>
         <div id="center">
-            <button class="vertical-center" type="button">LOCATE</button>
+            <button class="vertical-center" type="button" onclick="locate();">LOCATE</button>
         </div>
-        
-        <div id="center">
-            <iframe id="map" src="https://www.openstreetmap.org/export/embed.html?bbox=8.66652,49.85138,8.6922,49.86637&amp;layer=mapnik“ style=„border: 1px solid black"></iframe>
-        </div>
+        <div id="map"></div>
 
     </body>
 

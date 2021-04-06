@@ -25,23 +25,23 @@ jobs:
           echo "::set-output name=SETREMOTE::$(git ls-remote https://github.com/guillaumeaubert/gmvault-docker.git HEAD | awk '{ print $1 }')"
           echo "::set-output name=SETLOCAL::$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/Gmvault | awk '{ print $1 }')"
   
-  repo-sync:
-    needs: [get_commits]
-    runs-on: ubuntu-latest
-    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
-    steps:
-    - name: repo-sync
-      uses: wei/git-sync@v3
-      with:
-        source_repo: "https://github.com/guillaumeaubert/gmvault-docker.git"
-        source_branch: "master"
-        destination_repo: "git@github.com:schklom/Mirror-workflows.git"
-        destination_branch: "Gmvault"
-        ssh_private_key: ${{ secrets.GITSYNCACTION }}
+  # repo-sync:
+    # needs: [get_commits]
+    # runs-on: ubuntu-latest
+    # # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    # if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
+    # steps:
+    # - name: repo-sync
+      # uses: wei/git-sync@v3
+      # with:
+        # source_repo: "https://github.com/guillaumeaubert/gmvault-docker.git"
+        # source_branch: "master"
+        # destination_repo: "git@github.com:schklom/Mirror-workflows.git"
+        # destination_branch: "Gmvault"
+        # ssh_private_key: ${{ secrets.GITSYNCACTION }}
 
   buildandpush:
-    needs: [repo-sync]
+    # needs: [repo-sync]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

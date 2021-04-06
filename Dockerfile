@@ -22,12 +22,12 @@ RUN apk add --update \
 		ssmtp \
 		shadow \
 		su-exec \
-		tzdata \
-	&& pip install --upgrade pip \
-	&& pip install gmvault \
-	&& rm -rf /var/cache/apk/* \
-	&& addgroup -g "$GMVAULT_DEFAULT_GID" gmvault \
-	&& adduser \
+		tzdata
+RUN  pip install --upgrade pip
+RUN  pip install gmvault
+RUN  rm -rf /var/cache/apk/*
+RUN  addgroup -g "$GMVAULT_DEFAULT_GID" gmvault
+RUN  adduser \
 		-H `# No home directory` \
 		-D `# Don't assign a password` \
 		-u "$GMVAULT_DEFAULT_UID" \

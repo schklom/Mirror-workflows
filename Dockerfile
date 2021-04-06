@@ -16,17 +16,17 @@ RUN mkdir /app
 RUN apk add --update bash
 RUN apk add --update ca-certificates
 RUN apk add --update mailx
-RUN apk add --update py-pip
+RUN apk add --update py3-pip
 RUN apk add --update python3
 RUN apk add --update ssmtp
 RUN apk add --update shadow
 RUN apk add --update su-exec
 RUN apk add --update tzdata
-RUN  pip install --upgrade pip
-RUN  pip install gmvault
-RUN  rm -rf /var/cache/apk/*
-RUN  addgroup --gid "$GMVAULT_DEFAULT_GID" gmvault
-RUN  adduser \
+RUN pip3 install --upgrade pip3
+RUN pip3 install gmvault
+RUN rm -rf /var/cache/apk/*
+RUN addgroup --gid "$GMVAULT_DEFAULT_GID" gmvault
+RUN adduser \
 		--no-create-home `# No home directory` \
 		--disabled-password `# Don't assign a password` \
 		--uid "$GMVAULT_DEFAULT_UID" \

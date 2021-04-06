@@ -16,13 +16,13 @@ RUN mkdir /app
 RUN apk add --update bash
 RUN apk add --update ca-certificates
 RUN apk add --update mailx
-RUN apk add --update py3-pip
-RUN apk add --update python3
+RUN apk add --update py-pip
+RUN apk add --update python
 RUN apk add --update ssmtp
 RUN apk add --update shadow
 RUN apk add --update su-exec
 RUN apk add --update tzdata
-RUN pip3 install --upgrade setuptools pip
+RUN pip install --upgrade setuptools pip
 RUN pip install gmvault==1.9.1
 RUN rm -rf /var/cache/apk/*
 RUN addgroup --gid "$GMVAULT_DEFAULT_GID" gmvault

@@ -13,16 +13,15 @@ VOLUME $GMVAULT_DIR
 RUN mkdir /app
 
 # Set up environment.
-RUN apk add --update \
-		bash \
-		ca-certificates \
-		mailx \
-		py-pip \
-		python \
-		ssmtp \
-		shadow \
-		su-exec \
-		tzdata
+RUN apk add --update bash
+RUN apk add --update ca-certificates
+RUN apk add --update mailx
+RUN apk add --update py-pip
+RUN apk add --update python
+RUN apk add --update ssmtp
+RUN apk add --update shadow
+RUN apk add --update su-exec
+RUN apk add --update tzdata
 RUN  pip install --upgrade pip
 RUN  pip install gmvault
 RUN  rm -rf /var/cache/apk/*

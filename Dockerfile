@@ -23,7 +23,7 @@ RUN apk add --update shadow
 RUN apk add --update su-exec
 RUN apk add --update tzdata
 RUN pip3 install --upgrade pip
-RUN pip3 install gmvault
+RUN pip install gmvault
 RUN rm -rf /var/cache/apk/*
 RUN addgroup --gid "$GMVAULT_DEFAULT_GID" gmvault
 RUN adduser \

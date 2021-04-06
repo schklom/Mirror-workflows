@@ -26,13 +26,13 @@ RUN apk add --update \
 RUN  pip install --upgrade pip
 RUN  pip install gmvault
 RUN  rm -rf /var/cache/apk/*
-RUN  addgroup -g "$GMVAULT_DEFAULT_GID" gmvault
+RUN  addgroup --gid "$GMVAULT_DEFAULT_GID" gmvault
 RUN  adduser \
-		-H `# No home directory` \
-		-D `# Don't assign a password` \
-		-u "$GMVAULT_DEFAULT_UID" \
-		-s "/bin/bash" \
-		-G "gmvault" \
+		--no-create-home `# No home directory` \
+		--disabled-password `# Don't assign a password` \
+		--uid "$GMVAULT_DEFAULT_UID" \
+		--shell "/bin/bash" \
+		--ingroup "gmvault" \
 		gmvault
 
 # Copy cron jobs.

@@ -2,7 +2,7 @@
 	set_include_path(__DIR__ ."/include" . PATH_SEPARATOR .
 		get_include_path());
 
-	$op = $_REQUEST["op"];
+	$op = $_REQUEST['op'] ?? '';
 	$method = !empty($_REQUEST['subop']) ?
 		$_REQUEST['subop'] :
 		$_REQUEST["method"] ?? false;

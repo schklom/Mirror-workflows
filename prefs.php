@@ -93,10 +93,23 @@
 		}
 	</style>
 
+	<noscript>
+		<style type="text/css">
+			body.css_loading noscript {
+				display : block;
+				margin : 16px;
+			}
+		</style>
+
+		<?= stylesheet_tag("themes/light.css") ?>
+	</noscript>
+
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 </head>
 
 <body class="flat ttrss_main ttrss_prefs css_loading">
+
+<noscript class="alert alert-error"><?= ('Javascript is disabled. Please enable it.') ?></noscript>
 
 <div id="notify" class="notify"></div>
 <div id="cmdline" style="display : none"></div>
@@ -107,7 +120,6 @@
 		<div dojoType="dijit.ProgressBar" places="0" style="width : 300px" id="loading_bar"
 	     progress="0" maximum="100">
 		</div>
-		<noscript><br/><?php print_error('Javascript is disabled. Please enable it.') ?></noscript>
 	</div>
 </div>
 

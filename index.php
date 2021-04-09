@@ -110,19 +110,31 @@
 		}
 	</style>
 
+	<noscript>
+		<?= stylesheet_tag("themes/light.css") ?>
+
+		<style type="text/css">
+			body.css_loading noscript {
+				display : block;
+				margin : 16px;
+			}
+		</style>
+	</noscript>
+
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="referrer" content="no-referrer"/>
 </head>
 
 <body class="flat ttrss_main ttrss_index css_loading">
 
-<div id="overlay" style="display : block">
+<noscript class="alert alert-error"><?= ('Javascript is disabled. Please enable it.') ?></noscript>
+
+<div id="overlay">
 	<div id="overlay_inner">
 		<?= __("Loading, please wait...") ?>
 		<div dojoType="dijit.ProgressBar" places="0" style="width : 300px" id="loading_bar"
 	     progress="0" maximum="100">
 		</div>
-		<noscript><br/><?php print_error('Javascript is disabled. Please enable it.') ?></noscript>
 	</div>
 </div>
 

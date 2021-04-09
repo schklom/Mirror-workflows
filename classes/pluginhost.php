@@ -469,6 +469,29 @@ class PluginHost {
 		}
 	}
 
+	// same as set(), but sets data to current preference profile
+	function profile_set(Plugin $sender, string $name, $value) {
+		$profile_id = $_SESSION["profile"] ?? null;
+
+		if ($profile_id) {
+			$idx = get_class($sender);
+
+			if (!isset($this->storage[$idx])) {
+				$this->storage[$idx] = [];
+			}
+
+			if (!isset($this->storage[$idx][$profile_id])) {
+				$this->storage[$idx][$profile_id] = [];
+			}
+
+			$this->storage[$idx][$profile_id][$name] = $value;
+
+			$this->save_data(get_class($sender));
+		} else {
+			return $this->set($sender, $name, $value);
+		}
+	}
+
 	function set(Plugin $sender, string $name, $value) {
 		$idx = get_class($sender);
 
@@ -490,6 +513,26 @@ class PluginHost {
 			$this->storage[$idx][$name] = $value;
 
 		$this->save_data(get_class($sender));
+	}
+
+	// same as get(), but sets data to current preference profile
+	function profile_get(Plugin $sender, string $name, $default_value = false) {
+		$profile_id = $_SESSION["profile"] ?? null;
+
+		if ($profile_id) {
+			$idx = get_class($sender);
+
+			$this->load_data();
+
+			if (isset($this->storage[$idx][$profile_id][$name])) {
+				return $this->storage[$idx][$profile_id][$name];
+			} else {
+				return $default_value;
+			}
+
+		} else {
+			return $this->get($sender, $name, $default_value);
+		}
 	}
 
 	function get(Plugin $sender, string $name, $default_value = false) {

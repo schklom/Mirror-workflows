@@ -22,10 +22,12 @@ if (!constants.language_dev) Object.assign(data, require("./en.js"))
 			Bibliogram, özel profilleri anonim olarak paylaşmanıza, beğenmenize, yorum yapmanıza, takip etmenize veya görüntülemenize izin #[em vermez].
 			Silinen gönderileri korumaz.
 	`)
+	data.experiencing_problems_header = "Bibliogram ile ilgili sorunlar mı yaşıyorsunuz?"
+	data.t_read_more_here = "Buradan daha fazlasını okuyun."
 	data.about_this_instance_header = "Bu örnek hakkında"
 	data.onion_site_available = "Onion sitesi var"
 	data.t_settings = "Ayarlar"
-	data.t_privacy_policy = "Gizlilik Politikası"
+	data.t_privacy_policy = "Gizlilik politikası"
 	data.has_not_written_privacy_policy = "Sahibi gizlilik politikası yazmadı"
 	data.instance_not_blocked = "Örnek engellenmedi"
 	data.instance_partially_blocked = "Örnek kısmen engellendi"
@@ -52,7 +54,7 @@ if (!constants.language_dev) Object.assign(data, require("./en.js"))
 	data.t_home = "Ana Sayfa"
 	data.tab_timeline = "Zaman Çizelgesi"
 	data.tab_igtv = "IGTV"
-	data.next_page_button = "Sonraki Sayfa"
+	data.next_page_button = "Sonraki sayfa"
 	data.next_page_button_loading = "Yükleniyor..."
 	data.profile_is_private_notice = "Profil özeldir."
 	data.no_posts_notice = "Gönderi yok."
@@ -64,7 +66,7 @@ if (!constants.language_dev) Object.assign(data, require("./en.js"))
 	// settings
 	data.t_features = "Özellikler"
 	data.t_language = "Dil"
-	data.save_data = "Veri kaydet"
+	data.save_data = "Veri tasarrufu"
 	data.t_automatic = "Otomatik"
 	data.t_off = "Kapalı"
 	data.lazy_load = "Tembel yükleme"

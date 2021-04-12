@@ -1859,6 +1859,6 @@ class RSSUtils {
 
 	static function function_enabled($func) {
 		return !in_array($func,
-						explode(',', (string)ini_get('disable_functions')));
+						explode(',', str_replace(" ", "", ini_get('disable_functions'))));
 	}
 }

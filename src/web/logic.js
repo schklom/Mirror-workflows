@@ -22,7 +22,7 @@ function locate(){
             return response.json();
         })
         .then(function(json) {
-            var lonLat = new OpenLayers.LonLat( json.lat , json.lon )
+            var lonLat = new OpenLayers.LonLat( json.lon , json.lat )
                 .transform(
                 new OpenLayers.Projection("EPSG:4326"),
                 map.getProjectionObject()

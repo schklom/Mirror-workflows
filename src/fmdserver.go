@@ -7,18 +7,29 @@ import (
     "strings"
     "io/ioutil"
     "strconv"
+    "encoding/json"
+    "path/filepath"
+    "os"
 )
+
+//Some variables
+const port = 8000
+const dataDir = "data"
+
+type locationData struct {
+	Id string `'json:"id"`
+    Lon string `json:"lon"`
+	Lat string `json:"lat"`
+}
 
 func getLocation(w http.ResponseWriter, r *http.Request) {
     id := strings.TrimPrefix(r.URL.Path, "/location/")
-
     w.Header().Set("Content-Type", "application/json")
 
-
-    files, err := ioutil.ReadDir("./data/"+id)
+    filePath := filepath.Join(dataDir, id)
+    files, err := ioutil.ReadDir(filePath)
     highest := -1
     position := -1
-
     for i := 0; i< len(files); i++ {
         number, _ := strconv.Atoi(files[i].Name());
         if number > highest {
@@ -26,8 +37,8 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
                 position = i;
         }
     }
-
-    data, err := ioutil.ReadFile("./data/"+id+"/"+files[position].Name())
+    filePath = filepath.Join(filePath, files[position].Name())
+    data, err := ioutil.ReadFile(filePath)
     if err != nil {
         fmt.Println("File reading error", err)
         return
@@ -36,7 +47,26 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 }
 
 func putLocation(w http.ResponseWriter, r *http.Request) {
-
+    var location locationData
+	err := json.NewDecoder(r.Body).Decode(&location)
+	if err != nil {
+		fmt.Fprintf(w, "Meeep!, Error")
+        return
+	}
+	path := filepath.Join(dataDir, location.Id)
+	os.MkdirAll(path, os.ModePerm)
+    files, err := ioutil.ReadDir(path)
+    highest := 0
+    for i := 0; i< len(files); i++ {
+        number, _ := strconv.Atoi(files[i].Name())
+        if number > highest {
+                highest = number;
+        }
+    }
+    highest += 1
+    path = filepath.Join(path, strconv.Itoa(highest))
+    file, _ := json.MarshalIndent(location, "", " ")
+ 	_ = ioutil.WriteFile(path, file, 0644)
 }
 
 func handleRequests() {
@@ -47,5 +77,6 @@ func handleRequests() {
 }
 
 func main() {
+    fmt.Println("FMD - Server\nStarting Server");
 	handleRequests()
 }

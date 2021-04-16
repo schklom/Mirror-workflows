@@ -18,6 +18,7 @@ const dataDir = "data"
 
 type locationData struct {
 	Id string `'json:"id"`
+	Date uint64 `'json:"date"`
     Lon string `json:"lon"`
 	Lat string `json:"lat"`
 }
@@ -73,6 +74,7 @@ func handleRequests() {
 	http.Handle("/", http.FileServer(http.Dir("./web")))
 	http.HandleFunc("/location/", getLocation)
 	http.HandleFunc("/newlocation", putLocation)
+    //http.ListenAndServeTLS(":8001", "server.crt", "server.key", nil)
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }
 

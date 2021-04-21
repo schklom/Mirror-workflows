@@ -1386,11 +1386,13 @@ body.ttrss_utility hr {
 .cdm .feed-title a:hover {
   color: #257aa7;
 }
+.cdm .intermediate .embed-responsive,
 .cdm .content-inner .embed-responsive {
   overflow: hidden;
   padding-bottom: 56.25%;
   position: relative;
 }
+.cdm .intermediate .embed-responsive iframe,
 .cdm .content-inner .embed-responsive iframe {
   border: 0;
   bottom: 0;

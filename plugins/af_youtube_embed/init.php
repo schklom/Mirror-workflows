@@ -29,10 +29,12 @@ class Af_Youtube_Embed extends Plugin {
 
 			$vid_id = $matches[1];
 
-			return "<iframe class=\"youtube-player\"
-				type=\"text/html\" width=\"640\" height=\"385\"
-				src=\"https://www.youtube.com/embed/$vid_id\"
-				allowfullscreen frameborder=\"0\"></iframe>";
+			return "<div class='embed-responsive'>
+				<iframe class='youtube-player'
+					type='text/html' width='640' height='385'
+					src=\"https://www.youtube.com/embed/$vid_id\"
+					allowfullscreen frameborder='0'></iframe>
+				</div>";
 
 		}
 	}

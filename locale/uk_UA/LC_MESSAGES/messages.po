@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-03-08 19:06+0300\n"
-"PO-Revision-Date: 2020-10-03 17:41+0000\n"
+"PO-Revision-Date: 2021-03-27 22:30+0000\n"
 "Last-Translator: Андрій Жук <zhouck@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.tt-rss.org/projects/tt-rss/"
 "messages/uk/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.2.2\n"
+"X-Generator: Weblate 4.5.2\n"
 
 #: backend.php:60
 msgid "Use default"
@@ -647,7 +647,7 @@ msgstr "Розширені"
 
 #: classes/pref/prefs.php:80
 msgid "Debugging"
-msgstr ""
+msgstr "Налагодження"
 
 #: classes/pref/prefs.php:86
 msgid "Never apply these tags automatically (comma-separated list)."
@@ -819,7 +819,7 @@ msgstr "Тема"
 
 #: classes/pref/prefs.php:117
 msgid "Don't enforce DISTINCT headlines"
-msgstr ""
+msgstr "Не вимагати унікальності заголовків"
 
 #: classes/pref/prefs.php:117
 #, fuzzy
@@ -844,7 +844,7 @@ msgstr "Вимкнути оновлення"
 
 #: classes/pref/prefs.php:119
 msgid "May increase server load"
-msgstr ""
+msgstr "Може збільшувати навантаження на сервер"
 
 #: classes/pref/prefs.php:220
 msgid "The configuration was saved."
@@ -961,7 +961,7 @@ msgstr "Більше тем..."
 
 #: classes/pref/prefs.php:669
 msgid "Preview"
-msgstr ""
+msgstr "Передогляд"
 
 #: classes/pref/prefs.php:695
 msgid "Register"
@@ -1043,7 +1043,7 @@ msgstr "Увімкнути обрані плагіни"
 
 #: classes/pref/prefs.php:889
 msgid "Reload"
-msgstr ""
+msgstr "Перезавантажити"
 
 #: classes/pref/prefs.php:896
 #, fuzzy
@@ -1107,7 +1107,7 @@ msgstr ""
 
 #: classes/pref/system.php:24
 msgid "Test message from tt-rss"
-msgstr ""
+msgstr "Перевіряюче повідомлення від tt-rss"
 
 #: classes/pref/system.php:82 js/PrefHelpers.js:595
 msgid "Refresh"
@@ -1115,20 +1115,21 @@ msgstr "Оновити"
 
 #: classes/pref/system.php:87
 msgid "&lt;&lt;"
-msgstr ""
+msgstr "&lt;&lt;"
 
 #: classes/pref/system.php:91
 #, php-format
 msgid "Page %d of %d"
-msgstr ""
+msgstr "Сторінка %d з %d"
 
 #: classes/pref/system.php:96
+#, fuzzy
 msgid "&gt;&gt;"
-msgstr ""
+msgstr "&gt;&gt;"
 
 #: classes/pref/system.php:105
 msgid "Severity:"
-msgstr ""
+msgstr "Важливість:"
 
 #: classes/pref/system.php:109
 #, fuzzy
@@ -1137,7 +1138,7 @@ msgstr "Помилка"
 
 #: classes/pref/system.php:110
 msgid "Warnings"
-msgstr ""
+msgstr "Попередження"
 
 #: classes/pref/system.php:111
 #, fuzzy
@@ -1317,9 +1318,9 @@ msgstr "Вимкнути OTP"
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d день"
+msgstr[1] "%d днів"
+msgstr[2] "%d днів"
 
 #: classes/pref/feeds.php:565
 msgid "Check to enable field"
@@ -1728,7 +1729,7 @@ msgstr ""
 
 #: plugins/af_readability/init.php:115
 msgid "(append)"
-msgstr ""
+msgstr "(додати)"
 
 #: plugins/af_readability/init.php:130
 msgid "Readability"
@@ -1740,7 +1741,7 @@ msgstr "Вбудувати вміст статті"
 
 #: plugins/af_readability/init.php:141
 msgid "Append to summary, instead of replacing it"
-msgstr ""
+msgstr "Додати до підсумку, а не заміняти"
 
 #: plugins/bookmarklets/init.php:88 js/CommonDialogs.js:93
 msgid "Subscribe"
@@ -1890,11 +1891,11 @@ msgstr "Увімкнути додаткову перевірку на дублі
 #: plugins/af_redditimgur/init.php:85
 #, php-format
 msgid "Rewrite Reddit URLs to %s"
-msgstr ""
+msgstr "Переписувати посилання на Reddit до %s"
 
 #: plugins/af_redditimgur/init.php:93
 msgid "Import score, limit maximum to:"
-msgstr ""
+msgstr "Показник імпорту, встановити максимум у:"
 
 #: plugins/af_redditimgur/init.php:124
 msgid "Configuration saved"
@@ -1955,11 +1956,11 @@ msgstr "Не показувати зображення у статтях, зме
 
 #: include/login_form.php:156 js/Feeds.js:281
 msgid "Safe mode"
-msgstr ""
+msgstr "Безпечний режим"
 
 #: include/login_form.php:161
 msgid "Uses default theme and prevents all plugins from loading."
-msgstr ""
+msgstr "Використовує типову тему та блокує завантаження будь-яких плагінів."
 
 #: include/login_form.php:169
 msgid "Remember me"
@@ -2087,6 +2088,8 @@ msgid ""
 "URL scheme reported by your browser (%a) doesn't match server-configured "
 "SELF_URL_PATH (%b), check X-Forwarded-Proto."
 msgstr ""
+"Схема URL, яку надіслав переглядач (%a), не відповідає налаштованому на "
+"сервері SELF_URL_PATH (%b), перевірте X-Forwarded-Proto."
 
 #: js/App.js:576
 msgid "Fatal error"
@@ -2104,7 +2107,7 @@ msgstr "Доступні оновлення з Git."
 
 #: js/App.js:832
 msgid "Updates for some local plugins are available."
-msgstr ""
+msgstr "Є оновлення для деяких локальних плагінів."
 
 #: js/App.js:1042
 msgid "Please enable mail or mailto plugin first."
@@ -2231,6 +2234,8 @@ msgid ""
 "Provided URL is a HTML page referencing multiple feeds, please select "
 "required feed from the dropdown menu below."
 msgstr ""
+"Наданий URL є HTML сторінкою, що містить декілька каналів, оберіть потрібний "
+"зі списку вибору нижче."
 
 #: js/CommonDialogs.js:122
 msgid ""
@@ -2290,7 +2295,7 @@ msgstr "Будь ласка, оберіть файл картинку для з�
 
 #: js/CommonDialogs.js:373
 msgid "Icon file is too large."
-msgstr ""
+msgstr "Файл з іконкою завеликий."
 
 #: js/CommonDialogs.js:376
 msgid "Upload failed."
@@ -2422,11 +2427,11 @@ msgstr "Очистити дані"
 
 #: js/PrefHelpers.js:396
 msgid "Uninstall"
-msgstr ""
+msgstr "Видалити"
 
 #: js/PrefHelpers.js:408 js/PrefHelpers.js:569
 msgid "Could not find any plugins for this search query."
-msgstr ""
+msgstr "Не знайдено жодного плагіну для цього пошукового запиту."
 
 #: js/PrefHelpers.js:415
 #, fuzzy, javascript-format
@@ -2466,24 +2471,24 @@ msgstr "Імпортування, будь ласка, зачекайте..."
 
 #: js/PrefHelpers.js:480 js/PrefHelpers.js:524 js/PrefHelpers.js:635
 msgid "Operation failed: check event log."
-msgstr ""
+msgstr "Операція закінчилася помилкою: перевірте журнал подій."
 
 #: js/PrefHelpers.js:484
 msgid "Plugin has been installed."
-msgstr ""
+msgstr "Плагін було встановлено."
 
 #: js/PrefHelpers.js:488
 msgid "Plugin is already installed."
-msgstr ""
+msgstr "Плагін вже встановлено."
 
 #: js/PrefHelpers.js:498 js/PrefHelpers.js:652 js/PrefHelpers.js:718
 #, javascript-format
 msgid "Exited with RC: %d"
-msgstr ""
+msgstr "Вихід з кодом: %d"
 
 #: js/PrefHelpers.js:549
 msgid "Already installed"
-msgstr ""
+msgstr "Вже встановлено"
 
 #: js/PrefHelpers.js:560
 #, fuzzy
@@ -2493,11 +2498,11 @@ msgstr "Востаннє оновлений: %s"
 
 #: js/PrefHelpers.js:577
 msgid "Looking for plugins..."
-msgstr ""
+msgstr "Пошук плагінів..."
 
 #: js/PrefHelpers.js:596 js/PrefHelpers.js:738
 msgid "Close"
-msgstr ""
+msgstr "Закрити"
 
 #: js/PrefHelpers.js:614
 #, fuzzy
@@ -2526,12 +2531,12 @@ msgstr "Немає доступних дій"
 #: js/PrefHelpers.js:689
 #, javascript-format
 msgid "Checking: %s"
-msgstr ""
+msgstr "Перевірка: %s"
 
 #: js/PrefHelpers.js:696
 #, javascript-format
 msgid "%s: Operation failed: check event log."
-msgstr ""
+msgstr "%s: Операція закінчилася помилкою: перевірте журнал подій."
 
 #: js/PrefHelpers.js:719
 #, fuzzy
@@ -2913,6 +2918,8 @@ msgid ""
 "Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. "
 "You will need to log out and back in to disable it."
 msgstr ""
+"Tiny Tiny RSS працює в безпечному режимі. Всі теми та плагіни вимкнені. Ви "
+"маєте вийти та зайти знову щоб вимкнути їх повністю."
 
 #: js/Feeds.js:610
 msgid "Used for word stemming"
@@ -2922,7 +2929,7 @@ msgstr ""
 
 #: js/App.js:609
 msgid "Stack trace"
-msgstr ""
+msgstr "Траса стеку викликів"
 
 #: js/PrefFeedTree.js:369
 msgid "Rename category to:"
@@ -2962,7 +2969,7 @@ msgstr "Застосувати"
 
 #: js/PrefHelpers.js:331
 msgid "Selected plugins have been enabled. Reload?"
-msgstr ""
+msgstr "Обрані плагіни були увімкнуті. Перезавантажити?"
 
 #: js/PrefHelpers.js:660
 #, fuzzy
@@ -2974,9 +2981,9 @@ msgstr "Завантаження завершилося."
 #, javascript-format
 msgid "Updates pending for %d plugin"
 msgid_plural "Updates pending for %d plugins"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Оновлення очікує для %d плагіна"
+msgstr[1] "Оновлення очікує для %d плагінів"
+msgstr[2] "Оновлення очікує для %d плагінів"
 
 #: js/Headlines.js:622
 msgid "Invert"
@@ -2988,7 +2995,7 @@ msgstr "Оцінити"
 
 #: js/Headlines.js:635
 msgid "Delete permanently"
-msgstr ""
+msgstr "Видалити незворотньо"
 
 #: js/Headlines.js:809
 msgid ""

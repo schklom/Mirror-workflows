@@ -278,7 +278,7 @@ const Article = {
 		}
 	},
 	pack: function(row) {
-		if (row.getAttribute("data-is-packed") != "1" && row.hasClassName("cdm")) {
+		if (row.getAttribute("data-is-packed") != "1") {
 			console.log("packing", row.id);
 			row.setAttribute("data-is-packed", "1");
 
@@ -414,7 +414,9 @@ const Article = {
 
 			App.findAll("div[id*=RROW][class*=active]").forEach((row) => {
 				row.removeClassName("active");
-				Article.pack(row);
+
+				if (App.isCombinedMode() && !App.getInitParam("cdm_expanded"))
+					Article.pack(row);
 			});
 
 			const row = App.byId(`RROW-${id}`);

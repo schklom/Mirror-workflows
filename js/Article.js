@@ -278,7 +278,7 @@ const Article = {
 		}
 	},
 	pack: function(row) {
-		if (row.getAttribute("data-is-packed") != "1") {
+		if (row.getAttribute("data-is-packed") != "1" && row.hasClassName("cdm")) {
 			console.log("packing", row.id);
 			row.setAttribute("data-is-packed", "1");
 

@@ -490,7 +490,9 @@ const Headlines = {
 						id="RROW-${hl.id}"
 						data-article-id="${hl.id}"
 						data-orig-feed-id="${hl.feed_id}"
+						data-is-packed="1"
 						data-content="${App.escapeHtml(hl.content)}"
+						data-rendered-enclosures="${App.escapeHtml(Article.renderEnclosures(hl.enclosures))}"
 						data-score="${hl.score}"
 						data-article-title="${App.escapeHtml(hl.title)}"
 						onmouseover="Article.mouseIn(${hl.id})"
@@ -537,9 +539,10 @@ const Headlines = {
 									${__("Loading, please wait...")}
 								</div>
 							</div>
-							<div class="intermediate">
-								${Article.renderEnclosures(hl.enclosures)}
-							</div>
+
+							<!-- intermediate: unstyled, kept for compatibility -->
+							<div class="intermediate"></div>
+
 							<div class="footer" onclick="event.stopPropagation()">
 
 								<div class="left">

@@ -754,6 +754,12 @@ body.ttrss_main {
 			.content {
 				border-top-width : 0;
 				padding : 0 4px 4px 4px;
+
+				.content-inner {
+					a {
+						word-break: break-all;
+					}
+				}
 			}
 
 			.header[data-is-stuck] {
@@ -785,13 +791,6 @@ body.ttrss_main {
 				.left {
 					overflow: hidden;
 					text-overflow: ellipsis;
-				}
-			}
-
-			.content-inner,
-			.intermediate {
-				a {
-					word-break: break-all;
 				}
 			}
 		}

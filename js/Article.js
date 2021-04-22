@@ -255,12 +255,12 @@ const Article = {
 		return comments;
 	},
 	unpack: function(row) {
-		if (row.hasAttribute("data-content")) {
+		if (row.getAttribute("data-is-packed") == "1") {
 			console.log("unpacking: " + row.id);
 
 			const container = row.querySelector(".content-inner");
 
-			container.innerHTML = row.getAttribute("data-content").trim();
+			container.innerHTML = row.getAttribute("data-content").trim() + row.getAttribute("data-rendered-enclosures").trim();
 
 			dojo.parser.parse(container);
 
@@ -272,16 +272,15 @@ const Article = {
 			if (App.isCombinedMode() && App.byId("main").hasClassName("expandable"))
 				row.setAttribute("data-content-original", row.getAttribute("data-content"));
 
-			row.removeAttribute("data-content");
+			row.setAttribute("data-is-packed", "0");
 
 			PluginHost.run(PluginHost.HOOK_ARTICLE_RENDERED_CDM, row);
 		}
 	},
 	pack: function(row) {
-		if (row.hasAttribute("data-content-original")) {
+		if (row.getAttribute("data-is-packed") != "1") {
 			console.log("packing", row.id);
-			row.setAttribute("data-content", row.getAttribute("data-content-original"));
-			row.removeAttribute("data-content-original");
+			row.setAttribute("data-is-packed", "1");
 
 			row.querySelector(".content-inner").innerHTML = `<div class="text-center text-muted">
 				${__("Loading, please wait...")}

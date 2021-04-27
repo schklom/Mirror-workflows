@@ -18,7 +18,7 @@ except KeyError as e:
     firefly_validate_ssl = True
 
 try:
-    import_interval = os.environ['IMPORT_INTERVAL']
+    import_interval = int(os.environ['IMPORT_INTERVAL'])
 except KeyError as e:
     import_interval = 60 * 5
 

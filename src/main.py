@@ -84,9 +84,9 @@ def move_successful(files_to_import):
             continue
         if config.debug:
             print("  - Moving file '" + file_to_import + "' to successful destination.")
-            source_file = Path(config.source_directory).joinpath(file_to_import)
-            target_file = Path(config.history_directory).joinpath(file_to_import)
-            shutil.move(source_file, target_file)
+        source_file = Path(config.source_directory).joinpath(file_to_import)
+        target_file = Path(config.history_directory).joinpath(file_to_import)
+        shutil.move(source_file, target_file)
 
 
 def move_failed(files_to_import):
@@ -95,15 +95,15 @@ def move_failed(files_to_import):
             continue
         if config.debug:
             print("  - Moving file '" + file_to_import + "' to failed destination.")
-            source_file = Path(config.source_directory).joinpath(file_to_import)
-            target_file = Path(config.failed_directory).joinpath(file_to_import)
-            shutil.move(source_file, target_file)
-            report_handle = \
-                open(Path(config.failed_directory).joinpath("report_" + file_to_import.replace(".csv", ".txt")), "w+")
-            report_handle.writelines(
-                line + "\n"
-                for line in files_to_import.get(file_to_import).get("report")
-            )
+        source_file = Path(config.source_directory).joinpath(file_to_import)
+        target_file = Path(config.failed_directory).joinpath(file_to_import)
+        shutil.move(source_file, target_file)
+        report_handle = \
+            open(Path(config.failed_directory).joinpath("report_" + file_to_import.replace(".csv", ".txt")), "w+")
+        report_handle.writelines(
+            line + "\n"
+            for line in files_to_import.get(file_to_import).get("report")
+        )
 
 
 def start():

@@ -2,8 +2,6 @@
 
 As of now there is no other way to get your movements out of your Crypto.com Wallet (not DeFi Wallet App) than exporting it to CSV files. This service provides a file share where you can drop your exported CSV files and automatically import it to your Firefly III instance.
 
-Well, as there's more information needed than provided within these csv files to map the transactions to the appropriate accounts within Firefly III it's not "just importing a csv". Therefore the csv-importer isn't used and instead the Firefly III API is called directly.
-
 # How to use
 
 ## Run it from Docker Hub
@@ -12,27 +10,52 @@ Get and run this service from Docker hub image:
 
 ```
 docker pull financelurker/cryptocom-csv-firefly-iii:latest
-docker run <tbd>
+docker run -d --name cryptocom-csv-firefly-iii \
+	-v "<<import directory>>":"/var/cryptocom-csv-firefly-iii/csv-to-import" \
+	-v "<<history directory>>":"/var/cryptocom-csv-firefly-iii/csv-import-history" \
+	-v "<<failed directory>>":"/var/cryptocom-csv-firefly-iii/csv-import-failed" \
+	-e IMPORT_INTERVAL=<<seconds>> \
+	-e FIREFLY_III_ACCESS_TOKEN=<<access token>> \
+	-e FIREFLY_III_URL=<<url to firefly instance>> \
+	-e PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+	-e LANG=C.UTF-8 \
+	-e GPG_KEY=E3FF2839C048B25C084DEBE9B26995E310250568 \
+	-e PYTHON_VERSION=3.9.4 \
+	-e PYTHON_PIP_VERSION=21.0.1 \
+	-e PYTHON_GET_PIP_URL=https://github.com/pypa/get-pip/raw/29f37dbe6b3842ccd52d61816a3044173962ebeb/public/get-pip.py \
+	-e PYTHON_GET_PIP_SHA256=e03eb8a33d3b441ff484c56a436ff10680479d4bd14e59268e67977ed40904de \
+	financelurker/cryptocom-csv-firefly-iii:latest
 ```
 
 ## Run it from code
-
-This way needs the csv-importer binaries also be available on the PATH environment variable.
 
 Get and run this service from Docker hub image:
 
 ```
 git clone <tbd>
 cd cryptocom-csv-firefly-iii/src
+<< set environmental variables and create directories >>
 python main.py
 ```
 
 ## Configuration
 
+### Firefly III Accounts
+
+For each coin you handle in your **Crypto.com Crypto** Wallet add an account with the appropriate currency (if not existent, create one).
+To each of those accounts add the notes-identifier **"cryptocom-csv-firefly-iii:crypto-wallet"**, so the service can identify between which asset accounts in your Crypto Wallet the transfer should be inserted.
+
 ### Directories
 
-In order to get this service to work you need three directories:
+In order to get this service to work you need three directories, which are the main interface to this service:
 
+* Import Directory
+  * This directory is the input for the service. Just drop a Crypto.com csv file (from Crypto Wallet for now).
+  If the run was successful - for now - after each run this directory should be empty.
+* History Directory
+  * This is the output directory for a successfully imported csv file and is considered "reporting"
+* Failed Directory
+  * The service puts failed to import csv files here. In addition a dedicated "report_"-file will be generated containing information what the cause of this fail was.
 
 ### Environment
 

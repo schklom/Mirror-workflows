@@ -11,7 +11,7 @@ from model import ImportRecord
 firefly_config = None
 urllib3.disable_warnings()
 
-notes_identifier = "cryptocom-csv-firefly-iii"
+notes_identifier = "cryptocom-csv-firefly-iii:crypto-wallet"
 
 
 def connect():

@@ -90,7 +90,7 @@ In order to run this service you need to configure some environmental variables:
   - Type: string
   - Default: /var/crypto-com-csv-firefly-iii/csv-import-failed
 - **DEBUG**
-  - Description: This property defines if debug mode is enabled or not. If debug mode is enabled the import_interval is set to 5 seconds and all written elements to Firefly III additionally get the "dev" tag.
-  - Type: boolean [ true | any ]
+  - Description: This property defines if debug mode is enabled or not. The debug mode is enabled as soon as there is an environmental variable called "debug" with any value. If debug mode is enabled the import_interval is set to 5 seconds and all written elements to Firefly III additionally get the "dev" tag.
+  - Type: boolean [ any ]
   - Optional
   - Default: False

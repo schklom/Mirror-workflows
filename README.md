@@ -10,5 +10,4 @@ The Actions are defined in the directory .github/workflows. Secrets are used for
 
 - Feedropolis
 - Spreed
-- TGTG (TooGoodToGo, but the creator accepted my pull request to support arm, so I don't maintain this anymore)
 - TT-RSS

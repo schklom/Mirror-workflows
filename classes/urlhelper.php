@@ -487,4 +487,26 @@ class UrlHelper {
 		}
 	}
 
+	public static function url_to_youtube_vid($url) {
+		$url = str_replace("youtube.com", "youtube-nocookie.com", $url);
+
+		$regexps = [
+			"/\/\/www\.youtube-nocookie\.com\/v\/([\w-]+)/",
+			"/\/\/www\.youtube-nocookie\.com\/embed\/([\w-]+)/",
+			"/\/\/www\.youtube-nocookie\.com\/watch?v=([\w-]+)/",
+			"/\/\/youtu.be\/([\w-]+)/",
+		];
+
+		foreach ($regexps as $re) {
+			$matches = [];
+
+			if (preg_match($re, $url, $matches)) {
+				return $matches[1];
+			}
+		}
+
+		return false;
+	}
+
+
 }

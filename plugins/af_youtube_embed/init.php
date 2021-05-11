@@ -16,18 +16,16 @@ class Af_Youtube_Embed extends Plugin {
 	}
 
 	function hook_iframe_whitelisted($src) {
-		return in_array($src, ["www.youtube.com", "youtube.com", "youtu.be"]);
+		return in_array($src, ["www.youtube.com", "youtube.com",
+			"www.youtube-nocookie.com", "youtube-nocookie.com",
+			"youtu.be"]);
 	}
 
 	function hook_render_enclosure($entry, $hide_images) {
 
-		$matches = array();
+		$url = $entry["content_url"];
 
-		if (preg_match("/\/\/www\.youtube\.com\/v\/([\w-]+)/", $entry["content_url"], $matches) ||
-			preg_match("/\/\/www\.youtube\.com\/watch?v=([\w-]+)/", $entry["content_url"], $matches) ||
-			preg_match("/\/\/youtu.be\/([\w-]+)/", $entry["content_url"], $matches)) {
-
-			$vid_id = $matches[1];
+		if ($vid_id = UrlHelper::url_to_youtube_vid($url)) {
 
 			return "<div class='embed-responsive'>
 				<iframe class='youtube-player'

@@ -1751,9 +1751,10 @@ class Feeds extends Handler_Protected {
 							author, score,
 							(SELECT count(label_id) FROM ttrss_user_labels2 WHERE article_id = ttrss_entries.id) AS num_labels,
 							(SELECT count(id) FROM ttrss_enclosures WHERE post_id = ttrss_entries.id) AS num_enclosures
-						FROM ttrss_entries, ttrss_user_entries, ttrss_tags, ttrss_feeds
+						FROM ttrss_entries,
+							ttrss_user_entries LEFT JOIN ttrss_feeds ON (ttrss_feeds.id = ttrss_user_entries.feed_id),
+							ttrss_tags
 						WHERE
-							ttrss_feeds.id = ttrss_user_entries.feed_id AND
 							ref_id = ttrss_entries.id AND
 							ttrss_user_entries.owner_uid = ".$pdo->quote($owner_uid)." AND
 							post_int_id = int_id AND

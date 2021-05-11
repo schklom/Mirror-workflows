@@ -282,9 +282,13 @@ const Article = {
 			console.log("packing", row.id);
 			row.setAttribute("data-is-packed", "1");
 
-			row.querySelector(".content-inner").innerHTML = `<div class="text-center text-muted">
-				${__("Loading, please wait...")}
-			</div>`
+			const content_inner = row.querySelector(".content-inner");
+
+			// missing in unexpanded mode
+			if (content_inner)
+				content_inner.innerHTML = `<div class="text-center text-muted">
+					${__("Loading, please wait...")}
+				</div>`
 		}
 	},
 	view: function (id, no_expand) {

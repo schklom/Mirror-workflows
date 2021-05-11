@@ -425,13 +425,7 @@ class Af_RedditImgur extends Plugin {
 			}
 
 			$matches = array();
-			if (!$found && (preg_match("/youtube\.com\/v\/([\w-]+)/", $entry_href, $matches) ||
-				preg_match("/youtube\.com\/.*?[\&\?]v=([\w-]+)/", $entry_href, $matches) ||
-				preg_match("/youtube\.com\/embed\/([\w-]+)/", $entry_href, $matches) ||
-				preg_match("/youtube\.com\/watch\?v=([\w-]+)/", $entry_href, $matches) ||
-				preg_match("/\/\/youtu.be\/([\w-]+)/", $entry_href, $matches))) {
-
-				$vid_id = $matches[1];
+			if (!$found && $vid_id = UrlHelper::url_to_youtube_vid($entry_href)) {
 
 				Debug::log("Handling as youtube: $vid_id", Debug::LOG_VERBOSE);
 

@@ -485,7 +485,7 @@ class Config {
 		}
 
 		// ttrss_users won't be there on initial startup (before migrations are done)
-		if (!Config::is_migration_needed() && self::get(Config::SINGLE_USER_MODE) && class_exists("PDO")) {
+		if (!Config::is_migration_needed() && self::get(Config::SINGLE_USER_MODE)) {
 			if (UserHelper::get_login_by_id(1) != "admin") {
 				array_push($errors, "SINGLE_USER_MODE is enabled but default admin account (ID: 1) is not found.");
 			}

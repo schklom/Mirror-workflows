@@ -142,7 +142,7 @@ class Share extends Plugin {
 				$line);
 
 			$enclosures = Article::_get_enclosures($line["id"]);
-			list ($og_image, $og_stream) = Article::_get_image($enclosures, $line['content'], $line["site_url"] ? $line["site_url"] : "", $line);
+			list ($og_image, $og_stream) = Article::_get_image($enclosures, $line['content'], $line["site_url"] ?: "", $line);
 
 			$content_decoded = html_entity_decode($line["title"], ENT_NOQUOTES | ENT_HTML401);
 			$parsed_updated = TimeHelper::make_local_datetime($line["updated"], true, $owner_uid, true);

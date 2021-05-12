@@ -75,7 +75,7 @@ class UserHelper {
 
 			$_SESSION["auth_module"] = false;
 
-			if (!$_SESSION["csrf_token"])
+			if (empty($_SESSION["csrf_token"]))
 				$_SESSION["csrf_token"] = bin2hex(get_random_bytes(16));
 
 			$_SESSION["ip_address"] = UserHelper::get_user_ip();

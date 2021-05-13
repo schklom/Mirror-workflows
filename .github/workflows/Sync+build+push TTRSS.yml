@@ -22,8 +22,10 @@ jobs:
       - name: set local and remote latest commit as environment variables
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+        # echo "::set-output name=SETREMOTE::$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose.git HEAD | awk '{ print $1 }')"
+        # fox updates the docker image based on the tt-rss repo instead of ttrss-docker-compose for some reason, so it's better to do the same
         run: |
-          echo "::set-output name=SETREMOTE::$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose.git HEAD | awk '{ print $1 }')"
+          echo "::set-output name=SETREMOTE::$(git ls-remote https://git.tt-rss.org/fox/tt-rss.git HEAD | awk '{ print $1 }')"
           echo "::set-output name=SETLOCAL::$(cat last_sync_with_original_repo_commit_id)"
   
   repo_sync:

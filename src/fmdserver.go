@@ -5,16 +5,19 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 )
 
 //Some variables
-const port = 8000
 const dataDir = "data"
+
+var ids []string
 
 type locationData struct {
 	Id       string `'json:"id"`
@@ -29,7 +32,7 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	filePath := filepath.Join(dataDir, id)
-	files, err := ioutil.ReadDir(filePath)
+	files, _ := ioutil.ReadDir(filePath)
 	highest := -1
 	position := -1
 	for i := 0; i < len(files); i++ {
@@ -45,7 +48,7 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("File reading error", err)
 		return
 	}
-	w.Write([]byte(fmt.Sprintf(string(data))))
+	w.Write([]byte(fmt.Sprint(string(data))))
 }
 
 func putLocation(w http.ResponseWriter, r *http.Request) {
@@ -57,7 +60,7 @@ func putLocation(w http.ResponseWriter, r *http.Request) {
 	}
 	path := filepath.Join(dataDir, location.Id)
 	os.MkdirAll(path, os.ModePerm)
-	files, err := ioutil.ReadDir(path)
+	files, _ := ioutil.ReadDir(path)
 	highest := 0
 	for i := 0; i < len(files); i++ {
 		number, _ := strconv.Atoi(files[i].Name())
@@ -71,20 +74,49 @@ func putLocation(w http.ResponseWriter, r *http.Request) {
 	_ = ioutil.WriteFile(path, file, 0644)
 }
 
-func createDevice(w http.ResponseWriter, r *http.Request){
+func createDevice(w http.ResponseWriter, r *http.Request) {
 
+}
+
+func generateNewId(n int) string {
+	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+	s := make([]rune, n)
+	rand.Seed(time.Now().Unix())
+	for i := range s {
+		s[i] = letters[rand.Intn(len(letters))]
+	}
+	newId := string(s)
+	for i := 0; i < len(ids); i++ {
+		if ids[i] == newId {
+			newId = generateNewId(n)
+		}
+	}
+	return newId
 }
 
 func handleRequests() {
 	http.Handle("/", http.FileServer(http.Dir("./web")))
 	http.HandleFunc("/location/", getLocation)
 	http.HandleFunc("/newlocation", putLocation)
-	http.HandleFunc("/newDevice" createDcreateDevice)
+	http.HandleFunc("/newDevice", createDevice)
 	//http.ListenAndServeTLS(":8001", "server.crt", "server.key", nil)
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }
 
+func initData() {
+	fmt.Println("Init: Preparing FMD-Server...")
+	filePath := filepath.Join(dataDir)
+	dirs, _ := ioutil.ReadDir(filePath)
+	for i := 0; i < len(dirs); i++ {
+		ids = append(ids, dirs[i].Name())
+	}
+	fmt.Printf("Init: %d Devices registered.\n\n", len(ids))
+}
+
 func main() {
-	fmt.Println("FMD - Server\nStarting Server")
+	initData()
+	fmt.Println("FMD - Server")
+	fmt.Println("Starting Server")
+	fmt.Println("Port: 8000")
 	handleRequests()
 }

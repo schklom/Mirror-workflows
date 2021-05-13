@@ -75,7 +75,14 @@ func putLocation(w http.ResponseWriter, r *http.Request) {
 }
 
 func createDevice(w http.ResponseWriter, r *http.Request) {
-
+	body, _ := ioutil.ReadAll(r.Body)
+	id := generateNewId(5)
+	ids = append(ids, id)
+	path := filepath.Join(dataDir, id)
+	os.MkdirAll(path, os.ModePerm)
+	path = filepath.Join(path, "privkey")
+	_ = ioutil.WriteFile(path, body, 0644)
+	w.Write([]byte(fmt.Sprint(id)))
 }
 
 func generateNewId(n int) string {

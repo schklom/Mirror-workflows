@@ -16,6 +16,7 @@ import (
 
 //Some variables
 const dataDir = "data"
+const privateKeyFile = "privkey"
 
 var ids []string
 
@@ -43,6 +44,21 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	filePath = filepath.Join(filePath, files[position].Name())
+	data, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		fmt.Println("File reading error", err)
+		return
+	}
+	w.Write([]byte(fmt.Sprint(string(data))))
+}
+
+func getKey(w http.ResponseWriter, r *http.Request) {
+	id := strings.TrimPrefix(r.URL.Path, "/key/")
+	w.Header().Set("Content-Type", "application/text")
+
+	filePath := filepath.Join(dataDir, id)
+	filePath = filepath.Join(filePath, privateKeyFile)
+
 	data, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		fmt.Println("File reading error", err)
@@ -80,7 +96,7 @@ func createDevice(w http.ResponseWriter, r *http.Request) {
 	ids = append(ids, id)
 	path := filepath.Join(dataDir, id)
 	os.MkdirAll(path, os.ModePerm)
-	path = filepath.Join(path, "privkey")
+	path = filepath.Join(path, privateKeyFile)
 	_ = ioutil.WriteFile(path, body, 0644)
 	w.Write([]byte(fmt.Sprint(id)))
 }
@@ -104,6 +120,7 @@ func generateNewId(n int) string {
 func handleRequests() {
 	http.Handle("/", http.FileServer(http.Dir("./web")))
 	http.HandleFunc("/location/", getLocation)
+	http.HandleFunc("/key/", getKey)
 	http.HandleFunc("/newlocation", putLocation)
 	http.HandleFunc("/newDevice", createDevice)
 	//http.ListenAndServeTLS(":8001", "server.crt", "server.key", nil)

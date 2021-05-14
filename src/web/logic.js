@@ -36,8 +36,8 @@ function locate(){
                 crypt.setPrivateKey(key);
 
                 var provider = crypt.decrypt(json.Provider);
-                var lon = crypt.decrypt(test);
-                var lat = crypt.decrypt(test2);
+                var lon = crypt.decrypt(json.lon);
+                var lat = crypt.decrypt(json.lat);
                 var lonLat = new OpenLayers.LonLat(lon, lat)
                 .transform(
                 new OpenLayers.Projection("EPSG:4326"),

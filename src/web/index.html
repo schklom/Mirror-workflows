@@ -1,23 +1,28 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>FMD</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="cache-control" content="no-cache, must-revalidate, post-check=0, pre-check=0" />
-        <meta http-equiv="cache-control" content="max-age=0" />
-        <meta http-equiv="expires" content="0" />
-        <link rel="stylesheet" href="./style.css">
-        <script src="https://openlayers.org/api/OpenLayers.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.js"></script>        <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/2.3.1/jsencrypt.min.js" async></script>
-        <script src="./logic.js"></script>
 
-    <body onload="init();">
+<head>
+    <title>FMD</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate, post-check=0, pre-check=0" />
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="expires" content="0" />
+    <link rel="stylesheet" href="./style.css">
+    <script src="https://openlayers.org/api/OpenLayers.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/2.3.1/jsencrypt.min.js" async></script>
+    <script src="./logic.js"></script>
+
+<body onload="init();">
+
+    <div id="head">
         <div id="center">
             <h2>Find My Device</h2>
         </div>
         <br>
         <div id="center">
-            <p>This server tracks all your registered devices.<br>Please enter the device-id to receive the latest location:</p>
+            <p>This server tracks all your registered devices.<br>Please enter the device-id to receive the latest
+                location:</p>
         </div>
         <br>
         <div id="center">
@@ -26,8 +31,15 @@
         <div id="center">
             <button class="vertical-center" type="button" onclick="locate();">LOCATE</button>
         </div>
-        <div id="map"></div>
 
-    </body>
+    </div>
+    <div id="map"></div>
+    <div id="deviceInfo">
+        <p>Location-Infos:</p>
+        <p id="providerView">Provider:</p>
+        <p id="dateView">Date:</p>
+    </div>
 
-</html> 
+</body>
+
+</html>

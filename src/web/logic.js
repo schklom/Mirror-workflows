@@ -18,11 +18,27 @@ function locate(){
 
     fetch("/location/" + idInput.value)
         .then(function(response) {
-
             return response.json();
         })
         .then(function(json) {
-            var lonLat = new OpenLayers.LonLat( json.lon , json.lat )
+
+            fetch("/key/" + idInput.value)
+                .then(function(response) {
+                    return response.text()
+            })
+            .then(function(keyBase64){
+
+                //magic
+                password = prompt("Enter the password:");
+                
+                var key = decryptAES(password, keyBase64)
+                var crypt = new JSEncrypt();
+                crypt.setPrivateKey(key);
+
+                var provider = crypt.decrypt(json.Provider);
+                var lon = crypt.decrypt(test);
+                var lat = crypt.decrypt(test2);
+                var lonLat = new OpenLayers.LonLat(lon, lat)
                 .transform(
                 new OpenLayers.Projection("EPSG:4326"),
                 map.getProjectionObject()
@@ -32,6 +48,28 @@ function locate(){
             markers.clearMarkers();
             markers.addMarker(new OpenLayers.Marker(lonLat));
             map.setCenter (lonLat, zoom);
+            })
         })
 
 }
+
+function decryptAES(password, cipherText) {
+    keySize = 256;
+    ivSize = 128;
+    iterationCount = 1867;
+
+    let ivLength = ivSize / 4;
+    let saltLength = keySize / 4;
+    let salt = cipherText.substr(0, saltLength);
+    let iv = cipherText.substr(saltLength, ivLength);
+    let encrypted = cipherText.substring(ivLength + saltLength);
+    let key = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt), {
+        keySize: keySize / 32,
+        iterations: iterationCount
+    });
+    let cipherParams = CryptoJS.lib.CipherParams.create({
+        ciphertext: CryptoJS.enc.Base64.parse(encrypted)
+    });
+    let decrypted = CryptoJS.AES.decrypt(cipherParams, key, {iv: CryptoJS.enc.Hex.parse(iv)});
+    return decrypted.toString(CryptoJS.enc.Utf8);
+}    

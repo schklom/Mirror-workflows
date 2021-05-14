@@ -79,3 +79,9 @@ function decryptAES(password, cipherText) {
     let decrypted = CryptoJS.AES.decrypt(cipherParams, key, {iv: CryptoJS.enc.Hex.parse(iv)});
     return decrypted.toString(CryptoJS.enc.Utf8);
 }    
+
+function clickPress(event) {
+    if (event.keyCode == 13) {
+        locate();
+    }
+}

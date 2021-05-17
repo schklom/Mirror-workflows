@@ -31,7 +31,7 @@ var interval = setInterval(function () {
         }
     })
 
-}, 600000);
+}, 300000);
 
 function init() {
     map = new OpenLayers.Map("map");

@@ -1,5 +1,8 @@
 var map, markers;
 
+var newestLocationDataIndex;
+var currentLocationDataIndx = 0;
+
 function init() {
     map = new OpenLayers.Map("map");
     map.addLayer(new OpenLayers.Layer.OSM());
@@ -13,16 +16,34 @@ function init() {
     map.addLayer(markers);
 }
 
-function locate(){
+function locate(index){
     idInput = document.getElementById('fmdid');
 
-    fetch("/location/" + idInput.value)
+    fetch("/location", {
+        method: 'PUT',
+        body: JSON.stringify({
+             id: idInput.value,
+             index: index
+         }),
+        headers: {
+            'Content-type': 'applicatoin/json'
+        }
+        })
         .then(function(response) {
             return response.json();
         })
         .then(function(json) {
 
-            fetch("/key/" + idInput.value)
+            fetch("/key", {
+                method: 'PUT',
+                body: JSON.stringify({
+                     id: idInput.value,
+                     index: index
+                 }),
+                headers: {
+                    'Content-type': 'applicatoin/json'
+                }
+                })
                 .then(function(response) {
                     return response.text()
             })
@@ -57,6 +78,28 @@ function locate(){
             })
         })
 
+
+        fetch("/locationDataSize", {
+            method: 'PUT',
+            body: JSON.stringify({
+                 id: idInput.value,
+                 index: index
+             }),
+            headers: {
+                'Content-type': 'applicatoin/json'
+            }
+            })
+            .then(function(response) {
+                return response.text()
+        })
+        .then(function(responseIndex){
+            newestLocationDataIndex = parseInt(responseIndex);
+            if(currentLocationDataIndx == 0){
+                currentLocationDataIndx = newestLocationDataIndex;
+            }
+        })
+
+
 }
 
 function decryptAES(password, cipherText) {
@@ -82,6 +125,17 @@ function decryptAES(password, cipherText) {
 
 function clickPress(event) {
     if (event.keyCode == 13) {
-        locate();
+        locate(-1);
     }
+}
+
+function locateOlder(){
+    currentLocationDataIndx -= 1;
+    locate (currentLocationDataIndx);
+    
+}
+
+function locateNewer(){
+    currentLocationDataIndx += 1;
+    locate(currentLocationDataIndx);
 }

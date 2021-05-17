@@ -29,7 +29,7 @@
             <input type="text" onkeypress="clickPress(event)" id="fmdid" name="fmdid" ><br><br>
         </div>
         <div id="center">
-            <button class="vertical-center" type="button" onclick="locate();">LOCATE</button>
+            <button class="vertical-center" type="button" onclick="locate(-1);">LOCATE</button>
         </div>
 
     </div>
@@ -38,6 +38,10 @@
         <p>Location-Infos:</p>
         <p id="providerView">Provider:</p>
         <p id="dateView">Date:</p>
+        <div>
+            <button class="vertical-center" type="button" onclick="locateOlder()">&#60;</button>
+            <button class="vertical-center" type="button" onclick="locateNewer()">&#62;</button>
+        </div>
     </div>
 
 </body>

@@ -40,11 +40,11 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Meeep!, Error")
 		return
 	}
-
+	fmt.Print(request.Index)
 	filePath := filepath.Join(dataDir, request.Id)
 	if request.Index == -1 {
 		files, _ := ioutil.ReadDir(filePath)
-		highest := -1
+		highest := 0
 		position := -1
 		for i := 0; i < len(files); i++ {
 			number, _ := strconv.Atoi(files[i].Name())
@@ -83,7 +83,7 @@ func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 			highest = number
 		}
 	}
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/text")
 	w.Write([]byte(fmt.Sprint(highest)))
 }
 

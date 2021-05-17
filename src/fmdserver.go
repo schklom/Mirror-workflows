@@ -10,7 +10,6 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -28,35 +27,74 @@ type locationData struct {
 	Lat      string `json:"lat"`
 }
 
-func getLocation(w http.ResponseWriter, r *http.Request) {
-	id := strings.TrimPrefix(r.URL.Path, "/location/")
-	w.Header().Set("Content-Type", "application/json")
+type requestData struct {
+	Id    string `'json:"id"`
+	Index int    `'json:"index"`
+}
 
-	filePath := filepath.Join(dataDir, id)
-	files, _ := ioutil.ReadDir(filePath)
-	highest := -1
-	position := -1
-	for i := 0; i < len(files); i++ {
-		number, _ := strconv.Atoi(files[i].Name())
-		if number > highest {
-			highest = number
-			position = i
-		}
+func getLocation(w http.ResponseWriter, r *http.Request) {
+	var request requestData
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		fmt.Fprintf(w, "Meeep!, Error")
+		return
 	}
-	filePath = filepath.Join(filePath, files[position].Name())
+
+	filePath := filepath.Join(dataDir, request.Id)
+	if request.Index == -1 {
+		files, _ := ioutil.ReadDir(filePath)
+		highest := -1
+		position := -1
+		for i := 0; i < len(files); i++ {
+			number, _ := strconv.Atoi(files[i].Name())
+			if number > highest {
+				highest = number
+				position = i
+			}
+		}
+		filePath = filepath.Join(filePath, files[position].Name())
+	} else {
+		filePath = filepath.Join(filePath, fmt.Sprint(request.Index))
+	}
 	data, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		fmt.Println("File reading error", err)
 		return
 	}
+	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(fmt.Sprint(string(data))))
 }
 
-func getKey(w http.ResponseWriter, r *http.Request) {
-	id := strings.TrimPrefix(r.URL.Path, "/key/")
-	w.Header().Set("Content-Type", "application/text")
+func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
+	var request requestData
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		fmt.Fprintf(w, "Meeep!, Error")
+		return
+	}
 
-	filePath := filepath.Join(dataDir, id)
+	filePath := filepath.Join(dataDir, request.Id)
+	files, _ := ioutil.ReadDir(filePath)
+	highest := -1
+	for i := 0; i < len(files); i++ {
+		number, _ := strconv.Atoi(files[i].Name())
+		if number > highest {
+			highest = number
+		}
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(fmt.Sprint(highest)))
+}
+
+func getKey(w http.ResponseWriter, r *http.Request) {
+	var request requestData
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		fmt.Fprintf(w, "Meeep!, Error")
+		return
+	}
+
+	filePath := filepath.Join(dataDir, request.Id)
 	filePath = filepath.Join(filePath, privateKeyFile)
 
 	data, err := ioutil.ReadFile(filePath)
@@ -64,6 +102,7 @@ func getKey(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("File reading error", err)
 		return
 	}
+	w.Header().Set("Content-Type", "application/text")
 	w.Write([]byte(fmt.Sprint(string(data))))
 }
 
@@ -119,8 +158,9 @@ func generateNewId(n int) string {
 
 func handleRequests() {
 	http.Handle("/", http.FileServer(http.Dir("./web")))
-	http.HandleFunc("/location/", getLocation)
-	http.HandleFunc("/key/", getKey)
+	http.HandleFunc("/location", getLocation)
+	http.HandleFunc("/locationDataSize", getLocationDataSize)
+	http.HandleFunc("/key", getKey)
 	http.HandleFunc("/newlocation", putLocation)
 	http.HandleFunc("/newDevice", createDevice)
 	//http.ListenAndServeTLS(":8001", "server.crt", "server.key", nil)

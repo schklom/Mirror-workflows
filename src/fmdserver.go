@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-//Some variables
+//Some IO variables
 const dataDir = "data"
 const privateKeyFile = "privkey"
 
@@ -27,6 +27,7 @@ type locationData struct {
 	Lat      string `json:"lat"`
 }
 
+//The json-request from the webpage.
 type requestData struct {
 	Id    string `'json:"id"`
 	Index int    `'json:"index"`

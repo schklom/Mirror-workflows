@@ -3,6 +3,36 @@ var map, markers;
 var newestLocationDataIndex;
 var currentLocationDataIndx = 0;
 
+var interval = setInterval(function () { 
+    idInput = document.getElementById('fmdid');
+
+    fetch("/locationDataSize", {
+        method: 'PUT',
+        body: JSON.stringify({
+             id: idInput.value,
+             index: -1
+         }),
+        headers: {
+            'Content-type': 'applicatoin/json'
+        }
+        })
+        .then(function(response) {
+            return response.text()
+    })
+    .then(function(responseIndex){
+        newlocationDataIndex = parseInt(responseIndex);
+        if(newestLocationDataIndex < newlocationDataIndex){
+            newestLocationDataIndex = newlocationDataIndex;
+            var toasted = new Toasted({
+                position: 'top-center',
+                duration: 3000
+            })
+            toasted.show('New locationdata available!') 
+        }
+    })
+
+}, 600000);
+
 function init() {
     map = new OpenLayers.Map("map");
     map.addLayer(new OpenLayers.Layer.OSM());

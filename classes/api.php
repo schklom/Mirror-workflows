@@ -377,6 +377,7 @@ class API extends Handler {
 		];
 
 		$config["daemon_is_running"] = file_is_locked("update_daemon.lock");
+		$config["custom_sort_types"] = $this->_get_custom_sort_types();
 
 		$config["num_feeds"] = ORM::for_table('ttrss_feeds')
 			->where('owner_uid', $_SESSION['uid'])
@@ -851,5 +852,17 @@ class API extends Handler {
 		}
 
 		return false;
+	}
+
+	private function _get_custom_sort_types() {
+		$ret = [];
+
+		PluginHost::getInstance()->run_hooks_callback(PluginHost::HOOK_HEADLINES_CUSTOM_SORT_MAP, function ($result) use (&$ret) {
+			foreach ($result as $sort_value => $sort_title) {
+				$ret[$sort_value] = $sort_title;
+			}
+		});
+
+		return $ret;
 	}
 }

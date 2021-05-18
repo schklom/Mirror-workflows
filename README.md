@@ -41,7 +41,7 @@ services:
     container_name: ttrss_db # optional
     restart: "no" # optional
     environment:
-      - TZ=${TZ}
+      - TZ=Europe/Berlin
       - POSTGRES_DB=abcd
       - POSTGRES_USER=abcd
       - POSTGRES_PASSWORD=abcd

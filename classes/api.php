@@ -1,7 +1,7 @@
 <?php
 class API extends Handler {
 
-	const API_LEVEL  = 16;
+	const API_LEVEL  = 17;
 
 	const STATUS_OK  = 0;
 	const STATUS_ERR = 1;

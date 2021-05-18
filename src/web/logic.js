@@ -2,129 +2,132 @@ var map, markers;
 
 var newestLocationDataIndex;
 var currentLocationDataIndx = 0;
+var keyTemp;
 
-var interval = setInterval(function () { 
+var interval = setInterval(function () {
     idInput = document.getElementById('fmdid');
 
     fetch("/locationDataSize", {
         method: 'PUT',
         body: JSON.stringify({
-             id: idInput.value,
-             index: -1
-         }),
+            id: idInput.value,
+            index: -1
+        }),
         headers: {
             'Content-type': 'applicatoin/json'
         }
-        })
-        .then(function(response) {
+    })
+        .then(function (response) {
             return response.text()
-    })
-    .then(function(responseIndex){
-        newlocationDataIndex = parseInt(responseIndex);
-        if(newestLocationDataIndex < newlocationDataIndex){
-            newestLocationDataIndex = newlocationDataIndex;
-            var toasted = new Toasted({
-                position: 'top-center',
-                duration: 3000
-            })
-            toasted.show('New locationdata available!') 
-        }
-    })
+        })
+        .then(function (responseIndex) {
+            newlocationDataIndex = parseInt(responseIndex);
+            if (newestLocationDataIndex < newlocationDataIndex) {
+                newestLocationDataIndex = newlocationDataIndex;
+                var toasted = new Toasted({
+                    position: 'top-center',
+                    duration: 3000
+                })
+                toasted.show('New locationdata available!')
+            }
+        })
 
 }, 300000);
 
 function init() {
     map = new OpenLayers.Map("map");
     map.addLayer(new OpenLayers.Layer.OSM());
-    map.setCenter(new OpenLayers.LonLat(13.41,52.52) // Center of the map
+    map.setCenter(new OpenLayers.LonLat(13.41, 52.52) // Center of the map
         .transform(
-        new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+            new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
             new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator Projection
-          ), 15 // Zoom level
-      );
-    markers = new OpenLayers.Layer.Markers( "Markers" );
+        ), 15 // Zoom level
+    );
+    markers = new OpenLayers.Layer.Markers("Markers");
     map.addLayer(markers);
 }
 
-function locate(index){
+function locate(index) {
     idInput = document.getElementById('fmdid');
 
     fetch("/location", {
         method: 'PUT',
         body: JSON.stringify({
-             id: idInput.value,
-             index: index
-         }),
+            id: idInput.value,
+            index: index
+        }),
         headers: {
             'Content-type': 'applicatoin/json'
         }
-        })
-        .then(function(response) {
+    })
+        .then(function (response) {
             return response.json();
         })
-        .then(function(json) {
+        .then(function (json) {
 
             fetch("/key", {
                 method: 'PUT',
                 body: JSON.stringify({
-                     id: idInput.value,
-                     index: index
-                 }),
+                    id: idInput.value,
+                    index: index
+                }),
                 headers: {
                     'Content-type': 'applicatoin/json'
                 }
-                })
-                .then(function(response) {
+            })
+                .then(function (response) {
                     return response.text()
-            })
-            .then(function(keyBase64){
+                })
+                .then(function (keyBase64) {
 
-                //magic
-                password = prompt("Enter the password:");
-                
-                var key = decryptAES(password, keyBase64)
-                var crypt = new JSEncrypt();
-                crypt.setPrivateKey(key);
+                    //magic
+                    if (keyTemp == null) {
+                        password = prompt("Enter the password:");
+                    }
 
-                var provider = crypt.decrypt(json.Provider);
-                var time = new Date(json.Date);
-                var lon = crypt.decrypt(json.lon);
-                var lat = crypt.decrypt(json.lat);
+                    var key = decryptAES(password, keyBase64)
+                    var crypt = new JSEncrypt();
+                    crypt.setPrivateKey(key);
 
-                document.getElementById("deviceInfo").style.visibility= "visible";
-                document.getElementById("dateView").innerHTML = time;
-                document.getElementById("providerView").innerHTML = provider;
+                    var provider = crypt.decrypt(json.Provider);
+                    var time = new Date(json.Date);
+                    var lon = crypt.decrypt(json.lon);
+                    var lat = crypt.decrypt(json.lat);
 
-                var lonLat = new OpenLayers.LonLat(lon, lat)
-                .transform(
-                new OpenLayers.Projection("EPSG:4326"),
-                map.getProjectionObject()
-                );
+                    document.getElementById("deviceInfo").style.visibility = "visible";
+                    document.getElementById("dateView").innerHTML = time;
+                    document.getElementById("providerView").innerHTML = provider;
 
-            var zoom=16;
-            markers.clearMarkers();
-            markers.addMarker(new OpenLayers.Marker(lonLat));
-            map.setCenter (lonLat, zoom);
-            })
+                    var lonLat = new OpenLayers.LonLat(lon, lat)
+                        .transform(
+                            new OpenLayers.Projection("EPSG:4326"),
+                            map.getProjectionObject()
+                        );
+
+                    var zoom = 16;
+                    markers.clearMarkers();
+                    markers.addMarker(new OpenLayers.Marker(lonLat));
+                    map.setCenter(lonLat, zoom);
+                })
         })
 
 
-        fetch("/locationDataSize", {
-            method: 'PUT',
-            body: JSON.stringify({
-                 id: idInput.value,
-                 index: index
-             }),
-            headers: {
-                'Content-type': 'applicatoin/json'
-            }
-            })
-            .then(function(response) {
-                return response.text()
+    fetch("/locationDataSize", {
+        method: 'PUT',
+        body: JSON.stringify({
+            id: idInput.value,
+            index: index
+        }),
+        headers: {
+            'Content-type': 'applicatoin/json'
+        }
+    })
+        .then(function (response) {
+            return response.text()
         })
-        .then(function(responseIndex){
+        .then(function (responseIndex) {
             newestLocationDataIndex = parseInt(responseIndex);
-            if(currentLocationDataIndx == 0){
+            if (currentLocationDataIndx == 0) {
                 currentLocationDataIndx = newestLocationDataIndex;
             }
         })
@@ -133,25 +136,33 @@ function locate(index){
 }
 
 function decryptAES(password, cipherText) {
+    var key;
     keySize = 256;
     ivSize = 128;
     iterationCount = 1867;
-
+    
     let ivLength = ivSize / 4;
     let saltLength = keySize / 4;
-    let salt = cipherText.substr(0, saltLength);
+
     let iv = cipherText.substr(saltLength, ivLength);
     let encrypted = cipherText.substring(ivLength + saltLength);
-    let key = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt), {
-        keySize: keySize / 32,
-        iterations: iterationCount
-    });
+
+    if (keyTemp == null) {
+        let salt = cipherText.substr(0, saltLength);
+        key = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt), {
+            keySize: keySize / 32,
+            iterations: iterationCount
+        });
+        keyTemp = key;
+    } else {
+        key = keyTemp;
+    }
     let cipherParams = CryptoJS.lib.CipherParams.create({
         ciphertext: CryptoJS.enc.Base64.parse(encrypted)
     });
-    let decrypted = CryptoJS.AES.decrypt(cipherParams, key, {iv: CryptoJS.enc.Hex.parse(iv)});
+    let decrypted = CryptoJS.AES.decrypt(cipherParams, key, { iv: CryptoJS.enc.Hex.parse(iv) });
     return decrypted.toString(CryptoJS.enc.Utf8);
-}    
+}
 
 function clickPress(event) {
     if (event.keyCode == 13) {
@@ -159,13 +170,13 @@ function clickPress(event) {
     }
 }
 
-function locateOlder(){
+function locateOlder() {
     currentLocationDataIndx -= 1;
-    locate (currentLocationDataIndx);
-    
+    locate(currentLocationDataIndx);
+
 }
 
-function locateNewer(){
+function locateNewer() {
     currentLocationDataIndx += 1;
     locate(currentLocationDataIndx);
 }

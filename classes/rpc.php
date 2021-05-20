@@ -564,7 +564,9 @@ class RPC extends Handler_Protected {
 		$hotkeys = array(
 			__("Navigation") => array(
 				"next_feed" => __("Open next feed"),
+				"next_unread_feed" => __("Open next unread feed"),
 				"prev_feed" => __("Open previous feed"),
+				"prev_unread_feed" => __("Open previous unread feed"),
 				"next_article_or_scroll" => __("Open next article (in combined mode, scroll down)"),
 				"prev_article_or_scroll" => __("Open previous article (in combined mode, scroll up)"),
 				"next_headlines_page" => __("Scroll headlines by one page down"),
@@ -643,7 +645,9 @@ class RPC extends Handler_Protected {
 	static function get_hotkeys_map() {
 		$hotkeys = array(
 			"k" => "next_feed",
+			"K" => "next_unread_feed",
 			"j" => "prev_feed",
+			"J" => "prev_unread_feed",
 			"n" => "next_article_noscroll",
 			"p" => "prev_article_noscroll",
 			"N" => "article_page_down",

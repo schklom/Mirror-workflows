@@ -944,9 +944,23 @@ const App = {
 				if (feed !== false)
 					Feeds.open({feed: feed, is_cat: is_cat, delayed: true})
          };
+         this.hotkey_actions["next_unread_feed"] = () => {
+            const [feed, is_cat] = Feeds.getNextFeed(
+               Feeds.getActive(), Feeds.activeIsCat(), true);
+
+				if (feed !== false)
+					Feeds.open({feed: feed, is_cat: is_cat, delayed: true})
+         };
          this.hotkey_actions["prev_feed"] = () => {
             const [feed, is_cat] = Feeds.getPreviousFeed(
                Feeds.getActive(), Feeds.activeIsCat());
+
+				if (feed !== false)
+					Feeds.open({feed: feed, is_cat: is_cat, delayed: true})
+         };
+         this.hotkey_actions["prev_unread_feed"] = () => {
+            const [feed, is_cat] = Feeds.getPreviousFeed(
+               Feeds.getActive(), Feeds.activeIsCat(), true);
 
 				if (feed !== false)
 					Feeds.open({feed: feed, is_cat: is_cat, delayed: true})

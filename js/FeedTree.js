@@ -434,14 +434,15 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 
 			return [false, false];
 		},
-		_prevTreeItemFromIndex: function (start) {
+		_prevTreeItemFromIndex: function (start, unread_only) {
 			const items = this.model.store._arrayOfAllItems;
 
 			for (let i = start-1; i > 0; i--) {
 				const id = String(items[i].id);
 				const box = this._itemNodesMap[id];
+				const unread = parseInt(items[i].unread);
 
-				if (box) {
+				if (box && (!unread_only || unread > 0)) {
 					const row = box[0].rowNode;
 					const cat = box[0].rowNode.parentNode.parentNode;
 
@@ -451,7 +452,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 				}
 			}
 		},
-		getPreviousFeed: function (feed, is_cat) {
+		getPreviousFeed: function (feed, is_cat, unread_only = false) {
 			let treeItem;
 
 			if (is_cat) {
@@ -464,11 +465,11 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 			const start = items.indexOf(treeItem);
 
 			if (start != -1) {
-				let item = this._prevTreeItemFromIndex(start);
+				let item = this._prevTreeItemFromIndex(start, unread_only);
 
 				// wrap from the bottom
 				if (!item) {
-					item = this._prevTreeItemFromIndex(items.length);
+					item = this._prevTreeItemFromIndex(items.length, unread_only);
 				}
 
 				if (item)

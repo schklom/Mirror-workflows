@@ -583,17 +583,17 @@ const	Feeds = {
 
 		return false;
 	},
-	getNextFeed: function(feed, is_cat) {
+	getNextFeed: function(feed, is_cat, unread_only = false) {
 		const tree = dijit.byId("feedTree");
 
-		if (tree) return tree.getNextFeed(feed, is_cat, false);
+		if (tree) return tree.getNextFeed(feed, is_cat, unread_only);
 
 		return [false, false];
 	},
-	getPreviousFeed: function(feed, is_cat) {
+	getPreviousFeed: function(feed, is_cat, unread_only = false) {
 		const tree = dijit.byId("feedTree");
 
-		if (tree) return tree.getPreviousFeed(feed, is_cat);
+		if (tree) return tree.getPreviousFeed(feed, is_cat, unread_only);
 
 		return [false, false];
 	},

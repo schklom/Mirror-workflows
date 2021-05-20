@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-03-08 19:06+0300\n"
-"PO-Revision-Date: 2021-04-19 11:32+0000\n"
+"PO-Revision-Date: 2021-05-19 15:32+0000\n"
 "Last-Translator: Eike <weblate.tt-rss.org@lotz.me>\n"
 "Language-Team: German <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "de/>\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.6\n"
+"X-Generator: Weblate 4.6.2\n"
 "X-Poedit-Bookmarks: -1,557,558,-1,-1,-1,-1,-1,-1,-1\n"
 
 #: backend.php:60
@@ -1059,7 +1059,7 @@ msgstr "Falsches Passwort"
 #: classes/pref/prefs.php:1019
 #, php-format
 msgid "v%.2f, by %s"
-msgstr "v%.2f, von %s"
+msgstr "v%.2f, by %s"
 
 #: classes/pref/prefs.php:1032
 #, php-format
@@ -1084,8 +1084,8 @@ msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
 "reference."
 msgstr ""
-"Generiertes Passwort <stark>%s</stark> für %s. Bitte merken Sie sich das für "
-"eine spätere Nutzung."
+"Generiertes Passwort <strong>%s</strong> für %s. Bitte merken Sie es sich "
+"für eine spätere Nutzung."
 
 #: classes/pref/system.php:24
 msgid "Test message from tt-rss"
@@ -1849,7 +1849,7 @@ msgstr "Reddit-URLs nach %s umschreiben"
 
 #: plugins/af_redditimgur/init.php:93
 msgid "Import score, limit maximum to:"
-msgstr ""
+msgstr "Punkte importieren, Maximum begrenzen auf:"
 
 #: plugins/af_redditimgur/init.php:124
 msgid "Configuration saved"

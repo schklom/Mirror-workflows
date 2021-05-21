@@ -1,0 +1,10 @@
+[Unit]
+Description=A server for saving locationdata send by fmd.
+After=multi-user.target
+ 
+[Service]
+Type=simple
+ExecStart=[path to executeable]
+ 
+[Install]
+WantedBy=multi-user.target

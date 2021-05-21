@@ -9,7 +9,7 @@
     <meta http-equiv="expires" content="0" />
     <link rel="stylesheet" href="./style.css">
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
-    <link href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" rel="stylesheet"/>
+    <link href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" rel="stylesheet" />
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/2.3.1/jsencrypt.min.js" async></script>
     <link rel="stylesheet" href="https://unpkg.com/toastedjs/dist/toasted.min.css">
@@ -19,32 +19,65 @@
 <body onload="init();">
 
     <div id="head">
-        <div id="center">
+        <div class="center">
             <h2>Find My Device</h2>
         </div>
         <br>
-        <div id="center">
+        <div class="center">
             <p>This server tracks all your registered devices.<br>Please enter the device-id to receive the latest
                 location:</p>
         </div>
         <br>
-        <div id="center">
-            <input type="text" onkeypress="clickPress(event)" id="fmdid" name="fmdid" ><br><br>
+        <div class="center">
+            <input type="text" onkeypress="clickPress(event)" id="fmdid" name="fmdid"><br><br>
         </div>
-        <div id="center">
-            <button class="vertical-center" type="button" onclick="locate(-1);">LOCATE</button>
+        <div class="center">
+            <button id="locateButton" type="button" onclick="locate(-1);">LOCATE</button>
         </div>
 
     </div>
-    <div id="map"></div>
-    <div id="deviceInfo">
-        <div>
-            <button class="vertical-center" type="button" onclick="locateOlder()">&#60;</button>
-            <button class="vertical-center" type="button" onclick="locateNewer()">&#62;</button>
+    <div id="dataView">
+        <div id="map"></div>
+        <div id="deviceInfo">
+            <div class="center">
+                <button type="button" onclick="locateOlder()">&#60;</button>
+                <button type="button" onclick="locateNewer()">&#62;</button>
+            </div>
+            <p>Location-Infos:</p>
+
+            <div class="row">
+                <div class="column">
+                    <p>Index</p>
+                </div>
+                <div class="column">
+                    <p id="indexView">Data</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <p>Provider</p>
+                </div>
+                <div class="column">
+                    <p id="providerView">Data</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <p>Date</p>
+                </div>
+                <div class="column">
+                    <p id="dateView">Data</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column">
+                    <p>Time</p>
+                </div>
+                <div class="column">
+                    <p id="timeView">Data</p>
+                </div>
+            </div>
         </div>
-        <p>Location-Infos:</p>
-        <p id="providerView">Provider:</p>
-        <p id="dateView">Date:</p>
     </div>
 
 </body>

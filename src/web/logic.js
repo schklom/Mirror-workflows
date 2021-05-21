@@ -96,7 +96,8 @@ function locate(index) {
                     var lat = crypt.decrypt(json.lat);
 
                     document.getElementById("deviceInfo").style.visibility = "visible";
-                    document.getElementById("dateView").innerHTML = time;
+                    document.getElementById("dateView").innerHTML = time.getDay() + "/" + time.getMonth() + "/" + time.getFullYear();
+                    document.getElementById("timeView").innerHTML = time.getHours() + ":" + time.getMinutes();
                     document.getElementById("providerView").innerHTML = provider;
                     
                     var target = L.latLng(lat, lon);

@@ -3,6 +3,11 @@
 }
 body {
     background-color: #232323;
+    height: 98%;
+}
+
+html{
+    height: 100%;
 }
 
 h2 {
@@ -46,7 +51,6 @@ button {
     border: none;
     border-radius: 8px;
     height: 5%;
-    width: 40%;
     padding: 10px;
     margin: 10px;
     font-size: medium; 
@@ -56,7 +60,7 @@ button:active {
     background-color: #318f2f;
 }
 
-#center{
+.center{
     width: 100%;
     border: 1px solid black;
     display: flex;
@@ -65,30 +69,36 @@ button:active {
     border: none;
 }
 
-#head{
-    height: 40%;
+.column {
+    float: left;
+  }
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
 }
 
-html{
-    height: 100%;
+#locateButton{
+    width: 50%;
 }
-body{
-    height: 98%;
+
+#dataView{
+    margin-top: 20px;
+    height: 60%;
 }
 
 #map{
-    width: 100%;
+    width: 99%;
     height: 60%;
-    position: relative;
-    display: inline-block;
+    position: absolute;
+    z-index: 1;
 }
 
 #deviceInfo{
     position: absolute;
-    width: 10%;
+    z-index: 2;
     visibility: hidden;
-    top: 55%;
-    height: 10%;
     padding: 10px;
     margin: 10px;
     border-radius: 8px;

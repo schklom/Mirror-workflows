@@ -8,7 +8,7 @@ var keyTemp;
 var interval = setInterval(function () {
     idInput = document.getElementById('fmdid');
 
-    if (idInput.innerHTML != "") {
+    if (idInput.value != "") {
 
         fetch("/locationDataSize", {
             method: 'PUT',
@@ -53,6 +53,8 @@ function init() {
 
 function locate(index) {
     idInput = document.getElementById('fmdid');
+
+    if (idInput.value != "") {
 
     fetch("/location", {
         method: 'PUT',
@@ -131,8 +133,10 @@ function locate(index) {
             if (currentLocationDataIndx == 0) {
                 currentLocationDataIndx = newestLocationDataIndex;
             }
+            document.getElementById("indexView").innerHTML = currentLocationDataIndx;
         })
 
+    }
 
 }
 

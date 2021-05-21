@@ -8,30 +8,33 @@ var keyTemp;
 var interval = setInterval(function () {
     idInput = document.getElementById('fmdid');
 
-    fetch("/locationDataSize", {
-        method: 'PUT',
-        body: JSON.stringify({
-            id: idInput.value,
-            index: -1
-        }),
-        headers: {
-            'Content-type': 'applicatoin/json'
-        }
-    })
-        .then(function (response) {
-            return response.text()
-        })
-        .then(function (responseIndex) {
-            newlocationDataIndex = parseInt(responseIndex);
-            if (newestLocationDataIndex < newlocationDataIndex) {
-                newestLocationDataIndex = newlocationDataIndex;
-                var toasted = new Toasted({
-                    position: 'top-center',
-                    duration: 3000
-                })
-                toasted.show('New locationdata available!')
+    if (idInput.innerHTML != "") {
+
+        fetch("/locationDataSize", {
+            method: 'PUT',
+            body: JSON.stringify({
+                id: idInput.value,
+                index: -1
+            }),
+            headers: {
+                'Content-type': 'applicatoin/json'
             }
         })
+            .then(function (response) {
+                return response.text()
+            })
+            .then(function (responseIndex) {
+                newlocationDataIndex = parseInt(responseIndex);
+                if (newestLocationDataIndex < newlocationDataIndex) {
+                    newestLocationDataIndex = newlocationDataIndex;
+                    var toasted = new Toasted({
+                        position: 'top-center',
+                        duration: 3000
+                    })
+                    toasted.show('New locationdata available!')
+                }
+            })
+    }
 
 }, 300000);
 
@@ -39,11 +42,11 @@ function init() {
     var element = document.getElementById('map');
     map = L.map(element);
     markers = L.layerGroup().addTo(map);
-    
+
     L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
-    
+
     var target = L.latLng('57', '13');
     map.setView(target, 1.5);
 }
@@ -99,7 +102,7 @@ function locate(index) {
                     document.getElementById("dateView").innerHTML = time.getDay() + "/" + time.getMonth() + "/" + time.getFullYear();
                     document.getElementById("timeView").innerHTML = time.getHours() + ":" + time.getMinutes();
                     document.getElementById("providerView").innerHTML = provider;
-                    
+
                     var target = L.latLng(lat, lon);
 
                     markers.clearLayers();

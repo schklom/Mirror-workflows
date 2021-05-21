@@ -51,7 +51,7 @@ class UrlHelper {
 				// (i'm not sure if it's a good idea)
 
 				if (strpos($rel_parts['path'], '/') !== 0) {
-					$rel_parts['path'] = with_trailing_slash($base_parts['path']) . $rel_parts['path'];
+					$rel_parts['path'] = with_trailing_slash($base_parts['path'] ?? "") . $rel_parts['path'];
 				}
 
 				$rel_parts['path'] = str_replace("/./", "/", $rel_parts['path']);

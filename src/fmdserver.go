@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -14,8 +15,12 @@ import (
 )
 
 //Some IO variables
-const dataDir = "data"
+var dataDir = "data"
+var webDir = "web"
+
 const privateKeyFile = "privkey"
+
+var filesDir string
 
 var ids []string
 
@@ -134,6 +139,7 @@ func createDevice(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
 	id := generateNewId(5)
 	ids = append(ids, id)
+
 	path := filepath.Join(dataDir, id)
 	os.MkdirAll(path, os.ModePerm)
 	path = filepath.Join(path, privateKeyFile)
@@ -158,7 +164,7 @@ func generateNewId(n int) string {
 }
 
 func handleRequests() {
-	http.Handle("/", http.FileServer(http.Dir("./web")))
+	http.Handle("/", http.FileServer(http.Dir(webDir)))
 	http.HandleFunc("/location", getLocation)
 	http.HandleFunc("/locationDataSize", getLocationDataSize)
 	http.HandleFunc("/key", getKey)
@@ -178,7 +184,26 @@ func initData() {
 	fmt.Printf("Init: %d Devices registered.\n\n", len(ids))
 }
 
+func initDir() {
+	flag.StringVar(&filesDir, "d", "", "Specifiy data directory. Default is the directory of the executable.")
+	flag.Parse()
+
+	if filesDir == "" {
+		executableFile, err := os.Executable()
+		if err != nil {
+			filesDir = "."
+		} else {
+			dir, _ := filepath.Split(executableFile)
+			filesDir = dir
+		}
+	}
+	dataDir = filepath.Join(filesDir, dataDir)
+	webDir = filepath.Join(filesDir, webDir)
+	fmt.Println("FMD-Datadirectory: ", filesDir)
+}
+
 func main() {
+	initDir()
 	initData()
 	fmt.Println("FMD - Server")
 	fmt.Println("Starting Server")

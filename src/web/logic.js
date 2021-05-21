@@ -175,6 +175,14 @@ function clickPress(event) {
     }
 }
 
+function switchWithKeys(event){
+    if (event.keyCode == 111) {
+        locateOlder();
+    }else if(event.keyCode == 110){
+        locateNewer();
+    }
+}
+
 function locateOlder() {
     currentLocationDataIndx -= 1;
     locate(currentLocationDataIndx);

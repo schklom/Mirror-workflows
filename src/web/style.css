@@ -46,7 +46,7 @@ button {
     border: none;
     border-radius: 8px;
     height: 5%;
-    width: 50%;
+    width: 40%;
     padding: 10px;
     margin: 10px;
     font-size: medium; 
@@ -65,18 +65,20 @@ button:active {
     border: none;
 }
 
-html, body {
-    width: 100%;
-    height: 100%;
-}
-
 #head{
     height: 40%;
 }
 
+html{
+    height: 100%;
+}
+body{
+    height: 98%;
+}
+
 #map{
     width: 100%;
-    height: 90%;
+    height: 60%;
     position: relative;
     display: inline-block;
 }
@@ -86,7 +88,7 @@ html, body {
     width: 10%;
     visibility: hidden;
     top: 55%;
-    height: 60%;
+    height: 10%;
     padding: 10px;
     margin: 10px;
     border-radius: 8px;

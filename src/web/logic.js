@@ -36,16 +36,16 @@ var interval = setInterval(function () {
 }, 300000);
 
 function init() {
-    map = new OpenLayers.Map("map");
-    map.addLayer(new OpenLayers.Layer.OSM());
-    map.setCenter(new OpenLayers.LonLat(13.41, 52.52) // Center of the map
-        .transform(
-            new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-            new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator Projection
-        ), 15 // Zoom level
-    );
-    markers = new OpenLayers.Layer.Markers("Markers");
-    map.addLayer(markers);
+    var element = document.getElementById('map');
+    map = L.map(element);
+    markers = L.layerGroup().addTo(map);
+    
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    
+    var target = L.latLng('57', '13');
+    map.setView(target, 1.5);
 }
 
 function locate(index) {
@@ -98,17 +98,13 @@ function locate(index) {
                     document.getElementById("deviceInfo").style.visibility = "visible";
                     document.getElementById("dateView").innerHTML = time;
                     document.getElementById("providerView").innerHTML = provider;
+                    
+                    var target = L.latLng(lat, lon);
 
-                    var lonLat = new OpenLayers.LonLat(lon, lat)
-                        .transform(
-                            new OpenLayers.Projection("EPSG:4326"),
-                            map.getProjectionObject()
-                        );
+                    markers.clearLayers();
+                    L.marker(target).addTo(markers);
+                    map.setView(target, 16);
 
-                    var zoom = 16;
-                    markers.clearMarkers();
-                    markers.addMarker(new OpenLayers.Marker(lonLat));
-                    map.setCenter(lonLat, zoom);
                 })
         })
 
@@ -141,7 +137,7 @@ function decryptAES(password, cipherText) {
     keySize = 256;
     ivSize = 128;
     iterationCount = 1867;
-    
+
     let ivLength = ivSize / 4;
     let saltLength = keySize / 4;
 

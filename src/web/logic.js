@@ -2,6 +2,7 @@ var map, markers;
 
 var newestLocationDataIndex;
 var currentLocationDataIndx = 0;
+var currentId;
 var keyTemp;
 
 var interval = setInterval(function () {

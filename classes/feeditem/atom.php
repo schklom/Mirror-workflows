@@ -60,43 +60,76 @@ class FeedItem_Atom extends FeedItem_Common {
 		}
 	}
 
+	/** $base is optional (returns $content if $base is null), $content is an HTML string */
+	private function rewrite_content_to_base($base, $content) {
+
+		if (!empty($base) && !empty($content)) {
+
+			$tmpdoc = new DOMDocument();
+			if (@$tmpdoc->loadHTML('<?xml encoding="UTF-8">' . $content)) {
+				$tmpxpath = new DOMXPath($tmpdoc);
+
+				$elems = $tmpxpath->query("(//*[@href]|//*[@src])");
+
+				foreach ($elems as $elem) {
+					if ($elem->hasAttribute("href")) {
+						$elem->setAttribute("href",
+							UrlHelper::rewrite_relative($base, $elem->getAttribute("href")));
+					} else if ($elem->hasAttribute("src")) {
+						$elem->setAttribute("src",
+							UrlHelper::rewrite_relative($base, $elem->getAttribute("src")));
+					}
+				}
+
+				return $tmpdoc->saveXML();
+			}
+		}
+
+		return $content;
+	}
+
 	function get_content() {
 		$content = $this->elem->getElementsByTagName("content")->item(0);
 
 		if ($content) {
+			$base = $this->xpath->evaluate("string(ancestor-or-self::*[@xml:base][1]/@xml:base)", $content);
+
 			if ($content->hasAttribute('type')) {
 				if ($content->getAttribute('type') == 'xhtml') {
 					for ($i = 0; $i < $content->childNodes->length; $i++) {
 						$child = $content->childNodes->item($i);
 
 						if ($child->hasChildNodes()) {
-							return $this->doc->saveHTML($child);
+							return $this->rewrite_content_to_base($base, $this->doc->saveHTML($child));
 						}
 					}
 				}
 			}
 
-			return $this->subtree_or_text($content);
+			return $this->rewrite_content_to_base($base, $this->subtree_or_text($content));
 		}
 	}
 
+	// TODO: duplicate code should be merged with get_content()
 	function get_description() {
 		$content = $this->elem->getElementsByTagName("summary")->item(0);
 
 		if ($content) {
+			$base = $this->xpath->evaluate("string(ancestor-or-self::*[@xml:base][1]/@xml:base)", $content);
+
 			if ($content->hasAttribute('type')) {
 				if ($content->getAttribute('type') == 'xhtml') {
 					for ($i = 0; $i < $content->childNodes->length; $i++) {
 						$child = $content->childNodes->item($i);
 
 						if ($child->hasChildNodes()) {
-							return $this->doc->saveHTML($child);
+							return $this->rewrite_content_to_base($base, $this->doc->saveHTML($child));
 						}
 					}
 				}
 			}
 
-			return $this->subtree_or_text($content);
+			return $this->rewrite_content_to_base($base, $this->subtree_or_text($content));
 		}
 
 	}
@@ -122,16 +155,22 @@ class FeedItem_Atom extends FeedItem_Common {
 	function get_enclosures() {
 		$links = $this->elem->getElementsByTagName("link");
 
-		$encs = array();
+		$encs = [];
 
 		foreach ($links as $link) {
 			if ($link && $link->hasAttribute("href") && $link->hasAttribute("rel")) {
+				$base = $this->xpath->evaluate("string(ancestor-or-self::*[@xml:base][1]/@xml:base)", $link);
+
 				if ($link->getAttribute("rel") == "enclosure") {
 					$enc = new FeedEnclosure();
 
 					$enc->type = clean($link->getAttribute("type"));
-					$enc->link = clean($link->getAttribute("href"));
 					$enc->length = clean($link->getAttribute("length"));
+					$enc->link = clean($link->getAttribute("href"));
+
+					if (!empty($base)) {
+						$enc->link = UrlHelper::rewrite_relative($base, $enc->link);
+					}
 
 					array_push($encs, $enc);
 				}

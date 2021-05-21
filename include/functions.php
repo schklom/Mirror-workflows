@@ -193,8 +193,8 @@
 	}
 
 	/** function is @deprecated */
-	function rewrite_relative_url($url, $rel_url) {
-		return UrlHelper::rewrite_relative($url, $rel_url);
+	function rewrite_relative_url($base_url, $rel_url) {
+		return UrlHelper::rewrite_relative($base_url, $rel_url);
 	}
 
 	/** function is @deprecated */

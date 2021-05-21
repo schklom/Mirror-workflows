@@ -20,14 +20,14 @@ class UrlHelper {
 	}
 
 	/**
-	 * Converts a (possibly) relative URL to a absolute one.
+	 * Converts a (possibly) relative URL to a absolute one, using provided base URL.
 	 *
-	 * @param string $url     Base URL (i.e. from where the document is)
+	 * @param string $base_url     Base URL (i.e. from where the document is)
 	 * @param string $rel_url Possibly relative URL in the document
 	 *
 	 * @return string Absolute URL
 	 */
-	public static function rewrite_relative($url, $rel_url) {
+	public static function rewrite_relative($base_url, $rel_url) {
 
 		$rel_parts = parse_url($rel_url);
 
@@ -40,14 +40,19 @@ class UrlHelper {
 			# allow magnet links
 			return $rel_url;
 		} else {
-			$parts = parse_url($url);
+			$base_parts = parse_url($base_url);
 
-			$rel_parts['host'] = $parts['host'];
-			$rel_parts['scheme'] = $parts['scheme'];
+			$rel_parts['host'] = $base_parts['host'];
+			$rel_parts['scheme'] = $base_parts['scheme'];
 
 			if (isset($rel_parts['path'])) {
-				if (strpos($rel_parts['path'], '/') !== 0)
-					$rel_parts['path'] = '/' . $rel_parts['path'];
+
+				// experimental: if relative url path is not absolute (i.e. starting with /) concatenate it using base url path
+				// (i'm not sure if it's a good idea)
+
+				if (strpos($rel_parts['path'], '/') !== 0) {
+					$rel_parts['path'] = with_trailing_slash($base_parts['path']) . $rel_parts['path'];
+				}
 
 				$rel_parts['path'] = str_replace("/./", "/", $rel_parts['path']);
 				$rel_parts['path'] = str_replace("//", "/", $rel_parts['path']);

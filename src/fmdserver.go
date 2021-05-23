@@ -19,6 +19,8 @@ var dataDir = "data"
 var webDir = "web"
 
 const privateKeyFile = "privkey"
+const serverCert = "server.crt"
+const serverKey = "server.key"
 
 var filesDir string
 
@@ -170,7 +172,10 @@ func handleRequests() {
 	http.HandleFunc("/key", getKey)
 	http.HandleFunc("/newlocation", putLocation)
 	http.HandleFunc("/newDevice", createDevice)
-	//http.ListenAndServeTLS(":8001", "server.crt", "server.key", nil)
+	if fileExists(filepath.Join(filesDir, serverKey)) {
+		err := http.ListenAndServeTLS(":8002", filepath.Join(filesDir, serverCert), filepath.Join(filesDir, serverKey), nil)
+		fmt.Println("HTTPS won't be available.", err)
+	}
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }
 
@@ -200,6 +205,14 @@ func initDir() {
 	dataDir = filepath.Join(filesDir, dataDir)
 	webDir = filepath.Join(filesDir, webDir)
 	fmt.Println("FMD-Datadirectory: ", filesDir)
+}
+
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }
 
 func main() {

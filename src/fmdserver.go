@@ -24,6 +24,8 @@ const serverKey = "server.key"
 
 var filesDir string
 
+var debug bool
+
 var ids []string
 
 type locationData struct {
@@ -173,10 +175,21 @@ func handleRequests() {
 	http.HandleFunc("/newlocation", putLocation)
 	http.HandleFunc("/newDevice", createDevice)
 	if fileExists(filepath.Join(filesDir, serverKey)) {
-		err := http.ListenAndServeTLS(":8002", filepath.Join(filesDir, serverCert), filepath.Join(filesDir, serverKey), nil)
-		fmt.Println("HTTPS won't be available.", err)
+		var err error
+		if debug {
+			err = http.ListenAndServeTLS(":1009", filepath.Join(filesDir, serverCert), filepath.Join(filesDir, serverKey), nil)
+		} else {
+			err = http.ListenAndServeTLS(":1008", filepath.Join(filesDir, serverCert), filepath.Join(filesDir, serverKey), nil)
+		}
+		if err != nil {
+			fmt.Println("HTTPS won't be available.", err)
+		}
 	}
-	log.Fatal(http.ListenAndServe(":8000", nil))
+	if debug {
+		log.Fatal(http.ListenAndServe(":2021", nil))
+	} else {
+		log.Fatal(http.ListenAndServe(":1020", nil))
+	}
 }
 
 func initData() {
@@ -190,9 +203,6 @@ func initData() {
 }
 
 func initDir() {
-	flag.StringVar(&filesDir, "d", "", "Specifiy data directory. Default is the directory of the executable.")
-	flag.Parse()
-
 	if filesDir == "" {
 		executableFile, err := os.Executable()
 		if err != nil {
@@ -216,10 +226,18 @@ func fileExists(filename string) bool {
 }
 
 func main() {
+	flag.StringVar(&filesDir, "d", "", "Specifiy data directory. Default is the directory of the executable.")
+	flag.BoolVar(&debug, "t", false, "Start the application on with the test-ports.")
+	flag.Parse()
+
 	initDir()
 	initData()
 	fmt.Println("FMD - Server")
 	fmt.Println("Starting Server")
-	fmt.Println("Port: 8000")
+	if debug {
+		fmt.Println("Port: 2021(unsecure) 2020(secure)")
+	} else {
+		fmt.Println("Port: 1020(unsecure) 1008(secure)")
+	}
 	handleRequests()
 }

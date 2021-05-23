@@ -88,7 +88,7 @@ function locate(index) {
 
                     //magic
                     if (keyTemp == null) {
-                        password = prompt("Enter the password:");
+                        password =  password_prompt();                   
                     }
 
                     var key = decryptAES(password, keyBase64)
@@ -193,3 +193,39 @@ function locateNewer() {
     currentLocationDataIndx += 1;
     locate(currentLocationDataIndx);
 }
+
+window.password_prompt = function() {
+    var submit = function() {
+        callback(input.value);
+        document.body.removeChild(div);
+    };
+
+    var div = document.createElement("div");
+    div.id = "passwordPrompt";
+
+    var label = document.createElement("label");
+    label.id = "password_prompt_label";
+    label.className = "center"
+    label.innerHTML = "Please enter the password:";
+    label.for = "password_prompt_input";
+    div.appendChild(label);
+
+    div.appendChild(document.createElement("br"));
+
+    var centedInnerDiv = document.createElement("div");
+    centedInnerDiv.className = "center";
+    div.appendChild(centedInnerDiv);
+
+    var input = document.createElement("input");
+    input.id = "password_prompt_input";
+    input.type = "password";
+    input.addEventListener("keyup", function(e) {
+        if (event.keyCode == 13) submit();
+    }, false);
+    centedInnerDiv.appendChild(input);
+
+    div.appendChild(document.createElement("br"));
+    div.appendChild(document.createElement("br"));
+
+    document.body.appendChild(div);
+};

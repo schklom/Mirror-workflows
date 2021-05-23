@@ -105,3 +105,18 @@ button:active {
     background-color: #232323;
     opacity: 0.5;
 }
+
+#passwordPrompt{
+    background-color: #232323;
+    border-style: solid;
+    border-color:  #4cb050;
+    border-width: 1px;
+    border-radius: 8px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    top:50%;
+    left:50%;
+    opacity: 0.9;
+    transform:translate(-50%, -50%);
+}

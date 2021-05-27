@@ -163,11 +163,13 @@ function locate(index, password) {
                             var time = new Date(json.Date);
                             var lon = crypt.decrypt(json.lon);
                             var lat = crypt.decrypt(json.lat);
+                            var bat = crypt.decrypt(json.Bat);
 
                             document.getElementById("deviceInfo").style.visibility = "visible";
                             document.getElementById("dateView").innerHTML = time.getDay() + "/" + time.getMonth() + "/" + time.getFullYear();
                             document.getElementById("timeView").innerHTML = time.getHours() + ":" + time.getMinutes();
                             document.getElementById("providerView").innerHTML = provider;
+                            document.getElementById("batView").innerHTML = bat;
 
                             var target = L.latLng(lat, lon);
 

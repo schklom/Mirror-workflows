@@ -32,6 +32,7 @@ type locationData struct {
 	Id       string `'json:"id"`
 	Provider string `'json:"provider"`
 	Date     uint64 `'json:"date"`
+	Bat      string `'json:"bat"`
 	Lon      string `json:"lon"`
 	Lat      string `json:"lat"`
 }

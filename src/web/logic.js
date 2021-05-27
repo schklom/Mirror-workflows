@@ -51,94 +51,142 @@ function init() {
     map.setView(target, 1.5);
 }
 
-function locate(index) {
+function prepareForLocate() {
+    if (keyTemp == null) {
+        var submit = function () {
+            document.body.removeChild(div);
+            locate(-1, input.value);
+        };
+
+        var div = document.createElement("div");
+        div.id = "passwordPrompt";
+
+        var label = document.createElement("label");
+        label.id = "password_prompt_label";
+        label.className = "center"
+        label.innerHTML = "Please enter the password:";
+        label.for = "password_prompt_input";
+        div.appendChild(label);
+
+        div.appendChild(document.createElement("br"));
+
+        var centedInnerDiv = document.createElement("div");
+        centedInnerDiv.className = "center";
+        div.appendChild(centedInnerDiv);
+
+        var input = document.createElement("input");
+        input.id = "password_prompt_input";
+        input.type = "password";
+        centedInnerDiv.appendChild(input);
+
+        div.appendChild(document.createElement("br"));
+        div.appendChild(document.createElement("br"));
+
+        document.body.appendChild(div);
+
+        input.focus();
+        input.addEventListener("keyup", function (e) {
+            if (event.keyCode == 13) {
+                if (input.value != "") {
+                    submit();
+                }
+            }
+        }, false);
+
+    } else {
+        locate(-1, "");
+    }
+}
+
+function locate(index, password) {
     idInput = document.getElementById('fmdid');
 
     if (idInput.value != "") {
 
-    fetch("/location", {
-        method: 'PUT',
-        body: JSON.stringify({
-            id: idInput.value,
-            index: index
-        }),
-        headers: {
-            'Content-type': 'applicatoin/json'
-        }
-    })
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (json) {
-
-            fetch("/key", {
-                method: 'PUT',
-                body: JSON.stringify({
-                    id: idInput.value,
-                    index: index
-                }),
-                headers: {
-                    'Content-type': 'applicatoin/json'
-                }
-            })
-                .then(function (response) {
-                    return response.text()
-                })
-                .then(function (keyBase64) {
-
-                    //magic
-                    if (keyTemp == null) {
-                        password =  password_prompt();                   
-                    }
-
-                    var key = decryptAES(password, keyBase64)
-                    var crypt = new JSEncrypt();
-                    crypt.setPrivateKey(key);
-
-                    var provider = crypt.decrypt(json.Provider);
-                    var time = new Date(json.Date);
-                    var lon = crypt.decrypt(json.lon);
-                    var lat = crypt.decrypt(json.lat);
-
-                    document.getElementById("deviceInfo").style.visibility = "visible";
-                    document.getElementById("dateView").innerHTML = time.getDay() + "/" + time.getMonth() + "/" + time.getFullYear();
-                    document.getElementById("timeView").innerHTML = time.getHours() + ":" + time.getMinutes();
-                    document.getElementById("providerView").innerHTML = provider;
-
-                    var target = L.latLng(lat, lon);
-
-                    markers.clearLayers();
-                    L.marker(target).addTo(markers);
-                    map.setView(target, 16);
-
-                })
-        })
-
-
-    fetch("/locationDataSize", {
-        method: 'PUT',
-        body: JSON.stringify({
-            id: idInput.value,
-            index: index
-        }),
-        headers: {
-            'Content-type': 'applicatoin/json'
-        }
-    })
-        .then(function (response) {
-            return response.text()
-        })
-        .then(function (responseIndex) {
-            newestLocationDataIndex = parseInt(responseIndex);
-            if (currentLocationDataIndx == 0) {
-                currentLocationDataIndx = newestLocationDataIndex;
+        fetch("/locationDataSize", {
+            method: 'PUT',
+            body: JSON.stringify({
+                id: idInput.value,
+                index: index
+            }),
+            headers: {
+                'Content-type': 'applicatoin/json'
             }
-            document.getElementById("indexView").innerHTML = currentLocationDataIndx;
         })
+            .then(function (response) {
+                return response.text()
+            })
+            .then(function (responseIndex) {
+                newestLocationDataIndex = parseInt(responseIndex);
+                if (currentLocationDataIndx == 0) {
+                    currentLocationDataIndx = newestLocationDataIndex;
+                }
+                document.getElementById("indexView").innerHTML = currentLocationDataIndx;
+            })
+
+        fetch("/location", {
+            method: 'PUT',
+            body: JSON.stringify({
+                id: idInput.value,
+                index: index
+            }),
+            headers: {
+                'Content-type': 'applicatoin/json'
+            }
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (json) {
+
+                fetch("/key", {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        id: idInput.value,
+                        index: index
+                    }),
+                    headers: {
+                        'Content-type': 'applicatoin/json'
+                    }
+                })
+                    .then(function (response) {
+                        return response.text()
+                    })
+                    .then(function (keyBase64) {
+
+                        var key = decryptAES(password, keyBase64)
+                        if (key != -1) {
+                            var crypt = new JSEncrypt();
+                            crypt.setPrivateKey(key);
+
+                            var provider = crypt.decrypt(json.Provider);
+                            var time = new Date(json.Date);
+                            var lon = crypt.decrypt(json.lon);
+                            var lat = crypt.decrypt(json.lat);
+
+                            document.getElementById("deviceInfo").style.visibility = "visible";
+                            document.getElementById("dateView").innerHTML = time.getDay() + "/" + time.getMonth() + "/" + time.getFullYear();
+                            document.getElementById("timeView").innerHTML = time.getHours() + ":" + time.getMinutes();
+                            document.getElementById("providerView").innerHTML = provider;
+
+                            var target = L.latLng(lat, lon);
+
+                            markers.clearLayers();
+                            L.marker(target).addTo(markers);
+                            map.setView(target, 16);
+                        } else {
+                            alert("Wrong password!");
+                        }
+
+                    })
+            })
+
+
+
 
     }
-
 }
+
 
 function decryptAES(password, cipherText) {
     var key;
@@ -166,66 +214,38 @@ function decryptAES(password, cipherText) {
         ciphertext: CryptoJS.enc.Base64.parse(encrypted)
     });
     let decrypted = CryptoJS.AES.decrypt(cipherParams, key, { iv: CryptoJS.enc.Hex.parse(iv) });
-    return decrypted.toString(CryptoJS.enc.Utf8);
+    try {
+        return decrypted.toString(CryptoJS.enc.Utf8);
+    } catch (error) {
+        keyTemp = null;
+        return -1;
+    }
 }
 
 function clickPress(event) {
     if (event.keyCode == 13) {
-        locate(-1);
+        prepareForLocate();
     }
 }
 
-function switchWithKeys(event){
+function switchWithKeys(event) {
     if (event.keyCode == 111) {
         locateOlder();
-    }else if(event.keyCode == 110){
+    } else if (event.keyCode == 110) {
         locateNewer();
     }
 }
 
 function locateOlder() {
-    currentLocationDataIndx -= 1;
-    locate(currentLocationDataIndx);
-
+    if (keyTemp != null) {
+        currentLocationDataIndx -= 1;
+        locate(currentLocationDataIndx);
+    }
 }
 
 function locateNewer() {
-    currentLocationDataIndx += 1;
-    locate(currentLocationDataIndx);
+    if (keyTemp != null) {
+        currentLocationDataIndx += 1;
+        locate(currentLocationDataIndx);
+    }
 }
-
-window.password_prompt = function() {
-    var submit = function() {
-        callback(input.value);
-        document.body.removeChild(div);
-    };
-
-    var div = document.createElement("div");
-    div.id = "passwordPrompt";
-
-    var label = document.createElement("label");
-    label.id = "password_prompt_label";
-    label.className = "center"
-    label.innerHTML = "Please enter the password:";
-    label.for = "password_prompt_input";
-    div.appendChild(label);
-
-    div.appendChild(document.createElement("br"));
-
-    var centedInnerDiv = document.createElement("div");
-    centedInnerDiv.className = "center";
-    div.appendChild(centedInnerDiv);
-
-    var input = document.createElement("input");
-    input.id = "password_prompt_input";
-    input.type = "password";
-    input.addEventListener("keyup", function(e) {
-        if (event.keyCode == 13) submit();
-    }, false);
-    centedInnerDiv.appendChild(input);
-
-    div.appendChild(document.createElement("br"));
-    div.appendChild(document.createElement("br"));
-
-    document.body.appendChild(div);
-};

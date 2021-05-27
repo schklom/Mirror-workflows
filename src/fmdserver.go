@@ -177,7 +177,7 @@ func handleRequests() {
 	if fileExists(filepath.Join(filesDir, serverKey)) {
 		var err error
 		if debug {
-			err = http.ListenAndServeTLS(":1009", filepath.Join(filesDir, serverCert), filepath.Join(filesDir, serverKey), nil)
+			err = http.ListenAndServeTLS(":2020", filepath.Join(filesDir, serverCert), filepath.Join(filesDir, serverKey), nil)
 		} else {
 			err = http.ListenAndServeTLS(":1008", filepath.Join(filesDir, serverCert), filepath.Join(filesDir, serverKey), nil)
 		}

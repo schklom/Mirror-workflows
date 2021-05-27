@@ -80,7 +80,7 @@ jobs:
           ref: 'TTRSS-docker' # branch
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1.1.0
+        uses: docker/setup-qemu-action@v1.2.0
         #with:
           #image: tonistiigi/binfmt:latest
           #platforms: all
@@ -135,7 +135,7 @@ jobs:
           ref: 'TTRSS-docker-with-filelogging' # branch
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1.1.0
+        uses: docker/setup-qemu-action@v1.2.0
         #with:
           #image: tonistiigi/binfmt:latest
           #platforms: all

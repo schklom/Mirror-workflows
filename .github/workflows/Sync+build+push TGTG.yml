@@ -47,7 +47,7 @@ jobs:
           ref: 'TGTG' # branch
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1.1.0
+        uses: docker/setup-qemu-action@v1.2.0
         #with:
           #image: tonistiigi/binfmt:latest
           #platforms: all

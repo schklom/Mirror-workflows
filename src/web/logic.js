@@ -166,8 +166,8 @@ function locate(index, password) {
                             var bat = crypt.decrypt(json.Bat);
 
                             document.getElementById("deviceInfo").style.visibility = "visible";
-                            document.getElementById("dateView").innerHTML = time.getDay() + "/" + time.getMonth() + "/" + time.getFullYear();
-                            document.getElementById("timeView").innerHTML = time.getHours() + ":" + time.getMinutes();
+                            document.getElementById("dateView").innerHTML = time.toLocaleDateString();
+                            document.getElementById("timeView").innerHTML = time.toLocaleTimeString();
                             document.getElementById("providerView").innerHTML = provider;
                             document.getElementById("batView").innerHTML = bat;
 

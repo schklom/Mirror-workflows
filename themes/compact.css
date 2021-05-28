@@ -1525,6 +1525,10 @@ body.ttrss_prefs .dijitAccordionTitleSelected i.material-icons {
 body.ttrss_prefs #feedsTab {
   background: #f5f5f5;
 }
+body.ttrss_prefs #feedTree .dijitTreeContent {
+  display: inline-flex;
+  margin-left: 4px;
+}
 body.ttrss_prefs .dijitDialog #pref-profiles-list .dijitInlineEditBoxDisplayMode {
   padding: 0px;
 }

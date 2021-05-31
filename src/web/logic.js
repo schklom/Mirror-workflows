@@ -118,9 +118,7 @@ function locate(index, password) {
             })
             .then(function (responseIndex) {
                 newestLocationDataIndex = parseInt(responseIndex);
-                if (currentLocationDataIndx == 0) {
-                    currentLocationDataIndx = newestLocationDataIndex;
-                }
+                currentLocationDataIndx = newestLocationDataIndex;
                 document.getElementById("indexView").innerHTML = currentLocationDataIndx;
             })
 

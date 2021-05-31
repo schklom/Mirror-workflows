@@ -237,7 +237,7 @@ function switchWithKeys(event) {
 }
 
 function locateOlder() {
-    if (keyTemp != null) {
+    if (keyTemp != null && currentLocationDataIndx > 1) {
         currentLocationDataIndx -= 1;
         locate(currentLocationDataIndx);
     }

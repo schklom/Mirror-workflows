@@ -52,7 +52,8 @@ function init() {
 }
 
 function prepareForLocate() {
-    if (keyTemp == null) {
+    idInput = document.getElementById('fmdid');
+    if (idInput.value != "" && keyTemp == null) {
         var submit = function () {
             document.body.removeChild(div);
             locate(-1, input.value);
@@ -118,7 +119,10 @@ function locate(index, password) {
             })
             .then(function (responseIndex) {
                 newestLocationDataIndex = parseInt(responseIndex);
-                currentLocationDataIndx = newestLocationDataIndex;
+                if (index == -1 || index > newestLocationDataIndex) {
+                    index = newestLocationDataIndex;
+                    currentLocationDataIndx = newestLocationDataIndex;
+                }
                 document.getElementById("indexView").innerHTML = currentLocationDataIndx;
             })
 
@@ -239,13 +243,13 @@ function switchWithKeys(event) {
 function locateOlder() {
     if (keyTemp != null && currentLocationDataIndx > 1) {
         currentLocationDataIndx -= 1;
-        locate(currentLocationDataIndx);
+        locate(currentLocationDataIndx, "");
     }
 }
 
 function locateNewer() {
     if (keyTemp != null) {
         currentLocationDataIndx += 1;
-        locate(currentLocationDataIndx);
+        locate(currentLocationDataIndx, "");
     }
 }

@@ -15,6 +15,7 @@ import (
 )
 
 //Some IO variables
+var version = "v0.1"
 var dataDir = "data"
 var webDir = "web"
 
@@ -233,7 +234,7 @@ func main() {
 
 	initDir()
 	initData()
-	fmt.Println("FMD - Server")
+	fmt.Println("FMD - Server - ", version)
 	fmt.Println("Starting Server")
 	if debug {
 		fmt.Println("Port: 2021(unsecure) 2020(secure)")

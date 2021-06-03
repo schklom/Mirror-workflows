@@ -171,7 +171,7 @@ function locate(index, password) {
                             document.getElementById("dateView").innerHTML = time.toLocaleDateString();
                             document.getElementById("timeView").innerHTML = time.toLocaleTimeString();
                             document.getElementById("providerView").innerHTML = provider;
-                            document.getElementById("batView").innerHTML = bat;
+                            document.getElementById("batView").innerHTML = bat + "%";
 
                             var target = L.latLng(lat, lon);
 

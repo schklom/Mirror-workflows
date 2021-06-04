@@ -16,18 +16,18 @@
   "author": "",
   "license": "AGPL-3.0-only",
   "dependencies": {
-    "better-sqlite3": "^7.1.2",
+    "better-sqlite3": "^7.4.0",
     "cookie": "^0.4.1",
     "feed": "git+https://git.sr.ht/~cadence/nodejs-feed#3dde82f8296d7a6f5659323e497e0c684f03ab71",
-    "get-stream": "^6.0.0",
+    "get-stream": "^6.0.1",
     "gm": "^1.23.1",
     "is-in-subnet": "^4.0.1",
     "mixin-deep": "^2.0.1",
     "node-dir": "^0.1.17",
     "node-fetch": "^2.6.1",
-    "pinski": "git+https://git.sr.ht/~cadence/nodejs-pinski#34d816664a87f65cafc2075b1901fd2edb744582",
+    "pinski": "git+https://git.sr.ht/~cadence/nodejs-pinski#2a5a025a974bd5cbb81bae32ec4d5c247cec0d42",
     "pug": "^3.0.2",
-    "semver": "^7.3.4",
+    "semver": "^7.3.5",
     "socks-proxy-agent": "git+https://git.sr.ht/~cadence/nodejs-socks-proxy-agent#5eef50a01667bd5c6b5626fb8e206232152dfbee"
   },
   "optionalDependencies": {
@@ -36,8 +36,8 @@
   },
   "devDependencies": {
     "jimp": "^0.16.1",
-    "selenium-webdriver": "^4.0.0-beta.1",
-    "tap": "^14.11.0",
+    "selenium-webdriver": "^4.0.0-beta.3",
+    "tap": "^15.0.9",
     "why-is-node-running": "^2.2.0"
   }
 }

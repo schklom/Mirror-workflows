@@ -1,5 +1,11 @@
 <?php
 class UrlHelper {
+	const ALLOWED_RELATIVE_SCHEMES = [
+		"magnet",
+		"mailto",
+		"tel"
+	];
+
 	static $fetch_last_error;
 	static $fetch_last_error_code;
 	static $fetch_last_error_content;
@@ -36,8 +42,7 @@ class UrlHelper {
 		} else if (strpos($rel_url, "//") === 0) {
 			# protocol-relative URL (rare but they exist)
 			return self::validate("https:" . $rel_url);
-		} else if (strpos($rel_url, "magnet:") === 0) {
-			# allow magnet links
+		} else if (array_search($rel_parts["scheme"] ?? "", self::ALLOWED_RELATIVE_SCHEMES, true) !== false) {
 			return $rel_url;
 		} else {
 			$base_parts = parse_url($base_url);

@@ -1338,6 +1338,35 @@ class Pref_Prefs extends Handler_Protected {
 		}
 	}
 
+	function cloneprofile() {
+		$old_profile = $_REQUEST["old_profile"] ?? 0;
+		$new_title = clean($_REQUEST["new_title"]);
+
+		if ($old_profile && $new_title) {
+			$new_profile = ORM::for_table('ttrss_settings_profiles')->create();
+			$new_profile->title = $new_title;
+			$new_profile->owner_uid = $_SESSION['uid'];
+
+			if ($new_profile->save()) {
+				$sth = $this->pdo->prepare("INSERT INTO ttrss_user_prefs
+					(owner_uid, pref_name, profile, value)
+						SELECT
+							:uid,
+							pref_name,
+							:new_profile,
+							value
+						FROM ttrss_user_prefs
+						WHERE owner_uid = :uid AND profile = :old_profile");
+
+				$sth->execute([
+					"uid" => $_SESSION["uid"],
+					"new_profile" => $new_profile->id,
+					"old_profile" => $old_profile,
+				]);
+			}
+		}
+	}
+
 	function remprofiles() {
 		$ids = $_REQUEST["ids"] ?? [];
 
@@ -1394,11 +1423,19 @@ class Pref_Prefs extends Handler_Protected {
 
 		array_push($rv, ["title" => __("Default profile"),
 				"id" => 0,
+				"initialized" => true,
 				"active" => empty($_SESSION["profile"])
 			]);
 
 		foreach ($profiles as $profile) {
 			$profile['active'] = ($_SESSION["profile"] ?? 0) == $profile->id;
+
+			$num_settings = ORM::for_table('ttrss_user_prefs')
+				->where('profile', $profile->id)
+				->count();
+
+			$profile['initialized'] = $num_settings > 0;
+
 			array_push($rv, $profile->as_array());
 		};
 

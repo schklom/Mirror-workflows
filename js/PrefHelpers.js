@@ -128,6 +128,24 @@ const	Helpers = {
 				getSelectedProfiles: function () {
 					return Tables.getSelected("pref-profiles-list");
 				},
+				cloneSelected: function() {
+					const sel_rows = this.getSelectedProfiles();
+
+					if (sel_rows.length == 1) {
+						const new_title = prompt(__("Name for cloned profile:"));
+
+						if (new_title) {
+							xhr.post("backend.php", {op: "pref-prefs", method: "cloneprofile", "new_title": new_title, "old_profile": sel_rows[0]}, () => {
+								Notify.close();
+								dialog.refresh();
+							});
+						}
+
+					} else {
+						alert(__("Please select a single profile to clone."));
+					}
+
+				},
 				removeSelected: function () {
 					const sel_rows = this.getSelectedProfiles();
 
@@ -174,7 +192,7 @@ const	Helpers = {
 
 								<div class="pull-right">
 									<input name='newprofile' dojoType='dijit.form.ValidationTextBox' required='1'>
-									${App.FormFields.button_tag(__('Create profile'), "", {onclick: 'App.dialogOf(this).addProfile()'})}
+									${App.FormFields.button_tag(App.FormFields.icon("add_circle") + " " + __('Add'), "", {onclick: 'App.dialogOf(this).addProfile()'})}
 								</div>
 							</div>
 
@@ -198,6 +216,7 @@ const	Helpers = {
 																</script>
 														</span>` : `${profile.title}`}
 													${profile.active ? __("(active)") : ""}
+													${profile.initialized ? "" : __("(empty)")}
 												</td>
 											</tr>
 										`).join("")}
@@ -205,9 +224,11 @@ const	Helpers = {
 								</div>
 
 								<footer>
-									${App.FormFields.button_tag(App.FormFields.icon("delete") + " " +__('Remove selected profiles'), "",
+									${App.FormFields.button_tag(App.FormFields.icon("delete") + " " +__('Remove selected'), "",
 										{class: 'pull-left alt-danger', onclick: 'App.dialogOf(this).removeSelected()'})}
-									${App.FormFields.submit_tag(App.FormFields.icon("check") + " " + __('Activate profile'), {onclick: 'App.dialogOf(this).execute()'})}
+									${App.FormFields.button_tag(App.FormFields.icon("content_copy") + " " + __('Clone'), "",
+									{class: '', onclick: 'App.dialogOf(this).cloneSelected()'})}
+									${App.FormFields.submit_tag(App.FormFields.icon("check") + " " + __('Activate'), {onclick: 'App.dialogOf(this).execute()'})}
 									${App.FormFields.cancel_dialog_tag(__('Cancel'))}
 								</footer>
 							</form>

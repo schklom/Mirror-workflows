@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"time"
 )
@@ -28,6 +29,8 @@ var filesDir string
 var debug bool
 
 var ids []string
+
+var isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]*$`).MatchString
 
 type locationData struct {
 	Id       string `'json:"id"`
@@ -48,6 +51,10 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 	var request requestData
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
+		fmt.Fprintf(w, "Meeep!, Error")
+		return
+	}
+	if !isIdValid(request.Id) {
 		fmt.Fprintf(w, "Meeep!, Error")
 		return
 	}
@@ -81,6 +88,10 @@ func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 	var request requestData
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
+		fmt.Fprintf(w, "Meeep!, Error")
+		return
+	}
+	if !isIdValid(request.Id) {
 		fmt.Fprintf(w, "Meeep!, Error")
 		return
 	}
@@ -122,6 +133,10 @@ func putLocation(w http.ResponseWriter, r *http.Request) {
 	var location locationData
 	err := json.NewDecoder(r.Body).Decode(&location)
 	if err != nil {
+		fmt.Fprintf(w, "Meeep!, Error")
+		return
+	}
+	if !isIdValid(location.Id) {
 		fmt.Fprintf(w, "Meeep!, Error")
 		return
 	}
@@ -194,17 +209,7 @@ func handleRequests() {
 	}
 }
 
-func initData() {
-	fmt.Println("Init: Preparing FMD-Server...")
-	filePath := filepath.Join(dataDir)
-	dirs, _ := ioutil.ReadDir(filePath)
-	for i := 0; i < len(dirs); i++ {
-		ids = append(ids, dirs[i].Name())
-	}
-	fmt.Printf("Init: %d Devices registered.\n\n", len(ids))
-}
-
-func initDir() {
+func initServer() {
 	if filesDir == "" {
 		executableFile, err := os.Executable()
 		if err != nil {
@@ -216,7 +221,18 @@ func initDir() {
 	}
 	dataDir = filepath.Join(filesDir, dataDir)
 	webDir = filepath.Join(filesDir, webDir)
-	fmt.Println("FMD-Datadirectory: ", filesDir)
+
+	fmt.Println("Init: FMD-Datadirectory: ", filesDir)
+
+	fmt.Println("Init: Preparing FMD-Server...")
+
+	filePath := filepath.Join(dataDir)
+	dirs, _ := ioutil.ReadDir(filePath)
+	for i := 0; i < len(dirs); i++ {
+		ids = append(ids, dirs[i].Name())
+	}
+	fmt.Printf("Init: %d Devices registered.\n\n", len(ids))
+
 }
 
 func fileExists(filename string) bool {
@@ -232,8 +248,8 @@ func main() {
 	flag.BoolVar(&debug, "t", false, "Start the application on with the test-ports.")
 	flag.Parse()
 
-	initDir()
-	initData()
+	initServer()
+
 	fmt.Println("FMD - Server - ", version)
 	fmt.Println("Starting Server")
 	if debug {

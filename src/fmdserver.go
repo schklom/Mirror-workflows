@@ -16,7 +16,7 @@ import (
 )
 
 //Some IO variables
-var version = "v0.1"
+var version = "v0.1.1"
 var dataDir = "data"
 var webDir = "web"
 

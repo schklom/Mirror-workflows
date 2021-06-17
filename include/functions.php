@@ -162,17 +162,17 @@
 
 	/* compat shims */
 
-	/** function is @deprecated */
+	/** function is @deprecated by Config::get_version() */
 	function get_version() {
 		return Config::get_version();
 	}
 
-	/** function is @deprecated */
+	/** function is @deprecated by Config::get_schema_version() */
 	function get_schema_version() {
 		return Config::get_schema_version();
 	}
 
-	/** function is @deprecated */
+	/** function is @deprecated by Debug::log() */
 	function _debug($msg) {
 	    Debug::log($msg);
 	}
@@ -182,37 +182,37 @@
 		return Feeds::_get_counters($feed, $is_cat, true, $_SESSION["uid"]);
 	}
 
-	/** function is @deprecated */
+	/** function is @deprecated by Sanitizer::sanitize() */
 	function sanitize($str, $force_remove_images = false, $owner = false, $site_url = false, $highlight_words = false, $article_id = false) {
 		return Sanitizer::sanitize($str, $force_remove_images, $owner, $site_url, $highlight_words, $article_id);
 	}
 
-	/** function is @deprecated */
+	/** function is @deprecated by UrlHelper::fetch() */
 	function fetch_file_contents($params) {
 		return UrlHelper::fetch($params);
 	}
 
-	/** function is @deprecated */
+	/** function is @deprecated by UrlHelper::rewrite_relative() */
 	function rewrite_relative_url($base_url, $rel_url) {
 		return UrlHelper::rewrite_relative($base_url, $rel_url);
 	}
 
-	/** function is @deprecated */
+	/** function is @deprecated by UrlHelper::validate() */
 	function validate_url($url) {
 		return UrlHelper::validate($url);
 	}
 
-	/** function is @deprecated */
+	/** function is @deprecated by UserHelper::authenticate() */
 	function authenticate_user($login, $password, $check_only = false, $service = false) {
 		return UserHelper::authenticate($login, $password, $check_only, $service);
 	}
 
-	/** function is @deprecated */
+	/** function is @deprecated by TimeHelper::smart_date_time() */
 	function smart_date_time($timestamp, $tz_offset = 0, $owner_uid = false, $eta_min = false) {
 		return TimeHelper::smart_date_time($timestamp, $tz_offset, $owner_uid, $eta_min);
 	}
 
-	/** function is @deprecated */
+	/** function is @deprecated by TimeHelper::make_local_datetime() */
 	function make_local_datetime($timestamp, $long, $owner_uid = false, $no_smart_dt = false, $eta_min = false) {
 		return TimeHelper::make_local_datetime($timestamp, $long, $owner_uid, $no_smart_dt, $eta_min);
 	}

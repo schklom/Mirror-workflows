@@ -31,8 +31,8 @@ class UrlHelper {
 	 *
 	 * @param string $base_url     Base URL (i.e. from where the document is)
 	 * @param string $rel_url Possibly relative URL in the document
-	 * @param string $owner_element Owner node tag name (i.e. A) (optional)
-	 * @param string $owner_attribute Owner attribute (i.e. href) (optional)
+	 * @param string $owner_element Owner element tag name (i.e. "a") (optional)
+	 * @param string $owner_attribute Owner attribute (i.e. "href") (optional)
 	 *
 	 * @return string Absolute URL
 	 */
@@ -47,7 +47,7 @@ class UrlHelper {
 		} else if (strpos($rel_url, "//") === 0) {
 			return self::validate("https:" . $rel_url);
 		// allow some extra schemes for A href
-		} else if (in_array($rel_parts["scheme"] ?? "", self::EXTRA_HREF_SCHEMES) &&
+		} else if (in_array($rel_parts["scheme"] ?? "", self::EXTRA_HREF_SCHEMES, true) &&
 				$owner_element == "a" &&
 				$owner_attribute == "href") {
 			return $rel_url;

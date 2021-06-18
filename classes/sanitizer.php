@@ -74,7 +74,7 @@ class Sanitizer {
 
 			if ($entry->hasAttribute('href')) {
 				$entry->setAttribute('href',
-					rewrite_relative_url($rewrite_base_url, $entry->getAttribute('href')));
+					UrlHelper::rewrite_relative($rewrite_base_url, $entry->getAttribute('href'), $entry->tagName, "href"));
 
 				$entry->setAttribute('rel', 'noopener noreferrer');
 				$entry->setAttribute("target", "_blank");
@@ -82,7 +82,7 @@ class Sanitizer {
 
 			if ($entry->hasAttribute('src')) {
 				$entry->setAttribute('src',
-					rewrite_relative_url($rewrite_base_url, $entry->getAttribute('src')));
+					UrlHelper::rewrite_relative($rewrite_base_url, $entry->getAttribute('src'), $entry->tagName, "src"));
 			}
 
 			if ($entry->nodeName == 'img') {
@@ -94,7 +94,7 @@ class Sanitizer {
 				$matches = RSSUtils::decode_srcset($entry->getAttribute('srcset'));
 
 				for ($i = 0; $i < count($matches); $i++) {
-					$matches[$i]["url"] = rewrite_relative_url($rewrite_base_url, $matches[$i]["url"]);
+					$matches[$i]["url"] = UrlHelper::rewrite_relative($rewrite_base_url, $matches[$i]["url"]);
 				}
 
 				$entry->setAttribute("srcset", RSSUtils::encode_srcset($matches));

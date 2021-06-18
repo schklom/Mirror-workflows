@@ -52,7 +52,7 @@ class UrlHelper {
 				$owner_attribute == "href") {
 			return $rel_url;
 		// allow limited subset of inline base64-encoded images for IMG elements
-		} else if ($rel_parts["scheme"] ?? "" == "data" &&
+		} else if (($rel_parts["scheme"] ?? "") == "data" &&
 				preg_match('%^image/(webp|gif|jpg|png|svg);base64,%', $rel_parts["path"]) &&
 				$owner_element == "img" &&
 				$owner_attribute == "src") {

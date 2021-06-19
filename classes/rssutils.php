@@ -646,7 +646,7 @@ class RSSUtils {
 
 				$entry_title = strip_tags($item->get_title());
 
-				$entry_link = rewrite_relative_url($site_url, clean($item->get_link()));
+				$entry_link = UrlHelper::rewrite_relative($site_url, clean($item->get_link()), "a", "href");
 
 				$entry_language = mb_substr(trim($item->get_language()), 0, 2);
 

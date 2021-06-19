@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-18 13:34+0300\n"
-"PO-Revision-Date: 2021-03-10 10:30+0000\n"
+"PO-Revision-Date: 2021-06-20 09:32+0000\n"
 "Last-Translator: Dario Di Ludovico <dario@diludovico.it>\n"
 "Language-Team: Italian <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "it/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.5.1\n"
+"X-Generator: Weblate 4.7\n"
 
 #: backend.php:60
 msgid "Use default"
@@ -282,20 +282,16 @@ msgid "Open next feed"
 msgstr "Apri il notiziario successivo"
 
 #: classes/rpc.php:567
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open next unread feed"
-msgstr "Apri il notiziario successivo"
+msgstr "Apri il prossimo notiziario non letto"
 
 #: classes/rpc.php:568
 msgid "Open previous feed"
 msgstr "Apri il notiziario precedente"
 
 #: classes/rpc.php:569
-#, fuzzy
-#| msgid "Open previous feed"
 msgid "Open previous unread feed"
-msgstr "Apri il notiziario precedente"
+msgstr "Apri il precedente notiziario non letto"
 
 #: classes/rpc.php:570
 msgid "Open next article (in combined mode, scroll down)"
@@ -463,10 +459,8 @@ msgid "Toggle headline grouping"
 msgstr "Attiva/disattiva il raggruppamento dei titoli"
 
 #: classes/rpc.php:613
-#, fuzzy
-#| msgid "Toggle sidebar"
 msgid "Toggle grid view"
-msgstr "Attiva la sidebar"
+msgstr "Attiva la vista a griglia"
 
 #: classes/rpc.php:614
 msgid "Debug feed update"
@@ -857,14 +851,12 @@ msgid "May increase server load"
 msgstr "Potrebbe sovraccaricare il server"
 
 #: classes/pref/prefs.php:121
-#, fuzzy
-#| msgid "Preview"
 msgid "Grid view"
-msgstr "Anteprima"
+msgstr "Vista a griglia"
 
 #: classes/pref/prefs.php:121
 msgid "On wider screens, if always expanded"
-msgstr ""
+msgstr "Su grandi schermi, se sempre espanso"
 
 #: classes/pref/prefs.php:222
 msgid "The configuration was saved."
@@ -933,14 +925,12 @@ msgid "Disable OTP"
 msgstr "Disattivare password usa e getta (OTP)"
 
 #: classes/pref/prefs.php:472
-#, fuzzy
-#| msgid "OTP Key:"
 msgid "OTP secret:"
 msgstr "Chiave OTP:"
 
 #: classes/pref/prefs.php:499
 msgid "Verification code:"
-msgstr ""
+msgstr "Codice di verifica:"
 
 #: classes/pref/prefs.php:507
 msgid "Enable OTP"
@@ -1611,10 +1601,8 @@ msgid "%d min"
 msgstr "%d min"
 
 #: plugins/auth_internal/init.php:112
-#, fuzzy
-#| msgid "Please enter label caption:"
 msgid "Please enter verification code (OTP):"
-msgstr "Inserire il nome dell'etichetta:"
+msgstr "Inserire il codice di verifica (OTP):"
 
 #: plugins/auth_internal/init.php:114
 msgid "Continue"
@@ -1622,7 +1610,7 @@ msgstr "Continua"
 
 #: plugins/auth_internal/init.php:166
 msgid "Too many authentication attempts, throttled."
-msgstr ""
+msgstr "Troppi tentativi di autenticazione, limitato."
 
 #: plugins/auth_internal/init.php:247
 msgid "Password has been changed."
@@ -1717,7 +1705,7 @@ msgstr "(accoda)"
 
 #: plugins/af_readability/init.php:130
 msgid "Readability"
-msgstr "Readability"
+msgstr "Leggibilità"
 
 #: plugins/af_readability/init.php:135
 msgid "Inline article content"
@@ -1809,7 +1797,7 @@ msgstr "Sottoscrivi %s in Tiny Tiny RSS?"
 
 #: plugins/bookmarklets/init.php:350
 msgid "Bookmarklets"
-msgstr "Bookmarklets"
+msgstr "Segnalibri"
 
 #: plugins/bookmarklets/init.php:352
 msgid ""
@@ -1838,8 +1826,6 @@ msgid "The following comics are currently supported:"
 msgstr "I seguenti fumetti sono attualmente supportati:"
 
 #: plugins/nsfw/init.php:39
-#, fuzzy
-#| msgid "Not work safe (click to toggle)"
 msgid "Not safe for work (click to toggle)"
 msgstr "Non sicuro per luoghi di lavoro (clicca per attivare)"
 
@@ -2339,13 +2325,11 @@ msgstr "Pulire log degli eventi?"
 
 #: js/PrefHelpers.js:135
 msgid "Name for cloned profile:"
-msgstr ""
+msgstr "Nome del profilo clonato:"
 
 #: js/PrefHelpers.js:145
-#, fuzzy
-#| msgid "Please select an image file."
 msgid "Please select a single profile to clone."
-msgstr "Selezionare un file immagine."
+msgstr "Selezionare un profilo da clonare."
 
 #: js/PrefHelpers.js:153
 msgid ""
@@ -2372,7 +2356,7 @@ msgstr "(attivo)"
 
 #: js/PrefHelpers.js:219
 msgid "(empty)"
-msgstr ""
+msgstr "(vuoto)"
 
 #: js/PrefHelpers.js:242
 msgid "Activate selected profile?"
@@ -2753,10 +2737,8 @@ msgid "Looking for articles (%d processed, %f found)..."
 msgstr "Cercando articoli (%d processati, %f trovati)..."
 
 #: js/CommonFilters.js:72
-#, fuzzy
-#| msgid "Found %d articles matching this filter:"
 msgid "Articles matching this filter:"
-msgstr "Trovati %d articoli che corrispondono a questo filtro:"
+msgstr "Articoli che corrispondono a questo filtro:"
 
 #: js/CommonFilters.js:74
 msgid "Found %d articles matching this filter:"
@@ -2767,10 +2749,8 @@ msgid "Error while trying to get filter test results."
 msgstr "Errore cercando di ricevere i risultati del test sui filtri."
 
 #: js/CommonFilters.js:95
-#, fuzzy
-#| msgid "Looking for plugins..."
 msgid "Looking for articles..."
-msgstr "Ricerca plugin..."
+msgstr "Ricerca articoli..."
 
 #: js/CommonFilters.js:174
 msgid "Edit rule"
@@ -2833,10 +2813,8 @@ msgid "Unable to fetch full text for this article"
 msgstr "Impossibile recuperare il testo completo di questo articolo"
 
 #: plugins/shorten_expanded/init.js:32
-#, fuzzy
-#| msgid "Email article"
 msgid "Expand article"
-msgstr "Invia articolo per email"
+msgstr "Espandi l'articolo"
 
 #: plugins/share/share.js:7
 msgid "Share article by URL"
@@ -2902,13 +2880,11 @@ msgstr "URL del sito:"
 
 #: js/PrefHelpers.js:229
 msgid "Clone"
-msgstr ""
+msgstr "Clona"
 
 #: js/PrefHelpers.js:231
-#, fuzzy
-#| msgid "Activate profile"
 msgid "Activate"
-msgstr "Attiva profilo"
+msgstr "Attiva"
 
 #: js/PrefHelpers.js:299
 msgid "Apply"

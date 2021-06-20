@@ -154,7 +154,9 @@ class TimelineEntry extends TimelineBaseMethods {
 	getThumbnailSrcsetP() {
 		if (this.data.thumbnail_resources) {
 			return this.data.thumbnail_resources.map(tr => {
-				return `${proxyImage(tr.src, tr.config_width)} ${tr.config_width}w`
+				let src = tr.src
+				if (constants.proxy_media.thumbnail) src = proxyImage(tr.src, tr.config_width)
+				return `${src} ${tr.config_width}w`
 			}).join(", ")
 		} else {
 			return null
@@ -174,16 +176,20 @@ class TimelineEntry extends TimelineBaseMethods {
 				found = tr
 				if (tr.config_width >= size) break // don't proceed once we find one large enough
 			}
+			let src = found.src
+			if (constants.proxy_media.thumbnail) src = proxyImage(src, found.config_width) // force resize to config rather than requested
 			return {
 				config_width: found.config_width,
 				config_height: found.config_height,
-				src: proxyImage(found.src, found.config_width) // force resize to config rather than requested
+				src
 			}
 		} else if (this.data.thumbnail_src) {
+			let src = this.data.thumbnail_src
+			if (constants.proxy_media.thumbnail) src = proxyImage(src, size) // force resize to requested
 			return {
 				config_width: size, // probably?
 				config_height: size,
-				src: proxyImage(this.data.thumbnail_src, size) // force resize to requested
+				src
 			}
 		} else {
 			return null

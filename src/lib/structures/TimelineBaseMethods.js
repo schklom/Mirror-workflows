@@ -26,11 +26,15 @@ class TimelineBaseMethods {
 	}
 
 	getDisplayUrlP() {
-		return proxyImage(this.data.display_url)
+		let url = this.data.display_url
+		if (constants.proxy_media.image) url = proxyImage(url)
+		return url
 	}
 
 	getVideoUrlP() {
-		return proxyVideo(this.data.video_url)
+		let url = this.data.video_url
+		if (constants.proxy_media.video) url = proxyVideo(url)
+		return url
 	}
 
 	getAlt() {

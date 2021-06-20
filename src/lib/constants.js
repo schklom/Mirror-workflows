@@ -41,6 +41,11 @@ let constants = {
 	does_not_track: false,
 
 	allow_user_from_reel: "fallback", // one of: "never", "fallback", "prefer", "onlyPreferSaved", "preferForRSS"
+	proxy_media: { // Whether to proxy media (images, videos, thumbnails) through Bibliogram. This is strongly recommended to protect user privacy. If proxy is turned off, some browser content blockers may break all images since they are served from Facebook domains.
+		image: true,
+		video: true,
+		thumbnail: true
+	},
 
 	feeds: {
 		// Whether feeds are enabled.

@@ -19,6 +19,16 @@
 	ini_set("session.gc_maxlifetime", $session_expire);
 	ini_set("session.cookie_lifetime", "0");
 
+	// prolong PHP session cookie
+	if (isset($_COOKIE[$session_name]))
+		setcookie($session_name,
+			$_COOKIE[$session_name],
+			time() + $session_expire,
+			ini_get("session.cookie_path"),
+			ini_get("session.cookie_domain"),
+			ini_get("session.cookie_secure"),
+			ini_get("session.cookie_httponly"));
+
 	function validate_session() {
 		if (\Config::get(\Config::SINGLE_USER_MODE)) return true;
 

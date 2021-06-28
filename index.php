@@ -159,73 +159,80 @@
         <div id="toolbar-frame" dojoType="dijit.layout.ContentPane" region="top">
             <div id="toolbar" dojoType="fox.Toolbar">
 
-            <i class="material-icons net-alert" style="display : none"
+			 	<!-- order 0, default -->
+
+				<?php
+					PluginHost::getInstance()->run_hooks_callback(PluginHost::HOOK_MAIN_TOOLBAR_BUTTON, function ($result) {
+						echo $result;
+					});
+				?>
+
+				<!-- order 5: alert icons -->
+
+            <i class="material-icons net-alert" style="display : none; order : 5"
                 title="<?= __("Communication problem with server.") ?>">error_outline</i>
 
-            <i class="material-icons log-alert" style="display : none" onclick="App.openPreferences('system')"
+            <i class="material-icons log-alert" style="display : none; order : 5" onclick="App.openPreferences('system')"
                  title="<?= __("Recent entries found in event log.") ?>">warning</i>
 
-            <i id="updates-available" class="material-icons icon-new-version" style="display : none"
+            <i id="updates-available" class="material-icons icon-new-version" style="display : none; order: 5"
                title="<?= __('Updates are available from Git.') ?>">new_releases</i>
 
-            <?php
+				<!-- order 10: headlines toolbar -->
 
-            PluginHost::getInstance()->run_hooks_callback(PluginHost::HOOK_MAIN_TOOLBAR_BUTTON, function ($result) {
-                echo $result;
-				});
-            ?>
+            <div id="toolbar-headlines" dojoType="fox.Toolbar" style="order : 10"> </div>
 
-            <div id="toolbar-headlines" dojoType="fox.Toolbar" style="order : 10">
-
-            </div>
+				<!-- order 20: main toolbar contents (dropdowns) -->
 
             <form id="toolbar-main" dojoType="dijit.form.Form" action="" style="order : 20" onsubmit="return false">
 
-            <select name="view_mode" title="<?= __('Show articles') ?>"
-                onchange="Feeds.onViewModeChanged()"
-                dojoType="fox.form.Select">
-                <option selected="selected" value="adaptive"><?= __('Adaptive') ?></option>
-                <option value="all_articles"><?= __('All Articles') ?></option>
-                <option value="marked"><?= __('Starred') ?></option>
-                <option value="published"><?= __('Published') ?></option>
-                <option value="unread"><?= __('Unread') ?></option>
-                <option value="has_note"><?= __('With Note') ?></option>
-            </select>
+					<select name="view_mode" title="<?= __('Show articles') ?>"
+						onchange="Feeds.onViewModeChanged()"
+						dojoType="fox.form.Select">
+						<option selected="selected" value="adaptive"><?= __('Adaptive') ?></option>
+						<option value="all_articles"><?= __('All Articles') ?></option>
+						<option value="marked"><?= __('Starred') ?></option>
+						<option value="published"><?= __('Published') ?></option>
+						<option value="unread"><?= __('Unread') ?></option>
+						<option value="has_note"><?= __('With Note') ?></option>
+					</select>
 
-			<select title="<?= __('Sort articles') ?>"
-                onchange="Feeds.onViewModeChanged()"
-                dojoType="fox.form.Select" name="order_by">
+					<select title="<?= __('Sort articles') ?>"
+							onchange="Feeds.onViewModeChanged()"
+							dojoType="fox.form.Select" name="order_by">
 
-				<option selected="selected" value="default"><?= __('Default') ?></option>
-                <option value="feed_dates"><?= __('Newest first') ?></option>
-                <option value="date_reverse"><?= __('Oldest first') ?></option>
-                <option value="title"><?= __('Title') ?></option>
+						<option selected="selected" value="default"><?= __('Default') ?></option>
+							<option value="feed_dates"><?= __('Newest first') ?></option>
+							<option value="date_reverse"><?= __('Oldest first') ?></option>
+							<option value="title"><?= __('Title') ?></option>
 
-				<?php
-					PluginHost::getInstance()->run_hooks_callback(PluginHost::HOOK_HEADLINES_CUSTOM_SORT_MAP, function ($result) {
-						foreach ($result as $sort_value => $sort_title) {
-							print "<option value=\"" . htmlspecialchars($sort_value) . "\">$sort_title</option>";
-						}
-					});
-				?>
-            </select>
+						<?php
+							PluginHost::getInstance()->run_hooks_callback(PluginHost::HOOK_HEADLINES_CUSTOM_SORT_MAP, function ($result) {
+								foreach ($result as $sort_value => $sort_title) {
+									print "<option value=\"" . htmlspecialchars($sort_value) . "\">$sort_title</option>";
+								}
+							});
+						?>
+	            </select>
 
-            <div class="catchup-button" dojoType="fox.form.ComboButton" onclick="Feeds.catchupCurrent()">
-                <span><?= __('Mark as read') ?></span>
-                <div dojoType="dijit.DropDownMenu">
-                    <div dojoType="dijit.MenuItem" onclick="Feeds.catchupCurrent('1day')">
-                        <?= __('Older than one day') ?>
-                    </div>
-                    <div dojoType="dijit.MenuItem" onclick="Feeds.catchupCurrent('1week')">
-                        <?= __('Older than one week') ?>
-                    </div>
-                    <div dojoType="dijit.MenuItem" onclick="Feeds.catchupCurrent('2week')">
-                        <?= __('Older than two weeks') ?>
-                    </div>
-                </div>
-            </div>
+					<div class="catchup-button" dojoType="fox.form.ComboButton" onclick="Feeds.catchupCurrent()">
+						<span><?= __('Mark as read') ?></span>
+						<div dojoType="dijit.DropDownMenu">
+							<div dojoType="dijit.MenuItem" onclick="Feeds.catchupCurrent('1day')">
+									<?= __('Older than one day') ?>
+							</div>
+							<div dojoType="dijit.MenuItem" onclick="Feeds.catchupCurrent('1week')">
+									<?= __('Older than one week') ?>
+							</div>
+							<div dojoType="dijit.MenuItem" onclick="Feeds.catchupCurrent('2week')">
+									<?= __('Older than two weeks') ?>
+							</div>
+						</div>
+					</div>
 
             </form>
+
+				<!-- toolbar actions dropdown: order 30 -->
 
             <div class="action-chooser" style="order : 30">
 
@@ -235,7 +242,7 @@
 						});
                 ?>
 
-                <div dojoType="fox.form.DropDownButton" class="action-button" title="<?= __('Actions...') ?>">
+               <div dojoType="fox.form.DropDownButton" class="action-button" title="<?= __('Actions...') ?>">
 					<span><i class="material-icons">menu</i></span>
                     <div dojoType="dijit.Menu" style="display: none">
                         <div dojoType="dijit.MenuItem" onclick="App.onActionSelected('qmcPrefs')"><?= __('Preferences...') ?></div>

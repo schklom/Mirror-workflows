@@ -20,6 +20,11 @@ p {
     margin: 10px;
 }
 
+a{
+    color:whitesmoke;
+    margin: 10px;
+}
+
 label {
     color: whitesmoke;
     margin: 10px;
@@ -60,6 +65,11 @@ button:active {
     background-color: #318f2f;
 }
 
+footer{
+    padding: 10px;
+    z-index: 2;
+}
+
 .center{
     width: 100%;
     border: 1px solid black;
@@ -85,12 +95,12 @@ button:active {
 
 #dataView{
     margin-top: 20px;
-    height: 60%;
+    height: 64%;
 }
 
 #map{
     width: 99%;
-    height: 60%;
+    height: 64%;
     position: absolute;
     z-index: 1;
 }

@@ -168,6 +168,10 @@ func createDevice(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(fmt.Sprint(id)))
 }
 
+func getVersion(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte(fmt.Sprint(version)))
+}
+
 func generateNewId(n int) string {
 	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 	s := make([]rune, n)
@@ -191,6 +195,7 @@ func handleRequests() {
 	http.HandleFunc("/key", getKey)
 	http.HandleFunc("/newlocation", putLocation)
 	http.HandleFunc("/newDevice", createDevice)
+	http.HandleFunc("/version", getVersion)
 	if fileExists(filepath.Join(filesDir, serverKey)) {
 		var err error
 		if debug {

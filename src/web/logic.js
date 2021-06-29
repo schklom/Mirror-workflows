@@ -49,6 +49,18 @@ function init() {
 
     var target = L.latLng('57', '13');
     map.setView(target, 1.5);
+
+    var versionView = document.getElementById('version');
+    fetch("/version", {
+        method: 'GET'
+    })
+        .then(function (response) {
+            return response.text();
+        })
+        .then(function (versionCode) {
+            versionView.innerHTML = versionCode;
+        })
+
 }
 
 function prepareForLocate() {

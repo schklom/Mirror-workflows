@@ -29,14 +29,14 @@ var interval = setInterval(function () {
                     newestLocationDataIndex = newlocationDataIndex;
                     var toasted = new Toasted({
                         position: 'top-center',
-                        duration: 3000
+                        duration: 15000
                     })
                     toasted.show('New locationdata available!')
                 }
             })
     }
 
-}, 300000);
+}, 180000);
 
 function init() {
     var element = document.getElementById('map');

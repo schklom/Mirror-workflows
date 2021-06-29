@@ -19,9 +19,32 @@
         <h2>Privacy Notice</h2>
     </div>
 
-    <p>What data is stored on the server?<br>If you use fmd on your phone and have enabled the server, your phone sents contiously you location in an encrypted format to this server. The data is in way encrypted that i could never decrypt it. Only you know where your phone was. Some data that also will be sent is:<br>Time, Type of location, battery-status, ip address<br>I don't sell your data nor i do i do anything with it. How i could i? I can't decrypt it.
-    <br><br>How is your data secured?<br>The data is end-to-end encrypted.<br>Here is how:<br>Your phone creates a keypair. Both will be saved. The private key will be encrypted before saved. This encrypted private key will be send to the server. On your phone are both keys. When fmd starts and send data it will encrypt the data with the public key. Even when your phone gets stolen the private key can't be read, cause it's encrypted.
-    When you now go to the website the website sends you the encrypted locationdata and the encrypted privatekey. You now enter the password so the privatekey can be decrypted. With the decrypted private key the data can be decrypted and shown.<br>With this method i can't decrypt your data cause i don't have the password to decrypt the key.</p>
+    <div class="center">
+        <h3>29.07.2021</h3>
+    </div>
+
+    <h3>What data is stored when visiting the website?</h3>
+    <p>For the sake of the connection your ip address will be transmitted, but not saved. While using the website the key and the userid will be saved temporarly on your computer, but will be removed when leaving the page.</p>
+
+    <h3>What data is stored on the server?</h3>
+    <p>On the server is the encrypted data from your phone. This data contains right now the location, the date, the random user-id(not encrypted), the battery level and the encrypted private key.</p>
+
+    <h3>Is the data used/sold/etc. ?</h3>
+    <p>The data isn't used for any off-label purpose. It's won't get sold, used for statistics or anything else. The only usecase is to provide the user the data to find the phone.</p>
+
+    <h3>Is my data encrypted?</h3>
+    <p>Yes, your data is end to end encrypted.(Except the userid).</p>
+
+    <h3>How is my data encrypted?</h3>
+    <p>Great you ask.<br>Your phone creates a keypair on registration. This keypair consists of a privatekey(this one can decrypt and encrypt) and a public key(this one can only decrypt). The privatekey gets encrypted with the passowrd you select and than send to the server. Now everytime your phone sends data it uses the public key to encrypt this data and sends this data to the server.<br>
+    When you no access the webpage and enter your userid, the userid will be send to your pc where you decrypt it with your password. Once done you can access the data of the phone.<br>
+    The password is never stored on the server and only temporarly on your pc.</p>
+
+    <h3>Who has access to the data?</h3>
+    <p>I(Nulide) am the only who has access to the server. But i can't do something with your data. It's encrypted.</p>
+
+    <h3>How can i delete my data from the server</h3>
+    <p>You can mail me at Nulide@tutanota.de<br>In a fututre version the server will clean the data automatically or by pressing a button, but this isn't developed yet.</p>
 
 </body>
 

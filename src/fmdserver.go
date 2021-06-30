@@ -49,6 +49,11 @@ type locationData struct {
 	Lat      string `json:"lat"`
 }
 
+type locationDataSize struct {
+	DataLength         int
+	DataBeginningIndex int
+}
+
 //The json-request from the webpage.
 type requestData struct {
 	Id    string `'json:"id"`
@@ -107,14 +112,20 @@ func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 	filePath := filepath.Join(dataDir, request.Id)
 	files, _ := ioutil.ReadDir(filePath)
 	highest := -1
+	smallest := 2147483647
 	for i := 0; i < len(files); i++ {
 		number, _ := strconv.Atoi(files[i].Name())
 		if number > highest {
 			highest = number
 		}
+		if number < smallest {
+			smallest = number
+		}
 	}
-	w.Header().Set("Content-Type", "application/text")
-	w.Write([]byte(fmt.Sprint(highest)))
+	dataSize := locationDataSize{DataLength: highest, DataBeginningIndex: smallest}
+	result, _ := json.Marshal(dataSize)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(result)
 }
 
 func getKey(w http.ResponseWriter, r *http.Request) {
@@ -152,16 +163,35 @@ func putLocation(w http.ResponseWriter, r *http.Request) {
 	os.MkdirAll(path, os.ModePerm)
 	files, _ := ioutil.ReadDir(path)
 	highest := 0
+	smallest := 2147483647
 	for i := 0; i < len(files); i++ {
 		number, _ := strconv.Atoi(files[i].Name())
 		if number > highest {
 			highest = number
 		}
+		if number < smallest {
+			smallest = number
+		}
 	}
 	highest += 1
+
+	//Auto-Clean directory
+	difference := (highest - smallest) - serverConfig.MaxSavedLoc
+	if difference > 0 {
+		deleteUntil := smallest + difference
+		index := smallest
+		for index <= deleteUntil {
+			indexPath := filepath.Join(path, strconv.Itoa(index))
+			os.Remove(indexPath)
+			index += 1
+		}
+	}
+
+	//Create new locationfile
 	path = filepath.Join(path, strconv.Itoa(highest))
 	file, _ := json.MarshalIndent(location, "", " ")
 	_ = ioutil.WriteFile(path, file, 0644)
+
 }
 
 func createDevice(w http.ResponseWriter, r *http.Request) {

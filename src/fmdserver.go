@@ -23,14 +23,24 @@ var webDir = "web"
 const privateKeyFile = "privkey"
 const serverCert = "server.crt"
 const serverKey = "server.key"
+const configFile = "config.json"
 
 var filesDir string
 
 var debug bool
 
+var serverConfig config
+
 var ids []string
 
 var isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]*$`).MatchString
+
+type config struct {
+	PortSecure   string
+	PortUnsecure string
+	IdLength     int
+	MaxSavedLoc  int
+}
 
 type locationData struct {
 	Id       string `'json:"id"`
@@ -231,6 +241,28 @@ func initServer() {
 
 	fmt.Println("Init: Preparing FMD-Server...")
 
+	fmt.Println("Init: Preparing Config...")
+
+	configFilePath := filepath.Join(filesDir, configFile)
+
+	configRead := true
+	configContent, err := ioutil.ReadFile(configFilePath)
+	if err != nil {
+		configRead = false
+	}
+	err = json.Unmarshal(configContent, &serverConfig)
+	if err != nil {
+		configRead = false
+	}
+	//Create DefaultConfig when no config available
+	if !configRead {
+		serverConfig = config{PortSecure: "1008", PortUnsecure: "1020", IdLength: 5, MaxSavedLoc: 1000}
+		configToString, _ := json.MarshalIndent(serverConfig, "", " ")
+		err := ioutil.WriteFile(configFilePath, configToString, 0644)
+		fmt.Println(err)
+	}
+
+	fmt.Println("Init: Preparing Devices")
 	filePath := filepath.Join(dataDir)
 	dirs, _ := ioutil.ReadDir(filePath)
 	for i := 0; i < len(dirs); i++ {
@@ -254,6 +286,8 @@ func main() {
 	flag.Parse()
 
 	initServer()
+
+	fmt.Println(serverConfig.MaxSavedLoc)
 
 	fmt.Println("FMD - Server - ", version)
 	fmt.Println("Starting Server")

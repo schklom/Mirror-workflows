@@ -1,6 +1,7 @@
 var map, markers;
 
 var newestLocationDataIndex;
+var smallestLocationDataIndex;
 var currentLocationDataIndx = 0;
 var currentId;
 var keyTemp;
@@ -21,12 +22,12 @@ var interval = setInterval(function () {
             }
         })
             .then(function (response) {
-                return response.text()
+                return response.json()
             })
-            .then(function (responseIndex) {
-                newlocationDataIndex = parseInt(responseIndex);
-                if (newestLocationDataIndex < newlocationDataIndex) {
-                    newestLocationDataIndex = newlocationDataIndex;
+            .then(function (json) {
+                if (newestLocationDataIndex < json.DataLength) {
+                    newestLocationDataIndex = json.DataLength;
+                    smallestLocationDataIndex = json.DataBeginningIndex
                     var toasted = new Toasted({
                         position: 'top-center',
                         duration: 15000
@@ -127,10 +128,11 @@ function locate(index, password) {
             }
         })
             .then(function (response) {
-                return response.text()
+                return response.json()
             })
-            .then(function (responseIndex) {
-                newestLocationDataIndex = parseInt(responseIndex);
+            .then(function (json) {
+                newestLocationDataIndex = json.DataLength;
+                smallestLocationDataIndex = json.DataBeginningIndex;
                 if (index == -1 || index > newestLocationDataIndex) {
                     index = newestLocationDataIndex;
                     currentLocationDataIndx = newestLocationDataIndex;
@@ -253,9 +255,11 @@ function switchWithKeys(event) {
 }
 
 function locateOlder() {
-    if (keyTemp != null && currentLocationDataIndx > 1) {
+    if (keyTemp != null && currentLocationDataIndx >= smallestLocationDataIndex) {
         currentLocationDataIndx -= 1;
         locate(currentLocationDataIndx, "");
+    }else{
+        currentLocationDataIndx = newestLocationDataIndex;
     }
 }
 

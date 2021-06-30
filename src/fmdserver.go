@@ -27,8 +27,6 @@ const configFile = "config.json"
 
 var filesDir string
 
-var debug bool
-
 var serverConfig config
 
 var ids []string
@@ -36,8 +34,8 @@ var ids []string
 var isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]*$`).MatchString
 
 type config struct {
-	PortSecure   string
-	PortUnsecure string
+	PortSecure   int
+	PortUnsecure int
 	IdLength     int
 	MaxSavedLoc  int
 }
@@ -207,21 +205,14 @@ func handleRequests() {
 	http.HandleFunc("/newDevice", createDevice)
 	http.HandleFunc("/version", getVersion)
 	if fileExists(filepath.Join(filesDir, serverKey)) {
-		var err error
-		if debug {
-			err = http.ListenAndServeTLS(":2020", filepath.Join(filesDir, serverCert), filepath.Join(filesDir, serverKey), nil)
-		} else {
-			err = http.ListenAndServeTLS(":1008", filepath.Join(filesDir, serverCert), filepath.Join(filesDir, serverKey), nil)
-		}
+		securePort := ":" + strconv.Itoa(serverConfig.PortSecure)
+		err := http.ListenAndServeTLS(securePort, filepath.Join(filesDir, serverCert), filepath.Join(filesDir, serverKey), nil)
 		if err != nil {
 			fmt.Println("HTTPS won't be available.", err)
 		}
 	}
-	if debug {
-		log.Fatal(http.ListenAndServe(":2021", nil))
-	} else {
-		log.Fatal(http.ListenAndServe(":1020", nil))
-	}
+	unsecurePort := ":" + strconv.Itoa(serverConfig.PortUnsecure)
+	log.Fatal(http.ListenAndServe(unsecurePort, nil))
 }
 
 func initServer() {
@@ -256,7 +247,7 @@ func initServer() {
 	}
 	//Create DefaultConfig when no config available
 	if !configRead {
-		serverConfig = config{PortSecure: "1008", PortUnsecure: "1020", IdLength: 5, MaxSavedLoc: 1000}
+		serverConfig = config{PortSecure: 1008, PortUnsecure: 1020, IdLength: 5, MaxSavedLoc: 1000}
 		configToString, _ := json.MarshalIndent(serverConfig, "", " ")
 		err := ioutil.WriteFile(configFilePath, configToString, 0644)
 		fmt.Println(err)
@@ -282,7 +273,6 @@ func fileExists(filename string) bool {
 
 func main() {
 	flag.StringVar(&filesDir, "d", "", "Specifiy data directory. Default is the directory of the executable.")
-	flag.BoolVar(&debug, "t", false, "Start the application on with the test-ports.")
 	flag.Parse()
 
 	initServer()
@@ -291,10 +281,6 @@ func main() {
 
 	fmt.Println("FMD - Server - ", version)
 	fmt.Println("Starting Server")
-	if debug {
-		fmt.Println("Port: 2021(unsecure) 2020(secure)")
-	} else {
-		fmt.Println("Port: 1020(unsecure) 1008(secure)")
-	}
+	fmt.Printf("Port: %d(unsecure) %d(secure)\n", serverConfig.PortUnsecure, serverConfig.PortSecure)
 	handleRequests()
 }

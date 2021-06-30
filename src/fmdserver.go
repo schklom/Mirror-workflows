@@ -166,7 +166,7 @@ func putLocation(w http.ResponseWriter, r *http.Request) {
 
 func createDevice(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
-	id := generateNewId(5)
+	id := generateNewId(serverConfig.IdLength)
 	ids = append(ids, id)
 
 	path := filepath.Join(dataDir, id)
@@ -252,6 +252,7 @@ func initServer() {
 		err := ioutil.WriteFile(configFilePath, configToString, 0644)
 		fmt.Println(err)
 	}
+	isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]{1,` + strconv.Itoa(serverConfig.IdLength) + `}$`).MatchString
 
 	fmt.Println("Init: Preparing Devices")
 	filePath := filepath.Join(dataDir)
@@ -276,8 +277,6 @@ func main() {
 	flag.Parse()
 
 	initServer()
-
-	fmt.Println(serverConfig.MaxSavedLoc)
 
 	fmt.Println("FMD - Server - ", version)
 	fmt.Println("Starting Server")

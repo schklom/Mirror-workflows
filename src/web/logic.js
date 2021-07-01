@@ -255,7 +255,7 @@ function switchWithKeys(event) {
 }
 
 function locateOlder() {
-    if (keyTemp != null && currentLocationDataIndx >= smallestLocationDataIndex) {
+    if (keyTemp != null && currentLocationDataIndx > smallestLocationDataIndex) {
         currentLocationDataIndx -= 1;
         locate(currentLocationDataIndx, "");
     }else{

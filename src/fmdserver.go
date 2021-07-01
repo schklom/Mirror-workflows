@@ -114,12 +114,14 @@ func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 	highest := -1
 	smallest := 2147483647
 	for i := 0; i < len(files); i++ {
-		number, _ := strconv.Atoi(files[i].Name())
-		if number > highest {
-			highest = number
-		}
-		if number < smallest {
-			smallest = number
+		number, err := strconv.Atoi(files[i].Name())
+		if err == nil {
+			if number > highest {
+				highest = number
+			}
+			if number < smallest {
+				smallest = number
+			}
 		}
 	}
 	dataSize := locationDataSize{DataLength: highest, DataBeginningIndex: smallest}
@@ -165,12 +167,14 @@ func putLocation(w http.ResponseWriter, r *http.Request) {
 	highest := 0
 	smallest := 2147483647
 	for i := 0; i < len(files); i++ {
-		number, _ := strconv.Atoi(files[i].Name())
-		if number > highest {
-			highest = number
-		}
-		if number < smallest {
-			smallest = number
+		number, err := strconv.Atoi(files[i].Name())
+		if err == nil {
+			if number > highest {
+				highest = number
+			}
+			if number < smallest {
+				smallest = number
+			}
 		}
 	}
 	highest += 1

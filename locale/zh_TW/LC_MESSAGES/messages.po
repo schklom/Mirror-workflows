@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-18 13:34+0300\n"
-"PO-Revision-Date: 2021-07-02 16:40+0000\n"
+"PO-Revision-Date: 2021-07-05 18:39+0000\n"
 "Last-Translator: TonyRL <tony_lao@outlook.com>\n"
 "Language-Team: Chinese (Traditional) <https://weblate.tt-rss.org/projects/"
 "tt-rss/messages/zh_Hant/>\n"
@@ -117,7 +117,7 @@ msgstr "無法連接到伺服器。"
 
 #: index.php:166 prefs.php:130
 msgid "Recent entries found in event log."
-msgstr "在事件日誌中找到的最近條目。"
+msgstr "在事件紀錄檔中找到的最近條目。"
 
 #: index.php:169
 msgid "Updates are available from Git."
@@ -137,11 +137,11 @@ msgstr "全部文章"
 
 #: index.php:189 classes/rpc.php:623
 msgid "Starred"
-msgstr "星標"
+msgstr "已星標"
 
 #: index.php:190 classes/rpc.php:624
 msgid "Published"
-msgstr "已發布"
+msgstr "已發佈"
 
 #: index.php:191
 msgid "Unread"
@@ -161,11 +161,11 @@ msgstr "預設"
 
 #: index.php:200
 msgid "Newest first"
-msgstr "最新的優先"
+msgstr "由新到舊"
 
 #: index.php:201
 msgid "Oldest first"
-msgstr "最舊的優先"
+msgstr "由舊到新"
 
 #: index.php:202
 msgid "Title"
@@ -397,7 +397,7 @@ msgstr "切換文章展開（合併模式）"
 
 #: classes/rpc.php:597
 msgid "Toggle full article text via Readability"
-msgstr ""
+msgstr "經 Readability 切換全文"
 
 #: classes/rpc.php:598
 msgid "Article selection"
@@ -498,7 +498,7 @@ msgstr "最新的"
 
 #: classes/rpc.php:625 classes/feeds.php:1124
 msgid "Recently read"
-msgstr "閱讀紀錄"
+msgstr "最近閱讀"
 
 #: classes/rpc.php:627
 msgid "Other"
@@ -560,7 +560,7 @@ msgstr "返回 Tiny Tiny RSS"
 msgid ""
 "You will need to provide valid account name and email. Password reset link "
 "will be sent to your email address."
-msgstr "你需要提供有效的電子郵件以及帳號名稱，密碼重設連結將以電子郵件寄給你。"
+msgstr "您需要提供有效的電子郵件以及帳號名稱，密碼重設連結將以電子郵件寄給您。"
 
 #: classes/handler/public.php:488 classes/pref/feeds.php:641
 #: plugins/bookmarklets/init.php:302 include/login_form.php:103
@@ -591,7 +591,7 @@ msgstr "回去"
 
 #: classes/handler/public.php:560
 msgid "[tt-rss] Password reset request"
-msgstr "[tt-rss] 密碼重置請求"
+msgstr "[tt-rss] 密碼重設請求"
 
 #: classes/handler/public.php:570
 msgid "Sorry, login and email combination not found."
@@ -819,7 +819,7 @@ msgstr "佈景主題"
 
 #: classes/pref/prefs.php:118
 msgid "Don't enforce DISTINCT headlines"
-msgstr ""
+msgstr "不強制一致的標題"
 
 #: classes/pref/prefs.php:118
 msgid "May produce duplicate entries"
@@ -839,7 +839,7 @@ msgstr "禁用條件計數器更新"
 
 #: classes/pref/prefs.php:120
 msgid "May increase server load"
-msgstr ""
+msgstr "可能增加伺服器負載"
 
 #: classes/pref/prefs.php:121
 msgid "Grid view"
@@ -895,7 +895,7 @@ msgstr "更改密碼"
 msgid ""
 "Authentication module used for this session (<b>%s</b>) does not provide an "
 "ability to set passwords."
-msgstr ""
+msgstr "此工作階段的身份驗證模組（<b>%s</b>）不提供設定密碼功能。"
 
 #: classes/pref/prefs.php:400
 msgid "Generate password"
@@ -907,7 +907,7 @@ msgstr "移除所選的"
 
 #: classes/pref/prefs.php:442 classes/pref/prefs.php:494
 msgid "Your password:"
-msgstr "你的密碼："
+msgstr "您的密碼："
 
 #: classes/pref/prefs.php:450
 msgid "Disable OTP"
@@ -993,7 +993,7 @@ msgstr "管理設定檔"
 
 #: classes/pref/prefs.php:776
 msgid "Reset to defaults"
-msgstr "恢復到預設"
+msgstr "重設為預設"
 
 #: classes/pref/prefs.php:831 classes/pref/filters.php:645
 #: classes/pref/users.php:217 classes/pref/feeds.php:900 js/Feeds.js:644
@@ -1021,7 +1021,7 @@ msgid ""
 "The following plugins use per-feed content hooks. This may cause excessive "
 "data usage and origin server load resulting in a ban of your instance: <b>"
 "%s</b>"
-msgstr ""
+msgstr "以下擴充套件使用摘要内容鈎子。這可能造成過度的數據用量和原始伺服器負載，使您的實例被禁：<b>%s</b>"
 
 #: classes/pref/prefs.php:885 js/CommonFilters.js:234
 msgid "More info"
@@ -1143,7 +1143,7 @@ msgstr "日期"
 
 #: classes/pref/system.php:169
 msgid "Event log"
-msgstr "事件日誌"
+msgstr "事件紀錄檔"
 
 #: classes/pref/system.php:175
 msgid "Mail configuration"
@@ -1497,7 +1497,7 @@ msgstr "從未"
 
 #: classes/feeds.php:198 classes/feeds.php:1122
 msgid "Archived articles"
-msgstr "已儲存的文章"
+msgstr "已封存文章"
 
 #: classes/feeds.php:257
 msgid "Collapse article"
@@ -1525,9 +1525,7 @@ msgid ""
 "No articles found to display. You can assign articles to labels manually "
 "from article header context menu (applies to all selected articles) or use a "
 "filter."
-msgstr ""
-"本標籤下沒有文章。你可以透過文章標題上的右鍵選單（會套用到全部所選的文章）或"
-"使用過濾器的方式為文章新增標籤。"
+msgstr "本標籤下沒有文章。您可以透過文章標題上的右鍵選單（會套用到全部所選的文章）或使用過濾器的方式為文章新增標籤。"
 
 #: classes/feeds.php:368
 msgid "No articles found to display."
@@ -1552,7 +1550,7 @@ msgstr "加星標文章"
 
 #: classes/feeds.php:1116
 msgid "Published articles"
-msgstr "已發布文章"
+msgstr "已發佈文章"
 
 #: classes/feeds.php:1118
 msgid "Fresh articles"
@@ -1587,7 +1585,7 @@ msgstr "繼續"
 
 #: plugins/auth_internal/init.php:166
 msgid "Too many authentication attempts, throttled."
-msgstr ""
+msgstr "嘗試次數過多，請稍後再試。"
 
 #: plugins/auth_internal/init.php:247
 msgid "Password has been changed."
@@ -1753,7 +1751,7 @@ msgstr "分享"
 
 #: plugins/bookmarklets/init.php:283
 msgid "Shared article will appear in the Published feed."
-msgstr "共享文章將顯示在已發布的摘要中。"
+msgstr "共享文章將顯示在已發佈的摘要中。"
 
 #: plugins/bookmarklets/init.php:322 include/login_form.php:177
 msgid "Log in"
@@ -1827,11 +1825,11 @@ msgstr "開啟額外的重複檢查"
 #: plugins/af_redditimgur/init.php:86
 #, php-format
 msgid "Rewrite Reddit URLs to %s"
-msgstr ""
+msgstr "重寫 Reddit 網址到 %s"
 
 #: plugins/af_redditimgur/init.php:94
 msgid "Import score, limit maximum to:"
-msgstr ""
+msgstr "匯入評分，最大限制為："
 
 #: plugins/af_redditimgur/init.php:125
 msgid "Configuration saved"
@@ -1903,11 +1901,11 @@ msgstr "記住我"
 
 #: include/sessions.php:32
 msgid "Session failed to validate (password changed)"
-msgstr "無法驗證會話（IP 錯誤）"
+msgstr "無法驗證工作階段（IP 錯誤）"
 
 #: include/sessions.php:36
 msgid "Session failed to validate (user not found)"
-msgstr "無法驗證會話（找不到使用者）"
+msgstr "無法驗證工作階段（找不到使用者）"
 
 #: include/functions.php:49
 msgid "Detect automatically"
@@ -1982,7 +1980,7 @@ msgstr "背景："
 
 #: js/PrefLabelTree.js:189
 msgid "Reset selected labels to default colors?"
-msgstr "將選取的可選標籤重置為預設顏色？"
+msgstr "將選取的標籤重設為預設顏色？"
 
 #: js/PrefLabelTree.js:202 js/PrefLabelTree.js:222
 msgid "No labels selected."
@@ -2230,7 +2228,7 @@ msgstr "摘要圖示已移除。"
 
 #: js/CommonDialogs.js:574
 msgid "Upload new icon..."
-msgstr "上傳新圖示…"
+msgstr "上傳新圖示……"
 
 #: js/CommonDialogs.js:603
 msgid "Show as feed"
@@ -2274,7 +2272,7 @@ msgstr "預覽文摘"
 
 #: js/PrefHelpers.js:113
 msgid "Clear event log?"
-msgstr "要清空事件日誌嗎？"
+msgstr "要清空事件紀錄檔嗎？"
 
 #: js/PrefHelpers.js:135
 msgid "Name for cloned profile:"
@@ -2335,7 +2333,7 @@ msgstr ""
 
 #: js/PrefHelpers.js:329
 msgid "Reset to defaults?"
-msgstr "重置為預設狀態？"
+msgstr "重設為預設狀態？"
 
 #: js/PrefHelpers.js:415
 msgid "Clear data"
@@ -2347,7 +2345,7 @@ msgstr "解除安裝"
 
 #: js/PrefHelpers.js:430 js/PrefHelpers.js:589
 msgid "Could not find any plugins for this search query."
-msgstr ""
+msgstr "找不到此擴充套件。"
 
 #: js/PrefHelpers.js:437
 #, javascript-format
@@ -2378,7 +2376,7 @@ msgstr "正在安装 %s，請稍候……"
 
 #: js/PrefHelpers.js:502 js/PrefHelpers.js:544 js/PrefHelpers.js:655
 msgid "Operation failed: check event log."
-msgstr ""
+msgstr "操作失敗：請檢查事件紀錄檔。"
 
 #: js/PrefHelpers.js:506
 msgid "Plugin has been installed."
@@ -2403,7 +2401,7 @@ msgstr "已更新：%s"
 
 #: js/PrefHelpers.js:597
 msgid "Looking for plugins..."
-msgstr "正在尋找擴充套件…"
+msgstr "正在尋找擴充套件……"
 
 #: js/PrefHelpers.js:616 js/PrefHelpers.js:758
 msgid "Close"
@@ -2433,7 +2431,7 @@ msgstr "正在檢查版本：%s"
 #: js/PrefHelpers.js:716
 #, javascript-format
 msgid "%s: Operation failed: check event log."
-msgstr "%s：操作失敗：請檢查世間日誌。"
+msgstr "%s：操作失敗：請檢查事件紀錄檔。"
 
 #: js/PrefHelpers.js:739
 msgid "Ready to update"
@@ -2644,11 +2642,11 @@ msgstr "請僅選擇一個使用者。"
 
 #: js/PrefUsers.js:145
 msgid "Reset password of selected user?"
-msgstr "重置選定使用者的密碼？"
+msgstr "重設選定使用者的密碼？"
 
 #: js/PrefUsers.js:146
 msgid "Resetting password for selected user..."
-msgstr "正在重置選定使用者的密碼..."
+msgstr "正在重設選定使用者的密碼..."
 
 #: js/PrefUsers.js:161
 msgid ""
@@ -2687,7 +2685,7 @@ msgstr "嘗試獲取過濾器測試結果時發生錯誤。"
 
 #: js/CommonFilters.js:95
 msgid "Looking for articles..."
-msgstr "尋找文章…"
+msgstr "尋找文章……"
 
 #: js/CommonFilters.js:174
 msgid "Edit rule"
@@ -2789,7 +2787,7 @@ msgstr ""
 
 #: js/App.js:612
 msgid "Stack trace"
-msgstr ""
+msgstr "堆疊追踪"
 
 #: js/PrefFeedTree.js:369
 msgid "Rename category to:"

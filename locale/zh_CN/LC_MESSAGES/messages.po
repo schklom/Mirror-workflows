@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-18 13:34+0300\n"
-"PO-Revision-Date: 2021-07-02 16:39+0000\n"
+"PO-Revision-Date: 2021-07-16 08:49+0000\n"
 "Last-Translator: TonyRL <tony_lao@outlook.com>\n"
 "Language-Team: Chinese (Simplified) <https://weblate.tt-rss.org/projects/"
 "tt-rss/messages/zh_Hans/>\n"
@@ -1110,7 +1110,6 @@ msgid "Refresh"
 msgstr "刷新"
 
 #: classes/pref/system.php:87
-#, fuzzy
 msgid "&lt;&lt;"
 msgstr "&lt;&lt;"
 
@@ -1121,7 +1120,7 @@ msgstr ""
 
 #: classes/pref/system.php:96
 msgid "&gt;&gt;"
-msgstr ""
+msgstr "&gt;&gt;"
 
 #: classes/pref/system.php:105
 msgid "Severity:"

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-18 13:34+0300\n"
-"PO-Revision-Date: 2021-07-05 18:39+0000\n"
+"PO-Revision-Date: 2021-07-16 08:49+0000\n"
 "Last-Translator: TonyRL <tony_lao@outlook.com>\n"
 "Language-Team: Chinese (Traditional) <https://weblate.tt-rss.org/projects/"
 "tt-rss/messages/zh_Hant/>\n"
@@ -855,7 +855,7 @@ msgstr "設定已儲存。"
 
 #: classes/pref/prefs.php:264
 msgid "Your personal data has been saved."
-msgstr "您的個人數據已儲存。"
+msgstr "您的個人資料已儲存。"
 
 #: classes/pref/prefs.php:294
 msgid "Full name:"
@@ -1086,7 +1086,7 @@ msgstr "最後使用"
 msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
 "reference."
-msgstr ""
+msgstr "已為 %s 產生密碼 <strong>%s</strong>。請牢記以備將來參考。"
 
 #: classes/pref/system.php:24
 msgid "Test message from tt-rss"
@@ -1278,7 +1278,7 @@ msgstr[0] "（%d 天）"
 
 #: classes/pref/feeds.php:535 classes/pref/feeds.php:583
 msgid "Disabled"
-msgstr "禁用"
+msgstr "已停用"
 
 #: classes/pref/feeds.php:539
 #, php-format
@@ -1893,7 +1893,7 @@ msgstr "安全模式"
 
 #: include/login_form.php:159
 msgid "Uses default theme and prevents all plugins from loading."
-msgstr ""
+msgstr "使用預設主题，並防止載入所有擴充套件。"
 
 #: include/login_form.php:167
 msgid "Remember me"
@@ -2010,7 +2010,7 @@ msgstr "更新守護行程沒有更新摘要。"
 msgid ""
 "URL scheme reported by your browser (%a) doesn't match server-configured "
 "SELF_URL_PATH (%b), check X-Forwarded-Proto."
-msgstr ""
+msgstr "瀏覽器報告的URL配置（％a）與伺服器配置的 SELF_URL_PATH（％b）不符合，請檢查 X-Forwarded-Proto。"
 
 #: js/App.js:579
 msgid "Fatal error"
@@ -2026,7 +2026,7 @@ msgstr "Tiny Tiny RSS 有新版本啦。"
 
 #: js/App.js:836
 msgid "Updates for some local plugins are available."
-msgstr ""
+msgstr "一些本地擴充套件可以更新。"
 
 #: js/App.js:1065
 msgid "Please enable mail or mailto plugin first."
@@ -2149,7 +2149,7 @@ msgstr "點擊以編輯摘要"
 msgid ""
 "Provided URL is a HTML page referencing multiple feeds, please select "
 "required feed from the dropdown menu below."
-msgstr ""
+msgstr "提供的 URL 是一個參照多個摘要的 HTML 頁面，請從下拉選單中選取所需的摘要。"
 
 #: js/CommonDialogs.js:122
 msgid ""
@@ -2329,7 +2329,7 @@ msgstr "您可以透過自訂 CSS 來更改目前主題的顏色，字體和版�
 msgid ""
 "User CSS has been applied, you might need to reload the page to see all "
 "changes."
-msgstr ""
+msgstr "已套用用戶 CSS，您可能重新載入頁面來看到新的變更。"
 
 #: js/PrefHelpers.js:329
 msgid "Reset to defaults?"
@@ -2453,7 +2453,7 @@ msgstr "OPML 匯入"
 msgid ""
 "If you have imported labels and/or filters, you might need to reload "
 "preferences to see your new data."
-msgstr ""
+msgstr "如果您已經匯入標籤或過濾器，您可能需要重新載入來看到新的資料。"
 
 #: js/Headlines.js:642
 msgid "Cancel search"
@@ -2487,7 +2487,7 @@ msgstr[0] "已選擇 %d 篇文章"
 #, javascript-format
 msgid "Delete %d selected article in %s?"
 msgid_plural "Delete %d selected articles in %s?"
-msgstr[0] "要在 %s 中刪除 %d 篇文章嗎？"
+msgstr[0] "要刪除 %d 篇所選的文章（在%s中）嗎？"
 
 #: js/Headlines.js:1114
 #, javascript-format
@@ -2499,7 +2499,7 @@ msgstr[0] "要刪除選取的 %d 篇文章嗎？"
 #, javascript-format
 msgid "Mark %d selected article in %s as read?"
 msgid_plural "Mark %d selected articles in %s as read?"
-msgstr[0] "要將在 %s 中選取的 %d 篇文章標記為已讀嗎？"
+msgstr[0] "要將選取的 %d 篇文章（在 %s 中）標記為已讀嗎？"
 
 #: js/Headlines.js:1263
 msgid "No article is selected."
@@ -2779,11 +2779,11 @@ msgstr "之前共享文章的 URL 將會回到未認證狀態。是否繼續？"
 msgid ""
 "Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. "
 "You will need to log out and back in to disable it."
-msgstr ""
+msgstr "Tiny Tiny RSS 正在以安全模式執行。所有主題和擴充套件均已停用。您需要登出後重新登入以停用它。"
 
 #: js/Feeds.js:628
 msgid "Used for word stemming"
-msgstr ""
+msgstr "用於詞幹提取"
 
 #: js/App.js:612
 msgid "Stack trace"

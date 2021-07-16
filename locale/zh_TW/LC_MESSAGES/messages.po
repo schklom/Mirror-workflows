@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-18 13:34+0300\n"
-"PO-Revision-Date: 2021-07-16 08:49+0000\n"
+"PO-Revision-Date: 2021-07-20 11:09+0000\n"
 "Last-Translator: TonyRL <tony_lao@outlook.com>\n"
 "Language-Team: Chinese (Traditional) <https://weblate.tt-rss.org/projects/"
 "tt-rss/messages/zh_Hant/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.7.1\n"
+"X-Generator: Weblate 4.7.2\n"
 
 #: backend.php:60
 msgid "Use default"
@@ -141,7 +141,7 @@ msgstr "已星標"
 
 #: index.php:190 classes/rpc.php:624
 msgid "Published"
-msgstr "已發佈"
+msgstr "已發布"
 
 #: index.php:191
 msgid "Unread"
@@ -341,7 +341,7 @@ msgstr "加星此文章"
 
 #: classes/rpc.php:582 js/Headlines.js:1400
 msgid "Toggle published"
-msgstr "發佈此文章"
+msgstr "發布此文章"
 
 #: classes/rpc.php:583 js/Headlines.js:1375
 msgid "Toggle unread"
@@ -417,7 +417,7 @@ msgstr "選擇星標的"
 
 #: classes/rpc.php:602
 msgid "Select published"
-msgstr "選擇已發佈文章"
+msgstr "選擇已發布文章"
 
 #: classes/rpc.php:603
 msgid "Invert selection"
@@ -807,7 +807,7 @@ msgstr "根據摘要分組"
 
 #: classes/pref/prefs.php:115
 msgid "Group multiple-feed output by originating feed"
-msgstr ""
+msgstr "根據摘要來源將多個摘要輸出組合一起"
 
 #: classes/pref/prefs.php:116
 msgid "Language"
@@ -847,7 +847,7 @@ msgstr "格狀檢視"
 
 #: classes/pref/prefs.php:121
 msgid "On wider screens, if always expanded"
-msgstr ""
+msgstr "在寬螢幕上永遠展開文章"
 
 #: classes/pref/prefs.php:222
 msgid "The configuration was saved."
@@ -1550,7 +1550,7 @@ msgstr "加星標文章"
 
 #: classes/feeds.php:1116
 msgid "Published articles"
-msgstr "已發佈文章"
+msgstr "已發布文章"
 
 #: classes/feeds.php:1118
 msgid "Fresh articles"
@@ -1618,6 +1618,7 @@ msgid ""
 "number (0-1). Setting it too low might produce false positives, zero "
 "disables checking."
 msgstr ""
+"PostgreSQL trigram 擴充套件將傳回一個字串相似度的浮點數（0-1）。設定過低的界限可能導致誤判，設定為 0 將關閉相似度檢查。"
 
 #: plugins/af_psql_trgm/init.php:177
 msgid "Minimum title length:"
@@ -1751,7 +1752,7 @@ msgstr "分享"
 
 #: plugins/bookmarklets/init.php:283
 msgid "Shared article will appear in the Published feed."
-msgstr "共享文章將顯示在已發佈的摘要中。"
+msgstr "共享文章將顯示在已發布的摘要中。"
 
 #: plugins/bookmarklets/init.php:322 include/login_form.php:177
 msgid "Log in"
@@ -1780,7 +1781,7 @@ msgstr "在 Tiny Tiny RSS 中訂閱"
 
 #: plugins/bookmarklets/init.php:358
 msgid "Use this bookmarklet to publish arbitrary pages using Tiny Tiny RSS"
-msgstr ""
+msgstr "使用書籤小程式經 Tiny Tiny RSS 發布任意頁面"
 
 #: plugins/af_comics/init.php:62
 msgid "Feeds supported by af_comics"

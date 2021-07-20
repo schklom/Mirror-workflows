@@ -80,6 +80,11 @@ type AccessID struct {
 	Time     int64
 }
 
+type AccessToken struct {
+	DeviceId string `'json:"id"`
+	AccessId string `'json:"token"`
+}
+
 func getLocation(w http.ResponseWriter, r *http.Request) {
 	var request requestData
 	err := json.NewDecoder(r.Body).Decode(&request)
@@ -249,6 +254,11 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 	if string(hashedPW) == data.HashedPassword {
 		newAccess := AccessID{DeviceId: data.Id, AccessID: generateNewId(64), Time: time.Now().Unix()}
 		accessIds = append(accessIds, newAccess)
+
+		accessToken := AccessToken{DeviceId: data.Id, AccessId: newAccess.AccessID}
+		result, _ := json.Marshal(accessToken)
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(result)
 	}
 
 }
@@ -269,7 +279,11 @@ func createDevice(w http.ResponseWriter, r *http.Request) {
 	_ = ioutil.WriteFile(privKeyPath, []byte(device.PrivKey), 0644)
 	hashedPWPath := filepath.Join(path, hashedPasswordFile)
 	_ = ioutil.WriteFile(hashedPWPath, []byte(device.HashedPassword), 0644)
-	w.Write([]byte(fmt.Sprint(id)))
+
+	accessToken := AccessToken{DeviceId: id, AccessId: ""}
+	result, _ := json.Marshal(accessToken)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(result)
 }
 
 func checkAccessID(idToCheck string) string {

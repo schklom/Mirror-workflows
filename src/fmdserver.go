@@ -89,12 +89,12 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 	var request requestData
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		fmt.Fprintf(w, "Meeep!, Error")
+		fmt.Fprintf(w, "Meeep!, Error - getLocation - 1")
 		return
 	}
 	id := checkAccessID(request.AccessID)
 	if id == "" {
-		fmt.Fprintf(w, "Meeep!, Error")
+		fmt.Fprintf(w, "Meeep!, Error - getLocation - 2")
 		return
 	}
 	fmt.Print(request.Index)
@@ -127,12 +127,12 @@ func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 	var request requestData
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		fmt.Fprintf(w, "Meeep!, Error")
+		fmt.Fprintf(w, "Meeep!, Error - getLocationDataSize - 1")
 		return
 	}
 	id := checkAccessID(request.AccessID)
 	if id == "" {
-		fmt.Fprintf(w, "Meeep!, Error")
+		fmt.Fprintf(w, "Meeep!, Error - getLocationDataSize - 1")
 		return
 	}
 
@@ -161,12 +161,12 @@ func getKey(w http.ResponseWriter, r *http.Request) {
 	var request requestData
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		fmt.Fprintf(w, "Meeep!, Error")
+		fmt.Fprintf(w, "Meeep!, Error - getKey - 1")
 		return
 	}
 	id := checkAccessID(request.AccessID)
 	if id == "" {
-		fmt.Fprintf(w, "Meeep!, Error")
+		fmt.Fprintf(w, "Meeep!, Error - getKey - 2")
 		return
 	}
 
@@ -186,12 +186,12 @@ func putLocation(w http.ResponseWriter, r *http.Request) {
 	var location locationData
 	err := json.NewDecoder(r.Body).Decode(&location)
 	if err != nil {
-		fmt.Fprintf(w, "Meeep!, Error")
+		fmt.Fprintf(w, "Meeep!, Error - putLocation - 1")
 		return
 	}
 	id := checkAccessID(location.AccessID)
 	if id == "" {
-		fmt.Fprintf(w, "Meeep!, Error")
+		fmt.Fprintf(w, "Meeep!, Error - putLocation - 2")
 		return
 	}
 	path := filepath.Join(dataDir, id)
@@ -235,11 +235,11 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 	var data requestAccessData
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		fmt.Fprintf(w, "Meeep!, Error")
+		fmt.Fprintf(w, "Meeep!, Error - requestAccess - 1")
 		return
 	}
 	if !isIdValid(data.Id) {
-		fmt.Fprintf(w, "Meeep!, Error")
+		fmt.Fprintf(w, "Meeep!, Error - requestAccess - 2")
 		return
 	}
 
@@ -267,7 +267,7 @@ func createDevice(w http.ResponseWriter, r *http.Request) {
 	var device registrationData
 	err := json.NewDecoder(r.Body).Decode(&device)
 	if err != nil {
-		fmt.Fprintf(w, "Meeep!, Error")
+		fmt.Fprintf(w, "Meeep!, Error - createDevice")
 		return
 	}
 	id := generateNewId(serverConfig.IdLength)

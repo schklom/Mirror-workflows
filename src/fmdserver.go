@@ -65,13 +65,13 @@ type requestData struct {
 }
 
 type registrationData struct {
-	PrivKey        string `'json:"privkey"`
-	HashedPassword string `'json:"hashedpw"`
+	HashedPW string `'json:"hashpw"`
+	PrivKey  string `'json:"privkey"`
 }
 
 type requestAccessData struct {
-	HashedPassword string `'json:"hashedpw"`
-	Id             string `'json:"DeviceId"`
+	HashedPW string `'json:"hashpw"`
+	Id       string `'json:"DeviceId"`
 }
 
 type AccessID struct {
@@ -251,7 +251,7 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("File reading error", err)
 		return
 	}
-	if string(hashedPW) == data.HashedPassword {
+	if string(hashedPW) == data.HashedPW {
 		newAccess := AccessID{DeviceId: data.Id, AccessID: generateNewId(64), Time: time.Now().Unix()}
 		accessIds = append(accessIds, newAccess)
 
@@ -278,7 +278,7 @@ func createDevice(w http.ResponseWriter, r *http.Request) {
 	privKeyPath := filepath.Join(path, privateKeyFile)
 	_ = ioutil.WriteFile(privKeyPath, []byte(device.PrivKey), 0644)
 	hashedPWPath := filepath.Join(path, hashedPasswordFile)
-	_ = ioutil.WriteFile(hashedPWPath, []byte(device.HashedPassword), 0644)
+	_ = ioutil.WriteFile(hashedPWPath, []byte(device.HashedPW), 0644)
 
 	accessToken := AccessToken{DeviceId: id, AccessId: ""}
 	result, _ := json.Marshal(accessToken)
@@ -329,7 +329,7 @@ func handleRequests() {
 	http.HandleFunc("/key", getKey)
 	http.HandleFunc("/newlocation", putLocation)
 	http.HandleFunc("/newDevice", createDevice)
-	http.HandleFunc("requestAccess", requestAccess)
+	http.HandleFunc("/requestAccess", requestAccess)
 	http.HandleFunc("/version", getVersion)
 	if fileExists(filepath.Join(filesDir, serverKey)) {
 		securePort := ":" + strconv.Itoa(serverConfig.PortSecure)

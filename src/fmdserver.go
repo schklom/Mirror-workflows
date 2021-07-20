@@ -44,7 +44,7 @@ type config struct {
 }
 
 type locationData struct {
-	AccessID string `'json:"id"`
+	AccessID string `'json:"AccessToken"`
 	Provider string `'json:"provider"`
 	Date     uint64 `'json:"date"`
 	Bat      string `'json:"bat"`
@@ -60,7 +60,7 @@ type locationDataSize struct {
 
 //The json-request from the webpage.
 type requestData struct {
-	AccessID string `'json:"id"`
+	AccessID string `'json:"AccessToken"`
 	Index    int    `'json:"index"`
 }
 
@@ -71,7 +71,7 @@ type registrationData struct {
 
 type requestAccessData struct {
 	HashedPassword string `'json:"hashedpw"`
-	Id             string `'json:"id"`
+	Id             string `'json:"DeviceId"`
 }
 
 type AccessID struct {
@@ -81,8 +81,8 @@ type AccessID struct {
 }
 
 type AccessToken struct {
-	DeviceId string `'json:"id"`
-	AccessId string `'json:"token"`
+	DeviceId string `'json:"DeviceId"`
+	AccessId string `'json:"AccessToken"`
 }
 
 func getLocation(w http.ResponseWriter, r *http.Request) {

@@ -32,6 +32,8 @@ var serverConfig config
 
 var ids []string
 
+var accessIds []AccessID
+
 var isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]*$`).MatchString
 
 type config struct {
@@ -42,7 +44,7 @@ type config struct {
 }
 
 type locationData struct {
-	Id       string `'json:"id"`
+	AccessID string `'json:"id"`
 	Provider string `'json:"provider"`
 	Date     uint64 `'json:"date"`
 	Bat      string `'json:"bat"`
@@ -51,19 +53,31 @@ type locationData struct {
 }
 
 type locationDataSize struct {
+	AccessID           string
 	DataLength         int
 	DataBeginningIndex int
 }
 
 //The json-request from the webpage.
 type requestData struct {
-	Id    string `'json:"id"`
-	Index int    `'json:"index"`
+	AccessID string `'json:"id"`
+	Index    int    `'json:"index"`
 }
 
 type registrationData struct {
 	PrivKey        string `'json:"privkey"`
 	HashedPassword string `'json:"hashedpw"`
+}
+
+type requestAccessData struct {
+	HashedPassword string `'json:"hashedpw"`
+	Id             string `'json:"id"`
+}
+
+type AccessID struct {
+	DeviceId string
+	AccessID string
+	Time     int64
 }
 
 func getLocation(w http.ResponseWriter, r *http.Request) {
@@ -73,12 +87,13 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Meeep!, Error")
 		return
 	}
-	if !isIdValid(request.Id) {
+	id := checkAccessID(request.AccessID)
+	if id == "" {
 		fmt.Fprintf(w, "Meeep!, Error")
 		return
 	}
 	fmt.Print(request.Index)
-	filePath := filepath.Join(dataDir, request.Id)
+	filePath := filepath.Join(dataDir, id)
 	if request.Index == -1 {
 		files, _ := ioutil.ReadDir(filePath)
 		highest := 0
@@ -110,12 +125,13 @@ func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Meeep!, Error")
 		return
 	}
-	if !isIdValid(request.Id) {
+	id := checkAccessID(request.AccessID)
+	if id == "" {
 		fmt.Fprintf(w, "Meeep!, Error")
 		return
 	}
 
-	filePath := filepath.Join(dataDir, request.Id)
+	filePath := filepath.Join(dataDir, id)
 	files, _ := ioutil.ReadDir(filePath)
 	highest := -1
 	smallest := 2147483647
@@ -143,8 +159,13 @@ func getKey(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Meeep!, Error")
 		return
 	}
+	id := checkAccessID(request.AccessID)
+	if id == "" {
+		fmt.Fprintf(w, "Meeep!, Error")
+		return
+	}
 
-	filePath := filepath.Join(dataDir, request.Id)
+	filePath := filepath.Join(dataDir, id)
 	filePath = filepath.Join(filePath, privateKeyFile)
 
 	data, err := ioutil.ReadFile(filePath)
@@ -163,11 +184,12 @@ func putLocation(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Meeep!, Error")
 		return
 	}
-	if !isIdValid(location.Id) {
+	id := checkAccessID(location.AccessID)
+	if id == "" {
 		fmt.Fprintf(w, "Meeep!, Error")
 		return
 	}
-	path := filepath.Join(dataDir, location.Id)
+	path := filepath.Join(dataDir, id)
 	os.MkdirAll(path, os.ModePerm)
 	files, _ := ioutil.ReadDir(path)
 	highest := 0
@@ -204,6 +226,33 @@ func putLocation(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func requestAccess(w http.ResponseWriter, r *http.Request) {
+	var data requestAccessData
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		fmt.Fprintf(w, "Meeep!, Error")
+		return
+	}
+	if !isIdValid(data.Id) {
+		fmt.Fprintf(w, "Meeep!, Error")
+		return
+	}
+
+	path := filepath.Join(dataDir, data.Id)
+	hashedPWPath := filepath.Join(path, hashedPasswordFile)
+
+	hashedPW, err := ioutil.ReadFile(hashedPWPath)
+	if err != nil {
+		fmt.Println("File reading error", err)
+		return
+	}
+	if string(hashedPW) == data.HashedPassword {
+		newAccess := AccessID{DeviceId: data.Id, AccessID: generateNewId(64), Time: time.Now().Unix()}
+		accessIds = append(accessIds, newAccess)
+	}
+
+}
+
 func createDevice(w http.ResponseWriter, r *http.Request) {
 	var device registrationData
 	err := json.NewDecoder(r.Body).Decode(&device)
@@ -221,6 +270,22 @@ func createDevice(w http.ResponseWriter, r *http.Request) {
 	hashedPWPath := filepath.Join(path, hashedPasswordFile)
 	_ = ioutil.WriteFile(hashedPWPath, []byte(device.HashedPassword), 0644)
 	w.Write([]byte(fmt.Sprint(id)))
+}
+
+func checkAccessID(idToCheck string) string {
+	for index, id := range accessIds {
+		if id.AccessID == idToCheck {
+			expiredTime := id.Time + (15 * 60)
+			if expiredTime < time.Now().Unix() {
+				accessIds[index] = accessIds[len(accessIds)-1]
+				accessIds = accessIds[:len(accessIds)-1]
+				return ""
+			}
+		} else {
+			return id.DeviceId
+		}
+	}
+	return ""
 }
 
 func getVersion(w http.ResponseWriter, r *http.Request) {
@@ -250,6 +315,7 @@ func handleRequests() {
 	http.HandleFunc("/key", getKey)
 	http.HandleFunc("/newlocation", putLocation)
 	http.HandleFunc("/newDevice", createDevice)
+	http.HandleFunc("requestAccess", requestAccess)
 	http.HandleFunc("/version", getVersion)
 	if fileExists(filepath.Join(filesDir, serverKey)) {
 		securePort := ":" + strconv.Itoa(serverConfig.PortSecure)

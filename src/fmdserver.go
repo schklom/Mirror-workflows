@@ -32,7 +32,7 @@ var serverConfig config
 
 var ids []string
 
-var accessIds []AccessID
+var accessTokens []AccessToken
 
 var isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]*$`).MatchString
 
@@ -44,45 +44,45 @@ type config struct {
 }
 
 type locationData struct {
-	AccessID string `'json:"AccessToken"`
-	Provider string `'json:"provider"`
-	Date     uint64 `'json:"date"`
-	Bat      string `'json:"bat"`
-	Lon      string `json:"lon"`
-	Lat      string `json:"lat"`
+	AccessToken string `'json:"AccessToken"`
+	Provider    string `'json:"provider"`
+	Date        uint64 `'json:"date"`
+	Bat         string `'json:"bat"`
+	Lon         string `json:"lon"`
+	Lat         string `json:"lat"`
 }
 
 type locationDataSize struct {
-	AccessID           string
+	AccessToken        string
 	DataLength         int
 	DataBeginningIndex int
 }
 
 //The json-request from the webpage.
 type requestData struct {
-	AccessID string `'json:"AccessToken"`
-	Index    int    `'json:"index"`
+	AccessToken string `'json:"AccessToken"`
+	Index       int    `'json:"index"`
 }
 
 type registrationData struct {
-	HashedPW string `'json:"hashpw"`
-	PrivKey  string `'json:"privkey"`
+	HashedPassword string `'json:"hashedPassword"`
+	PrivKey        string `'json:"privKey"`
 }
 
 type requestAccessData struct {
-	HashedPW string `'json:"hashpw"`
-	Id       string `'json:"DeviceId"`
-}
-
-type AccessID struct {
-	DeviceId string
-	AccessID string
-	Time     int64
+	HashedPassword string `'json:"hashedPassword"`
+	DeviceId       string `'json:"DeviceId"`
 }
 
 type AccessToken struct {
-	DeviceId string `'json:"DeviceId"`
-	AccessId string `'json:"AccessToken"`
+	DeviceId    string
+	AccessToken string
+	Time        int64
+}
+
+type AccessTokenReply struct {
+	DeviceId    string `'json:"DeviceId"`
+	AccessToken string `'json:"AccessToken"`
 }
 
 func getLocation(w http.ResponseWriter, r *http.Request) {
@@ -92,7 +92,7 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Meeep!, Error - getLocation - 1")
 		return
 	}
-	id := checkAccessID(request.AccessID)
+	id := checkAccessToken(request.AccessToken)
 	if id == "" {
 		fmt.Fprintf(w, "Meeep!, Error - getLocation - 2")
 		return
@@ -130,7 +130,7 @@ func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Meeep!, Error - getLocationDataSize - 1")
 		return
 	}
-	id := checkAccessID(request.AccessID)
+	id := checkAccessToken(request.AccessToken)
 	if id == "" {
 		fmt.Fprintf(w, "Meeep!, Error - getLocationDataSize - 1")
 		return
@@ -164,7 +164,7 @@ func getKey(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Meeep!, Error - getKey - 1")
 		return
 	}
-	id := checkAccessID(request.AccessID)
+	id := checkAccessToken(request.AccessToken)
 	if id == "" {
 		fmt.Fprintf(w, "Meeep!, Error - getKey - 2")
 		return
@@ -189,7 +189,7 @@ func putLocation(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Meeep!, Error - putLocation - 1")
 		return
 	}
-	id := checkAccessID(location.AccessID)
+	id := checkAccessToken(location.AccessToken)
 	if id == "" {
 		fmt.Fprintf(w, "Meeep!, Error - putLocation - 2")
 		return
@@ -238,12 +238,12 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Meeep!, Error - requestAccess - 1")
 		return
 	}
-	if !isIdValid(data.Id) {
+	if !isIdValid(data.DeviceId) {
 		fmt.Fprintf(w, "Meeep!, Error - requestAccess - 2")
 		return
 	}
 
-	path := filepath.Join(dataDir, data.Id)
+	path := filepath.Join(dataDir, data.DeviceId)
 	hashedPWPath := filepath.Join(path, hashedPasswordFile)
 
 	hashedPW, err := ioutil.ReadFile(hashedPWPath)
@@ -251,11 +251,11 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("File reading error", err)
 		return
 	}
-	if string(hashedPW) == data.HashedPW {
-		newAccess := AccessID{DeviceId: data.Id, AccessID: generateNewId(64), Time: time.Now().Unix()}
-		accessIds = append(accessIds, newAccess)
+	if string(hashedPW) == data.HashedPassword {
+		newAccess := AccessToken{DeviceId: data.DeviceId, AccessToken: generateNewId(64), Time: time.Now().Unix()}
+		accessTokens = append(accessTokens, newAccess)
 
-		accessToken := AccessToken{DeviceId: data.Id, AccessId: newAccess.AccessID}
+		accessToken := AccessToken{DeviceId: data.DeviceId, AccessToken: newAccess.AccessToken}
 		result, _ := json.Marshal(accessToken)
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(result)
@@ -278,21 +278,21 @@ func createDevice(w http.ResponseWriter, r *http.Request) {
 	privKeyPath := filepath.Join(path, privateKeyFile)
 	_ = ioutil.WriteFile(privKeyPath, []byte(device.PrivKey), 0644)
 	hashedPWPath := filepath.Join(path, hashedPasswordFile)
-	_ = ioutil.WriteFile(hashedPWPath, []byte(device.HashedPW), 0644)
+	_ = ioutil.WriteFile(hashedPWPath, []byte(device.HashedPassword), 0644)
 
-	accessToken := AccessToken{DeviceId: id, AccessId: ""}
+	accessToken := AccessToken{DeviceId: id, AccessToken: ""}
 	result, _ := json.Marshal(accessToken)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(result)
 }
 
-func checkAccessID(idToCheck string) string {
-	for index, id := range accessIds {
-		if id.AccessID == idToCheck {
+func checkAccessToken(idToCheck string) string {
+	for index, id := range accessTokens {
+		if id.AccessToken == idToCheck {
 			expiredTime := id.Time + (15 * 60)
 			if expiredTime < time.Now().Unix() {
-				accessIds[index] = accessIds[len(accessIds)-1]
-				accessIds = accessIds[:len(accessIds)-1]
+				accessTokens[index] = accessTokens[len(accessTokens)-1]
+				accessTokens = accessTokens[:len(accessTokens)-1]
 				return ""
 			}
 		} else {

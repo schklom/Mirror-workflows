@@ -21,6 +21,7 @@ var dataDir = "data"
 var webDir = "web"
 
 const privateKeyFile = "privkey"
+const hashedPasswordFile = "hashedPW"
 const serverCert = "server.crt"
 const serverKey = "server.key"
 const configFile = "config.json"
@@ -58,6 +59,11 @@ type locationDataSize struct {
 type requestData struct {
 	Id    string `'json:"id"`
 	Index int    `'json:"index"`
+}
+
+type registrationData struct {
+	PrivKey        string `'json:"privkey"`
+	HashedPassword string `'json:"hashedpw"`
 }
 
 func getLocation(w http.ResponseWriter, r *http.Request) {
@@ -199,14 +205,21 @@ func putLocation(w http.ResponseWriter, r *http.Request) {
 }
 
 func createDevice(w http.ResponseWriter, r *http.Request) {
-	body, _ := ioutil.ReadAll(r.Body)
+	var device registrationData
+	err := json.NewDecoder(r.Body).Decode(&device)
+	if err != nil {
+		fmt.Fprintf(w, "Meeep!, Error")
+		return
+	}
 	id := generateNewId(serverConfig.IdLength)
 	ids = append(ids, id)
 
 	path := filepath.Join(dataDir, id)
 	os.MkdirAll(path, os.ModePerm)
-	path = filepath.Join(path, privateKeyFile)
-	_ = ioutil.WriteFile(path, body, 0644)
+	privKeyPath := filepath.Join(path, privateKeyFile)
+	_ = ioutil.WriteFile(privKeyPath, []byte(device.PrivKey), 0644)
+	hashedPWPath := filepath.Join(path, hashedPasswordFile)
+	_ = ioutil.WriteFile(hashedPWPath, []byte(device.HashedPassword), 0644)
 	w.Write([]byte(fmt.Sprint(id)))
 }
 

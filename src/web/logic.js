@@ -7,38 +7,7 @@ var currentId;
 var keyTemp;
 var hashedPW;
 
-var interval = setInterval(function () {
-    idInput = document.getElementById('fmdid');
-
-    if (idInput.value != "") {
-
-        fetch("/locationDataSize", {
-            method: 'PUT',
-            body: JSON.stringify({
-                id: idInput.value,
-                index: -1
-            }),
-            headers: {
-                'Content-type': 'applicatoin/json'
-            }
-        })
-            .then(function (response) {
-                return response.json()
-            })
-            .then(function (json) {
-                if (newestLocationDataIndex < json.DataLength) {
-                    newestLocationDataIndex = json.DataLength;
-                    smallestLocationDataIndex = json.DataBeginningIndex
-                    var toasted = new Toasted({
-                        position: 'top-center',
-                        duration: 15000
-                    })
-                    toasted.show('New locationdata available!')
-                }
-            })
-    }
-
-}, 180000);
+var backgroundSync = false;
 
 function init() {
     var element = document.getElementById('map');
@@ -138,7 +107,7 @@ function locate(index, password) {
             return response.json()
         })
             .then(function (token) {
-              
+
                 fetch("/locationDataSize", {
                     method: 'PUT',
                     body: JSON.stringify({
@@ -161,7 +130,7 @@ function locate(index, password) {
                         }
                         document.getElementById("indexView").innerHTML = currentLocationDataIndx;
                     })
-        
+
                 fetch("/location", {
                     method: 'PUT',
                     body: JSON.stringify({
@@ -176,7 +145,7 @@ function locate(index, password) {
                         return response.json();
                     })
                     .then(function (json) {
-        
+
                         fetch("/key", {
                             method: 'PUT',
                             body: JSON.stringify({
@@ -191,33 +160,83 @@ function locate(index, password) {
                                 return response.text()
                             })
                             .then(function (keyBase64) {
-        
+
                                 var key = decryptAES(password, keyBase64)
                                 if (key != -1) {
                                     var crypt = new JSEncrypt();
                                     crypt.setPrivateKey(key);
-        
+
                                     var provider = crypt.decrypt(json.Provider);
                                     var time = new Date(json.Date);
                                     var lon = crypt.decrypt(json.lon);
                                     var lat = crypt.decrypt(json.lat);
                                     var bat = crypt.decrypt(json.Bat);
-        
+
                                     document.getElementById("deviceInfo").style.visibility = "visible";
                                     document.getElementById("dateView").innerHTML = time.toLocaleDateString();
                                     document.getElementById("timeView").innerHTML = time.toLocaleTimeString();
                                     document.getElementById("providerView").innerHTML = provider;
                                     document.getElementById("batView").innerHTML = bat + "%";
-        
+
                                     var target = L.latLng(lat, lon);
-        
+
                                     markers.clearLayers();
                                     L.marker(target).addTo(markers);
                                     map.setView(target, 16);
+
+                                    if (!backgroundSync) {
+                                        var interval = setInterval(function () {
+                                            idInput = document.getElementById('fmdid');
+
+                                            if (idInput.value != "") {
+
+                                                fetch("/requestAccess", {
+                                                    method: 'PUT',
+                                                    body: JSON.stringify({
+                                                        DeviceId: idInput.value,
+                                                        HashedPassword: hashedPW
+                                                    }),
+                                                    headers: {
+                                                        'Content-type': 'applicatoin/json'
+                                                    }
+                                                }).then(function (response) {
+                                                    return response.json()
+                                                })
+                                                    .then(function (token) {
+
+                                                        fetch("/locationDataSize", {
+                                                            method: 'PUT',
+                                                            body: JSON.stringify({
+                                                                DeviceId: token.AccessToken,
+                                                                index: -1
+                                                            }),
+                                                            headers: {
+                                                                'Content-type': 'applicatoin/json'
+                                                            }
+                                                        })
+                                                            .then(function (response) {
+                                                                return response.json()
+                                                            })
+                                                            .then(function (json) {
+                                                                if (newestLocationDataIndex < json.DataLength) {
+                                                                    newestLocationDataIndex = json.DataLength;
+                                                                    smallestLocationDataIndex = json.DataBeginningIndex
+                                                                    var toasted = new Toasted({
+                                                                        position: 'top-center',
+                                                                        duration: 15000
+                                                                    })
+                                                                    toasted.show('New locationdata available!')
+                                                                }
+                                                            })
+                                                    })
+                                                }
+                                        
+                                        }, 180000);
+                                    }
                                 } else {
                                     alert("Wrong password!");
                                 }
-        
+
                             })
                     })
 

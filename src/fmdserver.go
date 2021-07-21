@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -70,7 +71,7 @@ type registrationData struct {
 }
 
 type requestAccessData struct {
-	HashedPassword string `'json:"hashedPassword"`
+	HashedPassword string `'json:"HashedPassword"`
 	DeviceId       string `'json:"DeviceId"`
 }
 
@@ -251,7 +252,7 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("File reading error", err)
 		return
 	}
-	if string(hashedPW) == data.HashedPassword {
+	if strings.EqualFold(string(hashedPW), (data.HashedPassword)) {
 		newAccess := AccessToken{DeviceId: data.DeviceId, AccessToken: generateNewId(64), Time: time.Now().Unix()}
 		accessTokens = append(accessTokens, newAccess)
 

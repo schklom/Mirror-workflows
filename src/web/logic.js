@@ -5,6 +5,7 @@ var smallestLocationDataIndex;
 var currentLocationDataIndx = 0;
 var currentId;
 var keyTemp;
+var hashedPW;
 
 var interval = setInterval(function () {
     idInput = document.getElementById('fmdid');
@@ -114,51 +115,34 @@ function prepareForLocate() {
 
 function locate(index, password) {
     idInput = document.getElementById('fmdid');
+    if (password != "") {
+        hashedPW = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse("cafe"), {
+            keySize: 256 / 32,
+            iterations: 1867
+        }).toString();
+    }
 
     if (idInput.value != "") {
 
-        fetch("/locationDataSize", {
+
+        fetch("/requestAccess", {
             method: 'PUT',
             body: JSON.stringify({
-                id: idInput.value,
-                index: index
+                DeviceId: idInput.value,
+                HashedPassword: hashedPW
             }),
             headers: {
                 'Content-type': 'applicatoin/json'
             }
+        }).then(function (response) {
+            return response.json()
         })
-            .then(function (response) {
-                return response.json()
-            })
-            .then(function (json) {
-                newestLocationDataIndex = json.DataLength;
-                smallestLocationDataIndex = json.DataBeginningIndex;
-                if (index == -1 || index > newestLocationDataIndex) {
-                    index = newestLocationDataIndex;
-                    currentLocationDataIndx = newestLocationDataIndex;
-                }
-                document.getElementById("indexView").innerHTML = currentLocationDataIndx;
-            })
-
-        fetch("/location", {
-            method: 'PUT',
-            body: JSON.stringify({
-                id: idInput.value,
-                index: index
-            }),
-            headers: {
-                'Content-type': 'applicatoin/json'
-            }
-        })
-            .then(function (response) {
-                return response.json();
-            })
-            .then(function (json) {
-
-                fetch("/key", {
+            .then(function (token) {
+              
+                fetch("/locationDataSize", {
                     method: 'PUT',
                     body: JSON.stringify({
-                        id: idInput.value,
+                        AccessToken: token.AccessToken,
                         index: index
                     }),
                     headers: {
@@ -166,41 +150,78 @@ function locate(index, password) {
                     }
                 })
                     .then(function (response) {
-                        return response.text()
+                        return response.json()
                     })
-                    .then(function (keyBase64) {
-
-                        var key = decryptAES(password, keyBase64)
-                        if (key != -1) {
-                            var crypt = new JSEncrypt();
-                            crypt.setPrivateKey(key);
-
-                            var provider = crypt.decrypt(json.Provider);
-                            var time = new Date(json.Date);
-                            var lon = crypt.decrypt(json.lon);
-                            var lat = crypt.decrypt(json.lat);
-                            var bat = crypt.decrypt(json.Bat);
-
-                            document.getElementById("deviceInfo").style.visibility = "visible";
-                            document.getElementById("dateView").innerHTML = time.toLocaleDateString();
-                            document.getElementById("timeView").innerHTML = time.toLocaleTimeString();
-                            document.getElementById("providerView").innerHTML = provider;
-                            document.getElementById("batView").innerHTML = bat + "%";
-
-                            var target = L.latLng(lat, lon);
-
-                            markers.clearLayers();
-                            L.marker(target).addTo(markers);
-                            map.setView(target, 16);
-                        } else {
-                            alert("Wrong password!");
+                    .then(function (json) {
+                        newestLocationDataIndex = json.DataLength;
+                        smallestLocationDataIndex = json.DataBeginningIndex;
+                        if (index == -1 || index > newestLocationDataIndex) {
+                            index = newestLocationDataIndex;
+                            currentLocationDataIndx = newestLocationDataIndex;
                         }
-
+                        document.getElementById("indexView").innerHTML = currentLocationDataIndx;
                     })
+        
+                fetch("/location", {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        AccessToken: token.AccessToken,
+                        index: index
+                    }),
+                    headers: {
+                        'Content-type': 'applicatoin/json'
+                    }
+                })
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (json) {
+        
+                        fetch("/key", {
+                            method: 'PUT',
+                            body: JSON.stringify({
+                                AccessToken: token.AccessToken,
+                                index: index
+                            }),
+                            headers: {
+                                'Content-type': 'applicatoin/json'
+                            }
+                        })
+                            .then(function (response) {
+                                return response.text()
+                            })
+                            .then(function (keyBase64) {
+        
+                                var key = decryptAES(password, keyBase64)
+                                if (key != -1) {
+                                    var crypt = new JSEncrypt();
+                                    crypt.setPrivateKey(key);
+        
+                                    var provider = crypt.decrypt(json.Provider);
+                                    var time = new Date(json.Date);
+                                    var lon = crypt.decrypt(json.lon);
+                                    var lat = crypt.decrypt(json.lat);
+                                    var bat = crypt.decrypt(json.Bat);
+        
+                                    document.getElementById("deviceInfo").style.visibility = "visible";
+                                    document.getElementById("dateView").innerHTML = time.toLocaleDateString();
+                                    document.getElementById("timeView").innerHTML = time.toLocaleTimeString();
+                                    document.getElementById("providerView").innerHTML = provider;
+                                    document.getElementById("batView").innerHTML = bat + "%";
+        
+                                    var target = L.latLng(lat, lon);
+        
+                                    markers.clearLayers();
+                                    L.marker(target).addTo(markers);
+                                    map.setView(target, 16);
+                                } else {
+                                    alert("Wrong password!");
+                                }
+        
+                            })
+                    })
+
             })
-
-
-
 
     }
 }
@@ -258,7 +279,7 @@ function locateOlder() {
     if (keyTemp != null && currentLocationDataIndx > smallestLocationDataIndex) {
         currentLocationDataIndx -= 1;
         locate(currentLocationDataIndx, "");
-    }else{
+    } else {
         currentLocationDataIndx = newestLocationDataIndex;
     }
 }

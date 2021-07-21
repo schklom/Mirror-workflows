@@ -302,8 +302,6 @@ func checkAccessToken(idToCheck string) string {
 			} else {
 				return id.DeviceId
 			}
-		} else {
-			return ""
 		}
 	}
 	return ""

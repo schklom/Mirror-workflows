@@ -3,3 +3,4 @@ src/data
 src/fmdserver.tar.xz
 src/config.json
 src/fmdserver.go
+src/__debug_bin

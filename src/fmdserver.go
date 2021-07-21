@@ -290,13 +290,19 @@ func checkAccessToken(idToCheck string) string {
 	for index, id := range accessTokens {
 		if id.AccessToken == idToCheck {
 			expiredTime := id.Time + (15 * 60)
-			if expiredTime < time.Now().Unix() {
+			if expiredTime == 0 {
+				accessTokens[index] = accessTokens[len(accessTokens)-1]
+				accessTokens = accessTokens[:len(accessTokens)-1]
+				return id.DeviceId
+			} else if expiredTime < time.Now().Unix() {
 				accessTokens[index] = accessTokens[len(accessTokens)-1]
 				accessTokens = accessTokens[:len(accessTokens)-1]
 				return ""
+			} else {
+				return id.DeviceId
 			}
 		} else {
-			return id.DeviceId
+			return ""
 		}
 	}
 	return ""

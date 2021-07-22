@@ -388,7 +388,7 @@ func generateNewId(n int) string {
 
 func mainLocation(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
-	case http.MethodGet:
+	case http.MethodPut:
 		getLocation(w, r)
 	case http.MethodPost:
 		postLocation(w, r)
@@ -397,7 +397,7 @@ func mainLocation(w http.ResponseWriter, r *http.Request) {
 
 func mainCommand(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
-	case http.MethodGet:
+	case http.MethodPut:
 		getCommand(w, r)
 	case http.MethodPost:
 		postCommand(w, r)

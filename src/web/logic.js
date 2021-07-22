@@ -95,7 +95,7 @@ function locate(index, password) {
 
 
         fetch("/requestAccess", {
-            method: 'GET',
+            method: 'PUT',
             body: JSON.stringify({
                 DeviceId: idInput.value,
                 HashedPassword: hashedPW
@@ -109,7 +109,7 @@ function locate(index, password) {
             .then(function (token) {
 
                 fetch("/locationDataSize", {
-                    method: 'GET',
+                    method: 'PUT',
                     body: JSON.stringify({
                         AccessToken: token.AccessToken,
                         index: index
@@ -132,7 +132,7 @@ function locate(index, password) {
                     })
 
                 fetch("/location", {
-                    method: 'GET',
+                    method: 'PUT',
                     body: JSON.stringify({
                         AccessToken: token.AccessToken,
                         index: index
@@ -147,7 +147,7 @@ function locate(index, password) {
                     .then(function (json) {
 
                         fetch("/key", {
-                            method: 'GET',
+                            method: 'PUT',
                             body: JSON.stringify({
                                 AccessToken: token.AccessToken,
                                 index: index
@@ -191,7 +191,7 @@ function locate(index, password) {
                                             if (idInput.value != "") {
 
                                                 fetch("/requestAccess", {
-                                                    method: 'GET',
+                                                    method: 'PUT',
                                                     body: JSON.stringify({
                                                         DeviceId: idInput.value,
                                                         HashedPassword: hashedPW
@@ -205,7 +205,7 @@ function locate(index, password) {
                                                     .then(function (token) {
 
                                                         fetch("/locationDataSize", {
-                                                            method: 'GET',
+                                                            method: 'PUT',
                                                             body: JSON.stringify({
                                                                 DeviceId: token.AccessToken,
                                                                 index: -1
@@ -315,7 +315,7 @@ function sendToPhone(message) {
     if (idInput.value != "" && hashedPW != "") {
 
         fetch("/requestAccess", {
-            method: 'GET',
+            method: 'PUT',
             body: JSON.stringify({
                 DeviceId: idInput.value,
                 HashedPassword: hashedPW

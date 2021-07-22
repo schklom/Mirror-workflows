@@ -229,8 +229,8 @@ function locate(index, password) {
                                                                 }
                                                             })
                                                     })
-                                                }
-                                        
+                                            }
+
                                         }, 180000);
                                     }
                                 } else {
@@ -307,5 +307,43 @@ function locateNewer() {
     if (keyTemp != null) {
         currentLocationDataIndx += 1;
         locate(currentLocationDataIndx, "");
+    }
+}
+
+function sendToPhone(message) {
+    idInput = document.getElementById('fmdid');
+    if (idInput.value != "" && hashedPW != "") {
+
+        fetch("/requestAccess", {
+            method: 'PUT',
+            body: JSON.stringify({
+                DeviceId: idInput.value,
+                HashedPassword: hashedPW
+            }),
+            headers: {
+                'Content-type': 'applicatoin/json'
+            }
+        }).then(function (response) {
+            return response.json()
+        })
+            .then(function (token) {
+                fetch("/newCommand", {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        AccessToken: token.AccessToken,
+                        Command: message
+                    }),
+                    headers: {
+                        'Content-type': 'applicatoin/json'
+                    }
+                }).then(function (response){
+                    var toasted = new Toasted({
+                        position: 'top-center',
+                        duration: 2000
+                    })
+                    toasted.show('Command send!')
+                })
+
+            })
     }
 }

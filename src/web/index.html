@@ -44,13 +44,10 @@
                 <button type="button" onclick="locateNewer()">&#62;</button>
             </div>
             <div class="center">
-                <button type="button" onclick="sendToPhone()">O</button>
-                <div class="hide">Locate</div> 
-                <button type="button" onclick="sendToPhone()">R</button>
-                <div class="hide">Ring</div> 
-                <button type="button" onclick="sendToPhone()">L</button>
-                <div class="hide">Lock</div> 
-                <button type="button" onclick="sendToPhone()">X</button>
+                <button type="button" title="Locate" onclick="sendToPhone('locate')">O</button>
+                <button type="button" title="Ring" onclick="sendToPhone('ring')">R</button>
+                <button type="button" title="Lock" onclick="sendToPhone('lock')">L</button>
+                <button type="button" title="Delete" onclick="sendToPhone('delete')">X</button>
                 <div class="hide">Delete</div> 
             </div>
             <p>Location-Infos:</p>

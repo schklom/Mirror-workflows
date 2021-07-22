@@ -25,9 +25,13 @@ var webDir = "web"
 var locationDir = "loc"
 var mediaDir = "media"
 
+//User-Files
 const privateKeyFile = "privkey"
 const publicKeyfile = "pubkey"
 const hashedPasswordFile = "hashedPW"
+const commandToUserFile = "toDevice"
+
+//Server Config
 const serverCert = "server.crt"
 const serverKey = "server.key"
 const configFile = "config.json"
@@ -62,6 +66,11 @@ type locationDataSize struct {
 	AccessToken        string
 	DataLength         int
 	DataBeginningIndex int
+}
+
+type commandToDeviceData struct {
+	AccessToken string `'json:"AccessToken"`
+	Command     string `'json:"Command"`
 }
 
 //The json-request from the webpage.
@@ -238,6 +247,23 @@ func putLocation(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func putCommand(w http.ResponseWriter, r *http.Request) {
+	var data commandToDeviceData
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		fmt.Fprintf(w, "Meeep!, Error - putMessage - 1")
+		return
+	}
+	id := checkAccessToken(data.AccessToken)
+	if id == "" {
+		fmt.Fprintf(w, "Meeep!, Error - putMessage - 2")
+		return
+	}
+	path := filepath.Join(dataDir, id)
+	path = filepath.Join(path, commandToUserFile)
+	_ = ioutil.WriteFile(path, []byte(data.Command), 0644)
+}
+
 func requestAccess(w http.ResponseWriter, r *http.Request) {
 	var data requestAccessData
 	err := json.NewDecoder(r.Body).Decode(&data)
@@ -345,6 +371,7 @@ func handleRequests() {
 	http.HandleFunc("/locationDataSize", getLocationDataSize)
 	http.HandleFunc("/key", getKey)
 	http.HandleFunc("/newlocation", putLocation)
+	http.HandleFunc("/newCommand", putCommand)
 	http.HandleFunc("/newDevice", createDevice)
 	http.HandleFunc("/requestAccess", requestAccess)
 	http.HandleFunc("/version", getVersion)

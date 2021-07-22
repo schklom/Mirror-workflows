@@ -70,15 +70,6 @@ button:active {
     background-color: #318f2f;
 }
 
-.hide {
-    display: none;
-  }
-  
-button + .hide {
-    display: block;
-    color: #232323
-  }
-
 footer{
     padding: 10px;
     z-index: 2;

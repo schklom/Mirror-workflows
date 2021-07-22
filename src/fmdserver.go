@@ -21,6 +21,10 @@ var version = "v0.2.1"
 var dataDir = "data"
 var webDir = "web"
 
+//User-Folders
+var locationDir = "loc"
+var mediaDir = "media"
+
 const privateKeyFile = "privkey"
 const hashedPasswordFile = "hashedPW"
 const serverCert = "server.crt"
@@ -99,9 +103,10 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Print(request.Index)
-	filePath := filepath.Join(dataDir, id)
+	path := filepath.Join(dataDir, id)
+	path = filepath.Join(path, locationDir)
 	if request.Index == -1 {
-		files, _ := ioutil.ReadDir(filePath)
+		files, _ := ioutil.ReadDir(path)
 		highest := 0
 		position := -1
 		for i := 0; i < len(files); i++ {
@@ -111,17 +116,15 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 				position = i
 			}
 		}
-		filePath = filepath.Join(filePath, files[position].Name())
+		path = filepath.Join(path, files[position].Name())
 	} else {
-		filePath = filepath.Join(filePath, fmt.Sprint(request.Index))
+		path = filepath.Join(path, fmt.Sprint(request.Index))
 	}
-	data, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		fmt.Println("File reading error", err)
-		return
+	data, err := ioutil.ReadFile(path)
+	if err == nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(fmt.Sprint(string(data))))
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte(fmt.Sprint(string(data))))
 }
 
 func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
@@ -137,8 +140,9 @@ func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	filePath := filepath.Join(dataDir, id)
-	files, _ := ioutil.ReadDir(filePath)
+	path := filepath.Join(dataDir, id)
+	path = filepath.Join(path, locationDir)
+	files, _ := ioutil.ReadDir(path)
 	highest := -1
 	smallest := 2147483647
 	for i := 0; i < len(files); i++ {
@@ -196,7 +200,7 @@ func putLocation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	path := filepath.Join(dataDir, id)
-	os.MkdirAll(path, os.ModePerm)
+	path = filepath.Join(path, locationDir)
 	files, _ := ioutil.ReadDir(path)
 	highest := 0
 	smallest := 2147483647
@@ -280,6 +284,10 @@ func createDevice(w http.ResponseWriter, r *http.Request) {
 	_ = ioutil.WriteFile(privKeyPath, []byte(device.PrivKey), 0644)
 	hashedPWPath := filepath.Join(path, hashedPasswordFile)
 	_ = ioutil.WriteFile(hashedPWPath, []byte(device.HashedPassword), 0644)
+	locationPath := filepath.Join(path, locationDir)
+	os.MkdirAll(locationPath, os.ModePerm)
+	mediaPath := filepath.Join(path, mediaDir)
+	os.MkdirAll(mediaPath, os.ModePerm)
 
 	accessToken := AccessToken{DeviceId: id, AccessToken: ""}
 	result, _ := json.Marshal(accessToken)

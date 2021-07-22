@@ -268,6 +268,7 @@ func getCommand(w http.ResponseWriter, r *http.Request) {
 		result, _ := json.Marshal(reply)
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(result))
+		os.Remove(path)
 	} else {
 		reply := commandToDeviceData{AccessToken: data.AccessToken, Command: ""}
 		result, _ := json.Marshal(reply)

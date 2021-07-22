@@ -138,6 +138,55 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func postLocation(w http.ResponseWriter, r *http.Request) {
+	var location locationData
+	err := json.NewDecoder(r.Body).Decode(&location)
+	if err != nil {
+		fmt.Fprintf(w, "Meeep!, Error - postLocation - 1")
+		return
+	}
+	id := checkAccessToken(location.AccessToken)
+	if id == "" {
+		fmt.Fprintf(w, "Meeep!, Error - postLocation - 2")
+		return
+	}
+	path := filepath.Join(dataDir, id)
+	path = filepath.Join(path, locationDir)
+	files, _ := ioutil.ReadDir(path)
+	highest := 0
+	smallest := 2147483647
+	for i := 0; i < len(files); i++ {
+		number, err := strconv.Atoi(files[i].Name())
+		if err == nil {
+			if number > highest {
+				highest = number
+			}
+			if number < smallest {
+				smallest = number
+			}
+		}
+	}
+	highest += 1
+
+	//Auto-Clean directory
+	difference := (highest - smallest) - serverConfig.MaxSavedLoc
+	if difference > 0 {
+		deleteUntil := smallest + difference
+		index := smallest
+		for index <= deleteUntil {
+			indexPath := filepath.Join(path, strconv.Itoa(index))
+			os.Remove(indexPath)
+			index += 1
+		}
+	}
+
+	//Create new locationfile
+	path = filepath.Join(path, strconv.Itoa(highest))
+	file, _ := json.MarshalIndent(location, "", " ")
+	_ = ioutil.WriteFile(path, file, 0644)
+
+}
+
 func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 	var request requestData
 	err := json.NewDecoder(r.Body).Decode(&request)
@@ -198,65 +247,37 @@ func getKey(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(fmt.Sprint(string(data))))
 }
 
-func putLocation(w http.ResponseWriter, r *http.Request) {
-	var location locationData
-	err := json.NewDecoder(r.Body).Decode(&location)
-	if err != nil {
-		fmt.Fprintf(w, "Meeep!, Error - putLocation - 1")
-		return
-	}
-	id := checkAccessToken(location.AccessToken)
-	if id == "" {
-		fmt.Fprintf(w, "Meeep!, Error - putLocation - 2")
-		return
-	}
-	path := filepath.Join(dataDir, id)
-	path = filepath.Join(path, locationDir)
-	files, _ := ioutil.ReadDir(path)
-	highest := 0
-	smallest := 2147483647
-	for i := 0; i < len(files); i++ {
-		number, err := strconv.Atoi(files[i].Name())
-		if err == nil {
-			if number > highest {
-				highest = number
-			}
-			if number < smallest {
-				smallest = number
-			}
-		}
-	}
-	highest += 1
-
-	//Auto-Clean directory
-	difference := (highest - smallest) - serverConfig.MaxSavedLoc
-	if difference > 0 {
-		deleteUntil := smallest + difference
-		index := smallest
-		for index <= deleteUntil {
-			indexPath := filepath.Join(path, strconv.Itoa(index))
-			os.Remove(indexPath)
-			index += 1
-		}
-	}
-
-	//Create new locationfile
-	path = filepath.Join(path, strconv.Itoa(highest))
-	file, _ := json.MarshalIndent(location, "", " ")
-	_ = ioutil.WriteFile(path, file, 0644)
-
-}
-
-func putCommand(w http.ResponseWriter, r *http.Request) {
-	var data commandToDeviceData
+func getCommand(w http.ResponseWriter, r *http.Request) {
+	var data requestData
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		fmt.Fprintf(w, "Meeep!, Error - putMessage - 1")
+		fmt.Fprintf(w, "Meeep!, Error - getCommand - 1")
 		return
 	}
 	id := checkAccessToken(data.AccessToken)
 	if id == "" {
-		fmt.Fprintf(w, "Meeep!, Error - putMessage - 2")
+		fmt.Fprintf(w, "Meeep!, Error - getCommand - 2")
+		return
+	}
+	path := filepath.Join(dataDir, id)
+	path = filepath.Join(path, commandToUserFile)
+	command, err := ioutil.ReadFile(path)
+	if err == nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(fmt.Sprint(string(command))))
+	}
+}
+
+func postCommand(w http.ResponseWriter, r *http.Request) {
+	var data commandToDeviceData
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		fmt.Fprintf(w, "Meeep!, Error - postCommand - 1")
+		return
+	}
+	id := checkAccessToken(data.AccessToken)
+	if id == "" {
+		fmt.Fprintf(w, "Meeep!, Error - postCommand - 2")
 		return
 	}
 	path := filepath.Join(dataDir, id)
@@ -296,7 +317,7 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func createDevice(w http.ResponseWriter, r *http.Request) {
+func postDevice(w http.ResponseWriter, r *http.Request) {
 	var device registrationData
 	err := json.NewDecoder(r.Body).Decode(&device)
 	if err != nil {
@@ -325,6 +346,10 @@ func createDevice(w http.ResponseWriter, r *http.Request) {
 	w.Write(result)
 }
 
+func getVersion(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte(fmt.Sprint(version)))
+}
+
 func checkAccessToken(idToCheck string) string {
 	for index, id := range accessTokens {
 		if id.AccessToken == idToCheck {
@@ -345,10 +370,6 @@ func checkAccessToken(idToCheck string) string {
 	return ""
 }
 
-func getVersion(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(fmt.Sprint(version)))
-}
-
 func generateNewId(n int) string {
 	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 	s := make([]rune, n)
@@ -365,14 +386,31 @@ func generateNewId(n int) string {
 	return newId
 }
 
+func mainLocation(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		getLocation(w, r)
+	case http.MethodPost:
+		postLocation(w, r)
+	}
+}
+
+func mainCommand(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		getCommand(w, r)
+	case http.MethodPost:
+		postCommand(w, r)
+	}
+}
+
 func handleRequests() {
 	http.Handle("/", http.FileServer(http.Dir(webDir)))
-	http.HandleFunc("/location", getLocation)
+	http.HandleFunc("/command", mainCommand)
+	http.HandleFunc("/location", mainLocation)
 	http.HandleFunc("/locationDataSize", getLocationDataSize)
 	http.HandleFunc("/key", getKey)
-	http.HandleFunc("/newlocation", putLocation)
-	http.HandleFunc("/newCommand", putCommand)
-	http.HandleFunc("/newDevice", createDevice)
+	http.HandleFunc("/device", postDevice)
 	http.HandleFunc("/requestAccess", requestAccess)
 	http.HandleFunc("/version", getVersion)
 	if fileExists(filepath.Join(filesDir, serverKey)) {

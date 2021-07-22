@@ -263,9 +263,18 @@ func getCommand(w http.ResponseWriter, r *http.Request) {
 	path = filepath.Join(path, commandToUserFile)
 	command, err := ioutil.ReadFile(path)
 	if err == nil {
+		commandAsString := string(command)
+		reply := commandToDeviceData{AccessToken: data.AccessToken, Command: commandAsString}
+		result, _ := json.Marshal(reply)
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(fmt.Sprint(string(command))))
+		w.Write([]byte(result))
+	} else {
+		reply := commandToDeviceData{AccessToken: data.AccessToken, Command: ""}
+		result, _ := json.Marshal(reply)
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(result))
 	}
+
 }
 
 func postCommand(w http.ResponseWriter, r *http.Request) {

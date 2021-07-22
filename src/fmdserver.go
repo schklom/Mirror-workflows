@@ -26,6 +26,7 @@ var locationDir = "loc"
 var mediaDir = "media"
 
 const privateKeyFile = "privkey"
+const publicKeyfile = "pubkey"
 const hashedPasswordFile = "hashedPW"
 const serverCert = "server.crt"
 const serverKey = "server.key"
@@ -71,6 +72,7 @@ type requestData struct {
 
 type registrationData struct {
 	HashedPassword string `'json:"hashedPassword"`
+	PubKey         string `'json:"pubKey"`
 	PrivKey        string `'json:"privKey"`
 }
 
@@ -282,6 +284,8 @@ func createDevice(w http.ResponseWriter, r *http.Request) {
 	os.MkdirAll(path, os.ModePerm)
 	privKeyPath := filepath.Join(path, privateKeyFile)
 	_ = ioutil.WriteFile(privKeyPath, []byte(device.PrivKey), 0644)
+	pubKeyPath := filepath.Join(path, publicKeyfile)
+	_ = ioutil.WriteFile(pubKeyPath, []byte(device.PubKey), 0644)
 	hashedPWPath := filepath.Join(path, hashedPasswordFile)
 	_ = ioutil.WriteFile(hashedPWPath, []byte(device.HashedPassword), 0644)
 	locationPath := filepath.Join(path, locationDir)

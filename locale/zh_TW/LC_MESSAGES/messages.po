@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-18 13:34+0300\n"
-"PO-Revision-Date: 2021-07-20 11:09+0000\n"
+"PO-Revision-Date: 2021-08-21 16:10+0000\n"
 "Last-Translator: TonyRL <tony_lao@outlook.com>\n"
 "Language-Team: Chinese (Traditional) <https://weblate.tt-rss.org/projects/"
 "tt-rss/messages/zh_Hant/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.7.2\n"
+"X-Generator: Weblate 4.8\n"
 
 #: backend.php:60
 msgid "Use default"
@@ -1514,7 +1514,7 @@ msgstr "沒有未讀文章。"
 
 #: classes/feeds.php:359
 msgid "No updated articles found to display."
-msgstr "沒有最新更新的文章。"
+msgstr "沒有最近更新的文章。"
 
 #: classes/feeds.php:362
 msgid "No starred articles found to display."
@@ -1554,7 +1554,7 @@ msgstr "已發布文章"
 
 #: classes/feeds.php:1118
 msgid "Fresh articles"
-msgstr "最新更新的文章"
+msgstr "最近更新的文章"
 
 #: classes/feeds.php:1252
 msgid "Special"

@@ -203,7 +203,7 @@ class Pref_Filters extends Handler_Protected {
             } else {
 
                 $where = $line["cat_filter"] ?
-                    Feeds::_get_cat_title($line["cat_id"]) :
+                    Feeds::_get_cat_title($line["cat_id"] ?? 0) :
                     ($line["feed_id"] ?
                         Feeds::_get_title($line["feed_id"]) : __("All feeds"));
             }

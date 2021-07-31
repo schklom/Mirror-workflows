@@ -10,7 +10,7 @@ mixin fieldset(name)
 mixin input(id, description, placeholder, disabled, list)
 	.field-row
 		label.description(for=id)= description
-		input(type="text" id=id name=id value=settings[id] placeholder=placeholder disabled=disabled list=`${id}-list`)
+		input(type="text" dir="ltr" id=id name=id value=settings[id] placeholder=placeholder disabled=disabled list=`${id}-list`)
 		if list
 			datalist(id=`${id}-list`)
 				each item in list
@@ -21,7 +21,7 @@ mixin checkbox(id, description, label, disabled)
 		label.description(for=id)= description
 		input.checkbox(type="checkbox" id=id name=id checked=(settings[id] !== 0) disabled=disabled autocomplete="off")
 		label.pill(for=id tabindex=(disabled ? null : 0) onkeypress=`[" ", "Enter"].includes(event.key) && this.click()`)= label
-			span.fake-checkbox
+			span.fake-checkbox(class=ll.meta_direction)
 
 mixin select(id, description, disabled, options)
 	.field-row
@@ -31,7 +31,7 @@ mixin select(id, description, disabled, options)
 				option(value=option.value selected=(option.value === settings[id]))= option.text
 
 doctype html
-html
+html(dir=ll.meta_direction)
 	head
 		title= `${ll.t_settings} | Bibliogram`
 		include includes/head
@@ -47,7 +47,7 @@ html
 
 				+fieldset(ll.t_features)
 					+select("language", ll.t_language, false, [
-						{value: "ar", text: "اَلْعَرَبِيَّةُ‎"},
+						{value: "ar", text: "العربية"},
 						{value: "bg", text: "Български"},
 						{value: "de", text: "Deutsch"},
 						{value: "en", text: "English (International)"},

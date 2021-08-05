@@ -104,7 +104,11 @@ function locate(index, password) {
                 'Content-type': 'applicatoin/json'
             }
         }).then(function (response) {
-            return response.json()
+            if(response.ok){
+                return response.json()
+            }else{
+                alert("ID or password false");
+            }
         })
             .then(function (token) {
 

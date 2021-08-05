@@ -105,12 +105,12 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 	var request requestData
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		fmt.Fprintf(w, "Meeep!, Error - getLocation - 1")
+		http.Error(w, "Meeep!, Error - getLocation 1", http.StatusBadRequest)
 		return
 	}
 	id := checkAccessToken(request.AccessToken)
 	if id == "" {
-		fmt.Fprintf(w, "Meeep!, Error - getLocation - 2")
+		http.Error(w, "Meeep!, Error - getLocation 2", http.StatusBadRequest)
 		return
 	}
 	fmt.Print(request.Index)
@@ -142,12 +142,12 @@ func postLocation(w http.ResponseWriter, r *http.Request) {
 	var location locationData
 	err := json.NewDecoder(r.Body).Decode(&location)
 	if err != nil {
-		fmt.Fprintf(w, "Meeep!, Error - postLocation - 1")
+		http.Error(w, "Meeep!, Error - postLocation 1", http.StatusBadRequest)
 		return
 	}
 	id := checkAccessToken(location.AccessToken)
 	if id == "" {
-		fmt.Fprintf(w, "Meeep!, Error - postLocation - 2")
+		http.Error(w, "Meeep!, Error - postLocation 2", http.StatusBadRequest)
 		return
 	}
 	path := filepath.Join(dataDir, id)
@@ -191,12 +191,12 @@ func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 	var request requestData
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		fmt.Fprintf(w, "Meeep!, Error - getLocationDataSize - 1")
+		http.Error(w, "Meeep!, Error - getLocationDataSize 1", http.StatusBadRequest)
 		return
 	}
 	id := checkAccessToken(request.AccessToken)
 	if id == "" {
-		fmt.Fprintf(w, "Meeep!, Error - getLocationDataSize - 1")
+		http.Error(w, "Meeep!, Error - getLocationDataSize 2", http.StatusBadRequest)
 		return
 	}
 
@@ -226,12 +226,12 @@ func getKey(w http.ResponseWriter, r *http.Request) {
 	var request requestData
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		fmt.Fprintf(w, "Meeep!, Error - getKey - 1")
+		http.Error(w, "Meeep!, Error - getKey 1", http.StatusBadRequest)
 		return
 	}
 	id := checkAccessToken(request.AccessToken)
 	if id == "" {
-		fmt.Fprintf(w, "Meeep!, Error - getKey - 2")
+		http.Error(w, "Meeep!, Error - getKey 2", http.StatusBadRequest)
 		return
 	}
 
@@ -251,12 +251,12 @@ func getCommand(w http.ResponseWriter, r *http.Request) {
 	var data requestData
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		fmt.Fprintf(w, "Meeep!, Error - getCommand - 1")
+		http.Error(w, "Meeep!, Error - getCommand 1", http.StatusBadRequest)
 		return
 	}
 	id := checkAccessToken(data.AccessToken)
 	if id == "" {
-		fmt.Fprintf(w, "Meeep!, Error - getCommand - 2")
+		http.Error(w, "Meeep!, Error - getCommand 2", http.StatusBadRequest)
 		return
 	}
 	path := filepath.Join(dataDir, id)
@@ -282,12 +282,12 @@ func postCommand(w http.ResponseWriter, r *http.Request) {
 	var data commandToDeviceData
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		fmt.Fprintf(w, "Meeep!, Error - postCommand - 1")
+		http.Error(w, "Meeep!, Error - postCommand 1", http.StatusBadRequest)
 		return
 	}
 	id := checkAccessToken(data.AccessToken)
 	if id == "" {
-		fmt.Fprintf(w, "Meeep!, Error - postCommand - 2")
+		http.Error(w, "Meeep!, Error - postCommand 2", http.StatusBadRequest)
 		return
 	}
 	path := filepath.Join(dataDir, id)
@@ -299,11 +299,11 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 	var data requestAccessData
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		fmt.Fprintf(w, "Meeep!, Error - requestAccess - 1")
+		http.Error(w, "Meeep!, Error - requestAccess 1", http.StatusBadRequest)
 		return
 	}
 	if !isIdValid(data.DeviceId) {
-		fmt.Fprintf(w, "Meeep!, Error - requestAccess - 2")
+		http.Error(w, "Meeep!, Error - requestAccess 2", http.StatusBadRequest)
 		return
 	}
 
@@ -312,7 +312,7 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 
 	hashedPW, err := ioutil.ReadFile(hashedPWPath)
 	if err != nil {
-		fmt.Println("File reading error", err)
+		http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusForbidden)
 		return
 	}
 	if strings.EqualFold(string(hashedPW), (data.HashedPassword)) {
@@ -323,6 +323,8 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		result, _ := json.Marshal(accessToken)
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(result)
+	} else {
+		http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusForbidden)
 	}
 
 }
@@ -331,7 +333,7 @@ func postDevice(w http.ResponseWriter, r *http.Request) {
 	var device registrationData
 	err := json.NewDecoder(r.Body).Decode(&device)
 	if err != nil {
-		fmt.Fprintf(w, "Meeep!, Error - createDevice")
+		http.Error(w, "Meeep!, Error - createDevice", http.StatusBadRequest)
 		return
 	}
 	id := generateNewId(serverConfig.IdLength)

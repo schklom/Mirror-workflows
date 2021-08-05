@@ -21,6 +21,11 @@ function extractSharedData(text) {
 	parser.restore()
 	const sharedDataString = parser.slice(end - parser.cursor)
 	const sharedData = JSON.parse(sharedDataString)
+	// check for alternate form of age restrictions
+	if (sharedData.entry_data && sharedData.entry_data.HttpGatedContentPage) {
+		// lazy fix; ideally extracting the age should be done here, but for the web ui it doesn't matter
+		return {status: constants.symbols.extractor_results.AGE_RESTRICTED, value: null}
+	}
 	return {status: constants.symbols.extractor_results.SUCCESS, value: sharedData}
 }
 

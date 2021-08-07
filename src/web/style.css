@@ -117,7 +117,7 @@ footer{
 #deviceInfo{
     position: absolute;
     z-index: 2;
-    visibility: visible;
+    visibility: hidden;
     padding: 10px;
     margin: 10px;
     border-radius: 8px;

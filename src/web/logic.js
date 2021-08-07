@@ -87,7 +87,7 @@ function locate(index, password) {
     if (password != "") {
         hashedPW = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse("cafe"), {
             keySize: 256 / 32,
-            iterations: 1867*2
+            iterations: 1867 * 2
         }).toString();
     }
 
@@ -104,10 +104,16 @@ function locate(index, password) {
                 'Content-type': 'applicatoin/json'
             }
         }).then(function (response) {
-            if(response.ok){
+            if (response.ok) {
                 return response.json()
-            }else{
-                alert("ID or password false");
+            } else {
+                if (response.status == 423) {
+                    alert("ID, wether it exists or not is locked.");
+                } else if (response.status == 403) {
+                    alert("ID or password false");
+                } else {
+                    alert("Unhandled error: " + response.status);
+                }
             }
         })
             .then(function (token) {
@@ -340,7 +346,7 @@ function sendToPhone(message) {
                     headers: {
                         'Content-type': 'applicatoin/json'
                     }
-                }).then(function (response){
+                }).then(function (response) {
                     var toasted = new Toasted({
                         position: 'top-center',
                         duration: 2000

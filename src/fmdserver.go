@@ -42,9 +42,17 @@ var serverConfig config
 
 var ids []string
 
+var lockedIds []lockedId
+
 var accessTokens []AccessToken
 
 var isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]*$`).MatchString
+
+type lockedId struct {
+	DeviceId  string
+	Failed    int
+	Timestamp int64
+}
 
 type config struct {
 	PortSecure   int
@@ -306,25 +314,29 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - requestAccess 2", http.StatusBadRequest)
 		return
 	}
+	if !isLocked(data.DeviceId) {
+		path := filepath.Join(dataDir, data.DeviceId)
+		hashedPWPath := filepath.Join(path, hashedPasswordFile)
 
-	path := filepath.Join(dataDir, data.DeviceId)
-	hashedPWPath := filepath.Join(path, hashedPasswordFile)
+		hashedPW, err := ioutil.ReadFile(hashedPWPath)
+		if err != nil {
+			http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusForbidden)
+			return
+		}
+		if strings.EqualFold(string(hashedPW), (data.HashedPassword)) {
+			newAccess := AccessToken{DeviceId: data.DeviceId, AccessToken: generateNewId(64), Time: time.Now().Unix()}
+			accessTokens = append(accessTokens, newAccess)
 
-	hashedPW, err := ioutil.ReadFile(hashedPWPath)
-	if err != nil {
-		http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusForbidden)
-		return
-	}
-	if strings.EqualFold(string(hashedPW), (data.HashedPassword)) {
-		newAccess := AccessToken{DeviceId: data.DeviceId, AccessToken: generateNewId(64), Time: time.Now().Unix()}
-		accessTokens = append(accessTokens, newAccess)
-
-		accessToken := AccessToken{DeviceId: data.DeviceId, AccessToken: newAccess.AccessToken}
-		result, _ := json.Marshal(accessToken)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(result)
+			accessToken := AccessToken{DeviceId: data.DeviceId, AccessToken: newAccess.AccessToken}
+			result, _ := json.Marshal(accessToken)
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(result)
+		} else {
+			incrementLock(data.DeviceId)
+			http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusForbidden)
+		}
 	} else {
-		http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusForbidden)
+		http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusLocked)
 	}
 
 }
@@ -360,6 +372,42 @@ func postDevice(w http.ResponseWriter, r *http.Request) {
 
 func getVersion(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(fmt.Sprint(version)))
+}
+
+func isLocked(idToCheck string) bool {
+	for index, lId := range lockedIds {
+		if lId.DeviceId == idToCheck {
+			if lId.Failed >= 3 {
+				if lId.Timestamp < time.Now().Unix() {
+					lockedIds[index] = lockedIds[len(lockedIds)-1]
+					lockedIds = lockedIds[:len(lockedIds)-1]
+					return false
+				} else {
+					return true
+				}
+			} else {
+				return false
+			}
+		}
+	}
+	return false
+}
+
+func incrementLock(idToLock string) {
+	for index, lId := range lockedIds {
+		if lId.DeviceId == idToLock {
+			if lId.Timestamp < time.Now().Unix() {
+				lockedIds[index].Failed = 1
+				lockedIds[index].Timestamp = time.Now().Unix() + (10 * 60)
+			} else {
+				lockedIds[index].Failed++
+				lockedIds[index].Timestamp = time.Now().Unix() + (10 * 60)
+			}
+			return
+		}
+	}
+	lId := lockedId{DeviceId: idToLock, Timestamp: time.Now().Unix() + (10 * 60), Failed: 1}
+	lockedIds = append(lockedIds, lId)
 }
 
 func checkAccessToken(idToCheck string) string {

@@ -44,10 +44,18 @@
                 <button type="button" onclick="locateNewer()">&#62;</button>
             </div>
             <div class="center">
-                <button type="button" title="Locate" onclick="sendToPhone('locate')">O</button>
-                <button type="button" title="Ring" onclick="sendToPhone('ring')">R</button>
-                <button type="button" title="Lock" onclick="sendToPhone('lock')">L</button>
-                <button type="button" title="Delete" onclick="sendToPhone('delete')">X</button>
+                <button type="button" class="imageButton" style="content: assets/Locate\.jpg;" title="Locate" onclick="sendToPhone('locate')">
+                    <img src="assets/Locate.png" height="30"/>
+                </button>
+                <button type="button" class="imageButton" title="Ring" onclick="sendToPhone('ring')">
+                    <img src="assets/Ring.png" height="30"/>
+                </button>
+                <button type="button" class="imageButton" title="Lock" onclick="sendToPhone('lock')">
+                    <img src="assets/Locked.png" height="30"/>
+                </button>
+                <button type="button" class="imageButton" title="Delete" onclick="sendToPhone('delete')">
+                    <img src="assets/Delete.png" height="30"/>
+                </button>
             </div>
             <p>Location-Infos:</p>
 

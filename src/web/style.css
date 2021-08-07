@@ -66,6 +66,10 @@ button {
     font-size: medium; 
 }
 
+.imageButton{
+    padding: 5px;
+}
+
 button:active {
     background-color: #318f2f;
 }
@@ -113,7 +117,7 @@ footer{
 #deviceInfo{
     position: absolute;
     z-index: 2;
-    visibility: hidden;
+    visibility: visible;
     padding: 10px;
     margin: 10px;
     border-radius: 8px;

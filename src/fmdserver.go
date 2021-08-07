@@ -337,6 +337,9 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusLocked)
+		path := filepath.Join(dataDir, data.DeviceId)
+		path = filepath.Join(path, commandToUserFile)
+		_ = ioutil.WriteFile(path, []byte("423"), 0644)
 	}
 
 }

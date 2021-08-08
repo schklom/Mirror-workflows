@@ -5,6 +5,7 @@ import {quota} from "./quota.js"
 /** @type {PostOverlay[]} */
 const postOverlays = []
 const titleHistory = []
+const focusHistory = []
 titleHistory.push(document.title)
 const shortcodeDataMap = new Map()
 
@@ -28,6 +29,10 @@ window.addEventListener("popstate", event => {
 			titleHistory.pop()
 			document.title = titleHistory.slice(-1)[0]
 		}
+		if (focusHistory.length) {
+			const item = focusHistory.pop()
+			item.focus()
+		}
 		if (postOverlays.length) {
 			popOverlay()
 		} else {
@@ -38,6 +43,7 @@ window.addEventListener("popstate", event => {
 
 function pushOverlay(overlay) {
 	postOverlays.push(overlay)
+	focusHistory.push(document.activeElement)
 	document.body.style.overflowY = "hidden"
 }
 
@@ -82,6 +88,9 @@ class PostOverlay extends ElemJS {
 		this.html(html)
 		this.loaded = true
 		this.removeClass("loading")
+		setTimeout(() => {
+			this.element.focus()
+		})
 	}
 
 	showError() {

@@ -195,7 +195,7 @@ class Readability
 
                     // No luck after removing flags, just return the longest text we found during the different loops
                     usort($this->attempts, function ($a, $b) {
-                        return $b['textLength'] - $a['textLength'];
+                        return $a['textLength'] < $b['textLength'];
                     });
 
                     // But first check if we actually have something

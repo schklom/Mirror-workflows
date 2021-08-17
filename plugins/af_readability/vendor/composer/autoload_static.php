@@ -20,7 +20,7 @@ class ComposerStaticInitb44cc79a0eaef9cd9c2f2ac697cbe9c0
     public static $prefixDirsPsr4 = array (
         'andreskrey\\Readability\\' => 
         array (
-            0 => __DIR__ . '/..' . '/andreskrey/readability.php/src',
+            0 => __DIR__ . '/..' . '/fivefilters/readability.php/src',
         ),
         'Psr\\Log\\' => 
         array (

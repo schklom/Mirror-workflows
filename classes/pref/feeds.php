@@ -82,7 +82,7 @@ class Pref_Feeds extends Handler_Protected {
 			->order_by_asc('title');
 
 		if ($search) {
-			$feeds_obj->where_raw('(LOWER(title) LIKE ? OR LOWER(feed_url) LIKE ?)', ["%$search%", "%$search%"]);
+			$feeds_obj->where_raw('(LOWER(title) LIKE ? OR LOWER(feed_url) LIKE LOWER(?))', ["%$search%", "%$search%"]);
 		}
 
 		foreach ($feeds_obj->find_many() as $feed) {
@@ -253,7 +253,7 @@ class Pref_Feeds extends Handler_Protected {
 				->order_by_asc('title');
 
 			if ($search) {
-				$feeds_obj->where_raw('(LOWER(title) LIKE ? OR LOWER(feed_url) LIKE ?)', ["%$search%", "%$search%"]);
+				$feeds_obj->where_raw('(LOWER(title) LIKE ? OR LOWER(feed_url) LIKE LOWER(?))', ["%$search%", "%$search%"]);
 			}
 
 			foreach ($feeds_obj->find_many() as $feed) {
@@ -289,7 +289,7 @@ class Pref_Feeds extends Handler_Protected {
 				->order_by_asc('title');
 
 			if ($search) {
-				$feeds_obj->where_raw('(LOWER(title) LIKE ? OR LOWER(feed_url) LIKE ?)', ["%$search%", "%$search%"]);
+				$feeds_obj->where_raw('(LOWER(title) LIKE ? OR LOWER(feed_url) LIKE LOWER(?))', ["%$search%", "%$search%"]);
 			}
 
 			foreach ($feeds_obj->find_many() as $feed) {

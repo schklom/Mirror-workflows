@@ -293,7 +293,7 @@ class Pref_Feeds extends Handler_Protected {
 			}
 
 			foreach ($feeds_obj->find_many() as $feed) {
-				array_push($cat['items'], [
+				array_push($root['items'], [
 					'id' => 'FEED:' . $feed->id,
 					'bare_id' => (int) $feed->id,
 					'auxcounter' => -1,
@@ -351,7 +351,7 @@ class Pref_Feeds extends Handler_Protected {
 			$feed_category = ORM::for_table('ttrss_feed_categories')
 				->where('owner_uid', $_SESSION['uid'])
 				->find_one($bare_item_id);
-			
+
 			if ($feed_category) {
 				$feed_category->parent_cat = $parent_qpart;
 				$feed_category->save();
@@ -389,7 +389,7 @@ class Pref_Feeds extends Handler_Protected {
 						$feed_category = ORM::for_table('ttrss_feed_categories')
 							->where('owner_uid', $_SESSION['uid'])
 							->find_one($bare_id);
-						
+
 						if ($feed_category) {
 							$feed_category->order_id = $order_id;
 							$feed_category->save();

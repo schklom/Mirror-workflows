@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '1baf8c521785ab4dc8f474fdd772280737c7e254',
+    'reference' => 'a73e3bec45c5523910c711cf882976b71781ac9e',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,9 +18,9 @@
       'aliases' => 
       array (
       ),
-      'reference' => '1baf8c521785ab4dc8f474fdd772280737c7e254',
+      'reference' => 'a73e3bec45c5523910c711cf882976b71781ac9e',
     ),
-    'andreskrey/readability.php' => 
+    'fivefilters/readability.php' => 
     array (
       'pretty_version' => 'v2.1.0',
       'version' => '2.1.0.0',
@@ -31,12 +31,12 @@
     ),
     'psr/log' => 
     array (
-      'pretty_version' => '1.1.3',
-      'version' => '1.1.3.0',
+      'pretty_version' => '1.1.4',
+      'version' => '1.1.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => '0f73288fd15629204f9d42b7055f72dacbe811fc',
+      'reference' => 'd49695b909c3b7628b6289db5479a1c204601f11',
     ),
   ),
 );

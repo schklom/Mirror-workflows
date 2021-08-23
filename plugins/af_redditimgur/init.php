@@ -785,7 +785,8 @@ class Af_RedditImgur extends Plugin {
 
 	}
 
-	private function get_header($url, $header, $useragent = SELF_USER_AGENT) {
+	/** $useragent defaults to Config::get_user_agent() */
+	private function get_header($url, $header, $useragent = false) {
 		$ret = false;
 
 		if (function_exists("curl_init")) {
@@ -795,7 +796,7 @@ class Af_RedditImgur extends Plugin {
 			curl_setopt($ch, CURLOPT_HEADER, true);
 			curl_setopt($ch, CURLOPT_NOBODY, true);
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, !ini_get("open_basedir"));
-			curl_setopt($ch, CURLOPT_USERAGENT, $useragent);
+			curl_setopt($ch, CURLOPT_USERAGENT, $useragent ? $useragent : Config::get_user_agent());
 
 			@curl_exec($ch);
 			$ret = curl_getinfo($ch, $header);
@@ -804,11 +805,11 @@ class Af_RedditImgur extends Plugin {
 		return $ret;
 	}
 
-	private function get_content_type($url, $useragent = SELF_USER_AGENT) {
+	private function get_content_type($url, $useragent = false) {
 		return $this->get_header($url, CURLINFO_CONTENT_TYPE, $useragent);
 	}
 
-	private function get_location($url, $useragent = SELF_USER_AGENT) {
+	private function get_location($url, $useragent = false) {
 		return $this->get_header($url, CURLINFO_EFFECTIVE_URL, $useragent);
 	}
 

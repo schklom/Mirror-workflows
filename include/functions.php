@@ -157,8 +157,7 @@
 	require_once 'controls.php';
 	require_once 'controls_compat.php';
 
-	define('SELF_USER_AGENT', 'Tiny Tiny RSS/' . Config::get_version() . ' (http://tt-rss.org/)');
-	ini_set('user_agent', SELF_USER_AGENT);
+	ini_set('user_agent', Config::get_user_agent());
 
 	/* compat shims */
 

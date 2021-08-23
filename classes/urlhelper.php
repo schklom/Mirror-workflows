@@ -281,8 +281,7 @@ class UrlHelper {
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_HEADER, true);
 			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
-			curl_setopt($ch, CURLOPT_USERAGENT, $useragent ? $useragent :
-				SELF_USER_AGENT);
+			curl_setopt($ch, CURLOPT_USERAGENT, $useragent ? $useragent : Config::get_user_agent());
 			curl_setopt($ch, CURLOPT_ENCODING, "");
 
 			if  ($http_referrer)

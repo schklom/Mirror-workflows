@@ -522,6 +522,7 @@ class RPC extends Handler_Protected {
 			WHERE
 				errno NOT IN (".E_USER_NOTICE.", ".E_USER_DEPRECATED.") AND
 				$log_interval AND
+				errstr NOT LIKE '%Returning bool from comparison function is deprecated%' AND
 				errstr NOT LIKE '%imagecreatefromstring(): Data is not in a recognized format%'");
 			$sth->execute();
 

@@ -228,7 +228,7 @@ class Pref_Feeds extends Handler_Protected {
 				if ($num_children > 0 || $show_empty_cats)
 					array_push($root['items'], $cat);
 
-				$root['param'] += count($cat['items']);
+				//$root['param'] += count($cat['items']);
 			}
 
 			/* Uncategorized is a special case */
@@ -1267,7 +1267,7 @@ class Pref_Feeds extends Handler_Protected {
 		$c = 0;
 
 		foreach ($cat['items'] ?? [] as $child) {
-			if ($child['type'] ?? '' == 'category') {
+			if (($child['type'] ?? '') == 'category') {
 				$c += $this->calculate_children_count($child);
 			} else {
 				$c += 1;

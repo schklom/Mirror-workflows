@@ -178,6 +178,7 @@ class Pref_Feeds extends Handler_Protected {
 
 			$labels = ORM::for_table('ttrss_labels2')
 				->where('owner_uid', $_SESSION['uid'])
+				->order_by_asc('caption')
 				->find_many();
 
 			if (count($labels)) {

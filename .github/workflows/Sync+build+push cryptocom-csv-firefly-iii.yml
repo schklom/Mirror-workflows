@@ -1,4 +1,4 @@
-name: Sync+build+push crypto-trades-firefly-iii
+name: Sync+build+push cryptocom-csv-firefly-iii
 
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
@@ -19,8 +19,8 @@ jobs:
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         run: |
-          echo "::set-output name=SETREMOTE::$(git ls-remote https://github.com/financelurker/crypto-trades-firefly-iii.git HEAD | awk '{ print $1 }')"
-          echo "::set-output name=SETLOCAL::$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/crypto-trades-firefly-iii | awk '{ print $1 }')"
+          echo "::set-output name=SETREMOTE::$(git ls-remote https://github.com/financelurker/cryptocom-csv-firefly-iii.git HEAD | awk '{ print $1 }')"
+          echo "::set-output name=SETLOCAL::$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/cryptocom-csv-firefly-iii | awk '{ print $1 }')"
   
   repo-sync:
     needs: [get_commits]
@@ -31,10 +31,10 @@ jobs:
       - name: repo-sync
         uses: wei/git-sync@v3
         with:
-          source_repo: "https://github.com/financelurker/crypto-trades-firefly-iii.git"
+          source_repo: "https://github.com/financelurker/cryptocom-csv-firefly-iii.git"
           source_branch: "master"
           destination_repo: "git@github.com:schklom/Mirror-workflows.git"
-          destination_branch: "crypto-trades-firefly-iii"
+          destination_branch: "cryptocom-csv-firefly-iii"
           ssh_private_key: ${{ secrets.GITSYNCACTION }}
   
   buildandpush:
@@ -44,7 +44,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.3.4
         with:
-          ref: 'crypto-trades-firefly-iii' # branch
+          ref: 'cryptocom-csv-firefly-iii' # branch
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
@@ -67,7 +67,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       # https://github.com/docker/build-push-action#multi-platform-image
-      - name: Build and push crypto-trades-firefly-iii
+      - name: Build and push cryptocom-csv-firefly-iii
         uses: docker/build-push-action@v2.7.0
         with:
           context: .
@@ -77,4 +77,4 @@ jobs:
           pull: true
           push: true
           tags: |
-            schklom/crypto-trades-firefly-iii:latest
+            schklom/cryptocom-csv-firefly-iii:latest

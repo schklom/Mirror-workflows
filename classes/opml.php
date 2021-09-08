@@ -189,7 +189,7 @@ class OPML extends Handler_Protected {
 				WHERE owner_uid = ? ORDER BY id");
 			$sth->execute([$owner_uid]);
 
-			while ($line = $sth->fetch()) {
+			while ($line = $sth->fetch(PDO::FETCH_ASSOC)) {
 				$line["rules"] = array();
 				$line["actions"] = array();
 
@@ -404,6 +404,7 @@ class OPML extends Handler_Protected {
 
 				if ($filter_id) {
 					$this->opml_notice(T_sprintf("Adding filter %s...", $title));
+					//$this->opml_notice(json_encode($filter));
 
 					foreach ($filter["rules"] as $rule) {
 						$feed_id = null;
@@ -420,7 +421,17 @@ class OPML extends Handler_Protected {
 									array_push($match_on, ($is_cat ? "CAT:" : "") . $name);
 								} else {
 
-									if (!$is_cat) {
+									$match_id = Feeds::_find_by_title($name, $is_cat, $_SESSION['uid']);
+
+									if ($match_id) {
+										if ($is_cat) {
+											array_push($match_on, "CAT:$match_id");
+										} else {
+											array_push($match_on, $match_id);
+										}
+									}
+
+									/*if (!$is_cat) {
 										$tsth = $this->pdo->prepare("SELECT id FROM ttrss_feeds
 											WHERE title = ? AND owner_uid = ?");
 
@@ -441,7 +452,7 @@ class OPML extends Handler_Protected {
 
 											array_push($match_on, "CAT:$match_id");
 										}
-									}
+									} */
 								}
 							}
 
@@ -458,7 +469,17 @@ class OPML extends Handler_Protected {
 
 						} else {
 
-							if (!$rule["cat_filter"]) {
+							$match_id = Feeds::_find_by_title($rule['feed'], $rule['cat_filter'], $_SESSION['uid']);
+
+							if ($match_id) {
+								if ($rule['cat_filter']) {
+									$cat_id = $match_id;
+								} else {
+									$feed_id = $match_id;
+								}
+							}
+
+							/*if (!$rule["cat_filter"]) {
 								$tsth = $this->pdo->prepare("SELECT id FROM ttrss_feeds
 									WHERE title = ? AND owner_uid = ?");
 
@@ -476,7 +497,7 @@ class OPML extends Handler_Protected {
 								if ($row = $tsth->fetch()) {
 									$feed_id = $row['id'];
 								}
-							}
+							} */
 
 							$cat_filter = bool_to_sql_bool($rule["cat_filter"]);
 							$reg_exp = $rule["reg_exp"];
@@ -546,12 +567,12 @@ class OPML extends Handler_Protected {
 		foreach ($outlines as $node) {
 			if ($node->hasAttributes() && strtolower($node->tagName) == "outline") {
 				$attrs = $node->attributes;
-				$node_cat_title = $attrs->getNamedItem('text')->nodeValue;
+				$node_cat_title = $attrs->getNamedItem('text') ? $attrs->getNamedItem('text')->nodeValue : false;
 
 				if (!$node_cat_title)
-					$node_cat_title = $attrs->getNamedItem('title')->nodeValue;
+					$node_cat_title = $attrs->getNamedItem('title') ? $attrs->getNamedItem('title')->nodeValue : false;
 
-				$node_feed_url = $attrs->getNamedItem('xmlUrl')->nodeValue;
+				$node_feed_url = $attrs->getNamedItem('xmlUrl') ? $attrs->getNamedItem('xmlUrl')->nodeValue : false;
 
 				if ($node_cat_title && !$node_feed_url) {
 					$this->opml_import_category($doc, $node, $owner_uid, $cat_id);
@@ -611,9 +632,16 @@ class OPML extends Handler_Protected {
 
 		if (is_file($tmp_file)) {
 			$doc = new DOMDocument();
-			libxml_disable_entity_loader(false);
+
+			if (version_compare(PHP_VERSION, '8.0.0', '<')) {
+				libxml_disable_entity_loader(false);
+			}
+
 			$loaded = $doc->load($tmp_file);
-			libxml_disable_entity_loader(true);
+
+			if (version_compare(PHP_VERSION, '8.0.0', '<')) {
+				libxml_disable_entity_loader(true);
+			}
 			unlink($tmp_file);
 		} else if (empty($doc)) {
 			print_error(__('Error: unable to find moved OPML file.'));
@@ -621,9 +649,10 @@ class OPML extends Handler_Protected {
 		}
 
 		if ($loaded) {
-			$this->pdo->beginTransaction();
+			// we're using ORM while importing so we can't transaction-lock things anymore
+			//$this->pdo->beginTransaction();
 			$this->opml_import_category($doc, false, $owner_uid, false);
-			$this->pdo->commit();
+			//$this->pdo->commit();
 		} else {
 			print_error(__('Error while parsing document.'));
 		}

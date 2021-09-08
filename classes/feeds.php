@@ -1105,6 +1105,30 @@ class Feeds extends Handler_Protected {
 		}
 	}
 
+	/** $owner_uid defaults to $_SESSION['uid] */
+	static function _find_by_title(string $title, bool $cat = false, int $owner_uid = 0) {
+
+		$res = false;
+
+		if ($cat) {
+			$res = ORM::for_table('ttrss_feed_categories')
+				->where('owner_uid', $owner_uid ? $owner_uid : $_SESSION['uid'])
+				->where('title', $title)
+				->find_one();
+		} else {
+			$res = ORM::for_table('ttrss_feeds')
+				->where('owner_uid', $owner_uid ? $owner_uid : $_SESSION['uid'])
+				->where('title', $title)
+				->find_one();
+		}
+
+		if ($res) {
+			return $res->id;
+		} else {
+			return false;
+		}
+	}
+
 	static function _get_title($id, bool $cat = false) {
 	    $pdo = Db::pdo();
 

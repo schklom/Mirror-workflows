@@ -8,7 +8,7 @@ function format_backtrace($trace) {
 			if (isset($e["file"]) && isset($e["line"])) {
 				$fmt_args = [];
 
-				if (is_array($e["args"])) {
+				if (is_array($e["args"] ?? false)) {
 					foreach ($e["args"] as $a) {
 						if (is_object($a)) {
 							array_push($fmt_args, "{" . get_class($a) . "}");

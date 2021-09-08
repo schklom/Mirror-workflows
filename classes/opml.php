@@ -204,36 +204,36 @@ class OPML extends Handler_Protected {
 					$cat_filter = $tmp_line["cat_filter"];
 
 					if (!$tmp_line["match_on"]) {
-                        if ($cat_filter && $tmp_line["cat_id"] || $tmp_line["feed_id"]) {
-                            $tmp_line["feed"] = Feeds::_get_title(
-                                $cat_filter ? $tmp_line["cat_id"] : $tmp_line["feed_id"],
-                                $cat_filter);
-                        } else {
-                            $tmp_line["feed"] = "";
-                        }
-                    } else {
-					    $match = [];
-					    foreach (json_decode($tmp_line["match_on"], true) as $feed_id) {
+						if ($cat_filter && $tmp_line["cat_id"] || $tmp_line["feed_id"]) {
+							$tmp_line["feed"] = Feeds::_get_title(
+								$cat_filter ? $tmp_line["cat_id"] : $tmp_line["feed_id"],
+								$cat_filter);
+						} else {
+							$tmp_line["feed"] = "";
+						}
+					} else {
+						$match = [];
+						foreach (json_decode($tmp_line["match_on"], true) as $feed_id) {
 
-                            if (strpos($feed_id, "CAT:") === 0) {
-                                $feed_id = (int)substr($feed_id, 4);
-                                if ($feed_id) {
-                                    array_push($match, [Feeds::_get_cat_title($feed_id), true, false]);
-                                } else {
-                                    array_push($match, [0, true, true]);
-                                }
-                            } else {
-                                if ($feed_id) {
-                                    array_push($match, [Feeds::_get_title((int)$feed_id), false, false]);
-                                } else {
-                                    array_push($match, [0, false, true]);
-                                }
-                            }
-                        }
+							if (strpos($feed_id, "CAT:") === 0) {
+								$feed_id = (int)substr($feed_id, 4);
+								if ($feed_id) {
+									array_push($match, [Feeds::_get_cat_title($feed_id), true, false]);
+								} else {
+									array_push($match, [0, true, true]);
+								}
+							} else {
+								if ($feed_id) {
+									array_push($match, [Feeds::_get_title((int)$feed_id), false, false]);
+								} else {
+									array_push($match, [0, false, true]);
+								}
+							}
+						}
 
-                        $tmp_line["match"] = $match;
-					    unset($tmp_line["match_on"]);
-                    }
+						$tmp_line["match"] = $match;
+						unset($tmp_line["match_on"]);
+					}
 
 					unset($tmp_line["feed_id"]);
 					unset($tmp_line["cat_id"]);
@@ -409,31 +409,31 @@ class OPML extends Handler_Protected {
 						$feed_id = null;
 						$cat_id = null;
 
-						if ($rule["match"]) {
+						if ($rule["match"] ?? false) {
 
-                            $match_on = [];
+							$match_on = [];
 
-						    foreach ($rule["match"] as $match) {
-						        list ($name, $is_cat, $is_id) = $match;
+							foreach ($rule["match"] as $match) {
+								list ($name, $is_cat, $is_id) = $match;
 
-						        if ($is_id) {
-						            array_push($match_on, ($is_cat ? "CAT:" : "") . $name);
-                                } else {
+								if ($is_id) {
+									array_push($match_on, ($is_cat ? "CAT:" : "") . $name);
+								} else {
 
-                                    if (!$is_cat) {
-                                        $tsth = $this->pdo->prepare("SELECT id FROM ttrss_feeds
-                                    		WHERE title = ? AND owner_uid = ?");
+									if (!$is_cat) {
+										$tsth = $this->pdo->prepare("SELECT id FROM ttrss_feeds
+											WHERE title = ? AND owner_uid = ?");
 
-                                        $tsth->execute([$name, $_SESSION['uid']]);
+										$tsth->execute([$name, $_SESSION['uid']]);
 
-                                        if ($row = $tsth->fetch()) {
-                                            $match_id = $row['id'];
+										if ($row = $tsth->fetch()) {
+											$match_id = $row['id'];
 
 											array_push($match_on, $match_id);
-                                        }
-                                    } else {
-                                        $tsth = $this->pdo->prepare("SELECT id FROM ttrss_feed_categories
-                                    		WHERE title = ? AND owner_uid = ?");
+										}
+									} else {
+										$tsth = $this->pdo->prepare("SELECT id FROM ttrss_feed_categories
+											WHERE title = ? AND owner_uid = ?");
 										$tsth->execute([$name, $_SESSION['uid']]);
 
 										if ($row = $tsth->fetch()) {
@@ -441,54 +441,54 @@ class OPML extends Handler_Protected {
 
 											array_push($match_on, "CAT:$match_id");
 										}
-                                    }
-                                }
-                            }
+									}
+								}
+							}
 
-                            $reg_exp = $rule["reg_exp"];
-                            $filter_type = (int)$rule["filter_type"];
-                            $inverse = bool_to_sql_bool($rule["inverse"]);
-                            $match_on = json_encode($match_on);
+							$reg_exp = $rule["reg_exp"];
+							$filter_type = (int)$rule["filter_type"];
+							$inverse = bool_to_sql_bool($rule["inverse"]);
+							$match_on = json_encode($match_on);
 
-                            $usth = $this->pdo->prepare("INSERT INTO ttrss_filters2_rules
+							$usth = $this->pdo->prepare("INSERT INTO ttrss_filters2_rules
 								(feed_id,cat_id,match_on,filter_id,filter_type,reg_exp,cat_filter,inverse)
-                                VALUES
-                                (NULL, NULL, ?, ?, ?, ?, false, ?)");
-                            $usth->execute([$match_on, $filter_id, $filter_type, $reg_exp, $inverse]);
+								VALUES
+								(NULL, NULL, ?, ?, ?, ?, false, ?)");
+							$usth->execute([$match_on, $filter_id, $filter_type, $reg_exp, $inverse]);
 
-                        } else {
+						} else {
 
-                            if (!$rule["cat_filter"]) {
-                                $tsth = $this->pdo->prepare("SELECT id FROM ttrss_feeds
-                                    WHERE title = ? AND owner_uid = ?");
-
-                                $tsth->execute([$rule['feed'], $_SESSION['uid']]);
-
-                                if ($row = $tsth->fetch()) {
-                                    $feed_id = $row['id'];
-                                }
-                            } else {
-								$tsth = $this->pdo->prepare("SELECT id FROM ttrss_feed_categories
-                                    WHERE title = ? AND owner_uid = ?");
+							if (!$rule["cat_filter"]) {
+								$tsth = $this->pdo->prepare("SELECT id FROM ttrss_feeds
+									WHERE title = ? AND owner_uid = ?");
 
 								$tsth->execute([$rule['feed'], $_SESSION['uid']]);
 
 								if ($row = $tsth->fetch()) {
 									$feed_id = $row['id'];
 								}
-                            }
+							} else {
+								$tsth = $this->pdo->prepare("SELECT id FROM ttrss_feed_categories
+									WHERE title = ? AND owner_uid = ?");
 
-                            $cat_filter = bool_to_sql_bool($rule["cat_filter"]);
-                            $reg_exp = $rule["reg_exp"];
-                            $filter_type = (int)$rule["filter_type"];
-                            $inverse = bool_to_sql_bool($rule["inverse"]);
+								$tsth->execute([$rule['feed'], $_SESSION['uid']]);
 
-                            $usth = $this->pdo->prepare("INSERT INTO ttrss_filters2_rules
+								if ($row = $tsth->fetch()) {
+									$feed_id = $row['id'];
+								}
+							}
+
+							$cat_filter = bool_to_sql_bool($rule["cat_filter"]);
+							$reg_exp = $rule["reg_exp"];
+							$filter_type = (int)$rule["filter_type"];
+							$inverse = bool_to_sql_bool($rule["inverse"]);
+
+							$usth = $this->pdo->prepare("INSERT INTO ttrss_filters2_rules
 								(feed_id,cat_id,filter_id,filter_type,reg_exp,cat_filter,inverse)
-                                VALUES
-                                (?, ?, ?, ?, ?, ?, ?)");
-                            $usth->execute([$feed_id, $cat_id, $filter_id, $filter_type, $reg_exp, $cat_filter, $inverse]);
-                        }
+								VALUES
+								(?, ?, ?, ?, ?, ?, ?)");
+							$usth->execute([$feed_id, $cat_id, $filter_id, $filter_type, $reg_exp, $cat_filter, $inverse]);
+						}
 					}
 
 					foreach ($filter["actions"] as $action) {

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-18 13:34+0300\n"
-"PO-Revision-Date: 2021-08-21 16:10+0000\n"
+"PO-Revision-Date: 2021-09-22 14:10+0000\n"
 "Last-Translator: TonyRL <tony_lao@outlook.com>\n"
 "Language-Team: Chinese (Traditional) <https://weblate.tt-rss.org/projects/"
 "tt-rss/messages/zh_Hant/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.8\n"
+"X-Generator: Weblate 4.8.1\n"
 
 #: backend.php:60
 msgid "Use default"
@@ -474,7 +474,7 @@ msgstr "標記所有摘要為已讀"
 
 #: classes/rpc.php:617
 msgid "Un/collapse current category"
-msgstr "展開/折疊當前分類"
+msgstr "展開／折疊當前類別"
 
 #: classes/rpc.php:618
 msgid "Toggle auto expand in combined mode"
@@ -686,7 +686,7 @@ msgstr "合併模式"
 
 #: classes/pref/prefs.php:95
 msgid "Show flat list of articles instead of separate panels"
-msgstr "將文章列表展開顯示，而不是將標題和內容分別顯示"
+msgstr "將文章清單展開顯示，而不是將標題和內容分別顯示"
 
 #: classes/pref/prefs.php:96
 msgid "Confirm marking feeds as read"
@@ -722,7 +722,7 @@ msgstr "啟用 API"
 
 #: classes/pref/prefs.php:101
 msgid "Allows accessing this account through the API"
-msgstr "允許第三方程式透過 API 來存取這個帳號"
+msgstr "允許第三方應用程式透過 API 來存取這個帳號"
 
 #: classes/pref/prefs.php:102
 msgid "Enable categories"
@@ -927,7 +927,7 @@ msgstr "啟用 OTP 動態密碼"
 
 #: classes/pref/prefs.php:521
 msgid "Personal data"
-msgstr "個人資訊"
+msgstr "個人資料"
 
 #: classes/pref/prefs.php:524
 msgid "Password"
@@ -1159,7 +1159,7 @@ msgstr "發送測試郵件"
 
 #: classes/pref/system.php:210
 msgid "PHP Information"
-msgstr "PHP訊息"
+msgstr "PHP 資訊"
 
 #: classes/pref/filters.php:197 classes/pref/filters.php:208
 #: classes/pref/filters.php:426 classes/pref/filters.php:847
@@ -1817,7 +1817,7 @@ msgstr "為不宜在工作時瀏覽的帖文套用標籤（以逗號分隔）：
 
 #: plugins/af_redditimgur/init.php:72
 msgid "Extract missing content using Readability (requires af_readability)"
-msgstr "使用 Readability 擷取缺少的內容(需要 af_readability)"
+msgstr "使用 Readability 擷取缺少的內容（需要 af_readability）"
 
 #: plugins/af_redditimgur/init.php:79
 msgid "Enable additional duplicate checking"
@@ -2324,7 +2324,7 @@ msgstr "自訂樣式"
 msgid ""
 "You can override colors, fonts and layout of your currently selected theme "
 "with custom CSS declarations here."
-msgstr "您可以透過自訂 CSS 來更改目前主題的顏色，字體和版面。"
+msgstr "您可以透過自訂 CSS 來更改目前主題的顏色，字體和版面配置。"
 
 #: js/PrefHelpers.js:289
 msgid ""

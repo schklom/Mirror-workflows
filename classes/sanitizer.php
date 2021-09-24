@@ -68,7 +68,7 @@ class Sanitizer {
 		// $rewrite_base_url = $site_url ? $site_url : Config::get_self_url();
 		$rewrite_base_url = $site_url ? $site_url : "http://domain.invalid/";
 
-		$entries = $xpath->query('(//a[@href]|//img[@src]|//source[@srcset|@src])');
+		$entries = $xpath->query('(//a[@href]|//img[@src]|//source[@srcset|@src]|//video[@poster])');
 
 		foreach ($entries as $entry) {
 
@@ -98,6 +98,11 @@ class Sanitizer {
 				}
 
 				$entry->setAttribute("srcset", RSSUtils::encode_srcset($matches));
+			}
+
+			if ($entry->hasAttribute('poster')) {
+				$entry->setAttribute('poster',
+					UrlHelper::rewrite_relative($rewrite_base_url, $entry->getAttribute('poster'), $entry->tagName, "poster"));
 			}
 
 			if ($entry->hasAttribute('src') &&

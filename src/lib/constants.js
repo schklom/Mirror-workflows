@@ -28,6 +28,7 @@ let constants = {
 	tor: {
 		enabled: true, // If false, everything else in this block has no effect.
 		password: null, // If `null`, Bibliogram will run its own Tor process instead.
+		port: 9051, // If a password is provided, Bibliogram will connect to Tor on this port. (This is ignored when running its own Tor process.)
 		for: {
 			user_html: true,
 			timeline_graphql: false,

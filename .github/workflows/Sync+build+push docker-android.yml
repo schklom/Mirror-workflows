@@ -1,4 +1,4 @@
-name: Sync+build+push Rotki
+name: Sync+build+push docker-android
 
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
@@ -57,7 +57,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       #- uses: actions/checkout@v2.3.4
         #with:
-          #ref: 'Rotki'
+          #ref: 'docker-android'
       #- name: app dockerfile
       #  run: sed -r 's/^FROM ([a-zA-Z]+)(.*)$/FROM arm32v7\/\1\2/' src/app/Dockerfile > src/app/Dockerfile
       #- name: adapt web dockerfile

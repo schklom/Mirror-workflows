@@ -514,7 +514,7 @@ const Headlines = {
 								${hl.cdm_excerpt ? hl.cdm_excerpt : ""}
 							</span>
 
-							<div class="feed">
+							<div class="feed" data-feed-id="${hl.feed_id}">
 								<a href="#" style="background-color: ${hl.feed_bg_color}"
 									onclick="Feeds.open({feed:${hl.feed_id}})">${hl.feed_title}</a>
 							</div>
@@ -1497,6 +1497,48 @@ const Headlines = {
 			});
 
 			this.headlinesMenuCommon(menu);
+
+			menu.startup();
+		}
+
+		/* vfeed menu */
+
+		if (!dijit.byId("vfeedMenu")) {
+
+			const menu = new dijit.Menu({
+				id: "vfeedMenu",
+				targetNodeIds: ["headlines-frame"],
+				selector: ".header .feed"
+			});
+
+			menu.addChild(new dijit.MenuItem({
+				label: __("Mark as read"),
+				onClick: function() {
+					Feeds.catchupFeed(this.getParent().currentTarget.getAttribute("data-feed-id"));
+				}}));
+
+			menu.addChild(new dijit.MenuItem({
+				label: __("Edit feed"),
+				onClick: function() {
+					CommonDialogs.editFeed(this.getParent().currentTarget.getAttribute("data-feed-id"), false);
+				}}));
+
+			menu.addChild(new dijit.MenuItem({
+				label: __("Open site"),
+				onClick: function() {
+					App.postOpenWindow("backend.php", {op: "feeds", method: "opensite",
+						feed_id: this.getParent().currentTarget.getAttribute("data-feed-id"), csrf_token: __csrf_token});
+				}}));
+
+			menu.addChild(new dijit.MenuSeparator());
+
+			menu.addChild(new dijit.MenuItem({
+				label: __("Debug feed"),
+				onClick: function() {
+					/* global __csrf_token */
+					App.postOpenWindow("backend.php", {op: "feeds", method: "updatedebugger",
+						feed_id: this.getParent().currentTarget.getAttribute("data-feed-id"), csrf_token: __csrf_token});
+				}}));
 
 			menu.startup();
 		}

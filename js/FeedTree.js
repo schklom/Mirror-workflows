@@ -102,6 +102,15 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 						}}));
 
 					menu.addChild(new dijit.MenuItem({
+						label: __("Open site"),
+						onClick: function() {
+							App.postOpenWindow("backend.php", {op: "feeds", method: "opensite",
+								feed_id: this.getParent().row_id, csrf_token: __csrf_token});
+						}}));
+
+					menu.addChild(new dijit.MenuSeparator());
+
+					menu.addChild(new dijit.MenuItem({
 						label: __("Debug feed"),
 						onClick: function() {
 							/* global __csrf_token */

@@ -587,6 +587,23 @@ class Feeds extends Handler_Protected {
 		]);
 	}
 
+	function opensite() {
+		$feed = ORM::for_table('ttrss_feeds')
+			->find_one((int)$_REQUEST['feed_id']);
+
+		if ($feed) {
+			$site_url = UrlHelper::validate($feed->site_url);
+
+			if ($site_url) {
+				header("Location: $site_url");
+				return;
+			}
+		}
+
+		header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+		print "Feed not found or has an empty site URL.";
+	}
+
 	function updatedebugger() {
 		header("Content-type: text/html");
 

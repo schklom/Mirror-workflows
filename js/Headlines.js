@@ -514,7 +514,7 @@ const Headlines = {
 								${hl.cdm_excerpt ? hl.cdm_excerpt : ""}
 							</span>
 
-							<div class="feed" data-feed-id="${hl.feed_id}">
+							<div class="feed vfeedMenuAttach" data-feed-id="${hl.feed_id}">
 								<a href="#" style="background-color: ${hl.feed_bg_color}"
 									onclick="Feeds.open({feed:${hl.feed_id}})">${hl.feed_title}</a>
 							</div>
@@ -584,9 +584,9 @@ const Headlines = {
 					${Article.renderLabels(hl.id, hl.labels)}
 				</span>
 			</div>
-					<span class="feed">
-					<a style="background : ${hl.feed_bg_color}" href="#" onclick="Feeds.open({feed:${hl.feed_id}})">${hl.feed_title}</a>
-					</span>
+			<span class="feed vfeedMenuAttach" data-feed-id="${hl.feed_id}">
+				<a style="background : ${hl.feed_bg_color}" href="#" onclick="Feeds.open({feed:${hl.feed_id}})">${hl.feed_title}</a>
+			</span>
 			<div title="${hl.imported}">
 				<span class="updated">${hl.updated}</span>
 			</div>
@@ -1508,7 +1508,7 @@ const Headlines = {
 			const menu = new dijit.Menu({
 				id: "vfeedMenu",
 				targetNodeIds: ["headlines-frame"],
-				selector: ".header .feed"
+				selector: ".vfeedMenuAttach"
 			});
 
 			menu.addChild(new dijit.MenuItem({

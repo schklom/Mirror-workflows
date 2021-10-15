@@ -48,9 +48,7 @@ class OPML extends Handler_Protected {
 
 	// Export
 
-	private function opml_export_category($owner_uid, $cat_id, $hide_private_feeds = false, $include_settings = true) {
-
-		$cat_id = (int) $cat_id;
+	private function opml_export_category(int $owner_uid, int $cat_id, bool $hide_private_feeds = false, bool $include_settings = true) {
 
 		if ($hide_private_feeds)
 			$hide_qpart = "(private IS false AND auth_login = '' AND auth_pass = '')";
@@ -126,7 +124,7 @@ class OPML extends Handler_Protected {
 		return $out;
 	}
 
-	function opml_export($filename, $owner_uid, $hide_private_feeds = false, $include_settings = true, $file_output = false) {
+	function opml_export(string $filename, int $owner_uid, bool $hide_private_feeds = false, bool $include_settings = true, bool $file_output = false) {
 		if (!$owner_uid) return;
 
 		if (!$file_output)
@@ -298,7 +296,7 @@ class OPML extends Handler_Protected {
 
 	// Import
 
-	private function opml_import_feed($node, $cat_id, $owner_uid) {
+	private function opml_import_feed(DOMNode $node, int $cat_id, int $owner_uid, int $nest) {
 		$attrs = $node->attributes;
 
 		$feed_title = mb_substr($attrs->getNamedItem('text')->nodeValue, 0, 250);
@@ -318,7 +316,7 @@ class OPML extends Handler_Protected {
 
 			if (!$sth->fetch()) {
 				#$this->opml_notice("[FEED] [$feed_title/$feed_url] dst_CAT=$cat_id");
-				$this->opml_notice(T_sprintf("Adding feed: %s", $feed_title == '[Unknown]' ? $feed_url : $feed_title));
+				$this->opml_notice(T_sprintf("Adding feed: %s", $feed_title == '[Unknown]' ? $feed_url : $feed_title), $nest);
 
 				if (!$cat_id) $cat_id = null;
 
@@ -338,12 +336,12 @@ class OPML extends Handler_Protected {
 				$sth->execute([$feed_title, $feed_url, $owner_uid, $cat_id, $site_url, $order_id, $update_interval, $purge_interval]);
 
 			} else {
-				$this->opml_notice(T_sprintf("Duplicate feed: %s", $feed_title == '[Unknown]' ? $feed_url : $feed_title));
+				$this->opml_notice(T_sprintf("Duplicate feed: %s", $feed_title == '[Unknown]' ? $feed_url : $feed_title), $nest);
 			}
 		}
 	}
 
-	private function opml_import_label($node, $owner_uid) {
+	private function opml_import_label(DOMNode $node, int $owner_uid, int $nest) {
 		$attrs = $node->attributes;
 		$label_name = $attrs->getNamedItem('label-name')->nodeValue;
 
@@ -351,16 +349,16 @@ class OPML extends Handler_Protected {
 			$fg_color = $attrs->getNamedItem('label-fg-color')->nodeValue;
 			$bg_color = $attrs->getNamedItem('label-bg-color')->nodeValue;
 
-			if (!Labels::find_id($label_name, $_SESSION['uid'])) {
-				$this->opml_notice(T_sprintf("Adding label %s", htmlspecialchars($label_name)));
+			if (!Labels::find_id($label_name, $owner_uid)) {
+				$this->opml_notice(T_sprintf("Adding label %s", htmlspecialchars($label_name)), $nest);
 				Labels::create($label_name, $fg_color, $bg_color, $owner_uid);
 			} else {
-				$this->opml_notice(T_sprintf("Duplicate label: %s", htmlspecialchars($label_name)));
+				$this->opml_notice(T_sprintf("Duplicate label: %s", htmlspecialchars($label_name)), $nest);
 			}
 		}
 	}
 
-	private function opml_import_preference($node) {
+	private function opml_import_preference(DOMNode $node, int $owner_uid, int $nest) {
 		$attrs = $node->attributes;
 		$pref_name = $attrs->getNamedItem('pref-name')->nodeValue;
 
@@ -368,13 +366,13 @@ class OPML extends Handler_Protected {
 			$pref_value = $attrs->getNamedItem('value')->nodeValue;
 
 			$this->opml_notice(T_sprintf("Setting preference key %s to %s",
-				$pref_name, $pref_value));
+				$pref_name, $pref_value), $nest);
 
-			set_pref($pref_name, $pref_value);
+			set_pref($pref_name, $pref_value, $owner_uid);
 		}
 	}
 
-	private function opml_import_filter($node) {
+	private function opml_import_filter(DOMNode $node, int $owner_uid, int $nest) {
 		$attrs = $node->attributes;
 
 		$filter_type = $attrs->getNamedItem('filter-type')->nodeValue;
@@ -393,17 +391,17 @@ class OPML extends Handler_Protected {
 				$sth = $this->pdo->prepare("INSERT INTO ttrss_filters2 (match_any_rule,enabled,inverse,title,owner_uid)
 					VALUES (?, ?, ?, ?, ?)");
 
-				$sth->execute([$match_any_rule, $enabled, $inverse, $title, $_SESSION['uid']]);
+				$sth->execute([$match_any_rule, $enabled, $inverse, $title, $owner_uid]);
 
 				$sth = $this->pdo->prepare("SELECT MAX(id) AS id FROM ttrss_filters2 WHERE
 					owner_uid = ?");
-				$sth->execute([$_SESSION['uid']]);
+				$sth->execute([$owner_uid]);
 
 				$row = $sth->fetch();
 				$filter_id = $row['id'];
 
 				if ($filter_id) {
-					$this->opml_notice(T_sprintf("Adding filter %s...", $title));
+					$this->opml_notice(T_sprintf("Adding filter %s...", $title), $nest);
 					//$this->opml_notice(json_encode($filter));
 
 					foreach ($filter["rules"] as $rule) {
@@ -421,7 +419,7 @@ class OPML extends Handler_Protected {
 									array_push($match_on, ($is_cat ? "CAT:" : "") . $name);
 								} else {
 
-									$match_id = Feeds::_find_by_title($name, $is_cat, $_SESSION['uid']);
+									$match_id = Feeds::_find_by_title($name, $is_cat, $owner_uid);
 
 									if ($match_id) {
 										if ($is_cat) {
@@ -469,7 +467,7 @@ class OPML extends Handler_Protected {
 
 						} else {
 
-							$match_id = Feeds::_find_by_title($rule['feed'], $rule['cat_filter'], $_SESSION['uid']);
+							$match_id = Feeds::_find_by_title($rule['feed'] ?? "", $rule['cat_filter'], $owner_uid);
 
 							if ($match_id) {
 								if ($rule['cat_filter']) {
@@ -528,8 +526,8 @@ class OPML extends Handler_Protected {
 		}
 	}
 
-	private function opml_import_category($doc, $root_node, $owner_uid, $parent_id) {
-		$default_cat_id = (int) $this->get_feed_category('Imported feeds', false);
+	private function opml_import_category(DOMDocument $doc, ?DOMNode $root_node, int $owner_uid, int $parent_id, int $nest) {
+		$default_cat_id = (int) $this->get_feed_category('Imported feeds', $owner_uid, 0);
 
 		if ($root_node) {
 			$cat_title = mb_substr($root_node->attributes->getNamedItem('text')->nodeValue, 0, 250);
@@ -538,13 +536,13 @@ class OPML extends Handler_Protected {
 				$cat_title = mb_substr($root_node->attributes->getNamedItem('title')->nodeValue, 0, 250);
 
 			if (!in_array($cat_title, array("tt-rss-filters", "tt-rss-labels", "tt-rss-prefs"))) {
-				$cat_id = $this->get_feed_category($cat_title, $parent_id);
+				$cat_id = $this->get_feed_category($cat_title, $owner_uid, $parent_id);
 
-				if ($cat_id === false) {
+				if ($cat_id === 0) {
 					$order_id = (int) $root_node->attributes->getNamedItem('ttrssSortOrder')->nodeValue;
 
-					Feeds::_add_cat($cat_title, $_SESSION['uid'], $parent_id ? $parent_id : null, (int)$order_id);
-					$cat_id = $this->get_feed_category($cat_title, $parent_id);
+					Feeds::_add_cat($cat_title, $owner_uid, $parent_id ? $parent_id : null, (int)$order_id);
+					$cat_id = $this->get_feed_category($cat_title, $owner_uid, $parent_id);
 				}
 
 			} else {
@@ -561,8 +559,8 @@ class OPML extends Handler_Protected {
 			$cat_title = false;
 		}
 
-		#$this->opml_notice("[CAT] $cat_title id: $cat_id P_id: $parent_id");
-		$this->opml_notice(T_sprintf("Processing category: %s", $cat_title ? $cat_title : __("Uncategorized")));
+		//$this->opml_notice("[CAT] $cat_title id: $cat_id P_id: $parent_id");
+		$this->opml_notice(T_sprintf("Processing category: %s", $cat_title ? $cat_title : __("Uncategorized")), $nest);
 
 		foreach ($outlines as $node) {
 			if ($node->hasAttributes() && strtolower($node->tagName) == "outline") {
@@ -575,7 +573,7 @@ class OPML extends Handler_Protected {
 				$node_feed_url = $attrs->getNamedItem('xmlUrl') ? $attrs->getNamedItem('xmlUrl')->nodeValue : false;
 
 				if ($node_cat_title && !$node_feed_url) {
-					$this->opml_import_category($doc, $node, $owner_uid, $cat_id);
+					$this->opml_import_category($doc, $node, $owner_uid, $cat_id, $nest+1);
 				} else {
 
 					if (!$cat_id) {
@@ -586,99 +584,112 @@ class OPML extends Handler_Protected {
 
 					switch ($cat_title) {
 					case "tt-rss-prefs":
-						$this->opml_import_preference($node);
+						$this->opml_import_preference($node, $owner_uid, $nest+1);
 						break;
 					case "tt-rss-labels":
-						$this->opml_import_label($node, $owner_uid);
+						$this->opml_import_label($node, $owner_uid, $nest+1);
 						break;
 					case "tt-rss-filters":
-						$this->opml_import_filter($node);
+						$this->opml_import_filter($node, $owner_uid, $nest+1);
 						break;
 					default:
-						$this->opml_import_feed($node, $dst_cat_id, $owner_uid);
+						$this->opml_import_feed($node, $dst_cat_id, $owner_uid, $nest+1);
 					}
 				}
 			}
 		}
 	}
 
-	function opml_import($owner_uid) {
+	/** $filename is optional; assumes HTTP upload with $_FILES otherwise */
+	function opml_import(int $owner_uid, string $filename = "") {
 		if (!$owner_uid) return;
 
 		$doc = false;
 
-		if ($_FILES['opml_file']['error'] != 0) {
-			print_error(T_sprintf("Upload failed with error code %d",
-				$_FILES['opml_file']['error']));
-			return;
-		}
+		if (!$filename) {
+			if ($_FILES['opml_file']['error'] != 0) {
+				print_error(T_sprintf("Upload failed with error code %d",
+					$_FILES['opml_file']['error']));
+				return false;
+			}
 
-		if (is_uploaded_file($_FILES['opml_file']['tmp_name'])) {
-			$tmp_file = (string)tempnam(Config::get(Config::CACHE_DIR) . '/upload', 'opml');
+			if (is_uploaded_file($_FILES['opml_file']['tmp_name'])) {
+				$tmp_file = (string)tempnam(Config::get(Config::CACHE_DIR) . '/upload', 'opml');
 
-			$result = move_uploaded_file($_FILES['opml_file']['tmp_name'],
-				$tmp_file);
+				$result = move_uploaded_file($_FILES['opml_file']['tmp_name'],
+					$tmp_file);
 
-			if (!$result) {
-				print_error(__("Unable to move uploaded file."));
-				return;
+				if (!$result) {
+					print_error(__("Unable to move uploaded file."));
+					return false;
+				}
+			} else {
+				print_error(__('Error: please upload OPML file.'));
+				return false;
 			}
 		} else {
-			print_error(__('Error: please upload OPML file.'));
-			return;
+			$tmp_file = $filename;
+		}
+
+		if (!is_readable($tmp_file)) {
+			$this->opml_notice(T_sprintf("Error: file is not readable: %s", $filename));
+			return false;
 		}
 
 		$loaded = false;
 
-		if (is_file($tmp_file)) {
-			$doc = new DOMDocument();
+		$doc = new DOMDocument();
 
-			if (version_compare(PHP_VERSION, '8.0.0', '<')) {
-				libxml_disable_entity_loader(false);
-			}
-
-			$loaded = $doc->load($tmp_file);
-
-			if (version_compare(PHP_VERSION, '8.0.0', '<')) {
-				libxml_disable_entity_loader(true);
-			}
-			unlink($tmp_file);
-		} else if (empty($doc)) {
-			print_error(__('Error: unable to find moved OPML file.'));
-			return;
+		if (version_compare(PHP_VERSION, '8.0.0', '<')) {
+			libxml_disable_entity_loader(false);
 		}
+
+		$loaded = $doc->load($tmp_file);
+
+		if (version_compare(PHP_VERSION, '8.0.0', '<')) {
+			libxml_disable_entity_loader(true);
+		}
+
+		// only remove temporary i.e. HTTP uploaded files
+		if (!$filename)
+			unlink($tmp_file);
 
 		if ($loaded) {
 			// we're using ORM while importing so we can't transaction-lock things anymore
 			//$this->pdo->beginTransaction();
-			$this->opml_import_category($doc, false, $owner_uid, false);
+			$this->opml_import_category($doc, null, $owner_uid, 0, 0);
 			//$this->pdo->commit();
 		} else {
-			print_error(__('Error while parsing document.'));
+			$this->opml_notice(__('Error while parsing document.'));
+			return false;
+		}
+
+		return true;
+	}
+
+	private function opml_notice(string $msg, int $prefix_length = 0) {
+		if (php_sapi_name() == "cli") {
+			Debug::log(str_repeat("   ", $prefix_length) . $msg);
+		} else {
+			// TODO: use better separator i.e. CSS-defined span of certain width or something
+			print str_repeat("&nbsp;&nbsp;&nbsp;", $prefix_length) . $msg . "<br/>";
 		}
 	}
 
-	private function opml_notice($msg) {
-		print "$msg<br/>";
-	}
-
-	function get_feed_category($feed_cat, $parent_cat_id = false) {
-
-		$parent_cat_id = (int) $parent_cat_id;
+	function get_feed_category(string $feed_cat, int $owner_uid, int $parent_cat_id) : int {
 
 		$sth = $this->pdo->prepare("SELECT id FROM ttrss_feed_categories
 			WHERE title = :title
 			AND (parent_cat = :parent OR (:parent = 0 AND parent_cat IS NULL))
 			AND owner_uid = :uid");
 
-		$sth->execute([':title' => $feed_cat, ':parent' => $parent_cat_id, ':uid' => $_SESSION['uid']]);
+		$sth->execute([':title' => $feed_cat, ':parent' => $parent_cat_id, ':uid' => $owner_uid]);
 
 		if ($row = $sth->fetch()) {
 			return $row['id'];
 		} else {
-			return false;
+			return 0;
 		}
 	}
-
 
 }

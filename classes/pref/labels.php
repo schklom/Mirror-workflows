@@ -160,7 +160,7 @@ class Pref_Labels extends Handler_Protected {
 
 	function add() {
 		$caption = clean($_REQUEST["caption"]);
-		$output = clean($_REQUEST["output"]);
+		$output = clean($_REQUEST["output"] ?? false);
 
 		if ($caption) {
 			if (Labels::create($caption)) {

@@ -3,6 +3,10 @@ abstract class Af_ComicFilter {
 	public abstract function supported();
 	public abstract function process(&$article);
 
+	public function __construct(/*PluginHost $host*/) {
+
+	}
+
 	public function on_subscribe($url) {
 		return false;
 	}

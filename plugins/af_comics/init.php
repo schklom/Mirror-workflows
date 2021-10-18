@@ -34,7 +34,7 @@ class Af_Comics extends Plugin {
 
 				array_push($names, $filter_name);
 
-				$filter = new $filter_name();
+				$filter = new $filter_name($host);
 
 				if (is_subclass_of($filter, "Af_ComicFilter")) {
 					array_push($this->filters, $filter);

@@ -48,7 +48,7 @@ jobs:
           echo "search for cgroups in subpaths matching =  !*/init.scope  !*-qemu  !*.libvirt-qemu  !/init.scope  !/system  !/systemd  !/user  /user*slice  !/lxc/*/*  !/lxc.monitor  !/lxc.payload/*/*  !/lxc.payload.*  *" >> system/netdata.conf
       - name: UPDATE NETWORKING FOR ROOTLESS DOCKER
         run: >-
-          sed -i "/        case ',':   \/\/ comma/a\        case '@':" netdata/collectors/cgroups.plugin/cgroup-network.c
+          sed -i "/        case ',':   \/\/ comma/a\        case '@':" collectors/cgroups.plugin/cgroup-network.c
       # https://github.com/marketplace/actions/git-auto-commit
       - name: pushing web Dockerfile changes to main branch
         uses: stefanzweifel/git-auto-commit-action@v4.12.0

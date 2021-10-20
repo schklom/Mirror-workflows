@@ -43,9 +43,9 @@ jobs:
       # https://github.com/netdata/netdata/issues/11069#issuecomment-947611170
       - name: ADD CGROUPS FOR ROOTLESS DOCKER
         run: |
-          echo "[plugin:cgroups]" >> netdata/system/netdata.conf
-          echo "enable by default cgroups matching =  !*/init.scope  !/system.slice/run-*.scope  /user.slice/*docker-* !/user.slice/* *.scope  /machine.slice/*.service  /kubepods/pod*/*  /kubepods/*/pod*/*  !/kubepods*" >> netdata/system/netdata.conf
-          echo "search for cgroups in subpaths matching =  !*/init.scope  !*-qemu  !*.libvirt-qemu  !/init.scope  !/system  !/systemd  !/user  /user*slice  !/lxc/*/*  !/lxc.monitor  !/lxc.payload/*/*  !/lxc.payload.*  *" >> netdata/system/netdata.conf
+          echo "[plugin:cgroups]" >> system/netdata.conf
+          echo "enable by default cgroups matching =  !*/init.scope  !/system.slice/run-*.scope  /user.slice/*docker-* !/user.slice/* *.scope  /machine.slice/*.service  /kubepods/pod*/*  /kubepods/*/pod*/*  !/kubepods*" >> system/netdata.conf
+          echo "search for cgroups in subpaths matching =  !*/init.scope  !*-qemu  !*.libvirt-qemu  !/init.scope  !/system  !/systemd  !/user  /user*slice  !/lxc/*/*  !/lxc.monitor  !/lxc.payload/*/*  !/lxc.payload.*  *" >> system/netdata.conf
       - name: UPDATE NETWORKING FOR ROOTLESS DOCKER
         run: >-
           sed -i "/        case ',':   \/\/ comma/a\        case '@':" netdata/collectors/cgroups.plugin/cgroup-network.c

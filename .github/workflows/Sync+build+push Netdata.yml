@@ -92,4 +92,4 @@ jobs:
           pull: true
           push: true
           tags: |
-            schklom/Netdata:latest
+            schklom/netdata:latest

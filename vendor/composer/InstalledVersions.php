@@ -30,7 +30,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'f96abd2b52b9de5eac3651594ca32c6a4023c3e3',
+    'reference' => '2a5c2be6cdd9ba9217a0661805b62aeec1de90c3',
     'dev-requirement' => true,
     'name' => '__root__',
   ),
@@ -43,7 +43,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'f96abd2b52b9de5eac3651594ca32c6a4023c3e3',
+      'reference' => '2a5c2be6cdd9ba9217a0661805b62aeec1de90c3',
       'dev-requirement' => false,
     ),
     'beberlei/assert' => 
@@ -105,6 +105,16 @@ private static $installed = array (
       ),
       'reference' => 'f34c2b11eb9d2c9318e13540a1dbc2a3afbd939c',
       'dev-requirement' => false,
+    ),
+    'phpstan/phpstan' => 
+    array (
+      'pretty_version' => '0.12.99',
+      'version' => '0.12.99.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'b4d40f1d759942f523be267a1bab6884f46ca3f7',
+      'dev-requirement' => true,
     ),
     'spomky-labs/otphp' => 
     array (

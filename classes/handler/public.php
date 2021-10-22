@@ -53,6 +53,10 @@ class Handler_Public extends Handler {
 
 			if ($handler) {
 				$qfh_ret = $handler->get_headlines(PluginHost::feed_to_pfeed_id((int)$feed), $params);
+			} else {
+				user_error("Failed to find handler for plugin feed ID: $feed", E_USER_ERROR);
+
+				return false;
 			}
 
 		} else {

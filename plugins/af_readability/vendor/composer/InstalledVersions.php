@@ -23,41 +23,41 @@ use Composer\Semver\VersionParser;
 class InstalledVersions
 {
     private static $installed = array (
-  'root' => 
+  'root' =>
   array (
     'pretty_version' => 'dev-master',
     'version' => 'dev-master',
-    'aliases' => 
+    'aliases' =>
     array (
     ),
     'reference' => 'a73e3bec45c5523910c711cf882976b71781ac9e',
     'name' => '__root__',
   ),
-  'versions' => 
+  'versions' =>
   array (
-    '__root__' => 
+    '__root__' =>
     array (
       'pretty_version' => 'dev-master',
       'version' => 'dev-master',
-      'aliases' => 
+      'aliases' =>
       array (
       ),
       'reference' => 'a73e3bec45c5523910c711cf882976b71781ac9e',
     ),
-    'fivefilters/readability.php' => 
+    'fivefilters/readability.php' =>
     array (
       'pretty_version' => 'v2.1.0',
       'version' => '2.1.0.0',
-      'aliases' => 
+      'aliases' =>
       array (
       ),
       'reference' => '7617a912b6c527909168f5d41d263792f171c42a',
     ),
-    'psr/log' => 
+    'psr/log' =>
     array (
       'pretty_version' => '1.1.4',
       'version' => '1.1.4.0',
-      'aliases' => 
+      'aliases' =>
       array (
       ),
       'reference' => 'd49695b909c3b7628b6289db5479a1c204601f11',
@@ -285,7 +285,6 @@ class InstalledVersions
         $installed = array();
 
         if (self::$canGetVendors) {
-            // @phpstan-ignore-next-line
             foreach (ClassLoader::getRegisteredLoaders() as $vendorDir => $loader) {
                 if (isset(self::$installedByVendor[$vendorDir])) {
                     $installed[] = self::$installedByVendor[$vendorDir];

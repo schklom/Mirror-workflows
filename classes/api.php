@@ -307,6 +307,7 @@ class API extends Handler {
 		$article_ids = explode(',', clean($_REQUEST['article_id'] ?? ''));
 		$sanitize_content = self::_param_to_bool($_REQUEST['sanitize'] ?? true);
 
+		// @phpstan-ignore-next-line
 		if (count($article_ids)) {
 			$entries = ORM::for_table('ttrss_entries')
 				->table_alias('e')
@@ -369,7 +370,6 @@ class API extends Handler {
 			}
 
 			$this->_wrap(self::STATUS_OK, $articles);
-		// @phpstan-ignore-next-line
 		} else {
 			$this->_wrap(self::STATUS_ERR, ['error' => self::E_INCORRECT_USAGE]);
 		}

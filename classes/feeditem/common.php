@@ -190,6 +190,7 @@ abstract class FeedItem_Common extends FeedItem {
 		}, $tmp);
 
 		// remove empty values
+		// @phpstan-ignore-next-line
 		$tmp = array_filter($tmp, 'strlen');
 
 		asort($tmp);

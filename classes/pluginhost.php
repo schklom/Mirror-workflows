@@ -23,56 +23,153 @@ class PluginHost {
 	// Hooks marked with *1 are run in global context and available
 	// to plugins loaded in config.php only
 
-	const HOOK_ARTICLE_BUTTON = "hook_article_button";											// hook_article_button($line)
-	const HOOK_ARTICLE_FILTER = "hook_article_filter";											// hook_article_filter($article)
-	const HOOK_PREFS_TAB = "hook_prefs_tab";														// hook_prefs_tab($tab)
-	const HOOK_PREFS_TAB_SECTION = "hook_prefs_tab_section";									// hook_prefs_tab_section($section)
-	const HOOK_PREFS_TABS = "hook_prefs_tabs";													// hook_prefs_tabs()
-	const HOOK_FEED_PARSED = "hook_feed_parsed";													// hook_feed_parsed($parser, $feed_id)
-	const HOOK_UPDATE_TASK = "hook_update_task"; //*1											// GLOBAL: hook_update_task($cli_options)
-	const HOOK_AUTH_USER = "hook_auth_user";														// hook_auth_user($login, $password, $service) (byref)
-	const HOOK_HOTKEY_MAP = "hook_hotkey_map";													// hook_hotkey_map($hotkeys) (byref)
-	const HOOK_RENDER_ARTICLE = "hook_render_article";											//	hook_render_article($article)
-	const HOOK_RENDER_ARTICLE_CDM = "hook_render_article_cdm";								// hook_render_article_cdm($article)
-	const HOOK_FEED_FETCHED = "hook_feed_fetched";												// hook_feed_fetched($feed_data, $fetch_url, $owner_uid, $feed) (byref)
-	const HOOK_SANITIZE = "hook_sanitize";															//	hook_sanitize($doc, $site_url, $allowed_elements, $disallowed_attributes, $article_id) (byref)
-	const HOOK_RENDER_ARTICLE_API = "hook_render_article_api";								// hook_render_article_api($params)
-	const HOOK_TOOLBAR_BUTTON = "hook_toolbar_button";											// hook_toolbar_button()
-	const HOOK_ACTION_ITEM = "hook_action_item";													// hook_action_item()
-	const HOOK_HEADLINE_TOOLBAR_BUTTON = "hook_headline_toolbar_button";					// hook_headline_toolbar_button($feed_id, $is_cat)
-	const HOOK_HOTKEY_INFO = "hook_hotkey_info";													// hook_hotkey_info($hotkeys) (byref)
-	const HOOK_ARTICLE_LEFT_BUTTON = "hook_article_left_button";							// hook_article_left_button($row)
-	const HOOK_PREFS_EDIT_FEED = "hook_prefs_edit_feed";										// hook_prefs_edit_feed($feed_id)
-	const HOOK_PREFS_SAVE_FEED = "hook_prefs_save_feed";										// hook_prefs_save_feed($feed_id)
-	const HOOK_FETCH_FEED = "hook_fetch_feed";													// hook_fetch_feed($feed_data, $fetch_url, $owner_uid, $feed, $last_article_timestamp, $auth_login, $auth_pass) (byref)
-	const HOOK_QUERY_HEADLINES = "hook_query_headlines";										// hook_query_headlines($row) (byref)
-	const HOOK_HOUSE_KEEPING = "hook_house_keeping"; //*1										// GLOBAL: hook_house_keeping()
-	const HOOK_SEARCH = "hook_search";																// hook_search($query)
-	const HOOK_FORMAT_ENCLOSURES = "hook_format_enclosures";									// hook__format_enclosures($rv, $result, $id, $always_display_enclosures, $article_content, $hide_images) (byref)
-	const HOOK_SUBSCRIBE_FEED = "hook_subscribe_feed";											// hook_subscribe_feed($contents, $url, $auth_login, $auth_pass) (byref)
-	const HOOK_HEADLINES_BEFORE = "hook_headlines_before";									// hook_headlines_before($feed, $is_cat, $qfh_ret)
-	const HOOK_RENDER_ENCLOSURE = "hook_render_enclosure";									// hook_render_enclosure($entry, $id, $rv)
-	const HOOK_ARTICLE_FILTER_ACTION = "hook_article_filter_action";						// hook_article_filter_action($article, $action)
-	const HOOK_ARTICLE_EXPORT_FEED = "hook_article_export_feed";							// hook_article_export_feed($line, $feed, $is_cat, $owner_uid) (byref)
-	const HOOK_MAIN_TOOLBAR_BUTTON = "hook_main_toolbar_button";							// hook_main_toolbar_button()
-	const HOOK_ENCLOSURE_ENTRY = "hook_enclosure_entry";										// hook_enclosure_entry($entry, $id, $rv) (byref)
-	const HOOK_FORMAT_ARTICLE = "hook_format_article";											// hook_format_article($html, $row)
-	const HOOK_FORMAT_ARTICLE_CDM = "hook_format_article_cdm"; /* RIP */
-	const HOOK_FEED_BASIC_INFO = "hook_feed_basic_info";										// hook_feed_basic_info($basic_info, $fetch_url, $owner_uid, $feed_id, $auth_login, $auth_pass) (byref)
-	const HOOK_SEND_LOCAL_FILE = "hook_send_local_file";										// hook_send_local_file($filename)
-	const HOOK_UNSUBSCRIBE_FEED = "hook_unsubscribe_feed";									// hook_unsubscribe_feed($feed_id, $owner_uid)
-	const HOOK_SEND_MAIL = "hook_send_mail";														// hook_send_mail(Mailer $mailer, $params)
-	const HOOK_FILTER_TRIGGERED = "hook_filter_triggered";									// hook_filter_triggered($feed_id, $owner_uid, $article, $matched_filters, $matched_rules, $article_filters)
-	const HOOK_GET_FULL_TEXT = "hook_get_full_text";											// hook_get_full_text($url)
-	const HOOK_ARTICLE_IMAGE = "hook_article_image";											// hook_article_image($enclosures, $content, $site_url)
-	const HOOK_FEED_TREE = "hook_feed_tree";														// hook_feed_tree()
-	const HOOK_IFRAME_WHITELISTED = "hook_iframe_whitelisted";								// hook_iframe_whitelisted($url)
-	const HOOK_ENCLOSURE_IMPORTED = "hook_enclosure_imported";								// hook_enclosure_imported($enclosure, $feed)
-	const HOOK_HEADLINES_CUSTOM_SORT_MAP = "hook_headlines_custom_sort_map";			// hook_headlines_custom_sort_map()
+	/** hook_article_button($line) */
+	const HOOK_ARTICLE_BUTTON = "hook_article_button";
+
+	/** hook_article_filter($article) */
+	const HOOK_ARTICLE_FILTER = "hook_article_filter";
+
+	/** hook_prefs_tab($tab) */
+	const HOOK_PREFS_TAB = "hook_prefs_tab";
+
+	/** hook_prefs_tab_section($section) */
+	const HOOK_PREFS_TAB_SECTION = "hook_prefs_tab_section";
+
+	/** hook_prefs_tabs() */
+	const HOOK_PREFS_TABS = "hook_prefs_tabs";
+
+	/** hook_feed_parsed($parser, $feed_id) */
+	const HOOK_FEED_PARSED = "hook_feed_parsed";
+
+	/** GLOBAL: hook_update_task($cli_options) */
+	const HOOK_UPDATE_TASK = "hook_update_task"; //*1
+
+	/** hook_auth_user($login, $password, $service) (byref) */
+	const HOOK_AUTH_USER = "hook_auth_user";
+
+	/** hook_hotkey_map($hotkeys) (byref) */
+	const HOOK_HOTKEY_MAP = "hook_hotkey_map";
+
+	/** hook_render_article($article) */
+	const HOOK_RENDER_ARTICLE = "hook_render_article";
+
+	/** hook_render_article_cdm($article) */
+	const HOOK_RENDER_ARTICLE_CDM = "hook_render_article_cdm";
+
+	/** hook_feed_fetched($feed_data, $fetch_url, $owner_uid, $feed) (byref) */
+	const HOOK_FEED_FETCHED = "hook_feed_fetched";
+
+	/** hook_sanitize($doc, $site_url, $allowed_elements, $disallowed_attributes, $article_id) (byref) */
+	const HOOK_SANITIZE = "hook_sanitize";
+
+	/** hook_render_article_api($params) */
+	const HOOK_RENDER_ARTICLE_API = "hook_render_article_api";
+
+	/** hook_toolbar_button() */
+	const HOOK_TOOLBAR_BUTTON = "hook_toolbar_button";
+
+	/** hook_action_item() */
+	const HOOK_ACTION_ITEM = "hook_action_item";
+
+	/** hook_headline_toolbar_button($feed_id, $is_cat) */
+	const HOOK_HEADLINE_TOOLBAR_BUTTON = "hook_headline_toolbar_button";
+
+	/** hook_hotkey_info($hotkeys) (byref) */
+	const HOOK_HOTKEY_INFO = "hook_hotkey_info";
+
+	/** hook_article_left_button($row) */
+	const HOOK_ARTICLE_LEFT_BUTTON = "hook_article_left_button";
+
+	/** hook_prefs_edit_feed($feed_id) */
+	const HOOK_PREFS_EDIT_FEED = "hook_prefs_edit_feed";
+
+	/** hook_prefs_save_feed($feed_id) */
+	const HOOK_PREFS_SAVE_FEED = "hook_prefs_save_feed";
+
+	/** hook_fetch_feed($feed_data, $fetch_url, $owner_uid, $feed, $last_article_timestamp, $auth_login, $auth_pass) (byref) */
+	const HOOK_FETCH_FEED = "hook_fetch_feed";
+
+	/** hook_query_headlines($row) (byref) */
+	const HOOK_QUERY_HEADLINES = "hook_query_headlines";
+
+	/** GLOBAL: hook_house_keeping() */
+	const HOOK_HOUSE_KEEPING = "hook_house_keeping"; //*1
+
+	/** hook_search($query) */
+	const HOOK_SEARCH = "hook_search";
+
+	/** hook_format_enclosures($rv, $result, $id, $always_display_enclosures, $article_content, $hide_images) (byref) */
+	const HOOK_FORMAT_ENCLOSURES = "hook_format_enclosures";
+
+	/** hook_subscribe_feed($contents, $url, $auth_login, $auth_pass) (byref) */
+	const HOOK_SUBSCRIBE_FEED = "hook_subscribe_feed";
+
+	/** hook_headlines_before($feed, $is_cat, $qfh_ret) */
+	const HOOK_HEADLINES_BEFORE = "hook_headlines_before";
+
+	/** hook_render_enclosure($entry, $id, $rv) */
+	const HOOK_RENDER_ENCLOSURE = "hook_render_enclosure";
+
+	/** hook_article_filter_action($article, $action) */
+	const HOOK_ARTICLE_FILTER_ACTION = "hook_article_filter_action";
+
+	/** hook_article_export_feed($line, $feed, $is_cat, $owner_uid) (byref) */
+	const HOOK_ARTICLE_EXPORT_FEED = "hook_article_export_feed";
+
+	/** hook_main_toolbar_button() */
+	const HOOK_MAIN_TOOLBAR_BUTTON = "hook_main_toolbar_button";
+
+	/** hook_enclosure_entry($entry, $id, $rv) (byref) */
+	const HOOK_ENCLOSURE_ENTRY = "hook_enclosure_entry";
+
+	/** hook_format_article($html, $row) */
+	const HOOK_FORMAT_ARTICLE = "hook_format_article";
+
+	/** @deprecated removed, do not use */
+	const HOOK_FORMAT_ARTICLE_CDM = "hook_format_article_cdm";
+
+	/** hook_feed_basic_info($basic_info, $fetch_url, $owner_uid, $feed_id, $auth_login, $auth_pass) (byref) */
+	const HOOK_FEED_BASIC_INFO = "hook_feed_basic_info";
+
+	/** hook_send_local_file($filename) */
+	const HOOK_SEND_LOCAL_FILE = "hook_send_local_file";
+
+	/** hook_unsubscribe_feed($feed_id, $owner_uid) */
+	const HOOK_UNSUBSCRIBE_FEED = "hook_unsubscribe_feed";
+
+	/** hook_send_mail(Mailer $mailer, $params) */
+	const HOOK_SEND_MAIL = "hook_send_mail";
+
+	/** hook_filter_triggered($feed_id, $owner_uid, $article, $matched_filters, $matched_rules, $article_filters) */
+	const HOOK_FILTER_TRIGGERED = "hook_filter_triggered";
+
+	/** hook_get_full_text($url) */
+	const HOOK_GET_FULL_TEXT = "hook_get_full_text";
+
+	/** hook_article_image($enclosures, $content, $site_url) */
+	const HOOK_ARTICLE_IMAGE = "hook_article_image";
+
+	/** hook_feed_tree() */
+	const HOOK_FEED_TREE = "hook_feed_tree";
+
+	/** hook_iframe_whitelisted($url) */
+	const HOOK_IFRAME_WHITELISTED = "hook_iframe_whitelisted";
+
+	/** hook_enclosure_imported($enclosure, $feed) */
+	const HOOK_ENCLOSURE_IMPORTED = "hook_enclosure_imported";
+
+	/** hook_headlines_custom_sort_map() */
+	const HOOK_HEADLINES_CUSTOM_SORT_MAP = "hook_headlines_custom_sort_map";
+
+	/** hook_headlines_custom_sort_override($order) */
 	const HOOK_HEADLINES_CUSTOM_SORT_OVERRIDE = "hook_headlines_custom_sort_override";
-																												// hook_headlines_custom_sort_override($order)
+
+	/** hook_headline_toolbar_select_menu_item($feed_id, $is_cat) */
 	const HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM = "hook_headline_toolbar_select_menu_item";
-																												// hook_headline_toolbar_select_menu_item($feed_id, $is_cat)
+
+
+	/** hook_pre_subscribe($url, $auth_login, $auth_pass) (byref) */
+	const HOOK_PRE_SUBSCRIBE = "hook_pre_subscribe";
 
 	const KIND_ALL = 1;
 	const KIND_SYSTEM = 2;
@@ -103,12 +200,12 @@ class PluginHost {
 		$this->plugins[$name] = $plugin;
 	}
 
-	// needed for compatibility with API 1
+	/** needed for compatibility with API 1 */
 	function get_link() {
 		return false;
 	}
 
-	// needed for compatibility with API 2 (?)
+	/** needed for compatibility with API 2 (?) */
 	function get_dbh() {
 		return false;
 	}

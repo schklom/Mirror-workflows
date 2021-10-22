@@ -1013,6 +1013,13 @@ class Feeds extends Handler_Protected {
 
 		if (!$url) return ["code" => 2];
 
+		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_PRE_SUBSCRIBE,
+			/** @phpstan-ignore-next-line */
+			function ($result) use (&$url, &$auth_login, &$auth_pass) {
+				// arguments are updated inside the hook (if needed)
+			},
+			$url, $auth_login, $auth_pass);
+
 		$contents = UrlHelper::fetch($url, false, $auth_login, $auth_pass);
 
 		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_SUBSCRIBE_FEED,

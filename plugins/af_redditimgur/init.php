@@ -468,6 +468,7 @@ class Af_RedditImgur extends Plugin {
 					if (@$cdoc->loadHTML($content)) {
 						$cxpath = new DOMXPath($cdoc);
 
+						/** @var ?DOMElement $rel_image */
 						$rel_image = $cxpath->query("//link[@rel='image_src']")->item(0);
 
 						if ($rel_image) {
@@ -514,7 +515,10 @@ class Af_RedditImgur extends Plugin {
 					if (@$cdoc->loadHTML($content)) {
 						$cxpath = new DOMXPath($cdoc);
 
+						/** @var ?DOMElement $og_image */
 						$og_image = $cxpath->query("//meta[@property='og:image']")->item(0);
+
+						/** @var ?DOMElement $og_video */
 						$og_video = $cxpath->query("//meta[@property='og:video']")->item(0);
 
 						if ($og_video) {
@@ -577,6 +581,7 @@ class Af_RedditImgur extends Plugin {
 			if (@$doc->loadHTML($article["content"])) {
 				$xpath = new DOMXPath($doc);
 
+				/** @var ?DOMElement $content_link */
 				$content_link = $xpath->query("(//a[contains(., '[link]')])")->item(0);
 
 				if ($this->host->get($this, "enable_content_dupcheck")) {

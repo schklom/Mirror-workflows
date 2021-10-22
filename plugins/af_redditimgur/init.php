@@ -28,11 +28,24 @@ class Af_RedditImgur extends Plugin {
 		$host->add_hook($host::HOOK_RENDER_ARTICLE, $this);
 		$host->add_hook($host::HOOK_RENDER_ARTICLE_CDM, $this);
 		$host->add_hook($host::HOOK_RENDER_ARTICLE_API, $this);
+
+		$host->add_hook($host::HOOK_PRE_SUBSCRIBE, $this);
+	}
+
+	function hook_pre_subscribe(&$url, $auth_login, $auth_pass) {
+		$reddit_to_teddit = $this->host->get($this, "reddit_to_teddit");
+
+		if ($reddit_to_teddit) {
+			$url = $this->rewrite_to_reddit($url);
+
+			return true;
+		}
+
+		return false;
 	}
 
 	function hook_prefs_tab($args) {
 		if ($args != "prefFeeds") return;
-
 			$enable_readability = $this->host->get($this, "enable_readability");
 			$enable_content_dupcheck = $this->host->get($this, "enable_content_dupcheck");
 			$reddit_to_teddit = $this->host->get($this, "reddit_to_teddit");
@@ -873,6 +886,18 @@ class Af_RedditImgur extends Plugin {
 
 		return $str;
 	}
+
+	private function rewrite_to_reddit($str) {
+		if (strpos($str, "teddit.net") !== false) {
+			$str = preg_replace("/https?:\/\/teddit.net/", "https://reddit.com", $str);
+
+			if (strpos($str, "/.rss") === false)
+				$str .= "/.rss";
+		}
+
+		return $str;
+	}
+
 
 	function hook_render_article_cdm($article) {
 		if ($this->host->get($this, "reddit_to_teddit")) {

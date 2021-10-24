@@ -43,6 +43,7 @@ body.ttrss_main .post .header {
 body.ttrss_main .post .header .left,
 body.ttrss_main .post .header .right {
   display: flex;
+  align-items: center;
 }
 body.ttrss_main .post .header .row {
   display: flex;
@@ -1302,8 +1303,19 @@ body.ttrss_utility hr {
 .cdm .footer i.material-icons {
   color: #999;
 }
+.cdm .footer .left,
+.cdm .footer .right {
+  display: flex;
+  align-items: center;
+}
 .cdm .footer .left {
   flex-grow: 2;
+}
+.cdm .footer .left > * {
+  margin-right: 4px;
+}
+.cdm .footer .right > * {
+  margin-left: 4px;
 }
 .cdm .content-inner {
   margin: 10px;

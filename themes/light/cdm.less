@@ -98,8 +98,23 @@
 			color : @color-icon;
 		}
 
+		.left, .right {
+			display : flex;
+			align-items : center;
+		}
+
 		.left {
 			flex-grow : 2;
+
+			> * {
+				margin-right : 4px;
+			}
+		}
+
+		.right {
+			> * {
+				margin-left : 4px;
+			}
 		}
 	}
 

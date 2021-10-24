@@ -230,17 +230,43 @@ class Feeds extends Handler_Protected {
 
 				$line["feed_title"] = $line["feed_title"] ?? "";
 
+				$button_doc = new DOMDocument();
+
 				$line["buttons_left"] = "";
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_ARTICLE_LEFT_BUTTON,
-					function ($result) use (&$line) {
-						$line["buttons_left"] .= $result;
+					function ($result, $plugin) use (&$line, &$button_doc) {
+						if ($button_doc->loadXML($result)) {
+
+							/** @var DOMElement|null */
+							$child = $button_doc->firstChild;
+
+							if ($child) {
+								do {
+									$child->setAttribute('data-plugin-name', get_class($plugin));
+								} while ($child = $child->nextSibling);
+
+								$line["buttons_left"] .= $button_doc->saveXML($button_doc->firstChild);
+							}
+						}
 					},
 					$line);
 
 				$line["buttons"] = "";
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_ARTICLE_BUTTON,
-					function ($result) use (&$line) {
-						$line["buttons"] .= $result;
+					function ($result, $plugin) use (&$line, &$button_doc) {
+						if ($button_doc->loadXML($result)) {
+
+							/** @var DOMElement|null */
+							$child = $button_doc->firstChild;
+
+							if ($child) {
+								do {
+									$child->setAttribute('data-plugin-name', get_class($plugin));
+								} while ($child = $child->nextSibling);
+
+								$line["buttons"] .= $button_doc->saveXML($button_doc->firstChild);
+							}
+						}
 					},
 					$line);
 

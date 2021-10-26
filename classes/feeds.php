@@ -235,7 +235,7 @@ class Feeds extends Handler_Protected {
 				$line["buttons_left"] = "";
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_ARTICLE_LEFT_BUTTON,
 					function ($result, $plugin) use (&$line, &$button_doc) {
-						if ($button_doc->loadXML($result)) {
+						if ($result && $button_doc->loadXML($result)) {
 
 							/** @var DOMElement|null */
 							$child = $button_doc->firstChild;
@@ -254,7 +254,7 @@ class Feeds extends Handler_Protected {
 				$line["buttons"] = "";
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_ARTICLE_BUTTON,
 					function ($result, $plugin) use (&$line, &$button_doc) {
-						if ($button_doc->loadXML($result)) {
+						if ($result && $button_doc->loadXML($result)) {
 
 							/** @var DOMElement|null */
 							$child = $button_doc->firstChild;

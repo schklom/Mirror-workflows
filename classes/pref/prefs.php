@@ -1325,7 +1325,7 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	function activateprofile() {
-		$id = (int) $_REQUEST['id'] ?? 0;
+		$id = (int) ($_REQUEST['id'] ?? 0);
 
 		$profile = ORM::for_table('ttrss_settings_profiles')
 			->where('owner_uid', $_SESSION['uid'])

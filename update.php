@@ -210,6 +210,7 @@
 	}
 
 	if (isset($options["daemon"])) {
+		// @phpstan-ignore-next-line
 		while (true) {
 			$quiet = (isset($options["quiet"])) ? "--quiet" : "";
 			$log = isset($options['log']) ? '--log '.$options['log'] : '';

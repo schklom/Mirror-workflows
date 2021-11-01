@@ -5,8 +5,6 @@ class Feeds extends Handler_Protected {
 	const NEVER_GROUP_FEEDS = [ -6, 0 ];
 	const NEVER_GROUP_BY_DATE = [ -2, -1, -3 ];
 
-	 private $params;
-
 	 private $viewfeed_timestamp;
 	 private $viewfeed_timestamp_last;
 

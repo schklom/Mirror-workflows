@@ -13,7 +13,6 @@ class PluginHost {
 	private $api_methods = array();
 	private $plugin_actions = array();
 	private $owner_uid;
-	private $last_registered;
 	private $data_loaded;
 	private static $instance;
 
@@ -383,7 +382,7 @@ class PluginHost {
 
 			if (!isset($this->plugins[$class])) {
 				try {
-					if (file_exists($file)) require_once $file;
+					require_once $file;
 				} catch (Error $err) {
 					user_error($err, E_USER_WARNING);
 					continue;
@@ -403,8 +402,6 @@ class PluginHost {
 						_bindtextdomain($class, dirname($file) . "/locale");
 						_bind_textdomain_codeset($class, "UTF-8");
 					}
-
-					$this->last_registered = $class;
 
 					try {
 						switch ($kind) {

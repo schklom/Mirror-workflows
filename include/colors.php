@@ -200,27 +200,31 @@ function _color_hue2rgb($m1, $m2, $h) {
 
 ### Convert a hex color into an RGB triplet.
 function _color_unpack($hex, $normalize = false) {
+	$hex = strpos($hex, '#') !== 0 ? _resolve_htmlcolor($hex) : substr($hex, 1);
 
-  if (strpos($hex, '#') !== 0)
-    $hex = _resolve_htmlcolor($hex);
-  else
-  	$hex = substr($hex, 1);
+	if (strlen($hex) == 4) {
+		$hex = $hex[1] . $hex[1] . $hex[2] . $hex[2] . $hex[3] . $hex[3];
+	}
 
-  if (strlen($hex) == 4) {
-    $hex = $hex[1] . $hex[1] . $hex[2] . $hex[2] . $hex[3] . $hex[3];
-  }
-  $c = hexdec($hex);
-  for ($i = 16; $i >= 0; $i -= 8) {
-    $out[] = (($c >> $i) & 0xFF) / ($normalize ? 255 : 1);
-  } return $out;
+	$c = hexdec($hex);
+	$out = [];
+
+	for ($i = 16; $i >= 0; $i -= 8) {
+		$out[] = (($c >> $i) & 0xFF) / ($normalize ? 255 : 1);
+	}
+
+	return $out;
 }
 
 ### Convert an RGB triplet to a hex color.
 function _color_pack($rgb, $normalize = false) {
 	$out = 0;
-  foreach ($rgb as $k => $v) {
-    $out |= (($v * ($normalize ? 255 : 1)) << (16 - $k * 8));
-  }return '#'. str_pad(dechex($out), 6, 0, STR_PAD_LEFT);
+
+	foreach ($rgb as $k => $v) {
+		$out |= (($v * ($normalize ? 255 : 1)) << (16 - $k * 8));
+	}
+
+	return '#'. str_pad(dechex($out), 6, '0', STR_PAD_LEFT);
 }
 
 function rgb2hsl($arr) {
@@ -248,9 +252,14 @@ function rgb2hsl($arr) {
       $del_G = ((($var_Max - $var_G ) / 6 ) + ($del_Max / 2 ) ) / $del_Max;
       $del_B = ((($var_Max - $var_B ) / 6 ) + ($del_Max / 2 ) ) / $del_Max;
 
-      if      ($var_R == $var_Max) $h = $del_B - $del_G;
-      else if ($var_G == $var_Max) $h = (1 / 3 ) + $del_R - $del_B;
-      else if ($var_B == $var_Max) $h = (2 / 3 ) + $del_G - $del_R;
+			if ($var_R == $var_Max) {
+				$h = $del_B - $del_G;
+			} else if ($var_G == $var_Max) {
+				$h = (1 / 3 ) + $del_R - $del_B;
+			} else {
+				// ($var_B == $var_Max)
+				$h = (2 / 3 ) + $del_G - $del_R;
+			}
 
       if ($h < 0) $h++;
       if ($h > 1) $h--;
@@ -292,6 +301,7 @@ function hsl2rgb($arr) {
 	   $colors = array();
 
 		$size = @getimagesize($imageFile);
+		$img = null;
 
 		// to enable .ico support place floIcon.php into lib/
 		if (strtolower($size['mime']) == 'image/vnd.microsoft.icon') {

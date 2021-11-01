@@ -1,116 +1,104 @@
-<?php return array (
-  'root' => 
-  array (
-    'pretty_version' => 'dev-master',
-    'version' => 'dev-master',
-    'aliases' => 
-    array (
+<?php return array(
+    'root' => array(
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'type' => 'library',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'reference' => '9714c4fbcf76492d084ca5327cbab1ad1b662280',
+        'name' => '__root__',
+        'dev' => true,
     ),
-    'reference' => '2a5c2be6cdd9ba9217a0661805b62aeec1de90c3',
-    'dev-requirement' => true,
-    'name' => '__root__',
-  ),
-  'versions' => 
-  array (
-    '__root__' => 
-    array (
-      'pretty_version' => 'dev-master',
-      'version' => 'dev-master',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '2a5c2be6cdd9ba9217a0661805b62aeec1de90c3',
-      'dev-requirement' => false,
+    'versions' => array(
+        '__root__' => array(
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'reference' => '9714c4fbcf76492d084ca5327cbab1ad1b662280',
+            'dev_requirement' => false,
+        ),
+        'beberlei/assert' => array(
+            'pretty_version' => 'v3.2.7',
+            'version' => '3.2.7.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../beberlei/assert',
+            'aliases' => array(),
+            'reference' => 'd63a6943fc4fd1a2aedb65994e3548715105abcf',
+            'dev_requirement' => false,
+        ),
+        'chillerlan/php-qrcode' => array(
+            'pretty_version' => '3.4.0',
+            'version' => '3.4.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../chillerlan/php-qrcode',
+            'aliases' => array(),
+            'reference' => 'd8bf297e6843a53aeaa8f3285ce04fc349d133d6',
+            'dev_requirement' => false,
+        ),
+        'chillerlan/php-settings-container' => array(
+            'pretty_version' => '1.2.1',
+            'version' => '1.2.1.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../chillerlan/php-settings-container',
+            'aliases' => array(),
+            'reference' => 'b9b0431dffd74102ee92348a63b4c33fc8ba639b',
+            'dev_requirement' => false,
+        ),
+        'j4mie/idiorm' => array(
+            'pretty_version' => 'v1.5.7',
+            'version' => '1.5.7.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../j4mie/idiorm',
+            'aliases' => array(),
+            'reference' => 'd23f97053ef5d0b988a02c6a71eb5c6118b2f5b4',
+            'dev_requirement' => false,
+        ),
+        'mervick/material-design-icons' => array(
+            'pretty_version' => '2.2.0',
+            'version' => '2.2.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../mervick/material-design-icons',
+            'aliases' => array(),
+            'reference' => '635435c8d3df3a6da3241648caf8a65d1c07cc1a',
+            'dev_requirement' => false,
+        ),
+        'paragonie/constant_time_encoding' => array(
+            'pretty_version' => 'v2.4.0',
+            'version' => '2.4.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../paragonie/constant_time_encoding',
+            'aliases' => array(),
+            'reference' => 'f34c2b11eb9d2c9318e13540a1dbc2a3afbd939c',
+            'dev_requirement' => false,
+        ),
+        'phpstan/phpstan' => array(
+            'pretty_version' => '1.0.0',
+            'version' => '1.0.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpstan/phpstan',
+            'aliases' => array(),
+            'reference' => '0d13a99513182e521271d46bde8f28caa4f84d97',
+            'dev_requirement' => true,
+        ),
+        'spomky-labs/otphp' => array(
+            'pretty_version' => 'v10.0.1',
+            'version' => '10.0.1.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../spomky-labs/otphp',
+            'aliases' => array(),
+            'reference' => 'f44cce5a9db4b8da410215d992110482c931232f',
+            'dev_requirement' => false,
+        ),
+        'thecodingmachine/safe' => array(
+            'pretty_version' => 'v1.3.3',
+            'version' => '1.3.3.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../thecodingmachine/safe',
+            'aliases' => array(),
+            'reference' => 'a8ab0876305a4cdaef31b2350fcb9811b5608dbc',
+            'dev_requirement' => false,
+        ),
     ),
-    'beberlei/assert' => 
-    array (
-      'pretty_version' => 'v3.2.7',
-      'version' => '3.2.7.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'd63a6943fc4fd1a2aedb65994e3548715105abcf',
-      'dev-requirement' => false,
-    ),
-    'chillerlan/php-qrcode' => 
-    array (
-      'pretty_version' => '3.4.0',
-      'version' => '3.4.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'd8bf297e6843a53aeaa8f3285ce04fc349d133d6',
-      'dev-requirement' => false,
-    ),
-    'chillerlan/php-settings-container' => 
-    array (
-      'pretty_version' => '1.2.1',
-      'version' => '1.2.1.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'b9b0431dffd74102ee92348a63b4c33fc8ba639b',
-      'dev-requirement' => false,
-    ),
-    'j4mie/idiorm' => 
-    array (
-      'pretty_version' => 'v1.5.7',
-      'version' => '1.5.7.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'd23f97053ef5d0b988a02c6a71eb5c6118b2f5b4',
-      'dev-requirement' => false,
-    ),
-    'mervick/material-design-icons' => 
-    array (
-      'pretty_version' => '2.2.0',
-      'version' => '2.2.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '635435c8d3df3a6da3241648caf8a65d1c07cc1a',
-      'dev-requirement' => false,
-    ),
-    'paragonie/constant_time_encoding' => 
-    array (
-      'pretty_version' => 'v2.4.0',
-      'version' => '2.4.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'f34c2b11eb9d2c9318e13540a1dbc2a3afbd939c',
-      'dev-requirement' => false,
-    ),
-    'phpstan/phpstan' => 
-    array (
-      'pretty_version' => '0.12.99',
-      'version' => '0.12.99.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'b4d40f1d759942f523be267a1bab6884f46ca3f7',
-      'dev-requirement' => true,
-    ),
-    'spomky-labs/otphp' => 
-    array (
-      'pretty_version' => 'v10.0.1',
-      'version' => '10.0.1.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'f44cce5a9db4b8da410215d992110482c931232f',
-      'dev-requirement' => false,
-    ),
-    'thecodingmachine/safe' => 
-    array (
-      'pretty_version' => 'v1.3.3',
-      'version' => '1.3.3.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'a8ab0876305a4cdaef31b2350fcb9811b5608dbc',
-      'dev-requirement' => false,
-    ),
-  ),
 );

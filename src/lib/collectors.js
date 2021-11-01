@@ -407,23 +407,18 @@ async function getOrFetchShortcode(shortcode) {
  * @returns {Promise<{result: import("./types").TimelineEntryN3, fromCache: boolean}>}
  */
 function fetchShortcodeData(shortcode) {
-	// example actual query from web:
-	// query_hash=2b0673e0dc4580674a88d426fe00ea90&variables={"shortcode":"xxxxxxxxxxx","child_comment_count":3,"fetch_comment_count":40,"parent_comment_count":24,"has_threaded_comments":true}
-	// we will not include params about comments, which means we will not receive comments, but everything else should still work fine
-	const p = new URLSearchParams()
-	p.set("query_hash", constants.external.shortcode_query_hash)
-	p.set("variables", JSON.stringify({shortcode}))
+	// embed endpoint unfortunately only returns a single image, or a single video thumbnail
 	return requestCache.getOrFetchPromise("shortcode/"+shortcode, () => {
-		return switcher.request("post_graphql", `https://www.instagram.com/graphql/query/?${p.toString()}`, async res => {
-			if (res.status === 302) throw constants.symbols.INSTAGRAM_BLOCK_TYPE_DECEMBER
+		return switcher.request("post_graphql", `https://www.instagram.com/p/${shortcode}/embed/captioned/`, async res => {
 			if (res.status === 429) throw constants.symbols.RATE_LIMITED
-		}).then(res => res.json()).then(root => {
-			/** @type {import("./types").TimelineEntryN3} */
-			const data = root.data.shortcode_media
+		}).then(res => res.text()).then(text => {
+			const textData = text.match(/window\.__additionalDataLoaded\('extra',(.*)\);<\/script>/)[1]
+			let data = JSON.parse(textData)
 			if (data == null) {
 				// the thing doesn't exist
 				throw constants.symbols.NOT_FOUND
 			} else {
+				data = data.shortcode_media
 				history.report("post", true)
 				if (constants.caching.db_post_n3) {
 					db.prepare("REPLACE INTO Posts (shortcode, id, id_as_numeric, username, json) VALUES (@shortcode, @id, @id_as_numeric, @username, @json)")
@@ -440,7 +435,7 @@ function fetchShortcodeData(shortcode) {
 				return data
 			}
 		}).catch(error => {
-			if (error === constants.symbols.RATE_LIMITED || error === constants.symbols.INSTAGRAM_BLOCK_TYPE_DECEMBER) {
+			if (error === constants.symbols.RATE_LIMITED) {
 				history.report("post", false, error)
 			}
 			throw error

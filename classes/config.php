@@ -234,10 +234,9 @@ class Config {
 	private static $instance;
 
 	private $params = [];
-	private $schema_version = null;
 	private $version = [];
 
-	/** @var Db_Migrations $migrations */
+	/** @var Db_Migrations|null $migrations */
 	private $migrations;
 
 	public static function get_instance() : Config {
@@ -255,10 +254,10 @@ class Config {
 		$ref = new ReflectionClass(get_class($this));
 
 		foreach ($ref->getConstants() as $const => $cvalue) {
-			if (isset($this::_DEFAULTS[$const])) {
-				$override = getenv($this::_ENVVAR_PREFIX . $const);
+			if (isset(self::_DEFAULTS[$const])) {
+				$override = getenv(self::_ENVVAR_PREFIX . $const);
 
-				list ($defval, $deftype) = $this::_DEFAULTS[$const];
+				list ($defval, $deftype) = self::_DEFAULTS[$const];
 
 				$this->params[$cvalue] = [ self::cast_to($override !== false ? $override : $defval, $deftype), $deftype ];
 			}
@@ -383,7 +382,7 @@ class Config {
 	}
 
 	private function _add(string $param, string $default, int $type_hint) {
-		$override = getenv($this::_ENVVAR_PREFIX . $param);
+		$override = getenv(self::_ENVVAR_PREFIX . $param);
 
 		$this->params[$param] = [ self::cast_to($override !== false ? $override : $default, $type_hint), $type_hint ];
 	}

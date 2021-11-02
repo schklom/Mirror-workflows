@@ -4,9 +4,7 @@ class Db
 	/** @var Db $instance */
 	private static $instance;
 
-	private $link;
-
-	/** @var PDO $pdo */
+	/** @var PDO|null $pdo */
 	private $pdo;
 
 	function __construct() {

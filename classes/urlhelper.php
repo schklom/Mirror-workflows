@@ -162,8 +162,12 @@ class UrlHelper {
 
 			$context = stream_context_create($context_options);
 
+			// PHP 8 changed the second param from int to bool, but we still support PHP >= 7.1.0
+			// @phpstan-ignore-next-line
 			$headers = get_headers($url, 0, $context);
 		} else {
+			// PHP 8 changed the second param from int to bool, but we still support PHP >= 7.1.0
+			// @phpstan-ignore-next-line
 			$headers = get_headers($url, 0);
 		}
 
@@ -275,7 +279,7 @@ class UrlHelper {
 
 			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout ? $timeout : Config::get(Config::FILE_FETCH_CONNECT_TIMEOUT));
 			curl_setopt($ch, CURLOPT_TIMEOUT, $timeout ? $timeout : Config::get(Config::FILE_FETCH_TIMEOUT));
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, !ini_get("open_basedir") && $followlocation);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, $followlocation);
 			curl_setopt($ch, CURLOPT_MAXREDIRS, 20);
 			curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -283,6 +287,7 @@ class UrlHelper {
 			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
 			curl_setopt($ch, CURLOPT_USERAGENT, $useragent ? $useragent : Config::get_user_agent());
 			curl_setopt($ch, CURLOPT_ENCODING, "");
+			curl_setopt($ch, CURLOPT_COOKIEJAR, "/dev/null");
 
 			if  ($http_referrer)
 				curl_setopt($ch, CURLOPT_REFERER, $http_referrer);
@@ -304,10 +309,6 @@ class UrlHelper {
 					return 0;
 				});
 
-			}
-
-			if (!ini_get("open_basedir")) {
-				curl_setopt($ch, CURLOPT_COOKIEJAR, "/dev/null");
 			}
 
 			if (Config::get(Config::HTTP_PROXY)) {

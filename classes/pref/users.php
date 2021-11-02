@@ -167,7 +167,7 @@ class Pref_Users extends Handler_Administrative {
 				$user->created = Db::NOW();
 				$user->save();
 
-				if ($new_uid = UserHelper::find_user_by_login($login)) {
+				if (!is_null(UserHelper::find_user_by_login($login))) {
 					print T_sprintf("Added user %s with password %s",
 						$login, $new_password);
 				} else {

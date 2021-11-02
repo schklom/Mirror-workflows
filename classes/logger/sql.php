@@ -1,8 +1,6 @@
 <?php
 class Logger_SQL implements Logger_Adapter {
 
-	private $pdo;
-
 	function __construct() {
 		$conn = get_class($this);
 

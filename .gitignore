@@ -5,3 +5,6 @@ src/config.json
 src/fmdserver.go
 src/__debug_bin
 src/FMDServer.tar.xz
+src/main/data
+src/main/fmdserver
+src/main/dataNew

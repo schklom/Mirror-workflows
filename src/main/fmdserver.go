@@ -18,15 +18,10 @@ import (
 
 //Some IO variables
 var version = "v0.3.1"
-var dataDir = "data"
+var dataDirFC = "data"
 var webDir = "web"
 
-//User-Folders
-var locationDir = "loc"
-var mediaDir = "media"
-
 //User-Files
-const privateKeyFile = "privkey"
 const publicKeyfile = "pubkey"
 const hashedPasswordFile = "hashedPW"
 const commandToUserFile = "toDevice"
@@ -504,7 +499,7 @@ func initServer() {
 			filesDir = dir
 		}
 	}
-	dataDir = filepath.Join(filesDir, dataDir)
+	dataDirFC := filepath.Join(filesDir, dataDirFC)
 	webDir = filepath.Join(filesDir, webDir)
 
 	fmt.Println("Init: FMD-Datadirectory: ", filesDir)
@@ -534,10 +529,29 @@ func initServer() {
 	isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]{1,` + strconv.Itoa(serverConfig.IdLength) + `}$`).MatchString
 
 	fmt.Println("Init: Preparing Devices")
-	filePath := filepath.Join(dataDir)
+	filePath := filepath.Join(dataDirFC)
 	dirs, _ := ioutil.ReadDir(filePath)
+	var uio = UserIO{}
+	fmt.Printf("loc: ", filesDir)
+	uio.Init(filesDir, serverConfig.IdLength, serverConfig.MaxSavedLoc)
+	fmt.Println("Init: Converting Data to new UIO")
 	for i := 0; i < len(dirs); i++ {
-		ids = append(ids, dirs[i].Name())
+		id := dirs[i].Name()
+		userPath := filepath.Join(filePath, id)
+		privKeyFile := filepath.Join(userPath, privateKeyFile)
+		pubKeyFile := filepath.Join(userPath, privateKeyFile)
+		hashedPwFile := filepath.Join(userPath, privateKeyFile)
+		privKey, _ := ioutil.ReadFile(privKeyFile)
+		pubKey, _ := ioutil.ReadFile(pubKeyFile)
+		hashedPW, _ := ioutil.ReadFile(hashedPwFile)
+		uio.CreateNewUser(id, string(privKey), string(pubKey), string(hashedPW))
+		locationPath := filepath.Join(userPath, locationDir)
+		locs, _ := ioutil.ReadDir(locationPath)
+		for z := 0; z < len(locs); z++ {
+			locationFile := filepath.Join(locationPath, locs[z].Name())
+			loc, _ := ioutil.ReadFile(locationFile)
+			uio.AddLocation(id, string(loc))
+		}
 	}
 	fmt.Printf("Init: %d Devices registered.\n\n", len(ids))
 
@@ -558,7 +572,7 @@ func main() {
 	initServer()
 
 	fmt.Println("FMD - Server - ", version)
-	fmt.Println("Starting Server")
+	fmt.Println("Starting Server - error only conversion")
 	fmt.Printf("Port: %d(unsecure) %d(secure)\n", serverConfig.PortUnsecure, serverConfig.PortSecure)
-	handleRequests()
+	//handleRequests()
 }

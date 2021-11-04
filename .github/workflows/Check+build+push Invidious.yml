@@ -32,14 +32,6 @@ jobs:
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
     steps:
-      - name: repo-sync
-        uses: wei/git-sync@v3
-        with:
-          source_repo: "https://git.tt-rss.org/iv-org/invidious.git"
-          source_branch: "master"
-          destination_repo: "git@github.com:schklom/Mirror-workflows.git"
-          destination_branch: "Invidious"
-          ssh_private_key: ${{ secrets.GITSYNCACTION }}
       - name: Checkout
         uses: actions/checkout@v2.4.0
         with:

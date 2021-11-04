@@ -26,7 +26,7 @@ jobs:
           echo "::set-output name=SETREMOTE::$(git ls-remote https://git.tt-rss.org/iv-org/invidious.git HEAD | awk '{ print $1 }')"
           echo "::set-output name=SETLOCAL::$(cat last_sync_with_original_repo_commit_id)"
   
-  repo_sync:
+  repo_check:
     needs: [get_commits]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs

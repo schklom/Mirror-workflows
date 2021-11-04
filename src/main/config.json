@@ -1,0 +1,6 @@
+{
+ "PortSecure": 1008,
+ "PortUnsecure": 1020,
+ "IdLength": 5,
+ "MaxSavedLoc": 1000
+}

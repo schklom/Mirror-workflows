@@ -1,5 +1,6 @@
 src/fmdserver
 src/data
+src/data/*
 src/fmdserver.tar.xz
 src/config.json
 src/fmdserver.go

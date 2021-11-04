@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"math/rand"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -18,13 +17,8 @@ import (
 
 //Some IO variables
 var version = "v0.3.1"
-var dataDirFC = "data"
 var webDir = "web"
-
-//User-Files
-const publicKeyfile = "pubkey"
-const hashedPasswordFile = "hashedPW"
-const commandToUserFile = "toDevice"
+var uio UserIO
 
 //Server Config
 const serverCert = "server.crt"
@@ -35,19 +29,9 @@ var filesDir string
 
 var serverConfig config
 
-var ids []string
-
-var lockedIds []lockedId
-
 var accessTokens []AccessToken
 
 var isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]*$`).MatchString
-
-type lockedId struct {
-	DeviceId  string
-	Failed    int
-	Timestamp int64
-}
 
 type config struct {
 	PortSecure   int
@@ -153,41 +137,9 @@ func postLocation(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - postLocation 2", http.StatusBadRequest)
 		return
 	}
-	path := filepath.Join(dataDir, id)
-	path = filepath.Join(path, locationDir)
-	files, _ := ioutil.ReadDir(path)
-	highest := 0
-	smallest := 2147483647
-	for i := 0; i < len(files); i++ {
-		number, err := strconv.Atoi(files[i].Name())
-		if err == nil {
-			if number > highest {
-				highest = number
-			}
-			if number < smallest {
-				smallest = number
-			}
-		}
-	}
-	highest += 1
 
-	//Auto-Clean directory
-	difference := (highest - smallest) - serverConfig.MaxSavedLoc
-	if difference > 0 {
-		deleteUntil := smallest + difference
-		index := smallest
-		for index <= deleteUntil {
-			indexPath := filepath.Join(path, strconv.Itoa(index))
-			os.Remove(indexPath)
-			index += 1
-		}
-	}
-
-	//Create new locationfile
-	path = filepath.Join(path, strconv.Itoa(highest))
-	file, _ := json.MarshalIndent(location, "", " ")
-	_ = ioutil.WriteFile(path, file, 0644)
-
+	locationAsString, _ := json.MarshalIndent(location, "", " ")
+	uio.AddLocation(id, string(locationAsString))
 }
 
 func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
@@ -237,17 +189,8 @@ func getKey(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getKey 2", http.StatusBadRequest)
 		return
 	}
-
-	filePath := filepath.Join(dataDir, id)
-	filePath = filepath.Join(filePath, privateKeyFile)
-
-	data, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		fmt.Println("File reading error", err)
-		return
-	}
 	w.Header().Set("Content-Type", "application/text")
-	w.Write([]byte(fmt.Sprint(string(data))))
+	w.Write([]byte(fmt.Sprint(uio.GetPrivateKey(id))))
 }
 
 func getCommand(w http.ResponseWriter, r *http.Request) {
@@ -262,16 +205,15 @@ func getCommand(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getCommand 2", http.StatusBadRequest)
 		return
 	}
-	path := filepath.Join(dataDir, id)
-	path = filepath.Join(path, commandToUserFile)
-	command, err := ioutil.ReadFile(path)
-	if err == nil {
-		commandAsString := string(command)
+	uInfo, err := uio.GetUserInfo(id)
+	if uInfo.CommandToUser != "" {
+		commandAsString := string(uInfo.CommandToUser)
 		reply := commandToDeviceData{AccessToken: data.AccessToken, Command: commandAsString}
 		result, _ := json.Marshal(reply)
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(result))
-		os.Remove(path)
+		uInfo.CommandToUser = ""
+		uio.SetUserInfo(id, uInfo)
 	} else {
 		reply := commandToDeviceData{AccessToken: data.AccessToken, Command: ""}
 		result, _ := json.Marshal(reply)
@@ -293,9 +235,10 @@ func postCommand(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - postCommand 2", http.StatusBadRequest)
 		return
 	}
-	path := filepath.Join(dataDir, id)
-	path = filepath.Join(path, commandToUserFile)
-	_ = ioutil.WriteFile(path, []byte(data.Command), 0644)
+
+	uInfo, _ := uio.GetUserInfo(id)
+	uInfo.CommandToUser = (data.Command)
+	uio.SetUserInfo(uInfo)
 }
 
 func requestAccess(w http.ResponseWriter, r *http.Request) {
@@ -346,21 +289,7 @@ func postDevice(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - createDevice", http.StatusBadRequest)
 		return
 	}
-	id := generateNewId(serverConfig.IdLength)
-	ids = append(ids, id)
-
-	path := filepath.Join(dataDir, id)
-	os.MkdirAll(path, os.ModePerm)
-	privKeyPath := filepath.Join(path, privateKeyFile)
-	_ = ioutil.WriteFile(privKeyPath, []byte(device.PrivKey), 0644)
-	pubKeyPath := filepath.Join(path, publicKeyfile)
-	_ = ioutil.WriteFile(pubKeyPath, []byte(device.PubKey), 0644)
-	hashedPWPath := filepath.Join(path, hashedPasswordFile)
-	_ = ioutil.WriteFile(hashedPWPath, []byte(device.HashedPassword), 0644)
-	locationPath := filepath.Join(path, locationDir)
-	os.MkdirAll(locationPath, os.ModePerm)
-	mediaPath := filepath.Join(path, mediaDir)
-	os.MkdirAll(mediaPath, os.ModePerm)
+	id := uio.CreateNewUser(device.PrivKey, device.PubKey, device.HashedPassword)
 
 	accessToken := AccessToken{DeviceId: id, AccessToken: ""}
 	result, _ := json.Marshal(accessToken)
@@ -370,42 +299,6 @@ func postDevice(w http.ResponseWriter, r *http.Request) {
 
 func getVersion(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(fmt.Sprint(version)))
-}
-
-func isLocked(idToCheck string) bool {
-	for index, lId := range lockedIds {
-		if lId.DeviceId == idToCheck {
-			if lId.Failed >= 3 {
-				if lId.Timestamp < time.Now().Unix() {
-					lockedIds[index] = lockedIds[len(lockedIds)-1]
-					lockedIds = lockedIds[:len(lockedIds)-1]
-					return false
-				} else {
-					return true
-				}
-			} else {
-				return false
-			}
-		}
-	}
-	return false
-}
-
-func incrementLock(idToLock string) {
-	for index, lId := range lockedIds {
-		if lId.DeviceId == idToLock {
-			if lId.Timestamp < time.Now().Unix() {
-				lockedIds[index].Failed = 1
-				lockedIds[index].Timestamp = time.Now().Unix() + (10 * 60)
-			} else {
-				lockedIds[index].Failed++
-				lockedIds[index].Timestamp = time.Now().Unix() + (10 * 60)
-			}
-			return
-		}
-	}
-	lId := lockedId{DeviceId: idToLock, Timestamp: time.Now().Unix() + (10 * 60), Failed: 1}
-	lockedIds = append(lockedIds, lId)
 }
 
 func checkAccessToken(idToCheck string) string {
@@ -426,22 +319,6 @@ func checkAccessToken(idToCheck string) string {
 		}
 	}
 	return ""
-}
-
-func generateNewId(n int) string {
-	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-	s := make([]rune, n)
-	rand.Seed(time.Now().Unix())
-	for i := range s {
-		s[i] = letters[rand.Intn(len(letters))]
-	}
-	newId := string(s)
-	for i := 0; i < len(ids); i++ {
-		if ids[i] == newId {
-			newId = generateNewId(n)
-		}
-	}
-	return newId
 }
 
 func mainLocation(w http.ResponseWriter, r *http.Request) {
@@ -499,10 +376,9 @@ func initServer() {
 			filesDir = dir
 		}
 	}
-	dataDirFC := filepath.Join(filesDir, dataDirFC)
 	webDir = filepath.Join(filesDir, webDir)
 
-	fmt.Println("Init: FMD-Datadirectory: ", filesDir)
+	fmt.Println("Init: FMD-Data directory: ", filesDir)
 
 	fmt.Println("Init: Preparing FMD-Server...")
 
@@ -529,32 +405,9 @@ func initServer() {
 	isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]{1,` + strconv.Itoa(serverConfig.IdLength) + `}$`).MatchString
 
 	fmt.Println("Init: Preparing Devices")
-	filePath := filepath.Join(dataDirFC)
-	dirs, _ := ioutil.ReadDir(filePath)
-	var uio = UserIO{}
-	fmt.Printf("loc: ", filesDir)
+	uio = UserIO{}
 	uio.Init(filesDir, serverConfig.IdLength, serverConfig.MaxSavedLoc)
-	fmt.Println("Init: Converting Data to new UIO")
-	for i := 0; i < len(dirs); i++ {
-		id := dirs[i].Name()
-		userPath := filepath.Join(filePath, id)
-		privKeyFile := filepath.Join(userPath, privateKeyFile)
-		pubKeyFile := filepath.Join(userPath, privateKeyFile)
-		hashedPwFile := filepath.Join(userPath, privateKeyFile)
-		privKey, _ := ioutil.ReadFile(privKeyFile)
-		pubKey, _ := ioutil.ReadFile(pubKeyFile)
-		hashedPW, _ := ioutil.ReadFile(hashedPwFile)
-		uio.CreateNewUser(id, string(privKey), string(pubKey), string(hashedPW))
-		locationPath := filepath.Join(userPath, locationDir)
-		locs, _ := ioutil.ReadDir(locationPath)
-		for z := 0; z < len(locs); z++ {
-			locationFile := filepath.Join(locationPath, locs[z].Name())
-			loc, _ := ioutil.ReadFile(locationFile)
-			uio.AddLocation(id, string(loc))
-		}
-	}
-	fmt.Printf("Init: %d Devices registered.\n\n", len(ids))
-
+	fmt.Printf("Init: %d Devices registered.\n\n", len(uio.IDs))
 }
 
 func fileExists(filename string) bool {
@@ -572,7 +425,7 @@ func main() {
 	initServer()
 
 	fmt.Println("FMD - Server - ", version)
-	fmt.Println("Starting Server - error only conversion")
+	fmt.Println("Starting Server")
 	fmt.Printf("Port: %d(unsecure) %d(secure)\n", serverConfig.PortUnsecure, serverConfig.PortSecure)
-	//handleRequests()
+	handleRequests()
 }

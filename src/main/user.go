@@ -23,7 +23,7 @@ const userInfoFile = "userdat"
 
 type UserIO struct {
 	IDs          []string
-	LockedIDs    []string
+	LockedIDs    []LockedId
 	DataPath     string
 	UserIDLength int
 	MaxSavedLoc  int
@@ -33,6 +33,12 @@ type UserInfo struct {
 	HashedPassword string
 	CommandToUser  string
 	Push           string
+}
+
+type LockedId struct {
+	DeviceId  string
+	Failed    int
+	Timestamp int64
 }
 
 func (u *UserIO) Init(path string, userIDLength int, maxSavedLoc int) {
@@ -46,8 +52,8 @@ func (u *UserIO) Init(path string, userIDLength int, maxSavedLoc int) {
 	u.MaxSavedLoc = maxSavedLoc
 }
 
-func (u *UserIO) CreateNewUser(id string, privKey string, pubKey string, hashedPassword string) string {
-	//id := u.generateNewId(u.UserIDLength)
+func (u *UserIO) CreateNewUser(privKey string, pubKey string, hashedPassword string) string {
+	id := u.generateNewId(u.UserIDLength)
 	u.IDs = append(u.IDs, id)
 
 	userPath := filepath.Join(u.DataPath, id)
@@ -154,4 +160,40 @@ func (u *UserIO) generateNewId(n int) string {
 		}
 	}
 	return newId
+}
+
+func (u *UserIO) IncrementLock(id string) {
+	for index, lId := range u.LockedIDs {
+		if lId.DeviceId == id {
+			if lId.Timestamp < time.Now().Unix() {
+				u.LockedIDs[index].Failed = 1
+				u.LockedIDs[index].Timestamp = time.Now().Unix() + (10 * 60)
+			} else {
+				u.LockedIDs[index].Failed++
+				u.LockedIDs[index].Timestamp = time.Now().Unix() + (10 * 60)
+			}
+			return
+		}
+	}
+	lId := LockedId{DeviceId: id, Timestamp: time.Now().Unix() + (10 * 60), Failed: 1}
+	u.LockedIDs = append(u.LockedIDs, lId)
+}
+
+func (u *UserIO) isLocked(idToCheck string) bool {
+	for index, lId := range u.LockedIDs {
+		if lId.DeviceId == idToCheck {
+			if lId.Failed >= 3 {
+				if lId.Timestamp < time.Now().Unix() {
+					u.LockedIDs[index] = u.LockedIDs[len(u.LockedIDs)-1]
+					u.LockedIDs = u.LockedIDs[:len(u.LockedIDs)-1]
+					return false
+				} else {
+					return true
+				}
+			} else {
+				return false
+			}
+		}
+	}
+	return false
 }

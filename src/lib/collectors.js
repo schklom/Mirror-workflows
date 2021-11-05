@@ -4,6 +4,7 @@ const switcher = require("./utils/torswitcher")
 const {extractSharedData} = require("./utils/body")
 const {TtlCache, RequestCache, UserRequestCache} = require("./cache")
 const RequestHistory = require("./structures/RequestHistory")
+const fhp = require("fast-html-parser")
 const db = require("./db")
 require("./testimports")(constants, request, extractSharedData, UserRequestCache, RequestHistory, db)
 
@@ -398,6 +399,7 @@ async function getOrFetchShortcode(shortcode) {
 		const {result, fromCache} = await fetchShortcodeData(shortcode)
 		const entry = getOrCreateShortcode(shortcode)
 		entry.applyN3(result)
+		entry.fullyUpdated = true // we already called fetchShortcodeData, which fetches the greatest amount of data possible. it's no use trying to fetch that again with .update().
 		return {post: entry, fromCache}
 	}
 }
@@ -412,11 +414,92 @@ function fetchShortcodeData(shortcode) {
 		return switcher.request("post_graphql", `https://www.instagram.com/p/${shortcode}/embed/captioned/`, async res => {
 			if (res.status === 429) throw constants.symbols.RATE_LIMITED
 		}).then(res => res.text()).then(text => {
-			const textData = text.match(/window\.__additionalDataLoaded\('extra',(.*)\);<\/script>/)[1]
-			let data = JSON.parse(textData)
+			let data = null
+			const match = text.match(/window\.__additionalDataLoaded\('extra',(.*)\);<\/script>/)
+			if (match) {
+				const textData = match[1]
+				data = JSON.parse(textData)
+			}
 			if (data == null) {
-				// the thing doesn't exist
-				throw constants.symbols.NOT_FOUND
+				// we have to actually parse the HTML to get the data
+				const root = fhp.parse(text)
+
+				// Check if post really exists
+				if (root.querySelector(".EmbedIsBroken")) {
+					throw constants.symbols.NOT_FOUND
+				}
+
+				// find embed
+				const e_embed = root.querySelector(".Embed")
+				// find avatar
+				const e_avatar = root.querySelector(".Avatar")
+				const e_avatarImage = e_avatar.querySelector("img")
+				// find username
+				const e_usernameText = root.querySelector(".UsernameText")
+				const e_viewProfile = root.querySelector(".ViewProfileButton")
+				// find verified
+				const e_verified = root.querySelector(".VerifiedSprite")
+				// find media
+				const e_media = root.querySelector(".EmbeddedMediaImage")
+				// find caption
+				const e_caption = root.querySelector(".Caption")
+				// extract owner
+				const owner = {
+					id: e_embed.attributes["data-owner-id"],
+					is_verified: !!e_verified,
+					profile_pic_url: e_avatarImage.attributes.src,
+					username: e_viewProfile.attributes.href.replace(new RegExp(`^https:\/\/www\.instagram\.com\/(${constants.external.username_regex}).*$`, "s"), "$1")
+				}
+				// extract media type
+				let mediaType = e_embed.attributes["data-media-type"]
+				const videoData = {}
+				if (mediaType === "GraphVideo") {
+					Object.assign(videoData, {
+						video_url: null,
+						video_view_count: null
+					})
+				} else {
+					mediaType = "GraphImage"
+				}
+				// extract display resources
+				const display_resources = e_media.attributes.srcset.split(",").map(source => {
+					source = source.trim()
+					const [url, widthString] = source.split(" ")
+					const width = +widthString.match(/\d+/)[0]
+					return {
+						src: url,
+						config_width: width,
+						config_height: width // best guess!
+					}
+				})
+				// extract caption text
+				const captionText = e_caption.childNodes.slice(4, -3).map(node => { // slice removes unneeded starting and ending whitespace and user handles
+					if (node.tagName === "br") {
+						return "\n"
+					} else {
+						return node.text
+					}
+				}).join("")
+				return {
+					__typename: mediaType,
+					id: e_embed.attributes["data-media-id"],
+					display_url: e_media.attributes.src,
+					display_resources,
+					is_video: mediaType === "GraphVideo",
+					shortcode,
+					accessibility_caption: e_media.attributes.alt,
+					...videoData,
+					owner,
+					edge_media_to_caption: {
+						edges: [
+							{
+								node: {
+									text: captionText
+								}
+							}
+						]
+					}
+				}
 			} else {
 				data = data.shortcode_media
 				history.report("post", true)

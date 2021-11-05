@@ -38,15 +38,16 @@ mixin post(post, headerWithNavigation)
 								- let caption = post.children[0].data.accessibility_caption
 								if caption
 									p.description= caption
-							p.description
-								span!= ll.pug_post_timestamp({post})
+							if post.hasDate
+								p.description
+									span!= ll.pug_post_timestamp({post})
 
 		section.images-gallery
 			for entry in post.children
 				if entry.isVideo()
-					video(src=entry.getVideoUrlP() controls preload="auto" width=entry.data.dimensions.width height=entry.data.dimensions.height).sized-video
+					video(src=entry.getVideoUrlP() controls preload="auto" width=entry.data.dimensions && entry.data.dimensions.width height=entry.data.dimensions && entry.data.dimensions.height).sized-video
 				else
-					img(src=entry.getDisplayUrlP() alt=entry.getAlt() width=entry.data.dimensions.width height=entry.data.dimensions.height).sized-image
+					img(src=entry.getDisplayUrlP() alt=entry.getAlt() width=entry.data.dimensions && entry.data.dimensions.width height=entry.data.dimensions && entry.data.dimensions.height).sized-image
 				if willDisplayAltInGallery
 					- let caption = entry.data.accessibility_caption
 					if caption

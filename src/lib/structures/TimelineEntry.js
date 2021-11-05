@@ -19,6 +19,7 @@ each child in children
 class TimelineEntry extends TimelineBaseMethods {
 	constructor() {
 		super()
+		this.fullyUpdated = false
 		/** @type {import("../types").TimelineEntryAll} some properties may not be available yet! */
 		// @ts-ignore
 		this.data = {}
@@ -38,12 +39,16 @@ class TimelineEntry extends TimelineBaseMethods {
 	}
 
 	async update() {
-		return collectors.fetchShortcodeData(this.data.shortcode).then(data => {
-			this.applyN3(data.result)
-		}).catch(error => {
-			console.error("TimelineEntry could not self-update; trying to continue anyway...")
-			console.error("E:", error)
-		})
+		if (!this.fullyUpdated) {
+			return collectors.fetchShortcodeData(this.data.shortcode).then(data => {
+				this.applyN3(data.result)
+			}).catch(error => {
+				console.error("TimelineEntry could not self-update; trying to continue anyway...")
+				console.error("E:", error)
+			}).finally(() => {
+				this.fullyUpdated = true
+			})
+		}
 	}
 
 	/**
@@ -88,6 +93,7 @@ class TimelineEntry extends TimelineBaseMethods {
 	 * All mutations should act exactly once and have no effect on already mutated data.
 	 */
 	fixData() {
+		this.hasDate = !!this.data.taken_at_timestamp
 		this.date = new Date(this.data.taken_at_timestamp*1000)
 	}
 
@@ -237,7 +243,7 @@ class TimelineEntry extends TimelineBaseMethods {
 		let fromCache = true
 		const clone = await (async () => {
 			// Do we just already have the extended owner?
-			if (this.data.owner.full_name) { // this property is on extended owner and not basic owner
+			if (this.data.owner.profile_pic_url) { // this property is on extended owner and not basic owner
 				const clone = proxyExtendedOwner(this.data.owner)
 				this.ownerPfpCacheP = clone.profile_pic_url
 				return clone
@@ -246,7 +252,7 @@ class TimelineEntry extends TimelineBaseMethods {
 			else if (collectors.userRequestCache.getByID(this.data.owner.id)) {
 				/** @type {import("./User")} */
 				const user = collectors.userRequestCache.getByID(this.data.owner.id)
-				if (user.data.full_name !== undefined) {
+				if (user.data.profile_pic_url !== undefined) {
 					this.data.owner = {
 						id: user.data.id,
 						username: user.data.username,

@@ -18,6 +18,7 @@
   "dependencies": {
     "better-sqlite3": "^7.4.4",
     "cookie": "^0.4.1",
+    "fast-html-parser": "^1.0.1",
     "feed": "git+https://git.sr.ht/~cadence/nodejs-feed#3dde82f8296d7a6f5659323e497e0c684f03ab71",
     "get-stream": "^6.0.1",
     "gm": "^1.23.1",

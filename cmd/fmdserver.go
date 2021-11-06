@@ -11,12 +11,14 @@ import (
 	"path/filepath"
 	"regexp"
 	"strconv"
+
+	"findmydeviceserver/user"
 )
 
 //Some IO variables
 var version = "v0.3.1"
 var webDir = "web"
-var uio UserIO
+var uio user.UserIO
 
 //Server Config
 const serverCert = "server.crt"
@@ -210,7 +212,7 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - requestAccess 2", http.StatusBadRequest)
 		return
 	}
-	if !uio.ACC.isLocked(data.DeviceId) {
+	if !uio.ACC.IsLocked(data.DeviceId) {
 		checkPassed, accessToken := uio.RequestAccess(data.DeviceId, data.HashedPassword)
 		if checkPassed {
 			accesstokenReply := AccessTokenReply{DeviceId: data.DeviceId, AccessToken: accessToken.AccessToken}
@@ -239,7 +241,7 @@ func postDevice(w http.ResponseWriter, r *http.Request) {
 	}
 	id := uio.CreateNewUser(device.PrivKey, device.PubKey, device.HashedPassword)
 
-	accessToken := AccessToken{DeviceId: id, AccessToken: ""}
+	accessToken := user.AccessToken{DeviceId: id, AccessToken: ""}
 	result, _ := json.Marshal(accessToken)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(result)
@@ -333,7 +335,7 @@ func initServer() {
 	isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]{1,` + strconv.Itoa(serverConfig.IdLength) + `}$`).MatchString
 
 	fmt.Println("Init: Preparing Devices")
-	uio = UserIO{}
+	uio = user.UserIO{}
 	uio.Init(filesDir, serverConfig.IdLength, serverConfig.MaxSavedLoc)
 	fmt.Printf("Init: Devices registered\n\n")
 }

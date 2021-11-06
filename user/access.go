@@ -1,4 +1,4 @@
-package main
+package user
 
 import "time"
 
@@ -36,7 +36,7 @@ func (a *AccessController) IncrementLock(id string) {
 	a.lockedIDs = append(a.lockedIDs, lId)
 }
 
-func (a *AccessController) isLocked(idToCheck string) bool {
+func (a *AccessController) IsLocked(idToCheck string) bool {
 	for index, lId := range a.lockedIDs {
 		if lId.DeviceId == idToCheck {
 			if lId.Failed >= 3 {

@@ -121,8 +121,8 @@ function locate(index, password) {
                 fetch("/locationDataSize", {
                     method: 'PUT',
                     body: JSON.stringify({
-                        IDT: token.AccessToken,
-                        Data: index
+                        IDT: token.Data,
+                        Data: index.toString()
                     }),
                     headers: {
                         'Content-type': 'applicatoin/json'
@@ -144,8 +144,8 @@ function locate(index, password) {
                 fetch("/location", {
                     method: 'PUT',
                     body: JSON.stringify({
-                        IDT: token.AccessToken,
-                        Data: index
+                        IDT: token.Data,
+                        Data: index.toString()
                     }),
                     headers: {
                         'Content-type': 'applicatoin/json'
@@ -159,8 +159,8 @@ function locate(index, password) {
                         fetch("/key", {
                             method: 'PUT',
                             body: JSON.stringify({
-                                IDT: token.AccessToken,
-                                Data: index
+                                IDT: token.Data,
+                                Data: index.toString()
                             }),
                             headers: {
                                 'Content-type': 'applicatoin/json'

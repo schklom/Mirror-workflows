@@ -100,25 +100,7 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getLocation 2", http.StatusBadRequest)
 		return
 	}
-	fmt.Print(request.Index)
-	path := filepath.Join(dataDir, id)
-	path = filepath.Join(path, locationDir)
-	if request.Index == -1 {
-		files, _ := ioutil.ReadDir(path)
-		highest := 0
-		position := -1
-		for i := 0; i < len(files); i++ {
-			number, _ := strconv.Atoi(files[i].Name())
-			if number > highest {
-				highest = number
-				position = i
-			}
-		}
-		path = filepath.Join(path, files[position].Name())
-	} else {
-		path = filepath.Join(path, fmt.Sprint(request.Index))
-	}
-	data, err := ioutil.ReadFile(path)
+	data, err := uio.GetLocation(id, request.Index)
 	if err == nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(fmt.Sprint(string(data))))
@@ -155,22 +137,8 @@ func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	path := filepath.Join(dataDir, id)
-	path = filepath.Join(path, locationDir)
-	files, _ := ioutil.ReadDir(path)
-	highest := -1
-	smallest := 2147483647
-	for i := 0; i < len(files); i++ {
-		number, err := strconv.Atoi(files[i].Name())
-		if err == nil {
-			if number > highest {
-				highest = number
-			}
-			if number < smallest {
-				smallest = number
-			}
-		}
-	}
+	highest, smallest := uio.GetLocationSize(id)
+
 	dataSize := locationDataSize{DataLength: highest, DataBeginningIndex: smallest}
 	result, _ := json.Marshal(dataSize)
 	w.Header().Set("Content-Type", "application/json")

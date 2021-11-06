@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"math/rand"
 	"os"
@@ -106,8 +107,44 @@ func (u *UserIO) AddLocation(id string, loc string) {
 	_ = ioutil.WriteFile(userLocationFilePath, []byte(loc), 0644)
 }
 
-func (u *UserIO) GetLocation(id string, pos int) {
+func (u *UserIO) GetLocation(id string, pos int) ([]byte, error) {
+	userLocationPath := filepath.Join(u.getUserDir(id), locationDir)
+	var userLocationFilePath string
+	if pos == -1 {
+		files, _ := ioutil.ReadDir(userLocationPath)
+		highest := 0
+		position := -1
+		for i := 0; i < len(files); i++ {
+			number, _ := strconv.Atoi(files[i].Name())
+			if number > highest {
+				highest = number
+				position = i
+			}
+		}
+		userLocationFilePath = filepath.Join(userLocationPath, files[position].Name())
+	} else {
+		userLocationFilePath = filepath.Join(userLocationPath, fmt.Sprint(pos))
+	}
+	return ioutil.ReadFile(userLocationFilePath)
+}
 
+func (u *UserIO) GetLocationSize(id string) (int, int) {
+	userLocationPath := filepath.Join(u.getUserDir(id), locationDir)
+	files, _ := ioutil.ReadDir(userLocationPath)
+	highest := -1
+	smallest := 2147483647
+	for i := 0; i < len(files); i++ {
+		number, err := strconv.Atoi(files[i].Name())
+		if err == nil {
+			if number > highest {
+				highest = number
+			}
+			if number < smallest {
+				smallest = number
+			}
+		}
+	}
+	return highest, smallest
 }
 
 func (u *UserIO) GetPrivateKey(id string) (string, error) {

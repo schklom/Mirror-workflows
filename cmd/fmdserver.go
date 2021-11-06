@@ -80,6 +80,13 @@ type AccessTokenReply struct {
 	AccessToken string `'json:"AccessToken"`
 }
 
+//universal package for string transfer
+// IDT = DeviceID or AccessToken
+type DataPackage struct {
+	IDT  string `'json:"Identifier"`
+	Data string `'json:"Data"`
+}
+
 func getLocation(w http.ResponseWriter, r *http.Request) {
 	var request requestData
 	err := json.NewDecoder(r.Body).Decode(&request)
@@ -165,7 +172,7 @@ func getCommand(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getCommand 2", http.StatusBadRequest)
 		return
 	}
-	uInfo, err := uio.GetUserInfo(id)
+	uInfo, _ := uio.GetUserInfo(id)
 	if uInfo.CommandToUser != "" {
 		commandAsString := string(uInfo.CommandToUser)
 		reply := commandToDeviceData{AccessToken: data.AccessToken, Command: commandAsString}
@@ -198,6 +205,25 @@ func postCommand(w http.ResponseWriter, r *http.Request) {
 
 	uInfo, _ := uio.GetUserInfo(id)
 	uInfo.CommandToUser = (data.Command)
+	uio.SetUserInfo(id, uInfo)
+	http.Get(uInfo.Push)
+}
+
+func postPushLink(w http.ResponseWriter, r *http.Request) {
+	var data DataPackage
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		http.Error(w, "Meeep!, Error - postCommand 1", http.StatusBadRequest)
+		return
+	}
+	id := uio.ACC.CheckAccessToken(data.IDT)
+	if id == "" {
+		http.Error(w, "Meeep!, Error - postCommand 2", http.StatusBadRequest)
+		return
+	}
+
+	uInfo, _ := uio.GetUserInfo(id)
+	uInfo.Push = (data.Data)
 	uio.SetUserInfo(id, uInfo)
 }
 
@@ -281,6 +307,8 @@ func handleRequests() {
 	http.HandleFunc("/key/", getKey)
 	http.HandleFunc("/device", postDevice)
 	http.HandleFunc("/device/", postDevice)
+	http.HandleFunc("/push", postPushLink)
+	http.HandleFunc("/push/", postPushLink)
 	http.HandleFunc("/requestAccess", requestAccess)
 	http.HandleFunc("/requestAccess/", requestAccess)
 	http.HandleFunc("/version", getVersion)

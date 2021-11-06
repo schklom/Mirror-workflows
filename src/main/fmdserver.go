@@ -11,8 +11,6 @@ import (
 	"path/filepath"
 	"regexp"
 	"strconv"
-	"strings"
-	"time"
 )
 
 //Some IO variables
@@ -28,8 +26,6 @@ const configFile = "config.json"
 var filesDir string
 
 var serverConfig config
-
-var accessTokens []AccessToken
 
 var isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]*$`).MatchString
 
@@ -77,12 +73,6 @@ type requestAccessData struct {
 	DeviceId       string `'json:"DeviceId"`
 }
 
-type AccessToken struct {
-	DeviceId    string
-	AccessToken string
-	Time        int64
-}
-
 type AccessTokenReply struct {
 	DeviceId    string `'json:"DeviceId"`
 	AccessToken string `'json:"AccessToken"`
@@ -95,7 +85,7 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getLocation 1", http.StatusBadRequest)
 		return
 	}
-	id := checkAccessToken(request.AccessToken)
+	id := uio.ACC.CheckAccessToken(request.AccessToken)
 	if id == "" {
 		http.Error(w, "Meeep!, Error - getLocation 2", http.StatusBadRequest)
 		return
@@ -114,7 +104,7 @@ func postLocation(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - postLocation 1", http.StatusBadRequest)
 		return
 	}
-	id := checkAccessToken(location.AccessToken)
+	id := uio.ACC.CheckAccessToken(location.AccessToken)
 	if id == "" {
 		http.Error(w, "Meeep!, Error - postLocation 2", http.StatusBadRequest)
 		return
@@ -131,7 +121,7 @@ func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getLocationDataSize 1", http.StatusBadRequest)
 		return
 	}
-	id := checkAccessToken(request.AccessToken)
+	id := uio.ACC.CheckAccessToken(request.AccessToken)
 	if id == "" {
 		http.Error(w, "Meeep!, Error - getLocationDataSize 2", http.StatusBadRequest)
 		return
@@ -152,7 +142,7 @@ func getKey(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getKey 1", http.StatusBadRequest)
 		return
 	}
-	id := checkAccessToken(request.AccessToken)
+	id := uio.ACC.CheckAccessToken(request.AccessToken)
 	if id == "" {
 		http.Error(w, "Meeep!, Error - getKey 2", http.StatusBadRequest)
 		return
@@ -168,7 +158,7 @@ func getCommand(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getCommand 1", http.StatusBadRequest)
 		return
 	}
-	id := checkAccessToken(data.AccessToken)
+	id := uio.ACC.CheckAccessToken(data.AccessToken)
 	if id == "" {
 		http.Error(w, "Meeep!, Error - getCommand 2", http.StatusBadRequest)
 		return
@@ -198,7 +188,7 @@ func postCommand(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - postCommand 1", http.StatusBadRequest)
 		return
 	}
-	id := checkAccessToken(data.AccessToken)
+	id := uio.ACC.CheckAccessToken(data.AccessToken)
 	if id == "" {
 		http.Error(w, "Meeep!, Error - postCommand 2", http.StatusBadRequest)
 		return
@@ -206,7 +196,7 @@ func postCommand(w http.ResponseWriter, r *http.Request) {
 
 	uInfo, _ := uio.GetUserInfo(id)
 	uInfo.CommandToUser = (data.Command)
-	uio.SetUserInfo(uInfo)
+	uio.SetUserInfo(id, uInfo)
 }
 
 func requestAccess(w http.ResponseWriter, r *http.Request) {
@@ -220,32 +210,22 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - requestAccess 2", http.StatusBadRequest)
 		return
 	}
-	if !isLocked(data.DeviceId) {
-		path := filepath.Join(dataDir, data.DeviceId)
-		hashedPWPath := filepath.Join(path, hashedPasswordFile)
-
-		hashedPW, err := ioutil.ReadFile(hashedPWPath)
-		if err != nil {
-			http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusForbidden)
-			return
-		}
-		if strings.EqualFold(string(hashedPW), (data.HashedPassword)) {
-			newAccess := AccessToken{DeviceId: data.DeviceId, AccessToken: generateNewId(64), Time: time.Now().Unix()}
-			accessTokens = append(accessTokens, newAccess)
-
-			accessToken := AccessToken{DeviceId: data.DeviceId, AccessToken: newAccess.AccessToken}
-			result, _ := json.Marshal(accessToken)
+	if !uio.ACC.isLocked(data.DeviceId) {
+		checkPassed, accessToken := uio.RequestAccess(data.DeviceId, data.HashedPassword)
+		if checkPassed {
+			accesstokenReply := AccessTokenReply{DeviceId: data.DeviceId, AccessToken: accessToken.AccessToken}
+			result, _ := json.Marshal(accesstokenReply)
 			w.Header().Set("Content-Type", "application/json")
 			w.Write(result)
 		} else {
-			incrementLock(data.DeviceId)
+			uio.ACC.IncrementLock(data.DeviceId)
 			http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusForbidden)
 		}
 	} else {
 		http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusLocked)
-		path := filepath.Join(dataDir, data.DeviceId)
-		path = filepath.Join(path, commandToUserFile)
-		_ = ioutil.WriteFile(path, []byte("423"), 0644)
+		uInfo, _ := uio.GetUserInfo(data.DeviceId)
+		uInfo.CommandToUser = "423"
+		uio.SetUserInfo(data.DeviceId, uInfo)
 	}
 
 }
@@ -267,26 +247,6 @@ func postDevice(w http.ResponseWriter, r *http.Request) {
 
 func getVersion(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(fmt.Sprint(version)))
-}
-
-func checkAccessToken(idToCheck string) string {
-	for index, id := range accessTokens {
-		if id.AccessToken == idToCheck {
-			expiredTime := id.Time + (15 * 60)
-			if expiredTime == 0 {
-				accessTokens[index] = accessTokens[len(accessTokens)-1]
-				accessTokens = accessTokens[:len(accessTokens)-1]
-				return id.DeviceId
-			} else if expiredTime < time.Now().Unix() {
-				accessTokens[index] = accessTokens[len(accessTokens)-1]
-				accessTokens = accessTokens[:len(accessTokens)-1]
-				return ""
-			} else {
-				return id.DeviceId
-			}
-		}
-	}
-	return ""
 }
 
 func mainLocation(w http.ResponseWriter, r *http.Request) {
@@ -375,7 +335,7 @@ func initServer() {
 	fmt.Println("Init: Preparing Devices")
 	uio = UserIO{}
 	uio.Init(filesDir, serverConfig.IdLength, serverConfig.MaxSavedLoc)
-	fmt.Printf("Init: %d Devices registered.\n\n", len(uio.IDs))
+	fmt.Printf("Init: Devices registered\n\n")
 }
 
 func fileExists(filename string) bool {

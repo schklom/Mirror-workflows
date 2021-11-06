@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -23,11 +24,11 @@ const publicKeyFile = "pubkey"
 const userInfoFile = "userdat"
 
 type UserIO struct {
-	IDs          []string
-	LockedIDs    []LockedId
-	DataPath     string
-	UserIDLength int
-	MaxSavedLoc  int
+	ids          []string
+	dataPath     string
+	userIDLength int
+	maxSavedLoc  int
+	ACC          AccessController
 }
 
 type UserInfo struct {
@@ -36,28 +37,22 @@ type UserInfo struct {
 	Push           string
 }
 
-type LockedId struct {
-	DeviceId  string
-	Failed    int
-	Timestamp int64
-}
-
 func (u *UserIO) Init(path string, userIDLength int, maxSavedLoc int) {
-	u.DataPath = filepath.Join(path, dataDir)
-	os.MkdirAll(u.DataPath, os.ModePerm)
-	dirs, _ := ioutil.ReadDir(u.DataPath)
+	u.dataPath = filepath.Join(path, dataDir)
+	os.MkdirAll(u.dataPath, os.ModePerm)
+	dirs, _ := ioutil.ReadDir(u.dataPath)
 	for i := 0; i < len(dirs); i++ {
-		u.IDs = append(u.IDs, dirs[i].Name())
+		u.ids = append(u.ids, dirs[i].Name())
 	}
-	u.UserIDLength = userIDLength
-	u.MaxSavedLoc = maxSavedLoc
+	u.userIDLength = userIDLength
+	u.maxSavedLoc = maxSavedLoc
 }
 
 func (u *UserIO) CreateNewUser(privKey string, pubKey string, hashedPassword string) string {
-	id := u.generateNewId(u.UserIDLength)
-	u.IDs = append(u.IDs, id)
+	id := u.generateNewId()
+	u.ids = append(u.ids, id)
 
-	userPath := filepath.Join(u.DataPath, id)
+	userPath := filepath.Join(u.dataPath, id)
 	os.MkdirAll(userPath, os.ModePerm)
 	locationPath := filepath.Join(userPath, locationDir)
 	os.MkdirAll(locationPath, os.ModePerm)
@@ -91,7 +86,7 @@ func (u *UserIO) AddLocation(id string, loc string) {
 	highest += 1
 
 	//Auto-Clean directory
-	difference := (highest - smallest) - u.MaxSavedLoc
+	difference := (highest - smallest) - u.maxSavedLoc
 	if difference > 0 {
 		deleteUntil := smallest + difference
 		index := smallest
@@ -180,57 +175,30 @@ func (u *UserIO) GetUserInfo(id string) (UserInfo, error) {
 }
 
 func (u *UserIO) getUserDir(id string) string {
-	return filepath.Join(u.DataPath, id)
+	return filepath.Join(u.dataPath, id)
 }
 
-func (u *UserIO) generateNewId(n int) string {
+func (u *UserIO) generateNewId() string {
 	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-	s := make([]rune, n)
+	s := make([]rune, u.userIDLength)
 	rand.Seed(time.Now().Unix())
 	for i := range s {
 		s[i] = letters[rand.Intn(len(letters))]
 	}
 	newId := string(s)
-	for i := 0; i < len(u.IDs); i++ {
-		if u.IDs[i] == newId {
-			newId = u.generateNewId(n)
+	for i := 0; i < len(u.ids); i++ {
+		if u.ids[i] == newId {
+			newId = u.generateNewId()
 		}
 	}
 	return newId
 }
 
-func (u *UserIO) IncrementLock(id string) {
-	for index, lId := range u.LockedIDs {
-		if lId.DeviceId == id {
-			if lId.Timestamp < time.Now().Unix() {
-				u.LockedIDs[index].Failed = 1
-				u.LockedIDs[index].Timestamp = time.Now().Unix() + (10 * 60)
-			} else {
-				u.LockedIDs[index].Failed++
-				u.LockedIDs[index].Timestamp = time.Now().Unix() + (10 * 60)
-			}
-			return
-		}
+func (u *UserIO) RequestAccess(id string, hashedPW string) (bool, AccessToken) {
+	uInfo, _ := u.GetUserInfo(id)
+	if strings.EqualFold(uInfo.HashedPassword, hashedPW) {
+		return true, u.ACC.PutAccess(id, u.generateNewId())
 	}
-	lId := LockedId{DeviceId: id, Timestamp: time.Now().Unix() + (10 * 60), Failed: 1}
-	u.LockedIDs = append(u.LockedIDs, lId)
-}
-
-func (u *UserIO) isLocked(idToCheck string) bool {
-	for index, lId := range u.LockedIDs {
-		if lId.DeviceId == idToCheck {
-			if lId.Failed >= 3 {
-				if lId.Timestamp < time.Now().Unix() {
-					u.LockedIDs[index] = u.LockedIDs[len(u.LockedIDs)-1]
-					u.LockedIDs = u.LockedIDs[:len(u.LockedIDs)-1]
-					return false
-				} else {
-					return true
-				}
-			} else {
-				return false
-			}
-		}
-	}
-	return false
+	var a AccessToken
+	return false, a
 }

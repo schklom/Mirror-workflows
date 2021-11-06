@@ -1,9 +1,14 @@
 # This file is a template, and might need editing before it works on your project.
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Go.gitlab-ci.yml
+
 image: golang:latest
 
 variables:
   # Please edit to your GitLab project
-  REPO_NAME: gitlab.com/Nulide/findmydeviceserver
+  REPO_NAME: gitlab.com/namespace/project
 
 # The problem is that to be able to use go get, one needs to put
 # the repository in the $GOPATH. So for example if your gitlab domain
@@ -14,7 +19,7 @@ variables:
 before_script:
   - mkdir -p $GOPATH/src/$(dirname $REPO_NAME)
   - ln -svf $CI_PROJECT_DIR $GOPATH/src/$REPO_NAME
-  - cd $GOPATH/src/$REPO_NAME/src
+  - cd $GOPATH/src/$REPO_NAME
 
 stages:
   - test
@@ -31,7 +36,7 @@ format:
 compile:
   stage: build
   script:
-    - go build -race -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/src/fmdserver
+    - go build -race -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/cmd/fmdserver
   artifacts:
     paths:
-      - src/fmdserver
+      - fmdserver

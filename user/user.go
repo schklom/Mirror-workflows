@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-var dataDir = "dataNew"
+var dataDir = "data"
 
 //User-Folders
 var locationDir = "loc"

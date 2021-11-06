@@ -53,53 +53,34 @@ type locationDataSize struct {
 	DataBeginningIndex int
 }
 
-type commandToDeviceData struct {
-	AccessToken string `'json:"AccessToken"`
-	Command     string `'json:"Command"`
-}
-
-//The json-request from the webpage.
-type requestData struct {
-	AccessToken string `'json:"AccessToken"`
-	Index       int    `'json:"index"`
-}
-
 type registrationData struct {
 	HashedPassword string `'json:"hashedPassword"`
 	PubKey         string `'json:"pubKey"`
 	PrivKey        string `'json:"privKey"`
 }
 
-type requestAccessData struct {
-	HashedPassword string `'json:"HashedPassword"`
-	DeviceId       string `'json:"DeviceId"`
-}
-
-type AccessTokenReply struct {
-	DeviceId    string `'json:"DeviceId"`
-	AccessToken string `'json:"AccessToken"`
-}
-
 //universal package for string transfer
 // IDT = DeviceID or AccessToken
+// If both will be send. ID is always IDT
 type DataPackage struct {
 	IDT  string `'json:"Identifier"`
 	Data string `'json:"Data"`
 }
 
 func getLocation(w http.ResponseWriter, r *http.Request) {
-	var request requestData
+	var request DataPackage
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		http.Error(w, "Meeep!, Error - getLocation 1", http.StatusBadRequest)
 		return
 	}
-	id := uio.ACC.CheckAccessToken(request.AccessToken)
+	id := uio.ACC.CheckAccessToken(request.IDT)
 	if id == "" {
 		http.Error(w, "Meeep!, Error - getLocation 2", http.StatusBadRequest)
 		return
 	}
-	data, err := uio.GetLocation(id, request.Index)
+	index, _ := strconv.Atoi(request.Data)
+	data, err := uio.GetLocation(id, index)
 	if err == nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(fmt.Sprint(string(data))))
@@ -124,13 +105,13 @@ func postLocation(w http.ResponseWriter, r *http.Request) {
 }
 
 func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
-	var request requestData
+	var request DataPackage
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		http.Error(w, "Meeep!, Error - getLocationDataSize 1", http.StatusBadRequest)
 		return
 	}
-	id := uio.ACC.CheckAccessToken(request.AccessToken)
+	id := uio.ACC.CheckAccessToken(request.IDT)
 	if id == "" {
 		http.Error(w, "Meeep!, Error - getLocationDataSize 2", http.StatusBadRequest)
 		return
@@ -145,13 +126,13 @@ func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 }
 
 func getKey(w http.ResponseWriter, r *http.Request) {
-	var request requestData
+	var request DataPackage
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		http.Error(w, "Meeep!, Error - getKey 1", http.StatusBadRequest)
 		return
 	}
-	id := uio.ACC.CheckAccessToken(request.AccessToken)
+	id := uio.ACC.CheckAccessToken(request.IDT)
 	if id == "" {
 		http.Error(w, "Meeep!, Error - getKey 2", http.StatusBadRequest)
 		return
@@ -161,13 +142,13 @@ func getKey(w http.ResponseWriter, r *http.Request) {
 }
 
 func getCommand(w http.ResponseWriter, r *http.Request) {
-	var data requestData
+	var data DataPackage
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
 		http.Error(w, "Meeep!, Error - getCommand 1", http.StatusBadRequest)
 		return
 	}
-	id := uio.ACC.CheckAccessToken(data.AccessToken)
+	id := uio.ACC.CheckAccessToken(data.IDT)
 	if id == "" {
 		http.Error(w, "Meeep!, Error - getCommand 2", http.StatusBadRequest)
 		return
@@ -175,14 +156,14 @@ func getCommand(w http.ResponseWriter, r *http.Request) {
 	uInfo, _ := uio.GetUserInfo(id)
 	if uInfo.CommandToUser != "" {
 		commandAsString := string(uInfo.CommandToUser)
-		reply := commandToDeviceData{AccessToken: data.AccessToken, Command: commandAsString}
+		reply := DataPackage{IDT: data.IDT, Data: commandAsString}
 		result, _ := json.Marshal(reply)
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(result))
 		uInfo.CommandToUser = ""
 		uio.SetUserInfo(id, uInfo)
 	} else {
-		reply := commandToDeviceData{AccessToken: data.AccessToken, Command: ""}
+		reply := DataPackage{IDT: data.IDT, Data: ""}
 		result, _ := json.Marshal(reply)
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(result))
@@ -191,20 +172,20 @@ func getCommand(w http.ResponseWriter, r *http.Request) {
 }
 
 func postCommand(w http.ResponseWriter, r *http.Request) {
-	var data commandToDeviceData
+	var data DataPackage
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
 		http.Error(w, "Meeep!, Error - postCommand 1", http.StatusBadRequest)
 		return
 	}
-	id := uio.ACC.CheckAccessToken(data.AccessToken)
+	id := uio.ACC.CheckAccessToken(data.IDT)
 	if id == "" {
 		http.Error(w, "Meeep!, Error - postCommand 2", http.StatusBadRequest)
 		return
 	}
 
 	uInfo, _ := uio.GetUserInfo(id)
-	uInfo.CommandToUser = (data.Command)
+	uInfo.CommandToUser = (data.Data)
 	uio.SetUserInfo(id, uInfo)
 	http.Get(uInfo.Push)
 }
@@ -228,32 +209,32 @@ func postPushLink(w http.ResponseWriter, r *http.Request) {
 }
 
 func requestAccess(w http.ResponseWriter, r *http.Request) {
-	var data requestAccessData
+	var data DataPackage
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
 		http.Error(w, "Meeep!, Error - requestAccess 1", http.StatusBadRequest)
 		return
 	}
-	if !isIdValid(data.DeviceId) {
+	if !isIdValid(data.IDT) {
 		http.Error(w, "Meeep!, Error - requestAccess 2", http.StatusBadRequest)
 		return
 	}
-	if !uio.ACC.IsLocked(data.DeviceId) {
-		checkPassed, accessToken := uio.RequestAccess(data.DeviceId, data.HashedPassword)
+	if !uio.ACC.IsLocked(data.IDT) {
+		checkPassed, accessToken := uio.RequestAccess(data.IDT, data.Data)
 		if checkPassed {
-			accesstokenReply := AccessTokenReply{DeviceId: data.DeviceId, AccessToken: accessToken.AccessToken}
+			accesstokenReply := DataPackage{IDT: data.IDT, Data: accessToken.AccessToken}
 			result, _ := json.Marshal(accesstokenReply)
 			w.Header().Set("Content-Type", "application/json")
 			w.Write(result)
 		} else {
-			uio.ACC.IncrementLock(data.DeviceId)
+			uio.ACC.IncrementLock(data.IDT)
 			http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusForbidden)
 		}
 	} else {
 		http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusLocked)
-		uInfo, _ := uio.GetUserInfo(data.DeviceId)
+		uInfo, _ := uio.GetUserInfo(data.IDT)
 		uInfo.CommandToUser = "423"
-		uio.SetUserInfo(data.DeviceId, uInfo)
+		uio.SetUserInfo(data.IDT, uInfo)
 	}
 
 }

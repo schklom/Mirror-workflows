@@ -97,8 +97,8 @@ function locate(index, password) {
         fetch("/requestAccess", {
             method: 'PUT',
             body: JSON.stringify({
-                DeviceId: idInput.value,
-                HashedPassword: hashedPW
+                IDT: idInput.value,
+                Data: hashedPW
             }),
             headers: {
                 'Content-type': 'applicatoin/json'
@@ -121,8 +121,8 @@ function locate(index, password) {
                 fetch("/locationDataSize", {
                     method: 'PUT',
                     body: JSON.stringify({
-                        AccessToken: token.AccessToken,
-                        index: index
+                        IDT: token.AccessToken,
+                        Data: index
                     }),
                     headers: {
                         'Content-type': 'applicatoin/json'
@@ -144,8 +144,8 @@ function locate(index, password) {
                 fetch("/location", {
                     method: 'PUT',
                     body: JSON.stringify({
-                        AccessToken: token.AccessToken,
-                        index: index
+                        IDT: token.AccessToken,
+                        Data: index
                     }),
                     headers: {
                         'Content-type': 'applicatoin/json'
@@ -159,8 +159,8 @@ function locate(index, password) {
                         fetch("/key", {
                             method: 'PUT',
                             body: JSON.stringify({
-                                AccessToken: token.AccessToken,
-                                index: index
+                                IDT: token.AccessToken,
+                                Data: index
                             }),
                             headers: {
                                 'Content-type': 'applicatoin/json'
@@ -217,8 +217,8 @@ function locate(index, password) {
                                                         fetch("/locationDataSize", {
                                                             method: 'PUT',
                                                             body: JSON.stringify({
-                                                                DeviceId: token.AccessToken,
-                                                                index: -1
+                                                                IDT: token.AccessToken,
+                                                                Data: -1
                                                             }),
                                                             headers: {
                                                                 'Content-type': 'applicatoin/json'
@@ -327,8 +327,8 @@ function sendToPhone(message) {
         fetch("/requestAccess", {
             method: 'PUT',
             body: JSON.stringify({
-                DeviceId: idInput.value,
-                HashedPassword: hashedPW
+                IDT: idInput.value,
+                Data: hashedPW
             }),
             headers: {
                 'Content-type': 'applicatoin/json'
@@ -340,8 +340,8 @@ function sendToPhone(message) {
                 fetch("/command", {
                     method: 'POST',
                     body: JSON.stringify({
-                        AccessToken: token.AccessToken,
-                        Command: message
+                        IDT: token.AccessToken,
+                        Data: message
                     }),
                     headers: {
                         'Content-type': 'applicatoin/json'

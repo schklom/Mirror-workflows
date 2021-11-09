@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -11,6 +12,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strconv"
+	"strings"
 
 	"findmydeviceserver/user"
 )
@@ -187,7 +189,17 @@ func postCommand(w http.ResponseWriter, r *http.Request) {
 	uInfo, _ := uio.GetUserInfo(id)
 	uInfo.CommandToUser = (data.Data)
 	uio.SetUserInfo(id, uInfo)
-	http.Get(uInfo.Push)
+	url := strings.Replace(uInfo.Push, "/UP?", "/message?", -1)
+
+	var jsonData = []byte(`{
+		"message": "magic may begin",
+		"priority": 5
+	}`)
+	request, _ := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
+
+	client := &http.Client{}
+	client.Do(request)
 }
 
 func postPushLink(w http.ResponseWriter, r *http.Request) {

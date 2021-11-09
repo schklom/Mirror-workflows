@@ -340,7 +340,7 @@ function sendToPhone(message) {
                 fetch("/command", {
                     method: 'POST',
                     body: JSON.stringify({
-                        IDT: token.AccessToken,
+                        IDT: token.Data,
                         Data: message
                     }),
                     headers: {

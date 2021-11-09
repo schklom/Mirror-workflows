@@ -37,7 +37,7 @@ compile:
   stage: build
   script:
     - cd cmd
-    - go build -race -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR
+    - go build -race -ldflags "-extldflags '-static'" -o fmdserver
   artifacts:
     paths:
       - fmdserver

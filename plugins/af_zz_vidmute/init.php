@@ -1,6 +1,5 @@
 <?php
 class Af_Zz_VidMute extends Plugin {
-	private $host;
 
 	function about() {
 		return array(null,
@@ -9,7 +8,7 @@ class Af_Zz_VidMute extends Plugin {
 	}
 
 	function init($host) {
-		$this->host = $host;
+
 	}
 
 	function get_js() {

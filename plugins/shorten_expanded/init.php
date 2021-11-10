@@ -1,6 +1,5 @@
 <?php
 class Shorten_Expanded extends Plugin {
-	private $host;
 
 	function about() {
 		return array(null,
@@ -9,7 +8,7 @@ class Shorten_Expanded extends Plugin {
 	}
 
 	function init($host) {
-		$this->host = $host;
+
 	}
 
 	function get_css() {

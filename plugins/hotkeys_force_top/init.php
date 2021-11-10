@@ -1,7 +1,5 @@
 <?php
 class Hotkeys_Force_Top extends Plugin {
-        private $host;
-
         function about() {
                 return array(null,
                         "Force open article to the top",
@@ -9,7 +7,6 @@ class Hotkeys_Force_Top extends Plugin {
         }
 
         function init($host) {
-                $this->host = $host;
 
         }
 

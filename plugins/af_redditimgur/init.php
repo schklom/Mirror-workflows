@@ -827,6 +827,7 @@ class Af_RedditImgur extends Plugin {
 		return $this->get_header($url, CURLINFO_CONTENT_TYPE, $useragent);
 	}
 
+	// @phpstan-ignore-next-line
 	private function get_location($url, $useragent = false) {
 		return $this->get_header($url, CURLINFO_EFFECTIVE_URL, $useragent);
 	}

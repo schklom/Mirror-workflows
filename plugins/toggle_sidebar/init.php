@@ -1,8 +1,6 @@
 <?php
 class Toggle_Sidebar extends Plugin {
 
-	private $host;
-
 	function about() {
 		return array(null,
 			"Adds a main toolbar button to toggle sidebar",
@@ -10,8 +8,6 @@ class Toggle_Sidebar extends Plugin {
 	}
 
 	function init($host) {
-		$this->host = $host;
-
 		$host->add_hook($host::HOOK_MAIN_TOOLBAR_BUTTON, $this);
 	}
 

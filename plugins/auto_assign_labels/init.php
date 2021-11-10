@@ -1,9 +1,6 @@
 <?php
 class Auto_Assign_Labels extends Plugin {
 
-	/* @var PluginHost $host */
-	private $host;
-
 	function about() {
 		return array(null,
 			"Assign labels automatically based on article title, content, and tags",
@@ -11,8 +8,6 @@ class Auto_Assign_Labels extends Plugin {
 	}
 
 	function init($host) {
-		$this->host = $host;
-
 		$host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
 	}
 

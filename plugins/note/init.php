@@ -1,9 +1,6 @@
 <?php
 class Note extends Plugin {
 
-	/* @var PluginHost $host */
-	private $host;
-
 	function about() {
 		return array(null,
 			"Adds support for setting article notes",
@@ -11,8 +8,6 @@ class Note extends Plugin {
 	}
 
 	function init($host) {
-		$this->host = $host;
-
 		$host->add_hook($host::HOOK_ARTICLE_BUTTON, $this);
 	}
 

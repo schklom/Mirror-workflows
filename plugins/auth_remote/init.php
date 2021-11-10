@@ -1,8 +1,6 @@
 <?php
 class Auth_Remote extends Auth_Base {
 
-	private $host;
-
 	function about() {
 		return array(null,
 			"Authenticates against remote password (e.g. supplied by Apache)",
@@ -10,10 +8,7 @@ class Auth_Remote extends Auth_Base {
 			true);
 	}
 
-	/* @var PluginHost $host */
 	function init($host) {
-		$this->host = $host;
-
 		$host->add_hook($host::HOOK_AUTH_USER, $this);
 	}
 

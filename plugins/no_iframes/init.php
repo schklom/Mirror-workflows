@@ -1,6 +1,5 @@
 <?php
 class No_Iframes extends Plugin {
-	private $host;
 
 	function about() {
 		return array(null,
@@ -9,8 +8,6 @@ class No_Iframes extends Plugin {
 	}
 
 	function init($host) {
-		$this->host = $host;
-
 		$host->add_hook($host::HOOK_SANITIZE, $this);
 	}
 

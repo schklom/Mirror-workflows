@@ -17,6 +17,21 @@ class UserHelper {
 		self::HASH_ALGO_SHA1
 	];
 
+	/** forbidden to login */
+	const ACCESS_LEVEL_DISABLED 		= -2;
+
+	/** can't subscribe to new feeds, feeds are not updated */
+	const ACCESS_LEVEL_READONLY		= -1;
+
+	/** no restrictions, regular user */
+	const ACCESS_LEVEL_USER				= 0;
+
+	/** not used, same as regular user */
+	const ACCESS_LEVEL_POWERUSER		= 5;
+
+	/** has administrator permissions */
+	const ACCESS_LEVEL_ADMIN			= 10;
+
 	static function authenticate(string $login = null, string $password = null, bool $check_only = false, string $service = null) {
 		if (!Config::get(Config::SINGLE_USER_MODE)) {
 			$user_id = false;
@@ -41,7 +56,7 @@ class UserHelper {
 
 				$user = ORM::for_table('ttrss_users')->find_one($user_id);
 
-				if ($user) {
+				if ($user && $user->access_level != self::ACCESS_LEVEL_DISABLED) {
 					$_SESSION["uid"] = $user_id;
 					$_SESSION["auth_module"] = $auth_module;
 					$_SESSION["name"] = $user->login;
@@ -68,7 +83,7 @@ class UserHelper {
 
 			$_SESSION["uid"] = 1;
 			$_SESSION["name"] = "admin";
-			$_SESSION["access_level"] = 10;
+			$_SESSION["access_level"] = self::ACCESS_LEVEL_ADMIN;
 
 			$_SESSION["hide_hello"] = true;
 			$_SESSION["hide_logout"] = true;

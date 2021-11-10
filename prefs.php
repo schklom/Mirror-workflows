@@ -148,7 +148,7 @@
             style="padding : 0px"
             href="backend.php?op=pref-labels"
             title="<i class='material-icons'>label_outline1</i> <?= __('Labels') ?>"></div>
-        <?php if ($_SESSION["access_level"] >= 10) { ?>
+        <?php if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN) { ?>
             <div id="usersTab" dojoType="dijit.layout.ContentPane"
                 style="padding : 0px"
                 href="backend.php?op=pref-users"

@@ -538,6 +538,8 @@ class Pref_Feeds extends Handler_Protected {
 				$local_purge_intervals = [ T_nsprintf('%d day', '%d days', $purge_interval, $purge_interval) ];
 			}
 
+			$user = ORM::for_table("ttrss_users")->find_one($_SESSION["uid"]);
+
 			print json_encode([
 				"feed" => $row,
 				"cats" => [
@@ -549,6 +551,9 @@ class Pref_Feeds extends Handler_Protected {
 				"intervals" => [
 					"update" => $local_update_intervals,
 					"purge" => $local_purge_intervals,
+				],
+				"user" => [
+					"access_level" => $user->access_level
 				],
 				"lang" => [
 					"enabled" => Config::get(Config::DB_TYPE) == "pgsql",
@@ -1206,6 +1211,13 @@ class Pref_Feeds extends Handler_Protected {
 		$feeds = explode("\n", clean($_REQUEST['feeds']));
 		$login = clean($_REQUEST['login']);
 		$pass = clean($_REQUEST['pass']);
+
+		$user = ORM::for_table('ttrss_users')->find_one($_SESSION["uid"]);
+
+		// TODO: we should return some kind of error code to frontend here
+		if ($user->access_level == UserHelper::ACCESS_LEVEL_READONLY) {
+			return false;
+		}
 
 		$csth = $this->pdo->prepare("SELECT id FROM ttrss_feeds
 						WHERE feed_url = ? AND owner_uid = ?");

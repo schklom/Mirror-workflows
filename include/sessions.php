@@ -1,7 +1,9 @@
 <?php
 	namespace Sessions;
 
-	require_once "autoload.php";
+use UserHelper;
+
+require_once "autoload.php";
 	require_once "functions.php";
 	require_once "errorhandler.php";
 	require_once "lib/gettext/gettext.inc.php";
@@ -40,6 +42,11 @@
 			if ($user) {
 				if ($user->pwd_hash != $_SESSION["pwd_hash"]) {
 					$_SESSION["login_error_msg"] = __("Session failed to validate (password changed)");
+					return false;
+				}
+
+				if ($user->access_level == UserHelper::ACCESS_LEVEL_DISABLED) {
+					$_SESSION["login_error_msg"] = __("Session failed to validate (account is disabled)");
 					return false;
 				}
 			} else {

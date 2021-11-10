@@ -123,7 +123,8 @@ class RSSUtils {
 				ttrss_feeds f, ttrss_users u LEFT JOIN ttrss_user_prefs2 p ON
 					(p.owner_uid = u.id AND profile IS NULL AND pref_name = 'DEFAULT_UPDATE_INTERVAL')
 			WHERE
-				f.owner_uid = u.id
+				f.owner_uid = u.id AND
+				u.access_level NOT IN (".sprintf("%d, %d", UserHelper::ACCESS_LEVEL_DISABLED, UserHelper::ACCESS_LEVEL_READONLY).")
 				$login_thresh_qpart
 				$update_limit_qpart
 				$updstart_thresh_qpart
@@ -163,7 +164,8 @@ class RSSUtils {
 			FROM ttrss_feeds f, ttrss_users u LEFT JOIN ttrss_user_prefs2 p ON
 					(p.owner_uid = u.id AND profile IS NULL AND pref_name = 'DEFAULT_UPDATE_INTERVAL')
 			WHERE
-				f.owner_uid = u.id
+				f.owner_uid = u.id AND
+				u.access_level NOT IN (".sprintf("%d, %d", UserHelper::ACCESS_LEVEL_DISABLED, UserHelper::ACCESS_LEVEL_READONLY).")
 				AND feed_url = :feed
 				$login_thresh_qpart
 				$update_limit_qpart
@@ -351,6 +353,19 @@ class RSSUtils {
 
 			if (!$feed_language) $feed_language = mb_strtolower(get_pref(Prefs::DEFAULT_SEARCH_LANGUAGE, $feed_obj->owner_uid));
 			if (!$feed_language) $feed_language = 'simple';
+
+			$user = ORM::for_table('ttrss_users')->find_one($feed_obj->owner_uid);
+
+			if ($user) {
+				if ($user->access_level == UserHelper::ACCESS_LEVEL_READONLY) {
+					Debug::log("error: denied update for $feed: permission denied by owner access level");
+					return false;
+				}
+			} else {
+				// this would indicate database corruption of some kind
+				Debug::log("error: owner not found for feed: $feed");
+				return false;
+			}
 
 		} else {
 			Debug::log("error: feeds table record not found for feed: $feed");

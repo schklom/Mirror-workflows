@@ -1027,9 +1027,16 @@ class Feeds extends Handler_Protected {
 	 *                 5 - Couldn't download the URL content.
 	 *                 6 - Content is an invalid XML.
 	 *                 7 - Error while creating feed database entry.
+	 *                 8 - Permission denied (ACCESS_LEVEL_READONLY).
 	 */
 	static function _subscribe($url, $cat_id = 0,
 							   $auth_login = '', $auth_pass = '') : array {
+
+		$user = ORM::for_table("ttrss_users")->find_one($_SESSION['uid']);
+
+		if ($user && $user->access_level == UserHelper::ACCESS_LEVEL_READONLY) {
+			return ["code" => 8];
+		}
 
 		$pdo = Db::pdo();
 

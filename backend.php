@@ -86,10 +86,13 @@
 		1440 => __("Daily"),
 		10080 => __("Weekly"));
 
-	$access_level_names = array(
-		0 => __("User"),
-		5 => __("Power User"),
-		10 => __("Administrator"));
+	$access_level_names = [
+		UserHelper::ACCESS_LEVEL_DISABLED 	=> __("Disabled"),
+		UserHelper::ACCESS_LEVEL_READONLY 	=> __("Read Only"),
+		UserHelper::ACCESS_LEVEL_USER			=> __("User"),
+		UserHelper::ACCESS_LEVEL_POWERUSER	=> __("Power User"),
+		UserHelper::ACCESS_LEVEL_ADMIN		=> __("Administrator")
+	];
 
 	// shortcut syntax for plugin methods (?op=plugin--pmethod&...params)
 	/* if (strpos($op, PluginHost::PUBLIC_METHOD_DELIMITER) !== false) {

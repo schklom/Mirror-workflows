@@ -813,7 +813,7 @@ class Pref_Prefs extends Handler_Protected {
 
 		usort($rv, function($a, $b) { return strcmp($a["name"], $b["name"]); });
 
-		print json_encode(['plugins' => $rv, 'is_admin' => $_SESSION['access_level'] >= 10]);
+		print json_encode(['plugins' => $rv, 'is_admin' => $_SESSION['access_level'] >= UserHelper::ACCESS_LEVEL_ADMIN]);
 	}
 
 	function index_plugins() {
@@ -890,7 +890,7 @@ class Pref_Prefs extends Handler_Protected {
 
 					<?= \Controls\button_tag(\Controls\icon("refresh"), "", ["title" => __("Reload"), "onclick" => "Helpers.Plugins.reload()"]) ?>
 
-					<?php if ($_SESSION["access_level"] >= 10) { ?>
+					<?php if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN) { ?>
 						<?php if (Config::get(Config::CHECK_FOR_UPDATES) && Config::get(Config::CHECK_FOR_PLUGIN_UPDATES)) { ?>
 
 							<button class='alt-warning' dojoType='dijit.form.Button' onclick="Helpers.Plugins.update()">
@@ -1152,7 +1152,7 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	function uninstallPlugin() {
-		if ($_SESSION["access_level"] >= 10) {
+		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN) {
 			$plugin_name = basename(clean($_REQUEST['plugin']));
 			$status = 0;
 
@@ -1167,7 +1167,7 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	function installPlugin() {
-		if ($_SESSION["access_level"] >= 10 && Config::get(Config::ENABLE_PLUGIN_INSTALLER)) {
+		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN && Config::get(Config::ENABLE_PLUGIN_INSTALLER)) {
 			$plugin_name = basename(clean($_REQUEST['plugin']));
 			$all_plugins = $this->_get_available_plugins();
 			$plugin_dir = dirname(dirname(__DIR__)) . "/plugins.local";
@@ -1252,18 +1252,18 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	private function _get_available_plugins() {
-		if ($_SESSION["access_level"] >= 10 && Config::get(Config::ENABLE_PLUGIN_INSTALLER)) {
+		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN && Config::get(Config::ENABLE_PLUGIN_INSTALLER)) {
 			return json_decode(UrlHelper::fetch(['url' => 'https://tt-rss.org/plugins.json']), true);
 		}
 	}
 	function getAvailablePlugins() {
-		if ($_SESSION["access_level"] >= 10) {
+		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN) {
 			print json_encode($this->_get_available_plugins());
 		}
 	}
 
 	function checkForPluginUpdates() {
-		if ($_SESSION["access_level"] >= 10 && Config::get(Config::CHECK_FOR_UPDATES) && Config::get(Config::CHECK_FOR_PLUGIN_UPDATES)) {
+		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN && Config::get(Config::CHECK_FOR_UPDATES) && Config::get(Config::CHECK_FOR_PLUGIN_UPDATES)) {
 			$plugin_name = $_REQUEST["name"] ?? "";
 
 			$root_dir = dirname(dirname(__DIR__)); # we're in classes/pref/
@@ -1279,7 +1279,7 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	function updateLocalPlugins() {
-		if ($_SESSION["access_level"] >= 10) {
+		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN) {
 			$plugins = explode(",", $_REQUEST["plugins"] ?? "");
 
 			# we're in classes/pref/

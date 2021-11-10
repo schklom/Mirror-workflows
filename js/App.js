@@ -17,6 +17,9 @@ const App = {
    hotkey_actions: {},
    is_prefs: false,
    LABEL_BASE_INDEX: -1024,
+	UserAccessLevels: {
+		ACCESS_LEVEL_READONLY: -1
+	},
    _translations: {},
    Hash: {
       get: function() {
@@ -76,10 +79,15 @@ const App = {
             </select>
          `
       },
-      select_hash: function(name, value, values = {}, attributes = {}, id = "") {
+      select_hash: function(name, value, values = {}, attributes = {}, id = "", params = {}) {
+			let keys = Object.keys(values);
+
+			if (params.numeric_sort)
+				keys = keys.sort((a,b) => a - b);
+
          return `
             <select name="${name}" dojoType="fox.form.Select" id="${App.escapeHtml(id)}" ${this.attributes_to_string(attributes)}>
-               ${Object.keys(values).map((vk) =>
+               ${keys.map((vk) =>
                      `<option ${vk == value ? 'selected="selected"' : ''} value="${App.escapeHtml(vk)}">${App.escapeHtml(values[vk])}</option>`
                ).join("")}
             </select>

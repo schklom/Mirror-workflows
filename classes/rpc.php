@@ -299,7 +299,8 @@ class RPC extends Handler_Protected {
 				ttrss_feeds f, ttrss_users u LEFT JOIN ttrss_user_prefs2 p ON
 					(p.owner_uid = u.id AND profile IS NULL AND pref_name = 'DEFAULT_UPDATE_INTERVAL')
 			WHERE
-				f.owner_uid = u.id
+				f.owner_uid = u.id AND
+				u.access_level NOT IN (".sprintf("%d, %d", UserHelper::ACCESS_LEVEL_DISABLED, UserHelper::ACCESS_LEVEL_READONLY).")
 				$owner_check_qpart
 				$update_limit_qpart
 				$updstart_thresh_qpart
@@ -403,7 +404,7 @@ class RPC extends Handler_Protected {
 		$git_timestamp = $version["timestamp"] ?? false;
 		$git_commit = $version["commit"] ?? false;
 
-		if (Config::get(Config::CHECK_FOR_UPDATES) && $_SESSION["access_level"] >= 10 && $git_timestamp) {
+		if (Config::get(Config::CHECK_FOR_UPDATES) && $_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN && $git_timestamp) {
 			$content = @UrlHelper::fetch(["url" => "https://tt-rss.org/version.json"]);
 
 			if ($content) {
@@ -510,7 +511,7 @@ class RPC extends Handler_Protected {
 		$data['cdm_expanded'] = get_pref(Prefs::CDM_EXPANDED);
 		$data["labels"] = Labels::get_all($_SESSION["uid"]);
 
-		if (Config::get(Config::LOG_DESTINATION) == 'sql' && $_SESSION['access_level'] >= 10) {
+		if (Config::get(Config::LOG_DESTINATION) == 'sql' && $_SESSION['access_level'] >= UserHelper::ACCESS_LEVEL_ADMIN) {
 			if (Config::get(Config::DB_TYPE) == 'pgsql') {
 				$log_interval = "created_at > NOW() - interval '1 hour'";
 			} else {

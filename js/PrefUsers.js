@@ -75,7 +75,7 @@ const	Users = {
 									<fieldset>
 										<label>${__('Access level: ')}</label>
 										${App.FormFields.select_hash("access_level",
-											user.access_level, reply.access_level_names, {disabled: admin_disabled.toString()})}
+											user.access_level, reply.access_level_names, {disabled: admin_disabled.toString()}, "", {numeric_sort: true})}
 
 										${admin_disabled ? App.FormFields.hidden_tag("access_level",
 											user.access_level.toString()) : ''}

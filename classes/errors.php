@@ -7,7 +7,11 @@ class Errors {
 	const E_SCHEMA_MISMATCH = "E_SCHEMA_MISMATCH";
 	const E_URL_SCHEME_MISMATCH = "E_URL_SCHEME_MISMATCH";
 
-	static function to_json(string $code, array $params = []) {
+	/**
+	 * @param Errors::E_* $code
+	 * @param array<string, string> $params
+	 */
+	static function to_json(string $code, array $params = []): string {
 		return json_encode(["error" => ["code" => $code, "params" => $params]]);
 	}
 }

@@ -231,9 +231,13 @@ class Config {
 																					Config::T_STRING ],
 	];
 
+	/** @var Config|null */
 	private static $instance;
 
+	/** @var array<string, array<bool|int|string>> */
 	private $params = [];
+
+	/** @var array<string, mixed> */
 	private $version = [];
 
 	/** @var Db_Migrations|null $migrations */
@@ -268,10 +272,16 @@ class Config {
 		directory, its contents are displayed instead of git commit-based version, this could be generated
 		based on source git tree commit used when creating the package */
 
+	/**
+	 * @return array<string, mixed>|string
+	 */
 	static function get_version(bool $as_string = true) {
 		return self::get_instance()->_get_version($as_string);
 	}
 
+	/**
+	 * @return array<string, mixed>|string
+	 */
 	private function _get_version(bool $as_string = true) {
 		$root_dir = dirname(__DIR__);
 
@@ -298,7 +308,10 @@ class Config {
 		return $as_string ? $this->version["version"] : $this->version;
 	}
 
-	static function get_version_from_git(string $dir) {
+	/**
+	 * @return array<string, int|string>
+	 */
+	static function get_version_from_git(string $dir): array {
 		$descriptorspec = [
 			1 => ["pipe", "w"], // STDOUT
 			2 => ["pipe", "w"], // STDERR
@@ -364,6 +377,9 @@ class Config {
 		return self::get_migrations()->get_version();
 	}
 
+	/**
+	 * @return bool|int|string
+	 */
 	static function cast_to(string $value, int $type_hint) {
 		switch ($type_hint) {
 			case self::T_BOOL:
@@ -375,24 +391,30 @@ class Config {
 		}
 	}
 
+	/**
+	 * @return bool|int|string
+	 */
 	private function _get(string $param) {
 		list ($value, $type_hint) = $this->params[$param];
 
 		return $this->cast_to($value, $type_hint);
 	}
 
-	private function _add(string $param, string $default, int $type_hint) {
+	private function _add(string $param, string $default, int $type_hint): void {
 		$override = getenv(self::_ENVVAR_PREFIX . $param);
 
 		$this->params[$param] = [ self::cast_to($override !== false ? $override : $default, $type_hint), $type_hint ];
 	}
 
-	static function add(string $param, string $default, int $type_hint = Config::T_STRING) {
+	static function add(string $param, string $default, int $type_hint = Config::T_STRING): void {
 		$instance = self::get_instance();
 
-		return $instance->_add($param, $default, $type_hint);
+		$instance->_add($param, $default, $type_hint);
 	}
 
+	/**
+	 * @return bool|int|string
+	 */
 	static function get(string $param) {
 		$instance = self::get_instance();
 
@@ -431,6 +453,9 @@ class Config {
 
 	/* sanity check stuff */
 
+	/**
+	 * @return array<int, array<string, string>> A list of entries identifying tt-rss tables with bad config
+	 */
 	private static function check_mysql_tables() {
 		$pdo = Db::pdo();
 
@@ -447,7 +472,7 @@ class Config {
 		return $bad_tables;
 	}
 
-	static function sanity_check() {
+	static function sanity_check(): void {
 
 		/*
 			we don't actually need the DB object right now but some checks below might use ORM which won't be initialized
@@ -621,11 +646,11 @@ class Config {
 		}
 	}
 
-	private static function format_error($msg) {
+	private static function format_error(string $msg): string {
 		return "<div class=\"alert alert-danger\">$msg</div>";
 	}
 
-	static function get_override_links() {
+	static function get_override_links(): string {
 		$rv = "";
 
 		$local_css = get_theme_path(self::get(self::LOCAL_OVERRIDE_STYLESHEET));
@@ -637,7 +662,7 @@ class Config {
 		return $rv;
 	}
 
-	static function get_user_agent() {
+	static function get_user_agent(): string {
 		return sprintf(self::get(self::HTTP_USER_AGENT), self::get_version());
 	}
 }

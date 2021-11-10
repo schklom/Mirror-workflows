@@ -37,7 +37,7 @@
 	/**
 	 * @SuppressWarnings(unused)
 	 */
-	function reap_children() {
+	function reap_children(): int {
 		global $children;
 		global $ctimes;
 
@@ -64,7 +64,7 @@
 		return count($tmp);
 	}
 
-	function check_ctimes() {
+	function check_ctimes(): void {
 		global $ctimes;
 
 		foreach (array_keys($ctimes) as $pid) {
@@ -80,7 +80,7 @@
 	/**
 	* @SuppressWarnings(unused)
  	*/
-	function sigchld_handler($signal) {
+	function sigchld_handler(int $signo, mixed $siginfo): void {
 		$running_jobs = reap_children();
 
 		Debug::log("Received SIGCHLD, $running_jobs active tasks left.");
@@ -88,7 +88,7 @@
 		pcntl_waitpid(-1, $status, WNOHANG);
 	}
 
-	function shutdown($caller_pid) {
+	function shutdown(int $caller_pid): void {
 		if ($caller_pid == posix_getpid()) {
 			if (file_exists(Config::get(Config::LOCK_DIRECTORY) . "/update_daemon.lock")) {
 				Debug::log("Removing lockfile (master)...");
@@ -97,7 +97,7 @@
 		}
 	}
 
-	function task_shutdown() {
+	function task_shutdown(): void {
 		$pid = posix_getpid();
 
 		if (file_exists(Config::get(Config::LOCK_DIRECTORY) . "/update_daemon-$pid.lock")) {
@@ -106,13 +106,13 @@
 		}
 	}
 
-	function sigint_handler() {
+	function sigint_handler(): void {
 		Debug::log("[MASTER] SIG_INT received, shutting down master process.");
 		shutdown(posix_getpid());
 		die;
 	}
 
-	function task_sigint_handler() {
+	function task_sigint_handler(): void {
 		Debug::log("[TASK] SIG_INT received, shutting down task.");
 		task_shutdown();
 		die;

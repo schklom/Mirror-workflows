@@ -12,7 +12,7 @@
 
 	Config::sanity_check();
 
-	function make_stampfile($filename) {
+	function make_stampfile(string $filename): bool {
 		$fp = fopen(Config::get(Config::LOCK_DIRECTORY) . "/$filename", "w");
 
 		if (flock($fp, LOCK_EX | LOCK_NB)) {
@@ -25,7 +25,7 @@
 		}
 	}
 
-	function cleanup_tags($days = 14, $limit = 1000) {
+	function cleanup_tags(int $days = 14, int $limit = 1000): int {
 
 		$days = (int) $days;
 

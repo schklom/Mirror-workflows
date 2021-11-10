@@ -6,16 +6,19 @@ class UrlHelper {
 		"tel"
 	];
 
-	static $fetch_last_error;
-	static $fetch_last_error_code;
-	static $fetch_last_error_content;
-	static $fetch_last_content_type;
-	static $fetch_last_modified;
-	static $fetch_effective_url;
-	static $fetch_effective_ip_addr;
-	static $fetch_curl_used;
+	static string $fetch_last_error;
+	static int $fetch_last_error_code;
+	static string $fetch_last_error_content;
+	static string $fetch_last_content_type;
+	static string $fetch_last_modified;
+	static string $fetch_effective_url;
+	static string $fetch_effective_ip_addr;
+	static bool $fetch_curl_used;
 
-	static function build_url($parts) {
+	/**
+	 * @param array<string, string> $parts
+	 */
+	static function build_url(array $parts): string {
 		$tmp = $parts['scheme'] . "://" . $parts['host'];
 
 		if (isset($parts['path'])) $tmp .= $parts['path'];
@@ -81,7 +84,10 @@ class UrlHelper {
 	}
 
 	// extended filtering involves validation for safe ports and loopback
-	static function validate($url, $extended_filtering = false) {
+	/**
+	 * @return bool|string false if something went wrong, otherwise the URL string
+	 */
+	static function validate(string $url, bool $extended_filtering = false) {
 
 		$url = clean($url);
 
@@ -138,7 +144,10 @@ class UrlHelper {
 		return $url;
 	}
 
-	static function resolve_redirects($url, $timeout, $nest = 0) {
+	/**
+	 * @return bool|string
+	 */
+	static function resolve_redirects(string $url, int $timeout, int $nest = 0) {
 
 		// too many redirects
 		if ($nest > 10)
@@ -189,12 +198,15 @@ class UrlHelper {
 		return false;
 	}
 
-		// TODO: max_size currently only works for CURL transfers
+	/**
+	 * @return bool|string false if something went wrong, otherwise string contents
+	 */
+	// TODO: max_size currently only works for CURL transfers
 	// TODO: multiple-argument way is deprecated, first parameter is a hash now
 	public static function fetch($options /* previously: 0: $url , 1: $type = false, 2: $login = false, 3: $pass = false,
 				4: $post_query = false, 5: $timeout = false, 6: $timestamp = 0, 7: $useragent = false*/) {
 
-		self::$fetch_last_error = false;
+		self::$fetch_last_error = "";
 		self::$fetch_last_error_code = -1;
 		self::$fetch_last_error_content = "";
 		self::$fetch_last_content_type = "";
@@ -510,7 +522,7 @@ class UrlHelper {
 		}
 	}
 
-	public static function url_to_youtube_vid($url) {
+	public static function url_to_youtube_vid(string $url) { # : bool|string
 		$url = str_replace("youtube.com", "youtube-nocookie.com", $url);
 
 		$regexps = [

@@ -79,8 +79,9 @@
 
 	/**
 	* @SuppressWarnings(unused)
+	* @param mixed $siginfo
  	*/
-	function sigchld_handler(int $signo, mixed $siginfo): void {
+	function sigchld_handler(int $signo, $siginfo): void {
 		$running_jobs = reap_children();
 
 		Debug::log("Received SIGCHLD, $running_jobs active tasks left.");

@@ -16,7 +16,7 @@ class UrlHelper {
 	static bool $fetch_curl_used;
 
 	/**
-	 * @param array<string, string> $parts
+	 * @param array<string, string|int> $parts
 	 */
 	static function build_url(array $parts): string {
 		$tmp = $parts['scheme'] . "://" . $parts['host'];
@@ -113,6 +113,11 @@ class UrlHelper {
 				} else {
 					$tokens['host'] = idn_to_ascii($tokens['host']);
 				}
+
+				// if `idn_to_ascii` failed
+				if ($tokens['host'] === false) {
+					return false;
+				}
 			}
 		}
 
@@ -199,6 +204,7 @@ class UrlHelper {
 	}
 
 	/**
+	 * @param array<string, bool|int|string>|string $options
 	 * @return bool|string false if something went wrong, otherwise string contents
 	 */
 	// TODO: max_size currently only works for CURL transfers
@@ -522,7 +528,10 @@ class UrlHelper {
 		}
 	}
 
-	public static function url_to_youtube_vid(string $url) { # : bool|string
+	/**
+	 * @return bool|string false if the provided URL didn't match expected patterns, otherwise the video ID string
+	 */
+	public static function url_to_youtube_vid(string $url) {
 		$url = str_replace("youtube.com", "youtube-nocookie.com", $url);
 
 		$regexps = [

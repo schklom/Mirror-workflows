@@ -299,7 +299,7 @@ class Feeds extends Handler_Protected {
 				$this->_mark_timestamp("   enclosures");
 
 				$line["updated_long"] = TimeHelper::make_local_datetime($line["updated"],true);
-				$line["updated"] = TimeHelper::make_local_datetime($line["updated"], false, false, false, true);
+				$line["updated"] = TimeHelper::make_local_datetime($line["updated"], false, null, false, true);
 
 				$line['imported'] = T_sprintf("Imported at %s",
 					TimeHelper::make_local_datetime($line["date_entered"], false));

@@ -1,7 +1,7 @@
 <?php
 class TimeHelper {
 
-	static function smart_date_time($timestamp, $tz_offset = 0, $owner_uid = false, $eta_min = false) {
+	static function smart_date_time(int $timestamp, int $tz_offset = 0, int $owner_uid = null, bool $eta_min = false): string {
 		if (!$owner_uid) $owner_uid = $_SESSION['uid'];
 
 		if ($eta_min && time() + $tz_offset - $timestamp < 3600) {
@@ -21,8 +21,8 @@ class TimeHelper {
 		}
 	}
 
-	static function make_local_datetime($timestamp, $long, $owner_uid = false,
-					$no_smart_dt = false, $eta_min = false) {
+	static function make_local_datetime(string $timestamp, bool $long, int $owner_uid = null,
+					bool $no_smart_dt = false, bool $eta_min = false): string {
 
 		if (!$owner_uid) $owner_uid = $_SESSION['uid'];
 		if (!$timestamp) $timestamp = '1970-01-01 0:00';
@@ -67,7 +67,7 @@ class TimeHelper {
 		}
 	}
 
-	static function convert_timestamp($timestamp, $source_tz, $dest_tz) {
+	static function convert_timestamp(int $timestamp, string $source_tz, string $dest_tz): int {
 
 		try {
 			$source_tz = new DateTimeZone($source_tz);

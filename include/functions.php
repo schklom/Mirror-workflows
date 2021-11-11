@@ -213,12 +213,12 @@
 	}
 
 	/** function is @deprecated by TimeHelper::smart_date_time() */
-	function smart_date_time($timestamp, $tz_offset = 0, $owner_uid = false, $eta_min = false) {
+	function smart_date_time(int $timestamp, int $tz_offset = 0, int $owner_uid = null, bool $eta_min = false): string {
 		return TimeHelper::smart_date_time($timestamp, $tz_offset, $owner_uid, $eta_min);
 	}
 
 	/** function is @deprecated by TimeHelper::make_local_datetime() */
-	function make_local_datetime($timestamp, $long, $owner_uid = false, $no_smart_dt = false, $eta_min = false) {
+	function make_local_datetime(string $timestamp, bool $long, int $owner_uid = null, bool $no_smart_dt = false, bool $eta_min = false): string {
 		return TimeHelper::make_local_datetime($timestamp, $long, $owner_uid, $no_smart_dt, $eta_min);
 	}
 

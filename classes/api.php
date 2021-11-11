@@ -351,7 +351,7 @@ class API extends Handler {
 					$article['content'] = Sanitizer::sanitize(
 						$entry->content,
 						self::_param_to_bool($entry->hide_images),
-						false, $entry->site_url, false, $entry->id);
+						null, $entry->site_url, null, $entry->id);
 				} else {
 					$article['content'] = $entry->content;
 				}
@@ -746,7 +746,7 @@ class API extends Handler {
 							$headline_row["content"] = Sanitizer::sanitize(
 								$line["content"],
 								self::_param_to_bool($line['hide_images']),
-								false, $line["site_url"], false, $line["id"]);
+								null, $line["site_url"], null, $line["id"]);
 						} else {
 							$headline_row["content"] = $line["content"];
 						}

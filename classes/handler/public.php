@@ -109,7 +109,7 @@ class Handler_Public extends Handler {
 				$tpl->setVariable('ARTICLE_EXCERPT', $line["content_preview"], true);
 
 				$content = Sanitizer::sanitize($line["content"], false, $owner_uid,
-					$feed_site_url, false, $line["id"]);
+					$feed_site_url, null, $line["id"]);
 
 				$content = DiskCache::rewrite_urls($content);
 
@@ -207,7 +207,7 @@ class Handler_Public extends Handler {
 				$article['link']	= $line['link'];
 				$article['title'] = $line['title'];
 				$article['excerpt'] = $line["content_preview"];
-				$article['content'] = Sanitizer::sanitize($line["content"], false, $owner_uid, $feed_site_url, false, $line["id"]);
+				$article['content'] = Sanitizer::sanitize($line["content"], false, $owner_uid, $feed_site_url, null, $line["id"]);
 				$article['updated'] = date('c', strtotime($line["updated"]));
 
 				if (!empty($line['note'])) $article['note'] = $line['note'];

@@ -133,7 +133,7 @@ class Share extends Plugin {
 
 			$line["content"] = Sanitizer::sanitize($line["content"],
 				$line['hide_images'],
-				$owner_uid, $line["site_url"], false, $line["id"]);
+				$owner_uid, $line["site_url"], null, $line["id"]);
 
 			PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE,
 				function ($result) use (&$line) {

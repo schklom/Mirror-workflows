@@ -181,8 +181,14 @@
 		return Feeds::_get_counters($feed, $is_cat, true, $_SESSION["uid"]);
 	}
 
-	/** function is @deprecated by Sanitizer::sanitize() */
-	function sanitize($str, $force_remove_images = false, $owner = false, $site_url = false, $highlight_words = false, $article_id = false) {
+	/**
+	 * @deprecated by Sanitizer::sanitize()
+	 *
+	 * @param array<int, string>|null $highlight_words Words to highlight in the HTML output.
+	 *
+	 * @return false|string The HTML, or false if an error occurred.
+	 */
+	function sanitize(string $str, bool $force_remove_images = false, int $owner = null, string $site_url = null, array $highlight_words = null, int $article_id = null) {
 		return Sanitizer::sanitize($str, $force_remove_images, $owner, $site_url, $highlight_words, $article_id);
 	}
 

@@ -271,7 +271,7 @@ class Feeds extends Handler_Protected {
 				$this->_mark_timestamp("   pre-sanitize");
 
 				$line["content"] = Sanitizer::sanitize($line["content"],
-					$line['hide_images'], false, $line["site_url"], $highlight_words, $line["id"]);
+					$line['hide_images'], null, $line["site_url"], $highlight_words, $line["id"]);
 
 				$this->_mark_timestamp("   sanitize");
 

@@ -36,15 +36,24 @@
 		define('SUBSTRING_FOR_DATE', 'SUBSTRING');
 	}
 
+	/**
+	 * @return bool|int|null|string
+	 */
 	function get_pref(string $pref_name, int $owner_uid = null) {
 		return Prefs::get($pref_name, $owner_uid ? $owner_uid : $_SESSION["uid"], $_SESSION["profile"] ?? null);
 	}
 
-	function set_pref(string $pref_name, $value, int $owner_uid = null, bool $strip_tags = true) {
+	/**
+	 * @param bool|int|string $value
+	 */
+	function set_pref(string $pref_name, $value, int $owner_uid = null, bool $strip_tags = true): bool {
 		return Prefs::set($pref_name, $value, $owner_uid ? $owner_uid : $_SESSION["uid"], $_SESSION["profile"] ?? null, $strip_tags);
 	}
 
-	function get_translations() {
+	/**
+	 * @return array<string, string>
+	 */
+	function get_translations(): array {
 		$t = array(
 					"auto"  => __("Detect automatically"),
 					"ar_SA" => "العربيّة (Arabic)",
@@ -81,7 +90,7 @@
 
 	require_once "lib/gettext/gettext.inc.php";
 
-	function startup_gettext() {
+	function startup_gettext(): void {
 
 		$selected_locale = "";
 
@@ -161,23 +170,27 @@
 
 	/* compat shims */
 
-	/** function is @deprecated by Config::get_version() */
+	/**
+	 * @deprecated by Config::get_version()
+	 *
+	 * @return array<string, mixed>|string
+	 */
 	function get_version() {
 		return Config::get_version();
 	}
 
 	/** function is @deprecated by Config::get_schema_version() */
-	function get_schema_version() {
+	function get_schema_version(): int {
 		return Config::get_schema_version();
 	}
 
 	/** function is @deprecated by Debug::log() */
-	function _debug($msg) {
-	    Debug::log($msg);
+	function _debug(string $msg): void {
+		Debug::log($msg);
 	}
 
 	/** function is @deprecated */
-	function getFeedUnread($feed, $is_cat = false) {
+	function getFeedUnread(int $feed, bool $is_cat = false): int {
 		return Feeds::_get_counters($feed, $is_cat, true, $_SESSION["uid"]);
 	}
 
@@ -192,23 +205,42 @@
 		return Sanitizer::sanitize($str, $force_remove_images, $owner, $site_url, $highlight_words, $article_id);
 	}
 
-	/** function is @deprecated by UrlHelper::fetch() */
+	/**
+	 * @deprecated by UrlHelper::fetch()
+	 *
+	 * @param array<string, bool|int|string>|string $params
+	 * @return bool|string false if something went wrong, otherwise string contents
+	 */
 	function fetch_file_contents($params) {
 		return UrlHelper::fetch($params);
 	}
 
-	/** function is @deprecated by UrlHelper::rewrite_relative() */
+	/**
+	 * @deprecated by UrlHelper::rewrite_relative()
+	 *
+	 * Converts a (possibly) relative URL to a absolute one, using provided base URL.
+	 * Provides some exceptions for additional schemes like data: if called with owning element/attribute.
+	 *
+	 * @param string $base_url     Base URL (i.e. from where the document is)
+	 * @param string $rel_url Possibly relative URL in the document
+	 *
+	 * @return string Absolute URL
+	 */
 	function rewrite_relative_url($base_url, $rel_url) {
 		return UrlHelper::rewrite_relative($base_url, $rel_url);
 	}
 
-	/** function is @deprecated by UrlHelper::validate() */
-	function validate_url($url) {
+	/**
+	 * @deprecated by UrlHelper::validate()
+	 *
+	 * @return bool|string false if something went wrong, otherwise the URL string
+	 */
+	function validate_url(string $url) {
 		return UrlHelper::validate($url);
 	}
 
 	/** function is @deprecated by UserHelper::authenticate() */
-	function authenticate_user($login, $password, $check_only = false, $service = false) {
+	function authenticate_user(string $login = null, string $password = null, bool $check_only = false, string $service = null): bool {
 		return UserHelper::authenticate($login, $password, $check_only, $service);
 	}
 
@@ -224,13 +256,19 @@
 
 	// this returns Config::SELF_URL_PATH sans ending slash
 	/** function is @deprecated by Config::get_self_url() */
-	function get_self_url_prefix() {
+	function get_self_url_prefix(): string {
 		return Config::get_self_url();
 	}
 
 	/* end compat shims */
 
-	// this is used for user http parameters unless HTML code is actually needed
+	/**
+	 * This is used for user http parameters unless HTML code is actually needed.
+	 *
+	 * @param mixed $param
+	 *
+	 * @return mixed
+	 */
 	function clean($param) {
 		if (is_array($param)) {
 			return array_map("trim", array_map("strip_tags", $param));
@@ -249,7 +287,7 @@
 		}
 	}
 
-	function make_password($length = 12) {
+	function make_password(int $length = 12): string {
 		$password = "";
 		$possible = "0123456789abcdfghjkmnpqrstvwxyzABCDFGHJKMNPQRSTVWXYZ*%+^";
 
@@ -274,11 +312,11 @@
 		return $password;
 	}
 
-	function validate_csrf($csrf_token) {
+	function validate_csrf(?string $csrf_token): bool {
 		return isset($csrf_token) && hash_equals($_SESSION['csrf_token'] ?? "", $csrf_token);
 	}
 
-	function truncate_string($str, $max_len, $suffix = '&hellip;') {
+	function truncate_string(string $str, int $max_len, string $suffix = '&hellip;'): string {
 		if (mb_strlen($str, "utf-8") > $max_len) {
 			return mb_substr($str, 0, $max_len, "utf-8") . $suffix;
 		} else {
@@ -286,7 +324,7 @@
 		}
 	}
 
-	function mb_substr_replace($original, $replacement, $position, $length) {
+	function mb_substr_replace(string $original, string $replacement, int $position, int $length): string {
 		$startString = mb_substr($original, 0, $position, "UTF-8");
 		$endString = mb_substr($original, $position + $length, mb_strlen($original), "UTF-8");
 
@@ -295,7 +333,7 @@
 		return $out;
 	}
 
-	function truncate_middle($str, $max_len, $suffix = '&hellip;') {
+	function truncate_middle(string $str, int $max_len, string $suffix = '&hellip;'): string {
 		if (mb_strlen($str) > $max_len) {
 			return mb_substr_replace($str, $suffix, $max_len / 2, mb_strlen($str) - $max_len);
 		} else {
@@ -303,15 +341,15 @@
 		}
 	}
 
-	function sql_bool_to_bool($s) {
+	function sql_bool_to_bool(string $s): bool {
 		return $s && ($s !== "f" && $s !== "false"); //no-op for PDO, backwards compat for legacy layer
 	}
 
-	function bool_to_sql_bool($s) {
+	function bool_to_sql_bool(bool $s): int {
 		return $s ? 1 : 0;
 	}
 
-	function file_is_locked($filename) {
+	function file_is_locked(string $filename): bool {
 		if (file_exists(Config::get(Config::LOCK_DIRECTORY) . "/$filename")) {
 			if (function_exists('flock')) {
 				$fp = @fopen(Config::get(Config::LOCK_DIRECTORY) . "/$filename", "r");
@@ -333,7 +371,10 @@
 		}
 	}
 
-	function make_lockfile($filename) {
+	/**
+	 * @return resource|false A file pointer resource on success, or false on error.
+	 */
+	function make_lockfile(string $filename) {
 		$fp = fopen(Config::get(Config::LOCK_DIRECTORY) . "/$filename", "w");
 
 		if ($fp && flock($fp, LOCK_EX | LOCK_NB)) {
@@ -357,38 +398,44 @@
 		}
 	}
 
-	function checkbox_to_sql_bool($val) {
+	/**
+	 * @param mixed $val
+	 */
+	function checkbox_to_sql_bool($val): int {
 		return ($val == "on") ? 1 : 0;
 	}
 
-	function uniqid_short() {
+	function uniqid_short(): string {
 		return uniqid(base_convert((string)rand(), 10, 36));
 	}
 
-	function T_sprintf() {
+	function T_sprintf(): string {
 		$args = func_get_args();
 		return vsprintf(__(array_shift($args)), $args);
 	}
 
-	function T_nsprintf() {
+	function T_nsprintf(): string {
 		$args = func_get_args();
 		return vsprintf(_ngettext(array_shift($args), array_shift($args), array_shift($args)), $args);
 	}
 
-	function init_plugins() {
+	function init_plugins(): bool {
 		PluginHost::getInstance()->load(Config::get(Config::PLUGINS), PluginHost::KIND_ALL);
 
 		return true;
 	}
 
 	if (!function_exists('gzdecode')) {
-		function gzdecode($string) { // no support for 2nd argument
+		/**
+		 * @return false|string The decoded string or false if an error occurred.
+		 */
+		function gzdecode(string $string) { // no support for 2nd argument
 			return file_get_contents('compress.zlib://data:who/cares;base64,'.
 				base64_encode($string));
 		}
 	}
 
-	function get_random_bytes($length) {
+	function get_random_bytes(int $length): string {
 		if (function_exists('random_bytes')) {
 			return random_bytes($length);
 		} else if (function_exists('openssl_random_pseudo_bytes')) {
@@ -403,7 +450,7 @@
 		}
 	}
 
-	function read_stdin() {
+	function read_stdin(): ?string {
 		$fp = fopen("php://stdin", "r");
 
 		if ($fp) {
@@ -415,11 +462,19 @@
 		return null;
 	}
 
-	function implements_interface($class, $interface) {
-		return in_array($interface, class_implements($class));
+	/**
+	 * @param object|string $class
+	 */
+	function implements_interface($class, string $interface): bool {
+		$class_implemented_interfaces = class_implements($class);
+
+		if ($class_implemented_interfaces) {
+			return in_array($interface, $class_implemented_interfaces);
+		}
+		return false;
 	}
 
-	function get_theme_path($theme) {
+	function get_theme_path(string $theme): string {
 		$check = "themes/$theme";
 		if (file_exists($check)) return $check;
 
@@ -429,15 +484,18 @@
 		return "";
 	}
 
-	function theme_exists($theme) {
+	function theme_exists(string $theme): bool {
 		return file_exists("themes/$theme") || file_exists("themes.local/$theme");
 	}
 
-	function arr_qmarks($arr) {
+	/**
+	 * @param array<int, mixed> $arr
+	 */
+	function arr_qmarks(array $arr): string {
 		return str_repeat('?,', count($arr) - 1) . '?';
 	}
 
-	function get_scripts_timestamp() {
+	function get_scripts_timestamp(): int {
 		$files = glob("js/*.js");
 		$ts = 0;
 

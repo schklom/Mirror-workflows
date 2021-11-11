@@ -1,6 +1,9 @@
 <?php
 class RSSUtils {
-	static function calculate_article_hash($article, $pluginhost) {
+	/**
+	 * @param array<string, mixed> $article
+	 */
+	static function calculate_article_hash(array $article, PluginHost $pluginhost): string {
 		$tmp = "";
 
 		$ignored_fields = [ "feed", "guid", "guid_hashed", "owner_uid", "force_catchup" ];
@@ -21,16 +24,16 @@ class RSSUtils {
 	}
 
 	// Strips utf8mb4 characters (i.e. emoji) for mysql
-	static function strip_utf8mb4(string $str) {
+	static function strip_utf8mb4(string $str): string {
 		return preg_replace('/[\x{10000}-\x{10FFFF}]/u', "\xEF\xBF\xBD", $str);
 	}
 
-	static function cleanup_feed_browser() {
+	static function cleanup_feed_browser(): void {
 		$pdo = Db::pdo();
 		$pdo->query("DELETE FROM ttrss_feedbrowser_cache");
 	}
 
-	static function cleanup_feed_icons() {
+	static function cleanup_feed_icons(): void {
 		$pdo = Db::pdo();
 		$sth = $pdo->prepare("SELECT id FROM ttrss_feeds WHERE id = ?");
 
@@ -52,7 +55,10 @@ class RSSUtils {
 		}
 	}
 
-	static function update_daemon_common(int $limit = 0, array $options = []) {
+	/**
+	 * @param array<string, false|string> $options
+	 */
+	static function update_daemon_common(int $limit = 0, array $options = []): int {
 		if (!$limit) $limit = Config::get(Config::DAEMON_FEED_LIMIT);
 
 		if (Config::get_schema_version() != Config::SCHEMA_VERSION) {
@@ -272,7 +278,7 @@ class RSSUtils {
 	}
 
 	/** this is used when subscribing */
-	static function update_basic_info(int $feed_id) {
+	static function update_basic_info(int $feed_id): void {
 		$feed = ORM::for_table('ttrss_feeds')
 			->select_many('id', 'owner_uid', 'feed_url', 'auth_pass', 'auth_login', 'title', 'site_url')
 			->find_one($feed_id);
@@ -728,6 +734,7 @@ class RSSUtils {
 							},
 							$e, $feed);
 
+						// TODO: Just use FeedEnclosure (and modify it to cover whatever justified this)?
 						$e_item = array(
 							rewrite_relative_url($site_url, $e->link),
 							$e->type, $e->length, $e->title, $e->width, $e->height);
@@ -1265,8 +1272,14 @@ class RSSUtils {
 		return true;
 	}
 
-	/* TODO: move to DiskCache? */
-	static function cache_enclosures($enclosures, $site_url) {
+	/**
+	 * TODO: move to DiskCache?
+	 *
+	 * @param array<int, array<string|int>> $enclosures An array of "enclosure arrays" [string $link, string $type, int $length, string, $title, int $width, int $height]
+	 * @see RSSUtils::update_rss_feed()
+	 * @see FeedEnclosure
+	 */
+	static function cache_enclosures(array $enclosures, string $site_url): void {
 		$cache = new DiskCache("images");
 
 		if ($cache->is_writable()) {
@@ -1298,7 +1311,7 @@ class RSSUtils {
 	}
 
 	/* TODO: move to DiskCache? */
-	static function cache_media_url($cache, $url, $site_url) {
+	static function cache_media_url(DiskCache $cache, string $url, string $site_url): void {
 		$url = rewrite_relative_url($site_url, $url);
 		$local_filename = sha1($url);
 
@@ -1322,7 +1335,7 @@ class RSSUtils {
 	}
 
 	/* TODO: move to DiskCache? */
-	static function cache_media($html, $site_url) {
+	static function cache_media(string $html, string $site_url): void {
 		$cache = new DiskCache("images");
 
 		if ($html && $cache->is_writable()) {
@@ -1351,7 +1364,7 @@ class RSSUtils {
 		}
 	}
 
-	static function expire_error_log() {
+	static function expire_error_log(): void {
 		Debug::log("Removing old error log entries...");
 
 		$pdo = Db::pdo();
@@ -1365,14 +1378,16 @@ class RSSUtils {
 		}
 	}
 
-	// deprecated; table not used
-	static function expire_feed_archive() {
+	/**
+	 * @deprecated table not used
+	 */
+	static function expire_feed_archive(): void {
 		$pdo = Db::pdo();
 
 		$pdo->query("DELETE FROM ttrss_archived_feeds");
 	}
 
-	static function expire_lock_files() {
+	static function expire_lock_files(): void {
 		Debug::log("Removing old lock files...", Debug::LOG_VERBOSE);
 
 		$num_deleted = 0;
@@ -1413,7 +1428,15 @@ class RSSUtils {
 		return $params;
 	} */
 
-	static function get_article_filters($filters, $title, $content, $link, $author, $tags, &$matched_rules = false, &$matched_filters = false) {
+	/**
+	 * @param array<int, array<string, mixed>> $filters
+	 * @param array<int, string> $tags
+	 * @param array<int, array<string, mixed>>|null $matched_rules
+	 * @param array<int, array<string, mixed>>|null $matched_filters
+	 *
+	 * @return array<int, array<string, string>> An array of filter action arrays with keys "type" and "param"
+	 */
+	static function get_article_filters(array $filters, string $title, string $content, string $link, string $author, array $tags, array &$matched_rules = null, array &$matched_filters = null): array {
 		$matches = array();
 
 		foreach ($filters as $filter) {
@@ -1497,16 +1520,26 @@ class RSSUtils {
 		return $matches;
 	}
 
-	static function find_article_filter($filters, $filter_name) {
+	/**
+	 * @param array<int, array<string, string>> $filters An array of filter action arrays with keys "type" and "param"
+	 *
+	 * @return array<string, string>|null A filter action array with keys "type" and "param"
+	 */
+	static function find_article_filter(array $filters, string $filter_name): ?array {
 		foreach ($filters as $f) {
 			if ($f["type"] == $filter_name) {
 				return $f;
 			};
 		}
-		return false;
+		return null;
 	}
 
-	static function find_article_filters($filters, $filter_name) {
+	/**
+	 * @param array<int, array<string, string>> $filters An array of filter action arrays with keys "type" and "param"
+	 *
+	 * @return array<int, array<string, string>> An array of filter action arrays with keys "type" and "param"
+	 */
+	static function find_article_filters(array $filters, string $filter_name): array {
 		$results = array();
 
 		foreach ($filters as $f) {
@@ -1517,7 +1550,10 @@ class RSSUtils {
 		return $results;
 	}
 
-	static function calculate_article_score($filters) {
+	/**
+	 * @param array<int, array<string, string>> $filters An array of filter action arrays with keys "type" and "param"
+	 */
+	static function calculate_article_score(array $filters): int {
 		$score = 0;
 
 		foreach ($filters as $f) {
@@ -1528,7 +1564,12 @@ class RSSUtils {
 		return $score;
 	}
 
-	static function labels_contains_caption($labels, $caption) {
+	/**
+	 * @param array<int, array<int, int|string>> $labels An array of label arrays like [int $feed_id, string $caption, string $fg_color, string $bg_color]
+	 *
+	 * @see Article::_get_labels()
+	 */
+	static function labels_contains_caption(array $labels, string $caption): bool {
 		foreach ($labels as $label) {
 			if ($label[1] == $caption) {
 				return true;
@@ -1538,7 +1579,11 @@ class RSSUtils {
 		return false;
 	}
 
-	static function assign_article_to_label_filters($id, $filters, $owner_uid, $article_labels) {
+	/**
+	 * @param array<int, array<string, string>> $filters An array of filter action arrays with keys "type" and "param"
+	 * @param array<int, array<int, int|string>> $article_labels An array of label arrays like [int $feed_id, string $caption, string $fg_color, string $bg_color]
+	 */
+	static function assign_article_to_label_filters(int $id, array $filters, int $owner_uid, $article_labels): void {
 		foreach ($filters as $f) {
 			if ($f["type"] == "label") {
 				if (!self::labels_contains_caption($article_labels, $f["param"])) {
@@ -1548,20 +1593,20 @@ class RSSUtils {
 		}
 	}
 
-	static function make_guid_from_title($title) {
+	static function make_guid_from_title(string $title): ?string {
 		return preg_replace("/[ \"\',.:;]/", "-",
 			mb_strtolower(strip_tags($title), 'utf-8'));
 	}
 
 	/* counter cache is no longer used, if called truncate leftover data */
-	static function cleanup_counters_cache() {
+	static function cleanup_counters_cache(): void {
 		$pdo = Db::pdo();
 
 		$pdo->query("DELETE FROM ttrss_counters_cache");
 		$pdo->query("DELETE FROM ttrss_cat_counters_cache");
 	}
 
-	static function disable_failed_feeds() {
+	static function disable_failed_feeds(): void {
 		if (Config::get(Config::DAEMON_UNSUCCESSFUL_DAYS_LIMIT) > 0) {
 
 			$pdo = Db::pdo();
@@ -1599,7 +1644,7 @@ class RSSUtils {
 		}
 	}
 
-	static function housekeeping_user($owner_uid) {
+	static function housekeeping_user(int $owner_uid): void {
 		$tmph = new PluginHost();
 
 		UserHelper::load_user_plugins($owner_uid, $tmph);
@@ -1607,7 +1652,7 @@ class RSSUtils {
 		$tmph->run_hooks(PluginHost::HOOK_HOUSE_KEEPING);
 	}
 
-	static function housekeeping_common() {
+	static function housekeeping_common(): void {
 		DiskCache::expire();
 
 		self::expire_lock_files();
@@ -1623,6 +1668,9 @@ class RSSUtils {
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_HOUSE_KEEPING);
 	}
 
+	/**
+	 * @return false|string
+	 */
 	static function update_favicon(string $site_url, int $feed) {
 		$icon_file = Config::get(Config::ICONS_DIR) . "/$feed.ico";
 
@@ -1687,11 +1735,14 @@ class RSSUtils {
 		return $icon_file;
 	}
 
-	static function is_gzipped($feed_data) {
+	static function is_gzipped(string $feed_data): bool {
 		return strpos(substr($feed_data, 0, 3),
 				"\x1f" . "\x8b" . "\x08", 0) === 0;
 	}
 
+	/**
+	 * @return array<int, array<string, mixed>> An array of filter arrays with keys "id", "match_any_rule", "inverse", "rules", and "actions"
+	 */
 	static function load_filters(int $feed_id, int $owner_uid) {
 		$filters = array();
 
@@ -1809,7 +1860,7 @@ class RSSUtils {
 	 *
 	 * @param string $url A feed or page URL
 	 * @access public
-	 * @return mixed The favicon URL, or false if none was found.
+	 * @return false|string The favicon URL string, or false if none was found.
 	 */
 	static function get_favicon_url(string $url) {
 
@@ -1843,8 +1894,12 @@ class RSSUtils {
 		return $favicon_url;
 	}
 
-	// https://community.tt-rss.org/t/problem-with-img-srcset/3519
-	static function decode_srcset($srcset) {
+	/**
+	 * @see https://community.tt-rss.org/t/problem-with-img-srcset/3519
+	 *
+	 * @return array<int, array<string, string>> An array of srcset subitem arrays with keys "url" and "size"
+	 */
+	static function decode_srcset(string $srcset): array {
 		$matches = [];
 
 		preg_match_all(
@@ -1862,7 +1917,10 @@ class RSSUtils {
 		return $matches;
 	}
 
-	static function encode_srcset($matches) {
+	/**
+	 * @param array<int, array<string, string>> $matches An array of srcset subitem arrays with keys "url" and "size"
+	 */
+	static function encode_srcset(array $matches): string {
 		$tokens = [];
 
 		foreach ($matches as $m) {
@@ -1872,7 +1930,7 @@ class RSSUtils {
 		return implode(",", $tokens);
 	}
 
-	static function function_enabled($func) {
+	static function function_enabled(string $func): bool {
 		return !in_array($func,
 						explode(',', str_replace(" ", "", ini_get('disable_functions'))));
 	}

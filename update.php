@@ -108,7 +108,7 @@
 
 	$options = getopt("", array_keys($options_map));
 
-	if (count($options) == 0 || isset($options["help"]) ) {
+	if ($options === false || count($options) == 0 || isset($options["help"]) ) {
 		print "Tiny Tiny RSS CLI management tool\n";
 		print "=================================\n";
 		print "Options:\n\n";

@@ -205,7 +205,7 @@ class UrlHelper {
 
 	/**
 	 * @param array<string, bool|int|string>|string $options
-	 * @return bool|string false if something went wrong, otherwise string contents
+	 * @return false|string false if something went wrong, otherwise string contents
 	 */
 	// TODO: max_size currently only works for CURL transfers
 	// TODO: multiple-argument way is deprecated, first parameter is a hash now

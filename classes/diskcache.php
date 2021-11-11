@@ -1,9 +1,13 @@
 <?php
 class DiskCache {
-	private $dir;
+	private string $dir;
 
-	// https://stackoverflow.com/a/53662733
-	private $mimeMap = [
+	/**
+	 * https://stackoverflow.com/a/53662733
+	 *
+	 * @var array<string, string>
+	 */
+	private array $mimeMap = [
 		'video/3gpp2'                                                               => '3g2',
 		'video/3gp'                                                                 => '3gp',
 		'video/3gpp'                                                                => '3gp',
@@ -190,21 +194,22 @@ class DiskCache {
 		'text/x-scriptzsh'                                                          => 'zsh'
 	];
 
-	public function __construct($dir) {
+	public function __construct(string $dir) {
 		$this->dir = Config::get(Config::CACHE_DIR) . "/" . basename(clean($dir));
 	}
 
-	public function get_dir() {
+	public function get_dir(): string {
 		return $this->dir;
 	}
 
-	public function make_dir() {
+	public function make_dir(): bool {
 		if (!is_dir($this->dir)) {
 			return mkdir($this->dir);
 		}
+		return false;
 	}
 
-	public function is_writable($filename = "") {
+	public function is_writable(?string $filename = null): bool {
 		if ($filename) {
 			if (file_exists($this->get_full_path($filename)))
 				return is_writable($this->get_full_path($filename));
@@ -215,44 +220,55 @@ class DiskCache {
 		}
 	}
 
-	public function exists($filename) {
+	public function exists(string $filename): bool {
 		return file_exists($this->get_full_path($filename));
 	}
 
-	public function get_size($filename) {
+	/**
+	 * @return int|false -1 if the file doesn't exist, false if an error occurred, size in bytes otherwise
+	 */
+	public function get_size(string $filename) {
 		if ($this->exists($filename))
 			return filesize($this->get_full_path($filename));
 		else
 			return -1;
 	}
 
-	public function get_full_path($filename) {
+	public function get_full_path(string $filename): string {
 		return $this->dir . "/" . basename(clean($filename));
 	}
 
-	public function put($filename, $data) {
+	/**
+	 * @param mixed $data
+	 *
+	 * @return int|false Bytes written or false if an error occurred.
+	 */
+	public function put(string $filename, $data) {
 		return file_put_contents($this->get_full_path($filename), $data);
 	}
 
-	public function touch($filename) {
+	public function touch(string $filename): bool {
 		return touch($this->get_full_path($filename));
 	}
 
-	public function get($filename) {
+	public function get(string $filename): ?string {
 		if ($this->exists($filename))
 			return file_get_contents($this->get_full_path($filename));
 		else
 			return null;
 	}
 
-	public function get_mime_type($filename) {
+	/**
+	 * @return false|null|string false if detection failed, null if the file doesn't exist, string mime content type otherwise
+	 */
+	public function get_mime_type(string $filename) {
 		if ($this->exists($filename))
 			return mime_content_type($this->get_full_path($filename));
 		else
 			return null;
 	}
 
-	public function get_fake_extension($filename) {
+	public function get_fake_extension(string $filename): string {
 		$mimetype = $this->get_mime_type($filename);
 
 		if ($mimetype)
@@ -261,7 +277,10 @@ class DiskCache {
 			return "";
 	}
 
-	public function send($filename) {
+	/**
+	 * @return bool|int false if the file doesn't exist (or unreadable) or isn't audio/video, true if a plugin handled, otherwise int of bytes sent
+	 */
+	public function send(string $filename) {
 		$fake_extension = $this->get_fake_extension($filename);
 
 		if ($fake_extension)
@@ -272,7 +291,7 @@ class DiskCache {
 		return $this->send_local_file($this->get_full_path($filename));
 	}
 
-	public function get_url($filename) {
+	public function get_url(string $filename): string {
 		return Config::get_self_url() . "/public.php?op=cached&file=" . basename($this->dir) . "/" . basename($filename);
 	}
 
@@ -280,8 +299,7 @@ class DiskCache {
 	// this is called separately after sanitize() and plugin render article hooks to allow
 	// plugins work on original source URLs used before caching
 	// NOTE: URLs should be already absolutized because this is called after sanitize()
-	static public function rewrite_urls($str)
-	{
+	static public function rewrite_urls(string $str): string {
 		$res = trim($str);
 		if (!$res) return '';
 
@@ -338,7 +356,7 @@ class DiskCache {
 		return $res;
 	}
 
-	static function expire() {
+	static function expire(): void {
 		$dirs = array_filter(glob(Config::get(Config::CACHE_DIR) . "/*"), "is_dir");
 
 		foreach ($dirs as $cache_dir) {
@@ -362,14 +380,19 @@ class DiskCache {
 		}
 	}
 
-	/*	this is essentially a wrapper for readfile() which allows plugins to hook
-		output with httpd-specific "fast" implementation i.e. X-Sendfile or whatever else
-
-		hook function should return true if request was handled (or at least attempted to)
-
-		note that this can be called without user context so the plugin to handle this
-		should be loaded systemwide in config.php */
-	function send_local_file($filename) {
+	/*	 */
+	/**
+	 * this is essentially a wrapper for readfile() which allows plugins to hook
+	 * output with httpd-specific "fast" implementation i.e. X-Sendfile or whatever else
+	 *
+	 * hook function should return true if request was handled (or at least attempted to)
+	 *
+	 * note that this can be called without user context so the plugin to handle this
+	 * should be loaded systemwide in config.php
+	 *
+	 * @return bool|int false if the file doesn't exist (or unreadable) or isn't audio/video, true if a plugin handled, otherwise int of bytes sent
+	 */
+	function send_local_file(string $filename) {
 		if (file_exists($filename)) {
 
 			if (is_writable($filename)) touch($filename);

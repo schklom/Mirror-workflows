@@ -1,5 +1,8 @@
 <?php
-function format_backtrace($trace) {
+/**
+ * @param array<int, array<string, mixed>> $trace
+ */
+function format_backtrace($trace): string {
 	$rv = "";
 	$idx = 1;
 
@@ -39,7 +42,7 @@ function format_backtrace($trace) {
 	return $rv;
 }
 
-function ttrss_error_handler($errno, $errstr, $file, $line) {
+function ttrss_error_handler(int $errno, string $errstr, string $file, int $line): bool {
 	/*if (version_compare(PHP_VERSION, '8.0.0', '<')) {
 		if (error_reporting() == 0 || !$errno) return false;
 	} else {
@@ -59,7 +62,7 @@ function ttrss_error_handler($errno, $errstr, $file, $line) {
 		return false;
 }
 
-function ttrss_fatal_handler() {
+function ttrss_fatal_handler(): bool {
 	$error = error_get_last();
 
 	if ($error !== NULL) {

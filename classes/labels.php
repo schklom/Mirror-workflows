@@ -1,15 +1,15 @@
 <?php
 class Labels
 {
-	static function label_to_feed_id($label) {
+	static function label_to_feed_id(int $label): int {
 		return LABEL_BASE_INDEX - 1 - abs($label);
 	}
 
-	static function feed_to_label_id($feed) {
+	static function feed_to_label_id(int $feed): int {
 		return LABEL_BASE_INDEX - 1 + abs($feed);
 	}
 
-	static function find_id($label, $owner_uid) {
+	static function find_id(string $label, int $owner_uid): int {
 		$pdo = Db::pdo();
 
 		$sth = $pdo->prepare("SELECT id FROM ttrss_labels2 WHERE LOWER(caption) = LOWER(?)
@@ -23,7 +23,7 @@ class Labels
 		}
 	}
 
-	static function find_caption($label, $owner_uid) {
+	static function find_caption(int $label, int $owner_uid): string {
 		$pdo = Db::pdo();
 
 		$sth = $pdo->prepare("SELECT caption FROM ttrss_labels2 WHERE id = ?
@@ -37,18 +37,24 @@ class Labels
 		}
 	}
 
-	static function get_as_hash($owner_uid) {
+	/**
+	 * @return array<int, array<string, string>>
+	 */
+	static function get_as_hash(int $owner_uid): array {
 		$rv = [];
 		$labels = Labels::get_all($owner_uid);
 
 		foreach ($labels as $i => $label) {
-			$rv[$label["id"]] = $labels[$i];
+			$rv[(int)$label["id"]] = $labels[$i];
 		}
 
 		return $rv;
 	}
 
-	static function get_all($owner_uid)	{
+	/**
+	 * @return array<int, array<string, string>> An array of label detail arrays
+	 */
+	static function get_all(int $owner_uid)	{
 		$rv = array();
 
 		$pdo = Db::pdo();
@@ -64,7 +70,12 @@ class Labels
 		return $rv;
 	}
 
-	static function update_cache($owner_uid, $id, $labels = false, $force = false) {
+	/**
+	 * @param array<int, array<int|string, mixed>>|null $labels
+	 *
+	 * @see Article::_get_labels()
+	 */
+	static function update_cache(int $owner_uid, int $id, ?array $labels = null, bool $force = false): void {
 		$pdo = Db::pdo();
 
 		if ($force)
@@ -81,7 +92,7 @@ class Labels
 
 	}
 
-	static function clear_cache($id)	{
+	static function clear_cache(int $id): void	{
 
 		$pdo = Db::pdo();
 
@@ -91,7 +102,7 @@ class Labels
 
 	}
 
-	static function remove_article($id, $label, $owner_uid) {
+	static function remove_article(int $id, string $label, int $owner_uid): void {
 
 		$label_id = self::find_id($label, $owner_uid);
 
@@ -109,7 +120,7 @@ class Labels
 		self::clear_cache($id);
 	}
 
-	static function add_article($id, $label, $owner_uid)	{
+	static function add_article(int $id, string $label, int $owner_uid): void {
 
 		$label_id = self::find_id($label, $owner_uid);
 
@@ -138,7 +149,7 @@ class Labels
 
 	}
 
-	static function remove($id, $owner_uid) {
+	static function remove(int $id, int $owner_uid): void {
 		if (!$owner_uid) $owner_uid = $_SESSION["uid"];
 
 		$pdo = Db::pdo();
@@ -182,7 +193,10 @@ class Labels
 		if (!$tr_in_progress) $pdo->commit();
 	}
 
-	static function create($caption, $fg_color = '', $bg_color = '', $owner_uid = false)	{
+	/**
+	 * @return false|int false if the check for an existing label failed, otherwise the number of rows inserted (1 on success)
+	 */
+	static function create(string $caption, ?string $fg_color = '', ?string $bg_color = '', ?int $owner_uid = null)	{
 
 		if (!$owner_uid) $owner_uid = $_SESSION['uid'];
 

@@ -1,7 +1,10 @@
 <?php
 class Counters {
 
-	static function get_all() {
+	/**
+	 * @return array<int, array<string, int|string>>
+	 */
+	static function get_all(): array {
 		return array_merge(
 			self::get_global(),
 			self::get_virt(),
@@ -11,7 +14,12 @@ class Counters {
 		);
 	}
 
-	static function get_conditional(array $feed_ids = null, array $label_ids = null) {
+	/**
+	 * @param array<int> $feed_ids
+	 * @param array<int> $label_ids
+	 * @return array<int, array<string, int|string>>
+	 */
+	static function get_conditional(array $feed_ids = null, array $label_ids = null): array {
 		return array_merge(
 			self::get_global(),
 			self::get_virt(),
@@ -21,7 +29,10 @@ class Counters {
 		);
 	}
 
-	static private function get_cat_children(int $cat_id, int $owner_uid) {
+	/**
+	 * @return array<int, int>
+	 */
+	static private function get_cat_children(int $cat_id, int $owner_uid): array {
 		$unread = 0;
 		$marked = 0;
 
@@ -40,7 +51,11 @@ class Counters {
 		return [$unread, $marked];
 	}
 
-	private static function get_cats(array $cat_ids = null) {
+	/**
+	 * @param array<int> $cat_ids
+	 * @return array<int, array<string, int|string>>
+	 */
+	private static function get_cats(array $cat_ids = null): array {
 		$ret = [];
 
 		/* Labels category */
@@ -129,7 +144,11 @@ class Counters {
 		return $ret;
 	}
 
-	private static function get_feeds(array $feed_ids = null) {
+	/**
+	 * @param array<int> $feed_ids
+	 * @return array<int, array<string, int|string>>
+	 */
+	private static function get_feeds(array $feed_ids = null): array {
 
 		$ret = [];
 
@@ -199,7 +218,10 @@ class Counters {
 		return $ret;
 	}
 
-	private static function get_global() {
+	/**
+	 * @return array<int, array<string, int|string>>
+	 */
+	private static function get_global(): array {
 		$ret = [
 			[
 				"id" => "global-unread",
@@ -219,7 +241,10 @@ class Counters {
 		return $ret;
 	}
 
-	private static function get_virt() {
+	/**
+	 * @return array<int, array<string, int|string>>
+	 */
+	private static function get_virt(): array {
 
 		$ret = [];
 
@@ -263,7 +288,11 @@ class Counters {
 		return $ret;
 	}
 
-	static function get_labels(array $label_ids = null) {
+	/**
+	 * @param array<int> $label_ids
+	 * @return array<int, array<string, int|string>>
+	 */
+	static function get_labels(array $label_ids = null): array {
 
 		$ret = [];
 

@@ -130,7 +130,7 @@
 
 	$options = getopt("", $longopts);
 
-	if (isset($options["help"]) ) {
+	if ($options === false || isset($options["help"]) ) {
 		print "Tiny Tiny RSS update daemon.\n\n";
 		print "Options:\n";
 		print "  --log FILE           - log messages to FILE\n";
@@ -161,21 +161,28 @@
 
 	if (isset($options["tasks"])) {
 		Debug::log("Set to spawn " . $options["tasks"] . " children.");
-		$max_jobs = $options["tasks"];
+		$max_jobs = (int) $options["tasks"];
 	} else {
 		$max_jobs = Config::get(Config::DAEMON_MAX_JOBS);
 	}
 
+	if ($max_jobs < 1) {
+		$max_jobs = 1;
+		Debug::log("Enforced minimum task count of $max_jobs.");
+	}
+
 	if (isset($options["interval"])) {
 		Debug::log("Spawn interval: " . $options["interval"] . " seconds.");
-		$spawn_interval = $options["interval"];
+		$spawn_interval = (int) $options["interval"];
 	} else {
 		$spawn_interval = Config::get(Config::DAEMON_SLEEP_INTERVAL);
 	}
 
 	// let's enforce a minimum spawn interval as to not forkbomb the host
-	$spawn_interval = max(60, $spawn_interval);
-	Debug::log("Spawn interval: $spawn_interval sec");
+	if ($spawn_interval < 60) {
+		$spawn_interval = 60;
+		Debug::log("Enforced minimum task spawn interval of $spawn_interval seconds.");
+	}
 
 	if (file_is_locked("update_daemon.lock")) {
 		die("error: Can't create lockfile. ".

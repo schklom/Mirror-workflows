@@ -21,7 +21,7 @@ class TimeHelper {
 		}
 	}
 
-	static function make_local_datetime(string $timestamp, bool $long, int $owner_uid = null,
+	static function make_local_datetime(?string $timestamp, bool $long, int $owner_uid = null,
 					bool $no_smart_dt = false, bool $eta_min = false): string {
 
 		if (!$owner_uid) $owner_uid = $_SESSION['uid'];

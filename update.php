@@ -97,7 +97,7 @@
 	];
 
 	foreach (PluginHost::getInstance()->get_commands() as $command => $data) {
-		$options_map[$command . $data["suffix"]] = [ $data["arghelp"] ?? "", $data["description"] ];
+		$options_map[$command . $data["suffix"]] = [ $data["arghelp"], $data["description"] ];
 	}
 
 	if (php_sapi_name() != "cli") {

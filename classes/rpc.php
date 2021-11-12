@@ -227,7 +227,7 @@ class RPC extends Handler_Protected {
 		$search_query = clean($_REQUEST['search_query']);
 		$search_lang = clean($_REQUEST['search_lang']);
 
-		Feeds::_catchup($feed_id, $is_cat, false, $mode, [$search_query, $search_lang]);
+		Feeds::_catchup($feed_id, $is_cat, null, $mode, [$search_query, $search_lang]);
 
 		// return counters here synchronously so that frontend can figure out next unread feed properly
 		print json_encode(['counters' => Counters::get_all()]);

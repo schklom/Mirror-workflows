@@ -409,8 +409,8 @@ class API extends Handler {
 
 	function catchupFeed() {
 		$feed_id = clean($_REQUEST["feed_id"]);
-		$is_cat = clean($_REQUEST["is_cat"]);
-		@$mode = clean($_REQUEST["mode"]);
+		$is_cat = clean($_REQUEST["is_cat"]) == "true";
+		$mode = clean($_REQUEST['mode'] ?? "");
 
 		if (!in_array($mode, ["all", "1day", "1week", "2week"]))
 			$mode = "all";

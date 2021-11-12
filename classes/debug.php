@@ -5,6 +5,13 @@ class Debug {
     const LOG_VERBOSE = 1;
     const LOG_EXTENDED = 2;
 
+	const ALL_LOG_LEVELS = [
+		Debug::LOG_DISABLED,
+		Debug::LOG_NORMAL,
+		Debug::LOG_VERBOSE,
+		Debug::LOG_EXTENDED,
+	];
+
 	/** @deprecated */
 	public static int $LOG_DISABLED = self::LOG_DISABLED;
 
@@ -43,21 +50,21 @@ class Debug {
     }
 
 	/**
-	 * @param Debug::LOG_* $level
+	 * @param int $level Debug::LOG_*
 	 */
-    public static function set_loglevel($level): void {
+    public static function set_loglevel(int $level): void {
         self::$loglevel = $level;
     }
 
 	/**
-	 * @return Debug::LOG_*
+	 * @return int Debug::LOG_*
 	 */
     public static function get_loglevel(): int {
         return self::$loglevel;
     }
 
 	/**
-	 * @param Debug::LOG_* $level
+	 * @param int $level Debug::LOG_*
 	 */
     public static function log(string $message, int $level = Debug::LOG_NORMAL): bool {
 

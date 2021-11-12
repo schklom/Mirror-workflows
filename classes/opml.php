@@ -7,6 +7,9 @@ class OPML extends Handler_Protected {
 		return array_search($method, $csrf_ignored) !== false;
 	}
 
+	/**
+	 * @return bool|int|void false if writing the file failed, true if printing succeeded, int if bytes were written to a file, or void if $owner_uid is missing
+	 */
 	function export() {
 		$output_name = sprintf("tt-rss_%s_%s.opml", $_SESSION["name"], date("Y-m-d"));
 		$include_settings = $_REQUEST["include_settings"] == "1";
@@ -17,7 +20,7 @@ class OPML extends Handler_Protected {
 		return $rc;
 	}
 
-	function import() {
+	function import(): void {
 		$owner_uid = $_SESSION["uid"];
 
 		header('Content-Type: text/html; charset=utf-8');
@@ -42,13 +45,11 @@ class OPML extends Handler_Protected {
 			</form>";
 
 		print "</div></body></html>";
-
-
 	}
 
 	// Export
 
-	private function opml_export_category(int $owner_uid, int $cat_id, bool $hide_private_feeds = false, bool $include_settings = true) {
+	private function opml_export_category(int $owner_uid, int $cat_id, bool $hide_private_feeds = false, bool $include_settings = true): string {
 
 		if ($hide_private_feeds)
 			$hide_qpart = "(private IS false AND auth_login = '' AND auth_pass = '')";
@@ -124,6 +125,9 @@ class OPML extends Handler_Protected {
 		return $out;
 	}
 
+	/**
+	 * @return bool|int|void false if writing the file failed, true if printing succeeded, int if bytes were written to a file, or void if $owner_uid is missing
+	 */
 	function opml_export(string $filename, int $owner_uid, bool $hide_private_feeds = false, bool $include_settings = true, bool $file_output = false) {
 		if (!$owner_uid) return;
 
@@ -290,13 +294,14 @@ class OPML extends Handler_Protected {
 
 		if ($file_output)
 			return file_put_contents($filename, $res) > 0;
-		else
-			print $res;
+
+		print $res;
+		return true;
 	}
 
 	// Import
 
-	private function opml_import_feed(DOMNode $node, int $cat_id, int $owner_uid, int $nest) {
+	private function opml_import_feed(DOMNode $node, int $cat_id, int $owner_uid, int $nest): void {
 		$attrs = $node->attributes;
 
 		$feed_title = mb_substr($attrs->getNamedItem('text')->nodeValue, 0, 250);
@@ -341,7 +346,7 @@ class OPML extends Handler_Protected {
 		}
 	}
 
-	private function opml_import_label(DOMNode $node, int $owner_uid, int $nest) {
+	private function opml_import_label(DOMNode $node, int $owner_uid, int $nest): void {
 		$attrs = $node->attributes;
 		$label_name = $attrs->getNamedItem('label-name')->nodeValue;
 
@@ -358,7 +363,7 @@ class OPML extends Handler_Protected {
 		}
 	}
 
-	private function opml_import_preference(DOMNode $node, int $owner_uid, int $nest) {
+	private function opml_import_preference(DOMNode $node, int $owner_uid, int $nest): void {
 		$attrs = $node->attributes;
 		$pref_name = $attrs->getNamedItem('pref-name')->nodeValue;
 
@@ -372,7 +377,7 @@ class OPML extends Handler_Protected {
 		}
 	}
 
-	private function opml_import_filter(DOMNode $node, int $owner_uid, int $nest) {
+	private function opml_import_filter(DOMNode $node, int $owner_uid, int $nest): void {
 		$attrs = $node->attributes;
 
 		$filter_type = $attrs->getNamedItem('filter-type')->nodeValue;
@@ -526,7 +531,7 @@ class OPML extends Handler_Protected {
 		}
 	}
 
-	private function opml_import_category(DOMDocument $doc, ?DOMNode $root_node, int $owner_uid, int $parent_id, int $nest) {
+	private function opml_import_category(DOMDocument $doc, ?DOMNode $root_node, int $owner_uid, int $parent_id, int $nest): void {
 		$default_cat_id = (int) $this->get_feed_category('Imported feeds', $owner_uid, 0);
 
 		if ($root_node) {
@@ -601,6 +606,9 @@ class OPML extends Handler_Protected {
 	}
 
 	/** $filename is optional; assumes HTTP upload with $_FILES otherwise */
+	/**
+	 * @return bool|void false on failure, true if successful, void if $owner_uid is missing
+	 */
 	function opml_import(int $owner_uid, string $filename = "") {
 		if (!$owner_uid) return;
 
@@ -667,7 +675,7 @@ class OPML extends Handler_Protected {
 		return true;
 	}
 
-	private function opml_notice(string $msg, int $prefix_length = 0) {
+	private function opml_notice(string $msg, int $prefix_length = 0): void {
 		if (php_sapi_name() == "cli") {
 			Debug::log(str_repeat("   ", $prefix_length) . $msg);
 		} else {

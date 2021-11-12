@@ -1,8 +1,12 @@
 <?php
 class Mailer {
-	private $last_error = "";
+	private string $last_error = "";
 
-	function mail($params) {
+	/**
+	 * @param array<string, mixed> $params
+	 * @return bool|int bool if the default mail function handled the request, otherwise an int as described in Mailer#mail()
+	 */
+	function mail(array $params) {
 
 		$to_name = $params["to_name"] ?? "";
 		$to_address = $params["to_address"];
@@ -26,6 +30,8 @@ class Mailer {
 		// 4. set error message if needed via passed Mailer instance function set_error()
 
 		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_SEND_MAIL) as $p) {
+			// Implemented via plugin, so ignore the undefined method 'hook_send_mail'.
+			// @phpstan-ignore-next-line
 			$rc = $p->hook_send_mail($this, $params);
 
 			if ($rc == 1)
@@ -46,12 +52,12 @@ class Mailer {
 		return $rc;
 	}
 
-	function set_error($message) {
+	function set_error(string $message): void {
 		$this->last_error = $message;
 		user_error("Error sending mail: $message", E_USER_WARNING);
 	}
 
-	function error() {
+	function error(): string {
 		return $this->last_error;
 	}
 }

@@ -71,7 +71,7 @@ class Labels
 	}
 
 	/**
-	 * @param array<int, array<int, array<int, int|string>> $labels
+	 * @param array<int, array<int, array<int, int|string>>> $labels
 	 *
 	 * @see Article::_get_labels()
 	 */

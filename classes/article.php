@@ -483,7 +483,7 @@ class Article extends Handler_Protected {
 
 	/**
 	 * @param array<int, int> $ids
-	 * @param Article::CATCHUP_MODE_* $cmode
+	 * @param int $cmode Article::CATCHUP_MODE_*
 	 */
 	static function _catchup_by_id($ids, int $cmode, ?int $owner_uid = null): void {
 

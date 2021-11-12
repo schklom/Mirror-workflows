@@ -4,7 +4,11 @@ class Article extends Handler_Protected {
 	const ARTICLE_KIND_VIDEO = 2;
 	const ARTICLE_KIND_YOUTUBE = 3;
 
-	function redirect() {
+	const CATCHUP_MODE_MARK_AS_READ = 0;
+	const CATCHUP_MODE_MARK_AS_UNREAD = 1;
+	const CATCHUP_MODE_TOGGLE = 2;
+
+	function redirect(): void {
 		$article = ORM::for_table('ttrss_entries')
 			->table_alias('e')
 			->join('ttrss_user_entries', [ 'ref_id', '=', 'e.id'], 'ue')
@@ -24,8 +28,7 @@ class Article extends Handler_Protected {
 		print "Article not found or has an empty URL.";
 	}
 
-	static function _create_published_article($title, $url, $content, $labels_str,
-			$owner_uid) {
+	static function _create_published_article(string $title, string $url, string $content, string $labels_str, int $owner_uid): bool {
 
 		$guid = 'SHA1:' . sha1("ttshared:" . $url . $owner_uid); // include owner_uid to prevent global GUID clash
 
@@ -158,14 +161,14 @@ class Article extends Handler_Protected {
 		return $rc;
 	}
 
-	function printArticleTags() {
+	function printArticleTags(): void {
 		$id = (int) clean($_REQUEST['id'] ?? 0);
 
 		print json_encode(["id" => $id,
 			"tags" => self::_get_tags($id)]);
 	}
 
-	function setScore() {
+	function setScore(): void {
 		$ids = array_map("intval", clean($_REQUEST['ids'] ?? []));
 		$score = (int)clean($_REQUEST['score']);
 
@@ -179,7 +182,7 @@ class Article extends Handler_Protected {
 		print json_encode(["id" => $ids, "score" => $score]);
 	}
 
-	function setArticleTags() {
+	function setArticleTags(): void {
 
 		$id = clean($_REQUEST["id"]);
 
@@ -254,18 +257,18 @@ class Article extends Handler_Protected {
 		print "</ul>";
 	}*/
 
-	function assigntolabel() {
-		return $this->_label_ops(true);
+	function assigntolabel(): void {
+		$this->_label_ops(true);
 	}
 
-	function removefromlabel() {
-		return $this->_label_ops(false);
+	function removefromlabel(): void {
+		$this->_label_ops(false);
 	}
 
-	private function _label_ops($assign) {
+	private function _label_ops(bool $assign): void {
 		$reply = array();
 
-		$ids = explode(",", clean($_REQUEST["ids"]));
+		$ids = array_map("intval", explode(",", clean($_REQUEST["ids"] ?? [])));
 		$label_id = clean($_REQUEST["lid"]);
 
 		$label = Labels::find_caption($label_id, $_SESSION["uid"]);
@@ -289,11 +292,10 @@ class Article extends Handler_Protected {
 		print json_encode($reply);
 	}
 
-	static function _format_enclosures($id,
-										$always_display_enclosures,
-									   $article_content,
-										$hide_images = false) {
-
+	/**
+	 * @return array{'formatted': string, 'entries': array<int, array<string, mixed>>}
+	 */
+	static function _format_enclosures(int $id, bool $always_display_enclosures, string $article_content, bool $hide_images = false): array {
 		$enclosures = self::_get_enclosures($id);
 		$enclosures_formatted = "";
 
@@ -366,7 +368,10 @@ class Article extends Handler_Protected {
 		return $rv;
 	}
 
-	static function _get_tags($id, $owner_uid = 0, $tag_cache = false) {
+	/**
+	 * @return array<int, string>
+	 */
+	static function _get_tags(int $id, int $owner_uid = 0, ?string $tag_cache = null): array {
 
 		$a_id = $id;
 
@@ -383,12 +388,14 @@ class Article extends Handler_Protected {
 
 		/* check cache first */
 
-		if ($tag_cache === false) {
+		if (!$tag_cache) {
 			$csth = $pdo->prepare("SELECT tag_cache FROM ttrss_user_entries
 				WHERE ref_id = ? AND owner_uid = ?");
 			$csth->execute([$id, $owner_uid]);
 
-			if ($row = $csth->fetch()) $tag_cache = $row["tag_cache"];
+			if ($row = $csth->fetch()) {
+				$tag_cache = $row["tag_cache"];
+			}
 		}
 
 		if ($tag_cache) {
@@ -416,7 +423,7 @@ class Article extends Handler_Protected {
 		return $tags;
 	}
 
-	function getmetadatabyid() {
+	function getmetadatabyid(): void {
 		$article = ORM::for_table('ttrss_entries')
 			->join('ttrss_user_entries', ['ref_id', '=', 'id'], 'ue')
 			->where('ue.owner_uid', $_SESSION['uid'])
@@ -429,7 +436,10 @@ class Article extends Handler_Protected {
 		}
 	}
 
-	static function _get_enclosures($id) {
+	/**
+	 * @return array<int, array<string, mixed>>
+	 */
+	static function _get_enclosures(int $id): array {
 		$encs = ORM::for_table('ttrss_enclosures')
 			->where('post_id', $id)
 			->find_many();
@@ -452,7 +462,7 @@ class Article extends Handler_Protected {
 
 	}
 
-	static function _purge_orphans() {
+	static function _purge_orphans(): void {
 
         // purge orphaned posts in main content table
 
@@ -471,7 +481,11 @@ class Article extends Handler_Protected {
         }
     }
 
-	static function _catchup_by_id($ids, $cmode, $owner_uid = false) {
+	/**
+	 * @param array<int, int> $ids
+	 * @param Article::CATCHUP_MODE_* $cmode
+	 */
+	static function _catchup_by_id($ids, int $cmode, ?int $owner_uid = null): void {
 
 		if (!$owner_uid) $owner_uid = $_SESSION["uid"];
 
@@ -479,11 +493,11 @@ class Article extends Handler_Protected {
 
 		$ids_qmarks = arr_qmarks($ids);
 
-		if ($cmode == 1) {
+		if ($cmode == Article::CATCHUP_MODE_MARK_AS_UNREAD) {
 			$sth = $pdo->prepare("UPDATE ttrss_user_entries SET
 				unread = true
 					WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
-		} else if ($cmode == 2) {
+		} else if ($cmode == Article::CATCHUP_MODE_TOGGLE) {
 			$sth = $pdo->prepare("UPDATE ttrss_user_entries SET
 				unread = NOT unread,last_read = NOW()
 					WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
@@ -496,7 +510,10 @@ class Article extends Handler_Protected {
 		$sth->execute(array_merge($ids, [$owner_uid]));
 	}
 
-	static function _get_labels($id, $owner_uid = false) {
+	/**
+	 * @return array<int, array<int, int|string>>
+	 */
+	static function _get_labels(int $id, ?int $owner_uid = null): array {
 		$rv = array();
 
 		if (!$owner_uid) $owner_uid = $_SESSION["uid"];
@@ -543,6 +560,12 @@ class Article extends Handler_Protected {
 		return $rv;
 	}
 
+	/**
+	 * @param array<int, array<string, mixed>> $enclosures
+	 * @param array<string, mixed> $headline
+	 *
+	 * @return array<int, Article::ARTICLE_KIND_*|string>
+	 */
 	static function _get_image(array $enclosures, string $content, string $site_url, array $headline) {
 
 		$article_image = "";
@@ -603,14 +626,14 @@ class Article extends Handler_Protected {
 				}
 
 			if ($article_image) {
-				$article_image = rewrite_relative_url($site_url, $article_image);
+				$article_image = UrlHelper::rewrite_relative($site_url, $article_image);
 
 				if (!$article_kind && (count($enclosures) > 1 || (isset($elems) && $elems->length > 1)))
 					$article_kind = Article::ARTICLE_KIND_ALBUM;
 			}
 
 			if ($article_stream)
-				$article_stream = rewrite_relative_url($site_url, $article_stream);
+				$article_stream = UrlHelper::rewrite_relative($site_url, $article_stream);
 		}
 
 		$cache = new DiskCache("images");
@@ -624,7 +647,12 @@ class Article extends Handler_Protected {
 		return [$article_image, $article_stream, $article_kind];
 	}
 
-	// only cached, returns label ids (not label feed ids)
+	/**
+	 * only cached, returns label ids (not label feed ids)
+	 *
+	 * @param array<int, int> $article_ids
+	 * @return array<int, int>
+	 */
 	static function _labels_of(array $article_ids) {
 		if (count($article_ids) == 0)
 			return [];
@@ -651,6 +679,10 @@ class Article extends Handler_Protected {
 		return array_unique($rv);
 	}
 
+	/**
+	 * @param array<int, int> $article_ids
+	 * @return array<int, int>
+	 */
 	static function _feeds_of(array $article_ids) {
 		if (count($article_ids) == 0)
 			return [];

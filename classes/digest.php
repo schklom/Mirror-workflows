@@ -62,7 +62,7 @@ class Digest
 
 						if ($rc && $do_catchup) {
 							Debug::log("Marking affected articles as read...");
-							Article::_catchup_by_id($affected_ids, 0, $line["id"]);
+							Article::_catchup_by_id($affected_ids, Article::CATCHUP_MODE_MARK_AS_READ, $line["id"]);
 						}
 					} else {
 						Debug::log("No headlines");

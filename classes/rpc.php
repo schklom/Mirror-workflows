@@ -344,11 +344,11 @@ class RPC extends Handler_Protected {
 
 		$ids_qmarks = arr_qmarks($ids);
 
-		if ($cmode == 0) {
+		if ($cmode == Article::CATCHUP_MODE_MARK_AS_READ) {
 			$sth = $this->pdo->prepare("UPDATE ttrss_user_entries SET
 				marked = false, last_marked = NOW()
 					WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
-		} else if ($cmode == 1) {
+		} else if ($cmode == Article::CATCHUP_MODE_MARK_AS_UNREAD) {
 			$sth = $this->pdo->prepare("UPDATE ttrss_user_entries SET
 				marked = true, last_marked = NOW()
 					WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
@@ -365,11 +365,11 @@ class RPC extends Handler_Protected {
 
 		$ids_qmarks = arr_qmarks($ids);
 
-		if ($cmode == 0) {
+		if ($cmode == Article::CATCHUP_MODE_MARK_AS_READ) {
 			$sth = $this->pdo->prepare("UPDATE ttrss_user_entries SET
 				published = false, last_published = NOW()
 					WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
-		} else if ($cmode == 1) {
+		} else if ($cmode == Article::CATCHUP_MODE_MARK_AS_UNREAD) {
 			$sth = $this->pdo->prepare("UPDATE ttrss_user_entries SET
 				published = true, last_published = NOW()
 					WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");

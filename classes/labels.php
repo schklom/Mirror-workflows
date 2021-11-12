@@ -71,11 +71,11 @@ class Labels
 	}
 
 	/**
-	 * @param array<int, array<int|string, mixed>>|null $labels
+	 * @param array<int, array<int, array<int, int|string>> $labels
 	 *
 	 * @see Article::_get_labels()
 	 */
-	static function update_cache(int $owner_uid, int $id, ?array $labels = null, bool $force = false): void {
+	static function update_cache(int $owner_uid, int $id, array $labels, bool $force = false): void {
 		$pdo = Db::pdo();
 
 		if ($force)

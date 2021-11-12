@@ -289,9 +289,9 @@ class Feeds extends Handler_Protected {
 
 				if ($line["num_enclosures"] > 0) {
 					$line["enclosures"] = Article::_format_enclosures($id,
-						$line["always_display_enclosures"],
+						sql_bool_to_bool($line["always_display_enclosures"]),
 						$line["content"],
-						$line["hide_images"]);
+						sql_bool_to_bool($line["hide_images"]));
 				} else {
 					$line["enclosures"] = [ 'formatted' => '', 'entries' => [] ];
 				}

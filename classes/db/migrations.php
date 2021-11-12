@@ -1,16 +1,33 @@
 <?php
 class Db_Migrations {
 
-	private string $base_filename = "schema.sql";
-	private string $base_path;
-	private string $migrations_path;
-	private string $migrations_table;
-	private bool $base_is_latest;
-	private \PDO $pdo;
+	// TODO: class properties can be switched to PHP typing if/when the minimum PHP_VERSION is raised to 7.4.0+
+	/** @var string */
+	private $base_filename = "schema.sql";
 
-	private int $cached_version;
-	private int $cached_max_version;
-	private int $max_version_override;
+	/** @var string */
+	private $base_path;
+
+	/** @var string */
+	private $migrations_path;
+
+	/** @var string */
+	private $migrations_table;
+
+	/** @var bool */
+	private $base_is_latest;
+
+	/** @var PDO */
+	private $pdo;
+
+	/** @var int */
+	private $cached_version;
+
+	/** @var int */
+	private $cached_max_version;
+
+	/** @var int */
+	private $max_version_override;
 
 	function __construct() {
 		$this->pdo = Db::pdo();

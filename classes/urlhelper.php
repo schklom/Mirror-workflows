@@ -6,14 +6,30 @@ class UrlHelper {
 		"tel"
 	];
 
-	static string $fetch_last_error;
-	static int $fetch_last_error_code;
-	static string $fetch_last_error_content;
-	static string $fetch_last_content_type;
-	static string $fetch_last_modified;
-	static string $fetch_effective_url;
-	static string $fetch_effective_ip_addr;
-	static bool $fetch_curl_used;
+	// TODO: class properties can be switched to PHP typing if/when the minimum PHP_VERSION is raised to 7.4.0+
+	/** @var string */
+	static $fetch_last_error;
+
+	/** @var int */
+	static $fetch_last_error_code;
+
+	/** @var string */
+	static $fetch_last_error_content;
+
+	/** @var string */
+	static $fetch_last_content_type;
+
+	/** @var string */
+	static $fetch_last_modified;
+
+	/** @var string */
+	static $fetch_effective_url;
+
+	/** @var string */
+	static $fetch_effective_ip_addr;
+
+	/** @var bool */
+	static $fetch_curl_used;
 
 	/**
 	 * @param array<string, string|int> $parts

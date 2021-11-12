@@ -1,38 +1,49 @@
 <?php
 class PluginHost {
-	private ?\Pdo $pdo = null;
+	// TODO: class properties can be switched to PHP typing if/when the minimum PHP_VERSION is raised to 7.4.0+
+	/** @var PDO|null */
+	private $pdo = null;
 
-	/* separate handle for plugin data so transaction while saving wouldn't clash with possible main
-		tt-rss code transactions; only initialized when first needed */
-	private ?\Pdo $pdo_data = null;
+	/**
+	 * separate handle for plugin data so transaction while saving wouldn't clash with possible main
+	 * tt-rss code transactions; only initialized when first needed
+	 *
+	 * @var PDO|null
+	 */
+	private $pdo_data = null;
 
 	/** @var array<string, array<int, array<int, Plugin>>> hook types -> priority levels -> Plugins */
-	private array $hooks = [];
+	private $hooks = [];
 
 	/** @var array<string, Plugin> */
-	private array $plugins = [];
+	private $plugins = [];
 
 	/** @var array<string, array<string, Plugin>> handler type -> method type -> Plugin */
-	private array $handlers = [];
+	private $handlers = [];
 
 	/** @var array<string, array{'description': string, 'suffix': string, 'arghelp': string, 'class': Plugin}> command type -> details array */
-	private array $commands = [];
+	private $commands = [];
 
 	/** @var array<string, array<string, mixed>> plugin name -> (potential profile array) -> key -> value  */
-	private array $storage = [];
+	private $storage = [];
 
 	/** @var array<int, array<int, array{'id': int, 'title': string, 'sender': Plugin, 'icon': string}>> */
-	private array $feeds = [];
+	private $feeds = [];
 
 	/** @var array<string, Plugin> API method name, Plugin sender */
-	private array $api_methods = [];
+	private $api_methods = [];
 
 	/** @var array<string, array<int, array{'action': string, 'description': string, 'sender': Plugin}>> */
-	private array $plugin_actions = [];
+	private $plugin_actions = [];
 
-	private ?int $owner_uid = null;
-	private bool $data_loaded = false;
-	private static ?PluginHost $instance = null;
+	/** @var int|null */
+	private $owner_uid = null;
+
+	/** @var bool */
+	private $data_loaded = false;
+
+	/** @var PluginHost|null */
+	private static $instance = null;
 
 	const API_VERSION = 2;
 	const PUBLIC_METHOD_DELIMITER = "--";

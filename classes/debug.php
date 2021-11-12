@@ -1,9 +1,9 @@
 <?php
 class Debug {
 	const LOG_DISABLED = -1;
-    const LOG_NORMAL = 0;
-    const LOG_VERBOSE = 1;
-    const LOG_EXTENDED = 2;
+	const LOG_NORMAL = 0;
+	const LOG_VERBOSE = 1;
+	const LOG_EXTENDED = 2;
 
 	const ALL_LOG_LEVELS = [
 		Debug::LOG_DISABLED,
@@ -12,26 +12,44 @@ class Debug {
 		Debug::LOG_EXTENDED,
 	];
 
-	/** @deprecated */
-	public static int $LOG_DISABLED = self::LOG_DISABLED;
+	// TODO: class properties can be switched to PHP typing if/when the minimum PHP_VERSION is raised to 7.4.0+
+	/**
+	 * @deprecated
+	 * @var int
+	*/
+	public static $LOG_DISABLED = self::LOG_DISABLED;
 
-	/** @deprecated */
-    public static int $LOG_NORMAL = self::LOG_NORMAL;
+	/**
+	 * @deprecated
+	 * @var int
+	*/
+	public static $LOG_NORMAL = self::LOG_NORMAL;
 
-	/** @deprecated */
-    public static int $LOG_VERBOSE = self::LOG_VERBOSE;
+	/**
+	 * @deprecated
+	 * @var int
+	*/
+	public static $LOG_VERBOSE = self::LOG_VERBOSE;
 
-	/** @deprecated */
-    public static int $LOG_EXTENDED = self::LOG_EXTENDED;
+	/**
+	 * @deprecated
+	 * @var int
+	*/
+	public static $LOG_EXTENDED = self::LOG_EXTENDED;
 
-    private static bool $enabled = false;
-    private static bool $quiet = false;
-    private static ?string $logfile = null;
+	/** @var bool */
+	private static $enabled = false;
+
+	/** @var bool */
+	private static $quiet = false;
+
+	/** @var string|null */
+	private static $logfile = null;
 
 	/**
 	 * @var int Debug::LOG_*
 	 */
-    private static int $loglevel = self::LOG_NORMAL;
+    private static $loglevel = self::LOG_NORMAL;
 
 	public static function set_logfile(string $logfile): void {
         self::$logfile = $logfile;

@@ -1,6 +1,8 @@
 <?php
 class Mailer {
-	private string $last_error = "";
+	// TODO: class properties can be switched to PHP typing if/when the minimum PHP_VERSION is raised to 7.4.0+
+	/** @var string */
+	private $last_error = "";
 
 	/**
 	 * @param array<string, mixed> $params

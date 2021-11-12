@@ -29,7 +29,7 @@ class Debug {
     private static ?string $logfile = null;
 
 	/**
-	 * @var Debug::LOG_*
+	 * @var int Debug::LOG_*
 	 */
     private static int $loglevel = self::LOG_NORMAL;
 

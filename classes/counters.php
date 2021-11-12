@@ -273,6 +273,10 @@ class Counters {
 
 		if (is_array($feeds)) {
 			foreach ($feeds as $feed) {
+				if (!method_exists($feed['sender'], 'get_unread')) {
+					continue;
+				}
+
 				$cv = [
 					"id" => PluginHost::pfeed_to_feed_id($feed['id']),
 					"counter" => $feed['sender']->get_unread($feed['id'])

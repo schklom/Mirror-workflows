@@ -17,7 +17,7 @@ class Pref_Prefs extends Handler_Protected {
 	const PI_ERR_PLUGIN_NOT_FOUND = "PI_ERR_PLUGIN_NOT_FOUND";
 	const PI_ERR_NO_WORKDIR = "PI_ERR_NO_WORKDIR";
 
-	function csrf_ignore($method) {
+	function csrf_ignore(string $method): bool {
 		$csrf_ignored = array("index", "updateself", "otpqrcode");
 
 		return array_search($method, $csrf_ignored) !== false;

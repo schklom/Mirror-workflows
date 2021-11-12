@@ -1,7 +1,7 @@
 <?php
 class RPC extends Handler_Protected {
 
-	/*function csrf_ignore($method) {
+	/*function csrf_ignore(string $method): bool {
 		$csrf_ignored = array("completelabels");
 
 		return array_search($method, $csrf_ignored) !== false;

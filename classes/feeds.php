@@ -8,7 +8,7 @@ class Feeds extends Handler_Protected {
 	 private $viewfeed_timestamp;
 	 private $viewfeed_timestamp_last;
 
-    function csrf_ignore($method) {
+	function csrf_ignore(string $method): bool {
 		$csrf_ignored = array("index");
 
 		return array_search($method, $csrf_ignored) !== false;

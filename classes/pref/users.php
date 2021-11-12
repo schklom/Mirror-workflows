@@ -1,6 +1,6 @@
 <?php
 class Pref_Users extends Handler_Administrative {
-		function csrf_ignore($method) {
+		function csrf_ignore(string $method): bool {
 			return $method == "index";
 		}
 

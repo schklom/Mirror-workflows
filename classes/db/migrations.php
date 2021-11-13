@@ -21,10 +21,10 @@ class Db_Migrations {
 	private $pdo;
 
 	/** @var int */
-	private $cached_version;
+	private $cached_version = 0;
 
 	/** @var int */
-	private $cached_max_version;
+	private $cached_max_version = 0;
 
 	/** @var int */
 	private $max_version_override;
@@ -65,7 +65,7 @@ class Db_Migrations {
 	}
 
 	function get_version() : int {
-		if (isset($this->cached_version))
+		if ($this->cached_version)
 			return $this->cached_version;
 
 		try {
@@ -152,7 +152,7 @@ class Db_Migrations {
 		if ($this->max_version_override > 0)
 			return $this->max_version_override;
 
-		if (isset($this->cached_max_version))
+		if ($this->cached_max_version)
 			return $this->cached_max_version;
 
 		$migrations = glob("{$this->migrations_path}/*.sql");

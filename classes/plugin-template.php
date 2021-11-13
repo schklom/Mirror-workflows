@@ -1,5 +1,5 @@
 <?php
-abstract class Plugin {
+abstract class PluginTemplate {
 	const API_VERSION_COMPAT = 1;
 
 	/** @var PDO $pdo */

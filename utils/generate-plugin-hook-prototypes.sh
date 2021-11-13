@@ -15,8 +15,11 @@ grep 'hook_.*(' ../classes/pluginhost.php | sed -e 's#[\t ]*/[* ]*##' \
 EOF
 done
 
-cat ../classes/plugin.tpl | while IFS=\n read L; do
+cat ../classes/plugin-template.php | while IFS=\n read L; do
 	case $L in
+		*PluginTemplate* )
+			echo "$L" | sed 's/PluginTemplate/Plugin/'
+			;;
 		*AUTO_GENERATED_HOOKS_GO_HERE* )
 			echo "\t/* plugin hook methods (auto-generated) */\n"
 			cat $TMPFILE

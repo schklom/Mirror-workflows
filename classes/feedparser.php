@@ -1,19 +1,35 @@
 <?php
 class FeedParser {
+
+	/** @var DOMDocument */
 	private $doc;
-	private $error;
-	private $libxml_errors = array();
+
+	/** @var string|null */
+	private $error = null;
+
+	/** @var array<string> */
+	private $libxml_errors = [];
+
+	/** @var array<FeedItem> */
 	private $items;
+
+	/** @var string */
 	private $link;
+
+	/** @var string */
 	private $title;
+
+	/** @var int */
 	private $type;
+
+	/** @var DOMXPath */
 	private $xpath;
 
 	const FEED_RDF = 0;
 	const FEED_RSS = 1;
 	const FEED_ATOM = 2;
 
-	function __construct($data) {
+	function __construct(string $data) {
 		libxml_use_internal_errors(true);
 		libxml_clear_errors();
 		$this->doc = new DOMDocument();
@@ -26,7 +42,7 @@ class FeedParser {
 		if ($error) {
 			foreach (libxml_get_errors() as $error) {
 				if ($error->level == LIBXML_ERR_FATAL) {
-					if(!isset($this->error)) //currently only the first error is reported
+					if ($this->error) //currently only the first error is reported
 						$this->error = $this->format_error($error);
 					$this->libxml_errors [] = $this->format_error($error);
 				}
@@ -37,7 +53,7 @@ class FeedParser {
 		$this->items = array();
 	}
 
-	function init() {
+	function init() : void {
 		$root = $this->doc->firstChild;
 		$xpath = new DOMXPath($this->doc);
 		$xpath->registerNamespace('atom', 'http://www.w3.org/2005/Atom');
@@ -69,7 +85,7 @@ class FeedParser {
 					$this->type = $this::FEED_ATOM;
 					break;
 				default:
-					if( !isset($this->error) ){
+					if (!isset($this->error) ){
 						$this->error = "Unknown/unsupported feed type";
 					}
 					return;
@@ -100,6 +116,7 @@ class FeedParser {
 				if (!$link)
 					$link = $xpath->query("//atom03:feed/atom03:link[@rel='alternate']")->item(0);
 
+				/** @var DOMElement|null $link */
 				if ($link && $link->hasAttributes()) {
 					$this->link = $link->getAttribute("href");
 				}
@@ -121,6 +138,7 @@ class FeedParser {
 					$this->title = $title->nodeValue;
 				}
 
+				/** @var DOMElement|null $link */
 				$link = $xpath->query("//channel/link")->item(0);
 
 				if ($link) {
@@ -173,39 +191,37 @@ class FeedParser {
 		}
 	}
 
-	function format_error($error) {
-		if ($error) {
-			return sprintf("LibXML error %s at line %d (column %d): %s",
-				$error->code, $error->line, $error->column,
-				$error->message);
-		} else {
-			return "";
-		}
+	function format_error(LibXMLError $error) : string {
+		return sprintf("LibXML error %s at line %d (column %d): %s",
+			$error->code, $error->line, $error->column,
+			$error->message);
 	}
 
 	// libxml may have invalid unicode data in error messages
-	function error() {
+	function error() : string {
 		return UConverter::transcode($this->error, 'UTF-8', 'UTF-8');
 	}
 
-	// WARNING: may return invalid unicode data
-	function errors() {
+	/** @return array<string> - WARNING: may return invalid unicode data */
+	function errors() : array {
 		return $this->libxml_errors;
 	}
 
-	function get_link() {
+	function get_link() : string {
 		return clean($this->link);
 	}
 
-	function get_title() {
+	function get_title() : string {
 		return clean($this->title);
 	}
 
-	function get_items() {
+	/** @return array<FeedItem> */
+	function get_items() : array {
 		return $this->items;
 	}
 
-	function get_links($rel) {
+	/** @return array<string> */
+	function get_links(string $rel) : array {
 		$rv = array();
 
 		switch ($this->type) {

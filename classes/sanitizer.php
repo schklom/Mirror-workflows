@@ -44,7 +44,7 @@ class Sanitizer {
 		return $doc;
 	}
 
-	public static function iframe_whitelisted(DOMNode $entry): bool {
+	public static function iframe_whitelisted(DOMElement $entry): bool {
 		$src = parse_url($entry->getAttribute("src"), PHP_URL_HOST);
 
 		if (!empty($src))

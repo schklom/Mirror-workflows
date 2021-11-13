@@ -3,14 +3,12 @@ class Share extends Plugin {
 	/** @var PluginHost $host */
 	private $host;
 
-	/** @return array<float|string|null> */
 	function about() {
 		return array(null,
 			"Share article by unique URL",
 			"fox");
 	}
 
-	/** @param PluginHost $host */
 	function init($host) {
 		$this->host = $host;
 
@@ -22,17 +20,14 @@ class Share extends Plugin {
 		return $method == "get";
 	}
 
-	/** @return string */
 	function get_js() {
 		return file_get_contents(__DIR__ . "/share.js");
 	}
 
-	/** @return string */
 	function get_css() {
 		return file_get_contents(__DIR__ . "/share.css");
 	}
 
-	/** @return string */
 	function get_prefs_js() {
 		return file_get_contents(__DIR__ . "/share_prefs.js");
 	}

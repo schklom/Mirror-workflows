@@ -12,7 +12,7 @@ abstract class Plugin {
 	 * */
 	abstract function init($host);
 
-	/** @return array<float|string|bool> */
+	/** @return array<null|float|string|bool> */
 	abstract function about();
 	// return array(1.0, "plugin", "No description", "No author", false);
 
@@ -46,6 +46,11 @@ abstract class Plugin {
 
 	/** @return string */
 	function get_js() {
+		return "";
+	}
+
+	/** @return string */
+	function get_css() {
 		return "";
 	}
 

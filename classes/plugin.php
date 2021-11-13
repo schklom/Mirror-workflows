@@ -96,22 +96,39 @@ abstract class Plugin {
 
 	/* plugin hook methods */
 
+	/**
+	 * @param array<string,mixed> $line
+	 * @return string
+	 */
 	function hook_article_button($line) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
+	/**
+	 * @param array<string,mixed> $article
+	 * @return array<string,mixed>
+	 */
 	function hook_article_filter($article) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
+	/**
+	 * @param string $tab
+	 * @return void
+	 */
 	function hook_prefs_tab($tab) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
+	/**
+	 * @param string $section
+	 * @return void
+	 */
 	function hook_prefs_tab_section($section) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
+	/** @return void  */
 	function hook_prefs_tabs() {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}

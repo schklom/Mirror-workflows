@@ -43,8 +43,8 @@ class Share extends Plugin {
 		print __("Article unshared");
 	}
 
-	/** @param int $id
-	 *
+	/**
+	 * @param string $id
 	 * @return void */
 	function hook_prefs_tab_section($id) {
 		if ($id == "prefFeedsPublishedGenerated") {

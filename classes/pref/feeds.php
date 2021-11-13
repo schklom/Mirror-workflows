@@ -1289,7 +1289,7 @@ class Pref_Feeds extends Handler_Protected {
 	/**
 	 * @param array<string, mixed> $cat
 	 */
-	private function calculate_children_count(?array $cat): int {
+	private function calculate_children_count(array $cat): int {
 		$c = 0;
 
 		foreach ($cat['items'] ?? [] as $child) {

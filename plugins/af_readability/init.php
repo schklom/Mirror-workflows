@@ -6,7 +6,7 @@ use \andreskrey\Readability\Configuration;
 
 class Af_Readability extends Plugin {
 
-	/* @var PluginHost $host */
+	/** @var PluginHost $host */
 	private $host;
 
 	function about() {
@@ -19,6 +19,7 @@ class Af_Readability extends Plugin {
 		return array("needs_curl" => true);
 	}
 
+	/** @return void */
 	function save() {
 		$enable_share_anything = checkbox_to_sql_bool($_POST["enable_share_anything"] ?? "");
 

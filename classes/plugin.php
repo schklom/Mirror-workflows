@@ -20,7 +20,7 @@ abstract class Plugin {
 		$this->pdo = Db::pdo();
 	}
 
-	/** @return array<string,int> */
+	/** @return array<string,bool> */
 	function flags() {
 		/* associative array, possible keys:
 			needs_curl = boolean

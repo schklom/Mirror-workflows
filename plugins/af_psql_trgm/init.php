@@ -1,9 +1,13 @@
 <?php
 class Af_Psql_Trgm extends Plugin {
 
-	/* @var PluginHost $host */
+	/** @var PluginHost $host */
 	private $host;
+
+	/** @var float */
 	private $default_similarity = 0.75;
+
+	/** @var int */
 	private $default_min_length = 32;
 
 	function about() {
@@ -12,6 +16,7 @@ class Af_Psql_Trgm extends Plugin {
 			"fox");
 	}
 
+	/** @return void */
 	function save() {
 		$similarity = (float) $_POST["similarity"];
 		$min_title_length = (int) $_POST["min_title_length"];
@@ -45,6 +50,7 @@ class Af_Psql_Trgm extends Plugin {
 		return file_get_contents(__DIR__ . "/init.js");
 	}
 
+	/** @return void */
 	function showrelated() {
 		$id = (int) $_REQUEST['id'];
 		$owner_uid = $_SESSION["uid"];

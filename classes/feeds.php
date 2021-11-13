@@ -21,7 +21,7 @@ class Feeds extends Handler_Protected {
 	 * @return array{0: array<int, int>, 1: int, 2: int, 3: bool, 4: array<string, mixed>} $topmost_article_ids, $headlines_count, $feed, $disable_cache, $reply
 	 */
 	private function _format_headlines_list(int $feed, string $method, string $view_mode, int $limit, bool $cat_view,
-					int $offset, string $override_order, bool $include_children, bool $check_first_id,
+					int $offset, string $override_order, bool $include_children, ?int $check_first_id = null,
 					bool $skip_first_id_check, string $order_by): array {
 
 		$disable_cache = false;

@@ -7,14 +7,13 @@ class Pref_Filters extends Handler_Protected {
 		return array_search($method, $csrf_ignored) !== false;
 	}
 
-	function filtersortreset() {
+	function filtersortreset(): void {
 		$sth = $this->pdo->prepare("UPDATE ttrss_filters2
 				SET order_id = 0 WHERE owner_uid = ?");
 		$sth->execute([$_SESSION['uid']]);
-		return;
 	}
 
-	function savefilterorder() {
+	function savefilterorder(): void {
 		$data = json_decode($_POST['payload'], true);
 
 		#file_put_contents("/tmp/saveorder.json", clean($_POST['payload']));
@@ -40,11 +39,9 @@ class Pref_Filters extends Handler_Protected {
 				}
 			}
 		}
-
-		return;
 	}
 
-	function testFilterDo() {
+	function testFilterDo(): void {
 		$offset = (int) clean($_REQUEST["offset"]);
 		$limit = (int) clean($_REQUEST["limit"]);
 
@@ -162,7 +159,7 @@ class Pref_Filters extends Handler_Protected {
 		print json_encode($rv);
 	}
 
-	private function _get_rules_list($filter_id) {
+	private function _get_rules_list(int $filter_id): string {
 		$sth = $this->pdo->prepare("SELECT reg_exp,
 			inverse,
 			match_on,
@@ -222,7 +219,7 @@ class Pref_Filters extends Handler_Protected {
 		return $rv;
 	}
 
-	function getfiltertree() {
+	function getfiltertree(): void {
 		$root = array();
 		$root['id'] = 'root';
 		$root['name'] = __('Filters');
@@ -307,10 +304,9 @@ class Pref_Filters extends Handler_Protected {
 		$fl['items'] = array($root);
 
 		print json_encode($fl);
-		return;
 	}
 
-	function edit() {
+	function edit(): void {
 
 		$filter_id = (int) clean($_REQUEST["id"] ?? 0);
 
@@ -406,7 +402,10 @@ class Pref_Filters extends Handler_Protected {
 		}
 	}
 
-	private function _get_rule_name($rule) {
+	/**
+	 * @param array<string, mixed>|null $rule
+	 */
+	private function _get_rule_name(?array $rule = null): string {
 		if (!$rule) $rule = json_decode(clean($_REQUEST["rule"]), true);
 
 		$feeds = $rule["feed_id"];
@@ -446,11 +445,18 @@ class Pref_Filters extends Handler_Protected {
 			"<span class='field'>$filter_type</span>", "<span class='feed'>$feed</span>", isset($rule["inverse"]) ? __("(inverse)") : "") . "</span>";
 	}
 
-	function printRuleName() {
+	function printRuleName(): void {
 		print $this->_get_rule_name(json_decode(clean($_REQUEST["rule"]), true));
 	}
 
-	private function _get_action_name($action) {
+	/**
+	 * @param array<string, mixed>|null $action
+	 */
+	private function _get_action_name(?array $action = null): string {
+		if (!$action) {
+			return "";
+		}
+
 		$sth = $this->pdo->prepare("SELECT description FROM
 			ttrss_filter_actions WHERE id = ?");
 		$sth->execute([(int)$action["action_id"]]);
@@ -484,11 +490,11 @@ class Pref_Filters extends Handler_Protected {
 		return $title;
 	}
 
-	function printActionName() {
-		print $this->_get_action_name(json_decode(clean($_REQUEST["action"]), true));
+	function printActionName(): void {
+		print $this->_get_action_name(json_decode(clean($_REQUEST["action"] ?? ""), true));
 	}
 
-	function editSave() {
+	function editSave(): void {
 		$filter_id = clean($_REQUEST["id"]);
 		$enabled = checkbox_to_sql_bool(clean($_REQUEST["enabled"] ?? false));
 		$match_any_rule = checkbox_to_sql_bool(clean($_REQUEST["match_any_rule"] ?? false));
@@ -510,7 +516,7 @@ class Pref_Filters extends Handler_Protected {
 		$this->pdo->commit();
 	}
 
-	function remove() {
+	function remove(): void {
 
 		$ids = explode(",", clean($_REQUEST["ids"]));
 		$ids_qmarks = arr_qmarks($ids);
@@ -520,7 +526,7 @@ class Pref_Filters extends Handler_Protected {
 		$sth->execute(array_merge($ids, [$_SESSION['uid']]));
 	}
 
-	private function _save_rules_and_actions($filter_id) {
+	private function _save_rules_and_actions($filter_id): void {
 
 		$sth = $this->pdo->prepare("DELETE FROM ttrss_filters2_rules WHERE filter_id = ?");
 		$sth->execute([$filter_id]);
@@ -597,7 +603,7 @@ class Pref_Filters extends Handler_Protected {
 		}
 	}
 
-	function add () {
+	function add(): void {
 		$enabled = checkbox_to_sql_bool(clean($_REQUEST["enabled"] ?? false));
 		$match_any_rule = checkbox_to_sql_bool(clean($_REQUEST["match_any_rule"] ?? false));
 		$title = clean($_REQUEST["title"]);
@@ -625,7 +631,7 @@ class Pref_Filters extends Handler_Protected {
 		$this->pdo->commit();
 	}
 
-	function index() {
+	function index(): void {
 		if (array_key_exists("search", $_REQUEST)) {
 			$filter_search = clean($_REQUEST["search"]);
 			$_SESSION["prefs_filter_search"] = $filter_search;
@@ -691,15 +697,18 @@ class Pref_Filters extends Handler_Protected {
 		<?php
 	}
 
-	function editrule() {
-		$feed_ids = explode(",", clean($_REQUEST["ids"]));
+	function editrule(): void {
+		$feed_ids = array_map("intval", explode(",", clean($_REQUEST["ids"])));
 
 		print json_encode([
 			"multiselect" => $this->_feed_multi_select("feed_id", $feed_ids, 'required="1" style="width : 100%; height : 300px" dojoType="fox.form.ValidationMultiSelect"')
 		]);
 	}
 
-	private function _get_name($id) {
+	/**
+	 * @return array<int, string>
+	 */
+	private function _get_name(int $id): array {
 
 		$sth = $this->pdo->prepare(
 			"SELECT title,match_any_rule,f.inverse AS inverse,COUNT(DISTINCT r.id) AS num_rules,COUNT(DISTINCT a.id) AS num_actions
@@ -745,8 +754,9 @@ class Pref_Filters extends Handler_Protected {
 		return [];
 	}
 
-	function join() {
-		$ids = explode(",", clean($_REQUEST["ids"]));
+	function join(): void {
+		/** @var array<int, int> */
+		$ids = array_map("intval", explode(",", clean($_REQUEST["ids"])));
 
 		if (count($ids) > 1) {
 			$base_id = array_shift($ids);
@@ -775,7 +785,7 @@ class Pref_Filters extends Handler_Protected {
 		}
 	}
 
-	private function _optimize($id) {
+	private function _optimize(int $id): void {
 
 		$this->pdo->beginTransaction();
 
@@ -830,9 +840,9 @@ class Pref_Filters extends Handler_Protected {
 		$this->pdo->commit();
 	}
 
-	private function _feed_multi_select($id, $default_ids = [],
+	private function _feed_multi_select(string $id, $default_ids = [],
 						   $attributes = "", $include_all_feeds = true,
-						   $root_id = null, $nest_level = 0) {
+						   $root_id = null, $nest_level = 0): string {
 
 		$pdo = Db::pdo();
 

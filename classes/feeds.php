@@ -2067,7 +2067,12 @@ class Feeds extends Handler_Protected {
 			->delete_many();
 	}
 
-	static function _update_access_key(int $feed_id, bool $is_cat, int $owner_uid): ?string {
+	/**
+	 * @param string $feed_id may be a feed ID or tag
+	 *
+	 * @see Handler_Public#generate_syndicated_feed()
+	 */
+	static function _update_access_key(string $feed_id, bool $is_cat, int $owner_uid): ?string {
 		$key = ORM::for_table('ttrss_access_keys')
 			->where('owner_uid', $owner_uid)
 			->where('feed_id', $feed_id)
@@ -2077,7 +2082,12 @@ class Feeds extends Handler_Protected {
 		return self::_get_access_key($feed_id, $is_cat, $owner_uid);
 	}
 
-	static function _get_access_key(int $feed_id, bool $is_cat, int $owner_uid): ?string {
+	/**
+	 * @param string $feed_id may be a feed ID or tag
+	 *
+	 * @see Handler_Public#generate_syndicated_feed()
+	 */
+	static function _get_access_key(string $feed_id, bool $is_cat, int $owner_uid): ?string {
 		$key = ORM::for_table('ttrss_access_keys')
 			->where('owner_uid', $owner_uid)
 			->where('feed_id', $feed_id)

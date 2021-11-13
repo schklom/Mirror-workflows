@@ -27,7 +27,7 @@ class API extends Handler {
 				]);
 	}
 
-	function before($method) {
+	function before(string $method): bool {
 		if (parent::before($method)) {
 			header("Content-Type: text/json");
 

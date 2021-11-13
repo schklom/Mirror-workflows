@@ -1,9 +1,16 @@
 <?php
 class Handler implements IHandler {
+	// TODO: class properties can be switched to PHP typing if/when the minimum PHP_VERSION is raised to 7.4.0+
+	/** @var PDO */
 	protected $pdo;
+
+	/** @var array<int|string, mixed> */
 	protected $args;
 
-	function __construct($args) {
+	/**
+	 * @param array<int|string, mixed> $args
+	 */
+	function __construct(array $args) {
 		$this->pdo = Db::pdo();
 		$this->args = $args;
 	}
@@ -12,11 +19,11 @@ class Handler implements IHandler {
 		return false;
 	}
 
-	function before($method) {
+	function before(string $method): bool {
 		return true;
 	}
 
-	function after() {
+	function after(): bool {
 		return true;
 	}
 

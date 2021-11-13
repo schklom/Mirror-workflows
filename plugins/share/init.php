@@ -1,14 +1,16 @@
 <?php
 class Share extends Plugin {
+	/** @var PluginHost $host */
 	private $host;
 
+	/** @return array<float|string|null> */
 	function about() {
 		return array(null,
 			"Share article by unique URL",
 			"fox");
 	}
 
-	/* @var PluginHost $host */
+	/** @param PluginHost $host */
 	function init($host) {
 		$this->host = $host;
 
@@ -20,18 +22,22 @@ class Share extends Plugin {
 		return $method == "get";
 	}
 
+	/** @return string */
 	function get_js() {
 		return file_get_contents(__DIR__ . "/share.js");
 	}
 
+	/** @return string */
 	function get_css() {
 		return file_get_contents(__DIR__ . "/share.css");
 	}
 
+	/** @return string */
 	function get_prefs_js() {
 		return file_get_contents(__DIR__ . "/share_prefs.js");
 	}
 
+	/** @return void */
 	function unshare() {
 		$id = $_REQUEST['id'];
 
@@ -42,6 +48,9 @@ class Share extends Plugin {
 		print __("Article unshared");
 	}
 
+	/** @param int $id
+	 *
+	 * @return void */
 	function hook_prefs_tab_section($id) {
 		if ($id == "prefFeedsPublishedGenerated") {
 			?>
@@ -56,6 +65,7 @@ class Share extends Plugin {
 		}
 	}
 
+	/** @return void */
 	function clearArticleKeys() {
 		$sth = $this->pdo->prepare("UPDATE ttrss_user_entries SET uuid = '' WHERE
 			owner_uid = ?");
@@ -64,6 +74,7 @@ class Share extends Plugin {
 		print __("Shared URLs cleared.");
 	}
 
+	/** @return void */
 	function newkey() {
 		$id = $_REQUEST['id'];
 		$uuid = uniqid_short();
@@ -75,6 +86,10 @@ class Share extends Plugin {
 		print json_encode(["link" => $uuid]);
 	}
 
+	/**
+	 * @param array<string,mixed> $line
+	 *
+	 * @return string */
 	function hook_article_button($line) {
 		$icon_class = !empty($line['uuid']) ? "is-shared" : "";
 
@@ -83,6 +98,7 @@ class Share extends Plugin {
 			title='".__('Share by URL')."'>link</i>";
 	}
 
+	/** @return void */
 	function get() {
 		$uuid = clean($_REQUEST["key"] ?? "");
 
@@ -107,7 +123,7 @@ class Share extends Plugin {
 		print "Article not found.";
 	}
 
-	private function format_article($id, $owner_uid) {
+	private function format_article(int $id, int $owner_uid) : void {
 
 		$pdo = Db::pdo();
 
@@ -231,6 +247,7 @@ class Share extends Plugin {
 		}
 	}
 
+	/** @return void */
 	function shareDialog() {
 		$id = (int)clean($_REQUEST['id'] ?? 0);
 
@@ -276,6 +293,7 @@ class Share extends Plugin {
 		<?php
 	}
 
+	/** @return int */
 	function api_version() {
 		return 2;
 	}

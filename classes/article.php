@@ -553,6 +553,8 @@ class Article extends Handler_Protected {
 		}
 
 		if (count($rv) > 0)
+			// PHPStan has issues with the shape of $rv for some reason (array vs non-empty-array).
+			// @phpstan-ignore-next-line
 			Labels::update_cache($owner_uid, $id, $rv);
 		else
 			Labels::update_cache($owner_uid, $id, array("no-labels" => 1));

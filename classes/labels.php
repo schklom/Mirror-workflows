@@ -71,7 +71,8 @@ class Labels
 	}
 
 	/**
-	 * @param array<int, array<int, array<int, int|string>>> $labels
+	 * @param array{'no-labels': 1}|array<int, array<int, array{0: int, 1: string, 2: string, 3: string}>> $labels
+	 * [label_id, caption, fg_color, bg_color]
 	 *
 	 * @see Article::_get_labels()
 	 */

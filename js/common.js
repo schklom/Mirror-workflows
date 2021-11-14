@@ -186,7 +186,7 @@ const xhr = {
 	},
 	json: function(url, params = {}, complete = undefined, failed = undefined) {
 		return new Promise((resolve, reject) =>
-			this.post(url, params).then((data) => {
+			this.post(url, params, null, failed).then((data) => {
 				let obj = null;
 
 				try {

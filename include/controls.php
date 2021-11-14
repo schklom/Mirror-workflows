@@ -82,7 +82,7 @@
 
 	/**
 	 * @param mixed $value
-	 * @param array<int, string> $values
+	 * @param array<int|string, string> $values
 	 * @param array<string, mixed> $attributes
 	 */
    function select_tag(string $name, $value, array $values, array $attributes = [], string $id = ""): string {
@@ -110,8 +110,8 @@
    }*/
 
 	/**
-	* @param mixed $value
-	* @param array<int, string> $values
+	 * @param mixed $value
+	 * @param array<int|string, string> $values
 	 * @param array<string, mixed> $attributes
 	 */
    function select_hash(string $name, $value, array $values, array $attributes = [], string $id = ""): string {

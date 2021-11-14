@@ -241,7 +241,7 @@ abstract class Plugin {
 	}
 
 	/**
-	 * @param array{'article': array<string,mixed>} $params
+	 * @param array{'article': array<string,mixed>|null, 'headline': array<string,mixed>|null} $params
 	 * @return array<string, string>
 	 */
 	function hook_render_article_api($params) {
@@ -532,7 +532,7 @@ abstract class Plugin {
 	 * @param string $content
 	 * @param string $site_url
 	 * @param array<string,mixed> $article
-	 * @return string
+	 * @return string|array<int,string>
 	 */
 	function hook_article_image($enclosures, $content, $site_url, $article) {
 		user_error("Dummy method invoked.", E_USER_ERROR);

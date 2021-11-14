@@ -457,16 +457,40 @@ abstract class Plugin {
 		return "";
 	}
 
+	/**
+	 * @param array{"title": string, "site_url": string} $basic_info
+	 * @param string $fetch_url
+	 * @param int $owner_uid
+	 * @param int $feed_id
+	 * @param string $auth_login
+	 * @param string $auth_pass
+	 * @return array{"title": string, "site_url": string}
+	 */
 	function hook_feed_basic_info($basic_info, $fetch_url, $owner_uid, $feed_id, $auth_login, $auth_pass) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return $basic_info;
 	}
 
+	/**
+	 * @param string $filename
+	 * @return bool
+	 */
 	function hook_send_local_file($filename) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return false;
 	}
 
+	/**
+	 * @param int $feed_id
+	 * @param int $owner_uid
+	 * @return bool
+	 */
 	function hook_unsubscribe_feed($feed_id, $owner_uid) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return false;
 	}
 
 	/**
@@ -533,23 +557,54 @@ abstract class Plugin {
 		return false;
 	}
 
+	/**
+	 * @param array<string,string> $enclosure
+	 * @param int $feed
+	 * @return array<string,string> ($enclosure)
+	 */
 	function hook_enclosure_imported($enclosure, $feed) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return $enclosure;
 	}
 
+	/** @return array<string,string> */
 	function hook_headlines_custom_sort_map() {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return ["" => ""];
 	}
 
+	/**
+	 * @param string $order
+	 * @return array<int, string|bool> -- query, skip_first_id
+	 */
 	function hook_headlines_custom_sort_override($order) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return ["", false];
 	}
 
+	/**
+	 * @param int $feed_id
+	 * @param int $is_cat
+	 * @return string
+	 */
 	function hook_headline_toolbar_select_menu_item($feed_id, $is_cat) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return "";
 	}
 
+	/**
+	 * @param string $url
+	 * @param string $auth_login
+	 * @param string $auth_pass
+	 * @return bool
+	 */
 	function hook_pre_subscribe(&$url, $auth_login, $auth_pass) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return false;
 	}
 }

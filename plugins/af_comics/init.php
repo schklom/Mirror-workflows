@@ -1,6 +1,7 @@
 <?php
 class Af_Comics extends Plugin {
 
+	/** @var array<object> $filters */
 	private $filters = array();
 
 	function about() {

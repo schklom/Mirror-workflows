@@ -56,7 +56,9 @@ class Pref_Filters extends Handler_Protected {
 
 		$res = $this->pdo->query("SELECT id,name FROM ttrss_filter_types");
 
-		$filter_types = array();
+		/** @var array<int, string> */
+		$filter_types = [];
+
 		while ($line = $res->fetch()) {
 			$filter_types[$line["id"]] = $line["name"];
 		}
@@ -64,7 +66,10 @@ class Pref_Filters extends Handler_Protected {
 		$scope_qparts = array();
 
 		$rctr = 0;
+
+		/** @var string $r */
 		foreach (clean($_REQUEST["rule"]) AS $r) {
+			/** @var array{'reg_exp': string, 'filter_type': int, 'feed_id': array<int, int|string>, 'name': string}|null */
 			$rule = json_decode($r, true);
 
 			if ($rule && $rctr < 5) {
@@ -72,19 +77,21 @@ class Pref_Filters extends Handler_Protected {
 				unset($rule["filter_type"]);
 
 				$scope_inner_qparts = [];
+
+				/** @var int|string $feed_id may be a category string (e.g. 'CAT:7') or feed ID int */
 				foreach ($rule["feed_id"] as $feed_id) {
 
-                    if (strpos($feed_id, "CAT:") === 0) {
-                        $cat_id = (int) substr($feed_id, 4);
-                        array_push($scope_inner_qparts, "cat_id = " . $this->pdo->quote($cat_id));
-                    } else if ($feed_id > 0) {
-                        array_push($scope_inner_qparts, "feed_id = " . $this->pdo->quote($feed_id));
-                    }
-                }
+				if (strpos("$feed_id", "CAT:") === 0) {
+						$cat_id = (int) substr("$feed_id", 4);
+						array_push($scope_inner_qparts, "cat_id = " . $cat_id);
+					} else if (is_numeric($feed_id) && $feed_id > 0) {
+						array_push($scope_inner_qparts, "feed_id = " . (int)$feed_id);
+					}
+				}
 
-                if (count($scope_inner_qparts) > 0) {
-				    array_push($scope_qparts, "(" . implode(" OR ", $scope_inner_qparts) . ")");
-                }
+				if (count($scope_inner_qparts) > 0) {
+				array_push($scope_qparts, "(" . implode(" OR ", $scope_inner_qparts) . ")");
+				}
 
 				array_push($filter["rules"], $rule);
 
@@ -495,7 +502,7 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	function editSave(): void {
-		$filter_id = clean($_REQUEST["id"]);
+		$filter_id = (int) clean($_REQUEST["id"]);
 		$enabled = checkbox_to_sql_bool(clean($_REQUEST["enabled"] ?? false));
 		$match_any_rule = checkbox_to_sql_bool(clean($_REQUEST["match_any_rule"] ?? false));
 		$inverse = checkbox_to_sql_bool(clean($_REQUEST["inverse"] ?? false));
@@ -526,7 +533,7 @@ class Pref_Filters extends Handler_Protected {
 		$sth->execute(array_merge($ids, [$_SESSION['uid']]));
 	}
 
-	private function _save_rules_and_actions($filter_id): void {
+	private function _save_rules_and_actions(int $filter_id): void {
 
 		$sth = $this->pdo->prepare("DELETE FROM ttrss_filters2_rules WHERE filter_id = ?");
 		$sth->execute([$filter_id]);
@@ -698,7 +705,8 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	function editrule(): void {
-		$feed_ids = array_map("intval", explode(",", clean($_REQUEST["ids"])));
+		/** @var array<int, int|string> */
+		$feed_ids = explode(",", clean($_REQUEST["ids"]));
 
 		print json_encode([
 			"multiselect" => $this->_feed_multi_select("feed_id", $feed_ids, 'required="1" style="width : 100%; height : 300px" dojoType="fox.form.ValidationMultiSelect"')
@@ -840,9 +848,11 @@ class Pref_Filters extends Handler_Protected {
 		$this->pdo->commit();
 	}
 
-	private function _feed_multi_select(string $id, $default_ids = [],
-						   $attributes = "", $include_all_feeds = true,
-						   $root_id = null, $nest_level = 0): string {
+	/**
+	 * @param array<int, int|string> $default_ids
+	 */
+	private function _feed_multi_select(string $id, array $default_ids = [], string $attributes = "",
+		bool $include_all_feeds = true, ?int $root_id = null, int $nest_level = 0): string {
 
 		$pdo = Db::pdo();
 

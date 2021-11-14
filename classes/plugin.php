@@ -558,9 +558,9 @@ abstract class Plugin {
 	}
 
 	/**
-	 * @param array<string,string> $enclosure
+	 * @param object $enclosure
 	 * @param int $feed
-	 * @return array<string,string> ($enclosure)
+	 * @return object ($enclosure)
 	 */
 	function hook_enclosure_imported($enclosure, $feed) {
 		user_error("Dummy method invoked.", E_USER_ERROR);

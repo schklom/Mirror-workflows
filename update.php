@@ -378,7 +378,7 @@
 		Debug::log("Exporting feeds of user $user to $filename as OPML...");
 
 		if ($owner_uid = UserHelper::find_user_by_login($user)) {
-			$opml = new OPML("");
+			$opml = new OPML([]);
 
 			$rc = $opml->opml_export($filename, $owner_uid, false, true, true);
 
@@ -394,7 +394,7 @@
 		Debug::log("Importing feeds of user $user from OPML file $filename...");
 
 		if ($owner_uid = UserHelper::find_user_by_login($user)) {
-			$opml = new OPML("");
+			$opml = new OPML([]);
 
 			$rc = $opml->opml_import($owner_uid, $filename);
 

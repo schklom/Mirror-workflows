@@ -1,5 +1,7 @@
 <?php
 class NSFW extends Plugin {
+
+	/** @var PluginHost $host */
 	private $host;
 
 	function about() {
@@ -31,7 +33,12 @@ class NSFW extends Plugin {
 		}
 	}
 
-	private function rewrite_contents($article) {
+	/**
+	 * @param array<string, mixed> $article
+	 * @return array<string,mixed>
+	 * @throws PDOException
+	 */
+	private function rewrite_contents(array $article) : array {
 		$tags = explode(",", $this->host->get($this, "tags"));
 		$article_tags = $article["tags"];
 
@@ -101,7 +108,7 @@ class NSFW extends Plugin {
 		<?php
 	}
 
-	function save() {
+	function save() : void {
 		$tags = implode(", ",
 			FeedItem_Common::normalize_categories(explode(",", $_POST["tags"] ?? "")));
 

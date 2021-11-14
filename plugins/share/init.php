@@ -194,10 +194,7 @@ class Share extends Plugin {
 								strip_tags($content_decoded)
 							)
 						), 500, "...")) ?>">
-
-					<?php if ($og_image) { ?>
-						<meta property='og:image' content="<?= htmlspecialchars($og_image) ?>">
-					<?php } ?>
+					<meta property='og:image' content="<?= htmlspecialchars($og_image) ?>">
 				</head>
 
 				<body class='flat ttrss_utility ttrss_zoom css_loading'>

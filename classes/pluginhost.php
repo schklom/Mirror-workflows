@@ -431,8 +431,20 @@ class PluginHost {
 			}
 
 			if (!isset($this->plugins[$class])) {
+
+				// WIP hack
+				// we can't catch incompatible method signatures via Throwable
+				// maybe also auto-disable user plugin in this situation? idk -fox
+				if ($_SESSION["plugin_blacklist.$class"] ?? false) {
+					user_error("Plugin $class has caused a PHP Fatal Error so it won't be loaded again in this session.", E_USER_NOTICE);
+					continue;
+				}
+
 				try {
+					$_SESSION["plugin_blacklist.$class"] = true;
 					require_once $file;
+					$_SESSION["plugin_blacklist.$class"] = false;
+
 				} catch (Error $err) {
 					user_error($err, E_USER_WARNING);
 					continue;

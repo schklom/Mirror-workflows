@@ -99,9 +99,8 @@ class UrlHelper {
 		}
 	}
 
-	// extended filtering involves validation for safe ports and loopback
-	/**
-	 * @return bool|string false if something went wrong, otherwise the URL string
+	/** extended filtering involves validation for safe ports and loopback
+	 * @return false|string false if something went wrong, otherwise the URL string
 	 */
 	static function validate(string $url, bool $extended_filtering = false) {
 
@@ -166,7 +165,7 @@ class UrlHelper {
 	}
 
 	/**
-	 * @return bool|string
+	 * @return false|string
 	 */
 	static function resolve_redirects(string $url, int $timeout, int $nest = 0) {
 
@@ -545,7 +544,7 @@ class UrlHelper {
 	}
 
 	/**
-	 * @return bool|string false if the provided URL didn't match expected patterns, otherwise the video ID string
+	 * @return false|string false if the provided URL didn't match expected patterns, otherwise the video ID string
 	 */
 	public static function url_to_youtube_vid(string $url) {
 		$url = str_replace("youtube.com", "youtube-nocookie.com", $url);

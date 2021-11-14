@@ -434,16 +434,24 @@ class PluginHost {
 
 				// WIP hack
 				// we can't catch incompatible method signatures via Throwable
-				// maybe also auto-disable user plugin in this situation? idk -fox
-				if ($_SESSION["plugin_blacklist.$class"] ?? false) {
-					user_error("Plugin $class has caused a PHP Fatal Error so it won't be loaded again in this session.", E_USER_NOTICE);
+				// this also enables global tt-rss safe mode in case there are more plugins like this
+				if (($_SESSION["plugin_blacklist"][$class] ?? 0)) {
+
+					// only report once per-plugin per-session
+					if ($_SESSION["plugin_blacklist"][$class] < 2) {
+						user_error("Plugin $class has caused a PHP fatal error so it won't be loaded again in this session.", E_USER_WARNING);
+						$_SESSION["plugin_blacklist"][$class] = 2;
+					}
+
+					$_SESSION["safe_mode"] = 1;
+
 					continue;
 				}
 
 				try {
-					$_SESSION["plugin_blacklist.$class"] = true;
+					$_SESSION["plugin_blacklist"][$class] = 1;
 					require_once $file;
-					$_SESSION["plugin_blacklist.$class"] = false;
+					unset($_SESSION["plugin_blacklist"][$class]);
 
 				} catch (Error $err) {
 					user_error($err, E_USER_WARNING);

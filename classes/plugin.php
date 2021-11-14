@@ -140,10 +140,19 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
+	/**
+	 * @param FeedParser $parser
+	 * @param int $feed_id
+	 * @return void
+	 */
 	function hook_feed_parsed($parser, $feed_id) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
+	/**
+	 * @param array<string,string> $cli_options
+	 * @return void
+	 */
 	function hook_update_task($cli_options) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
@@ -170,44 +179,94 @@ abstract class Plugin {
 		return false;
 	}
 
+	/**
+	 * @param array<string, string> $hotkeys
+	 * @return array<string, string>
+	 */
 	function hook_hotkey_map($hotkeys) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
+	/**
+	 * @param array<string, mixed> $article
+	 * @return array<string, mixed>
+	 */
 	function hook_render_article($article) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return [];
 	}
 
+	/**
+	 * @param array<string, mixed> $article
+	 * @return array<string, mixed>
+	 */
 	function hook_render_article_cdm($article) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return [];
 	}
 
+	/**
+	 * @param string $feed_data
+	 * @param string $fetch_url
+	 * @param int $owner_uid
+	 * @param int $feed
+	 * @return string
+	 */
 	function hook_feed_fetched($feed_data, $fetch_url, $owner_uid, $feed) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return "";
 	}
 
 	function hook_sanitize($doc, $site_url, $allowed_elements, $disallowed_attributes, $article_id) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
+	/**
+	 * @param array{'article': array<string,mixed>} $params
+	 * @return array<string, string>
+	 */
 	function hook_render_article_api($params) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return [];
 	}
 
+	/** @return string  */
 	function hook_toolbar_button() {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return "";
 	}
 
+	/** @return string  */
 	function hook_action_item() {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return "";
 	}
 
+	/**
+	 * @param int $feed_id
+	 * @param bool $is_cat
+	 * @return string
+	 */
 	function hook_headline_toolbar_button($feed_id, $is_cat) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return "";
 	}
 
+	/**
+	 * @param array<string,string> $hotkeys
+	 * @return array<string,string>
+	 */
 	function hook_hotkey_info($hotkeys) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return [];
 	}
 
 	function hook_article_left_button($row) {
@@ -230,6 +289,7 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
+	/** @return void  */
 	function hook_house_keeping() {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
@@ -262,6 +322,7 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
+	/** @return void  */
 	function hook_main_toolbar_button() {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
@@ -296,24 +357,57 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
+	/** NOTE: $article_filters should be renamed $filter_actions because that's what this is
+	 * @param int $feed_id
+	 * @param int $owner_uid
+	 * @param array<string,mixed> $article
+	 * @param array<string,mixed> $matched_filters
+	 * @param array<string,string|bool|int> $matched_rules
+	 * @param array<string,string> $article_filters
+	 * @return void
+	 */
 	function hook_filter_triggered($feed_id, $owner_uid, $article, $matched_filters, $matched_rules, $article_filters) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
+	/**
+	 * @param string $url
+	 * @return string
+	 */
 	function hook_get_full_text($url) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return "";
 	}
 
+	/**
+	 * @param array<string,string> $enclosures
+	 * @param string $content
+	 * @param string $site_url
+	 * @param array<string,mixed> $article
+	 * @return string
+	 */
 	function hook_article_image($enclosures, $content, $site_url, $article) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return "";
 	}
 
+	/** @return string */
 	function hook_feed_tree() {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return "";
 	}
 
+	/**
+	 * @param string $url
+	 * @return bool
+	 */
 	function hook_iframe_whitelisted($url) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return false;
 	}
 
 	function hook_enclosure_imported($enclosure, $feed) {

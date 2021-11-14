@@ -277,7 +277,7 @@ abstract class Plugin {
 
 	/**
 	 * @param array<string,string> $hotkeys
-	 * @return array<string,string>
+	 * @return array<string, array<string, string>>
 	 */
 	function hook_hotkey_info($hotkeys) {
 		user_error("Dummy method invoked.", E_USER_ERROR);

@@ -1,5 +1,7 @@
 <?php
 class Bookmarklets extends Plugin {
+
+	/** @var PluginHost $host */
 	private $host;
 
 	function about() {
@@ -20,7 +22,7 @@ class Bookmarklets extends Plugin {
 		return in_array($method, ["subscribe", "sharepopup"]);
 	}
 
-	function subscribe() {
+	function subscribe() : void {
 		if (Config::get(Config::SINGLE_USER_MODE)) {
 			UserHelper::login_sequence();
 		}
@@ -171,7 +173,7 @@ class Bookmarklets extends Plugin {
 		}
 	}
 
-	function sharepopup() {
+	function sharepopup() : void {
 		if (Config::get(Config::SINGLE_USER_MODE)) {
 			UserHelper::login_sequence();
 		}
@@ -331,7 +333,6 @@ class Bookmarklets extends Plugin {
 		</html>
 		<?php
 	}
-
 
 	function hook_prefs_tab($args) {
 		if ($args != "prefFeeds")

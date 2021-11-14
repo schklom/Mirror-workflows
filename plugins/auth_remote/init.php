@@ -12,7 +12,7 @@ class Auth_Remote extends Auth_Base {
 		$host->add_hook($host::HOOK_AUTH_USER, $this);
 	}
 
-	function get_login_by_ssl_certificate() {
+	function get_login_by_ssl_certificate() : string {
 		$cert_serial = Pref_Prefs::_get_ssl_certificate_id();
 
 		if ($cert_serial) {

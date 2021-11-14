@@ -130,7 +130,7 @@ class Auth_Internal extends Auth_Base {
 		}
 
 		if ($login) {
-			$try_user_id = $this->find_user_by_login($login);
+			$try_user_id = UserHelper::find_user_by_login($login);
 
 			if ($try_user_id) {
 				return $this->check_password($try_user_id, $password);
@@ -140,6 +140,14 @@ class Auth_Internal extends Auth_Base {
 		return false;
 	}
 
+	/**
+	 * @param int $owner_uid
+	 * @param string $password
+	 * @param string $service
+	 * @return int|false (false if failed, user id otherwise)
+	 * @throws PDOException
+	 * @throws Exception
+	 */
 	function check_password(int $owner_uid, string $password, string $service = '') {
 
 		$user = ORM::for_table('ttrss_users')->find_one($owner_uid);
@@ -203,7 +211,7 @@ class Auth_Internal extends Auth_Base {
 		return false;
 	}
 
-	function change_password($owner_uid, $old_password, $new_password) {
+	function change_password(int $owner_uid, string $old_password, string $new_password) : string {
 
 		if ($this->check_password($owner_uid, $old_password)) {
 
@@ -246,7 +254,15 @@ class Auth_Internal extends Auth_Base {
 		}
 	}
 
-	private function check_app_password($login, $password, $service) {
+	/**
+	 * @param string $login
+	 * @param string $password
+	 * @param string $service
+	 * @return false|int (false if failed, user id otherwise)
+	 * @throws PDOException
+	 * @throws Exception
+	 */
+	private function check_app_password(string $login, string $password, string $service) {
 		$sth = $this->pdo->prepare("SELECT p.id, p.pwd_hash, u.id AS uid
 			FROM ttrss_app_passwords p, ttrss_users u
 			WHERE p.owner_uid = u.id AND LOWER(u.login) = LOWER(?) AND service = ?");

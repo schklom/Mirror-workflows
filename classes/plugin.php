@@ -226,8 +226,18 @@ abstract class Plugin {
 		return "";
 	}
 
+	/**
+	 * @param DOMDocument $doc
+	 * @param string $site_url
+	 * @param array<string> $allowed_elements
+	 * @param array<string> $disallowed_attributes
+	 * @param int $article_id
+	 * @return DOMDocument
+	 */
 	function hook_sanitize($doc, $site_url, $allowed_elements, $disallowed_attributes, $article_id) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return $doc;
 	}
 
 	/**
@@ -301,8 +311,20 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
+	/**
+	 * @param string $feed_data
+	 * @param string $fetch_url
+	 * @param int $owner_uid
+	 * @param int $feed
+	 * @param int $last_article_timestamp
+	 * @param string $auth_login
+	 * @param string $auth_pass
+	 * @return string (possibly mangled feed data)
+	 */
 	function hook_fetch_feed($feed_data, $fetch_url, $owner_uid, $feed, $last_article_timestamp, $auth_login, $auth_pass) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return "";
 	}
 
 	/**
@@ -331,8 +353,19 @@ abstract class Plugin {
 		return [];
 	}
 
-	function hook_format_enclosures($rv, $result, $id, $always_display_enclosures, $article_content, $hide_images) {
+	/**
+	 * @param string $enclosures_formatted
+	 * @param array<int, array<string, mixed>> $enclosures
+	 * @param int $article_id
+	 * @param bool $always_display_enclosures
+	 * @param string $article_content
+	 * @param bool $hide_images
+	 * @return string|array<string,array<int, array<string, mixed>>> ($enclosures_formatted, $enclosures)
+	 */
+	function hook_format_enclosures($enclosures_formatted, $enclosures, $article_id, $always_display_enclosures, $article_content, $hide_images) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return "";
 	}
 
 	/**
@@ -344,6 +377,8 @@ abstract class Plugin {
 	 */
 	function hook_subscribe_feed($contents, $url, $auth_login, $auth_pass) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return "";
 	}
 
 	/**
@@ -366,10 +401,19 @@ abstract class Plugin {
 	 */
 	function hook_render_enclosure($entry, $article_id, $rv) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return "";
 	}
 
+	/**
+	 * @param array<string,mixed> $article
+	 * @param string $action
+	 * @return array<string,mixed> ($article)
+	 */
 	function hook_article_filter_action($article, $action) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return [];
 	}
 
 	/**
@@ -409,6 +453,8 @@ abstract class Plugin {
 	 */
 	function hook_format_article($html, $row) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return "";
 	}
 
 	function hook_feed_basic_info($basic_info, $fetch_url, $owner_uid, $feed_id, $auth_login, $auth_pass) {

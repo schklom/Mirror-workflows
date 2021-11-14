@@ -187,6 +187,7 @@ class Af_Readability extends Plugin {
 			case "action_append":
 				return $this->process_article($article, true);
 		}
+		return $article;
 	}
 
 	public function extract_content($url) {

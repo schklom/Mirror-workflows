@@ -190,7 +190,11 @@ class Af_Readability extends Plugin {
 		return $article;
 	}
 
-	public function extract_content($url) {
+	/**
+	 * @param string $url
+	 * @return string|false
+	 */
+	public function extract_content(string $url) {
 
 		$tmp = UrlHelper::fetch([
 			"url" => $url,
@@ -224,13 +228,13 @@ class Af_Readability extends Plugin {
 					foreach ($entries as $entry) {
 						if ($entry->hasAttribute("href")) {
 							$entry->setAttribute("href",
-									rewrite_relative_url(UrlHelper::$fetch_effective_url, $entry->getAttribute("href")));
+									UrlHelper::rewrite_relative(UrlHelper::$fetch_effective_url, $entry->getAttribute("href")));
 
 						}
 
 						if ($entry->hasAttribute("src")) {
 							$entry->setAttribute("src",
-									rewrite_relative_url(UrlHelper::$fetch_effective_url, $entry->getAttribute("src")));
+								UrlHelper::rewrite_relative(UrlHelper::$fetch_effective_url, $entry->getAttribute("src")));
 
 						}
 					}
@@ -246,7 +250,13 @@ class Af_Readability extends Plugin {
 		return false;
 	}
 
-	function process_article($article, $append_mode) {
+	/**
+	 * @param array<string, mixed> $article
+	 * @param bool $append_mode
+	 * @return array<string,mixed>
+	 * @throws PDOException
+	 */
+	function process_article(array $article, bool $append_mode) : array {
 
 		$extracted_content = $this->extract_content($article["link"]);
 
@@ -263,12 +273,14 @@ class Af_Readability extends Plugin {
 		return $article;
 	}
 
-	private function get_stored_array($name) {
-		$tmp = $this->host->get($this, $name);
-
-		if (!is_array($tmp)) $tmp = [];
-
-		return $tmp;
+	/**
+	 * @param string $name
+	 * @return array<int|string, mixed>
+	 * @throws PDOException
+	 * @deprecated
+	 */
+	private function get_stored_array(string $name) : array {
+		return $this->host->get_array($this, $name);
 	}
 
 	function hook_article_filter($article) {
@@ -306,7 +318,12 @@ class Af_Readability extends Plugin {
 		return 2;
 	}
 
-	private function filter_unknown_feeds($enabled_feeds) {
+	/**
+	 * @param array<int> $enabled_feeds
+	 * @return array<int>
+	 * @throws PDOException
+	 */
+	private function filter_unknown_feeds(array $enabled_feeds) : array {
 		$tmp = array();
 
 		foreach ($enabled_feeds as $feed) {
@@ -322,7 +339,7 @@ class Af_Readability extends Plugin {
 		return $tmp;
 	}
 
-	function embed() {
+	function embed() : void {
 		$article_id = (int) $_REQUEST["id"];
 
 		$sth = $this->pdo->prepare("SELECT link FROM ttrss_entries WHERE id = ?");

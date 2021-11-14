@@ -334,6 +334,8 @@ class UserHelper {
 	}
 
 	static function is_default_password(): bool {
+
+		/** @var Auth_Internal|false $authenticator -- this is only here to make check_password() visible to static analyzer */
 		$authenticator = PluginHost::getInstance()->get_plugin($_SESSION["auth_module"]);
 
 		if ($authenticator &&

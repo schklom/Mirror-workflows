@@ -5,7 +5,7 @@ if (file_exists("lib/floIcon.php")) {
 	require_once "lib/floIcon.php";
 }
 
-function _resolve_htmlcolor($color) {
+function _resolve_htmlcolor(string $color): string {
 	$htmlcolors = array ("aliceblue" => "#f0f8ff",
 		"antiquewhite" => "#faebd7",
 		"aqua" => "#00ffff",
@@ -162,8 +162,14 @@ function _resolve_htmlcolor($color) {
 		return $color;
 }
 
-### RGB >> HSL
-function _color_rgb2hsl($rgb) {
+/**
+ * RGB >> HSL
+ *
+ * @param array{0: int, 1: int, 2: int} $rgb
+ *
+ * @return array{0: float, 1: float, 2: float}
+ */
+function _color_rgb2hsl(array $rgb): array {
   $r = $rgb[0]; $g = $rgb[1]; $b = $rgb[2];
   $min = min($r, min($g, $b)); $max = max($r, max($g, $b));
   $delta = $max - $min; $l = ($min + $max) / 2; $s = 0;
@@ -179,8 +185,14 @@ function _color_rgb2hsl($rgb) {
   } return array($h, $s, $l);
 }
 
-### HSL >> RGB
-function _color_hsl2rgb($hsl) {
+/**
+ * HSL >> RGB
+ *
+ * @param array{0: float, 1: float, 2: float} $hsl
+ *
+ * @return array{0: int, 1: int, 2: int}
+ */
+function _color_hsl2rgb($hsl): array {
   $h = $hsl[0]; $s = $hsl[1]; $l = $hsl[2];
   $m2 = ($l <= 0.5) ? $l * ($s + 1) : $l + $s - $l*$s;
   $m1 = $l * 2 - $m2;
@@ -190,16 +202,28 @@ function _color_hsl2rgb($hsl) {
 }
 
 ### Helper function for _color_hsl2rgb().
-function _color_hue2rgb($m1, $m2, $h) {
-  $h = ($h < 0) ? $h + 1 : (($h > 1) ? $h - 1 : $h);
-  if ($h * 6 < 1) return $m1 + ($m2 - $m1) * $h * 6;
-  if ($h * 2 < 1) return $m2;
-  if ($h * 3 < 2) return $m1 + ($m2 - $m1) * (0.66666 - $h) * 6;
-  return $m1;
+function _color_hue2rgb(float $m1, float $m2, float $h): int {
+	$rv = $m1;
+
+	$h = ($h < 0) ? $h + 1 : (($h > 1) ? $h - 1 : $h);
+
+	if ($h * 6 < 1) {
+		$rv = $m1 + ($m2 - $m1) * $h * 6;
+	} else if ($h * 2 < 1) {
+		$rv = $m2;
+	} else if ($h * 3 < 2) {
+		$rv = $m1 + ($m2 - $m1) * (0.66666 - $h) * 6;
+	}
+
+	return (int) round($rv);
 }
 
-### Convert a hex color into an RGB triplet.
-function _color_unpack($hex, $normalize = false) {
+/**
+ * Convert a hex color into an RGB triplet.
+ *
+ * @return array{0: int, 1: int, 2: int}
+ */
+function _color_unpack(string $hex, bool $normalize = false): array {
 	$hex = strpos($hex, '#') !== 0 ? _resolve_htmlcolor($hex) : substr($hex, 1);
 
 	if (strlen($hex) == 4) {
@@ -216,8 +240,12 @@ function _color_unpack($hex, $normalize = false) {
 	return $out;
 }
 
-### Convert an RGB triplet to a hex color.
-function _color_pack($rgb, $normalize = false) {
+/**
+ * Convert an RGB triplet to a hex color.
+ *
+ * @param array{0: int, 1: int, 2: int} $rgb
+ */
+function _color_pack(array $rgb, bool $normalize = false): string {
 	$out = 0;
 
 	foreach ($rgb as $k => $v) {
@@ -227,7 +255,12 @@ function _color_pack($rgb, $normalize = false) {
 	return '#'. str_pad(dechex($out), 6, '0', STR_PAD_LEFT);
 }
 
-function rgb2hsl($arr) {
+/**
+ * @param array{0: int, 1: int, 2: int} $arr
+ *
+ * @return array{0: float, 1: float, 2: float}
+ */
+function rgb2hsl(array $arr): array {
 	$r = $arr[0];
 	$g = $arr[1];
 	$b = $arr[2];
@@ -268,7 +301,12 @@ function rgb2hsl($arr) {
    return array($h, $s, $v);
 }
 
-function hsl2rgb($arr) {
+/**
+ * @param array{0: float, 1: float, 2: float} $arr
+ *
+ * @return array{0: int, 1: int, 2: int}
+ */
+function hsl2rgb(array $arr): array {
 	$h = $arr[0];
 	$s = $arr[1];
 	$v = $arr[2];
@@ -289,64 +327,66 @@ function hsl2rgb($arr) {
         else if  ($var_i == 4) { $var_R = $var_3 ; $var_G = $var_1  ; $var_B = $v     ; }
         else                   { $var_R = $v     ; $var_G = $var_1  ; $var_B = $var_2 ; }
 
-        $r = $var_R * 255;
-        $g = $var_G * 255;
-        $B = $var_B * 255;
+        $r = (int) round($var_R * 255);
+        $g = (int) round($var_G * 255);
+        $B = (int) round($var_B * 255);
     }
     return array($r, $g, $B);
 }
 
-	function colorPalette($imageFile, $numColors, $granularity = 5) {
-	   $granularity = max(1, abs((int)$granularity));
-	   $colors = array();
+/**
+ * @return array<int, string>|null
+*/
+function colorPalette(string $imageFile, int $numColors, int $granularity = 5): ?array {
+	$granularity = max(1, abs($granularity));
+	$colors = [];
 
-		$size = @getimagesize($imageFile);
-		$img = null;
+	$size = @getimagesize($imageFile);
+	$img = null;
 
-		// to enable .ico support place floIcon.php into lib/
-		if (strtolower($size['mime']) == 'image/vnd.microsoft.icon') {
+	// to enable .ico support place floIcon.php into lib/
+	if (strtolower($size['mime']) == 'image/vnd.microsoft.icon') {
+		if (class_exists("floIcon")) {
+			$ico = new \floIcon();
+			@$ico->readICO($imageFile);
 
-			if (class_exists("floIcon")) {
-
-				$ico = new \floIcon();
-				@$ico->readICO($imageFile);
-
-				if(count($ico->images)==0)
-					return false;
-				else
-					$img = @$ico->images[count($ico->images)-1]->getImageResource();
-
+			if(count($ico->images) == 0) {
+				return null;
 			} else {
-				return false;
+				$img = @$ico->images[count($ico->images)-1]->getImageResource();
 			}
-
-		} else if ($size[0] > 0 && $size[1] > 0) {
-		   $img = @imagecreatefromstring(file_get_contents($imageFile));
 		}
-
-		if (!$img) return false;
-
-	   for($x = 0; $x < $size[0]; $x += $granularity) {
-	      for($y = 0; $y < $size[1]; $y += $granularity) {
-	         $thisColor = imagecolorat($img, $x, $y);
-	         $rgb = imagecolorsforindex($img, $thisColor);
-	         $red = round(round(($rgb['red'] / 0x33)) * 0x33);
-	         $green = round(round(($rgb['green'] / 0x33)) * 0x33);
-	         $blue = round(round(($rgb['blue'] / 0x33)) * 0x33);
-	         $thisRGB = sprintf('%02X%02X%02X', $red, $green, $blue);
-	         if(array_key_exists($thisRGB, $colors)) {
-	            $colors[$thisRGB]++;
-	         } else{
-	            $colors[$thisRGB] = 1;
-	         }
-	      }
-		}
-
-	   arsort($colors);
-	   return array_slice(array_keys($colors), 0, $numColors);
+		return null;
+	} else if ($size[0] > 0 && $size[1] > 0) {
+		$img = @imagecreatefromstring(file_get_contents($imageFile));
 	}
 
-	function calculate_avg_color($iconFile) {
+	if (!$img) {
+		return null;
+	}
+
+	for($x = 0; $x < $size[0]; $x += $granularity) {
+		for($y = 0; $y < $size[1]; $y += $granularity) {
+			$thisColor = imagecolorat($img, $x, $y);
+			$rgb = imagecolorsforindex($img, $thisColor);
+			$red = round(round(($rgb['red'] / 0x33)) * 0x33);
+			$green = round(round(($rgb['green'] / 0x33)) * 0x33);
+			$blue = round(round(($rgb['blue'] / 0x33)) * 0x33);
+			$thisRGB = sprintf('%02X%02X%02X', $red, $green, $blue);
+
+			if(array_key_exists($thisRGB, $colors)) {
+				$colors[$thisRGB]++;
+			} else {
+				$colors[$thisRGB] = 1;
+			}
+		}
+	}
+
+	arsort($colors);
+	return array_slice(array_keys($colors), 0, $numColors);
+}
+
+	function calculate_avg_color(string $iconFile): string {
 		$palette = colorPalette($iconFile, 4, 4);
 
 		if (is_array($palette)) {

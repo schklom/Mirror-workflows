@@ -232,7 +232,7 @@ abstract class Plugin {
 	 * @param array<string> $allowed_elements
 	 * @param array<string> $disallowed_attributes
 	 * @param int $article_id
-	 * @return DOMDocument
+	 * @return DOMDocument|array<int,DOMDocument|array<string>>
 	 */
 	function hook_sanitize($doc, $site_url, $allowed_elements, $disallowed_attributes, $article_id) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
@@ -519,7 +519,7 @@ abstract class Plugin {
 
 	/**
 	 * @param string $url
-	 * @return string
+	 * @return string|false
 	 */
 	function hook_get_full_text($url) {
 		user_error("Dummy method invoked.", E_USER_ERROR);

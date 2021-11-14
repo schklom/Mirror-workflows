@@ -32,6 +32,8 @@ class Af_Youtube_Embed extends Plugin {
 				</div>";
 
 		}
+
+		return "";
 	}
 
 	function api_version() {

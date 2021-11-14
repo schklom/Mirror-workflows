@@ -8,7 +8,6 @@ abstract class Auth_Base extends Plugin implements IAuthModule {
 		$this->pdo = Db::pdo();
 	}
 
-	// compatibility wrapper, because of how pluginhost works (hook name == method name)
 	function hook_auth_user(...$args) {
 		return $this->authenticate(...$args);
 	}

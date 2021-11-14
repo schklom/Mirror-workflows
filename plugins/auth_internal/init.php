@@ -12,6 +12,7 @@ class Auth_Internal extends Auth_Base {
 		$host->add_hook($host::HOOK_AUTH_USER, $this);
 	}
 
+	/** @param string $service */
 	function authenticate($login, $password, $service = '') {
 
 		$otp = (int) ($_REQUEST["otp"] ?? 0);

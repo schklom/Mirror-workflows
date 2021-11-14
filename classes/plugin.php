@@ -141,8 +141,24 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
-	function hook_auth_user($login, $password, $service) {
+	/** this is a pluginhost compatibility wrapper that invokes $this->authenticate(...$args) (Auth_Base)
+	 * @param mixed $args = ($login, $password, $service)
+	 * @return int|false user_id
+	 */
+	function hook_auth_user(...$args) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+		return false;
+	}
+
+	/** IAuthModule only
+	 * @param string $login
+	 * @param string $password
+	 * optional third string $service
+	 * @return int|false user_id
+	 */
+	function authenticate($login, $password) {
+		user_error("Dummy method invoked.", E_USER_ERROR);
+		return false;
 	}
 
 	function hook_hotkey_map($hotkeys) {

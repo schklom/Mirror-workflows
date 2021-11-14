@@ -109,6 +109,8 @@ abstract class Plugin {
 	 */
 	function hook_article_button($line) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return "";
 	}
 
 	/**
@@ -117,6 +119,8 @@ abstract class Plugin {
 	 */
 	function hook_article_filter($article) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return [];
 	}
 
 	/**
@@ -185,6 +189,8 @@ abstract class Plugin {
 	 */
 	function hook_hotkey_map($hotkeys) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return [];
 	}
 
 	/**
@@ -269,14 +275,28 @@ abstract class Plugin {
 		return [];
 	}
 
+	/**
+	 * @param array<string,mixed> $row
+	 * @return string
+	 */
 	function hook_article_left_button($row) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return "";
 	}
 
+	/**
+	 * @param int $feed_id
+	 * @return void
+	 */
 	function hook_prefs_edit_feed($feed_id) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
+	/**
+	 * @param int $feed_id
+	 * @return void
+	 */
 	function hook_prefs_save_feed($feed_id) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
@@ -285,8 +305,15 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
-	function hook_query_headlines($row) {
+	/**
+	 * @param array<string,mixed> $row
+	 * @param int $excerpt_length
+	 * @return array<string,mixed>
+	 */
+	function hook_query_headlines($row, $excerpt_length) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return [];
 	}
 
 	/** @return void  */
@@ -294,23 +321,50 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
+	/**
+	 * @param string $query
+	 * @return array<string>
+	 */
 	function hook_search($query) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return [];
 	}
 
 	function hook_format_enclosures($rv, $result, $id, $always_display_enclosures, $article_content, $hide_images) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
+	/**
+	 * @param string $contents
+	 * @param string $url
+	 * @param string $auth_login
+	 * @param string $auth_pass
+	 * @return string (possibly mangled feed data)
+	 */
 	function hook_subscribe_feed($contents, $url, $auth_login, $auth_pass) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
+	/**
+	 * @param int $feed
+	 * @param bool $is_cat
+	 * @param array<string,mixed> $qfh_ret (headlines object)
+	 * @return string
+	 */
 	function hook_headlines_before($feed, $is_cat, $qfh_ret) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return "";
 	}
 
-	function hook_render_enclosure($entry, $id, $rv) {
+	/**
+	 * @param array<string,mixed> $entry
+	 * @param int $article_id
+	 * @param array<string,mixed> $rv
+	 * @return string
+	 */
+	function hook_render_enclosure($entry, $article_id, $rv) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
@@ -318,8 +372,17 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
+	/**
+	 * @param array<string,mixed> $line
+	 * @param int $feed
+	 * @param bool $is_cat
+	 * @param int $owner_uid
+	 * @return array<string,mixed> ($line)
+	 */
 	function hook_article_export_feed($line, $feed, $is_cat, $owner_uid) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return [];
 	}
 
 	/** @return void  */
@@ -331,12 +394,19 @@ abstract class Plugin {
 	 * @param array<string,string> $entry
 	 * @param int $id
 	 * @param array{'formatted': string, 'entries': array<int, array<string, mixed>>} $rv
-	 * @return array<string,string>
+	 * @return array<string,string> ($entry)
 	 */
 	function hook_enclosure_entry($entry, $id, $rv) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return [];
 	}
 
+	/**
+	 * @param string $html
+	 * @param array<string,mixed> $row
+	 * @return string ($html)
+	 */
 	function hook_format_article($html, $row) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
@@ -353,8 +423,15 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
-	function hook_send_mail(Mailer $mailer, $params) {
+	/**
+	 * @param Mailer $mailer
+	 * @param array<string,mixed> $params
+	 * @return int
+	 */
+	function hook_send_mail($mailer, $params) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return -1;
 	}
 
 	/** NOTE: $article_filters should be renamed $filter_actions because that's what this is

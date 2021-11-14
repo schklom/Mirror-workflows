@@ -93,11 +93,13 @@ class Handler_Public extends Handler {
 				$line["content_preview"] = Sanitizer::sanitize(truncate_string(strip_tags($line["content"]), 100, '...'));
 				$line["tags"] = Article::_get_tags($line["id"], $owner_uid);
 
+				$max_excerpt_length = 250;
+
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_QUERY_HEADLINES,
 					function ($result) use (&$line) {
 						$line = $result;
 					},
-					$line);
+					$line, $max_excerpt_length);
 
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_ARTICLE_EXPORT_FEED,
 					function ($result) use (&$line) {

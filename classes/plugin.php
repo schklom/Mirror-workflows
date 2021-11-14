@@ -276,7 +276,7 @@ abstract class Plugin {
 	}
 
 	/**
-	 * @param array<string,string> $hotkeys
+	 * @param array<string, array<string, string>> $hotkeys
 	 * @return array<string, array<string, string>>
 	 */
 	function hook_hotkey_info($hotkeys) {

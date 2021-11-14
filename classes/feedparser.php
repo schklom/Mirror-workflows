@@ -11,18 +11,18 @@ class FeedParser {
 	private $libxml_errors = [];
 
 	/** @var array<FeedItem> */
-	private $items;
+	private $items = [];
 
-	/** @var string */
+	/** @var string|null */
 	private $link;
 
-	/** @var string */
+	/** @var string|null */
 	private $title;
 
-	/** @var int */
+	/** @var FeedParser::FEED_*|null */
 	private $type;
 
-	/** @var DOMXPath */
+	/** @var DOMXPath|null */
 	private $xpath;
 
 	const FEED_RDF = 0;
@@ -49,8 +49,6 @@ class FeedParser {
 			}
 		}
 		libxml_clear_errors();
-
-		$this->items = array();
 	}
 
 	function init() : void {
@@ -208,11 +206,11 @@ class FeedParser {
 	}
 
 	function get_link() : string {
-		return clean($this->link);
+		return clean($this->link ?? '');
 	}
 
 	function get_title() : string {
-		return clean($this->title);
+		return clean($this->title ?? '');
 	}
 
 	/** @return array<FeedItem> */

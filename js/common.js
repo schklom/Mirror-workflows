@@ -198,6 +198,7 @@ const xhr = {
 						failed(e);
 
 					reject(e);
+					return;
 				}
 
 				console.log('xhr.json', '<<<', obj, (new Date().getTime() - xhr._ts) + " ms");

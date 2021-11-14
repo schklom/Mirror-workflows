@@ -32,8 +32,6 @@ class Mailer {
 		// 4. set error message if needed via passed Mailer instance function set_error()
 
 		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_SEND_MAIL) as $p) {
-			// Implemented via plugin, so ignore the undefined method 'hook_send_mail'.
-			// @phpstan-ignore-next-line
 			$rc = $p->hook_send_mail($this, $params);
 
 			if ($rc == 1)

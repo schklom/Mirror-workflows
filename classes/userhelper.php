@@ -348,7 +348,7 @@ class UserHelper {
 	}
 
 	/**
-	 * @param UserHelper::HASH_ALGO_* $algo
+	 * @param string $algo should be one of UserHelper::HASH_ALGO_*
 	 *
 	 * @return false|string False if the password couldn't be hashed, otherwise the hash string.
 	 */

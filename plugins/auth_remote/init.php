@@ -29,7 +29,7 @@ class Auth_Remote extends Auth_Base {
 		return "";
 	}
 
-	function authenticate($login, $password) {
+	function authenticate($login, $password, $service = '') {
 		$try_login = "";
 
 		foreach (["REMOTE_USER", "HTTP_REMOTE_USER", "REDIRECT_REMOTE_USER", "PHP_AUTH_USER"] as $hdr) {

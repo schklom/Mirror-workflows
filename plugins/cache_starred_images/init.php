@@ -97,7 +97,7 @@ class Cache_Starred_Images extends Plugin {
 		}
 	}
 
-	function hook_enclosure_entry($enc, $article_id) {
+	function hook_enclosure_entry($enc, $article_id, $rv) {
 		$local_filename = $article_id . "-" . sha1($enc["content_url"]);
 
 		if ($this->cache->exists($local_filename)) {

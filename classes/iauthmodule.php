@@ -3,14 +3,16 @@ interface IAuthModule {
 	/**
 	 * @param string $login
 	 * @param string $password
-	 * optional third string $service
+	 * @param string $service
 	 * @return int|false user_id
 	 */
-	function authenticate($login, $password); // + optional third parameter: $service
+	function authenticate($login, $password, $service = '');
 
 	/** this is a pluginhost compatibility wrapper that invokes $this->authenticate(...$args) (Auth_Base)
-	 * @param mixed $args = ($login, $password, $service)
+ 	 * @param string $login
+	 * @param string $password
+	 * @param string $service
 	 * @return int|false user_id
 	 */
-	function hook_auth_user(...$args);
+	function hook_auth_user($login, $password, $service = '');
 }

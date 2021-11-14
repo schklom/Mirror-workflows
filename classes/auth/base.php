@@ -8,8 +8,8 @@ abstract class Auth_Base extends Plugin implements IAuthModule {
 		$this->pdo = Db::pdo();
 	}
 
-	function hook_auth_user(...$args) {
-		return $this->authenticate(...$args);
+	function hook_auth_user($login, $password, $service = '') {
+		return $this->authenticate($login, $password, $service);
 	}
 
 	// Auto-creates specified user if allowed by system configuration

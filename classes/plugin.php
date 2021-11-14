@@ -1,4 +1,11 @@
 <?php
+/* TODO: I haven't yet decided if we're keeping hook prototypes which did grow (with additional params) over time and breaking all plugins
+	with legacy function definitions, or commenting base definitions out for the time being -fox
+
+	(It's a shame that PHP doesn't support argument overloading)
+
+	Stuff like hook_enclosure_entry() etc.
+*/
 abstract class Plugin {
 	const API_VERSION_COMPAT = 1;
 
@@ -142,10 +149,12 @@ abstract class Plugin {
 	}
 
 	/** this is a pluginhost compatibility wrapper that invokes $this->authenticate(...$args) (Auth_Base)
-	 * @param mixed $args = ($login, $password, $service)
+	 * @param string $login
+	 * @param string $password
+	 * @param string $service
 	 * @return int|false user_id
 	 */
-	function hook_auth_user(...$args) {
+	function hook_auth_user($login, $password, $service = '') {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 		return false;
 	}
@@ -153,10 +162,10 @@ abstract class Plugin {
 	/** IAuthModule only
 	 * @param string $login
 	 * @param string $password
-	 * optional third string $service
+	 * @param string $service
 	 * @return int|false user_id
 	 */
-	function authenticate($login, $password) {
+	function authenticate($login, $password, $service = '') {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 		return false;
 	}
@@ -257,6 +266,12 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
+	/**
+	 * @param array<string,string> $entry
+	 * @param int $id
+	 * @param array{'formatted': string, 'entries': array<int, array<string, mixed>>} $rv
+	 * @return array<string,string>
+	 */
 	function hook_enclosure_entry($entry, $id, $rv) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
@@ -289,7 +304,7 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
-	function hook_article_image($enclosures, $content, $site_url) {
+	function hook_article_image($enclosures, $content, $site_url, $article) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
@@ -317,7 +332,7 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
-	function hook_pre_subscribe($url, $auth_login, $auth_pass) {
+	function hook_pre_subscribe(&$url, $auth_login, $auth_pass) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 }

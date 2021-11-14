@@ -202,7 +202,7 @@ class Af_Psql_Trgm extends Plugin {
 			<?php
 				/* cleanup */
 				$enabled_feeds = $this->filter_unknown_feeds(
-					$this->get_stored_array("enabled_feeds"));
+					$this->host->get_array($this, "enabled_feeds"));
 
 				$this->host->set($this, "enabled_feeds", $enabled_feeds);
 			?>
@@ -227,7 +227,7 @@ class Af_Psql_Trgm extends Plugin {
 	}
 
 	function hook_prefs_edit_feed($feed_id) {
-			$enabled_feeds = $this->get_stored_array("enabled_feeds");
+			$enabled_feeds = $this->host->get_array($this, "enabled_feeds");
 		?>
 			<header><?= __("Similarity (af_psql_trgm)") ?></header>
 
@@ -244,7 +244,7 @@ class Af_Psql_Trgm extends Plugin {
 	}
 
 	function hook_prefs_save_feed($feed_id) {
-		$enabled_feeds = $this->get_stored_array("enabled_feeds");
+		$enabled_feeds = $this->host->get_array($this, "enabled_feeds");
 
 		$enable = checkbox_to_sql_bool($_POST["trgm_similarity_enabled"] ?? "");
 		$key = array_search($feed_id, $enabled_feeds);
@@ -273,7 +273,7 @@ class Af_Psql_Trgm extends Plugin {
 
 		if (!$enable_globally &&
 				!in_array($article["feed"]["id"],
-					$this->get_stored_array("enabled_feeds"))) {
+					$this->host->get_array($this,"enabled_feeds"))) {
 
 			return $article;
 		}
@@ -281,14 +281,14 @@ class Af_Psql_Trgm extends Plugin {
 		$similarity = (float) $this->host->get($this, "similarity", $this->default_similarity);
 
 		if ($similarity < 0.01) {
-			Debug::log("af_psql_trgm: similarity is set too low ($similarity)", Debug::$LOG_EXTENDED);
+			Debug::log("af_psql_trgm: similarity is set too low ($similarity)", Debug::LOG_EXTENDED);
 			return $article;
 		}
 
 		$min_title_length = (int) $this->host->get($this, "min_title_length", $this->default_min_length);
 
 		if (mb_strlen($article["title"]) < $min_title_length) {
-			Debug::log("af_psql_trgm: article title is too short (min: $min_title_length)", Debug::$LOG_EXTENDED);
+			Debug::log("af_psql_trgm: article title is too short (min: $min_title_length)", Debug::LOG_EXTENDED);
 			return $article;
 		}
 
@@ -327,10 +327,10 @@ class Af_Psql_Trgm extends Plugin {
 		$row = $sth->fetch();
 		$similarity_result = $row['ms'];
 
-		Debug::log("af_psql_trgm: similarity result for $title_escaped: $similarity_result", Debug::$LOG_EXTENDED);
+		Debug::log("af_psql_trgm: similarity result for $title_escaped: $similarity_result", Debug::LOG_EXTENDED);
 
 		if ($similarity_result >= $similarity) {
-			Debug::log("af_psql_trgm: marking article as read ($similarity_result >= $similarity)", Debug::$LOG_EXTENDED);
+			Debug::log("af_psql_trgm: marking article as read ($similarity_result >= $similarity)", Debug::LOG_EXTENDED);
 
 			$article["force_catchup"] = true;
 		}
@@ -342,7 +342,12 @@ class Af_Psql_Trgm extends Plugin {
 		return 2;
 	}
 
-	private function filter_unknown_feeds($enabled_feeds) {
+	/**
+	 * @param array<int> $enabled_feeds
+	 * @return array<int>
+	 * @throws PDOException
+	 */
+	private function filter_unknown_feeds($enabled_feeds) : array {
 		$tmp = array();
 
 		foreach ($enabled_feeds as $feed) {
@@ -357,14 +362,4 @@ class Af_Psql_Trgm extends Plugin {
 
 		return $tmp;
 	}
-
-	private function get_stored_array($name) {
-		$tmp = $this->host->get($this, $name);
-
-		if (!is_array($tmp)) $tmp = [];
-
-		return $tmp;
-	}
-
-
 }

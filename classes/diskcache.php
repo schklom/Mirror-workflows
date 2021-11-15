@@ -253,6 +253,26 @@ class DiskCache {
 		return touch($this->get_full_path($filename));
 	}
 
+	/** Downloads $url to cache as $local_filename if its missing (unless $force-ed)
+	 * @param string $url
+	 * @param string $local_filename
+	 * @param array<string,string|int|false> $options (additional params to UrlHelper::fetch())
+	 * @param bool $force
+	 * @return bool
+	 */
+	public function download(string $url, string $local_filename, array $options = [], bool $force = false) : bool {
+		if ($this->exists($local_filename) && !$force)
+			return true;
+
+		$data = UrlHelper::fetch(array_merge(["url" => $url,
+							"max_size" => Config::get(Config::MAX_CACHE_FILE_SIZE)], $options));
+
+		if ($data)
+			return $this->put($local_filename, $data) > 0;
+
+		return false;
+	}
+
 	public function get(string $filename): ?string {
 		if ($this->exists($filename))
 			return file_get_contents($this->get_full_path($filename));

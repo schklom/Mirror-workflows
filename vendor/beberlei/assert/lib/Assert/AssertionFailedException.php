@@ -18,18 +18,9 @@ use Throwable;
 
 interface AssertionFailedException extends Throwable
 {
-    /**
-     * @return string|null
-     */
     public function getPropertyPath();
 
-    /**
-     * @return mixed
-     */
     public function getValue();
 
-    /**
-     * @return array
-     */
-    public function getConstraints(): array;
+    public function getConstraints();
 }

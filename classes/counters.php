@@ -273,9 +273,8 @@ class Counters {
 
 		if (is_array($feeds)) {
 			foreach ($feeds as $feed) {
-				if (!method_exists($feed['sender'], 'get_unread')) {
+				if (!implements_interface($feed['sender'], 'IVirtualFeed'))
 					continue;
-				}
 
 				$cv = [
 					"id" => PluginHost::pfeed_to_feed_id($feed['id']),

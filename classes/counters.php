@@ -273,6 +273,8 @@ class Counters {
 
 		if (is_array($feeds)) {
 			foreach ($feeds as $feed) {
+				/** @var IVirtualFeed $feed['sender'] */
+
 				if (!implements_interface($feed['sender'], 'IVirtualFeed'))
 					continue;
 

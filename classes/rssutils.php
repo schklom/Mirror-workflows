@@ -687,7 +687,7 @@ class RSSUtils {
 				}
 
 				$entry_comments = mb_substr(strip_tags($item->get_comments_url()), 0, 245);
-				$num_comments = (int) $item->get_comments_count();
+				$num_comments = $item->get_comments_count();
 
 				$entry_author = strip_tags($item->get_author());
 				$entry_guid = mb_substr($entry_guid, 0, 245);

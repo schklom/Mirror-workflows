@@ -1,6 +1,6 @@
 <?php
 class FeedItem_RSS extends FeedItem_Common {
-	function get_id() {
+	function get_id(): string {
 		$id = $this->elem->getElementsByTagName("guid")->item(0);
 
 		if ($id) {
@@ -10,6 +10,9 @@ class FeedItem_RSS extends FeedItem_Common {
 		}
 	}
 
+	/**
+	 * @return int|false a timestamp on success, false otherwise
+	 */
 	function get_date() {
 		$pubDate = $this->elem->getElementsByTagName("pubDate")->item(0);
 
@@ -22,9 +25,12 @@ class FeedItem_RSS extends FeedItem_Common {
 		if ($date) {
 			return strtotime($date->nodeValue);
 		}
+
+		// consistent with strtotime failing to parse
+		return false;
 	}
 
-	function get_link() {
+	function get_link(): string {
 		$links = $this->xpath->query("atom:link", $this->elem);
 
 		foreach ($links as $link) {
@@ -37,6 +43,7 @@ class FeedItem_RSS extends FeedItem_Common {
 			}
 		}
 
+		/** @var DOMElement|null */
 		$link = $this->elem->getElementsByTagName("guid")->item(0);
 
 		if ($link && $link->hasAttributes() && $link->getAttribute("isPermaLink") == "true") {
@@ -48,9 +55,11 @@ class FeedItem_RSS extends FeedItem_Common {
 		if ($link) {
 			return clean(trim($link->nodeValue));
 		}
+
+		return '';
 	}
 
-	function get_title() {
+	function get_title(): string {
 		$title = $this->xpath->query("title", $this->elem)->item(0);
 
 		if ($title) {
@@ -64,10 +73,15 @@ class FeedItem_RSS extends FeedItem_Common {
 		if ($title) {
 			return clean(trim($title->nodeValue));
 		}
+
+		return '';
 	}
 
-	function get_content() {
+	function get_content(): string {
+		/** @var DOMElement|null */
 		$contentA = $this->xpath->query("content:encoded", $this->elem)->item(0);
+
+		/** @var DOMElement|null */
 		$contentB = $this->elem->getElementsByTagName("description")->item(0);
 
 		if ($contentA && !$contentB) {
@@ -85,17 +99,24 @@ class FeedItem_RSS extends FeedItem_Common {
 
 			return mb_strlen($resultA) > mb_strlen($resultB) ? $resultA : $resultB;
 		}
+
+		return '';
 	}
 
-	function get_description() {
+	function get_description(): string {
 		$summary = $this->elem->getElementsByTagName("description")->item(0);
 
 		if ($summary) {
 			return $summary->nodeValue;
 		}
+
+		return '';
 	}
 
-	function get_categories() {
+	/**
+	 * @return array<int, string>
+	 */
+	function get_categories(): array {
 		$categories = $this->elem->getElementsByTagName("category");
 		$cats = [];
 
@@ -112,7 +133,10 @@ class FeedItem_RSS extends FeedItem_Common {
 		return $this->normalize_categories($cats);
 	}
 
-	function get_enclosures() {
+	/**
+	 * @return array<int, FeedEnclosure>
+	 */
+	function get_enclosures(): array {
 		$enclosures = $this->elem->getElementsByTagName("enclosure");
 
 		$encs = array();
@@ -134,7 +158,7 @@ class FeedItem_RSS extends FeedItem_Common {
 		return $encs;
 	}
 
-	function get_language() {
+	function get_language(): string {
 		$languages = $this->doc->getElementsByTagName('language');
 
 		if (count($languages) == 0) {
@@ -143,5 +167,4 @@ class FeedItem_RSS extends FeedItem_Common {
 
 		return clean($languages[0]->textContent);
 	}
-
 }

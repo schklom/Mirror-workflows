@@ -189,7 +189,7 @@ class Article extends Handler_Protected {
 		//$tags_str = clean($_REQUEST["tags_str"]);
 		//$tags = array_unique(array_map('trim', explode(",", $tags_str)));
 
-		$tags = FeedItem_Common::normalize_categories(explode(",", clean($_REQUEST["tags_str"])));
+		$tags = FeedItem_Common::normalize_categories(explode(",", clean($_REQUEST["tags_str"] ?? "")));
 
 		$this->pdo->beginTransaction();
 

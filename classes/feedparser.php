@@ -65,10 +65,12 @@ class FeedParser {
 
 		$this->xpath = $xpath;
 
-		$root = $xpath->query("(//atom03:feed|//atom:feed|//channel|//rdf:rdf|//rdf:RDF)");
+		$root_list = $xpath->query("(//atom03:feed|//atom:feed|//channel|//rdf:rdf|//rdf:RDF)");
 
-		if (!empty($root) && $root->length > 0) {
-			$root = $root->item(0);
+		if (!empty($root_list) && $root_list->length > 0) {
+
+			/** @var DOMElement|false $root */
+			$root = $root_list->item(0);
 
 			if ($root) {
 				switch (mb_strtolower($root->tagName)) {

@@ -22,7 +22,7 @@ class Af_Comics_Dilbert extends Af_ComicFilter {
 				if ($res && $doc->loadHTML($res)) {
 					$xpath = new DOMXPath($doc);
 
-					// Get the image container
+					/** @var DOMElement|false $basenode (image container) */
 					$basenode = $xpath->query('(//div[@class="img-comic-container"]/a[@class="img-comic-link"])')->item(0);
 
 					// Get the comic title

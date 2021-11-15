@@ -32,7 +32,7 @@ class Af_Comics_ComicPress extends Af_ComicFilter {
 						return true;
 					}
 
-					// buni-specific
+					/** @var DOMElement|false $webtoon_link (buni specific) */
 					$webtoon_link = $xpath->query("//a[contains(@href,'www.webtoons.com')]")->item(0);
 
 					if ($webtoon_link) {

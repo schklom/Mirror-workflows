@@ -345,7 +345,7 @@ abstract class Plugin {
 
 	/**
 	 * @param string $query
-	 * @return array<string>
+	 * @return array<int, string|array<string>>
 	 */
 	function hook_search($query) {
 		user_error("Dummy method invoked.", E_USER_ERROR);

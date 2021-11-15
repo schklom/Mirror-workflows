@@ -602,7 +602,7 @@ class Article extends Handler_Protected {
 					} else if ($e->nodeName == "video") {
 						$article_image = $e->getAttribute("poster");
 
-						/** @var DOMElement|false $src */
+						/** @var DOMElement|null $src */
 						$src = $tmpxpath->query("//source[@src]", $e)->item(0);
 
 						if ($src) {

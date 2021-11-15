@@ -69,7 +69,7 @@ class FeedParser {
 
 		if (!empty($root_list) && $root_list->length > 0) {
 
-			/** @var DOMElement|false $root */
+			/** @var DOMElement|null $root */
 			$root = $root_list->item(0);
 
 			if ($root) {

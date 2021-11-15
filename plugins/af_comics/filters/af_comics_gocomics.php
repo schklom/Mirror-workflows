@@ -50,7 +50,7 @@ class Af_Comics_Gocomics extends Af_ComicFilter {
 				if (@$doc->loadHTML($body)) {
 					$xpath = new DOMXPath($doc);
 
-					/** @var DOMElement|false $node */
+					/** @var DOMElement|null $node */
 					$node = $xpath->query('//picture[contains(@class, "item-comic-image")]/img')->item(0);
 
 					if ($node) {

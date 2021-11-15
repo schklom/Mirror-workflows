@@ -287,7 +287,7 @@ class Af_RedditImgur extends Plugin {
 
 		$this->generated_enclosures = [];
 
-		/** @var DOMElement|false $anchor -- embed anchor element, before reddit <table> post layout */
+		/** @var DOMElement|null $anchor -- embed anchor element, before reddit <table> post layout */
 		$anchor = $xpath->query('//body/*')->item(0);
 
 		// deal with json-provided media content first

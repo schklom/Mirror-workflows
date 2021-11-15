@@ -457,7 +457,7 @@ const	Helpers = {
 
 				xhr.json("backend.php", {op: "pref-prefs", method: "uninstallPlugin", plugin: plugin}, (reply) => {
 					if (reply && reply.status == 1)
-						Helpers.Prefs.refresh();
+						Helpers.Plugins.reload();
 					else {
 						Notify.error("Plugin uninstallation failed.");
 					}

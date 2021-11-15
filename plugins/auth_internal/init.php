@@ -30,22 +30,6 @@ class Auth_Internal extends Auth_Base {
 				}
 
 				if ($otp) {
-
-					/*$base32 = new \OTPHP\Base32();
-
-					$secret = $base32->encode(mb_substr(sha1($row["salt"]), 0, 12), false);
-					$secret_legacy = $base32->encode(sha1($row["salt"]));
-
-					$totp = new \OTPHP\TOTP($secret);
-					$otp_check = $totp->now();
-
-					$totp_legacy = new \OTPHP\TOTP($secret_legacy);
-					$otp_check_legacy = $totp_legacy->now();
-
-					if ($otp !== $otp_check && $otp !== $otp_check_legacy) {
-						return false;
-					} */
-
 					if ($this->check_password($user_id, $password) && UserHelper::check_otp($user_id, $otp))
 						return $user_id;
 					else
@@ -130,10 +114,42 @@ class Auth_Internal extends Auth_Base {
 		}
 
 		if ($login) {
-			$try_user_id = UserHelper::find_user_by_login($login);
+			$user = ORM::for_table('ttrss_users')
+				->where('login', $login)
+				->find_one();
 
-			if ($try_user_id) {
-				return $this->check_password($try_user_id, $password);
+			if ($user) {
+				if (get_schema_version() >= 145) {
+					if ($user->last_auth_attempt) {
+						$last_auth_attempt = strtotime($user->last_auth_attempt);
+
+						if ($last_auth_attempt && time() - $last_auth_attempt < Config::get(Config::AUTH_MIN_INTERVAL)) {
+							Logger::log(E_USER_NOTICE, "Too many authentication attempts for {$user->login}, throttled.");
+
+							// start an empty session to deliver login error message
+							if (session_status() != PHP_SESSION_ACTIVE)
+								session_start();
+
+							$_SESSION["login_error_msg"] = __("Too many authentication attempts, throttled.");
+
+							$user->last_auth_attempt = Db::NOW();
+							$user->save();
+
+							return false;
+						}
+					}
+				}
+
+				$auth_result = $this->check_password($user->id, $password);
+
+				if ($auth_result) {
+					return $auth_result;
+				} else {
+					if (get_schema_version() >= 145) {
+						$user->last_auth_attempt = Db::NOW();
+						$user->save();
+					}
+				}
 			}
 		}
 
@@ -153,33 +169,6 @@ class Auth_Internal extends Auth_Base {
 		$user = ORM::for_table('ttrss_users')->find_one($owner_uid);
 
 		if ($user) {
-
-			// don't throttle app passwords
-			if (!$service && get_schema_version() >= 145) {
-
-				if ($user->last_auth_attempt) {
-					$last_auth_attempt = strtotime($user->last_auth_attempt);
-
-					if ($last_auth_attempt && time() - $last_auth_attempt < Config::get(Config::AUTH_MIN_INTERVAL)) {
-						Logger::log(E_USER_NOTICE, "Too many authentication attempts for {$user->login}, throttled.");
-
-						// start an empty session to deliver login error message
-						if (session_status() != PHP_SESSION_ACTIVE)
-							session_start();
-
-						$_SESSION["login_error_msg"] = __("Too many authentication attempts, throttled.");
-
-						$user->last_auth_attempt = Db::NOW();
-						$user->save();
-
-						return false;
-					}
-				}
-
-				$user->last_auth_attempt = Db::NOW();
-				$user->save();
-			}
-
 			$salt = $user['salt'] ?? "";
 			$login = $user['login'];
 			$pwd_hash = $user['pwd_hash'];

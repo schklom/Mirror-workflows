@@ -53,11 +53,21 @@ class UrlHelper {
 	 * @param string $owner_element Owner element tag name (i.e. "a") (optional)
 	 * @param string $owner_attribute Owner attribute (i.e. "href") (optional)
 	 *
-	 * @return string Absolute URL
+	 * @return false|string Absolute URL or false on failure (either during URL parsing or validation)
 	 */
 	public static function rewrite_relative($base_url, $rel_url, string $owner_element = "", string $owner_attribute = "") {
-
 		$rel_parts = parse_url($rel_url);
+
+		/**
+		 * If parse_url failed to parse $rel_url return false to match the current "invalid thing" behavior
+		 * of UrlHelper::validate().
+		 *
+		 * TODO: There are many places where a string return value is assumed.  We should either update those
+		 * to account for the possibility of failure, or look into updating this function's return values.
+		 */
+		if ($rel_parts === false) {
+			return false;
+		}
 
 		if (!empty($rel_parts['host']) && !empty($rel_parts['scheme'])) {
 			return self::validate($rel_url);

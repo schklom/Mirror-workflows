@@ -48,155 +48,151 @@ class PluginHost {
 	const API_VERSION = 2;
 	const PUBLIC_METHOD_DELIMITER = "--";
 
-	// Hooks marked with *1 are run in global context and available
-	// to plugins loaded in config.php only
-
-	/** hook_article_button($line) */
+	/** @see Plugin::hook_article_button() */
 	const HOOK_ARTICLE_BUTTON = "hook_article_button";
 
-	/** hook_article_filter($article) */
+	/** @see Plugin::hook_article_filter() */
 	const HOOK_ARTICLE_FILTER = "hook_article_filter";
 
-	/** hook_prefs_tab($tab) */
+	/** @see Plugin::hook_prefs_tab() */
 	const HOOK_PREFS_TAB = "hook_prefs_tab";
 
-	/** hook_prefs_tab_section($section) */
+	/** @see Plugin::hook_prefs_tab_section() */
 	const HOOK_PREFS_TAB_SECTION = "hook_prefs_tab_section";
 
-	/** hook_prefs_tabs() */
+	/** @see Plugin::hook_prefs_tabs() */
 	const HOOK_PREFS_TABS = "hook_prefs_tabs";
 
-	/** hook_feed_parsed($parser, $feed_id) */
+	/** @see Plugin::hook_feed_parsed() */
 	const HOOK_FEED_PARSED = "hook_feed_parsed";
 
-	/** GLOBAL: hook_update_task($cli_options) */
+	/** @see Plugin::hook_update_task() */
 	const HOOK_UPDATE_TASK = "hook_update_task"; //*1
 
-	/** hook_auth_user($login, $password, $service) (byref) */
+	/** @see Plugin::hook_auth_user() */
 	const HOOK_AUTH_USER = "hook_auth_user";
 
-	/** hook_hotkey_map($hotkeys) (byref) */
+	/** @see Plugin::hook_hotkey_map() */
 	const HOOK_HOTKEY_MAP = "hook_hotkey_map";
 
-	/** hook_render_article($article) */
+	/** @see Plugin::hook_render_article() */
 	const HOOK_RENDER_ARTICLE = "hook_render_article";
 
-	/** hook_render_article_cdm($article) */
+	/** @see Plugin::hook_render_article_cdm() */
 	const HOOK_RENDER_ARTICLE_CDM = "hook_render_article_cdm";
 
-	/** hook_feed_fetched($feed_data, $fetch_url, $owner_uid, $feed) (byref) */
+	/** @see Plugin::hook_feed_fetched() */
 	const HOOK_FEED_FETCHED = "hook_feed_fetched";
 
-	/** hook_sanitize($doc, $site_url, $allowed_elements, $disallowed_attributes, $article_id) (byref) */
+	/** @see Plugin::hook_sanitize() */
 	const HOOK_SANITIZE = "hook_sanitize";
 
-	/** hook_render_article_api($params) */
+	/** @see Plugin::hook_render_article_api() */
 	const HOOK_RENDER_ARTICLE_API = "hook_render_article_api";
 
-	/** hook_toolbar_button() */
+	/** @see Plugin::hook_toolbar_button() */
 	const HOOK_TOOLBAR_BUTTON = "hook_toolbar_button";
 
-	/** hook_action_item() */
+	/** @see Plugin::hook_action_item() */
 	const HOOK_ACTION_ITEM = "hook_action_item";
 
-	/** hook_headline_toolbar_button($feed_id, $is_cat) */
+	/** @see Plugin::hook_headline_toolbar_button() */
 	const HOOK_HEADLINE_TOOLBAR_BUTTON = "hook_headline_toolbar_button";
 
-	/** hook_hotkey_info($hotkeys) (byref) */
+	/** @see Plugin::hook_hotkey_info() */
 	const HOOK_HOTKEY_INFO = "hook_hotkey_info";
 
-	/** hook_article_left_button($row) */
+	/** @see Plugin::hook_article_left_button() */
 	const HOOK_ARTICLE_LEFT_BUTTON = "hook_article_left_button";
 
-	/** hook_prefs_edit_feed($feed_id) */
+	/** @see Plugin::hook_prefs_edit_feed() */
 	const HOOK_PREFS_EDIT_FEED = "hook_prefs_edit_feed";
 
-	/** hook_prefs_save_feed($feed_id) */
+	/** @see Plugin::hook_prefs_save_feed() */
 	const HOOK_PREFS_SAVE_FEED = "hook_prefs_save_feed";
 
-	/** hook_fetch_feed($feed_data, $fetch_url, $owner_uid, $feed, $last_article_timestamp, $auth_login, $auth_pass) (byref) */
+	/** @see Plugin::hook_fetch_feed() */
 	const HOOK_FETCH_FEED = "hook_fetch_feed";
 
-	/** hook_query_headlines($row) (byref) */
+	/** @see Plugin::hook_query_headlines() */
 	const HOOK_QUERY_HEADLINES = "hook_query_headlines";
 
-	/** GLOBAL: hook_house_keeping() */
+	/** @see Plugin::hook_house_keeping() */
 	const HOOK_HOUSE_KEEPING = "hook_house_keeping"; //*1
 
-	/** hook_search($query) */
+	/** @see Plugin::hook_search() */
 	const HOOK_SEARCH = "hook_search";
 
-	/** hook_format_enclosures($rv, $result, $id, $always_display_enclosures, $article_content, $hide_images) (byref) */
+	/** @see Plugin::hook_format_enclosures() */
 	const HOOK_FORMAT_ENCLOSURES = "hook_format_enclosures";
 
-	/** hook_subscribe_feed($contents, $url, $auth_login, $auth_pass) (byref) */
+	/** @see Plugin::hook_subscribe_feed() */
 	const HOOK_SUBSCRIBE_FEED = "hook_subscribe_feed";
 
-	/** hook_headlines_before($feed, $is_cat, $qfh_ret) */
+	/** @see Plugin::hook_headlines_before() */
 	const HOOK_HEADLINES_BEFORE = "hook_headlines_before";
 
-	/** hook_render_enclosure($entry, $id, $rv) */
+	/** @see Plugin::hook_render_enclosure() */
 	const HOOK_RENDER_ENCLOSURE = "hook_render_enclosure";
 
-	/** hook_article_filter_action($article, $action) */
+	/** @see Plugin::hook_article_filter_action() */
 	const HOOK_ARTICLE_FILTER_ACTION = "hook_article_filter_action";
 
-	/** hook_article_export_feed($line, $feed, $is_cat, $owner_uid) (byref) */
+	/** @see Plugin::hook_article_export_feed() */
 	const HOOK_ARTICLE_EXPORT_FEED = "hook_article_export_feed";
 
-	/** hook_main_toolbar_button() */
+	/** @see Plugin::hook_main_toolbar_button() */
 	const HOOK_MAIN_TOOLBAR_BUTTON = "hook_main_toolbar_button";
 
-	/** hook_enclosure_entry($entry, $id, $rv) (byref) */
+	/** @see Plugin::hook_enclosure_entry() */
 	const HOOK_ENCLOSURE_ENTRY = "hook_enclosure_entry";
 
-	/** hook_format_article($html, $row) */
+	/** @see Plugin::hook_format_article() */
 	const HOOK_FORMAT_ARTICLE = "hook_format_article";
 
-	/** @deprecated removed, do not use */
+	/** @see Plugin::hook_format_article_cdm() */
 	const HOOK_FORMAT_ARTICLE_CDM = "hook_format_article_cdm";
 
-	/** hook_feed_basic_info($basic_info, $fetch_url, $owner_uid, $feed_id, $auth_login, $auth_pass) (byref) */
+	/** @see Plugin::hook_feed_basic_info() */
 	const HOOK_FEED_BASIC_INFO = "hook_feed_basic_info";
 
-	/** hook_send_local_file($filename) */
+	/** @see Plugin::hook_send_local_file() */
 	const HOOK_SEND_LOCAL_FILE = "hook_send_local_file";
 
-	/** hook_unsubscribe_feed($feed_id, $owner_uid) */
+	/** @see Plugin::hook_unsubscribe_feed() */
 	const HOOK_UNSUBSCRIBE_FEED = "hook_unsubscribe_feed";
 
-	/** hook_send_mail(Mailer $mailer, $params) */
+	/** @see Plugin::hook_send_mail() */
 	const HOOK_SEND_MAIL = "hook_send_mail";
 
-	/** hook_filter_triggered($feed_id, $owner_uid, $article, $matched_filters, $matched_rules, $article_filters) */
+	/** @see Plugin::hook_filter_triggered() */
 	const HOOK_FILTER_TRIGGERED = "hook_filter_triggered";
 
-	/** hook_get_full_text($url) */
+	/** @see Plugin::hook_get_full_text() */
 	const HOOK_GET_FULL_TEXT = "hook_get_full_text";
 
-	/** hook_article_image($enclosures, $content, $site_url) */
+	/** @see Plugin::hook_article_image() */
 	const HOOK_ARTICLE_IMAGE = "hook_article_image";
 
-	/** hook_feed_tree() */
+	/** @see Plugin::hook_feed_tree() */
 	const HOOK_FEED_TREE = "hook_feed_tree";
 
-	/** hook_iframe_whitelisted($url) */
+	/** @see Plugin::hook_iframe_whitelisted() */
 	const HOOK_IFRAME_WHITELISTED = "hook_iframe_whitelisted";
 
-	/** hook_enclosure_imported($enclosure, $feed) */
+	/** @see Plugin::hook_enclosure_imported() */
 	const HOOK_ENCLOSURE_IMPORTED = "hook_enclosure_imported";
 
-	/** hook_headlines_custom_sort_map() */
+	/** @see Plugin::hook_headlines_custom_sort_map() */
 	const HOOK_HEADLINES_CUSTOM_SORT_MAP = "hook_headlines_custom_sort_map";
 
-	/** hook_headlines_custom_sort_override($order) */
+	/** @see Plugin::hook_headlines_custom_sort_override() */
 	const HOOK_HEADLINES_CUSTOM_SORT_OVERRIDE = "hook_headlines_custom_sort_override";
 
-	/** hook_headline_toolbar_select_menu_item($feed_id, $is_cat) */
+	/** @see Plugin::hook_headline_toolbar_select_menu_item() */
 	const HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM = "hook_headline_toolbar_select_menu_item";
 
-
-	/** hook_pre_subscribe($url, $auth_login, $auth_pass) (byref) */
+	/** @see Plugin::hook_pre_subscribe() */
 	const HOOK_PRE_SUBSCRIBE = "hook_pre_subscribe";
 
 	const KIND_ALL = 1;

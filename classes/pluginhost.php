@@ -263,6 +263,7 @@ class PluginHost {
 	}
 
 	/**
+	 * @param PluginHost::HOOK_* $hook
 	 * @param mixed $args
 	 */
 	function run_hooks(string $hook, ...$args): void {
@@ -282,6 +283,7 @@ class PluginHost {
 	}
 
 	/**
+	 * @param PluginHost::HOOK_* $hook
 	 * @param mixed $args
 	 * @param mixed $check
 	 */
@@ -306,6 +308,7 @@ class PluginHost {
 	}
 
 	/**
+	 * @param PluginHost::HOOK_* $hook
 	 * @param mixed $args
 	 */
 	function run_hooks_callback(string $hook, Closure $callback, ...$args): void {
@@ -326,6 +329,7 @@ class PluginHost {
 	}
 
 	/**
+	 * @param PluginHost::HOOK_* $hook
 	 * @param mixed $args
 	 */
 	function chain_hooks_callback(string $hook, Closure $callback, &...$args): void {
@@ -345,6 +349,9 @@ class PluginHost {
 		}
 	}
 
+	/**
+	 * @param PluginHost::HOOK_* $type
+	 */
 	function add_hook(string $type, Plugin $sender, int $priority = 50): void {
 		$priority = (int) $priority;
 
@@ -369,6 +376,9 @@ class PluginHost {
 		ksort($this->hooks[$type]);
 	}
 
+	/**
+	 * @param PluginHost::HOOK_* $type
+	 */
 	function del_hook(string $type, Plugin $sender): void {
 		if (is_array($this->hooks[$type])) {
 			foreach (array_keys($this->hooks[$type]) as $prio) {
@@ -382,6 +392,7 @@ class PluginHost {
 	}
 
 	/**
+	 * @param PluginHost::HOOK_* $type
 	 * @return array<int, Plugin>
 	 */
 	function get_hooks(string $type) {
@@ -396,6 +407,10 @@ class PluginHost {
 		}
 		return [];
 	}
+
+	/**
+	 * @param PluginHost::KIND_* $kind
+	 */
 	function load_all(int $kind, int $owner_uid = null, bool $skip_init = false): void {
 
 		$plugins = array_merge(glob("plugins/*"), glob("plugins.local/*"));
@@ -407,6 +422,9 @@ class PluginHost {
 		$this->load(join(",", $plugins), $kind, $owner_uid, $skip_init);
 	}
 
+	/**
+	 * @param PluginHost::KIND_* $kind
+	 */
 	function load(string $classlist, int $kind, int $owner_uid = null, bool $skip_init = false): void {
 		$plugins = explode(",", $classlist);
 

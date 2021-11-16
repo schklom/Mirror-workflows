@@ -257,17 +257,14 @@ class Article extends Handler_Protected {
 		print "</ul>";
 	}*/
 
-	// TODO: dead code?
 	function assigntolabel(): void {
 		$this->_label_ops(true);
 	}
 
-	// TODO: dead code?
 	function removefromlabel(): void {
 		$this->_label_ops(false);
 	}
 
-	// TODO: dead code?
 	private function _label_ops(bool $assign): void {
 		$reply = array();
 

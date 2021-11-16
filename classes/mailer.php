@@ -31,6 +31,8 @@ class Mailer {
 		// 3. any other return value will allow cycling to the next handler and, eventually, to default mail() function
 		// 4. set error message if needed via passed Mailer instance function set_error()
 
+		$hooks_tried = 0;
+
 		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_SEND_MAIL) as $p) {
 			$rc = $p->hook_send_mail($this, $params);
 
@@ -39,6 +41,8 @@ class Mailer {
 
 			if ($rc == -1)
 				return 0;
+
+			++$hooks_tried;
 		}
 
 		$headers = [ "From: $from_combined", "Content-Type: text/plain; charset=UTF-8" ];
@@ -46,7 +50,7 @@ class Mailer {
 		$rc = mail($to_combined, $subject, $message, implode("\r\n", array_merge($headers, $additional_headers)));
 
 		if (!$rc) {
-			$this->set_error(error_get_last()['message']);
+			$this->set_error(error_get_last()['message'] ?? T_sprintf("Unknown error while sending mail. Hooks tried: %d.", $hooks_tried));
 		}
 
 		return $rc;

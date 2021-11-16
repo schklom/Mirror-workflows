@@ -257,18 +257,21 @@ class Article extends Handler_Protected {
 		print "</ul>";
 	}*/
 
+	// TODO: dead code?
 	function assigntolabel(): void {
 		$this->_label_ops(true);
 	}
 
+	// TODO: dead code?
 	function removefromlabel(): void {
 		$this->_label_ops(false);
 	}
 
+	// TODO: dead code?
 	private function _label_ops(bool $assign): void {
 		$reply = array();
 
-		$ids = array_map("intval", explode(",", clean($_REQUEST["ids"] ?? [])));
+		$ids = array_map("intval", array_filter(explode(",", clean($_REQUEST["ids"] ?? "")), "strlen"));
 		$label_id = clean($_REQUEST["lid"]);
 
 		$label = Labels::find_caption($label_id, $_SESSION["uid"]);

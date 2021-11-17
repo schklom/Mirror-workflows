@@ -299,7 +299,10 @@ class Config {
 					user_error("Unable to determine version: " . $this->version["version"], E_USER_WARNING);
 
 					$this->version["version"] = "UNKNOWN (Unsupported, Git error)";
+				} else if (!getenv("TTRSS_SELF_URL_PATH") || !getenv("SCRIPT_ROOT")) {
+					$this->version["version"] .= " (Unsupported)";
 				}
+
 			} else {
 				$this->version["version"] = "UNKNOWN (Unsupported)";
 			}

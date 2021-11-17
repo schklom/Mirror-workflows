@@ -71,10 +71,10 @@ jobs:
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
-        #with:
+        with:
           #image: tonistiigi/binfmt:latest
           #platforms: all
-          platforms: arm/v
+          platforms: arm64
       # https://github.com/marketplace/actions/docker-setup-buildx
       - name: Set up Docker Buildx
         id: buildx

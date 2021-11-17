@@ -11,3 +11,4 @@ The Actions are defined in the directory .github/workflows. Secrets are used for
 - Feedropolis
 - Spreed
 - TT-RSS
+- Bibliogram

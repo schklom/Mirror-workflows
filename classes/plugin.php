@@ -98,10 +98,11 @@ abstract class Plugin {
 
 	/* GLOBAL hooks are invoked in global context, only available to system plugins (loaded via .env for all users) */
 
-	/**
+	/** Adds buttons for article (on the right) - e.g. mail, share, add note.
 	 * @param array<string,mixed> $line
 	 * @return string
 	 * @see PluginHost::HOOK_ARTICLE_BUTTON
+	 * @see Plugin::hook_article_left_button()
 	 */
 	function hook_article_button($line) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
@@ -109,7 +110,7 @@ abstract class Plugin {
 		return "";
 	}
 
-	/**
+	/** Allows plugins to alter article data as gathered from feed XML, i.e. embed images, get full text content, etc.
 	 * @param array<string,mixed> $article
 	 * @return array<string,mixed>
 	 * @see PluginHost::HOOK_ARTICLE_FILTER
@@ -120,7 +121,7 @@ abstract class Plugin {
 		return [];
 	}
 
-	/**
+	/** Allow adding new UI elements (e.g. accordion panes) to (top) tab contents in Preferences
 	 * @param string $tab
 	 * @return void
 	 * @see PluginHost::HOOK_PREFS_TAB
@@ -129,7 +130,7 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
-	/**
+	/** Allow adding new content to various sections of preferences UI (i.e. OPML import/export pane)
 	 * @param string $section
 	 * @return void
 	 * @see PluginHost::HOOK_PREFS_TAB_SECTION
@@ -138,14 +139,15 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
-	/** @return void
+	/** Allows adding new (top) tabs in preferences UI
+	 * @return void
 	 * @see PluginHost::HOOK_PREFS_TABS
 	*/
 	function hook_prefs_tabs() {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
-	/**
+	/** Invoked when feed XML is processed by FeedParser class
 	 * @param FeedParser $parser
 	 * @param int $feed_id
 	 * @return void
@@ -155,7 +157,7 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
-	/** GLOBAL
+	/** GLOBAL: Invoked when a feed update task finishes
 	 * @param array<string,string> $cli_options
 	 * @return void
 	 * @see PluginHost::HOOK_UPDATE_TASK
@@ -164,7 +166,7 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
-	/** this is a pluginhost compatibility wrapper that invokes $this->authenticate(...$args) (Auth_Base)
+	/** This is a pluginhost compatibility wrapper that invokes $this->authenticate(...$args) (Auth_Base)
 	 * @param string $login
 	 * @param string $password
 	 * @param string $service
@@ -187,10 +189,11 @@ abstract class Plugin {
 		return false;
 	}
 
-	/**
+	/** Allows plugins to modify global hotkey map (hotkey sequence -> action)
 	 * @param array<string, string> $hotkeys
 	 * @return array<string, string>
 	 * @see PluginHost::HOOK_HOTKEY_MAP
+	 * @see Plugin::hook_hotkey_info()
 	 */
 	function hook_hotkey_map($hotkeys) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
@@ -198,7 +201,7 @@ abstract class Plugin {
 		return [];
 	}
 
-	/**
+	/** Invoked when article is rendered by backend (before it gets passed to frontent JS code) - three panel mode
 	 * @param array<string, mixed> $article
 	 * @return array<string, mixed>
 	 * @see PluginHost::HOOK_RENDER_ARTICLE
@@ -209,7 +212,7 @@ abstract class Plugin {
 		return [];
 	}
 
-	/**
+	/** Invoked when article is rendered by backend (before it gets passed to frontent JS code) - combined mode
 	 * @param array<string, mixed> $article
 	 * @return array<string, mixed>
 	 * @see PluginHost::HOOK_RENDER_ARTICLE_CDM
@@ -220,7 +223,7 @@ abstract class Plugin {
 		return [];
 	}
 
-	/**
+	/** Invoked when raw feed XML data has been successfully downloaded (but not parsed yet)
 	 * @param string $feed_data
 	 * @param string $fetch_url
 	 * @param int $owner_uid
@@ -234,7 +237,7 @@ abstract class Plugin {
 		return "";
 	}
 
-	/**
+	/** Invoked on article content when it is sanitized (i.e. potentially harmful tags removed)
 	 * @param DOMDocument $doc
 	 * @param string $site_url
 	 * @param array<string> $allowed_elements
@@ -249,7 +252,7 @@ abstract class Plugin {
 		return $doc;
 	}
 
-	/**
+	/** Invoked when article is rendered by backend (before it gets passed to frontent JS code) - exclusive to API clients
 	 * @param array{'article': array<string,mixed>|null, 'headline': array<string,mixed>|null} $params
 	 * @return array<string, string>
 	 * @see PluginHost::HOOK_RENDER_ARTICLE_API
@@ -260,7 +263,7 @@ abstract class Plugin {
 		return [];
 	}
 
-	/**
+	/** Allows adding new UI elements to tt-rss main toolbar
 	 * @return string
 	 * @see PluginHost::HOOK_TOOLBAR_BUTTON
 	 */
@@ -270,7 +273,7 @@ abstract class Plugin {
 		return "";
 	}
 
-	/**
+	/** Allows adding new items to tt-rss main Actions... dropdown menu
 	 * @return string
 	 * @see PluginHost::HOOK_ACTION_ITEM
 	 */
@@ -280,7 +283,7 @@ abstract class Plugin {
 		return "";
 	}
 
-	/**
+	/** Allows adding new UI elements to the toolbar area related to currently loaded feed headlines
 	 * @param int $feed_id
 	 * @param bool $is_cat
 	 * @return string
@@ -292,10 +295,11 @@ abstract class Plugin {
 		return "";
 	}
 
-	/**
+	/** Allows adding new hotkey action names and descriptions
 	 * @param array<string, array<string, string>> $hotkeys
 	 * @return array<string, array<string, string>>
 	 * @see PluginHost::HOOK_HOTKEY_INFO
+	 * @see Plugin::hook_hotkey_map()
 	 */
 	function hook_hotkey_info($hotkeys) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
@@ -303,10 +307,11 @@ abstract class Plugin {
 		return [];
 	}
 
-	/**
+	/** Adds per-article buttons on the left side
 	 * @param array<string,mixed> $row
 	 * @return string
 	 * @see PluginHost::HOOK_ARTICLE_LEFT_BUTTON
+	 * @see Plugin::hook_article_button()
 	 */
 	function hook_article_left_button($row) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
@@ -314,7 +319,7 @@ abstract class Plugin {
 		return "";
 	}
 
-	/**
+	/** Allows adding new UI elements to the "Plugins" tab of the feed editor UI
 	 * @param int $feed_id
 	 * @return void
 	 * @see PluginHost::HOOK_PREFS_EDIT_FEED
@@ -323,7 +328,7 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
-	/**
+	/** Invoked when data is saved in the feed editor
 	 * @param int $feed_id
 	 * @return void
 	 * @see PluginHost::HOOK_PREFS_SAVE_FEED
@@ -332,7 +337,8 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
-	/**
+	/** Allows overriding built-in fetching mechanism for feeds, substituting received data if necessary
+	 * (i.e. origin site doesn't actually provide any RSS feeds), or XML is invalid
 	 * @param string $feed_data
 	 * @param string $fetch_url
 	 * @param int $owner_uid
@@ -349,7 +355,7 @@ abstract class Plugin {
 		return "";
 	}
 
-	/**
+	/** Invoked when headlines data ($row) has been retrieved from the database
 	 * @param array<string,mixed> $row
 	 * @param int $excerpt_length
 	 * @return array<string,mixed>
@@ -361,16 +367,16 @@ abstract class Plugin {
 		return [];
 	}
 
-	/** GLOBAL
+	/** GLOBAL: This is run periodically by the update daemon when idle
 	 * @return void
 	 * @see PluginHost::HOOK_HOUSE_KEEPING */
 	function hook_house_keeping() {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
-	/**
+	/** Allows overriding built-in article search
 	 * @param string $query
-	 * @return array<int, string|array<string>>
+	 * @return array<int, string|array<string>> - list(SQL search query, highlight keywords)
 	 * @see PluginHost::HOOK_SEARCH
 	 */
 	function hook_search($query) {

@@ -263,7 +263,7 @@ abstract class Plugin {
 		return [];
 	}
 
-	/** Allows adding new UI elements to tt-rss main toolbar
+	/** Allows adding new UI elements to tt-rss main toolbar (to the right, before Actions... dropdown)
 	 * @return string
 	 * @see PluginHost::HOOK_TOOLBAR_BUTTON
 	 */
@@ -385,7 +385,7 @@ abstract class Plugin {
 		return [];
 	}
 
-	/**
+	/** Invoked when enclosures are rendered to HTML (when article itself is rendered)
 	 * @param string $enclosures_formatted
 	 * @param array<int, array<string, mixed>> $enclosures
 	 * @param int $article_id
@@ -401,7 +401,7 @@ abstract class Plugin {
 		return "";
 	}
 
-	/**
+	/** Invoked during feed subscription (after data has been fetched)
 	 * @param string $contents
 	 * @param string $url
 	 * @param string $auth_login
@@ -467,7 +467,7 @@ abstract class Plugin {
 		return [];
 	}
 
-	/**
+	/** Allows adding custom buttons to tt-rss main toolbar (left side)
 	 * @return void
 	 * @see PluginHost::HOOK_MAIN_TOOLBAR_BUTTON
 	*/
@@ -475,7 +475,7 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
-	/**
+	/** Invoked for every enclosure entry as article is being rendered
 	 * @param array<string,string> $entry
 	 * @param int $id
 	 * @param array{'formatted': string, 'entries': array<int, array<string, mixed>>} $rv
@@ -488,7 +488,7 @@ abstract class Plugin {
 		return [];
 	}
 
-	/**
+	/** Share plugins run this when article is being rendered as HTML for sharing
 	 * @param string $html
 	 * @param array<string,mixed> $row
 	 * @return string ($html)
@@ -500,7 +500,7 @@ abstract class Plugin {
 		return "";
 	}
 
-	/**
+	/** Invoked when basic feed information (title, site_url) is being collected, useful to override default if feed doesn't provide anything (or feed itself is synthesized)
 	 * @param array{"title": string, "site_url": string} $basic_info
 	 * @param string $fetch_url
 	 * @param int $owner_uid
@@ -516,7 +516,8 @@ abstract class Plugin {
 		return $basic_info;
 	}
 
-	/**
+	/** Invoked when file (e.g. cache entry, static data) is being sent to client, may override default mechanism
+	 * using faster httpd-specific implementation (see nginx_xaccel)
 	 * @param string $filename
 	 * @return bool
 	 * @see PluginHost::HOOK_SEND_LOCAL_FILE
@@ -527,7 +528,7 @@ abstract class Plugin {
 		return false;
 	}
 
-	/**
+	/** Invoked when user tries to unsubscribe from a feed, returning true would prevent any further default actions
 	 * @param int $feed_id
 	 * @param int $owner_uid
 	 * @return bool
@@ -539,7 +540,7 @@ abstract class Plugin {
 		return false;
 	}
 
-	/**
+	/** Invoked when mail is being sent (if no hooks are registered, tt-rss uses PHP mail() as a fallback)
 	 * @param Mailer $mailer
 	 * @param array<string,mixed> $params
 	 * @return int
@@ -551,7 +552,8 @@ abstract class Plugin {
 		return -1;
 	}
 
-	/** NOTE: $article_filters should be renamed $filter_actions because that's what this is
+	/** Invoked when filter is triggered on an article, may be used to implement logging for filters
+	 * NOTE: $article_filters should be renamed $filter_actions because that's what this is
 	 * @param int $feed_id
 	 * @param int $owner_uid
 	 * @param array<string,mixed> $article
@@ -565,7 +567,7 @@ abstract class Plugin {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 
-	/**
+	/** Plugins may provide this to allow getting full article text (af_readbility implements this)
 	 * @param string $url
 	 * @return string|false
 	 * @see PluginHost::HOOK_GET_FULL_TEXT
@@ -576,7 +578,7 @@ abstract class Plugin {
 		return "";
 	}
 
-	/**
+	/** Invoked when article flavor image is being determined, allows overriding default selection logic
 	 * @param array<string,string> $enclosures
 	 * @param string $content
 	 * @param string $site_url
@@ -590,8 +592,8 @@ abstract class Plugin {
 		return "";
 	}
 
-	/**
-	 * @return string
+	/** Allows adding arbitrary elements before feed tree
+	 * @return string HTML
 	 * @see PluginHost::HOOK_FEED_TREE
 	 * */
 	function hook_feed_tree() {
@@ -600,7 +602,7 @@ abstract class Plugin {
 		return "";
 	}
 
-	/**
+	/** Invoked for every iframe to determine if it is allowed to be displayed
 	 * @param string $url
 	 * @return bool
 	 * @see PluginHost::HOOK_IFRAME_WHITELISTED
@@ -623,7 +625,7 @@ abstract class Plugin {
 		return $enclosure;
 	}
 
-	/**
+	/** Allows adding custom elements to headline sort dropdown (name -> caption)
 	 * @return array<string,string>
 	 * @see PluginHost::HOOK_HEADLINES_CUSTOM_SORT_MAP
 	 */
@@ -633,9 +635,9 @@ abstract class Plugin {
 		return ["" => ""];
 	}
 
-	/**
+	/** Allows overriding headline sorting (or provide custom sort methods)
 	 * @param string $order
-	 * @return array<int, string|bool> -- query, skip_first_id
+	 * @return array<int, string|bool> -- (query, skip_first_id)
 	 * @see PluginHost::HOOK_HEADLINES_CUSTOM_SORT_OVERRIDE
 	 */
 	function hook_headlines_custom_sort_override($order) {
@@ -644,7 +646,7 @@ abstract class Plugin {
 		return ["", false];
 	}
 
-	/**
+	/** Allows adding custom elements to headlines Select... dropdown
 	 * @param int $feed_id
 	 * @param int $is_cat
 	 * @return string
@@ -656,7 +658,7 @@ abstract class Plugin {
 		return "";
 	}
 
-	/**
+	/** Invoked when user tries to subscribe to feed, may override information (i.e. feed URL) used afterwards
 	 * @param string $url
 	 * @param string $auth_login
 	 * @param string $auth_pass

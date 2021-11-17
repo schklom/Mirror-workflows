@@ -1275,7 +1275,7 @@ class RSSUtils {
 	/**
 	 * TODO: move to DiskCache?
 	 *
-	 * @param array<int, array<string|int>> $enclosures An array of "enclosure arrays" [string $link, string $type, int $length, string, $title, int $width, int $height]
+	 * @param array<int, array<string>> $enclosures An array of "enclosure arrays" [string $link, string $type, string $length, string, $title, string $width, string $height]
 	 * @see RSSUtils::update_rss_feed()
 	 * @see FeedEnclosure
 	 */

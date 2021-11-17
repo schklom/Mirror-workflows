@@ -105,7 +105,7 @@ jobs:
         with:
           context: ./app
           file: ./app/Dockerfile
-          #platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
+          #platforms: linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6
           platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
           pull: true
           push: true
@@ -116,7 +116,7 @@ jobs:
         with:
           context: ./web-nginx
           file: ./web-nginx/Dockerfile
-          #platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
+          #platforms: linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6
           platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
           pull: true
           push: true

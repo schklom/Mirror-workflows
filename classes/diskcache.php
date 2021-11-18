@@ -9,7 +9,7 @@ class DiskCache {
 	 *
 	 * @var array<string, string>
 	 */
-	private array $mimeMap = [
+	private $mimeMap = [
 		'video/3gpp2'                                                               => '3g2',
 		'video/3gp'                                                                 => '3gp',
 		'video/3gpp'                                                                => '3gp',

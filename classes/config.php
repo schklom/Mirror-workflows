@@ -8,172 +8,188 @@ class Config {
 
 	const SCHEMA_VERSION = 145;
 
-	/* override defaults, defined below in _DEFAULTS[], prefixing with _ENVVAR_PREFIX:
-
-		DB_TYPE becomes:
-
-		.env:
-
-		TTRSS_DB_TYPE=pgsql
-
-		or config.php:
-
-		putenv('TTRSS_DB_TYPE=pgsql');
-
-		etc, etc.
+	/** override default values, defined below in _DEFAULTS[], prefixing with _ENVVAR_PREFIX:
+	 *
+	 * DB_TYPE becomes:
+	 *
+	 * .env (docker environment):
+	 *
+	 * TTRSS_DB_TYPE=pgsql
+	 *
+	 * or config.php:
+	 *
+	 * putenv('TTRSS_DB_TYPE=pgsql');
+	 *
+	 * note lack of quotes and spaces before and after "=".
+	 *
 	*/
 
+	/** database type: pgsql or mysql */
 	const DB_TYPE = "DB_TYPE";
+
+	/** database server hostname */
 	const DB_HOST = "DB_HOST";
+
+	/** database user */
 	const DB_USER = "DB_USER";
+
+	/** database name */
 	const DB_NAME = "DB_NAME";
+
+	/** database password */
 	const DB_PASS = "DB_PASS";
+
+	/** database server port */
 	const DB_PORT = "DB_PORT";
-	// database credentials
 
+	/** connection charset for MySQL. if you have a legacy database and/or experience
+	 * garbage unicode characters with this option, try setting it to a blank string. */
 	const MYSQL_CHARSET = "MYSQL_CHARSET";
-	// connection charset for MySQL. if you have a legacy database and/or experience
-	// garbage unicode characters with this option, try setting it to a blank string.
 
+	/** this should be set to a fully qualified URL used to access
+	 * your tt-rss instance over the net, such as: https://example.com/tt-rss/
+	 * if your tt-rss instance is behind a reverse proxy, use external URL.
+	 * tt-rss will likely help you pick correct value for this on startup */
 	const SELF_URL_PATH = "SELF_URL_PATH";
-	// this should be set to a fully qualified URL used to access
-	// your tt-rss instance over the net, such as: https://example.com/tt-rss/
-	// if your tt-rss instance is behind a reverse proxy, use external URL.
-	// tt-rss will likely help you pick correct value for this on startup
 
+	/** operate in single user mode, disables all functionality related to
+	 * multiple users and authentication. enabling this assumes you have
+	 * your tt-rss directory protected by other means (e.g. http auth). */
 	const SINGLE_USER_MODE = "SINGLE_USER_MODE";
-	// operate in single user mode, disables all functionality related to
-	// multiple users and authentication. enabling this assumes you have
-	// your tt-rss directory protected by other means (e.g. http auth).
 
+	/** enables fallback update mode where tt-rss tries to update feeds in
+	 * background while tt-rss is open in your browser.
+	 * if you don't have a lot of feeds and don't want to or can't run
+	 * background processes while not running tt-rss, this method is generally
+	 * viable to keep your feeds up to date. */
 	const SIMPLE_UPDATE_MODE = "SIMPLE_UPDATE_MODE";
-	// enables fallback update mode where tt-rss tries to update feeds in
-	// background while tt-rss is open in your browser.
-	// if you don't have a lot of feeds and don't want to or can't run
-	// background processes while not running tt-rss, this method is generally
-	// viable to keep your feeds up to date.
 
+	/** use this PHP CLI executable to start various tasks */
 	const PHP_EXECUTABLE = "PHP_EXECUTABLE";
-	// use this PHP CLI executable to start various tasks
 
+	/** base directory for lockfiles (must be writable) */
 	const LOCK_DIRECTORY = "LOCK_DIRECTORY";
-	// base directory for lockfiles (must be writable)
 
+	/** base directory for local cache (must be writable) */
 	const CACHE_DIR = "CACHE_DIR";
-	// base directory for local cache (must be writable)
 
+	/** directory for feed favicons (directory must be writable) */
 	const ICONS_DIR = "ICONS_DIR";
+
+	/** URL for feed favicons */
 	const ICONS_URL = "ICONS_URL";
-	// directory and URL for feed favicons (directory must be writable)
 
+	/** auto create users authenticated via external modules */
 	const AUTH_AUTO_CREATE = "AUTH_AUTO_CREATE";
-	// auto create users authenticated via external modules
 
+	/** auto log in users authenticated via external modules i.e. auth_remote */
 	const AUTH_AUTO_LOGIN = "AUTH_AUTO_LOGIN";
-	// auto log in users authenticated via external modules i.e. auth_remote
 
+	/** unconditinally purge all articles older than this amount, in days
+	 * overrides user-controlled purge interval */
 	const FORCE_ARTICLE_PURGE = "FORCE_ARTICLE_PURGE";
-	// unconditinally purge all articles older than this amount, in days
-	// overrides user-controlled purge interval
 
+	/** default lifetime of a session (e.g. login) cookie. In seconds,
+	 * 0 means cookie will be deleted when browser closes. */
 	const SESSION_COOKIE_LIFETIME = "SESSION_COOKIE_LIFETIME";
-	// default lifetime of a session (e.g. login) cookie. In seconds,
-	// 0 means cookie will be deleted when browser closes.
 
+	/** send email using this name */
 	const SMTP_FROM_NAME = "SMTP_FROM_NAME";
+
+	/** send email using this address */
 	const SMTP_FROM_ADDRESS = "SMTP_FROM_ADDRESS";
-	// send email using this name and address
 
+	/** default subject for email digest */
 	const DIGEST_SUBJECT = "DIGEST_SUBJECT";
-	// default subject for email digest
 
+	/** enable built-in update checker, both for core code and plugins (using git) */
 	const CHECK_FOR_UPDATES = "CHECK_FOR_UPDATES";
-	// enable built-in update checker, both for core code and plugins (using git)
 
+	/** system plugins enabled for all users, comma separated list, no quotes
+	 * keep at least one auth module in there (i.e. auth_internal) */
 	const PLUGINS = "PLUGINS";
-	// system plugins enabled for all users, comma separated list, no quotes
-	// keep at least one auth module in there (i.e. auth_internal)
 
+	/** available options: sql (default, event log), syslog, stdout (for debugging) */
 	const LOG_DESTINATION = "LOG_DESTINATION";
-	// available options: sql (default, event log), syslog, stdout (for debugging)
 
+	/** link this stylesheet on all pages (if it exists), should be placed in themes.local */
 	const LOCAL_OVERRIDE_STYLESHEET = "LOCAL_OVERRIDE_STYLESHEET";
-	// link this stylesheet on all pages (if it exists), should be placed in themes.local
 
+	/** same but this javascript file (you can use that for polyfills), should be placed in themes.local */
 	const LOCAL_OVERRIDE_JS = "LOCAL_OVERRIDE_JS";
-	// same but this javascript file (you can use that for polyfills), should be placed in themes.local
 
+	/** in seconds, terminate update tasks that ran longer than this interval */
 	const DAEMON_MAX_CHILD_RUNTIME = "DAEMON_MAX_CHILD_RUNTIME";
-	// in seconds, terminate update tasks that ran longer than this interval
 
+	/** max concurrent update jobs forking update daemon starts */
 	const DAEMON_MAX_JOBS = "DAEMON_MAX_JOBS";
-	// max concurrent update jobs forking update daemon starts
 
+	/** How long to wait for response when requesting feed from a site (seconds)  */
 	const FEED_FETCH_TIMEOUT = "FEED_FETCH_TIMEOUT";
-	// How long to wait for response when requesting feed from a site (seconds)
 
+	/** How long to wait for response when requesting uncached feed from a site (seconds)  */
 	const FEED_FETCH_NO_CACHE_TIMEOUT = "FEED_FETCH_NO_CACHE_TIMEOUT";
-	// Same but not cached
 
+	/** Default timeout when fetching files from remote sites */
 	const FILE_FETCH_TIMEOUT = "FILE_FETCH_TIMEOUT";
-	// Default timeout when fetching files from remote sites
 
+	/** How long to wait for initial response from website when fetching remote files */
 	const FILE_FETCH_CONNECT_TIMEOUT = "FILE_FETCH_CONNECT_TIMEOUT";
-	// How long to wait for initial response from website when fetching files from remote sites
 
+	/** stop updating feeds if user haven't logged in for X days */
 	const DAEMON_UPDATE_LOGIN_LIMIT = "DAEMON_UPDATE_LOGIN_LIMIT";
-	// stop updating feeds if user haven't logged in for X days
 
+	/** how many feeds to update in one batch */
 	const DAEMON_FEED_LIMIT = "DAEMON_FEED_LIMIT";
-	// how many feeds to update in one batch
 
+	/** default sleep interval between feed updates (sec) */
 	const DAEMON_SLEEP_INTERVAL = "DAEMON_SLEEP_INTERVAL";
-	// default sleep interval between feed updates (sec)
 
+	/** do not cache files larger than that (bytes) */
 	const MAX_CACHE_FILE_SIZE = "MAX_CACHE_FILE_SIZE";
-	// do not cache files larger than that (bytes)
 
+	/** do not download files larger than that (bytes) */
 	const MAX_DOWNLOAD_FILE_SIZE = "MAX_DOWNLOAD_FILE_SIZE";
-	// do not download files larger than that (bytes)
 
+	/** max file size for downloaded favicons (bytes) */
 	const MAX_FAVICON_FILE_SIZE = "MAX_FAVICON_FILE_SIZE";
-	// max file size for downloaded favicons (bytes)
 
+	/** max age in days for various automatically cached (temporary) files */
 	const CACHE_MAX_DAYS = "CACHE_MAX_DAYS";
-	// max age in days for various automatically cached (temporary) files
 
+	/** max interval between forced unconditional updates for servers
+	 * not complying with http if-modified-since (seconds) */
 	const MAX_CONDITIONAL_INTERVAL = "MAX_CONDITIONAL_INTERVAL";
-	// max interval between forced unconditional updates for servers not complying with http if-modified-since (seconds)
 
+	/** automatically disable updates for feeds which failed to
+	 * update for this amount of days; 0 disables */
 	const DAEMON_UNSUCCESSFUL_DAYS_LIMIT = "DAEMON_UNSUCCESSFUL_DAYS_LIMIT";
-	// automatically disable updates for feeds which failed to
-	// update for this amount of days; 0 disables
 
+	/** log all sent emails in the event log */
 	const LOG_SENT_MAIL = "LOG_SENT_MAIL";
-	// log all sent emails in the event log
 
+	/** use HTTP proxy for requests */
 	const HTTP_PROXY = "HTTP_PROXY";
-	// use HTTP proxy for requests
 
+	/** prevent users from changing passwords */
 	const FORBID_PASSWORD_CHANGES = "FORBID_PASSWORD_CHANGES";
-	// prevent users from changing passwords
 
+	/** default session cookie name */
 	const SESSION_NAME = "SESSION_NAME";
-	// default session cookie name
 
+	/** enable plugin update checker (using git) */
 	const CHECK_FOR_PLUGIN_UPDATES = "CHECK_FOR_PLUGIN_UPDATES";
-	// enable plugin update checker (using git)
 
+	/** allow installing first party plugins using plugin installer in prefs */
 	const ENABLE_PLUGIN_INSTALLER = "ENABLE_PLUGIN_INSTALLER";
-	// allow installing first party plugins using plugin installer in prefs
 
+	/** minimum amount of seconds required between authentication attempts */
 	const AUTH_MIN_INTERVAL = "AUTH_MIN_INTERVAL";
-	// minimum amount of seconds required between authentication attempts
 
+	/** http user agent (changing this is not recommended) */
 	const HTTP_USER_AGENT = "HTTP_USER_AGENT";
-	// http user agent (changing this is not recommended)
 
-	// default values for all of the above:
+	/** default values for all global configuration options */
 	private const _DEFAULTS = [
 		Config::DB_TYPE => [ "pgsql", 									Config::T_STRING ],
 		Config::DB_HOST => [ "db", 										Config::T_STRING ],
@@ -268,11 +284,11 @@ class Config {
 		}
 	}
 
-	/* package maintainers who don't use git: if version_static.txt exists in tt-rss root
-		directory, its contents are displayed instead of git commit-based version, this could be generated
-		based on source git tree commit used when creating the package */
-
-	/**
+	/** determine tt-rss version (using git)
+	 *
+	 * package maintainers who don't use git: if version_static.txt exists in tt-rss root
+	 * directory, its contents are displayed instead of git commit-based version, this could be generated
+	 * based on source git tree commit used when creating the package
 	 * @return array<string, mixed>|string
 	 */
 	static function get_version(bool $as_string = true) {
@@ -456,7 +472,7 @@ class Config {
 
 	/* sanity check stuff */
 
-	/**
+	/** checks for mysql tables not using InnoDB (tt-rss is incompatible with MyISAM)
 	 * @return array<int, array<string, string>> A list of entries identifying tt-rss tables with bad config
 	 */
 	private static function check_mysql_tables() {

@@ -820,6 +820,10 @@ const App = {
             App.updateRuntimeInfo();
          }, 60 * 1000)
 
+		if (App.getInitParam("safe_mode") && this.isPrefs()) {
+			CommonDialogs.safeModeWarning();
+		}
+
       console.log("second stage ok");
 
    },

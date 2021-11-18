@@ -1,8 +1,14 @@
 <?php
 class Mailer {
+	// TODO: class properties can be switched to PHP typing if/when the minimum PHP_VERSION is raised to 7.4.0+
+	/** @var string */
 	private $last_error = "";
 
-	function mail($params) {
+	/**
+	 * @param array<string, mixed> $params
+	 * @return bool|int bool if the default mail function handled the request, otherwise an int as described in Mailer#mail()
+	 */
+	function mail(array $params) {
 
 		$to_name = $params["to_name"] ?? "";
 		$to_address = $params["to_address"];
@@ -25,6 +31,8 @@ class Mailer {
 		// 3. any other return value will allow cycling to the next handler and, eventually, to default mail() function
 		// 4. set error message if needed via passed Mailer instance function set_error()
 
+		$hooks_tried = 0;
+
 		foreach (PluginHost::getInstance()->get_hooks(PluginHost::HOOK_SEND_MAIL) as $p) {
 			$rc = $p->hook_send_mail($this, $params);
 
@@ -33,6 +41,8 @@ class Mailer {
 
 			if ($rc == -1)
 				return 0;
+
+			++$hooks_tried;
 		}
 
 		$headers = [ "From: $from_combined", "Content-Type: text/plain; charset=UTF-8" ];
@@ -40,18 +50,18 @@ class Mailer {
 		$rc = mail($to_combined, $subject, $message, implode("\r\n", array_merge($headers, $additional_headers)));
 
 		if (!$rc) {
-			$this->set_error(error_get_last()['message']);
+			$this->set_error(error_get_last()['message'] ?? T_sprintf("Unknown error while sending mail. Hooks tried: %d.", $hooks_tried));
 		}
 
 		return $rc;
 	}
 
-	function set_error($message) {
+	function set_error(string $message): void {
 		$this->last_error = $message;
 		user_error("Error sending mail: $message", E_USER_WARNING);
 	}
 
-	function error() {
+	function error(): string {
 		return $this->last_error;
 	}
 }

@@ -124,7 +124,7 @@
 			$handler = $reflection->newInstanceWithoutConstructor();
 		}
 
-		if ($handler && implements_interface($handler, 'IHandler')) {
+		if (implements_interface($handler, 'IHandler')) {
 			$handler->__construct($_REQUEST);
 
 			if (validate_csrf($csrf_token) || $handler->csrf_ignore($method)) {

@@ -18,7 +18,7 @@ class Af_Youtube_Embed extends Plugin {
 			"youtu.be"]);
 	}
 
-	function hook_render_enclosure($entry, $hide_images) {
+	function hook_render_enclosure($entry, $id, $rv) {
 
 		$url = $entry["content_url"];
 
@@ -32,6 +32,8 @@ class Af_Youtube_Embed extends Plugin {
 				</div>";
 
 		}
+
+		return "";
 	}
 
 	function api_version() {

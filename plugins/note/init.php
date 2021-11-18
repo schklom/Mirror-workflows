@@ -21,7 +21,7 @@ class Note extends Plugin {
 			style='cursor : pointer' title='".__('Edit article note')."'>note</i>";
 	}
 
-	function edit() {
+	function edit() : void {
 		$id = clean($_REQUEST['id']);
 
 		$sth = $this->pdo->prepare("SELECT note FROM ttrss_user_entries WHERE
@@ -49,7 +49,7 @@ class Note extends Plugin {
 		<?php
 	}
 
-	function setNote() {
+	function setNote() : void {
 		$id = (int)clean($_REQUEST["id"]);
 		$note = clean($_REQUEST["note"]);
 

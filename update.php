@@ -12,7 +12,7 @@
 
 	Config::sanity_check();
 
-	function make_stampfile($filename) {
+	function make_stampfile(string $filename): bool {
 		$fp = fopen(Config::get(Config::LOCK_DIRECTORY) . "/$filename", "w");
 
 		if (flock($fp, LOCK_EX | LOCK_NB)) {
@@ -25,7 +25,7 @@
 		}
 	}
 
-	function cleanup_tags($days = 14, $limit = 1000) {
+	function cleanup_tags(int $days = 14, int $limit = 1000): int {
 
 		$days = (int) $days;
 
@@ -97,7 +97,7 @@
 	];
 
 	foreach (PluginHost::getInstance()->get_commands() as $command => $data) {
-		$options_map[$command . $data["suffix"]] = [ $data["arghelp"] ?? "", $data["description"] ];
+		$options_map[$command . $data["suffix"]] = [ $data["arghelp"], $data["description"] ];
 	}
 
 	if (php_sapi_name() != "cli") {
@@ -108,7 +108,7 @@
 
 	$options = getopt("", array_keys($options_map));
 
-	if (count($options) == 0 || isset($options["help"]) ) {
+	if ($options === false || count($options) == 0 || isset($options["help"]) ) {
 		print "Tiny Tiny RSS CLI management tool\n";
 		print "=================================\n";
 		print "Options:\n\n";
@@ -378,7 +378,7 @@
 		Debug::log("Exporting feeds of user $user to $filename as OPML...");
 
 		if ($owner_uid = UserHelper::find_user_by_login($user)) {
-			$opml = new OPML("");
+			$opml = new OPML([]);
 
 			$rc = $opml->opml_export($filename, $owner_uid, false, true, true);
 
@@ -394,7 +394,7 @@
 		Debug::log("Importing feeds of user $user from OPML file $filename...");
 
 		if ($owner_uid = UserHelper::find_user_by_login($user)) {
-			$opml = new OPML("");
+			$opml = new OPML([]);
 
 			$rc = $opml->opml_import($owner_uid, $filename);
 

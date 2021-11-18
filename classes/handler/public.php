@@ -1,10 +1,12 @@
 <?php
 class Handler_Public extends Handler {
 
-	// $feed may be a tag
+	/**
+	 * @param string $feed may be a feed ID or tag
+	 */
 	private function generate_syndicated_feed(int $owner_uid, string $feed, bool $is_cat,
 		int $limit, int $offset, string $search, string $view_mode = "",
-		string $format = 'atom', string $order = "", string $orig_guid = "", string $start_ts = "") {
+		string $format = 'atom', string $order = "", string $orig_guid = "", string $start_ts = ""): void {
 
 		$note_style = 	"background-color : #fff7d5;
 			border-width : 1px; ".
@@ -52,11 +54,13 @@ class Handler_Public extends Handler {
 				PluginHost::feed_to_pfeed_id((int)$feed));
 
 			if ($handler) {
+				// 'get_headlines' is implemented by the plugin.
+				// @phpstan-ignore-next-line
 				$qfh_ret = $handler->get_headlines(PluginHost::feed_to_pfeed_id((int)$feed), $params);
 			} else {
 				user_error("Failed to find handler for plugin feed ID: $feed", E_USER_ERROR);
 
-				return false;
+				return;
 			}
 
 		} else {
@@ -89,11 +93,13 @@ class Handler_Public extends Handler {
 				$line["content_preview"] = Sanitizer::sanitize(truncate_string(strip_tags($line["content"]), 100, '...'));
 				$line["tags"] = Article::_get_tags($line["id"], $owner_uid);
 
+				$max_excerpt_length = 250;
+
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_QUERY_HEADLINES,
 					function ($result) use (&$line) {
 						$line = $result;
 					},
-					$line);
+					$line, $max_excerpt_length);
 
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_ARTICLE_EXPORT_FEED,
 					function ($result) use (&$line) {
@@ -109,7 +115,7 @@ class Handler_Public extends Handler {
 				$tpl->setVariable('ARTICLE_EXCERPT', $line["content_preview"], true);
 
 				$content = Sanitizer::sanitize($line["content"], false, $owner_uid,
-					$feed_site_url, false, $line["id"]);
+					$feed_site_url, null, $line["id"]);
 
 				$content = DiskCache::rewrite_urls($content);
 
@@ -207,7 +213,7 @@ class Handler_Public extends Handler {
 				$article['link']	= $line['link'];
 				$article['title'] = $line['title'];
 				$article['excerpt'] = $line["content_preview"];
-				$article['content'] = Sanitizer::sanitize($line["content"], false, $owner_uid, $feed_site_url, false, $line["id"]);
+				$article['content'] = Sanitizer::sanitize($line["content"], false, $owner_uid, $feed_site_url, null, $line["id"]);
 				$article['updated'] = date('c', strtotime($line["updated"]));
 
 				if (!empty($line['note'])) $article['note'] = $line['note'];
@@ -247,7 +253,7 @@ class Handler_Public extends Handler {
 		}
 	}
 
-	function getUnread() {
+	function getUnread(): void {
 		$login = clean($_REQUEST["login"]);
 		$fresh = clean($_REQUEST["fresh"]) == "1";
 
@@ -265,7 +271,7 @@ class Handler_Public extends Handler {
 		}
 	}
 
-	function getProfiles() {
+	function getProfiles(): void {
 		$login = clean($_REQUEST["login"]);
 		$rv = [];
 
@@ -288,7 +294,7 @@ class Handler_Public extends Handler {
 		print json_encode($rv);
 	}
 
-	function logout() {
+	function logout(): void {
 		if (validate_csrf($_POST["csrf_token"])) {
 			UserHelper::logout();
 			header("Location: index.php");
@@ -298,7 +304,7 @@ class Handler_Public extends Handler {
 		}
 	}
 
-	function rss() {
+	function rss(): void {
 		$feed = clean($_REQUEST["id"]);
 		$key = clean($_REQUEST["key"]);
 		$is_cat = clean($_REQUEST["is_cat"] ?? false);
@@ -333,21 +339,21 @@ class Handler_Public extends Handler {
 		header('HTTP/1.1 403 Forbidden');
 	}
 
-	function updateTask() {
+	function updateTask(): void {
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK);
 	}
 
-	function housekeepingTask() {
+	function housekeepingTask(): void {
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_HOUSE_KEEPING);
 	}
 
-	function globalUpdateFeeds() {
+	function globalUpdateFeeds(): void {
 		RPC::updaterandomfeed_real();
 
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK);
 	}
 
-	function login() {
+	function login(): void {
 		if (!Config::get(Config::SINGLE_USER_MODE)) {
 
 			$login = clean($_POST["login"]);
@@ -403,12 +409,12 @@ class Handler_Public extends Handler {
 		}
 	}
 
-	function index() {
+	function index(): void {
 		header("Content-Type: text/plain");
 		print Errors::to_json(Errors::E_UNKNOWN_METHOD);
 	}
 
-	function forgotpass() {
+	function forgotpass(): void {
 		startup_gettext();
 		session_start();
 
@@ -587,7 +593,7 @@ class Handler_Public extends Handler {
 		print "</html>";
 	}
 
-	function dbupdate() {
+	function dbupdate(): void {
 		startup_gettext();
 
 		if (!Config::get(Config::SINGLE_USER_MODE) && ($_SESSION["access_level"] ?? 0) < 10) {
@@ -730,7 +736,7 @@ class Handler_Public extends Handler {
 		<?php
 	}
 
-	function cached() {
+	function cached(): void {
 		list ($cache_dir, $filename) = explode("/", $_GET["file"], 2);
 
 		// we do not allow files with extensions at the moment
@@ -746,7 +752,7 @@ class Handler_Public extends Handler {
 		}
 	}
 
-	private function _make_article_tag_uri($id, $timestamp) {
+	private function _make_article_tag_uri(int $id, string $timestamp): string {
 
 		$timestamp = date("Y-m-d", strtotime($timestamp));
 
@@ -756,7 +762,7 @@ class Handler_Public extends Handler {
 	// this should be used very carefully because this endpoint is exposed to unauthenticated users
 	// plugin data is not loaded because there's no user context and owner_uid/session may or may not be available
 	// in general, don't do anything user-related in here and do not modify $_SESSION
-	public function pluginhandler() {
+	public function pluginhandler(): void {
 		$host = new PluginHost();
 
 		$plugin_name = basename(clean($_REQUEST["plugin"]));
@@ -788,7 +794,7 @@ class Handler_Public extends Handler {
 		}
 	}
 
-	static function _render_login_form(string $return_to = "") {
+	static function _render_login_form(string $return_to = ""): void {
 		header('Cache-Control: public');
 
 		if ($return_to)

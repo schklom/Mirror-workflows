@@ -1,19 +1,35 @@
 <?php
 class FeedParser {
+
+	/** @var DOMDocument */
 	private $doc;
-	private $error;
-	private $libxml_errors = array();
-	private $items;
+
+	/** @var string|null */
+	private $error = null;
+
+	/** @var array<string> */
+	private $libxml_errors = [];
+
+	/** @var array<FeedItem> */
+	private $items = [];
+
+	/** @var string|null */
 	private $link;
+
+	/** @var string|null */
 	private $title;
+
+	/** @var FeedParser::FEED_*|null */
 	private $type;
+
+	/** @var DOMXPath|null */
 	private $xpath;
 
 	const FEED_RDF = 0;
 	const FEED_RSS = 1;
 	const FEED_ATOM = 2;
 
-	function __construct($data) {
+	function __construct(string $data) {
 		libxml_use_internal_errors(true);
 		libxml_clear_errors();
 		$this->doc = new DOMDocument();
@@ -26,18 +42,18 @@ class FeedParser {
 		if ($error) {
 			foreach (libxml_get_errors() as $error) {
 				if ($error->level == LIBXML_ERR_FATAL) {
-					if(!isset($this->error)) //currently only the first error is reported
+					// currently only the first error is reported
+					if (!isset($this->error)) {
 						$this->error = $this->format_error($error);
-					$this->libxml_errors [] = $this->format_error($error);
+					}
+					$this->libxml_errors[] = $this->format_error($error);
 				}
 			}
 		}
 		libxml_clear_errors();
-
-		$this->items = array();
 	}
 
-	function init() {
+	function init() : void {
 		$root = $this->doc->firstChild;
 		$xpath = new DOMXPath($this->doc);
 		$xpath->registerNamespace('atom', 'http://www.w3.org/2005/Atom');
@@ -51,10 +67,12 @@ class FeedParser {
 
 		$this->xpath = $xpath;
 
-		$root = $xpath->query("(//atom03:feed|//atom:feed|//channel|//rdf:rdf|//rdf:RDF)");
+		$root_list = $xpath->query("(//atom03:feed|//atom:feed|//channel|//rdf:rdf|//rdf:RDF)");
 
-		if (!empty($root) && $root->length > 0) {
-			$root = $root->item(0);
+		if (!empty($root_list) && $root_list->length > 0) {
+
+			/** @var DOMElement|null $root */
+			$root = $root_list->item(0);
 
 			if ($root) {
 				switch (mb_strtolower($root->tagName)) {
@@ -69,7 +87,7 @@ class FeedParser {
 					$this->type = $this::FEED_ATOM;
 					break;
 				default:
-					if( !isset($this->error) ){
+					if (!isset($this->error)) {
 						$this->error = "Unknown/unsupported feed type";
 					}
 					return;
@@ -100,6 +118,7 @@ class FeedParser {
 				if (!$link)
 					$link = $xpath->query("//atom03:feed/atom03:link[@rel='alternate']")->item(0);
 
+				/** @var DOMElement|null $link */
 				if ($link && $link->hasAttributes()) {
 					$this->link = $link->getAttribute("href");
 				}
@@ -121,6 +140,7 @@ class FeedParser {
 					$this->title = $title->nodeValue;
 				}
 
+				/** @var DOMElement|null $link */
 				$link = $xpath->query("//channel/link")->item(0);
 
 				if ($link) {
@@ -166,46 +186,44 @@ class FeedParser {
 			if ($this->link) $this->link = trim($this->link);
 
 		} else {
-			if( !isset($this->error) ){
+			if (!isset($this->error)) {
 				$this->error = "Unknown/unsupported feed type";
 			}
 			return;
 		}
 	}
 
-	function format_error($error) {
-		if ($error) {
-			return sprintf("LibXML error %s at line %d (column %d): %s",
-				$error->code, $error->line, $error->column,
-				$error->message);
-		} else {
-			return "";
-		}
+	function format_error(LibXMLError $error) : string {
+		return sprintf("LibXML error %s at line %d (column %d): %s",
+			$error->code, $error->line, $error->column,
+			$error->message);
 	}
 
 	// libxml may have invalid unicode data in error messages
-	function error() {
+	function error() : string {
 		return UConverter::transcode($this->error, 'UTF-8', 'UTF-8');
 	}
 
-	// WARNING: may return invalid unicode data
-	function errors() {
+	/** @return array<string> - WARNING: may return invalid unicode data */
+	function errors() : array {
 		return $this->libxml_errors;
 	}
 
-	function get_link() {
-		return clean($this->link);
+	function get_link() : string {
+		return clean($this->link ?? '');
 	}
 
-	function get_title() {
-		return clean($this->title);
+	function get_title() : string {
+		return clean($this->title ?? '');
 	}
 
-	function get_items() {
+	/** @return array<FeedItem> */
+	function get_items() : array {
 		return $this->items;
 	}
 
-	function get_links($rel) {
+	/** @return array<string> */
+	function get_links(string $rel) : array {
 		$rv = array();
 
 		switch ($this->type) {

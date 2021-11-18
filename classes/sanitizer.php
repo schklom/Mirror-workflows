@@ -1,6 +1,10 @@
 <?php
 class Sanitizer {
-	private static function strip_harmful_tags($doc, $allowed_elements, $disallowed_attributes) {
+	/**
+	 * @param array<int, string> $allowed_elements
+	 * @param array<int, string> $disallowed_attributes
+	 */
+	private static function strip_harmful_tags(DOMDocument $doc, array $allowed_elements, $disallowed_attributes): DOMDocument {
 		$xpath = new DOMXPath($doc);
 		$entries = $xpath->query('//*');
 
@@ -40,7 +44,7 @@ class Sanitizer {
 		return $doc;
 	}
 
-	public static function iframe_whitelisted($entry) {
+	public static function iframe_whitelisted(DOMElement $entry): bool {
 		$src = parse_url($entry->getAttribute("src"), PHP_URL_HOST);
 
 		if (!empty($src))
@@ -49,11 +53,16 @@ class Sanitizer {
 		return false;
 	}
 
-	private static function is_prefix_https() {
+	private static function is_prefix_https(): bool {
 		return parse_url(Config::get(Config::SELF_URL_PATH), PHP_URL_SCHEME) == 'https';
 	}
 
-	public static function sanitize($str, $force_remove_images = false, $owner = false, $site_url = false, $highlight_words = false, $article_id = false) {
+	/**
+	 * @param array<int, string>|null $highlight_words Words to highlight in the HTML output.
+	 *
+	 * @return false|string The HTML, or false if an error occurred.
+	 */
+	public static function sanitize(string $str, bool $force_remove_images = false, int $owner = null, string $site_url = null, array $highlight_words = null, int $article_id = null) {
 
 		if (!$owner && isset($_SESSION["uid"]))
 			$owner = $_SESSION["uid"];
@@ -183,7 +192,7 @@ class Sanitizer {
 			$div->appendChild($entry);
 		}
 
-		if ($highlight_words && is_array($highlight_words)) {
+		if (is_array($highlight_words)) {
 			foreach ($highlight_words as $word) {
 
 				// http://stackoverflow.com/questions/4081372/highlight-keywords-in-a-paragraph

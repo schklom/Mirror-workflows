@@ -2,11 +2,20 @@
 use chillerlan\QRCode;
 
 class Pref_Prefs extends Handler_Protected {
-
+	// TODO: class properties can be switched to PHP typing if/when the minimum PHP_VERSION is raised to 7.4.0+
+	/** @var array<Prefs::*, array<int, string>> */
 	private $pref_help = [];
+
+	/** @var array<string, array<int, string>> pref items are Prefs::*|Pref_Prefs::BLOCK_SEPARATOR (PHPStan was complaining) */
 	private $pref_item_map = [];
+
+	/** @var array<string, string> */
 	private $pref_help_bottom = [];
+
+	/** @var array<int, string> */
 	private $pref_blacklist = [];
+
+	private const BLOCK_SEPARATOR = 'BLOCK_SEPARATOR';
 
 	const PI_RES_ALREADY_INSTALLED = "PI_RES_ALREADY_INSTALLED";
 	const PI_RES_SUCCESS = "PI_RES_SUCCESS";
@@ -17,7 +26,8 @@ class Pref_Prefs extends Handler_Protected {
 	const PI_ERR_PLUGIN_NOT_FOUND = "PI_ERR_PLUGIN_NOT_FOUND";
 	const PI_ERR_NO_WORKDIR = "PI_ERR_NO_WORKDIR";
 
-	function csrf_ignore($method) {
+	/** @param string $method */
+	function csrf_ignore($method) : bool {
 		$csrf_ignored = array("index", "updateself", "otpqrcode");
 
 		return array_search($method, $csrf_ignored) !== false;
@@ -30,35 +40,35 @@ class Pref_Prefs extends Handler_Protected {
 			__('General') => [
 				Prefs::USER_LANGUAGE,
 				Prefs::USER_TIMEZONE,
-				'BLOCK_SEPARATOR',
+				self::BLOCK_SEPARATOR,
 				Prefs::USER_CSS_THEME,
-				'BLOCK_SEPARATOR',
+				self::BLOCK_SEPARATOR,
 				Prefs::ENABLE_API_ACCESS,
 			],
 			__('Feeds') => [
 				Prefs::DEFAULT_UPDATE_INTERVAL,
 				Prefs::FRESH_ARTICLE_MAX_AGE,
 				Prefs::DEFAULT_SEARCH_LANGUAGE,
-				'BLOCK_SEPARATOR',
+				self::BLOCK_SEPARATOR,
 				Prefs::ENABLE_FEED_CATS,
-				'BLOCK_SEPARATOR',
+				self::BLOCK_SEPARATOR,
 				Prefs::CONFIRM_FEED_CATCHUP,
 				Prefs::ON_CATCHUP_SHOW_NEXT_FEED,
-				'BLOCK_SEPARATOR',
+				self::BLOCK_SEPARATOR,
 				Prefs::HIDE_READ_FEEDS,
 				Prefs::HIDE_READ_SHOWS_SPECIAL,
 			],
 			__('Articles') => [
 				Prefs::PURGE_OLD_DAYS,
 				Prefs::PURGE_UNREAD_ARTICLES,
-				'BLOCK_SEPARATOR',
+				self::BLOCK_SEPARATOR,
 				Prefs::COMBINED_DISPLAY_MODE,
 				Prefs::CDM_EXPANDED,
 				Prefs::CDM_ENABLE_GRID,
-				'BLOCK_SEPARATOR',
+				self::BLOCK_SEPARATOR,
 				Prefs::CDM_AUTO_CATCHUP,
 				Prefs::VFEED_GROUP_BY_FEED,
-				'BLOCK_SEPARATOR',
+				self::BLOCK_SEPARATOR,
 				Prefs::SHOW_CONTENT_PREVIEW,
 				Prefs::STRIP_IMAGES,
 			],
@@ -69,12 +79,12 @@ class Pref_Prefs extends Handler_Protected {
 			],
 			__('Advanced') => [
 				Prefs::BLACKLISTED_TAGS,
-				'BLOCK_SEPARATOR',
+				self::BLOCK_SEPARATOR,
 				Prefs::LONG_DATE_FORMAT,
 				Prefs::SHORT_DATE_FORMAT,
-				'BLOCK_SEPARATOR',
+				self::BLOCK_SEPARATOR,
 				Prefs::SSL_CERT_SERIAL,
-				'BLOCK_SEPARATOR',
+				self::BLOCK_SEPARATOR,
 				Prefs::DISABLE_CONDITIONAL_COUNTERS,
 				Prefs::HEADLINES_NO_DISTINCT,
 			],
@@ -127,7 +137,7 @@ class Pref_Prefs extends Handler_Protected {
 		];
 	}
 
-	function changepassword() {
+	function changepassword(): void {
 
 		if (Config::get(Config::FORBID_PASSWORD_CHANGES)) {
 			print "ERROR: ".format_error("Access forbidden.");
@@ -173,7 +183,7 @@ class Pref_Prefs extends Handler_Protected {
 		}
 	}
 
-	function saveconfig() {
+	function saveconfig(): void {
 		$boolean_prefs = explode(",", clean($_POST["boolean_prefs"]));
 
 		foreach ($boolean_prefs as $pref) {
@@ -223,7 +233,7 @@ class Pref_Prefs extends Handler_Protected {
 		}
 	}
 
-	function changePersonalData() {
+	function changePersonalData(): void {
 
 		$user = ORM::for_table('ttrss_users')->find_one($_SESSION['uid']);
 		$new_email = clean($_POST['email']);
@@ -264,13 +274,13 @@ class Pref_Prefs extends Handler_Protected {
 		print __("Your personal data has been saved.");
 	}
 
-	function resetconfig() {
+	function resetconfig(): void {
 		Prefs::reset($_SESSION["uid"], $_SESSION["profile"]);
 
 		print "PREFS_NEED_RELOAD";
 	}
 
-	private function index_auth_personal() {
+	private function index_auth_personal(): void {
 
 		$user = ORM::for_table('ttrss_users')->find_one($_SESSION['uid']);
 
@@ -310,7 +320,7 @@ class Pref_Prefs extends Handler_Protected {
 		<?php
 	}
 
-	private function index_auth_password() {
+	private function index_auth_password(): void {
 		if ($_SESSION["auth_module"]) {
 			$authenticator = PluginHost::getInstance()->get_plugin($_SESSION["auth_module"]);
 		} else {
@@ -385,7 +395,7 @@ class Pref_Prefs extends Handler_Protected {
 		}
 	}
 
-	private function index_auth_app_passwords() {
+	private function index_auth_app_passwords(): void {
 		print_notice("Separate passwords used for API clients. Required if you enable OTP.");
 		?>
 
@@ -409,7 +419,7 @@ class Pref_Prefs extends Handler_Protected {
 		<?php
 	}
 
-	private function index_auth_2fa() {
+	private function index_auth_2fa(): void {
 		$otp_enabled = UserHelper::is_otp_enabled($_SESSION["uid"]);
 
 		if ($_SESSION["auth_module"] == "auth_internal") {
@@ -515,7 +525,7 @@ class Pref_Prefs extends Handler_Protected {
 		}
 	}
 
-	function index_auth() {
+	function index_auth(): void {
 		?>
 		<div dojoType='dijit.layout.TabContainer'>
 			<div dojoType='dijit.layout.ContentPane' title="<?= __('Personal data') ?>">
@@ -534,35 +544,38 @@ class Pref_Prefs extends Handler_Protected {
 		<?php
 	}
 
-	private function index_prefs_list() {
+	private function index_prefs_list(): void {
 		$profile = $_SESSION["profile"] ?? null;
 
 		if ($profile) {
 			print_notice(__("Some preferences are only available in default profile."));
 		}
 
+		/** @var array<string, array{'type_hint': Config::T_*, 'value': bool|int|string, 'help_text': string, 'short_desc': string}> */
 		$prefs_available = [];
+
+		/** @var array<int, string> */
 		$listed_boolean_prefs = [];
 
-		foreach (Prefs::get_all($_SESSION["uid"], $profile) as $line) {
+		foreach (Prefs::get_all($_SESSION["uid"], $profile) as $pref) {
 
-			if (in_array($line["pref_name"], $this->pref_blacklist)) {
+			if (in_array($pref["pref_name"], $this->pref_blacklist)) {
 				continue;
 			}
 
-			if ($profile && in_array($line["pref_name"], Prefs::_PROFILE_BLACKLIST)) {
+			if ($profile && in_array($pref["pref_name"], Prefs::_PROFILE_BLACKLIST)) {
 				continue;
 			}
 
-			$pref_name = $line["pref_name"];
+			$pref_name = $pref["pref_name"];
 			$short_desc = $this->_get_short_desc($pref_name);
 
 			if (!$short_desc)
 				continue;
 
 			$prefs_available[$pref_name] = [
-				'type_hint' => $line['type_hint'],
-				'value' => $line['value'],
+				'type_hint' => $pref['type_hint'],
+				'value' => $pref['value'],
 				'help_text' => $this->_get_help_text($pref_name),
 				'short_desc' => $short_desc
 			];
@@ -574,12 +587,12 @@ class Pref_Prefs extends Handler_Protected {
 
 			foreach ($this->pref_item_map[$section] as $pref_name) {
 
-				if ($pref_name == 'BLOCK_SEPARATOR' && !$profile) {
+				if ($pref_name == self::BLOCK_SEPARATOR && !$profile) {
 					print "<hr/>";
 					continue;
 				}
 
-				if ($pref_name == "DEFAULT_SEARCH_LANGUAGE" && Config::get(Config::DB_TYPE) != "pgsql") {
+				if ($pref_name == Prefs::DEFAULT_SEARCH_LANGUAGE && Config::get(Config::DB_TYPE) != "pgsql") {
 					continue;
 				}
 
@@ -596,17 +609,17 @@ class Pref_Prefs extends Handler_Protected {
 					$value = $item['value'];
 					$type_hint = $item['type_hint'];
 
-					if ($pref_name == "USER_LANGUAGE") {
+					if ($pref_name == Prefs::USER_LANGUAGE) {
 						print \Controls\select_hash($pref_name, $value, get_translations(),
 							["style" => 'width : 220px; margin : 0px']);
 
-					} else if ($pref_name == "USER_TIMEZONE") {
+					} else if ($pref_name == Prefs::USER_TIMEZONE) {
 
 						$timezones = explode("\n", file_get_contents("lib/timezones.txt"));
 
 						print \Controls\select_tag($pref_name, $value, $timezones, ["dojoType" => "dijit.form.FilteringSelect"]);
 
-					} else if ($pref_name == "BLACKLISTED_TAGS") { # TODO: other possible <textarea> prefs go here
+					} else if ($pref_name == Prefs::BLACKLISTED_TAGS) { # TODO: other possible <textarea> prefs go here
 
 						print "<div>";
 
@@ -618,7 +631,7 @@ class Pref_Prefs extends Handler_Protected {
 
 						print "</div>";
 
-					} else if ($pref_name == "USER_CSS_THEME") {
+					} else if ($pref_name == Prefs::USER_CSS_THEME) {
 
 						$theme_files = array_map("basename",
 							array_merge(glob("themes/*.php"),
@@ -642,13 +655,13 @@ class Pref_Prefs extends Handler_Protected {
 
 						<?php
 
-					} else if ($pref_name == "DEFAULT_UPDATE_INTERVAL") {
+					} else if ($pref_name == Prefs::DEFAULT_UPDATE_INTERVAL) {
 
 						global $update_intervals_nodefault;
 
 						print \Controls\select_hash($pref_name, $value, $update_intervals_nodefault);
 
-					} else if ($pref_name == "DEFAULT_SEARCH_LANGUAGE") {
+					} else if ($pref_name == Prefs::DEFAULT_SEARCH_LANGUAGE) {
 
 						print \Controls\select_tag($pref_name, $value, Pref_Feeds::get_ts_languages());
 
@@ -656,7 +669,7 @@ class Pref_Prefs extends Handler_Protected {
 
 						array_push($listed_boolean_prefs, $pref_name);
 
-						if ($pref_name == "PURGE_UNREAD_ARTICLES" && Config::get(Config::FORCE_ARTICLE_PURGE) != 0) {
+						if ($pref_name == Prefs::PURGE_UNREAD_ARTICLES && Config::get(Config::FORCE_ARTICLE_PURGE) != 0) {
 							$is_disabled = true;
 							$is_checked = true;
 						} else {
@@ -672,10 +685,10 @@ class Pref_Prefs extends Handler_Protected {
 								['onclick' => 'Helpers.Digest.preview()', 'style' => 'margin-left : 10px']);
 						}
 
-					} else if (in_array($pref_name, ['FRESH_ARTICLE_MAX_AGE',
-							'PURGE_OLD_DAYS', 'LONG_DATE_FORMAT', 'SHORT_DATE_FORMAT'])) {
+					} else if (in_array($pref_name, [Prefs::FRESH_ARTICLE_MAX_AGE,
+							Prefs::PURGE_OLD_DAYS, Prefs::LONG_DATE_FORMAT, Prefs::SHORT_DATE_FORMAT])) {
 
-						if ($pref_name == "PURGE_OLD_DAYS" && Config::get(Config::FORCE_ARTICLE_PURGE) != 0) {
+						if ($pref_name == Prefs::PURGE_OLD_DAYS && Config::get(Config::FORCE_ARTICLE_PURGE) != 0) {
 							$attributes = ["disabled" => true, "required" => true];
 							$value = Config::get(Config::FORCE_ARTICLE_PURGE);
 						} else {
@@ -687,7 +700,7 @@ class Pref_Prefs extends Handler_Protected {
 						else
 							print \Controls\input_tag($pref_name, $value, "text", $attributes);
 
-					} else if ($pref_name == "SSL_CERT_SERIAL") {
+					} else if ($pref_name == Prefs::SSL_CERT_SERIAL) {
 
 						print \Controls\input_tag($pref_name, $value, "text", ["readonly" => true], "SSL_CERT_SERIAL");
 
@@ -727,7 +740,7 @@ class Pref_Prefs extends Handler_Protected {
 		print \Controls\hidden_tag("boolean_prefs", htmlspecialchars(join(",", $listed_boolean_prefs)));
 	}
 
-	private function index_prefs() {
+	private function index_prefs(): void {
 		?>
 		<form dojoType='dijit.form.Form' id='changeSettingsForm'>
 			<?= \Controls\hidden_tag("op", "pref-prefs") ?>
@@ -783,7 +796,7 @@ class Pref_Prefs extends Handler_Protected {
 		<?php
 	}
 
-	function getPluginsList() {
+	function getPluginsList(): void {
 		$system_enabled = array_map("trim", explode(",", (string)Config::get(Config::PLUGINS)));
 		$user_enabled = array_map("trim", explode(",", get_pref(Prefs::_ENABLED_PLUGINS)));
 
@@ -816,7 +829,7 @@ class Pref_Prefs extends Handler_Protected {
 		print json_encode(['plugins' => $rv, 'is_admin' => $_SESSION['access_level'] >= UserHelper::ACCESS_LEVEL_ADMIN]);
 	}
 
-	function index_plugins() {
+	function index_plugins(): void {
 		?>
 		<form dojoType="dijit.form.Form" id="changePluginsForm">
 
@@ -912,7 +925,7 @@ class Pref_Prefs extends Handler_Protected {
 		<?php
 	}
 
-	function index() {
+	function index(): void {
 		?>
 			<div dojoType='dijit.layout.AccordionContainer' region='center'>
 				<div dojoType='dijit.layout.AccordionPane' title="<i class='material-icons'>person</i> <?= __('Personal data / Authentication')?>">
@@ -937,7 +950,7 @@ class Pref_Prefs extends Handler_Protected {
 		<?php
 	}
 
-	function _get_otp_qrcode_img() {
+	function _get_otp_qrcode_img(): ?string {
 		$secret = UserHelper::get_otp_secret($_SESSION["uid"]);
 		$login = UserHelper::get_login_by_id($_SESSION["uid"]);
 
@@ -949,15 +962,16 @@ class Pref_Prefs extends Handler_Protected {
 			return $qrcode->render($otpurl);
 		}
 
-		return false;
+		return null;
 	}
 
-	function otpenable() {
+	function otpenable(): void {
 		$password = clean($_REQUEST["password"]);
 		$otp_check = clean($_REQUEST["otp"]);
 
 		$authenticator = PluginHost::getInstance()->get_plugin($_SESSION["auth_module"]);
 
+		/** @var Auth_Internal|false $authenticator -- this is only here to make check_password() visible to static analyzer */
 		if ($authenticator->check_password($_SESSION["uid"], $password)) {
 			if (UserHelper::enable_otp($_SESSION["uid"], $otp_check)) {
 				print "OK";
@@ -969,9 +983,10 @@ class Pref_Prefs extends Handler_Protected {
 		}
 	}
 
-	function otpdisable() {
+	function otpdisable(): void {
 		$password = clean($_REQUEST["password"]);
 
+		/** @var Auth_Internal|false $authenticator -- this is only here to make check_password() visible to static analyzer */
 		$authenticator = PluginHost::getInstance()->get_plugin($_SESSION["auth_module"]);
 
 		if ($authenticator->check_password($_SESSION["uid"], $password)) {
@@ -1008,38 +1023,42 @@ class Pref_Prefs extends Handler_Protected {
 
 	}
 
-	function setplugins() {
+	function setplugins(): void {
 		$plugins = array_filter($_REQUEST["plugins"], 'clean') ?? [];
 
 		set_pref(Prefs::_ENABLED_PLUGINS, implode(",", $plugins));
 	}
 
-	function _get_plugin_version(Plugin $plugin) {
+	function _get_plugin_version(Plugin $plugin): string {
 		$about = $plugin->about();
 
 		if (!empty($about[0])) {
 			return T_sprintf("v%.2f, by %s", $about[0], $about[2]);
-		} else {
-			$ref = new ReflectionClass(get_class($plugin));
-
-			$plugin_dir = dirname($ref->getFileName());
-
-			if (basename($plugin_dir) == "plugins") {
-				return "";
-			}
-
-			if (is_dir("$plugin_dir/.git")) {
-				$ver = Config::get_version_from_git($plugin_dir);
-
-				return $ver["status"] == 0 ? T_sprintf("v%s, by %s", $ver["version"], $about[2]) : $ver["version"];
-			}
 		}
+
+		$ref = new ReflectionClass(get_class($plugin));
+
+		$plugin_dir = dirname($ref->getFileName());
+
+		if (basename($plugin_dir) == "plugins") {
+			return "";
+		}
+
+		if (is_dir("$plugin_dir/.git")) {
+			$ver = Config::get_version_from_git($plugin_dir);
+
+			return $ver["status"] == 0 ? T_sprintf("v%s, by %s", $ver["version"], $about[2]) : $ver["version"];
+		}
+
+		return "";
 	}
 
-	static function _get_updated_plugins() {
+	/**
+	 * @return array<int, array{'plugin': string, 'rv': array{'stdout': false|string, 'stderr': false|string, 'git_status': int, 'need_update': bool}|null}>
+	 */
+	static function _get_updated_plugins(): array {
 		$root_dir = dirname(dirname(__DIR__)); # we're in classes/pref/
 		$plugin_dirs = array_filter(glob("$root_dir/plugins.local/*"), "is_dir");
-
 		$rv = [];
 
 		foreach ($plugin_dirs as $dir) {
@@ -1057,7 +1076,10 @@ class Pref_Prefs extends Handler_Protected {
 		return $rv;
 	}
 
-	private static function _plugin_needs_update($root_dir, $plugin_name) {
+	/**
+	 * @return array{'stdout': false|string, 'stderr': false|string, 'git_status': int, 'need_update': bool}|null
+	 */
+	private static function _plugin_needs_update(string $root_dir, string $plugin_name): ?array {
 		$plugin_dir = "$root_dir/plugins.local/" . basename($plugin_name);
 		$rv = null;
 
@@ -1086,7 +1108,10 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 
-	private function _update_plugin($root_dir, $plugin_name) {
+	/**
+	 * @return array{'stdout': false|string, 'stderr': false|string, 'git_status': int}
+	 */
+	private function _update_plugin(string $root_dir, string $plugin_name): array {
 		$plugin_dir = "$root_dir/plugins.local/" . basename($plugin_name);
 		$rv = [];
 
@@ -1112,7 +1137,7 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	// https://gist.github.com/mindplay-dk/a4aad91f5a4f1283a5e2#gistcomment-2036828
-	private function _recursive_rmdir(string $dir, bool $keep_root = false) {
+	private function _recursive_rmdir(string $dir, bool $keep_root = false): bool {
 		// Handle bad arguments.
 		if (empty($dir) || !file_exists($dir)) {
 			 return true; // No such file/dir$dir exists.
@@ -1137,7 +1162,7 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	// https://stackoverflow.com/questions/7153000/get-class-name-from-file
-	private function _get_class_name_from_file($file) {
+	private function _get_class_name_from_file(string $file): string {
 		$tokens = token_get_all(file_get_contents($file));
 
 		for ($i = 0; $i < count($tokens); $i++) {
@@ -1149,9 +1174,11 @@ class Pref_Prefs extends Handler_Protected {
 				}
 			}
 		}
+
+		return "";
 	}
 
-	function uninstallPlugin() {
+	function uninstallPlugin():  void {
 		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN) {
 			$plugin_name = basename(clean($_REQUEST['plugin']));
 			$status = 0;
@@ -1166,7 +1193,7 @@ class Pref_Prefs extends Handler_Protected {
 		}
 	}
 
-	function installPlugin() {
+	function installPlugin(): void {
 		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN && Config::get(Config::ENABLE_PLUGIN_INSTALLER)) {
 			$plugin_name = basename(clean($_REQUEST['plugin']));
 			$all_plugins = $this->_get_available_plugins();
@@ -1251,47 +1278,59 @@ class Pref_Prefs extends Handler_Protected {
 		}
 	}
 
-	private function _get_available_plugins() {
+	/**
+	 * @return array<int, array{'name': string, 'description': string, 'topics': array<int, string>, 'html_url': string, 'clone_url': string, 'last_update': string}>
+	 */
+	private function _get_available_plugins(): array {
 		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN && Config::get(Config::ENABLE_PLUGIN_INSTALLER)) {
-			return json_decode(UrlHelper::fetch(['url' => 'https://tt-rss.org/plugins.json']), true);
+			$content = json_decode(UrlHelper::fetch(['url' => 'https://tt-rss.org/plugins.json']), true);
+
+			if ($content) {
+				return $content;
+			}
 		}
+
+		return [];
 	}
-	function getAvailablePlugins() {
+
+	function getAvailablePlugins(): void {
 		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN) {
 			print json_encode($this->_get_available_plugins());
+		} else {
+			print "[]";
 		}
 	}
 
-	function checkForPluginUpdates() {
+	function checkForPluginUpdates(): void {
 		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN && Config::get(Config::CHECK_FOR_UPDATES) && Config::get(Config::CHECK_FOR_PLUGIN_UPDATES)) {
 			$plugin_name = $_REQUEST["name"] ?? "";
-
 			$root_dir = dirname(dirname(__DIR__)); # we're in classes/pref/
 
-			if (!empty($plugin_name)) {
-				$rv = [["plugin" => $plugin_name, "rv" => self::_plugin_needs_update($root_dir, $plugin_name)]];
-			} else {
-				$rv = self::_get_updated_plugins();
-			}
+			$rv = empty($plugin_name) ? self::_get_updated_plugins() : [
+				["plugin" => $plugin_name, "rv" => self::_plugin_needs_update($root_dir, $plugin_name)],
+			];
 
 			print json_encode($rv);
 		}
 	}
 
-	function updateLocalPlugins() {
+	function updateLocalPlugins(): void {
 		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN) {
 			$plugins = explode(",", $_REQUEST["plugins"] ?? "");
+
+			if ($plugins !== false) {
+				$plugins = array_filter($plugins, 'strlen');
+			}
 
 			# we're in classes/pref/
 			$root_dir = dirname(dirname(__DIR__));
 
 			$rv = [];
 
-			if (count($plugins) > 0) {
+			if ($plugins) {
 				foreach ($plugins as $plugin_name) {
 					array_push($rv, ["plugin" => $plugin_name, "rv" => $this->_update_plugin($root_dir, $plugin_name)]);
 				}
-			// @phpstan-ignore-next-line
 			} else {
 				$plugin_dirs = array_filter(glob("$root_dir/plugins.local/*"), "is_dir");
 
@@ -1301,7 +1340,7 @@ class Pref_Prefs extends Handler_Protected {
 
 						$test = self::_plugin_needs_update($root_dir, $plugin_name);
 
-						if (!empty($test["o"]))
+						if (!empty($test["stdout"]))
 							array_push($rv, ["plugin" => $plugin_name, "rv" => $this->_update_plugin($root_dir, $plugin_name)]);
 					}
 				}
@@ -1311,20 +1350,20 @@ class Pref_Prefs extends Handler_Protected {
 		}
 	}
 
-	function clearplugindata() {
+	function clearplugindata(): void {
 		$name = clean($_REQUEST["name"]);
 
 		PluginHost::getInstance()->clear_data(PluginHost::getInstance()->get_plugin($name));
 	}
 
-	function customizeCSS() {
+	function customizeCSS(): void {
 		$value = get_pref(Prefs::USER_STYLESHEET);
 		$value = str_replace("<br/>", "\n", $value);
 
 		print json_encode(["value" => $value]);
 	}
 
-	function activateprofile() {
+	function activateprofile(): void {
 		$id = (int) ($_REQUEST['id'] ?? 0);
 
 		$profile = ORM::for_table('ttrss_settings_profiles')
@@ -1338,7 +1377,7 @@ class Pref_Prefs extends Handler_Protected {
 		}
 	}
 
-	function cloneprofile() {
+	function cloneprofile(): void {
 		$old_profile = $_REQUEST["old_profile"] ?? 0;
 		$new_title = clean($_REQUEST["new_title"]);
 
@@ -1367,7 +1406,7 @@ class Pref_Prefs extends Handler_Protected {
 		}
 	}
 
-	function remprofiles() {
+	function remprofiles(): void {
 		$ids = $_REQUEST["ids"] ?? [];
 
 		ORM::for_table('ttrss_settings_profiles')
@@ -1377,7 +1416,7 @@ class Pref_Prefs extends Handler_Protected {
 			->delete_many();
 	}
 
-	function addprofile() {
+	function addprofile(): void {
 		$title = clean($_REQUEST["title"]);
 
 		if ($title) {
@@ -1396,7 +1435,7 @@ class Pref_Prefs extends Handler_Protected {
 		}
 	}
 
-	function saveprofile() {
+	function saveprofile(): void {
 		$id = (int)$_REQUEST["id"];
 		$title = clean($_REQUEST["value"]);
 
@@ -1413,7 +1452,7 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	// TODO: this maybe needs to be unified with Public::getProfiles()
-	function getProfiles() {
+	function getProfiles(): void {
 		$rv = [];
 
 		$profiles = ORM::for_table('ttrss_settings_profiles')
@@ -1442,21 +1481,21 @@ class Pref_Prefs extends Handler_Protected {
 		print json_encode($rv);
 	}
 
-	private function _get_short_desc($pref_name) {
+	private function _get_short_desc(string $pref_name): string {
 		if (isset($this->pref_help[$pref_name][0])) {
 			return $this->pref_help[$pref_name][0];
 		}
 		return "";
 	}
 
-	private function _get_help_text($pref_name) {
+	private function _get_help_text(string $pref_name): string {
 		if (isset($this->pref_help[$pref_name][1])) {
 			return $this->pref_help[$pref_name][1];
 		}
 		return "";
 	}
 
-	private function appPasswordList() {
+	private function appPasswordList(): void {
 		?>
 		<div dojoType='fox.Toolbar'>
 			<div dojoType='fox.form.DropDownButton'>
@@ -1506,7 +1545,7 @@ class Pref_Prefs extends Handler_Protected {
 		<?php
 	}
 
-	function deleteAppPasswords() {
+	function deleteAppPasswords(): void {
 		$passwords = ORM::for_table('ttrss_app_passwords')
 			->where('owner_uid', $_SESSION['uid'])
 			->where_in('id', $_REQUEST['ids'] ?? [])
@@ -1515,7 +1554,7 @@ class Pref_Prefs extends Handler_Protected {
 		$this->appPasswordList();
 	}
 
-	function generateAppPassword() {
+	function generateAppPassword(): void {
 		$title = clean($_REQUEST['title']);
 		$new_password = make_password(16);
 		$new_salt = UserHelper::get_salt();
@@ -1536,11 +1575,11 @@ class Pref_Prefs extends Handler_Protected {
 		$this->appPasswordList();
 	}
 
-	function previewDigest() {
+	function previewDigest(): void {
 		print json_encode(Digest::prepare_headlines_digest($_SESSION["uid"], 1, 16));
 	}
 
-	static function _get_ssl_certificate_id() {
+	static function _get_ssl_certificate_id(): string {
 		if ($_SERVER["REDIRECT_SSL_CLIENT_M_SERIAL"] ?? false) {
 			return sha1($_SERVER["REDIRECT_SSL_CLIENT_M_SERIAL"] .
 				$_SERVER["REDIRECT_SSL_CLIENT_V_START"] .
@@ -1556,7 +1595,7 @@ class Pref_Prefs extends Handler_Protected {
 		return "";
 	}
 
-	private function format_otp_secret($secret) {
+	private function format_otp_secret(string $secret): string {
 		return implode(" ", str_split($secret, 4));
 	}
 }

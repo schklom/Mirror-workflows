@@ -1,10 +1,10 @@
 <?php
 class Pref_Users extends Handler_Administrative {
-		function csrf_ignore($method) {
+		function csrf_ignore(string $method): bool {
 			return $method == "index";
 		}
 
-		function edit() {
+		function edit(): void {
 			$user = ORM::for_table('ttrss_users')
 				->select_expr("id,login,access_level,email,full_name,otp_enabled")
 				->find_one((int)$_REQUEST["id"])
@@ -20,7 +20,7 @@ class Pref_Users extends Handler_Administrative {
 			}
 		}
 
-		function userdetails() {
+		function userdetails(): void {
 			$id = (int) clean($_REQUEST["id"]);
 
 			$sth = $this->pdo->prepare("SELECT login,
@@ -103,7 +103,7 @@ class Pref_Users extends Handler_Administrative {
 
 		}
 
-		function editSave() {
+		function editSave(): void {
 			$id = (int)$_REQUEST['id'];
 			$password = clean($_REQUEST["password"]);
 			$user = ORM::for_table('ttrss_users')->find_one($id);
@@ -132,7 +132,7 @@ class Pref_Users extends Handler_Administrative {
 			}
 		}
 
-		function remove() {
+		function remove(): void {
 			$ids = explode(",", clean($_REQUEST["ids"]));
 
 			foreach ($ids as $id) {
@@ -149,7 +149,7 @@ class Pref_Users extends Handler_Administrative {
 			}
 		}
 
-		function add() {
+		function add(): void {
 			$login = clean($_REQUEST["login"]);
 
 			if (!$login) return; // no blank usernames
@@ -178,11 +178,11 @@ class Pref_Users extends Handler_Administrative {
 			}
 		}
 
-		function resetPass() {
+		function resetPass(): void {
 			UserHelper::reset_password(clean($_REQUEST["id"]));
 		}
 
-		function index() {
+		function index(): void {
 
 			global $access_level_names;
 

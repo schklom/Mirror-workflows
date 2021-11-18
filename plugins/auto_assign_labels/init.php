@@ -11,7 +11,12 @@ class Auto_Assign_Labels extends Plugin {
 		$host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
 	}
 
-	function get_all_labels_filter_format($owner_uid) {
+	/**
+	 * @param int $owner_uid
+	 * @return array<int, array<int, int|string>>
+	 * @throws PDOException
+	 */
+	private function get_all_labels_filter_format(int $owner_uid) : array {
 		$rv = array();
 
 		// TODO: use Labels::get_all()

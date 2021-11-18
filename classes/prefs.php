@@ -141,7 +141,10 @@ class Prefs {
 		Prefs::_PREFS_MIGRATED
 	];
 
+	/** @var Prefs|null */
 	private static $instance;
+
+	/** @var array<string, bool|int|string> */
 	private $cache = [];
 
 	/** @var PDO */
@@ -154,10 +157,13 @@ class Prefs {
 		return self::$instance;
 	}
 
-	static function is_valid(string $pref_name) {
+	static function is_valid(string $pref_name): bool {
 		return isset(self::_DEFAULTS[$pref_name]);
 	}
 
+	/**
+	 * @return bool|int|null|string
+	 */
 	static function get_default(string $pref_name) {
 		if (self::is_valid($pref_name))
 			return self::_DEFAULTS[$pref_name][0];
@@ -181,10 +187,16 @@ class Prefs {
 		//
 	}
 
+	/**
+	 * @return array<int, array<string, bool|int|null|string>>
+	 */
 	static function get_all(int $owner_uid, int $profile_id = null) {
 		return self::get_instance()->_get_all($owner_uid, $profile_id);
 	}
 
+	/**
+	 * @return array<int, array<string, bool|int|null|string>>
+	 */
 	private function _get_all(int $owner_uid, int $profile_id = null) {
 		$rv = [];
 
@@ -205,7 +217,7 @@ class Prefs {
 		return $rv;
 	}
 
-	private function cache_all(int $owner_uid, $profile_id = null) {
+	private function cache_all(int $owner_uid, ?int $profile_id): void {
 		if (!$profile_id) $profile_id = null;
 
 		// fill cache with defaults
@@ -232,11 +244,17 @@ class Prefs {
 		}
 	}
 
-	static function get(string $pref_name, int $owner_uid, int $profile_id = null) {
+	/**
+	 * @return bool|int|null|string
+	 */
+	static function get(string $pref_name, int $owner_uid, ?int $profile_id) {
 		return self::get_instance()->_get($pref_name, $owner_uid, $profile_id);
 	}
 
-	private function _get(string $pref_name, int $owner_uid, int $profile_id = null) {
+	/**
+	 * @return bool|int|null|string
+	 */
+	private function _get(string $pref_name, int $owner_uid, ?int $profile_id) {
 		if (isset(self::_DEFAULTS[$pref_name])) {
 			if (!$profile_id || in_array($pref_name, self::_PROFILE_BLACKLIST)) $profile_id = null;
 
@@ -274,12 +292,15 @@ class Prefs {
 		return null;
 	}
 
-	private function _is_cached(string $pref_name, int $owner_uid, int $profile_id = null) {
+	private function _is_cached(string $pref_name, int $owner_uid, ?int $profile_id): bool {
 		$cache_key = sprintf("%d/%d/%s", $owner_uid, $profile_id, $pref_name);
 		return isset($this->cache[$cache_key]);
 	}
 
-	private function _get_cache(string $pref_name, int $owner_uid, int $profile_id = null) {
+	/**
+	 * @return bool|int|null|string
+	 */
+	private function _get_cache(string $pref_name, int $owner_uid, ?int $profile_id) {
 		$cache_key = sprintf("%d/%d/%s", $owner_uid, $profile_id, $pref_name);
 
 		if (isset($this->cache[$cache_key]))
@@ -288,17 +309,23 @@ class Prefs {
 		return null;
 	}
 
-	private function _set_cache(string $pref_name, $value, int $owner_uid, int $profile_id = null) {
+	/**
+	 * @param bool|int|string $value
+	 */
+	private function _set_cache(string $pref_name, $value, int $owner_uid, ?int $profile_id): void {
 		$cache_key = sprintf("%d/%d/%s", $owner_uid, $profile_id, $pref_name);
 
 		$this->cache[$cache_key] = $value;
 	}
 
-	static function set(string $pref_name, $value, int $owner_uid, int $profile_id = null, bool $strip_tags = true) {
+	/**
+	 * @param bool|int|string $value
+	 */
+	static function set(string $pref_name, $value, int $owner_uid, ?int $profile_id, bool $strip_tags = true): bool {
 		return self::get_instance()->_set($pref_name, $value, $owner_uid, $profile_id);
 	}
 
-	private function _delete(string $pref_name, int $owner_uid, int $profile_id = null) {
+	private function _delete(string $pref_name, int $owner_uid, ?int $profile_id): bool {
 		$sth = $this->pdo->prepare("DELETE FROM ttrss_user_prefs2
 			WHERE pref_name = :name AND owner_uid = :uid AND
 				(profile = :profile OR (:profile IS NULL AND profile IS NULL))");
@@ -306,7 +333,10 @@ class Prefs {
 		return $sth->execute(["uid" => $owner_uid, "profile" => $profile_id, "name" => $pref_name ]);
 	}
 
-	private function _set(string $pref_name, $value, int $owner_uid, int $profile_id = null, bool $strip_tags = true) {
+	/**
+	 * @param bool|int|string $value
+	 */
+	private function _set(string $pref_name, $value, int $owner_uid, ?int $profile_id, bool $strip_tags = true): bool {
 		if (!$profile_id) $profile_id = null;
 
 		if ($profile_id && in_array($pref_name, self::_PROFILE_BLACKLIST))
@@ -359,7 +389,7 @@ class Prefs {
 		return false;
 	}
 
-	function migrate(int $owner_uid, int $profile_id = null) {
+	function migrate(int $owner_uid, ?int $profile_id): void {
 		if (get_schema_version() < 141)
 			return;
 
@@ -401,7 +431,7 @@ class Prefs {
 		}
 	}
 
-	static function reset(int $owner_uid, int $profile_id = null) {
+	static function reset(int $owner_uid, ?int $profile_id): void {
 		if (!$profile_id) $profile_id = null;
 
 		$sth = Db::pdo()->prepare("DELETE FROM ttrss_user_prefs2

@@ -32,7 +32,7 @@ class UserHelper {
 	/** has administrator permissions */
 	const ACCESS_LEVEL_ADMIN			= 10;
 
-	static function authenticate(string $login = null, string $password = null, bool $check_only = false, string $service = null) {
+	static function authenticate(string $login = null, string $password = null, bool $check_only = false, string $service = null): bool {
 		if (!Config::get(Config::SINGLE_USER_MODE)) {
 			$user_id = false;
 			$auth_module = false;
@@ -99,7 +99,7 @@ class UserHelper {
 		}
 	}
 
-	static function load_user_plugins(int $owner_uid, PluginHost $pluginhost = null) {
+	static function load_user_plugins(int $owner_uid, PluginHost $pluginhost = null): void {
 
 		if (!$pluginhost) $pluginhost = PluginHost::getInstance();
 
@@ -114,7 +114,7 @@ class UserHelper {
 		}
 	}
 
-	static function login_sequence() {
+	static function login_sequence(): void {
 		$pdo = Db::pdo();
 
 		if (Config::get(Config::SINGLE_USER_MODE)) {
@@ -159,7 +159,7 @@ class UserHelper {
 		}
 	}
 
-	static function print_user_stylesheet() {
+	static function print_user_stylesheet(): void {
 		$value = get_pref(Prefs::USER_STYLESHEET);
 
 		if ($value) {
@@ -170,7 +170,7 @@ class UserHelper {
 
 	}
 
-	static function get_user_ip() {
+	static function get_user_ip(): ?string {
 		foreach (["HTTP_X_REAL_IP", "REMOTE_ADDR"] as $hdr) {
 			if (isset($_SERVER[$hdr]))
 				return $_SERVER[$hdr];
@@ -179,7 +179,7 @@ class UserHelper {
 		return null;
 	}
 
-	static function get_login_by_id(int $id) {
+	static function get_login_by_id(int $id): ?string {
 		$user = ORM::for_table('ttrss_users')
 			->find_one($id);
 
@@ -189,7 +189,7 @@ class UserHelper {
 			return null;
 	}
 
-	static function find_user_by_login(string $login) {
+	static function find_user_by_login(string $login): ?int {
 		$user = ORM::for_table('ttrss_users')
 			->where('login', $login)
 			->find_one();
@@ -200,7 +200,7 @@ class UserHelper {
 			return null;
 	}
 
-	static function logout() {
+	static function logout(): void {
 		if (session_status() === PHP_SESSION_ACTIVE)
 			session_destroy();
 
@@ -211,11 +211,11 @@ class UserHelper {
 		session_commit();
 	}
 
-	static function get_salt() {
+	static function get_salt(): string {
 		return substr(bin2hex(get_random_bytes(125)), 0, 250);
 	}
 
-	static function reset_password($uid, $format_output = false, $new_password = "") {
+	static function reset_password(int $uid, bool $format_output = false, string $new_password = ""): void {
 
 		$user = ORM::for_table('ttrss_users')->find_one($uid);
 		$message = "";
@@ -298,7 +298,7 @@ class UserHelper {
 		}
 	}
 
-	static function get_otp_secret(int $owner_uid, bool $show_if_enabled = false) {
+	static function get_otp_secret(int $owner_uid, bool $show_if_enabled = false): ?string {
 		$user = ORM::for_table('ttrss_users')->find_one($owner_uid);
 
 		if ($user) {
@@ -333,7 +333,9 @@ class UserHelper {
 		return null;
 	}
 
-	static function is_default_password() {
+	static function is_default_password(): bool {
+
+		/** @var Auth_Internal|false $authenticator -- this is only here to make check_password() visible to static analyzer */
 		$authenticator = PluginHost::getInstance()->get_plugin($_SESSION["auth_module"]);
 
 		if ($authenticator &&
@@ -345,10 +347,12 @@ class UserHelper {
 		return false;
 	}
 
-	static function hash_password(string $pass, string $salt, string $algo = "") {
-
-		if (!$algo) $algo = self::HASH_ALGOS[0];
-
+	/**
+	 * @param string $algo should be one of UserHelper::HASH_ALGO_*
+	 *
+	 * @return false|string False if the password couldn't be hashed, otherwise the hash string.
+	 */
+	static function hash_password(string $pass, string $salt, string $algo = self::HASH_ALGOS[0]) {
 		$pass_hash = "";
 
 		switch ($algo) {

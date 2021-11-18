@@ -1,7 +1,10 @@
 <?php
    namespace Controls;
 
-   function attributes_to_string(array $attributes) {
+	/**
+	 * @param array<string, mixed> $attributes
+	 */
+   function attributes_to_string(array $attributes): string {
       $rv = [];
 
       foreach ($attributes as $k => $v) {
@@ -21,21 +24,27 @@
       return hidden_tag("op", strtolower(get_class($plugin) . \PluginHost::PUBLIC_METHOD_DELIMITER . $method));
    } */
 
-   function public_method_tags(\Plugin $plugin, string $method) {
+   function public_method_tags(\Plugin $plugin, string $method): string {
       return hidden_tag("op", strtolower(get_class($plugin) . \PluginHost::PUBLIC_METHOD_DELIMITER . $method));
    }
 
-   function pluginhandler_tags(\Plugin $plugin, string $method) {
+   function pluginhandler_tags(\Plugin $plugin, string $method): string {
       return hidden_tag("op", "pluginhandler") .
                hidden_tag("plugin", strtolower(get_class($plugin))) .
                hidden_tag("method", $method);
    }
 
-   function button_tag(string $value, string $type, array $attributes = []) {
+	/**
+	 * @param array<string, mixed> $attributes
+	 */
+   function button_tag(string $value, string $type, array $attributes = []): string {
       return "<button dojoType=\"dijit.form.Button\" ".attributes_to_string($attributes)." type=\"$type\">$value</button>";
    }
 
-   function input_tag(string $name, string $value, string $type = "text", array $attributes = [], string $id = "") {
+	/**
+	 * @param array<string, mixed> $attributes
+	 */
+   function input_tag(string $name, string $value, string $type = "text", array $attributes = [], string $id = ""): string {
       $attributes_str = attributes_to_string($attributes);
       $dojo_type = strpos($attributes_str, "dojoType") === false ? "dojoType='dijit.form.TextBox'" : "";
 
@@ -43,23 +52,40 @@
          type=\"$type\" value=\"".htmlspecialchars($value)."\">";
    }
 
-   function number_spinner_tag(string $name, string $value, array $attributes = [], string $id = "") {
+	/**
+	 * @param array<string, mixed> $attributes
+	 */
+   function number_spinner_tag(string $name, string $value, array $attributes = [], string $id = ""): string {
       return input_tag($name, $value, "text", array_merge(["dojoType" => "dijit.form.NumberSpinner"], $attributes), $id);
    }
 
-   function submit_tag(string $value, array $attributes = []) {
+	/**
+	 * @param array<string, mixed> $attributes
+	 */
+   function submit_tag(string $value, array $attributes = []): string {
       return button_tag($value, "submit", array_merge(["class" => "alt-primary"], $attributes));
    }
 
-   function cancel_dialog_tag(string $value, array $attributes = []) {
+	/**
+	 * @param array<string, mixed> $attributes
+	 */
+   function cancel_dialog_tag(string $value, array $attributes = []): string {
       return button_tag($value, "", array_merge(["onclick" => "App.dialogOf(this).hide()"], $attributes));
    }
 
-   function icon(string $icon, array $attributes = []) {
+	/**
+	 * @param array<string, mixed> $attributes
+	 */
+   function icon(string $icon, array $attributes = []): string {
       return "<i class=\"material-icons\" ".attributes_to_string($attributes).">$icon</i>";
    }
 
-   function select_tag(string $name, $value, array $values, array $attributes = [], string $id = "") {
+	/**
+	 * @param mixed $value
+	 * @param array<int|string, string> $values
+	 * @param array<string, mixed> $attributes
+	 */
+   function select_tag(string $name, $value, array $values, array $attributes = [], string $id = ""): string {
       $attributes_str = attributes_to_string($attributes);
       $dojo_type = strpos($attributes_str, "dojoType") === false ? "dojoType='fox.form.Select'" : "";
 
@@ -83,7 +109,12 @@
       return select_tag($name, $value, $values, $attributes, $id);
    }*/
 
-   function select_hash(string $name, $value, array $values, array $attributes = [], string $id = "") {
+	/**
+	 * @param mixed $value
+	 * @param array<int|string, string> $values
+	 * @param array<string, mixed> $attributes
+	 */
+   function select_hash(string $name, $value, array $values, array $attributes = [], string $id = ""): string {
       $attributes_str = attributes_to_string($attributes);
       $dojo_type = strpos($attributes_str, "dojoType") === false ? "dojoType='fox.form.Select'" : "";
 
@@ -93,7 +124,7 @@
       foreach ($values as $k => $v) {
          $is_sel = ($k == $value) ? "selected=\"selected\"" : "";
 
-         $rv .= "<option value=\"".htmlspecialchars($k)."\" $is_sel>".htmlspecialchars($v)."</option>";
+         $rv .= "<option value=\"".htmlspecialchars("$k")."\" $is_sel>".htmlspecialchars($v)."</option>";
       }
 
       $rv .= "</select>";
@@ -101,13 +132,19 @@
       return $rv;
    }
 
-   function hidden_tag(string $name, string $value, array $attributes = []) {
+	/**
+	 * @param array<string, mixed> $attributes
+	 */
+   function hidden_tag(string $name, string $value, array $attributes = []): string {
       return "<input dojoType=\"dijit.form.TextBox\" style=\"display : none\"
                ".attributes_to_string($attributes)." name=\"".htmlspecialchars($name)."\"
                value=\"".htmlspecialchars($value)."\">";
    }
 
-   function checkbox_tag(string $name, bool $checked = false, string $value = "", array $attributes = [], string $id = "") {
+	/**
+	 * @param array<string, mixed> $attributes
+	 */
+   function checkbox_tag(string $name, bool $checked = false, string $value = "", array $attributes = [], string $id = ""): string {
       $is_checked = $checked ? "checked" : "";
       $value_str = $value ? "value=\"".htmlspecialchars($value)."\"" : "";
 
@@ -115,8 +152,11 @@
                   $value_str $is_checked ".attributes_to_string($attributes)." id=\"".htmlspecialchars($id)."\">";
    }
 
+	/**
+	 * @param array<string, mixed> $attributes
+	 */
    function select_feeds_cats(string $name, int $default_id = null, array $attributes = [],
-                  bool $include_all_cats = true, string $root_id = null, int $nest_level = 0, string $id = "") {
+                  bool $include_all_cats = true, string $root_id = null, int $nest_level = 0, string $id = ""): string {
 
       $ret = "";
 

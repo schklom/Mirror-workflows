@@ -2,7 +2,7 @@
 class FeedItem_Atom extends FeedItem_Common {
 	const NS_XML = "http://www.w3.org/XML/1998/namespace";
 
-	function get_id() {
+	function get_id(): string {
 		$id = $this->elem->getElementsByTagName("id")->item(0);
 
 		if ($id) {
@@ -12,6 +12,9 @@ class FeedItem_Atom extends FeedItem_Common {
 		}
 	}
 
+	/**
+	 * @return int|false a timestamp on success, false otherwise
+	 */
 	function get_date() {
 		$updated = $this->elem->getElementsByTagName("updated")->item(0);
 
@@ -30,10 +33,13 @@ class FeedItem_Atom extends FeedItem_Common {
 		if ($date) {
 			return strtotime($date->nodeValue);
 		}
+
+		// consistent with strtotime failing to parse
+		return false;
 	}
 
 
-	function get_link() {
+	function get_link(): string {
 		$links = $this->elem->getElementsByTagName("link");
 
 		foreach ($links as $link) {
@@ -44,24 +50,27 @@ class FeedItem_Atom extends FeedItem_Common {
 				$base = $this->xpath->evaluate("string(ancestor-or-self::*[@xml:base][1]/@xml:base)", $link);
 
 				if ($base)
-					return rewrite_relative_url($base, clean(trim($link->getAttribute("href"))));
+					return UrlHelper::rewrite_relative($base, clean(trim($link->getAttribute("href"))));
 				else
 					return clean(trim($link->getAttribute("href")));
-
 			}
 		}
+
+		return '';
 	}
 
-	function get_title() {
+	function get_title(): string {
 		$title = $this->elem->getElementsByTagName("title")->item(0);
-
-		if ($title) {
-			return clean(trim($title->nodeValue));
-		}
+		return $title ? clean(trim($title->nodeValue)) : '';
 	}
 
-	/** $base is optional (returns $content if $base is null), $content is an HTML string */
-	private function rewrite_content_to_base($base, $content) {
+	/**
+	 * @param string|null $base optional (returns $content if $base is null)
+	 * @param string $content an HTML string
+	 *
+	 * @return string the rewritten XML or original $content
+	 */
+	private function rewrite_content_to_base(?string $base = null, string $content) {
 
 		if (!empty($base) && !empty($content)) {
 
@@ -81,14 +90,17 @@ class FeedItem_Atom extends FeedItem_Common {
 					}
 				}
 
-				return $tmpdoc->saveXML();
+				// Fall back to $content if saveXML somehow fails (i.e. returns false)
+				$modified_content = $tmpdoc->saveXML();
+				return $modified_content !== false ? $modified_content : $content;
 			}
 		}
 
 		return $content;
 	}
 
-	function get_content() {
+	function get_content(): string {
+		/** @var DOMElement|null */
 		$content = $this->elem->getElementsByTagName("content")->item(0);
 
 		if ($content) {
@@ -108,10 +120,13 @@ class FeedItem_Atom extends FeedItem_Common {
 
 			return $this->rewrite_content_to_base($base, $this->subtree_or_text($content));
 		}
+
+		return '';
 	}
 
 	// TODO: duplicate code should be merged with get_content()
-	function get_description() {
+	function get_description(): string {
+		/** @var DOMElement|null */
 		$content = $this->elem->getElementsByTagName("summary")->item(0);
 
 		if ($content) {
@@ -132,9 +147,13 @@ class FeedItem_Atom extends FeedItem_Common {
 			return $this->rewrite_content_to_base($base, $this->subtree_or_text($content));
 		}
 
+		return '';
 	}
 
-	function get_categories() {
+	/**
+	 * @return array<int, string>
+	 */
+	function get_categories(): array {
 		$categories = $this->elem->getElementsByTagName("category");
 		$cats = [];
 
@@ -152,7 +171,10 @@ class FeedItem_Atom extends FeedItem_Common {
 		return $this->normalize_categories($cats);
 	}
 
-	function get_enclosures() {
+	/**
+	 * @return array<int, FeedEnclosure>
+	 */
+	function get_enclosures(): array {
 		$links = $this->elem->getElementsByTagName("link");
 
 		$encs = [];
@@ -182,7 +204,7 @@ class FeedItem_Atom extends FeedItem_Common {
 		return $encs;
 	}
 
-	function get_language() {
+	function get_language(): string {
 		$lang = $this->elem->getAttributeNS(self::NS_XML, "lang");
 
 		if (!empty($lang)) {
@@ -195,5 +217,6 @@ class FeedItem_Atom extends FeedItem_Common {
 				}
 			}
 		}
+		return '';
 	}
 }

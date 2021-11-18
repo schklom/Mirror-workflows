@@ -50,8 +50,22 @@ class Af_Comics_Gocomics_FarSide extends Af_ComicFilter {
 					if ($content_node) {
 						$imgs = $xpath->query('//img[@data-src]', $content_node);
 
+						$cache = new DiskCache("images");
+
 						foreach ($imgs as $img) {
-							$img->setAttribute('src', $img->getAttribute('data-src'));
+							$image_url = $img->getAttribute('data-src');
+							$local_filename = sha1($image_url);
+
+							if ($image_url) {
+								$img->setAttribute('src', $image_url);
+
+								// try to cache image locally because they just 401 us otherwise
+								if (!$cache->exists($local_filename)) {
+									Debug::log("[Af_Comics_Gocomics_FarSide] caching: $image_url", Debug::LOG_VERBOSE);
+									$res = $cache->download($image_url, sha1($image_url), ["http_referrer" => $image_url]);
+									Debug::log("[Af_Comics_Gocomics_FarSide] cache result: $res", Debug::LOG_VERBOSE);
+								}
+							}
 						}
 
 						$junk_elems = $xpath->query("//*[@data-shareable-popover]");

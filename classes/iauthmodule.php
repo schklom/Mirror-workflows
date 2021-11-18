@@ -1,5 +1,18 @@
 <?php
 interface IAuthModule {
-	function authenticate($login, $password); // + optional third parameter: $service
-	function hook_auth_user(...$args); // compatibility wrapper due to how hooks work
+	/**
+	 * @param string $login
+	 * @param string $password
+	 * @param string $service
+	 * @return int|false user_id
+	 */
+	function authenticate($login, $password, $service = '');
+
+	/** this is a pluginhost compatibility wrapper that invokes $this->authenticate(...$args) (Auth_Base)
+ 	 * @param string $login
+	 * @param string $password
+	 * @param string $service
+	 * @return int|false user_id
+	 */
+	function hook_auth_user($login, $password, $service = '');
 }

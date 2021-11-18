@@ -51,14 +51,21 @@ Profit!
 
 ## Usage
 
-The `SettingsContainerInterface` (wrapped in`SettingsContainerAbstract` ) provides plug-in functionality for immutable object variables and adds some fancy, like loading/saving JSON, arrays etc. 
-It takes iterable as the only constructor argument and calls a method with the trait's name on invocation (`MyTrait::MyTrait()`) for each used trait.
+The `SettingsContainerInterface` (wrapped in`SettingsContainerAbstract` ) provides plug-in functionality for immutable object properties and adds some fancy, like loading/saving JSON, arrays etc. 
+It takes an `iterable` as the only constructor argument and calls a method with the trait's name on invocation (`MyTrait::MyTrait()`) for each used trait.
 
 ### Simple usage
 ```php
 class MyContainer extends SettingsContainerAbstract{
 	protected $foo;
 	protected $bar;
+}
+```
+Typed properties in PHP 7.4+:
+```php
+class MyContainer extends SettingsContainerAbstract{
+	protected string $foo;
+	protected string $bar;
 }
 ```
 
@@ -78,6 +85,8 @@ $container->fromJSON('{"foo": "what", "bar": "foo"}');
 $container->toArray(); // -> ['foo' => 'what', 'bar' => 'foo']
 // or JSON
 $container->toJSON(); // -> {"foo": "what", "bar": "foo"}
+// JSON via JsonSerializable
+$json = json_encode($container); // -> {"foo": "what", "bar": "foo"}
 
 //non-existing properties will be ignored:
 $container->nope = 'what';

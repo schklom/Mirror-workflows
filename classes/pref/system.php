@@ -2,19 +2,19 @@
 
 class Pref_System extends Handler_Administrative {
 
-	private $log_page_limit = 15;
+	private const LOG_PAGE_LIMIT = 15;
 
-	function csrf_ignore($method) {
+	function csrf_ignore(string $method): bool {
 		$csrf_ignored = array("index");
 
 		return array_search($method, $csrf_ignored) !== false;
 	}
 
-	function clearLog() {
+	function clearLog(): void {
 		$this->pdo->query("DELETE FROM ttrss_error_log");
 	}
 
-	function sendTestEmail() {
+	function sendTestEmail(): void {
 		$mail_address = clean($_REQUEST["mail_address"]);
 
 		$mailer = new Mailer();
@@ -28,7 +28,7 @@ class Pref_System extends Handler_Administrative {
 		print json_encode(['rc' => $rc, 'error' => $mailer->error()]);
 	}
 
-	function getphpinfo() {
+	function getphpinfo(): void {
 		ob_start();
 		phpinfo();
 		$info = ob_get_contents();
@@ -37,7 +37,7 @@ class Pref_System extends Handler_Administrative {
 		print preg_replace( '%^.*<body>(.*)</body>.*$%ms','$1', (string)$info);
 	}
 
-	private function _log_viewer(int $page, int $severity) {
+	private function _log_viewer(int $page, int $severity): void {
 		$errno_values = [];
 
 		switch ($severity) {
@@ -56,8 +56,7 @@ class Pref_System extends Handler_Administrative {
 			$errno_filter_qpart = "true";
 		}
 
-		$limit = $this->log_page_limit;
-		$offset = $limit * $page;
+		$offset = self::LOG_PAGE_LIMIT * $page;
 
 		$sth = $this->pdo->prepare("SELECT
 				COUNT(id) AS total_pages
@@ -69,7 +68,7 @@ class Pref_System extends Handler_Administrative {
 		$sth->execute($errno_values);
 
 		if ($res = $sth->fetch()) {
-			$total_pages = (int)($res["total_pages"] / $limit);
+			$total_pages = (int)($res["total_pages"] / self::LOG_PAGE_LIMIT);
 		} else {
 			$total_pages = 0;
 		}
@@ -134,7 +133,7 @@ class Pref_System extends Handler_Administrative {
 							$errno_filter_qpart
 						ORDER BY
 							ttrss_error_log.id DESC
-						LIMIT $limit OFFSET $offset");
+						LIMIT ". self::LOG_PAGE_LIMIT ." OFFSET $offset");
 
 					$sth->execute($errno_values);
 
@@ -159,7 +158,7 @@ class Pref_System extends Handler_Administrative {
 		<?php
 	}
 
-	function index() {
+	function index(): void {
 
 		$severity = (int) ($_REQUEST["severity"] ?? E_USER_WARNING);
 		$page = (int) ($_REQUEST["page"] ?? 0);

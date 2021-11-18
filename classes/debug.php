@@ -1,52 +1,90 @@
 <?php
 class Debug {
 	const LOG_DISABLED = -1;
-    const LOG_NORMAL = 0;
-    const LOG_VERBOSE = 1;
-    const LOG_EXTENDED = 2;
+	const LOG_NORMAL = 0;
+	const LOG_VERBOSE = 1;
+	const LOG_EXTENDED = 2;
 
-	/** @deprecated */
+	const ALL_LOG_LEVELS = [
+		Debug::LOG_DISABLED,
+		Debug::LOG_NORMAL,
+		Debug::LOG_VERBOSE,
+		Debug::LOG_EXTENDED,
+	];
+
+	// TODO: class properties can be switched to PHP typing if/when the minimum PHP_VERSION is raised to 7.4.0+
+	/**
+	 * @deprecated
+	 * @var int
+	*/
 	public static $LOG_DISABLED = self::LOG_DISABLED;
 
-	/** @deprecated */
-    public static $LOG_NORMAL = self::LOG_NORMAL;
+	/**
+	 * @deprecated
+	 * @var int
+	*/
+	public static $LOG_NORMAL = self::LOG_NORMAL;
 
-	/** @deprecated */
-    public static $LOG_VERBOSE = self::LOG_VERBOSE;
+	/**
+	 * @deprecated
+	 * @var int
+	*/
+	public static $LOG_VERBOSE = self::LOG_VERBOSE;
 
-	/** @deprecated */
-    public static $LOG_EXTENDED = self::LOG_EXTENDED;
+	/**
+	 * @deprecated
+	 * @var int
+	*/
+	public static $LOG_EXTENDED = self::LOG_EXTENDED;
 
-    private static $enabled = false;
-    private static $quiet = false;
-    private static $logfile = false;
+	/** @var bool */
+	private static $enabled = false;
+
+	/** @var bool */
+	private static $quiet = false;
+
+	/** @var string|null */
+	private static $logfile = null;
+
+	/**
+	 * @var int Debug::LOG_*
+	 */
     private static $loglevel = self::LOG_NORMAL;
 
-	public static function set_logfile($logfile) {
+	public static function set_logfile(string $logfile): void {
         self::$logfile = $logfile;
     }
 
-    public static function enabled() {
+    public static function enabled(): bool {
         return self::$enabled;
     }
 
-    public static function set_enabled($enable) {
+    public static function set_enabled(bool $enable): void {
         self::$enabled = $enable;
     }
 
-    public static function set_quiet($quiet) {
+    public static function set_quiet(bool $quiet): void {
         self::$quiet = $quiet;
     }
 
-    public static function set_loglevel($level) {
+	/**
+	 * @param int $level Debug::LOG_*
+	 */
+    public static function set_loglevel(int $level): void {
         self::$loglevel = $level;
     }
 
-    public static function get_loglevel() {
+	/**
+	 * @return int Debug::LOG_*
+	 */
+    public static function get_loglevel(): int {
         return self::$loglevel;
     }
 
-    public static function log($message, int $level = 0) {
+	/**
+	 * @param int $level Debug::LOG_*
+	 */
+    public static function log(string $message, int $level = Debug::LOG_NORMAL): bool {
 
         if (!self::$enabled || self::$loglevel < $level) return false;
 
@@ -73,7 +111,7 @@ class Debug {
                     if (!$locked) {
                         fclose($fp);
                         user_error("Unable to lock debugging log file: " . self::$logfile, E_USER_WARNING);
-                        return;
+                        return false;
                     }
                 }
 
@@ -86,7 +124,7 @@ class Debug {
                 fclose($fp);
 
                 if (self::$quiet)
-                    return;
+                    return false;
 
             } else {
                 user_error("Unable to open debugging log file: " . self::$logfile, E_USER_WARNING);
@@ -94,5 +132,7 @@ class Debug {
         }
 
         print "[$ts] $message\n";
+
+		return true;
     }
 }

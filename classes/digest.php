@@ -1,7 +1,7 @@
 <?php
 class Digest
 {
-	static function send_headlines_digests() {
+	static function send_headlines_digests(): void {
 
 		$user_limit = 15; // amount of users to process (e.g. emails to send out)
 		$limit = 1000; // maximum amount of headlines to include
@@ -62,7 +62,7 @@ class Digest
 
 						if ($rc && $do_catchup) {
 							Debug::log("Marking affected articles as read...");
-							Article::_catchup_by_id($affected_ids, 0, $line["id"]);
+							Article::_catchup_by_id($affected_ids, Article::CATCHUP_MODE_MARK_AS_READ, $line["id"]);
 						}
 					} else {
 						Debug::log("No headlines");
@@ -78,6 +78,9 @@ class Digest
 		Debug::log("All done.");
 	}
 
+	/**
+	 * @return array{0: string, 1: int, 2: array<int>, 3: string}
+	 */
 	static function prepare_headlines_digest(int $user_id, int $days = 1, int $limit = 1000) {
 
 		$tpl = new Templator();

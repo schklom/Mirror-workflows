@@ -6,16 +6,35 @@ class UrlHelper {
 		"tel"
 	];
 
+	// TODO: class properties can be switched to PHP typing if/when the minimum PHP_VERSION is raised to 7.4.0+
+	/** @var string */
 	static $fetch_last_error;
+
+	/** @var int */
 	static $fetch_last_error_code;
+
+	/** @var string */
 	static $fetch_last_error_content;
+
+	/** @var string */
 	static $fetch_last_content_type;
+
+	/** @var string */
 	static $fetch_last_modified;
+
+	/** @var string */
 	static $fetch_effective_url;
+
+	/** @var string */
 	static $fetch_effective_ip_addr;
+
+	/** @var bool */
 	static $fetch_curl_used;
 
-	static function build_url($parts) {
+	/**
+	 * @param array<string, string|int> $parts
+	 */
+	static function build_url(array $parts): string {
 		$tmp = $parts['scheme'] . "://" . $parts['host'];
 
 		if (isset($parts['path'])) $tmp .= $parts['path'];
@@ -34,11 +53,21 @@ class UrlHelper {
 	 * @param string $owner_element Owner element tag name (i.e. "a") (optional)
 	 * @param string $owner_attribute Owner attribute (i.e. "href") (optional)
 	 *
-	 * @return string Absolute URL
+	 * @return false|string Absolute URL or false on failure (either during URL parsing or validation)
 	 */
 	public static function rewrite_relative($base_url, $rel_url, string $owner_element = "", string $owner_attribute = "") {
-
 		$rel_parts = parse_url($rel_url);
+
+		/**
+		 * If parse_url failed to parse $rel_url return false to match the current "invalid thing" behavior
+		 * of UrlHelper::validate().
+		 *
+		 * TODO: There are many places where a string return value is assumed.  We should either update those
+		 * to account for the possibility of failure, or look into updating this function's return values.
+		 */
+		if ($rel_parts === false) {
+			return false;
+		}
 
 		if (!empty($rel_parts['host']) && !empty($rel_parts['scheme'])) {
 			return self::validate($rel_url);
@@ -80,8 +109,10 @@ class UrlHelper {
 		}
 	}
 
-	// extended filtering involves validation for safe ports and loopback
-	static function validate($url, $extended_filtering = false) {
+	/** extended filtering involves validation for safe ports and loopback
+	 * @return false|string false if something went wrong, otherwise the URL string
+	 */
+	static function validate(string $url, bool $extended_filtering = false) {
 
 		$url = clean($url);
 
@@ -106,6 +137,11 @@ class UrlHelper {
 					$tokens['host'] = idn_to_ascii($tokens['host'], IDNA_NONTRANSITIONAL_TO_ASCII, INTL_IDNA_VARIANT_UTS46);
 				} else {
 					$tokens['host'] = idn_to_ascii($tokens['host']);
+				}
+
+				// if `idn_to_ascii` failed
+				if ($tokens['host'] === false) {
+					return false;
 				}
 			}
 		}
@@ -138,7 +174,10 @@ class UrlHelper {
 		return $url;
 	}
 
-	static function resolve_redirects($url, $timeout, $nest = 0) {
+	/**
+	 * @return false|string
+	 */
+	static function resolve_redirects(string $url, int $timeout, int $nest = 0) {
 
 		// too many redirects
 		if ($nest > 10)
@@ -189,12 +228,16 @@ class UrlHelper {
 		return false;
 	}
 
-		// TODO: max_size currently only works for CURL transfers
+	/**
+	 * @param array<string, bool|int|string>|string $options
+	 * @return false|string false if something went wrong, otherwise string contents
+	 */
+	// TODO: max_size currently only works for CURL transfers
 	// TODO: multiple-argument way is deprecated, first parameter is a hash now
 	public static function fetch($options /* previously: 0: $url , 1: $type = false, 2: $login = false, 3: $pass = false,
 				4: $post_query = false, 5: $timeout = false, 6: $timestamp = 0, 7: $useragent = false*/) {
 
-		self::$fetch_last_error = false;
+		self::$fetch_last_error = "";
 		self::$fetch_last_error_code = -1;
 		self::$fetch_last_error_content = "";
 		self::$fetch_last_content_type = "";
@@ -510,7 +553,10 @@ class UrlHelper {
 		}
 	}
 
-	public static function url_to_youtube_vid($url) {
+	/**
+	 * @return false|string false if the provided URL didn't match expected patterns, otherwise the video ID string
+	 */
+	public static function url_to_youtube_vid(string $url) {
 		$url = str_replace("youtube.com", "youtube-nocookie.com", $url);
 
 		$regexps = [

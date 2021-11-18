@@ -1,13 +1,13 @@
 <?php
 class Pref_Labels extends Handler_Protected {
 
-	function csrf_ignore($method) {
+	function csrf_ignore(string $method): bool {
 		$csrf_ignored = array("index", "getlabeltree");
 
 		return array_search($method, $csrf_ignored) !== false;
 	}
 
-	function edit() {
+	function edit(): void {
 		$label = ORM::for_table('ttrss_labels2')
 			->where('owner_uid', $_SESSION['uid'])
 			->find_one($_REQUEST['id']);
@@ -17,7 +17,7 @@ class Pref_Labels extends Handler_Protected {
 		}
 	}
 
-	function getlabeltree() {
+	function getlabeltree(): void {
 		$root = array();
 		$root['id'] = 'root';
 		$root['name'] = __('Labels');
@@ -48,10 +48,9 @@ class Pref_Labels extends Handler_Protected {
 		$fl['items'] = array($root);
 
 		print json_encode($fl);
-		return;
 	}
 
-	function colorset() {
+	function colorset(): void {
 		$kind = clean($_REQUEST["kind"]);
 		$ids = explode(',', clean($_REQUEST["ids"]));
 		$color = clean($_REQUEST["color"]);
@@ -84,7 +83,7 @@ class Pref_Labels extends Handler_Protected {
 		}
 	}
 
-	function colorreset() {
+	function colorreset(): void {
 		$ids = explode(',', clean($_REQUEST["ids"]));
 
 		foreach ($ids as $id) {
@@ -101,7 +100,7 @@ class Pref_Labels extends Handler_Protected {
 		}
 	}
 
-	function save() {
+	function save(): void {
 
 		$id = clean($_REQUEST["id"]);
 		$caption = clean($_REQUEST["caption"]);
@@ -148,9 +147,9 @@ class Pref_Labels extends Handler_Protected {
 
 	}
 
-	function remove() {
-
-		$ids = explode(",", clean($_REQUEST["ids"]));
+	function remove(): void {
+		/** @var array<int, int> */
+		$ids = array_map("intval", explode(",", clean($_REQUEST["ids"])));
 
 		foreach ($ids as $id) {
 			Labels::remove($id, $_SESSION["uid"]);
@@ -158,7 +157,7 @@ class Pref_Labels extends Handler_Protected {
 
 	}
 
-	function add() {
+	function add(): void {
 		$caption = clean($_REQUEST["caption"]);
 		$output = clean($_REQUEST["output"] ?? false);
 
@@ -171,7 +170,7 @@ class Pref_Labels extends Handler_Protected {
 		}
 	}
 
-	function index() {
+	function index(): void {
 		?>
 		<div dojoType='dijit.layout.BorderContainer' gutters='false'>
 			<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='top'>

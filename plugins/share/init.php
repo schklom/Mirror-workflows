@@ -1,5 +1,6 @@
 <?php
 class Share extends Plugin {
+	/** @var PluginHost $host */
 	private $host;
 
 	function about() {
@@ -8,7 +9,6 @@ class Share extends Plugin {
 			"fox");
 	}
 
-	/* @var PluginHost $host */
 	function init($host) {
 		$this->host = $host;
 
@@ -32,6 +32,7 @@ class Share extends Plugin {
 		return file_get_contents(__DIR__ . "/share_prefs.js");
 	}
 
+	/** @return void */
 	function unshare() {
 		$id = $_REQUEST['id'];
 
@@ -42,6 +43,9 @@ class Share extends Plugin {
 		print __("Article unshared");
 	}
 
+	/**
+	 * @param string $id
+	 * @return void */
 	function hook_prefs_tab_section($id) {
 		if ($id == "prefFeedsPublishedGenerated") {
 			?>
@@ -56,6 +60,7 @@ class Share extends Plugin {
 		}
 	}
 
+	/** @return void */
 	function clearArticleKeys() {
 		$sth = $this->pdo->prepare("UPDATE ttrss_user_entries SET uuid = '' WHERE
 			owner_uid = ?");
@@ -64,6 +69,7 @@ class Share extends Plugin {
 		print __("Shared URLs cleared.");
 	}
 
+	/** @return void */
 	function newkey() {
 		$id = $_REQUEST['id'];
 		$uuid = uniqid_short();
@@ -75,6 +81,10 @@ class Share extends Plugin {
 		print json_encode(["link" => $uuid]);
 	}
 
+	/**
+	 * @param array<string,mixed> $line
+	 *
+	 * @return string */
 	function hook_article_button($line) {
 		$icon_class = !empty($line['uuid']) ? "is-shared" : "";
 
@@ -83,6 +93,7 @@ class Share extends Plugin {
 			title='".__('Share by URL')."'>link</i>";
 	}
 
+	/** @return void */
 	function get() {
 		$uuid = clean($_REQUEST["key"] ?? "");
 
@@ -107,7 +118,7 @@ class Share extends Plugin {
 		print "Article not found.";
 	}
 
-	private function format_article($id, $owner_uid) {
+	private function format_article(int $id, int $owner_uid) : void {
 
 		$pdo = Db::pdo();
 
@@ -133,7 +144,7 @@ class Share extends Plugin {
 
 			$line["content"] = Sanitizer::sanitize($line["content"],
 				$line['hide_images'],
-				$owner_uid, $line["site_url"], false, $line["id"]);
+				$owner_uid, $line["site_url"], null, $line["id"]);
 
 			PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE,
 				function ($result) use (&$line) {
@@ -183,10 +194,7 @@ class Share extends Plugin {
 								strip_tags($content_decoded)
 							)
 						), 500, "...")) ?>">
-
-					<?php if ($og_image) { ?>
-						<meta property='og:image' content="<?= htmlspecialchars($og_image) ?>">
-					<?php } ?>
+					<meta property='og:image' content="<?= htmlspecialchars($og_image) ?>">
 				</head>
 
 				<body class='flat ttrss_utility ttrss_zoom css_loading'>
@@ -231,6 +239,7 @@ class Share extends Plugin {
 		}
 	}
 
+	/** @return void */
 	function shareDialog() {
 		$id = (int)clean($_REQUEST['id'] ?? 0);
 
@@ -276,6 +285,7 @@ class Share extends Plugin {
 		<?php
 	}
 
+	/** @return int */
 	function api_version() {
 		return 2;
 	}

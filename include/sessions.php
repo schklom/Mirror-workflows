@@ -1,9 +1,9 @@
 <?php
 	namespace Sessions;
 
-use UserHelper;
+	use UserHelper;
 
-require_once "autoload.php";
+	require_once "autoload.php";
 	require_once "functions.php";
 	require_once "errorhandler.php";
 	require_once "lib/gettext/gettext.inc.php";
@@ -31,7 +31,7 @@ require_once "autoload.php";
 			ini_get("session.cookie_secure"),
 			ini_get("session.cookie_httponly"));
 
-	function validate_session() {
+	function validate_session(): bool {
 		if (\Config::get(\Config::SINGLE_USER_MODE)) return true;
 
 		$pdo = \Db::pdo();
@@ -58,11 +58,11 @@ require_once "autoload.php";
 		return true;
 	}
 
-	function ttrss_open ($s, $n) {
+	function ttrss_open(string $savePath, string $sessionName): bool {
 		return true;
 	}
 
-	function ttrss_read ($id){
+	function ttrss_read(string $id): string {
 		global $session_expire;
 
 		$sth = \Db::pdo()->prepare("SELECT data FROM ttrss_sessions WHERE id=?");
@@ -84,7 +84,7 @@ require_once "autoload.php";
 
 	}
 
-	function ttrss_write ($id, $data) {
+	function ttrss_write(string $id, string $data): bool {
 		global $session_expire;
 
 		$data = base64_encode($data);
@@ -105,18 +105,18 @@ require_once "autoload.php";
 		return true;
 	}
 
-	function ttrss_close () {
+	function ttrss_close(): bool {
 		return true;
 	}
 
-	function ttrss_destroy($id) {
+	function ttrss_destroy(string $id): bool {
 		$sth = \Db::pdo()->prepare("DELETE FROM ttrss_sessions WHERE id = ?");
 		$sth->execute([$id]);
 
 		return true;
 	}
 
-	function ttrss_gc ($expire) {
+	function ttrss_gc(int $lifetime): bool {
 		\Db::pdo()->query("DELETE FROM ttrss_sessions WHERE expire < " . time());
 
 		return true;
@@ -126,7 +126,10 @@ require_once "autoload.php";
 		session_set_save_handler('\Sessions\ttrss_open',
 			'\Sessions\ttrss_close', '\Sessions\ttrss_read',
 			'\Sessions\ttrss_write', '\Sessions\ttrss_destroy',
-			'\Sessions\ttrss_gc');
+			'\Sessions\ttrss_gc'); // @phpstan-ignore-line
+			// PHPStan complains about '\Sessions\ttrss_gc' if its $lifetime param isn't marked as string,
+			// but the docs say it's an int.  If it is actually a string it'll get coerced to an int.
+
 		register_shutdown_function('session_write_close');
 
 		if (!defined('NO_SESSION_AUTOSTART')) {

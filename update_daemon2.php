@@ -37,7 +37,7 @@
 	/**
 	 * @SuppressWarnings(unused)
 	 */
-	function reap_children() {
+	function reap_children(): int {
 		global $children;
 		global $ctimes;
 
@@ -64,7 +64,7 @@
 		return count($tmp);
 	}
 
-	function check_ctimes() {
+	function check_ctimes(): void {
 		global $ctimes;
 
 		foreach (array_keys($ctimes) as $pid) {
@@ -79,8 +79,9 @@
 
 	/**
 	* @SuppressWarnings(unused)
+	* @param mixed $siginfo
  	*/
-	function sigchld_handler($signal) {
+	function sigchld_handler(int $signo, $siginfo): void {
 		$running_jobs = reap_children();
 
 		Debug::log("Received SIGCHLD, $running_jobs active tasks left.");
@@ -88,7 +89,7 @@
 		pcntl_waitpid(-1, $status, WNOHANG);
 	}
 
-	function shutdown($caller_pid) {
+	function shutdown(int $caller_pid): void {
 		if ($caller_pid == posix_getpid()) {
 			if (file_exists(Config::get(Config::LOCK_DIRECTORY) . "/update_daemon.lock")) {
 				Debug::log("Removing lockfile (master)...");
@@ -97,7 +98,7 @@
 		}
 	}
 
-	function task_shutdown() {
+	function task_shutdown(): void {
 		$pid = posix_getpid();
 
 		if (file_exists(Config::get(Config::LOCK_DIRECTORY) . "/update_daemon-$pid.lock")) {
@@ -106,13 +107,13 @@
 		}
 	}
 
-	function sigint_handler() {
+	function sigint_handler(): void {
 		Debug::log("[MASTER] SIG_INT received, shutting down master process.");
 		shutdown(posix_getpid());
 		die;
 	}
 
-	function task_sigint_handler() {
+	function task_sigint_handler(): void {
 		Debug::log("[TASK] SIG_INT received, shutting down task.");
 		task_shutdown();
 		die;
@@ -129,7 +130,7 @@
 
 	$options = getopt("", $longopts);
 
-	if (isset($options["help"]) ) {
+	if ($options === false || isset($options["help"]) ) {
 		print "Tiny Tiny RSS update daemon.\n\n";
 		print "Options:\n";
 		print "  --log FILE           - log messages to FILE\n";
@@ -160,21 +161,28 @@
 
 	if (isset($options["tasks"])) {
 		Debug::log("Set to spawn " . $options["tasks"] . " children.");
-		$max_jobs = $options["tasks"];
+		$max_jobs = (int) $options["tasks"];
 	} else {
 		$max_jobs = Config::get(Config::DAEMON_MAX_JOBS);
 	}
 
+	if ($max_jobs < 1) {
+		$max_jobs = 1;
+		Debug::log("Enforced minimum task count of $max_jobs.");
+	}
+
 	if (isset($options["interval"])) {
 		Debug::log("Spawn interval: " . $options["interval"] . " seconds.");
-		$spawn_interval = $options["interval"];
+		$spawn_interval = (int) $options["interval"];
 	} else {
 		$spawn_interval = Config::get(Config::DAEMON_SLEEP_INTERVAL);
 	}
 
 	// let's enforce a minimum spawn interval as to not forkbomb the host
-	$spawn_interval = max(60, $spawn_interval);
-	Debug::log("Spawn interval: $spawn_interval sec");
+	if ($spawn_interval < 60) {
+		$spawn_interval = 60;
+		Debug::log("Enforced minimum task spawn interval of $spawn_interval seconds.");
+	}
 
 	if (file_is_locked("update_daemon.lock")) {
 		die("error: Can't create lockfile. ".

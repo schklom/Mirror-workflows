@@ -1,7 +1,7 @@
 <?php
 class Logger_Syslog implements Logger_Adapter {
 
-	function log_error(int $errno, string $errstr, string $file, int $line, $context) {
+	function log_error(int $errno, string $errstr, string $file, int $line, string $context): bool {
 
 		switch ($errno) {
 		case E_ERROR:
@@ -25,6 +25,7 @@ class Logger_Syslog implements Logger_Adapter {
 
 		syslog($priority, "[tt-rss] $errname ($file:$line) $errstr");
 
+		return true;
 	}
 
 }

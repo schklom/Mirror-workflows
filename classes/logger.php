@@ -1,6 +1,9 @@
 <?php
 class Logger {
+	/** @var Logger|null */
 	private static $instance;
+
+	/** @var Logger_Adapter|null */
 	private $adapter;
 
 	const LOG_DEST_SQL = "sql";
@@ -25,11 +28,11 @@ class Logger {
 		16384		=> 'E_USER_DEPRECATED',
 		32767		=> 'E_ALL'];
 
-	static function log_error(int $errno, string $errstr, string $file, int $line, $context) {
+	static function log_error(int $errno, string $errstr, string $file, int $line, string $context): bool {
 		return self::get_instance()->_log_error($errno, $errstr, $file, $line, $context);
 	}
 
-	private function _log_error($errno, $errstr, $file, $line, $context) {
+	private function _log_error(int $errno, string $errstr, string $file, int $line, string $context): bool {
 		//if ($errno == E_NOTICE) return false;
 
 		if ($this->adapter)
@@ -38,11 +41,11 @@ class Logger {
 			return false;
 	}
 
-	static function log(int $errno, string $errstr, $context = "") {
+	static function log(int $errno, string $errstr, string $context = ""): bool {
 		return self::get_instance()->_log($errno, $errstr, $context);
 	}
 
-	private function _log(int $errno, string $errstr, $context = "") {
+	private function _log(int $errno, string $errstr, string $context = ""): bool {
 		if ($this->adapter)
 			return $this->adapter->log_error($errno, $errstr, '', 0, $context);
 		else
@@ -65,7 +68,7 @@ class Logger {
 			$this->adapter = new Logger_Stdout();
 			break;
 		default:
-			$this->adapter = false;
+			$this->adapter = null;
 		}
 
 		if ($this->adapter && !implements_interface($this->adapter, "Logger_Adapter"))

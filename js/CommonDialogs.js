@@ -11,6 +11,21 @@ const	CommonDialogs = {
 			const dialog = dijit.byId("infoBox");
 			if (dialog)	dialog.hide();
 		},
+		safeModeWarning: function() {
+			const dialog = new fox.SingleUseDialog({
+				title: __("Safe mode"),
+				content: `<div class='alert alert-info'>
+						${__('Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. You will need to log out and back in to disable it.')}
+					</div>
+					<footer class='text-center'>
+						<button dojoType='dijit.form.Button' type='submit' class='alt-primary'>
+							${__('Close this window')}
+						</button>
+					</footer>`
+			});
+
+			dialog.show();
+		},
 		subscribeToFeed: function() {
 			xhr.json("backend.php",
 					{op: "feeds", method: "subscribeToFeed"},

@@ -363,7 +363,14 @@ const	Helpers = {
 			xhr.json("backend.php", {op: "pref-prefs", method: "getPluginsList"}, (reply) => {
 				this._list_of_plugins = reply;
 				this.render_contents();
+			}, (e) => {
+				this.render_error(e);
 			});
+		},
+		render_error: function(e) {
+			const container = document.querySelector(".prefs-plugin-list");
+
+			container.innerHTML = `<li class='text-error'>${__("Error while loading plugins list: %s.").replace("%s", e)}</li>`;
 		},
 		render_contents: function() {
 			const container = document.querySelector(".prefs-plugin-list");

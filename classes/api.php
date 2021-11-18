@@ -92,9 +92,11 @@ class API extends Handler {
 					return;
 				} else {
 					$this->_wrap(self::STATUS_ERR, array("error" => self::E_LOGIN_ERROR));
+					return;
 				}
 			} else {
 				$this->_wrap(self::STATUS_ERR, array("error" => self::E_API_DISABLED));
+				return;
 			}
 		}
 		$this->_wrap(self::STATUS_ERR, array("error" => self::E_LOGIN_ERROR));

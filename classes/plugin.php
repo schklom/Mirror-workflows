@@ -367,7 +367,7 @@ abstract class Plugin {
 		return [];
 	}
 
-	/** GLOBAL: This is run periodically by the update daemon when idle
+	/** This is run periodically by the update daemon when idle (available both to user and system plugins)
 	 * @return void
 	 * @see PluginHost::HOOK_HOUSE_KEEPING */
 	function hook_house_keeping() {

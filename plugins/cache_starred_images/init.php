@@ -7,6 +7,9 @@ class Cache_Starred_Images extends Plugin {
 	/** @var DiskCache $cache */
 	private $cache;
 
+	/** @var DiskCache $cache_status */
+	private $cache_status;
+
 	/** @var int $max_cache_attempts (per article) */
 	private $max_cache_attempts = 5;
 
@@ -19,19 +22,26 @@ class Cache_Starred_Images extends Plugin {
 	function init($host) {
 		$this->host = $host;
 		$this->cache = new DiskCache("starred-images");
+		$this->cache_status = new DiskCache("starred-images.status-files");
 
 		if ($this->cache->make_dir())
 			chmod($this->cache->get_dir(), 0777);
 
+		if ($this->cache_status->make_dir())
+			chmod($this->cache_status->get_dir(), 0777);
+
 		if (!$this->cache->exists(".no-auto-expiry"))
 			$this->cache->touch(".no-auto-expiry");
 
-		if ($this->cache->is_writable()) {
+		if (!$this->cache_status->exists(".no-auto-expiry"))
+			$this->cache_status->touch(".no-auto-expiry");
+
+		if ($this->cache->is_writable() && $this->cache_status->is_writable()) {
 			$host->add_hook($host::HOOK_HOUSE_KEEPING, $this);
 			$host->add_hook($host::HOOK_ENCLOSURE_ENTRY, $this);
 			$host->add_hook($host::HOOK_SANITIZE, $this);
 		} else {
-			user_error("Starred cache directory ".$this->cache->get_dir()." is not writable.", E_USER_WARNING);
+			user_error("Starred cache directory ".$this->cache->get_dir()." (or status cache subdir in status-files/) is not writable.", E_USER_WARNING);
 		}
 	}
 
@@ -72,12 +82,15 @@ class Cache_Starred_Images extends Plugin {
 
 		/* actual housekeeping */
 
-		Debug::log("expiring " . $this->cache->get_dir() . "...");
+		Debug::log("expiring {$this->cache->get_dir()} and {$this->cache_status->get_dir()}...");
 
 		$files = array_merge(
 				glob($this->cache->get_dir() . "/*.png"),
 				glob($this->cache->get_dir() . "/*.mp4"),
+				glob($this->cache_status->get_dir() . "/*.status"),
 				glob($this->cache->get_dir() . "/*.status"));
+
+		asort($files);
 
 		$last_article_id = 0;
 		$article_exists = 1;
@@ -157,15 +170,15 @@ class Cache_Starred_Images extends Plugin {
 		$status_filename = $article_id . "-" . sha1($site_url) . ".status";
 
 		/* housekeeping might run as a separate user, in this case status/media might not be writable */
-		if (!$this->cache->is_writable($status_filename)) {
+		if (!$this->cache_status->is_writable($status_filename)) {
 			Debug::log("status not writable: $status_filename", Debug::LOG_VERBOSE);
 			return false;
 		}
 
 		Debug::log("status: $status_filename", Debug::LOG_VERBOSE);
 
-		if ($this->cache->exists($status_filename))
-			$status = json_decode($this->cache->get($status_filename), true);
+		if ($this->cache_status->exists($status_filename))
+			$status = json_decode($this->cache_status->get($status_filename), true);
 		else
 			$status = ["attempt" => 0];
 
@@ -177,7 +190,7 @@ class Cache_Starred_Images extends Plugin {
 			return false;
 		}
 
-		if (!$this->cache->put($status_filename, json_encode($status))) {
+		if (!$this->cache_status->put($status_filename, json_encode($status))) {
 			user_error("unable to write status file: $status_filename", E_USER_WARNING);
 			return false;
 		}

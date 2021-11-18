@@ -307,7 +307,7 @@ class Handler_Public extends Handler {
 	function rss(): void {
 		$feed = clean($_REQUEST["id"]);
 		$key = clean($_REQUEST["key"]);
-		$is_cat = self::_param_to_bool($_REQUEST["is_cat"] ?? null);
+		$is_cat = self::_param_to_bool($_REQUEST["is_cat"] ?? false);
 		$limit = (int)clean($_REQUEST["limit"] ?? 0);
 		$offset = (int)clean($_REQUEST["offset"] ?? 0);
 

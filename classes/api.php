@@ -417,7 +417,7 @@ class API extends Handler {
 
 	function catchupFeed(): bool {
 		$feed_id = clean($_REQUEST["feed_id"]);
-		$is_cat = clean($_REQUEST["is_cat"]);
+		$is_cat = self::_param_to_bool($_REQUEST["is_cat"] ?? false);
 		$mode = clean($_REQUEST["mode"] ?? "");
 
 		if (!in_array($mode, ["all", "1day", "1week", "2week"]))

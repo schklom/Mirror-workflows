@@ -307,7 +307,7 @@ class Handler_Public extends Handler {
 	function rss(): void {
 		$feed = clean($_REQUEST["id"]);
 		$key = clean($_REQUEST["key"]);
-		$is_cat = clean($_REQUEST["is_cat"] ?? false);
+		$is_cat = self::_param_to_bool($_REQUEST["is_cat"] ?? null);
 		$limit = (int)clean($_REQUEST["limit"] ?? 0);
 		$offset = (int)clean($_REQUEST["offset"] ?? 0);
 
@@ -317,7 +317,7 @@ class Handler_Public extends Handler {
 		$start_ts = clean($_REQUEST["ts"] ?? "");
 
 		$format = clean($_REQUEST['format'] ?? "atom");
-		$orig_guid = clean($_REQUEST["orig_guid"] ?? false);
+		$orig_guid = clean($_REQUEST["orig_guid"] ?? "");
 
 		if (Config::get(Config::SINGLE_USER_MODE)) {
 			UserHelper::authenticate("admin", null);

@@ -88,6 +88,8 @@ class API extends Handler {
 					$this->_wrap(self::STATUS_OK, array("session_id" => session_id(),
 						"config" => $this->_get_config(),
 						"api_level" => self::API_LEVEL));
+
+					return;
 				} else {
 					$this->_wrap(self::STATUS_ERR, array("error" => self::E_LOGIN_ERROR));
 				}

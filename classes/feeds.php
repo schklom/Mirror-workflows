@@ -69,6 +69,8 @@ class Feeds extends Handler_Protected {
 		$qfh_ret = [];
 
 		if (!$cat_view && is_numeric($feed) && $feed < PLUGIN_FEED_BASE_INDEX && $feed > LABEL_BASE_INDEX) {
+
+			/** @var IVirtualFeed|false $handler */
 			$handler = PluginHost::getInstance()->get_feed_handler(
 				PluginHost::feed_to_pfeed_id($feed));
 
@@ -86,8 +88,6 @@ class Feeds extends Handler_Protected {
 					"include_children" => $include_children,
 					"order_by" => $order_by);
 
-				// Implemented by a plugin, so ignore the undefined 'get_headlines' method.
-				// @phpstan-ignore-next-line
 				$qfh_ret = $handler->get_headlines(PluginHost::feed_to_pfeed_id($feed),
 					$options);
 			}

@@ -31,6 +31,9 @@ class Handler implements IHandler {
 	 * @param mixed $p
 	 */
 	protected static function _param_to_bool($p): bool {
+		if (is_string($p)) {
+			$p = clean($p);
+		}
 		return $p && ($p !== "f" && $p !== "false");
 	}
 }

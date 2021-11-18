@@ -102,6 +102,18 @@ func (u *UserIO) AddLocation(id string, loc string) {
 	_ = ioutil.WriteFile(userLocationFilePath, []byte(loc), 0644)
 }
 
+func (u *UserIO) DeleteUser(id string) {
+	os.Remove(u.getUserDir(id))
+	for i := 0; i < len(u.ids); i++ {
+		if u.ids[i] == id {
+			u.ids[i] = u.ids[len(u.ids)-1]
+			u.ids = u.ids[:len(u.ids)-1]
+			return
+		}
+	}
+
+}
+
 func (u *UserIO) GetLocation(id string, pos int) ([]byte, error) {
 	userLocationPath := filepath.Join(u.getUserDir(id), locationDir)
 	var userLocationFilePath string

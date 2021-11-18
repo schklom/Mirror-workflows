@@ -18,7 +18,7 @@ import (
 )
 
 //Some IO variables
-var version = "v0.3.1"
+var version = "v0.3.2"
 var webDir = "web"
 var uio user.UserIO
 
@@ -251,6 +251,21 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func deleteDevice(w http.ResponseWriter, r *http.Request) {
+	var data DataPackage
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		http.Error(w, "Meeep!, Error - postCommand 1", http.StatusBadRequest)
+		return
+	}
+	id := uio.ACC.CheckAccessToken(data.IDT)
+	if id == "" {
+		http.Error(w, "Meeep!, Error - postCommand 2", http.StatusBadRequest)
+		return
+	}
+	uio.DeleteUser(id)
+}
+
 func postDevice(w http.ResponseWriter, r *http.Request) {
 	var device registrationData
 	err := json.NewDecoder(r.Body).Decode(&device)
@@ -288,6 +303,15 @@ func mainCommand(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func mainDevice(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodDelete:
+		deleteDevice(w, r)
+	case http.MethodPost:
+		postDevice(w, r)
+	}
+}
+
 func handleRequests() {
 	http.Handle("/", http.FileServer(http.Dir(webDir)))
 	http.HandleFunc("/command", mainCommand)
@@ -298,8 +322,8 @@ func handleRequests() {
 	http.HandleFunc("/locationDataSize/", getLocationDataSize)
 	http.HandleFunc("/key", getKey)
 	http.HandleFunc("/key/", getKey)
-	http.HandleFunc("/device", postDevice)
-	http.HandleFunc("/device/", postDevice)
+	http.HandleFunc("/device", mainDevice)
+	http.HandleFunc("/device/", mainDevice)
 	http.HandleFunc("/push", postPushLink)
 	http.HandleFunc("/push/", postPushLink)
 	http.HandleFunc("/requestAccess", requestAccess)

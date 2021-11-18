@@ -201,7 +201,7 @@ class API extends Handler {
 			$show_excerpt = self::_param_to_bool($_REQUEST["show_excerpt"] ?? false);
 			$show_content = self::_param_to_bool($_REQUEST["show_content"] ?? false);
 			/* all_articles, unread, adaptive, marked, updated */
-			$view_mode = clean($_REQUEST["view_mode"] ?? false);
+			$view_mode = clean($_REQUEST["view_mode"] ?? null);
 			$include_attachments = self::_param_to_bool($_REQUEST["include_attachments"] ?? false);
 			$since_id = (int)clean($_REQUEST["since_id"] ?? 0);
 			$include_nested = self::_param_to_bool($_REQUEST["include_nested"] ?? false);

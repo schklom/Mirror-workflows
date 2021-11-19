@@ -173,7 +173,7 @@ class RPC extends Handler_Protected {
 	}
 
 	function sanityCheck(): void {
-		$_SESSION["hasSandbox"] = clean($_REQUEST["hasSandbox"]) === "true";
+		$_SESSION["hasSandbox"] = self::_param_to_bool($_REQUEST["hasSandbox"] ?? false);
 		$_SESSION["clientTzOffset"] = clean($_REQUEST["clientTzOffset"]);
 
 		$client_location = $_REQUEST["clientLocation"];
@@ -225,7 +225,7 @@ class RPC extends Handler_Protected {
 
 	function catchupFeed(): void {
 		$feed_id = clean($_REQUEST['feed_id']);
-		$is_cat = clean($_REQUEST['is_cat']) == "true";
+		$is_cat = self::_param_to_bool($_REQUEST['is_cat'] ?? false);
 		$mode = clean($_REQUEST['mode'] ?? '');
 		$search_query = clean($_REQUEST['search_query']);
 		$search_lang = clean($_REQUEST['search_lang']);

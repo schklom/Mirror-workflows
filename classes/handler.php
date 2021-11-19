@@ -27,4 +27,11 @@ class Handler implements IHandler {
 		return true;
 	}
 
+	/**
+	 * @param mixed $p
+	 */
+	protected static function _param_to_bool($p): bool {
+		$p = clean($p);
+		return $p && ($p !== "f" && $p !== "false");
+	}
 }

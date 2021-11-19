@@ -17,13 +17,6 @@ class API extends Handler {
 	private $seq;
 
 	/**
-	 * @param mixed $p
-	 */
-	private static function _param_to_bool($p): bool {
-		return $p && ($p !== "f" && $p !== "false");
-	}
-
-	/**
 	 * @param array<int|string, mixed> $reply
 	 */
 	private function _wrap(int $status, array $reply): bool {
@@ -110,7 +103,7 @@ class API extends Handler {
 
 	function getUnread(): bool {
 		$feed_id = clean($_REQUEST["feed_id"] ?? "");
-		$is_cat = clean($_REQUEST["is_cat"] ?? "");
+		$is_cat = self::_param_to_bool($_REQUEST["is_cat"] ?? false);
 
 		if ($feed_id) {
 			return $this->_wrap(self::STATUS_OK, array("unread" => getFeedUnread($feed_id, $is_cat)));
@@ -126,10 +119,10 @@ class API extends Handler {
 
 	function getFeeds(): bool {
 		$cat_id = (int) clean($_REQUEST["cat_id"]);
-		$unread_only = self::_param_to_bool(clean($_REQUEST["unread_only"] ?? 0));
+		$unread_only = self::_param_to_bool($_REQUEST["unread_only"] ?? false);
 		$limit = (int) clean($_REQUEST["limit"] ?? 0);
 		$offset = (int) clean($_REQUEST["offset"] ?? 0);
-		$include_nested = self::_param_to_bool(clean($_REQUEST["include_nested"] ?? false));
+		$include_nested = self::_param_to_bool($_REQUEST["include_nested"] ?? false);
 
 		$feeds = $this->_api_get_feeds($cat_id, $unread_only, $limit, $offset, $include_nested);
 
@@ -137,9 +130,9 @@ class API extends Handler {
 	}
 
 	function getCategories(): bool {
-		$unread_only = self::_param_to_bool(clean($_REQUEST["unread_only"] ?? false));
-		$enable_nested = self::_param_to_bool(clean($_REQUEST["enable_nested"] ?? false));
-		$include_empty = self::_param_to_bool(clean($_REQUEST['include_empty'] ?? false));
+		$unread_only = self::_param_to_bool($_REQUEST["unread_only"] ?? false);
+		$enable_nested = self::_param_to_bool($_REQUEST["enable_nested"] ?? false);
+		$include_empty = self::_param_to_bool($_REQUEST["include_empty"] ?? false);
 
 		// TODO do not return empty categories, return Uncategorized and standard virtual cats
 
@@ -204,21 +197,20 @@ class API extends Handler {
 
 			$offset = (int)clean($_REQUEST["skip"] ?? 0);
 			$filter = clean($_REQUEST["filter"] ?? "");
-			$is_cat = self::_param_to_bool(clean($_REQUEST["is_cat"] ?? false));
-			$show_excerpt = self::_param_to_bool(clean($_REQUEST["show_excerpt"] ?? false));
-			$show_content = self::_param_to_bool(clean($_REQUEST["show_content"] ?? false));
+			$is_cat = self::_param_to_bool($_REQUEST["is_cat"] ?? false);
+			$show_excerpt = self::_param_to_bool($_REQUEST["show_excerpt"] ?? false);
+			$show_content = self::_param_to_bool($_REQUEST["show_content"] ?? false);
 			/* all_articles, unread, adaptive, marked, updated */
 			$view_mode = clean($_REQUEST["view_mode"] ?? null);
-			$include_attachments = self::_param_to_bool(clean($_REQUEST["include_attachments"] ?? false));
+			$include_attachments = self::_param_to_bool($_REQUEST["include_attachments"] ?? false);
 			$since_id = (int)clean($_REQUEST["since_id"] ?? 0);
-			$include_nested = self::_param_to_bool(clean($_REQUEST["include_nested"] ?? false));
-			$sanitize_content = !isset($_REQUEST["sanitize"]) ||
-				self::_param_to_bool($_REQUEST["sanitize"]);
-			$force_update = self::_param_to_bool(clean($_REQUEST["force_update"] ?? false));
-			$has_sandbox = self::_param_to_bool(clean($_REQUEST["has_sandbox"] ?? false));
+			$include_nested = self::_param_to_bool($_REQUEST["include_nested"] ?? false);
+			$sanitize_content = self::_param_to_bool($_REQUEST["sanitize"] ?? true);
+			$force_update = self::_param_to_bool($_REQUEST["force_update"] ?? false);
+			$has_sandbox = self::_param_to_bool($_REQUEST["has_sandbox"] ?? false);
 			$excerpt_length = (int)clean($_REQUEST["excerpt_length"] ?? 0);
 			$check_first_id = (int)clean($_REQUEST["check_first_id"] ?? 0);
-			$include_header = self::_param_to_bool(clean($_REQUEST["include_header"] ?? false));
+			$include_header = self::_param_to_bool($_REQUEST["include_header"] ?? false);
 
 			$_SESSION['hasSandbox'] = $has_sandbox;
 

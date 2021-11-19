@@ -456,7 +456,7 @@ class Feeds extends Handler_Protected {
 		$method = $_REQUEST["m"] ?? "";
 		$view_mode = $_REQUEST["view_mode"] ?? "";
 		$limit = 30;
-		$cat_view = $_REQUEST["cat"] == "true";
+		$cat_view = self::_param_to_bool($_REQUEST["cat"] ?? false);
 		$next_unread_feed = $_REQUEST["nuf"] ?? 0;
 		$offset = (int) ($_REQUEST["skip"] ?? 0);
 		$order_by = $_REQUEST["order_by"] ?? "";

@@ -47,7 +47,7 @@ class Pref_Feeds extends Handler_Protected {
 			$search = "";
 
 		// first one is set by API
-		$show_empty_cats = clean($_REQUEST['force_show_empty'] ?? false) ||
+		$show_empty_cats = self::_param_to_bool($_REQUEST['force_show_empty'] ?? false) ||
 			(clean($_REQUEST['mode'] ?? 0) != 2 && !$search);
 
 		$items = [];
@@ -208,7 +208,7 @@ class Pref_Feeds extends Handler_Protected {
 		}
 
 		if ($enable_cats) {
-			$show_empty_cats = clean($_REQUEST['force_show_empty'] ?? false) ||
+			$show_empty_cats = self::_param_to_bool($_REQUEST['force_show_empty'] ?? false) ||
 				(clean($_REQUEST['mode'] ?? 0) != 2 && !$search);
 
 			$feed_categories = ORM::for_table('ttrss_feed_categories')
@@ -1260,7 +1260,7 @@ class Pref_Feeds extends Handler_Protected {
 
 	function regenFeedKey(): void {
 		$feed_id = clean($_REQUEST['id']);
-		$is_cat = clean($_REQUEST['is_cat']);
+		$is_cat = self::_param_to_bool($_REQUEST['is_cat'] ?? false);
 
 		$new_key = Feeds::_update_access_key($feed_id, $is_cat, $_SESSION["uid"]);
 
@@ -1269,7 +1269,7 @@ class Pref_Feeds extends Handler_Protected {
 
 	function getSharedURL(): void {
 		$feed_id = clean($_REQUEST['id']);
-		$is_cat = clean($_REQUEST['is_cat']) == "true";
+		$is_cat = self::_param_to_bool($_REQUEST['is_cat'] ?? false);
 		$search = clean($_REQUEST['search']);
 
 		$link = Config::get_self_url() . "/public.php?" . http_build_query([

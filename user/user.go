@@ -103,7 +103,7 @@ func (u *UserIO) AddLocation(id string, loc string) {
 }
 
 func (u *UserIO) DeleteUser(id string) {
-	os.Remove(u.getUserDir(id))
+	os.RemoveAll(u.getUserDir(id))
 	for i := 0; i < len(u.ids); i++ {
 		if u.ids[i] == id {
 			u.ids[i] = u.ids[len(u.ids)-1]

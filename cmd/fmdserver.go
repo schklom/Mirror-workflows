@@ -255,12 +255,12 @@ func deleteDevice(w http.ResponseWriter, r *http.Request) {
 	var data DataPackage
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - postCommand 1", http.StatusBadRequest)
+		http.Error(w, "Meeep!, Error - deleteDevice 1", http.StatusBadRequest)
 		return
 	}
 	id := uio.ACC.CheckAccessToken(data.IDT)
 	if id == "" {
-		http.Error(w, "Meeep!, Error - postCommand 2", http.StatusBadRequest)
+		http.Error(w, "Meeep!, Error - deleteDevice 2", http.StatusBadRequest)
 		return
 	}
 	uio.DeleteUser(id)
@@ -305,9 +305,9 @@ func mainCommand(w http.ResponseWriter, r *http.Request) {
 
 func mainDevice(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
-	case http.MethodDelete:
-		deleteDevice(w, r)
 	case http.MethodPost:
+		deleteDevice(w, r)
+	case http.MethodPut:
 		postDevice(w, r)
 	}
 }

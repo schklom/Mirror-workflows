@@ -89,8 +89,8 @@ class UrlHelper {
 		} else {
 			$base_parts = parse_url($base_url);
 
-			$rel_parts['host'] = $base_parts['host'];
-			$rel_parts['scheme'] = $base_parts['scheme'];
+			$rel_parts['host'] = $base_parts['host'] ?? "";
+			$rel_parts['scheme'] = $base_parts['scheme'] ?? "";
 
 			if (isset($rel_parts['path'])) {
 

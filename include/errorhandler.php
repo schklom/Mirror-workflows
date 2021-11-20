@@ -19,7 +19,7 @@ function format_backtrace($trace): string {
 							array_push($fmt_args, "[" . truncate_string(json_encode($a), 256, "...")) . "]";
 						} else if (is_resource($a)) {
 							array_push($fmt_args, truncate_string(get_resource_type($a), 256, "..."));
-						} else {
+						} else if ($a) {
 							array_push($fmt_args, truncate_string($a, 256, "..."));
 						}
 					}

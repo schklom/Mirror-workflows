@@ -341,7 +341,12 @@
 		}
 	}
 
-	function sql_bool_to_bool(string $s): bool {
+	/** Convert values accepted by tt-rss as true/false to PHP booleans
+	 * @see https://tt-rss.org/wiki/ApiReference#boolean-values
+	 * @param null|string $s null values are considered false
+	 * @return bool
+	 */
+	function sql_bool_to_bool(?string $s): bool {
 		return $s && ($s !== "f" && $s !== "false"); //no-op for PDO, backwards compat for legacy layer
 	}
 

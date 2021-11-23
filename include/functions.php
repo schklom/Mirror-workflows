@@ -267,7 +267,7 @@
 	 *
 	 * @param mixed $param
 	 *
-	 * @return mixed
+	 * @return mixed|null
 	 */
 	function clean($param) {
 		if (is_array($param)) {

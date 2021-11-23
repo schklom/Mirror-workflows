@@ -823,8 +823,8 @@ class API extends Handler {
 	function subscribeToFeed(): bool {
 		$feed_url = clean($_REQUEST["feed_url"]);
 		$category_id = (int) clean($_REQUEST["category_id"]);
-		$login = clean($_REQUEST["login"]);
-		$password = clean($_REQUEST["password"]);
+		$login = clean($_REQUEST["login"] ?? "");
+		$password = clean($_REQUEST["password"] ?? "");
 
 		if ($feed_url) {
 			$rc = Feeds::_subscribe($feed_url, $category_id, $login, $password);

@@ -286,6 +286,8 @@ class UrlHelper {
 		$url = ltrim($url, ' ');
 		$url = str_replace(' ', '%20', $url);
 
+		Debug::log("[UrlHelper] fetching: $url", Debug::LOG_EXTENDED);
+
 		$url = self::validate($url, true);
 
 		if (!$url) {
@@ -345,7 +347,7 @@ class UrlHelper {
 					//Debug::log("[curl progressfunction] $downloaded $max_size", Debug::$LOG_EXTENDED);
 
 					if ($downloaded > $max_size) {
-						Debug::log("curl: reached max size of $max_size bytes requesting $url, aborting.", Debug::LOG_VERBOSE);
+						Debug::log("[UrlHelper] fetch error: curl reached max size of $max_size bytes downloading $url, aborting.", Debug::LOG_VERBOSE);
 						return 1;
 					}
 

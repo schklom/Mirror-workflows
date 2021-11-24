@@ -496,30 +496,38 @@ class Af_RedditImgur extends Plugin {
 
 				Debug::log("handling as imgur page/whatever", Debug::LOG_VERBOSE);
 
-				$content = UrlHelper::fetch(["url" => $entry_href,
-					"http_accept" => "text/*"]);
+				$content_type = $this->get_content_type($entry_href);
 
-				if ($content) {
-					$cdoc = new DOMDocument();
+				if ($content_type && strpos($content_type, "text/html") !== false) {
 
-					if (@$cdoc->loadHTML($content)) {
-						$cxpath = new DOMXPath($cdoc);
+					$content = UrlHelper::fetch(["url" => $entry_href,
+						"http_accept" => "text/*"]);
 
-						/** @var ?DOMElement $rel_image */
-						$rel_image = $cxpath->query("//link[@rel='image_src']")->item(0);
+					if ($content) {
+						$cdoc = new DOMDocument();
 
-						if ($rel_image) {
+						if (@$cdoc->loadHTML($content)) {
+							$cxpath = new DOMXPath($cdoc);
 
-							$img = $doc->createElement('img');
-							$img->setAttribute("src", $rel_image->getAttribute("href"));
+							/** @var ?DOMElement $rel_image */
+							$rel_image = $cxpath->query("//link[@rel='image_src']")->item(0);
 
-							$br = $doc->createElement('br');
-							$entry->parentNode->insertBefore($img, $entry);
-							$entry->parentNode->insertBefore($br, $entry);
+							if ($rel_image) {
 
-							$found = true;
+								$img = $doc->createElement('img');
+								$img->setAttribute("src", $rel_image->getAttribute("href"));
+
+								$br = $doc->createElement('br');
+								$entry->parentNode->insertBefore($img, $entry);
+								$entry->parentNode->insertBefore($br, $entry);
+
+								$found = true;
+							}
 						}
 					}
+
+				} else {
+					Debug::log("skipping imgur $entry_href because of content type: $content_type", Debug::LOG_VERBOSE);
 				}
 			}
 
@@ -543,53 +551,60 @@ class Af_RedditImgur extends Plugin {
 			if (!$found) {
 				Debug::log("looking for meta og:image", Debug::LOG_VERBOSE);
 
-				$content = UrlHelper::fetch(["url" => $entry_href,
-					"http_accept" => "text/*"]);
+				$content_type = $this->get_content_type($entry_href);
 
-				if ($content) {
-					$cdoc = new DOMDocument();
+				if ($content_type && strpos($content_type, "text/html") !== false) {
 
-					if (@$cdoc->loadHTML($content)) {
-						$cxpath = new DOMXPath($cdoc);
+					$content = UrlHelper::fetch(["url" => $entry_href,
+						"http_accept" => "text/*"]);
 
-						/** @var ?DOMElement $og_image */
-						$og_image = $cxpath->query("//meta[@property='og:image']")->item(0);
+					if ($content) {
+						$cdoc = new DOMDocument();
 
-						/** @var ?DOMElement $og_video */
-						$og_video = $cxpath->query("//meta[@property='og:video']")->item(0);
+						if (@$cdoc->loadHTML($content)) {
+							$cxpath = new DOMXPath($cdoc);
 
-						if ($og_video) {
+							/** @var ?DOMElement $og_image */
+							$og_image = $cxpath->query("//meta[@property='og:image']")->item(0);
 
-							$source_stream = $og_video->getAttribute("content");
+							/** @var ?DOMElement $og_video */
+							$og_video = $cxpath->query("//meta[@property='og:video']")->item(0);
 
-							if ($source_stream) {
+							if ($og_video) {
 
-								if ($og_image) {
-									$poster_url = $og_image->getAttribute("content");
-								} else {
-									$poster_url = false;
+								$source_stream = $og_video->getAttribute("content");
+
+								if ($source_stream) {
+
+									if ($og_image) {
+										$poster_url = $og_image->getAttribute("content");
+									} else {
+										$poster_url = false;
+									}
+
+									$this->handle_as_video($doc, $entry, $source_stream, $poster_url);
+									$found = true;
 								}
 
-								$this->handle_as_video($doc, $entry, $source_stream, $poster_url);
-								$found = true;
-							}
+							} else if ($og_image) {
 
-						} else if ($og_image) {
+								$og_src = $og_image->getAttribute("content");
 
-							$og_src = $og_image->getAttribute("content");
+								if ($og_src) {
+									$img = $doc->createElement('img');
+									$img->setAttribute("src", $og_src);
 
-							if ($og_src) {
-								$img = $doc->createElement('img');
-								$img->setAttribute("src", $og_src);
+									$br = $doc->createElement('br');
+									$entry->parentNode->insertBefore($img, $entry);
+									$entry->parentNode->insertBefore($br, $entry);
 
-								$br = $doc->createElement('br');
-								$entry->parentNode->insertBefore($img, $entry);
-								$entry->parentNode->insertBefore($br, $entry);
-
-								$found = true;
+									$found = true;
+								}
 							}
 						}
 					}
+				} else {
+					Debug::log("BODY: skipping $entry_href because of content type: $content_type", Debug::LOG_VERBOSE);
 				}
 			}
 		}

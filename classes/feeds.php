@@ -18,9 +18,10 @@ class Feeds extends Handler_Protected {
 	}
 
 	/**
+	 * @param string|int $feed
 	 * @return array{0: array<int, int>, 1: int, 2: int, 3: bool, 4: array<string, mixed>} $topmost_article_ids, $headlines_count, $feed, $disable_cache, $reply
 	 */
-	private function _format_headlines_list(int $feed, string $method, string $view_mode, int $limit, bool $cat_view,
+	private function _format_headlines_list(mixed $feed, string $method, string $view_mode, int $limit, bool $cat_view,
 					int $offset, string $override_order, bool $include_children, ?int $check_first_id = null,
 					bool $skip_first_id_check, string $order_by): array {
 
@@ -1213,7 +1214,10 @@ class Feeds extends Handler_Protected {
 		}
 	}
 
-	static function _get_title(int $id, bool $cat = false): string {
+	/**
+	 * @param string|int $id
+	 */
+	static function _get_title(mixed $id, bool $cat = false): string {
 		$pdo = Db::pdo();
 
 		if ($cat) {

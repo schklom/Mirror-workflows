@@ -1,7 +1,7 @@
 <?php
 class API extends Handler {
 
-	const API_LEVEL  = 17;
+	const API_LEVEL  = 18;
 
 	const STATUS_OK  = 0;
 	const STATUS_ERR = 1;
@@ -186,11 +186,9 @@ class API extends Handler {
 	}
 
 	function getHeadlines(): bool {
-		$feed_id = clean($_REQUEST["feed_id"]);
-		if ($feed_id !== "" && is_numeric($feed_id)) {
+		$feed_id = clean($_REQUEST["feed_id"] ?? "");
 
-			$feed_id = (int) $feed_id;
-
+		if (!empty($feed_id)) {
 			$limit = (int)clean($_REQUEST["limit"] ?? 0 );
 
 			if (!$limit || $limit >= 200) $limit = 200;
@@ -632,9 +630,10 @@ class API extends Handler {
 	}
 
 	/**
+	 * @param string|int $feed_id
 	 * @return array{0: array<int, array<string, mixed>>, 1: array<string, mixed>} $headlines, $headlines_header
 	 */
-	private static function _api_get_headlines(int $feed_id, int $limit, int $offset,
+	private static function _api_get_headlines(mixed $feed_id, int $limit, int $offset,
 				string $filter, bool $is_cat, bool $show_excerpt, bool $show_content, ?string $view_mode, string $order,
 				bool $include_attachments, int $since_id, string $search = "", bool $include_nested = false,
 				bool $sanitize_content = true, bool $force_update = false, int $excerpt_length = 100, ?int $check_first_id = null,

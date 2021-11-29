@@ -1269,22 +1269,17 @@ body.ttrss_utility hr {
   margin: 0px 4px;
 }
 .cdm .header .feed {
-  float: right;
-  font-weight: normal;
-  font-style: italic;
-}
-.cdm .header .feed a {
-  border-radius: 4px;
-  display: inline-block;
-  padding: 1px 4px 1px 4px;
-}
-.cdm .header .feed,
-.cdm .header .feed a {
-  vertical-align: middle;
-  color: black;
   font-weight: normal;
   font-style: italic;
   font-size: 11px;
+  display: inline-block;
+  max-width: 25%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-radius: 4px;
+  padding: 1px 4px;
+  margin-right: 4px;
+  color: black;
 }
 .cdm .header .author {
   white-space: nowrap;

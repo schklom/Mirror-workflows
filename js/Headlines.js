@@ -515,10 +515,8 @@ const Headlines = {
 								${hl.cdm_excerpt ? hl.cdm_excerpt : ""}
 							</span>
 
-							<div class="feed vfeedMenuAttach" data-feed-id="${hl.feed_id}">
-								<a href="#" style="background-color: ${hl.feed_bg_color}"
-									onclick="Feeds.open({feed:${hl.feed_id}})">${hl.feed_title}</a>
-							</div>
+							<a href="#" class="feed vfeedMenuAttach" style="background-color: ${hl.feed_bg_color}" data-feed-id="${hl.feed_id}"
+								onclick="Feeds.open({feed:${hl.feed_id}})">${hl.feed_title}</a>
 
 							<span class="updated" title="${hl.imported}">${hl.updated}</span>
 

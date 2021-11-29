@@ -59,23 +59,17 @@
 		}
 
 		.feed {
-			float: right;
-			font-weight: normal;
-			font-style: italic;
-
-			a {
-				border-radius : 4px;
-				display : inline-block;
-				padding : 1px 4px 1px 4px;
-			}
-		}
-
-		.feed, .feed a {
-			vertical-align: middle;
-			color: @default-text;
 			font-weight: normal;
 			font-style: italic;
 			font-size: @font-size-small;
+			display : inline-block;
+			max-width : 25%;
+			overflow : hidden;
+			text-overflow : ellipsis;
+			border-radius : 4px;
+			padding : 1px 4px;
+			margin-right : 4px;
+			color: @default-text;
 		}
 
 		.author {

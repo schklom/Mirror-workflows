@@ -633,7 +633,7 @@ class API extends Handler {
 	 * @param string|int $feed_id
 	 * @return array{0: array<int, array<string, mixed>>, 1: array<string, mixed>} $headlines, $headlines_header
 	 */
-	private static function _api_get_headlines(mixed $feed_id, int $limit, int $offset,
+	private static function _api_get_headlines($feed_id, int $limit, int $offset,
 				string $filter, bool $is_cat, bool $show_excerpt, bool $show_content, ?string $view_mode, string $order,
 				bool $include_attachments, int $since_id, string $search = "", bool $include_nested = false,
 				bool $sanitize_content = true, bool $force_update = false, int $excerpt_length = 100, ?int $check_first_id = null,

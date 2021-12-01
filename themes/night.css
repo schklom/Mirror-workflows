@@ -1259,6 +1259,7 @@ body.ttrss_utility hr {
 }
 .cdm .header .titleWrap {
   flex-grow: 2;
+  width: 0;
 }
 .cdm .header .updated {
   color: #ccc;

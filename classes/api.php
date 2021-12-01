@@ -188,7 +188,7 @@ class API extends Handler {
 	function getHeadlines(): bool {
 		$feed_id = clean($_REQUEST["feed_id"] ?? "");
 
-		if (!empty($feed_id)) {
+		if (!empty($feed_id) || is_numeric($feed_id)) { // is_numeric for feed_id "0"
 			$limit = (int)clean($_REQUEST["limit"] ?? 0 );
 
 			if (!$limit || $limit >= 200) $limit = 200;

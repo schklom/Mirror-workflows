@@ -31,7 +31,7 @@ class jimIcon {
                 }
                 if ($a != 127)
                         $this->all_transaprent = 0;
-                return imagecolorallocatealpha($img, $r, $g, $b, (int) $a);
+                return imagecolorallocatealpha($img, $r, $g, $b, $a);
         }
 
         // Given a string with the contents of an .ICO,

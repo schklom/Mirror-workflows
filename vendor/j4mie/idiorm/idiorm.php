@@ -2209,24 +2209,24 @@
         // ---  ArrayAccess  --- //
         // --------------------- //
 
-        public function offsetExists($key) {
-            return array_key_exists($key, $this->_data);
+        public function offsetExists(mixed $offset): bool {
+            return array_key_exists($offset, $this->_data);
         }
 
-        public function offsetGet($key) {
-            return $this->get($key);
+        public function offsetGet(mixed $offset): mixed {
+            return $this->get($offset);
         }
 
-        public function offsetSet($key, $value) {
-            if(is_null($key)) {
+        public function offsetSet(mixed $offset, mixed $value): void {
+            if(is_null($offset)) {
                 throw new InvalidArgumentException('You must specify a key/array index.');
             }
-            $this->set($key, $value);
+            $this->set($offset, $value);
         }
 
-        public function offsetUnset($key) {
-            unset($this->_data[$key]);
-            unset($this->_dirty_fields[$key]);
+        public function offsetUnset(mixed $offset): void {
+            unset($this->_data[$offset]);
+            unset($this->_dirty_fields[$offset]);
         }
 
         // --------------------- //
@@ -2445,7 +2445,7 @@
          * Get the number of records in the result set
          * @return int
          */
-        public function count() {
+        public function count(): int {
             return count($this->_results);
         }
 
@@ -2454,7 +2454,7 @@
          * over the result set.
          * @return \ArrayIterator
          */
-        public function getIterator() {
+        public function getIterator(): Traversable {
             return new ArrayIterator($this->_results);
         }
 
@@ -2463,7 +2463,7 @@
          * @param int|string $offset
          * @return bool
          */
-        public function offsetExists($offset) {
+        public function offsetExists(mixed $offset): bool {
             return isset($this->_results[$offset]);
         }
 
@@ -2472,25 +2472,33 @@
          * @param int|string $offset
          * @return mixed
          */
-        public function offsetGet($offset) {
+        public function offsetGet(mixed $offset): mixed {
             return $this->_results[$offset];
         }
         
         /**
          * ArrayAccess
-         * @param int|string $offset
+         * @param mixed $offset
          * @param mixed $value
          */
-        public function offsetSet($offset, $value) {
+        public function offsetSet(mixed $offset, mixed $value): void {
             $this->_results[$offset] = $value;
         }
 
         /**
          * ArrayAccess
-         * @param int|string $offset
+         * @param mixed $offset
          */
-        public function offsetUnset($offset) {
+        public function offsetUnset(mixed $offset): void {
             unset($this->_results[$offset]);
+	}
+
+        public function __serialize() {
+            return $this->serialize();
+        }
+
+        public function __unserialize($data) {
+            $this->unserialize($data);
         }
 
         /**

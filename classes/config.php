@@ -309,7 +309,7 @@ class Config {
 			} else if (file_exists("$root_dir/version_static.txt")) {
 				$this->version["version"] = trim(file_get_contents("$root_dir/version_static.txt")) . " (Unsupported)";
 			} else if (ini_get("open_basedir")) {
-				$this->version["version"] .= "UNKNOWN (Unsupported, open_basedir)";
+				$this->version["version"] = "UNKNOWN (Unsupported, open_basedir)";
 			} else if (is_dir("$root_dir/.git")) {
 				$this->version = self::get_version_from_git($root_dir);
 

@@ -27,7 +27,7 @@ class Pref_Prefs extends Handler_Protected {
 	const PI_ERR_NO_WORKDIR = "PI_ERR_NO_WORKDIR";
 
 	/** @param string $method */
-	function csrf_ignore($method) : bool {
+	function csrf_ignore(string $method) : bool {
 		$csrf_ignored = array("index", "updateself", "otpqrcode");
 
 		return array_search($method, $csrf_ignored) !== false;

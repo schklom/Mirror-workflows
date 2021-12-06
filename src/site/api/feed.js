@@ -23,6 +23,7 @@ function respondWithFeed(feed, kind, maxAge, available) {
 		}
 	}
 	const headers = {
+		"Access-Control-Allow-Origin": "*",
 		"Cache-Control": `public, max-age=${maxAge}`
 	}
 	if (!available) headers["X-Bibliogram-Feed-Unavailable"] = 1

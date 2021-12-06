@@ -670,4 +670,13 @@ abstract class Plugin {
 
 		return false;
 	}
+
+	/** Invoked after user logout, may override built-in behavior (redirect back to login page)
+	 *  @param string $login
+	 *  @param int $user_id
+	 * @return array<mixed> - [0] - if set, url to redirect to
+	*/
+	function hook_post_logout($login, $user_id) {
+		return [""];
+	}
 }

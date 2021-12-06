@@ -195,6 +195,9 @@ class PluginHost {
 	/** @see Plugin::hook_pre_subscribe() */
 	const HOOK_PRE_SUBSCRIBE = "hook_pre_subscribe";
 
+	/** @see Plugin::hook_post_logout() */
+	const HOOK_POST_LOGOUT = "hook_post_logout";
+
 	const KIND_ALL = 1;
 	const KIND_SYSTEM = 2;
 	const KIND_USER = 3;

@@ -296,8 +296,25 @@ class Handler_Public extends Handler {
 
 	function logout(): void {
 		if (validate_csrf($_POST["csrf_token"])) {
+
+			$login = $_SESSION["name"];
+			$user_id = $_SESSION["uid"];
+
 			UserHelper::logout();
-			header("Location: index.php");
+
+			$redirect_url = "";
+
+			PluginHost::getInstance()->run_hooks_callback(PluginHost::HOOK_POST_LOGOUT,
+				function ($result) use (&$redirect_url) {
+					if (!empty($result[0]))
+						$redirect_url = UrlHelper::validate($result[0]);
+				},
+				$login, $user_id);
+
+			if (!$redirect_url)
+				$redirect_url = get_self_url_prefix() . "/index.php";
+
+			header("Location: " . $redirect_url);
 		} else {
 			header("Content-Type: text/json");
 			print Errors::to_json(Errors::E_UNAUTHORIZED);

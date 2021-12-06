@@ -3,13 +3,16 @@ class Af_Comics_ComicPress extends Af_ComicFilter {
 
 	function supported() {
 		return array("Buni", "Buttersafe", "Happy Jar", "CSection",
-			"Extra Fabulous Comics", "Nedroid", "Stonetoss");
+			"Extra Fabulous Comics", "Nedroid", "Stonetoss",
+			"Danby Draws", "Powerup Comics");
 	}
 
 	function process(&$article) {
 		if (strpos($article["guid"], "bunicomic.com") !== false ||
 				strpos($article["guid"], "buttersafe.com") !== false ||
 				strpos($article["guid"], "extrafabulouscomics.com") !== false ||
+				strpos($article["guid"], "danbydraws.com") !== false ||
+				strpos($article["guid"], "theduckwebcomics.com/Powerup_Comics") !== false ||
 				strpos($article["guid"], "happyjar.com") !== false ||
 				strpos($article["guid"], "nedroid.com") !== false ||
 				strpos($article["guid"], "stonetoss.com") !== false ||

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: TT-RSS CZech\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-18 13:34+0300\n"
-"PO-Revision-Date: 2021-03-12 06:52+0000\n"
+"PO-Revision-Date: 2021-11-24 07:41+0000\n"
 "Last-Translator: Marek Pavelka <mara.pavelka@gmail.com>\n"
 "Language-Team: Czech <https://weblate.tt-rss.org/projects/tt-rss/messages/cs/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.5.1\n"
+"X-Generator: Weblate 4.9.1\n"
 
 #: backend.php:60
 msgid "Use default"
@@ -280,20 +280,16 @@ msgid "Open next feed"
 msgstr "Otevřít další kanál"
 
 #: classes/rpc.php:567
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open next unread feed"
-msgstr "Otevřít další kanál"
+msgstr "Otevřít další nepřečtený kanál"
 
 #: classes/rpc.php:568
 msgid "Open previous feed"
 msgstr "Otevřít předchozí kanál"
 
 #: classes/rpc.php:569
-#, fuzzy
-#| msgid "Open previous feed"
 msgid "Open previous unread feed"
-msgstr "Otevřít předchozí kanál"
+msgstr "Otevřít předchozí nepřečtený kanál"
 
 #: classes/rpc.php:570
 msgid "Open next article (in combined mode, scroll down)"
@@ -461,10 +457,8 @@ msgid "Toggle headline grouping"
 msgstr "Přepnout seskupování nadpisů"
 
 #: classes/rpc.php:613
-#, fuzzy
-#| msgid "Toggle sidebar"
 msgid "Toggle grid view"
-msgstr "Přepnout postranní panel"
+msgstr "Přepnout zobrazení v mřížce"
 
 #: classes/rpc.php:614
 msgid "Debug feed update"
@@ -851,14 +845,12 @@ msgid "May increase server load"
 msgstr "Může zvýšit zatížení serveru"
 
 #: classes/pref/prefs.php:121
-#, fuzzy
-#| msgid "Preview"
 msgid "Grid view"
-msgstr "Náhled"
+msgstr "Zobrazení v mřížce"
 
 #: classes/pref/prefs.php:121
 msgid "On wider screens, if always expanded"
-msgstr ""
+msgstr "Na širších obrazovkách, pokud je vždy rozbaleno"
 
 #: classes/pref/prefs.php:222
 msgid "The configuration was saved."
@@ -927,14 +919,12 @@ msgid "Disable OTP"
 msgstr "Zakázat jednorázové heslo"
 
 #: classes/pref/prefs.php:472
-#, fuzzy
-#| msgid "OTP Key:"
 msgid "OTP secret:"
-msgstr "Klíč jednorázového hesla:"
+msgstr "Tajné jednorázové heslo:"
 
 #: classes/pref/prefs.php:499
 msgid "Verification code:"
-msgstr ""
+msgstr "Ověřovací kód:"
 
 #: classes/pref/prefs.php:507
 msgid "Enable OTP"
@@ -1609,10 +1599,8 @@ msgid "%d min"
 msgstr "%d min"
 
 #: plugins/auth_internal/init.php:112
-#, fuzzy
-#| msgid "Please enter label caption:"
 msgid "Please enter verification code (OTP):"
-msgstr "Zadejte titulek štítku:"
+msgstr "Zadejte ověřovací kód (jednorázové heslo):"
 
 #: plugins/auth_internal/init.php:114
 msgid "Continue"
@@ -1620,7 +1608,7 @@ msgstr "Pokračovat"
 
 #: plugins/auth_internal/init.php:166
 msgid "Too many authentication attempts, throttled."
-msgstr ""
+msgstr "Příliš mnoho pokusů o ověření, omezeno."
 
 #: plugins/auth_internal/init.php:247
 msgid "Password has been changed."
@@ -1833,8 +1821,6 @@ msgid "The following comics are currently supported:"
 msgstr "Nyní jsou podporovány následující komiksy:"
 
 #: plugins/nsfw/init.php:39
-#, fuzzy
-#| msgid "Not work safe (click to toggle)"
 msgid "Not safe for work (click to toggle)"
 msgstr "Neotvírat v práci (kliknutím přepnout)"
 
@@ -2331,13 +2317,11 @@ msgstr "Vymazat protokol událostí?"
 
 #: js/PrefHelpers.js:135
 msgid "Name for cloned profile:"
-msgstr ""
+msgstr "Název pro klonovaný profil:"
 
 #: js/PrefHelpers.js:145
-#, fuzzy
-#| msgid "Please select an image file."
 msgid "Please select a single profile to clone."
-msgstr "Vyberte soubor obrázku."
+msgstr "Vyberte jeden profil pro klonování."
 
 #: js/PrefHelpers.js:153
 msgid ""
@@ -2362,7 +2346,7 @@ msgstr "(aktivní)"
 
 #: js/PrefHelpers.js:219
 msgid "(empty)"
-msgstr ""
+msgstr "(prázdný)"
 
 #: js/PrefHelpers.js:242
 msgid "Activate selected profile?"
@@ -2749,10 +2733,8 @@ msgid "Looking for articles (%d processed, %f found)..."
 msgstr "Hledání článků (%d zpracováno, %f nalezeno)..."
 
 #: js/CommonFilters.js:72
-#, fuzzy
-#| msgid "Found %d articles matching this filter:"
 msgid "Articles matching this filter:"
-msgstr "Nalezeno %d článků odpovídajících tomuto filtru:"
+msgstr "Články odpovídající tomuto filtru:"
 
 #: js/CommonFilters.js:74
 msgid "Found %d articles matching this filter:"
@@ -2763,10 +2745,8 @@ msgid "Error while trying to get filter test results."
 msgstr "Chyba při pokusu o získání výsledků testu filtru."
 
 #: js/CommonFilters.js:95
-#, fuzzy
-#| msgid "Looking for plugins..."
 msgid "Looking for articles..."
-msgstr "Vyhledávání modulů..."
+msgstr "Vyhledávání článků..."
 
 #: js/CommonFilters.js:174
 msgid "Edit rule"
@@ -2829,10 +2809,8 @@ msgid "Unable to fetch full text for this article"
 msgstr "Nelze načíst úplný text pro tento článek"
 
 #: plugins/shorten_expanded/init.js:32
-#, fuzzy
-#| msgid "Email article"
 msgid "Expand article"
-msgstr "Odeslat článek e-mailem"
+msgstr "Rozbalit článek"
 
 #: plugins/share/share.js:7
 msgid "Share article by URL"
@@ -2896,13 +2874,11 @@ msgstr "URL stránky:"
 
 #: js/PrefHelpers.js:229
 msgid "Clone"
-msgstr ""
+msgstr "Klonovat"
 
 #: js/PrefHelpers.js:231
-#, fuzzy
-#| msgid "Activate profile"
 msgid "Activate"
-msgstr "Aktivovat profil"
+msgstr "Aktivovat"
 
 #: js/PrefHelpers.js:299
 msgid "Apply"

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-18 13:34+0300\n"
-"PO-Revision-Date: 2021-09-22 14:10+0000\n"
+"PO-Revision-Date: 2021-11-21 17:41+0000\n"
 "Last-Translator: TonyRL <tony_lao@outlook.com>\n"
 "Language-Team: Chinese (Traditional) <https://weblate.tt-rss.org/projects/"
 "tt-rss/messages/zh_Hant/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.8.1\n"
+"X-Generator: Weblate 4.9.1\n"
 
 #: backend.php:60
 msgid "Use default"
@@ -149,7 +149,7 @@ msgstr "未讀"
 
 #: index.php:192
 msgid "With Note"
-msgstr "筆記"
+msgstr "附註記"
 
 #: index.php:195
 msgid "Sort articles"
@@ -650,7 +650,7 @@ msgstr "進階"
 
 #: classes/pref/prefs.php:81
 msgid "Debugging"
-msgstr "除錯中"
+msgstr "除錯"
 
 #: classes/pref/prefs.php:87
 msgid "Never apply these tags automatically (comma-separated list)."

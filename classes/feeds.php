@@ -955,7 +955,8 @@ class Feeds extends Handler_Protected {
 			$sth->execute([$owner_uid, $feed]);
 			$row = $sth->fetch();
 
-			return $row["count"];
+			// Handle 'SUM()' returning null if there are no results
+			return $row["count"] ?? 0;
 
 		} else if ($n_feed == -1) {
 			$match_part = "marked = true";

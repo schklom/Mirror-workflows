@@ -647,12 +647,25 @@ abstract class Plugin {
 	}
 
 	/** Allows adding custom elements to headlines Select... dropdown
+	 * @deprecated removed, see Plugin::hook_headline_toolbar_select_menu_item2()
 	 * @param int $feed_id
 	 * @param int $is_cat
 	 * @return string
 	 * @see PluginHost::HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM
 	 */
 	function hook_headline_toolbar_select_menu_item($feed_id, $is_cat) {
+		user_error("Dummy method invoked.", E_USER_ERROR);
+
+		return "";
+	}
+
+	/** Allows adding custom elements to headlines Select... select dropdown (<option> format)
+	 * @param int $feed_id
+	 * @param int $is_cat
+	 * @return string
+	 * @see PluginHost::HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM2
+	 */
+	function hook_headline_toolbar_select_menu_item2($feed_id, $is_cat) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 
 		return "";

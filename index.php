@@ -215,20 +215,13 @@
 						?>
 	            </select>
 
-					<div class="catchup-button" dojoType="fox.form.ComboButton" onclick="Feeds.catchupCurrent()">
-						<span><?= __('Mark as read') ?></span>
-						<div dojoType="dijit.DropDownMenu">
-							<div dojoType="dijit.MenuItem" onclick="Feeds.catchupCurrent('1day')">
-									<?= __('Older than one day') ?>
-							</div>
-							<div dojoType="dijit.MenuItem" onclick="Feeds.catchupCurrent('1week')">
-									<?= __('Older than one week') ?>
-							</div>
-							<div dojoType="dijit.MenuItem" onclick="Feeds.catchupCurrent('2week')">
-									<?= __('Older than two weeks') ?>
-							</div>
-						</div>
-					</div>
+					<select class="catchup-button" id="main-catchup-dropdown" dojoType="fox.form.Select"
+						data-prevent-value-change="true">
+						<option value=""><?= __('Mark as read') ?></option>
+						<option value="1day"><?= __('Older than one day') ?></option>
+						<option value="1week"><?= __('Older than one week') ?></option>
+						<option value="2week"><?= __('Older than two weeks') ?></option>
+					</select>
 
             </form>
 

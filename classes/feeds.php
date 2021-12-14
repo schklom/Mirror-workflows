@@ -133,7 +133,7 @@ class Feeds extends Handler_Protected {
 		$reply['vfeed_group_enabled'] = $vfeed_group_enabled;
 
 		$plugin_menu_items = "";
-		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM,
+		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM2,
 			function ($result) use (&$plugin_menu_items) {
 				$plugin_menu_items .= $result;
 			},

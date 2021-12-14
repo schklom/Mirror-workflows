@@ -1359,7 +1359,7 @@ class Feeds extends Handler_Protected {
 		$sth->execute([$user_id]);
 		$row = $sth->fetch();
 
-		return $row["count"];
+		return $row["count"] ?? 0;
 	}
 
 	static function _get_cat_title(int $cat_id): string {

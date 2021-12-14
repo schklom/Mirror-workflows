@@ -1359,6 +1359,7 @@ class Feeds extends Handler_Protected {
 		$sth->execute([$user_id]);
 		$row = $sth->fetch();
 
+		// Handle 'SUM()' returning null if there are no articles/results (e.g. admin user with no feeds)
 		return $row["count"] ?? 0;
 	}
 

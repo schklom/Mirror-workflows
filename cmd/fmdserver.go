@@ -86,6 +86,8 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(fmt.Sprint(string(data))))
+	} else {
+		http.Error(w, "Meeep!, Error - getLocation 3", http.StatusNoContent)
 	}
 }
 

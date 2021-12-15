@@ -101,7 +101,7 @@ function locate(index, password) {
                 Data: hashedPW
             }),
             headers: {
-                'Content-type': 'applicatoin/json'
+                'Content-type': 'application/json'
             }
         }).then(function (response) {
             if (response.ok) {
@@ -125,7 +125,7 @@ function locate(index, password) {
                         Data: index.toString()
                     }),
                     headers: {
-                        'Content-type': 'applicatoin/json'
+                        'Content-type': 'application/json'
                     }
                 })
                     .then(function (response) {
@@ -148,7 +148,7 @@ function locate(index, password) {
                         Data: index.toString()
                     }),
                     headers: {
-                        'Content-type': 'applicatoin/json'
+                        'Content-type': 'application/json'
                     }
                 })
                     .then(function (response) {
@@ -163,7 +163,7 @@ function locate(index, password) {
                                 Data: index.toString()
                             }),
                             headers: {
-                                'Content-type': 'applicatoin/json'
+                                'Content-type': 'application/json'
                             }
                         })
                             .then(function (response) {
@@ -207,7 +207,7 @@ function locate(index, password) {
                                                         HashedPassword: hashedPW
                                                     }),
                                                     headers: {
-                                                        'Content-type': 'applicatoin/json'
+                                                        'Content-type': 'application/json'
                                                     }
                                                 }).then(function (response) {
                                                     return response.json()
@@ -221,7 +221,7 @@ function locate(index, password) {
                                                                 Data: -1
                                                             }),
                                                             headers: {
-                                                                'Content-type': 'applicatoin/json'
+                                                                'Content-type': 'application/json'
                                                             }
                                                         })
                                                             .then(function (response) {
@@ -331,7 +331,7 @@ function sendToPhone(message) {
                 Data: hashedPW
             }),
             headers: {
-                'Content-type': 'applicatoin/json'
+                'Content-type': 'application/json'
             }
         }).then(function (response) {
             return response.json()
@@ -344,7 +344,7 @@ function sendToPhone(message) {
                         Data: message
                     }),
                     headers: {
-                        'Content-type': 'applicatoin/json'
+                        'Content-type': 'application/json'
                     }
                 }).then(function (response) {
                     var toasted = new Toasted({

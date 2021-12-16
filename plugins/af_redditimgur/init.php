@@ -205,7 +205,7 @@ class Af_RedditImgur extends Plugin {
 
 			Debug::log("found hosted video url: $media_url / poster $poster_url, looking up fallback url...", Debug::LOG_VERBOSE);
 
-			$fallback_url = $data["media"]["reddit_video"]["fallback_url"];
+			$fallback_url = $data["media"]["reddit_video"]["fallback_url"] ?? null;
 
 			if ($fallback_url) {
 				Debug::log("found video fallback_url: $fallback_url", Debug::LOG_VERBOSE);

@@ -1,6 +1,15 @@
 <?php
 class Pref_Filters extends Handler_Protected {
 
+	const ACTION_TAG = 4;
+	const ACTION_SCORE = 6;
+	const ACTION_LABEL = 7;
+	const ACTION_PLUGIN = 9;
+	const ACTION_REMOVE_TAG = 10;
+
+	const PARAM_ACTIONS = [self::ACTION_TAG, self::ACTION_SCORE,
+		self::ACTION_LABEL, self::ACTION_PLUGIN, self::ACTION_REMOVE_TAG];
+
 	function csrf_ignore(string $method): bool {
 		$csrf_ignored = array("index", "getfiltertree", "savefilterorder");
 
@@ -274,7 +283,7 @@ class Pref_Filters extends Handler_Protected {
 				}
 			}
 
-			if ($line['action_id'] == 7) {
+			if ($line['action_id'] == self::ACTION_LABEL) {
 				$label_sth = $this->pdo->prepare("SELECT fg_color, bg_color
 					FROM ttrss_labels2 WHERE caption = ? AND
 						owner_uid = ?");
@@ -474,11 +483,7 @@ class Pref_Filters extends Handler_Protected {
 
 			$title = __($row["description"]);
 
-			if ($action["action_id"] == 4 || $action["action_id"] == 6 ||
-				$action["action_id"] == 7)
-				$title .= ": " . $action["action_param"];
-
-			if ($action["action_id"] == 9) {
+			if ($action["action_id"] == self::ACTION_PLUGIN) {
 				list ($pfclass, $pfaction) = explode(":", $action["action_param"]);
 
 				$filter_actions = PluginHost::getInstance()->get_filter_actions();
@@ -491,6 +496,8 @@ class Pref_Filters extends Handler_Protected {
 						}
 					}
 				}
+			} else if (in_array($action["action_id"], self::PARAM_ACTIONS)) {
+				$title .= ": " . $action["action_param"];
 			}
 		}
 
@@ -596,12 +603,17 @@ class Pref_Filters extends Handler_Protected {
 					$action_param = $action["action_param"];
 					$action_param_label = $action["action_param_label"];
 
-					if ($action_id == 7) {
+					if ($action_id == self::ACTION_LABEL) {
 						$action_param = $action_param_label;
 					}
 
-					if ($action_id == 6) {
+					if ($action_id == self::ACTION_SCORE) {
 						$action_param = (int)str_replace("+", "", $action_param);
+					}
+
+					if (in_array($action_id, [self::ACTION_TAG, self::ACTION_REMOVE_TAG])) {
+						$action_param = implode(", ", FeedItem_Common::normalize_categories(
+							explode(",", $action_param)));
 					}
 
 					$asth->execute([$filter_id, $action_id, $action_param]);

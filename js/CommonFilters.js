@@ -16,7 +16,8 @@ const	Filters = {
 			ACTION_SCORE: 6,
 			ACTION_LABEL: 7,
 			ACTION_PLUGIN: 9,
-			PARAM_ACTIONS: [4, 6, 7, 9],
+			ACTION_REMOVE_TAG: 10,
+			PARAM_ACTIONS: [4, 6, 7, 9, 10],
 			filter_info: {},
 			test: function() {
 				const test_dialog = new fox.SingleUseDialog({

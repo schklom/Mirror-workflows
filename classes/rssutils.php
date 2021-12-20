@@ -1164,32 +1164,30 @@ class RSSUtils {
 				}
 
 				// check for manual tags (we have to do it here since they're loaded from filters)
-
 				foreach ($article_filters as $f) {
 					if ($f["type"] == "tag") {
+						$entry_tags = array_merge($entry_tags,
+							FeedItem_Common::normalize_categories(explode(",", $f["param"])));
+					}
+				}
 
-						$manual_tags = array_map('trim', explode(",", mb_strtolower($f["param"])));
-
-						foreach ($manual_tags as $tag) {
-							array_push($entry_tags, $tag);
-						}
+				// like boring tags, but filter-based
+				foreach ($article_filters as $f) {
+					if ($f["type"] == "ignore-tag") {
+						$entry_tags = array_diff($entry_tags,
+							FeedItem_Common::normalize_categories(explode(",", $f["param"])));
 					}
 				}
 
 				// Skip boring tags
-
-				$boring_tags = array_map('trim',
-						explode(",", mb_strtolower(
-							get_pref(Prefs::BLACKLISTED_TAGS, $feed_obj->owner_uid))));
-
 				$entry_tags = FeedItem_Common::normalize_categories(
-					array_unique(
-						array_diff($entry_tags, $boring_tags)));
+						array_diff($entry_tags,
+							FeedItem_Common::normalize_categories(explode(",",
+								get_pref(Prefs::BLACKLISTED_TAGS, $feed_obj->owner_uid)))));
 
-				Debug::log("filtered tags: " . implode(", ", $entry_tags), Debug::LOG_VERBOSE);
+				Debug::log("resulting article tags: " . implode(", ", $entry_tags), Debug::LOG_VERBOSE);
 
 				// Save article tags in the database
-
 				if (count($entry_tags) > 0) {
 
 					$tsth = $pdo->prepare("SELECT id FROM ttrss_tags

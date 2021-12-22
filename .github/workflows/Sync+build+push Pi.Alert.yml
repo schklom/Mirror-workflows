@@ -22,9 +22,8 @@ jobs:
       - name: set local and remote latest commit as environment variables
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-        # echo "::set-output name=SETREMOTE::$(git ls-remote https://github.com/pucherot/Pi.Alert.git HEAD | awk '{ print $1 }')"
         run: |
-          echo "::set-output name=SETREMOTE::$(git ls-remote https://github.com/pucherot/Pi.Alert.git HEAD | awk '{ print $1 }')"
+          echo "::set-output name=SETREMOTE::$(git ls-remote https://github.com/BarnardCollier/pialert.git HEAD | awk '{ print $1 }')"
           echo "::set-output name=SETLOCAL::$(cat last_sync_with_original_repo_commit_id)"
   
   repo_sync:
@@ -36,7 +35,7 @@ jobs:
       - name: repo-sync
         uses: wei/git-sync@v3
         with:
-          source_repo: "https://github.com/pucherot/Pi.Alert.git"
+          source_repo: "https://github.com/BarnardCollier/pialert.git"
           source_branch: "main"
           destination_repo: "git@github.com:schklom/Mirror-workflows.git"
           destination_branch: "Pi.Alert"
@@ -46,7 +45,7 @@ jobs:
         with:
           ref: 'Pi.Alert' # branch
       - name: get most recent commit id on original repo, for next comparison on sync
-        run: git ls-remote https://github.com/pucherot/Pi.Alert.git HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
+        run: git ls-remote https://github.com/BarnardCollier/pialert.git HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.12.0
         with:

@@ -419,6 +419,8 @@ class UrlHelper {
 
 				if (curl_errno($ch) != 0) {
 					self::$fetch_last_error .=  "; " . curl_errno($ch) . " " . curl_error($ch);
+				} else {
+					self::$fetch_last_error = "HTTP Code: $http_code ";
 				}
 
 				self::$fetch_last_error_content = $contents;

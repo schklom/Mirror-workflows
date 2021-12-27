@@ -35,19 +35,19 @@ jobs:
     if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
     steps:
       - name: repo-sync
-        # uses: wei/git-sync@v3
-        # with:
-          # source_repo: "https://git.tt-rss.org/fox/ttrss-docker-compose.git"
-          # source_branch: "master"
-          # destination_repo: "git@github.com:schklom/Mirror-workflows.git"
-          # destination_branch: "TTRSS-docker"
-          # ssh_private_key: ${{ secrets.GITSYNCACTION }}
-        uses: repo-sync/github-sync@v2
+        uses: wei/git-sync@v3
         with:
           source_repo: "https://git.tt-rss.org/fox/ttrss-docker-compose.git"
           source_branch: "master"
+          destination_repo: "git@github.com:schklom/Mirror-workflows.git"
           destination_branch: "TTRSS-docker"
-          github_token: ${{ secrets.REPO_SYNC_GITHUB_SYNC_PERSONAL_ACCESS_TOKEN }}
+          ssh_private_key: ${{ secrets.GITSYNCACTION }}
+        # uses: repo-sync/github-sync@v2
+        # with:
+          # source_repo: "https://git.tt-rss.org/fox/ttrss-docker-compose.git"
+          # source_branch: "master"
+          # destination_branch: "TTRSS-docker"
+          # github_token: ${{ secrets.REPO_SYNC_GITHUB_SYNC_PERSONAL_ACCESS_TOKEN }}
       - name: Checkout
         uses: actions/checkout@v2.4.0
         with:

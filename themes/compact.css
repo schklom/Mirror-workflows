@@ -1475,8 +1475,7 @@ body.ttrss_utility hr {
   box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.1);
   border: 0 solid #ddd;
   border-bottom-width: 1px;
-  background: white ! important;
-  opacity: 0.9;
+  background: rgba(255, 255, 255, 0.9) ! important;
   backdrop-filter: blur(6px);
 }
 body.ttrss_prefs {

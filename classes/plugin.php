@@ -98,7 +98,7 @@ abstract class Plugin {
 
 	/* GLOBAL hooks are invoked in global context, only available to system plugins (loaded via .env for all users) */
 
-	/** Adds buttons for article (on the right) - e.g. mail, share, add note.
+	/** Adds buttons for article (on the right) - e.g. mail, share, add note. Generated markup must be valid XML.
 	 * @param array<string,mixed> $line
 	 * @return string
 	 * @see PluginHost::HOOK_ARTICLE_BUTTON
@@ -307,7 +307,7 @@ abstract class Plugin {
 		return [];
 	}
 
-	/** Adds per-article buttons on the left side
+	/** Adds per-article buttons on the left side. Generated markup must be valid XML.
 	 * @param array<string,mixed> $row
 	 * @return string
 	 * @see PluginHost::HOOK_ARTICLE_LEFT_BUTTON

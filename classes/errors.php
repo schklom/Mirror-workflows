@@ -14,4 +14,27 @@ class Errors {
 	static function to_json(string $code, array $params = []): string {
 		return json_encode(["error" => ["code" => $code, "params" => $params]]);
 	}
+
+	static function libxml_last_error() : string {
+		$error = libxml_get_last_error();
+		$error_formatted = "";
+
+		if ($error) {
+			foreach (libxml_get_errors() as $error) {
+				if ($error->level == LIBXML_ERR_FATAL) {
+					// currently only the first error is reported
+					$error_formatted = self::format_libxml_error($error);
+					break;
+				}
+			}
+		}
+
+		return UConverter::transcode($error_formatted, 'UTF-8', 'UTF-8');
+	}
+
+	static function format_libxml_error(LibXMLError $error) : string {
+		return sprintf("LibXML error %s at line %d (column %d): %s",
+			$error->code, $error->line, $error->column,
+			$error->message);
+	}
 }

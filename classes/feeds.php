@@ -254,6 +254,10 @@ class Feeds extends Handler_Protected {
 
 								$line["buttons_left"] .= $button_doc->saveXML($button_doc->firstChild);
 							}
+						} else if ($result) {
+							user_error(get_class($plugin) .
+								" plugin: content provided in HOOK_ARTICLE_LEFT_BUTTON is not valid XML: " .
+								Errors::libxml_last_error() . " $result", E_USER_WARNING);
 						}
 					},
 					$line);
@@ -273,6 +277,10 @@ class Feeds extends Handler_Protected {
 
 								$line["buttons"] .= $button_doc->saveXML($button_doc->firstChild);
 							}
+						} else if ($result) {
+							user_error(get_class($plugin) .
+								" plugin: content provided in HOOK_ARTICLE_BUTTON is not valid XML: " .
+								Errors::libxml_last_error() . " $result", E_USER_WARNING);
 						}
 					},
 					$line);

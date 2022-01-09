@@ -233,8 +233,13 @@ class Af_Readability extends Plugin {
 						}
 
 						if ($entry->hasAttribute("src")) {
+							if ($entry->hasAttribute("data-src")) {
+								$src = $entry->getAttribute("data-src");
+							} else {
+								$src = $entry->getAttribute("src");
+							}
 							$entry->setAttribute("src",
-								UrlHelper::rewrite_relative(UrlHelper::$fetch_effective_url, $entry->getAttribute("src")));
+								UrlHelper::rewrite_relative(UrlHelper::$fetch_effective_url, $src));
 
 						}
 					}

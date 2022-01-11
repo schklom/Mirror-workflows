@@ -1,14 +1,14 @@
-# Mirror-workflows
+This branch does not mirror any repo. It just contains a Dockerfile needed to make an image that I want.
 
-Each branch mirrors a repo (easier to build with Actions than having one repo for each repo I want to mirror).
+This branch contains a Dockerfile for `iperf3`.
 
-Actions synchronize the branches to repos, build Dockerfiles into images, and push these images to Docker Hub.
+By default, it runs `iperf3 -s` and makes an `iperf3` server listening on port 5201.
 
-The Actions are defined in the directory .github/workflows. Secrets are used for sensitive information.
-
-### Branches currently working:
-
-- Feedropolis
-- Spreed
-- TT-RSS
-- Bibliogram
+A basic usage with docker-compose is
+```python
+services:
+  iperf3:
+    image: schklom/iperf3
+    ports:
+      - 5201:5201
+```

@@ -1,9 +1,9 @@
 FROM alpine
 
-# install binary and remove cache
-RUN apt-get update
-RUN apt-get install -y iperf3
-RUN rm -rf /var/lib/apt/lists/*
+# install binary
+RUN apk update
+# https://stackoverflow.com/a/48281852
+RUN apk add --no-cache iperf3
 
 # By default, expose port 5201
 EXPOSE 5201

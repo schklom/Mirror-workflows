@@ -8,4 +8,4 @@ RUN apk add --no-cache iperf3
 # By default, expose port 5201
 EXPOSE 5201
 
-CMD ["iperf", "-s"]
+CMD ["iperf3", "-s"]

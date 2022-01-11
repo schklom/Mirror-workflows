@@ -12,3 +12,6 @@ services:
     ports:
       - 5201:5201
 ```
+
+# Acknowledgements
+This Dockerfile is heavily inspired by https://github.com/nerdalert/iperf3/blob/master/Dockerfile

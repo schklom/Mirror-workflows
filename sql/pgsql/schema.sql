@@ -245,6 +245,9 @@ insert into ttrss_filter_actions (id,name,description) values (8, 'stop',
 insert into ttrss_filter_actions (id,name,description) values (9, 'plugin',
 	'Invoke plugin');
 
+insert into ttrss_filter_actions (id,name,description) values (10, 'ignore-tag',
+	'Ignore tags');
+
 create table ttrss_filters2(id serial not null primary key,
 	owner_uid integer not null references ttrss_users(id) on delete cascade,
 	match_any_rule boolean not null default false,

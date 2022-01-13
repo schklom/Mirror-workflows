@@ -193,10 +193,9 @@ class FeedParser {
 		}
 	}
 
+	/** @deprecated use Errors::format_libxml_error() instead */
 	function format_error(LibXMLError $error) : string {
-		return sprintf("LibXML error %s at line %d (column %d): %s",
-			$error->code, $error->line, $error->column,
-			$error->message);
+		return Errors::format_libxml_error($error);
 	}
 
 	// libxml may have invalid unicode data in error messages

@@ -282,6 +282,10 @@ const	Feeds = {
 			CommonDialogs.safeModeWarning();
 		}
 
+		dojo.connect(dijit.byId("main-catchup-dropdown"), 'onItemClick',
+			(item) => Feeds.catchupCurrent(item.option.value)
+		);
+
 		// bw_limit disables timeout() so we request initial counters separately
 		if (App.getInitParam("bw_limit")) {
 			this.requestCounters();

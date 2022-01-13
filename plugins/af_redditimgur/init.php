@@ -158,7 +158,24 @@ class Af_RedditImgur extends Plugin {
 	private function process_post_media(array $data, DOMDocument $doc, DOMXPath $xpath, DOMElement $anchor) : bool {
 		$found = 0;
 
-		if (isset($data["media_metadata"])) {
+		// process galleries in the right order
+		if (isset($data["gallery_data"]) && isset($data["media_metadata"])) {
+			foreach ($data["gallery_data"]["items"] as $gal_item) {
+				$media_id = $gal_item["media_id"] ?? null;
+
+				if ($media_id) {
+					$media_url = htmlspecialchars_decode($data["media_metadata"][$media_id]["s"]["u"] ?? "");
+
+					if ($media_url) {
+						Debug::log("found gallery item: $media_id, url: $media_url", Debug::LOG_EXTENDED);
+
+						$this->handle_as_image($doc, $anchor, $media_url);
+						$found = 1;
+					}
+				}
+			}
+		// i'm not sure if this is a thing, but if there's no gallery just process any possible attaches in the random order...
+		} else if (isset($data["media_metadata"])) {
 			foreach ($data["media_metadata"] as $media) {
 				if (!empty($media["s"]["u"])) {
 					$media_url = htmlspecialchars_decode($media["s"]["u"]);
@@ -205,7 +222,7 @@ class Af_RedditImgur extends Plugin {
 
 			Debug::log("found hosted video url: $media_url / poster $poster_url, looking up fallback url...", Debug::LOG_VERBOSE);
 
-			$fallback_url = $data["media"]["reddit_video"]["fallback_url"];
+			$fallback_url = $data["media"]["reddit_video"]["fallback_url"] ?? null;
 
 			if ($fallback_url) {
 				Debug::log("found video fallback_url: $fallback_url", Debug::LOG_VERBOSE);

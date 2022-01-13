@@ -557,7 +557,7 @@ class RSSUtils {
 			Debug::log("language: $feed_language", Debug::LOG_VERBOSE);
 			Debug::log("processing feed data...", Debug::LOG_VERBOSE);
 
-			$site_url = mb_substr(rewrite_relative_url($feed_obj->feed_url, clean($rss->get_link())), 0, 245);
+			$site_url = mb_substr(UrlHelper::rewrite_relative($feed_obj->feed_url, clean($rss->get_link())), 0, 245);
 
 			Debug::log("site_url: $site_url", Debug::LOG_VERBOSE);
 			Debug::log("feed_title: {$rss->get_title()}", Debug::LOG_VERBOSE);
@@ -736,7 +736,7 @@ class RSSUtils {
 
 						// TODO: Just use FeedEnclosure (and modify it to cover whatever justified this)?
 						$e_item = array(
-							rewrite_relative_url($site_url, $e->link),
+							UrlHelper::rewrite_relative($site_url, $e->link),
 							$e->type, $e->length, $e->title, $e->width, $e->height);
 
 						// Yet another episode of "mysql utf8_general_ci is gimped"
@@ -1164,32 +1164,30 @@ class RSSUtils {
 				}
 
 				// check for manual tags (we have to do it here since they're loaded from filters)
-
 				foreach ($article_filters as $f) {
 					if ($f["type"] == "tag") {
+						$entry_tags = array_merge($entry_tags,
+							FeedItem_Common::normalize_categories(explode(",", $f["param"])));
+					}
+				}
 
-						$manual_tags = array_map('trim', explode(",", mb_strtolower($f["param"])));
-
-						foreach ($manual_tags as $tag) {
-							array_push($entry_tags, $tag);
-						}
+				// like boring tags, but filter-based
+				foreach ($article_filters as $f) {
+					if ($f["type"] == "ignore-tag") {
+						$entry_tags = array_diff($entry_tags,
+							FeedItem_Common::normalize_categories(explode(",", $f["param"])));
 					}
 				}
 
 				// Skip boring tags
-
-				$boring_tags = array_map('trim',
-						explode(",", mb_strtolower(
-							get_pref(Prefs::BLACKLISTED_TAGS, $feed_obj->owner_uid))));
-
 				$entry_tags = FeedItem_Common::normalize_categories(
-					array_unique(
-						array_diff($entry_tags, $boring_tags)));
+						array_diff($entry_tags,
+							FeedItem_Common::normalize_categories(explode(",",
+								get_pref(Prefs::BLACKLISTED_TAGS, $feed_obj->owner_uid)))));
 
-				Debug::log("filtered tags: " . implode(", ", $entry_tags), Debug::LOG_VERBOSE);
+				Debug::log("resulting article tags: " . implode(", ", $entry_tags), Debug::LOG_VERBOSE);
 
 				// Save article tags in the database
-
 				if (count($entry_tags) > 0) {
 
 					$tsth = $pdo->prepare("SELECT id FROM ttrss_tags
@@ -1286,7 +1284,7 @@ class RSSUtils {
 			foreach ($enclosures as $enc) {
 
 				if (preg_match("/(image|audio|video)/", $enc[1])) {
-					$src = rewrite_relative_url($site_url, $enc[0]);
+					$src = UrlHelper::rewrite_relative($site_url, $enc[0]);
 
 					$local_filename = sha1($src);
 
@@ -1312,7 +1310,7 @@ class RSSUtils {
 
 	/* TODO: move to DiskCache? */
 	static function cache_media_url(DiskCache $cache, string $url, string $site_url): void {
-		$url = rewrite_relative_url($site_url, $url);
+		$url = UrlHelper::rewrite_relative($site_url, $url);
 		$local_filename = sha1($url);
 
 		Debug::log("cache_media: checking $url", Debug::LOG_VERBOSE);
@@ -1874,14 +1872,14 @@ class RSSUtils {
 
 				$base = $xpath->query('/html/head/base[@href]');
 				foreach ($base as $b) {
-					$url = rewrite_relative_url($url, $b->getAttribute("href"));
+					$url = UrlHelper::rewrite_relative($url, $b->getAttribute("href"));
 					break;
 				}
 
 				$entries = $xpath->query('/html/head/link[@rel="shortcut icon" or @rel="icon"]');
 				if (count($entries) > 0) {
 					foreach ($entries as $entry) {
-						$favicon_url = rewrite_relative_url($url, $entry->getAttribute("href"));
+						$favicon_url = UrlHelper::rewrite_relative($url, $entry->getAttribute("href"));
 						break;
 					}
 				}
@@ -1889,7 +1887,7 @@ class RSSUtils {
 		}
 
 		if (!$favicon_url)
-			$favicon_url = rewrite_relative_url($url, "/favicon.ico");
+			$favicon_url = UrlHelper::rewrite_relative($url, "/favicon.ico");
 
 		return $favicon_url;
 	}

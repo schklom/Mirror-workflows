@@ -626,6 +626,12 @@ const Headlines = {
 		const search_query = Feeds._search_query ? Feeds._search_query.query : "";
 		const target = dijit.byId('toolbar-headlines');
 
+		// TODO: is this needed? destroyDescendants() below might take care of it (?)
+		if (this._headlinesSelectClickHandle)
+			dojo.disconnect(this._headlinesSelectClickHandle);
+
+		target.destroyDescendants();
+
 		if (tb && typeof tb == 'object') {
 			target.attr('innerHTML',
 			`
@@ -646,27 +652,37 @@ const Headlines = {
 				</span>
 				<span class='right'>
 					<span id='selected_prompt'></span>
-					<div class='select-articles-dropdown' dojoType='fox.form.DropDownButton' title='"${__('Select articles')}'>
-						<span>${__("Select...")}</span>
-						<div dojoType='dijit.Menu' style='display: none;'>
-						<div dojoType='dijit.MenuItem' onclick='Headlines.select("all")'>${__('All')}</div>
-						<div dojoType='dijit.MenuItem' onclick='Headlines.select("unread")'>${__('Unread')}</div>
-						<div dojoType='dijit.MenuItem' onclick='Headlines.select("invert")'>${__('Invert')}</div>
-						<div dojoType='dijit.MenuItem' onclick='Headlines.select("none")'>${__('None')}</div>
-						<div dojoType='dijit.MenuSeparator'></div>
-						<div dojoType='dijit.MenuItem' onclick='Headlines.selectionToggleUnread()'>${__('Toggle unread')}</div>
-						<div dojoType='dijit.MenuItem' onclick='Headlines.selectionToggleMarked()'>${__('Toggle starred')}</div>
-						<div dojoType='dijit.MenuItem' onclick='Headlines.selectionTogglePublished()'>${__('Toggle published')}</div>
-						<div dojoType='dijit.MenuSeparator'></div>
-						<div dojoType='dijit.MenuItem' onclick='Headlines.catchupSelection()'>${__('Mark as read')}</div>
-						<div dojoType='dijit.MenuItem' onclick='Article.selectionSetScore()'>${__('Set score')}</div>
-						${tb.plugin_menu_items}
+
+					<select class='select-articles-dropdown'
+						id='headlines-select-articles-dropdown'
+						data-prevent-value-change="true"
+						data-dropdown-skip-first="true"
+						dojoType="fox.form.Select"
+						title="${__('Show articles')}">
+						<option value='' selected="selected">${__("Select...")}</option>
+						<option value='headlines_select_all'>${__('All')}</option>
+						<option value='headlines_select_unread'>${__('Unread')}</option>
+						<option value='headlines_select_invert'>${__('Invert')}</option>
+						<option value='headlines_select_none'>${__('None')}</option>
+						<option></option>
+						<option value='headlines_selectionToggleUnread'>${__('Toggle unread')}</option>
+						<option value='headlines_selectionToggleMarked'>${__('Toggle starred')}</option>
+						<option value='headlines_selectionTogglePublished'>${__('Toggle published')}</option>
+						<option></option>
+						<option value='headlines_catchupSelection'>${__('Mark as read')}</option>
+						<option value='article_selectionSetScore'>${__('Set score')}</option>
+						${tb.plugin_menu_items != '' ?
+							`
+							<option></option>
+							${tb.plugin_menu_items}
+						` : ''}
 						${headlines.id === 0 && !headlines.is_cat ?
 							`
-							<div dojoType='dijit.MenuSeparator'></div>
-							<div dojoType='dijit.MenuItem' class='text-error' onclick='Headlines.deleteSelection()'>${__('Delete permanently')}</div>
+							<option></option>
+							<option class='text-error' value='headlines_deleteSelection'>${__('Delete permanently')}</option>
 							` : ''}
-					</div>
+					</select>
+
 					${tb.plugin_buttons}
 				</span>
 			`);
@@ -675,6 +691,48 @@ const Headlines = {
 		}
 
 		dojo.parser.parse(target.domNode);
+
+		this._headlinesSelectClickHandle = dojo.connect(dijit.byId("headlines-select-articles-dropdown"), 'onItemClick',
+			(item) => {
+				const action = item.option.value;
+
+				switch (action) {
+					case 'headlines_select_all':
+						Headlines.select('all');
+						break;
+					case 'headlines_select_unread':
+						Headlines.select('unread');
+						break;
+					case 'headlines_select_invert':
+						Headlines.select('invert');
+						break;
+					case 'headlines_select_none':
+						Headlines.select('none');
+						break;
+					case 'headlines_selectionToggleUnread':
+						Headlines.selectionToggleUnread();
+						break;
+					case 'headlines_selectionToggleMarked':
+						Headlines.selectionToggleMarked();
+						break;
+					case 'headlines_selectionTogglePublished':
+						Headlines.selectionTogglePublished();
+						break;
+					case 'headlines_catchupSelection':
+						Headlines.catchupSelection();
+						break;
+					case 'article_selectionSetScore':
+						Article.selectionSetScore();
+						break;
+					case 'headlines_deleteSelection':
+						Headlines.deleteSelection();
+						break;
+					default:
+						if (!PluginHost.run_until(PluginHost.HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM2, true, action))
+							console.warn('unknown headlines action', action);
+				}
+			}
+		);
 	},
 	onLoaded: function (reply, offset, append) {
 		console.log("Headlines.onLoaded: offset=", offset, "append=", append);

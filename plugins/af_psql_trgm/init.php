@@ -124,7 +124,7 @@ class Af_Psql_Trgm extends Plugin {
 	function hook_article_button($line) {
 		return "<i style=\"cursor : pointer\" class='material-icons'
 			onclick=\"Plugins.Psql_Trgm.showRelated(".$line["id"].")\"
-			title='".__('Show related articles')."'>bookmark_outline</i>";
+			title=\"".__('Show related articles')."\">bookmark_outline</i>";
 	}
 
 	function hook_prefs_tab($args) {

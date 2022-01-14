@@ -52,7 +52,7 @@ class Af_Readability extends Plugin {
 
 	function hook_article_button($line) {
 		return "<i class='material-icons' onclick=\"Plugins.Af_Readability.embed(".$line["id"].")\"
-			style='cursor : pointer' title='".__('Toggle full article text')."'>description</i>";
+			style='cursor : pointer' title=\"".__('Toggle full article text')."\">description</i>";
 	}
 
 	function hook_prefs_tab($args) {

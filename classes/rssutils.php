@@ -786,12 +786,12 @@ class RSSUtils {
 					// dupes when the entry gets purged and reinserted again e.g.
 					// in the case of SLOW SLOW OMG SLOW updating feeds
 
+					$pdo->commit();
+
 					$entry_obj = ORM::for_table('ttrss_entries')
 						->find_one($base_entry_id)
 						->set('date_updated', Db::NOW())
 						->save();
-
-					$pdo->commit();
 
 					continue;
 				}

@@ -85,10 +85,9 @@ class Cache_Starred_Images extends Plugin {
 		Debug::log("expiring {$this->cache->get_dir()} and {$this->cache_status->get_dir()}...");
 
 		$files = array_merge(
-				glob($this->cache->get_dir() . "/*.png"),
-				glob($this->cache->get_dir() . "/*.mp4"),
-				glob($this->cache_status->get_dir() . "/*.status"),
-				glob($this->cache->get_dir() . "/*.status"));
+			glob($this->cache->get_dir() . "/*-*"),
+			glob($this->cache_status->get_dir() . "/*.status")
+		);
 
 		asort($files);
 

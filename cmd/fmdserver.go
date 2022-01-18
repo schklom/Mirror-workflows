@@ -108,6 +108,43 @@ func postLocation(w http.ResponseWriter, r *http.Request) {
 	uio.AddLocation(id, string(locationAsString))
 }
 
+func getPicture(w http.ResponseWriter, r *http.Request) {
+	var request DataPackage
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		http.Error(w, "Meeep!, Error - getPicture 1", http.StatusBadRequest)
+		return
+	}
+	id := uio.ACC.CheckAccessToken(request.IDT)
+	if id == "" {
+		http.Error(w, "Meeep!, Error - getPicture 2", http.StatusBadRequest)
+		return
+	}
+	index, _ := strconv.Atoi(request.Data)
+	data, err := uio.GetLocation(id, index)
+	if err == nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(fmt.Sprint(string(data))))
+	}
+}
+
+func postPicture(w http.ResponseWriter, r *http.Request) {
+	var location locationData
+	err := json.NewDecoder(r.Body).Decode(&location)
+	if err != nil {
+		http.Error(w, "Meeep!, Error - postPicture 1", http.StatusBadRequest)
+		return
+	}
+	id := uio.ACC.CheckAccessToken(location.AccessToken)
+	if id == "" {
+		http.Error(w, "Meeep!, Error - postPicture 2", http.StatusBadRequest)
+		return
+	}
+
+	picture, _ := json.MarshalIndent(location, "", " ")
+	uio.AddPicture(id, string(picture))
+}
+
 func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 	var request DataPackage
 	err := json.NewDecoder(r.Body).Decode(&request)
@@ -296,6 +333,15 @@ func mainLocation(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func mainPicture(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodPut:
+		getPicture(w, r)
+	case http.MethodPost:
+		postPicture(w, r)
+	}
+}
+
 func mainCommand(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPut:
@@ -322,6 +368,8 @@ func handleRequests() {
 	http.HandleFunc("/location/", mainLocation)
 	http.HandleFunc("/locationDataSize", getLocationDataSize)
 	http.HandleFunc("/locationDataSize/", getLocationDataSize)
+	http.HandleFunc("/picture", mainPicture)
+	http.HandleFunc("/picture/", mainPicture)
 	http.HandleFunc("/key", getKey)
 	http.HandleFunc("/key/", getKey)
 	http.HandleFunc("/device", mainDevice)

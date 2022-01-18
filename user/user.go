@@ -2,6 +2,7 @@ package user
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
@@ -102,6 +103,13 @@ func (u *UserIO) AddLocation(id string, loc string) {
 	_ = ioutil.WriteFile(userLocationFilePath, []byte(loc), 0644)
 }
 
+func (u *UserIO) AddPicture(id string, pic string) {
+	userMediaDir := filepath.Join(u.getUserDir(id), mediaDir)
+	//Create new locationfile
+	userLocationFilePath := filepath.Join(userMediaDir, "picture")
+	_ = ioutil.WriteFile(userLocationFilePath, []byte(pic), 0644)
+}
+
 func (u *UserIO) DeleteUser(id string) {
 	os.RemoveAll(u.getUserDir(id))
 	for i := 0; i < len(u.ids); i++ {
@@ -133,6 +141,20 @@ func (u *UserIO) GetLocation(id string, pos int) ([]byte, error) {
 		userLocationFilePath = filepath.Join(userLocationPath, fmt.Sprint(pos))
 	}
 	return ioutil.ReadFile(userLocationFilePath)
+}
+
+func (u *UserIO) GetPicture(id string) ([]byte, error) {
+	userMediaDir := filepath.Join(u.getUserDir(id), mediaDir)
+
+	files, _ := ioutil.ReadDir(userMediaDir)
+
+	for i := 0; i < len(files); i++ {
+		if files[i].Name() == "picture" {
+			pictureFile := filepath.Join(userMediaDir, "picture")
+			return ioutil.ReadFile(pictureFile)
+		}
+	}
+	return nil, errors.New("no picture available")
 }
 
 func (u *UserIO) GetLocationSize(id string) (int, int) {

@@ -41,12 +41,12 @@ type config struct {
 }
 
 type locationData struct {
-	AccessToken string `'json:"AccessToken"`
-	Provider    string `'json:"provider"`
-	Date        uint64 `'json:"date"`
-	Bat         string `'json:"bat"`
-	Lon         string `json:"lon"`
-	Lat         string `json:"lat"`
+	IDT      string `'json:"idt"`
+	Provider string `'json:"provider"`
+	Date     uint64 `'json:"date"`
+	Bat      string `'json:"bat"`
+	Lon      string `json:"lon"`
+	Lat      string `json:"lat"`
 }
 
 type locationDataSize struct {
@@ -98,7 +98,7 @@ func postLocation(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - postLocation 1", http.StatusBadRequest)
 		return
 	}
-	id := uio.ACC.CheckAccessToken(location.AccessToken)
+	id := uio.ACC.CheckAccessToken(location.IDT)
 	if id == "" {
 		http.Error(w, "Meeep!, Error - postLocation 2", http.StatusBadRequest)
 		return
@@ -129,20 +129,20 @@ func getPicture(w http.ResponseWriter, r *http.Request) {
 }
 
 func postPicture(w http.ResponseWriter, r *http.Request) {
-	var location locationData
-	err := json.NewDecoder(r.Body).Decode(&location)
+	var data DataPackage
+	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
 		http.Error(w, "Meeep!, Error - postPicture 1", http.StatusBadRequest)
 		return
 	}
-	id := uio.ACC.CheckAccessToken(location.AccessToken)
+	id := uio.ACC.CheckAccessToken(data.IDT)
 	if id == "" {
 		http.Error(w, "Meeep!, Error - postPicture 2", http.StatusBadRequest)
 		return
 	}
 
-	picture, _ := json.MarshalIndent(location, "", " ")
-	uio.AddPicture(id, string(picture))
+	picture := data.Data
+	uio.AddPicture(id, picture)
 }
 
 func getLocationDataSize(w http.ResponseWriter, r *http.Request) {

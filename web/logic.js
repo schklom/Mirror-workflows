@@ -170,8 +170,12 @@ function locate(index, password) {
                                 return response.text()
                             })
                             .then(function (keyBase64) {
-
-                                var key = decryptAES(password, keyBase64)
+                                if (keyTemp == null) {
+                                    var key = decryptAES(password, keyBase64)
+                                    keyTemp = key
+                                } else {
+                                    key = keyTemp
+                                }
                                 if (key != -1) {
                                     var crypt = new JSEncrypt();
                                     crypt.setPrivateKey(key);
@@ -255,9 +259,8 @@ function locate(index, password) {
     }
 }
 
-
 function decryptAES(password, cipherText) {
-    var key;
+    var msg;
     keySize = 256;
     ivSize = 128;
     iterationCount = 1867;
@@ -268,24 +271,19 @@ function decryptAES(password, cipherText) {
     let iv = cipherText.substr(saltLength, ivLength);
     let encrypted = cipherText.substring(ivLength + saltLength);
 
-    if (keyTemp == null) {
-        let salt = cipherText.substr(0, saltLength);
-        key = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt), {
-            keySize: keySize / 32,
-            iterations: iterationCount
-        });
-        keyTemp = key;
-    } else {
-        key = keyTemp;
-    }
+    let salt = cipherText.substr(0, saltLength);
+    msg = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt), {
+        keySize: keySize / 32,
+        iterations: iterationCount
+    });
+
     let cipherParams = CryptoJS.lib.CipherParams.create({
         ciphertext: CryptoJS.enc.Base64.parse(encrypted)
     });
-    let decrypted = CryptoJS.AES.decrypt(cipherParams, key, { iv: CryptoJS.enc.Hex.parse(iv) });
+    let decrypted = CryptoJS.AES.decrypt(cipherParams, msg, { iv: CryptoJS.enc.Hex.parse(iv) });
     try {
         return decrypted.toString(CryptoJS.enc.Utf8);
     } catch (error) {
-        keyTemp = null;
         return -1;
     }
 }
@@ -356,4 +354,60 @@ function sendToPhone(message) {
 
             })
     }
+}
+
+function showPicture() {
+    idInput = document.getElementById('fmdid');
+    if (idInput.value != "" && hashedPW != "") {
+
+        fetch("/requestAccess", {
+            method: 'PUT',
+            body: JSON.stringify({
+                IDT: idInput.value,
+                Data: hashedPW
+            }),
+            headers: {
+                'Content-type': 'applicatoin/json'
+            }
+        }).then(function (response) {
+            return response.json()
+        })
+            .then(function (token) {
+                fetch("/picture", {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        IDT: token.Data,
+                        Data: ""
+                    }),
+                    headers: {
+                        'Content-type': 'application/text'
+                    }
+                }).then(function (response) {
+                    return response.text()
+                })
+                    .then(function (data) {
+                        split = data.split("___PICTURE-DATA___")
+                        var crypt = new JSEncrypt();
+                        crypt.setPrivateKey(keyTemp);
+                        picPassword = crypt.decrypt(split[0])
+                        picture = decryptAES(picPassword, split[1])
+
+                        var div = document.createElement("div");
+                        div.id = "imagePrompt";
+
+                        var imageDiv = document.createElement("div");
+                        var img = document.createElement("img");
+                        imageDiv.className = "center"
+                        img.id = "imageFromDevice"
+                        img.src = "data:image/jpeg;base64," + picture
+                        imageDiv.appendChild(img)
+                        div.appendChild(imageDiv)
+                        document.body.appendChild(div);
+
+
+                    })
+
+            })
+    }
+
 }

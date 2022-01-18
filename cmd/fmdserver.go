@@ -120,8 +120,7 @@ func getPicture(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getPicture 2", http.StatusBadRequest)
 		return
 	}
-	index, _ := strconv.Atoi(request.Data)
-	data, err := uio.GetLocation(id, index)
+	data, err := uio.GetPicture(id)
 	if err == nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(fmt.Sprint(string(data))))

@@ -139,3 +139,21 @@ footer{
     opacity: 0.9;
     transform:translate(-50%, -50%);
 }
+
+#imagePrompt{
+    background-color: #232323;
+    border-style: solid;
+    border-color:  #4cb050;
+    border-width: 1px;
+    border-radius: 8px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+}
+
+#imageFromDevice{
+    width: 75%;
+}

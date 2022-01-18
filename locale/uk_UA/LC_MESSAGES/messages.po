@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-18 13:34+0300\n"
-"PO-Revision-Date: 2021-03-27 22:30+0000\n"
+"PO-Revision-Date: 2022-01-19 09:40+0000\n"
 "Last-Translator: Андрій Жук <zhouck@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.tt-rss.org/projects/tt-rss/"
 "messages/uk/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.5.2\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #: backend.php:60
 msgid "Use default"
@@ -281,20 +281,16 @@ msgid "Open next feed"
 msgstr "Відкрити наступний канал"
 
 #: classes/rpc.php:567
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open next unread feed"
-msgstr "Відкрити наступний канал"
+msgstr "Відкрити наступний непрочитаний канал"
 
 #: classes/rpc.php:568
 msgid "Open previous feed"
 msgstr "Відкрити попередній канал"
 
 #: classes/rpc.php:569
-#, fuzzy
-#| msgid "Open previous feed"
 msgid "Open previous unread feed"
-msgstr "Відкрити попередній канал"
+msgstr "Відкрити попередній непрочитаний канал"
 
 #: classes/rpc.php:570
 msgid "Open next article (in combined mode, scroll down)"
@@ -305,14 +301,12 @@ msgid "Open previous article (in combined mode, scroll up)"
 msgstr "Відкрити попередню статтю (в комбінованому режимі, прокрутка вверх)"
 
 #: classes/rpc.php:572
-#, fuzzy
 msgid "Scroll headlines by one page down"
-msgstr "Прокрутити статті на одну сторінку вниз"
+msgstr "Прокрутити заголовки на одну сторінку вниз"
 
 #: classes/rpc.php:573
-#, fuzzy
 msgid "Scroll headlines by one page up"
-msgstr "Прокрутити статті на одну сторінку вгору"
+msgstr "Прокрутити заголовки на одну сторінку вгору"
 
 #: classes/rpc.php:574
 msgid "Open next article"
@@ -323,23 +317,20 @@ msgid "Open previous article"
 msgstr "Відкрити попередню статтю"
 
 #: classes/rpc.php:576
-#, fuzzy
 msgid "Move to next article (don't expand)"
-msgstr "Перейти до наступної статті (не розгортати чи позначати прочитаною)"
+msgstr "Перейти до наступної статті (не розгортати)"
 
 #: classes/rpc.php:577
-#, fuzzy
 msgid "Move to previous article (don't expand)"
-msgstr "Перейти до попередньої статті (не розгортати чи позначати прочитаною)"
+msgstr "Перейти до попередньої статті (не розгортати)"
 
 #: classes/rpc.php:578
 msgid "Show search dialog"
 msgstr "Показати діалог пошуку"
 
 #: classes/rpc.php:579
-#, fuzzy
 msgid "Cancel active search"
-msgstr "Скасувати пошук"
+msgstr "Скасувати активний пошук"
 
 #: classes/rpc.php:580
 msgid "Article"
@@ -467,10 +458,8 @@ msgid "Toggle headline grouping"
 msgstr "Перемкнути групування заголовків"
 
 #: classes/rpc.php:613
-#, fuzzy
-#| msgid "Toggle sidebar"
 msgid "Toggle grid view"
-msgstr "Перемкнути бічну панель"
+msgstr "Перемкнути табличний вигляд"
 
 #: classes/rpc.php:614
 msgid "Debug feed update"
@@ -629,12 +618,9 @@ msgid "Update"
 msgstr "Оновити"
 
 #: classes/handler/public.php:700
-#, fuzzy, php-format
-#| msgid ""
-#| "Tiny Tiny RSS database needs update to the latest version (%d to %d)."
+#, php-format
 msgid "Database schema needs update to the latest version (%d to %d)."
-msgstr ""
-"База даних Tiny Tiny RSS потребує оновлення до останньої версії (з %d до %d)."
+msgstr "Схема база даних потребує оновлення до останньої версії (з %d до %d)."
 
 #: classes/pref/labels.php:168
 #, php-format
@@ -841,39 +827,32 @@ msgid "Don't enforce DISTINCT headlines"
 msgstr "Не вимагати унікальності заголовків"
 
 #: classes/pref/prefs.php:118
-#, fuzzy
 msgid "May produce duplicate entries"
-msgstr "Дозволяти дублікати статей"
+msgstr "Може створювати дублікати статей"
 
 #: classes/pref/prefs.php:119
-#, fuzzy
 msgid "Show article and feed IDs"
-msgstr "Показати статті"
+msgstr "Показати ідентифікатори статті та каналу"
 
 #: classes/pref/prefs.php:119
-#, fuzzy
 msgid "In the headlines buffer"
-msgstr "Сортувати заголовки по даті, вказаній у каналі"
+msgstr "В буфері заголовків"
 
 #: classes/pref/prefs.php:120
-#, fuzzy
-#| msgid "Disable updates"
 msgid "Disable conditional counter updates"
-msgstr "Вимкнути оновлення"
+msgstr "Вимкнути оновлення умовного лічильника"
 
 #: classes/pref/prefs.php:120
 msgid "May increase server load"
 msgstr "Може збільшувати навантаження на сервер"
 
 #: classes/pref/prefs.php:121
-#, fuzzy
-#| msgid "Preview"
 msgid "Grid view"
-msgstr "Передогляд"
+msgstr "Табличний вигляд"
 
 #: classes/pref/prefs.php:121
 msgid "On wider screens, if always expanded"
-msgstr ""
+msgstr "На широких екранах, чи завжди розгорнуто"
 
 #: classes/pref/prefs.php:222
 msgid "The configuration was saved."
@@ -926,10 +905,8 @@ msgstr ""
 "дає можливості встановлювати паролі."
 
 #: classes/pref/prefs.php:400
-#, fuzzy
-#| msgid "Generate new password"
 msgid "Generate password"
-msgstr "Створити новий пароль"
+msgstr "Створити пароль"
 
 #: classes/pref/prefs.php:406 classes/pref/feeds.php:938 js/PrefHelpers.js:227
 msgid "Remove selected"
@@ -944,14 +921,12 @@ msgid "Disable OTP"
 msgstr "Вимкнути OTP"
 
 #: classes/pref/prefs.php:472
-#, fuzzy
-#| msgid "OTP Key:"
 msgid "OTP secret:"
-msgstr "Ключ OTP (одноразовий):"
+msgstr "Секретний ключ OTP:"
 
 #: classes/pref/prefs.php:499
 msgid "Verification code:"
-msgstr ""
+msgstr "Код перевірки:"
 
 #: classes/pref/prefs.php:507
 msgid "Enable OTP"
@@ -970,9 +945,8 @@ msgid "App passwords"
 msgstr "Паролі додатків"
 
 #: classes/pref/prefs.php:530
-#, fuzzy
 msgid "Authenticator (OTP)"
-msgstr "Автентифікація"
+msgstr "Автентифікатор (OTP)"
 
 #: classes/pref/prefs.php:541
 msgid "Some preferences are only available in default profile."
@@ -1017,10 +991,8 @@ msgid "Save configuration"
 msgstr "Зберегти конфігурацію"
 
 #: classes/pref/prefs.php:764
-#, fuzzy
-#| msgid "Save and reload"
 msgid "Save and exit"
-msgstr "Зберегти й перезавантажити"
+msgstr "Зберегти й вийти"
 
 #: classes/pref/prefs.php:771 js/PrefHelpers.js:127
 msgid "Manage profiles"
@@ -1062,31 +1034,24 @@ msgstr ""
 "бан вашої інсталяції: <b>%s</b>"
 
 #: classes/pref/prefs.php:885 js/CommonFilters.js:234
-#, fuzzy
 msgid "More info"
-msgstr "більше інформації"
+msgstr "Більше інформації"
 
 #: classes/pref/prefs.php:888
-#, fuzzy
-#| msgid "Enable selected plugins"
 msgid "Enable selected"
-msgstr "Увімкнути обрані плагіни"
+msgstr "Увімкнути обрані"
 
 #: classes/pref/prefs.php:891
 msgid "Reload"
 msgstr "Перезавантажити"
 
 #: classes/pref/prefs.php:898
-#, fuzzy
-#| msgid "Perform updates"
 msgid "Check for updates"
-msgstr "Виконати оновлення"
+msgstr "Перевірити оновлення"
 
 #: classes/pref/prefs.php:905
-#, fuzzy
-#| msgid "Mail plugin"
 msgid "Install plugin"
-msgstr "Поштовий додаток"
+msgstr "Встановити додаток"
 
 #: classes/pref/prefs.php:918
 msgid "Personal data / Authentication"
@@ -1110,10 +1075,9 @@ msgid "v%.2f, by %s"
 msgstr "v%.2f, від %s"
 
 #: classes/pref/prefs.php:1034
-#, fuzzy, php-format
-#| msgid "v%.2f, by %s"
+#, php-format
 msgid "v%s, by %s"
-msgstr "v%.2f, від %s"
+msgstr "v%s, від %s"
 
 #: classes/pref/prefs.php:1477
 msgid "Description"
@@ -1154,7 +1118,6 @@ msgid "Page %d of %d"
 msgstr "Сторінка %d з %d"
 
 #: classes/pref/system.php:96
-#, fuzzy
 msgid "&gt;&gt;"
 msgstr "&gt;&gt;"
 
@@ -1163,18 +1126,16 @@ msgid "Severity:"
 msgstr "Важливість:"
 
 #: classes/pref/system.php:109
-#, fuzzy
 msgid "Errors"
-msgstr "Помилка"
+msgstr "Помилки"
 
 #: classes/pref/system.php:110
 msgid "Warnings"
 msgstr "Попередження"
 
 #: classes/pref/system.php:111
-#, fuzzy
 msgid "Everything"
-msgstr "Зняти вибір з усіх"
+msgstr "Все"
 
 #: classes/pref/system.php:121
 msgid "Error"
@@ -1193,25 +1154,20 @@ msgid "Date"
 msgstr "Дата"
 
 #: classes/pref/system.php:169
-#, fuzzy
-#| msgid "Event Log"
 msgid "Event log"
 msgstr "Журнал подій"
 
 #: classes/pref/system.php:175
-#, fuzzy
-#| msgid "Save configuration"
 msgid "Mail configuration"
-msgstr "Зберегти конфігурацію"
+msgstr "Поштова конфігурація"
 
 #: classes/pref/system.php:202
 msgid "To:"
 msgstr "До:"
 
 #: classes/pref/system.php:204
-#, fuzzy
 msgid "Send test email"
-msgstr "Відправити електронний лист"
+msgstr "Відправити тестовий лист"
 
 #: classes/pref/system.php:210
 msgid "PHP Information"
@@ -1333,17 +1289,16 @@ msgstr[1] "(%d канали)"
 msgstr[2] "(%d каналів)"
 
 #: classes/pref/feeds.php:533
-#, fuzzy, php-format
+#, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
-msgstr[0] "(%d канал)"
-msgstr[1] "(%d канали)"
-msgstr[2] "(%d каналів)"
+msgstr[0] "(%d день)"
+msgstr[1] "(%d дні)"
+msgstr[2] "(%d днів)"
 
 #: classes/pref/feeds.php:535 classes/pref/feeds.php:583
-#, fuzzy
 msgid "Disabled"
-msgstr "Вимкнути OTP"
+msgstr "Вимкнуто"
 
 #: classes/pref/feeds.php:539
 #, php-format
@@ -1358,9 +1313,9 @@ msgid "Check to enable field"
 msgstr "Перевірити доступність поля"
 
 #: classes/pref/feeds.php:581
-#, fuzzy, php-format
+#, php-format
 msgid "(%d days)"
-msgstr "(%d канал)"
+msgstr "(%d днів)"
 
 #: classes/pref/feeds.php:586 js/CommonDialogs.js:460
 msgid "Include in e-mail digest"
@@ -1387,9 +1342,8 @@ msgid "Language:"
 msgstr "Мова:"
 
 #: classes/pref/feeds.php:624 js/CommonDialogs.js:526
-#, fuzzy
 msgid "Update interval:"
-msgstr "Типовий інтервал оновлення"
+msgstr "Інтервал оновлення:"
 
 #: classes/pref/feeds.php:631 js/CommonDialogs.js:530
 msgid "Article purging:"
@@ -1454,10 +1408,8 @@ msgid "Export OPML"
 msgstr "Експорт OPML"
 
 #: classes/pref/feeds.php:1011
-#, fuzzy
-#| msgid "Include settings"
 msgid "Include tt-rss settings"
-msgstr "Включати налаштування"
+msgstr "Включати налаштування tt-rss"
 
 #: classes/pref/feeds.php:1027
 msgid "Display URL"
@@ -1468,18 +1420,16 @@ msgid "Clear all generated URLs"
 msgstr "Прибрати всі створені посилання"
 
 #: classes/pref/feeds.php:1044
-#, fuzzy
 msgid "My feeds"
-msgstr "Більше каналів"
+msgstr "Мої канали"
 
 #: classes/pref/feeds.php:1049
 msgid "OPML"
 msgstr "OPML"
 
 #: classes/pref/feeds.php:1054
-#, fuzzy
 msgid "Sharing"
-msgstr "Поширити"
+msgstr "Поширення"
 
 #: classes/userhelper.php:221
 #, php-format
@@ -1555,9 +1505,9 @@ msgid "Error while parsing document."
 msgstr "Помилка розбору документу."
 
 #: classes/config.php:335
-#, fuzzy, php-format
+#, php-format
 msgid "Git error [RC=%d]: %s"
-msgstr "Фатальна помилка"
+msgstr "Git error [RC=%d]: %s"
 
 #: classes/feeds.php:54 classes/feeds.php:467
 msgid "Feed not found."
@@ -1651,20 +1601,16 @@ msgid "%d min"
 msgstr "%d хв"
 
 #: plugins/auth_internal/init.php:112
-#, fuzzy
-#| msgid "Please enter label caption:"
 msgid "Please enter verification code (OTP):"
-msgstr "Будь ласка, введіть заголовок мітки:"
+msgstr "Будь ласка, введіть код перевірки (OTP):"
 
 #: plugins/auth_internal/init.php:114
-#, fuzzy
-#| msgid "Content:"
 msgid "Continue"
-msgstr "Вміст:"
+msgstr "Продовжити"
 
 #: plugins/auth_internal/init.php:166
 msgid "Too many authentication attempts, throttled."
-msgstr ""
+msgstr "Забагато спроб входу, призупинено."
 
 #: plugins/auth_internal/init.php:247
 msgid "Password has been changed."
@@ -1684,9 +1630,8 @@ msgid "Show related articles"
 msgstr "Показати пов’язані статті"
 
 #: plugins/af_psql_trgm/init.php:134
-#, fuzzy
 msgid "Mark similar articles as read (af_psql_trgm)"
-msgstr "Позначати подібні статті як прочитані"
+msgstr "Позначати схожі статті як прочитані (af_psql_trgm)"
 
 #: plugins/af_psql_trgm/init.php:164
 msgid "Minimum similarity:"
@@ -1707,18 +1652,16 @@ msgid "Minimum title length:"
 msgstr "Мінімальна довжина заголовку:"
 
 #: plugins/af_psql_trgm/init.php:187
-#, fuzzy
 msgid "Enable for all feeds."
-msgstr "Увімкнути для всіх каналів:"
+msgstr "Увімкнути для всіх каналів."
 
 #: plugins/af_psql_trgm/init.php:206 plugins/af_readability/init.php:108
 msgid "Currently enabled for (click to edit):"
 msgstr "Зараз увімкнено для (клацніть для зміни):"
 
 #: plugins/af_psql_trgm/init.php:226
-#, fuzzy
 msgid "Similarity (af_psql_trgm)"
-msgstr "Схожість (pg_trgm)"
+msgstr "Схожість (af_psql_trgm)"
 
 #: plugins/af_psql_trgm/init.php:232
 msgid "Mark similar articles as read"
@@ -1737,9 +1680,8 @@ msgid "Inline content"
 msgstr "Вбудовувати вміст"
 
 #: plugins/af_readability/init.php:45
-#, fuzzy
 msgid "Append content"
-msgstr "Вбудовувати вміст"
+msgstr "Додавати вміст"
 
 #: plugins/af_readability/init.php:54
 msgid "Toggle full article text"
@@ -1762,7 +1704,7 @@ msgstr "(додати)"
 
 #: plugins/af_readability/init.php:130
 msgid "Readability"
-msgstr "Readability"
+msgstr "Зручне читання"
 
 #: plugins/af_readability/init.php:135
 msgid "Inline article content"
@@ -1884,8 +1826,6 @@ msgid "The following comics are currently supported:"
 msgstr "Наступні комікси наразі підтримуються:"
 
 #: plugins/nsfw/init.php:39
-#, fuzzy
-#| msgid "Not work safe (click to toggle)"
 msgid "Not safe for work (click to toggle)"
 msgstr "Неприйнятно на роботі (клацніть, щоб перемкнути)"
 
@@ -1894,9 +1834,8 @@ msgid "NSFW Plugin"
 msgstr "NSFW (Непристойно-на-роботі) додаток"
 
 #: plugins/nsfw/init.php:88
-#, fuzzy
 msgid "Tags to consider NSFW (comma-separated):"
-msgstr "Теги для визначення небезпечним на роботі (розділені комами)"
+msgstr "Теги для визначення небезпечним на роботі (розділені комами):"
 
 #: plugins/nsfw/init.php:110
 msgid "Configuration saved."
@@ -1907,9 +1846,8 @@ msgid "Reddit content settings (af_redditimgur)"
 msgstr "Налаштування вмісту Reddit (af_redditimgur)"
 
 #: plugins/af_redditimgur/init.php:63
-#, fuzzy
 msgid "Apply tags to NSFW posts (comma-separated list):"
-msgstr "Теги для визначення небезпечним на роботі (розділені комами)"
+msgstr "Теги для визначення небезпечним на роботі (розділені комами):"
 
 #: plugins/af_redditimgur/init.php:72
 msgid "Extract missing content using Readability (requires af_readability)"
@@ -1937,9 +1875,8 @@ msgid "Toggle sidebar"
 msgstr "Перемкнути бічну панель"
 
 #: plugins/share/init.php:42
-#, fuzzy
 msgid "Article unshared"
-msgstr "Статті"
+msgstr "Поширення статті вимкнуто"
 
 #: plugins/share/init.php:54
 msgid "Unshare all articles"
@@ -2067,10 +2004,8 @@ msgid "Click to close"
 msgstr "Клацніть щоб закрити"
 
 #: js/PrefLabelTree.js:71
-#, fuzzy
-#| msgid "Edit rule"
 msgid "Edit label"
-msgstr "Змінити правило"
+msgstr "Змінити мітку"
 
 #: js/PrefLabelTree.js:143
 msgid "Foreground:"
@@ -2101,18 +2036,12 @@ msgid "Keyboard shortcuts"
 msgstr "Гарячі клавіші"
 
 #: js/App.js:472
-#, fuzzy
 msgid "Update daemon is not running."
-msgstr ""
-"<span onclick=\"App.explainError(3)\">Сервіс оновлення не оновлює канали.</"
-"span>"
+msgstr "Сервіс оновлення не працює."
 
 #: js/App.js:485
-#, fuzzy
 msgid "Update daemon is not updating feeds."
-msgstr ""
-"<span onclick=\"App.explainError(3)\">Сервіс оновлення не оновлює канали.</"
-"span>"
+msgstr "Сервіс оновлення не оновлює канали."
 
 #: js/App.js:572
 msgid ""
@@ -2131,10 +2060,8 @@ msgid "Unhandled exception"
 msgstr "Необроблена помилка"
 
 #: js/App.js:833
-#, fuzzy
-#| msgid "Updates are available from Git."
 msgid "Updates for Tiny Tiny RSS are available."
-msgstr "Доступні оновлення з Git."
+msgstr "Доступні оновлення Tiny Tiny RSS ."
 
 #: js/App.js:836
 msgid "Updates for some local plugins are available."
@@ -2214,8 +2141,6 @@ msgid "No categories selected."
 msgstr "Не виділено жодної категорії."
 
 #: js/PrefFeedTree.js:303
-#, fuzzy
-#| msgid "Edit Multiple Feeds"
 msgid "Edit multiple feeds"
 msgstr "Змінити декілька каналів"
 
@@ -2320,9 +2245,8 @@ msgid "Removing feed..."
 msgstr "Видалення каналу..."
 
 #: js/CommonDialogs.js:353
-#, fuzzy
 msgid "Please select an image file."
-msgstr "Будь ласка, оберіть файл картинку для завантаження."
+msgstr "Будь ласка, оберіть картинку для завантаження."
 
 #: js/CommonDialogs.js:373
 msgid "Icon file is too large."
@@ -2345,9 +2269,8 @@ msgid "Feed icon removed."
 msgstr "Іконка каналу видалена."
 
 #: js/CommonDialogs.js:574
-#, fuzzy
 msgid "Upload new icon..."
-msgstr "Завантажити нову іконку для цього каналу?"
+msgstr "Завантажити нову іконку..."
 
 #: js/CommonDialogs.js:603
 msgid "Show as feed"
@@ -2388,10 +2311,8 @@ msgid "Generated URLs cleared."
 msgstr "Створені посилання видалені."
 
 #: js/PrefHelpers.js:59
-#, fuzzy
-#| msgid "Digest"
 msgid "Digest preview"
-msgstr "Дайджест"
+msgstr "Передогляд дайджест"
 
 #: js/PrefHelpers.js:113
 msgid "Clear event log?"
@@ -2399,12 +2320,11 @@ msgstr "Очистити журнал подій?"
 
 #: js/PrefHelpers.js:135
 msgid "Name for cloned profile:"
-msgstr ""
+msgstr "Назва клонованого профілю:"
 
 #: js/PrefHelpers.js:145
-#, fuzzy
 msgid "Please select a single profile to clone."
-msgstr "Будь ласка, оберіть файл картинку для завантаження."
+msgstr "Будь ласка, оберіть профіль для клонування."
 
 #: js/PrefHelpers.js:153
 msgid ""
@@ -2430,7 +2350,7 @@ msgstr "(активний)"
 
 #: js/PrefHelpers.js:219
 msgid "(empty)"
-msgstr ""
+msgstr "(порожньо)"
 
 #: js/PrefHelpers.js:242
 msgid "Activate selected profile?"
@@ -2478,40 +2398,31 @@ msgid "Could not find any plugins for this search query."
 msgstr "Не знайдено жодного плагіну для цього пошукового запиту."
 
 #: js/PrefHelpers.js:437
-#, fuzzy, javascript-format
-#| msgid "Clear stored data for this plugin?"
+#, javascript-format
 msgid "Clear stored data for %s?"
-msgstr "Очистити збережені дані для цього плагіну?"
+msgstr "Очистити збережені дані для %s?"
 
 #: js/PrefHelpers.js:446
-#, fuzzy, javascript-format
-#| msgid "User plugins"
+#, javascript-format
 msgid "Uninstall plugin %s?"
-msgstr "Користувацькі плагіни"
+msgstr "Вилучити додаток %s?"
 
 #: js/PrefHelpers.js:455
-#, fuzzy
-#| msgid "Registration failed."
 msgid "Plugin uninstallation failed."
-msgstr "Реєстрація не вдалася."
+msgstr "Вилучення додатку завершилося невдало."
 
 #: js/PrefHelpers.js:471
-#, fuzzy
-#| msgid "Mail plugin"
 msgid "Available plugins"
-msgstr "Поштовий додаток"
+msgstr "Доступні додатки"
 
 #: js/PrefHelpers.js:484
-#, fuzzy
-#| msgid "Plugins"
 msgid "Plugin installer"
-msgstr "Додатки"
+msgstr "Встановлювач додатків"
 
 #: js/PrefHelpers.js:487
-#, fuzzy, javascript-format
-#| msgid "Importing, please wait..."
+#, javascript-format
 msgid "Installing %s, please wait..."
-msgstr "Імпортування, будь ласка, зачекайте..."
+msgstr "Встановлення %s, будь ласка, зачекайте..."
 
 #: js/PrefHelpers.js:502 js/PrefHelpers.js:544 js/PrefHelpers.js:655
 msgid "Operation failed: check event log."
@@ -2535,10 +2446,8 @@ msgid "Already installed"
 msgstr "Вже встановлено"
 
 #: js/PrefHelpers.js:580
-#, fuzzy
-#| msgid "Last updated: %s"
 msgid "Updated: %s"
-msgstr "Востаннє оновлений: %s"
+msgstr "Оновлений: %s"
 
 #: js/PrefHelpers.js:597
 msgid "Looking for plugins..."
@@ -2549,28 +2458,20 @@ msgid "Close"
 msgstr "Закрити"
 
 #: js/PrefHelpers.js:634
-#, fuzzy
-#| msgid "User plugins"
 msgid "Update plugins"
-msgstr "Користувацькі плагіни"
+msgstr "Оновити додатки"
 
 #: js/PrefHelpers.js:649
-#, fuzzy
-#| msgid "Uploading, please wait..."
 msgid "Updating, please wait..."
-msgstr "Завантаження, будь ласка, зачекайте..."
+msgstr "Оновлення, будь ласка, зачекайте..."
 
 #: js/PrefHelpers.js:673
-#, fuzzy
-#| msgid "Update"
 msgid "Update done."
-msgstr "Оновити"
+msgstr "Оновлення завершено."
 
 #: js/PrefHelpers.js:697
-#, fuzzy
-#| msgid "No actions available"
 msgid "No updates available"
-msgstr "Немає доступних дій"
+msgstr "Немає оновлень"
 
 #: js/PrefHelpers.js:709
 #, javascript-format
@@ -2583,10 +2484,8 @@ msgid "%s: Operation failed: check event log."
 msgstr "%s: Операція закінчилася помилкою: перевірте журнал подій."
 
 #: js/PrefHelpers.js:739
-#, fuzzy
-#| msgid "Last update:"
 msgid "Ready to update"
-msgstr "Останнє оновлення:"
+msgstr "Готове до оновлення"
 
 #: js/PrefHelpers.js:784
 msgid "Please choose an OPML file first."
@@ -2747,9 +2646,8 @@ msgid "Article URL:"
 msgstr "Посилання на статтю:"
 
 #: js/Article.js:132
-#, fuzzy
 msgid "No URL could be displayed for this article."
-msgstr "Прибрати доступ до цієї статті?"
+msgstr "Немає посилань для цієї статті."
 
 #: js/Article.js:154
 msgid "no tags"
@@ -2767,10 +2665,8 @@ msgstr[1] "коментарі"
 msgstr[2] "коментарів"
 
 #: js/Article.js:340
-#, fuzzy
-#| msgid "Articles"
 msgid "Article tags"
-msgstr "Статті"
+msgstr "Мітки статті"
 
 #: js/Article.js:347
 msgid "Tags for this article (separated by commas):"
@@ -2829,16 +2725,12 @@ msgid "Removing selected users..."
 msgstr "Видалення виділених користувачі..."
 
 #: js/CommonFilters.js:14
-#, fuzzy
-#| msgid "Edit Filter"
 msgid "Edit filter"
 msgstr "Змінити фільтр"
 
 #: js/CommonFilters.js:14
-#, fuzzy
-#| msgid "Create filter"
 msgid "Create new filter"
-msgstr "Створити фільтр"
+msgstr "Створити новий фільтр"
 
 #: js/CommonFilters.js:44
 #, javascript-format
@@ -2846,10 +2738,8 @@ msgid "Looking for articles (%d processed, %f found)..."
 msgstr "Пошук статей (%d опрацьовано, %f знайдено)..."
 
 #: js/CommonFilters.js:72
-#, fuzzy
-#| msgid "Found %d articles matching this filter:"
 msgid "Articles matching this filter:"
-msgstr "Знайдено %d статей, що відповідають цьому фільтру:"
+msgstr "Статті, що відповідають цьому фільтру:"
 
 #: js/CommonFilters.js:74
 msgid "Found %d articles matching this filter:"
@@ -2860,10 +2750,8 @@ msgid "Error while trying to get filter test results."
 msgstr "Виникла помилка при спробі отримати тестові результати фільтру."
 
 #: js/CommonFilters.js:95
-#, fuzzy
-#| msgid "Looking for plugins..."
 msgid "Looking for articles..."
-msgstr "Пошук плагінів..."
+msgstr "Пошук статей..."
 
 #: js/CommonFilters.js:174
 msgid "Edit rule"
@@ -2878,9 +2766,8 @@ msgid "Inverse regular expression matching"
 msgstr "Обернути збіг з регулярним виразом"
 
 #: js/CommonFilters.js:222
-#, fuzzy
 msgid "on"
-msgstr "Жоден"
+msgstr "в"
 
 #: js/CommonFilters.js:250
 msgid "Edit action"
@@ -2927,10 +2814,8 @@ msgid "Unable to fetch full text for this article"
 msgstr "Не вдалося витягнути повний текст для цієї статті"
 
 #: plugins/shorten_expanded/init.js:32
-#, fuzzy
-#| msgid "Email article"
 msgid "Expand article"
-msgstr "Надіслати статтю поштою"
+msgstr "Розгорнути статтю"
 
 #: plugins/share/share.js:7
 msgid "Share article by URL"
@@ -2998,13 +2883,11 @@ msgstr "Посилання на сайт:"
 
 #: js/PrefHelpers.js:229
 msgid "Clone"
-msgstr ""
+msgstr "Клонувати"
 
 #: js/PrefHelpers.js:231
-#, fuzzy
-#| msgid "Activate profile"
 msgid "Activate"
-msgstr "Активувати профіль"
+msgstr "Активувати"
 
 #: js/PrefHelpers.js:299
 msgid "Apply"
@@ -3015,10 +2898,8 @@ msgid "Selected plugins have been enabled. Reload?"
 msgstr "Обрані плагіни були увімкнуті. Перезавантажити?"
 
 #: js/PrefHelpers.js:680
-#, fuzzy
-#| msgid "Upload complete."
 msgid "Updates complete"
-msgstr "Завантаження завершилося."
+msgstr "Оновлення завершено"
 
 #: js/PrefHelpers.js:694
 #, javascript-format
@@ -3057,9 +2938,8 @@ msgid "Access level: "
 msgstr "Рівень доступу: "
 
 #: js/CommonFilters.js:70
-#, fuzzy
 msgid "No recent articles matching this filter have been found."
-msgstr "Знайдено %d статей, що відповідають цьому фільтру:"
+msgstr "Не знайдено свіжих статей, що відповідають цьому фільтру."
 
 #~ msgid "One time password:"
 #~ msgstr "Одноразовий пароль:"

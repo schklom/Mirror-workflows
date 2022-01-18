@@ -402,9 +402,17 @@ function showPicture() {
                         img.src = "data:image/jpeg;base64," + picture
                         imageDiv.appendChild(img)
                         div.appendChild(imageDiv)
+
+                        var buttonDiv = document.createElement("div");
+                        buttonDiv.className = "center"
+                        var btn = document.createElement("button");
+                        btn.innerHTML="close"
+                        btn.addEventListener('click', function() {
+                            document.body.removeChild(div)
+                        }, false);
+                        buttonDiv.appendChild(btn)
+                        div.appendChild(buttonDiv)
                         document.body.appendChild(div);
-
-
                     })
 
             })

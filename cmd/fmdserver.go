@@ -83,6 +83,9 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	index, _ := strconv.Atoi(request.Data)
+	if index == -1 {
+		index, _ = uio.GetLocationSize(id)
+	}
 	data := uio.GetLocation(id, index)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(fmt.Sprint(string(data))))

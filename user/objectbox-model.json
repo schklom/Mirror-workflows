@@ -1,0 +1,72 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:3954602988193931325",
+      "lastPropertyId": "9:5170962636802096083",
+      "name": "User",
+      "properties": [
+        {
+          "id": "1:8450759992626090591",
+          "name": "Id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:6116232405593468539",
+          "name": "UID",
+          "indexId": "1:2944041920753964299",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:1902563990708713222",
+          "name": "HashedPassword",
+          "type": 9
+        },
+        {
+          "id": "4:8714021200352323402",
+          "name": "PrivateKey",
+          "type": 9
+        },
+        {
+          "id": "5:8538276255825872314",
+          "name": "PublicKey",
+          "type": 9
+        },
+        {
+          "id": "6:4727352073804792405",
+          "name": "CommandToUser",
+          "type": 9
+        },
+        {
+          "id": "7:8342083663476395689",
+          "name": "PushUrl",
+          "type": 9
+        },
+        {
+          "id": "8:5104161147127511055",
+          "name": "LocationData",
+          "type": 30
+        },
+        {
+          "id": "9:5170962636802096083",
+          "name": "Pictures",
+          "type": 30
+        }
+      ]
+    }
+  ],
+  "lastEntityId": "1:3954602988193931325",
+  "lastIndexId": "1:2944041920753964299",
+  "lastRelationId": "",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

@@ -38,6 +38,7 @@ type config struct {
 	PortUnsecure int
 	IdLength     int
 	MaxSavedLoc  int
+	MaxSavedPic  int
 }
 
 type locationData struct {
@@ -61,7 +62,7 @@ type registrationData struct {
 	PrivKey        string `'json:"privKey"`
 }
 
-//universal package for string transfer
+// universal package for string transfer
 // IDT = DeviceID or AccessToken
 // If both will be send. ID is always IDT
 type DataPackage struct {
@@ -82,13 +83,9 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	index, _ := strconv.Atoi(request.Data)
-	data, err := uio.GetLocation(id, index)
-	if err == nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(fmt.Sprint(string(data))))
-	} else {
-		http.Error(w, "Meeep!, Error - getLocation 3", http.StatusNoContent)
-	}
+	data := uio.GetLocation(id, index)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(fmt.Sprint(string(data))))
 }
 
 func postLocation(w http.ResponseWriter, r *http.Request) {
@@ -120,11 +117,10 @@ func getPicture(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getPicture 2", http.StatusBadRequest)
 		return
 	}
-	data, err := uio.GetPicture(id)
-	if err == nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(fmt.Sprint(string(data))))
-	}
+	data := uio.GetPicture(id)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(fmt.Sprint(string(data))))
+
 }
 
 func postPicture(w http.ResponseWriter, r *http.Request) {
@@ -193,15 +189,13 @@ func getCommand(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getCommand 2", http.StatusBadRequest)
 		return
 	}
-	uInfo, _ := uio.GetUserInfo(id)
-	if uInfo.CommandToUser != "" {
-		commandAsString := string(uInfo.CommandToUser)
+	commandAsString := uio.GetCommandToUser(id)
+	if commandAsString != "" {
 		reply := DataPackage{IDT: data.IDT, Data: commandAsString}
 		result, _ := json.Marshal(reply)
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(result))
-		uInfo.CommandToUser = ""
-		uio.SetUserInfo(id, uInfo)
+		uio.SetCommandToUser(id, "")
 	} else {
 		reply := DataPackage{IDT: data.IDT, Data: ""}
 		result, _ := json.Marshal(reply)
@@ -223,11 +217,9 @@ func postCommand(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - postCommand 2", http.StatusBadRequest)
 		return
 	}
+	uio.SetCommandToUser(id, data.Data)
 
-	uInfo, _ := uio.GetUserInfo(id)
-	uInfo.CommandToUser = (data.Data)
-	uio.SetUserInfo(id, uInfo)
-	url := strings.Replace(uInfo.Push, "/UP?", "/message?", -1)
+	url := strings.Replace(uio.GetPushUrl(id), "/UP?", "/message?", -1)
 
 	var jsonData = []byte(`{
 		"message": "magic may begin",
@@ -253,9 +245,7 @@ func postPushLink(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	uInfo, _ := uio.GetUserInfo(id)
-	uInfo.Push = (data.Data)
-	uio.SetUserInfo(id, uInfo)
+	uio.SetPushUrl(id, data.Data)
 }
 
 func requestAccess(w http.ResponseWriter, r *http.Request) {
@@ -282,9 +272,7 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusLocked)
-		uInfo, _ := uio.GetUserInfo(data.IDT)
-		uInfo.CommandToUser = "423"
-		uio.SetUserInfo(data.IDT, uInfo)
+		uio.SetCommandToUser(data.IDT, "423")
 	}
 
 }
@@ -421,7 +409,7 @@ func initServer() {
 	}
 	//Create DefaultConfig when no config available
 	if !configRead {
-		serverConfig = config{PortSecure: 1008, PortUnsecure: 1020, IdLength: 5, MaxSavedLoc: 1000}
+		serverConfig = config{PortSecure: 1008, PortUnsecure: 1020, IdLength: 5, MaxSavedLoc: 1000, MaxSavedPic: 10}
 		configToString, _ := json.MarshalIndent(serverConfig, "", " ")
 		err := ioutil.WriteFile(configFilePath, configToString, 0644)
 		fmt.Println(err)
@@ -430,7 +418,7 @@ func initServer() {
 
 	fmt.Println("Init: Preparing Devices")
 	uio = user.UserIO{}
-	uio.Init(filesDir, serverConfig.IdLength, serverConfig.MaxSavedLoc)
+	uio.Init(filesDir, serverConfig.IdLength, serverConfig.MaxSavedLoc, serverConfig.MaxSavedPic)
 	fmt.Printf("Init: Devices registered\n\n")
 }
 

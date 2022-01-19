@@ -10,3 +10,8 @@ src/main/data
 src/main/fmdserver
 src/main/dataNew
 data/
+cmd/objectbox/data.mdb
+cmd/objectbox/lock.mdb
+objectbox/data.mdb
+objectbox/lock.mdb
+config.json

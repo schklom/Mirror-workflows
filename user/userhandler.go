@@ -14,7 +14,7 @@ type UserIO struct {
 	UB           *UserBox
 }
 
-func (u *UserIO) Init(path string, userIDLength int, maxSavedLoc int, maxSavedPic int) {
+func (u *UserIO) Init(userIDLength int, maxSavedLoc int, maxSavedPic int) {
 	u.userIDLength = userIDLength
 	u.maxSavedLoc = maxSavedLoc
 	u.maxSavedPic = maxSavedPic
@@ -57,6 +57,9 @@ func (u *UserIO) DeleteUser(id string) {
 
 func (u *UserIO) GetLocation(id string, pos int) string {
 	user := u.UB.GetByID(id)
+	if len(user.LocationData)-1 < pos {
+		return ""
+	}
 	return user.LocationData[pos]
 }
 
@@ -128,8 +131,10 @@ func (u *UserIO) generateNewId() string {
 
 func (u *UserIO) RequestAccess(id string, hashedPW string) (bool, AccessToken) {
 	user := u.UB.GetByID(id)
-	if strings.EqualFold(user.HashedPassword, hashedPW) {
-		return true, u.ACC.PutAccess(id, u.generateNewId())
+	if user != nil {
+		if strings.EqualFold(user.HashedPassword, hashedPW) {
+			return true, u.ACC.PutAccess(id, u.generateNewId())
+		}
 	}
 	var a AccessToken
 	return false, a

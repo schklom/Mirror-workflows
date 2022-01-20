@@ -15,7 +15,7 @@ func main() {
 	fmt.Println("Registered IDs: " + strconv.Itoa(len(oio.Ids)))
 	fmt.Println("Init ObjectBox DB")
 	uio := user.UserIO{}
-	uio.Init(5, 1000, 10)
+	uio.Init(".", 5, 1000, 10)
 	fmt.Println("Start convertingprocess")
 	for i := 0; i < len(oio.Ids); i++ {
 		fmt.Println("(" + strconv.Itoa(i) + "/" + strconv.Itoa(len(oio.Ids)) + ")")

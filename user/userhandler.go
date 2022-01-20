@@ -27,6 +27,10 @@ func (u *UserIO) CreateNewUser(privKey string, pubKey string, hashedPassword str
 	return id
 }
 
+func (u *UserIO) CreateNewUserCT(uid string, privKey string, pubKey string, hashedPassword string) {
+	u.UB.Put(&User{UID: uid, HashedPassword: hashedPassword, PrivateKey: privKey, PublicKey: pubKey})
+}
+
 func (u *UserIO) AddLocation(id string, loc string) {
 	user := u.UB.GetByID(id)
 

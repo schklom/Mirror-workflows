@@ -20,8 +20,8 @@ type User struct {
 
 var uQuery *UserQuery
 
-func initDB() *UserBox {
-	ob, _ := objectbox.NewBuilder().Model(ObjectBoxModel()).Build()
+func initDB(path string) *UserBox {
+	ob, _ := objectbox.NewBuilder().Model(ObjectBoxModel()).Directory(path).Build()
 
 	u := BoxForUser(ob)
 	uQuery = u.Query(User_.UID.Equals("", true))

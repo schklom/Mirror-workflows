@@ -2,6 +2,7 @@ package user
 
 import (
 	"math/rand"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -14,11 +15,12 @@ type UserIO struct {
 	UB           *UserBox
 }
 
-func (u *UserIO) Init(userIDLength int, maxSavedLoc int, maxSavedPic int) {
+func (u *UserIO) Init(path string, userIDLength int, maxSavedLoc int, maxSavedPic int) {
 	u.userIDLength = userIDLength
 	u.maxSavedLoc = maxSavedLoc
 	u.maxSavedPic = maxSavedPic
-	u.UB = initDB()
+	path = filepath.Join(path, "objectbox")
+	u.UB = initDB(path)
 }
 
 func (u *UserIO) CreateNewUser(privKey string, pubKey string, hashedPassword string) string {

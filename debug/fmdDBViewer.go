@@ -11,7 +11,7 @@ import (
 
 func main() {
 	var uio = user.UserIO{}
-	uio.Init(5, 1000, 10)
+	uio.Init(".", 5, 1000, 10)
 	reader := bufio.NewReader(os.Stdin)
 	var run = true
 	for run {

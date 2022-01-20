@@ -421,7 +421,7 @@ func initServer() {
 
 	fmt.Println("Init: Preparing Devices")
 	uio = user.UserIO{}
-	uio.Init(serverConfig.IdLength, serverConfig.MaxSavedLoc, serverConfig.MaxSavedPic)
+	uio.Init(filesDir, serverConfig.IdLength, serverConfig.MaxSavedLoc, serverConfig.MaxSavedPic)
 	fmt.Printf("Init: Devices registered\n\n")
 }
 

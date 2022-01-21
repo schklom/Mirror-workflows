@@ -692,7 +692,7 @@ body.ttrss_main #headlines-frame[data-is-vfeed="false"] .hl .icon-feed {
   display: none;
 }
 body.ttrss_main #headlines-frame[data-auto-catchup="true"] #headlines-spacer {
-  height: 100vh;
+  height: calc(100vh - 32px);
 }
 body.ttrss_main #headlines-frame .dijitCheckBox {
   margin-right: 4px;

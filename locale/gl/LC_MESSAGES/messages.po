@@ -8,90 +8,92 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-18 13:34+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2022-01-23 14:40+0000\n"
+"Last-Translator: xosé m. <correoxm@disroot.org>\n"
+"Language-Team: Galician <https://weblate.tt-rss.org/projects/tt-rss/messages/"
+"gl/>\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #: backend.php:60
 msgid "Use default"
-msgstr ""
+msgstr "Usar por defecto"
 
 #: backend.php:61
 msgid "Never purge"
-msgstr ""
+msgstr "Non purgar"
 
 #: backend.php:62
 msgid "1 week old"
-msgstr ""
+msgstr "de 1 semana"
 
 #: backend.php:63
 msgid "2 weeks old"
-msgstr ""
+msgstr "de 2 semanas"
 
 #: backend.php:64
 msgid "1 month old"
-msgstr ""
+msgstr "de 1 mes"
 
 #: backend.php:65
 msgid "2 months old"
-msgstr ""
+msgstr "de 2 meses"
 
 #: backend.php:66
 msgid "3 months old"
-msgstr ""
+msgstr "de 3 meses"
 
 #: backend.php:69
 msgid "Default interval"
-msgstr ""
+msgstr "Intervalo por defecto"
 
 #: backend.php:70 backend.php:80
 msgid "Disable updates"
-msgstr ""
+msgstr "Desactivar actualizacións"
 
 #: backend.php:71 backend.php:81
 msgid "15 minutes"
-msgstr ""
+msgstr "15 minutos"
 
 #: backend.php:72 backend.php:82
 msgid "30 minutes"
-msgstr ""
+msgstr "30 minutos"
 
 #: backend.php:73 backend.php:83
 msgid "Hourly"
-msgstr ""
+msgstr "Cada hora"
 
 #: backend.php:74 backend.php:84
 msgid "4 hours"
-msgstr ""
+msgstr "4 horas"
 
 #: backend.php:75 backend.php:85
 msgid "12 hours"
-msgstr ""
+msgstr "12 horas"
 
 #: backend.php:76 backend.php:86
 msgid "Daily"
-msgstr ""
+msgstr "Diaria"
 
 #: backend.php:77 backend.php:87
 msgid "Weekly"
-msgstr ""
+msgstr "Semanal"
 
 #: backend.php:90 classes/pref/system.php:124
 msgid "User"
-msgstr ""
+msgstr "Usuaria"
 
 #: backend.php:91
 msgid "Power User"
-msgstr ""
+msgstr "Súper Usuaria"
 
 #: backend.php:92
 msgid "Administrator"
-msgstr ""
+msgstr "Administración"
 
 #: index.php:134 index.php:148 index.php:272 prefs.php:119
 #: classes/pref/prefs.php:877 classes/pref/prefs.php:927
@@ -107,235 +109,235 @@ msgstr ""
 #: plugins/note/note.js:28 plugins/af_readability/init.js:19
 #: plugins/share/share.js:56 js/CommonFilters.js:181
 msgid "Loading, please wait..."
-msgstr ""
+msgstr "Cargando, agarda..."
 
 #: index.php:163 prefs.php:128 js/App.js:460
 msgid "Communication problem with server."
-msgstr ""
+msgstr "Problema de comunicación co servidor."
 
 #: index.php:166 prefs.php:130
 msgid "Recent entries found in event log."
-msgstr ""
+msgstr "Entradas recentes atopadas no rexistro de eventos."
 
 #: index.php:169
 msgid "Updates are available from Git."
-msgstr ""
+msgstr "Actualizacións dispoñibles desde Git."
 
 #: index.php:184
 msgid "Show articles"
-msgstr ""
+msgstr "Mostrar artigos"
 
 #: index.php:187
 msgid "Adaptive"
-msgstr ""
+msgstr "Adaptable"
 
 #: index.php:188
 msgid "All Articles"
-msgstr ""
+msgstr "Tódolos Artigos"
 
 #: index.php:189 classes/rpc.php:623
 msgid "Starred"
-msgstr ""
+msgstr "Con estrela"
 
 #: index.php:190 classes/rpc.php:624
 msgid "Published"
-msgstr ""
+msgstr "Publicados"
 
 #: index.php:191
 msgid "Unread"
-msgstr ""
+msgstr "Sen ler"
 
 #: index.php:192
 msgid "With Note"
-msgstr ""
+msgstr "Con Nota"
 
 #: index.php:195
 msgid "Sort articles"
-msgstr ""
+msgstr "Orde dos artigos"
 
 #: index.php:199
 msgid "Default"
-msgstr ""
+msgstr "Por defecto"
 
 #: index.php:200
 msgid "Newest first"
-msgstr ""
+msgstr "Máis novos primeiro"
 
 #: index.php:201
 msgid "Oldest first"
-msgstr ""
+msgstr "Máis antigos primeiro"
 
 #: index.php:202
 msgid "Title"
-msgstr ""
+msgstr "Título"
 
 #: index.php:214 index.php:248 classes/rpc.php:610 js/FeedTree.js:92
 #: js/FeedTree.js:122
 msgid "Mark as read"
-msgstr ""
+msgstr "Marcar como lido"
 
 #: index.php:217
 msgid "Older than one day"
-msgstr ""
+msgstr "Anterior a un día"
 
 #: index.php:220
 msgid "Older than one week"
-msgstr ""
+msgstr "Anterior a unha semana"
 
 #: index.php:223
 msgid "Older than two weeks"
-msgstr ""
+msgstr "Anterior a dúas semanas"
 
 #: index.php:238
 msgid "Actions..."
-msgstr ""
+msgstr "Accións..."
 
 #: index.php:241
 msgid "Preferences..."
-msgstr ""
+msgstr "Axustes..."
 
 #: index.php:242
 msgid "Search..."
-msgstr ""
+msgstr "Buscar..."
 
 #: index.php:243
 msgid "Feed actions:"
-msgstr ""
+msgstr "Accións da fonte:"
 
 #: index.php:244 plugins/bookmarklets/init.php:38
 #: plugins/bookmarklets/init.php:72
 msgid "Subscribe to feed..."
-msgstr ""
+msgstr "Subscribir a fonte..."
 
 #: index.php:245
 msgid "Edit this feed..."
-msgstr ""
+msgstr "Editar esta fonte..."
 
 #: index.php:246 classes/pref/feeds.php:925 js/PrefFeedTree.js:99
 #: js/CommonDialogs.js:585
 msgid "Unsubscribe"
-msgstr ""
+msgstr "Retirar subscrición"
 
 #: index.php:247
 msgid "All feeds:"
-msgstr ""
+msgstr "Tódalas fontes:"
 
 #: index.php:249
 msgid "(Un)hide read feeds"
-msgstr ""
+msgstr "(Des)agochar fontes lidas"
 
 #: index.php:250
 msgid "Other actions:"
-msgstr ""
+msgstr "Outras accións:"
 
 #: index.php:251 classes/rpc.php:596
 msgid "Toggle widescreen mode"
-msgstr ""
+msgstr "Activar modo pantalla completa"
 
 #: index.php:252
 msgid "Keyboard shortcuts help"
-msgstr ""
+msgstr "Axuda sobre atallos de teclado"
 
 #: index.php:261
 msgid "Logout"
-msgstr ""
+msgstr "Desconectar"
 
 #: prefs.php:20 prefs.php:139 classes/rpc.php:626 classes/pref/prefs.php:929
 msgid "Preferences"
-msgstr ""
+msgstr "Axustes"
 
 #: prefs.php:132
 msgid "Exit preferences"
-msgstr ""
+msgstr "Saír dos axustes"
 
 #: prefs.php:142 classes/pref/prefs.php:38 classes/pref/feeds.php:127
 #: classes/pref/feeds.php:914
 msgid "Feeds"
-msgstr ""
+msgstr "Fontes"
 
 #: prefs.php:146 classes/pref/filters.php:228
 msgid "Filters"
-msgstr ""
+msgstr "Filtros"
 
 #: prefs.php:150 classes/pref/labels.php:23 classes/feeds.php:1254
 msgid "Labels"
-msgstr ""
+msgstr "Etiquetas"
 
 #: prefs.php:155
 msgid "Users"
-msgstr ""
+msgstr "Usuarias"
 
 #: prefs.php:158
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 #: classes/rpc.php:565
 msgid "Navigation"
-msgstr ""
+msgstr "Navegación"
 
 #: classes/rpc.php:566
 msgid "Open next feed"
-msgstr ""
+msgstr "Abrir fonte seguinte"
 
 #: classes/rpc.php:567
 msgid "Open next unread feed"
-msgstr ""
+msgstr "Abrir seguinte fonte non lida"
 
 #: classes/rpc.php:568
 msgid "Open previous feed"
-msgstr ""
+msgstr "Abrir fonte anterior"
 
 #: classes/rpc.php:569
 msgid "Open previous unread feed"
-msgstr ""
+msgstr "Abrir fonte anterior non lida"
 
 #: classes/rpc.php:570
 msgid "Open next article (in combined mode, scroll down)"
-msgstr ""
+msgstr "Abrir artigo seguinte (en modo combinado, desprazar abaixo)"
 
 #: classes/rpc.php:571
 msgid "Open previous article (in combined mode, scroll up)"
-msgstr ""
+msgstr "Abrir antigo anterior (en modo combinado, desprazar arriba)"
 
 #: classes/rpc.php:572
 msgid "Scroll headlines by one page down"
-msgstr ""
+msgstr "Desprazar aos titulares da páxina inferior"
 
 #: classes/rpc.php:573
 msgid "Scroll headlines by one page up"
-msgstr ""
+msgstr "Desprazar aos titulares da páxina superior"
 
 #: classes/rpc.php:574
 msgid "Open next article"
-msgstr ""
+msgstr "Abrir artigo seguinte"
 
 #: classes/rpc.php:575
 msgid "Open previous article"
-msgstr ""
+msgstr "Abrir artigo anterior"
 
 #: classes/rpc.php:576
 msgid "Move to next article (don't expand)"
-msgstr ""
+msgstr "Ir ao artigo seguinte (non despregar)"
 
 #: classes/rpc.php:577
 msgid "Move to previous article (don't expand)"
-msgstr ""
+msgstr "Ir ao artigo anterior (non despregar)"
 
 #: classes/rpc.php:578
 msgid "Show search dialog"
-msgstr ""
+msgstr "Mostra diálogo de busca"
 
 #: classes/rpc.php:579
 msgid "Cancel active search"
-msgstr ""
+msgstr "Cancelar a busca activa"
 
 #: classes/rpc.php:580
 msgid "Article"
-msgstr ""
+msgstr "Artigo"
 
 #: classes/rpc.php:581 js/Headlines.js:1388 js/Headlines.js:658
 msgid "Toggle starred"
-msgstr ""
+msgstr "Marcar con estrela"
 
 #: classes/rpc.php:582 js/Headlines.js:1400
 msgid "Toggle published"
@@ -347,204 +349,204 @@ msgstr ""
 
 #: classes/rpc.php:584
 msgid "Edit tags"
-msgstr ""
+msgstr "Editar etiquetas"
 
 #: classes/rpc.php:585
 msgid "Open in new window"
-msgstr ""
+msgstr "Abrir en nova ventá"
 
 #: classes/rpc.php:586 js/Headlines.js:1421
 msgid "Mark below as read"
-msgstr ""
+msgstr "Marcar o inferior como lido"
 
 #: classes/rpc.php:587 js/Headlines.js:1414
 msgid "Mark above as read"
-msgstr ""
+msgstr "Marcar o superior como lido"
 
 #: classes/rpc.php:588
 msgid "Scroll down"
-msgstr ""
+msgstr "Ir abaixo"
 
 #: classes/rpc.php:589
 msgid "Scroll up"
-msgstr ""
+msgstr "Ir arriba"
 
 #: classes/rpc.php:590
 msgid "Scroll down page"
-msgstr ""
+msgstr "Ir a páxina inferior"
 
 #: classes/rpc.php:591
 msgid "Scroll up page"
-msgstr ""
+msgstr "Ir á páxina superior"
 
 #: classes/rpc.php:592
 msgid "Select article under cursor"
-msgstr ""
+msgstr "Elexir artigo baixo o cursor"
 
 #: classes/rpc.php:593
 msgid "Email article"
-msgstr ""
+msgstr "Enviar por email"
 
 #: classes/rpc.php:594
 msgid "Close/collapse article"
-msgstr ""
+msgstr "Pechar/pregar artigo"
 
 #: classes/rpc.php:595
 msgid "Toggle article expansion (combined mode)"
-msgstr ""
+msgstr "Activar expansión do artigo (modo combinado)"
 
 #: classes/rpc.php:597
 msgid "Toggle full article text via Readability"
-msgstr ""
+msgstr "Activar texto completo do artigo vía Readability"
 
 #: classes/rpc.php:598
 msgid "Article selection"
-msgstr ""
+msgstr "Selección do artigo"
 
 #: classes/rpc.php:599
 msgid "Select all articles"
-msgstr ""
+msgstr "Seleccionar tódolos artigos"
 
 #: classes/rpc.php:600
 msgid "Select unread"
-msgstr ""
+msgstr "Seleccionar non lidos"
 
 #: classes/rpc.php:601
 msgid "Select starred"
-msgstr ""
+msgstr "Seleccionar con estrela"
 
 #: classes/rpc.php:602
 msgid "Select published"
-msgstr ""
+msgstr "Seleccionar publicados"
 
 #: classes/rpc.php:603
 msgid "Invert selection"
-msgstr ""
+msgstr "Inverter selección"
 
 #: classes/rpc.php:604
 msgid "Deselect everything"
-msgstr ""
+msgstr "Non seleccionar nada"
 
 #: classes/rpc.php:605
 msgid "Feed"
-msgstr ""
+msgstr "Fonte"
 
 #: classes/rpc.php:606
 msgid "Refresh current feed"
-msgstr ""
+msgstr "Actualizar fonte actual"
 
 #: classes/rpc.php:607
 msgid "Un/hide read feeds"
-msgstr ""
+msgstr "Agochar/Mostrar fontes lidas"
 
 #: classes/rpc.php:608 classes/pref/feeds.php:917 js/CommonDialogs.js:19
 msgid "Subscribe to feed"
-msgstr ""
+msgstr "Subscribir a fonte"
 
 #: classes/rpc.php:609 js/PrefFeedTree.js:93 js/CommonDialogs.js:336
 #: js/Headlines.js:1544 js/FeedTree.js:99
 msgid "Edit feed"
-msgstr ""
+msgstr "Editar fonte"
 
 #: classes/rpc.php:611
 msgid "Reverse headlines"
-msgstr ""
+msgstr "Inverter orde dos titulares"
 
 #: classes/rpc.php:612
 msgid "Toggle headline grouping"
-msgstr ""
+msgstr "Activar agrupamento de titulares"
 
 #: classes/rpc.php:613
 msgid "Toggle grid view"
-msgstr ""
+msgstr "Activar vista en grella"
 
 #: classes/rpc.php:614
 msgid "Debug feed update"
-msgstr ""
+msgstr "Depurar actualización da fonte"
 
 #: classes/rpc.php:615
 msgid "Debug viewfeed()"
-msgstr ""
+msgstr "Depurar viewfeed()"
 
 #: classes/rpc.php:616 js/FeedTree.js:155
 msgid "Mark all feeds as read"
-msgstr ""
+msgstr "Marcar tódalas fontes como lidas"
 
 #: classes/rpc.php:617
 msgid "Un/collapse current category"
-msgstr ""
+msgstr "Des/pregar categoría actual"
 
 #: classes/rpc.php:618
 msgid "Toggle auto expand in combined mode"
-msgstr ""
+msgstr "Activar autodespregar en modo combinado"
 
 #: classes/rpc.php:619
 msgid "Toggle combined mode"
-msgstr ""
+msgstr "Activar modo combinado"
 
 #: classes/rpc.php:620
 msgid "Go to"
-msgstr ""
+msgstr "Ir a"
 
 #: classes/rpc.php:621 classes/feeds.php:1120
 msgid "All articles"
-msgstr ""
+msgstr "Tódolos artigos"
 
 #: classes/rpc.php:622
 msgid "Fresh"
-msgstr ""
+msgstr "Novidades"
 
 #: classes/rpc.php:625 classes/feeds.php:1124
 msgid "Recently read"
-msgstr ""
+msgstr "Lido recentemente"
 
 #: classes/rpc.php:627
 msgid "Other"
-msgstr ""
+msgstr "Outro"
 
 #: classes/rpc.php:628
 msgid "Create label"
-msgstr ""
+msgstr "Crear etiqueta"
 
 #: classes/rpc.php:629 classes/pref/filters.php:659
 msgid "Create filter"
-msgstr ""
+msgstr "Crear filtro"
 
 #: classes/rpc.php:630
 msgid "Un/collapse sidebar"
-msgstr ""
+msgstr "Des/pregar panel lateral"
 
 #: classes/rpc.php:631
 msgid "Show help dialog"
-msgstr ""
+msgstr "Mostrar diálogo de axuda"
 
 #: classes/rpc.php:766
 msgid "Shift"
-msgstr ""
+msgstr "Maiúsculas"
 
 #: classes/rpc.php:769
 msgid "Ctrl"
-msgstr ""
+msgstr "Control"
 
 #: classes/rpc.php:794 plugins/af_psql_trgm/init.php:112
 #: plugins/share/init.php:274 js/PrefHelpers.js:491 js/Feeds.js:272
 #: js/CommonDialogs.js:273 js/PrefHelpers.js:66 js/PrefHelpers.js:814
 #: js/CommonFilters.js:101
 msgid "Close this window"
-msgstr ""
+msgstr "Pechar esta ventá"
 
 #: classes/handler/public.php:277 classes/pref/prefs.php:1424
 #: include/login_form.php:132
 msgid "Default profile"
-msgstr ""
+msgstr "Perfil por defecto"
 
 #: classes/handler/public.php:389
 msgid "Incorrect username or password"
-msgstr ""
+msgstr "Nome de usuaria ou contrasinal incorrectos"
 
 #: classes/handler/public.php:441
 msgid "Password recovery"
-msgstr ""
+msgstr "Recuperación do contrasinal"
 
 #: classes/handler/public.php:478 classes/handler/public.php:508
 #: classes/handler/public.php:568 classes/handler/public.php:685
@@ -552,241 +554,248 @@ msgstr ""
 #: plugins/bookmarklets/init.php:91 plugins/bookmarklets/init.php:136
 #: plugins/bookmarklets/init.php:154 plugins/bookmarklets/init.php:159
 msgid "Return to Tiny Tiny RSS"
-msgstr ""
+msgstr "Volver a Tiny Tiny RSS"
 
 #: classes/handler/public.php:481
 msgid ""
 "You will need to provide valid account name and email. Password reset link "
 "will be sent to your email address."
 msgstr ""
+"Terás que proporcionar un nome válido de conta e email. Enviarase unha "
+"ligazón para restablecer o contrasinal."
 
 #: classes/handler/public.php:488 classes/pref/feeds.php:641
 #: plugins/bookmarklets/init.php:302 include/login_form.php:103
 #: js/CommonDialogs.js:543 js/PrefUsers.js:64
 msgid "Login:"
-msgstr ""
+msgstr "Usuaria:"
 
 #: classes/handler/public.php:493
 msgid "Email:"
-msgstr ""
+msgstr "Email:"
 
 #: classes/handler/public.php:501
 #, php-format
 msgid "How much is %d + %d:"
-msgstr ""
+msgstr "Canto é %d + %d:"
 
 #: classes/handler/public.php:507 classes/pref/users.php:240
 msgid "Reset password"
-msgstr ""
+msgstr "Restablecer contrasinal"
 
 #: classes/handler/public.php:518
 msgid "Some of the required form parameters are missing or incorrect."
-msgstr ""
+msgstr "Falta algún dos datos requeridos ou son incorrectos."
 
 #: classes/handler/public.php:522 classes/handler/public.php:574
 msgid "Go back"
-msgstr ""
+msgstr "Atrás"
 
 #: classes/handler/public.php:560
 msgid "[tt-rss] Password reset request"
-msgstr ""
+msgstr "[tt-rss] Solicitado restablecemento contrasinal"
 
 #: classes/handler/public.php:570
 msgid "Sorry, login and email combination not found."
-msgstr ""
+msgstr "Sentimos dicir que non atopamos esta combinación de usuaria e email."
 
 #: classes/handler/public.php:590
 msgid "Your access level is insufficient to run this script."
-msgstr ""
+msgstr "O teu nivel de acceso non é suficiente para executar este script."
 
 #: classes/handler/public.php:652
 msgid "Database Updater"
-msgstr ""
+msgstr "Actualizador da base de datos"
 
 #: classes/handler/public.php:665
 #, php-format
 msgid "Performing updates to version %d"
-msgstr ""
+msgstr "Realizando actualización á versión %d"
 
 #: classes/handler/public.php:680 classes/handler/public.php:707
 #: js/PrefHelpers.js:411 js/PrefHelpers.js:757
 msgid "Update"
-msgstr ""
+msgstr "Actualizar"
 
 #: classes/handler/public.php:700
 #, php-format
 msgid "Database schema needs update to the latest version (%d to %d)."
 msgstr ""
+"Hai que actualizar o esquema da base de datos á última versión (%d a %d)."
 
 #: classes/pref/labels.php:168
 #, php-format
 msgid "Created label <b>%s</b>"
-msgstr ""
+msgstr "Etiqueta creada <b>%s</b>"
 
 #: classes/pref/labels.php:180 classes/pref/prefs.php:836
 #: classes/pref/prefs.php:1463 classes/pref/filters.php:649
 #: classes/pref/users.php:222 classes/pref/feeds.php:904
 #: js/CommonFilters.js:440 js/CommonFilters.js:473 js/CommonDialogs.js:236
 msgid "Select"
-msgstr ""
+msgstr "Elexir"
 
 #: classes/pref/prefs.php:30 classes/pref/feeds.php:601
 msgid "General"
-msgstr ""
+msgstr "Xeral"
 
 #: classes/pref/prefs.php:51
 msgid "Articles"
-msgstr ""
+msgstr "Artigos"
 
 #: classes/pref/prefs.php:65
 msgid "Digest"
-msgstr ""
+msgstr "Resumo"
 
 #: classes/pref/prefs.php:70
 msgid "Advanced"
-msgstr ""
+msgstr "Avanzado"
 
 #: classes/pref/prefs.php:81
 msgid "Debugging"
-msgstr ""
+msgstr "Depurando"
 
 #: classes/pref/prefs.php:87
 msgid "Never apply these tags automatically (comma-separated list)."
 msgstr ""
+"Non aplicar automáticamente estas etiquetas (lista separada por vírgulas)."
 
 #: classes/pref/prefs.php:91
 msgid "Blacklisted tags"
-msgstr ""
+msgstr "Etiquetas rexeitadas"
 
 #: classes/pref/prefs.php:92
 msgid "Default language"
-msgstr ""
+msgstr "Idioma por defecto"
 
 #: classes/pref/prefs.php:92
 msgid "Used for full-text search"
-msgstr ""
+msgstr "Utilizado na busca por texto"
 
 #: classes/pref/prefs.php:93
 msgid "Mark read on scroll"
-msgstr ""
+msgstr "Marcar como lido ao desprazar"
 
 #: classes/pref/prefs.php:93
 msgid "Mark articles as read as you scroll past them"
-msgstr ""
+msgstr "Marca os artigos como listos a medida que te desprazas neles"
 
 #: classes/pref/prefs.php:94
 msgid "Always expand articles"
-msgstr ""
+msgstr "Despregar sempre os artigos"
 
 #: classes/pref/prefs.php:95
 msgid "Combined mode"
-msgstr ""
+msgstr "Modo combinado"
 
 #: classes/pref/prefs.php:95
 msgid "Show flat list of articles instead of separate panels"
-msgstr ""
+msgstr "Mostra unha lista de artigos en lugar de paneis separados"
 
 #: classes/pref/prefs.php:96
 msgid "Confirm marking feeds as read"
-msgstr ""
+msgstr "Confirmar o marcado como lidos"
 
 #: classes/pref/prefs.php:97
 msgid "Default update interval"
-msgstr ""
+msgstr "Intervalo de actualización por defecto"
 
 #: classes/pref/prefs.php:98
 msgid "Mark sent articles as read"
-msgstr ""
+msgstr "Marcar como lidos os artigos enviados"
 
 #: classes/pref/prefs.php:99
 msgid "Enable digest"
-msgstr ""
+msgstr "Activar resumo"
 
 #: classes/pref/prefs.php:99
 msgid "Send daily digest of new (and unread) headlines to your e-mail address"
 msgstr ""
+"Envia un resumo diario coas novidades (e non lidos) a o enderezo de email"
 
 #: classes/pref/prefs.php:100
 msgid "Try to send around this time"
-msgstr ""
+msgstr "Intentar enviar sobre esta hora"
 
 #: classes/pref/prefs.php:100
 msgid "Time in UTC"
-msgstr ""
+msgstr "Hora en UTC"
 
 #: classes/pref/prefs.php:101
 msgid "Enable API"
-msgstr ""
+msgstr "Activar API"
 
 #: classes/pref/prefs.php:101
 msgid "Allows accessing this account through the API"
-msgstr ""
+msgstr "Permitir o acceso a esta conta a través da API"
 
 #: classes/pref/prefs.php:102
 msgid "Enable categories"
-msgstr ""
+msgstr "Activar categorías"
 
 #: classes/pref/prefs.php:103
 msgid "Maximum age of fresh articles"
-msgstr ""
+msgstr "Idade máxima das novidades"
 
 #: classes/pref/prefs.php:103
 msgid "hours"
-msgstr ""
+msgstr "horas"
 
 #: classes/pref/prefs.php:104
 msgid "Hide read feeds"
-msgstr ""
+msgstr "Agochar fontes lidas"
 
 #: classes/pref/prefs.php:105
 msgid "Always show special feeds"
-msgstr ""
+msgstr "Mostrar sempre fontes especiais"
 
 #: classes/pref/prefs.php:105
 msgid "While hiding read feeds"
-msgstr ""
+msgstr "Mentras se agochan fontes lidas"
 
 #: classes/pref/prefs.php:106
 msgid "Long date format"
-msgstr ""
+msgstr "Formato longo da data"
 
 #: classes/pref/prefs.php:106
 msgid ""
 "Syntax is identical to PHP <a href='http://php.net/manual/function.date."
 "php'>date()</a> function."
 msgstr ""
+"A sintaxe é a da función PHP <a href='http://php.net/manual/function.date."
+"php'>date()</a>."
 
 #: classes/pref/prefs.php:107
 msgid "Automatically show next feed"
-msgstr ""
+msgstr "Mostrar automáticamente a seguinte fonte"
 
 #: classes/pref/prefs.php:107
 msgid "After marking one as read"
-msgstr ""
+msgstr "Após marcar un como lido"
 
 #: classes/pref/prefs.php:108
 msgid "Purge articles older than"
-msgstr ""
+msgstr "Purgar artigos anteriores a"
 
 #: classes/pref/prefs.php:108
 msgid "<strong>days</strong> (0 disables)"
-msgstr ""
+msgstr "<strong>días</strong> (0 desactiva)"
 
 #: classes/pref/prefs.php:109
 msgid "Purge unread articles"
-msgstr ""
+msgstr "Purgar artigos non lidos"
 
 #: classes/pref/prefs.php:110
 msgid "Short date format"
-msgstr ""
+msgstr "Formato curto da data"
 
 #: classes/pref/prefs.php:111
 msgid "Show content preview in headlines"
-msgstr ""
+msgstr "Mostrar vista previa nos titulares"
 
 #: classes/pref/prefs.php:112
 msgid "SSL client certificate"
-msgstr ""
+msgstr "Certificado SSL do cliente"
 
 #: classes/pref/prefs.php:113 classes/pref/feeds.php:588
 #: js/CommonDialogs.js:462
@@ -795,71 +804,71 @@ msgstr ""
 
 #: classes/pref/prefs.php:114
 msgid "Time zone"
-msgstr ""
+msgstr "Zona horaria"
 
 #: classes/pref/prefs.php:115
 msgid "Group by feed"
-msgstr ""
+msgstr "Agrupar por fonte"
 
 #: classes/pref/prefs.php:115
 msgid "Group multiple-feed output by originating feed"
-msgstr ""
+msgstr "Agrupa a saída de varias fontes por fonte de orixe"
 
 #: classes/pref/prefs.php:116
 msgid "Language"
-msgstr ""
+msgstr "Idioma"
 
 #: classes/pref/prefs.php:117
 msgid "Theme"
-msgstr ""
+msgstr "Decorado"
 
 #: classes/pref/prefs.php:118
 msgid "Don't enforce DISTINCT headlines"
-msgstr ""
+msgstr "Non forzar titulares DISTINCT"
 
 #: classes/pref/prefs.php:118
 msgid "May produce duplicate entries"
-msgstr ""
+msgstr "Pode producir entradas duplicadas"
 
 #: classes/pref/prefs.php:119
 msgid "Show article and feed IDs"
-msgstr ""
+msgstr "Mostra IDs do artigo e da fonte"
 
 #: classes/pref/prefs.php:119
 msgid "In the headlines buffer"
-msgstr ""
+msgstr "No buffer dos titulares"
 
 #: classes/pref/prefs.php:120
 msgid "Disable conditional counter updates"
-msgstr ""
+msgstr "Desactivar actualizacións do contador condiconal"
 
 #: classes/pref/prefs.php:120
 msgid "May increase server load"
-msgstr ""
+msgstr "Pode aumentar a carga do servidor"
 
 #: classes/pref/prefs.php:121
 msgid "Grid view"
-msgstr ""
+msgstr "Vista en grella"
 
 #: classes/pref/prefs.php:121
 msgid "On wider screens, if always expanded"
-msgstr ""
+msgstr "En pantallas máis anchas, se sempre expandido"
 
 #: classes/pref/prefs.php:222
 msgid "The configuration was saved."
-msgstr ""
+msgstr "Gardouse a configuración."
 
 #: classes/pref/prefs.php:264
 msgid "Your personal data has been saved."
-msgstr ""
+msgstr "Gardáronse os datos personais."
 
 #: classes/pref/prefs.php:294
 msgid "Full name:"
-msgstr ""
+msgstr "Nome completo:"
 
 #: classes/pref/prefs.php:299 js/PrefUsers.js:98
 msgid "E-mail:"
-msgstr ""
+msgstr "Email:"
 
 #: classes/pref/prefs.php:307 classes/pref/feeds.php:670
 #: plugins/af_psql_trgm/init.php:193 plugins/note/init.php:51
@@ -868,23 +877,23 @@ msgstr ""
 #: js/CommonFilters.js:236 js/CommonFilters.js:320 js/CommonFilters.js:520
 #: js/PrefLabelTree.js:170 js/Article.js:358 js/PrefUsers.js:119
 msgid "Save"
-msgstr ""
+msgstr "Gardar"
 
 #: classes/pref/prefs.php:358
 msgid "Old password:"
-msgstr ""
+msgstr "Contrasinal antigo:"
 
 #: classes/pref/prefs.php:363 js/PrefUsers.js:84
 msgid "New password:"
-msgstr ""
+msgstr "Novo contrasinal:"
 
 #: classes/pref/prefs.php:368
 msgid "Confirm password:"
-msgstr ""
+msgstr "Confirmar contrasinal:"
 
 #: classes/pref/prefs.php:376
 msgid "Change password"
-msgstr ""
+msgstr "Cambiar contrasinal"
 
 #: classes/pref/prefs.php:383
 #, php-format
@@ -892,124 +901,126 @@ msgid ""
 "Authentication module used for this session (<b>%s</b>) does not provide an "
 "ability to set passwords."
 msgstr ""
+"O módulo de autenticación usado nesta sesión (<b>%s</b>) non permite a "
+"función de establecer contrasinais."
 
 #: classes/pref/prefs.php:400
 msgid "Generate password"
-msgstr ""
+msgstr "Crear contrasinal"
 
 #: classes/pref/prefs.php:406 classes/pref/feeds.php:938 js/PrefHelpers.js:227
 msgid "Remove selected"
-msgstr ""
+msgstr "Eliminar seleccionado"
 
 #: classes/pref/prefs.php:442 classes/pref/prefs.php:494
 msgid "Your password:"
-msgstr ""
+msgstr "O teu contrasinal:"
 
 #: classes/pref/prefs.php:450
 msgid "Disable OTP"
-msgstr ""
+msgstr "Desactivar OTP"
 
 #: classes/pref/prefs.php:472
 msgid "OTP secret:"
-msgstr ""
+msgstr "Segredo OTP:"
 
 #: classes/pref/prefs.php:499
 msgid "Verification code:"
-msgstr ""
+msgstr "Código de verificación:"
 
 #: classes/pref/prefs.php:507
 msgid "Enable OTP"
-msgstr ""
+msgstr "Activar OTP"
 
 #: classes/pref/prefs.php:521
 msgid "Personal data"
-msgstr ""
+msgstr "Datos personais"
 
 #: classes/pref/prefs.php:524
 msgid "Password"
-msgstr ""
+msgstr "Contrasinal"
 
 #: classes/pref/prefs.php:527
 msgid "App passwords"
-msgstr ""
+msgstr "Contrasinais da app"
 
 #: classes/pref/prefs.php:530
 msgid "Authenticator (OTP)"
-msgstr ""
+msgstr "Autenticador (OTP)"
 
 #: classes/pref/prefs.php:541
 msgid "Some preferences are only available in default profile."
-msgstr ""
+msgstr "Algúns axustes só están dispoñibles para o perfil por defecto."
 
 #: classes/pref/prefs.php:630
 msgid "default"
-msgstr ""
+msgstr "por defecto"
 
 #: classes/pref/prefs.php:638
 msgid "Customize"
-msgstr ""
+msgstr "Personalizar"
 
 #: classes/pref/prefs.php:640
 msgid "More themes..."
-msgstr ""
+msgstr "Máis decorados..."
 
 #: classes/pref/prefs.php:671
 msgid "Preview"
-msgstr ""
+msgstr "Vista previa"
 
 #: classes/pref/prefs.php:697
 msgid "Register"
-msgstr ""
+msgstr "Rexistro"
 
 #: classes/pref/prefs.php:701 classes/pref/system.php:101
 msgid "Clear"
-msgstr ""
+msgstr "Limpar"
 
 #: classes/pref/prefs.php:705 classes/pref/prefs.php:871
 #: plugins/bookmarklets/init.php:364 js/CommonDialogs.js:641
 msgid "More info..."
-msgstr ""
+msgstr "Máis info..."
 
 #: classes/pref/prefs.php:713
 #, php-format
 msgid "Current server time: %s"
-msgstr ""
+msgstr "Hora actual do servidor: %s"
 
 #: classes/pref/prefs.php:761
 msgid "Save configuration"
-msgstr ""
+msgstr "Gardar configuración"
 
 #: classes/pref/prefs.php:764
 msgid "Save and exit"
-msgstr ""
+msgstr "Gardar e saír"
 
 #: classes/pref/prefs.php:771 js/PrefHelpers.js:127
 msgid "Manage profiles"
-msgstr ""
+msgstr "Xestionar perfís"
 
 #: classes/pref/prefs.php:776
 msgid "Reset to defaults"
-msgstr ""
+msgstr "Restablecer por defecto"
 
 #: classes/pref/prefs.php:831 classes/pref/filters.php:645
 #: classes/pref/users.php:217 classes/pref/feeds.php:900 js/Feeds.js:644
 #: js/Feeds.js:639
 msgid "Search"
-msgstr ""
+msgstr "Buscar"
 
 #: classes/pref/prefs.php:839 classes/pref/prefs.php:1466
 #: classes/pref/filters.php:652 classes/pref/users.php:225
 #: classes/pref/feeds.php:907 js/CommonFilters.js:444 js/CommonFilters.js:476
 #: js/PrefFeedTree.js:506 js/PrefHelpers.js:187 js/Headlines.js:652
 msgid "All"
-msgstr ""
+msgstr "Todo"
 
 #: classes/pref/prefs.php:841 classes/pref/prefs.php:1468
 #: classes/pref/filters.php:654 classes/pref/users.php:227
 #: classes/pref/feeds.php:909 js/CommonFilters.js:446 js/CommonFilters.js:478
 #: js/CommonDialogs.js:241
 msgid "None"
-msgstr ""
+msgstr "Nada"
 
 #: classes/pref/prefs.php:869
 #, php-format
@@ -1018,64 +1029,67 @@ msgid ""
 "data usage and origin server load resulting in a ban of your instance: <b>"
 "%s</b>"
 msgstr ""
+"Os seguintes complementos usan ganchos de contido por-feed. Isto pode causar "
+"un exceso uso de datos e carga no servidor de orixe que podería resultar en "
+"que exclúan a túa instancia: <b>%s</b>"
 
 #: classes/pref/prefs.php:885 js/CommonFilters.js:234
 msgid "More info"
-msgstr ""
+msgstr "Máis info"
 
 #: classes/pref/prefs.php:888
 msgid "Enable selected"
-msgstr ""
+msgstr "Activar os seleccionados"
 
 #: classes/pref/prefs.php:891
 msgid "Reload"
-msgstr ""
+msgstr "Recargar"
 
 #: classes/pref/prefs.php:898
 msgid "Check for updates"
-msgstr ""
+msgstr "Comprobar actualizacións"
 
 #: classes/pref/prefs.php:905
 msgid "Install plugin"
-msgstr ""
+msgstr "Instalar complemento"
 
 #: classes/pref/prefs.php:918
 msgid "Personal data / Authentication"
-msgstr ""
+msgstr "Datos personais / Autenticación"
 
 #: classes/pref/prefs.php:932 classes/pref/feeds.php:1067
 msgid "Plugins"
-msgstr ""
+msgstr "Complementos"
 
 #: classes/pref/prefs.php:965
 msgid "Incorrect one time password"
-msgstr ""
+msgstr "Contrasinal dun só uso incorrecto"
 
 #: classes/pref/prefs.php:968 classes/pref/prefs.php:1006
 msgid "Incorrect password"
-msgstr ""
+msgstr "Contrasinal incorrecto"
 
 #: classes/pref/prefs.php:1021
 #, php-format
 msgid "v%.2f, by %s"
-msgstr ""
+msgstr "v%.2f, por %s"
 
 #: classes/pref/prefs.php:1034
 #, php-format
 msgid "v%s, by %s"
-msgstr ""
+msgstr "v%s, por %s"
 
 #: classes/pref/prefs.php:1477
 msgid "Description"
-msgstr ""
+msgstr "Descrición"
 
 #: classes/pref/prefs.php:1478
 msgid "Created"
-msgstr ""
+msgstr "Creado"
 
 #: classes/pref/prefs.php:1479
 msgid "Last used"
-msgstr ""
+msgstr "Último uso"
 
 #: classes/pref/prefs.php:1524
 #, php-format
@@ -1083,59 +1097,61 @@ msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
 "reference."
 msgstr ""
+"Contrasinal creado <strong>%s</strong> para %s. Lémbrao para referencia "
+"futura."
 
 #: classes/pref/system.php:24
 msgid "Test message from tt-rss"
-msgstr ""
+msgstr "Mensaxe de proba desde tt-rss"
 
 #: classes/pref/system.php:82 js/PrefHelpers.js:615
 msgid "Refresh"
-msgstr ""
+msgstr "Actualizar"
 
 #: classes/pref/system.php:87
 msgid "&lt;&lt;"
-msgstr ""
+msgstr "&lt;&lt;"
 
 #: classes/pref/system.php:91
 #, php-format
 msgid "Page %d of %d"
-msgstr ""
+msgstr "Páxina %d de %d"
 
 #: classes/pref/system.php:96
 msgid "&gt;&gt;"
-msgstr ""
+msgstr "&gt;&gt;"
 
 #: classes/pref/system.php:105
 msgid "Severity:"
-msgstr ""
+msgstr "Severidade:"
 
 #: classes/pref/system.php:109
 msgid "Errors"
-msgstr ""
+msgstr "Erros"
 
 #: classes/pref/system.php:110
 msgid "Warnings"
-msgstr ""
+msgstr "Avisos"
 
 #: classes/pref/system.php:111
 msgid "Everything"
-msgstr ""
+msgstr "Todo"
 
 #: classes/pref/system.php:121
 msgid "Error"
-msgstr ""
+msgstr "Erro"
 
 #: classes/pref/system.php:122
 msgid "Filename"
-msgstr ""
+msgstr "Nome de ficheiro"
 
 #: classes/pref/system.php:123
 msgid "Message"
-msgstr ""
+msgstr "Mensaxe"
 
 #: classes/pref/system.php:125
 msgid "Date"
-msgstr ""
+msgstr "Data"
 
 #: classes/pref/system.php:169
 msgid "Event log"
@@ -1425,7 +1441,7 @@ msgstr ""
 
 #: classes/opml.php:41
 msgid "Return to preferences"
-msgstr ""
+msgstr "Volver aos axustes"
 
 #: classes/opml.php:321
 #, php-format
@@ -1919,6 +1935,8 @@ msgid ""
 "You are using default tt-rss password. Please change it in the Preferences "
 "(Personal data / Authentication)."
 msgstr ""
+"Estás usando o contrasinal por defecto de tt-rss. Cámbiao nos Axusts (Datos "
+"personais / Autenticación)."
 
 #: js/Feeds.js:426
 msgid "Mark all articles as read?"
@@ -2451,6 +2469,8 @@ msgid ""
 "If you have imported labels and/or filters, you might need to reload "
 "preferences to see your new data."
 msgstr ""
+"Se importaches etiquetas e/ou filtros, pode que teñas que recargar os "
+"axustes para ver os novos datos."
 
 #: js/Headlines.js:642
 msgid "Cancel search"

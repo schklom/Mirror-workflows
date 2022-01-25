@@ -398,6 +398,8 @@ const	Filters = {
 					xhr.post("backend.php", this.attr('value'), () => {
 						dialog.hide();
 
+						Notify.close();
+
 						const tree = dijit.byId("filterTree");
 						if (tree) tree.reload();
 					});

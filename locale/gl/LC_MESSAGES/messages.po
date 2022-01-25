@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-18 13:34+0300\n"
-"PO-Revision-Date: 2022-01-23 14:40+0000\n"
+"PO-Revision-Date: 2022-01-26 08:40+0000\n"
 "Last-Translator: xosé m. <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "gl/>\n"
@@ -800,7 +800,7 @@ msgstr "Certificado SSL do cliente"
 #: classes/pref/prefs.php:113 classes/pref/feeds.php:588
 #: js/CommonDialogs.js:462
 msgid "Do not embed media"
-msgstr ""
+msgstr "Non incluír multimedia"
 
 #: classes/pref/prefs.php:114
 msgid "Time zone"
@@ -1155,126 +1155,126 @@ msgstr "Data"
 
 #: classes/pref/system.php:169
 msgid "Event log"
-msgstr ""
+msgstr "Rexistro do evento"
 
 #: classes/pref/system.php:175
 msgid "Mail configuration"
-msgstr ""
+msgstr "Configuración de email"
 
 #: classes/pref/system.php:202
 msgid "To:"
-msgstr ""
+msgstr "Para:"
 
 #: classes/pref/system.php:204
 msgid "Send test email"
-msgstr ""
+msgstr "Enviar email de proba"
 
 #: classes/pref/system.php:210
 msgid "PHP Information"
-msgstr ""
+msgstr "Info PHP"
 
 #: classes/pref/filters.php:197 classes/pref/filters.php:208
 #: classes/pref/filters.php:426 classes/pref/filters.php:847
 msgid "All feeds"
-msgstr ""
+msgstr "Tódalas fontes"
 
 #: classes/pref/filters.php:219 classes/pref/filters.php:446
 msgid "(inverse)"
-msgstr ""
+msgstr "(inversa)"
 
 #: classes/pref/filters.php:215 classes/pref/filters.php:445
 #, php-format
 msgid "%s on %s in %s %s"
-msgstr ""
+msgstr "%s en %s en %s %s"
 
 #: classes/pref/filters.php:661
 msgid "Combine"
-msgstr ""
+msgstr "Combinar"
 
 #: classes/pref/filters.php:663 classes/pref/feeds.php:921
 #: classes/pref/feeds.php:936
 msgid "Reset sort order"
-msgstr ""
+msgstr "Restablecer orde"
 
 #: classes/pref/filters.php:665 classes/pref/users.php:236
 #: js/CommonDialogs.js:578 js/CommonFilters.js:518
 msgid "Remove"
-msgstr ""
+msgstr "Eliminar"
 
 #: classes/pref/filters.php:720
 msgid "[No caption]"
-msgstr ""
+msgstr "[Sen lenda]"
 
 #: classes/pref/filters.php:722
 #, php-format
 msgid "%s (%d rule)"
 msgid_plural "%s (%d rules)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s (%d regra)"
+msgstr[1] "%s (%d regras)"
 
 #: classes/pref/filters.php:736
 msgid "matches any rule"
-msgstr ""
+msgstr "concorda ningunha regra"
 
 #: classes/pref/filters.php:737
 msgid "inverse"
-msgstr ""
+msgstr "inversa"
 
 #: classes/pref/filters.php:740
 #, php-format
 msgid "%s (+%d action)"
 msgid_plural "%s (+%d actions)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s (+%d acción)"
+msgstr[1] "%s (+%d accións)"
 
 #: classes/pref/filters.php:900 classes/pref/feeds.php:247
 #: classes/digest.php:116 classes/opml.php:544 classes/feeds.php:1250
 #: include/controls.php:177
 msgid "Uncategorized"
-msgstr ""
+msgstr "Sen categoría"
 
 #: classes/pref/users.php:56
 msgid "Registered"
-msgstr ""
+msgstr "Alta en"
 
 #: classes/pref/users.php:61
 msgid "Last logged in"
-msgstr ""
+msgstr "Última conexión"
 
 #: classes/pref/users.php:66
 msgid "Subscribed feeds"
-msgstr ""
+msgstr "Fontes subscritas"
 
 #: classes/pref/users.php:71
 msgid "Stored articles"
-msgstr ""
+msgstr "Artigos gardados"
 
 #: classes/pref/users.php:101 classes/userhelper.php:223
 msgid "User not found"
-msgstr ""
+msgstr "Non se atopa usuaria"
 
 #: classes/pref/users.php:171
 #, php-format
 msgid "Added user %s with password %s"
-msgstr ""
+msgstr "Engadida usuaria %s con contrasinal %s"
 
 #: classes/pref/users.php:174
 #, php-format
 msgid "Could not create user %s"
-msgstr ""
+msgstr "Non se puido crear a usuaria %s"
 
 #: classes/pref/users.php:177
 #, php-format
 msgid "User %s already exists."
-msgstr ""
+msgstr "Xa existe a usuaria %s."
 
 #: classes/pref/users.php:232
 msgid "Create user"
-msgstr ""
+msgstr "Crear usuaria"
 
 #: classes/pref/users.php:272
 msgid "Click to edit"
-msgstr ""
+msgstr "Preme para editar"
 
 #: classes/pref/feeds.php:77 classes/pref/feeds.php:233
 #: classes/pref/feeds.php:281 classes/pref/feeds.php:287
@@ -1282,81 +1282,81 @@ msgstr ""
 #, php-format
 msgid "(%d feed)"
 msgid_plural "(%d feeds)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(%d fonte)"
+msgstr[1] "(%d fontes)"
 
 #: classes/pref/feeds.php:533
 #, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(%d día)"
+msgstr[1] "(%d días)"
 
 #: classes/pref/feeds.php:535 classes/pref/feeds.php:583
 msgid "Disabled"
-msgstr ""
+msgstr "Desactivado"
 
 #: classes/pref/feeds.php:539
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d día"
+msgstr[1] "%d días"
 
 #: classes/pref/feeds.php:565
 msgid "Check to enable field"
-msgstr ""
+msgstr "Marca para activar o campo"
 
 #: classes/pref/feeds.php:581
 #, php-format
 msgid "(%d days)"
-msgstr ""
+msgstr "(%d días)"
 
 #: classes/pref/feeds.php:586 js/CommonDialogs.js:460
 msgid "Include in e-mail digest"
-msgstr ""
+msgstr "Incluír no resumo por email"
 
 #: classes/pref/feeds.php:587 js/CommonDialogs.js:461
 msgid "Always display image attachments"
-msgstr ""
+msgstr "Mostrar sempre imaxes incluídas"
 
 #: classes/pref/feeds.php:589 js/CommonDialogs.js:463
 msgid "Cache media"
-msgstr ""
+msgstr "Caché multimedia"
 
 #: classes/pref/feeds.php:590 js/CommonDialogs.js:464
 msgid "Mark updated articles as unread"
-msgstr ""
+msgstr "Marcar artigos actualizados como non lidos"
 
 #: classes/pref/feeds.php:605 js/PrefFeedTree.js:426 js/CommonDialogs.js:500
 msgid "Place in category:"
-msgstr ""
+msgstr "Pór na categoría:"
 
 #: classes/pref/feeds.php:613 js/Feeds.js:626 js/CommonDialogs.js:516
 msgid "Language:"
-msgstr ""
+msgstr "Idioma:"
 
 #: classes/pref/feeds.php:624 js/CommonDialogs.js:526
 msgid "Update interval:"
-msgstr ""
+msgstr "Actualizar cada:"
 
 #: classes/pref/feeds.php:631 js/CommonDialogs.js:530
 msgid "Article purging:"
-msgstr ""
+msgstr "Purgar artigos:"
 
 #: classes/pref/feeds.php:638 plugins/auth_internal/init.php:101
 #: js/PrefFeedTree.js:434
 msgid "Authentication"
-msgstr ""
+msgstr "Autenticación"
 
 #: classes/pref/feeds.php:647 plugins/bookmarklets/init.php:309
 #: include/login_form.php:112 js/CommonDialogs.js:549
 msgid "Password:"
-msgstr ""
+msgstr "Contrasinal:"
 
 #: classes/pref/feeds.php:654
 msgid "Options"
-msgstr ""
+msgstr "Opcións"
 
 #: classes/pref/feeds.php:671 plugins/note/init.php:52
 #: plugins/bookmarklets/init.php:282 js/CommonDialogs.js:587
@@ -1364,80 +1364,80 @@ msgstr ""
 #: js/CommonFilters.js:525 js/Feeds.js:640 js/PrefFeedTree.js:454
 #: js/PrefHelpers.js:232 js/PrefHelpers.js:306
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: classes/pref/feeds.php:876
 msgid "Feeds with errors"
-msgstr ""
+msgstr "Fontes con erros"
 
 #: classes/pref/feeds.php:882
 msgid "Inactive feeds"
-msgstr ""
+msgstr "Fontes inactivas"
 
 #: classes/pref/feeds.php:919
 msgid "Edit selected feeds"
-msgstr ""
+msgstr "Editar fontes elexidas"
 
 #: classes/pref/feeds.php:923 js/PrefFeedTree.js:396
 msgid "Batch subscribe"
-msgstr ""
+msgstr "Subscribir en grupo"
 
 #: classes/pref/feeds.php:931
 msgid "Categories"
-msgstr ""
+msgstr "Categorías"
 
 #: classes/pref/feeds.php:934
 msgid "Add category"
-msgstr ""
+msgstr "Engadir categoría"
 
 #: classes/pref/feeds.php:987
 msgid "Choose file..."
-msgstr ""
+msgstr "Elexir ficheiro..."
 
 #: classes/pref/feeds.php:995
 msgid "Import OPML"
-msgstr ""
+msgstr "Importar OPML"
 
 #: classes/pref/feeds.php:1006
 msgid "Export OPML"
-msgstr ""
+msgstr "Exportar OPML"
 
 #: classes/pref/feeds.php:1011
 msgid "Include tt-rss settings"
-msgstr ""
+msgstr "Incluír axustes tt-rss"
 
 #: classes/pref/feeds.php:1027
 msgid "Display URL"
-msgstr ""
+msgstr "Mostra URL"
 
 #: classes/pref/feeds.php:1032
 msgid "Clear all generated URLs"
-msgstr ""
+msgstr "Limpar tódolos URLs creados"
 
 #: classes/pref/feeds.php:1044
 msgid "My feeds"
-msgstr ""
+msgstr "Fontes"
 
 #: classes/pref/feeds.php:1049
 msgid "OPML"
-msgstr ""
+msgstr "OPML"
 
 #: classes/pref/feeds.php:1054
 msgid "Sharing"
-msgstr ""
+msgstr "Compartir"
 
 #: classes/userhelper.php:221
 #, php-format
 msgid "Changed password of user %s to %s"
-msgstr ""
+msgstr "Cambiou o contrasinal da usuaria de %s a %s"
 
 #: classes/opml.php:28 classes/opml.php:32
 msgid "OPML Utility"
-msgstr ""
+msgstr "Ferramenta OPML"
 
 #: classes/opml.php:36
 msgid "Importing OPML..."
-msgstr ""
+msgstr "Importando OPML..."
 
 #: classes/opml.php:41
 msgid "Return to preferences"
@@ -1446,22 +1446,22 @@ msgstr "Volver aos axustes"
 #: classes/opml.php:321
 #, php-format
 msgid "Adding feed: %s"
-msgstr ""
+msgstr "Engadindo fonte: %s"
 
 #: classes/opml.php:341
 #, php-format
 msgid "Duplicate feed: %s"
-msgstr ""
+msgstr "Duplicar fonte: %s"
 
 #: classes/opml.php:355
 #, php-format
 msgid "Adding label %s"
-msgstr ""
+msgstr "Engadir etiqueta %s"
 
 #: classes/opml.php:358
 #, php-format
 msgid "Duplicate label: %s"
-msgstr ""
+msgstr "Duplicar etiqueta: %s"
 
 #: classes/opml.php:370
 #, php-format

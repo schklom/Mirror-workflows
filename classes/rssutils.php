@@ -847,7 +847,8 @@ class RSSUtils {
 				if (count($matched_filter_ids) > 0) {
 					$filter_objs = ORM::for_table('ttrss_filters2')
 						->where('owner_uid', $feed_obj->owner_uid)
-						->where_in('id', $matched_filter_ids);
+						->where_in('id', $matched_filter_ids)
+						->find_many();
 
 					foreach ($filter_objs as $filter_obj) {
 						$filter_obj->set('last_triggered', Db::NOW());

@@ -6,4 +6,5 @@ FROM homeassistant/home-assistant:stable
 #RUN mkdir /config/python_scripts
 
 # Add custom store (https://github.com/hacs/integration and https://hacs.xyz/docs/setup/download#home-assistant-core)
+RUN cd /config
 RUN wget -O - https://get.hacs.xyz | bash -

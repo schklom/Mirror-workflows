@@ -18,7 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.4.0
         with:
-          ref: 'Home-Assistant' # branch
+          ref: 'Home-Assistant-Extra' # branch
       - name: set local and remote latest commit as environment variables
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
@@ -33,18 +33,18 @@ jobs:
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
     steps:
-      - name: repo-sync
-        uses: wei/git-sync@v3
-        with:
-          source_repo: "https://github.com/home-assistant/core"
-          source_branch: "master"
-          destination_repo: "git@github.com:schklom/Mirror-workflows.git"
-          destination_branch: "Home-Assistant"
-          ssh_private_key: ${{ secrets.GITSYNCACTION }}
+      # - name: repo-sync
+        # uses: wei/git-sync@v3
+        # with:
+          # source_repo: "https://github.com/home-assistant/core"
+          # source_branch: "master"
+          # destination_repo: "git@github.com:schklom/Mirror-workflows.git"
+          # destination_branch: "Home-Assistant"
+          # ssh_private_key: ${{ secrets.GITSYNCACTION }}
       - name: Checkout
         uses: actions/checkout@v2.4.0
         with:
-          ref: 'Home-Assistant' # branch
+          ref: 'Home-Assistant-Extra' # branch
       - name: get most recent commit id on original repo, for next comparison on sync
         run: git ls-remote https://github.com/home-assistant/core refs/heads/master | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
       - name: Commit and push the change
@@ -54,7 +54,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       #- uses: actions/checkout@v2.4.0
         #with:
-          #ref: 'Home-Assistant'
+          #ref: 'Home-Assistant-Extra'
       #- name: app dockerfile
       #  run: sed -r 's/^FROM ([a-zA-Z]+)(.*)$/FROM arm32v7\/\1\2/' src/app/Dockerfile > src/app/Dockerfile
       #- name: adapt web dockerfile
@@ -75,8 +75,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.4.0
         with:
-          #repository: 'schklom/Home-Assistant'
-          ref: 'Home-Assistant' # branch
+          #repository: 'schklom/Home-Assistant-Extra'
+          ref: 'Home-Assistant-Extra' # branch
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
@@ -99,7 +99,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       # https://github.com/docker/build-push-action#multi-platform-image
-      - name: Build and push Home-Assistant
+      - name: Build and push Home-Assistant-Extra
         uses: docker/build-push-action@v2.8.0
         with:
           context: .
@@ -109,4 +109,4 @@ jobs:
           pull: true
           push: true
           tags: |
-            schklom/Home-Assistant:latest
+            schklom/home-assistant:latest

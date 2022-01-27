@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-18 13:34+0300\n"
-"PO-Revision-Date: 2022-01-26 08:40+0000\n"
+"PO-Revision-Date: 2022-01-30 07:17+0000\n"
 "Last-Translator: xosé m. <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "gl/>\n"
@@ -137,7 +137,7 @@ msgstr "Tódolos Artigos"
 
 #: index.php:189 classes/rpc.php:623
 msgid "Starred"
-msgstr "Con estrela"
+msgstr "Favoritos"
 
 #: index.php:190 classes/rpc.php:624
 msgid "Published"
@@ -337,15 +337,15 @@ msgstr "Artigo"
 
 #: classes/rpc.php:581 js/Headlines.js:1388 js/Headlines.js:658
 msgid "Toggle starred"
-msgstr "Marcar con estrela"
+msgstr "Marcar favorito"
 
 #: classes/rpc.php:582 js/Headlines.js:1400
 msgid "Toggle published"
-msgstr ""
+msgstr "Marcar publicado"
 
 #: classes/rpc.php:583 js/Headlines.js:1375
 msgid "Toggle unread"
-msgstr ""
+msgstr "Marcar non lido"
 
 #: classes/rpc.php:584
 msgid "Edit tags"
@@ -413,7 +413,7 @@ msgstr "Seleccionar non lidos"
 
 #: classes/rpc.php:601
 msgid "Select starred"
-msgstr "Seleccionar con estrela"
+msgstr "Seleccionar favoritos"
 
 #: classes/rpc.php:602
 msgid "Select published"
@@ -1466,76 +1466,76 @@ msgstr "Duplicar etiqueta: %s"
 #: classes/opml.php:370
 #, php-format
 msgid "Setting preference key %s to %s"
-msgstr ""
+msgstr "Establecer chave de preferencia de %s a %s"
 
 #: classes/opml.php:406
 #, php-format
 msgid "Adding filter %s..."
-msgstr ""
+msgstr "Engadindo filtro %s..."
 
 #: classes/opml.php:544
 #, php-format
 msgid "Processing category: %s"
-msgstr ""
+msgstr "Procesando categoría: %s"
 
 #: classes/opml.php:590
 #, php-format
 msgid "Upload failed with error code %d"
-msgstr ""
+msgstr "Fallou a subida, código do erro %d"
 
 #: classes/opml.php:602
 msgid "Unable to move uploaded file."
-msgstr ""
+msgstr "Non se puido mover o ficheiro subido."
 
 #: classes/opml.php:606
 msgid "Error: please upload OPML file."
-msgstr ""
+msgstr "Erro: sube un ficheiro OPML."
 
 #: classes/opml.php:619
 msgid "Error: unable to find moved OPML file."
-msgstr ""
+msgstr "Erro: non se puido atopar o ficheiro OPML movido."
 
 #: classes/opml.php:628
 msgid "Error while parsing document."
-msgstr ""
+msgstr "Erro ao procesar o documento."
 
 #: classes/config.php:335
 #, php-format
 msgid "Git error [RC=%d]: %s"
-msgstr ""
+msgstr "Erro Git [RC=%d]: %s"
 
 #: classes/feeds.php:54 classes/feeds.php:467
 msgid "Feed not found."
-msgstr ""
+msgstr "Non se atopa a fonte."
 
 #: classes/feeds.php:119
 msgid "Never"
-msgstr ""
+msgstr "Nunca"
 
 #: classes/feeds.php:198 classes/feeds.php:1122
 msgid "Archived articles"
-msgstr ""
+msgstr "Artigos arquivados"
 
 #: classes/feeds.php:257
 msgid "Collapse article"
-msgstr ""
+msgstr "Pregar artigo"
 
 #: classes/feeds.php:280
 #, php-format
 msgid "Imported at %s"
-msgstr ""
+msgstr "Obtido o %s"
 
 #: classes/feeds.php:356
 msgid "No unread articles found to display."
-msgstr ""
+msgstr "Non hai artigos sen ler para mostrar."
 
 #: classes/feeds.php:359
 msgid "No updated articles found to display."
-msgstr ""
+msgstr "Non hai artigos actualizados que mostrar."
 
 #: classes/feeds.php:362
 msgid "No starred articles found to display."
-msgstr ""
+msgstr "Non hai artigos favoritos que mostrar."
 
 #: classes/feeds.php:366
 msgid ""
@@ -1543,91 +1543,94 @@ msgid ""
 "from article header context menu (applies to all selected articles) or use a "
 "filter."
 msgstr ""
+"Non hai artigos que mostrar. Podes asocialle etiquetas aos artigos de xeito "
+"manual desde menú contextual no titular do artigo (aplícase a tódolos "
+"artigos seleccionados) ou usar un filtro."
 
 #: classes/feeds.php:368
 msgid "No articles found to display."
-msgstr ""
+msgstr "Non hai artigos que mostrar."
 
 #: classes/feeds.php:385 classes/feeds.php:536
 #, php-format
 msgid "Feeds last updated at %s"
-msgstr ""
+msgstr "Actualizáronse as fontes en %s"
 
 #: classes/feeds.php:397 classes/feeds.php:548
 msgid "Some feeds have update errors (click for details)"
-msgstr ""
+msgstr "Algunhas fontes actualizáronse con erros (preme para detalles)"
 
 #: classes/feeds.php:525
 msgid "No feed selected."
-msgstr ""
+msgstr "Non hai fonte seleccionada."
 
 #: classes/feeds.php:1114
 msgid "Starred articles"
-msgstr ""
+msgstr "Artigos favoritos"
 
 #: classes/feeds.php:1116
 msgid "Published articles"
-msgstr ""
+msgstr "Artigos publicados"
 
 #: classes/feeds.php:1118
 msgid "Fresh articles"
-msgstr ""
+msgstr "Novidades"
 
 #: classes/feeds.php:1252
 msgid "Special"
-msgstr ""
+msgstr "Especial"
 
 #: classes/feeds.php:1343
 #, php-format
 msgid "Incorrect search syntax: %s."
-msgstr ""
+msgstr "Sintaxe da busca incorrecta: %s."
 
 #: classes/feeds.php:1533
 #, php-format
 msgid "Search results: %s"
-msgstr ""
+msgstr "Resultados da busca: %s"
 
 #: classes/timehelper.php:8
 #, php-format
 msgid "%d min"
-msgstr ""
+msgstr "%d min"
 
 #: plugins/auth_internal/init.php:112
 msgid "Please enter verification code (OTP):"
-msgstr ""
+msgstr "Escribe o código de verificación (OTP):"
 
 #: plugins/auth_internal/init.php:114
 msgid "Continue"
-msgstr ""
+msgstr "Continuar"
 
 #: plugins/auth_internal/init.php:166
 msgid "Too many authentication attempts, throttled."
-msgstr ""
+msgstr "Demasiados intentos de autenticación."
 
 #: plugins/auth_internal/init.php:247
 msgid "Password has been changed."
-msgstr ""
+msgstr "Cambiache o contrasinal."
 
 #: plugins/auth_internal/init.php:249
 msgid "Old password is incorrect."
-msgstr ""
+msgstr "O contrasinal antigo non é correcto."
 
 #: plugins/af_psql_trgm/init.php:31
 #, php-format
 msgid "Data saved (%s, %d)"
-msgstr ""
+msgstr "Datos gardados (%s, %d)"
 
 #: plugins/af_psql_trgm/init.php:121
 msgid "Show related articles"
-msgstr ""
+msgstr "Mostrar artigos relacionados"
 
 #: plugins/af_psql_trgm/init.php:134
 msgid "Mark similar articles as read (af_psql_trgm)"
-msgstr ""
+msgstr "Marcar como lidos os artigos semellantes (af_psql_trgm)"
 
 #: plugins/af_psql_trgm/init.php:164
 msgid "Minimum similarity:"
-msgstr ""
+msgstr "Semellanza mínima:"
 
 #: plugins/af_psql_trgm/init.php:172
 msgid ""
@@ -1635,212 +1638,220 @@ msgid ""
 "number (0-1). Setting it too low might produce false positives, zero "
 "disables checking."
 msgstr ""
+"A extensión PostgreSQL trigram devolve cadeas semellantes como números de "
+"punto flotante (0-1). Establecer un valor demasiado baixo produce falsos "
+"positivos, o cero desactiva a comprobación."
 
 #: plugins/af_psql_trgm/init.php:177
 msgid "Minimum title length:"
-msgstr ""
+msgstr "Lonxitude mínima do título:"
 
 #: plugins/af_psql_trgm/init.php:187
 msgid "Enable for all feeds."
-msgstr ""
+msgstr "Activar para tódalas fontes."
 
 #: plugins/af_psql_trgm/init.php:206 plugins/af_readability/init.php:108
 msgid "Currently enabled for (click to edit):"
-msgstr ""
+msgstr "Activado actualmente para (preme para editar):"
 
 #: plugins/af_psql_trgm/init.php:226
 msgid "Similarity (af_psql_trgm)"
-msgstr ""
+msgstr "Semellanza (af_psql_trgm)"
 
 #: plugins/af_psql_trgm/init.php:232
 msgid "Mark similar articles as read"
-msgstr ""
+msgstr "Marcar artigos semellantes como lidos"
 
 #: plugins/note/init.php:26 plugins/note/note.js:6
 msgid "Edit article note"
-msgstr ""
+msgstr "Editar nota do artigo"
 
 #: plugins/af_readability/init.php:27
 msgid "Data saved."
-msgstr ""
+msgstr "Datos gardados."
 
 #: plugins/af_readability/init.php:44
 msgid "Inline content"
-msgstr ""
+msgstr "Contido en liña"
 
 #: plugins/af_readability/init.php:45
 msgid "Append content"
-msgstr ""
+msgstr "Anexar contido"
 
 #: plugins/af_readability/init.php:54
 msgid "Toggle full article text"
-msgstr ""
+msgstr "Activar texto completo do artigo"
 
 #: plugins/af_readability/init.php:64
 msgid "Readability settings (af_readability)"
-msgstr ""
+msgstr "Axustes da lexibilidade (af_readability)"
 
 #: plugins/af_readability/init.php:85
 msgid ""
 "Provide full-text services to core code (bookmarklets) and other plugins"
 msgstr ""
+"Proporcionar servizos de texto completo ao código base (bookmarklets) e "
+"outros complementos"
 
 #: plugins/af_readability/init.php:115
 msgid "(append)"
-msgstr ""
+msgstr "(anexar)"
 
 #: plugins/af_readability/init.php:130
 msgid "Readability"
-msgstr ""
+msgstr "Lexibilidade"
 
 #: plugins/af_readability/init.php:135
 msgid "Inline article content"
-msgstr ""
+msgstr "Contido en liña do artigo"
 
 #: plugins/af_readability/init.php:141
 msgid "Append to summary, instead of replacing it"
-msgstr ""
+msgstr "Anexar ao resumo, no lugar de substituílo"
 
 #: plugins/bookmarklets/init.php:88 js/CommonDialogs.js:93
 msgid "Subscribe"
-msgstr ""
+msgstr "Subscribir"
 
 #: plugins/bookmarklets/init.php:101
 #, php-format
 msgid "Already subscribed to <b>%s</b>."
-msgstr ""
+msgstr "Xa estás subscrita a <b>%s</b>."
 
 #: plugins/bookmarklets/init.php:104
 #, php-format
 msgid "Subscribed to <b>%s</b>."
-msgstr ""
+msgstr "Subscrita a <b>%s</b>."
 
 #: plugins/bookmarklets/init.php:107
 #, php-format
 msgid "Could not subscribe to <b>%s</b>."
-msgstr ""
+msgstr "Non se puido subscribir a <b>%s</b>."
 
 #: plugins/bookmarklets/init.php:110
 #, php-format
 msgid "No feeds found in <b>%s</b>."
-msgstr ""
+msgstr "Non se atopan fontes en <b>%s</b>."
 
 #: plugins/bookmarklets/init.php:116
 #, php-format
 msgid "Could not subscribe to <b>%s</b>.<br>Can't download the Feed URL."
 msgstr ""
+"Non se puido subscribir a <b>%s</b>.<br>Non se descargou o URL da Fonte."
 
 #: plugins/bookmarklets/init.php:127
 msgid "Multiple feed URLs found:"
-msgstr ""
+msgstr "Atopáronse varios URLs da fonte:"
 
 #: plugins/bookmarklets/init.php:135
 msgid "Subscribe to selected feed"
-msgstr ""
+msgstr "Subscribirse á fonte seleccionada"
 
 #: plugins/bookmarklets/init.php:153
 msgid "Edit subscription options"
-msgstr ""
+msgstr "Editar opcións da subscrición"
 
 #: plugins/bookmarklets/init.php:184 plugins/bookmarklets/init.php:361
 msgid "Share with Tiny Tiny RSS"
-msgstr ""
+msgstr "Compartir con Tiny Tiny RSS"
 
 #: plugins/bookmarklets/init.php:256
 msgid "Title:"
-msgstr ""
+msgstr "Título:"
 
 #: plugins/bookmarklets/init.php:261
 msgid "URL:"
-msgstr ""
+msgstr "URL:"
 
 #: plugins/bookmarklets/init.php:266
 msgid "Content:"
-msgstr ""
+msgstr "Contido:"
 
 #: plugins/bookmarklets/init.php:271
 msgid "Labels:"
-msgstr ""
+msgstr "Etiquetas:"
 
 #: plugins/bookmarklets/init.php:281
 msgid "Share"
-msgstr ""
+msgstr "Compartir"
 
 #: plugins/bookmarklets/init.php:283
 msgid "Shared article will appear in the Published feed."
-msgstr ""
+msgstr "O artigo compartido aparecerá na fonte Publicados."
 
 #: plugins/bookmarklets/init.php:322 include/login_form.php:177
 msgid "Log in"
-msgstr ""
+msgstr "Conectar"
 
 #: plugins/bookmarklets/init.php:343
 #, php-format
 msgid "Subscribe to %s in Tiny Tiny RSS?"
-msgstr ""
+msgstr "Subscribirse a %s en Tiny Tiny RSS?"
 
 #: plugins/bookmarklets/init.php:350
 msgid "Bookmarklets"
-msgstr ""
+msgstr "Bookmarklets"
 
 #: plugins/bookmarklets/init.php:352
 msgid ""
 "Drag the link below to your browser toolbar, open the feed you're interested "
 "in in your browser and click on the link to subscribe to it."
 msgstr ""
+"Arrastra a ligazón inferior á barra de ferramentas do teu navegador, abre a "
+"fonte que che interesa e preme na ligazón para subscribirte a ela."
 
 #: plugins/bookmarklets/init.php:355
 msgid "Subscribe in Tiny Tiny RSS"
-msgstr ""
+msgstr "Subscribirse con Tiny Tiny RSS"
 
 #: plugins/bookmarklets/init.php:358
 msgid "Use this bookmarklet to publish arbitrary pages using Tiny Tiny RSS"
-msgstr ""
+msgstr "Usa este bookmarklet para publicar calquera páxina usando Tiny Tiny RSS"
 
 #: plugins/af_comics/init.php:62
 msgid "Feeds supported by af_comics"
-msgstr ""
+msgstr "Fontes con soporte af_comics"
 
 #: plugins/af_comics/init.php:64
 msgid "The following comics are currently supported:"
-msgstr ""
+msgstr "Actualmente están soportados estos cómics:"
 
 #: plugins/nsfw/init.php:39
 msgid "Not safe for work (click to toggle)"
-msgstr ""
+msgstr "Non é seguro no traballo (preme para activar)"
 
 #: plugins/nsfw/init.php:73
 msgid "NSFW Plugin"
-msgstr ""
+msgstr "Complemento NSFW"
 
 #: plugins/nsfw/init.php:88
 msgid "Tags to consider NSFW (comma-separated):"
-msgstr ""
+msgstr "Etiquetas que se consideran NSFW (separa con vírgulas):"
 
 #: plugins/nsfw/init.php:110
 msgid "Configuration saved."
-msgstr ""
+msgstr "Axustes gardados."
 
 #: plugins/af_redditimgur/init.php:45
 msgid "Reddit content settings (af_redditimgur)"
-msgstr ""
+msgstr "Axustes do contido de Reddit (af_redditimgur)"
 
 #: plugins/af_redditimgur/init.php:63
 msgid "Apply tags to NSFW posts (comma-separated list):"
-msgstr ""
+msgstr "Aplicar etiquetas a publicacións NSFW (separadas por vírgulas):"
 
 #: plugins/af_redditimgur/init.php:72
 msgid "Extract missing content using Readability (requires af_readability)"
-msgstr ""
+msgstr "Extraer o contido faltante usando Readability (require af_readability)"
 
 #: plugins/af_redditimgur/init.php:79
 msgid "Enable additional duplicate checking"
-msgstr ""
+msgstr "Activar a comprobación adicional de duplicados"
 
 #: plugins/af_redditimgur/init.php:86
 #, php-format
 msgid "Rewrite Reddit URLs to %s"
-msgstr ""
+msgstr "Rescribir URLs de Reddit a %s"
 
 #: plugins/af_redditimgur/init.php:94
 msgid "Import score, limit maximum to:"
@@ -1848,87 +1859,87 @@ msgstr ""
 
 #: plugins/af_redditimgur/init.php:125
 msgid "Configuration saved"
-msgstr ""
+msgstr "Axustes gardados"
 
 #: plugins/toggle_sidebar/init.php:27
 msgid "Toggle sidebar"
-msgstr ""
+msgstr "Activar panel lateral"
 
 #: plugins/share/init.php:42
 msgid "Article unshared"
-msgstr ""
+msgstr "Artigo non compartido"
 
 #: plugins/share/init.php:54
 msgid "Unshare all articles"
-msgstr ""
+msgstr "Non compartir ningún artigo"
 
 #: plugins/share/init.php:64
 msgid "Shared URLs cleared."
-msgstr ""
+msgstr "Limpáronse os URLs compartidos."
 
 #: plugins/share/init.php:83
 msgid "Share by URL"
-msgstr ""
+msgstr "Compartir por URL"
 
 #: plugins/share/init.php:255
 msgid "You can share this article by the following unique URL:"
-msgstr ""
+msgstr "Podes compartir este artigo co seguinte URL único:"
 
 #: plugins/share/init.php:267
 msgid "Article not found."
-msgstr ""
+msgstr "Non se atopa o artigo."
 
 #: plugins/share/init.php:272
 msgid "Unshare article"
-msgstr ""
+msgstr "Non compartir artigo"
 
 #: plugins/share/init.php:273 js/CommonDialogs.js:644
 msgid "Generate new URL"
-msgstr ""
+msgstr "Crear novo URL"
 
 #: include/login_form.php:124
 msgid "I forgot my password"
-msgstr ""
+msgstr "Esquecín o contrasinal"
 
 #: include/login_form.php:129
 msgid "Profile:"
-msgstr ""
+msgstr "Perfil:"
 
 #: include/login_form.php:142
 msgid "Use less traffic"
-msgstr ""
+msgstr "Usar menos tráfico"
 
 #: include/login_form.php:146
 msgid "Does not display images in articles, reduces automatic refreshes."
-msgstr ""
+msgstr "Non mostra imaxes nos artigos, reduce as actualizacións automáticas."
 
 #: include/login_form.php:154 js/Feeds.js:282
 msgid "Safe mode"
-msgstr ""
+msgstr "Modo seguro"
 
 #: include/login_form.php:159
 msgid "Uses default theme and prevents all plugins from loading."
-msgstr ""
+msgstr "Usa o decorado por defecto e evita que se carguen os complementos."
 
 #: include/login_form.php:167
 msgid "Remember me"
-msgstr ""
+msgstr "Lémbrame"
 
 #: include/sessions.php:32
 msgid "Session failed to validate (password changed)"
-msgstr ""
+msgstr "Fallou a validación da conta (cambiou o contrasinal)"
 
 #: include/sessions.php:36
 msgid "Session failed to validate (user not found)"
-msgstr ""
+msgstr "Fallou a validación da conta (non se atopa usuaria)"
 
 #: include/functions.php:49
 msgid "Detect automatically"
-msgstr ""
+msgstr "Detectar automáticamente"
 
 #: js/Feeds.js:262
 msgid "Your password is at default value"
-msgstr ""
+msgstr "O teu contrasinal ten o valor por defecto"
 
 #: js/Feeds.js:264
 msgid ""
@@ -1940,88 +1951,88 @@ msgstr ""
 
 #: js/Feeds.js:426
 msgid "Mark all articles as read?"
-msgstr ""
+msgstr "Marcar tódolos artigos como lidos?"
 
 #: js/Feeds.js:430
 msgid "Marking all feeds as read..."
-msgstr ""
+msgstr "Marcando tódalas fontes como lidas..."
 
 #: js/Feeds.js:447
 msgid "Mark %w in %s older than 1 day as read?"
-msgstr ""
+msgstr "Marcar %w en %s anteriores a un día como lidos?"
 
 #: js/Feeds.js:450
 msgid "Mark %w in %s older than 1 week as read?"
-msgstr ""
+msgstr "Marcar %w en %s anteriores a 1 semana como lidos?"
 
 #: js/Feeds.js:453
 msgid "Mark %w in %s older than 2 weeks as read?"
-msgstr ""
+msgstr "Marcar %w en %s anteriores a 2 semanas como lidos?"
 
 #: js/Feeds.js:456
 msgid "Mark %w in %s as read?"
-msgstr ""
+msgstr "Marcar %w en %s como lidos?"
 
 #: js/Feeds.js:459
 msgid "search results"
-msgstr ""
+msgstr "resultados da busca"
 
 #: js/Feeds.js:459
 msgid "all articles"
-msgstr ""
+msgstr "tódolos artigos"
 
 #: js/Feeds.js:500
 #, javascript-format
 msgid "Mark all articles in %s as read?"
-msgstr ""
+msgstr "Marcar tódolos artigos en %s como lidos?"
 
 #: js/Feeds.js:635
 msgid "Search syntax"
-msgstr ""
+msgstr "Sintaxe da busca"
 
 #: js/common.js:448
 msgid "Click to close"
-msgstr ""
+msgstr "Preme para pechar"
 
 #: js/PrefLabelTree.js:71
 msgid "Edit label"
-msgstr ""
+msgstr "Editar etiqueta"
 
 #: js/PrefLabelTree.js:143
 msgid "Foreground:"
-msgstr ""
+msgstr "Primeiro plano:"
 
 #: js/PrefLabelTree.js:144
 msgid "Background:"
-msgstr ""
+msgstr "Fondo:"
 
 #: js/PrefLabelTree.js:189
 msgid "Reset selected labels to default colors?"
-msgstr ""
+msgstr "Restablecer á cor por defecto das etiquetas seleccionadas?"
 
 #: js/PrefLabelTree.js:202 js/PrefLabelTree.js:222
 msgid "No labels selected."
-msgstr ""
+msgstr "Sen etiquetas seleccionadas."
 
 #: js/PrefLabelTree.js:209
 msgid "Remove selected labels?"
-msgstr ""
+msgstr "Eliminar as etiquetas seleccionadas?"
 
 #: js/PrefLabelTree.js:210
 msgid "Removing selected labels..."
-msgstr ""
+msgstr "Eliminando as etiquetas seleccionadas..."
 
 #: js/App.js:411
 msgid "Keyboard shortcuts"
-msgstr ""
+msgstr "Atallos do teclado"
 
 #: js/App.js:472
 msgid "Update daemon is not running."
-msgstr ""
+msgstr "O demoño de actualización non está en execución."
 
 #: js/App.js:485
 msgid "Update daemon is not updating feeds."
-msgstr ""
+msgstr "O demoño de actualización non está actualizando as fontes."
 
 #: js/App.js:572
 msgid ""

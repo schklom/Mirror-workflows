@@ -195,7 +195,11 @@ class Feeds extends Handler_Protected {
 				// frontend doesn't expect pdo returning booleans as strings on mysql
 				if (Config::get(Config::DB_TYPE) == "mysql") {
 					foreach (["unread", "marked", "published"] as $k) {
-						$line[$k] = $line[$k] === "1";
+						if (is_integer($line[$k])) {
+							$line[$k] = $line[$k] === 1;
+						} else {
+							$line[$k] = $line[$k] === "1";
+						}
 					}
 				}
 

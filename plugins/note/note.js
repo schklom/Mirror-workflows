@@ -1,41 +1,58 @@
-/* global dojo, Plugins, xhr, App, Notify, fox, __ */
+/* global require, Plugins, PluginHost, xhr, App, Notify, fox, __ */
 
-Plugins.Note = {
-	edit: function(id) {
-		const dialog = new fox.SingleUseDialog({
-			title: __("Edit article note"),
-			execute: function () {
-				if (this.validate()) {
-					Notify.progress("Saving article note...", true);
+require(['dojo/_base/kernel', 'dojo/ready'], function  (dojo, ready) {
+	ready(function() {
 
-					xhr.json("backend.php", this.attr('value'), (reply) => {
-						Notify.close();
-						dialog.hide();
+		Plugins.Note = {
+			set_click_handler: function() {
+				document.querySelectorAll(".article-note[data-note-for]").forEach((note) => {
+					note.onclick = function() {
+						Plugins.Note.edit(this.getAttribute('data-note-for'));
+					}
+				});
+			},
+			edit: function(id) {
+				const dialog = new fox.SingleUseDialog({
+					title: __("Edit article note"),
+					execute: function () {
+						if (this.validate()) {
+							Notify.progress("Saving article note...", true);
 
-						if (reply) {
-							App.findAll(`div[data-note-for="${reply.id}"]`).forEach((elem) => {
-								elem.querySelector(".body").innerHTML = reply.note;
+							xhr.json("backend.php", this.attr('value'), (reply) => {
+								Notify.close();
+								dialog.hide();
 
-								if (reply.note)
-									elem.show();
-								else
-									elem.hide();
+								if (reply) {
+									App.findAll(`div[data-note-for="${reply.id}"]`).forEach((elem) => {
+										elem.querySelector(".body").innerHTML = reply.note;
+
+										if (reply.note)
+											elem.show();
+										else
+											elem.hide();
+									});
+								}
 							});
 						}
+					},
+					content: __("Loading, please wait...")
+				});
+
+				const tmph = dojo.connect(dialog, 'onShow', function () {
+					dojo.disconnect(tmph);
+
+					xhr.post("backend.php", App.getPhArgs("note", "edit", {id: id}), (reply) => {
+						dialog.attr('content', reply);
 					});
-				}
-			},
-			content: __("Loading, please wait...")
+				});
+
+				dialog.show();
+			}
+		};
+
+		PluginHost.register(PluginHost.HOOK_HEADLINE_RENDERED, function() {
+			Plugins.Note.set_click_handler();
+			return true;
 		});
-
-		const tmph = dojo.connect(dialog, 'onShow', function () {
-			dojo.disconnect(tmph);
-
-			xhr.post("backend.php", App.getPhArgs("note", "edit", {id: id}), (reply) => {
-				dialog.attr('content', reply);
-			});
-		});
-
-		dialog.show();
-	}
-};
+	});
+});

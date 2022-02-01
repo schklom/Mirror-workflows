@@ -15,6 +15,9 @@ class Note extends Plugin {
 		return file_get_contents(__DIR__ . "/note.js");
 	}
 
+	function get_css() {
+		return file_get_contents(__DIR__ . "/note.css");
+	}
 
 	function hook_article_button($line) {
 		return "<i class='material-icons' onclick=\"Plugins.Note.edit(".$line["id"].")\"

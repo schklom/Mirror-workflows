@@ -88,7 +88,7 @@ class Debug {
 
         if (!self::$enabled || self::$loglevel < $level) return false;
 
-        $ts = strftime("%H:%M:%S", time());
+        $ts = date("H:i:s", time());
         if (function_exists('posix_getpid')) {
             $ts = "$ts/" . posix_getpid();
         }

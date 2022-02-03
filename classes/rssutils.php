@@ -921,7 +921,7 @@ class RSSUtils {
 					$entry_timestamp = time();
 				}
 
-				$entry_timestamp_fmt = strftime("%Y/%m/%d %H:%M:%S", $entry_timestamp);
+				$entry_timestamp_fmt = date("Y/m/d H:i:s", $entry_timestamp);
 
 				Debug::log("date: $entry_timestamp ($entry_timestamp_fmt)", Debug::LOG_VERBOSE);
 				Debug::log("num_comments: $num_comments", Debug::LOG_VERBOSE);

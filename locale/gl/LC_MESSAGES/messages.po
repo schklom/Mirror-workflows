@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-18 13:34+0300\n"
-"PO-Revision-Date: 2022-01-30 07:17+0000\n"
+"PO-Revision-Date: 2022-02-04 12:17+0000\n"
 "Last-Translator: xosé m. <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "gl/>\n"
@@ -1855,7 +1855,7 @@ msgstr "Rescribir URLs de Reddit a %s"
 
 #: plugins/af_redditimgur/init.php:94
 msgid "Import score, limit maximum to:"
-msgstr ""
+msgstr "Puntuación da importación, limitar o máximo a:"
 
 #: plugins/af_redditimgur/init.php:125
 msgid "Configuration saved"
@@ -2039,441 +2039,455 @@ msgid ""
 "URL scheme reported by your browser (%a) doesn't match server-configured "
 "SELF_URL_PATH (%b), check X-Forwarded-Proto."
 msgstr ""
+"O esquema URL publicado polo teu navegador (%a) non concorda co configurado "
+"polo servidor SELF_URL_PATH (%b), comproba X-Forwarded-Proto."
 
 #: js/App.js:579
 msgid "Fatal error"
-msgstr ""
+msgstr "Erro fatal"
 
 #: js/App.js:604
 msgid "Unhandled exception"
-msgstr ""
+msgstr "Excepción non xestionada"
 
 #: js/App.js:833
 msgid "Updates for Tiny Tiny RSS are available."
-msgstr ""
+msgstr "Hai actualizacións dispoñibles para Tiny Tiny Rss."
 
 #: js/App.js:836
 msgid "Updates for some local plugins are available."
-msgstr ""
+msgstr "Hai actualizacións dispoñibles para complementos locais."
 
 #: js/App.js:1065
 msgid "Please enable mail or mailto plugin first."
-msgstr ""
+msgstr "Antes activa o complemento mail ou mailto."
 
 #: js/App.js:1116 js/App.js:1253 js/CommonDialogs.js:328
 msgid "You can't edit this kind of feed."
-msgstr ""
+msgstr "Non podes editar este tipo de fonte."
 
 #: js/App.js:1188
 msgid "Please enable af_readability first."
-msgstr ""
+msgstr "Activa primeiro af_readability."
 
 #: js/App.js:1201 js/App.js:1294
 msgid "Widescreen is not available in combined mode."
-msgstr ""
+msgstr "A pantalla ancha non está dispoñible no modo combinado."
 
 #: js/App.js:1262
 msgid "Please select some feed first."
-msgstr ""
+msgstr "Primeiro selecciona algunha fonte."
 
 #: js/App.js:1267
 msgid "You can't unsubscribe from the category."
-msgstr ""
+msgstr "Non podes retirar a subscrición da categoría."
 
 #: js/App.js:1273 js/CommonDialogs.js:302 js/CommonDialogs.js:343
 #, javascript-format
 msgid "Unsubscribe from %s?"
-msgstr ""
+msgstr "Retirar subscrición a %s?"
 
 #: js/PrefFeedTree.js:73
 msgid "Edit category"
-msgstr ""
+msgstr "Editar categoría"
 
 #: js/PrefFeedTree.js:80
 msgid "Remove category"
-msgstr ""
+msgstr "Eliminar categoría"
 
 #: js/PrefFeedTree.js:179
 #, javascript-format
 msgid ""
 "Remove category %s? Any nested feeds would be placed into Uncategorized."
 msgstr ""
+"Eliminar a categoría %s? Tódalas fontes que conteña irán a Sen Categoría."
 
 #: js/PrefFeedTree.js:180
 msgid "Removing category..."
-msgstr ""
+msgstr "Eliminando a categoría..."
 
 #: js/PrefFeedTree.js:192
 msgid "Unsubscribe from selected feeds?"
-msgstr ""
+msgstr "Retirar a subscrición ás fontes seleccionadas?"
 
 #: js/PrefFeedTree.js:194
 msgid "Unsubscribing from selected feeds..."
-msgstr ""
+msgstr "Retirando a subscrición ás fontes..."
 
 #: js/PrefFeedTree.js:207 js/PrefFeedTree.js:276 js/PrefFeedTree.js:292
 #: js/PrefFeedTree.js:497 js/CommonDialogs.js:230
 msgid "No feeds selected."
-msgstr ""
+msgstr "Non hai fontes seleccionadas."
 
 #: js/PrefFeedTree.js:242
 msgid "Remove selected categories?"
-msgstr ""
+msgstr "Eliminar as categorías seleccionadas?"
 
 #: js/PrefFeedTree.js:243
 msgid "Removing selected categories..."
-msgstr ""
+msgstr "Eliminando as categorías..."
 
 #: js/PrefFeedTree.js:255
 msgid "No categories selected."
-msgstr ""
+msgstr "Sen categorías seleccionadas."
 
 #: js/PrefFeedTree.js:303
 msgid "Edit multiple feeds"
-msgstr ""
+msgstr "Editar múltiples fontes"
 
 #: js/PrefFeedTree.js:332
 msgid "Save changes to selected feeds?"
-msgstr ""
+msgstr "Gardar os cambios ás fontes seleccionadas?"
 
 #: js/PrefFeedTree.js:344 js/CommonDialogs.js:430 js/PrefUsers.js:42
 #: js/CommonFilters.js:395
 msgid "Saving data..."
-msgstr ""
+msgstr "Gardando os datos..."
 
 #: js/PrefFeedTree.js:381
 msgid "Category title:"
-msgstr ""
+msgstr "Título da categoría:"
 
 #: js/PrefFeedTree.js:384
 msgid "Creating category..."
-msgstr ""
+msgstr "Creando categoría..."
 
 #: js/PrefFeedTree.js:399
 msgid "Subscribing to feeds..."
-msgstr ""
+msgstr "Subscribindose as fontes..."
 
 #: js/PrefFeedTree.js:417
 msgid "One valid feed per line (no detection is done)"
-msgstr ""
+msgstr "Unha soa fonte válida por liña (non se validarán)"
 
 #: js/PrefFeedTree.js:470
 msgid "Feeds without recent updates"
-msgstr ""
+msgstr "Fontes sen actualizacións recentes"
 
 #: js/PrefFeedTree.js:478 js/CommonDialogs.js:209
 msgid "Remove selected feeds?"
-msgstr ""
+msgstr "Eliminar fontes seleccionadas?"
 
 #: js/PrefFeedTree.js:479 js/CommonDialogs.js:210
 msgid "Removing selected feeds..."
-msgstr ""
+msgstr "Eliminando as fontes..."
 
 #: js/PrefFeedTree.js:520
 msgid "Click to edit feed"
-msgstr ""
+msgstr "Preme para editar a fonte"
 
 #: js/CommonDialogs.js:30
 msgid ""
 "Provided URL is a HTML page referencing multiple feeds, please select "
 "required feed from the dropdown menu below."
 msgstr ""
+"O URL proporcionado é unha páxina HTML que referencia varias fontes, elixe a "
+"fonte de interese desde o menú despregable inferior."
 
 #: js/CommonDialogs.js:122
 msgid ""
 "Failed to parse output. This can indicate server timeout and/or network "
 "issues. Backend output was logged to browser console."
 msgstr ""
+"Fallou o procesado da saída. Esto pode indicar problemas no servidor ou na "
+"rede. Gardouse o rexistro da saída na consola do navegador."
 
 #: js/CommonDialogs.js:136
 #, javascript-format
 msgid "Subscribed to %s"
-msgstr ""
+msgstr "Subscrición a %s"
 
 #: js/CommonDialogs.js:145
 msgid "Specified URL seems to be invalid."
-msgstr ""
+msgstr "O URL indicado non semella válido."
 
 #: js/CommonDialogs.js:148
 msgid "Specified URL doesn't seem to contain any feeds."
-msgstr ""
+msgstr "O URL indicado non semella conter ningunha fonte."
 
 #: js/CommonDialogs.js:161
 msgid "Expand to select feed"
-msgstr ""
+msgstr "Desprega para seleccionar a fonte"
 
 #: js/CommonDialogs.js:173
 #, javascript-format
 msgid "Couldn't download the specified URL: %s"
-msgstr ""
+msgstr "Non se puido descargar o URL indicado: %s"
 
 #: js/CommonDialogs.js:176
 #, javascript-format
 msgid "XML validation failed: %s"
-msgstr ""
+msgstr "Fallou a validación XML: %s"
 
 #: js/CommonDialogs.js:179
 msgid "You are already subscribed to this feed."
-msgstr ""
+msgstr "Xa tes unha subscrición a esta fonte."
 
 #: js/CommonDialogs.js:201
 msgid "Feeds with update errors"
-msgstr ""
+msgstr "Fontes con fallo na actualización"
 
 #: js/CommonDialogs.js:283
 msgid "Please enter label caption:"
-msgstr ""
+msgstr "Escribe o nome da etiqueta:"
 
 #: js/CommonDialogs.js:305
 msgid "Removing feed..."
-msgstr ""
+msgstr "Eliminando a fonte..."
 
 #: js/CommonDialogs.js:353
 msgid "Please select an image file."
-msgstr ""
+msgstr "Elixe o ficheiro coa imaxe."
 
 #: js/CommonDialogs.js:373
 msgid "Icon file is too large."
-msgstr ""
+msgstr "O ficheiro de icona é demasiado grande."
 
 #: js/CommonDialogs.js:376
 msgid "Upload failed."
-msgstr ""
+msgstr "Fallou a subida."
 
 #: js/CommonDialogs.js:406
 msgid "Remove stored feed icon?"
-msgstr ""
+msgstr "Eliminar a icona gardada?"
 
 #: js/CommonDialogs.js:407
 msgid "Removing feed icon..."
-msgstr ""
+msgstr "Eliminando a icona da fonte..."
 
 #: js/CommonDialogs.js:410
 msgid "Feed icon removed."
-msgstr ""
+msgstr "Icona eliminada."
 
 #: js/CommonDialogs.js:574
 msgid "Upload new icon..."
-msgstr ""
+msgstr "Subindo nova icona..."
 
 #: js/CommonDialogs.js:603
 msgid "Show as feed"
-msgstr ""
+msgstr "Mostrar como fonte"
 
 #: js/CommonDialogs.js:605
 msgid "Generate new syndication address for this feed?"
-msgstr ""
+msgstr "Crear un novo enderezo de sindicación para esta fonte?"
 
 #: js/CommonDialogs.js:607
 msgid "Trying to change address..."
-msgstr ""
+msgstr "Intentando cambiar o enderezo..."
 
 #: js/CommonDialogs.js:625
 msgid "Could not change feed URL."
-msgstr ""
+msgstr "Non se cambiou o URL da fonte."
 
 #: js/CommonDialogs.js:632
 msgid "%s can be accessed via the following secret URL:"
-msgstr ""
+msgstr "Pódese acceder a %s a través do URL segredo:"
 
 #: js/PrefHelpers.js:20
 msgid "Remove selected app passwords?"
-msgstr ""
+msgstr "Eliminar os contrasinais da app seleccionada?"
 
 #: js/PrefHelpers.js:45
 msgid "This will invalidate all previously generated feed URLs. Continue?"
 msgstr ""
+"Esto vai invalidar tódolos URLs das fontes creados anteriormente. Continuar?"
 
 #: js/PrefHelpers.js:46 plugins/share/share_prefs.js:6
 msgid "Clearing URLs..."
-msgstr ""
+msgstr "Limpando URLs..."
 
 #: js/PrefHelpers.js:49
 msgid "Generated URLs cleared."
-msgstr ""
+msgstr "Eliminados os URLs creados."
 
 #: js/PrefHelpers.js:59
 msgid "Digest preview"
-msgstr ""
+msgstr "Vista previa do resumo"
 
 #: js/PrefHelpers.js:113
 msgid "Clear event log?"
-msgstr ""
+msgstr "Limpar rexistro de eventos?"
 
 #: js/PrefHelpers.js:135
 msgid "Name for cloned profile:"
-msgstr ""
+msgstr "Nome do perfil clonado:"
 
 #: js/PrefHelpers.js:145
 msgid "Please select a single profile to clone."
-msgstr ""
+msgstr "Elixe un só perfil para clonar."
 
 #: js/PrefHelpers.js:153
 msgid ""
 "Remove selected profiles? Active and default profiles will not be removed."
 msgstr ""
+"Eliminar os perfís seleccionados? O perfil por defecto e os activos non se "
+"eliminarán."
 
 #: js/PrefHelpers.js:154
 msgid "Removing selected profiles..."
-msgstr ""
+msgstr "Eliminando os perfís seleccionados..."
 
 #: js/PrefHelpers.js:163
 msgid "No profiles selected."
-msgstr ""
+msgstr "No hai perfil seleccionado."
 
 #: js/PrefHelpers.js:168
 msgid "Creating profile..."
-msgstr ""
+msgstr "Creando perfil..."
 
 #: js/PrefHelpers.js:218
 msgid "(active)"
-msgstr ""
+msgstr "(activo)"
 
 #: js/PrefHelpers.js:219
 msgid "(empty)"
-msgstr ""
+msgstr "(baleiro)"
 
 #: js/PrefHelpers.js:242
 msgid "Activate selected profile?"
-msgstr ""
+msgstr "Activar o perfil seleccionado?"
 
 #: js/PrefHelpers.js:251
 msgid "Please choose a profile to activate."
-msgstr ""
+msgstr "Elixe un perfil para activalo."
 
 #: js/PrefHelpers.js:264
 msgid "Customize stylesheet"
-msgstr ""
+msgstr "Personalizar o aspecto"
 
 #: js/PrefHelpers.js:280
 msgid ""
 "You can override colors, fonts and layout of your currently selected theme "
 "with custom CSS declarations here."
 msgstr ""
+"Podes sobrescribir as cores, tipo de letra e disposición do decorado actual "
+"escribindo aquí declaracións CSS."
 
 #: js/PrefHelpers.js:289
 msgid ""
 "User CSS has been applied, you might need to reload the page to see all "
 "changes."
 msgstr ""
+"Aplicouse o CSS personal, pode que teñas que recargar a páxina para ver os "
+"cambios."
 
 #: js/PrefHelpers.js:329
 msgid "Reset to defaults?"
-msgstr ""
+msgstr "Restablecer por defecto?"
 
 #: js/PrefHelpers.js:415
 msgid "Clear data"
-msgstr ""
+msgstr "Limpar datos"
 
 #: js/PrefHelpers.js:418
 msgid "Uninstall"
-msgstr ""
+msgstr "Desinstalar"
 
 #: js/PrefHelpers.js:430 js/PrefHelpers.js:589
 msgid "Could not find any plugins for this search query."
-msgstr ""
+msgstr "Non se atopan complementos para esta busca."
 
 #: js/PrefHelpers.js:437
 #, javascript-format
 msgid "Clear stored data for %s?"
-msgstr ""
+msgstr "Limpar os datos almacenados para %s?"
 
 #: js/PrefHelpers.js:446
 #, javascript-format
 msgid "Uninstall plugin %s?"
-msgstr ""
+msgstr "Desinstalar complemento %s?"
 
 #: js/PrefHelpers.js:455
 msgid "Plugin uninstallation failed."
-msgstr ""
+msgstr "Fallou a desinstalación do complemento."
 
 #: js/PrefHelpers.js:471
 msgid "Available plugins"
-msgstr ""
+msgstr "Complementos dispoñibles"
 
 #: js/PrefHelpers.js:484
 msgid "Plugin installer"
-msgstr ""
+msgstr "Instalador de complementos"
 
 #: js/PrefHelpers.js:487
 #, javascript-format
 msgid "Installing %s, please wait..."
-msgstr ""
+msgstr "Instalando %s, agarda..."
 
 #: js/PrefHelpers.js:502 js/PrefHelpers.js:544 js/PrefHelpers.js:655
 msgid "Operation failed: check event log."
-msgstr ""
+msgstr "Fallou a operación: mira no rexistro."
 
 #: js/PrefHelpers.js:506
 msgid "Plugin has been installed."
-msgstr ""
+msgstr "Instalouse o complemento."
 
 #: js/PrefHelpers.js:510
 msgid "Plugin is already installed."
-msgstr ""
+msgstr "O complemento xa está instalado."
 
 #: js/PrefHelpers.js:520 js/PrefHelpers.js:672 js/PrefHelpers.js:738
 #, javascript-format
 msgid "Exited with RC: %d"
-msgstr ""
+msgstr "Saíu con RC: %d"
 
 #: js/PrefHelpers.js:569
 msgid "Already installed"
-msgstr ""
+msgstr "Xa instaldo"
 
 #: js/PrefHelpers.js:580
 msgid "Updated: %s"
-msgstr ""
+msgstr "Actualizado: %s"
 
 #: js/PrefHelpers.js:597
 msgid "Looking for plugins..."
-msgstr ""
+msgstr "Buscando complementos..."
 
 #: js/PrefHelpers.js:616 js/PrefHelpers.js:758
 msgid "Close"
-msgstr ""
+msgstr "Pechar"
 
 #: js/PrefHelpers.js:634
 msgid "Update plugins"
-msgstr ""
+msgstr "Actualizar complementos"
 
 #: js/PrefHelpers.js:649
 msgid "Updating, please wait..."
-msgstr ""
+msgstr "Actualizando, agarda..."
 
 #: js/PrefHelpers.js:673
 msgid "Update done."
-msgstr ""
+msgstr "Actualización completa."
 
 #: js/PrefHelpers.js:697
 msgid "No updates available"
-msgstr ""
+msgstr "Non hai actualizacións"
 
 #: js/PrefHelpers.js:709
 #, javascript-format
 msgid "Checking: %s"
-msgstr ""
+msgstr "Comprobando: %s"
 
 #: js/PrefHelpers.js:716
 #, javascript-format
 msgid "%s: Operation failed: check event log."
-msgstr ""
+msgstr "%s: Fallou a operación: mira o rexistro."
 
 #: js/PrefHelpers.js:739
 msgid "Ready to update"
-msgstr ""
+msgstr "Preparado para actualizar"
 
 #: js/PrefHelpers.js:784
 msgid "Please choose an OPML file first."
-msgstr ""
+msgstr "Primeiro elixe un ficheiro OPML."
 
 #: js/PrefHelpers.js:787
 msgid "Importing, please wait..."
-msgstr ""
+msgstr "Importando, agarda..."
 
 #: js/PrefHelpers.js:796
 msgid "OPML Import"
-msgstr ""
+msgstr "Importación OPML"
 
 #: js/PrefHelpers.js:807
 msgid ""
@@ -2485,417 +2499,425 @@ msgstr ""
 
 #: js/Headlines.js:642
 msgid "Cancel search"
-msgstr ""
+msgstr "Cancelar busca"
 
 #: js/Headlines.js:650
 msgid "Select..."
-msgstr ""
+msgstr "Seleccionar..."
 
 #: js/Headlines.js:764 js/Headlines.js:818 js/Headlines.js:835
 msgid "Click to open next unread feed."
-msgstr ""
+msgstr "Preme para abrir a seguinte fonte non lida."
 
 #: js/Headlines.js:832
 msgid "New articles found, reload feed to continue."
-msgstr ""
+msgstr "Hai novos artigos, recarga a fonte para continuar."
 
 #: js/Headlines.js:889 js/Headlines.js:915 js/Headlines.js:927
 #: js/Headlines.js:1070 js/Headlines.js:1087 js/Headlines.js:1104
 #: js/Headlines.js:1241 js/Article.js:62
 msgid "No articles selected."
-msgstr ""
+msgstr "Sen artigos seleccionados."
 
 #: js/Headlines.js:1041
 #, javascript-format
 msgid "%d article selected"
 msgid_plural "%d articles selected"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d artigo seleccionado"
+msgstr[1] "%d artigos seleccionados"
 
 #: js/Headlines.js:1112
 #, javascript-format
 msgid "Delete %d selected article in %s?"
 msgid_plural "Delete %d selected articles in %s?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Eliminar %d artigo seleccionado en %s?"
+msgstr[1] "Eliminar %d artigos seleccionados en %s?"
 
 #: js/Headlines.js:1114
 #, javascript-format
 msgid "Delete %d selected article?"
 msgid_plural "Delete %d selected articles?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Eliminar %d artigo seleccionado?"
+msgstr[1] "Eliminar %d artigos seleccionados?"
 
 #: js/Headlines.js:1247
 #, javascript-format
 msgid "Mark %d selected article in %s as read?"
 msgid_plural "Mark %d selected articles in %s as read?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Marcar %d artigo seleccionado en %s como lido?"
+msgstr[1] "Marcar %d artigos seleccionados en %s como lidos?"
 
 #: js/Headlines.js:1263
 msgid "No article is selected."
-msgstr ""
+msgstr "Sen artigo seleccionado."
 
 #: js/Headlines.js:1298
 msgid "No articles found to mark"
-msgstr ""
+msgstr "Non se atopan artigos para marcar"
 
 #: js/Headlines.js:1300
 #, javascript-format
 msgid "Mark %d article as read?"
 msgid_plural "Mark %d articles as read?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Marcar %d artigo como lido?"
+msgstr[1] "Marcar %d artigos como lidos?"
 
 #: js/Headlines.js:1359
 msgid "Open original article"
-msgstr ""
+msgstr "Abrir artigo orixinal"
 
 #: js/Headlines.js:1366
 msgid "Display article URL"
-msgstr ""
+msgstr "Mostrar URL do artigo"
 
 #: js/Headlines.js:1473
 msgid "Assign label"
-msgstr ""
+msgstr "Asignar etiqueta"
 
 #: js/Headlines.js:1478
 msgid "Remove label"
-msgstr ""
+msgstr "Retirar etiqueta"
 
 #: js/Headlines.js:1515
 msgid "Select articles in group"
-msgstr ""
+msgstr "Seleccionar artigos en grupo"
 
 #: js/Headlines.js:1525
 msgid "Mark group as read"
-msgstr ""
+msgstr "Marcar grupo como lido"
 
 #: js/Headlines.js:1537
 msgid "Mark feed as read"
-msgstr ""
+msgstr "Marcar fonte como lida"
 
 #: js/PrefFilterTree.js:47 js/CommonFilters.js:224
 msgid "in"
-msgstr ""
+msgstr "en"
 
 #: js/PrefFilterTree.js:50
 msgid "Inverse"
-msgstr ""
+msgstr "Inversa"
 
 #: js/PrefFilterTree.js:110 js/PrefFilterTree.js:139
 msgid "No filters selected."
-msgstr ""
+msgstr "Sen filtro seleccionado."
 
 #: js/PrefFilterTree.js:114
 msgid "Combine selected filters?"
-msgstr ""
+msgstr "Combinar os filtros seleccionados?"
 
 #: js/PrefFilterTree.js:115
 msgid "Joining filters..."
-msgstr ""
+msgstr "Combinando os filtros..."
 
 #: js/PrefFilterTree.js:126
 msgid "Remove selected filters?"
-msgstr ""
+msgstr "Retirar os filtros seleccionados?"
 
 #: js/PrefFilterTree.js:127
 msgid "Removing selected filters..."
-msgstr ""
+msgstr "Retirando os filtros seleccionados..."
 
 #: js/Article.js:36
 msgid "Please enter new score for selected articles:"
-msgstr ""
+msgstr "Escribe a nova puntuación para os artigos seleccionados:"
 
 #: js/Article.js:70
 msgid "Please enter new score for this article:"
-msgstr ""
+msgstr "Escribe a nova puntuación para este artigo:"
 
 #: js/Article.js:130
 msgid "Article URL:"
-msgstr ""
+msgstr "URL do artigo:"
 
 #: js/Article.js:132
 msgid "No URL could be displayed for this article."
-msgstr ""
+msgstr "Non se puido mostrar o URL deste artigo."
 
 #: js/Article.js:154
 msgid "no tags"
-msgstr ""
+msgstr "sen etiquetas"
 
 #: js/Article.js:246
 msgid "comments"
-msgstr ""
+msgstr "comentarios"
 
 #: js/Article.js:249
 msgid "comment"
 msgid_plural "comments"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "comentario"
+msgstr[1] "comentarios"
 
 #: js/Article.js:340
 msgid "Article tags"
-msgstr ""
+msgstr "Etiquetas do artigo"
 
 #: js/Article.js:347
 msgid "Tags for this article (separated by commas):"
-msgstr ""
+msgstr "Etiquetas para este artigo (separadas por vírgulas):"
 
 #: js/Article.js:367
 msgid "Saving article tags..."
-msgstr ""
+msgstr "Gardando etiquetas..."
 
 #: js/FeedTree.js:105
 msgid "Debug feed"
-msgstr ""
+msgstr "Depurar fonte"
 
 #: js/FeedTree.js:128
 msgid "(Un)collapse"
-msgstr ""
+msgstr "(Des)pregar"
 
 #: js/PrefUsers.js:19
 msgid "Please enter username:"
-msgstr ""
+msgstr "Escribe o nome de usuaria:"
 
 #: js/PrefUsers.js:22
 msgid "Adding user..."
-msgstr ""
+msgstr "Engadindo usuaria..."
 
 #: js/PrefUsers.js:39
 msgid "Edit user"
-msgstr ""
+msgstr "Editar usuaria"
 
 #: js/PrefUsers.js:136 js/PrefUsers.js:175
 msgid "No users selected."
-msgstr ""
+msgstr "Sen usuarias seleccionadas."
 
 #: js/PrefUsers.js:141
 msgid "Please select one user."
-msgstr ""
+msgstr "Elixe unha usuaria."
 
 #: js/PrefUsers.js:145
 msgid "Reset password of selected user?"
-msgstr ""
+msgstr "Restablecer contrasinal da usuaria?"
 
 #: js/PrefUsers.js:146
 msgid "Resetting password for selected user..."
-msgstr ""
+msgstr "Restablecendo contrasinal da usuaria seleccionada..."
 
 #: js/PrefUsers.js:161
 msgid ""
 "Remove selected users? Neither default admin nor your account will be "
 "removed."
 msgstr ""
+"Eliminar usuarias seleccionadas? Non se eliminarán a túa conta nin a da "
+"admin por defecto."
 
 #: js/PrefUsers.js:162
 msgid "Removing selected users..."
-msgstr ""
+msgstr "Eliminando usuarias seleccionadas..."
 
 #: js/CommonFilters.js:14
 msgid "Edit filter"
-msgstr ""
+msgstr "Editar filtro"
 
 #: js/CommonFilters.js:14
 msgid "Create new filter"
-msgstr ""
+msgstr "Crear novo filtro"
 
 #: js/CommonFilters.js:44
 #, javascript-format
 msgid "Looking for articles (%d processed, %f found)..."
-msgstr ""
+msgstr "Buscando artigos (%d procesados, %f atopados)..."
 
 #: js/CommonFilters.js:72
 msgid "Articles matching this filter:"
-msgstr ""
+msgstr "Artigos que concordan co filtro:"
 
 #: js/CommonFilters.js:74
 msgid "Found %d articles matching this filter:"
-msgstr ""
+msgstr "Atopados %d artigos de acordo a este filtro:"
 
 #: js/CommonFilters.js:83
 msgid "Error while trying to get filter test results."
-msgstr ""
+msgstr "Erro ao intentar obter os resultados do filtro."
 
 #: js/CommonFilters.js:95
 msgid "Looking for articles..."
-msgstr ""
+msgstr "Buscando artigos..."
 
 #: js/CommonFilters.js:174
 msgid "Edit rule"
-msgstr ""
+msgstr "Editar regra"
 
 #: js/CommonFilters.js:174
 msgid "Add rule"
-msgstr ""
+msgstr "Engadir regra"
 
 #: js/CommonFilters.js:218
 msgid "Inverse regular expression matching"
-msgstr ""
+msgstr "Coincidencia coa expresión regular inversa"
 
 #: js/CommonFilters.js:222
 msgid "on"
-msgstr ""
+msgstr "en"
 
 #: js/CommonFilters.js:250
 msgid "Edit action"
-msgstr ""
+msgstr "Editar acción"
 
 #: js/CommonFilters.js:250
 msgid "Add action"
-msgstr ""
+msgstr "Engadir acción"
 
 #: js/CommonFilters.js:360
 msgid "Remove filter?"
-msgstr ""
+msgstr "Eliminar filtro?"
 
 #: js/CommonFilters.js:365
 msgid "Removing filter..."
-msgstr ""
+msgstr "Eliminando filtro..."
 
 #: js/CommonFilters.js:450 js/CommonFilters.js:482 js/PrefHelpers.js:195
 msgid "Add"
-msgstr ""
+msgstr "Engadir"
 
 #: js/CommonFilters.js:453 js/CommonFilters.js:485
 msgid "Delete"
-msgstr ""
+msgstr "Eliminar"
 
 #: js/CommonFilters.js:519 js/CommonFilters.js:523
 msgid "Test"
-msgstr ""
+msgstr "Proba"
 
 #: js/CommonFilters.js:524
 msgid "Create"
-msgstr ""
+msgstr "Crear"
 
 #: plugins/af_psql_trgm/init.js:6
 msgid "Related articles"
-msgstr ""
+msgstr "Artigos relacionados"
 
 #: plugins/note/note.js:9
 msgid "Saving article note..."
-msgstr ""
+msgstr "Gardando a nota do artigo..."
 
 #: plugins/af_readability/init.js:31
 msgid "Unable to fetch full text for this article"
-msgstr ""
+msgstr "Non se puido obter o texto completo do artigo"
 
 #: plugins/shorten_expanded/init.js:32
 msgid "Expand article"
-msgstr ""
+msgstr "Despregrar artigo"
 
 #: plugins/share/share.js:7
 msgid "Share article by URL"
-msgstr ""
+msgstr "Compartir artigo por URL"
 
 #: plugins/share/share.js:9
 msgid "Generate new share URL for this article?"
-msgstr ""
+msgstr "Crear un novo URL de compartición para este artigo?"
 
 #: plugins/share/share.js:11
 msgid "Trying to change URL..."
-msgstr ""
+msgstr "Intentando cambiar URL..."
 
 #: plugins/share/share.js:34
 msgid "Could not change URL."
-msgstr ""
+msgstr "Non se cambiou o URL."
 
 #: plugins/share/share.js:42
 msgid "Remove sharing for this article?"
-msgstr ""
+msgstr "Eliminar a compartición deste artigo?"
 
 #: plugins/share/share_prefs.js:5
 msgid "This will invalidate all previously shared article URLs. Continue?"
 msgstr ""
+"Esto invalidará tódolos URL de artigo previamente compartidos. Continuar?"
 
 #: js/Feeds.js:284
 msgid ""
 "Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. "
 "You will need to log out and back in to disable it."
 msgstr ""
+"Tiny Tiny RSS estase executando en modo seguro. Tódolos decorados e "
+"complementos están desactivados. Terás que desconectar e volver a conectarte "
+"para desactivalo."
 
 #: js/Feeds.js:628
 msgid "Used for word stemming"
-msgstr ""
+msgstr "Utilizado para a relación entre palabras"
 
 #: js/App.js:612
 msgid "Stack trace"
-msgstr ""
+msgstr "Trazas no rexistro"
 
 #: js/PrefFeedTree.js:369
 msgid "Rename category to:"
-msgstr ""
+msgstr "Cambiar nome da categoría a:"
 
 #: js/PrefFeedTree.js:534
 msgid "Unsubscribe from selected feeds"
-msgstr ""
+msgstr "Retirar subscrición das fontes seleccionadas"
 
 #: js/CommonDialogs.js:53
 msgid "Available feeds"
-msgstr ""
+msgstr "Fontes dispoñibles"
 
 #: js/CommonDialogs.js:86
 msgid "This feed requires authentication."
-msgstr ""
+msgstr "Esta fonte require autenticación."
 
 #: js/CommonDialogs.js:506
 msgid "Site URL:"
-msgstr ""
+msgstr "URL do sitio:"
 
 #: js/PrefHelpers.js:229
 msgid "Clone"
-msgstr ""
+msgstr "Clonar"
 
 #: js/PrefHelpers.js:231
 msgid "Activate"
-msgstr ""
+msgstr "Activar"
 
 #: js/PrefHelpers.js:299
 msgid "Apply"
-msgstr ""
+msgstr "Aplicar"
 
 #: js/PrefHelpers.js:352
 msgid "Selected plugins have been enabled. Reload?"
-msgstr ""
+msgstr "Reactiváronse os complementos seleccionados. Recagar?"
 
 #: js/PrefHelpers.js:680
 msgid "Updates complete"
-msgstr ""
+msgstr "Actualización completa"
 
 #: js/PrefHelpers.js:694
 #, javascript-format
 msgid "Updates pending for %d plugin"
 msgid_plural "Updates pending for %d plugins"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Actualizacións pendentes para %d complemento"
+msgstr[1] "Actualizacións pendentes para %d complementos"
 
 #: js/Headlines.js:654
 msgid "Invert"
-msgstr ""
+msgstr "Invertir"
 
 #: js/Headlines.js:662
 msgid "Set score"
-msgstr ""
+msgstr "Establecer puntuación"
 
 #: js/Headlines.js:667
 msgid "Delete permanently"
-msgstr ""
+msgstr "Eliminar permanentemente"
 
 #: js/Headlines.js:855
 msgid ""
 "Could not update headlines (invalid object received - see error console for "
 "details)"
 msgstr ""
+"Non se actualizaron os titulares (recibido obxecto non válido - mira na "
+"consola o detalle do erro)"
 
 #: js/Article.js:207
 msgid "Attachments"
-msgstr ""
+msgstr "Anexos"
 
 #: js/PrefUsers.js:76
 msgid "Access level: "
-msgstr ""
+msgstr "Nivel de acceso: "
 
 #: js/CommonFilters.js:70
 msgid "No recent articles matching this filter have been found."
-msgstr ""
+msgstr "Non se atopan artigos recentes que cumpran co filtro."

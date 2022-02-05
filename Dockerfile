@@ -2,9 +2,9 @@ FROM alpine/git:latest AS builder
 RUN git clone -b FindMyDeviceServer --single-branch https://github.com/schklom/Mirror-workflows.git /fmd
 
 FROM golang:latest
-RUN REPO_NAME = FindMyDeviceServer
+RUN REPO_NAME=FindMyDeviceServer
 # We know from test that GOPATH=/go
-RUN DIRECTORY = $GOPATH/src/$REPO_NAME
+RUN DIRECTORY=$GOPATH/src/$REPO_NAME
 
 RUN mkdir -p ${DIRECTORY}
 WORKDIR ${DIRECTORY}

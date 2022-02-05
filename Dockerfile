@@ -6,6 +6,7 @@ RUN REPO_NAME=FindMyDeviceServer
 # We know from test that GOPATH=/go
 RUN DIRECTORY=$GOPATH/src/$REPO_NAME
 
+RUN env
 RUN mkdir -p ${DIRECTORY}
 WORKDIR ${DIRECTORY}
 RUN bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh)

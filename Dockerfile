@@ -1,7 +1,7 @@
 FROM alpine/git as builder
 RUN git clone https://gitlab.com/Nulide/findmydeviceserver.git /
 
-FROM golang as 
+FROM golang
 COPY --from=builder /findmydeviceserver .
 WORKDIR cmd
 RUN go build -race -ldflags "-extldflags '-static'" -o fmdserver

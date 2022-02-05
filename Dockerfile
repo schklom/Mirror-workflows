@@ -4,7 +4,7 @@ RUN git clone -b FindMyDeviceServer --single-branch https://github.com/schklom/M
 FROM golang:latest
 COPY --from=builder /fmd .
 WORKDIR cmd
-RUN go build -o fmdserver
+RUN go build fmdserver.go
 
 # https://gitlab.com/Nulide/findmydeviceserver/-/issues/3
 # HTTP

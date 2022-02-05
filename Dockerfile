@@ -1,4 +1,4 @@
-FROM ubuntu:latest as builder
+FROM ubuntu:latest AS builder
 RUN apt-get -y update
 RUN apt-get -y install git
 #FROM alpine/git:latest as builder

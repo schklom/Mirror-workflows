@@ -5,7 +5,7 @@ require(['dojo/_base/kernel', 'dojo/ready'], function  (dojo, ready) {
 
 		Plugins.Note = {
 			set_click_handler: function() {
-				document.querySelectorAll(".article-note[data-note-for]").forEach((note) => {
+				App.findAll(".article-note[data-note-for]").forEach((note) => {
 					note.onclick = function() {
 						Plugins.Note.edit(this.getAttribute('data-note-for'));
 					}
@@ -50,9 +50,8 @@ require(['dojo/_base/kernel', 'dojo/ready'], function  (dojo, ready) {
 			}
 		};
 
-		PluginHost.register(PluginHost.HOOK_HEADLINE_RENDERED, function() {
+		PluginHost.register(PluginHost.HOOK_HEADLINES_RENDERED, () => {
 			Plugins.Note.set_click_handler();
-			return true;
 		});
 	});
 });

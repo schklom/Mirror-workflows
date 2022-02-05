@@ -12,5 +12,6 @@ EXPOSE 1020/tcp
 # HTTPS
 EXPOSE 1008/tcp
 
-VOLUME ??
-CMD ??
+RUN ls -alh
+#VOLUME ??
+CMD fmdserver

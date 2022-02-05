@@ -2,17 +2,13 @@ FROM alpine/git:latest AS builder
 RUN git clone -b FindMyDeviceServer --single-branch https://github.com/schklom/Mirror-workflows.git /fmd
 
 FROM golang:latest
-RUN export REPO_NAME=FindMyDeviceServer
 # We know from test that GOPATH=/go
-RUN export DIRECTORY=$GOPATH/src/$REPO_NAME
-
-RUN env
-RUN mkdir -p ${DIRECTORY}
-WORKDIR ${DIRECTORY}
+RUN mkdir -p $GOPATH/src/FindMyDeviceServer
+WORKDIR $GOPATH/src/FindMyDeviceServer
 RUN bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh)
   
-COPY --from=builder /fmd ${DIRECTORY}
-WORKDIR ${DIRECTORY}/cmd
+COPY --from=builder /fmd $GOPATH/src/FindMyDeviceServer
+WORKDIR $GOPATH/src/FindMyDeviceServer/cmd
 RUN go build fmdserver.go
 
 # https://gitlab.com/Nulide/findmydeviceserver/-/issues/3

@@ -5,7 +5,7 @@ FROM golang:latest
 # We know from test that GOPATH=/go
 RUN mkdir -p $GOPATH/src/FindMyDeviceServer
 WORKDIR $GOPATH/src/FindMyDeviceServer
-RUN bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh)
+RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh | bash
   
 COPY --from=builder /fmd $GOPATH/src/FindMyDeviceServer
 WORKDIR $GOPATH/src/FindMyDeviceServer/cmd

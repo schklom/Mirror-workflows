@@ -1,8 +1,8 @@
 #FROM ubuntu as builder
 #RUN apt-get -y update
 #RUN apt-get -y install git
-FROM alpine/git:latest
-RUN git clone https://gitlab.com/Nulide/findmydeviceserver.git /
+FROM alpine/git:latest as builder
+RUN git clone -b FindMyServer --single-branch https://github.com/schklom/Mirror-workflows.git /
 
 FROM golang:latest
 COPY --from=builder /findmydeviceserver .

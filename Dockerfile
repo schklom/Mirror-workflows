@@ -1,4 +1,6 @@
-FROM alpine/git as builder
+FROM ubuntu as builder
+RUN apt-get -y update
+RUN apt-get -y install git
 RUN git clone https://gitlab.com/Nulide/findmydeviceserver.git /
 
 FROM golang

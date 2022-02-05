@@ -359,7 +359,7 @@ class Config {
 
 			if ($check == "version") {
 
-				$rv["version"] = strftime("%y.%m", (int)$timestamp) . "-$commit";
+				$rv["version"] = date("y.m", (int)$timestamp) . "-$commit";
 				$rv["commit"] = $commit;
 				$rv["timestamp"] = $timestamp;
 

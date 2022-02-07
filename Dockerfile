@@ -18,4 +18,4 @@ EXPOSE 1020/tcp
 EXPOSE 1008/tcp
 
 #VOLUME ??
-CMD fmdserver
+CMD $GOPATH/src/FindMyDeviceServer/cmd/fmdserver

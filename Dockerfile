@@ -9,13 +9,16 @@ WORKDIR $GOPATH/src/fmd/
   
 WORKDIR /go/src/fmd/cmd
 #RUN go build fmdserver.go
-RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh | bash
-RUN GOOS=linux GOARCH=arm64 go build -ldflags '-w -s -extldflags "-static"' -o fmdserver
+RUN go build -ldflags '-w -s' -o fmdserver
 
 
 FROM golang:alpine
 COPY --from=binary /go/src/fmd/web /fmd/web/
 COPY --from=binary /go/src/fmd/cmd/fmdserver /fmd/
+
+WORKDIR /fmd
+
+RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh | bash
 #
 
 # https://gitlab.com/Nulide/findmydeviceserver/-/issues/3

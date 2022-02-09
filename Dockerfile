@@ -1,6 +1,7 @@
 FROM alpine/git:latest AS gitimport
 RUN git clone -b FindMyDeviceServer --single-branch https://github.com/schklom/Mirror-workflows.git /fmd
 
+
 FROM golang:latest AS binary
 # We know from test that $GOPATH=/go
 RUN mkdir -p /go/src/fmd
@@ -11,9 +12,6 @@ COPY --from=gitimport /fmd $GOPATH/src/fmd
 WORKDIR /go/src/fmd/cmd
 #RUN go build fmdserver.go
 RUN go build -o fmdserver
-
-#RUN mv fmdserver ../
-#WORKDIR $GOPATH/src/FindMyDeviceServer
 
 
 FROM golang:alpine
@@ -26,5 +24,5 @@ EXPOSE 1020/tcp
 # HTTPS
 EXPOSE 1008/tcp
 
-#VOLUME ??
+VOLUME /fmd
 CMD /fmd/fmdserver

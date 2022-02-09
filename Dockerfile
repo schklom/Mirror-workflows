@@ -25,4 +25,4 @@ EXPOSE 1020/tcp
 EXPOSE 1008/tcp
 
 VOLUME /fmd
-CMD /fmd/fmdserver
+CMD [ "/fmd/fmdserver" ]

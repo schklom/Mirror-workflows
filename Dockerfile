@@ -14,6 +14,7 @@ RUN go build -ldflags '-w -s' -o fmdserver
 
 
 FROM golang:alpine
+VOLUME /fmd
 COPY --from=builder /go/src/fmd/web /fmd/web/
 COPY --from=builder /go/src/fmd/cmd/fmdserver /fmd/
 
@@ -25,5 +26,4 @@ EXPOSE 1020/tcp
 # HTTPS
 EXPOSE 1008/tcp
 
-VOLUME /fmd
 ENTRYPOINT [ "/fmd/fmdserver" ]

@@ -11,10 +11,10 @@ RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/instal
 COPY --from=gitimport /fmd $GOPATH/src/fmd
 WORKDIR /go/src/fmd/cmd
 #RUN go build fmdserver.go
-RUN GOOS=linux GOARCH=arm64 go build -tags netgo -ldflags '-w -s -extldflags "-static"' -o fmdserver
+RUN GOOS=linux GOARCH=arm64 go build -race -tags netgo -ldflags '-w -s -extldflags "-static"' -o fmdserver
 
 
-FROM arm64v8/alpine:latest
+FROM golang:alpine
 COPY --from=binary /go/src/fmd/web /fmd/web/
 COPY --from=binary /go/src/fmd/cmd/fmdserver /fmd/
 

@@ -8,6 +8,7 @@ COPY --from=gitimport /fmd/ $GOPATH/src/fmd/
 WORKDIR $GOPATH/src/fmd/
   
 WORKDIR /go/src/fmd/cmd
+RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh | bash
 #RUN go build fmdserver.go
 RUN go build -ldflags '-w -s' -o fmdserver
 

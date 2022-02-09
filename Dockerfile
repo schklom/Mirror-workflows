@@ -6,7 +6,7 @@ FROM golang:latest AS binary
 # We know from test that $GOPATH=/go
 COPY --from=gitimport /fmd/ $GOPATH/src/fmd/
 WORKDIR $GOPATH/src/fmd/
-RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh | bash
+#RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh | bash
   
 WORKDIR /go/src/fmd/cmd
 #RUN go build fmdserver.go

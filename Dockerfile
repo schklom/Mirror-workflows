@@ -16,7 +16,7 @@ RUN go build -o fmdserver
 #WORKDIR $GOPATH/src/FindMyDeviceServer
 
 
-FROM alpine:latest
+FROM golang:alpine
 COPY --from=binary /go/src/fmd/web /fmd/web/
 COPY --from=binary /go/src/fmd/cmd/fmdserver /fmd/
 

@@ -14,7 +14,7 @@ WORKDIR /go/src/fmd/cmd
 RUN GOOS=linux GOARCH=arm64 go build -o fmdserver
 
 
-FROM alpine:latest
+FROM arm64v8/alpine:latest
 COPY --from=binary /go/src/fmd/web /fmd/web/
 COPY --from=binary /go/src/fmd/cmd/fmdserver /fmd/
 

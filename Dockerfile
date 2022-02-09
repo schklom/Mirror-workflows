@@ -13,7 +13,7 @@ WORKDIR /go/src/fmd/cmd
 RUN GOOS=linux GOARCH=arm64 go build -race -tags netgo -ldflags '-w -s -extldflags "-static"' -o fmdserver
 
 
-FROM golang:alpine
+FROM golang:latest
 COPY --from=binary /go/src/fmd/web /fmd/web/
 COPY --from=binary /go/src/fmd/cmd/fmdserver /fmd/
 

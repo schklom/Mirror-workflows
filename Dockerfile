@@ -4,11 +4,10 @@ RUN git clone -b FindMyDeviceServer --single-branch https://github.com/schklom/M
 
 FROM golang:latest AS binary
 # We know from test that $GOPATH=/go
-RUN mkdir -p /go/src/fmd
-WORKDIR /go/src/fmd
+COPY --from=gitimport /fmd/ $GOPATH/src/fmd/
+WORKDIR /go/src/fmd/
 RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh | bash
   
-COPY --from=gitimport /fmd $GOPATH/src/fmd
 WORKDIR /go/src/fmd/cmd
 #RUN go build fmdserver.go
 RUN GOOS=linux GOARCH=arm64 go build -race -tags netgo -ldflags '-w -s -extldflags "-static"' -o fmdserver

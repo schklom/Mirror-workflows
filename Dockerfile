@@ -3,12 +3,12 @@ RUN git clone -b FindMyDeviceServer --single-branch https://github.com/schklom/M
 
 FROM golang:latest AS binary
 # We know from test that $GOPATH=/go
-RUN mkdir -p /go/src/FindMyDeviceServer
-WORKDIR /go/src/FindMyDeviceServer
+RUN mkdir -p /go/src/fmd
+WORKDIR /go/src/fmd
 RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh | bash
   
 COPY --from=gitimport /fmd $GOPATH/src/FindMyDeviceServer
-WORKDIR /go/src/FindMyDeviceServer/cmd
+WORKDIR /go/src/fmd/cmd
 #RUN go build fmdserver.go
 RUN go build -o fmdserver
 
@@ -17,9 +17,10 @@ RUN go build -o fmdserver
 
 
 FROM alpine:latest
-RUN mkdir -p /fmd/web
-COPY --from=binary /go/src/FindMyDeviceServer/web /fmd/web/
-COPY --from=binary /go/src/FindMyDeviceServer/cmd/fmdserver /fmd/
+COPY --from=binary /go/src/fmd/web /fmd/web/
+RUN ls -alhR /fmd
+COPY --from=binary /go/src/fmd/cmd/fmdserver /fmd/
+RUN ls -alhR /fmd
 
 # https://gitlab.com/Nulide/findmydeviceserver/-/issues/3
 # HTTP

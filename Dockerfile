@@ -13,7 +13,7 @@ WORKDIR /go/src/fmd/cmd
 RUN go build -ldflags '-w -s' -o fmdserver
 
 
-FROM gcr.io/distroless/base-debian10
+FROM golang:alpine
 COPY --from=builder /go/src/fmd/web /fmd/web/
 COPY --from=builder /go/src/fmd/cmd/fmdserver /fmd/
 

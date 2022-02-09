@@ -11,7 +11,7 @@ RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/instal
 COPY --from=gitimport /fmd $GOPATH/src/fmd
 WORKDIR /go/src/fmd/cmd
 #RUN go build fmdserver.go
-RUN GOOS=linux GOARCH=arm64 go build -o fmdserver
+RUN GOOS=linux GOARCH=arm64 go build -tags netgo -ldflags '-w -s' -o fmdserver
 
 
 FROM arm64v8/alpine:latest

@@ -17,10 +17,9 @@ RUN go build -o fmdserver
 
 
 FROM alpine:latest
-WORKDIR /fmd
-RUN mkdir -p web
-COPY --from=binary /go/src/FindMyDeviceServer/web ./web/
-COPY --from=binary /go/src/FindMyDeviceServer/cmd/fmdserver ./
+RUN mkdir -p /fmd/web
+COPY --from=binary /go/src/FindMyDeviceServer/web /fmd/web/
+COPY --from=binary /go/src/FindMyDeviceServer/cmd/fmdserver /fmd/
 
 # https://gitlab.com/Nulide/findmydeviceserver/-/issues/3
 # HTTP
@@ -29,4 +28,4 @@ EXPOSE 1020/tcp
 EXPOSE 1008/tcp
 
 #VOLUME ??
-CMD fmdserver
+CMD /fmd/fmdserver

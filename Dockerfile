@@ -12,6 +12,9 @@ WORKDIR $GOPATH/src/FindMyDeviceServer/cmd
 #RUN go build fmdserver.go
 RUN go build -o fmdserver
 
+RUN mv fmdserver ../
+WORKDIR $GOPATH/src/FindMyDeviceServer
+
 # https://gitlab.com/Nulide/findmydeviceserver/-/issues/3
 # HTTP
 EXPOSE 1020/tcp
@@ -19,4 +22,4 @@ EXPOSE 1020/tcp
 EXPOSE 1008/tcp
 
 #VOLUME ??
-CMD $GOPATH/src/FindMyDeviceServer/cmd/fmdserver
+CMD fmdserver

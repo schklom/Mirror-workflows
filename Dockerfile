@@ -18,9 +18,7 @@ RUN go build -o fmdserver
 
 FROM alpine:latest
 COPY --from=binary /go/src/fmd/web /fmd/web/
-RUN ls -alhR /fmd
 COPY --from=binary /go/src/fmd/cmd/fmdserver /fmd/
-RUN ls -alhR /fmd
 
 # https://gitlab.com/Nulide/findmydeviceserver/-/issues/3
 # HTTP

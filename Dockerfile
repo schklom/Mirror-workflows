@@ -14,7 +14,7 @@ WORKDIR /go/src/fmd/cmd
 RUN go build -o fmdserver
 
 
-FROM scratch
+FROM gcr.io/distroless/static
 COPY --from=binary /go/src/fmd/web /fmd/web/
 COPY --from=binary /go/src/fmd/cmd/fmdserver /fmd/
 

@@ -10,7 +10,7 @@ RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/instal
 COPY --from=builder /fmd $GOPATH/src/FindMyDeviceServer
 WORKDIR $GOPATH/src/FindMyDeviceServer/cmd
 #RUN go build fmdserver.go
-RUN go build -race -ldflags "-extldflags '-static'" -o fmdserver
+RUN go build -ldflags "-extldflags '-static'" -o fmdserver
 
 # https://gitlab.com/Nulide/findmydeviceserver/-/issues/3
 # HTTP

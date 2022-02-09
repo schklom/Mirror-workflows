@@ -6,16 +6,17 @@ FROM golang:latest AS binary
 # We know from test that $GOPATH=/go
 COPY --from=gitimport /fmd/ $GOPATH/src/fmd/
 WORKDIR $GOPATH/src/fmd/
-#RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh | bash
   
 WORKDIR /go/src/fmd/cmd
 #RUN go build fmdserver.go
+RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh | bash
 RUN GOOS=linux GOARCH=arm64 go build -ldflags '-w -s -extldflags "-static"' -o fmdserver
 
 
-FROM golang:latest
+FROM golang:alpine
 COPY --from=binary /go/src/fmd/web /fmd/web/
 COPY --from=binary /go/src/fmd/cmd/fmdserver /fmd/
+#
 
 # https://gitlab.com/Nulide/findmydeviceserver/-/issues/3
 # HTTP

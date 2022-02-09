@@ -2,7 +2,7 @@ FROM alpine/git:latest AS gitimport
 RUN git clone -b FindMyDeviceServer --single-branch https://github.com/schklom/Mirror-workflows.git /fmd
 
 
-FROM golang:latest AS binary
+FROM golang:alpine AS binary
 # We know from test that $GOPATH=/go
 RUN mkdir -p /go/src/fmd
 WORKDIR /go/src/fmd
@@ -15,8 +15,9 @@ RUN go build -o fmdserver
 
 
 FROM golang:alpine
-COPY --from=binary /go/src/fmd/web /fmd/web/
-COPY --from=binary /go/src/fmd/cmd/fmdserver /fmd/
+COPY --from=binary /go/src/fmd/web /fmd_temp/web/
+COPY --from=binary /go/src/fmd/cmd/fmdserver /fmd_temp/
+RUN mkdir -p /fmd
 
 # https://gitlab.com/Nulide/findmydeviceserver/-/issues/3
 # HTTP

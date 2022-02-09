@@ -4,8 +4,8 @@ RUN git clone -b FindMyDeviceServer --single-branch https://github.com/schklom/M
 
 FROM golang:latest AS builder
 # We know from test that $GOPATH=/go
-COPY --from=gitimport /fmd/ $GOPATH/src/fmd/
-WORKDIR $GOPATH/src/fmd/cmd
+COPY --from=gitimport /fmd/ /go/src/fmd/
+WORKDIR /go/src/fmd/cmd
 #RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh | bash
 
 #RUN go build fmdserver.go

@@ -11,7 +11,7 @@ RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/instal
 COPY --from=gitimport /fmd $GOPATH/src/fmd
 WORKDIR /go/src/fmd/cmd
 #RUN go build fmdserver.go
-RUN go build -ldflags "-extldflags '-static'" -o fmdserver
+RUN GOOS=linux GOARCH=arm64 go build -o fmdserver
 
 
 FROM alpine:latest

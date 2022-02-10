@@ -8,6 +8,7 @@ WORKDIR /go/src/fmd
 
 # Install bash curl gcc
 RUN apk --no-cache add bash curl build-base
+RUN apk --no-cache add util-linux pciutils usbutils coreutils binutils findutils grep iproute2
 
 RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh | bash
 

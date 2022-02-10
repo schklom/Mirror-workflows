@@ -15,7 +15,7 @@ RUN go build -ldflags "-w -s" -o fmdserver
 
 RUN mkdir -p /fmd/web
 VOLUME /fmd
-RUN mv /go/src/fmd/web/ /fmd/web/
+RUN mv /go/src/fmd/web/ /fmd/
 RUN mv /go/src/fmd/cmd/fmdserver /fmd/fmdserver
 #RUN rm -rf /go/src/fmd
 

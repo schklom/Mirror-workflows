@@ -60,7 +60,7 @@ jobs:
           commit_message: Add last_sync_with_original_repo_commit_id
 
   build_push_findmydeviceserver:
-    #needs: [repo_sync]
+    needs: [repo_sync]
     #needs: [get_commits]
     runs-on: ubuntu-latest
     steps:

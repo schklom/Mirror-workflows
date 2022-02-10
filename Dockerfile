@@ -23,6 +23,7 @@ VOLUME /fmd
 WORKDIR /fmd
 
 COPY start.bash /fmd_script/
+RUN chmod +x /fmd_script/bash
 # https://gitlab.com/Nulide/findmydeviceserver/-/issues/3
 # HTTP
 EXPOSE 1020/tcp

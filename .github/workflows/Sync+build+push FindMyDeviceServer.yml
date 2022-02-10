@@ -8,56 +8,56 @@ on:
   workflow_dispatch:
 
 jobs:
-  # get_commits:
-    # runs-on: ubuntu-latest
-    # # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    # outputs:
-      # LOCAL: ${{ steps.commits.outputs.SETLOCAL }}
-      # REMOTE: ${{ steps.commits.outputs.SETREMOTE }} 
-    # steps:
-      # - name: Checkout
-        # uses: actions/checkout@v2.4.0
-        # with:
-          # ref: 'FindMyDeviceServer' # branch
-      # - name: set local and remote latest commit as environment variables
-        # id: commits
-        # # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-        # # echo "::set-output name=SETREMOTE::$(git ls-remote https://gitlab.com/Nulide/findmydeviceserver.git HEAD | awk '{ print $1 }')"
-        # run: |
-          # echo "::set-output name=SETREMOTE::$(git ls-remote https://gitlab.com/Nulide/findmydeviceserver.git HEAD | awk '{ print $1 }')"
-          # echo "::set-output name=SETLOCAL::$(cat last_sync_with_original_repo_commit_id)"
+  get_commits:
+    runs-on: ubuntu-latest
+    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    outputs:
+      LOCAL: ${{ steps.commits.outputs.SETLOCAL }}
+      REMOTE: ${{ steps.commits.outputs.SETREMOTE }} 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+        with:
+          ref: 'FindMyDeviceServer' # branch
+      - name: set local and remote latest commit as environment variables
+        id: commits
+        # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+        # echo "::set-output name=SETREMOTE::$(git ls-remote https://gitlab.com/Nulide/findmydeviceserver.git HEAD | awk '{ print $1 }')"
+        run: |
+          echo "::set-output name=SETREMOTE::$(git ls-remote https://gitlab.com/Nulide/findmydeviceserver.git HEAD | awk '{ print $1 }')"
+          echo "::set-output name=SETLOCAL::$(cat last_sync_with_original_repo_commit_id)"
   
-  # repo_sync:
-    # needs: [get_commits]
-    # runs-on: ubuntu-latest
-    # # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    # if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
-    # steps:
-      # - name: repo-sync
-        # uses: wei/git-sync@v3
+  repo_sync:
+    needs: [get_commits]
+    runs-on: ubuntu-latest
+    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
+    steps:
+      - name: repo-sync
+        uses: wei/git-sync@v3
+        with:
+          source_repo: "git@gitlab.com:Nulide/findmydeviceserver.git"
+          source_branch: "master"
+          destination_repo: "git@github.com:schklom/Mirror-workflows.git"
+          destination_branch: "FindMyDeviceServer"
+          source_ssh_private_key: ${{ secrets.GITLAB_SSH_KEY }}
+          destination_ssh_private_key: ${{ secrets.GITSYNCACTION }}
+        # uses: repo-sync/github-sync@v2
         # with:
-          # source_repo: "git@gitlab.com:Nulide/findmydeviceserver.git"
+          # source_repo: "https://gitlab.com/Nulide/findmydeviceserver.git"
           # source_branch: "master"
-          # destination_repo: "git@github.com:schklom/Mirror-workflows.git"
           # destination_branch: "FindMyDeviceServer"
-          # source_ssh_private_key: ${{ secrets.GITLAB_SSH_KEY }}
-          # destination_ssh_private_key: ${{ secrets.GITSYNCACTION }}
-        # # uses: repo-sync/github-sync@v2
-        # # with:
-          # # source_repo: "https://gitlab.com/Nulide/findmydeviceserver.git"
-          # # source_branch: "master"
-          # # destination_branch: "FindMyDeviceServer"
-          # # github_token: ${{ secrets.REPO_SYNC_GITHUB_SYNC_PERSONAL_ACCESS_TOKEN }}
-      # - name: Checkout
-        # uses: actions/checkout@v2.4.0
-        # with:
-          # ref: 'FindMyDeviceServer' # branch
-      # - name: get most recent commit id on original repo, for next comparison on sync
-        # run: git ls-remote https://gitlab.com/Nulide/findmydeviceserver.git HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
-      # - name: Commit and push the change
-        # uses: stefanzweifel/git-auto-commit-action@v4.13.1
-        # with:
-          # commit_message: Add last_sync_with_original_repo_commit_id
+          # github_token: ${{ secrets.REPO_SYNC_GITHUB_SYNC_PERSONAL_ACCESS_TOKEN }}
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+        with:
+          ref: 'FindMyDeviceServer' # branch
+      - name: get most recent commit id on original repo, for next comparison on sync
+        run: git ls-remote https://gitlab.com/Nulide/findmydeviceserver.git HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
+      - name: Commit and push the change
+        uses: stefanzweifel/git-auto-commit-action@v4.13.1
+        with:
+          commit_message: Add last_sync_with_original_repo_commit_id
 
   build_push_findmydeviceserver:
     # needs: [repo_sync]

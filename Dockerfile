@@ -22,11 +22,11 @@ VOLUME /fmd
 #RUN rm -rf /go/src/fmd
 WORKDIR /fmd
 
-COPY start.bash ./
+COPY start.bash /fmd_script/
 # https://gitlab.com/Nulide/findmydeviceserver/-/issues/3
 # HTTP
 EXPOSE 1020/tcp
 # HTTPS
 EXPOSE 1008/tcp
 
-ENTRYPOINT [ "start.bash" ]
+ENTRYPOINT [ "/fmd_script/start.bash" ]

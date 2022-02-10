@@ -5,7 +5,7 @@ RUN git clone -b FindMyDeviceServer --single-branch https://github.com/schklom/M
 FROM golang:alpine AS builder
 # We know from test that $GOPATH=/go
 WORKDIR /go/src/fmd
-RUN apk --no-cache add bash curl
+RUN apk --no-cache add bash curl build-base
 RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh | bash
 
 COPY --from=gitimport /fmd/ /go/src/fmd/

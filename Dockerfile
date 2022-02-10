@@ -6,14 +6,17 @@ FROM golang:alpine AS builder
 # We know from test that $GOPATH=/go
 WORKDIR /go/src/fmd
 
-# Install bash curl gcc ldconfig+read (updated)
-RUN apk --no-cache add bash curl build-base musl-utils zsh-doc
+# Install bash curl gcc ldconfig+read (updated) sed
+RUN apk --no-cache add bash curl build-base musl-utils zsh-doc sed
 # MAYBE REMOVE????
 RUN apk --no-cache add util-linux pciutils usbutils coreutils binutils findutils grep iproute2
 
-RUN set +x
-RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh | bash -x
-RUN set -x
+RUN curl -s -o /tmp/install.sh https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh
+RUN sed -i '1 i set +x' /tmp/install.sh
+RUN bash /tmp/install.sh
+#RUN set +x
+#RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh | bash -x
+#RUN set -x
 
 COPY --from=gitimport /fmd/ /go/src/fmd/
 WORKDIR /go/src/fmd/cmd

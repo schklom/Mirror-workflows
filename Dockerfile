@@ -6,8 +6,8 @@ FROM golang:alpine AS builder
 # We know from test that $GOPATH=/go
 WORKDIR /go/src/fmd
 
-# Install bash curl gcc
-RUN apk --no-cache add bash curl build-base
+# Install bash curl gcc ldconfig (updated)
+RUN apk --no-cache add bash curl build-base musl-utils
 # MAYBE REMOVE????
 RUN apk --no-cache add util-linux pciutils usbutils coreutils binutils findutils grep iproute2
 

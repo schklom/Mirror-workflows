@@ -11,7 +11,7 @@ RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/instal
 COPY --from=gitimport /fmd/ /go/src/fmd/
 WORKDIR /go/src/fmd/cmd
 #RUN go build fmdserver.go
-RUN go build -o fmdserver
+RUN go build -ldflags "-extldflags '-static'" -o fmdserver
 
 RUN mkdir -p /fmd/web
 VOLUME /fmd

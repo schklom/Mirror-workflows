@@ -11,6 +11,7 @@ RUN apk --no-cache add bash curl build-base musl-utils zsh-doc sed
 # MAYBE REMOVE????
 RUN apk --no-cache add util-linux pciutils usbutils coreutils binutils findutils grep iproute2
 
+# ATTEMPT DEBUG
 RUN curl -s -o /tmp/install.sh https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh
 RUN sed -i '1 i set +x' /tmp/install.sh
 RUN bash /tmp/install.sh

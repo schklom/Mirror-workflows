@@ -11,7 +11,9 @@ RUN apk --no-cache add bash curl build-base musl-utils zsh-doc
 # MAYBE REMOVE????
 RUN apk --no-cache add util-linux pciutils usbutils coreutils binutils findutils grep iproute2
 
+RUN set +x
 RUN curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh | bash -x
+RUN set -x
 
 COPY --from=gitimport /fmd/ /go/src/fmd/
 WORKDIR /go/src/fmd/cmd

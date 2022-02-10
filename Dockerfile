@@ -29,6 +29,7 @@ COPY --from=builder /go/src/fmd/cmd/fmdserver /fmd/
 COPY --from=builder /go/src/fmd/objectboxlib /fmd/objectboxlib
 
 WORKDIR /fmd
+RUN apk --no-cache add coreutils
 
 # https://gitlab.com/Nulide/findmydeviceserver/-/issues/3
 # HTTP

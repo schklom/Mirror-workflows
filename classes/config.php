@@ -510,7 +510,7 @@ class Config {
 			array_push($errors, "Please enable at least one authentication module via PLUGINS");
 		}
 
-		if (function_exists('posix_getuid') && posix_getuid() == 0) {
+		if (function_exists('posix_getuid') && posix_getuid() == 0 && !getenv("container")) {
 			array_push($errors, "Please don't run this script as root.");
 		}
 

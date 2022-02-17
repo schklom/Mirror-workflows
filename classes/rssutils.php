@@ -736,7 +736,7 @@ class RSSUtils {
 
 						// TODO: Just use FeedEnclosure (and modify it to cover whatever justified this)?
 						$e_item = array(
-							UrlHelper::rewrite_relative($site_url, $e->link),
+							UrlHelper::rewrite_relative($site_url, $e->link, "", "", $e->type),
 							$e->type, $e->length, $e->title, $e->width, $e->height);
 
 						// Yet another episode of "mysql utf8_general_ci is gimped"

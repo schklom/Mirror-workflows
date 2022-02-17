@@ -6,6 +6,10 @@ class UrlHelper {
 		"tel"
 	];
 
+	const EXTRA_SCHEMES_BY_CONTENT_TYPE = [
+		"application/x-bittorrent" => [ "magnet" ],
+	];
+
 	// TODO: class properties can be switched to PHP typing if/when the minimum PHP_VERSION is raised to 7.4.0+
 	/** @var string */
 	static $fetch_last_error;
@@ -52,10 +56,16 @@ class UrlHelper {
 	 * @param string $rel_url Possibly relative URL in the document
 	 * @param string $owner_element Owner element tag name (i.e. "a") (optional)
 	 * @param string $owner_attribute Owner attribute (i.e. "href") (optional)
+	 * @param string $content_type URL content type as specified by enclosures, etc.
 	 *
 	 * @return false|string Absolute URL or false on failure (either during URL parsing or validation)
 	 */
-	public static function rewrite_relative($base_url, $rel_url, string $owner_element = "", string $owner_attribute = "") {
+	public static function rewrite_relative($base_url,
+				$rel_url,
+				string $owner_element = "",
+				string $owner_attribute = "",
+				string $content_type = "") {
+
 		$rel_parts = parse_url($rel_url);
 
 		/**
@@ -79,6 +89,11 @@ class UrlHelper {
 		} else if (in_array($rel_parts["scheme"] ?? "", self::EXTRA_HREF_SCHEMES, true) &&
 				$owner_element == "a" &&
 				$owner_attribute == "href") {
+			return $rel_url;
+		// allow some extra schemes for links with feed-specified content type i.e. enclosures
+		} else if ($content_type &&
+				is_array(self::EXTRA_SCHEMES_BY_CONTENT_TYPE[$content_type]) &&
+				in_array($rel_parts["scheme"], self::EXTRA_SCHEMES_BY_CONTENT_TYPE[$content_type])) {
 			return $rel_url;
 		// allow limited subset of inline base64-encoded images for IMG elements
 		} else if (($rel_parts["scheme"] ?? "") == "data" &&

@@ -52,7 +52,7 @@ module.exports = [
 		route: "/imageproxy", methods: ["GET"], code: async (input) => {
 			const verifyResult = verifyURL(input.url)
 			if (verifyResult.status !== "ok") return verifyResult.value
-			if (!["png", "jpg"].some(ext => verifyResult.url.pathname.endsWith(ext))) return [400, "URL extension is not allowed"]
+			if (!["png", "jpg", "webp"].some(ext => verifyResult.url.pathname.endsWith(ext))) return [400, "URL extension is not allowed"]
 			const params = input.url.searchParams
 			const width = +params.get("width")
 			if (typeof width === "number" && !isNaN(width) && width > 0) {

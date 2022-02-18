@@ -92,7 +92,7 @@ class UrlHelper {
 			return $rel_url;
 		// allow some extra schemes for links with feed-specified content type i.e. enclosures
 		} else if ($content_type &&
-				is_array(self::EXTRA_SCHEMES_BY_CONTENT_TYPE[$content_type]) &&
+				isset(self::EXTRA_SCHEMES_BY_CONTENT_TYPE[$content_type]) &&
 				in_array($rel_parts["scheme"], self::EXTRA_SCHEMES_BY_CONTENT_TYPE[$content_type])) {
 			return $rel_url;
 		// allow limited subset of inline base64-encoded images for IMG elements

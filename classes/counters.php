@@ -250,7 +250,7 @@ class Counters {
 
 		for ($i = 0; $i >= -4; $i--) {
 
-			$count = Feeds::_get_counters($i);
+			$count = Feeds::_get_counters($i, false, true);
 
 			if ($i == 0 || $i == -1 || $i == -2)
 				$auxctr = Feeds::_get_counters($i, false);

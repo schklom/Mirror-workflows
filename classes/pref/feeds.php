@@ -1111,7 +1111,7 @@ class Pref_Feeds extends Handler_Protected {
 			$title = Feeds::_get_title($feed_id, false);
 
 		if ($unread === false)
-			$unread = Feeds::_get_counters($feed_id, false);
+			$unread = Feeds::_get_counters($feed_id, false, true);
 
 		return [
 			'id' => 'FEED:' . $feed_id,

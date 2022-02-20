@@ -1507,7 +1507,7 @@ class Feeds extends Handler_Protected {
 				$view_query_part = " ";
 			} else if ($feed != -1) {
 
-				$unread = Feeds::_get_counters($feed, $cat_view);
+				$unread = Feeds::_get_counters($feed, $cat_view, true);
 
 				if ($cat_view && $feed > 0 && $include_children)
 					$unread += self::_get_cat_children_unread($feed);

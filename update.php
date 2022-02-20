@@ -10,6 +10,14 @@
 	require_once "autoload.php";
 	require_once "functions.php";
 
+
+	if (php_sapi_name() != "cli") {
+		header("Content-type: text/plain");
+		printf("Please run this script using PHP CLI executable (you're using PHP SAPI: %s, PHP_EXECUTABLE is set to '%s')\n",
+			php_sapi_name(), Config::get(Config::PHP_EXECUTABLE));
+		exit(1);
+	}
+
 	Config::sanity_check();
 
 	function make_stampfile(string $filename): bool {
@@ -98,12 +106,6 @@
 
 	foreach (PluginHost::getInstance()->get_commands() as $command => $data) {
 		$options_map[$command . $data["suffix"]] = [ $data["arghelp"], $data["description"] ];
-	}
-
-	if (php_sapi_name() != "cli") {
-		header("Content-type: text/plain");
-		print "Please run this script from the command line.\n";
-		exit;
 	}
 
 	$options = getopt("", array_keys($options_map));

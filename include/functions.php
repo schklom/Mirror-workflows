@@ -2,7 +2,7 @@
 	define('LABEL_BASE_INDEX', -1024);
 	define('PLUGIN_FEED_BASE_INDEX', -128);
 
-	/** constant is @deprecated, use Config::SCHEMA_VERSION instead */
+	/** @deprecated by Config::SCHEMA_VERSION */
 	define('SCHEMA_VERSION', Config::SCHEMA_VERSION);
 
 	if (version_compare(PHP_VERSION, '8.0.0', '<')) {
@@ -179,18 +179,24 @@
 		return Config::get_version();
 	}
 
-	/** function is @deprecated by Config::get_schema_version() */
+	/** @deprecated by Config::get_schema_version() */
 	function get_schema_version(): int {
 		return Config::get_schema_version();
 	}
 
-	/** function is @deprecated by Debug::log() */
+	/** @deprecated by Debug::log() */
 	function _debug(string $msg): void {
 		Debug::log($msg);
 	}
 
-	/** function is @deprecated */
-	function getFeedUnread(int $feed, bool $is_cat = false): int {
+
+	/** @deprecated by Feeds::_get_counters()
+	 * @param int|string $feed feed id or tag name
+	 * @param bool $is_cat
+	 * @return int
+	 * @throws PDOException
+	 */
+	function getFeedUnread($feed, bool $is_cat = false): int {
 		return Feeds::_get_counters($feed, $is_cat, true, $_SESSION["uid"]);
 	}
 
@@ -239,23 +245,23 @@
 		return UrlHelper::validate($url);
 	}
 
-	/** function is @deprecated by UserHelper::authenticate() */
+	/** @deprecated by UserHelper::authenticate() */
 	function authenticate_user(string $login = null, string $password = null, bool $check_only = false, string $service = null): bool {
 		return UserHelper::authenticate($login, $password, $check_only, $service);
 	}
 
-	/** function is @deprecated by TimeHelper::smart_date_time() */
+	/** @deprecated by TimeHelper::smart_date_time() */
 	function smart_date_time(int $timestamp, int $tz_offset = 0, int $owner_uid = null, bool $eta_min = false): string {
 		return TimeHelper::smart_date_time($timestamp, $tz_offset, $owner_uid, $eta_min);
 	}
 
-	/** function is @deprecated by TimeHelper::make_local_datetime() */
+	/** @deprecated by TimeHelper::make_local_datetime() */
 	function make_local_datetime(string $timestamp, bool $long, int $owner_uid = null, bool $no_smart_dt = false, bool $eta_min = false): string {
 		return TimeHelper::make_local_datetime($timestamp, $long, $owner_uid, $no_smart_dt, $eta_min);
 	}
 
 	// this returns Config::SELF_URL_PATH sans ending slash
-	/** function is @deprecated by Config::get_self_url() */
+	/** @deprecated by Config::get_self_url() */
 	function get_self_url_prefix(): string {
 		return Config::get_self_url();
 	}

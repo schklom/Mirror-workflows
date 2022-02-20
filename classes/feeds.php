@@ -936,7 +936,15 @@ class Feeds extends Handler_Protected {
 		}
 	}
 
-	static function _get_counters(int $feed, bool $is_cat = false, bool $unread_only = false, ?int $owner_uid = null): int {
+	/**
+	 * @param int|string $feed feed id or tag name
+	 * @param bool $is_cat
+	 * @param bool $unread_only
+	 * @param null|int $owner_uid
+	 * @return int
+	 * @throws PDOException
+	 */
+	static function _get_counters($feed, bool $is_cat = false, bool $unread_only = false, ?int $owner_uid = null): int {
 
 		$n_feed = (int) $feed;
 		$need_entries = false;
@@ -957,6 +965,7 @@ class Feeds extends Handler_Protected {
 			return self::_get_cat_unread($n_feed, $owner_uid);
 		} else if ($n_feed == -6) {
 			return 0;
+		// tags
 		} else if ($feed != "0" && $n_feed == 0) {
 
 			$sth = $pdo->prepare("SELECT SUM((SELECT COUNT(int_id)
@@ -1498,7 +1507,7 @@ class Feeds extends Handler_Protected {
 				$view_query_part = " ";
 			} else if ($feed != -1) {
 
-				$unread = getFeedUnread($feed, $cat_view);
+				$unread = Feeds::_get_counters($feed, $cat_view);
 
 				if ($cat_view && $feed > 0 && $include_children)
 					$unread += self::_get_cat_children_unread($feed);

@@ -106,7 +106,7 @@ class API extends Handler {
 		$is_cat = self::_param_to_bool($_REQUEST["is_cat"] ?? false);
 
 		if ($feed_id) {
-			return $this->_wrap(self::STATUS_OK, array("unread" => getFeedUnread($feed_id, $is_cat)));
+			return $this->_wrap(self::STATUS_OK, array("unread" => Feeds::_get_counters($feed_id, $is_cat)));
 		} else {
 			return $this->_wrap(self::STATUS_OK, array("unread" => Feeds::_get_global_unread()));
 		}
@@ -152,7 +152,7 @@ class API extends Handler {
 
 		foreach ($categories->find_many() as $category) {
 			if ($include_empty || $category->num_feeds > 0 || $category->num_cats > 0) {
-				$unread = getFeedUnread($category->id, true);
+				$unread = Feeds::_get_counters($category->id, true);
 
 				if ($enable_nested)
 					$unread += Feeds::_get_cat_children_unread($category->id);
@@ -170,7 +170,7 @@ class API extends Handler {
 
 		foreach ([-2,-1,0] as $cat_id) {
 			if ($include_empty || !$this->_is_cat_empty($cat_id)) {
-				$unread = getFeedUnread($cat_id, true);
+				$unread = Feeds::_get_counters($cat_id, true);
 
 				if ($unread || !$unread_only) {
 					array_push($cats, [
@@ -546,7 +546,7 @@ class API extends Handler {
 
 			if ($cat_id == -4 || $cat_id == -1) {
 				foreach ([-1, -2, -3, -4, -6, 0] as $i) {
-					$unread = getFeedUnread($i);
+					$unread = Feeds::_get_counters($i);
 
 					if ($unread || !$unread_only) {
 						$title = Feeds::_get_title($i);
@@ -573,7 +573,7 @@ class API extends Handler {
 					->find_many();
 
 				foreach ($categories as $category) {
-					$unread = getFeedUnread($category->id, true) +
+					$unread = Feeds::_get_counters($category->id, true) +
 						Feeds::_get_cat_children_unread($category->id);
 
 					if ($unread || !$unread_only) {
@@ -607,7 +607,7 @@ class API extends Handler {
 			}
 
 			foreach ($feeds_obj->find_many() as $feed) {
-				$unread = getFeedUnread($feed->id);
+				$unread = Feeds::_get_counters($feed->id);
 				$has_icon = Feeds::_has_icon($feed->id);
 
 				if ($unread || !$unread_only) {

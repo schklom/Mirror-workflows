@@ -431,6 +431,12 @@ function fetchShortcodeData(shortcode) {
 
 				// find embed
 				const e_embed = root.querySelector(".Embed")
+				// rate limited? if so, the request to instagram took 5-10 seconds, and returned no other content after <body style="background: white">
+				// so in that case there will be no useful elements, and no .Embed element
+				if (!e_embed) {
+					throw constants.symbols.RATE_LIMITED
+				}
+
 				// find avatar
 				const e_avatar = root.querySelector(".Avatar")
 				const e_avatarImage = e_avatar.querySelector("img")
@@ -473,13 +479,16 @@ function fetchShortcodeData(shortcode) {
 					}
 				})
 				// extract caption text
-				const captionText = e_caption.childNodes.slice(4, -3).map(node => { // slice removes unneeded starting and ending whitespace and user handles
-					if (node.tagName === "br") {
-						return "\n"
-					} else {
-						return node.text
-					}
-				}).join("")
+				let captionText = ""
+				if (e_caption) {
+					captionText = e_caption.childNodes.slice(4, -3).map(node => { // slice removes unneeded starting and ending whitespace and user handles
+						if (node.tagName === "br") {
+							return "\n"
+						} else {
+							return node.text
+						}
+					}).join("")
+				}
 				return {
 					__typename: mediaType,
 					id: e_embed.attributes["data-media-id"],

@@ -59,7 +59,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.4.0
         with:
-          #repository: 'schklom/FindMyDeviceServer'
+          #repository: 'schklom/Gadgetbridge-osmand-experiments'
           ref: 'Gadgetbridge-osmand-experiments' # branch
       - name: Setup JDK
         uses: actions/setup-java@v2

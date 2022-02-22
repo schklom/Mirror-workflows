@@ -67,13 +67,13 @@ jobs:
       - name: Setup JDK+Android
         run: sudo apt-get install openjdk-11-jdk git adb -y
       - name: Build apk
-        run: ./gradlew --no-daemon assemble
+        run: ./gradlew --no-daemon assembleDebug
       - name: Release apk
         uses: softprops/action-gh-release@v1
         with:
           tag_name: Gadgetbridge-osmand-experiments
           #files: ./app/build/outputs/apk/app-debug.apk
-          files: ./app/build/outputs/apk/release/app-release-unsigned.apk
+          files: ./app/build/outputs/apk/debug/app-debug.apk
       - name: List files
         run: |
           ls -alhR ./app/build/outputs/apk

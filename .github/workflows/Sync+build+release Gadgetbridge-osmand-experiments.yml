@@ -9,7 +9,7 @@ on:
 
 jobs:
   get_commits:
-    if: ${{ false }}  # disable for now
+    #if: ${{ false }}  # disable for now
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     outputs:
@@ -28,11 +28,11 @@ jobs:
           echo "::set-output name=SETLOCAL::$(cat last_sync_with_original_repo_commit_id)"
   
   repo_sync:
-    if: ${{ false }}  # disable for now
+    #if: ${{ false }}  # disable for now
     needs: [get_commits]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    #if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
+    if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
     steps:
       - name: repo-sync
         uses: wei/git-sync@v3

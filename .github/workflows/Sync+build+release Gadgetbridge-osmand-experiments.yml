@@ -63,13 +63,9 @@ jobs:
         with:
           #repository: 'schklom/Gadgetbridge-osmand-experiments'
           ref: 'Gadgetbridge-osmand-experiments' # branch
-      - name: Setup JDK
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'temurin' # See 'Supported distributions' for available options
-          java-version: '17'
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
+      # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
+      - name: Setup JDK+Android
+        run: apt-get install openjdk-11-jdk git adb -y
       - name: Build apk
         run: ./gradlew --no-daemon assembleRelease
       - name: Release apk

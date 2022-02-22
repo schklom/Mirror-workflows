@@ -68,16 +68,9 @@ jobs:
         run: sudo apt-get install openjdk-11-jdk git adb -y
       - name: Build apk
         run: ./gradlew --no-daemon assembleRelease
-      - name: Tag
-        if: startsWith(github.ref, 'refs/heads/release/')
-        run: |
-          git tag "v$env:GitVersion_SemVer"
-          git push origin "v$env:GitVersion_SemVer"
       - name: Release apk
-        if: startsWith(github.ref, 'refs/heads/release/')
         uses: softprops/action-gh-release@v1
         with:
-          name: v${{ env.GitVersion_SemVer }}
+          tag_name: Gadgetbridge-osmand-experiments
           files: app/build/outputs/apk/app-debug.apk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          

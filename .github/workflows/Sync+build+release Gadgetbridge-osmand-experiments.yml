@@ -71,7 +71,7 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
       - name: Build apk
-        run: ./gradlew assembleRelease
+        run: ./gradlew --no-daemon assembleRelease
       - name: Release apk
         uses: softprops/action-gh-release@v1
         with:

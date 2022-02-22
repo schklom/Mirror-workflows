@@ -74,7 +74,4 @@ jobs:
           tag_name: Gadgetbridge-osmand-experiments
           #files: ./app/build/outputs/apk/app-debug.apk
           files: ./app/build/outputs/apk/debug/app-debug.apk
-      - name: List files
-        run: |
-          ls -alhR ./app/build/outputs/apk
           

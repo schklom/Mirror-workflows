@@ -12,3 +12,4 @@ The Actions are defined in the directory .github/workflows. Secrets are used for
 - Spreed
 - TT-RSS
 - Bibliogram
+- FindMyDeviceServer

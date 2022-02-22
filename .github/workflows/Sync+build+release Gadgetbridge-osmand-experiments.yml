@@ -65,7 +65,7 @@ jobs:
           ref: 'Gadgetbridge-osmand-experiments' # branch
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
       - name: Setup JDK+Android
-        run: apt-get install openjdk-11-jdk git adb -y
+        run: sudo apt-get install openjdk-11-jdk git adb -y
       - name: Build apk
         run: ./gradlew --no-daemon assembleRelease
       - name: Release apk

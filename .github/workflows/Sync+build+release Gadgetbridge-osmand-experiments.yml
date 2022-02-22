@@ -1,0 +1,76 @@
+name: Sync+build+release Gadgetbridge-osmand-experiments
+
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  get_commits:
+    runs-on: ubuntu-latest
+    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    outputs:
+      LOCAL: ${{ steps.commits.outputs.SETLOCAL }}
+      REMOTE: ${{ steps.commits.outputs.SETREMOTE }} 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+        with:
+          ref: 'Gadgetbridge-osmand-experiments' # branch
+      - name: set local and remote latest commit as environment variables
+        id: commits
+        # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+        run: |
+          echo "::set-output name=SETREMOTE::$(git ls-remote https://codeberg.org/Freeyourgadget/Gadgetbridge.git refs/heads/osmand-experiments | awk '{ print $1 }')"
+          echo "::set-output name=SETLOCAL::$(cat last_sync_with_original_repo_commit_id)"
+  
+  repo_sync:
+    needs: [get_commits]
+    runs-on: ubuntu-latest
+    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
+    steps:
+      - name: repo-sync
+        uses: wei/git-sync@v3
+        with:
+          source_repo: "https://codeberg.org/Freeyourgadget/Gadgetbridge.git"
+          source_branch: "osmand-experiments"
+          destination_repo: "git@github.com:schklom/Mirror-workflows.git"
+          destination_branch: "Gadgetbridge-osmand-experiments"
+          destination_ssh_private_key: ${{ secrets.GITSYNCACTION }}
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+        with:
+          ref: 'Gadgetbridge-osmand-experiments' # branch
+      - name: get most recent commit id on original repo, for next comparison on sync
+        run: git ls-remote https://codeberg.org/Freeyourgadget/Gadgetbridge.git refs/heads/osmand-experiments | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
+      - name: Commit and push the change
+        uses: stefanzweifel/git-auto-commit-action@v4.13.1
+        with:
+          commit_message: Add last_sync_with_original_repo_commit_id
+
+  build_gadgetbridge:
+    needs: [repo_sync]
+    #needs: [get_commits]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+        with:
+          #repository: 'schklom/FindMyDeviceServer'
+          ref: 'Gadgetbridge-osmand-experiments' # branch
+      - name: Setup JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin' # See 'Supported distributions' for available options
+          java-version: '17'
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+      - name: Build apk
+        run: gradlew assembleRelease
+      - name: Release apk
+        uses: softprops/action-gh-release@v1
+        with:
+          files: app/build/outputs/apk/app-debug.apk

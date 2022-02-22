@@ -72,5 +72,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: Gadgetbridge-osmand-experiments
-          files: app/build/outputs/apk/app-debug.apk
+          files: ./app/build/outputs/apk/app-debug.apk
+      - name: List files
+        run: |
+          ls -alhR ./ && \
+          ls -alh /
           

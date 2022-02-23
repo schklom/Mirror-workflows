@@ -898,6 +898,9 @@ body.ttrss_main select.attachments {
   margin-top: 10px;
   max-width: 120px;
 }
+body.ttrss_main .attachments-inline a {
+  word-break: break-all;
+}
 body.ttrss_main #filterDlg_feeds select {
   height: 150px;
   width: 410px;

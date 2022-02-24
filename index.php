@@ -238,6 +238,13 @@
                <div dojoType="fox.form.DropDownButton" class="action-button" title="<?= __('Actions...') ?>">
 					<span><i class="material-icons">menu</i></span>
                     <div dojoType="dijit.Menu" style="display: none">
+								<script type='dojo/method' event='onOpen' args='evt,a,b,c'>
+									const ws = this.getChildren().find((m) => m.id == 'qmcToggleWidescreen');
+
+									if (ws)
+										ws.attr('hidden', !!App.isCombinedMode());
+								</script>
+
                         <div dojoType="dijit.MenuItem" onclick="App.onActionSelected('qmcPrefs')"><?= __('Preferences...') ?></div>
                         <div dojoType="dijit.MenuItem" onclick="App.onActionSelected('qmcSearch')"><?= __('Search...') ?></div>
                         <div dojoType="dijit.MenuItem" disabled="1"><?= __('Feed actions:') ?></div>
@@ -248,7 +255,9 @@
                         <div dojoType="dijit.MenuItem" onclick="App.onActionSelected('qmcCatchupAll')"><?= __('Mark as read') ?></div>
                         <div dojoType="dijit.MenuItem" onclick="App.onActionSelected('qmcShowOnlyUnread')"><?= __('(Un)hide read feeds') ?></div>
                         <div dojoType="dijit.MenuItem" disabled="1"><?= __('Other actions:') ?></div>
-                        <div dojoType="dijit.MenuItem" onclick="App.onActionSelected('qmcToggleWidescreen')"><?= __('Toggle widescreen mode') ?></div>
+								<div dojoType="dijit.MenuItem" id="qmcToggleWidescreen" onclick="App.onActionSelected('qmcToggleWidescreen')">
+									<?= __('Toggle widescreen mode') ?></div>
+								<div dojoType="dijit.MenuItem" onclick="App.onActionSelected('qmcToggleCombined')"><?= __('Toggle combined mode') ?></div>
                         <div dojoType="dijit.MenuItem" onclick="App.onActionSelected('qmcHKhelp')"><?= __('Keyboard shortcuts help') ?></div>
 
                         <?php

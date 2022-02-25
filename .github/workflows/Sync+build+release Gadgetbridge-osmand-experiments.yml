@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  get_tags:
+  get_commit_and_tag:
     #if: ${{ false }}  # disable for now
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
@@ -33,10 +33,10 @@ jobs:
   
   repo_sync:
     #if: ${{ false }}  # disable for now
-    needs: [get_tags]
+    needs: [get_commit_and_tag]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    if: needs.get_commits.outputs.LOCALTAG != needs.get_commits.outputs.REMOTETAG && needs.get_commits.outputs.LOCALCOMMIT != needs.get_commits.outputs.REMOTECOMMIT
+    if: needs.get_commit_and_tag.outputs.LOCALTAG != needs.get_commit_and_tag.outputs.REMOTETAG && needs.get_commit_and_tag.outputs.LOCALCOMMIT != needs.get_commit_and_tag.outputs.REMOTECOMMIT
     steps:
       - name: repo-sync
         uses: wei/git-sync@v3

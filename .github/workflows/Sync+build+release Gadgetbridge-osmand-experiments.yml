@@ -51,7 +51,7 @@ jobs:
         with:
           ref: 'Gadgetbridge-osmand-experiments' # branch
       - name: get most recent release tag on original repo, for next comparison on sync
-        run: git ls-remote --tags --sort=version:refname https://codeberg.org/Freeyourgadget/Gadgetbridge.git | tail -n 1 | awk '{ print $2 } | cut -c 11-' > last_sync_with_original_repo_release_tag
+        run: git ls-remote --tags --sort=version:refname https://codeberg.org/Freeyourgadget/Gadgetbridge.git | tail -n 1 | awk '{ print $2 }' | cut -c 11- > last_sync_with_original_repo_release_tag
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.13.1
         with:

@@ -77,13 +77,14 @@ jobs:
           ref: 'Gadgetbridge-osmand-experiments' # branch
       - name: Pull changes
         run: git pull
+        if: ${{ false }}
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
       - name: Setup JDK+Android
         run: sudo apt-get install openjdk-11-jdk git adb -y
-        #if: ${{ false }}
+        if: ${{ false }}
       - name: Build apk
         run: ./gradlew --no-daemon assembleDebug
-        #if: ${{ false }}
+        if: ${{ false }}
       - name: Release apk
         uses: softprops/action-gh-release@v1
         with:

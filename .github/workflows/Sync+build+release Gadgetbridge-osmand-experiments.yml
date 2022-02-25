@@ -89,7 +89,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         #if: ${{ false }}
         with:
-          tag_name: ${TAGNAME}
+          tag_name: ${{ TAGNAME }}
           #files: ./app/build/outputs/apk/app-debug.apk
           #files: ./app/build/outputs/apk/debug/app-debug.apk
           files: LICENSE

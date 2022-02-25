@@ -17,12 +17,13 @@ jobs:
       LOCALTAG: ${{ steps.commits.outputs.SETLOCALTAG }}
       REMOTECOMMIT: ${{ steps.commits.outputs.SETREMOTECOMMIT }}
       LOCALCOMMIT: ${{ steps.commits.outputs.SETLOCALCOMMIT }}
+      RELEASETAGNAME: ${{ steps.commits.outputs.SETRELEASETAGNAME }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2.4.0
         with:
           ref: 'Gadgetbridge-osmand-experiments' # branch
-      - name: set local and remote latest release tag + commit id as environment variables
+      - name: set local and remote latest release tag + commit id + tag name as environment variables
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         run: |
@@ -30,6 +31,7 @@ jobs:
           echo "::set-output name=SETLOCALTAG::$(cat last_sync_with_original_repo_release_tag)"
           echo "::set-output name=SETREMOTECOMMIT::$(git ls-remote --heads https://codeberg.org/Freeyourgadget/Gadgetbridge.git | grep osm | awk '{ print $1 }')"
           echo "::set-output name=SETLOCALCOMMIT::$(cat last_sync_with_original_repo_commit_id)"
+          echo "::set-output name=SETRELEASETAGNAME::$(git ls-remote --tags --sort=version:refname https://codeberg.org/Freeyourgadget/Gadgetbridge.git | tail -n 1 | awk '{ print $2 }' | cut -c 11-)"
   
   repo_sync:
     if: ${{ false }}
@@ -87,7 +89,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         #if: ${{ false }}
         with:
-          tag_name: Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.LOCALTAG }}
+          tag_name: Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.RELEASETAGNAME }}
           #files: ./app/build/outputs/apk/app-debug.apk
           #files: ./app/build/outputs/apk/debug/app-debug.apk
           files: LICENSE

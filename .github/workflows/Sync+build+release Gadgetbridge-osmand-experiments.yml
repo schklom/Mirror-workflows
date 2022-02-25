@@ -67,9 +67,6 @@ jobs:
     #needs: [repo_sync]
     needs: [get_commit_and_tag]
     runs-on: ubuntu-latest
-    env:
-      LOCALTAG: ${{ needs.get_commit_and_tag.outputs.LOCALTAG }}
-      TAGNAME: Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.LOCALTAG }}
     steps:
       - name: ENV
         run: env | grep TAG
@@ -88,11 +85,15 @@ jobs:
       - name: Build apk
         run: ./gradlew --no-daemon assembleDebug
         if: ${{ false }}
+      - name: Generate tag name
+        run: echo "Gadgetbridge-osmand-experiments-$TAGNAME" > ${{ aaa }}
+        env:
+          TAGNAME: Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.LOCALTAG }}
       - name: Release apk
         uses: softprops/action-gh-release@v1
         #if: ${{ false }}
         with:
-          tag_name: "Gadgetbridge-osmand-experiments-$TAGNAME"
+          tag_name: ${{ aaa }}
           #files: ./app/build/outputs/apk/app-debug.apk
           #files: ./app/build/outputs/apk/debug/app-debug.apk
           files: LICENSE

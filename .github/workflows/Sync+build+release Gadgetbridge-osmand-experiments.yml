@@ -84,14 +84,14 @@ jobs:
         run: ./gradlew --no-daemon assembleDebug
         if: ${{ false }}
       - name: Generate tag name
-        run: echo "Gadgetbridge-osmand-experiments-$TAGNAME" > ${{ aaa }}
+        run: echo "Gadgetbridge-osmand-experiments-$TAGNAME" > ${{ github.ref }}
         env:
           TAGNAME: Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.LOCALTAG }}
       - name: Release apk
         uses: softprops/action-gh-release@v1
         #if: ${{ false }}
         with:
-          tag_name: ${{ aaa }}
+          tag_name: ${{ github.ref }}
           #files: ./app/build/outputs/apk/app-debug.apk
           #files: ./app/build/outputs/apk/debug/app-debug.apk
           files: LICENSE

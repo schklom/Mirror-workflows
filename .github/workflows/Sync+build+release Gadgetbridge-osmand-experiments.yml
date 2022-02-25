@@ -37,10 +37,8 @@ jobs:
     needs: [get_commit_and_tag]
     runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ needs.get_commit_and_tag.outputs.LOCALCOMMIT }}
-      - run: echo ${{ needs.get_commit_and_tag.outputs.REMOTECOMMIT }}
-      - run: echo $(test "${{ needs.get_commit_and_tag.outputs.LOCALCOMMIT }}" = "${{ needs.get_commit_and_tag.outputs.REMOTECOMMIT }}") $?
-      - run: echo $(test ${{ needs.get_commit_and_tag.outputs.LOCALCOMMIT }} = ${{ needs.get_commit_and_tag.outputs.REMOTECOMMIT }}) $?
+      - run: echo $(test ${{ needs.get_commit_and_tag.outputs.LOCALCOMMIT }} != ${{ needs.get_commit_and_tag.outputs.REMOTECOMMIT }}) $?
+      - run: echo $(test ${{ needs.get_commit_and_tag.outputs.LOCALTAG }} != ${{ needs.get_commit_and_tag.outputs.REMOTETAG }}) $?
     
   repo_sync:
     #if: ${{ false }}

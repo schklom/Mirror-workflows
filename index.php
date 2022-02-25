@@ -239,10 +239,26 @@
 					<span><i class="material-icons">menu</i></span>
                     <div dojoType="dijit.Menu" style="display: none">
 								<script type='dojo/method' event='onOpen' args='evt,a,b,c'>
-									const ws = this.getChildren().find((m) => m.id == 'qmcToggleWidescreen');
+									const widescreen = this.getChildren().find((m) => m.id == 'qmcToggleWidescreen');
+									const expanded = this.getChildren().find((m) => m.id == 'qmcToggleExpanded');
+									const combined = this.getChildren().find((m) => m.id == 'qmcToggleCombined');
 
-									if (ws)
-										ws.attr('hidden', !!App.isCombinedMode());
+									if (combined)
+										combined.attr('label',
+											App.isCombinedMode() ? __('Switch to three panel view') : __('Switch to combined view'));
+
+									if (widescreen)
+										widescreen
+											.attr('hidden', !!App.isCombinedMode())
+											.attr('label',
+												App.isWideScreenMode() ? __('Disable widescreen mode') : __('Enable widescreen mode'));
+
+									if (expanded)
+										expanded
+											.attr('hidden', !App.isCombinedMode())
+											.attr('label',
+												App.isExpandedMode() ? __('Expand selected article only') : __('Expand all articles'));
+
 								</script>
 
                         <div dojoType="dijit.MenuItem" onclick="App.onActionSelected('qmcPrefs')"><?= __('Preferences...') ?></div>
@@ -254,10 +270,13 @@
                         <div dojoType="dijit.MenuItem" disabled="1"><?= __('All feeds:') ?></div>
                         <div dojoType="dijit.MenuItem" onclick="App.onActionSelected('qmcCatchupAll')"><?= __('Mark as read') ?></div>
                         <div dojoType="dijit.MenuItem" onclick="App.onActionSelected('qmcShowOnlyUnread')"><?= __('(Un)hide read feeds') ?></div>
-                        <div dojoType="dijit.MenuItem" disabled="1"><?= __('Other actions:') ?></div>
+                        <div dojoType="dijit.MenuItem" disabled="1"><?= __('UI layout:') ?></div>
+								<div dojoType="dijit.MenuItem" id="qmcToggleCombined" onclick="App.onActionSelected('qmcToggleCombined')"><?= __('Toggle combined mode') ?></div>
 								<div dojoType="dijit.MenuItem" id="qmcToggleWidescreen" onclick="App.onActionSelected('qmcToggleWidescreen')">
 									<?= __('Toggle widescreen mode') ?></div>
-								<div dojoType="dijit.MenuItem" onclick="App.onActionSelected('qmcToggleCombined')"><?= __('Toggle combined mode') ?></div>
+								<div dojoType="dijit.MenuItem" id="qmcToggleExpanded" onclick="App.onActionSelected('qmcToggleExpanded')">
+									<?= __('Toggle expand all articles') ?></div>
+								<div dojoType="dijit.MenuItem" disabled="1"><?= __('Other actions:') ?></div>
                         <div dojoType="dijit.MenuItem" onclick="App.onActionSelected('qmcHKhelp')"><?= __('Keyboard shortcuts help') ?></div>
 
                         <?php

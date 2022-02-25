@@ -299,6 +299,21 @@ const App = {
 			Headlines.renderAgain();
 		})
 	},
+	isExpandedMode: function() {
+		return !!this.getInitParam("cdm_expanded");
+	},
+	setExpandedMode: function(expand) {
+		if (App.isCombinedMode()) {
+			const value = expand ? "true" : "false";
+
+			xhr.post("backend.php", {op: "rpc", method: "setpref", key: "CDM_EXPANDED", value: value}, () => {
+				this.setInitParam("cdm_expanded", !this.getInitParam("cdm_expanded"));
+				Headlines.renderAgain();
+			});
+		} else {
+			alert(__("This function is only available in combined mode."));
+		}
+	},
 	getActionByHotkeySequence: function(sequence) {
 		const hotkeys_map = this.getInitParam("hotkeys");
 
@@ -1236,12 +1251,7 @@ const App = {
 				App.setCombinedMode(!App.isCombinedMode());
          };
          this.hotkey_actions["toggle_cdm_expanded"] = () => {
-            const value = this.getInitParam("cdm_expanded") ? "false" : "true";
-
-            xhr.post("backend.php", {op: "rpc", method: "setpref", key: "CDM_EXPANDED", value: value}, () => {
-               this.setInitParam("cdm_expanded", !this.getInitParam("cdm_expanded"));
-               Headlines.renderAgain();
-            });
+				App.setExpandedMode(!App.isExpandedMode());
          };
          this.hotkey_actions["article_span_grid"] = () => {
             Article.cdmToggleGridSpan(Article.getActive());
@@ -1306,6 +1316,9 @@ const App = {
             break;
 			case "qmcToggleCombined":
 				App.setCombinedMode(!App.isCombinedMode());
+				break;
+			case "qmcToggleExpanded":
+				App.setExpandedMode(!App.isExpandedMode());
 				break;
          case "qmcHKhelp":
             this.hotkeyHelp()

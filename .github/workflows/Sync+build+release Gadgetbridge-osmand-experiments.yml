@@ -67,6 +67,8 @@ jobs:
     #needs: [repo_sync]
     needs: [get_commit_and_tag]
     runs-on: ubuntu-latest
+    env:
+      TAGNAME: Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.LOCALTAG }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2.4.0
@@ -83,15 +85,11 @@ jobs:
       - name: Build apk
         run: ./gradlew --no-daemon assembleDebug
         if: ${{ false }}
-      - name: Generate tag name
-        run: echo "Gadgetbridge-osmand-experiments-$TAGNAME" > ${{ github.ref }}
-        env:
-          TAGNAME: Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.LOCALTAG }}
       - name: Release apk
         uses: softprops/action-gh-release@v1
         #if: ${{ false }}
         with:
-          tag_name: ${{ github.ref }}
+          tag_name: ${TAGNAME}
           #files: ./app/build/outputs/apk/app-debug.apk
           #files: ./app/build/outputs/apk/debug/app-debug.apk
           files: LICENSE

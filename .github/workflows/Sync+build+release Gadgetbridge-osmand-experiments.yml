@@ -36,7 +36,7 @@ jobs:
     needs: [get_commit_and_tag]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    if: needs.get_commit_and_tag.outputs.LOCALTAG != needs.get_commit_and_tag.outputs.REMOTETAG && needs.get_commit_and_tag.outputs.LOCALCOMMIT != needs.get_commit_and_tag.outputs.REMOTECOMMIT
+    #if: needs.get_commit_and_tag.outputs.LOCALTAG != needs.get_commit_and_tag.outputs.REMOTETAG && needs.get_commit_and_tag.outputs.LOCALCOMMIT != needs.get_commit_and_tag.outputs.REMOTECOMMIT
     steps:
       - name: repo-sync
         uses: wei/git-sync@v3
@@ -77,7 +77,7 @@ jobs:
         run: |
           pwd
           ls -alh
-          echo ${{ needs.get_commits.outputs.LOCALTAG }}
+          env
       - name: Pull changes
         run: git pull
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation

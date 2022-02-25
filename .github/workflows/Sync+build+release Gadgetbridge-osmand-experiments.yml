@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v2.4.0
         with:
           ref: 'Gadgetbridge-osmand-experiments' # branch
-      - name: set local and remote latest release tag as environment variables
+      - name: set local and remote latest release tag + commit id as environment variables
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         run: |

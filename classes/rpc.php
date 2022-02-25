@@ -108,8 +108,8 @@ class RPC extends Handler_Protected {
 	function getAllCounters(): void {
 		@$seq = (int) $_REQUEST['seq'];
 
-		$feed_id_count = (int)$_REQUEST["feed_id_count"];
-		$label_id_count = (int)$_REQUEST["label_id_count"];
+		$feed_id_count = (int) ($_REQUEST["feed_id_count"] ?? -1);
+		$label_id_count = (int) ($_REQUEST["label_id_count"] ?? -1);
 
 		// it seems impossible to distinguish empty array [] from a null - both become unset in $_REQUEST
 		// so, count is >= 0 means we had an array, -1 means null

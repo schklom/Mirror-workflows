@@ -20,11 +20,11 @@ jobs:
         uses: actions/checkout@v2.4.0
         with:
           ref: 'Gadgetbridge-osmand-experiments' # branch
-      - name: set local and remote latest commit as environment variables
+      - name: set local and remote latest release tag as environment variables
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         run: |
-          echo "::set-output name=SETREMOTE::$(git ls-remote https://codeberg.org/Freeyourgadget/Gadgetbridge.git refs/heads/osmand-experiments | awk '{ print $1 }')"
+          echo "::set-output name=SETREMOTE::$(git tag --sort=version:refname | tail -n 1)"
           echo "::set-output name=SETLOCAL::$(cat last_sync_with_original_repo_release_tag)"
   
   repo_sync:

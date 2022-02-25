@@ -74,7 +74,7 @@ jobs:
           #repository: 'schklom/Gadgetbridge-osmand-experiments'
           ref: 'Gadgetbridge-osmand-experiments' # branch
       - name: Pull changes
-        run: git pull
+        run: git pull https://codeberg.org/Freeyourgadget/Gadgetbridge.git
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
       - name: Setup JDK+Android
         run: sudo apt-get install openjdk-11-jdk git adb -y

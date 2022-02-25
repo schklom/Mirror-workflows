@@ -73,11 +73,6 @@ jobs:
         with:
           #repository: 'schklom/Gadgetbridge-osmand-experiments'
           ref: 'Gadgetbridge-osmand-experiments' # branch
-      - name: LS
-        run: |
-          pwd
-          ls -alh
-          env
       - name: Pull changes
         run: git pull
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation

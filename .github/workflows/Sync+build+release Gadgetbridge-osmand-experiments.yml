@@ -32,7 +32,7 @@ jobs:
           echo "::set-output name=SETLOCALCOMMIT::$(cat last_sync_with_original_repo_commit_id)"
   
   repo_sync:
-    #if: ${{ false }}  # disable for now
+    if: ${{ false }}
     needs: [get_commit_and_tag]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
@@ -64,8 +64,8 @@ jobs:
           commit_message: Add last_sync_with_original_repo_commit_id
 
   build_gadgetbridge:
-    needs: [repo_sync]
-    #needs: [get_commits]
+    #needs: [repo_sync]
+    needs: [get_commit_and_tag]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -74,18 +74,24 @@ jobs:
           #repository: 'schklom/Gadgetbridge-osmand-experiments'
           ref: 'Gadgetbridge-osmand-experiments' # branch
       - name: TEST ENV
-        run: echo $AAA
+        run: |
+          echo "$AAA"
+          echo "BBB$AAA"
         env:
           AAA: ${{ needs.get_commit_and_tag.outputs.LOCALTAG }}
       - name: Pull changes
         run: git pull
+        if: ${{ false }}
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
       - name: Setup JDK+Android
         run: sudo apt-get install openjdk-11-jdk git adb -y
+        if: ${{ false }}
       - name: Build apk
         run: ./gradlew --no-daemon assembleDebug
+        if: ${{ false }}
       - name: Release apk
         uses: softprops/action-gh-release@v1
+        if: ${{ false }}
         with:
           tag_name: Gadgetbridge-osmand-experiments-${{ needs.get_commits.outputs.LOCALTAG }}
           #files: ./app/build/outputs/apk/app-debug.apk

@@ -26,7 +26,7 @@ jobs:
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         run: |
-          echo "::set-output name=SETREMOTETAG::$(git ls-remote --tags --sort=version:refname https://codeberg.org/Freeyourgadget/Gadgetbridge.git | tail -n 1 | awk '{ print $2 }') | cut -c 11-"
+          echo "::set-output name=SETREMOTETAG::$(git ls-remote --tags --sort=version:refname https://codeberg.org/Freeyourgadget/Gadgetbridge.git | tail -n 1 | awk '{ print $2 }' | cut -c 11-)"
           echo "::set-output name=SETLOCALTAG::$(cat last_sync_with_original_repo_release_tag)"
           echo "::set-output name=SETREMOTECOMMIT::$(git ls-remote --heads https://codeberg.org/Freeyourgadget/Gadgetbridge.git | grep osm | awk '{ print $1 }')"
           echo "::set-output name=SETLOCALCOMMIT::$(cat last_sync_with_original_repo_commit_id)"
@@ -51,7 +51,7 @@ jobs:
         with:
           ref: 'Gadgetbridge-osmand-experiments' # branch
       - name: get most recent release tag on original repo, for next comparison on sync
-        run: git ls-remote --tags --sort=version:refname https://codeberg.org/Freeyourgadget/Gadgetbridge.git | tail -n 1 | awk '{ print $2 }' > last_sync_with_original_repo_release_tag
+        run: git ls-remote --tags --sort=version:refname https://codeberg.org/Freeyourgadget/Gadgetbridge.git | tail -n 1 | awk '{ print $2 } | cut -c 11-' > last_sync_with_original_repo_release_tag
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.13.1
         with:

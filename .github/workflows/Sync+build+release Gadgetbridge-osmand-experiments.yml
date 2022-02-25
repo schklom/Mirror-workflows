@@ -68,8 +68,6 @@ jobs:
     needs: [get_commit_and_tag]
     runs-on: ubuntu-latest
     steps:
-      - name: ENV
-        run: env | grep TAG
       - name: Checkout
         uses: actions/checkout@v2.4.0
         with:

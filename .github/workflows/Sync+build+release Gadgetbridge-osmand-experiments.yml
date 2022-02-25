@@ -67,7 +67,7 @@ jobs:
 
   build_gadgetbridge:
     #needs: [repo_sync]
-    #needs: [get_commit_and_tag]
+    needs: [get_commit_and_tag]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -85,10 +85,11 @@ jobs:
       - name: Build apk
         run: ./gradlew --no-daemon assembleDebug
         if: ${{ false }}
+      - run: echo 
       - name: Release apk
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: Gadgetbridge-${{ needs.get_commit_and_tag.outputs.RELEASETAGNAME }}
+          tag_name: Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.RELEASETAGNAME }}
           #files: ./app/build/outputs/apk/app-debug.apk
           #files: ./app/build/outputs/apk/debug/app-debug.apk
           files: LICENSE

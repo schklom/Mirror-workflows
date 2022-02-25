@@ -34,11 +34,11 @@ jobs:
           echo "::set-output name=SETRELEASETAGNAME::$(git ls-remote --tags --sort=version:refname https://codeberg.org/Freeyourgadget/Gadgetbridge.git | tail -n 1 | awk '{ print $2 }' | cut -c 11-)"
   
   repo_sync:
-    #if: ${{ false }}
+    if: ${{ false }}
     needs: [get_commit_and_tag]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    if: needs.get_commit_and_tag.outputs.LOCALTAG != needs.get_commit_and_tag.outputs.REMOTETAG || needs.get_commit_and_tag.outputs.LOCALCOMMIT != needs.get_commit_and_tag.outputs.REMOTECOMMIT
+    #if: needs.get_commit_and_tag.outputs.LOCALTAG != needs.get_commit_and_tag.outputs.REMOTETAG || needs.get_commit_and_tag.outputs.LOCALCOMMIT != needs.get_commit_and_tag.outputs.REMOTECOMMIT
     steps:
       - name: repo-sync
         uses: wei/git-sync@v3
@@ -66,7 +66,7 @@ jobs:
           commit_message: Add last_sync_with_original_repo_commit_id
 
   build_gadgetbridge:
-    needs: [repo_sync]
+    #needs: [repo_sync]
     #needs: [get_commit_and_tag]
     runs-on: ubuntu-latest
     steps:
@@ -80,12 +80,14 @@ jobs:
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
       - name: Setup JDK+Android
         run: sudo apt-get install openjdk-11-jdk git adb -y
+        #if: ${{ false }}
       - name: Build apk
         run: ./gradlew --no-daemon assembleDebug
+        #if: ${{ false }}
       - name: Release apk
         uses: softprops/action-gh-release@v1
-        #if: ${{ false }}
         with:
           tag_name: Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.RELEASETAGNAME }}
           #files: ./app/build/outputs/apk/app-debug.apk
-          files: ./app/build/outputs/apk/debug/app-debug.apk
+          #files: ./app/build/outputs/apk/debug/app-debug.apk
+          files: LICENSE

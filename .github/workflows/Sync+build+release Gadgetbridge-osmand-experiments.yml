@@ -73,9 +73,17 @@ jobs:
         with:
           #repository: 'schklom/Gadgetbridge-osmand-experiments'
           ref: 'Gadgetbridge-osmand-experiments' # branch
+      - name: Resolve conflicts REMOVE THIS WHEN OSM-EXPERIMENTS REPO PULLS THE MASTER BRANCH
+        run: |
+          git add app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/DeviceCoordinator.java
+          git add app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/AbstractDeviceCoordinator.java
+      - name: Commit and push the change
+        uses: stefanzweifel/git-auto-commit-action@v4.13.1
+        with:
+          commit_message: Resolve osm-experiments & master branch conflicts
       - name: Pull changes
         #run: git pull --no-rebase --allow-unrelated-histories https://codeberg.org/Freeyourgadget/Gadgetbridge.git
-        run: git merge origin/master
+        run: git pull https://codeberg.org/Freeyourgadget/Gadgetbridge.git
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
       - name: Setup JDK+Android
         run: sudo apt-get install openjdk-11-jdk git adb -y

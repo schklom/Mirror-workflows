@@ -36,7 +36,7 @@ jobs:
     needs: [get_commit_and_tag]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    if: needs.get_commit_and_tag.outputs.LOCALTAG != needs.get_commit_and_tag.outputs.REMOTETAG || needs.get_commit_and_tag.outputs.LOCALCOMMIT != needs.get_commit_and_tag.outputs.REMOTECOMMIT
+    #if: needs.get_commit_and_tag.outputs.LOCALTAG != needs.get_commit_and_tag.outputs.REMOTETAG || needs.get_commit_and_tag.outputs.LOCALCOMMIT != needs.get_commit_and_tag.outputs.REMOTECOMMIT
     steps:
       - name: repo-sync
         uses: wei/git-sync@v3
@@ -82,7 +82,10 @@ jobs:
         with:
           commit_message: Resolve osm-experiments & master branch conflicts
       - name: Pull changes
-        run: git pull --no-rebase --allow-unrelated-histories https://codeberg.org/Freeyourgadget/Gadgetbridge.git
+        run: |
+          git config user.email "schklom@users.noreply.github.com"
+          git config user.name "schklom"
+          git pull --no-rebase --allow-unrelated-histories https://codeberg.org/Freeyourgadget/Gadgetbridge.git
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
       - name: Setup JDK+Android
         run: sudo apt-get install openjdk-11-jdk git adb -y

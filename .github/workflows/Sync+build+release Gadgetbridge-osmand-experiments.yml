@@ -75,9 +75,9 @@ jobs:
           ref: 'Gadgetbridge-osmand-experiments' # branch
       - name: Resolve conflicts REMOVE THIS WHEN OSM-EXPERIMENTS REPO PULLS THE MASTER BRANCH
         run: |
-          git add app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/DeviceCoordinator.java
-          git add app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/AbstractDeviceCoordinator.java
-      - name: Commit and push the change
+          echo >> app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/DeviceCoordinator.java
+          echo >> app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/AbstractDeviceCoordinator.java
+      - name: Resolve conflicts REMOVE THIS WHEN OSM-EXPERIMENTS REPO PULLS THE MASTER BRANCH - commit
         uses: stefanzweifel/git-auto-commit-action@v4.13.1
         with:
           commit_message: Resolve osm-experiments & master branch conflicts

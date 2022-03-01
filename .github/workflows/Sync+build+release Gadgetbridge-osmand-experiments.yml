@@ -19,7 +19,7 @@ jobs:
       LOCALCOMMIT: ${{ steps.commits.outputs.SETLOCALCOMMIT }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           ref: 'Gadgetbridge-osmand-experiments' # branch
       - name: set local and remote latest release tag + commit id + tag name as environment variables
@@ -47,7 +47,7 @@ jobs:
           destination_branch: "Gadgetbridge-osmand-experiments"
           destination_ssh_private_key: ${{ secrets.GITSYNCACTION }}
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           ref: 'Gadgetbridge-osmand-experiments' # branch
       - name: get most recent release tag on original repo, for next comparison on sync
@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           #repository: 'schklom/Gadgetbridge-osmand-experiments'
           ref: 'Gadgetbridge-osmand-experiments' # branch

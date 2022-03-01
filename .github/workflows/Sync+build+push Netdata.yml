@@ -37,7 +37,7 @@ jobs:
           destination_branch: "Netdata"
           ssh_private_key: ${{ secrets.GITSYNCACTION }}
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2.4.0
+      - uses: actions/checkout@v3
         with:
           ref: 'Netdata'
       # https://github.com/netdata/netdata/issues/11069#issuecomment-947611170
@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           ref: 'Netdata' # branch
       # https://github.com/docker/setup-qemu-action#usage

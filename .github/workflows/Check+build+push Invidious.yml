@@ -16,7 +16,7 @@ jobs:
       REMOTE: ${{ steps.commits.outputs.SETREMOTE }} 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           ref: 'Invidious' # branch
       - name: set local and remote latest commit as environment variables
@@ -33,7 +33,7 @@ jobs:
     if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           ref: 'Invidious' # branch
       - name: get most recent commit id on original repo, for next comparison on sync
@@ -43,7 +43,7 @@ jobs:
         with:
           commit_message: Add last_sync_with_original_repo_commit_id
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      #- uses: actions/checkout@v2.4.0
+      #- uses: actions/checkout@v3
         #with:
           #ref: 'Invidious'
       #- name: app dockerfile
@@ -64,7 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           #repository: 'schklom/Invidious'
           ref: 'Invidious' # branch

@@ -16,7 +16,7 @@ jobs:
       REMOTE: ${{ steps.commits.outputs.SETREMOTE }} 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           ref: 'Nextcloud_notify_push' # branch
       - name: set local and remote latest commit as environment variables
@@ -48,7 +48,7 @@ jobs:
           # destination_branch: "Nextcloud_notify_push"
           # github_token: ${{ secrets.REPO_SYNC_GITHUB_SYNC_PERSONAL_ACCESS_TOKEN }}
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           ref: 'Nextcloud_notify_push' # branch
       - name: get most recent commit id on original repo, for next comparison on sync
@@ -64,7 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           #repository: 'schklom/Nextcloud_notify_push'
           ref: 'Nextcloud_notify_push' # branch

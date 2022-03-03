@@ -23,17 +23,15 @@ before_script:
   - go mod tidy
   - wget https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh
   - chmod +x install.sh
-  - (yes | ./install.sh) || [ $? -eq 1 ] 
+  - (yes | ./install.sh ;) || [ $? -eq 1] 
 
 stages:
   - format
   - build
-  - deploy
 
 format:
   stage: test
   script:
-    - bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh)
     - go fmt $(go list ./... | grep -v /vendor/)
     - go vet $(go list ./... | grep -v /vendor/)
     - go test -race $(go list ./... | grep -v /vendor/)

@@ -69,7 +69,7 @@ jobs:
           ref: 'Mango' # branch
       # https://github.com/hkalexling/Mango/wiki/Platform-Support#arm32v7arm64v8
       - name: Get .o file
-        run: curl -Lo mango-arm32v7.o $(curl https://api.github.com/repos/hkalexling/Mango/releases/latest | grep "browser_download_url" | cut -d : -f 2,3 | grep arm32 | tr -d '\" ')
+        run: curl -Lo mango-arm32v7.o $(curl https://api.github.com/repos/hkalexling/Mango/releases/latest | grep "browser_download_url" | awk '{ print $2 }' | grep arm32 | tr -d '\" ')
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.13.1
         with:
@@ -120,7 +120,7 @@ jobs:
           ref: 'Mango' # branch
       # https://github.com/hkalexling/Mango/wiki/Platform-Support#arm32v7arm64v8
       - name: Get .o file
-        run: curl -Lo mango-arm64v8.o $(curl https://api.github.com/repos/hkalexling/Mango/releases/latest | grep "browser_download_url" | cut -d : -f 2,3 | grep arm64 | tr -d '\" ')
+        run: curl -Lo mango-arm64v8.o $(curl https://api.github.com/repos/hkalexling/Mango/releases/latest | grep "browser_download_url" | awk '{ print $2 }' | grep arm64 | tr -d '\" ')
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.13.1
         with:

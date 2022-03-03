@@ -17,10 +17,12 @@ variables:
 # repository in /go/src/gitlab.com/namespace/project
 # Thus, making a symbolic link corrects this.
 before_script:
+  - bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh)
   - mkdir -p $GOPATH/src/$(dirname $REPO_NAME)
   - ln -svf $CI_PROJECT_DIR $GOPATH/src/$REPO_NAME
   - cd $GOPATH/src/$REPO_NAME
-  - bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh)
+  - go mod tidy
+
 
 stages:
   - test
@@ -30,9 +32,6 @@ stages:
 format:
   stage: test
   script:
-    - bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh)
-    - go get -u github.com/objectbox/objectbox-go/...
-    - go get -u github.com/google/flatbuffers/go
     - go fmt $(go list ./... | grep -v /vendor/)
     - go vet $(go list ./... | grep -v /vendor/)
     - go test -race $(go list ./... | grep -v /vendor/)
@@ -41,7 +40,7 @@ compile:
   stage: build
   script:
     - cd cmd
-    - go build -race -ldflags "-extldflags '-static'" -o fmdserver
+    - go build fmdserver
   artifacts:
     paths:
       - fmdserver

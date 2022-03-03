@@ -109,7 +109,8 @@ jobs:
             schklom/mango:arm32v7
   
   build_push_arm64v8:
-    needs: [repo_sync]
+    needs: [build_push_arm32v7]
+    #needs: [repo_sync]
     #needs: [get_commits]
     runs-on: ubuntu-latest
     steps:

@@ -13,3 +13,4 @@ The Actions are defined in the directory .github/workflows. Secrets are used for
 - TT-RSS
 - Bibliogram
 - FindMyDeviceServer
+- Mango

@@ -26,8 +26,9 @@ before_script:
   - (yes | ./install.sh ;) || [ $? -eq 1] 
 
 stages:
-  - format
+  - test
   - build
+  - deploy
 
 format:
   stage: test

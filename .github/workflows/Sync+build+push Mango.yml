@@ -9,6 +9,7 @@ on:
 
 jobs:
   get_commits:
+    if: ${{ false }}
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     outputs:
@@ -30,7 +31,8 @@ jobs:
     needs: [get_commits]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
+    #if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
+    if: ${{ false }}
     steps:
       - name: repo-sync
         uses: wei/git-sync@v3
@@ -58,8 +60,9 @@ jobs:
           commit_message: Add last_sync_with_original_repo_commit_id
 
   build_push_arm32v7:
-    needs: [repo_sync]
+    #needs: [repo_sync]
     #needs: [get_commits]
+    if: ${{ false }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -102,7 +105,7 @@ jobs:
             schklom/mango:arm32v7
   
   build_push_arm64v8:
-    needs: [repo_sync]
+    #needs: [repo_sync]
     #needs: [get_commits]
     runs-on: ubuntu-latest
     steps:

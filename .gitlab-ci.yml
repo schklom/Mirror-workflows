@@ -17,19 +17,13 @@ variables:
 # repository in /go/src/gitlab.com/namespace/project
 # Thus, making a symbolic link corrects this.
 before_script:
+  - mkdir -p $GOPATH/src/$(dirname $REPO_NAME)
+  - ln -svf $CI_PROJECT_DIR $GOPATH/src/$REPO_NAME
+  - cd $GOPATH/src/$REPO_NAME
+  - go mod tidy
   - wget https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh
   - chmod +x install.sh
   - yes | ./install.sh
-  - echo hallo
-  - mkdir -p $GOPATH/src/$(dirname $REPO_NAME)
-  - echo hallo2
-  - ln -svf $CI_PROJECT_DIR $GOPATH/src/$REPO_NAME
-  - echo hallo3
-  - cd $GOPATH/src/$REPO_NAME
-  - echo hallo4
-  - go mod tidy
-  - echo hallo5
-
 
 stages:
   - build

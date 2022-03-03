@@ -38,6 +38,7 @@ format:
 compile:
   stage: build
   script:
+    - bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh)
     - cd cmd
     - go build -race -ldflags "-extldflags '-static'" -o fmdserver
   artifacts:

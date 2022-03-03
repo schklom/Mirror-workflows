@@ -41,7 +41,7 @@ compile:
   stage: build
   script:
     - cd cmd
-    - go build fmdserver
+    - go build fmdserver.go
   artifacts:
     paths:
       - fmdserver

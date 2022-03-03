@@ -8,7 +8,7 @@ image: golang:latest
 
 variables:
   # Please edit to your GitLab project
-  REPO_NAME: gitlab.com/namespace/project
+  REPO_NAME: gitlab.com/Nulide/findmydeviceserver
 
 # The problem is that to be able to use go get, one needs to put
 # the repository in the $GOPATH. So for example if your gitlab domain
@@ -21,17 +21,16 @@ before_script:
   - ln -svf $CI_PROJECT_DIR $GOPATH/src/$REPO_NAME
   - cd $GOPATH/src/$REPO_NAME
   - go mod tidy
-  - wget https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh
-  - chmod +x install.sh
-  - yes | ./install.sh
 
 stages:
   - build
-  - deploy
 
 compile:
   stage: build
   script:
+    - wget https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh
+    - chmod +x install.sh
+    - yes | ./install.sh
     - cd cmd
     - go build fmdserver
   artifacts:

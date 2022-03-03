@@ -23,7 +23,7 @@ before_script:
   - go mod tidy
   - wget https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh
   - chmod +x install.sh
-  - (yes | ./install.sh ;) || [ $? -eq 1] 
+  - (yes | ./install.sh ;) || exit_code=$?
 
 stages:
   - test

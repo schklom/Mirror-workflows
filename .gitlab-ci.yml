@@ -17,7 +17,9 @@ variables:
 # repository in /go/src/gitlab.com/namespace/project
 # Thus, making a symbolic link corrects this.
 before_script:
-  - bash <(curl -s https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh)
+  - wget https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh
+  - chmod +x install.sh
+  - yes | ./install.sh
   - mkdir -p $GOPATH/src/$(dirname $REPO_NAME)
   - ln -svf $CI_PROJECT_DIR $GOPATH/src/$REPO_NAME
   - cd $GOPATH/src/$REPO_NAME

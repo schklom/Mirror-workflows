@@ -1,0 +1,95 @@
+name: Sync+build+push SimplyTranslate
+
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  get_commits:
+    runs-on: ubuntu-latest
+    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    outputs:
+      LOCAL_ENGINES: ${{ steps.commits.outputs.SETLOCAL_ENGINES }}
+      REMOTE_ENGINES: ${{ steps.commits.outputs.SETREMOTE_ENGINES }} 
+      LOCAL_WEB: ${{ steps.commits.outputs.SETLOCAL_WEB }}
+      REMOTE_WEB: ${{ steps.commits.outputs.SETREMOTE_WEB }} 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: 'SimplyTranslate' # branch
+      - name: set local and remote latest commit as environment variables
+        id: commits
+        # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+        run: |
+          echo "::set-output name=SETREMOTE_ENGINES::$(git ls-remote https://git.sr.ht/~metalune/simplytranslate_engines HEAD | awk '{ print $1 }')"
+          echo "::set-output name=SETLOCAL_ENGINES::$(cat last_sync_with_original_repo_commit_id_engines)"
+          echo "::set-output name=SETREMOTE_WEB::$(git ls-remote https://git.sr.ht/~metalune/simplytranslate_web HEAD | awk '{ print $1 }')"
+          echo "::set-output name=SETLOCAL_WEB::$(cat last_sync_with_original_repo_commit_id_web)"
+  
+  repo_check:
+    needs: [get_commits]
+    runs-on: ubuntu-latest
+    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    if: needs.get_commits.outputs.LOCAL_ENGINES != needs.get_commits.outputs.REMOTE_ENGINES || needs.get_commits.outputs.LOCAL_WEB != needs.get_commits.outputs.REMOTE_WEB
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: 'SimplyTranslate' # branch
+      - name: get most recent commit id on original repo, for next comparison on sync PART 1
+        run: git ls-remote https://git.sr.ht/~metalune/simplytranslate_engines HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_engines
+      - name: get most recent commit id on original repo, for next comparison on sync PART 2
+        run: git ls-remote https://git.sr.ht/~metalune/simplytranslate_web HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_web
+      - name: Commit and push the change
+        uses: stefanzweifel/git-auto-commit-action@v4.13.1
+        with:
+          commit_message: Add last_sync_with_original_repo_commit_id_engines + last_sync_with_original_repo_commit_id_web
+
+  build_push:
+    needs: [repo_check]
+    #needs: [get_commits]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          #repository: 'schklom/Mango'
+          ref: 'SimplyTranslate' # branch
+      # https://github.com/docker/setup-qemu-action#usage
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1.2.0
+        #with:
+          #image: tonistiigi/binfmt:latest
+          #platforms: all
+          #platforms: arm/v7
+      # https://github.com/marketplace/actions/docker-setup-buildx
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1.6.0
+        #with:
+          #install: true
+      #- name: Available platforms
+      #  run: echo ${{ steps.buildx.outputs.platforms }}
+      # https://github.com/docker/login-action#docker-hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # https://github.com/docker/build-push-action#multi-platform-image
+      - name: Build and push SimplyTranslate
+        uses: docker/build-push-action@v2.9.0
+        with:
+          context: .
+          file: ./Dockerfile
+          #platforms: linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6
+          platforms: linux/arm/v7
+          pull: true
+          push: true
+          tags: |
+            schklom/simplytranslate
+  

@@ -13,7 +13,9 @@ WORKDIR /go/src/fmd/cmd
 RUN go build fmdserver.go
 #RUN go build -ldflags "-w -s" -o /go/src/fmd/fmdserver
 
-FROM alpine:latest AS COPY --from=builder /go/src/fmd/ /fmd/
+
+FROM alpine:latest
+COPY --from=builder /go/src/fmd/ /fmd/
 
 # HTTP
 EXPOSE 1020/tcp

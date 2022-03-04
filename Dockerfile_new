@@ -13,14 +13,14 @@ WORKDIR /go/src/fmd/cmd
 RUN go build fmdserver.go
 #RUN go build -ldflags "-w -s" -o /go/src/fmd/fmdserver
 
-WORKDIR /go/src/fmd
+FROM alpine:latest AS COPY --from=builder /go/src/fmd/ /fmd/
 
 # HTTP
 EXPOSE 1020/tcp
 # HTTPS
 EXPOSE 1008/tcp
 
-RUN mkdir -p /go/src/fmd/objectbox
-VOLUME /go/src/fmd/objectbox
+RUN mkdir -p /fmd/objectbox
+VOLUME /fmd/objectbox
 
-CMD [ "/go/src/fmd/fmdserver" ]
+CMD [ "/fmd/fmdserver" ]

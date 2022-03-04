@@ -36,6 +36,20 @@ jobs:
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     if: needs.get_commits.outputs.LOCAL_ENGINES != needs.get_commits.outputs.REMOTE_ENGINES || needs.get_commits.outputs.LOCAL_WEB != needs.get_commits.outputs.REMOTE_WEB
     steps:
+      - name: repo-sync
+        uses: wei/git-sync@v3
+        with:
+          source_repo: "https://git.sr.ht/~metalune/simplytranslate_docker"
+          source_branch: "master"
+          destination_repo: "git@github.com:schklom/Mirror-workflows.git"
+          destination_branch: "SimplyTranslate"
+          ssh_private_key: ${{ secrets.GITSYNCACTION }}
+        # uses: repo-sync/github-sync@v2
+        # with:
+          # source_repo: "https://github.com/hkalexling/Mango.git"
+          # source_branch: "master"
+          # destination_branch: "SimplyTranslate"
+          # github_token: ${{ secrets.REPO_SYNC_GITHUB_SYNC_PERSONAL_ACCESS_TOKEN }}
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -84,8 +98,8 @@ jobs:
       - name: Build and push SimplyTranslate
         uses: docker/build-push-action@v2.9.0
         with:
-          context: .
-          file: ./Dockerfile
+          context: web
+          file: ./web/Dockerfile
           #platforms: linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6
           platforms: linux/arm/v7
           pull: true

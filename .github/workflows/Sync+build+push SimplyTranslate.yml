@@ -30,7 +30,7 @@ jobs:
           echo "::set-output name=SETREMOTE_WEB::$(git ls-remote https://git.sr.ht/~metalune/simplytranslate_web HEAD | awk '{ print $1 }')"
           echo "::set-output name=SETLOCAL_WEB::$(cat last_sync_with_original_repo_commit_id_web)"
   
-  repo_check:
+  repo_sync:
     needs: [get_commits]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
@@ -64,7 +64,7 @@ jobs:
           commit_message: Add last_sync_with_original_repo_commit_id_engines + last_sync_with_original_repo_commit_id_web
 
   build_push:
-    needs: [repo_check]
+    needs: [repo_sync]
     #needs: [get_commits]
     runs-on: ubuntu-latest
     steps:

@@ -11,7 +11,8 @@ RUN (yes | ./install.sh ;) || exit_code=$?
 
 WORKDIR /go/src/fmd/cmd
 #RUN go build fmdserver.go
-RUN go build -ldflags "-w -s" -o /go/src/fmd/fmdserver
+#RUN go build -ldflags "-w -s" -o /go/src/fmd/fmdserver
+RUN go build -race -ldflags "-extldflags '-static'" -o fmdserver
 
 
 FROM alpine:latest

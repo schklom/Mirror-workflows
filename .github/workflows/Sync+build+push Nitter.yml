@@ -9,7 +9,7 @@ on:
 
 jobs:
   get_commits:
-    if: ${{ false }}
+    #if: ${{ false }}
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     outputs:
@@ -28,7 +28,7 @@ jobs:
         run: |
           echo "::set-output name=SETREMOTE_ORIGINAL_REPO::$(git ls-remote https://github.com/zedeus/nitter refs/heads/master | awk '{ print $1 }')"
           echo "::set-output name=LOCAL_ORIGINAL_REPO::$(cat last_sync_with_original_repo_commit_id_original_repo)"
-          echo "::set-output name=REMOTE_DOCKERFILE::$(git ls-remote https://github.com/goodtiding5/docker-nitter refs/heads/master | awk '{ print $1 }')"
+          echo "::set-output name=REMOTE_DOCKERFILE::$(git ls-remote https://github.com/unixfox/periodic-build-with-github-actions refs/heads/master | awk '{ print $1 }')"
           echo "::set-output name=LOCAL_DOCKERFILE::$(cat last_sync_with_original_repo_commit_id_dockerfile)"
   
   repo_sync:
@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     #if: needs.get_commits.outputs.LOCAL_ORIGINAL_REPO != needs.get_commits.outputs.REMOTE_ORIGINAL_REPO || needs.get_commits.outputs.LOCAL_DOCKERFILE != needs.get_commits.outputs.REMOTE_DOCKERFILE
-    if: ${{ false }}
+    #if: ${{ false }}
     steps:
       - name: repo-sync
         uses: wei/git-sync@v3
@@ -52,7 +52,7 @@ jobs:
           ref: 'Nitter' # branch
       - name: get most recent commit id on original repo, for next comparison on sync ORIGINAL REPO
         run: git ls-remote https://github.com/zedeus/nitter refs/heads/master | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_original_repo
-      - name: get most recent commit id on original repo, for next comparison on sync DOCKERFILE
+      - name: get most recent commit id on adapted repo, for next comparison on sync DOCKERFILE
         run: git ls-remote https://github.com/goodtiding5/docker-nitter refs/heads/master | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_dockerfile
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.13.1
@@ -60,7 +60,7 @@ jobs:
           commit_message: Add last_sync_with_original_repo_commit_id_original_repo + last_sync_with_original_repo_commit_id_dockerfile
 
   build_push:
-    #needs: [repo_sync]
+    needs: [repo_sync]
     #needs: [get_commits]
     runs-on: ubuntu-latest
     steps:
@@ -95,7 +95,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: Dockerfile
+          file: nitter/Dockerfile
           #platforms: linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6
           platforms: linux/amd64,linux/arm64
           pull: true

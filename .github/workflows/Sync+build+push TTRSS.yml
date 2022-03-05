@@ -53,7 +53,7 @@ jobs:
         with:
           ref: 'TTRSS-docker' # branch
       - name: get most recent commit id on original repo, for next comparison on sync
-        run: git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose.git HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
+        run: git ls-remote https://git.tt-rss.org/fox/tt-rss.git HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.13.1
         with:

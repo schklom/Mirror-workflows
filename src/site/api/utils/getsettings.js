@@ -41,7 +41,24 @@ function getSettings(req) {
 	return addDefaults()
 }
 
+/*
+ * CSRF tokens were previously used here to reduce an attack vector, but have now been removed.
+ *
+ * In a CSRF attack, an attack with a website can forge POST requests to Bibliogram that execute in the visitor's browser. Since the request is first-party, it will include cookies. Therefore a crafted form could override the user's preferences.
+ *
+ * This was removed because:
+ * - Instance redirector extensions can now issue a POST to set consistent preferences
+ * - The chance of somebody choosing to troll visitors is low
+ * - The impact if this occurs is low: the worst that can happen is somebody's preferences are erased, which they can simply change back
+ * - The more popular Invidious does not see it necessary to use CSRF protection
+ * - The implementation wasn't totally secure anyway.
+ *
+ * The code remains, but generateCSRF and checkCSRF have been set to always accept.
+ */
+
 function generateCSRF() {
+	return "x"
+
 	const token = crypto.randomBytes(16).toString("hex")
 	const expires = Date.now() + constants.caching.csrf_time
 	db.prepare("INSERT INTO CSRFTokens (token, expires) VALUES (?, ?)").run(token, expires)
@@ -49,6 +66,8 @@ function generateCSRF() {
 }
 
 function checkCSRF(token) {
+	return true
+
 	const row = db.prepare("SELECT * FROM CSRFTokens WHERE token = ? AND expires > ?").get(token, Date.now())
 	if (row) {
 		db.prepare("DELETE FROM CSRFTokens WHERE token = ?").run(token)

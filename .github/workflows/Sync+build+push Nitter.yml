@@ -9,6 +9,7 @@ on:
 
 jobs:
   get_commits:
+    if: ${{ false }}
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     outputs:
@@ -34,7 +35,8 @@ jobs:
     needs: [get_commits]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    if: needs.get_commits.outputs.LOCAL_ORIGINAL_REPO != needs.get_commits.outputs.REMOTE_ORIGINAL_REPO || needs.get_commits.outputs.LOCAL_DOCKERFILE != needs.get_commits.outputs.REMOTE_DOCKERFILE
+    #if: needs.get_commits.outputs.LOCAL_ORIGINAL_REPO != needs.get_commits.outputs.REMOTE_ORIGINAL_REPO || needs.get_commits.outputs.LOCAL_DOCKERFILE != needs.get_commits.outputs.REMOTE_DOCKERFILE
+    if: ${{ false }}
     steps:
       - name: repo-sync
         uses: wei/git-sync@v3
@@ -58,7 +60,7 @@ jobs:
           commit_message: Add last_sync_with_original_repo_commit_id_original_repo + last_sync_with_original_repo_commit_id_dockerfile
 
   build_push:
-    needs: [repo_sync]
+    #needs: [repo_sync]
     #needs: [get_commits]
     runs-on: ubuntu-latest
     steps:

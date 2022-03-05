@@ -28,7 +28,7 @@ jobs:
         run: |
           echo "::set-output name=SETREMOTE_ORIGINAL_REPO::$(git ls-remote https://github.com/zedeus/nitter refs/heads/master | awk '{ print $1 }')"
           echo "::set-output name=LOCAL_ORIGINAL_REPO::$(cat last_sync_with_original_repo_commit_id_original_repo)"
-          echo "::set-output name=REMOTE_DOCKERFILE::$(git ls-remote https://github.com/zedeus/nitter refs/heads/master | awk '{ print $1 }')"
+          echo "::set-output name=REMOTE_DOCKERFILE::$(git ls-remote https://github.com/goodtiding5/docker-nitter refs/heads/master | awk '{ print $1 }')"
           echo "::set-output name=LOCAL_DOCKERFILE::$(cat last_sync_with_original_repo_commit_id_dockerfile)"
   
   repo_sync:

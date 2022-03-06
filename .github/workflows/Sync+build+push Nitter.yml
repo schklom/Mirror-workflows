@@ -25,6 +25,8 @@ jobs:
       - name: set local and remote latest commit as environment variables
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+        # I can't use the original repo because the base image of the Dockerfile only supports amd64
+        # https://github.com/zedeus/nitter/issues/399#issuecomment-997263495 => I can use https://github.com/unixfox/periodic-build-with-github-actions/blob/master/nitter/Dockerfile
         run: |
           echo "::set-output name=SETREMOTE_ORIGINAL_REPO::$(git ls-remote https://github.com/zedeus/nitter refs/heads/master | awk '{ print $1 }')"
           echo "::set-output name=LOCAL_ORIGINAL_REPO::$(cat last_sync_with_original_repo_commit_id_original_repo)"
@@ -41,7 +43,7 @@ jobs:
       - name: repo-sync
         uses: wei/git-sync@v3
         with:
-          source_repo: "https://github.com/goodtiding5/docker-nitter"
+          source_repo: "https://github.com/unixfox/periodic-build-with-github-actions"
           source_branch: "master"
           destination_repo: "git@github.com:schklom/Mirror-workflows.git"
           destination_branch: "Nitter"
@@ -53,7 +55,7 @@ jobs:
       - name: get most recent commit id on original repo, for next comparison on sync ORIGINAL REPO
         run: git ls-remote https://github.com/zedeus/nitter refs/heads/master | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_original_repo
       - name: get most recent commit id on adapted repo, for next comparison on sync DOCKERFILE
-        run: git ls-remote https://github.com/goodtiding5/docker-nitter refs/heads/master | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_dockerfile
+        run: git ls-remote https://github.com/unixfox/periodic-build-with-github-actions refs/heads/master | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_dockerfile
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.13.1
         with:
@@ -97,7 +99,7 @@ jobs:
           context: .
           file: nitter/Dockerfile
           #platforms: linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
           pull: true
           push: true
           tags: |

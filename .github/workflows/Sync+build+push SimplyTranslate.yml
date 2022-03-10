@@ -58,10 +58,13 @@ jobs:
         run: git ls-remote https://git.sr.ht/~metalune/simplytranslate_engines HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_engines
       - name: get most recent commit id on original repo, for next comparison on sync PART 2
         run: git ls-remote https://git.sr.ht/~metalune/simplytranslate_web HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_web
+      # https://packages.ubuntu.com/search?suite=default&section=all&arch=arm64&keywords=g%2B%2B+linux+gnu&searchon=names
+      - name: Replace g++-multilib-i686-linux-gnu with g++-arm-linux-gnueabihf in the Dockerfile
+        run: sed -i 's/g++-multilib-i686-linux-gnu/g++-arm-linux-gnueabihf/' web/Dockerfile
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.13.1
         with:
-          commit_message: Add last_sync_with_original_repo_commit_id_engines + last_sync_with_original_repo_commit_id_web + fix Dockerfile
+          commit_message: Add last_sync_with_original_repo_commit_id_engines + last_sync_with_original_repo_commit_id_web + Fix Dockerfile
 
   build_push:
     needs: [repo_sync]
@@ -73,9 +76,6 @@ jobs:
         with:
           #repository: 'schklom/Mango'
           ref: 'SimplyTranslate' # branch
-      # https://packages.ubuntu.com/search?suite=default&arch=arm64&searchon=names&keywords=g%2B%2B-multilib
-      - name: Replace g++-multilib-i686-linux-gnu with g++-arm-linux-gnueabihf in the Dockerfile
-        run: sed -i 's/g++-multilib-i686-linux-gnu/g++-arm-linux-gnueabihf/' web/Dockerfile
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0
@@ -109,4 +109,3 @@ jobs:
           push: true
           tags: |
             schklom/simplytranslate:arm64
-  

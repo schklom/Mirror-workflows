@@ -54,6 +54,8 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: 'SimplyTranslate' # branch
+      - name: Replace g++-multilib-i686-linux-gnu with g++-multilib in the Dockerfile
+        run: sed -i 's/g++-multilib-i686-linux-gnu/g++-multilib/' web/Dockerfile
       - name: get most recent commit id on original repo, for next comparison on sync PART 1
         run: git ls-remote https://git.sr.ht/~metalune/simplytranslate_engines HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_engines
       - name: get most recent commit id on original repo, for next comparison on sync PART 2
@@ -61,7 +63,7 @@ jobs:
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.13.1
         with:
-          commit_message: Add last_sync_with_original_repo_commit_id_engines + last_sync_with_original_repo_commit_id_web
+          commit_message: Add last_sync_with_original_repo_commit_id_engines + last_sync_with_original_repo_commit_id_web + fix Dockerfile
 
   build_push:
     needs: [repo_sync]

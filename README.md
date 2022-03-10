@@ -14,3 +14,6 @@ The Actions are defined in the directory .github/workflows. Secrets are used for
 - Bibliogram
 - FindMyDeviceServer
 - Mango
+- Home-Assistant-Extra
+- Nitter
+- SimplyTranslate

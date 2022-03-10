@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-18 13:34+0300\n"
-"PO-Revision-Date: 2021-05-19 15:32+0000\n"
-"Last-Translator: Eike <weblate.tt-rss.org@lotz.me>\n"
+"PO-Revision-Date: 2022-03-10 09:58+0000\n"
+"Last-Translator: Pascal Borkenhagen <tt-rss.org@askme-world.de>\n"
 "Language-Team: German <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "de/>\n"
 "Language: de_DE\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.6.2\n"
+"X-Generator: Weblate 4.11.2\n"
 "X-Poedit-Bookmarks: -1,557,558,-1,-1,-1,-1,-1,-1,-1\n"
 
 #: backend.php:60
@@ -1624,7 +1624,7 @@ msgstr "Weiter"
 
 #: plugins/auth_internal/init.php:166
 msgid "Too many authentication attempts, throttled."
-msgstr ""
+msgstr "Zu viele Anmeldeversuche, gedrosselt."
 
 #: plugins/auth_internal/init.php:247
 msgid "Password has been changed."
@@ -1840,8 +1840,6 @@ msgid "The following comics are currently supported:"
 msgstr "Die folgenden Comics werden momentan unterstützt:"
 
 #: plugins/nsfw/init.php:39
-#, fuzzy
-#| msgid "Not work safe (click to toggle)"
 msgid "Not safe for work (click to toggle)"
 msgstr "NSFW (Klicken zum Anzeigen)"
 
@@ -2339,13 +2337,11 @@ msgstr "Ereignisprotokoll löschen?"
 
 #: js/PrefHelpers.js:135
 msgid "Name for cloned profile:"
-msgstr ""
+msgstr "Name des geklonten Profils:"
 
 #: js/PrefHelpers.js:145
-#, fuzzy
-#| msgid "Please select an image file."
 msgid "Please select a single profile to clone."
-msgstr "Bitte wählen Sie eine Bilddatei aus."
+msgstr "Bitte wählen Sie ein einzelnes Profil zum klonen."
 
 #: js/PrefHelpers.js:153
 msgid ""
@@ -2753,10 +2749,8 @@ msgid "Looking for articles (%d processed, %f found)..."
 msgstr "Suche Artikel (%d verarbeitet, %f gefunden)..."
 
 #: js/CommonFilters.js:72
-#, fuzzy
-#| msgid "Found %d articles matching this filter:"
 msgid "Articles matching this filter:"
-msgstr "Es wurden %d passende Artikel gefunden:"
+msgstr "Filter entsprechende Artikel:"
 
 #: js/CommonFilters.js:74
 msgid "Found %d articles matching this filter:"
@@ -2767,10 +2761,8 @@ msgid "Error while trying to get filter test results."
 msgstr "Fehler beim Versuch, Filtertestergebnisse abzurufen."
 
 #: js/CommonFilters.js:95
-#, fuzzy
-#| msgid "Looking for plugins..."
 msgid "Looking for articles..."
-msgstr "Auf der Suche nach Plugins..."
+msgstr "Auf der Suche nach Artikel..."
 
 #: js/CommonFilters.js:174
 msgid "Edit rule"
@@ -2833,10 +2825,8 @@ msgid "Unable to fetch full text for this article"
 msgstr "Vollständiger Text für diesen Artikel konnte nicht abgerufen werden"
 
 #: plugins/shorten_expanded/init.js:32
-#, fuzzy
-#| msgid "Email article"
 msgid "Expand article"
-msgstr "Artikel per E-Mail versenden"
+msgstr "Artikel ausklappen"
 
 #: plugins/share/share.js:7
 msgid "Share article by URL"
@@ -2904,10 +2894,8 @@ msgid "Clone"
 msgstr ""
 
 #: js/PrefHelpers.js:231
-#, fuzzy
-#| msgid "Activate profile"
 msgid "Activate"
-msgstr "Profil aktivieren"
+msgstr "Aktivieren"
 
 #: js/PrefHelpers.js:299
 msgid "Apply"

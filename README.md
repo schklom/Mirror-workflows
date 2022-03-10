@@ -17,3 +17,4 @@ The Actions are defined in the directory .github/workflows. Secrets are used for
 - Home-Assistant-Extra
 - Nitter
 - SimplyTranslate
+- Wikiless

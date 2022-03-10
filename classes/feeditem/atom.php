@@ -70,7 +70,7 @@ class FeedItem_Atom extends FeedItem_Common {
 	 *
 	 * @return string the rewritten XML or original $content
 	 */
-	private function rewrite_content_to_base(?string $base = null, string $content) {
+	private function rewrite_content_to_base(?string $base = null, ?string $content = '') {
 
 		if (!empty($base) && !empty($content)) {
 

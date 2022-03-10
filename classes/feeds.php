@@ -23,7 +23,7 @@ class Feeds extends Handler_Protected {
 	 */
 	private function _format_headlines_list($feed, string $method, string $view_mode, int $limit, bool $cat_view,
 					int $offset, string $override_order, bool $include_children, ?int $check_first_id = null,
-					bool $skip_first_id_check, string $order_by): array {
+					?bool $skip_first_id_check = false, ? string $order_by = ''): array {
 
 		$disable_cache = false;
 

@@ -138,7 +138,7 @@ class Pref_System extends Handler_Administrative {
 					$sth->execute($errno_values);
 
 					while ($line = $sth->fetch()) {
-						foreach ($line as $k => $v) { $line[$k] = htmlspecialchars($v); }
+						foreach ($line as $k => $v) { $line[$k] = htmlspecialchars($v ?? ''); }
 						?>
 						<tr>
 							<td class='errno'>

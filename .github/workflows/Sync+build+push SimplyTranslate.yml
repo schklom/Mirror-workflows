@@ -75,7 +75,7 @@ jobs:
           ref: 'SimplyTranslate' # branch
       # https://packages.ubuntu.com/search?suite=default&arch=arm64&searchon=names&keywords=g%2B%2B-multilib
       - name: Replace g++-multilib-i686-linux-gnu with g++-multilib-arm-linux-gnueabi in the Dockerfile
-        run: sed -i 's/g++-multilib-i686-linux-gnu/gg++-multilib-arm-linux-gnueabi/' web/Dockerfile
+        run: sed -i 's/g++-multilib-i686-linux-gnu/g++-multilib-arm-linux-gnueabi/' web/Dockerfile
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1.2.0

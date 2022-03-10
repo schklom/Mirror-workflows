@@ -108,5 +108,5 @@ jobs:
           pull: true
           push: true
           tags: |
-            schklom/simplytranslate
+            schklom/simplytranslate:arm64
   

@@ -13,9 +13,11 @@ jobs:
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     outputs:
       LOCAL_ENGINES: ${{ steps.commits.outputs.SETLOCAL_ENGINES }}
-      REMOTE_ENGINES: ${{ steps.commits.outputs.SETREMOTE_ENGINES }} 
+      REMOTE_ENGINES: ${{ steps.commits.outputs.SETREMOTE_ENGINES }}
       LOCAL_WEB: ${{ steps.commits.outputs.SETLOCAL_WEB }}
-      REMOTE_WEB: ${{ steps.commits.outputs.SETREMOTE_WEB }} 
+      REMOTE_WEB: ${{ steps.commits.outputs.SETREMOTE_WEB }}
+      LOCAL_DOCKER: ${{ steps.commits.outputs.SETLOCAL_DOCKER }}
+      REMOTE_DOCKER: ${{ steps.commits.outputs.SETREMOTE_DOCKER }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -29,12 +31,14 @@ jobs:
           echo "::set-output name=SETLOCAL_ENGINES::$(cat last_sync_with_original_repo_commit_id_engines)"
           echo "::set-output name=SETREMOTE_WEB::$(git ls-remote https://git.sr.ht/~metalune/simplytranslate_web HEAD | awk '{ print $1 }')"
           echo "::set-output name=SETLOCAL_WEB::$(cat last_sync_with_original_repo_commit_id_web)"
+          echo "::set-output name=SETREMOTE_DOCKER::$(git ls-remote https://git.sr.ht/~metalune/simplytranslate_docker HEAD | awk '{ print $1 }')"
+          echo "::set-output name=SETLOCAL_DOCKER::$(cat last_sync_with_original_repo_commit_id_DOCKER)"
   
   repo_sync:
     needs: [get_commits]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    if: needs.get_commits.outputs.LOCAL_ENGINES != needs.get_commits.outputs.REMOTE_ENGINES || needs.get_commits.outputs.LOCAL_WEB != needs.get_commits.outputs.REMOTE_WEB
+    if: needs.get_commits.outputs.LOCAL_ENGINES != needs.get_commits.outputs.REMOTE_ENGINES || needs.get_commits.outputs.LOCAL_WEB != needs.get_commits.outputs.REMOTE_WEB || needs.get_commits.outputs.LOCAL_DOCKER != needs.get_commits.outputs.REMOTE_DOCKER
     steps:
       - name: repo-sync
         uses: wei/git-sync@v3

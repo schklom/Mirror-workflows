@@ -198,6 +198,9 @@ function locate(index, password) {
                                     L.marker(target).addTo(markers);
                                     map.setView(target, 16);
 
+                                    loginDiv = document.getElementById("login");
+                                    loginDiv.parentNode.removeChild(loginDiv);
+
                                     if (!backgroundSync) {
                                         var interval = setInterval(function () {
                                             idInput = document.getElementById('fmdid');

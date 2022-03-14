@@ -23,16 +23,18 @@
             <h2>Find My Device</h2>
         </div>
         <br>
-        <div class="center">
-            <p>This server tracks all your registered devices.<br>Please enter the device-id to receive the latest
-                location:</p>
-        </div>
-        <br>
-        <div class="center">
-            <input type="text" onkeypress="clickPress(event)" id="fmdid" name="fmdid"><br><br>
-        </div>
-        <div class="center">
-            <button id="locateButton" type="button" onclick="prepareForLocate();">LOCATE</button>
+        <div id="login">
+            <div class="center">
+                <p>This server tracks all your registered devices.<br>Please enter the device-id to receive the latest
+                    location:</p>
+            </div>
+            <br>
+            <div class="center">
+                <input type="text" onkeypress="clickPress(event)" id="fmdid" name="fmdid"><br><br>
+            </div>
+            <div class="center">
+                <button id="locateButton" type="button" onclick="prepareForLocate();">LOCATE</button>
+            </div>
         </div>
 
     </div>
@@ -41,27 +43,27 @@
         <div id="deviceInfo">
             <div class="center">
                 <button type="button" class="imageButton" onclick="locateOlder()">
-                    <img src="assets/Left.png" height="24"/>
+                    <img src="assets/Left.png" height="24" />
                 </button>
                 <button type="button" class="imageButton" onclick="locateNewer()">
-                    <img src="assets/Right.png" height="24"/>
+                    <img src="assets/Right.png" height="24" />
                 </button>
             </div>
             <div class="center">
                 <button type="button" class="imageButton" title="Locate" onclick="sendToPhone('locate')">
-                    <img src="assets/Locate.png" height="36"/>
+                    <img src="assets/Locate.png" height="36" />
                 </button>
                 <button type="button" class="imageButton" title="Ring" onclick="sendToPhone('ring')">
-                    <img src="assets/Ring.png" height="36"/>
+                    <img src="assets/Ring.png" height="36" />
                 </button>
                 <button type="button" class="imageButton" title="Lock" onclick="sendToPhone('lock')">
-                    <img src="assets/Locked.png" height="36"/>
+                    <img src="assets/Locked.png" height="36" />
                 </button>
                 <button type="button" class="imageButton" title="Delete" onclick="sendToPhone('delete')">
-                    <img src="assets/Delete.png" height="36"/>
+                    <img src="assets/Delete.png" height="36" />
                 </button>
                 <button type="button" class="imageButton" title="Picture" onclick="showPicture()">
-                    <img src="assets/Picture.png" height="36"/>
+                    <img src="assets/Picture.png" height="36" />
                 </button>
             </div>
             <p>Location-Infos:</p>
@@ -110,6 +112,8 @@
     </div>
 
     <footer>
+        
+
         <div class="center">
             <p>@Nulide FMDServer</p>
             <p id="version">v</p>

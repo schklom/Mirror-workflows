@@ -13,7 +13,8 @@ function init() {
     var div;
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         div = document.getElementById("desktop");
-        document.getElementsByClassName("column-left")[0].style.width= "10%";
+        document.getElementsByClassName("column-left")[1].style.width= "12%";
+        document.getElementsByClassName("column-middle")[1].style.width= "85";
     } else {
         div = document.getElementById("mobile");
     }

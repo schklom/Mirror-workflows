@@ -18,19 +18,16 @@ type User struct {
 	Pictures       []string
 }
 
-var uQuery *UserQuery
-
 func initDB(path string) *UserBox {
 	ob, _ := objectbox.NewBuilder().Model(ObjectBoxModel()).Directory(path).Build()
 
 	u := BoxForUser(ob)
-	uQuery = u.Query(User_.UID.Equals("", true))
 
 	return u
 }
 
 func (u *UserBox) GetByID(id string) *User {
-	uQuery.SetStringParams(User_.UID, id)
+	uQuery := u.Query(User_.UID.Equals(id, true))
 	foundUser, _ := uQuery.Find()
 	if len(foundUser) == 0 {
 		return nil

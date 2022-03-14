@@ -97,7 +97,7 @@ function locate(index, password) {
         idInput = document.getElementById('fmdid');
         currentId = idInput.value;
     }
-    if (password != "" && hashedPW == null) {
+    if (password != "") {
         hashedPW = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse("cafe"), {
             keySize: 256 / 32,
             iterations: 1867 * 2

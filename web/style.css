@@ -108,12 +108,12 @@ footer{
 
 #deviceInfo{
     width:97%;
-    visibility: hidden;
     padding: 1vw;
     margin-top: 2vw;
     background-color: #303030;
     border-radius: 5vw;
     border-color: #252525;
+    display: none;
     opacity: 0.5;
 }
 

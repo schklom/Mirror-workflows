@@ -10,6 +10,15 @@ var hashedPW;
 var backgroundSync = false;
 
 function init() {
+    var div;
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        div = document.getElementById("desktop");
+        document.getElementsByClassName("column-left")[0].style.width= "10%";
+    } else {
+        div = document.getElementById("mobile");
+    }
+    div.parentNode.removeChild(div);
+
     var element = document.getElementById('map');
     map = L.map(element);
     markers = L.layerGroup().addTo(map);
@@ -83,21 +92,24 @@ function prepareForLocate() {
 }
 
 function locate(index, password) {
-    idInput = document.getElementById('fmdid');
-    if (password != "") {
+    if (currentId == null) {
+        idInput = document.getElementById('fmdid');
+        currentId = idInput.value;
+    }
+    if (password != "" && hashedPW == null) {
         hashedPW = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse("cafe"), {
             keySize: 256 / 32,
             iterations: 1867 * 2
         }).toString();
     }
 
-    if (idInput.value != "") {
+    if (currentId != "") {
 
 
         fetch("/requestAccess", {
             method: 'PUT',
             body: JSON.stringify({
-                IDT: idInput.value,
+                IDT: currentId,
                 Data: hashedPW
             }),
             headers: {
@@ -186,8 +198,8 @@ function locate(index, password) {
                                     var bat = crypt.decrypt(json.Bat);
 
 
-                                    document.getElementById("deviceInfo").style.display = "block";
-                                    document.getElementById("idView").innerHTML = idInput.value;
+                                    document.getElementsByClassName("deviceInfo")[0].style.display = "block";
+                                    document.getElementById("idView").innerHTML = currentId;
                                     document.getElementById("dateView").innerHTML = time.toLocaleDateString();
                                     document.getElementById("timeView").innerHTML = time.toLocaleTimeString();
                                     document.getElementById("providerView").innerHTML = provider;
@@ -200,18 +212,19 @@ function locate(index, password) {
                                     map.setView(target, 16);
 
                                     loginDiv = document.getElementById("login");
-                                    loginDiv.parentNode.removeChild(loginDiv);
+                                    if (loginDiv != null) {
+                                        loginDiv.parentNode.removeChild(loginDiv);
+                                    }
 
                                     if (!backgroundSync) {
                                         var interval = setInterval(function () {
-                                            idInput = document.getElementById('fmdid');
 
-                                            if (idInput.value != "") {
+                                            if (currentId != "") {
 
                                                 fetch("/requestAccess", {
                                                     method: 'PUT',
                                                     body: JSON.stringify({
-                                                        DeviceId: idInput.value,
+                                                        DeviceId: currentId,
                                                         HashedPassword: hashedPW
                                                     }),
                                                     headers: {
@@ -259,8 +272,8 @@ function locate(index, password) {
                     })
 
             })
-
     }
+
 }
 
 function decryptAES(password, cipherText) {
@@ -323,13 +336,12 @@ function locateNewer() {
 }
 
 function sendToPhone(message) {
-    idInput = document.getElementById('fmdid');
-    if (idInput.value != "" && hashedPW != "") {
+    if (currentId != "" && hashedPW != "") {
 
         fetch("/requestAccess", {
             method: 'PUT',
             body: JSON.stringify({
-                IDT: idInput.value,
+                IDT: currentId,
                 Data: hashedPW
             }),
             headers: {
@@ -361,13 +373,12 @@ function sendToPhone(message) {
 }
 
 function showPicture() {
-    idInput = document.getElementById('fmdid');
-    if (idInput.value != "" && hashedPW != "") {
+    if (currentId != "" && hashedPW != "") {
 
         fetch("/requestAccess", {
             method: 'PUT',
             body: JSON.stringify({
-                IDT: idInput.value,
+                IDT: currentId,
                 Data: hashedPW
             }),
             headers: {
@@ -410,8 +421,8 @@ function showPicture() {
                         var buttonDiv = document.createElement("div");
                         buttonDiv.className = "center"
                         var btn = document.createElement("button");
-                        btn.innerHTML="close"
-                        btn.addEventListener('click', function() {
+                        btn.innerHTML = "close"
+                        btn.addEventListener('click', function () {
                             document.body.removeChild(div)
                         }, false);
                         buttonDiv.appendChild(btn)

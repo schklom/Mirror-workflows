@@ -44,7 +44,7 @@
     </div>
     <footer>
         <div>
-            <div id="deviceInfo">
+            <div class="deviceInfo" id="desktop">
                 <div class="row">
                     <div class="column-left">
                         <div class="center">
@@ -88,6 +88,56 @@
                         </button>
                         <button type="button" class="imageButton" title="Picture" onclick="showPicture()">
                             <img src="assets/Picture.png" height="36" />
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="deviceInfo" id="mobile">
+                <div class="row">
+                    <div class="column-left">
+                        <div class="center">
+                            <img src="assets/Smartphone.png" height="48" />
+                        </div>
+                        <div style="margin-top:1vw" class="center">
+                            <p id="batView">Data</p>
+                        </div>
+                    </div>
+                    <div class="column-middle">
+                        <h3 style="display:inline;" id="idView">ID</h3>
+                        <p> - </p>
+                        <p id="providerView">Data</p>
+
+                        <div>
+                            <button type="button" class="imageButton" onclick="locateOlder()">
+                                <img src="assets/Left.png" height="24" />
+                            </button>
+                            <button type="button" class="imageButton" onclick="locateNewer()">
+                                <img src="assets/Right.png" height="24" />
+                            </button>
+                        </div>
+
+                        <div>
+                            <p id="datetime">data from </p>
+                            <p id="dateView">Date</p>
+                            <p id="timeView">Time</p>
+                        </div>
+
+                        <button type="button" class="imageButton" title="Locate" onclick="sendToPhone('locate')">
+                            <img src="assets/Locate.png" height="24" />
+                        </button>
+                        <button type="button" class="imageButton" title="Ring" onclick="sendToPhone('ring')">
+                            <img src="assets/Ring.png" height="24" />
+                        </button>
+                        <button type="button" class="imageButton" title="Lock" onclick="sendToPhone('lock')">
+                            <img src="assets/Locked.png" height="24" />
+                        </button>
+                        <button type="button" class="imageButton" title="Delete" onclick="sendToPhone('delete')">
+                            <img src="assets/Delete.png" height="24" />
+                        </button>
+                        <button type="button" class="imageButton" title="Picture" onclick="showPicture()">
+                            <img src="assets/Picture.png" height="24" />
                         </button>
                     </div>
 

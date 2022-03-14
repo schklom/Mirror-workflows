@@ -10,29 +10,15 @@ html{
     height: 100%;
 }
 
-h2 {
+h2, h3{
     color: #4cb050;
     margin: 10px;
 }
 
-h3{
-    color: #4cb050;
-    margin: 10px;
-}
-
-p {
+p, a, label{
     color:whitesmoke;
     margin: 10px;
-}
-
-a{
-    color:whitesmoke;
-    margin: 10px;
-}
-
-label {
-    color: whitesmoke;
-    margin: 10px;
+    display:inline;
 }
 
 input {
@@ -88,9 +74,15 @@ footer{
     border: none;
 }
 
-.column {
-    float: left;
+.column-left {
+    float:left;
+    width:20%;
   }
+
+.column-middle{
+    float:left;
+    width:80%;
+}
 
 .row:after {
     content: "";
@@ -115,13 +107,13 @@ footer{
 }
 
 #deviceInfo{
-    position: absolute;
-    z-index: 2;
+    width:97%;
     visibility: hidden;
-    padding: 10px;
-    margin: 10px;
-    border-radius: 8px;
-    background-color: #232323;
+    padding: 1vw;
+    margin-top: 2vw;
+    background-color: #303030;
+    border-radius: 5vw;
+    border-color: #252525;
     opacity: 0.5;
 }
 

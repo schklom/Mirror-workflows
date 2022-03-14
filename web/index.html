@@ -7,7 +7,7 @@
     <meta http-equiv="cache-control" content="no-cache, must-revalidate, post-check=0, pre-check=0" />
     <meta http-equiv="cache-control" content="max-age=0" />
     <meta http-equiv="expires" content="0" />
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./style.css?t=123456">
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
     <link href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" rel="stylesheet" />
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.js"></script>
@@ -40,84 +40,66 @@
     </div>
     <div id="dataView" onkeypress="switchWithKeys(event)">
         <div id="map"></div>
-        <div id="deviceInfo">
-            <div class="center">
-                <button type="button" class="imageButton" onclick="locateOlder()">
-                    <img src="assets/Left.png" height="24" />
-                </button>
-                <button type="button" class="imageButton" onclick="locateNewer()">
-                    <img src="assets/Right.png" height="24" />
-                </button>
-            </div>
-            <div class="center">
-                <button type="button" class="imageButton" title="Locate" onclick="sendToPhone('locate')">
-                    <img src="assets/Locate.png" height="36" />
-                </button>
-                <button type="button" class="imageButton" title="Ring" onclick="sendToPhone('ring')">
-                    <img src="assets/Ring.png" height="36" />
-                </button>
-                <button type="button" class="imageButton" title="Lock" onclick="sendToPhone('lock')">
-                    <img src="assets/Locked.png" height="36" />
-                </button>
-                <button type="button" class="imageButton" title="Delete" onclick="sendToPhone('delete')">
-                    <img src="assets/Delete.png" height="36" />
-                </button>
-                <button type="button" class="imageButton" title="Picture" onclick="showPicture()">
-                    <img src="assets/Picture.png" height="36" />
-                </button>
-            </div>
-            <p>Location-Infos:</p>
 
-            <div class="row">
-                <div class="column">
-                    <p>Index</p>
-                </div>
-                <div class="column">
-                    <p id="indexView">Data</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="column">
-                    <p>Provider</p>
-                </div>
-                <div class="column">
-                    <p id="providerView">Data</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="column">
-                    <p>Date</p>
-                </div>
-                <div class="column">
-                    <p id="dateView">Data</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="column">
-                    <p>Time</p>
-                </div>
-                <div class="column">
-                    <p id="timeView">Data</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="column">
-                    <p>Battery</p>
-                </div>
-                <div class="column">
-                    <p id="batView">Data</p>
-                </div>
-            </div>
-        </div>
     </div>
-
     <footer>
-        
+        <div>
+            <div id="deviceInfo">
+                <div class="row">
+                    <div class="column-left">
+                        <div class="center">
+                            <img src="assets/Smartphone.png" height="96" />
+                        </div>
+                        <div class="center">
+                            <p id="batView">Data</p>
+                        </div>
+                    </div>
+                    <div class="column-middle">
+                        <h3 style="display:inline;" id="idView">ID</h3>
+                        <p> - </p>
+                        <p id="providerView">Data</p>
 
-        <div class="center">
-            <p>@Nulide FMDServer</p>
-            <p id="version">v</p>
-            <a href="ds.html">Privacy Notice</a>
+                        <div>
+                            <button type="button" class="imageButton" onclick="locateOlder()">
+                                <img src="assets/Left.png" height="24" />
+                            </button>
+                            <button type="button" class="imageButton" onclick="locateNewer()">
+                                <img src="assets/Right.png" height="24" />
+                            </button>
+                        </div>
+
+                        <div>
+                            <p id="datetime">data from </p>
+                            <p id="dateView">Date</p>
+                            <p id="timeView">Time</p>
+                        </div>
+
+                        <button type="button" class="imageButton" title="Locate" onclick="sendToPhone('locate')">
+                            <img src="assets/Locate.png" height="36" />
+                        </button>
+                        <button type="button" class="imageButton" title="Ring" onclick="sendToPhone('ring')">
+                            <img src="assets/Ring.png" height="36" />
+                        </button>
+                        <button type="button" class="imageButton" title="Lock" onclick="sendToPhone('lock')">
+                            <img src="assets/Locked.png" height="36" />
+                        </button>
+                        <button type="button" class="imageButton" title="Delete" onclick="sendToPhone('delete')">
+                            <img src="assets/Delete.png" height="36" />
+                        </button>
+                        <button type="button" class="imageButton" title="Picture" onclick="showPicture()">
+                            <img src="assets/Picture.png" height="36" />
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="center">
+                <p>@Nulide FMDServer</p>
+                <p id="version">v</p>
+                <a href="ds.html">Privacy Notice</a>
+            </div>
         </div>
     </footer>
 

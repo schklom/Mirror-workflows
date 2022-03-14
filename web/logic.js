@@ -138,7 +138,6 @@ function locate(index, password) {
                             index = newestLocationDataIndex;
                             currentLocationDataIndx = newestLocationDataIndex;
                         }
-                        document.getElementById("indexView").innerHTML = currentLocationDataIndx;
                     })
 
                 fetch("/location", {
@@ -186,7 +185,9 @@ function locate(index, password) {
                                     var lat = crypt.decrypt(json.lat);
                                     var bat = crypt.decrypt(json.Bat);
 
+
                                     document.getElementById("deviceInfo").style.visibility = "visible";
+                                    document.getElementById("idView").innerHTML = idInput.value;
                                     document.getElementById("dateView").innerHTML = time.toLocaleDateString();
                                     document.getElementById("timeView").innerHTML = time.toLocaleTimeString();
                                     document.getElementById("providerView").innerHTML = provider;

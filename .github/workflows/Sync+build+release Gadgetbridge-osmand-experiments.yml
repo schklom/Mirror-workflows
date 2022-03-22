@@ -81,16 +81,14 @@ jobs:
       #  uses: stefanzweifel/git-auto-commit-action@v4.14.0
       #  with:
       #    commit_message: Resolve osm-experiments & master branch conflicts
-      - name: COMMIT
+      - name: Commit and pull (rebase)
         run: |
+          git config user.name "schklom"
+          git config user.email "schklom@users.noreply.github.com"
           git add app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/DeviceCoordinator.java
           git add app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/AbstractDeviceCoordinator.java
           git commit app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/DeviceCoordinator.java
           git commit app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/AbstractDeviceCoordinator.java
-      - name: Pull changes
-        run: |
-          git config user.email "schklom@users.noreply.github.com"
-          git config user.name "schklom"
           git pull --rebase --allow-unrelated-histories https://codeberg.org/Freeyourgadget/Gadgetbridge.git
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
       - name: Setup JDK+Android

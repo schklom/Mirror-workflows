@@ -1,0 +1,10 @@
+<phpunit
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/latest/phpunit.xsd"
+         bootstrap="tests/autoload.php"
+         verbose="true">
+  <testsuite name="tt-rss">
+    <directory>tests</directory>
+</testsuite>
+
+</phpunit>

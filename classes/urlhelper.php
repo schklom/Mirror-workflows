@@ -109,15 +109,21 @@ class UrlHelper {
 
 			if (isset($rel_parts['path'])) {
 
-				// experimental: if relative url path is not absolute (i.e. starting with /) concatenate it using base url path
-				// (i'm not sure if it's a good idea)
+				// we append dirname() of base path to relative URL path as per RFC 3986 section 5.2.2
+				$base_path = with_trailing_slash(dirname($base_parts['path']));
 
-				if (strpos($rel_parts['path'], '/') !== 0) {
-					$rel_parts['path'] = with_trailing_slash($base_parts['path'] ?? "") . $rel_parts['path'];
+				// 1. absolute relative path (/test.html) = no-op, proceed as is
+
+				// 2. dotslash relative URI (./test.html) - strip "./", append base path
+				if (strpos($rel_parts['path'], './') === 0) {
+					$rel_parts['path'] = $base_path . substr($rel_parts['path'], 2);
+				// 3. anything else relative (test.html) - append dirname() of base path
+				} else if (strpos($rel_parts['path'], '/') !== 0) {
+					$rel_parts['path'] = $base_path . $rel_parts['path'];
 				}
 
-				$rel_parts['path'] = str_replace("/./", "/", $rel_parts['path']);
-				$rel_parts['path'] = str_replace("//", "/", $rel_parts['path']);
+				//$rel_parts['path'] = str_replace("/./", "/", $rel_parts['path']);
+				//$rel_parts['path'] = str_replace("//", "/", $rel_parts['path']);
 			}
 
 			return self::validate(self::build_url($rel_parts));

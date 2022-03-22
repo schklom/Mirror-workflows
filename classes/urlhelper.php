@@ -110,10 +110,10 @@ class UrlHelper {
 			$rel_parts['host'] = $base_parts['host'] ?? "";
 			$rel_parts['scheme'] = $base_parts['scheme'] ?? "";
 
-			if (isset($rel_parts['path'])) {
+			if ($rel_parts['path'] ?? "") {
 
 				// we append dirname() of base path to relative URL path as per RFC 3986 section 5.2.2
-				$base_path = with_trailing_slash(dirname($base_parts['path']));
+				$base_path = with_trailing_slash(dirname($base_parts['path'] ?? ""));
 
 				// 1. absolute relative path (/test.html) = no-op, proceed as is
 

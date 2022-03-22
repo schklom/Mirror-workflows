@@ -1,24 +1,9 @@
 <?php
-set_include_path(dirname(__DIR__) ."/include" . PATH_SEPARATOR .
-		get_include_path());
-
-require_once "autoload.php";
-require_once "functions.php";
 
 use PHPUnit\Framework\TestCase;
 
 final class UrlHelperTest extends TestCase {
-	public function testCanBeUsedAsString(): void {
-		/*$this->assertEquals(
-			'http://example.com/example.html',
-			UrlHelper::rewrite_relative('http://example.com/example/', '/example.html')
-		);
-
-		$this->assertEquals(
-			'http://example.com/example/example.html',
-			UrlHelper::rewrite_relative('http://example.com/example/', 'example.html')
-		);*/
-
+	public function test_rewrite_relative(): void {
 		// protocol-neutral URL
 		$this->assertEquals(
 			'https://example.com/example.html',
@@ -48,6 +33,21 @@ final class UrlHelperTest extends TestCase {
 		$this->assertEquals(
 			'https://apod.nasa.gov/apod/image/2203/Road2Stars_EsoHoralek_1080.jpg',
 			UrlHelper::rewrite_relative('https://apod.nasa.gov/apod/ap220315.html', './image/2203/Road2Stars_EsoHoralek_1080.jpg')
+		);
+
+		$this->assertEquals(
+			'http://example.com/test/url',
+			UrlHelper::rewrite_relative('http://example.com/test/url', '')
+		);
+
+		$this->assertEquals(
+			'http://www.example.com/test',
+			UrlHelper::rewrite_relative('http://www.example2.com ', 'http://www.example.com/test')
+		);
+
+		$this->assertEquals(
+			'http://www.example.com/test',
+			UrlHelper::rewrite_relative('http://www.example.com/test2 ', 'http://www.example.com/test')
 		);
 
 	}

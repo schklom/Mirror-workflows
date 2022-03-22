@@ -26,6 +26,7 @@ class UrlHelper {
 	/** @var string */
 	static $fetch_last_modified;
 
+
 	/** @var string */
 	static $fetch_effective_url;
 
@@ -68,6 +69,8 @@ class UrlHelper {
 
 		$rel_parts = parse_url($rel_url);
 
+		if (!$rel_url) return $base_url;
+
 		/**
 		 * If parse_url failed to parse $rel_url return false to match the current "invalid thing" behavior
 		 * of UrlHelper::validate().
@@ -107,7 +110,7 @@ class UrlHelper {
 			$rel_parts['host'] = $base_parts['host'] ?? "";
 			$rel_parts['scheme'] = $base_parts['scheme'] ?? "";
 
-			if (isset($rel_parts['path'])) {
+			if ($rel_parts['path'] ?? false) {
 
 				// we append dirname() of base path to relative URL path as per RFC 3986 section 5.2.2
 				$base_path = with_trailing_slash(dirname($base_parts['path']));

@@ -218,7 +218,11 @@ class Af_Readability extends Plugin {
 			}
 
 			try {
-				$r = new Readability(new Configuration());
+
+				$r = new Readability(new Configuration([
+					'fixRelativeURLs' => true,
+					'originalURL'     => $url,
+				]));
 
 				if ($r->parse($tmp)) {
 

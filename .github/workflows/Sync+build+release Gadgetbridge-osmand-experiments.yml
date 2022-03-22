@@ -77,10 +77,16 @@ jobs:
         run: |
           echo >> app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/DeviceCoordinator.java
           echo >> app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/AbstractDeviceCoordinator.java
-      - name: Resolve conflicts REMOVE THIS WHEN OSM-EXPERIMENTS REPO PULLS THE MASTER BRANCH - commit
-        uses: stefanzweifel/git-auto-commit-action@v4.14.0
-        with:
-          commit_message: Resolve osm-experiments & master branch conflicts
+      #- name: Resolve conflicts REMOVE THIS WHEN OSM-EXPERIMENTS REPO PULLS THE MASTER BRANCH - commit
+      #  uses: stefanzweifel/git-auto-commit-action@v4.14.0
+      #  with:
+      #    commit_message: Resolve osm-experiments & master branch conflicts
+      - name: COMMIT
+        run: |
+          git add app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/DeviceCoordinator.java
+          git add app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/AbstractDeviceCoordinator.java
+          git commit app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/DeviceCoordinator.java
+          git commit app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/AbstractDeviceCoordinator.java
       - name: Pull changes
         run: |
           git config user.email "schklom@users.noreply.github.com"

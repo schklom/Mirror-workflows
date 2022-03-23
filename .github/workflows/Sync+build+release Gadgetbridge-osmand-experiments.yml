@@ -46,33 +46,15 @@ jobs:
           destination_repo: "git@github.com:schklom/Mirror-workflows.git"
           destination_branch: "Gadgetbridge-osmand-experiments"
           destination_ssh_private_key: ${{ secrets.GITSYNCACTION }}
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: 'Gadgetbridge-osmand-experiments' # branch
-      - name: get most recent release tag on original repo, for next comparison on sync
-        run: git ls-remote --tags --sort=version:refname https://codeberg.org/Freeyourgadget/Gadgetbridge.git | tail -n 1 | awk '{ print $2 }' | cut -c 11- > last_sync_with_original_repo_release_tag
-      - name: Commit and push the change
-        uses: stefanzweifel/git-auto-commit-action@v4.14.0
-        with:
-          commit_message: Add last_sync_with_original_repo_release_tag
-      - name: get most recent commit on OSM branch, for next comparison on sync
-        run: git ls-remote --heads https://codeberg.org/Freeyourgadget/Gadgetbridge.git | grep osm | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
-      - name: Commit and push the change
-        uses: stefanzweifel/git-auto-commit-action@v4.14.0
-        with:
-          commit_message: Add last_sync_with_original_repo_commit_id
-
-  build_gadgetbridge:
-    needs: [repo_sync, get_commit_and_tag]
-    #needs: [get_commit_and_tag]
+  
+  update_repo:
+    needs: [repo_sync]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          #repository: 'schklom/Gadgetbridge-osmand-experiments'
-          ref: 'Gadgetbridge-osmand-experiments' # branch
+          ref: 'Gadgetbridge-osmand-experiments'          
       - name: Resolve conflicts REMOVE THIS WHEN OSM-EXPERIMENTS REPO PULLS THE MASTER BRANCH
         run: |
           echo >> app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/DeviceCoordinator.java
@@ -91,6 +73,29 @@ jobs:
           git add last_sync_with_original_repo_commit_id
           git commit -m "resolve merge conflicts"
           git pull --rebase --allow-unrelated-histories https://codeberg.org/Freeyourgadget/Gadgetbridge.git
+      - name: get most recent release tag on original repo, for next comparison on sync
+        run: git ls-remote --tags --sort=version:refname https://codeberg.org/Freeyourgadget/Gadgetbridge.git | tail -n 1 | awk '{ print $2 }' | cut -c 11- > last_sync_with_original_repo_release_tag
+      - name: Commit and push the change
+        uses: stefanzweifel/git-auto-commit-action@v4.14.0
+        with:
+          commit_message: Add last_sync_with_original_repo_release_tag
+      - name: get most recent commit on OSM branch, for next comparison on sync
+        run: git ls-remote --heads https://codeberg.org/Freeyourgadget/Gadgetbridge.git | grep osm | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
+      - name: Commit and push the change
+        uses: stefanzweifel/git-auto-commit-action@v4.14.0
+        with:
+          commit_message: Add last_sync_with_original_repo_commit_id
+
+  build_gadgetbridge:
+    needs: [repo_sync, get_commit_and_tag, update_repo]
+    #needs: [get_commit_and_tag]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          #repository: 'schklom/Gadgetbridge-osmand-experiments'
+          ref: 'Gadgetbridge-osmand-experiments' # branch
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
       - name: Setup JDK+Android
         run: sudo apt-get install openjdk-11-jdk git adb -y

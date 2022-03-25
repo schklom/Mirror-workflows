@@ -32,7 +32,7 @@ jobs:
           echo "::set-output name=SETREMOTE_WEB::$(git ls-remote https://git.sr.ht/~metalune/simplytranslate_web HEAD | awk '{ print $1 }')"
           echo "::set-output name=SETLOCAL_WEB::$(cat last_sync_with_original_repo_commit_id_web)"
           echo "::set-output name=SETREMOTE_DOCKER::$(git ls-remote https://git.sr.ht/~metalune/simplytranslate_docker HEAD | awk '{ print $1 }')"
-          echo "::set-output name=SETLOCAL_DOCKER::$(cat last_sync_with_original_repo_commit_id_DOCKER)"
+          echo "::set-output name=SETLOCAL_DOCKER::$(cat last_sync_with_original_repo_commit_id_docker)"
   
   repo_sync:
     needs: [get_commits]
@@ -62,13 +62,15 @@ jobs:
         run: git ls-remote https://git.sr.ht/~metalune/simplytranslate_engines HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_engines
       - name: get most recent commit id on original repo, for next comparison on sync PART 2
         run: git ls-remote https://git.sr.ht/~metalune/simplytranslate_web HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_web
+      - name: get most recent commit id on original repo, for next comparison on sync PART 3
+        run: git ls-remote https://git.sr.ht/~metalune/simplytranslate_docker HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_docker
       # https://packages.ubuntu.com/search?suite=default&section=all&arch=arm64&keywords=g%2B%2B+linux+gnu&searchon=names
       - name: Replace g++-multilib-i686-linux-gnu with g++-arm-linux-gnueabihf in the Dockerfile
         run: sed -i 's/g++-multilib-i686-linux-gnu/g++-arm-linux-gnueabihf/' web/Dockerfile
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.14.0
         with:
-          commit_message: Add last_sync_with_original_repo_commit_id_engines + last_sync_with_original_repo_commit_id_web + Fix Dockerfile
+          commit_message: Add last_sync_with_original_repo_commit_id_engines + last_sync_with_original_repo_commit_id_web + last_sync_with_original_repo_commit_id_docker + Fix Dockerfile
 
   build_push:
     needs: [repo_sync]

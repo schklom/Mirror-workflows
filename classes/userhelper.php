@@ -68,6 +68,8 @@ class UserHelper {
 					$user->last_login = Db::NOW();
 					$user->save();
 
+					$_SESSION["last_login_update"] = time();
+
 					return true;
 				}
 

@@ -13,7 +13,7 @@ class Af_Comics_Explosm extends Af_ComicFilter {
 
 				if (@$doc->loadHTML(UrlHelper::fetch($article["link"]))) {
 					$xpath = new DOMXPath($doc);
-					$basenode = $xpath->query('(//img[@id="main-comic"])')->item(0);
+					$basenode = $xpath->query('//div[contains(@class, "MainComic__ComicImage")]//img')->item(0);
 
 					if ($basenode) {
 						$article["content"] = $doc->saveHTML($basenode);

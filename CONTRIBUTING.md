@@ -1,4 +1,6 @@
-## Contributing code the right way 
+## Contributing code the right way
+
+*NOTE (March, 2022): Gitea registration is disabled until further notice. Please PM me on the forum or post in the Development subforum, I'll make an account for you ASAP. -fox*
 
 TLDR: it works like Github.
 
@@ -9,7 +11,7 @@ TLDR: it works like Github.
 
 If you have any other questions, see this [forum thread](https://discourse.tt-rss.org/t/how-to-contribute-code-via-pull-requests-on-git-tt-rss-org/1850).
 
-Please don't inline patches in forum posts, attach files instead (``.patch`` or ``.diff`` file 
+Please don't inline patches in forum posts, attach files instead (``.patch`` or ``.diff`` file
 extensions should work).
 
 ## Contributing translations
@@ -17,8 +19,8 @@ extensions should work).
 Believe it or not, people also spam using Weblate. Therefore, some minor jumping through hoops is involved here:
 
 1. Register on [Weblate](https://weblate.tt-rss.org/) / forums;
-2. Post in the [Weblate discussion thread](https://community.tt-rss.org/t/easier-translations-with-weblate/1680) on the forum, ask to be added to a project 
+2. Post in the [Weblate discussion thread](https://community.tt-rss.org/t/easier-translations-with-weblate/1680) on the forum, ask to be added to a project
 you're interested in;
-3. You'll be given proper access rights and will be able to edit translations. 
+3. You'll be given proper access rights and will be able to edit translations.
 
 That's it. If the language you're interested is not available yet, ask and we'll add it;

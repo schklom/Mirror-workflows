@@ -510,16 +510,53 @@ class Config {
 			array_push($errors, "Please enable at least one authentication module via PLUGINS");
 		}
 
-		if (function_exists('posix_getuid') && posix_getuid() == 0 && !getenv("container")) {
-			array_push($errors, "Please don't run this script as root.");
-		}
+		/* we assume our dependencies are sane under docker, so some sanity checks are skipped.
+			this also allows tt-rss process to run under root if requested (I'm using this for development
+			under podman because of uidmapping issues with rootless containers, don't use in production -fox) */
+		if (!getenv("container")) {
+			if (function_exists('posix_getuid') && posix_getuid() == 0) {
+				array_push($errors, "Please don't run this script as root.");
+			}
 
-		if (version_compare(PHP_VERSION, '7.1.0', '<')) {
-			array_push($errors, "PHP version 7.1.0 or newer required. You're using " . PHP_VERSION . ".");
-		}
+			if (version_compare(PHP_VERSION, '7.1.0', '<')) {
+				array_push($errors, "PHP version 7.1.0 or newer required. You're using " . PHP_VERSION . ".");
+			}
 
-		if (!class_exists("UConverter")) {
-			array_push($errors, "PHP UConverter class is missing, it's provided by the Internationalization (intl) module.");
+			if (!class_exists("UConverter")) {
+				array_push($errors, "PHP UConverter class is missing, it's provided by the Internationalization (intl) module.");
+			}
+
+			if (!function_exists("curl_init") && !ini_get("allow_url_fopen")) {
+				array_push($errors, "PHP configuration option allow_url_fopen is disabled, and CURL functions are not present. Either enable allow_url_fopen or install PHP extension for CURL.");
+			}
+
+			if (!function_exists("json_encode")) {
+				array_push($errors, "PHP support for JSON is required, but was not found.");
+			}
+
+			if (!class_exists("PDO")) {
+				array_push($errors, "PHP support for PDO is required but was not found.");
+			}
+
+			if (!function_exists("mb_strlen")) {
+				array_push($errors, "PHP support for mbstring functions is required but was not found.");
+			}
+
+			if (!function_exists("hash")) {
+				array_push($errors, "PHP support for hash() function is required but was not found.");
+			}
+
+			if (ini_get("safe_mode")) {
+				array_push($errors, "PHP safe mode setting is obsolete and not supported by tt-rss.");
+			}
+
+			if (!function_exists("mime_content_type")) {
+				array_push($errors, "PHP function mime_content_type() is missing, try enabling fileinfo module.");
+			}
+
+			if (!class_exists("DOMDocument")) {
+				array_push($errors, "PHP support for DOMDocument is required, but was not found.");
+			}
 		}
 
 		if (!is_writable(self::get(Config::CACHE_DIR) . "/images")) {
@@ -534,6 +571,14 @@ class Config {
 			array_push($errors, "Data export cache is not writable (chmod -R 777 ".self::get(Config::CACHE_DIR)."/export)");
 		}
 
+		if (!is_writable(self::get(Config::ICONS_DIR))) {
+			array_push($errors, "ICONS_DIR defined in config.php is not writable (chmod -R 777 ".self::get(Config::ICONS_DIR).").\n");
+		}
+
+		if (!is_writable(self::get(Config::LOCK_DIRECTORY))) {
+			array_push($errors, "LOCK_DIRECTORY is not writable (chmod -R 777 ".self::get(Config::LOCK_DIRECTORY).").\n");
+		}
+
 		// ttrss_users won't be there on initial startup (before migrations are done)
 		if (!Config::is_migration_needed() && self::get(Config::SINGLE_USER_MODE)) {
 			if (UserHelper::get_login_by_id(1) != "admin") {
@@ -541,6 +586,7 @@ class Config {
 			}
 		}
 
+		// skip check for CLI scripts so that we could install database schema if it is missing.
 		if (php_sapi_name() != "cli") {
 
 			if (self::get_schema_version() < 0) {
@@ -563,46 +609,6 @@ class Config {
 				array_push($errors,
 					"Please set SELF_URL_PATH to the correct value detected for your server: <b>$ref_self_url_path</b> (you're using: <b>" . self::get_self_url() . "</b>)");
 			}
-		}
-
-		if (!is_writable(self::get(Config::ICONS_DIR))) {
-			array_push($errors, "ICONS_DIR defined in config.php is not writable (chmod -R 777 ".self::get(Config::ICONS_DIR).").\n");
-		}
-
-		if (!is_writable(self::get(Config::LOCK_DIRECTORY))) {
-			array_push($errors, "LOCK_DIRECTORY is not writable (chmod -R 777 ".self::get(Config::LOCK_DIRECTORY).").\n");
-		}
-
-		if (!function_exists("curl_init") && !ini_get("allow_url_fopen")) {
-			array_push($errors, "PHP configuration option allow_url_fopen is disabled, and CURL functions are not present. Either enable allow_url_fopen or install PHP extension for CURL.");
-		}
-
-		if (!function_exists("json_encode")) {
-			array_push($errors, "PHP support for JSON is required, but was not found.");
-		}
-
-		if (!class_exists("PDO")) {
-			array_push($errors, "PHP support for PDO is required but was not found.");
-		}
-
-		if (!function_exists("mb_strlen")) {
-			array_push($errors, "PHP support for mbstring functions is required but was not found.");
-		}
-
-		if (!function_exists("hash")) {
-			array_push($errors, "PHP support for hash() function is required but was not found.");
-		}
-
-		if (ini_get("safe_mode")) {
-			array_push($errors, "PHP safe mode setting is obsolete and not supported by tt-rss.");
-		}
-
-		if (!function_exists("mime_content_type")) {
-			array_push($errors, "PHP function mime_content_type() is missing, try enabling fileinfo module.");
-		}
-
-		if (!class_exists("DOMDocument")) {
-			array_push($errors, "PHP support for DOMDocument is required, but was not found.");
 		}
 
 		if (self::get(Config::DB_TYPE) == "mysql") {

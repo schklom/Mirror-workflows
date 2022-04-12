@@ -68,7 +68,7 @@ jobs:
       - name: Replace g++-multilib-i686-linux-gnu with g++-arm-linux-gnueabihf in the Dockerfile
         run: sed -i 's/g++-multilib-i686-linux-gnu/g++-arm-linux-gnueabihf/' web/Dockerfile
       - name: Commit and push the change
-        uses: stefanzweifel/git-auto-commit-action@v4.14.0
+        uses: stefanzweifel/git-auto-commit-action@v4.14.1
         with:
           commit_message: Add last_sync_with_original_repo_commit_id_engines + last_sync_with_original_repo_commit_id_web + last_sync_with_original_repo_commit_id_docker + Fix Dockerfile
 

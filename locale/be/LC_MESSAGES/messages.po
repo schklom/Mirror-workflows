@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-18 13:34+0300\n"
-"PO-Revision-Date: 2022-04-17 16:50+0000\n"
+"PO-Revision-Date: 2022-04-18 19:08+0000\n"
 "Last-Translator: Mikalai <me@mikalaidaronin.info>\n"
 "Language-Team: Belarusian <https://weblate.tt-rss.org/projects/tt-rss/"
 "messages/be/>\n"
@@ -1300,7 +1300,7 @@ msgstr[2] "(%d дзён)"
 
 #: classes/pref/feeds.php:535 classes/pref/feeds.php:583
 msgid "Disabled"
-msgstr "Вымкнута"
+msgstr "Выключана"
 
 #: classes/pref/feeds.php:539
 #, php-format

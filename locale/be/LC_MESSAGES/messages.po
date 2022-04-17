@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-18 13:34+0300\n"
-"PO-Revision-Date: 2022-04-17 16:34+0000\n"
+"PO-Revision-Date: 2022-04-17 16:50+0000\n"
 "Last-Translator: Mikalai <me@mikalaidaronin.info>\n"
 "Language-Team: Belarusian <https://weblate.tt-rss.org/projects/tt-rss/"
 "messages/be/>\n"
@@ -110,7 +110,7 @@ msgstr "Адміністратар"
 #: plugins/note/note.js:28 plugins/af_readability/init.js:19
 #: plugins/share/share.js:56 js/CommonFilters.js:181
 msgid "Loading, please wait..."
-msgstr "Ідзе запуск, калі ласка, пачакайце..."
+msgstr "Ідзе загрузка, калі ласка, пачакайце..."
 
 #: index.php:163 prefs.php:128 js/App.js:460
 msgid "Communication problem with server."

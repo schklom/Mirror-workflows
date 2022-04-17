@@ -8,91 +8,93 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-18 13:34+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2022-04-17 11:57+0000\n"
+"Last-Translator: Mikalai <me@mikalaidaronin.info>\n"
+"Language-Team: Belarusian <https://weblate.tt-rss.org/projects/tt-rss/"
+"messages/be/>\n"
 "Language: be\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.11.2\n"
 
 #: backend.php:60
 msgid "Use default"
-msgstr ""
+msgstr "Стандартна"
 
 #: backend.php:61
 msgid "Never purge"
-msgstr ""
+msgstr "Ніколі не выдаляць"
 
 #: backend.php:62
 msgid "1 week old"
-msgstr ""
+msgstr "Старэй за 1 тыдзень"
 
 #: backend.php:63
 msgid "2 weeks old"
-msgstr ""
+msgstr "Старэй за 2 тыдні"
 
 #: backend.php:64
 msgid "1 month old"
-msgstr ""
+msgstr "Старэй за 1 месяц"
 
 #: backend.php:65
 msgid "2 months old"
-msgstr ""
+msgstr "Старэй за 2 месяцы"
 
 #: backend.php:66
 msgid "3 months old"
-msgstr ""
+msgstr "Старэй за 3 месяцы"
 
 #: backend.php:69
 msgid "Default interval"
-msgstr ""
+msgstr "Стандартны інтэрвал"
 
 #: backend.php:70 backend.php:80
 msgid "Disable updates"
-msgstr ""
+msgstr "Адключыць абнаўленні"
 
 #: backend.php:71 backend.php:81
 msgid "15 minutes"
-msgstr ""
+msgstr "15 хвілін"
 
 #: backend.php:72 backend.php:82
 msgid "30 minutes"
-msgstr ""
+msgstr "30 хвілін"
 
 #: backend.php:73 backend.php:83
 msgid "Hourly"
-msgstr ""
+msgstr "Штогадзінна"
 
 #: backend.php:74 backend.php:84
 msgid "4 hours"
-msgstr ""
+msgstr "Раз у 4 гадзіны"
 
 #: backend.php:75 backend.php:85
 msgid "12 hours"
-msgstr ""
+msgstr "Раз у 12 гадзін"
 
 #: backend.php:76 backend.php:86
 msgid "Daily"
-msgstr ""
+msgstr "Штодня"
 
 #: backend.php:77 backend.php:87
 msgid "Weekly"
-msgstr ""
+msgstr "Штотыднёва"
 
 #: backend.php:90 classes/pref/system.php:124
 msgid "User"
-msgstr ""
+msgstr "Карыстальнік"
 
 #: backend.php:91
 msgid "Power User"
-msgstr ""
+msgstr "Прывілеяваны карыстальнік"
 
 #: backend.php:92
 msgid "Administrator"
-msgstr ""
+msgstr "Адміністратар"
 
 #: index.php:134 index.php:148 index.php:272 prefs.php:119
 #: classes/pref/prefs.php:877 classes/pref/prefs.php:927
@@ -108,444 +110,454 @@ msgstr ""
 #: plugins/note/note.js:28 plugins/af_readability/init.js:19
 #: plugins/share/share.js:56 js/CommonFilters.js:181
 msgid "Loading, please wait..."
-msgstr ""
+msgstr "Ідзе загрузка, калі ласка, пачакайце..."
 
 #: index.php:163 prefs.php:128 js/App.js:460
 msgid "Communication problem with server."
-msgstr ""
+msgstr "Праблемы сувязі з серверам."
 
 #: index.php:166 prefs.php:130
 msgid "Recent entries found in event log."
-msgstr ""
+msgstr "Знойдзены свежыя запісы ў журнале падзей."
 
 #: index.php:169
 msgid "Updates are available from Git."
-msgstr ""
+msgstr "Абнаўлення даступныя ў Git."
 
 #: index.php:184
 msgid "Show articles"
-msgstr ""
+msgstr "Паказаць артыкулы"
 
 #: index.php:187
 msgid "Adaptive"
-msgstr ""
+msgstr "Адаптыўна"
 
 #: index.php:188
 msgid "All Articles"
-msgstr ""
+msgstr "Усе артыкулы"
 
 #: index.php:189 classes/rpc.php:623
 msgid "Starred"
-msgstr ""
+msgstr "Упадабаныя"
 
 #: index.php:190 classes/rpc.php:624
 msgid "Published"
-msgstr ""
+msgstr "Апублікаваны"
 
 #: index.php:191
 msgid "Unread"
-msgstr ""
+msgstr "Непрачытаныя"
 
 #: index.php:192
 msgid "With Note"
-msgstr ""
+msgstr "З нататкаю"
 
 #: index.php:195
 msgid "Sort articles"
-msgstr ""
+msgstr "Сартаваць артыкулы"
 
 #: index.php:199
 msgid "Default"
-msgstr ""
+msgstr "Стандартна"
 
 #: index.php:200
 msgid "Newest first"
-msgstr ""
+msgstr "Спачатку новыя"
 
 #: index.php:201
 msgid "Oldest first"
-msgstr ""
+msgstr "Спачатку старэйшыя"
 
 #: index.php:202
 msgid "Title"
-msgstr ""
+msgstr "Загаловак"
 
 #: index.php:214 index.php:248 classes/rpc.php:610 js/FeedTree.js:92
 #: js/FeedTree.js:122
 msgid "Mark as read"
-msgstr ""
+msgstr "Пазначыць як прачытанае"
 
 #: index.php:217
 msgid "Older than one day"
-msgstr ""
+msgstr "Старэй за 1 дзень"
 
 #: index.php:220
 msgid "Older than one week"
-msgstr ""
+msgstr "Старэй за 1 тыдзень"
 
 #: index.php:223
 msgid "Older than two weeks"
-msgstr ""
+msgstr "Старэй за 2 тыдні"
 
 #: index.php:238
 msgid "Actions..."
-msgstr ""
+msgstr "Дзеянні..."
 
 #: index.php:241
 msgid "Preferences..."
-msgstr ""
+msgstr "Налады..."
 
 #: index.php:242
 msgid "Search..."
-msgstr ""
+msgstr "Пошук..."
 
 #: index.php:243
 msgid "Feed actions:"
-msgstr ""
+msgstr "Дзеянні з каналамі:"
 
 #: index.php:244 plugins/bookmarklets/init.php:38
 #: plugins/bookmarklets/init.php:72
 msgid "Subscribe to feed..."
-msgstr ""
+msgstr "Падпісацца на канал..."
 
 #: index.php:245
 msgid "Edit this feed..."
-msgstr ""
+msgstr "Змяніць гэты канал..."
 
 #: index.php:246 classes/pref/feeds.php:925 js/PrefFeedTree.js:99
 #: js/CommonDialogs.js:585
 msgid "Unsubscribe"
-msgstr ""
+msgstr "Адпісацца"
 
 #: index.php:247
 msgid "All feeds:"
-msgstr ""
+msgstr "Усе каналы:"
 
 #: index.php:249
 msgid "(Un)hide read feeds"
-msgstr ""
+msgstr "Паказаць/схаваць прачытаныя каналы"
 
 #: index.php:250
 msgid "Other actions:"
-msgstr ""
+msgstr "Другія дзеянні:"
 
 #: index.php:251 classes/rpc.php:596
+#, fuzzy
 msgid "Toggle widescreen mode"
-msgstr ""
+msgstr "Пераключыць шырокі экран"
 
 #: index.php:252
 msgid "Keyboard shortcuts help"
-msgstr ""
+msgstr "Пра спалучэнні клавіш"
 
 #: index.php:261
 msgid "Logout"
-msgstr ""
+msgstr "Выхад"
 
 #: prefs.php:20 prefs.php:139 classes/rpc.php:626 classes/pref/prefs.php:929
 msgid "Preferences"
-msgstr ""
+msgstr "Налады"
 
 #: prefs.php:132
 msgid "Exit preferences"
-msgstr ""
+msgstr "Закрыць налады"
 
 #: prefs.php:142 classes/pref/prefs.php:38 classes/pref/feeds.php:127
 #: classes/pref/feeds.php:914
 msgid "Feeds"
-msgstr ""
+msgstr "Каналы"
 
 #: prefs.php:146 classes/pref/filters.php:228
 msgid "Filters"
-msgstr ""
+msgstr "Фільтры"
 
 #: prefs.php:150 classes/pref/labels.php:23 classes/feeds.php:1254
 msgid "Labels"
-msgstr ""
+msgstr "Пазнакі"
 
 #: prefs.php:155
 msgid "Users"
-msgstr ""
+msgstr "Карыстальнікі"
 
 #: prefs.php:158
 msgid "System"
-msgstr ""
+msgstr "Сістэма"
 
 #: classes/rpc.php:565
 msgid "Navigation"
-msgstr ""
+msgstr "Навігацыя"
 
 #: classes/rpc.php:566
 msgid "Open next feed"
-msgstr ""
+msgstr "Адкрыць наступны канал"
 
 #: classes/rpc.php:567
 msgid "Open next unread feed"
-msgstr ""
+msgstr "Адкрыць наступны непрачытаны канал"
 
 #: classes/rpc.php:568
 msgid "Open previous feed"
-msgstr ""
+msgstr "Адкрыць папярэдні канал"
 
 #: classes/rpc.php:569
 msgid "Open previous unread feed"
-msgstr ""
+msgstr "Адкрыць папярэдні непрачытаны канал"
 
 #: classes/rpc.php:570
+#, fuzzy
 msgid "Open next article (in combined mode, scroll down)"
-msgstr ""
+msgstr "Адкрыць наступны артыкул (не пракручваць вялікія артыкулы)"
 
 #: classes/rpc.php:571
+#, fuzzy
 msgid "Open previous article (in combined mode, scroll up)"
-msgstr ""
+msgstr "Адкрыць папярэдні артыкул (не пракручваць вялікія артыкулы)"
 
 #: classes/rpc.php:572
+#, fuzzy
 msgid "Scroll headlines by one page down"
-msgstr ""
+msgstr "Пракруціць загалоўкі на адну старонку ўніз"
 
 #: classes/rpc.php:573
+#, fuzzy
 msgid "Scroll headlines by one page up"
-msgstr ""
+msgstr "Пракруціць загалоўкі на адну старонку ўгору"
 
 #: classes/rpc.php:574
 msgid "Open next article"
-msgstr ""
+msgstr "Адкрыць наступны артыкул"
 
 #: classes/rpc.php:575
 msgid "Open previous article"
-msgstr ""
+msgstr "Адкрыць папярэдні артыкул"
 
 #: classes/rpc.php:576
 msgid "Move to next article (don't expand)"
-msgstr ""
+msgstr "Перайсці да наступнага артыкулу (не разгортваць)"
 
 #: classes/rpc.php:577
 msgid "Move to previous article (don't expand)"
-msgstr ""
+msgstr "Перайсці да папярэдняга артыкулу (не разгортваць)"
 
 #: classes/rpc.php:578
 msgid "Show search dialog"
-msgstr ""
+msgstr "Паказаць дыялог пошуку"
 
 #: classes/rpc.php:579
 msgid "Cancel active search"
-msgstr ""
+msgstr "Скасаваць актыўны пошук"
 
 #: classes/rpc.php:580
 msgid "Article"
-msgstr ""
+msgstr "Артыкул"
 
 #: classes/rpc.php:581 js/Headlines.js:1388 js/Headlines.js:658
 msgid "Toggle starred"
-msgstr ""
+msgstr "Дадаць/выдаліць з упадабанага"
 
 #: classes/rpc.php:582 js/Headlines.js:1400
 msgid "Toggle published"
-msgstr ""
+msgstr "Дадаць/выдаліць з апублікаванага"
 
 #: classes/rpc.php:583 js/Headlines.js:1375
 msgid "Toggle unread"
-msgstr ""
+msgstr "Пераключыць прачытана/не прачытана"
 
 #: classes/rpc.php:584
+#, fuzzy
 msgid "Edit tags"
-msgstr ""
+msgstr "Змяніць тэгі"
 
 #: classes/rpc.php:585
 msgid "Open in new window"
-msgstr ""
+msgstr "Адкрыць у новым акне"
 
 #: classes/rpc.php:586 js/Headlines.js:1421
 msgid "Mark below as read"
-msgstr ""
+msgstr "Пазначыць артыкулы ніжэй як прачытаныя"
 
 #: classes/rpc.php:587 js/Headlines.js:1414
 msgid "Mark above as read"
-msgstr ""
+msgstr "Пазначыць артыкулы вышэй як прачытаныя"
 
 #: classes/rpc.php:588
+#, fuzzy
 msgid "Scroll down"
-msgstr ""
+msgstr "Гартаць уніз"
 
 #: classes/rpc.php:589
+#, fuzzy
 msgid "Scroll up"
-msgstr ""
+msgstr "Гартаць угору"
 
 #: classes/rpc.php:590
+#, fuzzy
 msgid "Scroll down page"
-msgstr ""
+msgstr "Прагартаць старонку ўніз"
 
 #: classes/rpc.php:591
+#, fuzzy
 msgid "Scroll up page"
-msgstr ""
+msgstr "Прагартаць старонку ўгору"
 
 #: classes/rpc.php:592
 msgid "Select article under cursor"
-msgstr ""
+msgstr "Выбраць артыкул пад курсорам"
 
 #: classes/rpc.php:593
 msgid "Email article"
-msgstr ""
+msgstr "Пераслаць артыкул па e-mail"
 
 #: classes/rpc.php:594
 msgid "Close/collapse article"
-msgstr ""
+msgstr "Закрыць/згарнуць артыкул"
 
 #: classes/rpc.php:595
 msgid "Toggle article expansion (combined mode)"
-msgstr ""
+msgstr "Пераключыць разгортванне артыкула (камбінаваны рэжым)"
 
 #: classes/rpc.php:597
 msgid "Toggle full article text via Readability"
-msgstr ""
+msgstr "Пераключыць на поўны тэкст артыкула праз Readability"
 
 #: classes/rpc.php:598
 msgid "Article selection"
-msgstr ""
+msgstr "Выбраць артыкул"
 
 #: classes/rpc.php:599
 msgid "Select all articles"
-msgstr ""
+msgstr "Выбраць усе артыкулы"
 
 #: classes/rpc.php:600
 msgid "Select unread"
-msgstr ""
+msgstr "Выбраць непрачытанае"
 
 #: classes/rpc.php:601
 msgid "Select starred"
-msgstr ""
+msgstr "Выбраць упадабанае"
 
 #: classes/rpc.php:602
 msgid "Select published"
-msgstr ""
+msgstr "Выбраць апублікаванае"
 
 #: classes/rpc.php:603
 msgid "Invert selection"
-msgstr ""
+msgstr "Інвертаваць выбар"
 
 #: classes/rpc.php:604
 msgid "Deselect everything"
-msgstr ""
+msgstr "Зняць выбар з усіх"
 
 #: classes/rpc.php:605
 msgid "Feed"
-msgstr ""
+msgstr "Канал"
 
 #: classes/rpc.php:606
 msgid "Refresh current feed"
-msgstr ""
+msgstr "Абнавіць бягучы канал"
 
 #: classes/rpc.php:607
 msgid "Un/hide read feeds"
-msgstr ""
+msgstr "Паказаць/схаваць прачытаныя каналы"
 
 #: classes/rpc.php:608 classes/pref/feeds.php:917 js/CommonDialogs.js:19
 msgid "Subscribe to feed"
-msgstr ""
+msgstr "Падпісацца на канал"
 
 #: classes/rpc.php:609 js/PrefFeedTree.js:93 js/CommonDialogs.js:336
 #: js/Headlines.js:1544 js/FeedTree.js:99
 msgid "Edit feed"
-msgstr ""
+msgstr "Змяніць канал"
 
 #: classes/rpc.php:611
 msgid "Reverse headlines"
-msgstr ""
+msgstr "Зваротны парадак загалоўкаў"
 
 #: classes/rpc.php:612
 msgid "Toggle headline grouping"
-msgstr ""
+msgstr "Пераключыць групоўку загалоўкаў"
 
 #: classes/rpc.php:613
 msgid "Toggle grid view"
-msgstr ""
+msgstr "Пераключыць выгляд сеткі"
 
 #: classes/rpc.php:614
 msgid "Debug feed update"
-msgstr ""
+msgstr "Тэсціраваць абнаўленне канала"
 
 #: classes/rpc.php:615
 msgid "Debug viewfeed()"
-msgstr ""
+msgstr "Тэсціраваць viewfeed()"
 
 #: classes/rpc.php:616 js/FeedTree.js:155
 msgid "Mark all feeds as read"
-msgstr ""
+msgstr "Пазначыць усе каналы прачытанымі"
 
 #: classes/rpc.php:617
 msgid "Un/collapse current category"
-msgstr ""
+msgstr "Згарнуць/разгарнуць бягучую катэгорыю"
 
 #: classes/rpc.php:618
 msgid "Toggle auto expand in combined mode"
-msgstr ""
+msgstr "Пераключыць аўтаматычнае разгортванне артыкула ў камбінаваным рэжыме"
 
 #: classes/rpc.php:619
 msgid "Toggle combined mode"
-msgstr ""
+msgstr "Пераключыць камбінаваны рэжым"
 
 #: classes/rpc.php:620
 msgid "Go to"
-msgstr ""
+msgstr "Перайсці да"
 
 #: classes/rpc.php:621 classes/feeds.php:1120
 msgid "All articles"
-msgstr ""
+msgstr "Усе артыкулы"
 
 #: classes/rpc.php:622
 msgid "Fresh"
-msgstr ""
+msgstr "Нядаўнія"
 
 #: classes/rpc.php:625 classes/feeds.php:1124
 msgid "Recently read"
-msgstr ""
+msgstr "Нядаўна прачытаныя"
 
 #: classes/rpc.php:627
 msgid "Other"
-msgstr ""
+msgstr "Іншыя"
 
 #: classes/rpc.php:628
 msgid "Create label"
-msgstr ""
+msgstr "Стварыць пазнаку"
 
 #: classes/rpc.php:629 classes/pref/filters.php:659
 msgid "Create filter"
-msgstr ""
+msgstr "Стварыць фільтр"
 
 #: classes/rpc.php:630
 msgid "Un/collapse sidebar"
-msgstr ""
+msgstr "Згарнуць/разгарнуць бакавую паліцу"
 
 #: classes/rpc.php:631
 msgid "Show help dialog"
-msgstr ""
+msgstr "Адкрыць акно помачы"
 
 #: classes/rpc.php:766
 msgid "Shift"
-msgstr ""
+msgstr "Shift"
 
 #: classes/rpc.php:769
 msgid "Ctrl"
-msgstr ""
+msgstr "Ctrl"
 
 #: classes/rpc.php:794 plugins/af_psql_trgm/init.php:112
 #: plugins/share/init.php:274 js/PrefHelpers.js:491 js/Feeds.js:272
 #: js/CommonDialogs.js:273 js/PrefHelpers.js:66 js/PrefHelpers.js:814
 #: js/CommonFilters.js:101
 msgid "Close this window"
-msgstr ""
+msgstr "Зачыніць гэта вакно"
 
 #: classes/handler/public.php:277 classes/pref/prefs.php:1424
 #: include/login_form.php:132
 msgid "Default profile"
-msgstr ""
+msgstr "Стандартны профіль"
 
 #: classes/handler/public.php:389
 msgid "Incorrect username or password"
-msgstr ""
+msgstr "Няправільнае імя карыстальніка або пароль"
 
 #: classes/handler/public.php:441
 msgid "Password recovery"
-msgstr ""
+msgstr "Аднаўленне пароля"
 
 #: classes/handler/public.php:478 classes/handler/public.php:508
 #: classes/handler/public.php:568 classes/handler/public.php:685
@@ -553,254 +565,264 @@ msgstr ""
 #: plugins/bookmarklets/init.php:91 plugins/bookmarklets/init.php:136
 #: plugins/bookmarklets/init.php:154 plugins/bookmarklets/init.php:159
 msgid "Return to Tiny Tiny RSS"
-msgstr ""
+msgstr "Павярнуцца да Tiny Tiny RSS"
 
 #: classes/handler/public.php:481
 msgid ""
 "You will need to provide valid account name and email. Password reset link "
 "will be sent to your email address."
 msgstr ""
+"Неабходна увесці сапраўднае імя карыстальніка і адрас электроннай пошты. "
+"Спасылка для скідання пароля будзе адпраўлена на ваш адрас электроннай пошты."
 
 #: classes/handler/public.php:488 classes/pref/feeds.php:641
 #: plugins/bookmarklets/init.php:302 include/login_form.php:103
 #: js/CommonDialogs.js:543 js/PrefUsers.js:64
 msgid "Login:"
-msgstr ""
+msgstr "Імя карыстальніка:"
 
 #: classes/handler/public.php:493
 msgid "Email:"
-msgstr ""
+msgstr "E-mail:"
 
 #: classes/handler/public.php:501
 #, php-format
 msgid "How much is %d + %d:"
-msgstr ""
+msgstr "Колькі будзе %d плюс %d:"
 
 #: classes/handler/public.php:507 classes/pref/users.php:240
 msgid "Reset password"
-msgstr ""
+msgstr "Скінуць пароль"
 
 #: classes/handler/public.php:518
 msgid "Some of the required form parameters are missing or incorrect."
-msgstr ""
+msgstr "Некаторыя з неабходных параметраў няправільныя або не ўведзеныя."
 
 #: classes/handler/public.php:522 classes/handler/public.php:574
 msgid "Go back"
-msgstr ""
+msgstr "Назад"
 
 #: classes/handler/public.php:560
 msgid "[tt-rss] Password reset request"
-msgstr ""
+msgstr "[tt-rss] Запыт на скіданне пароля"
 
 #: classes/handler/public.php:570
 msgid "Sorry, login and email combination not found."
-msgstr ""
+msgstr "На жаль, карыстальнік з такім адрасам электроннай пошты не знойдзены."
 
 #: classes/handler/public.php:590
 msgid "Your access level is insufficient to run this script."
-msgstr ""
+msgstr "Ваш узровень доступу недастатковы для запуску гэтага скрыпта."
 
 #: classes/handler/public.php:652
 msgid "Database Updater"
-msgstr ""
+msgstr "Абнаўляльнік базы даных"
 
 #: classes/handler/public.php:665
 #, php-format
 msgid "Performing updates to version %d"
-msgstr ""
+msgstr "Выконваецца абнаўлення да версіі %d"
 
 #: classes/handler/public.php:680 classes/handler/public.php:707
 #: js/PrefHelpers.js:411 js/PrefHelpers.js:757
 msgid "Update"
-msgstr ""
+msgstr "Абнавіць"
 
 #: classes/handler/public.php:700
 #, php-format
 msgid "Database schema needs update to the latest version (%d to %d)."
-msgstr ""
+msgstr "Схема база даных патрабуе абнаўлення до апошняй версіі (з %d до %d)."
 
 #: classes/pref/labels.php:168
 #, php-format
 msgid "Created label <b>%s</b>"
-msgstr ""
+msgstr "Створана пазнака <b>%s</b>"
 
 #: classes/pref/labels.php:180 classes/pref/prefs.php:836
 #: classes/pref/prefs.php:1463 classes/pref/filters.php:649
 #: classes/pref/users.php:222 classes/pref/feeds.php:904
 #: js/CommonFilters.js:440 js/CommonFilters.js:473 js/CommonDialogs.js:236
 msgid "Select"
-msgstr ""
+msgstr "Выбраць"
 
 #: classes/pref/prefs.php:30 classes/pref/feeds.php:601
 msgid "General"
-msgstr ""
+msgstr "Агульныя"
 
 #: classes/pref/prefs.php:51
 msgid "Articles"
-msgstr ""
+msgstr "Артыкулы"
 
 #: classes/pref/prefs.php:65
 msgid "Digest"
-msgstr ""
+msgstr "Дайджэст"
 
 #: classes/pref/prefs.php:70
 msgid "Advanced"
-msgstr ""
+msgstr "Пашыраныя"
 
 #: classes/pref/prefs.php:81
 msgid "Debugging"
-msgstr ""
+msgstr "Наладка"
 
 #: classes/pref/prefs.php:87
 msgid "Never apply these tags automatically (comma-separated list)."
-msgstr ""
+msgstr "Ніколі не дадаваць гэтыя тэгі аўтаматычна (спіс, падзелены коскамі)."
 
 #: classes/pref/prefs.php:91
 msgid "Blacklisted tags"
-msgstr ""
+msgstr "Чорны спіс тэгаў"
 
 #: classes/pref/prefs.php:92
 msgid "Default language"
-msgstr ""
+msgstr "Стандартная мова"
 
 #: classes/pref/prefs.php:92
 msgid "Used for full-text search"
-msgstr ""
+msgstr "Выкарыстоўваецца для поўнатэкставага пошуку"
 
 #: classes/pref/prefs.php:93
+#, fuzzy
 msgid "Mark read on scroll"
-msgstr ""
+msgstr "Пазначаць як прачытанае пры прагортванні"
 
 #: classes/pref/prefs.php:93
+#, fuzzy
 msgid "Mark articles as read as you scroll past them"
-msgstr ""
+msgstr "Пазначаць артыкулы прачытанымі, калі вы прагортваеце ніжэй за ніх"
 
 #: classes/pref/prefs.php:94
 msgid "Always expand articles"
-msgstr ""
+msgstr "Заўсёды разгортваць артыкулы"
 
 #: classes/pref/prefs.php:95
 msgid "Combined mode"
-msgstr ""
+msgstr "Камбінаваны рэжым"
 
 #: classes/pref/prefs.php:95
 msgid "Show flat list of articles instead of separate panels"
 msgstr ""
+"Паказваць разгорнуты спіс артыкулаў (замест асобных паліц для загалоўкаў і "
+"тэксту)"
 
 #: classes/pref/prefs.php:96
 msgid "Confirm marking feeds as read"
-msgstr ""
+msgstr "Пацверджваць, калі каналы пазначаюцца прачытанымі"
 
 #: classes/pref/prefs.php:97
 msgid "Default update interval"
-msgstr ""
+msgstr "Стандартны інтэрвал абнаўлення"
 
 #: classes/pref/prefs.php:98
 msgid "Mark sent articles as read"
-msgstr ""
+msgstr "Пазначаць адпраўленыя артыкулы прачытанымі"
 
 #: classes/pref/prefs.php:99
 msgid "Enable digest"
-msgstr ""
+msgstr "Уключыць дайджэст па e-mail"
 
 #: classes/pref/prefs.php:99
 msgid "Send daily digest of new (and unread) headlines to your e-mail address"
 msgstr ""
+"Адпраўляць штодзённы агляд новых і непрачытаных артыкулаў на ваш адрас "
+"электроннай пошты"
 
 #: classes/pref/prefs.php:100
 msgid "Try to send around this time"
-msgstr ""
+msgstr "Спрабаваць высылаць каля гэтай гадзіны"
 
 #: classes/pref/prefs.php:100
 msgid "Time in UTC"
-msgstr ""
+msgstr "Час у зоне UTC"
 
 #: classes/pref/prefs.php:101
 msgid "Enable API"
-msgstr ""
+msgstr "Уключыць API"
 
 #: classes/pref/prefs.php:101
 msgid "Allows accessing this account through the API"
-msgstr ""
+msgstr "Дазваляе мець доступ да гэтага карыстальніка праз API"
 
 #: classes/pref/prefs.php:102
 msgid "Enable categories"
-msgstr ""
+msgstr "Уключыць катэгорыі"
 
 #: classes/pref/prefs.php:103
 msgid "Maximum age of fresh articles"
-msgstr ""
+msgstr "Час трактавання артыкула як нядаўняга (у гадзінах)"
 
 #: classes/pref/prefs.php:103
 msgid "hours"
-msgstr ""
+msgstr "гадзін"
 
 #: classes/pref/prefs.php:104
 msgid "Hide read feeds"
-msgstr ""
+msgstr "Схаваць прачытаныя каналы"
 
 #: classes/pref/prefs.php:105
 msgid "Always show special feeds"
-msgstr ""
+msgstr "Заўсёды паказваць спецыяльныя каналы"
 
 #: classes/pref/prefs.php:105
 msgid "While hiding read feeds"
-msgstr ""
+msgstr "Калі прачытаныя каналы схаваныя"
 
 #: classes/pref/prefs.php:106
 msgid "Long date format"
-msgstr ""
+msgstr "Доўгі фармат даты"
 
 #: classes/pref/prefs.php:106
 msgid ""
 "Syntax is identical to PHP <a href='http://php.net/manual/function.date."
 "php'>date()</a> function."
 msgstr ""
+"Выкарыстоўваецца сінтаксіс, ідэнтычны да функцыі PHP <a href='http://php.net/"
+"manual/function.date.php'>date()</a>."
 
 #: classes/pref/prefs.php:107
 msgid "Automatically show next feed"
-msgstr ""
+msgstr "Аўтаматычна паказваць наступны канал"
 
 #: classes/pref/prefs.php:107
 msgid "After marking one as read"
-msgstr ""
+msgstr "Пасля пазначэння каналу прачытаным"
 
 #: classes/pref/prefs.php:108
 msgid "Purge articles older than"
-msgstr ""
+msgstr "Выдаляць артыкулы, старэйшыя за"
 
 #: classes/pref/prefs.php:108
 msgid "<strong>days</strong> (0 disables)"
-msgstr ""
+msgstr "<strong>дзён</strong> („0” каб выключыць)"
 
 #: classes/pref/prefs.php:109
 msgid "Purge unread articles"
-msgstr ""
+msgstr "Выдаляць непрачытаныя артыкулы"
 
 #: classes/pref/prefs.php:110
 msgid "Short date format"
-msgstr ""
+msgstr "Кароткі фармат даты"
 
 #: classes/pref/prefs.php:111
 msgid "Show content preview in headlines"
-msgstr ""
+msgstr "Паказваць папярэдні прагляд ў спісу загалоўкаў"
 
 #: classes/pref/prefs.php:112
 msgid "SSL client certificate"
-msgstr ""
+msgstr "Кліенцкі SSL-сертыфікат"
 
 #: classes/pref/prefs.php:113 classes/pref/feeds.php:588
 #: js/CommonDialogs.js:462
 msgid "Do not embed media"
-msgstr ""
+msgstr "Не ўстаўляць медыя"
 
 #: classes/pref/prefs.php:114
 msgid "Time zone"
-msgstr ""
+msgstr "Часавы пояс"
 
 #: classes/pref/prefs.php:115
 msgid "Group by feed"
-msgstr ""
+msgstr "Групаваць па каналам"
 
 #: classes/pref/prefs.php:115
 msgid "Group multiple-feed output by originating feed"
@@ -808,11 +830,11 @@ msgstr ""
 
 #: classes/pref/prefs.php:116
 msgid "Language"
-msgstr ""
+msgstr "Мова"
 
 #: classes/pref/prefs.php:117
 msgid "Theme"
-msgstr ""
+msgstr "Стыль"
 
 #: classes/pref/prefs.php:118
 msgid "Don't enforce DISTINCT headlines"
@@ -820,15 +842,15 @@ msgstr ""
 
 #: classes/pref/prefs.php:118
 msgid "May produce duplicate entries"
-msgstr ""
+msgstr "Магчыма стварэнне дублікатаў артыкулаў"
 
 #: classes/pref/prefs.php:119
 msgid "Show article and feed IDs"
-msgstr ""
+msgstr "Паказваць ідэнтыфікатары артыкулаў і каналаў"
 
 #: classes/pref/prefs.php:119
 msgid "In the headlines buffer"
-msgstr ""
+msgstr "У буферы загалоўка"
 
 #: classes/pref/prefs.php:120
 msgid "Disable conditional counter updates"
@@ -836,31 +858,31 @@ msgstr ""
 
 #: classes/pref/prefs.php:120
 msgid "May increase server load"
-msgstr ""
+msgstr "Магчыма павялічаная нагрузка на сервер"
 
 #: classes/pref/prefs.php:121
 msgid "Grid view"
-msgstr ""
+msgstr "Выгляд сеткі"
 
 #: classes/pref/prefs.php:121
 msgid "On wider screens, if always expanded"
-msgstr ""
+msgstr "На шырокіх экранах, калі заўсёды разгорнута"
 
 #: classes/pref/prefs.php:222
 msgid "The configuration was saved."
-msgstr ""
+msgstr "Канфігурацыя захаваная."
 
 #: classes/pref/prefs.php:264
 msgid "Your personal data has been saved."
-msgstr ""
+msgstr "Вашы асабістыя даныя захаваныя."
 
 #: classes/pref/prefs.php:294
 msgid "Full name:"
-msgstr ""
+msgstr "Поўнае імя:"
 
 #: classes/pref/prefs.php:299 js/PrefUsers.js:98
 msgid "E-mail:"
-msgstr ""
+msgstr "E-mail:"
 
 #: classes/pref/prefs.php:307 classes/pref/feeds.php:670
 #: plugins/af_psql_trgm/init.php:193 plugins/note/init.php:51
@@ -869,23 +891,23 @@ msgstr ""
 #: js/CommonFilters.js:236 js/CommonFilters.js:320 js/CommonFilters.js:520
 #: js/PrefLabelTree.js:170 js/Article.js:358 js/PrefUsers.js:119
 msgid "Save"
-msgstr ""
+msgstr "Захаваць"
 
 #: classes/pref/prefs.php:358
 msgid "Old password:"
-msgstr ""
+msgstr "Стары пароль:"
 
 #: classes/pref/prefs.php:363 js/PrefUsers.js:84
 msgid "New password:"
-msgstr ""
+msgstr "Новы пароль:"
 
 #: classes/pref/prefs.php:368
 msgid "Confirm password:"
-msgstr ""
+msgstr "Пацверджанне пароля:"
 
 #: classes/pref/prefs.php:376
 msgid "Change password"
-msgstr ""
+msgstr "Змяніць пароль"
 
 #: classes/pref/prefs.php:383
 #, php-format
@@ -893,124 +915,126 @@ msgid ""
 "Authentication module used for this session (<b>%s</b>) does not provide an "
 "ability to set passwords."
 msgstr ""
+"Модуль аўтэнтыфікацыі, які выкарыстоўваецца для гэтай сесіі (<b>%s</b>), не "
+"дае магчымасці устанаўліваць паролі."
 
 #: classes/pref/prefs.php:400
 msgid "Generate password"
-msgstr ""
+msgstr "Стварыць пароль"
 
 #: classes/pref/prefs.php:406 classes/pref/feeds.php:938 js/PrefHelpers.js:227
 msgid "Remove selected"
-msgstr ""
+msgstr "Выдаліць выбранае"
 
 #: classes/pref/prefs.php:442 classes/pref/prefs.php:494
 msgid "Your password:"
-msgstr ""
+msgstr "Ваш пароль:"
 
 #: classes/pref/prefs.php:450
 msgid "Disable OTP"
-msgstr ""
+msgstr "Адключыць аднаразовыя паролі (OTP)"
 
 #: classes/pref/prefs.php:472
 msgid "OTP secret:"
-msgstr ""
+msgstr "Сакрэтны ключ OTP:"
 
 #: classes/pref/prefs.php:499
 msgid "Verification code:"
-msgstr ""
+msgstr "Код верыфікацыі:"
 
 #: classes/pref/prefs.php:507
 msgid "Enable OTP"
-msgstr ""
+msgstr "Уключыць аднаразовыя паролі (OTP)"
 
 #: classes/pref/prefs.php:521
 msgid "Personal data"
-msgstr ""
+msgstr "Асабістая інфармацыя"
 
 #: classes/pref/prefs.php:524
 msgid "Password"
-msgstr ""
+msgstr "Пароль"
 
 #: classes/pref/prefs.php:527
 msgid "App passwords"
-msgstr ""
+msgstr "Паролі прыкладанняў"
 
 #: classes/pref/prefs.php:530
 msgid "Authenticator (OTP)"
-msgstr ""
+msgstr "Аўтэнтыфікатар (OTP)"
 
 #: classes/pref/prefs.php:541
 msgid "Some preferences are only available in default profile."
-msgstr ""
+msgstr "Некаторыя налады даступныя толькі для стандартнага профілю."
 
 #: classes/pref/prefs.php:630
 msgid "default"
-msgstr ""
+msgstr "стандартна"
 
 #: classes/pref/prefs.php:638
 msgid "Customize"
-msgstr ""
+msgstr "Наладзіць карыстальніцкія стылі"
 
 #: classes/pref/prefs.php:640
 msgid "More themes..."
-msgstr ""
+msgstr "Больш стыляў..."
 
 #: classes/pref/prefs.php:671
 msgid "Preview"
-msgstr ""
+msgstr "Папярэдні прагляд"
 
 #: classes/pref/prefs.php:697
 msgid "Register"
-msgstr ""
+msgstr "Рэгістрацыя"
 
 #: classes/pref/prefs.php:701 classes/pref/system.php:101
 msgid "Clear"
-msgstr ""
+msgstr "Ачысціць"
 
 #: classes/pref/prefs.php:705 classes/pref/prefs.php:871
 #: plugins/bookmarklets/init.php:364 js/CommonDialogs.js:641
 msgid "More info..."
-msgstr ""
+msgstr "Больш інфармацыі..."
 
 #: classes/pref/prefs.php:713
 #, php-format
 msgid "Current server time: %s"
-msgstr ""
+msgstr "Бягучы час на серверы: %s"
 
 #: classes/pref/prefs.php:761
 msgid "Save configuration"
-msgstr ""
+msgstr "Захаваць канфігурацыю"
 
 #: classes/pref/prefs.php:764
 msgid "Save and exit"
-msgstr ""
+msgstr "Захаваць і выйсці"
 
 #: classes/pref/prefs.php:771 js/PrefHelpers.js:127
 msgid "Manage profiles"
-msgstr ""
+msgstr "Кіраваць профілямі"
 
 #: classes/pref/prefs.php:776
 msgid "Reset to defaults"
-msgstr ""
+msgstr "Аднавіць стандартныя значэнні"
 
 #: classes/pref/prefs.php:831 classes/pref/filters.php:645
 #: classes/pref/users.php:217 classes/pref/feeds.php:900 js/Feeds.js:644
 #: js/Feeds.js:639
 msgid "Search"
-msgstr ""
+msgstr "Пошук"
 
 #: classes/pref/prefs.php:839 classes/pref/prefs.php:1466
 #: classes/pref/filters.php:652 classes/pref/users.php:225
 #: classes/pref/feeds.php:907 js/CommonFilters.js:444 js/CommonFilters.js:476
 #: js/PrefFeedTree.js:506 js/PrefHelpers.js:187 js/Headlines.js:652
 msgid "All"
-msgstr ""
+msgstr "Усё"
 
 #: classes/pref/prefs.php:841 classes/pref/prefs.php:1468
 #: classes/pref/filters.php:654 classes/pref/users.php:227
 #: classes/pref/feeds.php:909 js/CommonFilters.js:446 js/CommonFilters.js:478
 #: js/CommonDialogs.js:241
 msgid "None"
-msgstr ""
+msgstr "Нічога"
 
 #: classes/pref/prefs.php:869
 #, php-format
@@ -1019,14 +1043,17 @@ msgid ""
 "data usage and origin server load resulting in a ban of your instance: <b>"
 "%s</b>"
 msgstr ""
+"Наступныя плагіны выкарыстоўваюць хукі для кантэнту кожнага канала. Гэта "
+"можа прывесці да празмернага выкарыстоўвання прапускной здольнасці сервера, "
+"што ў сваю чаргу можа прывесці да блакіроўкі вашай інсталяцыі: <b>%s</b>"
 
 #: classes/pref/prefs.php:885 js/CommonFilters.js:234
 msgid "More info"
-msgstr ""
+msgstr "Больш інфармацыі"
 
 #: classes/pref/prefs.php:888
 msgid "Enable selected"
-msgstr ""
+msgstr "Актываваць выбраныя плагіны"
 
 #: classes/pref/prefs.php:891
 msgid "Reload"
@@ -1034,49 +1061,49 @@ msgstr ""
 
 #: classes/pref/prefs.php:898
 msgid "Check for updates"
-msgstr ""
+msgstr "Праверыць наяўнасць абнаўленняў"
 
 #: classes/pref/prefs.php:905
 msgid "Install plugin"
-msgstr ""
+msgstr "Усталяваць плагін"
 
 #: classes/pref/prefs.php:918
 msgid "Personal data / Authentication"
-msgstr ""
+msgstr "Асабістая інфармацыя / аўтэнтыфікацыя"
 
 #: classes/pref/prefs.php:932 classes/pref/feeds.php:1067
 msgid "Plugins"
-msgstr ""
+msgstr "Плагіны"
 
 #: classes/pref/prefs.php:965
 msgid "Incorrect one time password"
-msgstr ""
+msgstr "Няправільны аднаразовы пароль"
 
 #: classes/pref/prefs.php:968 classes/pref/prefs.php:1006
 msgid "Incorrect password"
-msgstr ""
+msgstr "Няправільны пароль"
 
 #: classes/pref/prefs.php:1021
 #, php-format
 msgid "v%.2f, by %s"
-msgstr ""
+msgstr "v%.2f, ад %s"
 
 #: classes/pref/prefs.php:1034
 #, php-format
 msgid "v%s, by %s"
-msgstr ""
+msgstr "v%s, ад %s"
 
 #: classes/pref/prefs.php:1477
 msgid "Description"
-msgstr ""
+msgstr "Апісанне"
 
 #: classes/pref/prefs.php:1478
 msgid "Created"
-msgstr ""
+msgstr "Створана"
 
 #: classes/pref/prefs.php:1479
 msgid "Last used"
-msgstr ""
+msgstr "Апошняе выкарыстанне"
 
 #: classes/pref/prefs.php:1524
 #, php-format
@@ -1084,14 +1111,16 @@ msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
 "reference."
 msgstr ""
+"Быў створаны пароль <strong>%s</strong> для %s. Калі ласка, запамятайе яго "
+"для выкарыстання ў будучыні."
 
 #: classes/pref/system.php:24
 msgid "Test message from tt-rss"
-msgstr ""
+msgstr "Тэставае паведамленне ад tt-rss"
 
 #: classes/pref/system.php:82 js/PrefHelpers.js:615
 msgid "Refresh"
-msgstr ""
+msgstr "Абнавіць"
 
 #: classes/pref/system.php:87
 msgid "&lt;&lt;"
@@ -1100,7 +1129,7 @@ msgstr ""
 #: classes/pref/system.php:91
 #, php-format
 msgid "Page %d of %d"
-msgstr ""
+msgstr "Старонка %d з %d"
 
 #: classes/pref/system.php:96
 msgid "&gt;&gt;"
@@ -1108,64 +1137,64 @@ msgstr ""
 
 #: classes/pref/system.php:105
 msgid "Severity:"
-msgstr ""
+msgstr "Важнасць:"
 
 #: classes/pref/system.php:109
 msgid "Errors"
-msgstr ""
+msgstr "Памылкі"
 
 #: classes/pref/system.php:110
 msgid "Warnings"
-msgstr ""
+msgstr "Папярэджанні"
 
 #: classes/pref/system.php:111
 msgid "Everything"
-msgstr ""
+msgstr "Усё"
 
 #: classes/pref/system.php:121
 msgid "Error"
-msgstr ""
+msgstr "Памылка"
 
 #: classes/pref/system.php:122
 msgid "Filename"
-msgstr ""
+msgstr "Назва файла"
 
 #: classes/pref/system.php:123
 msgid "Message"
-msgstr ""
+msgstr "Паведамленне"
 
 #: classes/pref/system.php:125
 msgid "Date"
-msgstr ""
+msgstr "Дата"
 
 #: classes/pref/system.php:169
 msgid "Event log"
-msgstr ""
+msgstr "Журнал падзей"
 
 #: classes/pref/system.php:175
 msgid "Mail configuration"
-msgstr ""
+msgstr "Канфігурацыя e-mail"
 
 #: classes/pref/system.php:202
 msgid "To:"
-msgstr ""
+msgstr "Каму:"
 
 #: classes/pref/system.php:204
 msgid "Send test email"
-msgstr ""
+msgstr "Адправіць тэставае паведамленне"
 
 #: classes/pref/system.php:210
 msgid "PHP Information"
-msgstr ""
+msgstr "Інфармацыя пра PHP"
 
 #: classes/pref/filters.php:197 classes/pref/filters.php:208
 #: classes/pref/filters.php:426 classes/pref/filters.php:847
 msgid "All feeds"
-msgstr ""
+msgstr "Усе каналы"
 
 #: classes/pref/filters.php:219 classes/pref/filters.php:446
 msgid "(inverse)"
-msgstr ""
+msgstr "(адваротны)"
 
 #: classes/pref/filters.php:215 classes/pref/filters.php:445
 #, php-format
@@ -1174,92 +1203,94 @@ msgstr ""
 
 #: classes/pref/filters.php:661
 msgid "Combine"
-msgstr ""
+msgstr "Камбінаваць"
 
 #: classes/pref/filters.php:663 classes/pref/feeds.php:921
 #: classes/pref/feeds.php:936
 msgid "Reset sort order"
-msgstr ""
+msgstr "Скінуць парадак сартавання"
 
 #: classes/pref/filters.php:665 classes/pref/users.php:236
 #: js/CommonDialogs.js:578 js/CommonFilters.js:518
 msgid "Remove"
-msgstr ""
+msgstr "Выдаліць"
 
 #: classes/pref/filters.php:720
 msgid "[No caption]"
-msgstr ""
+msgstr "[Няма загалоўка]"
 
 #: classes/pref/filters.php:722
 #, php-format
 msgid "%s (%d rule)"
 msgid_plural "%s (%d rules)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s (%d правіла)"
+msgstr[1] "%s (%d правілы)"
+msgstr[2] "%s (%d правілаў)"
 
 #: classes/pref/filters.php:736
 msgid "matches any rule"
-msgstr ""
+msgstr "задавальняе любому правілу"
 
 #: classes/pref/filters.php:737
 msgid "inverse"
-msgstr ""
+msgstr "адваротны"
 
 #: classes/pref/filters.php:740
 #, php-format
 msgid "%s (+%d action)"
 msgid_plural "%s (+%d actions)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s (+%d дзеянне)"
+msgstr[1] "%s (+%d дзеянні)"
+msgstr[2] "%s (+%d дзеянняў)"
 
 #: classes/pref/filters.php:900 classes/pref/feeds.php:247
 #: classes/digest.php:116 classes/opml.php:544 classes/feeds.php:1250
 #: include/controls.php:177
 msgid "Uncategorized"
-msgstr ""
+msgstr "Без катэгорыі"
 
 #: classes/pref/users.php:56
 msgid "Registered"
-msgstr ""
+msgstr "Зарэгістраваны"
 
 #: classes/pref/users.php:61
 msgid "Last logged in"
-msgstr ""
+msgstr "Апошні ўваход"
 
 #: classes/pref/users.php:66
 msgid "Subscribed feeds"
-msgstr ""
+msgstr "Падпісаны каналы"
 
 #: classes/pref/users.php:71
 msgid "Stored articles"
-msgstr ""
+msgstr "Захаваныя артыкулы"
 
 #: classes/pref/users.php:101 classes/userhelper.php:223
 msgid "User not found"
-msgstr ""
+msgstr "Карыстальнік не знойдзены"
 
 #: classes/pref/users.php:171
 #, php-format
 msgid "Added user %s with password %s"
-msgstr ""
+msgstr "Дададзены карыстальнік <b>%s</b> з паролем <b>%s</b>"
 
 #: classes/pref/users.php:174
 #, php-format
 msgid "Could not create user %s"
-msgstr ""
+msgstr "Немагчыма стварыць карыстальніка %s"
 
 #: classes/pref/users.php:177
 #, php-format
 msgid "User %s already exists."
-msgstr ""
+msgstr "Карыстальнік %s ужо існуе."
 
 #: classes/pref/users.php:232
 msgid "Create user"
-msgstr ""
+msgstr "Стварыць карыстальніка"
 
 #: classes/pref/users.php:272
 msgid "Click to edit"
-msgstr ""
+msgstr "Клікніце как змяніць"
 
 #: classes/pref/feeds.php:77 classes/pref/feeds.php:233
 #: classes/pref/feeds.php:281 classes/pref/feeds.php:287
@@ -1267,26 +1298,29 @@ msgstr ""
 #, php-format
 msgid "(%d feed)"
 msgid_plural "(%d feeds)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(%d канал)"
+msgstr[1] "(%d каналы)"
+msgstr[2] "(%d каналаў)"
 
 #: classes/pref/feeds.php:533
 #, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(%d дзень)"
+msgstr[1] "(%d дні)"
+msgstr[2] "(%d дзён)"
 
 #: classes/pref/feeds.php:535 classes/pref/feeds.php:583
 msgid "Disabled"
-msgstr ""
+msgstr "Вымкнута"
 
 #: classes/pref/feeds.php:539
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d дзень"
+msgstr[1] "%d дні"
+msgstr[2] "%d дзён"
 
 #: classes/pref/feeds.php:565
 msgid "Check to enable field"
@@ -1295,53 +1329,53 @@ msgstr ""
 #: classes/pref/feeds.php:581
 #, php-format
 msgid "(%d days)"
-msgstr ""
+msgstr "(%d дзён)"
 
 #: classes/pref/feeds.php:586 js/CommonDialogs.js:460
 msgid "Include in e-mail digest"
-msgstr ""
+msgstr "Дадаць да e-mail дайдэсту"
 
 #: classes/pref/feeds.php:587 js/CommonDialogs.js:461
 msgid "Always display image attachments"
-msgstr ""
+msgstr "Заўсёды паказваць графічныя прымацаванні"
 
 #: classes/pref/feeds.php:589 js/CommonDialogs.js:463
 msgid "Cache media"
-msgstr ""
+msgstr "Захоўваць медыя (кэш)"
 
 #: classes/pref/feeds.php:590 js/CommonDialogs.js:464
 msgid "Mark updated articles as unread"
-msgstr ""
+msgstr "Пазначаць абноўленыя артыкулы як непрачытаныя"
 
 #: classes/pref/feeds.php:605 js/PrefFeedTree.js:426 js/CommonDialogs.js:500
 msgid "Place in category:"
-msgstr ""
+msgstr "Змясціць у катэгорыю:"
 
 #: classes/pref/feeds.php:613 js/Feeds.js:626 js/CommonDialogs.js:516
 msgid "Language:"
-msgstr ""
+msgstr "Мова:"
 
 #: classes/pref/feeds.php:624 js/CommonDialogs.js:526
 msgid "Update interval:"
-msgstr ""
+msgstr "Інтэрвал абнаўлення:"
 
 #: classes/pref/feeds.php:631 js/CommonDialogs.js:530
 msgid "Article purging:"
-msgstr ""
+msgstr "Выдаленне артыкулаў:"
 
 #: classes/pref/feeds.php:638 plugins/auth_internal/init.php:101
 #: js/PrefFeedTree.js:434
 msgid "Authentication"
-msgstr ""
+msgstr "Аўтэнтыфікацыя"
 
 #: classes/pref/feeds.php:647 plugins/bookmarklets/init.php:309
 #: include/login_form.php:112 js/CommonDialogs.js:549
 msgid "Password:"
-msgstr ""
+msgstr "Пароль:"
 
 #: classes/pref/feeds.php:654
 msgid "Options"
-msgstr ""
+msgstr "Опцыі"
 
 #: classes/pref/feeds.php:671 plugins/note/init.php:52
 #: plugins/bookmarklets/init.php:282 js/CommonDialogs.js:587
@@ -1349,104 +1383,104 @@ msgstr ""
 #: js/CommonFilters.js:525 js/Feeds.js:640 js/PrefFeedTree.js:454
 #: js/PrefHelpers.js:232 js/PrefHelpers.js:306
 msgid "Cancel"
-msgstr ""
+msgstr "Скасаваць"
 
 #: classes/pref/feeds.php:876
 msgid "Feeds with errors"
-msgstr ""
+msgstr "Каналы з памылками"
 
 #: classes/pref/feeds.php:882
 msgid "Inactive feeds"
-msgstr ""
+msgstr "Неактыўныя каналы"
 
 #: classes/pref/feeds.php:919
 msgid "Edit selected feeds"
-msgstr ""
+msgstr "Змяніць выбраныя каналы"
 
 #: classes/pref/feeds.php:923 js/PrefFeedTree.js:396
 msgid "Batch subscribe"
-msgstr ""
+msgstr "Масавая падпіска"
 
 #: classes/pref/feeds.php:931
 msgid "Categories"
-msgstr ""
+msgstr "Катэгорыі"
 
 #: classes/pref/feeds.php:934
 msgid "Add category"
-msgstr ""
+msgstr "Дадаць катэгорыю"
 
 #: classes/pref/feeds.php:987
 msgid "Choose file..."
-msgstr ""
+msgstr "Выберыце файл..."
 
 #: classes/pref/feeds.php:995
 msgid "Import OPML"
-msgstr ""
+msgstr "Імпартаваць OPML"
 
 #: classes/pref/feeds.php:1006
 msgid "Export OPML"
-msgstr ""
+msgstr "Экспартаваць OPML"
 
 #: classes/pref/feeds.php:1011
 msgid "Include tt-rss settings"
-msgstr ""
+msgstr "Дадаць налады tt-rss"
 
 #: classes/pref/feeds.php:1027
 msgid "Display URL"
-msgstr ""
+msgstr "Паказаць URL"
 
 #: classes/pref/feeds.php:1032
 msgid "Clear all generated URLs"
-msgstr ""
+msgstr "Ачысціць усе створаныя URL"
 
 #: classes/pref/feeds.php:1044
 msgid "My feeds"
-msgstr ""
+msgstr "Мае каналы"
 
 #: classes/pref/feeds.php:1049
 msgid "OPML"
-msgstr ""
+msgstr "OPML"
 
 #: classes/pref/feeds.php:1054
 msgid "Sharing"
-msgstr ""
+msgstr "Распаўсюджванне"
 
 #: classes/userhelper.php:221
 #, php-format
 msgid "Changed password of user %s to %s"
-msgstr ""
+msgstr "Зменены пароль карыстальніка %s на %s"
 
 #: classes/opml.php:28 classes/opml.php:32
 msgid "OPML Utility"
-msgstr ""
+msgstr "Утыліта OPML"
 
 #: classes/opml.php:36
 msgid "Importing OPML..."
-msgstr ""
+msgstr "Імпартаванне OPML..."
 
 #: classes/opml.php:41
 msgid "Return to preferences"
-msgstr ""
+msgstr "Вярнуцца да налад"
 
 #: classes/opml.php:321
 #, php-format
 msgid "Adding feed: %s"
-msgstr ""
+msgstr "Дадаю канал: %s"
 
 #: classes/opml.php:341
 #, php-format
 msgid "Duplicate feed: %s"
-msgstr ""
+msgstr "Канал ужо існуе: %s"
 
 #: classes/opml.php:355
 #, php-format
 msgid "Adding label %s"
-msgstr ""
+msgstr "Дадаю пазнаку %s"
 
 #: classes/opml.php:358
 #, php-format
 msgid "Duplicate label: %s"
-msgstr ""
+msgstr "Пазнака ужо існуе: %s"
 
 #: classes/opml.php:370
 #, php-format
@@ -1528,6 +1562,9 @@ msgid ""
 "from article header context menu (applies to all selected articles) or use a "
 "filter."
 msgstr ""
+"Не знойдзена ніводнага артыкула. Вы можаце прызначыць пазнакі ўручную з "
+"назвы артыкула з дапамогай кантэкстнага меню (прымяняецца да ўсіх выбраных "
+"артыкулаў) або выкарыстаць фільтр."
 
 #: classes/feeds.php:368
 msgid "No articles found to display."
@@ -1745,7 +1782,7 @@ msgstr ""
 
 #: plugins/bookmarklets/init.php:271
 msgid "Labels:"
-msgstr ""
+msgstr "Пазнакі:"
 
 #: plugins/bookmarklets/init.php:281
 msgid "Share"
@@ -1837,7 +1874,7 @@ msgstr ""
 
 #: plugins/toggle_sidebar/init.php:27
 msgid "Toggle sidebar"
-msgstr ""
+msgstr "Пераключыць бакавую паліцу"
 
 #: plugins/share/init.php:42
 msgid "Article unshared"
@@ -1968,7 +2005,7 @@ msgstr ""
 
 #: js/PrefLabelTree.js:71
 msgid "Edit label"
-msgstr ""
+msgstr "Змяніць пазнаку"
 
 #: js/PrefLabelTree.js:143
 msgid "Foreground:"
@@ -1980,19 +2017,19 @@ msgstr ""
 
 #: js/PrefLabelTree.js:189
 msgid "Reset selected labels to default colors?"
-msgstr ""
+msgstr "Аднавіць выбраныя пазнакі да стандартных колераў?"
 
 #: js/PrefLabelTree.js:202 js/PrefLabelTree.js:222
 msgid "No labels selected."
-msgstr ""
+msgstr "Не выбрана ніводная пазнака."
 
 #: js/PrefLabelTree.js:209
 msgid "Remove selected labels?"
-msgstr ""
+msgstr "Выдаліць выбраныя пазнакі?"
 
 #: js/PrefLabelTree.js:210
 msgid "Removing selected labels..."
-msgstr ""
+msgstr "Выдаленне выбраных пазнак..."
 
 #: js/App.js:411
 msgid "Keyboard shortcuts"
@@ -2194,7 +2231,7 @@ msgstr ""
 
 #: js/CommonDialogs.js:283
 msgid "Please enter label caption:"
-msgstr ""
+msgstr "Калі ласка, увядзіце загаловак пазнакі:"
 
 #: js/CommonDialogs.js:305
 msgid "Removing feed..."
@@ -2452,6 +2489,8 @@ msgid ""
 "If you have imported labels and/or filters, you might need to reload "
 "preferences to see your new data."
 msgstr ""
+"Калі вы імпартавалі пазнакі і/або фільтры, мажліва вам трэба перазагрузіць "
+"налады каб пабачыць новыя даныя."
 
 #: js/Headlines.js:642
 msgid "Cancel search"
@@ -2528,11 +2567,11 @@ msgstr ""
 
 #: js/Headlines.js:1473
 msgid "Assign label"
-msgstr ""
+msgstr "Ужыць пазнаку"
 
 #: js/Headlines.js:1478
 msgid "Remove label"
-msgstr ""
+msgstr "Выдаліць пазнаку"
 
 #: js/Headlines.js:1515
 msgid "Select articles in group"

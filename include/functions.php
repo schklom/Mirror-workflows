@@ -57,6 +57,7 @@
 		$t = array(
 					"auto"  => __("Detect automatically"),
 					"ar_SA" => "العربيّة (Arabic)",
+					"be"    => "Belarusian",
 					"bg_BG" => "Bulgarian",
 					"da_DA" => "Dansk",
 					"ca_CA" => "Català",

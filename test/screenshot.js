@@ -18,8 +18,8 @@ constants.website_origin = origin
 const dimensions = new Map([
 	["firefox", {
 		scrollbar: 12,
-		heightDifference: 74,
-		widthDifference: 0
+		heightDifference: 74+12,
+		widthDifference: 0 // 12
 	}],
 	["chrome", {
 		scrollbar: 15,
@@ -82,6 +82,7 @@ function exec(command) {
 
 			if (scrollNumber > 1) {
 				await driver.executeScript(`window.scrollByPages(1)`)
+				await new Promise(resolve => setTimeout(resolve, 400)) // magic :( I didn't always need this
 			}
 
 			const finalExists = await fs.access(screenPath("final")).then(() => true).catch(() => false)
@@ -91,6 +92,7 @@ function exec(command) {
 			const message = `equal screens: ${filenameWithScroll}`
 			tap.test(message, async childTest => {
 				const image = await Jimp.read(screenshot)
+				console.log("screenshot size", {width: image.bitmap.width, height: image.bitmap.height}, "crop size", command.size)
 				image.crop(0, 0, command.size.width, command.size.height) // crop out page scrollbar
 
 				if (finalExists) {

@@ -9,15 +9,15 @@
     "assistant": "cd src/site && node assistant.js",
     "build-lang": "cd src/lang/utils && node build_base.js",
     "test": "tap",
-    "upload-test-files": "rsync -a src/lib/utils/saved_requests/files/ debib:meta/saved_requests; rsync -a test/screenshots/final/ debib:meta/screenshots",
+    "upload-test-files": "rsync -a src/lib/utils/saved_requests/files/ ipib:meta/saved_requests; rsync -a test/screenshots/final/ ipib:meta/screenshots",
     "download-test-files": "bash -c 'mkdir -p test/screenshots/{diff,final,staging} && rm test/screenshots/final/* && wget -q -r -nd -np -P test/screenshots/final -R html -R tmp https://meta.bibliogram.art/screenshots/'"
   },
   "keywords": [],
   "author": "",
   "license": "AGPL-3.0-only",
   "dependencies": {
-    "better-sqlite3": "^7.4.4",
-    "cookie": "^0.4.1",
+    "better-sqlite3": "^7.5.1",
+    "cookie": "^0.5.0",
     "fast-html-parser": "^1.0.1",
     "feed": "git+https://git.sr.ht/~cadence/nodejs-feed#3dde82f8296d7a6f5659323e497e0c684f03ab71",
     "get-stream": "^6.0.1",
@@ -25,10 +25,10 @@
     "is-in-subnet": "^4.0.1",
     "mixin-deep": "^2.0.1",
     "node-dir": "^0.1.17",
-    "node-fetch": "^2.6.5",
+    "node-fetch": "^2.6.7",
     "pinski": "git+https://git.sr.ht/~cadence/nodejs-pinski#2a5a025a974bd5cbb81bae32ec4d5c247cec0d42",
     "pug": "^3.0.2",
-    "semver": "^7.3.5",
+    "semver": "^7.3.7",
     "socks-proxy-agent": "git+https://git.sr.ht/~cadence/nodejs-socks-proxy-agent#5eef50a01667bd5c6b5626fb8e206232152dfbee"
   },
   "optionalDependencies": {
@@ -37,8 +37,8 @@
   },
   "devDependencies": {
     "jimp": "^0.16.1",
-    "selenium-webdriver": "^4.0.0",
-    "tap": "^15.0.10",
-    "why-is-node-running": "^2.2.0"
+    "selenium-webdriver": "^4.1.1",
+    "tap": "^16.0.1",
+    "why-is-node-running": "^2.2.1"
   }
 }

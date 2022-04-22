@@ -1,4 +1,4 @@
-name: Sync Gadgetbridge repo
+name: Gadgetbridge repo sync
 
 on:
   # Triggers the workflow on push or pull request events but only for the main branch

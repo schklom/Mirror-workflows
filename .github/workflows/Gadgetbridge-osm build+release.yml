@@ -35,4 +35,3 @@ jobs:
           #files: ./app/build/outputs/apk/app-debug.apk
           files: |
             ./app/build/outputs/apk/main/release/app-main-release-unsigned.apk
-            ./app/build/outputs/apk/main/release/output-metadata.json

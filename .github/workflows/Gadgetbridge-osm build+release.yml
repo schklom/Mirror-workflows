@@ -23,8 +23,8 @@ jobs:
         run: sudo apt-get install openjdk-11-jdk git adb -y
       - name: Build apk
         run: ./gradlew --no-daemon assembleDebug
-      - name: LS
-        run: ls -AlhR app/build/outputs
+      #- name: LS
+        #run: ls -AlhR app/build/outputs
       ####- name: Delete previous release
         ####run: git push --delete origin Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.LOCALTAG }}
       - name: Release apk

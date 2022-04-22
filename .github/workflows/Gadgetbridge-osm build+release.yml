@@ -50,8 +50,8 @@ jobs:
         run: ./gradlew --no-daemon assembleDebug
       #- name: LS
         #run: ls -AlhR app/build/outputs
-      - name: Delete previous release
-        run: git push --delete origin Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.LOCALTAG }}
+      #- name: Delete previous release
+      #  run: git push --delete origin Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.LOCALTAG }}
       - name: Release apk
         uses: softprops/action-gh-release@v1
         with:

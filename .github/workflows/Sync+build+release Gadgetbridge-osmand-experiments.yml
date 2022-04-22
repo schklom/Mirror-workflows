@@ -21,7 +21,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: 'Gadgetbridge-osmand-experiments' # branch
+          repository: 'schklom/Gadgetbridge-osm'
+          ####ref: 'Gadgetbridge-osmand-experiments' # branch
+          ref: 'osmand-experiments' # branch
       - name: set local and remote latest release tag + commit id + tag name as environment variables
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
@@ -43,8 +45,10 @@ jobs:
         with:
           source_repo: "https://codeberg.org/Freeyourgadget/Gadgetbridge.git"
           source_branch: "osmand-experiments"
-          destination_repo: "git@github.com:schklom/Mirror-workflows.git"
-          destination_branch: "Gadgetbridge-osmand-experiments"
+          ####destination_repo: "git@github.com:schklom/Mirror-workflows.git"
+          destination_repo: "git@github.com:schklom/Gadgetbridge-osm.git"
+          ####destination_branch: "Gadgetbridge-osmand-experiments"
+          destination_branch: "osmand-experiments"
           destination_ssh_private_key: ${{ secrets.GITSYNCACTION }}
   
   update_repo:
@@ -54,7 +58,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: 'Gadgetbridge-osmand-experiments'          
+          repository: 'schklom/Gadgetbridge-osm'
+          ####ref: 'Gadgetbridge-osmand-experiments' # branch
+          ref: 'osmand-experiments' # branch
       - name: Resolve conflicts REMOVE THIS WHEN OSM-EXPERIMENTS REPO PULLS THE MASTER BRANCH
         run: |
           echo >> app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/DeviceCoordinator.java
@@ -65,8 +71,10 @@ jobs:
       #    commit_message: Resolve osm-experiments & master branch conflicts
       - name: Commit and pull (rebase)
         run: |
-          git config user.name "schklom"
-          git config user.email "schklom@users.noreply.github.com"
+          ####git config user.name "schklom"
+          git config user.name github-actions
+          ####git config user.email "schklom@users.noreply.github.com"
+          git config user.email github-actions@github.com
           git add app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/DeviceCoordinator.java
           git add app/src/main/java/nodomain/freeyourgadget/gadgetbridge/devices/AbstractDeviceCoordinator.java
           git commit -m "resolve merge conflicts"
@@ -92,8 +100,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          #repository: 'schklom/Gadgetbridge-osmand-experiments'
-          ref: 'Gadgetbridge-osmand-experiments' # branch
+          repository: 'schklom/Gadgetbridge-osm'
+          ####ref: 'Gadgetbridge-osmand-experiments' # branch
+          ref: 'osmand-experiments' # branch
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
       - name: Setup JDK+Android
         run: sudo apt-get install openjdk-11-jdk git adb -y

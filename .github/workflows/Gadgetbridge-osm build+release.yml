@@ -34,3 +34,4 @@ jobs:
           tag_name: Gadgetbridge-osmand-experiments
           #files: ./app/build/outputs/apk/app-debug.apk
           files: ./app/build/outputs/apk/main/debug/app-main-debug.apk
+          repository: 'schklom/Gadgetbridge-osm'

@@ -8,6 +8,31 @@ on:
   workflow_dispatch:
 
 jobs:
+  get_commit_and_tag:
+    #if: ${{ false }}  # disable for now
+    runs-on: ubuntu-latest
+    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    outputs:
+      REMOTETAG: ${{ steps.commits.outputs.SETREMOTETAG }}
+      LOCALTAG: ${{ steps.commits.outputs.SETLOCALTAG }}
+      ####REMOTECOMMIT: ${{ steps.commits.outputs.SETREMOTECOMMIT }}
+      ####LOCALCOMMIT: ${{ steps.commits.outputs.SETLOCALCOMMIT }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repository: 'schklom/Gadgetbridge-osm'
+          ####ref: 'Gadgetbridge-osmand-experiments' # branch
+          ref: 'osmand-experiments' # branch
+      - name: set local and remote latest release tag + commit id + tag name as environment variables
+        id: commits
+        # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+        run: |
+          echo "::set-output name=SETREMOTETAG::$(git ls-remote --tags --sort=version:refname https://codeberg.org/Freeyourgadget/Gadgetbridge.git | tail -n 1 | awk '{ print $2 }' | cut -c 11-)"
+          echo "::set-output name=SETLOCALTAG::$(git ls-remote --tags --sort=version:refname https://github.com/schklom/Gadgetbridge-osm.git | tail -n 1 | awk '{ print $2 }' | cut -c 43-)"
+          ####echo "::set-output name=SETREMOTECOMMIT::$(git ls-remote --heads https://codeberg.org/Freeyourgadget/Gadgetbridge.git | grep osm | awk '{ print $1 }')"
+          ####echo "::set-output name=SETLOCALCOMMIT::$(cat last_sync_with_original_repo_commit_id)"
+
   build_gadgetbridge:
     #needs: [get_commit_and_tag]
     runs-on: ubuntu-latest
@@ -25,8 +50,8 @@ jobs:
         run: ./gradlew --no-daemon assembleDebug
       #- name: LS
         #run: ls -AlhR app/build/outputs
-      ####- name: Delete previous release
-        ####run: git push --delete origin Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.LOCALTAG }}
+      - name: Delete previous release
+        run: git push --delete origin Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.LOCALTAG }}
       - name: Release apk
         uses: softprops/action-gh-release@v1
         with:

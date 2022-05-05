@@ -11,7 +11,7 @@ The Actions are defined in the directory .github/workflows. Secrets are used for
 - Feedropolis
 - Spreed
 - TT-RSS
-- Bibliogram
+- ~Bibliogram~ (c.f. https://todo.sr.ht/~cadence/bibliogram-issues/51#event-174552)
 - FindMyDeviceServer
 - Mango
 - Home-Assistant-Extra

@@ -27,11 +27,11 @@ jobs:
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         run: |
-          echo "::set-output name=SETREMOTE_ENGINES::$(git ls-remote https://git.sr.ht/~metalune/simplytranslate_engines HEAD | awk '{ print $1 }')"
+          echo "::set-output name=SETREMOTE_ENGINES::$(git ls-remote https://codeberg.org/SimpleWeb/SimplyTranslate-Engines HEAD | awk '{ print $1 }')"
           echo "::set-output name=SETLOCAL_ENGINES::$(cat last_sync_with_original_repo_commit_id_engines)"
-          echo "::set-output name=SETREMOTE_WEB::$(git ls-remote https://git.sr.ht/~metalune/simplytranslate_web HEAD | awk '{ print $1 }')"
+          echo "::set-output name=SETREMOTE_WEB::$(git ls-remote https://codeberg.org/SimpleWeb/SimplyTranslate-Web HEAD | awk '{ print $1 }')"
           echo "::set-output name=SETLOCAL_WEB::$(cat last_sync_with_original_repo_commit_id_web)"
-          echo "::set-output name=SETREMOTE_DOCKER::$(git ls-remote https://git.sr.ht/~metalune/simplytranslate_docker HEAD | awk '{ print $1 }')"
+          echo "::set-output name=SETREMOTE_DOCKER::$(git ls-remote https://codeberg.org/SimpleWeb/SimplyTranslate-Docker HEAD | awk '{ print $1 }')"
           echo "::set-output name=SETLOCAL_DOCKER::$(cat last_sync_with_original_repo_commit_id_docker)"
   
   repo_sync:
@@ -59,11 +59,11 @@ jobs:
         with:
           ref: 'SimplyTranslate' # branch
       - name: get most recent commit id on original repo, for next comparison on sync PART 1
-        run: git ls-remote https://git.sr.ht/~metalune/simplytranslate_engines HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_engines
+        run: git ls-remote https://codeberg.org/SimpleWeb/SimplyTranslate-Engines HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_engines
       - name: get most recent commit id on original repo, for next comparison on sync PART 2
-        run: git ls-remote https://git.sr.ht/~metalune/simplytranslate_web HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_web
+        run: git ls-remote https://codeberg.org/SimpleWeb/SimplyTranslate-Web HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_web
       - name: get most recent commit id on original repo, for next comparison on sync PART 3
-        run: git ls-remote https://git.sr.ht/~metalune/simplytranslate_docker HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_docker
+        run: git ls-remote https://codeberg.org/SimpleWeb/SimplyTranslate-Docker HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_docker
       # https://packages.ubuntu.com/search?suite=default&section=all&arch=arm64&keywords=g%2B%2B+linux+gnu&searchon=names
       - name: Replace g++-multilib-i686-linux-gnu with g++-arm-linux-gnueabihf in the Dockerfile
         run: sed -i 's/g++-multilib-i686-linux-gnu/g++-arm-linux-gnueabihf/' web/Dockerfile

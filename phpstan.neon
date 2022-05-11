@@ -1,5 +1,6 @@
 parameters:
    level: 6
+   reportUnmatchedIgnoredErrors: false
    ignoreErrors:
       - '#Constant.*\b(SUBSTRING_FOR_DATE|SCHEMA_VERSION|SELF_USER_AGENT|LABEL_BASE_INDEX|PLUGIN_FEED_BASE_INDEX)\b.*not found#'
       - '#Comparison operation ">" between int<1, max> and 0 is always true.#'

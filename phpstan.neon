@@ -13,6 +13,8 @@ parameters:
       - node_modules/*
       - vendor/**/tests/*
       - vendor/**/test/*
+      - vendor/sebastian/*
+      - lib/dojo-src/*
       - plugins/**/tests/*
       - plugins/**/Test/*
       - plugins.local/**/tests/*

@@ -50,12 +50,6 @@ type locationData struct {
 	Lat      string `json:"lat"`
 }
 
-type locationDataSize struct {
-	AccessToken        string
-	DataLength         int
-	DataBeginningIndex int
-}
-
 type registrationData struct {
 	HashedPassword string `'json:"hashedPassword"`
 	PubKey         string `'json:"pubKey"`
@@ -84,7 +78,7 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 	}
 	index, _ := strconv.Atoi(request.Data)
 	if index == -1 {
-		index, _ = uio.GetLocationSize(id)
+		index = uio.GetLocationSize(id)
 	}
 	data := uio.GetLocation(id, index)
 	w.Header().Set("Content-Type", "application/json")
@@ -156,9 +150,9 @@ func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	highest, smallest := uio.GetLocationSize(id)
+	highest := uio.GetLocationSize(id)
 
-	dataSize := locationDataSize{DataLength: highest, DataBeginningIndex: smallest}
+	dataSize := DataPackage{Data: string(highest)}
 	result, _ := json.Marshal(dataSize)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(result)

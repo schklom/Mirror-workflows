@@ -1,7 +1,6 @@
 var map, markers;
 
 var newestLocationDataIndex;
-var smallestLocationDataIndex;
 var currentLocationDataIndx = 0;
 var currentId;
 var keyTemp;
@@ -146,7 +145,6 @@ function locate(index, password) {
                     })
                     .then(function (json) {
                         newestLocationDataIndex = json.DataLength;
-                        smallestLocationDataIndex = json.DataBeginningIndex;
                         if (index == -1 || index > newestLocationDataIndex) {
                             index = newestLocationDataIndex;
                             currentLocationDataIndx = newestLocationDataIndex;
@@ -252,7 +250,6 @@ function locate(index, password) {
                                                             .then(function (json) {
                                                                 if (newestLocationDataIndex < json.DataLength) {
                                                                     newestLocationDataIndex = json.DataLength;
-                                                                    smallestLocationDataIndex = json.DataBeginningIndex
                                                                     var toasted = new Toasted({
                                                                         position: 'top-center',
                                                                         duration: 15000
@@ -321,7 +318,7 @@ function switchWithKeys(event) {
 }
 
 function locateOlder() {
-    if (keyTemp != null && currentLocationDataIndx > smallestLocationDataIndex) {
+    if (keyTemp != null && currentLocationDataIndx > 0) {
         currentLocationDataIndx -= 1;
         locate(currentLocationDataIndx, "");
     } else {

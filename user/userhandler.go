@@ -77,9 +77,9 @@ func (u *UserIO) GetPicture(id string) string {
 	return user.Pictures[0]
 }
 
-func (u *UserIO) GetLocationSize(id string) (int, int) {
+func (u *UserIO) GetLocationSize(id string) int {
 	user := u.UB.GetByID(id)
-	return len(user.LocationData) - 1, 0
+	return len(user.LocationData) - 1
 }
 
 func (u *UserIO) GetPrivateKey(id string) string {

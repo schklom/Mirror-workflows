@@ -69,12 +69,17 @@ func (u *UserIO) GetLocation(id string, pos int) string {
 	return user.LocationData[pos]
 }
 
-func (u *UserIO) GetPicture(id string) string {
+func (u *UserIO) GetPicture(id string, pos int) string {
 	user := u.UB.GetByID(id)
 	if len(user.Pictures) == 0 {
 		return "Picture not found"
 	}
-	return user.Pictures[0]
+	return user.Pictures[pos]
+}
+
+func (u *UserIO) GetPictureSize(id string) int {
+	user := u.UB.GetByID(id)
+	return len(user.Pictures) - 1
 }
 
 func (u *UserIO) GetLocationSize(id string) int {

@@ -18,7 +18,7 @@ import (
 )
 
 //Some IO variables
-var version = "v0.3.3"
+var version = "v0.3.4"
 var webDir = "web"
 var uio user.UserIO
 
@@ -114,10 +114,34 @@ func getPicture(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getPicture 2", http.StatusBadRequest)
 		return
 	}
-	data := uio.GetPicture(id)
+	index, _ := strconv.Atoi(request.Data)
+	if index == -1 {
+		index = uio.GetPictureSize(id)
+	}
+	data := uio.GetPicture(id, index)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(fmt.Sprint(string(data))))
+}
 
+func getPictureSize(w http.ResponseWriter, r *http.Request) {
+	var request DataPackage
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		http.Error(w, "Meeep!, Error - getPictureSize 1", http.StatusBadRequest)
+		return
+	}
+	id := uio.ACC.CheckAccessToken(request.IDT)
+	if id == "" {
+		http.Error(w, "Meeep!, Error - getPictureSize 2", http.StatusBadRequest)
+		return
+	}
+
+	highest := uio.GetPictureSize(id)
+
+	dataSize := DataPackage{Data: string(highest)}
+	result, _ := json.Marshal(dataSize)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(result)
 }
 
 func postPicture(w http.ResponseWriter, r *http.Request) {
@@ -354,6 +378,8 @@ func handleRequests() {
 	http.HandleFunc("/locationDataSize/", getLocationDataSize)
 	http.HandleFunc("/picture", mainPicture)
 	http.HandleFunc("/picture/", mainPicture)
+	http.HandleFunc("/pictureSize", getPictureSize)
+	http.HandleFunc("/pictureSize/", getPictureSize)
 	http.HandleFunc("/key", getKey)
 	http.HandleFunc("/key/", getKey)
 	http.HandleFunc("/device", mainDevice)

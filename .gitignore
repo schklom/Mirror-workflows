@@ -21,3 +21,5 @@ fmdDBViewer
 .gitignore
 fmdDBViewer
 lock.mdb
+fmdserver
+Package.tar.xz

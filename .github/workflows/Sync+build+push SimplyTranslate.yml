@@ -64,9 +64,6 @@ jobs:
         run: git ls-remote https://codeberg.org/SimpleWeb/SimplyTranslate-Web HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_web
       - name: get most recent commit id on original repo, for next comparison on sync PART 3
         run: git ls-remote https://codeberg.org/SimpleWeb/SimplyTranslate-Docker HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_docker
-      # https://packages.ubuntu.com/search?suite=default&section=all&arch=arm64&keywords=g%2B%2B+linux+gnu&searchon=names
-      - name: Replace g++-multilib-i686-linux-gnu with g++-arm-linux-gnueabihf in the Dockerfile
-        run: sed -i 's/g++-multilib-i686-linux-gnu/g++-arm-linux-gnueabihf/' web/Dockerfile
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.14.1
         with:
@@ -80,8 +77,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          #repository: 'schklom/Mango'
+          #repository: 'schklom/SimplyTranslate'
           ref: 'SimplyTranslate' # branch
+      # https://packages.ubuntu.com/search?suite=default&section=all&arch=arm64&keywords=g%2B%2B+linux+gnu&searchon=names
+      - name: Replace g++-multilib-i686-linux-gnu with g++-arm-linux-gnueabihf in the Dockerfile
+        run: sed -i 's/g++-multilib-i686-linux-gnu/g++-arm-linux-gnueabihf/' web/Dockerfile
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2.0.0
@@ -124,7 +124,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          #repository: 'schklom/Mango'
+          #repository: 'schklom/SimplyTranslate'
           ref: 'SimplyTranslate' # branch
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU

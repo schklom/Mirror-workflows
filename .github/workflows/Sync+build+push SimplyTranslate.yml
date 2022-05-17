@@ -119,7 +119,7 @@ jobs:
             schklom/simplytranslate:arm64
 
   build_push_amd64:
-    needs: [repo_sync]
+    #needs: [repo_sync]
     #needs: [get_commits]
     runs-on: ubuntu-latest
     steps:

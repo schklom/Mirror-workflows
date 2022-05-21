@@ -396,7 +396,7 @@ class UrlHelper {
 
 			if (curl_errno($ch) === 23 || curl_errno($ch) === 61) {
 				curl_setopt($ch, CURLOPT_ENCODING, 'none');
-				$contents = @curl_exec($ch);
+				$ret = @curl_exec($ch);
 			}
 
 			$headers_length = curl_getinfo($ch, CURLINFO_HEADER_SIZE);

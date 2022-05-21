@@ -1,10 +1,8 @@
 ## Contributing code the right way
 
-*NOTE (March, 2022): Gitea registration is disabled until further notice. Please PM me on the forum or post in the Development subforum, I'll make an account for you ASAP. -fox*
-
 TLDR: it works like Github.
 
-1. Register on the [development website](https://git.tt-rss.org);
+1. Register on the [development website](https://dev.tt-rss.org);
 2. Fork the repository you're interested in;
 3. Do the needful;
 4. File a PR against master branch;

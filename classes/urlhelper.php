@@ -394,6 +394,11 @@ class UrlHelper {
 
 			$ret = @curl_exec($ch);
 
+			if (curl_errno($ch) === 23 || curl_errno($ch) === 61) {
+				curl_setopt($ch, CURLOPT_ENCODING, 'none');
+				$contents = @curl_exec($ch);
+			}
+
 			$headers_length = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
 			$headers = explode("\r\n", substr($ret, 0, $headers_length));
 			$contents = substr($ret, $headers_length);
@@ -411,11 +416,6 @@ class UrlHelper {
 					self::$fetch_last_error_code = (int) substr($header, 9, 3);
 					self::$fetch_last_error = $header;
 				}
-			}
-
-			if (curl_errno($ch) === 23 || curl_errno($ch) === 61) {
-				curl_setopt($ch, CURLOPT_ENCODING, 'none');
-				$contents = @curl_exec($ch);
 			}
 
 			$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);

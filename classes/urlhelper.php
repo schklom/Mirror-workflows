@@ -353,7 +353,7 @@ class UrlHelper {
 			curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			curl_setopt($ch, CURLOPT_HEADER, true);
-			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 			curl_setopt($ch, CURLOPT_USERAGENT, $useragent ? $useragent : Config::get_user_agent());
 			curl_setopt($ch, CURLOPT_ENCODING, "");
 			curl_setopt($ch, CURLOPT_COOKIEJAR, "/dev/null");
@@ -393,6 +393,15 @@ class UrlHelper {
 				curl_setopt($ch, CURLOPT_USERPWD, "$login:$pass");
 
 			$ret = @curl_exec($ch);
+			$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+			// CURLAUTH_BASIC didn't work, let's retry with CURLAUTH_ANY in case it's actually something
+			// unusual like NTLM...
+			if ($http_code == 403 && $login && $pass) {
+				curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+
+				$ret = @curl_exec($ch);
+			}
 
 			if (curl_errno($ch) === 23 || curl_errno($ch) === 61) {
 				curl_setopt($ch, CURLOPT_ENCODING, 'none');

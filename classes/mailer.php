@@ -45,7 +45,15 @@ class Mailer {
 			++$hooks_tried;
 		}
 
-		$headers = [ "From: $from_combined", "Content-Type: text/plain; charset=UTF-8" ];
+		$headers = [ "From: $from_combined" ];
+
+		if($message_html){
+			$headers[]="MIME-Version: 1.0";
+			$headers[]="Content-Type: text/html; charset=UTF-8";
+		}
+		else{
+			$headers[]="Content-Type: text/plain; charset=UTF-8";
+		}
 
 		$rc = mail($to_combined, $subject, $message, implode("\r\n", array_merge($headers, $additional_headers)));
 

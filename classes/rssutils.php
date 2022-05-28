@@ -1673,65 +1673,79 @@ class RSSUtils {
 	static function update_favicon(string $site_url, int $feed) {
 		$icon_file = Config::get(Config::ICONS_DIR) . "/$feed.ico";
 
-		$favicon_url = self::get_favicon_url($site_url);
-		if (!$favicon_url) {
-			Debug::log("favicon: couldn't find favicon URL in $site_url", Debug::LOG_VERBOSE);
+		$favicon_urls = self::get_favicon_urls($site_url);
+
+		if (count($favicon_urls) == 0) {
+			Debug::log("favicon: couldn't find any favicon URLs for $site_url", Debug::LOG_VERBOSE);
 			return false;
 		}
 
-		// Limiting to "image" type misses those served with text/plain
-		$contents = UrlHelper::fetch([
-			'url' => $favicon_url,
-			'max_size' => Config::get(Config::MAX_FAVICON_FILE_SIZE),
-			//'type' => 'image',
-		]);
-		if (!$contents) {
-			Debug::log("favicon: fetching $favicon_url failed", Debug::LOG_VERBOSE);
-			return false;
+		// i guess we'll have to go through all of them until something looks valid...
+		foreach ($favicon_urls as $favicon_url) {
+
+			// Limiting to "image" type misses those served with text/plain
+			$contents = UrlHelper::fetch([
+				'url' => $favicon_url,
+				'max_size' => Config::get(Config::MAX_FAVICON_FILE_SIZE),
+				//'type' => 'image',
+			]);
+
+			if (!$contents) {
+				Debug::log("favicon: fetching $favicon_url failed, skipping...", Debug::LOG_VERBOSE);
+				break;
+			}
+
+			// TODO: we could use mime_conent_type() here instead of below hacks but we'll need to
+			// save every favicon to disk and go from there.
+			// also, if SVG is allowed in the future, we'll need to specifically forbid 'image/svg+xml'.
+
+			// Crude image type matching.
+			// Patterns gleaned from the file(1) source code.
+			if (preg_match('/^\x00\x00\x01\x00/', $contents)) {
+				// 0       string  \000\000\001\000        MS Windows icon resource
+				//error_log("update_favicon: favicon_url=$favicon_url isa MS Windows icon resource");
+			}
+			elseif (preg_match('/^GIF8/', $contents)) {
+				// 0       string          GIF8            GIF image data
+				//error_log("update_favicon: favicon_url=$favicon_url isa GIF image");
+			}
+			elseif (preg_match('/^\x89PNG\x0d\x0a\x1a\x0a/', $contents)) {
+				// 0       string          \x89PNG\x0d\x0a\x1a\x0a         PNG image data
+				//error_log("update_favicon: favicon_url=$favicon_url isa PNG image");
+			}
+			elseif (preg_match('/^\xff\xd8/', $contents)) {
+				// 0       beshort         0xffd8          JPEG image data
+				//error_log("update_favicon: favicon_url=$favicon_url isa JPG image");
+			}
+			elseif (preg_match('/^BM/', $contents)) {
+				// 0	string		BM	PC bitmap (OS2, Windows BMP files)
+				//error_log("update_favicon, favicon_url=$favicon_url isa BMP image");
+			}
+			else {
+				//error_log("update_favicon: favicon_url=$favicon_url isa UNKNOWN type");
+				Debug::log("favicon $favicon_url type is unknown, skipping...", Debug::LOG_VERBOSE);
+				break;
+			}
+
+			Debug::log("favicon: $favicon_url looks valid, saving to $icon_file", Debug::LOG_VERBOSE);
+
+			$fp = @fopen($icon_file, "w");
+
+			if ($fp) {
+
+				fwrite($fp, $contents);
+				fclose($fp);
+				chmod($icon_file, 0644);
+				clearstatcache();
+
+				return $icon_file;
+
+			} else {
+				Debug::log("favicon: failed to open $icon_file for writing", Debug::LOG_VERBOSE);
+			}
 		}
 
-		// Crude image type matching.
-		// Patterns gleaned from the file(1) source code.
-		if (preg_match('/^\x00\x00\x01\x00/', $contents)) {
-			// 0       string  \000\000\001\000        MS Windows icon resource
-			//error_log("update_favicon: favicon_url=$favicon_url isa MS Windows icon resource");
-		}
-		elseif (preg_match('/^GIF8/', $contents)) {
-			// 0       string          GIF8            GIF image data
-			//error_log("update_favicon: favicon_url=$favicon_url isa GIF image");
-		}
-		elseif (preg_match('/^\x89PNG\x0d\x0a\x1a\x0a/', $contents)) {
-			// 0       string          \x89PNG\x0d\x0a\x1a\x0a         PNG image data
-			//error_log("update_favicon: favicon_url=$favicon_url isa PNG image");
-		}
-		elseif (preg_match('/^\xff\xd8/', $contents)) {
-			// 0       beshort         0xffd8          JPEG image data
-			//error_log("update_favicon: favicon_url=$favicon_url isa JPG image");
-		}
-		elseif (preg_match('/^BM/', $contents)) {
-			// 0	string		BM	PC bitmap (OS2, Windows BMP files)
-			//error_log("update_favicon, favicon_url=$favicon_url isa BMP image");
-		}
-		else {
-			//error_log("update_favicon: favicon_url=$favicon_url isa UNKNOWN type");
-			Debug::log("favicon $favicon_url type is unknown (not updating)", Debug::LOG_VERBOSE);
-			return false;
-		}
-
-		Debug::log("favicon: saving to $icon_file", Debug::LOG_VERBOSE);
-
-		$fp = @fopen($icon_file, "w");
-		if (!$fp) {
-			Debug::log("favicon: failed to open $icon_file for writing", Debug::LOG_VERBOSE);
-			return false;
-		}
-
-		fwrite($fp, $contents);
-		fclose($fp);
-		chmod($icon_file, 0644);
-		clearstatcache();
-
-		return $icon_file;
+		return false;
 	}
 
 	static function is_gzipped(string $feed_data): bool {
@@ -1853,17 +1867,33 @@ class RSSUtils {
 	}
 
 	/**
-	 * Try to determine the favicon URL for a feed.
-	 * adapted from wordpress favicon plugin by Jeff Minard (http://thecodepro.com/)
-	 * http://dev.wp-plugins.org/file/favatars/trunk/favatars.php
-	 *
+	 * Returns first determined favicon URL for a feed.
 	 * @param string $url A feed or page URL
 	 * @access public
 	 * @return false|string The favicon URL string, or false if none was found.
 	 */
 	static function get_favicon_url(string $url) {
 
-		$favicon_url = false;
+		$favicon_urls = self::get_favicon_urls($url);
+
+		if (count($favicon_urls) > 0)
+			return $favicon_urls[0];
+		else
+			return false;
+	}
+
+	/**
+	 * Try to determine all favicon URLs for a feed.
+	 * adapted from wordpress favicon plugin by Jeff Minard (http://thecodepro.com/)
+	 * http://dev.wp-plugins.org/file/favatars/trunk/favatars.php
+	 *
+	 * @param string $url A feed or page URL
+	 * @access public
+	 * @return array<string> List of all determined favicon URLs or an empty array
+	 */
+	static function get_favicon_urls(string $url) : array {
+
+		$favicon_urls = [];
 
 		if ($html = @UrlHelper::fetch($url)) {
 
@@ -1877,20 +1907,27 @@ class RSSUtils {
 					break;
 				}
 
-				$entries = $xpath->query('/html/head/link[@rel="shortcut icon" or @rel="icon"]');
+				$entries = $xpath->query('/html/head/link[@rel="shortcut icon" or @rel="icon" or @rel="alternate icon"]');
 				if (count($entries) > 0) {
 					foreach ($entries as $entry) {
 						$favicon_url = UrlHelper::rewrite_relative($url, $entry->getAttribute("href"));
-						break;
+
+						if ($favicon_url)
+							array_push($favicon_urls, $favicon_url);
+
 					}
 				}
 			}
 		}
 
-		if (!$favicon_url)
+		if (count($favicon_urls) == 0) {
 			$favicon_url = UrlHelper::rewrite_relative($url, "/favicon.ico");
 
-		return $favicon_url;
+			if ($favicon_url)
+							array_push($favicon_urls, $favicon_url);
+		}
+
+		return $favicon_urls;
 	}
 
 	/**

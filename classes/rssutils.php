@@ -557,9 +557,14 @@ class RSSUtils {
 			Debug::log("language: $feed_language", Debug::LOG_VERBOSE);
 			Debug::log("processing feed data...", Debug::LOG_VERBOSE);
 
-			$site_url = mb_substr(UrlHelper::rewrite_relative($feed_obj->feed_url, clean($rss->get_link())), 0, 245);
+			// this is a fallback, in case RSSUtils::update_basic_info() fails.
+			// TODO: is this necessary? remove unless it is.
+			if (empty($feed_obj->site_url)) {
+				$feed_obj->site_url = mb_substr(UrlHelper::rewrite_relative($feed_obj->feed_url, clean($rss->get_link())), 0, 245);
+				$feed_obj->save();
+			}
 
-			Debug::log("site_url: $site_url", Debug::LOG_VERBOSE);
+			Debug::log("site_url: {$feed_obj->site_url}", Debug::LOG_VERBOSE);
 			Debug::log("feed_title: {$rss->get_title()}", Debug::LOG_VERBOSE);
 
 			Debug::log("favicon: needs check: {$feed_obj->favicon_needs_check} is custom: {$feed_obj->favicon_is_custom} avg color: {$feed_obj->favicon_avg_color}",
@@ -575,7 +580,7 @@ class RSSUtils {
 
 				if (!$feed_obj->favicon_is_custom) {
 					Debug::log("favicon: trying to update favicon...", Debug::LOG_VERBOSE);
-					self::update_favicon($site_url, $feed);
+					self::update_favicon($feed_obj->site_url, $feed);
 
 					if ((file_exists($favicon_file) ? filemtime($favicon_file) : -1) > $favicon_modified)
 						$feed_obj->favicon_avg_color = null;
@@ -667,7 +672,7 @@ class RSSUtils {
 
 				$entry_title = strip_tags($item->get_title());
 
-				$entry_link = UrlHelper::rewrite_relative($site_url, clean($item->get_link()), "a", "href");
+				$entry_link = UrlHelper::rewrite_relative($feed_obj->site_url, clean($item->get_link()), "a", "href");
 
 				$entry_language = mb_substr(trim($item->get_language()), 0, 2);
 
@@ -736,7 +741,7 @@ class RSSUtils {
 
 						// TODO: Just use FeedEnclosure (and modify it to cover whatever justified this)?
 						$e_item = array(
-							UrlHelper::rewrite_relative($site_url, $e->link, "", "", $e->type),
+							UrlHelper::rewrite_relative($feed_obj->site_url, $e->link, "", "", $e->type),
 							$e->type, $e->length, $e->title, $e->width, $e->height);
 
 						// Yet another episode of "mysql utf8_general_ci is gimped"
@@ -769,7 +774,7 @@ class RSSUtils {
 					"enclosures" => $enclosures,
 					"feed" => array("id" => $feed,
 						"fetch_url" => $feed_obj->feed_url,
-						"site_url" => $site_url,
+						"site_url" => $feed_obj->site_url,
 						"cache_images" => $feed_obj->cache_images)
 				);
 
@@ -937,7 +942,7 @@ class RSSUtils {
 				Debug::log("force catchup: $entry_force_catchup", Debug::LOG_VERBOSE);
 
 				if ($feed_obj->cache_images)
-					self::cache_media($entry_content, $site_url);
+					self::cache_media($entry_content, $feed_obj->site_url);
 
 				$csth = $pdo->prepare("SELECT id FROM ttrss_entries
 					WHERE guid IN (?, ?, ?)");
@@ -1135,7 +1140,7 @@ class RSSUtils {
 					$feed_obj->owner_uid, $article_labels);
 
 				if ($feed_obj->cache_images)
-					self::cache_enclosures($enclosures, $site_url);
+					self::cache_enclosures($enclosures, $feed_obj->site_url);
 
 				if (Debug::get_loglevel() >= Debug::LOG_EXTENDED) {
 					Debug::log("article enclosures:", Debug::LOG_VERBOSE);

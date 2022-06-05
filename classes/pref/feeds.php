@@ -983,10 +983,6 @@ class Pref_Feeds extends Handler_Protected {
 							dijit.byId('feedTree').editCategory(bare_id, item);
 						}
 					</script>
-					<script type="dojo/method" event="onLoad" args="item">
-						dijit.byId('feedTree').checkInactiveFeeds();
-						dijit.byId('feedTree').checkErrorFeeds();
-					</script>
 				</div>
 			</div>
 		</div>

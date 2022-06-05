@@ -5,6 +5,16 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 	function (declare, domConstruct, checkBoxTree, array, cookie) {
 
 	return declare("fox.PrefFeedTree", lib.CheckBoxTree, {
+		postCreate: function() {
+			this.inherited(arguments);
+
+			const tmph = dojo.connect(this, 'onLoad', () => {
+				dojo.disconnect(tmph);
+
+				this.checkInactiveFeeds();
+				this.checkErrorFeeds();
+			});
+		},
 		// save state in localStorage instead of cookies
 		// reference: https://stackoverflow.com/a/27968996
 		_saveExpandedNodes: function(){

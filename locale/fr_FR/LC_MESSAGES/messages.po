@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-06-05 11:48+0300\n"
-"PO-Revision-Date: 2021-06-20 08:32+0000\n"
+"PO-Revision-Date: 2022-06-08 11:20+0000\n"
 "Last-Translator: Glandos <bugs-ttrss@antipoul.fr>\n"
 "Language-Team: French <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "fr/>\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.7\n"
+"X-Generator: Weblate 4.12.2\n"
 
 #: backend.php:60
 msgid "Use default"
@@ -93,10 +93,8 @@ msgid "Disabled"
 msgstr "Désactivé"
 
 #: backend.php:91
-#, fuzzy
-#| msgid "Readability"
 msgid "Read Only"
-msgstr "Lisibilité"
+msgstr "Lecture seule"
 
 #: backend.php:92 classes/pref/system.php:123
 msgid "User"
@@ -243,7 +241,7 @@ msgstr "Masquer/afficher les flux lus"
 
 #: index.php:273
 msgid "UI layout:"
-msgstr ""
+msgstr "Disposition d’interface :"
 
 #: index.php:274 classes/rpc.php:639
 msgid "Toggle combined mode"
@@ -254,10 +252,8 @@ msgid "Toggle widescreen mode"
 msgstr "Basculer le mode écran large"
 
 #: index.php:278
-#, fuzzy
-#| msgid "Always expand articles"
 msgid "Toggle expand all articles"
-msgstr "Toujours développer les articles"
+msgstr "Basculer le développement de tous les articles"
 
 #: index.php:279
 msgid "Other actions:"
@@ -637,10 +633,8 @@ msgid "Remove"
 msgstr "Supprimer"
 
 #: classes/pref/filters.php:692
-#, fuzzy
-#| msgid "Toggle feedlist"
 msgid "Toggle rule display"
-msgstr "Afficher/masquer la liste des flux"
+msgstr "Afficher/masquer les règles"
 
 #: classes/pref/filters.php:751
 msgid "[No caption]"
@@ -1375,7 +1369,7 @@ msgstr "Erreur : veuillez envoyer un document OPML."
 #: classes/opml.php:643
 #, php-format
 msgid "Error: file is not readable: %s"
-msgstr ""
+msgstr "Erreur : le fichier n’est pas lisible : %s"
 
 #: classes/opml.php:671
 msgid "Error while parsing document."
@@ -1640,6 +1634,7 @@ msgstr "Mot de passe de l’utilisateur %s changé en %s"
 #, php-format
 msgid "Unknown error while sending mail. Hooks tried: %d."
 msgstr ""
+"Erreur inconnue lors de l’envoi du courriel. Inspecteurs de contenu : %d."
 
 #: plugins/af_comics/init.php:60
 msgid "Feeds supported by af_comics"
@@ -1990,20 +1985,16 @@ msgid "Session failed to validate (password changed)"
 msgstr "Échec de la validation de la session (mot de passe changé)"
 
 #: include/sessions.php:49
-#, fuzzy
-#| msgid "Session failed to validate (user agent changed)"
 msgid "Session failed to validate (account is disabled)"
-msgstr "Échec de la validation de la session (navigateur différent)"
+msgstr "Échec de la validation de la session (compte désactivé)"
 
 #: include/sessions.php:53
 msgid "Session failed to validate (user not found)"
 msgstr "Échec de la validation de la session (utilisateur introuvable)"
 
 #: js/App.js:314
-#, fuzzy
-#| msgid "Widescreen is not available in combined mode."
 msgid "This function is only available in combined mode."
-msgstr "L’écran large n’est pas disponible en mode combiné."
+msgstr "Cette fonction est seulement disponible en mode combiné."
 
 #: js/App.js:445
 msgid "Keyboard shortcuts"
@@ -2169,14 +2160,12 @@ msgid "XML validation failed: %s"
 msgstr "Erreur de validation XML : %s"
 
 #: js/CommonDialogs.js:197
-#, fuzzy
-#| msgid "Error while parsing document."
 msgid "Error while creating feed database entry."
-msgstr "Erreur lors de l’analyse du document."
+msgstr "Erreur lors de la création du flux en base de données."
 
 #: js/CommonDialogs.js:200
 msgid "You are not allowed to perform this operation."
-msgstr ""
+msgstr "Vous n’êtes pas autorisé à effectuer cette opération."
 
 #: js/CommonDialogs.js:222
 msgid "Feeds with update errors"
@@ -2340,10 +2329,8 @@ msgid "Create"
 msgstr "Créer"
 
 #: js/FeedTree.js:105 js/Headlines.js:1585
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open site"
-msgstr "Ouvrir le flux suivant"
+msgstr "Ouvrir le site"
 
 #: js/FeedTree.js:114 js/Headlines.js:1594
 msgid "Debug feed"
@@ -2685,10 +2672,9 @@ msgid "Reset to defaults?"
 msgstr "Revenir aux valeurs par défaut ?"
 
 #: js/PrefHelpers.js:373
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Error while parsing document."
+#, java-printf-format, javascript-format
 msgid "Error while loading plugins list: %s."
-msgstr "Erreur lors de l’analyse du document."
+msgstr "Erreur lors du chargement de la liste des plugins : %s."
 
 #: js/PrefHelpers.js:422
 msgid "Clear data"
@@ -2932,9 +2918,8 @@ msgid "Stack trace"
 msgstr "Trace de la pile"
 
 #: js/App.js:653
-#, fuzzy
 msgid "Additional information"
-msgstr "Information du classifieur"
+msgstr "Informations supplémentaires"
 
 #: js/Article.js:207
 msgid "Attachments"
@@ -2974,8 +2959,6 @@ msgid "Unsubscribe from selected feeds"
 msgstr "Se désabonner des flux sélectionnés"
 
 #: js/CommonDialogs.js:502
-#, fuzzy
-#| msgid "Feed Title"
 msgid "Feed title"
 msgstr "Titre du flux"
 
@@ -3038,7 +3021,7 @@ msgstr "Marquer le flux comme lu"
 
 #: js/Headlines.js:524
 msgid "Span all columns"
-msgstr ""
+msgstr "Étaler sur toutes les colonnes"
 
 #: js/Headlines.js:665
 msgid "Invert"
@@ -3081,35 +3064,25 @@ msgid "Apply"
 msgstr "Appliquer"
 
 #: js/PrefHelpers.js:303
-#, fuzzy
-#| msgid "Save and exit"
 msgid "Save and reload"
-msgstr "Sauvegarder et quitter"
+msgstr "Sauvegarder et recharger"
 
 #: js/PrefHelpers.js:352
 msgid "Selected plugins have been enabled. Reload?"
 msgstr "Les greffons sélectionnés ont été activés. Recharger ?"
 
 #: js/PrefHelpers.js:400
-#, fuzzy
-#| msgid ""
-#| "System plugins are enabled in <strong>config.php</strong> for all users."
 msgid "System plugins are enabled using global configuration."
 msgstr ""
-"Les greffons système sont activés dans <strong>config.php</strong> pour tous "
-"les utilisateurs."
+"Les greffons système sont activés à l’aide de la configuration générale."
 
 #: js/PrefHelpers.js:577
-#, fuzzy
-#| msgid "Uninstall"
 msgid "Install"
-msgstr "Désinstaller"
+msgstr "Installer"
 
 #: js/PrefHelpers.js:654
-#, fuzzy
-#| msgid "Playing..."
 msgid "Updating..."
-msgstr "Lecture..."
+msgstr "Mise-à-jour…"
 
 #: js/PrefHelpers.js:687
 msgid "Updates complete"
@@ -3131,10 +3104,8 @@ msgid "Access level: "
 msgstr "Permissions : "
 
 #: js/PrefUsers.js:92
-#, fuzzy
-#| msgid "Enabled"
 msgid "OTP enabled"
-msgstr "Activé"
+msgstr "OTP activé"
 
 #: js/PrefUsers.js:104
 msgid "User details"

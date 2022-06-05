@@ -5,7 +5,12 @@
 			"type": "gulp",
 			"task": "default",
 			"problemMatcher": [],
-			"label": "gulp: default"
+			"label": "gulp: default",
+			"options": {
+				"env": {
+					 "PATH": "${env:PATH}:/usr/lib/sdk/node16/bin/"
+				}
+		  }
 		}
 	]
 }

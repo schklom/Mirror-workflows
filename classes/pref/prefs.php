@@ -275,7 +275,7 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	function resetconfig(): void {
-		Prefs::reset($_SESSION["uid"], $_SESSION["profile"]);
+		Prefs::reset($_SESSION["uid"], $_SESSION["profile"] ?? null);
 
 		print "PREFS_NEED_RELOAD";
 	}

@@ -684,10 +684,12 @@ class Pref_Filters extends Handler_Protected {
 						<?= __('Create filter') ?></button>
 					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').joinSelectedFilters()">
 						<?= __('Combine') ?></button>
-					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').resetFilterOrder()">
-						<?= __('Reset sort order') ?></button>
 					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').removeSelectedFilters()">
 						<?= __('Remove') ?></button>
+					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').resetFilterOrder()">
+						<?= __('Reset sort order') ?></button>
+					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').toggleRules()">
+						<?= __('Toggle rule display') ?></button>
 
 				</div>
 			</div>

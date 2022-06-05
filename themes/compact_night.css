@@ -1728,6 +1728,9 @@ body.ttrss_utility fieldset > label.checkbox {
   display: inline;
   font-weight: normal;
 }
+body.ttrss_prefs[hide-filter-rules="true"] ul.filterRules {
+  display: none;
+}
 .flat {
   /*#feedTree {
 		.dijitTreeContent .dijitInline {

@@ -4,6 +4,13 @@
 define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], function (declare, domConstruct) {
 
 	return declare("fox.PrefFilterTree", lib.CheckBoxTree, {
+		postCreate: function() {
+			this.inherited(arguments);
+
+			dijit.byId('filterTree').hideOrShowFilterRules(
+				parseInt(localStorage.getItem("ttrss:hide-filter-rules"))
+			);
+		},
 		_createTreeNode: function(args) {
 			const tnode = this.inherited(arguments);
 
@@ -95,6 +102,16 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 				dijit.byId('filtersTab').attr('content', reply);
 				Notify.close();
 			});
+		},
+		hideOrShowFilterRules(hide) {
+			App.findAll("body")[0].setAttribute("hide-filter-rules", !!hide);
+		},
+		toggleRules: function() {
+			const hide = !parseInt(localStorage.getItem("ttrss:hide-filter-rules"));
+
+			this.hideOrShowFilterRules(hide);
+
+			localStorage.setItem("ttrss:hide-filter-rules", hide ? 1 : 0);
 		},
 		resetFilterOrder: function() {
 			Notify.progress("Loading, please wait...");

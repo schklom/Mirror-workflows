@@ -1,5 +1,5 @@
 /* eslint-disable prefer-rest-params */
-/* global __, lib, dijit, define, dojo, CommonDialogs, Notify, Tables, xhrPost, xhr, fox, App */
+/* global __, lib, dijit, define, dojo, CommonDialogs, Notify, Tables, xhr, fox, App */
 
 define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_base/array", "dojo/cookie"],
 	function (declare, domConstruct, checkBoxTree, array, cookie) {
@@ -13,6 +13,17 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 
 				this.checkInactiveFeeds();
 				this.checkErrorFeeds();
+			});
+
+			dojo.connect(this, 'onClick', (item) => {
+				const id = String(item.id);
+				const bare_id = id.substr(id.indexOf(':')+1);
+
+				if (id.match('FEED:')) {
+					CommonDialogs.editFeed(bare_id);
+				} else if (id.match('CAT:')) {
+					dijit.byId('feedTree').editCategory(bare_id, item);
+				}
 			});
 		},
 		// save state in localStorage instead of cookies

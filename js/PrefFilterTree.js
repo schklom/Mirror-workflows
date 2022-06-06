@@ -1,5 +1,5 @@
 /* eslint-disable prefer-rest-params */
-/* global __, define, lib, dijit, dojo, xhr, App, Notify */
+/* global __, define, lib, dijit, dojo, xhr, App, Notify, Filters */
 
 define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], function (declare, domConstruct) {
 
@@ -10,6 +10,15 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			dijit.byId('filterTree').hideOrShowFilterRules(
 				parseInt(localStorage.getItem("ttrss:hide-filter-rules"))
 			);
+
+			dojo.connect(this, 'onClick', (item) => {
+				const id = String(item.id);
+				const bare_id = id.substr(id.indexOf(':')+1);
+
+				if (id.match('FILTER:')) {
+					Filters.edit(bare_id);
+				}
+			});
 		},
 		_createTreeNode: function(args) {
 			const tnode = this.inherited(arguments);

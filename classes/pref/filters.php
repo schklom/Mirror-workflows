@@ -703,14 +703,6 @@ class Pref_Filters extends Handler_Protected {
 				</div>
 				<div dojoType="fox.PrefFilterTree" id="filterTree" dndController="dijit.tree.dndSource"
 					betweenThreshold="5" model="filterModel" openOnClick="true">
-					<script type="dojo/method" event="onClick" args="item">
-						var id = String(item.id);
-						var bare_id = id.substr(id.indexOf(':')+1);
-
-						if (id.match('FILTER:')) {
-							Filters.edit(bare_id);
-						}
-					</script>
 				</div>
 			</div>
 			<?php PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefFilters") ?>

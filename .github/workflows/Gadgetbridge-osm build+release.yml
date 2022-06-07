@@ -23,7 +23,7 @@ jobs:
       - name: Setup JDK+Android
         run: sudo apt-get install openjdk-11-jdk git adb -y
       - name: Build apk
-        run: ./gradlew --no-daemon assembleRelease
+        run: ./gradlew --no-daemon assembleDebug
       - name: LS
         run: ls -AlhR app/build/outputs
       #- name: Delete previous release

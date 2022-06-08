@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-06-05 11:48+0300\n"
-"PO-Revision-Date: 2022-02-04 12:17+0000\n"
+"PO-Revision-Date: 2022-06-09 13:15+0000\n"
 "Last-Translator: xosé m. <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "gl/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.12.2\n"
 
 #: backend.php:60
 msgid "Use default"
@@ -88,10 +88,8 @@ msgid "Disabled"
 msgstr "Desactivado"
 
 #: backend.php:91
-#, fuzzy
-#| msgid "Readability"
 msgid "Read Only"
-msgstr "Lexibilidade"
+msgstr "Só lectura"
 
 #: backend.php:92 classes/pref/system.php:123
 msgid "User"
@@ -238,7 +236,7 @@ msgstr "(Des)agochar fontes lidas"
 
 #: index.php:273
 msgid "UI layout:"
-msgstr ""
+msgstr "Disposición:"
 
 #: index.php:274 classes/rpc.php:639
 msgid "Toggle combined mode"
@@ -249,10 +247,8 @@ msgid "Toggle widescreen mode"
 msgstr "Activar modo pantalla completa"
 
 #: index.php:278
-#, fuzzy
-#| msgid "Always expand articles"
 msgid "Toggle expand all articles"
-msgstr "Despregar sempre os artigos"
+msgstr "Activar Despregar tódolos artigos"
 
 #: index.php:279
 msgid "Other actions:"
@@ -631,10 +627,8 @@ msgid "Remove"
 msgstr "Eliminar"
 
 #: classes/pref/filters.php:692
-#, fuzzy
-#| msgid "Toggle published"
 msgid "Toggle rule display"
-msgstr "Marcar publicado"
+msgstr "Activar mostrar regra"
 
 #: classes/pref/filters.php:751
 msgid "[No caption]"
@@ -1364,7 +1358,7 @@ msgstr "Erro: sube un ficheiro OPML."
 #: classes/opml.php:643
 #, php-format
 msgid "Error: file is not readable: %s"
-msgstr ""
+msgstr "Erro: o ficheiro non é lexible: %s"
 
 #: classes/opml.php:671
 msgid "Error while parsing document."
@@ -1628,7 +1622,7 @@ msgstr "Cambiou o contrasinal da usuaria de %s a %s"
 #: classes/mailer.php:60
 #, php-format
 msgid "Unknown error while sending mail. Hooks tried: %d."
-msgstr ""
+msgstr "Erro descoñecido ao enviar o email. Intentouse: %d."
 
 #: plugins/af_comics/init.php:60
 msgid "Feeds supported by af_comics"
@@ -1971,20 +1965,16 @@ msgid "Session failed to validate (password changed)"
 msgstr "Fallou a validación da conta (cambiou o contrasinal)"
 
 #: include/sessions.php:49
-#, fuzzy
-#| msgid "Session failed to validate (password changed)"
 msgid "Session failed to validate (account is disabled)"
-msgstr "Fallou a validación da conta (cambiou o contrasinal)"
+msgstr "Fallou a validación da conta (conta está desactivada)"
 
 #: include/sessions.php:53
 msgid "Session failed to validate (user not found)"
 msgstr "Fallou a validación da conta (non se atopa usuaria)"
 
 #: js/App.js:314
-#, fuzzy
-#| msgid "Widescreen is not available in combined mode."
 msgid "This function is only available in combined mode."
-msgstr "A pantalla ancha non está dispoñible no modo combinado."
+msgstr "Esta función so está dispoñible no modo combinado."
 
 #: js/App.js:445
 msgid "Keyboard shortcuts"
@@ -2148,14 +2138,12 @@ msgid "XML validation failed: %s"
 msgstr "Fallou a validación XML: %s"
 
 #: js/CommonDialogs.js:197
-#, fuzzy
-#| msgid "Error while parsing document."
 msgid "Error while creating feed database entry."
-msgstr "Erro ao procesar o documento."
+msgstr "Erro ao crear a entrada na base de datos da fonte."
 
 #: js/CommonDialogs.js:200
 msgid "You are not allowed to perform this operation."
-msgstr ""
+msgstr "Non tes permiso para executar esta operación."
 
 #: js/CommonDialogs.js:222
 msgid "Feeds with update errors"
@@ -2319,10 +2307,8 @@ msgid "Create"
 msgstr "Crear"
 
 #: js/FeedTree.js:105 js/Headlines.js:1585
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open site"
-msgstr "Abrir fonte seguinte"
+msgstr "Abrir sitio"
 
 #: js/FeedTree.js:114 js/Headlines.js:1594
 msgid "Debug feed"
@@ -2660,10 +2646,9 @@ msgid "Reset to defaults?"
 msgstr "Restablecer por defecto?"
 
 #: js/PrefHelpers.js:373
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Error while parsing document."
+#, java-printf-format, javascript-format
 msgid "Error while loading plugins list: %s."
-msgstr "Erro ao procesar o documento."
+msgstr "Erro ao cargar a lista de complementos: %s."
 
 #: js/PrefHelpers.js:422
 msgid "Clear data"
@@ -2907,17 +2892,15 @@ msgstr "Trazas no rexistro"
 
 #: js/App.js:653
 msgid "Additional information"
-msgstr ""
+msgstr "Información adicional"
 
 #: js/Article.js:207
 msgid "Attachments"
 msgstr "Anexos"
 
 #: js/Article.js:319 js/Headlines.js:551
-#, fuzzy
-#| msgid "Remove sharing for this article?"
 msgid "Edit tags for this article"
-msgstr "Eliminar a compartición deste artigo?"
+msgstr "Editar etiquetas deste artigo"
 
 #: js/CommonDialogs.js:18
 msgid ""
@@ -2930,17 +2913,15 @@ msgstr ""
 
 #: js/CommonDialogs.js:53
 msgid "Feed or site URL"
-msgstr ""
+msgstr "URL do sitio ou fonte"
 
 #: js/CommonDialogs.js:68
 msgid "Available feeds"
 msgstr "Fontes dispoñibles"
 
 #: js/CommonDialogs.js:85 js/PrefFeedTree.js:446
-#, fuzzy
-#| msgid "Login:"
 msgid "Login"
-msgstr "Usuaria:"
+msgstr "Identificador:"
 
 #: js/CommonDialogs.js:101
 msgid "This feed requires authentication."
@@ -2951,88 +2932,69 @@ msgid "Unsubscribe from selected feeds"
 msgstr "Retirar subscrición das fontes seleccionadas"
 
 #: js/CommonDialogs.js:502
-#, fuzzy
-#| msgid "Feed actions:"
 msgid "Feed title"
-msgstr "Accións da fonte:"
+msgstr "Título da fonte"
 
 #: js/CommonDialogs.js:509
-#, fuzzy
-#| msgid "Feed"
 msgid "Feed URL"
-msgstr "Fonte"
+msgstr "URL da fonte"
 
 #: js/CommonDialogs.js:528
 msgid "Site URL:"
 msgstr "URL do sitio:"
 
 #: js/CommonDialogs.js:530
-#, fuzzy
-#| msgid "Site URL:"
 msgid "Site URL"
-msgstr "URL do sitio:"
+msgstr "URL do sitio"
 
 #: js/CommonDialogs.js:593
 msgid "Icon"
-msgstr ""
+msgstr "Icona"
 
 #: js/CommonFilters.js:71
 msgid "No recent articles matching this filter have been found."
 msgstr "Non se atopan artigos recentes que cumpran co filtro."
 
 #: js/CommonFilters.js:419
-#, fuzzy
-#| msgid "Enable API"
 msgid "Enabled"
-msgstr "Activar API"
+msgstr "Activado"
 
 #: js/CommonFilters.js:420
-#, fuzzy
-#| msgid "matches any rule"
 msgid "Match any rule"
-msgstr "concorda ningunha regra"
+msgstr "Non hai coincidencias"
 
 #: js/CommonFilters.js:421
-#, fuzzy
-#| msgid "Inverse regular expression matching"
 msgid "Inverse matching"
-msgstr "Coincidencia coa expresión regular inversa"
+msgstr "Coicidencia inversa"
 
 #: js/CommonFilters.js:439
 msgid "Match"
-msgstr ""
+msgstr "Coincidencia"
 
 #: js/CommonFilters.js:472
-#, fuzzy
-#| msgid "Add action"
 msgid "Apply actions"
-msgstr "Engadir acción"
+msgstr "Aplicar accións"
 
 #: js/Feeds.js:269
-#, fuzzy
-#| msgid "Preferences"
 msgid "Open Preferences"
-msgstr "Axustes"
+msgstr "Abrir os Axustes"
 
 #: js/Feeds.js:612
-#, fuzzy, javascript-format
-#| msgid "Search..."
+#, javascript-format
 msgid "Search %s..."
-msgstr "Buscar..."
+msgstr "Buscar %s..."
 
 #: js/Feeds.js:621
 msgid "Used for word stemming"
 msgstr "Utilizado para a relación entre palabras"
 
 #: js/Headlines.js:471
-#, fuzzy
-#| msgid "Mark feed as read"
 msgid "mark feed as read"
-msgstr "Marcar fonte como lida"
+msgstr "marcar fonte como lida"
 
 #: js/Headlines.js:524
 msgid "Span all columns"
-msgstr ""
+msgstr "Despregar tódas columnas"
 
 #: js/Headlines.js:665
 msgid "Invert"
@@ -3059,10 +3021,8 @@ msgid "Rename category to:"
 msgstr "Cambiar nome da categoría a:"
 
 #: js/PrefFeedTree.js:455
-#, fuzzy
-#| msgid "This feed requires authentication."
 msgid "Feeds require authentication."
-msgstr "Esta fonte require autenticación."
+msgstr "A fonte require autenticación."
 
 #: js/PrefHelpers.js:229
 msgid "Clone"
@@ -3077,10 +3037,8 @@ msgid "Apply"
 msgstr "Aplicar"
 
 #: js/PrefHelpers.js:303
-#, fuzzy
-#| msgid "Save and exit"
 msgid "Save and reload"
-msgstr "Gardar e saír"
+msgstr "Gardar e recargar"
 
 #: js/PrefHelpers.js:352
 msgid "Selected plugins have been enabled. Reload?"
@@ -3089,18 +3047,15 @@ msgstr "Reactiváronse os complementos seleccionados. Recagar?"
 #: js/PrefHelpers.js:400
 msgid "System plugins are enabled using global configuration."
 msgstr ""
+"Os complementos do sistema están activados usando a configuración global."
 
 #: js/PrefHelpers.js:577
-#, fuzzy
-#| msgid "Uninstall"
 msgid "Install"
-msgstr "Desinstalar"
+msgstr "Instalar"
 
 #: js/PrefHelpers.js:654
-#, fuzzy
-#| msgid "Updating, please wait..."
 msgid "Updating..."
-msgstr "Actualizando, agarda..."
+msgstr "Actualizando..."
 
 #: js/PrefHelpers.js:687
 msgid "Updates complete"
@@ -3114,10 +3069,8 @@ msgstr[0] "Actualizacións pendentes para %d complemento"
 msgstr[1] "Actualizacións pendentes para %d complementos"
 
 #: js/PrefLabelTree.js:126
-#, fuzzy
-#| msgid "Options"
 msgid "Caption"
-msgstr "Opcións"
+msgstr "Texto"
 
 #: js/PrefUsers.js:76
 msgid "Access level: "
@@ -3125,11 +3078,11 @@ msgstr "Nivel de acceso: "
 
 #: js/PrefUsers.js:92
 msgid "OTP enabled"
-msgstr ""
+msgstr "OTP activado"
 
 #: js/PrefUsers.js:104
 msgid "User details"
-msgstr ""
+msgstr "Detalles da usuaria"
 
 #~ msgid "Error: unable to find moved OPML file."
 #~ msgstr "Erro: non se puido atopar o ficheiro OPML movido."

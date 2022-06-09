@@ -17,8 +17,12 @@ class Db
 		}
 	}
 
-	static function NOW(): string {
-		return date("Y-m-d H:i:s", time());
+	/**
+	 * @param int $delta adjust generated timestamp by this value in seconds (either positive or negative)
+	 * @return string
+	 */
+	static function NOW(int $delta = 0): string {
+		return date("Y-m-d H:i:s", time() + $delta);
 	}
 
 	private function __clone() {

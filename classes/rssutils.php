@@ -492,7 +492,7 @@ class RSSUtils {
 
 			// If-Modified-Since
 			if (UrlHelper::$fetch_last_error_code == 304) {
-				Debug::log("source claims data not modified, nothing to do.", Debug::LOG_VERBOSE);
+				Debug::log("source claims data not modified (304), nothing to do.", Debug::LOG_VERBOSE);
 				$error_message = "";
 
 				$feed_obj->set([
@@ -503,6 +503,24 @@ class RSSUtils {
 
 				$feed_obj->save();
 
+			} else if (UrlHelper::$fetch_last_error_code == 429) {
+
+				// randomize interval using Config::HTTP_429_THROTTLE_INTERVAL as a base value (1-2x)
+				$http_429_throttle_interval = rand(Config::get(Config::HTTP_429_THROTTLE_INTERVAL),
+					Config::get(Config::HTTP_429_THROTTLE_INTERVAL)*2);
+
+				$error_message = UrlHelper::$fetch_last_error;
+
+				Debug::log("source claims we're requesting too often (429), throttling updates for $http_429_throttle_interval seconds.",
+					Debug::LOG_VERBOSE);
+
+				$feed_obj->set([
+					'last_error' => $error_message . " (updates throttled for $http_429_throttle_interval seconds.)",
+					'last_successful_update' => Db::NOW($http_429_throttle_interval),
+					'last_updated' => Db::NOW($http_429_throttle_interval),
+				]);
+
+				$feed_obj->save();
 			} else {
 				$error_message = UrlHelper::$fetch_last_error;
 

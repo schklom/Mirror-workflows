@@ -1,5 +1,7 @@
 parameters:
    level: 6
+   parallel:
+      maximumNumberOfProcesses: 4
    reportUnmatchedIgnoredErrors: false
    ignoreErrors:
       - '#Constant.*\b(SUBSTRING_FOR_DATE|SCHEMA_VERSION|SELF_USER_AGENT|LABEL_BASE_INDEX|PLUGIN_FEED_BASE_INDEX)\b.*not found#'

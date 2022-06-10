@@ -17,6 +17,15 @@ class UserHelper {
 		self::HASH_ALGO_SHA1
 	];
 
+	const ACCESS_LEVELS = [
+		self::ACCESS_LEVEL_DISABLED,
+		self::ACCESS_LEVEL_READONLY,
+		self::ACCESS_LEVEL_USER,
+		self::ACCESS_LEVEL_POWERUSER,
+		self::ACCESS_LEVEL_ADMIN,
+		self::ACCESS_LEVEL_KEEP_CURRENT
+	];
+
 	/** forbidden to login */
 	const ACCESS_LEVEL_DISABLED 		= -2;
 
@@ -31,6 +40,23 @@ class UserHelper {
 
 	/** has administrator permissions */
 	const ACCESS_LEVEL_ADMIN			= 10;
+
+	/** used by self::user_modify() to keep current access level */
+	const ACCESS_LEVEL_KEEP_CURRENT = -1024;
+
+	/**
+	 * @param int $level integer loglevel value
+	 * @return UserHelper::ACCESS_LEVEL_* if valid, warn and return ACCESS_LEVEL_KEEP_CURRENT otherwise
+	 */
+	public static function map_access_level(int $level) : int {
+		if (in_array($level, self::ACCESS_LEVELS)) {
+			/** @phpstan-ignore-next-line */
+			return $level;
+		} else {
+			user_error("Passed invalid user access level: $level", E_USER_WARNING);
+			return self::ACCESS_LEVEL_KEEP_CURRENT;
+		}
+	}
 
 	static function authenticate(string $login = null, string $password = null, bool $check_only = false, string $service = null): bool {
 		if (!Config::get(Config::SINGLE_USER_MODE)) {
@@ -133,7 +159,7 @@ class UserHelper {
 			if (empty($_SESSION["uid"])) {
 
 				if (Config::get(Config::AUTH_AUTO_LOGIN) && self::authenticate(null, null)) {
-					$_SESSION["ref_schema_version"] = get_schema_version();
+					$_SESSION["ref_schema_version"] = Config::get_schema_version();
 				} else {
 					 self::authenticate(null, null, true);
 				}
@@ -217,6 +243,7 @@ class UserHelper {
 		return substr(bin2hex(get_random_bytes(125)), 0, 250);
 	}
 
+	/** TODO: this should invoke UserHelper::user_modify() */
 	static function reset_password(int $uid, bool $format_output = false, string $new_password = ""): void {
 
 		$user = ORM::for_table('ttrss_users')->find_one($uid);
@@ -379,5 +406,90 @@ class UserHelper {
 			return "$algo:$pass_hash";
 		else
 			return false;
+	}
+
+	/**
+	 * @param string $login Login for new user (case-insensitive)
+	 * @param string $password Password for new user (may not be blank)
+	 * @param UserHelper::ACCESS_LEVEL_* $access_level Access level for new user
+	 * @return bool true if user has been created
+	 */
+	static function user_add(string $login, string $password, int $access_level) : bool {
+		$login = clean($login);
+
+		if ($login &&
+			$password &&
+			!self::find_user_by_login($login) &&
+			self::map_access_level((int)$access_level) != self::ACCESS_LEVEL_KEEP_CURRENT) {
+
+			$user = ORM::for_table('ttrss_users')->create();
+
+			$user->salt = self::get_salt();
+			$user->login = mb_strtolower($login);
+			$user->pwd_hash = self::hash_password($password, $user->salt);
+			$user->access_level = $access_level;
+			$user->created = Db::NOW();
+
+			return $user->save();
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param int $uid User ID to modify
+	 * @param string $new_password set password to this value if its not blank
+	 * @param UserHelper::ACCESS_LEVEL_* $access_level set user access level to this value if it is set (default ACCESS_LEVEL_KEEP_CURRENT)
+	 * @return bool true if user record has been saved
+	 *
+	 * NOTE: $access_level is of mixed type because of intellephense
+	 */
+	static function user_modify(int $uid, string $new_password = '', $access_level = self::ACCESS_LEVEL_KEEP_CURRENT) : bool {
+		$user = ORM::for_table('ttrss_users')->find_one($uid);
+
+		if ($user) {
+			if ($new_password != '') {
+				$new_salt = self::get_salt();
+				$pwd_hash = self::hash_password($new_password, $new_salt, self::HASH_ALGOS[0]);
+
+				$user->pwd_hash = $pwd_hash;
+				$user->salt = $new_salt;
+			}
+
+			if ($access_level != self::ACCESS_LEVEL_KEEP_CURRENT) {
+				$user->access_level = (int)$access_level;
+			}
+
+			return $user->save();
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param int $uid user ID to delete (this won't delete built-in admin user with UID 1)
+	 * @return bool true if user has been deleted
+	 */
+	static function user_delete(int $uid) : bool {
+		if ($uid != 1) {
+
+			$user = ORM::for_table('ttrss_users')->find_one($uid);
+
+			if ($user) {
+				// TODO: is it still necessary to split those queries?
+
+				ORM::for_table('ttrss_tags')
+					->where('owner_uid', $uid)
+					->delete_many();
+
+				ORM::for_table('ttrss_feeds')
+					->where('owner_uid', $uid)
+					->delete_many();
+
+				return $user->delete();
+			}
+		}
+
+		return false;
 	}
 }

@@ -18,14 +18,14 @@ class Auth_Internal extends Auth_Base {
 		$otp = (int) ($_REQUEST["otp"] ?? 0);
 
 		// don't bother with null/null logins for auth_external etc
-		if ($login && get_schema_version() > 96) {
+		if ($login && Config::get_schema_version() > 96) {
 
 			$user_id = UserHelper::find_user_by_login($login);
 
 			if ($user_id && UserHelper::is_otp_enabled($user_id)) {
 
 				// only allow app passwords for service logins if OTP is enabled
-				if ($service && get_schema_version() > 138) {
+				if ($service && Config::get_schema_version() > 138) {
 					return $this->check_app_password($login, $password, $service);
 				}
 
@@ -106,7 +106,7 @@ class Auth_Internal extends Auth_Base {
 		// service logins: check app passwords first but allow regular password
 		// as a fallback if OTP is not enabled
 
-		if ($service && get_schema_version() > 138) {
+		if ($service && Config::get_schema_version() > 138) {
 			$user_id = $this->check_app_password($login, $password, $service);
 
 			if ($user_id)
@@ -119,7 +119,7 @@ class Auth_Internal extends Auth_Base {
 				->find_one();
 
 			if ($user) {
-				if (get_schema_version() >= 145) {
+				if (Config::get_schema_version() >= 145) {
 					if ($user->last_auth_attempt) {
 						$last_auth_attempt = strtotime($user->last_auth_attempt);
 
@@ -145,7 +145,7 @@ class Auth_Internal extends Auth_Base {
 				if ($auth_result) {
 					return $auth_result;
 				} else {
-					if (get_schema_version() >= 145) {
+					if (Config::get_schema_version() >= 145) {
 						$user->last_auth_attempt = Db::NOW();
 						$user->save();
 					}
@@ -176,7 +176,7 @@ class Auth_Internal extends Auth_Base {
 			list ($pwd_algo, $raw_hash) = explode(":", $pwd_hash, 2);
 
 			// check app password only if service is specified
-			if ($service && get_schema_version() > 138) {
+			if ($service && Config::get_schema_version() > 138) {
 				return $this->check_app_password($login, $password, $service);
 			}
 

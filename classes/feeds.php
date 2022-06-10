@@ -665,7 +665,7 @@ class Feeds extends Handler_Protected {
 		}
 
 		Debug::set_enabled(true);
-		Debug::set_loglevel($xdebug);
+		Debug::set_loglevel(Debug::map_loglevel($xdebug));
 
 		$feed_id = (int)$_REQUEST["feed_id"];
 		$do_update = ($_REQUEST["action"] ?? "") == "do_update";

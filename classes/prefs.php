@@ -230,7 +230,7 @@ class Prefs {
 			}
 		}
 
-		if (get_schema_version() >= 141) {
+		if (Config::get_schema_version() >= 141) {
 			// fill in any overrides from the database
 			$sth = $this->pdo->prepare("SELECT pref_name, value FROM ttrss_user_prefs2
 									WHERE owner_uid = :uid AND
@@ -265,7 +265,7 @@ class Prefs {
 			if ($this->_is_cached($pref_name, $owner_uid, $profile_id)) {
 				$cached_value = $this->_get_cache($pref_name, $owner_uid, $profile_id);
 				return Config::cast_to($cached_value, $type_hint);
-			} else if (get_schema_version() >= 141) {
+			} else if (Config::get_schema_version() >= 141) {
 				$sth = $this->pdo->prepare("SELECT value FROM ttrss_user_prefs2
 								WHERE pref_name = :name AND owner_uid = :uid AND
 								(profile = :profile OR (:profile IS NULL AND profile IS NULL))");
@@ -390,7 +390,7 @@ class Prefs {
 	}
 
 	function migrate(int $owner_uid, ?int $profile_id): void {
-		if (get_schema_version() < 141)
+		if (Config::get_schema_version() < 141)
 			return;
 
 		if (!$profile_id) $profile_id = null;

@@ -68,9 +68,9 @@ class Debug {
     }
 
 	/**
-	 * @param int $level Debug::LOG_*
+	 * @param Debug::LOG_* $level
 	 */
-    public static function set_loglevel(int $level): void {
+    public static function set_loglevel($level): void {
         self::$loglevel = $level;
     }
 
@@ -82,7 +82,21 @@ class Debug {
     }
 
 	/**
-	 * @param int $level Debug::LOG_*
+	 * @param int $level integer loglevel value
+	 * @return Debug::LOG_* if valid, warn and return LOG_DISABLED otherwise
+	 */
+	public static function map_loglevel(int $level) : int {
+		if (in_array($level, self::ALL_LOG_LEVELS)) {
+			/** @phpstan-ignore-next-line */
+			return $level;
+		} else {
+			user_error("Passed invalid debug log level: $level", E_USER_WARNING);
+			return self::LOG_DISABLED;
+		}
+	}
+
+	/**
+	 * @param Debug::LOG_* $level log level
 	 */
     public static function log(string $message, int $level = Debug::LOG_NORMAL): bool {
 

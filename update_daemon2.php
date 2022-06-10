@@ -146,7 +146,7 @@
     Debug::set_enabled(true);
 
     if (isset($options["log-level"])) {
-        Debug::set_loglevel((int)$options["log-level"]);
+        Debug::set_loglevel(Debug::map_loglevel((int)$options["log-level"]));
     }
 
     if (isset($options["log"])) {
@@ -155,7 +155,7 @@
         Debug::log("Logging to " . $options["log"]);
     } else {
         if (isset($options['quiet'])) {
-            Debug::set_loglevel(Debug::$LOG_DISABLED);
+            Debug::set_loglevel(Debug::LOG_DISABLED);
         }
     }
 

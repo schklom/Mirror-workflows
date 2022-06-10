@@ -362,18 +362,14 @@ class UserHelper {
 		return null;
 	}
 
-	static function is_default_password(): bool {
-
-		/** @var Auth_Internal|false $authenticator -- this is only here to make check_password() visible to static analyzer */
-		$authenticator = PluginHost::getInstance()->get_plugin($_SESSION["auth_module"]);
-
-		if ($authenticator &&
-                method_exists($authenticator, "check_password") &&
-                $authenticator->check_password($_SESSION["uid"], "password")) {
-
-			return true;
-		}
-		return false;
+	/**
+	 * @param null|int $owner_uid if null, checks current user via session-specific auth module, if set works on internal database only
+	 * @return bool
+	 * @throws PDOException
+	 * @throws Exception
+	 */
+	static function is_default_password(?int $owner_uid = null): bool {
+		return self::user_has_password($owner_uid, 'password');
 	}
 
 	/**
@@ -492,4 +488,30 @@ class UserHelper {
 
 		return false;
 	}
+
+	/**
+	 * @param null|int $owner_uid if null, checks current user via session-specific auth module, if set works on internal database only
+	 * @param string $password password to compare hash against
+	 * @return bool
+	 */
+	static function user_has_password(?int $owner_uid = null, string $password) : bool {
+		if ($owner_uid) {
+			$authenticator = new Auth_Internal();
+
+			return $authenticator->check_password($owner_uid, $password);
+		} else {
+			/** @var Auth_Internal|false $authenticator -- this is only here to make check_password() visible to static analyzer */
+			$authenticator = PluginHost::getInstance()->get_plugin($_SESSION["auth_module"]);
+
+			if ($authenticator &&
+						method_exists($authenticator, "check_password") &&
+						$authenticator->check_password($_SESSION["uid"], $password)) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 }

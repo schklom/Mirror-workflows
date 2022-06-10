@@ -101,6 +101,7 @@
 		"user-list" => "list all users",
 		"user-add:" => ["USER[:PASSWORD[:ACCESS_LEVEL=0]]", "add USER, prompts for password if unset"],
 		"user-remove:" => ["USERNAME", "remove USER"],
+		"user-check-password:" => ["USER:PASSWORD", "returns 0 if user has specified PASSWORD"],
 		"user-set-password:" => ["USER:PASSWORD", "sets PASSWORD of specified USER"],
 		"user-set-access-level:" => ["USER:LEVEL", "sets access LEVEL of specified USER"],
 		"user-exists:" => ["USER", "returns 0 if specified USER exists in the database"],
@@ -533,6 +534,21 @@
 			exit(0);
 		else
 			exit(1);
+	}
+
+	if (isset($options["user-check-password"])) {
+		list ($login, $password) = explode(":", $options["user-check-password"], 2);
+
+		$uid = UserHelper::find_user_by_login($login);
+
+		if (!$uid) {
+			Debug::log("Error: User not found: $login");
+			exit(1);
+		}
+
+		$rc = UserHelper::user_has_password($uid, $password);
+
+		exit($rc ? 0 : 1);
 	}
 
 	PluginHost::getInstance()->run_commands($options);

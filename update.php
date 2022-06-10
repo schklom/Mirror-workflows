@@ -140,7 +140,7 @@
 			printf("  %s %s\n", str_pad($option, $max_key_len + 5), $help_text);
 		}
 
-		return;
+		exit(0);
 	}
 
 	if (!isset($options['daemon'])) {
@@ -181,7 +181,6 @@
 	if (isset($options["pidlock"])) {
 		$my_pid = $options["pidlock"];
 		$lock_filename = "update_daemon-$my_pid.lock";
-
 	}
 
 	Debug::log("Lock: $lock_filename");
@@ -251,6 +250,7 @@
 	if (isset($options["daemon-loop"])) {
 		if (!make_stampfile('update_daemon.stamp')) {
 			Debug::log("warning: unable to create stampfile\n");
+			exit(1);
 		}
 
 		RSSUtils::update_daemon_common(isset($options["pidlock"]) ? 50 : Config::get(Config::DAEMON_FEED_LIMIT), $options);
@@ -273,7 +273,7 @@
 				Debug::log("Type 'yes' to continue.");
 
 				if (read_stdin() != 'yes')
-					exit;
+					exit(1);
 			} else {
 				Debug::log("Proceeding to update without confirmation.");
 			}
@@ -283,7 +283,9 @@
 			}
 
 			$migrations = Config::get_migrations();
-			$migrations->migrate();
+			$rc = $migrations->migrate();
+
+			exit($rc ? 0 : 1);
 
 		} else {
 			Debug::log("Database schema is already at latest version.");
@@ -347,7 +349,6 @@
 		}
 
 		echo "Plugins marked by * are currently enabled for all users.\n";
-
 	}
 
 	if (isset($options["debug-feed"])) {
@@ -358,9 +359,9 @@
 
 		Debug::set_loglevel(Debug::LOG_EXTENDED);
 
-		$rc = RSSUtils::update_rss_feed($feed) != false ? 0 : 1;
+		$rc = RSSUtils::update_rss_feed($feed);
 
-		exit($rc);
+		exit($rc ? 0 : 1);
 	}
 
 	if (isset($options["send-digests"])) {
@@ -389,8 +390,10 @@
 			$rc = $opml->opml_export($filename, $owner_uid, false, true, true);
 
 			Debug::log($rc ? "Success." : "Failed.");
+			exit($rc ? 0 : 1);
 		} else {
 			Debug::log("User not found: $user");
+			exit(1);
 		}
 	}
 
@@ -405,8 +408,10 @@
 			$rc = $opml->opml_import($owner_uid, $filename);
 
 			Debug::log($rc ? "Success." : "Failed.");
+			exit($rc ? 0 : 1);
 		} else {
 			Debug::log("User not found: $user");
+			exit(1);
 		}
 
 	}
@@ -445,6 +450,7 @@
 			Debug::log("Success.");
 		} else {
 			Debug::log("Operation failed, check the logs for more information.");
+			exit(1);
 		}
 	}
 
@@ -464,6 +470,7 @@
 			Debug::log("Success.");
 		} else {
 			Debug::log("Operation failed, check the logs for more information.");
+			exit(1);
 		}
 	}
 
@@ -488,6 +495,7 @@
 			Debug::log("Success.");
 		} else {
 			Debug::log("Operation failed, check the logs for more information.");
+			exit(1);
 		}
 	}
 
@@ -514,6 +522,7 @@
 			Debug::log("Success.");
 		} else {
 			Debug::log("Operation failed, check the logs for more information.");
+			exit(1);
 		}
 	}
 

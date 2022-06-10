@@ -269,7 +269,7 @@
 	if (isset($options["update-schema"])) {
 		if (Config::is_migration_needed()) {
 
-			if (!isset($options['force-yes']) || $options["update-schema"] != "force-yes") {
+			if (!isset($options['force-yes']) && $options["update-schema"] != "force-yes") {
 				Debug::log("Type 'yes' to continue.");
 
 				if (read_stdin() != 'yes')

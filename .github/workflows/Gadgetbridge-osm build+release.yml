@@ -17,8 +17,8 @@ jobs:
         with:
           repository: 'schklom/Gadgetbridge-osm'
           ####ref: 'Gadgetbridge-osmand-experiments' # branch
-          #ref: 'osmand-experiments' # branch
-          ref: 'master' # branch
+          ref: 'osmand-experiments' # branch
+          #ref: 'master' # branch
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
       - name: Setup JDK+Android
         run: sudo apt-get install openjdk-11-jdk git adb -y

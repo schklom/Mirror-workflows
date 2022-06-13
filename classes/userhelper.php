@@ -494,7 +494,7 @@ class UserHelper {
 	 * @param string $password password to compare hash against
 	 * @return bool
 	 */
-	static function user_has_password(?int $owner_uid = null, string $password) : bool {
+	static function user_has_password(?int $owner_uid, string $password) : bool {
 		if ($owner_uid) {
 			$authenticator = new Auth_Internal();
 

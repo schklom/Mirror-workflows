@@ -9,16 +9,16 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-06-05 11:48+0300\n"
-"PO-Revision-Date: 2021-07-16 08:49+0000\n"
-"Last-Translator: TonyRL <tony_lao@outlook.com>\n"
-"Language-Team: Chinese (Simplified) <https://weblate.tt-rss.org/projects/tt-"
-"rss/messages/zh_Hans/>\n"
+"PO-Revision-Date: 2022-06-15 06:42+0000\n"
+"Last-Translator: Ptsa Daniel <ptsa1987@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://weblate.tt-rss.org/projects/"
+"tt-rss/messages/zh_Hans/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.7.1\n"
+"X-Generator: Weblate 4.12.2\n"
 
 #: backend.php:60
 msgid "Use default"
@@ -89,10 +89,8 @@ msgid "Disabled"
 msgstr "禁用"
 
 #: backend.php:91
-#, fuzzy
-#| msgid "Readability"
 msgid "Read Only"
-msgstr "Readability 获取全文"
+msgstr "只读"
 
 #: backend.php:92 classes/pref/system.php:123
 msgid "User"
@@ -239,7 +237,7 @@ msgstr "隐藏/显示 已读"
 
 #: index.php:273
 msgid "UI layout:"
-msgstr ""
+msgstr "界面布局："
 
 #: index.php:274 classes/rpc.php:639
 msgid "Toggle combined mode"
@@ -250,10 +248,8 @@ msgid "Toggle widescreen mode"
 msgstr "切换宽屏模式"
 
 #: index.php:278
-#, fuzzy
-#| msgid "Always expand articles"
 msgid "Toggle expand all articles"
-msgstr "始终展开文章"
+msgstr "切换 展开文章"
 
 #: index.php:279
 msgid "Other actions:"
@@ -626,10 +622,8 @@ msgid "Remove"
 msgstr "移除"
 
 #: classes/pref/filters.php:692
-#, fuzzy
-#| msgid "Toggle feedlist"
 msgid "Toggle rule display"
-msgstr "切换侧边栏"
+msgstr "切换 显示规则"
 
 #: classes/pref/filters.php:751
 msgid "[No caption]"
@@ -861,14 +855,12 @@ msgid "May increase server load"
 msgstr "可能会增加服务器负载"
 
 #: classes/pref/prefs.php:131
-#, fuzzy
-#| msgid "Preview"
 msgid "Grid view"
-msgstr "预览"
+msgstr "网格视图"
 
 #: classes/pref/prefs.php:131
 msgid "On wider screens, if always expanded"
-msgstr ""
+msgstr "在宽屏上总是展开"
 
 #: classes/pref/prefs.php:232
 msgid "The configuration was saved."
@@ -922,14 +914,12 @@ msgid "Disable OTP"
 msgstr "禁用 OTP 动态口令"
 
 #: classes/pref/prefs.php:482
-#, fuzzy
-#| msgid "OTP Key:"
 msgid "OTP secret:"
-msgstr "OTP密钥："
+msgstr "一次性密码："
 
 #: classes/pref/prefs.php:509
 msgid "Verification code:"
-msgstr ""
+msgstr "验证码："
 
 #: classes/pref/prefs.php:517
 msgid "Enable OTP"
@@ -1351,7 +1341,7 @@ msgstr "错误：请上传 OPML 文件。"
 #: classes/opml.php:643
 #, php-format
 msgid "Error: file is not readable: %s"
-msgstr ""
+msgstr "错误：文件不可读：%s"
 
 #: classes/opml.php:671
 msgid "Error while parsing document."
@@ -1366,20 +1356,16 @@ msgid "Open next feed"
 msgstr "显示下一个订阅源"
 
 #: classes/rpc.php:587
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open next unread feed"
-msgstr "显示下一个订阅源"
+msgstr "打开下一个未读订阅源"
 
 #: classes/rpc.php:588
 msgid "Open previous feed"
 msgstr "显示前一个订阅源"
 
 #: classes/rpc.php:589
-#, fuzzy
-#| msgid "Open previous feed"
 msgid "Open previous unread feed"
-msgstr "显示前一个订阅源"
+msgstr "打开上一个未读订阅源"
 
 #: classes/rpc.php:590
 msgid "Open next article (in combined mode, scroll down)"
@@ -1543,10 +1529,8 @@ msgid "Toggle headline grouping"
 msgstr "切换标题分组"
 
 #: classes/rpc.php:633
-#, fuzzy
-#| msgid "Toggle sidebar"
 msgid "Toggle grid view"
-msgstr "切换侧边栏"
+msgstr "切换网格视图"
 
 #: classes/rpc.php:634
 msgid "Debug feed update"
@@ -1621,7 +1605,7 @@ msgstr "用户%s ，密码修改为%s"
 #: classes/mailer.php:60
 #, php-format
 msgid "Unknown error while sending mail. Hooks tried: %d."
-msgstr ""
+msgstr "发送邮件时出现未知错误。尝试的挂钩：%d。"
 
 #: plugins/af_comics/init.php:60
 msgid "Feeds supported by af_comics"
@@ -1748,10 +1732,8 @@ msgid "Configuration saved"
 msgstr "设置已保存"
 
 #: plugins/auth_internal/init.php:92
-#, fuzzy
-#| msgid "Please enter label caption:"
 msgid "Please enter verification code (OTP):"
-msgstr "请填写预定义标签的说明："
+msgstr "请输入验证码（OTP）："
 
 #: plugins/auth_internal/init.php:94
 msgid "Continue"
@@ -1759,7 +1741,7 @@ msgstr "继续"
 
 #: plugins/auth_internal/init.php:133
 msgid "Too many authentication attempts, throttled."
-msgstr ""
+msgstr "身份验证尝试过多，受到限制。"
 
 #: plugins/auth_internal/init.php:240
 msgid "Password has been changed."
@@ -1873,10 +1855,8 @@ msgid "Edit article note"
 msgstr "编辑文章注记"
 
 #: plugins/nsfw/init.php:46
-#, fuzzy
-#| msgid "Not work safe (click to toggle)"
 msgid "Not safe for work (click to toggle)"
-msgstr "不宜在工作场所观看（点击开启）"
+msgstr "工作在不安全状态（点击切换）"
 
 #: plugins/nsfw/init.php:80
 msgid "NSFW Plugin"
@@ -1963,19 +1943,16 @@ msgid "Session failed to validate (password changed)"
 msgstr "无法验证会话（密码错误）"
 
 #: include/sessions.php:49
-#, fuzzy
 msgid "Session failed to validate (account is disabled)"
-msgstr "无法验证会话（user agent 发生变化）"
+msgstr "会话验证失败（帐户已禁用）"
 
 #: include/sessions.php:53
 msgid "Session failed to validate (user not found)"
 msgstr "无法验证会话（没有找到该用户）"
 
 #: js/App.js:314
-#, fuzzy
-#| msgid "Widescreen is not available in combined mode."
 msgid "This function is only available in combined mode."
-msgstr "在合并模式下无法启用宽屏."
+msgstr "此功能仅在组合模式下可用。"
 
 #: js/App.js:445
 msgid "Keyboard shortcuts"
@@ -1990,15 +1967,11 @@ msgid "Update daemon is not updating feeds."
 msgstr "更新程序未更新订阅源."
 
 #: js/App.js:606
-#, fuzzy, java-printf-format
-#| msgid ""
-#| "URL scheme reported by your browser (%a) doesn't match server-configured "
-#| "SELF_URL_PATH (%b), check X-Forwarded-Proto."
+#, java-printf-format
 msgid ""
 "URL scheme reported by your browser (%a) doesn't match server-configured "
 "SELF_URL_PATH (%b), check X-Forwarded-Proto."
-msgstr ""
-"浏览器报告的URL方案（％a）与服务器配置的SELF_URL_PATH（％b）不匹配，请检查X-"
+msgstr "浏览器报告的URL方案（％a）与服务器配置的SELF_URL_PATH（％b）不匹配，请检查X-"
 "Forwarded-Proto。"
 
 #: js/App.js:613
@@ -2140,14 +2113,12 @@ msgid "XML validation failed: %s"
 msgstr "XML 验证失败：%s"
 
 #: js/CommonDialogs.js:197
-#, fuzzy
-#| msgid "Error while parsing document."
 msgid "Error while creating feed database entry."
-msgstr "解析文档时发生错误。"
+msgstr "创建订阅源数据库条目时出错。"
 
 #: js/CommonDialogs.js:200
 msgid "You are not allowed to perform this operation."
-msgstr ""
+msgstr "您无权执行此操作。"
 
 #: js/CommonDialogs.js:222
 msgid "Feeds with update errors"
@@ -2242,10 +2213,8 @@ msgid "Looking for articles (%d processed, %f found)..."
 msgstr "搜索文章中 (%d 已处理, %f 已发现)..."
 
 #: js/CommonFilters.js:73
-#, fuzzy
-#| msgid "Found %d articles matching this filter:"
 msgid "Articles matching this filter:"
-msgstr "找到与过滤器匹配的%d篇文章："
+msgstr "符合此过滤条件的文章："
 
 #: js/CommonFilters.js:75
 #, java-printf-format, javascript-format
@@ -2273,9 +2242,8 @@ msgid "Inverse regular expression matching"
 msgstr "反选正则表达式匹配结果"
 
 #: js/CommonFilters.js:223
-#, fuzzy
 msgid "on"
-msgstr "无"
+msgstr "在"
 
 #: js/CommonFilters.js:225 js/PrefFilterTree.js:54
 msgid "in"
@@ -2314,10 +2282,8 @@ msgid "Create"
 msgstr "创建"
 
 #: js/FeedTree.js:105 js/Headlines.js:1585
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open site"
-msgstr "显示下一个订阅源"
+msgstr "打开网站"
 
 #: js/FeedTree.js:114 js/Headlines.js:1594
 msgid "Debug feed"
@@ -2581,13 +2547,11 @@ msgstr "清空事件日志?"
 
 #: js/PrefHelpers.js:135
 msgid "Name for cloned profile:"
-msgstr ""
+msgstr "被克隆的配置文件名称："
 
 #: js/PrefHelpers.js:145
-#, fuzzy
-#| msgid "Please select an image file."
 msgid "Please select a single profile to clone."
-msgstr "请选择图片文件上传。"
+msgstr "请选择要克隆的单个配置文件。"
 
 #: js/PrefHelpers.js:153
 msgid ""
@@ -2612,7 +2576,7 @@ msgstr "（当前使用的）"
 
 #: js/PrefHelpers.js:219
 msgid "(empty)"
-msgstr ""
+msgstr "（空的）"
 
 #: js/PrefHelpers.js:242
 msgid "Activate selected profile?"
@@ -2643,10 +2607,9 @@ msgid "Reset to defaults?"
 msgstr "重置为默认状态？"
 
 #: js/PrefHelpers.js:373
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Error while parsing document."
+#, java-printf-format, javascript-format
 msgid "Error while loading plugins list: %s."
-msgstr "解析文档时发生错误。"
+msgstr "加载插件列表时出错：%s。"
 
 #: js/PrefHelpers.js:422
 msgid "Clear data"
@@ -2709,10 +2672,9 @@ msgid "Already installed"
 msgstr "已安装"
 
 #: js/PrefHelpers.js:587
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Updated: %s"
+#, java-printf-format, javascript-format
 msgid "Updated: %s"
-msgstr "更新：％s"
+msgstr "更新：%s"
 
 #: js/PrefHelpers.js:604
 msgid "Looking for plugins..."
@@ -2877,10 +2839,8 @@ msgid "This will invalidate all previously shared article URLs. Continue?"
 msgstr "之前共享文章的 URL 将会回到未认证状态。是否继续？"
 
 #: plugins/shorten_expanded/init.js:32
-#, fuzzy
-#| msgid "Email article"
 msgid "Expand article"
-msgstr "通过邮件发送文章"
+msgstr "展开文章"
 
 #: js/App.js:646
 msgid "Stack trace"
@@ -2927,10 +2887,8 @@ msgid "Unsubscribe from selected feeds"
 msgstr "退订选中的信息源"
 
 #: js/CommonDialogs.js:502
-#, fuzzy
-#| msgid "Feed Title"
 msgid "Feed title"
-msgstr "信息源标题"
+msgstr "订阅源标题"
 
 #: js/CommonDialogs.js:509
 msgid "Feed URL"
@@ -2991,7 +2949,7 @@ msgstr "标记信息源为已读"
 
 #: js/Headlines.js:524
 msgid "Span all columns"
-msgstr ""
+msgstr "跨越所有列"
 
 #: js/Headlines.js:665
 msgid "Invert"
@@ -3021,46 +2979,35 @@ msgstr "Feed需要登录认证。"
 
 #: js/PrefHelpers.js:229
 msgid "Clone"
-msgstr ""
+msgstr "克隆"
 
 #: js/PrefHelpers.js:231
-#, fuzzy
-#| msgid "Activate profile"
 msgid "Activate"
-msgstr "启用偏好文件"
+msgstr "启用"
 
 #: js/PrefHelpers.js:299
 msgid "Apply"
 msgstr "应用"
 
 #: js/PrefHelpers.js:303
-#, fuzzy
-#| msgid "Save and exit"
 msgid "Save and reload"
-msgstr "保存并退出"
+msgstr "保存并重新加载"
 
 #: js/PrefHelpers.js:352
 msgid "Selected plugins have been enabled. Reload?"
 msgstr "所选插件已启用。 重新加载？"
 
 #: js/PrefHelpers.js:400
-#, fuzzy
-#| msgid ""
-#| "System plugins are enabled in <strong>config.php</strong> for all users."
 msgid "System plugins are enabled using global configuration."
-msgstr "在 <strong>config.php</strong> 中启用的系统插件适用于所有用户."
+msgstr "使用全局配置启用系统插件。"
 
 #: js/PrefHelpers.js:577
-#, fuzzy
-#| msgid "Uninstall"
 msgid "Install"
-msgstr "卸载"
+msgstr "安装"
 
 #: js/PrefHelpers.js:654
-#, fuzzy
-#| msgid "Playing..."
 msgid "Updating..."
-msgstr "播放中……"
+msgstr "更新中..."
 
 #: js/PrefHelpers.js:687
 msgid "Updates complete"
@@ -3081,10 +3028,8 @@ msgid "Access level: "
 msgstr "访问级别: "
 
 #: js/PrefUsers.js:92
-#, fuzzy
-#| msgid "Enabled"
 msgid "OTP enabled"
-msgstr "已启用"
+msgstr "启用 OTP"
 
 #: js/PrefUsers.js:104
 msgid "User details"

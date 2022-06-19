@@ -169,6 +169,9 @@ create table ttrss_entries (id integer not null primary key auto_increment,
 create index ttrss_entries_date_entered_index on ttrss_entries(date_entered);
 create index ttrss_entries_updated_idx on ttrss_entries(updated);
 
+create fulltext index if not exists ttrss_entries_title_search_idx on ttrss_entries(title);
+create fulltext index if not exists ttrss_entries_combined_search_idx on ttrss_entries(title, content);
+
 create table ttrss_user_entries (
 	int_id integer not null primary key auto_increment,
 	ref_id integer not null,

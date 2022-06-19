@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-06-05 11:48+0300\n"
-"PO-Revision-Date: 2022-01-19 09:40+0000\n"
+"PO-Revision-Date: 2022-06-19 10:42+0000\n"
 "Last-Translator: Андрій Жук <zhouck@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.tt-rss.org/projects/tt-rss/"
 "messages/uk/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.13\n"
 
 #: backend.php:60
 msgid "Use default"
@@ -89,10 +89,8 @@ msgid "Disabled"
 msgstr "Вимкнуто"
 
 #: backend.php:91
-#, fuzzy
-#| msgid "Readability"
 msgid "Read Only"
-msgstr "Зручне читання"
+msgstr "Лише читання"
 
 #: backend.php:92 classes/pref/system.php:123
 msgid "User"
@@ -239,7 +237,7 @@ msgstr "Показати/приховати прочитані канали"
 
 #: index.php:273
 msgid "UI layout:"
-msgstr ""
+msgstr "Схема UI:"
 
 #: index.php:274 classes/rpc.php:639
 msgid "Toggle combined mode"
@@ -250,10 +248,8 @@ msgid "Toggle widescreen mode"
 msgstr "Перемкнути повний екран"
 
 #: index.php:278
-#, fuzzy
-#| msgid "Always expand articles"
 msgid "Toggle expand all articles"
-msgstr "Завжди розгортати статті"
+msgstr "(Не/)Розгортати всі статті"
 
 #: index.php:279
 msgid "Other actions:"
@@ -633,10 +629,8 @@ msgid "Remove"
 msgstr "Вилучити"
 
 #: classes/pref/filters.php:692
-#, fuzzy
-#| msgid "Toggle feedlist"
 msgid "Toggle rule display"
-msgstr "Перемкнути список каналів"
+msgstr "Перемкнути показ правила"
 
 #: classes/pref/filters.php:751
 msgid "[No caption]"
@@ -1369,7 +1363,7 @@ msgstr "Помилка: завантажуйте OPML файл."
 #: classes/opml.php:643
 #, php-format
 msgid "Error: file is not readable: %s"
-msgstr ""
+msgstr "Помилка: не вдалося прочитати файл %s"
 
 #: classes/opml.php:671
 msgid "Error while parsing document."
@@ -1633,7 +1627,7 @@ msgstr "Змінено пароль користувача %s на %s"
 #: classes/mailer.php:60
 #, php-format
 msgid "Unknown error while sending mail. Hooks tried: %d."
-msgstr ""
+msgstr "Невідома помилка при відправленні листа. Спробували хуки: %d."
 
 #: plugins/af_comics/init.php:60
 msgid "Feeds supported by af_comics"
@@ -1979,20 +1973,16 @@ msgid "Session failed to validate (password changed)"
 msgstr "Не вдається перевірити сесію (змінився пароль)"
 
 #: include/sessions.php:49
-#, fuzzy
-#| msgid "Session failed to validate (password changed)"
 msgid "Session failed to validate (account is disabled)"
-msgstr "Не вдається перевірити сесію (змінився пароль)"
+msgstr "Не вдається перевірити сесію (обліковий запис вимкнено)"
 
 #: include/sessions.php:53
 msgid "Session failed to validate (user not found)"
 msgstr "Не вдається перевірити сесію (користувача не знайдено)"
 
 #: js/App.js:314
-#, fuzzy
-#| msgid "Widescreen is not available in combined mode."
 msgid "This function is only available in combined mode."
-msgstr "Широкоекранний показ недоступний в комбінованому режимі."
+msgstr "Ця функція доступна лише в комбінованому режимі."
 
 #: js/App.js:445
 msgid "Keyboard shortcuts"
@@ -2157,14 +2147,12 @@ msgid "XML validation failed: %s"
 msgstr "Перевірка XML не вдалася: %s"
 
 #: js/CommonDialogs.js:197
-#, fuzzy
-#| msgid "Error while parsing document."
 msgid "Error while creating feed database entry."
-msgstr "Помилка розбору документу."
+msgstr "Помилка створення запису бази каналу."
 
 #: js/CommonDialogs.js:200
 msgid "You are not allowed to perform this operation."
-msgstr ""
+msgstr "Вам не дозволено виконувати цю операцію."
 
 #: js/CommonDialogs.js:222
 msgid "Feeds with update errors"
@@ -2328,10 +2316,8 @@ msgid "Create"
 msgstr "Створити"
 
 #: js/FeedTree.js:105 js/Headlines.js:1585
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open site"
-msgstr "Відкрити наступний канал"
+msgstr "Відкрити сайт"
 
 #: js/FeedTree.js:114 js/Headlines.js:1594
 msgid "Debug feed"
@@ -2675,10 +2661,9 @@ msgid "Reset to defaults?"
 msgstr "Скинути на типові значення?"
 
 #: js/PrefHelpers.js:373
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Error while parsing document."
+#, java-printf-format, javascript-format
 msgid "Error while loading plugins list: %s."
-msgstr "Помилка розбору документу."
+msgstr "Помилка завантаження списку додатків: %s."
 
 #: js/PrefHelpers.js:422
 msgid "Clear data"
@@ -2923,17 +2908,15 @@ msgstr "Траса стеку викликів"
 
 #: js/App.js:653
 msgid "Additional information"
-msgstr ""
+msgstr "Додаткова інформація"
 
 #: js/Article.js:207
 msgid "Attachments"
 msgstr "Вкладення"
 
 #: js/Article.js:319 js/Headlines.js:551
-#, fuzzy
-#| msgid "Remove sharing for this article?"
 msgid "Edit tags for this article"
-msgstr "Прибрати доступ до цієї статті?"
+msgstr "Змінити мітки для цієї статті"
 
 #: js/CommonDialogs.js:18
 msgid ""
@@ -2964,8 +2947,6 @@ msgid "Unsubscribe from selected feeds"
 msgstr "Відписатися від обраних каналів"
 
 #: js/CommonDialogs.js:502
-#, fuzzy
-#| msgid "Feed Title"
 msgid "Feed title"
 msgstr "Заголовок каналу"
 
@@ -3025,10 +3006,8 @@ msgstr ""
 "%D0%A1%D1%82%D0%B5%D0%BC%D1%96%D0%BD%D0%B3>стемінгу</a>"
 
 #: js/Headlines.js:471
-#, fuzzy
-#| msgid "Mark feed as read"
 msgid "mark feed as read"
-msgstr "Позначити канал як прочитаний"
+msgstr "позначити канал як прочитаний"
 
 #: js/Headlines.js:524
 msgid "Span all columns"
@@ -3075,35 +3054,24 @@ msgid "Apply"
 msgstr "Застосувати"
 
 #: js/PrefHelpers.js:303
-#, fuzzy
-#| msgid "Save and exit"
 msgid "Save and reload"
-msgstr "Зберегти й вийти"
+msgstr "Зберегти та перезавантажити"
 
 #: js/PrefHelpers.js:352
 msgid "Selected plugins have been enabled. Reload?"
 msgstr "Обрані плагіни були увімкнуті. Перезавантажити?"
 
 #: js/PrefHelpers.js:400
-#, fuzzy
-#| msgid ""
-#| "System plugins are enabled in <strong>config.php</strong> for all users."
 msgid "System plugins are enabled using global configuration."
-msgstr ""
-"Системні плагіни вмикаються в <strong>config.php</strong> для всіх "
-"користувачів."
+msgstr "Системні плагіни увімкнені за допомогою глобальних налаштувань."
 
 #: js/PrefHelpers.js:577
-#, fuzzy
-#| msgid "Uninstall"
 msgid "Install"
-msgstr "Видалити"
+msgstr "Встановити"
 
 #: js/PrefHelpers.js:654
-#, fuzzy
-#| msgid "Updating, please wait..."
 msgid "Updating..."
-msgstr "Оновлення, будь ласка, зачекайте..."
+msgstr "Оновлення..."
 
 #: js/PrefHelpers.js:687
 msgid "Updates complete"
@@ -3126,10 +3094,8 @@ msgid "Access level: "
 msgstr "Рівень доступу: "
 
 #: js/PrefUsers.js:92
-#, fuzzy
-#| msgid "Enabled"
 msgid "OTP enabled"
-msgstr "Увімкнутий"
+msgstr "OTP увімкнутий"
 
 #: js/PrefUsers.js:104
 msgid "User details"

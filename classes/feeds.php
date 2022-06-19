@@ -2357,8 +2357,11 @@ class Feeds extends Handler_Protected {
 							$k = mb_strtolower($k);
 							array_push($search_query_leftover, $not ? "!$k" : $k);
 						} else {
-							array_push($query_keywords, "(UPPER(ttrss_entries.title) $not LIKE UPPER(".$pdo->quote("%$k%").")
-								OR UPPER(ttrss_entries.content) $not LIKE UPPER(".$pdo->quote("%$k%")."))");
+							$k = mb_strtolower($k);
+							array_push($search_query_leftover, $not ? "-$k" : $k);
+
+							//array_push($query_keywords, "(UPPER(ttrss_entries.title) $not LIKE UPPER(".$pdo->quote("%$k%").")
+							//	OR UPPER(ttrss_entries.content) $not LIKE UPPER(".$pdo->quote("%$k%")."))");
 						}
 
 						if (!$not) array_push($search_words, $k);
@@ -2380,8 +2383,12 @@ class Feeds extends Handler_Protected {
 
 				array_push($query_keywords,
 					"(tsvector_combined @@ to_tsquery($search_language, $tsquery))");
-			}
+			} else {
+				$ft_query = $pdo->quote(implode(" ", $search_query_leftover));
 
+				array_push($query_keywords,
+					"MATCH (ttrss_entries.title, ttrss_entries.content) AGAINST ($ft_query IN BOOLEAN MODE)");
+			}
 		}
 
 		if (count($query_keywords) > 0)

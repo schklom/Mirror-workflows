@@ -86,7 +86,7 @@ class Af_Psql_Trgm extends Plugin {
 					ttrss_entries.title AS title,
 					updated, link,
 					ttrss_feeds.title AS feed_title,
-					MATCH (ttrss_entries.title) AGAINST (:title) AS sm
+					(MATCH (ttrss_entries.title) AGAINST (:title) / LENGTH(ttrss_entries.title)) AS sm
 				FROM
 					ttrss_entries, ttrss_user_entries LEFT JOIN ttrss_feeds ON (ttrss_feeds.id = feed_id)
 				WHERE
@@ -343,7 +343,7 @@ class Af_Psql_Trgm extends Plugin {
 				guid != :guid AND
 				owner_uid = :uid");
 		} else {
-			$sth = $this->pdo->prepare("SELECT MATCH(title) AGAINST (:title) AS ms
+			$sth = $this->pdo->prepare("SELECT (MATCH(title) AGAINST (:title) / LENGTH(title)) AS ms
 				FROM ttrss_entries, ttrss_user_entries WHERE ref_id = id AND
 					date_entered >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND
 					guid != :guid AND

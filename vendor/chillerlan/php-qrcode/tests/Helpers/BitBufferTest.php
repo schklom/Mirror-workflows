@@ -12,21 +12,22 @@
 
 namespace chillerlan\QRCodeTest\Helpers;
 
-use chillerlan\QRCode\{QRCode, Helpers\BitBuffer};
-use chillerlan\QRCodeTest\QRTestAbstract;
+use chillerlan\QRCode\QRCode;
+use chillerlan\QRCode\Helpers\BitBuffer;
+use PHPUnit\Framework\TestCase;
 
-class BitBufferTest extends QRTestAbstract{
+/**
+ * BitBuffer coverage test
+ */
+final class BitBufferTest extends TestCase{
 
-	/**
-	 * @var \chillerlan\QRCode\Helpers\BitBuffer
-	 */
-	protected $bitBuffer;
+	protected BitBuffer $bitBuffer;
 
 	protected function setUp():void{
 		$this->bitBuffer = new BitBuffer;
 	}
 
-	public function bitProvider(){
+	public function bitProvider():array{
 		return [
 			'number'   => [QRCode::DATA_NUMBER, 16],
 			'alphanum' => [QRCode::DATA_ALPHANUM, 32],
@@ -38,16 +39,16 @@ class BitBufferTest extends QRTestAbstract{
 	/**
 	 * @dataProvider bitProvider
 	 */
-	public function testPut($data, $value){
+	public function testPut(int $data, int $value):void{
 		$this->bitBuffer->put($data, 4);
-		$this->assertSame($value, $this->bitBuffer->buffer[0]);
-		$this->assertSame(4, $this->bitBuffer->length);
+		$this::assertSame($value, $this->bitBuffer->getBuffer()[0]);
+		$this::assertSame(4, $this->bitBuffer->getLength());
 	}
 
-	public function testClear(){
+	public function testClear():void{
 		$this->bitBuffer->clear();
-		$this->assertSame([], $this->bitBuffer->buffer);
-		$this->assertSame(0, $this->bitBuffer->length);
+		$this::assertSame([], $this->bitBuffer->getBuffer());
+		$this::assertSame(0, $this->bitBuffer->getLength());
 	}
 
 }

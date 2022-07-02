@@ -21,17 +21,13 @@ use function is_string, sprintf, strip_tags, trim;
  */
 class QRMarkup extends QROutputAbstract{
 
-	/**
-	 * @var string
-	 */
-	protected $defaultMode = QRCode::OUTPUT_MARKUP_SVG;
+	protected string $defaultMode = QRCode::OUTPUT_MARKUP_SVG;
 
 	/**
 	 * @see \sprintf()
-	 *
-	 * @var string
 	 */
-	protected $svgHeader = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="qr-svg %1$s" style="width: 100%%; height: auto;" viewBox="0 0 %2$d %2$d">';
+	protected string $svgHeader = '<svg xmlns="http://www.w3.org/2000/svg" class="qr-svg %1$s" '.
+	                              'style="width: 100%%; height: auto;" viewBox="0 0 %2$d %2$d">';
 
 	/**
 	 * @inheritDoc
@@ -55,10 +51,15 @@ class QRMarkup extends QROutputAbstract{
 	}
 
 	/**
-	 * @return string
+	 * HTML output
 	 */
-	protected function html():string{
-		$html = '<div class="'.$this->options->cssClass.'">'.$this->options->eol;
+	protected function html(string $file = null):string{
+
+		$html = empty($this->options->cssClass)
+			? '<div>'
+			: '<div class="'.$this->options->cssClass.'">';
+
+		$html .= $this->options->eol;
 
 		foreach($this->matrix->matrix() as $row){
 			$html .= '<div>';
@@ -72,19 +73,21 @@ class QRMarkup extends QROutputAbstract{
 
 		$html .= '</div>'.$this->options->eol;
 
-		if($this->options->cachefile){
-			return '<!DOCTYPE html><head><meta charset="UTF-8"></head><body>'.$this->options->eol.$html.'</body>';
+		if($file !== null){
+			return '<!DOCTYPE html>'.
+			       '<head><meta charset="UTF-8"><title>QR Code</title></head>'.
+			       '<body>'.$this->options->eol.$html.'</body>';
 		}
 
 		return $html;
 	}
 
 	/**
-	 * @link https://github.com/codemasher/php-qrcode/pull/5
+	 * SVG output
 	 *
-	 * @return string
+	 * @see https://github.com/codemasher/php-qrcode/pull/5
 	 */
-	protected function svg():string{
+	protected function svg(string $file = null):string{
 		$matrix = $this->matrix->matrix();
 
 		$svg = sprintf($this->svgHeader, $this->options->cssClass, $this->options->svgViewBoxSize ?? $this->moduleCount)
@@ -115,7 +118,9 @@ class QRMarkup extends QROutputAbstract{
 					}
 
 					if($count > 0){
-						$len = $count;
+						$len   = $count;
+						$start ??= 0; // avoid type coercion in sprintf() - phan happy
+
 						$path .= sprintf('M%s %s h%s v1 h-%sZ ', $start, $y, $len, $len);
 
 						// reset count
@@ -128,7 +133,10 @@ class QRMarkup extends QROutputAbstract{
 			}
 
 			if(!empty($path)){
-				$svg .= sprintf('<path class="qr-%s %s" stroke="transparent" fill="%s" fill-opacity="%s" d="%s" />', $M_TYPE, $this->options->cssClass, $value, $this->options->svgOpacity, $path);
+				$svg .= sprintf(
+					'<path class="qr-%s %s" stroke="transparent" fill="%s" fill-opacity="%s" d="%s" />',
+					$M_TYPE, $this->options->cssClass, $value, $this->options->svgOpacity, $path
+				);
 			}
 
 		}
@@ -137,8 +145,9 @@ class QRMarkup extends QROutputAbstract{
 		$svg .= '</svg>'.$this->options->eol;
 
 		// if saving to file, append the correct headers
-		if($this->options->cachefile){
-			return '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'.$this->options->eol.$svg;
+		if($file !== null){
+			return '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'.
+			       $this->options->eol.$svg;
 		}
 
 		if($this->options->imageBase64){

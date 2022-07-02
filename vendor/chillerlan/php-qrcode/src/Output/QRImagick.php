@@ -19,24 +19,20 @@ use chillerlan\QRCode\QRCodeException;
 use chillerlan\Settings\SettingsContainerInterface;
 use Imagick, ImagickDraw, ImagickPixel;
 
-use function is_string;
+use function extension_loaded, is_string;
 
 /**
- * ImageMagick output module
- * requires ext-imagick
- * @link http://php.net/manual/book.imagick.php
- * @link http://phpimagick.com
+ * ImageMagick output module (requires ext-imagick)
+ *
+ * @see http://php.net/manual/book.imagick.php
+ * @see http://phpimagick.com
  */
 class QRImagick extends QROutputAbstract{
 
-	/**
-	 * @var \Imagick
-	 */
-	protected $imagick;
+	protected Imagick $imagick;
 
 	/**
 	 * @inheritDoc
-	 * @throws \chillerlan\QRCode\QRCodeException
 	 */
 	public function __construct(SettingsContainerInterface $options, QRMatrix $matrix){
 
@@ -72,7 +68,7 @@ class QRImagick extends QROutputAbstract{
 	 * @return string|\Imagick
 	 */
 	public function dump(string $file = null){
-		$file          = $file ?? $this->options->cachefile;
+		$file ??= $this->options->cachefile;
 		$this->imagick = new Imagick;
 
 		$this->imagick->newImage(
@@ -98,7 +94,7 @@ class QRImagick extends QROutputAbstract{
 	}
 
 	/**
-	 * @return void
+	 * Creates the QR image via ImagickDraw
 	 */
 	protected function drawImage():void{
 		$draw = new ImagickDraw;

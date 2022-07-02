@@ -2,9 +2,7 @@
 /**
  * Class TestContainer
  *
- * @filesource   TestContainer.php
  * @created      28.08.2018
- * @package      chillerlan\SettingsTest
  * @author       Smiley <smiley@chillerlan.net>
  * @copyright    2018 Smiley
  * @license      MIT
@@ -25,5 +23,5 @@ use chillerlan\Settings\SettingsContainerAbstract;
 class TestContainer extends SettingsContainerAbstract{
 	use TestOptionsTrait;
 
-	private $test3 = 'what';
+	private string $test3 = 'what';
 }

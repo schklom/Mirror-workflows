@@ -12,14 +12,41 @@
 
 namespace chillerlan\QRCodeTest\Output;
 
-use chillerlan\QRCode\{QRCode, Output\QRImage};
-use const PHP_MAJOR_VERSION;
+use chillerlan\QRCode\{QRCode, QROptions};
+use chillerlan\QRCode\Output\{QROutputInterface, QRImage};
 
+/**
+ * Tests the QRImage output module
+ */
 class QRImageTest extends QROutputTestAbstract{
 
-	protected $FQCN = QRImage::class;
+	/**
+	 * @inheritDoc
+	 * @internal
+	 */
+	public function setUp():void{
 
-	public function types(){
+		if(!extension_loaded('gd')){
+			$this->markTestSkipped('ext-gd not loaded');
+			return;
+		}
+
+		parent::setUp();
+	}
+
+	/**
+	 * @inheritDoc
+	 * @internal
+	 */
+	protected function getOutputInterface(QROptions $options):QROutputInterface{
+		return new QRImage($options, $this->matrix);
+	}
+
+	/**
+	 * @inheritDoc
+	 * @internal
+	 */
+	public function types():array{
 		return [
 			'png' => [QRCode::OUTPUT_IMAGE_PNG],
 			'gif' => [QRCode::OUTPUT_IMAGE_GIF],
@@ -28,25 +55,9 @@ class QRImageTest extends QROutputTestAbstract{
 	}
 
 	/**
-	 * @dataProvider types
-	 * @param $type
+	 * @inheritDoc
 	 */
-	public function testImageOutput($type){
-		$this->options->outputType  = $type;
-		$this->options->imageBase64 = false;
-
-		$this->setOutputInterface();
-		$this->outputInterface->dump($this::cachefile.$type);
-		$img = $this->outputInterface->dump();
-
-		if($type === QRCode::OUTPUT_IMAGE_JPG){ // jpeg encoding may cause different results
-			$this->markAsRisky();
-		}
-
-		$this->assertSame($img, file_get_contents($this::cachefile.$type));
-	}
-
-	public function testSetModuleValues(){
+	public function testSetModuleValues():void{
 
 		$this->options->moduleValues = [
 			// data
@@ -54,24 +65,25 @@ class QRImageTest extends QROutputTestAbstract{
 			4    => [255, 255, 255],
 		];
 
-		$this->setOutputInterface()->dump();
+		$this->outputInterface = $this->getOutputInterface($this->options);
+		$this->outputInterface->dump();
 
-		$this->assertTrue(true); // tricking the code coverage
+		$this::assertTrue(true); // tricking the code coverage
 	}
 
+	/**
+	 * @phan-suppress PhanUndeclaredClassReference
+	 */
 	public function testOutputGetResource():void{
 		$this->options->returnResource = true;
+		$this->outputInterface         = $this->getOutputInterface($this->options);
 
-		$this->setOutputInterface();
+		$actual = $this->outputInterface->dump();
 
-		$data = $this->outputInterface->dump();
-
-		if(PHP_MAJOR_VERSION >= 8){
-			$this::assertInstanceOf('\\GdImage', $data);
-		}
-		else{
-			$this::assertIsResource($data);
-		}
+		/** @noinspection PhpElementIsNotAvailableInCurrentPhpVersionInspection */
+		\PHP_MAJOR_VERSION >= 8
+			? $this::assertInstanceOf(\GdImage::class, $actual)
+			: $this::assertIsResource($actual);
 	}
 
 }

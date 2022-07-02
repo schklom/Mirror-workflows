@@ -14,26 +14,26 @@ namespace chillerlan\QRCodeTest\Helpers;
 
 use chillerlan\QRCode\Helpers\Polynomial;
 use chillerlan\QRCode\QRCodeException;
-use chillerlan\QRCodeTest\QRTestAbstract;
+use PHPUnit\Framework\TestCase;
 
-class PolynomialTest extends QRTestAbstract{
+/**
+ * Polynomial coverage test
+ */
+final class PolynomialTest extends TestCase{
 
-	/**
-	 * @var \chillerlan\QRCode\Helpers\Polynomial
-	 */
-	protected $polynomial;
+	protected Polynomial $polynomial;
 
 	protected function setUp():void{
 		$this->polynomial = new Polynomial;
 	}
 
-	public function testGexp(){
-		$this->assertSame(142, $this->polynomial->gexp(-1));
-		$this->assertSame(133, $this->polynomial->gexp(128));
-		$this->assertSame(2,   $this->polynomial->gexp(256));
+	public function testGexp():void{
+		$this::assertSame(142, $this->polynomial->gexp(-1));
+		$this::assertSame(133, $this->polynomial->gexp(128));
+		$this::assertSame(2,   $this->polynomial->gexp(256));
 	}
 
-	public function testGlogException(){
+	public function testGlogException():void{
 		$this->expectException(QRCodeException::class);
 		$this->expectExceptionMessage('log(0)');
 

@@ -13,23 +13,38 @@
 namespace chillerlan\QRCode\Data;
 
 /**
- *
+ * Specifies the methods reqired for the data modules (Number, Alphanum, Byte and Kanji)
+ * and holds version information in several constants
  */
 interface QRDataInterface{
 
-	const NUMBER_CHAR_MAP = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-
-	const ALPHANUM_CHAR_MAP = [
-		'0', '1', '2', '3', '4', '5', '6', '7',
-		'8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
-		'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-		'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
-		'W', 'X', 'Y', 'Z', ' ', '$', '%', '*',
-		'+', '-', '.', '/', ':',
+	/**
+	 * @var int[]
+	 */
+	const CHAR_MAP_NUMBER = [
+		'0' => 0, '1' => 1, '2' => 2, '3' => 3, '4' => 4, '5' => 5, '6' => 6, '7' => 7, '8' => 8, '9' => 9,
 	];
 
 	/**
-	 * @link http://www.qrcode.com/en/about/version.html
+	 * ISO/IEC 18004:2000 Table 5
+	 *
+	 * @var int[]
+	 */
+	const CHAR_MAP_ALPHANUM = [
+		'0' =>  0, '1' =>  1, '2' =>  2, '3' =>  3, '4' =>  4, '5' =>  5, '6' =>  6, '7' =>  7,
+		'8' =>  8, '9' =>  9, 'A' => 10, 'B' => 11, 'C' => 12, 'D' => 13, 'E' => 14, 'F' => 15,
+		'G' => 16, 'H' => 17, 'I' => 18, 'J' => 19, 'K' => 20, 'L' => 21, 'M' => 22, 'N' => 23,
+		'O' => 24, 'P' => 25, 'Q' => 26, 'R' => 27, 'S' => 28, 'T' => 29, 'U' => 30, 'V' => 31,
+		'W' => 32, 'X' => 33, 'Y' => 34, 'Z' => 35, ' ' => 36, '$' => 37, '%' => 38, '*' => 39,
+		'+' => 40, '-' => 41, '.' => 42, '/' => 43, ':' => 44,
+	];
+
+	/**
+	 * ISO/IEC 18004:2000 Tables 7-11 - Number of symbol characters and input data capacity for versions 1 to 40
+	 *
+	 * @see http://www.qrcode.com/en/about/version.html
+	 *
+	 * @var int [][][]
 	 */
 	const MAX_LENGTH =[
 	//	v  => [NUMERIC => [L, M, Q, H ], ALPHANUM => [L, M, Q, H], BINARY => [L, M, Q, H  ], KANJI => [L, M, Q, H   ]]  // modules
@@ -75,6 +90,11 @@ interface QRDataInterface{
 		40 => [[7089, 5596, 3993, 3057], [4296, 3391, 2420, 1852], [2953, 2331, 1663, 1273], [1817, 1435, 1024,  784]], // 177
 	];
 
+	/**
+	 * ISO/IEC 18004:2000 Tables 7-11 - Number of symbol characters and input data capacity for versions 1 to 40
+	 *
+	 * @var int [][]
+	 */
 	const MAX_BITS = [
 		// version => [L, M, Q, H ]
 		1  => [  152,   128,   104,    72],
@@ -120,7 +140,9 @@ interface QRDataInterface{
 	];
 
 	/**
-	 * @link http://www.thonky.com/qr-code-tutorial/error-correction-table
+	 * @see http://www.thonky.com/qr-code-tutorial/error-correction-table
+	 *
+	 * @var int [][][]
 	 */
 	const RSBLOCKS = [
 		1  => [[ 1,  0,  26,  19], [ 1,  0, 26, 16], [ 1,  0, 26, 13], [ 1,  0, 26,  9]],
@@ -167,20 +189,11 @@ interface QRDataInterface{
 
 	/**
 	 * Sets the data string (internally called by the constructor)
-	 *
-	 * @param string $data
-	 *
-	 * @return \chillerlan\QRCode\Data\QRDataInterface
 	 */
 	public function setData(string $data):QRDataInterface;
 
 	/**
 	 * returns a fresh matrix object with the data written for the given $maskPattern
-	 *
-	 * @param int       $maskPattern
-	 * @param bool|null $test
-	 *
-	 * @return \chillerlan\QRCode\Data\QRMatrix
 	 */
 	public function initMatrix(int $maskPattern, bool $test = null):QRMatrix;
 

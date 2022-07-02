@@ -12,13 +12,28 @@
 
 namespace chillerlan\QRCodeTest\Output;
 
-use chillerlan\QRCode\{QRCode, Output\QRString};
+use chillerlan\QRCodeExamples\MyCustomOutput;
+use chillerlan\QRCode\{QRCode, QROptions};
+use chillerlan\QRCode\Output\{QROutputInterface, QRString};
 
+/**
+ * Tests the QRString output module
+ */
 class QRStringTest extends QROutputTestAbstract{
 
-	protected $FQCN = QRString::class;
+	/**
+	 * @inheritDoc
+	 * @internal
+	 */
+	protected function getOutputInterface(QROptions $options):QROutputInterface{
+		return new QRString($options, $this->matrix);
+	}
 
-	public function types(){
+	/**
+	 * @inheritDoc
+	 * @internal
+	 */
+	public function types():array{
 		return [
 			'json' => [QRCode::OUTPUT_STRING_JSON],
 			'text' => [QRCode::OUTPUT_STRING_TEXT],
@@ -26,19 +41,9 @@ class QRStringTest extends QROutputTestAbstract{
 	}
 
 	/**
-	 * @dataProvider types
-	 * @param $type
+	 * @inheritDoc
 	 */
-	public function testStringOutput($type){
-		$this->options->outputType = $type;
-		$this->options->cachefile  = $this::cachefile.$type;
-		$this->setOutputInterface();
-		$data = $this->outputInterface->dump();
-
-		$this->assertSame($data, file_get_contents($this->options->cachefile));
-	}
-
-	public function testSetModuleValues(){
+	public function testSetModuleValues():void{
 
 		$this->options->moduleValues = [
 			// data
@@ -46,11 +51,26 @@ class QRStringTest extends QROutputTestAbstract{
 			4    => 'B',
 		];
 
-		$this->setOutputInterface();
-		$data = $this->outputInterface->dump();
+		$this->outputInterface = $this->getOutputInterface($this->options);
+		$data                  = $this->outputInterface->dump();
 
-		$this->assertStringContainsString('A', $data);
-		$this->assertStringContainsString('B', $data);
+		$this::assertStringContainsString('A', $data);
+		$this::assertStringContainsString('B', $data);
+	}
+
+	/**
+	 * covers the custom output functionality via an example
+	 */
+	public function testCustomOutput():void{
+		$this->options->version         = 5;
+		$this->options->eccLevel        = QRCode::ECC_L;
+		$this->options->outputType      = QRCode::OUTPUT_CUSTOM;
+		$this->options->outputInterface = MyCustomOutput::class;
+
+		$this::assertSame(
+			file_get_contents(__DIR__.'/samples/custom'),
+			(new QRCode($this->options))->render('test')
+		);
 	}
 
 }

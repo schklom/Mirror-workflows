@@ -23,8 +23,6 @@ use function class_exists, substr;
  */
 class QRFpdfTest extends QROutputTestAbstract{
 
-	protected $FQCN = QRFpdf::class;
-
 	/**
 	 * @inheritDoc
 	 * @internal
@@ -33,10 +31,30 @@ class QRFpdfTest extends QROutputTestAbstract{
 
 		if(!class_exists(FPDF::class)){
 			$this->markTestSkipped('FPDF not available');
+
+			/** @noinspection PhpUnreachableStatementInspection */
 			return;
 		}
 
 		parent::setUp();
+	}
+
+	/**
+	 * @inheritDoc
+	 * @internal
+	 */
+	protected function getOutputInterface(QROptions $options):QROutputInterface{
+		return new QRFpdf($options, $this->matrix);
+	}
+
+	/**
+	 * @inheritDoc
+	 * @internal
+	 */
+	public function types():array{
+		return [
+			'fpdf' => [QRCode::OUTPUT_FPDF],
+		];
 	}
 
 	/**
@@ -50,6 +68,7 @@ class QRFpdfTest extends QROutputTestAbstract{
 			4    => [255, 255, 255],
 		];
 
+		$this->outputInterface = $this->getOutputInterface($this->options);
 		$this->outputInterface->dump();
 
 		$this::assertTrue(true); // tricking the code coverage
@@ -57,25 +76,22 @@ class QRFpdfTest extends QROutputTestAbstract{
 
 	/**
 	 * @inheritDoc
+	 * @dataProvider types
 	 */
-	public function testRenderImage():void{
-		$type = QRCode::OUTPUT_FPDF;
-
+	public function testRenderImage(string $type):void{
 		$this->options->outputType  = $type;
 		$this->options->imageBase64 = false;
-		$this->outputInterface->dump($this::cachefile.$type);
 
 		// substr() to avoid CreationDate
-		$expected = substr(file_get_contents($this::cachefile.$type), 0, 2000);
-		$actual   = substr($this->outputInterface->dump(), 0, 2000);
+		$expected = substr(file_get_contents(__DIR__.'/samples/'.$type), 0, 2500);
+		$actual   = substr((new QRCode($this->options))->render('test'), 0, 2500);
 
 		$this::assertSame($expected, $actual);
 	}
 
 	public function testOutputGetResource():void{
 		$this->options->returnResource = true;
-
-		$this->setOutputInterface();
+		$this->outputInterface         = $this->getOutputInterface($this->options);
 
 		$this::assertInstanceOf(FPDF::class, $this->outputInterface->dump());
 	}

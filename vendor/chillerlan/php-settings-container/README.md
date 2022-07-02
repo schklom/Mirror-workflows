@@ -1,51 +1,45 @@
 # chillerlan/php-settings-container
 
-A container class for immutable settings objects. Not a DI container. PHP 7.2+
-- [`SettingsContainerInterface`](https://github.com/chillerlan/php-settings-container/blob/master/src/SettingsContainerInterface.php) provides immutable properties with magic getter & setter and some fancy
+A container class for immutable settings objects. Not a DI container. PHP 7.4+
+- [`SettingsContainerInterface`](https://github.com/chillerlan/php-settings-container/blob/main/src/SettingsContainerInterface.php) provides immutable properties with magic getter & setter and some fancy - decouple configuration logic from your application!
 
+[![PHP Version Support][php-badge]][php]
 [![version][packagist-badge]][packagist]
 [![license][license-badge]][license]
-[![Travis][travis-badge]][travis]
 [![Coverage][coverage-badge]][coverage]
 [![Scrunitizer][scrutinizer-badge]][scrutinizer]
 [![Packagist downloads][downloads-badge]][downloads]
-[![PayPal donate][donate-badge]][donate]
+[![Continuous Integration][gh-action-badge]][gh-action]
 
-[packagist-badge]: https://img.shields.io/packagist/v/chillerlan/php-settings-container.svg?style=flat-square
+[php-badge]: https://img.shields.io/packagist/php-v/chillerlan/php-settings-container?logo=php&color=8892BF
+[php]: https://www.php.net/supported-versions.php
+[packagist-badge]: https://img.shields.io/packagist/v/chillerlan/php-settings-container.svg?logo=packagist
 [packagist]: https://packagist.org/packages/chillerlan/php-settings-container
-[license-badge]: https://img.shields.io/github/license/chillerlan/php-settings-container.svg?style=flat-square
-[license]: https://github.com/chillerlan/php-settings-container/blob/master/LICENSE
-[travis-badge]: https://img.shields.io/travis/chillerlan/php-settings-container.svg?style=flat-square
-[travis]: https://travis-ci.org/chillerlan/php-settings-container
-[coverage-badge]: https://img.shields.io/codecov/c/github/chillerlan/php-settings-container.svg?style=flat-square
+[license-badge]: https://img.shields.io/github/license/chillerlan/php-settings-container.svg
+[license]: https://github.com/chillerlan/php-settings-container/blob/main/LICENSE
+[coverage-badge]: https://img.shields.io/codecov/c/github/chillerlan/php-settings-container.svg?logo=codecov
 [coverage]: https://codecov.io/github/chillerlan/php-settings-container
-[scrutinizer-badge]: https://img.shields.io/scrutinizer/g/chillerlan/php-settings-container.svg?style=flat-square
+[scrutinizer-badge]: https://img.shields.io/scrutinizer/g/chillerlan/php-settings-container.svg?logo=scrutinizer
 [scrutinizer]: https://scrutinizer-ci.com/g/chillerlan/php-settings-container
-[downloads-badge]: https://img.shields.io/packagist/dt/chillerlan/php-settings-container.svg?style=flat-square
+[downloads-badge]: https://img.shields.io/packagist/dt/chillerlan/php-settings-container.svg?logo=packagist
 [downloads]: https://packagist.org/packages/chillerlan/php-settings-container/stats
-[donate-badge]: https://img.shields.io/badge/donate-paypal-ff33aa.svg?style=flat-square
-[donate]: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=WLYUNAT9ZTJZ4
+[gh-action-badge]: https://github.com/chillerlan/php-settings-container/workflows/CI/badge.svg
+[gh-action]: https://github.com/chillerlan/php-settings-container/actions?query=workflow%3A%22CI%22
 
 ## Documentation
 
 ### Installation
 **requires [composer](https://getcomposer.org)**
 
-*composer.json* (note: replace `dev-master` with a version boundary)
+*composer.json* (note: replace `dev-main` with a [version constraint](https://getcomposer.org/doc/articles/versions.md#writing-version-constraints), e.g. `^2.1` - see [releases](https://github.com/chillerlan/php-settings-container/releases) for valid versions)
 ```json
 {
 	"require": {
-		"php": "^7.2",
-		"chillerlan/php-settings-container": "^1.0"
+		"php": "^7.4",
+		"chillerlan/php-settings-container": "dev-main"
 	}
 }
 ```
-
-### Manual installation
-Download the desired version of the package from [master](https://github.com/chillerlan/php-settings-container/archive/master.zip) or 
-[release](https://github.com/chillerlan/php-settings-container/releases) and extract the contents to your project folder.  After that:
-- run `composer install` to install the required dependencies and generate `/vendor/autoload.php`.
-- if you use a custom autoloader, point the namespace `chillerlan\Settings` to the folder `src` of the package 
 
 Profit!
 
@@ -140,7 +134,7 @@ var_dump($container->what); // -> md5 hash of "some value"
 
 ### API
 
-#### [`SettingsContainerAbstract`](https://github.com/chillerlan/php-settings-container/blob/master/src/SettingsContainerAbstract.php)
+#### [`SettingsContainerAbstract`](https://github.com/chillerlan/php-settings-container/blob/main/src/SettingsContainerAbstract.php)
 
 method | return  | info
 -------- | ----  | -----------

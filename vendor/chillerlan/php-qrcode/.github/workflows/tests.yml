@@ -2,8 +2,12 @@
 # https://github.com/sebastianbergmann/phpunit/blob/master/.github/workflows/ci.yml
 
 on:
-  - pull_request
-  - push
+  push:
+    branches:
+      - v4.3.x
+  pull_request:
+    branches:
+      - v4.3.x
 
 name: "Continuous Integration"
 
@@ -46,14 +50,17 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-#          - windows-latest
+          - windows-latest
         php-version:
-          - "7.2"
-          - "7.3"
           - "7.4"
           - "8.0"
+          - "8.1"
 
     steps:
+#      - name: "Configure git to avoid issues with line endings"
+#        if: matrix.os == 'windows-latest'
+#        run: git config --global core.autocrlf false
+
       - name: "Checkout"
         uses: actions/checkout@v2
 
@@ -69,7 +76,7 @@ jobs:
         run: composer update --no-ansi --no-interaction --no-progress --no-suggest
 
       - name: "Run tests with phpunit"
-        run: php vendor/phpunit/phpunit/phpunit --configuration=phpunit.xml
+        run: php vendor/bin/phpunit --configuration=phpunit.xml
 
       - name: "Send code coverage report to Codecov.io"
         uses: codecov/codecov-action@v1

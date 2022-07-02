@@ -12,4 +12,9 @@
 
 namespace chillerlan\QRCode;
 
-class QRCodeException extends \Exception{}
+use Exception;
+
+/**
+ * An exception container
+ */
+class QRCodeException extends Exception{}

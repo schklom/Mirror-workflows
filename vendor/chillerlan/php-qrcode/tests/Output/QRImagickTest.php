@@ -9,40 +9,59 @@
  * @copyright    2018 smiley
  * @license      MIT
  *
+ * @noinspection PhpUndefinedClassInspection
  * @noinspection PhpComposerExtensionStubsInspection
  */
 
 namespace chillerlan\QRCodeTest\Output;
 
 use Imagick;
-use chillerlan\QRCode\{QRCode, Output\QRImagick};
+use chillerlan\QRCode\{QRCode, QROptions};
+use chillerlan\QRCode\Output\{QROutputInterface, QRImagick};
 
+/**
+ * Tests the QRImagick output module
+ */
 class QRImagickTest extends QROutputTestAbstract{
 
-	protected $FQCN = QRImagick::class;
-
+	/**
+	 * @inheritDoc
+	 * @internal
+	 */
 	public function setUp():void{
 
 		if(!extension_loaded('imagick')){
 			$this->markTestSkipped('ext-imagick not loaded');
+
+			/** @noinspection PhpUnreachableStatementInspection */
 			return;
 		}
 
 		parent::setUp();
 	}
 
-	public function testImageOutput(){
-		$type = QRCode::OUTPUT_IMAGICK;
-
-		$this->options->outputType = $type;
-		$this->setOutputInterface();
-		$this->outputInterface->dump($this::cachefile.$type);
-		$img = $this->outputInterface->dump();
-
-		$this->assertSame($img, file_get_contents($this::cachefile.$type));
+	/**
+	 * @inheritDoc
+	 * @internal
+	 */
+	protected function getOutputInterface(QROptions $options):QROutputInterface{
+		return new QRImagick($options, $this->matrix);
 	}
 
-	public function testSetModuleValues(){
+	/**
+	 * @inheritDoc
+	 * @internal
+	 */
+	public function types():array{
+		return [
+			'imagick' => [QRCode::OUTPUT_IMAGICK],
+		];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function testSetModuleValues():void{
 
 		$this->options->moduleValues = [
 			// data
@@ -50,17 +69,18 @@ class QRImagickTest extends QROutputTestAbstract{
 			4    => '#ECF9BE',
 		];
 
-		$this->setOutputInterface()->dump();
+		$this->outputInterface = $this->getOutputInterface($this->options);
+		$this->outputInterface->dump();
 
-		$this->assertTrue(true); // tricking the code coverage
+		$this::assertTrue(true); // tricking the code coverage
 	}
 
 	public function testOutputGetResource():void{
 		$this->options->returnResource = true;
-
-		$this->setOutputInterface();
+		$this->outputInterface         = $this->getOutputInterface($this->options);
 
 		$this::assertInstanceOf(Imagick::class, $this->outputInterface->dump());
 	}
+
 
 }

@@ -19,6 +19,7 @@
 namespace chillerlan\QRCodeExamples;
 
 use chillerlan\QRCode\Output\QRImage;
+
 use function base64_encode, imagechar, imagecolorallocate, imagecolortransparent, imagecopymerge, imagecreatetruecolor,
 	imagedestroy, imagefilledrectangle, imagefontwidth, in_array, round, str_split, strlen;
 
@@ -31,29 +32,24 @@ class QRImageWithText extends QRImage{
 	 * @return string
 	 */
 	public function dump(string $file = null, string $text = null):string{
-		$this->image = imagecreatetruecolor($this->length, $this->length);
-		$background  = imagecolorallocate($this->image, ...$this->options->imageTransparencyBG);
+		// set returnResource to true to skip further processing for now
+		$this->options->returnResource = true;
 
-		if((bool)$this->options->imageTransparent && in_array($this->options->outputType, $this::TRANSPARENCY_TYPES, true)){
-			imagecolortransparent($this->image, $background);
-		}
-
-		imagefilledrectangle($this->image, 0, 0, $this->length, $this->length, $background);
-
-		foreach($this->matrix->matrix() as $y => $row){
-			foreach($row as $x => $M_TYPE){
-				$this->setPixel($x, $y, $this->moduleValues[$M_TYPE]);
-			}
-		}
+		// there's no need to save the result of dump() into $this->image here
+		parent::dump($file);
 
 		// render text output if a string is given
 		if($text !== null){
 			$this->addText($text);
 		}
 
-		$imageData = $this->dumpImage($file);
+		$imageData = $this->dumpImage();
 
-		if((bool)$this->options->imageBase64){
+		if($file !== null){
+			$this->saveToFile($imageData, $file);
+		}
+
+		if($this->options->imageBase64){
 			$imageData = 'data:image/'.$this->options->outputType.';base64,'.base64_encode($imageData);
 		}
 
@@ -80,7 +76,7 @@ class QRImageWithText extends QRImage{
 		$background  = imagecolorallocate($this->image, ...$textBG);
 
 		// allow transparency
-		if((bool)$this->options->imageTransparent && in_array($this->options->outputType, $this::TRANSPARENCY_TYPES, true)){
+		if($this->options->imageTransparent && in_array($this->options->outputType, $this::TRANSPARENCY_TYPES, true)){
 			imagecolortransparent($this->image, $background);
 		}
 
@@ -97,7 +93,7 @@ class QRImageWithText extends QRImage{
 
 		// loop through the string and draw the letters
 		foreach(str_split($text) as $i => $chr){
-			imagechar($this->image, $textSize, $i * $w + $x, $this->length, $chr, $fontColor);
+			imagechar($this->image, $textSize, (int)($i * $w + $x), $this->length, $chr, $fontColor);
 		}
 	}
 

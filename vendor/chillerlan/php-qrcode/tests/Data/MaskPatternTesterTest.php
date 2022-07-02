@@ -12,18 +12,31 @@
 
 namespace chillerlan\QRCodeTest\Data;
 
-use chillerlan\QRCode\{QROptions, Data\Byte, Data\MaskPatternTester};
-use chillerlan\QRCodeTest\QRTestAbstract;
+use chillerlan\QRCode\QROptions;
+use chillerlan\QRCode\Data\{Byte, MaskPatternTester};
+use PHPUnit\Framework\TestCase;
 
-class MaskPatternTesterTest extends QRTestAbstract{
+/**
+ * MaskPatternTester coverage test
+ */
+final class MaskPatternTesterTest extends TestCase{
 
-	protected $FQCN = MaskPatternTester::class;
+	/**
+	 * Tests getting the best mask pattern
+	 */
+	public function testMaskpattern():void{
+		$dataInterface = new Byte(new QROptions(['version' => 10]), 'test');
 
-	// coverage
-	public function testMaskpattern(){
-		$matrix = (new Byte(new QROptions(['version' => 10]), 'test'))->initMatrix(3, true);
+		$this::assertSame(3, (new MaskPatternTester($dataInterface))->getBestMaskPattern());
+	}
 
-		$this->assertSame(4243, (new MaskPatternTester($matrix))->testPattern());
+	/**
+	 * Tests getting the penalty value for a given mask pattern
+	 */
+	public function testMaskpatternID():void{
+		$dataInterface = new Byte(new QROptions(['version' => 10]), 'test');
+
+		$this::assertSame(4243, (new MaskPatternTester($dataInterface))->testPattern(3));
 	}
 
 }

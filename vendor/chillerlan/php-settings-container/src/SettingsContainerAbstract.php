@@ -2,9 +2,7 @@
 /**
  * Class SettingsContainerAbstract
  *
- * @filesource   SettingsContainerAbstract.php
  * @created      28.08.2018
- * @package      chillerlan\Settings
  * @author       Smiley <smiley@chillerlan.net>
  * @copyright    2018 Smiley
  * @license      MIT
@@ -12,16 +10,15 @@
 
 namespace chillerlan\Settings;
 
-use Exception, ReflectionClass, ReflectionProperty;
+use ReflectionClass, ReflectionProperty;
 
-use function call_user_func, call_user_func_array, get_object_vars, json_decode, json_encode, method_exists, property_exists;
+use function get_object_vars, json_decode, json_encode, method_exists, property_exists;
+use const JSON_THROW_ON_ERROR;
 
 abstract class SettingsContainerAbstract implements SettingsContainerInterface{
 
 	/**
 	 * SettingsContainerAbstract constructor.
-	 *
-	 * @param iterable|null $properties
 	 */
 	public function __construct(iterable $properties = null){
 
@@ -35,8 +32,6 @@ abstract class SettingsContainerAbstract implements SettingsContainerInterface{
 	/**
 	 * calls a method with trait name as replacement constructor for each used trait
 	 * (remember pre-php5 classname constructors? yeah, basically this.)
-	 *
-	 * @return void
 	 */
 	protected function construct():void{
 		$traits = (new ReflectionClass($this))->getTraits();
@@ -45,7 +40,7 @@ abstract class SettingsContainerAbstract implements SettingsContainerInterface{
 			$method = $trait->getShortName();
 
 			if(method_exists($this, $method)){
-				call_user_func([$this, $method]);
+				$this->{$method}();
 			}
 		}
 
@@ -56,16 +51,17 @@ abstract class SettingsContainerAbstract implements SettingsContainerInterface{
 	 */
 	public function __get(string $property){
 
-		if(property_exists($this, $property) && !$this->isPrivate($property)){
-
-			if(method_exists($this, 'get_'.$property)){
-				return call_user_func([$this, 'get_'.$property]);
-			}
-
-			return $this->{$property};
+		if(!property_exists($this, $property) || $this->isPrivate($property)){
+			return null;
 		}
 
-		return null;
+		$method = 'get_'.$property;
+
+		if(method_exists($this, $method)){
+			return $this->{$method}();
+		}
+
+		return $this->{$property};
 	}
 
 	/**
@@ -77,8 +73,10 @@ abstract class SettingsContainerAbstract implements SettingsContainerInterface{
 			return;
 		}
 
-		if(method_exists($this, 'set_'.$property)){
-			call_user_func_array([$this, 'set_'.$property], [$value]);
+		$method = 'set_'.$property;
+
+		if(method_exists($this, $method)){
+			$this->{$method}($value);
 
 			return;
 		}
@@ -95,10 +93,6 @@ abstract class SettingsContainerAbstract implements SettingsContainerInterface{
 
 	/**
 	 * @internal Checks if a property is private
-	 *
-	 * @param string $property
-	 *
-	 * @return bool
 	 */
 	protected function isPrivate(string $property):bool{
 		return (new ReflectionProperty($this, $property))->isPrivate();
@@ -152,12 +146,7 @@ abstract class SettingsContainerAbstract implements SettingsContainerInterface{
 	 * @inheritdoc
 	 */
 	public function fromJSON(string $json):SettingsContainerInterface{
-
-		$data = json_decode($json, true); // as of PHP 7.3: JSON_THROW_ON_ERROR
-
-		if($data === false || $data === null){
-			throw new Exception('error while decoding JSON');
-		}
+		$data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
 
 		return $this->fromIterable($data);
 	}
@@ -165,7 +154,7 @@ abstract class SettingsContainerAbstract implements SettingsContainerInterface{
 	/**
 	 * @inheritdoc
 	 */
-	public function jsonSerialize(){
+	public function jsonSerialize():array{
 		return $this->toArray();
 	}
 

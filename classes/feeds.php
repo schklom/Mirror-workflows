@@ -2392,7 +2392,7 @@ class Feeds extends Handler_Protected {
 		}
 
 		if (count($query_keywords) > 0)
-			$search_query_part = implode("AND", $query_keywords);
+			$search_query_part = implode("AND ", $query_keywords);
 		else
 			$search_query_part = "false";
 

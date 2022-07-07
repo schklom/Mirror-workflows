@@ -74,54 +74,7 @@ jobs:
         with:
           commit_message: Add last_sync_with_original_repo_commit_id_engines + last_sync_with_original_repo_commit_id_web + last_sync_with_original_repo_commit_id_docker + Fix Dockerfile
 
-  build_push_arm64:
-    needs: [repo_sync]
-    #needs: [get_commits]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          #repository: 'schklom/SimplyTranslate'
-          ref: 'SimplyTranslate' # branch
-      # https://packages.ubuntu.com/search?suite=default&section=all&arch=arm64&keywords=g%2B%2B+linux+gnu&searchon=names
-      - name: Replace g++-multilib-i686-linux-gnu with g++ in the Dockerfile
-        run: sed -i 's/g++-multilib-i686-linux-gnu/g++/' web/Dockerfile
-      # https://github.com/docker/setup-qemu-action#usage
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2.0.0
-        #with:
-          #image: tonistiigi/binfmt:latest
-          #platforms: all
-          #platforms: arm/v7
-      # https://github.com/marketplace/actions/docker-setup-buildx
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2.0.0
-        #with:
-          #install: true
-      #- name: Available platforms
-      #  run: echo ${{ steps.buildx.outputs.platforms }}
-      # https://github.com/docker/login-action#docker-hub
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      # https://github.com/docker/build-push-action#multi-platform-image
-      - name: Build and push SimplyTranslate
-        uses: docker/build-push-action@v3.0.0
-        with:
-          context: web
-          file: ./web/Dockerfile
-          #platforms: linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6
-          platforms: linux/arm64
-          pull: true
-          push: true
-          tags: |
-            schklom/simplytranslate:arm64
-
-  build_push_amd64:
+  build_push:
     needs: [repo_sync]
     #needs: [get_commits]
     runs-on: ubuntu-latest
@@ -159,8 +112,8 @@ jobs:
           context: web
           file: ./web/Dockerfile
           #platforms: linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
           pull: true
           push: true
           tags: |
-            schklom/simplytranslate:amd64
+            schklom/simplytranslate:latest

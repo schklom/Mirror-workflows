@@ -45,7 +45,7 @@ class Auth_Remote extends Auth_Base {
 
 		foreach (["REMOTE_USER", "HTTP_REMOTE_USER", "REDIRECT_REMOTE_USER", "PHP_AUTH_USER"] as $hdr) {
 			if (!empty($_SERVER[$hdr])) {
-				$try_login = $_SERVER[$hdr];
+				$try_login = strtolower($_SERVER[$hdr]);
 				break;
 			}
 		}

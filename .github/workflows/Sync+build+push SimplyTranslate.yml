@@ -2,9 +2,9 @@ name: Sync+build+push SimplyTranslate
 
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
-  #schedule:
+  schedule:
     # * is a special character in YAML so you have to quote this string
-    #- cron:  '0 0 * * *'
+    - cron:  '0 0 * * *'
   workflow_dispatch:
 
 jobs:
@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     #if: false
-    #if: needs.get_commits.outputs.LOCAL_ENGINES != needs.get_commits.outputs.REMOTE_ENGINES || needs.get_commits.outputs.LOCAL_WEB != needs.get_commits.outputs.REMOTE_WEB || needs.get_commits.outputs.LOCAL_DOCKER != needs.get_commits.outputs.REMOTE_DOCKER
+    if: needs.get_commits.outputs.LOCAL_ENGINES != needs.get_commits.outputs.REMOTE_ENGINES || needs.get_commits.outputs.LOCAL_WEB != needs.get_commits.outputs.REMOTE_WEB || needs.get_commits.outputs.LOCAL_DOCKER != needs.get_commits.outputs.REMOTE_DOCKER
     steps:
       - name: repo-sync
         uses: wei/git-sync@v3

@@ -40,7 +40,7 @@ jobs:
         uses: wei/git-sync@v3
         with:
           source_repo: "https://github.com/PussTheCat-org/docker-quetre-quay"
-          source_branch: "main"
+          source_branch: "master"
           destination_repo: "git@github.com:schklom/Mirror-workflows.git"
           destination_branch: "Quetre"
           ssh_private_key: ${{ secrets.GITSYNCACTION }}

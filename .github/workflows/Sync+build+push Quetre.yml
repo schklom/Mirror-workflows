@@ -64,6 +64,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4.14.1
         with:
           commit_message: Add last_sync_with_original_repo_commit_id_docker + last_sync_with_original_repo_commit_id_original
+          file_pattern: last_sync_with_original_repo_commit_id_original last_sync_with_original_repo_commit_id_docker
 
   build_push:
     needs: [repo_sync]
@@ -103,7 +104,8 @@ jobs:
           context: .
           file: docker/Dockerfile
           #platforms: linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6
-          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/ppc64le,linux/s390x
+          #platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/ppc64le,linux/s390x
+          platforms: linux/arm64
           pull: true
           push: true
           tags: |

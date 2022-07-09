@@ -34,7 +34,7 @@ jobs:
     needs: [get_commits]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    if: needs.get_commits.outputs.LOCAL_DOCKER != needs.get_commits.outputs.REMOTE_DOCKER || needs.get_commits.outputs.SETLOCAL_ORIGINAL != needs.get_commits.outputs.SETREMOTE_ORIGINAL
+    if: needs.get_commits.outputs.LOCAL_DOCKER != needs.get_commits.outputs.REMOTE_DOCKER || needs.get_commits.outputs.LOCAL_ORIGINAL != needs.get_commits.outputs.REMOTE_ORIGINAL
     steps:
       - name: repo-sync
         uses: wei/git-sync@v3

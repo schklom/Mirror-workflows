@@ -32,7 +32,7 @@ function init() {
     map.setView(target, 1.5);
 
     var versionView = document.getElementById('version');
-    fetch("/version", {
+    fetch("./version", {
         method: 'GET'
     })
         .then(function (response) {
@@ -107,7 +107,7 @@ function locate(index, password) {
     if (currentId != "") {
 
 
-        fetch("/requestAccess", {
+        fetch("./requestAccess", {
             method: 'PUT',
             body: JSON.stringify({
                 IDT: currentId,
@@ -131,7 +131,7 @@ function locate(index, password) {
         })
             .then(function (token) {
 
-                fetch("/locationDataSize", {
+                fetch("./locationDataSize", {
                     method: 'PUT',
                     body: JSON.stringify({
                         IDT: token.Data,
@@ -153,7 +153,7 @@ function locate(index, password) {
                         }
                     })
 
-                fetch("/location", {
+                fetch("./location", {
                     method: 'PUT',
                     body: JSON.stringify({
                         IDT: token.Data,
@@ -168,7 +168,7 @@ function locate(index, password) {
                     })
                     .then(function (json) {
 
-                        fetch("/key", {
+                        fetch("./key", {
                             method: 'PUT',
                             body: JSON.stringify({
                                 IDT: token.Data,
@@ -222,7 +222,7 @@ function locate(index, password) {
 
                                             if (currentId != "") {
 
-                                                fetch("/requestAccess", {
+                                                fetch("./requestAccess", {
                                                     method: 'PUT',
                                                     body: JSON.stringify({
                                                         DeviceId: currentId,
@@ -236,7 +236,7 @@ function locate(index, password) {
                                                 })
                                                     .then(function (token) {
 
-                                                        fetch("/locationDataSize", {
+                                                        fetch("./locationDataSize", {
                                                             method: 'PUT',
                                                             body: JSON.stringify({
                                                                 IDT: token.AccessToken,
@@ -339,7 +339,7 @@ function locateNewer() {
 function sendToPhone(message) {
     if (currentId != "" && hashedPW != "") {
 
-        fetch("/requestAccess", {
+        fetch("./requestAccess", {
             method: 'PUT',
             body: JSON.stringify({
                 IDT: currentId,
@@ -352,7 +352,7 @@ function sendToPhone(message) {
             return response.json()
         })
             .then(function (token) {
-                fetch("/command", {
+                fetch("./command", {
                     method: 'POST',
                     body: JSON.stringify({
                         IDT: token.Data,
@@ -376,7 +376,7 @@ function sendToPhone(message) {
 function showPicture() {
     if (currentId != "" && hashedPW != "") {
 
-        fetch("/requestAccess", {
+        fetch("./requestAccess", {
             method: 'PUT',
             body: JSON.stringify({
                 IDT: currentId,
@@ -389,7 +389,7 @@ function showPicture() {
             return response.json()
         })
             .then(function (token) {
-                fetch("/picture", {
+                fetch("./picture", {
                     method: 'PUT',
                     body: JSON.stringify({
                         IDT: token.Data,

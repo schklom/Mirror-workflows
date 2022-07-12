@@ -383,7 +383,7 @@ function showPicture() {
                 Data: hashedPW
             }),
             headers: {
-                'Content-type': 'application/text'
+                'Content-type': 'application/json'
             }
         }).then(function (response) {
             return response.json()

@@ -1,9 +1,16 @@
 {
+	"repositories": [
+	    {
+			"name": "j4mie/idiorm",
+	      "type": "vcs",
+	      "url": "https://github.com/aaronpk/idiorm"
+	    }
+	  ],
     "require": {
         "spomky-labs/otphp": "^10.0",
         "chillerlan/php-qrcode": "^4.3.3",
         "mervick/material-design-icons": "^2.2",
-        "j4mie/idiorm": "^1.5"
+        "j4mie/idiorm": "dev-master"
     },
     "require-dev": {
         "phpstan/phpstan": "^1.",

@@ -447,7 +447,7 @@ class RSSUtils {
 				Debug::log("not using CURL due to open_basedir restrictions", Debug::LOG_VERBOSE);
 			}
 
-			if (time() - strtotime($feed_obj->last_unconditional) > Config::get(Config::MAX_CONDITIONAL_INTERVAL)) {
+			if (time() - strtotime($feed_obj->last_unconditional ?? "") > Config::get(Config::MAX_CONDITIONAL_INTERVAL)) {
 				Debug::log("maximum allowed interval for conditional requests exceeded, forcing refetch", Debug::LOG_VERBOSE);
 
 				$force_refetch = true;

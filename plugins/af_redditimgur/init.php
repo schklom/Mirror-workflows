@@ -397,7 +397,7 @@ class Af_RedditImgur extends Plugin {
 		$entries = $xpath->query('//a[@href]');
 
 		foreach ($entries as $entry) {
-			$entry_href = $entry->getAttribute("href");
+			$entry_href = UrlHelper::rewrite_relative($article["link"], $entry->getAttribute("href"), "a");
 
 			$matches = [];
 

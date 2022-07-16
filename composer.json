@@ -3,7 +3,7 @@
 	    {
 			"name": "j4mie/idiorm",
 	      "type": "vcs",
-	      "url": "https://github.com/aaronpk/idiorm"
+	      "url": "https://dev.tt-rss.org/fox/idiorm.git"
 	    }
 	  ],
     "require": {
@@ -13,7 +13,7 @@
         "j4mie/idiorm": "dev-master"
     },
     "require-dev": {
-        "phpstan/phpstan": "^1.",
+        "phpstan/phpstan": "1.1.2",
         "phpunit/phpunit": "9.5.16"
     }
 }

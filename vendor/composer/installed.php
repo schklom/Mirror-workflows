@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '4b6161892000cb2b8392dce92a9cf2cabdf2d20e',
+        'reference' => '96f704d157fcf20da130f37a31fbffd62a8a9892',
         'name' => '__root__',
         'dev' => true,
     ),
@@ -16,7 +16,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '4b6161892000cb2b8392dce92a9cf2cabdf2d20e',
+            'reference' => '96f704d157fcf20da130f37a31fbffd62a8a9892',
             'dev_requirement' => false,
         ),
         'beberlei/assert' => array(
@@ -157,12 +157,12 @@
             'dev_requirement' => true,
         ),
         'phpstan/phpstan' => array(
-            'pretty_version' => '1.8.1',
-            'version' => '1.8.1.0',
+            'pretty_version' => '1.1.2',
+            'version' => '1.1.2.0',
             'type' => 'library',
             'install_path' => __DIR__ . '/../phpstan/phpstan',
             'aliases' => array(),
-            'reference' => '8dbba631fa32f4b289404469c2afd6122fd61d67',
+            'reference' => 'bcea0ae85868a89d5789c75f012c93129f842934',
             'dev_requirement' => true,
         ),
         'phpunit/php-code-coverage' => array(

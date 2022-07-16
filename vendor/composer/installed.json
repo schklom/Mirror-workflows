@@ -297,14 +297,8 @@
             "version_normalized": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/aaronpk/idiorm.git",
+                "url": "https://dev.tt-rss.org/fox/idiorm.git",
                 "reference": "efc8ea06698f53e2c479c7696f2b154c47c3a3cb"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/aaronpk/idiorm/zipball/efc8ea06698f53e2c479c7696f2b154c47c3a3cb",
-                "reference": "efc8ea06698f53e2c479c7696f2b154c47c3a3cb",
-                "shasum": ""
             },
             "require": {
                 "php": ">=5.2.0"
@@ -316,7 +310,7 @@
             "time": "2022-03-26T15:19:01+00:00",
             "default-branch": true,
             "type": "library",
-            "installation-source": "dist",
+            "installation-source": "source",
             "autoload": {
                 "classmap": [
                     "idiorm.php"
@@ -960,31 +954,36 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.8.1",
-            "version_normalized": "1.8.1.0",
+            "version": "1.1.2",
+            "version_normalized": "1.1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "8dbba631fa32f4b289404469c2afd6122fd61d67"
+                "reference": "bcea0ae85868a89d5789c75f012c93129f842934"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/8dbba631fa32f4b289404469c2afd6122fd61d67",
-                "reference": "8dbba631fa32f4b289404469c2afd6122fd61d67",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/bcea0ae85868a89d5789c75f012c93129f842934",
+                "reference": "bcea0ae85868a89d5789c75f012c93129f842934",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2|^8.0"
+                "php": "^7.1|^8.0"
             },
             "conflict": {
                 "phpstan/phpstan-shim": "*"
             },
-            "time": "2022-07-12T16:08:06+00:00",
+            "time": "2021-11-09T12:41:09+00:00",
             "bin": [
                 "phpstan",
                 "phpstan.phar"
             ],
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
             "installation-source": "dist",
             "autoload": {
                 "files": [
@@ -998,7 +997,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.8.1"
+                "source": "https://github.com/phpstan/phpstan/tree/1.1.2"
             },
             "funding": [
                 {

@@ -1024,7 +1024,7 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	function setplugins(): void {
-		$plugins = array_filter($_REQUEST["plugins"], 'clean') ?? [];
+		$plugins = array_filter($_REQUEST["plugins"] ?? [], 'clean');
 
 		set_pref(Prefs::_ENABLED_PLUGINS, implode(",", $plugins));
 	}

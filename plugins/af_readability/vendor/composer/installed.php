@@ -1,42 +1,79 @@
-<?php return array (
-  'root' => 
-  array (
-    'pretty_version' => 'dev-master',
-    'version' => 'dev-master',
-    'aliases' => 
-    array (
+<?php return array(
+    'root' => array(
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'type' => 'library',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'reference' => 'fdd1c43612011060b4b876db438eb7ec62dd077d',
+        'name' => '__root__',
+        'dev' => true,
     ),
-    'reference' => 'a73e3bec45c5523910c711cf882976b71781ac9e',
-    'name' => '__root__',
-  ),
-  'versions' => 
-  array (
-    '__root__' => 
-    array (
-      'pretty_version' => 'dev-master',
-      'version' => 'dev-master',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'a73e3bec45c5523910c711cf882976b71781ac9e',
+    'versions' => array(
+        '__root__' => array(
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'reference' => 'fdd1c43612011060b4b876db438eb7ec62dd077d',
+            'dev_requirement' => false,
+        ),
+        'fivefilters/readability.php' => array(
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../fivefilters/readability.php',
+            'aliases' => array(
+                0 => '9999999-dev',
+            ),
+            'reference' => '5ad152c70376002f043bb936d8ae5eed103fb993',
+            'dev_requirement' => false,
+        ),
+        'league/uri' => array(
+            'pretty_version' => '6.7.1',
+            'version' => '6.7.1.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../league/uri',
+            'aliases' => array(),
+            'reference' => '2d7c87a0860f3126a39f44a8a9bf2fed402dcfea',
+            'dev_requirement' => false,
+        ),
+        'league/uri-interfaces' => array(
+            'pretty_version' => '2.3.0',
+            'version' => '2.3.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../league/uri-interfaces',
+            'aliases' => array(),
+            'reference' => '00e7e2943f76d8cb50c7dfdc2f6dee356e15e383',
+            'dev_requirement' => false,
+        ),
+        'masterminds/html5' => array(
+            'pretty_version' => '2.7.5',
+            'version' => '2.7.5.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../masterminds/html5',
+            'aliases' => array(),
+            'reference' => 'f640ac1bdddff06ea333a920c95bbad8872429ab',
+            'dev_requirement' => false,
+        ),
+        'psr/http-message' => array(
+            'pretty_version' => '1.0.1',
+            'version' => '1.0.1.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../psr/http-message',
+            'aliases' => array(),
+            'reference' => 'f6561bf28d520154e4b0ec72be95418abe6d9363',
+            'dev_requirement' => false,
+        ),
+        'psr/log' => array(
+            'pretty_version' => '1.1.4',
+            'version' => '1.1.4.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../psr/log',
+            'aliases' => array(),
+            'reference' => 'd49695b909c3b7628b6289db5479a1c204601f11',
+            'dev_requirement' => false,
+        ),
     ),
-    'fivefilters/readability.php' => 
-    array (
-      'pretty_version' => 'v2.1.0',
-      'version' => '2.1.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '7617a912b6c527909168f5d41d263792f171c42a',
-    ),
-    'psr/log' => 
-    array (
-      'pretty_version' => '1.1.4',
-      'version' => '1.1.4.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'd49695b909c3b7628b6289db5479a1c204601f11',
-    ),
-  ),
 );

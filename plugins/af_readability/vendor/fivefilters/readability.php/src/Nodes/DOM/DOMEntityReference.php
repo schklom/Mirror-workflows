@@ -1,8 +1,8 @@
 <?php
 
-namespace andreskrey\Readability\Nodes\DOM;
+namespace fivefilters\Readability\Nodes\DOM;
 
-use andreskrey\Readability\Nodes\NodeTrait;
+use fivefilters\Readability\Nodes\NodeTrait;
 
 class DOMEntityReference extends \DOMEntityReference
 {

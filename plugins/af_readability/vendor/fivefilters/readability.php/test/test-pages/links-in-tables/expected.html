@@ -54,7 +54,7 @@ to inefficient patches.
 Watch how much the compressed text on the right side changes from a one-letter
 change in the uncompressed text on the left:
 </p>
-<p><a href="https://2.bp.blogspot.com/-chCZZinlUTg/WEcxvJo9gdI/AAAAAAAADnk/3ND_BspqN6Y2j5xxkLFW3RyS2Ig0NHZpQCLcB/s1600/ipsum-opsum.gif" imageanchor="1"><img height="105" src="https://2.bp.blogspot.com/-chCZZinlUTg/WEcxvJo9gdI/AAAAAAAADnk/3ND_BspqN6Y2j5xxkLFW3RyS2Ig0NHZpQCLcB/s640/ipsum-opsum.gif" width="640"></img></a></p>
+<p><a href="https://2.bp.blogspot.com/-chCZZinlUTg/WEcxvJo9gdI/AAAAAAAADnk/3ND_BspqN6Y2j5xxkLFW3RyS2Ig0NHZpQCLcB/s1600/ipsum-opsum.gif" imageanchor="1"><img src="https://2.bp.blogspot.com/-chCZZinlUTg/WEcxvJo9gdI/AAAAAAAADnk/3ND_BspqN6Y2j5xxkLFW3RyS2Ig0NHZpQCLcB/s640/ipsum-opsum.gif" width="640" height="105"></a></p>
 <p>
 File-by-File therefore is based on detecting changes in the uncompressed data.
 To generate a patch, we first decompress both old and new files before computing
@@ -105,45 +105,50 @@ Patching?</span></strong>
 Here are examples of app updates already using File-by-File Patching:
 </p>
 <div dir="ltr" trbidi="on">
-
-<div dir="ltr">
-<table readabilityDataTable="1"><colgroup><col width="142"></col><col width="102"></col><col width="176"></col><col width="176"></col></colgroup><tbody><tr><td><p><span>Application</span></p>
+<table readabilityDataTable="1"><colgroup><col width="142"><col width="102"><col width="176"><col width="176"></colgroup><tbody>
+<tr><td><p><span>Application</span></p>
 </td><td><p><span>Original Size</span></p>
 </td><td><p><span>Previous (BSDiff) Patch Size</span></p>
 <p><span>(% vs original)</span></p>
 </td><td><p><span>File-by-File Patch Size (% vs original)</span></p>
-</td></tr><tr><td><div dir="ltr">
+</td></tr>
+<tr><td><div dir="ltr">
 <p><a href="https://play.google.com/store/apps/details?id=com.king.farmheroessupersaga&amp;hl=en"><span>Farm Heroes Super Saga</span></a></p></div>
 </td><td><p><span>71.1 MB</span></p>
 </td><td><p><span>13.4 MB (-81%)</span></p>
 </td><td><p><span>8.0 MB (-89%)</span></p>
-</td></tr><tr><td><div dir="ltr">
+</td></tr>
+<tr><td><div dir="ltr">
 <p><a href="https://play.google.com/store/apps/details?id=com.google.android.apps.maps"><span>Google Maps</span></a></p></div>
 </td><td><p><span>32.7 MB</span></p>
 </td><td><p><span>17.5 MB (-46%)</span></p>
 </td><td><p><span>9.6 MB (-71%)</span></p>
-</td></tr><tr><td><div dir="ltr">
+</td></tr>
+<tr><td><div dir="ltr">
 <p><a href="https://play.google.com/store/apps/details?id=com.google.android.gm"><span>Gmail</span></a></p></div>
 </td><td><p><span>17.8 MB</span></p>
 </td><td><p><span>7.6 MB (-57%)</span></p>
 </td><td><p><span>7.3 MB (-59%)</span></p>
-</td></tr><tr><td><div dir="ltr">
+</td></tr>
+<tr><td><div dir="ltr">
 <p><a href="https://play.google.com/store/apps/details?id=com.google.android.tts"><span>Google TTS</span></a></p></div>
 </td><td><p><span>18.9 MB</span></p>
 </td><td><p><span>17.2 MB (-9%)</span></p>
 </td><td><p><span>13.1 MB (-31%)</span></p>
-</td></tr><tr><td><div dir="ltr">
+</td></tr>
+<tr><td><div dir="ltr">
 <p><a href="https://play.google.com/store/apps/details?id=com.amazon.kindle"><span>Kindle</span></a></p></div>
 </td><td><p><span>52.4 MB</span></p>
 </td><td><p><span>19.1 MB (-64%)</span></p>
 </td><td><p><span>8.4 MB (-84%)</span></p>
-</td></tr><tr><td><div dir="ltr">
+</td></tr>
+<tr><td><div dir="ltr">
 <p><a href="https://play.google.com/store/apps/details?id=com.netflix.mediaclient"><span>Netflix</span></a></p></div>
 </td><td><p><span>16.2 MB</span></p>
 </td><td><p><span>7.7 MB (-52%)</span></p>
 </td><td><p><span>1.2 MB (-92%)</span></p>
-</td></tr></tbody></table></div>
-
+</td></tr>
+</tbody></table>
 </div>
 <p><em>Disclaimer: if you see different patch sizes when you press "update"
 manually, that is because we are not currently using File-by-file for
@@ -169,6 +174,6 @@ As a developer if you're interested in reducing your APK size still further,
 here are some <a href="https://developer.android.com/topic/performance/reduce-apk-size.html?utm_campaign=android_discussion_filebyfile_120616&amp;utm_source=anddev&amp;utm_medium=blog">general
 tips on reducing APK size</a>.
 </p>
-<p><a href="https://2.bp.blogspot.com/-5aRh1dM6Unc/WEcNs55RGhI/AAAAAAAADnI/tzr_oOJjZwgWd9Vu25ydY0UwB3eXKupXwCLcB/s1600/image01.png" imageanchor="1"><img height="200" src="https://2.bp.blogspot.com/-5aRh1dM6Unc/WEcNs55RGhI/AAAAAAAADnI/tzr_oOJjZwgWd9Vu25ydY0UwB3eXKupXwCLcB/s200/image01.png" width="191"></img></a></p>
+<p><a href="https://2.bp.blogspot.com/-5aRh1dM6Unc/WEcNs55RGhI/AAAAAAAADnI/tzr_oOJjZwgWd9Vu25ydY0UwB3eXKupXwCLcB/s1600/image01.png" imageanchor="1"><img src="https://2.bp.blogspot.com/-5aRh1dM6Unc/WEcNs55RGhI/AAAAAAAADnI/tzr_oOJjZwgWd9Vu25ydY0UwB3eXKupXwCLcB/s200/image01.png" width="191" height="200"></a></p>
 
 </div>

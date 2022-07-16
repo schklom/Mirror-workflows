@@ -1,22 +1,32 @@
 <?php
 
-namespace andreskrey\Readability\Test;
+namespace fivefilters\Readability\Test;
 
 class TestPage
 {
+    private $slug;
     private $configuration;
     private $sourceHTML;
     private $expectedHTML;
     private $expectedImages;
     private $expectedMetadata;
 
-    public function __construct($configuration, $sourceHTML, $expectedHTML, $expectedImages, $expectedMetadata)
+    public function __construct($slug, $configuration, $sourceHTML, $expectedHTML, $expectedImages, $expectedMetadata)
     {
+        $this->slug = $slug;
         $this->configuration = $configuration;
         $this->sourceHTML = $sourceHTML;
         $this->expectedHTML = $expectedHTML;
         $this->expectedImages = $expectedImages;
         $this->expectedMetadata = $expectedMetadata;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
     }
 
     /**
@@ -28,7 +38,7 @@ class TestPage
     }
 
     /**
-     * @return null
+     * @return string
      */
     public function getSourceHTML()
     {
@@ -36,7 +46,7 @@ class TestPage
     }
 
     /**
-     * @return null
+     * @return string
      */
     public function getExpectedHTML()
     {

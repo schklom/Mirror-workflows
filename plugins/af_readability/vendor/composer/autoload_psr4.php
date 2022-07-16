@@ -6,6 +6,9 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'andreskrey\\Readability\\' => array($vendorDir . '/fivefilters/readability.php/src'),
+    'fivefilters\\Readability\\' => array($vendorDir . '/fivefilters/readability.php/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
+    'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
+    'Masterminds\\' => array($vendorDir . '/masterminds/html5/src'),
+    'League\\Uri\\' => array($vendorDir . '/league/uri-interfaces/src', $vendorDir . '/league/uri/src'),
 );

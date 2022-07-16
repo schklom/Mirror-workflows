@@ -1,11 +1,11 @@
 <?php
 
-namespace andreskrey\Readability\Nodes;
+namespace fivefilters\Readability\Nodes;
 
-use andreskrey\Readability\Nodes\DOM\DOMDocument;
-use andreskrey\Readability\Nodes\DOM\DOMElement;
-use andreskrey\Readability\Nodes\DOM\DOMNode;
-use andreskrey\Readability\Nodes\DOM\DOMNodeList;
+use fivefilters\Readability\Nodes\DOM\DOMDocument;
+use fivefilters\Readability\Nodes\DOM\DOMElement;
+use fivefilters\Readability\Nodes\DOM\DOMNode;
+use fivefilters\Readability\Nodes\DOM\DOMNodeList;
 
 /**
  * Class NodeUtility.
@@ -18,31 +18,43 @@ class NodeUtility
      * @var array
      */
     public static $regexps = [
-        'unlikelyCandidates' => '/-ad-|banner|breadcrumbs|combx|comment|community|cover-wrap|disqus|extra|foot|header|legends|menu|related|remark|replies|rss|shoutbox|sidebar|skyscraper|social|sponsor|supplemental|ad-break|agegate|pagination|pager|popup|yom-remote/i',
-        'okMaybeItsACandidate' => '/and|article|body|column|main|shadow/i',
+        'unlikelyCandidates' => '/-ad-|ai2html|banner|breadcrumbs|combx|comment|community|cover-wrap|disqus|extra|footer|gdpr|header|legends|menu|related|remark|replies|rss|shoutbox|sidebar|skyscraper|social|sponsor|supplemental|ad-break|agegate|pagination|pager|popup|yom-remote/i',
+        'okMaybeItsACandidate' => '/and|article|body|column|content|main|shadow/i',
         'extraneous' => '/print|archive|comment|discuss|e[\-]?mail|share|reply|all|login|sign|single|utility/i',
         'byline' => '/byline|author|dateline|writtenby|p-author/i',
-        'replaceFonts' => '/<(\/?)font[^>]*>/gi',
+        'replaceFonts' => '/<(\/?)font[^>]*>/i',
         'normalize' => '/\s{2,}/',
         'videos' => '/\/\/(www\.)?((dailymotion|youtube|youtube-nocookie|player\.vimeo|v\.qq)\.com|(archive|upload\.wikimedia)\.org|player\.twitch\.tv)/i',
+        'shareElements' => '/(\b|_)(share|sharedaddy)(\b|_)/i',
         'nextLink' => '/(next|weiter|continue|>([^\|]|$)|»([^\|]|$))/i',
         'prevLink' => '/(prev|earl|old|new|<|«)/i',
+        'tokenize' => '/\W+/',
         'whitespace' => '/^\s*$/',
         'hasContent' => '/\S$/',
         'positive' => '/article|body|content|entry|hentry|h-entry|main|page|pagination|post|text|blog|story/i',
-        'negative' => '/hidden|^hid$| hid$| hid |^hid |banner|combx|comment|com-|contact|foot|footer|footnote|masthead|media|meta|outbrain|promo|related|scroll|share|shoutbox|sidebar|skyscraper|sponsor|shopping|tags|tool|widget/i',
+        'negative' => '/-ad-|hidden|^hid$| hid$| hid |^hid |banner|combx|comment|com-|contact|foot|footer|footnote|gdpr|masthead|media|meta|outbrain|promo|related|scroll|share|shoutbox|sidebar|skyscraper|sponsor|shopping|tags|tool|widget/i',
         // \x{00A0} is the unicode version of &nbsp;
-        'onlyWhitespace' => '/\x{00A0}|\s+/u'
+        'onlyWhitespace' => '/\x{00A0}|\s+/u',
+        'hashUrl' => '/^#.+/',
+        'srcsetUrl' => '/(\S+)(\s+[\d.]+[xw])?(\s*(?:,|$))/',
+        'b64DataUrl' => '/^data:\s*([^\s;,]+)\s*;\s*base64\s*,/i',
+        // See: https://schema.org/Article
+        'jsonLdArticleTypes' => '/^Article|AdvertiserContentArticle|NewsArticle|AnalysisNewsArticle|AskPublicNewsArticle|BackgroundNewsArticle|OpinionNewsArticle|ReportageNewsArticle|ReviewNewsArticle|Report|SatiricalArticle|ScholarlyArticle|MedicalScholarlyArticle|SocialMediaPosting|BlogPosting|LiveBlogPosting|DiscussionForumPosting|TechArticle|APIReference$/'
+     
     ];
 
     /**
+     * Finds the next node, starting from the given node, and ignoring
+     * whitespace in between. If the given node is an element, the same node is
+     * returned.
+     * 
      * Imported from the Element class on league\html-to-markdown.
      *
      * @param $node
      *
-     * @return DOMElement
+     * @return DOMNode
      */
-    public static function nextElement($node)
+    public static function nextNode($node)
     {
         $next = $node;
         while ($next

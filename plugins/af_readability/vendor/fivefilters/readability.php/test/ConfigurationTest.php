@@ -1,8 +1,8 @@
 <?php
 
-namespace andreskrey\Readability\Test;
+namespace fivefilters\Readability\Test;
 
-use andreskrey\Readability\Configuration;
+use fivefilters\Readability\Configuration;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
 

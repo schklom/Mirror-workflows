@@ -1,32 +1,51 @@
 # Readability.php
-[![Latest Stable Version](https://poser.pugx.org/andreskrey/readability.php/v/stable)](https://packagist.org/packages/andreskrey/readability.php) [![Build Status](https://travis-ci.org/andreskrey/readability.php.svg?branch=master)](https://travis-ci.org/andreskrey/readability.php) [![Coverage Status](https://coveralls.io/repos/github/andreskrey/readability.php/badge.svg?branch=master)](https://coveralls.io/github/andreskrey/readability.php/?branch=master) [![StyleCI](https://styleci.io/repos/71042668/shield?branch=master)](https://styleci.io/repos/71042668) [![Total Downloads](https://poser.pugx.org/andreskrey/readability.php/downloads)](https://packagist.org/packages/andreskrey/readability.php) [![Monthly Downloads](https://poser.pugx.org/andreskrey/readability.php/d/monthly)](https://packagist.org/packages/andreskrey/readability.php)
+
+## News (August 2021)
+
+Andres Rey, the [original developer](https://github.com/andreskrey/readability.php) of Readability.php has kindly let us take over maintenance and development of the project.
+
+Please bear with us while we catch up with [Readability.js](https://github.com/mozilla/readability) changes. There'll be a new release (3.0.0) when we're ready.
+
+For the changes we've made so far in this repository, please see our [blog post](https://www.fivefilters.org/2021/readability/).
+
+## About
+
+[![Latest Stable Version](https://poser.pugx.org/fivefilters/readability.php/v/stable)](https://packagist.org/packages/fivefilters/readability.php) [![Tests](https://github.com/fivefilters/readability.php/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/fivefilters/readability.php/actions/workflows/main.yml)
 
 PHP port of *Mozilla's* **[Readability.js](https://github.com/mozilla/readability)**. Parses html text (usually news and other articles) and returns **title**, **author**, **main image** and **text content** without nav bars, ads, footers, or anything that isn't the main body of the text. Analyzes each node, gives them a score, and determines what's relevant and what can be discarded.
 
-![Screenshot](https://raw.githubusercontent.com/andreskrey/readability.php/assets/screenshot.png)
+![Screenshot](https://raw.githubusercontent.com/fivefilters/readability.php/assets/screenshot.png)
 
 The project aim is to be a 1 to 1 port of Mozilla's version and to follow closely all changes introduced there, but there are some major differences on the structure. Most of the code is a 1:1 copy –even the comments were imported– but some functions and structures were adapted to suit better the PHP language.
 
-**Lead Developer**: Andres Rey
+**Original Developer**: Andres Rey
+
+**Developer/Maintainer**: FiveFilters.org
+
+## Code porting
+
+Master branch - Up to date on 26 August 2021, with the exception of a [piece of code](https://github.com/fivefilters/readability.php/commit/1c662465bded2ab3acf3b975a1315c8c45f0bf73#diff-b9b31807b1a39caec18ddc293e9c52931ba8b55191c61e6b77a623d699a599ffR1899) which doesn't produce the same results in PHP for us compard to the JS version. Perhaps there's an error, or some difference in the underlying code that affects this. If you know what's wrong, please feel free to drop us a note or submit a pull request. :)
+
+Version 2.1.0 - Up to date with Readability.js up to [19 Nov 2018](https://github.com/mozilla/readability/commit/876c81f710711ba2afb36dd83889d4c5b4fc2743).
 
 ## Requirements
 
-PHP 7.0+, ext-dom, ext-xml, and ext-mbstring. To install all this dependencies (in the rare case your system does not have them already), you could try something like this in *nix like environments:
+PHP 7.3+, ext-dom, ext-xml, and ext-mbstring. To install these dependencies (in the rare case your system does not have them already), you could try something like this in *nix like environments:
 
-`$ sudo apt-get install php7.1-xml php7.1-mbstring`
+`$ sudo apt-get install php7.4-xml php7.4-mbstring`
 
 ## How to use it
 
 First you have to require the library using composer:
 
-`composer require andreskrey/readability.php`
+`composer require fivefilters/readability.php`
 
 Then, create a Readability class and pass a Configuration class, feed the `parse()` function with your HTML and echo the variable:
 
 ```php 
-use andreskrey\Readability\Readability;
-use andreskrey\Readability\Configuration;
-use andreskrey\Readability\ParseException;
+use fivefilters\Readability\Readability;
+use fivefilters\Readability\Configuration;
+use fivefilters\Readability\ParseException;
 
 $readability = new Readability(new Configuration());
 
@@ -86,7 +105,7 @@ $configuration = new Configuration([
 Then you pass this Configuration object to Readability. The following options are available. Remember to prepend `set` when calling them using native setters.
 
 - **MaxTopCandidates**: default value `5`, max amount of top level candidates.
-- **WordThreshold**: default value `500`, minimum amount of characters to consider that the article was parsed successful.
+- **CharThreshold**: default value `500`, minimum amount of characters to consider that the article was parsed successful.
 - **ArticleByLine**: default value `false`, search for the article byline and remove it from the text. It will be moved to the article metadata. 
 - **StripUnlikelyCandidates**: default value `true`, remove nodes that are unlikely to have relevant information. Useful for debugging or parsing complex or non-standard articles. 
 - **CleanConditionally**: default value `true`, remove certain nodes after parsing to return a cleaner result. 
@@ -95,13 +114,15 @@ Then you pass this Configuration object to Readability. The following options ar
 - **SubstituteEntities**: default value `false`, disables the `substituteEntities` flag of libxml. Will avoid substituting HTML entities. Like `&aacute;` to á.
 - **NormalizeEntities**: default value `false`, converts UTF-8 characters to its HTML Entity equivalent. Useful to parse HTML with mixed encoding.
 - **OriginalURL**: default value `http://fakehost`, original URL from the article used to fix relative URLs.
-- **SummonCthulhu**: default value `false`, remove all `<script>` nodes via regex. This is not ideal as it might break things, but might be the only solution to [libxml problems with unescaped javascript](https://github.com/andreskrey/readability.php#known-issues). If you're not parsing Javascript tutorials, it's recommended to always set this option as `true`.
+- **KeepClasses**: default value `false`, which removes all `class="..."` attribute values from HTML elements.
+- **Parser**: default value `html5`, which uses HTML5-PHP for parsing. Set to `libxml` to use that instead (not recommended for modern HTML documents).
+- **SummonCthulhu**: default value `false`, remove all `<script>` nodes via regex. This is not ideal as it might break things, but if you've set the parser to libxml (see above), it might be the only solution to [libxml problems with unescaped javascript](https://github.com/fivefilters/readability.php#known-libxml-parsing-issues).
 
 ### Debug log
 
 Logging is optional and you will have to inject your own logger to save all the debugging messages. To do so, use a logger that implements the [PSR-3 logging interface](https://github.com/php-fig/log) and pass it to the configuration object. For example:
 
-```
+```php
 // Using monolog
 
 $log = new Logger('Readability');
@@ -116,7 +137,9 @@ In the log you will find information about the parsed nodes, why they were remov
 
 Of course the main limitation is PHP. Websites that load the content through lazy loading, AJAX, or any type of javascript fueled call will be ignored (actually, *not ran*) and the resulting text will be incorrect, compared to the readability.js results. All the articles you want to parse with readability.php need to be complete and all the content should be in the HTML already.  
 
-## Known Issues
+## Known libxml parsing issues
+
+Readability.php as of version 3.0.0 uses a HTML5 parser. Earlier versions used libxml. The issues below apply to libxml parsing, so if you're using an earlier version of Readability.php (pre 3.0.0), or if you've set the parser to libxml in the configuration, read on...
 
 ### Javascript spilling into the text body
 
@@ -153,7 +176,11 @@ Self closing tags like `<br />` get automatically expanded to `<br></br`. No way
 
 ## Dependencies
 
-Readability.php uses the [PSR Log](https://github.com/php-fig/log) interface to define the allowed type of loggers. [Monolog](https://github.com/Seldaek/monolog) is only required on development installations. (`--dev` option during `composer install`).
+Readability.php uses 
+
+ * [HTML5-PHP](https://github.com/Masterminds/html5-php) to parse and serialise HTML.
+ * [PSR Log](https://github.com/php-fig/log) interface to define the allowed type of loggers. 
+ * [Monolog](https://github.com/Seldaek/monolog) is only required on development installations. (`--dev` option during `composer install`).
 
 ## To-do
 
@@ -165,21 +192,44 @@ Readability.php uses the [PSR Log](https://github.com/php-fig/log) interface to 
 
 Readability parses all the text with DOMDocument, scans the text nodes and gives the a score, based on the amount of words, links and type of element. Then it selects the highest scoring element and creates a new DOMDocument with all its siblings. Each sibling is scored to discard useless elements, like nav bars, empty nodes, etc.
 
+## Security
+
+If you're going to use Readability with untrusted input (whether in HTML or DOM form), we **strongly** recommend you use a sanitizer library like [HTML Purifier](https://github.com/ezyang/htmlpurifier) to avoid script injection when you use
+the output of Readability. We would also recommend using [CSP](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) to add further defense-in-depth
+restrictions to what you allow the resulting content to do. The Firefox integration of
+reader mode uses both of these techniques itself. Sanitizing unsafe content out of the input is explicitly not something we aim to do as part of Readability itself - there are other good sanitizer libraries out there, use them!
+
 ## Testing
 
-Any version of PHP installed locally should be enough to develop new features and add new test cases. If you want to be 100% sure that your change doesn't create any issues with other versions of PHP, you can use the provided Docker containers to test currently in 7.0, 7.1, and 7.2.
+Any version of PHP from 7.3 and above installed locally should be enough to develop new features and add new test cases. If you want to be 100% sure that your change doesn't create any issues with other versions of PHP, you can use the provided Docker containers to test currently in 7.3, 7.4, and 8.0.
 
-You'll need Docker and Docker Compose for this. To run all the tests in all the available versions just type the following command:
+You'll need Docker and Docker Compose for this. To run all the tests in the three PHP versions above, just type the following command:
 
 ```bash
 make test-all
 ```
 
-This will start all the containers and run all the tests on every supported version of PHP. If you want to test against a specific version, you can use `make test-7.0`, `make test-7.1`, or `make test-7.2`.
+This will start all the containers and run all the tests on every supported version of PHP. If you want to test against a specific version, you can use `make test-7.3`, `make test-7.4`, or `make test-8`.
 
-## Code porting
+### Different versions of libxml
 
-Up to date with readability.js as of [19 Nov 2018](https://github.com/mozilla/readability/commit/876c81f710711ba2afb36dd83889d4c5b4fc2743).
+If you want to test against supported versions of PHP *AND* multiple versions of libxml, run `test-all-versions`. This will test against PHP versions 7.3 to 8 and libxml versions 2.9.4, 2.9.5, 2.9.10, and 2.9.12. Normally you won't need to do this unless you think you've found a bug on an specific version of libxml.
+
+### Updating the expected tests
+
+If you've made an improvement to the code, you'll probably want to examine the Readability.php output for the test cases here. To do that, run the following command first from the root of the project folder:
+
+    docker-compose up -d php-7.4-libxml-2.9.10
+
+You should now have a docker image running with the project root folder mapped to /app/ on your Docker instance (see `docker-compose.yml`). Any changes to these files will be accessible from the Docker instance from now on.
+
+Next, create a folder in tests/ called /changed, then run the following command to run the test suite:
+
+    docker-compose exec -e output-changes=1 -e output-diff=1 php-7.4-libxml-2.9.10 php /app/vendor/phpunit/phpunit/phpunit --configuration /app/phpunit.xml
+
+The two environment variables (`output-changes=1` and `output-diff=1`) will result in new output for any failing test (along with a diff of changes) being written to the changed/ folder.
+
+If you're happy the changes are okay, set `output-diff=0` and the diff files will no longer be written, making it easier to copy the new expected output files over to their corresponding locations in test-pages\.
  
 ## License
 

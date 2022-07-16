@@ -1,6 +1,6 @@
 <?php
 
-namespace andreskrey\Readability;
+namespace fivefilters\Readability;
 
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
@@ -67,6 +67,21 @@ class Configuration
      * @var string
      */
     protected $originalURL = 'http://fakehost';
+
+    /**
+     * @var string
+     */
+    protected $parser = 'html5';
+
+    /**
+     * @var bool
+     */
+    protected $keepClasses = false;
+
+    /**
+     * @var bool
+     */
+    protected $disableJSONLD = false;
 
     /**
      * Configuration constructor.
@@ -322,6 +337,66 @@ class Configuration
     public function setOriginalURL($originalURL)
     {
         $this->originalURL = $originalURL;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getParser()
+    {
+        return $this->parser;
+    }
+
+    /**
+     * @param string $parser
+     *
+     * @return $this
+     */
+    public function setParser($parser)
+    {
+        $this->parser = $parser;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getKeepClasses()
+    {
+        return $this->keepClasses;
+    }
+
+    /**
+     * @param bool $keepClasses
+     *
+     * @return $this
+     */
+    public function setKeepClasses($keepClasses)
+    {
+        $this->keepClasses = $keepClasses;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getDisableJSONLD()
+    {
+        return $this->disableJSONLD;
+    }
+
+    /**
+     * @param bool $disableJSONLD
+     *
+     * @return $this
+     */
+    public function setDisableJSONLD($disableJSONLD)
+    {
+        $this->disableJSONLD = $disableJSONLD;
 
         return $this;
     }

@@ -1,5 +1,5 @@
-{
-    "0": "http:\/\/fakehost\/foo\/bar\/baz.png",
-    "3": "http:\/\/test\/foo\/bar\/baz.png",
-    "4": "https:\/\/test\/foo\/bar\/baz.png"
-}
+[
+    "http:\/\/fakehost\/foo\/bar\/baz.png",
+    "http:\/\/test\/foo\/bar\/baz.png",
+    "https:\/\/test\/foo\/bar\/baz.png"
+]

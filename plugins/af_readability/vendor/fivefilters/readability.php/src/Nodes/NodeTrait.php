@@ -1,11 +1,11 @@
 <?php
 
-namespace andreskrey\Readability\Nodes;
+namespace fivefilters\Readability\Nodes;
 
-use andreskrey\Readability\Nodes\DOM\DOMDocument;
-use andreskrey\Readability\Nodes\DOM\DOMElement;
-use andreskrey\Readability\Nodes\DOM\DOMNode;
-use andreskrey\Readability\Nodes\DOM\DOMText;
+use fivefilters\Readability\Nodes\DOM\DOMDocument;
+use fivefilters\Readability\Nodes\DOM\DOMElement;
+use fivefilters\Readability\Nodes\DOM\DOMNode;
+use fivefilters\Readability\Nodes\DOM\DOMText;
 use DOMNodeList;
 
 /**
@@ -38,7 +38,6 @@ trait NodeTrait
      * @var array
      */
     private $divToPElements = [
-        'a',
         'blockquote',
         'dl',
         'div',
@@ -47,8 +46,7 @@ trait NodeTrait
         'p',
         'pre',
         'table',
-        'ul',
-        'select',
+        'ul'
     ];
 
     /**
@@ -169,6 +167,7 @@ trait NodeTrait
      *
      * @return string
      */
+    #[\ReturnTypeWillChange]
     public function getAttribute($attributeName)
     {
         if (!is_null($this->attributes)) {
@@ -187,6 +186,7 @@ trait NodeTrait
      *
      * @see getAttribute
      */
+    #[\ReturnTypeWillChange]
     public function hasAttribute($attributeName)
     {
         if (!is_null($this->attributes)) {
@@ -240,19 +240,21 @@ trait NodeTrait
      */
     public function getLinkDensity()
     {
-        $linkLength = 0;
         $textLength = mb_strlen($this->getTextContent(true));
-
-        if (!$textLength) {
+        if ($textLength === 0) {
             return 0;
         }
+
+        $linkLength = 0;
 
         $links = $this->getAllLinks();
 
         if ($links) {
             /** @var DOMElement $link */
             foreach ($links as $link) {
-                $linkLength += mb_strlen($link->getTextContent(true));
+                $href = $link->getAttribute('href');
+                $coefficient = ($href && preg_match(NodeUtility::$regexps['hashUrl'], $href)) ? 0.3 : 1;
+                $linkLength += mb_strlen($link->getTextContent(true)) * $coefficient;
             }
         }
 
@@ -282,7 +284,7 @@ trait NodeTrait
 
         // Look for a special ID
         $id = $this->getAttribute('id');
-        if (trim($id)) {
+        if (trim($id) !== '') {
             if (preg_match(NodeUtility::$regexps['negative'], $id)) {
                 $weight -= 25;
             }
@@ -302,38 +304,14 @@ trait NodeTrait
      *
      * @return string
      */
-    public function getTextContent($normalize = false)
+    public function getTextContent($normalize = true)
     {
-        $nodeValue = $this->nodeValue;
+        $nodeValue = trim($this->textContent);
         if ($normalize) {
-            $nodeValue = trim(preg_replace('/\s{2,}/', ' ', $nodeValue));
+            $nodeValue = preg_replace(NodeUtility::$regexps['normalize'], ' ', $nodeValue);
         }
 
         return $nodeValue;
-    }
-
-    /**
-     * Returns the children of the current node.
-     *
-     * @param bool $filterEmptyDOMText Filter empty DOMText nodes?
-     *
-     * @deprecated Use NodeUtility::filterTextNodes, function will be removed in version 3.0
-     *
-     * @return array
-     */
-    public function getChildren($filterEmptyDOMText = false)
-    {
-        @trigger_error('getChildren was replaced with NodeUtility::filterTextNodes and will be removed in version 3.0', E_USER_DEPRECATED);
-
-        $ret = iterator_to_array($this->childNodes);
-        if ($filterEmptyDOMText) {
-            // Array values is used to discard the key order. Needs to be 0 to whatever without skipping any number
-            $ret = array_values(array_filter($ret, function ($node) {
-                return $node->nodeName !== '#text' || mb_strlen(trim($node->nodeValue));
-            }));
-        }
-
-        return $ret;
     }
 
     /**
@@ -374,7 +352,7 @@ trait NodeTrait
      */
     public function createNode($originalNode, $tagName)
     {
-        $text = $originalNode->getTextContent();
+        $text = $originalNode->getTextContent(false);
         $newNode = $originalNode->ownerDocument->createElement($tagName, $text);
 
         return $newNode;
@@ -433,7 +411,7 @@ trait NodeTrait
             }
 
             /* @var DOMNode $child */
-            return !($child->nodeType === XML_TEXT_NODE && !preg_match('/\S$/', $child->getTextContent()));
+            return !($child->nodeType === XML_TEXT_NODE && preg_match(NodeUtility::$regexps['hasContent'], $child->textContent));
         });
     }
 
@@ -508,13 +486,14 @@ trait NodeTrait
      * In the original JS project they check if the node has the style display=none, which unfortunately
      * in our case we have no way of knowing that. So we just check for the attribute hidden or "display: none".
      *
-     * Might be a good idea to check for classes or other attributes like 'aria-hidden'
-     *
      * @return bool
      */
     public function isProbablyVisible()
     {
-        return !preg_match('/display:( )?none/', $this->getAttribute('style')) && !$this->hasAttribute('hidden');
+        return !preg_match('/display:( )?none/i', $this->getAttribute('style')) && 
+                !$this->hasAttribute('hidden') &&
+                //check for "fallback-image" so that wikimedia math images are displayed
+                (!$this->hasAttribute('aria-hidden') || $this->getAttribute('aria-hidden') !== 'true' || ($this->hasAttribute('class') && strpos($this->getAttribute('class'), 'fallback-image') !== false));
     }
 
     /**

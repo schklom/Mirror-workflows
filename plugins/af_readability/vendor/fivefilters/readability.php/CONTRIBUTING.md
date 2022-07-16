@@ -2,8 +2,9 @@
 
 Contributions are **welcome** and will be fully **credited**.
 
-We accept contributions via Pull Requests on [Github](https://github.com/andreskrey/readability.php/).
+When it comes to the core article-extraction functionality, please contribute to [Mozilla's Readability](https://github.com/mozilla/readability/) repository, as we're trying to mirror that here.
 
+For anything else, we accept contributions via Pull Requests on [Github](https://github.com/fivefilters/readability.php/).
 
 ## Pull Requests
 

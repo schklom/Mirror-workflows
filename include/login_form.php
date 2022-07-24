@@ -32,6 +32,27 @@
 	<script type="text/javascript">
 		require({cache:{}});
 	</script>
+
+	<script type="text/javascript">
+	/* exported Plugins */
+	const Plugins = {};
+
+	<?php
+		foreach (PluginHost::getInstance()->get_plugins() as $n => $p) {
+			if (method_exists($p, "get_login_js")) {
+				$script = $p->get_login_js();
+
+				if ($script) {
+					echo "try {
+					    $script
+					} catch (e) {
+                        console.warn('failed to initialize plugin JS: $n', e);
+                    }";
+				}
+			}
+		}
+	?>
+	</script>
 </head>
 
 <body class="flat ttrss_utility ttrss_login css_loading">
@@ -175,6 +196,7 @@
 			<fieldset class="align-right">
 				<label> </label>
 				<?= \Controls\submit_tag(__('Log in')) ?>
+				<?php PluginHost::getInstance()->run_hooks(PluginHost::HOOK_LOGINFORM_ADDITIONAL_BUTTONS) ?>
 			</fieldset>
 
 		</form>

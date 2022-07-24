@@ -50,6 +50,11 @@ abstract class Plugin {
 	}
 
 	/** @return string */
+	function get_login_js() {
+		return "";
+	}
+
+	/** @return string */
 	function get_css() {
 		return "";
 	}
@@ -690,6 +695,15 @@ abstract class Plugin {
 	 * @return array<mixed> - [0] - if set, url to redirect to
 	*/
 	function hook_post_logout($login, $user_id) {
+		user_error("Dummy method invoked.", E_USER_ERROR);
+
 		return [""];
+	}
+
+	/** Adds buttons to the right of default Login button
+	 * @return void
+	 */
+	function hook_loginform_additional_buttons() {
+		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 }

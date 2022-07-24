@@ -203,6 +203,9 @@ class PluginHost {
 	/** @see Plugin::hook_post_logout() */
 	const HOOK_POST_LOGOUT = "hook_post_logout";
 
+	/** @see Plugin::hook_loginform_additional_buttons() */
+	const HOOK_LOGINFORM_ADDITIONAL_BUTTONS = "hook_loginform_additional_buttons";
+
 	const KIND_ALL = 1;
 	const KIND_SYSTEM = 2;
 	const KIND_USER = 3;

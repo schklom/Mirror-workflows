@@ -807,7 +807,7 @@ class Handler_Public extends Handler {
 		} else {
 			user_error("PluginHandler[PUBLIC]: Requested method '$method' of unknown plugin '$plugin_name'.", E_USER_WARNING);
 			header("Content-Type: text/json");
-			print Errors::to_json(Errors::E_UNKNOWN_PLUGIN);
+			print Errors::to_json(Errors::E_UNKNOWN_PLUGIN, ['plugin' => $plugin_name]);
 		}
 	}
 

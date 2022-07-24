@@ -38,6 +38,7 @@ class ComposerStaticInitb44cc79a0eaef9cd9c2f2ac697cbe9c0
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
         ),
         'Masterminds\\' => 
         array (
@@ -45,8 +46,8 @@ class ComposerStaticInitb44cc79a0eaef9cd9c2f2ac697cbe9c0
         ),
         'League\\Uri\\' => 
         array (
-            0 => __DIR__ . '/..' . '/league/uri-interfaces/src',
-            1 => __DIR__ . '/..' . '/league/uri/src',
+            0 => __DIR__ . '/..' . '/league/uri/src',
+            1 => __DIR__ . '/..' . '/league/uri-interfaces/src',
         ),
     );
 

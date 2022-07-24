@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'f7b3c50828d4604ac5999daf3c3405e65c877e2f',
+    'reference' => '5006c754c42a09f5b88b258c2da4b9eff7508357',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'f7b3c50828d4604ac5999daf3c3405e65c877e2f',
+      'reference' => '5006c754c42a09f5b88b258c2da4b9eff7508357',
     ),
     'fivefilters/readability.php' => 
     array (
@@ -56,6 +56,15 @@
       array (
       ),
       'reference' => 'f640ac1bdddff06ea333a920c95bbad8872429ab',
+    ),
+    'psr/http-factory' => 
+    array (
+      'pretty_version' => '1.0.1',
+      'version' => '1.0.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '12ac7fcd07e5b077433f5f2bee95b3a771bf61be',
     ),
     'psr/http-message' => 
     array (

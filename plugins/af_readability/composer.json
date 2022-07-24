@@ -7,6 +7,7 @@
         }
     ],
     "require": {
-        "fivefilters/readability.php": "dev-master"
+        "fivefilters/readability.php": "dev-master",
+		  "psr/http-factory": "1.0.1"
     }
 }

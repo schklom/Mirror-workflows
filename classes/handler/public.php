@@ -785,7 +785,7 @@ class Handler_Public extends Handler {
 		$plugin_name = basename(clean($_REQUEST["plugin"]));
 		$method = clean($_REQUEST["pmethod"]);
 
-		$host->load($plugin_name, PluginHost::KIND_USER, 0);
+		$host->load($plugin_name, PluginHost::KIND_ALL, 0);
 		//$host->load_data();
 
 		$plugin = $host->get_plugin($plugin_name);

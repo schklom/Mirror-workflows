@@ -465,9 +465,11 @@ class Config {
 	/** generates reference self_url_path (no trailing slash) */
 	static function make_self_url() : string {
 		$proto = self::is_server_https() ? 'https' : 'http';
-		$self_url_path = $proto . '://' . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+
+		$self_url_path = $proto . '://' . $_SERVER["HTTP_HOST"] . parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
 		$self_url_path = preg_replace("/\w+\.php(\?.*$)?$/", "", $self_url_path);
+		#$self_url_path = preg_replace("/(\?.*$)?$/", "", $self_url_path);
 
 		if (substr($self_url_path, -1) === "/") {
 			return substr($self_url_path, 0, -1);

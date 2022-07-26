@@ -91,15 +91,3 @@ jobs:
           tags: |
             schklom/nextcloud-janus-strukturag:latest
           #labels: ${{ steps.docker_meta.outputs.labels }}
-      - name: Build and push Coturn
-        uses: docker/build-push-action@v3.1.0
-        with:
-          context: .
-          file: ./docker/coturn/Dockerfile
-          #platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
-          platforms: linux/arm/v7,linux/arm64
-          pull: true
-          push: true
-          tags: |
-            schklom/nextcloud-coturn-strukturag:latest
-          #labels: ${{ steps.docker_meta.outputs.labels }}

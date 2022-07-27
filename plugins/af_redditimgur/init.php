@@ -651,9 +651,7 @@ class Af_RedditImgur extends Plugin {
 				$xpath = new DOMXPath($doc);
 
 				/** @var ?DOMElement $content_link */
-				$content_link = UrlHelper::rewrite_relative($article["link"],
-					$xpath->query("(//a[contains(., '[link]')])")->item(0),
-						"a");
+				$content_link = $xpath->query("(//a[contains(., '[link]')])")->item(0);
 
 				if ($this->host->get($this, "enable_content_dupcheck")) {
 

@@ -653,10 +653,14 @@ class Af_RedditImgur extends Plugin {
 				/** @var ?DOMElement $content_link */
 				$content_link = $xpath->query("(//a[contains(., '[link]')])")->item(0);
 
-				if ($this->host->get($this, "enable_content_dupcheck")) {
+				if ($content_link) {
+					$content_href = UrlHelper::rewrite_relative($article["link"], $content_link->getAttribute("href"), "a");
 
-					if ($content_link) {
-						$content_href = $content_link->getAttribute("href");
+					if ($this->is_blacklisted($content_href))
+						return $article;
+
+					if ($this->host->get($this, "enable_content_dupcheck")) {
+
 						$entry_guid = $article["guid_hashed"];
 						$owner_uid = $article["owner_uid"];
 
@@ -682,20 +686,16 @@ class Af_RedditImgur extends Plugin {
 							if ($num_found > 0) $article["force_catchup"] = true;
 						}
 					}
-				}
 
-				if ($content_link && $this->is_blacklisted($content_link->getAttribute("href")))
-					return $article;
+					$found = $this->inline_stuff($article, $doc, $xpath);
+					$node = $doc->getElementsByTagName('body')->item(0);
 
-				$found = $this->inline_stuff($article, $doc, $xpath);
-
-				$node = $doc->getElementsByTagName('body')->item(0);
-
-				if ($node && $found) {
-					$article["content"] = $doc->saveHTML($node);
-					$article["enclosures"] = $this->generated_enclosures;
-				} else if ($content_link) {
-					$article = $this->readability($article, $content_link->getAttribute("href"), $doc, $xpath);
+					if ($node && $found) {
+						$article["content"] = $doc->saveHTML($node);
+						$article["enclosures"] = $this->generated_enclosures;
+					} else {
+						$article = $this->readability($article, $content_href, $doc, $xpath);
+					}
 				}
 			}
 		}

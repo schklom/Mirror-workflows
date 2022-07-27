@@ -936,11 +936,12 @@ class Af_RedditImgur extends Plugin {
 	private function is_blacklisted(string $src, array $also_blacklist = []) : bool {
 		$src_domain = parse_url($src, PHP_URL_HOST);
 
-		foreach (array_merge($this->domain_blacklist, $also_blacklist) as $domain) {
-			if (strstr($src_domain, $domain) !== false) {
-				return true;
+		if ($src_domain)
+			foreach (array_merge($this->domain_blacklist, $also_blacklist) as $domain) {
+				if (strstr($src_domain, $domain) !== false) {
+					return true;
+				}
 			}
-		}
 
 		return false;
 	}

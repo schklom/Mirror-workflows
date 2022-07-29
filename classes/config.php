@@ -524,8 +524,8 @@ class Config {
 				array_push($errors, "Please don't run this script as root.");
 			}
 
-			if (version_compare(PHP_VERSION, '7.1.0', '<')) {
-				array_push($errors, "PHP version 7.1.0 or newer required. You're using " . PHP_VERSION . ".");
+			if (version_compare(PHP_VERSION, '7.4.0', '<')) {
+				array_push($errors, "PHP version 7.4.0 or newer required. You're using " . PHP_VERSION . ".");
 			}
 
 			if (!class_exists("UConverter")) {

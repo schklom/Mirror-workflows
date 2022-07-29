@@ -2,8 +2,8 @@
 
 	// we need a separate check here because functions.php might get parsed
 	// incorrectly before 5.3 because of :: syntax.
-	if (version_compare(PHP_VERSION, '7.0.0', '<')) {
-		print "<b>Fatal Error</b>: PHP version 7.0.0 or newer required. You're using " . PHP_VERSION . ".\n";
+	if (version_compare(PHP_VERSION, '7.4.0', '<')) {
+		print "<b>Fatal Error</b>: PHP version 7.4.0 or newer required. You're using " . PHP_VERSION . ".\n";
 		exit;
 	}
 

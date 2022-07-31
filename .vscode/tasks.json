@@ -3,11 +3,11 @@
 	"tasks": [
 		{
 			"type": "shell",
-			"label": "phpstan-8.1 (background)",
+			"label": "phpstan 8.1 (watcher)",
 			"isBackground": true,
 			"problemMatcher": {
 				"fileLocation": ["relative", "${workspaceRoot}"],
-				"owner": "phpstan-8.1",
+				"owner": "phpstan-watcher-8.1",
 				"pattern": {
 					 "regexp": "^/app/(.*?):([0-9\\?]*):(.*)$",
 					 "file": 1,
@@ -21,22 +21,7 @@
 
 				}
 		  },
-			"command": "while true; do docker run --rm -v $(pwd):/app -v /tmp/phpstan-8.1:/tmp/phpstan --workdir /app php:8.1-cli php -d memory_limit=-1 ./vendor/bin/phpstan --memory-limit=2G --error-format=raw || true; echo 'All done'; sleep 30; done",
-		},
-		{
-			"type": "shell",
-			"label": "phpstan-8.0 (run once)",
-			"problemMatcher": {
-				"fileLocation": ["relative", "${workspaceRoot}"],
-				"owner": "phpstan-8.0",
-				"pattern": {
-					 "regexp": "^/app/(.*?):([0-9\\?]*):(.*)$",
-					 "file": 1,
-					 "line": 2,
-					 "message": 3
-				}
-		  },
-			"command": "docker run --rm -v $(pwd):/app -v /tmp/phpstan-8.0:/tmp/phpstan --workdir /app php:8.0-cli php -d memory_limit=-1 ./vendor/bin/phpstan --memory-limit=2G --error-format=raw || true",
+			"command": "${workspaceRoot}/utils/phpstan-watcher.sh",
 		},
 		{
 			"type": "gulp",

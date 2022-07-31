@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '5006c754c42a09f5b88b258c2da4b9eff7508357',
+    'reference' => '4aefbd628e9a0e1eac58523904ad887b0635cda3',
     'name' => '__root__',
   ),
   'versions' => 
@@ -18,7 +18,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '5006c754c42a09f5b88b258c2da4b9eff7508357',
+      'reference' => '4aefbd628e9a0e1eac58523904ad887b0635cda3',
     ),
     'fivefilters/readability.php' => 
     array (
@@ -28,7 +28,7 @@
       array (
         0 => '9999999-dev',
       ),
-      'reference' => '5ad152c70376002f043bb936d8ae5eed103fb993',
+      'reference' => '8ac5abdd497b37d2be4833bcf18d6819bba4d9c9',
     ),
     'league/uri' => 
     array (
@@ -50,10 +50,11 @@
     ),
     'masterminds/html5' => 
     array (
-      'pretty_version' => '2.7.5',
-      'version' => '2.7.5.0',
+      'pretty_version' => 'dev-master',
+      'version' => 'dev-master',
       'aliases' => 
       array (
+        0 => '2.7.x-dev',
       ),
       'reference' => 'f640ac1bdddff06ea333a920c95bbad8872429ab',
     ),

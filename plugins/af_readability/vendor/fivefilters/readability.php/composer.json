@@ -5,6 +5,13 @@
     "keywords": ["readability", "html"],
     "homepage": "https://github.com/fivefilters/readability.php",
     "license": "Apache-2.0",
+    "repositories": [
+        {
+        "name": "masterminds/html5",
+        "type": "vcs",
+        "url": "https://dev.tt-rss.org/fox/html5-php.git"
+        }
+    ],
     "authors": [
         {
             "name": "Andres Rey",
@@ -32,7 +39,7 @@
         "ext-xml": "*",
         "ext-mbstring": "*",
         "psr/log": "^1.0",
-        "masterminds/html5": "^2.0",
+        "masterminds/html5": "2.7.x-dev@dev",
         "league/uri": "^6.4"
     },
     "require-dev": {

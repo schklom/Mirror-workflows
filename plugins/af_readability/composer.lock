@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "351bb4bce6353ca338c03626bab6413f",
+    "content-hash": "183ed768c66eb8f183350edf06c06a63",
     "packages": [
         {
             "name": "fivefilters/readability.php",
@@ -12,14 +12,14 @@
             "source": {
                 "type": "git",
                 "url": "https://dev.tt-rss.org/fox/readability-php.git",
-                "reference": "5ad152c70376002f043bb936d8ae5eed103fb993"
+                "reference": "8ac5abdd497b37d2be4833bcf18d6819bba4d9c9"
             },
             "require": {
                 "ext-dom": "*",
                 "ext-mbstring": "*",
                 "ext-xml": "*",
                 "league/uri": "^6.4",
-                "masterminds/html5": "^2.0",
+                "masterminds/html5": "2.7.x-dev@dev",
                 "php": ">=7.3.0",
                 "psr/log": "^1.0"
             },
@@ -64,7 +64,7 @@
                 "html",
                 "readability"
             ],
-            "time": "2022-07-16T13:23:08+00:00"
+            "time": "2022-07-31T06:02:47+00:00"
         },
         {
             "name": "league/uri",
@@ -238,17 +238,11 @@
         },
         {
             "name": "masterminds/html5",
-            "version": "2.7.5",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Masterminds/html5-php.git",
+                "url": "https://dev.tt-rss.org/fox/html5-php.git",
                 "reference": "f640ac1bdddff06ea333a920c95bbad8872429ab"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Masterminds/html5-php/zipball/f640ac1bdddff06ea333a920c95bbad8872429ab",
-                "reference": "f640ac1bdddff06ea333a920c95bbad8872429ab",
-                "shasum": ""
             },
             "require": {
                 "ext-ctype": "*",
@@ -259,6 +253,7 @@
             "require-dev": {
                 "phpunit/phpunit": "^4.8.35 || ^5.7.21 || ^6 || ^7"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -270,7 +265,11 @@
                     "Masterminds\\": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Masterminds\\HTML5\\Tests\\": "test/HTML5"
+                }
+            },
             "license": [
                 "MIT"
             ],
@@ -291,18 +290,14 @@
             "description": "An HTML5 parser and serializer.",
             "homepage": "http://masterminds.github.io/html5-php",
             "keywords": [
-                "HTML5",
                 "dom",
                 "html",
+                "html5",
                 "parser",
                 "querypath",
                 "serializer",
                 "xml"
             ],
-            "support": {
-                "issues": "https://github.com/Masterminds/html5-php/issues",
-                "source": "https://github.com/Masterminds/html5-php/tree/2.7.5"
-            },
             "time": "2021-07-01T14:25:37+00:00"
         },
         {
@@ -466,11 +461,11 @@
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": {
         "fivefilters/readability.php": 20
     },
-    "prefer-stable": false,
+    "prefer-stable": true,
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],

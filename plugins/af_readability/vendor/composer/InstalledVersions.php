@@ -30,7 +30,7 @@ class InstalledVersions
     'aliases' => 
     array (
     ),
-    'reference' => '4aefbd628e9a0e1eac58523904ad887b0635cda3',
+    'reference' => 'a8b0bce008e23f9c47bf1f4de4d8e6886435071e',
     'name' => '__root__',
   ),
   'versions' => 
@@ -42,7 +42,7 @@ class InstalledVersions
       'aliases' => 
       array (
       ),
-      'reference' => '4aefbd628e9a0e1eac58523904ad887b0635cda3',
+      'reference' => 'a8b0bce008e23f9c47bf1f4de4d8e6886435071e',
     ),
     'fivefilters/readability.php' => 
     array (
@@ -80,7 +80,7 @@ class InstalledVersions
       array (
         0 => '2.7.x-dev',
       ),
-      'reference' => 'f640ac1bdddff06ea333a920c95bbad8872429ab',
+      'reference' => '1e0033a694ce576deba7c59c1da56c76e9e42109',
     ),
     'psr/http-factory' => 
     array (

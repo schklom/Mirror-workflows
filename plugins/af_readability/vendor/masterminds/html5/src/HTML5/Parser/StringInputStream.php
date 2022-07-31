@@ -192,6 +192,7 @@ class StringInputStream implements InputStream
      * Advance the pointer.
      * This is part of the Iterator interface.
      */
+	#[\ReturnTypeWillChange]
     public function next()
     {
         ++$this->char;
@@ -200,6 +201,7 @@ class StringInputStream implements InputStream
     /**
      * Rewind to the start of the string.
      */
+	#[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->char = 0;
@@ -210,6 +212,7 @@ class StringInputStream implements InputStream
      *
      * @return bool Whether the current pointer location is valid.
      */
+	#[\ReturnTypeWillChange]
     public function valid()
     {
         return $this->char < $this->EOF;

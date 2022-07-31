@@ -248,11 +248,12 @@ class Feeds extends Handler_Protected {
 					function ($result, $plugin) use (&$line, &$button_doc) {
 						if ($result && $button_doc->loadXML($result)) {
 
-							/** @var DOMElement|null */
+							/** @var DOMElement|null $child */
 							$child = $button_doc->firstChild;
 
 							if ($child) {
 								do {
+									/** @var DOMElement|null $child */
 									$child->setAttribute('data-plugin-name', get_class($plugin));
 								} while ($child = $child->nextSibling);
 
@@ -271,11 +272,12 @@ class Feeds extends Handler_Protected {
 					function ($result, $plugin) use (&$line, &$button_doc) {
 						if ($result && $button_doc->loadXML($result)) {
 
-							/** @var DOMElement|null */
+							/** @var DOMElement|null $child */
 							$child = $button_doc->firstChild;
 
 							if ($child) {
 								do {
+									/** @var DOMElement|null $child */
 									$child->setAttribute('data-plugin-name', get_class($plugin));
 								} while ($child = $child->nextSibling);
 

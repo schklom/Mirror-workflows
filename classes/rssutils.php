@@ -662,7 +662,7 @@ class RSSUtils {
 					print_r($item);
 				}
 
-				if (ini_get("max_execution_time") > 0 && time() - $tstart >= ini_get("max_execution_time") * 0.7) {
+				if (ini_get("max_execution_time") > 0 && time() - $tstart >= ((float)ini_get("max_execution_time") * 0.7)) {
 					Debug::log("looks like there's too many articles to process at once, breaking out.", Debug::LOG_VERBOSE);
 					$pdo->commit();
 					break;

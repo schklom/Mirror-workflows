@@ -18,7 +18,7 @@ function curl_copy_handle(\CurlHandle $handle): \CurlHandle
     error_clear_last();
     $result = \curl_copy_handle($handle);
     if ($result === false) {
-        throw CurlException::createFromPhpError();
+        throw CurlException::createFromPhpError($handle);
     }
     return $result;
 }
@@ -39,7 +39,7 @@ function curl_escape(\CurlHandle $handle, string $string): string
     error_clear_last();
     $result = \curl_escape($handle, $string);
     if ($result === false) {
-        throw CurlException::createFromPhpError();
+        throw CurlException::createFromPhpError($handle);
     }
     return $result;
 }
@@ -64,7 +64,7 @@ function curl_exec(\CurlHandle $handle)
     error_clear_last();
     $result = \curl_exec($handle);
     if ($result === false) {
-        throw CurlException::createFromPhpError();
+        throw CurlException::createFromPhpError($handle);
     }
     return $result;
 }
@@ -541,7 +541,7 @@ function curl_getinfo(\CurlHandle $handle, int $option = null)
         $result = \curl_getinfo($handle);
     }
     if ($result === false) {
-        throw CurlException::createFromPhpError();
+        throw CurlException::createFromPhpError($handle);
     }
     return $result;
 }
@@ -627,7 +627,7 @@ function curl_multi_info_read(\CurlMultiHandle $multi_handle, ?int &$queued_mess
     error_clear_last();
     $result = \curl_multi_info_read($multi_handle, $queued_messages);
     if ($result === false) {
-        throw CurlException::createFromPhpError();
+        throw CurlException::createFromPhpError($multi_handle);
     }
     return $result;
 }
@@ -791,7 +791,7 @@ function curl_multi_setopt(\CurlMultiHandle $multi_handle, int $option, $value):
     error_clear_last();
     $result = \curl_multi_setopt($multi_handle, $option, $value);
     if ($result === false) {
-        throw CurlException::createFromPhpError();
+        throw CurlException::createFromPhpError($multi_handle);
     }
 }
 
@@ -1281,6 +1281,18 @@ function curl_multi_setopt(\CurlMultiHandle $multi_handle, int $option, $value):
  *
  *
  * TRUE by default. Available since PHP 7.3.0 and libcurl &gt;= cURL 7.52.0.
+ *
+ *
+ *
+ * CURLOPT_SAFE_UPLOAD
+ *
+ * Always TRUE, what disables support for the @ prefix for
+ * uploading files in CURLOPT_POSTFIELDS, which
+ * means that values starting with @ can be safely
+ * passed as fields. CURLFile may be used for
+ * uploads instead.
+ *
+ *
  *
  *
  *
@@ -2576,7 +2588,7 @@ function curl_multi_setopt(\CurlMultiHandle $multi_handle, int $option, $value):
  *
  * CURLOPT_PROXY_TLSAUTH_USERNAME
  *
- * Tusername to use for the HTTPS proxy TLS authentication method specified with the
+ * The username to use for the HTTPS proxy TLS authentication method specified with the
  * CURLOPT_PROXY_TLSAUTH_TYPE option. Requires that the
  * CURLOPT_PROXY_TLSAUTH_PASSWORD option to also be set.
  *
@@ -3142,7 +3154,7 @@ function curl_setopt(\CurlHandle $handle, int $option, $value): void
     error_clear_last();
     $result = \curl_setopt($handle, $option, $value);
     if ($result === false) {
-        throw CurlException::createFromPhpError();
+        throw CurlException::createFromPhpError($handle);
     }
 }
 
@@ -3161,7 +3173,7 @@ function curl_share_errno(\CurlShareHandle $share_handle): int
     error_clear_last();
     $result = \curl_share_errno($share_handle);
     if ($result === false) {
-        throw CurlException::createFromPhpError();
+        throw CurlException::createFromPhpError($share_handle);
     }
     return $result;
 }
@@ -3238,7 +3250,7 @@ function curl_share_setopt(\CurlShareHandle $share_handle, int $option, $value):
     error_clear_last();
     $result = \curl_share_setopt($share_handle, $option, $value);
     if ($result === false) {
-        throw CurlException::createFromPhpError();
+        throw CurlException::createFromPhpError($share_handle);
     }
 }
 
@@ -3258,7 +3270,7 @@ function curl_unescape(\CurlHandle $handle, string $string): string
     error_clear_last();
     $result = \curl_unescape($handle, $string);
     if ($result === false) {
-        throw CurlException::createFromPhpError();
+        throw CurlException::createFromPhpError($handle);
     }
     return $result;
 }

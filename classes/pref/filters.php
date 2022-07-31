@@ -115,6 +115,7 @@ class Pref_Filters extends Handler_Protected {
 		$glue = $filter['match_any_rule'] ? " OR " :  " AND ";
 		$scope_qpart = join($glue, $scope_qparts);
 
+		/** @phpstan-ignore-next-line */
 		if (!$scope_qpart) $scope_qpart = "true";
 
 		$rv = array();

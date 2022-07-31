@@ -43,7 +43,8 @@ class FeedItem_Atom extends FeedItem_Common {
 		$links = $this->elem->getElementsByTagName("link");
 
 		foreach ($links as $link) {
-			if ($link && $link->hasAttribute("href") &&
+			/** @phpstan-ignore-next-line */
+			if ($link->hasAttribute("href") &&
 				(!$link->hasAttribute("rel")
 					|| $link->getAttribute("rel") == "alternate"
 					|| $link->getAttribute("rel") == "standout")) {
@@ -180,7 +181,8 @@ class FeedItem_Atom extends FeedItem_Common {
 		$encs = [];
 
 		foreach ($links as $link) {
-			if ($link && $link->hasAttribute("href") && $link->hasAttribute("rel")) {
+			/** @phpstan-ignore-next-line */
+			if ($link->hasAttribute("href") && $link->hasAttribute("rel")) {
 				$base = $this->xpath->evaluate("string(ancestor-or-self::*[@xml:base][1]/@xml:base)", $link);
 
 				if ($link->getAttribute("rel") == "enclosure") {

@@ -2,6 +2,36 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"type": "shell",
+			"label": "phpstan-8.1",
+			"problemMatcher": {
+				"fileLocation": ["relative", "${workspaceRoot}"],
+				"owner": "phpstan-8.1",
+				"pattern": {
+					 "regexp": "^/app/(.*?):([0-9\\?]*):(.*)$",
+					 "file": 1,
+					 "line": 2,
+					 "message": 3
+				}
+		  },
+			"command": "docker run --rm -v $(pwd):/app -v /tmp/phpstan-8.1:/tmp/phpstan --workdir /app php:8.1-cli php -d memory_limit=-1 ./vendor/bin/phpstan --memory-limit=2G --error-format=raw || true",
+		},
+		{
+			"type": "shell",
+			"label": "phpstan-8.0",
+			"problemMatcher": {
+				"fileLocation": ["relative", "${workspaceRoot}"],
+				"owner": "phpstan-8.0",
+				"pattern": {
+					 "regexp": "^/app/(.*?):([0-9\\?]*):(.*)$",
+					 "file": 1,
+					 "line": 2,
+					 "message": 3
+				}
+		  },
+			"command": "docker run --rm -v $(pwd):/app -v /tmp/phpstan-8.0:/tmp/phpstan --workdir /app php:8.0-cli php -d memory_limit=-1 ./vendor/bin/phpstan --memory-limit=2G --error-format=raw || true",
+		},
+		{
 			"type": "gulp",
 			"task": "default",
 			"problemMatcher": [],

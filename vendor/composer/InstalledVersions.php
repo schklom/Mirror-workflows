@@ -30,7 +30,7 @@ class InstalledVersions
     'aliases' => 
     array (
     ),
-    'reference' => 'd5c043e8467881c00b2cd836f2f37b8479cf0b96',
+    'reference' => '26c67dba776e1e6f8ac40eed70fe79995325863d',
     'name' => '__root__',
   ),
   'versions' => 
@@ -42,7 +42,7 @@ class InstalledVersions
       'aliases' => 
       array (
       ),
-      'reference' => 'd5c043e8467881c00b2cd836f2f37b8479cf0b96',
+      'reference' => '26c67dba776e1e6f8ac40eed70fe79995325863d',
     ),
     'beberlei/assert' => 
     array (

@@ -144,7 +144,7 @@ function locate(index, password) {
                         return response.json()
                     })
                     .then(function (json) {
-                        newestLocationDataIndex = json.DataLength;
+                        newestLocationDataIndex = json.Data;
                         if (index == -1 || index > newestLocationDataIndex) {
                             index = newestLocationDataIndex;
                             currentLocationDataIndx = newestLocationDataIndex;

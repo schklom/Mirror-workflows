@@ -15,19 +15,19 @@ func (_ *GoogleTranslateEngine) InternalName() string { return "google" }
 func (_ *GoogleTranslateEngine) DisplayName() string { return "Google" }
 
 func (_ *GoogleTranslateEngine) getLangs(type_ string) ([]Language, error) {
-	var langs_type string
+	var langsType string
 	switch type_ {
 	case "source":
-		langs_type = "sl"
+		langsType = "sl"
 
 	case "target":
-		langs_type = "tl"
+		langsType = "tl"
 
 	default:
-		panic(fmt.Errorf("getLangs was passed an invalid language type: %s", langs_type))
+		panic(fmt.Errorf("getLangs was passed an invalid language type: %s", langsType))
 	}
 
-	request_url, err := url.Parse("https://translate.google.com/m")
+	requestURL, err := url.Parse("https://translate.google.com/m")
 
 	if err != nil {
 		// The URL is constant, so it should never fail.
@@ -35,11 +35,11 @@ func (_ *GoogleTranslateEngine) getLangs(type_ string) ([]Language, error) {
 	}
 
 	query := url.Values{}
-	query.Add("mui", langs_type)
+	query.Add("mui", langsType)
 	query.Add("hl", "en-US")
-	request_url.RawQuery = query.Encode()
+	requestURL.RawQuery = query.Encode()
 
-	response, err := http.Get(request_url.String())
+	response, err := http.Get(requestURL.String())
 
 	if err != nil {
 		return nil, err
@@ -65,19 +65,19 @@ func (_ *GoogleTranslateEngine) getLangs(type_ string) ([]Language, error) {
 			return
 		}
 
-		lang_url, err := url.Parse(href)
+		langURL, err := url.Parse(href)
 
 		if err != nil {
 			return
 		}
 
-		lang_code := lang_url.Query()[langs_type][0]
+		langCode := langURL.Query()[langsType][0]
 
-		if lang_code == "auto" {
+		if langCode == "auto" {
 			return
 		}
 
-		langs = append(langs, Language{Name: a.Text(), Code: lang_code})
+		langs = append(langs, Language{Name: a.Text(), Code: langCode})
 	})
 
 	return langs, nil
@@ -96,7 +96,7 @@ func (_ *GoogleTranslateEngine) SupportsAutodetect() bool { return true }
 func (_ *GoogleTranslateEngine) DetectLanguage(text string) (Language, error) { return Language{}, nil }
 
 func (_ *GoogleTranslateEngine) Translate(text string, from Language, to Language) (TranslationResult, error) {
-	request_url, err := url.Parse("https://translate.google.com/m")
+	requestURL, err := url.Parse("https://translate.google.com/m")
 
 	if err != nil {
 		// The URL is constant, so it should never fail.
@@ -108,9 +108,9 @@ func (_ *GoogleTranslateEngine) Translate(text string, from Language, to Languag
 	query.Add("tl", to.Code)
 	query.Add("hl", to.Code)
 	query.Add("q", text)
-	request_url.RawQuery = query.Encode()
+	requestURL.RawQuery = query.Encode()
 
-	response, err := http.Get(request_url.String())
+	response, err := http.Get(requestURL.String())
 
 	if err != nil {
 		return TranslationResult{}, err

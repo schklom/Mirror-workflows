@@ -83,12 +83,12 @@ func (_ *GoogleTranslateEngine) getLangs(type_ string) ([]Language, error) {
 	return langs, nil
 }
 
-func (engine *GoogleTranslateEngine) SourceLanguages() ([]Language, error) {
-	return engine.getLangs("source")
+func (e *GoogleTranslateEngine) SourceLanguages() ([]Language, error) {
+	return e.getLangs("source")
 }
 
-func (engine *GoogleTranslateEngine) TargetLanguages() ([]Language, error) {
-	return engine.getLangs("target")
+func (e *GoogleTranslateEngine) TargetLanguages() ([]Language, error) {
+	return e.getLangs("target")
 }
 
 func (_ *GoogleTranslateEngine) SupportsAutodetect() bool { return true }

@@ -903,7 +903,7 @@ class Af_RedditImgur extends Plugin {
 
 			// do not try to embed posts linking back to other reddit posts
 			// readability.php requires PHP 5.6
-			if ($url &&	strpos($url, "reddit.com") === false && version_compare(PHP_VERSION, '5.6.0', '>=')) {
+			if ($url &&	strpos($url, "reddit.com") === false) {
 
 				/* link may lead to a huge video file or whatever, we need to check content type before trying to
 				parse it which p much requires curl */

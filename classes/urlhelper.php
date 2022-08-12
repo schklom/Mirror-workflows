@@ -190,32 +190,26 @@ class UrlHelper {
 		if ($nest > 10)
 			return false;
 
-		if (version_compare(PHP_VERSION, '7.1.0', '>=')) {
-			$context_options = array(
-				'http' => array(
-					 'header' => array(
-						 'Connection: close'
-					 ),
-					 'method' => 'HEAD',
-					 'timeout' => $timeout,
-					 'protocol_version'=> 1.1)
-				);
+		$context_options = array(
+			'http' => array(
+					'header' => array(
+						'Connection: close'
+					),
+					'method' => 'HEAD',
+					'timeout' => $timeout,
+					'protocol_version'=> 1.1)
+			);
 
-			if (Config::get(Config::HTTP_PROXY)) {
-				$context_options['http']['request_fulluri'] = true;
-				$context_options['http']['proxy'] = Config::get(Config::HTTP_PROXY);
-			}
-
-			$context = stream_context_create($context_options);
-
-			// PHP 8 changed the second param from int to bool, but we still support PHP >= 7.1.0
-			// @phpstan-ignore-next-line
-			$headers = get_headers($url, 0, $context);
-		} else {
-			// PHP 8 changed the second param from int to bool, but we still support PHP >= 7.1.0
-			// @phpstan-ignore-next-line
-			$headers = get_headers($url, 0);
+		if (Config::get(Config::HTTP_PROXY)) {
+			$context_options['http']['request_fulluri'] = true;
+			$context_options['http']['proxy'] = Config::get(Config::HTTP_PROXY);
 		}
+
+		$context = stream_context_create($context_options);
+
+		// PHP 8 changed the second param from int to bool, but we still support PHP >= 7.4.0
+		// @phpstan-ignore-next-line
+		$headers = get_headers($url, 0, $context);
 
 		if (is_array($headers)) {
 			$headers = array_reverse($headers); // last one is the correct one

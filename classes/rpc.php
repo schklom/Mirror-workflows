@@ -753,12 +753,11 @@ class RPC extends Handler_Protected {
 	function hotkeyHelp(): void {
 		$info = self::get_hotkeys_info();
 		$imap = self::get_hotkeys_map();
-		$omap = array();
+		$omap = [];
 
 		foreach ($imap[1] as $sequence => $action) {
-			if (!isset($omap[$action])) $omap[$action] = array();
-
-			array_push($omap[$action], $sequence);
+			$omap[$action] ??= [];
+			$omap[$action][] = $sequence;
 		}
 
 		?>

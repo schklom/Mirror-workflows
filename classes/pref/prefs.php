@@ -185,7 +185,7 @@ class Pref_Prefs extends Handler_Protected {
 		$boolean_prefs = explode(",", clean($_POST["boolean_prefs"]));
 
 		foreach ($boolean_prefs as $pref) {
-			if (!isset($_POST[$pref])) $_POST[$pref] = 'false';
+			$_POST[$pref] ??= 'false';
 		}
 
 		$need_reload = false;

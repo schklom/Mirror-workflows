@@ -412,8 +412,7 @@ class Handler_Public extends Handler {
 				if (session_status() != PHP_SESSION_ACTIVE)
 					session_start();
 
-				if (!isset($_SESSION["login_error_msg"]))
-					$_SESSION["login_error_msg"] = __("Incorrect username or password");
+				$_SESSION["login_error_msg"] ??= __("Incorrect username or password");
 			}
 
 			$return = clean($_REQUEST['return']);

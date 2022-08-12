@@ -535,10 +535,7 @@ class PluginHost {
 		$method = strtolower($method);
 
 		if ($this->is_system($sender)) {
-			if (!isset($this->handlers[$handler])) {
-				$this->handlers[$handler] = [];
-			}
-
+			$this->handlers[$handler] ??= [];
 			$this->handlers[$handler][$method] = $sender;
 		}
 	}
@@ -641,8 +638,7 @@ class PluginHost {
 				owner_uid= ? AND name = ?");
 			$sth->execute([$this->owner_uid, $plugin]);
 
-			if (!isset($this->storage[$plugin]))
-				$this->storage[$plugin] = [];
+			$this->storage[$plugin] ??= [];
 
 			$content = serialize($this->storage[$plugin]);
 
@@ -673,14 +669,8 @@ class PluginHost {
 		if ($profile_id) {
 			$idx = get_class($sender);
 
-			if (!isset($this->storage[$idx])) {
-				$this->storage[$idx] = [];
-			}
-
-			if (!isset($this->storage[$idx][$profile_id])) {
-				$this->storage[$idx][$profile_id] = [];
-			}
-
+			$this->storage[$idx] ??= [];
+			$this->storage[$idx][$profile_id] ??= [];
 			$this->storage[$idx][$profile_id][$name] = $value;
 
 			$this->save_data(get_class($sender));
@@ -695,9 +685,7 @@ class PluginHost {
 	function set(Plugin $sender, string $name, $value): void {
 		$idx = get_class($sender);
 
-		if (!isset($this->storage[$idx]))
-			$this->storage[$idx] = [];
-
+		$this->storage[$idx] ??= [];
 		$this->storage[$idx][$name] = $value;
 
 		$this->save_data(get_class($sender));
@@ -709,8 +697,7 @@ class PluginHost {
 	function set_array(Plugin $sender, array $params): void {
 		$idx = get_class($sender);
 
-		if (!isset($this->storage[$idx]))
-			$this->storage[$idx] = [];
+		$this->storage[$idx] ??= [];
 
 		foreach ($params as $name => $value)
 			$this->storage[$idx][$name] = $value;
@@ -848,11 +835,13 @@ class PluginHost {
 	function add_filter_action(Plugin $sender, string $action_name, string $action_desc): void {
 		$sender_class = get_class($sender);
 
-		if (!isset($this->plugin_actions[$sender_class]))
-			$this->plugin_actions[$sender_class] = [];
+		$this->plugin_actions[$sender_class] ??= [];
 
-		array_push($this->plugin_actions[$sender_class],
-			array("action" => $action_name, "description" => $action_desc, "sender" => $sender));
+		$this->plugin_actions[$sender_class][] = [
+			"action" => $action_name,
+			"description" => $action_desc,
+			"sender" => $sender,
+		];
 	}
 
 	/**

@@ -39,7 +39,7 @@ class RSSUtils {
 
 		// check icon files once every Config::get(Config::CACHE_MAX_DAYS) days
 		$icon_files = array_filter(glob(Config::get(Config::ICONS_DIR) . "/*.ico"),
-			function($f) { return filemtime($f) < time() - 86400 * Config::get(Config::CACHE_MAX_DAYS); });
+			fn($f) => filemtime($f) < time() - 86400 * Config::get(Config::CACHE_MAX_DAYS));
 
 		foreach ($icon_files as $icon) {
 			$feed_id = basename($icon, ".ico");
@@ -865,7 +865,7 @@ class RSSUtils {
 				$pluginhost->run_hooks(PluginHost::HOOK_FILTER_TRIGGERED,
 					$feed, $feed_obj->owner_uid, $article, $matched_filters, $matched_rules, $article_filters);
 
-				$matched_filter_ids = array_map(function($f) { return $f['id']; }, $matched_filters);
+				$matched_filter_ids = array_map(fn($f) => $f['id'], $matched_filters);
 
 				if (count($matched_filter_ids) > 0) {
 					$filter_objs = ORM::for_table('ttrss_filters2')
@@ -1801,7 +1801,7 @@ class RSSUtils {
 			[$cat_id]);
 
 		$check_cats_str = join(",", $check_cats);
-		$check_cats_fullids = array_map(function($a) { return "CAT:$a"; }, $check_cats);
+		$check_cats_fullids = array_map(fn($a) => "CAT:$a", $check_cats);
 
 		while ($line = $sth->fetch()) {
 			$filter_id = $line["id"];

@@ -189,14 +189,11 @@ class Db_Migrations {
 			$filename = "{$this->base_path}/{$this->base_filename}";
 
 		if (file_exists($filename)) {
-			$lines =	array_filter(preg_split("/[\r\n]/", file_get_contents($filename)),
-							function ($line) {
-								return strlen(trim($line)) > 0 && strpos($line, "--") !== 0;
-							});
+			$lines = array_filter(preg_split("/[\r\n]/", file_get_contents($filename)),
+				fn($line) => strlen(trim($line)) > 0 && strpos($line, "--") !== 0);
 
-			return array_filter(explode(";", implode("", $lines)), function ($line) {
-				return strlen(trim($line)) > 0 && !in_array(strtolower($line), ["begin", "commit"]);
-			});
+			return array_filter(explode(";", implode("", $lines)),
+				fn($line) => strlen(trim($line)) > 0 && !in_array(strtolower($line), ["begin", "commit"]));
 
 		} else {
 			user_error("Requested schema file ${filename} not found.", E_USER_ERROR);

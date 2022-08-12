@@ -163,9 +163,7 @@ class Digest
 			$article_labels_formatted = "";
 
 			if (is_array($article_labels) && count($article_labels) > 0) {
-				$article_labels_formatted = implode(", ", array_map(function($a) {
-					return $a[1];
-				}, $article_labels));
+				$article_labels_formatted = implode(", ", array_map(fn($a) => $a[1], $article_labels));
 			}
 
 			$tpl->setVariable('FEED_TITLE', $line["feed_title"]);

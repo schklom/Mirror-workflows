@@ -872,13 +872,13 @@ class Pref_Prefs extends Handler_Protected {
 							PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FEED_PARSED),
 							PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FETCH_FEED));
 
-						$feed_handlers = array_filter($feed_handlers, function($plugin) use ($feed_handler_whitelist) {
-							return in_array(get_class($plugin), $feed_handler_whitelist) === false; });
+						$feed_handlers = array_filter($feed_handlers,
+							fn($plugin) => in_array(get_class($plugin), $feed_handler_whitelist) === false);
 
 						if (count($feed_handlers) > 0) {
 							print_error(
 								T_sprintf("The following plugins use per-feed content hooks. This may cause excessive data usage and origin server load resulting in a ban of your instance: <b>%s</b>" ,
-									implode(", ", array_map(function($plugin) { return get_class($plugin); }, $feed_handlers))
+									implode(", ", array_map(fn($plugin) => get_class($plugin), $feed_handlers))
 								) . " (<a href='https://tt-rss.org/wiki/FeedHandlerPlugins' target='_blank'>".__("More info...")."</a>)"
 							);
 						}
@@ -1067,9 +1067,7 @@ class Pref_Prefs extends Handler_Protected {
 			}
 		}
 
-		$rv = array_values(array_filter($rv, function ($item) {
-			return $item["rv"]["need_update"];
-		}));
+		$rv = array_values(array_filter($rv, fn($item) => $item["rv"]["need_update"]));
 
 		return $rv;
 	}

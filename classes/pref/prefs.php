@@ -2,18 +2,17 @@
 use chillerlan\QRCode;
 
 class Pref_Prefs extends Handler_Protected {
-	// TODO: class properties can be switched to PHP typing if/when the minimum PHP_VERSION is raised to 7.4.0+
 	/** @var array<Prefs::*, array<int, string>> */
-	private $pref_help = [];
+	private array $pref_help = [];
 
 	/** @var array<string, array<int, string>> pref items are Prefs::*|Pref_Prefs::BLOCK_SEPARATOR (PHPStan was complaining) */
-	private $pref_item_map = [];
+	private array $pref_item_map = [];
 
 	/** @var array<string, string> */
-	private $pref_help_bottom = [];
+	private array $pref_help_bottom = [];
 
 	/** @var array<int, string> */
-	private $pref_blacklist = [];
+	private array $pref_blacklist = [];
 
 	private const BLOCK_SEPARATOR = 'BLOCK_SEPARATOR';
 
@@ -26,7 +25,6 @@ class Pref_Prefs extends Handler_Protected {
 	const PI_ERR_PLUGIN_NOT_FOUND = "PI_ERR_PLUGIN_NOT_FOUND";
 	const PI_ERR_NO_WORKDIR = "PI_ERR_NO_WORKDIR";
 
-	/** @param string $method */
 	function csrf_ignore(string $method) : bool {
 		$csrf_ignored = array("index", "updateself", "otpqrcode");
 

@@ -1,49 +1,42 @@
 <?php
 class PluginHost {
-	// TODO: class properties can be switched to PHP typing if/when the minimum PHP_VERSION is raised to 7.4.0+
-	/** @var PDO|null */
-	private $pdo = null;
+	private ?PDO $pdo = null;
 
 	/**
 	 * separate handle for plugin data so transaction while saving wouldn't clash with possible main
 	 * tt-rss code transactions; only initialized when first needed
-	 *
-	 * @var PDO|null
 	 */
-	private $pdo_data = null;
+	private ?PDO $pdo_data = null;
 
 	/** @var array<string, array<int, array<int, Plugin>>> hook types -> priority levels -> Plugins */
-	private $hooks = [];
+	private array $hooks = [];
 
 	/** @var array<string, Plugin> */
-	private $plugins = [];
+	private array $plugins = [];
 
 	/** @var array<string, array<string, Plugin>> handler type -> method type -> Plugin */
-	private $handlers = [];
+	private array $handlers = [];
 
 	/** @var array<string, array{'description': string, 'suffix': string, 'arghelp': string, 'class': Plugin}> command type -> details array */
-	private $commands = [];
+	private array $commands = [];
 
 	/** @var array<string, array<string, mixed>> plugin name -> (potential profile array) -> key -> value  */
-	private $storage = [];
+	private array $storage = [];
 
 	/** @var array<int, array<int, array{'id': int, 'title': string, 'sender': Plugin, 'icon': string}>> */
-	private $feeds = [];
+	private array $feeds = [];
 
 	/** @var array<string, Plugin> API method name, Plugin sender */
-	private $api_methods = [];
+	private array $api_methods = [];
 
 	/** @var array<string, array<int, array{'action': string, 'description': string, 'sender': Plugin}>> */
-	private $plugin_actions = [];
+	private array $plugin_actions = [];
 
-	/** @var int|null */
-	private $owner_uid = null;
+	private ?int $owner_uid = null;
 
-	/** @var bool */
-	private $data_loaded = false;
+	private bool $data_loaded = false;
 
-	/** @var PluginHost|null */
-	private static $instance = null;
+	private static ?PluginHost $instance = null;
 
 	const API_VERSION = 2;
 	const PUBLIC_METHOD_DELIMITER = "--";

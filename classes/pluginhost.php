@@ -405,7 +405,7 @@ class PluginHost {
 			$tmp = [];
 
 			foreach (array_keys($this->hooks[$type]) as $prio) {
-				$tmp = array_merge($tmp, $this->hooks[$type][$prio]);
+				array_push($tmp, ...$this->hooks[$type][$prio]);
 			}
 
 			return $tmp;
@@ -418,7 +418,7 @@ class PluginHost {
 	 */
 	function load_all(int $kind, int $owner_uid = null, bool $skip_init = false): void {
 
-		$plugins = array_merge(glob("plugins/*"), glob("plugins.local/*"));
+		$plugins = [...(glob("plugins/*") ?: []), ...(glob("plugins.local/*") ?: [])];
 		$plugins = array_filter($plugins, "is_dir");
 		$plugins = array_map("basename", $plugins);
 

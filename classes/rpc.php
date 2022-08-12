@@ -77,7 +77,7 @@ class RPC extends Handler_Protected {
 
 		$sth = $this->pdo->prepare("DELETE FROM ttrss_user_entries
 			WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
-		$sth->execute(array_merge($ids, [$_SESSION['uid']]));
+		$sth->execute([...$ids, $_SESSION['uid']]);
 
 		Article::_purge_orphans();
 
@@ -364,7 +364,7 @@ class RPC extends Handler_Protected {
 					WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
 		}
 
-		$sth->execute(array_merge($ids, [$_SESSION['uid']]));
+		$sth->execute([...$ids, $_SESSION['uid']]);
 	}
 
 	/**
@@ -388,7 +388,7 @@ class RPC extends Handler_Protected {
 					WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
 		}
 
-		$sth->execute(array_merge($ids, [$_SESSION['uid']]));
+		$sth->execute([...$ids, $_SESSION['uid']]);
 	}
 
 	function log(): void {

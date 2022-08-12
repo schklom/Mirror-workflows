@@ -19,7 +19,10 @@ class Af_Comics extends Plugin {
 
 		require_once __DIR__ . "/filter_base.php";
 
-		$filters = array_merge(glob(__DIR__ . "/filters.local/*.php"), glob(__DIR__ . "/filters/*.php"));
+		$filters = [
+			...(glob(__DIR__ . "/filters.local/*.php") ?: []),
+			...(glob(__DIR__ . "/filters/*.php") ?: []),
+		];
 		$names = [];
 
 		foreach ($filters as $file) {

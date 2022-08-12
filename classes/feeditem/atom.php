@@ -201,7 +201,7 @@ class FeedItem_Atom extends FeedItem_Common {
 			}
 		}
 
-		$encs = array_merge($encs, parent::get_enclosures());
+		array_push($encs, ...parent::get_enclosures());
 
 		return $encs;
 	}

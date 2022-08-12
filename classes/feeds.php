@@ -1938,8 +1938,8 @@ class Feeds extends Handler_Protected {
 		$sth->execute([$cat, $owner_uid]);
 
 		while ($line = $sth->fetch()) {
-			array_push($rv, (int)$line["parent_cat"]);
-			$rv = array_merge($rv, self::_get_parent_cats($line["parent_cat"], $owner_uid));
+			$cat = (int) $line["parent_cat"];
+			array_push($rv, $cat, ...self::_get_parent_cats($cat, $owner_uid));
 		}
 
 		return $rv;
@@ -1958,8 +1958,7 @@ class Feeds extends Handler_Protected {
 		$sth->execute([$cat, $owner_uid]);
 
 		while ($line = $sth->fetch()) {
-			array_push($rv, $line["id"]);
-			$rv = array_merge($rv, self::_get_child_cats($line["id"], $owner_uid));
+			array_push($rv, $line["id"], ...self::_get_child_cats($line["id"], $owner_uid));
 		}
 
 		return $rv;
@@ -1980,16 +1979,18 @@ class Feeds extends Handler_Protected {
 		$sth = $pdo->prepare("SELECT DISTINCT cat_id, fc.parent_cat FROM ttrss_feeds f LEFT JOIN ttrss_feed_categories fc
 				ON (fc.id = f.cat_id)
 				WHERE f.owner_uid = ? AND f.id IN ($feeds_qmarks)");
-		$sth->execute(array_merge([$owner_uid], $feeds));
+		$sth->execute([$owner_uid, ...$feeds]);
 
 		$rv = [];
 
 		if ($row = $sth->fetch()) {
+			$cat_id = (int) $row["cat_id"];
+			$rv[] = $cat_id;
 			array_push($rv, (int)$row["cat_id"]);
 
-			if ($with_parents && $row["parent_cat"])
-				$rv = array_merge($rv,
-							self::_get_parent_cats($row["cat_id"], $owner_uid));
+			if ($with_parents && $row["parent_cat"]) {
+				array_push($rv, ...self::_get_parent_cats($cat_id, $owner_uid));
+			}
 		}
 
 		$rv = array_unique($rv);

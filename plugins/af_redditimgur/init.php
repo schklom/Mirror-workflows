@@ -376,11 +376,11 @@ class Af_RedditImgur extends Plugin {
 		}
 
 		if ($post_is_nsfw && count($apply_nsfw_tags) > 0) {
-			$article["tags"] = array_merge($article["tags"], $apply_nsfw_tags);
+			array_push($article["tags"], ...$apply_nsfw_tags);
 		}
 
 		if (count($link_flairs) > 0) {
-			$article["tags"] = array_merge($article["tags"], FeedItem_Common::normalize_categories($link_flairs));
+			array_push($article["tags"], ...FeedItem_Common::normalize_categories($link_flairs));
 		}
 
 		$article["num_comments"] = $num_comments;
@@ -937,7 +937,7 @@ class Af_RedditImgur extends Plugin {
 		$src_domain = parse_url($src, PHP_URL_HOST);
 
 		if ($src_domain)
-			foreach (array_merge($this->domain_blacklist, $also_blacklist) as $domain) {
+		foreach ([...$this->domain_blacklist, ...$also_blacklist] as $domain) {
 				if (strstr($src_domain, $domain) !== false) {
 					return true;
 				}

@@ -177,7 +177,7 @@ class Article extends Handler_Protected {
 		$sth = $this->pdo->prepare("UPDATE ttrss_user_entries SET
 			score = ? WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
 
-		$sth->execute(array_merge([$score], $ids, [$_SESSION['uid']]));
+		$sth->execute([$score, ...$ids, $_SESSION['uid']]);
 
 		print json_encode(["id" => $ids, "score" => $score]);
 	}
@@ -507,7 +507,7 @@ class Article extends Handler_Protected {
 					WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
 		}
 
-		$sth->execute(array_merge($ids, [$owner_uid]));
+		$sth->execute([...$ids, $owner_uid]);
 	}
 
 	/**

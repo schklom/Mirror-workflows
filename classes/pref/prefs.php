@@ -631,10 +631,11 @@ class Pref_Prefs extends Handler_Protected {
 
 					} else if ($pref_name == Prefs::USER_CSS_THEME) {
 
-						$theme_files = array_map("basename",
-							array_merge(glob("themes/*.php"),
-								glob("themes/*.css"),
-								glob("themes.local/*.css")));
+						$theme_files = array_map("basename", [
+							...glob("themes/*.php") ?: [],
+							...glob("themes/*.css") ?: [],
+							...glob("themes.local/*.css") ?: [],
+						]);
 
 						asort($theme_files);
 
@@ -867,10 +868,11 @@ class Pref_Prefs extends Handler_Protected {
 
 						$feed_handler_whitelist = [ "Af_Comics" ];
 
-						$feed_handlers = array_merge(
-							PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FEED_FETCHED),
-							PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FEED_PARSED),
-							PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FETCH_FEED));
+						$feed_handlers = [
+							...PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FEED_FETCHED),
+							...PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FEED_PARSED),
+							...PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FETCH_FEED),
+						];
 
 						$feed_handlers = array_filter($feed_handlers,
 							fn($plugin) => in_array(get_class($plugin), $feed_handler_whitelist) === false);

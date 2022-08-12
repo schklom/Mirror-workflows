@@ -5,13 +5,13 @@ class Counters {
 	 * @return array<int, array<string, int|string>>
 	 */
 	static function get_all(): array {
-		return array_merge(
-			self::get_global(),
-			self::get_virt(),
-			self::get_labels(),
-			self::get_feeds(),
-			self::get_cats()
-		);
+		return [
+			...self::get_global(),
+			...self::get_virt(),
+			...self::get_labels(),
+			...self::get_feeds(),
+			...self::get_cats(),
+		];
 	}
 
 	/**
@@ -20,13 +20,13 @@ class Counters {
 	 * @return array<int, array<string, int|string>>
 	 */
 	static function get_conditional(array $feed_ids = null, array $label_ids = null): array {
-		return array_merge(
-			self::get_global(),
-			self::get_virt(),
-			self::get_labels($label_ids),
-			self::get_feeds($feed_ids),
-			self::get_cats(is_array($feed_ids) ? Feeds::_cats_of($feed_ids, $_SESSION["uid"], true) : null)
-		);
+		return [
+			...self::get_global(),
+			...self::get_virt(),
+			...self::get_labels($label_ids),
+			...self::get_feeds($feed_ids),
+			...self::get_cats(is_array($feed_ids) ? Feeds::_cats_of($feed_ids, $_SESSION["uid"], true) : null)
+		];
 	}
 
 	/**
@@ -93,11 +93,7 @@ class Counters {
 					ue.feed_id = f.id AND
 					ue.owner_uid = ?");
 
-			$sth->execute(array_merge(
-				[$_SESSION['uid']],
-				$cat_ids,
-				[$_SESSION['uid']]
-			));
+			$sth->execute([$_SESSION['uid'], ...$cat_ids, $_SESSION['uid']]);
 
 		} else {
 			$sth = $pdo->prepare("SELECT fc.id,
@@ -170,7 +166,7 @@ class Counters {
 				WHERE f.id = ue.feed_id AND ue.owner_uid = ? AND f.id IN ($feed_ids_qmarks)
 				GROUP BY f.id");
 
-			$sth->execute(array_merge([$_SESSION['uid']], $feed_ids));
+			$sth->execute([$_SESSION['uid'], ...$feed_ids]);
 		} else {
 			$sth = $pdo->prepare("SELECT f.id,
 					f.title,
@@ -319,7 +315,7 @@ class Counters {
 						LEFT JOIN ttrss_user_entries AS u1 ON u1.ref_id = article_id AND u1.owner_uid = ?
 							WHERE ttrss_labels2.owner_uid = ? AND ttrss_labels2.id IN ($label_ids_qmarks)
 								GROUP BY ttrss_labels2.id, ttrss_labels2.caption");
-			$sth->execute(array_merge([$_SESSION["uid"], $_SESSION["uid"]], $label_ids));
+			$sth->execute([$_SESSION["uid"], $_SESSION["uid"], ...$label_ids]);
 		} else {
 			$sth = $pdo->prepare("SELECT id,
 						caption,

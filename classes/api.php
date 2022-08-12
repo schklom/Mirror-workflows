@@ -286,7 +286,7 @@ class API extends Handler {
 			$sth = $this->pdo->prepare("UPDATE ttrss_user_entries SET
 				$field = $set_to $additional_fields
 				WHERE ref_id IN ($article_qmarks) AND owner_uid = ?");
-			$sth->execute(array_merge($article_ids, [$_SESSION['uid']]));
+			$sth->execute([...$article_ids, $_SESSION['uid']]);
 
 			$num_updated = $sth->rowCount();
 

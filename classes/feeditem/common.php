@@ -189,7 +189,7 @@ abstract class FeedItem_Common extends FeedItem {
 		$tmp = [];
 
 		foreach ($cats as $rawcat) {
-			$tmp = array_merge($tmp, explode(",", $rawcat));
+			array_push($tmp, ...explode(",", $rawcat));
 		}
 
 		$tmp = array_map(function($srccat) {

@@ -462,7 +462,11 @@ class UrlHelper {
 			}
 
 			if (!$contents) {
-				self::$fetch_last_error = curl_errno($ch) . " " . curl_error($ch);
+				if (curl_errno($ch) === 0) {
+					self::$fetch_last_error = 'Successful response, but no content was received.';
+				} else {
+					self::$fetch_last_error = curl_errno($ch) . " " . curl_error($ch);
+				}
 				curl_close($ch);
 				return false;
 			}
@@ -575,6 +579,11 @@ class UrlHelper {
 
 				self::$fetch_last_error_content = $data;
 
+				return false;
+			}
+
+			if (!$data) {
+				self::$fetch_last_error = 'Successful response, but no content was received.';
 				return false;
 			}
 

@@ -547,6 +547,11 @@ class UrlHelper {
 
 			$data = @file_get_contents($url, false, $context);
 
+			if ($data === false) {
+				self::$fetch_last_error = "'file_get_contents' failed.";
+				return false;
+			}
+
 			foreach ($http_response_header as $header) {
 				if (strstr($header, ": ") !== false) {
 					list ($key, $value) = explode(": ", $header);

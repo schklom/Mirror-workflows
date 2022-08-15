@@ -587,20 +587,20 @@ class UrlHelper {
 				return false;
 			}
 
-			if (!$data) {
+			if ($data) {
+				$is_gzipped = RSSUtils::is_gzipped($data);
+
+				if ($is_gzipped) {
+					$tmp = @gzdecode($data);
+
+					if ($tmp) $data = $tmp;
+				}
+
+				return $data;
+			} else {
 				self::$fetch_last_error = 'Successful response, but no content was received.';
 				return false;
 			}
-
-			$is_gzipped = RSSUtils::is_gzipped($data);
-
-			if ($is_gzipped && $data) {
-				$tmp = @gzdecode($data);
-
-				if ($tmp) $data = $tmp;
-			}
-
-			return $data;
 		}
 	}
 

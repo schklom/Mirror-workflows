@@ -439,7 +439,11 @@ class UrlHelper {
 			}
 
 			if (!$contents) {
-				self::$fetch_last_error = curl_errno($ch) . " " . curl_error($ch);
+				if (curl_errno($ch) === 0) {
+					self::$fetch_last_error = 'Successful response, but no content was received.';
+				} else {
+					self::$fetch_last_error = curl_errno($ch) . " " . curl_error($ch);
+				}
 				curl_close($ch);
 				return false;
 			}
@@ -520,6 +524,11 @@ class UrlHelper {
 
 			$data = @file_get_contents($url, false, $context);
 
+			if ($data === false) {
+				self::$fetch_last_error = "'file_get_contents' failed.";
+				return false;
+			}
+
 			foreach ($http_response_header as $header) {
 				if (strstr($header, ": ") !== false) {
 					list ($key, $value) = explode(": ", $header);
@@ -555,15 +564,20 @@ class UrlHelper {
 				return false;
 			}
 
-			$is_gzipped = RSSUtils::is_gzipped($data);
+			if ($data) {
+				$is_gzipped = RSSUtils::is_gzipped($data);
 
-			if ($is_gzipped && $data) {
-				$tmp = @gzdecode($data);
+				if ($is_gzipped) {
+					$tmp = @gzdecode($data);
 
-				if ($tmp) $data = $tmp;
+					if ($tmp) $data = $tmp;
+				}
+
+				return $data;
+			} else {
+				self::$fetch_last_error = 'Successful response, but no content was received.';
+				return false;
 			}
-
-			return $data;
 		}
 	}
 

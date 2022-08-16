@@ -219,6 +219,11 @@ class Handler_Public extends Handler {
 				if (!empty($line['note'])) $article['note'] = $line['note'];
 				if (!empty($line['author'])) $article['author'] = $line['author'];
 
+				$article['source'] = [
+					'link' => $line['site_url'] ? $line["site_url"] : Config::get_self_url(),
+					'title' => $line['feed_title'] ?? $feed_title
+				];
+
 				if (count($line["tags"]) > 0) {
 					$article['tags'] = array();
 

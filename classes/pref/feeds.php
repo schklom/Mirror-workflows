@@ -172,7 +172,7 @@ class Pref_Feeds extends Handler_Protected {
 			if ($enable_cats) {
 				array_push($root['items'], $cat);
 			} else {
-				$root['items'] = array_merge($root['items'], $cat['items']);
+				array_push($root['items'], ...$cat['items']);
 			}
 
 			$sth = $this->pdo->prepare("SELECT * FROM
@@ -202,7 +202,7 @@ class Pref_Feeds extends Handler_Protected {
 				if ($enable_cats) {
 					array_push($root['items'], $cat);
 				} else {
-					$root['items'] = array_merge($root['items'], $cat['items']);
+					array_push($root['items'], ...$cat['items']);
 				}
 			}
 		}
@@ -848,7 +848,7 @@ class Pref_Feeds extends Handler_Protected {
 				if ($qpart) {
 					$sth = $this->pdo->prepare("UPDATE ttrss_feeds SET $qpart WHERE id IN ($feed_ids_qmarks)
 						AND owner_uid = ?");
-					$sth->execute(array_merge($feed_ids, [$_SESSION['uid']]));
+					$sth->execute([...$feed_ids, $_SESSION['uid']]);
 				}
 			}
 

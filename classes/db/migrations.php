@@ -1,33 +1,15 @@
 <?php
 class Db_Migrations {
 
-	// TODO: class properties can be switched to PHP typing if/when the minimum PHP_VERSION is raised to 7.4.0+
-	/** @var string */
-	private $base_filename = "schema.sql";
-
-	/** @var string */
-	private $base_path;
-
-	/** @var string */
-	private $migrations_path;
-
-	/** @var string */
-	private $migrations_table;
-
-	/** @var bool */
-	private $base_is_latest;
-
-	/** @var PDO */
-	private $pdo;
-
-	/** @var int */
-	private $cached_version = 0;
-
-	/** @var int */
-	private $cached_max_version = 0;
-
-	/** @var int */
-	private $max_version_override;
+	private string $base_filename = "schema.sql";
+	private string $base_path;
+	private string $migrations_path;
+	private string $migrations_table;
+	private bool $base_is_latest;
+	private PDO $pdo;
+	private int $cached_version = 0;
+	private int $cached_max_version = 0;
+	private int $max_version_override;
 
 	function __construct() {
 		$this->pdo = Db::pdo();
@@ -207,14 +189,11 @@ class Db_Migrations {
 			$filename = "{$this->base_path}/{$this->base_filename}";
 
 		if (file_exists($filename)) {
-			$lines =	array_filter(preg_split("/[\r\n]/", file_get_contents($filename)),
-							function ($line) {
-								return strlen(trim($line)) > 0 && strpos($line, "--") !== 0;
-							});
+			$lines = array_filter(preg_split("/[\r\n]/", file_get_contents($filename)),
+				fn($line) => strlen(trim($line)) > 0 && strpos($line, "--") !== 0);
 
-			return array_filter(explode(";", implode("", $lines)), function ($line) {
-				return strlen(trim($line)) > 0 && !in_array(strtolower($line), ["begin", "commit"]);
-			});
+			return array_filter(explode(";", implode("", $lines)),
+				fn($line) => strlen(trim($line)) > 0 && !in_array(strtolower($line), ["begin", "commit"]));
 
 		} else {
 			user_error("Requested schema file ${filename} not found.", E_USER_ERROR);

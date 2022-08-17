@@ -1,11 +1,9 @@
 <?php
 class Handler implements IHandler {
-	// TODO: class properties can be switched to PHP typing if/when the minimum PHP_VERSION is raised to 7.4.0+
-	/** @var PDO */
-	protected $pdo;
+	protected PDO $pdo;
 
 	/** @var array<int|string, mixed> */
-	protected $args;
+	protected array $args;
 
 	/**
 	 * @param array<int|string, mixed> $args

@@ -108,8 +108,7 @@
 				$valid_langs[$lang] = $t;
 
 				$lang = substr($lang, 0, 2);
-				if (!isset($valid_langs[$lang]))
-					$valid_langs[$lang] = $t;
+				$valid_langs[$lang] ??= $t;
 			}
 
 			// break up string into pieces (languages and q factors)

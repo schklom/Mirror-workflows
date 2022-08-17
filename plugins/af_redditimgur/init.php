@@ -376,11 +376,11 @@ class Af_RedditImgur extends Plugin {
 		}
 
 		if ($post_is_nsfw && count($apply_nsfw_tags) > 0) {
-			$article["tags"] = array_merge($article["tags"], $apply_nsfw_tags);
+			array_push($article["tags"], ...$apply_nsfw_tags);
 		}
 
 		if (count($link_flairs) > 0) {
-			$article["tags"] = array_merge($article["tags"], FeedItem_Common::normalize_categories($link_flairs));
+			array_push($article["tags"], ...FeedItem_Common::normalize_categories($link_flairs));
 		}
 
 		$article["num_comments"] = $num_comments;
@@ -903,7 +903,7 @@ class Af_RedditImgur extends Plugin {
 
 			// do not try to embed posts linking back to other reddit posts
 			// readability.php requires PHP 5.6
-			if ($url &&	strpos($url, "reddit.com") === false && version_compare(PHP_VERSION, '5.6.0', '>=')) {
+			if ($url &&	strpos($url, "reddit.com") === false) {
 
 				/* link may lead to a huge video file or whatever, we need to check content type before trying to
 				parse it which p much requires curl */
@@ -937,7 +937,7 @@ class Af_RedditImgur extends Plugin {
 		$src_domain = parse_url($src, PHP_URL_HOST);
 
 		if ($src_domain)
-			foreach (array_merge($this->domain_blacklist, $also_blacklist) as $domain) {
+		foreach ([...$this->domain_blacklist, ...$also_blacklist] as $domain) {
 				if (strstr($src_domain, $domain) !== false) {
 					return true;
 				}

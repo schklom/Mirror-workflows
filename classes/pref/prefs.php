@@ -2,18 +2,17 @@
 use chillerlan\QRCode;
 
 class Pref_Prefs extends Handler_Protected {
-	// TODO: class properties can be switched to PHP typing if/when the minimum PHP_VERSION is raised to 7.4.0+
 	/** @var array<Prefs::*, array<int, string>> */
-	private $pref_help = [];
+	private array $pref_help = [];
 
 	/** @var array<string, array<int, string>> pref items are Prefs::*|Pref_Prefs::BLOCK_SEPARATOR (PHPStan was complaining) */
-	private $pref_item_map = [];
+	private array $pref_item_map = [];
 
 	/** @var array<string, string> */
-	private $pref_help_bottom = [];
+	private array $pref_help_bottom = [];
 
 	/** @var array<int, string> */
-	private $pref_blacklist = [];
+	private array $pref_blacklist = [];
 
 	private const BLOCK_SEPARATOR = 'BLOCK_SEPARATOR';
 
@@ -26,7 +25,6 @@ class Pref_Prefs extends Handler_Protected {
 	const PI_ERR_PLUGIN_NOT_FOUND = "PI_ERR_PLUGIN_NOT_FOUND";
 	const PI_ERR_NO_WORKDIR = "PI_ERR_NO_WORKDIR";
 
-	/** @param string $method */
 	function csrf_ignore(string $method) : bool {
 		$csrf_ignored = array("index", "updateself", "otpqrcode");
 
@@ -187,7 +185,7 @@ class Pref_Prefs extends Handler_Protected {
 		$boolean_prefs = explode(",", clean($_POST["boolean_prefs"]));
 
 		foreach ($boolean_prefs as $pref) {
-			if (!isset($_POST[$pref])) $_POST[$pref] = 'false';
+			$_POST[$pref] ??= 'false';
 		}
 
 		$need_reload = false;
@@ -633,10 +631,11 @@ class Pref_Prefs extends Handler_Protected {
 
 					} else if ($pref_name == Prefs::USER_CSS_THEME) {
 
-						$theme_files = array_map("basename",
-							array_merge(glob("themes/*.php"),
-								glob("themes/*.css"),
-								glob("themes.local/*.css")));
+						$theme_files = array_map("basename", [
+							...glob("themes/*.php") ?: [],
+							...glob("themes/*.css") ?: [],
+							...glob("themes.local/*.css") ?: [],
+						]);
 
 						asort($theme_files);
 
@@ -869,18 +868,19 @@ class Pref_Prefs extends Handler_Protected {
 
 						$feed_handler_whitelist = [ "Af_Comics" ];
 
-						$feed_handlers = array_merge(
-							PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FEED_FETCHED),
-							PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FEED_PARSED),
-							PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FETCH_FEED));
+						$feed_handlers = [
+							...PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FEED_FETCHED),
+							...PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FEED_PARSED),
+							...PluginHost::getInstance()->get_hooks(PluginHost::HOOK_FETCH_FEED),
+						];
 
-						$feed_handlers = array_filter($feed_handlers, function($plugin) use ($feed_handler_whitelist) {
-							return in_array(get_class($plugin), $feed_handler_whitelist) === false; });
+						$feed_handlers = array_filter($feed_handlers,
+							fn($plugin) => in_array(get_class($plugin), $feed_handler_whitelist) === false);
 
 						if (count($feed_handlers) > 0) {
 							print_error(
 								T_sprintf("The following plugins use per-feed content hooks. This may cause excessive data usage and origin server load resulting in a ban of your instance: <b>%s</b>" ,
-									implode(", ", array_map(function($plugin) { return get_class($plugin); }, $feed_handlers))
+									implode(", ", array_map(fn($plugin) => get_class($plugin), $feed_handlers))
 								) . " (<a href='https://tt-rss.org/wiki/FeedHandlerPlugins' target='_blank'>".__("More info...")."</a>)"
 							);
 						}
@@ -1069,9 +1069,7 @@ class Pref_Prefs extends Handler_Protected {
 			}
 		}
 
-		$rv = array_values(array_filter($rv, function ($item) {
-			return $item["rv"]["need_update"];
-		}));
+		$rv = array_values(array_filter($rv, fn($item) => $item["rv"]["need_update"]));
 
 		return $rv;
 	}

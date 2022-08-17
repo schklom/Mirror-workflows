@@ -10,31 +10,14 @@ class UrlHelper {
 		"application/x-bittorrent" => [ "magnet" ],
 	];
 
-	// TODO: class properties can be switched to PHP typing if/when the minimum PHP_VERSION is raised to 7.4.0+
-	/** @var string */
-	static $fetch_last_error;
-
-	/** @var int */
-	static $fetch_last_error_code;
-
-	/** @var string */
-	static $fetch_last_error_content;
-
-	/** @var string */
-	static $fetch_last_content_type;
-
-	/** @var string */
-	static $fetch_last_modified;
-
-
-	/** @var string */
-	static $fetch_effective_url;
-
-	/** @var string */
-	static $fetch_effective_ip_addr;
-
-	/** @var bool */
-	static $fetch_curl_used;
+	static string $fetch_last_error;
+	static int $fetch_last_error_code;
+	static string $fetch_last_error_content;
+	static string $fetch_last_content_type;
+	static string $fetch_last_modified;
+	static string $fetch_effective_url;
+	static string $fetch_effective_ip_addr;
+	static bool $fetch_curl_used;
 
 	/**
 	 * @param array<string, string|int> $parts
@@ -207,32 +190,26 @@ class UrlHelper {
 		if ($nest > 10)
 			return false;
 
-		if (version_compare(PHP_VERSION, '7.1.0', '>=')) {
-			$context_options = array(
-				'http' => array(
-					 'header' => array(
-						 'Connection: close'
-					 ),
-					 'method' => 'HEAD',
-					 'timeout' => $timeout,
-					 'protocol_version'=> 1.1)
-				);
+		$context_options = array(
+			'http' => array(
+					'header' => array(
+						'Connection: close'
+					),
+					'method' => 'HEAD',
+					'timeout' => $timeout,
+					'protocol_version'=> 1.1)
+			);
 
-			if (Config::get(Config::HTTP_PROXY)) {
-				$context_options['http']['request_fulluri'] = true;
-				$context_options['http']['proxy'] = Config::get(Config::HTTP_PROXY);
-			}
-
-			$context = stream_context_create($context_options);
-
-			// PHP 8 changed the second param from int to bool, but we still support PHP >= 7.1.0
-			// @phpstan-ignore-next-line
-			$headers = get_headers($url, 0, $context);
-		} else {
-			// PHP 8 changed the second param from int to bool, but we still support PHP >= 7.1.0
-			// @phpstan-ignore-next-line
-			$headers = get_headers($url, 0);
+		if (Config::get(Config::HTTP_PROXY)) {
+			$context_options['http']['request_fulluri'] = true;
+			$context_options['http']['proxy'] = Config::get(Config::HTTP_PROXY);
 		}
+
+		$context = stream_context_create($context_options);
+
+		// PHP 8 changed the second param from int to bool, but we still support PHP >= 7.4.0
+		// @phpstan-ignore-next-line
+		$headers = get_headers($url, 0, $context);
 
 		if (is_array($headers)) {
 			$headers = array_reverse($headers); // last one is the correct one

@@ -1,15 +1,13 @@
 <?php
 class DiskCache {
-	// TODO: class properties can be switched to PHP typing if/when the minimum PHP_VERSION is raised to 7.4.0+
-	/** @var string */
-	private $dir;
+	private string $dir;
 
 	/**
 	 * https://stackoverflow.com/a/53662733
 	 *
 	 * @var array<string, string>
 	 */
-	private $mimeMap = [
+	private array $mimeMap = [
 		'video/3gpp2'                                                               => '3g2',
 		'video/3gp'                                                                 => '3gp',
 		'video/3gpp'                                                                => '3gp',

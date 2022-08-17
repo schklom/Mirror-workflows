@@ -1,8 +1,6 @@
 <?php
 class Mailer {
-	// TODO: class properties can be switched to PHP typing if/when the minimum PHP_VERSION is raised to 7.4.0+
-	/** @var string */
-	private $last_error = "";
+	private string $last_error = "";
 
 	/**
 	 * @param array<string, mixed> $params
@@ -47,7 +45,7 @@ class Mailer {
 
 		$headers = [ "From: $from_combined", "Content-Type: text/plain; charset=UTF-8" ];
 
-		$rc = mail($to_combined, $subject, $message, implode("\r\n", array_merge($headers, $additional_headers)));
+		$rc = mail($to_combined, $subject, $message, implode("\r\n", [...$headers, ...$additional_headers]));
 
 		if (!$rc) {
 			$this->set_error(error_get_last()['message'] ?? T_sprintf("Unknown error while sending mail. Hooks tried: %d.", $hooks_tried));

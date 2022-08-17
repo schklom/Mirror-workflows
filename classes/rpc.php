@@ -77,7 +77,7 @@ class RPC extends Handler_Protected {
 
 		$sth = $this->pdo->prepare("DELETE FROM ttrss_user_entries
 			WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
-		$sth->execute(array_merge($ids, [$_SESSION['uid']]));
+		$sth->execute([...$ids, $_SESSION['uid']]);
 
 		Article::_purge_orphans();
 
@@ -364,7 +364,7 @@ class RPC extends Handler_Protected {
 					WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
 		}
 
-		$sth->execute(array_merge($ids, [$_SESSION['uid']]));
+		$sth->execute([...$ids, $_SESSION['uid']]);
 	}
 
 	/**
@@ -388,7 +388,7 @@ class RPC extends Handler_Protected {
 					WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
 		}
 
-		$sth->execute(array_merge($ids, [$_SESSION['uid']]));
+		$sth->execute([...$ids, $_SESSION['uid']]);
 	}
 
 	function log(): void {
@@ -753,12 +753,11 @@ class RPC extends Handler_Protected {
 	function hotkeyHelp(): void {
 		$info = self::get_hotkeys_info();
 		$imap = self::get_hotkeys_map();
-		$omap = array();
+		$omap = [];
 
 		foreach ($imap[1] as $sequence => $action) {
-			if (!isset($omap[$action])) $omap[$action] = array();
-
-			array_push($omap[$action], $sequence);
+			$omap[$action] ??= [];
+			$omap[$action][] = $sequence;
 		}
 
 		?>

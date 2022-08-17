@@ -43,10 +43,8 @@ class FeedParser {
 			foreach (libxml_get_errors() as $error) {
 				if ($error->level == LIBXML_ERR_FATAL) {
 					// currently only the first error is reported
-					if (!isset($this->error)) {
-						$this->error = $this->format_error($error);
-					}
-					$this->libxml_errors[] = $this->format_error($error);
+					$this->error ??= Errors::format_libxml_error($error);
+					$this->libxml_errors[] = Errors::format_libxml_error($error);
 				}
 			}
 		}
@@ -87,9 +85,7 @@ class FeedParser {
 					$this->type = $this::FEED_ATOM;
 					break;
 				default:
-					if (!isset($this->error)) {
-						$this->error = "Unknown/unsupported feed type";
-					}
+					$this->error ??= "Unknown/unsupported feed type";
 					return;
 				}
 			}
@@ -186,9 +182,7 @@ class FeedParser {
 			if ($this->link) $this->link = trim($this->link);
 
 		} else {
-			if (!isset($this->error)) {
-				$this->error = "Unknown/unsupported feed type";
-			}
+			$this->error ??= "Unknown/unsupported feed type";
 			return;
 		}
 	}

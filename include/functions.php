@@ -69,7 +69,7 @@
 					"de_DE" => "Deutsch",
 					"fa"    => "Persian (Farsi)",
 					"fr_FR" => "Français",
-					"gl"    => "Galician",
+					"gl"    => "Galego (Galician)",
 					"hu_HU" => "Magyar (Hungarian)",
 					"it_IT" => "Italiano",
 					"ja_JP" => "日本語 (Japanese)",

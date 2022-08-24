@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-06-05 11:48+0300\n"
-"PO-Revision-Date: 2022-06-09 13:15+0000\n"
+"PO-Revision-Date: 2022-08-25 06:49+0000\n"
 "Last-Translator: xosé m. <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "gl/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.12.2\n"
+"X-Generator: Weblate 4.14\n"
 
 #: backend.php:60
 msgid "Use default"
@@ -2921,7 +2921,7 @@ msgstr "Fontes dispoñibles"
 
 #: js/CommonDialogs.js:85 js/PrefFeedTree.js:446
 msgid "Login"
-msgstr "Identificador:"
+msgstr "Acceso"
 
 #: js/CommonDialogs.js:101
 msgid "This feed requires authentication."

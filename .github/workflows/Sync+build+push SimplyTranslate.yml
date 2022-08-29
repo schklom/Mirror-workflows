@@ -45,7 +45,7 @@ jobs:
       - name: repo-sync
         uses: wei/git-sync@v3
         with:
-          source_repo: "https://git.sr.ht/~metalune/simplytranslate_docker"
+          source_repo: "https://codeberg.org/SimpleWeb/SimplyTranslate-Docker"
           source_branch: "master"
           destination_repo: "git@github.com:schklom/Mirror-workflows.git"
           destination_branch: "SimplyTranslate"

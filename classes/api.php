@@ -835,7 +835,7 @@ class API extends Handler {
 	}
 
 	function getFeedTree(): bool {
-		$include_empty = self::_param_to_bool(clean($_REQUEST['include_empty']));
+		$include_empty = self::_param_to_bool($_REQUEST['include_empty'] ?? false);
 
 		$pf = new Pref_Feeds($_REQUEST);
 

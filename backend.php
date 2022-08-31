@@ -39,7 +39,7 @@
 	header("Content-Type: text/json; charset=utf-8");
 
 	if (Config::get(Config::SINGLE_USER_MODE)) {
-		UserHelper::authenticate( "admin", null);
+		UserHelper::authenticate("admin", null);
 	}
 
 	if (!empty($_SESSION["uid"])) {

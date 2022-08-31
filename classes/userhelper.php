@@ -122,6 +122,7 @@ class UserHelper {
 				$_SESSION["csrf_token"] = bin2hex(get_random_bytes(16));
 
 			$_SESSION["ip_address"] = UserHelper::get_user_ip();
+			$_SESSION["last_login_update"] = time();
 
 			return true;
 		}

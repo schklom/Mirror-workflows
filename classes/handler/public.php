@@ -394,10 +394,6 @@ class Handler_Public extends Handler {
 			if (UserHelper::authenticate($login, $password)) {
 				$_POST["password"] = "";
 
-				if (Config::get_schema_version() >= 120) {
-					$_SESSION["language"] = get_pref(Prefs::USER_LANGUAGE, $_SESSION["uid"]);
-				}
-
 				$_SESSION["ref_schema_version"] = Config::get_schema_version();
 				$_SESSION["bw_limit"] = !!clean($_POST["bw_limit"] ?? false);
 				$_SESSION["safe_mode"] = $safe_mode;

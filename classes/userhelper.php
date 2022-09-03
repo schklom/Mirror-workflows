@@ -83,18 +83,14 @@ class UserHelper {
 				$user = ORM::for_table('ttrss_users')->find_one($user_id);
 
 				if ($user && $user->access_level != self::ACCESS_LEVEL_DISABLED) {
-					$_SESSION["uid"] = $user_id;
+					self::set_session_for_user($user_id);
 					$_SESSION["auth_module"] = $auth_module;
 					$_SESSION["name"] = $user->login;
 					$_SESSION["access_level"] = $user->access_level;
-					$_SESSION["csrf_token"] = bin2hex(get_random_bytes(16));
-					$_SESSION["ip_address"] = UserHelper::get_user_ip();
 					$_SESSION["pwd_hash"] = $user->pwd_hash;
 
 					$user->last_login = Db::NOW();
 					$user->save();
-
-					$_SESSION["last_login_update"] = time();
 
 					return true;
 				}
@@ -108,8 +104,7 @@ class UserHelper {
 			return false;
 
 		} else {
-
-			$_SESSION["uid"] = 1;
+			self::set_session_for_user(1);
 			$_SESSION["name"] = "admin";
 			$_SESSION["access_level"] = self::ACCESS_LEVEL_ADMIN;
 
@@ -118,13 +113,20 @@ class UserHelper {
 
 			$_SESSION["auth_module"] = false;
 
-			if (empty($_SESSION["csrf_token"]))
-				$_SESSION["csrf_token"] = bin2hex(get_random_bytes(16));
-
-			$_SESSION["ip_address"] = UserHelper::get_user_ip();
-			$_SESSION["last_login_update"] = time();
-
 			return true;
+		}
+	}
+
+	static function set_session_for_user(int $owner_uid): void {
+		$_SESSION["uid"] = $owner_uid;
+		$_SESSION["last_login_update"] = time();
+		$_SESSION["ip_address"] = UserHelper::get_user_ip();
+
+		if (empty($_SESSION["csrf_token"]))
+			$_SESSION["csrf_token"] = bin2hex(get_random_bytes(16));
+
+		if (Config::get_schema_version() >= 120) {
+			$_SESSION["language"] = get_pref(Prefs::USER_LANGUAGE, $owner_uid);
 		}
 	}
 

@@ -50,7 +50,7 @@ func (u *UserIO) AddPicture(id string, pic string) {
 	user.Pictures = append(user.Pictures, pic)
 
 	if len(user.Pictures) > u.maxSavedPic {
-		user.Pictures = user.LocationData[(len(user.Pictures) - u.maxSavedPic):]
+		user.Pictures = user.Pictures[(len(user.Pictures) - u.maxSavedPic):]
 	}
 	u.UB.Update(user)
 }

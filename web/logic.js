@@ -12,8 +12,8 @@ function init() {
     var div;
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         div = document.getElementById("desktop");
-        document.getElementsByClassName("column-left")[1].style.width= "12%";
-        document.getElementsByClassName("column-middle")[1].style.width= "85";
+        document.getElementsByClassName("column-left")[1].style.width = "12%";
+        document.getElementsByClassName("column-middle")[1].style.width = "85";
     } else {
         div = document.getElementById("mobile");
     }
@@ -386,48 +386,69 @@ function showPicture() {
             return response.json()
         })
             .then(function (token) {
-                fetch("./picture", {
+                fetch("./pictureSize", {
                     method: 'PUT',
                     body: JSON.stringify({
                         IDT: token.Data,
                         Data: ""
                     }),
                     headers: {
-                        'Content-type': 'application/text'
+                        'Content-type': 'application/json'
                     }
                 }).then(function (response) {
-                    return response.text()
-                })
-                    .then(function (data) {
-                        split = data.split("___PICTURE-DATA___")
-                        var crypt = new JSEncrypt();
-                        crypt.setPrivateKey(keyTemp);
-                        picPassword = crypt.decrypt(split[0])
-                        picture = decryptAES(picPassword, split[1])
+                    return response.json()
+                }).then(function (json) {
+                    if (json.Data == "-1") {
+                        var toasted = new Toasted({
+                            position: 'top-center',
+                            duration: 30000
+                        })
+                        toasted.show('No Picture available!')
+                        return;
+                    }
 
-                        var div = document.createElement("div");
-                        div.id = "imagePrompt";
-
-                        var imageDiv = document.createElement("div");
-                        var img = document.createElement("img");
-                        imageDiv.className = "center"
-                        img.id = "imageFromDevice"
-                        img.src = "data:image/jpeg;base64," + picture
-                        imageDiv.appendChild(img)
-                        div.appendChild(imageDiv)
-
-                        var buttonDiv = document.createElement("div");
-                        buttonDiv.className = "center"
-                        var btn = document.createElement("button");
-                        btn.innerHTML = "close"
-                        btn.addEventListener('click', function () {
-                            document.body.removeChild(div)
-                        }, false);
-                        buttonDiv.appendChild(btn)
-                        div.appendChild(buttonDiv)
-                        document.body.appendChild(div);
+                    fetch("./picture", {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            IDT: token.Data,
+                            Data: "-1"
+                        }),
+                        headers: {
+                            'Content-type': 'application/json'
+                        }
+                    }).then(function (response) {
+                        return response.text()
                     })
+                        .then(function (data) {
+                            split = data.split("___PICTURE-DATA___")
+                            var crypt = new JSEncrypt();
+                            crypt.setPrivateKey(keyTemp);
+                            picPassword = crypt.decrypt(split[0])
+                            picture = decryptAES(picPassword, split[1])
 
+                            var div = document.createElement("div");
+                            div.id = "imagePrompt";
+
+                            var imageDiv = document.createElement("div");
+                            var img = document.createElement("img");
+                            imageDiv.className = "center"
+                            img.id = "imageFromDevice"
+                            img.src = "data:image/jpeg;base64," + picture
+                            imageDiv.appendChild(img)
+                            div.appendChild(imageDiv)
+
+                            var buttonDiv = document.createElement("div");
+                            buttonDiv.className = "center"
+                            var btn = document.createElement("button");
+                            btn.innerHTML = "close"
+                            btn.addEventListener('click', function () {
+                                document.body.removeChild(div)
+                            }, false);
+                            buttonDiv.appendChild(btn)
+                            div.appendChild(buttonDiv)
+                            document.body.appendChild(div);
+                        })
+                })
             })
     }
 

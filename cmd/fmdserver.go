@@ -17,12 +17,12 @@ import (
 	"findmydeviceserver/user"
 )
 
-//Some IO variables
+// Some IO variables
 var version = "v0.3.4"
 var webDir = "web"
 var uio user.UserIO
 
-//Server Config
+// Server Config
 const serverCert = "server.crt"
 const serverKey = "server.key"
 const configFile = "config.json"
@@ -138,7 +138,7 @@ func getPictureSize(w http.ResponseWriter, r *http.Request) {
 
 	highest := uio.GetPictureSize(id)
 
-	dataSize := DataPackage{Data: string(highest)}
+	dataSize := DataPackage{Data: strconv.Itoa(highest)}
 	result, _ := json.Marshal(dataSize)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(result)

@@ -176,7 +176,7 @@ func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 
 	highest := uio.GetLocationSize(id)
 
-	dataSize := DataPackage{Data: string(highest)}
+	dataSize := DataPackage{Data: strconv.Itoa(highest)}
 	result, _ := json.Marshal(dataSize)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(result)

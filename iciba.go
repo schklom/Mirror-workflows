@@ -238,9 +238,9 @@ func (_ *ICIBAEngine) Translate(text string, from Language, to Language) (Transl
 	query.Add("c", "trans")
 	query.Add("m", "fy")
 	query.Add("client", "6")
-	query.Add("auth_user", "key_ciba")
+	query.Add("auth_user", "key_web_fanyi")
 
-	sum := md5.Sum([]byte(("6key_cibaifanyicjbysdlove1" + text)))
+	sum := md5.Sum([]byte(("6key_web_fanyiifanyiweb8hc9s98e" + text)))
 
 	query.Add("sign", hex.EncodeToString(sum[:])[:16])
 

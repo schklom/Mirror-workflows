@@ -4,7 +4,8 @@
 <head>
     <title>FMD</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="cache-control" content="no-cache, must-revalidate, post-check=0, pre-check=0" />
+    <meta http-equiv="cache-control" content="no-cache, no-store must-revalidate, post-check=0, pre-check=0" />
+    <meta http-equiv="Pragma" content="no-cache"/>
     <meta http-equiv="cache-control" content="max-age=0" />
     <meta http-equiv="expires" content="0" />
     <link rel="stylesheet" href="./style.css?t=123456">
@@ -86,9 +87,15 @@
                         <button type="button" class="imageButton" title="Delete" onclick="sendToPhone('delete')">
                             <img src="assets/Delete.png" height="36" />
                         </button>
-                        <button type="button" class="imageButton" title="Camera" onclick="sendToPhone('camera back')">
-                            <img src="assets/Camera.png" height="36" />
-                        </button>
+                        <div class="dropdown">
+                            <button type="button" class="imageButton dropDownBtn" title="Camera" onclick="dropDownBtn()">
+                                <img class="imgDopDownBtn" src="assets/Camera.png" height="36" />
+                            </button>
+                            <div id="cameraDropDown" class="dropdown-content">
+                                <button title="front" onclick="sendToPhone('camera front')")></button>
+                                <button title="back" onclick="sendToPhone('camera back')")></button>
+                            </div>
+                        </div>
                         <button type="button" class="imageButton" title="Picture" onclick="showPicture()">
                             <img src="assets/Picture.png" height="36" />
                         </button>
@@ -139,6 +146,15 @@
                         <button type="button" class="imageButton" title="Delete" onclick="sendToPhone('delete')">
                             <img src="assets/Delete.png" height="24" />
                         </button>
+                        <div class="dropdown">
+                            <button type="button" class="imageButton dropDownBtn" title="Camera">
+                                <img src="assets/Camera.png" height="24" />
+                            </button>
+                            <div class="dropdown-content">
+                                <button title="front" onclick="sendToPhone('camera front')")></button>
+                                <button title="back" onclick="sendToPhone('camera back')")></button>
+                            </div>
+                        </div>
                         <button type="button" class="imageButton" title="Picture" onclick="showPicture()">
                             <img src="assets/Picture.png" height="24" />
                         </button>

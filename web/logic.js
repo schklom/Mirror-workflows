@@ -453,3 +453,16 @@ function showPicture() {
     }
 
 }
+
+
+function dropDownBtn() {
+    document.getElementById("cameraDropDown").style.display = "block";
+  }
+  
+
+  window.onclick = function(event) {
+    if (!event.target.matches('.imgDopDownBtn')) {
+        console.log(event.target);
+      document.getElementById("cameraDropDown").style.display = "None";
+    }
+  }

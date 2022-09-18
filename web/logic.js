@@ -6,7 +6,8 @@ var currentId;
 var keyTemp;
 var hashedPW;
 
-var backgroundSync = false;
+var newestPictureIndex;
+var currentPictureIndex;
 
 function init() {
     var div;
@@ -214,54 +215,6 @@ function locate(index, password) {
                                     if (loginDiv != null) {
                                         loginDiv.parentNode.removeChild(loginDiv);
                                     }
-
-                                    if (!backgroundSync) {
-                                        var interval = setInterval(function () {
-
-                                            if (currentId != "") {
-
-                                                fetch("./requestAccess", {
-                                                    method: 'PUT',
-                                                    body: JSON.stringify({
-                                                        DeviceId: currentId,
-                                                        HashedPassword: hashedPW
-                                                    }),
-                                                    headers: {
-                                                        'Content-type': 'application/json'
-                                                    }
-                                                }).then(function (response) {
-                                                    return response.json()
-                                                })
-                                                    .then(function (token) {
-
-                                                        fetch("./locationDataSize", {
-                                                            method: 'PUT',
-                                                            body: JSON.stringify({
-                                                                IDT: token.AccessToken,
-                                                                Data: -1
-                                                            }),
-                                                            headers: {
-                                                                'Content-type': 'application/json'
-                                                            }
-                                                        })
-                                                            .then(function (response) {
-                                                                return response.json()
-                                                            })
-                                                            .then(function (json) {
-                                                                if (newestLocationDataIndex < json.DataLength) {
-                                                                    newestLocationDataIndex = json.DataLength;
-                                                                    var toasted = new Toasted({
-                                                                        position: 'top-center',
-                                                                        duration: 15000
-                                                                    })
-                                                                    toasted.show('New locationdata available!')
-                                                                }
-                                                            })
-                                                    })
-                                            }
-
-                                        }, 180000);
-                                    }
                                 } else {
                                     alert("Wrong password!");
                                 }
@@ -405,55 +358,87 @@ function showPicture() {
                         })
                         toasted.show('No Picture available!')
                         return;
+                    }else{
+                        newestPictureIndex = Number(json.Data);
+                        currentPictureIndex = newestPictureIndex;
+                        loadPicture(token, newestPictureIndex);
                     }
 
-                    fetch("./picture", {
-                        method: 'PUT',
-                        body: JSON.stringify({
-                            IDT: token.Data,
-                            Data: "-1"
-                        }),
-                        headers: {
-                            'Content-type': 'application/json'
-                        }
-                    }).then(function (response) {
-                        return response.text()
-                    })
-                        .then(function (data) {
-                            split = data.split("___PICTURE-DATA___")
-                            var crypt = new JSEncrypt();
-                            crypt.setPrivateKey(keyTemp);
-                            picPassword = crypt.decrypt(split[0])
-                            picture = decryptAES(picPassword, split[1])
-
-                            var div = document.createElement("div");
-                            div.id = "imagePrompt";
-
-                            var imageDiv = document.createElement("div");
-                            var img = document.createElement("img");
-                            imageDiv.className = "center"
-                            img.id = "imageFromDevice"
-                            img.src = "data:image/jpeg;base64," + picture
-                            imageDiv.appendChild(img)
-                            div.appendChild(imageDiv)
-
-                            var buttonDiv = document.createElement("div");
-                            buttonDiv.className = "center"
-                            var btn = document.createElement("button");
-                            btn.innerHTML = "close"
-                            btn.addEventListener('click', function () {
-                                document.body.removeChild(div)
-                            }, false);
-                            buttonDiv.appendChild(btn)
-                            div.appendChild(buttonDiv)
-                            document.body.appendChild(div);
-                        })
+                    
                 })
             })
     }
 
 }
 
+function loadPicture(token, index){
+    fetch("./picture", {
+        method: 'PUT',
+        body: JSON.stringify({
+            IDT: token.Data,
+            Data: index.toString
+        }),
+        headers: {
+            'Content-type': 'application/json'
+        }
+    }).then(function (response) {
+        return response.text()
+    })
+        .then(function (data) {
+            split = data.split("___PICTURE-DATA___")
+            var crypt = new JSEncrypt();
+            crypt.setPrivateKey(keyTemp);
+            picPassword = crypt.decrypt(split[0])
+            picture = decryptAES(picPassword, split[1])
+
+            var div = document.createElement("div");
+            div.id = "imagePrompt";
+
+            var imageDiv = document.createElement("div");
+            var img = document.createElement("img");
+            imageDiv.className = "center"
+            img.id = "imageFromDevice"
+            img.src = "data:image/jpeg;base64," + picture
+            imageDiv.appendChild(img)
+            div.appendChild(imageDiv)
+
+            var buttonDiv = document.createElement("div");
+            buttonDiv.className = "center"
+
+            var beforeBtn = document.createElement("button");
+            beforeBtn.innerHTML = "<-"
+            beforeBtn.addEventListener('click', function () {
+                document.body.removeChild(div)
+                currentPictureIndex-=1;
+                if(currentPictureIndex < 0){
+                    currentPictureIndex = newestPictureIndex;
+                }
+                loadPicture(token, currentPictureIndex);
+            }, false);
+            buttonDiv.appendChild(beforeBtn)
+
+            var btn = document.createElement("button");
+            btn.innerHTML = "close"
+            btn.addEventListener('click', function () {
+                document.body.removeChild(div)
+            }, false);
+            buttonDiv.appendChild(btn)
+
+            var afterBtn = document.createElement("button");
+            afterBtn.innerHTML = "->"
+            afterBtn.addEventListener('click', function () {
+                document.body.removeChild(div)
+                currentPictureIndex+=1;
+                if(currentPictureIndex > newestPictureIndex){
+                    currentPictureIndex = 0;
+                }
+                loadPicture(token, currentPictureIndex);
+            }, false);
+            buttonDiv.appendChild(afterBtn)
+            div.appendChild(buttonDiv)
+            document.body.appendChild(div);
+        })
+}
 
 function dropDownBtn() {
     document.getElementById("cameraDropDown").style.display = "block";
@@ -462,7 +447,6 @@ function dropDownBtn() {
 
   window.onclick = function(event) {
     if (!event.target.matches('.imgDopDownBtn')) {
-        console.log(event.target);
       document.getElementById("cameraDropDown").style.display = "None";
     }
   }

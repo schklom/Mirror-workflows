@@ -92,8 +92,8 @@
                                 <img class="imgDopDownBtn" src="assets/Camera.png" height="36" />
                             </button>
                             <div id="cameraDropDown" class="dropdown-content">
-                                <button title="front" onclick="sendToPhone('camera front')")></button>
-                                <button title="back" onclick="sendToPhone('camera back')")></button>
+                                <button title="front" onclick="sendToPhone('camera front')")>Front</button>
+                                <button title="back" onclick="sendToPhone('camera back')")>Back</button>
                             </div>
                         </div>
                         <button type="button" class="imageButton" title="Picture" onclick="showPicture()">
@@ -147,12 +147,12 @@
                             <img src="assets/Delete.png" height="24" />
                         </button>
                         <div class="dropdown">
-                            <button type="button" class="imageButton dropDownBtn" title="Camera">
-                                <img src="assets/Camera.png" height="24" />
+                            <button type="button" class="imageButton dropDownBtn" title="Camera" onclick="dropDownBtn()">
+                                <img class="imgDopDownBtn" src="assets/Camera.png" height="24" />
                             </button>
-                            <div class="dropdown-content">
-                                <button title="front" onclick="sendToPhone('camera front')")></button>
-                                <button title="back" onclick="sendToPhone('camera back')")></button>
+                            <div id="cameraDropDown" class="dropdown-content">
+                                <button title="front" onclick="sendToPhone('camera front')")>Front</button>
+                                <button title="back" onclick="sendToPhone('camera back')")>Back</button>
                             </div>
                         </div>
                         <button type="button" class="imageButton" title="Picture" onclick="showPicture()">

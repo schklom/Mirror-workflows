@@ -376,7 +376,7 @@ function loadPicture(token, index){
         method: 'PUT',
         body: JSON.stringify({
             IDT: token.Data,
-            Data: index.toString
+            Data: index.toString()
         }),
         headers: {
             'Content-type': 'application/json'

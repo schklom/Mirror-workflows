@@ -1,4 +1,4 @@
-module codeberg.org/Simple-Web/simplytranslate_engines_go
+module codeberg.org/SimpleWeb/SimplyTranslate/engines
 
 go 1.16
 

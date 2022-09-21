@@ -1,12 +1,10 @@
-## SimplyTranslate Engines
+## SimplyTranslate
 
-The core part of SimplyTranslate that actually gets the data from translation websites.
-
-Note that this is a work-in-progress rewrite of https://codeberg.org/SimpleWeb/SimplyTranslate-Engines in Go. Much work remains until this rewrite will replace the original Python repository.
+This is a work-in-progress rewrite of https://codeberg.org/SimpleWeb/SimplyTranslate-Engines and https://codeberg.org/SimpleWeb/SimplyTranslate-Web in Go (yes, in one repo). Much work remains until this rewrite will replace the original Python repositories.
 
 ### License
 
-SimplyTranslate Engines is free software: you can redistribute it and/or modify
+SimplyTranslate is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.

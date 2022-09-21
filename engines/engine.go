@@ -1,4 +1,4 @@
-package simplytranslate_engines
+package engines
 
 type TranslationResult struct {
 	SourceLanguage Language

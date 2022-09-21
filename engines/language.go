@@ -1,4 +1,4 @@
-package simplytranslate_engines
+package engines
 
 type Language struct {
 	Name, Code string

@@ -36,6 +36,9 @@ jobs:
       - name: export test
         run: |
           export aa=$(pwd)/abc
+          echo "$aa"
       
       - name: export test part 2
-        run: echo "$aa"
+        run: |
+          aa=$(pwd)/abc
+          echo "$aa"

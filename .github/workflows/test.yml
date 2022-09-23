@@ -10,6 +10,8 @@ on:
 env:
   ABC: abc
   DEF: $ABC
+  II: $GITHUB_WORKSPACE
+  JJ: ${{ GITHUB_WORKSPACE }}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -39,19 +41,8 @@ jobs:
         
       - name: export test
         run: |
-          export aa=$(pwd)/abc
-          echo "$aa"
-      
-      - name: export test part 2
-        run: |
           aa=$(pwd)/abc
           echo "$aa"
-      
-      - name: env
-        run: |
-          echo "$USER"
-          echo "$ABC"
-          echo "$DEF"
       
       - name: env complete
         run: env

@@ -32,8 +32,13 @@ jobs:
         with:
           ref: 'main' # branch
 
-      - name: ls
-        run: ls -alh
+      - name: ls /mnt
+        run: ls -alh /mnt
+      
+      - name: fill /mnt
+        run: |
+          mkdir -p /mnt/aa/bb
+          ls -alhr /mnt
 
       - name: pwd
         run: pwd

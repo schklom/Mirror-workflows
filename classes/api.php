@@ -544,6 +544,28 @@ class API extends Handler {
 
 			/* Virtual feeds */
 
+			$vfeeds = PluginHost::getInstance()->get_feeds(-1);
+
+			if (is_array($vfeeds)) {
+				foreach ($vfeeds as $feed) {
+					if (!implements_interface($feed['sender'], 'IVirtualFeed'))
+						continue;
+					
+					$unread = $feed['sender']->get_unread($feed['id']);
+					
+					if ($unread || !$unread_only) {
+						$row = [
+							'id' => PluginHost::pfeed_to_feed_id($feed['id']),
+							'title' => $feed['title'],
+							'unread' => $unread,
+							'cat_id' => -1,
+						];
+
+						array_push($feeds, $row);
+					}
+				}
+			}
+
 			if ($cat_id == -4 || $cat_id == -1) {
 				foreach ([-1, -2, -3, -4, -6, 0] as $i) {
 					$unread = Feeds::_get_counters($i, false, true);
@@ -675,7 +697,47 @@ class API extends Handler {
 				"skip_first_id_check" => $skip_first_id_check
 			);
 
-			$qfh_ret = Feeds::_get_headlines($params);
+			if (!$is_cat && is_numeric($feed_id) && $feed_id < PLUGIN_FEED_BASE_INDEX && $feed_id > LABEL_BASE_INDEX) {
+				/** @var IVirtualFeed|false $handler */
+				$pfeed_id = PluginHost::feed_to_pfeed_id($feed_id);
+				$handler = PluginHost::getInstance()->get_feed_handler($pfeed_id);
+				
+				if ($handler) {
+					$params = array(
+						"feed" => $feed_id,
+						"limit" => $limit,
+						"view_mode" => $view_mode,
+						"cat_view" => $is_cat,
+						"search" => $search,
+						"override_order" => $order,
+						"offset" => $offset,
+						"since_id" => 0,
+						"include_children" => $include_nested,
+						"check_first_id" => $check_first_id,
+						"skip_first_id_check" => $skip_first_id_check
+					);
+	
+					$qfh_ret = $handler->get_headlines($pfeed_id, $params);
+				}
+	
+			} else {
+	
+				$params = array(
+					"feed" => $feed_id,
+					"limit" => $limit,
+					"view_mode" => $view_mode,
+					"cat_view" => $is_cat,
+					"search" => $search,
+					"override_order" => $order,
+					"offset" => $offset,
+					"since_id" => $since_id,
+					"include_children" => $include_nested,
+					"check_first_id" => $check_first_id,
+					"skip_first_id_check" => $skip_first_id_check
+				);
+	
+				$qfh_ret = Feeds::_get_headlines($params);
+			}
 
 			$result = $qfh_ret[0];
 			$feed_title = $qfh_ret[1];

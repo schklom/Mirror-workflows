@@ -965,6 +965,14 @@ class Feeds extends Handler_Protected {
 
 		if ($is_cat) {
 			return self::_get_cat_unread($n_feed, $owner_uid);
+		} else if(is_numeric($feed) && $feed < PLUGIN_FEED_BASE_INDEX && $feed > LABEL_BASE_INDEX) { // virtual Feed
+			$feed_id = PluginHost::feed_to_pfeed_id($feed);
+			$handler = PluginHost::getInstance()->get_feed_handler($feed_id);
+			if (implements_interface($handler, 'IVirtualFeed')) {
+				return $handler->get_unread($feed_id);
+			} else {
+				return 0;
+			}
 		} else if ($n_feed == -6) {
 			return 0;
 		// tags

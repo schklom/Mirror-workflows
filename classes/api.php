@@ -333,7 +333,7 @@ class API extends Handler {
 					'published' => self::_param_to_bool($entry->published),
 					'comments' => $entry->comments,
 					'author' => $entry->author,
-					'updated' => (int) strtotime($entry->updated),
+					'updated' => (int) strtotime($entry->updated ?? ''),
 					'feed_id' => $entry->feed_id,
 					'attachments' => Article::_get_enclosures($entry->id),
 					'score' => (int) $entry->score,
@@ -618,7 +618,7 @@ class API extends Handler {
 						'unread' => (int) $unread,
 						'has_icon' => $has_icon,
 						'cat_id' => (int) $feed->cat_id,
-						'last_updated' => (int) strtotime($feed->last_updated),
+						'last_updated' => (int) strtotime($feed->last_updated ?? ''),
 						'order_id' => (int) $feed->order_id,
 					];
 
@@ -648,7 +648,7 @@ class API extends Handler {
 					->find_one($feed_id);
 
 				if ($feed) {
-					$last_updated = strtotime($feed->last_updated);
+					$last_updated = strtotime($feed->last_updated ?? '');
 					$cache_images = self::_param_to_bool($feed->cache_images);
 
 					if (!$cache_images && time() - $last_updated > 120) {
@@ -725,7 +725,7 @@ class API extends Handler {
 						"unread" => self::_param_to_bool($line["unread"]),
 						"marked" => self::_param_to_bool($line["marked"]),
 						"published" => self::_param_to_bool($line["published"]),
-						"updated" => (int)strtotime($line["updated"]),
+						"updated" => (int)strtotime($line["updated"] ?? ''),
 						"is_updated" => $is_updated,
 						"title" => $line["title"],
 						"link" => $line["link"],

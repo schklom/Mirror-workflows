@@ -550,9 +550,10 @@ class API extends Handler {
 				foreach ($vfeeds as $feed) {
 					if (!implements_interface($feed['sender'], 'IVirtualFeed'))
 						continue;
-					
+
+					/** @var IVirtualFeed $feed['sender'] */
 					$unread = $feed['sender']->get_unread($feed['id']);
-					
+
 					if ($unread || !$unread_only) {
 						$row = [
 							'id' => PluginHost::pfeed_to_feed_id($feed['id']),
@@ -697,11 +698,14 @@ class API extends Handler {
 				"skip_first_id_check" => $skip_first_id_check
 			);
 
+			$qfh_ret = [];
+
 			if (!$is_cat && is_numeric($feed_id) && $feed_id < PLUGIN_FEED_BASE_INDEX && $feed_id > LABEL_BASE_INDEX) {
-				/** @var IVirtualFeed|false $handler */
 				$pfeed_id = PluginHost::feed_to_pfeed_id($feed_id);
+
+				/** @var IVirtualFeed|false $handler */
 				$handler = PluginHost::getInstance()->get_feed_handler($pfeed_id);
-				
+
 				if ($handler) {
 					$params = array(
 						"feed" => $feed_id,
@@ -716,12 +720,12 @@ class API extends Handler {
 						"check_first_id" => $check_first_id,
 						"skip_first_id_check" => $skip_first_id_check
 					);
-	
+
 					$qfh_ret = $handler->get_headlines($pfeed_id, $params);
 				}
-	
+
 			} else {
-	
+
 				$params = array(
 					"feed" => $feed_id,
 					"limit" => $limit,
@@ -735,7 +739,7 @@ class API extends Handler {
 					"check_first_id" => $check_first_id,
 					"skip_first_id_check" => $skip_first_id_check
 				);
-	
+
 				$qfh_ret = Feeds::_get_headlines($params);
 			}
 

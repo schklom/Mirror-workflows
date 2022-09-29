@@ -667,7 +667,7 @@ class Feeds extends Handler_Protected {
 		}
 
 		Debug::set_enabled(true);
-		Debug::set_loglevel(Debug::map_loglevel($xdebug));
+		Debug::set_loglevel((int)Debug::map_loglevel($xdebug));
 
 		$feed_id = (int)$_REQUEST["feed_id"];
 		$do_update = ($_REQUEST["action"] ?? "") == "do_update";
@@ -969,6 +969,7 @@ class Feeds extends Handler_Protected {
 			$feed_id = PluginHost::feed_to_pfeed_id($feed);
 			$handler = PluginHost::getInstance()->get_feed_handler($feed_id);
 			if (implements_interface($handler, 'IVirtualFeed')) {
+				/** @var IVirtualFeed $handler */
 				return $handler->get_unread($feed_id);
 			} else {
 				return 0;

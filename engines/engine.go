@@ -10,7 +10,7 @@ type Engine interface {
 	DisplayName() string
 	SourceLanguages() ([]Language, error)
 	TargetLanguages() ([]Language, error)
-	Translate(text string, from Language, to Language) (TranslationResult, error)
+	Translate(text string, from, to Language) (TranslationResult, error)
 	SupportsAutodetect() bool
 	DetectLanguage(text string) (Language, error)
 }

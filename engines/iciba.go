@@ -226,7 +226,7 @@ type icibaTranslateResponse struct {
 	} `json:"content"`
 }
 
-func (_ *ICIBA) Translate(text string, from Language, to Language) (TranslationResult, error) {
+func (_ *ICIBA) Translate(text string, from, to Language) (TranslationResult, error) {
 	requestURL, err := url.Parse("https://ifanyi.iciba.com/index.php")
 
 	if err != nil {

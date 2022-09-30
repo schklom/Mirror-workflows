@@ -95,7 +95,7 @@ func (_ *GoogleTranslate) SupportsAutodetect() bool { return true }
 
 func (_ *GoogleTranslate) DetectLanguage(text string) (Language, error) { return Language{}, nil }
 
-func (_ *GoogleTranslate) Translate(text string, from Language, to Language) (TranslationResult, error) {
+func (_ *GoogleTranslate) Translate(text string, from, to Language) (TranslationResult, error) {
 	requestURL, err := url.Parse("https://translate.google.com/m")
 
 	if err != nil {

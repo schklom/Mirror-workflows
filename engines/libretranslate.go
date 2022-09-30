@@ -10,7 +10,7 @@ import (
 // LibreTranslate is an engine that interfaces with any
 // [LibreTranslate](https://github.com/LibreTranslate/LibreTranslate) instance.
 type LibreTranslate struct {
-	// InstanceURL is the URL to a LibreTranslate instance, for instance
+	// InstanceURL is the URL to a LibreTranslate instance, for example
 	// "https://libretranslate.com".
 	InstanceURL string
 	// APIKey is the API key for the given instance. If empty, then no API
@@ -130,7 +130,7 @@ type libreTranslateResponse struct {
 	TranslatedText string `json:"translatedText"`
 }
 
-func (e *LibreTranslate) Translate(text string, from Language, to Language) (TranslationResult, error) {
+func (e *LibreTranslate) Translate(text string, from, to Language) (TranslationResult, error) {
 	formData := map[string]string{
 		"q":      text,
 		"source": from.Code,

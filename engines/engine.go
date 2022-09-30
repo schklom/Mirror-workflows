@@ -5,7 +5,7 @@ type TranslationResult struct {
 	TranslatedText string
 }
 
-type TranslationEngine interface {
+type Engine interface {
 	InternalName() string
 	DisplayName() string
 	SourceLanguages() ([]Language, error)

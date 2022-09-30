@@ -9,12 +9,12 @@ import (
 	"net/url"
 )
 
-// ICIBAEngine is an engine that fetches data from https://www.iciba.com.
-type ICIBAEngine struct{}
+// ICIBA is an engine that fetches data from https://www.iciba.com.
+type ICIBA struct{}
 
-func (_ *ICIBAEngine) InternalName() string { return "iciba" }
+func (_ *ICIBA) InternalName() string { return "iciba" }
 
-func (_ *ICIBAEngine) DisplayName() string { return "iCIBA" }
+func (_ *ICIBA) DisplayName() string { return "iCIBA" }
 
 var icibaLanguages = []Language{
 	// ICIBA does have an API, but they return Chinese names.
@@ -211,13 +211,13 @@ var icibaLanguages = []Language{
 	{Name: "Zulu", Code: "zu"},
 }
 
-func (_ *ICIBAEngine) SourceLanguages() ([]Language, error) { return icibaLanguages, nil }
+func (_ *ICIBA) SourceLanguages() ([]Language, error) { return icibaLanguages, nil }
 
-func (_ *ICIBAEngine) TargetLanguages() ([]Language, error) { return icibaLanguages, nil }
+func (_ *ICIBA) TargetLanguages() ([]Language, error) { return icibaLanguages, nil }
 
-func (_ *ICIBAEngine) SupportsAutodetect() bool { return true }
+func (_ *ICIBA) SupportsAutodetect() bool { return true }
 
-func (_ *ICIBAEngine) DetectLanguage(text string) (Language, error) { return Language{}, nil }
+func (_ *ICIBA) DetectLanguage(text string) (Language, error) { return Language{}, nil }
 
 type icibaTranslateResponse struct {
 	Content struct {
@@ -226,7 +226,7 @@ type icibaTranslateResponse struct {
 	} `json:"content"`
 }
 
-func (_ *ICIBAEngine) Translate(text string, from Language, to Language) (TranslationResult, error) {
+func (_ *ICIBA) Translate(text string, from Language, to Language) (TranslationResult, error) {
 	requestURL, err := url.Parse("https://ifanyi.iciba.com/index.php")
 
 	if err != nil {

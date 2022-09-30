@@ -7,9 +7,9 @@ import (
 	"net/http"
 )
 
-// LibreTranslateEngine is an engine that interfaces with any
+// LibreTranslate is an engine that interfaces with any
 // [LibreTranslate](https://github.com/LibreTranslate/LibreTranslate) instance.
-type LibreTranslateEngine struct {
+type LibreTranslate struct {
 	// InstanceURL is the URL to a LibreTranslate instance, for instance
 	// "https://libretranslate.com".
 	InstanceURL string
@@ -23,16 +23,16 @@ type LibreTranslateEngine struct {
 	APIKey string
 }
 
-func (_ *LibreTranslateEngine) InternalName() string { return "libre" }
+func (_ *LibreTranslate) InternalName() string { return "libre" }
 
-func (_ *LibreTranslateEngine) DisplayName() string { return "LibreTranslate" }
+func (_ *LibreTranslate) DisplayName() string { return "LibreTranslate" }
 
 type libreLanguagesResponse []struct {
 	Name string `json:"name"`
 	Code string `json:"code"`
 }
 
-func (e *LibreTranslateEngine) getLangs() ([]Language, error) {
+func (e *LibreTranslate) getLangs() ([]Language, error) {
 	response, err := http.Get(e.InstanceURL + "/languages")
 
 	if err != nil {
@@ -61,18 +61,18 @@ func (e *LibreTranslateEngine) getLangs() ([]Language, error) {
 
 }
 
-func (e *LibreTranslateEngine) SourceLanguages() ([]Language, error) { return e.getLangs() }
+func (e *LibreTranslate) SourceLanguages() ([]Language, error) { return e.getLangs() }
 
-func (e *LibreTranslateEngine) TargetLanguages() ([]Language, error) { return e.getLangs() }
+func (e *LibreTranslate) TargetLanguages() ([]Language, error) { return e.getLangs() }
 
-func (_ *LibreTranslateEngine) SupportsAutodetect() bool { return true }
+func (_ *LibreTranslate) SupportsAutodetect() bool { return true }
 
 type libreDetectResponse []struct {
 	Confidence   float64 `json:"confidence"`
 	LanguageCode string  `json:"language"`
 }
 
-func (e *LibreTranslateEngine) DetectLanguage(text string) (Language, error) {
+func (e *LibreTranslate) DetectLanguage(text string) (Language, error) {
 	formData := map[string]string{"q": text}
 
 	if e.APIKey != "" {
@@ -130,7 +130,7 @@ type libreTranslateResponse struct {
 	TranslatedText string `json:"translatedText"`
 }
 
-func (e *LibreTranslateEngine) Translate(text string, from Language, to Language) (TranslationResult, error) {
+func (e *LibreTranslate) Translate(text string, from Language, to Language) (TranslationResult, error) {
 	formData := map[string]string{
 		"q":      text,
 		"source": from.Code,

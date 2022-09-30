@@ -7,6 +7,6 @@ import (
 // TODO: port web frontend to Go.
 
 func main() {
-	engine := &engines.GoogleTranslateEngine{}
+	engine := &engines.GoogleTranslate{}
 	print(engine.DisplayName())
 }

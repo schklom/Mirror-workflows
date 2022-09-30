@@ -8,13 +8,13 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-type GoogleTranslateEngine struct{}
+type GoogleTranslate struct{}
 
-func (_ *GoogleTranslateEngine) InternalName() string { return "google" }
+func (_ *GoogleTranslate) InternalName() string { return "google" }
 
-func (_ *GoogleTranslateEngine) DisplayName() string { return "Google" }
+func (_ *GoogleTranslate) DisplayName() string { return "Google" }
 
-func (_ *GoogleTranslateEngine) getLangs(type_ string) ([]Language, error) {
+func (_ *GoogleTranslate) getLangs(type_ string) ([]Language, error) {
 	var langsType string
 	switch type_ {
 	case "source":
@@ -83,19 +83,19 @@ func (_ *GoogleTranslateEngine) getLangs(type_ string) ([]Language, error) {
 	return langs, nil
 }
 
-func (e *GoogleTranslateEngine) SourceLanguages() ([]Language, error) {
+func (e *GoogleTranslate) SourceLanguages() ([]Language, error) {
 	return e.getLangs("source")
 }
 
-func (e *GoogleTranslateEngine) TargetLanguages() ([]Language, error) {
+func (e *GoogleTranslate) TargetLanguages() ([]Language, error) {
 	return e.getLangs("target")
 }
 
-func (_ *GoogleTranslateEngine) SupportsAutodetect() bool { return true }
+func (_ *GoogleTranslate) SupportsAutodetect() bool { return true }
 
-func (_ *GoogleTranslateEngine) DetectLanguage(text string) (Language, error) { return Language{}, nil }
+func (_ *GoogleTranslate) DetectLanguage(text string) (Language, error) { return Language{}, nil }
 
-func (_ *GoogleTranslateEngine) Translate(text string, from Language, to Language) (TranslationResult, error) {
+func (_ *GoogleTranslate) Translate(text string, from Language, to Language) (TranslationResult, error) {
 	requestURL, err := url.Parse("https://translate.google.com/m")
 
 	if err != nil {

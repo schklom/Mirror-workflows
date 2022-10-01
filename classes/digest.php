@@ -22,7 +22,7 @@ class Digest
 		while ($line = $res->fetch()) {
 
 			if (get_pref(Prefs::DIGEST_ENABLE, $line['id'])) {
-				$preferred_ts = strtotime(get_pref(Prefs::DIGEST_PREFERRED_TIME, $line['id']));
+				$preferred_ts = strtotime(get_pref(Prefs::DIGEST_PREFERRED_TIME, $line['id']) ?? '');
 
 				// try to send digests within 2 hours of preferred time
 				if ($preferred_ts && time() >= $preferred_ts &&

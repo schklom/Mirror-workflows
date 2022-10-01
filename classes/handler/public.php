@@ -128,9 +128,9 @@ class Handler_Public extends Handler {
 				$tpl->setVariable('ARTICLE_CONTENT', $content, true);
 
 				$tpl->setVariable('ARTICLE_UPDATED_ATOM',
-					date('c', strtotime($line["updated"])), true);
+					date('c', strtotime($line["updated"] ?? '')), true);
 				$tpl->setVariable('ARTICLE_UPDATED_RFC822',
-					date(DATE_RFC822, strtotime($line["updated"])), true);
+					date(DATE_RFC822, strtotime($line["updated"] ?? '')), true);
 
 				$tpl->setVariable('ARTICLE_AUTHOR', htmlspecialchars($line['author']), true);
 
@@ -214,7 +214,7 @@ class Handler_Public extends Handler {
 				$article['title'] = $line['title'];
 				$article['excerpt'] = $line["content_preview"];
 				$article['content'] = Sanitizer::sanitize($line["content"], false, $owner_uid, $feed_site_url, null, $line["id"]);
-				$article['updated'] = date('c', strtotime($line["updated"]));
+				$article['updated'] = date('c', strtotime($line["updated"] ?? ''));
 
 				if (!empty($line['note'])) $article['note'] = $line['note'];
 				if (!empty($line['author'])) $article['author'] = $line['author'];

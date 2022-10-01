@@ -19,19 +19,19 @@ class FeedItem_Atom extends FeedItem_Common {
 		$updated = $this->elem->getElementsByTagName("updated")->item(0);
 
 		if ($updated) {
-			return strtotime($updated->nodeValue);
+			return strtotime($updated->nodeValue ?? '');
 		}
 
 		$published = $this->elem->getElementsByTagName("published")->item(0);
 
 		if ($published) {
-			return strtotime($published->nodeValue);
+			return strtotime($published->nodeValue ?? '');
 		}
 
 		$date = $this->xpath->query("dc:date", $this->elem)->item(0);
 
 		if ($date) {
-			return strtotime($date->nodeValue);
+			return strtotime($date->nodeValue ?? '');
 		}
 
 		// consistent with strtotime failing to parse

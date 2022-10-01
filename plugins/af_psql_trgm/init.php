@@ -122,7 +122,7 @@ class Af_Psql_Trgm extends Plugin {
 
 				print "</div>";
 
-				print "<div style='text-align : right' class='text-muted'>" . TimeHelper::smart_date_time(strtotime($line["updated"])) . "</div>";
+				print "<div style='text-align : right' class='text-muted'>" . TimeHelper::smart_date_time(strtotime($line["updated"] ?? '')) . "</div>";
 
 				print "</li>";
 			}

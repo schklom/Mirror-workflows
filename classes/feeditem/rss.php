@@ -17,13 +17,13 @@ class FeedItem_RSS extends FeedItem_Common {
 		$pubDate = $this->elem->getElementsByTagName("pubDate")->item(0);
 
 		if ($pubDate) {
-			return strtotime($pubDate->nodeValue);
+			return strtotime($pubDate->nodeValue ?? '');
 		}
 
 		$date = $this->xpath->query("dc:date", $this->elem)->item(0);
 
 		if ($date) {
-			return strtotime($date->nodeValue);
+			return strtotime($date->nodeValue ?? '');
 		}
 
 		// consistent with strtotime failing to parse

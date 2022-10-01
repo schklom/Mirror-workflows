@@ -193,7 +193,7 @@ class Counters {
 			}
 
 			// hide default un-updated timestamp i.e. 1970-01-01 (?) -fox
-			if ((int)date('Y') - (int)date('Y', strtotime($line['last_updated'])) > 2)
+			if ((int)date('Y') - (int)date('Y', strtotime($line['last_updated'] ?? '')) > 2)
 				$last_updated = '';
 
 			$cv = [

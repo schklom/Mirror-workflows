@@ -43,13 +43,11 @@ function format_backtrace($trace): string {
 }
 
 function ttrss_error_handler(int $errno, string $errstr, string $file, int $line): bool {
-	/*if (version_compare(PHP_VERSION, '8.0.0', '<')) {
+	if (version_compare(PHP_VERSION, '8.0.0', '<')) {
 		if (error_reporting() == 0 || !$errno) return false;
 	} else {
 		if (!(error_reporting() & $errno)) return false;
 	}
-
-	if (error_reporting() == 0 || !$errno) return false;*/
 
 	$file = substr(str_replace(dirname(__DIR__), "", $file), 1);
 

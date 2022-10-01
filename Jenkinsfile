@@ -6,8 +6,8 @@ pipeline {
             steps {
                 sh """
                 docker run --rm \
-                    --volumes-from jenkins-docker_app_1 \
-                    --workdir ${env.WORKSPACE} \
+                    --workdir /app \
+                    -v ${env.WORKSPACE}:/app \
                     php:8.1-cli \
                     php ./vendor/bin/phpunit
                 """
@@ -18,8 +18,8 @@ pipeline {
                 sh """
                 # php -d memory_limit=-1 ....
                 docker run --rm \
-                    --volumes-from jenkins-docker_app_1 \
-                    --workdir ${env.WORKSPACE} \
+                    --workdir /app \
+                    -v ${env.WORKSPACE}:/app \
                     php:8.1-cli \
                     php -d memory_limit=-1 ./vendor/bin/phpstan --memory-limit=2G
                 """

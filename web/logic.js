@@ -121,7 +121,7 @@ function locate(index, password) {
                 return response.json()
             } else {
                 if (response.status == 423) {
-                    alert("ID, wether it exists or not is locked.");
+                    alert("ID, whether it exists or not is locked.");
                 } else if (response.status == 403) {
                     alert("ID or password false");
                 } else {

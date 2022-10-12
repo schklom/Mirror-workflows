@@ -78,7 +78,7 @@ jobs:
           ref: 'Home-Assistant-Extra' # branch
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2.0.0
+        uses: docker/setup-qemu-action@v2.1.0
         #with:
           #image: tonistiigi/binfmt:latest
           #platforms: all

@@ -1848,6 +1848,9 @@ body.ttrss_prefs[hide-filter-rules="true"] ul.filterRules {
 .flat .dijitTree .dijitTreeNode .dijitTreeRow.dijitTreeRowSelected {
   color: white;
 }
+.flat .dijitTree .dijitTreeNode .dijitTreeRow.dijitTreeRowSelected .dijitTreeExpando {
+  color: white;
+}
 .flat .dijitTree .labelParam {
   float: right;
   margin-right: 16px;

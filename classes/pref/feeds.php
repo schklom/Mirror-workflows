@@ -373,7 +373,7 @@ class Pref_Feeds extends Handler_Protected {
 
 		$order_id = 1;
 
-		$cat = $data_map[$item_id];
+		$cat = ($data_map[$item_id] ?? false);
 
 		if ($cat && is_array($cat)) {
 			foreach ($cat as $item) {
@@ -436,7 +436,7 @@ class Pref_Feeds extends Handler_Protected {
 			foreach ($data['items'] as $item) {
 
 #				if ($item['id'] != 'root') {
-					if (is_array($item['items'])) {
+					if (is_array($item['items'] ?? false)) {
 						if (isset($item['items']['_reference'])) {
 							$data_map[$item['id']] = array($item['items']);
 						} else {

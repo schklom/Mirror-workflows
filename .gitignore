@@ -1,5 +1,4 @@
 vendor/
-templates_c/
 alltube-*.zip
 coverage/
 config/config.yml

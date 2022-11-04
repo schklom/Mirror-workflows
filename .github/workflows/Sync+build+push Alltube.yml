@@ -51,20 +51,19 @@ jobs:
         with:
           commit_message: Add last_sync_with_original_repo_commit_id
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      #- uses: actions/checkout@v3
-        #with:
-          #ref: 'Alltube'
-      #- name: app dockerfile
-      #  run: sed -r 's/^FROM ([a-zA-Z]+)(.*)$/FROM arm32v7\/\1\2/' src/app/Dockerfile > src/app/Dockerfile
-      #- name: adapt web dockerfile
-      #  run: sed -r 's/^FROM abiosoft\/caddy:no-stats$/FROM jessestuart\/caddy/' web/Dockerfile > web/Dockerfile
+      - uses: actions/checkout@v3
+        with:
+          ref: 'Alltube'
+      # Removes "template_c/" from .gitignore, or the Dockerfile "COPY" command ignores it and the build crashes when that folder is needed
+      - name: Remove "templace_c" from .gitignore
+        run: sed -i '/templates_c/d' .gitignore
       # https://github.com/marketplace/actions/git-auto-commit
-      #- name: pushing web Dockerfile changes to main branch
-      #  uses: stefanzweifel/git-auto-commit-action@v4.15.3
-      #  with:
+      - name: pushing web Dockerfile changes to main branch
+        uses: stefanzweifel/git-auto-commit-action@v4.15.3
+        with:
           # Optional but recommended
           # Defaults to "Apply automatic changes"
-      #    commit_message: Updated web Dockerfile to work with Raspberry Pi 4
+          commit_message: Removes "template_c/" from .gitignore, or otherwise the Dockerfile "COPY" command ignores it and the build crashes when that folder is needed
 
   build_push:
     needs: [repo_sync]

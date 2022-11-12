@@ -61,7 +61,7 @@ class Pref_Labels extends Handler_Protected {
 
 			if ($kind == "fg" || $kind == "bg") {
 				$sth = $this->pdo->prepare("UPDATE ttrss_labels2 SET
-					${kind}_color = ? WHERE id = ?
+					{$kind}_color = ? WHERE id = ?
 					AND owner_uid = ?");
 
 				$sth->execute([$color, $id, $_SESSION['uid']]);

@@ -17,7 +17,7 @@ class Db_Migrations {
 
 	function initialize_for_plugin(Plugin $plugin, bool $base_is_latest = true, string $schema_suffix = "sql"): void {
 		$plugin_dir = PluginHost::getInstance()->get_plugin_dir($plugin);
-		$this->initialize($plugin_dir . "/${schema_suffix}",
+		$this->initialize("{$plugin_dir}/{$schema_suffix}",
 			strtolower("ttrss_migrations_plugin_" . get_class($plugin)),
 			$base_is_latest);
 	}
@@ -31,7 +31,7 @@ class Db_Migrations {
 	}
 
 	private function set_version(int $version): void {
-		Debug::log("Updating table {$this->migrations_table} with version ${version}...", Debug::LOG_EXTENDED);
+		Debug::log("Updating table {$this->migrations_table} with version {$version}...", Debug::LOG_EXTENDED);
 
 		$sth = $this->pdo->query("SELECT * FROM {$this->migrations_table}");
 
@@ -170,7 +170,7 @@ class Db_Migrations {
 			try {
 				$this->migrate_to($i);
 			} catch (PDOException $e) {
-				user_error("Failed to apply migration ${i} for {$this->migrations_table}: " . $e->getMessage(), E_USER_WARNING);
+				user_error("Failed to apply migration {$i} for {$this->migrations_table}: " . $e->getMessage(), E_USER_WARNING);
 				return false;
 				//throw $e;
 			}
@@ -184,7 +184,7 @@ class Db_Migrations {
 	 */
 	private function get_lines(int $version) : array {
 		if ($version > 0)
-			$filename = "{$this->migrations_path}/${version}.sql";
+			$filename = "{$this->migrations_path}/{$version}.sql";
 		else
 			$filename = "{$this->base_path}/{$this->base_filename}";
 
@@ -196,7 +196,7 @@ class Db_Migrations {
 				fn($line) => strlen(trim($line)) > 0 && !in_array(strtolower($line), ["begin", "commit"]));
 
 		} else {
-			user_error("Requested schema file ${filename} not found.", E_USER_ERROR);
+			user_error("Requested schema file {$filename} not found.", E_USER_ERROR);
 			return [];
 		}
 	}

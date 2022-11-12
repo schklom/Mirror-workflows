@@ -1749,11 +1749,11 @@ class Feeds extends Handler_Protected {
 			}
 
 			if (!$allow_archived) {
-				$from_qpart = "${ext_tables_part}ttrss_entries LEFT JOIN ttrss_user_entries ON (ref_id = ttrss_entries.id), ttrss_feeds";
+				$from_qpart = "{$ext_tables_part}ttrss_entries LEFT JOIN ttrss_user_entries ON (ref_id = ttrss_entries.id), ttrss_feeds";
 				$feed_check_qpart = "ttrss_user_entries.feed_id = ttrss_feeds.id AND";
 
 			} else {
-				$from_qpart = "${ext_tables_part}ttrss_entries LEFT JOIN ttrss_user_entries ON (ref_id = ttrss_entries.id)
+				$from_qpart = "{$ext_tables_part}ttrss_entries LEFT JOIN ttrss_user_entries ON (ref_id = ttrss_entries.id)
 						LEFT JOIN ttrss_feeds ON (feed_id = ttrss_feeds.id)";
 				$feed_check_qpart = "";
 			}
@@ -2238,7 +2238,7 @@ class Feeds extends Handler_Protected {
 	 * @return array{0: string, 1: array<int, string>} [$search_query_part, $search_words]
 	 */
 	private static function _search_to_sql(string $search, string $search_language, int $owner_uid): array {
-		$keywords = str_getcsv(preg_replace('/(-?\w+)\:"(\w+)/', '"${1}:${2}', trim($search)), ' ');
+		$keywords = str_getcsv(preg_replace('/(-?\w+)\:"(\w+)/', '"{$1}:{$2}', trim($search)), ' ');
 		$query_keywords = array();
 		$search_words = array();
 		$search_query_leftover = array();

@@ -306,7 +306,7 @@ class DiskCache {
 		if ($fake_extension)
 			$fake_extension = ".$fake_extension";
 
-		header("Content-Disposition: inline; filename=\"${filename}${fake_extension}\"");
+		header("Content-Disposition: inline; filename=\"{$filename}{$fake_extension}\"");
 
 		return $this->send_local_file($this->get_full_path($filename));
 	}

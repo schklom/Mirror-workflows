@@ -1,8 +1,8 @@
 # 🎤 Web Whisper 📝
 
-Get OpenAI's [Whipser]() right into your browser!
+Get OpenAI's [Whisper](https://github.com/openai/whisper) right into your browser!
 
-This is a Web-UI for the AI whisper. 
+This is a small personal project I am using to learn Golang and Svelte. It is a light web frontend for OpenAI's whisper.
 
 ## ✨ Features:
 

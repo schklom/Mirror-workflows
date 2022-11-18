@@ -66,7 +66,7 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 
 		commandString := fmt.Sprintf("%v/%v", path, whisperBin)
 		targetFilepath := fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id.String())
-		output, err := exec.Command(commandString, "-m", whisperModel, "-nt", "-l", "es", "-f", targetFilepath).Output()
+		output, err := exec.Command(commandString, "-m", whisperModel, "-nt", "-f", targetFilepath).Output()
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			log.Printf("Error while transcribing: %v", err)

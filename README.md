@@ -60,3 +60,14 @@ You will need `npm` and `yarn` to run the frontend.
 - Run `yarn`
 - Run the frontend with `yarn dev`
     - The frontend will be available at the address in the console output.
+
+## Screenshots
+
+##### Main page
+![](misc/MainPage.png)
+
+##### Recording
+![](misc/Recording.png)
+
+##### Result
+![](misc/Transcribed.png)

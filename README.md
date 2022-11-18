@@ -24,6 +24,10 @@ This is a Web-UI for the AI whisper.
 
 ## 🪺 Self-hosting
 
+### Docker-compose (coming soon)
+
+### Manual
+
 This is a small guide on how to self-host this project.
 
 It is built of two parts; the `backend` and the `frontend`. Both need to be running at the same time so you can make use of it.
@@ -36,7 +40,7 @@ And enter the directory:
 
 `cd web-whisper`
 
-### Running the backend
+#### Running the backend
 
 You will need `go` (Golang) installed on your computer.
 
@@ -47,7 +51,7 @@ You will need `go` (Golang) installed on your computer.
 - Run the backend `go run .`
     - The backend starts at `localhost:9090`; you can edit the `main.go` file to change the default port.
 
-### Running the frontend
+#### Running the frontend
 
 You will need `npm` and `yarn` to run the frontend.
 

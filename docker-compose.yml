@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      dockerfile: ./backend.Dockerfile
+      context: .
+    container_name: web-whisper-be
+    ports:
+      - 127.0.0.1:9090:9090
+  
+  frontend:
+    build:
+      dockerfile: ./frontend.Dockerfile
+      context: .
+    container_name: web-whisper-fe
+    ports:
+      - 127.0.0.1:5173:5173

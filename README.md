@@ -15,27 +15,31 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 
 ## ✨ Features:
 
-- Backend written in **Go**
-- Frontend written with **Svelte** and **Tailwind CSS**.
-- Whisper from [whisper.cpp](https://github.com/ggerganov/whisper.cpp).
+- [x] Backend written in **Go**
+- [x] Frontend written with **Svelte** and **Tailwind CSS**.
+- [x] Whisper from [whisper.cpp](https://github.com/ggerganov/whisper.cpp).
     - You don't need a GPU, uses CPU.
     - No need for complex installations.
-- Record and transcribe audio right from your browser.
-- Lightweight and beautiful UI.
-- Self-hosted. No 3rd parties.
+- [x] Record and transcribe audio right from your browser.
+- [x] Lightweight and beautiful UI.
+- [x] Self-hosted. No 3rd parties.
+- [x] Docker compose for easy self-hosting
 
 ## 🧭 Roadmap:
 
-- [ ] Docker compose for easy self-hosting
 - [ ] Upload any files (video, audio...)
 - [ ] Download `.srt` subtitle files
-- [ ] Get a history of your transcriptions
+- [ ] History of your transcriptions
 
 ## 🪺 Self-hosting
 
 ### Docker-compose
 
-> (coming soon)
+> Install [Docker](https://docs.docker.com/engine/install/#server) and [docker-compose](https://docs.docker.com/compose/install/)
+
+1. Clone this repo: `git clone https://codeberg.org/pluja/web-whisper`
+3. Build and run the containers: `docker compose up -d`
+3. Navigate to http://localhost:5137 and enjoy!
 
 ### Manual
 

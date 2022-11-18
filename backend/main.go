@@ -14,7 +14,7 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(JSONMiddleware)
 
-	r.Get("/transcribe", transcribe)
+	r.Post("/transcribe", transcribe)
 	r.Get("/translate", translate)
 
 	c := cors.New(cors.Options{

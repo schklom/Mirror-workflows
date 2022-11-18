@@ -18,12 +18,13 @@ func main() {
 	r.Get("/translate", translate)
 
 	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:9090"},
+		AllowedOrigins: []string{"http://0.0.0.0:9090", "http://127.0.0.1:9090", "http://localhost:9090"},
 		AllowedMethods: []string{http.MethodGet, http.MethodPost, http.MethodDelete, http.MethodPatch},
 	})
 
+	//c := cors.Default()
 	handler := c.Handler(r)
-	http.ListenAndServe("localhost:9090", handler)
+	http.ListenAndServe("0.0.0.0:9090", handler)
 }
 
 func JSONMiddleware(hndlr http.Handler) http.Handler {

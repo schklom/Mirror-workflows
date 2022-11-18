@@ -1,5 +1,5 @@
 package main
 
 type Response struct {
-	Message string `json:"message"`
+	Result string `json:"result"`
 }

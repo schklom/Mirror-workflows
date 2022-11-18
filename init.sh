@@ -22,7 +22,27 @@ function initFrontend () {
     echo $feName | yarn create vite --template svelte
     mv $feName frontend
     cd frontend
-    yarn add -d tailwindcss postcss autoprefixer @tailwindcss/forms && yarn && cd ..
+    yarn add -D tailwindcss postcss autoprefixer @tailwindcss/forms && yarn 
+    npx tailwindcss init -p
+    echo '''
+    /** @type {import("tailwindcss").Config} */
+    module.exports = {
+    content: [
+        "./src/**/*.svelte"
+    ],
+    theme: {
+        extend: {},
+    },
+    plugins: [require("@tailwindcss/forms")],
+    }
+    ''' > tailwind.config.cjs
+    rm app.css
+    echo """
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+    """ > index.css
+    sed -i -e 's/app\.css/index\.css/g' main.js
 
     sleep 5 && printf "\n ℹ️ Start development server with `yarn dev` inside frontend folder.\n"
 }

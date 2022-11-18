@@ -4,6 +4,15 @@ Get OpenAI's [Whisper](https://github.com/openai/whisper) right into your browse
 
 This is a small personal project I am using to learn Golang and Svelte. It is a light web frontend for OpenAI's whisper.
 
+## Contents:
+
+- [Features](#features)
+- [Roadmap](#roadmap)
+- [Self-hosting](#self-hosting)
+    - [With docker](#docker-compose)
+    - [From source](#manual)
+- [Screenshots](#screenshots)
+
 ## ✨ Features:
 
 - Backend written in **Go**
@@ -24,7 +33,9 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 
 ## 🪺 Self-hosting
 
-### Docker-compose (coming soon)
+### Docker-compose
+
+> (coming soon)
 
 ### Manual
 

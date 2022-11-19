@@ -20,22 +20,25 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 
 ## ✨ Features:
 
-- [x] Backend written in **Go**
-- [x] Frontend written with **Svelte** and **Tailwind CSS**.
-- [x] Whisper from [whisper.cpp](https://github.com/ggerganov/whisper.cpp).
-    - You don't need a GPU, uses CPU.
-    - No need for complex installations.
 - [x] Record and transcribe audio right from your browser.
 - [x] Lightweight and beautiful UI.
 - [x] Self-hosted. No 3rd parties.
-- [x] Docker compose for easy self-hosting
+- [x] **Docker compose** for easy self-hosting
 - [x] Select input audio language
+- [x] **Privacy respecting**: 
+    - All happens locally. No third parties involved.
+    - Audio files are deleted immediately after processing.
+- [x] Backend written in **Go**
+- [x] Frontend written with **Svelte** and **Tailwind CSS**.
+- [x] Uses C++ whisper version from [whisper.cpp](https://github.com/ggerganov/whisper.cpp).
+    - You don't need a GPU, uses CPU.
+    - No need for complex installations.
 
 ## 🧭 Roadmap:
 
 - [ ] Upload any files (video, audio...)
 - [ ] Download `.srt` subtitle files
-- [ ] History of your transcriptions
+- [ ] History of your transcriptions (?)
 - [ ] Translate input to English
 
 ## 🪺 Self-hosting
@@ -103,10 +106,16 @@ You will need `npm` and `yarn` to run the frontend.
 ## Screenshots
 
 ##### Main page
-![](misc/MainPage.png)
+<img src="https://farside.link/rimgo/RuT608I.png" align=center>
 
 ##### Recording
-![](misc/Recording.png)
+<img src="https://farside.link/rimgo/M5pW2BB.png" align=center>
 
-##### Result
-![](misc/Transcribed.png)
+#### Audio language options
+<img src="https://farside.link/rimgo/QYAqqaa.png" align=center>
+
+#### Processing (transcode+transcript)
+<img src="https://farside.link/rimgo/355YyFC.png" align=center>
+
+#### Result (you can easily copy to clipboard)
+<img src="https://farside.link/rimgo/5etPJ1q.png" align=center>

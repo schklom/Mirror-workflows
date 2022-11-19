@@ -85,6 +85,11 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 			log.Printf("Error marshalling tasks to json: %v", err)
 			return
 		}
+
+		err = os.Remove(fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id.String()))
+		if err != nil {
+			log.Printf("Could not remove the .wav file %v.", err)
+		}
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonData)
 

@@ -135,7 +135,10 @@
 </script>
 
 <main class="bg-gray-800 h-screen flex flex-col items-center justify-center">
-  <p class="text-5xl text-slate-300 font-bold text-center mt-24">Web Whisper</p>
+  <div class="flex flex-row flex-wrap justify-center align-middle">
+    <img class="w-16 h-16" src="/logo.webp" alt="">
+    <p class="text-5xl text-slate-300 font-bold text-center mt-2 ml-4">Web Whisper</p>
+  </div>
   <p class="text-md font-bold text-slate-300 text-center mt-2">Powered by Go, Svelte and Whisper.cpp</p>
   
   <div class="flex flex-col max-w-md items-center space-x-2 bg-slate-100 rounded-xl p-6 dark:bg-slate-800 m-16 w-4/5">
@@ -271,6 +274,6 @@
   {/if}
 
   <div class="mt-8">
-    <p class="text-md font-bold text-slate-300 text-center">With ❤ by <a class="text-blue-400" href="https://codeberg.org/pluja">Pluja</a></p>
+    <p class="text-md font-bold text-slate-300 text-center">🌱 by <a class="text-blue-400" href="https://codeberg.org/pluja">Pluja</a></p>
   </div>
 </main>

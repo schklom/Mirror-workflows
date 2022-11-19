@@ -1,10 +1,14 @@
 <script>
   import axios from "axios";
   import {onMount} from "svelte";
+  
+  const delay = ms => new Promise(res => setTimeout(res, ms));
+
   let started = false
   let audioAvailable = false
   let transcriptionResultText = false
   let copied = false
+  let processing = false
 
   let recordedBlobs
   let mediaRecorder
@@ -56,6 +60,7 @@
 
   // Makes the requests to the backend with the received audio file.
   async function handleTranscribe() {
+    processing = true;
     var blob = new Blob(recordedBlobs, {
      type: 'audio/webm'
     });
@@ -80,18 +85,23 @@
 
     console.log(response.data.result);
     transcriptionResultText = response.data.result;
+    processing = false
   }
 
   // Handles the Copy text button behaviour
   function handleCopyText() {
     // Get the text field
     var copyText = document.getElementById("textbox");
-    copyText.select();
-    copyText.setSelectionRange(0, 99999); // For mobile devices
+    //copyText.select();
+    //copyText.setSelectionRange(0, 99999); // For mobile devices
     // Copy the text inside the text field
-    navigator.clipboard.writeText(copyText.value);
+    navigator.clipboard.writeText(copyText.innerHTML);
     // Alert the copied text
-    copied = true
+    copied = true;
+
+    setTimeout(() => {
+      copied = false;
+    }, 2300);
   }
 
   // Handles the stop button to stop the recording.
@@ -191,12 +201,22 @@
         </div>
       </div>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <a on:click={handleTranscribe} id="download" class="bg-blue-500 cursor-pointer text-white text-center hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
-        </svg>        
-        <span>Transcribe</span>
-      </a>
+        {#if processing == false}
+        <a on:click={handleTranscribe} id="download" class="bg-blue-500 cursor-pointer text-white text-center hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+          </svg>        
+          <span>Transcribe</span>
+        </a>
+        {:else}
+        <button type="button" class="pointer-none inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:border-gray-700 focus:shadow-outline-gray active:bg-gray-700 transition ease-in-out duration-150 cursor-not-allowed" disabled="">
+          <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Processing
+        </button>
+        {/if}
       {/if}
     </div>
     
@@ -223,9 +243,9 @@
 
   {#if transcriptionResultText}
     <div id="transcriptionResultTextBox" class="max-w-md items-center space-x-2 bg-slate-100 rounded-xl dark:bg-slate-800 m-2 p-4 w-4/5">
-      <div class="p-5">
+      <div class="p-2">
           <div class="flex flex-col justify-center items-center">
-            <input id="textbox" type="text" disabled class="font-large text-gray-700 mb-3 font-bold p-4 rounded-xl border-none" value="{transcriptionResultText}">
+            <p id="textbox" type="text" disabled class="font-large text-gray-700 mb-3 font-bold p-4 rounded-xl border-none bg-slate-100">{transcriptionResultText}</p>
             {#if copied == false }
               <!-- svelte-ignore a11y-click-events-have-key-events -->
               <!-- svelte-ignore a11y-missing-attribute -->

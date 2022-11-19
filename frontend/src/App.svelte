@@ -86,6 +86,7 @@
     console.log(response.data.result);
     transcriptionResultText = response.data.result;
     processing = false
+    audioAvailable = false
   }
 
   // Handles the Copy text button behaviour

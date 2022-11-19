@@ -1,6 +1,7 @@
 # Web Whisper 
 
 <p align="center"><img width="150" src="frontend/public/logo.webp"> </img></p>
+<sub align="center">This logo has been generated with Stable Diffusion</sub>
 
 Get OpenAI's [Whisper](https://github.com/openai/whisper) right into your browser!
 

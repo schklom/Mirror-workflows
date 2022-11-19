@@ -31,10 +31,14 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 
 ## 🧭 Roadmap:
 
-- [ ] Upload any files (video, audio...)
-- [ ] Download `.srt` subtitle files
-- [ ] History of your transcriptions (?)
-- [ ] Translate input to English
+- [ ] Show error messages on the frontend when they occur.
+- [ ] Download `.srt` subtitle file generated from audio.
+- [ ] Translate input audio transcription to english.
+- [ ] Allow to upload any file (video, audio) in any format and transcribe it.
+	- [ ] Limit max file size for server hosting.
+    - [ ] Allow to cut audio to X seconds before transcription.
+- [ ] Transcription history / save snippets
+    - Publish to some **pastebin**-like service.
 
 ## 🪺 Self-hosting
 

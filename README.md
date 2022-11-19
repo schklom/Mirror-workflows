@@ -24,12 +24,14 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 - [x] Lightweight and beautiful UI.
 - [x] Self-hosted. No 3rd parties.
 - [x] Docker compose for easy self-hosting
+- [x] Select input audio language
 
 ## 🧭 Roadmap:
 
 - [ ] Upload any files (video, audio...)
 - [ ] Download `.srt` subtitle files
 - [ ] History of your transcriptions
+- [ ] Translate input to English
 
 ## 🪺 Self-hosting
 

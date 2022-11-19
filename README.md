@@ -1,4 +1,6 @@
-# 🎤 Web Whisper 📝
+# Web Whisper 
+
+<p align="center"><img width="500" src="frontend/public/logo.webp"> </img></p>
 
 Get OpenAI's [Whisper](https://github.com/openai/whisper) right into your browser!
 

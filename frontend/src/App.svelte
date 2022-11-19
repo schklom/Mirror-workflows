@@ -3,11 +3,13 @@
   import {onMount} from "svelte";
   let started = false
   let audioAvailable = false
-  let translation = false
+  let transcriptionResultText = false
+  let copied = false
 
   let recordedBlobs
   let mediaRecorder
 
+  // When app is mounted, it runs the init() function
   onMount(() => {
     init();
   });
@@ -18,6 +20,7 @@
     main.innerHTML = `<div class="error"><p>${message}</p></div>`;
   }
 
+  // Handle data blobs when available from mediaRecorder.
   function handleDataAvailable(event) {
     console.log('handleDataAvailable', event);
     if (event.data && event.data.size > 0) {
@@ -25,6 +28,7 @@
     }
   }
 
+  // Handles the start button. Sets up and starts mediaRecorder
   function handleStart() {
     console.log("Started");
     recordedBlobs = [];
@@ -50,6 +54,7 @@
     console.log('MediaRecorder started', mediaRecorder);
   }
 
+  // Makes the requests to the backend with the received audio file.
   async function handleTranscribe() {
     var blob = new Blob(recordedBlobs, {
      type: 'audio/webm'
@@ -59,7 +64,10 @@
         type: "audio/mp3",
     });
     const formData = new FormData();
+    let language = document.getElementById("lang").value;
+    console.log(language)
     formData.append("file", audiofile);
+    formData.append("lang", language);
     
     const response = await axios({
       method: 'post',
@@ -71,9 +79,22 @@
     });
 
     console.log(response.data.result);
-    translation = response.data.result;
+    transcriptionResultText = response.data.result;
   }
 
+  // Handles the Copy text button behaviour
+  function handleCopyText() {
+    // Get the text field
+    var copyText = document.getElementById("textbox");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); // For mobile devices
+    // Copy the text inside the text field
+    navigator.clipboard.writeText(copyText.value);
+    // Alert the copied text
+    copied = true
+  }
+
+  // Handles the stop button to stop the recording.
   async function handleStop() {
     mediaRecorder.stop();
     console.log("Stopped");
@@ -81,6 +102,7 @@
     audioAvailable = true;
   }
 
+  // Handles the download of the recorded audio.
   function handleDownload() {
     const downloadLink = document.getElementById('download');
     var blob = new Blob(recordedBlobs, {
@@ -91,6 +113,7 @@
     downloadLink.download = "test.webm";
   }
 
+  // Asks for microphone permission to the user
   async function init() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
@@ -105,7 +128,7 @@
   <p class="text-5xl text-slate-300 font-bold text-center mt-24">Web Whisper</p>
   <p class="text-md font-bold text-slate-300 text-center mt-2">Powered by Go, Svelte and Whisper.cpp</p>
   
-  <div class="flex flex-col max-w-md items-center space-x-2 bg-slate-100 rounded-xl p-8 dark:bg-slate-800 m-16">
+  <div class="flex flex-col max-w-md items-center space-x-2 bg-slate-100 rounded-xl p-6 dark:bg-slate-800 m-16 w-4/5">
     <div class="inline-flex mt-2 mb-1">
       <!-- component -->
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -134,6 +157,39 @@
       {/if}
 
       { #if audioAvailable }
+      <div class="flex justify-center mt-6">
+        <div class="mb-2 xl:w-full">
+          <label for="lang">Audio language</label>
+          <select required id="lang" class="form-select appearance-none
+            block
+            w-full
+            px-6
+            py-1.5
+            text-sm
+            font-normal
+            text-gray-700
+            bg-white bg-clip-padding bg-no-repeat
+            border border-solid border-gray-300
+            rounded
+            transition
+            ease-in-out
+            m-0
+            focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example">
+              <option value="en" selected>Default (en)</option>
+              <option value="fr">French</option>
+              <option value="de">German</option>
+              <option value="it">Italian</option>
+              <option value="es">Spanish</option>
+              <option value="ca">Catalan</option>
+              <option value="et">Estonian</option>
+              <option value="Czech">Czech</option>
+              <option value="no">Norweigan</option>
+              <option value="ru">Russian</option>
+              <option value="ja">Japanese</option>
+              <option value="Chinese">Chinese</option>
+          </select>
+        </div>
+      </div>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <a on:click={handleTranscribe} id="download" class="bg-blue-500 cursor-pointer text-white text-center hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
@@ -165,10 +221,33 @@
   </div>
 
 
-  {#if translation}
-    <div id="translationBox" class="flex max-w-md flex-col items-center space-x-2 bg-slate-100 rounded-xl p-8 dark:bg-slate-800 mb-4">
-      <p class="font-bold"> {translation} </p>
-    </div>
+  {#if transcriptionResultText}
+    <div id="transcriptionResultTextBox" class="max-w-md items-center space-x-2 bg-slate-100 rounded-xl dark:bg-slate-800 m-2 p-4 w-4/5">
+      <div class="p-5">
+          <div class="flex flex-col justify-center items-center">
+            <input id="textbox" type="text" disabled class="font-large text-gray-700 mb-3 font-bold p-4 rounded-xl border-none" value="{transcriptionResultText}">
+            {#if copied == false }
+              <!-- svelte-ignore a11y-click-events-have-key-events -->
+              <!-- svelte-ignore a11y-missing-attribute -->
+              <a on:click={handleCopyText} class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-sm px-3 py-2 text-center inline-flex items-center text-center cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                </svg>
+                  Copy text
+              </a>
+            {:else}
+              <!-- svelte-ignore a11y-click-events-have-key-events -->
+              <!-- svelte-ignore a11y-missing-attribute -->
+              <a on:click={handleCopyText} class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-bold rounded-lg text-sm px-3 py-2 text-center inline-flex items-center text-center cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0118 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3l1.5 1.5 3-3.75" />
+                </svg>   
+                  Copied!
+              </a>           
+            {/if}
+          </div>
+      </div>
+  </div>
   {/if}
 
   <div class="mt-8">

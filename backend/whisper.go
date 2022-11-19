@@ -40,6 +40,9 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		}
 		defer file.Close()
 
+		language := r.FormValue("lang")
+		fmt.Println(language)
+
 		id := uuid.New()
 		f, err := os.OpenFile(fmt.Sprintf("%v/%v.webm", samplesDir, id.String()), os.O_WRONLY|os.O_CREATE, 0666)
 		if err != nil {
@@ -66,7 +69,7 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 
 		commandString := fmt.Sprintf("%v/%v", path, whisperBin)
 		targetFilepath := fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id.String())
-		output, err := exec.Command(commandString, "-m", whisperModel, "-nt", "-f", targetFilepath).Output()
+		output, err := exec.Command(commandString, "-m", whisperModel, "-nt", "-l", language, "-f", targetFilepath).Output()
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			log.Printf("Error while transcribing: %v", err)

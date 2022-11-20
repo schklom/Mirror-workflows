@@ -9,6 +9,7 @@
   let transcriptionResultText = false
   let copied = false
   let processing = false
+  let fileName = false
 
   let recordedBlobs
   let mediaRecorder
@@ -18,6 +19,11 @@
     init();
   });
 
+  function handleFileUpload () {
+      var fileInput = document.getElementById('fileSelect'); 
+      fileName = fileInput.files.item(0).name;
+      audioAvailable = true;
+  };
 
   function renderError(message) {
     const main = document.querySelector('main');
@@ -34,7 +40,9 @@
 
   // Handles the start button. Sets up and starts mediaRecorder
   function handleStart() {
-    console.log("Started");
+    console.log("Started recording...");
+    audioAvailable = false;
+    fileName = false;
     recordedBlobs = [];
     let options = {mimeType: 'audio/webm;'};
     started = true;
@@ -61,16 +69,23 @@
   // Makes the requests to the backend with the received audio file.
   async function handleTranscribe() {
     processing = true;
-    var blob = new Blob(recordedBlobs, {
-     type: 'audio/webm'
-    });
-    var url = URL.createObjectURL(blob);
-    const audiofile = new File([blob], "audio.webm", {
-        type: "audio/mp3",
-    });
+    let audiofile;
+    if(fileName != false) {
+      var fileInput = document.getElementById('fileSelect'); 
+      audiofile = fileInput.files[0];
+    } else{ // Is an audio recording
+      var blob = new Blob(recordedBlobs, {
+       type: 'audio/webm'
+      });
+      var url = URL.createObjectURL(blob);
+      const audiofile = new File([blob], "audio.webm", {
+          type: "audio/mp3",
+      });
+    }
     const formData = new FormData();
+
     let language = document.getElementById("lang").value;
-    console.log(language)
+
     formData.append("file", audiofile);
     formData.append("lang", language);
     
@@ -135,7 +150,7 @@
   }
 </script>
 
-<main class="bg-gray-800 h-screen flex flex-col items-center justify-center">
+<main class="bg-gray-800 h-fit min-h-screen flex flex-col items-center justify-center">
   <div class="flex flex-row flex-wrap justify-center align-middle">
     <img class="w-16 h-16" src="/logo.webp" alt="">
     <p class="text-5xl text-slate-300 font-bold text-center mt-2 ml-4">Web Whisper</p>
@@ -143,22 +158,24 @@
   <p class="text-md font-bold text-slate-300 text-center mt-2">Powered by Go, Svelte and Whisper.cpp</p>
   
   <div class="flex flex-col max-w-md items-center space-x-2 bg-slate-100 rounded-xl p-6 dark:bg-slate-800 m-16 w-4/5">
-    <div class="inline-flex mt-2 mb-1">
-      <!-- component -->
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
-      </svg>
-      <span class="font-bold text-center text-md mt-1">Record an audio.</span>
-    </div>
     
-    <div class="flex flex-col text-center justify-center">
+    <div class="text-center justify-center">
       {#if started == false}
       <button on:click={handleStart} id="start" class="bg-blue-500 text-white hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
         </svg>
         <span>Record</span>
       </button>
+
+      <!-- component -->
+      <label class="bg-blue-500 text-white hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
+          <svg class="w-6 h-6 mr-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
+          </svg>
+          <span class="leading-normal">Select a file</span>
+          <input id="fileSelect" on:change={handleFileUpload} type='file' class="hidden" />
+      </label>
       {/if}
 
       { #if started }
@@ -172,36 +189,43 @@
 
       { #if audioAvailable }
       <div class="flex justify-center mt-6">
-        <div class="mb-2 xl:w-full">
-          <label for="lang">Audio language</label>
-          <select required id="lang" class="form-select appearance-none
-            block
-            w-full
-            px-6
-            py-1.5
-            text-sm
-            font-normal
-            text-gray-700
-            bg-white bg-clip-padding bg-no-repeat
-            border border-solid border-gray-300
-            rounded
-            transition
-            ease-in-out
-            m-0
-            focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example">
-              <option value="en" selected>Default (en)</option>
-              <option value="fr">French</option>
-              <option value="de">German</option>
-              <option value="it">Italian</option>
-              <option value="es">Spanish</option>
-              <option value="ca">Catalan</option>
-              <option value="et">Estonian</option>
-              <option value="Czech">Czech</option>
-              <option value="no">Norweigan</option>
-              <option value="ru">Russian</option>
-              <option value="ja">Japanese</option>
-              <option value="Chinese">Chinese</option>
-          </select>
+        <div class="flex flex-col">
+          {#if fileName}
+            <p class="font-bold text-gray-400">
+              {fileName}
+            </p>
+          {/if}
+          <div class="mb-2 xl:w-full">
+            <label for="lang">Audio language</label>
+            <select required id="lang" class="form-select appearance-none
+              block
+              w-full
+              px-6
+              py-1.5
+              text-sm
+              font-normal
+              text-gray-700
+              bg-white bg-clip-padding bg-no-repeat
+              border border-solid border-gray-300
+              rounded
+              transition
+              ease-in-out
+              m-0
+              focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example">
+                <option value="en" selected>Default (en)</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="it">Italian</option>
+                <option value="es">Spanish</option>
+                <option value="ca">Catalan</option>
+                <option value="et">Estonian</option>
+                <option value="Czech">Czech</option>
+                <option value="no">Norweigan</option>
+                <option value="ru">Russian</option>
+                <option value="ja">Japanese</option>
+                <option value="Chinese">Chinese</option>
+            </select>
+          </div>
         </div>
       </div>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -274,7 +298,7 @@
   </div>
   {/if}
 
-  <div class="mt-8">
+  <div class="m-8">
     <p class="text-md font-bold text-slate-300 text-center">🌱 by <a class="text-blue-400" href="https://codeberg.org/pluja">Pluja</a></p>
   </div>
 </main>

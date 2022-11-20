@@ -4,12 +4,14 @@
   
   const delay = ms => new Promise(res => setTimeout(res, ms));
 
-  let started = false
-  let audioAvailable = false
-  let transcriptionResultText = false
-  let copied = false
-  let processing = false
-  let fileName = false
+  let recording = false;
+  let audioAvailable = false;
+  let transcriptionResultText = false;
+  let copied = false;
+  let processing = false;
+  let fileName = false;
+  let generateSubtitles = false;
+  let subtitlesUrl = "#";
 
   let recordedBlobs
   let mediaRecorder
@@ -45,7 +47,7 @@
     fileName = false;
     recordedBlobs = [];
     let options = {mimeType: 'audio/webm;'};
-    started = true;
+    recording = true;
     try {
       mediaRecorder = new MediaRecorder(window.stream, options);
     } catch (e) {
@@ -88,6 +90,7 @@
 
     formData.append("file", audiofile);
     formData.append("lang", language);
+    formData.append("subs", String(generateSubtitles));
     
     const response = await axios({
       method: 'post',
@@ -98,9 +101,9 @@
       },
     });
 
-    console.log(response.data.result);
-    transcriptionResultText = response.data.result;
     processing = false
+    transcriptionResultText = response.data.result;
+    subtitlesUrl = `http://localhost:9090/getsubs?id=${response.data.id}`;
     audioAvailable = false
   }
 
@@ -124,19 +127,8 @@
   async function handleStop() {
     mediaRecorder.stop();
     console.log("Stopped");
-    started = false;
+    recording = false;
     audioAvailable = true;
-  }
-
-  // Handles the download of the recorded audio.
-  function handleDownload() {
-    const downloadLink = document.getElementById('download');
-    var blob = new Blob(recordedBlobs, {
-     type: 'audio/webm'
-    });
-    var url = URL.createObjectURL(blob);
-    downloadLink.href = url;
-    downloadLink.download = "test.webm";
   }
 
   // Asks for microphone permission to the user
@@ -150,7 +142,7 @@
   }
 </script>
 
-<main class="bg-gray-800 h-fit min-h-screen flex flex-col items-center justify-center">
+<main class="bg-gray-800 h-fit min-h-screen flex flex-col items-center justify-center py-8">
   <div class="flex flex-row flex-wrap justify-center align-middle">
     <img class="w-16 h-16" src="/logo.webp" alt="">
     <p class="text-5xl text-slate-300 font-bold text-center mt-2 ml-4">Web Whisper</p>
@@ -160,25 +152,29 @@
   <div class="flex flex-col max-w-md items-center space-x-2 bg-slate-100 rounded-xl p-6 dark:bg-slate-800 m-16 w-4/5">
     
     <div class="text-center justify-center">
-      {#if started == false}
+      {#if recording == false}
       <button on:click={handleStart} id="start" class="bg-blue-500 text-white hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
         </svg>
+        { #if audioAvailable }
+        <span>Record again</span>
+        {:else}
         <span>Record</span>
+        {/if}
       </button>
 
       <!-- component -->
-      <label class="bg-blue-500 text-white hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
+      <label class="bg-blue-500 text-white hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center cursor-pointer">
           <svg class="w-6 h-6 mr-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
               <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
           </svg>
-          <span class="leading-normal">Select a file</span>
-          <input id="fileSelect" on:change={handleFileUpload} type='file' class="hidden" />
+          <span>File</span>
+          <input accept="audio/*, video/*" id="fileSelect" on:change={handleFileUpload} type='file' class="hidden" />
       </label>
       {/if}
 
-      { #if started }
+      { #if recording }
       <button on:click={handleStop} id="stop" class="bg-red-500 text-white hover:bg-red-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 7.5A2.25 2.25 0 017.5 5.25h9a2.25 2.25 0 012.25 2.25v9a2.25 2.25 0 01-2.25 2.25h-9a2.25 2.25 0 01-2.25-2.25v-9z" />
@@ -188,14 +184,13 @@
       {/if}
 
       { #if audioAvailable }
-      <div class="flex justify-center mt-6">
-        <div class="flex flex-col">
+      <div class="justify-center mt-6">
           {#if fileName}
             <p class="font-bold text-gray-400">
               {fileName}
             </p>
           {/if}
-          <div class="mb-2 xl:w-full">
+          <div class="mb-2 xl:w-fulll">
             <label for="lang">Audio language</label>
             <select required id="lang" class="form-select appearance-none
               block
@@ -225,8 +220,17 @@
                 <option value="ja">Japanese</option>
                 <option value="Chinese">Chinese</option>
             </select>
-          </div>
         </div>
+      </div>
+      <div class="flex flex-row items-center align-middle text-center mb-4">
+        <input id="generateSubtitles" bind:checked={generateSubtitles} 
+               class="appearance-none h-4 w-4 border border-gray-300 rounded-sm 
+                    bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none 
+                    transition duration-200 align-top bg-no-repeat bg-center bg-contain 
+                    float-left cursor-pointer" type="checkbox">
+        <label class="inline-block text-gray-800 text-bold ml-2" for="generateSubtitles">     
+          <span>Generate subtitle file</span>
+        </label>
       </div>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
         {#if processing == false}
@@ -272,27 +276,39 @@
   {#if transcriptionResultText}
     <div id="transcriptionResultTextBox" class="max-w-md items-center space-x-2 bg-slate-100 rounded-xl dark:bg-slate-800 m-2 p-4 w-4/5">
       <div class="p-2">
-          <div class="flex flex-col justify-center items-center">
+          <div class="flex flex-col">
+            <div class="flex flex-row justify-between">
+              {#if generateSubtitles}
+                <a href={subtitlesUrl} id="stop" class=" bg-blue-500 text-white hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3 3m0 0l3-3m-3 3V2.25" />
+                  </svg>                       
+                  <span>Subtitles</span>
+                </a>
+              {/if}
+              {#if copied == false }
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-missing-attribute -->
+                <a on:click={handleCopyText} class="bg-gray-500 text-white hover:bg-gray-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center cursor-pointer">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                  </svg>
+                  <span class="sr-only">Copy text</span>
+                </a>
+              {:else}
+                <!-- svelte-ignore a11y-click-events-have-key-events -->
+                <!-- svelte-ignore a11y-missing-attribute -->
+                <a on:click={handleCopyText} class="bg-green-400 text-white cursor-none font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0118 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3l1.5 1.5 3-3.75" />
+                  </svg>   
+                  <span class="sr-only">Copied</span>
+                </a>           
+              {/if}
+            </div>
+          </div>
+          <div class="text-justify font-mono">
             <p id="textbox" type="text" disabled class="font-large text-gray-700 mb-3 font-bold p-4 rounded-xl border-none bg-slate-100">{transcriptionResultText}</p>
-            {#if copied == false }
-              <!-- svelte-ignore a11y-click-events-have-key-events -->
-              <!-- svelte-ignore a11y-missing-attribute -->
-              <a on:click={handleCopyText} class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-sm px-3 py-2 text-center inline-flex items-center text-center cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
-                </svg>
-                <span class="sr-only">Copy text</span>
-              </a>
-            {:else}
-              <!-- svelte-ignore a11y-click-events-have-key-events -->
-              <!-- svelte-ignore a11y-missing-attribute -->
-              <a on:click={handleCopyText} class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-bold rounded-lg text-sm px-3 py-2 text-center inline-flex items-center text-center cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0118 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3l1.5 1.5 3-3.75" />
-                </svg>   
-                <span class="sr-only">Copied</span>
-              </a>           
-            {/if}
           </div>
       </div>
   </div>

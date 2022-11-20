@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"strconv"
 
 	"github.com/google/uuid"
 	ffmpeg "github.com/u2takey/ffmpeg-go"
@@ -18,6 +19,31 @@ const (
 	whisperModel = "whisper.cpp/models/ggml-small.bin"
 	samplesDir   = "whisper.cpp/samples"
 )
+
+func getSubsFile(w http.ResponseWriter, r *http.Request) {
+	path, err := os.Getwd()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Printf("Error getting path: %v", err)
+		return
+	}
+	id := r.URL.Query().Get("id")
+
+	if id == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("The id does not exist.")
+		return
+	}
+
+	fmt.Println(id)
+	w.Header().Set("Content-Disposition", "attachment; filename="+strconv.Quote("subtitles.srt"))
+	w.Header().Set("Content-Type", "application/octet-stream")
+	http.ServeFile(w, r, fmt.Sprintf("%v/%v/%v.wav.srt", path, samplesDir, id))
+	err = os.Remove(fmt.Sprintf("%v/%v/%v.wav.srt", path, samplesDir, id))
+	if err != nil {
+		log.Printf("Could not remove the .wav file %v.", err)
+	}
+}
 
 func transcribe(w http.ResponseWriter, r *http.Request) {
 	path, err := os.Getwd()
@@ -41,7 +67,18 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		defer file.Close()
 
 		language := r.FormValue("lang")
+		if language == "" {
+			fmt.Println("Defaulting language to English...")
+			language = "en"
+		}
 		fmt.Println(language)
+
+		subs := ""
+		getSubs, err := strconv.ParseBool(r.FormValue("subs"))
+
+		if getSubs == true {
+			subs = "-osrt"
+		}
 
 		id := uuid.New()
 		f, err := os.OpenFile(fmt.Sprintf("%v/%v.webm", samplesDir, id.String()), os.O_WRONLY|os.O_CREATE, 0666)
@@ -69,7 +106,7 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 
 		commandString := fmt.Sprintf("%v/%v", path, whisperBin)
 		targetFilepath := fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id.String())
-		output, err := exec.Command(commandString, "-m", whisperModel, "-nt", "-l", language, "-f", targetFilepath).Output()
+		output, err := exec.Command(commandString, "-m", whisperModel, subs, "-nt", "-l", language, "-f", targetFilepath).Output()
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			log.Printf("Error while transcribing: %v", err)
@@ -78,6 +115,7 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		var response Response
 
 		response.Result = string(output)
+		response.Id = id.String()
 
 		jsonData, err := json.Marshal(response)
 		if err != nil {

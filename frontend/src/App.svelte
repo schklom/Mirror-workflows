@@ -1,6 +1,8 @@
 <script>
   import axios from "axios";
   import {onMount} from "svelte";
+
+  const apiHost = "localhost:9090"
   
   const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -76,17 +78,18 @@
       var fileInput = document.getElementById('fileSelect'); 
       audiofile = fileInput.files[0];
     } else{ // Is an audio recording
+      console.log("Processing audio")
       var blob = new Blob(recordedBlobs, {
-       type: 'audio/webm'
+        type: 'audio/webm'
       });
       var url = URL.createObjectURL(blob);
-      const audiofile = new File([blob], "audio.webm", {
-          type: "audio/mp3",
+      audiofile = new File([blob], "audio.webm", {
+        type: "audio/mp3",
       });
     }
     const formData = new FormData();
-
     let language = document.getElementById("lang").value;
+
 
     formData.append("file", audiofile);
     formData.append("lang", language);
@@ -94,7 +97,7 @@
     
     const response = await axios({
       method: 'post',
-      url: 'http://localhost:9090/transcribe',
+      url: `http://${apiHost}/transcribe`,
       data: formData,
       headers: {
         'Content-Type': `mutlipart/form-data;`,
@@ -103,7 +106,7 @@
 
     processing = false
     transcriptionResultText = response.data.result;
-    subtitlesUrl = `http://localhost:9090/getsubs?id=${response.data.id}`;
+    subtitlesUrl = `http://${apiHost}/getsubs?id=${response.data.id}`;
     audioAvailable = false
   }
 

@@ -17,6 +17,7 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 
 - [x] Record and transcribe audio right from your browser.
 - [x] Upload any media file (video, audio) in any format and transcribe it.
+- [x] Download `.srt` subtitle file generated from audio.
 - [x] Lightweight and beautiful UI.
 - [x] Self-hosted. No 3rd parties.
 - [x] **Docker compose** for easy self-hosting
@@ -33,7 +34,6 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 ## 🧭 Roadmap:
 
 - [ ] Show error messages on the frontend when they occur.
-- [ ] Download `.srt` subtitle file generated from audio.
 - [ ] Translate input audio transcription to english.
 - [x] Allow to upload any file (video, audio) in any format and transcribe it.
 	- [ ] Limit max file size for server hosting.

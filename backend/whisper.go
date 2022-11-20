@@ -75,7 +75,6 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 
 		subs := ""
 		getSubs, err := strconv.ParseBool(r.FormValue("subs"))
-
 		if getSubs == true {
 			subs = "-osrt"
 		}
@@ -106,12 +105,16 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 
 		commandString := fmt.Sprintf("%v/%v", path, whisperBin)
 		targetFilepath := fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id.String())
-		output, err := exec.Command(commandString, "-m", whisperModel, subs, "-nt", "-l", language, "-f", targetFilepath).Output()
+		output, err := exec.Command(commandString, "-m", whisperModel, "-nt", "-l", language, "-f", targetFilepath).Output()
+		if subs != "" {
+			output, err = exec.Command(commandString, "-m", whisperModel, subs, "-nt", "-l", language, "-f", targetFilepath).Output()
+		}
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			log.Printf("Error while transcribing: %v", err)
 			return
 		}
+
 		var response Response
 
 		response.Result = string(output)

@@ -109,16 +109,16 @@ You will need `npm` and `yarn` to run the frontend.
 <p align="center"><sub>*Logo generated with Stable Diffusion*</sub></p>
 
 ##### Main page
-<img src="https://farside.link/rimgo/RuT608I.png" align=center>
+<img src="https://farside.link/rimgo/GFBHU8V.png" align=center>
 
 ##### Recording
 <img src="https://farside.link/rimgo/M5pW2BB.png" align=center>
 
-#### Audio language options
-<img src="https://farside.link/rimgo/QYAqqaa.png" align=center>
+#### Transcription Options
+<img src="https://farside.link/rimgo/a4yf4hu.png" align=center>
 
-#### Processing (transcode+transcript)
-<img src="https://farside.link/rimgo/355YyFC.png" align=center>
+#### Processing
+<img src="https://farside.link/rimgo/SHOTbh8.png" align=center>
 
-#### Result (you can easily copy to clipboard)
-<img src="https://farside.link/rimgo/5etPJ1q.png" align=center>
+#### Result
+<img src="https://farside.link/rimgo/8EodxT9.png" align=center>

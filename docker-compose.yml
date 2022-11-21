@@ -6,39 +6,11 @@ services:
       dockerfile: ./backend.Dockerfile
       context: .
     container_name: web-whisper-be
-    ports:
-      - 127.0.0.1:9090:9090
   
   frontend:
     build:
       dockerfile: ./frontend.Dockerfile
       context: .
-    networks:
-      - default
-      - caddy
     container_name: web-whisper-fe
-    labels:
-      caddy: "localhost"
-      caddy.reverse_proxy: "{{upstreams http 5173}}"
-    #ports:
-    #  - "127.0.0.1:5173:5173"
-
-  caddy:
-    image: lucaslorentz/caddy-docker-proxy:ci-alpine
     ports:
-      - 3000:443
-    environment:
-      - CADDY_INGRESS_NETWORKS=caddy
-    networks:
-      - caddy
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - caddy_data:/data
-    restart: unless-stopped
-
-networks:
-  caddy:
-    name: caddy
-
-volumes:
-  caddy_data: {}
+      - "127.0.0.1:3000:443"

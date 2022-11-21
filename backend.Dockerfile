@@ -1,6 +1,7 @@
-FROM golang:bullseye
+FROM golang:bullseye AS build
 
 WORKDIR /app
+
 COPY backend/ ./
 RUN go mod download
 RUN go build -v -o wwbackend ./...
@@ -11,9 +12,20 @@ WORKDIR /app/whisper.cpp
 RUN bash -c  "models/download-ggml-model.sh small &> /dev/null"
 RUN bash -c "make small &> /dev/null"
 #
-WORKDIR /app
-RUN bash -c "apt update -y &> /dev/null"
-RUN bash -c "apt install -y ffmpeg &> /dev/null"
 
-EXPOSE 9090
+FROM debian:bullseye-slim
+
+RUN apt update
+RUN apt install -y apt-transport-https debian-keyring debian-archive-keyring curl gpg
+RUN curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+RUN curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /etc/apt/sources.list.d/caddy-stable.list
+RUN apt update
+RUN apt install -y caddy ffmpeg
+
+WORKDIR /app
+COPY --from=build /app/ ./
+COPY docker/backend.Caddyfile /etc/caddy/Caddyfile
+RUN chmod +x /app/wwbackend
+
+EXPOSE 443
 CMD ["./wwbackend"]

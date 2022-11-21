@@ -48,25 +48,26 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 > Install [Docker](https://docs.docker.com/engine/install/#server) and [docker-compose](https://docs.docker.com/compose/install/)
 
 1. Clone this repo: `git clone https://codeberg.org/pluja/web-whisper`
-2. Open and edit the `docker-compose.yml` to fit your needs:
+2. Open and edit the `docker-compose.yml` to fit your needs.
 
 #### Local usage:
 
-The WebRTC microphone recording **needs** to have an SSL certificate (HTTPS) in order to work. To achieve this, I set up a caddy server within the `docker-compose.yml` that will create a self-signed certificate for you.
+The WebRTC microphone recording **needs** to have an SSL certificate (HTTPS) in order to work. To achieve this, I set up a caddy server within each image that will create a self-signed certificate. You simply need to run:
 
 3. `docker compose up -d`
 4. Visit https://localhost:3000
 
 #### Server setup
 
-The WebRTC microphone recording **needs** to have an SSL certificate (HTTPS) in order to work. This means that for this app to work, you need to serve it via HTTPS. You can use the already setup caddy server that will get it working on `localhost:3000` through HTTPS. Otherwise, you will need to setup a reverse proxy to serve the site via HTTPS.
+The WebRTC microphone recording **needs** to have an SSL certificate (HTTPS) in order to work. This means that for this app to work, you need to serve it via HTTPS. You can use the the current Dockerfiles and docker-compose.yml, or you can create your own (and PR if you come up with anything better that works!).
 
 If you want to set up a reverse proxy, you can just:
 
-3. Comment all caddy-related lines from the `docker-compose.yml` file.
-4. Uncomment the `ports` part of the `frontend` service OR setup the network of your reverse proxy.
-5. Point your reverse proxy to the frontend.
-6. Build and run the containers: `docker compose up -d`
+3. `docker compose up -d`
+5. Point your reverse proxy to the frontend:
+    - `https://frontend:3000` or `https://localhost:3000` depending if you choose to publish ports or not.
+
+---
 
 ### Manual
 

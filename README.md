@@ -17,6 +17,8 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 
 - [x] Record and transcribe audio right from your browser.
 - [x] Upload any media file (video, audio) in any format and transcribe it.
+    - [x] Option to cut audio to X seconds before transcription.
+    - [x] Option to disable file uploads.
 - [x] Download `.srt` subtitle file generated from audio.
 - [x] Lightweight and beautiful UI.
 - [x] Self-hosted. No 3rd parties.
@@ -36,7 +38,8 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 - [ ] Translate input audio transcription to english.
 - [x] Allow to upload any file (video, audio) in any format and transcribe it.
 	- [ ] Limit max file size for server hosting.
-    - [ ] Allow to cut audio to X seconds before transcription.
+    - [x] Allow to cut audio to X seconds before transcription.
+    - [x] Option to disable file uploads.
 - [ ] Transcription history / save snippets
     - Publish to some **pastebin**-like service.
 
@@ -52,6 +55,7 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 
 - `DOMAIN_NAME`: This is the domain where you plan to host and access `web-whisper`. In case you want to use it locally, you don't need to change it, leave `https://localhost:3000`. Note that if you change the port, you must also reflect this in this variable.
 - `CUT_MEDIA_SECONDS`: This is a variable that lets you limit the seconds of the processed media. If you set it to, for example, `10` all media will be cut after 10 seconds. If you leave it as `0`, no limit is set.
+- `ALLOW_FILE_UPLOADS`: This option enables or disables the ability to upload an arbitrary media file to the server for transcription. If set to `false` users will not be able to upload any files. If set to `true` (or any other string), users will be able to upload files.
 
 #### Local usage (without domain):
 

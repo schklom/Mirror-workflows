@@ -3,6 +3,7 @@
   import {onMount} from "svelte";
 
   const apiHost = "http://localhost:9090"
+  var allowFiles = "ALLOW_FILES"
   
   const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -22,12 +23,18 @@
   // When app is mounted, it runs the init() function
   onMount(() => {
     init();
+
+    if(allowFiles != "false") {
+      allowFiles = "true"
+    }
   });
 
   function handleFileUpload () {
-      var fileInput = document.getElementById('fileSelect'); 
-      fileName = fileInput.files.item(0).name;
-      audioAvailable = true;
+      if(allowFiles == "true"){
+        var fileInput = document.getElementById('fileSelect'); 
+        fileName = fileInput.files.item(0).name;
+        audioAvailable = true;
+      }
   };
 
   function renderError(message) {
@@ -99,7 +106,7 @@
     try {
       const response = await axios({
         method: 'post',
-        url: `${apiHost}/transcribe`,
+        url: `/transcribe`,
         data: formData,
         headers: {
           'Content-Type': `mutlipart/form-data;`,
@@ -108,7 +115,7 @@
       });
       processing = false
       transcriptionResultText = response.data.result;
-      if(generateSubtitles) subtitlesUrl = `${apiHost}/getsubs?id=${response.data.id}`;
+      if(generateSubtitles) subtitlesUrl = `/getsubs?id=${response.data.id}`;
       audioAvailable = false
 
     } catch(error) {
@@ -185,6 +192,7 @@
       </button>
 
       <!-- component -->
+      {#if allowFiles == "true"}
       <label class="bg-blue-500 text-white hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center cursor-pointer">
           <svg class="w-6 h-6 mr-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
               <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
@@ -192,6 +200,7 @@
           <span>File</span>
           <input accept="audio/*, video/*" id="fileSelect" on:change={handleFileUpload} type='file' class="hidden" />
       </label>
+      {/if}
       {/if}
 
       { #if recording }

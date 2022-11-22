@@ -7,6 +7,7 @@ require (
 	github.com/go-chi/chi/v5 v5.0.7 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
+	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/rs/cors v1.8.2 // indirect
 	github.com/u2takey/ffmpeg-go v0.4.1 // indirect
 	github.com/u2takey/go-utils v0.3.1 // indirect

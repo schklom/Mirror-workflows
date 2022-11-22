@@ -2,7 +2,7 @@
   import axios from "axios";
   import {onMount} from "svelte";
 
-  const apiHost = "localhost:9090"
+  const apiHost = "http://localhost:9090"
   
   const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -14,6 +14,7 @@
   let fileName = false;
   let generateSubtitles = false;
   let subtitlesUrl = "#";
+  let errorMessage = false
 
   let recordedBlobs
   let mediaRecorder
@@ -95,19 +96,31 @@
     formData.append("lang", language);
     formData.append("subs", String(generateSubtitles));
     
-    const response = await axios({
-      method: 'post',
-      url: `http://${apiHost}/transcribe`,
-      data: formData,
-      headers: {
-        'Content-Type': `mutlipart/form-data;`,
-      },
-    });
+    try {
+      const response = await axios({
+        method: 'post',
+        url: `${apiHost}/transcribe`,
+        data: formData,
+        headers: {
+          'Content-Type': `mutlipart/form-data;`,
+          "Access-Control-Allow-Origin": `${apiHost}`
+        },
+      });
+      processing = false
+      transcriptionResultText = response.data.result;
+      subtitlesUrl = `${apiHost}/getsubs?id=${response.data.id}`;
+      audioAvailable = false
 
-    processing = false
-    transcriptionResultText = response.data.result;
-    subtitlesUrl = `http://${apiHost}/getsubs?id=${response.data.id}`;
-    audioAvailable = false
+    } catch(error) {
+      console.log(error)
+      console.log(JSON.parse(error.request.response))
+      errorMessage = JSON.parse(error.request.response).message
+      setTimeout(() => {
+        errorMessage = false;
+      }, 8000);
+      processing = false
+
+    }
   }
 
   // Handles the Copy text button behaviour
@@ -151,9 +164,14 @@
     <p class="text-5xl text-slate-300 font-bold text-center mt-2 ml-4">Web Whisper</p>
   </div>
   <p class="text-md font-bold text-slate-300 text-center mt-2">Powered by Go, Svelte and Whisper.cpp</p>
+
+  { #if errorMessage }
+  <div class="text-center max-w-md space-x-2 bg-red-500 rounded-xl p-4 mt-8">
+    <p class="font-bold text-white">{errorMessage}</p>
+  </div>
+  {/if}
   
   <div class="flex flex-col max-w-md items-center space-x-2 bg-slate-100 rounded-xl p-6 dark:bg-slate-800 m-16 w-4/5">
-    
     <div class="text-center justify-center">
       {#if recording == false}
       <button on:click={handleStart} id="start" class="bg-blue-500 text-white hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">

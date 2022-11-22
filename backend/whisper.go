@@ -24,14 +24,14 @@ func getSubsFile(w http.ResponseWriter, r *http.Request) {
 	path, err := os.Getwd()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		log.Printf("Error getting path: %v", err)
+		returnServerError(w, r, fmt.Sprintf("Error getting path: %v", err))
 		return
 	}
 	id := r.URL.Query().Get("id")
 
 	if id == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		log.Printf("The id does not exist.")
+		returnServerError(w, r, fmt.Sprintf("ID does not exist: %v", err))
 		return
 	}
 
@@ -45,23 +45,57 @@ func getSubsFile(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func returnServerError(w http.ResponseWriter, r *http.Request, message string) {
+	var response Response
+	response.Message = message
+	response.Result = ""
+	response.Id = ""
+
+	log.Printf("ERROR: %v", message)
+	jsonData, err := json.Marshal(response)
+	if err != nil {
+		log.Printf("Error marshalling to json: %v", err)
+		return
+	}
+
+	//w.WriteHeader(http.StatusInternalServerError)
+	w.Write(jsonData)
+}
+
 func transcribe(w http.ResponseWriter, r *http.Request) {
 	path, err := os.Getwd()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		log.Printf("Error getting path: %v", err)
+		returnServerError(w, r, fmt.Sprintf("Error getting path: %v", err))
 		return
 	}
 
 	switch r.Method {
 	case "GET":
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	case "POST":
-		file, _, err := r.FormFile("file")
+		var response Response
+		response.Result = "Not allowed"
+		jsonData, err := json.Marshal(response)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			log.Printf("Error getting the form file: %v", err)
+			log.Printf("Error marshalling tasks to json: %v", err)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(jsonData)
+		return
+	case "POST":
+		log.Printf("Got POST for transcribing...")
+		var response Response
+		response.Message = ""
+		response.Result = ""
+		response.Id = ""
+
+		file, header, err := r.FormFile("file")
+		log.Printf("Got file %v...", header.Filename)
+
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			returnServerError(w, r, fmt.Sprintf("Error getting the form file: %v", err))
 			return
 		}
 		defer file.Close()
@@ -83,18 +117,31 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		f, err := os.OpenFile(fmt.Sprintf("%v/%v.webm", samplesDir, id.String()), os.O_WRONLY|os.O_CREATE, 0666)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			log.Printf("Error getting the form file: %v", err)
+			returnServerError(w, r, fmt.Sprintf("Error getting the form file: %v", err))
 			return
 		}
 		defer f.Close()
 		io.Copy(f, file)
 
+		// Configure ffmpeg
+
+		ffmpegArgs := make([]ffmpeg.KwArgs, 0)
+		// Load .env variables
+		if CutMediaSeconds != "0" {
+			ffmpegArgs = append(ffmpegArgs, ffmpeg.KwArgs{"t": CutMediaSeconds})
+		}
+		// Append all args and merge to single KwArgs
+		ffmpegArgs = append(ffmpegArgs, ffmpeg.KwArgs{"ar": 16000, "ac": 1, "c:a": "pcm_s16le"})
+		args := ffmpeg.MergeKwArgs(ffmpegArgs)
+
 		err = ffmpeg.Input(fmt.Sprintf("%v/%v/%v.webm", path, samplesDir, id.String())).
-			Output(fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id.String()), ffmpeg.KwArgs{"ar": 16000, "ac": 1, "c:a": "pcm_s16le"}).
+			Output(fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id.String()), args).
 			OverWriteOutput().ErrorToStdOut().Run()
+
 		if err != nil {
+			log.Printf("%v", err)
 			w.WriteHeader(http.StatusInternalServerError)
-			log.Printf("Error while encoding to wav: %v", err)
+			returnServerError(w, r, fmt.Sprintf("Error while encoding to wav: %v", err))
 			return
 		}
 
@@ -109,13 +156,12 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		if subs != "" {
 			output, err = exec.Command(commandString, "-m", whisperModel, subs, "-nt", "-l", language, "-f", targetFilepath).Output()
 		}
+
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			log.Printf("Error while transcribing: %v", err)
+			returnServerError(w, r, fmt.Sprintf("Error while transcribing: %v", err))
 			return
 		}
-
-		var response Response
 
 		response.Result = string(output)
 		response.Id = id.String()
@@ -123,7 +169,7 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		jsonData, err := json.Marshal(response)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			log.Printf("Error marshalling tasks to json: %v", err)
+			returnServerError(w, r, fmt.Sprintf("Error marshalling to json: %v", err))
 			return
 		}
 

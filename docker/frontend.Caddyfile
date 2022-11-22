@@ -1,5 +1,25 @@
-localhost
+localhost {
+        header {
+            Access-Control-Allow-Origin "*"
+            Access-Control-Allow-Credentials true
+            Access-Control-Allow-Methods "*"
+            Access-Control-Allow-Headers "*"
+            defer
+        }
 
-encode zstd gzip
-root * /var/www/html
-file_server
+        encode zstd gzip
+        root * /var/www/html
+        file_server
+
+        handle /transcribe* {
+            reverse_proxy backend:9090
+        }
+
+        handle /getsubs* {
+            reverse_proxy backend:9090
+        }
+
+        handle /translate* {
+            reverse_proxy backend:9090
+        }
+}

@@ -43,16 +43,18 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 
 ## 🪺 Self-hosting
 
-> The project is not ready for stable self-hosting with docker yet. You will face some issues while trying to do so. I recommend you jump to the [Manual](#manual) selfhosting for the time being.
+> **Warning**
+> If you plan to host a production instance, you should use the [docker compose](#docker-compose) method.
 
 ### Docker-compose
 
-> Install [Docker](https://docs.docker.com/engine/install/#server) and [docker-compose](https://docs.docker.com/compose/install/)
-
 1. Clone this repo: `git clone https://codeberg.org/pluja/web-whisper`
-2. Open and edit the `docker-compose.yml` to fit your needs.
+2. Open and edit the `docker-compose.yml` to fit your needs. You should properly set the variables:
 
-#### Local usage:
+- `DOMAIN_NAME`: This is the domain where you plan to host and access `web-whisper`. In case you want to use it locally, you don't need to change it, leave `https://localhost:3000`. Note that if you change the port, you must also reflect this in this variable.
+- `CUT_MEDIA_SECONDS`: This is a variable that lets you limit the seconds of the processed media. If you set it to, for example, `10` all media will be cut after 10 seconds. If you leave it as `0`, no limit is set.
+
+#### Local usage (without domain):
 
 The WebRTC microphone recording **needs** to have an SSL certificate (HTTPS) in order to work. To achieve this, I set up a caddy server within each image that will create a self-signed certificate. You simply need to run:
 
@@ -67,15 +69,15 @@ If you want to set up a reverse proxy, you can just:
 
 3. `docker compose up -d`
 5. Point your reverse proxy to the frontend:
-    - `https://frontend:3000` or `https://localhost:3000` depending if you choose to publish ports or not.
+    - `https://frontend:443` or `https://localhost:3000` (or any other port you choose) depending on if you choose to publish ports or not.
 
 ---
 
 ### Manual
 
-This is a small guide on how to self-host this project.
+This is a small guide on how to self-host this project. This set up should not be used for production purpose, instead you should use the [docker setup](#docker-compose). If you want to test without docker or just help with development, here is how you can do it:
 
-It is built of two parts; the `backend` and the `frontend`. Both need to be running at the same time so you can make use of it.
+This project is built of two parts; the `backend` and the `frontend`. Both need to be running at the same time, so you can make use of it.
 
 First step is to clone this repository:
 

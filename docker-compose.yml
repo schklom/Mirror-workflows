@@ -5,12 +5,16 @@ services:
     build:
       dockerfile: ./backend.Dockerfile
       context: .
-    container_name: web-whisper-be
+    container_name: web-whisper-backend
+    environment:
+      CUT_MEDIA_SECONDS: "10"
   
-  frontend:
+  web:
     build:
       dockerfile: ./frontend.Dockerfile
       context: .
-    container_name: web-whisper-fe
+    container_name: web-whisper-web
     ports:
       - "127.0.0.1:3000:443"
+    environment:
+      DOMAIN_NAME: "https://localhost:3000"

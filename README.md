@@ -72,3 +72,7 @@ Note that this instance is limited:
 
 #### Result
 <img width="850" src="https://farside.link/rimgo/8EodxT9.png" align=center>
+
+## Similar projects
+
+- [Whisper WASM](https://github.com/ggerganov/whisper.cpp/tree/master/examples/whisper.wasm) - If you want to run Whisper directly in your browser without the need of a server, you can use this project.

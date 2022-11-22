@@ -15,9 +15,9 @@ import (
 )
 
 const (
-	whisperBin   = "whisper.cpp/main"
-	whisperModel = "whisper.cpp/models/ggml-small.bin"
-	samplesDir   = "whisper.cpp/samples"
+	whisperBin       = "whisper.cpp/main"
+	whisperModelPath = "whisper.cpp/models/ggml-"
+	samplesDir       = "whisper.cpp/samples"
 )
 
 func getSubsFile(w http.ResponseWriter, r *http.Request) {
@@ -152,9 +152,10 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 
 		commandString := fmt.Sprintf("%v/%v", path, whisperBin)
 		targetFilepath := fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id.String())
-		output, err := exec.Command(commandString, "-m", whisperModel, "-nt", "-l", language, "-f", targetFilepath).Output()
+		model := fmt.Sprintf("%v%v.bin", whisperModelPath, WhisperModel)
+		output, err := exec.Command(commandString, "-m", model, "-nt", "-l", language, "-f", targetFilepath).Output()
 		if subs != "" {
-			output, err = exec.Command(commandString, "-m", whisperModel, subs, "-nt", "-l", language, "-f", targetFilepath).Output()
+			output, err = exec.Command(commandString, "-m", model, subs, "-nt", "-l", language, "-f", targetFilepath).Output()
 		}
 
 		if err != nil {

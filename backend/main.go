@@ -12,6 +12,7 @@ import (
 )
 
 var CutMediaSeconds string
+var WhisperModel string
 
 func main() {
 	r := chi.NewRouter()
@@ -41,6 +42,8 @@ func main() {
 			CutMediaSeconds = "0"
 		}
 	}
+
+	WhisperModel = os.Getenv("WHISPER_MODEL")
 
 	//c := cors.Default()
 	handler := c.Handler(r)

@@ -5,9 +5,11 @@ services:
     build:
       dockerfile: ./backend.Dockerfile
       context: .
+      args:
+        # Valid model values: tiny, base, small, medium, large
+        - WHISPER_MODEL=small
+        - CUT_MEDIA_SECONDS=10
     container_name: web-whisper-backend
-    environment:
-      CUT_MEDIA_SECONDS: "10"
   
   whisper:
     build:

@@ -8,6 +8,7 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 
 - [Features](#features)
 - [Roadmap](#roadmap)
+- [Test it!](#test-it)
 - [Self-hosting](#self-hosting)
     - [With docker](#docker-compose)
     - [From source](#manual)
@@ -42,6 +43,14 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
     - [x] Option to disable file uploads.
 - [ ] Transcription history / save snippets
     - Publish to some **pastebin**-like service.
+
+## 🧪 Test it!
+
+A testing instance is available at: https://whisper.r3d.red
+
+This instance is limited:
+- Maximum of 10 seconds audio recordings 
+- File uploads are disabled.
 
 ## 🪺 Self-hosting
 

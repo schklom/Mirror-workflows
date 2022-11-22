@@ -57,16 +57,16 @@ Note that this instance is limited:
 <p align="center"><sub>*Logo generated with Stable Diffusion*</sub></p>
 
 ##### Main page
-<img src="https://farside.link/rimgo/GFBHU8V.png" align=center>
+<img width="850" src="https://farside.link/rimgo/GFBHU8V.png" align=center>
 
 ##### Recording
-<img src="https://farside.link/rimgo/M5pW2BB.png" align=center>
+<img width="850" src="https://farside.link/rimgo/M5pW2BB.png" align=center>
 
 #### Transcription Options
-<img src="https://farside.link/rimgo/a4yf4hu.png" align=center>
+<img width="850" src="https://farside.link/rimgo/a4yf4hu.png" align=center>
 
 #### Processing
-<img src="https://farside.link/rimgo/SHOTbh8.png" align=center>
+<img width="850" src="https://farside.link/rimgo/SHOTbh8.png" align=center>
 
 #### Result
-<img src="https://farside.link/rimgo/8EodxT9.png" align=center>
+<img width="850" src="https://farside.link/rimgo/8EodxT9.png" align=center>

@@ -9,7 +9,7 @@ services:
     environment:
       CUT_MEDIA_SECONDS: "10"
   
-  web:
+  whisper:
     build:
       dockerfile: ./frontend.Dockerfile
       context: .

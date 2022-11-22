@@ -68,7 +68,7 @@ If you want to set up a reverse proxy, you can just:
 
 3. `docker compose up -d`
 5. Point your reverse proxy to the frontend:
-    - `https://frontend:443` or `https://localhost:3000` (or any other port you choose) depending on if you choose to publish ports or not.
+    - `https://whisper:443` or `https://localhost:3000` (or any other port you choose) depending on if you choose to publish ports or not.
 
 ---
 

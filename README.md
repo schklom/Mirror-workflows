@@ -44,9 +44,11 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 
 ## 🧪 Test it!
 
-A testing instance is available at: https://whisper.r3d.red
+You can easily [**self host**](https://codeberg.org/pluja/web-whisper/wiki/Self-Hosting) your own instance with docker (locally or in a server).
 
-This instance is limited:
+Also, I have made testing instance available at: https://whisper.r3d.red
+
+Note that this instance is limited:
 - Maximum of 10 seconds audio recordings 
 - File uploads are disabled.
 

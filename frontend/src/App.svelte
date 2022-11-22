@@ -108,7 +108,7 @@
       });
       processing = false
       transcriptionResultText = response.data.result;
-      subtitlesUrl = `${apiHost}/getsubs?id=${response.data.id}`;
+      if(generateSubtitles) subtitlesUrl = `${apiHost}/getsubs?id=${response.data.id}`;
       audioAvailable = false
 
     } catch(error) {
@@ -299,13 +299,15 @@
       <div class="p-2">
           <div class="flex flex-col">
             <div class="flex flex-row justify-between">
-              {#if generateSubtitles}
-                <a href={subtitlesUrl} id="stop" class=" bg-blue-500 text-white hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3 3m0 0l3-3m-3 3V2.25" />
-                  </svg>                       
-                  <span>Subtitles</span>
-                </a>
+              { #if generateSubtitles }
+                {#if subtitlesUrl != "#"}
+                  <a href={subtitlesUrl} id="stop" class=" bg-blue-500 text-white hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3 3m0 0l3-3m-3 3V2.25" />
+                    </svg>                       
+                    <span>Subtitles</span>
+                  </a>
+                {/if}
               {/if}
               {#if copied == false }
                 <!-- svelte-ignore a11y-click-events-have-key-events -->

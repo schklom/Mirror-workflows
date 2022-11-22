@@ -52,6 +52,7 @@ Also, I have made testing instance available at: https://whisper.r3d.red
 Note that this instance is limited:
 - Maximum of 10 seconds audio recordings 
 - File uploads are disabled.
+- Uses the `base` model.
 
 ## Screenshots
 

@@ -1,4 +1,4 @@
-localhost {
+:80 {
         header {
             Access-Control-Allow-Origin "*"
             Access-Control-Allow-Credentials true

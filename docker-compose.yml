@@ -15,6 +15,7 @@ services:
       context: .
     container_name: web-whisper-web
     ports:
-      - "127.0.0.1:3000:443"
+      - "127.0.0.1:3000:80"
     environment:
-      DOMAIN_NAME: "https://localhost:3000"
+      DOMAIN_NAME: "http://localhost:3000"
+      ALLOW_FILE_UPLOADS: true

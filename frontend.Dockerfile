@@ -13,9 +13,11 @@ FROM caddy:alpine
 
 ARG DOMAIN_NAME
 ENV DOMAIN_NAME $DOMAIN_NAME
+ARG ALLOW_FILE_UPLOADS
+ENV ALLOW_FILE_UPLOADS $ALLOW_FILE_UPLOADS
 
 COPY --from=build /app/dist/ /var/www/html
 RUN find /var/www/html -name '*.js' -exec sed -i.bak "s/http:\/\/localhost:9090/$DOMAIN_NAME/g" {} +
 COPY docker/frontend.Caddyfile /etc/caddy/Caddyfile
 
-EXPOSE 443
+EXPOSE 80

@@ -55,20 +55,16 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 
 #### Local usage (without domain):
 
-The WebRTC microphone recording **needs** to have an SSL certificate (HTTPS) in order to work. To achieve this, I set up a caddy server within each image that will create a self-signed certificate. You simply need to run:
-
 3. `docker compose up -d`
-4. Visit https://localhost:3000
+4. Visit http://localhost:3000
 
 #### Server setup
-
-The WebRTC microphone recording **needs** to have an SSL certificate (HTTPS) in order to work. This means that for this app to work, you need to serve it via HTTPS. You can use the the current Dockerfiles and docker-compose.yml, or you can create your own (and PR if you come up with anything better that works!).
 
 If you want to set up a reverse proxy, you can just:
 
 3. `docker compose up -d`
 5. Point your reverse proxy to the frontend:
-    - `https://whisper:443` or `https://localhost:3000` (or any other port you choose) depending on if you choose to publish ports or not.
+    - `whisper:80` or `http://localhost:3000` (or any other port you choose) depending on if you choose to publish ports or not.
 
 ---
 

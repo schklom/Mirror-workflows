@@ -43,6 +43,8 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 
 ## 🪺 Self-hosting
 
+> The project is not ready for stable self-hosting with docker yet. You will face some issues while trying to do so. I recommend you jump to the [Manual](#manual) selfhosting for the time being.
+
 ### Docker-compose
 
 > Install [Docker](https://docs.docker.com/engine/install/#server) and [docker-compose](https://docs.docker.com/compose/install/)

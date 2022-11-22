@@ -13,9 +13,9 @@ services:
     build:
       dockerfile: ./frontend.Dockerfile
       context: .
-    container_name: web-whisper-web
+      args:
+        - DOMAIN_NAME=localhost:3000
+        - ALLOW_FILE_UPLOADS=true
+    container_name: web-whisper
     ports:
       - "127.0.0.1:3000:80"
-    environment:
-      DOMAIN_NAME: "http://localhost:3000"
-      ALLOW_FILE_UPLOADS: true

@@ -33,7 +33,6 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 
 ## 🧭 Roadmap:
 
-- [ ] Show error messages on the frontend when they occur.
 - [ ] Translate input audio transcription to english.
 - [x] Allow to upload any file (video, audio) in any format and transcribe it.
 	- [ ] Limit max file size for server hosting.

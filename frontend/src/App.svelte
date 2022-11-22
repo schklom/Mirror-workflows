@@ -119,7 +119,6 @@
         errorMessage = false;
       }, 8000);
       processing = false
-
     }
   }
 

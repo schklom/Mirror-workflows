@@ -75,4 +75,4 @@ Note that this instance is limited:
 
 ## Similar projects
 
-- [Whisper WASM](https://github.com/ggerganov/whisper.cpp/tree/master/examples/whisper.wasm) - If you want to run Whisper directly in your browser without the need of a server, you can use this project.
+- [Whisper WASM](https://github.com/ggerganov/whisper.cpp/tree/master/examples/whisper.wasm) - If you want to run Whisper directly in your browser without the need of a server, you can use this project. Note that performance for this version is not very good.

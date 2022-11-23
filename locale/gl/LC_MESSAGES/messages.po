@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-06-05 11:48+0300\n"
-"PO-Revision-Date: 2022-06-09 13:15+0000\n"
+"PO-Revision-Date: 2022-11-23 11:05+0000\n"
 "Last-Translator: xosé m. <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "gl/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.12.2\n"
+"X-Generator: Weblate 4.14.2\n"
 
 #: backend.php:60
 msgid "Use default"
@@ -260,7 +260,7 @@ msgstr "Axuda sobre atallos de teclado"
 
 #: index.php:289
 msgid "Logout"
-msgstr "Desconectar"
+msgstr "Pechar Sesión"
 
 #: prefs.php:20 prefs.php:139 classes/pref/prefs.php:942 classes/rpc.php:646
 msgid "Preferences"
@@ -1844,7 +1844,7 @@ msgstr "O artigo compartido aparecerá na fonte Publicados."
 
 #: plugins/bookmarklets/init.php:324 include/login_form.php:177
 msgid "Log in"
-msgstr "Conectar"
+msgstr "Acceder"
 
 #: plugins/bookmarklets/init.php:344
 #, php-format
@@ -1966,7 +1966,7 @@ msgstr "Fallou a validación da conta (cambiou o contrasinal)"
 
 #: include/sessions.php:49
 msgid "Session failed to validate (account is disabled)"
-msgstr "Fallou a validación da conta (conta está desactivada)"
+msgstr "Fallou a validación da sesión (conta está desactivada)"
 
 #: include/sessions.php:53
 msgid "Session failed to validate (user not found)"
@@ -2908,7 +2908,7 @@ msgid ""
 "You will need to log out and back in to disable it."
 msgstr ""
 "Tiny Tiny RSS estase executando en modo seguro. Tódolos decorados e "
-"complementos están desactivados. Terás que desconectar e volver a conectarte "
+"complementos están desactivados. Terás que pechar sesión e volver a acceder "
 "para desactivalo."
 
 #: js/CommonDialogs.js:53
@@ -2921,7 +2921,7 @@ msgstr "Fontes dispoñibles"
 
 #: js/CommonDialogs.js:85 js/PrefFeedTree.js:446
 msgid "Login"
-msgstr "Identificador:"
+msgstr "Acceso"
 
 #: js/CommonDialogs.js:101
 msgid "This feed requires authentication."

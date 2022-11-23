@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-06-05 11:48+0300\n"
-"PO-Revision-Date: 2021-11-21 17:41+0000\n"
+"PO-Revision-Date: 2022-08-25 06:49+0000\n"
 "Last-Translator: TonyRL <tony_lao@outlook.com>\n"
-"Language-Team: Chinese (Traditional) <https://weblate.tt-rss.org/projects/tt-"
-"rss/messages/zh_Hant/>\n"
+"Language-Team: Chinese (Traditional) <https://weblate.tt-rss.org/projects/"
+"tt-rss/messages/zh_Hant/>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.9.1\n"
+"X-Generator: Weblate 4.14\n"
 
 #: backend.php:60
 msgid "Use default"
@@ -238,7 +238,7 @@ msgstr "隱藏（顯示）已讀摘要"
 
 #: index.php:273
 msgid "UI layout:"
-msgstr ""
+msgstr "使用者介面配置："
 
 #: index.php:274 classes/rpc.php:639
 msgid "Toggle combined mode"
@@ -1976,16 +1976,12 @@ msgid "Update daemon is not updating feeds."
 msgstr "更新守護行程沒有更新摘要。"
 
 #: js/App.js:606
-#, fuzzy, java-printf-format
-#| msgid ""
-#| "URL scheme reported by your browser (%a) doesn't match server-configured "
-#| "SELF_URL_PATH (%b), check X-Forwarded-Proto."
+#, java-printf-format
 msgid ""
 "URL scheme reported by your browser (%a) doesn't match server-configured "
 "SELF_URL_PATH (%b), check X-Forwarded-Proto."
-msgstr ""
-"瀏覽器報告的URL配置（％a）與伺服器配置的 SELF_URL_PATH（％b）不符合，請檢查 "
-"X-Forwarded-Proto。"
+msgstr "瀏覽器報告的 URL 配置（%a）與伺服器配置的 SELF_URL_PATH（%b）不符合，請檢查 X"
+"-Forwarded-Proto。"
 
 #: js/App.js:613
 msgid "Fatal error"
@@ -2624,10 +2620,9 @@ msgid "Reset to defaults?"
 msgstr "重設為預設狀態？"
 
 #: js/PrefHelpers.js:373
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Error while parsing document."
+#, java-printf-format, javascript-format
 msgid "Error while loading plugins list: %s."
-msgstr "解析文檔時發生錯誤。"
+msgstr "載入擴充套件列表時發生錯誤：%s。"
 
 #: js/PrefHelpers.js:422
 msgid "Clear data"
@@ -2866,7 +2861,7 @@ msgstr "堆疊追踪"
 
 #: js/App.js:653
 msgid "Additional information"
-msgstr ""
+msgstr "額外資訊"
 
 #: js/Article.js:207
 msgid "Attachments"
@@ -3024,16 +3019,12 @@ msgid "System plugins are enabled using global configuration."
 msgstr ""
 
 #: js/PrefHelpers.js:577
-#, fuzzy
-#| msgid "Uninstall"
 msgid "Install"
-msgstr "解除安裝"
+msgstr "安裝"
 
 #: js/PrefHelpers.js:654
-#, fuzzy
-#| msgid "Playing..."
 msgid "Updating..."
-msgstr "播放中……"
+msgstr "更新中……"
 
 #: js/PrefHelpers.js:687
 msgid "Updates complete"

@@ -1,7 +1,7 @@
 parameters:
    level: 6
    parallel:
-      maximumNumberOfProcesses: 2
+      maximumNumberOfProcesses: 4
    reportUnmatchedIgnoredErrors: false
    ignoreErrors:
       - '#Constant.*\b(SUBSTRING_FOR_DATE|SCHEMA_VERSION|SELF_USER_AGENT|LABEL_BASE_INDEX|PLUGIN_FEED_BASE_INDEX)\b.*not found#'
@@ -24,5 +24,6 @@ parameters:
       - plugins/**/test/*
       - plugins.local/**/test/*
       - plugins.local/*/vendor/intervention/*
+      - plugins.local/cache_s3/vendor/*
    paths:
       - .

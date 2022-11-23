@@ -454,7 +454,7 @@ class PluginHost {
 				// WIP hack
 				// we can't catch incompatible method signatures via Throwable
 				// this also enables global tt-rss safe mode in case there are more plugins like this
-				if (($_SESSION["plugin_blacklist"][$class] ?? 0)) {
+				if (!getenv('TTRSS_XDEBUG_ENABLED') && ($_SESSION["plugin_blacklist"][$class] ?? 0)) {
 
 					// only report once per-plugin per-session
 					if ($_SESSION["plugin_blacklist"][$class] < 2) {

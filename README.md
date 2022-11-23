@@ -1,6 +1,8 @@
 # Web Whisper
 
-Get OpenAI's [Whisper](https://github.com/openai/whisper) right into your browser!
+### Convert any audio to text!
+
+A user interface for OpenAI's [Whisper](https://github.com/openai/whisper) right into your browser!
 
 This is a small personal project I am using to learn Golang and Svelte. It is a light web frontend for OpenAI's whisper.
 

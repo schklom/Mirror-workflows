@@ -170,7 +170,9 @@
 <main class="bg-gray-800 h-fit min-h-screen flex flex-col items-center justify-center py-8">
   <div class="flex flex-row flex-wrap justify-center align-middle">
     <img class="w-16 h-16" src="/logo.webp" alt="">
-    <p class="text-5xl text-slate-300 font-bold text-center mt-2 ml-4">Web Whisper</p>
+    <a href="https://codeberg.org/pluja/web-whisper">
+      <p class="text-5xl text-slate-300 font-bold text-center mt-2 ml-4">Web Whisper</p>
+    </a>
   </div>
   <p class="text-md font-bold text-slate-300 text-center mt-2">Powered by Go, Svelte and Whisper.cpp</p>
 

@@ -13,6 +13,7 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 - [Test it!](#test-it)
 - [Self Host](https://codeberg.org/pluja/web-whisper/wiki/Self-Hosting)
 - [Screenshots](#screenshots)
+- [Other information](#other-information)
 
 ## ✨ Features:
 
@@ -74,6 +75,22 @@ Note that this instance is limited:
 
 #### Result
 <img width="850" src="https://farside.link/rimgo/8EodxT9.png" align=center>
+
+## Other information
+
+#### How fast is this?
+
+Whisper.cpp usually provides faster results than the python implementation. Although it will highly depend on your machine resources, the length of the media source and the file size. Here is a little benchmark:
+
+```
+CPU: i7
+RAM: 16
+Input format: webm audio
+File size: 7MB
+Audio length: 30m
+
+Total elapsed time: 7m 38s
+```
 
 ## Similar projects
 

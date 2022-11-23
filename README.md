@@ -19,6 +19,7 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
     - [x] Option to cut audio to X seconds before transcription.
     - [x] Option to disable file uploads.
 - [x] Select input audio language
+- [x] Translate input audio transcription to english.
 - [x] Download `.srt` subtitle file generated from audio.
 - [x] Choose the Whisper model you want to use (tiny, base, small...)
 - [x] Lightweight and beautiful UI.
@@ -35,7 +36,6 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 
 ## 🧭 Roadmap:
 
-- [ ] Translate input audio transcription to english.
 - [x] Allow to upload any file (video, audio) in any format and transcribe it.
 	- [ ] Limit max file size for server hosting.
     - [x] Allow to cut audio to X seconds before transcription.

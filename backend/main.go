@@ -15,20 +15,8 @@ var CutMediaSeconds string
 var WhisperModel string
 
 func main() {
-	r := chi.NewRouter()
-
-	r.Use(middleware.Logger)
-	r.Use(JSONMiddleware)
-
-	r.Post("/transcribe", transcribe)
-	r.Get("/getsubs", getSubsFile)
-	r.Get("/translate", translate)
-
-	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{http.MethodGet, http.MethodPost, http.MethodDelete, http.MethodPatch},
-	})
-
+	// Get the environment variables
+	WhisperModel = os.Getenv("WHISPER_MODEL")
 	CutMediaSeconds = os.Getenv("CUT_MEDIA_SECONDS")
 	if CutMediaSeconds == "" {
 		log.Printf("No CUT_MEDIA_SECONDS ENV found. Trying to get .env file.")
@@ -43,13 +31,23 @@ func main() {
 		}
 	}
 
-	WhisperModel = os.Getenv("WHISPER_MODEL")
+	// Setup the router and routes
+	r := chi.NewRouter()
 
-	//c := cors.Default()
+	r.Use(middleware.Logger)
+	r.Use(JSONMiddleware)
+
+	r.Post("/transcribe", transcribe)
+	r.Get("/getsubs", getSubsFile)
+
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{http.MethodGet, http.MethodPost, http.MethodDelete, http.MethodPatch},
+	})
+
 	handler := c.Handler(r)
-	log.Printf("Starting backend server...")
+	log.Printf("Starting backend server at :9090...")
 	http.ListenAndServe(":9090", handler)
-	log.Printf("OK")
 }
 
 func JSONMiddleware(hndlr http.Handler) http.Handler {

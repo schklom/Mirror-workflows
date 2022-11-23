@@ -109,7 +109,7 @@
     try {
       const response = await axios({
         method: 'post',
-        url: `${apiHost}/transcribe`,
+        url: `/transcribe`,
         data: formData,
         headers: {
           'Content-Type': `mutlipart/form-data;`,
@@ -118,7 +118,7 @@
       });
       processing = false
       transcriptionResultText = response.data.result;
-      if(generateSubtitles) subtitlesUrl = `${apiHost}/getsubs?id=${response.data.id}`;
+      if(generateSubtitles) subtitlesUrl = `/getsubs?id=${response.data.id}`;
       audioAvailable = false
 
     } catch(error) {

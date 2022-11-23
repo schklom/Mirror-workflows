@@ -177,7 +177,7 @@
   </div>
   {/if}
   
-  <div class="flex flex-col max-w-md items-center space-x-2 bg-slate-100 rounded-xl p-6 dark:bg-slate-800 m-16 w-4/5">
+  <div class="flex flex-col max-w-md items-center space-x-2 bg-slate-100 rounded-xl p-6 m-16 w-4/5">
     <div class="text-center justify-center">
       {#if recording == false}
       <button on:click={handleStart} id="start" class="bg-blue-500 text-white hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
@@ -303,7 +303,7 @@
 
 
   {#if transcriptionResultText}
-    <div id="transcriptionResultTextBox" class="max-w-md items-center space-x-2 bg-slate-100 rounded-xl dark:bg-slate-800 m-2 p-4 w-4/5">
+    <div id="transcriptionResultTextBox" class="max-w-md items-center space-x-2 bg-slate-100 rounded-xl m-2 p-4 w-4/5">
       <div class="p-2">
           <div class="flex flex-col">
             <div class="flex flex-row justify-between">

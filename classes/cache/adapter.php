@@ -9,6 +9,11 @@ interface Cache_Adapter {
 	 * @return int|false -1 if the file doesn't exist, false if an error occurred, size in bytes otherwise
 	 */
 	public function get_size(string $filename);
+
+	/**
+	 * @return int|false -1 if the file doesn't exist, false if an error occurred, timestamp otherwise
+	 */
+	public function get_mtime(string $filename);
 	/**
 	 * @param mixed $data
 	 *

@@ -2,6 +2,10 @@
 class Cache_Local implements Cache_Adapter {
 	private string $dir;
 
+	public function get_mtime(string $filename) {
+		return filemtime($this->get_full_path($filename));
+	}
+
 	public function set_dir(string $dir) : void {
 		$this->dir = Config::get(Config::CACHE_DIR) . "/" . basename(clean($dir));
 	}

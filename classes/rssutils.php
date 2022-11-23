@@ -338,6 +338,9 @@ class RSSUtils {
 
 		$pdo = Db::pdo();
 
+		/** @var DiskCache $cache */
+		$cache = new DiskCache('feeds');
+
 		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$favicon_interval_qpart = "favicon_last_checked < NOW() - INTERVAL '12 hour'";
 		} else {
@@ -387,7 +390,7 @@ class RSSUtils {
 
 		$date_feed_processed = date('Y-m-d H:i');
 
-		$cache_filename = Config::get(Config::CACHE_DIR) . "/feeds/" . sha1($feed_obj->feed_url) . ".xml";
+		$cache_filename = sha1($feed_obj->feed_url) . ".xml";
 
 		$pluginhost = new PluginHost();
 		$user_plugins = get_pref(Prefs::_ENABLED_PLUGINS, $feed_obj->owner_uid);
@@ -423,13 +426,13 @@ class RSSUtils {
 
 		// try cache
 		if (!$feed_data &&
-			is_readable($cache_filename) &&
+			$cache->exists($cache_filename) &&
 			!$feed_obj->auth_login && !$feed_obj->auth_pass &&
-			filemtime($cache_filename) > time() - 30) {
+			$cache->get_mtime($cache_filename) > time() - 30) {
 
 			Debug::log("using local cache: {$cache_filename}.", Debug::LOG_VERBOSE);
 
-			$feed_data = file_get_contents($cache_filename);
+			$feed_data = $cache->get($cache_filename);
 
 			if ($feed_data) {
 				$rss_hash = sha1($feed_data);
@@ -480,9 +483,9 @@ class RSSUtils {
 			if ($feed_data && !$feed_obj->auth_pass && !$feed_obj->auth_login && is_writable(Config::get(Config::CACHE_DIR) . "/feeds")) {
 				$new_rss_hash = sha1($feed_data);
 
-				if ($new_rss_hash != $rss_hash) {
+				if ($new_rss_hash != $rss_hash && $cache->is_writable()) {
 					Debug::log("saving to local cache: $cache_filename", Debug::LOG_VERBOSE);
-					file_put_contents($cache_filename, $feed_data);
+					$cache->put($cache_filename, $feed_data);
 				}
 			}
 		}

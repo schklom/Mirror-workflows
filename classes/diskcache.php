@@ -200,7 +200,7 @@ class DiskCache implements Cache_Adapter {
 			if (implements_interface($p, "Cache_Adapter")) {
 
 				/** @var Cache_Adapter $p */
-				$this->adapter = $p;
+				$this->adapter = clone $p; // we need separate object instances for separate directories
 				$this->adapter->set_dir($dir);
 				return;
 			}
@@ -208,6 +208,10 @@ class DiskCache implements Cache_Adapter {
 
 		$this->adapter = new Cache_Local();
 		$this->adapter->set_dir($dir);
+	}
+
+	public function get_mtime(string $filename) {
+		return $this->adapter->get_mtime($filename);
 	}
 
 	public function set_dir(string $dir) : void {

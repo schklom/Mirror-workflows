@@ -174,7 +174,7 @@
       <p class="text-5xl text-slate-300 font-bold text-center mt-2 ml-4">Web Whisper</p>
     </a>
   </div>
-  <p class="text-md font-bold text-slate-300 text-center mt-2">Powered by Go, Svelte and Whisper.cpp</p>
+  <p class="text-md font-bold text-slate-300 text-center mt-2">🎶 Convert any audio to text 📝</p>
 
   { #if errorMessage }
   <div class="text-center max-w-md space-x-2 bg-red-500 rounded-xl p-4 mt-8">

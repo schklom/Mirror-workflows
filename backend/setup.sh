@@ -1,7 +1,8 @@
 #!/bin/bash
 
+source .env
 git clone https://github.com/ggerganov/whisper.cpp
 cd whisper.cpp
-bash ./models/download-ggml-model.sh small
+bash ./models/download-ggml-$WHISPER_MODEL.sh small
 # build the main example
-make small
+make $WHISPER_MODEL

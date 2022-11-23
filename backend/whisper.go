@@ -105,7 +105,12 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("Defaulting language to English...")
 			language = "en"
 		}
-		fmt.Println(language)
+
+		translate, err := strconv.ParseBool(r.FormValue("translate"))
+		if language == "" {
+			fmt.Println("Defaulting translate to false...")
+			translate = false
+		}
 
 		subs := ""
 		getSubs, err := strconv.ParseBool(r.FormValue("subs"))
@@ -123,7 +128,7 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		defer f.Close()
 		io.Copy(f, file)
 
-		// Configure ffmpeg
+		/*** FFMPEG ****/
 
 		ffmpegArgs := make([]ffmpeg.KwArgs, 0)
 		// Load .env variables
@@ -145,19 +150,34 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		// Remove old file
 		err = os.Remove(fmt.Sprintf("%v/%v/%v.webm", path, samplesDir, id.String()))
 		if err != nil {
 			log.Printf("Could not remove file.")
 		}
 
+		/*** WHISPER ****/
+		// Prepare whisper main args
 		commandString := fmt.Sprintf("%v/%v", path, whisperBin)
 		targetFilepath := fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id.String())
 		model := fmt.Sprintf("%v%v.bin", whisperModelPath, WhisperModel)
-		output, err := exec.Command(commandString, "-m", model, "-nt", "-l", language, "-f", targetFilepath).Output()
-		if subs != "" {
-			output, err = exec.Command(commandString, "-m", model, subs, "-nt", "-l", language, "-f", targetFilepath).Output()
-		}
 
+		// Populate whisper args
+		whisperArgs := make([]string, 0)
+		whisperArgs = append(whisperArgs, "-m", model, "-nt", "-l", language)
+		if subs != "" {
+			whisperArgs = append(whisperArgs, subs)
+		}
+		if translate {
+			whisperArgs = append(whisperArgs, "--translate")
+		}
+		whisperArgs = append(whisperArgs, "-f", targetFilepath)
+
+		// Run whisper
+		log.Printf("%v %v", commandString, whisperArgs)
+		command := exec.Command(commandString, whisperArgs...)
+		fmt.Printf(command.String())
+		output, err := exec.Command(commandString, whisperArgs...).Output()
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			returnServerError(w, r, fmt.Sprintf("Error while transcribing: %v", err))
@@ -185,17 +205,4 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
-}
-
-func translate(w http.ResponseWriter, _ *http.Request) {
-	var response Response
-	response.Result = "Not implemented"
-	jsonData, err := json.Marshal(response)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		log.Printf("Error marshalling tasks to json: %v", err)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-	w.Write(jsonData)
 }

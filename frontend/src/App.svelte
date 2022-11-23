@@ -13,10 +13,12 @@
   let copied = false;
   let processing = false;
   let fileName = false;
+  let errorMessage = false;
+  
   let generateSubtitles = false;
   let subtitlesUrl = "#";
-  let errorMessage = false
-
+  let translate = false;
+  
   let recordedBlobs
   let mediaRecorder
 
@@ -101,12 +103,13 @@
 
     formData.append("file", audiofile);
     formData.append("lang", language);
+    formData.append("translate", translate);
     formData.append("subs", String(generateSubtitles));
     
     try {
       const response = await axios({
         method: 'post',
-        url: `/transcribe`,
+        url: `${apiHost}/transcribe`,
         data: formData,
         headers: {
           'Content-Type': `mutlipart/form-data;`,
@@ -115,7 +118,7 @@
       });
       processing = false
       transcriptionResultText = response.data.result;
-      if(generateSubtitles) subtitlesUrl = `/getsubs?id=${response.data.id}`;
+      if(generateSubtitles) subtitlesUrl = `${apiHost}/getsubs?id=${response.data.id}`;
       audioAvailable = false
 
     } catch(error) {
@@ -251,15 +254,22 @@
             </select>
         </div>
       </div>
-      <div class="flex flex-row items-center align-middle text-center mb-4">
-        <input id="generateSubtitles" bind:checked={generateSubtitles} 
-               class="appearance-none h-4 w-4 border border-gray-300 rounded-sm 
-                    bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none 
-                    transition duration-200 align-top bg-no-repeat bg-center bg-contain 
-                    float-left cursor-pointer" type="checkbox">
-        <label class="inline-block text-gray-800 text-bold ml-2" for="generateSubtitles">     
-          <span>Generate subtitle file</span>
-        </label>
+
+      <div class="flex justify-left">
+        <div>
+          <div>
+            <input id="generateSubtitles" bind:checked={generateSubtitles}  class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox">
+            <label class="inline-block text-gray-800" for="generateSubtitles">
+              Generate subtitles file
+            </label>
+          </div>
+          <div>
+            <input  id="translate" bind:checked={translate}  class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox">
+            <label class="inline-block text-gray-800" for="translate">
+              Translate
+            </label>
+          </div>
+        </div>
       </div>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
         {#if processing == false}

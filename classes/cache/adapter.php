@@ -9,7 +9,6 @@ interface Cache_Adapter {
 	 * @return int|false -1 if the file doesn't exist, false if an error occurred, size in bytes otherwise
 	 */
 	public function get_size(string $filename);
-
 	/**
 	 * @return int|false -1 if the file doesn't exist, false if an error occurred, timestamp otherwise
 	 */
@@ -30,5 +29,7 @@ interface Cache_Adapter {
 	 * @return bool|int false if the file doesn't exist (or unreadable) or isn't audio/video, true if a plugin handled, otherwise int of bytes sent
 	 */
 	public function send(string $filename);
+
+	/** Catchall function to expire all subfolders/prefixes in the cache, invoked on the backend */
 	public function expire_all(): void;
 }

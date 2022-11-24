@@ -210,12 +210,15 @@ class DiskCache implements Cache_Adapter {
 		$this->adapter->set_dir($dir);
 	}
 
-	public function get_mtime(string $filename) {
-		return $this->adapter->get_mtime($filename);
-	}
-
 	public function set_dir(string $dir) : void {
 		$this->adapter->set_dir($dir);
+	}
+
+	/**
+	 * @return int|false -1 if the file doesn't exist, false if an error occurred, timestamp otherwise
+	 */
+	public function get_mtime(string $filename) {
+		return $this->adapter->get_mtime($filename);
 	}
 
 	public function make_dir(): bool {
@@ -230,10 +233,18 @@ class DiskCache implements Cache_Adapter {
 		return $this->adapter->exists($filename);
 	}
 
+	/**
+	 * @return int|false -1 if the file doesn't exist, false if an error occurred, size in bytes otherwise
+	 */
 	public function get_size(string $filename) {
 		return $this->adapter->get_size($filename);
 	}
 
+	/**
+	 * @param mixed $data
+	 *
+	 * @return int|false Bytes written or false if an error occurred.
+	 */
 	public function put(string $filename, $data) {
 		return $this->adapter->put($filename, $data);
 	}
@@ -248,11 +259,6 @@ class DiskCache implements Cache_Adapter {
 
 	public function get(string $filename): ?string {
 		return $this->adapter->get($filename);
-	}
-
-	static function expire(): void {
-		$adapter = new Cache_Local();
-		$adapter->expire_all();
 	}
 
 	public function expire_all(): void {
@@ -283,9 +289,6 @@ class DiskCache implements Cache_Adapter {
 		return false;
 	}
 
-	/**
-	 * @return bool|int false if the file doesn't exist (or unreadable) or isn't audio/video, true if a plugin handled, otherwise int of bytes sent
-	 */
 	public function send(string $filename) {
 		$mimetype = $this->adapter->get_mime_type($filename);
 
@@ -324,7 +327,7 @@ class DiskCache implements Cache_Adapter {
 	}
 
 	public function get_fake_extension(string $filename): string {
-		$mimetype = $this->get_mime_type($filename);
+		$mimetype = $this->adapter->get_mime_type($filename);
 
 		if ($mimetype)
 			return isset($this->mimeMap[$mimetype]) ? $this->mimeMap[$mimetype] : "";

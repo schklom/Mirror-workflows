@@ -1673,7 +1673,8 @@ class RSSUtils {
 	}
 
 	static function housekeeping_common(): void {
-		DiskCache::expire();
+		$cache = new DiskCache("");
+		$cache->expire_all();
 
 		self::expire_lock_files();
 		self::expire_error_log();

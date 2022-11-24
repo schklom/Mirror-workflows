@@ -94,7 +94,7 @@ class Cache_Local implements Cache_Adapter {
 
 				if ($files) {
 					foreach ($files as $file) {
-						if (time() - filemtime($file) > 86400*Config::get(Config::CACHE_MAX_DAYS)) {
+						if (time() - filemtime($file) > 86400 * Config::get(Config::CACHE_MAX_DAYS)) {
 							unlink($file);
 
 							++$num_deleted;

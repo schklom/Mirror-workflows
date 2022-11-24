@@ -119,7 +119,7 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		}
 
 		id := uuid.New()
-		f, err := os.OpenFile(fmt.Sprintf("%v/%v.webm", samplesDir, id.String()), os.O_WRONLY|os.O_CREATE, 0666)
+		f, err := os.OpenFile(fmt.Sprintf("%v/%v/%v.webm", path, samplesDir, id.String()), os.O_WRONLY|os.O_CREATE, 0666)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			returnServerError(w, r, fmt.Sprintf("Error getting the form file: %v", err))
@@ -160,7 +160,7 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		// Prepare whisper main args
 		commandString := fmt.Sprintf("%v/%v", path, whisperBin)
 		targetFilepath := fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id.String())
-		model := fmt.Sprintf("%v%v.bin", whisperModelPath, WhisperModel)
+		model := fmt.Sprintf("%v/%v%v.bin", path, whisperModelPath, WhisperModel)
 
 		// Populate whisper args
 		whisperArgs := make([]string, 0)

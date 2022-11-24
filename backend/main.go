@@ -14,9 +14,22 @@ import (
 var CutMediaSeconds string
 var WhisperModel string
 
-func main() {
-	// Get the environment variables
+func setEnvVariables() {
 	WhisperModel = os.Getenv("WHISPER_MODEL")
+	if WhisperModel == "" {
+		log.Printf("No WHISPER_MODEL ENV found. Trying to get .env file.")
+		err := godotenv.Load()
+		if err != nil {
+			log.Printf("No .env file found... Defaulting WHISPER_MODEL to 0")
+			WhisperModel = "small"
+		}
+		os.Getenv("WHISPER_MODEL")
+		if WhisperModel == "" {
+			WhisperModel = "small"
+		}
+	}
+	log.Printf("Selected model: %v", WhisperModel)
+
 	CutMediaSeconds = os.Getenv("CUT_MEDIA_SECONDS")
 	if CutMediaSeconds == "" {
 		log.Printf("No CUT_MEDIA_SECONDS ENV found. Trying to get .env file.")
@@ -30,6 +43,11 @@ func main() {
 			CutMediaSeconds = "0"
 		}
 	}
+}
+
+func main() {
+	// Get the environment variables
+	setEnvVariables()
 
 	// Setup the router and routes
 	r := chi.NewRouter()

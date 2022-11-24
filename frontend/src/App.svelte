@@ -4,8 +4,6 @@
 
   const apiHost = "http://localhost:9090"
   var allowFiles = "ALLOW_FILES"
-  
-  const delay = ms => new Promise(res => setTimeout(res, ms));
 
   let recording = false;
   let audioAvailable = false;
@@ -13,13 +11,14 @@
   let copied = false;
   let processing = false;
   let fileName = false;
-  let errorMessage = false;
+  let errorMessage = "false";
+  let microphone = false;
   
   let generateSubtitles = false;
   let subtitlesUrl = "#";
   let translate = false;
   
-  let recordedBlobs
+  let recordedChunks = [];
   let mediaRecorder
 
   // When app is mounted, it runs the init() function
@@ -40,15 +39,17 @@
   };
 
   function renderError(message) {
-    const main = document.querySelector('main');
-    main.innerHTML = `<div class="error"><p>${message}</p></div>`;
+    errorMessage = message
+    setTimeout(() => {
+        errorMessage = "false";
+      }, 8000);    
   }
 
   // Handle data blobs when available from mediaRecorder.
   function handleDataAvailable(event) {
     console.log('handleDataAvailable', event);
     if (event.data && event.data.size > 0) {
-      recordedBlobs.push(event.data);
+      recordedChunks.push(event.data);
     }
   }
 
@@ -57,13 +58,13 @@
     console.log("Started recording...");
     audioAvailable = false;
     fileName = false;
-    recordedBlobs = [];
+    recordedChunks = [];
     let options = {mimeType: 'audio/webm;'};
     recording = true;
     try {
       mediaRecorder = new MediaRecorder(window.stream, options);
     } catch (e) {
-      console.error('Exception while creating MediaRecorder:', e);
+      renderError(`Exception while creating MediaRecorder: ${e}`)
       return;
     }
 
@@ -71,7 +72,7 @@
 
     mediaRecorder.onstop = (event) => {
       console.log('Recorder stopped: ', event);
-      console.log('Recorded Blobs: ', recordedBlobs);
+      console.log('Recorded Blobs: ', recordedChunks);
     };
 
     mediaRecorder.ondataavailable = handleDataAvailable;
@@ -84,18 +85,20 @@
   async function handleTranscribe() {
     processing = true;
     let audiofile;
+    
     if(fileName != false) {
+
       var fileInput = document.getElementById('fileSelect'); 
       audiofile = fileInput.files[0];
+
     } else{ // Is an audio recording
+
       console.log("Processing audio")
-      var blob = new Blob(recordedBlobs, {
-        type: 'audio/webm'
-      });
+      var blob = new Blob(recordedChunks, { type : 'audio/webm;' });
+
       var url = URL.createObjectURL(blob);
-      audiofile = new File([blob], "audio.webm", {
-        type: "audio/mp3",
-      });
+      audiofile = new File([blob], "audio.webm", { type : 'audio/webm;' });
+
     }
     const formData = new FormData();
     let language = document.getElementById("lang").value;
@@ -122,12 +125,8 @@
       audioAvailable = false
 
     } catch(error) {
-      console.log(error)
       console.log(JSON.parse(error.request.response))
-      errorMessage = JSON.parse(error.request.response).message
-      setTimeout(() => {
-        errorMessage = false;
-      }, 8000);
+      renderError(JSON.parse(error.request.response).message)
       processing = false
     }
   }
@@ -157,11 +156,19 @@
   }
 
   // Asks for microphone permission to the user
+  function askMicrophonePermission() {
+    navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then((stream) => {
+      window.stream = stream;
+      microphone = true;
+    }).catch(function(err) {
+      errorMessage = `No microphone available. Recording will not work! ${err}`
+    });;
+  }
   async function init() {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-      window.stream = stream;
+      askMicrophonePermission()
     } catch (e) {
+      errorMessage = `No microphone available. Recording will not work! ${e}`
       console.error('navigator.getUserMedia error:', e);
     }
   }
@@ -176,7 +183,7 @@
   </div>
   <p class="text-md font-bold text-slate-300 text-center mt-2">🎶 Convert any audio to text 📝</p>
 
-  { #if errorMessage }
+  { #if errorMessage != "false" }
   <div class="text-center max-w-md space-x-2 bg-red-500 rounded-xl p-4 mt-8">
     <p class="font-bold text-white">{errorMessage}</p>
   </div>

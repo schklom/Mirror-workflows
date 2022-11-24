@@ -20,7 +20,6 @@ interface Cache_Adapter {
 	 * @return int|false Bytes written or false if an error occurred.
 	 */
 	public function put(string $filename, $data);
-	public function touch(string $filename): bool;
 	public function get(string $filename): ?string;
 	public function get_full_path(string $filename): string;
 	/**

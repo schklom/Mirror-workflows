@@ -238,8 +238,12 @@ class DiskCache implements Cache_Adapter {
 		return $this->adapter->put($filename, $data);
 	}
 
+	/** @deprecated we can't assume cached files are local, and other storages
+	 * might not support this operation (object metadata may be immutable) */
 	public function touch(string $filename): bool {
-		return $this->adapter->touch($filename);
+		user_error("DiskCache: called unsupported method touch() for $filename", E_USER_DEPRECATED);
+
+		return false;
 	}
 
 	public function get(string $filename): ?string {

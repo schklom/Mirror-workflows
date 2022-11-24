@@ -66,10 +66,6 @@ class Cache_Local implements Cache_Adapter {
 		return file_put_contents($this->get_full_path($filename), $data);
 	}
 
-	public function touch(string $filename): bool {
-		return touch($this->get_full_path($filename));
-	}
-
 	/**
 	 * @return false|null|string false if detection failed, null if the file doesn't exist, string mime content type otherwise
 	 */

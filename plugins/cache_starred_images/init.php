@@ -31,10 +31,10 @@ class Cache_Starred_Images extends Plugin {
 			chmod($this->cache_status->get_dir(), 0777);
 
 		if (!$this->cache->exists(".no-auto-expiry"))
-			$this->cache->touch(".no-auto-expiry");
+			$this->cache->put(".no-auto-expiry", "");
 
 		if (!$this->cache_status->exists(".no-auto-expiry"))
-			$this->cache_status->touch(".no-auto-expiry");
+			$this->cache_status->put(".no-auto-expiry", "");
 
 		if ($this->cache->is_writable() && $this->cache_status->is_writable()) {
 			$host->add_hook($host::HOOK_HOUSE_KEEPING, $this);

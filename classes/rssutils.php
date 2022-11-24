@@ -1326,8 +1326,6 @@ class RSSUtils {
 						} else {
 							Debug::log("cache_enclosures: failed with ".UrlHelper::$fetch_last_error_code.": ".UrlHelper::$fetch_last_error);
 						}
-					} else if (is_writable($local_filename)) {
-						$cache->touch($local_filename);
 					}
 				}
 			}
@@ -1353,8 +1351,6 @@ class RSSUtils {
 			} else {
 				Debug::log("cache_media: failed with ".UrlHelper::$fetch_last_error_code.": ".UrlHelper::$fetch_last_error);
 			}
-		} else if ($cache->is_writable($local_filename)) {
-			$cache->touch($local_filename);
 		}
 	}
 

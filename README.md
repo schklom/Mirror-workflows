@@ -1,6 +1,8 @@
-# Web Whisper
+# WEB WHISPER
 
-### 🎶 Convert any audio to text 📝
+<p align="center"> <b> 🎶 Convert any audio to text 📝 </b></p>
+
+<br>
 
 A user interface for OpenAI's [Whisper](https://github.com/openai/whisper) right into your browser!
 

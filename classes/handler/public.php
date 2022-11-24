@@ -769,6 +769,18 @@ class Handler_Public extends Handler {
 		}
 	}
 
+	function feed_icon() : void {
+		$id = (int)$_REQUEST['id'];
+		$cache = new DiskCache('feed-icons');
+
+		if ($cache->exists((string)$id)) {
+			$cache->send((string)$id);
+		} else {
+			header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+			echo "File not found.";
+		}
+	}
+
 	private function _make_article_tag_uri(int $id, string $timestamp): string {
 
 		$timestamp = date("Y-m-d", strtotime($timestamp));

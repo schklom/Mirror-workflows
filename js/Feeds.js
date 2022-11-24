@@ -100,7 +100,7 @@ const	Feeds = {
 				if (id > 0) {
 					if (has_img) {
 						this.setIcon(id, false,
-							App.getInitParam("icons_url") + "/" + id + ".ico?" + has_img);
+							App.getInitParam("icons_url") + '?' + dojo.objectToQuery({op: 'feed_icon', id: id}));
 					} else {
 						this.setIcon(id, false, 'images/blank_icon.gif');
 					}
@@ -678,8 +678,10 @@ const	Feeds = {
 		});
 	},
 	renderIcon: function(feed_id, exists) {
+		const icon_url = App.getInitParam("icons_url") + '?' + dojo.objectToQuery({op: 'feed_icon', id: feed_id});
+
 		return feed_id && exists ?
-			`<img class="icon" src="${App.escapeHtml(App.getInitParam("icons_url"))}/${feed_id}.ico">` :
+			`<img class="icon" src="${App.escapeHtml(icon_url)}">` :
 				`<i class='icon-no-feed material-icons'>rss_feed</i>`;
 	}
 };

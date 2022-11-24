@@ -454,14 +454,15 @@ class Pref_Feeds extends Handler_Protected {
 
 	function removeIcon(): void {
 		$feed_id = (int) $_REQUEST["feed_id"];
-		$icon_file = Config::get(Config::ICONS_DIR) . "/$feed_id.ico";
+
+		$cache = new DiskCache('feed-icons');
 
 		$feed = ORM::for_table('ttrss_feeds')
 			->where('owner_uid', $_SESSION['uid'])
 			->find_one($feed_id);
 
-		if ($feed && file_exists($icon_file)) {
-			if (unlink($icon_file)) {
+		if ($feed && $cache->exists((string)$feed_id)) {
+			if ($cache->remove((string)$feed_id)) {
 				$feed->set([
 					'favicon_avg_color' => null,
 					'favicon_last_checked' => '1970-01-01',
@@ -486,24 +487,25 @@ class Pref_Feeds extends Handler_Protected {
 		if ($feed && $tmp_file && move_uploaded_file($_FILES['icon_file']['tmp_name'], $tmp_file)) {
 			if (filesize($tmp_file) < Config::get(Config::MAX_FAVICON_FILE_SIZE)) {
 
-				$new_filename = Config::get(Config::ICONS_DIR) . "/$feed_id.ico";
+				$cache = new DiskCache('feed-icons');
 
-				if (file_exists($new_filename)) unlink($new_filename);
-					if (rename($tmp_file, $new_filename)) {
-						chmod($new_filename, 0644);
+				if ($cache->put((string)$feed_id, file_get_contents($tmp_file))) {
 
-						$feed->set([
-							'favicon_avg_color' => null,
-							'favicon_is_custom' => true,
-						]);
+					$feed->set([
+						'favicon_avg_color' => null,
+						'favicon_is_custom' => true,
+					]);
 
-						if ($feed->save()) {
-							$rc = self::E_ICON_UPLOAD_SUCCESS;
-						}
-
-					} else {
-						$rc = self::E_ICON_RENAME_FAILED;
+					if ($feed->save()) {
+						$rc = self::E_ICON_UPLOAD_SUCCESS;
 					}
+
+				} else {
+					$rc = self::E_ICON_RENAME_FAILED;
+				}
+
+				@unlink($tmp_file);
+
 			} else {
 				$rc = self::E_ICON_FILE_TOO_LARGE;
 			}
@@ -1186,9 +1188,10 @@ class Pref_Feeds extends Handler_Protected {
 
 			$pdo->commit();
 
-			if (file_exists(Config::get(Config::ICONS_DIR) . "/$id.ico")) {
-				unlink(Config::get(Config::ICONS_DIR) . "/$id.ico");
-			}
+			$favicon_cache = new DiskCache('feed-icons');
+
+			if ($favicon_cache->exists((string)$id))
+				$favicon_cache->remove((string)$id);
 
 		} else {
 			Labels::remove(Labels::feed_to_label_id($id), $owner_uid);

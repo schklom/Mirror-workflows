@@ -1163,11 +1163,28 @@ class Feeds extends Handler_Protected {
 	}
 
 	static function _get_icon_file(int $feed_id): string {
-		return Config::get(Config::ICONS_DIR) . "/$feed_id.ico";
+		$favicon_cache = new DiskCache('feed-icons');
+
+		return $favicon_cache->get_full_path((string)$feed_id);
 	}
 
-	static function _has_icon(int $id): bool {
-		return is_file(Config::get(Config::ICONS_DIR) . "/$id.ico") && filesize(Config::get(Config::ICONS_DIR) . "/$id.ico") > 0;
+	static function _get_icon_url(int $feed_id, string $fallback_url = "") : string {
+		if (self::_has_icon($feed_id)) {
+			$icon_url = Config::get_self_url() . "/public.php?" . http_build_query([
+				'op' => 'feed_icon',
+				'id' => $feed_id,
+			]);
+
+			return $icon_url;
+		}
+
+		return $fallback_url;
+	}
+
+	static function _has_icon(int $feed_id): bool {
+		$favicon_cache = new DiskCache('feed-icons');
+
+		return $favicon_cache->exists((string)$feed_id);
 	}
 
 	/**
@@ -1191,16 +1208,9 @@ class Feeds extends Handler_Protected {
 				if ($id < LABEL_BASE_INDEX) {
 					return "label";
 				} else {
-					$icon = self::_get_icon_file($id);
-
-					if ($icon && file_exists($icon)) {
-						return Config::get(Config::ICONS_URL) . "/" . basename($icon) . "?" . filemtime($icon);
-					}
+					return self::_get_icon_url($id);
 				}
-				break;
 		}
-
-		return false;
 	}
 
 	/**

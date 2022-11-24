@@ -82,11 +82,10 @@ class Pref_Users extends Handler_Administrative {
 					<?php while ($row = $sth->fetch()) { ?>
 						<li>
 							<?php
-								$icon_file = Config::get(Config::ICONS_URL) . "/" . $row["id"] . ".ico";
-								$icon = file_exists($icon_file) ? $icon_file : "images/blank_icon.gif";
+								$icon_url = Feeds::_get_icon_url($row['id'], 'images/blank_icon.gif');
 							?>
 
-							<img class="icon" src="<?= $icon_file ?>">
+							<img class="icon" src="<?= htmlspecialchars($icon_url) ?>">
 
 							<a target="_blank" href="<?= htmlspecialchars($row["site_url"]) ?>">
 								<?= htmlspecialchars($row["title"]) ?>

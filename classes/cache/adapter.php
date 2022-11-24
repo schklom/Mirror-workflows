@@ -21,6 +21,7 @@ interface Cache_Adapter {
 	public function put(string $filename, $data);
 	public function get(string $filename): ?string;
 	public function get_full_path(string $filename): string;
+	public function remove(string $filename) : bool;
 	/**
 	 * @return false|null|string false if detection failed, null if the file doesn't exist, string mime content type otherwise
 	 */

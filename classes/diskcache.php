@@ -210,6 +210,10 @@ class DiskCache implements Cache_Adapter {
 		$this->adapter->set_dir($dir);
 	}
 
+	public function remove(string $filename): bool {
+		return $this->adapter->remove($filename);
+	}
+
 	public function set_dir(string $dir) : void {
 		$this->adapter->set_dir($dir);
 	}
@@ -290,6 +294,20 @@ class DiskCache implements Cache_Adapter {
 	}
 
 	public function send(string $filename) {
+
+		if (!$this->exists($filename)) {
+			header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
+			echo "File not found.";
+			return false;
+		}
+
+		$gmt_modified = gmdate("D, d M Y H:i:s", (int)$this->get_mtime($filename)) . " GMT";
+
+		if (($_SERVER['HTTP_IF_MODIFIED_SINCE'] ?? '') == $gmt_modified) {
+			header('HTTP/1.1 304 Not Modified');
+			return false;
+		}
+
 		$mimetype = $this->adapter->get_mime_type($filename);
 
 		if ($mimetype == "application/octet-stream")
@@ -314,6 +332,15 @@ class DiskCache implements Cache_Adapter {
 
 		header("Content-Disposition: inline; filename=\"{$filename}{$fake_extension}\"");
 		header("Content-type: $mimetype");
+
+		$stamp_expires = gmdate("D, d M Y H:i:s",
+			(int)$this->get_mtime($filename) + 86400 * Config::get(Config::CACHE_MAX_DAYS)) . " GMT";
+
+		header("Expires: $stamp_expires", true);
+		header("Last-Modified: $gmt_modified", true);
+		header("Cache-Control: public");
+
+		header_remove("Pragma");
 
 		return $this->adapter->send($filename);
 	}

@@ -1695,15 +1695,16 @@ class RSSUtils {
 
 		$dh = opendir($old_dir);
 
+		$cache = new DiskCache('feed-icons');
+
 		if ($dh) {
 			while (($old_filename = readdir($dh)) !== false) {
 				if (strpos($old_filename, ".ico") !== false) {
 					$new_filename = str_replace(".ico", "", $old_filename);
 					$old_full_path = "$old_dir/$old_filename";
-					$new_full_path = "$new_dir/$new_filename";
 
-					if (is_file($old_full_path) && !file_exists($new_full_path)) {
-						rename($old_full_path, $new_full_path);
+					if (is_file($old_full_path) && $cache->put($new_filename, file_get_contents($old_full_path))) {
+						unlink($old_full_path);
 					}
 				}
 			}

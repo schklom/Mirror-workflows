@@ -222,7 +222,7 @@ class DiskCache implements Cache_Adapter {
 	 * @return int|false -1 if the file doesn't exist, false if an error occurred, timestamp otherwise
 	 */
 	public function get_mtime(string $filename) {
-		return $this->adapter->get_mtime($filename);
+		return $this->adapter->get_mtime(basename($filename));
 	}
 
 	public function make_dir(): bool {
@@ -230,18 +230,18 @@ class DiskCache implements Cache_Adapter {
 	}
 
 	public function is_writable(?string $filename = null): bool {
-		return $this->adapter->is_writable($filename);
+		return $this->adapter->is_writable(basename($filename));
 	}
 
 	public function exists(string $filename): bool {
-		return $this->adapter->exists($filename);
+		return $this->adapter->exists(basename($filename));
 	}
 
 	/**
 	 * @return int|false -1 if the file doesn't exist, false if an error occurred, size in bytes otherwise
 	 */
 	public function get_size(string $filename) {
-		return $this->adapter->get_size($filename);
+		return $this->adapter->get_size(basename($filename));
 	}
 
 	/**
@@ -250,7 +250,7 @@ class DiskCache implements Cache_Adapter {
 	 * @return int|false Bytes written or false if an error occurred.
 	 */
 	public function put(string $filename, $data) {
-		return $this->adapter->put($filename, $data);
+		return $this->adapter->put(basename($filename), $data);
 	}
 
 	/** @deprecated we can't assume cached files are local, and other storages
@@ -262,7 +262,7 @@ class DiskCache implements Cache_Adapter {
 	}
 
 	public function get(string $filename): ?string {
-		return $this->adapter->get($filename);
+		return $this->adapter->get(basename($filename));
 	}
 
 	public function expire_all(): void {
@@ -294,6 +294,7 @@ class DiskCache implements Cache_Adapter {
 	}
 
 	public function send(string $filename) {
+		$filename = basename($filename);
 
 		if (!$this->exists($filename)) {
 			header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
@@ -308,7 +309,7 @@ class DiskCache implements Cache_Adapter {
 			return false;
 		}
 
-		$mimetype = $this->adapter->get_mime_type($filename);
+		$mimetype = $this->get_mime_type($filename);
 
 		if ($mimetype == "application/octet-stream")
 				$mimetype = "video/mp4";
@@ -346,15 +347,15 @@ class DiskCache implements Cache_Adapter {
 	}
 
 	public function get_full_path(string $filename): string {
-		return $this->adapter->get_full_path($filename);
+		return $this->adapter->get_full_path(basename($filename));
 	}
 
 	public function get_mime_type(string $filename) {
-		return $this->adapter->get_mime_type($filename);
+		return $this->adapter->get_mime_type(basename($filename));
 	}
 
 	public function get_fake_extension(string $filename): string {
-		$mimetype = $this->adapter->get_mime_type($filename);
+		$mimetype = $this->adapter->get_mime_type(basename($filename));
 
 		if ($mimetype)
 			return isset($this->mimeMap[$mimetype]) ? $this->mimeMap[$mimetype] : "";

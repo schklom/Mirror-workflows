@@ -255,11 +255,12 @@
                 <option value="es">Spanish</option>
                 <option value="ca">Catalan</option>
                 <option value="et">Estonian</option>
-                <option value="Czech">Czech</option>
+                <option value="cs">Czech</option>
+                <option value="nl">Dutch</option>
                 <option value="no">Norweigan</option>
                 <option value="ru">Russian</option>
                 <option value="ja">Japanese</option>
-                <option value="Chinese">Chinese</option>
+                <option value="zh">Chinese</option>
             </select>
         </div>
       </div>

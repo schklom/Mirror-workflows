@@ -3,8 +3,6 @@ FROM node:lts-alpine AS build
 WORKDIR /app
 
 COPY frontend/ ./
-RUN --mount=type=cache,target=/root/.cache/yarn \
-    --mount=type=cache,target=/app/node_modules
 RUN yarn install
 
 ARG DOMAIN_NAME

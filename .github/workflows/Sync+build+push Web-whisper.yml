@@ -101,6 +101,8 @@ jobs:
       
       - name: Choose tiny among (tiny.en tiny base.en base small.en small medium.en medium large)
         run: sed -ir 's/^ARG WHISPER_MODEL(=.*)?/ARG WHISPER_MODEL=tiny/' ./backend.Dockerfile
+      - name: Check Dockerfile
+        run: cat ./backend.Dockerfile
       # https://github.com/docker/build-push-action#multi-platform-image
       - name: Build and push Web-whisper
         uses: docker/build-push-action@v3.2.0

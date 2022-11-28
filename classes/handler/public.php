@@ -418,7 +418,7 @@ class Handler_Public extends Handler {
 
 			$return = clean($_REQUEST['return']);
 
-			if ($_REQUEST['return'] && mb_strpos($return, Config::get(Config::SELF_URL_PATH)) === 0) {
+			if ($_REQUEST['return'] && mb_strpos($return, Config::get_self_url()) === 0) {
 				header("Location: " . clean($_REQUEST['return']));
 			} else {
 				header("Location: " . Config::get_self_url());
@@ -572,7 +572,7 @@ class Handler_Public extends Handler {
 
 					$tpl->setVariable('LOGIN', $login);
 					$tpl->setVariable('RESETPASS_LINK', $resetpass_link);
-					$tpl->setVariable('TTRSS_HOST', Config::get(Config::SELF_URL_PATH));
+					$tpl->setVariable('TTRSS_HOST', Config::get_self_url());
 
 					$tpl->addBlock('message');
 

@@ -4,13 +4,13 @@ on:
   # Triggers the workflow on push or pull request events but only for the main branch
   #schedule:
     # * is a special character in YAML so you have to quote this string
-    #- cron:  '0 0 * * *'
+    - cron:  '0 0 * * *'
   workflow_dispatch: # Allows manually triggering from the Actions page
 
 jobs:
   get_commits:
     runs-on: ubuntu-latest
-    if: ${{ false }}
+    #if: ${{ false }}
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     outputs:
       LOCAL: ${{ steps.commits.outputs.SETLOCAL }}
@@ -29,7 +29,7 @@ jobs:
   
   repo_sync:
     needs: [get_commits]
-    if: ${{ false }}
+    #if: ${{ false }}
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     #if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
@@ -172,7 +172,7 @@ jobs:
             schklom/web-whisper-backend:large
 
   build_push_frontend:
-    if: ${{ false }}
+    #if: ${{ false }}
     #needs: [repo_sync]
     #needs: [get_commits]
     runs-on: ubuntu-latest

@@ -448,13 +448,7 @@ class Config {
 
 	/** this returns Config::SELF_URL_PATH sans trailing slash */
 	static function get_self_url() : string {
-		$self_url_path = self::get(Config::SELF_URL_PATH);
-
-		if (substr($self_url_path, -1) === "/") {
-			return substr($self_url_path, 0, -1);
-		} else {
-			return $self_url_path;
-		}
+		return preg_replace("#/*$#", "", self::get(Config::SELF_URL_PATH));
 	}
 
 	static function is_server_https() : bool {

@@ -293,6 +293,7 @@ class Article extends Handler_Protected {
 	}
 
 	/**
+	 * @param int $id article id
 	 * @return array{'formatted': string, 'entries': array<int, array<string, mixed>>}
 	 */
 	static function _format_enclosures(int $id, bool $always_display_enclosures, string $article_content, bool $hide_images = false): array {

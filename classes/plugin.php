@@ -482,7 +482,7 @@ abstract class Plugin {
 
 	/** Invoked for every enclosure entry as article is being rendered
 	 * @param array<string,string> $entry
-	 * @param int $id
+	 * @param int $id article id
 	 * @param array{'formatted': string, 'entries': array<int, array<string, mixed>>} $rv
 	 * @return array<string,string> ($entry)
 	 * @see PluginHost::HOOK_ENCLOSURE_ENTRY

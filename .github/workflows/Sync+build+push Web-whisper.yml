@@ -100,7 +100,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       
       - name: Choose tiny among (tiny.en tiny base.en base small.en small medium.en medium large)
-        run: sed -ir 's/^ARG WHISPER_MODEL$/ARG WHISPER_MODEL=tiny/' ./backend.Dockerfile > ./backend.Dockerfile
+        run: sed -ir 's/^ARG WHISPER_MODEL(=.*)?/ARG WHISPER_MODEL=tiny/' ./backend.Dockerfile
       # https://github.com/docker/build-push-action#multi-platform-image
       - name: Build and push Web-whisper
         uses: docker/build-push-action@v3.2.0
@@ -114,7 +114,7 @@ jobs:
             schklom/web-whisper-backend:tiny
       
       - name: Choose base among (tiny.en tiny base.en base small.en small medium.en medium large)
-        run: sed -ir 's/^ARG WHISPER_MODEL$/ARG WHISPER_MODEL=base/' ./backend.Dockerfile > ./backend.Dockerfile
+        run: sed -ir 's/^ARG WHISPER_MODEL(=.*)?/ARG WHISPER_MODEL=base/' ./backend.Dockerfile
       # https://github.com/docker/build-push-action#multi-platform-image
       - name: Build and push Web-whisper
         uses: docker/build-push-action@v3.2.0
@@ -128,7 +128,7 @@ jobs:
             schklom/web-whisper-backend:base
       
       - name: Choose small among (tiny.en tiny base.en base small.en small medium.en medium large)
-        run: sed -ir 's/^ARG WHISPER_MODEL$/ARG WHISPER_MODEL=small/' ./backend.Dockerfile > ./backend.Dockerfile
+        run: sed -ir 's/^ARG WHISPER_MODEL(=.*)?/ARG WHISPER_MODEL=small/' ./backend.Dockerfile
       # https://github.com/docker/build-push-action#multi-platform-image
       - name: Build and push Web-whisper
         uses: docker/build-push-action@v3.2.0
@@ -142,7 +142,7 @@ jobs:
             schklom/web-whisper-backend:small
       
       - name: Choose medium among (tiny.en tiny base.en base small.en small medium.en medium large)
-        run: sed -ir 's/^ARG WHISPER_MODEL$/ARG WHISPER_MODEL=medium/' ./backend.Dockerfile > ./backend.Dockerfile
+        run: sed -ir 's/^ARG WHISPER_MODEL(=.*)?/ARG WHISPER_MODEL=medium/' ./backend.Dockerfile
       # https://github.com/docker/build-push-action#multi-platform-image
       - name: Build and push Web-whisper
         uses: docker/build-push-action@v3.2.0
@@ -156,7 +156,7 @@ jobs:
             schklom/web-whisper-backend:medium
       
       - name: Choose large among (tiny.en tiny base.en base small.en small medium.en medium large)
-        run: sed -ir 's/^ARG WHISPER_MODEL$/ARG WHISPER_MODEL=large/' ./backend.Dockerfile > ./backend.Dockerfile
+        run: sed -ir 's/^ARG WHISPER_MODEL(=.*)?/ARG WHISPER_MODEL=large/' ./backend.Dockerfile
       # https://github.com/docker/build-push-action#multi-platform-image
       - name: Build and push Web-whisper
         uses: docker/build-push-action@v3.2.0

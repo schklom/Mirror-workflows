@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: 'Alltube' # branch
+          ref: 'Web-whisper' # branch
       - name: set local and remote latest commit as environment variables
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
@@ -55,7 +55,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       #- uses: actions/checkout@v3
         #with:
-          #ref: 'Alltube'
+          #ref: 'Web-whisper'
       #- name: app dockerfile
       #  run: sed -r 's/^FROM ([a-zA-Z]+)(.*)$/FROM arm32v7\/\1\2/' src/app/Dockerfile > src/app/Dockerfile
       #- name: adapt web dockerfile
@@ -99,6 +99,10 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       
+      - name: Check Dockerfile
+        run: cat ./backend.Dockerfile
+      - name: Check modification Dockerfile
+        run: sed -r 's/^ARG WHISPER_MODEL.*/ARG WHISPER_MODEL=tiny/' ./backend.Dockerfile
       - name: Choose tiny among (tiny.en tiny base.en base small.en small medium.en medium large)
         run: sed -r 's/^ARG WHISPER_MODEL.*/ARG WHISPER_MODEL=tiny/' ./backend.Dockerfile > ./backend.Dockerfile
       - name: Check Dockerfile

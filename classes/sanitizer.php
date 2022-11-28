@@ -54,7 +54,7 @@ class Sanitizer {
 	}
 
 	private static function is_prefix_https(): bool {
-		return parse_url(Config::get(Config::SELF_URL_PATH), PHP_URL_SCHEME) == 'https';
+		return parse_url(Config::get_self_url(), PHP_URL_SCHEME) == 'https';
 	}
 
 	/**

@@ -110,7 +110,7 @@ jobs:
           context: .
           file: ./backend.Dockerfile.tiny
           #platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
-          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
           push: true
           tags: |
             schklom/web-whisper-backend:tiny
@@ -124,7 +124,7 @@ jobs:
           context: .
           file: ./backend.Dockerfile.base
           #platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
-          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
           push: true
           tags: |
             schklom/web-whisper-backend:base
@@ -138,7 +138,7 @@ jobs:
           context: .
           file: ./backend.Dockerfile.small
           #platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
-          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
           push: true
           tags: |
             schklom/web-whisper-backend:small
@@ -152,7 +152,7 @@ jobs:
           context: .
           file: ./backend.Dockerfile.medium
           #platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
-          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
           push: true
           tags: |
             schklom/web-whisper-backend:medium
@@ -166,7 +166,7 @@ jobs:
           context: .
           file: ./backend.Dockerfile.large
           #platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
-          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
           push: true
           tags: |
             schklom/web-whisper-backend:large

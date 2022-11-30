@@ -8,6 +8,8 @@ services:
       args:
         # Valid model values: tiny, base, small, medium, large
         - WHISPER_MODEL=small
+        - WHISPER_THREADS=4 # Number of threads to use during computation
+        - WHISPER_PROCESSORS=1 # Number of processors to use during computation
         - CUT_MEDIA_SECONDS=10
     container_name: web-whisper-backend
   

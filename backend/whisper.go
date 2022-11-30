@@ -135,6 +135,7 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		if CutMediaSeconds != "0" {
 			ffmpegArgs = append(ffmpegArgs, ffmpeg.KwArgs{"t": CutMediaSeconds})
 		}
+
 		// Append all args and merge to single KwArgs
 		ffmpegArgs = append(ffmpegArgs, ffmpeg.KwArgs{"ar": 16000, "ac": 1, "c:a": "pcm_s16le"})
 		args := ffmpeg.MergeKwArgs(ffmpegArgs)
@@ -171,6 +172,14 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		if translate {
 			whisperArgs = append(whisperArgs, "--translate")
 		}
+		fmt.Println(WhisperThreads, WhisperProcs)
+		if WhisperThreads != "4" {
+			whisperArgs = append(whisperArgs, "-t", WhisperThreads)
+		}
+		if WhisperProcs != "1" {
+			whisperArgs = append(whisperArgs, "-p", WhisperProcs)
+		}
+
 		whisperArgs = append(whisperArgs, "-f", targetFilepath)
 
 		// Run whisper

@@ -13,8 +13,37 @@ import (
 
 var CutMediaSeconds string
 var WhisperModel string
+var WhisperThreads string
+var WhisperProcs string
 
 func setEnvVariables() {
+	WhisperThreads = os.Getenv("WHISPER_THREADS")
+	if WhisperThreads == "" {
+		log.Printf("No WHISPER_THREADS ENV found. Trying to get .env file.")
+		err := godotenv.Load()
+		if err != nil {
+			log.Printf("No .env file found... Defaulting WHISPER_THREADS to 0")
+			WhisperThreads = "4"
+		}
+		os.Getenv("WHISPER_THREADS")
+		if WhisperThreads == "" {
+			WhisperThreads = "4"
+		}
+	}
+	WhisperProcs = os.Getenv("WHISPER_PROCESSORS")
+	if WhisperProcs == "" {
+		log.Printf("No WHISPER_PROCESSORS ENV found. Trying to get .env file.")
+		err := godotenv.Load()
+		if err != nil {
+			log.Printf("No .env file found... Defaulting WHISPER_PROCESSORS to 0")
+			WhisperProcs = "1"
+		}
+		os.Getenv("WHISPER_PROCESSORS")
+		if WhisperProcs == "" {
+			WhisperProcs = "1"
+		}
+	}
+
 	WhisperModel = os.Getenv("WHISPER_MODEL")
 	if WhisperModel == "" {
 		log.Printf("No WHISPER_MODEL ENV found. Trying to get .env file.")

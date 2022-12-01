@@ -88,11 +88,23 @@ Whisper.cpp usually provides faster results than the python implementation. Alth
 ```
 CPU: i7
 RAM: 16
+Threads: 4
+Procs: 1
 Input format: webm audio
 File size: 7MB
 Audio length: 30m
 
 Total elapsed time: 7m 38s
+```
+```
+CPU: i7
+RAM: 16
+Threads: 10
+Procs: 1
+Input format: webm audio
+Audio length: 30s
+
+Total elapsed time: 5s
 ```
 
 ## Similar projects

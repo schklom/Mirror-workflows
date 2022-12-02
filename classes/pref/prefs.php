@@ -251,7 +251,7 @@ class Pref_Prefs extends Handler_Protected {
 
 					$tpl->setVariable('LOGIN', $user->login);
 					$tpl->setVariable('NEWMAIL', $new_email);
-					$tpl->setVariable('TTRSS_HOST', Config::get(Config::SELF_URL_PATH));
+					$tpl->setVariable('TTRSS_HOST', Config::get_self_url());
 
 					$tpl->addBlock('message');
 
@@ -1002,7 +1002,7 @@ class Pref_Prefs extends Handler_Protected {
 				$tpl->readTemplateFromFile("otp_disabled_template.txt");
 
 				$tpl->setVariable('LOGIN', $row["login"]);
-				$tpl->setVariable('TTRSS_HOST', Config::get(Config::SELF_URL_PATH));
+				$tpl->setVariable('TTRSS_HOST', Config::get_self_url());
 
 				$tpl->addBlock('message');
 

@@ -44,7 +44,7 @@ class RSSUtils {
 
 			if ($dh) {
 				while (($icon = readdir($dh)) !== false) {
-					if ($cache->get_mtime($icon) < time() - 86400 * Config::get(Config::CACHE_MAX_DAYS)) {
+					if (preg_match('/^[0-9]{1,}$/', $icon) && $cache->get_mtime($icon) < time() - 86400 * Config::get(Config::CACHE_MAX_DAYS)) {
 
 						$sth->execute([(int)$icon]);
 
@@ -54,7 +54,7 @@ class RSSUtils {
 							$icon_path = $cache->get_full_path($icon);
 
 							Debug::log("Removing orphaned feed icon: $icon_path");
-							unlink($icon);
+							unlink($icon_path);
 						}
 					}
 				}

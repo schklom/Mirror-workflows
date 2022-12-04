@@ -68,7 +68,7 @@ jobs:
           # Defaults to "Apply automatic changes"
       #    commit_message: Updated web Dockerfile to work with Raspberry Pi 4
 
-  build_push_backend:
+  build_push_backend_tiny:
     #needs: [repo_sync]
     #needs: [get_commits]
     runs-on: ubuntu-latest
@@ -101,8 +101,6 @@ jobs:
   
       - name: Choose tiny among (tiny.en tiny base.en base small.en small medium.en medium large)
         run: sed -r 's/^ARG WHISPER_MODEL.*/ARG WHISPER_MODEL=tiny/' backend.Dockerfile > backend.Dockerfile.tiny
-      - name: Check Dockerfile
-        run: cat backend.Dockerfile.tiny
       # https://github.com/docker/build-push-action#multi-platform-image
       - name: Build and push Web-whisper
         uses: docker/build-push-action@v3.2.0
@@ -115,6 +113,38 @@ jobs:
           tags: |
             schklom/web-whisper-backend:tiny
       
+
+  build_push_backend_base:
+    #needs: [repo_sync]
+    #needs: [get_commits]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: 'Web-whisper' # branch
+      # https://github.com/docker/setup-qemu-action#usage
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2.1.0
+        #with:
+          #image: tonistiigi/binfmt:latest
+          #platforms: all
+          #platforms: arm/v7
+      # https://github.com/marketplace/actions/docker-setup-buildx
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2.2.1
+        #with:
+          #install: true
+      #- name: Available platforms
+      #  run: echo ${{ steps.buildx.outputs.platforms }}
+      # https://github.com/docker/login-action#docker-hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+  
       - name: Choose base among (tiny.en tiny base.en base small.en small medium.en medium large)
         run: sed -r 's/^ARG WHISPER_MODEL.*/ARG WHISPER_MODEL=base/' ./backend.Dockerfile > ./backend.Dockerfile.base
       # https://github.com/docker/build-push-action#multi-platform-image
@@ -129,6 +159,38 @@ jobs:
           tags: |
             schklom/web-whisper-backend:base
       
+            
+  build_push_backend_small:
+    #needs: [repo_sync]
+    #needs: [get_commits]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: 'Web-whisper' # branch
+      # https://github.com/docker/setup-qemu-action#usage
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2.1.0
+        #with:
+          #image: tonistiigi/binfmt:latest
+          #platforms: all
+          #platforms: arm/v7
+      # https://github.com/marketplace/actions/docker-setup-buildx
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2.2.1
+        #with:
+          #install: true
+      #- name: Available platforms
+      #  run: echo ${{ steps.buildx.outputs.platforms }}
+      # https://github.com/docker/login-action#docker-hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+  
       - name: Choose small among (tiny.en tiny base.en base small.en small medium.en medium large)
         run: sed -r 's/^ARG WHISPER_MODEL.*/ARG WHISPER_MODEL=small/' ./backend.Dockerfile > ./backend.Dockerfile.small
       # https://github.com/docker/build-push-action#multi-platform-image
@@ -143,6 +205,38 @@ jobs:
           tags: |
             schklom/web-whisper-backend:small
       
+            
+  build_push_backend_medium:
+    #needs: [repo_sync]
+    #needs: [get_commits]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: 'Web-whisper' # branch
+      # https://github.com/docker/setup-qemu-action#usage
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2.1.0
+        #with:
+          #image: tonistiigi/binfmt:latest
+          #platforms: all
+          #platforms: arm/v7
+      # https://github.com/marketplace/actions/docker-setup-buildx
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2.2.1
+        #with:
+          #install: true
+      #- name: Available platforms
+      #  run: echo ${{ steps.buildx.outputs.platforms }}
+      # https://github.com/docker/login-action#docker-hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+  
       - name: Choose medium among (tiny.en tiny base.en base small.en small medium.en medium large)
         run: sed -r 's/^ARG WHISPER_MODEL.*/ARG WHISPER_MODEL=medium/' ./backend.Dockerfile > ./backend.Dockerfile.medium
       # https://github.com/docker/build-push-action#multi-platform-image
@@ -157,6 +251,38 @@ jobs:
           tags: |
             schklom/web-whisper-backend:medium
       
+            
+  build_push_backend_large:
+    #needs: [repo_sync]
+    #needs: [get_commits]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: 'Web-whisper' # branch
+      # https://github.com/docker/setup-qemu-action#usage
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2.1.0
+        #with:
+          #image: tonistiigi/binfmt:latest
+          #platforms: all
+          #platforms: arm/v7
+      # https://github.com/marketplace/actions/docker-setup-buildx
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2.2.1
+        #with:
+          #install: true
+      #- name: Available platforms
+      #  run: echo ${{ steps.buildx.outputs.platforms }}
+      # https://github.com/docker/login-action#docker-hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+  
       - name: Choose large among (tiny.en tiny base.en base small.en small medium.en medium large)
         run: sed -r 's/^ARG WHISPER_MODEL.*/ARG WHISPER_MODEL=large/' ./backend.Dockerfile > ./backend.Dockerfile.large
       # https://github.com/docker/build-push-action#multi-platform-image
@@ -170,10 +296,11 @@ jobs:
           push: true
           tags: |
             schklom/web-whisper-backend:large
-
+            
+            
   build_push_frontend:
     #if: ${{ false }}
-    #needs: [repo_sync]
+    needs: [repo_sync]
     #needs: [get_commits]
     runs-on: ubuntu-latest
     steps:

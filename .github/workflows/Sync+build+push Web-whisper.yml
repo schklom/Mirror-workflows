@@ -69,7 +69,7 @@ jobs:
       #    commit_message: Updated web Dockerfile to work with Raspberry Pi 4
 
   build_push_backend_tiny:
-    #needs: [repo_sync]
+    needs: [repo_sync]
     #needs: [get_commits]
     runs-on: ubuntu-latest
     steps:
@@ -115,7 +115,7 @@ jobs:
       
 
   build_push_backend_base:
-    #needs: [repo_sync]
+    needs: [repo_sync]
     #needs: [get_commits]
     runs-on: ubuntu-latest
     steps:
@@ -161,7 +161,7 @@ jobs:
       
             
   build_push_backend_small:
-    #needs: [repo_sync]
+    needs: [repo_sync]
     #needs: [get_commits]
     runs-on: ubuntu-latest
     steps:
@@ -207,7 +207,7 @@ jobs:
       
             
   # build_push_backend_medium:
-    # #needs: [repo_sync]
+    # needs: [repo_sync]
     # #needs: [get_commits]
     # runs-on: ubuntu-latest
     # steps:
@@ -253,7 +253,7 @@ jobs:
       
             
   # build_push_backend_large:
-    # #needs: [repo_sync]
+    # needs: [repo_sync]
     # #needs: [get_commits]
     # runs-on: ubuntu-latest
     # steps:

@@ -156,6 +156,7 @@
   // Handles the stop button to stop the recording.
   async function handleStop() {
     mediaRecorder.stop();
+    window.stream.getTracks().forEach(track => track.stop());
     console.log("Stopped");
     recording = false;
     audioAvailable = true;

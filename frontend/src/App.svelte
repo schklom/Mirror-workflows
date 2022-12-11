@@ -17,9 +17,13 @@
   let generateSubtitles = false;
   let subtitlesUrl = "#";
   let translate = false;
+  let language = "en";
   
   let recordedChunks = [];
-  let mediaRecorder
+  let mediaRecorder;
+
+  // references to DOM elements
+  let fileSelectInput;
 
   // When app is mounted, it runs the init() function
   onMount(() => {
@@ -31,9 +35,8 @@
   });
 
   function handleFileUpload () {
-      if(allowFiles == "true"){
-        var fileInput = document.getElementById('fileSelect'); 
-        fileName = fileInput.files.item(0).name;
+      if(allowFiles == "true" && fileSelectInput){
+        fileName = fileSelectInput.files.item(0).name;
         audioAvailable = true;
       }
   };
@@ -88,8 +91,7 @@
     
     if(fileName != false) {
 
-      var fileInput = document.getElementById('fileSelect'); 
-      audiofile = fileInput.files[0];
+      audiofile = fileSelectInput.files[0];
 
     } else{ // Is an audio recording
 
@@ -101,8 +103,6 @@
 
     }
     const formData = new FormData();
-    let language = document.getElementById("lang").value;
-
 
     formData.append("file", audiofile);
     formData.append("lang", language);
@@ -112,7 +112,7 @@
     try {
       const response = await axios({
         method: 'post',
-        url: `/transcribe`,
+        url: `${apiHost}/transcribe`,
         data: formData,
         headers: {
           'Content-Type': `mutlipart/form-data;`,
@@ -132,13 +132,12 @@
   }
 
   // Handles the Copy text button behaviour
-  function handleCopyText() {
-    // Get the text field
-    var copyText = document.getElementById("textbox");
+  async function handleCopyText() {
+    if(!transcriptionResultText) return;
     //copyText.select();
     //copyText.setSelectionRange(0, 99999); // For mobile devices
     // Copy the text inside the text field
-    navigator.clipboard.writeText(copyText.innerHTML);
+    await navigator.clipboard.writeText(transcriptionResultText);
     // Alert the copied text
     copied = true;
 
@@ -210,7 +209,7 @@
               <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
           </svg>
           <span>File</span>
-          <input accept="audio/*, video/*" id="fileSelect" on:change={handleFileUpload} type='file' class="hidden" />
+          <input accept="audio/*, video/*" id="fileSelect" bind:this={fileSelectInput} on:change={handleFileUpload} type='file' class="hidden" />
       </label>
       {/if}
       {/if}
@@ -233,7 +232,7 @@
           {/if}
           <div class="mb-2 xl:w-fulll">
             <label for="lang">Audio language</label>
-            <select required id="lang" class="form-select appearance-none
+            <select required bind:value={language} id="lang" class="form-select appearance-none
               block
               w-full
               px-6

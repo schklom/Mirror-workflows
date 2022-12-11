@@ -27,8 +27,6 @@
 
   // When app is mounted, it runs the init() function
   onMount(() => {
-    init();
-
     if(allowFiles != "false") {
       allowFiles = "true"
     }
@@ -57,7 +55,15 @@
   }
 
   // Handles the start button. Sets up and starts mediaRecorder
-  function handleStart() {
+  async function handleStart() {
+    try {
+      await askMicrophonePermission()
+    } catch (e) {
+      errorMessage = `No microphone available. Recording will not work! ${e}`
+      console.error('navigator.getUserMedia error:', e);
+      return;
+    }
+
     console.log("Started recording...");
     audioAvailable = false;
     fileName = false;
@@ -149,6 +155,7 @@
   // Handles the stop button to stop the recording.
   async function handleStop() {
     mediaRecorder.stop();
+    window.stream.getTracks().forEach(track => track.stop());
     console.log("Stopped");
     recording = false;
     audioAvailable = true;
@@ -156,20 +163,12 @@
 
   // Asks for microphone permission to the user
   function askMicrophonePermission() {
-    navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then((stream) => {
+    return navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then((stream) => {
       window.stream = stream;
       microphone = true;
     }).catch(function(err) {
       errorMessage = `No microphone available. Recording will not work! ${err}`
-    });;
-  }
-  async function init() {
-    try {
-      askMicrophonePermission()
-    } catch (e) {
-      errorMessage = `No microphone available. Recording will not work! ${e}`
-      console.error('navigator.getUserMedia error:', e);
-    }
+    });
   }
 </script>
 

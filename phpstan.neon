@@ -18,6 +18,8 @@ parameters:
       - vendor/**/test/*
       - vendor/sebastian/*
       - lib/dojo-src/*
+      - lib/**/tests/*
+      - lib/**/test/*
       - plugins/**/tests/*
       - plugins/**/Test/*
       - plugins.local/**/tests/*

@@ -242,7 +242,7 @@
             "source": {
                 "type": "git",
                 "url": "https://dev.tt-rss.org/fox/html5-php.git",
-                "reference": "1e0033a694ce576deba7c59c1da56c76e9e42109"
+                "reference": "d2c79ada2a87bb7eaafe1a39e4e3bb37853099aa"
             },
             "require": {
                 "ext-ctype": "*",
@@ -298,7 +298,7 @@
                 "serializer",
                 "xml"
             ],
-            "time": "2022-07-31T06:41:22+00:00"
+            "time": "2022-12-11T19:41:09+00:00"
         },
         {
             "name": "psr/http-factory",
@@ -469,5 +469,5 @@
     "prefer-lowest": false,
     "platform": [],
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.3.0"
 }

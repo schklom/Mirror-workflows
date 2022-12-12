@@ -247,17 +247,22 @@
               m-0
               focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example">
                 <option value="en" selected>Default (en)</option>
-                <option value="fr">French</option>
-                <option value="de">German</option>
-                <option value="it">Italian</option>
-                <option value="es">Spanish</option>
                 <option value="ca">Catalan</option>
-                <option value="et">Estonian</option>
                 <option value="cs">Czech</option>
+                <option value="de">German</option>
+                <option value="es">Spanish</option>
+                <option value="et">Estonian</option>
+                <option value="fi">Finnish</option>
+                <option value="fr">French</option>
+                <option value="he">Hebrew</option>
+                <option value="it">Italian</option>
+                <option value="ja">Japanese</option>
                 <option value="nl">Dutch</option>
                 <option value="no">Norweigan</option>
+                <option value="pl">Polish</option>
+                <option value="pt">Portuguese</option>
                 <option value="ru">Russian</option>
-                <option value="ja">Japanese</option>
+                <option value="sv">Swedish</option>
                 <option value="zh">Chinese</option>
             </select>
         </div>

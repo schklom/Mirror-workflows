@@ -85,27 +85,36 @@ Note that this instance is limited:
 
 Whisper.cpp usually provides faster results than the python implementation. Although it will highly depend on your machine resources, the length of the media source and the file size. Here is a little benchmark:
 
-```
-CPU: i7
-RAM: 16
-Threads: 4
-Procs: 1
-Input format: webm audio
-File size: 7MB
-Audio length: 30m
+| Processor | RAM | Threads | Processors | Length | Size | Elapsed time |
+|---|---|---|---|---|---|---|
+| i7 | 16 | 4 | 1 | 30m | 7MB | 7m 38s |
+| i7 | 16 | 8 | 1 | 30s | < 1MB | 5s |
 
-Total elapsed time: 7m 38s
-```
-```
-CPU: i7
-RAM: 16
-Threads: 10
-Procs: 1
-Input format: webm audio
-Audio length: 30s
+#### What is the difference between models?
 
-Total elapsed time: 5s
-```
+There are several models, which differ by size. The size difference is related to having more or less parameters. The more parameters the better it can "understand" what it is listening to (less errors). With smaller models, more errors will occur (i.e. confusing words).
+
+Also note that when using bigger models, the transcription time and the memory usage will increase:
+
+| Model  | Disk   | Mem     |
+| ---    | ---    | ---     |
+| tiny   |  75 MB | ~390 MB |
+| base   | 142 MB | ~500 MB |
+| small  | 466 MB | ~1.0 GB |
+| medium | 1.5 GB | ~2.6 GB |
+| large  | 2.9 GB | ~4.7 GB |
+
+> Table from [Whisper.cpp](https://github.com/ggerganov/whisper.cpp) repo.
+
+#### How accurate is this?
+
+Not all languages provide the same accuracy when using Whisper. Please, take a look at the following graphic to see the Languages and their related WER (Word Error Ratio). The smaller the WER, the better the model will understand the language.
+
+<p align=center><img src="https://github.com/openai/whisper/raw/main/language-breakdown.svg" width=550></p>
+
+> Image from original [Whisper](https://github.com/openai/whisper) repo.
+
+
 
 ## Similar projects
 

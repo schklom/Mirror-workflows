@@ -246,7 +246,7 @@
             "source": {
                 "type": "git",
                 "url": "https://dev.tt-rss.org/fox/html5-php.git",
-                "reference": "1e0033a694ce576deba7c59c1da56c76e9e42109"
+                "reference": "d2c79ada2a87bb7eaafe1a39e4e3bb37853099aa"
             },
             "require": {
                 "ext-ctype": "*",
@@ -257,7 +257,7 @@
             "require-dev": {
                 "phpunit/phpunit": "^4.8.35 || ^5.7.21 || ^6 || ^7"
             },
-            "time": "2022-07-31T06:41:22+00:00",
+            "time": "2022-12-11T19:41:09+00:00",
             "default-branch": true,
             "type": "library",
             "extra": {

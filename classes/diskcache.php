@@ -3,6 +3,7 @@ class DiskCache implements Cache_Adapter {
 	/** @var Cache_Adapter $adapter */
 	private $adapter;
 
+	/** @var array<string, DiskCache> $instances */
 	private static $instances = [];
 
 	/**

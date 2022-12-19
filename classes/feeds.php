@@ -1163,7 +1163,7 @@ class Feeds extends Handler_Protected {
 	}
 
 	static function _get_icon_file(int $feed_id): string {
-		$favicon_cache = new DiskCache('feed-icons');
+		$favicon_cache = DiskCache::instance('feed-icons');
 
 		return $favicon_cache->get_full_path((string)$feed_id);
 	}
@@ -1182,7 +1182,7 @@ class Feeds extends Handler_Protected {
 	}
 
 	static function _has_icon(int $feed_id): bool {
-		$favicon_cache = new DiskCache('feed-icons');
+		$favicon_cache = DiskCache::instance('feed-icons');
 
 		return $favicon_cache->exists((string)$feed_id);
 	}

@@ -3,6 +3,8 @@ class DiskCache implements Cache_Adapter {
 	/** @var Cache_Adapter $adapter */
 	private $adapter;
 
+	private static $instances = [];
+
 	/**
 	 * https://stackoverflow.com/a/53662733
 	 *
@@ -195,6 +197,13 @@ class DiskCache implements Cache_Adapter {
 		'text/x-scriptzsh'                                                          => 'zsh'
 	];
 
+	public static function instance(string $dir) : DiskCache {
+		if ((self::$instances[$dir] ?? null) == null)
+			self::$instances[$dir] = new self($dir);
+
+		return self::$instances[$dir];
+	}
+
 	public function __construct(string $dir) {
 		foreach (PluginHost::getInstance()->get_plugins() as $n => $p) {
 			if (implements_interface($p, "Cache_Adapter")) {
@@ -302,9 +311,10 @@ class DiskCache implements Cache_Adapter {
 			return false;
 		}
 
-		$gmt_modified = gmdate("D, d M Y H:i:s", (int)$this->get_mtime($filename)) . " GMT";
+		$file_mtime = $this->get_mtime($filename);
+		$gmt_modified = gmdate("D, d M Y H:i:s", (int)$file_mtime) . " GMT";
 
-		if (($_SERVER['HTTP_IF_MODIFIED_SINCE'] ?? '') == $gmt_modified) {
+		if (($_SERVER['HTTP_IF_MODIFIED_SINCE'] ?? '') == $gmt_modified || ($_SERVER['HTTP_IF_NONE_MATCH'] ?? '') == $file_mtime) {
 			header('HTTP/1.1 304 Not Modified');
 			return false;
 		}
@@ -339,7 +349,8 @@ class DiskCache implements Cache_Adapter {
 
 		header("Expires: $stamp_expires", true);
 		header("Last-Modified: $gmt_modified", true);
-		header("Cache-Control: public");
+		header("Cache-Control: no-cache");
+		header("ETag: $file_mtime");
 
 		header_remove("Pragma");
 
@@ -378,7 +389,7 @@ class DiskCache implements Cache_Adapter {
 		$doc = new DOMDocument();
 		if (@$doc->loadHTML('<?xml encoding="UTF-8">' . $res)) {
 			$xpath = new DOMXPath($doc);
-			$cache = new DiskCache("images");
+			$cache = DiskCache::instance("images");
 
 			$entries = $xpath->query('(//img[@src]|//source[@src|@srcset]|//video[@poster|@src])');
 

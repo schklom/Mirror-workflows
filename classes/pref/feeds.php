@@ -455,7 +455,7 @@ class Pref_Feeds extends Handler_Protected {
 	function removeIcon(): void {
 		$feed_id = (int) $_REQUEST["feed_id"];
 
-		$cache = new DiskCache('feed-icons');
+		$cache = DiskCache::instance('feed-icons');
 
 		$feed = ORM::for_table('ttrss_feeds')
 			->where('owner_uid', $_SESSION['uid'])
@@ -487,7 +487,7 @@ class Pref_Feeds extends Handler_Protected {
 		if ($feed && $tmp_file && move_uploaded_file($_FILES['icon_file']['tmp_name'], $tmp_file)) {
 			if (filesize($tmp_file) < Config::get(Config::MAX_FAVICON_FILE_SIZE)) {
 
-				$cache = new DiskCache('feed-icons');
+				$cache = DiskCache::instance('feed-icons');
 
 				if ($cache->put((string)$feed_id, file_get_contents($tmp_file))) {
 
@@ -514,7 +514,8 @@ class Pref_Feeds extends Handler_Protected {
 		if (file_exists($tmp_file))
 			unlink($tmp_file);
 
-		print json_encode(['rc' => $rc, 'icon_url' => Feeds::_get_icon($feed_id)]);
+		print json_encode(['rc' => $rc, 'icon_url' =>
+			Feeds::_get_icon($feed_id) . "?ts=" . time() ]);
 	}
 
 	function editfeed(): void {
@@ -1188,7 +1189,7 @@ class Pref_Feeds extends Handler_Protected {
 
 			$pdo->commit();
 
-			$favicon_cache = new DiskCache('feed-icons');
+			$favicon_cache = DiskCache::instance('feed-icons');
 
 			if ($favicon_cache->exists((string)$id))
 				$favicon_cache->remove((string)$id);

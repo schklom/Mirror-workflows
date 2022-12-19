@@ -50,7 +50,7 @@ class Af_Comics_Gocomics_FarSide extends Af_ComicFilter {
 					if ($content_node) {
 						$imgs = $xpath->query('//img[@data-src]', $content_node);
 
-						$cache = new DiskCache("images");
+						$cache = DiskCache::instance("images");
 
 						foreach ($imgs as $img) {
 							$image_url = $img->getAttribute('data-src');

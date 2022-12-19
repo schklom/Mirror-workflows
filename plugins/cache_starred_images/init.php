@@ -21,8 +21,8 @@ class Cache_Starred_Images extends Plugin {
 
 	function init($host) {
 		$this->host = $host;
-		$this->cache = new DiskCache("starred-images");
-		$this->cache_status = new DiskCache("starred-images.status-files");
+		$this->cache = DiskCache::instance("starred-images");
+		$this->cache_status = DiskCache::instance("starred-images.status-files");
 
 		if ($this->cache->make_dir())
 			chmod($this->cache->get_dir(), 0777);

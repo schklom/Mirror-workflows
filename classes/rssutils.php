@@ -37,7 +37,7 @@ class RSSUtils {
 		$pdo = Db::pdo();
 		$sth = $pdo->prepare("SELECT id FROM ttrss_feeds WHERE id = ?");
 
-		$cache = new DiskCache('feed-icons');
+		$cache = DiskCache::instance('feed-icons');
 
 		if ($cache->is_writable()) {
 			$dh = opendir($cache->get_full_path(""));
@@ -348,7 +348,7 @@ class RSSUtils {
 		$pdo = Db::pdo();
 
 		/** @var DiskCache $cache */
-		$cache = new DiskCache('feeds');
+		$cache = DiskCache::instance('feeds');
 
 		if (Config::get(Config::DB_TYPE) == "pgsql") {
 			$favicon_interval_qpart = "favicon_last_checked < NOW() - INTERVAL '12 hour'";
@@ -606,7 +606,7 @@ class RSSUtils {
 				$feed_obj->favicon_last_checked = Db::NOW();
 				$feed_obj->save();
 
-				$favicon_cache = new DiskCache('feed-icons');
+				$favicon_cache = DiskCache::instance('feed-icons');
 
 				$favicon_modified = $favicon_cache->exists($feed) ? $favicon_cache->get_mtime($feed) : -1;
 
@@ -1320,7 +1320,7 @@ class RSSUtils {
 	 * @see FeedEnclosure
 	 */
 	static function cache_enclosures(array $enclosures, string $site_url): void {
-		$cache = new DiskCache("images");
+		$cache = DiskCache::instance("images");
 
 		if ($cache->is_writable()) {
 			foreach ($enclosures as $enc) {
@@ -1372,7 +1372,7 @@ class RSSUtils {
 
 	/* TODO: move to DiskCache? */
 	static function cache_media(string $html, string $site_url): void {
-		$cache = new DiskCache("images");
+		$cache = DiskCache::instance("images");
 
 		if ($html && $cache->is_writable()) {
 			$doc = new DOMDocument();
@@ -1695,7 +1695,7 @@ class RSSUtils {
 
 		$dh = opendir($old_dir);
 
-		$cache = new DiskCache('feed-icons');
+		$cache = DiskCache::instance('feed-icons');
 
 		if ($dh) {
 			while (($old_filename = readdir($dh)) !== false) {
@@ -1714,7 +1714,7 @@ class RSSUtils {
 	}
 
 	static function housekeeping_common(): void {
-		$cache = new DiskCache("");
+		$cache = DiskCache::instance("");
 		$cache->expire_all();
 
 		self::migrate_feed_icons();
@@ -1789,7 +1789,7 @@ class RSSUtils {
 				break;
 			}
 
-			$favicon_cache = new DiskCache('feed-icons');
+			$favicon_cache = DiskCache::instance('feed-icons');
 
 			if ($favicon_cache->is_writable()) {
 				Debug::log("favicon: $favicon_url looks valid, saving to cache", Debug::LOG_VERBOSE);

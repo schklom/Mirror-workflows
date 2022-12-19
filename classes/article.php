@@ -447,7 +447,7 @@ class Article extends Handler_Protected {
 
 		$rv = [];
 
-		$cache = new DiskCache("images");
+		$cache = DiskCache::instance("images");
 
 		foreach ($encs as $enc) {
 			$cache_key = sha1($enc->content_url);
@@ -640,7 +640,7 @@ class Article extends Handler_Protected {
 				$article_stream = UrlHelper::rewrite_relative($site_url, $article_stream);
 		}
 
-		$cache = new DiskCache("images");
+		$cache = DiskCache::instance("images");
 
 		if ($article_image && $cache->exists(sha1($article_image)))
 			$article_image = $cache->get_url(sha1($article_image));

@@ -187,9 +187,9 @@ class Counters {
 			$last_updated = TimeHelper::make_local_datetime($line['last_updated'], false);
 
 			if (Feeds::_has_icon($id)) {
-				$has_img = filemtime(Feeds::_get_icon_file($id));
+				$ts = filemtime(Feeds::_get_icon_file($id));
 			} else {
-				$has_img = false;
+				$ts = 0;
 			}
 
 			// hide default un-updated timestamp i.e. 1970-01-01 (?) -fox
@@ -201,7 +201,7 @@ class Counters {
 				"updated" => $last_updated,
 				"counter" => (int) $line["count"],
 				"markedcounter" => (int) $line["count_marked"],
-				"has_img" => (int) $has_img
+				"ts" => (int) $ts
 			];
 
 			$cv["error"] = $line["last_error"];

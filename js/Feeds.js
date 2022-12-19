@@ -71,7 +71,7 @@ const	Feeds = {
 			const kind = elems[l].kind;
 			const ctr = parseInt(elems[l].counter);
 			const error = elems[l].error;
-			const has_img = elems[l].has_img;
+			const ts = elems[l].ts;
 			const updated = elems[l].updated;
 
 			if (id == "global-unread") {
@@ -98,9 +98,9 @@ const	Feeds = {
 				this.setValue(id, false, 'updated', updated);
 
 				if (id > 0) {
-					if (has_img) {
+					if (ts) {
 						this.setIcon(id, false,
-							App.getInitParam("icons_url") + '?' + dojo.objectToQuery({op: 'feed_icon', id: id}));
+							App.getInitParam("icons_url") + '?' + dojo.objectToQuery({op: 'feed_icon', id: id, ts: ts}));
 					} else {
 						this.setIcon(id, false, 'images/blank_icon.gif');
 					}

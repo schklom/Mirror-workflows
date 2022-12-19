@@ -759,7 +759,7 @@ class Handler_Public extends Handler {
 		// we do not allow files with extensions at the moment
 		$filename = str_replace(".", "", $filename);
 
-		$cache = new DiskCache($cache_dir);
+		$cache = DiskCache::instance($cache_dir);
 
 		if ($cache->exists($filename)) {
 			$cache->send($filename);
@@ -771,7 +771,7 @@ class Handler_Public extends Handler {
 
 	function feed_icon() : void {
 		$id = (int)$_REQUEST['id'];
-		$cache = new DiskCache('feed-icons');
+		$cache = DiskCache::instance('feed-icons');
 
 		if ($cache->exists((string)$id)) {
 			$cache->send((string)$id);

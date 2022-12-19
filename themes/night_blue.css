@@ -1529,6 +1529,9 @@ body.ttrss_prefs .dijitTree#labelTree .dijitTreeIcon,
 body.ttrss_prefs .dijitTree#filterTree .dijitTreeIcon {
   display: none;
 }
+body.ttrss_prefs .dijitTree .dijitTreeRow.dijitTreeRowSelected .dijitTreeExpando {
+  color: white;
+}
 body.ttrss_prefs .dijitAccordionTitle i.material-icons {
   top: -1px;
   position: relative;
@@ -1846,9 +1849,6 @@ body.ttrss_prefs[hide-filter-rules="true"] ul.filterRules {
   color: #257aa7;
 }
 .flat .dijitTree .dijitTreeNode .dijitTreeRow.dijitTreeRowSelected {
-  color: white;
-}
-.flat .dijitTree .dijitTreeNode .dijitTreeRow.dijitTreeRowSelected .dijitTreeExpando {
   color: white;
 }
 .flat .dijitTree .labelParam {

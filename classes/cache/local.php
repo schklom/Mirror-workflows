@@ -124,10 +124,12 @@ class Cache_Local implements Cache_Adapter {
 	 *
 	 * @return bool|int false if the file doesn't exist (or unreadable) or isn't audio/video, true if a plugin handled, otherwise int of bytes sent
 	 */
-	function send_local_file(string $filename) {
+	private function send_local_file(string $filename) {
 		if (file_exists($filename)) {
 
-			if (is_writable($filename)) touch($filename);
+			if (is_writable($filename) && !$this->exists('.no-auto-expiry')) {
+				touch($filename);
+			}
 
 			$tmppluginhost = new PluginHost();
 

@@ -11,10 +11,10 @@
 ## Contents:
 
 - [WEB WHISPER](#web-whisper)
-  - [Contents:](#contents)
-  - [✨ Features:](#-features)
-  - [🧭 Roadmap:](#-roadmap)
-  - [🧪 Test it!](#-test-it)
+  - [Contents](#contents)
+  - [Features](#features)
+  - [Roadmap](#roadmap)
+  - [Demo](#test-it)
   - [Screenshots](#screenshots)
         - [Main page](#main-page)
         - [Recording](#recording)
@@ -23,6 +23,8 @@
       - [Result](#result)
   - [Other information](#other-information)
       - [How fast is this?](#how-fast-is-this)
+      - [What is the difference between models?](#what-is-the-difference-between-models)
+      - [How accurate is this?](#how-accurate-is-this)
   - [Similar projects](#similar-projects)
 
 ## ✨ Features:

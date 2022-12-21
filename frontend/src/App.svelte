@@ -189,7 +189,7 @@
   </div>
   {/if}
   
-  <div class="flex flex-col max-w-md items-center space-x-2 bg-slate-100 rounded-xl p-6 m-16 w-4/5">
+  <div class="max-w-md space-x-2 bg-slate-100 rounded-xl p-6 m-16 w-4/5">
     <div class="text-center justify-center">
       {#if recording == false}
       <button on:click={handleStart} id="start" class="bg-blue-500 text-white hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
@@ -271,24 +271,30 @@
         </div>
       </div>
 
-      <div class="flex items-start justify-left">
+      <div class="flex flex-col text-left font-bold text-sky-600 p-2">
         <div>
-          <div>
+          <div class="my-1">
             <input id="generateSubtitles" bind:checked={generateSubtitles}  class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox">
-            <label class="inline-block text-gray-800" for="generateSubtitles">
-              Generate subtitles file
+            <label class="flex flex-row align-middle text-gray-800" for="generateSubtitles">
+              <span>
+                Subtitle file
+              </span>
             </label>
           </div>
-          <div>
+          <div class="my-1">
             <input  id="translate" bind:checked={translate}  class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox">
-            <label class="inline-block text-gray-800" for="translate">
-              Translate
+            <label class="flex flex-row align-middle text-gray-800" for="translate">
+              <span>
+                Translate
+              </span>
             </label>
           </div>
-          <div>
+          <div class="my-1">
             <input id="speedup" bind:checked={speedUp}  class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox">
-            <label class="inline-block text-gray-800" for="speedup">
-              Speed up audio (reduced accuracy)
+            <label class="flex flex-row align-middle text-gray-800" for="speedup">
+              <span>
+                Audio x2 <a class="text-blue-600 font-bold font-mono" href="https://codeberg.org/pluja/web-whisper/wiki/Features#audio-x2">(i)</a>
+              </span>
             </label>
           </div>
         </div>

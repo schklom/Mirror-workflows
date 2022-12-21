@@ -1,5 +1,3 @@
-# WEB WHISPER
-
 <p align="center"> <b> 🎶 Convert any audio to text 📝 </b></p>
 
 <p align="center"> <a href="https://codeberg.org/pluja/web-whisper/releases"> Changelog </a> · <a href="https://codeberg.org/pluja/web-whisper/wiki/Self-Hosting">Setup</a> · <a href="https://whisper.r3d.red">Demo</a></p>
@@ -8,24 +6,22 @@
 
 <p align="center"> A light user interface for OpenAI's <a href="https://github.com/openai/whisper">Whisper</a> right into your browser! </p>
 
-## Contents:
+## WEB WHISPER
 
-- [WEB WHISPER](#web-whisper)
-  - [Contents](#contents)
-  - [Features](#features)
-  - [Roadmap](#roadmap)
-  - [Demo](#test-it)
-  - [Screenshots](#screenshots)
-        - [Main page](#main-page)
-        - [Recording](#recording)
-      - [Transcription Options](#transcription-options)
-      - [Processing](#processing)
-      - [Result](#result)
-  - [Other information](#other-information)
-      - [How fast is this?](#how-fast-is-this)
-      - [What is the difference between models?](#what-is-the-difference-between-models)
-      - [How accurate is this?](#how-accurate-is-this)
-  - [Similar projects](#similar-projects)
+- [Features](#features)
+- [Roadmap](#roadmap)
+- [Demo](#test-it)
+- [Screenshots](#screenshots)
+    - [Main page](#main-page)
+    - [Recording](#recording)
+    - [Transcription Options](#transcription-options)
+    - [Processing](#processing)
+    - [Result](#result)
+- [Other information](#other-information)
+    - [How fast is this?](#how-fast-is-this)
+    - [What is the difference between models?](#what-is-the-difference-between-models)
+    - [How accurate is this?](#how-accurate-is-this)
+- [Similar projects](#similar-projects)
 
 ## ✨ Features:
 

@@ -17,6 +17,7 @@
   let generateSubtitles = false;
   let subtitlesUrl = "#";
   let translate = false;
+  let speedUp = false;
   let language = "en";
   
   let recordedChunks = [];
@@ -112,7 +113,8 @@
 
     formData.append("file", audiofile);
     formData.append("lang", language);
-    formData.append("translate", translate);
+    formData.append("translate", translate.toString());
+    formData.append("speedUp", speedUp.toString());
     formData.append("subs", String(generateSubtitles));
     
     try {
@@ -246,7 +248,8 @@
               ease-in-out
               m-0
               focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example">
-                <option value="en" selected>Default (en)</option>
+              <option value="auto" selected>Auto detect</option>
+                <option value="en">English</option>
                 <option value="ca">Catalan</option>
                 <option value="cs">Czech</option>
                 <option value="de">German</option>
@@ -268,7 +271,7 @@
         </div>
       </div>
 
-      <div class="flex justify-left">
+      <div class="flex items-start justify-left">
         <div>
           <div>
             <input id="generateSubtitles" bind:checked={generateSubtitles}  class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox">
@@ -280,6 +283,12 @@
             <input  id="translate" bind:checked={translate}  class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox">
             <label class="inline-block text-gray-800" for="translate">
               Translate
+            </label>
+          </div>
+          <div>
+            <input id="speedup" bind:checked={speedUp}  class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox">
+            <label class="inline-block text-gray-800" for="speedup">
+              Speed up audio (reduced accuracy)
             </label>
           </div>
         </div>

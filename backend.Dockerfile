@@ -9,6 +9,9 @@ RUN rm -rf whisper.cpp
 RUN bash -c "git clone https://github.com/ggerganov/whisper.cpp &> /dev/null"
 WORKDIR /app/whisper.cpp
 
+ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
+RUN bash -c "git pull &> /dev/null"
+
 ARG WHISPER_MODEL
 ENV WHISPER_MODEL "$WHISPER_MODEL"
 RUN bash -c  "models/download-ggml-model.sh $WHISPER_MODEL &> /dev/null"

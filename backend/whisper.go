@@ -106,17 +106,10 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 			language = "en"
 		}
 
-		translate, err := strconv.ParseBool(r.FormValue("translate"))
-		if language == "" {
-			fmt.Println("Defaulting translate to false...")
-			translate = false
-		}
-
-		subs := ""
-		getSubs, err := strconv.ParseBool(r.FormValue("subs"))
-		if getSubs == true {
-			subs = "-osrt"
-		}
+		// get params
+		translate, _ := strconv.ParseBool(r.FormValue("translate"))
+		getSubs, _ := strconv.ParseBool(r.FormValue("subs"))
+		speedUp, _ := strconv.ParseBool(r.FormValue("speedUp"))
 
 		id := uuid.New()
 		f, err := os.OpenFile(fmt.Sprintf("%v/%v/%v.webm", path, samplesDir, id.String()), os.O_WRONLY|os.O_CREATE, 0666)
@@ -166,8 +159,11 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		// Populate whisper args
 		whisperArgs := make([]string, 0)
 		whisperArgs = append(whisperArgs, "-m", model, "-nt", "-l", language)
-		if subs != "" {
-			whisperArgs = append(whisperArgs, subs)
+		if getSubs {
+			whisperArgs = append(whisperArgs, "-osrt")
+		}
+		if speedUp { // Speed Up
+			whisperArgs = append(whisperArgs, "--speed-up")
 		}
 		if translate {
 			whisperArgs = append(whisperArgs, "--translate")

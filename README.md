@@ -10,12 +10,20 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 
 ## Contents:
 
-- [Features](#features)
-- [Roadmap](#roadmap)
-- [Test it!](#test-it)
-- [Self Host](https://codeberg.org/pluja/web-whisper/wiki/Self-Hosting)
-- [Screenshots](#screenshots)
-- [Other information](#other-information)
+- [WEB WHISPER](#web-whisper)
+  - [Contents:](#contents)
+  - [✨ Features:](#-features)
+  - [🧭 Roadmap:](#-roadmap)
+  - [🧪 Test it!](#-test-it)
+  - [Screenshots](#screenshots)
+        - [Main page](#main-page)
+        - [Recording](#recording)
+      - [Transcription Options](#transcription-options)
+      - [Processing](#processing)
+      - [Result](#result)
+  - [Other information](#other-information)
+      - [How fast is this?](#how-fast-is-this)
+  - [Similar projects](#similar-projects)
 
 ## ✨ Features:
 
@@ -23,7 +31,9 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 - [x] Upload any media file (video, audio) in any format and transcribe it.
     - [x] Option to cut audio to X seconds before transcription.
     - [x] Option to disable file uploads.
-- [x] Select input audio language
+- [x] Select input audio language.
+  - [x] Auto-detect input audio language.
+- [x] Option to speed up audio by 2x for faster results (this has negative impact on accuracy).
 - [x] Translate input audio transcription to english.
 - [x] Download `.srt` subtitle file generated from audio.
 - [x] Configure whisper
@@ -42,10 +52,6 @@ This is a small personal project I am using to learn Golang and Svelte. It is a 
 
 ## 🧭 Roadmap:
 
-- [x] Allow to upload any file (video, audio) in any format and transcribe it.
-	- [ ] Limit max file size for server hosting.
-    - [x] Allow to cut audio to X seconds before transcription.
-    - [x] Option to disable file uploads.
 - [ ] Transcription history / save snippets
     - Publish to some **pastebin**-like service.
 

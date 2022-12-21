@@ -6,9 +6,7 @@
 
 <br>
 
-A user interface for OpenAI's [Whisper](https://github.com/openai/whisper) right into your browser!
-
-This is a small personal project I am using to learn Golang and Svelte. It is a light web frontend for OpenAI's whisper.
+<p align="center"> A light user interface for OpenAI's <a href="https://github.com/openai/whisper">Whisper</a> right into your browser! </p>
 
 ## Contents:
 

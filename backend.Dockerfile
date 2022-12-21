@@ -9,7 +9,8 @@ RUN rm -rf whisper.cpp
 RUN bash -c "git clone https://github.com/ggerganov/whisper.cpp &> /dev/null"
 WORKDIR /app/whisper.cpp
 
-ADD "https://www.random.org/cgi-bin/randbyte?nbytes=10&format=h" skipcache
+# Invalidate cache if repo has new commits so these are pulled
+ADD https://api.github.com/repos/ggerganov/whisper.cpp/git/refs/heads/master /.git-hashref
 RUN bash -c "git pull &> /dev/null"
 
 ARG WHISPER_MODEL

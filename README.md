@@ -2,6 +2,8 @@
 
 <p align="center"> <b> 🎶 Convert any audio to text 📝 </b></p>
 
+<p align="center"> <a href="https://codeberg.org/pluja/web-whisper/releases"> Changelog </a> · <a href="https://codeberg.org/pluja/web-whisper/wiki/Self-Hosting">Setup</a> · <a href="https://whisper.r3d.red">Demo</a></p>
+
 <br>
 
 A user interface for OpenAI's [Whisper](https://github.com/openai/whisper) right into your browser!

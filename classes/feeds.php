@@ -434,7 +434,7 @@ class Feeds extends Handler_Protected {
 					$num_errors = ORM::for_table('ttrss_feeds')
 						->where_not_equal('last_error', '')
 						->where('owner_uid', $_SESSION['uid'])
-						->where_gt('update_interval', 0)
+						->where_gte('update_interval', 0)
 						->count('id');
 
 					if ($num_errors > 0) {
@@ -587,7 +587,7 @@ class Feeds extends Handler_Protected {
 		$num_errors = ORM::for_table('ttrss_feeds')
 			->where_not_equal('last_error', '')
 			->where('owner_uid', $_SESSION['uid'])
-			->where_gt('update_interval', 0)
+			->where_gte('update_interval', 0)
 			->count('id');
 
 		if ($num_errors > 0) {

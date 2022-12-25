@@ -1154,7 +1154,7 @@ class Pref_Feeds extends Handler_Protected {
 			->select_many('id', 'title', 'feed_url', 'last_error', 'site_url')
 			->where_not_equal('last_error', '')
 			->where('owner_uid', $_SESSION['uid'])
-			->where_gt('update_interval', 0)
+			->where_gte('update_interval', 0)
 			->find_array());
 	}
 

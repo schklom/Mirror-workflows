@@ -18,7 +18,7 @@
   let subtitlesUrl = "#";
   let translate = false;
   let speedUp = false;
-  let language = "en";
+  let language = "auto";
   
   let recordedChunks = [];
   let mediaRecorder;
@@ -133,7 +133,7 @@
       audioAvailable = false
 
     } catch(error) {
-      console.log(JSON.parse(error.request.response))
+      console.log(JSON.parse(error))
       renderError(JSON.parse(error.request.response).message)
       processing = false
     }
@@ -247,26 +247,27 @@
               transition
               ease-in-out
               m-0
-              focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example">
-              <option value="auto" selected>Auto detect</option>
-                <option value="en">English</option>
-                <option value="ca">Catalan</option>
-                <option value="cs">Czech</option>
-                <option value="de">German</option>
-                <option value="es">Spanish</option>
-                <option value="et">Estonian</option>
-                <option value="fi">Finnish</option>
-                <option value="fr">French</option>
-                <option value="he">Hebrew</option>
-                <option value="it">Italian</option>
-                <option value="ja">Japanese</option>
-                <option value="nl">Dutch</option>
-                <option value="no">Norweigan</option>
-                <option value="pl">Polish</option>
-                <option value="pt">Portuguese</option>
-                <option value="ru">Russian</option>
-                <option value="sv">Swedish</option>
-                <option value="zh">Chinese</option>
+              focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none">
+              <option value="auto">Auto detect</option>
+              <option value="ca">Catalan</option>
+              <option value="cs">Czech</option>
+              <option value="zh">Chinese</option>
+              <option value="da">Danish</option>
+              <option value="nl">Dutch</option>
+              <option value="en">English</option>
+              <option value="es">Spanish</option>
+              <option value="et">Estonian</option>
+              <option value="fi">Finnish</option>
+              <option value="fr">French</option>
+              <option value="de">German</option>
+              <option value="he">Hebrew</option>
+              <option value="it">Italian</option>
+              <option value="ja">Japanese</option>
+              <option value="no">Norweigan</option>
+              <option value="pl">Polish</option>
+              <option value="pt">Portuguese</option>
+              <option value="ru">Russian</option>
+              <option value="sv">Swedish</option>
             </select>
         </div>
       </div>

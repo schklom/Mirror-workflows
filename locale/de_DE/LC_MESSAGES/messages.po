@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-06-05 11:48+0300\n"
-"PO-Revision-Date: 2022-03-10 09:58+0000\n"
-"Last-Translator: Pascal Borkenhagen <tt-rss.org@askme-world.de>\n"
+"PO-Revision-Date: 2022-12-28 09:33+0000\n"
+"Last-Translator: Eike <weblate.tt-rss.org@lotz.me>\n"
 "Language-Team: German <https://weblate.tt-rss.org/projects/tt-rss/messages/"
 "de/>\n"
 "Language: de_DE\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.15\n"
 "X-Poedit-Bookmarks: -1,557,558,-1,-1,-1,-1,-1,-1,-1\n"
 
 #: backend.php:60
@@ -93,10 +93,8 @@ msgid "Disabled"
 msgstr "Deaktiviert"
 
 #: backend.php:91
-#, fuzzy
-#| msgid "Readability"
 msgid "Read Only"
-msgstr "Lesbarkeit"
+msgstr "nur lesen"
 
 #: backend.php:92 classes/pref/system.php:123
 msgid "User"
@@ -243,7 +241,7 @@ msgstr "Gelesene zeigen/verstecken"
 
 #: index.php:273
 msgid "UI layout:"
-msgstr ""
+msgstr "UI layout:"
 
 #: index.php:274 classes/rpc.php:639
 msgid "Toggle combined mode"
@@ -639,10 +637,8 @@ msgid "Remove"
 msgstr "Entfernen"
 
 #: classes/pref/filters.php:692
-#, fuzzy
-#| msgid "Toggle feedlist"
 msgid "Toggle rule display"
-msgstr "Feed-Liste verbergen"
+msgstr "Regelanzeige umschalten"
 
 #: classes/pref/filters.php:751
 msgid "[No caption]"
@@ -878,10 +874,8 @@ msgid "May increase server load"
 msgstr "Kann die Serverlast erhöhen"
 
 #: classes/pref/prefs.php:131
-#, fuzzy
-#| msgid "Preview"
 msgid "Grid view"
-msgstr "Vorschau"
+msgstr "Rasteransicht"
 
 #: classes/pref/prefs.php:131
 msgid "On wider screens, if always expanded"
@@ -941,14 +935,12 @@ msgid "Disable OTP"
 msgstr "Einmalpasswörter ausschalten"
 
 #: classes/pref/prefs.php:482
-#, fuzzy
-#| msgid "OTP Key:"
 msgid "OTP secret:"
-msgstr "OTP-Schlüssel:"
+msgstr "OTP Geheimnis:"
 
 #: classes/pref/prefs.php:509
 msgid "Verification code:"
-msgstr ""
+msgstr "Verifizierungscode:"
 
 #: classes/pref/prefs.php:517
 msgid "Enable OTP"
@@ -1375,7 +1367,7 @@ msgstr "Fehler: bitte eine OPML-Datei hochladen."
 #: classes/opml.php:643
 #, php-format
 msgid "Error: file is not readable: %s"
-msgstr ""
+msgstr "Fehler: Datei ist nicht lesbar: %s"
 
 #: classes/opml.php:671
 msgid "Error while parsing document."
@@ -1390,20 +1382,16 @@ msgid "Open next feed"
 msgstr "Nächsten Feed öffnen"
 
 #: classes/rpc.php:587
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open next unread feed"
-msgstr "Nächsten Feed öffnen"
+msgstr "Nächsten ungelesenen Feed öffnen"
 
 #: classes/rpc.php:588
 msgid "Open previous feed"
 msgstr "Vorherigen Feed öffnen"
 
 #: classes/rpc.php:589
-#, fuzzy
-#| msgid "Open previous feed"
 msgid "Open previous unread feed"
-msgstr "Vorherigen Feed öffnen"
+msgstr "Vorherigen ungelesenen Feed öffnen"
 
 #: classes/rpc.php:590
 msgid "Open next article (in combined mode, scroll down)"
@@ -1567,10 +1555,8 @@ msgid "Toggle headline grouping"
 msgstr "Gruppierung der Schlagzeilen umschalten"
 
 #: classes/rpc.php:633
-#, fuzzy
-#| msgid "Toggle sidebar"
 msgid "Toggle grid view"
-msgstr "Seitenleiste ein-/ausschalten"
+msgstr "Rasteransicht umschalten"
 
 #: classes/rpc.php:634
 msgid "Debug feed update"
@@ -1775,10 +1761,8 @@ msgid "Configuration saved"
 msgstr "Die Einstellungen wurden gespeichert"
 
 #: plugins/auth_internal/init.php:92
-#, fuzzy
-#| msgid "Please enter label caption:"
 msgid "Please enter verification code (OTP):"
-msgstr "Bitte einen Label-Titel eingeben:"
+msgstr "Bitte Verifizierungscode (OTP) eingeben:"
 
 #: plugins/auth_internal/init.php:94
 msgid "Continue"
@@ -1994,20 +1978,16 @@ msgid "Session failed to validate (password changed)"
 msgstr "Sitzung konnte nicht validiert werden (Passwort wurde geändert)"
 
 #: include/sessions.php:49
-#, fuzzy
-#| msgid "Session failed to validate (user agent changed)"
 msgid "Session failed to validate (account is disabled)"
-msgstr "Sitzung konnte nicht validiert werden (User-Agent wurde geändert)"
+msgstr "Sitzung konnte nicht validiert werden (Konto ist deaktiviert)"
 
 #: include/sessions.php:53
 msgid "Session failed to validate (user not found)"
 msgstr "Sitzung konnte nicht validiert werden (Benutzer existiert nicht)"
 
 #: js/App.js:314
-#, fuzzy
-#| msgid "Widescreen is not available in combined mode."
 msgid "This function is only available in combined mode."
-msgstr "Breitbild-Modus ist in der kombinierten Ansicht nicht verfügbar."
+msgstr "Diese Funktion ist nur im kombinierten Modus verfügbar."
 
 #: js/App.js:445
 msgid "Keyboard shortcuts"
@@ -2173,14 +2153,12 @@ msgid "XML validation failed: %s"
 msgstr "XML-Validierung fehlgeschlagen: %s"
 
 #: js/CommonDialogs.js:197
-#, fuzzy
-#| msgid "Error while parsing document."
 msgid "Error while creating feed database entry."
-msgstr "Fehler beim Parsen des Dokuments."
+msgstr "Fehler beim Erstellen des Feed-Datenbankeintrags."
 
 #: js/CommonDialogs.js:200
 msgid "You are not allowed to perform this operation."
-msgstr ""
+msgstr "Sie dürfen diesen Vorgang nicht ausführen."
 
 #: js/CommonDialogs.js:222
 msgid "Feeds with update errors"
@@ -2344,10 +2322,8 @@ msgid "Create"
 msgstr "Erstellen"
 
 #: js/FeedTree.js:105 js/Headlines.js:1585
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open site"
-msgstr "Nächsten Feed öffnen"
+msgstr "Seite öffnen"
 
 #: js/FeedTree.js:114 js/Headlines.js:1594
 msgid "Debug feed"
@@ -2620,7 +2596,7 @@ msgstr "Ereignisprotokoll löschen?"
 
 #: js/PrefHelpers.js:135
 msgid "Name for cloned profile:"
-msgstr "Name des geklonten Profils:"
+msgstr "Name des kopierten Profils:"
 
 #: js/PrefHelpers.js:145
 msgid "Please select a single profile to clone."
@@ -2686,10 +2662,9 @@ msgid "Reset to defaults?"
 msgstr "Auf Standardwerte zurücksetzen?"
 
 #: js/PrefHelpers.js:373
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Error while parsing document."
+#, java-printf-format, javascript-format
 msgid "Error while loading plugins list: %s."
-msgstr "Fehler beim Parsen des Dokuments."
+msgstr "Fehler beim Laden der Plugin-Liste: %s."
 
 #: js/PrefHelpers.js:422
 msgid "Clear data"
@@ -2931,9 +2906,8 @@ msgid "Stack trace"
 msgstr "Stacktrace"
 
 #: js/App.js:653
-#, fuzzy
 msgid "Additional information"
-msgstr "Klassifizierungsinformationen"
+msgstr "Zusätzliche Informationen"
 
 #: js/Article.js:207
 msgid "Attachments"
@@ -2973,8 +2947,6 @@ msgid "Unsubscribe from selected feeds"
 msgstr "Ausgewählte Feeds abbestellen"
 
 #: js/CommonDialogs.js:502
-#, fuzzy
-#| msgid "Feed Title"
 msgid "Feed title"
 msgstr "Feed-Titel"
 
@@ -3070,7 +3042,7 @@ msgstr "Feeds benötigen Authentifizierung."
 
 #: js/PrefHelpers.js:229
 msgid "Clone"
-msgstr ""
+msgstr "Kopieren"
 
 #: js/PrefHelpers.js:231
 msgid "Activate"
@@ -3081,35 +3053,24 @@ msgid "Apply"
 msgstr "Übernehmen"
 
 #: js/PrefHelpers.js:303
-#, fuzzy
-#| msgid "Save and exit"
 msgid "Save and reload"
-msgstr "Speichern und verlassen"
+msgstr "Speichern und neu laden"
 
 #: js/PrefHelpers.js:352
 msgid "Selected plugins have been enabled. Reload?"
 msgstr "Ausgewählte Plugins wurden aktiviert. Neu laden?"
 
 #: js/PrefHelpers.js:400
-#, fuzzy
-#| msgid ""
-#| "System plugins are enabled in <strong>config.php</strong> for all users."
 msgid "System plugins are enabled using global configuration."
-msgstr ""
-"System-Plugins sind in der <strong>config.php</strong> für alle Benutzer "
-"aktiviert."
+msgstr "System-Plugins werden über die globale Konfiguration aktiviert."
 
 #: js/PrefHelpers.js:577
-#, fuzzy
-#| msgid "Uninstall"
 msgid "Install"
-msgstr "Deinstallieren"
+msgstr "Installieren"
 
 #: js/PrefHelpers.js:654
-#, fuzzy
-#| msgid "Playing..."
 msgid "Updating..."
-msgstr "Abspielen..."
+msgstr "Aktualisieren..."
 
 #: js/PrefHelpers.js:687
 msgid "Updates complete"
@@ -3131,10 +3092,8 @@ msgid "Access level: "
 msgstr "Zugriffsberechtigung: "
 
 #: js/PrefUsers.js:92
-#, fuzzy
-#| msgid "Enabled"
 msgid "OTP enabled"
-msgstr "Aktiviert"
+msgstr "OTP aktiviert"
 
 #: js/PrefUsers.js:104
 msgid "User details"

@@ -2,7 +2,7 @@
   import axios from "axios";
   import {onMount} from "svelte";
 
-  const apiHost = "http://localhost:9090"
+  const apiHost = "DOMAIN_NAME"
   var allowFiles = "ALLOW_FILES"
 
   let recording = false;
@@ -261,12 +261,14 @@
               <option value="fr">French</option>
               <option value="de">German</option>
               <option value="he">Hebrew</option>
+              <option value="hu">Hungarian</option>
               <option value="it">Italian</option>
               <option value="ja">Japanese</option>
               <option value="no">Norweigan</option>
               <option value="pl">Polish</option>
               <option value="pt">Portuguese</option>
               <option value="ru">Russian</option>
+              <option value="sk">Slovak</option>
               <option value="sv">Swedish</option>
             </select>
         </div>

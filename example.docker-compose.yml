@@ -18,7 +18,7 @@ services:
       dockerfile: ./frontend.Dockerfile
       context: .
       args:
-        - DOMAIN_NAME=localhost:3000
+        - DOMAIN_NAME=http://localhost:3000 # Make sure to add the correct protocol (http/https)
         - ALLOW_FILE_UPLOADS=true
     container_name: web-whisper
     ports:

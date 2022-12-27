@@ -2,8 +2,8 @@
   import axios from "axios";
   import {onMount} from "svelte";
 
-  var apiHost = "http://DOMAIN_NAME"
-  var allowFiles = "ALLOW_FILES"
+  var apiHost = "DOMAIN_NAME";
+  var allowFiles = "ALLOW_FILES";
 
   let recording = false;
   let audioAvailable = false;

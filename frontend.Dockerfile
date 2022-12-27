@@ -18,6 +18,7 @@ RUN yarn build
 
 WORKDIR /app/dist
 RUN find /app/dist -type f -exec sed -i "s#DOMAIN_NAME#${DOMAIN_NAME}#g" {} +
+RUN find /app/dist -type f -exec sed -i "s#ALLOW_FILES#${ALLOW_FILE_UPLOADS}#g" {} +
 #RUN sed -i s/DOMAIN_NAME/$DOMAIN_NAME/g /app/dist
 #RUN sed -i -r "s/ALLOW_FILES/$ALLOW_FILE_UPLOADS/g" *.js
 

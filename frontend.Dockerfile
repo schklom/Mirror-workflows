@@ -17,8 +17,8 @@ RUN echo "$DOMAIN_NAME"
 RUN yarn build
 
 RUN find /app/dist/ -name '*.js'
-RUN find /app/dist/ -name '*.js' -exec sed -i "s/DOMAIN_NAME/$DOMAIN_NAME/g" {} \;
-RUN find /app/dist/ -name '*.js' -exec sed -i "s/ALLOW_FILES/$ALLOW_FILE_UPLOADS/g" {} \;
+RUN find /app/dist/ -name '*.js' -exec sed -i "s/DOMAIN_NAME/$DOMAIN_NAME/g" {} +;
+RUN find /app/dist/ -name '*.js' -exec sed -i "s/ALLOW_FILES/$ALLOW_FILE_UPLOADS/g" {} +;
 
 
 FROM caddy:2-alpine

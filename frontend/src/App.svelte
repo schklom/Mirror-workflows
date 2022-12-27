@@ -380,7 +380,7 @@
             </div>
           </div>
           <div class="text-justify font-mono">
-            <p id="textbox" disabled class="font-large text-gray-700 mb-3 font-bold p-4 rounded-xl border-none bg-slate-100">{transcriptionResultText}</p>
+            <p id="textbox" class="font-large text-gray-700 mb-3 font-bold p-4 rounded-xl border-none bg-slate-100">{transcriptionResultText}</p>
           </div>
       </div>
   </div>

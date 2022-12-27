@@ -13,13 +13,15 @@ ENV ALLOW_FILE_UPLOADS "$ALLOW_FILE_UPLOADS"
 
 RUN echo "$DOMAIN_NAME"
 
-RUN find /app -name '*.svelte' -exec sed -i "s/localhost:9090/$DOMAIN_NAME/g" {} +
-RUN find /app -name '*.svelte' -exec sed -i "s/ALLOW_FILES/$ALLOW_FILE_UPLOADS/g" {} +
 
 RUN yarn build
 
-FROM caddy:alpine
+RUN find /app/dist/ -name '*.js'
+RUN find /app/dist/ -name '*.js' -exec sed -i "s/DOMAIN_NAME/${DOMAIN_NAME}/g" {} \;
+RUN find /app/dist/ -name '*.js' -exec sed -i "s/ALLOW_FILES/${ALLOW_FILE_UPLOADS}/g" {} \;
 
+
+FROM caddy:2-alpine
 
 COPY --from=build /app/dist/ /var/www/html
 COPY docker/frontend.Caddyfile /etc/caddy/Caddyfile

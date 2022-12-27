@@ -2,7 +2,7 @@
   import axios from "axios";
   import {onMount} from "svelte";
 
-  const apiHost = "DOMAIN_NAME"
+  var apiHost = "http://DOMAIN_NAME"
   var allowFiles = "ALLOW_FILES"
 
   let recording = false;
@@ -133,7 +133,7 @@
       audioAvailable = false
 
     } catch(error) {
-      console.log(JSON.parse(error))
+      console.log(error)
       renderError(JSON.parse(error.request.response).message)
       processing = false
     }

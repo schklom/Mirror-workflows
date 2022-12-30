@@ -703,9 +703,9 @@ class Pref_Feeds extends Handler_Protected {
 
 	private function editsaveops(bool $batch): void {
 
-		$feed_title = clean($_POST["title"]);
-		$feed_url = clean($_POST["feed_url"]);
-		$site_url = clean($_POST["site_url"]);
+		$feed_title = clean($_POST["title"] ?? "");
+		$feed_url = clean($_POST["feed_url"] ?? "");
+		$site_url = clean($_POST["site_url"] ?? "");
 		$upd_intl = (int) clean($_POST["update_interval"] ?? 0);
 		$purge_intl = (int) clean($_POST["purge_interval"] ?? 0);
 		$feed_id = (int) clean($_POST["id"] ?? 0); /* editSave */

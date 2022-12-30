@@ -357,6 +357,7 @@
 		return $s && ($s !== "f" && $s !== "false"); //no-op for PDO, backwards compat for legacy layer
 	}
 
+	/** @deprecated misleading name, seems to be pointless wrapper */
 	function bool_to_sql_bool(bool $s): int {
 		return $s ? 1 : 0;
 	}
@@ -412,6 +413,7 @@
 
 	/**
 	 * @param mixed $val
+	 * @deprecated misleading name, seems to be a pointless wrapper
 	 */
 	function checkbox_to_sql_bool($val): int {
 		return ($val == "on") ? 1 : 0;

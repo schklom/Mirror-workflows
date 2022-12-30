@@ -711,20 +711,14 @@ class Pref_Feeds extends Handler_Protected {
 		$feed_id = (int) clean($_POST["id"] ?? 0); /* editSave */
 		$feed_ids = explode(",", clean($_POST["ids"] ?? "")); /* batchEditSave */
 		$cat_id = (int) clean($_POST["cat_id"] ?? 0);
-		$auth_login = clean($_POST["auth_login"]);
-		$auth_pass = clean($_POST["auth_pass"]);
-		$private = checkbox_to_sql_bool(clean($_POST["private"] ?? ""));
-		$include_in_digest = checkbox_to_sql_bool(
-			clean($_POST["include_in_digest"] ?? ""));
-		$cache_images = checkbox_to_sql_bool(
-			clean($_POST["cache_images"] ?? ""));
-		$hide_images = checkbox_to_sql_bool(
-			clean($_POST["hide_images"] ?? ""));
-		$always_display_enclosures = checkbox_to_sql_bool(
-			clean($_POST["always_display_enclosures"] ?? ""));
-
-		$mark_unread_on_update = checkbox_to_sql_bool(
-			clean($_POST["mark_unread_on_update"] ?? ""));
+		$auth_login = clean($_POST["auth_login"] ?? "");
+		$auth_pass = clean($_POST["auth_pass"] ?? "");
+		$private = clean($_POST["private"] ?? "") == "on";
+		$include_in_digest = clean($_POST["include_in_digest"] ?? "") == "on";
+		$cache_images = clean($_POST["cache_images"] ?? "") == "on";
+		$hide_images = clean($_POST["hide_images"] ?? "") == "on";
+		$always_display_enclosures = clean($_POST["always_display_enclosures"] ?? "") == "on";
+		$mark_unread_on_update = clean($_POST["mark_unread_on_update"] ?? "") == "on";
 
 		$feed_language = clean($_POST["feed_language"] ?? "");
 
@@ -779,71 +773,79 @@ class Pref_Feeds extends Handler_Protected {
 			foreach (array_keys($feed_data) as $k) {
 
 				$qpart = "";
+				$qparams = [];
 
 				switch ($k) {
 					case "title":
-						$qpart = "title = " . $this->pdo->quote($feed_title);
+						$qpart = "title = ?";
+						$qparams = [$feed_title];
 						break;
 
 					case "feed_url":
-						$qpart = "feed_url = " . $this->pdo->quote($feed_url);
+						$qpart = "feed_url = ?";
+						$qparams = [$this->pdo->quote($feed_url)];
 						break;
 
 					case "update_interval":
-						$qpart = "update_interval = " . $upd_intl; // made int above
+						$qpart = "update_interval = ?";
+						$qparams = [$upd_intl];
 						break;
 
 					case "purge_interval":
-						$qpart = "purge_interval = " . $purge_intl; // made int above
+						$qpart = "purge_interval = ?";
+						$qparams = [$purge_intl];
 						break;
 
 					case "auth_login":
-						$qpart = "auth_login = " . $this->pdo->quote($auth_login);
+						$qpart = "auth_login = ?";
+						$qparams = [$auth_login];
 						break;
 
 					case "auth_pass":
-						$qpart = "auth_pass =" . $this->pdo->quote($auth_pass). ", auth_pass_encrypted = false";
+						$qpart = "auth_pass = ?, auth_pass_encrypted = false";
+						$qparams = [$auth_pass];
 						break;
 
 					case "private":
-						$qpart = "private = " . $private; // made int above
+						$qpart = "private = ?";
+						$qparams = [$private];
 						break;
 
 					case "include_in_digest":
-						$qpart = "include_in_digest = " . $include_in_digest; // made int above
+						$qpart = "include_in_digest = ?";
+						$qparams = [$include_in_digest];
 						break;
 
 					case "always_display_enclosures":
-						$qpart = "always_display_enclosures = " . $always_display_enclosures; // made int above
+						$qpart = "always_display_enclosures = ?";
+						$qparams = [$always_display_enclosures];
 						break;
 
 					case "mark_unread_on_update":
-						$qpart = "mark_unread_on_update = " . $mark_unread_on_update; // made int above
+						$qpart = "mark_unread_on_update = ?";
+						$qparams = [$mark_unread_on_update];
 						break;
 
 					case "cache_images":
-						$qpart = "cache_images = " . $cache_images; // made int above
+						$qpart = "cache_images = ?";
+						$qparams = [$cache_images];
 						break;
 
 					case "hide_images":
-						$qpart = "hide_images = " . $hide_images; // made int above
+						$qpart = "hide_images = ?";
+						$qparams = [$hide_images];
 						break;
 
 					case "cat_id":
 						if (get_pref(Prefs::ENABLE_FEED_CATS)) {
-							if ($cat_id) {
-								$qpart = "cat_id = " . $cat_id; // made int above
-							} else {
-								$qpart = 'cat_id = NULL';
-							}
-						} else {
-							$qpart = "";
+							$qpart = "cat_id = ?";
+							$qparams = $cat_id ? [$cat_id] : [null];
 						}
-
 						break;
 
 					case "feed_language":
-						$qpart = "feed_language = " . $this->pdo->quote($feed_language);
+						$qpart = "feed_language = ?";
+						$qparams = [$this->pdo->quote($feed_language)];
 						break;
 
 				}
@@ -851,7 +853,7 @@ class Pref_Feeds extends Handler_Protected {
 				if ($qpart) {
 					$sth = $this->pdo->prepare("UPDATE ttrss_feeds SET $qpart WHERE id IN ($feed_ids_qmarks)
 						AND owner_uid = ?");
-					$sth->execute([...$feed_ids, $_SESSION['uid']]);
+					$sth->execute([...$qparams, ...$feed_ids, $_SESSION['uid']]);
 				}
 			}
 

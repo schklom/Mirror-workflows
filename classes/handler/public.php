@@ -381,7 +381,7 @@ class Handler_Public extends Handler {
 			$login = clean($_POST["login"]);
 			$password = clean($_POST["password"]);
 			$remember_me = clean($_POST["remember_me"] ?? false);
-			$safe_mode = checkbox_to_sql_bool(clean($_POST["safe_mode"] ?? false));
+			$safe_mode = checkbox_to_sql_bool($_POST["safe_mode"] ?? false);
 
 			if (session_status() != PHP_SESSION_ACTIVE) {
 				if ($remember_me) {

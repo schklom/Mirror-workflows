@@ -357,9 +357,11 @@
 		return $s && ($s !== "f" && $s !== "false"); //no-op for PDO, backwards compat for legacy layer
 	}
 
-	/** @deprecated misleading name, seems to be pointless wrapper */
+	/** workaround for PDO casting all query parameters to string unless type is specified explicitly,
+	 * which breaks booleans having false value because they become empty string literals ("") causing
+	 * DB type mismatches and breaking SQL queries */
 	function bool_to_sql_bool(bool $s): int {
-		return $s ? 1 : 0;
+		return (int)$s;
 	}
 
 	function file_is_locked(string $filename): bool {
@@ -411,12 +413,13 @@
 		}
 	}
 
-	/**
+	/** checkbox-specific workaround for PDO casting all query parameters to string unless type is
+	 * specified explicitly, which breaks booleans having false value because they become empty
+	 * string literals ("") causing DB type mismatches and breaking SQL queries
 	 * @param mixed $val
-	 * @deprecated misleading name, seems to be a pointless wrapper
 	 */
 	function checkbox_to_sql_bool($val): int {
-		return ($val == "on") ? 1 : 0;
+		return ($val === "on") ? 1 : 0;
 	}
 
 	function uniqid_short(): string {

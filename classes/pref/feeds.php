@@ -713,12 +713,12 @@ class Pref_Feeds extends Handler_Protected {
 		$cat_id = (int) clean($_POST["cat_id"] ?? 0);
 		$auth_login = clean($_POST["auth_login"] ?? "");
 		$auth_pass = clean($_POST["auth_pass"] ?? "");
-		$private = clean($_POST["private"] ?? "") == "on";
-		$include_in_digest = clean($_POST["include_in_digest"] ?? "") == "on";
-		$cache_images = clean($_POST["cache_images"] ?? "") == "on";
-		$hide_images = clean($_POST["hide_images"] ?? "") == "on";
-		$always_display_enclosures = clean($_POST["always_display_enclosures"] ?? "") == "on";
-		$mark_unread_on_update = clean($_POST["mark_unread_on_update"] ?? "") == "on";
+		$private = checkbox_to_sql_bool($_POST["private"] ?? "");
+		$include_in_digest = checkbox_to_sql_bool($_POST["include_in_digest"] ?? "");
+		$cache_images = checkbox_to_sql_bool($_POST["cache_images"] ?? "");
+		$hide_images = checkbox_to_sql_bool($_POST["hide_images"] ?? "");
+		$always_display_enclosures = checkbox_to_sql_bool($_POST["always_display_enclosures"] ?? "");
+		$mark_unread_on_update = checkbox_to_sql_bool($_POST["mark_unread_on_update"] ?? "");
 
 		$feed_language = clean($_POST["feed_language"] ?? "");
 

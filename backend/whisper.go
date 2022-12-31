@@ -147,12 +147,9 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Remove old file
-
-		if KeepFiles != "true" {
-			err = os.Remove(fmt.Sprintf("%v/%v/%v.webm", path, samplesDir, id.String()))
-			if err != nil {
-				log.Printf("Could not remove file.")
-			}
+		err = os.Remove(fmt.Sprintf("%v/%v/%v.webm", path, samplesDir, id.String()))
+		if err != nil {
+			log.Printf("Could not remove file.")
 		}
 
 		/*** WHISPER ****/
@@ -204,9 +201,11 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = os.Remove(fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id.String()))
-		if err != nil {
-			log.Printf("Could not remove the .wav file %v.", err)
+		if KeepFiles != "true" {
+			err = os.Remove(fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id.String()))
+			if err != nil {
+				log.Printf("Could not remove the .wav file %v.", err)
+			}
 		}
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonData)

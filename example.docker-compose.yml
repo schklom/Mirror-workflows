@@ -2,6 +2,9 @@ version: "3.9"
 
 services:
   backend:
+    container_name: web-whisper-backend
+    #volumes: 
+    #  - ./files:/app/whisper.cpp/samples
     build:
       dockerfile: ./backend.Dockerfile
       context: .
@@ -11,15 +14,14 @@ services:
         - WHISPER_THREADS=4 # Number of threads to use during computation
         - WHISPER_PROCESSORS=1 # Number of processors to use during computation
         - CUT_MEDIA_SECONDS=10
-    container_name: web-whisper-backend
+        - KEEP_FILES=true # If you want to keep the files for later usage, turn on this variable and add the volume above.
   
   whisper:
+    container_name: web-whisper
+    ports:
+      - "127.0.0.1:3000:80"
     build:
       dockerfile: ./frontend.Dockerfile
       context: .
       args:
-        - DOMAIN_NAME=http://localhost:3000 # Make sure to add the correct protocol (http/https)
         - ALLOW_FILE_UPLOADS=true
-    container_name: web-whisper
-    ports:
-      - "127.0.0.1:3000:80"

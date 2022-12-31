@@ -8,12 +8,13 @@
 
 ## WEB WHISPER
 
-- [Features](#features)
-- [Roadmap](#roadmap)
-- [Demo](#test-it)
+- [WEB WHISPER](#web-whisper)
+- [✨ Features:](#-features)
+- [🧭 Roadmap:](#-roadmap)
+- [🧪 Test it!](#-test-it)
 - [Screenshots](#screenshots)
-    - [Main page](#main-page)
-    - [Recording](#recording)
+      - [Main page](#main-page)
+      - [Recording](#recording)
     - [Transcription Options](#transcription-options)
     - [Processing](#processing)
     - [Result](#result)
@@ -40,7 +41,8 @@
 - [x] **Docker compose** for easy self-hosting
 - [x] **Privacy respecting**: 
     - All happens locally. No third parties involved.
-    - Audio files are deleted immediately after processing.
+    - Option to delete all files immediately after processing.
+    - Option keep files for later use / download.
 - [x] Uses C++ whisper version from [whisper.cpp](https://github.com/ggerganov/whisper.cpp).
     - You don't need a GPU, uses CPU.
     - No need for complex installations.

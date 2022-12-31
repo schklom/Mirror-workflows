@@ -86,6 +86,7 @@ func main() {
 
 	r.Post("/transcribe", transcribe)
 	r.Get("/getsubs", getSubsFile)
+	r.Get("/status", getInfo)
 
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},

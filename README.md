@@ -9,9 +9,9 @@
 ## WEB WHISPER
 
 - [WEB WHISPER](#web-whisper)
-- [✨ Features:](#-features)
-- [🧭 Roadmap:](#-roadmap)
-- [🧪 Test it!](#-test-it)
+- [Features:](#features)
+- [Roadmap:](#roadmap)
+- [Test it!](#test-it)
 - [Screenshots](#screenshots)
       - [Main page](#main-page)
       - [Recording](#recording)

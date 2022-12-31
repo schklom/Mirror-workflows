@@ -15,6 +15,7 @@ var CutMediaSeconds string
 var WhisperModel string
 var WhisperThreads string
 var WhisperProcs string
+var KeepFiles string
 
 func setEnvVariables() {
 	WhisperThreads = os.Getenv("WHISPER_THREADS")
@@ -70,6 +71,20 @@ func setEnvVariables() {
 		os.Getenv("CUT_MEDIA_SECONDS")
 		if CutMediaSeconds == "" {
 			CutMediaSeconds = "0"
+		}
+	}
+
+	KeepFiles = os.Getenv("KEEP_FILES")
+	if KeepFiles == "" {
+		log.Printf("No KEEP_FILES ENV found. Trying to get .env file.")
+		err := godotenv.Load()
+		if err != nil {
+			log.Printf("No .env file found... Defaulting KEEP_FILES to false")
+			KeepFiles = "false"
+		}
+		os.Getenv("KEEP_FILES")
+		if KeepFiles == "" {
+			KeepFiles = "false"
 		}
 	}
 }

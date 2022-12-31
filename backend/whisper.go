@@ -39,9 +39,11 @@ func getSubsFile(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Disposition", "attachment; filename="+strconv.Quote("subtitles.srt"))
 	w.Header().Set("Content-Type", "application/octet-stream")
 	http.ServeFile(w, r, fmt.Sprintf("%v/%v/%v.wav.srt", path, samplesDir, id))
-	err = os.Remove(fmt.Sprintf("%v/%v/%v.wav.srt", path, samplesDir, id))
-	if err != nil {
-		log.Printf("Could not remove the .wav file %v.", err)
+	if KeepFiles != "true" {
+		err = os.Remove(fmt.Sprintf("%v/%v/%v.wav.srt", path, samplesDir, id))
+		if err != nil {
+			log.Printf("Could not remove the .wav file %v.", err)
+		}
 	}
 }
 
@@ -145,9 +147,12 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Remove old file
-		err = os.Remove(fmt.Sprintf("%v/%v/%v.webm", path, samplesDir, id.String()))
-		if err != nil {
-			log.Printf("Could not remove file.")
+
+		if KeepFiles != "true" {
+			err = os.Remove(fmt.Sprintf("%v/%v/%v.webm", path, samplesDir, id.String()))
+			if err != nil {
+				log.Printf("Could not remove file.")
+			}
 		}
 
 		/*** WHISPER ****/

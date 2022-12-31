@@ -2,7 +2,7 @@
   import axios from "axios";
   import {onMount} from "svelte";
 
-  var apiHost = "DOMAIN_NAME";
+  var apiHost = "";
   var allowFiles = "ALLOW_FILES";
 
   let recording = false;

@@ -22,4 +22,8 @@
         handle /translate* {
             reverse_proxy backend:9090
         }
+
+        handle /status* {
+            reverse_proxy backend:9090
+        }
 }

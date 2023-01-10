@@ -10,3 +10,7 @@ type InstanceInfo struct {
 	Version    string `json:"version"`
 	CommitHash string `json:"commit_hash"`
 }
+
+type FileHistory struct {
+	Files []string `json:"files"`
+}

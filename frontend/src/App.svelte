@@ -24,16 +24,46 @@
   
   let recordedChunks = [];
   let mediaRecorder;
+  let history = [];
 
   // references to DOM elements
   let fileSelectInput;
 
   // When app is mounted, it runs the init() function
-  onMount(() => {
+  onMount(async () => {
     if(allowFiles != "false") {
       allowFiles = "true"
+      const response = await axios({
+        method: 'get',
+        url: `${apiHost}/history`,
+        headers: {
+          'Content-Type': `application/json`,
+          "Access-Control-Allow-Origin": `${apiHost}`
+        }       
+      });
+
+      if (response.data.files) {
+        history = response.data.files
+      }
     }
   });
+
+  async function updateHistory() {
+    if(allowFiles != "false") {
+      const response = await axios({
+        method: 'get',
+        url: `${apiHost}/history`,
+        headers: {
+          'Content-Type': `application/json`,
+          "Access-Control-Allow-Origin": `${apiHost}`
+        }       
+      });
+
+      if (response.data.files) {
+        history = response.data.files
+      }
+    }
+  }
 
   function _(el) {
     return document.getElementById(el);
@@ -143,6 +173,8 @@
       renderError(JSON.parse(error.request.response).message)
       processing = false
     }
+
+    await updateHistory()
   }
 
   // Handles the Copy text button behaviour
@@ -389,8 +421,34 @@
             <p id="textbox" class="font-large text-gray-700 mb-3 font-bold p-4 rounded-xl border-none bg-slate-100">{transcriptionResultText}</p>
           </div>
       </div>
-  </div>
+    </div>
   {/if}
+
+  { #if history.length > 0 }
+  <div>
+    <div class="p-2 mt-2 text-center text-white font-bold uppercase">
+      <h3 class="text-lg flex flex-row items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <polyline points="12 8 12 12 14 14" />
+          <path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5" />
+        </svg>
+        <span>Transcription History</span>
+      </h3>
+    </div>
+
+      { #each history as file (file) }
+        <div class="p-2 border-2 rounded-lg border-slate-500 m-2 flex flex-row justify-between flex-wrap align-middle items-center">
+          <p class="mr-2 text-white font-mono">{file}</p>
+          <a href="/getsubs?id={file}" id="stop" class=" bg-slate-500 text-white hover:bg-sky-800 font-bold text-center rounded-lg p-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3 3m0 0l3-3m-3 3V2.25" />
+            </svg>
+          </a>
+        </div>
+      { /each }
+    </div>
+  { /if }
 
   <div class="m-8">
     <p class="text-md font-bold text-slate-300 text-center">🌱 by <a class="text-blue-400" href="https://codeberg.org/pluja">Pluja</a></p>

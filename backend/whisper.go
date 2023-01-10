@@ -4,13 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"os/exec"
 	"strconv"
+	"strings"
 
-	"github.com/google/uuid"
+	"github.com/rs/xid"
 	ffmpeg "github.com/u2takey/ffmpeg-go"
 )
 
@@ -28,6 +30,9 @@ func getSubsFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	id := r.URL.Query().Get("id")
+	if !strings.Contains(id, ".srt") {
+		id = fmt.Sprintf("%v.srt", id)
+	}
 
 	if id == "" {
 		w.WriteHeader(http.StatusBadRequest)
@@ -36,13 +41,13 @@ func getSubsFile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println(id)
-	w.Header().Set("Content-Disposition", "attachment; filename="+strconv.Quote("subtitles.srt"))
+	w.Header().Set("Content-Disposition", "attachment; filename="+strconv.Quote(fmt.Sprintf("%v", id)))
 	w.Header().Set("Content-Type", "application/octet-stream")
-	http.ServeFile(w, r, fmt.Sprintf("%v/%v/%v.wav.srt", path, samplesDir, id))
+	http.ServeFile(w, r, fmt.Sprintf("%v/%v/%v", path, samplesDir, id))
 	if KeepFiles != "true" {
-		err = os.Remove(fmt.Sprintf("%v/%v/%v.wav.srt", path, samplesDir, id))
+		err = os.Remove(fmt.Sprintf("%v/%v/%v", path, samplesDir, id))
 		if err != nil {
-			log.Printf("Could not remove the .wav file %v.", err)
+			log.Printf("Could not remove the .srt file %v.", err)
 		}
 	}
 }
@@ -62,6 +67,37 @@ func returnServerError(w http.ResponseWriter, r *http.Request, message string) {
 
 	//w.WriteHeader(http.StatusInternalServerError)
 	w.Write(jsonData)
+}
+
+func transcriptionHistory(w http.ResponseWriter, r *http.Request) {
+	path, err := os.Getwd()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		returnServerError(w, r, fmt.Sprintf("Error getting path: %v", err))
+		return
+	}
+	files, err := ioutil.ReadDir(fmt.Sprintf("%v/%v/", path, samplesDir))
+	if err != nil {
+		log.Printf("ERROR: Could not read directory")
+	}
+
+	fileSt := FileHistory{}
+	for _, f := range files {
+		if strings.Contains(f.Name(), ".srt") {
+			fileSt.Files = append(fileSt.Files, f.Name())
+		}
+	}
+	fmt.Printf("%v", fileSt)
+
+	jsonR, err := json.Marshal(fileSt)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		returnServerError(w, r, fmt.Sprintf("Error marshalling to json: %v", err))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonR)
 }
 
 func transcribe(w http.ResponseWriter, r *http.Request) {
@@ -113,8 +149,14 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		getSubs, _ := strconv.ParseBool(r.FormValue("subs"))
 		speedUp, _ := strconv.ParseBool(r.FormValue("speedUp"))
 
-		id := uuid.New()
-		f, err := os.OpenFile(fmt.Sprintf("%v/%v/%v.webm", path, samplesDir, id.String()), os.O_WRONLY|os.O_CREATE, 0666)
+		guid := xid.New()
+		id := guid.String()
+
+		if KeepFiles == "true" {
+			id = header.Filename
+		}
+
+		f, err := os.OpenFile(fmt.Sprintf("%v/%v/%v.webm", path, samplesDir, id), os.O_WRONLY|os.O_CREATE, 0666)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			returnServerError(w, r, fmt.Sprintf("Error getting the form file: %v", err))
@@ -135,8 +177,8 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		ffmpegArgs = append(ffmpegArgs, ffmpeg.KwArgs{"ar": 16000, "ac": 1, "c:a": "pcm_s16le"})
 		args := ffmpeg.MergeKwArgs(ffmpegArgs)
 
-		err = ffmpeg.Input(fmt.Sprintf("%v/%v/%v.webm", path, samplesDir, id.String())).
-			Output(fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id.String()), args).
+		err = ffmpeg.Input(fmt.Sprintf("%v/%v/%v.webm", path, samplesDir, id)).
+			Output(fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id), args).
 			OverWriteOutput().ErrorToStdOut().Run()
 
 		if err != nil {
@@ -147,7 +189,7 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Remove old file
-		err = os.Remove(fmt.Sprintf("%v/%v/%v.webm", path, samplesDir, id.String()))
+		err = os.Remove(fmt.Sprintf("%v/%v/%v.webm", path, samplesDir, id))
 		if err != nil {
 			log.Printf("Could not remove file.")
 		}
@@ -155,7 +197,7 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		/*** WHISPER ****/
 		// Prepare whisper main args
 		commandString := fmt.Sprintf("%v/%v", path, whisperBin)
-		targetFilepath := fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id.String())
+		targetFilepath := fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id)
 		model := fmt.Sprintf("%v/%v%v.bin", path, whisperModelPath, WhisperModel)
 
 		// Populate whisper args
@@ -192,7 +234,7 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		}
 
 		response.Result = string(output)
-		response.Id = id.String()
+		response.Id = id
 
 		jsonData, err := json.Marshal(response)
 		if err != nil {
@@ -202,7 +244,7 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if KeepFiles != "true" {
-			err = os.Remove(fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id.String()))
+			err = os.Remove(fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id))
 			if err != nil {
 				log.Printf("Could not remove the .wav file %v.", err)
 			}

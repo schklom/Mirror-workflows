@@ -177,19 +177,21 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		ffmpegArgs = append(ffmpegArgs, ffmpeg.KwArgs{"ar": 16000, "ac": 1, "c:a": "pcm_s16le"})
 		args := ffmpeg.MergeKwArgs(ffmpegArgs)
 
-		err = ffmpeg.Input(fmt.Sprintf("%v/%v/%v.webm", path, samplesDir, id)).
+		e := os.Rename(fmt.Sprintf("%v/%v/%v.webm", path, samplesDir, id), fmt.Sprintf("%v/%v/%v", path, samplesDir, id))
+		if e != nil {
+			log.Printf("ERROR: Could not rename file")
+		}
+		err = ffmpeg.Input(fmt.Sprintf("%v/%v/%v", path, samplesDir, id)).
 			Output(fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id), args).
 			OverWriteOutput().ErrorToStdOut().Run()
-
 		if err != nil {
 			log.Printf("%v", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			returnServerError(w, r, fmt.Sprintf("Error while encoding to wav: %v", err))
 			return
 		}
-
-		// Remove old file
-		err = os.Remove(fmt.Sprintf("%v/%v/%v.webm", path, samplesDir, id))
+		// Remove old webm file
+		err = os.Remove(fmt.Sprintf("%v/%v/%v", path, samplesDir, id))
 		if err != nil {
 			log.Printf("Could not remove file.")
 		}
@@ -197,7 +199,7 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		/*** WHISPER ****/
 		// Prepare whisper main args
 		commandString := fmt.Sprintf("%v/%v", path, whisperBin)
-		targetFilepath := fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id)
+		sourceFilepath := fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id)
 		model := fmt.Sprintf("%v/%v%v.bin", path, whisperModelPath, WhisperModel)
 
 		// Populate whisper args
@@ -220,7 +222,7 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 			whisperArgs = append(whisperArgs, "-p", WhisperProcs)
 		}
 
-		whisperArgs = append(whisperArgs, "-f", targetFilepath)
+		whisperArgs = append(whisperArgs, "-f", sourceFilepath)
 
 		// Run whisper
 		log.Printf("%v %v", commandString, whisperArgs)
@@ -231,6 +233,11 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			returnServerError(w, r, fmt.Sprintf("Error while transcribing: %v", err))
 			return
+		}
+
+		e = os.Rename(fmt.Sprintf("%v/%v/%v.wav.srt", path, samplesDir, id), fmt.Sprintf("%v/%v/%v.srt", path, samplesDir, id))
+		if e != nil {
+			log.Printf("ERROR: Could not rename file")
 		}
 
 		response.Result = string(output)

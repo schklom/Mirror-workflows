@@ -8,10 +8,16 @@
 
 ## WEB WHISPER
 
-- [Features](#features)
-- [Roadmap](#roadmap)
-- [Demo](#test-it)
+- [WEB WHISPER](#web-whisper)
+- [✨ Features:](#-features)
+- [🧭 Roadmap:](#-roadmap)
+- [🧪 Test it!](#-test-it)
 - [Screenshots](#screenshots)
+      - [Main page](#main-page)
+      - [Recording](#recording)
+    - [Transcription Options](#transcription-options)
+    - [Processing](#processing)
+    - [Result](#result)
 - [Other information](#other-information)
     - [How fast is this?](#how-fast-is-this)
     - [What is the difference between models?](#what-is-the-difference-between-models)
@@ -29,6 +35,7 @@
 - [x] Option to speed up audio by 2x for faster results (this has negative impact on accuracy).
 - [x] Translate input audio transcription to english.
 - [x] Download `.srt` subtitle file generated from audio.
+- [x] Option to enable transcription history.
 - [x] Configure whisper
     - [x] Choose the Whisper model you want to use (tiny, base, small...)
     - [x] Configure the number of **threads** and **processors** to use.
@@ -46,8 +53,7 @@
 
 ## 🧭 Roadmap:
 
-- [ ] Transcription history / save snippets
-    - Publish to some **pastebin**-like service.
+- [] ...
 
 ## 🧪 Test it!
 

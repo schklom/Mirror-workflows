@@ -3,8 +3,8 @@ version: "3.9"
 services:
   backend:
     container_name: web-whisper-backend
-    #volumes: 
-    #  - ./files:/app/whisper.cpp/samples
+    volumes:
+      - ./files:/app/whisper.cpp/samples
     build:
       dockerfile: ./backend.Dockerfile
       context: .
@@ -13,8 +13,8 @@ services:
         - WHISPER_MODEL=small
         - WHISPER_THREADS=4 # Number of threads to use during computation
         - WHISPER_PROCESSORS=1 # Number of processors to use during computation
-        - CUT_MEDIA_SECONDS=10
-        - KEEP_FILES=true # If you want to keep the files for later usage, and have a transcription history, turn on this variable and add the volume above.
+        - CUT_MEDIA_SECONDS=0 # 0 = Disabled. Set to an integer to cut all media to that number of seconds.
+        - KEEP_FILES=true # If you want to disable the transcription history, set this to false, and remove the volumes above.
   
   whisper:
     container_name: web-whisper

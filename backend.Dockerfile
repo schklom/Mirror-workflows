@@ -56,6 +56,7 @@ COPY --from=build /app/ ./
 COPY --from=build /whisper/whisper.cpp/main ./whisper.cpp/
 COPY --from=build /whisper/whisper.cpp/models ./whisper.cpp/models
 RUN rm -rf ./whisper.cpp/samples/*
+RUN mkdir ./whisper.cpp/samples
 RUN chmod +x ./wwbackend
 
 

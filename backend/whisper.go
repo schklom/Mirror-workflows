@@ -121,8 +121,10 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonData)
 		return
+
 	case "POST":
 		log.Printf("Got POST for transcribing...")
+
 		var response Response
 		response.Message = ""
 		response.Result = ""
@@ -141,7 +143,7 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		language := r.FormValue("lang")
 		if language == "" {
 			fmt.Println("Defaulting language to English...")
-			language = "en"
+			language = "auto"
 		}
 
 		// get params
@@ -149,38 +151,36 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		getSubs, _ := strconv.ParseBool(r.FormValue("subs"))
 		speedUp, _ := strconv.ParseBool(r.FormValue("speedUp"))
 
+		// We set the filename to a random UID string by default.
 		guid := xid.New()
 		id := guid.String()
-
-		if KeepFiles == "true" {
+		// If history is activated, we will keep the original filename
+		if KeepFiles == "true" && header.Filename != "audio.webm" {
 			id = header.Filename
 		}
 
-		f, err := os.OpenFile(fmt.Sprintf("%v/%v/%v.webm", path, samplesDir, id), os.O_WRONLY|os.O_CREATE, 0666)
+		// We create a file that will be named {id}
+		f, err := os.OpenFile(fmt.Sprintf("%v/%v/%v", path, samplesDir, id), os.O_WRONLY|os.O_CREATE, 0666)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			returnServerError(w, r, fmt.Sprintf("Error getting the form file: %v", err))
 			return
 		}
 		defer f.Close()
+		// Then, we copy contents of the Form File to the newly created file
 		io.Copy(f, file)
 
 		/*** FFMPEG ****/
-
 		ffmpegArgs := make([]ffmpeg.KwArgs, 0)
 		// Load .env variables
 		if CutMediaSeconds != "0" {
 			ffmpegArgs = append(ffmpegArgs, ffmpeg.KwArgs{"t": CutMediaSeconds})
 		}
-
 		// Append all args and merge to single KwArgs
 		ffmpegArgs = append(ffmpegArgs, ffmpeg.KwArgs{"ar": 16000, "ac": 1, "c:a": "pcm_s16le"})
 		args := ffmpeg.MergeKwArgs(ffmpegArgs)
 
-		e := os.Rename(fmt.Sprintf("%v/%v/%v.webm", path, samplesDir, id), fmt.Sprintf("%v/%v/%v", path, samplesDir, id))
-		if e != nil {
-			log.Printf("ERROR: Could not rename file")
-		}
+		// We convert the media file to a .wav file. The resulting file is {id}.wav
 		err = ffmpeg.Input(fmt.Sprintf("%v/%v/%v", path, samplesDir, id)).
 			Output(fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id), args).
 			OverWriteOutput().ErrorToStdOut().Run()
@@ -190,16 +190,23 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 			returnServerError(w, r, fmt.Sprintf("Error while encoding to wav: %v", err))
 			return
 		}
-		// Remove old webm file
+
+		// Remove old file ({id})
 		err = os.Remove(fmt.Sprintf("%v/%v/%v", path, samplesDir, id))
 		if err != nil {
-			log.Printf("Could not remove file.")
+			log.Printf("ERROR: Could not remove file: %v", err)
 		}
 
 		/*** WHISPER ****/
+		// Remove the .wav file extension from the resulting wav file
+		e := os.Rename(fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id), fmt.Sprintf("%v/%v/%v", path, samplesDir, id))
+		if e != nil {
+			log.Printf("ERROR: Could not rename file: %v", e)
+		}
+
 		// Prepare whisper main args
 		commandString := fmt.Sprintf("%v/%v", path, whisperBin)
-		sourceFilepath := fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id)
+		sourceFilepath := fmt.Sprintf("%v/%v/%v", path, samplesDir, id)
 		model := fmt.Sprintf("%v/%v%v.bin", path, whisperModelPath, WhisperModel)
 
 		// Populate whisper args
@@ -235,10 +242,10 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		e = os.Rename(fmt.Sprintf("%v/%v/%v.wav.srt", path, samplesDir, id), fmt.Sprintf("%v/%v/%v.srt", path, samplesDir, id))
+		/*e = os.Rename(fmt.Sprintf("%v/%v/%v.wav.srt", path, samplesDir, id), fmt.Sprintf("%v/%v/%v.srt", path, samplesDir, id))
 		if e != nil {
 			log.Printf("ERROR: Could not rename file")
-		}
+		}*/
 
 		response.Result = string(output)
 		response.Id = id
@@ -251,9 +258,9 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if KeepFiles != "true" {
-			err = os.Remove(fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id))
+			err = os.Remove(fmt.Sprintf("%v/%v/%v", path, samplesDir, id))
 			if err != nil {
-				log.Printf("Could not remove the .wav file %v.", err)
+				log.Printf("Could not remove the wav file %v.", err)
 			}
 		}
 		w.WriteHeader(http.StatusOK)

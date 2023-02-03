@@ -634,8 +634,9 @@ class RSSUtils {
 					$feed_obj->favicon_avg_color = 'fail';
 					$feed_obj->save();
 
-					$feed_obj->favicon_avg_color = \Colors\calculate_avg_color($favicon_cache->get_full_path($feed));
-					if ($feed_obj->favicon_avg_color) {
+					$calculated_avg_color = \Colors\calculate_avg_color($favicon_cache->get_full_path($feed));
+					if ($calculated_avg_color) {
+						$feed_obj->favicon_avg_color = $calculated_avg_color;
 						$feed_obj->save();
 					}
 

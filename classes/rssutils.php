@@ -597,7 +597,9 @@ class RSSUtils {
 			Debug::log("site_url: {$feed_obj->site_url}", Debug::LOG_VERBOSE);
 			Debug::log("feed_title: {$rss->get_title()}", Debug::LOG_VERBOSE);
 
-			Debug::log("favicon: needs check: {$feed_obj->favicon_needs_check} is custom: {$feed_obj->favicon_is_custom} avg color: {$feed_obj->favicon_avg_color}",
+			Debug::log('favicon: needs check: ' . ($feed_obj->favicon_needs_check ? 'true' : 'false')
+				. ', is custom: ' . ($feed_obj->favicon_is_custom ? 'true' : 'false')
+				. ", avg color: {$feed_obj->favicon_avg_color}",
 				Debug::LOG_VERBOSE);
 
 			if ($feed_obj->favicon_needs_check || $force_refetch

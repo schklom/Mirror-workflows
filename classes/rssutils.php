@@ -640,7 +640,7 @@ class RSSUtils {
 						$feed_obj->save();
 					}
 
-					Debug::log("favicon: avg color: {$feed_obj->favicon_avg_color}", Debug::LOG_VERBOSE);
+					Debug::log("favicon: calculated avg color: {$calculated_avg_color}, setting avg color: {$feed_obj->favicon_avg_color}", Debug::LOG_VERBOSE);
 
 				} else if ($feed_obj->favicon_avg_color == 'fail') {
 					Debug::log("floicon failed on $feed or a suitable avg color couldn't be determined, not trying to recalculate avg color", Debug::LOG_VERBOSE);

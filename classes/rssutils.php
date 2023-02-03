@@ -600,7 +600,8 @@ class RSSUtils {
 			Debug::log("favicon: needs check: {$feed_obj->favicon_needs_check} is custom: {$feed_obj->favicon_is_custom} avg color: {$feed_obj->favicon_avg_color}",
 				Debug::LOG_VERBOSE);
 
-			if ($feed_obj->favicon_needs_check || $force_refetch) {
+			if ($feed_obj->favicon_needs_check || $force_refetch
+				|| ($feed_obj->favicon_is_custom && !$feed_obj->favicon_avg_color)) {
 
 				// restrict update attempts to once per 12h
 				$feed_obj->favicon_last_checked = Db::NOW();

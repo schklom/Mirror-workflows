@@ -102,13 +102,14 @@ There are several models, which differ by size. The size difference is related t
 
 Also note that when using bigger models, the transcription time and the memory usage will increase:
 
-| Model  | Disk   | Mem     |
+
+| Model  | Disk   | Mem (since v1.6.1)     |
 | ---    | ---    | ---     |
-| tiny   |  75 MB | ~390 MB |
-| base   | 142 MB | ~500 MB |
-| small  | 466 MB | ~1.0 GB |
-| medium | 1.5 GB | ~2.6 GB |
-| large  | 2.9 GB | ~4.7 GB |
+| tiny   |  75 MB | ~125 MB |
+| base   | 142 MB | ~210 MB |
+| small  | 466 MB | ~600 MB |
+| medium | 1.5 GB | ~1.7 GB |
+| large  | 2.9 GB | ~3.3 GB |
 
 > Table from [Whisper.cpp](https://github.com/ggerganov/whisper.cpp) repo.
 

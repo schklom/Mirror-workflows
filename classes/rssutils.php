@@ -597,10 +597,13 @@ class RSSUtils {
 			Debug::log("site_url: {$feed_obj->site_url}", Debug::LOG_VERBOSE);
 			Debug::log("feed_title: {$rss->get_title()}", Debug::LOG_VERBOSE);
 
-			Debug::log("favicon: needs check: {$feed_obj->favicon_needs_check} is custom: {$feed_obj->favicon_is_custom} avg color: {$feed_obj->favicon_avg_color}",
+			Debug::log('favicon: needs check: ' . ($feed_obj->favicon_needs_check ? 'true' : 'false')
+				. ', is custom: ' . ($feed_obj->favicon_is_custom ? 'true' : 'false')
+				. ", avg color: {$feed_obj->favicon_avg_color}",
 				Debug::LOG_VERBOSE);
 
-			if ($feed_obj->favicon_needs_check || $force_refetch) {
+			if ($feed_obj->favicon_needs_check || $force_refetch
+				|| ($feed_obj->favicon_is_custom && !$feed_obj->favicon_avg_color)) {
 
 				// restrict update attempts to once per 12h
 				$feed_obj->favicon_last_checked = Db::NOW();
@@ -631,13 +634,16 @@ class RSSUtils {
 					$feed_obj->favicon_avg_color = 'fail';
 					$feed_obj->save();
 
-					$feed_obj->favicon_avg_color = \Colors\calculate_avg_color($favicon_cache->get_full_path($feed));
-					$feed_obj->save();
+					$calculated_avg_color = \Colors\calculate_avg_color($favicon_cache->get_full_path($feed));
+					if ($calculated_avg_color) {
+						$feed_obj->favicon_avg_color = $calculated_avg_color;
+						$feed_obj->save();
+					}
 
-					Debug::log("favicon: avg color: {$feed_obj->favicon_avg_color}", Debug::LOG_VERBOSE);
+					Debug::log("favicon: calculated avg color: {$calculated_avg_color}, setting avg color: {$feed_obj->favicon_avg_color}", Debug::LOG_VERBOSE);
 
 				} else if ($feed_obj->favicon_avg_color == 'fail') {
-					Debug::log("floicon failed on $feed, not trying to recalculate avg color", Debug::LOG_VERBOSE);
+					Debug::log("floicon failed on $feed or a suitable avg color couldn't be determined, not trying to recalculate avg color", Debug::LOG_VERBOSE);
 				}
 			}
 

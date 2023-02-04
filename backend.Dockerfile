@@ -15,9 +15,9 @@ RUN apt install -y unzip curl
 
 WORKDIR /whisper
 # Get latest working whisper version
-RUN bash -c "curl -L --output v1.1.1.zip https://github.com/ggerganov/whisper.cpp/archive/refs/tags/v1.1.1.zip"
-RUN bash -c "unzip v1.1.1.zip &> /dev/null"
-RUN mv whisper.cpp-1.1.1 whisper.cpp
+RUN bash -c "curl -L --output v1.2.0.zip https://github.com/ggerganov/whisper.cpp/archive/refs/tags/v1.2.0.zip"
+RUN bash -c "unzip v1.2.0.zip &> /dev/null"
+RUN mv whisper.cpp-1.2.0 whisper.cpp
 
 # Get and make whisper.cpp models and binary
 WORKDIR /whisper/whisper.cpp

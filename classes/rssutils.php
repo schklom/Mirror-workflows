@@ -316,14 +316,20 @@ class RSSUtils {
 
 				$feed_data = trim($feed_data);
 
-				$rss = new FeedParser($feed_data);
-				$rss->init();
+				if ($feed_data) {
+					$rss = new FeedParser($feed_data);
+					$rss->init();
 
-				if (!$rss->error()) {
-					$basic_info = [
-						'title' => mb_substr(clean($rss->get_title()), 0, 199),
-						'site_url' => mb_substr(UrlHelper::rewrite_relative($feed->feed_url, clean($rss->get_link())), 0, 245),
-					];
+					if (!$rss->error()) {
+						$basic_info = [
+							'title' => mb_substr(clean($rss->get_title()), 0, 199),
+							'site_url' => mb_substr(UrlHelper::rewrite_relative($feed->feed_url, clean($rss->get_link())), 0, 245),
+						];
+					} else {
+						Debug::log(sprintf("unable to parse feed for basic info: %s", $rss->error()), Debug::LOG_VERBOSE);
+					}
+				} else {
+					Debug::log(sprintf("unable to fetch feed for basic info: %s [%s]", UrlHelper::$fetch_last_error, UrlHelper::$fetch_last_error_code), Debug::LOG_VERBOSE);
 				}
 			}
 

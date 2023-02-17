@@ -84,10 +84,10 @@ Note that this instance is limited:
 <img width="850" src="https://farside.link/rimgo/VLP4KQo.png" align=center>
 
 #### Processing
-<img width="850" src="https://farside.link/rimgo/SHOTbh8.png" align=center>
+<img width="850" src="https://farside.link/rimgo/Xvt2cnW.png" align=center>
 
 #### Result
-<img width="850" src="https://farside.link/rimgo/8EodxT9.png" align=center>
+<img width="850" src="https://farside.link/rimgo/JdF5uIj.png" align=center>
 <p align=center>*old version screenshot</p>
 
 ## Other information

@@ -88,7 +88,6 @@ Note that this instance is limited:
 
 #### Result
 <img width="850" src="https://farside.link/rimgo/JdF5uIj.png" align=center>
-<p align=center>*old version screenshot</p>
 
 ## Other information
 

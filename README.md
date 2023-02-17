@@ -72,19 +72,23 @@ Note that this instance is limited:
 <p align="center"><sub>*Logo generated with Stable Diffusion*</sub></p>
 
 ##### Main page
-<img width="850" src="https://farside.link/rimgo/GFBHU8V.png" align=center>
+<img width="850" src="https://farside.link/rimgo/C7kGNif.png" align=center>
+
+#### Video options
+<img width="850" src="https://farside.link/rimgo/JjXVbt4.png" align=center>
 
 ##### Recording
 <img width="850" src="https://farside.link/rimgo/M5pW2BB.png" align=center>
 
 #### Transcription Options
-<img width="850" src="https://farside.link/rimgo/a4yf4hu.png" align=center>
+<img width="850" src="https://farside.link/rimgo/VLP4KQo.png" align=center>
 
 #### Processing
 <img width="850" src="https://farside.link/rimgo/SHOTbh8.png" align=center>
 
 #### Result
 <img width="850" src="https://farside.link/rimgo/8EodxT9.png" align=center>
+<p align=center>*old version screenshot</p>
 
 ## Other information
 

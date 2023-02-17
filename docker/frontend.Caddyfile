@@ -15,6 +15,10 @@
             reverse_proxy backend:9090
         }
 
+        handle /video/transcribe* {
+            reverse_proxy backend:9090
+        }
+
         handle /getsubs* {
             reverse_proxy backend:9090
         }

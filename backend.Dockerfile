@@ -4,12 +4,11 @@ WORKDIR /app
 
 # Build Go backend
 COPY backend/ ./
-RUN go mod download
+RUN apt update
 RUN go build -v -o wwbackend ./...
 
 # Get necessary Software
 RUN rm -rf whisper.cpp
-RUN apt update
 RUN apt remove -y wget
 RUN apt install -y unzip curl
 
@@ -50,8 +49,15 @@ ENV WHISPER_THREADS "$WHISPER_THREADS"
 ARG WHISPER_PROCESSORS
 ENV WHISPER_PROCESSORS "$WHISPER_PROCESSORS"
 
-RUN apt update
-RUN apt install -y ffmpeg
+RUN apt update && apt install -y curl xz-utils
+RUN curl -L https://nixos.org/nix/install > install
+RUN chmod +x install
+RUN ./install --daemon
+RUN rm install
+SHELL ["/bin/bash", "--login" , "-c"]
+RUN nix-env -iA nixpkgs.yt-dlp
+RUN nix-env -iA nixpkgs.ffmpeg_5
+ENV PATH "$PATH:/root/.nix-profile/bin"
 COPY --from=build /app/ ./
 COPY --from=build /whisper/whisper.cpp/main ./whisper.cpp/
 COPY --from=build /whisper/whisper.cpp/models ./whisper.cpp/models

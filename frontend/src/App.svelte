@@ -15,6 +15,7 @@
   let fileName = false;
   let errorMessage = "false";
   let microphone = false;
+  let videoUrl = "";
   
   let generateSubtitles = false;
   let subtitlesUrl = "#";
@@ -127,6 +128,37 @@
     console.log('MediaRecorder started', mediaRecorder);
   }
 
+  async function handleVideoUrl() {
+    processing = true;
+    console.log(videoUrl)
+    const formData = new FormData();
+    formData.append("videoUrl", videoUrl);
+    formData.append("lang", language);
+    formData.append("translate", translate.toString());
+    formData.append("speedUp", speedUp.toString());
+    formData.append("subs", String(generateSubtitles));
+    try {
+      const response = await axios({
+        method: 'post',
+        url: `${apiHost}/video/transcribe`,
+        data: formData,
+        headers: {
+          'Content-Type': `mutlipart/form-data;`,
+          "Access-Control-Allow-Origin": `${apiHost}`
+        }       
+      });
+      processing = false
+      transcriptionResultText = response.data.result;
+      if(generateSubtitles) subtitlesUrl = `/getsubs?id=${response.data.id}`;
+      audioAvailable = false
+
+    } catch(error) {
+      console.log(error)
+      renderError(JSON.parse(error.request.response).message)
+      processing = false
+    }
+  }
+
   // Makes the requests to the backend with the received audio file.
   async function handleTranscribe() {
     processing = true;
@@ -226,43 +258,66 @@
     <p class="font-bold text-white">{errorMessage}</p>
   </div>
   {/if}
+
+  <div class="mx-auto mt-12 mb-0 max-w-md space-y-4">
+    <div class="flex">
+      <label for="vidurl" class="sr-only">Video a video URL</label>
+      <div class="relative">
+        <input
+          type="vidurl"
+          bind:value={videoUrl}
+          on:change={handleFileUpload}
+          class="w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm"
+          placeholder="Enter a video URL"
+        />
+        <span class="absolute inset-y-0 right-4 inline-flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+          <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5"></path>
+          <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5"></path>
+       </svg>
+      </div>
+    </div>
+  </div>
   
-  <div class="max-w-md space-x-2 bg-slate-100 rounded-xl p-6 m-16 w-4/5">
+  <div class="max-w-md space-x-2 bg-slate-100 rounded-xl p-6 mx-16 mb-16 mt-6 w-4/5">
     <div class="text-center justify-center">
-      {#if recording == false}
-      <button on:click={handleStart} id="start" class="bg-blue-500 text-white hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
-        </svg>
-        { #if audioAvailable }
-        <span>Record again</span>
-        {:else}
-        <span>Record</span>
+      {#if videoUrl == ""}
+        {#if recording == false}
+          <button on:click={handleStart} id="start" class="bg-blue-600 text-white hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+            </svg>
+            { #if audioAvailable }
+              <span>Record again</span>
+            {:else}
+              <span>Record</span>
+            {/if}
+          </button>
+
+          <!-- component -->
+          {#if allowFiles == "true"}
+            <label class="bg-blue-500 text-white hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center cursor-pointer">
+                <svg class="w-6 h-6 mr-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
+                </svg>
+                <span>File</span>
+                <input accept="audio/*, video/*" name="fileSelect" id="fileSelect" bind:this={fileSelectInput} on:change={handleFileUpload} on:loadstart={handleFileUpload} type='file' class="hidden" />
+            </label>
+          {/if}
         {/if}
-      </button>
-
-      <!-- component -->
-      {#if allowFiles == "true"}
-      <label class="bg-blue-500 text-white hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center cursor-pointer">
-          <svg class="w-6 h-6 mr-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-              <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
-          </svg>
-          <span>File</span>
-          <input accept="audio/*, video/*" name="fileSelect" id="fileSelect" bind:this={fileSelectInput} on:change={handleFileUpload} on:loadstart={handleFileUpload} type='file' class="hidden" />
-      </label>
+        { #if recording }
+          <button on:click={handleStop} id="stop" class="bg-red-500 text-white hover:bg-red-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 7.5A2.25 2.25 0 017.5 5.25h9a2.25 2.25 0 012.25 2.25v9a2.25 2.25 0 01-2.25 2.25h-9a2.25 2.25 0 01-2.25-2.25v-9z" />
+            </svg>        
+            <span>Stop</span>
+          </button>
+        {/if}
       {/if}
-      {/if}
+      
 
-      { #if recording }
-      <button on:click={handleStop} id="stop" class="bg-red-500 text-white hover:bg-red-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 7.5A2.25 2.25 0 017.5 5.25h9a2.25 2.25 0 012.25 2.25v9a2.25 2.25 0 01-2.25 2.25h-9a2.25 2.25 0 01-2.25-2.25v-9z" />
-        </svg>        
-        <span>Stop</span>
-      </button>
-      {/if}
-
-      { #if audioAvailable }
+      { #if audioAvailable == true || videoUrl != "" }
       <div class="justify-center mt-6">
           {#if fileName}
             <p class="font-bold text-gray-400">
@@ -342,12 +397,23 @@
       </div>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
         {#if processing == false}
-        <a on:click={handleTranscribe} id="download" class="bg-blue-500 cursor-pointer text-white text-center hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
-          </svg>        
-          <span>Transcribe</span>
-        </a>
+          {#if videoUrl != ""}
+          <a on:click={handleVideoUrl} id="download" class="bg-red-500 cursor-pointer text-white text-center hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+              <path d="M3 5m0 4a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z"></path>
+              <path d="M10 9l5 3l-5 3z"></path>
+           </svg>       
+            <span>Download & transcribe URL</span>
+          </a>
+          {:else}
+          <a on:click={handleTranscribe} id="download" class="bg-blue-500 cursor-pointer text-white text-center hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+            </svg>        
+            <span>Transcribe file</span>
+          </a>
+          {/if}
         {:else}
         <button type="button" class="pointer-none inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:border-gray-700 focus:shadow-outline-gray active:bg-gray-700 transition ease-in-out duration-150 cursor-not-allowed">
           <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

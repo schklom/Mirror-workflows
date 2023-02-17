@@ -30,6 +30,7 @@
 - [x] Upload any media file (video, audio) in any format and transcribe it.
     - [x] Option to cut audio to X seconds before transcription.
     - [x] Option to disable file uploads.
+- [x] Enter a video URL to transcribe it to text (uses yt-dlp for getting video).
 - [x] Select input audio language.
   - [x] Auto-detect input audio language.
 - [x] Option to speed up audio by 2x for faster results (this has negative impact on accuracy).

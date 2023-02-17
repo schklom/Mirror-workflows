@@ -100,6 +100,7 @@ func main() {
 	r.Use(JSONMiddleware)
 
 	r.Post("/transcribe", transcribe)
+	r.Post("/video/transcribe", transcribeVideo)
 	r.Get("/getsubs", getSubsFile)
 	r.Get("/status", getInfo)
 	r.Get("/history", transcriptionHistory)

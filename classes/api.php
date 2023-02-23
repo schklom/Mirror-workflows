@@ -1,7 +1,7 @@
 <?php
 class API extends Handler {
 
-	const API_LEVEL  = 18;
+	const API_LEVEL  = 19;
 
 	const STATUS_OK  = 0;
 	const STATUS_ERR = 1;
@@ -12,6 +12,7 @@ class API extends Handler {
 	const E_INCORRECT_USAGE = "INCORRECT_USAGE";
 	const E_UNKNOWN_METHOD = "UNKNOWN_METHOD";
 	const E_OPERATION_FAILED = "E_OPERATION_FAILED";
+	const E_NOT_FOUND = "E_NOT_FOUND";
 
 	/** @var int|null */
 	private $seq;
@@ -910,6 +911,17 @@ class API extends Handler {
 
 		return $this->_wrap(self::STATUS_OK,
 			array("categories" => $pf->_makefeedtree()));
+	}
+
+	function getFeedIcon(): bool {
+		$id = (int)$_REQUEST['id'];
+		$cache = DiskCache::instance('feed-icons');
+
+		if ($cache->exists((string)$id)) {
+			return $cache->send((string)$id) > 0;
+		} else {
+			return $this->_wrap(self::STATUS_ERR, array("error" => self::E_NOT_FOUND));
+		}
 	}
 
 	// only works for labels or uncategorized for the time being

@@ -34,6 +34,9 @@ FROM golang:bullseye
 
 WORKDIR /app
 
+ARG ARCHITECTURE
+ENV ARCHITECTURE "$ARCHITECTURE"
+
 ARG CUT_MEDIA_SECONDS
 ENV CUT_MEDIA_SECONDS "$CUT_MEDIA_SECONDS"
 
@@ -49,15 +52,20 @@ ENV WHISPER_THREADS "$WHISPER_THREADS"
 ARG WHISPER_PROCESSORS
 ENV WHISPER_PROCESSORS "$WHISPER_PROCESSORS"
 
-RUN apt update && apt install -y curl xz-utils
-RUN curl -L https://nixos.org/nix/install > install
-RUN chmod +x install
-RUN ./install --daemon
-RUN rm install
+# Get and install latest ffmpeg
+RUN apt update && apt install -y xz-utils tar
+RUN wget "https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-$ARCHITECTURE-static.tar.xz"
+RUN tar xvf ffmpeg-release-${ARCHITECTURE}-static.tar.xz
+RUN mv ffmpeg*/ffmpeg /bin/ffmpeg
+RUN rm -rf ffmpeg*
+
+# Get and install yt-dlp
+RUN wget https://github.com/yt-dlp/yt-dlp/releases/download/2023.02.17/yt-dlp_linux
+RUN mv yt-dlp_linux yt-dlp
+RUN chmod +x yt-dlp
+RUN mv yt-dlp /bin/yt-dlp
+
 SHELL ["/bin/bash", "--login" , "-c"]
-RUN nix-env -iA nixpkgs.yt-dlp
-RUN nix-env -iA nixpkgs.ffmpeg_5
-ENV PATH "$PATH:/root/.nix-profile/bin"
 COPY --from=build /app/ ./
 COPY --from=build /whisper/whisper.cpp/main ./whisper.cpp/
 COPY --from=build /whisper/whisper.cpp/models ./whisper.cpp/models

@@ -706,6 +706,7 @@ class Feeds extends Handler_Protected {
 			<?= javascript_tag("js/common.js") ?>
 			<?= javascript_tag("lib/dojo/dojo.js") ?>
 			<?= javascript_tag("lib/dojo/tt-rss-layer.js") ?>
+			<?= Config::get_override_links() ?>
 		</head>
 		<body class="flat ttrss_utility feed_debugger css_loading">
 		<script type="text/javascript">

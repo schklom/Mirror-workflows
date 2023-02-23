@@ -195,6 +195,7 @@ class Share extends Plugin {
 							)
 						), 500, "...")) ?>">
 					<meta property='og:image' content="<?= htmlspecialchars($og_image) ?>">
+					<?= Config::get_override_links() ?>
 				</head>
 
 				<body class='flat ttrss_utility ttrss_zoom css_loading'>

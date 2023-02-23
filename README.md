@@ -1,3 +1,5 @@
+[![Please don't upload to GitHub](https://nogithub.codeberg.page/badge.svg)](https://nogithub.codeberg.page)
+
 <p align="center"> <b> 🎶 Convert any audio to text 📝 </b></p>
 
 <p align="center"> <a href="https://codeberg.org/pluja/web-whisper/releases"> Changelog </a> · <a href="https://codeberg.org/pluja/web-whisper/wiki/Self-Hosting">Setup</a> · <a href="https://whisper.r3d.red">Demo</a></p>
@@ -72,19 +74,22 @@ Note that this instance is limited:
 <p align="center"><sub>*Logo generated with Stable Diffusion*</sub></p>
 
 ##### Main page
-<img width="850" src="https://farside.link/rimgo/GFBHU8V.png" align=center>
+<img width="850" src="https://farside.link/rimgo/C7kGNif.png" align=center>
+
+#### Video options
+<img width="850" src="https://farside.link/rimgo/JjXVbt4.png" align=center>
 
 ##### Recording
 <img width="850" src="https://farside.link/rimgo/M5pW2BB.png" align=center>
 
 #### Transcription Options
-<img width="850" src="https://farside.link/rimgo/a4yf4hu.png" align=center>
+<img width="850" src="https://farside.link/rimgo/VLP4KQo.png" align=center>
 
 #### Processing
-<img width="850" src="https://farside.link/rimgo/SHOTbh8.png" align=center>
+<img width="850" src="https://farside.link/rimgo/Xvt2cnW.png" align=center>
 
 #### Result
-<img width="850" src="https://farside.link/rimgo/8EodxT9.png" align=center>
+<img width="850" src="https://farside.link/rimgo/JdF5uIj.png" align=center>
 
 ## Other information
 

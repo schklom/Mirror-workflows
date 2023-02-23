@@ -34,9 +34,6 @@ FROM golang:bullseye
 
 WORKDIR /app
 
-ARG ARCHITECTURE
-ENV ARCHITECTURE "$ARCHITECTURE"
-
 ARG CUT_MEDIA_SECONDS
 ENV CUT_MEDIA_SECONDS "$CUT_MEDIA_SECONDS"
 
@@ -54,8 +51,8 @@ ENV WHISPER_PROCESSORS "$WHISPER_PROCESSORS"
 
 # Get and install latest ffmpeg
 RUN apt update && apt install -y xz-utils tar
-RUN wget "https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-$ARCHITECTURE-static.tar.xz"
-RUN tar xvf ffmpeg-release-${ARCHITECTURE}-static.tar.xz
+RUN wget "https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz"
+RUN tar xvf ffmpeg-release-amd64-static.tar.xz
 RUN mv ffmpeg*/ffmpeg /bin/ffmpeg
 RUN rm -rf ffmpeg*
 

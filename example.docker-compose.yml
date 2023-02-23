@@ -15,7 +15,6 @@ services:
         - WHISPER_PROCESSORS=1 # Number of processors to use during computation
         - CUT_MEDIA_SECONDS=0 # 0 = Disabled. Set to an integer to cut all media to that number of seconds.
         - KEEP_FILES=true # If you want to disable the transcription history, set this to false, and remove the volumes above.
-        - ARCHITECTURE=amd64 # Architecture to use when downloading ffmpeg. See: https://johnvansickle.com/ffmpeg/
   
   whisper:
     container_name: web-whisper

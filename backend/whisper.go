@@ -114,17 +114,12 @@ func transcribeVideo(w http.ResponseWriter, r *http.Request) {
 		response.Id = ""
 
 		log.Printf("Attempting download of %v", r.FormValue("videoUrl"))
-		output, err := exec.Command("yt-dlp", "-x", "-o", fmt.Sprintf("%v/%v/%v", path, samplesDir, "%(id)s.%(ext)s"), "-j", "--audio-format", "mp3", r.FormValue("videoUrl")).Output()
-		if err != nil {
-			fmt.Printf("%v", err)
-			w.WriteHeader(http.StatusInternalServerError)
-			ReturnServerError(w, r, fmt.Sprintf("Error: %v", err))
-			return
-		}
 
+		// Get video info
+		jsonVideoInfo, err := exec.Command("yt-dlp", "-j", r.FormValue("videoUrl")).Output()
+		fmt.Printf(string(jsonVideoInfo)[:100])
 		vid := WebVideo{}
-		fmt.Printf(string(output)[:25])
-		err = json.Unmarshal(output, &vid)
+		err = json.Unmarshal(jsonVideoInfo, &vid)
 		if err != nil {
 			fmt.Printf("ERROR: %v", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -132,9 +127,42 @@ func transcribeVideo(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		_, err = exec.Command("yt-dlp", "-o", fmt.Sprintf("%v/%v/%v", path, samplesDir, "%(id)s.%(ext)s"), "-f", "bestaudio", "-x", r.FormValue("videoUrl")).Output()
+		if err != nil {
+			_, err = exec.Command("yt-dlp", "-o", fmt.Sprintf("%v/%v/%v", path, samplesDir, "%(id)s.%(ext)s"), "-x", r.FormValue("videoUrl")).Output()
+			if err != nil {
+				fmt.Printf("ERROR: Unable to download. %v", err)
+				w.WriteHeader(http.StatusInternalServerError)
+				ReturnServerError(w, r, fmt.Sprintf("ERROR: marshalling yt-dl json: %v", err))
+				return
+			}
+		}
+
+		files, err := os.ReadDir(fmt.Sprintf("%v/%v/", path, samplesDir))
+		if len(files) <= 0 || err != nil {
+			fmt.Printf("ERROR: Unable to download. %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			ReturnServerError(w, r, fmt.Sprintf("ERROR: could not download file: %v", err))
+			return
+		}
+
+		var fnam string
+		for _, file := range files {
+			// Extract the filename and the file extension
+			filenameParts := strings.Split(file.Name(), ".")
+			//extension := filenameParts[len(filenameParts) - 1]
+			id := filenameParts[0]
+
+			// Check if the file ID matches
+			if id == vid.Id {
+				fmt.Println("File: ", file.Name())
+				fnam = file.Name()
+			}
+		}
+
 		// Remove file extension, in order to keep the subtitles filename correct
-		fmt.Printf("\n%v/%v/%v.mp3", path, samplesDir, vid.Id)
-		e := os.Rename(fmt.Sprintf("%v/%v/%v.mp3", path, samplesDir, vid.Id), fmt.Sprintf("%v/%v/%v", path, samplesDir, vid.Id))
+		fmt.Printf("\n%v/%v/%v.mp3", path, samplesDir, fnam)
+		e := os.Rename(fmt.Sprintf("%v/%v/%v", path, samplesDir, fnam), fmt.Sprintf("%v/%v/%v", path, samplesDir, vid.Id))
 		if e != nil {
 			log.Printf("ERROR: Could not rename file: %v", e)
 		}

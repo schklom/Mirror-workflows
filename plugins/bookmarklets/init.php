@@ -56,6 +56,7 @@ class Bookmarklets extends Plugin {
 						display : none;
 					}
 				</style>
+				<?= Config::get_override_links() ?>
 			</head>
 			<body class='flat ttrss_utility css_loading'>
 			<script type="text/javascript">
@@ -202,6 +203,7 @@ class Bookmarklets extends Plugin {
 					display : none;
 				}
 			</style>
+			<?= Config::get_override_links() ?>
 		</head>
 		<body class='flat ttrss_utility share_popup css_loading'>
 			<script type="text/javascript">

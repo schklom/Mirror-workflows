@@ -541,6 +541,10 @@ class Config {
 				array_push($errors, "PHP support for JSON is required, but was not found.");
 			}
 
+			if (!function_exists("flock")) {
+				array_push($errors, "PHP support for flock() function is required.");
+			}
+
 			if (!class_exists("PDO")) {
 				array_push($errors, "PHP support for PDO is required but was not found.");
 			}

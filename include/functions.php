@@ -366,21 +366,18 @@
 
 	function file_is_locked(string $filename): bool {
 		if (file_exists(Config::get(Config::LOCK_DIRECTORY) . "/$filename")) {
-			if (function_exists('flock')) {
-				$fp = @fopen(Config::get(Config::LOCK_DIRECTORY) . "/$filename", "r");
-				if ($fp) {
-					if (flock($fp, LOCK_EX | LOCK_NB)) {
-						flock($fp, LOCK_UN);
-						fclose($fp);
-						return false;
-					}
+			$fp = @fopen(Config::get(Config::LOCK_DIRECTORY) . "/$filename", "r");
+			if ($fp) {
+				if (flock($fp, LOCK_EX | LOCK_NB)) {
+					flock($fp, LOCK_UN);
 					fclose($fp);
-					return true;
-				} else {
 					return false;
 				}
+				fclose($fp);
+				return true;
+			} else {
+				return false;
 			}
-			return true; // consider the file always locked and skip the test
 		} else {
 			return false;
 		}

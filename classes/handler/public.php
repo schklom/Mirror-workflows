@@ -451,6 +451,7 @@ class Handler_Public extends Handler {
 				echo javascript_tag("lib/dojo/dojo.js");
 				echo javascript_tag("lib/dojo/tt-rss-layer.js");
 			?>
+			<?= Config::get_override_links() ?>
 		</head>
 		<body class='flat ttrss_utility'>
 		<div class='container'>

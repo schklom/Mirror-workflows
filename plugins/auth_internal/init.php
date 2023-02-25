@@ -76,6 +76,7 @@ class Auth_Internal extends Auth_Base {
 										},
 									};
 								</script>
+								<?= Config::get_override_links() ?>
 							</head>
 							<body class="flat ttrss_utility otp css_loading">
 								<h1><?= __("Authentication") ?></h1>

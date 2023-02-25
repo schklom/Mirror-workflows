@@ -355,8 +355,9 @@ function colorPalette(string $imageFile, int $numColors, int $granularity = 5): 
 			} else {
 				$img = @$ico->images[count($ico->images)-1]->getImageResource();
 			}
+		} else {
+			return null;
 		}
-		return null;
 	} else if ($size[0] > 0 && $size[1] > 0) {
 		$img = @imagecreatefromstring(file_get_contents($imageFile));
 	}

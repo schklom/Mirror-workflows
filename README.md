@@ -11,9 +11,9 @@
 ## WEB WHISPER
 
 - [WEB WHISPER](#web-whisper)
-- [✨ Features:](#-features)
-- [🧭 Roadmap:](#-roadmap)
-- [🧪 Test it!](#-test-it)
+- [Features:](#-features)
+- [Roadmap:](#-roadmap)
+- [Test it!](#-test-it)
 - [Screenshots](#screenshots)
       - [Main page](#main-page)
       - [Recording](#recording)
@@ -55,11 +55,12 @@
 - [x] Lightweight and beautiful UI.
     - [x] Frontend written with **Svelte** and **Tailwind CSS**.
 
-## 🧭 Roadmap:
+## Roadmap:
 
-- [] ...
+- [ ] Ability to switch between API and LOCAL mode.
+- [ ] Ability to transcribe videos from a URL using the API.
 
-## 🧪 Test it!
+## Test it!
 
 You can easily [**self host**](https://codeberg.org/pluja/web-whisper/wiki/Self-Hosting) your own instance with docker (locally or in a server).
 

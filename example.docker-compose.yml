@@ -25,3 +25,5 @@ services:
       context: .
       args:
         - ALLOW_FILE_UPLOADS=true
+        - RUN_AS=LOCAL # API or LOCAL. If you choose API, comment out the `backend` service.
+        - OPENAI_TOKEN=YourApiTokenHere # If you choose API, add here your api key, otherwise, leave as 'none'

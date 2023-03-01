@@ -6,6 +6,8 @@
   var apiHost = "";
   
   var allowFiles = "ALLOW_FILES";
+  var runAs = "RUN_AS";
+  var oaiToken = "OAI_TOKEN";
 
   let recording = false;
   let audioAvailable = false;
@@ -34,7 +36,7 @@
   onMount(async () => {
     if(allowFiles != "false") {
       allowFiles = "true"
-      const response = await axios({
+      /*const response = await axios({
         method: 'get',
         url: `${apiHost}/history`,
         headers: {
@@ -45,7 +47,7 @@
 
       if (response.data.files) {
         history = response.data.files
-      }
+      }*/
     }
   });
 
@@ -137,6 +139,7 @@
     formData.append("translate", translate.toString());
     formData.append("speedUp", speedUp.toString());
     formData.append("subs", String(generateSubtitles));
+
     try {
       const response = await axios({
         method: 'post',
@@ -180,33 +183,55 @@
     const formData = new FormData();
 
     formData.append("file", audiofile);
-    formData.append("lang", language);
-    formData.append("translate", translate.toString());
-    formData.append("speedUp", speedUp.toString());
-    formData.append("subs", String(generateSubtitles));
     
-    try {
-      const response = await axios({
-        method: 'post',
-        url: `${apiHost}/transcribe`,
-        data: formData,
-        headers: {
-          'Content-Type': `mutlipart/form-data;`,
-          "Access-Control-Allow-Origin": `${apiHost}`
-        }       
-      });
-      processing = false
-      transcriptionResultText = response.data.result;
-      if(generateSubtitles) subtitlesUrl = `/getsubs?id=${response.data.id}`;
-      audioAvailable = false
-
-    } catch(error) {
-      console.log(error)
-      renderError(JSON.parse(error.request.response).message)
-      processing = false
+    if (runAs == "LOCAL") {
+      formData.append("lang", language);
+      formData.append("translate", translate.toString());
+      formData.append("speedUp", speedUp.toString());
+      formData.append("subs", String(generateSubtitles));
+      try {
+        const response = await axios({
+          method: 'post',
+          url: `${apiHost}/transcribe`,
+          data: formData,
+          headers: {
+            'Content-Type': `mutlipart/form-data;`,
+            "Access-Control-Allow-Origin": `${apiHost}`
+          }       
+        });
+        processing = false
+        transcriptionResultText = response.data.result;
+        if(generateSubtitles) subtitlesUrl = `/getsubs?id=${response.data.id}`;
+        audioAvailable = false
+      } catch(error) {
+        console.log(error)
+        renderError(JSON.parse(error.request.response).message)
+        processing = false
+      }
+      await updateHistory()
+    } else {
+      formData.append("model", "whisper-1")
+      try {
+        const response = await axios({
+          method: 'post',
+          url: `https://api.openai.com/v1/audio/transcriptions`,
+          data: formData,
+          headers: {
+            "Authorization": `Bearer ${oaiToken}`,
+            'Content-Type': `mutlipart/form-data;`,
+            "Access-Control-Allow-Origin": `api.openai.com`
+          }       
+        });
+        processing = false
+        console.log(response.data)
+        transcriptionResultText = response.data.text;
+        audioAvailable = false
+      } catch(error) {
+        console.log(error)
+        renderError(JSON.parse(error.request.response).message)
+        processing = false
+      }
     }
-
-    await updateHistory()
   }
 
   // Handles the Copy text button behaviour
@@ -259,26 +284,28 @@
   </div>
   {/if}
 
-  <div class="mx-auto mt-12 mb-0 max-w-md space-y-4">
-    <div class="flex">
-      <label for="vidurl" class="sr-only">Video a video URL</label>
-      <div class="relative">
-        <input
-          type="vidurl"
-          bind:value={videoUrl}
-          on:change={handleFileUpload}
-          class="w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm"
-          placeholder="Enter a video URL"
-        />
-        <span class="absolute inset-y-0 right-4 inline-flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-          <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5"></path>
-          <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5"></path>
-       </svg>
+  { #if runAs != "API" }
+    <div class="mx-auto mt-12 mb-0 max-w-md space-y-4">
+      <div class="flex">
+        <label for="vidurl" class="sr-only">Video a video URL</label>
+        <div class="relative">
+          <input
+            type="vidurl"
+            bind:value={videoUrl}
+            on:change={handleFileUpload}
+            class="w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm"
+            placeholder="Enter a video URL"
+          />
+          <span class="absolute inset-y-0 right-4 inline-flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+            <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5"></path>
+            <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5"></path>
+        </svg>
+        </div>
       </div>
     </div>
-  </div>
+  {/if}
   
   <div class="max-w-md space-x-2 bg-slate-100 rounded-xl p-6 mx-16 mb-16 mt-6 w-4/5">
     <div class="text-center justify-center">

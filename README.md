@@ -29,6 +29,7 @@
 ## ✨ Features:
 
 - [x] Record and transcribe audio right from your browser.
+- [x] You can run it [100% locally](https://codeberg.org/pluja/web-whisper/wiki/Self-Hosting#user-content-frontend-variables), or you can make use of [OpenAI Whisper API](https://codeberg.org/pluja/web-whisper/wiki/Self-Hosting#user-content-frontend-variables)
 - [x] Upload any media file (video, audio) in any format and transcribe it.
     - [x] Option to cut audio to X seconds before transcription.
     - [x] Option to disable file uploads.
@@ -43,7 +44,7 @@
     - [x] Choose the Whisper model you want to use (tiny, base, small...)
     - [x] Configure the number of **threads** and **processors** to use.
 - [x] **Docker compose** for easy self-hosting
-- [x] **Privacy respecting**: 
+- [x] **Privacy respecting** (when run locally): 
     - All happens locally. No third parties involved.
     - Option to delete all files immediately after processing.
     - Option keep files for later use / download.

@@ -25,5 +25,5 @@ services:
       context: .
       args:
         - ALLOW_FILE_UPLOADS=true
-        - RUN_AS_API=false # true or false. Read more about Running Modes: 
+        - RUN_AS_API=false # true or false. Read more here https://codeberg.org/pluja/web-whisper/wiki/Self-Hosting#running-modes-local-and-api
         - OPENAI_TOKEN=YourApiTokenHere # If you choose API, add here your api key, otherwise, leave as 'none'

@@ -11,8 +11,8 @@ RUN yarn install
 ARG ALLOW_FILE_UPLOADS
 ENV ALLOW_FILE_UPLOADS "$ALLOW_FILE_UPLOADS"
 
-ARG RUN_AS
-ENV RUN_AS "$RUN_AS"
+ARG RUN_AS_API
+ENV RUN_AS_API "$RUN_AS_API"
 
 
 ARG OPENAI_TOKEN
@@ -22,7 +22,7 @@ RUN echo "$DOMAIN_NAME"
 
 
 RUN find /app/src -type f -exec sed -i "s#ALLOW_FILES#${ALLOW_FILE_UPLOADS}#g" {} +
-RUN find /app/src -type f -exec sed -i "s#RUN_AS#${RUN_AS}#g" {} +
+RUN find /app/src -type f -exec sed -i "s#\"RUN_AS_API\"#${RUN_AS_API}#g" {} +
 RUN find /app/src -type f -exec sed -i "s#OAI_TOKEN#${OPENAI_TOKEN}#g" {} +
 RUN yarn build
 

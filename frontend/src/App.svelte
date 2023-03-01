@@ -6,9 +6,11 @@
   var apiHost = "";
   
   var allowFiles = "ALLOW_FILES";
-  var runAs = "RUN_AS";
+  var canRunApi = "RUN_AS_API";
   var oaiToken = "OAI_TOKEN";
 
+  let runAsApi = canRunApi;
+  let canRunLocally=true;
   let recording = false;
   let audioAvailable = false;
   let transcriptionResultText = false;
@@ -34,25 +36,27 @@
 
   // When app is mounted, it runs the init() function
   onMount(async () => {
-    if(allowFiles != "false") {
-      allowFiles = "true"
-      /*const response = await axios({
-        method: 'get',
-        url: `${apiHost}/history`,
-        headers: {
-          'Content-Type': `application/json`,
-          "Access-Control-Allow-Origin": `${apiHost}`
-        }       
-      });
-
-      if (response.data.files) {
-        history = response.data.files
-      }*/
+    if(canRunApi) {
+      try {
+        const response = await axios({
+          method: 'get',
+          url: `${apiHost}/history`,
+          headers: {
+            'Content-Type': `application/json`,
+            "Access-Control-Allow-Origin": `${apiHost}`
+          }       
+        });
+        if (response.data.files) {
+          history = response.data.files
+        }
+      } catch (e) {
+        console.log("INFO: Ignore the errors, local backend has been disabled!")
+        canRunLocally=false
+      }
     }
-  });
 
-  async function updateHistory() {
-    if(allowFiles != "false") {
+    if(allowFiles != "false" && canRunLocally) {
+      allowFiles = "true"
       const response = await axios({
         method: 'get',
         url: `${apiHost}/history`,
@@ -64,6 +68,27 @@
 
       if (response.data.files) {
         history = response.data.files
+      }
+    }
+  });
+
+  async function updateHistory() {
+    if(allowFiles != "false" && canRunLocally) {
+      try {
+        const response = await axios({
+          method: 'get',
+          url: `${apiHost}/history`,
+          headers: {
+            'Content-Type': `application/json`,
+            "Access-Control-Allow-Origin": `${apiHost}`
+          }       
+        });
+  
+        if (response.data.files) {
+          history = response.data.files
+        }
+      } catch (e) {
+        console.log(e)
       }
     }
   }
@@ -184,7 +209,7 @@
 
     formData.append("file", audiofile);
     
-    if (runAs == "LOCAL") {
+    if (runAsApi == false && canRunLocally == true) {
       formData.append("lang", language);
       formData.append("translate", translate.toString());
       formData.append("speedUp", speedUp.toString());
@@ -284,7 +309,7 @@
   </div>
   {/if}
 
-  { #if runAs != "API" }
+  { #if runAsApi == false && canRunLocally == true }
     <div class="mx-auto mt-12 mb-0 max-w-md space-y-4">
       <div class="flex">
         <label for="vidurl" class="sr-only">Video a video URL</label>
@@ -309,6 +334,22 @@
   
   <div class="max-w-md space-x-2 bg-slate-100 rounded-xl p-6 mx-16 mb-16 mt-6 w-4/5">
     <div class="text-center justify-center">
+      { #if canRunLocally == true && canRunApi == true }
+      <div class="mb-3 mt-3">
+        <div class="relative inline-block w-10 mr-2 align-middle select-none">
+            <input type="checkbox" bind:checked={runAsApi} name="toggle" id="Blue" class="checked:bg-blue-500 outline-none focus:outline-none right-4 checked:right-0 duration-200 ease-in absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
+            <label for="Blue" class="block h-6 overflow-hidden bg-gray-300 rounded-full cursor-pointer">
+            </label>
+            </div>
+            <span class="font-medium text-gray-600">
+                {#if runAsApi == true }
+                  Running API
+                {:else}
+                  Running Locally
+                {/if}
+            </span>
+        </div>
+      { /if }
       {#if videoUrl == ""}
         {#if recording == false}
           <button on:click={handleStart} id="start" class="bg-blue-600 text-white hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
@@ -342,7 +383,6 @@
           </button>
         {/if}
       {/if}
-      
 
       { #if audioAvailable == true || videoUrl != "" }
       <div class="justify-center mt-6">

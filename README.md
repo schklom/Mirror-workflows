@@ -11,11 +11,12 @@
 ## WEB WHISPER
 
 - [WEB WHISPER](#web-whisper)
-- [Features:](#-features)
-- [Roadmap:](#-roadmap)
-- [Test it!](#-test-it)
+- [✨ Features:](#-features)
+- [Roadmap:](#roadmap)
+- [Test it!](#test-it)
 - [Screenshots](#screenshots)
       - [Main page](#main-page)
+    - [Video options](#video-options)
       - [Recording](#recording)
     - [Transcription Options](#transcription-options)
     - [Processing](#processing)
@@ -29,7 +30,8 @@
 ## ✨ Features:
 
 - [x] Record and transcribe audio right from your browser.
-- [x] You can run it [100% locally](https://codeberg.org/pluja/web-whisper/wiki/Self-Hosting#user-content-frontend-variables), or you can make use of [OpenAI Whisper API](https://codeberg.org/pluja/web-whisper/wiki/Self-Hosting#user-content-frontend-variables)
+- [x] You can run it [100% locally](https://codeberg.org/pluja/web-whisper/wiki/Self-Hosting#user-content-frontend-variables), or you can make use of [OpenAI Whisper API](https://codeberg.org/pluja/web-whisper/wiki/Self-Hosting#user-content-frontend-variables).
+  - [x] Ability to switch between API and LOCAL mode.
 - [x] Upload any media file (video, audio) in any format and transcribe it.
     - [x] Option to cut audio to X seconds before transcription.
     - [x] Option to disable file uploads.
@@ -57,7 +59,6 @@
 
 ## Roadmap:
 
-- [ ] Ability to switch between API and LOCAL mode.
 - [ ] Ability to transcribe videos from a URL using the API.
 
 ## Test it!

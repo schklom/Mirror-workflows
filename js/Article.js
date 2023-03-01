@@ -146,10 +146,8 @@ const Article = {
 			</div>`;
 	},
 	renderTags: function (id, tags) {
-		const tags_short = tags.length > 5 ? tags.slice(0, 5) : tags;
-
 		return `<span class="tags" title="${tags.join(", ")}" data-tags-for="${id}">
-			${tags_short.length > 0 ? tags_short.map((tag) => `
+			${tags.length > 0 ? tags.map((tag) => `
 				<a href="#" onclick="Feeds.open({feed: '${tag.trim()}'})" class="tag">${tag}</a>`
 			).join(", ") : `${__("no tags")}`}</span>`;
 	},

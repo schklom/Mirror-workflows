@@ -23,7 +23,6 @@ RUN echo "$DOMAIN_NAME"
 
 RUN find /app/src -type f -exec sed -i "s#ALLOW_FILES#${ALLOW_FILE_UPLOADS}#g" {} +
 RUN find /app/src -type f -exec sed -i "s#\"RUN_AS_API\"#${RUN_AS_API}#g" {} +
-RUN find /app/src -type f -exec sed -i "s#OAI_TOKEN#${OPENAI_TOKEN}#g" {} +
 RUN yarn build
 
 WORKDIR /app/dist

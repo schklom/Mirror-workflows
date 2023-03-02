@@ -30,7 +30,7 @@
 ## Features:
 
 - [x] Record and transcribe audio right from your browser.
-- [x] Tun it [100% locally](https://codeberg.org/pluja/web-whisper/wiki/Features#local-mode-vs-api-mode), or you can make use of [OpenAI Whisper API](https://codeberg.org/pluja/web-whisper/wiki/Features#local-mode-vs-api-mode).
+- [x] Run it [100% locally](https://codeberg.org/pluja/web-whisper/wiki/Features#local-mode-vs-api-mode), or you can make use of [OpenAI Whisper API](https://codeberg.org/pluja/web-whisper/wiki/Features#local-mode-vs-api-mode).
   - [x] Ability to [switch](https://codeberg.org/pluja/web-whisper/wiki/Features#local-mode-vs-api-mode) between API and LOCAL mode.
 - [x] Upload any media file (video, audio) in any format and transcribe it.
     - [x] Option to cut audio to X seconds before transcription.

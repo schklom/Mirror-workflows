@@ -108,19 +108,19 @@ func setEnvVariables() {
 	}
 
 	DisableLocal = os.Getenv("DISABLE_LOCAL_WHISPER")
-	if OaiToken == "" {
+	if DisableLocal == "" {
 		log.Printf("No DISABLE_LOCAL_WHISPER ENV found. Trying to get .env file.")
 		err := godotenv.Load()
 		if err != nil {
 			log.Printf("No .env file found... Defaulting DISABLE_LOCAL_WHISPER to false")
-			OaiToken = "false"
+			DisableLocal = "false"
 		}
 		os.Getenv("DISABLE_LOCAL_WHISPER")
-		if OaiToken == "" {
-			OaiToken = "false"
+		if DisableLocal == "" {
+			DisableLocal = "false"
 		}
-		if OaiToken == "none" {
-			OaiToken = "false"
+		if DisableLocal == "none" {
+			DisableLocal = "false"
 		}
 	}
 }

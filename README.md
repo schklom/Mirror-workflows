@@ -11,7 +11,7 @@
 ## WEB WHISPER
 
 - [WEB WHISPER](#web-whisper)
-- [✨ Features:](#-features)
+- [Features:](#features)
 - [Roadmap:](#roadmap)
 - [Test it!](#test-it)
 - [Screenshots](#screenshots)
@@ -27,11 +27,11 @@
     - [How accurate is this?](#how-accurate-is-this)
 - [Similar projects](#similar-projects)
 
-## ✨ Features:
+## Features:
 
 - [x] Record and transcribe audio right from your browser.
-- [x] You can run it [100% locally](https://codeberg.org/pluja/web-whisper/wiki/Self-Hosting#user-content-frontend-variables), or you can make use of [OpenAI Whisper API](https://codeberg.org/pluja/web-whisper/wiki/Self-Hosting#user-content-frontend-variables).
-  - [x] Ability to switch between API and LOCAL mode.
+- [x] Tun it [100% locally](https://codeberg.org/pluja/web-whisper/wiki/Features#local-mode-vs-api-mode), or you can make use of [OpenAI Whisper API](https://codeberg.org/pluja/web-whisper/wiki/Features#local-mode-vs-api-mode).
+  - [x] Ability to [switch](https://codeberg.org/pluja/web-whisper/wiki/Features#local-mode-vs-api-mode) between API and LOCAL mode.
 - [x] Upload any media file (video, audio) in any format and transcribe it.
     - [x] Option to cut audio to X seconds before transcription.
     - [x] Option to disable file uploads.
@@ -60,6 +60,7 @@
 ## Roadmap:
 
 - [ ] Ability to transcribe videos from a URL using the API.
+- [ ] Summarize transcriptions via ChatGPT API.
 
 ## Test it!
 

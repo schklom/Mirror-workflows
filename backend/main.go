@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -123,6 +124,12 @@ func setEnvVariables() {
 			DisableLocal = "false"
 		}
 	}
+
+	fmt.Println("Configuration:")
+	fmt.Printf("Local Whisper Disabled: %v", DisableLocal)
+	fmt.Printf("Keep Files: %v", KeepFiles)
+	fmt.Printf("Cut Media At: %vs", CutMediaSeconds)
+	fmt.Printf("Local Whisper  Model: %v", WhisperModel)
 }
 
 func main() {

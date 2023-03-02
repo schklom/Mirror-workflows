@@ -332,6 +332,9 @@
   
   <div class="max-w-md space-x-2 bg-slate-100 rounded-xl p-6 mx-16 mb-16 mt-6 w-4/5">
     <div class="text-center justify-center">
+      {#if runAsApi == true }
+        <a class="underline text-blue-300" href="https://platform.openai.com/docs/guides/speech-to-text/longer-inputs" target="_blank">API max filesize: 25MB</a>
+      {/if}
       { #if canRunLocally == true && canRunApi == true }
       <div class="mb-3 mt-3">
         <div class="relative inline-block w-10 mr-2 align-middle select-none">

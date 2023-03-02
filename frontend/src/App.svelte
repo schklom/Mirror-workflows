@@ -2,12 +2,11 @@
   import axios from "axios";
   import {onMount} from "svelte";
 
-  // Development variable. Add localhost:9090 if developing.
+  // Development variable. Add http://localhost:9090 if developing.
   var apiHost = "";
   
   var allowFiles = "ALLOW_FILES";
   var canRunApi = "RUN_AS_API";
-  var oaiToken = "OAI_TOKEN";
 
   let runAsApi = canRunApi;
   let canRunLocally=true;
@@ -239,12 +238,11 @@
       try {
         const response = await axios({
           method: 'post',
-          url: `https://api.openai.com/v1/audio/transcriptions`,
+          url: `${apiHost}/api/whisper`,
           data: formData,
           headers: {
-            "Authorization": `Bearer ${oaiToken}`,
             'Content-Type': `mutlipart/form-data;`,
-            "Access-Control-Allow-Origin": `api.openai.com`
+            "Access-Control-Allow-Origin": `${apiHost}`
           }       
         });
         processing = false
@@ -385,111 +383,113 @@
       {/if}
 
       { #if audioAvailable == true || videoUrl != "" }
-      <div class="justify-center mt-6">
-          {#if fileName}
-            <p class="font-bold text-gray-400">
-              {fileName}
-            </p>
-          {/if}
-          <div class="mb-2 xl:w-fulll">
-            <label for="lang">Audio language</label>
-            <select required bind:value={language} id="lang" class="form-select appearance-none
-              block
-              w-full
-              px-6
-              py-1.5
-              text-sm
-              font-normal
-              text-gray-700
-              bg-white bg-clip-padding bg-no-repeat
-              border border-solid border-gray-300
-              rounded
-              transition
-              ease-in-out
-              m-0
-              focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none">
-              <option value="auto">Auto detect</option>
-              <option value="ca">Catalan</option>
-              <option value="cs">Czech</option>
-              <option value="zh">Chinese</option>
-              <option value="da">Danish</option>
-              <option value="nl">Dutch</option>
-              <option value="en">English</option>
-              <option value="es">Spanish</option>
-              <option value="et">Estonian</option>
-              <option value="fi">Finnish</option>
-              <option value="fr">French</option>
-              <option value="de">German</option>
-              <option value="he">Hebrew</option>
-              <option value="hu">Hungarian</option>
-              <option value="it">Italian</option>
-              <option value="ja">Japanese</option>
-              <option value="no">Norweigan</option>
-              <option value="pl">Polish</option>
-              <option value="pt">Portuguese</option>
-              <option value="ru">Russian</option>
-              <option value="sk">Slovak</option>
-              <option value="sv">Swedish</option>
-            </select>
-        </div>
-      </div>
+        { #if runAsApi != true }
+          <div class="justify-center mt-6">
+              {#if fileName}
+                <p class="font-bold text-gray-400">
+                  {fileName}
+                </p>
+              {/if}
+              <div class="mb-2 xl:w-fulll">
+                <label for="lang">Audio language</label>
+                <select required bind:value={language} id="lang" class="form-select appearance-none
+                  block
+                  w-full
+                  px-6
+                  py-1.5
+                  text-sm
+                  font-normal
+                  text-gray-700
+                  bg-white bg-clip-padding bg-no-repeat
+                  border border-solid border-gray-300
+                  rounded
+                  transition
+                  ease-in-out
+                  m-0
+                  focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none">
+                  <option value="auto">Auto detect</option>
+                  <option value="ca">Catalan</option>
+                  <option value="cs">Czech</option>
+                  <option value="zh">Chinese</option>
+                  <option value="da">Danish</option>
+                  <option value="nl">Dutch</option>
+                  <option value="en">English</option>
+                  <option value="es">Spanish</option>
+                  <option value="et">Estonian</option>
+                  <option value="fi">Finnish</option>
+                  <option value="fr">French</option>
+                  <option value="de">German</option>
+                  <option value="he">Hebrew</option>
+                  <option value="hu">Hungarian</option>
+                  <option value="it">Italian</option>
+                  <option value="ja">Japanese</option>
+                  <option value="no">Norweigan</option>
+                  <option value="pl">Polish</option>
+                  <option value="pt">Portuguese</option>
+                  <option value="ru">Russian</option>
+                  <option value="sk">Slovak</option>
+                  <option value="sv">Swedish</option>
+                </select>
+            </div>
+          </div>
 
-      <div class="flex flex-col text-left font-bold text-sky-600 p-2">
-        <div>
-          <div class="my-1">
-            <input id="generateSubtitles" bind:checked={generateSubtitles}  class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox">
-            <label class="flex flex-row align-middle text-gray-800" for="generateSubtitles">
-              <span>
-                Subtitle file
-              </span>
-            </label>
+          <div class="flex flex-col text-left font-bold text-sky-600 p-2">
+            <div>
+              <div class="my-1">
+                <input id="generateSubtitles" bind:checked={generateSubtitles}  class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox">
+                <label class="flex flex-row align-middle text-gray-800" for="generateSubtitles">
+                  <span>
+                    Subtitle file
+                  </span>
+                </label>
+              </div>
+              <div class="my-1">
+                <input  id="translate" bind:checked={translate}  class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox">
+                <label class="flex flex-row align-middle text-gray-800" for="translate">
+                  <span>
+                    Translate
+                  </span>
+                </label>
+              </div>
+              <div class="my-1">
+                <input id="speedup" bind:checked={speedUp}  class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox">
+                <label class="flex flex-row align-middle text-gray-800" for="speedup">
+                  <span>
+                    Audio x2 <a class="text-blue-600 font-bold font-mono" href="https://codeberg.org/pluja/web-whisper/wiki/Features#audio-x2">(i)</a>
+                  </span>
+                </label>
+              </div>
+            </div>
           </div>
-          <div class="my-1">
-            <input  id="translate" bind:checked={translate}  class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox">
-            <label class="flex flex-row align-middle text-gray-800" for="translate">
-              <span>
-                Translate
-              </span>
-            </label>
-          </div>
-          <div class="my-1">
-            <input id="speedup" bind:checked={speedUp}  class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="checkbox">
-            <label class="flex flex-row align-middle text-gray-800" for="speedup">
-              <span>
-                Audio x2 <a class="text-blue-600 font-bold font-mono" href="https://codeberg.org/pluja/web-whisper/wiki/Features#audio-x2">(i)</a>
-              </span>
-            </label>
-          </div>
-        </div>
-      </div>
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
-        {#if processing == false}
-          {#if videoUrl != ""}
-          <a on:click={handleVideoUrl} id="download" class="bg-red-500 cursor-pointer text-white text-center hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M3 5m0 4a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z"></path>
-              <path d="M10 9l5 3l-5 3z"></path>
-           </svg>       
-            <span>Download & transcribe URL</span>
-          </a>
-          {:else}
-          <a on:click={handleTranscribe} id="download" class="bg-blue-500 cursor-pointer text-white text-center hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
-            </svg>        
-            <span>Transcribe file</span>
-          </a>
-          {/if}
-        {:else}
-        <button type="button" class="pointer-none inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:border-gray-700 focus:shadow-outline-gray active:bg-gray-700 transition ease-in-out duration-150 cursor-not-allowed">
-          <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          Processing
-        </button>
         {/if}
+        <!-- svelte-ignore a11y-click-events-have-key-events -->
+          {#if processing == false}
+            {#if videoUrl != ""}
+            <a on:click={handleVideoUrl} id="download" class="bg-red-500 cursor-pointer text-white text-center hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M3 5m0 4a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z"></path>
+                <path d="M10 9l5 3l-5 3z"></path>
+            </svg>       
+              <span>Download & transcribe URL</span>
+            </a>
+            {:else}
+            <a on:click={handleTranscribe} id="download" class="bg-blue-500 cursor-pointer text-white text-center hover:bg-blue-800 font-bold py-2 px-4 my-1.5 rounded inline-flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+              </svg>        
+              <span>Transcribe file</span>
+            </a>
+            {/if}
+          {:else}
+          <button type="button" class="pointer-none inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-gray-600 hover:bg-gray-500 focus:outline-none focus:border-gray-700 focus:shadow-outline-gray active:bg-gray-700 transition ease-in-out duration-150 cursor-not-allowed">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Processing
+          </button>
+          {/if}
       {/if}
     </div>
     

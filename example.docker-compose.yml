@@ -9,12 +9,13 @@ services:
       dockerfile: ./backend.Dockerfile
       context: .
       args:
-        # Valid model values: tiny, base, small, medium, large
-        - WHISPER_MODEL=small
-        - WHISPER_THREADS=4 # Number of threads to use during computation
-        - WHISPER_PROCESSORS=1 # Number of processors to use during computation
-        - CUT_MEDIA_SECONDS=0 # 0 = Disabled. Set to an integer to cut all media to that number of seconds.
-        - KEEP_FILES=true # If you want to disable the transcription history, set this to false, and remove the volumes above.
+        - WHISPER_MODEL=${WHISPER_MODEL}
+        - CUT_MEDIA_SECONDS=${CUT_MEDIA_SECONDS}
+        - WHISPER_THREADS=${WHISPER_THREADS}
+        - WHISPER_PROCESSORS=${WHISPER_PROCESSORS}
+        - KEEP_FILES=${KEEP_FILES}
+        - ARCHITECTURE=${ARCHITECTURE}
+        - OPENAI_TOKEN=${OPENAI_TOKEN}
   
   whisper:
     container_name: web-whisper
@@ -24,6 +25,5 @@ services:
       dockerfile: ./frontend.Dockerfile
       context: .
       args:
-        - ALLOW_FILE_UPLOADS=true
-        - RUN_AS_API=false # true or false. Read more here https://codeberg.org/pluja/web-whisper/wiki/Self-Hosting#running-modes-local-and-api
-        - OPENAI_TOKEN=YourApiTokenHere # If you choose API, add here your api key, otherwise, leave as 'none'
+        - ALLOW_FILE_UPLOADS=${ALLOW_FILE_UPLOADS}
+        - RUN_AS_API=${RUN_AS_API}

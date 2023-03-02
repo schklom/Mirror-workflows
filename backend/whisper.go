@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"os/exec"
@@ -85,6 +87,102 @@ func transcriptionHistory(w http.ResponseWriter, r *http.Request) {
 type WebVideo struct {
 	Id    string `json:"id"`
 	Title string `json:"title"`
+}
+
+type OaiResponse struct {
+	Text string `json:"text"`
+}
+
+func transcribeViaApi(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	default:
+		var response Response
+		response.Result = "Not allowed"
+		jsonData, err := json.Marshal(response)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("Error marshalling tasks to json: %v", err)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(jsonData)
+		return
+	case "POST":
+		if OaiToken == "none" {
+			w.WriteHeader(http.StatusInternalServerError)
+			ReturnServerError(w, r, "OpenAI API token not set!")
+			return
+		}
+
+		file, header, err := r.FormFile("file")
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			ReturnServerError(w, r, "Failed to read file from form data")
+			return
+		}
+		defer file.Close()
+
+		body := &bytes.Buffer{}
+		writer := multipart.NewWriter(body)
+
+		part, err := writer.CreateFormFile("file", header.Filename)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			ReturnServerError(w, r, "Failed to create form file")
+			return
+		}
+
+		if _, err := io.Copy(part, file); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			ReturnServerError(w, r, "Failed to copy file into form")
+			return
+		}
+
+		if err := writer.WriteField("model", "whisper-1"); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			ReturnServerError(w, r, "Failed to write model to form")
+			return
+		}
+
+		if err := writer.Close(); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			ReturnServerError(w, r, "Failed to close writer")
+			return
+		}
+
+		req, err := http.NewRequest("POST", "https://api.openai.com/v1/audio/transcriptions", body)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			ReturnServerError(w, r, "Failed to create new request")
+			return
+		}
+		req.Header.Set("Content-Type", writer.FormDataContentType())
+		req.Header.Set("Authorization", fmt.Sprintf("Bearer %v", OaiToken))
+
+		client := &http.Client{}
+		resp, err := client.Do(req)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			ReturnServerError(w, r, "Failed to perform request")
+			return
+		}
+		defer resp.Body.Close()
+
+		response := OaiResponse{}
+		if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			ReturnServerError(w, r, "Failed to decode response")
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			ReturnServerError(w, r, "Failed to encode response")
+			return
+		}
+	}
 }
 
 func transcribeVideo(w http.ResponseWriter, r *http.Request) {

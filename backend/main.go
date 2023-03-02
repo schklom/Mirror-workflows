@@ -17,6 +17,7 @@ var WhisperThreads string
 var WhisperProcs string
 var KeepFiles string
 var OaiToken string
+var DisableLocal string
 
 func setEnvVariables() {
 	WhisperThreads = os.Getenv("WHISPER_THREADS")
@@ -105,6 +106,23 @@ func setEnvVariables() {
 			OaiToken = "false"
 		}
 	}
+
+	DisableLocal = os.Getenv("DISABLE_LOCAL_WHISPER")
+	if OaiToken == "" {
+		log.Printf("No DISABLE_LOCAL_WHISPER ENV found. Trying to get .env file.")
+		err := godotenv.Load()
+		if err != nil {
+			log.Printf("No .env file found... Defaulting DISABLE_LOCAL_WHISPER to false")
+			OaiToken = "false"
+		}
+		os.Getenv("DISABLE_LOCAL_WHISPER")
+		if OaiToken == "" {
+			OaiToken = "false"
+		}
+		if OaiToken == "none" {
+			OaiToken = "false"
+		}
+	}
 }
 
 func main() {
@@ -117,14 +135,18 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(JSONMiddleware)
 
-	r.Post("/transcribe", transcribe)
-	r.Post("/video/transcribe", transcribeVideo)
-	r.Get("/getsubs", getSubsFile)
-	r.Get("/status", getInfo)
-	r.Get("/history", transcriptionHistory)
+	if DisableLocal == "false" {
+		r.Post("/transcribe", transcribe)
+		r.Post("/video/transcribe", transcribeVideo)
+		r.Get("/getsubs", getSubsFile)
+		r.Get("/status", getInfo)
+		r.Get("/history", transcriptionHistory)
+	}
 
 	// Interact wiht OpenAI api (through backend)
-	r.Post("/api/whisper", transcribeViaApi)
+	if OaiToken != "false" {
+		r.Post("/api/whisper", transcribeViaApi)
+	}
 
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},

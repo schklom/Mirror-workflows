@@ -347,6 +347,8 @@
                 {/if}
             </span>
         </div>
+      {:else if canRunLocally == false && canRunApi == true}
+        <p class="font-medium text-gray-600">Running on API</p>
       { /if }
       {#if videoUrl == ""}
         {#if recording == false}

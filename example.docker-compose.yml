@@ -6,7 +6,7 @@ services:
     volumes:
       - ./files:/app/whisper.cpp/samples
     build:
-      dockerfile: ./backend.Dockerfile
+      dockerfile: ./backend.Dockerfile  # change to `backend.apionly.Dockerfile` if you disabled Local Whisper.
       context: .
       args:
         - WHISPER_MODEL=${WHISPER_MODEL}
@@ -16,6 +16,7 @@ services:
         - KEEP_FILES=${KEEP_FILES}
         - ARCHITECTURE=${ARCHITECTURE}
         - OPENAI_TOKEN=${OPENAI_TOKEN}
+        - DISABLE_LOCAL_WHISPER=${DISABLE_LOCAL_WHISPER}
   
   whisper:
     container_name: web-whisper

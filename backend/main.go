@@ -119,9 +119,6 @@ func setEnvVariables() {
 		if DisableLocal == "" {
 			DisableLocal = "false"
 		}
-		if DisableLocal == "none" {
-			DisableLocal = "false"
-		}
 	}
 
 	log.Println("Configuration:")

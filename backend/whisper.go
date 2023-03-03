@@ -329,29 +329,13 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 	}
 
 	switch r.Method {
-	default:
-		var response Response
-		response.Result = "Not allowed"
-		jsonData, err := json.Marshal(response)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			log.Printf("Error marshalling tasks to json: %v", err)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-		w.Write(jsonData)
-		return
 	case "POST":
-		log.Printf("Got POST for transcribing a video...")
-
 		var response Response
 		response.Message = ""
 		response.Result = ""
 		response.Id = ""
 
 		file, header, err := r.FormFile("file")
-		log.Printf("Got file %v...", header.Filename)
-
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			ReturnServerError(w, r, fmt.Sprintf("Error getting the form file: %v", err))
@@ -361,24 +345,16 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 
 		language := r.FormValue("lang")
 		if language == "" {
-			fmt.Println("Defaulting language to English...")
 			language = "auto"
 		}
 
-		// get params
-		translate, _ := strconv.ParseBool(r.FormValue("translate"))
-		getSubs, _ := strconv.ParseBool(r.FormValue("subs"))
-		speedUp, _ := strconv.ParseBool(r.FormValue("speedUp"))
-
-		// We set the filename to a random UID string by default.
 		guid := xid.New()
 		id := guid.String()
-		// If history is activated, we will keep the original filename
+
 		if KeepFiles == "true" && header.Filename != "audio.webm" {
 			id = header.Filename
 		}
 
-		// We create a file that will be named {id}
 		f, err := os.OpenFile(fmt.Sprintf("%v/%v/%v", path, samplesDir, id), os.O_WRONLY|os.O_CREATE, 0666)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -386,31 +362,27 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		defer f.Close()
-		// Then, we copy contents of the Form File to the newly created file
 		io.Copy(f, file)
 
-		/*** FFMPEG ****/
-		// Convert source to wav
+		translate, _ := strconv.ParseBool(r.FormValue("translate"))
+		getSubs, _ := strconv.ParseBool(r.FormValue("subs"))
+		speedUp, _ := strconv.ParseBool(r.FormValue("speedUp"))
+
 		err = FfmpegConvert(fmt.Sprintf("%v/%v/%v", path, samplesDir, id))
 		if err != nil {
 			ReturnServerError(w, r, fmt.Sprintf("%s", err))
 		}
 
-		/*** WHISPER ****/
-		// Remove the .wav file extension from the resulting wav (filename.wav -> filename) file
 		e := os.Rename(fmt.Sprintf("%v/%v/%v.wav", path, samplesDir, id), fmt.Sprintf("%v/%v/%v", path, samplesDir, id))
 		if e != nil {
 			log.Printf("ERROR: Could not rename file: %v", e)
 		}
-		// Prepare whisper main args
+
 		sourceFilepath := fmt.Sprintf("%v/%v/%v", path, samplesDir, id)
 		model := fmt.Sprintf("%v/%v%v.bin", path, whisperModelPath, WhisperModel)
-		// Get whisper arg array
 		whisperArgs := getWhisperArgs(model, language, getSubs, speedUp, translate, sourceFilepath)
-		// Run whisper and prepare response
 		response.Result, _ = runWhisper(whisperArgs)
 		response.Id = id
-
 		jsonData, err := json.Marshal(response)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -423,6 +395,17 @@ func transcribe(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Printf("Could not remove the wav file %v.", err)
 			}
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(jsonData)
+	default:
+		var response Response
+		response.Result = "Not allowed"
+		jsonData, err := json.Marshal(response)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			ReturnServerError(w, r, fmt.Sprintf("Error marshalling tasks to json: %v", err))
+			return
 		}
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonData)

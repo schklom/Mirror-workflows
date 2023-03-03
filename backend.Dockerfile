@@ -26,7 +26,7 @@ RUN bash -c  "models/download-ggml-model.sh $WHISPER_MODEL &> /dev/null"
 RUN bash -c "make $WHISPER_MODEL &> /dev/null"
 
 # Prepare working environment
-FROM golang:bullseye
+FROM gcc:bullseye
 
 ARG CUT_MEDIA_SECONDS
 ENV CUT_MEDIA_SECONDS "$CUT_MEDIA_SECONDS"

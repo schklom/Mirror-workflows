@@ -5,3 +5,4 @@ docker-compose.yml
 *.srt
 *.wav
 .env
+files/

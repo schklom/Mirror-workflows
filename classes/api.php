@@ -1,7 +1,7 @@
 <?php
 class API extends Handler {
 
-	const API_LEVEL  = 19;
+	const API_LEVEL  = 20;
 
 	const STATUS_OK  = 0;
 	const STATUS_ERR = 1;
@@ -504,9 +504,14 @@ class API extends Handler {
 	}
 
 	function shareToPublished(): bool {
-		$title = strip_tags(clean($_REQUEST["title"]));
-		$url = strip_tags(clean($_REQUEST["url"]));
-		$content = strip_tags(clean($_REQUEST["content"]));
+		$title = clean($_REQUEST["title"]);
+		$url = clean($_REQUEST["url"]);
+		$sanitize_content = self::_param_to_bool($_REQUEST["sanitize"] ?? true);
+
+		if ($sanitize_content)
+			$content = clean($_REQUEST["content"]);
+		else
+			$content = $_REQUEST["content"];
 
 		if (Article::_create_published_article($title, $url, $content, "", $_SESSION["uid"])) {
 			return $this->_wrap(self::STATUS_OK, array("status" => 'OK'));

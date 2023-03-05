@@ -84,20 +84,19 @@ class FeedItem_RSS extends FeedItem_Common {
 		/** @var DOMElement|null */
 		$contentB = $this->elem->getElementsByTagName("description")->item(0);
 
-		if ($contentA && !$contentB) {
-			return $this->subtree_or_text($contentA);
-		}
-
-
-		if ($contentB && !$contentA) {
-			return $this->subtree_or_text($contentB);
-		}
-
 		if ($contentA && $contentB) {
 			$resultA = $this->subtree_or_text($contentA);
 			$resultB = $this->subtree_or_text($contentB);
 
 			return mb_strlen($resultA) > mb_strlen($resultB) ? $resultA : $resultB;
+		}
+
+		if ($contentA) {
+			return $this->subtree_or_text($contentA);
+		}
+
+		if ($contentB) {
+			return $this->subtree_or_text($contentB);
 		}
 
 		return '';

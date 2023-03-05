@@ -1198,19 +1198,19 @@ const App = {
             }
          };
          this.hotkey_actions["goto_read"] = () => {
-            Feeds.open({feed: -6});
+            Feeds.open({feed: Feeds.FEED_RECENTLY_READ});
          };
          this.hotkey_actions["goto_all"] = () => {
-            Feeds.open({feed: -4});
+            Feeds.open({feed: Feeds.FEED_ALL});
          };
          this.hotkey_actions["goto_fresh"] = () => {
-            Feeds.open({feed: -3});
+            Feeds.open({feed: Feeds.FEED_FRESH});
          };
          this.hotkey_actions["goto_marked"] = () => {
-            Feeds.open({feed: -1});
+            Feeds.open({feed: Feeds.FEED_STARRED});
          };
          this.hotkey_actions["goto_published"] = () => {
-            Feeds.open({feed: -2});
+            Feeds.open({feed: Feeds.FEED_PUBLISHED});
          };
          this.hotkey_actions["goto_prefs"] = () => {
             App.openPreferences();

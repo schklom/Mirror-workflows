@@ -225,8 +225,8 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 			if (item.auxcounter > 0) rc += " Has_Aux";
 			if (item.markedcounter > 0) rc += " Has_Marked";
 			if (item.updates_disabled > 0) rc += " UpdatesDisabled";
-			if (item.bare_id >= App.LABEL_BASE_INDEX && item.bare_id < 0 && !is_cat || item.bare_id == 0 && !is_cat) rc += " Special";
-			if (item.bare_id == -1 && is_cat) rc += " AlwaysVisible";
+			if (item.bare_id >= App.LABEL_BASE_INDEX && item.bare_id < 0 && !is_cat || item.bare_id == Feeds.FEED_ARCHIVED && !is_cat) rc += " Special";
+			if (item.bare_id == Feeds.CATEGORY_SPECIAL && is_cat) rc += " AlwaysVisible";
 			if (item.bare_id < App.LABEL_BASE_INDEX) rc += " Label";
 
 			return rc;

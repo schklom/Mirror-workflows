@@ -241,7 +241,12 @@ class Pref_Feeds extends Handler_Protected {
 				//$root['param'] += count($cat['items']);
 			}
 
-			/* Uncategorized is a special case */
+			/**
+			 * Uncategorized is a special case.
+			 *
+			 * Define a minimal array shape to help PHPStan with the type of $cat['items']
+			 * @var array{items: array<int, array<string, mixed>>} $cat
+			 */
 			$cat = [
 				'id' => 'CAT:0',
 				'bare_id' => 0,
@@ -267,7 +272,7 @@ class Pref_Feeds extends Handler_Protected {
 			}
 
 			foreach ($feeds_obj->find_many() as $feed) {
-				$cat['items'][] = [
+				array_push($cat['items'], [
 					'id' => 'FEED:' . $feed->id,
 					'bare_id' => (int) $feed->id,
 					'auxcounter' => -1,
@@ -279,7 +284,7 @@ class Pref_Feeds extends Handler_Protected {
 					'unread' => -1,
 					'type' => 'feed',
 					'updates_disabled' => (int)($feed->update_interval < 0),
-				];
+				]);
 			}
 
 			$cat['param'] = sprintf(_ngettext('(%d feed)', '(%d feeds)', count($cat['items'])), count($cat['items']));

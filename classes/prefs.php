@@ -325,13 +325,13 @@ class Prefs {
 		return self::get_instance()->_set($pref_name, $value, $owner_uid, $profile_id);
 	}
 
-	private function _delete(string $pref_name, int $owner_uid, ?int $profile_id): bool {
+	/* private function _delete(string $pref_name, int $owner_uid, ?int $profile_id): bool {
 		$sth = $this->pdo->prepare("DELETE FROM ttrss_user_prefs2
 			WHERE pref_name = :name AND owner_uid = :uid AND
 				(profile = :profile OR (:profile IS NULL AND profile IS NULL))");
 
 		return $sth->execute(["uid" => $owner_uid, "profile" => $profile_id, "name" => $pref_name ]);
-	}
+	} */
 
 	/**
 	 * @param bool|int|string $value

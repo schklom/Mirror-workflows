@@ -267,7 +267,7 @@ class Pref_Feeds extends Handler_Protected {
 			}
 
 			foreach ($feeds_obj->find_many() as $feed) {
-				array_push($cat['items'], [
+				$cat['items'][] = [
 					'id' => 'FEED:' . $feed->id,
 					'bare_id' => (int) $feed->id,
 					'auxcounter' => -1,
@@ -279,7 +279,7 @@ class Pref_Feeds extends Handler_Protected {
 					'unread' => -1,
 					'type' => 'feed',
 					'updates_disabled' => (int)($feed->update_interval < 0),
-				]);
+				];
 			}
 
 			$cat['param'] = sprintf(_ngettext('(%d feed)', '(%d feeds)', count($cat['items'])), count($cat['items']));

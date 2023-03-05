@@ -169,7 +169,7 @@ class API extends Handler {
 			}
 		}
 
-		foreach ([-2,-1,0] as $cat_id) {
+		foreach ([Feeds::CATEGORY_LABELS, Feeds::CATEGORY_SPECIAL, Feeds::CATEGORY_UNCATEGORIZED] as $cat_id) {
 			if ($include_empty || !$this->_is_cat_empty($cat_id)) {
 				$unread = Feeds::_get_counters($cat_id, true, true);
 
@@ -528,8 +528,8 @@ class API extends Handler {
 
 			/* Labels */
 
-			/* API only: -4 All feeds, including virtual feeds */
-			if ($cat_id == -4 || $cat_id == -2) {
+			/* API only: -4 (Feeds::CATEGORY_ALL) All feeds, including virtual feeds */
+			if ($cat_id == Feeds::CATEGORY_ALL || $cat_id == Feeds::CATEGORY_LABELS) {
 				$counters = Counters::get_labels();
 
 				foreach (array_values($counters) as $cv) {
@@ -540,7 +540,7 @@ class API extends Handler {
 							'id' => (int) $cv['id'],
 							'title' => $cv['description'],
 							'unread' => $cv['counter'],
-							'cat_id' => -2,
+							'cat_id' => Feeds::CATEGORY_LABELS,
 						];
 
 						array_push($feeds, $row);
@@ -550,7 +550,7 @@ class API extends Handler {
 
 			/* Virtual feeds */
 
-			$vfeeds = PluginHost::getInstance()->get_feeds(-1);
+			$vfeeds = PluginHost::getInstance()->get_feeds(Feeds::CATEGORY_SPECIAL);
 
 			if (is_array($vfeeds)) {
 				foreach ($vfeeds as $feed) {
@@ -565,7 +565,7 @@ class API extends Handler {
 							'id' => PluginHost::pfeed_to_feed_id($feed['id']),
 							'title' => $feed['title'],
 							'unread' => $unread,
-							'cat_id' => -1,
+							'cat_id' => Feeds::CATEGORY_SPECIAL,
 						];
 
 						array_push($feeds, $row);
@@ -573,8 +573,9 @@ class API extends Handler {
 				}
 			}
 
-			if ($cat_id == -4 || $cat_id == -1) {
-				foreach ([-1, -2, -3, -4, -6, 0] as $i) {
+			if ($cat_id == Feeds::CATEGORY_ALL || $cat_id == Feeds::CATEGORY_SPECIAL) {
+				foreach ([Feeds::FEED_STARRED, Feeds::FEED_PUBLISHED, Feeds::FEED_FRESH,
+					Feeds::FEED_ALL, Feeds::FEED_RECENTLY_READ, Feeds::FEED_ARCHIVED] as $i) {
 					$unread = Feeds::_get_counters($i, false, true);
 
 					if ($unread || !$unread_only) {
@@ -584,7 +585,7 @@ class API extends Handler {
 							'id' => $i,
 							'title' => $title,
 							'unread' => $unread,
-							'cat_id' => -1,
+							'cat_id' => Feeds::CATEGORY_SPECIAL,
 						];
 
 						array_push($feeds, $row);
@@ -620,7 +621,7 @@ class API extends Handler {
 
 			/* Real feeds */
 
-			/* API only: -3 All feeds, excluding virtual feeds (e.g. Labels and such) */
+			/* API only: -3 (Feeds::CATEGORY_ALL_EXCEPT_VIRTUAL) All feeds, excluding virtual feeds (e.g. Labels and such) */
 			$feeds_obj = ORM::for_table('ttrss_feeds')
 				->select_many('id', 'feed_url', 'cat_id', 'title', 'order_id')
 				->select_expr(SUBSTRING_FOR_DATE.'(last_updated,1,19)', 'last_updated')
@@ -631,7 +632,7 @@ class API extends Handler {
 			if ($limit) $feeds_obj->limit($limit);
 			if ($offset) $feeds_obj->offset($offset);
 
-			if ($cat_id != -3 && $cat_id != -4) {
+			if ($cat_id != Feeds::CATEGORY_ALL_EXCEPT_VIRTUAL && $cat_id != Feeds::CATEGORY_ALL) {
 				$feeds_obj->where_raw('(cat_id = ? OR (? = 0 AND cat_id IS NULL))', [$cat_id, $cat_id]);
 			}
 
@@ -931,13 +932,13 @@ class API extends Handler {
 
 	// only works for labels or uncategorized for the time being
 	private function _is_cat_empty(int $id): bool {
-		if ($id == -2) {
+		if ($id == Feeds::CATEGORY_LABELS) {
 			$label_count = ORM::for_table('ttrss_labels2')
 				->where('owner_uid', $_SESSION['uid'])
 				->count();
 
 			return $label_count == 0;
-		} else if ($id == 0) {
+		} else if ($id == Feeds::CATEGORY_UNCATEGORIZED) {
 			$uncategorized_count = ORM::for_table('ttrss_feeds')
 				->where_null('cat_id')
 				->where('owner_uid', $_SESSION['uid'])

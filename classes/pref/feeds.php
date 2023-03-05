@@ -135,18 +135,19 @@ class Pref_Feeds extends Handler_Protected {
 		if (clean($_REQUEST['mode'] ?? 0) == 2) {
 
 			if ($enable_cats) {
-				$cat = $this->feedlist_init_cat(-1);
+				$cat = $this->feedlist_init_cat(Feeds::CATEGORY_SPECIAL);
 			} else {
 				$cat['items'] = array();
 			}
 
-			foreach (array(-4, -3, -1, -2, 0, -6) as $i) {
-				array_push($cat['items'], $this->feedlist_init_feed($i));
+			foreach ([Feeds::FEED_ALL, Feeds::FEED_FRESH, Feeds::FEED_STARRED, Feeds::FEED_PUBLISHED,
+				Feeds::FEED_ARCHIVED, Feeds::FEED_RECENTLY_READ] as $feed_id) {
+				array_push($cat['items'], $this->feedlist_init_feed($feed_id));
 			}
 
-			/* Plugin feeds for -1 */
+			/* Plugin feeds for -1 (Feeds::CATEGORY_SPECIAL) */
 
-			$feeds = PluginHost::getInstance()->get_feeds(-1);
+			$feeds = PluginHost::getInstance()->get_feeds(Feeds::CATEGORY_SPECIAL);
 
 			if ($feeds) {
 				foreach ($feeds as $feed) {
@@ -180,7 +181,7 @@ class Pref_Feeds extends Handler_Protected {
 			$sth->execute([$_SESSION['uid']]);
 
 			if (get_pref(Prefs::ENABLE_FEED_CATS)) {
-				$cat = $this->feedlist_init_cat(-2);
+				$cat = $this->feedlist_init_cat(Feeds::CATEGORY_LABELS);
 			} else {
 				$cat['items'] = [];
 			}
@@ -1027,7 +1028,7 @@ class Pref_Feeds extends Handler_Protected {
 		<?= format_notice('Published articles can be subscribed by anyone who knows the following URL:') ?></h3>
 
 		<button dojoType='dijit.form.Button' class='alt-primary'
-			onclick="CommonDialogs.generatedFeed(-2, false)">
+			onclick="CommonDialogs.generatedFeed(<?= Feeds::FEED_PUBLISHED ?>, false)">
 			<?= \Controls\icon('share') ?>
 			<?= __('Display URL') ?>
 		</button>

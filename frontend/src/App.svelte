@@ -434,6 +434,7 @@
                   <option value="ru">Russian</option>
                   <option value="sk">Slovak</option>
                   <option value="sv">Swedish</option>
+                  <option value="gsw">Swiss German</option>
                 </select>
             </div>
           </div>

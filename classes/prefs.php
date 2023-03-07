@@ -325,14 +325,6 @@ class Prefs {
 		return self::get_instance()->_set($pref_name, $value, $owner_uid, $profile_id);
 	}
 
-	private function _delete(string $pref_name, int $owner_uid, ?int $profile_id): bool {
-		$sth = $this->pdo->prepare("DELETE FROM ttrss_user_prefs2
-			WHERE pref_name = :name AND owner_uid = :uid AND
-				(profile = :profile OR (:profile IS NULL AND profile IS NULL))");
-
-		return $sth->execute(["uid" => $owner_uid, "profile" => $profile_id, "name" => $pref_name ]);
-	}
-
 	/**
 	 * @param bool|int|string $value
 	 */
@@ -349,10 +341,6 @@ class Prefs {
 				$value = trim(strip_tags($value));
 
 			$value = Config::cast_to($value, $type_hint);
-
-			// is this a good idea or not? probably not (user-set value remains user-set even if its at default)
-			//if ($value == $def_val)
-			//	return $this->_delete($pref_name, $owner_uid, $profile_id);
 
 			if ($value == $this->_get($pref_name, $owner_uid, $profile_id))
 				return false;

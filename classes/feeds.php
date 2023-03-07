@@ -2,8 +2,52 @@
 require_once "colors.php";
 
 class Feeds extends Handler_Protected {
-	const NEVER_GROUP_FEEDS = [ -6, 0 ];
-	const NEVER_GROUP_BY_DATE = [ -2, -1, -3 ];
+	/** special feed for archived articles */
+	const FEED_ARCHIVED = 0;
+
+	/** special feed for starred articles */
+	const FEED_STARRED = -1;
+
+	/** special feed for published articles */
+	const FEED_PUBLISHED = -2;
+
+	/** special feed for archived articles */
+	const FEED_FRESH = -3;
+
+	/** special feed for all articles */
+	const FEED_ALL = -4;
+
+	/**
+	 * a special case feed used to display auxiliary information when there's nothing to load (e.g. no stuff in fresh feed)
+	 *
+	 * TODO: Remove this and 'Feeds::_generate_dashboard_feed()'?  It only seems to be used if 'Feeds::view()' (also potentially removable)
+	 * gets passed the ID.
+	 */
+	const FEED_DASHBOARD = -5;
+
+	/** special feed for recently read articles */
+	const FEED_RECENTLY_READ = -6;
+
+	/** special feed for error scenarios (e.g. feed not found) */
+	const FEED_ERROR = -7;
+
+	/** special "category" for uncategorized articles */
+	const CATEGORY_UNCATEGORIZED = 0;
+
+	/** special category for "special" articles (e.g. Starred, Published, Archived, plugin-provided, etc.) */
+	const CATEGORY_SPECIAL = -1;
+
+	/** special category for labels */
+	const CATEGORY_LABELS = -2;
+
+	/** special category for all feeds, excluding virtual feeds (e.g. labels and such) */
+	const CATEGORY_ALL_EXCEPT_VIRTUAL = -3;
+
+	/** special category for all feeds, including virtual feeds (e.g. labels and such) */
+	const CATEGORY_ALL = -4;
+
+	const NEVER_GROUP_FEEDS = [ Feeds::FEED_RECENTLY_READ, Feeds::FEED_ARCHIVED ];
+	const NEVER_GROUP_BY_DATE = [ Feeds::FEED_PUBLISHED, Feeds::FEED_STARRED, Feeds::FEED_FRESH ];
 
 	/** @var int|float int on 64-bit, float on 32-bit */
 	private $viewfeed_timestamp;
@@ -205,7 +249,7 @@ class Feeds extends Handler_Protected {
 
 				// normalize archived feed
 				if ($line['feed_id'] === null) {
-					$line['feed_id'] = 0;
+					$line['feed_id'] = Feeds::FEED_ARCHIVED;
 					$line["feed_title"] = __("Archived articles");
 				}
 
@@ -478,10 +522,7 @@ class Feeds extends Handler_Protected {
 
 		if (is_numeric($feed)) $feed = (int) $feed;
 
-		/* Feed -5 is a special case: it is used to display auxiliary information
-		 * when there's nothing to load - e.g. no stuff in fresh feed */
-
-		if ($feed == -5) {
+		if ($feed == Feeds::FEED_DASHBOARD) {
 			print json_encode($this->_generate_dashboard_feed());
 			return;
 		}
@@ -566,7 +607,7 @@ class Feeds extends Handler_Protected {
 	private function _generate_dashboard_feed(): array {
 		$reply = array();
 
-		$reply['headlines']['id'] = -5;
+		$reply['headlines']['id'] = Feeds::FEED_DASHBOARD;
 		$reply['headlines']['is_cat'] = false;
 
 		$reply['headlines']['toolbar'] = '';
@@ -610,7 +651,7 @@ class Feeds extends Handler_Protected {
 	private function _generate_error_feed(string $error): array {
 		$reply = array();
 
-		$reply['headlines']['id'] = -7;
+		$reply['headlines']['id'] = Feeds::FEED_ERROR;
 		$reply['headlines']['is_cat'] = false;
 
 		$reply['headlines']['toolbar'] = '';
@@ -827,7 +868,9 @@ class Feeds extends Handler_Protected {
 
 				if ($feed_id >= 0) {
 
-					if ($feed_id > 0) {
+					if ($feed_id == Feeds::CATEGORY_UNCATEGORIZED) {
+						$cat_qpart = "cat_id IS NULL";
+					} else {
 						$children = self::_get_child_cats($feed_id, $owner_uid);
 						array_push($children, $feed_id);
 						$children = array_map("intval", $children);
@@ -835,8 +878,6 @@ class Feeds extends Handler_Protected {
 						$children = join(",", $children);
 
 						$cat_qpart = "cat_id IN ($children)";
-					} else {
-						$cat_qpart = "cat_id IS NULL";
 					}
 
 					$sth = $pdo->prepare("UPDATE ttrss_user_entries
@@ -847,7 +888,7 @@ class Feeds extends Handler_Protected {
 										(SELECT id FROM ttrss_feeds WHERE $cat_qpart) AND $date_qpart AND $search_qpart) as tmp)");
 					$sth->execute([$owner_uid]);
 
-				} else if ($feed_id == -2) {
+				} else if ($feed_id == Feeds::CATEGORY_LABELS) {
 
 					$sth = $pdo->prepare("UPDATE ttrss_user_entries
 						SET unread = false,last_read = NOW() WHERE (SELECT COUNT(*)
@@ -867,7 +908,7 @@ class Feeds extends Handler_Protected {
 
 			} else if ($feed_id < 0 && $feed_id > LABEL_BASE_INDEX) { // special, like starred
 
-				if ($feed_id == -1) {
+				if ($feed_id == Feeds::FEED_STARRED) {
 					$sth = $pdo->prepare("UPDATE ttrss_user_entries
 						SET unread = false, last_read = NOW() WHERE ref_id IN
 							(SELECT id FROM
@@ -876,7 +917,7 @@ class Feeds extends Handler_Protected {
 					$sth->execute([$owner_uid]);
 				}
 
-				if ($feed_id == -2) {
+				if ($feed_id == Feeds::FEED_PUBLISHED) {
 					$sth = $pdo->prepare("UPDATE ttrss_user_entries
 						SET unread = false, last_read = NOW() WHERE ref_id IN
 							(SELECT id FROM
@@ -885,7 +926,7 @@ class Feeds extends Handler_Protected {
 					$sth->execute([$owner_uid]);
 				}
 
-				if ($feed_id == -3) {
+				if ($feed_id == Feeds::FEED_FRESH) {
 
 					$intl = (int) get_pref(Prefs::FRESH_ARTICLE_MAX_AGE);
 
@@ -904,7 +945,7 @@ class Feeds extends Handler_Protected {
 					$sth->execute([$owner_uid]);
 				}
 
-				if ($feed_id == -4) {
+				if ($feed_id == Feeds::FEED_ALL) {
 					$sth = $pdo->prepare("UPDATE ttrss_user_entries
 						SET unread = false, last_read = NOW() WHERE ref_id IN
 							(SELECT id FROM
@@ -973,7 +1014,7 @@ class Feeds extends Handler_Protected {
 			} else {
 				return 0;
 			}
-		} else if ($n_feed == -6) {
+		} else if ($n_feed == Feeds::FEED_RECENTLY_READ) {
 			return 0;
 		// tags
 		} else if ($feed != "0" && $n_feed == 0) {
@@ -989,11 +1030,11 @@ class Feeds extends Handler_Protected {
 			// Handle 'SUM()' returning null if there are no results
 			return $row["count"] ?? 0;
 
-		} else if ($n_feed == -1) {
+		} else if ($n_feed == Feeds::FEED_STARRED) {
 			$match_part = "marked = true";
-		} else if ($n_feed == -2) {
+		} else if ($n_feed == Feeds::FEED_PUBLISHED) {
 			$match_part = "published = true";
-		} else if ($n_feed == -3) {
+		} else if ($n_feed == Feeds::FEED_FRESH) {
 			$match_part = "unread = true AND score >= 0";
 
 			$intl = (int) get_pref(Prefs::FRESH_ARTICLE_MAX_AGE, $owner_uid);
@@ -1006,11 +1047,11 @@ class Feeds extends Handler_Protected {
 
 			$need_entries = true;
 
-		} else if ($n_feed == -4) {
+		} else if ($n_feed == Feeds::FEED_ALL) {
 			$match_part = "true";
 		} else if ($n_feed >= 0) {
 
-			if ($n_feed != 0) {
+			if ($n_feed != Feeds::FEED_ARCHIVED) {
 				$match_part = sprintf("feed_id = %d", $n_feed);
 			} else {
 				$match_part = "feed_id IS NULL";
@@ -1191,17 +1232,17 @@ class Feeds extends Handler_Protected {
 	 */
 	static function _get_icon(int $id) {
 		switch ($id) {
-			case 0:
+			case Feeds::FEED_ARCHIVED:
 				return "archive";
-			case -1:
+			case Feeds::FEED_STARRED:
 				return "star";
-			case -2:
+			case Feeds::FEED_PUBLISHED:
 				return "rss_feed";
-			case -3:
+			case Feeds::FEED_FRESH:
 				return "whatshot";
-			case -4:
+			case Feeds::FEED_ALL:
 				return "inbox";
-			case -6:
+			case Feeds::FEED_RECENTLY_READ:
 				return "restore";
 			default:
 				if ($id < LABEL_BASE_INDEX) {
@@ -1264,17 +1305,17 @@ class Feeds extends Handler_Protected {
 
 		if ($cat) {
 			return self::_get_cat_title($id);
-		} else if ($id == -1) {
+		} else if ($id == Feeds::FEED_STARRED) {
 			return __("Starred articles");
-		} else if ($id == -2) {
+		} else if ($id == Feeds::FEED_PUBLISHED) {
 			return __("Published articles");
-		} else if ($id == -3) {
+		} else if ($id == Feeds::FEED_FRESH) {
 			return __("Fresh articles");
-		} else if ($id == -4) {
+		} else if ($id == Feeds::FEED_ALL) {
 			return __("All articles");
-		} else if ($id === 0) {
+		} else if ($id === Feeds::FEED_ARCHIVED) {
 			return __("Archived articles");
-		} else if ($id == -6) {
+		} else if ($id == Feeds::FEED_RECENTLY_READ) {
 			return __("Recently read");
 		} else if ($id < LABEL_BASE_INDEX) {
 
@@ -1350,9 +1391,9 @@ class Feeds extends Handler_Protected {
 			if ($row = $sth->fetch()) {
 				return (int) $row["unread"];
 			}
-		} else if ($cat == -1) {
+		} else if ($cat == Feeds::CATEGORY_SPECIAL) {
 			return 0;
-		} else if ($cat == -2) {
+		} else if ($cat == Feeds::CATEGORY_LABELS) {
 
 			$sth = $pdo->prepare("SELECT COUNT(DISTINCT article_id) AS unread
 				FROM ttrss_user_entries ue, ttrss_user_labels2 l
@@ -1407,11 +1448,11 @@ class Feeds extends Handler_Protected {
 
 	static function _get_cat_title(int $cat_id): string {
 		switch ($cat_id) {
-			case 0:
+			case Feeds::CATEGORY_UNCATEGORIZED:
 				return __("Uncategorized");
-			case -1:
+			case Feeds::CATEGORY_SPECIAL:
 				return __("Special");
-			case -2:
+			case Feeds::CATEGORY_LABELS:
 				return __("Labels");
 			default:
 				$cat = ORM::for_table('ttrss_feed_categories')
@@ -1526,6 +1567,7 @@ class Feeds extends Handler_Protected {
 			if ($search) {
 				$view_query_part = " ";
 			} else if ($feed != -1) {
+				// not Feeds::FEED_STARRED or Feeds::CATEGORY_SPECIAL
 
 				$unread = Feeds::_get_counters($feed, $cat_view, true);
 
@@ -1550,7 +1592,7 @@ class Feeds extends Handler_Protected {
 			$view_query_part = " published = true AND ";
 		}
 
-		if ($view_mode == "unread" && $feed != -6) {
+		if ($view_mode == "unread" && $feed != Feeds::FEED_RECENTLY_READ) {
 			$view_query_part = " unread = true AND ";
 		}
 
@@ -1594,13 +1636,13 @@ class Feeds extends Handler_Protected {
 			} else {
 				$query_strategy_part = "feed_id = " . $pdo->quote((string)$feed);
 			}
-		} else if ($feed == 0 && !$cat_view) { // archive virtual feed
+		} else if ($feed == Feeds::FEED_ARCHIVED && !$cat_view) { // archive virtual feed
 			$query_strategy_part = "feed_id IS NULL";
 			$allow_archived = true;
-		} else if ($feed == 0 && $cat_view) { // uncategorized
+		} else if ($feed == Feeds::CATEGORY_UNCATEGORIZED && $cat_view) { // uncategorized
 			$query_strategy_part = "cat_id IS NULL AND feed_id IS NOT NULL";
 			$vfeed_query_part = "ttrss_feeds.title AS feed_title,";
-		} else if ($feed == -1) { // starred virtual feed
+		} else if ($feed == -1) { // starred virtual feed, Feeds::FEED_STARRED or Feeds::CATEGORY_SPECIAL
 			$query_strategy_part = "marked = true";
 			$vfeed_query_part = "ttrss_feeds.title AS feed_title,";
 			$allow_archived = true;
@@ -1609,7 +1651,7 @@ class Feeds extends Handler_Protected {
 				$override_order = "last_marked DESC, date_entered DESC, updated DESC";
 			}
 
-		} else if ($feed == -2) { // published virtual feed OR labels category
+		} else if ($feed == -2) { // published virtual feed (Feeds::FEED_PUBLISHED) OR labels category (Feeds::CATEGORY_LABELS)
 
 			if (!$cat_view) {
 				$query_strategy_part = "published = true";
@@ -1629,7 +1671,7 @@ class Feeds extends Handler_Protected {
 						ttrss_user_labels2.article_id = ref_id";
 
 			}
-		} else if ($feed == -6) { // recently read
+		} else if ($feed == Feeds::FEED_RECENTLY_READ) { // recently read
 			$query_strategy_part = "unread = false AND last_read IS NOT NULL";
 
 			if (Config::get(Config::DB_TYPE) == "pgsql") {
@@ -1644,7 +1686,7 @@ class Feeds extends Handler_Protected {
 
 			if (!$override_order) $override_order = "last_read DESC";
 
-		} else if ($feed == -3) { // fresh virtual feed
+		} else if ($feed == Feeds::FEED_FRESH) { // fresh virtual feed
 			$query_strategy_part = "unread = true AND score >= 0";
 
 			$intl = (int) get_pref(Prefs::FRESH_ARTICLE_MAX_AGE, $owner_uid);
@@ -1656,7 +1698,7 @@ class Feeds extends Handler_Protected {
 			}
 
 			$vfeed_query_part = "ttrss_feeds.title AS feed_title,";
-		} else if ($feed == -4) { // all articles virtual feed
+		} else if ($feed == Feeds::FEED_ALL) { // all articles virtual feed
 			$allow_archived = true;
 			$query_strategy_part = "true";
 			$vfeed_query_part = "ttrss_feeds.title AS feed_title,";
@@ -1771,7 +1813,7 @@ class Feeds extends Handler_Protected {
 
 			$first_id_query_strategy_part = $query_strategy_part;
 
-			if ($feed == -3)
+			if ($feed == Feeds::FEED_FRESH)
 				$first_id_query_strategy_part = "true";
 
 			if (Config::get(Config::DB_TYPE) == "pgsql") {
@@ -1785,7 +1827,7 @@ class Feeds extends Handler_Protected {
 			}
 
 			// except for Labels category
-			if (get_pref(Prefs::HEADLINES_NO_DISTINCT, $owner_uid) && !($feed == -2 && $cat_view)) {
+			if (get_pref(Prefs::HEADLINES_NO_DISTINCT, $owner_uid) && !($feed == Feeds::CATEGORY_LABELS && $cat_view)) {
 				$distinct_qpart = "";
 			}
 

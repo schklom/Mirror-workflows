@@ -307,7 +307,7 @@ const Headlines = {
 				offset = unread_in_buffer;
 				break;
 			case "adaptive":
-				if (!(Feeds.getActive() == -1 && !Feeds.activeIsCat()))
+				if (!(Feeds.getActive() == Feeds.FEED_STARRED && !Feeds.activeIsCat()))
 					offset = num_unread > 0 ? unread_in_buffer : num_all;
 				break;
 		}
@@ -746,7 +746,7 @@ const Headlines = {
 			feed_id = reply['headlines']['id'];
 			Feeds.last_search_query = reply['headlines']['search_query'];
 
-			if (feed_id != -7 && (feed_id != Feeds.getActive() || is_cat != Feeds.activeIsCat()))
+			if (feed_id != Feeds.FEED_ERROR && (feed_id != Feeds.getActive() || is_cat != Feeds.activeIsCat()))
 				return;
 
 			const headlines_count = reply['headlines-info']['count'];

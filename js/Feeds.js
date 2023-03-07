@@ -3,6 +3,19 @@
 /* global __, App, Headlines, xhr, dojo, dijit, fox, PluginHost, Notify, fox */
 
 const	Feeds = {
+	FEED_ARCHIVED: 0,
+	FEED_STARRED: -1,
+	FEED_PUBLISHED: -2,
+	FEED_FRESH: -3,
+	FEED_ALL: -4,
+	FEED_DASHBOARD: -5,
+	FEED_RECENTLY_READ: -6,
+	FEED_ERROR: -7,
+	CATEGORY_UNCATEGORIZED: 0,
+	CATEGORY_SPECIAL: -1,
+	CATEGORY_LABELS: -2,
+	CATEGORY_ALL_EXCEPT_VIRTUAL: -3,
+	CATEGORY_ALL: -4,
 	_default_feed_id: -3,
 	counters_last_request: 0,
 	_active_feed_id: undefined,

@@ -23,7 +23,7 @@ class Feeds extends Handler_Protected {
 	 * TODO: Remove this and 'Feeds::_generate_dashboard_feed()'?  It only seems to be used if 'Feeds::view()' (also potentially removable)
 	 * gets passed the ID.
 	 */
-	const FEED_NOTHING = -5;
+	const FEED_DASHBOARD = -5;
 
 	/** special feed for recently read articles */
 	const FEED_RECENTLY_READ = -6;
@@ -522,7 +522,7 @@ class Feeds extends Handler_Protected {
 
 		if (is_numeric($feed)) $feed = (int) $feed;
 
-		if ($feed == Feeds::FEED_NOTHING) {
+		if ($feed == Feeds::FEED_DASHBOARD) {
 			print json_encode($this->_generate_dashboard_feed());
 			return;
 		}
@@ -607,7 +607,7 @@ class Feeds extends Handler_Protected {
 	private function _generate_dashboard_feed(): array {
 		$reply = array();
 
-		$reply['headlines']['id'] = Feeds::FEED_NOTHING;
+		$reply['headlines']['id'] = Feeds::FEED_DASHBOARD;
 		$reply['headlines']['is_cat'] = false;
 
 		$reply['headlines']['toolbar'] = '';

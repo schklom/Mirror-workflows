@@ -6,7 +6,7 @@ RUN pip install lxml
 RUN pip install Django
 # RUN git clone https://github.com/cldrn/rainmap-lite /rainmap-lite
 COPY . /rainmap-lite
-RUN ls -alh
+RUN ls -alh /rainmap-lite
 WORKDIR /rainmap-lite
 
 # Config for setup.sh
@@ -27,4 +27,4 @@ ENV SMTP_PORT=${SMTP_PORT:-""}
 ENV SMTP_DOMAIN_NAME=${SMTP_DOMAIN_NAME:-""}
 ENV HTTP_PORT=${PORT}
 
-CMD /rainmap-lite/run.bash
+CMD /rainmap-lite/rainmap-lite-docker/run.bash

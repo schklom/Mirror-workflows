@@ -49,7 +49,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: 'added-docker-files' # branch
+          ref: 'rainmap-lite-docker' # branch
+          path: docker-files
       
       - name: get most recent commit id on original repo, for next comparison on sync
         if: needs.get_commits.outputs.LOCAL_ORIGINAL != needs.get_commits.outputs.REMOTE_ORIGINAL

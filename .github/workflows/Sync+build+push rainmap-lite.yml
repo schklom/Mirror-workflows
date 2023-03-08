@@ -71,7 +71,7 @@ jobs:
 
   build_push:
     needs: [repo_sync]
-    if: ${{ false }}
+    #if: ${{ false }}
     #needs: [get_commits]
     runs-on: ubuntu-latest
     steps:

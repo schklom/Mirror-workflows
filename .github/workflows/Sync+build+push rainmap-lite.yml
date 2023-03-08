@@ -51,6 +51,21 @@ jobs:
         with:
           ref: 'rainmap-lite' # branch
       
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          #repository: 'schklom/aaa'
+          ref: 'rainmap-lite-docker' # branch
+      
+      - name: LS
+        run: ls -alh
+      
+      - name: LS rainmap-lite
+        run: ls -alh rainmap-lite
+      
+      - name: LS rainmap-lite-docker
+        run: ls -alh rainmap-lite-docker
+      
       - name: get most recent commit id on original repo, for next comparison on sync
         if: needs.get_commits.outputs.LOCAL_ORIGINAL != needs.get_commits.outputs.REMOTE_ORIGINAL
         run: git ls-remote https://github.com/cldrn/rainmap-lite HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_original
@@ -60,14 +75,14 @@ jobs:
         with:
           commit_message: Add last_sync_with_original_repo_commit_id_original
       
-      - name: Checkout to add run.bash to the repo, from my repo
-        #run: git clone -b rainmap-lite-docker --single-branch https://github.com/schklom/Mirror-workflows rainmap-lite-docker
-        run: wget https://raw.githubusercontent.com/schklom/Mirror-workflows/rainmap-lite-docker/run.bash
+      # - name: Checkout to add run.bash to the repo, from my repo
+        # #run: git clone -b rainmap-lite-docker --single-branch https://github.com/schklom/Mirror-workflows rainmap-lite-docker
+        # run: wget https://raw.githubusercontent.com/schklom/Mirror-workflows/rainmap-lite-docker/run.bash
       
-      - name: Commit and push run.bash
-        uses: stefanzweifel/git-auto-commit-action@v4.16.0
-        with:
-          commit_message: Add run.bash
+      # - name: Commit and push run.bash
+        # uses: stefanzweifel/git-auto-commit-action@v4.16.0
+        # with:
+          # commit_message: Add run.bash
 
   build_push:
     needs: [repo_sync]
@@ -80,6 +95,7 @@ jobs:
         with:
           #repository: 'schklom/aaa'
           ref: 'rainmap-lite-docker' # branch
+      
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2.1.0

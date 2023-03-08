@@ -30,7 +30,7 @@ jobs:
     needs: [get_commits]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    if: needs.get_commits.outputs.LOCAL_ORIGINAL != needs.get_commits.outputs.REMOTE_ORIGINAL
+    #if: needs.get_commits.outputs.LOCAL_ORIGINAL != needs.get_commits.outputs.REMOTE_ORIGINAL
     steps:
       - name: repo-sync
         uses: wei/git-sync@v3
@@ -49,7 +49,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: 'rainmap-lite' # branch
+          ref: 'added-docker-files' # branch
       
       - name: get most recent commit id on original repo, for next comparison on sync
         if: needs.get_commits.outputs.LOCAL_ORIGINAL != needs.get_commits.outputs.REMOTE_ORIGINAL

@@ -1,14 +1,17 @@
 FROM ubuntu:latest
 RUN apt-get update
 RUN apt-get install sqlite3 git nmap python3 python3-pip -y
-RUN pip install lxml
-RUN pip install Django
-RUN pip install python-dotenv
-RUN pip install pytz
-# RUN git clone https://github.com/cldrn/rainmap-lite /rainmap-lite
-COPY . /rainmap-lite
-RUN ls -alh /rainmap-lite
+
+# Import run.bash
+COPY . /rainmap-lite-docker
+
+# Import original rainmap-lite repo
+RUN git clone https://github.com/cldrn/rainmap-lite /rainmap-lite
+
 WORKDIR /rainmap-lite
+
+# Install the required Python libs
+RUN pip install -r requirement.txt
 
 # Config for setup.sh
 ENV APP_ROOT_PATH=${APP_ROOT_PATH:-/opt/rainmap-lite/}
@@ -28,4 +31,4 @@ ENV SMTP_PORT=${SMTP_PORT:-""}
 ENV SMTP_DOMAIN_NAME=${SMTP_DOMAIN_NAME:-""}
 ENV HTTP_PORT=${PORT}
 
-CMD /rainmap-lite/rainmap-lite-docker/run.bash
+CMD /rainmap-lite-docker/run.bash

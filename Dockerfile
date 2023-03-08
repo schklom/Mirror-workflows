@@ -1,6 +1,8 @@
 FROM ubuntu:latest
 RUN apt-get update
-RUN apt-get install sqlite3 git nmap python3 python3-pip -y
+RUN apt-get install -y sqlite3 git nmap python3 python3-pip
+# Required for pip's libxml package on armv7
+RUN apt-get install -y libxml2 libxslt
 
 # Import run.bash
 COPY . /rainmap-lite-docker

@@ -6,6 +6,7 @@ RUN pip install lxml
 RUN pip install Django
 # RUN git clone https://github.com/cldrn/rainmap-lite /rainmap-lite
 COPY . /rainmap-lite
+RUN ls -alh
 WORKDIR /rainmap-lite
 
 # Config for setup.sh

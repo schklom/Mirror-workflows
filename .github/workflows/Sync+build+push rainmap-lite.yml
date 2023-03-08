@@ -49,8 +49,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: 'rainmap-lite-docker' # branch
-          path: docker-files
+          ref: 'rainmap-lite' # branch
       
       - name: get most recent commit id on original repo, for next comparison on sync
         if: needs.get_commits.outputs.LOCAL_ORIGINAL != needs.get_commits.outputs.REMOTE_ORIGINAL
@@ -61,7 +60,7 @@ jobs:
         with:
           commit_message: Add last_sync_with_original_repo_commit_id_original
       
-      - name: Add run.bash to the repo, from my repo
+      - name: Checkout to add run.bash to the repo, from my repo
         uses: actions/checkout@v3
         with:
           repository: schklom/rainmap-lite-docker

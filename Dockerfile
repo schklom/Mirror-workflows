@@ -5,7 +5,7 @@ RUN pip install --upgrade pip
 RUN pip install lxml
 RUN pip install Django
 RUN git clone https://github.com/cldrn/rainmap-lite /rainmap-lite
-WORKDIR /rainmap-lite/rainmap-lite
+WORKDIR /rainmap-lite
 
 # Config for setup.sh
 ENV APP_ROOT_PATH=${APP_ROOT_PATH:-/opt/rainmap-lite/}
@@ -25,5 +25,4 @@ ENV SMTP_PORT=${SMTP_PORT:-""}
 ENV SMTP_DOMAIN_NAME=${SMTP_DOMAIN_NAME:-""}
 ENV HTTP_PORT=${PORT}
 
-VOLUME /rainmap-lite/rainmap-lite-docker/run.sh
-CMD /rainmap-lite/rainmap-lite-docker/run.sh
+CMD /rainmap-lite/run.bash

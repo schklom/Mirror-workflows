@@ -3,6 +3,8 @@ RUN apt-get update
 RUN apt-get install sqlite3 git nmap python3 python3-pip -y
 RUN pip install lxml
 RUN pip install Django
+RUN pip install python-dotenv
+RUN pip install pytz
 # RUN git clone https://github.com/cldrn/rainmap-lite /rainmap-lite
 COPY . /rainmap-lite
 RUN ls -alh /rainmap-lite

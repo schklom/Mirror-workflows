@@ -56,6 +56,7 @@ jobs:
         with:
           #repository: 'schklom/aaa'
           ref: 'rainmap-lite-docker' # branch
+          path: 'rainmap-lite-docker'
       
       - name: LS
         run: ls -alh

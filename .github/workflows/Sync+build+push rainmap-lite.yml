@@ -63,8 +63,8 @@ jobs:
       - name: Checkout to add run.bash to the repo, from my repo
         uses: actions/checkout@v3
         with:
-          repository: schklom/rainmap-lite-docker
-          path: rainmap-lite-docker
+          ref: "rainmap-lite-docker"
+          path: "rainmap-lite-docker"
       
       - name: Commit and push run.bash
         uses: stefanzweifel/git-auto-commit-action@v4.16.0

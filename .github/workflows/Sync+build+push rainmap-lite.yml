@@ -2,9 +2,9 @@ name: Sync+build+push rainmap-lite
 
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
-  #schedule:
+  schedule:
     # * is a special character in YAML so you have to quote this string
-    #- cron:  '0 0 * * *'
+    - cron:  '0 0 * * *'
   workflow_dispatch:
 
 jobs:
@@ -116,7 +116,7 @@ jobs:
           context: .
           file: rainmap-lite-docker/Dockerfile
           #platforms: linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6
-          platforms: linux/arm64
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
           pull: true
           push: true
           tags: |

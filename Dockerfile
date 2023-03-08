@@ -1,7 +1,7 @@
 FROM ubuntu:latest
 RUN apt-get update
-RUN apt-get install sqlite3 git nmap python -y
-RUN python -m pip install --upgrade pip
+RUN apt-get install sqlite3 git nmap python3 -y
+RUN python3 -m pip install --upgrade pip
 RUN pip install lxml
 RUN pip install Django
 # RUN git clone https://github.com/cldrn/rainmap-lite /rainmap-lite

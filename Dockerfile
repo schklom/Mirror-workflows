@@ -4,7 +4,8 @@ RUN apt-get install sqlite3 git nmap python-pip  -y
 RUN pip install --upgrade pip
 RUN pip install lxml
 RUN pip install Django
-RUN git clone https://github.com/cldrn/rainmap-lite /rainmap-lite
+# RUN git clone https://github.com/cldrn/rainmap-lite /rainmap-lite
+COPY . /rainmap-lite
 WORKDIR /rainmap-lite
 
 # Config for setup.sh

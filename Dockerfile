@@ -11,7 +11,11 @@ RUN git clone https://github.com/cldrn/rainmap-lite /rainmap-lite
 WORKDIR /rainmap-lite/rainmap-lite
 
 # Install the required Python libs
-RUN pip install -r requirement.txt
+# RUN pip install -r requirement.txt # Packages too old, error
+RUN pip install Django
+RUN pip install lxml
+RUN pip install python-dotenv
+RUN pip install pytz
 
 # Config for setup.sh
 ENV APP_ROOT_PATH=${APP_ROOT_PATH:-/opt/rainmap-lite/}

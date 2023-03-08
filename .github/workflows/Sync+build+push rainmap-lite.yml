@@ -61,12 +61,13 @@ jobs:
           commit_message: Add last_sync_with_original_repo_commit_id_original
       
       - name: Checkout to add run.bash to the repo, from my repo
-        run: git clone -b rainmap-lite-docker --single-branch https://github.com/schklom/Mirror-workflows rainmap-lite-docker
+        #run: git clone -b rainmap-lite-docker --single-branch https://github.com/schklom/Mirror-workflows rainmap-lite-docker
+        run: wget https://raw.githubusercontent.com/schklom/Mirror-workflows/rainmap-lite-docker/run.bash
       
       - name: Commit and push run.bash
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
         with:
-          commit_message: Add run.bash and Dockerfile
+          commit_message: Add run.bash
 
   build_push:
     needs: [repo_sync]

@@ -11,6 +11,7 @@ RUN git clone https://github.com/cldrn/rainmap-lite /rainmap-lite
 WORKDIR /rainmap-lite
 
 # Install the required Python libs
+RUN ls -alh
 RUN pip install -r requirement.txt
 
 # Config for setup.sh

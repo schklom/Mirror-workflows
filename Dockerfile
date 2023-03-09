@@ -46,8 +46,8 @@ ARG GROUP=1001
 
 #############################################################################
 WORKDIR ${APP_ROOT_PATH}
-RUN chown -R ${USER}:${GROUP} ${APP_ROOT_PATH}
-USER ${USER}:${GROUP}
+#RUN chown -R ${USER}:${GROUP} ${APP_ROOT_PATH}
+#USER ${USER}:${GROUP}
 #############################################################################
 
 
@@ -57,7 +57,8 @@ RUN git clone https://github.com/cldrn/rainmap-lite /rainmap-lite
 WORKDIR ${APP_ROOT_PATH}/rainmap-lite
 
 # Import run.bash
-COPY --chown=${USER}:${GROUP} run.bash ${APP_ROOT_PATH}/rainmap-lite/
+#COPY --chown=${USER}:${GROUP} run.bash ${APP_ROOT_PATH}/rainmap-lite/
+COPY run.bash ${APP_ROOT_PATH}/rainmap-lite/
 RUN chmod +x ${APP_ROOT_PATH}/rainmap-lite/run.bash
 #############################################################################
 

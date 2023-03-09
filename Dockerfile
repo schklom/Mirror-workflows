@@ -44,7 +44,7 @@ ARG GROUP=1001
 
 
 #############################################################################
-WORKDIR ${APP_ROOT_PATH}
+WORKDIR ${APP_ROOT_PATH}/rainmap-lite
 RUN chown -R ${USER}:${GROUP} ${APP_ROOT_PATH}
 USER ${USER}:${GROUP}
 #############################################################################

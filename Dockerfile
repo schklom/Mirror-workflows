@@ -12,9 +12,9 @@ RUN apt-get install -y tzdata
 
 
 #############################################################################
-RUN apt-get install -y sqlite3 git python3 python3-pip nmap cron
+RUN apt-get install -y sqlite3 git python3.10 python3-pip nmap cron
 # Get around dependency errors with "pip install lxml" on armv7
-RUN apt-get install -y python3-lxml python3-django python3-dotenv
+#RUN apt-get install -y python3-lxml python3-django python3-dotenv
 RUN apt-get install -y libxml2 libxslt1-dev
 #############################################################################
 

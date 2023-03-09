@@ -21,13 +21,13 @@ SMTP_PORT=${SMTP_PORT}
 SMTP_DOMAIN_NAME=${SMTP_DOMAIN_NAME}
 
 # Create the database schema
-python manage.py migrate
+python3 manage.py migrate
 
 # Load the default scanning profiles data
-python manage.py loaddata nmapprofiles
+python3 manage.py loaddata nmapprofiles
 
 # For security RainmapLite does not have any default administrative user out of box
-python manage.py createsuperuser
+python3 manage.py createsuperuser
 
 # Setup the crontab job
 crontab -l > cronjob_list.txt
@@ -39,4 +39,4 @@ rm cronjob_list.txt
 echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('${ADMIN_USER}', '${ADMIN_EMAIL}', '${ADMIN_PASS}')" | python3 manage.py shell
 
 # Run the app
-python manage.py runserver 0.0.0.0:${HTTP_PORT}
+python3 manage.py runserver 0.0.0.0:${HTTP_PORT}

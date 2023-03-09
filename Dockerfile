@@ -63,7 +63,7 @@ RUN chmod +x ${APP_ROOT_PATH}/rainmap-lite/run.bash
 
 #############################################################################
 # Install the required Python libs
-# RUN pip install -r requirement.txt # Packages too old, error
+RUN pip install -r requirement.txt # Packages too old, error
 # RUN pip install Django
 # RUN pip install lxml
 # RUN pip install python-dotenv

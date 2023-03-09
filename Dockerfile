@@ -14,6 +14,7 @@ RUN apt-get install -y python3-lxml python3-django python3-dotenv
 
 # Import run.bash
 COPY . /rainmap-lite-docker
+RUN chmod +x /rainmap-lite-docker/run.bash
 
 # Import original rainmap-lite repo
 RUN git clone https://github.com/cldrn/rainmap-lite /rainmap-lite

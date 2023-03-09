@@ -1,7 +1,14 @@
 FROM ubuntu:latest
-RUN apt-get update
-RUN apt-get install -y sqlite3 git python3 python3-pip nmap cron
 
+RUN apt-get update
+
+# tzdata gets installed with the (I guess) cron package
+# This is to avoid waiting indefinitely for user input
+ARG DEBIAN_FRONTEND=noninteractive
+ARG TZ=Europe/Berlin
+RUN apt-get install -y tzdata
+
+RUN apt-get install -y sqlite3 git python3 python3-pip nmap cron
 # Get around dependency errors with "pip install lxml" on armv7
 RUN apt-get install -y python3-lxml python3-django python3-dotenv
 

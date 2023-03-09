@@ -19,12 +19,18 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: 'rainmap-lite' # branch
+      #- name: set local and remote latest commit as environment variables
+      #  id: commits
+      #  # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+      #  run: |
+      #    echo "::set-output name=SETREMOTE_ORIGINAL::$(git ls-remote https://github.com/cldrn/rainmap-lite HEAD | awk '{ print $1 }')"
+      #    echo "::set-output name=SETLOCAL_ORIGINAL::$(cat last_sync_with_original_repo_commit_id_original)"
       - name: set local and remote latest commit as environment variables
         id: commits
-        # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+        # https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/
         run: |
-          echo "::set-output name=SETREMOTE_ORIGINAL::$(git ls-remote https://github.com/cldrn/rainmap-lite HEAD | awk '{ print $1 }')"
-          echo "::set-output name=SETLOCAL_ORIGINAL::$(cat last_sync_with_original_repo_commit_id_original)"
+          echo "SETREMOTE_ORIGINAL=$(git ls-remote https://github.com/cldrn/rainmap-lite HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+          echo "SETLOCAL_ORIGINAL=$(cat last_sync_with_original_repo_commit_id_original)" >> $GITHUB_OUTPUT
 
   repo_sync:
     needs: [get_commits]

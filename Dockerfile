@@ -55,8 +55,8 @@ USER ${USER}:${GROUP}
 RUN git clone https://github.com/cldrn/rainmap-lite /rainmap-lite
 
 # Import run.bash
-COPY --chown=${USER}:${GROUP} run.bash ${APP_ROOT_PATH}/rainmap-lite
-RUN chmod +x ${APP_ROOT_PATH}/run.bash
+COPY --chown=${USER}:${GROUP} run.bash ${APP_ROOT_PATH}/rainmap-lite/
+RUN chmod +x ${APP_ROOT_PATH}/rainmap-lite/run.bash
 #############################################################################
 
 
@@ -68,5 +68,5 @@ RUN chmod +x ${APP_ROOT_PATH}/run.bash
 # RUN pip install python-dotenv
 RUN pip install pytz
 
-CMD /rainmap-lite-docker/run.bash
+CMD ${APP_ROOT_PATH}/rainmap-lite/run.bash
 #############################################################################

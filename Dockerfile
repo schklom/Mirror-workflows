@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 RUN apt-get update
-RUN apt-get install -y sqlite3 git python3 python3-pip nmap nmap-scripts cron
+RUN apt-get install -y sqlite3 git python3 python3-pip nmap cron
 
 # Get around dependency errors with "pip install lxml" on armv7
 RUN apt-get install -y python3-lxml python3-django python3-dotenv

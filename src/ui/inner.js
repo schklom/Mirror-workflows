@@ -10,8 +10,9 @@ const parent = new RRM({
 	initStatus: RRM.S_OPEN,
 	timeout: 400
 });
-parent.setHandler('highlight', path => highlightXpath(path));
+parent.setHandler('highlight', highlightXpath);
 parent.setHandler('selectionToggle', selectionToggle);
+parent.setHandler('countLinks', countLinks);
 
 let selectionEnabled = false;
 let selectionColor = '#000';
@@ -44,6 +45,18 @@ window.addEventListener('message', (msg) => {
 	parent.handleRequest(JSON.parse(msg.data))
 }, false);
 
+function countLinks({ entry, link }) {
+	let res = document.evaluate(entry, document);
+	let set = new Set();
+	let elem;
+	while (elem = res.iterateNext()) {
+		let linkRes = document.evaluate(link, elem);
+		let one = linkRes.iterateNext();
+		if (!one || !one.value) continue;
+		set.add(one.value);
+	}
+	return Promise.resolve(set.size);
+}
 
 function highlightXpath(xpath, reset) {
 	let n = highlightOne(xpath, 0, reset);

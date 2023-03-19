@@ -14,6 +14,7 @@ async function insertIfNotExists(data, feedId) {
 			feed: feedId,
 			link: data.link,
 			title: data.title,
+			image: data.image,
 			description: data.description,
 			added: data.added
 		});

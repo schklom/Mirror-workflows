@@ -1,24 +1,34 @@
-FROM node:12-buster-slim
+FROM node:18-buster-slim as build
 
-ENV DEBIAN_FRONTEND noninteractive
-
-RUN apt-get update \
- && apt-get install -y xvfb libasound2 libnss3 libgconf-2-4 libxss1 libgtk-3-0
+RUN npm i -g pnpm
 
 RUN mkdir /app
-ADD . /app/
 RUN chown node:node -R /app
 USER node
 WORKDIR /app
+ADD pnpm-lock.yaml .
+# ADD package-lock.json .
+ADD package.json .
+RUN pnpm config set store-dir .pnpm-store
+RUN pnpm install
 
-RUN npm ci
-RUN npm run build
+ADD --chown=1000:1000 . /app/
 
-#cannot set earlier because otherwise it will not install dev-devendencies used for build
+RUN pnpm run build
 ENV NODE_ENV production
-RUN npm ci
+RUN pnpm install
+RUN pnpm store prune
 
+FROM node:18-buster-slim as run
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update \
+ && apt-get install -y xvfb libasound2 libnss3 libgconf-2-4 libxss1 libgtk-3-0 libgbm-dev --no-install-recommends
+
+COPY --from=build /app /app/
+
+WORKDIR /app
+ENV NODE_ENV production
 EXPOSE 3000
-
 ENTRYPOINT /app/docker-entrypoint.sh
 CMD npm run start

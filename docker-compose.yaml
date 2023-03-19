@@ -3,19 +3,18 @@ version: '3.4'
 services:
 
   app:
-    image: stormworks/feedropolis
+    image: docker.io/stormworks/feedropolis
     ports:
-      - 80:3000
-    user: root
-    command: npm run start
-    entrypoint: '/app/docker-entrypoint.sh'
+      - 3000:3000
+    user: node
+    privileged: true
     environment:
       - DATABASE_URL=postgres://test:test@db:5432/test
-      - BASE_URL=http://localhost
+      - BASE_URL=http://localhost:3000
       - DEBUG=
 
   db:
-    image: postgres:latest
+    image: docker.io/library/postgres:12
     environment:
       - POSTGRES_USER=test
       - POSTGRES_PASSWORD=test

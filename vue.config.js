@@ -1,4 +1,3 @@
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 
 module.exports = {
 	configureWebpack: {
@@ -6,7 +5,7 @@ module.exports = {
 			app: './src/ui/entry.js'
 		},
 		plugins: [
-			new FaviconsWebpackPlugin('./src/assets/small.jpg')
+			
 		]
 	},
 	devServer: {

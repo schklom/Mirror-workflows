@@ -22,8 +22,19 @@
 					<span class="ok" v-if="pathDescription.length > 0">✔</span>
 					<span class="error" v-else>✘</span>
 				</p>
+				<p>
+					And optionally
+					<button class="pure-button select2"
+						:style="selectDescriptionStyle"
+						@click.prevent="selectImage"
+					>select</button>
+					an image of the same item.
+					<span class="ok" v-if="pathImage.length > 0">✔</span>
+					<span class="error" v-else>✘</span>
+				</p>
 				<p v-if="pathTitle.length > 0">
-					Found <input readonly class="pure-input-1-5" style="width: 64px" v-model="found" /> entries.
+					Found <input readonly class="pure-input-1-5" style="width: 64px" v-model="foundLinks" /> unique links 
+					(in <input readonly class="pure-input-1-5" style="width: 64px" v-model="found" /> entries)
 				</p>
 			</div>
 			<button
@@ -58,6 +69,14 @@
 						class="pure-input-2-3"
 						v-model="pathDescription"
 						@blur="highlight(pathDescription)"
+					/>
+				</div>
+				<div class="pure-control-group">
+					<label>Image (optional)</label>
+					<input type="text"
+						class="pure-input-2-3"
+						v-model="pathImage"
+						@blur="highlight(pathImage)"
 					/>
 				</div>
 				<div class="pure-control-group">
@@ -113,11 +132,14 @@ export default {
 			expertMode: false,
 			pathTitleAbsolute: '',
 			pathDescriptionAbsolute: '',
+			pathImageAbsolute: '',
 			pathTitle: '',
 			pathDescription: '',
+			pathImage: '',
 			pathEntry: '',
-			pathLink: './ancestor-or-self::node()[1]/@href',
+			pathLink: './/@href',
 			found: 0,
+			foundLinks: 0,
 			selecting: '',
 			selectTitleColor: '#ffaa00',
 			selectDescriptionColor: '#aaaa00'
@@ -149,7 +171,7 @@ export default {
 			return r;
 		},
 		canSubmit() {
-			return this.found > 0 && this.pathTitle.length > 0 && this.pathEntry.length > 0;
+			return this.foundLinks > 0 && this.pathTitle.length > 0 && this.pathEntry.length > 0;
 		}
 	},
 	watch: {
@@ -158,12 +180,13 @@ export default {
 			let entry = this.feeds.find(e => e.uid === nv);
 			if (!entry) return;
 			let params = entry.selectors;
-			['pathDescription', 'pathEntry', 'pathLink', 'pathTitle'].forEach(key => {
+			['pathDescription', 'pathEntry', 'pathLink', 'pathTitle', 'pathImage'].forEach(key => {
 				this[key] = params[key];
 			});
-			this.pathTitleAbsolute = this.pathEntry + this.pathTitle.substr(1);
+			this.pathTitleAbsolute = this.pathEntry + this.pathTitle.substring(1);
 			this.pathTitleAbsolute = this.pathTitleAbsolute.replace('/text()', '');
-			this.pathDescriptionAbsolute = this.pathDescription ? this.pathEntry + this.pathDescription.substr(1) : '';
+			this.pathDescriptionAbsolute = this.pathDescription ? this.pathEntry + this.pathDescription.substring(1) : '';
+			this.pathImageAbsolute = this.pathImage ? this.pathEntry + this.pathImage.substring(1) : '';
 			this.highlight('.');
 		}
 	},
@@ -173,6 +196,7 @@ export default {
 				pathTitle: this.pathTitle,
 				pathEntry: this.pathEntry,
 				pathDescription: this.pathDescription,
+				pathImage: this.pathImage,
 				pathLink: this.pathLink
 			})
 			.then(res => {
@@ -188,6 +212,10 @@ export default {
 		},
 		selectDescription() {
 			this.selecting = 'description';
+			sendEvent('selectionToggle', { enabled: true, color: this.selectDescriptionColor });
+		},
+		selectImage() {
+			this.selecting = 'image';
 			sendEvent('selectionToggle', { enabled: true, color: this.selectDescriptionColor });
 		},
 		async highlight(path) {
@@ -208,11 +236,24 @@ export default {
 				this.pathTitleAbsolute = xpath;
 			} else if (this.selecting === 'description') {
 				this.pathDescriptionAbsolute = xpath;
+			} else if (this.selecting === 'image') {
+				this.pathImageAbsolute = xpath;
 			}
 			this.selecting = '';
 			this.updateEntry();
 			this.found = await send('highlight', this.pathEntry);
+			await this.updateFoundLinks();
 
+		},
+		async updateFoundLinks() {
+			if (this.found === 0) {
+				this.foundLinks = 0;
+				return;
+			}
+			this.foundLinks = await send('countLinks', {
+				entry: this.pathEntry,
+				link: this.pathLink
+			});
 		},
 		stripNumbers(xpath) {
 			let p = xpath.split('/');
@@ -221,27 +262,67 @@ export default {
 			})
 			return p.join('/');
 		},
+		// updateEntry() {
+		// 	let path1 = this.pathTitleAbsolute;
+		// 	let path2 = this.pathDescriptionAbsolute;
+		// 	if (path2) {
+		// 		let path3 = '';
+		// 		for (let i=0, ii=path1.length; i<ii; i++) {
+		// 			if (path1[i] === path2[i]) {
+		// 				path3 = path3 + path1[i];
+		// 			} else {
+		// 				break;
+		// 			}
+		// 		}
+		// 		this.pathEntry = path3.replace(/\/$/, '');
+		// 		this.pathTitle = '.' + this.pathTitleAbsolute.substring(this.pathEntry.length) + '/text()';
+		// 		this.pathLink = '.' + this.pathTitleAbsolute.substring(this.pathEntry.length) + '/ancestor-or-self::node()/@href';
+		// 		this.pathDescription = '.' + this.pathDescriptionAbsolute.substring(this.pathEntry.length) + '/text()';
+		// 	} else {
+		// 		this.pathEntry = path1;
+		// 		this.pathTitle = './text()';
+		// 		this.pathLink = './ancestor-or-self::node()/@href';
+		// 		this.pathDescription = '';
+		// 		this.pathImage = '';
+		// 	}
+		// },
 		updateEntry() {
-			let path1 = this.pathTitleAbsolute;
-			let path2 = this.pathDescriptionAbsolute;
-			if (path2) {
-				let path3 = '';
-				for (let i=0, ii=path1.length; i<ii; i++) {
-					if (path1[i] === path2[i]) {
-						path3 = path3 + path1[i];
-					} else {
-						break;
+			let paths = [this.pathTitleAbsolute];
+			if (this.pathDescriptionAbsolute) paths.push(this.pathDescriptionAbsolute);
+			if (this.pathImageAbsolute) paths.push(this.pathImageAbsolute);
+			if (paths.length > 1) {
+				let lce = '';
+				let length = paths.reduce((c, v) => Math.min(c, v.length), 9999);
+				for (let i=0; i<length; i++) {
+					let match = true;
+					let letter = paths[0][i];
+					for(let p of paths) {
+						if (p[i] !== letter) {
+							match = false;
+							break;
+						}
+					}
+					if (match) {
+						lce += letter;
 					}
 				}
-				this.pathEntry = path3.replace(/\/$/, '');
-				this.pathTitle = '.' + this.pathTitleAbsolute.substr(this.pathEntry.length) + '/text()';
-				this.pathLink = '.' + this.pathTitleAbsolute.substr(this.pathEntry.length) + '/ancestor-or-self::node()/@href';
-				this.pathDescription = '.' + this.pathDescriptionAbsolute.substr(this.pathEntry.length) + '/text()';
+				this.pathEntry = lce.replace(/\/$/, '');
+				this.pathTitle = '.' + this.pathTitleAbsolute.substring(this.pathEntry.length) + '/text()';
+				if (this.pathDescriptionAbsolute) {
+					this.pathDescription = '.' + this.pathDescriptionAbsolute.substring(this.pathEntry.length) + '/text()';
+				} else {
+					this.pathDescription = '';
+				}
+				if (this.pathImageAbsolute) {
+					this.pathImage = '.' + this.pathImageAbsolute.substring(this.pathEntry.length) + '/@src';
+				} else {
+					this.pathImage = '';
+				}
 			} else {
-				this.pathEntry = path1;
+				this.pathEntry = this.pathTitleAbsolute;
 				this.pathTitle = './text()';
-				this.pathLink = './ancestor-or-self::node()/@href';
 				this.pathDescription = '';
+				this.pathImage = '';
 			}
 		}
 	}

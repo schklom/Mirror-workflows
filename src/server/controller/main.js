@@ -1,13 +1,14 @@
 const getFilteredHtml = require('../../fetcher/getfilteredhtml');
 const { generateFeedFromSettings, getHtml, getDom, extractSitedata } = require('../../fetcher/feed');
-const URL = require('url');
+// const URL = require('url');
 const { XMLSerializer } = require('xmldom');
 
 const methods = {};
 const controller = {};
 
 const baseUrl = process.env.BASE_URL || 'http://localhost';
-const injectHref = URL.resolve( baseUrl, '/inner.js' );
+const injectHref = new URL('/inner.js', new URL(baseUrl)).href;
+// URL.resolve( baseUrl, '/inner.js' );
 
 controller['POST /load-page'] = async (data, ctx) => {
 	ctx.session.url = data.url;

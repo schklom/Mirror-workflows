@@ -16,7 +16,7 @@ class Manager {
 		this.queue = [];
 	}
 
-	createRequest(action,params) {
+	createRequest(action, params) {
 		let resolve,reject;
 		const p = new Promise((res,rej) => {
 			resolve = res;
@@ -25,18 +25,18 @@ class Manager {
 		p.resolve = resolve;
 		p.reject = reject;
 		p._id = this.getId();
-		this.outstanding.set(p._id,p);
+		this.outstanding.set(p._id, p);
 		if (this.timeout) {
 			setTimeout(() => {
 				p.reject(new Error("timeout reached"));
-			},this.timeout);
+			}, this.timeout);
 		}
-		this.send(Manager.T_REQ,p._id,null,action,params);
+		this.send(Manager.T_REQ, p._id, null, action, params);
 		return p;
 	}
 
 	createEvent(evtName,data) {
-		this.send(Manager.T_EVT,this.getId(),null,evtName,data);
+		this.send(Manager.T_EVT, this.getId(), null, evtName, data);
 	}
 
 	getId() {
@@ -49,13 +49,13 @@ class Manager {
 
 	handleRequest(request) {
 		let handler;
-		const {type,action,id,params,data} = request;
+		const { type, action, id, params, data } = request;
 		if (type === Manager.T_ERR || type === Manager.T_RES) {
 			if (this.outstanding.has(id)) {
 				let outs = this.outstanding.get(id);
 				this.outstanding.delete(id);
 				if (type === Manager.T_ERR) {
-					outs.reject(data);
+					outs.reject(new Error(data));
 				} else {
 					outs.resolve(data);
 				}
@@ -71,36 +71,36 @@ class Manager {
 			handler = this.handlers.get(Manager.WILDCARD);
 		} else {
 			if (type === Manager.T_REQ) {
-				return this.send("error",id,"not implemented");
+				return this.send(Manager.T_ERR, id, "not implemented");
 			} else {
 				return;
 			}
 		}
 
-		let p = handler(params ? params : {},action);
+		let p = handler(params || {}, action);
 
 		if (type === Manager.T_REQ) {
 			p.then(res => {
-				this.send(Manager.T_RES,id,res);
+				this.send(Manager.T_RES, id, res);
 			},err => {
-				this.send(Manager.T_ERR,id,err);
+				this.send(Manager.T_ERR, id, err);
 			});
 		}
 
 	}
 
-	send(type,id,data,action,params) {
+	send(type, id, data, action, params) {
 		let pkt = {
 			type: type,
 			id: id
 		};
-		if (data) {
-			pkt.data = data;
-		} else {
+		if (action) {
 			pkt.action = action;
 			if (params) {
 				pkt.params = params;
 			}
+		} else {
+			pkt.data = data;
 		}
 		switch (this.status) {
 			case Manager.S_OPEN:

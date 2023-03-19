@@ -92,6 +92,7 @@ function updateNextCheck(feedSettings, error) {
 }
 
 module.exports = {
+	fetchNextFeed,
 	start,
 	stop
 }

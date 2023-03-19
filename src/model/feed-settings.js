@@ -11,6 +11,7 @@ class FeedSettings {
 		pathEntry,
 		pathTitle,
 		pathLink,
+		pathImage,
 		pathDescription
 	}) {
 		this.url = url;
@@ -22,6 +23,7 @@ class FeedSettings {
 		this.pathTitle = pathTitle;
 		this.pathLink = pathLink;
 		this.pathDescription = pathDescription;
+		this.pathImage = pathImage;
 	}
 
 }

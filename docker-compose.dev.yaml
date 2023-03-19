@@ -3,7 +3,7 @@ version: '3.4'
 services:
 
   db:
-    image: postgres:latest
+    image: docker.io/library/postgres:12
     environment:
       - POSTGRES_USER=test
       - POSTGRES_PASSWORD=test
@@ -11,6 +11,6 @@ services:
       - 5432:5432/tcp
 
   adminer:
-    image: adminer
+    image: docker.io/library/adminer
     ports:
       - 8090:8080

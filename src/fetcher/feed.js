@@ -1,13 +1,10 @@
-const feed = require('feed');
 const { DOMParser } = require('xmldom')
 const select = require('xpath.js')
 const nightmareFetcher = require('./nightmare');
 const simpleFetcher = require('./fetch');
 const { Feed } = require('feed');
 const debug = require('debug')('ap:feed');
-const cheerio = require('cheerio');
 const url = require('url');
-const crypto = require('crypto');
 const getFilteredHtml = require('./getfilteredhtml');
 
 async function generateFeedFromSettings(settings) {
@@ -50,16 +47,32 @@ function extractSitedata(doc, html, settings) {
 
 function sanitizeFeedData(feedData, siteData) {
 	return feedData.map(entry => {
-		return {
-			link: url.resolve( siteData.url, entry.link ),
+		let v = {
+			link: new URL(entry.link, new URL(siteData.url)).href,
 			title: entry.title.trim(),
 			description: entry.description ? entry.description.trim() : '',
+			image: entry.image ? entry.image.trim() : '',
 			added: new Date()
 		}
-	})
+		if (v.link.length > 255) {
+			debug('link too long to save', link);
+			return null;
+		}
+		if (v.title.length > 255) {
+			v.title = v.title.substring(0, 255);
+		}
+		if (v.description.length > 255) {
+			v.description = v.description.substring(0, 255);
+		}
+		if (v.image.length > 255) {
+			v.image = '';
+		}
+		return v;
+	}).filter(e => !!e)
 }
 
 function getDom(html) {
+	debug('html', html);
 	return new DOMParser({
 		errorHandler: {
 			warning(w) {
@@ -73,9 +86,6 @@ function getDom(html) {
 			}
 		}
 	}).parseFromString(html, 'text/html');
-}
-function getDomCheerio(html) {
-	return cheerio.load(html);
 }
 
 async function getHtml(settings) {
@@ -106,13 +116,13 @@ function extractDataXpath(doc, settings) {
 	entries.forEach(entry => {
 		// debug('entry', entry);
 		let titleElem = select(entry, settings.pathTitle);
-		let title = getValue(titleElem); //titleElem.length ? titleElem[0].data : null;
+		let title = getValue(titleElem);
 		if (!title) {
 			debug('no title found', titleElem);
 			return;
 		}
 		let linkElem = select(entry, settings.pathLink);
-		let link = getValue(linkElem); //.length ? linkElem[0].value : null;
+		let link = getValue(linkElem);
 		if (!link) {
 			debug('no link found', linkElem);
 			return;
@@ -120,11 +130,17 @@ function extractDataXpath(doc, settings) {
 		let description;
 		if (settings.pathDescription) {
 			let descriptionElem = select(entry, settings.pathDescription);
-			description = getValue(descriptionElem); //.length ? descriptionElem[0].data : null;
+			description = getValue(descriptionElem);
+		}
+		let image;
+		if (settings.pathImage) {
+			let imageElem = select(entry, settings.pathImage);
+			image = getValue(imageElem);
 		}
 		data.push({
 			title,
 			link,
+			image,
 			description
 		});
 	});
@@ -136,68 +152,37 @@ function extractDataXpath(doc, settings) {
 	}
 	return data;
 }
-function extractDataSelect($, settings) {
-	const data = [];
-	$(settings.entry).each((i, e) => {
-		const $e = $(e);
-		let title = getValue($e, settings.title);
-		if (!title) {
-			debug('no title found', $e);
-			return;
-		}
-		let link = getValue($e, settings.link);
-		if (!link) {
-			debug('no link found', $e);
-			return;
-		}
-		let description = getValue($e, settings.description);
-		if (!link) {
-			debug('no description found', $e);
-		}
-		data.push({
-			title,
-			link,
-			description
-		})
-	});
-	function getValue($e, config) {
-		$e = $e.find(config.path);
-		if (config.text) return $e.text();
-		if (config.attr) return $e.attr(config.attr);
-	}
-	return data;
-}
-
-function r2a(res) {
-	let a = [];
-	let elem;
-	while (elem = res.iterateNext()) {
-		a.push(elem);
-	}
-	return a;
-}
 
 const baseUrl = process.env.BASE_URL || 'http://localhost';
 
 function createFeed(settings, feedData) {
+	let favUrl = new URL(settings.url);
+	favUrl.pathname = '/favicon.ico';
+	favUrl.search = '';
 	const feed = new Feed({
 		title: settings.title || 'unnamed',
 		description: settings.description || 'no description',
 		id: settings.url, //crypto.createHash('sha1').update(settings.url).digest('hex'),
 		link: encodeURIComponent(settings.url),
+		favicon: favUrl.href,
 		generator: 'FeedroPolis',
 		feedLinks: {
-			atom: url.resolve(baseUrl, `/feed/get/${settings.uid || 0}/${settings.secret || 'none'}/`)
+			atom: new URL(`/feed/get/${settings.uid || 0}/${settings.secret || 'none'}/`, new URL(baseUrl)).href
 		}
 	});
-	feedData.forEach(({ title, link, description, added }) => {
-		feed.addItem({
-			id: link, //crypto.createHash('sha1').update(link).digest('hex'),
+	feedData.forEach(({ title, link, description, added, image }) => {
+		const item = {
+			id: link,
 			title,
 			link,
 			description,
+			content: '',
 			date: added
-		});
+		};
+		item.content += '<h1>'+title+'</h1>';
+		if (description) item.content += '<p>'+description+'</p>';
+		if (image) item.content += '<img src="'+image+'" />'
+		feed.addItem(item);
 	});
 	return feed;
 }
@@ -207,7 +192,6 @@ module.exports = {
 	getHtml,
 	getDom,
 	extractDataXpath,
-	extractDataSelect,
 	extractSitedata,
 	createFeed
 }

@@ -79,13 +79,6 @@
 			font-size : @font-size-small;
 			font-weight : normal;
 		}
-
-		.tags {
-			max-width : 50%;
-			overflow : hidden;
-			white-space : nowrap;
-			text-overflow : ellipsis;
-		}
 	}
 
 	.footer {
@@ -107,6 +100,7 @@
 
 		.left {
 			flex-grow : 2;
+			min-width : 0;
 
 			> * {
 				margin-right : 4px;
@@ -117,6 +111,13 @@
 			> * {
 				margin-left : 4px;
 			}
+		}
+
+		.tags {
+			max-width : 50%;
+			overflow : hidden;
+			white-space : nowrap;
+			text-overflow : ellipsis;
 		}
 	}
 

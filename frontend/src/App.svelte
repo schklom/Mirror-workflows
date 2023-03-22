@@ -29,6 +29,7 @@
   let recordedChunks = [];
   let mediaRecorder;
   let history = [];
+  let status = {};
 
   // references to DOM elements
   let fileSelectInput;
@@ -68,6 +69,20 @@
       if (response.data.files) {
         history = response.data.files
       }
+    }
+
+    try {
+      const response = await axios({
+        method: 'get',
+        url: `${apiHost}/status`,
+        headers: {
+          'Content-Type': `application/json`,
+          "Access-Control-Allow-Origin": `${apiHost}`
+        }       
+      });
+      status = response.data
+    } catch (e) {
+      console.log("INFO: Could not get version from backend.")
     }
   });
 
@@ -591,5 +606,11 @@
 
   <div class="m-8">
     <p class="text-md font-bold text-slate-300 text-center">🌱 by <a class="text-blue-400" href="https://codeberg.org/pluja">Pluja</a></p>
+    {#if status?.version && status?.commit_hash}
+      <p class="text-md text-slate-400 text-center mt-2">
+        <a href="https://codeberg.org/pluja/web-whisper/releases/tag/{status.version}">{status.version}</a>
+        (<a href="https://codeberg.org/pluja/web-whisper/commit/{status.commit_hash}">{status.commit_hash.substring(0,10)}</a>)
+      </p>
+    {/if}
   </div>
 </main>

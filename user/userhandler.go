@@ -140,6 +140,11 @@ func (u *UserIO) generateNewId() string {
 	return newId
 }
 
+func (u *UserIO) GetSalt(id string) string {
+	user := u.UB.GetByID(id)
+	return user.Salt
+}
+
 func (u *UserIO) RequestAccess(id string, hashedPW string) (bool, AccessToken) {
 	user := u.UB.GetByID(id)
 	if user != nil {

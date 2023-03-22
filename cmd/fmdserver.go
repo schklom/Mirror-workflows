@@ -270,6 +270,24 @@ func postPushLink(w http.ResponseWriter, r *http.Request) {
 	uio.SetPushUrl(id, data.Data)
 }
 
+func requestSalt(w http.ResponseWriter, r *http.Request) {
+	var data DataPackage
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		http.Error(w, "Meeep!, Error - requestAccess 1", http.StatusBadRequest)
+		return
+	}
+	var salt string
+	if !isIdValid(data.IDT) {
+		salt = "cafe"
+	} else {
+		salt = uio.GetSalt(data.IDT)
+	}
+	w.Header().Set("Content-Type", "application/text")
+	w.Write([]byte(fmt.Sprint(salt)))
+
+}
+
 func requestAccess(w http.ResponseWriter, r *http.Request) {
 	var data DataPackage
 	err := json.NewDecoder(r.Body).Decode(&data)
@@ -390,6 +408,7 @@ func handleRequests() {
 	http.HandleFunc("/device/", mainDevice)
 	http.HandleFunc("/push", postPushLink)
 	http.HandleFunc("/push/", postPushLink)
+	http.HandleFunc("/salt/", requestSalt)
 	http.HandleFunc("/requestAccess", requestAccess)
 	http.HandleFunc("/requestAccess/", requestAccess)
 	http.HandleFunc("/version", getVersion)

@@ -45,3 +45,40 @@ compile:
   artifacts:
     paths:
       - fmdserver
+
+docker-build:
+  image: registry.gitlab.com/luckyturtledev/docker-with-buildx:latest
+  stage: build
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    # docker tag for branch
+    - tags=""
+    - |
+      if [[ "$CI_COMMIT_BRANCH" != "" ]]; then
+        tags+=" --tag $CI_REGISTRY_IMAGE:${CI_COMMIT_BRANCH}"
+      fi
+    # docker tag for git tag
+    - |
+      if [[ "$CI_COMMIT_TAG" != "" ]]; then
+        tags+=" --tag $CI_REGISTRY_IMAGE:${CI_COMMIT_TAG}"
+        tags+=" --tag $CI_REGISTRY_IMAGE:latest"
+        echo "Piepline is a release"
+      fi
+    - |
+      if [[ "$tags" == "" ]] || [[ "$CI_PIPELINE_SOURCE" == "$merge_request_event" ]] || [[ "$CI_PIPELINE_SOURCE" == "$external_pull_request_event" ]]; then
+        push=""
+        echo "Image will not be pushed. Piepline is a merge request or tags are empty"
+      else
+        push="--push"
+        echo "Image will be pushed."
+      fi
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes; docker buildx create ${config} --use
+    - docker buildx build ${push} --platform linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64/v8 $tags .
+  # buildx multiplatform build does fail sometimes at gitlab-ci. see https://github.com/docker/buildx/issues/584
+  retry: 2
+  rules:
+    - exists:
+        - Dockerfile

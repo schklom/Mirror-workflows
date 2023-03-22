@@ -28,7 +28,7 @@ async function run({
 			if (href) {
 				let url = URL.resolve( baseUrl, href );
 				debug('loading stylesheet', url);
-				content = await fetch(url);
+				content = await fetch({ url });
 			}
 			stylesheet.replaceWith(`<style>${content}</style>`);
 		}

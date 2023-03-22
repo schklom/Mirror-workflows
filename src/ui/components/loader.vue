@@ -4,7 +4,32 @@
 			URL: <input id="name" type="url" name="url" placeholder="https://" v-model="url">
 		</div>
 		<div class="pure-control-group">
-			Cookies: <input id="cookies" type="text" name="cookies" placeholder="key1=value1;key2=..." v-model="cookies">
+			<label>
+				Show Advanced Options
+				<input type="checkbox"
+					name="showMoreOptions"
+					value="1"
+					v-model="showMoreOptions"
+				/>
+			</label>
+			<div class="pure-control-group">
+				<label v-show="showMoreOptions">
+					Cookies:
+					<input id="cookies" type="text" name="cookies" placeholder="key1=value1;key2=..." v-model="cookies" style="width: 420px">
+				</label>
+			</div>
+			<div class="pure-control-group">
+				<label v-show="showMoreOptions">
+					Request Body:
+					<input type="text" name="body" v-model="body" style="width: 420px">
+				</label>
+			</div>
+			<div class="pure-control-group">
+				<label v-show="showMoreOptions">
+					Custom Headers:
+					<textarea name="headers" v-model="headers" cols="50" rows="3" placeholder="Content-Type: application/json"></textarea>
+				</label>
+			</div>
 		</div>
 		<div class="pure-control-group">
 			<label>
@@ -63,6 +88,7 @@
 				</option>
 			</select>
 		</div>
+		{{ { body, cookies, headers} }}
 		<div class="pure-control-group">
 			<input type="submit" class="pure-button" value="Load" @click.prevent="submit" :disabled="loading" />
 		</div>
@@ -80,11 +106,14 @@ export default {
 			copyFromVal: null,
 			url: '',
 			cookies: '',
+			body: '',
+			headers: '',
 			loadScripts: false,
 			waitFor: 'time',
 			waitForTime: 500,
 			waitForSelector: '',
-			loading: false
+			loading: false,
+			showMoreOptions: false
 		}
 	},
 	created() {
@@ -124,6 +153,8 @@ export default {
 			ajax('api/main/load-page', {
 				url: this.url,
 				cookies: this.cookies,
+				body: this.body,
+				headers: this.parseHeaders(),
 				loadScripts: this.loadScripts,
 				waitFor: this.waitFor,
 				waitForTime: this.waitForTime,
@@ -137,6 +168,21 @@ export default {
 				EventHub.$emit('pageInfo', res);
 				this.$emit('next');
 			});
+		},
+		parseHeaders() {
+			let lines = this.headers.split('\n');
+			let entries = [];
+			for (let line of lines) {
+				line = line.trim();
+				if (!line.length) continue;
+				let xpos = line.indexOf(':');
+				if (xpos < 1) continue;
+				let key = line.substring(0, xpos).trim();
+				let value = line.substring(xpos+1).trim();
+				if (!key.length || !value.length) continue;
+				entries.push([key, value])
+			}
+			return Object.fromEntries(entries);
 		}
 	}
 }

@@ -2,3 +2,7 @@
 /dist/
 /data/
 /.git/
+.env*
+Dockerfile*
+docker-compose*
+todo.md

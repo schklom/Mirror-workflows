@@ -20,7 +20,7 @@ async function getAllFeeds() {
 
 async function getNextFeedInQueue() {
 	let d = new Date();
-	let time = d.toJSON().substr(0, 19);
+	let time = d.toJSON().substring(0, 19);
 	let res = await connection(table)
 		.whereBetween('errorcount', [0, 3])
 		.where('nextcheck', '<', time)

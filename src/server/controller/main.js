@@ -29,8 +29,10 @@ controller['POST /load-page'] = async (data, ctx) => {
 
 controller['POST /set-selectors'] = async (data, ctx) => {
 	ctx.session.selectors = data;
-	let settings = Object.assign({}, ctx.session.loadParams);
-	settings.selectors = ctx.session.selectors;
+	let settings = {};
+	settings.url = ctx.session.loadParams.url;
+	settings.loadparams = { ...ctx.session.loadParams };
+	settings.selectors = { ...ctx.session.selectors };
 	let feed = await generateFeedFromSettings(settings);
 	ctx.session.generated = feed.atom1();
 	return { ok: true }

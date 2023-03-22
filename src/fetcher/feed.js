@@ -9,7 +9,7 @@ const getFilteredHtml = require('./getfilteredhtml');
 
 async function generateFeedFromSettings(settings) {
 	debug('generateFeedFromSettings', settings);
-	let html = await getHtml(settings);
+	let html = await getHtml(settings.loadparams);
 	html = await getFilteredHtml({ input: html });
 	debug('html filtered size', html.length);
 	let doc = await getDom(html);
@@ -72,7 +72,7 @@ function sanitizeFeedData(feedData, siteData) {
 }
 
 function getDom(html) {
-	debug('html', html);
+	// debug('html', html);
 	return new DOMParser({
 		errorHandler: {
 			warning(w) {
@@ -88,23 +88,13 @@ function getDom(html) {
 	}).parseFromString(html, 'text/html');
 }
 
-async function getHtml(settings) {
+async function getHtml(loadParams) {
 	let html;
-	if (settings.loadScripts) {
-		let params = {
-			url: settings.url
-		};
-		if (settings.cookies) {
-			params.cookies = settings.cookies;
-		}
-		if (settings.waitFor === 'time') {
-			params.waitTime = ~~(settings.waitForTime);
-		} else if (settings.waitFor === 'selector') {
-			params.waitForSelector = settings.waitForSelector;
-		}
-		html = await nightmareFetcher(params);
+	debug('getHtml', loadParams);
+	if (loadParams.loadScripts) {
+		html = await nightmareFetcher(loadParams);
 	} else {
-		html = await simpleFetcher(settings.url, settings.cookies);
+		html = await simpleFetcher(loadParams);
 	}
 	return html;
 }

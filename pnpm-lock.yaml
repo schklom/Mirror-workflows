@@ -1,9 +1,10 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@stormking/emere': ^1.0.0
+  '@stormking/emere': ^1.1.0
   '@vue/cli-plugin-babel': ^4.5.10
   '@vue/cli-service': ^4.5.10
+  axios: ^1.3.4
   cheerio: ^1.0.0-rc.5
   co-body: ^6.1.0
   core-js: ^3.8.2
@@ -34,7 +35,8 @@ specifiers:
   xpath.js: ^1.1.0
 
 dependencies:
-  '@stormking/emere': 1.0.0
+  '@stormking/emere': 1.1.0
+  axios: 1.3.4_debug@4.3.4
   cheerio: 1.0.0-rc.12
   co-body: 6.1.0
   core-js: 3.29.1
@@ -1494,8 +1496,8 @@ packages:
     resolution: {integrity: sha512-T7VNNlYVM1SgQ+VsMYhnDkcGmWhQdL0bDyGm5TlQ3GBXnJscEClUUOKduWTmm2zCnvNLC1hc3JpuXjs/nFOc5w==}
     dev: true
 
-  /@stormking/emere/1.0.0:
-    resolution: {integrity: sha512-/glVhyDPUwDoegyMC+2a3dCu+zRGsf/zyRV3JBPkJ0Zmk3g0V2qOUnXOgW+EG8kNHUpOUtinF0i0kSt4/fgcqg==}
+  /@stormking/emere/1.1.0:
+    resolution: {integrity: sha512-rhviMRt77Dm6/fv9XupMx06QGglZ+fRSwNUhYNMoCiafKdSbilFrFZgIsesdRyCTK7URLrYLnez9cJF+2Nbbuw==}
     engines: {node: '>=16.0.0'}
     dependencies:
       '@cliqz/adblocker-electron': 1.26.2_electron@23.1.4
@@ -2102,7 +2104,7 @@ packages:
       source-map: 0.6.1
       vue-template-es2015-compiler: 1.9.1
     optionalDependencies:
-      prettier: 2.8.4
+      prettier: 2.8.6
     transitivePeerDependencies:
       - arc-templates
       - atpl
@@ -2601,6 +2603,16 @@ packages:
 
   /aws4/1.12.0:
     resolution: {integrity: sha512-NmWvPnx0F1SfrQbYwOi7OeaNGokp9XhzNioJ/CSBs8Qa4vxug81mhJEAVZwxXuBmYB5KDRfMq/F3RR0BIU7sWg==}
+
+  /axios/1.3.4_debug@4.3.4:
+    resolution: {integrity: sha512-toYm+Bsyl6VC5wSkfkbbNB6ROv7KY93PEBBL6xyDczaIHasAiv4wPqQ/c4RjoQzipxRD2W5g21cOqQulZ7rHwQ==}
+    dependencies:
+      follow-redirects: 1.15.2_debug@4.3.4
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
 
   /babel-loader/8.3.0_y3c3uzyfhmxjbwhc6k6hyxg3aa:
     resolution: {integrity: sha512-H8SvsMF+m9t15HNLMipppzkC+Y2Yq+v3SonZyU70RBL/h1gxPkH08Ot8pEE9Z4Kd+czyWJClmFS8qzIP9OZ04Q==}
@@ -5199,7 +5211,6 @@ packages:
         optional: true
     dependencies:
       debug: 4.3.4
-    dev: true
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -5228,6 +5239,15 @@ packages:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       mime-types: 2.1.35
+
+  /form-data/4.0.0:
+    resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
+    engines: {node: '>= 6'}
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      mime-types: 2.1.35
+    dev: false
 
   /forwarded/0.2.0:
     resolution: {integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==}
@@ -8462,8 +8482,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /prettier/2.8.4:
-    resolution: {integrity: sha512-vIS4Rlc2FNh0BySk3Wkd6xmwxB0FpOndW5fisM5H8hsZSxU2VWVB5CWIkIjWvrHjIhxk2g3bfMKM87zNTrZddw==}
+  /prettier/2.8.6:
+    resolution: {integrity: sha512-mtuzdiBbHwPEgl7NxWlqOkithPyp4VN93V7VeHVWBF+ad3I5avc0RVDT4oImXQy9H/AqxA2NSQH8pSxHW6FYbQ==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     requiresBuild: true
@@ -8520,6 +8540,10 @@ packages:
       forwarded: 0.2.0
       ipaddr.js: 1.9.1
     dev: true
+
+  /proxy-from-env/1.1.0:
+    resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
+    dev: false
 
   /prr/1.0.1:
     resolution: {integrity: sha512-yPw4Sng1gWghHQWj0B3ZggWUm4qVbPwPFcRG8KyxiU7J2OHFSoEHKS+EZ3fv5l1t9CyCiop6l/ZYeWbrgoQejw==}

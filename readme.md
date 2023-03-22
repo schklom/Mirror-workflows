@@ -71,6 +71,10 @@ Running electron on a server requires some workarounds with Xvfb. See docker-ent
 
 ## Changelog
 
+### 2023-03-22
+
+- added support for request body and custom headers
+
 ### 2023-03-19
 
 - replaced nightmare.js with custom scraper; fixed out-of-date electron version
@@ -89,3 +93,7 @@ Running electron on a server requires some workarounds with Xvfb. See docker-ent
 ### 2021-03-27
 
 - can now copy load and select parameters from other feeds for faster feed editing
+
+## Problem Solving
+
+if serving the app on http, your browser can block the injected js script (Blocked loading mixed active content "http://yourdomain.com/inner.js")

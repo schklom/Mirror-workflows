@@ -98,10 +98,25 @@ function locate(index, password) {
         currentId = idInput.value;
     }
     if (password != "") {
-        hashedPW = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse("cafe"), {
-            keySize: 256 / 32,
-            iterations: 1867 * 2
-        }).toString();
+
+
+        fetch("./salt", {
+            method: 'PUT',
+            body: JSON.stringify({
+                IDT: currentId,
+                Data: ""
+            }),
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }).then(function (response) {
+            return response.text();
+        }).then( function (text){
+            hashedPW = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt), {
+                keySize: 256 / 32,
+                iterations: 1867 * 2
+            }).toString();
+        })
     }
 
     if (currentId != "") {

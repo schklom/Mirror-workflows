@@ -9,6 +9,7 @@ import (
 type User struct {
 	Id             uint64
 	UID            string `objectbox:"unique"`
+	Salt           string
 	HashedPassword string
 	PrivateKey     string
 	PublicKey      string
@@ -18,10 +19,18 @@ type User struct {
 	Pictures       []string
 }
 
+type DB struct {
+	Id      uint64
+	Setting string `objectbox:"unique"`
+	Value   string
+}
+
 func initDB(path string) *UserBox {
 	ob, _ := objectbox.NewBuilder().Model(ObjectBoxModel()).Directory(path).Build()
 
 	u := BoxForUser(ob)
+	dbc := BoxForDB(ob)
+	dbc.updateDB(u)
 
 	return u
 }

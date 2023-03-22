@@ -33,6 +33,7 @@ var User_ = struct {
 	PushUrl        *objectbox.PropertyString
 	LocationData   *objectbox.PropertyStringVector
 	Pictures       *objectbox.PropertyStringVector
+	Salt           *objectbox.PropertyString
 }{
 	Id: &objectbox.PropertyUint64{
 		BaseProperty: &objectbox.BaseProperty{
@@ -88,6 +89,12 @@ var User_ = struct {
 			Entity: &UserBinding.Entity,
 		},
 	},
+	Salt: &objectbox.PropertyString{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     10,
+			Entity: &UserBinding.Entity,
+		},
+	},
 }
 
 // GeneratorVersion is called by ObjectBox to verify the compatibility of the generator used to generate this code
@@ -110,7 +117,8 @@ func (user_EntityInfo) AddToModel(model *objectbox.Model) {
 	model.Property("PushUrl", 9, 7, 8342083663476395689)
 	model.Property("LocationData", 30, 8, 5104161147127511055)
 	model.Property("Pictures", 30, 9, 5170962636802096083)
-	model.EntityLastPropertyId(9, 5170962636802096083)
+	model.Property("Salt", 9, 10, 8589796416714185539)
+	model.EntityLastPropertyId(10, 8589796416714185539)
 }
 
 // GetId is called by ObjectBox during Put operations to check for existing ID on an object
@@ -140,11 +148,13 @@ func (user_EntityInfo) Flatten(object interface{}, fbb *flatbuffers.Builder, id 
 	var offsetPushUrl = fbutils.CreateStringOffset(fbb, obj.PushUrl)
 	var offsetLocationData = fbutils.CreateStringVectorOffset(fbb, obj.LocationData)
 	var offsetPictures = fbutils.CreateStringVectorOffset(fbb, obj.Pictures)
+	var offsetSalt = fbutils.CreateStringOffset(fbb, obj.Salt)
 
 	// build the FlatBuffers object
-	fbb.StartObject(9)
+	fbb.StartObject(10)
 	fbutils.SetUint64Slot(fbb, 0, id)
 	fbutils.SetUOffsetTSlot(fbb, 1, offsetUID)
+	fbutils.SetUOffsetTSlot(fbb, 9, offsetSalt)
 	fbutils.SetUOffsetTSlot(fbb, 2, offsetHashedPassword)
 	fbutils.SetUOffsetTSlot(fbb, 3, offsetPrivateKey)
 	fbutils.SetUOffsetTSlot(fbb, 4, offsetPublicKey)
@@ -171,6 +181,7 @@ func (user_EntityInfo) Load(ob *objectbox.ObjectBox, bytes []byte) (interface{},
 	return &User{
 		Id:             propId,
 		UID:            fbutils.GetStringSlot(table, 6),
+		Salt:           fbutils.GetStringSlot(table, 22),
 		HashedPassword: fbutils.GetStringSlot(table, 8),
 		PrivateKey:     fbutils.GetStringSlot(table, 10),
 		PublicKey:      fbutils.GetStringSlot(table, 12),
@@ -390,7 +401,8 @@ func (asyncBox *UserAsyncBox) Remove(object *User) error {
 // Query provides a way to search stored objects
 //
 // For example, you can find all User which Id is either 42 or 47:
-// 		box.Query(User_.Id.In(42, 47)).Find()
+//
+//	box.Query(User_.Id.In(42, 47)).Find()
 type UserQuery struct {
 	*objectbox.Query
 }
@@ -412,6 +424,347 @@ func (query *UserQuery) Offset(offset uint64) *UserQuery {
 
 // Limit sets the number of elements to process by the query
 func (query *UserQuery) Limit(limit uint64) *UserQuery {
+	query.Query.Limit(limit)
+	return query
+}
+
+type dB_EntityInfo struct {
+	objectbox.Entity
+	Uid uint64
+}
+
+var DBBinding = dB_EntityInfo{
+	Entity: objectbox.Entity{
+		Id: 2,
+	},
+	Uid: 8856917640871448365,
+}
+
+// DB_ contains type-based Property helpers to facilitate some common operations such as Queries.
+var DB_ = struct {
+	Id      *objectbox.PropertyUint64
+	Setting *objectbox.PropertyString
+	Value   *objectbox.PropertyString
+}{
+	Id: &objectbox.PropertyUint64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     1,
+			Entity: &DBBinding.Entity,
+		},
+	},
+	Setting: &objectbox.PropertyString{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     3,
+			Entity: &DBBinding.Entity,
+		},
+	},
+	Value: &objectbox.PropertyString{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     4,
+			Entity: &DBBinding.Entity,
+		},
+	},
+}
+
+// GeneratorVersion is called by ObjectBox to verify the compatibility of the generator used to generate this code
+func (dB_EntityInfo) GeneratorVersion() int {
+	return 6
+}
+
+// AddToModel is called by ObjectBox during model build
+func (dB_EntityInfo) AddToModel(model *objectbox.Model) {
+	model.Entity("DB", 2, 8856917640871448365)
+	model.Property("Id", 6, 1, 3350810327005036618)
+	model.PropertyFlags(1)
+	model.Property("Setting", 9, 3, 5731551320740598034)
+	model.PropertyFlags(2080)
+	model.PropertyIndex(2, 429973515999585505)
+	model.Property("Value", 9, 4, 5601273323643270668)
+	model.EntityLastPropertyId(4, 5601273323643270668)
+}
+
+// GetId is called by ObjectBox during Put operations to check for existing ID on an object
+func (dB_EntityInfo) GetId(object interface{}) (uint64, error) {
+	return object.(*DB).Id, nil
+}
+
+// SetId is called by ObjectBox during Put to update an ID on an object that has just been inserted
+func (dB_EntityInfo) SetId(object interface{}, id uint64) error {
+	object.(*DB).Id = id
+	return nil
+}
+
+// PutRelated is called by ObjectBox to put related entities before the object itself is flattened and put
+func (dB_EntityInfo) PutRelated(ob *objectbox.ObjectBox, object interface{}, id uint64) error {
+	return nil
+}
+
+// Flatten is called by ObjectBox to transform an object to a FlatBuffer
+func (dB_EntityInfo) Flatten(object interface{}, fbb *flatbuffers.Builder, id uint64) error {
+	obj := object.(*DB)
+	var offsetSetting = fbutils.CreateStringOffset(fbb, obj.Setting)
+	var offsetValue = fbutils.CreateStringOffset(fbb, obj.Value)
+
+	// build the FlatBuffers object
+	fbb.StartObject(4)
+	fbutils.SetUint64Slot(fbb, 0, id)
+	fbutils.SetUOffsetTSlot(fbb, 2, offsetSetting)
+	fbutils.SetUOffsetTSlot(fbb, 3, offsetValue)
+	return nil
+}
+
+// Load is called by ObjectBox to load an object from a FlatBuffer
+func (dB_EntityInfo) Load(ob *objectbox.ObjectBox, bytes []byte) (interface{}, error) {
+	if len(bytes) == 0 { // sanity check, should "never" happen
+		return nil, errors.New("can't deserialize an object of type 'DB' - no data received")
+	}
+
+	var table = &flatbuffers.Table{
+		Bytes: bytes,
+		Pos:   flatbuffers.GetUOffsetT(bytes),
+	}
+
+	var propId = table.GetUint64Slot(4, 0)
+
+	return &DB{
+		Id:      propId,
+		Setting: fbutils.GetStringSlot(table, 8),
+		Value:   fbutils.GetStringSlot(table, 10),
+	}, nil
+}
+
+// MakeSlice is called by ObjectBox to construct a new slice to hold the read objects
+func (dB_EntityInfo) MakeSlice(capacity int) interface{} {
+	return make([]*DB, 0, capacity)
+}
+
+// AppendToSlice is called by ObjectBox to fill the slice of the read objects
+func (dB_EntityInfo) AppendToSlice(slice interface{}, object interface{}) interface{} {
+	if object == nil {
+		return append(slice.([]*DB), nil)
+	}
+	return append(slice.([]*DB), object.(*DB))
+}
+
+// Box provides CRUD access to DB objects
+type DBBox struct {
+	*objectbox.Box
+}
+
+// BoxForDB opens a box of DB objects
+func BoxForDB(ob *objectbox.ObjectBox) *DBBox {
+	return &DBBox{
+		Box: ob.InternalBox(2),
+	}
+}
+
+// Put synchronously inserts/updates a single object.
+// In case the Id is not specified, it would be assigned automatically (auto-increment).
+// When inserting, the DB.Id property on the passed object will be assigned the new ID as well.
+func (box *DBBox) Put(object *DB) (uint64, error) {
+	return box.Box.Put(object)
+}
+
+// Insert synchronously inserts a single object. As opposed to Put, Insert will fail if given an ID that already exists.
+// In case the Id is not specified, it would be assigned automatically (auto-increment).
+// When inserting, the DB.Id property on the passed object will be assigned the new ID as well.
+func (box *DBBox) Insert(object *DB) (uint64, error) {
+	return box.Box.Insert(object)
+}
+
+// Update synchronously updates a single object.
+// As opposed to Put, Update will fail if an object with the same ID is not found in the database.
+func (box *DBBox) Update(object *DB) error {
+	return box.Box.Update(object)
+}
+
+// PutAsync asynchronously inserts/updates a single object.
+// Deprecated: use box.Async().Put() instead
+func (box *DBBox) PutAsync(object *DB) (uint64, error) {
+	return box.Box.PutAsync(object)
+}
+
+// PutMany inserts multiple objects in single transaction.
+// In case Ids are not set on the objects, they would be assigned automatically (auto-increment).
+//
+// Returns: IDs of the put objects (in the same order).
+// When inserting, the DB.Id property on the objects in the slice will be assigned the new IDs as well.
+//
+// Note: In case an error occurs during the transaction, some of the objects may already have the DB.Id assigned
+// even though the transaction has been rolled back and the objects are not stored under those IDs.
+//
+// Note: The slice may be empty or even nil; in both cases, an empty IDs slice and no error is returned.
+func (box *DBBox) PutMany(objects []*DB) ([]uint64, error) {
+	return box.Box.PutMany(objects)
+}
+
+// Get reads a single object.
+//
+// Returns nil (and no error) in case the object with the given ID doesn't exist.
+func (box *DBBox) Get(id uint64) (*DB, error) {
+	object, err := box.Box.Get(id)
+	if err != nil {
+		return nil, err
+	} else if object == nil {
+		return nil, nil
+	}
+	return object.(*DB), nil
+}
+
+// GetMany reads multiple objects at once.
+// If any of the objects doesn't exist, its position in the return slice is nil
+func (box *DBBox) GetMany(ids ...uint64) ([]*DB, error) {
+	objects, err := box.Box.GetMany(ids...)
+	if err != nil {
+		return nil, err
+	}
+	return objects.([]*DB), nil
+}
+
+// GetManyExisting reads multiple objects at once, skipping those that do not exist.
+func (box *DBBox) GetManyExisting(ids ...uint64) ([]*DB, error) {
+	objects, err := box.Box.GetManyExisting(ids...)
+	if err != nil {
+		return nil, err
+	}
+	return objects.([]*DB), nil
+}
+
+// GetAll reads all stored objects
+func (box *DBBox) GetAll() ([]*DB, error) {
+	objects, err := box.Box.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	return objects.([]*DB), nil
+}
+
+// Remove deletes a single object
+func (box *DBBox) Remove(object *DB) error {
+	return box.Box.Remove(object)
+}
+
+// RemoveMany deletes multiple objects at once.
+// Returns the number of deleted object or error on failure.
+// Note that this method will not fail if an object is not found (e.g. already removed).
+// In case you need to strictly check whether all of the objects exist before removing them,
+// you can execute multiple box.Contains() and box.Remove() inside a single write transaction.
+func (box *DBBox) RemoveMany(objects ...*DB) (uint64, error) {
+	var ids = make([]uint64, len(objects))
+	for k, object := range objects {
+		ids[k] = object.Id
+	}
+	return box.Box.RemoveIds(ids...)
+}
+
+// Creates a query with the given conditions. Use the fields of the DB_ struct to create conditions.
+// Keep the *DBQuery if you intend to execute the query multiple times.
+// Note: this function panics if you try to create illegal queries; e.g. use properties of an alien type.
+// This is typically a programming error. Use QueryOrError instead if you want the explicit error check.
+func (box *DBBox) Query(conditions ...objectbox.Condition) *DBQuery {
+	return &DBQuery{
+		box.Box.Query(conditions...),
+	}
+}
+
+// Creates a query with the given conditions. Use the fields of the DB_ struct to create conditions.
+// Keep the *DBQuery if you intend to execute the query multiple times.
+func (box *DBBox) QueryOrError(conditions ...objectbox.Condition) (*DBQuery, error) {
+	if query, err := box.Box.QueryOrError(conditions...); err != nil {
+		return nil, err
+	} else {
+		return &DBQuery{query}, nil
+	}
+}
+
+// Async provides access to the default Async Box for asynchronous operations. See DBAsyncBox for more information.
+func (box *DBBox) Async() *DBAsyncBox {
+	return &DBAsyncBox{AsyncBox: box.Box.Async()}
+}
+
+// DBAsyncBox provides asynchronous operations on DB objects.
+//
+// Asynchronous operations are executed on a separate internal thread for better performance.
+//
+// There are two main use cases:
+//
+// 1) "execute & forget:" you gain faster put/remove operations as you don't have to wait for the transaction to finish.
+//
+// 2) Many small transactions: if your write load is typically a lot of individual puts that happen in parallel,
+// this will merge small transactions into bigger ones. This results in a significant gain in overall throughput.
+//
+// In situations with (extremely) high async load, an async method may be throttled (~1ms) or delayed up to 1 second.
+// In the unlikely event that the object could still not be enqueued (full queue), an error will be returned.
+//
+// Note that async methods do not give you hard durability guarantees like the synchronous Box provides.
+// There is a small time window in which the data may not have been committed durably yet.
+type DBAsyncBox struct {
+	*objectbox.AsyncBox
+}
+
+// AsyncBoxForDB creates a new async box with the given operation timeout in case an async queue is full.
+// The returned struct must be freed explicitly using the Close() method.
+// It's usually preferable to use DBBox::Async() which takes care of resource management and doesn't require closing.
+func AsyncBoxForDB(ob *objectbox.ObjectBox, timeoutMs uint64) *DBAsyncBox {
+	var async, err = objectbox.NewAsyncBox(ob, 2, timeoutMs)
+	if err != nil {
+		panic("Could not create async box for entity ID 2: %s" + err.Error())
+	}
+	return &DBAsyncBox{AsyncBox: async}
+}
+
+// Put inserts/updates a single object asynchronously.
+// When inserting a new object, the Id property on the passed object will be assigned the new ID the entity would hold
+// if the insert is ultimately successful. The newly assigned ID may not become valid if the insert fails.
+func (asyncBox *DBAsyncBox) Put(object *DB) (uint64, error) {
+	return asyncBox.AsyncBox.Put(object)
+}
+
+// Insert a single object asynchronously.
+// The Id property on the passed object will be assigned the new ID the entity would hold if the insert is ultimately
+// successful. The newly assigned ID may not become valid if the insert fails.
+// Fails silently if an object with the same ID already exists (this error is not returned).
+func (asyncBox *DBAsyncBox) Insert(object *DB) (id uint64, err error) {
+	return asyncBox.AsyncBox.Insert(object)
+}
+
+// Update a single object asynchronously.
+// The object must already exists or the update fails silently (without an error returned).
+func (asyncBox *DBAsyncBox) Update(object *DB) error {
+	return asyncBox.AsyncBox.Update(object)
+}
+
+// Remove deletes a single object asynchronously.
+func (asyncBox *DBAsyncBox) Remove(object *DB) error {
+	return asyncBox.AsyncBox.Remove(object)
+}
+
+// Query provides a way to search stored objects
+//
+// For example, you can find all DB which Id is either 42 or 47:
+//
+//	box.Query(DB_.Id.In(42, 47)).Find()
+type DBQuery struct {
+	*objectbox.Query
+}
+
+// Find returns all objects matching the query
+func (query *DBQuery) Find() ([]*DB, error) {
+	objects, err := query.Query.Find()
+	if err != nil {
+		return nil, err
+	}
+	return objects.([]*DB), nil
+}
+
+// Offset defines the index of the first object to process (how many objects to skip)
+func (query *DBQuery) Offset(offset uint64) *DBQuery {
+	query.Query.Offset(offset)
+	return query
+}
+
+// Limit sets the number of elements to process by the query
+func (query *DBQuery) Limit(limit uint64) *DBQuery {
 	query.Query.Limit(limit)
 	return query
 }

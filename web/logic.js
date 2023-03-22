@@ -277,7 +277,7 @@ function decryptAES(password, cipherText) {
 
 function clickPress(event) {
     if (event.keyCode == 13) {
-        prepareForLocate();
+        prepareForLogin();
     }
 }
 

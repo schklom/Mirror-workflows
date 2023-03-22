@@ -188,6 +188,7 @@ export default {
 			this.pathDescriptionAbsolute = this.pathDescription ? this.pathEntry + this.pathDescription.substring(1) : '';
 			this.pathImageAbsolute = this.pathImage ? this.pathEntry + this.pathImage.substring(1) : '';
 			this.highlight('.');
+			this.updateFoundLinks();
 		}
 	},
 	methods: {
@@ -262,30 +263,6 @@ export default {
 			})
 			return p.join('/');
 		},
-		// updateEntry() {
-		// 	let path1 = this.pathTitleAbsolute;
-		// 	let path2 = this.pathDescriptionAbsolute;
-		// 	if (path2) {
-		// 		let path3 = '';
-		// 		for (let i=0, ii=path1.length; i<ii; i++) {
-		// 			if (path1[i] === path2[i]) {
-		// 				path3 = path3 + path1[i];
-		// 			} else {
-		// 				break;
-		// 			}
-		// 		}
-		// 		this.pathEntry = path3.replace(/\/$/, '');
-		// 		this.pathTitle = '.' + this.pathTitleAbsolute.substring(this.pathEntry.length) + '/text()';
-		// 		this.pathLink = '.' + this.pathTitleAbsolute.substring(this.pathEntry.length) + '/ancestor-or-self::node()/@href';
-		// 		this.pathDescription = '.' + this.pathDescriptionAbsolute.substring(this.pathEntry.length) + '/text()';
-		// 	} else {
-		// 		this.pathEntry = path1;
-		// 		this.pathTitle = './text()';
-		// 		this.pathLink = './ancestor-or-self::node()/@href';
-		// 		this.pathDescription = '';
-		// 		this.pathImage = '';
-		// 	}
-		// },
 		updateEntry() {
 			let paths = [this.pathTitleAbsolute];
 			if (this.pathDescriptionAbsolute) paths.push(this.pathDescriptionAbsolute);

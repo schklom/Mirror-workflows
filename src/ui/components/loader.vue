@@ -88,7 +88,6 @@
 				</option>
 			</select>
 		</div>
-		{{ { body, cookies, headers} }}
 		<div class="pure-control-group">
 			<input type="submit" class="pure-button" value="Load" @click.prevent="submit" :disabled="loading" />
 		</div>
@@ -120,6 +119,8 @@ export default {
 		EventHub.$on('reset', () => {
 			this.url = '';
 			this.cookies = '';
+			this.body = '';
+			this.headers = '';
 			this.loadScripts = false;
 			this.waitForTime = 500;
 			this.waitForSelector = '';
@@ -142,8 +143,14 @@ export default {
 			let entry = this.feeds.find(e => e.uid === nv);
 			if (!entry) return;
 			let params = entry.loadparams;
-			['url', 'cookies', 'loadScripts', 'waitFor', 'waitForSelector', 'waitForTime'].forEach(key => {
-				this[key] = params[key];
+			['url', 'cookies', 'loadScripts', 'waitFor', 'waitForSelector', 'waitForTime', 'body', 'headers'].forEach(key => {
+				if (key === 'headers') {
+					if (params[key] && typeof params[key] === 'object') {
+						this[key] = Object.entries(params[key]).map(([k, v]) => `${k}: ${v}`).join('\n')
+					}
+				} else {
+					this[key] = params[key];
+				}
 			});
 		}
 	},

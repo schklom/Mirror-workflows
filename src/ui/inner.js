@@ -58,29 +58,30 @@ function countLinks({ entry, link }) {
 	return Promise.resolve(set.size);
 }
 
-function highlightXpath(xpath, reset) {
-	let n = highlightOne(xpath, 0, reset);
-	if (!reset) setTimeout(() => highlightXpath(xpath, true), 2000);
-	return Promise.resolve(n);
+function highlightXpath(xpath) {
+	let list = getList(xpath);
+	highlightList(list, true);
+	setTimeout(() => highlightList(list, false), 2000);
+	return Promise.resolve(list.length);
 }
 
-function highlightOne(xpath, offset, reset) {
+function getList(xpath) {
 	let res = document.evaluate(xpath, document);
+	let list = [];
 	let elem;
-	let n = 0;
 	while (elem = res.iterateNext()) {
-		n += 1;
-		if (n < offset) continue;
-		else break;
+		list.push(elem);
 	}
-	if (elem && elem.style) {
-		elem.style.background = reset ? 'inherit' : selectionColor;
-		return highlightOne(xpath, offset+1, reset);
-	} else {
-		return offset-1;
-	}
+	return list;
 }
 
+function highlightList(list, activate) {
+	for (let elem of list) {
+		if (elem && elem.style) {
+			elem.style.background = !activate ? 'inherit' : selectionColor;
+		}
+	}
+}
 
 function getXpath(element) {
 	// if (element.id !== '')

@@ -49,7 +49,7 @@ function prepareForLogin() {
     if (idInput.value != "" && keyTemp == null) {
         var submit = function () {
             document.body.removeChild(div);
-            preparePassword(input.value);
+            preparePassword(idInput.value, input.value);
         };
 
         var div = document.createElement("div");

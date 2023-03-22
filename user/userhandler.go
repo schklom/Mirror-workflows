@@ -23,14 +23,14 @@ func (u *UserIO) Init(path string, userIDLength int, maxSavedLoc int, maxSavedPi
 	u.UB = initDB(path)
 }
 
-func (u *UserIO) CreateNewUser(privKey string, pubKey string, hashedPassword string) string {
+func (u *UserIO) CreateNewUser(privKey string, pubKey string, salt string, hashedPassword string) string {
 	id := u.generateNewId()
-	u.UB.Put(&User{UID: id, HashedPassword: hashedPassword, PrivateKey: privKey, PublicKey: pubKey})
+	u.UB.Put(&User{UID: id, Salt: salt, HashedPassword: hashedPassword, PrivateKey: privKey, PublicKey: pubKey})
 	return id
 }
 
-func (u *UserIO) CreateNewUserCT(uid string, privKey string, pubKey string, hashedPassword string) {
-	u.UB.Put(&User{UID: uid, HashedPassword: hashedPassword, PrivateKey: privKey, PublicKey: pubKey})
+func (u *UserIO) CreateNewUserCT(uid string, salt, string, privKey string, pubKey string, hashedPassword string) {
+	u.UB.Put(&User{UID: uid, Salt: salt, HashedPassword: hashedPassword, PrivateKey: privKey, PublicKey: pubKey})
 }
 
 func (u *UserIO) AddLocation(id string, loc string) {

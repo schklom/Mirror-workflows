@@ -51,6 +51,7 @@ type locationData struct {
 }
 
 type registrationData struct {
+	Salt           string `'json:"salt"`
 	HashedPassword string `'json:"hashedPassword"`
 	PubKey         string `'json:"pubKey"`
 	PrivKey        string `'json:"privKey"`
@@ -320,7 +321,10 @@ func postDevice(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - createDevice", http.StatusBadRequest)
 		return
 	}
-	id := uio.CreateNewUser(device.PrivKey, device.PubKey, device.HashedPassword)
+	if device.Salt == "" {
+		device.Salt = "cafe"
+	}
+	id := uio.CreateNewUser(device.PrivKey, device.PubKey, device.Salt, device.HashedPassword)
 
 	accessToken := user.AccessToken{DeviceId: id, AccessToken: ""}
 	result, _ := json.Marshal(accessToken)

@@ -18,7 +18,7 @@ import (
 )
 
 // Some IO variables
-var version = "v0.3.5"
+var version = "v0.3.6"
 var webDir = "web"
 var uio user.UserIO
 

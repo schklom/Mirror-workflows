@@ -44,12 +44,12 @@ function init() {
 
 }
 
-function prepareForLocate() {
+function prepareForLogin() {
     idInput = document.getElementById('fmdid');
     if (idInput.value != "" && keyTemp == null) {
         var submit = function () {
             document.body.removeChild(div);
-            locate(-1, input.value);
+            preparePassword(input.value);
         };
 
         var div = document.createElement("div");
@@ -92,7 +92,7 @@ function prepareForLocate() {
     }
 }
 
-function locate(index, password) {
+function preparePassword(index, password) {
     if (currentId == null) {
         idInput = document.getElementById('fmdid');
         currentId = idInput.value;
@@ -100,7 +100,7 @@ function locate(index, password) {
     if (password != "") {
 
 
-        fetch("./salt", {
+        saltFeth = fetch("./salt", {
             method: 'PUT',
             body: JSON.stringify({
                 IDT: currentId,
@@ -111,14 +111,18 @@ function locate(index, password) {
             }
         }).then(function (response) {
             return response.text();
-        }).then( function (text){
+        }).then(function (salt) {
             hashedPW = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt), {
                 keySize: 256 / 32,
                 iterations: 1867 * 2
             }).toString();
+            locate(-1, password);
         })
     }
+}
 
+
+function locate(index, password) {
     if (currentId != "") {
 
 
@@ -373,20 +377,20 @@ function showPicture() {
                         })
                         toasted.show('No Picture available!')
                         return;
-                    }else{
+                    } else {
                         newestPictureIndex = Number(json.Data);
                         currentPictureIndex = newestPictureIndex;
                         loadPicture(token, newestPictureIndex);
                     }
 
-                    
+
                 })
             })
     }
 
 }
 
-function loadPicture(token, index){
+function loadPicture(token, index) {
     fetch("./picture", {
         method: 'PUT',
         body: JSON.stringify({
@@ -424,8 +428,8 @@ function loadPicture(token, index){
             beforeBtn.innerHTML = "<-"
             beforeBtn.addEventListener('click', function () {
                 document.body.removeChild(div)
-                currentPictureIndex-=1;
-                if(currentPictureIndex < 0){
+                currentPictureIndex -= 1;
+                if (currentPictureIndex < 0) {
                     currentPictureIndex = newestPictureIndex;
                 }
                 loadPicture(token, currentPictureIndex);
@@ -443,8 +447,8 @@ function loadPicture(token, index){
             afterBtn.innerHTML = "->"
             afterBtn.addEventListener('click', function () {
                 document.body.removeChild(div)
-                currentPictureIndex+=1;
-                if(currentPictureIndex > newestPictureIndex){
+                currentPictureIndex += 1;
+                if (currentPictureIndex > newestPictureIndex) {
                     currentPictureIndex = 0;
                 }
                 loadPicture(token, currentPictureIndex);
@@ -457,11 +461,11 @@ function loadPicture(token, index){
 
 function dropDownBtn() {
     document.getElementById("cameraDropDown").style.display = "block";
-  }
-  
+}
 
-  window.onclick = function(event) {
+
+window.onclick = function (event) {
     if (!event.target.matches('.imgDopDownBtn')) {
-      document.getElementById("cameraDropDown").style.display = "None";
+        document.getElementById("cameraDropDown").style.display = "None";
     }
-  }
+}

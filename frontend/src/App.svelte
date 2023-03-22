@@ -6,7 +6,7 @@
   var apiHost = "";
   
   var allowFiles = "ALLOW_FILES";
-  var canRunApi = "RUN_AS_API";
+  var canRunApi = RUN_AS_API;
 
   let runAsApi = canRunApi;
   let canRunLocally=true;

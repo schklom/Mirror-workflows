@@ -20,104 +20,46 @@ var OaiToken string
 var DisableLocal string
 
 func setEnvVariables() {
-	WhisperThreads = os.Getenv("WHISPER_THREADS")
-	if WhisperThreads == "" {
-		log.Printf("No WHISPER_THREADS ENV found. Trying to get .env file.")
-		err := godotenv.Load()
-		if err != nil {
-			log.Printf("No .env file found... Defaulting WHISPER_THREADS to 0")
-			WhisperThreads = "4"
-		}
-		os.Getenv("WHISPER_THREADS")
-		if WhisperThreads == "" {
-			WhisperThreads = "4"
-		}
-	}
-	WhisperProcs = os.Getenv("WHISPER_PROCESSORS")
-	if WhisperProcs == "" {
-		log.Printf("No WHISPER_PROCESSORS ENV found. Trying to get .env file.")
-		err := godotenv.Load()
-		if err != nil {
-			log.Printf("No .env file found... Defaulting WHISPER_PROCESSORS to 0")
-			WhisperProcs = "1"
-		}
-		os.Getenv("WHISPER_PROCESSORS")
-		if WhisperProcs == "" {
-			WhisperProcs = "1"
-		}
-	}
+	envVars := []string{"WHISPER_THREADS", "WHISPER_PROCESSORS", "WHISPER_MODEL", "CUT_MEDIA_SECONDS", "KEEP_FILES", "OPENAI_TOKEN", "DISABLE_LOCAL_WHISPER"}
+	defaultVars := [...]string{"4", "1", "small", "0", "false", "false", "false"}
 
-	WhisperModel = os.Getenv("WHISPER_MODEL")
-	if WhisperModel == "" {
-		log.Printf("No WHISPER_MODEL ENV found. Trying to get .env file.")
-		err := godotenv.Load()
-		if err != nil {
-			log.Printf("No .env file found... Defaulting WHISPER_MODEL to 0")
-			WhisperModel = "small"
+	for i, envVarName := range envVars {
+		value := os.Getenv(envVarName)
+		if value == "" {
+			log.Printf("No %s ENV found. Trying to get .env file.", envVarName)
+			err := godotenv.Load()
+			if err != nil {
+				log.Printf("No .env file found... Defaulting %s to %s", envVarName, defaultVars[i])
+				value = defaultVars[i]
+			} else {
+				value = os.Getenv(envVarName)
+				if value == "" {
+					value = defaultVars[i]
+				}
+			}
 		}
-		os.Getenv("WHISPER_MODEL")
-		if WhisperModel == "" {
-			WhisperModel = "small"
-		}
-	}
-	log.Printf("Selected model: %v", WhisperModel)
 
-	CutMediaSeconds = os.Getenv("CUT_MEDIA_SECONDS")
-	if CutMediaSeconds == "" {
-		log.Printf("No CUT_MEDIA_SECONDS ENV found. Trying to get .env file.")
-		err := godotenv.Load()
-		if err != nil {
-			log.Printf("No .env file found... Defaulting CUT_MEDIA_SECONDS to 0")
-			CutMediaSeconds = "0"
-		}
-		os.Getenv("CUT_MEDIA_SECONDS")
-		if CutMediaSeconds == "" {
-			CutMediaSeconds = "0"
-		}
-	}
-
-	KeepFiles = os.Getenv("KEEP_FILES")
-	if KeepFiles == "" {
-		log.Printf("No KEEP_FILES ENV found. Trying to get .env file.")
-		err := godotenv.Load()
-		if err != nil {
-			log.Printf("No .env file found... Defaulting KEEP_FILES to false")
-			KeepFiles = "false"
-		}
-		os.Getenv("KEEP_FILES")
-		if KeepFiles == "" {
-			KeepFiles = "false"
-		}
-	}
-
-	OaiToken = os.Getenv("OPENAI_TOKEN")
-	if OaiToken == "" {
-		log.Printf("No OPENAI_TOKEN ENV found. Trying to get .env file.")
-		err := godotenv.Load()
-		if err != nil {
-			log.Printf("No .env file found... Defaulting OPENAI_TOKEN to false")
-			OaiToken = "false"
-		}
-		os.Getenv("OPENAI_TOKEN")
-		if OaiToken == "" {
-			OaiToken = "false"
-		}
-		if OaiToken == "none" {
-			OaiToken = "false"
-		}
-	}
-
-	DisableLocal = os.Getenv("DISABLE_LOCAL_WHISPER")
-	if DisableLocal == "" {
-		log.Printf("No DISABLE_LOCAL_WHISPER ENV found. Trying to get .env file.")
-		err := godotenv.Load()
-		if err != nil {
-			log.Printf("No .env file found... Defaulting DISABLE_LOCAL_WHISPER to false")
-			DisableLocal = "false"
-		}
-		os.Getenv("DISABLE_LOCAL_WHISPER")
-		if DisableLocal == "" {
-			DisableLocal = "false"
+		switch envVarName {
+		case "WHISPER_THREADS":
+			WhisperThreads = value
+		case "WHISPER_PROCESSORS":
+			WhisperProcs = value
+		case "WHISPER_MODEL":
+			WhisperModel = value
+			log.Printf("Selected model: %v", WhisperModel)
+		case "CUT_MEDIA_SECONDS":
+			CutMediaSeconds = value
+		case "KEEP_FILES":
+			KeepFiles = value
+		case "OPENAI_TOKEN":
+			if value == "none" {
+				value = "false"
+			}
+			OaiToken = value
+		case "DISABLE_LOCAL_WHISPER":
+			DisableLocal = value
+		default:
+			log.Printf("Unknown environment variable %s", envVarName)
 		}
 	}
 

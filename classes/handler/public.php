@@ -416,10 +416,10 @@ class Handler_Public extends Handler {
 				$_SESSION["login_error_msg"] ??= __("Incorrect username or password");
 			}
 
-			$return = clean($_REQUEST['return']);
+			$return = clean($_REQUEST['return'] ?? '');
 
-			if ($_REQUEST['return'] && mb_strpos($return, Config::get_self_url()) === 0) {
-				header("Location: " . clean($_REQUEST['return']));
+			if ($return && mb_strpos($return, Config::get_self_url()) === 0) {
+				header("Location: $return");
 			} else {
 				header("Location: " . Config::get_self_url());
 			}

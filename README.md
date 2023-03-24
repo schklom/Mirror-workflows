@@ -12,10 +12,10 @@ The Actions are defined in the directory .github/workflows. Secrets are used for
 - Spreed
 - TT-RSS
 - ~Bibliogram~ (c.f. https://todo.sr.ht/~cadence/bibliogram-issues/51#event-174552)
-- FindMyDeviceServer
+- ~FindMyDeviceServer~ (bug)
 - Mango
 - Home-Assistant-Extra
 - Nitter
 - SimplyTranslate
-- Wikiless
-- Quetre
+- ~Wikiless~ (original repository is gone temporarily for legal reasons)
+- ~Quetre~

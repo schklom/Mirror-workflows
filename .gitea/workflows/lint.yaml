@@ -18,6 +18,12 @@ jobs:
       - name: checkout source
         uses: actions/checkout@v3
 
+      - name: npm install
+        run: npm install
+
+      - name: eslint
+        run: npx eslint js plugins
+
       - name: calculate cache key hash
         uses: actions/go-hashfiles@v0.0.1
         id: cache-hash

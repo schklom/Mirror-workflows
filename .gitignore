@@ -3,7 +3,6 @@ Thumbs.db
 /messages.mo
 /node_modules
 /locale/**/*.po~
-/package-lock.json
 /plugins.local/*
 /themes.local/*
 /config.php

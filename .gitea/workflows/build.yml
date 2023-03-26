@@ -18,9 +18,6 @@ jobs:
     steps:
     - uses: https://gitea.com/actions/checkout@v3
 
-    - name: npm install
-      run: npm install
-
     - name: eslint
       run: npx eslint js plugins
 

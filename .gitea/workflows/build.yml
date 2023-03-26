@@ -49,11 +49,6 @@ jobs:
         path: /tmp/phpstan
         key: ${{ steps.cache-phpstan.outputs.cache-primary-key }}
 
-    - run: echo REPO_TIMESTAMP=$(git --git-dir '.git' --no-pager log --pretty='%ct' -n1 HEAD) >> $GITHUB_ENV
-    - run: echo REPO_COMMIT=$(git --git-dir '.git' --no-pager log --pretty='%h' -n1 HEAD) >> $GITHUB_ENV
-    - run: echo REPO_COMMIT_FULL=$(git --git-dir '.git' --no-pager log --pretty='%H' -n1 HEAD) >> $GITHUB_ENV
-    - run: echo BUILD_TAG=$(date -d @${REPO_TIMESTAMP} +%y.%m)-${REPO_COMMIT} >> $GITHUB_ENV
-
     - name: setup qemu
       uses: https://github.com/docker/setup-qemu-action@v2
 
@@ -73,18 +68,37 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USER }}
         password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
+    - name: get docker meta for web-nginx
+      id: meta_web_nginx
+      uses: https://github.com/docker/metadata-action@v4
+      with:
+        images: |
+          ${{ secrets.REGISTRY_HOST }}/cthulhoo/ttrss-web-nginx
+          cthulhoo/ttrss-web-nginx
+        tags: |
+          type=sha,prefix={{ date 'YY.MM-' tz='UTC'}}
+          type=raw,value=latest,enable={{ is_default_branch }}
+
     - name: build web-nginx image
       uses: https://github.com/docker/build-push-action@v4
       with:
         push: true
         platforms: linux/amd64,linux/arm64,linux/arm/v7
         context: .docker/web-nginx
-        tags: |
-          ${{ secrets.REGISTRY_HOST }}/cthulhoo/ttrss-web-nginx:latest
-          ${{ secrets.REGISTRY_HOST }}/cthulhoo/ttrss-web-nginx:${{ env.BUILD_TAG }}
-          cthulhoo/ttrss-web-nginx:latest
-          cthulhoo/ttrss-web-nginx:${{ env.BUILD_TAG }}
+        tags: ${{ steps.meta_web_nginx.outputs.tags }}
+        labels: ${{ steps.meta_web_nginx.outputs.labels }}
         provenance: false
+
+    - name: get docker meta for app
+      id: meta_app
+      uses: https://github.com/docker/metadata-action@v4
+      with:
+        images: |
+          ${{ secrets.REGISTRY_HOST }}/cthulhoo/ttrss-fpm-pgsql-static
+          cthulhoo/ttrss-fpm-pgsql-static
+        tags: |
+          type=sha,prefix={{ date 'YY.MM-' tz='UTC'}}
+          type=raw,value=latest,enable={{ is_default_branch }}
 
     - name: build app image
       uses: https://github.com/docker/build-push-action@v4
@@ -94,9 +108,6 @@ jobs:
         context: .docker/app
         build-contexts:
           app-src=.
-        tags: |
-          ${{ secrets.REGISTRY_HOST }}/cthulhoo/ttrss-fpm-pgsql-static:latest
-          ${{ secrets.REGISTRY_HOST }}/cthulhoo/ttrss-fpm-pgsql-static:${{ env.BUILD_TAG }}
-          cthulhoo/ttrss-fpm-pgsql-static:latest
-          cthulhoo/ttrss-fpm-pgsql-static:${{ env.BUILD_TAG }}
+        tags: ${{ steps.meta_app.outputs.tags }}
+        labels: ${{ steps.meta_app.outputs.labels }}
         provenance: false

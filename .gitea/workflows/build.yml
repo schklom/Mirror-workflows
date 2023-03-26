@@ -24,6 +24,8 @@ jobs:
     - name: eslint
       run: npx eslint js plugins
 
+    - run: rm -rf node_modules
+
     - name: phpunit
       run: php81 ./vendor/bin/phpunit
 

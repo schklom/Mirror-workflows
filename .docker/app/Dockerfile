@@ -1,4 +1,4 @@
-FROM registry.fakecake.org/alpine:3.17
+FROM registry.fakecake.org/docker.io/alpine:3.17
 EXPOSE 9000/tcp
 
 ENV SCRIPT_ROOT=/opt/tt-rss

@@ -1,4 +1,4 @@
-FROM registry.fakecake.org/nginx:alpine
+FROM registry.fakecake.org/docker.io/nginx:alpine
 
 HEALTHCHECK CMD curl --fail http://localhost/tt-rss/index.php || exit 1
 

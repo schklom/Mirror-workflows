@@ -88,6 +88,8 @@ jobs:
         tags: ${{ steps.meta_web_nginx.outputs.tags }}
         labels: ${{ steps.meta_web_nginx.outputs.labels }}
         provenance: false
+        cache-from: type=registry,ref=${{ secrets.REGISTRY_HOST }}/cthulhoo/ttrss-web-nginx:latest
+        cache-to: type=inline
 
     - name: get docker meta for app
       id: meta_app
@@ -111,3 +113,5 @@ jobs:
         tags: ${{ steps.meta_app.outputs.tags }}
         labels: ${{ steps.meta_app.outputs.labels }}
         provenance: false
+        cache-from: type=registry,ref=${{ secrets.REGISTRY_HOST }}/cthulhoo/ttrss-fpm-pgsql-static:latest
+        cache-to: type=inline

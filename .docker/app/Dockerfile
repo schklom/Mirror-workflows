@@ -4,8 +4,6 @@ EXPOSE 9000/tcp
 ENV SCRIPT_ROOT=/opt/tt-rss
 ENV SRC_DIR=/src/tt-rss/
 
-COPY --from=app-src . ${SRC_DIR}
-
 RUN apk add --no-cache dcron php81 php81-fpm php81-phar \
 	php81-pdo php81-gd php81-pgsql php81-pdo_pgsql php81-xmlwriter \
 	php81-mbstring php81-intl php81-xml php81-curl php81-simplexml \
@@ -28,6 +26,8 @@ ADD --chmod=0755 backup.sh /etc/periodic/weekly/backup
 
 ADD index.php ${SCRIPT_ROOT}
 ADD config.docker.php ${SCRIPT_ROOT}
+
+COPY --from=app-src . ${SRC_DIR}
 
 ARG ORIGIN_REPO_MAIN=https://git.tt-rss.org/fox/tt-rss.git
 ARG ORIGIN_REPO_XACCEL=https://git.tt-rss.org/fox/ttrss-nginx-xaccel.git

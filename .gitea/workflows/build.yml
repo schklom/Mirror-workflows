@@ -16,6 +16,8 @@ jobs:
   phpdoc:
     runs-on: alpine-3.16
     steps:
+    - uses: https://gitea.com/actions/checkout@v3
+
     - name: phpdoc
       run: php81 /phpDocumentor.phar -d classes -d include -t phpdoc --visibility=public
 

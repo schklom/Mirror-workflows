@@ -13,6 +13,21 @@ defaults:
     shell: sh
 
 jobs:
+  phpdoc:
+    runs-on: alpine-3.16
+    steps:
+    - name: phpdoc
+      run: php81 /phpDocumentor.phar -d classes -d include -t phpdoc --visibility=public
+
+    - name: prepare ssh
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.APK_DEPLOY_SSH_KEY }}" | tr -d \\r > ~/.ssh/id_ed25519
+        chmod 600 ~/.ssh/id_ed25519
+
+    - name: upload results
+      run: rsync -e 'ssh -o StrictHostKeyChecking=no' phpdoc/ ${{ secrets.APK_DEPLOY_USER }}@${{ secrets.APK_DEPLOY_HOST }}:phpdoc/
+
   build:
     runs-on: alpine-3.16
     steps:

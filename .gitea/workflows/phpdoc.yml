@@ -1,0 +1,21 @@
+name: build
+
+on:
+  push:
+    branches:
+      - "master"
+  workflow_dispatch: {}
+
+defaults:
+  run:
+    shell: sh
+
+jobs:
+  build:
+    runs-on: alpine-3.16
+    steps:
+    - name: phpdoc
+      run: php81 /phpDocumentor.phar -d classes -d include -t phpdoc --visibility=public
+
+    - name: upload results
+      run: rsync -e 'ssh -o StrictHostKeyChecking=no' phpdoc/ ${{ secrets.APK_DEPLOY_USER }}@${{ secrets.APK_DEPLOY_HOST }}:phpdoc/

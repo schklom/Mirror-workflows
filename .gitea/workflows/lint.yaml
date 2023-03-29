@@ -26,15 +26,6 @@ jobs:
       - name: eslint
         run: npx eslint js plugins
 
-      - name: calculate cache key hash
-        uses: actions/go-hashfiles@v0.0.1
-        id: cache-hash
-        with:
-          patterns: |
-            classes/*.php
-            include/*.php
-            plugins/**/*.php
-
       - name: phpunit
         run: php81 ./vendor/bin/phpunit
 

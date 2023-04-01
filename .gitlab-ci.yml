@@ -60,6 +60,9 @@ phpunit:
       changes:
         - '**/*.php'
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH
+      when: manual
+      allow_failure: true
   script:
     - php81 ./vendor/bin/phpunit
 
@@ -72,6 +75,9 @@ eslint:
       changes:
         - '**/*.js'
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH
+      when: manual
+      allow_failure: true
   script:
     - npm install
     - npx eslint js plugins
@@ -85,6 +91,9 @@ phpstan:
       changes:
         - '**/*.php'
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH
+      when: manual
+      allow_failure: true
   script:
     - php81 -d memory_limit=-1 ./vendor/bin/phpstan --memory-limit=2G
 

@@ -599,7 +599,7 @@ const	CommonDialogs = {
 									<input style="display: none" type="file" onchange="App.dialogOf(this).uploadIcon(this)">
 								</label>
 
-								${App.FormFields.submit_tag(App.FormFields.icon("delete") + " " + __("Remove"), {class: "alt-danger", onclick: "App.dialogOf(this).removeIcon("+feed_id+")"})}
+								${App.FormFields.button_tag(App.FormFields.icon("delete") + " " + __("Remove"), "", {class: "alt-danger", onclick: "App.dialogOf(this).removeIcon("+feed_id+")"})}
 							</div>
 							<div dojoType="dijit.layout.ContentPane" title="${__('Plugins')}">
 								${reply.plugin_data}

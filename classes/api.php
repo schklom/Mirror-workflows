@@ -99,7 +99,7 @@ class API extends Handler {
 	}
 
 	function isLoggedIn(): bool {
-		return $this->_wrap(self::STATUS_OK, array("status" => ($_SESSION["uid"] ?? '') != ''));
+		return $this->_wrap(self::STATUS_OK, array("status" => (bool)($_SESSION["uid"] ?? '')));
 	}
 
 	function getUnread(): bool {

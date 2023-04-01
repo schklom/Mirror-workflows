@@ -92,3 +92,17 @@ ttrss-fpm-pgsql-static:
    variables:
      BUILD_CONTEXT: ${CI_PROJECT_DIR}/.docker/app
 
+phpdoc:
+  image:
+    name: ${CI_DOCKER_IMAGE}
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      changes:
+        - '**/*.php'
+  script:
+    - php81 /phpDocumentor.phar -d classes -d include -t phpdoc --visibility=public
+    - mkdir -p ~/.ssh &&
+        cp ${PHPDOC_DEPLOY_SSH_KEY} ~/.ssh/id_ed25519 &&
+        chmod 0600 ~/.ssh/id_ed25519
+    - rsync -av -e 'ssh -o StrictHostKeyChecking=no' phpdoc/ ${PHPDOC_DEPLOY_HOST}:phpdoc/

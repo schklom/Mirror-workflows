@@ -1,7 +1,6 @@
 stages:
   - lint
   - build
-  - docs
 
 .build-master:
   image:
@@ -102,7 +101,7 @@ ttrss-fpm-pgsql-static:
 phpdoc:
   image:
     name: ${CI_DOCKER_IMAGE}
-  stage: docs
+  stage: build
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:

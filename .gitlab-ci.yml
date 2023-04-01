@@ -7,7 +7,7 @@ stages:
     name: ${CI_DOCKER_IMAGE}
   stage: build
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE != "web"
       changes:
         - '**/*.php'
         - '**/*.js'
@@ -56,7 +56,7 @@ phpunit:
     name: ${CI_DOCKER_IMAGE}
   stage: lint
   rules:
-    - if: $CI_COMMIT_BRANCH
+    - if: $CI_COMMIT_BRANCH && $CI_PIPELINE_SOURCE != "web"
       changes:
         - '**/*.php'
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
@@ -71,7 +71,7 @@ eslint:
     name: ${CI_DOCKER_IMAGE}
   stage: lint
   rules:
-    - if: $CI_COMMIT_BRANCH
+    - if: $CI_COMMIT_BRANCH && $CI_PIPELINE_SOURCE != "web"
       changes:
         - '**/*.js'
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
@@ -89,7 +89,7 @@ phpstan:
     - phpunit
   stage: lint
   rules:
-    - if: $CI_COMMIT_BRANCH
+    - if: $CI_COMMIT_BRANCH && $CI_PIPELINE_SOURCE != "web"
       changes:
         - '**/*.php'
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
@@ -114,7 +114,7 @@ phpdoc:
     name: ${CI_DOCKER_IMAGE}
   stage: build
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE != "web"
       changes:
         - '**/*.php'
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

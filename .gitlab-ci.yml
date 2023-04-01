@@ -85,6 +85,8 @@ eslint:
 phpstan:
   image:
     name: ${CI_DOCKER_IMAGE}
+  needs:
+    - phpunit
   stage: lint
   rules:
     - if: $CI_COMMIT_BRANCH

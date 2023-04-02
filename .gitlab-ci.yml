@@ -17,7 +17,7 @@ phpunit:
   extends: .phpunit
 
 eslint:
-  extends: .phpunit
+  extends: .eslint
 
 phpstan:
   extends: .phpstan

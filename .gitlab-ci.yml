@@ -2,115 +2,25 @@ stages:
   - lint
   - build
 
-.build-master:
-  image:
-    name: ${CI_DOCKER_IMAGE}
-  stage: build
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE != "web"
-      changes:
-        - '**/*.php'
-        - '**/*.js'
-        - '.docker/**/*'
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
-  before_script:
-      - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
-      - docker login -u ${DOCKER_HUB_USER}  -p ${DOCKER_HUB_TOKEN}
+variables:
+  ESLINT_PATHS: js plugins
 
-      - docker run --privileged --rm registry.fakecake.org/docker.io/tonistiigi/binfmt --install all
-      - docker buildx create --name mp-builder --driver docker-container --bootstrap --use
-
-  script:
-      - BUILD_TIMESTAMP=$(date -d $(echo ${CI_COMMIT_TIMESTAMP} | cut -b 1-10) +%y.%m)
-
-      - docker buildx build
-          --push
-          --platform linux/amd64,linux/arm64,linux/arm/v7
-          --tag ${CI_REGISTRY}/cthulhoo/${CI_JOB_NAME}:${BUILD_TIMESTAMP}-${CI_COMMIT_SHORT_SHA}
-          --tag ${CI_REGISTRY}/cthulhoo/${CI_JOB_NAME}:latest
-          --tag cthulhoo/${CI_JOB_NAME}:${BUILD_TIMESTAMP}-${CI_COMMIT_SHORT_SHA}
-          --tag cthulhoo/${CI_JOB_NAME}:latest
-          --build-context app-src=.
-          --cache-from type=registry,ref=${CI_REGISTRY}/cthulhoo/${CI_JOB_NAME}:latest
-          --cache-to type=inline
-          ${BUILD_CONTEXT}
-
-#  note: CI_REGISTRY, etc. variables are privileged
-#
-# .build-branch:
-#   image:
-#     name: ${CI_DOCKER_IMAGE}
-#   stage: build
-#   rules:
-#     - if: $CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE != "web"
-#       changes:
-#         - '**/*.php'
-#         - '**/*.js'
-#         - '.docker/**/*'
-#     - if: $CI_COMMIT_BRANCH && $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
-#       when: manual
-#   before_script:
-#       - docker buildx create --name mp-builder --driver docker-container --bootstrap --use
-#       - CONTAINER_NAME=$(echo ${CI_JOB_NAME} | sed 's/branch://')
-#   script:
-#       - docker buildx build
-#           --push
-#           --platform linux/amd64
-#           --tag ${CI_REGISTRY}/cthulhoo/$CONTAINER_NAME:${CI_COMMIT_BRANCH}-${CI_COMMIT_SHORT_SHA}
-#           --tag ${CI_REGISTRY}/cthulhoo/$CONTAINER_NAME:${CI_COMMIT_BRANCH}
-#           --build-context app-src=.
-#           --cache-from type=registry,ref=${CI_REGISTRY}/cthulhoo/$CONTAINER_NAME:${CI_COMMIT_BRANCH}
-#           --cache-to type=inline
-#           ${BUILD_CONTEXT}
+include:
+  - project: 'ci/ci-templates'
+    ref: master
+    file: .ci-build-docker.yml
+  - project: 'ci/ci-templates'
+    ref: master
+    file: .ci-lint-common.yml
 
 phpunit:
-  image:
-    name: ${CI_DOCKER_IMAGE}
-  stage: lint
-  rules:
-    - if: $CI_COMMIT_BRANCH && $CI_PIPELINE_SOURCE != "web"
-      changes:
-        - '**/*.php'
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-    - if: $CI_COMMIT_BRANCH
-      when: manual
-      allow_failure: true
-  script:
-    - php81 ./vendor/bin/phpunit
+  extends: .phpunit
 
 eslint:
-  image:
-    name: ${CI_DOCKER_IMAGE}
-  stage: lint
-  rules:
-    - if: $CI_COMMIT_BRANCH && $CI_PIPELINE_SOURCE != "web"
-      changes:
-        - '**/*.js'
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-    - if: $CI_COMMIT_BRANCH
-      when: manual
-      allow_failure: true
-  script:
-    - npm install
-    - npx eslint js plugins
+  extends: .phpunit
 
 phpstan:
-  image:
-    name: ${CI_DOCKER_IMAGE}
-  needs:
-    - phpunit
-  stage: lint
-  rules:
-    - if: $CI_COMMIT_BRANCH && $CI_PIPELINE_SOURCE != "web"
-      changes:
-        - '**/*.php'
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-    - if: $CI_COMMIT_BRANCH
-      when: manual
-      allow_failure: true
-  script:
-    - php81 -d memory_limit=-1 ./vendor/bin/phpstan --memory-limit=2G
+  extends: .phpstan
 
 ttrss-web-nginx:
   extends: .build-master
@@ -121,16 +31,6 @@ ttrss-fpm-pgsql-static:
    extends: .build-master
    variables:
      BUILD_CONTEXT: ${CI_PROJECT_DIR}/.docker/app
-
-# branch:ttrss-web-nginx:
-#   extends: .build-branch
-#   variables:
-#     BUILD_CONTEXT: ${CI_PROJECT_DIR}/.docker/web-nginx
-
-# branch:ttrss-fpm-pgsql-static:
-#    extends: .build-branch
-#    variables:
-#      BUILD_CONTEXT: ${CI_PROJECT_DIR}/.docker/app
 
 phpdoc:
   image:

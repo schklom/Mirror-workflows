@@ -10,10 +10,9 @@ module.exports = function(loadParams) {
 	const params = {
 		url: loadParams.url,
 		header: headers,
-		waitAfterLoad: waitTime > 0 ? waitTime : 0,
-		waitForSelector,
+		waitAfterLoad: loadParams.waitTime,
+		waitForSelector: loadParams.waitForSelector,
 		userAgent,
-		referrer: loadParams.referrer,
 		timeout: 10000
 	};
 	if (loadParams.body) {

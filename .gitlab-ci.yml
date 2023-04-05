@@ -27,10 +27,20 @@ ttrss-web-nginx:
   variables:
     BUILD_CONTEXT: ${CI_PROJECT_DIR}/.docker/web-nginx
 
+ttrss-web-nginx:branch:
+  extends: .build-branch
+  variables:
+    BUILD_CONTEXT: ${CI_PROJECT_DIR}/.docker/web-nginx
+
 ttrss-fpm-pgsql-static:
    extends: .build-master
    variables:
-     BUILD_CONTEXT: ${CI_PROJECT_DIR}/.docker/app
+    BUILD_CONTEXT: ${CI_PROJECT_DIR}/.docker/app
+
+ttrss-fpm-pgsql-static:branch:
+   extends: .build-branch
+   variables:
+    BUILD_CONTEXT: ${CI_PROJECT_DIR}/.docker/app
 
 phpdoc:
   image:

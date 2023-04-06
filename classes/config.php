@@ -316,7 +316,7 @@ class Config {
 			$this->version["status"] = -1;
 
 			if (PHP_OS === "Darwin") {
-				$ttrss_version["version"] = "UNKNOWN (Unsupported, Darwin)";
+				$this->version["version"] = "UNKNOWN (Unsupported, Darwin)";
 			} else if (file_exists("$root_dir/version_static.txt")) {
 				$this->version["version"] = trim(file_get_contents("$root_dir/version_static.txt")) . " (Unsupported)";
 			} else if (ini_get("open_basedir")) {

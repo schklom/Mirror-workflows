@@ -239,7 +239,7 @@ class Article extends Handler_Protected {
 		print json_encode(["id" => (int)$id, "tags" => $this->_get_tags($id)]);
 	}
 
-	function completeTags() {
+	function completeTags(): void {
 		$search = clean($_REQUEST["search"]);
 
 		$sth = $this->pdo->prepare("SELECT DISTINCT tag_name FROM ttrss_tags

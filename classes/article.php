@@ -239,8 +239,7 @@ class Article extends Handler_Protected {
 		print json_encode(["id" => (int)$id, "tags" => $this->_get_tags($id)]);
 	}
 
-
-	/*function completeTags() {
+	function completeTags() {
 		$search = clean($_REQUEST["search"]);
 
 		$sth = $this->pdo->prepare("SELECT DISTINCT tag_name FROM ttrss_tags
@@ -250,12 +249,14 @@ class Article extends Handler_Protected {
 
 		$sth->execute([$_SESSION['uid'], "$search%"]);
 
-		print "<ul>";
+		$results = [];
+
 		while ($line = $sth->fetch()) {
-			print "<li>" . $line["tag_name"] . "</li>";
+			array_push($results, $line["tag_name"]);
 		}
-		print "</ul>";
-	}*/
+
+		print json_encode($results);
+	}
 
 	function assigntolabel(): void {
 		$this->_label_ops(true);

@@ -333,6 +333,20 @@ const Article = {
 
 		return false;
 	},
+	autocompleteInject: function(elem, targetId) {
+		const target = App.byId(targetId);
+
+		if (!target)
+			return;
+
+		target.value = target.value.split(',')
+			.slice(0, -1)
+			.map((w) => w.trim())
+			.concat([elem.innerText])
+			.join(', ') + ', ';
+
+		target.focus();
+	},
 	editTags: function (id) {
 		const dialog = new fox.SingleUseDialog({
 			title: __("Article tags"),
@@ -348,7 +362,7 @@ const Article = {
 				<section>
 					<textarea dojoType='dijit.form.SimpleTextarea' rows='4' disabled='true'
 						id='tags_str' name='tags_str'>${__("Loading, please wait...")}</textarea>
-					<div class='autocomplete' id='tags_choices' style='display:none'></div>
+					<span id='tags_choices'></span>
 				</section>
 
 				<footer>
@@ -387,9 +401,15 @@ const Article = {
 					.attr('value', reply.tags.join(", "))
 					.attr('disabled', false);
 
-				/* new Ajax.Autocompleter("tags_str", "tags_choices",
-					"backend.php?op=article&method=completeTags",
-					{tokens: ',', paramName: "search"}); */
+				App.byId('tags_str').onkeyup = (e) => {
+					const last_tag = e.target.value.split(',').pop().trim();
+
+					xhr.json("backend.php", {op: 'article', method: 'completeTags', search: last_tag}, (data) => {
+						App.byId("tags_choices").innerHTML = `${data.map((tag) =>
+							`<a href="#" onclick="Article.autocompleteInject(this, 'tags_str')">${tag}</a>` )
+								.join(', ')}`
+					});
+				};
 			});
 		});
 

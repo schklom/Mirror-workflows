@@ -30,5 +30,5 @@ COPY --from=build /app /app/
 WORKDIR /app
 ENV NODE_ENV production
 EXPOSE 3000
-ENTRYPOINT /app/docker-entrypoint.sh
-CMD ["npm", "run", "start"]
+
+CMD /app/docker-entrypoint.sh npm run start

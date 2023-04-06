@@ -1526,6 +1526,8 @@ class RSSUtils {
 						$match = @preg_match("/$reg_exp/iu", $author);
 						break;
 					case "tag":
+						array_push($tags, ''); // allow matching if there are no tags
+
 						foreach ($tags as $tag) {
 							if (@preg_match("/$reg_exp/iu", $tag)) {
 								$match = true;

@@ -28,11 +28,19 @@ jobs:
         run: ls -AlhR app/build/outputs
       #- name: Delete previous release
       #  run: git push --delete origin Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.LOCALTAG }}
+      
+      - name: Set the version
+        id: step_one
+        run: |
+          ver=$(git ls-remote --tags --sort="version:refname" https://codeberg.org/Freeyourgadget/Gadgetbridge | tail -n 1 | awk '{ print $2 }' | cut -d / -f 3)
+          echo "version=${ver}" >> $GITHUB_ENV
+      
       - name: Release apk
         uses: softprops/action-gh-release@v1
         with:
           ####tag_name: Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.REMOTETAG }}
-          body: Gadgetbridge-osmand-experiments
+          tag_name: "Gadgetbridge-osmand-experiments ${{ env.version }}"
+          body: "app-main-debug.apk is the Gadgetbridge file with OSM patches"
           #files: |
             # ./app/build/outputs/apk/app-debug.apk
           #files: ./app/build/outputs/apk/main/release/app-main-release-unsigned.apk

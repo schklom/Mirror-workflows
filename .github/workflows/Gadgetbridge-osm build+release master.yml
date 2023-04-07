@@ -39,8 +39,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           ####tag_name: Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.REMOTETAG }}
-          tag_name: "Gadgetbridge-osmand-experiments ${{ env.version }}"
-          body: "app-main-debug.apk is the Gadgetbridge file with OSM patches"
+          tag_name: "${{ env.version }}"
+          body: "app-main-debug.apk is the Gadgetbridge file with osmand-experiments patches"
           #files: |
             # ./app/build/outputs/apk/app-debug.apk
           #files: ./app/build/outputs/apk/main/release/app-main-release-unsigned.apk

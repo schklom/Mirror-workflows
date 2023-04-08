@@ -42,6 +42,11 @@ function init() {
             versionView.innerHTML = versionCode;
         })
 
+    if(getWelcomeCookie() == ""){
+        welcomePrompt = document.getElementById('welcomePrompt');
+        welcomePrompt.style.visibility = 'visible';
+    }
+
 }
 
 function prepareForLogin() {
@@ -53,7 +58,8 @@ function prepareForLogin() {
         };
 
         var div = document.createElement("div");
-        div.id = "passwordPrompt";
+        div.id = "passowordPrompt";
+        div.class = "prompt";
 
         var label = document.createElement("label");
         label.id = "password_prompt_label";
@@ -469,3 +475,28 @@ window.onclick = function (event) {
         document.getElementById("cameraDropDown").style.display = "None";
     }
 }
+
+function getWelcomeCookie() {
+    let name = "welcome=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for(let i = 0; i <ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
+
+  function welcomeFinish() {
+    const d = new Date();
+    d.setTime(d.getTime() + (365*24*60*60*1000));
+    let expires = "expires="+ d.toUTCString();
+    document.cookie = "welcome=true" + ";" + expires + ";path=/";
+    welcomePrompt = document.getElementById('welcomePrompt');
+    welcomePrompt.style.visibility = 'hidden';
+  }

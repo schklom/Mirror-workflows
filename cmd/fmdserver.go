@@ -57,6 +57,14 @@ type registrationData struct {
 	PrivKey        string `'json:"privKey"`
 }
 
+type passwordUpdateData struct {
+	IDT            string `'json:"idt"`
+	Salt           string `'json:"salt"`
+	HashedPassword string `'json:"hashedPassword"`
+	PubKey         string `'json:"pubKey"`
+	PrivKey        string `'json:"privKey"`
+}
+
 // universal package for string transfer
 // IDT = DeviceID or AccessToken
 // If both will be send. ID is always IDT
@@ -317,6 +325,18 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func postPassword(w http.ResponseWriter, r *http.Request) {
+	var data passwordUpdateData
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		http.Error(w, "Meeep!, Error - createDevice", http.StatusBadRequest)
+		return
+	}
+	id := uio.ACC.CheckAccessToken(data.IDT)
+
+	uio.UpdateUserPassword(id, data.PrivKey, data.PubKey, data.Salt, data.HashedPassword)
+}
+
 func deleteDevice(w http.ResponseWriter, r *http.Request) {
 	var data DataPackage
 	err := json.NewDecoder(r.Body).Decode(&data)
@@ -406,6 +426,8 @@ func handleRequests() {
 	http.HandleFunc("/key/", getKey)
 	http.HandleFunc("/device", mainDevice)
 	http.HandleFunc("/device/", mainDevice)
+	http.HandleFunc("/password", postPassword)
+	http.HandleFunc("/password/", postPassword)
 	http.HandleFunc("/push", postPushLink)
 	http.HandleFunc("/push/", postPushLink)
 	http.HandleFunc("/salt/", requestSalt)

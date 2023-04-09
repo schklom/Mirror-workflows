@@ -344,6 +344,8 @@ class PluginHost {
 		foreach ($this->get_hooks((string)$hook) as $plugin) {
 			//Debug::log("invoking: " . get_class($plugin) . "->$hook()", Debug::$LOG_VERBOSE);
 
+			$p_scope = Tracer::start("$hook - " . get_class($plugin));
+
 			try {
 				if ($callback($plugin->$method(...$args), $plugin))
 					break;
@@ -352,6 +354,8 @@ class PluginHost {
 			} catch (Error $err) {
 				user_error($err, E_USER_WARNING);
 			}
+
+			$p_scope->close();
 		}
 
 		$scope->close();
@@ -444,7 +448,7 @@ class PluginHost {
 			$class = trim($class);
 			$class_file = strtolower(basename(clean($class)));
 
-			$p_scope = Tracer::start('load_plugin', ['file' => $class_file]);
+			$p_scope = Tracer::start("loading $class_file");
 
 			// try system plugin directory first
 			$file = dirname(__DIR__) . "/plugins/$class_file/init.php";
@@ -507,6 +511,8 @@ class PluginHost {
 						_bind_textdomain_codeset($class, "UTF-8");
 					}
 
+					$i_scope = Tracer::start('init and register plugin');
+
 					try {
 						switch ($kind) {
 							case $this::KIND_SYSTEM:
@@ -531,6 +537,8 @@ class PluginHost {
 					} catch (Error $err) {
 						user_error($err, E_USER_WARNING);
 					}
+
+					$i_scope->close();
 
 				}
 			}

@@ -49,12 +49,6 @@ class Feeds extends Handler_Protected {
 	const NEVER_GROUP_FEEDS = [ Feeds::FEED_RECENTLY_READ, Feeds::FEED_ARCHIVED ];
 	const NEVER_GROUP_BY_DATE = [ Feeds::FEED_PUBLISHED, Feeds::FEED_STARRED, Feeds::FEED_FRESH ];
 
-	/** @var int|float int on 64-bit, float on 32-bit */
-	private $viewfeed_timestamp;
-
-	/** @var int|float int on 64-bit, float on 32-bit */
-	private $viewfeed_timestamp_last;
-
 	function csrf_ignore(string $method): bool {
 		$csrf_ignored = array("index");
 
@@ -281,8 +275,6 @@ class Feeds extends Handler_Protected {
 					array_push($topmost_article_ids, $id);
 				}
 
-				$this->_mark_timestamp("   labels");
-
 				$line["feed_title"] = $line["feed_title"] ?? "";
 
 				$button_doc = new DOMDocument();
@@ -358,15 +350,11 @@ class Feeds extends Handler_Protected {
 					$line["enclosures"] = [ 'formatted' => '', 'entries' => [] ];
 				}
 
-				$this->_mark_timestamp("   enclosures");
-
 				$line["updated_long"] = TimeHelper::make_local_datetime($line["updated"],true);
 				$line["updated"] = TimeHelper::make_local_datetime($line["updated"], false, null, false, true);
 
 				$line['imported'] = T_sprintf("Imported at %s",
 					TimeHelper::make_local_datetime($line["date_entered"], false));
-
-				$this->_mark_timestamp("   local-datetime");
 
 				if ($line["tag_cache"])
 					$tags = explode(",", $line["tag_cache"]);
@@ -377,14 +365,12 @@ class Feeds extends Handler_Protected {
 
 				//$line["tags"] = Article::_get_tags($line["id"], false, $line["tag_cache"]);
 
-				$this->_mark_timestamp("   tags");
-
 				$line['has_icon'] = self::_has_icon($feed_id);
 
 			    //setting feed headline background color, needs to change text color based on dark/light
 				$fav_color = $line['favicon_avg_color'] ?? false;
 
-				$this->_mark_timestamp("   pre-color");
+				$c_scope = Tracer::start('colors');
 
 				require_once "colors.php";
 
@@ -400,21 +386,15 @@ class Feeds extends Handler_Protected {
 				    $line['feed_bg_color'] = 'rgba(' . implode(",", $rgba_cache[$feed_id]) . ',0.3)';
 				}
 
-				$this->_mark_timestamp("   color");
-				$this->_mark_timestamp("   pre-hook_render_cdm");
+				$c_scope->close();
 
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE_CDM,
 					function ($result, $plugin) use (&$line) {
 						$line = $result;
-						$this->_mark_timestamp("       hook: " . get_class($plugin));
 					},
 					$line);
 
-				$this->_mark_timestamp("   hook_render_cdm");
-
 				$line['content'] = DiskCache::rewrite_urls($line['content']);
-
-				$this->_mark_timestamp("   disk_cache_rewrite");
 
 				/* we don't need those */
 
@@ -429,8 +409,6 @@ class Feeds extends Handler_Protected {
 		}
 
 		$a_scope->close();
-
-		$this->_mark_timestamp("end of articles");
 
 		if (!$headlines_count) {
 
@@ -2501,24 +2479,6 @@ class Feeds extends Handler_Protected {
 		}
 
 		return [$query, $skip_first_id];
-	}
-
-	private function _mark_timestamp(string $label): void {
-
-		if (empty($_REQUEST['timestamps']))
-			return;
-
-		if (!$this->viewfeed_timestamp) $this->viewfeed_timestamp = hrtime(true);
-		if (!$this->viewfeed_timestamp_last) $this->viewfeed_timestamp_last = hrtime(true);
-
-		$timestamp = hrtime(true);
-
-		printf("[%4d ms, %4d abs] %s\n",
-			($timestamp - $this->viewfeed_timestamp_last) / 1e6,
-			($timestamp - $this->viewfeed_timestamp) / 1e6,
-			$label);
-
-		$this->viewfeed_timestamp_last = $timestamp;
 	}
 
 }

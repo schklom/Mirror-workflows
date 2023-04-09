@@ -659,6 +659,7 @@ class PluginHost {
 
 	private function save_data(string $plugin): void {
 		if ($this->owner_uid) {
+			$scope = Tracer::start(__METHOD__);
 
 			if (!$this->pdo_data)
 				$this->pdo_data = Db::instance()->pdo_connect();
@@ -686,6 +687,7 @@ class PluginHost {
 			}
 
 			$this->pdo_data->commit();
+			$scope->close();
 		}
 	}
 

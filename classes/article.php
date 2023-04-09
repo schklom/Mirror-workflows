@@ -581,6 +581,7 @@ class Article extends Handler_Protected {
 	 * @return array<int, Article::ARTICLE_KIND_*|string>
 	 */
 	static function _get_image(array $enclosures, string $content, string $site_url, array $headline) {
+		$scope = Tracer::start(__METHOD__);
 
 		$article_image = "";
 		$article_stream = "";
@@ -659,6 +660,8 @@ class Article extends Handler_Protected {
 		if ($article_stream && $cache->exists(sha1($article_stream)))
 			$article_stream = $cache->get_url(sha1($article_stream));
 
+		$scope->close();
+
 		return [$article_image, $article_stream, $article_kind];
 	}
 
@@ -671,6 +674,8 @@ class Article extends Handler_Protected {
 	static function _labels_of(array $article_ids) {
 		if (count($article_ids) == 0)
 			return [];
+
+		$scope = Tracer::start(__METHOD__);
 
 		$entries = ORM::for_table('ttrss_entries')
 			->table_alias('e')
@@ -691,6 +696,8 @@ class Article extends Handler_Protected {
 			}
 		}
 
+		$scope->close();
+
 		return array_unique($rv);
 	}
 
@@ -701,6 +708,8 @@ class Article extends Handler_Protected {
 	static function _feeds_of(array $article_ids) {
 		if (count($article_ids) == 0)
 			return [];
+
+		$scope = Tracer::start(__METHOD__);
 
 		$entries = ORM::for_table('ttrss_entries')
 			->table_alias('e')
@@ -713,6 +722,8 @@ class Article extends Handler_Protected {
 		foreach ($entries as $entry) {
 			array_push($rv, $entry->feed_id);
 		}
+
+		$scope->close();
 
 		return array_unique($rv);
 	}

@@ -4,7 +4,7 @@ EXPOSE 9000/tcp
 ENV SCRIPT_ROOT=/opt/tt-rss
 ENV SRC_DIR=/src/tt-rss/
 
-RUN apk add --no-cache dcron php81 php81-fpm php81-phar \
+RUN apk add --no-cache dcron php81 php81-fpm php81-phar php81-sockets \
 	php81-pdo php81-gd php81-pgsql php81-pdo_pgsql php81-xmlwriter \
 	php81-mbstring php81-intl php81-xml php81-curl php81-simplexml \
 	php81-session php81-tokenizer php81-dom php81-fileinfo php81-ctype \

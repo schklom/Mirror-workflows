@@ -145,8 +145,8 @@
 				$b_scope->close();
 
 				if ($before) {
+					$m_scope = Tracer::start("method/$method");
 					if ($method && method_exists($handler, $method)) {
-						$m_scope = Tracer::start("method/$method");
 						$reflection = new ReflectionMethod($handler, $method);
 
 						if ($reflection->getNumberOfRequiredParameters() == 0) {
@@ -154,17 +154,21 @@
 						} else {
 							user_error("Refusing to invoke method $method of handler $op which has required parameters.", E_USER_WARNING);
 							header("Content-Type: text/json");
+
+							$m_scope->getSpan()->setTag('error', Errors::E_UNAUTHORIZED);
 							print Errors::to_json(Errors::E_UNAUTHORIZED);
 						}
-						$m_scope->close();
 					} else {
 						if (method_exists($handler, "catchall")) {
 							$handler->catchall($method);
 						} else {
 							header("Content-Type: text/json");
+
+							$m_scope->getSpan()->setTag('error', Errors::E_UNKNOWN_METHOD);
 							print Errors::to_json(Errors::E_UNKNOWN_METHOD, ["info" => get_class($handler) . "->$method"]);
 						}
 					}
+					$m_scope->close();
 
 					$a_scope = Tracer::start("after/$method");
 					$handler->after();
@@ -176,6 +180,7 @@
 					header("Content-Type: text/json");
 					print Errors::to_json(Errors::E_UNAUTHORIZED);
 
+					$scope->getSpan()->setTag('error', Errors::E_UNAUTHORIZED);
 					$scope->close();
 					return;
 				}
@@ -184,6 +189,7 @@
 				header("Content-Type: text/json");
 				print Errors::to_json(Errors::E_UNAUTHORIZED);
 
+				$scope->getSpan()->setTag('error', Errors::E_UNAUTHORIZED);
 				$scope->close();
 				return;
 			}
@@ -193,4 +199,5 @@
 	header("Content-Type: text/json");
 	print Errors::to_json(Errors::E_UNKNOWN_METHOD, [ "info" => (isset($handler) ? get_class($handler) : "UNKNOWN:".$op) . "->$method"]);
 
+	$scope->getSpan()->setTag('error', Errors::E_UNKNOWN_METHOD);
 	$scope->close();

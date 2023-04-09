@@ -3,39 +3,59 @@ use OpenTracing\GlobalTracer;
 use OpenTracing\Scope;
 
 class Tracer {
+	/** @var Tracer $instance */
 	private static $instance;
 
 	public function __construct() {
-		$config = new \Jaeger\Config(
-			[
-				'sampler' => [
-					'type' => \Jaeger\SAMPLER_TYPE_CONST,
-					'param' => true,
-				],
-				'logging' => true,
-				"local_agent" => [
-					"reporting_host" => "172.17.172.39",
-					"reporting_port" => 6832
-				],
-				'dispatch_mode' => \Jaeger\Config::JAEGER_OVER_BINARY_UDP,
-			],
-			'tt-rss'
-		);
+		$jaeger_host = Config::get(Config::JAEGER_REPORTING_HOST);
 
-		$config->initializeTracer();
+		if ($jaeger_host) {
+			$config = new \Jaeger\Config(
+				[
+					'sampler' => [
+						'type' => \Jaeger\SAMPLER_TYPE_CONST,
+						'param' => true,
+					],
+					'logging' => true,
+					"local_agent" => [
+						"reporting_host" => $jaeger_host,
+						"reporting_port" => 6832
+					],
+					'dispatch_mode' => \Jaeger\Config::JAEGER_OVER_BINARY_UDP,
+				],
+				'tt-rss'
+			);
 
-		register_shutdown_function(function() {
-			$tracer = GlobalTracer::get();
-			$tracer->flush();
-		});
+			$config->initializeTracer();
+
+			register_shutdown_function(function() {
+				$tracer = GlobalTracer::get();
+				$tracer->flush();
+			});
+		}
 	}
 
-	private function _start(string $name, array $options = []) {
+	/**
+	 * @param string $name
+	 * @param array<mixed> $options
+	 * @param array<string> $args
+	 * @return Scope
+	 */
+	private function _start(string $name, array $options = [], array $args = []): Scope {
 		$tracer = GlobalTracer::get();
+
+		$options['tags']['args'] = json_encode($args);
+
 		return $tracer->startActiveSpan($name, $options);
 	}
 
-	public static function start(string $name, array $options = []) : Scope {
+	/**
+	 * @param string $name
+	 * @param array<string> $options
+	 * @param array<string> $args
+	 * @return Scope
+	 */
+	public static function start(string $name, array $options = [], array $args = []) : Scope {
 		return self::get_instance()->_start($name, $options);
 	}
 

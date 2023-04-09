@@ -987,7 +987,7 @@ class Feeds extends Handler_Protected {
 	 * @throws PDOException
 	 */
 	static function _get_counters($feed, bool $is_cat = false, bool $unread_only = false, ?int $owner_uid = null): int {
-		$scope = Tracer::start(__FUNCTION__, ['tags' => ['args' => json_encode(func_get_args())]]);
+		$scope = Tracer::start(__FUNCTION__, [], func_get_args());
 
 		$n_feed = (int) $feed;
 		$need_entries = false;

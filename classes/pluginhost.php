@@ -339,6 +339,7 @@ class PluginHost {
 	 */
 	function chain_hooks_callback(string $hook, Closure $callback, &...$args): void {
 		$method = strtolower((string)$hook);
+		$scope = Tracer::start(__METHOD__, ['hook' => $hook]);
 
 		foreach ($this->get_hooks((string)$hook) as $plugin) {
 			//Debug::log("invoking: " . get_class($plugin) . "->$hook()", Debug::$LOG_VERBOSE);
@@ -352,6 +353,8 @@ class PluginHost {
 				user_error($err, E_USER_WARNING);
 			}
 		}
+
+		$scope->close();
 	}
 
 	/**
@@ -431,6 +434,8 @@ class PluginHost {
 	 * @param PluginHost::KIND_* $kind
 	 */
 	function load(string $classlist, int $kind, int $owner_uid = null, bool $skip_init = false): void {
+		$scope = Tracer::start(__METHOD__);
+
 		$plugins = explode(",", $classlist);
 
 		$this->owner_uid = (int) $owner_uid;
@@ -439,18 +444,21 @@ class PluginHost {
 			$class = trim($class);
 			$class_file = strtolower(basename(clean($class)));
 
+			$p_scope = Tracer::start('load_plugin', ['file' => $class_file]);
+
 			// try system plugin directory first
 			$file = dirname(__DIR__) . "/plugins/$class_file/init.php";
 
 			if (!file_exists($file)) {
 				$file = dirname(__DIR__) . "/plugins.local/$class_file/init.php";
 
-				if (!file_exists($file))
+				if (!file_exists($file)) {
+					$p_scope->close();
 					continue;
+				}
 			}
 
 			if (!isset($this->plugins[$class])) {
-
 				// WIP hack
 				// we can't catch incompatible method signatures via Throwable
 				// this also enables global tt-rss safe mode in case there are more plugins like this
@@ -464,6 +472,8 @@ class PluginHost {
 
 					$_SESSION["safe_mode"] = 1;
 
+					$p_scope->getSpan()->setTag('error', 'plugin is blacklisted');
+					$p_scope->close();
 					continue;
 				}
 
@@ -474,16 +484,21 @@ class PluginHost {
 
 				} catch (Error $err) {
 					user_error($err, E_USER_WARNING);
+
+					$p_scope->getSpan()->setTag('error', $err);
+					$p_scope->close();
 					continue;
 				}
 
 				if (class_exists($class) && is_subclass_of($class, "Plugin")) {
-
 					$plugin = new $class($this);
 					$plugin_api = $plugin->api_version();
 
 					if ($plugin_api < self::API_VERSION) {
 						user_error("Plugin $class is not compatible with current API version (need: " . self::API_VERSION . ", got: $plugin_api)", E_USER_WARNING);
+
+						$p_scope->getSpan()->setTag('error', 'plugin is not compatible with API version');
+						$p_scope->close();
 						continue;
 					}
 
@@ -516,11 +531,15 @@ class PluginHost {
 					} catch (Error $err) {
 						user_error($err, E_USER_WARNING);
 					}
+
 				}
 			}
+			$p_scope->close();
 		}
 
 		$this->load_data();
+
+		$scope->close();
 	}
 
 	function is_system(Plugin $plugin): bool {
@@ -613,6 +632,8 @@ class PluginHost {
 	}
 
 	private function load_data(): void {
+		$scope = Tracer::start(__METHOD__);
+
 		if ($this->owner_uid && !$this->data_loaded && get_schema_version() > 100)  {
 			$sth = $this->pdo->prepare("SELECT name, content FROM ttrss_plugin_storage
 				WHERE owner_uid = ?");
@@ -624,6 +645,8 @@ class PluginHost {
 
 			$this->data_loaded = true;
 		}
+
+		$scope->close();
 	}
 
 	private function save_data(string $plugin): void {

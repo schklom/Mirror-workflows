@@ -1104,7 +1104,7 @@ class Pref_Feeds extends Handler_Protected {
 	 * @return array<string, mixed>
 	 */
 	private function feedlist_init_feed(int $feed_id, ?string $title = null, bool $unread = false, string $error = '', string $updated = ''): array {
-		$scope = Tracer::start(__FUNCTION__, [], func_get_args());
+		$scope = Tracer::start(__METHOD__, []);
 
 		if (!$title)
 			$title = Feeds::_get_title($feed_id, false);

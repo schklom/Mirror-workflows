@@ -221,7 +221,11 @@ class DiskCache implements Cache_Adapter {
 	}
 
 	public function remove(string $filename): bool {
-		return $this->adapter->remove($filename);
+		$scope = Tracer::start(__METHOD__);
+		$rc = $this->adapter->remove($filename);
+		$scope->close();
+
+		return $rc;
 	}
 
 	public function set_dir(string $dir) : void {
@@ -244,7 +248,11 @@ class DiskCache implements Cache_Adapter {
 	}
 
 	public function exists(string $filename): bool {
-		return $this->adapter->exists(basename($filename));
+		$scope = Tracer::start(__METHOD__);
+		$rc = $this->adapter->exists(basename($filename));
+		$scope->close();
+
+		return $rc;
 	}
 
 	/**
@@ -260,7 +268,11 @@ class DiskCache implements Cache_Adapter {
 	 * @return int|false Bytes written or false if an error occurred.
 	 */
 	public function put(string $filename, $data) {
-		return $this->adapter->put(basename($filename), $data);
+		$scope = Tracer::start(__METHOD__);
+		$rc = $this->adapter->put(basename($filename), $data);
+		$scope->close();
+
+		return $rc;
 	}
 
 	/** @deprecated we can't assume cached files are local, and other storages
@@ -304,7 +316,7 @@ class DiskCache implements Cache_Adapter {
 	}
 
 	public function send(string $filename) {
-		$scope = Tracer::start(__FUNCTION__, ['filename' => $filename]);
+		$scope = Tracer::start(__METHOD__, ['filename' => $filename]);
 
 		$filename = basename($filename);
 
@@ -401,8 +413,14 @@ class DiskCache implements Cache_Adapter {
 	// plugins work on original source URLs used before caching
 	// NOTE: URLs should be already absolutized because this is called after sanitize()
 	static public function rewrite_urls(string $str): string {
+		$scope = Tracer::start(__METHOD__);
+
 		$res = trim($str);
-		if (!$res) return '';
+
+		if (!$res) {
+			$scope->close();
+			return '';
+		}
 
 		$doc = new DOMDocument();
 		if (@$doc->loadHTML('<?xml encoding="UTF-8">' . $res)) {
@@ -414,6 +432,8 @@ class DiskCache implements Cache_Adapter {
 			$need_saving = false;
 
 			foreach ($entries as $entry) {
+				$e_scope = Tracer::start('entry', ['tagName' => $entry->tagName]);
+
 				foreach (array('src', 'poster') as $attr) {
 					if ($entry->hasAttribute($attr)) {
 						$url = $entry->getAttribute($attr);
@@ -445,6 +465,8 @@ class DiskCache implements Cache_Adapter {
 
 					$entry->setAttribute("srcset", RSSUtils::encode_srcset($matches));
 				}
+
+				$e_scope->close();
 			}
 
 			if ($need_saving) {
@@ -454,6 +476,9 @@ class DiskCache implements Cache_Adapter {
 				$res = $doc->saveHTML();
 			}
 		}
+
+		$scope->close();
+
 		return $res;
 	}
 }

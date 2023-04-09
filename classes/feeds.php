@@ -71,7 +71,7 @@ class Feeds extends Handler_Protected {
 
 		$disable_cache = false;
 
-		$this->_mark_timestamp("init");
+		$scope = Tracer::start(__METHOD__, [], func_get_args());
 
 		$reply = [];
 		$rgba_cache = [];
@@ -157,8 +157,6 @@ class Feeds extends Handler_Protected {
 			$qfh_ret = $this->_get_headlines($params);
 		}
 
-		$this->_mark_timestamp("db query");
-
 		$vfeed_group_enabled = get_pref(Prefs::VFEED_GROUP_BY_FEED) &&
 			!(in_array($feed, self::NEVER_GROUP_FEEDS) && !$cat_view);
 
@@ -175,6 +173,8 @@ class Feeds extends Handler_Protected {
 
 		$reply['search_query'] = [$search, $search_language];
 		$reply['vfeed_group_enabled'] = $vfeed_group_enabled;
+
+		$p_scope = Tracer::start('plugin_menu_items');
 
 		$plugin_menu_items = "";
 		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM2,
@@ -208,13 +208,15 @@ class Feeds extends Handler_Protected {
 					},
 					$feed, $cat_view, $qfh_ret);
 
-		$this->_mark_timestamp("object header");
+		$p_scope->close();
+
+		$a_scope = Tracer::start('articles');
 
 		$headlines_count = 0;
 
 		if ($result instanceof PDOStatement) {
 			while ($line = $result->fetch(PDO::FETCH_ASSOC)) {
-				$this->_mark_timestamp("article start: " . $line["id"] . " " . $line["title"]);
+				$aa_scope = Tracer::start('article', ['id' => $line['id']]);
 
 				++$headlines_count;
 
@@ -231,8 +233,6 @@ class Feeds extends Handler_Protected {
 						},
 						$line, $max_excerpt_length);
 				}
-
-				$this->_mark_timestamp("   hook_query_headlines");
 
 				$id = $line["id"];
 
@@ -312,6 +312,7 @@ class Feeds extends Handler_Protected {
 					$line);
 
 				$line["buttons"] = "";
+
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_ARTICLE_BUTTON,
 					function ($result, $plugin) use (&$line, &$button_doc) {
 						if ($result && $button_doc->loadXML($result)) {
@@ -335,12 +336,8 @@ class Feeds extends Handler_Protected {
 					},
 					$line);
 
-				$this->_mark_timestamp("   pre-sanitize");
-
 				$line["content"] = Sanitizer::sanitize($line["content"],
 					$line['hide_images'], null, $line["site_url"], $highlight_words, $line["id"]);
-
-				$this->_mark_timestamp("   sanitize");
 
 				if (!get_pref(Prefs::CDM_EXPANDED)) {
 					$line["cdm_excerpt"] = "<span class='collapse'>
@@ -351,8 +348,6 @@ class Feeds extends Handler_Protected {
 						$line["cdm_excerpt"] .= "<span class='excerpt'>" . $line["content_preview"] . "</span>";
 					}
 				}
-
-				$this->_mark_timestamp("   pre-enclosures");
 
 				if ($line["num_enclosures"] > 0) {
 					$line["enclosures"] = Article::_format_enclosures($id,
@@ -429,9 +424,11 @@ class Feeds extends Handler_Protected {
 
 				array_push($reply['content'], $line);
 
-				$this->_mark_timestamp("article end");
+				$aa_scope->close();
 			}
 		}
+
+		$a_scope->close();
 
 		$this->_mark_timestamp("end of articles");
 
@@ -494,7 +491,7 @@ class Feeds extends Handler_Protected {
 			}
 		}
 
-		$this->_mark_timestamp("end");
+		$scope->close();
 
 		return array($topmost_article_ids, $headlines_count, $feed, $disable_cache, $reply);
 	}
@@ -987,7 +984,7 @@ class Feeds extends Handler_Protected {
 	 * @throws PDOException
 	 */
 	static function _get_counters($feed, bool $is_cat = false, bool $unread_only = false, ?int $owner_uid = null): int {
-		$scope = Tracer::start(__FUNCTION__, [], func_get_args());
+		$scope = Tracer::start(__METHOD__, [], func_get_args());
 
 		$n_feed = (int) $feed;
 		$need_entries = false;
@@ -1497,6 +1494,8 @@ class Feeds extends Handler_Protected {
 	 */
 	static function _get_headlines($params): array {
 
+		$scope = Tracer::start(__METHOD__, [], func_get_args());
+
 		$pdo = Db::pdo();
 
 		// WARNING: due to highly dynamic nature of this query its going to quote parameters
@@ -1989,8 +1988,9 @@ class Feeds extends Handler_Protected {
 			$res = $pdo->query($query);
 		}
 
-		return array($res, $feed_title, $feed_site_url, $last_error, $last_updated, $search_words, $first_id, $vfeed_query_part != "", $query_error_override);
+		$scope->close();
 
+		return array($res, $feed_title, $feed_site_url, $last_error, $last_updated, $search_words, $first_id, $vfeed_query_part != "", $query_error_override);
 	}
 
 	/**

@@ -63,6 +63,7 @@ class Sanitizer {
 	 * @return false|string The HTML, or false if an error occurred.
 	 */
 	public static function sanitize(string $str, ?bool $force_remove_images = false, int $owner = null, string $site_url = null, array $highlight_words = null, int $article_id = null) {
+		$scope = Tracer::start(__METHOD__);
 
 		if (!$owner && isset($_SESSION["uid"]))
 			$owner = $_SESSION["uid"];
@@ -222,6 +223,8 @@ class Sanitizer {
 		}
 
 		$res = $doc->saveHTML();
+
+		$scope->close();
 
 		/* strip everything outside of <body>...</body> */
 

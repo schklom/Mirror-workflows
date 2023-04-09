@@ -30,11 +30,16 @@
 	$op = (string)clean($op);
 	$method = (string)clean($method);
 
+	$scope = Tracer::start(__FILE__, ['tags' => $_REQUEST]);
+
 	startup_gettext();
 
 	$script_started = microtime(true);
 
-	if (!init_plugins()) return;
+	if (!init_plugins()) {
+		$scope->close();
+		return;
+	}
 
 	header("Content-Type: text/json; charset=utf-8");
 
@@ -46,6 +51,8 @@
 		if (!\Sessions\validate_session()) {
 			header("Content-Type: text/json");
 			print Errors::to_json(Errors::E_UNAUTHORIZED);
+
+			$scope->close();
 			return;
 		}
 		UserHelper::load_user_plugins($_SESSION["uid"]);
@@ -53,6 +60,7 @@
 
 	if (Config::is_migration_needed()) {
 		print Errors::to_json(Errors::E_SCHEMA_MISMATCH);
+		$scope->close();
 		return;
 	}
 
@@ -114,6 +122,7 @@
 			user_error("Refusing to invoke method $method of handler $op which starts with underscore.", E_USER_WARNING);
 			header("Content-Type: text/json");
 			print Errors::to_json(Errors::E_UNAUTHORIZED);
+			$scope->close();
 			return;
 		}
 
@@ -125,11 +134,19 @@
 		}
 
 		if (implements_interface($handler, 'IHandler')) {
+			$h_scope = Tracer::start("construct/$op");
 			$handler->__construct($_REQUEST);
+			$h_scope->close();
 
 			if (validate_csrf($csrf_token) || $handler->csrf_ignore($method)) {
-				if ($handler->before($method)) {
+
+				$b_scope = Tracer::start("before/$method");
+				$before = $handler->before($method);
+				$b_scope->close();
+
+				if ($before) {
 					if ($method && method_exists($handler, $method)) {
+						$m_scope = Tracer::start("method/$method");
 						$reflection = new ReflectionMethod($handler, $method);
 
 						if ($reflection->getNumberOfRequiredParameters() == 0) {
@@ -139,6 +156,7 @@
 							header("Content-Type: text/json");
 							print Errors::to_json(Errors::E_UNAUTHORIZED);
 						}
+						$m_scope->close();
 					} else {
 						if (method_exists($handler, "catchall")) {
 							$handler->catchall($method);
@@ -147,17 +165,26 @@
 							print Errors::to_json(Errors::E_UNKNOWN_METHOD, ["info" => get_class($handler) . "->$method"]);
 						}
 					}
+
+					$a_scope = Tracer::start("after/$method");
 					$handler->after();
+					$a_scope->close();
+
+					$scope->close();
 					return;
 				} else {
 					header("Content-Type: text/json");
 					print Errors::to_json(Errors::E_UNAUTHORIZED);
+
+					$scope->close();
 					return;
 				}
 			} else {
 				user_error("Refusing to invoke method $method of handler $op with invalid CSRF token.", E_USER_WARNING);
 				header("Content-Type: text/json");
 				print Errors::to_json(Errors::E_UNAUTHORIZED);
+
+				$scope->close();
 				return;
 			}
 		}
@@ -166,4 +193,4 @@
 	header("Content-Type: text/json");
 	print Errors::to_json(Errors::E_UNKNOWN_METHOD, [ "info" => (isset($handler) ? get_class($handler) : "UNKNOWN:".$op) . "->$method"]);
 
-?>
+	$scope->close();

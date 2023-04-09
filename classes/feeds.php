@@ -987,6 +987,7 @@ class Feeds extends Handler_Protected {
 	 * @throws PDOException
 	 */
 	static function _get_counters($feed, bool $is_cat = false, bool $unread_only = false, ?int $owner_uid = null): int {
+		$scope = Tracer::start(__FUNCTION__, ['tags' => ['args' => json_encode(func_get_args())]]);
 
 		$n_feed = (int) $feed;
 		$need_entries = false;
@@ -1010,11 +1011,14 @@ class Feeds extends Handler_Protected {
 			$handler = PluginHost::getInstance()->get_feed_handler($feed_id);
 			if (implements_interface($handler, 'IVirtualFeed')) {
 				/** @var IVirtualFeed $handler */
+				$scope->close();
 				return $handler->get_unread($feed_id);
 			} else {
+				$scope->close();
 				return 0;
 			}
 		} else if ($n_feed == Feeds::FEED_RECENTLY_READ) {
+			$scope->close();
 			return 0;
 		// tags
 		} else if ($feed != "0" && $n_feed == 0) {
@@ -1028,6 +1032,7 @@ class Feeds extends Handler_Protected {
 			$row = $sth->fetch();
 
 			// Handle 'SUM()' returning null if there are no results
+			$scope->close();
 			return $row["count"] ?? 0;
 
 		} else if ($n_feed == Feeds::FEED_STARRED) {
@@ -1061,6 +1066,7 @@ class Feeds extends Handler_Protected {
 
 			$label_id = Labels::feed_to_label_id($feed);
 
+			$scope->close();
 			return self::_get_label_unread($label_id, $owner_uid);
 		}
 
@@ -1080,6 +1086,7 @@ class Feeds extends Handler_Protected {
 			$sth->execute([$owner_uid]);
 			$row = $sth->fetch();
 
+			$scope->close();
 			return $row["unread"];
 
 		} else {
@@ -1092,6 +1099,7 @@ class Feeds extends Handler_Protected {
 			$sth->execute([$feed, $owner_uid]);
 			$row = $sth->fetch();
 
+			$scope->close();
 			return $row["unread"];
 		}
 	}

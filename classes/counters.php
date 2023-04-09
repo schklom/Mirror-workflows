@@ -145,6 +145,7 @@ class Counters {
 	 * @return array<int, array<string, int|string>>
 	 */
 	private static function get_feeds(array $feed_ids = null): array {
+		$scope = Tracer::start(__FUNCTION__);
 
 		$ret = [];
 
@@ -211,6 +212,8 @@ class Counters {
 
 		}
 
+		$scope->close();
+
 		return $ret;
 	}
 
@@ -218,6 +221,8 @@ class Counters {
 	 * @return array<int, array<string, int|string>>
 	 */
 	private static function get_global(): array {
+		$scope = Tracer::start(__FUNCTION__);
+
 		$ret = [
 			[
 				"id" => "global-unread",
@@ -234,6 +239,8 @@ class Counters {
 			"counter" => $subcribed_feeds
 		]);
 
+		$scope->close();
+
 		return $ret;
 	}
 
@@ -241,6 +248,7 @@ class Counters {
 	 * @return array<int, array<string, int|string>>
 	 */
 	private static function get_virt(): array {
+		$scope = Tracer::start(__FUNCTION__);
 
 		$ret = [];
 
@@ -287,6 +295,7 @@ class Counters {
 			}
 		}
 
+		$scope->close();
 		return $ret;
 	}
 
@@ -295,6 +304,7 @@ class Counters {
 	 * @return array<int, array<string, int|string>>
 	 */
 	static function get_labels(array $label_ids = null): array {
+		$scope = Tracer::start(__FUNCTION__);
 
 		$ret = [];
 
@@ -346,6 +356,7 @@ class Counters {
 			array_push($ret, $cv);
 		}
 
+		$scope->close();
 		return $ret;
 	}
 }

@@ -106,6 +106,8 @@ class RPC extends Handler_Protected {
 	}
 
 	function getAllCounters(): void {
+		$scope = Tracer::start(__FUNCTION__);
+
 		@$seq = (int) $_REQUEST['seq'];
 
 		$feed_id_count = (int) ($_REQUEST["feed_id_count"] ?? -1);
@@ -132,6 +134,7 @@ class RPC extends Handler_Protected {
 			'seq' => $seq
 		];
 
+		$scope->close();
 		print json_encode($reply);
 	}
 

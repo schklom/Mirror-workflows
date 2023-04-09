@@ -1,0 +1,17 @@
+# Please do not use this ignore file to define platform specific files.
+#
+# For these purposes create a global .gitignore file, which is a list of rules
+# for ignoring files in every Git repository on your computer.
+#
+# https://help.github.com/articles/ignoring-files/#create-a-global-gitignore
+
+jaeger-idl
+vendor
+
+composer.lock
+composer.phar
+
+jaeger-client-php.iml
+
+phpunit.xml
+phpcs.xml

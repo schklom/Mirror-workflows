@@ -304,11 +304,16 @@ class DiskCache implements Cache_Adapter {
 	}
 
 	public function send(string $filename) {
+		$scope = Tracer::start(__FUNCTION__, ['filename' => $filename]);
+
 		$filename = basename($filename);
 
 		if (!$this->exists($filename)) {
 			header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 			echo "File not found.";
+
+			$scope->getSpan()->setTag('error', '404 not found');
+			$scope->close();
 			return false;
 		}
 
@@ -317,6 +322,9 @@ class DiskCache implements Cache_Adapter {
 
 		if (($_SERVER['HTTP_IF_MODIFIED_SINCE'] ?? '') == $gmt_modified || ($_SERVER['HTTP_IF_NONE_MATCH'] ?? '') == $file_mtime) {
 			header('HTTP/1.1 304 Not Modified');
+
+			$scope->getSpan()->setTag('error', '304 not modified');
+			$scope->close();
 			return false;
 		}
 
@@ -334,6 +342,9 @@ class DiskCache implements Cache_Adapter {
 			header("Content-type: text/plain");
 
 			print "Stored file has disallowed content type ($mimetype)";
+
+			$scope->getSpan()->setTag('error', '400 disallowed content type');
+			$scope->close();
 			return false;
 		}
 
@@ -355,7 +366,13 @@ class DiskCache implements Cache_Adapter {
 
 		header_remove("Pragma");
 
-		return $this->adapter->send($filename);
+		$scope->getSpan()->setTag('mimetype', $mimetype);
+
+		$rc = $this->adapter->send($filename);
+
+		$scope->close();
+
+		return $rc;
 	}
 
 	public function get_full_path(string $filename): string {

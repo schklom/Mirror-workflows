@@ -37,26 +37,26 @@ class Tracer {
 
 	/**
 	 * @param string $name
-	 * @param array<string>|array<string, array<string, mixed>> $options
+	 * @param array<string>|array<string, array<string, mixed>> $tags
 	 * @param array<string> $args
 	 * @return Scope
 	 */
-	private function _start(string $name, array $options = [], array $args = []): Scope {
+	private function _start(string $name, array $tags = [], array $args = []): Scope {
 		$tracer = GlobalTracer::get();
 
-		$options['tags']['args'] = json_encode($args);
+		$tags['args'] = json_encode($args);
 
-		return $tracer->startActiveSpan($name, $options);
+		return $tracer->startActiveSpan($name, ['tags' => $tags]);
 	}
 
 	/**
 	 * @param string $name
-	 * @param array<string>|array<string, array<string, mixed>> $options
+	 * @param array<string>|array<string, array<string, mixed>> $tags
 	 * @param array<string> $args
 	 * @return Scope
 	 */
-	public static function start(string $name, array $options = [], array $args = []) : Scope {
-		return self::get_instance()->_start($name, $options, $args);
+	public static function start(string $name, array $tags = [], array $args = []) : Scope {
+		return self::get_instance()->_start($name, $tags, $args);
 	}
 
 	public static function get_instance() : Tracer {

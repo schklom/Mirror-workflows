@@ -52,6 +52,7 @@
 			header("Content-Type: text/json");
 			print Errors::to_json(Errors::E_UNAUTHORIZED);
 
+			$scope->getSpan()->setTag('error', Errors::E_UNAUTHORIZED);
 			$scope->close();
 			return;
 		}
@@ -60,6 +61,8 @@
 
 	if (Config::is_migration_needed()) {
 		print Errors::to_json(Errors::E_SCHEMA_MISMATCH);
+
+		$scope->getSpan()->setTag('error', Errors::E_SCHEMA_MISMATCH);
 		$scope->close();
 		return;
 	}
@@ -122,11 +125,14 @@
 			user_error("Refusing to invoke method $method of handler $op which starts with underscore.", E_USER_WARNING);
 			header("Content-Type: text/json");
 			print Errors::to_json(Errors::E_UNAUTHORIZED);
+
+			$scope->getSpan()->setTag('error', Errors::E_UNAUTHORIZED);
 			$scope->close();
 			return;
 		}
 
 		if ($override) {
+			/** @var Plugin|IHandler|ICatchall $handler */
 			$handler = $override;
 		} else {
 			$reflection = new ReflectionClass($op);

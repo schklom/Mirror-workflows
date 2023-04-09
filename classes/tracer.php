@@ -37,7 +37,7 @@ class Tracer {
 
 	/**
 	 * @param string $name
-	 * @param array<mixed> $options
+	 * @param array<string>|array<string, array<string, mixed>> $options
 	 * @param array<string> $args
 	 * @return Scope
 	 */
@@ -51,12 +51,12 @@ class Tracer {
 
 	/**
 	 * @param string $name
-	 * @param array<string> $options
+	 * @param array<string>|array<string, array<string, mixed>> $options
 	 * @param array<string> $args
 	 * @return Scope
 	 */
 	public static function start(string $name, array $options = [], array $args = []) : Scope {
-		return self::get_instance()->_start($name, $options);
+		return self::get_instance()->_start($name, $options, $args);
 	}
 
 	public static function get_instance() : Tracer {

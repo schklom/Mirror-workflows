@@ -29,6 +29,25 @@ function $$(query) {
 	return document.querySelectorAll(query);
 }
 
+// polyfill for safari https://raw.githubusercontent.com/pladaria/requestidlecallback-polyfill/master/index.js
+window.requestIdleCallback =
+	window.requestIdleCallback ||
+		function (callback) {
+			const start = Date.now();
+			return setTimeout(() => {
+				callback({
+					didTimeout: false,
+					timeRemaining: () => Math.max(0, 50 - (Date.now() - start))
+					},
+				);
+			}, 1);
+		};
+
+window.cancelIdleCallback =
+	window.cancelIdleCallback ||
+		function (id) {
+			clearTimeout(id);
+		};
 
 Element.prototype.hasClassName = function(className) {
 	return this.classList.contains(className);

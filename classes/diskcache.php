@@ -221,7 +221,7 @@ class DiskCache implements Cache_Adapter {
 	}
 
 	public function remove(string $filename): bool {
-		$scope = Tracer::start(__METHOD__);
+		$scope = Tracer::start(__METHOD__, ['filename' => $filename]);
 		$rc = $this->adapter->remove($filename);
 		$scope->close();
 
@@ -248,7 +248,7 @@ class DiskCache implements Cache_Adapter {
 	}
 
 	public function exists(string $filename): bool {
-		$scope = Tracer::start(__METHOD__);
+		$scope = Tracer::start(__METHOD__, ['filename' => $filename]);
 		$rc = $this->adapter->exists(basename($filename));
 		$scope->close();
 
@@ -259,7 +259,11 @@ class DiskCache implements Cache_Adapter {
 	 * @return int|false -1 if the file doesn't exist, false if an error occurred, size in bytes otherwise
 	 */
 	public function get_size(string $filename) {
-		return $this->adapter->get_size(basename($filename));
+		$scope = Tracer::start(__METHOD__, ['filename' => $filename]);
+		$rc = $this->adapter->get_size(basename($filename));
+		$scope->close();
+
+		return $rc;
 	}
 
 	/**

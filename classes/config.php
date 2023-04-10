@@ -196,7 +196,7 @@ class Config {
 	const JAEGER_REPORTING_HOST = "JAEGER_REPORTING_HOST";
 
 	/** Jaeger service name */
-	const JAEGER_SERVICE_NAME = "tt-rss";
+	const JAEGER_SERVICE_NAME = "JAEGER_SERVICE_NAME";
 
 	/** default values for all global configuration options */
 	private const _DEFAULTS = [

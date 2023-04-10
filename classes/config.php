@@ -323,12 +323,11 @@ class Config {
 		if (empty($this->version)) {
 			$this->version["status"] = -1;
 
-			if (file_exists("$root_dir/version_static_official.txt")) {
-				list ($version, $timestamp, $commit) = explode(" ", file_get_contents("$root_dir/version_static_official.txt"));
+			if (getenv("BUILD_TIMESTAMP") && getenv("CI_COMMIT_SHORT_SHA")) {
 
-				$this->version["version"] = trim($version);
-				$this->version["timestamp"] = strtotime(trim($timestamp));
-				$this->version["commit"] = trim($commit);
+				$this->version["version"] = sprintf("%s-%s-%s", getenv("BUILD_TIMESTAMP"), getenv("CI_COMMIT_BRANCH"), getenv("CI_COMMIT_SHORT_SHA"));
+				$this->version["timestamp"] = strtotime(getenv("CI_COMMIT_TIMESTAMP"));
+				$this->version["commit"] = getenv("CI_COMMIT_SHA");
 				$this->version["status"] = 0;
 
 			} else if (PHP_OS === "Darwin") {

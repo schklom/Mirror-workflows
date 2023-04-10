@@ -8,6 +8,7 @@ ARG BUILD_TIMESTAMP
 ARG CI_COMMIT_BRANCH
 ARG CI_COMMIT_SHORT_SHA
 ARG CI_COMMIT_TIMESTAMP
+ARG CI_COMMIT_SHA
 
 RUN apk add --no-cache dcron php81 php81-fpm php81-phar php81-sockets \
 	php81-pdo php81-gd php81-pgsql php81-pdo_pgsql php81-xmlwriter \
@@ -34,7 +35,9 @@ ADD config.docker.php ${SCRIPT_ROOT}
 
 COPY --from=app-src . ${SRC_DIR}
 
-RUN [ ! -z ${BUILD_TIMESTAMP} ] && echo ${BUILD_TIMESTAMP}-${CI_COMMIT_BRANCH}-${CI_COMMIT_SHORT_SHA} ${CI_COMMIT_TIMESTAMP} | tee ${SRC_DIR}/version-static-official.txt
+RUN [ ! -z ${BUILD_TIMESTAMP} ] \
+	&& echo ${BUILD_TIMESTAMP}-${CI_COMMIT_BRANCH}-${CI_COMMIT_SHORT_SHA} ${CI_COMMIT_TIMESTAMP} ${CI_COMMIT_SHA} | \
+		tee ${SRC_DIR}/version_static_official.txt
 
 ARG ORIGIN_REPO_XACCEL=https://git.tt-rss.org/fox/ttrss-nginx-xaccel.git
 

@@ -311,7 +311,7 @@ class Config {
 	static function get_version_html() : string {
 		$version = self::get_version(false);
 
-		return sprintf("<span title=\"%s\">%s</span>", date("Y-m-d H:i:s", ($version['timestamp'] ?? 0)), $version['version']);
+		return sprintf("<span title=\"%s\n%s\">%s</span>", date("Y-m-d H:i:s", ($version['timestamp'] ?? 0)), $version['commit'], $version['version']);
 	}
 
 	/**
@@ -323,7 +323,15 @@ class Config {
 		if (empty($this->version)) {
 			$this->version["status"] = -1;
 
-			if (PHP_OS === "Darwin") {
+			if (file_exists("$root_dir/version_static_official.txt")) {
+				list ($version, $timestamp, $commit) = explode(" ", file_get_contents("$root_dir/version_static_official.txt"));
+
+				$this->version["version"] = trim($version);
+				$this->version["timestamp"] = strtotime(trim($timestamp));
+				$this->version["commit"] = trim($commit);
+				$this->version["status"] = 0;
+
+			} else if (PHP_OS === "Darwin") {
 				$this->version["version"] = "UNKNOWN (Unsupported, Darwin)";
 			} else if (file_exists("$root_dir/version_static.txt")) {
 				$this->version["version"] = trim(file_get_contents("$root_dir/version_static.txt")) . " (Unsupported)";

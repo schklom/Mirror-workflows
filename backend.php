@@ -30,7 +30,7 @@
 	$op = (string)clean($op);
 	$method = (string)clean($method);
 
-	$scope = Tracer::start(__FILE__, ['tags' => $_REQUEST]);
+	$scope = Tracer::start(__FILE__, ['tags' => json_encode($_REQUEST)]);
 
 	startup_gettext();
 

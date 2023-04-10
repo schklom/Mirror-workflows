@@ -19,9 +19,6 @@ RUN apk add --no-cache dcron php81 php81-fpm php81-phar php81-sockets \
 			/etc/php81/php-fpm.d/www.conf && \
 	mkdir -p /var/www ${SCRIPT_ROOT}/config.d
 
-ARG BUILD_TIMESTAMP
-ENV BUILD_TIMESTAMP=${BUILD_TIMESTAMP}
-
 ARG CI_COMMIT_BRANCH
 ENV CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH}
 

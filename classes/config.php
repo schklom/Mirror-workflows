@@ -327,11 +327,11 @@ class Config {
 		if (empty($this->version)) {
 			$this->version["status"] = -1;
 
-			if (getenv("BUILD_TIMESTAMP") && getenv("CI_COMMIT_SHORT_SHA")) {
+			if (getenv("CI_COMMIT_SHORT_SHA") && getenv("CI_COMMIT_TIMESTAMP")) {
 
-				$this->version["version"] = sprintf("%s-%s", getenv("BUILD_TIMESTAMP"), getenv("CI_COMMIT_SHORT_SHA"));
 				$this->version["branch"] = getenv("CI_COMMIT_BRANCH");
 				$this->version["timestamp"] = strtotime(getenv("CI_COMMIT_TIMESTAMP"));
+				$this->version["version"] = sprintf("%s-%s", date("Y.m", $this->version["timestamp"]), getenv("CI_COMMIT_SHORT_SHA"));
 				$this->version["commit"] = getenv("CI_COMMIT_SHORT_SHA");
 				$this->version["status"] = 0;
 

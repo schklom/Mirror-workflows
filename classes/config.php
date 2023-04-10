@@ -195,6 +195,9 @@ class Config {
 	/** host running Jaeger collector to receive traces (disabled if empty) */
 	const JAEGER_REPORTING_HOST = "JAEGER_REPORTING_HOST";
 
+	/** Jaeger service name */
+	const JAEGER_SERVICE_NAME = "tt-rss";
+
 	/** default values for all global configuration options */
 	private const _DEFAULTS = [
 		Config::DB_TYPE => [ "pgsql", 									Config::T_STRING ],
@@ -253,6 +256,7 @@ class Config {
 																					Config::T_STRING ],
 		Config::HTTP_429_THROTTLE_INTERVAL => [ 3600,				Config::T_INT ],
 		Config::JAEGER_REPORTING_HOST => [ "",							Config::T_STRING ],
+		Config::JAEGER_SERVICE_NAME => [ "tt-rss",					Config::T_STRING ],
 	];
 
 	/** @var Config|null */

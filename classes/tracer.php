@@ -23,7 +23,7 @@ class Tracer {
 					],
 					'dispatch_mode' => \Jaeger\Config::JAEGER_OVER_BINARY_UDP,
 				],
-				'tt-rss'
+				Config::get(Config::JAEGER_SERVICE_NAME)
 			);
 
 			$config->initializeTracer();

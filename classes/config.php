@@ -311,7 +311,11 @@ class Config {
 	static function get_version_html() : string {
 		$version = self::get_version(false);
 
-		return sprintf("<span title=\"%s\n%s\">%s</span>", date("Y-m-d H:i:s", ($version['timestamp'] ?? 0)), $version['commit'], $version['version']);
+		return sprintf("<span title=\"%s\n%s\n%s\">%s</span>",
+			date("Y-m-d H:i:s", ($version['timestamp'] ?? 0)),
+				$version['commit'],
+				$version['branch'] ?? '',
+				$version['version']);
 	}
 
 	/**
@@ -325,7 +329,8 @@ class Config {
 
 			if (getenv("BUILD_TIMESTAMP") && getenv("CI_COMMIT_SHORT_SHA")) {
 
-				$this->version["version"] = sprintf("%s-%s-%s", getenv("BUILD_TIMESTAMP"), getenv("CI_COMMIT_BRANCH"), getenv("CI_COMMIT_SHORT_SHA"));
+				$this->version["version"] = sprintf("%s-%s", getenv("BUILD_TIMESTAMP"), getenv("CI_COMMIT_SHORT_SHA"));
+				$this->version["branch"] = getenv("CI_COMMIT_BRANCH");
 				$this->version["timestamp"] = strtotime(getenv("CI_COMMIT_TIMESTAMP"));
 				$this->version["commit"] = getenv("CI_COMMIT_SHORT_SHA");
 				$this->version["status"] = 0;
@@ -367,6 +372,7 @@ class Config {
 		$rv = [
 			"status" => -1,
 			"version" => "",
+			"branch" => "",
 			"commit" => "",
 			"timestamp" => 0,
 		];

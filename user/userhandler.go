@@ -107,6 +107,11 @@ func (u *UserIO) SetPrivateKey(id string, key string) {
 	u.UB.Update(user)
 }
 
+func (u *UserIO) GetPublicKey(id string) string {
+	user := u.UB.GetByID(id)
+	return user.PublicKey
+}
+
 func (u *UserIO) SetPublicKey(id string, key string) {
 	user := u.UB.GetByID(id)
 	user.PublicKey = key

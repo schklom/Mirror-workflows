@@ -207,6 +207,22 @@ func getKey(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(fmt.Sprint(uio.GetPrivateKey(id))))
 }
 
+func getPubKey(w http.ResponseWriter, r *http.Request) {
+	var request DataPackage
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		http.Error(w, "Meeep!, Error - getKey 1", http.StatusBadRequest)
+		return
+	}
+	id := uio.ACC.CheckAccessToken(request.IDT)
+	if id == "" {
+		http.Error(w, "Meeep!, Error - getKey 2", http.StatusBadRequest)
+		return
+	}
+	w.Header().Set("Content-Type", "application/text")
+	w.Write([]byte(fmt.Sprint(uio.GetPublicKey(id))))
+}
+
 func getCommand(w http.ResponseWriter, r *http.Request) {
 	var data DataPackage
 	err := json.NewDecoder(r.Body).Decode(&data)
@@ -426,6 +442,8 @@ func handleRequests() {
 	http.HandleFunc("/pictureSize/", getPictureSize)
 	http.HandleFunc("/key", getKey)
 	http.HandleFunc("/key/", getKey)
+	http.HandleFunc("/pubKey", getPubKey)
+	http.HandleFunc("/pubKey/", getPubKey)
 	http.HandleFunc("/device", mainDevice)
 	http.HandleFunc("/device/", mainDevice)
 	http.HandleFunc("/password", postPassword)

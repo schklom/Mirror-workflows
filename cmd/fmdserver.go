@@ -203,8 +203,10 @@ func getKey(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getKey 2", http.StatusBadRequest)
 		return
 	}
-	w.Header().Set("Content-Type", "application/text")
-	w.Write([]byte(fmt.Sprint(uio.GetPrivateKey(id))))
+	dataReply := DataPackage{IDT: request.IDT, Data: uio.GetPrivateKey(id)}
+	result, _ := json.Marshal(dataReply)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(result)
 }
 
 func getPubKey(w http.ResponseWriter, r *http.Request) {
@@ -219,8 +221,10 @@ func getPubKey(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getKey 2", http.StatusBadRequest)
 		return
 	}
-	w.Header().Set("Content-Type", "application/text")
-	w.Write([]byte(fmt.Sprint(uio.GetPublicKey(id))))
+	dataReply := DataPackage{IDT: request.IDT, Data: uio.GetPublicKey(id)}
+	result, _ := json.Marshal(dataReply)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(result)
 }
 
 func getCommand(w http.ResponseWriter, r *http.Request) {

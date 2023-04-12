@@ -432,6 +432,7 @@ func handleRequests() {
 	http.HandleFunc("/password/", postPassword)
 	http.HandleFunc("/push", postPushLink)
 	http.HandleFunc("/push/", postPushLink)
+	http.HandleFunc("/salt", requestSalt)
 	http.HandleFunc("/salt/", requestSalt)
 	http.HandleFunc("/requestAccess", requestAccess)
 	http.HandleFunc("/requestAccess/", requestAccess)

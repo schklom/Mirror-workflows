@@ -116,9 +116,9 @@ function preparePassword(index, password) {
                 'Content-type': 'application/json'
             }
         }).then(function (response) {
-            return response.text();
+            return response.json();
         }).then(function (salt) {
-            hashedPW = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt), {
+            hashedPW = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt.data), {
                 keySize: 256 / 32,
                 iterations: 1867 * 2
             }).toString();

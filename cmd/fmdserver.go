@@ -291,8 +291,10 @@ func requestSalt(w http.ResponseWriter, r *http.Request) {
 	} else {
 		salt = uio.GetSalt(data.IDT)
 	}
-	w.Header().Set("Content-Type", "application/text")
-	w.Write([]byte(fmt.Sprint(salt)))
+	dataReply := DataPackage{IDT: data.IDT, Data: salt}
+	result, _ := json.Marshal(dataReply)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(result)
 
 }
 

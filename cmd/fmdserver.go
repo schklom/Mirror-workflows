@@ -301,7 +301,7 @@ func requestSalt(w http.ResponseWriter, r *http.Request) {
 	var data DataPackage
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - requestAccess 1", http.StatusBadRequest)
+		http.Error(w, "Meeep!, Error - requestSalt 1", http.StatusBadRequest)
 		return
 	}
 	var salt string
@@ -350,7 +350,7 @@ func postPassword(w http.ResponseWriter, r *http.Request) {
 	var data passwordUpdateData
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - createDevice", http.StatusBadRequest)
+		http.Error(w, "Meeep!, Error - password", http.StatusBadRequest)
 		return
 	}
 	id := uio.ACC.CheckAccessToken(data.IDT)

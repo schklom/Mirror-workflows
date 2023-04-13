@@ -33,11 +33,10 @@ func (u *UserIO) CreateNewUserCT(uid string, salt, string, privKey string, pubKe
 	u.UB.Put(&User{UID: uid, Salt: salt, HashedPassword: hashedPassword, PrivateKey: privKey, PublicKey: pubKey})
 }
 
-func (u *UserIO) UpdateUserPassword(id string, privKey string, pubKey string, salt string, hashedPassword string) {
+func (u *UserIO) UpdateUserPassword(id string, privKey string, salt string, hashedPassword string) {
 	user := u.UB.GetByID(id)
 	user.HashedPassword = hashedPassword
 	user.Salt = salt
-	user.PublicKey = pubKey
 	user.PrivateKey = privKey
 	u.UB.Update(user)
 }

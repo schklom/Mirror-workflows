@@ -61,7 +61,6 @@ type passwordUpdateData struct {
 	IDT            string `'json:"idt"`
 	Salt           string `'json:"salt"`
 	HashedPassword string `'json:"hashedPassword"`
-	PubKey         string `'json:"pubKey"`
 	PrivKey        string `'json:"privKey"`
 }
 
@@ -356,7 +355,12 @@ func postPassword(w http.ResponseWriter, r *http.Request) {
 	}
 	id := uio.ACC.CheckAccessToken(data.IDT)
 
-	uio.UpdateUserPassword(id, data.PrivKey, data.PubKey, data.Salt, data.HashedPassword)
+	uio.UpdateUserPassword(id, data.PrivKey, data.Salt, data.HashedPassword)
+
+	dataReply := DataPackage{IDT: data.IDT, Data: "true"}
+	result, _ := json.Marshal(dataReply)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(result)
 }
 
 func deleteDevice(w http.ResponseWriter, r *http.Request) {

@@ -34,7 +34,8 @@ func main() {
 				fmt.Println("length loc: " + strconv.Itoa(len(user.LocationData)))
 				fmt.Println("length pic: " + strconv.Itoa(len(user.Pictures)))
 				fmt.Println("salt: " + user.Salt)
-				fmt.Println("salt: " + user.HashedPassword)
+				fmt.Println("HPW: " + user.HashedPassword)
+				fmt.Println("PrivKey: " + user.PrivateKey)
 				fmt.Println("PushUrl: " + user.PushUrl)
 			} else {
 				fmt.Println("User does not exist.")

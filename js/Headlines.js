@@ -13,6 +13,7 @@ const Headlines = {
 	_scroll_reset_timeout: false,
 	default_force_previous: false,
 	default_force_to_top: false,
+	default_move_on_expand: true,
 	line_scroll_offset: 120, /* px */
 	sticky_header_observer: new IntersectionObserver(
 		(entries, observer) => {
@@ -255,7 +256,8 @@ const Headlines = {
 						// this would only work if there's enough space
 						App.byId("headlines-frame").scrollTop -= scroll_position_A-scroll_position_B;
 
-						Article.cdmMoveToId(id);
+						if (this.default_move_on_expand)
+							Article.cdmMoveToId(id);
 					}
 
 				} else if (in_body) {

@@ -140,16 +140,21 @@ func (u *UserIO) GetPushUrl(id string) string {
 }
 
 func (u *UserIO) generateNewId() string {
+	newId := genId(u.userIDLength)
+	for u.UB.GetByID(newId) != nil {
+		newId = genId(u.userIDLength)
+	}
+	return newId
+}
+
+func genId(length int) string {
 	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-	s := make([]rune, u.userIDLength)
+	s := make([]rune, length)
 	rand.Seed(time.Now().Unix())
 	for i := range s {
 		s[i] = letters[rand.Intn(len(letters))]
 	}
 	newId := string(s)
-	if u.UB.GetByID(newId) != nil {
-		newId = u.generateNewId()
-	}
 	return newId
 }
 

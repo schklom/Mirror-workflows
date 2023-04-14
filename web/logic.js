@@ -203,11 +203,11 @@ function locate(index, password) {
                                         }
                                     })
                                         .then(function (response) {
-                                            return response.text()
+                                            return response.json()
                                         })
-                                        .then(function (keyBase64) {
+                                        .then(function (keyData) {
                                             if (keyTemp == null) {
-                                                var key = decryptAES(password, keyBase64)
+                                                var key = decryptAES(password, keyData.Data)
                                                 keyTemp = key
                                             } else {
                                                 key = keyTemp

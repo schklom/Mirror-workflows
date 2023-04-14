@@ -75,8 +75,25 @@ func (a *AccessController) CheckAccessToken(idToCheck string) string {
 	return ""
 }
 
-func (a *AccessController) PutAccess(id string, accessTokenId string) AccessToken {
-	newAccess := AccessToken{DeviceId: id, AccessToken: accessTokenId, Time: time.Now().Unix()}
+func (a *AccessController) CheckForDuplicates(idToCheck string) bool {
+	for _, id := range a.accessTokens {
+		if id.AccessToken == idToCheck {
+			return true
+		}
+	}
+	return false
+}
+
+func (a *AccessController) generateNewAT() string {
+	newId := genId(20)
+	for a.CheckForDuplicates(newId) {
+		newId = genId(20)
+	}
+	return newId
+}
+
+func (a *AccessController) PutAccess(id string) AccessToken {
+	newAccess := AccessToken{DeviceId: id, AccessToken: a.generateNewAT(), Time: time.Now().Unix()}
 	a.accessTokens = append(a.accessTokens, newAccess)
 	return newAccess
 }

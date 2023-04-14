@@ -27,6 +27,16 @@ func main() {
 			for i := 0; i < len(users); i++ {
 				fmt.Println(strconv.Itoa(i) + " - " + users[i].UID)
 			}
+		} else if stirngs.Compare("l", text) == 0 {
+			fmt.Print("ID -> ")
+			id, _ := reader.ReadString('\n')
+			fmt.Print("PASSWORD -> ")
+			password, _ := reader.ReadString('\n')
+			user := uio.UB.GetByID(id)
+			encryptedPrivKey := user.User_.PrivateKey
+
+			print(user.User_.LocationData[len[LocationData-1]])
+
 		} else {
 			user := uio.UB.GetByID(text)
 			if user != nil {

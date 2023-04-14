@@ -59,7 +59,7 @@ function prepareForLogin() {
 
         var div = document.createElement("div");
         div.id = "passowordPrompt";
-        div.class = "prompt";
+        div.classList.add("prompt");
 
         var label = document.createElement("label");
         label.id = "password_prompt_label";
@@ -521,7 +521,7 @@ function prepareDelete() {
 
     var div = document.createElement("div");
     div.id = "passowordPrompt";
-    div.class = "prompt";
+    div.classList.add("prompt");
 
     var label = document.createElement("label");
     label.id = "password_prompt_label";

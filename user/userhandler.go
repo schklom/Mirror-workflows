@@ -167,7 +167,7 @@ func (u *UserIO) RequestAccess(id string, hashedPW string) (bool, AccessToken) {
 	user := u.UB.GetByID(id)
 	if user != nil {
 		if strings.EqualFold(user.HashedPassword, hashedPW) {
-			return true, u.ACC.PutAccess(id, u.generateNewId())
+			return true, u.ACC.PutAccess(id)
 		}
 	}
 	var a AccessToken

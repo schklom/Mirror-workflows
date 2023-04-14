@@ -42,7 +42,7 @@ function init() {
             versionView.innerHTML = versionCode;
         })
 
-    if(getWelcomeCookie() == ""){
+    if (getWelcomeCookie() == "") {
         welcomePrompt = document.getElementById('welcomePrompt');
         welcomePrompt.style.visibility = 'visible';
     }
@@ -118,7 +118,7 @@ function preparePassword(index, password) {
         }).then(function (response) {
             return response.json();
         }).then(function (salt) {
-            hashedPW = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt.data), {
+            hashedPW = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt.Data), {
                 keySize: 256 / 32,
                 iterations: 1867 * 2
             }).toString();
@@ -175,78 +175,90 @@ function locate(index, password) {
                             index = newestLocationDataIndex;
                             currentLocationDataIndx = newestLocationDataIndex;
                         }
-                    })
 
-                fetch("./location", {
-                    method: 'PUT',
-                    body: JSON.stringify({
-                        IDT: token.Data,
-                        Data: index.toString()
-                    }),
-                    headers: {
-                        'Content-type': 'application/json'
-                    }
-                })
-                    .then(function (response) {
-                        return response.json();
-                    })
-                    .then(function (json) {
+                        if (json.Data != "-1") {
+                            fetch("./location", {
+                                method: 'PUT',
+                                body: JSON.stringify({
+                                    IDT: token.Data,
+                                    Data: index.toString()
+                                }),
+                                headers: {
+                                    'Content-type': 'application/json'
+                                }
+                            })
+                                .then(function (response) {
+                                    return response.json();
+                                })
+                                .then(function (json) {
 
-                        fetch("./key", {
-                            method: 'PUT',
-                            body: JSON.stringify({
-                                IDT: token.Data,
-                                Data: index.toString()
-                            }),
-                            headers: {
-                                'Content-type': 'application/json'
+                                    fetch("./key", {
+                                        method: 'PUT',
+                                        body: JSON.stringify({
+                                            IDT: token.Data,
+                                            Data: index.toString()
+                                        }),
+                                        headers: {
+                                            'Content-type': 'application/json'
+                                        }
+                                    })
+                                        .then(function (response) {
+                                            return response.text()
+                                        })
+                                        .then(function (keyBase64) {
+                                            if (keyTemp == null) {
+                                                var key = decryptAES(password, keyBase64)
+                                                keyTemp = key
+                                            } else {
+                                                key = keyTemp
+                                            }
+                                            if (key != -1) {
+                                                var crypt = new JSEncrypt();
+                                                crypt.setPrivateKey(key);
+
+                                                var provider = crypt.decrypt(json.Provider);
+                                                var time = new Date(json.Date);
+                                                var lon = crypt.decrypt(json.lon);
+                                                var lat = crypt.decrypt(json.lat);
+                                                var bat = crypt.decrypt(json.Bat);
+
+
+                                                document.getElementsByClassName("deviceInfo")[0].style.display = "block";
+                                                document.getElementById("idView").innerHTML = currentId;
+                                                document.getElementById("dateView").innerHTML = time.toLocaleDateString();
+                                                document.getElementById("timeView").innerHTML = time.toLocaleTimeString();
+                                                document.getElementById("providerView").innerHTML = provider;
+                                                document.getElementById("batView").innerHTML = bat + "%";
+
+                                                var target = L.latLng(lat, lon);
+
+                                                markers.clearLayers();
+                                                L.marker(target).addTo(markers);
+                                                map.setView(target, 16);
+
+                                                loginDiv = document.getElementById("login");
+                                                if (loginDiv != null) {
+                                                    loginDiv.parentNode.removeChild(loginDiv);
+                                                }
+                                            } else {
+                                                alert("Wrong password!");
+                                            }
+
+                                        })
+                                })
+                        } else {
+                            document.getElementsByClassName("deviceInfo")[0].style.display = "block";
+                            document.getElementById("idView").innerHTML = currentId;
+                            document.getElementById("dateView").innerHTML = "No data available";
+                            document.getElementById("timeView").innerHTML = "No data available";
+                            document.getElementById("providerView").innerHTML = "No data available";
+                            document.getElementById("batView").innerHTML = "? %";
+                            loginDiv = document.getElementById("login");
+                            if (loginDiv != null) {
+                                loginDiv.parentNode.removeChild(loginDiv);
                             }
-                        })
-                            .then(function (response) {
-                                return response.text()
-                            })
-                            .then(function (keyBase64) {
-                                if (keyTemp == null) {
-                                    var key = decryptAES(password, keyBase64)
-                                    keyTemp = key
-                                } else {
-                                    key = keyTemp
-                                }
-                                if (key != -1) {
-                                    var crypt = new JSEncrypt();
-                                    crypt.setPrivateKey(key);
-
-                                    var provider = crypt.decrypt(json.Provider);
-                                    var time = new Date(json.Date);
-                                    var lon = crypt.decrypt(json.lon);
-                                    var lat = crypt.decrypt(json.lat);
-                                    var bat = crypt.decrypt(json.Bat);
-
-
-                                    document.getElementsByClassName("deviceInfo")[0].style.display = "block";
-                                    document.getElementById("idView").innerHTML = currentId;
-                                    document.getElementById("dateView").innerHTML = time.toLocaleDateString();
-                                    document.getElementById("timeView").innerHTML = time.toLocaleTimeString();
-                                    document.getElementById("providerView").innerHTML = provider;
-                                    document.getElementById("batView").innerHTML = bat + "%";
-
-                                    var target = L.latLng(lat, lon);
-
-                                    markers.clearLayers();
-                                    L.marker(target).addTo(markers);
-                                    map.setView(target, 16);
-
-                                    loginDiv = document.getElementById("login");
-                                    if (loginDiv != null) {
-                                        loginDiv.parentNode.removeChild(loginDiv);
-                                    }
-                                } else {
-                                    alert("Wrong password!");
-                                }
-
-                            })
+                        }
                     })
-
             })
     }
 
@@ -480,28 +492,28 @@ function getWelcomeCookie() {
     let name = "welcome=";
     let decodedCookie = decodeURIComponent(document.cookie);
     let ca = decodedCookie.split(';');
-    for(let i = 0; i <ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) == ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) == 0) {
-        return c.substring(name.length, c.length);
-      }
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
     }
     return "";
-  }
+}
 
-  function welcomeFinish() {
+function welcomeFinish() {
     const d = new Date();
-    d.setTime(d.getTime() + (365*24*60*60*1000));
-    let expires = "expires="+ d.toUTCString();
+    d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
+    let expires = "expires=" + d.toUTCString();
     document.cookie = "welcome=true" + ";" + expires + ";path=/";
     welcomePrompt = document.getElementById('welcomePrompt');
     welcomePrompt.style.visibility = 'hidden';
-  }
+}
 
-  function prepareDelete(){
+function prepareDelete() {
     var submit = function () {
         document.body.removeChild(div);
         sendToPhone('delete ' + input.value);
@@ -543,4 +555,4 @@ function getWelcomeCookie() {
         }
     }, false);
 
-  }
+}

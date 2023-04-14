@@ -500,3 +500,47 @@ function getWelcomeCookie() {
     welcomePrompt = document.getElementById('welcomePrompt');
     welcomePrompt.style.visibility = 'hidden';
   }
+
+  function prepareDelete(){
+    var submit = function () {
+        document.body.removeChild(div);
+        sendToPhone('delete ' + input.value);
+    };
+
+    var div = document.createElement("div");
+    div.id = "passowordPrompt";
+    div.class = "prompt";
+
+    var label = document.createElement("label");
+    label.id = "password_prompt_label";
+    label.className = "center"
+    label.innerHTML = "Please enter the device pin:";
+    label.for = "password_prompt_input";
+    div.appendChild(label);
+
+    div.appendChild(document.createElement("br"));
+
+    var centedInnerDiv = document.createElement("div");
+    centedInnerDiv.className = "center";
+    div.appendChild(centedInnerDiv);
+
+    var input = document.createElement("input");
+    input.id = "password_prompt_input";
+    input.type = "password";
+    centedInnerDiv.appendChild(input);
+
+    div.appendChild(document.createElement("br"));
+    div.appendChild(document.createElement("br"));
+
+    document.body.appendChild(div);
+
+    input.focus();
+    input.addEventListener("keyup", function (e) {
+        if (event.keyCode == 13) {
+            if (input.value != "") {
+                submit();
+            }
+        }
+    }, false);
+
+  }

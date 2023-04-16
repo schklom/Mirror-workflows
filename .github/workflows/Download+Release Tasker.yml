@@ -58,7 +58,8 @@ jobs:
       
       - name: Write tag name
         if: ${{ env.current_hash }} != ${{ env.new_hash }}
-        run: echo "tagname=${{ env.version }}_${{ env.last_update_date_env }}" >> $GITHUB_ENV
+        #run: echo "tagname=${{ env.version }}_${{ env.last_update_date_env }}" >> $GITHUB_ENV
+        run: echo "tagname=${{ format('{0}_{1}', env.version, env.last_update_date_env) }}" >> $GITHUB_ENV
       
       - name: Commit and push the change
         if: ${{ env.current_hash }} != ${{ env.new_hash }}

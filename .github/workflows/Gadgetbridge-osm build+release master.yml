@@ -45,3 +45,5 @@ jobs:
             # ./app/build/outputs/apk/app-debug.apk
           #files: ./app/build/outputs/apk/main/release/app-main-release-unsigned.apk
           files: ./app/build/outputs/apk/main/debug/app-main-debug.apk
+          repository: "schklom/Gadgetbridge-osm"
+          token: ${{ secrets.PAT_GITHUB_ACTION }}

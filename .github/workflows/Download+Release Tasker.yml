@@ -60,8 +60,8 @@ jobs:
         if: ${{ env.current_hash }} != ${{ env.new_hash }}
         #run: echo "tagname=${{ env.version }}_${{ env.last_update_date_env }}" >> $GITHUB_ENV
         run: |
-          ver=${{ env.version }}
-          last_update=${{ env.last_update_date_env }}
+          ver="${{ env.version }}"
+          last_update="${{ env.last_update_date_env }}"
           tagname="$(ver)_$(last_update)"
           echo "tagname=${tagname}" >> $GITHUB_ENV
       

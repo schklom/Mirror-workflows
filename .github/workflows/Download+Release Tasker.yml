@@ -62,3 +62,4 @@ jobs:
           tag_name: "${{ env.last_update_date_env }}"
           body: "New version of Tasker Direct Purchase"
           files: "${{ env.filename }}"
+          repository: "schklom/Tasker-apk"

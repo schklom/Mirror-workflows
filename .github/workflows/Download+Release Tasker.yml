@@ -45,7 +45,7 @@ jobs:
       - name: Record last update date and update current hash
         if: ${{ env.current_hash }} != ${{ env.new_hash }}
         run: |
-          date +%Y%m%d > last_update_date
+          date +%Y-%m-%d > last_update_date
           echo "last_update_date_env=$(cat last_update_date)" >> $GITHUB_ENV
           mv hash_new_file hash_current_file
       

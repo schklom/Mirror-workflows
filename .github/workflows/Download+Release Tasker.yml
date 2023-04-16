@@ -49,6 +49,13 @@ jobs:
           echo "last_update_date_env=$(cat last_update_date)" >> $GITHUB_ENV
           mv hash_new_file hash_current_file
       
+      - name: Find version number
+        if: ${{ env.current_hash }} != ${{ env.new_hash }}
+        run: |
+          unzip ${filename} -d apk_files
+          echo "version=$(grep "Version" apk_files/assets/about.html | cut -d " " -f 2)" >> $GITHUB_ENV
+          rm -rf apk_files
+      
       - name: Commit and push the change
         if: ${{ env.current_hash }} != ${{ env.new_hash }}
         uses: stefanzweifel/git-auto-commit-action@v4
@@ -59,7 +66,7 @@ jobs:
         if: ${{ env.current_hash }} != ${{ env.new_hash }}
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ env.last_update_date_env }}
+          tag_name: ${{ env.version }}
           body: "New version of Tasker Direct Purchase"
           files: ${{ env.filename }}
           repository: "schklom/Tasker-apk"

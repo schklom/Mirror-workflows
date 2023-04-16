@@ -29,7 +29,7 @@ jobs:
         run: |
           filename="./Tasker.28.Direct.apk"
           echo "filename=${filename}" >> $GITHUB_ENV
-          fileid=${{ TASKER_GOOGLE_DRIVE_FILE_ID }}
+          fileid=${{ env.TASKER_GOOGLE_DRIVE_FILE_ID }}
           url="https://drive.google.com/uc?export=download&confirm=t&id=${fileid}"
           curl -L "https://drive.google.com/uc?export=download&confirm=t&id=${fileid}" -o ${filename}
       

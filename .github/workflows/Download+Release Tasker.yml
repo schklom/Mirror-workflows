@@ -24,7 +24,6 @@ jobs:
         with:
           repository: 'schklom/Tasker-apk'
           ref: 'main' # branch
-          token: ${{ secrets.GITSYNCACTION }}
 
       - name: Get apk from Google Drive
         run: |
@@ -48,17 +47,17 @@ jobs:
           date +%Y%m%d > last_update_date
           mv hash_new_file hash_current_file
       
-      - name: DEBUG
-        run: |
-          ls -alh ./
-          echo "current hash=${{ env.current_hash }}"
-          echo "new hash=${{ env.new_hash }}"
-      
       - name: Commit and push the change
         if: ${{ env.current_hash }} != ${{ env.new_hash }}
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Update the apk, its hash, and update date
+        #uses: stefanzweifel/git-auto-commit-action@v4
+        #with:
+        #  commit_message: Update the apk, its hash, and update date
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "Update the apk, its hash, and update date"
+          git push
         
       - name: Release apk if hashes are different
         if: ${{ env.current_hash }} != ${{ env.new_hash }}

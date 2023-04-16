@@ -29,7 +29,7 @@ jobs:
         run: |
           filename="./Tasker.28.Direct.apk"
           echo "filename=${filename}" >> $GITHUB_ENV
-          fileid=${{ env.TASKER_GOOGLE_DRIVE_FILE_ID }}
+          fileid=${{ secrets.TASKER_GOOGLE_DRIVE_FILE_ID }}
           url="https://drive.google.com/uc?export=download&confirm=t&id=${fileid}"
           curl -L "https://drive.google.com/uc?export=download&confirm=t&id=${fileid}" -o ${filename}
       
@@ -57,6 +57,6 @@ jobs:
         if: ${{ env.current_hash }} != ${{ env.new_hash }}
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: "${{ last_update_date }}"
+          tag_name: "$(cat last_update_date)"
           body: "New version of Tasker Direct Purchase"
-          files: "${{ filename }}"
+          files: "${{ env.filename }}"

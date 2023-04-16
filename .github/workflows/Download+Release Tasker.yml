@@ -49,9 +49,11 @@ jobs:
           echo "last_update_date_env=$(cat last_update_date)" >> $GITHUB_ENV
           mv hash_new_file hash_current_file
       
+      # https://code.whatever.social/questions/13469147/get-android-apk-file-versionname-or-versioncode-without-installing-apk
       - name: Find version number
         if: ${{ env.current_hash }} != ${{ env.new_hash }}
         run: |
+          sudo apt-get install -y aapt
           version=`aapt d badging ${{ env.filename }} | grep -Po "(?<=\sversionName=')([0-9.]+)"`
           echo "version=${version}" >> $GITHUB_ENV
 #          unzip -d apk_files ${{ env.filename }}

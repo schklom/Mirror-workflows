@@ -45,7 +45,7 @@ jobs:
       - name: Record last update date and update current hash
         if: ${{ env.current_hash }} != ${{ env.new_hash }}
         run: |
-          date +%Y-%m-%d > last_update_date
+          date +%Y-%m-%d_%H-%M > last_update_date
           echo "last_update_date_env=$(cat last_update_date)" >> $GITHUB_ENV
           mv hash_new_file hash_current_file
       
@@ -66,7 +66,7 @@ jobs:
         if: ${{ env.current_hash }} != ${{ env.new_hash }}
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ env.version }}
+          tag_name: "${{ env.version }}_${{ env.last_update_date_env }}"
           body: "New version of Tasker Direct Purchase"
           files: ${{ env.filename }}
           repository: "schklom/Tasker-apk"

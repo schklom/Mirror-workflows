@@ -24,6 +24,7 @@ jobs:
         with:
           repository: 'schklom/Tasker-apk'
           ref: 'main' # branch
+          token: ${{ secrets.PAT_GITHUB_ACTION }}
 
       - name: Get apk from Google Drive
         run: |

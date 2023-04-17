@@ -28,11 +28,12 @@ jobs:
       - name: set local and remote latest commit as environment variables
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+        # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
         run: |
-          echo "::set-output name=SETREMOTE_ORIGINAL_REPO::$(git ls-remote https://github.com/zelon88/HRConvert2 HEAD | awk '{ print $1 }')"
-          echo "::set-output name=SETLOCAL_ORIGINAL_REPO::$(cat last_sync_with_original_repo_commit_id_original_repo)"
-          echo "::set-output name=SETREMOTE_DOCKERFILE::$(git ls-remote https://github.com/dwaaan/HRConvert2-Docker HEAD | awk '{ print $1 }')"
-          echo "::set-output name=SETLOCAL_DOCKERFILE::$(cat last_sync_with_original_repo_commit_id_dockerfile)"
+          echo "SETREMOTE_ORIGINAL_REPO=$(git ls-remote https://github.com/zelon88/HRConvert2 HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+          echo "SETLOCAL_ORIGINAL_REPO=$(cat last_sync_with_original_repo_commit_id_original_repo)" >> $GITHUB_OUTPUT
+          echo "SETREMOTE_DOCKERFILE=$(git ls-remote https://github.com/dwaaan/HRConvert2-Docker HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+          echo "SETLOCAL_DOCKERFILE=$(cat last_sync_with_original_repo_commit_id_dockerfile)" >> $GITHUB_OUTPUT
   
   repo_sync:
     needs: [get_commits]

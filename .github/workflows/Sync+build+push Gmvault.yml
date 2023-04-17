@@ -21,9 +21,10 @@ jobs:
       - name: set commits as environment variables
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+        # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
         run: |
-          echo "::set-output name=SETREMOTE::$(git ls-remote https://github.com/guillaumeaubert/gmvault-docker.git HEAD | awk '{ print $1 }')"
-          echo "::set-output name=SETLOCAL::$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/Gmvault | awk '{ print $1 }')"
+          echo "SETREMOTE=$(git ls-remote https://github.com/guillaumeaubert/gmvault-docker.git HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+          echo "SETLOCAL=$(git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/Gmvault | awk '{ print $1 }')" >> $GITHUB_OUTPUT
   
   # repo-sync:
     # needs: [get_commits]

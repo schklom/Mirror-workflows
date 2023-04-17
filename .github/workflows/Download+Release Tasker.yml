@@ -41,16 +41,9 @@ jobs:
         run: |
           echo "current_hash=$(cat hash_current_file)" >> $GITHUB_ENV
           echo "new_hash=$(cat hash_new_file)" >> $GITHUB_ENV
-          cat hash_current_file
-          cat hash_new_file
-      
-      - name: Print hashes
-        run: |
-          echo "${{ env.current_hash }}"
-          echo "${{ env.new_hash }}"
       
       - name: Record last update date and update current hash
-        if: ${{ env.current_hash }} != ${{ env.new_hash }}
+        if: ${{ env.current_hash != env.new_hash }}
         run: |
           date +%Y-%m-%d_%H-%M > last_update_date
           echo "last_update_date_env=$(cat last_update_date)" >> $GITHUB_ENV
@@ -58,7 +51,7 @@ jobs:
       
       # https://code.whatever.social/questions/13469147/get-android-apk-file-versionname-or-versioncode-without-installing-apk
       - name: Find version number
-        if: ${{ env.current_hash }} != ${{ env.new_hash }}
+        if: ${{ env.current_hash != env.new_hash }}
         run: |
           sudo apt-get install -y aapt
           version=`aapt d badging ${{ env.filename }} | grep -Po "(?<=\sversionName=')([0-9.]+)"`
@@ -68,7 +61,7 @@ jobs:
 #          rm -rf apk_files
       
       - name: Write tag name
-        if: ${{ env.current_hash }} != ${{ env.new_hash }}
+        if: ${{ env.current_hash != env.new_hash }}
         #run: echo "tagname=${{ env.version }}_${{ env.last_update_date_env }}" >> $GITHUB_ENV
         run: |
           ver="${{ env.version }}"
@@ -77,13 +70,13 @@ jobs:
           echo "tagname=${tagname}" >> $GITHUB_ENV
       
       - name: Commit and push the change
-        if: ${{ env.current_hash }} != ${{ env.new_hash }}
+        if: ${{ env.current_hash != env.new_hash }}
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Update the apk, its hash, and update date
         
       - name: Release apk if hashes are different
-        if: ${{ env.current_hash }} != ${{ env.new_hash }}
+        if: ${{ env.current_hash != env.new_hash }}
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.tagname }}

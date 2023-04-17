@@ -44,6 +44,11 @@ jobs:
           cat hash_current_file
           cat hash_new_file
       
+      - name: Print hashes
+        run: |
+          echo "${{ env.current_hash }}"
+          echo "${{ env.new_hash }}"
+      
       - name: Record last update date and update current hash
         if: ${{ env.current_hash }} != ${{ env.new_hash }}
         run: |

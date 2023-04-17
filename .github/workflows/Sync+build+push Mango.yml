@@ -22,9 +22,10 @@ jobs:
       - name: set local and remote latest commit as environment variables
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+        # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
         run: |
-          echo "::set-output name=SETREMOTE::$(git ls-remote https://github.com/hkalexling/Mango.git HEAD | awk '{ print $1 }')"
-          echo "::set-output name=SETLOCAL::$(cat last_sync_with_original_repo_commit_id)"
+          echo "SETREMOTE=$(git ls-remote https://github.com/hkalexling/Mango.git HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+          echo "SETLOCAL=$(cat last_sync_with_original_repo_commit_id)" >> $GITHUB_OUTPUT
   
   repo_sync:
     needs: [get_commits]

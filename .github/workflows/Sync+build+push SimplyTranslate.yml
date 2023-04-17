@@ -25,7 +25,8 @@ jobs:
         with:
           ref: 'SimplyTranslate' # branch
       - name: set local and remote latest commit as environment variables
-        id: commits
+        id: commits        
+        # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
         run: |
           echo "SETREMOTE_ENGINES=$(git ls-remote https://codeberg.org/SimpleWeb/SimplyTranslate-Engines HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT

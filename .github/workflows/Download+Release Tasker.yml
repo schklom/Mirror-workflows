@@ -41,6 +41,8 @@ jobs:
         run: |
           echo "current_hash=$(cat hash_current_file)" >> $GITHUB_ENV
           echo "new_hash=$(cat hash_new_file)" >> $GITHUB_ENV
+          cat hash_current_file
+          cat hash_new_file
       
       - name: Record last update date and update current hash
         if: ${{ env.current_hash }} != ${{ env.new_hash }}

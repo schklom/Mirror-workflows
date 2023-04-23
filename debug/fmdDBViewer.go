@@ -37,10 +37,10 @@ func main() {
 					}
 				}
 				if dup > 0 {
-					Println("___")
-					Println(users[i].HashedPassword)
-					Println("Amount of duplicates: " + strconv.Itoa(dup))
-					Println("___")
+					fmt.Println("___")
+					fmt.Println(users[i].HashedPassword)
+					fmt.Println("Amount of duplicates: " + strconv.Itoa(dup))
+					fmt.Println("___")
 				}
 			}
 		} else if strings.Compare("l", text) == 0 {

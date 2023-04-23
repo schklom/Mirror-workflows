@@ -5,6 +5,7 @@ import (
 	"findmydeviceserver/user"
 	"fmt"
 	"os"
+	"os/user"
 	"strconv"
 	"strings"
 )
@@ -26,6 +27,22 @@ func main() {
 			users, _ := uio.UB.GetAll()
 			for i := 0; i < len(users); i++ {
 				fmt.Println(strconv.Itoa(i) + " - " + users[i].UID)
+			}
+		} else if strings.Compare("dp", text) == 0 {
+			users, _ := uio.UB.GetAll()
+			for i := 0; i < len(users); i++ {
+				var dup = 0
+				for z := 0; z < len(users); z++ {
+					if users[i].hashedPassword == users[z].hashedPassword {
+						dup += 1
+					}
+				}
+				if dup > 0 {
+					print("___")
+					print(users[i].hashedPassword)
+					print("Amount of duplicates: " + strconv.Itoa(dup))
+					print("___")
+				}
 			}
 		} else if stirngs.Compare("l", text) == 0 {
 			fmt.Print("ID -> ")

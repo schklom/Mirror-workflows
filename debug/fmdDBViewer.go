@@ -36,7 +36,7 @@ func main() {
 						dup += 1
 					}
 				}
-				if dup > 0 {
+				if dup > 1 {
 					fmt.Println("___")
 					fmt.Println(users[i].HashedPassword)
 					fmt.Println("Amount of duplicates: " + strconv.Itoa(dup))

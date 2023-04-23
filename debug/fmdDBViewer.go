@@ -5,7 +5,6 @@ import (
 	"findmydeviceserver/user"
 	"fmt"
 	"os"
-	"os/user"
 	"strconv"
 	"strings"
 )
@@ -33,26 +32,26 @@ func main() {
 			for i := 0; i < len(users); i++ {
 				var dup = 0
 				for z := 0; z < len(users); z++ {
-					if users[i].hashedPassword == users[z].hashedPassword {
+					if users[i].HashedPassword == users[z].HashedPassword {
 						dup += 1
 					}
 				}
 				if dup > 0 {
 					print("___")
-					print(users[i].hashedPassword)
+					print(users[i].HashedPassword)
 					print("Amount of duplicates: " + strconv.Itoa(dup))
 					print("___")
 				}
 			}
-		} else if stirngs.Compare("l", text) == 0 {
-			fmt.Print("ID -> ")
+		} else if strings.Compare("l", text) == 0 {
+			/*fmt.Print("ID -> ")
 			id, _ := reader.ReadString('\n')
 			fmt.Print("PASSWORD -> ")
 			password, _ := reader.ReadString('\n')
 			user := uio.UB.GetByID(id)
 			encryptedPrivKey := user.User_.PrivateKey
 
-			print(user.User_.LocationData[len[LocationData-1]])
+			print(user.User_.LocationData[len[LocationData-1]])*/
 
 		} else {
 			user := uio.UB.GetByID(text)

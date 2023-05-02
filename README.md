@@ -1,3 +1,5 @@
+## Soon I will be working on a new version of web-whisper with many new features, such as automatic voice dubbing of video/voice files, subtitle editing, etc.
+
 [![Please don't upload to GitHub](https://nogithub.codeberg.page/badge.svg)](https://nogithub.codeberg.page)
 
 <p align="center"> <b> 🎶 Convert any audio to text 📝 </b></p>

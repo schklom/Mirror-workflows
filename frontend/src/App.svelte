@@ -439,7 +439,7 @@
                   <option value="fi">Finnish</option>
                   <option value="fr">French</option>
                   <option value="de">German</option>
-                  <option value="he">Hebrew</option>
+                  <option value="iw">Hebrew</option>
                   <option value="hu">Hungarian</option>
                   <option value="it">Italian</option>
                   <option value="ja">Japanese</option>

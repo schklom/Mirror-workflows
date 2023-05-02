@@ -49,10 +49,13 @@ ENV WHISPER_PROCESSORS "$WHISPER_PROCESSORS"
 ARG OPENAI_TOKEN
 ENV OPENAI_TOKEN "$OPENAI_TOKEN"
 
+ARG ARCHITECTURE
+ENV ARCHITECTURE "$ARCHITECTURE"
+
 WORKDIR /app
 # Get and install latest ffmpeg
 RUN apt update && apt install -y xz-utils tar
-RUN wget "https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz"
+RUN wget "https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-${ARCHITECTURE}-static.tar.xz"
 RUN tar xvf ffmpeg-release-amd64-static.tar.xz
 RUN mv ffmpeg*/ffmpeg /bin/ffmpeg
 RUN rm -rf ffmpeg*

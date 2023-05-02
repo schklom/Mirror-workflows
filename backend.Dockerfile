@@ -61,7 +61,7 @@ RUN mv ffmpeg*/ffmpeg /bin/ffmpeg
 RUN rm -rf ffmpeg*
 
 # Get and install yt-dlp
-RUN wget https://github.com/yt-dlp/yt-dlp/releases/download/2023.02.17/yt-dlp_linux
+RUN wget https://github.com/yt-dlp/yt-dlp/releases/download/2023.03.04/yt-dlp_linux
 RUN mv yt-dlp_linux yt-dlp
 RUN chmod +x yt-dlp
 RUN mv yt-dlp /bin/yt-dlp

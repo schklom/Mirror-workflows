@@ -56,7 +56,7 @@ WORKDIR /app
 # Get and install latest ffmpeg
 RUN apt update && apt install -y xz-utils tar
 RUN wget "https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-${ARCHITECTURE}-static.tar.xz"
-RUN tar xvf ffmpeg-release-amd64-static.tar.xz
+RUN tar xvf ffmpeg-release-${ARCHITECTURE}-static.tar.xz
 RUN mv ffmpeg*/ffmpeg /bin/ffmpeg
 RUN rm -rf ffmpeg*
 

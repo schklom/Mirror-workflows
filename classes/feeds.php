@@ -2458,6 +2458,9 @@ class Feeds extends Handler_Protected {
 		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HEADLINES_CUSTOM_SORT_OVERRIDE,
 			function ($result) use (&$query, &$skip_first_id) {
 				list ($query, $skip_first_id) = $result;
+
+				// run until first hard match
+				return !empty($query);
 			},
 			$order);
 

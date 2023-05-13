@@ -1,4 +1,4 @@
-## Soon I will be working on a new version of web-whisper with many new features, such as automatic voice dubbing of video/voice files, subtitle editing, etc.
+# Currently working on an improved version. See [web whisper plus](https://codeberg.org/pluja/web-whisper-plus)
 
 [![Please don't upload to GitHub](https://nogithub.codeberg.page/badge.svg)](https://nogithub.codeberg.page)
 

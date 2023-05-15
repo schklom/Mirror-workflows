@@ -1,22 +1,22 @@
-FROM registry.fakecake.org/docker.io/alpine:3.17
+FROM registry.fakecake.org/docker.io/alpine:3.18
 EXPOSE 9000/tcp
 
 ENV SCRIPT_ROOT=/opt/tt-rss
 ENV SRC_DIR=/src/tt-rss/
 
-RUN apk add --no-cache dcron php81 php81-fpm php81-phar php81-sockets php81-pecl-apcu \
-	php81-pdo php81-gd php81-pgsql php81-pdo_pgsql php81-xmlwriter php81-opcache \
-	php81-mbstring php81-intl php81-xml php81-curl php81-simplexml \
-	php81-session php81-tokenizer php81-dom php81-fileinfo php81-ctype \
-	php81-json php81-iconv php81-pcntl php81-posix php81-zip php81-exif \
-	php81-openssl git postgresql-client sudo php81-pecl-xdebug rsync tzdata && \
-	sed -i 's/\(memory_limit =\) 128M/\1 256M/' /etc/php81/php.ini && \
+RUN apk add --no-cache dcron php82 php82-fpm php82-phar php82-sockets php82-pecl-apcu \
+	php82-pdo php82-gd php82-pgsql php82-pdo_pgsql php82-xmlwriter php82-opcache \
+	php82-mbstring php82-intl php82-xml php82-curl php82-simplexml \
+	php82-session php82-tokenizer php82-dom php82-fileinfo php82-ctype \
+	php82-json php82-iconv php82-pcntl php82-posix php82-zip php82-exif \
+	php82-openssl git postgresql-client sudo php82-pecl-xdebug rsync tzdata && \
+	sed -i 's/\(memory_limit =\) 128M/\1 256M/' /etc/php82/php.ini && \
 	sed -i -e 's/^listen = 127.0.0.1:9000/listen = 9000/' \
 		-e 's/;\(clear_env\) = .*/\1 = no/i' \
 		-e 's/^\(user\|group\) = .*/\1 = app/i' \
 		-e 's/;\(php_admin_value\[error_log\]\) = .*/\1 = \/tmp\/error.log/' \
 		-e 's/;\(php_admin_flag\[log_errors\]\) = .*/\1 = on/' \
-			/etc/php81/php-fpm.d/www.conf && \
+			/etc/php82/php-fpm.d/www.conf && \
 	mkdir -p /var/www ${SCRIPT_ROOT}/config.d
 
 ARG CI_COMMIT_BRANCH
@@ -81,7 +81,7 @@ ENV TTRSS_DB_HOST="db"
 ENV TTRSS_DB_PORT="5432"
 
 ENV TTRSS_MYSQL_CHARSET="UTF8"
-ENV TTRSS_PHP_EXECUTABLE="/usr/bin/php81"
+ENV TTRSS_PHP_EXECUTABLE="/usr/bin/php82"
 ENV TTRSS_PLUGINS="auth_internal, note, nginx_xaccel"
 
 CMD ${SCRIPT_ROOT}/startup.sh

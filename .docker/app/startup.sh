@@ -61,7 +61,7 @@ sudo -u app cp ${SCRIPT_ROOT}/config.docker.php $DST_DIR/config.php
 chmod 644 $DST_DIR/config.php
 
 chown -R $OWNER_UID:$OWNER_GID $DST_DIR \
-	/var/log/php81
+	/var/log/php82
 
 if [ -z "$TTRSS_NO_STARTUP_PLUGIN_UPDATES" ]; then
 	echo updating all local plugins...
@@ -100,7 +100,7 @@ if [ ! -z "${TTRSS_XDEBUG_ENABLED}" ]; then
 	fi
 	echo enabling xdebug with the following parameters:
 	env | grep TTRSS_XDEBUG
-	cat > /etc/php81/conf.d/50_xdebug.ini <<EOF
+	cat > /etc/php82/conf.d/50_xdebug.ini <<EOF
 zend_extension=xdebug.so
 xdebug.mode=develop,trace,debug
 xdebug.start_with_request = yes
@@ -110,17 +110,17 @@ EOF
 fi
 
 sed -i.bak "s/^\(memory_limit\) = \(.*\)/\1 = ${PHP_WORKER_MEMORY_LIMIT}/" \
-	/etc/php81/php.ini
+	/etc/php82/php.ini
 
 sed -i.bak "s/^\(pm.max_children\) = \(.*\)/\1 = ${PHP_WORKER_MAX_CHILDREN}/" \
-	/etc/php81/php-fpm.d/www.conf
+	/etc/php82/php-fpm.d/www.conf
 
-sudo -Eu app php81 $DST_DIR/update.php --update-schema=force-yes
+sudo -Eu app php82 $DST_DIR/update.php --update-schema=force-yes
 
 if [ ! -z "$ADMIN_USER_PASS" ]; then
-	sudo -Eu app php81 $DST_DIR/update.php --user-set-password "admin:$ADMIN_USER_PASS"
+	sudo -Eu app php82 $DST_DIR/update.php --user-set-password "admin:$ADMIN_USER_PASS"
 else
-	if sudo -Eu app php81 $DST_DIR/update.php --user-check-password "admin:password"; then
+	if sudo -Eu app php82 $DST_DIR/update.php --user-check-password "admin:password"; then
 		RANDOM_PASS=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 16 ; echo '')
 
 		echo "*****************************************************************************"
@@ -128,17 +128,17 @@ else
 		echo "* If you want to set it manually, use ADMIN_USER_PASS environment variable. *"
 		echo "*****************************************************************************"
 
-		sudo -Eu app php81 $DST_DIR/update.php --user-set-password "admin:$RANDOM_PASS"
+		sudo -Eu app php82 $DST_DIR/update.php --user-set-password "admin:$RANDOM_PASS"
 	fi
 fi
 
 if [ ! -z "$ADMIN_USER_ACCESS_LEVEL" ]; then
-	sudo -Eu app php81 $DST_DIR/update.php --user-set-access-level "admin:$ADMIN_USER_ACCESS_LEVEL"
+	sudo -Eu app php82 $DST_DIR/update.php --user-set-access-level "admin:$ADMIN_USER_ACCESS_LEVEL"
 fi
 
 if [ ! -z "$AUTO_CREATE_USER" ]; then
-	sudo -Eu app /bin/sh -c "php81 $DST_DIR/update.php --user-exists $AUTO_CREATE_USER ||
-		php81 $DST_DIR/update.php --force-yes --user-add \"$AUTO_CREATE_USER:$AUTO_CREATE_USER_PASS:$AUTO_CREATE_USER_ACCESS_LEVEL\""
+	sudo -Eu app /bin/sh -c "php82 $DST_DIR/update.php --user-exists $AUTO_CREATE_USER ||
+		php82 $DST_DIR/update.php --force-yes --user-add \"$AUTO_CREATE_USER:$AUTO_CREATE_USER_PASS:$AUTO_CREATE_USER_ACCESS_LEVEL\""
 fi
 
 rm -f /tmp/error.log && mkfifo /tmp/error.log && chown app:app /tmp/error.log
@@ -150,4 +150,4 @@ unset AUTO_CREATE_USER_PASS
 
 touch $DST_DIR/.app_is_ready
 
-exec /usr/sbin/php-fpm81 --nodaemonize --force-stderr
+exec /usr/sbin/php-fpm82 --nodaemonize --force-stderr

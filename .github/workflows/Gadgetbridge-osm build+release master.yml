@@ -19,6 +19,8 @@ jobs:
           ####ref: 'Gadgetbridge-osmand-experiments' # branch
           #ref: 'osmand-experiments' # branch
           ref: 'master' # branch
+      - name: Update package lists
+        run: sudo apt-get update
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
       - name: Setup JDK+Android
         run: sudo apt-get install openjdk-11-jdk git adb -y

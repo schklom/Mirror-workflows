@@ -1,7 +1,7 @@
 <?php
 class API extends Handler {
 
-	const API_LEVEL  = 20;
+	const API_LEVEL  = 21;
 
 	const STATUS_OK  = 0;
 	const STATUS_ERR = 1;
@@ -843,6 +843,8 @@ class API extends Handler {
 					$headline_row["score"] = (int)$line["score"];
 					$headline_row["note"] = $line["note"];
 					$headline_row["lang"] = $line["lang"];
+
+					$headline_row["site_url"] = $line["site_url"];
 
 					if ($show_content) {
 						$hook_object = ["headline" => &$headline_row];

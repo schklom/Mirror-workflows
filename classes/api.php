@@ -844,7 +844,7 @@ class API extends Handler {
 					$headline_row["note"] = $line["note"];
 					$headline_row["lang"] = $line["lang"];
 
-					$headline_row["site_url"] = $line["site_url"]
+					$headline_row["site_url"] = $line["site_url"];
 
 					if ($show_content) {
 						$hook_object = ["headline" => &$headline_row];

@@ -313,7 +313,7 @@ class Config {
 
 		return sprintf("<span title=\"%s\n%s\n%s\">%s</span>",
 			date("Y-m-d H:i:s", ($version['timestamp'] ?? 0)),
-				$version['commit'],
+				$version['commit'] ?? '',
 				$version['branch'] ?? '',
 				$version['version']);
 	}

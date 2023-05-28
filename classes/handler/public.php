@@ -260,7 +260,7 @@ class Handler_Public extends Handler {
 
 	function getUnread(): void {
 		$login = clean($_REQUEST["login"]);
-		$fresh = clean($_REQUEST["fresh"]) == "1";
+		$fresh = clean($_REQUEST["fresh"] ?? "0") == "1";
 
 		$uid = UserHelper::find_user_by_login($login);
 

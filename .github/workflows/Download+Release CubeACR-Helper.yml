@@ -1,4 +1,4 @@
-name: Download+Release CubeACR
+name: Download+Release CubeACR-Helper
 
 # Controls when the workflow will run
 on:
@@ -22,13 +22,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          repository: 'schklom/CubeACR-apk'
+          repository: 'schklom/CubeACR-Helper-apk'
           ref: 'main' # branch
           token: ${{ secrets.PAT_GITHUB_ACTION }}
 
-      - name: Get apk from Google Drive
+      - name: Get apk from https://cubeacr.app
         run: |
-          filename="./CubeACR.apk"
+          filename="./CubeACR-Helper.apk"
           echo "filename=${filename}" >> $GITHUB_ENV
           url=$(curl 'https://cubeacr.app' | grep --only-matching --max-count=1 '/.*\.apk')
           curl "https://cubeacr.app${url}" -o ${filename}
@@ -79,7 +79,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ env.tagname }}
-          body: "New version of CubeACR"
+          body: "New version of CubeACR-Helper"
           files: ${{ env.filename }}
           repository: "schklom/CubeACR-apk"
           token: ${{ secrets.PAT_GITHUB_ACTION }}

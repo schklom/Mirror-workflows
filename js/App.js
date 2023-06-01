@@ -810,8 +810,10 @@ const App = {
          dojo.connect(dijit.byId('content-insert'), 'resize',
             (args) => {
                if (args && args.w >= 0 && args.h >= 0) {
-                  Cookie.set("ttrss_ci_width", args.w, this.getInitParam("cookie_lifetime"));
-                  Cookie.set("ttrss_ci_height", args.h, this.getInitParam("cookie_lifetime"));
+						const cookie_suffix = this._widescreen_mode ? "wide" : "normal";
+
+                  Cookie.set("ttrss_ci_width:" + cookie_suffix, args.w, this.getInitParam("cookie_lifetime"));
+                  Cookie.set("ttrss_ci_height:" + cookie_suffix, args.h, this.getInitParam("cookie_lifetime"));
                }
             });
 
@@ -918,10 +920,6 @@ const App = {
 			return;
 		}
 
-		// reset stored sizes because geometry changed
-		Cookie.set("ttrss_ci_width", 0);
-		Cookie.set("ttrss_ci_height", 0);
-
 		this._widescreen_mode = wide;
 
       const article_id = Article.getActive();
@@ -938,9 +936,9 @@ const App = {
             height: 'auto',
             borderTopWidth: '0px' });
 
-         if (parseInt(Cookie.get("ttrss_ci_width")) > 0) {
+         if (parseInt(Cookie.get("ttrss_ci_width:wide")) > 0) {
             content_insert.domNode.setStyle(
-               {width: Cookie.get("ttrss_ci_width") + "px" });
+               {width: Cookie.get("ttrss_ci_width:wide") + "px" });
          }
 
          headlines_frame.setStyle({ borderBottomWidth: '0px' });
@@ -953,9 +951,9 @@ const App = {
             height: '50%',
             borderTopWidth: '0px'});
 
-         if (parseInt(Cookie.get("ttrss_ci_height")) > 0) {
+         if (parseInt(Cookie.get("ttrss_ci_height:normal")) > 0) {
             content_insert.domNode.setStyle(
-               {height: Cookie.get("ttrss_ci_height") + "px" });
+               {height: Cookie.get("ttrss_ci_height:normal") + "px" });
          }
 
          headlines_frame.setStyle({ borderBottomWidth: '1px' });

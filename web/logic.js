@@ -516,9 +516,9 @@ function welcomeFinish() {
 }
 
 function prepareDeleteDevice() {
-    var submit = function () {
+    var submit = function (pin) {
         document.body.removeChild(div);
-        sendToPhone('delete ' + input.value);
+        sendToPhone('delete ' + pin);
     };
 
     var div = document.createElement("div");
@@ -552,7 +552,7 @@ function prepareDeleteDevice() {
     input.addEventListener("keyup", function (e) {
         if (event.keyCode == 13) {
             if (input.value != "") {
-                submit();
+                submit(input.value);
             }
         }
     }, false);

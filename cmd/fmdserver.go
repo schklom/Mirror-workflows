@@ -73,6 +73,8 @@ type DataPackage struct {
 	Data string `'json:"Data"`
 }
 
+// ------- Location -------
+
 func getLocation(w http.ResponseWriter, r *http.Request) {
 	var request DataPackage
 	err := json.NewDecoder(r.Body).Decode(&request)
@@ -135,6 +137,29 @@ func postLocationLegacy(w http.ResponseWriter, r *http.Request) bool {
 	return true
 }
 
+func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
+	var request DataPackage
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		http.Error(w, "Meeep!, Error - getLocationDataSize 1", http.StatusBadRequest)
+		return
+	}
+	id := uio.ACC.CheckAccessToken(request.IDT)
+	if id == "" {
+		http.Error(w, "Meeep!, Error - getLocationDataSize 2", http.StatusBadRequest)
+		return
+	}
+
+	highest := uio.GetLocationSize(id)
+
+	dataSize := DataPackage{Data: strconv.Itoa(highest)}
+	result, _ := json.Marshal(dataSize)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(result)
+}
+
+// ------- Picture -------
+
 func getPicture(w http.ResponseWriter, r *http.Request) {
 	var request DataPackage
 	err := json.NewDecoder(r.Body).Decode(&request)
@@ -194,26 +219,7 @@ func postPicture(w http.ResponseWriter, r *http.Request) {
 	uio.AddPicture(id, picture)
 }
 
-func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
-	var request DataPackage
-	err := json.NewDecoder(r.Body).Decode(&request)
-	if err != nil {
-		http.Error(w, "Meeep!, Error - getLocationDataSize 1", http.StatusBadRequest)
-		return
-	}
-	id := uio.ACC.CheckAccessToken(request.IDT)
-	if id == "" {
-		http.Error(w, "Meeep!, Error - getLocationDataSize 2", http.StatusBadRequest)
-		return
-	}
-
-	highest := uio.GetLocationSize(id)
-
-	dataSize := DataPackage{Data: strconv.Itoa(highest)}
-	result, _ := json.Marshal(dataSize)
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(result)
-}
+// ------- Public/Private Keys -------
 
 func getPrivKey(w http.ResponseWriter, r *http.Request) {
 	var request DataPackage
@@ -250,6 +256,8 @@ func getPubKey(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(result)
 }
+
+// ------- Commands -------
 
 func getCommand(w http.ResponseWriter, r *http.Request) {
 	var data DataPackage
@@ -322,6 +330,8 @@ func postPushLink(w http.ResponseWriter, r *http.Request) {
 	uio.SetPushUrl(id, data.Data)
 }
 
+// ------- Authentication, Login -------
+
 func requestSalt(w http.ResponseWriter, r *http.Request) {
 	var data DataPackage
 	err := json.NewDecoder(r.Body).Decode(&data)
@@ -367,7 +377,6 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusLocked)
 		uio.SetCommandToUser(data.IDT, "423")
 	}
-
 }
 
 func postPassword(w http.ResponseWriter, r *http.Request) {
@@ -387,6 +396,8 @@ func postPassword(w http.ResponseWriter, r *http.Request) {
 	w.Write(result)
 }
 
+// ------- (De-) Registration -------
+
 func deleteDevice(w http.ResponseWriter, r *http.Request) {
 	var data DataPackage
 	err := json.NewDecoder(r.Body).Decode(&data)
@@ -402,20 +413,22 @@ func deleteDevice(w http.ResponseWriter, r *http.Request) {
 	uio.DeleteUser(id)
 }
 
-func postDevice(w http.ResponseWriter, r *http.Request) {
-	var device registrationData
-	err := json.NewDecoder(r.Body).Decode(&device)
+func createDevice(w http.ResponseWriter, r *http.Request) {
+	var reg registrationData
+	err := json.NewDecoder(r.Body).Decode(&reg)
 	if err != nil {
 		http.Error(w, "Meeep!, Error - createDevice", http.StatusBadRequest)
 		return
 	}
-	id := uio.CreateNewUser(device.PrivKey, device.PubKey, device.Salt, device.HashedPassword)
+	id := uio.CreateNewUser(reg.PrivKey, reg.PubKey, reg.Salt, reg.HashedPassword)
 
 	accessToken := user.AccessToken{DeviceId: id, Token: ""}
 	result, _ := json.Marshal(accessToken)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(result)
 }
+
+// ------- Main Web Request Handling -------
 
 func getVersion(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(fmt.Sprint(version)))
@@ -453,7 +466,7 @@ func mainDevice(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		deleteDevice(w, r)
 	case http.MethodPut:
-		postDevice(w, r)
+		createDevice(w, r)
 	}
 }
 

@@ -8,9 +8,9 @@ type AccessController struct {
 }
 
 type AccessToken struct {
-	DeviceId    string
-	AccessToken string
-	Time        int64
+	DeviceId     string
+	Token        string
+	CreationTime int64
 }
 
 type LockedId struct {
@@ -55,15 +55,12 @@ func (a *AccessController) IsLocked(idToCheck string) bool {
 	return false
 }
 
-func (a *AccessController) CheckAccessToken(idToCheck string) string {
+func (a *AccessController) CheckAccessToken(toCheck string) string {
 	for index, id := range a.accessTokens {
-		if id.AccessToken == idToCheck {
-			expiredTime := id.Time + (15 * 60)
-			if expiredTime == 0 {
-				a.accessTokens[index] = a.accessTokens[len(a.accessTokens)-1]
-				a.accessTokens = a.accessTokens[:len(a.accessTokens)-1]
-				return id.DeviceId
-			} else if expiredTime < time.Now().Unix() {
+		if id.Token == toCheck {
+			expirationTime := id.CreationTime + (15 * 60)
+			tokenExpired := expirationTime < time.Now().Unix()
+			if tokenExpired {
 				a.accessTokens[index] = a.accessTokens[len(a.accessTokens)-1]
 				a.accessTokens = a.accessTokens[:len(a.accessTokens)-1]
 				return ""
@@ -75,9 +72,9 @@ func (a *AccessController) CheckAccessToken(idToCheck string) string {
 	return ""
 }
 
-func (a *AccessController) CheckForDuplicates(idToCheck string) bool {
+func (a *AccessController) CheckForDuplicates(toCheck string) bool {
 	for _, id := range a.accessTokens {
-		if id.AccessToken == idToCheck {
+		if id.Token == toCheck {
 			return true
 		}
 	}
@@ -93,7 +90,7 @@ func (a *AccessController) generateNewAT() string {
 }
 
 func (a *AccessController) PutAccess(id string) AccessToken {
-	newAccess := AccessToken{DeviceId: id, AccessToken: a.generateNewAT(), Time: time.Now().Unix()}
+	newAccess := AccessToken{DeviceId: id, Token: a.generateNewAT(), CreationTime: time.Now().Unix()}
 	a.accessTokens = append(a.accessTokens, newAccess)
 	return newAccess
 }

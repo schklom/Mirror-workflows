@@ -331,7 +331,7 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 	if !uio.ACC.IsLocked(data.IDT) {
 		checkPassed, accessToken := uio.RequestAccess(data.IDT, data.Data)
 		if checkPassed {
-			accesstokenReply := DataPackage{IDT: data.IDT, Data: accessToken.AccessToken}
+			accesstokenReply := DataPackage{IDT: data.IDT, Data: accessToken.Token}
 			result, _ := json.Marshal(accesstokenReply)
 			w.Header().Set("Content-Type", "application/json")
 			w.Write(result)
@@ -390,7 +390,7 @@ func postDevice(w http.ResponseWriter, r *http.Request) {
 	}
 	id := uio.CreateNewUser(device.PrivKey, device.PubKey, device.Salt, device.HashedPassword)
 
-	accessToken := user.AccessToken{DeviceId: id, AccessToken: ""}
+	accessToken := user.AccessToken{DeviceId: id, Token: ""}
 	result, _ := json.Marshal(accessToken)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(result)

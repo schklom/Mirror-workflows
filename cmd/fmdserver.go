@@ -215,16 +215,16 @@ func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 	w.Write(result)
 }
 
-func getKey(w http.ResponseWriter, r *http.Request) {
+func getPrivKey(w http.ResponseWriter, r *http.Request) {
 	var request DataPackage
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - getKey 1", http.StatusBadRequest)
+		http.Error(w, "Meeep!, Error - getPrivKey 1", http.StatusBadRequest)
 		return
 	}
 	id := uio.ACC.CheckAccessToken(request.IDT)
 	if id == "" {
-		http.Error(w, "Meeep!, Error - getKey 2", http.StatusBadRequest)
+		http.Error(w, "Meeep!, Error - getPrivKey 2", http.StatusBadRequest)
 		return
 	}
 	dataReply := DataPackage{IDT: request.IDT, Data: uio.GetPrivateKey(id)}
@@ -237,12 +237,12 @@ func getPubKey(w http.ResponseWriter, r *http.Request) {
 	var request DataPackage
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - getKey 1", http.StatusBadRequest)
+		http.Error(w, "Meeep!, Error - getPubKey 1", http.StatusBadRequest)
 		return
 	}
 	id := uio.ACC.CheckAccessToken(request.IDT)
 	if id == "" {
-		http.Error(w, "Meeep!, Error - getKey 2", http.StatusBadRequest)
+		http.Error(w, "Meeep!, Error - getPubKey 2", http.StatusBadRequest)
 		return
 	}
 	dataReply := DataPackage{IDT: request.IDT, Data: uio.GetPublicKey(id)}
@@ -469,8 +469,8 @@ func handleRequests() {
 	http.HandleFunc("/picture/", mainPicture)
 	http.HandleFunc("/pictureSize", getPictureSize)
 	http.HandleFunc("/pictureSize/", getPictureSize)
-	http.HandleFunc("/key", getKey)
-	http.HandleFunc("/key/", getKey)
+	http.HandleFunc("/key", getPrivKey)
+	http.HandleFunc("/key/", getPrivKey)
 	http.HandleFunc("/pubKey", getPubKey)
 	http.HandleFunc("/pubKey/", getPubKey)
 	http.HandleFunc("/device", mainDevice)

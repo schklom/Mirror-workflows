@@ -168,7 +168,7 @@ func (u *UserIO) GetSalt(id string) string {
 func (u *UserIO) RequestAccess(id string, hashedPW string) (bool, AccessToken) {
 	user := u.UB.GetByID(id)
 	if user != nil {
-		if strings.EqualFold(user.HashedPassword, hashedPW) {
+		if strings.EqualFold(strings.ToLower(user.HashedPassword), strings.ToLower(hashedPW)) {
 			return true, u.ACC.PutAccess(id)
 		}
 	}

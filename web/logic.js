@@ -170,13 +170,13 @@ function locate(index, password) {
                         return response.json()
                     })
                     .then(function (json) {
-                        newestLocationDataIndex = json.Data;
+                        newestLocationDataIndex = parseInt(json.Data, 10);
                         if (index == -1 || index > newestLocationDataIndex) {
                             index = newestLocationDataIndex;
                             currentLocationDataIndx = newestLocationDataIndex;
                         }
 
-                        if (json.Data != "-1") {
+                        if (newestLocationDataIndex > 0) {
                             fetch("./location", {
                                 method: 'PUT',
                                 body: JSON.stringify({

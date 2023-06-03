@@ -85,9 +85,9 @@ func (a *AccessController) CheckForDuplicates(idToCheck string) bool {
 }
 
 func (a *AccessController) generateNewAT() string {
-	newId := genId(20)
+	newId := genRandomString(20)
 	for a.CheckForDuplicates(newId) {
-		newId = genId(20)
+		newId = genRandomString(20)
 	}
 	return newId
 }

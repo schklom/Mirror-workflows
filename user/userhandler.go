@@ -1,10 +1,10 @@
 package user
 
 import (
-	"math/rand"
+	"crypto/rand"
+	"math/big"
 	"path/filepath"
 	"strings"
-	"time"
 )
 
 type UserIO struct {
@@ -140,19 +140,22 @@ func (u *UserIO) GetPushUrl(id string) string {
 }
 
 func (u *UserIO) generateNewId() string {
-	newId := genId(u.userIDLength)
+	newId := genRandomString(u.userIDLength)
 	for u.UB.GetByID(newId) != nil {
-		newId = genId(u.userIDLength)
+		newId = genRandomString(u.userIDLength)
 	}
 	return newId
 }
 
-func genId(length int) string {
+func genRandomString(length int) string {
 	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 	s := make([]rune, length)
-	rand.Seed(time.Now().Unix())
 	for i := range s {
-		s[i] = letters[rand.Intn(len(letters))]
+		nBig, err := rand.Int(rand.Reader, big.NewInt(int64(len(letters))))
+		if err != nil {
+			panic(err)
+		}
+		s[i] = letters[nBig.Int64()]
 	}
 	newId := string(s)
 	return newId

@@ -1,10 +1,14 @@
 package user
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 var CurrentVersion = 1
 
 func (db *DBBox) updateDB(u *UserBox) {
+	fmt.Println("DB: Migrating datatabase ...")
 	dbquery := db.Query(DB_.Setting.Equals("version", true))
 	foundSettings, _ := dbquery.Find()
 	if len(foundSettings) == 0 {
@@ -12,19 +16,30 @@ func (db *DBBox) updateDB(u *UserBox) {
 		dbquery := db.Query(DB_.Setting.Equals("version", true))
 		foundSettings, _ = dbquery.Find()
 	}
-	if foundSettings[0].Value == "0" {
-		fmt.Println("DB: Updating DB ...")
 
-		ids, _ := u.Query().FindIds()
-
-		for _, id := range ids {
-			user, _ := u.Get(id)
-			user.Salt = "cafe"
-			u.Update(user)
-		}
-
-		fmt.Println("DB: Update finished")
-		foundSettings[0].Value = "1"
-		db.Update(foundSettings[0])
+	versionString := foundSettings[0].Value
+	versionInt, err := strconv.Atoi(versionString)
+	if err != nil {
+		fmt.Println("DB: Invalid DB version: ", versionString)
+		return
 	}
+
+	if versionInt < 1 {
+		db.migrateToV1(u)
+	}
+	foundSettings[0].Value = strconv.Itoa(CurrentVersion)
+	db.Update(foundSettings[0])
+	fmt.Println("DB: Migration finished")
+}
+
+func (db *DBBox) migrateToV1(u *UserBox) {
+	fmt.Println("DB: Migrating to v1 ...")
+	ids, _ := u.Query().FindIds()
+
+	for _, id := range ids {
+		user, _ := u.Get(id)
+		user.Salt = "cafe"
+		u.Update(user)
+	}
+
 }

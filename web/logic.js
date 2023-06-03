@@ -4,7 +4,7 @@ var newestLocationDataIndex;
 var currentLocationDataIndx = 0;
 var currentId;
 var keyTemp;
-var hashedPW;
+var globalAccessToken = "";
 
 var newestPictureIndex;
 var currentPictureIndex;
@@ -50,12 +50,8 @@ function init() {
 }
 
 function prepareForLogin() {
-    idInput = document.getElementById('fmdid');
+    let idInput = document.getElementById('fmdid');
     if (idInput.value != "" && keyTemp == null) {
-        var submit = function () {
-            document.body.removeChild(div);
-            preparePassword(idInput.value, input.value);
-        };
 
         var div = document.createElement("div");
         div.id = "passwordPrompt";
@@ -88,78 +84,117 @@ function prepareForLogin() {
         input.addEventListener("keyup", function (e) {
             if (event.keyCode == 13) {
                 if (input.value != "") {
-                    submit();
+                    document.body.removeChild(div);
+                    doLogin(idInput.value, input.value);
                 }
             }
         }, false);
 
     } else {
-        locate(-1, "");
+        locate(-1);
     }
 }
 
-function preparePassword(index, password) {
+async function doLogin(fmdid, password) {
     if (currentId == null) {
-        idInput = document.getElementById('fmdid');
-        currentId = idInput.value;
+        currentId = fmdid;
     }
-    if (password != "") {
+    if (password == "") {
+        alert("Password is empty.");
+        return;
+    }
 
+    let response = await fetch("./salt", {
+        method: 'PUT',
+        body: JSON.stringify({
+            IDT: currentId,
+            Data: "unused",
+        }),
+        headers: {
+            'Content-type': 'application/json'
+        }
+    });
+    let saltJson = await response.json();
+    let salt = saltJson.Data;
 
-        saltFeth = fetch("./salt", {
-            method: 'PUT',
-            body: JSON.stringify({
-                IDT: currentId,
-                Data: ""
-            }),
-            headers: {
-                'Content-type': 'application/json'
+    modernPasswordHash = await hashPasswordForLogin(password, salt);
+    legacyPasswordHash = hashPasswordForLoginLegacy(password, salt);
+
+    try {
+        await tryLoginWithHash(fmdid, modernPasswordHash);
+        // fall through to locate()
+    } catch {
+        console.log("Modern hash failed, trying legacy hash.");
+        try {
+            await tryLoginWithHash(fmdid, legacyPasswordHash);
+            // fall through to locate()
+        } catch (statusCode) {
+            if (statusCode == 423) {
+                alert("Too many attempts. Try again in 10 minutes.");
+            } else if (statusCode == 403) {
+                alert("Wrong ID or wrong password.");
+            } else {
+                alert("Unhandled error: " + statusCode);
             }
-        }).then(function (response) {
-            return response.json();
-        }).then(function (salt) {
-            hashedPW = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt.Data), {
-                keySize: 256 / 32,
-                iterations: 1867 * 2
-            }).toString();
-            locate(-1, password);
-        })
+            return;
+        }
+    }
+    locate(-1);
+}
+
+async function tryLoginWithHash(fmdid, passwordHash) {
+    const response = await fetch("./requestAccess", {
+        method: 'PUT',
+        body: JSON.stringify({
+            IDT: fmdid,
+            Data: passwordHash,
+        }),
+        headers: {
+            'Content-type': 'application/json'
+        }
+    });
+    if (response.ok) {
+        const tokenJson = await response.json()
+        globalAccessToken = tokenJson.Data;
+        return globalAccessToken;
+    } else {
+        throw response.status;
     }
 }
 
 
-function locate(requestedIndex, password) {
-    if (currentId != "") {
-
-
-        fetch("./requestAccess", {
-            method: 'PUT',
-            body: JSON.stringify({
-                IDT: currentId,
-                Data: hashedPW
-            }),
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }).then(function (response) {
-            if (response.ok) {
-                return response.json()
-            } else {
-                if (response.status == 423) {
-                    alert("ID, whether it exists or not is locked.");
-                } else if (response.status == 403) {
-                    alert("ID or password false");
-                } else {
-                    alert("Unhandled error: " + response.status);
-                }
-            }
+function locate(requestedIndex) {
+    if (!globalAccessToken) {
+        console.log("Missing accessToken!");
+        return;
+    }
+    fetch("./locationDataSize", {
+        method: 'PUT',
+        body: JSON.stringify({
+            IDT: globalAccessToken,
+            Data: "unused",
+        }),
+        headers: {
+            'Content-type': 'application/json'
+        }
+    })
+        .then(function (response) {
+            return response.json()
         })
-            .then(function (token) {
+        .then(function (json) {
+            newestLocationSize = parseInt(json.Data, 10);
+            newestLocationDataIndex = newestLocationSize - 1;
 
-                fetch("./locationDataSize", {
+            if (requestedIndex == -1 || requestedIndex > newestLocationDataIndex) {
+                requestedIndex = newestLocationDataIndex;
+                currentLocationDataIndx = newestLocationDataIndex;
+            }
+
+            if (requestedIndex >= 0) {
+                fetch("./location", {
                     method: 'PUT',
                     body: JSON.stringify({
-                        IDT: token.Data,
+                        IDT: globalAccessToken,
                         Data: requestedIndex.toString()
                     }),
                     headers: {
@@ -167,132 +202,77 @@ function locate(requestedIndex, password) {
                     }
                 })
                     .then(function (response) {
-                        return response.json()
+                        return response.json();
                     })
                     .then(function (json) {
-                        newestLocationSize = parseInt(json.Data, 10);
-                        newestLocationDataIndex = newestLocationSize - 1;
 
-                        if (requestedIndex == -1 || requestedIndex > newestLocationDataIndex) {
-                            requestedIndex = newestLocationDataIndex;
-                            currentLocationDataIndx = newestLocationDataIndex;
-                        }
-
-                        if (requestedIndex >= 0) {
-                            fetch("./location", {
-                                method: 'PUT',
-                                body: JSON.stringify({
-                                    IDT: token.Data,
-                                    Data: requestedIndex.toString()
-                                }),
-                                headers: {
-                                    'Content-type': 'application/json'
-                                }
-                            })
-                                .then(function (response) {
-                                    return response.json();
-                                })
-                                .then(function (json) {
-
-                                    fetch("./key", {
-                                        method: 'PUT',
-                                        body: JSON.stringify({
-                                            IDT: token.Data,
-                                            Data: requestedIndex.toString()
-                                        }),
-                                        headers: {
-                                            'Content-type': 'application/json'
-                                        }
-                                    })
-                                        .then(function (response) {
-                                            return response.json()
-                                        })
-                                        .then(function (keyData) {
-                                            if (keyTemp == null) {
-                                                var key = decryptAES(password, keyData.Data)
-                                                keyTemp = key
-                                            } else {
-                                                key = keyTemp
-                                            }
-                                            if (key != -1) {
-                                                var crypt = new JSEncrypt();
-                                                crypt.setPrivateKey(key);
-
-                                                var provider = crypt.decrypt(json.Provider);
-                                                var time = new Date(json.Date);
-                                                var lon = crypt.decrypt(json.lon);
-                                                var lat = crypt.decrypt(json.lat);
-                                                var bat = crypt.decrypt(json.Bat);
-
-
-                                                document.getElementsByClassName("deviceInfo")[0].style.display = "block";
-                                                document.getElementById("idView").innerHTML = currentId;
-                                                document.getElementById("dateView").innerHTML = time.toLocaleDateString();
-                                                document.getElementById("timeView").innerHTML = time.toLocaleTimeString();
-                                                document.getElementById("providerView").innerHTML = provider;
-                                                document.getElementById("batView").innerHTML = bat + "%";
-
-                                                var target = L.latLng(lat, lon);
-
-                                                markers.clearLayers();
-                                                L.marker(target).addTo(markers);
-                                                map.setView(target, 16);
-
-                                                loginDiv = document.getElementById("login");
-                                                if (loginDiv != null) {
-                                                    loginDiv.parentNode.removeChild(loginDiv);
-                                                }
-                                            } else {
-                                                alert("Wrong password!");
-                                            }
-
-                                        })
-                                })
-                        } else {
-                            document.getElementsByClassName("deviceInfo")[0].style.display = "block";
-                            document.getElementById("idView").innerHTML = currentId;
-                            document.getElementById("dateView").innerHTML = "No data available";
-                            document.getElementById("timeView").innerHTML = "No data available";
-                            document.getElementById("providerView").innerHTML = "No data available";
-                            document.getElementById("batView").innerHTML = "? %";
-                            loginDiv = document.getElementById("login");
-                            if (loginDiv != null) {
-                                loginDiv.parentNode.removeChild(loginDiv);
+                        fetch("./key", {
+                            method: 'PUT',
+                            body: JSON.stringify({
+                                IDT: globalAccessToken,
+                                Data: requestedIndex.toString()
+                            }),
+                            headers: {
+                                'Content-type': 'application/json'
                             }
-                        }
+                        })
+                            .then(function (response) {
+                                return response.json()
+                            })
+                            .then(function (keyData) {
+                                if (keyTemp == null) {
+                                    var key = decryptAES(password, keyData.Data)
+                                    keyTemp = key
+                                } else {
+                                    key = keyTemp
+                                }
+                                if (key != -1) {
+                                    var crypt = new JSEncrypt();
+                                    crypt.setPrivateKey(key);
+
+                                    var provider = crypt.decrypt(json.Provider);
+                                    var time = new Date(json.Date);
+                                    var lon = crypt.decrypt(json.lon);
+                                    var lat = crypt.decrypt(json.lat);
+                                    var bat = crypt.decrypt(json.Bat);
+
+
+                                    document.getElementsByClassName("deviceInfo")[0].style.display = "block";
+                                    document.getElementById("idView").innerHTML = currentId;
+                                    document.getElementById("dateView").innerHTML = time.toLocaleDateString();
+                                    document.getElementById("timeView").innerHTML = time.toLocaleTimeString();
+                                    document.getElementById("providerView").innerHTML = provider;
+                                    document.getElementById("batView").innerHTML = bat + "%";
+
+                                    var target = L.latLng(lat, lon);
+
+                                    markers.clearLayers();
+                                    L.marker(target).addTo(markers);
+                                    map.setView(target, 16);
+
+                                    loginDiv = document.getElementById("login");
+                                    if (loginDiv != null) {
+                                        loginDiv.parentNode.removeChild(loginDiv);
+                                    }
+                                } else {
+                                    alert("Wrong password!");
+                                }
+
+                            })
                     })
-            })
-    }
-
-}
-
-function decryptAES(password, cipherText) {
-    var msg;
-    keySize = 256;
-    ivSize = 128;
-    iterationCount = 1867;
-
-    let ivLength = ivSize / 4;
-    let saltLength = keySize / 4;
-
-    let iv = cipherText.substr(saltLength, ivLength);
-    let encrypted = cipherText.substring(ivLength + saltLength);
-
-    let salt = cipherText.substr(0, saltLength);
-    msg = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt), {
-        keySize: keySize / 32,
-        iterations: iterationCount
-    });
-
-    let cipherParams = CryptoJS.lib.CipherParams.create({
-        ciphertext: CryptoJS.enc.Base64.parse(encrypted)
-    });
-    let decrypted = CryptoJS.AES.decrypt(cipherParams, msg, { iv: CryptoJS.enc.Hex.parse(iv) });
-    try {
-        return decrypted.toString(CryptoJS.enc.Utf8);
-    } catch (error) {
-        return -1;
-    }
+            } else {
+                document.getElementsByClassName("deviceInfo")[0].style.display = "block";
+                document.getElementById("idView").innerHTML = currentId;
+                document.getElementById("dateView").innerHTML = "No data available";
+                document.getElementById("timeView").innerHTML = "No data available";
+                document.getElementById("providerView").innerHTML = "No data available";
+                document.getElementById("batView").innerHTML = "? %";
+                loginDiv = document.getElementById("login");
+                if (loginDiv != null) {
+                    loginDiv.parentNode.removeChild(loginDiv);
+                }
+            }
+        })
 }
 
 function clickPress(event) {
@@ -312,7 +292,7 @@ function switchWithKeys(event) {
 function locateOlder() {
     if (keyTemp != null && currentLocationDataIndx > 0) {
         currentLocationDataIndx -= 1;
-        locate(currentLocationDataIndx, "");
+        locate(currentLocationDataIndx);
     } else {
         currentLocationDataIndx = newestLocationDataIndex;
     }
@@ -321,100 +301,75 @@ function locateOlder() {
 function locateNewer() {
     if (keyTemp != null) {
         currentLocationDataIndx += 1;
-        locate(currentLocationDataIndx, "");
+        locate(currentLocationDataIndx);
     }
 }
 
 function sendToPhone(message) {
-    if (currentId != "" && hashedPW != "") {
-
-        fetch("./requestAccess", {
-            method: 'PUT',
-            body: JSON.stringify({
-                IDT: currentId,
-                Data: hashedPW
-            }),
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }).then(function (response) {
-            return response.json()
-        })
-            .then(function (token) {
-                fetch("./command", {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        IDT: token.Data,
-                        Data: message
-                    }),
-                    headers: {
-                        'Content-type': 'application/json'
-                    }
-                }).then(function (response) {
-                    var toasted = new Toasted({
-                        position: 'top-center',
-                        duration: 2000
-                    })
-                    toasted.show('Command send!')
-                })
-
-            })
+    if (!globalAccessToken) {
+        console.log("Missing accessToken!");
+        return;
     }
+
+    fetch("./command", {
+        method: 'POST',
+        body: JSON.stringify({
+            IDT: globalAccessToken,
+            Data: message,
+        }),
+        headers: {
+            'Content-type': 'application/json'
+        }
+    }).then(function (response) {
+        var toasted = new Toasted({
+            position: 'top-center',
+            duration: 2000
+        })
+        toasted.show('Command send!')
+    })
 }
 
 function showPicture() {
-    if (currentId != "" && hashedPW != "") {
-
-        fetch("./requestAccess", {
-            method: 'PUT',
-            body: JSON.stringify({
-                IDT: currentId,
-                Data: hashedPW
-            }),
-            headers: {
-                'Content-type': 'application/json'
-            }
-        }).then(function (response) {
-            return response.json()
-        })
-            .then(function (token) {
-                fetch("./pictureSize", {
-                    method: 'PUT',
-                    body: JSON.stringify({
-                        IDT: token.Data,
-                        Data: ""
-                    }),
-                    headers: {
-                        'Content-type': 'application/json'
-                    }
-                }).then(function (response) {
-                    return response.json()
-                }).then(function (json) {
-                    if (json.Data == "-1") {
-                        var toasted = new Toasted({
-                            position: 'top-center',
-                            duration: 30000
-                        })
-                        toasted.show('No Picture available!')
-                        return;
-                    } else {
-                        newestPictureIndex = Number(json.Data);
-                        currentPictureIndex = newestPictureIndex;
-                        loadPicture(token, newestPictureIndex);
-                    }
-
-
-                })
-            })
+    if (!globalAccessToken) {
+        console.log("Missing accessToken!");
+        return;
     }
-
+    fetch("./pictureSize", {
+        method: 'PUT',
+        body: JSON.stringify({
+            IDT: globalAccessToken,
+            Data: ""
+        }),
+        headers: {
+            'Content-type': 'application/json'
+        }
+    }).then(function (response) {
+        return response.json()
+    }).then(function (json) {
+        if (json.Data == "-1") {
+            var toasted = new Toasted({
+                position: 'top-center',
+                duration: 30000
+            })
+            toasted.show('No Picture available!')
+            return;
+        } else {
+            newestPictureIndex = Number(json.Data);
+            currentPictureIndex = newestPictureIndex;
+            loadPicture(newestPictureIndex);
+        }
+    })
 }
 
-function loadPicture(token, index) {
+function loadPicture(index) {
+    if (!globalAccessToken) {
+        console.log("Missing accessToken!");
+        return;
+    }
     fetch("./picture", {
         method: 'PUT',
         body: JSON.stringify({
-            IDT: token.Data,
+            IDT: globalAccessToken,
             Data: index.toString()
         }),
         headers: {
@@ -452,7 +407,7 @@ function loadPicture(token, index) {
                 if (currentPictureIndex < 0) {
                     currentPictureIndex = newestPictureIndex;
                 }
-                loadPicture(token, currentPictureIndex);
+                loadPicture(currentPictureIndex);
             }, false);
             buttonDiv.appendChild(beforeBtn)
 
@@ -471,7 +426,7 @@ function loadPicture(token, index) {
                 if (currentPictureIndex > newestPictureIndex) {
                     currentPictureIndex = 0;
                 }
-                loadPicture(token, currentPictureIndex);
+                loadPicture(currentPictureIndex);
             }, false);
             buttonDiv.appendChild(afterBtn)
             div.appendChild(buttonDiv)

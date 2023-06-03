@@ -9,7 +9,7 @@ import (
 type User struct {
 	Id             uint64
 	UID            string `objectbox:"unique"`
-	Salt           string
+	Salt           string // may be empty. In Argon2 the HashedPassword contains the salt.
 	HashedPassword string
 	PrivateKey     string
 	PublicKey      string

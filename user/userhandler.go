@@ -2,6 +2,7 @@ package user
 
 import (
 	"crypto/rand"
+	"fmt"
 	"math/big"
 	"path/filepath"
 	"strings"
@@ -163,7 +164,10 @@ func (u *UserIO) GetSalt(id string) string {
 	if user == nil {
 		return ""
 	}
-	return user.Salt
+	if user.Salt != "" {
+		return user.Salt
+	}
+	return getSaltFromArgon2EncodedHash(user.HashedPassword)
 }
 
 func (u *UserIO) RequestAccess(id string, hashedPW string) (bool, AccessToken) {

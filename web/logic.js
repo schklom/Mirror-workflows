@@ -58,7 +58,7 @@ function prepareForLogin() {
         };
 
         var div = document.createElement("div");
-        div.id = "passowordPrompt";
+        div.id = "passwordPrompt";
         div.classList.add("prompt");
 
         var label = document.createElement("label");
@@ -128,7 +128,7 @@ function preparePassword(index, password) {
 }
 
 
-function locate(index, password) {
+function locate(requestedIndex, password) {
     if (currentId != "") {
 
 
@@ -160,7 +160,7 @@ function locate(index, password) {
                     method: 'PUT',
                     body: JSON.stringify({
                         IDT: token.Data,
-                        Data: index.toString()
+                        Data: requestedIndex.toString()
                     }),
                     headers: {
                         'Content-type': 'application/json'
@@ -170,18 +170,20 @@ function locate(index, password) {
                         return response.json()
                     })
                     .then(function (json) {
-                        newestLocationDataIndex = parseInt(json.Data, 10);
-                        if (index == -1 || index > newestLocationDataIndex) {
-                            index = newestLocationDataIndex;
+                        newestLocationSize = parseInt(json.Data, 10);
+                        newestLocationDataIndex = newestLocationSize - 1;
+
+                        if (requestedIndex == -1 || requestedIndex > newestLocationDataIndex) {
+                            requestedIndex = newestLocationDataIndex;
                             currentLocationDataIndx = newestLocationDataIndex;
                         }
 
-                        if (newestLocationDataIndex > 0) {
+                        if (requestedIndex >= 0) {
                             fetch("./location", {
                                 method: 'PUT',
                                 body: JSON.stringify({
                                     IDT: token.Data,
-                                    Data: index.toString()
+                                    Data: requestedIndex.toString()
                                 }),
                                 headers: {
                                     'Content-type': 'application/json'
@@ -196,7 +198,7 @@ function locate(index, password) {
                                         method: 'PUT',
                                         body: JSON.stringify({
                                             IDT: token.Data,
-                                            Data: index.toString()
+                                            Data: requestedIndex.toString()
                                         }),
                                         headers: {
                                             'Content-type': 'application/json'
@@ -513,14 +515,14 @@ function welcomeFinish() {
     welcomePrompt.style.visibility = 'hidden';
 }
 
-function prepareDelete() {
+function prepareDeleteDevice() {
     var submit = function () {
         document.body.removeChild(div);
         sendToPhone('delete ' + input.value);
     };
 
     var div = document.createElement("div");
-    div.id = "passowordPrompt";
+    div.id = "passwordPrompt";
     div.classList.add("prompt");
 
     var label = document.createElement("label");

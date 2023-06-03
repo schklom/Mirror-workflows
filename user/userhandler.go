@@ -163,6 +163,9 @@ func genRandomString(length int) string {
 
 func (u *UserIO) GetSalt(id string) string {
 	user := u.UB.GetByID(id)
+	if user == nil {
+		return ""
+	}
 	return user.Salt
 }
 

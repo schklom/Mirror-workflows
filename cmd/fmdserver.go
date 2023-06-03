@@ -304,12 +304,11 @@ func requestSalt(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - requestSalt 1", http.StatusBadRequest)
 		return
 	}
-	var salt string
 	if !isIdValid(data.IDT) {
-		salt = "cafe"
-	} else {
-		salt = uio.GetSalt(data.IDT)
+		http.Error(w, "Meeep!, Error - requestSalt 2", http.StatusBadRequest)
+		return
 	}
+	salt := uio.GetSalt(data.IDT)
 	dataReply := DataPackage{IDT: data.IDT, Data: salt}
 	result, _ := json.Marshal(dataReply)
 	w.Header().Set("Content-Type", "application/json")
@@ -384,9 +383,6 @@ func postDevice(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Meeep!, Error - createDevice", http.StatusBadRequest)
 		return
-	}
-	if device.Salt == "" {
-		device.Salt = "cafe"
 	}
 	id := uio.CreateNewUser(device.PrivKey, device.PubKey, device.Salt, device.HashedPassword)
 

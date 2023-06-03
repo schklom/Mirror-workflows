@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-var CurrentVersion = 1
+var CurrentVersion = 2
 
 func (db *DBBox) updateDB(u *UserBox) {
 	fmt.Println("DB: Migrating datatabase ...")
@@ -23,9 +23,13 @@ func (db *DBBox) updateDB(u *UserBox) {
 		fmt.Println("DB: Invalid DB version: ", versionString)
 		return
 	}
+	fmt.Println("DB: DB version: ", versionString)
 
 	if versionInt < 1 {
 		db.migrateToV1(u)
+	}
+	if versionInt < 2 {
+		db.migrateToV2(u)
 	}
 	foundSettings[0].Value = strconv.Itoa(CurrentVersion)
 	db.Update(foundSettings[0])
@@ -41,5 +45,17 @@ func (db *DBBox) migrateToV1(u *UserBox) {
 		user.Salt = "cafe"
 		u.Update(user)
 	}
+}
 
+func (db *DBBox) migrateToV2(u *UserBox) {
+	fmt.Println("DB: Migrating to v2 ...")
+	ids, _ := u.Query().FindIds()
+
+	for _, id := range ids {
+		user, _ := u.Get(id)
+		if user.Salt == "cafe" {
+			user.Salt = ""
+		}
+		u.Update(user)
+	}
 }

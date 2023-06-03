@@ -67,7 +67,8 @@ func (u *UserIO) DeleteUser(id string) {
 
 func (u *UserIO) GetLocation(id string, pos int) string {
 	user := u.UB.GetByID(id)
-	if len(user.LocationData)-1 < pos {
+	if pos < 0 || pos >= len(user.LocationData) {
+		fmt.Printf("Location out of bounds: %d, max=%d\n", pos, len(user.LocationData)-1)
 		return ""
 	}
 	return user.LocationData[pos]

@@ -41,6 +41,7 @@ type config struct {
 	MaxSavedPic  int
 }
 
+// Deprecated: used only by old clients. Modern clients use the opaque DataPackage.
 type locationData struct {
 	IDT      string `'json:"idt"`
 	Provider string `'json:"provider"`
@@ -94,20 +95,44 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 }
 
 func postLocation(w http.ResponseWriter, r *http.Request) {
+	// Try the modern method, if it fail to decode then fall back to legacy method
+	if !postLocationOpaque(w, r) {
+		postLocationLegacy(w, r)
+	}
+}
+
+func postLocationOpaque(w http.ResponseWriter, r *http.Request) bool {
+	var request DataPackage
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		// could not decode as DataPackage, try the fallback
+		return false
+	}
+	id := uio.ACC.CheckAccessToken(request.IDT)
+	if id == "" {
+		http.Error(w, "Meeep!, Error - postLocationOpaque 2", http.StatusBadRequest)
+		return true
+	}
+
+	uio.AddLocation(id, request.Data)
+	return true
+}
+
+func postLocationLegacy(w http.ResponseWriter, r *http.Request) bool {
 	var location locationData
 	err := json.NewDecoder(r.Body).Decode(&location)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - postLocation 1", http.StatusBadRequest)
-		return
+		return false
 	}
 	id := uio.ACC.CheckAccessToken(location.IDT)
 	if id == "" {
-		http.Error(w, "Meeep!, Error - postLocation 2", http.StatusBadRequest)
-		return
+		http.Error(w, "Meeep!, Error - postLocationLegacy 2", http.StatusBadRequest)
+		return true
 	}
 
 	locationAsString, _ := json.MarshalIndent(location, "", " ")
 	uio.AddLocation(id, string(locationAsString))
+	return true
 }
 
 func getPicture(w http.ResponseWriter, r *http.Request) {

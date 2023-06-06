@@ -362,16 +362,20 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - requestAccess 2", http.StatusBadRequest)
 		return
 	}
-	if !uio.ACC.IsLocked(data.IDT) {
-		checkPassed, accessToken := uio.RequestAccess(data.IDT, data.Data)
-		if checkPassed {
-			accesstokenReply := DataPackage{IDT: data.IDT, Data: accessToken.Token}
-			result, _ := json.Marshal(accesstokenReply)
-			w.Header().Set("Content-Type", "application/json")
-			w.Write(result)
-		} else {
-			uio.ACC.IncrementLock(data.IDT)
-			http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusForbidden)
+	if uio.ACC.IsLocked(data.IDT) {
+		http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusLocked)
+		uio.SetCommandToUser(data.IDT, "423")
+		return
+	}
+	granted, accessToken := uio.RequestAccess(data.IDT, data.Data)
+	if granted {
+		accessTokenReply := DataPackage{IDT: data.IDT, Data: accessToken.Token}
+		result, _ := json.Marshal(accessTokenReply)
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(result)
+	} else {
+		uio.ACC.IncrementLock(data.IDT)
+		http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusForbidden)
 		}
 	} else {
 		http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusLocked)

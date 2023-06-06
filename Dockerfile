@@ -15,6 +15,8 @@ RUN go build -o /fmd cmd/fmdserver.go
 
 FROM debian:bullseye-slim
 
+RUN apt update && apt install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+
 COPY --from=builder /fmd /fmd/server
 COPY --from=builder /usr/lib/libobjectbox.so /usr/lib/libobjectbox.so
 COPY web /fmd/web

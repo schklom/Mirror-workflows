@@ -3,7 +3,7 @@ var map, markers;
 var newestLocationDataIndex;
 var currentLocationDataIndx = 0;
 var currentId;
-var keyTemp;
+var globalPrivateKey;
 var globalAccessToken = "";
 
 var newestPictureIndex;
@@ -58,7 +58,7 @@ function setupOnClicks() {
 
 async function prepareForLogin() {
     let idInput = document.getElementById('fmdid');
-    if (idInput.value != "" && keyTemp == null) {
+    if (idInput.value != "" && globalPrivateKey == null) {
 
         var div = document.createElement("div");
         div.id = "passwordPrompt";
@@ -226,33 +226,30 @@ async function locate(requestedIndex) {
     }
     const locationData = await response.json();
 
-    response = await fetch("./key", {
-        method: 'PUT',
-        body: JSON.stringify({
-            IDT: globalAccessToken,
-            Data: requestedIndex.toString()
-        }),
-        headers: {
-            'Content-type': 'application/json'
+    if (globalPrivateKey == null) {
+        response = await fetch("./key", {
+            method: 'PUT',
+            body: JSON.stringify({
+                IDT: globalAccessToken,
+                Data: requestedIndex.toString()
+            }),
+            headers: {
+                'Content-type': 'application/json'
+            }
+        })
+        if (!response.ok) {
+            throw response.status;
         }
-    })
-    if (!response.ok) {
-        throw response.status;
+        const keyData = await response.json();
+        globalPrivateKey = decryptAES(password, keyData.Data)
     }
-    const keyData = await response.json();
 
-    if (keyTemp == null) {
-        var key = decryptAES(password, keyData.Data)
-        keyTemp = key
-    } else {
-        key = keyTemp
-    }
-    if (key == -1) {
+    if (globalPrivateKey == -1) {
         alert("Wrong password!");
         return
     }
     var crypt = new JSEncrypt();
-    crypt.setPrivateKey(key);
+    crypt.setPrivateKey(globalPrivateKey);
 
     var provider = crypt.decrypt(locationData.Provider);
     var time = new Date(locationData.Date);
@@ -295,7 +292,7 @@ function switchWithKeys(event) {
 }
 
 async function locateOlder() {
-    if (keyTemp != null && currentLocationDataIndx > 0) {
+    if (globalPrivateKey != null && currentLocationDataIndx > 0) {
         currentLocationDataIndx -= 1;
         await locate(currentLocationDataIndx);
     } else {
@@ -304,7 +301,7 @@ async function locateOlder() {
 }
 
 async function locateNewer() {
-    if (keyTemp != null) {
+    if (globalPrivateKey != null) {
         currentLocationDataIndx += 1;
         await locate(currentLocationDataIndx);
     }
@@ -386,7 +383,7 @@ function loadPicture(index) {
         .then(function (data) {
             split = data.split("___PICTURE-DATA___")
             var crypt = new JSEncrypt();
-            crypt.setPrivateKey(keyTemp);
+            crypt.setPrivateKey(globalPrivateKey);
             picPassword = crypt.decrypt(split[0])
             picture = decryptAES(picPassword, split[1])
 

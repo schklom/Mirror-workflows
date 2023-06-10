@@ -53,7 +53,7 @@ function init() {
 function setupOnClicks() {
     document.getElementById("locateButton").addEventListener("click", async () => await prepareForLogin());
     document.getElementById("locateOlder").addEventListener("click", async () => await locateOlder());
-    document.getElementById("locateButton").addEventListener("click", async () => await locateNewer());
+    document.getElementById("locateNewer").addEventListener("click", async () => await locateNewer());
 }
 
 async function prepareForLogin() {
@@ -146,6 +146,18 @@ async function doLogin(fmdid, password) {
             return;
         }
     }
+
+    await getPrivateKey(password);
+    if (globalPrivateKey == -1) {
+        alert("Failed to get private key!");
+        return;
+    }
+
+    loginDiv = document.getElementById("login");
+    if (loginDiv != null) {
+        loginDiv.parentNode.removeChild(loginDiv);
+    }
+
     await locate(-1);
 }
 
@@ -169,6 +181,23 @@ async function tryLoginWithHash(fmdid, passwordHash) {
     }
 }
 
+async function getPrivateKey(password) {
+    response = await fetch("./key", {
+        method: 'PUT',
+        body: JSON.stringify({
+            IDT: globalAccessToken,
+            Data: "unused",
+        }),
+        headers: {
+            'Content-type': 'application/json'
+        }
+    })
+    if (!response.ok) {
+        throw response.status;
+    }
+    const keyData = await response.json();
+    globalPrivateKey = await unwrapPrivateKey(password, keyData.Data);
+}
 
 async function locate(requestedIndex) {
     if (!globalAccessToken) {
@@ -192,7 +221,17 @@ async function locate(requestedIndex) {
     newestLocationSize = parseInt(locationDataSizeJson.Data, 10);
     newestLocationDataIndex = newestLocationSize - 1;
 
-    if (requestedIndex == -1 || requestedIndex > newestLocationDataIndex) {
+    if (requestedIndex > newestLocationDataIndex) {
+        currentLocationDataIndx = newestLocationDataIndex; // reset
+        const toasted = new Toasted({
+            position: 'top-center',
+            duration: 3000
+        })
+        toasted.show('No newer locations');
+        return
+    }
+
+    if (requestedIndex == -1) {
         requestedIndex = newestLocationDataIndex;
         currentLocationDataIndx = newestLocationDataIndex;
     }
@@ -204,10 +243,6 @@ async function locate(requestedIndex) {
         document.getElementById("timeView").innerHTML = "No data available";
         document.getElementById("providerView").innerHTML = "No data available";
         document.getElementById("batView").innerHTML = "? %";
-        loginDiv = document.getElementById("login");
-        if (loginDiv != null) {
-            loginDiv.parentNode.removeChild(loginDiv);
-        }
         return
     }
 
@@ -225,56 +260,20 @@ async function locate(requestedIndex) {
         throw response.status;
     }
     const locationData = await response.json();
-
-    if (globalPrivateKey == null) {
-        response = await fetch("./key", {
-            method: 'PUT',
-            body: JSON.stringify({
-                IDT: globalAccessToken,
-                Data: requestedIndex.toString()
-            }),
-            headers: {
-                'Content-type': 'application/json'
-            }
-        })
-        if (!response.ok) {
-            throw response.status;
-        }
-        const keyData = await response.json();
-        globalPrivateKey = decryptAES(password, keyData.Data)
-    }
-
-    if (globalPrivateKey == -1) {
-        alert("Wrong password!");
-        return
-    }
-    var crypt = new JSEncrypt();
-    crypt.setPrivateKey(globalPrivateKey);
-
-    var provider = crypt.decrypt(locationData.Provider);
-    var time = new Date(locationData.Date);
-    var lon = crypt.decrypt(locationData.lon);
-    var lat = crypt.decrypt(locationData.lat);
-    var bat = crypt.decrypt(locationData.Bat);
-
+    const loc = await parseLocation(globalPrivateKey, locationData);
+    const time = new Date(loc.time);
 
     document.getElementsByClassName("deviceInfo")[0].style.display = "block";
     document.getElementById("idView").innerHTML = currentId;
     document.getElementById("dateView").innerHTML = time.toLocaleDateString();
     document.getElementById("timeView").innerHTML = time.toLocaleTimeString();
-    document.getElementById("providerView").innerHTML = provider;
-    document.getElementById("batView").innerHTML = bat + "%";
+    document.getElementById("providerView").innerHTML = loc.provider;
+    document.getElementById("batView").innerHTML = loc.bat + " %";
 
-    var target = L.latLng(lat, lon);
-
+    const target = L.latLng(loc.lat, loc.lon);
     markers.clearLayers();
     L.marker(target).addTo(markers);
     map.setView(target, 16);
-
-    loginDiv = document.getElementById("login");
-    if (loginDiv != null) {
-        loginDiv.parentNode.removeChild(loginDiv);
-    }
 }
 
 function clickPress(event) {

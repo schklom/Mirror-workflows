@@ -251,12 +251,7 @@ async function locate(requestedIndex) {
     }
 
     if (requestedIndex < 0) {
-        document.getElementsByClassName("deviceInfo")[0].style.display = "block";
-        document.getElementById("idView").innerHTML = currentId;
-        document.getElementById("dateView").innerHTML = "No data available";
-        document.getElementById("timeView").innerHTML = "No data available";
-        document.getElementById("providerView").innerHTML = "No data available";
-        document.getElementById("batView").innerHTML = "? %";
+        setNoLocationDataAvailable("No data available");
         return
     }
 
@@ -274,7 +269,14 @@ async function locate(requestedIndex) {
         throw response.status;
     }
     const locationData = await response.json();
-    const loc = await parseLocation(globalPrivateKey, locationData);
+    var loc;
+    try {
+        loc = await parseLocation(globalPrivateKey, locationData);
+    } catch (error) {
+        console.log(error);
+        setNoLocationDataAvailable("Error parsing location data");
+        return;
+    }
     const time = new Date(loc.time);
 
     document.getElementsByClassName("deviceInfo")[0].style.display = "block";
@@ -288,6 +290,15 @@ async function locate(requestedIndex) {
     markers.clearLayers();
     L.marker(target).addTo(markers);
     map.setView(target, 16);
+}
+
+function setNoLocationDataAvailable(text) {
+    document.getElementsByClassName("deviceInfo")[0].style.display = "block";
+    document.getElementById("idView").innerHTML = currentId;
+    document.getElementById("dateView").innerHTML = text;
+    document.getElementById("timeView").innerHTML = text;
+    document.getElementById("providerView").innerHTML = text;
+    document.getElementById("batView").innerHTML = "? %";
 }
 
 document.addEventListener("keydown", function (event) {

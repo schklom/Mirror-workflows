@@ -9,6 +9,10 @@ var globalAccessToken = "";
 var newestPictureIndex;
 var currentPictureIndex;
 
+const KEYCODE_ENTER = 13;
+const KEYCODE_ARROW_LEFT = 37;
+const KEYCODE_ARROW_RIGHT = 39;
+
 function init() {
     var div;
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
@@ -59,7 +63,7 @@ function setupOnClicks() {
 // Section: Login
 
 function onFmdIdKeyPressed(event) {
-    if (event.keyCode == 13) {
+    if (event.keyCode == KEYCODE_ENTER) {
         prepareForLogin();
     }
 }
@@ -97,7 +101,7 @@ async function prepareForLogin() {
 
         input.focus();
         input.addEventListener("keyup", function (e) {
-            if (event.keyCode == 13) {
+            if (event.keyCode == KEYCODE_ENTER) {
                 if (input.value != "") {
                     document.body.removeChild(div);
                     doLogin(idInput.value, input.value);
@@ -286,10 +290,17 @@ async function locate(requestedIndex) {
     map.setView(target, 16);
 }
 
-function switchWithKeys(event) {
-    if (event.keyCode == 111) {
+document.addEventListener("keydown", function (event) {
+    // Don't interfere with navigating the map view
+    if (document.activeElement.id != "map") {
+        cycleThroughLocationsWithArrowKeys(event);
+    }
+});
+
+function cycleThroughLocationsWithArrowKeys(event) {
+    if (event.keyCode == KEYCODE_ARROW_LEFT) {
         locateOlder();
-    } else if (event.keyCode == 110) {
+    } else if (event.keyCode == KEYCODE_ARROW_RIGHT) {
         locateNewer();
     }
 }
@@ -518,7 +529,7 @@ function prepareDeleteDevice() {
 
     input.focus();
     input.addEventListener("keyup", function (e) {
-        if (event.keyCode == 13) {
+        if (event.keyCode == KEYCODE_ENTER) {
             if (input.value != "") {
                 submit(input.value);
             }

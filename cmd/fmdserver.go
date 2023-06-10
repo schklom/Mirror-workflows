@@ -308,7 +308,7 @@ func pushUser(id string) {
 	pushUrl := strings.Replace(uio.GetPushUrl(id), "/UP?", "/message?", -1)
 
 	var jsonData = []byte(`{
-		"message": "magic may begin",
+		"message": "fmd app wakeup",
 		"priority": 5
 	}`)
 	request, _ := http.NewRequest("POST", pushUrl, bytes.NewBuffer(jsonData))

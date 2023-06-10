@@ -66,31 +66,31 @@ func (u *UserIO) DeleteUser(id string) {
 	u.UB.Remove(user)
 }
 
-func (u *UserIO) GetLocation(id string, pos int) string {
+func (u *UserIO) GetLocation(id string, idx int) string {
 	user := u.UB.GetByID(id)
-	if pos < 0 || pos >= len(user.LocationData) {
-		fmt.Printf("Location out of bounds: %d, max=%d\n", pos, len(user.LocationData)-1)
+	if idx < 0 || idx >= len(user.LocationData) {
+		fmt.Printf("Location out of bounds: %d, max=%d\n", idx, len(user.LocationData)-1)
 		return ""
 	}
-	return user.LocationData[pos]
+	return user.LocationData[idx]
 }
 
-func (u *UserIO) GetPicture(id string, pos int) string {
+func (u *UserIO) GetPicture(id string, idx int) string {
 	user := u.UB.GetByID(id)
 	if len(user.Pictures) == 0 {
 		return "Picture not found"
 	}
-	return user.Pictures[pos]
+	return user.Pictures[idx]
 }
 
 func (u *UserIO) GetPictureSize(id string) int {
 	user := u.UB.GetByID(id)
-	return len(user.Pictures) - 1
+	return len(user.Pictures)
 }
 
 func (u *UserIO) GetLocationSize(id string) int {
 	user := u.UB.GetByID(id)
-	return len(user.LocationData) - 1
+	return len(user.LocationData)
 }
 
 func (u *UserIO) GetPrivateKey(id string) string {

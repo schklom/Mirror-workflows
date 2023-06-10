@@ -15,8 +15,8 @@ type User struct {
 	PublicKey      string
 	CommandToUser  string
 	PushUrl        string
-	LocationData   []string
-	Pictures       []string
+	LocationData   []string // elements must be string-encoded JSON structures
+	Pictures       []string // elements are base64 encoded encrypted images
 }
 
 type DB struct {

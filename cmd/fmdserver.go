@@ -98,12 +98,12 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 
 func postLocation(w http.ResponseWriter, r *http.Request) {
 	// Try the modern method, if it fail to decode then fall back to legacy method
-	if !postLocationOpaque(w, r) {
+	if !postLocationModern(w, r) {
 		postLocationLegacy(w, r)
 	}
 }
 
-func postLocationOpaque(w http.ResponseWriter, r *http.Request) bool {
+func postLocationModern(w http.ResponseWriter, r *http.Request) bool {
 	var request DataPackage
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
@@ -112,11 +112,12 @@ func postLocationOpaque(w http.ResponseWriter, r *http.Request) bool {
 	}
 	id := uio.ACC.CheckAccessToken(request.IDT)
 	if id == "" {
-		http.Error(w, "Meeep!, Error - postLocationOpaque 2", http.StatusBadRequest)
+		http.Error(w, "Meeep!, Error - postLocationModern 2", http.StatusBadRequest)
 		return true
 	}
 
-	uio.AddLocation(id, request.Data)
+	locationAsString, _ := json.MarshalIndent(request, "", " ")
+	uio.AddLocation(id, string(locationAsString))
 	return true
 }
 
@@ -150,9 +151,9 @@ func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	highest := uio.GetLocationSize(id)
+	size := uio.GetLocationSize(id)
 
-	dataSize := DataPackage{Data: strconv.Itoa(highest)}
+	dataSize := DataPackage{Data: strconv.Itoa(size)}
 	result, _ := json.Marshal(dataSize)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(result)

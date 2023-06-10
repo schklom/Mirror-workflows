@@ -178,7 +178,7 @@ func getPicture(w http.ResponseWriter, r *http.Request) {
 		index = uio.GetPictureSize(id)
 	}
 	data := uio.GetPicture(id, index)
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "text/plain")
 	w.Write([]byte(fmt.Sprint(string(data))))
 }
 

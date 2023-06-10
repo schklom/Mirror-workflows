@@ -330,12 +330,12 @@ function sendToPhone(message) {
     })
 }
 
-function showPicture() {
+async function showLatestPicture() {
     if (!globalAccessToken) {
         console.log("Missing accessToken!");
         return;
     }
-    fetch("./pictureSize", {
+    const response = await fetch("./pictureSize", {
         method: 'PUT',
         body: JSON.stringify({
             IDT: globalAccessToken,
@@ -344,30 +344,31 @@ function showPicture() {
         headers: {
             'Content-type': 'application/json'
         }
-    }).then(function (response) {
-        return response.json()
-    }).then(function (json) {
-        if (json.Data == "-1") {
-            var toasted = new Toasted({
-                position: 'top-center',
-                duration: 30000
-            })
-            toasted.show('No Picture available!')
-            return;
-        } else {
-            newestPictureIndex = Number(json.Data);
-            currentPictureIndex = newestPictureIndex;
-            loadPicture(newestPictureIndex);
-        }
-    })
+    });
+    if (!response.ok) {
+        throw response.status;
+    }
+    const json = await response.json();
+    if (json.Data == "0") {
+        const toasted = new Toasted({
+            position: 'top-center',
+            duration: 3000
+        })
+        toasted.show('No picture available')
+        return;
+    }
+    newestPictureSize = parseInt(json.Data, 10);
+    newestPictureIndex = newestPictureSize - 1
+    currentPictureIndex = newestPictureSize - 1;
+    await loadPicture(currentPictureIndex);
 }
 
-function loadPicture(index) {
+async function loadPicture(index) {
     if (!globalAccessToken) {
         console.log("Missing accessToken!");
         return;
     }
-    fetch("./picture", {
+    const response = await fetch("./picture", {
         method: 'PUT',
         body: JSON.stringify({
             IDT: globalAccessToken,
@@ -376,63 +377,62 @@ function loadPicture(index) {
         headers: {
             'Content-type': 'application/json'
         }
-    }).then(function (response) {
-        return response.text()
-    })
-        .then(function (data) {
-            split = data.split("___PICTURE-DATA___")
-            var crypt = new JSEncrypt();
-            crypt.setPrivateKey(globalPrivateKey);
-            picPassword = crypt.decrypt(split[0])
-            picture = decryptAES(picPassword, split[1])
+    });
+    if (!response.ok) {
+        throw response.status;
+    }
+    const data = await response.text();
+    const picture = await parsePicture(globalPrivateKey, data);
+    displaySinglePicture(picture);
+}
 
-            var div = document.createElement("div");
-            div.id = "imagePrompt";
+function displaySinglePicture() {
+    var div = document.createElement("div");
+    div.id = "imagePrompt";
 
-            var imageDiv = document.createElement("div");
-            var img = document.createElement("img");
-            imageDiv.className = "center"
-            img.id = "imageFromDevice"
-            img.src = "data:image/jpeg;base64," + picture
-            imageDiv.appendChild(img)
-            div.appendChild(imageDiv)
+    var imageDiv = document.createElement("div");
+    var img = document.createElement("img");
+    imageDiv.className = "center"
+    img.id = "imageFromDevice"
+    img.src = "data:image/jpeg;base64," + picture
+    imageDiv.appendChild(img)
+    div.appendChild(imageDiv)
 
-            var buttonDiv = document.createElement("div");
-            buttonDiv.className = "center"
+    var buttonDiv = document.createElement("div");
+    buttonDiv.className = "center"
 
-            var beforeBtn = document.createElement("button");
-            beforeBtn.innerHTML = "<-"
-            beforeBtn.addEventListener('click', function () {
-                document.body.removeChild(div)
-                currentPictureIndex -= 1;
-                if (currentPictureIndex < 0) {
-                    currentPictureIndex = newestPictureIndex;
-                }
-                loadPicture(currentPictureIndex);
-            }, false);
-            buttonDiv.appendChild(beforeBtn)
+    var beforeBtn = document.createElement("button");
+    beforeBtn.innerHTML = "<-"
+    beforeBtn.addEventListener('click', function () {
+        document.body.removeChild(div)
+        currentPictureIndex -= 1;
+        if (currentPictureIndex < 0) {
+            currentPictureIndex = newestPictureIndex;
+        }
+        loadPicture(currentPictureIndex);
+    }, false);
+    buttonDiv.appendChild(beforeBtn)
 
-            var btn = document.createElement("button");
-            btn.innerHTML = "close"
-            btn.addEventListener('click', function () {
-                document.body.removeChild(div)
-            }, false);
-            buttonDiv.appendChild(btn)
+    var btn = document.createElement("button");
+    btn.innerHTML = "close"
+    btn.addEventListener('click', function () {
+        document.body.removeChild(div)
+    }, false);
+    buttonDiv.appendChild(btn)
 
-            var afterBtn = document.createElement("button");
-            afterBtn.innerHTML = "->"
-            afterBtn.addEventListener('click', function () {
-                document.body.removeChild(div)
-                currentPictureIndex += 1;
-                if (currentPictureIndex > newestPictureIndex) {
-                    currentPictureIndex = 0;
-                }
-                loadPicture(currentPictureIndex);
-            }, false);
-            buttonDiv.appendChild(afterBtn)
-            div.appendChild(buttonDiv)
-            document.body.appendChild(div);
-        })
+    var afterBtn = document.createElement("button");
+    afterBtn.innerHTML = "->"
+    afterBtn.addEventListener('click', function () {
+        document.body.removeChild(div)
+        currentPictureIndex += 1;
+        if (currentPictureIndex > newestPictureIndex) {
+            currentPictureIndex = 0;
+        }
+        loadPicture(currentPictureIndex);
+    }, false);
+    buttonDiv.appendChild(afterBtn)
+    div.appendChild(buttonDiv)
+    document.body.appendChild(div);
 }
 
 function dropDownBtn() {

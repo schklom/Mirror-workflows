@@ -56,6 +56,14 @@ function setupOnClicks() {
     document.getElementById("locateNewer").addEventListener("click", async () => await locateNewer());
 }
 
+// Section: Login
+
+function onFmdIdKeyPressed(event) {
+    if (event.keyCode == 13) {
+        prepareForLogin();
+    }
+}
+
 async function prepareForLogin() {
     let idInput = document.getElementById('fmdid');
     if (idInput.value != "" && globalPrivateKey == null) {
@@ -199,6 +207,8 @@ async function getPrivateKey(password) {
     globalPrivateKey = await unwrapPrivateKey(password, keyData.Data);
 }
 
+// Section: Locate
+
 async function locate(requestedIndex) {
     if (!globalAccessToken) {
         console.log("Missing accessToken!");
@@ -276,12 +286,6 @@ async function locate(requestedIndex) {
     map.setView(target, 16);
 }
 
-function clickPress(event) {
-    if (event.keyCode == 13) {
-        prepareForLogin();
-    }
-}
-
 function switchWithKeys(event) {
     if (event.keyCode == 111) {
         locateOlder();
@@ -306,6 +310,8 @@ async function locateNewer() {
     }
 }
 
+// Section: Command
+
 function sendToPhone(message) {
     if (!globalAccessToken) {
         console.log("Missing accessToken!");
@@ -329,6 +335,8 @@ function sendToPhone(message) {
         toasted.show('Command send!')
     })
 }
+
+// Section: Picture
 
 async function showLatestPicture() {
     if (!globalAccessToken) {
@@ -446,6 +454,8 @@ window.onclick = function (event) {
     }
 }
 
+// Section: Welcome popup
+
 function getWelcomeCookie() {
     let name = "welcome=";
     let decodedCookie = decodeURIComponent(document.cookie);
@@ -470,6 +480,8 @@ function welcomeFinish() {
     welcomePrompt = document.getElementById('welcomePrompt');
     welcomePrompt.style.visibility = 'hidden';
 }
+
+// Section: Delete device
 
 function prepareDeleteDevice() {
     var submit = function (pin) {

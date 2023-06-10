@@ -124,7 +124,7 @@ async function doLogin(fmdid, password) {
     let saltJson = await response.json();
     let salt = saltJson.Data;
 
-    modernPasswordHash = await hashPasswordForLogin(password, salt);
+    modernPasswordHash = await hashPasswordForLoginModern(password, salt);
     legacyPasswordHash = hashPasswordForLoginLegacy(password, salt);
 
     try {

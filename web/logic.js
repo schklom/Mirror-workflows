@@ -416,7 +416,7 @@ async function loadPicture(index) {
     displaySinglePicture(picture);
 }
 
-function displaySinglePicture() {
+function displaySinglePicture(picture) {
     var div = document.createElement("div");
     div.id = "imagePrompt";
 

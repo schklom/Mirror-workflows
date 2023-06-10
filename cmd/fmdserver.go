@@ -301,18 +301,25 @@ func postCommand(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	uio.SetCommandToUser(id, data.Data)
+	pushUser(id)
+}
 
-	url := strings.Replace(uio.GetPushUrl(id), "/UP?", "/message?", -1)
+func pushUser(id string) {
+	pushUrl := strings.Replace(uio.GetPushUrl(id), "/UP?", "/message?", -1)
 
 	var jsonData = []byte(`{
 		"message": "magic may begin",
 		"priority": 5
 	}`)
-	request, _ := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+	request, _ := http.NewRequest("POST", pushUrl, bytes.NewBuffer(jsonData))
 	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
 
 	client := &http.Client{}
-	client.Do(request)
+	res, err := client.Do(request)
+	if err != nil {
+		fmt.Println("Error sending push: ", err)
+		return
+	}
 }
 
 func postPushLink(w http.ResponseWriter, r *http.Request) {
@@ -376,11 +383,7 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		w.Write(result)
 	} else {
 		uio.ACC.IncrementLock(data.IDT)
-		http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusForbidden)
-		}
-	} else {
-		http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusLocked)
-		uio.SetCommandToUser(data.IDT, "423")
+		http.Error(w, "Meeep!, Error - requestAccess 4", http.StatusForbidden)
 	}
 }
 

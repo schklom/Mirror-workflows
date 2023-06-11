@@ -48,6 +48,8 @@ jobs:
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
       - name: Setup JDK+Android
         run: sudo apt-get install openjdk-11-jdk git adb -y
+      - name: Gradlew executable
+        run: chmod +x gradlew
       - name: Build apk
         run: ./gradlew --no-daemon assembleDebug
       - name: LS

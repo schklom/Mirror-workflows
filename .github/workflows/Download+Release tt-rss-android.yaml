@@ -32,7 +32,7 @@ jobs:
           #destination_branch: "refs/tags/*"
           destination_ssh_private_key: ${{ secrets.GITSYNCACTION }}
 
-  build_gadgetbridge_on_master:
+  build_ttrss_on_master:
     needs: [repo_sync_master]
     runs-on: ubuntu-latest
     steps:
@@ -71,6 +71,6 @@ jobs:
             # ./app/build/outputs/apk/app-debug.apk
           #files: ./app/build/outputs/apk/main/release/app-main-release-unsigned.apk
           files: ./app/build/outputs/apk/main/debug/app-main-debug.apk
-          repository: "schklom/Gadgetbridge-osm"
+          repository: "schklom/tt-rss-android"
           token: ${{ secrets.PAT_GITHUB_ACTION }}
 

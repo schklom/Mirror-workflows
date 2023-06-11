@@ -1,0 +1,31 @@
+name: Download+Release AutoInput
+
+# Controls when the workflow will run
+on:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '1 0 * * SUN,WED' # Google causes problems sometimes when downloads are too frequent
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+
+  repo_sync_master:
+    #if: ${{ false }}
+    runs-on: ubuntu-latest
+    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    #if: needs.get_commit_and_tag.outputs.LOCALTAG != needs.get_commit_and_tag.outputs.REMOTETAG || needs.get_commit_and_tag.outputs.LOCALCOMMIT != needs.get_commit_and_tag.outputs.REMOTECOMMIT
+    steps:
+      - name: repo-sync master branch
+        uses: wei/git-sync@v3
+        with:
+          source_repo: "https://gitlab.tt-rss.org/tt-rss/tt-rss-android.git"
+          source_branch: "refs/remotes/source/*"
+          #source_branch: "master"
+          ####destination_repo: "git@github.com:schklom/Mirror-workflows.git"
+          destination_repo: "git@github.com:schklom/tt-rss-android.git"
+          ####destination_branch: "Gadgetbridge-osmand-experiments"
+          destination_branch: "refs/heads/*"
+          destination_ssh_private_key: ${{ secrets.GITSYNCACTION }}

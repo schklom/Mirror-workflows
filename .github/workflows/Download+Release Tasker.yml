@@ -54,6 +54,7 @@ jobs:
         if: ${{ env.current_hash != env.new_hash }}
         run: |
           sudo apt-get install -y aapt
+          ls -alh
           version=`aapt d badging ${{ env.filename }} | grep -Po "(?<=\sversionName=')([0-9.]+)"`
           echo "version=${version}" >> $GITHUB_ENV
 #          unzip -d apk_files ${{ env.filename }}

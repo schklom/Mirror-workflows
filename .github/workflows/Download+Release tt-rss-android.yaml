@@ -1,4 +1,4 @@
-name: Download+Release AutoInput
+name: Download+Release tt-rss-android
 
 # Controls when the workflow will run
 on:

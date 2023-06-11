@@ -38,6 +38,11 @@ jobs:
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     if: ${{needs.get_commits.outputs.LOCAL}} != ${{needs.get_commits.outputs.REMOTE}}
     steps:
+      - name: outputs
+        run: |
+          echo "${{needs.get_commits.outputs.LOCAL}}"
+          echo "${{needs.get_commits.outputs.REMOTE}}"
+    
       - name: repo-sync master branch
         uses: wei/git-sync@v3
         with:

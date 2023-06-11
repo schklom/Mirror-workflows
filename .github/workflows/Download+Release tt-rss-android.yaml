@@ -28,4 +28,6 @@ jobs:
           destination_repo: "git@github.com:schklom/tt-rss-android.git"
           ####destination_branch: "Gadgetbridge-osmand-experiments"
           #destination_branch: "refs/heads/*"
+          source_branch: "refs/tags/*"
+          destination_branch: "refs/tags/*"
           destination_ssh_private_key: ${{ secrets.GITSYNCACTION }}

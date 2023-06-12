@@ -5,6 +5,6 @@ Xvfb :99 -ac &
 sleep 2
 
 export DISPLAY=:99
-echo "Executing command $@"
+echo "Executing npm as user node"
 
-exec "$@"
+su -mc "cd /app && npm run start" node

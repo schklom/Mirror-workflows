@@ -22,6 +22,7 @@ RUN pnpm store prune
 FROM node:18-buster-slim as run
 
 ENV DEBIAN_FRONTEND noninteractive
+ENV HOME /home/node
 RUN apt-get update \
  && apt-get install -y xvfb libasound2 libnss3 libgconf-2-4 libxss1 libgtk-3-0 libgbm-dev --no-install-recommends
 
@@ -30,5 +31,6 @@ COPY --from=build /app /app/
 WORKDIR /app
 ENV NODE_ENV production
 EXPOSE 3000
+USER root
 
-CMD /app/docker-entrypoint.sh npm run start
+CMD /app/docker-entrypoint.sh

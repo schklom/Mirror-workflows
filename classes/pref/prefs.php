@@ -533,7 +533,11 @@ class Pref_Prefs extends Handler_Protected {
 				<?php $this->index_auth_password() ?>
 			</div>
 			<div dojoType='dijit.layout.ContentPane' title="<?= __('App passwords') ?>">
-				<?php $this->index_auth_app_passwords() ?>
+				<?php if (PluginHost::getInstance()->get_plugin('auth_internal')) { ?>
+					<?php $this->index_auth_app_passwords() ?>
+				<?php } else { ?>
+					<?= format_warning("App passwords are only available if <b>auth_internal<b> plugin is enabled."); ?>
+				<?php } ?>
 			</div>
 			<div dojoType='dijit.layout.ContentPane' title="<?= __('Authenticator (OTP)') ?>">
 				<?php $this->index_auth_2fa() ?>

@@ -1,7 +1,7 @@
 import { Greatfon, ResultsQuery } from "./greatfon";
 import { Request, Response, Route } from "playwright-chromium";
 import UserAgent from "user-agents";
-import { ImginnCom } from "./imginncom";
+import { Imgsed } from "./imgsed";
 import { PlaywrightScraper } from "./scrapers/playwright";
 import { AxiosScraper } from "./scrapers/axios";
 import { convertTTlToTimestamp } from "@/utils";
@@ -163,7 +163,7 @@ export interface Provider {
 
 export function getInstanceProviders(providers: Provider[]) {
 	try {
-		const providersInstances: (Greatfon | Wizstat | ImginnCom)[] = [];
+		const providersInstances: (Greatfon | Wizstat | Imgsed)[] = [];
 
 		providers.forEach((currentProvider) => {
 			const keys = Object.keys(currentProvider.ttl);
@@ -189,12 +189,20 @@ export function getInstanceProviders(providers: Provider[]) {
 					break;
 				case "Wizstat":
 					providersInstances.push(
-						new Wizstat(new PlaywrightScraper(scraperConfig)),
+						new Wizstat(
+							currentProvider.headlessBrowser
+								? new PlaywrightScraper(scraperConfig)
+								: new AxiosScraper(scraperConfig),
+						),
 					);
 					break;
-				case "ImginnCom":
+				case "Imgsed":
 					providersInstances.push(
-						new ImginnCom(new PlaywrightScraper(scraperConfig)),
+						new Imgsed(
+							currentProvider.headlessBrowser
+								? new PlaywrightScraper(scraperConfig)
+								: new AxiosScraper(scraperConfig),
+						),
 					);
 					break;
 			}

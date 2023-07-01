@@ -8,6 +8,7 @@ declare global {
 			PROXY: "true" | "false";
 			FETCH_PROVIDERS: "true" | "false";
 			PROVIDERS_LIST_URL: "true" | "false";
+			USE_HEADLESS_PROVIDERS: "true" | "false";
 			FETCH_PROVIDERS_EVERY: string;
 		}
 	}

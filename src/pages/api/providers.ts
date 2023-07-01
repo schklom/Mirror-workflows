@@ -30,6 +30,11 @@ async function getProviders() {
 		convertTTlToTimestamp(process.env.FETCH_PROVIDERS_EVERY),
 		JSON.stringify(providers),
 	);
+
+	if (process.env.USE_HEADLESS_PROVIDERS === "false") {
+		return providers.filter((provider) => !provider.headlessBrowser);
+	}
+
 	return providers;
 }
 

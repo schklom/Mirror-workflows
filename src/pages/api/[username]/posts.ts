@@ -25,6 +25,10 @@ async function getPosts(
 		);
 	}
 
+	if (query.data.username === "favicon.ico") {
+		return res.end();
+	}
+
 	if (cursor) {
 		const posts = await randomLoadMoreProvider.getPosts({
 			cursor,

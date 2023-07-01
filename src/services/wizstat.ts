@@ -9,6 +9,7 @@ import type {
 	PostsResponse,
 	Profile,
 } from ".";
+import { AxiosScraper } from "./scrapers/axios";
 import { PlaywrightScraper } from "./scrapers/playwright";
 import {
 	compactToNumber,
@@ -17,7 +18,6 @@ import {
 	convertToInstagramUrl,
 	extractTagsAndUsers,
 	proxyUrl,
-	replaceBrWithNewline,
 	shortcodeToMediaId,
 	stripHtmlTags,
 } from "@/utils";
@@ -42,7 +42,7 @@ interface WizstatPost {
 }
 
 export class Wizstat implements IGetProfile, IGetPost, IGetPosts, IGetComments {
-	constructor(private scraper: PlaywrightScraper) {}
+	constructor(private scraper: AxiosScraper | PlaywrightScraper) {}
 
 	private async scrapePosts(username: string): Promise<PostsResponse> {
 		const html = await this.scraper.getHtml({

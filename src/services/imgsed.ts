@@ -17,9 +17,10 @@ import {
 	shortcodeToMediaId,
 } from "@/utils";
 import * as cheerio from "cheerio";
+import { AxiosScraper } from "./scrapers/axios";
 
-export class ImginnCom implements IGetPost, IGetPosts, IGetComments {
-	constructor(private scraper: PlaywrightScraper) {}
+export class Imgsed implements IGetPost, IGetPosts, IGetComments {
+	constructor(private scraper: AxiosScraper | PlaywrightScraper) {}
 
 	private async scrapePosts(username: string): Promise<PostsResponse> {
 		const html = await this.scraper.getHtml({

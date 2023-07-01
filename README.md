@@ -104,6 +104,12 @@ cd proxigram
 cp .env.local.example .env.local
 
 # Replace 'pnpm' with yarn or npm if you use those.
+# If headless providers are disabled, you might not want to install the browser.
+# Use one of these instead:
+# pnpm install --no-optional​
+# npm install --omit=optional
+# yarn install --ignore-optional
+
 pnpm install
 pnpm build
 

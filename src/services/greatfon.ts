@@ -37,16 +37,7 @@ export interface ResultsQuery {
 export class Greatfon implements IGetAll {
 	constructor(private scraper: AxiosScraper | PlaywrightScraper) {}
 
-	private async scrapePosts(
-		username: string,
-		cursor?: string,
-	): Promise<PostsResponse> {
-		const cursorWithoutUserId = cursor
-			? reverseString(cursor?.split("_")[0])
-			: "";
-		const path = cursor
-			? `api/profile/${username}/?cursor=${cursorWithoutUserId}`
-			: `v/${username}`;
+	private async scrapePosts(path: string): Promise<PostsResponse> {
 		const html = await this.scraper.getHtml({
 			path,
 			expireTime: this.scraper.config.ttl?.posts as number,
@@ -70,7 +61,6 @@ export class Greatfon implements IGetAll {
 
 		return {
 			posts,
-			cursor: posts.at(-1)?.id,
 		};
 	}
 
@@ -144,13 +134,8 @@ export class Greatfon implements IGetAll {
 		};
 	}
 
-	async getPosts({
-		cursor,
-		username,
-	}: IgetPostsOptions): Promise<PostsResponse> {
-		if (cursor) return await this.scrapePosts(username, cursor);
-
-		return await this.scrapePosts(username);
+	async getPosts({ username }: IgetPostsOptions): Promise<PostsResponse> {
+		return await this.scrapePosts(`v/${username}`);
 	}
 
 	async getPost(shortcode: string): Promise<Post> {

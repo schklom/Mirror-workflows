@@ -201,7 +201,7 @@ export function compactToNumber(compact: string): number {
 
 export function convertTimestampToRelativeTime(timestamp: number): string {
 	const now = new Date();
-	const prev = new Date(timestamp);
+	const prev = new Date(Math.floor(timestamp * 1000));
 	const days = now.getDate() - prev.getDate();
 
 	const DIFFERENCES = {
@@ -301,5 +301,5 @@ export function convertTextToTimestamp(timeString: string): number {
 			now.setFullYear(now.getFullYear() - time);
 			break;
 	}
-	return now.getTime();
+	return Math.floor(now.getTime() / 1000);
 }

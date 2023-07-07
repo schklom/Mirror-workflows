@@ -70,12 +70,22 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments {
 		const userId = cursor?.split("_")[1];
 		const type = userId ? "posts" : "tags";
 		const id = userId ? userId : username.split("/").at(-1);
-		const html = await this.scraper.getHtml({
-			path: `api/${type}/?id=${id}&cursor=${cursor}`,
-			expireTime: this.scraper.config.ttl?.post as number,
-		});
-		const $ = cheerio.load(html);
-		const json = JSON.parse($("pre").text()) as PostsMain;
+		const path = `api/${type}/?id=${id}&cursor=${cursor}`;
+		let json: PostsMain;
+
+		if (this.scraper instanceof AxiosScraper) {
+			json = await this.scraper.getJson<PostsMain>({
+				path,
+				expireTime: this.scraper.config.ttl?.post as number,
+			});
+		} else {
+			const html = await this.scraper.getHtml({
+				path,
+				expireTime: this.scraper.config.ttl?.post as number,
+			});
+			const $ = cheerio.load(html);
+			json = JSON.parse($("pre").text()) as PostsMain;
+		}
 
 		const posts: Post[] = json.items.map((post) => ({
 			id: shortcodeToMediaId(post.code),

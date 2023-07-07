@@ -85,6 +85,7 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments {
 			isVideo: post.isVideo,
 			isSideCard: post.isSidecar,
 			created_at: {
+				relative: convertTimestampToRelativeTime(post.time),
 				timestamp: post.time,
 			},
 		}));

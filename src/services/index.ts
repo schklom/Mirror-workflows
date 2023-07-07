@@ -1,5 +1,5 @@
 import { Greatfon, ResultsQuery } from "./greatfon";
-import { Request, Response, Route } from "playwright-chromium";
+import { Request, Response, Route } from "playwright-core";
 import UserAgent from "user-agents";
 import { Imgsed } from "./imgsed";
 import { PlaywrightScraper } from "./scrapers/playwright";

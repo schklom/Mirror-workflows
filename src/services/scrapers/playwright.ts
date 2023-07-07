@@ -1,7 +1,7 @@
 import { IGetHtml, IGetHtmlOptions, randomUserAgent } from "..";
 import { createRedisKeyFromUrl } from "@/utils";
 import redis from "@/utils/redis";
-import { Request, Route, chromium } from "playwright-chromium";
+import { Request, Route, chromium } from "playwright-core";
 
 const browser = await chromium.launch({
 	headless: process.env.NODE_ENV === "development" ? false : true,

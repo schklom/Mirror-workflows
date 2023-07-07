@@ -104,11 +104,11 @@ cd proxigram
 cp .env.local.example .env.local
 
 # Replace 'pnpm' with yarn or npm if you use those.
-# If headless providers are disabled, you might not want to install the browser.
-# Use one of these instead:
-# pnpm install --no-optional​
-# npm install --omit=optional
-# yarn install --ignore-optional
+# If headless providers are enabled, you need to install the browser.
+# Use one of these commands to install the browser binary:
+# pnpm install playwright-chromium@1.34.3
+# npm install playwright-chromium@1.34.3
+# yarn install playwright-chromium@1.34.3
 
 pnpm install
 pnpm build

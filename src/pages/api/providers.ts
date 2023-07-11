@@ -15,7 +15,9 @@ async function Providers(
 
 async function getProviders() {
 	const cachedProviders = await redis.get("providers");
-	if (cachedProviders) JSON.parse(cachedProviders) as Provider[];
+	if (cachedProviders) {
+		return JSON.parse(cachedProviders) as Provider[];
+	}
 
 	const { data: providers } = await axios.get<Provider[]>(
 		process.env.PROVIDERS_LIST_URL,
@@ -23,13 +25,13 @@ async function getProviders() {
 
 	if (process.env.FETCH_PROVIDERS === "false") {
 		await redis.set("providers", JSON.stringify(providers));
+	} else {
+		await redis.setex(
+			"providers",
+			convertTTlToTimestamp(process.env.FETCH_PROVIDERS_EVERY),
+			JSON.stringify(providers),
+		);
 	}
-
-	await redis.setex(
-		"providers",
-		convertTTlToTimestamp(process.env.FETCH_PROVIDERS_EVERY),
-		JSON.stringify(providers),
-	);
 
 	if (process.env.USE_HEADLESS_PROVIDERS === "false") {
 		return providers.filter((provider) => !provider.headlessBrowser);

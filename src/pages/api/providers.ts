@@ -16,7 +16,11 @@ async function Providers(
 async function getProviders() {
 	const cachedProviders = await redis.get("providers");
 	if (cachedProviders) {
-		return JSON.parse(cachedProviders) as Provider[];
+		const providers = JSON.parse(cachedProviders) as Provider[];
+		if (process.env.USE_HEADLESS_PROVIDERS === "false") {
+			return providers.filter((provider) => !provider.headlessBrowser);
+		}
+		return providers;
 	}
 
 	const { data: providers } = await axios.get<Provider[]>(

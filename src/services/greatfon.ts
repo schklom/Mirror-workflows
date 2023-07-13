@@ -186,12 +186,15 @@ export class Greatfon implements IGetAll {
 
 		if (post.isVideo) {
 			post.video = proxyUrl($(".video-container>video").attr("src") as string);
+			post.thumb = proxyUrl(
+				$(".video-container>video").attr("poster") as string,
+			);
 		}
 
 		if (post.isSideCard) {
 			$(".swiper-slide").each((_i, el) => {
-				const image = $(el).find("img");
-				const type = image ? "image" : "video";
+				const imageUrl = $(el).find("img").attr("src");
+				const type = imageUrl ? "image" : "video";
 				post.sidecard?.push({
 					type,
 					url: proxyUrl(

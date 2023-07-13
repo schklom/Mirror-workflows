@@ -113,6 +113,8 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments {
 			expireTime: this.scraper.config.ttl?.post as number,
 		});
 		const $ = cheerio.load(html);
+		const isVideo = $(".media-wrap").data("video") ? true : false;
+
 		const post: Post = {
 			id: shortcodeToMediaId(shortcode),
 			shortcode,
@@ -136,11 +138,13 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments {
 				timestamp: Number($(".page-post").data("created")),
 			},
 			commentsCount: Number($(".page-post").data("comment-count")),
-			isVideo: $(".media-wrap").data("video") ? true : false,
+			isVideo,
 			isSideCard: $(".swiper-pagination").length > 0,
 			thumb: proxyUrl(
 				convertToInstagramUrl(
-					$(".media-wrap").first().find("img").attr("src") as string,
+					isVideo
+						? ($(".media-wrap > img:nth-child(2)").attr("src") as string)
+						: ($(".media-wrap > img:nth-child(1)").attr("src") as string),
 				),
 			),
 			sidecard: [],

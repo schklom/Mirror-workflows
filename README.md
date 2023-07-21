@@ -33,17 +33,17 @@
 
 ## About The Project
 
-Proxigram, a free and open source alternative Instagram front-end focused on privacy.
-Inspired by [ProxiTox](https://github.com/pablouser1/ProxiTok), [Nitter](https://github.com/zedeus/nitter/), [LibreMdb](https://github.com/zyachel/libremdb), and [many others](https://github.com/digitalblossom/alternative-frontends)
+Proxigram: A privacy focused and and open source front-end for Instagram.
+Inspired by [ProxiTox](https://github.com/pablouser1/ProxiTok), [Nitter](https://github.com/zedeus/nitter/), [LibreMdb](https://codeberg.org/zyachel/libremdb), and [many others](https://github.com/digitalblossom/alternative-frontends)
 
 
 ### Why?
 
-We all know the record of bad pactices that Meta has done against user's privacy. Regatherless of that, Instagram still being one of the largest social media in the world, this makes it imposible to not have to check Instagram sometimes. But it can be hard to use Instagram when the website is filled with sign up banners everywhere. This is where Proxigram comes in.
+We all know the record of bad practices that Meta has done against user's privacy. Regardless of that, Instagram still is one of the largest social media in the world. This makes it imposible to not have to check Instagram sometimes, but it can be hard to use Instagram when the website is filled with sign-up banners everywhere, is tracking all your activity and wants you to install the official app. This is where Proxigram comes in.
 
-There are others Instagram viewers out there, but some of them can be a little tricky to use since most of them have ads, needs JavaScript or are full of captchas and trackers. Proxigram does the job for you and goes to these services  parse the data, and gives it back to you.
+There are other Instagram viewers out there, but some of them can be a little tricky to use since most of them have ads, need JavaScript or are full of captchas and trackers. Proxigram does the job for you and goes to these services, parses the data, and gives it back to you.
 
-Using an instance of Proxigram, you can browse Instagram without JavaScript while retaining your privacy with all the requests going through the server, client never talks to Instagram and other services providers.
+Using an instance of Proxigram, you can browse Instagram without JavaScript while retaining your privacy with all the requests going through the server. The client never talks to Instagram or other service providers (unless it is specified).
 
 ### Screenshots
 
@@ -71,15 +71,15 @@ Using an instance of Proxigram, you can browse Instagram without JavaScript whil
 
 ## Roadmap
 
-- [] Add stories
-- [] Add highlights
+- [ ] Add stories
+- [ ] Add highlights
 - [X] Add rss feed
-- [] Add settings
-  - [] Enable or disable proxy
-  - [] Infinity scroll
-  - [] Redirect URLs
-  - [] Choose providers
-  - [] Healthiness of providers
+- [ ] Add settings
+  - [ ] Enable or disable proxy
+  - [ ] Infinity scroll
+  - [ ] Redirect URLs
+  - [ ] Choose providers
+  - [ ] Healthiness of providers 
 
 See the [open issues](https://codeberg.org/ThePenguinDev/Proxigram/issues) for a full list of proposed features and known issues.
 
@@ -116,6 +116,7 @@ pnpm install
 pnpm build
 
 # Start redis server.
+# If "CACHE" is set to false, it is not necessary. Check .env.local
 redis-server (or docker)
 
 pnpm start
@@ -138,4 +139,4 @@ Distributed under the AGPLv3 License. See `LICENSE` for more information.
 
 ## Legal Notice
 
-Proxigram does not host any content. All content shown on any Proxigram instances is from Instagram. Any issues with the content shown on any Proxigram instance, needs to be reported to Instagram, not the mantainer's ISP or domain provider. Proxigram is not affiliated with Meta.
+Proxigram does not host any content. All content shown on any Proxigram instances is from Instagram. Any issue with the content shown on any instance of Proxigram, needs to be reported to Instagram, not the maintainer's ISP or domain provider. Proxigram is not affiliated with Meta Platforms, Inc.

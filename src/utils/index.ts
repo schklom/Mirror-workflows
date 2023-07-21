@@ -4,6 +4,7 @@ import axios from "axios";
 declare global {
 	namespace NodeJS {
 		interface ProcessEnv {
+			CACHE: "true" | "false";
 			REDIS_URL: string;
 			PROXY: "true" | "false";
 			FETCH_PROVIDERS: "true" | "false";

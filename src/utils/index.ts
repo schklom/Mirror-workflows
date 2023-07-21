@@ -10,6 +10,10 @@ declare global {
 			PROVIDERS_LIST_URL: "true" | "false";
 			USE_HEADLESS_PROVIDERS: "true" | "false";
 			FETCH_PROVIDERS_EVERY: string;
+			RSS: "true" | "false";
+			SLEEP_TIME_PER_REQUEST: number;
+			ITEMS_PER_RSS: number;
+			URL: string;
 		}
 	}
 }
@@ -17,6 +21,10 @@ declare global {
 export const axiosInstance = axios.create({
 	baseURL: "http://127.0.0.1:3000/api/",
 });
+
+export function sleep(ms: number) {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 export function convertTTlToTimestamp(time: string) {
 	const format: "m" | "h" | "d" = time.slice(-1).toLowerCase() as
@@ -39,9 +47,14 @@ export function convertTTlToTimestamp(time: string) {
 	return t;
 }
 
+export function getBaseUrl() {
+	const url = new URL(process.env.URL);
+	return `${url.protocol}//${url.host}`;
+}
+
 export function proxyUrl(url: string) {
 	if (process.env.PROXY === "false") return url;
-	return `/api/proxy?url=${encodeURIComponent(url)}`;
+	return `${getBaseUrl()}/api/proxy?url=${encodeURIComponent(url)}`;
 }
 
 export function replaceBrWithNewline(html: string) {

@@ -8,6 +8,16 @@ COPY nginx.conf /etc/nginx/templates/nginx.conf.template
 # name can be overridden at runtime by passing an APP_UPSTREAM env var
 ENV APP_UPSTREAM=${APP_UPSTREAM:-app}
 
+# Webroot (defaults to /var/www/html)
+ENV APP_WEB_ROOT=${APP_WEB_ROOT:-/var/www/html}
+
+# Base location for tt-rss (defaults to /tt-rss)
+ENV APP_BASE=${APP_BASE:-/tt-rss}
+
+# In order to make tt-rss appear on website root without /tt-rss/ set above as follows in .env:
+# APP_WEB_ROOT=/var/www/html/tt-rss
+# APP_BASE=
+
 # It's necessary to set the following NGINX_ENVSUBST_OUTPUT_DIR env var to tell
 # nginx to replace the env vars of /etc/nginx/templates/nginx.conf.template
 # and put the result in /etc/nginx/nginx.conf (instead of /etc/nginx/conf.d/nginx.conf)

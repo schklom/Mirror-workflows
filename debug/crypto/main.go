@@ -1,4 +1,4 @@
-package debug
+package crypto
 
 import (
 	"bytes"
@@ -133,7 +133,7 @@ func AESEncrypt(src string, keyString string) string {
 
 func AESDecrypt(src string, keyString string) string {
 	salt := src[:keySize/8]
-	iv := src[keySize/8 : keySize/8+IV_SIZE/8]
+//	iv := src[keySize/8 : keySize/8+IV_SIZE/8]
 	msg := src[(keySize/8)+(IV_SIZE/8) : len(src)]
 
 	key := pbkdf2.Key([]byte(keyString), fromHex(salt), iterationCount, keySize/8, sha1.New)
@@ -143,7 +143,7 @@ func AESDecrypt(src string, keyString string) string {
 	if err != nil {
 		fmt.Println("key error1", err)
 	}
-	dcb := cipher.NewCBCDecrypter(block, fromHex(iv))
+//	dcb := cipher.NewCBCDecrypter(block, fromHex(iv))
 
 	pt := make([]byte, len(ciphertext))
 	block.Decrypt(pt, ciphertext)

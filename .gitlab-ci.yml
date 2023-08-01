@@ -78,7 +78,10 @@ docker-build:
     # Build the images
     # buildx multiplatform build sometimes fails in Gitlab CI: https://github.com/docker/buildx/issues/584
     - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes; docker buildx create --use
-    - docker buildx build ${push} --platform linux/amd64,linux/arm/v7,linux/arm64/v8 $tags .
+    # Issue: "invalid tag missing manifest digest" in Container Registry after buildx pushed it.
+    # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/393202
+    # Workaround: https://gitlab.com/gitlab-org/gitlab/-/issues/388865
+    - docker buildx build ${push} --provenance=false --platform linux/amd64,linux/arm/v7,linux/arm64/v8 $tags .
   retry: 2
   rules:
     - exists:

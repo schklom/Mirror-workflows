@@ -1,27 +1,14 @@
-src/fmdserver
-src/data
-src/data/*
-src/fmdserver.tar.xz
-src/config.json
-src/fmdserver.go
-src/__debug_bin
-src/FMDServer.tar.xz
-src/main/data
-src/main/fmdserver
-src/main/dataNew
+# Local objectbox data
 data/
-cmd/objectbox/data.mdb
-cmd/objectbox/lock.mdb
-objectbox/data.mdb
-objectbox/lock.mdb
+
+# Objectbox
+*.mdb
+
+# FMD Server config
 config.json
+config.yaml
+config.yml
+
+# binaries
 fmdserver
-data.mdb
 fmdDBViewer
-.gitignore
-fmdDBViewer
-lock.mdb
-fmdserver
-Package.tar.xz
-fmdserver
-data

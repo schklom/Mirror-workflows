@@ -15,6 +15,8 @@ import (
 	"strings"
 
 	"findmydeviceserver/user"
+
+	"gopkg.in/yaml.v3"
 )
 
 // Some IO variables
@@ -30,11 +32,11 @@ const CONFIG_FILE = "config.yml"
 var isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]*$`).MatchString
 
 type config struct {
-	PortSecure   int
-	PortUnsecure int
-	IdLength     int
-	MaxSavedLoc  int
-	MaxSavedPic  int
+	PortSecure   int `yaml:"PortSecure"`
+	PortInsecure int `yaml:"PortInsecure"`
+	UserIdLength int `yaml:"UserIdLength"`
+	MaxSavedLoc  int `yaml:"MaxSavedLoc"`
+	MaxSavedPic  int `yaml:"MaxSavedPic"`
 }
 
 // Deprecated: used only by old clients. Modern clients use the opaque DataPackage.
@@ -531,12 +533,12 @@ func handleRequests(filesDir string, webDir string, config config) {
 			fmt.Println("HTTPS won't be available.", err)
 		}
 	}
-	unsecurePort := ":" + strconv.Itoa(config.PortUnsecure)
-	log.Fatal(http.ListenAndServe(unsecurePort, nil))
+	insecureAddr := ":" + strconv.Itoa(config.PortInsecure)
+	log.Fatal(http.ListenAndServe(insecureAddr, nil))
 }
 
 func load_config(filesDir string) config {
-	fmt.Println("Init: Preparing Config...")
+	fmt.Println("Init: Loading Config...")
 
 	configFilePath := filepath.Join(filesDir, CONFIG_FILE)
 
@@ -548,7 +550,7 @@ func load_config(filesDir string) config {
 	}
 
 	serverConfig := config{}
-	err = json.Unmarshal(configContent, &serverConfig)
+	err = yaml.Unmarshal(configContent, &serverConfig)
 	if err != nil {
 		fmt.Println("ERROR: unmarshaling config file: ", err)
 		configRead = false
@@ -556,10 +558,11 @@ func load_config(filesDir string) config {
 
 	if !configRead {
 		fmt.Println("WARN: No config found! Using defaults.")
-		serverConfig = config{PortSecure: 1008, PortUnsecure: 1020, IdLength: 5, MaxSavedLoc: 1000, MaxSavedPic: 10}
+		serverConfig = config{PortSecure: 1008, PortInsecure: 1020, UserIdLength: 5, MaxSavedLoc: 1000, MaxSavedPic: 10}
 	}
+	//fmt.Printf("INFO: Using config %+v\n", serverConfig)
 
-	isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]{1,` + strconv.Itoa(serverConfig.IdLength) + `}$`).MatchString
+	isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]{1,` + strconv.Itoa(serverConfig.UserIdLength) + `}$`).MatchString
 
 	return serverConfig
 }
@@ -567,7 +570,7 @@ func load_config(filesDir string) config {
 func init_db(filesDir string, config config) {
 	fmt.Println("Init: Loading database")
 	uio = user.UserIO{}
-	uio.Init(filesDir, config.IdLength, config.MaxSavedLoc, config.MaxSavedPic)
+	uio.Init(filesDir, config.UserIdLength, config.MaxSavedLoc, config.MaxSavedPic)
 }
 
 func get_cwd() string {
@@ -601,6 +604,6 @@ func main() {
 
 	fmt.Println("FMD Server ", VERSION)
 	fmt.Println("Starting Server")
-	fmt.Printf("Port: %d (unsecure) %d (secure)\n", config.PortUnsecure, config.PortSecure)
+	fmt.Printf("Port: %d (insecure) %d (secure)\n", config.PortInsecure, config.PortSecure)
 	handleRequests(filesDir, webDir, config)
 }

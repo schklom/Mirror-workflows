@@ -1,0 +1,12 @@
+# This is an example config file for FMD Server
+
+# The ports FMD Server should listen on
+PortSecure: 1008
+PortInsecure: 1020
+
+# The length for the user IDs that are generated
+UserIdLength: 5
+
+# How many location points or pictures FMD Server should save per account
+MaxSavedLoc: 1000
+MaxSavedPic: 10

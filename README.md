@@ -91,6 +91,23 @@ To fix this increase the maximum body size, e.g to 20 MB:
 client_max_body_size 20m;
 ```
 
+## Configuring FMD Server
+
+The [`config.example.yml`](config.example.yml) contains the available options to configure FMD Server.
+Copy this file to `config.yml` and edit it to your liking.
+
+The `config.yml` should be in the same directory as the binary.
+With Docker you can mount it with `-v ./config.yml:/fmd/config.yml:ro` (for CLI)
+or for Compose:
+
+```yml
+# other lines omitted
+volumes:
+    - ./config.yml:/fmd/config.yml:ro
+```
+
+NOTE: `yml` not `yaml`!
+
 ## Developing
 
 A simple way to test code changes is to build a container image locally and run that:

@@ -18,18 +18,14 @@ import (
 )
 
 // Some IO variables
-var version = "v0.4.0"
-var webDir = "web"
+var VERSION = "v0.4.0"
+var WEB_DIR = "web"
 var uio user.UserIO
 
 // Server Config
-const serverCert = "server.crt"
-const serverKey = "server.key"
-const configFile = "config.json"
-
-var filesDir string
-
-var serverConfig config
+const SERVER_CERT = "server.crt"
+const SERVER_KEY = "server.key"
+const CONFIG_FILE = "config.yml"
 
 var isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]*$`).MatchString
 
@@ -460,7 +456,7 @@ func createDevice(w http.ResponseWriter, r *http.Request) {
 // ------- Main Web Request Handling -------
 
 func getVersion(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(fmt.Sprint(version)))
+	w.Write([]byte(fmt.Sprint(VERSION)))
 }
 
 func mainLocation(w http.ResponseWriter, r *http.Request) {
@@ -499,7 +495,7 @@ func mainDevice(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handleRequests() {
+func handleRequests(filesDir string, webDir string, config config) {
 	http.Handle("/", http.FileServer(http.Dir(webDir)))
 	http.HandleFunc("/command", mainCommand)
 	http.HandleFunc("/command/", mainCommand)
@@ -527,59 +523,64 @@ func handleRequests() {
 	http.HandleFunc("/requestAccess/", requestAccess)
 	http.HandleFunc("/version", getVersion)
 	http.HandleFunc("/version/", getVersion)
-	if fileExists(filepath.Join(filesDir, serverKey)) {
-		securePort := ":" + strconv.Itoa(serverConfig.PortSecure)
-		err := http.ListenAndServeTLS(securePort, filepath.Join(filesDir, serverCert), filepath.Join(filesDir, serverKey), nil)
+
+	if fileExists(filepath.Join(filesDir, SERVER_KEY)) {
+		securePort := ":" + strconv.Itoa(config.PortSecure)
+		err := http.ListenAndServeTLS(securePort, filepath.Join(filesDir, SERVER_CERT), filepath.Join(filesDir, SERVER_KEY), nil)
 		if err != nil {
 			fmt.Println("HTTPS won't be available.", err)
 		}
 	}
-	unsecurePort := ":" + strconv.Itoa(serverConfig.PortUnsecure)
+	unsecurePort := ":" + strconv.Itoa(config.PortUnsecure)
 	log.Fatal(http.ListenAndServe(unsecurePort, nil))
 }
 
-func initServer() {
-	if filesDir == "" {
-		executableFile, err := os.Executable()
-		if err != nil {
-			filesDir = "."
-		} else {
-			dir, _ := filepath.Split(executableFile)
-			filesDir = dir
-		}
-	}
-	webDir = filepath.Join(filesDir, webDir)
-
-	fmt.Println("Init: FMD-Data directory: ", filesDir)
-
-	fmt.Println("Init: Preparing FMD-Server...")
-
+func load_config(filesDir string) config {
 	fmt.Println("Init: Preparing Config...")
 
-	configFilePath := filepath.Join(filesDir, configFile)
+	configFilePath := filepath.Join(filesDir, CONFIG_FILE)
 
 	configRead := true
 	configContent, err := os.ReadFile(configFilePath)
 	if err != nil {
+		fmt.Println("ERROR: reading config file: ", err)
 		configRead = false
 	}
+
+	serverConfig := config{}
 	err = json.Unmarshal(configContent, &serverConfig)
 	if err != nil {
+		fmt.Println("ERROR: unmarshaling config file: ", err)
 		configRead = false
 	}
-	//Create DefaultConfig when no config available
+
 	if !configRead {
+		fmt.Println("WARN: No config found! Using defaults.")
 		serverConfig = config{PortSecure: 1008, PortUnsecure: 1020, IdLength: 5, MaxSavedLoc: 1000, MaxSavedPic: 10}
 		configToString, _ := json.MarshalIndent(serverConfig, "", " ")
 		err := os.WriteFile(configFilePath, configToString, 0644)
 		fmt.Println(err)
 	}
+
 	isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]{1,` + strconv.Itoa(serverConfig.IdLength) + `}$`).MatchString
 
-	fmt.Println("Init: Preparing Devices")
+	return serverConfig
+}
+
+func init_db(filesDir string, config config) {
+	fmt.Println("Init: Loading database")
 	uio = user.UserIO{}
-	uio.Init(filesDir, serverConfig.IdLength, serverConfig.MaxSavedLoc, serverConfig.MaxSavedPic)
-	fmt.Printf("Init: Devices registered\n\n")
+	uio.Init(filesDir, config.IdLength, config.MaxSavedLoc, config.MaxSavedPic)
+}
+
+func get_cwd() string {
+	executableFile, err := os.Executable()
+	if err != nil {
+		return "."
+	} else {
+		dir, _ := filepath.Split(executableFile)
+		return dir
+	}
 }
 
 func fileExists(filename string) bool {
@@ -591,13 +592,18 @@ func fileExists(filename string) bool {
 }
 
 func main() {
-	flag.StringVar(&filesDir, "d", "", "Specifiy data directory. Default is the directory of the executable.")
+	filesDir := ""
+	cwd := get_cwd()
+	flag.StringVar(&filesDir, "d", cwd, "Specifiy data directory. Default is the directory of the executable.")
 	flag.Parse()
+	fmt.Println("Init: FMD-Data directory: ", filesDir)
 
-	initServer()
+	webDir := filepath.Join(filesDir, WEB_DIR)
+	config := load_config(filesDir)
+	init_db(filesDir, config)
 
-	fmt.Println("FMD - Server - ", version)
+	fmt.Println("FMD Server ", VERSION)
 	fmt.Println("Starting Server")
-	fmt.Printf("Port: %d(unsecure) %d(secure)\n", serverConfig.PortUnsecure, serverConfig.PortSecure)
-	handleRequests()
+	fmt.Printf("Port: %d (unsecure) %d (secure)\n", config.PortUnsecure, config.PortSecure)
+	handleRequests(filesDir, webDir, config)
 }

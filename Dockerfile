@@ -5,15 +5,19 @@ ENV GOPATH /go
 
 RUN apt update && apt install -y npm
 
-COPY . ./
+# pre-download and only redownload in subsequent builds if they change
+COPY package.json package-lock.json ./
+RUN npm install
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
 
 ADD https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh objectbox-install.sh
 RUN chmod u+x objectbox-install.sh \
       && ./objectbox-install.sh
 
-RUN go build -o /fmd cmd/fmdserver.go
-RUN npm install
+COPY . ./
 
+RUN go build -o /fmd cmd/fmdserver.go
 
 
 FROM debian:bookworm-slim

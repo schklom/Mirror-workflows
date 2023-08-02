@@ -32,11 +32,12 @@ const CONFIG_FILE = "config.yml"
 var isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]*$`).MatchString
 
 type config struct {
-	PortSecure   int `yaml:"PortSecure"`
-	PortInsecure int `yaml:"PortInsecure"`
-	UserIdLength int `yaml:"UserIdLength"`
-	MaxSavedLoc  int `yaml:"MaxSavedLoc"`
-	MaxSavedPic  int `yaml:"MaxSavedPic"`
+	PortSecure        int    `yaml:"PortSecure"`
+	PortInsecure      int    `yaml:"PortInsecure"`
+	UserIdLength      int    `yaml:"UserIdLength"`
+	MaxSavedLoc       int    `yaml:"MaxSavedLoc"`
+	MaxSavedPic       int    `yaml:"MaxSavedPic"`
+	RegistrationToken string `yaml:"RegistrationToken"`
 }
 
 // Deprecated: used only by old clients. Modern clients use the opaque DataPackage.
@@ -50,10 +51,11 @@ type locationData struct {
 }
 
 type registrationData struct {
-	Salt           string `'json:"salt"`
-	HashedPassword string `'json:"hashedPassword"`
-	PubKey         string `'json:"pubKey"`
-	PrivKey        string `'json:"privKey"`
+	Salt              string `'json:"salt"`
+	HashedPassword    string `'json:"hashedPassword"`
+	PubKey            string `'json:"pubKey"`
+	PrivKey           string `'json:"privKey"`
+	RegistrationToken string `'json:"registrationToken"`
 }
 
 type passwordUpdateData struct {
@@ -440,13 +442,25 @@ func deleteDevice(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func createDevice(w http.ResponseWriter, r *http.Request) {
+type createDeviceHandler struct {
+	RegistrationToken string
+}
+
+func (h createDeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var reg registrationData
 	err := json.NewDecoder(r.Body).Decode(&reg)
 	if err != nil {
+		fmt.Println("ERROR: decoding json:", err)
 		http.Error(w, "Meeep!, Error - createDevice", http.StatusBadRequest)
 		return
 	}
+
+	if h.RegistrationToken != "" && h.RegistrationToken != reg.RegistrationToken {
+		fmt.Println("ERROR: invalid RegistrationToken!")
+		http.Error(w, "Meeep!, Error - createDevice", http.StatusUnauthorized)
+		return
+	}
+
 	id := uio.CreateNewUser(reg.PrivKey, reg.PubKey, reg.Salt, reg.HashedPassword)
 
 	accessToken := user.AccessToken{DeviceId: id, Token: ""}
@@ -488,16 +502,22 @@ func mainCommand(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func mainDevice(w http.ResponseWriter, r *http.Request) {
+type mainDeviceHandler struct {
+	createDeviceHandler createDeviceHandler
+}
+
+func (h mainDeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
 		deleteDevice(w, r)
 	case http.MethodPut:
-		createDevice(w, r)
+		h.createDeviceHandler.ServeHTTP(w, r)
 	}
 }
 
 func handleRequests(filesDir string, webDir string, config config) {
+	mainDeviceHandler := mainDeviceHandler{createDeviceHandler{config.RegistrationToken}}
+
 	http.Handle("/", http.FileServer(http.Dir(webDir)))
 	http.HandleFunc("/command", mainCommand)
 	http.HandleFunc("/command/", mainCommand)
@@ -513,8 +533,8 @@ func handleRequests(filesDir string, webDir string, config config) {
 	http.HandleFunc("/key/", getPrivKey)
 	http.HandleFunc("/pubKey", getPubKey)
 	http.HandleFunc("/pubKey/", getPubKey)
-	http.HandleFunc("/device", mainDevice)
-	http.HandleFunc("/device/", mainDevice)
+	http.Handle("/device", mainDeviceHandler)
+	http.Handle("/device/", mainDeviceHandler)
 	http.HandleFunc("/password", postPassword)
 	http.HandleFunc("/password/", postPassword)
 	http.HandleFunc("/push", postPushLink)
@@ -558,7 +578,7 @@ func load_config(filesDir string) config {
 
 	if !configRead {
 		fmt.Println("WARN: No config found! Using defaults.")
-		serverConfig = config{PortSecure: 8443, PortInsecure: 8080, UserIdLength: 5, MaxSavedLoc: 1000, MaxSavedPic: 10}
+		serverConfig = config{PortSecure: 8443, PortInsecure: 8080, UserIdLength: 5, MaxSavedLoc: 1000, MaxSavedPic: 10, RegistrationToken: ""}
 	}
 	//fmt.Printf("INFO: Using config %+v\n", serverConfig)
 

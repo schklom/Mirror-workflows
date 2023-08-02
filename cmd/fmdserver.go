@@ -557,9 +557,6 @@ func load_config(filesDir string) config {
 	if !configRead {
 		fmt.Println("WARN: No config found! Using defaults.")
 		serverConfig = config{PortSecure: 1008, PortUnsecure: 1020, IdLength: 5, MaxSavedLoc: 1000, MaxSavedPic: 10}
-		configToString, _ := json.MarshalIndent(serverConfig, "", " ")
-		err := os.WriteFile(configFilePath, configToString, 0644)
-		fmt.Println(err)
 	}
 
 	isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]{1,` + strconv.Itoa(serverConfig.IdLength) + `}$`).MatchString

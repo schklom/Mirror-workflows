@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/google/flatbuffers v23.5.26+incompatible
-	github.com/objectbox/objectbox-go v1.6.1
+	github.com/objectbox/objectbox-go v1.7.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 

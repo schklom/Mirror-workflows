@@ -1,4 +1,4 @@
-FROM golang:bullseye AS builder
+FROM golang:bookworm AS builder
 
 WORKDIR /go/src/findmydeviceserver
 ENV GOPATH /go
@@ -16,7 +16,7 @@ RUN npm install
 
 
 
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 
 RUN apt update && apt install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 

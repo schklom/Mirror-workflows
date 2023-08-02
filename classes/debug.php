@@ -5,6 +5,8 @@ class Debug {
 	const LOG_VERBOSE = 1;
 	const LOG_EXTENDED = 2;
 
+	const SEPARATOR = "<-{log-separator}->";
+
 	const ALL_LOG_LEVELS = [
 		Debug::LOG_DISABLED,
 		Debug::LOG_NORMAL,
@@ -35,6 +37,7 @@ class Debug {
 	private static bool $enabled = false;
 	private static bool $quiet = false;
 	private static ?string $logfile = null;
+	private static bool $enable_html = false;
 
 	private static int $loglevel = self::LOG_NORMAL;
 
@@ -82,58 +85,77 @@ class Debug {
 		}
 	}
 
+	public static function enable_html(bool $enable) : void {
+		self::$enable_html = $enable;
+	}
+
 	/**
 	 * @param Debug::LOG_* $level log level
 	 */
     public static function log(string $message, int $level = Debug::LOG_NORMAL): bool {
 
-        if (!self::$enabled || self::$loglevel < $level) return false;
+		if (!self::$enabled || self::$loglevel < $level) return false;
 
-        $ts = date("H:i:s", time());
-        if (function_exists('posix_getpid')) {
-            $ts = "$ts/" . posix_getpid();
-        }
+		$ts = date("H:i:s", time());
+		if (function_exists('posix_getpid')) {
+			$ts = "$ts/" . posix_getpid();
+		}
 
-        if (self::$logfile) {
-            $fp = fopen(self::$logfile, 'a+');
+		$orig_message = $message;
 
-            if ($fp) {
-                $locked = false;
+		if ($message === self::SEPARATOR) {
+			$message = self::$enable_html ? "<hr/>" :
+				"=================================================================================================================================";
+		}
 
-                if (function_exists("flock")) {
-                    $tries = 0;
+		if (self::$logfile) {
+			$fp = fopen(self::$logfile, 'a+');
 
-                    // try to lock logfile for writing
-                    while ($tries < 5 && !$locked = flock($fp, LOCK_EX | LOCK_NB)) {
-                        sleep(1);
-                        ++$tries;
-                    }
+			if ($fp) {
+					$locked = false;
 
-                    if (!$locked) {
-                        fclose($fp);
-                        user_error("Unable to lock debugging log file: " . self::$logfile, E_USER_WARNING);
-                        return false;
-                    }
-                }
+					if (function_exists("flock")) {
+						$tries = 0;
 
-                fputs($fp, "[$ts] $message\n");
+						// try to lock logfile for writing
+						while ($tries < 5 && !$locked = flock($fp, LOCK_EX | LOCK_NB)) {
+							sleep(1);
+							++$tries;
+						}
 
-                if (function_exists("flock")) {
-                    flock($fp, LOCK_UN);
-                }
+						if (!$locked) {
+							fclose($fp);
+							user_error("Unable to lock debugging log file: " . self::$logfile, E_USER_WARNING);
+							return false;
+						}
+					}
 
-                fclose($fp);
+					fputs($fp, "[$ts] $message\n");
 
-                if (self::$quiet)
-                    return false;
+					if (function_exists("flock")) {
+						flock($fp, LOCK_UN);
+					}
 
-            } else {
-                user_error("Unable to open debugging log file: " . self::$logfile, E_USER_WARNING);
-            }
-        }
+					fclose($fp);
 
-        print "[$ts] $message\n";
+					if (self::$quiet)
+						return false;
+
+			} else {
+					user_error("Unable to open debugging log file: " . self::$logfile, E_USER_WARNING);
+			}
+		}
+
+		if (self::$enable_html) {
+			if ($orig_message === self::SEPARATOR) {
+				print "$message\n";
+			} else {
+				print "<span class='log-timestamp'>$ts</span> <span class='log-message'>$message</span>\n";
+			}
+		} else {
+			print "[$ts] $message\n";
+		}
 
 		return true;
-    }
+	}
 }

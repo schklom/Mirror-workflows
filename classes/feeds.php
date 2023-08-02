@@ -708,6 +708,23 @@ class Feeds extends Handler_Protected {
 				body.css_loading * {
 					display : none;
 				}
+
+				.feed-xml {
+					color : green;
+				}
+
+				.log-timestamp {
+					color : gray;
+				}
+
+				.log-timestamp::before {
+					content: "["
+				}
+
+				.log-timestamp::after {
+					content: "]"
+				}
+
 			</style>
 			<script>
 				dojoConfig = {
@@ -759,6 +776,10 @@ class Feeds extends Handler_Protected {
 							<label class="checkbox"><?= \Controls\checkbox_tag("force_rehash", isset($_REQUEST["force_rehash"])) ?> Force rehash</label>
 						</fieldset>
 
+						<fieldset class="narrow">
+							<label class="checkbox"><?= \Controls\checkbox_tag("dump_feed_xml", isset($_REQUEST["dump_feed_xml"])) ?> Dump feed XML</label>
+						</fieldset>
+
 						<?= \Controls\submit_tag("Continue") ?>
 					</form>
 
@@ -767,7 +788,7 @@ class Feeds extends Handler_Protected {
 					<pre><?php
 
 					if ($do_update) {
-						RSSUtils::update_rss_feed($feed_id, true);
+						RSSUtils::update_rss_feed($feed_id, true, true);
 					}
 
 					?></pre>

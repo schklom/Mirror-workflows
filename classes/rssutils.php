@@ -1,5 +1,6 @@
 <?php
 class RSSUtils {
+
 	/**
 	 * @param array<string, mixed> $article
 	 */
@@ -351,9 +352,10 @@ class RSSUtils {
 		}
 	}
 
-	static function update_rss_feed(int $feed, bool $no_cache = false) : bool {
+	static function update_rss_feed(int $feed, bool $no_cache = false, bool $html_output = false) : bool {
 
 		$scope = Tracer::start(__METHOD__, [], func_get_args());
+		Debug::enable_html($html_output);
 		Debug::log("start", Debug::LOG_VERBOSE);
 
 		$pdo = Db::pdo();
@@ -424,6 +426,7 @@ class RSSUtils {
 		$rss_hash = false;
 
 		$force_refetch = isset($_REQUEST["force_refetch"]);
+		$dump_feed_xml = isset($_REQUEST["dump_feed_xml"]);
 		$feed_data = "";
 
 		Debug::log("running HOOK_FETCH_FEED handlers...", Debug::LOG_VERBOSE);
@@ -569,6 +572,14 @@ class RSSUtils {
 		$pff_owner_uid = $feed_obj->owner_uid;
 		$pff_feed_url = $feed_obj->feed_url;
 
+		if ($dump_feed_xml) {
+			Debug::log("feed data before hooks:", Debug::LOG_VERBOSE);
+
+			Debug::log(Debug::SEPARATOR, Debug::LOG_VERBOSE);
+			print("<code class='feed-xml'>" . htmlspecialchars($feed_data). "</code>\n");
+			Debug::log(Debug::SEPARATOR, Debug::LOG_VERBOSE);
+		}
+
 		$start_ts = microtime(true);
 		$pluginhost->chain_hooks_callback(PluginHost::HOOK_FEED_FETCHED,
 			function ($result, $plugin) use (&$feed_data, $start_ts) {
@@ -581,6 +592,14 @@ class RSSUtils {
 			Debug::log("feed data has been modified by a plugin.", Debug::LOG_VERBOSE);
 		} else {
 			Debug::log("feed data has not been modified by a plugin.", Debug::LOG_VERBOSE);
+		}
+
+		if ($dump_feed_xml) {
+			Debug::log("feed data after hooks:", Debug::LOG_VERBOSE);
+
+			Debug::log(Debug::SEPARATOR, Debug::LOG_VERBOSE);
+			print("<code class='feed-xml'>" . htmlspecialchars($feed_data). "</code>\n");
+			Debug::log(Debug::SEPARATOR, Debug::LOG_VERBOSE);
 		}
 
 		$rss = new FeedParser($feed_data);
@@ -697,8 +716,7 @@ class RSSUtils {
 
 				$pdo->beginTransaction();
 
-				Debug::log("=================================================================================================================================",
-					Debug::LOG_VERBOSE);
+				Debug::log(Debug::SEPARATOR, Debug::LOG_VERBOSE);
 
 				if (Debug::get_loglevel() >= 3) {
 					print_r($item);
@@ -1290,8 +1308,7 @@ class RSSUtils {
 				$a_scope->close();
 			}
 
-			Debug::log("=================================================================================================================================",
-					Debug::LOG_VERBOSE);
+			Debug::log(Debug::SEPARATOR, Debug::LOG_VERBOSE);
 
 			Debug::log("purging feed...", Debug::LOG_VERBOSE);
 

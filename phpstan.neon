@@ -22,10 +22,12 @@ parameters:
       - lib/**/test/*
       - plugins/**/tests/*
       - plugins/**/Test/*
+      - plugins/*/vendor/psr/log/*
       - plugins.local/**/tests/*
       - plugins/**/test/*
       - plugins.local/**/test/*
       - plugins.local/*/vendor/intervention/*
+      - plugins.local/*/vendor/psr/log/*
       - plugins.local/cache_s3/vendor/*
    paths:
       - .

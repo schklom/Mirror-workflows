@@ -642,7 +642,7 @@ class PluginHost {
 	private function load_data(): void {
 		$scope = Tracer::start(__METHOD__);
 
-		if ($this->owner_uid && !$this->data_loaded && get_schema_version() > 100)  {
+		if ($this->owner_uid && !$this->data_loaded && Config::get_schema_version() > 100)  {
 			$sth = $this->pdo->prepare("SELECT name, content FROM ttrss_plugin_storage
 				WHERE owner_uid = ?");
 			$sth->execute([$this->owner_uid]);

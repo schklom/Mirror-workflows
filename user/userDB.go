@@ -26,7 +26,7 @@ type DB struct {
 }
 
 func initDB(path string) *UserBox {
-	ob, _ := objectbox.NewBuilder().Model(ObjectBoxModel()).Directory(path).Build()
+	ob, _ := objectbox.NewBuilder().MaxSizeInKb(10 * 1048576).Model(ObjectBoxModel()).Directory(path).Build()
 
 	u := BoxForUser(ob)
 	dbc := BoxForDB(ob)

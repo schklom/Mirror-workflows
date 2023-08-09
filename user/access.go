@@ -59,6 +59,15 @@ func (a *AccessController) IsLocked(idToCheck string) bool {
 	return false
 }
 
+func (a *AccessController) ResetLock(id string) {
+	for index, lId := range a.lockedIDs {
+		if lId.DeviceId == id {
+			a.lockedIDs[index].Failed = 0
+			return
+		}
+	}
+}
+
 func (a *AccessController) CheckAccessToken(toCheck string) string {
 	for index, id := range a.accessTokens {
 		if id.Token == toCheck {

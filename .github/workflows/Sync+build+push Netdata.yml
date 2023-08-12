@@ -54,13 +54,15 @@ jobs:
       - name: UPDATE NETWORKING FOR ROOTLESS DOCKER
         run: >-
           sed -i "/        case ',':   \/\/ comma/a\        case '@':" collectors/cgroups.plugin/cgroup-network.c
+      - name: get most recent commit id on original repo, for next comparison on sync
+        run: git ls-remote https://github.com/netdata/netdata.git HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
       # https://github.com/marketplace/actions/git-auto-commit
       - name: pushing web Dockerfile changes to main branch
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
         with:
           # Optional but recommended
           # Defaults to "Apply automatic changes"
-          commit_message: Updated repo to work with Rootless Docker
+          commit_message: Add last_sync_with_original_repo_commit_id + Updated repo to work with Rootless Docker
   
   buildandpush:
     needs: [repo-sync]

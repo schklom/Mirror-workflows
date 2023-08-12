@@ -15,6 +15,10 @@ jobs:
       LOCAL: ${{ steps.commits.outputs.SETLOCAL }}
       REMOTE: ${{ steps.commits.outputs.SETREMOTE }} 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: 'TTRSS-docker' # branch
       - name: set commits as environment variables
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs

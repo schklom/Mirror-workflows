@@ -551,6 +551,7 @@ int is_valid_path_symbol(char c) {
         case '_':   // underscore
         case '.':   // dot
         case ',':   // comma
+        case '@':
             return 1;
 
         default:

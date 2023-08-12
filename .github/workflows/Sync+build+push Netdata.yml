@@ -60,7 +60,7 @@ jobs:
         with:
           # Optional but recommended
           # Defaults to "Apply automatic changes"
-          commit_message: Updated repo to work with Raspberry Pi 4
+          commit_message: Updated repo to work with Rootless Docker
   
   buildandpush:
     needs: [repo-sync]

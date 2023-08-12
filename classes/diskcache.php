@@ -243,8 +243,9 @@ class DiskCache implements Cache_Adapter {
 		return $this->adapter->make_dir();
 	}
 
+	/** @param string|null $filename null means check that cache directory itself is writable */
 	public function is_writable(?string $filename = null): bool {
-		return $this->adapter->is_writable(basename($filename));
+		return $this->adapter->is_writable($filename ? basename($filename) : null);
 	}
 
 	public function exists(string $filename): bool {

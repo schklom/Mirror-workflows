@@ -45,23 +45,28 @@ async function proxy(req: NextApiRequest, res: NextApiResponse) {
 		throw new ApiError(HttpStatusCode.BadRequest, "URL not supported");
 	}
 
+	const urlObj = new URL(url);
+	const domainName = urlObj.host.split(".")[1];
+	const tld = urlObj.host.split(".").at(-1);
+	const protocol = urlObj.protocol;
+	const Referer = `${protocol}//${domainName}.${tld}`;
 	const mediaRes = await axios.get(url, {
 		responseType: "stream",
 		headers: {
 			...requestHeaders,
-			"User-Agent": randomUserAgent,
-			Host: new URL(url).host,
-			Accept:
-				"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-			"Accept-Language": "en-US,en;q=0.5",
-			"Accept-Encoding": "gzip, deflate, br",
+			Host: urlObj.host,
+			Referer,
 			DNT: 1,
 			Connection: "keep-alive",
-			"Upgrade-Insecure-Requests": 1,
-			"Sec-Fetch-Dest": "document",
-			"Sec-Fetch-Mode": "navigate",
-			"Sec-Fetch-Site": "none",
-			"Sec-Fetch-User": "?1",
+			Accept:
+				"image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+			"User-Agent": randomUserAgent,
+			"Accept-Language": "en-US,en;q=0.5",
+			"Accept-Encoding": "gzip, deflate, br",
+			"Cache-Control": "no-cache",
+			"Sec-Fetch-Dest": "image",
+			"Sec-Fetch-Mode": "no-cors",
+			"Sec-Fetch-Site": "cross-site",
 		},
 	});
 

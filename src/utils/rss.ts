@@ -82,10 +82,9 @@ export class RSS {
 				link: `${getBaseUrl()}/p/${post.shortcode}`,
 				description: post.description,
 				content: `
-					${post.description}
-
-					<br/>
-
+					<p>
+						${post.description}
+					</p>
 					${renderContent(post)}
 				`,
 				author: [
@@ -97,9 +96,10 @@ export class RSS {
 				date: post.created_at?.timestamp
 					? new Date(post.created_at?.timestamp * 1000)
 					: new Date(Date.now()),
+				image: post.thumb,
 			});
 		}
 
-		return feed.rss2();
+		return feed.atom1();
 	}
 }

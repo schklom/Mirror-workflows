@@ -3,12 +3,6 @@ import { createRedisKeyFromUrl } from "@/utils";
 import redis from "@/utils/redis";
 import { Request, Route, chromium } from "playwright-core";
 
-const browser = await chromium.launch({
-	headless: process.env.NODE_ENV === "development" ? false : true,
-	// headless: false,
-});
-const context = await browser.newContext();
-
 export class PlaywrightScraper implements IGetHtml {
 	constructor(
 		public config: {
@@ -35,6 +29,11 @@ export class PlaywrightScraper implements IGetHtml {
 	}
 
 	private async init() {
+		const browser = await chromium.launch({
+			headless: process.env.NODE_ENV === "development" ? false : true,
+			// headless: false,
+		});
+		const context = await browser.newContext();
 		const page = await context.newPage();
 		await page.setExtraHTTPHeaders({
 			"User-Agent": randomUserAgent,

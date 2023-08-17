@@ -98,9 +98,9 @@ export function convertToInstagramUrl(url: string): string {
 	const provider = urlObj.hostname.substring(startIdx, endIdx);
 
 	switch (provider) {
-		case "imgsed":
-			return urlObj.search.slice(1);
 		case "wizstat":
+		case "picuki":
+		case "imgsed":
 			return urlObj.search.slice(1);
 		case "pimg":
 			return urlObj.searchParams.get("url") as string;

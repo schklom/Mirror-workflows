@@ -79,11 +79,15 @@ export function extractTagsAndUsers(text: string): {
 	let match: RegExpExecArray | null;
 
 	// rome-ignore lint/suspicious/noAssignInExpressions: <explanation>
-	while ((match = regex.exec(text)) !== null) {
+	while ((match = regex.exec(text.replaceAll("\n", " "))) !== null) {
+		const txt = stripHtmlTags(match[2]);
+		const usernameOrTag = txt
+			.replace(/[^a-zA-Z0-9]$/, "")
+			.replace(/<[^>]*$/, "");
 		if (match[1] === "@") {
-			matches.users.push(stripHtmlTags(match[2]));
+			matches.users.push(usernameOrTag);
 		} else {
-			matches.tags.push(stripHtmlTags(match[2]));
+			matches.tags.push(usernameOrTag);
 		}
 	}
 

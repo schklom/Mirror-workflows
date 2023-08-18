@@ -1,10 +1,11 @@
-import { usernameQueryScheme } from ".";
-import { IGetPosts, PostsResponse } from "@/services";
-import { getRandomProvider } from "@/utils";
-import { withExeptionFilter } from "@/utils/withExceptionFilter";
-import { HttpStatusCode } from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiError } from "next/dist/server/api-utils";
+import { HttpStatusCode } from "axios";
+import { usernameQueryScheme } from ".";
+import { withExeptionFilter } from "@/utils/withExceptionFilter";
+import { PostsResponse } from "@/services/types";
+import { getRandomProvider } from "@/services";
+import { IGetPosts } from "@/services/types/functions";
 
 async function getPosts(
 	req: NextApiRequest,

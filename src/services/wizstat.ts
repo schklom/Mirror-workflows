@@ -1,27 +1,22 @@
-import type {
-	Comment,
+import {
 	IGetComments,
 	IGetPost,
 	IGetPosts,
-	IgetPostsOptions,
 	IGetProfile,
-	Post,
-	PostsResponse,
-	Profile,
-} from ".";
-import { AxiosScraper } from "./scrapers/axios";
-import { PlaywrightScraper } from "./scrapers/playwright";
+	IgetPostsOptions,
+} from "./types/functions";
 import {
-	compactToNumber,
 	convertTextToTimestamp,
 	convertTimestampToRelativeTime,
-	convertToInstagramUrl,
-	extractTagsAndUsers,
-	proxyUrl,
-	shortcodeToMediaId,
-	stripHtmlTags,
-} from "@/utils";
+} from "@/utils/converters/time";
 import * as cheerio from "cheerio";
+import { AxiosScraper } from "./scrapers/axios";
+import { PlaywrightScraper } from "./scrapers/playwright";
+import { shortcodeToMediaId } from "@/utils/id";
+import { convertToInstagramUrl, proxyUrl } from "@/utils/url";
+import { extractTagsAndUsers, stripHtmlTags } from "@/utils/text";
+import { Comment, Post, PostsResponse, Profile } from "./types";
+import { compactToNumber } from "@/utils/converters/numbers";
 
 export interface PostsMain {
 	code: number;
@@ -227,10 +222,7 @@ export class Wizstat implements IGetProfile, IGetPost, IGetPosts, IGetComments {
 		$(".comment").each((_i, comment) => {
 			const $comment = $(comment);
 			comments?.push({
-				username: $comment
-					.find(".userinfo>.name")
-					.text()
-					.replace("@", "") as string,
+				username: $comment.find(".userinfo>.name").text().replace("@", ""),
 				avatar: proxyUrl(
 					convertToInstagramUrl(
 						$comment.find(".userinfo>.img>img").attr("src") as string,

@@ -1,8 +1,9 @@
-import { IGetTag, TagResponse } from "@/services";
-import { getRandomProvider } from "@/utils";
-import { withExeptionFilter } from "@/utils/withExceptionFilter";
-import { HttpStatusCode } from "axios";
+import { IGetTag } from "@/services/types/functions";
 import { ApiError } from "next/dist/server/api-utils";
+import { TagResponse } from "@/services/types";
+import { HttpStatusCode } from "axios";
+import { getRandomProvider } from "@/services";
+import { withExeptionFilter } from "@/utils/withExceptionFilter";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 async function getTag(req: NextApiRequest, res: NextApiResponse<TagResponse>) {

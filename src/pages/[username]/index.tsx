@@ -1,14 +1,14 @@
+import type {
+	GetServerSidePropsContext,
+	InferGetServerSidePropsType,
+} from "next";
+import type { PostsResponse, Profile } from "@/services/types";
 import { LoadMore } from "@/components/LoadMore";
 import { Meta } from "@/components/Meta";
 import { Layout } from "@/components/layouts/Layout";
 import { ProfileComponent, SideInfo } from "@/components/profile";
 import { Posts } from "@/components/profile/posts";
-import type { PostsResponse, Profile } from "@/services";
 import { axiosInstance } from "@/utils";
-import type {
-	GetServerSidePropsContext,
-	InferGetServerSidePropsType,
-} from "next";
 
 export default function ProfilePage({
 	profile,

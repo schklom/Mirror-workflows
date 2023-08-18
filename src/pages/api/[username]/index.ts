@@ -1,10 +1,10 @@
-import { IGetProfile } from "@/services";
-import { getRandomProvider } from "@/utils";
-import { withExeptionFilter } from "@/utils/withExceptionFilter";
-import { HttpStatusCode } from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiError } from "next/dist/server/api-utils";
 import { z } from "zod";
+import { ApiError } from "next/dist/server/api-utils";
+import { IGetProfile } from "@/services/types/functions";
+import { HttpStatusCode } from "axios";
+import { getRandomProvider } from "@/services";
+import { withExeptionFilter } from "@/utils/withExceptionFilter";
 
 export const usernameQueryScheme = z.object({
 	username: z.string().min(1).max(30),

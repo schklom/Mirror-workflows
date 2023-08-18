@@ -1,5 +1,6 @@
-import type { IGetPost, Post } from "@/services";
-import { getRandomProvider } from "@/utils";
+import { Post } from "@/services/types";
+import { IGetPost } from "@/services/types/functions";
+import { getRandomProvider } from "@/services";
 import { withExeptionFilter } from "@/utils/withExceptionFilter";
 import type { NextApiRequest, NextApiResponse } from "next";
 

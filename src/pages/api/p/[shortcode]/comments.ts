@@ -1,7 +1,8 @@
-import type { Comment, IGetComments } from "@/services";
-import { getRandomProvider } from "@/utils";
-import { withExeptionFilter } from "@/utils/withExceptionFilter";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { Comment } from "@/services/types";
+import { IGetComments } from "@/services/types/functions";
+import { getRandomProvider } from "@/services";
+import { withExeptionFilter } from "@/utils/withExceptionFilter";
 
 async function getComments(
 	req: NextApiRequest,

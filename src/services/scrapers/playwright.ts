@@ -1,7 +1,7 @@
-import { IGetHtml, IGetHtmlOptions, randomUserAgent } from "..";
-import { createRedisKeyFromUrl } from "@/utils";
-import redis from "@/utils/redis";
+import redis, { createRedisKeyFromUrl } from "@/utils/redis";
+import { randomUserAgent } from "..";
 import { Request, Route, chromium } from "playwright-core";
+import { IGetHtml, IGetHtmlOptions } from "../types/functions";
 
 export class PlaywrightScraper implements IGetHtml {
 	constructor(

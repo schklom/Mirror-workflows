@@ -10,7 +10,7 @@ import { Layout } from "@/components/layouts/Layout";
 import { SideInfo } from "@/components/profile";
 import { Posts } from "@/components/profile/posts";
 import { axiosInstance } from "@/utils";
-import { TagResponse } from "@/services";
+import { TagResponse } from "@/services/types";
 
 export default function Tag({
 	tag,

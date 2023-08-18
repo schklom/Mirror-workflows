@@ -1,9 +1,9 @@
-import { IGetSearch } from "@/services";
-import { getRandomProvider } from "@/utils";
-import { withExeptionFilter } from "@/utils/withExceptionFilter";
-import { HttpStatusCode } from "axios";
-import { NextApiRequest, NextApiResponse } from "next";
 import { ApiError } from "next/dist/server/api-utils";
+import { IGetSearch } from "@/services/types/functions";
+import { HttpStatusCode } from "axios";
+import { getRandomProvider } from "@/services";
+import { withExeptionFilter } from "@/utils/withExceptionFilter";
+import { NextApiRequest, NextApiResponse } from "next";
 
 async function search(req: NextApiRequest, res: NextApiResponse) {
 	const q = req.query.q as string;

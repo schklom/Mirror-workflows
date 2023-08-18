@@ -1,23 +1,18 @@
 import {
-	Comment,
 	IGetComments,
 	IGetPost,
 	IGetPosts,
 	IgetPostsOptions,
-	Post,
-	PostsResponse,
-} from ".";
-import { PostsMain } from "./wizstat";
-import { PlaywrightScraper } from "./scrapers/playwright";
-import {
-	convertTimestampToRelativeTime,
-	convertToInstagramUrl,
-	extractTagsAndUsers,
-	proxyUrl,
-	shortcodeToMediaId,
-} from "@/utils";
+} from "./types/functions";
 import * as cheerio from "cheerio";
+import { convertTimestampToRelativeTime } from "@/utils/converters/time";
 import { AxiosScraper } from "./scrapers/axios";
+import { PlaywrightScraper } from "./scrapers/playwright";
+import { shortcodeToMediaId } from "@/utils/id";
+import { convertToInstagramUrl, proxyUrl } from "@/utils/url";
+import { extractTagsAndUsers } from "@/utils/text";
+import { Comment, Post, PostsResponse } from "./types";
+import { PostsMain } from "./wizstat";
 
 export class Imgsed implements IGetPost, IGetPosts, IGetComments {
 	constructor(private scraper: AxiosScraper | PlaywrightScraper) {}

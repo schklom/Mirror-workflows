@@ -1,8 +1,8 @@
+import axios, { HttpStatusCode } from "axios";
+import { ApiError } from "next/dist/server/api-utils";
 import { randomUserAgent } from "@/services";
 import { withExeptionFilter } from "@/utils/withExceptionFilter";
-import axios, { HttpStatusCode } from "axios";
-import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiError } from "next/dist/server/api-utils";
+import { NextApiRequest, NextApiResponse } from "next";
 
 const SERVICESRGX = [
 	/^https?:\/\/(?:.*\.)?(?:cdninstagram\.com|fbcdn\.net|instagram\.fmci2-1\.fna\.fbcdn\.net)\/.*/,

@@ -1,7 +1,7 @@
 import redis from "@/utils/redis";
 import axios from "axios";
-import { Provider } from "@/services";
-import { convertTTlToTimestamp } from "@/utils";
+import { Provider } from "@/services/types/provider";
+import { convertTTlToTimestamp } from "@/utils/converters/time";
 import { withExeptionFilter } from "@/utils/withExceptionFilter";
 import { NextApiRequest, NextApiResponse } from "next";
 

@@ -1,14 +1,14 @@
-import { Meta } from "@/components/Meta";
-import { Layout } from "@/components/layouts/Layout";
-import { Comments } from "@/components/p/Comments";
-import { PostHeader } from "@/components/p/PostHeader";
-import type { Comment, Post } from "@/services";
-import { axiosInstance } from "@/utils";
 import type {
 	GetServerSidePropsContext,
 	InferGetServerSidePropsType,
 } from "next";
+import type { Comment, Post } from "@/services/types";
 import Image from "next/image";
+import { Meta } from "@/components/Meta";
+import { Layout } from "@/components/layouts/Layout";
+import { Comments } from "@/components/p/Comments";
+import { PostHeader } from "@/components/p/PostHeader";
+import { axiosInstance } from "@/utils";
 
 export default function PostPage({
 	post,

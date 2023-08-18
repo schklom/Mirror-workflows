@@ -1,28 +1,21 @@
 import {
-	Comment,
-	IGetAll,
-	IGetTagOptions,
-	IgetPostsOptions,
-	Post,
-	Profile,
-	Tag,
-	PostsResponse,
-} from ".";
-import { AxiosScraper } from "./scrapers/axios";
+	stripHtmlTags,
+	reverseString,
+	extractTagsAndUsers,
+	replaceBrWithNewline,
+} from "@/utils/text";
 import {
-	compactToNumber,
 	convertTextToTimestamp,
 	convertTimestampToRelativeTime,
-	extractTagsAndUsers,
-	mediaIdToShortcode,
-	proxyUrl,
-	replaceBrWithNewline,
-	reverseString,
-	shortcodeToMediaId,
-	stripHtmlTags,
-} from "@/utils";
+} from "@/utils/converters/time";
 import * as cheerio from "cheerio";
+import { proxyUrl } from "@/utils/url";
+import { AxiosScraper } from "./scrapers/axios";
+import { compactToNumber } from "@/utils/converters/numbers";
 import { PlaywrightScraper } from "./scrapers/playwright";
+import { mediaIdToShortcode, shortcodeToMediaId } from "@/utils/id";
+import { IGetAll, IGetTagOptions, IgetPostsOptions } from "./types/functions";
+import { Comment, Post, PostsResponse, Profile, Tag } from "./types";
 
 export interface ResultsQuery {
 	accounts: {

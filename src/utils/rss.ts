@@ -1,6 +1,7 @@
-import { Post, PostsResponse, Profile } from "@/services";
-import { axiosInstance, getBaseUrl, sleep } from "@/utils";
+import { Post, PostsResponse, Profile } from "@/services/types";
+import { axiosInstance, sleep } from "@/utils";
 import { Feed } from "feed";
+import { getBaseUrl } from "./url";
 
 let feed: Feed;
 

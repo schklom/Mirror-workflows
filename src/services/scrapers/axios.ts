@@ -1,11 +1,9 @@
-import { IGetHtml, IGetHtmlOptions, IGetJson, randomUserAgent } from "..";
-import {
-	createRedisKeyFromUrl,
-	mediaIdToShortcode,
-	reverseString,
-} from "@/utils";
-import redis from "@/utils/redis";
+import redis, { createRedisKeyFromUrl } from "@/utils/redis";
 import axios from "axios";
+import { reverseString } from "@/utils/text";
+import { randomUserAgent } from "..";
+import { mediaIdToShortcode } from "@/utils/id";
+import { IGetHtml, IGetHtmlOptions, IGetJson } from "../types/functions";
 
 export class AxiosScraper implements IGetHtml, IGetJson {
 	constructor(

@@ -154,7 +154,6 @@ export interface Provider {
 	provider: string;
 	canget: ProviderCanGet;
 	ttl: {
-		profile: string;
 		posts: string;
 		post: string;
 		search?: undefined;

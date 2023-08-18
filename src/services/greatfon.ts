@@ -67,7 +67,7 @@ export class Greatfon implements IGetAll {
 	async getProfile(username: string): Promise<Profile> {
 		const html = await this.scraper.getHtml({
 			path: `v/${username}`,
-			expireTime: this.scraper.config.ttl?.profile as number,
+			expireTime: this.scraper.config.ttl?.posts as number,
 		});
 		const $ = cheerio.load(html);
 

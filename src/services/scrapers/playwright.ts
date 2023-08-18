@@ -8,7 +8,6 @@ export class PlaywrightScraper implements IGetHtml {
 		public config: {
 			baseURL: string;
 			ttl?: {
-				profile?: number;
 				posts?: number;
 				post?: number;
 				search?: number;

@@ -78,7 +78,7 @@ export class Wizstat implements IGetProfile, IGetPost, IGetPosts, IGetComments {
 	async getProfile(username: string): Promise<Profile> {
 		const html = await this.scraper.getHtml({
 			path: `${username}/`,
-			expireTime: this.scraper.config.ttl?.profile as number,
+			expireTime: this.scraper.config.ttl?.posts as number,
 		});
 		const $ = cheerio.load(html);
 

@@ -18,11 +18,12 @@
       <a href="#about-the-project">About The Project</a>
       <ul>
        <li><a href="#why">Why?</a></li>
-      <li><a href="#screenshots">Screenshots</a></li>
+       <li><a href="#screenshots">Screenshots</a></li>
        <li><a href="#features">Features</a></li>
       </ul>
     </li>
     <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#resources">Resources</a></li>
     <li><a href="#installation">Installation</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#legal-notice">Legal notice</a></li>
@@ -82,6 +83,12 @@ Using an instance of Proxigram, you can browse Instagram without JavaScript whil
   - [ ] Healthiness of providers 
 
 See the [open issues](https://codeberg.org/ThePenguinDev/Proxigram/issues) for a full list of proposed features and known issues.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Resources
+
+-  [Wiki page of public instances](https://codeberg.org/ThePenguinDev/Proxigram/wiki/Instances)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

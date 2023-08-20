@@ -26,7 +26,7 @@ export default redis;
 export function createRedisKeyFromUrl(url: string) {
 	const urlObj = new URL(url);
 
-	const LAST_POSITION_PATH = urlObj.pathname
+	let LAST_POSITION_PATH = urlObj.pathname
 		.split("/")
 		.filter((e) => e !== "")
 		.at(-1);
@@ -42,14 +42,17 @@ export function createRedisKeyFromUrl(url: string) {
 		case "c":
 			DIR = "p";
 			break;
-		case "tags":
-			DIR = "tag";
-			break;
 		case "t":
+		case "tags":
 			DIR = "tag";
 			break;
 		default:
 			DIR = "profile";
+	}
+
+	switch (LAST_POSITION_PATH) {
+		case "info":
+			LAST_POSITION_PATH = "profile";
 	}
 
 	const DOMAIN_NAME = urlObj.host;

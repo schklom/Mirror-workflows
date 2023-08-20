@@ -7,12 +7,20 @@ import { convertTTlToTimestamp } from "@/utils/converters/time";
 import { Wizstat } from "./wizstat";
 import { Provider, ProviderCanGet } from "./types/provider";
 import { axiosInstance } from "@/utils";
+import { InstaStories } from "./instastories";
+import { StoriesIG } from "./storiesig";
 
 export const randomUserAgent = new UserAgent().toString();
 
 export function getInstanceProviders(providers: Provider[]) {
 	try {
-		const providersInstances: (Greatfon | Wizstat | Imgsed)[] = [];
+		const providersInstances: (
+			| Greatfon
+			| Wizstat
+			| Imgsed
+			| InstaStories
+			| StoriesIG
+		)[] = [];
 
 		providers.forEach((currentProvider) => {
 			const keys = Object.keys(currentProvider.ttl);
@@ -48,6 +56,24 @@ export function getInstanceProviders(providers: Provider[]) {
 				case "Imgsed":
 					providersInstances.push(
 						new Imgsed(
+							currentProvider.headlessBrowser
+								? new PlaywrightScraper(scraperConfig)
+								: new AxiosScraper(scraperConfig),
+						),
+					);
+					break;
+				case "Instastories":
+					providersInstances.push(
+						new InstaStories(
+							currentProvider.headlessBrowser
+								? new PlaywrightScraper(scraperConfig)
+								: new AxiosScraper(scraperConfig),
+						),
+					);
+					break;
+				case "Storiesig":
+					providersInstances.push(
+						new StoriesIG(
 							currentProvider.headlessBrowser
 								? new PlaywrightScraper(scraperConfig)
 								: new AxiosScraper(scraperConfig),

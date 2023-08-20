@@ -22,6 +22,8 @@ export function convertToInstagramUrl(url: string): string {
 			return urlObj.search.slice(1);
 		case "pimg":
 			return urlObj.searchParams.get("url") as string;
+		case "instastories":
+			return urlObj.pathname.replaceAll("/proxy/", "") + urlObj.search;
 		default:
 			return url;
 	}

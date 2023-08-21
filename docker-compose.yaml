@@ -6,7 +6,6 @@ services:
     image: docker.io/stormworks/feedropolis
     ports:
       - 3000:3000
-    user: node
     privileged: true
     environment:
       - DATABASE_URL=postgres://test:test@db:5432/test

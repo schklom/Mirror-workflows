@@ -1,0 +1,21 @@
+---
+version: "2.1"
+services:
+  proxigram:
+    # Currently no docker image so building one
+    image: proxigram:latest
+    build:
+      dockerfile: Dockerfile
+    container_name: proxigram
+    # 3000 is the container internal port, 8080 is the external access port, change if necessary.
+    ports:
+    - 8080:3000
+    restart: unless-stopped
+    # Copy .env.local.example to .env and change accordingly. If using a name other than .env then specify it here.
+    #env_file: .env.local.example
+
+  # When using this compose file, use REDIS_URL=redis:6379 at the env file
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: unless-stopped

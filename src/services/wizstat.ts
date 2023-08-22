@@ -14,7 +14,11 @@ import { AxiosScraper } from "./scrapers/axios";
 import { PlaywrightScraper } from "./scrapers/playwright";
 import { shortcodeToMediaId } from "@/utils/id";
 import { convertToInstagramUrl, proxyUrl } from "@/utils/url";
-import { extractTagsAndUsers, stripHtmlTags } from "@/utils/text";
+import {
+	convertToBase64,
+	extractTagsAndUsers,
+	stripHtmlTags,
+} from "@/utils/text";
 import { Comment, Post, PostsResponse, Profile } from "./types";
 import { compactToNumber } from "@/utils/converters/numbers";
 
@@ -67,7 +71,13 @@ export class Wizstat implements IGetProfile, IGetPost, IGetPosts, IGetComments {
 			posts.push(item);
 		});
 
-		return { posts, cursor: $(".more-posts").attr("data-cursor") };
+		const cursor = $(".more-posts").attr("data-cursor");
+
+		return {
+			posts,
+			cursor: cursor ? convertToBase64(cursor) : undefined,
+			hasNext: $(".end").length > 0,
+		};
 	}
 
 	async getProfile(username: string): Promise<Profile> {
@@ -101,8 +111,8 @@ export class Wizstat implements IGetProfile, IGetPost, IGetPosts, IGetComments {
 			return await this.scrapePosts(username);
 		}
 
-		const userId = cursor?.split("_")[1];
-		const type = userId ? "user" : "tag";
+		const userId = cursor.split("_")[1];
+		const type = userId ? "posts" : "tag";
 		const id = userId ? userId : username.split("/").at(-1);
 		const path = `api/${type}/?id=${id}&cursor=${cursor}`;
 		let json: PostsMain;
@@ -137,7 +147,7 @@ export class Wizstat implements IGetProfile, IGetPost, IGetPosts, IGetComments {
 		return {
 			posts: posts,
 			hasNext: json.hasNext,
-			cursor: json.cursor,
+			cursor: json.cursor ? convertToBase64(json.cursor) : undefined,
 		};
 	}
 

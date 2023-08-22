@@ -56,7 +56,7 @@ export interface Tag {
 
 export interface PostsResponse {
 	posts: Post[];
-	hasNext?: boolean;
+	hasNext: boolean;
 	cursor?: string;
 }
 

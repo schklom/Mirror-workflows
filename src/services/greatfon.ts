@@ -3,6 +3,7 @@ import {
 	reverseString,
 	extractTagsAndUsers,
 	replaceBrWithNewline,
+	convertToBase64,
 } from "@/utils/text";
 import {
 	convertTextToTimestamp,
@@ -16,6 +17,7 @@ import { PlaywrightScraper } from "./scrapers/playwright";
 import { mediaIdToShortcode, shortcodeToMediaId } from "@/utils/id";
 import { IGetAll, IGetTagOptions, IgetPostsOptions } from "./types/functions";
 import { Comment, Post, PostsResponse, Profile, Tag } from "./types";
+import { sleep } from "@/utils";
 
 export interface ResultsQuery {
 	accounts: {
@@ -42,18 +44,31 @@ export class Greatfon implements IGetAll {
 			const mediaId = reverseString(
 				$(el).find("a").attr("href")?.replace("/c/", "") as string,
 			);
+			const description = $(el).find(".content__text").text();
 
 			posts.push({
 				id: mediaId,
 				shortcode: mediaIdToShortcode(mediaId),
-				description: $(el).find(".content__text").text(),
+				description,
 				thumb: proxyUrl($(el).find(".content__img").attr("src") as string),
 				isVideo: $(el).find(".content__camera").length > 0,
 			});
 		});
 
+		const cursor = String($("#load_more").attr("data-cursor"));
+		const username = path.match(/\/([^\/?]+)(?=\/?(\?|$))/)?.at(1);
+		await sleep(process.env.SLEEP_TIME_PER_REQUEST);
+		const hasNextHtml = await this.scraper.getHtml({
+			path: `api/profile/${username}/?cursor=${cursor}`,
+			expireTime: this.scraper.config.ttl?.posts as number,
+		});
+		const $$ = cheerio.load(hasNextHtml);
+		const hasNext = $$(".grid-item").length > 0;
+
 		return {
 			posts,
+			cursor: hasNext ? convertToBase64(cursor) : undefined,
+			hasNext,
 		};
 	}
 
@@ -127,7 +142,16 @@ export class Greatfon implements IGetAll {
 		};
 	}
 
-	async getPosts({ username }: IgetPostsOptions): Promise<PostsResponse> {
+	async getPosts({
+		username,
+		cursor,
+	}: IgetPostsOptions): Promise<PostsResponse> {
+		if (cursor) {
+			return await this.scrapePosts(
+				`api/profile/${username}/?cursor=${cursor}`,
+			);
+		}
+
 		return await this.scrapePosts(`v/${username}`);
 	}
 

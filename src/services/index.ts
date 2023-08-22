@@ -90,10 +90,26 @@ export function getInstanceProviders(providers: Provider[]) {
 }
 
 export async function getRandomProvider<T>(canget: ProviderCanGet) {
-	const { data: providers } = await axiosInstance.get<Provider[]>("/providers");
+	const providers = await getProviders();
 	const filteredProviders = providers.filter((provider) =>
 		provider.canget.includes(canget),
 	);
+	const RANDOM_PROVIDER_ID = Math.floor(
+		Math.random() * filteredProviders.length,
+	);
+	return getInstanceProviders(filteredProviders)[RANDOM_PROVIDER_ID] as T;
+}
+
+export async function getProviders() {
+	const { data: providers } = await axiosInstance.get<Provider[]>("/providers");
+	return providers;
+}
+
+export async function getRandomFilteredProvider<T>(
+	callback: (value: Provider, index: number, array: Provider[]) => unknown,
+) {
+	const providers = await getProviders();
+	const filteredProviders = providers.filter(callback);
 	const RANDOM_PROVIDER_ID = Math.floor(
 		Math.random() * filteredProviders.length,
 	);

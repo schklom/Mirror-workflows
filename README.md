@@ -57,11 +57,11 @@ Using an instance of Proxigram, you can browse Instagram without JavaScript whil
 - See tags
 - RSS feeds
   - ```/{username}/rss```
-- Api
+- API
   - ```/api/{username}``` -> profile info
   - ```/api/{username}/posts``` -> profile feed
     - query:
-      - cursor: {postId}_{userId}
+      - cursor
   - ```/api/p/{shortcode}``` -> post
   - ```/api/p/{shortcode}/comments``` -> post's comments
   - ```/api/tag/{tag}``` -> tag posts

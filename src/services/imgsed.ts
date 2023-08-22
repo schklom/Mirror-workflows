@@ -10,7 +10,7 @@ import { AxiosScraper } from "./scrapers/axios";
 import { PlaywrightScraper } from "./scrapers/playwright";
 import { shortcodeToMediaId } from "@/utils/id";
 import { convertToInstagramUrl, proxyUrl } from "@/utils/url";
-import { extractTagsAndUsers } from "@/utils/text";
+import { convertToBase64, extractTagsAndUsers } from "@/utils/text";
 import { Comment, Post, PostsResponse } from "./types";
 import { PostsMain } from "./wizstat";
 
@@ -50,7 +50,13 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments {
 
 			posts.push(item);
 		});
-		return { posts, cursor: $(".load-more").attr("data-cursor") };
+		const cursor = $(".load-more").attr("data-cursor");
+
+		return {
+			posts,
+			cursor: cursor ? convertToBase64(cursor) : undefined,
+			hasNext: $(".load-more").length > 0,
+		};
 	}
 
 	async getPosts({
@@ -97,7 +103,7 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments {
 		return {
 			posts: posts,
 			hasNext: json.hasNext,
-			cursor: json.cursor,
+			cursor: convertToBase64(json.cursor),
 		};
 	}
 

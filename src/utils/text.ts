@@ -10,6 +10,14 @@ export function reverseString(str: string): string {
 	return str.split("").reverse().join("");
 }
 
+export function convertToBase64(text: string): string {
+	return Buffer.from(text).toString("base64");
+}
+
+export function convertFromBase64(base64: string): string {
+	return Buffer.from(base64, "base64").toString("utf-8");
+}
+
 export function extractTagsAndUsers(text: string): {
 	tags: string[];
 	users: string[];

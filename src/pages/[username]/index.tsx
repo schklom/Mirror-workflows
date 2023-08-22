@@ -40,7 +40,7 @@ export default function ProfilePage({
 						<h3>This account is private</h3>
 					)}
 
-					{posts?.cursor?.includes("_") && <LoadMore cursor={posts.cursor} />}
+					{posts?.cursor && <LoadMore cursor={posts.cursor} />}
 				</div>
 			</section>
 		</Layout>

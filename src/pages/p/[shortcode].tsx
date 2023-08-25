@@ -9,13 +9,18 @@ import { Layout } from "@/components/layouts/Layout";
 import { Comments } from "@/components/p/Comments";
 import { PostHeader } from "@/components/p/PostHeader";
 import { axiosInstance } from "@/utils";
+import { Slide, SlideItem } from "@/components/p/Slide";
 
 export default function PostPage({
 	post,
 	comments,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+	const isOneImage = !post.isVideo && !post.isSideCard;
+	const isVideo = post.video && !post.isSideCard;
+	const isSideCard = post.isSideCard && post.sidecard;
+
 	return (
-		<Layout>
+		<Layout className="grid sm:grid sm:grid-cols-2">
 			<Meta
 				title={`@${post.author?.username} posted: "${
 					post.description ? post.description : post.id
@@ -26,51 +31,51 @@ export default function PostPage({
 			/>
 			<div className="m-4 bg-gray-50 p-1">
 				{post.author && <PostHeader post={post} />}
-
 				<div>
-					<div>
-						{!post.isVideo && !post.isSideCard && (
-							<Image
-								key={post.thumb}
-								src={post.thumb}
-								alt={post.description as string}
-								width={455}
-								height={455}
-							/>
-						)}
-						{post.video && (
-							<video key={post.video} src={post.video} controls muted={false}>
-								<source src={post.video} type="video/mp4" />
-							</video>
-						)}
-						{post.isSideCard &&
-							post.sidecard?.map((media) =>
-								media.type === "image" ? (
-									<Image
-										key={media.url}
-										src={media.url}
-										alt={post.description as string}
-										width={455}
-										height={455}
-									/>
-								) : (
-									<video key={media.url} src={media.url} controls muted={false}>
-										<source src={media.url} type="video/mp4" />
-									</video>
-								),
-							)}
-					</div>
-				</div>
+					{isOneImage && (
+						<Img url={post.thumb} alt={String(post.description)} />
+					)}
 
-				<p>{post.description && post.description}</p>
+					{isVideo && <Video url={String(post.video)} />}
+
+					{isSideCard && (
+						<Slide length={Number(post.sidecard?.length)} id={post.id}>
+							{post.sidecard?.map((media, i) => {
+								const id = `${post.id}-${i + 1}`;
+								const alt = String(post.description);
+								return (
+									<SlideItem id={id} key={id}>
+										{media.type === "image" ? (
+											<Img url={media.url} alt={alt} />
+										) : (
+											<Video url={media.url} />
+										)}
+									</SlideItem>
+								);
+							})}
+						</Slide>
+					)}
+
+					<p>{post.description && post.description}</p>
+				</div>
 			</div>
-			<div className="m-4 bg-gray-50 p-1">
-				<span>{post.commentsCount && post.commentsCount}</span>
+			<div className="overflow-y-scroll overflow-x-hidden max-h-screen m-4 bg-gray-50 p-1">
+				{post.commentsCount && <span>Comments: {post.commentsCount}</span>}
 				<Comments comments={comments} />
 			</div>
 		</Layout>
 	);
 }
+
+const Video = ({ url }: { url: string }) => (
+	<video src={url} controls muted={false}>
+		<source src={url} type="video/mp4" />
+	</video>
+);
+
+const Img = ({ url, alt }: { url: string; alt: string }) => (
+	<Image src={url} alt={alt} width={455} height={455} />
+);
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 	const shortcode = ctx.params?.shortcode as string;

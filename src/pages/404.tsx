@@ -3,7 +3,12 @@ import NextError from "next/error";
 
 export default function Page404() {
 	return (
-		<Layout>
+		<Layout
+			meta={{
+				title: "We couldn't find what your looking for",
+				description: "We couldn't find what your looking for",
+			}}
+		>
 			<NextError
 				statusCode={404}
 				title="We couldn't find what your looking for"

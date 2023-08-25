@@ -19,16 +19,17 @@ export default function PostPage({
 	const isVideo = post.video && !post.isSideCard;
 	const isSideCard = post.isSideCard && post.sidecard;
 
+	const meta = {
+		title: `@${post.author?.username} posted: "${
+			post.description ? post.description : post.id
+		}"`,
+		description: `@${post.author?.username} posted: "${
+			post.description ? post.description : post.id
+		}"`,
+	};
+
 	return (
-		<Layout className="grid sm:grid sm:grid-cols-2">
-			<Meta
-				title={`@${post.author?.username} posted: "${
-					post.description ? post.description : post.id
-				}"`}
-				description={`@${post.author?.username} posted: "${
-					post.description ? post.description : post.id
-				}"`}
-			/>
+		<Layout className="grid sm:grid sm:grid-cols-2" meta={meta}>
 			<div className="m-4 bg-gray-50 p-1">
 				{post.author && <PostHeader post={post} />}
 				<div>

@@ -4,13 +4,20 @@ import { ResultsQuery } from "@/services/greatfon";
 import { axiosInstance } from "@/utils";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function Search({
 	accounts,
 	hashtags,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+	const router = useRouter();
+	const meta = {
+		title: `Search results for ${router.query.q}`,
+		description: `Search results for ${router.query.q} on Proxigram, a privacy frontend alternative to Instagram. Watch accounts without and account`,
+	};
+
 	return (
-		<Layout>
+		<Layout meta={meta}>
 			<section className="grid sm:grid-cols-2 text-center">
 				<div>
 					<h3>Users</h3>

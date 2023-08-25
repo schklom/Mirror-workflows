@@ -5,7 +5,6 @@ import type {
 import "react-loading-skeleton/dist/skeleton.css";
 
 import { LoadMore } from "@/components/LoadMore";
-import { Meta } from "@/components/Meta";
 import { Layout } from "@/components/layouts/Layout";
 import { SideInfo } from "@/components/profile";
 import { Posts } from "@/components/profile/posts";
@@ -15,12 +14,13 @@ import { TagResponse } from "@/services/types";
 export default function Tag({
 	tag,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+	const meta = {
+		title: tag.tag,
+		description: `See posts tagged with #${tag.tag} on Instagram privatly with Proxigram`,
+	};
+
 	return (
-		<Layout className="h-screen">
-			<Meta
-				title={tag.tag}
-				description={`See posts tagged with #${tag.tag} on Instagram privatly with proxigram`}
-			/>
+		<Layout className="h-screen" meta={meta}>
 			<section className="h-full sm:grid sm:grid-flow-col">
 				<SideInfo
 					data={{

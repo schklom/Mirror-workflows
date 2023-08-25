@@ -4,7 +4,6 @@ import type {
 } from "next";
 import type { PostsResponse, Profile } from "@/services/types";
 import { LoadMore } from "@/components/LoadMore";
-import { Meta } from "@/components/Meta";
 import { Layout } from "@/components/layouts/Layout";
 import { ProfileComponent, SideInfo } from "@/components/profile";
 import { Posts } from "@/components/profile/posts";
@@ -14,12 +13,13 @@ export default function ProfilePage({
 	profile,
 	posts,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+	const meta = {
+		title: `${profile?.fullname} (@${profile?.username})`,
+		description: `See Instagram photos and videos from ${profile?.fullname} (@${profile?.username}) privatly`,
+	};
+
 	return (
-		<Layout className="h-screen">
-			<Meta
-				title={`${profile?.fullname} (@${profile?.username})`}
-				description={`See Instagram photos and videos from ${profile?.fullname} (@${profile?.username}) privatly`}
-			/>
+		<Layout className="h-screen" meta={meta}>
 			<section className="h-full sm:grid sm:grid-flow-col">
 				<SideInfo
 					data={{

@@ -39,7 +39,7 @@ jobs:
         uses: wei/git-sync@v3
         with:
           source_repo: "https://codeberg.org/ThePenguinDev/Proxigram"
-          source_branch: "master"
+          source_branch: "main"
           destination_repo: "git@github.com:schklom/Mirror-workflows.git"
           destination_branch: "Proxigram"
           ssh_private_key: ${{ secrets.GITSYNCACTION }}

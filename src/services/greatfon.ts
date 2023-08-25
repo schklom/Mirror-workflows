@@ -171,7 +171,7 @@ export class Greatfon implements IGetAll {
 		const likes =
 			$(".content__like-text").text() || $(".bx-like").next().text();
 		const commentsCount =
-			$(".content__comment-text").text() || $("bx-comment-dots").next().text();
+			$(".content__comment-text").text() || $(".bx-comment-dots").next().text();
 
 		const post: Post = {
 			id: mediaId,

@@ -10,10 +10,14 @@ import { SideInfo } from "@/components/profile";
 import { Posts } from "@/components/profile/posts";
 import { axiosInstance } from "@/utils";
 import { TagResponse } from "@/services/types";
+import { isAxiosError } from "axios";
+import { ErrorInfo } from "@/components/error/ErrorInfo";
 
-export default function Tag({
-	tag,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+
+export default function Tag({ tag, error }: Props) {
+	if (error) return <ErrorInfo {...error} />;
+
 	const meta = {
 		title: tag.tag,
 		description: `See posts tagged with #${tag.tag} on Instagram privatly with Proxigram`,
@@ -41,19 +45,40 @@ export default function Tag({
 }
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-	const tag = ctx.params?.tag as string;
-	const cursor = ctx.query.cursor as string;
-	let data;
+	try {
+		const tag = ctx.params?.tag as string;
+		const cursor = ctx.query.cursor as string;
+		let data;
 
-	if (cursor) {
-		data = await axiosInstance.get<TagResponse>(`tag/${tag}?cursor=${cursor}`);
-	} else {
-		data = await axiosInstance.get<TagResponse>(`tag/${tag}`);
+		if (cursor) {
+			data = await axiosInstance.get<TagResponse>(
+				`tag/${tag}?cursor=${cursor}`,
+			);
+		} else {
+			data = await axiosInstance.get<TagResponse>(`tag/${tag}`);
+		}
+
+		return {
+			props: {
+				tag: data.data,
+			},
+		};
+	} catch (error) {
+		if (isAxiosError(error)) {
+			if (error.response) {
+				const { status, statusText } = error.response;
+				ctx.res.statusCode = status;
+				ctx.res.statusMessage = statusText;
+
+				return {
+					props: {
+						error: {
+							statusCode: error.response.status,
+						},
+						tag: null,
+					},
+				};
+			}
+		}
 	}
-
-	return {
-		props: {
-			tag: data.data,
-		},
-	};
 };

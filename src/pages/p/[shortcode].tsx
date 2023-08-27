@@ -4,17 +4,19 @@ import type {
 } from "next";
 import type { Comment, Post } from "@/services/types";
 import Image from "next/image";
-import { Meta } from "@/components/Meta";
 import { Layout } from "@/components/layouts/Layout";
 import { Comments } from "@/components/p/Comments";
 import { PostHeader } from "@/components/p/PostHeader";
 import { axiosInstance } from "@/utils";
 import { Slide, SlideItem } from "@/components/p/Slide";
+import { isAxiosError } from "axios";
+import { ErrorInfo } from "@/components/error/ErrorInfo";
 
-export default function PostPage({
-	post,
-	comments,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+
+export default function PostPage({ post, comments, error }: Props) {
+	if (error) return <ErrorInfo {...error} />;
+
 	const isOneImage = !post.isVideo && !post.isSideCard;
 	const isVideo = post.video && !post.isSideCard;
 	const isSideCard = post.isSideCard && post.sidecard;
@@ -79,16 +81,36 @@ const Img = ({ url, alt }: { url: string; alt: string }) => (
 );
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-	const shortcode = ctx.params?.shortcode as string;
-	const [{ data: post }, { data: comments }] = await Promise.all([
-		axiosInstance.get<Post>(`p/${shortcode}`),
-		axiosInstance.get<Comment[]>(`p/${shortcode}/comments`),
-	]);
+	try {
+		const shortcode = ctx.params?.shortcode as string;
+		const [{ data: post }, { data: comments }] = await Promise.all([
+			axiosInstance.get<Post>(`p/${shortcode}`),
+			axiosInstance.get<Comment[]>(`p/${shortcode}/comments`),
+		]);
 
-	return {
-		props: {
-			post,
-			comments,
-		},
-	};
+		return {
+			props: {
+				post,
+				comments,
+			},
+		};
+	} catch (error) {
+		if (isAxiosError(error)) {
+			if (error.response) {
+				const { status, statusText } = error.response;
+				ctx.res.statusCode = status;
+				ctx.res.statusMessage = statusText;
+
+				return {
+					props: {
+						error: {
+							statusCode: error.response.status,
+						},
+						post: null,
+						comments: null,
+					},
+				};
+			}
+		}
+	}
 };

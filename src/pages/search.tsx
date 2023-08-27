@@ -1,15 +1,18 @@
+import { ErrorInfo } from "@/components/error/ErrorInfo";
 import { Layout } from "@/components/layouts/Layout";
 import { Avatar } from "@/components/profile";
 import { ResultsQuery } from "@/services/greatfon";
 import { axiosInstance } from "@/utils";
+import { isAxiosError } from "axios";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-export default function Search({
-	accounts,
-	hashtags,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+
+export default function Search({ accounts, hashtags, error }: Props) {
+	if (error) return <ErrorInfo {...error} />;
+
 	const router = useRouter();
 	const meta = {
 		title: `Search results for ${router.query.q}`,
@@ -57,12 +60,32 @@ export default function Search({
 }
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-	const q = ctx.query.q as string;
-	const result = await axiosInstance.get<ResultsQuery>(`search/?q=${q}`);
+	try {
+		const q = ctx.query.q as string;
+		const result = await axiosInstance.get<ResultsQuery>(`search/?q=${q}`);
 
-	return {
-		props: {
-			...result.data,
-		},
-	};
+		return {
+			props: {
+				...result.data,
+			},
+		};
+	} catch (error) {
+		if (isAxiosError(error)) {
+			if (error.response) {
+				const { status, statusText } = error.response;
+				ctx.res.statusCode = status;
+				ctx.res.statusMessage = statusText;
+
+				return {
+					props: {
+						error: {
+							statusCode: error.response.status,
+						},
+						accounts: null,
+						hashtags: null,
+					},
+				};
+			}
+		}
+	}
 };

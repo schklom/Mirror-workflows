@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "argon2": "^0.31.0",
     "argon2-browser": "^1.18.0"
   }
 }

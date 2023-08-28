@@ -18,7 +18,7 @@ import (
 )
 
 // Some IO variables
-var version = "v0.3.6"
+var version = "v0.4.0"
 var webDir = "web"
 var uio user.UserIO
 
@@ -315,7 +315,7 @@ func pushUser(id string) {
 	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
 
 	client := &http.Client{}
-	res, err := client.Do(request)
+	_, err := client.Do(request)
 	if err != nil {
 		fmt.Println("Error sending push: ", err)
 		return

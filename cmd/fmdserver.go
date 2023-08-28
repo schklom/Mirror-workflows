@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -97,17 +97,32 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 }
 
 func postLocation(w http.ResponseWriter, r *http.Request) {
-	// Try the modern method, if it fail to decode then fall back to legacy method
-	if !postLocationModern(w, r) {
-		postLocationLegacy(w, r)
+	// Extract the body first. We can only read it once. If we read it twice
+	// (e.g. once in postLocationModern and then postLocationLegacy) it will be
+	// empty the second time we read it.
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println("Failed to read body:", err)
+		http.Error(w, "", http.StatusInternalServerError)
+		return
 	}
+	// Try the modern method. If it fails fall back to legacy method.
+	isModern := postLocationModern(w, body)
+	if !isModern {
+		postLocationLegacy(w, body)
+		}
 }
 
-func postLocationModern(w http.ResponseWriter, r *http.Request) bool {
+func postLocationModern(w http.ResponseWriter, body []byte) bool {
 	var request DataPackage
-	err := json.NewDecoder(r.Body).Decode(&request)
+	err := json.Unmarshal(body, &request)
 	if err != nil {
 		// could not decode as DataPackage, try the fallback
+		fmt.Println("Failed to decode as DataPackage:", err)
+		return false
+	}
+	if len(request.Data) == 0 {
+		// not a valid modern location package
 		return false
 	}
 	id := uio.ACC.CheckAccessToken(request.IDT)
@@ -121,10 +136,11 @@ func postLocationModern(w http.ResponseWriter, r *http.Request) bool {
 	return true
 }
 
-func postLocationLegacy(w http.ResponseWriter, r *http.Request) bool {
+func postLocationLegacy(w http.ResponseWriter, body []byte) bool {
 	var location locationData
-	err := json.NewDecoder(r.Body).Decode(&location)
+	err := json.Unmarshal(body, &location)
 	if err != nil {
+		fmt.Println("Failed to decode as locationData:", err)
 		return false
 	}
 	id := uio.ACC.CheckAccessToken(location.IDT)
@@ -538,7 +554,7 @@ func initServer() {
 	configFilePath := filepath.Join(filesDir, configFile)
 
 	configRead := true
-	configContent, err := ioutil.ReadFile(configFilePath)
+	configContent, err := os.ReadFile(configFilePath)
 	if err != nil {
 		configRead = false
 	}
@@ -550,7 +566,7 @@ func initServer() {
 	if !configRead {
 		serverConfig = config{PortSecure: 1008, PortUnsecure: 1020, IdLength: 5, MaxSavedLoc: 1000, MaxSavedPic: 10}
 		configToString, _ := json.MarshalIndent(serverConfig, "", " ")
-		err := ioutil.WriteFile(configFilePath, configToString, 0644)
+		err := os.WriteFile(configFilePath, configToString, 0644)
 		fmt.Println(err)
 	}
 	isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]{1,` + strconv.Itoa(serverConfig.IdLength) + `}$`).MatchString

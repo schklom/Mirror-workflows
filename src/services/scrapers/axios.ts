@@ -58,7 +58,7 @@ export class AxiosScraper implements IGetHtml, IGetJson {
 		const FULL_URL = `${this.config.baseURL}/${path}`;
 		const KEY = createRedisKeyFromUrl(FULL_URL);
 
-		const cachedData = await redis.get(FULL_URL);
+		const cachedData = await redis.get(KEY);
 		if (cachedData) return JSON.parse(cachedData) as T;
 
 		const { data: json } = await axios.get(FULL_URL, {

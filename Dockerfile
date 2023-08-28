@@ -3,11 +3,7 @@ FROM golang:bookworm AS builder
 WORKDIR /go/src/findmydeviceserver
 ENV GOPATH /go
 
-RUN apt update && apt install -y npm
-
 # pre-download and only redownload in subsequent builds if they change
-COPY package.json package-lock.json ./
-RUN npm install
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 

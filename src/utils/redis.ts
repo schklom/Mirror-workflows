@@ -34,6 +34,10 @@ export function createRedisKeyFromUrl(url: string) {
 		.split("/")
 		.filter((e) => e !== "")
 		.at(-2) as MIDDLE_POSITION_PATH;
+	const START_POSITION_PATH = urlObj.pathname
+		.split("/")
+		.filter((e) => e !== "")
+		.at(-3);
 
 	let DIR: string;
 
@@ -55,8 +59,14 @@ export function createRedisKeyFromUrl(url: string) {
 			LAST_POSITION_PATH = "profile";
 	}
 
+	switch (START_POSITION_PATH) {
+		case "api":
+			DIR = "api";
+	}
+
 	const DOMAIN_NAME = urlObj.host;
-	const CURSOR = urlObj.searchParams.get("cursor");
+	const CURSOR =
+		urlObj.searchParams.get("cursor") ?? urlObj.searchParams.get("after");
 	const QUERY = urlObj.searchParams.get("query");
 	const USERNAME = urlObj.searchParams.get("username");
 

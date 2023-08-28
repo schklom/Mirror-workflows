@@ -54,30 +54,41 @@ export class AxiosScraper implements IGetHtml, IGetJson {
 		return html;
 	}
 
-	async getJson<T>({ path, expireTime }: IGetHtmlOptions): Promise<T> {
+	async getJson<T>({ path, expireTime, data }: IGetHtmlOptions): Promise<T> {
 		const FULL_URL = `${this.config.baseURL}/${path}`;
 		const KEY = createRedisKeyFromUrl(FULL_URL);
+		const headers = {
+			Host: new URL(this.config.baseURL).hostname,
+			"User-Agent": randomUserAgent,
+			Accept:
+				"text/html,application/xhtml+xml,application/json,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+			"Accept-Language": "en-US,en;q=0.5",
+			"Accept-Encoding": "gzip, deflate, br",
+			DNT: 1,
+			Connection: "keep-alive",
+			"Upgrade-Insecure-Requests": 1,
+			"Sec-Fetch-Dest": "document",
+			"Sec-Fetch-Mode": "navigate",
+			"Sec-Fetch-Site": "none",
+			"Sec-Fetch-User": "?1",
+		};
 
 		const cachedData = await redis.get(KEY);
 		if (cachedData) return JSON.parse(cachedData) as T;
 
-		const { data: json } = await axios.get(FULL_URL, {
-			headers: {
-				Host: new URL(this.config.baseURL).hostname,
-				"User-Agent": randomUserAgent,
-				Accept:
-					"text/html,application/xhtml+xml,application/json,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-				"Accept-Language": "en-US,en;q=0.5",
-				"Accept-Encoding": "gzip, deflate, br",
-				DNT: 1,
-				Connection: "keep-alive",
-				"Upgrade-Insecure-Requests": 1,
-				"Sec-Fetch-Dest": "document",
-				"Sec-Fetch-Mode": "navigate",
-				"Sec-Fetch-Site": "none",
-				"Sec-Fetch-User": "?1",
-			},
-		});
+		let json;
+
+		if (data) {
+			const resp = await axios.post(FULL_URL, data, {
+				headers,
+			});
+			json = resp.data;
+		} else {
+			const resp = await axios.get(FULL_URL, {
+				headers,
+			});
+			json = resp.data;
+		}
 		await redis.setex(KEY, expireTime, JSON.stringify(json));
 
 		return json as T;

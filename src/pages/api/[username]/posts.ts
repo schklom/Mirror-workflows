@@ -40,10 +40,20 @@ async function getPosts(
 				cursor,
 			});
 			return res.json(posts);
-		} else if (!isNaN(Number(postId))) {
+		} else if (!isNaN(Number(postId)) && typeof userId === "undefined") {
 			const providerPosts = await getRandomFilteredProvider<IGetPosts>(
 				(provider) => provider.provider === "Greatfon",
 			);
+			const posts = await providerPosts.getPosts({
+				username: query.data.username,
+				cursor,
+			});
+			return res.json(posts);
+		} else {
+			const providerPosts = await getRandomFilteredProvider<IGetPosts>(
+				(provider) => ["Iganony"].includes(provider.provider),
+			);
+
 			const posts = await providerPosts.getPosts({
 				username: query.data.username,
 				cursor,

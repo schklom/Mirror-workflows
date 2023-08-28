@@ -28,6 +28,7 @@ export interface IGetSearch {
 export interface IGetHtmlOptions {
 	path: string;
 	expireTime: number;
+	data?: unknown;
 }
 
 export interface IGetTagOptions {

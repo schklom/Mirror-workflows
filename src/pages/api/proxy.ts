@@ -7,6 +7,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 const SERVICESRGX = [
 	/^https?:\/\/(?:.*\.)?(?:cdninstagram\.com|fbcdn\.net|instagram\.fmci2-1\.fna\.fbcdn\.net)\/.*/,
 	/https:\/\/cdn\d+\.([a-zA-Z0-9-]+\.)+[a-zA-Z]+\/v1\/[a-zA-Z0-9]+\.(jpg|png|gif|mp4)/,
+	/https:\/\/cdn-ny\d\.iganony\.io/,
 ];
 
 const getCleanReqHeaders = (headers: NextApiRequest["headers"]) => ({

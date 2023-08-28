@@ -9,6 +9,7 @@ import { Provider, ProviderCanGet } from "./types/provider";
 import { axiosInstance } from "@/utils";
 import { InstaStories } from "./instastories";
 import { StoriesIG } from "./storiesig";
+import { Iganony } from "./iganony";
 
 export const randomUserAgent = new UserAgent().toString();
 
@@ -20,6 +21,7 @@ export function getInstanceProviders(providers: Provider[]) {
 			| Imgsed
 			| InstaStories
 			| StoriesIG
+			| Iganony
 		)[] = [];
 
 		providers.forEach((currentProvider) => {
@@ -79,6 +81,9 @@ export function getInstanceProviders(providers: Provider[]) {
 								: new AxiosScraper(scraperConfig),
 						),
 					);
+					break;
+				case "Iganony":
+					providersInstances.push(new Iganony(new AxiosScraper(scraperConfig)));
 					break;
 			}
 		});

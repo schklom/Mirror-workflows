@@ -13,21 +13,22 @@ parameters:
           - plugins/*/vendor/*
           - plugins.local/*/vendor/*
    excludePaths:
-      - node_modules/*
-      - vendor/**/tests/*
-      - vendor/**/test/*
-      - vendor/sebastian/*
-      - lib/dojo-src/*
-      - lib/**/tests/*
       - lib/**/test/*
-      - plugins/**/tests/*
-      - plugins/**/Test/*
-      - plugins/*/vendor/psr/log/*
-      - plugins.local/**/tests/*
-      - plugins/**/test/*
+      - lib/**/tests/*
+      - lib/dojo-src/*
+      - node_modules/*
       - plugins.local/**/test/*
+      - plugins.local/**/tests/*
       - plugins.local/*/vendor/intervention/*
       - plugins.local/*/vendor/psr/log/*
       - plugins.local/cache_s3/vendor/*
+      - plugins/**/test/*
+      - plugins/**/Test/*
+      - plugins/**/tests/*
+      - plugins/*/vendor/intervention/*
+      - plugins/*/vendor/psr/log/*
+      - vendor/**/test/*
+      - vendor/**/tests/*
+      - vendor/sebastian/*
    paths:
       - .

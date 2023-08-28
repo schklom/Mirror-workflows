@@ -514,7 +514,7 @@ function welcomeFinish() {
     const d = new Date();
     d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
     let expires = "expires=" + d.toUTCString();
-    document.cookie = "welcome=true" + ";" + expires + ";path=/";
+    document.cookie = "welcome=true;" + expires + ";path=/;SameSite=Strict";
     welcomePrompt = document.getElementById('welcomePrompt');
     welcomePrompt.style.visibility = 'hidden';
 }

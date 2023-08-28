@@ -115,9 +115,7 @@ async function prepareForLogin() {
 }
 
 async function doLogin(fmdid, password) {
-    if (currentId == null) {
-        currentId = fmdid;
-    }
+    currentId = fmdid;
     if (password == "") {
         alert("Password is empty.");
         return;
@@ -126,7 +124,7 @@ async function doLogin(fmdid, password) {
     let response = await fetch("./salt", {
         method: 'PUT',
         body: JSON.stringify({
-            IDT: currentId,
+            IDT: fmdid,
             Data: "unused",
         }),
         headers: {

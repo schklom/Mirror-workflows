@@ -94,6 +94,14 @@ footer {
     clear: both;
 }
 
+.invisible {
+    visibility: hidden;
+}
+
+.inline {
+    display: inline;
+}
+
 #locateButton {
     width: 50%;
 }
@@ -179,6 +187,10 @@ footer {
     display: block;
 }
 
+.margin-top {
+    margin-top: 1vw;
+}
+
 .show {
     display: block;
 }
@@ -206,4 +218,9 @@ footer {
 
 .tooltip:hover .tooltiptext {
     visibility: visible;
+}
+
+#f-droid-badge {
+    height: 50%;
+    width: 50%;
 }

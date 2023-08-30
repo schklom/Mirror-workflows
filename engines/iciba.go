@@ -16,7 +16,7 @@ func (_ *ICIBA) InternalName() string { return "iciba" }
 
 func (_ *ICIBA) DisplayName() string { return "iCIBA" }
 
-var icibaLanguages = []Language{
+var icibaLanguages = Language{
 	// ICIBA does have an API, but they return Chinese names.
 	// For languages already present in Google translate, the English
 	// names in that engine file are used; Otherwise official names
@@ -25,199 +25,197 @@ var icibaLanguages = []Language{
 	// Missing "cni", "kbh", "tmh"
 	// due to conflict between ISO-639 table and Chinese label
 	// one "//" means on iciba but not on google
-	{Name: "Achinese", Code: "ace"},       //
-	{Name: "Achuar-Shiwiar", Code: "acu"}, //
-	{Name: "Afrikaans", Code: "af"},
-	{Name: "Aguaruna", Code: "agr"}, //
-	{Name: "Akawaio", Code: "ake"},  //
-	{Name: "Albanian", Code: "sq"},
-	{Name: "Amharic", Code: "am"},
-	{Name: "Arabic", Code: "ar"},
-	{Name: "Armenian", Code: "hy"},
-	{Name: "Azerbaijani", Code: "az"},
-	{Name: "Barasana-Eduria", Code: "bsn"}, //
-	{Name: "Bashkir", Code: "ba"},          //
-	{Name: "Basque", Code: "eu"},
-	{Name: "Belarusian", Code: "be"},
-	{Name: "Bemba", Code: "bem"}, //
-	{Name: "Bengali", Code: "bn"},
-	{Name: "Berber", Code: "ber"}, //
-	{Name: "Bislama", Code: "bi"}, //
-	{Name: "Bosnian", Code: "bs"},
-	{Name: "Breton", Code: "br"}, //
-	{Name: "Bulgarian", Code: "bg"},
-	{Name: "Cabécar", Code: "cjp"}, //
-	{Name: "Cantonese", Code: "yue"},
-	{Name: "Catalan", Code: "ca"},
-	{Name: "Cebuano", Code: "ceb"},
-	{Name: "Chamorro", Code: "cha"}, //
-	{Name: "Cherokee", Code: "chr"}, //
-	{Name: "Chichewa", Code: "ny"},
-	{Name: "Chinese (Simplified)", Code: "zh"},   // "zh-cn" on Google
-	{Name: "Chinese (Traditional)", Code: "cht"}, // "zh-tw" on Google
-	{Name: "Chuvash", Code: "cv"},
-	{Name: "Coptic", Code: "cop"}, //
-	{Name: "Corsican", Code: "co"},
-	{Name: "Croatian", Code: "hr"},
-	{Name: "Czech", Code: "cs"},
-	{Name: "Danish", Code: "da"},
-	{Name: "Dhivehi", Code: "dv"}, //
-	{Name: "Dinka", Code: "dik"},  //
-	{Name: "Dutch", Code: "nl"},
-	{Name: "Dzongkha", Code: "dz"}, //
-	{Name: "English", Code: "en"},
-	{Name: "Esperanto", Code: "eo"},
-	{Name: "Estonian", Code: "et"},
-	{Name: "Ewe", Code: "ee"},       //
-	{Name: "Faroese", Code: "fo"},   //
-	{Name: "Fijian", Code: "fj"},    //
-	{Name: "Filipino", Code: "fil"}, // "tl" on Google
-	{Name: "Finnish", Code: "fi"},
-	{Name: "French", Code: "fr"},
-	{Name: "Frisian", Code: "fy"},
-	{Name: "Galela", Code: "gbi"}, //
-	{Name: "Galician", Code: "gl"},
-	{Name: "Ganda", Code: "lg"},    //
-	{Name: "Georgian", Code: "jy"}, // "ka" on Google
-	{Name: "German", Code: "de"},
-	{Name: "Greek", Code: "el"},
-	{Name: "Guerrero Amuzgo", Code: "amu"}, //
-	{Name: "Gujarati", Code: "gu"},
-	{Name: "Haitian Creole", Code: "ht"},
-	{Name: "Hausa", Code: "ha"},
-	{Name: "Hawaiian", Code: "haw"},
-	{Name: "Hebrew", Code: "he"}, // "iw" on Google
-	{Name: "Hindi", Code: "hi"},
-	{Name: "Hmong Daw", Code: "mww"}, //
-	{Name: "Hmong", Code: "hmn"},     // not in iciba
-	{Name: "Hungarian", Code: "hu"},
-	{Name: "Icelandic", Code: "is"},
-	{Name: "Igbo", Code: "ig"},
-	{Name: "Indonesian", Code: "id"},
-	{Name: "Irish", Code: "ga"},
-	{Name: "Italian", Code: "it"},
-	{Name: "Jacalteco", Code: "jac"}, //
-	{Name: "Japanese", Code: "ja"},
-	{Name: "Javanese", Code: "jv"}, // "jw" on Google
-	{Name: "Kabyle", Code: "kab"},  //
-	{Name: "Kannada", Code: "kn"},
-	{Name: "Kaqchikel", Code: "cak"},        //
-	{Name: "Kazakh", Code: "ka"},            // Google only has "kk"
-	{Name: "Kazakh (Cyrillic)", Code: "kk"}, // Google has it as just "Kazakh"
-	{Name: "Kekchí", Code: "kek"},           //
-	{Name: "Khmer", Code: "km"},
-	{Name: "Kinyarwanda", Code: "rw"},
-	{Name: "Kongo", Code: "kg"}, //
-	{Name: "Korean", Code: "ko"},
-	{Name: "Kurdish (Kurmanji)", Code: "ku"},
-	{Name: "Kyrgyz", Code: "ky"},
-	{Name: "Lao", Code: "lo"},
-	{Name: "Latin", Code: "la"},
-	{Name: "Latvian", Code: "lv"},
-	{Name: "Lingala", Code: "ln"}, //
-	{Name: "Lithuanian", Code: "lt"},
-	{Name: "Lukpa", Code: "dop"}, //
-	{Name: "Luxembourgish", Code: "lb"},
-	{Name: "Macedonian", Code: "mk"},
-	{Name: "Malagasy", Code: "mg"},
-	{Name: "Malay", Code: "ms"},
-	{Name: "Malayalam", Code: "ml"},
-	{Name: "Maltese", Code: "mt"},
-	{Name: "Mam", Code: "mam"}, //
-	{Name: "Manx", Code: "gv"}, //
-	{Name: "Maori", Code: "mi"},
-	{Name: "Marathi", Code: "mr"},
-	{Name: "Mari (Eastern)", Code: "mhr"}, //
-	{Name: "Mari (Western)", Code: "mrj"}, //
-	{Name: "Mongolian", Code: "mn"},
-	{Name: "Montenegrin", Code: "me"}, //
-	{Name: "Myanmar (Burmese)", Code: "my"},
-	{Name: "Nahuatl", Code: "nhg"}, //
-	{Name: "Ndyuka", Code: "djk"},  //
-	{Name: "Nepali", Code: "ne"},
-	{Name: "Norwegian", Code: "no"},
-	{Name: "Odia (Oriya)", Code: "or"},
-	{Name: "Ojibwa", Code: "ojb"},
-	{Name: "Oromo", Code: "om"},       //
-	{Name: "Ossetian", Code: "os"},    //
-	{Name: "Paite", Code: "pck"},      //
-	{Name: "Papiamento", Code: "pap"}, //
-	{Name: "Pashto", Code: "ps"},
-	{Name: "Persian", Code: "fa"},
-	{Name: "Polish", Code: "pl"},
-	{Name: "Portuguese", Code: "pt"},
-	{Name: "Potawatomi", Code: "pot"}, //
-	{Name: "Punjabi", Code: "pa"},
-	{Name: "Querétaro Otomi", Code: "otq"},     //
-	{Name: "Quiché", Code: "quc"},              //
-	{Name: "Quichua", Code: "quw"},             //
-	{Name: "Quiotepec Chinantec", Code: "chq"}, //
-	{Name: "Romani", Code: "rmn"},              //
-	{Name: "Romanian", Code: "ro"},
-	{Name: "Rundi", Code: "rn"}, //
-	{Name: "Russian", Code: "ru"},
-	{Name: "Samoan", Code: "sm"},
-	{Name: "Sango", Code: "sg"}, //
-	{Name: "Scots Gaelic", Code: "gd"},
-	{Name: "Serbian", Code: "sr"},
-	{Name: "Seselwa Creole French", Code: "crs"}, //
-	{Name: "Sesotho", Code: "st"},
-	{Name: "Shona", Code: "sn"},
-	{Name: "Shuar", Code: "jiv"}, //
-	{Name: "Sindhi", Code: "sd"},
-	{Name: "Sinhala", Code: "si"},
-	{Name: "Slovak", Code: "sk"},
-	{Name: "Slovenian", Code: "sl"},
-	{Name: "Somali", Code: "so"},
-	{Name: "Spanish", Code: "es"},
-	{Name: "Sundanese", Code: "su"},
-	{Name: "Swahili", Code: "sw"},
-	{Name: "Swedish", Code: "sv"},
-	{Name: "Syriac", Code: "syc"},    // considered "extinct" but is somehow supported
-	{Name: "Tachelhit", Code: "shi"}, //
-	{Name: "Tahitian", Code: "ty"},   //
-	{Name: "Tajik", Code: "tg"},
-	{Name: "Tamil", Code: "ta"},
-	{Name: "Tatar", Code: "tt"},
-	{Name: "Telugu", Code: "te"},
-	{Name: "Tetum", Code: "tet"}, //
-	{Name: "Thai", Code: "th"},
-	{Name: "Tigre", Code: "ti"},      //
-	{Name: "Tiwi", Code: "tw"},       //
-	{Name: "Tok Pisin", Code: "tpi"}, //
-	{Name: "Tonga", Code: "to"},      //
-	{Name: "Tsonga", Code: "ts"},
-	{Name: "Tswana", Code: "tn"}, //
-	{Name: "Turkish", Code: "tr"},
-	{Name: "Turkmen", Code: "tk"},
-	{Name: "Udmurt", Code: "udm"}, //
-	{Name: "Ukrainian", Code: "uk"},
-	{Name: "Uma", Code: "ppk"}, //
-	{Name: "Urdu", Code: "ur"},
-	{Name: "Uspanteco", Code: "usp"}, //
-	{Name: "Uyghur", Code: "uy"},     // "ug" on Google
-	{Name: "Uzbek", Code: "uz"},
-	{Name: "Venda", Code: "ve"}, //
-	{Name: "Vietnamese", Code: "vi"},
-	{Name: "Waray", Code: "war"}, //
-	{Name: "Welsh", Code: "cy"},
-	{Name: "Wolaitta", Code: "wal"}, //
-	{Name: "Wolof", Code: "wol"},
-	{Name: "Xhosa", Code: "xh"},
-	{Name: "Yiddish", Code: "yi"},
-	{Name: "Yoruba", Code: "yo"},
-	{Name: "Yucatán Maya", Code: "yua"}, //
-	{Name: "Zarma", Code: "dje"},        //
-	{Name: "Zulu", Code: "zu"},
+	"ace": "Achinese",       //
+	"acu": "Achuar-Shiwiar", //
+	"af":  "Afrikaans",
+	"agr": "Aguaruna", //
+	"ake": "Akawaio",  //
+	"sq":  "Albanian",
+	"am":  "Amharic",
+	"ar":  "Arabic",
+	"hy":  "Armenian",
+	"az":  "Azerbaijani",
+	"bsn": "Barasana-Eduria", //
+	"ba":  "Bashkir",         //
+	"eu":  "Basque",
+	"be":  "Belarusian",
+	"bem": "Bemba", //
+	"bn":  "Bengali",
+	"ber": "Berber",  //
+	"bi":  "Bislama", //
+	"bs":  "Bosnian",
+	"br":  "Breton", //
+	"bg":  "Bulgarian",
+	"cjp": "Cabécar", //
+	"yue": "Cantonese",
+	"ca":  "Catalan",
+	"ceb": "Cebuano",
+	"cha": "Chamorro", //
+	"chr": "Cherokee", //
+	"ny":  "Chichewa",
+	"zh":  "Chinese (Simplified)",  // "zh-cn" on Google
+	"cht": "Chinese (Traditional)", // "zh-tw" on Google
+	"cv":  "Chuvash",
+	"cop": "Coptic", //
+	"co":  "Corsican",
+	"hr":  "Croatian",
+	"cs":  "Czech",
+	"da":  "Danish",
+	"dv":  "Dhivehi", //
+	"dik": "Dinka",   //
+	"nl":  "Dutch",
+	"dz":  "Dzongkha", //
+	"en":  "English",
+	"eo":  "Esperanto",
+	"et":  "Estonian",
+	"ee":  "Ewe",      //
+	"fo":  "Faroese",  //
+	"fj":  "Fijian",   //
+	"fil": "Filipino", // "tl" on Google
+	"fi":  "Finnish",
+	"fr":  "French",
+	"fy":  "Frisian",
+	"gbi": "Galela", //
+	"gl":  "Galician",
+	"lg":  "Ganda",    //
+	"jy":  "Georgian", // "ka" on Google
+	"de":  "German",
+	"el":  "Greek",
+	"amu": "Guerrero Amuzgo", //
+	"gu":  "Gujarati",
+	"ht":  "Haitian Creole",
+	"ha":  "Hausa",
+	"haw": "Hawaiian",
+	"he":  "Hebrew", // "iw" on Google
+	"hi":  "Hindi",
+	"mww": "Hmong Daw", //
+	"hmn": "Hmong",     // not in iciba
+	"hu":  "Hungarian",
+	"is":  "Icelandic",
+	"ig":  "Igbo",
+	"id":  "Indonesian",
+	"ga":  "Irish",
+	"it":  "Italian",
+	"jac": "Jacalteco", //
+	"ja":  "Japanese",
+	"jv":  "Javanese", // "jw" on Google
+	"kab": "Kabyle",   //
+	"kn":  "Kannada",
+	"cak": "Kaqchikel",         //
+	"ka":  "Kazakh",            // Google only has "kk"
+	"kk":  "Kazakh (Cyrillic)", // Google has it as just "Kazakh"
+	"kek": "Kekchí",            //
+	"km":  "Khmer",
+	"rw":  "Kinyarwanda",
+	"kg":  "Kongo", //
+	"ko":  "Korean",
+	"ku":  "Kurdish (Kurmanji)",
+	"ky":  "Kyrgyz",
+	"lo":  "Lao",
+	"la":  "Latin",
+	"lv":  "Latvian",
+	"ln":  "Lingala", //
+	"lt":  "Lithuanian",
+	"dop": "Lukpa", //
+	"lb":  "Luxembourgish",
+	"mk":  "Macedonian",
+	"mg":  "Malagasy",
+	"ms":  "Malay",
+	"ml":  "Malayalam",
+	"mt":  "Maltese",
+	"mam": "Mam",  //
+	"gv":  "Manx", //
+	"mi":  "Maori",
+	"mr":  "Marathi",
+	"mhr": "Mari (Eastern)", //
+	"mrj": "Mari (Western)", //
+	"mn":  "Mongolian",
+	"me":  "Montenegrin", //
+	"my":  "Myanmar (Burmese)",
+	"nhg": "Nahuatl", //
+	"djk": "Ndyuka",  //
+	"ne":  "Nepali",
+	"no":  "Norwegian",
+	"or":  "Odia (Oriya)",
+	"ojb": "Ojibwa",
+	"om":  "Oromo",      //
+	"os":  "Ossetian",   //
+	"pck": "Paite",      //
+	"pap": "Papiamento", //
+	"ps":  "Pashto",
+	"fa":  "Persian",
+	"pl":  "Polish",
+	"pt":  "Portuguese",
+	"pot": "Potawatomi", //
+	"pa":  "Punjabi",
+	"otq": "Querétaro Otomi",     //
+	"quc": "Quiché",              //
+	"quw": "Quichua",             //
+	"chq": "Quiotepec Chinantec", //
+	"rmn": "Romani",              //
+	"ro":  "Romanian",
+	"rn":  "Rundi", //
+	"ru":  "Russian",
+	"sm":  "Samoan",
+	"sg":  "Sango", //
+	"gd":  "Scots Gaelic",
+	"sr":  "Serbian",
+	"crs": "Seselwa Creole French", //
+	"st":  "Sesotho",
+	"sn":  "Shona",
+	"jiv": "Shuar", //
+	"sd":  "Sindhi",
+	"si":  "Sinhala",
+	"sk":  "Slovak",
+	"sl":  "Slovenian",
+	"so":  "Somali",
+	"es":  "Spanish",
+	"su":  "Sundanese",
+	"sw":  "Swahili",
+	"sv":  "Swedish",
+	"syc": "Syriac",    // considered "extinct" but is somehow supported
+	"shi": "Tachelhit", //
+	"ty":  "Tahitian",  //
+	"tg":  "Tajik",
+	"ta":  "Tamil",
+	"tt":  "Tatar",
+	"te":  "Telugu",
+	"tet": "Tetum", //
+	"th":  "Thai",
+	"ti":  "Tigre",     //
+	"tw":  "Tiwi",      //
+	"tpi": "Tok Pisin", //
+	"to":  "Tonga",     //
+	"ts":  "Tsonga",
+	"tn":  "Tswana", //
+	"tr":  "Turkish",
+	"tk":  "Turkmen",
+	"udm": "Udmurt", //
+	"uk":  "Ukrainian",
+	"ppk": "Uma", //
+	"ur":  "Urdu",
+	"usp": "Uspanteco", //
+	"uy":  "Uyghur",    // "ug" on Google
+	"uz":  "Uzbek",
+	"ve":  "Venda", //
+	"vi":  "Vietnamese",
+	"war": "Waray", //
+	"cy":  "Welsh",
+	"wal": "Wolaitta", //
+	"wol": "Wolof",
+	"xh":  "Xhosa",
+	"yi":  "Yiddish",
+	"yo":  "Yoruba",
+	"yua": "Yucatán Maya", //
+	"dje": "Zarma",        //
+	"zu":  "Zulu",
 }
 
-func (_ *ICIBA) SourceLanguages() ([]Language, error) { return icibaLanguages, nil }
+func (_ *ICIBA) SourceLanguages() (Language, error) { return icibaLanguages, nil }
 
-func (_ *ICIBA) TargetLanguages() ([]Language, error) { return icibaLanguages, nil }
+func (_ *ICIBA) TargetLanguages() (Language, error) { return icibaLanguages, nil }
 
-func (_ *ICIBA) SupportsAutodetect() bool { return true }
-
-func (_ *ICIBA) DetectLanguage(text string) (Language, error) { return Language{}, nil }
+func (_ *ICIBA) DetectLanguage(text string) (string, error) { return "", nil }
 
 type icibaTranslateResponse struct {
 	Content struct {
@@ -226,7 +224,7 @@ type icibaTranslateResponse struct {
 	} `json:"content"`
 }
 
-func (_ *ICIBA) Translate(text string, from, to Language) (TranslationResult, error) {
+func (_ *ICIBA) Translate(text string, from, to string) (TranslationResult, error) {
 	requestURL, err := url.Parse("https://ifanyi.iciba.com/index.php")
 
 	if err != nil {
@@ -247,8 +245,8 @@ func (_ *ICIBA) Translate(text string, from, to Language) (TranslationResult, er
 	requestURL.RawQuery = query.Encode()
 
 	formData := url.Values{}
-	formData.Add("from", from.Code)
-	formData.Add("to", to.Code)
+	formData.Add("from", from)
+	formData.Add("to", to)
 	formData.Add("q", text)
 
 	response, err := http.PostForm(requestURL.String(), formData)
@@ -269,17 +267,17 @@ func (_ *ICIBA) Translate(text string, from, to Language) (TranslationResult, er
 		return TranslationResult{}, err
 	}
 
-	var sourceLanguage Language
+	var sourceLanguage string
 
-	for _, lang := range icibaLanguages {
-		if lang.Code == responseJSON.Content.From {
-			sourceLanguage = lang
+	for code := range icibaLanguages {
+		if code == responseJSON.Content.From {
+			sourceLanguage = code
 			break
 		}
 	}
 
-	if sourceLanguage == (Language{}) {
-		return TranslationResult{SourceLanguage: from, TranslatedText: responseJSON.Content.Out},
+	if sourceLanguage == "" {
+		return TranslationResult{TranslatedText: responseJSON.Content.Out},
 			fmt.Errorf("language code \"%s\" is not in iCIBA's language list", responseJSON.Content.From)
 	}
 

@@ -14,7 +14,7 @@ func (_ *GoogleTranslate) InternalName() string { return "google" }
 
 func (_ *GoogleTranslate) DisplayName() string { return "Google" }
 
-func (_ *GoogleTranslate) getLangs(type_ string) ([]Language, error) {
+func (_ *GoogleTranslate) getLangs(type_ string) (Language, error) {
 	var langsType string
 	switch type_ {
 	case "source":
@@ -27,12 +27,7 @@ func (_ *GoogleTranslate) getLangs(type_ string) ([]Language, error) {
 		panic(fmt.Errorf("getLangs was passed an invalid language type: %s", langsType))
 	}
 
-	requestURL, err := url.Parse("https://translate.google.com/m")
-
-	if err != nil {
-		// The URL is constant, so it should never fail.
-		panic(err)
-	}
+	requestURL, _ := url.Parse("https://translate.google.com/m")
 
 	query := url.Values{}
 	query.Add("mui", langsType)
@@ -53,7 +48,7 @@ func (_ *GoogleTranslate) getLangs(type_ string) ([]Language, error) {
 		return nil, err
 	}
 
-	var langs []Language
+	var langs Language
 
 	doc.Find(".language-item").Each(func(_ int, s *goquery.Selection) {
 		a := s.Find("a").First()
@@ -77,36 +72,33 @@ func (_ *GoogleTranslate) getLangs(type_ string) ([]Language, error) {
 			return
 		}
 
-		langs = append(langs, Language{Name: a.Text(), Code: langCode})
+		langs[langCode] = a.Text()
 	})
 
 	return langs, nil
 }
 
-func (e *GoogleTranslate) SourceLanguages() ([]Language, error) {
+func (e *GoogleTranslate) SourceLanguages() (Language, error) {
 	return e.getLangs("source")
 }
 
-func (e *GoogleTranslate) TargetLanguages() ([]Language, error) {
+func (e *GoogleTranslate) TargetLanguages() (Language, error) {
 	return e.getLangs("target")
 }
 
-func (_ *GoogleTranslate) SupportsAutodetect() bool { return true }
+func (_ *GoogleTranslate) DetectLanguage(text string) (string, error) { return "", nil }
 
-func (_ *GoogleTranslate) DetectLanguage(text string) (Language, error) { return Language{}, nil }
+func (_ *GoogleTranslate) Translate(text string, from, to string) (TranslationResult, error) {
+	requestURL, _ := url.Parse("https://translate.google.com/m")
 
-func (_ *GoogleTranslate) Translate(text string, from, to Language) (TranslationResult, error) {
-	requestURL, err := url.Parse("https://translate.google.com/m")
-
-	if err != nil {
-		// The URL is constant, so it should never fail.
-		panic(err)
+	if from == "" {
+		from = "auto"
 	}
 
 	query := url.Values{}
-	query.Add("sl", from.Code)
-	query.Add("tl", to.Code)
-	query.Add("hl", to.Code)
+	query.Add("sl", from)
+	query.Add("tl", to)
+	query.Add("hl", to)
 	query.Add("q", text)
 	requestURL.RawQuery = query.Encode()
 

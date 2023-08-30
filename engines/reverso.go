@@ -14,39 +14,37 @@ func (_ *Reverso) InternalName() string { return "reverso" }
 
 func (_ *Reverso) DisplayName() string { return "Reverso" }
 
-var reversoLangs = []Language{
-	{Name: "Arabic", Code: "ara"},
-	{Name: "Chinese (Simplified)", Code: "chi"}, // marketed as just "Chinese"
-	{Name: "Czech", Code: "cze"},
-	{Name: "Danish", Code: "dan"},
-	{Name: "Dutch", Code: "dut"},
-	{Name: "English", Code: "eng"},
-	{Name: "French", Code: "fra"},
-	{Name: "German", Code: "ger"},
-	{Name: "Hebrew", Code: "heb"},
-	{Name: "Hindi", Code: "hin"},
-	{Name: "Hungarian", Code: "hun"},
-	{Name: "Italian", Code: "ita"},
-	{Name: "Japanese", Code: "jpn"},
-	{Name: "Korean", Code: "kor"},
-	{Name: "Persian", Code: "per"},
-	{Name: "Polish", Code: "pol"},
-	{Name: "Portuguese", Code: "por"},
-	{Name: "Romanian", Code: "rum"},
-	{Name: "Russian", Code: "rus"},
-	{Name: "Slovak", Code: "slo"},
-	{Name: "Spanish", Code: "spa"},
-	{Name: "Swedish", Code: "swe"},
-	{Name: "Thai", Code: "tha"},
-	{Name: "Turkish", Code: "tur"},
-	{Name: "Ukrainian", Code: "ukr"},
+var reversoLangs = Language{
+	"ara": "Arabic",
+	"chi": "Chinese (Simplified)", // marketed as just "Chinese"
+	"cze": "Czech",
+	"dan": "Danish",
+	"dut": "Dutch",
+	"eng": "English",
+	"fra": "French",
+	"ger": "German",
+	"heb": "Hebrew",
+	"hin": "Hindi",
+	"hun": "Hungarian",
+	"ita": "Italian",
+	"jpn": "Japanese",
+	"kor": "Korean",
+	"per": "Persian",
+	"pol": "Polish",
+	"por": "Portuguese",
+	"rum": "Romanian",
+	"rus": "Russian",
+	"slo": "Slovak",
+	"spa": "Spanish",
+	"swe": "Swedish",
+	"tha": "Thai",
+	"tur": "Turkish",
+	"ukr": "Ukrainian",
 }
 
-func (_ *Reverso) SourceLanguages() ([]Language, error) { return reversoLangs, nil }
+func (_ *Reverso) SourceLanguages() (Language, error) { return reversoLangs, nil }
 
-func (_ *Reverso) TargetLanguages() ([]Language, error) { return reversoLangs, nil }
-
-func (_ *Reverso) SupportsAutodetect() bool { return true }
+func (_ *Reverso) TargetLanguages() (Language, error) { return reversoLangs, nil }
 
 type reversoAPIResponse struct {
 	LanguageDetection struct {
@@ -55,12 +53,12 @@ type reversoAPIResponse struct {
 	Translation []string `json:"translation"`
 }
 
-func (e *Reverso) callAPI(text string, from, to Language) (reversoAPIResponse, error) {
+func (e *Reverso) callAPI(text string, from, to string) (reversoAPIResponse, error) {
 	// `contextResults` must be false for language detection
 	formData := map[string]interface{}{
 		"format": "text",
-		"from":   from.Code,
-		"to":     to.Code,
+		"from":   from,
+		"to":     to,
 		"input":  text,
 		"options": map[string]interface{}{
 			"sentenceSplitter":  false,
@@ -109,27 +107,27 @@ func (e *Reverso) callAPI(text string, from, to Language) (reversoAPIResponse, e
 	return result, nil
 }
 
-func (e *Reverso) DetectLanguage(text string) (Language, error) {
+func (e *Reverso) DetectLanguage(text string) (string, error) {
 	// Any language pair works here, does not affect result
-	r, err := e.callAPI(text, reversoLangs[0], reversoLangs[1])
+	r, err := e.callAPI(text, "ara", "chi")
 
 	if err != nil {
-		return Language{}, err
+		return "", err
 	}
 
 	langCode := r.LanguageDetection.DetectedLanguage
 
-	for _, lang := range reversoLangs {
-		if lang.Code == langCode {
-			return lang, nil
+	for code := range reversoLangs {
+		if code == langCode {
+			return code, nil
 		}
 	}
 
-	return Language{}, fmt.Errorf("language code \"%s\" is not in Reverso's language list", langCode)
+	return "", fmt.Errorf("language code \"%s\" is not in Reverso's language list", langCode)
 }
 
-func (e *Reverso) Translate(text string, from, to Language) (TranslationResult, error) {
-	if from.Code == "auto" {
+func (e *Reverso) Translate(text string, from, to string) (TranslationResult, error) {
+	if from == "auto" {
 		from_, err := e.DetectLanguage(text)
 
 		if err != nil {
@@ -154,7 +152,6 @@ func (e *Reverso) Translate(text string, from, to Language) (TranslationResult, 
 	}
 
 	return TranslationResult{
-		SourceLanguage: from,
 		TranslatedText: translation,
 	}, nil
 }

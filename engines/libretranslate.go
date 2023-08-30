@@ -27,12 +27,7 @@ func (_ *LibreTranslate) InternalName() string { return "libre" }
 
 func (_ *LibreTranslate) DisplayName() string { return "LibreTranslate" }
 
-type libreLanguagesResponse []struct {
-	Name string `json:"name"`
-	Code string `json:"code"`
-}
-
-func (e *LibreTranslate) getLangs() ([]Language, error) {
+func (e *LibreTranslate) getLangs() (Language, error) {
 	response, err := http.Get(e.InstanceURL + "/languages")
 
 	if err != nil {
@@ -45,34 +40,35 @@ func (e *LibreTranslate) getLangs() ([]Language, error) {
 		return nil, fmt.Errorf("got status code %d from LibreTranslate API", response.StatusCode)
 	}
 
-	var langsResponse libreLanguagesResponse
+	var langsResponse []struct {
+		Name string `json:"name"`
+		Code string `json:"code"`
+	}
 
 	if err := json.NewDecoder(response.Body).Decode(&langsResponse); err != nil {
 		return nil, err
 	}
 
-	langs := make([]Language, len(langsResponse))
+	langs := Language{}
 
-	for i, lang := range langsResponse {
-		langs[i] = Language{Name: lang.Name, Code: lang.Code}
+	for _, lang := range langsResponse {
+		langs[lang.Code] = lang.Name
 	}
 
 	return langs, nil
 
 }
 
-func (e *LibreTranslate) SourceLanguages() ([]Language, error) { return e.getLangs() }
+func (e *LibreTranslate) SourceLanguages() (Language, error) { return e.getLangs() }
 
-func (e *LibreTranslate) TargetLanguages() ([]Language, error) { return e.getLangs() }
-
-func (_ *LibreTranslate) SupportsAutodetect() bool { return true }
+func (e *LibreTranslate) TargetLanguages() (Language, error) { return e.getLangs() }
 
 type libreDetectResponse []struct {
 	Confidence   float64 `json:"confidence"`
 	LanguageCode string  `json:"language"`
 }
 
-func (e *LibreTranslate) DetectLanguage(text string) (Language, error) {
+func (e *LibreTranslate) DetectLanguage(text string) (string, error) {
 	formData := map[string]string{"q": text}
 
 	if e.APIKey != "" {
@@ -82,25 +78,25 @@ func (e *LibreTranslate) DetectLanguage(text string) (Language, error) {
 	formDataJSON, err := json.Marshal(formData)
 
 	if err != nil {
-		return Language{}, err
+		return "", err
 	}
 
 	response, err := http.Post(e.InstanceURL+"/detect", "application/json", bytes.NewBuffer(formDataJSON))
 
 	if err != nil {
-		return Language{}, err
+		return "", err
 	}
 
 	defer response.Body.Close()
 
 	if response.StatusCode != 200 {
-		return Language{}, fmt.Errorf("got status code %d from LibreTranslate API", response.StatusCode)
+		return "", fmt.Errorf("got status code %d from LibreTranslate API", response.StatusCode)
 	}
 
 	var langs libreDetectResponse
 
 	if err := json.NewDecoder(response.Body).Decode(&langs); err != nil {
-		return Language{}, err
+		return "", err
 	}
 
 	maxConfidenceLang := langs[0]
@@ -114,27 +110,27 @@ func (e *LibreTranslate) DetectLanguage(text string) (Language, error) {
 	engineLangs, err := e.getLangs()
 
 	if err != nil {
-		return Language{}, err
+		return "", err
 	}
 
-	for _, lang := range engineLangs {
-		if lang.Code == maxConfidenceLang.LanguageCode {
-			return lang, nil
+	for code := range engineLangs {
+		if code == maxConfidenceLang.LanguageCode {
+			return code, nil
 		}
 	}
 
-	return Language{}, fmt.Errorf("language code \"%s\" is not in the instance's language list", maxConfidenceLang.LanguageCode)
+	return "", fmt.Errorf("language code \"%s\" is not in the instance's language list", maxConfidenceLang.LanguageCode)
 }
 
 type libreTranslateResponse struct {
 	TranslatedText string `json:"translatedText"`
 }
 
-func (e *LibreTranslate) Translate(text string, from, to Language) (TranslationResult, error) {
+func (e *LibreTranslate) Translate(text string, from, to string) (TranslationResult, error) {
 	formData := map[string]string{
 		"q":      text,
-		"source": from.Code,
-		"target": to.Code,
+		"source": from,
+		"target": to,
 	}
 
 	if e.APIKey != "" {
@@ -165,5 +161,5 @@ func (e *LibreTranslate) Translate(text string, from, to Language) (TranslationR
 		return TranslationResult{}, err
 	}
 
-	return TranslationResult{SourceLanguage: from, TranslatedText: responseJSON.TranslatedText}, nil
+	return TranslationResult{TranslatedText: responseJSON.TranslatedText}, nil
 }

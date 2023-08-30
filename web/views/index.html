@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>SimplyTranslate</title>
+    <link rel="shortcut icon" href="/static/favicon.ico">
+    <meta name="description" content="Experience simple and private Google translations">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'">
+    <meta name="referrer" content="no-referrer">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <header class="center">
+        <h1>SimplyTranslate</h1>
+    </header>
+
+    <form method="POST" id="translation-form">
+
+        <input type="hidden" name="engine" value="{{.Engine}}">
+
+        <div class="wrap languages">
+            <div class="language">
+                <select name="from" aria-label="Source language">
+                    {{range $code, $name := .SourceLanguages}}
+                    <option value="{{ $code }}" {{if eq $code $.From}}selected{{end}}>{{ $name }}</option>
+                    {{end}}
+                </select>
+            </div>
+
+            <div class="switch_languages">
+                <button id="switchbutton" aria-label="Switch languages"
+                    formaction="/switchlanguages/?engine={{ .Engine }}" type="submit">&lt;-&gt;</button>
+            </div>
+
+            <div class="language">
+                <select name="to" aria-label="Target language">
+                    {{range $code, $name := .TargetLanguages}}
+                    <option value="{{ $code }}" {{if eq $code $.To}}selected{{end}}>{{ $name }}</option>
+                    {{end}}
+                </select>
+            </div>
+        </div>
+
+        <div class="wrap">
+            <div class="item-wrapper">
+                <textarea autofocus class="item" id="input" name="text" dir="auto"
+                    placeholder="Enter Text Here">{{ .OriginalText }}</textarea>
+            </div>
+
+            <div class="item-wrapper">
+                <textarea id="output" class="translation item" dir="auto" placeholder="Translation"
+                    readonly>{{.TranslatedText}}</textarea>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="center">
+            <button type="submit">Translate with {{ .Engine }}!</button>
+        </div>
+
+    </form>
+    <script src="/static/script.js"></script>
+</body>
+
+</html>

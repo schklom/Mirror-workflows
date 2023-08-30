@@ -1,6 +1,10 @@
 package main
 
 import (
+	"bytes"
+	"net/http"
+	"net/url"
+
 	"codeberg.org/SimpleWeb/SimplyTranslate/engines"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html/v2"
@@ -84,6 +88,8 @@ func main() {
 		translatedText := ""
 		from := ""
 		to := ""
+		ttsFrom := ""
+		ttsTo := ""
 
 		if c.Method() == "POST" {
 			from =
@@ -95,6 +101,23 @@ func main() {
 			} else {
 				translatedText = result.TranslatedText
 			}
+
+			ttsFromURL, _ := url.Parse("api/tts")
+
+			fromQuery := url.Values{}
+			fromQuery.Add("lang", from)
+			fromQuery.Add("text", originalText)
+			ttsFromURL.RawQuery = fromQuery.Encode()
+			ttsFrom = ttsFromURL.String()
+
+			ttsToURL, _ := url.Parse("api/tts")
+
+			toQuery := url.Values{}
+			toQuery.Add("lang", to)
+			toQuery.Add("text", translatedText)
+			ttsToURL.RawQuery = toQuery.Encode()
+			ttsTo = ttsToURL.String()
+
 		}
 		return c.Render("index", fiber.Map{
 			"Engine":          engine,
@@ -104,10 +127,43 @@ func main() {
 			"TranslatedText":  translatedText,
 			"From":            from,
 			"To":              to,
+			"TtsFrom":         ttsFrom,
+			"TtsTo":           ttsTo,
 		})
 	})
 
 	app.Static("/static", "./static")
+
+	app.Get("/api/tts", func(c *fiber.Ctx) error {
+		engine := c.Query("engine")
+		if _, ok := engines.Engines[engine]; !ok || engine == "" {
+			engine = "google"
+		}
+
+		text := c.Query("text")
+		if text == "" {
+			return c.SendStatus(400)
+		}
+
+		lang := c.Query("lang")
+		if lang == "" {
+			lang = "en"
+		}
+
+		if url, err := engines.Engines[engine].Tts(text, lang); err != nil {
+			return c.SendStatus(500)
+		} else {
+			if response, err := http.Get(url); err != nil {
+				return c.SendStatus(500)
+			} else {
+				defer response.Body.Close()
+				var buf bytes.Buffer
+				response.Write(&buf)
+				c.Context().SetContentType("audio/mpeg")
+				return c.Send(buf.Bytes())
+			}
+		}
+	})
 
 	app.Listen(":3000")
 }

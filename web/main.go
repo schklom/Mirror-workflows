@@ -90,8 +90,8 @@ func main() {
 		return c.Render("index", fiber.Map{
 			"Engine":          engine,
 			"enginesNames":    enginesNames,
-			"SourceLanguages": targetLanguages,
-			"TargetLanguages": sourceLanguages,
+			"SourceLanguages": sourceLanguages,
+			"TargetLanguages": targetLanguages,
 			"OriginalText":    originalText,
 			"TranslatedText":  translatedText,
 			"From":            from,
@@ -168,9 +168,6 @@ func main() {
 		}
 
 		lang := c.Query("lang")
-		if lang == "" {
-			lang = "en"
-		}
 
 		if url, err := engines.Engines[engine].Tts(text, lang); err != nil {
 			return c.SendStatus(500)
@@ -186,6 +183,24 @@ func main() {
 			}
 		}
 
+	})
+
+	app.Post("/switchlanguages", func(c *fiber.Ctx) error {
+		if c.Cookies("from") != "" {
+			fromCookie := new(fiber.Cookie)
+			fromCookie.Name = "from"
+			fromCookie.Value = c.Cookies("to")
+			fromCookie.Expires = time.Now().Add(24 * time.Hour * 365)
+
+			toCookie := new(fiber.Cookie)
+			toCookie.Name = "to"
+			toCookie.Value = c.Cookies("from")
+			toCookie.Expires = time.Now().Add(24 * time.Hour * 365)
+
+			c.Cookie(fromCookie)
+			c.Cookie(toCookie)
+		}
+		return c.Redirect("/")
 	})
 
 	app.Static("/static", "./static")

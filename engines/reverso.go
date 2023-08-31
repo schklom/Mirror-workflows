@@ -46,6 +46,8 @@ func (_ *Reverso) SourceLanguages() (Language, error) { return reversoLangs, nil
 
 func (_ *Reverso) TargetLanguages() (Language, error) { return reversoLangs, nil }
 
+func (_ *Reverso) Tts(text, lang string) (string, error) { return "", nil }
+
 type reversoAPIResponse struct {
 	LanguageDetection struct {
 		DetectedLanguage string `json:"detectedLanguage"`

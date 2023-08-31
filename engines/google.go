@@ -35,7 +35,6 @@ func (_ *GoogleTranslate) getLangs(type_ string) (Language, error) {
 	requestURL.RawQuery = query.Encode()
 
 	response, err := http.Get(requestURL.String())
-
 	if err != nil {
 		return nil, err
 	}
@@ -43,34 +42,26 @@ func (_ *GoogleTranslate) getLangs(type_ string) (Language, error) {
 	defer response.Body.Close()
 
 	doc, err := goquery.NewDocumentFromReader(response.Body)
-
 	if err != nil {
 		return nil, err
 	}
 
-	var langs Language
+	var langs Language = make(Language)
 
 	doc.Find(".language-item").Each(func(_ int, s *goquery.Selection) {
 		a := s.Find("a").First()
 
 		href, exists := a.Attr("href")
-
-		// Shouldn't happen, but here goes.
 		if !exists {
 			return
 		}
 
 		langURL, err := url.Parse(href)
-
 		if err != nil {
 			return
 		}
 
 		langCode := langURL.Query()[langsType][0]
-
-		if langCode == "auto" {
-			return
-		}
 
 		langs[langCode] = a.Text()
 	})
@@ -84,6 +75,18 @@ func (e *GoogleTranslate) SourceLanguages() (Language, error) {
 
 func (e *GoogleTranslate) TargetLanguages() (Language, error) {
 	return e.getLangs("target")
+}
+
+func (e *GoogleTranslate) Tts(text, lang string) (string, error) {
+	requestURL, _ := url.Parse("https://translate.google.com/translate_tts")
+
+	query := url.Values{}
+	query.Add("tl", lang)
+	query.Add("q", text)
+	query.Add("client", "tw-ob")
+	requestURL.RawQuery = query.Encode()
+
+	return requestURL.String(), nil
 }
 
 func (_ *GoogleTranslate) DetectLanguage(text string) (string, error) { return "", nil }

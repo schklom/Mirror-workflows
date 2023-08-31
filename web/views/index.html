@@ -57,19 +57,21 @@
             <div class="item-wrapper">
                 <textarea autofocus class="item" id="input" name="text" dir="auto"
                     placeholder="Enter Text Here">{{ .OriginalText }}</textarea>
-                <div class="center">
-                    <audio controls>
-                        <source type="audio/mpeg" src="{{ .TtsFrom }}">
-                    </audio>
-                </div>
+                {{if .TtsFrom}}
+                <audio controls>
+                    <source type="audio/mpeg" src="{{ .TtsFrom }}">
+                </audio>
+                {{end}}
             </div>
 
             <div class="item-wrapper">
                 <textarea id="output" class="translation item" dir="auto" placeholder="Translation"
                     readonly>{{.TranslatedText}}</textarea>
+                {{if .TtsTo}}
                 <audio controls>
                     <source type="audio/mpeg" src="{{ .TtsTo }}">
                 </audio>
+                {{end}}
             </div>
         </div>
 

@@ -225,12 +225,7 @@ type icibaTranslateResponse struct {
 }
 
 func (_ *ICIBA) Translate(text string, from, to string) (TranslationResult, error) {
-	requestURL, err := url.Parse("https://ifanyi.iciba.com/index.php")
-
-	if err != nil {
-		// The URL is constant, so it should never fail.
-		panic(err)
-	}
+	requestURL, _ := url.Parse("https://ifanyi.iciba.com/index.php")
 
 	query := url.Values{}
 	query.Add("c", "trans")
@@ -239,7 +234,6 @@ func (_ *ICIBA) Translate(text string, from, to string) (TranslationResult, erro
 	query.Add("auth_user", "key_web_fanyi")
 
 	sum := md5.Sum([]byte(("6key_web_fanyiifanyiweb8hc9s98e" + text)))
-
 	query.Add("sign", hex.EncodeToString(sum[:])[:16])
 
 	requestURL.RawQuery = query.Encode()
@@ -250,7 +244,6 @@ func (_ *ICIBA) Translate(text string, from, to string) (TranslationResult, erro
 	formData.Add("q", text)
 
 	response, err := http.PostForm(requestURL.String(), formData)
-
 	if err != nil {
 		return TranslationResult{}, err
 	}
@@ -286,3 +279,5 @@ func (_ *ICIBA) Translate(text string, from, to string) (TranslationResult, erro
 		TranslatedText: responseJSON.Content.Out,
 	}, nil
 }
+
+func (_ *ICIBA) Tts(text, lang string) (string, error) { return "", nil }

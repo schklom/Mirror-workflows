@@ -12,13 +12,14 @@ type Engine interface {
 	TargetLanguages() (Language, error)
 	Translate(text string, from, to string) (TranslationResult, error)
 	DetectLanguage(text string) (string, error)
+	Tts(text, lang string) (string, error)
 }
 
 type Language map[string]string
 
 var Engines = map[string]Engine{
-	"google":   &GoogleTranslate{},
-	"icibia":   &ICIBA{},
-	"libre":    &LibreTranslate{},
+	"google": &GoogleTranslate{},
+	// "icibia":   &ICIBA{},
+	// "libre":    &LibreTranslate{},
 	"reverseo": &Reverso{},
 }

@@ -63,6 +63,8 @@ func (e *LibreTranslate) SourceLanguages() (Language, error) { return e.getLangs
 
 func (e *LibreTranslate) TargetLanguages() (Language, error) { return e.getLangs() }
 
+func (e *LibreTranslate) Tts(text, lang string) (string, error) { return "", nil }
+
 type libreDetectResponse []struct {
 	Confidence   float64 `json:"confidence"`
 	LanguageCode string  `json:"language"`

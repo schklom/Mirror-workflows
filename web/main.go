@@ -13,6 +13,8 @@ import (
 
 func main() {
 	engine := html.New("./views", ".html")
+	engine.AddFunc("inc", func(i int) int { return i + 1 })
+
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
@@ -79,8 +81,15 @@ func main() {
 		} else {
 			return c.SendStatus(400)
 		}
+
+		enginesNames := map[string]string{}
+		for k, v := range engines.Engines {
+			enginesNames[k] = v.DisplayName()
+		}
+
 		return c.Render("index", fiber.Map{
 			"Engine":          engine,
+			"enginesNames":    enginesNames,
 			"SourceLanguages": targetLanguages,
 			"TargetLanguages": sourceLanguages,
 			"OriginalText":    originalText,

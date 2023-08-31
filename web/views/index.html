@@ -19,6 +19,17 @@
 
     <form action="/?engine={{.Engine}}" method="POST" id="translation-form">
 
+        <div class="center">
+            Translation Engine
+            {{$i := 0}}
+            {{ range $k, $v := .enginesNames }}
+            <a {{ if eq $k $.Engine }}style="text-decoration:underline" {{end}} href="/?engine={{ $k }}">{{ $v }}</a>
+            {{$i = (inc $i)}}
+            {{if eq $i (len $.enginesNames)}}{{else}}|{{end}}
+            {{end}}
+        </div>
+        <br>
+
         <div class="wrap languages">
             <div class="language">
                 <select name="from" aria-label="Source language">

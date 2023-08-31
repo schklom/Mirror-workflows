@@ -136,6 +136,10 @@ div.translations {
     grid-area: translations;
 }
 
+a {
+    text-decoration: none;
+}
+
 @media screen and (prefers-color-scheme: dark) {
     body {
         background-color: #212529;

@@ -66,7 +66,7 @@
 
             <div class="item-wrapper">
                 <textarea id="output" class="translation item" dir="auto" placeholder="Translation"
-                    readonly>{{.TranslatedText}}</textarea>
+                    readonly>{{.Translation.TranslatedText}}</textarea>
                 {{if .TtsTo}}
                 <audio controls>
                     <source type="audio/mpeg" src="{{ .TtsTo }}">
@@ -79,6 +79,58 @@
 
         <div class="center">
             <button type="submit">Translate with {{ .Engine }}!</button>
+        </div>
+
+        <br>
+
+        <div id="definitions_and_translations">
+            {{ if .Translation.Definitions }}
+            <div class="definitions">
+                {{ range $type, $definitions :=.Translation.Definitions }}
+                <span class="def_type">{{ $type }}</span>
+                <ol>
+                    {{ range $definition_item := $definitions }}
+                    <li>
+                        {{ $definition_item.definition }}
+                        <br>
+                        {{with $definition_item.use_in_sentence}}
+                        <span class="use_in_sentence">"{{$definition_item.use_in_sentence}}"</span>
+                        <br>
+                        {{end}}
+                        {{with $definition_item.synonyms}}
+                        {{ range $synonym_type, $_ := $definition_item.synonyms }}
+                        <span class="syn">
+                            {{if $synonym_type }}
+                            <br>
+                            <span class="syn_type">{{$synonym_type}}: </span>{{end}}{{ range $index, $element := index
+                            $definition_item.synonyms $synonym_type}}{{if $index}}, {{end}}{{$element}}{{end}}
+                        </span>
+                        {{end}}
+                        {{end}}
+                    </li>
+                    {{end}}
+                </ol>
+                {{end}}
+            </div>
+            {{ end}}
+
+            {{ if .Translation.Translations }}
+            <div class="translations">
+                {{ range $def_type, $translations := .Translation.Translations }}
+                <span class="def_type">{{ $def_type }}</span>
+                <ul>
+                    {{ range $word, $word_translations := $translations }}
+                    <li>
+                        <span class="syn_type">{{$word}}:</span>                        
+                        <span class="syn">{{ range $index, $element := $word_translations.words}}{{if $index}}, {{end}}{{$element}}{{end}}</span>
+                        <span class="syn_type">{{$word_translations.frequency}}</span>
+                    </li>
+                    <br>
+                    {{end}}
+                </ul>
+                {{end}}
+            </div>
+            {{end}}
         </div>
 
     </form>

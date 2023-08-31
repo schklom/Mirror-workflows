@@ -39,6 +39,7 @@ func main() {
 		ttsFrom := ""
 		ttsTo := ""
 
+		var translation engines.TranslationResult
 		if c.Method() == "POST" {
 			from = c.FormValue("from")
 			to = c.FormValue("to")
@@ -47,6 +48,7 @@ func main() {
 				return c.SendStatus(500)
 			} else {
 				translatedText = result.TranslatedText
+				translation = result
 			}
 
 			ttsFromURL, _ := url.Parse("api/tts")
@@ -93,7 +95,7 @@ func main() {
 			"SourceLanguages": sourceLanguages,
 			"TargetLanguages": targetLanguages,
 			"OriginalText":    originalText,
-			"TranslatedText":  translatedText,
+			"Translation":     translation,
 			"From":            from,
 			"To":              to,
 			"TtsFrom":         ttsFrom,

@@ -1,8 +1,10 @@
 package engines
 
 type TranslationResult struct {
-	SourceLanguage string `json:"source_language"`
-	TranslatedText string `json:"translated_text"`
+	SourceLanguage string      `json:"source_language"`
+	Definitions    interface{} `json:"definitions"`
+	Translations   interface{} `json:"translations"`
+	TranslatedText string      `json:"translated_text"`
 }
 
 type Engine interface {

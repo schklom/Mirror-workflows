@@ -17,9 +17,7 @@
         <h1>SimplyTranslate</h1>
     </header>
 
-    <form method="POST" id="translation-form">
-
-        <input type="hidden" name="engine" value="{{.Engine}}">
+    <form action="/?engine={{.Engine}}" method="POST" id="translation-form">
 
         <div class="wrap languages">
             <div class="language">

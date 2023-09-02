@@ -15,8 +15,6 @@ import (
 
 type GoogleTranslate struct{}
 
-func (_ *GoogleTranslate) InternalName() string { return "google" }
-
 func (_ *GoogleTranslate) DisplayName() string { return "Google" }
 
 func (_ *GoogleTranslate) getLangs(type_ string) (Language, error) {
@@ -29,7 +27,7 @@ func (_ *GoogleTranslate) getLangs(type_ string) (Language, error) {
 		langsType = "tl"
 
 	default:
-		panic(fmt.Errorf("getLangs was passed an invalid language type: %s", langsType))
+		return nil, fmt.Errorf("Invalid language type: %s", langsType)
 	}
 
 	requestURL, _ := url.Parse("https://translate.google.com/m")
@@ -93,8 +91,6 @@ func (e *GoogleTranslate) Tts(text, lang string) (string, error) {
 
 	return requestURL.String(), nil
 }
-
-func (_ *GoogleTranslate) DetectLanguage(text string) (string, error) { return "", nil }
 
 func (_ *GoogleTranslate) Translate(text string, from, to string) (TranslationResult, error) {
 	requestURL, _ := url.Parse("https://translate.google.com/m")
@@ -274,6 +270,10 @@ func (_ *GoogleTranslate) Translate(text string, from, to string) (TranslationRe
 					}
 				}
 			}
+		}
+
+		if len(json_) > 0 && json_[0] != nil && len(json_[0].([]interface{})) > 2 && json_[0].([]interface{})[2] != nil {
+			from = json_[0].([]interface{})[2].(string)
 		}
 	}
 

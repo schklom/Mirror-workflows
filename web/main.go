@@ -20,8 +20,11 @@ func main() {
 	})
 
 	app.All("/", func(c *fiber.Ctx) error {
-		engine := c.Query("engine")
-		if _, ok := engines.Engines[engine]; !ok || engine == "" {
+		engine := c.Cookies("engine")
+		if c.Query("engine") != "" {
+			engine = c.Query("engine")
+		}
+		if _, ok := engines.Engines[engine]; !ok {
 			engine = "google"
 		}
 		targetLanguages, err := engines.Engines[engine].TargetLanguages()
@@ -49,6 +52,7 @@ func main() {
 			} else {
 				translatedText = result.TranslatedText
 				translation = result
+				from = result.SourceLanguage
 			}
 
 			ttsFromURL, _ := url.Parse("api/tts")
@@ -68,15 +72,20 @@ func main() {
 			fromCookie := new(fiber.Cookie)
 			fromCookie.Name = "from"
 			fromCookie.Value = from
-			fromCookie.Expires = time.Now().Add(24 * time.Hour * 365)
+			fromCookie.Expires = time.Now().Add(time.Hour * 24 * 365)
 			c.Cookie(fromCookie)
 
 			toCookie := new(fiber.Cookie)
 			toCookie.Name = "to"
 			toCookie.Value = to
-			toCookie.Expires = time.Now().Add(24 * time.Hour * 365)
+			toCookie.Expires = time.Now().Add(time.Hour * 24 * 365)
 			c.Cookie(toCookie)
 
+			engineCookie := new(fiber.Cookie)
+			engineCookie.Name = "engine"
+			engineCookie.Value = engine
+			engineCookie.Expires = time.Now().Add(time.Hour * 24 * 365)
+			c.Cookie(engineCookie)
 		} else if c.Method() == "GET" {
 			from = c.Cookies("from")
 			to = c.Cookies("to")
@@ -184,7 +193,6 @@ func main() {
 				return c.Send(buf.Bytes())
 			}
 		}
-
 	})
 
 	app.Post("/switchlanguages", func(c *fiber.Ctx) error {

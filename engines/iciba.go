@@ -12,8 +12,6 @@ import (
 // ICIBA is an engine that fetches data from https://www.iciba.com.
 type ICIBA struct{}
 
-func (_ *ICIBA) InternalName() string { return "iciba" }
-
 func (_ *ICIBA) DisplayName() string { return "iCIBA" }
 
 var icibaLanguages = Language{
@@ -215,15 +213,6 @@ func (_ *ICIBA) SourceLanguages() (Language, error) { return icibaLanguages, nil
 
 func (_ *ICIBA) TargetLanguages() (Language, error) { return icibaLanguages, nil }
 
-func (_ *ICIBA) DetectLanguage(text string) (string, error) { return "", nil }
-
-type icibaTranslateResponse struct {
-	Content struct {
-		From string `json:"from"`
-		Out  string `json:"out"`
-	} `json:"content"`
-}
-
 func (_ *ICIBA) Translate(text string, from, to string) (TranslationResult, error) {
 	requestURL, _ := url.Parse("https://ifanyi.iciba.com/index.php")
 
@@ -254,7 +243,12 @@ func (_ *ICIBA) Translate(text string, from, to string) (TranslationResult, erro
 		return TranslationResult{}, fmt.Errorf("got status code %d from iCIBA", response.StatusCode)
 	}
 
-	var responseJSON icibaTranslateResponse
+	var responseJSON struct {
+		Content struct {
+			From string `json:"from"`
+			Out  string `json:"out"`
+		} `json:"content"`
+	}
 
 	if err := json.NewDecoder(response.Body).Decode(&responseJSON); err != nil {
 		return TranslationResult{}, err

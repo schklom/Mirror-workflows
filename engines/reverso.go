@@ -10,8 +10,6 @@ import (
 // Reverso is an engine that fetches data from https://reverso.net.
 type Reverso struct{}
 
-func (_ *Reverso) InternalName() string { return "reverso" }
-
 func (_ *Reverso) DisplayName() string { return "Reverso" }
 
 var reversoLangs = Language{
@@ -83,7 +81,6 @@ func (e *Reverso) callAPI(text string, from, to string) (reversoAPIResponse, err
 	}
 
 	request.Header.Set("Content-Type", "application/json")
-	// Returns 403 with empty or no user agent.
 	request.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; rv:110.0) Gecko/20100101 Firefox/110.0")
 
 	client := &http.Client{}
@@ -109,51 +106,29 @@ func (e *Reverso) callAPI(text string, from, to string) (reversoAPIResponse, err
 	return result, nil
 }
 
-func (e *Reverso) DetectLanguage(text string) (string, error) {
-	// Any language pair works here, does not affect result
-	r, err := e.callAPI(text, "ara", "chi")
-
-	if err != nil {
-		return "", err
-	}
-
-	langCode := r.LanguageDetection.DetectedLanguage
-
-	for code := range reversoLangs {
-		if code == langCode {
-			return code, nil
-		}
-	}
-
-	return "", fmt.Errorf("language code \"%s\" is not in Reverso's language list", langCode)
-}
-
 func (e *Reverso) Translate(text string, from, to string) (TranslationResult, error) {
-	if from == "auto" {
-		from_, err := e.DetectLanguage(text)
-
-		if err != nil {
-			return TranslationResult{}, err
-		}
-
-		from = from_
+	if from == "auto" || from == "" {
+		from = "eng"
 	}
 
 	var translation string
 
-	if from == to {
-		translation = text
-	} else {
-		r, err := e.callAPI(text, from, to)
+	r, err := e.callAPI(text, from, to)
+	if err != nil {
+		return TranslationResult{}, err
+	}
 
-		if err != nil {
-			return TranslationResult{}, err
+	translation = r.Translation[0]
+	langCode := r.LanguageDetection.DetectedLanguage
+
+	for code := range reversoLangs {
+		if code == langCode {
+			from = code
 		}
-
-		translation = r.Translation[0]
 	}
 
 	return TranslationResult{
 		TranslatedText: translation,
+		SourceLanguage: from,
 	}, nil
 }

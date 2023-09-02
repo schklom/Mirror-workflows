@@ -23,8 +23,6 @@ type LibreTranslate struct {
 	APIKey string
 }
 
-func (_ *LibreTranslate) InternalName() string { return "libre" }
-
 func (_ *LibreTranslate) DisplayName() string { return "LibreTranslate" }
 
 func (e *LibreTranslate) getLangs() (Language, error) {
@@ -70,7 +68,7 @@ type libreDetectResponse []struct {
 	LanguageCode string  `json:"language"`
 }
 
-func (e *LibreTranslate) DetectLanguage(text string) (string, error) {
+func (e *LibreTranslate) detectLanguage(text string) (string, error) {
 	formData := map[string]string{"q": text}
 
 	if e.APIKey != "" {
@@ -124,10 +122,6 @@ func (e *LibreTranslate) DetectLanguage(text string) (string, error) {
 	return "", fmt.Errorf("language code \"%s\" is not in the instance's language list", maxConfidenceLang.LanguageCode)
 }
 
-type libreTranslateResponse struct {
-	TranslatedText string `json:"translatedText"`
-}
-
 func (e *LibreTranslate) Translate(text string, from, to string) (TranslationResult, error) {
 	formData := map[string]string{
 		"q":      text,
@@ -157,11 +151,20 @@ func (e *LibreTranslate) Translate(text string, from, to string) (TranslationRes
 		return TranslationResult{}, fmt.Errorf("got status code %d from LibreTranslate API", response.StatusCode)
 	}
 
-	var responseJSON libreTranslateResponse
+	var responseJSON struct {
+		TranslatedText string `json:"translatedText"`
+	}
 
 	if err := json.NewDecoder(response.Body).Decode(&responseJSON); err != nil {
 		return TranslationResult{}, err
 	}
 
-	return TranslationResult{TranslatedText: responseJSON.TranslatedText}, nil
+	if r, err := e.detectLanguage(text); err == nil {
+		from = r
+	}
+
+	return TranslationResult{
+		TranslatedText: responseJSON.TranslatedText,
+		SourceLanguage: from,
+	}, nil
 }

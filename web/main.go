@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 
 	"codeberg.org/SimpleWeb/SimplyTranslate/engines"
@@ -215,5 +216,9 @@ func main() {
 
 	app.Static("/static", "./static")
 
-	app.Listen(":3000")
+	address := os.Getenv("ADDRESS")
+	if address == "" {
+		address = "127.0.0.1:3000"
+	}
+	app.Listen(address)
 }

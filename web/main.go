@@ -218,7 +218,7 @@ func main() {
 
 	address := os.Getenv("ADDRESS")
 	if address == "" {
-		address = "127.0.0.1:3000"
+		address = ":3000"
 	}
 	app.Listen(address)
 }

@@ -15,7 +15,7 @@ import (
 
 type GoogleTranslate struct{}
 
-func (_ *GoogleTranslate) DisplayName() string { return "Google" }
+func (_ *GoogleTranslate) DisplayName() string { return "Google Translate" }
 
 func (_ *GoogleTranslate) getLangs(type_ string) (Language, error) {
 	var langsType string

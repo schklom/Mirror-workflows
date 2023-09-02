@@ -34,7 +34,11 @@
             <div class="language">
                 <select name="from" aria-label="Source language">
                     {{range $code, $name := .SourceLanguages}}
+                    {{if and (eq $code "auto") $.SourceLanguage}}
+                    <option value="{{ $code }}" {{if eq $code $.From}}selected{{end}}>{{ $name }} ({{index $.SourceLanguages $.SourceLanguage}})</option>
+                    {{else }}
                     <option value="{{ $code }}" {{if eq $code $.From}}selected{{end}}>{{ $name }}</option>
+                    {{end}}
                     {{end}}
                 </select>
             </div>
@@ -78,7 +82,7 @@
         <br>
 
         <div class="center">
-            <button type="submit">Translate with {{ .Engine }}!</button>
+            <button type="submit">Translate with {{ index .enginesNames .Engine }}!</button>
         </div>
 
         <br>

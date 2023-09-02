@@ -42,6 +42,7 @@ func main() {
 		to := ""
 		ttsFrom := ""
 		ttsTo := ""
+		sourceLanguage := ""
 
 		var translation engines.TranslationResult
 		if c.Method() == "POST" {
@@ -53,7 +54,7 @@ func main() {
 			} else {
 				translatedText = result.TranslatedText
 				translation = result
-				from = result.SourceLanguage
+				sourceLanguage = result.SourceLanguage
 			}
 
 			ttsFromURL, _ := url.Parse("api/tts")
@@ -94,6 +95,10 @@ func main() {
 			return c.SendStatus(400)
 		}
 
+		if from == "" {
+			from = "auto"
+		}
+
 		enginesNames := map[string]string{}
 		for k, v := range engines.Engines {
 			enginesNames[k] = v.DisplayName()
@@ -110,6 +115,7 @@ func main() {
 			"To":              to,
 			"TtsFrom":         ttsFrom,
 			"TtsTo":           ttsTo,
+			"SourceLanguage":  sourceLanguage,
 		})
 	})
 

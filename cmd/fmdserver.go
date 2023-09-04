@@ -558,7 +558,7 @@ func load_config(filesDir string) config {
 
 	if !configRead {
 		fmt.Println("WARN: No config found! Using defaults.")
-		serverConfig = config{PortSecure: 1008, PortInsecure: 1020, UserIdLength: 5, MaxSavedLoc: 1000, MaxSavedPic: 10}
+		serverConfig = config{PortSecure: 8443, PortInsecure: 8080, UserIdLength: 5, MaxSavedLoc: 1000, MaxSavedPic: 10}
 	}
 	//fmt.Printf("INFO: Using config %+v\n", serverConfig)
 

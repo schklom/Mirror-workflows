@@ -20,11 +20,11 @@ Quickly try FMD Server on your laptop from the command line:
 
 ```
 docker build --tag fmd-git https://gitlab.com/Nulide/findmydeviceserver.git#v0.4.0
-docker run --rm -p 1020:1020 fmd-git
+docker run --rm -p 8080:8080 fmd-git
 ```
 
-You can now visit FMD Server's web interface in your browser at http://localhost:1020.
-You can register you FMD app using the server URL `http://<your-laptops-ip>:1020`.
+You can now visit FMD Server's web interface in your browser at http://localhost:8080.
+You can register you FMD app using the server URL `http://<your-laptops-ip>:8080`.
 
 Note that these steps are only for quick on-laptop testing and NOT for production!
 
@@ -45,7 +45,7 @@ services:
         build: https://gitlab.com/Nulide/findmydeviceserver.git#v0.4.0
         container_name: fmd
         ports:
-         - 127.0.0.1:1020:1020
+         - 127.0.0.1:8080:8080
         volumes:
             - './data:/fmd/objectbox/'
         restart: unless-stopped
@@ -60,8 +60,8 @@ It must be readable and writable by uid 1000 (ideally it is owned by uid 1000).
 This example mounts a folder named `./data` (in the current directory outside the container).
 
 *Networking:*
-FMD Server listens for HTTP connections on port 1020.
-This example has a port mapping from "127.0.0.1:1020" (on the host) to port 1020 (inside the container).
+FMD Server listens for HTTP connections on port 8080.
+This example has a port mapping from "127.0.0.1:8080" (on the host) to port 8080 (inside the container).
 You need to set up your own reverse proxy.
 The reverse proxy should terminate TLS and forward connections to the FMD container.
 Instead of the port binding you can also use Docker networks (e.g. to connect your proxy container to the FMD container).
@@ -75,7 +75,7 @@ Run with `docker compose up --build --detach`.
 `Caddyfile`
 ```
 fmd.example.com {
-	reverse_proxy localhost:1020
+	reverse_proxy localhost:8080
 }
 ```
 Caddy will automatically create a Let's Encrypt certificate for you.
@@ -114,7 +114,7 @@ A simple way to test code changes is to build a container image locally and run 
 
 ```
 docker build -t fmd-local .
-docker run --rm -p 1020:1020 fmd-local
+docker run --rm -p 8080:8080 fmd-local
 ```
 
 Alternatively, you can use `go build` directly and run the resulting binary,

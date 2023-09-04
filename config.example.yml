@@ -1,8 +1,8 @@
 # This is an example config file for FMD Server
 
 # The ports FMD Server should listen on
-PortSecure: 1008
-PortInsecure: 1020
+PortSecure: 8443
+PortInsecure: 8080
 
 # The length for the user IDs that are generated
 UserIdLength: 5

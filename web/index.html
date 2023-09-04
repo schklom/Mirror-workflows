@@ -28,7 +28,7 @@
     <script src="./picture.js"></script>
     <script src="./node_modules/argon2-browser/lib/argon2.js"></script>
 
-<body onload="init();">
+<body>
 
     <div id="head">
         <div class="center">
@@ -42,8 +42,8 @@
             </div>
             <br>
             <div class="center">
-                <input type="text" onkeypress="onFmdIdKeyPressed(event)" id="fmdid" name="fmdid"
-                    autocomplete="fmdid"><br><br>
+                <input type="text" id="fmdid" name="fmdid" autocomplete="fmdid">
+                <br><br>
             </div>
             <div class="center">
                 <button id="locateButton" type="button">LOCATE</button>
@@ -63,12 +63,12 @@
                         <div class="center">
                             <img src="assets/Smartphone.png" height="96" />
                         </div>
-                        <div style="margin-top:1vw" class="center">
+                        <div class="center margin-top">
                             <p id="batView">Data</p>
                         </div>
                     </div>
                     <div class="column-middle">
-                        <h3 style="display:inline;" id="idView">ID</h3>
+                        <h3 id="idView" class="inline">ID</h3>
                         <p> - </p>
                         <p id="providerView">Data</p>
 
@@ -87,29 +87,28 @@
                             <p id="timeView">Time</p>
                         </div>
 
-                        <button type="button" class="imageButton" title="Locate" onclick="sendToPhone('locate')">
+                        <button type="button" class="imageButton" title="Locate" id="locate">
                             <img src="assets/Locate.png" height="36" />
                         </button>
-                        <button type="button" class="imageButton" title="Ring" onclick="sendToPhone('ring')">
+                        <button type="button" class="imageButton" title="Ring" id="ring">
                             <img src="assets/Ring.png" height="36" />
                         </button>
-                        <button type="button" class="imageButton" title="Lock" onclick="sendToPhone('lock')">
+                        <button type="button" class="imageButton" title="Lock" id="lock">
                             <img src="assets/Locked.png" height="36" />
                         </button>
-                        <button type="button" class="imageButton" title="Delete" onclick="prepareDeleteDevice()">
+                        <button type="button" class="imageButton" title="Delete" id="delete">
                             <img src="assets/Delete.png" height="36" />
                         </button>
                         <div class="dropdown">
-                            <button type="button" class="imageButton dropDownBtn" title="Camera"
-                                onclick="dropDownBtn()">
+                            <button type="button" class="imageButton dropDownBtn" title="Camera" id="takePicture">
                                 <img class="imgDopDownBtn" src="assets/Camera.png" height="36" />
                             </button>
                             <div id="cameraDropDown" class="dropdown-content">
-                                <button title="front" onclick="sendToPhone('camera front')" )>Front</button>
-                                <button title="back" onclick="sendToPhone('camera back')" )>Back</button>
+                                <button title="front" id="cameraFront">Front</button>
+                                <button title="back" id="cameraBack">Back</button>
                             </div>
                         </div>
-                        <button type="button" class="imageButton" title="Picture" onclick="showLatestPicture()">
+                        <button type="button" class="imageButton" title="Picture" id="showPicture">
                             <img src="assets/Picture.png" height="36" />
                         </button>
                     </div>
@@ -123,12 +122,12 @@
                         <div class="center">
                             <img src="assets/Smartphone.png" height="48" />
                         </div>
-                        <div style="margin-top:1vw" class="center">
+                        <div class="center margin-top">
                             <p id="batView">Data</p>
                         </div>
                     </div>
                     <div class="column-middle">
-                        <h3 style="display:inline;" id="idView">ID</h3>
+                        <h3 id="idView">ID</h3>
                         <p> - </p>
                         <p id="providerView">Data</p>
 
@@ -147,47 +146,48 @@
                             <p id="timeView">Time</p>
                         </div>
 
-                        <button type="button" class="imageButton" title="Locate" onclick="sendToPhone('locate')">
+                        <button type="button" class="imageButton" title="Locate" id="locate">
                             <img src="assets/Locate.png" height="24" />
                         </button>
-                        <button type="button" class="imageButton" title="Ring" onclick="sendToPhone('ring')">
+                        <button type="button" class="imageButton" title="Ring" id="ring">
                             <img src="assets/Ring.png" height="24" />
                         </button>
-                        <button type="button" class="imageButton" title="Lock" onclick="sendToPhone('lock')">
+                        <button type="button" class="imageButton" title="Lock" id="lock">
                             <img src="assets/Locked.png" height="24" />
                         </button>
-                        <button type="button" class="imageButton" title="Delete" onclick="prepareDelete()">
+                        <button type="button" class="imageButton" title="Delete" id="delete">
                             <img src="assets/Delete.png" height="24" />
                         </button>
                         <div class="dropdown">
-                            <button type="button" class="imageButton dropDownBtn" title="Camera"
-                                onclick="dropDownBtn()">
+                            <button type="button" class="imageButton dropDownBtn" title="Camera" id="takePicture">
                                 <img class="imgDopDownBtn" src="assets/Camera.png" height="24" />
                             </button>
                             <div id="cameraDropDown" class="dropdown-content">
-                                <button title="front" onclick="sendToPhone('camera front')" )>Front</button>
-                                <button title="back" onclick="sendToPhone('camera back')" )>Back</button>
+                                <button title="front" id="cameraFront">Front</button>
+                                <button title="back" id="cameraBack">Back</button>
                             </div>
                         </div>
-                        <button type="button" class="imageButton" title="Picture" onclick="showLatestPicture()">
+                        <button type="button" class="imageButton" title="Picture" id="showPicture">
                             <img src="assets/Picture.png" height="24" />
                         </button>
                     </div>
-
                 </div>
             </div>
-            <div id="welcomePrompt" class="prompt" style="visibility: hidden;">
+
+            <div id="welcomePrompt" class="prompt invisible">
                 <h3 class="center">Welcome</h3><br>
                 <div class="center">
-                    <p>Hello and welcome to FMD.<br>This platform is for locating and finding you registered
-                        devices.<br>You need to have installed fmd on your mobile device before you can do so.<br>
-                        Check out the following link on F-Droid:
+                    <p>
+                        Hello and welcome to FMD. <br>
+                        This platform is for locating and controlling you registered devices. <br>
+                        You need to have FMD installed on your mobile device before you can do so. <br>
+                        Get the app on F-Droid:
                     </p>
                 </div>
                 <div class="center">
                     <a href="https://f-droid.org/packages/de.nulide.findmydevice/">
-                        <div class="center"><img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-                                style="height:50%;width:50%;" alt="Get it on F-Droid">
+                        <div class="center">
+                            <img src="assets/f-droid-badge.png" alt="Get it on F-Droid" id="f-droid-badge">
                         </div>
                     </a>
                 </div>
@@ -202,13 +202,12 @@
                 <br>
                 <br>
                 <div class="center">
-                    <button type="button" onclick="welcomeFinish()">OK</button>
+                    <button type="button" id="welcomeConfirm">OK</button>
                 </div>
             </div>
 
-
             <div class="center">
-                <p>@Nulide FMDServer</p>
+                <p>@Nulide FMD Server</p>
                 <p id="version">v</p>
                 <a href="ds.html">Privacy Notice</a>
             </div>

@@ -13,6 +13,9 @@ const KEYCODE_ENTER = 13;
 const KEYCODE_ARROW_LEFT = 37;
 const KEYCODE_ARROW_RIGHT = 39;
 
+
+window.addEventListener("load", (event) => init());
+
 function init() {
     var div;
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
@@ -55,9 +58,24 @@ function init() {
 }
 
 function setupOnClicks() {
+    document.getElementById("welcomeConfirm").addEventListener("click", () => welcomeFinish());
+    document.getElementById("fmdid").addEventListener("keyup", (event) => {
+        if (event.key == "Enter") {
+            prepareForLogin();
+        }
+    });
+
     document.getElementById("locateButton").addEventListener("click", async () => await prepareForLogin());
     document.getElementById("locateOlder").addEventListener("click", async () => await locateOlder());
     document.getElementById("locateNewer").addEventListener("click", async () => await locateNewer());
+    document.getElementById("locate").addEventListener("click", () => sendToPhone("locate"));
+    document.getElementById("ring").addEventListener("click", () => sendToPhone("ring"));
+    document.getElementById("lock").addEventListener("click", () => sendToPhone("lock"));
+    document.getElementById("delete").addEventListener("click", () => prepareDeleteDevice());
+    document.getElementById("cameraFront").addEventListener("click", () => sendToPhone("camera front"));
+    document.getElementById("cameraBack").addEventListener("click", () => sendToPhone("camera back"));
+    document.getElementById("takePicture").addEventListener("click", () => dropDownBtn());
+    document.getElementById("showPicture").addEventListener("click", async () => await showLatestPicture());
 }
 
 // Section: Login
@@ -496,7 +514,7 @@ function welcomeFinish() {
     const d = new Date();
     d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
     let expires = "expires=" + d.toUTCString();
-    document.cookie = "welcome=true" + ";" + expires + ";path=/";
+    document.cookie = "welcome=true;" + expires + ";path=/;SameSite=Strict";
     welcomePrompt = document.getElementById('welcomePrompt');
     welcomePrompt.style.visibility = 'hidden';
 }

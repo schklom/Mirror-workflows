@@ -1,7 +1,4 @@
-# This file is a template, and might need editing before it works on your project.
-# To contribute improvements to CI/CD templates, please follow the Development guide at:
-# https://docs.gitlab.com/ee/development/cicd/templates.html
-# This specific template is located at:
+# Based on this template:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Go.gitlab-ci.yml
 
 image: golang:latest
@@ -9,6 +6,9 @@ image: golang:latest
 variables:
   # Please edit to your GitLab project
   REPO_NAME: gitlab.com/Nulide/findmydeviceserver
+  # https://docs.gitlab.com/ee/user/packages/container_registry/build_and_push_images.html#container-registry-examples-with-gitlab-cicd
+  # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker-in-docker-with-tls-enabled-in-the-docker-executor
+  DOCKER_TLS_CERT_DIR: "/certs"
 
 # The problem is that to be able to use go get, one needs to put
 # the repository in the $GOPATH. So for example if your gitlab domain
@@ -40,27 +40,26 @@ format:
 compile:
   stage: build
   script:
-    - cd cmd
-    - go build fmdserver.go
+    - go build -o fmdserver cmd/fmdserver.go
   artifacts:
     paths:
       - fmdserver
 
 docker-build:
-  image: registry.gitlab.com/luckyturtledev/docker-with-buildx:latest
+  image: docker:latest
   stage: build
   services:
     - docker:dind
   before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
-    # docker tag for branch
     - tags=""
+    # docker tag for branch
     - |
       if [[ "$CI_COMMIT_BRANCH" != "" ]]; then
         tags="$tags --tag $CI_REGISTRY_IMAGE:${CI_COMMIT_BRANCH}"
       fi
-    # docker tag for git tag
+    # docker tag for git tags
     - |
       if [[ "$CI_COMMIT_TAG" != "" ]]; then
         tags="$tags --tag $CI_REGISTRY_IMAGE:${CI_COMMIT_TAG}"
@@ -70,15 +69,25 @@ docker-build:
     - |
       if [[ "$tags" == "" ]] || [[ "$CI_PIPELINE_SOURCE" == "$merge_request_event" ]] || [[ "$CI_PIPELINE_SOURCE" == "$external_pull_request_event" ]]; then
         push=""
-        echo "Image will not be pushed. Piepline is a merge request or tags are empty"
+        echo "Image will not be pushed. Pipeline is a merge request or tags are empty."
       else
         push="--push"
         echo "Image will be pushed."
       fi
-    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes; docker buildx create ${config} --use
-    - docker buildx build ${push} --platform linux/amd64,linux/arm/v5,linux/arm/v7,linux/arm64/v8 $tags .
-  # buildx multiplatform build does fail sometimes at gitlab-ci. see https://github.com/docker/buildx/issues/584
+    # Build the images
+    # buildx multiplatform build sometimes fails in Gitlab CI: https://github.com/docker/buildx/issues/584
+    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes; docker buildx create --use
+    # Issue: "invalid tag missing manifest digest" in Container Registry after buildx pushed it.
+    # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/393202
+    # Workaround: https://gitlab.com/gitlab-org/gitlab/-/issues/388865
+    - docker buildx build --pull ${push} --provenance=false --platform linux/amd64,linux/arm/v7,linux/arm64/v8 $tags .
   retry: 2
   rules:
     - exists:
         - Dockerfile
+      # Only run this job on the default branch (main) or on tagging a release. This is to save pipeline minutes.
+      # XXX: Enable this when disabling the manual running
+#      if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_TAG =~ /^v?[0-9\.]+$/
+  # Don't run at all (for now). This step takes ~40 mins, thus quickly eating up pipeline minutes.
+  when: manual
+

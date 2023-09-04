@@ -17,7 +17,7 @@ jobs:
       REMOTE: ${{ steps.commits.outputs.SETREMOTE }} 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: 'Web-whisper' # branch
       - name: set local and remote latest commit as environment variables
@@ -43,7 +43,7 @@ jobs:
           destination_branch: "Web-whisper"
           ssh_private_key: ${{ secrets.GITSYNCACTION }}
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: 'Web-whisper' # branch
       - name: get most recent commit id on original repo, for next comparison on sync
@@ -53,7 +53,7 @@ jobs:
         with:
           commit_message: Add last_sync_with_original_repo_commit_id
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      #- uses: actions/checkout@v3
+      #- uses: actions/checkout@v4
         #with:
           #ref: 'Web-whisper'
       #- name: app dockerfile
@@ -74,7 +74,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: 'Web-whisper' # branch
       # https://github.com/docker/setup-qemu-action#usage
@@ -120,7 +120,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: 'Web-whisper' # branch
       # https://github.com/docker/setup-qemu-action#usage
@@ -166,7 +166,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: 'Web-whisper' # branch
       # https://github.com/docker/setup-qemu-action#usage
@@ -212,7 +212,7 @@ jobs:
     # runs-on: ubuntu-latest
     # steps:
       # - name: Checkout
-        # uses: actions/checkout@v3
+        # uses: actions/checkout@v4
         # with:
           # ref: 'Web-whisper' # branch
       # # https://github.com/docker/setup-qemu-action#usage
@@ -258,7 +258,7 @@ jobs:
     # runs-on: ubuntu-latest
     # steps:
       # - name: Checkout
-        # uses: actions/checkout@v3
+        # uses: actions/checkout@v4
         # with:
           # ref: 'Web-whisper' # branch
       # # https://github.com/docker/setup-qemu-action#usage
@@ -305,7 +305,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: 'Web-whisper' # branch
       # https://github.com/docker/setup-qemu-action#usage

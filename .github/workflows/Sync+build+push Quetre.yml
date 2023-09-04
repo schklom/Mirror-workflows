@@ -18,7 +18,7 @@ jobs:
       REMOTE_ORIGINAL: ${{ steps.commits.outputs.SETREMOTE_ORIGINAL }} 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: 'Quetre' # branch
       - name: set local and remote latest commit as environment variables
@@ -51,7 +51,7 @@ jobs:
           # destination_branch: "Wikiless"
           # github_token: ${{ secrets.REPO_SYNC_GITHUB_SYNC_PERSONAL_ACCESS_TOKEN }}
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: 'Quetre' # branch
       - name: get most recent commit id on Docker repo, for next comparison on sync
@@ -71,7 +71,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           #repository: 'schklom/Quetre'
           ref: 'Quetre' # branch

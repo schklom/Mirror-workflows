@@ -21,7 +21,7 @@ jobs:
       REMOTE_DOCKER: ${{ steps.commits.outputs.SETREMOTE_DOCKER }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: 'SimplyTranslate' # branch
       - name: set local and remote latest commit as environment variables
@@ -58,7 +58,7 @@ jobs:
           # destination_branch: "SimplyTranslate"
           # github_token: ${{ secrets.REPO_SYNC_GITHUB_SYNC_PERSONAL_ACCESS_TOKEN }}
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: 'SimplyTranslate' # branch
       - name: get most recent commit id on original repo, for next comparison on sync PART 1
@@ -79,7 +79,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           #repository: 'schklom/SimplyTranslate'
           ref: 'SimplyTranslate' # branch

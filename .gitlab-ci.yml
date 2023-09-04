@@ -57,15 +57,14 @@ docker-build:
     # docker tag for branch
     - |
       if [[ "$CI_COMMIT_BRANCH" != "" ]]; then
-        tags="${tags} --tag $CI_REGISTRY_IMAGE:${CI_COMMIT_BRANCH}"
-        echo "Pipeline is for a branch: $CI_COMMIT_BRANCH"
+        tags="$tags --tag $CI_REGISTRY_IMAGE:${CI_COMMIT_BRANCH}"
       fi
     # docker tag for git tags
     - |
       if [[ "$CI_COMMIT_TAG" != "" ]]; then
-        tags="${tags} --tag $CI_REGISTRY_IMAGE:${CI_COMMIT_TAG}"
-        tags="${tags} --tag $CI_REGISTRY_IMAGE:latest"
-        echo "Pipeline is for a tag: $CI_COMMIT_TAG"
+        tags="$tags --tag $CI_REGISTRY_IMAGE:${CI_COMMIT_TAG}"
+        tags="$tags --tag $CI_REGISTRY_IMAGE:latest"
+        echo "Piepline is a release"
       fi
     - |
       if [[ "$tags" == "" ]] || [[ "$CI_PIPELINE_SOURCE" == "$merge_request_event" ]] || [[ "$CI_PIPELINE_SOURCE" == "$external_pull_request_event" ]]; then

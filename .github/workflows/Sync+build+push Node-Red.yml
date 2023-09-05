@@ -30,7 +30,7 @@ jobs:
     if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: 'Node-Red'
       - name: get most recent commit id on original repo, for next comparison on sync
@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           #repository: 'schklom/Node-Red'
           ref: 'Node-Red' # branch

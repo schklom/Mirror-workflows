@@ -21,5 +21,5 @@ var Engines = map[string]Engine{
 	"google": &GoogleTranslate{},
 	// "icibia": &ICIBA{},
 	// "libre":    &LibreTranslate{},
-	"reverseo": &Reverso{},
+	"reverso": &Reverso{},
 }

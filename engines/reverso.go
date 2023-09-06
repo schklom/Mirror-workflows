@@ -10,7 +10,7 @@ import (
 // Reverso is an engine that fetches data from https://reverso.net.
 type Reverso struct{}
 
-func (_ *Reverso) DisplayName() string { return "Reverseo" }
+func (_ *Reverso) DisplayName() string { return "Reverso" }
 
 var reversoLangs = Language{
 	"ara": "Arabic",

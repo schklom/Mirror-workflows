@@ -65,7 +65,7 @@ jobs:
           token: ${{ secrets.PAT_GITHUB_ACTION }}
       
       - name: get most recent version on original repo, for next comparison on sync
-        run: git ls-remote --tags https://github.com/Docile-Alligator/InfinityForReddit.git | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3 > last_sync_with_original_repo_version
+        run: git ls-remote --tags https://github.com/Docile-Alligator/Infinity-For-Reddit.git | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3 > last_sync_with_original_repo_version
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
         with:
@@ -135,7 +135,7 @@ jobs:
     needs: [fix_for_workflow]
     # Cannot use, so I made a local branch to store the Action
     #uses: schklom/InfinityForReddit/.github/workflows/build.yml@master
-    uses: ./.github/workflows/InfinityForRedditCustomBuild-auto-generated.yml
+    uses: ./.github/workflows/InfinityForRedditCustomBuild-auto-updated.yml
   
   publish_infinity_on_master:
     #needs: [build_from_workflow]

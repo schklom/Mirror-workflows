@@ -106,8 +106,12 @@ jobs:
         with:
           commit_message: Add Change API key + change User-Agent + Keystore + reuseable workflow
 
-  build_infinity_on_master:
+  build_from_workflow:
     needs: [repo_sync_master]
+    uses: schklom/Infinity-For-Reddit/.github/workflows/build.yml@master
+  
+  publish_infinity_on_master:
+    needs: [build_from_workflow]
     runs-on: ubuntu-latest
     #if: false
     steps:
@@ -116,9 +120,6 @@ jobs:
         with:
           repository: 'schklom/Infinity-For-Reddit'
           ref: 'master' # branch
-
-      - name: Reuse workflow to build app
-        uses: schklom/Infinity-For-Reddit/.github/workflows/build.yml@master
       
       - name: Set the version
         run: |

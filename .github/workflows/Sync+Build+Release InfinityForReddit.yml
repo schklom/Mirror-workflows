@@ -123,7 +123,8 @@ jobs:
         run: |
           url="https://raw.githubusercontent.com/schklom/InfinityForReddit/master/.github/workflows/build.yml"
           file="InfinityForRedditCustomBuild.yml"
-          curl "$url" -o "$file"
+          mkdir -p ".github/workflows"
+          curl "$url" -o ".github/workflows/$file"
           
       - name: Commit and push the change (modified workflow)
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
@@ -135,7 +136,7 @@ jobs:
     needs: [fix_for_workflow]
     # Cannot use, so I made a local branch to store the Action
     #uses: schklom/InfinityForReddit/.github/workflows/build.yml@master
-    uses: ./InfinityForRedditCustomBuild.yml@FixForInfinityForReddit
+    uses: ./.github/workflows/InfinityForRedditCustomBuild.yml@FixForInfinityForReddit
   
   publish_infinity_on_master:
     #needs: [build_from_workflow]

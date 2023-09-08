@@ -112,7 +112,7 @@ jobs:
     needs: [repo_sync_master]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout local repo to fix a reusable workflow bug
+      - name: Checkout main repo to fix a reusable workflow bug
         uses: actions/checkout@v4
         with:
           repository: 'schklom/Mirror-workflows'
@@ -121,8 +121,8 @@ jobs:
 
       - name: Copy modified workflow
         run: |
-          url="https://raw.githubusercontent.com/schklom/InfinityForReddit/master/.github/workflows/build.yml"
-          file="InfinityForRedditCustomBuild-auto-generated.yml"
+          url="https://raw.githubusercontent.com/schklom/Mirror-workflows/main/.github/workflows/InfinityForRedditCustomBuild-auto-updated.yml"
+          file="InfinityForRedditCustomBuild-auto-updated.yml"
           curl "$url" -o ".github/workflows/$file"
           
       - name: Commit and push the change (modified workflow)

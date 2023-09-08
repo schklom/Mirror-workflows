@@ -108,11 +108,31 @@ jobs:
         with:
           commit_message: Add Change API key + change User-Agent + Keystore + reuseable workflow
 
-  build_from_workflow:
+      - name: Checkout local repo to fix a reusable workflow bug
+        uses: actions/checkout@v4
+        with:
+          repository: 'schklom/Mirror-workflows'
+          ref: 'FixForInfinityForReddit' # branch
+          token: ${{ secrets.PAT_GITHUB_ACTION }}
+
+      - name: Copy modified workflow
+        run: |
+          url="https://raw.githubusercontent.com/schklom/InfinityForReddit/master/.github/workflows/build.yml"
+          file="InfinityForRedditCustomBuild.yml"
+          curl "$url" -o "$file"
+          
+      - name: Commit and push the change (modified workflow)
+        uses: stefanzweifel/git-auto-commit-action@v4.16.0
+        with:
+          commit_message: Copy modified workflow
+
+  #build_from_workflow:
    # if: false
     #needs: [repo_sync_master]
-    needs: [get_commits]
-    uses: schklom/InfinityForReddit/.github/workflows/build.yml@master
+    #needs: [get_commits]
+    # Cannot use, so I made a local branch to store the Action
+    #uses: schklom/InfinityForReddit/.github/workflows/build.yml@master
+    #uses: ./InfinityForRedditCustomBuild.yml@FixForInfinityForReddit
   
   publish_infinity_on_master:
     #needs: [build_from_workflow]

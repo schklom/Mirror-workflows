@@ -1,4 +1,4 @@
-name: Sync+Build+Release Infinity-For-Reddit
+name: Sync+Build+Release InfinityForReddit
 
 # Controls when the workflow will run
 on:
@@ -22,7 +22,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          repository: 'schklom/Infinity-For-Reddit'
+          repository: 'schklom/InfinityForReddit'
           ref: 'master' # branch
       - name: set local and remote latest version as environment variables
         id: commits
@@ -50,7 +50,7 @@ jobs:
           source_branch: "refs/remotes/source/*"
           #source_branch: "master"
           ####destination_repo: "git@github.com:schklom/Mirror-workflows.git"
-          destination_repo: "git@github.com:schklom/Infinity-For-Reddit.git"
+          destination_repo: "git@github.com:schklom/InfinityForReddit.git"
           ####destination_branch: "Gadgetbridge-osmand-experiments"
           destination_branch: "refs/heads/*"
           #source_branch: "refs/tags/*"
@@ -60,12 +60,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          repository: 'schklom/Infinity-For-Reddit'
+          repository: 'schklom/InfinityForReddit'
           ref: 'master' # branch
           token: ${{ secrets.PAT_GITHUB_ACTION }}
       
       - name: get most recent version on original repo, for next comparison on sync
-        run: git ls-remote --tags https://github.com/Docile-Alligator/Infinity-For-Reddit.git | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3 > last_sync_with_original_repo_version
+        run: git ls-remote --tags https://github.com/Docile-Alligator/InfinityForReddit.git | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3 > last_sync_with_original_repo_version
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
         with:
@@ -112,7 +112,7 @@ jobs:
    # if: false
     #needs: [repo_sync_master]
     needs: [get_commits]
-    uses: schklom/Infinity-For-Reddit/.github/workflows/build.yml@master
+    uses: schklom/InfinityForReddit/.github/workflows/build.yml@master
   
   publish_infinity_on_master:
     #needs: [build_from_workflow]
@@ -122,7 +122,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          repository: 'schklom/Infinity-For-Reddit'
+          repository: 'schklom/InfinityForReddit'
           ref: 'master' # branch
           token: ${{ secrets.PAT_GITHUB_ACTION }}
       
@@ -145,5 +145,5 @@ jobs:
           #files: ./app/build/outputs/apk/main/release/app-main-release-unsigned.apk
           #files: ./app/build/outputs/apk/main/debug/app-main-debug.apk
           files: ./Infinity.apk
-          repository: "schklom/Infinity-For-Reddit"
+          repository: "schklom/InfinityForReddit"
           token: ${{ secrets.PAT_GITHUB_ACTION }}

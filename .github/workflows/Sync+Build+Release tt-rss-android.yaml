@@ -29,8 +29,8 @@ jobs:
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
         run: |
-          echo "SETREMOTE=$(git ls-remote https://gitlab.tt-rss.org/tt-rss/tt-rss-android HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
-          echo "SETLOCAL=$(git ls-remote https://github.com/schklom/tt-rss-android HEAD | awk '{ print $1 }' | head -n 1)" >> $GITHUB_OUTPUT
+          echo "SETREMOTE=$(git ls-remote https://gitlab.tt-rss.org/tt-rss/tt-rss-android master | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+          echo "SETLOCAL=$(git ls-remote https://github.com/schklom/tt-rss-android master | awk '{ print $1 }' | head -n 1)" >> $GITHUB_OUTPUT
 
   repo_sync_master:
     needs: [get_commits]

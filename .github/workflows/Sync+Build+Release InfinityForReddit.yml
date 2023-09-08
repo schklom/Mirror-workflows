@@ -117,7 +117,6 @@ jobs:
         with:
           repository: 'schklom/Mirror-workflows'
           ref: 'main' # branch
-          token: ${{ secrets.PAT_GITHUB_ACTION }}
 
       - name: Copy modified workflow
         run: |

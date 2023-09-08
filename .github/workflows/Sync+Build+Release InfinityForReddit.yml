@@ -120,7 +120,7 @@ jobs:
           token: ${{ secrets.PAT_GITHUB_ACTION }}
 
       - name: Copy modified workflow
-        run: echo "${{ env.new_workflow }}" > "InfinityForRedditCustomBuild.yml"
+        run: echo '"${{ env.new_workflow }}"' > "InfinityForRedditCustomBuild.yml"
           
       - name: Commit and push the change (modified workflow)
         uses: stefanzweifel/git-auto-commit-action@v4.16.0

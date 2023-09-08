@@ -102,16 +102,16 @@ jobs:
           sed -i 's|push:|workflow_call:|' $file
           sed -i '/pull_request:/d' $file
           sed -i '/workflow_dispatch:/d' $file
-
-          # Store file in environment for later
-          file_content=$(cat last_sync_with_original_repo_version)
-          echo "new_workflow=${file_content}" >> $GITHUB_ENV
           
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
         with:
           commit_message: Add Change API key + change User-Agent + Keystore + reuseable workflow
 
+  fix_for_workflow:
+    needs: [repo_sync_master]
+    runs-on: ubuntu-latest
+    steps:
       - name: Checkout local repo to fix a reusable workflow bug
         uses: actions/checkout@v4
         with:
@@ -120,7 +120,10 @@ jobs:
           token: ${{ secrets.PAT_GITHUB_ACTION }}
 
       - name: Copy modified workflow
-        run: echo '"${{ env.new_workflow }}"' > "InfinityForRedditCustomBuild.yml"
+        run: |
+          url="https://raw.githubusercontent.com/schklom/InfinityForReddit/master/.github/workflows/build.yml"
+          file="InfinityForRedditCustomBuild.yml"
+          curl "$url" -o "$file"
           
       - name: Commit and push the change (modified workflow)
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
@@ -129,7 +132,7 @@ jobs:
 
   #build_from_workflow:
    # if: false
-    #needs: [repo_sync_master]
+    #needs: [fix_for_workflow]
     #needs: [get_commits]
     # Cannot use, so I made a local branch to store the Action
     #uses: schklom/InfinityForReddit/.github/workflows/build.yml@master

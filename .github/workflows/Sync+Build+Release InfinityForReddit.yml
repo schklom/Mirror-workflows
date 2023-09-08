@@ -120,14 +120,17 @@ jobs:
 
       - name: Copy modified workflow
         run: |
-          url="https://raw.githubusercontent.com/schklom/Mirror-workflows/main/.github/workflows/InfinityForRedditCustomBuildautoupdated.yml"
-          file="InfinityForRedditCustomBuildautoupdated.yml"
+          url="https://raw.githubusercontent.com/schklom/InfinityForReddit/master/.github/workflows/build.yml"
+          file="InfinityForRedditCustomBuild-auto-updated.yml"
           curl "$url" -o ".github/workflows/$file"
           
       - name: Commit and push the change (modified workflow)
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
         with:
           commit_message: Copy modified workflow
+
+      - name: Changes?
+        run: echo "${{ steps.auto-commit-action.outputs.changes_detected }}"
 
   #build_from_workflow:
    # if: false

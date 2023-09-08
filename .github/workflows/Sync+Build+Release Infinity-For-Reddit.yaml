@@ -62,6 +62,8 @@ jobs:
         with:
           repository: 'schklom/Infinity-For-Reddit'
           ref: 'master' # branch
+          token: ${{ secrets.PAT_GITHUB_ACTION }}
+      
       - name: get most recent version on original repo, for next comparison on sync
         run: git ls-remote --tags https://github.com/Docile-Alligator/Infinity-For-Reddit.git | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3 > last_sync_with_original_repo_version
       - name: Commit and push the change
@@ -121,6 +123,7 @@ jobs:
         with:
           repository: 'schklom/Infinity-For-Reddit'
           ref: 'master' # branch
+          token: ${{ secrets.PAT_GITHUB_ACTION }}
       
       - name: Set the version
         run: |

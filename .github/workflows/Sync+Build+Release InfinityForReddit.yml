@@ -121,8 +121,8 @@ jobs:
 
       - name: Copy modified workflow
         run: |
-          url="https://raw.githubusercontent.com/schklom/Mirror-workflows/main/.github/workflows/InfinityForRedditCustomBuild-auto-updated.yml"
-          file="InfinityForRedditCustomBuild-auto-updated.yml"
+          url="https://raw.githubusercontent.com/schklom/Mirror-workflows/main/.github/workflows/InfinityForRedditCustomBuildautoupdated.yml"
+          file="InfinityForRedditCustomBuildautoupdated.yml"
           curl "$url" -o ".github/workflows/$file"
           
       - name: Commit and push the change (modified workflow)
@@ -130,12 +130,12 @@ jobs:
         with:
           commit_message: Copy modified workflow
 
-  build_from_workflow:
-    if: false
-    needs: [fix_for_workflow]
+  #build_from_workflow:
+   # if: false
+    #needs: [fix_for_workflow]
     # Cannot use, so I made a local branch to store the Action
     #uses: schklom/InfinityForReddit/.github/workflows/build.yml@master
-    uses: ./.github/workflows/InfinityForRedditCustomBuild-auto-updated.yml
+    #uses: ./.github/workflows/InfinityForRedditCustomBuildautoupdated.yml
   
   publish_infinity_on_master:
     #needs: [build_from_workflow]

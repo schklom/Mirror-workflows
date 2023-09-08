@@ -12,7 +12,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
-  get_commits:
+  get_version:
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     outputs:
@@ -33,15 +33,15 @@ jobs:
           echo "SETLOCAL=$(cat last_sync_with_original_repo_version)" >> $GITHUB_OUTPUT
 
   repo_sync_master:
-    needs: [get_commits]
+    needs: [get_version]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    #if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
+    #if: needs.get_version.outputs.LOCAL != needs.get_version.outputs.REMOTE
     steps:
       - name: outputs
         run: |
-          echo "${{needs.get_commits.outputs.LOCAL}}"
-          echo "${{needs.get_commits.outputs.REMOTE}}"
+          echo "${{needs.get_version.outputs.LOCAL}}"
+          echo "${{needs.get_version.outputs.REMOTE}}"
     
       - name: repo-sync master branch
         uses: wei/git-sync@v3
@@ -111,6 +111,8 @@ jobs:
   fix_for_workflow:
     needs: [repo_sync_master]
     runs-on: ubuntu-latest
+    outputs:
+      CHANGESONBUILDYML: ${{ steps.changes.outputs.SETCHANGESONBUILDYML }}
     steps:
       - name: Checkout main repo to fix a reusable workflow bug
         uses: actions/checkout@v4
@@ -131,8 +133,19 @@ jobs:
         with:
           commit_message: Copy modified workflow
 
-      - name: Changes?
-        run: echo "${{ steps.auto-commit-action.outputs.changes_detected }}"
+      - name: Changes on build.yml?
+        id: changes
+        run: |
+          echo "${{ steps.auto-commit-action.outputs.changes_detected }}"
+          echo "SETCHANGESONBUILDYML=${{ steps.auto-commit-action.outputs.changes_detected }}" >> $GITHUB_OUTPUT
+
+  build_tomorrow:
+    needs: [fix_for_workflow]
+    runs-on: ubuntu-latest
+    steps:
+      - name: There was a change on build.yml, so we build tomorrow no matter what
+        if: ${{ needs.get_version.outputs.LOCAL} } == 'true'
+        run: echo "1" > there-was-a-change-on-build-yml-yesterday
 
   #build_from_workflow:
    # if: false

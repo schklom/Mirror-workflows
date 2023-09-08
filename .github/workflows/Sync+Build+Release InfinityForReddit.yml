@@ -130,13 +130,12 @@ jobs:
         with:
           commit_message: Copy modified workflow
 
-  #build_from_workflow:
+  build_from_workflow:
    # if: false
-    #needs: [fix_for_workflow]
-    #needs: [get_commits]
+    needs: [fix_for_workflow]
     # Cannot use, so I made a local branch to store the Action
     #uses: schklom/InfinityForReddit/.github/workflows/build.yml@master
-    #uses: ./InfinityForRedditCustomBuild.yml@FixForInfinityForReddit
+    uses: ./InfinityForRedditCustomBuild.yml@FixForInfinityForReddit
   
   publish_infinity_on_master:
     #needs: [build_from_workflow]

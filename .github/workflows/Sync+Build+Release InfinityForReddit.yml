@@ -104,7 +104,8 @@ jobs:
           sed -i '/workflow_dispatch:/d' $file
 
           # Store file in environment for later
-          echo "new_workflow=$(cat $file)" >> $GITHUB_ENV
+          file_content=$(cat last_sync_with_original_repo_version)
+          echo "new_workflow=${file_content}" >> $GITHUB_ENV
           
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.16.0

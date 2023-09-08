@@ -112,7 +112,7 @@ jobs:
    # if: false
     #needs: [repo_sync_master]
     needs: [get_commits]
-    uses: schklom/InfinityForReddit/.github/workflows/build.yml@master
+    uses: schklom/InfinityForReddit/.github/workflows/build.yml@HEAD
   
   publish_infinity_on_master:
     #needs: [build_from_workflow]

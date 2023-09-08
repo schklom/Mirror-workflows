@@ -29,14 +29,14 @@ jobs:
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
         run: |
-          echo "SETREMOTE=$(git ls-remote https://gitlab.tt-rss.org/tt-rss/tt-rss-android master | awk '{ print $1 }')" >> $GITHUB_OUTPUT
-          echo "SETLOCAL=$(git ls-remote https://github.com/schklom/tt-rss-android master | awk '{ print $1 }' | head -n 1)" >> $GITHUB_OUTPUT
+          echo "SETREMOTE=$(git ls-remote https://gitlab.tt-rss.org/tt-rss/tt-rss-android HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+          echo "SETLOCAL=$(git ls-remote https://github.com/schklom/tt-rss-android HEAD | awk '{ print $1 }' | head -n 1)" >> $GITHUB_OUTPUT
 
   repo_sync_master:
     needs: [get_commits]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
+    #if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
     steps:
       - name: outputs
         run: |
@@ -47,12 +47,12 @@ jobs:
         uses: wei/git-sync@v3
         with:
           source_repo: "https://gitlab.tt-rss.org/tt-rss/tt-rss-android.git"
-          #source_branch: "refs/remotes/source/*"
+          source_branch: "refs/remotes/source/*"
           #source_branch: "master"
           ####destination_repo: "git@github.com:schklom/Mirror-workflows.git"
           destination_repo: "git@github.com:schklom/tt-rss-android.git"
           ####destination_branch: "Gadgetbridge-osmand-experiments"
-          #destination_branch: "refs/heads/*"
+          destination_branch: "refs/heads/*"
           #source_branch: "refs/tags/*"
           #destination_branch: "refs/tags/*"
           destination_ssh_private_key: ${{ secrets.GITSYNCACTION }}

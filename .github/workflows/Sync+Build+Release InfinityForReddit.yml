@@ -116,14 +116,13 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: 'schklom/Mirror-workflows'
-          ref: 'FixForInfinityForReddit' # branch
+          ref: 'main' # branch
           token: ${{ secrets.PAT_GITHUB_ACTION }}
 
       - name: Copy modified workflow
         run: |
           url="https://raw.githubusercontent.com/schklom/InfinityForReddit/master/.github/workflows/build.yml"
-          file="InfinityForRedditCustomBuild.yml"
-          mkdir -p ".github/workflows"
+          file="InfinityForRedditCustomBuild-auto-generated.yml"
           curl "$url" -o ".github/workflows/$file"
           
       - name: Commit and push the change (modified workflow)
@@ -136,7 +135,7 @@ jobs:
     needs: [fix_for_workflow]
     # Cannot use, so I made a local branch to store the Action
     #uses: schklom/InfinityForReddit/.github/workflows/build.yml@master
-    uses: ./.github/workflows/InfinityForRedditCustomBuild.yml@FixForInfinityForReddit
+    uses: ./.github/workflows/InfinityForRedditCustomBuild-auto-generated.yml
   
   publish_infinity_on_master:
     #needs: [build_from_workflow]

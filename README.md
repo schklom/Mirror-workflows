@@ -21,4 +21,5 @@ The Actions are defined in the directory .github/workflows. Secrets are used for
 - ~Quetre~
 - Node-Red
 - Web-whisper
-- tt-rss-android
+- tt-rss-android (complete repo, not branch)
+- Infinity-For-Reddit (complete repo, not branch)

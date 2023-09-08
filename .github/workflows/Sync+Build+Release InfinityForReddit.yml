@@ -102,6 +102,9 @@ jobs:
           sed -i 's|push:|workflow_call:|' $file
           sed -i '/pull_request:/d' $file
           sed -i '/workflow_dispatch:/d' $file
+
+          # Store file in environment for later
+          echo "new_workflow=$(cat $file)" >> $GITHUB_ENV
           
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
@@ -116,10 +119,7 @@ jobs:
           token: ${{ secrets.PAT_GITHUB_ACTION }}
 
       - name: Copy modified workflow
-        run: |
-          url="https://raw.githubusercontent.com/schklom/InfinityForReddit/master/.github/workflows/build.yml"
-          file="InfinityForRedditCustomBuild.yml"
-          curl "$url" -o "$file"
+        run: echo "${{ env.new_workflow }}" > "InfinityForRedditCustomBuild.yml"
           
       - name: Commit and push the change (modified workflow)
         uses: stefanzweifel/git-auto-commit-action@v4.16.0

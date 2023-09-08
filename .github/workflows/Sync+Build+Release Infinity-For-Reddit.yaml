@@ -1,0 +1,143 @@
+name: Sync+Build+Release Infinity-For-Reddit
+
+# Controls when the workflow will run
+on:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '0 0 * * *'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+
+  get_commits:
+    runs-on: ubuntu-latest
+    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    outputs:
+      LOCAL: ${{ steps.commits.outputs.SETLOCAL }}
+      REMOTE: ${{ steps.commits.outputs.SETREMOTE }} 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: 'schklom/Infinity-For-Reddit'
+          ref: 'master' # branch
+      - name: set local and remote latest version as environment variables
+        id: commits
+        # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+        # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
+        run: |
+          echo "SETREMOTE=$(git ls-remote --tags https://github.com/Docile-Alligator/Infinity-For-Reddit.git | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3)" >> $GITHUB_OUTPUT
+          echo "SETLOCAL=$(cat last_sync_with_original_repo_version)" >> $GITHUB_OUTPUT
+
+  repo_sync_master:
+    needs: [get_commits]
+    runs-on: ubuntu-latest
+    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
+    steps:
+      - name: outputs
+        run: |
+          echo "${{needs.get_commits.outputs.LOCAL}}"
+          echo "${{needs.get_commits.outputs.REMOTE}}"
+    
+      - name: repo-sync master branch
+        uses: wei/git-sync@v3
+        with:
+          source_repo: "https://github.com/Docile-Alligator/Infinity-For-Reddit.git"
+          source_branch: "refs/remotes/source/*"
+          #source_branch: "master"
+          ####destination_repo: "git@github.com:schklom/Mirror-workflows.git"
+          destination_repo: "git@github.com:schklom/Infinity-For-Reddit.git"
+          ####destination_branch: "Gadgetbridge-osmand-experiments"
+          destination_branch: "refs/heads/*"
+          #source_branch: "refs/tags/*"
+          #destination_branch: "refs/tags/*"
+          destination_ssh_private_key: ${{ secrets.GITSYNCACTION }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: 'schklom/Infinity-For-Reddit'
+          ref: 'master' # branch
+      - name: get most recent version on original repo, for next comparison on sync
+        run: git ls-remote --tags https://github.com/Docile-Alligator/Infinity-For-Reddit.git | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3 > last_sync_with_original_repo_version
+      - name: Commit and push the change
+        uses: stefanzweifel/git-auto-commit-action@v4.16.0
+        with:
+          commit_message: Add last_sync_with_original_repo_version
+
+      # Inspired by https://www.reddit.com/r/Infinity_For_Reddit/comments/14c2v5x/build_your_own_apk_with_your_personal_api_key_in/
+      # which links specifically to https://colab.research.google.com/drive/13AE8RvjnCfuBJGaACEqxeBIMo33_l-Sc
+      - name: Changes for personal API key
+        run: |
+          api_token=${{ secrets.INFINITY_FOR_REDDIT_API_KEY }}
+          redirect_uri="127.0.0.1"
+          reddit_username=${{ secrets.REDDIT_USERNAME }}
+          user_agent="android:personal-app:0.0.1 (by /u/$reddit_username)"
+
+          # Change some code for user_agent and api key
+          file="app/src/main/java/ml/docilealligator/infinityforreddit/utils/APIUtils.java"
+          sed -i "s|NOe2iKrPPzwscA|$api_token|" $file
+          sed -i "s|infinity://localhost|$redirect_uri|" $file
+          # use double quotes to use bash variable inside sed, then escape double quotes inside via \"
+          sed -ir "s|public static final String USER_AGENT = \".*?\";|public static final String USER_AGENT = \"$user_agent\";|" $file
+
+          # Add Keystore
+          file="app/build.gradle"
+          wget "https://github.com/TanukiAI/Infinity-keystore/raw/main/Infinity.jks"
+          # multi-line insert before match "   signingConfigs {" (add one space after "i"
+          # This feels dirty, if someone knows how to do it better please tell me
+          # Need to backslash the first delimeter since I don't use "s"
+          # Need to escape the first space after "i" then sed escapes the others
+          sed -i '\|    buildTypes {|i\    signingConfigs {\n        release {\n            storeFile file("/Infinity.jks")\n            storePassword "Infinity"\n            keyAlias "Infinity"\n            keyPassword "Infinity"\n        }\n    }' $file
+
+          # Reuse app build workflow
+          # https://github.blog/2022-02-10-using-reusable-workflows-github-actions/
+          file=".github/workflows/build.yml"
+          sed -i 's|push:|workflow_call:|' $file
+          sed -i '/pull_request:/d' $file
+          sed -i '/workflow_dispatch:/d' $file
+          
+      - name: Commit and push the change
+        uses: stefanzweifel/git-auto-commit-action@v4.16.0
+        with:
+          commit_message: Add Change API key + change User-Agent + Keystore + reuseable workflow
+
+  build_infinity_on_master:
+    needs: [repo_sync_master]
+    runs-on: ubuntu-latest
+    #if: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: 'schklom/Infinity-For-Reddit'
+          ref: 'master' # branch
+
+      - name: Reuse workflow to build app
+        uses: schklom/Infinity-For-Reddit/.github/workflows/build.yml@master
+      
+      - name: Set the version
+        run: |
+          ver=$(cat last_sync_with_original_repo_version)
+          echo "version=${ver}" >> $GITHUB_ENV
+
+      - name: Rename apk file
+        run: mv app/build/outputs/apk/release/app*.apk Infinity.apk
+      
+      - name: Release apk
+        uses: softprops/action-gh-release@v1
+        with:
+          ####tag_name: Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.REMOTETAG }}
+          tag_name: "${{ env.version }}"
+          body: "Infinity.apk is the Infinity file"
+          #files: |
+            # ./app/build/outputs/apk/app-debug.apk
+          #files: ./app/build/outputs/apk/main/release/app-main-release-unsigned.apk
+          #files: ./app/build/outputs/apk/main/debug/app-main-debug.apk
+          files: ./Infinity.apk
+          repository: "schklom/Infinity-For-Reddit"
+          token: ${{ secrets.PAT_GITHUB_ACTION }}

@@ -127,6 +127,7 @@ jobs:
           
       - name: Commit and push the change (modified workflow)
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
+        id: auto-commit-action
         with:
           commit_message: Copy modified workflow
 

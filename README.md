@@ -16,7 +16,7 @@ feel free to stick to that.
 Alternatively, or if you are new to hosting applications,
 we recommend to run FMD Server with Docker.
 
-Quickly try FMD Server from the command line:
+Quickly try FMD Server on your laptop from the command line:
 
 ```
 docker build --tag fmd-git https://gitlab.com/Nulide/findmydeviceserver.git#v0.4.0
@@ -24,13 +24,14 @@ docker run --rm -p 1020:1020 fmd-git
 ```
 
 You can now visit FMD Server's web interface in your browser at http://localhost:1020.
-You can register you FMD app using the server URL `http://<your-computers-ip>:1020`.
+You can register you FMD app using the server URL `http://<your-laptops-ip>:1020`.
 
-Note that this is only for testing and NOT for production.
-In particular, the web interface will only work over HTTP on localhost.
-On all other origins the web interface only works over HTTPS.
+Note that these steps are only for quick on-laptop testing and NOT for production!
+
+⚠️ In particular, the web interface will only work over HTTP on localhost.
+On all other origins **the web interface only works over HTTPS**.
 (This is a requirement of the WebCrypto API.
-FMD Server's API always works over HTTP - but this is highly discouraged in production.)
+FMD Server's API (and hence the app) always works over HTTP - but this is highly discouraged in production.)
 
 ### Self-hosting with Docker Compose
 

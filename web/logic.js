@@ -55,6 +55,7 @@ function init() {
     }
 
     setupOnClicks()
+    checkWebCryptoApiAvailable()
 }
 
 function setupOnClicks() {
@@ -76,6 +77,14 @@ function setupOnClicks() {
     document.getElementById("cameraBack").addEventListener("click", () => sendToPhone("camera back"));
     document.getElementById("takePicture").addEventListener("click", () => dropDownBtn());
     document.getElementById("showPicture").addEventListener("click", async () => await showLatestPicture());
+}
+
+function checkWebCryptoApiAvailable() {
+    if (typeof (window.crypto.subtle) == "undefined") {
+        alert("FMD Server won't work because the WebCrypto API is not available.\n\n"
+            + "This is most likely because you are visiting this site over insecure HTTP. "
+            + "Please use HTTPS. If you are self-hosting, see the README.");
+    }
 }
 
 // Section: Login

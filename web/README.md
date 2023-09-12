@@ -1,17 +1,15 @@
 # Web Readme
 
-We bundle the following dependencies:
+Most dependencies are bundled with npm.
+Simply run `npm install` from the `web/` directory.
 
-- https://unpkg.com/leaflet@1.9.4/dist/leaflet.js
-- https://unpkg.com/leaflet@1.9.4/dist/leaflet.css
-- https://unpkg.com/toastedjs@0.0.2/dist/toasted.min.js
-- https://unpkg.com/toastedjs@0.0.2/dist/toasted.min.css
+`crypto-js` needs to be bundled manually because npm only contains the
+sources, and no compiled release.
+`jsencrypt` is bundled manually because the npm package contains crazy many dependencies that we don't need.
+They have been downloaded from:
+
 - https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.js
 - https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/2.3.1/jsencrypt.min.js
 
 Note that `crypto-js` and `jsencrypt` can be removed once support for
 the pre-0.4.0 crypto is dropped.
-
-To update one of these dependencies, simply download them from the above URLs
-with a new version and commit it.
-

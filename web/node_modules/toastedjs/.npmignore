@@ -1,0 +1,13 @@
+.DS_Store
+node_modules/
+npm-debug.log
+yarn-error.log
+.idea/
+.vscode/
+build/
+.babelrc
+webpack.config.js
+README.md
+*.map
+examples
+test/

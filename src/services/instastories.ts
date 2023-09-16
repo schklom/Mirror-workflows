@@ -6,6 +6,11 @@ import { IGetProfile } from "./types/functions";
 import { extractTagsAndUsers } from "@/utils/text";
 import { PlaywrightScraper } from "./scrapers/playwright";
 
+interface InstaStoriesRes {
+	profileInfo: InstaStoriesProfile;
+	isCrawler: boolean;
+}
+
 interface InstaStoriesProfile {
 	id: number;
 	username: string;
@@ -24,14 +29,23 @@ export class InstaStories implements IGetProfile {
 
 	async getProfile(username: string): Promise<Profile> {
 		let profile: InstaStoriesProfile;
+		const pathCash = `api/profile/cash?username=${username}`;
 		const path = `api/profile/v3/info?username=${username}`;
 
 		if (this.scraper instanceof AxiosScraper) {
+			await this.scraper.getJson<InstaStoriesRes>({
+				path: pathCash,
+				expireTime: this.scraper.config.ttl?.posts as number,
+			});
 			profile = await this.scraper.getJson<InstaStoriesProfile>({
 				path,
 				expireTime: this.scraper.config.ttl?.posts as number,
 			});
 		} else {
+			await this.scraper.getHtml({
+				path: pathCash,
+				expireTime: this.scraper.config.ttl?.post as number,
+			});
 			const html = await this.scraper.getHtml({
 				path,
 				expireTime: this.scraper.config.ttl?.post as number,

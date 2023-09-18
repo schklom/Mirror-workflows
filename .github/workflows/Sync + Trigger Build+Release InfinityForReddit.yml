@@ -16,8 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     outputs:
-      LOCAL: ${{ steps.commits.outputs.SETLOCAL }}
       REMOTE: ${{ steps.commits.outputs.SETREMOTE }} 
+      LOCAL: ${{ steps.commits.outputs.SETLOCAL }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

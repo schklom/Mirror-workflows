@@ -106,7 +106,7 @@ jobs:
           echo "        repository: schklom/InfinityForReddit" >> $file
           # Need to escape the dollar double bracket
           # https://github.com/orgs/community/discussions/26621
-          echo "        token: ${{ '${{ secrets.PAT_GITHUB_ACTION }}' }}" >> $file
+          echo "        token: ${{ '\${{ secrets.PAT_GITHUB_ACTION }}' }}" >> $file
       
       - name: Remove pointless workflow
         run: rm .github/workflows/codeql*

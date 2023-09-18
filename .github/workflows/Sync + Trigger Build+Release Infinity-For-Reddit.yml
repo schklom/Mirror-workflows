@@ -2,9 +2,9 @@ name: Sync + Trigger Build+Release Infinity-For-Reddit
 
 # Controls when the workflow will run
 on:
-  #schedule:
+  schedule:
     # * is a special character in YAML so you have to quote this string
-    #- cron:  '0 0 * * *'
+    - cron:  '0 0 * * *'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:

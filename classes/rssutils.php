@@ -1528,6 +1528,7 @@ class RSSUtils {
 
 			foreach ($filter["rules"] as $rule) {
 				$match = false;
+				$regexp_matches = [];
 				$reg_exp = str_replace('/', '\/', (string)$rule["reg_exp"]);
 				$reg_exp = str_replace("\n", "", $reg_exp); // reg_exp may be formatted with CRs now because of textarea, we need to strip those
 				$rule_inverse = $rule["inverse"] ?? false;
@@ -1538,32 +1539,32 @@ class RSSUtils {
 
 				switch ($rule["type"]) {
 					case "title":
-						$match = @preg_match("/$reg_exp/iu", $title);
+						$match = @preg_match("/$reg_exp/iu", $title, $regexp_matches);
 						break;
 					case "content":
 						// we don't need to deal with multiline regexps
 						$content = (string)preg_replace("/[\r\n\t]/", "", $content);
 
-						$match = @preg_match("/$reg_exp/iu", $content);
+						$match = @preg_match("/$reg_exp/iu", $content, $regexp_matches);
 						break;
 					case "both":
 						// we don't need to deal with multiline regexps
 						$content = (string)preg_replace("/[\r\n\t]/", "", $content);
 
-						$match = (@preg_match("/$reg_exp/iu", $title) || @preg_match("/$reg_exp/iu", $content));
+						$match = (@preg_match("/$reg_exp/iu", $title, $regexp_matches) || @preg_match("/$reg_exp/iu", $content, $regexp_matches));
 						break;
 					case "link":
-						$match = @preg_match("/$reg_exp/iu", $link);
+						$match = @preg_match("/$reg_exp/iu", $link, $regexp_matches);
 						break;
 					case "author":
-						$match = @preg_match("/$reg_exp/iu", $author);
+						$match = @preg_match("/$reg_exp/iu", $author, $regexp_matches);
 						break;
 					case "tag":
 						if (count($tags) == 0)
 							array_push($tags, ''); // allow matching if there are no tags
 
 						foreach ($tags as $tag) {
-							if (@preg_match("/$reg_exp/iu", $tag)) {
+							if (@preg_match("/$reg_exp/iu", $tag, $regexp_matches)) {
 								$match = true;
 								break;
 							}
@@ -1589,6 +1590,8 @@ class RSSUtils {
 			if ($inverse) $filter_match = !$filter_match;
 
 			if ($filter_match) {
+				$last_processed_rule["regexp_matches"] = $regexp_matches;
+
 				if (is_array($matched_rules)) array_push($matched_rules, $last_processed_rule);
 				if (is_array($matched_filters)) array_push($matched_filters, $filter);
 

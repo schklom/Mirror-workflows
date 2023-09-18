@@ -77,12 +77,17 @@ jobs:
           reddit_username=${{ secrets.REDDIT_USERNAME }}
           user_agent="android:personal-app:0.0.1 (by /u/$reddit_username)"
 
+
           # Change some code for user_agent and api key
           file="app/src/main/java/ml/docilealligator/infinityforreddit/utils/APIUtils.java"
           sed -i "s|NOe2iKrPPzwscA|$api_token|" $file
-          sed -i "s|infinity://localhost|$redirect_uri|" $file
+          
+          # the redirect URI seems to cause problems
+          #sed -i "s|infinity://localhost|$redirect_uri|" $file
+          
           # use double quotes to use bash variable inside sed, then escape double quotes inside via \"
           sed -ir "s|public static final String USER_AGENT = \".*?\";|public static final String USER_AGENT = \"$user_agent\";|" $file
+
 
           # Add Keystore
           file="app/build.gradle"
@@ -92,6 +97,7 @@ jobs:
           # Need to backslash the first delimeter since I don't use "s"
           # Need to escape the first space after "i" then sed escapes the others
           sed -i '\|    buildTypes {|i\    signingConfigs {\n        release {\n            storeFile file("/Infinity.jks")\n            storePassword "Infinity"\n            keyAlias "Infinity"\n            keyPassword "Infinity"\n        }\n    }' $file
+
 
           # Add the release of the artifact at the end of the build action
           # Need to escape the dollar double bracket

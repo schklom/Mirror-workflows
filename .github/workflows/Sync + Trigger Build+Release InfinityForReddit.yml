@@ -105,7 +105,7 @@ jobs:
           echo "        files: app/build/outputs/apk/release/app-release-unsigned.apk" >> $file
           echo "        repository: schklom/InfinityForReddit" >> $file
           # Need to escape the dollar double bracket
-          # https://github.com/orgs/community/discussions/26621
+          # https://github.com/orgs/community/discussions/26621#discussioncomment-3840420
           echo "        token: ${{ '\${{ secrets.PAT_GITHUB_ACTION }}' }}" >> $file
       
       - name: Remove pointless workflow

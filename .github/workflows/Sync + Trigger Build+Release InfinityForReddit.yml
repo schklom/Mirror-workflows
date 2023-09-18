@@ -100,7 +100,7 @@ jobs:
           echo "    - name: Release Infinity-For-Reddit APK ${{ needs.get_version.outputs.LOCAL }}" >> $file
           echo "      uses: softprops/action-gh-release@v1" >> $file
           echo "      with:" >> $file
-          echo "        tag_name: ${{ needs.get_version.outputs.LOCAL }}" >> $file
+          echo "        tag_name: \"${{ needs.get_version.outputs.LOCAL }}\"" >> $file
           echo "        body: New version of Infinity-For-Reddit" >> $file
           echo "        files: app/build/outputs/apk/release/app-release-unsigned.apk" >> $file
           echo "        repository: schklom/InfinityForReddit" >> $file

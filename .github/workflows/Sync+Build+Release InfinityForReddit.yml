@@ -66,10 +66,6 @@ jobs:
       
       - name: get most recent version on original repo, for next comparison on sync
         run: git ls-remote --tags https://github.com/Docile-Alligator/Infinity-For-Reddit.git | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3 > last_sync_with_original_repo_version
-      - name: Commit and push the change
-        uses: stefanzweifel/git-auto-commit-action@v4.16.0
-        with:
-          commit_message: Add last_sync_with_original_repo_version
 
       # Inspired by https://www.reddit.com/r/Infinity_For_Reddit/comments/14c2v5x/build_your_own_apk_with_your_personal_api_key_in/
       # which links specifically to https://colab.research.google.com/drive/13AE8RvjnCfuBJGaACEqxeBIMo33_l-Sc
@@ -107,7 +103,7 @@ jobs:
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
         with:
-          commit_message: Add Change API key + change User-Agent + Keystore + remove codeql workflow
+          commit_message: Add Change API key + change User-Agent + Keystore + remove codeql workflow + Add last_sync_with_original_repo_version
 
 #   fix_for_workflow:
 #     needs: [repo_sync_master]

@@ -1,4 +1,4 @@
-name: Sync+Build+Release InfinityForReddit
+name: Sync + Trigger Build+Release InfinityForReddit
 
 # Controls when the workflow will run
 on:
@@ -24,6 +24,7 @@ jobs:
         with:
           repository: 'schklom/InfinityForReddit'
           ref: 'master' # branch
+      
       - name: set local and remote latest version as environment variables
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
@@ -40,8 +41,8 @@ jobs:
     steps:
       - name: outputs
         run: |
-          echo "${{needs.get_version.outputs.LOCAL}}"
-          echo "${{needs.get_version.outputs.REMOTE}}"
+          echo "${{ needs.get_version.outputs.LOCAL }}"
+          echo "${{ needs.get_version.outputs.REMOTE }}"
     
       - name: repo-sync master branch
         uses: wei/git-sync@v3
@@ -91,6 +92,18 @@ jobs:
           # Need to backslash the first delimeter since I don't use "s"
           # Need to escape the first space after "i" then sed escapes the others
           sed -i '\|    buildTypes {|i\    signingConfigs {\n        release {\n            storeFile file("/Infinity.jks")\n            storePassword "Infinity"\n            keyAlias "Infinity"\n            keyPassword "Infinity"\n        }\n    }' $file
+
+          # Add the release of the artifact at the end of the build action
+          # This is long to write and read, get ready
+          file=".github/workflows/build.yml"
+          echo "      - name: Release Infinity-For-Reddit APK ${{ needs.get_version.outputs.LOCAL }}" >> $file
+          echo "        uses: softprops/action-gh-release@v1" >> $file
+          echo "        with:" >> $file
+          echo "          tag_name: ${{ needs.get_version.outputs.LOCAL }}" >> $file
+          echo "          body: New version of Infinity-For-Reddit" >> $file
+          echo "          files: app/build/outputs/apk/release/app-release-unsigned.apk" >> $file
+          echo "          repository: schklom/InfinityForReddit" >> $file
+          echo "          token: ${{ secrets.PAT_GITHUB_ACTION }}" >> $file
       
       - name: Remove pointless workflow
         run: rm .github/workflows/codeql*

@@ -98,54 +98,53 @@ jobs:
 
           # Reuse app build workflow
           # https://github.blog/2022-02-10-using-reusable-workflows-github-actions/
-          file=".github/workflows/build.yml"
-          sed -i 's|push:|workflow_call:|' $file
-          sed -i '/pull_request:/d' $file
-          sed -i '/workflow_dispatch:/d' $file
+
+          # Not reusable workflow, because it preloads before modifications
+          # Instead, we trigger a push if there was a change, because "push" is a trigger for the build
           
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
         with:
-          commit_message: Add Change API key + change User-Agent + Keystore + reuseable workflow
+          commit_message: Add Change API key + change User-Agent + Keystore
 
-  fix_for_workflow:
-    needs: [repo_sync_master]
-    runs-on: ubuntu-latest
-    outputs:
-      CHANGESONBUILDYML: ${{ steps.changes.outputs.SETCHANGESONBUILDYML }}
-    steps:
-      - name: Checkout main repo to fix a reusable workflow bug
-        uses: actions/checkout@v4
-        with:
-          repository: 'schklom/Mirror-workflows'
-          ref: 'main' # branch
-          token: ${{ secrets.PAT_GITHUB_ACTION }}
-
-      - name: Copy modified workflow
-        run: |
-          url="https://raw.githubusercontent.com/schklom/InfinityForReddit/master/.github/workflows/build.yml"
-          file="InfinityForRedditCustomBuild-auto-updated.yml"
-          curl "$url" -o ".github/workflows/$file"
-          
-      - name: Commit and push the change (modified workflow)
-        uses: stefanzweifel/git-auto-commit-action@v4.16.0
-        id: auto-commit-action
-        with:
-          commit_message: Copy modified workflow
-
-      - name: Changes on build.yml?
-        id: changes
-        run: |
-          echo "${{ steps.auto-commit-action.outputs.changes_detected }}"
-          echo "SETCHANGESONBUILDYML=${{ steps.auto-commit-action.outputs.changes_detected }}" >> $GITHUB_OUTPUT
-
-  build_tomorrow:
-    needs: [fix_for_workflow]
-    runs-on: ubuntu-latest
-    steps:
-      - name: There was a change on build.yml, so we build tomorrow no matter what
-        if: ${{ needs.get_version.outputs.LOCAL} } == 'true'
-        run: echo "1" > there-was-a-change-on-build-yml-yesterday
+#   fix_for_workflow:
+#     needs: [repo_sync_master]
+#     runs-on: ubuntu-latest
+#     outputs:
+#       CHANGESONBUILDYML: ${{ steps.changes.outputs.SETCHANGESONBUILDYML }}
+#     steps:
+#       - name: Checkout main repo to fix a reusable workflow bug
+#         uses: actions/checkout@v4
+#         with:
+#           repository: 'schklom/Mirror-workflows'
+#           ref: 'main' # branch
+#           token: ${{ secrets.PAT_GITHUB_ACTION }}
+# 
+#       - name: Copy modified workflow
+#         run: |
+#           url="https://raw.githubusercontent.com/schklom/InfinityForReddit/master/.github/workflows/build.yml"
+#           file="InfinityForRedditCustomBuild-auto-updated.yml"
+#           curl "$url" -o ".github/workflows/$file"
+#           
+#       - name: Commit and push the change (modified workflow)
+#         uses: stefanzweifel/git-auto-commit-action@v4.16.0
+#         id: auto-commit-action
+#         with:
+#           commit_message: Copy modified workflow
+# 
+#       - name: Changes on build.yml?
+#         id: changes
+#         run: |
+#           echo "${{ steps.auto-commit-action.outputs.changes_detected }}"
+#           echo "SETCHANGESONBUILDYML=${{ steps.auto-commit-action.outputs.changes_detected }}" >> $GITHUB_OUTPUT
+# 
+#   build_tomorrow:
+#     needs: [fix_for_workflow]
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: There was a change on build.yml, so we build tomorrow no matter what
+#         if: ${{ needs.get_version.outputs.LOCAL} } == 'true'
+#         run: echo "1" > there-was-a-change-on-build-yml-yesterday
 
   #build_from_workflow:
    # if: false
@@ -154,36 +153,35 @@ jobs:
     #uses: schklom/InfinityForReddit/.github/workflows/build.yml@master
     #uses: ./.github/workflows/InfinityForRedditCustomBuildautoupdated.yml
   
-  publish_infinity_on_master:
-    #needs: [build_from_workflow]
-    runs-on: ubuntu-latest
-    if: false
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          repository: 'schklom/InfinityForReddit'
-          ref: 'master' # branch
-          token: ${{ secrets.PAT_GITHUB_ACTION }}
-      
-      - name: Set the version
-        run: |
-          ver=$(cat last_sync_with_original_repo_version)
-          echo "version=${ver}" >> $GITHUB_ENV
-
-      - name: Rename apk file
-        run: mv app/build/outputs/apk/release/app*.apk Infinity.apk
-      
-      - name: Release apk
-        uses: softprops/action-gh-release@v1
-        with:
-          ####tag_name: Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.REMOTETAG }}
-          tag_name: "${{ env.version }}"
-          body: "Infinity.apk is the Infinity file"
-          #files: |
-            # ./app/build/outputs/apk/app-debug.apk
-          #files: ./app/build/outputs/apk/main/release/app-main-release-unsigned.apk
-          #files: ./app/build/outputs/apk/main/debug/app-main-debug.apk
-          files: ./Infinity.apk
-          repository: "schklom/InfinityForReddit"
-          token: ${{ secrets.PAT_GITHUB_ACTION }}
+#   publish_infinity_on_master:
+#    # needs: [build_from_workflow]
+#     runs-on: ubuntu-latest
+#     #if: false
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
+#         with:
+#           repository: 'schklom/InfinityForReddit'
+#           ref: 'master' # branch
+#           token: ${{ secrets.PAT_GITHUB_ACTION }}
+#       
+#       - name: Set the version
+#         run: |
+#           ver=$(cat last_sync_with_original_repo_version)
+#           echo "version=${ver}" >> $GITHUB_ENV
+# 
+#       - name: Rename apk file
+#         run: mv app/build/outputs/apk/release/app*.apk ./Infinity.apk
+#       
+#       - name: Release apk
+#         uses: softprops/action-gh-release@v1
+#         with:
+#           tag_name: "${{ env.version }}"
+#           body: "Infinity.apk is the Infinity file"
+#           #files: |
+#             # ./app/build/outputs/apk/app-debug.apk
+#           #files: ./app/build/outputs/apk/main/release/app-main-release-unsigned.apk
+#           #files: ./app/build/outputs/apk/main/debug/app-main-debug.apk
+#           files: ./Infinity.apk
+#           repository: "schklom/InfinityForReddit"
+#           token: ${{ secrets.PAT_GITHUB_ACTION }}

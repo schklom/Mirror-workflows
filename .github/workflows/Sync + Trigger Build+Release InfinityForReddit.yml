@@ -96,6 +96,7 @@ jobs:
           # Add the release of the artifact at the end of the build action
           # This is long to write and read, get ready
           file=".github/workflows/build.yml"
+          echo "" >> $file
           echo "      - name: Release Infinity-For-Reddit APK ${{ needs.get_version.outputs.LOCAL }}" >> $file
           echo "        uses: softprops/action-gh-release@v1" >> $file
           echo "        with:" >> $file

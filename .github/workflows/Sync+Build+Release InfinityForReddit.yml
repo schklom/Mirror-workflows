@@ -95,17 +95,19 @@ jobs:
           # Need to backslash the first delimeter since I don't use "s"
           # Need to escape the first space after "i" then sed escapes the others
           sed -i '\|    buildTypes {|i\    signingConfigs {\n        release {\n            storeFile file("/Infinity.jks")\n            storePassword "Infinity"\n            keyAlias "Infinity"\n            keyPassword "Infinity"\n        }\n    }' $file
-
+      
+      - name: Remove pointless workflow
+        run: rm .github/workflows/codeql*
           # Reuse app build workflow
           # https://github.blog/2022-02-10-using-reusable-workflows-github-actions/
 
           # Not reusable workflow, because it preloads before modifications
           # Instead, we trigger a push if there was a change, because "push" is a trigger for the build
-          
+      
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
         with:
-          commit_message: Add Change API key + change User-Agent + Keystore
+          commit_message: Add Change API key + change User-Agent + Keystore + remove codeql workflow
 
 #   fix_for_workflow:
 #     needs: [repo_sync_master]

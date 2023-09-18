@@ -94,7 +94,8 @@ jobs:
           sed -i '\|    buildTypes {|i\    signingConfigs {\n        release {\n            storeFile file("/Infinity.jks")\n            storePassword "Infinity"\n            keyAlias "Infinity"\n            keyPassword "Infinity"\n        }\n    }' $file
 
           # Add the release of the artifact at the end of the build action
-          # This is long to write and read, get ready
+          # Need to escape the dollar double bracket
+          # https://github.com/orgs/community/discussions/26621#discussioncomment-3840420
           file=".github/workflows/build.yml"
           echo "" >> $file
           echo "    - name: Release Infinity-For-Reddit APK ${{ needs.get_version.outputs.LOCAL }}" >> $file
@@ -104,8 +105,6 @@ jobs:
           echo "        body: New version of Infinity-For-Reddit" >> $file
           echo "        files: app/build/outputs/apk/release/app-release-unsigned.apk" >> $file
           echo "        repository: schklom/InfinityForReddit" >> $file
-          # Need to escape the dollar double bracket
-          # https://github.com/orgs/community/discussions/26621#discussioncomment-3840420
           echo "        token: ${{ '\${{ secrets.PAT_GITHUB_ACTION }}' }}" >> $file
       
       - name: Remove pointless workflow

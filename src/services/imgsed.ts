@@ -26,10 +26,10 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments {
 		const posts: Post[] = [];
 
 		$(".items>.item").each((_i, post) => {
-			const img = $(post).find("img");
 			const imgContainer = $(post).find(".img");
+			const img = $(imgContainer).find("a>img");
 			const postUrl = $(imgContainer).find("a");
-			const imageUrl = img.attr("data-src")
+			const imageUrl = img.attr("class") === "lazy"
 				? (img.attr("data-src") as string)
 				: (img.attr("src") as string);
 
@@ -44,8 +44,8 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments {
 				shortcode,
 				thumb: proxyUrl(convertToInstagramUrl(imageUrl)),
 				description: img.attr("alt"),
-				isSideCard: img.find("svg").length > 0,
-				isVideo: img.find(".video").length > 0,
+				isSideCard: imgContainer.find("svg").length > 0,
+				isVideo: imgContainer.find(".video").length > 0,
 			};
 
 			posts.push(item);

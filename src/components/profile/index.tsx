@@ -9,29 +9,36 @@ const formater = Intl.NumberFormat("en-US", {
 	maximumFractionDigits: 1,
 });
 
-export function SideInfo({
-	data,
-	children,
-}: {
+type Props = {
 	data: {
 		name?: string;
 		bio?: string;
 		image?: { src?: string; alt?: string; stories?: number };
 	};
 	children?: JSX.Element;
-}) {
+}
+
+export function SideInfo({
+	data,
+	children,
+}: Props) {
+	const { query } = useRouter()
+	const href = query.username ? `/${query.username}` : `/tag/${query.tag}`
+
 	return (
-		<div className="profile h-max bg-[#97695d] py-2 text-white sm:h-full sm:w-52">
+		<section className="profile h-max bg-[#97695d] py-2 text-white sm:h-full sm:w-52">
 			<div className="flex flex-col gap-1 text-center">
 				<Avatar image={data.image} />
 				<div className="profile-info">
-					<h3 className="font-bold">{data.name}</h3>
+					<Link href={href}>
+						<h3 className="font-bold">{data.name}</h3>
+					</Link>
 					<p>{data.bio}</p>
 				</div>
 				<hr />
 				{children}
 			</div>
-		</div>
+		</section>
 	);
 }
 
@@ -100,20 +107,22 @@ export function Avatar({
 						<Image
 							src={image.src}
 							alt={`${image.alt}'s profile picture`}
-							title={`See ${query.username}'s stories (${image.stories})`}
+							title={`Watch ${query.username}'s stories (${image.stories})`}
 							width={100}
 							height={100}
 							className="border-[#7fd4a2] border-solid border-4 rounded-full object-cover relative"
 						/>
 					</Link>
 				) : (
-					<Image
-						src={image.src}
-						alt={`${image.alt}'s profile picture`}
-						width={100}
-						height={100}
-						className="self-center rounded-full object-cover"
-					/>
+					<Link href={image.src} className="self-center" target="_blank">
+						<Image
+							src={image.src}
+							alt={`${image.alt}'s profile picture`}
+							width={100}
+							height={100}
+							className="rounded-full object-cover"
+						/>
+					</Link>
 				)
 			) : (
 				<Skeleton circle width={100} height={100} />

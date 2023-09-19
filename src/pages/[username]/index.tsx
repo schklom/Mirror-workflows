@@ -2,7 +2,7 @@ import type {
 	GetServerSidePropsContext,
 	InferGetServerSidePropsType,
 } from "next";
-import type { PostsResponse, Profile } from "@/services/types";
+import type { PostsResponse, Profile, Story } from "@/services/types";
 import { LoadMore } from "@/components/LoadMore";
 import { Layout } from "@/components/layouts/Layout";
 import { ProfileComponent, SideInfo } from "@/components/profile";
@@ -13,7 +13,7 @@ import { isAxiosError } from "axios";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
-export default function ProfilePage({ profile, posts, error }: Props) {
+export default function ProfilePage({ profile, posts, stories, error }: Props) {
 	if (error) return <ErrorInfo {...error} />;
 
 	const meta = {
@@ -31,6 +31,7 @@ export default function ProfilePage({ profile, posts, error }: Props) {
 						image: {
 							src: profile.profilePicture,
 							alt: profile.username,
+							stories,
 						},
 					}}
 				>
@@ -57,18 +58,31 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 		const { data: profile } = await axiosInstance.get<Profile>(username);
 		let posts: PostsResponse | undefined;
+		let storiesLength = 0;
 
 		if (!profile.isPrivate) {
 			const path = cursor
 				? `${username}/posts?cursor=${cursor}`
 				: `${username}/posts`;
-			posts = (await axiosInstance.get<PostsResponse>(path)).data;
+			const [postsRes, stories] = await Promise.allSettled([
+				axiosInstance.get<PostsResponse>(path),
+				axiosInstance.get<Story[]>(`${username}/stories`),
+			]);
+
+			if (stories.status === "fulfilled") {
+				storiesLength = stories.value.data.length;
+			}
+
+			if (postsRes.status === "fulfilled") {
+				posts = postsRes.value.data;
+			}
 		}
 
 		return {
 			props: {
 				profile,
 				posts,
+				stories: storiesLength,
 				error: null,
 			},
 		};
@@ -86,6 +100,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 						},
 						profile: null,
 						posts: null,
+						stories: null,
 					},
 				};
 			}

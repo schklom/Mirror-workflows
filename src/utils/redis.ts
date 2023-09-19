@@ -68,8 +68,13 @@ export function createRedisKeyFromUrl(url: string) {
 	const CURSOR =
 		urlObj.searchParams.get("cursor") ?? urlObj.searchParams.get("after");
 	const QUERY = urlObj.searchParams.get("query");
+	const URL_QUERY = urlObj.searchParams.get("url");
 	const USERNAME = urlObj.searchParams.get("username");
 
+	if (URL_QUERY) {
+		const lastPath = new URL(URL_QUERY).pathname.split("/").at(-1);
+		return `${DOMAIN_NAME}:${LAST_POSITION_PATH}:${lastPath}`;
+	}
 	if (CURSOR)
 		return `${DOMAIN_NAME}:${DIR}:${LAST_POSITION_PATH}:${CURSOR}`.toLowerCase();
 	if (QUERY)

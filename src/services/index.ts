@@ -10,88 +10,94 @@ import { axiosInstance } from "@/utils";
 import { InstaStories } from "./instastories";
 import { StoriesIG } from "./storiesig";
 import { Iganony } from "./iganony";
+import { InstaNavigation } from "./instanavigation";
 
 export const randomUserAgent = new UserAgent().toString();
 
 export function getInstanceProviders(providers: Provider[]) {
-	try {
-		const providersInstances: (
-			| Greatfon
-			| Wizstat
-			| Imgsed
-			| InstaStories
-			| StoriesIG
-			| Iganony
-		)[] = [];
+	const providersInstances: (
+		| Greatfon
+		| Wizstat
+		| Imgsed
+		| InstaStories
+		| StoriesIG
+		| Iganony
+		| InstaNavigation
+	)[] = [];
 
-		providers.forEach((currentProvider) => {
-			const keys = Object.keys(currentProvider.ttl);
-			const values = Object.values(currentProvider.ttl);
-			const scraperConfig = {
-				baseURL: currentProvider.url,
-				ttl: {
-					...Object.fromEntries(
-						keys.map((_, i) => [keys[i], convertTTlToTimestamp(values[i])]),
+	providers.forEach((currentProvider) => {
+		const keys = Object.keys(currentProvider.ttl);
+		const values = Object.values(currentProvider.ttl);
+		const scraperConfig = {
+			baseURL: currentProvider.url,
+			ttl: {
+				...Object.fromEntries(
+					keys.map((_, i) => [keys[i], convertTTlToTimestamp(values[i])]),
+				),
+			},
+		};
+
+		switch (currentProvider.provider) {
+			case "Greatfon":
+				providersInstances.push(
+					new Greatfon(
+						currentProvider.headlessBrowser
+							? new PlaywrightScraper(scraperConfig)
+							: new AxiosScraper(scraperConfig),
 					),
-				},
-			};
+				);
+				break;
+			case "Wizstat":
+				providersInstances.push(
+					new Wizstat(
+						currentProvider.headlessBrowser
+							? new PlaywrightScraper(scraperConfig)
+							: new AxiosScraper(scraperConfig),
+					),
+				);
+				break;
+			case "Imgsed":
+				providersInstances.push(
+					new Imgsed(
+						currentProvider.headlessBrowser
+							? new PlaywrightScraper(scraperConfig)
+							: new AxiosScraper(scraperConfig),
+					),
+				);
+				break;
+			case "Instastories":
+				providersInstances.push(
+					new InstaStories(
+						currentProvider.headlessBrowser
+							? new PlaywrightScraper(scraperConfig)
+							: new AxiosScraper(scraperConfig),
+					),
+				);
+				break;
+			case "Storiesig":
+				providersInstances.push(
+					new StoriesIG(
+						currentProvider.headlessBrowser
+							? new PlaywrightScraper(scraperConfig)
+							: new AxiosScraper(scraperConfig),
+					),
+				);
+				break;
+			case "Iganony":
+				providersInstances.push(new Iganony(new AxiosScraper(scraperConfig)));
+				break;
+			case "Instanavigation":
+				providersInstances.push(
+					new InstaNavigation(
+						currentProvider.headlessBrowser
+							? new PlaywrightScraper(scraperConfig)
+							: new AxiosScraper(scraperConfig),
+					),
+				);
+		}
+	});
 
-			switch (currentProvider.provider) {
-				case "Greatfon":
-					providersInstances.push(
-						new Greatfon(
-							currentProvider.headlessBrowser
-								? new PlaywrightScraper(scraperConfig)
-								: new AxiosScraper(scraperConfig),
-						),
-					);
-					break;
-				case "Wizstat":
-					providersInstances.push(
-						new Wizstat(
-							currentProvider.headlessBrowser
-								? new PlaywrightScraper(scraperConfig)
-								: new AxiosScraper(scraperConfig),
-						),
-					);
-					break;
-				case "Imgsed":
-					providersInstances.push(
-						new Imgsed(
-							currentProvider.headlessBrowser
-								? new PlaywrightScraper(scraperConfig)
-								: new AxiosScraper(scraperConfig),
-						),
-					);
-					break;
-				case "Instastories":
-					providersInstances.push(
-						new InstaStories(
-							currentProvider.headlessBrowser
-								? new PlaywrightScraper(scraperConfig)
-								: new AxiosScraper(scraperConfig),
-						),
-					);
-					break;
-				case "Storiesig":
-					providersInstances.push(
-						new StoriesIG(
-							currentProvider.headlessBrowser
-								? new PlaywrightScraper(scraperConfig)
-								: new AxiosScraper(scraperConfig),
-						),
-					);
-					break;
-				case "Iganony":
-					providersInstances.push(new Iganony(new AxiosScraper(scraperConfig)));
-					break;
-			}
-		});
-
-		return providersInstances;
-	} catch (error) {
-		throw new Error("Could not get the instances");
-	}
+	return providersInstances;
 }
 
 export async function getRandomProvider<T>(canget: ProviderCanGet) {

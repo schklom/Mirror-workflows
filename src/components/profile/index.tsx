@@ -1,6 +1,7 @@
 import { Profile } from "@/services/types";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import Skeleton from "react-loading-skeleton";
 
 const formater = Intl.NumberFormat("en-US", {
@@ -15,7 +16,7 @@ export function SideInfo({
 	data: {
 		name?: string;
 		bio?: string;
-		image?: { src?: string; alt?: string };
+		image?: { src?: string; alt?: string; stories?: number };
 	};
 	children?: JSX.Element;
 }) {
@@ -83,17 +84,37 @@ function ListElement({
 	);
 }
 
-export function Avatar({ image }: { image?: { src?: string; alt?: string } }) {
+export function Avatar({
+	image,
+}: { image?: { src?: string; alt?: string; stories?: number } }) {
+	const { query } = useRouter();
+
 	return (
 		<>
 			{image?.src && image?.alt ? (
-				<Image
-					src={image.src}
-					alt={`${image.alt}'s profile picture`}
-					width={100}
-					height={100}
-					className="self-center rounded-full object-cover"
-				/>
+				image.stories ? (
+					<Link href={`/${query.username}/stories`} className="self-center">
+						<span className="inline-flex items-center gap-1.5 py-1.5 px-3 text-xs font-medium bg-blue-100 text-blue-800 absolute z-10 ml-5 rounded-full">
+							{image.stories}
+						</span>
+						<Image
+							src={image.src}
+							alt={`${image.alt}'s profile picture`}
+							title={`See ${query.username}'s stories (${image.stories})`}
+							width={100}
+							height={100}
+							className="border-[#7fd4a2] border-solid border-4 rounded-full object-cover relative"
+						/>
+					</Link>
+				) : (
+					<Image
+						src={image.src}
+						alt={`${image.alt}'s profile picture`}
+						width={100}
+						height={100}
+						className="self-center rounded-full object-cover"
+					/>
+				)
 			) : (
 				<Skeleton circle width={100} height={100} />
 			)}

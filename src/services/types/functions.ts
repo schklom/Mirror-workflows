@@ -1,6 +1,6 @@
 import { ResultsQuery } from "@/services/greatfon";
 import { Request, Response, Route } from "playwright-core";
-import { Comment, Post, PostsResponse, Profile, Tag } from ".";
+import { Comment, Post, PostsResponse, Profile, Story, Tag } from ".";
 
 export interface IGetProfile {
 	getProfile(username: string): Promise<Profile>;
@@ -19,6 +19,10 @@ export interface IGetPosts {
 }
 export interface IGetPost {
 	getPost(shortcode: string): Promise<Post>;
+}
+
+export interface IGetStories {
+	getStories(username: string): Promise<Story[]>;
 }
 
 export interface IGetSearch {

@@ -1,4 +1,4 @@
-import { Post, PostsResponse, Profile } from "@/services/types";
+import { Post, PostsResponse, Profile, Story } from "@/services/types";
 import { axiosInstance, sleep } from "@/utils";
 import { Feed } from "feed";
 import { getBaseUrl } from "./url";
@@ -34,26 +34,32 @@ const renderContent = (post: Post): string => {
 };
 
 export class RSS {
-	private async createFeed(username: string) {
+	private async createFeed({
+		username,
+		path,
+		titleSufix,
+	}: { username: string; path: string; titleSufix?: string }) {
 		const { data: profile } = await axiosInstance.get<Profile>(username);
 		feed = new Feed({
 			id: profile.username,
-			title: `${profile.fullname} (@${profile.username}) • Proxigram`,
+			title: `${profile.fullname} (@${profile.username}) ${
+				titleSufix ? titleSufix : ""
+			} • Proxigram`,
 			copyright: "All rights to its authors",
 			description: profile.biography,
-			link: `${getBaseUrl()}/${profile.username}`,
+			link: `${getBaseUrl()}/${path}`,
 			image: profile.profilePicture,
 			author: {
 				name: profile.fullname,
 				link: `${getBaseUrl()}/${profile.username}`,
 			},
-			feed: `${getBaseUrl()}/${profile.username}/rss`,
+			feed: `${getBaseUrl()}/${path}/rss`,
 		});
 	}
 
-	async getPostsRss(username: string) {
+	async getPosts(username: string) {
 		const [, { data }] = await Promise.all([
-			this.createFeed(username),
+			this.createFeed({ username, path: username }),
 			axiosInstance.get<PostsResponse>(`${username}/posts`),
 		]);
 		const posts = data.posts;
@@ -100,6 +106,49 @@ export class RSS {
 				image: post.thumb,
 			});
 		}
+
+		return feed.atom1();
+	}
+
+	async getStories(username: string) {
+		const [, { data: stories }] = await Promise.all([
+			this.createFeed({
+				username,
+				path: `${username}/stories`,
+				titleSufix: "- Stories",
+			}),
+			axiosInstance.get<Story[]>(`${username}/stories`),
+		]);
+
+		stories.forEach((story, i) => {
+			feed.addItem({
+				title: story.isVideo ? "Video" : "Image",
+				id: `${username}-story-${i + 1}`,
+				link: `${getBaseUrl()}/${username}/stories#${username}-story-${i + 1}`,
+				content: `
+				${
+					story.isVideo
+						? `
+						<video src="${story.video}" poster="${story.thumb}" controls>
+							<source src="${story.video}" type="video/mp4" />
+						</video>
+						`
+						: `
+						<img src="${story.thumb}" />
+						`
+				}`,
+				author: [
+					{
+						name: username,
+						link: `${getBaseUrl()}/${username}`,
+					},
+				],
+				date: story.created_at?.timestamp
+					? new Date(story.created_at.timestamp * 1000)
+					: new Date(Date.now()),
+				image: story.thumb,
+			});
+		});
 
 		return feed.atom1();
 	}

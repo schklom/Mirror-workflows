@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 
 export function Header() {
-	const { query } = useRouter();
+	const { asPath, query } = useRouter();
 
 	return (
 		<header className="flex h-16 items-center justify-between bg-[#69463d] px-2 text-white shadow-sm shadow-slate-500">
@@ -19,7 +19,7 @@ export function Header() {
 				<ul className="flex gap-2">
 					{query.username && (
 						<li>
-							<Link href={`${query.username}/rss`} target="_blank">
+							<Link href={`${asPath}/rss`} target="_blank">
 								<IconRss className="h-6 w-6" />
 							</Link>
 						</li>

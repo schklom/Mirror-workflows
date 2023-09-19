@@ -5,7 +5,8 @@ export type ProviderCanGet =
 	| "Tags"
 	| "Search"
 	| "Comments"
-	| "load_more";
+	| "load_more"
+	| "Stories";
 
 export interface Provider {
 	url: string;

@@ -61,13 +61,16 @@ Using an instance of Proxigram, you can browse Instagram without JavaScript whil
 - See user profile and feed
 - See individual post
 - See tags
+- Stories
 - RSS feeds
-  - ```/{username}/rss```
+  - ```/{username}/rss``` -> Feed
+  - ```/{username}/stories/rss``` -> Stories
 - API
   - ```/api/{username}``` -> profile info
   - ```/api/{username}/posts``` -> profile feed
     - query:
       - cursor
+  - ```/api/{username}/stories``` -> profile stories
   - ```/api/p/{shortcode}``` -> post
   - ```/api/p/{shortcode}/comments``` -> post's comments
   - ```/api/tag/{tag}``` -> tag posts
@@ -78,7 +81,7 @@ Using an instance of Proxigram, you can browse Instagram without JavaScript whil
 
 ## Roadmap
 
-- [ ] Add stories
+- [X] Add stories
 - [ ] Add highlights
 - [X] Add rss feed
 - [ ] Add settings

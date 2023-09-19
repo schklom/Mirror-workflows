@@ -3,7 +3,6 @@ import type {
 	InferGetServerSidePropsType,
 } from "next";
 import type { Comment, Post } from "@/services/types";
-import Image from "next/image";
 import { Layout } from "@/components/layouts/Layout";
 import { Comments } from "@/components/p/Comments";
 import { PostHeader } from "@/components/p/PostHeader";
@@ -11,6 +10,7 @@ import { axiosInstance } from "@/utils";
 import { Slide, SlideItem } from "@/components/p/Slide";
 import { isAxiosError } from "axios";
 import { ErrorInfo } from "@/components/error/ErrorInfo";
+import { Img, Video } from "@/components/p/Body";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
@@ -22,12 +22,10 @@ export default function PostPage({ post, comments, error }: Props) {
 	const isSideCard = post.isSideCard && post.sidecard;
 
 	const meta = {
-		title: `@${post.author?.username} posted: "${
-			post.description ? post.description : post.id
-		}"`,
-		description: `@${post.author?.username} posted: "${
-			post.description ? post.description : post.id
-		}"`,
+		title: `@${post.author?.username} posted: "${post.description ? post.description : post.id
+			}"`,
+		description: `@${post.author?.username} posted: "${post.description ? post.description : post.id
+			}"`,
 	};
 
 	return (
@@ -69,16 +67,6 @@ export default function PostPage({ post, comments, error }: Props) {
 		</Layout>
 	);
 }
-
-const Video = ({ url }: { url: string }) => (
-	<video src={url} controls muted={false}>
-		<source src={url} type="video/mp4" />
-	</video>
-);
-
-const Img = ({ url, alt }: { url: string; alt: string }) => (
-	<Image src={url} alt={alt} width={455} height={455} />
-);
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 	try {

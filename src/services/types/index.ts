@@ -40,6 +40,16 @@ export interface Post {
 	};
 }
 
+export interface Story {
+	thumb: string;
+	video?: string;
+	isVideo?: boolean;
+	created_at?: {
+		relative?: string;
+		timestamp?: number;
+	};
+}
+
 export interface Author {
 	username: string;
 	name?: string;

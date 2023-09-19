@@ -12,7 +12,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 	const username = ctx.params?.username as string;
 	const rss = new RSS();
-	const feedString = await rss.getPostsRss(username);
+	const feedString = await rss.getPosts(username);
 
 	ctx.res.setHeader("Content-Type", "text/xml");
 	ctx.res.write(feedString);

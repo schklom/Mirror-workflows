@@ -37,15 +37,14 @@ export default function ProfilePage({ profile, posts, stories, error }: Props) {
 				>
 					<ProfileComponent data={profile} />
 				</SideInfo>
-				<div>
-					{posts ? (
-						<Posts posts={posts.posts} />
+				<section>
+					{!profile.isPrivate ? (
+						<Posts posts={posts?.posts} />
 					) : (
 						<h3>This account is private</h3>
 					)}
-
 					{posts?.cursor && <LoadMore cursor={posts.cursor} />}
-				</div>
+				</section>
 			</section>
 		</Layout>
 	);

@@ -35,7 +35,8 @@
                 <select name="from" aria-label="Source language">
                     {{range $code, $name := .SourceLanguages}}
                     {{if and (eq $code "auto") $.SourceLanguage}}
-                    <option value="{{ $code }}" {{if eq $code $.From}}selected{{end}}>{{ $name }} ({{index $.SourceLanguages $.SourceLanguage}})</option>
+                    <option value="{{ $code }}" {{if eq $code $.From}}selected{{end}}>{{ $name }} ({{index
+                        $.SourceLanguages $.SourceLanguage}})</option>
                     {{else }}
                     <option value="{{ $code }}" {{if eq $code $.From}}selected{{end}}>{{ $name }}</option>
                     {{end}}
@@ -125,8 +126,9 @@
                 <ul>
                     {{ range $word, $word_translations := $translations }}
                     <li>
-                        <span class="syn_type">{{$word}}:</span>                        
-                        <span class="syn">{{ range $index, $element := $word_translations.words}}{{if $index}}, {{end}}{{$element}}{{end}}</span>
+                        <span class="syn_type">{{$word}}:</span>
+                        <span class="syn">{{ range $index, $element := $word_translations.words}}{{if $index}},
+                            {{end}}{{$element}}{{end}}</span>
                         <span class="syn_type">{{$word_translations.frequency}}</span>
                     </li>
                     <br>
@@ -138,6 +140,11 @@
         </div>
 
     </form>
+    <br><br><br><br><br>
+    <footer class="center">
+        <a href="https://codeberg.org/ManeraKai/simplytranslate">Source Code</a>
+    </footer>
+
     <script src="/static/script.js"></script>
 </body>
 

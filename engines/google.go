@@ -277,6 +277,10 @@ func (_ *GoogleTranslate) Translate(text string, from, to string) (TranslationRe
 		}
 	}
 
+	if from == "auto" {
+		from = ""
+	}
+
 	return TranslationResult{
 		SourceLanguage: from,
 		Definitions:    definitions,

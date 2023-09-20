@@ -22,22 +22,30 @@ export default function PostPage({ post, comments, error }: Props) {
 	const isSideCard = post.isSideCard && post.sidecard;
 
 	const meta = {
-		title: `@${post.author?.username} posted: "${post.description ? post.description : post.id
-			}"`,
-		description: `@${post.author?.username} posted: "${post.description ? post.description : post.id
-			}"`,
+		title: `@${post.author?.username} posted: "${
+			post.description ? post.description : post.id
+		}"`,
+		description: `@${post.author?.username} posted: "${
+			post.description ? post.description : post.id
+		}"`,
 	};
 
 	return (
 		<Layout className="grid sm:grid sm:grid-cols-2" meta={meta}>
 			<div className="m-4 bg-gray-50 p-1">
 				{post.author && <PostHeader post={post} />}
-				<div>
+				<div className="flex flex-col">
 					{isOneImage && (
-						<Img url={post.thumb} alt={String(post.description)} />
+						<Img
+							url={post.thumb}
+							alt={String(post.description)}
+							className="self-center"
+						/>
 					)}
 
-					{isVideo && <Video url={String(post.video)} />}
+					{isVideo && (
+						<Video url={String(post.video)} className="self-center" />
+					)}
 
 					{isSideCard && (
 						<Slide length={Number(post.sidecard?.length)} id={post.id}>

@@ -1,4 +1,4 @@
-name: Sync+build+push SimplyTranslate
+name: Sync+build+push SimplyTranslateNEW
 
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
@@ -25,8 +25,8 @@ jobs:
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
         run: |
-          echo "SETREMOTE_ENGINES=$(git ls-remote https://codeberg.org/ManeraKai/simplytranslate HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
-          echo "SETLOCAL_ENGINES=$(cat last_sync_with_original_repo_commit_id)" >> $GITHUB_OUTPUT
+          echo "SETREMOTE=$(git ls-remote https://codeberg.org/ManeraKai/simplytranslate HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+          echo "SETLOCAL=$(cat last_sync_with_original_repo_commit_id)" >> $GITHUB_OUTPUT
   
   repo_sync:
     needs: [get_commits]

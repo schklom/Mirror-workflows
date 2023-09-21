@@ -71,7 +71,7 @@ jobs:
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
         with:
-          commit_message: Add last_sync_with_original_repo_commit_id_engines + last_sync_with_original_repo_commit_id_web + last_sync_with_original_repo_commit_id_docker + Fix Dockerfile
+          commit_message: Add last_sync_with_original_repo_commit_id_engines + last_sync_with_original_repo_commit_id_web + last_sync_with_original_repo_commit_id_docker
 
   build_push:
     needs: [repo_sync]

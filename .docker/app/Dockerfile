@@ -4,9 +4,7 @@ EXPOSE 9000/tcp
 ENV SCRIPT_ROOT=/opt/tt-rss
 ENV SRC_DIR=/src/tt-rss/
 
-RUN sed -i.bak 's#dl-cdn.alpinelinux.org#nexus.fakecake.org/repository#' /etc/apk/repositories && \
-	apk update && \
-	apk add --no-cache dcron php82 php82-fpm php82-phar php82-sockets php82-pecl-apcu \
+RUN apk add --no-cache dcron php82 php82-fpm php82-phar php82-sockets php82-pecl-apcu \
 	php82-pdo php82-gd php82-pgsql php82-pdo_pgsql php82-xmlwriter php82-opcache \
 	php82-mbstring php82-intl php82-xml php82-curl php82-simplexml \
 	php82-session php82-tokenizer php82-dom php82-fileinfo php82-ctype \

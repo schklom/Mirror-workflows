@@ -3,8 +3,6 @@ import { axiosInstance, sleep } from "@/utils";
 import { Feed } from "feed";
 import { getBaseUrl } from "./url";
 
-let feed: Feed;
-
 const renderContent = (post: Post): string => {
 	let html = "";
 
@@ -34,13 +32,14 @@ const renderContent = (post: Post): string => {
 };
 
 export class RSS {
+	private feed!: Feed;
 	private async createFeed({
 		username,
 		path,
 		titleSufix,
 	}: { username: string; path: string; titleSufix?: string }) {
 		const { data: profile } = await axiosInstance.get<Profile>(username);
-		feed = new Feed({
+		this.feed = new Feed({
 			id: profile.username,
 			title: `${profile.fullname} (@${profile.username}) ${
 				titleSufix ? titleSufix : ""
@@ -81,7 +80,7 @@ export class RSS {
 					: post.description
 				: null;
 
-			feed.addItem({
+			this.feed.addItem({
 				title: truncatedDescription
 					? `${type}: ${truncatedDescription}`
 					: `${type}`,
@@ -107,7 +106,7 @@ export class RSS {
 			});
 		}
 
-		return feed.atom1();
+		return this.feed.atom1();
 	}
 
 	async getStories(username: string) {
@@ -121,7 +120,7 @@ export class RSS {
 		]);
 
 		stories.forEach((story, i) => {
-			feed.addItem({
+			this.feed.addItem({
 				title: story.isVideo ? "Video" : "Image",
 				id: `${username}-story-${i + 1}`,
 				link: `${getBaseUrl()}/${username}/stories#${username}-story-${i + 1}`,
@@ -150,6 +149,6 @@ export class RSS {
 			});
 		});
 
-		return feed.atom1();
+		return this.feed.atom1();
 	}
 }

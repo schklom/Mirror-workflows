@@ -1,5 +1,5 @@
 import { Post, PostsResponse, Profile, Story } from "@/services/types";
-import { axiosInstance, sleep } from "@/utils";
+import { axiosInstance } from "@/utils";
 import { Feed } from "feed";
 import { getBaseUrl } from "./url";
 
@@ -32,14 +32,13 @@ const renderContent = (post: Post): string => {
 };
 
 export class RSS {
-	private feed!: Feed;
 	private async createFeed({
 		username,
 		path,
 		titleSufix,
 	}: { username: string; path: string; titleSufix?: string }) {
 		const { data: profile } = await axiosInstance.get<Profile>(username);
-		this.feed = new Feed({
+		return new Feed({
 			id: profile.username,
 			title: `${profile.fullname} (@${profile.username}) ${
 				titleSufix ? titleSufix : ""
@@ -57,60 +56,65 @@ export class RSS {
 	}
 
 	async getPosts(username: string) {
-		const [, { data }] = await Promise.all([
+		const [feed, { data }] = await Promise.all([
 			this.createFeed({ username, path: username }),
 			axiosInstance.get<PostsResponse>(`${username}/posts`),
 		]);
-		const posts = data.posts;
-
 		const maximumPosts =
 			process.env.ITEMS_PER_RSS > 12 ? 12 : process.env.ITEMS_PER_RSS;
+		const shorcodes = data.posts.slice(0, maximumPosts).map((p) => p.shortcode);
+		const posts = await Promise.allSettled(
+			shorcodes.map(
+				async (shortcode) =>
+					(
+						await axiosInstance.get<Post>(`p/${shortcode}`)
+					).data,
+			),
+		);
 
-		for (let i = 0; i < maximumPosts; i++) {
-			const p = posts[i];
-			await sleep(process.env.SLEEP_TIME_PER_REQUEST);
-			const { data: post } = await axiosInstance.get<Post>(`p/${p.shortcode}`);
-
-			const type = `${
-				post.isSideCard ? "Sidecard" : post.isVideo ? "Video" : "Photo"
-			}`;
-			const truncatedDescription = post.description
-				? post.description.length > 30
-					? `${post.description.slice(0, 30)}...`
-					: post.description
-				: null;
-
-			this.feed.addItem({
-				title: truncatedDescription
-					? `${type}: ${truncatedDescription}`
-					: `${type}`,
-				id: post.id,
-				link: `${getBaseUrl()}/p/${post.shortcode}`,
-				description: post.description,
-				content: `
+		posts.forEach((p) => {
+			if (p.status === "fulfilled") {
+				const post = p.value;
+				const type = `${
+					post.isSideCard ? "Sidecard" : post.isVideo ? "Video" : "Photo"
+				}`;
+				const truncatedDescription = post.description
+					? post.description.length > 30
+						? `${post.description.slice(0, 30)}...`
+						: post.description
+					: null;
+				feed.addItem({
+					title: truncatedDescription
+						? `${type}: ${truncatedDescription}`
+						: `${type}`,
+					id: post.id,
+					link: `${getBaseUrl()}/p/${post.shortcode}`,
+					description: post.description,
+					content: `
 					<p>
 						${post.description}
 					</p>
 					${renderContent(post)}
 				`,
-				author: [
-					{
-						name: post.author?.name,
-						link: `${getBaseUrl()}/${post.author?.username}`,
-					},
-				],
-				date: post.created_at?.timestamp
-					? new Date(post.created_at?.timestamp * 1000)
-					: new Date(Date.now()),
-				image: post.thumb,
-			});
-		}
+					author: [
+						{
+							name: post.author?.username,
+							link: `${getBaseUrl()}/${post.author?.username}`,
+						},
+					],
+					date: post.created_at?.timestamp
+						? new Date(post.created_at?.timestamp * 1000)
+						: new Date(Date.now()),
+					image: post.thumb,
+				});
+			}
+		});
 
-		return this.feed.atom1();
+		return feed.atom1();
 	}
 
 	async getStories(username: string) {
-		const [, { data: stories }] = await Promise.all([
+		const [feed, { data: stories }] = await Promise.all([
 			this.createFeed({
 				username,
 				path: `${username}/stories`,
@@ -120,7 +124,7 @@ export class RSS {
 		]);
 
 		stories.forEach((story, i) => {
-			this.feed.addItem({
+			feed.addItem({
 				title: story.isVideo ? "Video" : "Image",
 				id: `${username}-story-${i + 1}`,
 				link: `${getBaseUrl()}/${username}/stories#${username}-story-${i + 1}`,
@@ -149,6 +153,6 @@ export class RSS {
 			});
 		});
 
-		return this.feed.atom1();
+		return feed.atom1();
 	}
 }

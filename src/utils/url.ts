@@ -1,12 +1,13 @@
+import { env } from "@/utils/env.mjs";
 import { convertFromBase64 } from "./text";
 
 export function getBaseUrl() {
-	const url = new URL(process.env.URL);
+	const url = new URL(env.URL);
 	return `${url.protocol}//${url.host}`;
 }
 
 export function proxyUrl(url: string) {
-	if (process.env.PROXY === "false") return url;
+	if (!env.PROXY) return url;
 	return `${getBaseUrl()}/api/proxy?url=${encodeURIComponent(url)}`;
 }
 

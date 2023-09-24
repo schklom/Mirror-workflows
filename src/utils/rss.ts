@@ -1,7 +1,10 @@
-import { Post, PostsResponse, Profile, Story } from "@/services/types";
-import { axiosInstance } from "@/utils";
+import redis from "./redis";
+import { env } from "./env.mjs";
 import { Feed } from "feed";
 import { getBaseUrl } from "./url";
+import { axiosInstance } from "@/utils";
+import { convertTTlToTimestamp } from "./converters/time";
+import { Post, PostsResponse, Profile, Story } from "@/services/types";
 
 const renderContent = (post: Post): string => {
 	let html = "";
@@ -31,6 +34,8 @@ const renderContent = (post: Post): string => {
 	return html;
 };
 
+const expireTime = convertTTlToTimestamp(env.EXPIRE_TIME_FOR_RSS);
+
 export class RSS {
 	private async createFeed({
 		username,
@@ -56,13 +61,18 @@ export class RSS {
 	}
 
 	async getPosts(username: string) {
+		const cachedFeed = await redis.get(`feed:${username}`);
+		if (cachedFeed) {
+			return cachedFeed;
+		}
+
 		const [feed, { data }] = await Promise.all([
 			this.createFeed({ username, path: username }),
 			axiosInstance.get<PostsResponse>(`${username}/posts`),
 		]);
-		const maximumPosts =
-			process.env.ITEMS_PER_RSS > 12 ? 12 : process.env.ITEMS_PER_RSS;
-		const shorcodes = data.posts.slice(0, maximumPosts).map((p) => p.shortcode);
+		const shorcodes = data.posts
+			.slice(0, env.ITEMS_PER_RSS)
+			.map((p) => p.shortcode);
 		const posts = await Promise.allSettled(
 			shorcodes.map(
 				async (shortcode) =>
@@ -110,10 +120,16 @@ export class RSS {
 			}
 		});
 
-		return feed.atom1();
+		const feedString = feed.atom1();
+		await redis.setex(`feed:${username}`, expireTime, feedString);
+		return feedString;
 	}
 
 	async getStories(username: string) {
+		const cachedFeed = await redis.get(`feed:${username}:stories`);
+		if (cachedFeed) {
+			return cachedFeed;
+		}
 		const [feed, { data: stories }] = await Promise.all([
 			this.createFeed({
 				username,
@@ -153,6 +169,8 @@ export class RSS {
 			});
 		});
 
-		return feed.atom1();
+		const feedString = feed.atom1();
+		await redis.setex(`feed:${username}:stories`, expireTime, feedString);
+		return feedString;
 	}
 }

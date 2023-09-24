@@ -16,15 +16,9 @@ export class StoriesIG implements IGetProfile, IGetStories {
 		const path = `api/ig/userInfoByUsername/${username}`;
 
 		if (this.scraper instanceof AxiosScraper) {
-			json = await this.scraper.getJson<StoriesIGProfile>({
-				path,
-				expireTime: this.scraper.config.ttl?.posts as number,
-			});
+			json = await this.scraper.getJson<StoriesIGProfile>({ path });
 		} else {
-			const html = await this.scraper.getHtml({
-				path,
-				expireTime: this.scraper.config.ttl?.post as number,
-			});
+			const html = await this.scraper.getHtml({ path });
 			const $ = cheerio.load(html);
 			json = JSON.parse($("pre").text());
 		}
@@ -53,15 +47,9 @@ export class StoriesIG implements IGetProfile, IGetStories {
 		)}`;
 
 		if (this.scraper instanceof AxiosScraper) {
-			json = await this.scraper.getJson<StoriesIGStories>({
-				path,
-				expireTime: this.scraper.config.ttl?.posts as number,
-			});
+			json = await this.scraper.getJson<StoriesIGStories>({ path });
 		} else {
-			const html = await this.scraper.getHtml({
-				path,
-				expireTime: this.scraper.config.ttl?.post as number,
-			});
+			const html = await this.scraper.getHtml({ path });
 			const $ = cheerio.load(html);
 			json = JSON.parse($("pre").text());
 		}

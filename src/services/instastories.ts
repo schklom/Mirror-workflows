@@ -33,23 +33,11 @@ export class InstaStories implements IGetProfile {
 		const path = `api/profile/v3/info?username=${username}`;
 
 		if (this.scraper instanceof AxiosScraper) {
-			await this.scraper.getJson<InstaStoriesRes>({
-				path: pathCash,
-				expireTime: this.scraper.config.ttl?.posts as number,
-			});
-			profile = await this.scraper.getJson<InstaStoriesProfile>({
-				path,
-				expireTime: this.scraper.config.ttl?.posts as number,
-			});
+			await this.scraper.getJson<InstaStoriesRes>({ path: pathCash });
+			profile = await this.scraper.getJson<InstaStoriesProfile>({ path });
 		} else {
-			await this.scraper.getHtml({
-				path: pathCash,
-				expireTime: this.scraper.config.ttl?.post as number,
-			});
-			const html = await this.scraper.getHtml({
-				path,
-				expireTime: this.scraper.config.ttl?.post as number,
-			});
+			await this.scraper.getHtml({ path: pathCash });
+			const html = await this.scraper.getHtml({ path });
 			const $ = cheerio.load(html);
 			profile = JSON.parse($("pre").text());
 		}

@@ -1,12 +1,13 @@
+import * as cheerio from "cheerio";
+import { env } from "@/utils/env.mjs";
+import { sleep } from "@/utils";
 import { proxyUrl } from "@/utils/url";
 import { AxiosScraper } from "./scrapers/axios";
 import { Post, PostsResponse, Profile } from "./types";
-import { IGetPosts, IGetProfile, IgetPostsOptions } from "./types/functions";
-import * as cheerio from "cheerio";
-import { sleep } from "@/utils";
+import { convertTimestampToRelativeTime } from "@/utils/converters/time";
 import { convertToBase64, extractTagsAndUsers } from "@/utils/text";
 import { mediaIdToShortcode, shortcodeToMediaId } from "@/utils/id";
-import { convertTimestampToRelativeTime } from "@/utils/converters/time";
+import { IGetPosts, IGetProfile, IgetPostsOptions } from "./types/functions";
 
 interface IganonyResponse {
 	status: number;
@@ -73,19 +74,15 @@ export class Iganony implements IGetProfile, IGetPosts {
 	constructor(private scraper: AxiosScraper) {}
 
 	private async fetchProfileAndPosts(username: string) {
-		const html = await this.scraper.getHtml({
-			path: `/profile/${username}`,
-			expireTime: this.scraper.config.ttl?.posts as number,
-		});
+		const html = await this.scraper.getHtml({ path: `/profile/${username}` });
 		const $ = cheerio.load(html);
 		const nextData = $("script#__NEXT_DATA__").text();
 		const profileSessionID =
 			JSON.parse(nextData).props.pageProps.profileInfo.profileSessionID;
 
-		await sleep(process.env.SLEEP_TIME_PER_REQUEST);
+		await sleep(env.SLEEP_TIME_PER_REQUEST);
 		return await this.scraper.getJson<IganonyResponse>({
 			path: `/api/profile/${username}`,
-			expireTime: this.scraper.config.ttl?.posts as number,
 			data: {
 				token: "",
 				profileSessionID,
@@ -99,7 +96,6 @@ export class Iganony implements IGetProfile, IGetPosts {
 	}: { userId: number; cursor: string }) {
 		const { data, after } = await this.scraper.getJson<IganonyMorePosts>({
 			path: `/api/posts/${userId}?after=${cursor}`,
-			expireTime: this.scraper.config.ttl?.posts as number,
 		});
 		const posts: Post[] = data.map((post) => ({
 			id: post.id,

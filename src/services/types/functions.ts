@@ -1,5 +1,4 @@
 import { ResultsQuery } from "@/services/greatfon";
-import { Request, Response, Route } from "playwright-core";
 import { Comment, Post, PostsResponse, Profile, Story, Tag } from ".";
 
 export interface IGetProfile {
@@ -31,7 +30,6 @@ export interface IGetSearch {
 
 export interface IGetHtmlOptions {
 	path: string;
-	expireTime: number;
 	data?: unknown;
 }
 
@@ -50,19 +48,6 @@ export interface IGetHtml {
 
 export interface IGetJson {
 	getJson<T>(options: IGetHtmlOptions): Promise<T>;
-}
-
-export interface IGetRequestResponseOptions {
-	match: string | RegExp | ((response: Response) => boolean | Promise<boolean>);
-	path: string;
-	expireTime: number;
-}
-
-export interface IGetRequestResponse {
-	getRequestResponse<T>(
-		options: IGetRequestResponseOptions,
-		callback?: (route: Route, request: Request) => unknown,
-	): Promise<T>;
 }
 
 export interface IGetAll extends IGetProfile, IGetPost, IGetPosts, IGetTag {}

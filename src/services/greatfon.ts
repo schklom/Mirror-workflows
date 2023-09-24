@@ -1,3 +1,13 @@
+import * as cheerio from "cheerio";
+import { env } from "@/utils/env.mjs";
+import { sleep } from "@/utils";
+import { proxyUrl } from "@/utils/url";
+import { AxiosScraper } from "./scrapers/axios";
+import { compactToNumber } from "@/utils/converters/numbers";
+import { PlaywrightScraper } from "./scrapers/playwright";
+import { mediaIdToShortcode, shortcodeToMediaId } from "@/utils/id";
+import { IGetAll, IGetTagOptions, IgetPostsOptions } from "./types/functions";
+import { Comment, Post, PostsResponse, Profile, Tag } from "./types";
 import {
 	stripHtmlTags,
 	reverseString,
@@ -9,15 +19,6 @@ import {
 	convertTextToTimestamp,
 	convertTimestampToRelativeTime,
 } from "@/utils/converters/time";
-import * as cheerio from "cheerio";
-import { proxyUrl } from "@/utils/url";
-import { AxiosScraper } from "./scrapers/axios";
-import { compactToNumber } from "@/utils/converters/numbers";
-import { PlaywrightScraper } from "./scrapers/playwright";
-import { mediaIdToShortcode, shortcodeToMediaId } from "@/utils/id";
-import { IGetAll, IGetTagOptions, IgetPostsOptions } from "./types/functions";
-import { Comment, Post, PostsResponse, Profile, Tag } from "./types";
-import { sleep } from "@/utils";
 
 export interface ResultsQuery {
 	accounts: {
@@ -33,10 +34,7 @@ export class Greatfon implements IGetAll {
 	constructor(private scraper: AxiosScraper | PlaywrightScraper) {}
 
 	private async scrapePosts(path: string): Promise<PostsResponse> {
-		const html = await this.scraper.getHtml({
-			path,
-			expireTime: this.scraper.config.ttl?.posts as number,
-		});
+		const html = await this.scraper.getHtml({ path });
 		const $ = cheerio.load(html);
 		const posts: Post[] = [];
 
@@ -57,10 +55,9 @@ export class Greatfon implements IGetAll {
 
 		const cursor = String($("#load_more").attr("data-cursor"));
 		const username = path.match(/\/([^\/?]+)(?=\/?(\?|$))/)?.at(1);
-		await sleep(process.env.SLEEP_TIME_PER_REQUEST);
+		await sleep(env.SLEEP_TIME_PER_REQUEST);
 		const hasNextHtml = await this.scraper.getHtml({
 			path: `api/profile/${username}/?cursor=${cursor}`,
-			expireTime: this.scraper.config.ttl?.posts as number,
 		});
 		const $$ = cheerio.load(hasNextHtml);
 		const hasNext = $$(".grid-item").length > 0;
@@ -73,10 +70,7 @@ export class Greatfon implements IGetAll {
 	}
 
 	async getProfile(username: string): Promise<Profile> {
-		const html = await this.scraper.getHtml({
-			path: `v/${username}`,
-			expireTime: this.scraper.config.ttl?.posts as number,
-		});
+		const html = await this.scraper.getHtml({ path: `v/${username}` });
 		const $ = cheerio.load(html);
 
 		const urlStr = $(".user__img").attr("style") as string;
@@ -86,7 +80,6 @@ export class Greatfon implements IGetAll {
 
 		const $username = $(".user__info").find("h4").text();
 		const usr = $username.startsWith("@") ? $username.slice(1) : username;
-
 		const $userTitle = $(".user__title");
 
 		return {
@@ -158,10 +151,7 @@ export class Greatfon implements IGetAll {
 	async getPost(shortcode: string): Promise<Post> {
 		const mediaId = shortcodeToMediaId(shortcode);
 		const reversedId = reverseString(mediaId);
-		const html = await this.scraper.getHtml({
-			path: `c/${reversedId}`,
-			expireTime: this.scraper.config.ttl?.post as number,
-		});
+		const html = await this.scraper.getHtml({ path: `c/${reversedId}` });
 		const $ = cheerio.load(html);
 		const author = await this.getProfile(
 			$(".main__user-info").find("a").text().replace("@", ""),
@@ -229,10 +219,7 @@ export class Greatfon implements IGetAll {
 	async getComments(shortcode: string): Promise<Comment[]> {
 		const mediaId = shortcodeToMediaId(shortcode);
 		const reversedId = reverseString(mediaId);
-		const html = await this.scraper.getHtml({
-			path: `c/${reversedId}`,
-			expireTime: this.scraper.config.ttl?.post as number,
-		});
+		const html = await this.scraper.getHtml({ path: `c/${reversedId}` });
 		const $ = cheerio.load(html);
 		const comments: Comment[] = [];
 
@@ -259,10 +246,7 @@ export class Greatfon implements IGetAll {
 	}
 
 	async search(query: string): Promise<ResultsQuery> {
-		const html = await this.scraper.getHtml({
-			path: `search/?query=${query}`,
-			expireTime: this.scraper.config.ttl?.search as number,
-		});
+		const html = await this.scraper.getHtml({ path: `search/?query=${query}` });
 		const $ = cheerio.load(html);
 
 		const accounts: {

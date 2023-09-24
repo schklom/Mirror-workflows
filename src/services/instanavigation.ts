@@ -61,15 +61,9 @@ export class InstaNavigation implements IGetStories {
 		const path = `api/v1/stories/${username64}`;
 
 		if (this.scraper instanceof AxiosScraper) {
-			response = await this.scraper.getJson<Welcome>({
-				path,
-				expireTime: this.scraper.config.ttl?.posts as number,
-			});
+			response = await this.scraper.getJson<Welcome>({ path });
 		} else {
-			const html = await this.scraper.getHtml({
-				path,
-				expireTime: this.scraper.config.ttl?.post as number,
-			});
+			const html = await this.scraper.getHtml({ path });
 			const $ = cheerio.load(html);
 			response = JSON.parse($("pre").text());
 		}

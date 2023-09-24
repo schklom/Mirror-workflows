@@ -1,14 +1,24 @@
+import redis from "@/utils/redis";
+import { env } from "@/utils/env.mjs";
 import { Post } from "@/services/types";
 import { IGetPost } from "@/services/types/functions";
 import { getRandomProvider } from "@/services";
 import { withExeptionFilter } from "@/utils/withExceptionFilter";
-import type { NextApiRequest, NextApiResponse } from "next";
+import { convertTTlToTimestamp } from "@/utils/converters/time";
+import { NextApiRequest, NextApiResponse } from "next";
 
 async function getPost(req: NextApiRequest, res: NextApiResponse<Post>) {
 	const shortcode = req.query.shortcode as string;
-	const randomProvider = await getRandomProvider<IGetPost>("Post");
+	const expireTime = convertTTlToTimestamp(env.EXPIRE_TIME_FOR_POST);
 
+	const cachedData = await redis.get(`p:${shortcode}`);
+	if (cachedData) {
+		return res.json(JSON.parse(cachedData));
+	}
+
+	const randomProvider = await getRandomProvider<IGetPost>("Post");
 	const post = await randomProvider.getPost(shortcode);
+	await redis.setex(`p:${shortcode}`, expireTime, JSON.stringify(post));
 	return res.json(post);
 }
 

@@ -44,10 +44,7 @@ export class Wizstat implements IGetProfile, IGetPost, IGetPosts, IGetComments {
 	constructor(private scraper: AxiosScraper | PlaywrightScraper) {}
 
 	private async scrapePosts(username: string): Promise<PostsResponse> {
-		const html = await this.scraper.getHtml({
-			path: `${username}/`,
-			expireTime: this.scraper.config.ttl?.posts as number,
-		});
+		const html = await this.scraper.getHtml({ path: `${username}/` });
 		const $ = cheerio.load(html);
 		const posts: Post[] = [];
 
@@ -81,10 +78,7 @@ export class Wizstat implements IGetProfile, IGetPost, IGetPosts, IGetComments {
 	}
 
 	async getProfile(username: string): Promise<Profile> {
-		const html = await this.scraper.getHtml({
-			path: `${username}/`,
-			expireTime: this.scraper.config.ttl?.posts as number,
-		});
+		const html = await this.scraper.getHtml({ path: `${username}/` });
 		const $ = cheerio.load(html);
 
 		return {
@@ -118,15 +112,9 @@ export class Wizstat implements IGetProfile, IGetPost, IGetPosts, IGetComments {
 		let json: PostsMain;
 
 		if (this.scraper instanceof AxiosScraper) {
-			json = await this.scraper.getJson<PostsMain>({
-				path,
-				expireTime: this.scraper.config.ttl?.post as number,
-			});
+			json = await this.scraper.getJson<PostsMain>({ path });
 		} else {
-			const html = await this.scraper.getHtml({
-				path,
-				expireTime: this.scraper.config.ttl?.post as number,
-			});
+			const html = await this.scraper.getHtml({ path });
 			const $ = cheerio.load(html);
 			json = JSON.parse($("pre").text()) as PostsMain;
 		}
@@ -152,10 +140,7 @@ export class Wizstat implements IGetProfile, IGetPost, IGetPosts, IGetComments {
 	}
 
 	async getPost(shortcode: string): Promise<Post> {
-		const html = await this.scraper.getHtml({
-			path: `p/${shortcode}/`,
-			expireTime: this.scraper.config.ttl?.post as number,
-		});
+		const html = await this.scraper.getHtml({ path: `p/${shortcode}/` });
 		const $ = cheerio.load(html);
 
 		const post: Post = {
@@ -222,10 +207,7 @@ export class Wizstat implements IGetProfile, IGetPost, IGetPosts, IGetComments {
 	}
 
 	async getComments(shortcode: string): Promise<Comment[]> {
-		const html = await this.scraper.getHtml({
-			path: `p/${shortcode}/`,
-			expireTime: this.scraper.config.ttl?.post as number,
-		});
+		const html = await this.scraper.getHtml({ path: `p/${shortcode}/` });
 		const $ = cheerio.load(html);
 		const comments: Comment[] = [];
 

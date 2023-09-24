@@ -1,4 +1,3 @@
-import redis, { createRedisKeyFromUrl } from "@/utils/redis";
 import { randomUserAgent } from "..";
 import { Request, Route, chromium } from "playwright-core";
 import { IGetHtml, IGetHtmlOptions } from "../types/functions";
@@ -7,11 +6,6 @@ export class PlaywrightScraper implements IGetHtml {
 	constructor(
 		public config: {
 			baseURL: string;
-			ttl?: {
-				posts?: number;
-				post?: number;
-				search?: number;
-			};
 		},
 	) {}
 
@@ -43,14 +37,10 @@ export class PlaywrightScraper implements IGetHtml {
 		};
 	}
 
-	async getHtml({ path, expireTime }: IGetHtmlOptions): Promise<string> {
+	async getHtml({ path }: IGetHtmlOptions): Promise<string> {
 		const URL = `${this.config.baseURL}/${path}`;
-		const KEY = createRedisKeyFromUrl(URL);
-
-		const cachedData = await redis.get(KEY);
-		if (cachedData) return cachedData as string;
-
 		const { page } = await this.init();
+
 		page.route("**/*", (route, request) =>
 			this.abortUnwantedRequests(
 				["image", "script", "stylesheet", "font"],
@@ -62,11 +52,7 @@ export class PlaywrightScraper implements IGetHtml {
 		await page.goto(URL, { waitUntil: "load" });
 		const html = await page.content();
 
-		await Promise.allSettled([
-			page.close(),
-			redis.setex(KEY, expireTime, html),
-		]);
-
+		await page.close();
 		return html;
 	}
 }

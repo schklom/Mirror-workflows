@@ -1,20 +1,24 @@
+import redis from "@/utils/redis";
+import { env } from "@/utils/env.mjs";
 import { IGetTag } from "@/services/types/functions";
-import { ApiError } from "next/dist/server/api-utils";
 import { TagResponse } from "@/services/types";
-import { HttpStatusCode } from "axios";
 import { getRandomProvider } from "@/services";
 import { withExeptionFilter } from "@/utils/withExceptionFilter";
-import type { NextApiRequest, NextApiResponse } from "next";
+import { convertTTlToTimestamp } from "@/utils/converters/time";
+import { NextApiRequest, NextApiResponse } from "next";
 
 async function getTag(req: NextApiRequest, res: NextApiResponse<TagResponse>) {
-	const tag = req.query.tag as string | undefined;
-	const randomTagProvider = await getRandomProvider<IGetTag>("Tags");
+	const tag = req.query.tag as string;
+	const expireTime = convertTTlToTimestamp(env.EXPIRE_TIME_FOR_PROFILE);
 
-	if (!tag) {
-		throw new ApiError(HttpStatusCode.BadRequest, "You should provide a tag");
+	const cachedData = await redis.get(`tag:#${tag}`);
+	if (cachedData) {
+		return res.json(JSON.parse(cachedData));
 	}
 
+	const randomTagProvider = await getRandomProvider<IGetTag>("Tags");
 	const tagInfo = await randomTagProvider.getTag({ tag });
+	await redis.setex(`tag:#${tag}`, expireTime, JSON.stringify(tag));
 	res.json(tagInfo);
 }
 

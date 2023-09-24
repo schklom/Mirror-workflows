@@ -1,16 +1,15 @@
 import UserAgent from "user-agents";
-import { Greatfon } from "./greatfon";
 import { Imgsed } from "./imgsed";
-import { PlaywrightScraper } from "./scrapers/playwright";
-import { AxiosScraper } from "./scrapers/axios";
-import { convertTTlToTimestamp } from "@/utils/converters/time";
-import { Wizstat } from "./wizstat";
-import { Provider, ProviderCanGet } from "./types/provider";
-import { axiosInstance } from "@/utils";
-import { InstaStories } from "./instastories";
-import { StoriesIG } from "./storiesig";
 import { Iganony } from "./iganony";
+import { Wizstat } from "./wizstat";
+import { Greatfon } from "./greatfon";
+import { StoriesIG } from "./storiesig";
+import { InstaStories } from "./instastories";
+import { AxiosScraper } from "./scrapers/axios";
+import { axiosInstance } from "@/utils";
 import { InstaNavigation } from "./instanavigation";
+import { PlaywrightScraper } from "./scrapers/playwright";
+import { Provider, ProviderCanGet } from "./types/provider";
 
 export const randomUserAgent = new UserAgent().toString();
 
@@ -26,15 +25,8 @@ export function getInstanceProviders(providers: Provider[]) {
 	)[] = [];
 
 	providers.forEach((currentProvider) => {
-		const keys = Object.keys(currentProvider.ttl);
-		const values = Object.values(currentProvider.ttl);
 		const scraperConfig = {
 			baseURL: currentProvider.url,
-			ttl: {
-				...Object.fromEntries(
-					keys.map((_, i) => [keys[i], convertTTlToTimestamp(values[i])]),
-				),
-			},
 		};
 
 		switch (currentProvider.provider) {

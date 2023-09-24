@@ -18,10 +18,7 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments {
 	constructor(private scraper: AxiosScraper | PlaywrightScraper) {}
 
 	private async scrapePosts(username: string): Promise<PostsResponse> {
-		const html = await this.scraper.getHtml({
-			path: username,
-			expireTime: this.scraper.config.ttl?.posts as number,
-		});
+		const html = await this.scraper.getHtml({ path: username });
 		const $ = cheerio.load(html);
 		const posts: Post[] = [];
 
@@ -29,9 +26,10 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments {
 			const imgContainer = $(post).find(".img");
 			const img = $(imgContainer).find("a>img");
 			const postUrl = $(imgContainer).find("a");
-			const imageUrl = img.attr("class") === "lazy"
-				? (img.attr("data-src") as string)
-				: (img.attr("src") as string);
+			const imageUrl =
+				img.attr("class") === "lazy"
+					? (img.attr("data-src") as string)
+					: (img.attr("src") as string);
 
 			const shortcode = postUrl
 				.attr("href")
@@ -76,13 +74,9 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments {
 		if (this.scraper instanceof AxiosScraper) {
 			json = await this.scraper.getJson<PostsMain>({
 				path,
-				expireTime: this.scraper.config.ttl?.post as number,
 			});
 		} else {
-			const html = await this.scraper.getHtml({
-				path,
-				expireTime: this.scraper.config.ttl?.post as number,
-			});
+			const html = await this.scraper.getHtml({ path });
 			const $ = cheerio.load(html);
 			json = JSON.parse($("pre").text()) as PostsMain;
 		}
@@ -108,10 +102,7 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments {
 	}
 
 	async getPost(shortcode: string): Promise<Post> {
-		const html = await this.scraper.getHtml({
-			path: `p/${shortcode}/`,
-			expireTime: this.scraper.config.ttl?.post as number,
-		});
+		const html = await this.scraper.getHtml({ path: `p/${shortcode}/` });
 		const $ = cheerio.load(html);
 		const isVideo = $(".media-wrap").data("video") ? true : false;
 
@@ -175,10 +166,7 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments {
 	}
 
 	async getComments(shortcode: string): Promise<Comment[]> {
-		const html = await this.scraper.getHtml({
-			path: `p/${shortcode}/`,
-			expireTime: this.scraper.config.ttl?.post as number,
-		});
+		const html = await this.scraper.getHtml({ path: `p/${shortcode}/` });
 		const $ = cheerio.load(html);
 		const comments: Comment[] = [];
 		$(".comment").each((_i, comment) => {

@@ -4,6 +4,7 @@ import { Provider } from "@/services/types/provider";
 import { convertTTlToTimestamp } from "@/utils/converters/time";
 import { withExeptionFilter } from "@/utils/withExceptionFilter";
 import { NextApiRequest, NextApiResponse } from "next";
+import { env } from "@/utils/env.mjs";
 
 async function Providers(
 	_req: NextApiRequest,
@@ -17,27 +18,27 @@ async function getProviders() {
 	const cachedProviders = await redis.get("providers");
 	if (cachedProviders) {
 		const providers = JSON.parse(cachedProviders) as Provider[];
-		if (process.env.USE_HEADLESS_PROVIDERS === "false") {
+		if (!env.USE_HEADLESS_PROVIDERS) {
 			return providers.filter((provider) => !provider.headlessBrowser);
 		}
 		return providers;
 	}
 
 	const { data: providers } = await axios.get<Provider[]>(
-		process.env.PROVIDERS_LIST_URL,
+		env.PROVIDERS_LIST_URL,
 	);
 
-	if (process.env.FETCH_PROVIDERS === "false") {
+	if (!env.FETCH_PROVIDERS) {
 		await redis.set("providers", JSON.stringify(providers));
 	} else {
 		await redis.setex(
 			"providers",
-			convertTTlToTimestamp(process.env.FETCH_PROVIDERS_EVERY),
+			convertTTlToTimestamp(env.FETCH_PROVIDERS_EVERY),
 			JSON.stringify(providers),
 		);
 	}
 
-	if (process.env.USE_HEADLESS_PROVIDERS === "false") {
+	if (!env.USE_HEADLESS_PROVIDERS) {
 		return providers.filter((provider) => !provider.headlessBrowser);
 	}
 

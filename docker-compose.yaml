@@ -11,8 +11,8 @@ services:
     ports:
     - 8080:3000
     restart: unless-stopped
-    # Copy .env.local.example to .env and change accordingly. If using a name other than .env then specify it here.
-    #env_file: .env.local.example
+    # Copy .env.example to .env and change accordingly.
+    env_file: .env
 
   # When using this compose file, use REDIS_URL=redis:6379 at the env file
   redis:

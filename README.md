@@ -126,7 +126,7 @@ cd proxigram
 
 Change the configuration to your needs.
 ```bash
-cp .env.local.example .env.local
+cp .env.example .env
 ```
 
 Replace 'pnpm' with yarn or npm if you use those.
@@ -148,7 +148,7 @@ pnpm build
 
 Start redis server.
 
-If "CACHE" is set to false, it is not necessary. Check .env.local
+If "CACHE" is set to false (not recommended), it is not necessary. Check .env
 ```bash
 redis-server (or docker)
 ```
@@ -172,7 +172,7 @@ cd proxigram
 
 Change the configuration to your needs.
 ```bash
-cp .env.local.example .env.local
+cp .env.example .env
 ```
 
 Start containers.

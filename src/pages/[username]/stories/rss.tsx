@@ -1,26 +1,27 @@
 import { GetServerSidePropsContext } from "next";
 import { RSS } from "@/utils/rss";
+import { env } from "@/utils/env.mjs";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-    if (process.env.RSS === "false") {
-        ctx.res.write("RSS are disabled");
-        ctx.res.end();
-        return {
-            props: {},
-        };
-    }
+	if (!env.RSS) {
+		ctx.res.write("RSS are disabled");
+		ctx.res.end();
+		return {
+			props: {},
+		};
+	}
 
-    const username = ctx.params?.username as string;
-    const rss = new RSS();
-    const feedString = await rss.getStories(username);
+	const username = ctx.params?.username as string;
+	const rss = new RSS();
+	const feedString = await rss.getStories(username);
 
-    ctx.res.setHeader("Content-Type", "text/xml");
-    ctx.res.write(feedString);
-    ctx.res.end();
+	ctx.res.setHeader("Content-Type", "text/xml");
+	ctx.res.write(feedString);
+	ctx.res.end();
 
-    return {
-        props: {},
-    };
+	return {
+		props: {},
+	};
 };
 
 const RSSStoriesPage = () => null;

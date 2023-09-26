@@ -1,8 +1,9 @@
 import { GetServerSidePropsContext } from "next";
 import { RSS } from "@/utils/rss";
+import { env } from "@/utils/env.mjs";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-	if (process.env.RSS === "false") {
+	if (!env.RSS) {
 		ctx.res.write("RSS are disabled");
 		ctx.res.end();
 		return {

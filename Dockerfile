@@ -18,6 +18,7 @@ FROM gcr.io/distroless/nodejs18-debian11:nonroot
 WORKDIR /app
 
 COPY --from=build-env /app/next.config.mjs ./
+COPY --from=build-env /app/env.mjs ./
 COPY --from=build-env /app/.next /app/.next
 COPY --from=build-env /app/node_modules /app/node_modules
 COPY --from=build-env /app/public /app/public

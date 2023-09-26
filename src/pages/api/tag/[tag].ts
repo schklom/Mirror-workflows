@@ -1,5 +1,5 @@
 import redis from "@/utils/redis";
-import { env } from "@/utils/env.mjs";
+import { env } from "env.mjs";
 import { IGetTag } from "@/services/types/functions";
 import { TagResponse } from "@/services/types";
 import { getRandomProvider } from "@/services";

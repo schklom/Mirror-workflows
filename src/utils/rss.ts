@@ -1,5 +1,5 @@
 import redis from "./redis";
-import { env } from "./env.mjs";
+import { env } from "../../env.mjs";
 import { Feed } from "feed";
 import { getBaseUrl } from "./url";
 import { axiosInstance } from "@/utils";

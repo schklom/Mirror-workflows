@@ -1,6 +1,6 @@
 import { GetServerSidePropsContext } from "next";
 import { RSS } from "@/utils/rss";
-import { env } from "@/utils/env.mjs";
+import { env } from "env.mjs";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 	if (!env.RSS) {

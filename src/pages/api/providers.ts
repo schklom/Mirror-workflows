@@ -4,7 +4,7 @@ import { Provider } from "@/services/types/provider";
 import { convertTTlToTimestamp } from "@/utils/converters/time";
 import { withExeptionFilter } from "@/utils/withExceptionFilter";
 import { NextApiRequest, NextApiResponse } from "next";
-import { env } from "@/utils/env.mjs";
+import { env } from "env.mjs";
 
 async function Providers(
 	_req: NextApiRequest,

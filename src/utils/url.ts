@@ -1,4 +1,4 @@
-import { env } from "@/utils/env.mjs";
+import { env } from "env.mjs";
 import { convertFromBase64 } from "./text";
 
 export function getBaseUrl() {

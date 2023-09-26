@@ -1,5 +1,5 @@
 import redis from "@/utils/redis";
-import { env } from "@/utils/env.mjs";
+import { env } from "env.mjs";
 import { Comment } from "@/services/types";
 import { IGetComments } from "@/services/types/functions";
 import { getRandomProvider } from "@/services";

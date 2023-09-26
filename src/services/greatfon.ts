@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import { env } from "@/utils/env.mjs";
+import { env } from "env.mjs";
 import { sleep } from "@/utils";
 import { proxyUrl } from "@/utils/url";
 import { AxiosScraper } from "./scrapers/axios";

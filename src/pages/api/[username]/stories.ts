@@ -1,5 +1,5 @@
 import redis from "@/utils/redis";
-import { env } from "@/utils/env.mjs";
+import { env } from "env.mjs";
 import { Story } from "@/services/types";
 import { ApiError } from "next/dist/server/api-utils";
 import { IGetStories } from "@/services/types/functions";

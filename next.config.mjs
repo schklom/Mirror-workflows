@@ -1,4 +1,4 @@
-import "./src/utils/env.mjs";
+import "./env.mjs";
 
 /** @type {import('next').NextConfig} */
 

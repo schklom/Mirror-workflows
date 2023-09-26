@@ -1,4 +1,4 @@
-import { env } from "@/utils/env.mjs";
+import { env } from "env.mjs";
 import { getGitHash } from "@/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 

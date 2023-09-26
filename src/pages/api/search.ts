@@ -1,5 +1,5 @@
 import redis from "@/utils/redis";
-import { env } from "@/utils/env.mjs";
+import { env } from "env.mjs";
 import { ApiError } from "next/dist/server/api-utils";
 import { IGetSearch } from "@/services/types/functions";
 import { HttpStatusCode } from "axios";

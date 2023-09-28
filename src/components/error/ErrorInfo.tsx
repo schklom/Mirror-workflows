@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { Layout } from "../layouts/Layout";
 import { SearchForm } from "../SearchForm";
 import { ErrorMessage } from "./ErrorMessage";
@@ -8,18 +7,10 @@ type Props = {
 };
 
 export function ErrorInfo({ statusCode }: Props) {
-	const {
-		asPath,
-		query: { tag },
-	} = useRouter();
-
 	const is404 = statusCode === 404;
 	const is403 = statusCode === 403;
 	const is504 = statusCode === 504;
 
-	const originalUrl = tag
-		? `https://instagram.com/explorer/tag/${tag}`
-		: `https://instagram.com${asPath}`;
 	const msg = is403
 		? "This instance is being blocked"
 		: is404
@@ -38,7 +29,6 @@ export function ErrorInfo({ statusCode }: Props) {
 		>
 			{is404 ? (
 				<ErrorMessage
-					originalUrl={originalUrl}
 					statusCode={statusCode}
 					includeInstances={false}
 					title="We couldn't find what you are looking for"
@@ -50,7 +40,6 @@ export function ErrorInfo({ statusCode }: Props) {
 				</ErrorMessage>
 			) : is403 ? (
 				<ErrorMessage
-					originalUrl={originalUrl}
 					statusCode={statusCode}
 					title="This instance is being blocked"
 				>
@@ -59,7 +48,6 @@ export function ErrorInfo({ statusCode }: Props) {
 				</ErrorMessage>
 			) : is504 ? (
 				<ErrorMessage
-					originalUrl={originalUrl}
 					statusCode={statusCode}
 					title="The provider chosen, didn't respond"
 				>
@@ -67,11 +55,7 @@ export function ErrorInfo({ statusCode }: Props) {
 					you could
 				</ErrorMessage>
 			) : (
-				<ErrorMessage
-					originalUrl={originalUrl}
-					statusCode={statusCode}
-					title="Something went wrong..."
-				>
+				<ErrorMessage statusCode={statusCode} title="Something went wrong...">
 					You could try refreshing the page to select another random provider or
 					you could:
 				</ErrorMessage>

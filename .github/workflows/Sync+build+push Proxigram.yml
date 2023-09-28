@@ -57,7 +57,7 @@ jobs:
         run: git ls-remote https://codeberg.org/ThePenguinDev/Proxigram HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_engines
       
       # https://codeberg.org/ThePenguinDev/Proxigram/issues/7#issuecomment-1254499
-      - name: Fix .env file name: .env.example -> .env
+      - name: "Fix .env file name: .env.example -> .env"
         run: mv .env.example .env
       
       - name: Commit and push the change

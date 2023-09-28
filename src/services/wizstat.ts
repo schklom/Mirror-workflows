@@ -40,6 +40,9 @@ interface WizstatPost {
 	code: string;
 }
 
+const isVideoSvg = `<path d="M26.1 0L33 11.52H19.6L13.6.1a13.42 13.42 0 012.1-.1h10.4zM9.9.7l5.8 10.82H.4A13.09 13.09 0 014.1 4 12 12 0 019.9.7zM30.1 0h1.6c6 0 9.3 1.2 12.2 4.11a12.51 12.51 0 013.7 7.41H37zm1.7 29.06l-11.2-6.51A1.72 1.72 0 0018 24v13.08a1.79 1.79 0 002.5 1.6l.1-.1 11.2-6.51a1.7 1.7 0 00.1-2.91l-.1-.1-11.2-6.51zM0 15h48v16.77c0 6-1.2 9.32-4.1 12.22-2.8 2.71-6 4-11.7 4h-16c-6 0-9.3-1.2-12.2-4.11-2.7-2.8-4-6-4-11.72V15z"></path>`;
+const isSideCardSvg = `<path d="M34.8 29.7V11c0-2.9-2.3-5.2-5.2-5.2H11c-2.9 0-5.2 2.3-5.2 5.2v18.7c0 2.9 2.3 5.2 5.2 5.2h18.7c2.8-.1 5.1-2.4 5.1-5.2zM39.2 15v16.1c0 4.5-3.7 8.2-8.2 8.2H14.9c-.6 0-.9.7-.5 1.1 1 1.1 2.4 1.8 4.1 1.8h13.4c5.7 0 10.3-4.6 10.3-10.3V18.5c0-1.6-.7-3.1-1.8-4.1-.5-.4-1.2 0-1.2.6z"></path>`;
+
 export class Wizstat implements IGetProfile, IGetPost, IGetPosts, IGetComments {
 	constructor(private scraper: AxiosScraper | PlaywrightScraper) {}
 
@@ -61,8 +64,8 @@ export class Wizstat implements IGetProfile, IGetPost, IGetPosts, IGetComments {
 				shortcode,
 				thumb: proxyUrl(convertToInstagramUrl(img.attr("src") as string)),
 				description: img.attr("alt")?.trim(),
-				isVideo: false,
-				isSideCard: false,
+				isVideo: $(post).find(".img>svg").html() === isVideoSvg,
+				isSideCard: $(post).find(".img>svg").html() === isSideCardSvg,
 			};
 
 			posts.push(item);

@@ -36,7 +36,16 @@ export default function Tag({ tag, error }: Props) {
 					}}
 				/>
 				<div>
-					<Posts posts={tag.posts} />
+					<Posts
+						posts={{
+							isError: 0,
+							data: {
+								posts: tag.posts,
+								hasNext: Boolean(tag.hasNext),
+								cursor: tag.cursor,
+							},
+						}}
+					/>
 					{tag.cursor && <LoadMore cursor={tag.cursor} />}
 				</div>
 			</section>

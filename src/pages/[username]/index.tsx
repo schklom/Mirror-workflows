@@ -2,7 +2,12 @@ import type {
 	GetServerSidePropsContext,
 	InferGetServerSidePropsType,
 } from "next";
-import type { PostsResponse, Profile, Story } from "@/services/types";
+import type {
+	ErrorResponse,
+	PostsResponse,
+	Profile,
+	Story,
+} from "@/services/types";
 import { LoadMore } from "@/components/LoadMore";
 import { Layout } from "@/components/layouts/Layout";
 import { ProfileComponent, SideInfo } from "@/components/profile";
@@ -39,16 +44,28 @@ export default function ProfilePage({ profile, posts, stories, error }: Props) {
 				</SideInfo>
 				<section>
 					{!profile.isPrivate ? (
-						<Posts posts={posts?.posts} />
+						<Posts posts={posts} />
 					) : (
 						<h3>This account is private</h3>
 					)}
-					{posts?.cursor && <LoadMore cursor={posts.cursor} />}
+					{!posts.isError && posts.data.cursor && (
+						<LoadMore cursor={posts.data.cursor} />
+					)}
 				</section>
 			</section>
 		</Layout>
 	);
 }
+
+export type PostsTypeRes =
+	| {
+			isError: 0;
+			data: PostsResponse;
+	  }
+	| {
+			isError: 1;
+			data: ErrorResponse;
+	  };
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 	try {
@@ -56,7 +73,14 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 		const cursor = ctx.query.cursor as string;
 
 		const { data: profile } = await axiosInstance.get<Profile>(username);
-		let posts: PostsResponse | undefined;
+		let posts: PostsTypeRes = {
+			isError: 0,
+			data: {
+				hasNext: false,
+				posts: [],
+				cursor: "",
+			},
+		};
 		let storiesLength = 0;
 
 		if (!profile.isPrivate) {
@@ -73,7 +97,19 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 			}
 
 			if (postsRes.status === "fulfilled") {
-				posts = postsRes.value.data;
+				posts.data = postsRes.value.data;
+			} else {
+				if (isAxiosError(postsRes.reason)) {
+					if (postsRes.reason.response) {
+						posts = {
+							isError: 1,
+							data: {
+								statusCode: postsRes.reason.response.data.statusCode,
+								message: postsRes.reason.response.data.message,
+							},
+						};
+					}
+				}
 			}
 		}
 

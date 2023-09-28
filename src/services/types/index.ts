@@ -77,3 +77,8 @@ export interface TagResponse {
 	hasNext?: boolean;
 	cursor?: string;
 }
+
+export interface ErrorResponse {
+	statusCode: number;
+	message: string;
+}

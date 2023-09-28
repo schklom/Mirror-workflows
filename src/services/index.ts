@@ -13,16 +13,18 @@ import { Provider, ProviderCanGet } from "./types/provider";
 
 export const randomUserAgent = new UserAgent().toString();
 
+export const supportedProviders = [
+	"Greatfon",
+	"Wizstat",
+	"Imgsed",
+	"Instastories",
+	"Storiesig",
+	"Iganony",
+	"Instanavigation",
+];
+
 export function getInstanceProviders(providers: Provider[]) {
-	const providersInstances: (
-		| Greatfon
-		| Wizstat
-		| Imgsed
-		| InstaStories
-		| StoriesIG
-		| Iganony
-		| InstaNavigation
-	)[] = [];
+	const providersInstances: unknown[] = [];
 
 	providers.forEach((currentProvider) => {
 		const scraperConfig = {
@@ -86,6 +88,8 @@ export function getInstanceProviders(providers: Provider[]) {
 							: new AxiosScraper(scraperConfig),
 					),
 				);
+			default:
+				return;
 		}
 	});
 
@@ -97,10 +101,11 @@ export async function getRandomProvider<T>(canget: ProviderCanGet) {
 	const filteredProviders = providers.filter((provider) =>
 		provider.canget.includes(canget),
 	);
+	const providerInstances = getInstanceProviders(filteredProviders);
 	const RANDOM_PROVIDER_ID = Math.floor(
-		Math.random() * filteredProviders.length,
+		Math.random() * providerInstances.length,
 	);
-	return getInstanceProviders(filteredProviders)[RANDOM_PROVIDER_ID] as T;
+	return providerInstances[RANDOM_PROVIDER_ID] as T;
 }
 
 export async function getProviders() {
@@ -113,8 +118,10 @@ export async function getRandomFilteredProvider<T>(
 ) {
 	const providers = await getProviders();
 	const filteredProviders = providers.filter(callback);
+
+	const providerInstances = getInstanceProviders(filteredProviders);
 	const RANDOM_PROVIDER_ID = Math.floor(
-		Math.random() * filteredProviders.length,
+		Math.random() * providerInstances.length,
 	);
-	return getInstanceProviders(filteredProviders)[RANDOM_PROVIDER_ID] as T;
+	return providerInstances[RANDOM_PROVIDER_ID] as T;
 }

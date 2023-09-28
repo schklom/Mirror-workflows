@@ -5,6 +5,7 @@ import { convertTTlToTimestamp } from "@/utils/converters/time";
 import { withExeptionFilter } from "@/utils/withExceptionFilter";
 import { NextApiRequest, NextApiResponse } from "next";
 import { env } from "env.mjs";
+import { supportedProviders } from "@/services";
 
 async function Providers(
 	_req: NextApiRequest,
@@ -19,9 +20,15 @@ async function getProviders() {
 	if (cachedProviders) {
 		const providers = JSON.parse(cachedProviders) as Provider[];
 		if (!env.USE_HEADLESS_PROVIDERS) {
-			return providers.filter((provider) => !provider.headlessBrowser);
+			return providers.filter(
+				(provider) =>
+					!provider.headlessBrowser &&
+					supportedProviders.includes(provider.provider),
+			);
 		}
-		return providers;
+		return providers.filter((provider) =>
+			supportedProviders.includes(provider.provider),
+		);
 	}
 
 	const { data: providers } = await axios.get<Provider[]>(
@@ -39,10 +46,16 @@ async function getProviders() {
 	}
 
 	if (!env.USE_HEADLESS_PROVIDERS) {
-		return providers.filter((provider) => !provider.headlessBrowser);
+		return providers.filter(
+			(provider) =>
+				!provider.headlessBrowser &&
+				supportedProviders.includes(provider.provider),
+		);
 	}
 
-	return providers;
+	return providers.filter((provider) =>
+		supportedProviders.includes(provider.provider),
+	);
 }
 
 export default async function apiHandler(

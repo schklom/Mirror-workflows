@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     #if: false
-    if: needs.get_commits.outputs.LOCAL_REPO != needs.get_commits.outputs.REMOTE_REPO
+    #if: needs.get_commits.outputs.LOCAL_REPO != needs.get_commits.outputs.REMOTE_REPO
     steps:
       - name: repo-sync
         uses: wei/git-sync@v3

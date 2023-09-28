@@ -58,7 +58,10 @@ jobs:
       
       # https://codeberg.org/ThePenguinDev/Proxigram/issues/7#issuecomment-1254499
       - name: "Fix .env file name: .env.example -> .env"
-        run: mv .env.example .env
+        run: |
+          ls -alh ./
+          mv .env.example .env
+          ls -alh ./
       
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v4.16.0

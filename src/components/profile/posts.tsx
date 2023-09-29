@@ -38,10 +38,8 @@ export function Posts({ posts }: Props) {
 							</Link>
 							{post.isVideo ? (
 								<IconVideo className="absolute z-10 h-6 w-6 top-1 right-1 text-white" />
-							) : post.isSideCard ? (
+							) : post.isSideCard && (
 								<IconBoxMultiple className="absolute z-10 h-6 w-6 top-1 right-1 text-white" />
-							) : (
-								<IconPhoto className="absolute z-10 h-6 w-6 top-1 right-1 text-white" />
 							)}
 						</div>
 					))}

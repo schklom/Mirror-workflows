@@ -5,6 +5,7 @@ document.getElementById("input").addEventListener("keydown", function (event) {
         document.getElementById("translation-form").submit();
     }
 });
+// @license-end
 
 // Auto resize textarea to fit words inside it without need to scroll -- Thanks to: https://stackoverflow.com/a/25621277
 var input = document.getElementById("input");

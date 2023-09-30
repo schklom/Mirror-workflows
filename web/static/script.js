@@ -15,3 +15,4 @@ input.addEventListener("input", function (e) {
     this.style.height = 150 + "px";
     this.style.height = this.scrollHeight + "px";
 });
+// @license-end

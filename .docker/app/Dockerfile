@@ -13,6 +13,8 @@ RUN apk add --no-cache dcron php82 php82-fpm php82-phar php82-sockets php82-pecl
 	sed -i 's/\(memory_limit =\) 128M/\1 256M/' /etc/php82/php.ini && \
 	sed -i -e 's/^listen = 127.0.0.1:9000/listen = 9000/' \
 		-e 's/;\(clear_env\) = .*/\1 = no/i' \
+		-e 's/;\(pm.status_path = \/status\)/\1/i' \
+		-e 's/;\(pm.status_listen\) = .*/\1 = 9001/i' \
 		-e 's/^\(user\|group\) = .*/\1 = app/i' \
 		-e 's/;\(php_admin_value\[error_log\]\) = .*/\1 = \/tmp\/error.log/' \
 		-e 's/;\(php_admin_flag\[log_errors\]\) = .*/\1 = on/' \

@@ -782,16 +782,6 @@ class Pref_Feeds extends Handler_Protected {
 				$qparams = [];
 
 				switch ($k) {
-					case "title":
-						$qpart = "title = ?";
-						$qparams = [$feed_title];
-						break;
-
-					case "feed_url":
-						$qpart = "feed_url = ?";
-						$qparams = [$this->pdo->quote($feed_url)];
-						break;
-
 					case "update_interval":
 						$qpart = "update_interval = ?";
 						$qparams = [$upd_intl];

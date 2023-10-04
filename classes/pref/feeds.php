@@ -851,7 +851,7 @@ class Pref_Feeds extends Handler_Protected {
 
 					case "feed_language":
 						$qpart = "feed_language = ?";
-						$qparams = [$this->pdo->quote($feed_language)];
+						$qparams = [$feed_language];
 						break;
 
 				}

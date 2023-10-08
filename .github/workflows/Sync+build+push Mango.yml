@@ -54,7 +54,7 @@ jobs:
       - name: get most recent commit id on original repo, for next comparison on sync
         run: git ls-remote https://github.com/hkalexling/Mango.git HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
       - name: Commit and push the change
-        uses: stefanzweifel/git-auto-commit-action@v4.16.0
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Add last_sync_with_original_repo_commit_id
 
@@ -72,7 +72,7 @@ jobs:
       - name: Get .o file
         run: curl -Lo mango-arm32v7.o $(curl -L https://api.github.com/repos/hkalexling/Mango/releases/latest | grep "browser_download_url" | awk '{ print $2 }' | grep arm32 | tr -d '\" ')
       - name: Commit and push the change
-        uses: stefanzweifel/git-auto-commit-action@v4.16.0
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Add mango-arm32v7.o
       # https://github.com/docker/setup-qemu-action#usage
@@ -124,7 +124,7 @@ jobs:
       - name: Get .o file
         run: curl -Lo mango-arm64v8.o $(curl -L https://api.github.com/repos/hkalexling/Mango/releases/latest | grep "browser_download_url" | awk '{ print $2 }' | grep arm64 | tr -d '\" ')
       - name: Commit and push the change
-        uses: stefanzweifel/git-auto-commit-action@v4.16.0
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Add mango-arm64v8.o
       # https://github.com/docker/setup-qemu-action#usage

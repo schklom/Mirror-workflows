@@ -62,7 +62,7 @@ jobs:
         run: git ls-remote https://github.com/cldrn/rainmap-lite HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id_original
       
       - name: Commit and push the change
-        uses: stefanzweifel/git-auto-commit-action@v4.16.0
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Add last_sync_with_original_repo_commit_id_original
       
@@ -71,7 +71,7 @@ jobs:
         # run: wget https://raw.githubusercontent.com/schklom/Mirror-workflows/rainmap-lite-docker/run.bash
       
       # - name: Commit and push run.bash
-        # uses: stefanzweifel/git-auto-commit-action@v4.16.0
+        # uses: stefanzweifel/git-auto-commit-action@v5
         # with:
           # commit_message: Add run.bash
 

@@ -192,7 +192,7 @@ class Handler_Public extends Handler {
 
 			while ($line = $result->fetch()) {
 
-				$line["content_preview"] = Sanitizer::sanitize(truncate_string(strip_tags($line["content_preview"]), 100, '...'));
+				$line["content_preview"] = Sanitizer::sanitize(truncate_string(strip_tags($line["content"]), 100, '...'));
 				$line["tags"] = Article::_get_tags($line["id"], $owner_uid);
 
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_QUERY_HEADLINES,

@@ -3,11 +3,12 @@ import { ApiError } from "next/dist/server/api-utils";
 import { randomUserAgent } from "@/services";
 import { withExeptionFilter } from "@/utils/withExceptionFilter";
 import { NextApiRequest, NextApiResponse } from "next";
+import { env } from "env.mjs";
 
 const SERVICESRGX = [
 	/^https?:\/\/(?:.*\.)?(?:cdninstagram\.com|fbcdn\.net|instagram\.fmci2-1\.fna\.fbcdn\.net)\/.*/,
 	/https:\/\/cdn\d+\.([a-zA-Z0-9-]+\.)+[a-zA-Z]+\/v1\/[a-zA-Z0-9]+\.(jpg|png|gif|mp4)/,
-	/^https?:\/\/([a-zA-Z\d-]+\.)?[a-zA-Z\d-]+\.[a-zA-Z]{2,6}\/U2FsdGVkX[a-zA-Z\d-%]*$/
+	/^https?:\/\/([a-zA-Z\d-]+\.)?[a-zA-Z\d-]+\.[a-zA-Z]{2,6}\/U2FsdGVkX[a-zA-Z\d-%]*$/,
 ];
 
 const getCleanReqHeaders = (headers: NextApiRequest["headers"]) => ({
@@ -29,7 +30,7 @@ async function proxy(req: NextApiRequest, res: NextApiResponse) {
 	const url = req.query?.url as string | undefined;
 	const requestHeaders = getCleanReqHeaders(req.headers);
 
-	if (process.env.PROXY === "false") {
+	if (!env.PROXY) {
 		throw new ApiError(
 			HttpStatusCode.Locked,
 			"Proxy is disabled in this instance",
@@ -47,10 +48,7 @@ async function proxy(req: NextApiRequest, res: NextApiResponse) {
 	}
 
 	const urlObj = new URL(url);
-	const domainName = urlObj.host.split(".")[1];
-	const tld = urlObj.host.split(".").at(-1);
-	const protocol = urlObj.protocol;
-	const Referer = `${protocol}//${domainName}.${tld}`;
+	const Referer = `${urlObj.protocol}//${urlObj.hostname}`;
 	const mediaRes = await axios.get(url, {
 		responseType: "stream",
 		headers: {
@@ -71,11 +69,19 @@ async function proxy(req: NextApiRequest, res: NextApiResponse) {
 		},
 	});
 
-	res.statusCode = 206;
-	resHeadersArr.forEach((key) => {
-		const val = mediaRes.headers[key] as string;
-		if (val) res.setHeader(key, val);
-	});
+	const contentType = mediaRes.headers["content-type"] as string;
+	const isPhoto =
+		contentType.includes("image") || contentType === "application/download";
+
+	res.statusCode = isPhoto ? 200 : 206;
+	if (isPhoto) {
+		res.setHeader("content-type", "image/jpeg");
+	} else {
+		resHeadersArr.forEach((key) => {
+			const val = mediaRes.headers[key] as string;
+			if (val) res.setHeader(key, val);
+		});
+	}
 
 	mediaRes.data.pipe(res);
 	return;

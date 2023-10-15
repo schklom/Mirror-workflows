@@ -1,4 +1,3 @@
-import * as cheerio from "cheerio";
 import { convertToInstagramUrl, proxyUrl } from "@/utils/url";
 import { AxiosScraper } from "./scrapers/axios";
 import { Story } from "./types";
@@ -6,6 +5,7 @@ import { IGetStories } from "./types/functions";
 import { convertToBase64 } from "@/utils/text";
 import { PlaywrightScraper } from "./scrapers/playwright";
 import { convertTextToTimestamp } from "@/utils/converters/time";
+import { fetchJSON } from "@/utils/fetch";
 
 export interface Welcome {
 	user_info: UserInfo;
@@ -56,17 +56,9 @@ export class InstaNavigation implements IGetStories {
 	constructor(private scraper: AxiosScraper | PlaywrightScraper) {}
 
 	async getStories(username: string): Promise<Story[]> {
-		let response: Welcome;
 		const username64 = convertToBase64(`-1::${username}::`);
 		const path = `api/v1/stories/${username64}`;
-
-		if (this.scraper instanceof AxiosScraper) {
-			response = await this.scraper.getJson<Welcome>({ path });
-		} else {
-			const html = await this.scraper.getHtml({ path });
-			const $ = cheerio.load(html);
-			response = JSON.parse($("pre").text());
-		}
+		const response = await fetchJSON<Welcome>({ path, scraper: this.scraper });
 
 		return response.stories.map((story) => {
 			const source = proxyUrl(convertToInstagramUrl(story.source));

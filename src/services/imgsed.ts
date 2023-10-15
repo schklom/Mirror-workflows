@@ -13,6 +13,7 @@ import { convertToInstagramUrl, proxyUrl } from "@/utils/url";
 import { convertToBase64, extractTagsAndUsers } from "@/utils/text";
 import { Comment, Post, PostsResponse } from "./types";
 import { PostsMain } from "./wizstat";
+import { fetchJSON } from "@/utils/fetch";
 
 export class Imgsed implements IGetPost, IGetPosts, IGetComments {
 	constructor(private scraper: AxiosScraper | PlaywrightScraper) {}
@@ -69,17 +70,7 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments {
 		const type = userId ? "posts" : "tags";
 		const id = userId ? userId : username.split("/").at(-1);
 		const path = `api/${type}/?id=${id}&cursor=${cursor}`;
-		let json: PostsMain;
-
-		if (this.scraper instanceof AxiosScraper) {
-			json = await this.scraper.getJson<PostsMain>({
-				path,
-			});
-		} else {
-			const html = await this.scraper.getHtml({ path });
-			const $ = cheerio.load(html);
-			json = JSON.parse($("pre").text()) as PostsMain;
-		}
+		const json = await fetchJSON<PostsMain>({ path, scraper: this.scraper });
 
 		const posts: Post[] = json.items.map((post) => ({
 			id: shortcodeToMediaId(post.code),

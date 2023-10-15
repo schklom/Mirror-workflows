@@ -21,6 +21,7 @@ import {
 } from "@/utils/text";
 import { Comment, Post, PostsResponse, Profile } from "./types";
 import { compactToNumber } from "@/utils/converters/numbers";
+import { fetchJSON } from "@/utils/fetch";
 
 export interface PostsMain {
 	code: number;
@@ -112,15 +113,7 @@ export class Wizstat implements IGetProfile, IGetPost, IGetPosts, IGetComments {
 		const type = userId ? "posts" : "tag";
 		const id = userId ? userId : username.split("/").at(-1);
 		const path = `api/${type}/?id=${id}&cursor=${cursor}`;
-		let json: PostsMain;
-
-		if (this.scraper instanceof AxiosScraper) {
-			json = await this.scraper.getJson<PostsMain>({ path });
-		} else {
-			const html = await this.scraper.getHtml({ path });
-			const $ = cheerio.load(html);
-			json = JSON.parse($("pre").text()) as PostsMain;
-		}
+		const json = await fetchJSON<PostsMain>({ path, scraper: this.scraper });
 
 		const posts: Post[] = json.items.map((post) => ({
 			id: shortcodeToMediaId(post.code),

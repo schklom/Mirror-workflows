@@ -1,4 +1,3 @@
-import * as cheerio from "cheerio";
 import { Profile, Story } from "./types";
 import { IGetProfile, IGetStories } from "./types/functions";
 import { AxiosScraper } from "./scrapers/axios";
@@ -7,22 +6,16 @@ import { StoriesIGProfile, StoriesIGStories } from "./types/storiesig";
 import { extractTagsAndUsers } from "@/utils/text";
 import { proxyUrl } from "@/utils/url";
 import { convertTimestampToRelativeTime } from "@/utils/converters/time";
+import { fetchJSON } from "@/utils/fetch";
 
 export class StoriesIG implements IGetProfile, IGetStories {
 	constructor(private scraper: AxiosScraper | PlaywrightScraper) {}
 
 	async getProfile(username: string): Promise<Profile> {
-		let json: StoriesIGProfile;
-		const path = `api/ig/userInfoByUsername/${username}`;
-
-		if (this.scraper instanceof AxiosScraper) {
-			json = await this.scraper.getJson<StoriesIGProfile>({ path });
-		} else {
-			const html = await this.scraper.getHtml({ path });
-			const $ = cheerio.load(html);
-			json = JSON.parse($("pre").text());
-		}
-
+		const json = await fetchJSON<StoriesIGProfile>({
+			path: `api/ig/userInfoByUsername/${username}`,
+			scraper: this.scraper,
+		});
 		const profile = json.result.user;
 
 		return {
@@ -41,18 +34,13 @@ export class StoriesIG implements IGetProfile, IGetStories {
 	}
 
 	async getStories(username: string): Promise<Story[]> {
-		let json: StoriesIGStories;
 		const path = `api/ig/story?url=${encodeURIComponent(
 			`https://instagram.com/stories/${username}`,
 		)}`;
-
-		if (this.scraper instanceof AxiosScraper) {
-			json = await this.scraper.getJson<StoriesIGStories>({ path });
-		} else {
-			const html = await this.scraper.getHtml({ path });
-			const $ = cheerio.load(html);
-			json = JSON.parse($("pre").text());
-		}
+		const json = await fetchJSON<StoriesIGStories>({
+			path,
+			scraper: this.scraper,
+		});
 
 		return json.result.map((story) => ({
 			thumb: proxyUrl(story.image_versions2.candidates[0].url),

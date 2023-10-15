@@ -2,6 +2,7 @@ import {
 	IGetComments,
 	IGetPost,
 	IGetPosts,
+	IGetStories,
 	IgetPostsOptions,
 } from "./types/functions";
 import * as cheerio from "cheerio";
@@ -11,11 +12,11 @@ import { PlaywrightScraper } from "./scrapers/playwright";
 import { shortcodeToMediaId } from "@/utils/id";
 import { convertToInstagramUrl, proxyUrl } from "@/utils/url";
 import { convertToBase64, extractTagsAndUsers } from "@/utils/text";
-import { Comment, Post, PostsResponse } from "./types";
+import { Comment, Post, PostsResponse, Story } from "./types";
 import { PostsMain } from "./wizstat";
 import { fetchJSON } from "@/utils/fetch";
 
-export class Imgsed implements IGetPost, IGetPosts, IGetComments {
+export class Imgsed implements IGetPost, IGetPosts, IGetComments, IGetStories {
 	constructor(private scraper: AxiosScraper | PlaywrightScraper) {}
 
 	private async scrapePosts(username: string): Promise<PostsResponse> {
@@ -154,6 +155,30 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments {
 		}
 
 		return post;
+	}
+
+	async getStories(username: string): Promise<Story[]> {
+		const html = await this.scraper.getHtml({ path: `stories/${username}/` });
+		const $ = cheerio.load(html);
+		const $active = $("li.active");
+		const areThereStories =
+			$active.find(".title").text().toLocaleLowerCase() ===
+			username.toLocaleLowerCase();
+		if (areThereStories) {
+			const userId = $active.data("uid");
+			const s = parseInt(String(Date.now() / 10000000));
+			const json = await fetchJSON<{ thumb: string; src: string }[]>({
+				path: `api/story/?uid=${userId}&s=${s}`,
+				scraper: this.scraper,
+			});
+			return json.map((story) => ({
+				thumb: proxyUrl(convertToInstagramUrl(story.thumb)),
+				isVideo: story.src.includes(".mp4"),
+				video: story.src.includes(".mp4") ? proxyUrl(story.src) : undefined,
+			}));
+		}
+
+		return [];
 	}
 
 	async getComments(shortcode: string): Promise<Comment[]> {

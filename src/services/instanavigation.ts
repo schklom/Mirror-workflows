@@ -68,7 +68,7 @@ export class InstaNavigation implements IGetStories {
 					? proxyUrl(convertToInstagramUrl(story.thumbnail))
 					: source,
 				isVideo: story.media_type === "video" ? true : false,
-				video: source,
+				video: story.media_type === "video" ? source : undefined,
 				created_at: {
 					relative: `${story.taken_at} ago`,
 					timestamp: convertTextToTimestamp(`${story.taken_at} ago`),

@@ -33,17 +33,15 @@ ENV CI_COMMIT_TIMESTAMP=${CI_COMMIT_TIMESTAMP}
 ARG CI_COMMIT_SHA
 ENV CI_COMMIT_SHA=${CI_COMMIT_SHA}
 
-ADD .docker/app/startup.sh ${SCRIPT_ROOT}
-ADD .docker/app/updater.sh ${SCRIPT_ROOT}
-ADD .docker/app/dcron.sh ${SCRIPT_ROOT}
-ADD .docker/app/backup.sh /etc/periodic/weekly/backup
+ADD --chmod=0755 startup.sh ${SCRIPT_ROOT}
+ADD --chmod=0755 updater.sh ${SCRIPT_ROOT}
+ADD --chmod=0755 dcron.sh ${SCRIPT_ROOT}
+ADD --chmod=0755 backup.sh /etc/periodic/weekly/backup
 
-RUN chmod 0755 ${SCRIPT_ROOT}/*.sh
+ADD index.php ${SCRIPT_ROOT}
+ADD config.docker.php ${SCRIPT_ROOT}
 
-ADD .docker/app/index.php ${SCRIPT_ROOT}
-ADD .docker/app/config.docker.php ${SCRIPT_ROOT}
-
-COPY . ${SRC_DIR}
+COPY --from=app-src . ${SRC_DIR}
 
 ARG ORIGIN_REPO_XACCEL=https://git.tt-rss.org/fox/ttrss-nginx-xaccel.git
 

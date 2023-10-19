@@ -8,7 +8,7 @@ variables:
 include:
   - project: 'ci/ci-templates'
     ref: master
-    file: .ci-build-docker-kaniko.yml
+    file: .ci-build-docker.yml
   - project: 'ci/ci-templates'
     ref: master
     file: .ci-lint-common.yml
@@ -25,22 +25,22 @@ phpstan:
 ttrss-web-nginx:
   extends: .build-master
   variables:
-    DOCKERFILE: ${CI_PROJECT_DIR}/.docker/web-nginx/Dockerfile
+    BUILD_CONTEXT: ${CI_PROJECT_DIR}/.docker/web-nginx
 
 ttrss-web-nginx:branch:
   extends: .build-branch
   variables:
-    DOCKERFILE: ${CI_PROJECT_DIR}/.docker/web-nginx/Dockerfile
+    BUILD_CONTEXT: ${CI_PROJECT_DIR}/.docker/web-nginx
 
 ttrss-fpm-pgsql-static:
    extends: .build-master
    variables:
-    DOCKERFILE: ${CI_PROJECT_DIR}/.docker/app/Dockerfile
+    BUILD_CONTEXT: ${CI_PROJECT_DIR}/.docker/app
 
 ttrss-fpm-pgsql-static:branch:
    extends: .build-branch
    variables:
-    DOCKERFILE: ${CI_PROJECT_DIR}/.docker/app/Dockerfile
+    BUILD_CONTEXT: ${CI_PROJECT_DIR}/.docker/app
 
 phpdoc:
   image: ${PHP_IMAGE}

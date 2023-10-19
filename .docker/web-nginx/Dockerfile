@@ -2,7 +2,7 @@ FROM registry.fakecake.org/docker.io/nginx:alpine
 
 HEALTHCHECK CMD curl --fail http://localhost/tt-rss/index.php || exit 1
 
-COPY nginx.conf /etc/nginx/templates/nginx.conf.template
+COPY .docker/web-nginx/nginx.conf /etc/nginx/templates/nginx.conf.template
 
 # By default, nginx will send the php requests to "app" server, but this server
 # name can be overridden at runtime by passing an APP_UPSTREAM env var

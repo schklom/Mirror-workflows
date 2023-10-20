@@ -193,7 +193,7 @@ class Config {
 	const HTTP_429_THROTTLE_INTERVAL = "HTTP_429_THROTTLE_INTERVAL";
 
 	/** host running Jaeger collector to receive traces (disabled if empty) */
-	const OPENTELEMETRY_HOST = "OPENTELEMETRY_HOST";
+	const OPENTELEMETRY_ENDPOINT = "OPENTELEMETRY_ENDPOINT";
 
 	/** Jaeger service name */
 	const OPENTELEMETRY_SERVICE = "OPENTELEMETRY_SERVICE";
@@ -255,7 +255,7 @@ class Config {
 		Config::HTTP_USER_AGENT => [ 'Tiny Tiny RSS/%s (https://tt-rss.org/)',
 																					Config::T_STRING ],
 		Config::HTTP_429_THROTTLE_INTERVAL => [ 3600,				Config::T_INT ],
-		Config::OPENTELEMETRY_HOST => [ "",							Config::T_STRING ],
+		Config::OPENTELEMETRY_ENDPOINT => [ "",							Config::T_STRING ],
 		Config::OPENTELEMETRY_SERVICE => [ "tt-rss",					Config::T_STRING ],
 	];
 

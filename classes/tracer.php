@@ -16,10 +16,10 @@ class Tracer {
 	private static $tracer;
 
 	public function __construct() {
-		$opentelemetry_host = Config::get(Config::OPENTELEMETRY_HOST);
+		$OPENTELEMETRY_ENDPOINT = Config::get(Config::OPENTELEMETRY_ENDPOINT);
 
-		if ($opentelemetry_host) {
-			$transport = (new OtlpHttpTransportFactory())->create("http://$opentelemetry_host/v1/traces", 'application/x-protobuf');
+		if ($OPENTELEMETRY_ENDPOINT) {
+			$transport = (new OtlpHttpTransportFactory())->create($OPENTELEMETRY_ENDPOINT, 'application/x-protobuf');
 			$exporter = new SpanExporter($transport);
 		} else {
 			$exporter = new InMemoryExporter();

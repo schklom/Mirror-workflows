@@ -30,12 +30,6 @@
 	$op = (string)clean($op);
 	$method = (string)clean($method);
 
-	$span = Tracer::start(__FILE__);
-
-	register_shutdown_function(function() use ($span) {
-	 	$span->end();
-	});
-
 	startup_gettext();
 
 	$script_started = microtime(true);
@@ -43,6 +37,8 @@
 	if (!init_plugins()) {
 		return;
 	}
+
+	$span = OpenTelemetry\API\Trace\Span::getCurrent();
 
 	header("Content-Type: text/json; charset=utf-8");
 

@@ -16,7 +16,6 @@
 
 	Config::sanity_check();
 
-
 	if (!init_plugins()) return;
 
 	UserHelper::login_sequence();

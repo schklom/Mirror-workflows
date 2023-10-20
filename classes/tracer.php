@@ -5,17 +5,22 @@ use OpenTelemetry\Contrib\Otlp\SpanExporter;
 use OpenTelemetry\SDK\Trace\SpanProcessor\SimpleSpanProcessor;
 use OpenTelemetry\SDK\Trace\TracerProvider;
 use OpenTelemetry\API\Trace\Propagation\TraceContextPropagator;
-use OpenTelemetry\API\Trace\Span;
+use OpenTelemetry\API\Trace\SpanKind;
 use OpenTelemetry\SDK\Trace\SpanExporter\InMemoryExporter;
 
 use OpenTelemetry\SDK\Resource\ResourceInfoFactory;
 use OpenTelemetry\SDK\Resource\ResourceInfo;
 use OpenTelemetry\SDK\Common\Attribute\Attributes;
 use OpenTelemetry\SemConv\ResourceAttributes;
+use OpenTelemetry\SDK\Trace\Sampler\AlwaysOnSampler;
+use OpenTelemetry\SDK\Trace\Sampler\ParentBased;
+
 
 class Tracer {
 	/** @var Tracer $instance */
 	private static $instance;
+
+	private $tracerProvider;
 
 	/** @var OpenTelemetry\API\Trace\TracerInterface $tracer */
 	private $tracer;
@@ -36,23 +41,29 @@ class Tracer {
 			), ResourceAttributes::SCHEMA_URL),
 		);
 
-		$tracerProvider =  new TracerProvider(new SimpleSpanProcessor($exporter), null, $resource);
+		$this->tracerProvider = TracerProvider::builder()
+			->addSpanProcessor(new SimpleSpanProcessor($exporter))
+			->setResource($resource)
+			->setSampler(new ParentBased(new AlwaysOnSampler()))
+			->build();
 
-		$this->tracer = $tracerProvider->getTracer('io.opentelemetry.contrib.php');
+		$this->tracer = $this->tracerProvider->getTracer('io.opentelemetry.contrib.php');
 
 		$context = TraceContextPropagator::getInstance()->extract(getallheaders());
+
 		$span = $this->tracer->spanBuilder('root')
 			->setParent($context)
-			->setAttribute('http.request', json_encode($_REQUEST))
+			->setSpanKind(SpanKind::KIND_SERVER)
+			->setAttribute('php.request', json_encode($_REQUEST))
+			->setAttribute('php.server', json_encode($_SERVER))
 			->startSpan();
 
 		$scope = $span->activate();
 
-		register_shutdown_function(function() use ($span, $tracerProvider, $scope) {
+		register_shutdown_function(function() use ($span, $scope) {
 			$span->end();
 			$scope->detach();
-
-			$tracerProvider->shutdown();
+			$this->tracerProvider->shutdown();
 		});
 	}
 
@@ -61,7 +72,10 @@ class Tracer {
 	 * @return OpenTelemetry\API\Trace\SpanInterface
 	 */
 	private function _start(string $name) {
-		$span = $this->tracer->spanBuilder($name)->startSpan();
+		$span = $this->tracer
+			->spanBuilder($name)
+			->setSpanKind(SpanKind::KIND_SERVER)
+			->startSpan();
 
 		$span->activate();
 

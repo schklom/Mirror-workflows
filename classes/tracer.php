@@ -11,6 +11,8 @@ use OpenTelemetry\SDK\Trace\SpanExporter\InMemoryExporter;
 class Tracer {
 	/** @var Tracer $instance */
 	private static $instance;
+
+	/** @var OpenTelemetry\API\Trace\TracerInterface $tracer */
 	private static $tracer;
 
 	public function __construct() {
@@ -44,7 +46,7 @@ class Tracer {
 	 * @param string $name
 	 * @param array<string>|array<string, array<string, mixed>> $tags
 	 * @param array<string> $args
-	 * @return Span
+	 * @return OpenTelemetry\API\Trace\SpanInterface
 	 */
 	private function _start(string $name, array $tags = [], array $args = []) {
 		$span = $this->tracer->spanBuilder($name)->startSpan();
@@ -64,7 +66,7 @@ class Tracer {
 	 * @param string $name
 	 * @param array<string>|array<string, array<string, mixed>> $tags
 	 * @param array<string> $args
-	 * @return Span
+	 * @return OpenTelemetry\API\Trace\SpanInterface
 	 */
 	public static function start(string $name, array $tags = [], array $args = []) {
 		return self::get_instance()->_start($name, $tags, $args);
@@ -76,5 +78,4 @@ class Tracer {
 
 		return self::$instance;
 	}
-
 }

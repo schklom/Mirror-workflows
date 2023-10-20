@@ -28,8 +28,6 @@ parameters:
       - plugins/**/tests/*
       - plugins/*/vendor/intervention/*
       - plugins/*/vendor/psr/log/*
-      - vendor/**/test/*
-      - vendor/**/tests/*
-      - vendor/sebastian/*
+      - vendor/**/*
    paths:
       - .

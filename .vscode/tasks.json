@@ -3,11 +3,11 @@
 	"tasks": [
 		{
 			"type": "shell",
-			"label": "phpstan 8.1 (watcher)",
+			"label": "phpstan (watcher)",
 			"isBackground": true,
 			"problemMatcher": {
 				"fileLocation": ["relative", "${workspaceRoot}"],
-				"owner": "phpstan-watcher-8.1",
+				"owner": "phpstan-watcher",
 				"pattern": {
 					 "regexp": "^/app/(.*?):([0-9\\?]*):(.*)$",
 					 "file": 1,

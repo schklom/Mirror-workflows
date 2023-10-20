@@ -13,7 +13,7 @@ class Tracer {
 	private static $instance;
 
 	/** @var OpenTelemetry\API\Trace\TracerInterface $tracer */
-	private static $tracer;
+	private $tracer;
 
 	public function __construct() {
 		$OPENTELEMETRY_ENDPOINT = Config::get(Config::OPENTELEMETRY_ENDPOINT);

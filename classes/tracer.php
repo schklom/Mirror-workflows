@@ -8,6 +8,11 @@ use OpenTelemetry\API\Trace\Propagation\TraceContextPropagator;
 use OpenTelemetry\API\Trace\Span;
 use OpenTelemetry\SDK\Trace\SpanExporter\InMemoryExporter;
 
+use OpenTelemetry\SDK\Resource\ResourceInfoFactory;
+use OpenTelemetry\SDK\Resource\ResourceInfo;
+use OpenTelemetry\SDK\Common\Attribute\Attributes;
+use OpenTelemetry\SemConv\ResourceAttributes;
+
 class Tracer {
 	/** @var Tracer $instance */
 	private static $instance;
@@ -25,18 +30,27 @@ class Tracer {
 			$exporter = new InMemoryExporter();
 		}
 
-		$tracerProvider =  new TracerProvider(new SimpleSpanProcessor($exporter));
+		$resource = ResourceInfoFactory::emptyResource()->merge(
+			ResourceInfo::create(Attributes::create(
+				[ResourceAttributes::SERVICE_NAME => Config::get(Config::OPENTELEMETRY_SERVICE)]
+			), ResourceAttributes::SCHEMA_URL),
+		);
+
+		$tracerProvider =  new TracerProvider(new SimpleSpanProcessor($exporter), null, $resource);
+
 		$this->tracer = $tracerProvider->getTracer('io.opentelemetry.contrib.php');
 
 		$context = TraceContextPropagator::getInstance()->extract(getallheaders());
-		$span = $this->tracer->spanBuilder(Config::get(Config::OPENTELEMETRY_SERVICE))
+		$span = $this->tracer->spanBuilder('root')
 			->setParent($context)
+			->setAttribute('http.request', json_encode($_REQUEST))
 			->startSpan();
 
-		$span->activate();
+		$scope = $span->activate();
 
-		register_shutdown_function(function() use ($span, $tracerProvider) {
+		register_shutdown_function(function() use ($span, $tracerProvider, $scope) {
 			$span->end();
+			$scope->detach();
 
 			$tracerProvider->shutdown();
 		});
@@ -44,18 +58,10 @@ class Tracer {
 
 	/**
 	 * @param string $name
-	 * @param array<string>|array<string, array<string, mixed>> $tags
-	 * @param array<string> $args
 	 * @return OpenTelemetry\API\Trace\SpanInterface
 	 */
-	private function _start(string $name, array $tags = [], array $args = []) {
+	private function _start(string $name) {
 		$span = $this->tracer->spanBuilder($name)->startSpan();
-
-		foreach ($tags as $k => $v) {
-			$span->setAttribute($k, $v);
-		}
-
-		$span->setAttribute("func.args", json_encode($args));
 
 		$span->activate();
 
@@ -64,12 +70,10 @@ class Tracer {
 
 	/**
 	 * @param string $name
-	 * @param array<string>|array<string, array<string, mixed>> $tags
-	 * @param array<string> $args
 	 * @return OpenTelemetry\API\Trace\SpanInterface
 	 */
-	public static function start(string $name, array $tags = [], array $args = []) {
-		return self::get_instance()->_start($name, $tags, $args);
+	public static function start(string $name) {
+		return self::get_instance()->_start($name);
 	}
 
 	public static function get_instance() : Tracer {

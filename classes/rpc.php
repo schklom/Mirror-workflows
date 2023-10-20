@@ -106,7 +106,7 @@ class RPC extends Handler_Protected {
 	}
 
 	function getAllCounters(): void {
-		$scope = Tracer::start(__METHOD__);
+		$span = Tracer::start(__METHOD__);
 
 		@$seq = (int) $_REQUEST['seq'];
 
@@ -134,7 +134,7 @@ class RPC extends Handler_Protected {
 			'seq' => $seq
 		];
 
-		$scope->end();
+		$span->end();
 		print json_encode($reply);
 	}
 

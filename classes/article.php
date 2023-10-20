@@ -298,7 +298,7 @@ class Article extends Handler_Protected {
 	 * @return array{'formatted': string, 'entries': array<int, array<string, mixed>>}
 	 */
 	static function _format_enclosures(int $id, bool $always_display_enclosures, string $article_content, bool $hide_images = false): array {
-		$scope = Tracer::start(__METHOD__);
+		$span = Tracer::start(__METHOD__);
 
 		$enclosures = self::_get_enclosures($id);
 		$enclosures_formatted = "";
@@ -326,7 +326,7 @@ class Article extends Handler_Protected {
 			$enclosures_formatted, $enclosures, $id, $always_display_enclosures, $article_content, $hide_images);
 
 		if (!empty($enclosures_formatted)) {
-			$scope->end();
+			$span->end();
 			return [
 					'formatted' => $enclosures_formatted,
 					'entries' => []
@@ -370,7 +370,7 @@ class Article extends Handler_Protected {
 			}
 		}
 
-		$scope->end();
+		$span->end();
 		return $rv;
 	}
 
@@ -378,7 +378,7 @@ class Article extends Handler_Protected {
 	 * @return array<int, string>
 	 */
 	static function _get_tags(int $id, int $owner_uid = 0, ?string $tag_cache = null): array {
-		$scope = Tracer::start(__METHOD__);
+		$span = Tracer::start(__METHOD__);
 
 		$a_id = $id;
 
@@ -427,7 +427,7 @@ class Article extends Handler_Protected {
 			$sth->execute([$tags_str, $id, $owner_uid]);
 		}
 
-		$scope->end();
+		$span->end();
 		return $tags;
 	}
 
@@ -522,7 +522,7 @@ class Article extends Handler_Protected {
 	 * @return array<int, array<int, int|string>>
 	 */
 	static function _get_labels(int $id, ?int $owner_uid = null): array {
-		$scope = Tracer::start(__METHOD__, []);
+		$span = Tracer::start(__METHOD__);
 
 		$rv = array();
 
@@ -569,7 +569,7 @@ class Article extends Handler_Protected {
 		else
 			Labels::update_cache($owner_uid, $id, array("no-labels" => 1));
 
-		$scope->end();
+		$span->end();
 
 		return $rv;
 	}
@@ -581,7 +581,7 @@ class Article extends Handler_Protected {
 	 * @return array<int, Article::ARTICLE_KIND_*|string>
 	 */
 	static function _get_image(array $enclosures, string $content, string $site_url, array $headline) {
-		$scope = Tracer::start(__METHOD__);
+		$span = Tracer::start(__METHOD__);
 
 		$article_image = "";
 		$article_stream = "";
@@ -660,7 +660,7 @@ class Article extends Handler_Protected {
 		if ($article_stream && $cache->exists(sha1($article_stream)))
 			$article_stream = $cache->get_url(sha1($article_stream));
 
-		$scope->end();
+		$span->end();
 
 		return [$article_image, $article_stream, $article_kind];
 	}
@@ -675,7 +675,7 @@ class Article extends Handler_Protected {
 		if (count($article_ids) == 0)
 			return [];
 
-		$scope = Tracer::start(__METHOD__);
+		$span = Tracer::start(__METHOD__);
 
 		$entries = ORM::for_table('ttrss_entries')
 			->table_alias('e')
@@ -696,7 +696,7 @@ class Article extends Handler_Protected {
 			}
 		}
 
-		$scope->end();
+		$span->end();
 
 		return array_unique($rv);
 	}
@@ -709,7 +709,7 @@ class Article extends Handler_Protected {
 		if (count($article_ids) == 0)
 			return [];
 
-		$scope = Tracer::start(__METHOD__);
+		$span = Tracer::start(__METHOD__);
 
 		$entries = ORM::for_table('ttrss_entries')
 			->table_alias('e')
@@ -723,7 +723,7 @@ class Article extends Handler_Protected {
 			array_push($rv, $entry->feed_id);
 		}
 
-		$scope->end();
+		$span->end();
 
 		return array_unique($rv);
 	}

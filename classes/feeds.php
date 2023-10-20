@@ -65,7 +65,8 @@ class Feeds extends Handler_Protected {
 
 		$disable_cache = false;
 
-		$scope = Tracer::start(__METHOD__, [], func_get_args());
+		$span = Tracer::start(__METHOD__);
+		$span->setAttribute('func.args', json_encode(func_get_args()));
 
 		$reply = [];
 		$rgba_cache = [];
@@ -168,7 +169,7 @@ class Feeds extends Handler_Protected {
 		$reply['search_query'] = [$search, $search_language];
 		$reply['vfeed_group_enabled'] = $vfeed_group_enabled;
 
-		$scope->addEvent('plugin_menu_items');
+		$span->addEvent('plugin_menu_items');
 
 		$plugin_menu_items = "";
 		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM2,
@@ -202,13 +203,13 @@ class Feeds extends Handler_Protected {
 					},
 					$feed, $cat_view, $qfh_ret);
 
-		$scope->addEvent('articles');
+		$span->addEvent('articles');
 
 		$headlines_count = 0;
 
 		if ($result instanceof PDOStatement) {
 			while ($line = $result->fetch(PDO::FETCH_ASSOC)) {
-				$scope->addEvent('article: ' . $line['id']);
+				$span->addEvent('article: ' . $line['id']);
 
 				++$headlines_count;
 
@@ -368,7 +369,7 @@ class Feeds extends Handler_Protected {
 			    //setting feed headline background color, needs to change text color based on dark/light
 				$fav_color = $line['favicon_avg_color'] ?? false;
 
-				$scope->addEvent("colors");
+				$span->addEvent("colors");
 
 				require_once "colors.php";
 
@@ -384,7 +385,7 @@ class Feeds extends Handler_Protected {
 				    $line['feed_bg_color'] = 'rgba(' . implode(",", $rgba_cache[$feed_id]) . ',0.3)';
 				}
 
-				$scope->addEvent("HOOK_RENDER_ARTICLE_CDM");
+				$span->addEvent("HOOK_RENDER_ARTICLE_CDM");
 
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE_CDM,
 					function ($result, $plugin) use (&$line) {
@@ -463,7 +464,7 @@ class Feeds extends Handler_Protected {
 			}
 		}
 
-		$scope->end();
+		$span->end();
 
 		return array($topmost_article_ids, $headlines_count, $feed, $disable_cache, $reply);
 	}
@@ -977,9 +978,9 @@ class Feeds extends Handler_Protected {
 	 * @throws PDOException
 	 */
 	static function _get_counters($feed, bool $is_cat = false, bool $unread_only = false, ?int $owner_uid = null): int {
-		$scope = OpenTelemetry\API\Trace\Span::getCurrent();
+		$span = OpenTelemetry\API\Trace\Span::getCurrent();
 
-		$scope->addEvent(__METHOD__ . ": $feed ($is_cat)");
+		$span->addEvent(__METHOD__ . ": $feed ($is_cat)");
 
 		$n_feed = (int) $feed;
 		$need_entries = false;
@@ -1003,14 +1004,14 @@ class Feeds extends Handler_Protected {
 			$handler = PluginHost::getInstance()->get_feed_handler($feed_id);
 			if (implements_interface($handler, 'IVirtualFeed')) {
 				/** @var IVirtualFeed $handler */
-				//$scope->end();
+				//$span->end();
 				return $handler->get_unread($feed_id);
 			} else {
-				//$scope->end();
+				//$span->end();
 				return 0;
 			}
 		} else if ($n_feed == Feeds::FEED_RECENTLY_READ) {
-			//$scope->end();
+			//$span->end();
 			return 0;
 		// tags
 		} else if ($feed != "0" && $n_feed == 0) {
@@ -1024,7 +1025,7 @@ class Feeds extends Handler_Protected {
 			$row = $sth->fetch();
 
 			// Handle 'SUM()' returning null if there are no results
-			//$scope->end();
+			//$span->end();
 			return $row["count"] ?? 0;
 
 		} else if ($n_feed == Feeds::FEED_STARRED) {
@@ -1058,7 +1059,7 @@ class Feeds extends Handler_Protected {
 
 			$label_id = Labels::feed_to_label_id($feed);
 
-			//$scope->end();
+			//$span->end();
 			return self::_get_label_unread($label_id, $owner_uid);
 		}
 
@@ -1078,7 +1079,7 @@ class Feeds extends Handler_Protected {
 			$sth->execute([$owner_uid]);
 			$row = $sth->fetch();
 
-			//$scope->end();
+			//$span->end();
 			return $row["unread"];
 
 		} else {
@@ -1091,7 +1092,7 @@ class Feeds extends Handler_Protected {
 			$sth->execute([$feed, $owner_uid]);
 			$row = $sth->fetch();
 
-			//$scope->end();
+			//$span->end();
 			return $row["unread"];
 		}
 	}
@@ -1489,7 +1490,8 @@ class Feeds extends Handler_Protected {
 	 */
 	static function _get_headlines($params): array {
 
-		$scope = Tracer::start(__METHOD__, [], func_get_args());
+		$span = Tracer::start(__METHOD__);
+		$span->setAttribute('func.args', json_encode(func_get_args()));
 
 		$pdo = Db::pdo();
 
@@ -1983,7 +1985,7 @@ class Feeds extends Handler_Protected {
 			$res = $pdo->query($query);
 		}
 
-		$scope->end();
+		$span->end();
 
 		return array($res, $feed_title, $feed_site_url, $last_error, $last_updated, $search_words, $first_id, $vfeed_query_part != "", $query_error_override);
 	}

@@ -221,9 +221,11 @@ class DiskCache implements Cache_Adapter {
 	}
 
 	public function remove(string $filename): bool {
-		$scope = Tracer::start(__METHOD__, ['filename' => $filename]);
+		$span = Tracer::start(__METHOD__);
+		$span->setAttribute('file.name', $filename);
+
 		$rc = $this->adapter->remove($filename);
-		$scope->end();
+		$span->end();
 
 		return $rc;
 	}
@@ -249,8 +251,8 @@ class DiskCache implements Cache_Adapter {
 	}
 
 	public function exists(string $filename): bool {
-		$scope = OpenTelemetry\API\Trace\Span::getCurrent();
-		$scope->addEvent("DiskCache::exists: $filename");
+		$span = OpenTelemetry\API\Trace\Span::getCurrent();
+		$span->addEvent("DiskCache::exists: $filename");
 
 		$rc = $this->adapter->exists(basename($filename));
 
@@ -261,9 +263,11 @@ class DiskCache implements Cache_Adapter {
 	 * @return int|false -1 if the file doesn't exist, false if an error occurred, size in bytes otherwise
 	 */
 	public function get_size(string $filename) {
-		$scope = Tracer::start(__METHOD__, ['filename' => $filename]);
+		$span = Tracer::start(__METHOD__);
+		$span->setAttribute('file.name', $filename);
+
 		$rc = $this->adapter->get_size(basename($filename));
-		$scope->end();
+		$span->end();
 
 		return $rc;
 	}
@@ -274,9 +278,9 @@ class DiskCache implements Cache_Adapter {
 	 * @return int|false Bytes written or false if an error occurred.
 	 */
 	public function put(string $filename, $data) {
-		$scope = Tracer::start(__METHOD__);
+		$span = Tracer::start(__METHOD__);
 		$rc = $this->adapter->put(basename($filename), $data);
-		$scope->end();
+		$span->end();
 
 		return $rc;
 	}
@@ -322,7 +326,8 @@ class DiskCache implements Cache_Adapter {
 	}
 
 	public function send(string $filename) {
-		$scope = Tracer::start(__METHOD__, ['filename' => $filename]);
+		$span = Tracer::start(__METHOD__);
+		$span->setAttribute('file.name', $filename);
 
 		$filename = basename($filename);
 
@@ -330,8 +335,8 @@ class DiskCache implements Cache_Adapter {
 			header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 			echo "File not found.";
 
-			$scope->setAttribute('error', '404 not found');
-			$scope->end();
+			$span->setAttribute('error', '404 not found');
+			$span->end();
 			return false;
 		}
 
@@ -341,8 +346,8 @@ class DiskCache implements Cache_Adapter {
 		if (($_SERVER['HTTP_IF_MODIFIED_SINCE'] ?? '') == $gmt_modified || ($_SERVER['HTTP_IF_NONE_MATCH'] ?? '') == $file_mtime) {
 			header('HTTP/1.1 304 Not Modified');
 
-			$scope->setAttribute('error', '304 not modified');
-			$scope->end();
+			$span->setAttribute('error', '304 not modified');
+			$span->end();
 			return false;
 		}
 
@@ -361,8 +366,8 @@ class DiskCache implements Cache_Adapter {
 
 			print "Stored file has disallowed content type ($mimetype)";
 
-			$scope->setAttribute('error', '400 disallowed content type');
-			$scope->end();
+			$span->setAttribute('error', '400 disallowed content type');
+			$span->end();
 			return false;
 		}
 
@@ -384,11 +389,11 @@ class DiskCache implements Cache_Adapter {
 
 		header_remove("Pragma");
 
-		$scope->setAttribute('mimetype', $mimetype);
+		$span->setAttribute('mimetype', $mimetype);
 
 		$rc = $this->adapter->send($filename);
 
-		$scope->end();
+		$span->end();
 
 		return $rc;
 	}
@@ -419,13 +424,13 @@ class DiskCache implements Cache_Adapter {
 	// plugins work on original source URLs used before caching
 	// NOTE: URLs should be already absolutized because this is called after sanitize()
 	static public function rewrite_urls(string $str): string {
-		$scope = OpenTelemetry\API\Trace\Span::getCurrent();
-		$scope->addEvent("DiskCache::rewrite_urls");
+		$span = OpenTelemetry\API\Trace\Span::getCurrent();
+		$span->addEvent("DiskCache::rewrite_urls");
 
 		$res = trim($str);
 
 		if (!$res) {
-			$scope->end();
+			$span->end();
 			return '';
 		}
 
@@ -439,7 +444,7 @@ class DiskCache implements Cache_Adapter {
 			$need_saving = false;
 
 			foreach ($entries as $entry) {
-				$scope->addEvent("entry: " . $entry->tagName);
+				$span->addEvent("entry: " . $entry->tagName);
 
 				foreach (array('src', 'poster') as $attr) {
 					if ($entry->hasAttribute($attr)) {

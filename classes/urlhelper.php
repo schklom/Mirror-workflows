@@ -185,12 +185,13 @@ class UrlHelper {
 	 * @return false|string
 	 */
 	static function resolve_redirects(string $url, int $timeout, int $nest = 0) {
-		$scope = Tracer::start(__METHOD__, ['url' => $url]);
+		$span = Tracer::start(__METHOD__);
+		$span->setAttribute('func.args', json_encode(func_get_args()));
 
 		// too many redirects
 		if ($nest > 10) {
-			$scope->setAttribute('error', 'too many redirects');
-			$scope->end();
+			$span->setAttribute('error', 'too many redirects');
+			$span->end();
 			return false;
 		}
 
@@ -226,12 +227,12 @@ class UrlHelper {
 				}
 			}
 
-			$scope->end();
+			$span->end();
 			return $url;
 		}
 
-		$scope->setAttribute('error', 'request failed');
-		$scope->end();
+		$span->setAttribute('error', 'request failed');
+		$span->end();
 		// request failed?
 		return false;
 	}
@@ -279,7 +280,8 @@ class UrlHelper {
 		}
 		$url = $options["url"];
 
-		$scope = Tracer::start(__METHOD__, ['url' => $url]);
+		$span = Tracer::start(__METHOD__);
+		$span->setAttribute('func.args', json_encode(func_get_args()));
 
 		$type = isset($options["type"]) ? $options["type"] : false;
 		$login = isset($options["login"]) ? $options["login"] : false;
@@ -303,8 +305,8 @@ class UrlHelper {
 		if (!$url) {
 			self::$fetch_last_error = "Requested URL failed extended validation.";
 
-			$scope->setAttribute('error', self::$fetch_last_error);
-			$scope->end();
+			$span->setAttribute('error', self::$fetch_last_error);
+			$span->end();
 			return false;
 		}
 
@@ -314,8 +316,8 @@ class UrlHelper {
 		if (!$ip_addr || strpos($ip_addr, "127.") === 0) {
 			self::$fetch_last_error = "URL hostname failed to resolve or resolved to a loopback address ($ip_addr)";
 
-			$scope->setAttribute('error', self::$fetch_last_error);
-			$scope->end();
+			$span->setAttribute('error', self::$fetch_last_error);
+			$span->end();
 			return false;
 		}
 
@@ -327,8 +329,8 @@ class UrlHelper {
 
 			if (!$ch) {
 				self::$fetch_last_error = "curl_init() failed";
-				$scope->setAttribute('error', self::$fetch_last_error);
-				$scope->end();
+				$span->setAttribute('error', self::$fetch_last_error);
+				$span->end();
 				return false;
 			}
 
@@ -432,8 +434,8 @@ class UrlHelper {
 			if (!self::validate(self::$fetch_effective_url, true)) {
 				self::$fetch_last_error = "URL received after redirection failed extended validation.";
 
-				$scope->setAttribute('error', self::$fetch_last_error);
-				$scope->end();
+				$span->setAttribute('error', self::$fetch_last_error);
+				$span->end();
 				return false;
 			}
 
@@ -442,8 +444,8 @@ class UrlHelper {
 			if (!self::$fetch_effective_ip_addr || strpos(self::$fetch_effective_ip_addr, "127.") === 0) {
 				self::$fetch_last_error = "URL hostname received after redirection failed to resolve or resolved to a loopback address (".self::$fetch_effective_ip_addr.")";
 
-				$scope->setAttribute('error', self::$fetch_last_error);
-				$scope->end();
+				$span->setAttribute('error', self::$fetch_last_error);
+				$span->end();
 				return false;
 			}
 
@@ -460,8 +462,8 @@ class UrlHelper {
 				self::$fetch_last_error_content = $contents;
 				curl_close($ch);
 
-				$scope->setAttribute('error', self::$fetch_last_error);
-				$scope->end();
+				$span->setAttribute('error', self::$fetch_last_error);
+				$span->end();
 				return false;
 			}
 
@@ -473,8 +475,8 @@ class UrlHelper {
 				}
 				curl_close($ch);
 
-				$scope->setAttribute('error', self::$fetch_last_error);
-				$scope->end();
+				$span->setAttribute('error', self::$fetch_last_error);
+				$span->end();
 				return false;
 			}
 
@@ -488,7 +490,7 @@ class UrlHelper {
 				if ($tmp) $contents = $tmp;
 			}
 
-			$scope->end();
+			$span->end();
 
 			return $contents;
 		} else {
@@ -543,8 +545,8 @@ class UrlHelper {
 			if (!self::validate(self::$fetch_effective_url, true)) {
 				self::$fetch_last_error = "URL received after redirection failed extended validation.";
 
-				$scope->setAttribute('error', self::$fetch_last_error);
-				$scope->end();
+				$span->setAttribute('error', self::$fetch_last_error);
+				$span->end();
 				return false;
 			}
 
@@ -553,8 +555,8 @@ class UrlHelper {
 			if (!self::$fetch_effective_ip_addr || strpos(self::$fetch_effective_ip_addr, "127.") === 0) {
 				self::$fetch_last_error = "URL hostname received after redirection failed to resolve or resolved to a loopback address (".self::$fetch_effective_ip_addr.")";
 
-				$scope->setAttribute('error', self::$fetch_last_error);
-				$scope->end();
+				$span->setAttribute('error', self::$fetch_last_error);
+				$span->end();
 				return false;
 			}
 
@@ -563,8 +565,8 @@ class UrlHelper {
 			if ($data === false) {
 				self::$fetch_last_error = "'file_get_contents' failed.";
 
-				$scope->setAttribute('error', self::$fetch_last_error);
-				$scope->end();
+				$span->setAttribute('error', self::$fetch_last_error);
+				$span->end();
 				return false;
 			}
 
@@ -600,8 +602,8 @@ class UrlHelper {
 
 				self::$fetch_last_error_content = $data;
 
-				$scope->setAttribute('error', self::$fetch_last_error);
-				$scope->end();
+				$span->setAttribute('error', self::$fetch_last_error);
+				$span->end();
 				return false;
 			}
 
@@ -614,13 +616,13 @@ class UrlHelper {
 					if ($tmp) $data = $tmp;
 				}
 
-				$scope->end();
+				$span->end();
 				return $data;
 			} else {
 				self::$fetch_last_error = 'Successful response, but no content was received.';
 
-				$scope->setAttribute('error', self::$fetch_last_error);
-				$scope->end();
+				$span->setAttribute('error', self::$fetch_last_error);
+				$span->end();
 				return false;
 			}
 		}

@@ -69,7 +69,7 @@ class RSSUtils {
 	 * @param array<string, false|string> $options
 	 */
 	static function update_daemon_common(int $limit = 0, array $options = []): int {
-		$scope = Tracer::start(__METHOD__);
+		$span = Tracer::start(__METHOD__);
 
 		if (!$limit) $limit = Config::get(Config::DAEMON_FEED_LIMIT);
 
@@ -286,7 +286,7 @@ class RSSUtils {
 		// Send feed digests by email if needed.
 		Digest::send_headlines_digests();
 
-		$scope->end();
+		$span->end();
 
 		return $nf;
 	}
@@ -354,7 +354,9 @@ class RSSUtils {
 
 	static function update_rss_feed(int $feed, bool $no_cache = false, bool $html_output = false) : bool {
 
-		$scope = Tracer::start(__METHOD__, [], func_get_args());
+		$span = Tracer::start(__METHOD__);
+		$span->setAttribute('func.args', json_encode(func_get_args()));
+
 		Debug::enable_html($html_output);
 		Debug::log("start", Debug::LOG_VERBOSE);
 
@@ -390,19 +392,19 @@ class RSSUtils {
 			if ($user) {
 				if ($user->access_level == UserHelper::ACCESS_LEVEL_READONLY) {
 					Debug::log("error: denied update for $feed: permission denied by owner access level");
-					$scope->end();
+					$span->end();
 					return false;
 				}
 			} else {
 				// this would indicate database corruption of some kind
 				Debug::log("error: owner not found for feed: $feed");
-				$scope->end();
+				$span->end();
 				return false;
 			}
 
 		} else {
 			Debug::log("error: feeds table record not found for feed: $feed");
-			$scope->end();
+			$span->end();
 			return false;
 		}
 
@@ -561,7 +563,7 @@ class RSSUtils {
 				$feed_obj->save();
 			}
 
-			$scope->end();
+			$span->end();
 			return $error_message == "";
 		}
 
@@ -703,7 +705,7 @@ class RSSUtils {
 				]);
 
 				$feed_obj->save();
-				$scope->end();
+				$span->end();
 				return true; // no articles
 			}
 
@@ -712,7 +714,7 @@ class RSSUtils {
 			$tstart = time();
 
 			foreach ($items as $item) {
-				$a_scope = Tracer::start('article');
+				$a_span = Tracer::start('article');
 
 				$pdo->beginTransaction();
 
@@ -1305,7 +1307,7 @@ class RSSUtils {
 				Debug::log("article processed.", Debug::LOG_VERBOSE);
 
 				$pdo->commit();
-				$a_scope->end();
+				$a_span->end();
 			}
 
 			Debug::log(Debug::SEPARATOR, Debug::LOG_VERBOSE);
@@ -1346,12 +1348,12 @@ class RSSUtils {
 			unset($rss);
 
 			Debug::log("update failed.", Debug::LOG_VERBOSE);
-			$scope->end();
+			$span->end();
 			return false;
 		}
 
 		Debug::log("update done.", Debug::LOG_VERBOSE);
-		$scope->end();
+		$span->end();
 		return true;
 	}
 
@@ -1516,7 +1518,7 @@ class RSSUtils {
 	 * @return array<int, array<string, string>> An array of filter action arrays with keys "type" and "param"
 	 */
 	static function get_article_filters(array $filters, string $title, string $content, string $link, string $author, array $tags, array &$matched_rules = null, array &$matched_filters = null): array {
-		$scope = Tracer::start(__METHOD__);
+		$span = Tracer::start(__METHOD__);
 
 		$matches = array();
 
@@ -1604,7 +1606,7 @@ class RSSUtils {
 			}
 		}
 
-		$scope->end();
+		$span->end();
 
 		return $matches;
 	}

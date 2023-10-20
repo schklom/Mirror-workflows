@@ -30,10 +30,10 @@
 	$op = (string)clean($op);
 	$method = (string)clean($method);
 
-	$scope = Tracer::start(__FILE__);
+	$span = Tracer::start(__FILE__);
 
-	register_shutdown_function(function() use ($scope) {
-	 	$scope->end();
+	register_shutdown_function(function() use ($span) {
+	 	$span->end();
 	});
 
 	startup_gettext();
@@ -55,7 +55,7 @@
 			header("Content-Type: text/json");
 			print Errors::to_json(Errors::E_UNAUTHORIZED);
 
-			$scope->setAttribute('error', Errors::E_UNAUTHORIZED);
+			$span->setAttribute('error', Errors::E_UNAUTHORIZED);
 			return;
 		}
 		UserHelper::load_user_plugins($_SESSION["uid"]);
@@ -64,7 +64,7 @@
 	if (Config::is_migration_needed()) {
 		print Errors::to_json(Errors::E_SCHEMA_MISMATCH);
 
-		$scope->setAttribute('error', Errors::E_SCHEMA_MISMATCH);
+		$span->setAttribute('error', Errors::E_SCHEMA_MISMATCH);
 		return;
 	}
 
@@ -127,7 +127,7 @@
 			header("Content-Type: text/json");
 			print Errors::to_json(Errors::E_UNAUTHORIZED);
 
-			$scope->setAttribute('error', Errors::E_UNAUTHORIZED);
+			$span->setAttribute('error', Errors::E_UNAUTHORIZED);
 			return;
 		}
 
@@ -140,16 +140,16 @@
 		}
 
 		if (implements_interface($handler, 'IHandler')) {
-			$scope->addEvent("construct/$op");
+			$span->addEvent("construct/$op");
 			$handler->__construct($_REQUEST);
 
 			if (validate_csrf($csrf_token) || $handler->csrf_ignore($method)) {
 
-				$scope->addEvent("before/$method");
+				$span->addEvent("before/$method");
 				$before = $handler->before($method);
 
 				if ($before) {
-					$scope->addEvent("method/$method");
+					$span->addEvent("method/$method");
 					if ($method && method_exists($handler, $method)) {
 						$reflection = new ReflectionMethod($handler, $method);
 
@@ -159,7 +159,7 @@
 							user_error("Refusing to invoke method $method of handler $op which has required parameters.", E_USER_WARNING);
 							header("Content-Type: text/json");
 
-							$scope->setAttribute('error', Errors::E_UNAUTHORIZED);
+							$span->setAttribute('error', Errors::E_UNAUTHORIZED);
 							print Errors::to_json(Errors::E_UNAUTHORIZED);
 						}
 					} else {
@@ -168,19 +168,19 @@
 						} else {
 							header("Content-Type: text/json");
 
-							$scope->setAttribute('error', Errors::E_UNKNOWN_METHOD);
+							$span->setAttribute('error', Errors::E_UNKNOWN_METHOD);
 							print Errors::to_json(Errors::E_UNKNOWN_METHOD, ["info" => get_class($handler) . "->$method"]);
 						}
 					}
 
-					$scope->addEvent("after/$method");
+					$span->addEvent("after/$method");
 					$handler->after();
 					return;
 				} else {
 					header("Content-Type: text/json");
 					print Errors::to_json(Errors::E_UNAUTHORIZED);
 
-					$scope->setAttribute('error', Errors::E_UNAUTHORIZED);
+					$span->setAttribute('error', Errors::E_UNAUTHORIZED);
 					return;
 				}
 			} else {
@@ -188,7 +188,7 @@
 				header("Content-Type: text/json");
 				print Errors::to_json(Errors::E_UNAUTHORIZED);
 
-				$scope->setAttribute('error', Errors::E_UNAUTHORIZED);
+				$span->setAttribute('error', Errors::E_UNAUTHORIZED);
 				return;
 			}
 		}
@@ -197,4 +197,4 @@
 	header("Content-Type: text/json");
 	print Errors::to_json(Errors::E_UNKNOWN_METHOD, [ "info" => (isset($handler) ? get_class($handler) : "UNKNOWN:".$op) . "->$method"]);
 
-	$scope->setAttribute('error', Errors::E_UNKNOWN_METHOD);
+	$span->setAttribute('error', Errors::E_UNKNOWN_METHOD);

@@ -168,7 +168,7 @@ class Feeds extends Handler_Protected {
 		$reply['search_query'] = [$search, $search_language];
 		$reply['vfeed_group_enabled'] = $vfeed_group_enabled;
 
-		$p_scope = Tracer::start('plugin_menu_items');
+		$scope->addEvent('plugin_menu_items');
 
 		$plugin_menu_items = "";
 		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM2,
@@ -202,15 +202,13 @@ class Feeds extends Handler_Protected {
 					},
 					$feed, $cat_view, $qfh_ret);
 
-		$p_scope->close();
-
-		$a_scope = Tracer::start('articles');
+		$scope->addEvent('articles');
 
 		$headlines_count = 0;
 
 		if ($result instanceof PDOStatement) {
 			while ($line = $result->fetch(PDO::FETCH_ASSOC)) {
-				$aa_scope = Tracer::start('article', ['id' => $line['id']]);
+				$scope->addEvent('article: ' . $line['id']);
 
 				++$headlines_count;
 
@@ -370,7 +368,7 @@ class Feeds extends Handler_Protected {
 			    //setting feed headline background color, needs to change text color based on dark/light
 				$fav_color = $line['favicon_avg_color'] ?? false;
 
-				$c_scope = Tracer::start('colors');
+				$scope->addEvent("colors");
 
 				require_once "colors.php";
 
@@ -386,7 +384,7 @@ class Feeds extends Handler_Protected {
 				    $line['feed_bg_color'] = 'rgba(' . implode(",", $rgba_cache[$feed_id]) . ',0.3)';
 				}
 
-				$c_scope->close();
+				$scope->addEvent("HOOK_RENDER_ARTICLE_CDM");
 
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE_CDM,
 					function ($result, $plugin) use (&$line) {
@@ -403,12 +401,8 @@ class Feeds extends Handler_Protected {
 					unset($line[$k]);
 
 				array_push($reply['content'], $line);
-
-				$aa_scope->close();
 			}
 		}
-
-		$a_scope->close();
 
 		if (!$headlines_count) {
 
@@ -469,7 +463,7 @@ class Feeds extends Handler_Protected {
 			}
 		}
 
-		$scope->close();
+		$scope->end();
 
 		return array($topmost_article_ids, $headlines_count, $feed, $disable_cache, $reply);
 	}
@@ -983,7 +977,9 @@ class Feeds extends Handler_Protected {
 	 * @throws PDOException
 	 */
 	static function _get_counters($feed, bool $is_cat = false, bool $unread_only = false, ?int $owner_uid = null): int {
-		$scope = Tracer::start(__METHOD__, [], func_get_args());
+		$scope = OpenTelemetry\API\Trace\Span::getCurrent();
+
+		$scope->addEvent(__METHOD__ . ": $feed ($is_cat)");
 
 		$n_feed = (int) $feed;
 		$need_entries = false;
@@ -1007,14 +1003,14 @@ class Feeds extends Handler_Protected {
 			$handler = PluginHost::getInstance()->get_feed_handler($feed_id);
 			if (implements_interface($handler, 'IVirtualFeed')) {
 				/** @var IVirtualFeed $handler */
-				$scope->close();
+				//$scope->end();
 				return $handler->get_unread($feed_id);
 			} else {
-				$scope->close();
+				//$scope->end();
 				return 0;
 			}
 		} else if ($n_feed == Feeds::FEED_RECENTLY_READ) {
-			$scope->close();
+			//$scope->end();
 			return 0;
 		// tags
 		} else if ($feed != "0" && $n_feed == 0) {
@@ -1028,7 +1024,7 @@ class Feeds extends Handler_Protected {
 			$row = $sth->fetch();
 
 			// Handle 'SUM()' returning null if there are no results
-			$scope->close();
+			//$scope->end();
 			return $row["count"] ?? 0;
 
 		} else if ($n_feed == Feeds::FEED_STARRED) {
@@ -1062,7 +1058,7 @@ class Feeds extends Handler_Protected {
 
 			$label_id = Labels::feed_to_label_id($feed);
 
-			$scope->close();
+			//$scope->end();
 			return self::_get_label_unread($label_id, $owner_uid);
 		}
 
@@ -1082,7 +1078,7 @@ class Feeds extends Handler_Protected {
 			$sth->execute([$owner_uid]);
 			$row = $sth->fetch();
 
-			$scope->close();
+			//$scope->end();
 			return $row["unread"];
 
 		} else {
@@ -1095,7 +1091,7 @@ class Feeds extends Handler_Protected {
 			$sth->execute([$feed, $owner_uid]);
 			$row = $sth->fetch();
 
-			$scope->close();
+			//$scope->end();
 			return $row["unread"];
 		}
 	}
@@ -1987,7 +1983,7 @@ class Feeds extends Handler_Protected {
 			$res = $pdo->query($query);
 		}
 
-		$scope->close();
+		$scope->end();
 
 		return array($res, $feed_title, $feed_site_url, $last_error, $last_updated, $search_words, $first_id, $vfeed_query_part != "", $query_error_override);
 	}

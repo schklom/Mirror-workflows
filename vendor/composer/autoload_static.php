@@ -7,10 +7,24 @@ namespace Composer\Autoload;
 class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
 {
     public static $files = array (
-        '9b38cf48e83f5d8f60375221cd213eee' => __DIR__ . '/..' . '/phpstan/phpstan/bootstrap.php',
-        'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
+        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
+        '23c18046f52bef3eea034657bafda50f' => __DIR__ . '/..' . '/symfony/polyfill-php81/bootstrap.php',
+        '5897ea0ac4cccf14d323035e65887801' => __DIR__ . '/..' . '/symfony/polyfill-php82/bootstrap.php',
+        '8e92226780215d0ec758aa7b73e0ede9' => __DIR__ . '/..' . '/open-telemetry/context/fiber/initialize_fiber_handler.php',
+        'c7b4a5d8b94d270f0f9a84f81e1dd63d' => __DIR__ . '/..' . '/open-telemetry/api/Trace/functions.php',
+        '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
+        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'a4ecaeafb8cfb009ad0e052c90355e98' => __DIR__ . '/..' . '/beberlei/assert/lib/Assert/functions.php',
+        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
+        'c695cb998ba36e4bafc3d028efc7d113' => __DIR__ . '/..' . '/open-telemetry/sdk/Common/Util/functions.php',
+        'd991bdbfe253499825156f17c4a721db' => __DIR__ . '/..' . '/open-telemetry/sdk/Logs/Exporter/_register.php',
+        '01d424d2624f29a2eef00b09eb00935e' => __DIR__ . '/..' . '/open-telemetry/sdk/Metrics/MetricExporter/_register.php',
+        '063d0a0034c5e2149209c15208de47e4' => __DIR__ . '/..' . '/open-telemetry/sdk/Propagation/_register.php',
+        '2cc49ecec7e065b3a5423e964c0275e6' => __DIR__ . '/..' . '/open-telemetry/sdk/Trace/SpanExporter/_register.php',
+        '062120a429d7568eacd495a8c34fcf09' => __DIR__ . '/..' . '/open-telemetry/sdk/Common/Dev/Compatibility/_load.php',
+        '88e3b63cfb48eb8ea316a8a85a5f5c5f' => __DIR__ . '/..' . '/open-telemetry/sdk/_autoload.php',
         '51fcf4e06c07cc00c920b44bcd900e7a' => __DIR__ . '/..' . '/thecodingmachine/safe/deprecated/apc.php',
         '288267919fedd3829a7732b5fb202197' => __DIR__ . '/..' . '/thecodingmachine/safe/deprecated/array.php',
         'a88cd08cfbf1600f7d5de6e587eee1fa' => __DIR__ . '/..' . '/thecodingmachine/safe/deprecated/datetime.php',
@@ -98,9 +112,9 @@ class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
         '4af1dca6db8c527c6eed27bff85ff0e5' => __DIR__ . '/..' . '/thecodingmachine/safe/generated/yaz.php',
         'fe43ca06499ac37bc2dedd823af71eb5' => __DIR__ . '/..' . '/thecodingmachine/safe/generated/zip.php',
         '356736db98a6834f0a886b8d509b0ecd' => __DIR__ . '/..' . '/thecodingmachine/safe/generated/zlib.php',
-        'ff1b7935a93a4a9517db3ebe0533892a' => __DIR__ . '/..' . '/opentracing/opentracing/src/OpenTracing/Tags.php',
-        '0db36546c71c357f5ee70c39bb03966f' => __DIR__ . '/..' . '/opentracing/opentracing/src/OpenTracing/Formats.php',
-        '822502b10d2c1dae82956ef999e8b4be' => __DIR__ . '/..' . '/jonahgeorge/jaeger-client-php/src/Jaeger/Constants.php',
+        '157bbd0180425c7142fbaf1b1646bec3' => __DIR__ . '/..' . '/open-telemetry/exporter-otlp/_register.php',
+        '9b38cf48e83f5d8f60375221cd213eee' => __DIR__ . '/..' . '/phpstan/phpstan/bootstrap.php',
+        'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -117,26 +131,47 @@ class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
         array (
             'Webmozart\\Assert\\' => 17,
         ),
-        'T' => 
+        'S' => 
         array (
-            'Thrift\\' => 7,
+            'Symfony\\Polyfill\\Php82\\' => 23,
+            'Symfony\\Polyfill\\Php81\\' => 23,
+            'Symfony\\Polyfill\\Php80\\' => 23,
+            'Symfony\\Polyfill\\Mbstring\\' => 26,
         ),
         'P' => 
         array (
             'Psr\\Log\\' => 8,
-            'Psr\\Cache\\' => 10,
+            'Psr\\Http\\Message\\' => 17,
+            'Psr\\Http\\Client\\' => 16,
             'Prophecy\\' => 9,
             'PhpParser\\' => 10,
             'ParagonIE\\ConstantTime\\' => 23,
         ),
         'O' => 
         array (
-            'OpenTracing\\' => 12,
+            'Opentelemetry\\Proto\\' => 20,
+            'OpenTelemetry\\SemConv\\' => 22,
+            'OpenTelemetry\\SDK\\' => 18,
+            'OpenTelemetry\\Contrib\\Otlp\\' => 27,
+            'OpenTelemetry\\Context\\' => 22,
+            'OpenTelemetry\\API\\' => 18,
             'OTPHP\\' => 6,
         ),
-        'J' => 
+        'H' => 
         array (
-            'Jaeger\\' => 7,
+            'Http\\Promise\\' => 13,
+            'Http\\Discovery\\' => 15,
+            'Http\\Client\\' => 12,
+            'Http\\Adapter\\Guzzle7\\' => 21,
+        ),
+        'G' => 
+        array (
+            'GuzzleHttp\\Psr7\\' => 16,
+            'GuzzleHttp\\Promise\\' => 19,
+            'GuzzleHttp\\' => 11,
+            'Google\\Protobuf\\' => 16,
+            'GPBMetadata\\Opentelemetry\\' => 26,
+            'GPBMetadata\\Google\\Protobuf\\' => 28,
         ),
         'D' => 
         array (
@@ -168,17 +203,34 @@ class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
         ),
-        'Thrift\\' => 
+        'Symfony\\Polyfill\\Php82\\' => 
         array (
-            0 => __DIR__ . '/..' . '/packaged/thrift/src',
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php82',
+        ),
+        'Symfony\\Polyfill\\Php81\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php81',
+        ),
+        'Symfony\\Polyfill\\Php80\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
+        ),
+        'Symfony\\Polyfill\\Mbstring\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
         ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/src',
         ),
-        'Psr\\Cache\\' => 
+        'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/cache/src',
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+        ),
+        'Psr\\Http\\Client\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-client/src',
         ),
         'Prophecy\\' => 
         array (
@@ -192,17 +244,73 @@ class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
         array (
             0 => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src',
         ),
-        'OpenTracing\\' => 
+        'Opentelemetry\\Proto\\' => 
         array (
-            0 => __DIR__ . '/..' . '/opentracing/opentracing/src/OpenTracing',
+            0 => __DIR__ . '/..' . '/open-telemetry/gen-otlp-protobuf/Opentelemetry/Proto',
+        ),
+        'OpenTelemetry\\SemConv\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/open-telemetry/sem-conv',
+        ),
+        'OpenTelemetry\\SDK\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/open-telemetry/sdk',
+        ),
+        'OpenTelemetry\\Contrib\\Otlp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/open-telemetry/exporter-otlp',
+        ),
+        'OpenTelemetry\\Context\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/open-telemetry/context',
+        ),
+        'OpenTelemetry\\API\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/open-telemetry/api',
         ),
         'OTPHP\\' => 
         array (
             0 => __DIR__ . '/..' . '/spomky-labs/otphp/src',
         ),
-        'Jaeger\\' => 
+        'Http\\Promise\\' => 
         array (
-            0 => __DIR__ . '/..' . '/jonahgeorge/jaeger-client-php/src/Jaeger',
+            0 => __DIR__ . '/..' . '/php-http/promise/src',
+        ),
+        'Http\\Discovery\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-http/discovery/src',
+        ),
+        'Http\\Client\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-http/httplug/src',
+        ),
+        'Http\\Adapter\\Guzzle7\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-http/guzzle7-adapter/src',
+        ),
+        'GuzzleHttp\\Psr7\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
+        ),
+        'GuzzleHttp\\Promise\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/promises/src',
+        ),
+        'GuzzleHttp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
+        ),
+        'Google\\Protobuf\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/google/protobuf/src/Google/Protobuf',
+        ),
+        'GPBMetadata\\Opentelemetry\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/open-telemetry/gen-otlp-protobuf/GPBMetadata/Opentelemetry',
+        ),
+        'GPBMetadata\\Google\\Protobuf\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/google/protobuf/src/GPBMetadata/Google/Protobuf',
         ),
         'Doctrine\\Instantiator\\' => 
         array (
@@ -219,6 +327,9 @@ class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
     );
 
     public static $classMap = array (
+        'AllowDynamicProperties' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/AllowDynamicProperties.php',
+        'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
+        'CURLStringFile' => __DIR__ . '/..' . '/symfony/polyfill-php81/Resources/stubs/CURLStringFile.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'IdiormMethodMissingException' => __DIR__ . '/..' . '/j4mie/idiorm/idiorm.php',
         'IdiormResultSet' => __DIR__ . '/..' . '/j4mie/idiorm/idiorm.php',
@@ -643,6 +754,14 @@ class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
         'PharIo\\Version\\VersionConstraintParser' => __DIR__ . '/..' . '/phar-io/version/src/VersionConstraintParser.php',
         'PharIo\\Version\\VersionConstraintValue' => __DIR__ . '/..' . '/phar-io/version/src/VersionConstraintValue.php',
         'PharIo\\Version\\VersionNumber' => __DIR__ . '/..' . '/phar-io/version/src/VersionNumber.php',
+        'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
+        'Random\\BrokenRandomEngineError' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/BrokenRandomEngineError.php',
+        'Random\\CryptoSafeEngine' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/CryptoSafeEngine.php',
+        'Random\\Engine' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/Engine.php',
+        'Random\\Engine\\Secure' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/Engine/Secure.php',
+        'Random\\RandomError' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/RandomError.php',
+        'Random\\RandomException' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/Random/RandomException.php',
+        'ReturnTypeWillChange' => __DIR__ . '/..' . '/symfony/polyfill-php81/Resources/stubs/ReturnTypeWillChange.php',
         'Safe\\DateTime' => __DIR__ . '/..' . '/thecodingmachine/safe/lib/DateTime.php',
         'Safe\\DateTimeImmutable' => __DIR__ . '/..' . '/thecodingmachine/safe/lib/DateTimeImmutable.php',
         'Safe\\Exceptions\\ApacheException' => __DIR__ . '/..' . '/thecodingmachine/safe/generated/Exceptions/ApacheException.php',
@@ -927,6 +1046,9 @@ class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
         'SebastianBergmann\\Type\\UnknownType' => __DIR__ . '/..' . '/sebastian/type/src/UnknownType.php',
         'SebastianBergmann\\Type\\VoidType' => __DIR__ . '/..' . '/sebastian/type/src/VoidType.php',
         'SebastianBergmann\\Version' => __DIR__ . '/..' . '/sebastian/version/src/Version.php',
+        'SensitiveParameter' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/SensitiveParameter.php',
+        'SensitiveParameterValue' => __DIR__ . '/..' . '/symfony/polyfill-php82/Resources/stubs/SensitiveParameterValue.php',
+        'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'TheSeer\\Tokenizer\\Exception' => __DIR__ . '/..' . '/theseer/tokenizer/src/Exception.php',
         'TheSeer\\Tokenizer\\NamespaceUri' => __DIR__ . '/..' . '/theseer/tokenizer/src/NamespaceUri.php',
         'TheSeer\\Tokenizer\\NamespaceUriException' => __DIR__ . '/..' . '/theseer/tokenizer/src/NamespaceUriException.php',
@@ -935,6 +1057,8 @@ class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
         'TheSeer\\Tokenizer\\TokenCollectionException' => __DIR__ . '/..' . '/theseer/tokenizer/src/TokenCollectionException.php',
         'TheSeer\\Tokenizer\\Tokenizer' => __DIR__ . '/..' . '/theseer/tokenizer/src/Tokenizer.php',
         'TheSeer\\Tokenizer\\XMLSerializer' => __DIR__ . '/..' . '/theseer/tokenizer/src/XMLSerializer.php',
+        'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
+        'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

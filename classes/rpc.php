@@ -134,7 +134,7 @@ class RPC extends Handler_Protected {
 			'seq' => $seq
 		];
 
-		$scope->close();
+		$scope->end();
 		print json_encode($reply);
 	}
 

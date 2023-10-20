@@ -326,7 +326,7 @@ class Article extends Handler_Protected {
 			$enclosures_formatted, $enclosures, $id, $always_display_enclosures, $article_content, $hide_images);
 
 		if (!empty($enclosures_formatted)) {
-			$scope->close();
+			$scope->end();
 			return [
 					'formatted' => $enclosures_formatted,
 					'entries' => []
@@ -370,7 +370,7 @@ class Article extends Handler_Protected {
 			}
 		}
 
-		$scope->close();
+		$scope->end();
 		return $rv;
 	}
 
@@ -427,7 +427,7 @@ class Article extends Handler_Protected {
 			$sth->execute([$tags_str, $id, $owner_uid]);
 		}
 
-		$scope->close();
+		$scope->end();
 		return $tags;
 	}
 
@@ -569,7 +569,7 @@ class Article extends Handler_Protected {
 		else
 			Labels::update_cache($owner_uid, $id, array("no-labels" => 1));
 
-		$scope->close();
+		$scope->end();
 
 		return $rv;
 	}
@@ -660,7 +660,7 @@ class Article extends Handler_Protected {
 		if ($article_stream && $cache->exists(sha1($article_stream)))
 			$article_stream = $cache->get_url(sha1($article_stream));
 
-		$scope->close();
+		$scope->end();
 
 		return [$article_image, $article_stream, $article_kind];
 	}
@@ -696,7 +696,7 @@ class Article extends Handler_Protected {
 			}
 		}
 
-		$scope->close();
+		$scope->end();
 
 		return array_unique($rv);
 	}
@@ -723,7 +723,7 @@ class Article extends Handler_Protected {
 			array_push($rv, $entry->feed_id);
 		}
 
-		$scope->close();
+		$scope->end();
 
 		return array_unique($rv);
 	}

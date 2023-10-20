@@ -77,7 +77,7 @@ class Digest
 			}
 		}
 
-		$scope->close();
+		$scope->end();
 		Debug::log("All done.");
 	}
 

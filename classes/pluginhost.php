@@ -339,12 +339,15 @@ class PluginHost {
 	 */
 	function chain_hooks_callback(string $hook, Closure $callback, &...$args): void {
 		$method = strtolower((string)$hook);
-		$scope = Tracer::start(__METHOD__, ['hook' => $hook]);
+		$scope = OpenTelemetry\API\Trace\Span::getCurrent();
+		$scope->addEvent("chain_hooks_callback: $hook");
 
 		foreach ($this->get_hooks((string)$hook) as $plugin) {
 			//Debug::log("invoking: " . get_class($plugin) . "->$hook()", Debug::$LOG_VERBOSE);
 
-			$p_scope = Tracer::start("$hook - " . get_class($plugin));
+			//$p_scope = Tracer::start("$hook - " . get_class($plugin));
+
+			$scope->addEvent("$hook - " . get_class($plugin));
 
 			try {
 				if ($callback($plugin->$method(...$args), $plugin))
@@ -355,10 +358,10 @@ class PluginHost {
 				user_error($err, E_USER_WARNING);
 			}
 
-			$p_scope->close();
+			//$p_scope->end();
 		}
 
-		$scope->close();
+		//$scope->end();
 	}
 
 	/**
@@ -448,7 +451,7 @@ class PluginHost {
 			$class = trim($class);
 			$class_file = strtolower(basename(clean($class)));
 
-			$p_scope = Tracer::start("loading $class_file");
+			$scope->addEvent("$class_file: load");
 
 			// try system plugin directory first
 			$file = dirname(__DIR__) . "/plugins/$class_file/init.php";
@@ -457,7 +460,6 @@ class PluginHost {
 				$file = dirname(__DIR__) . "/plugins.local/$class_file/init.php";
 
 				if (!file_exists($file)) {
-					$p_scope->close();
 					continue;
 				}
 			}
@@ -476,8 +478,7 @@ class PluginHost {
 
 					$_SESSION["safe_mode"] = 1;
 
-					$p_scope->getSpan()->setTag('error', 'plugin is blacklisted');
-					$p_scope->close();
+					$scope->setAttribute('error', 'plugin is blacklisted');
 					continue;
 				}
 
@@ -489,8 +490,7 @@ class PluginHost {
 				} catch (Error $err) {
 					user_error($err, E_USER_WARNING);
 
-					$p_scope->getSpan()->setTag('error', $err);
-					$p_scope->close();
+					$scope->setAttribute('error', $err);
 					continue;
 				}
 
@@ -501,8 +501,7 @@ class PluginHost {
 					if ($plugin_api < self::API_VERSION) {
 						user_error("Plugin $class is not compatible with current API version (need: " . self::API_VERSION . ", got: $plugin_api)", E_USER_WARNING);
 
-						$p_scope->getSpan()->setTag('error', 'plugin is not compatible with API version');
-						$p_scope->close();
+						$scope->setAttribute('error', 'plugin is not compatible with API version');
 						continue;
 					}
 
@@ -511,7 +510,7 @@ class PluginHost {
 						_bind_textdomain_codeset($class, "UTF-8");
 					}
 
-					$i_scope = Tracer::start('init and register plugin');
+					$scope->addEvent("$class_file: initialize");
 
 					try {
 						switch ($kind) {
@@ -537,17 +536,12 @@ class PluginHost {
 					} catch (Error $err) {
 						user_error($err, E_USER_WARNING);
 					}
-
-					$i_scope->close();
-
 				}
 			}
-			$p_scope->close();
 		}
 
 		$this->load_data();
-
-		$scope->close();
+		$scope->end();
 	}
 
 	function is_system(Plugin $plugin): bool {
@@ -640,7 +634,8 @@ class PluginHost {
 	}
 
 	private function load_data(): void {
-		$scope = Tracer::start(__METHOD__);
+		$scope = OpenTelemetry\API\Trace\Span::getCurrent();
+		$scope->addEvent('load plugin data');
 
 		if ($this->owner_uid && !$this->data_loaded && Config::get_schema_version() > 100)  {
 			$sth = $this->pdo->prepare("SELECT name, content FROM ttrss_plugin_storage
@@ -648,18 +643,19 @@ class PluginHost {
 			$sth->execute([$this->owner_uid]);
 
 			while ($line = $sth->fetch()) {
+				$scope->addEvent($line["name"] . ': unserialize');
+
 				$this->storage[$line["name"]] = unserialize($line["content"]);
 			}
 
 			$this->data_loaded = true;
 		}
-
-		$scope->close();
 	}
 
 	private function save_data(string $plugin): void {
 		if ($this->owner_uid) {
-			$scope = Tracer::start(__METHOD__);
+			$scope = OpenTelemetry\API\Trace\Span::getCurrent();
+			$scope->addEvent(__METHOD__ . ": $plugin");
 
 			if (!$this->pdo_data)
 				$this->pdo_data = Db::instance()->pdo_connect();
@@ -687,7 +683,6 @@ class PluginHost {
 			}
 
 			$this->pdo_data->commit();
-			$scope->close();
 		}
 	}
 

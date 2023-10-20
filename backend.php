@@ -30,14 +30,17 @@
 	$op = (string)clean($op);
 	$method = (string)clean($method);
 
-	$scope = Tracer::start(__FILE__, ['tags' => json_encode($_REQUEST)]);
+	$scope = Tracer::start(__FILE__);
+
+	register_shutdown_function(function() use ($scope) {
+	 	$scope->end();
+	});
 
 	startup_gettext();
 
 	$script_started = microtime(true);
 
 	if (!init_plugins()) {
-		$scope->close();
 		return;
 	}
 
@@ -52,8 +55,7 @@
 			header("Content-Type: text/json");
 			print Errors::to_json(Errors::E_UNAUTHORIZED);
 
-			$scope->getSpan()->setTag('error', Errors::E_UNAUTHORIZED);
-			$scope->close();
+			$scope->setAttribute('error', Errors::E_UNAUTHORIZED);
 			return;
 		}
 		UserHelper::load_user_plugins($_SESSION["uid"]);
@@ -62,8 +64,7 @@
 	if (Config::is_migration_needed()) {
 		print Errors::to_json(Errors::E_SCHEMA_MISMATCH);
 
-		$scope->getSpan()->setTag('error', Errors::E_SCHEMA_MISMATCH);
-		$scope->close();
+		$scope->setAttribute('error', Errors::E_SCHEMA_MISMATCH);
 		return;
 	}
 
@@ -126,8 +127,7 @@
 			header("Content-Type: text/json");
 			print Errors::to_json(Errors::E_UNAUTHORIZED);
 
-			$scope->getSpan()->setTag('error', Errors::E_UNAUTHORIZED);
-			$scope->close();
+			$scope->setAttribute('error', Errors::E_UNAUTHORIZED);
 			return;
 		}
 
@@ -140,18 +140,16 @@
 		}
 
 		if (implements_interface($handler, 'IHandler')) {
-			$h_scope = Tracer::start("construct/$op");
+			$scope->addEvent("construct/$op");
 			$handler->__construct($_REQUEST);
-			$h_scope->close();
 
 			if (validate_csrf($csrf_token) || $handler->csrf_ignore($method)) {
 
-				$b_scope = Tracer::start("before/$method");
+				$scope->addEvent("before/$method");
 				$before = $handler->before($method);
-				$b_scope->close();
 
 				if ($before) {
-					$m_scope = Tracer::start("method/$method");
+					$scope->addEvent("method/$method");
 					if ($method && method_exists($handler, $method)) {
 						$reflection = new ReflectionMethod($handler, $method);
 
@@ -161,7 +159,7 @@
 							user_error("Refusing to invoke method $method of handler $op which has required parameters.", E_USER_WARNING);
 							header("Content-Type: text/json");
 
-							$m_scope->getSpan()->setTag('error', Errors::E_UNAUTHORIZED);
+							$scope->setAttribute('error', Errors::E_UNAUTHORIZED);
 							print Errors::to_json(Errors::E_UNAUTHORIZED);
 						}
 					} else {
@@ -170,24 +168,19 @@
 						} else {
 							header("Content-Type: text/json");
 
-							$m_scope->getSpan()->setTag('error', Errors::E_UNKNOWN_METHOD);
+							$scope->setAttribute('error', Errors::E_UNKNOWN_METHOD);
 							print Errors::to_json(Errors::E_UNKNOWN_METHOD, ["info" => get_class($handler) . "->$method"]);
 						}
 					}
-					$m_scope->close();
 
-					$a_scope = Tracer::start("after/$method");
+					$scope->addEvent("after/$method");
 					$handler->after();
-					$a_scope->close();
-
-					$scope->close();
 					return;
 				} else {
 					header("Content-Type: text/json");
 					print Errors::to_json(Errors::E_UNAUTHORIZED);
 
-					$scope->getSpan()->setTag('error', Errors::E_UNAUTHORIZED);
-					$scope->close();
+					$scope->setAttribute('error', Errors::E_UNAUTHORIZED);
 					return;
 				}
 			} else {
@@ -195,8 +188,7 @@
 				header("Content-Type: text/json");
 				print Errors::to_json(Errors::E_UNAUTHORIZED);
 
-				$scope->getSpan()->setTag('error', Errors::E_UNAUTHORIZED);
-				$scope->close();
+				$scope->setAttribute('error', Errors::E_UNAUTHORIZED);
 				return;
 			}
 		}
@@ -205,5 +197,4 @@
 	header("Content-Type: text/json");
 	print Errors::to_json(Errors::E_UNKNOWN_METHOD, [ "info" => (isset($handler) ? get_class($handler) : "UNKNOWN:".$op) . "->$method"]);
 
-	$scope->getSpan()->setTag('error', Errors::E_UNKNOWN_METHOD);
-	$scope->close();
+	$scope->setAttribute('error', Errors::E_UNKNOWN_METHOD);

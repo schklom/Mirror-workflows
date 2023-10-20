@@ -286,7 +286,7 @@ class RSSUtils {
 		// Send feed digests by email if needed.
 		Digest::send_headlines_digests();
 
-		$scope->close();
+		$scope->end();
 
 		return $nf;
 	}
@@ -390,19 +390,19 @@ class RSSUtils {
 			if ($user) {
 				if ($user->access_level == UserHelper::ACCESS_LEVEL_READONLY) {
 					Debug::log("error: denied update for $feed: permission denied by owner access level");
-					$scope->close();
+					$scope->end();
 					return false;
 				}
 			} else {
 				// this would indicate database corruption of some kind
 				Debug::log("error: owner not found for feed: $feed");
-				$scope->close();
+				$scope->end();
 				return false;
 			}
 
 		} else {
 			Debug::log("error: feeds table record not found for feed: $feed");
-			$scope->close();
+			$scope->end();
 			return false;
 		}
 
@@ -561,7 +561,7 @@ class RSSUtils {
 				$feed_obj->save();
 			}
 
-			$scope->close();
+			$scope->end();
 			return $error_message == "";
 		}
 
@@ -703,7 +703,7 @@ class RSSUtils {
 				]);
 
 				$feed_obj->save();
-				$scope->close();
+				$scope->end();
 				return true; // no articles
 			}
 
@@ -1305,7 +1305,7 @@ class RSSUtils {
 				Debug::log("article processed.", Debug::LOG_VERBOSE);
 
 				$pdo->commit();
-				$a_scope->close();
+				$a_scope->end();
 			}
 
 			Debug::log(Debug::SEPARATOR, Debug::LOG_VERBOSE);
@@ -1346,12 +1346,12 @@ class RSSUtils {
 			unset($rss);
 
 			Debug::log("update failed.", Debug::LOG_VERBOSE);
-			$scope->close();
+			$scope->end();
 			return false;
 		}
 
 		Debug::log("update done.", Debug::LOG_VERBOSE);
-		$scope->close();
+		$scope->end();
 		return true;
 	}
 
@@ -1604,7 +1604,7 @@ class RSSUtils {
 			}
 		}
 
-		$scope->close();
+		$scope->end();
 
 		return $matches;
 	}

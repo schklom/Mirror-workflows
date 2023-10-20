@@ -212,7 +212,7 @@ class Counters {
 
 		}
 
-		$scope->close();
+		$scope->end();
 
 		return $ret;
 	}
@@ -239,7 +239,7 @@ class Counters {
 			"counter" => $subcribed_feeds
 		]);
 
-		$scope->close();
+		$scope->end();
 
 		return $ret;
 	}
@@ -295,7 +295,7 @@ class Counters {
 			}
 		}
 
-		$scope->close();
+		$scope->end();
 		return $ret;
 	}
 
@@ -356,7 +356,7 @@ class Counters {
 			array_push($ret, $cv);
 		}
 
-		$scope->close();
+		$scope->end();
 		return $ret;
 	}
 }

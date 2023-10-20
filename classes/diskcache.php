@@ -223,7 +223,7 @@ class DiskCache implements Cache_Adapter {
 	public function remove(string $filename): bool {
 		$scope = Tracer::start(__METHOD__, ['filename' => $filename]);
 		$rc = $this->adapter->remove($filename);
-		$scope->close();
+		$scope->end();
 
 		return $rc;
 	}
@@ -249,9 +249,10 @@ class DiskCache implements Cache_Adapter {
 	}
 
 	public function exists(string $filename): bool {
-		$scope = Tracer::start(__METHOD__, ['filename' => $filename]);
+		$scope = OpenTelemetry\API\Trace\Span::getCurrent();
+		$scope->addEvent("DiskCache::exists: $filename");
+
 		$rc = $this->adapter->exists(basename($filename));
-		$scope->close();
 
 		return $rc;
 	}
@@ -262,7 +263,7 @@ class DiskCache implements Cache_Adapter {
 	public function get_size(string $filename) {
 		$scope = Tracer::start(__METHOD__, ['filename' => $filename]);
 		$rc = $this->adapter->get_size(basename($filename));
-		$scope->close();
+		$scope->end();
 
 		return $rc;
 	}
@@ -275,7 +276,7 @@ class DiskCache implements Cache_Adapter {
 	public function put(string $filename, $data) {
 		$scope = Tracer::start(__METHOD__);
 		$rc = $this->adapter->put(basename($filename), $data);
-		$scope->close();
+		$scope->end();
 
 		return $rc;
 	}
@@ -329,8 +330,8 @@ class DiskCache implements Cache_Adapter {
 			header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 			echo "File not found.";
 
-			$scope->getSpan()->setTag('error', '404 not found');
-			$scope->close();
+			$scope->setAttribute('error', '404 not found');
+			$scope->end();
 			return false;
 		}
 
@@ -340,8 +341,8 @@ class DiskCache implements Cache_Adapter {
 		if (($_SERVER['HTTP_IF_MODIFIED_SINCE'] ?? '') == $gmt_modified || ($_SERVER['HTTP_IF_NONE_MATCH'] ?? '') == $file_mtime) {
 			header('HTTP/1.1 304 Not Modified');
 
-			$scope->getSpan()->setTag('error', '304 not modified');
-			$scope->close();
+			$scope->setAttribute('error', '304 not modified');
+			$scope->end();
 			return false;
 		}
 
@@ -360,8 +361,8 @@ class DiskCache implements Cache_Adapter {
 
 			print "Stored file has disallowed content type ($mimetype)";
 
-			$scope->getSpan()->setTag('error', '400 disallowed content type');
-			$scope->close();
+			$scope->setAttribute('error', '400 disallowed content type');
+			$scope->end();
 			return false;
 		}
 
@@ -383,11 +384,11 @@ class DiskCache implements Cache_Adapter {
 
 		header_remove("Pragma");
 
-		$scope->getSpan()->setTag('mimetype', $mimetype);
+		$scope->setAttribute('mimetype', $mimetype);
 
 		$rc = $this->adapter->send($filename);
 
-		$scope->close();
+		$scope->end();
 
 		return $rc;
 	}
@@ -418,12 +419,13 @@ class DiskCache implements Cache_Adapter {
 	// plugins work on original source URLs used before caching
 	// NOTE: URLs should be already absolutized because this is called after sanitize()
 	static public function rewrite_urls(string $str): string {
-		$scope = Tracer::start(__METHOD__);
+		$scope = OpenTelemetry\API\Trace\Span::getCurrent();
+		$scope->addEvent("DiskCache::rewrite_urls");
 
 		$res = trim($str);
 
 		if (!$res) {
-			$scope->close();
+			$scope->end();
 			return '';
 		}
 
@@ -437,7 +439,7 @@ class DiskCache implements Cache_Adapter {
 			$need_saving = false;
 
 			foreach ($entries as $entry) {
-				$e_scope = Tracer::start('entry', ['tagName' => $entry->tagName]);
+				$scope->addEvent("entry: " . $entry->tagName);
 
 				foreach (array('src', 'poster') as $attr) {
 					if ($entry->hasAttribute($attr)) {
@@ -470,8 +472,6 @@ class DiskCache implements Cache_Adapter {
 
 					$entry->setAttribute("srcset", RSSUtils::encode_srcset($matches));
 				}
-
-				$e_scope->close();
 			}
 
 			if ($need_saving) {
@@ -481,8 +481,6 @@ class DiskCache implements Cache_Adapter {
 				$res = $doc->saveHTML();
 			}
 		}
-
-		$scope->close();
 
 		return $res;
 	}

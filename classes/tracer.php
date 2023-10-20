@@ -1,61 +1,72 @@
 <?php
-use OpenTracing\GlobalTracer;
-use OpenTracing\Scope;
+
+use OpenTelemetry\Contrib\Otlp\OtlpHttpTransportFactory;
+use OpenTelemetry\Contrib\Otlp\SpanExporter;
+use OpenTelemetry\SDK\Trace\SpanProcessor\SimpleSpanProcessor;
+use OpenTelemetry\SDK\Trace\TracerProvider;
+use OpenTelemetry\API\Trace\Propagation\TraceContextPropagator;
+use OpenTelemetry\API\Trace\Span;
+use OpenTelemetry\SDK\Trace\SpanExporter\InMemoryExporter;
 
 class Tracer {
 	/** @var Tracer $instance */
 	private static $instance;
+	private static $tracer;
 
 	public function __construct() {
-		$jaeger_host = Config::get(Config::JAEGER_REPORTING_HOST);
+		$opentelemetry_host = Config::get(Config::OPENTELEMETRY_HOST);
 
-		if ($jaeger_host) {
-			$config = new \Jaeger\Config(
-				[
-					'sampler' => [
-						'type' => \Jaeger\SAMPLER_TYPE_CONST,
-						'param' => true,
-					],
-					'logging' => true,
-					"local_agent" => [
-						"reporting_host" => $jaeger_host,
-						"reporting_port" => 6832
-					],
-					'dispatch_mode' => \Jaeger\Config::JAEGER_OVER_BINARY_UDP,
-				],
-				Config::get(Config::JAEGER_SERVICE_NAME)
-			);
-
-			$config->initializeTracer();
-
-			register_shutdown_function(function() {
-				$tracer = GlobalTracer::get();
-				$tracer->flush();
-			});
+		if ($opentelemetry_host) {
+			$transport = (new OtlpHttpTransportFactory())->create("http://$opentelemetry_host/v1/traces", 'application/x-protobuf');
+			$exporter = new SpanExporter($transport);
+		} else {
+			$exporter = new InMemoryExporter();
 		}
+
+		$tracerProvider =  new TracerProvider(new SimpleSpanProcessor($exporter));
+		$this->tracer = $tracerProvider->getTracer('io.opentelemetry.contrib.php');
+
+		$context = TraceContextPropagator::getInstance()->extract(getallheaders());
+		$span = $this->tracer->spanBuilder(Config::get(Config::OPENTELEMETRY_SERVICE))
+			->setParent($context)
+			->startSpan();
+
+		$span->activate();
+
+		register_shutdown_function(function() use ($span, $tracerProvider) {
+			$span->end();
+
+			$tracerProvider->shutdown();
+		});
 	}
 
 	/**
 	 * @param string $name
 	 * @param array<string>|array<string, array<string, mixed>> $tags
 	 * @param array<string> $args
-	 * @return Scope
+	 * @return Span
 	 */
-	private function _start(string $name, array $tags = [], array $args = []): Scope {
-		$tracer = GlobalTracer::get();
+	private function _start(string $name, array $tags = [], array $args = []) {
+		$span = $this->tracer->spanBuilder($name)->startSpan();
 
-		$tags['args'] = json_encode($args);
+		foreach ($tags as $k => $v) {
+			$span->setAttribute($k, $v);
+		}
 
-		return $tracer->startActiveSpan($name, ['tags' => $tags]);
+		$span->setAttribute("func.args", json_encode($args));
+
+		$span->activate();
+
+		return $span;
 	}
 
 	/**
 	 * @param string $name
 	 * @param array<string>|array<string, array<string, mixed>> $tags
 	 * @param array<string> $args
-	 * @return Scope
+	 * @return Span
 	 */
-	public static function start(string $name, array $tags = [], array $args = []) : Scope {
+	public static function start(string $name, array $tags = [], array $args = []) {
 		return self::get_instance()->_start($name, $tags, $args);
 	}
 

@@ -63,6 +63,8 @@ integration-test:
   variables:
     TEST_HELM_REPO: https://gitlab.tt-rss.org/tt-rss/helm-charts/tt-rss
   extends: .integration-test
+  script:
+    - curl -fs http://tt-rss-${CI_COMMIT_SHORT_SHA}-app/tt-rss/index.php | grep -q Login
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 

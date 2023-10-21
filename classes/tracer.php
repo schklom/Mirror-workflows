@@ -54,9 +54,9 @@ class Tracer {
 		$span = $this->tracer->spanBuilder($_SESSION['name'] ?? 'not-logged-in')
 			->setParent($context)
 			->setSpanKind(SpanKind::KIND_SERVER)
-			->setAttribute('php.request', json_encode($_REQUEST))
-			->setAttribute('php.server', json_encode($_SERVER))
-			->setAttribute('php.session', json_encode($_SESSION))
+			->setAttribute('php.request', json_encode($_REQUEST ?? []))
+			->setAttribute('php.server', json_encode($_SERVER ?? []))
+			->setAttribute('php.session', json_encode($_SESSION ?? []))
 			->startSpan();
 
 		$scope = $span->activate();

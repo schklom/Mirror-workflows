@@ -18,7 +18,8 @@
         "mervick/material-design-icons": "^2.2",
         "j4mie/idiorm": "dev-master",
 		"open-telemetry/exporter-otlp": "^1.0",
-		"php-http/guzzle7-adapter": "^1.0"
+		"php-http/guzzle7-adapter": "^1.0",
+		"soundasleep/html2text": "^2.1"
     },
     "require-dev": {
         "phpstan/phpstan": "1.10.3",

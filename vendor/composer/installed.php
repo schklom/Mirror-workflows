@@ -3,7 +3,7 @@
         'name' => '__root__',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '45a9ff0c88cbd33892ff16ab837e9059937d656e',
+        'reference' => '2b61052e8709283d89997e351173bcb43a3c2c61',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         '__root__' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '45a9ff0c88cbd33892ff16ab837e9059937d656e',
+            'reference' => '2b61052e8709283d89997e351173bcb43a3c2c61',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -371,8 +371,8 @@
         'psr/http-client-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '*',
-                1 => '1.0',
+                0 => '1.0',
+                1 => '*',
             ),
         ),
         'psr/http-factory' => array(
@@ -387,8 +387,8 @@
         'psr/http-factory-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '*',
-                1 => '1.0',
+                0 => '1.0',
+                1 => '*',
             ),
         ),
         'psr/http-message' => array(
@@ -403,8 +403,8 @@
         'psr/http-message-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '*',
-                1 => '1.0',
+                0 => '1.0',
+                1 => '*',
             ),
         ),
         'psr/log' => array(
@@ -568,6 +568,15 @@
             'install_path' => __DIR__ . '/../sebastian/version',
             'aliases' => array(),
             'dev_requirement' => true,
+        ),
+        'soundasleep/html2text' => array(
+            'pretty_version' => '2.1.0',
+            'version' => '2.1.0.0',
+            'reference' => '83502b6f8f1aaef8e2e238897199d64f284b4af3',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../soundasleep/html2text',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'spomky-labs/otphp' => array(
             'pretty_version' => 'v10.0.3',

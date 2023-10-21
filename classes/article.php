@@ -90,7 +90,7 @@ class Article extends Handler_Protected {
 					SET tsvector_combined = to_tsvector( :ts_content)
 					WHERE id = :id");
 					$params = [
-						":ts_content" => mb_substr(strip_tags($content ), 0, 900000),
+						":ts_content" => mb_substr(\Soundasleep\Html2Text::convert($content), 0, 900000),
 						":id" => $ref_id];
 					$sth->execute($params);
 				}
@@ -135,7 +135,7 @@ class Article extends Handler_Protected {
 					SET tsvector_combined = to_tsvector( :ts_content)
 					WHERE id = :id");
 					$params = [
-						":ts_content" => mb_substr(strip_tags($content ), 0, 900000),
+						":ts_content" => mb_substr(\Soundasleep\Html2Text::convert($content), 0, 900000),
 						":id" => $ref_id];
 					$sth->execute($params);
 				}

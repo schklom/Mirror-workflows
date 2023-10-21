@@ -317,7 +317,7 @@
 
 		while (true) {
 			foreach ($entries as $entry) {
-				$tsvector_combined = mb_substr(strip_tags($entry->title . " " . $entry->content), 0, 1000000);
+				$tsvector_combined = mb_substr(strip_tags($entry->title) . " " . \Soundasleep\Html2Text::convert($entry->content), 0, 900000);
 				$usth->execute([$tsvector_combined, $entry->id]);
 				$processed++;
 			}

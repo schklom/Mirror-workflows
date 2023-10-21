@@ -1,25 +1,25 @@
 <?php
 
-use OpenTelemetry\Contrib\Otlp\OtlpHttpTransportFactory;
-use OpenTelemetry\Contrib\Otlp\SpanExporter;
-use OpenTelemetry\SDK\Trace\SpanProcessor\SimpleSpanProcessor;
-use OpenTelemetry\SDK\Trace\TracerProvider;
+
 use OpenTelemetry\API\Trace\Propagation\TraceContextPropagator;
 use OpenTelemetry\API\Trace\SpanKind;
-use OpenTelemetry\SDK\Trace\SpanExporter\InMemoryExporter;
-
-use OpenTelemetry\SDK\Resource\ResourceInfoFactory;
-use OpenTelemetry\SDK\Resource\ResourceInfo;
+use OpenTelemetry\Contrib\Otlp\OtlpHttpTransportFactory;
+use OpenTelemetry\Contrib\Otlp\SpanExporter;
 use OpenTelemetry\SDK\Common\Attribute\Attributes;
-use OpenTelemetry\SemConv\ResourceAttributes;
+use OpenTelemetry\SDK\Resource\ResourceInfo;
+use OpenTelemetry\SDK\Resource\ResourceInfoFactory;
 use OpenTelemetry\SDK\Trace\Sampler\AlwaysOnSampler;
 use OpenTelemetry\SDK\Trace\Sampler\ParentBased;
-
+use OpenTelemetry\SDK\Trace\SpanExporter\InMemoryExporter;
+use OpenTelemetry\SDK\Trace\SpanProcessor\SimpleSpanProcessor;
+use OpenTelemetry\SDK\Trace\TracerProvider;
+use OpenTelemetry\SemConv\ResourceAttributes;
 
 class Tracer {
 	/** @var Tracer $instance */
 	private static $instance;
 
+	/** @var OpenTelemetry\SDK\Trace\TracerProviderInterface $tracerProvider */
 	private $tracerProvider;
 
 	/** @var OpenTelemetry\API\Trace\TracerInterface $tracer */
@@ -56,6 +56,7 @@ class Tracer {
 			->setSpanKind(SpanKind::KIND_SERVER)
 			->setAttribute('php.request', json_encode($_REQUEST))
 			->setAttribute('php.server', json_encode($_SERVER))
+			->setAttribute('php.session', json_encode($_SESSION))
 			->startSpan();
 
 		$scope = $span->activate();

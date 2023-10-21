@@ -51,7 +51,7 @@ class Tracer {
 
 		$context = TraceContextPropagator::getInstance()->extract(getallheaders());
 
-		$span = $this->tracer->spanBuilder($_SESSION['name'] ?? 'not-logged-in')
+		$span = $this->tracer->spanBuilder($_SESSION['name'] ?? 'not logged in')
 			->setParent($context)
 			->setSpanKind(SpanKind::KIND_SERVER)
 			->setAttribute('php.request', json_encode($_REQUEST))

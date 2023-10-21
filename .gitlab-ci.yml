@@ -2,6 +2,7 @@ stages:
   - lint
   - build
   - test
+  - publish
 
 variables:
   ESLINT_PATHS: js plugins
@@ -26,23 +27,23 @@ eslint:
 phpstan:
   extends: .phpstan
 
-ttrss-web-nginx:
-  extends: .build-master-commit-only
-  variables:
-    DOCKERFILE: ${CI_PROJECT_DIR}/.docker/web-nginx/Dockerfile
-
 ttrss-web-nginx:branch:
   extends: .build-branch
   variables:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/web-nginx/Dockerfile
 
-ttrss-fpm-pgsql-static:
-   extends: .build-master-commit-only
+ttrss-fpm-pgsql-static:branch:
+   extends: .build-branch
    variables:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/app/Dockerfile
 
-ttrss-fpm-pgsql-static:branch:
-   extends: .build-branch
+ttrss-web-nginx:
+  extends: .build-master-commit-only
+  variables:
+    DOCKERFILE: ${CI_PROJECT_DIR}/.docker/web-nginx/Dockerfile
+
+ttrss-fpm-pgsql-static:
+   extends: .build-master-commit-only
    variables:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/app/Dockerfile
 
@@ -68,3 +69,15 @@ integration-test:
   extends: .integration-test
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+ttrss-web-nginx:publish:
+  stage: publish
+  extends: .build-master
+  variables:
+    DOCKERFILE: ${CI_PROJECT_DIR}/.docker/web-nginx/Dockerfile
+
+ttrss-fpm-pgsql-static:publish:
+  stage: publish
+  extends: .build-master
+  variables:
+    DOCKERFILE: ${CI_PROJECT_DIR}/.docker/app/Dockerfile

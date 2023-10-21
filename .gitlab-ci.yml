@@ -51,11 +51,7 @@ phpdoc:
   image: ${PHP_IMAGE}
   stage: build
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE != "web" && $PHPDOC_DEPLOY_SSH_KEY != null
-      changes:
-        - '**/*.php'
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $PHPDOC_DEPLOY_SSH_KEY != null
-      when: manual
   script:
     - php82 /phpDocumentor.phar -d classes -d include -t phpdoc --visibility=public
     - mkdir -p ~/.ssh &&

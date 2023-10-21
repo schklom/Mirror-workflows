@@ -1,6 +1,7 @@
 stages:
   - lint
   - build
+  - test
 
 variables:
   ESLINT_PATHS: js plugins
@@ -12,6 +13,9 @@ include:
   - project: 'ci/ci-templates'
     ref: master
     file: .ci-lint-common.yml
+  - project: 'ci/ci-templates'
+    ref: master
+    file: .ci-integration-test.yml
 
 phpunit:
   extends: .phpunit
@@ -23,7 +27,7 @@ phpstan:
   extends: .phpstan
 
 ttrss-web-nginx:
-  extends: .build-master
+  extends: .build-master-commit-only
   variables:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/web-nginx/Dockerfile
 
@@ -33,7 +37,7 @@ ttrss-web-nginx:branch:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/web-nginx/Dockerfile
 
 ttrss-fpm-pgsql-static:
-   extends: .build-master
+   extends: .build-master-commit-only
    variables:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/app/Dockerfile
 
@@ -57,3 +61,10 @@ phpdoc:
         cp ${PHPDOC_DEPLOY_SSH_KEY} ~/.ssh/id_ed25519 &&
         chmod 0600 ~/.ssh/id_ed25519
     - rsync -av -e 'ssh -o StrictHostKeyChecking=no' phpdoc/ ${PHPDOC_DEPLOY_HOST}:phpdoc/
+
+integration-test:
+  variables:
+    TEST_HELM_REPO: https://gitlab.tt-rss.org/tt-rss/helm-charts/tt-rss
+  extends: .integration-test
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

@@ -96,5 +96,6 @@ update-demo:
     HELM_REPO: https://gitlab.tt-rss.org/tt-rss/helm-charts/tt-rss
   script:
     - git clone ${HELM_REPO} chart
-    - helm upgrade --atomic --install tt-rss-demo chart -f .helm/values-demo.yaml
+    - helm template tt-rss-demo chart --values .helm/values-demo.yaml --set imageTag=${CI_COMMIT_SHORT_SHA}
+    - helm upgrade --atomic --install tt-rss-demo chart --values .helm/values-demo.yaml --set imageTag=${CI_COMMIT_SHORT_SHA}
 

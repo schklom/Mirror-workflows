@@ -3,7 +3,6 @@ stages:
   - build
   - test
   - publish
-  - demo
 
 variables:
   ESLINT_PATHS: js plugins
@@ -90,7 +89,7 @@ ttrss-fpm-pgsql-static:publish:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/app/Dockerfile
 
 update-demo:
-  stage: demo
+  stage: publish
   image: ${HELM_IMAGE}
   variables:
     HELM_REPO: https://gitlab.tt-rss.org/tt-rss/helm-charts/tt-rss
@@ -98,4 +97,6 @@ update-demo:
     - git clone ${HELM_REPO} chart
     - helm template tt-rss-demo chart --values .helm/values-demo.yaml --set imageTag=${CI_COMMIT_SHORT_SHA}
     - helm upgrade --atomic --install tt-rss-demo chart --values .helm/values-demo.yaml --set imageTag=${CI_COMMIT_SHORT_SHA}
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_REGISTRY_USER != null
 

@@ -46,10 +46,7 @@ class Config {
 	 * garbage unicode characters with this option, try setting it to a blank string. */
 	const MYSQL_CHARSET = "MYSQL_CHARSET";
 
-	/** this should be set to a fully qualified URL used to access
-	 * your tt-rss instance over the net, such as: https://example.com/tt-rss/
-	 * if your tt-rss instance is behind a reverse proxy, use external URL.
-	 * tt-rss will likely help you pick correct value for this on startup */
+	/** this is a fallback falue for the CLI SAPI, it should be set to a fully-qualified tt-rss URL */
 	const SELF_URL_PATH = "SELF_URL_PATH";
 
 	/** operate in single user mode, disables all functionality related to
@@ -207,7 +204,7 @@ class Config {
 		Config::DB_PASS => [ "", 											Config::T_STRING ],
 		Config::DB_PORT => [ "5432",										Config::T_STRING ],
 		Config::MYSQL_CHARSET => [ "UTF8",								Config::T_STRING ],
-		Config::SELF_URL_PATH => [ "",									Config::T_STRING ],
+		Config::SELF_URL_PATH => [ "https://example.com/tt-rss", Config::T_STRING ],
 		Config::SINGLE_USER_MODE => [ "",								Config::T_BOOL ],
 		Config::SIMPLE_UPDATE_MODE => [ "",								Config::T_BOOL ],
 		Config::PHP_EXECUTABLE => [ "/usr/bin/php",					Config::T_STRING ],
@@ -474,32 +471,30 @@ class Config {
 		return $instance->_get($param);
 	}
 
-	/** this returns Config::SELF_URL_PATH sans trailing slash */
-	static function get_self_url() : string {
-		return preg_replace("#/*$#", "", self::get(Config::SELF_URL_PATH));
-	}
-
 	static function is_server_https() : bool {
 		return (!empty($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] != 'off')) ||
 			(!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https');
 	}
 
-	/** generates reference self_url_path (no trailing slash) */
-	static function make_self_url() : string {
-		$proto = self::is_server_https() ? 'https' : 'http';
-
-		$self_url_path = $proto . '://' . $_SERVER["HTTP_HOST"] . parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
-
-		$self_url_path = preg_replace("/\w+\.php(\?.*$)?$/", "", $self_url_path);
-		#$self_url_path = preg_replace("/(\?.*$)?$/", "", $self_url_path);
-
-		if (substr($self_url_path, -1) === "/") {
-			return substr($self_url_path, 0, -1);
+	/** returns fully-qualified external URL to tt-rss (no trailing slash)
+	 * SELF_URL_PATH configuration variable is used as a fallback for the CLI SAPI
+	 * */
+	static function get_self_url() : string {
+		if (php_sapi_name() == "cli") {
+			return self::get(Config::SELF_URL_PATH);
 		} else {
-			return $self_url_path;
+			$proto = self::is_server_https() ? 'https' : 'http';
+
+			$self_url_path = $proto . '://' . $_SERVER["HTTP_HOST"] . parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+			$self_url_path = preg_replace("/\w+\.php(\?.*$)?$/", "", $self_url_path);
+
+			if (substr($self_url_path, -1) === "/") {
+				return substr($self_url_path, 0, -1);
+			} else {
+				return $self_url_path;
+			}
 		}
 	}
-
 	/* sanity check stuff */
 
 	/** checks for mysql tables not using InnoDB (tt-rss is incompatible with MyISAM)
@@ -620,26 +615,8 @@ class Config {
 
 		// skip check for CLI scripts so that we could install database schema if it is missing.
 		if (php_sapi_name() != "cli") {
-
 			if (self::get_schema_version() < 0) {
 				array_push($errors, "Base database schema is missing. Either load it manually or perform a migration (<code>update.php --update-schema</code>)");
-			}
-
-			$ref_self_url_path = self::make_self_url();
-
-			if ($ref_self_url_path) {
-				$ref_self_url_path = preg_replace("/\w+\.php$/", "", $ref_self_url_path);
-			}
-
-			if (self::get_self_url() == "http://example.org/tt-rss") {
-				$hint = $ref_self_url_path ? "(possible value: <b>$ref_self_url_path</b>)" : "";
-				array_push($errors,
-						"Please set SELF_URL_PATH to the correct value for your server: $hint");
-			}
-
-			if (self::get_self_url() != $ref_self_url_path) {
-				array_push($errors,
-					"Please set SELF_URL_PATH to the correct value detected for your server: <b>$ref_self_url_path</b> (you're using: <b>" . self::get_self_url() . "</b>)");
 			}
 		}
 

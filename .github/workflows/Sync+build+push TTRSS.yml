@@ -38,8 +38,8 @@ jobs:
       - name: repo-sync
         uses: wei/git-sync@v3
         with:
-          source_repo: "https://git.tt-rss.org/fox/ttrss-docker-compose.git"
-          source_branch: "master"
+          source_repo: "https://gitlab.tt-rss.org/tt-rss/ttrss-docker-compose"
+          source_branch: "static-dockerhub"
           destination_repo: "git@github.com:schklom/Mirror-workflows.git"
           destination_branch: "TTRSS-docker"
           ssh_private_key: ${{ secrets.GITSYNCACTION }}

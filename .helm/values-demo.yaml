@@ -9,3 +9,6 @@ virtualservice:
   suffix: k3s.kake
   additional_domains:
     - demo.tt-rss.org
+
+restart:
+  enabled: true

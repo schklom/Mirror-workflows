@@ -64,6 +64,9 @@ integration-test:
     TEST_HELM_REPO: https://gitlab.tt-rss.org/tt-rss/helm-charts/tt-rss
   extends: .integration-test
   script:
+    - apk add py3-pip
+    - pip3 install selenium
+    - python3 tests/selenium.py
     - sleep 5
     - curl -fs http://tt-rss-${CI_COMMIT_SHORT_SHA}-app/tt-rss/index.php | grep -q Login
   rules:

@@ -72,6 +72,11 @@ integration-test:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
+integration-test:branch:
+  extends: integration-test
+  rules:
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH && $CI_REGISTRY_USER != null
+
 ttrss-web-nginx:publish:
   stage: publish
   extends: .build-master

@@ -52,8 +52,7 @@ else
 	echo "warning: working copy in $DST_DIR won't be updated, make sure you know what you're doing."
 fi
 
-for d in cache lock feed-icons plugins.local
-		themes.local templates.local cache/export cache/feeds cache/images cache/upload; do
+for d in cache lock feed-icons plugins.local themes.local templates.local cache/export cache/feeds cache/images cache/upload; do
 	sudo -u app mkdir -p $DST_DIR/$d
 done
 

@@ -87,3 +87,13 @@ ttrss-fpm-pgsql-static:publish:
   extends: .build-master
   variables:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/app/Dockerfile
+
+update-demo:
+  stage: publish
+  image: ${HELM_IMAGE}
+  variables:
+    HELM_REPO: https://gitlab.tt-rss.org/tt-rss/helm-charts/tt-rss
+  script:
+    - git clone ${HELM_REPO} chart
+    - helm upgrade --atomic --install tt-rss-demo chart -f .helm/values-demo.yaml
+

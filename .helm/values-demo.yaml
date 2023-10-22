@@ -1,0 +1,11 @@
+imageTag: latest
+
+user:
+  name: demo
+  password: demo
+  access_level: 10
+
+virtualservice:
+  suffix: k3s.kake
+  additional_domains:
+    - demo.tt-rss.org

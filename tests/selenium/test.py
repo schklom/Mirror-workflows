@@ -5,7 +5,7 @@ from selenium import webdriver
 options = webdriver.ChromeOptions()
 
 driver = webdriver.Remote(
-	command_executor='http://selenium-hub.selenium-grid.svc.cluster.local/wd/hub',
+    command_executor='http://selenium-hub.selenium-grid.svc.cluster.local:4444/wd/hub',
 	options=options
 )
 

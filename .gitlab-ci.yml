@@ -66,9 +66,7 @@ integration-test:
   script:
     - apk add py3-pip
     - pip3 install selenium
-    - python3 tests/selenium.py
-    - sleep 5
-    - curl -fs http://tt-rss-${CI_COMMIT_SHORT_SHA}-app/tt-rss/index.php | grep -q Login
+    - python3 tests/selenium/test.py
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 

@@ -60,13 +60,13 @@ phpdoc:
     - rsync -av -e 'ssh -o StrictHostKeyChecking=no' phpdoc/ ${PHPDOC_DEPLOY_HOST}:phpdoc/
 
 integration-test:
+  image: ${SELENIUM_IMAGE}
   variables:
     TEST_HELM_REPO: https://gitlab.tt-rss.org/tt-rss/helm-charts/tt-rss
+    SELENIUM_GRID_ENDPOINT: http://selenium-hub.selenium-grid.svc.cluster.local:4444/wd/hub
   extends: .integration-test
   script:
-    - apk add py3-pip
-    - pip3 install selenium
-    - python3 tests/selenium/test.py
+    - python3 tests/integration/selenium_test.py
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 

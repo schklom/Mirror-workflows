@@ -9,19 +9,14 @@ from selenium.webdriver.common.by import By
 
 CI_COMMIT_SHORT_SHA = os.getenv("CI_COMMIT_SHORT_SHA")
 SELENIUM_GRID_ENDPOINT = os.getenv("SELENIUM_GRID_ENDPOINT")
-
-if not CI_COMMIT_SHORT_SHA or not SELENIUM_GRID_ENDPOINT:
-    print("both CI_COMMIT_SHORT_SHA snd SELENIUM_GRID_ENDPOINT env vars should be defined")
-    exit(1)
+K8S_NAMESPACE = os.getenv("K8S_NAMESPACE")
 
 driver = webdriver.Remote(command_executor=SELENIUM_GRID_ENDPOINT, options=webdriver.ChromeOptions())
 
-app_url = f"http://tt-rss-{CI_COMMIT_SHORT_SHA}-app.gitlab-fakecake.svc.cluster.local/tt-rss"
-
-print(f"requesting base url: {app_url}")
-
 try:
-    driver.get(app_url)
+    base_url = f"http://tt-rss-{CI_COMMIT_SHORT_SHA}-app.{K8S_NAMESPACE}.svc.cluster.local/tt-rss"
+    print(f"requesting base url: {base_url}")
+    driver.get(base_url)
 
     print("filling in login information...")
 
@@ -37,7 +32,7 @@ try:
 
     print("checking for feedTree...")
 
-    assert driver.find_element(by=By.CSS_SELECTOR, value="#feedTree")
+    assert driver.find_element(by=By.CSS_SELECTOR, value="#zfeedTree")
 
     print("all done.")
 

@@ -1,4 +1,4 @@
-# simplified compose for local building & development
+# simplified compose for local development
 
 version: '3'
 
@@ -28,16 +28,16 @@ services:
     depends_on:
       - db
 
-#  updater:
-#    image: cthulhoo/ttrss-fpm-pgsql-static:latest
-#    restart: unless-stopped
-#    env_file:
-#      - .env
-#    volumes:
-#      - .:/var/www/html
-#    depends_on:
-#      - app
-#    command: /opt/tt-rss/updater.sh
+  updater:
+    image: cthulhoo/ttrss-fpm-pgsql-static:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - app
+    command: /opt/tt-rss/updater.sh
 
   web-nginx:
     image: cthulhoo/ttrss-web-nginx:latest
@@ -53,4 +53,3 @@ services:
       - .:/var/www/html/tt-rss:ro
     depends_on:
       - app
-

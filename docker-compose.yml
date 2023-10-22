@@ -34,7 +34,7 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/var/www/html
+      - .:/var/www/html/tt-rss
     depends_on:
       - app
     command: /opt/tt-rss/updater.sh

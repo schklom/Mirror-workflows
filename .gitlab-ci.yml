@@ -3,6 +3,7 @@ stages:
   - build
   - test
   - publish
+  - demo
 
 variables:
   ESLINT_PATHS: js plugins
@@ -89,7 +90,7 @@ ttrss-fpm-pgsql-static:publish:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/app/Dockerfile
 
 update-demo:
-  stage: publish
+  stage: demo
   image: ${HELM_IMAGE}
   variables:
     HELM_REPO: https://gitlab.tt-rss.org/tt-rss/helm-charts/tt-rss

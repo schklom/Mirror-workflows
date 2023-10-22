@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
 import os
+import sys
 import traceback
-import time
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -32,11 +32,13 @@ try:
 
     print("checking for feedTree...")
 
-    assert driver.find_element(by=By.CSS_SELECTOR, value="#zfeedTree")
+    assert driver.find_element(by=By.CSS_SELECTOR, value="#feedTree")
 
     print("all done.")
 
 except Exception:
     traceback.print_exc()
+    sys.exit(1)
 finally:
     driver.quit()
+

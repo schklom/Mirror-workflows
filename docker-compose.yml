@@ -1,0 +1,56 @@
+# simplified compose for local building & development
+
+version: '3'
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${TTRSS_DB_USER}
+      - POSTGRES_PASSWORD=${TTRSS_DB_PASS}
+      - POSTGRES_DB=${TTRSS_DB_NAME}
+
+  app:
+    image: cthulhoo/ttrss-fpm-pgsql-static:latest
+    build:
+      dockerfile: .docker/app/Dockerfile
+      context: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - app:/var/www/html
+    depends_on:
+      - db
+
+  updater:
+    image: cthulhoo/ttrss-fpm-pgsql-static:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - app:/var/www/html
+    depends_on:
+      - app
+    command: /opt/tt-rss/updater.sh
+
+  web-nginx:
+    image: cthulhoo/ttrss-web-nginx:latest
+    build:
+      dockerfile: .docker/web-nginx/Dockerfile
+      context: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - ${HTTP_PORT}:80
+    volumes:
+      - app:/var/www/html:ro
+    depends_on:
+      - app
+
+volumes:
+  app:

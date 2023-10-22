@@ -24,28 +24,32 @@ export PGPASSWORD=$TTRSS_DB_PASS
 
 [ ! -e /var/www/html/index.php ] && cp ${SCRIPT_ROOT}/index.php /var/www/html
 
-if [ ! -d $DST_DIR ]; then
-	mkdir -p $DST_DIR
-	chown $OWNER_UID:$OWNER_GID $DST_DIR
+if [ -z $SKIP_RSYNC_ON_STARTUP ]; then
+	if [ ! -d $DST_DIR ]; then
+		mkdir -p $DST_DIR
+		chown $OWNER_UID:$OWNER_GID $DST_DIR
 
-	sudo -u app rsync -a \
-		$SRC_DIR/ $DST_DIR/
+		sudo -u app rsync -a \
+			$SRC_DIR/ $DST_DIR/
+	else
+		chown -R $OWNER_UID:$OWNER_GID $DST_DIR
+
+		sudo -u app rsync -a --delete \
+			--exclude /cache \
+			--exclude /lock \
+			--exclude /feed-icons \
+			--exclude /plugins/af_comics/filters.local \
+			--exclude /plugins.local \
+			--exclude /templates.local \
+			--exclude /themes.local \
+			$SRC_DIR/ $DST_DIR/
+
+		sudo -u app rsync -a --delete \
+			$SRC_DIR/plugins.local/nginx_xaccel \
+			$DST_DIR/plugins.local/nginx_xaccel
+	fi
 else
-	chown -R $OWNER_UID:$OWNER_GID $DST_DIR
-
-	sudo -u app rsync -a --delete \
-		--exclude /cache \
-		--exclude /lock \
-		--exclude /feed-icons \
-		--exclude /plugins/af_comics/filters.local \
-		--exclude /plugins.local \
-		--exclude /templates.local \
-		--exclude /themes.local \
-		$SRC_DIR/ $DST_DIR/
-
-	sudo -u app rsync -a --delete \
-		$SRC_DIR/plugins.local/nginx_xaccel \
-		$DST_DIR/plugins.local/nginx_xaccel
+	echo "warning: working copy in $DST_DIR won't be updated, make sure you know what you're doing."
 fi
 
 for d in cache lock feed-icons plugins.local themes.local; do

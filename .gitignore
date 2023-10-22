@@ -1,4 +1,6 @@
 Thumbs.db
+/.env
+/docker-compose.override.yml
 /.app_is_ready
 /messages.mo
 /node_modules
@@ -13,3 +15,4 @@ Thumbs.db
 /vendor/**/.git
 /.phpunit.result.cache
 /.phpstan-tmp
+/.tools/

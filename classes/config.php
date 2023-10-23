@@ -268,6 +268,7 @@ class Config {
 	/** @var Db_Migrations|null $migrations */
 	private $migrations;
 
+	/** @var int $self_url_path_strip_dirs */
 	private static $self_url_path_strip_dirs = 0;
 
 	public static function get_instance() : Config {
@@ -478,7 +479,7 @@ class Config {
 			(!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https');
 	}
 
-	static function strip_self_url_path_dirs($amount) {
+	static function strip_self_url_path_dirs(int $amount) : void {
 		self::$self_url_path_strip_dirs = $amount;
 	}
 

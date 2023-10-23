@@ -268,8 +268,6 @@ class Config {
 	/** @var Db_Migrations|null $migrations */
 	private $migrations;
 
-	private static $self_url_path_strip_dirs = 0;
-
 	public static function get_instance() : Config {
 		if (self::$instance == null)
 			self::$instance = new self();
@@ -478,10 +476,6 @@ class Config {
 			(!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https');
 	}
 
-	static function strip_self_url_path_dirs($amount) {
-		self::$self_url_path_strip_dirs = $amount;
-	}
-
 	/** returns fully-qualified external URL to tt-rss (no trailing slash)
 	 * SELF_URL_PATH configuration variable is used as a fallback for the CLI SAPI
 	 * */
@@ -493,9 +487,6 @@ class Config {
 
 			$self_url_path = $proto . '://' . $_SERVER["HTTP_HOST"] . parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 			$self_url_path = preg_replace("/\w+\.php(\?.*$)?$/", "", $self_url_path);
-
-			for ($i = 0; $i < self::$self_url_path_strip_dirs; $i++)
-				$self_url_path = dirname($self_url_path);
 
 			if (substr($self_url_path, -1) === "/") {
 				return substr($self_url_path, 0, -1);

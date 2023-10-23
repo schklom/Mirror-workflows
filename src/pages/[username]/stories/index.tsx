@@ -40,10 +40,7 @@ export default function Stories({ profile, stories, error }: Props) {
 						{stories.data.length > 0 ? (
 							<div className="grid grid-cols-2 grid-rows-2 gap-2 p-2 sm:grid-cols-3 sm:grid-rows-3">
 								{stories.data.map((story, i) => (
-									<div
-										key={`${profile.username}-story-${i + 1}`}
-										id={`${profile.username}-story-${i + 1}`}
-									>
+									<div key={story.id} id={story.id}>
 										{story.isVideo ? (
 											<Video url={String(story.video)} poster={story.thumb} />
 										) : (

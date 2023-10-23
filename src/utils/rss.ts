@@ -139,11 +139,11 @@ export class RSS {
 			axiosInstance.get<Story[]>(`${username}/stories`),
 		]);
 
-		stories.forEach((story, i) => {
+		stories.forEach((story) => {
 			feed.addItem({
 				title: story.isVideo ? "Video" : "Image",
-				id: `${username}-story-${i + 1}`,
-				link: `${getBaseUrl()}/${username}/stories#${username}-story-${i + 1}`,
+				id: story.id,
+				link: `${getBaseUrl()}/${username}/stories#${story.id}`,
 				content: `
 				${
 					story.isVideo

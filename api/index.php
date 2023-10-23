@@ -14,6 +14,8 @@
 	require_once "functions.php";
 	require_once "sessions.php";
 
+	Config::strip_self_url_path_dirs(1);
+
 	ini_set('session.use_cookies', "0");
 	ini_set("session.gc_maxlifetime", "86400");
 

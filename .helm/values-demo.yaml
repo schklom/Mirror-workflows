@@ -10,5 +10,9 @@ virtualservice:
   additional_domains:
     - demo.tt-rss.org
 
+web:
+  root: /var/www/html/tt-rss
+  base: ""
+
 restart:
   enabled: true

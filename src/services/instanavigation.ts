@@ -62,8 +62,12 @@ export class InstaNavigation implements IGetStories {
 
 		return response.stories.map((story) => {
 			const source = proxyUrl(convertToInstagramUrl(story.source));
+			const id = story.thumbnail
+				? String(convertToInstagramUrl(story.thumbnail).split("_").at(2))
+				: String(source.split("_").at(2));
 
 			return {
+				id,
 				thumb: story.thumbnail
 					? proxyUrl(convertToInstagramUrl(story.thumbnail))
 					: source,

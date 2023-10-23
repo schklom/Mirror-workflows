@@ -43,6 +43,7 @@ export class StoriesIG implements IGetProfile, IGetStories {
 		});
 
 		return json.result.map((story) => ({
+			id: story.pk,
 			thumb: proxyUrl(story.image_versions2.candidates[0].url),
 			isVideo: story.video_versions ? true : false,
 			video: story.video_versions

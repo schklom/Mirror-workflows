@@ -41,6 +41,7 @@ export interface Post {
 }
 
 export interface Story {
+	id: string;
 	thumb: string;
 	video?: string;
 	isVideo?: boolean;

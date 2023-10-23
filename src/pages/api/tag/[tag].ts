@@ -11,14 +11,14 @@ async function getTag(req: NextApiRequest, res: NextApiResponse<TagResponse>) {
 	const tag = req.query.tag as string;
 	const expireTime = convertTTlToTimestamp(env.EXPIRE_TIME_FOR_PROFILE);
 
-	const cachedData = await redis.get(`tag:#${tag}`);
+	const cachedData = await redis.get(`tag:${tag}`);
 	if (cachedData) {
 		return res.json(JSON.parse(cachedData));
 	}
 
 	const randomTagProvider = await getRandomProvider<IGetTag>("Tags");
 	const tagInfo = await randomTagProvider.getTag({ tag });
-	await redis.setex(`tag:#${tag}`, expireTime, JSON.stringify(tag));
+	await redis.setex(`tag:${tag}`, expireTime, JSON.stringify(tagInfo));
 	res.json(tagInfo);
 }
 

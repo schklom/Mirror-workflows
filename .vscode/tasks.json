@@ -21,7 +21,7 @@
 
 				}
 		  },
-			"command": "${workspaceRoot}/utils/phpstan-watcher.sh",
+			"command": "chmod +x ${workspaceRoot}/utils/phpstan-watcher.sh && ${workspaceRoot}/utils/phpstan-watcher.sh",
 		},
 		{
 			"type": "gulp",

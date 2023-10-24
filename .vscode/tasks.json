@@ -6,22 +6,30 @@
 			"label": "phpstan (watcher)",
 			"isBackground": true,
 			"problemMatcher": {
-				"fileLocation": ["relative", "${workspaceRoot}"],
+				"fileLocation": [
+					"relative",
+					"${workspaceRoot}"
+				],
 				"owner": "phpstan-watcher",
 				"pattern": {
-					 "regexp": "^/app/(.*?):([0-9\\?]*):(.*)$",
-					 "file": 1,
-					 "line": 2,
-					 "message": 3
+					"regexp": "^/app/(.*?):([0-9\\?]*):(.*)$",
+					"file": 1,
+					"line": 2,
+					"message": 3
 				},
 				"background": {
 					"activeOnStart": true,
 					"beginsPattern": "Using configuration file",
 					"endsPattern": "All done"
-
 				}
-		  },
-			"command": "chmod +x ${workspaceRoot}/utils/phpstan-watcher.sh && ${workspaceRoot}/utils/phpstan-watcher.sh",
+			},
+			"command": "chmod +x ${workspaceRoot}/utils/phpstan-watcher.sh && ${workspaceRoot}/utils/phpstan-watcher.sh"
+		},
+		{
+			"type": "shell",
+			"label": "phpunit",
+			"command": "chmod +x ${workspaceRoot}/utils/phpunit.sh && ${workspaceRoot}/utils/phpunit.sh",
+			"problemMatcher": []
 		},
 		{
 			"type": "gulp",
@@ -30,9 +38,9 @@
 			"label": "gulp: default",
 			"options": {
 				"env": {
-					 "PATH": "${env:PATH}:/usr/lib/sdk/node16/bin/"
+					"PATH": "${env:PATH}:/usr/lib/sdk/node16/bin/"
 				}
-		  }
+			}
 		}
 	]
 }

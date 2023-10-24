@@ -479,14 +479,14 @@ class Config {
 	/** returns fully-qualified external URL to tt-rss (no trailing slash)
 	 * SELF_URL_PATH configuration variable is used as a fallback for the CLI SAPI
 	 * */
-	static function get_self_url() : string {
-		if (php_sapi_name() == "cli") {
+	static function get_self_url(bool $always_detect = false) : string {
+		if (!$always_detect && php_sapi_name() == "cli") {
 			return self::get(Config::SELF_URL_PATH);
 		} else {
 			$proto = self::is_server_https() ? 'https' : 'http';
 
 			$self_url_path = $proto . '://' . $_SERVER["HTTP_HOST"] . parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
-			$self_url_path = preg_replace("/\w+\.php(\?.*$)?$/", "", $self_url_path);
+			$self_url_path = preg_replace("/(\/api\/{1,})?(\w+\.php)?(\?.*$)?$/", "", $self_url_path);
 
 			if (substr($self_url_path, -1) === "/") {
 				return substr($self_url_path, 0, -1);

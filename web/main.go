@@ -151,6 +151,7 @@ func main() {
 	})
 
 	app.All("/api/translate", func(c *fiber.Ctx) error {
+		c.Append("Access-Control-Allow-Origin", "*")
 		from := ""
 		to := ""
 		engine := ""
@@ -182,6 +183,7 @@ func main() {
 	})
 
 	app.Get("/api/source_languages", func(c *fiber.Ctx) error {
+		c.Append("Access-Control-Allow-Origin", "*")
 		engine := c.Query("engine")
 		if _, ok := engines.Engines[engine]; !ok || engine == "" {
 			engine = "google"
@@ -206,6 +208,7 @@ func main() {
 	})
 
 	app.Get("/api/tts", func(c *fiber.Ctx) error {
+		c.Append("Access-Control-Allow-Origin", "*")
 		engine := c.Query("engine")
 		if _, ok := engines.Engines[engine]; !ok || engine == "" {
 			engine = "google"

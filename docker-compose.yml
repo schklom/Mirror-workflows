@@ -1,4 +1,8 @@
-# simplified compose for local development
+#
+# simplified compose FOR LOCAL DEVELOPMENT.
+#
+# please don't use this in production: it has no database persistence and maps to tt-rss source directly.
+#
 
 version: '3'
 

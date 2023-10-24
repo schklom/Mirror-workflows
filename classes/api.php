@@ -815,6 +815,7 @@ class API extends Handler {
 						$headline_row["excerpt"] = $line["content_preview"];
 
 					if ($show_content) {
+
 						if ($sanitize_content) {
 							$headline_row["content"] = Sanitizer::sanitize(
 								$line["content"],
@@ -867,8 +868,6 @@ class API extends Handler {
 							$hook_object);
 
 						$headline_row["content"] = DiskCache::rewrite_urls($headline_row['content']);
-						$headline_row["content"] = str_replace(["\r", "\n"], ["\\r", "\\n"], $headline_row["content"]);
-
 					}
 
 					array_push($headlines, $headline_row);

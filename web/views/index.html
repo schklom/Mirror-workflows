@@ -33,7 +33,8 @@
         <div class="wrap languages">
             <div class="language">
                 <select name="from" aria-label="Source language">
-                    {{range $code, $name := .SourceLanguages}}
+                    {{range $code := .SourceLanguagesSorted}}
+                    {{ $name := index $.SourceLanguages $code }}
                     {{if and (eq $code "auto") $.SourceLanguage}}
                     <option value="{{ $code }}" {{if eq $code $.From}}selected{{end}}>{{ $name }} ({{index
                         $.SourceLanguages $.SourceLanguage}})</option>
@@ -51,7 +52,8 @@
 
             <div class="language">
                 <select name="to" aria-label="Target language">
-                    {{range $code, $name := .TargetLanguages}}
+                    {{range $code := .TargetLanguagesSorted}}
+                    {{ $name := index $.TargetLanguages $code }}
                     <option value="{{ $code }}" {{if eq $code $.To}}selected{{end}}>{{ $name }}</option>
                     {{end}}
                 </select>

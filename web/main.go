@@ -5,12 +5,41 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"sort"
 	"time"
 
 	"codeberg.org/SimpleWeb/SimplyTranslate/engines"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html/v2"
 )
+
+func indexOf(arr []string, candidate string) int {
+	for index, c := range arr {
+		if c == candidate {
+			return index
+		}
+	}
+	return -1
+}
+
+func sortLanguages(langs engines.Language) []string {
+	keys := make([]string, 0, len(langs))
+	for key := range langs {
+		keys = append(keys, key)
+	}
+	sort.SliceStable(keys, func(i, j int) bool {
+		return langs[keys[i]] < langs[keys[j]]
+	})
+
+	s := indexOf(keys, "auto")
+	if s >= 0 {
+		keys = append(keys[:s], keys[s+1:]...)
+		keys = append(keys[:1], keys[0:]...)
+		keys[0] = "auto"
+	}
+
+	return keys
+}
 
 func main() {
 	engine := html.New("./views", ".html")
@@ -105,17 +134,19 @@ func main() {
 		}
 
 		return c.Render("index", fiber.Map{
-			"Engine":          engine,
-			"enginesNames":    enginesNames,
-			"SourceLanguages": sourceLanguages,
-			"TargetLanguages": targetLanguages,
-			"OriginalText":    originalText,
-			"Translation":     translation,
-			"From":            from,
-			"To":              to,
-			"TtsFrom":         ttsFrom,
-			"TtsTo":           ttsTo,
-			"SourceLanguage":  sourceLanguage,
+			"Engine":                engine,
+			"enginesNames":          enginesNames,
+			"SourceLanguages":       sourceLanguages,
+			"SourceLanguagesSorted": sortLanguages(sourceLanguages),
+			"TargetLanguages":       targetLanguages,
+			"TargetLanguagesSorted": sortLanguages(targetLanguages),
+			"OriginalText":          originalText,
+			"Translation":           translation,
+			"From":                  from,
+			"To":                    to,
+			"TtsFrom":               ttsFrom,
+			"TtsTo":                 ttsTo,
+			"SourceLanguage":        sourceLanguage,
 		})
 	})
 

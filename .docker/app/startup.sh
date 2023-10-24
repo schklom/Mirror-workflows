@@ -106,7 +106,7 @@ if [ ! -z "${TTRSS_XDEBUG_ENABLED}" ]; then
 	env | grep TTRSS_XDEBUG
 	cat > /etc/php82/conf.d/50_xdebug.ini <<EOF
 zend_extension=xdebug.so
-xdebug.mode=develop,trace,debug
+xdebug.mode=debug
 xdebug.start_with_request = yes
 xdebug.client_port = ${TTRSS_XDEBUG_PORT}
 xdebug.client_host = ${TTRSS_XDEBUG_HOST}

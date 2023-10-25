@@ -68,7 +68,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           #repository: 'schklom/FindMyDeviceServer'
-          ref: 'FindMyDeviceServer_Dockerfile' # branch
+          ref: 'FindMyDeviceServer' # branch
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.0.0

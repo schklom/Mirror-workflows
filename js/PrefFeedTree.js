@@ -150,7 +150,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 			const searchElem = App.byId("feed_search");
 			const search = (searchElem) ? searchElem.value : "";
 
-			xhr.post("backend.php", { op: "pref-feeds", search: search }, (reply) => {
+			xhr.post("backend.php", { op: "Pref_Feeds", search: search }, (reply) => {
 				dijit.byId('feedsTab').attr('content', reply);
 				Notify.close();
 			});
@@ -185,14 +185,14 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 		resetFeedOrder: function() {
 			Notify.progress("Loading, please wait...");
 
-			xhr.post("backend.php", {op: "pref-feeds", method: "feedsortreset"}, () => {
+			xhr.post("backend.php", {op: "Pref_Feeds", method: "feedsortreset"}, () => {
 				this.reload();
 			});
 		},
 		resetCatOrder: function() {
 			Notify.progress("Loading, please wait...");
 
-			xhr.post("backend.php", {op: "pref-feeds", method: "catsortreset"}, () => {
+			xhr.post("backend.php", {op: "Pref_Feeds", method: "catsortreset"}, () => {
 				this.reload();
 			});
 		},
@@ -200,7 +200,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 			if (confirm(__("Remove category %s? Any nested feeds would be placed into Uncategorized.").replace("%s", item.name))) {
 				Notify.progress("Removing category...");
 
-				xhr.post("backend.php", {op: "pref-feeds", method: "removeCat", ids: id}, () => {
+				xhr.post("backend.php", {op: "Pref_Feeds", method: "removeCat", ids: id}, () => {
 					Notify.close();
 					this.reload();
 				});
@@ -215,7 +215,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 					Notify.progress("Unsubscribing from selected feeds...", true);
 
 					const query = {
-						op: "pref-feeds", method: "remove",
+						op: "Pref_Feeds", method: "remove",
 						ids: sel_rows.toString()
 					};
 
@@ -231,14 +231,14 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 			return false;
 		},
 		checkErrorFeeds: function() {
-			xhr.json("backend.php", {op: "pref-feeds", method: "feedsWithErrors"}, (reply) => {
+			xhr.json("backend.php", {op: "Pref_Feeds", method: "feedsWithErrors"}, (reply) => {
 				if (reply.length > 0) {
 					Element.show(dijit.byId("pref_feeds_errors_btn").domNode);
 				}
 			});
 		},
 		checkInactiveFeeds: function() {
-			xhr.json("backend.php", {op: "pref-feeds", method: "inactivefeeds"}, (reply) => {
+			xhr.json("backend.php", {op: "Pref_Feeds", method: "inactivefeeds"}, (reply) => {
 				if (reply.length > 0) {
 					Element.show(dijit.byId("pref_feeds_inactive_btn").domNode);
 				}
@@ -264,7 +264,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 					Notify.progress("Removing selected categories...");
 
 					const query = {
-						op: "pref-feeds", method: "removeCat",
+						op: "Pref_Feeds", method: "removeCat",
 						ids: sel_rows.toString()
 					};
 
@@ -316,7 +316,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 
 			Notify.progress("Loading, please wait...");
 
-			xhr.post("backend.php", {op: "pref-feeds", method: "editfeeds", ids: rows.toString()}, (reply) => {
+			xhr.post("backend.php", {op: "Pref_Feeds", method: "editfeeds", ids: rows.toString()}, (reply) => {
 				Notify.close();
 
 				try {
@@ -393,7 +393,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 
 				Notify.progress("Loading, please wait...");
 
-				xhr.post("backend.php", { op: 'pref-feeds', method: 'renamecat', id: id, title: new_name }, () => {
+				xhr.post("backend.php", { op: 'Pref_Feeds', method: 'renamecat', id: id, title: new_name }, () => {
 					this.reload();
 				});
 			}
@@ -404,14 +404,14 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 			if (title) {
 				Notify.progress("Creating category...");
 
-				xhr.post("backend.php", {op: "pref-feeds", method: "addCat", cat: title}, () => {
+				xhr.post("backend.php", {op: "Pref_Feeds", method: "addCat", cat: title}, () => {
 					Notify.close();
 					this.reload();
 				});
 			}
 		},
 		batchSubscribe: function() {
-			xhr.json("backend.php", {op: 'pref-feeds', method: 'batchSubscribe'}, (reply) => {
+			xhr.json("backend.php", {op: 'Pref_Feeds', method: 'batchSubscribe'}, (reply) => {
 				const dialog = new fox.SingleUseDialog({
 					id: "batchSubDlg",
 					title: __("Batch subscribe"),
@@ -431,7 +431,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 					},
 					content: `
 						<form onsubmit='return false'>
-							${App.FormFields.hidden_tag("op", "pref-feeds")}
+							${App.FormFields.hidden_tag("op", "Pref_Feeds")}
 							${App.FormFields.hidden_tag("method", "batchaddfeeds")}
 
 							<header class='horizontal'>
@@ -484,7 +484,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 			});
 		},
 		showInactiveFeeds: function() {
-			xhr.json("backend.php", {op: 'pref-feeds', method: 'inactivefeeds'}, function (reply) {
+			xhr.json("backend.php", {op: 'Pref_Feeds', method: 'inactivefeeds'}, function (reply) {
 
 				const dialog = new fox.SingleUseDialog({
 					id: "inactiveFeedsDlg",
@@ -500,7 +500,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 								Notify.progress("Removing selected feeds...", true);
 
 								const query = {
-									op: "pref-feeds", method: "remove",
+									op: "Pref_Feeds", method: "remove",
 									ids: sel_rows.toString()
 								};
 

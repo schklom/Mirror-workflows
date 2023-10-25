@@ -9,7 +9,7 @@ define(["dojo/_base/declare", "dojo/data/ItemFileWriteStore"], function (declare
 			dojo.xhrPost({
 				url: "backend.php",
 				content: {
-					op: "pref-filters", method: "savefilterorder",
+					op: "Pref_Filters", method: "savefilterorder",
 					payload: newFileContentString
 				},
 				error: saveFailedCallback,

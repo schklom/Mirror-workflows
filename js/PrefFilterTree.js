@@ -107,7 +107,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			let search = "";
 			if (user_search) { search = user_search.value; }
 
-			xhr.post("backend.php", { op: "pref-filters", search: search }, (reply) => {
+			xhr.post("backend.php", { op: "Pref_Filters", search: search }, (reply) => {
 				dijit.byId('filtersTab').attr('content', reply);
 				Notify.close();
 			});
@@ -125,7 +125,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 		resetFilterOrder: function() {
 			Notify.progress("Loading, please wait...");
 
-			xhr.post("backend.php", {op: "pref-filters", method: "filtersortreset"}, () => {
+			xhr.post("backend.php", {op: "Pref_Filters", method: "filtersortreset"}, () => {
 				this.reload();
 			});
 		},
@@ -140,7 +140,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			if (confirm(__("Combine selected filters?"))) {
 				Notify.progress("Joining filters...");
 
-				xhr.post("backend.php", {op: "pref-filters", method: "join", ids: rows.toString()}, () => {
+				xhr.post("backend.php", {op: "Pref_Filters", method: "join", ids: rows.toString()}, () => {
 					this.reload();
 				});
 			}
@@ -153,7 +153,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 					Notify.progress("Removing selected filters...");
 
 					const query = {
-						op: "pref-filters", method: "remove",
+						op: "Pref_Filters", method: "remove",
 						ids: sel_rows.toString()
 					};
 

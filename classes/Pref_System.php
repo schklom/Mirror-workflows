@@ -194,7 +194,7 @@ class Pref_System extends Handler_Administrative {
 							}
 						</script>
 
-						<?= \Controls\hidden_tag("op", "pref-system") ?>
+						<?= \Controls\hidden_tag("op", "Pref_System") ?>
 						<?= \Controls\hidden_tag("method", "sendTestEmail") ?>
 
 						<fieldset>
@@ -210,7 +210,7 @@ class Pref_System extends Handler_Administrative {
 					<script type='dojo/method' event='onSelected' args='evt'>
 						if (this.domNode.querySelector('.loading'))
 							window.setTimeout(() => {
-								xhr.post("backend.php", {op: 'pref-system', method: 'getphpinfo'}, (reply) => {
+								xhr.post("backend.php", {op: 'Pref_System', method: 'getphpinfo'}, (reply) => {
 									this.attr('content', `<div class='phpinfo'>${reply}</div>`);
 								});
 							}, 200);

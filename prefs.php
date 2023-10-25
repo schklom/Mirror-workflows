@@ -142,26 +142,26 @@
 <div id="main" dojoType="dijit.layout.BorderContainer">
     <div dojoType="dijit.layout.TabContainer" region="center" id="pref-tabs">
         <div id="prefsTab" dojoType="dijit.layout.ContentPane"
-            href="backend.php?op=pref-prefs"
+            href="backend.php?op=Pref_Prefs"
             title="<i class='material-icons'>settings</i> <?= __('Preferences') ?>"></div>
         <div id="feedsTab" dojoType="dijit.layout.ContentPane"
-            href="backend.php?op=pref-feeds"
+            href="backend.php?op=Pref_Feeds"
             title="<i class='material-icons'>rss_feed</i>  <?= __('Feeds') ?>"></div>
         <div id="filtersTab" dojoType="dijit.layout.ContentPane"
             style="padding : 0px"
-            href="backend.php?op=pref-filters"
+            href="backend.php?op=Pref_Filters"
             title="<i class='material-icons'>filter_list1</i> <?= __('Filters') ?>"></div>
         <div id="labelsTab" dojoType="dijit.layout.ContentPane"
             style="padding : 0px"
-            href="backend.php?op=pref-labels"
+            href="backend.php?op=Pref_Labels"
             title="<i class='material-icons'>label_outline1</i> <?= __('Labels') ?>"></div>
         <?php if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN) { ?>
             <div id="usersTab" dojoType="dijit.layout.ContentPane"
                 style="padding : 0px"
-                href="backend.php?op=pref-users"
+                href="backend.php?op=Pref_Users"
                 title="<i class='material-icons'>person</i> <?= __('Users') ?>"></div>
             <div id="systemTab" dojoType="dijit.layout.ContentPane"
-                href="backend.php?op=pref-system"
+                href="backend.php?op=Pref_System"
                 title="<i class='material-icons'>info_outline</i> <?= __('System') ?>"></div>
         <?php } ?>
         <?php

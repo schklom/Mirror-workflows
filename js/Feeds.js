@@ -160,7 +160,7 @@ const	Feeds = {
 	},
 	// null = get all data, [] would give empty response for specific type
 	requestCounters: function(feed_ids = null, label_ids = null) {
-		xhr.json("backend.php", {op: "rpc",
+		xhr.json("backend.php", {op: "RPC",
 							method: "getAllCounters",
 							"feed_ids[]": feed_ids,
 							"feed_id_count": feed_ids ? feed_ids.length : -1,
@@ -179,7 +179,7 @@ const	Feeds = {
 			}
 
 			const store = new dojo.data.ItemFileWriteStore({
-				url: "backend.php?op=pref_feeds&method=getfeedtree&mode=2"
+				url: "backend.php?op=Pref_Feeds&method=getfeedtree&mode=2"
 			});
 
 			// noinspection JSUnresolvedFunction
@@ -347,7 +347,7 @@ const	Feeds = {
 	toggleUnread: function() {
 		const hide = !App.getInitParam("hide_read_feeds");
 
-		xhr.post("backend.php", {op: "rpc", method: "setpref", key: "HIDE_READ_FEEDS", value: hide}, () => {
+		xhr.post("backend.php", {op: "RPC", method: "setpref", key: "HIDE_READ_FEEDS", value: hide}, () => {
 			this.hideOrShowFeeds(hide);
 			App.setInitParam("hide_read_feeds", hide);
 		});
@@ -386,7 +386,7 @@ const	Feeds = {
 			}, 10 * 1000);
 		}
 
-		let query = {...{op: "feeds", method: "view", feed: feed}, ...dojo.formToObject("toolbar-main")};
+		let query = {...{op: "Feeds", method: "view", feed: feed}, ...dojo.formToObject("toolbar-main")};
 
 		if (method) query.m = method;
 
@@ -435,7 +435,7 @@ const	Feeds = {
 
 			Notify.progress("Marking all feeds as read...");
 
-			xhr.json("backend.php", {op: "feeds", method: "catchupAll"}, () => {
+			xhr.json("backend.php", {op: "Feeds", method: "catchupAll"}, () => {
 				this.reloadCurrent();
 			});
 
@@ -473,7 +473,7 @@ const	Feeds = {
 		}
 
 		const catchup_query = {
-			op: 'rpc', method: 'catchupFeed', feed_id: feed,
+			op: 'RPC', method: 'catchupFeed', feed_id: feed,
 			is_cat: is_cat, mode: mode, search_query: this.last_search_query[0],
 			search_lang: this.last_search_query[1]
 		};
@@ -612,7 +612,7 @@ const	Feeds = {
 	},
 	search: function() {
 		xhr.json("backend.php",
-					{op: "feeds", method: "search"},
+					{op: "Feeds", method: "search"},
 					(reply) => {
 						try {
 							const dialog = new fox.SingleUseDialog({
@@ -686,7 +686,7 @@ const	Feeds = {
 	updateRandom: function() {
 		console.log("in update_random_feed");
 
-		xhr.json("backend.php", {op: "rpc", method: "updaterandomfeed"}, () => {
+		xhr.json("backend.php", {op: "RPC", method: "updaterandomfeed"}, () => {
 			//
 		});
 	},

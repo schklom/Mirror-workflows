@@ -620,7 +620,7 @@ class Pref_Feeds extends Handler_Protected {
 		?>
 
 		<?= \Controls\hidden_tag("ids", $feed_ids) ?>
-		<?= \Controls\hidden_tag("op", "pref-feeds") ?>
+		<?= \Controls\hidden_tag("op", "Pref_Feeds") ?>
 		<?= \Controls\hidden_tag("method", "batchEditSave") ?>
 
 		<div dojoType="dijit.layout.TabContainer" style="height : 450px">
@@ -959,7 +959,7 @@ class Pref_Feeds extends Handler_Protected {
 			</div>
 			<div style="padding : 0px" dojoType="dijit.layout.ContentPane" region="center">
 				<div dojoType="fox.PrefFeedStore" jsId="feedStore"
-					url="backend.php?op=pref-feeds&method=getfeedtree">
+					url="backend.php?op=Pref_Feeds&method=getfeedtree">
 				</div>
 
 				<div dojoType="lib.CheckBoxStoreModel" jsId="feedModel" store="feedStore"
@@ -988,7 +988,7 @@ class Pref_Feeds extends Handler_Protected {
 			<label class='dijitButton'><?= __("Choose file...") ?>
 				<input style='display : none' id='opml_file' name='opml_file' type='file'>
 			</label>
-			<input type='hidden' name='op' value='pref-feeds'>
+			<input type='hidden' name='op' value='Pref_Feeds'>
 			<input type='hidden' name='csrf_token' value="<?= $_SESSION['csrf_token'] ?>">
 			<input type='hidden' name='method' value='importOpml'>
 			<button dojoType='dijit.form.Button' class='alt-primary' onclick="return Helpers.OPML.import()" type="submit">

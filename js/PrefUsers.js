@@ -8,7 +8,7 @@ const	Users = {
 			const user_search = App.byId("user_search");
 			const search = user_search ? user_search.value : "";
 
-			xhr.post("backend.php", { op: "pref-users", sort: sort, search: search }, (reply) => {
+			xhr.post("backend.php", { op: "Pref_Users", sort: sort, search: search }, (reply) => {
 				dijit.byId('usersTab').attr('content', reply);
 				Notify.close();
 				resolve();
@@ -21,7 +21,7 @@ const	Users = {
 		if (login) {
 			Notify.progress("Adding user...");
 
-			xhr.post("backend.php", {op: "pref-users", method: "add", login: login}, (reply) => {
+			xhr.post("backend.php", {op: "Pref_Users", method: "add", login: login}, (reply) => {
 				Users.reload().then(() => {
 					Notify.info(reply);
 				})
@@ -30,7 +30,7 @@ const	Users = {
 		}
 	},
 	edit: function(id) {
-		xhr.json('backend.php', {op: 'pref-users', method: 'edit', id: id}, (reply) => {
+		xhr.json('backend.php', {op: 'Pref_Users', method: 'edit', id: id}, (reply) => {
 			const user = reply.user;
 			const admin_disabled = (user.id == 1);
 
@@ -53,7 +53,7 @@ const	Users = {
 					<form onsubmit='return false'>
 
 						${App.FormFields.hidden_tag('id', user.id.toString())}
-						${App.FormFields.hidden_tag('op', 'pref-users')}
+						${App.FormFields.hidden_tag('op', 'Pref_Users')}
 						${App.FormFields.hidden_tag('method', 'editSave')}
 
 						<div dojoType="dijit.layout.TabContainer" style="height : 400px">
@@ -104,7 +104,7 @@ const	Users = {
 							<div dojoType="dijit.layout.ContentPane" title="${__('User details')}">
 								<script type='dojo/method' event='onShow' args='evt'>
 									if (this.domNode.querySelector('.loading')) {
-										xhr.post("backend.php", {op: 'pref-users', method: 'userdetails', id: ${user.id}}, (reply) => {
+										xhr.post("backend.php", {op: 'Pref_Users', method: 'userdetails', id: ${user.id}}, (reply) => {
 											this.attr('content', reply);
 										});
 									}
@@ -147,7 +147,7 @@ const	Users = {
 
 			const id = rows[0];
 
-			xhr.post("backend.php", {op: "pref-users", method: "resetPass", id: id}, (reply) => {
+			xhr.post("backend.php", {op: "Pref_Users", method: "resetPass", id: id}, (reply) => {
 				Notify.close();
 				Notify.info(reply, true);
 			});
@@ -162,7 +162,7 @@ const	Users = {
 				Notify.progress("Removing selected users...");
 
 				const query = {
-					op: "pref-users", method: "remove",
+					op: "Pref_Users", method: "remove",
 					ids: sel_rows.toString()
 				};
 

@@ -104,7 +104,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 					menu.addChild(new dijit.MenuItem({
 						label: __("Open site"),
 						onClick: function() {
-							App.postOpenWindow("backend.php", {op: "feeds", method: "opensite",
+							App.postOpenWindow("backend.php", {op: "Feeds", method: "opensite",
 								feed_id: this.getParent().row_id, csrf_token: __csrf_token});
 						}}));
 
@@ -114,7 +114,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 						label: __("Debug feed"),
 						onClick: function() {
 							/* global __csrf_token */
-							App.postOpenWindow("backend.php", {op: "feeds", method: "updatedebugger",
+							App.postOpenWindow("backend.php", {op: "Feeds", method: "updatedebugger",
 								feed_id: this.getParent().row_id, csrf_token: __csrf_token});
 						}}));
 				}

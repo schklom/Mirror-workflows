@@ -55,13 +55,13 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 			return rv;
 		},
 		reload: function() {
-			xhr.post("backend.php", { op: "pref-labels" }, (reply) => {
+			xhr.post("backend.php", { op: "Pref_Labels" }, (reply) => {
 				dijit.byId('labelsTab').attr('content', reply);
 				Notify.close();
 			});
 		},
 		editLabel: function(id) {
-			xhr.json("backend.php", {op: "pref-labels", method: "edit", id: id}, (reply) => {
+			xhr.json("backend.php", {op: "Pref_Labels", method: "edit", id: id}, (reply) => {
 
 				const fg_color = reply['fg_color'];
 				const bg_color = reply['bg_color'] ? reply['bg_color'] : '#fff7d5';
@@ -91,7 +91,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 						}
 
 						const query = {
-							op: "pref-labels", method: "colorset", kind: kind,
+							op: "Pref_Labels", method: "colorset", kind: kind,
 							ids: id, fg: fg, bg: bg, color: color
 						};
 
@@ -131,7 +131,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 						</section>
 
 						${App.FormFields.hidden_tag('id', id)}
-						${App.FormFields.hidden_tag('op', 'pref-labels')}
+						${App.FormFields.hidden_tag('op', 'Pref_Labels')}
 						${App.FormFields.hidden_tag('method', 'save')}
 
 						${App.FormFields.hidden_tag('fg_color', fg_color, {}, 'labelEdit_fgColor')}
@@ -189,7 +189,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 				if (confirm(__("Reset selected labels to default colors?"))) {
 
 					const query = {
-						op: "pref-labels", method: "colorreset",
+						op: "Pref_Labels", method: "colorreset",
 						ids: labels.toString()
 					};
 
@@ -210,7 +210,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 					Notify.progress("Removing selected labels...");
 
 					const query = {
-						op: "pref-labels", method: "remove",
+						op: "Pref_Labels", method: "remove",
 						ids: sel_rows.toString()
 					};
 

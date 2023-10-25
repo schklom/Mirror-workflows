@@ -28,7 +28,7 @@ const	CommonDialogs = {
 		},
 		subscribeToFeed: function() {
 			xhr.json("backend.php",
-					{op: "feeds", method: "subscribeToFeed"},
+					{op: "Feeds", method: "subscribeToFeed"},
 					(reply) => {
 						const dialog = new fox.SingleUseDialog({
 							title: __("Subscribe to feed"),
@@ -215,7 +215,7 @@ const	CommonDialogs = {
 		},
 		showFeedsWithErrors: function() {
 
-			xhr.json("backend.php", {op: "pref-feeds", method: "feedsWithErrors"}, (reply) => {
+			xhr.json("backend.php", {op: "Pref_Feeds", method: "feedsWithErrors"}, (reply) => {
 
 				const dialog = new fox.SingleUseDialog({
 					id: "errorFeedsDlg",
@@ -231,7 +231,7 @@ const	CommonDialogs = {
 								Notify.progress("Removing selected feeds...", true);
 
 								const query = {
-									op: "pref-feeds", method: "remove",
+									op: "Pref_Feeds", method: "remove",
 									ids: sel_rows.toString()
 								};
 
@@ -305,7 +305,7 @@ const	CommonDialogs = {
 
 			if (caption != undefined && caption.trim().length > 0) {
 
-				const query = {op: "pref-labels", method: "add", caption: caption.trim()};
+				const query = {op: "Pref_Labels", method: "add", caption: caption.trim()};
 
 				Notify.progress("Loading, please wait...", true);
 
@@ -325,7 +325,7 @@ const	CommonDialogs = {
 			if (typeof title == "undefined" || confirm(msg)) {
 				Notify.progress("Removing feed...");
 
-				const query = {op: "pref-feeds", quiet: 1, method: "remove", ids: feed_id};
+				const query = {op: "Pref_Feeds", quiet: 1, method: "remove", ids: feed_id};
 
 				xhr.post("backend.php", query, () => {
 					if (App.isPrefs()) {
@@ -348,7 +348,7 @@ const	CommonDialogs = {
 			if (feed_id <= 0)
 				return alert(__("You can't edit this kind of feed."));
 
-			const query = {op: "pref-feeds", method: "editfeed", id: feed_id};
+			const query = {op: "Pref_Feeds", method: "editfeed", id: feed_id};
 
 			console.log("editFeed", query);
 
@@ -378,7 +378,7 @@ const	CommonDialogs = {
 						const fd = new FormData();
 						fd.append('icon_file', icon_file)
 						fd.append('feed_id', feed_id);
-						fd.append('op', 'pref-feeds');
+						fd.append('op', 'Pref_Feeds');
 						fd.append('method', 'uploadIcon');
 						fd.append('csrf_token', App.getInitParam("csrf_token"));
 
@@ -427,7 +427,7 @@ const	CommonDialogs = {
 					if (confirm(__("Remove stored feed icon?"))) {
 						Notify.progress("Removing feed icon...", true);
 
-						xhr.post("backend.php", {op: "pref-feeds", method: "removeicon", feed_id: id}, () => {
+						xhr.post("backend.php", {op: "Pref_Feeds", method: "removeicon", feed_id: id}, () => {
 							Notify.info("Feed icon removed.");
 
 							if (App.isPrefs())
@@ -470,7 +470,7 @@ const	CommonDialogs = {
 			const tmph = dojo.connect(dialog, 'onShow', function () {
 				dojo.disconnect(tmph);
 
-				xhr.json("backend.php", {op: "pref-feeds", method: "editfeed", id: feed_id}, (reply) => {
+				xhr.json("backend.php", {op: "Pref_Feeds", method: "editfeed", id: feed_id}, (reply) => {
 					const feed = reply.feed;
 					const is_readonly = reply.user.access_level == App.UserAccessLevels.ACCESS_LEVEL_READONLY;
 
@@ -493,7 +493,7 @@ const	CommonDialogs = {
 							<div dojoType="dijit.layout.ContentPane" title="${__('General')}">
 
 								${App.FormFields.hidden_tag("id", feed_id)}
-								${App.FormFields.hidden_tag("op", "pref-feeds")}
+								${App.FormFields.hidden_tag("op", "Pref_Feeds")}
 								${App.FormFields.hidden_tag("method", "editSave")}
 
 								<section>
@@ -621,7 +621,7 @@ const	CommonDialogs = {
 
 			Notify.progress("Loading, please wait...", true);
 
-			xhr.json("backend.php", {op: "pref-feeds", method: "getsharedurl", id: feed, is_cat: is_cat, search: search}, (reply) => {
+			xhr.json("backend.php", {op: "Pref_Feeds", method: "getsharedurl", id: feed, is_cat: is_cat, search: search}, (reply) => {
 				try {
 					const dialog = new fox.SingleUseDialog({
 						title: __("Show as feed"),
@@ -630,7 +630,7 @@ const	CommonDialogs = {
 
 								Notify.progress("Trying to change address...", true);
 
-								const query = {op: "pref-feeds", method: "regenFeedKey", id: feed, is_cat: is_cat};
+								const query = {op: "Pref_Feeds", method: "regenFeedKey", id: feed, is_cat: is_cat};
 
 								xhr.json("backend.php", query, (reply) => {
 									const new_link = reply.link;

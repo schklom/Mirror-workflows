@@ -123,7 +123,7 @@ const Article = {
 		Article.setActive(0);
 	},
 	displayUrl: function (id) {
-		const query = {op: "article", method: "getmetadatabyid", id: id};
+		const query = {op: "Article", method: "getmetadatabyid", id: id};
 
 		xhr.json("backend.php", query, (reply) => {
 			if (reply && reply.link) {
@@ -136,7 +136,7 @@ const Article = {
 	openInNewWindow: function (id) {
 		/* global __csrf_token */
 		App.postOpenWindow("backend.php",
-			{ "op": "article", "method": "redirect", "id": id, "csrf_token": __csrf_token });
+			{ "op": "Article", "method": "redirect", "id": id, "csrf_token": __csrf_token });
 
 		Headlines.toggleUnread(id, 0);
 	},
@@ -395,7 +395,7 @@ const Article = {
 		const tmph = dojo.connect(dialog, 'onShow', function () {
 			dojo.disconnect(tmph);
 
-			xhr.json("backend.php", {op: "article", method: "printArticleTags", id: id}, (reply) => {
+			xhr.json("backend.php", {op: "Article", method: "printArticleTags", id: id}, (reply) => {
 
 				dijit.getEnclosingWidget(App.byId("tags_str"))
 					.attr('value', reply.tags.join(", "))
@@ -404,7 +404,7 @@ const Article = {
 				App.byId('tags_str').onkeyup = (e) => {
 					const last_tag = e.target.value.split(',').pop().trim();
 
-					xhr.json("backend.php", {op: 'article', method: 'completeTags', search: last_tag}, (data) => {
+					xhr.json("backend.php", {op: 'Article', method: 'completeTags', search: last_tag}, (data) => {
 						App.byId("tags_choices").innerHTML = `${data.map((tag) =>
 							`<a href="#" onclick="Article.autocompleteInject(this, 'tags_str')">${tag}</a>` )
 								.join(', ')}`

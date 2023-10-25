@@ -8,7 +8,7 @@ define(["dojo/_base/declare", "dojo/data/ItemFileWriteStore"], function (declare
 
 			dojo.xhrPost({
 				url: "backend.php",
-				content: {op: "pref-feeds", method: "savefeedorder",
+				content: {op: "Pref_Feeds", method: "savefeedorder",
 					payload: newFileContentString},
 				error: saveFailedCallback,
 				load: saveCompleteCallback});

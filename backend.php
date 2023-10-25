@@ -112,7 +112,7 @@
 		$op = "pluginhandler";
 	} */
 
-	$op = str_replace("-", "_", $op);
+	// $op = str_replace(, "_", $op);
 
 	$override = PluginHost::getInstance()->lookup_handler($op, $method);
 

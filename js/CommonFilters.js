@@ -115,7 +115,7 @@ const	Filters = {
 			insertRule: function(parentNode, replaceNode) {
 				const rule = dojo.formToJson("filter_new_rule_form");
 
-				xhr.post("backend.php", {op: "pref-filters", method: "printrulename", rule: rule}, (reply) => {
+				xhr.post("backend.php", {op: "Pref_Filters", method: "printrulename", rule: rule}, (reply) => {
 					try {
 						const li = document.createElement('li');
 						li.addClassName("rule");
@@ -147,7 +147,7 @@ const	Filters = {
 
 				const action = dojo.formToJson(form);
 
-				xhr.post("backend.php", { op: "pref-filters", method: "printactionname", action: action }, (reply) => {
+				xhr.post("backend.php", { op: "Pref_Filters", method: "printactionname", action: action }, (reply) => {
 					try {
 						const li = document.createElement('li');
 						li.addClassName("action");
@@ -200,7 +200,7 @@ const	Filters = {
 
 					console.log(rule, dialog.filter_info);
 
-					xhr.json("backend.php", {op: "pref-filters", method: "editrule", ids: rule.feed_id.join(",")}, function (editrule) {
+					xhr.json("backend.php", {op: "Pref_Filters", method: "editrule", ids: rule.feed_id.join(",")}, function (editrule) {
 						edit_rule_dialog.attr('content',
 							`
 							<form name="filter_new_rule_form" id="filter_new_rule_form" onsubmit="return false">
@@ -326,7 +326,7 @@ const	Filters = {
 
 					dijit.byId("filterDlg_actionSelect").attr('value', action.action_id);
 
-					/*xhr.post("backend.php", {op: 'pref-filters', method: 'newaction', action: actionStr}, (reply) => {
+					/*xhr.post("backend.php", {op: 'Pref_Filters', method: 'newaction', action: actionStr}, (reply) => {
 						edit_action_dialog.attr('content', reply);
 
 						setTimeout(() => {
@@ -365,7 +365,7 @@ const	Filters = {
 
 					Notify.progress("Removing filter...");
 
-					const query = {op: "pref-filters", method: "remove", ids: this.attr('value').id};
+					const query = {op: "Pref_Filters", method: "remove", ids: this.attr('value').id};
 
 					xhr.post("backend.php", query, () => {
 						const tree = dijit.byId("filterTree");
@@ -411,7 +411,7 @@ const	Filters = {
 		const tmph = dojo.connect(dialog, 'onShow', function () {
 			dojo.disconnect(tmph);
 
-			xhr.json("backend.php", {op: "pref-filters", method: "edit", id: filter_id}, function (filter) {
+			xhr.json("backend.php", {op: "Pref_Filters", method: "edit", id: filter_id}, function (filter) {
 
 				dialog.filter_info = filter;
 
@@ -425,7 +425,7 @@ const	Filters = {
 				`
 					<form onsubmit='return false'>
 
-						${App.FormFields.hidden_tag("op", "pref-filters")}
+						${App.FormFields.hidden_tag("op", "Pref_Filters")}
 						${App.FormFields.hidden_tag("id", filter_id)}
 						${App.FormFields.hidden_tag("method", filter_id ? "editSave" : "add")}
 						${App.FormFields.hidden_tag("csrf_token", App.getInitParam('csrf_token'))}
@@ -541,7 +541,7 @@ const	Filters = {
 
 						dialog.editRule(null, dojo.toJson(rule));
 					} else {
-						const query = {op: "article", method: "getmetadatabyid", id: Article.getActive()};
+						const query = {op: "Article", method: "getmetadatabyid", id: Article.getActive()};
 
 						xhr.json("backend.php", query, (reply) => {
 							let title;

@@ -696,7 +696,7 @@ class Pref_Filters extends Handler_Protected {
 			</div>
 			<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='center'>
 				<div dojoType="fox.PrefFilterStore" jsId="filterStore"
-					url="backend.php?op=pref-filters&method=getfiltertree">
+					url="backend.php?op=Pref_Filters&method=getfiltertree">
 				</div>
 				<div dojoType="lib.CheckBoxStoreModel" jsId="filterModel" store="filterStore"
 					query="{id:'root'}" rootId="root" rootLabel="Filters"

@@ -199,7 +199,7 @@ class Pref_Labels extends Handler_Protected {
 
 			<div style='padding : 0px' dojoType='dijit.layout.ContentPane' region='center'>
 				<div dojoType='dojo.data.ItemFileWriteStore' jsId='labelStore'
-					url='backend.php?op=pref-labels&method=getlabeltree'>
+					url='backend.php?op=Pref_Labels&method=getlabeltree'>
 				</div>
 
 				<div dojoType='lib.CheckBoxStoreModel' jsId='labelModel' store='labelStore'

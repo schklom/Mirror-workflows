@@ -153,7 +153,7 @@ const App = {
       return dijit.getEnclosingWidget(elem.closest('.dijitDialog'));
    },
    getPhArgs(plugin, method, args = {}) {
-      return {...{op: "pluginhandler", plugin: plugin, method: method}, ...args};
+      return {...{op: "PluginHandler", plugin: plugin, method: method}, ...args};
    },
    label_to_feed_id: function(label) {
       return this.LABEL_BASE_INDEX - 1 - Math.abs(label);
@@ -291,7 +291,7 @@ const App = {
 	setCombinedMode: function(combined) {
 		const value = combined ? "true" : "false";
 
-		xhr.post("backend.php", {op: "rpc", method: "setpref", key: "COMBINED_DISPLAY_MODE", value: value}, () => {
+		xhr.post("backend.php", {op: "RPC", method: "setpref", key: "COMBINED_DISPLAY_MODE", value: value}, () => {
 			this.setInitParam("combined_display_mode",
 				!this.getInitParam("combined_display_mode"));
 
@@ -306,7 +306,7 @@ const App = {
 		if (App.isCombinedMode()) {
 			const value = expand ? "true" : "false";
 
-			xhr.post("backend.php", {op: "rpc", method: "setpref", key: "CDM_EXPANDED", value: value}, () => {
+			xhr.post("backend.php", {op: "RPC", method: "setpref", key: "CDM_EXPANDED", value: value}, () => {
 				this.setInitParam("cdm_expanded", !this.getInitParam("cdm_expanded"));
 				Headlines.renderAgain();
 			});
@@ -440,7 +440,7 @@ const App = {
       }
    },
    hotkeyHelp: function() {
-      xhr.post("backend.php", {op: "rpc", method: "hotkeyHelp"}, (reply) => {
+      xhr.post("backend.php", {op: "RPC", method: "hotkeyHelp"}, (reply) => {
          const dialog = new fox.SingleUseDialog({
             title: __("Keyboard shortcuts"),
             content: reply,
@@ -621,7 +621,7 @@ const App = {
 
 			try {
 				xhr.post("backend.php",
-					{op: "rpc", method: "log",
+					{op: "RPC", method: "log",
 						file: params.filename ? params.filename : error.fileName,
 						line: params.lineno ? params.lineno : error.lineNumber,
 						msg: message,
@@ -703,7 +703,7 @@ const App = {
          this.initHotkeyActions();
 
          const params = {
-            op: "rpc",
+            op: "RPC",
             method: "sanityCheck",
             clientTzOffset: new Date().getTimezoneOffset() * 60,
             hasSandbox: "sandbox" in document.createElement("iframe"),
@@ -737,7 +737,7 @@ const App = {
       return errorMsg == "";
    },
    updateRuntimeInfo: function() {
-      xhr.json("backend.php", {op: "rpc", method: "getruntimeinfo"}, () => {
+      xhr.json("backend.php", {op: "RPC", method: "getruntimeinfo"}, () => {
          // handled by xhr.json()
       });
    },
@@ -858,7 +858,7 @@ const App = {
    checkForUpdates: function() {
       console.log('checking for updates...');
 
-      xhr.json("backend.php", {op: 'rpc', method: 'checkforupdates'})
+      xhr.json("backend.php", {op: 'RPC', method: 'checkforupdates'})
          .then((reply) => {
             console.log('update reply', reply);
 
@@ -965,7 +965,7 @@ const App = {
 
       if (article_id) Article.view(article_id);
 
-      xhr.post("backend.php", {op: "rpc", method: "setWidescreen", wide: wide ? 1 : 0});
+      xhr.post("backend.php", {op: "RPC", method: "setWidescreen", wide: wide ? 1 : 0});
    },
    initHotkeyActions: function() {
       if (this.is_prefs) {
@@ -1149,7 +1149,7 @@ const App = {
             if (!Feeds.activeIsCat() && parseInt(Feeds.getActive()) > 0) {
 
                /* global __csrf_token */
-               App.postOpenWindow("backend.php", {op: "feeds", method: "updatedebugger",
+               App.postOpenWindow("backend.php", {op: "Feeds", method: "updatedebugger",
                   feed_id: Feeds.getActive(), csrf_token: __csrf_token});
 
             } else {
@@ -1158,7 +1158,7 @@ const App = {
          };
 
          this.hotkey_actions["feed_debug_viewfeed"] = () => {
-            App.postOpenWindow("backend.php", {op: "feeds", method: "view",
+            App.postOpenWindow("backend.php", {op: "Feeds", method: "view",
                feed: Feeds.getActive(), timestamps: 1, debug: 1, cat: Feeds.activeIsCat(), csrf_token: __csrf_token});
          };
 
@@ -1177,13 +1177,13 @@ const App = {
             Headlines.reverse();
          };
          this.hotkey_actions["feed_toggle_grid"] = () => {
-            xhr.json("backend.php", {op: "rpc", method: "togglepref", key: "CDM_ENABLE_GRID"}, (reply) => {
+            xhr.json("backend.php", {op: "RPC", method: "togglepref", key: "CDM_ENABLE_GRID"}, (reply) => {
                App.setInitParam("cdm_enable_grid", reply.value);
                Headlines.renderAgain();
             })
          };
          this.hotkey_actions["feed_toggle_vgroup"] = () => {
-            xhr.post("backend.php", {op: "rpc", method: "togglepref", key: "VFEED_GROUP_BY_FEED"}, () => {
+            xhr.post("backend.php", {op: "RPC", method: "togglepref", key: "VFEED_GROUP_BY_FEED"}, () => {
                Feeds.reloadCurrent();
             })
          };
@@ -1274,7 +1274,7 @@ const App = {
             CommonDialogs.subscribeToFeed();
             break;
          case "qmcDigest":
-            window.location.href = "backend.php?op=digest";
+            window.location.href = "backend.php?op=Digest";
             break;
          case "qmcEditFeed":
             if (Feeds.activeIsCat())

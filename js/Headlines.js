@@ -160,26 +160,26 @@ const Headlines = {
 
 		if (ops.tmark.length != 0)
 			promises.push(xhr.post("backend.php",
-				{op: "rpc", method: "markSelected", "ids[]": ops.tmark, cmode: 2}));
+				{op: "RPC", method: "markSelected", "ids[]": ops.tmark, cmode: 2}));
 
 		if (ops.tpub.length != 0)
 			promises.push(xhr.post("backend.php",
-				{op: "rpc", method: "publishSelected", "ids[]": ops.tpub, cmode: 2}));
+				{op: "RPC", method: "publishSelected", "ids[]": ops.tpub, cmode: 2}));
 
 		if (ops.read.length != 0)
 			promises.push(xhr.post("backend.php",
-				{op: "rpc", method: "catchupSelected", "ids[]": ops.read, cmode: 0}));
+				{op: "RPC", method: "catchupSelected", "ids[]": ops.read, cmode: 0}));
 
 		if (ops.unread.length != 0)
 			promises.push(xhr.post("backend.php",
-				{op: "rpc", method: "catchupSelected", "ids[]": ops.unread, cmode: 1}));
+				{op: "RPC", method: "catchupSelected", "ids[]": ops.unread, cmode: 1}));
 
 		const scores = Object.keys(ops.rescore);
 
 		if (scores.length != 0) {
 			scores.forEach((score) => {
 				promises.push(xhr.post("backend.php",
-					{op: "article", method: "setScore", "ids[]": ops.rescore[score], score: score}));
+					{op: "Article", method: "setScore", "ids[]": ops.rescore[score], score: score}));
 			});
 		}
 
@@ -1132,7 +1132,7 @@ const Headlines = {
 		}
 
 		const query = {
-			op: "article", method: "removeFromLabel",
+			op: "Article", method: "removeFromLabel",
 			ids: ids.toString(), lid: id
 		};
 
@@ -1149,7 +1149,7 @@ const Headlines = {
 		}
 
 		const query = {
-			op: "article", method: "assignToLabel",
+			op: "Article", method: "assignToLabel",
 			ids: ids.toString(), lid: id
 		};
 
@@ -1181,7 +1181,7 @@ const Headlines = {
 			return;
 		}
 
-		const query = {op: "rpc", method: "delete", ids: rows.toString()};
+		const query = {op: "RPC", method: "delete", ids: rows.toString()};
 
 		xhr.json("backend.php", query, () => {
 			Feeds.reloadCurrent();
@@ -1586,7 +1586,7 @@ const Headlines = {
 			menu.addChild(new dijit.MenuItem({
 				label: __("Open site"),
 				onClick: function() {
-					App.postOpenWindow("backend.php", {op: "feeds", method: "opensite",
+					App.postOpenWindow("backend.php", {op: "Feeds", method: "opensite",
 						feed_id: this.getParent().currentTarget.getAttribute("data-feed-id"), csrf_token: __csrf_token});
 				}}));
 
@@ -1596,7 +1596,7 @@ const Headlines = {
 				label: __("Debug feed"),
 				onClick: function() {
 					/* global __csrf_token */
-					App.postOpenWindow("backend.php", {op: "feeds", method: "updatedebugger",
+					App.postOpenWindow("backend.php", {op: "Feeds", method: "updatedebugger",
 						feed_id: this.getParent().currentTarget.getAttribute("data-feed-id"), csrf_token: __csrf_token});
 				}}));
 

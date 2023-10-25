@@ -285,7 +285,7 @@ class Pref_Prefs extends Handler_Protected {
 		?>
 		<form dojoType='dijit.form.Form'>
 
-			<?= \Controls\hidden_tag("op", "pref-prefs") ?>
+			<?= \Controls\hidden_tag("op", "Pref_Prefs") ?>
 			<?= \Controls\hidden_tag("method", "changePersonalData") ?>
 
 			<script type="dojo/method" event="onSubmit" args="evt">
@@ -334,7 +334,7 @@ class Pref_Prefs extends Handler_Protected {
 
 			<form dojoType='dijit.form.Form'>
 
-				<?= \Controls\hidden_tag("op", "pref-prefs") ?>
+				<?= \Controls\hidden_tag("op", "Pref_Prefs") ?>
 				<?= \Controls\hidden_tag("method", "changepassword") ?>
 
 				<!-- TODO: return JSON the backend call -->
@@ -426,7 +426,7 @@ class Pref_Prefs extends Handler_Protected {
 				?>
 
 				<form dojoType='dijit.form.Form'>
-					<?= \Controls\hidden_tag("op", "pref-prefs") ?>
+					<?= \Controls\hidden_tag("op", "Pref_Prefs") ?>
 					<?= \Controls\hidden_tag("method", "otpdisable") ?>
 
 					<!-- TODO: return JSON from the backend call -->
@@ -473,7 +473,7 @@ class Pref_Prefs extends Handler_Protected {
 
 				<form dojoType='dijit.form.Form'>
 
-					<?= \Controls\hidden_tag("op", "pref-prefs") ?>
+					<?= \Controls\hidden_tag("op", "Pref_Prefs") ?>
 					<?= \Controls\hidden_tag("method", "otpenable") ?>
 
 					<fieldset>
@@ -746,7 +746,7 @@ class Pref_Prefs extends Handler_Protected {
 	private function index_prefs(): void {
 		?>
 		<form dojoType='dijit.form.Form' id='changeSettingsForm'>
-			<?= \Controls\hidden_tag("op", "pref-prefs") ?>
+			<?= \Controls\hidden_tag("op", "Pref_Prefs") ?>
 			<?= \Controls\hidden_tag("method", "saveconfig") ?>
 
 			<script type="dojo/method" event="onSubmit" args="evt, quit">
@@ -836,7 +836,7 @@ class Pref_Prefs extends Handler_Protected {
 		?>
 		<form dojoType="dijit.form.Form" id="changePluginsForm">
 
-			<?= \Controls\hidden_tag("op", "pref-prefs") ?>
+			<?= \Controls\hidden_tag("op", "Pref_Prefs") ?>
 			<?= \Controls\hidden_tag("method", "setplugins") ?>
 
 			<div dojoType="dijit.layout.BorderContainer" gutters="false">
@@ -936,7 +936,7 @@ class Pref_Prefs extends Handler_Protected {
 					<script type='dojo/method' event='onSelected' args='evt'>
 						if (this.domNode.querySelector('.loading'))
 							window.setTimeout(() => {
-								xhr.post("backend.php", {op: 'pref-prefs', method: 'index_auth'}, (reply) => {
+								xhr.post("backend.php", {op: 'Pref_Prefs', method: 'index_auth'}, (reply) => {
 									this.attr('content', reply);
 								});
 							}, 100);

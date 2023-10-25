@@ -41,4 +41,5 @@ return array(
     'Doctrine\\Instantiator\\' => array($vendorDir . '/doctrine/instantiator/src/Doctrine/Instantiator'),
     'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
     'Assert\\' => array($vendorDir . '/beberlei/assert/lib/Assert'),
+    '' => array($baseDir . '/classes'),
 );

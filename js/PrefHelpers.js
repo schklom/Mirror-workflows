@@ -19,7 +19,7 @@ const	Helpers = {
 				alert("No passwords selected.");
 			} else if (confirm(__("Remove selected app passwords?"))) {
 
-				xhr.post("backend.php", {op: "pref-prefs", method: "deleteAppPasswords", "ids[]": rows}, (reply) => {
+				xhr.post("backend.php", {op: "Pref_Prefs", method: "deleteAppPasswords", "ids[]": rows}, (reply) => {
 					this.updateContent(reply);
 					Notify.close();
 				});
@@ -31,7 +31,7 @@ const	Helpers = {
 			const title = prompt("Password description:")
 
 			if (title) {
-				xhr.post("backend.php", {op: "pref-prefs", method: "generateAppPassword", title: title}, (reply) => {
+				xhr.post("backend.php", {op: "Pref_Prefs", method: "generateAppPassword", title: title}, (reply) => {
 					this.updateContent(reply);
 					Notify.close();
 				});
@@ -45,7 +45,7 @@ const	Helpers = {
 			if (confirm(__("This will invalidate all previously generated feed URLs. Continue?"))) {
 				Notify.progress("Clearing URLs...");
 
-				xhr.post("backend.php", {op: "pref-feeds", method: "clearKeys"}, () => {
+				xhr.post("backend.php", {op: "Pref_Feeds", method: "clearKeys"}, () => {
 					Notify.info("Generated URLs cleared.");
 				});
 			}
@@ -71,7 +71,7 @@ const	Helpers = {
 			const tmph = dojo.connect(dialog, 'onShow', function () {
 				dojo.disconnect(tmph);
 
-				xhr.json("backend.php", {op: "pref-prefs", method: "previewDigest"}, (reply) => {
+				xhr.json("backend.php", {op: "Pref_Prefs", method: "previewDigest"}, (reply) => {
 					dialog.domNode.querySelector('.digest-preview').innerHTML = reply[0];
 				});
 			});
@@ -91,7 +91,7 @@ const	Helpers = {
 		},
 		update: function() {
 			xhr.post("backend.php", {
-						op: "pref-system",
+						op: "Pref_System",
 						severity: dijit.byId("severity").attr('value'),
 						page: Helpers.EventLog.log_page
 					}, (reply) => {
@@ -114,7 +114,7 @@ const	Helpers = {
 
 				Notify.progress("Loading, please wait...");
 
-				xhr.post("backend.php", {op: "pref-system", method: "clearLog"}, () => {
+				xhr.post("backend.php", {op: "Pref_System", method: "clearLog"}, () => {
 					Helpers.EventLog.refresh();
 				});
 			}
@@ -135,7 +135,7 @@ const	Helpers = {
 						const new_title = prompt(__("Name for cloned profile:"));
 
 						if (new_title) {
-							xhr.post("backend.php", {op: "pref-prefs", method: "cloneprofile", "new_title": new_title, "old_profile": sel_rows[0]}, () => {
+							xhr.post("backend.php", {op: "Pref_Prefs", method: "cloneprofile", "new_title": new_title, "old_profile": sel_rows[0]}, () => {
 								Notify.close();
 								dialog.refresh();
 							});
@@ -153,7 +153,7 @@ const	Helpers = {
 						if (confirm(__("Remove selected profiles? Active and default profiles will not be removed."))) {
 							Notify.progress("Removing selected profiles...", true);
 
-							xhr.post("backend.php", {op: "pref-prefs", method: "remprofiles", "ids[]": sel_rows}, () => {
+							xhr.post("backend.php", {op: "Pref_Prefs", method: "remprofiles", "ids[]": sel_rows}, () => {
 								Notify.close();
 								dialog.refresh();
 							});
@@ -167,7 +167,7 @@ const	Helpers = {
 					if (this.validate()) {
 						Notify.progress("Creating profile...", true);
 
-						const query = {op: "pref-prefs", method: "addprofile", title: dialog.attr('value').newprofile};
+						const query = {op: "Pref_Prefs", method: "addprofile", title: dialog.attr('value').newprofile};
 
 						xhr.post("backend.php", query, () => {
 							Notify.close();
@@ -177,7 +177,7 @@ const	Helpers = {
 					}
 				},
 				refresh: function() {
-					xhr.json("backend.php", {op: 'pref-prefs', method: 'getprofiles'}, (reply) => {
+					xhr.json("backend.php", {op: 'Pref_Prefs', method: 'getprofiles'}, (reply) => {
 						dialog.attr('content', `
 							<div dojoType='fox.Toolbar'>
 								<div dojoType='fox.form.DropDownButton'>
@@ -210,7 +210,7 @@ const	Helpers = {
 															profile-id='${profile.id}'>${profile.title}
 																<script type='dojo/method' event='onChange' args='value'>
 																	xhr.post("backend.php",
-																		{op: 'pref-prefs', method: 'saveprofile', value: value, id: this.attr('profile-id')}, () => {
+																		{op: 'Pref_Prefs', method: 'saveprofile', value: value, id: this.attr('profile-id')}, () => {
 																			//
 																		});
 																</script>
@@ -242,7 +242,7 @@ const	Helpers = {
 						if (confirm(__("Activate selected profile?"))) {
 							Notify.progress("Loading, please wait...");
 
-							xhr.post("backend.php", {op: "pref-prefs", method: "activateprofile", id: sel_rows.toString()}, () => {
+							xhr.post("backend.php", {op: "Pref_Prefs", method: "activateprofile", id: sel_rows.toString()}, () => {
 								window.location.reload();
 							});
 						}
@@ -312,7 +312,7 @@ const	Helpers = {
 			const tmph = dojo.connect(dialog, 'onShow', function () {
 				dojo.disconnect(tmph);
 
-				xhr.json("backend.php", {op: "pref-prefs", method: "customizeCSS"}, (reply) => {
+				xhr.json("backend.php", {op: "Pref_Prefs", method: "customizeCSS"}, (reply) => {
 
 					const editor = dijit.getEnclosingWidget(dialog.domNode.querySelector(".user-css-editor"));
 
@@ -327,14 +327,14 @@ const	Helpers = {
 		},
 		confirmReset: function() {
 			if (confirm(__("Reset to defaults?"))) {
-				xhr.post("backend.php", {op: "pref-prefs", method: "resetconfig"}, (reply) => {
+				xhr.post("backend.php", {op: "Pref_Prefs", method: "resetconfig"}, (reply) => {
 					Helpers.Prefs.refresh();
 					Notify.info(reply);
 				});
 			}
 		},
 		refresh: function() {
-			xhr.post("backend.php", { op: "pref-prefs" }, (reply) => {
+			xhr.post("backend.php", { op: "Pref_Prefs" }, (reply) => {
 				dijit.byId('prefsTab').attr('content', reply);
 				Notify.close();
 			});
@@ -360,7 +360,7 @@ const	Helpers = {
 			this.render_contents();
 		},
 		reload: function() {
-			xhr.json("backend.php", {op: "pref-prefs", method: "getPluginsList"}, (reply) => {
+			xhr.json("backend.php", {op: "Pref_Prefs", method: "getPluginsList"}, (reply) => {
 				this._list_of_plugins = reply;
 				this.render_contents();
 			}, (e) => {
@@ -444,7 +444,7 @@ const	Helpers = {
 			if (confirm(__("Clear stored data for %s?").replace("%s", name))) {
 				Notify.progress("Loading, please wait...");
 
-				xhr.post("backend.php", {op: "pref-prefs", method: "clearPluginData", name: name}, () => {
+				xhr.post("backend.php", {op: "Pref_Prefs", method: "clearPluginData", name: name}, () => {
 					Helpers.Prefs.refresh();
 				});
 			}
@@ -455,7 +455,7 @@ const	Helpers = {
 			if (confirm(msg)) {
 				Notify.progress("Loading, please wait...");
 
-				xhr.json("backend.php", {op: "pref-prefs", method: "uninstallPlugin", plugin: plugin}, (reply) => {
+				xhr.json("backend.php", {op: "Pref_Prefs", method: "uninstallPlugin", plugin: plugin}, (reply) => {
 					if (reply && reply.status == 1)
 						Helpers.Plugins.reload();
 					else {
@@ -504,7 +504,7 @@ const	Helpers = {
 
 						const container = install_dialog.domNode.querySelector(".contents");
 
-						xhr.json("backend.php", {op: "pref-prefs", method: "installPlugin", plugin: plugin}, (reply) => {
+						xhr.json("backend.php", {op: "Pref_Prefs", method: "installPlugin", plugin: plugin}, (reply) => {
 							if (!reply) {
 								container.innerHTML = `<li class='text-center text-error'>${__("Operation failed: check event log.")}</li>`;
 							} else {
@@ -603,7 +603,7 @@ const	Helpers = {
 					const container = dialog.domNode.querySelector(".contents");
 					container.innerHTML = `<li class='text-center'>${__("Looking for plugins...")}</li>`;
 
-					xhr.json("backend.php", {op: "pref-prefs", method: "getAvailablePlugins"}, (reply) => {
+					xhr.json("backend.php", {op: "Pref_Prefs", method: "getAvailablePlugins"}, (reply) => {
 						dialog.entries = reply;
 						dialog.render_contents();
 					});
@@ -656,7 +656,7 @@ const	Helpers = {
 					container.innerHTML = `<li class='text-center'>${__("Updating, please wait...")}</li>`;
 					let enable_update_btn = false;
 
-					xhr.json("backend.php", {op: "pref-prefs", method: "updateLocalPlugins", plugins: dialog.plugins_to_update.join(",")}, (reply) => {
+					xhr.json("backend.php", {op: "Pref_Prefs", method: "updateLocalPlugins", plugins: dialog.plugins_to_update.join(",")}, (reply) => {
 
 						if (!reply) {
 							container.innerHTML = `<li class='text-center text-error'>${__("Operation failed: check event log.")}</li>`;
@@ -717,7 +717,7 @@ const	Helpers = {
 
 					//container.innerHTML = `<li class='text-center'>${__("Checking: %s...").replace("%s", name)}</li>`;
 
-					xhr.json("backend.php", {op: "pref-prefs", method: "checkForPluginUpdates", name: name}, (reply) => {
+					xhr.json("backend.php", {op: "Pref_Prefs", method: "checkForPluginUpdates", name: name}, (reply) => {
 
 						if (!reply) {
 							container.innerHTML += `<li class='text-error'>${__("%s: Operation failed: check event log.").replace("%s", name)}</li>`;
@@ -834,7 +834,7 @@ const	Helpers = {
 		},
 		export: function() {
 			console.log("export");
-			window.open("backend.php?op=opml&method=export&" + dojo.formToQuery("opmlExportForm"));
+			window.open("backend.php?op=OPML&method=export&" + dojo.formToQuery("opmlExportForm"));
 		},
 	}
 };

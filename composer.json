@@ -12,6 +12,11 @@
 	      "url": "https://dev.tt-rss.org/fox/idiorm.git"
 	    }
 	  ],
+		"autoload": {
+			"psr-4": {
+				"": "classes/"
+			}
+	},
     "require": {
         "spomky-labs/otphp": "^10.0",
         "chillerlan/php-qrcode": "^4.3.3",

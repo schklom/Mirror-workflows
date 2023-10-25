@@ -643,7 +643,9 @@ class Config {
 			}
 		}
 
-		if (count($errors) > 0 && php_sapi_name() != "cli") { ?>
+		if (count($errors) > 0 && php_sapi_name() != "cli") {
+			http_response_code(503); ?>
+
 			<!DOCTYPE html>
 			<html>
 				<head>

@@ -834,5 +834,11 @@ class Handler_Public extends Handler {
 		exit;
 	}
 
+	// implicit Config::sanity_check() does the actual checking */
+	public function healthcheck() {
+		header("Content-Type: text/plain");
+		print "OK";
+	}
+
 }
 ?>

@@ -29,7 +29,7 @@
    }
 
    function pluginhandler_tags(\Plugin $plugin, string $method): string {
-      return hidden_tag("op", "pluginhandler") .
+      return hidden_tag("op", "PluginHandler") .
                hidden_tag("plugin", strtolower(get_class($plugin))) .
                hidden_tag("method", $method);
    }

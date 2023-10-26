@@ -280,7 +280,7 @@ const	Helpers = {
 						${__("You can override colors, fonts and layout of your currently selected theme with custom CSS declarations here.")}
 					</div>
 
-					${App.FormFields.hidden_tag('op', 'rpc')}
+					${App.FormFields.hidden_tag('op', 'RPC')}
 					${App.FormFields.hidden_tag('method', 'setpref')}
 					${App.FormFields.hidden_tag('key', 'USER_STYLESHEET')}
 

@@ -1061,7 +1061,7 @@ class Pref_Prefs extends Handler_Protected {
 	 * @return array<int, array{'plugin': string, 'rv': array{'stdout': false|string, 'stderr': false|string, 'git_status': int, 'need_update': bool}|null}>
 	 */
 	static function _get_updated_plugins(): array {
-		$root_dir = dirname(dirname(__DIR__)); # we're in classes/pref/
+		$root_dir = Config::get_self_dir();
 		$plugin_dirs = array_filter(glob("$root_dir/plugins.local/*"), "is_dir");
 		$rv = [];
 
@@ -1185,7 +1185,7 @@ class Pref_Prefs extends Handler_Protected {
 			$plugin_name = basename(clean($_REQUEST['plugin']));
 			$status = 0;
 
-			$plugin_dir = dirname(dirname(__DIR__)) . "/plugins.local/$plugin_name";
+			$plugin_dir = Config::get_self_dir() . "/plugins.local/$plugin_name";
 
 			if (is_dir($plugin_dir)) {
 				$status = $this->_recursive_rmdir($plugin_dir);
@@ -1199,7 +1199,7 @@ class Pref_Prefs extends Handler_Protected {
 		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN && Config::get(Config::ENABLE_PLUGIN_INSTALLER)) {
 			$plugin_name = basename(clean($_REQUEST['plugin']));
 			$all_plugins = $this->_get_available_plugins();
-			$plugin_dir = dirname(dirname(__DIR__)) . "/plugins.local";
+			$plugin_dir = Config::get_self_dir() . "/plugins.local";
 
 			$work_dir = "$plugin_dir/plugin-installer";
 
@@ -1306,7 +1306,7 @@ class Pref_Prefs extends Handler_Protected {
 	function checkForPluginUpdates(): void {
 		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN && Config::get(Config::CHECK_FOR_UPDATES) && Config::get(Config::CHECK_FOR_PLUGIN_UPDATES)) {
 			$plugin_name = $_REQUEST["name"] ?? "";
-			$root_dir = dirname(dirname(__DIR__)); # we're in classes/pref/
+			$root_dir = Config::get_self_dir();
 
 			$rv = empty($plugin_name) ? self::_get_updated_plugins() : [
 				["plugin" => $plugin_name, "rv" => self::_plugin_needs_update($root_dir, $plugin_name)],
@@ -1324,8 +1324,7 @@ class Pref_Prefs extends Handler_Protected {
 				$plugins = array_filter($plugins, 'strlen');
 			}
 
-			# we're in classes/pref/
-			$root_dir = dirname(dirname(__DIR__));
+			$root_dir = Config::get_self_dir();
 
 			$rv = [];
 

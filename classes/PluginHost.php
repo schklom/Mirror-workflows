@@ -459,10 +459,10 @@ class PluginHost {
 			$span->addEvent("$class_file: load");
 
 			// try system plugin directory first
-			$file = dirname(__DIR__) . "/plugins/$class_file/init.php";
+			$file = Config::get_self_dir() . "/plugins/$class_file/init.php";
 
 			if (!file_exists($file)) {
-				$file = dirname(__DIR__) . "/plugins.local/$class_file/init.php";
+				$file = Config::get_self_dir() . "/plugins.local/$class_file/init.php";
 
 				if (!file_exists($file)) {
 					continue;

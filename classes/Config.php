@@ -319,7 +319,7 @@ class Config {
 	 * @return array<string, mixed>|string
 	 */
 	private function _get_version(bool $as_string = true) {
-		$root_dir = dirname(__DIR__);
+		$root_dir = self::get_self_dir();
 
 		if (empty($this->version)) {
 			$this->version["status"] = -1;
@@ -413,7 +413,7 @@ class Config {
 	private function _get_migrations() : Db_Migrations {
 		if (empty($this->migrations)) {
 			$this->migrations = new Db_Migrations();
-			$this->migrations->initialize(dirname(__DIR__) . "/sql", "ttrss_version", true, self::SCHEMA_VERSION);
+			$this->migrations->initialize(self::get_self_dir() . "/sql", "ttrss_version", true, self::SCHEMA_VERSION);
 		}
 
 		return $this->migrations;
@@ -703,4 +703,9 @@ class Config {
 	static function get_user_agent(): string {
 		return sprintf(self::get(self::HTTP_USER_AGENT), self::get_version());
 	}
+
+	static function get_self_dir() : string {
+		return dirname(__DIR__); # we're in classes/Config.php
+	}
+
 }

@@ -171,11 +171,15 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments, IGetStories {
 				path: `api/story/?uid=${userId}&s=${s}`,
 				scraper: this.scraper,
 			});
-			return json.map((story) => ({
-				thumb: proxyUrl(convertToInstagramUrl(story.thumb)),
-				isVideo: story.src.includes(".mp4"),
-				video: story.src.includes(".mp4") ? proxyUrl(story.src) : undefined,
-			}));
+			return json.map((story) => {
+				const thumbUrl = convertToInstagramUrl(story.thumb);
+				return {
+					id: String(thumbUrl.split("_").at(2)),
+					thumb: proxyUrl(thumbUrl),
+					isVideo: story.src.includes(".mp4"),
+					video: story.src.includes(".mp4") ? proxyUrl(story.src) : undefined,
+				};
+			});
 		}
 
 		return [];

@@ -10,7 +10,7 @@ Plugins.Psql_Trgm = {
 		const tmph = dojo.connect(dialog, "onShow", null, function (/* e */) {
 			dojo.disconnect(tmph);
 
-			xhr.post("backend.php", {op: 'pluginhandler', plugin: 'af_psql_trgm', method: 'showrelated', id: id}, (reply) => {
+			xhr.post("backend.php", {op: 'PluginHandler', plugin: 'af_psql_trgm', method: 'showrelated', id: id}, (reply) => {
 				dialog.attr('content', reply);
 			});
 		});

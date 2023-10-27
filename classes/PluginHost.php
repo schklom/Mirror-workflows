@@ -889,7 +889,7 @@ class PluginHost {
 	}
 
 	/**
-	 * handled by classes/pluginhandler.php, requires valid session
+	 * handled by classes/PluginHandler.php, requires valid session
 	 *
 	 * @param array<int|string, mixed> $params
 	 */

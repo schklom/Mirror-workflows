@@ -750,7 +750,7 @@ class Feeds extends Handler_Protected {
 				<h1>Feed Debugger: <?= "$feed_id: " . $this->_get_title($feed_id) ?></h1>
 				<div class="content">
 					<form method="post" action="" dojoType="dijit.form.Form">
-						<?= \Controls\hidden_tag("op", "feeds") ?>
+						<?= \Controls\hidden_tag("op", "Feeds") ?>
 						<?= \Controls\hidden_tag("method", "updatedebugger") ?>
 						<?= \Controls\hidden_tag("csrf_token", $csrf_token) ?>
 						<?= \Controls\hidden_tag("action", "do_update") ?>

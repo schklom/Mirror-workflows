@@ -352,7 +352,7 @@ const Article = {
 			title: __("Article tags"),
 			content: `
 				${App.FormFields.hidden_tag("id", id.toString())}
-				${App.FormFields.hidden_tag("op", "article")}
+				${App.FormFields.hidden_tag("op", "Article")}
 				${App.FormFields.hidden_tag("method", "setArticleTags")}
 
 				<header class='horizontal'>

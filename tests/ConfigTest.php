@@ -2,7 +2,7 @@
 use PHPUnit\Framework\TestCase;
 
 final class SelfUrlPathTest extends TestCase {
-	public function test_a(): void {
+	public function test_self_url_a(): void {
 		$_SERVER = [];
 
 		$_SERVER["HTTP_X_FORWARDED_PROTO"] = "http";
@@ -16,7 +16,7 @@ final class SelfUrlPathTest extends TestCase {
 
 	}
 
-	public function test_b(): void {
+	public function test_self_url_b(): void {
 		$_SERVER = [];
 
 		$_SERVER["HTTP_X_FORWARDED_PROTO"] = "https";
@@ -29,7 +29,7 @@ final class SelfUrlPathTest extends TestCase {
 		);
 	}
 
-	public function test_c(): void {
+	public function test_self_url_c(): void {
 		$_SERVER = [];
 
 		$_SERVER["HTTP_X_FORWARDED_PROTO"] = "https";
@@ -42,7 +42,7 @@ final class SelfUrlPathTest extends TestCase {
 		);
 	}
 
-	public function test_d(): void {
+	public function test_self_url_d(): void {
 		$_SERVER = [];
 
 		$_SERVER["HTTP_X_FORWARDED_PROTO"] = "https";
@@ -55,7 +55,7 @@ final class SelfUrlPathTest extends TestCase {
 		);
 	}
 
-	public function test_e(): void {
+	public function test_self_url_e(): void {
 		$_SERVER = [];
 
 		$_SERVER["HTTP_X_FORWARDED_PROTO"] = "https";
@@ -68,7 +68,7 @@ final class SelfUrlPathTest extends TestCase {
 		);
 	}
 
-	public function test_f(): void {
+	public function test_self_url_f(): void {
 		$_SERVER = [];
 
 		$_SERVER["HTTP_HOST"] = "example.com";
@@ -80,7 +80,7 @@ final class SelfUrlPathTest extends TestCase {
 		);
 	}
 
-	public function test_g(): void {
+	public function test_self_url_g(): void {
 		$_SERVER = [];
 
 		$_SERVER["HTTP_HOST"] = "example.com";
@@ -92,7 +92,7 @@ final class SelfUrlPathTest extends TestCase {
 		);
 	}
 
-	public function test_h(): void {
+	public function test_self_url_h(): void {
 		$_SERVER = [];
 
 		$_SERVER["HTTP_HOST"] = "example.com";
@@ -101,6 +101,13 @@ final class SelfUrlPathTest extends TestCase {
 		$this->assertEquals(
 			'http://example.com/tt-rss',
 			Config::get_self_url(true)
+		);
+	}
+
+	public function test_get_self_dir(): void {
+		$this->assertEquals(
+			dirname(__DIR__), # we're in (app)/tests/
+			Config::get_self_dir()
 		);
 	}
 }

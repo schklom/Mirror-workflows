@@ -1,5 +1,5 @@
 <?php
-class Auth_Internal extends Auth_Base {
+class Auth_Internal extends Auth_Base implements IAuthModule2 {
 
 	function about() {
 		return array(null,

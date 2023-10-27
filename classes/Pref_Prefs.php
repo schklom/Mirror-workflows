@@ -174,7 +174,8 @@ class Pref_Prefs extends Handler_Protected {
 
 		$authenticator = PluginHost::getInstance()->get_plugin($_SESSION["auth_module"]);
 
-		if (method_exists($authenticator, "change_password")) {
+		if (implements_interface($authenticator, "IAuthModule2")) {
+			/** @var IAuthModule2 $authenticator */
 			print format_notice($authenticator->change_password($_SESSION["uid"], $old_pw, $new_pw));
 		} else {
 			print "ERROR: ".format_error("Function not supported by authentication module.");
@@ -325,9 +326,7 @@ class Pref_Prefs extends Handler_Protected {
 			$authenticator = false;
 		}
 
-		$otp_enabled = UserHelper::is_otp_enabled($_SESSION["uid"]);
-
-		if ($authenticator && method_exists($authenticator, "change_password")) {
+		if ($authenticator && implements_interface($authenticator, "IAuthModule2")) {
 			?>
 
 			<div style='display : none' id='pwd_change_infobox'></div>

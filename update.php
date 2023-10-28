@@ -104,6 +104,7 @@
 		"user-check-password:" => ["USER:PASSWORD", "returns 0 if user has specified PASSWORD"],
 		"user-set-password:" => ["USER:PASSWORD", "sets PASSWORD of specified USER"],
 		"user-set-access-level:" => ["USER:LEVEL", "sets access LEVEL of specified USER"],
+		"user-enable-api:" => ["USER:BOOL", "enables or disables API access of specified USER"],
 		"user-exists:" => ["USER", "returns 0 if specified USER exists in the database"],
 		"force-yes" => "assume 'yes' to all queries",
 		"help" => "",
@@ -493,6 +494,35 @@
 		Debug::log("Changing access level of user $login...");
 
 		if (UserHelper::user_modify($uid, '', UserHelper::map_access_level((int)$access_level))) {
+			Debug::log("Success.");
+		} else {
+			Debug::log("Operation failed, check the logs for more information.");
+			exit(1);
+		}
+	}
+
+	if (isset($options["user-enable-api"])) {
+		list ($login, $enable) = explode(":", $options["user-enable-api"], 2);
+
+		$uid = UserHelper::find_user_by_login($login);
+		$enable = Handler::_param_to_bool($enable);
+
+		if (!$uid) {
+			Debug::log("Error: User not found: $login");
+			exit(1);
+		}
+
+		$rc = -1;
+
+		if ($enable) {
+			Debug::log("Enabling API access for user $login...");
+			$rc = Prefs::set(Prefs::ENABLE_API_ACCESS, true, $uid, null);
+		} else {
+			Debug::log("Disabling API access for user $login...");
+			$rc = Prefs::set(Prefs::ENABLE_API_ACCESS, false, $uid, null);
+		}
+
+		if ($rc) {
 			Debug::log("Success.");
 		} else {
 			Debug::log("Operation failed, check the logs for more information.");

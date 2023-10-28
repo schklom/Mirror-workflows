@@ -343,7 +343,7 @@ class Prefs {
 			$value = Config::cast_to($value, $type_hint);
 
 			if ($value == $this->_get($pref_name, $owner_uid, $profile_id))
-				return false;
+				return true; // no need to actually set this to the same value, let's just say we did
 
 			$this->_set_cache($pref_name, $value, $owner_uid, $profile_id);
 

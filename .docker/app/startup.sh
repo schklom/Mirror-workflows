@@ -143,6 +143,12 @@ fi
 if [ ! -z "$AUTO_CREATE_USER" ]; then
 	sudo -Eu app /bin/sh -c "php82 $DST_DIR/update.php --user-exists $AUTO_CREATE_USER ||
 		php82 $DST_DIR/update.php --force-yes --user-add \"$AUTO_CREATE_USER:$AUTO_CREATE_USER_PASS:$AUTO_CREATE_USER_ACCESS_LEVEL\""
+
+	if [ ! -z "$AUTO_CREATE_USER_ENABLE_API" ]; then
+		# TODO: remove || true later
+		sudo -Eu app /bin/sh -c "php82 $DST_DIR/update.php --user-enable-api \"$AUTO_CREATE_USER:$AUTO_CREATE_USER_ENABLE_API\"" || true
+	fi
+
 fi
 
 rm -f /tmp/error.log && mkfifo /tmp/error.log && chown app:app /tmp/error.log

@@ -67,6 +67,7 @@ ENV ADMIN_USER_ACCESS_LEVEL=""
 ENV AUTO_CREATE_USER=""
 ENV AUTO_CREATE_USER_PASS=""
 ENV AUTO_CREATE_USER_ACCESS_LEVEL="0"
+ENV AUTO_CREATE_USER_ENABLE_API=""
 
 # TODO: remove prefix from container variables not used by tt-rss itself:
 #

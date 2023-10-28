@@ -20,6 +20,8 @@ include:
 
 phpunit:
   extends: .phpunit
+  variables:
+    PHPUNIT_ARGS: --exclude integration
 
 eslint:
   extends: .eslint

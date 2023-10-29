@@ -61,6 +61,18 @@ phpdoc:
         chmod 0600 ~/.ssh/id_ed25519
     - rsync -av -e 'ssh -o StrictHostKeyChecking=no' phpdoc/ ${PHPDOC_DEPLOY_HOST}:phpdoc/
 
+phpunit-integration:
+  image: ${PHP_IMAGE}
+  variables:
+    TEST_HELM_REPO: https://gitlab.tt-rss.org/tt-rss/helm-charts/tt-rss
+  extends: .integration-test
+  script:
+    - export K8S_NAMESPACE=$(kubectl get pods -o=custom-columns=NS:.metadata.namespace | tail -1)
+    - export API_URL="http://tt-rss-${CI_COMMIT_SHORT_SHA}-app.$K8S_NAMESPACE.svc.cluster.local/tt-rss/api/"
+    - php82 vendor/bin/phpunit --group integration
+  rules:
+    - if: $CI_COMMIT_BRANCH
+
 selenium:
   image: ${SELENIUM_IMAGE}
   variables:
@@ -74,16 +86,6 @@ selenium:
     - if: $CI_COMMIT_BRANCH
   needs:
     - job: phpunit-integration
-
-phpunit-integration:
-  image: ${PHP_IMAGE}
-  extends: selenium
-  script:
-    - export K8S_NAMESPACE=$(kubectl get pods -o=custom-columns=NS:.metadata.namespace | tail -1)
-    - export API_URL="http://tt-rss-${CI_COMMIT_SHORT_SHA}-app.$K8S_NAMESPACE.svc.cluster.local/tt-rss/api/"
-    - php82 vendor/bin/phpunit --group integration
-  rules:
-    - if: $CI_COMMIT_BRANCH
 
 ttrss-web-nginx:publish:
   stage: publish

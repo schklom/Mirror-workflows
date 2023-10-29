@@ -8,10 +8,7 @@ final class ApiTest extends TestCase {
 	private $api_url;
 
 	function __construct() {
-
 		$this->api_url = getenv('API_URL');
-
-		print_r($this->api_url);
 
 		parent::__construct();
 	}

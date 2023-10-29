@@ -22,6 +22,9 @@ final class ApiTest extends TestCase {
 	function api(array $payload) : ?array {
 		$ch = curl_init($this->api_url);
 
+		if ($this->sid)
+			$payload["sid"] = $this->sid;
+
 		curl_setopt($ch, CURLOPT_HEADER, false);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-type: application/json"]);
@@ -42,6 +45,10 @@ final class ApiTest extends TestCase {
 		return json_decode($resp, true);
 	}
 
+	public function setUp(): void {
+		$this->test_login();
+	}
+
 	/** @param array<mixed> $resp */
 	public function common_assertions(array $resp) : void {
 		$this->assertArrayHasKey("content", $resp);
@@ -57,11 +64,67 @@ final class ApiTest extends TestCase {
 	}
 
 	public function test_getVersion() : void {
-
-		$this->test_login();
-
-		$resp = $this->api(["op" => "getVersion", "sid" => $this->sid]);
+		$resp = $this->api(["op" => "getVersion"]);
 		$this->common_assertions($resp);
 		$this->assertArrayHasKey("version", $resp['content']);
 	}
+
+	public function test_getUnread() : void {
+		$resp = $this->api(["op" => "getUnread"]);
+		$this->common_assertions($resp);
+
+		$this->assertArrayHasKey("unread", $resp['content']);
+	}
+
+	public function test_subscribeToFeed() : void {
+		$resp = $this->api(["op" => "subscribeToFeed", "feed_url" => "https://tt-rss.org/feeds/tt-rss.xml"]);
+		$this->common_assertions($resp);
+
+		$this->assertArrayHasKey("feed_id", $resp['content']['status']);
+	}
+
+	public function test_getCounters() : void {
+		$resp = $this->api(["op" => "getCounters"]);
+		$this->common_assertions($resp);
+
+		foreach ($resp['content'] as $ctr) {
+			$this->assertIsArray($ctr);
+
+			foreach (["id", "counter"] as $k) {
+				$this->assertArrayHasKey($k, $ctr);
+				$this->assertNotNull($ctr[$k]);
+			}
+		}
+	}
+
+	public function test_getFeedTree() : void {
+		$resp = $this->api(["op" => "getFeedTree"]);
+
+		$this->assertArrayHasKey('categories', $resp['content']);
+		$this->assertArrayHasKey('items', $resp['content']['categories']);
+
+		foreach ($resp['content']['categories']['items'] as $cat) {
+
+			foreach (["id", "bare_id", "name", "items"] as $k) {
+				$this->assertArrayHasKey($k, $cat);
+			}
+
+			foreach ($cat['items'] as $feed) {
+				$this->assertIsArray($feed);
+
+				foreach (["id", "name", "unread", "bare_id"] as $k) {
+					$this->assertArrayHasKey($k, $feed);
+					$this->assertNotNull($feed[$k]);
+				}
+			}
+		}
+	}
+
+	public function test_getHeadlines() : void {
+		foreach (["0", "-1", "-2", "-3", "-4", "-6"] as $feed_id) {
+			$resp = $this->api(["op" => "getHeadlines", "feed_id" => $feed_id]);
+			$this->assertIsArray($resp);
+		}
+	}
+
 }

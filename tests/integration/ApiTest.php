@@ -7,18 +7,18 @@ final class ApiTest extends TestCase {
 	/** @var string */
 	private $api_url;
 
-	/** @var string */
-	private $sid;
-
 	function __construct() {
 
-		$this->api_url = $_ENV['API_URL'];
+		$this->api_url = getenv('API_URL');
 
 		print_r($this->api_url);
 
 		parent::__construct();
 	}
 
+	/** @param array<mixed> $payload
+	 * @return array<mixed>
+	 */
 	function api(array $payload) : ?array {
 		$ch = curl_init($this->api_url);
 
@@ -37,18 +37,19 @@ final class ApiTest extends TestCase {
 		return json_decode($response, true);
 	}
 
-	public function common_assertions(array $response) {
+	/** @param array<mixed> $response */
+	public function common_assertions(array $response) : void {
 		$this->assertArrayHasKey("content", $response);
 		$this->assertArrayNotHasKey("error", $response['content'], $response['content']['error']);
 	}
 
-	public function test_login() {
+	public function test_login() : void {
 		$response = $this->api(["op" => "login", "user" => "test", "password" => "test"]);
 
 		$this->common_assertions($response);
 	}
 
-	public function test_getVersion() {
+	public function test_getVersion() : void {
 
 		$response = $this->api(["op" => "getVersion"]);
 

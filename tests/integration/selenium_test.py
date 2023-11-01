@@ -56,6 +56,9 @@ class SeleniumTest(unittest.TestCase):
         self.driver.get(self.base_url + "/prefs.php")
 
         assert self.driver.find_element(by=By.CSS_SELECTOR, value="body.ttrss_prefs")
+
+        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#dijit_layout_AccordionPane_1_wrapper")))
+
         assert self.driver.find_element(by=By.CSS_SELECTOR, value="#dijit_layout_AccordionPane_1_wrapper").is_displayed()
 
         self.driver.execute_script("dijit.byId('pref-tabs').selectChild('feedsTab')")

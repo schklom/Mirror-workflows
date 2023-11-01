@@ -43,8 +43,6 @@ ttrss-web-nginx:
   extends: .build-master-commit-only
   variables:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/web-nginx/Dockerfile
-  before_script:
-    - echo .git >> ${CI_PROJECT_DIR}/.dockerignore
 
 ttrss-fpm-pgsql-static:
   extends: .build-master-commit-only
@@ -96,12 +94,16 @@ ttrss-web-nginx:publish:
   extends: .build-master
   variables:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/web-nginx/Dockerfile
+  before_script:
+    - echo .git >> ${CI_PROJECT_DIR}/.dockerignore
 
 ttrss-fpm-pgsql-static:publish:
   stage: publish
   extends: .build-master
   variables:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/app/Dockerfile
+  before_script:
+    - echo .git >> ${CI_PROJECT_DIR}/.dockerignore
 
 update-demo:
   stage: publish

@@ -35,19 +35,23 @@ ttrss-web-nginx:branch:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/web-nginx/Dockerfile
 
 ttrss-fpm-pgsql-static:branch:
-   extends: .build-branch
-   variables:
+  extends: .build-branch
+  variables:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/app/Dockerfile
 
 ttrss-web-nginx:
   extends: .build-master-commit-only
   variables:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/web-nginx/Dockerfile
+  before_script:
+    - echo .git >> ${CI_PROJECT_DIR}/.dockerignore
 
 ttrss-fpm-pgsql-static:
    extends: .build-master-commit-only
    variables:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/app/Dockerfile
+  before_script:
+    - echo .git >> ${CI_PROJECT_DIR}/.dockerignore
 
 phpdoc:
   image: ${PHP_IMAGE}

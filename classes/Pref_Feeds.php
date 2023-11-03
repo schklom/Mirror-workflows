@@ -39,12 +39,7 @@ class Pref_Feeds extends Handler_Protected {
 	/**
 	 * @return array<int, array<string, bool|int|string>>
 	 */
-	private function get_category_items(int $cat_id): array {
-
-		if (clean($_REQUEST['mode'] ?? 0) != 2)
-			$search = $_SESSION["prefs_feed_search"] ?? "";
-		else
-			$search = "";
+	private function get_category_items(int $cat_id, string $search): array {
 
 		// first one is set by API
 		$show_empty_cats = self::_param_to_bool($_REQUEST['force_show_empty'] ?? false) ||
@@ -64,7 +59,7 @@ class Pref_Feeds extends Handler_Protected {
 				'id' => 'CAT:' . $feed_category->id,
 				'bare_id' => (int)$feed_category->id,
 				'name' => $feed_category->title,
-				'items' => $this->get_category_items($feed_category->id),
+				'items' => $this->get_category_items($feed_category->id, $search),
 				'checkbox' => false,
 				'type' => 'category',
 				'unread' => -1,
@@ -121,7 +116,7 @@ class Pref_Feeds extends Handler_Protected {
 		if (clean($_REQUEST['mode'] ?? 0) != 2)
 			$search = $_SESSION["prefs_feed_search"] ?? "";
 		else
-			$search = "";
+			$search = $_REQUEST['search'] ?? '';
 
 		$root = array();
 		$root['id'] = 'root';
@@ -226,7 +221,7 @@ class Pref_Feeds extends Handler_Protected {
 					'bare_id' => (int) $feed_category->id,
 					'auxcounter' => -1,
 					'name' => $feed_category->title,
-					'items' => $this->get_category_items($feed_category->id),
+					'items' => $this->get_category_items($feed_category->id, $search),
 					'checkbox' => false,
 					'type' => 'category',
 					'unread' => -1,

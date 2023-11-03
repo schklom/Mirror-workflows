@@ -263,6 +263,7 @@
 
                         <div dojoType="dijit.MenuItem" onclick="App.onActionSelected('qmcPrefs')"><?= __('Preferences...') ?></div>
                         <div dojoType="dijit.MenuItem" onclick="App.onActionSelected('qmcSearch')"><?= __('Search...') ?></div>
+                        <div dojoType="dijit.MenuItem" onclick="App.onActionSelected('qmcFilterFeeds')"><?= __('Search feeds...') ?></div>
                         <div dojoType="dijit.MenuItem" disabled="1"><?= __('Feed actions:') ?></div>
                         <div dojoType="dijit.MenuItem" onclick="App.onActionSelected('qmcAddFeed')"><?= __('Subscribe to feed...') ?></div>
                         <div dojoType="dijit.MenuItem" onclick="App.onActionSelected('qmcEditFeed')"><?= __('Edit this feed...') ?></div>

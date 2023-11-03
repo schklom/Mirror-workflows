@@ -1270,6 +1270,9 @@ const App = {
          case "qmcSearch":
             Feeds.search();
             break;
+         case "qmcFilterFeeds":
+            Feeds.filter();
+            break;
          case "qmcAddFeed":
             CommonDialogs.subscribeToFeed();
             break;

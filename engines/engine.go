@@ -19,7 +19,7 @@ type Language map[string]string
 
 var Engines = map[string]Engine{
 	"google": &GoogleTranslate{},
-	// "icibia": &ICIBA{},
-	// "libre":    &LibreTranslate{},
+	"icibia": &ICIBA{},
+	// "libre":   &LibreTranslate{},
 	"reverso": &Reverso{},
 }

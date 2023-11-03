@@ -54,7 +54,6 @@ func (e *LibreTranslate) getLangs() (Language, error) {
 	}
 
 	return langs, nil
-
 }
 
 func (e *LibreTranslate) SourceLanguages() (Language, error) { return e.getLangs() }

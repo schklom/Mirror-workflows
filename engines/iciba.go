@@ -9,7 +9,7 @@ import (
 	"net/url"
 )
 
-// ICIBA is an engine that fetches data from https://www.iciba.com.
+// iCIBA is an engine that fetches data from https://www.iciba.com.
 type ICIBA struct{}
 
 func (_ *ICIBA) DisplayName() string { return "iCIBA" }
@@ -209,7 +209,15 @@ var icibaLanguages = Language{
 	"zu":  "Zulu",
 }
 
-func (_ *ICIBA) SourceLanguages() (Language, error) { return icibaLanguages, nil }
+func (_ *ICIBA) SourceLanguages() (Language, error) {
+	icibaLanguagesCopy := make(Language)
+	for k, v := range icibaLanguages {
+		icibaLanguagesCopy[k] = v
+	}
+
+	icibaLanguagesCopy["auto"] = "Detect Language"
+	return icibaLanguagesCopy, nil
+}
 
 func (_ *ICIBA) TargetLanguages() (Language, error) { return icibaLanguages, nil }
 
@@ -254,22 +262,20 @@ func (_ *ICIBA) Translate(text string, from, to string) (TranslationResult, erro
 		return TranslationResult{}, err
 	}
 
-	var sourceLanguage string
-
 	for code := range icibaLanguages {
 		if code == responseJSON.Content.From {
-			sourceLanguage = code
+			from = code
 			break
 		}
 	}
 
-	if sourceLanguage == "" {
+	if from == "" {
 		return TranslationResult{TranslatedText: responseJSON.Content.Out},
 			fmt.Errorf("language code \"%s\" is not in iCIBA's language list", responseJSON.Content.From)
 	}
 
 	return TranslationResult{
-		SourceLanguage: sourceLanguage,
+		SourceLanguage: from,
 		TranslatedText: responseJSON.Content.Out,
 	}, nil
 }

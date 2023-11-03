@@ -68,7 +68,7 @@ jobs:
           token: ${{ secrets.PAT_GITHUB_ACTION }}
       
       - name: get most recent version on original repo, for next comparison on sync
-        run: git ls-remote --tags https://github.com/Docile-Alligator/Infinity-For-Reddit.git | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3 > last_sync_with_original_repo_version
+        run: git ls-remote --tags https://github.com/Docile-Alligator/Infinity-For-Reddit.git | grep -v 'beta' | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3 > last_sync_with_original_repo_version
 
       # Inspired by https://www.reddit.com/r/Infinity_For_Reddit/comments/14c2v5x/build_your_own_apk_with_your_personal_api_key_in/
       # which links specifically to https://colab.research.google.com/drive/13AE8RvjnCfuBJGaACEqxeBIMo33_l-Sc

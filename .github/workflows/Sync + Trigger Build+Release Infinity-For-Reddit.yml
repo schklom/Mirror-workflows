@@ -108,7 +108,7 @@ jobs:
           # But I can't install it, so I switch to app/build/outputs/apk/debug/app-debug.apk
           file=".github/workflows/build.yml"
           echo "" >> $file
-          echo "    - name: Release Infinity-For-Reddit APK ${{ needs.get_version.outputs.LOCAL }}" >> $file
+          echo "    - name: Release Infinity-For-Reddit APK ${{ needs.get_version.outputs.REMOTE }}" >> $file
           echo "      uses: softprops/action-gh-release@v1" >> $file
           echo "      with:" >> $file
           echo "        tag_name: \"${{ needs.get_version.outputs.REMOTE }}\"" >> $file

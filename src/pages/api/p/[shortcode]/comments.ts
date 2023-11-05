@@ -7,10 +7,7 @@ import { withExeptionFilter } from "@/utils/withExceptionFilter";
 import { convertTTlToTimestamp } from "@/utils/converters/time";
 import { NextApiRequest, NextApiResponse } from "next";
 
-async function getComments(
-	req: NextApiRequest,
-	res: NextApiResponse<Comment[]>,
-) {
+async function getComments(req: NextApiRequest, res: NextApiResponse<Comment[]>) {
 	const shortcode = req.query.shortcode as string;
 	const expireTime = convertTTlToTimestamp(env.EXPIRE_TIME_FOR_POST);
 
@@ -21,17 +18,10 @@ async function getComments(
 
 	const randomProvider = await getRandomProvider<IGetComments>("Comments");
 	const comments = await randomProvider.getComments(shortcode);
-	await redis.setex(
-		`p:${shortcode}:comments`,
-		expireTime,
-		JSON.stringify(comments),
-	);
+	await redis.setex(`p:${shortcode}:comments`, expireTime, JSON.stringify(comments));
 	return res.json(comments);
 }
 
-export default async function apiHandler(
-	req: NextApiRequest,
-	res: NextApiResponse,
-) {
+export default async function apiHandler(req: NextApiRequest, res: NextApiResponse) {
 	await withExeptionFilter(req, res)(getComments);
 }

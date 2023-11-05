@@ -98,13 +98,9 @@ export function getInstanceProviders(providers: Provider[]) {
 
 export async function getRandomProvider<T>(canget: ProviderCanGet) {
 	const providers = await getProviders();
-	const filteredProviders = providers.filter((provider) =>
-		provider.canget.includes(canget),
-	);
+	const filteredProviders = providers.filter((provider) => provider.canget.includes(canget));
 	const providerInstances = getInstanceProviders(filteredProviders);
-	const RANDOM_PROVIDER_ID = Math.floor(
-		Math.random() * providerInstances.length,
-	);
+	const RANDOM_PROVIDER_ID = Math.floor(Math.random() * providerInstances.length);
 	return providerInstances[RANDOM_PROVIDER_ID] as T;
 }
 
@@ -120,8 +116,6 @@ export async function getRandomFilteredProvider<T>(
 	const filteredProviders = providers.filter(callback);
 
 	const providerInstances = getInstanceProviders(filteredProviders);
-	const RANDOM_PROVIDER_ID = Math.floor(
-		Math.random() * providerInstances.length,
-	);
+	const RANDOM_PROVIDER_ID = Math.floor(Math.random() * providerInstances.length);
 	return providerInstances[RANDOM_PROVIDER_ID] as T;
 }

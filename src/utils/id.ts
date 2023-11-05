@@ -1,6 +1,5 @@
 export function mediaIdToShortcode(id: string): string {
-	const alphabet =
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+	const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 	let shortcode = "";
 	let num = BigInt(id);
 	while (num > 0n) {
@@ -12,8 +11,7 @@ export function mediaIdToShortcode(id: string): string {
 }
 
 export function shortcodeToMediaId(shortcode: string): string {
-	const alphabet =
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+	const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 	let num = BigInt(0);
 	for (let i = 0; i < shortcode.length; i++) {
 		const char = shortcode.charAt(i);

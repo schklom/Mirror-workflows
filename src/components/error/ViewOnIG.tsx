@@ -9,12 +9,7 @@ export function ViewOnIG() {
 		? `https://instagram.com/explorer/tag/${tag}`
 		: `https://instagram.com${asPath}`;
 	return (
-		<a
-			href={originalUrl}
-			target="_blank"
-			rel="noreferrer"
-			className="text-[#fa3550] font-bold"
-		>
+		<a href={originalUrl} target="_blank" rel="noreferrer" className="text-[#fa3550] font-bold">
 			View this page on Instagram
 		</a>
 	);

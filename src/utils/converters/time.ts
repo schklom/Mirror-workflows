@@ -1,8 +1,5 @@
 export function convertTTlToTimestamp(time: string) {
-	const format: "m" | "h" | "d" = time.slice(-1).toLowerCase() as
-		| "m"
-		| "h"
-		| "d";
+	const format: "m" | "h" | "d" = time.slice(-1).toLowerCase() as "m" | "h" | "d";
 	const timeNumber: number = Number(time.slice(0, -1));
 
 	let t: number;

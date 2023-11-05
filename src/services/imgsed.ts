@@ -33,11 +33,7 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments, IGetStories {
 					? (img.attr("data-src") as string)
 					: (img.attr("src") as string);
 
-			const shortcode = postUrl
-				.attr("href")
-				?.split("/p/")
-				.at(-1)
-				?.slice(0, -1) as string;
+			const shortcode = postUrl.attr("href")?.split("/p/").at(-1)?.slice(0, -1) as string;
 
 			const item: Post = {
 				id: shortcodeToMediaId(shortcode),
@@ -59,10 +55,7 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments, IGetStories {
 		};
 	}
 
-	async getPosts({
-		cursor,
-		username,
-	}: IgetPostsOptions): Promise<PostsResponse> {
+	async getPosts({ cursor, username }: IgetPostsOptions): Promise<PostsResponse> {
 		if (!cursor) {
 			return await this.scrapePosts(username);
 		}
@@ -106,18 +99,16 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments, IGetStories {
 				username: $(".username>a").text().replace("@", ""),
 				avatar: proxyUrl(
 					convertToInstagramUrl(
-						$(
-							".user > div:nth-child(1) > a:nth-child(1) > img:nth-child(1)",
-						).attr("src") as string,
+						$(".user > div:nth-child(1) > a:nth-child(1) > img:nth-child(1)").attr(
+							"src",
+						) as string,
 					),
 				),
 			},
 			description: $(".desc").text(),
 			...extractTagsAndUsers($(".desc").text()),
 			created_at: {
-				relative: convertTimestampToRelativeTime(
-					Number($(".page-post").data("created")),
-				),
+				relative: convertTimestampToRelativeTime(Number($(".page-post").data("created"))),
 				timestamp: Number($(".page-post").data("created")),
 			},
 			commentsCount: Number($(".page-post").data("comment-count")),
@@ -142,9 +133,7 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments, IGetStories {
 						: ($(media).find("img").attr("src") as string);
 				post.sidecard?.push({
 					type: videoUrl ? "video" : "image",
-					url: videoUrl
-						? proxyUrl(videoUrl)
-						: proxyUrl(convertToInstagramUrl(imageUrl)),
+					url: videoUrl ? proxyUrl(videoUrl) : proxyUrl(convertToInstagramUrl(imageUrl)),
 				});
 			});
 		}
@@ -162,8 +151,7 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments, IGetStories {
 		const $ = cheerio.load(html);
 		const $active = $("li.active");
 		const areThereStories =
-			$active.find(".title").text().toLocaleLowerCase() ===
-			username.toLocaleLowerCase();
+			$active.find(".title").text().toLocaleLowerCase() === username.toLocaleLowerCase();
 		if (areThereStories) {
 			const userId = $active.data("uid");
 			const s = parseInt(String(Date.now() / 10000000));
@@ -193,9 +181,7 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments, IGetStories {
 			const $comment = $(comment);
 			comments?.push({
 				username: $comment.find(".con>h2>a").text().trim(),
-				avatar: proxyUrl(
-					convertToInstagramUrl($comment.find("img").data("src") as string),
-				),
+				avatar: proxyUrl(convertToInstagramUrl($comment.find("img").data("src") as string)),
 				comment: $comment.find(".con>p").text(),
 			});
 		});

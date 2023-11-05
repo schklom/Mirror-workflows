@@ -10,12 +10,7 @@ type Props = {
 	includeInstances?: boolean;
 };
 
-export function ErrorMessage({
-	statusCode,
-	title,
-	children,
-	includeInstances = true,
-}: Props) {
+export function ErrorMessage({ statusCode, title, children, includeInstances = true }: Props) {
 	return (
 		<>
 			<h2 className="text-5xl font-bold m-4 text-center">{statusCode}</h2>

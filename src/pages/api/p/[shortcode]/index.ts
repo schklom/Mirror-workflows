@@ -22,9 +22,6 @@ async function getPost(req: NextApiRequest, res: NextApiResponse<Post>) {
 	return res.json(post);
 }
 
-export default async function apiHandler(
-	req: NextApiRequest,
-	res: NextApiResponse,
-) {
+export default async function apiHandler(req: NextApiRequest, res: NextApiResponse) {
 	await withExeptionFilter(req, res)(getPost);
 }

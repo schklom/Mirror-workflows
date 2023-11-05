@@ -7,10 +7,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { env } from "env.mjs";
 import { supportedProviders } from "@/services";
 
-async function Providers(
-	_req: NextApiRequest,
-	res: NextApiResponse<Provider[]>,
-) {
+async function Providers(_req: NextApiRequest, res: NextApiResponse<Provider[]>) {
 	const providers = await getProviders();
 	res.json(providers);
 }
@@ -22,18 +19,13 @@ async function getProviders() {
 		if (!env.USE_HEADLESS_PROVIDERS) {
 			return providers.filter(
 				(provider) =>
-					!provider.headlessBrowser &&
-					supportedProviders.includes(provider.provider),
+					!provider.headlessBrowser && supportedProviders.includes(provider.provider),
 			);
 		}
-		return providers.filter((provider) =>
-			supportedProviders.includes(provider.provider),
-		);
+		return providers.filter((provider) => supportedProviders.includes(provider.provider));
 	}
 
-	const { data: providers } = await axios.get<Provider[]>(
-		env.PROVIDERS_LIST_URL,
-	);
+	const { data: providers } = await axios.get<Provider[]>(env.PROVIDERS_LIST_URL);
 
 	if (!env.FETCH_PROVIDERS) {
 		await redis.set("providers", JSON.stringify(providers));
@@ -48,19 +40,13 @@ async function getProviders() {
 	if (!env.USE_HEADLESS_PROVIDERS) {
 		return providers.filter(
 			(provider) =>
-				!provider.headlessBrowser &&
-				supportedProviders.includes(provider.provider),
+				!provider.headlessBrowser && supportedProviders.includes(provider.provider),
 		);
 	}
 
-	return providers.filter((provider) =>
-		supportedProviders.includes(provider.provider),
-	);
+	return providers.filter((provider) => supportedProviders.includes(provider.provider));
 }
 
-export default async function apiHandler(
-	req: NextApiRequest,
-	res: NextApiResponse,
-) {
+export default async function apiHandler(req: NextApiRequest, res: NextApiResponse) {
 	await withExeptionFilter(req, res)(Providers);
 }

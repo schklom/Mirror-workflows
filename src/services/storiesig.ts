@@ -46,9 +46,7 @@ export class StoriesIG implements IGetProfile, IGetStories {
 			id: story.pk,
 			thumb: proxyUrl(story.image_versions2.candidates[0].url),
 			isVideo: story.video_versions ? true : false,
-			video: story.video_versions
-				? proxyUrl(story.video_versions[0].url)
-				: undefined,
+			video: story.video_versions ? proxyUrl(story.video_versions[0].url) : undefined,
 			created_at: {
 				relative: convertTimestampToRelativeTime(story.taken_at),
 				timestamp: story.taken_at,

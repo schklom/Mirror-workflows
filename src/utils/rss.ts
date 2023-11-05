@@ -41,7 +41,11 @@ export class RSS {
 		username,
 		path,
 		titleSufix,
-	}: { username: string; path: string; titleSufix?: string }) {
+	}: {
+		username: string;
+		path: string;
+		titleSufix?: string;
+	}) {
 		const { data: profile } = await axiosInstance.get<Profile>(username);
 		return new Feed({
 			id: profile.username,
@@ -70,33 +74,24 @@ export class RSS {
 			this.createFeed({ username, path: username }),
 			axiosInstance.get<PostsResponse>(`${username}/posts`),
 		]);
-		const shorcodes = data.posts
-			.slice(0, env.ITEMS_PER_RSS)
-			.map((p) => p.shortcode);
+		const shorcodes = data.posts.slice(0, env.ITEMS_PER_RSS).map((p) => p.shortcode);
 		const posts = await Promise.allSettled(
 			shorcodes.map(
-				async (shortcode) =>
-					(
-						await axiosInstance.get<Post>(`p/${shortcode}`)
-					).data,
+				async (shortcode) => (await axiosInstance.get<Post>(`p/${shortcode}`)).data,
 			),
 		);
 
 		posts.forEach((p) => {
 			if (p.status === "fulfilled") {
 				const post = p.value;
-				const type = `${
-					post.isSideCard ? "Sidecard" : post.isVideo ? "Video" : "Photo"
-				}`;
+				const type = `${post.isSideCard ? "Sidecard" : post.isVideo ? "Video" : "Photo"}`;
 				const truncatedDescription = post.description
 					? post.description.length > 30
 						? `${post.description.slice(0, 30)}...`
 						: post.description
 					: null;
 				feed.addItem({
-					title: truncatedDescription
-						? `${type}: ${truncatedDescription}`
-						: `${type}`,
+					title: truncatedDescription ? `${type}: ${truncatedDescription}` : `${type}`,
 					id: post.id,
 					link: `${getBaseUrl()}/p/${post.shortcode}`,
 					description: post.description,

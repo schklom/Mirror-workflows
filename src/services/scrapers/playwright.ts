@@ -9,11 +9,7 @@ export class PlaywrightScraper implements IGetHtml {
 		},
 	) {}
 
-	private abortUnwantedRequests(
-		unwantedRequest: string[],
-		route: Route,
-		request: Request,
-	) {
+	private abortUnwantedRequests(unwantedRequest: string[], route: Route, request: Request) {
 		if (unwantedRequest.includes(request.resourceType())) {
 			route.abort();
 		} else {
@@ -42,11 +38,7 @@ export class PlaywrightScraper implements IGetHtml {
 		const { page } = await this.init();
 
 		page.route("**/*", (route, request) =>
-			this.abortUnwantedRequests(
-				["image", "script", "stylesheet", "font"],
-				route,
-				request,
-			),
+			this.abortUnwantedRequests(["image", "script", "stylesheet", "font"], route, request),
 		);
 
 		await page.goto(URL, { waitUntil: "load" });

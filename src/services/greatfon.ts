@@ -15,10 +15,7 @@ import {
 	replaceBrWithNewline,
 	convertToBase64,
 } from "@/utils/text";
-import {
-	convertTextToTimestamp,
-	convertTimestampToRelativeTime,
-} from "@/utils/converters/time";
+import { convertTextToTimestamp, convertTimestampToRelativeTime } from "@/utils/converters/time";
 
 export interface ResultsQuery {
 	accounts: {
@@ -95,16 +92,8 @@ export class Greatfon implements IGetAll {
 			...extractTagsAndUsers($(".user__info-desc").html()?.trim() as string),
 			mediaCount: Number(
 				$("li.user__item:nth-child(1)").length > 0
-					? $("li.user__item:nth-child(1)")
-							.text()
-							.split("Posts")[0]
-							.split(" ")
-							.join("")
-					: $("li.list__item:nth-child(1)")
-							.text()
-							.split("Posts")[0]
-							.split(" ")
-							.join(""),
+					? $("li.user__item:nth-child(1)").text().split("Posts")[0].split(" ").join("")
+					: $("li.list__item:nth-child(1)").text().split("Posts")[0].split(" ").join(""),
 			),
 			followers: Number(
 				$("li.user__item:nth-child(2)").length > 0
@@ -135,14 +124,9 @@ export class Greatfon implements IGetAll {
 		};
 	}
 
-	async getPosts({
-		username,
-		cursor,
-	}: IgetPostsOptions): Promise<PostsResponse> {
+	async getPosts({ username, cursor }: IgetPostsOptions): Promise<PostsResponse> {
 		if (cursor) {
-			return await this.scrapePosts(
-				`api/profile/${username}/?cursor=${cursor}`,
-			);
+			return await this.scrapePosts(`api/profile/${username}/?cursor=${cursor}`);
 		}
 
 		return await this.scrapePosts(`v/${username}`);
@@ -156,10 +140,8 @@ export class Greatfon implements IGetAll {
 		const author = await this.getProfile(
 			$(".main__user-info").find("a").text().replace("@", ""),
 		);
-		const createdAtText =
-			$(".content__time-text").text() || $(".bx-time").next().text();
-		const likes =
-			$(".content__like-text").text() || $(".bx-like").next().text();
+		const createdAtText = $(".content__time-text").text() || $(".bx-time").next().text();
+		const likes = $(".content__like-text").text() || $(".bx-like").next().text();
 		const commentsCount =
 			$(".content__comment-text").text() || $(".bx-comment-dots").next().text();
 
@@ -171,31 +153,23 @@ export class Greatfon implements IGetAll {
 				avatar: author.profilePicture,
 				name: author.fullname,
 			},
-			description: stripHtmlTags(
-				replaceBrWithNewline($(".main__list").html() as string),
-			),
+			description: stripHtmlTags(replaceBrWithNewline($(".main__list").html() as string)),
 			...extractTagsAndUsers($(".main__list").html() as string),
 			created_at: {
-				relative: convertTimestampToRelativeTime(
-					convertTextToTimestamp(createdAtText),
-				),
+				relative: convertTimestampToRelativeTime(convertTextToTimestamp(createdAtText)),
 				timestamp: convertTextToTimestamp(createdAtText),
 			},
 			commentsCount: compactToNumber(commentsCount),
 			likes: compactToNumber(likes),
 			isVideo: $(".video-container>video").length > 0,
 			isSideCard: $(".swiper-container").length > 0,
-			thumb: proxyUrl(
-				$(".main__image-container").find("img").attr("src") as string,
-			),
+			thumb: proxyUrl($(".main__image-container").find("img").attr("src") as string),
 			sidecard: [],
 		};
 
 		if (post.isVideo) {
 			post.video = proxyUrl($(".video-container>video").attr("src") as string);
-			post.thumb = proxyUrl(
-				$(".video-container>video").attr("poster") as string,
-			);
+			post.thumb = proxyUrl($(".video-container>video").attr("poster") as string);
 		}
 
 		if (post.isSideCard) {

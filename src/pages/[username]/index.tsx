@@ -1,13 +1,5 @@
-import type {
-	GetServerSidePropsContext,
-	InferGetServerSidePropsType,
-} from "next";
-import type {
-	ErrorResponse,
-	PostsResponse,
-	Profile,
-	Story,
-} from "@/services/types";
+import type { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import type { ErrorResponse, PostsResponse, Profile, Story } from "@/services/types";
 import { LoadMore } from "@/components/LoadMore";
 import { Layout } from "@/components/layouts/Layout";
 import { ProfileComponent, SideInfo } from "@/components/profile";
@@ -48,9 +40,7 @@ export default function ProfilePage({ profile, posts, stories, error }: Props) {
 					) : (
 						<h3>This account is private</h3>
 					)}
-					{!posts.isError && posts.data.cursor && (
-						<LoadMore cursor={posts.data.cursor} />
-					)}
+					{!posts.isError && posts.data.cursor && <LoadMore cursor={posts.data.cursor} />}
 				</section>
 			</section>
 		</Layout>
@@ -84,9 +74,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 		let storiesLength = 0;
 
 		if (!profile.isPrivate) {
-			const path = cursor
-				? `${username}/posts?cursor=${cursor}`
-				: `${username}/posts`;
+			const path = cursor ? `${username}/posts?cursor=${cursor}` : `${username}/posts`;
 			const [postsRes, stories] = await Promise.allSettled([
 				axiosInstance.get<PostsResponse>(path),
 				axiosInstance.get<Story[]>(`${username}/stories`),

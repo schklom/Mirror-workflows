@@ -1,7 +1,4 @@
-import type {
-	GetServerSidePropsContext,
-	InferGetServerSidePropsType,
-} from "next";
+import type { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import "react-loading-skeleton/dist/skeleton.css";
 
 import { LoadMore } from "@/components/LoadMore";
@@ -60,9 +57,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 		let data;
 
 		if (cursor) {
-			data = await axiosInstance.get<TagResponse>(
-				`tag/${tag}?cursor=${cursor}`,
-			);
+			data = await axiosInstance.get<TagResponse>(`tag/${tag}?cursor=${cursor}`);
 		} else {
 			data = await axiosInstance.get<TagResponse>(`tag/${tag}`);
 		}

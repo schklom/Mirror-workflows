@@ -19,22 +19,14 @@ const getCleanReqHeaders = (headers: NextApiRequest["headers"]) => ({
 	}),
 });
 
-const resHeadersArr = [
-	"content-range",
-	"content-length",
-	"content-type",
-	"accept-ranges",
-];
+const resHeadersArr = ["content-range", "content-length", "content-type", "accept-ranges"];
 
 async function proxy(req: NextApiRequest, res: NextApiResponse) {
 	const url = req.query?.url as string | undefined;
 	const requestHeaders = getCleanReqHeaders(req.headers);
 
 	if (!env.PROXY) {
-		throw new ApiError(
-			HttpStatusCode.Locked,
-			"Proxy is disabled in this instance",
-		);
+		throw new ApiError(HttpStatusCode.Locked, "Proxy is disabled in this instance");
 	}
 
 	if (!url) {
@@ -57,8 +49,7 @@ async function proxy(req: NextApiRequest, res: NextApiResponse) {
 			Referer,
 			DNT: 1,
 			Connection: "keep-alive",
-			Accept:
-				"image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+			Accept: "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
 			"User-Agent": randomUserAgent,
 			"Accept-Language": "en-US,en;q=0.5",
 			"Accept-Encoding": "gzip, deflate, br",
@@ -70,8 +61,7 @@ async function proxy(req: NextApiRequest, res: NextApiResponse) {
 	});
 
 	const contentType = mediaRes.headers["content-type"] as string;
-	const isPhoto =
-		contentType.includes("image") || contentType === "application/download";
+	const isPhoto = contentType.includes("image") || contentType === "application/download";
 
 	res.statusCode = isPhoto ? 200 : 206;
 	if (isPhoto) {
@@ -87,10 +77,7 @@ async function proxy(req: NextApiRequest, res: NextApiResponse) {
 	return;
 }
 
-export default async function apiHandler(
-	req: NextApiRequest,
-	res: NextApiResponse,
-) {
+export default async function apiHandler(req: NextApiRequest, res: NextApiResponse) {
 	await withExeptionFilter(req, res)(proxy);
 }
 

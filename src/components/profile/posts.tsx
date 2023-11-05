@@ -11,12 +11,8 @@ interface Props {
 export function Posts({ posts }: Props) {
 	if (posts.isError) {
 		return (
-			<ErrorMessage
-				statusCode={posts.data.statusCode}
-				title={posts.data.message}
-			>
-				You could try refreshing the page to select another random provider or
-				you could:
+			<ErrorMessage statusCode={posts.data.statusCode} title={posts.data.message}>
+				You could try refreshing the page to select another random provider or you could:
 			</ErrorMessage>
 		);
 	}
@@ -38,8 +34,10 @@ export function Posts({ posts }: Props) {
 							</Link>
 							{post.isVideo ? (
 								<IconVideo className="absolute z-10 h-6 w-6 top-1 right-1 text-white" />
-							) : post.isSideCard && (
-								<IconBoxMultiple className="absolute z-10 h-6 w-6 top-1 right-1 text-white" />
+							) : (
+								post.isSideCard && (
+									<IconBoxMultiple className="absolute z-10 h-6 w-6 top-1 right-1 text-white" />
+								)
 							)}
 						</div>
 					))}

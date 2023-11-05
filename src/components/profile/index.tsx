@@ -44,21 +44,9 @@ export function ProfileComponent({ data: profile }: { data: Profile | null }) {
 		<>
 			<div className="profile-stats">
 				<ul className="mx-2 flex justify-center gap-1 sm:flex-col">
-					<ListElement
-						profile={profile}
-						text="Publications"
-						property="mediaCount"
-					/>
-					<ListElement
-						profile={profile}
-						text="Followers"
-						property="followers"
-					/>
-					<ListElement
-						profile={profile}
-						text="Following"
-						property="following"
-					/>
+					<ListElement profile={profile} text="Publications" property="mediaCount" />
+					<ListElement profile={profile} text="Followers" property="followers" />
+					<ListElement profile={profile} text="Following" property="following" />
 				</ul>
 			</div>
 			{profile && <LinkToWebsite link={profile?.website} />}
@@ -143,11 +131,7 @@ function LinkToWebsite({ link }: { link: string | undefined }) {
 	return (
 		<>
 			{link ? (
-				<Link
-					href={link}
-					className="truncate text-sky-400 sm:mx-2"
-					target="_blank"
-				>
+				<Link href={link} className="truncate text-sky-400 sm:mx-2" target="_blank">
 					{link}
 				</Link>
 			) : (

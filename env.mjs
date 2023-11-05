@@ -26,10 +26,23 @@ export const env = createEnv({
 			.refine((s) => s === "true" || s === "false")
 			.transform((s) => s === "true"),
 		PROVIDERS_LIST_URL: z.string().url(),
-		EXPIRE_TIME_FOR_RSS: z.string().min(2).regex(/[dmh]$/i).regex(/[dmh]$/i),
-		EXPIRE_TIME_FOR_POST: z.string().min(2).regex(/[dmh]$/i),
-		FETCH_PROVIDERS_EVERY: z.string().min(2).regex(/[dmh]$/i),
-		EXPIRE_TIME_FOR_POSTS: z.string().min(2).regex(/[dmh]$/i),
+		EXPIRE_TIME_FOR_RSS: z
+			.string()
+			.min(2)
+			.regex(/[dmh]$/i)
+			.regex(/[dmh]$/i),
+		EXPIRE_TIME_FOR_POST: z
+			.string()
+			.min(2)
+			.regex(/[dmh]$/i),
+		FETCH_PROVIDERS_EVERY: z
+			.string()
+			.min(2)
+			.regex(/[dmh]$/i),
+		EXPIRE_TIME_FOR_POSTS: z
+			.string()
+			.min(2)
+			.regex(/[dmh]$/i),
 		SLEEP_TIME_PER_REQUEST: z
 			.string()
 			.transform((s) => parseInt(s, 10))
@@ -38,8 +51,14 @@ export const env = createEnv({
 			.string()
 			.refine((s) => s === "true" || s === "false")
 			.transform((s) => s === "true"),
-		EXPIRE_TIME_FOR_STORIES: z.string().min(2).regex(/[dmh]$/i),
-		EXPIRE_TIME_FOR_PROFILE: z.string().min(2).regex(/[dmh]$/i),
+		EXPIRE_TIME_FOR_STORIES: z
+			.string()
+			.min(2)
+			.regex(/[dmh]$/i),
+		EXPIRE_TIME_FOR_PROFILE: z
+			.string()
+			.min(2)
+			.regex(/[dmh]$/i),
 	},
 	runtimeEnv: {
 		URL: process.env.URL,

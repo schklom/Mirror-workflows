@@ -16,8 +16,7 @@ export class AxiosScraper implements IGetHtml, IGetJson {
 			headers: {
 				Host: new URL(URLTOVISIT).host,
 				"User-Agent": randomUserAgent,
-				Accept:
-					"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+				Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
 				"Accept-Language": "en-US,en;q=0.5",
 				"Accept-Encoding": "gzip, deflate, br",
 				DNT: 1,
@@ -37,8 +36,7 @@ export class AxiosScraper implements IGetHtml, IGetJson {
 		const headers = {
 			Host: new URL(this.config.baseURL).hostname,
 			"User-Agent": randomUserAgent,
-			Accept:
-				"text/html,application/xhtml+xml,application/json,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+			Accept: "text/html,application/xhtml+xml,application/json,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
 			"Accept-Language": "en-US,en;q=0.5",
 			"Accept-Encoding": "gzip, deflate, br",
 			DNT: 1,

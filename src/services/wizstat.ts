@@ -5,20 +5,13 @@ import {
 	IGetProfile,
 	IgetPostsOptions,
 } from "./types/functions";
-import {
-	convertTextToTimestamp,
-	convertTimestampToRelativeTime,
-} from "@/utils/converters/time";
+import { convertTextToTimestamp, convertTimestampToRelativeTime } from "@/utils/converters/time";
 import * as cheerio from "cheerio";
 import { AxiosScraper } from "./scrapers/axios";
 import { PlaywrightScraper } from "./scrapers/playwright";
 import { shortcodeToMediaId } from "@/utils/id";
 import { convertToInstagramUrl, proxyUrl } from "@/utils/url";
-import {
-	convertToBase64,
-	extractTagsAndUsers,
-	stripHtmlTags,
-} from "@/utils/text";
+import { convertToBase64, extractTagsAndUsers, stripHtmlTags } from "@/utils/text";
 import { Comment, Post, PostsResponse, Profile } from "./types";
 import { compactToNumber } from "@/utils/converters/numbers";
 import { fetchJSON } from "@/utils/fetch";
@@ -55,10 +48,7 @@ export class Wizstat implements IGetProfile, IGetPost, IGetPosts, IGetComments {
 		$(".post-items>.post-item").each((_i, post) => {
 			const img = $(post).find("img");
 
-			const shortcode = $(post)
-				.find(".img")
-				.attr("href")
-				?.slice(3, -1) as string;
+			const shortcode = $(post).find(".img").attr("href")?.slice(3, -1) as string;
 
 			const item: Post = {
 				id: shortcodeToMediaId(shortcode),
@@ -101,10 +91,7 @@ export class Wizstat implements IGetProfile, IGetPost, IGetPosts, IGetComments {
 		};
 	}
 
-	async getPosts({
-		cursor,
-		username,
-	}: IgetPostsOptions): Promise<PostsResponse> {
+	async getPosts({ cursor, username }: IgetPostsOptions): Promise<PostsResponse> {
 		if (!cursor) {
 			return await this.scrapePosts(username);
 		}
@@ -146,17 +133,13 @@ export class Wizstat implements IGetProfile, IGetPost, IGetPosts, IGetComments {
 				name: $(".nickname").text(),
 				username: $(".name").text().split(" ")[0].slice(1).trim(),
 				avatar: proxyUrl(
-					convertToInstagramUrl(
-						$(".user-info").find("img").attr("src") as string,
-					),
+					convertToInstagramUrl($(".user-info").find("img").attr("src") as string),
 				),
 			},
 			description: stripHtmlTags($(".desc").html() as string),
 			...extractTagsAndUsers($(".desc").text().trim()),
 			created_at: {
-				relative: convertTimestampToRelativeTime(
-					convertTextToTimestamp($(".date").text()),
-				),
+				relative: convertTimestampToRelativeTime(convertTextToTimestamp($(".date").text())),
 				timestamp: convertTextToTimestamp($(".date").text()),
 			},
 			thumb: proxyUrl(

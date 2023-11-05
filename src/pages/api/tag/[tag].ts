@@ -22,9 +22,6 @@ async function getTag(req: NextApiRequest, res: NextApiResponse<TagResponse>) {
 	res.json(tagInfo);
 }
 
-export default async function apiHandler(
-	req: NextApiRequest,
-	res: NextApiResponse,
-) {
+export default async function apiHandler(req: NextApiRequest, res: NextApiResponse) {
 	await withExeptionFilter(req, res)(getTag);
 }

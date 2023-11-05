@@ -7,10 +7,7 @@ export function Comments({ comments }: { comments: Comment[] }) {
 	return (
 		<>
 			{comments.map((comment) => (
-				<div
-					key={comment.username}
-					className="mb-1 bg-[#69463d] p-2 text-white"
-				>
+				<div key={comment.username} className="mb-1 bg-[#69463d] p-2 text-white">
 					<div className="flex gap-2">
 						{comment.avatar ? (
 							<Image
@@ -23,10 +20,7 @@ export function Comments({ comments }: { comments: Comment[] }) {
 						) : (
 							<Skeleton circle width={55} height={55} />
 						)}
-						<Link
-							href={`/${comment.username}`}
-							className="truncate font-semibold"
-						>
+						<Link href={`/${comment.username}`} className="truncate font-semibold">
 							@{comment.username}
 						</Link>
 					</div>

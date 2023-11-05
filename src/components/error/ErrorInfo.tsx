@@ -39,25 +39,18 @@ export function ErrorInfo({ statusCode }: Props) {
 					</>
 				</ErrorMessage>
 			) : is403 ? (
-				<ErrorMessage
-					statusCode={statusCode}
-					title="This instance is being blocked"
-				>
-					You could try refreshing the page to select another random provider or
-					you could:
+				<ErrorMessage statusCode={statusCode} title="This instance is being blocked">
+					You could try refreshing the page to select another random provider or you
+					could:
 				</ErrorMessage>
 			) : is504 ? (
-				<ErrorMessage
-					statusCode={statusCode}
-					title="The provider chosen, didn't respond"
-				>
-					You could try refreshing the page to select another random provider or
-					you could
+				<ErrorMessage statusCode={statusCode} title="The provider chosen, didn't respond">
+					You could try refreshing the page to select another random provider or you could
 				</ErrorMessage>
 			) : (
 				<ErrorMessage statusCode={statusCode} title="Something went wrong...">
-					You could try refreshing the page to select another random provider or
-					you could:
+					You could try refreshing the page to select another random provider or you
+					could:
 				</ErrorMessage>
 			)}
 		</Layout>

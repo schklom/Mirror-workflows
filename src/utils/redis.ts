@@ -2,8 +2,7 @@ import { Redis } from "ioredis";
 
 let redis: Pick<Redis, "get" | "setex" | "set"> = {
 	get: async (key) => Promise.resolve(null),
-	setex: async (key: string, seconds: number, value: unknown) =>
-		Promise.resolve("OK"),
+	setex: async (key: string, seconds: number, value: unknown) => Promise.resolve("OK"),
 	set: async (key: string, value: unknown) => Promise.resolve("OK"),
 };
 

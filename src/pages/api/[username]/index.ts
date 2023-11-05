@@ -18,10 +18,7 @@ async function getProfile(req: NextApiRequest, res: NextApiResponse) {
 	const expireTime = convertTTlToTimestamp(env.EXPIRE_TIME_FOR_PROFILE);
 
 	if (!query.success) {
-		throw new ApiError(
-			HttpStatusCode.BadRequest,
-			query.error.errors[0].message,
-		);
+		throw new ApiError(HttpStatusCode.BadRequest, query.error.errors[0].message);
 	}
 	if (query.data.username === "favicon.ico") {
 		return res.end();
@@ -34,17 +31,10 @@ async function getProfile(req: NextApiRequest, res: NextApiResponse) {
 
 	const randomProvider = await getRandomProvider<IGetProfile>("Profile");
 	const profile = await randomProvider.getProfile(query.data.username);
-	await redis.setex(
-		`profile:${query.data.username}`,
-		expireTime,
-		JSON.stringify(profile),
-	);
+	await redis.setex(`profile:${query.data.username}`, expireTime, JSON.stringify(profile));
 	res.json(profile);
 }
 
-export default async function apiHandler(
-	req: NextApiRequest,
-	res: NextApiResponse,
-) {
+export default async function apiHandler(req: NextApiRequest, res: NextApiResponse) {
 	await withExeptionFilter(req, res)(getProfile);
 }

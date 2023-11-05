@@ -5,7 +5,11 @@ export function Slide({
 	children,
 	id,
 	length,
-}: { children: ReactNode; id: string; length: number }) {
+}: {
+	children: ReactNode;
+	id: string;
+	length: number;
+}) {
 	const links = new Array(length).fill(0);
 	return (
 		<>
@@ -16,7 +20,11 @@ export function Slide({
 			</section>
 			<div className={`${styles["carousel__nav"]} text-center`}>
 				{links.map((_media, i) => (
-					<a href={`#${id}-${i + 1}`} className={styles["slider-nav"]}>
+					<a
+						key={`#${id}-${i + 1}`}
+						href={`#${id}-${i + 1}`}
+						className={styles["slider-nav"]}
+					>
 						{i + 1}
 					</a>
 				))}
@@ -25,10 +33,7 @@ export function Slide({
 	);
 }
 
-export function SlideItem({
-	id,
-	children,
-}: { id: string; children: ReactNode }) {
+export function SlideItem({ id, children }: { id: string; children: ReactNode }) {
 	return (
 		<div id={id} className={styles["slides-item"]} tabIndex={0}>
 			{children}

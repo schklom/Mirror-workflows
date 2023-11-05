@@ -15,10 +15,7 @@ async function getStories(req: NextApiRequest, res: NextApiResponse<Story[]>) {
 	const expireTime = convertTTlToTimestamp(env.EXPIRE_TIME_FOR_STORIES);
 
 	if (!query.success) {
-		throw new ApiError(
-			HttpStatusCode.BadRequest,
-			query.error.errors[0].message,
-		);
+		throw new ApiError(HttpStatusCode.BadRequest, query.error.errors[0].message);
 	}
 
 	if (query.data.username === "favicon.ico") {
@@ -39,9 +36,6 @@ async function getStories(req: NextApiRequest, res: NextApiResponse<Story[]>) {
 	res.json(stories);
 }
 
-export default async function apiHandler(
-	req: NextApiRequest,
-	res: NextApiResponse,
-) {
+export default async function apiHandler(req: NextApiRequest, res: NextApiResponse) {
 	await withExeptionFilter(req, res)(getStories);
 }

@@ -47,7 +47,9 @@ export default function Stories({ profile, stories, error }: Props) {
 											<Link href={story.thumb} target="_blank">
 												<Img
 													url={story.thumb}
-													alt={`${profile.username}'s image story #${i + 1}`}
+													alt={`${profile.username}'s image story #${
+														i + 1
+													}`}
 												/>
 											</Link>
 										)}
@@ -87,9 +89,7 @@ export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 
 		if (!profile.isPrivate) {
 			try {
-				stories.data = (
-					await axiosInstance.get<Story[]>(`${username}/stories`)
-				).data;
+				stories.data = (await axiosInstance.get<Story[]>(`${username}/stories`)).data;
 			} catch (error) {
 				if (isAxiosError(error)) {
 					if (error.response) {

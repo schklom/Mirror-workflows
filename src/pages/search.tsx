@@ -11,9 +11,9 @@ import { useRouter } from "next/router";
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 export default function Search({ accounts, hashtags, error }: Props) {
+	const router = useRouter();
 	if (error) return <ErrorInfo {...error} />;
 
-	const router = useRouter();
 	const meta = {
 		title: `Search results for ${router.query.q}`,
 		description: `Search results for ${router.query.q} on Proxigram, a privacy frontend alternative to Instagram. Watch accounts without and account`,

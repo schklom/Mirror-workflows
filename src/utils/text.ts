@@ -33,9 +33,7 @@ export function extractTagsAndUsers(text: string): {
 	// rome-ignore lint/suspicious/noAssignInExpressions: <explanation>
 	while ((match = regex.exec(text.replaceAll("\n", " "))) !== null) {
 		const txt = stripHtmlTags(match[2]);
-		const usernameOrTag = txt
-			.replace(/[^a-zA-Z0-9]$/, "")
-			.replace(/<[^>]*$/, "");
+		const usernameOrTag = txt.replace(/[^a-zA-Z0-9]$/, "").replace(/<[^>]*$/, "");
 		if (match[1] === "@") {
 			matches.users.push(usernameOrTag);
 		} else {

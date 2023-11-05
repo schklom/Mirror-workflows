@@ -1,7 +1,4 @@
-import type {
-	GetServerSidePropsContext,
-	InferGetServerSidePropsType,
-} from "next";
+import type { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import type { Comment, Post } from "@/services/types";
 import { Layout } from "@/components/layouts/Layout";
 import { Comments } from "@/components/p/Comments";
@@ -43,9 +40,7 @@ export default function PostPage({ post, comments, error }: Props) {
 						/>
 					)}
 
-					{isVideo && (
-						<Video url={String(post.video)} className="self-center" />
-					)}
+					{isVideo && <Video url={String(post.video)} className="self-center" />}
 
 					{isSideCard && (
 						<Slide length={Number(post.sidecard?.length)} id={post.id}>

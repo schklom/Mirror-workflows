@@ -11,19 +11,13 @@ import { getRandomFilteredProvider, getRandomProvider } from "@/services";
 import { convertTTlToTimestamp } from "@/utils/converters/time";
 import { NextApiRequest, NextApiResponse } from "next";
 
-async function getPosts(
-	req: NextApiRequest,
-	res: NextApiResponse<PostsResponse>,
-) {
+async function getPosts(req: NextApiRequest, res: NextApiResponse<PostsResponse>) {
 	const query = usernameQueryScheme.safeParse(req.query);
 	const cursorBase64 = req.query.cursor as string | undefined;
 	const expireTime = convertTTlToTimestamp(env.EXPIRE_TIME_FOR_POSTS);
 
 	if (!query.success) {
-		throw new ApiError(
-			HttpStatusCode.BadRequest,
-			query.error.errors[0].message,
-		);
+		throw new ApiError(HttpStatusCode.BadRequest, query.error.errors[0].message);
 	}
 
 	if (query.data.username === "favicon.ico") {
@@ -42,8 +36,8 @@ async function getPosts(
 				return res.json(JSON.parse(cachedData));
 			}
 
-			const providerPosts = await getRandomFilteredProvider<IGetPosts>(
-				(provider) => ["Wizstat", "Imgsed"].includes(provider.provider),
+			const providerPosts = await getRandomFilteredProvider<IGetPosts>((provider) =>
+				["Wizstat", "Imgsed"].includes(provider.provider),
 			);
 			const posts = await providerPosts.getPosts({
 				username: query.data.username,
@@ -84,8 +78,8 @@ async function getPosts(
 				return res.json(JSON.parse(cachedData));
 			}
 
-			const providerPosts = await getRandomFilteredProvider<IGetPosts>(
-				(provider) => ["Iganony"].includes(provider.provider),
+			const providerPosts = await getRandomFilteredProvider<IGetPosts>((provider) =>
+				["Iganony"].includes(provider.provider),
 			);
 			const posts = await providerPosts.getPosts({
 				username: query.data.username,
@@ -109,17 +103,10 @@ async function getPosts(
 	const posts = await randomPostsProvider.getPosts({
 		username: query.data.username,
 	});
-	await redis.setex(
-		`profile:${query.data.username}:posts`,
-		expireTime,
-		JSON.stringify(posts),
-	);
+	await redis.setex(`profile:${query.data.username}:posts`, expireTime, JSON.stringify(posts));
 	res.json(posts);
 }
 
-export default async function apiHandler(
-	req: NextApiRequest,
-	res: NextApiResponse,
-) {
+export default async function apiHandler(req: NextApiRequest, res: NextApiResponse) {
 	await withExeptionFilter(req, res)(getPosts);
 }

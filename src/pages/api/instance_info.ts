@@ -2,10 +2,7 @@ import { env } from "env.mjs";
 import { getGitHash } from "@/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function getInstanceInfo(
-	_req: NextApiRequest,
-	res: NextApiResponse,
-) {
+export default async function getInstanceInfo(_req: NextApiRequest, res: NextApiResponse) {
 	res.json({
 		url: env.URL,
 		version: getGitHash(),

@@ -28,9 +28,6 @@ async function search(req: NextApiRequest, res: NextApiResponse) {
 	res.json(searchInfo);
 }
 
-export default async function apiHandler(
-	req: NextApiRequest,
-	res: NextApiResponse,
-) {
+export default async function apiHandler(req: NextApiRequest, res: NextApiResponse) {
 	await withExeptionFilter(req, res)(search);
 }

@@ -9,10 +9,7 @@ export default function Page404() {
 				description: "We couldn't find what your looking for",
 			}}
 		>
-			<NextError
-				statusCode={404}
-				title="We couldn't find what your looking for"
-			/>
+			<NextError statusCode={404} title="We couldn't find what your looking for" />
 		</Layout>
 	);
 }

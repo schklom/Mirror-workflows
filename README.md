@@ -43,7 +43,6 @@
 Proxigram: A privacy focused and and open source front-end for Instagram.
 Inspired by [ProxiTox](https://github.com/pablouser1/ProxiTok), [Nitter](https://github.com/zedeus/nitter/), [LibreMdb](https://codeberg.org/zyachel/libremdb), and [many others](https://github.com/digitalblossom/alternative-frontends)
 
-
 ### Why?
 
 We all know the record of bad practices that Meta has done against user's privacy. Regardless of that, Instagram still is one of the largest social media in the world. This makes it imposible to not have to check Instagram sometimes, but it can be hard to use Instagram when the website is filled with sign-up banners everywhere, is tracking all your activity and wants you to install the official app. This is where Proxigram comes in.
@@ -58,22 +57,22 @@ Using an instance of Proxigram, you can browse Instagram without JavaScript whil
 
 ### Features
 
-- See user profile and feed
-- See individual post
-- See tags
-- Stories
-- RSS feeds
-  - ```/{username}/rss``` -> Feed
-  - ```/{username}/stories/rss``` -> Stories
-- API
-  - ```/api/{username}``` -> profile info
-  - ```/api/{username}/posts``` -> profile feed
-    - query:
-      - cursor
-  - ```/api/{username}/stories``` -> profile stories
-  - ```/api/p/{shortcode}``` -> post
-  - ```/api/p/{shortcode}/comments``` -> post's comments
-  - ```/api/tag/{tag}``` -> tag posts
+-   See user profile and feed
+-   See individual post
+-   See tags
+-   Stories
+-   RSS feeds
+    -   `/{username}/rss` -> Feed
+    -   `/{username}/stories/rss` -> Stories
+-   API
+    -   `/api/{username}` -> profile info
+    -   `/api/{username}/posts` -> profile feed
+        -   query:
+            -   cursor
+    -   `/api/{username}/stories` -> profile stories
+    -   `/api/p/{shortcode}` -> post
+    -   `/api/p/{shortcode}/comments` -> post's comments
+    -   `/api/tag/{tag}` -> tag posts
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -81,15 +80,15 @@ Using an instance of Proxigram, you can browse Instagram without JavaScript whil
 
 ## Roadmap
 
-- [X] Add stories
-- [ ] Add highlights
-- [X] Add rss feed
-- [ ] Add settings
-  - [ ] Enable or disable proxy
-  - [ ] Infinity scroll
-  - [ ] Redirect URLs
-  - [ ] Choose providers
-  - [ ] Healthiness of providers 
+-   [x] Add stories
+-   [ ] Add highlights
+-   [x] Add rss feed
+-   [ ] Add settings
+    -   [ ] Enable or disable proxy
+    -   [ ] Infinity scroll
+    -   [ ] Redirect URLs
+    -   [ ] Choose providers
+    -   [ ] Healthiness of providers
 
 See the [open issues](https://codeberg.org/ThePenguinDev/Proxigram/issues) for a full list of proposed features and known issues.
 
@@ -97,7 +96,7 @@ See the [open issues](https://codeberg.org/ThePenguinDev/Proxigram/issues) for a
 
 ## Resources
 
--  [Wiki page of public instances](https://codeberg.org/ThePenguinDev/Proxigram/wiki/Instances)
+-   [Wiki page of public instances](https://codeberg.org/ThePenguinDev/Proxigram/wiki/Instances)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -115,33 +114,38 @@ As Proxigram is made with Next.js, you can deploy it anywhere where Next.js is s
 4. Clone and setup the project
 
 Clone the repository.
+
 ```bash
 git clone https://codeberg.org/ThePenguinDev/proxigram.git
 ```
 
 Move to the folder.
+
 ```bash
 cd proxigram
 ```
 
 Change the configuration to your needs.
+
 ```bash
 cp .env.example .env
 ```
 
 Replace 'pnpm' with yarn or npm if you use those.
+
 ```bash
 pnpm install
 ```
 
 > If headless providers are enabled, you need to install the browser.
-Use one of these commands to install the browser binary:
+> Use one of these commands to install the browser binary:
 
-- pnpm add playwright-chromium@1.34.3
-- yarn add playwright-chromium@1.34.3
-- npm install playwright-chromium@1.34.3
+-   pnpm add playwright-chromium@1.34.3
+-   yarn add playwright-chromium@1.34.3
+-   npm install playwright-chromium@1.34.3
 
 Create build.
+
 ```bash
 pnpm build
 ```
@@ -149,11 +153,13 @@ pnpm build
 Start redis server.
 
 If "CACHE" is set to false (not recommended), it is not necessary. Check .env
+
 ```bash
 redis-server (or docker)
 ```
 
 Start the server.
+
 ```bash
 pnpm start
 ```
@@ -161,21 +167,25 @@ pnpm start
 ### Docker
 
 Clone the repository.
+
 ```bash
 git clone https://codeberg.org/ThePenguinDev/proxigram.git
 ```
 
 Move to the folder.
+
 ```bash
 cd proxigram
 ```
 
 Change the configuration to your needs.
+
 ```bash
 cp .env.example .env
 ```
 
 Start containers.
+
 ```bash
 docker compose up -d
 ```
@@ -183,7 +193,6 @@ docker compose up -d
 <!-- LICENSE -->
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 ## License
 

@@ -3,8 +3,7 @@ import type { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { ApiError } from "next/dist/server/api-utils";
 
 function getExceptionStatus(exception: unknown) {
-	if (exception instanceof AxiosError)
-		if (exception.response) return exception.response.status;
+	if (exception instanceof AxiosError) if (exception.response) return exception.response.status;
 
 	return exception instanceof ApiError
 		? exception.statusCode

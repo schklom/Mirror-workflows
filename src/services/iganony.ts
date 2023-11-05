@@ -77,8 +77,7 @@ export class Iganony implements IGetProfile, IGetPosts {
 		const html = await this.scraper.getHtml({ path: `/profile/${username}` });
 		const $ = cheerio.load(html);
 		const nextData = $("script#__NEXT_DATA__").text();
-		const profileSessionID =
-			JSON.parse(nextData).props.pageProps.profileInfo.profileSessionID;
+		const profileSessionID = JSON.parse(nextData).props.pageProps.profileInfo.profileSessionID;
 
 		await sleep(env.SLEEP_TIME_PER_REQUEST);
 		return await this.scraper.getJson<IganonyResponse>({
@@ -90,10 +89,7 @@ export class Iganony implements IGetProfile, IGetPosts {
 		});
 	}
 
-	private async fetchMorePosts({
-		userId,
-		cursor,
-	}: { userId: number; cursor: string }) {
+	private async fetchMorePosts({ userId, cursor }: { userId: number; cursor: string }) {
 		const { data, after } = await this.scraper.getJson<IganonyMorePosts>({
 			path: `/api/posts/${userId}?after=${cursor}`,
 		});
@@ -132,10 +128,7 @@ export class Iganony implements IGetProfile, IGetPosts {
 		};
 	}
 
-	async getPosts({
-		username,
-		cursor,
-	}: IgetPostsOptions): Promise<PostsResponse> {
+	async getPosts({ username, cursor }: IgetPostsOptions): Promise<PostsResponse> {
 		const { profile, profilePosts } = await this.fetchProfileAndPosts(username);
 
 		if (cursor) {

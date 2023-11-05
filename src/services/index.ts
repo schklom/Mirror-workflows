@@ -10,6 +10,7 @@ import { axiosInstance } from "@/utils";
 import { InstaNavigation } from "./instanavigation";
 import { PlaywrightScraper } from "./scrapers/playwright";
 import { Provider, ProviderCanGet } from "./types/provider";
+import { StoriesDown } from "./storiesdown";
 
 export const randomUserAgent = new UserAgent().toString();
 
@@ -21,6 +22,7 @@ export const supportedProviders = [
 	"Storiesig",
 	"Iganony",
 	"Instanavigation",
+	"Storiesdown",
 ];
 
 export function getInstanceProviders(providers: Provider[]) {
@@ -83,6 +85,14 @@ export function getInstanceProviders(providers: Provider[]) {
 			case "Instanavigation":
 				providersInstances.push(
 					new InstaNavigation(
+						currentProvider.headlessBrowser
+							? new PlaywrightScraper(scraperConfig)
+							: new AxiosScraper(scraperConfig),
+					),
+				);
+			case "Storiesdown":
+				providersInstances.push(
+					new StoriesDown(
 						currentProvider.headlessBrowser
 							? new PlaywrightScraper(scraperConfig)
 							: new AxiosScraper(scraperConfig),

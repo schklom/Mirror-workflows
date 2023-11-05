@@ -1,4 +1,6 @@
+import redis from "@/utils/redis";
 import { randomUserAgent } from "..";
+import { convertTTlToTimestamp } from "@/utils/converters/time";
 import { Request, Route, chromium } from "playwright-core";
 import { IGetHtml, IGetHtmlOptions } from "../types/functions";
 
@@ -35,6 +37,11 @@ export class PlaywrightScraper implements IGetHtml {
 
 	async getHtml({ path }: IGetHtmlOptions): Promise<string> {
 		const URL = `${this.config.baseURL}/${path}`;
+		const cachedData = await redis.get(`raw:${URL}`);
+		if (cachedData) {
+			return cachedData;
+		}
+
 		const { page } = await this.init();
 
 		page.route("**/*", (route, request) =>
@@ -45,6 +52,7 @@ export class PlaywrightScraper implements IGetHtml {
 		const html = await page.content();
 
 		await page.close();
+		await redis.setex(`raw:${URL}`, convertTTlToTimestamp("10m"), html);
 		return html;
 	}
 }

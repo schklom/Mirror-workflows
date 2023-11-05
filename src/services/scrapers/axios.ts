@@ -1,5 +1,7 @@
 import axios from "axios";
+import redis from "@/utils/redis";
 import { randomUserAgent } from "..";
+import { convertTTlToTimestamp } from "@/utils/converters/time";
 import { IGetHtml, IGetHtmlOptions, IGetJson } from "../types/functions";
 
 export class AxiosScraper implements IGetHtml, IGetJson {
@@ -11,6 +13,11 @@ export class AxiosScraper implements IGetHtml, IGetJson {
 
 	async getHtml({ path }: IGetHtmlOptions): Promise<string> {
 		const URLTOVISIT = `${this.config.baseURL}/${path}`;
+
+		const cachedData = await redis.get(`raw:${URLTOVISIT}`);
+		if (cachedData) {
+			return cachedData;
+		}
 
 		const { data: html } = await axios.get(URLTOVISIT, {
 			headers: {
@@ -28,11 +35,18 @@ export class AxiosScraper implements IGetHtml, IGetJson {
 				"Sec-Fetch-User": "?1",
 			},
 		});
+
+		await redis.setex(`raw:${URLTOVISIT}`, convertTTlToTimestamp("10m"), html);
 		return html;
 	}
 
 	async getJson<T>({ path, data }: IGetHtmlOptions): Promise<T> {
 		const FULL_URL = `${this.config.baseURL}/${path}`;
+		const cachedData = await redis.get(`raw:${FULL_URL}`);
+		if (cachedData) {
+			return JSON.parse(cachedData) as T;
+		}
+
 		const headers = {
 			Host: new URL(this.config.baseURL).hostname,
 			"User-Agent": randomUserAgent,
@@ -61,6 +75,7 @@ export class AxiosScraper implements IGetHtml, IGetJson {
 			});
 			json = resp.data;
 		}
+		await redis.setex(`raw:${FULL_URL}`, convertTTlToTimestamp("10m"), JSON.stringify(json));
 		return json as T;
 	}
 }

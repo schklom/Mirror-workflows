@@ -15,6 +15,9 @@ ENV APP_WEB_ROOT=${APP_WEB_ROOT:-/var/www/html}
 # Base location for tt-rss (defaults to /tt-rss)
 ENV APP_BASE=${APP_BASE:-/tt-rss}
 
+# Resolver for nginx (kube-dns.kube-system.svc.cluster.local for k8s)
+ENV RESOLVER=${RESOLVER:-127.0.0.11}
+
 # In order to make tt-rss appear on website root without /tt-rss/ set above as follows in .env:
 # APP_WEB_ROOT=/var/www/html/tt-rss
 # APP_BASE=

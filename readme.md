@@ -71,6 +71,11 @@ Running electron on a server requires some workarounds with Xvfb. See docker-ent
 
 ## Changelog
 
+### 2023-11-15
+
+- updated dependencies
+- inline iframe script
+
 ### 2023-03-22
 
 - added support for request body and custom headers

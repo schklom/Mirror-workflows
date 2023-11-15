@@ -32,6 +32,9 @@ dependencies:
   fetch:
     specifier: ^1.1.0
     version: 1.1.0
+  json-stringify-safe:
+    specifier: ^5.0.1
+    version: 5.0.1
   knex:
     specifier: ^0.21.21
     version: 0.21.21(pg@8.11.3)

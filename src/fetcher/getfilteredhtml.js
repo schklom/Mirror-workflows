@@ -2,6 +2,7 @@ const cheerio = require('cheerio');
 const debug = require('debug')('ap:fetch');
 const { URL } = require("url");
 const fetch = require('./fetch');
+const FS = require('fs/promises');
 
 async function run({
 	removeScripts = true,
@@ -39,7 +40,12 @@ async function run({
 		$('body').append(`<script src="${src}"></script>`)
 	});
 	for (let url of inlineScripts) {
-		let content = await fetch({ url });
+		let content;
+		if (url.startsWith('http')) {
+			content = await fetch({ url });
+		} else {
+			content = await FS.readFile(url, { encoding: 'utf8' });
+		}
 		$('body').append(`<script>${content}</script>`)
 	}
 	return $.html();

@@ -23,6 +23,7 @@
     "dotenv": "^8.6.0",
     "feed": "^4.2.2",
     "fetch": "^1.1.0",
+    "json-stringify-safe": "^5.0.1",
     "knex": "^0.21.21",
     "koa": "^2.14.2",
     "koa-better-router": "^2.1.1",

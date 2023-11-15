@@ -6,8 +6,7 @@ const { XMLSerializer } = require('xmldom');
 const methods = {};
 const controller = {};
 
-const baseUrl = process.env.BASE_URL || 'http://localhost';
-const injectHref = new URL('/inner.js', new URL(baseUrl)).href;
+const injectScript = './dist/inner.js';
 // URL.resolve( baseUrl, '/inner.js' );
 
 controller['POST /load-page'] = async (data, ctx) => {
@@ -18,7 +17,7 @@ controller['POST /load-page'] = async (data, ctx) => {
 		input: html,
 		baseUrl: data.url,
 		inlineStylesheets: true,
-		inlineScripts: [ injectHref ]
+		inlineScripts: [ injectScript ]
 	});
 	let dom = getDom(html);
 	let siteData = extractSitedata(dom, html, { url: data.url });

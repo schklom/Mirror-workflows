@@ -1,4 +1,5 @@
 const debug = require('debug')('wcx');
+const stringify = require('json-stringify-safe');
 const methods = {};
 
 function expectArguments(request) {
@@ -27,7 +28,7 @@ methods.wrap = function(fn) {
 		}
 		try {
 			let res = await fn(params,ctx);
-			ctx.body = JSON.stringify(res,null,' ');
+			ctx.body = stringify(res,null,' ');
 		} catch(err) {
 			debug("request error",err);
 			let data;
@@ -40,7 +41,7 @@ methods.wrap = function(fn) {
 			} else {
 				data = err;
 			}
-			ctx.body = JSON.stringify(data,null,' ');
+			ctx.body = stringify(data,null,' ');
 		}
 		next();
 	}

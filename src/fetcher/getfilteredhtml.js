@@ -1,6 +1,6 @@
 const cheerio = require('cheerio');
 const debug = require('debug')('ap:fetch');
-const URL = require("url");
+const { URL } = require("url");
 const fetch = require('./fetch');
 
 async function run({
@@ -8,6 +8,7 @@ async function run({
 	removeIframes = true,
 	removeLinks = true,
 	inlineStylesheets = false,
+	inlineScripts = [],
 	appendScripts = [],
 	input,
 	baseUrl
@@ -26,7 +27,8 @@ async function run({
 			let href = stylesheet.attr('href');
 			let content = '';
 			if (href) {
-				let url = URL.resolve( baseUrl, href );
+				// let url = URL.resolve( baseUrl, href );
+				let url = new URL(href, baseUrl).href;
 				debug('loading stylesheet', url);
 				content = await fetch({ url });
 			}
@@ -36,6 +38,10 @@ async function run({
 	appendScripts.forEach(src => {
 		$('body').append(`<script src="${src}"></script>`)
 	});
+	for (let url of inlineScripts) {
+		let content = await fetch({ url });
+		$('body').append(`<script>${content}</script>`)
+	}
 	return $.html();
 }
 

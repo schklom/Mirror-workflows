@@ -18,7 +18,7 @@ controller['POST /load-page'] = async (data, ctx) => {
 		input: html,
 		baseUrl: data.url,
 		inlineStylesheets: true,
-		appendScripts: [ injectHref ]
+		inlineScripts: [ injectHref ]
 	});
 	let dom = getDom(html);
 	let siteData = extractSitedata(dom, html, { url: data.url });

@@ -103,7 +103,7 @@ jobs:
         run: sed -r 's/^ARG WHISPER_MODEL.*/ARG WHISPER_MODEL=tiny/' backend.Dockerfile > backend.Dockerfile.tiny
       # https://github.com/docker/build-push-action#multi-platform-image
       - name: Build and push Web-whisper
-        uses: docker/build-push-action@v5.0.0
+        uses: docker/build-push-action@v5.1.0
         with:
           context: .
           file: ./backend.Dockerfile.tiny
@@ -149,7 +149,7 @@ jobs:
         run: sed -r 's/^ARG WHISPER_MODEL.*/ARG WHISPER_MODEL=base/' ./backend.Dockerfile > ./backend.Dockerfile.base
       # https://github.com/docker/build-push-action#multi-platform-image
       - name: Build and push Web-whisper
-        uses: docker/build-push-action@v5.0.0
+        uses: docker/build-push-action@v5.1.0
         with:
           context: .
           file: ./backend.Dockerfile.base
@@ -195,7 +195,7 @@ jobs:
         run: sed -r 's/^ARG WHISPER_MODEL.*/ARG WHISPER_MODEL=small/' ./backend.Dockerfile > ./backend.Dockerfile.small
       # https://github.com/docker/build-push-action#multi-platform-image
       - name: Build and push Web-whisper
-        uses: docker/build-push-action@v5.0.0
+        uses: docker/build-push-action@v5.1.0
         with:
           context: .
           file: ./backend.Dockerfile.small
@@ -241,7 +241,7 @@ jobs:
         # run: sed -r 's/^ARG WHISPER_MODEL.*/ARG WHISPER_MODEL=medium/' ./backend.Dockerfile > ./backend.Dockerfile.medium
       # # https://github.com/docker/build-push-action#multi-platform-image
       # - name: Build and push Web-whisper
-        # uses: docker/build-push-action@v5.0.0
+        # uses: docker/build-push-action@v5.1.0
         # with:
           # context: .
           # file: ./backend.Dockerfile.medium
@@ -287,7 +287,7 @@ jobs:
         # run: sed -r 's/^ARG WHISPER_MODEL.*/ARG WHISPER_MODEL=large/' ./backend.Dockerfile > ./backend.Dockerfile.large
       # # https://github.com/docker/build-push-action#multi-platform-image
       # - name: Build and push Web-whisper
-        # uses: docker/build-push-action@v5.0.0
+        # uses: docker/build-push-action@v5.1.0
         # with:
           # context: .
           # file: ./backend.Dockerfile.large
@@ -331,7 +331,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       # https://github.com/docker/build-push-action#multi-platform-image
       - name: Build and push Web-whisper
-        uses: docker/build-push-action@v5.0.0
+        uses: docker/build-push-action@v5.1.0
         with:
           context: .
           file: ./frontend.Dockerfile

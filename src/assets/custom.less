@@ -8,21 +8,28 @@ textarea {
 }
 
 @text: #2ded80;
-@inactive: #795fdc;
-@active: #a13064;
+@inactive: #4b34a7;
+@active: #861f4f;
 @dark: #000233;
-@table: #1eaeb7;
+@table: #12838b;
 
-body {
-	margin: 1em;
-	background: url('./skyline1.jpeg');
-	color: @text;
+html,body,#wrap {
 	height: 100%;
+}
+body {
+	background: url('./city1.jpg');
+	color: @text;
 	background-repeat: no-repeat;
     background-color: #000;
     background-attachment: fixed;
     background-size: cover;
     background-position: bottom;
+}
+#wrap {
+	backdrop-filter: blur(4px);
+	padding: 1em;
+}
+#app {
 }
 
 /* Accordion styles */
@@ -160,4 +167,14 @@ a {
 
 .pure-control-group {
     margin: 1em 0;
+}
+
+nav {
+	ul {
+		padding-left: 0
+	}
+	li {
+		display: inline-block;
+		margin: 0 1em;
+	}
 }

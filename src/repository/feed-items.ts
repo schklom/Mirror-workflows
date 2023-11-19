@@ -1,8 +1,9 @@
 import connection from "./base.js";
+import { FeedItem } from "../util/types.js";
 
 const table = 'feed_items';
 
-export async function insertIfNotExists(data, feedId: number) {
+export async function insertIfNotExists(data: Partial<FeedItem>, feedId: number) {
 	let exists = await connection(table)
 		.where({
 			feed: feedId,
@@ -21,9 +22,11 @@ export async function insertIfNotExists(data, feedId: number) {
 		});
 }
 
-export async function getItemsForFeed(feedId: number, max: number) {
-	return connection(table)
+export async function getItemsForFeed(feedId: number, max: number): Promise<FeedItem[]> {
+	let data = await connection(table)
 		.where('feed', feedId)
 		.orderBy('added', 'desc')
-		.limit(max);
+		.limit(max)
+		.select();
+	return data;
 }

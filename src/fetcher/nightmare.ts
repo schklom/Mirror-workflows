@@ -1,7 +1,8 @@
 import emere from '@stormking/emere';
+import { FetchParams } from '../util/types.js';
 const userAgent = process.env.USER_AGENT || 'Feedropolis RSS Generator';
 
-export default function(loadParams) {
+export default function(loadParams: FetchParams) {
 	const headers = { ...(loadParams.headers || {}) };
 	if (loadParams.cookies) {
 		headers.Cookie = loadParams.cookies;

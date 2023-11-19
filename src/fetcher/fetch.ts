@@ -1,9 +1,10 @@
 import axios, { AxiosRequestConfig } from "axios";
 import Debug from "debug";
+import { FetchParams } from "../util/types.js";
 const debug = Debug('ap:fetch');
 const userAgent = process.env.USER_AGENT || 'Feedropolis RSS Generator';
 
-export default async function(loadParams) {
+export default async function(loadParams: FetchParams) {
 	debug('fetch '+loadParams.url);
 	const params: AxiosRequestConfig = {
 		url: loadParams.url,

@@ -2,6 +2,7 @@ import * as FeedRepo from '../repository/feed.js';
 import * as FeedItemRepo from '../repository/feed-items.js';
 import { generateFeedFromSettings } from './feed.js';
 import Debug from 'debug';
+import { FeedModel as Feed } from '../util/types.js'
 const debug = Debug('ap:cron');
 
 const baseInterval = (parseInt(process.env.CRON_BASE) || 50) * 1000;
@@ -51,14 +52,14 @@ export async function fetchNextFeed() {
 			throw new Error('found no content in page');
 		}
 		for (let item of feed.items) {
-			await FeedItemRepo.insertIfNotExists(item, feedSettings.uid);
+			await FeedItemRepo.insertIfNotExists(item as any, feedSettings.uid);
 		}
 		updateNextCheck(feedSettings, false);
 		feedSettings.log.errors = [];
 	} catch (e) {
 		console.log(e);
 		updateNextCheck(feedSettings, true);
-		if (!feedSettings.log) feedSettings.log = {};
+		if (!feedSettings.log) feedSettings.log = { errors: [] };
 		if (!Array.isArray(feedSettings.log.errors)) feedSettings.log.errors = [];
 		feedSettings.log.errors.push({ message: e.message, stack: e.stack });
 		if (feedSettings.errorcount > maxErrorCount) {
@@ -72,7 +73,7 @@ export async function fetchNextFeed() {
 	await FeedRepo.updateFeed(feedSettings);
 }
 
-function createErrorItem(err, feedSettings) {
+function createErrorItem(err: Error, feedSettings: Feed) {
 	let link = feedSettings.url + '#error' + Date.now();
 	return {
 		id: link, //crypto.createHash('sha1').update(link).digest('hex'),
@@ -83,7 +84,7 @@ function createErrorItem(err, feedSettings) {
 	};
 }
 
-function updateNextCheck(feedSettings, error) {
+function updateNextCheck(feedSettings: Feed, error: boolean) {
 	let next = new Date();
 	let errTime = Math.min(maxErrorCount, feedSettings.errorcount);
 	let errorInterval = error ? backoffIntervals[errTime] : 0;

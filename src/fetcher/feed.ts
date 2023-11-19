@@ -6,10 +6,11 @@ import { Feed } from 'feed';
 import Debug from 'debug';
 import { URL } from 'node:url';
 import getFilteredHtml from './getfilteredhtml.js';
+import { FeedItem, FeedSettings, SiteData, FeedModel, FeedLoadParams, FeedSelector } from '../util/types.js';
 const debug = Debug('ap:feed');
 
 
-export async function generateFeedFromSettings(settings) {
+export async function generateFeedFromSettings(settings: FeedModel) {
 	debug('generateFeedFromSettings', settings);
 	let html = await getHtml(settings.loadparams);
 	html = await getFilteredHtml({ input: html, baseUrl: settings.url });
@@ -25,7 +26,7 @@ export async function generateFeedFromSettings(settings) {
 	return feed;
 }
 
-export function extractSitedata(doc, html, settings) {
+export function extractSitedata(doc: DOMParser, html: string, settings: { url: string }): SiteData {
 	let res = {
 		title: '',
 		description: '',
@@ -47,7 +48,7 @@ export function extractSitedata(doc, html, settings) {
 	return res;
 }
 
-function sanitizeFeedData(feedData, siteData) {
+function sanitizeFeedData(feedData: FeedItem[], siteData: SiteData): FeedItem[] {
 	return feedData.map(entry => {
 		let v = {
 			link: new URL(entry.link, new URL(siteData.url)).href,
@@ -73,7 +74,7 @@ function sanitizeFeedData(feedData, siteData) {
 	}).filter(e => !!e)
 }
 
-export function getDom(html) {
+export function getDom(html: string): DOMParser {
 	// debug('html', html);
 	return new DOMParser({
 		errorHandler: {
@@ -90,7 +91,7 @@ export function getDom(html) {
 	}).parseFromString(html, 'text/html');
 }
 
-export async function getHtml(loadParams) {
+export async function getHtml(loadParams: FeedLoadParams): Promise<string> {
 	let html;
 	debug('getHtml', loadParams);
 	if (loadParams.loadScripts) {
@@ -101,7 +102,7 @@ export async function getHtml(loadParams) {
 	return html;
 }
 
-export function extractDataXpath(doc, settings) {
+export function extractDataXpath(doc: DOMParser, settings: FeedSelector): FeedItem[] {
 	let data = [];
 	let entries = select(doc, settings.pathEntry);
 	debug('entries', entries.length);
@@ -147,7 +148,7 @@ export function extractDataXpath(doc, settings) {
 
 const baseUrl = process.env.BASE_URL || 'http://localhost';
 
-export function createFeed(settings, feedData) {
+export function createFeed(settings: FeedModel, feedData: FeedItem[]): Feed {
 	let favUrl = new URL(settings.url);
 	favUrl.pathname = '/favicon.ico';
 	favUrl.search = '';

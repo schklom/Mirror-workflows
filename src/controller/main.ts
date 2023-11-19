@@ -2,13 +2,13 @@ import Router from 'koa-better-router';
 import getFilteredHtml from '../fetcher/getfilteredhtml.js';
 import { generateFeedFromSettings, getHtml, getDom, extractSitedata } from '../fetcher/feed.js';
 import { XMLSerializer } from 'xmldom';
+import { FeedModel } from '../util/types.js';
 
 const router = Router({
 	prefix: '/api/main'
 });
 
 const injectScript = './dist/inner.js';
-// URL.resolve( baseUrl, '/inner.js' );
 
 router.addRoute('POST /load-page', async (ctx) => {
 	let data = JSON.parse(ctx.request.body);
@@ -31,10 +31,24 @@ router.addRoute('POST /load-page', async (ctx) => {
 router.addRoute('POST /set-selectors', async (ctx) => {
 	let data = JSON.parse(ctx.request.body);
 	ctx.session.selectors = data;
-	let settings: Record<string,any> = {};
-	settings.url = ctx.session.loadParams.url;
-	settings.loadparams = { ...ctx.session.loadParams };
-	settings.selectors = { ...ctx.session.selectors };
+	const settings: FeedModel = {
+		uid: 0,
+		lastcheck: new Date(),
+		nextcheck: new Date(),
+		created: new Date(),
+		noitemsiserror: false,
+		inserterrorsasitems: true,
+		log: { errors: [] },
+		checkinterval: 60 * 4,
+		errorcount: 0,
+		maxitems: 100,
+		url: ctx.session.loadParams.url,
+		title: 'temp feed',
+		description: '',
+		loadparams: { ...ctx.session.loadParams },
+		selectors: { ...ctx.session.selectors },
+		secret: 'temp',
+	};
 	let feed = await generateFeedFromSettings(settings);
 	ctx.session.generated = feed.atom1();
 	ctx.json = { ok: true }

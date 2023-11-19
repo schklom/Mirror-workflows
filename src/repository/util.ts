@@ -1,7 +1,8 @@
-const debug = require('debug')('ap:db');
-const { exec } = require('child_process');
+import Debug from 'debug';
+const debug = Debug('ap:db');
+import { exec } from 'child_process';
 
-function waitForDatabase(dbUri) {
+export function waitForDatabase(dbUri): Promise<void> {
 	return new Promise(function(resolve, reject) {
 		let cmd = `bash -c 'while !</dev/tcp/${dbUri.hostname}/${dbUri.port}; do sleep 1; done;'`;
 		debug(cmd);
@@ -17,7 +18,7 @@ function waitForDatabase(dbUri) {
 	});
 }
 
-function runMigrations(dbUri) {
+export function runMigrations(dbUri): Promise<void> {
 	return new Promise(function(resolve, reject) {
 		let cmd = `node node_modules/knex/bin/cli.js --migrations-directory migrations --client pg --connection ${dbUri.href} migrate:latest`;
 		debug(cmd);
@@ -26,9 +27,4 @@ function runMigrations(dbUri) {
 			else resolve();
 		});
 	});
-}
-
-module.exports = {
-	waitForDatabase,
-	runMigrations
 }

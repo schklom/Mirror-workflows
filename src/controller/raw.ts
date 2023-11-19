@@ -1,20 +1,22 @@
-const router = require('koa-better-router')();
-const { createFeed } = require('../../fetcher/feed');
-const FeedRepo = require('../repository/feed');
-const FeedItemRepo = require('../repository/feed-items');
+import Router from 'koa-better-router';
+import { createFeed } from '../fetcher/feed.js';
+import * as FeedRepo from '../repository/feed.js';
+import * as FeedItemRepo from '../repository/feed-items.js';
 
-router.addRoute("GET /raw/iframe/", (ctx,next) => {
+const router = Router();
+
+router.addRoute("GET /raw/iframe/", (ctx, next) => {
 	ctx.response.type = 'text/html';
 	ctx.response.status = 200;
 	ctx.response.body = ctx.session.loadedPage || '';
-    next();
+    return next();
 });
 
-router.addRoute("GET /raw/test-feed/", (ctx,next) => {
+router.addRoute("GET /raw/test-feed/", (ctx, next) => {
 	ctx.response.type = 'text/xml';
 	ctx.response.status = 200;
 	ctx.response.body = ctx.session.generated || '';
-    next();
+    return next();
 });
 
 router.addRoute('GET /feed/get/:id/:secret', async (ctx, next) => {
@@ -32,7 +34,7 @@ router.addRoute('GET /feed/get/:id/:secret', async (ctx, next) => {
 	ctx.response.type = 'text/xml';
 	ctx.response.status = 200;
 	ctx.response.body = feed.atom1();
-	next()
+	return next()
 });
 
-module.exports = router;
+export default router

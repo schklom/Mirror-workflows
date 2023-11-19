@@ -1,6 +1,17 @@
 
 
-class FeedSettings {
+export default class FeedSettings {
+
+	url: string
+	waitFor: string
+	waitForTime: number
+	waitForSelector: string
+	loadScripts: boolean
+	pathEntry: string
+	pathTitle: string
+	pathLink: string
+	pathDescription: string
+	pathImage: string
 
 	constructor({
 		url,
@@ -28,4 +39,3 @@ class FeedSettings {
 
 }
 
-module.exports = FeedSettings;

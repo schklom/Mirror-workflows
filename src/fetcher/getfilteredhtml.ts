@@ -1,10 +1,12 @@
-const cheerio = require('cheerio');
-const debug = require('debug')('ap:fetch');
-const { URL } = require("url");
-const fetch = require('./fetch');
-const FS = require('fs/promises');
+import * as cheerio from "cheerio";
+import Debug from "debug";
+import { URL } from "url";
+import fetch from './fetch.js';
+import FS from 'fs/promises';
+const debug = Debug('ap:getfilteredhtml');
 
-async function run({
+
+export default async function run({
 	removeScripts = true,
 	removeIframes = true,
 	removeLinks = true,
@@ -50,5 +52,3 @@ async function run({
 	}
 	return $.html();
 }
-
-module.exports = run;

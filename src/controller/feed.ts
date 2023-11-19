@@ -1,9 +1,13 @@
-const FeedRepo = require('../repository/feed');
-const crypto = require('crypto');
+import Router from 'koa-better-router';
+import crypto from 'node:crypto';
+import * as FeedRepo from '../repository/feed.js'
 
-const controller = {};
+const router = Router({
+	prefix: '/api/feed'
+});
 
-controller['POST /create'] = async (data, ctx) => {
+router.addRoute('POST /create', async (ctx) => {
+	let data = JSON.parse(ctx.request.body);
 	let e = {
 		title: data.title,
 		description: data.description,
@@ -29,38 +33,39 @@ controller['POST /create'] = async (data, ctx) => {
 	ctx.session.loadParams = null;
 	ctx.session.selectors = null;
 	ctx.session.loadedPage = null;
-	return res;
-};
+	ctx.json = res;
+});
 
-controller['POST /delete'] = async (data) => {
+router.addRoute('POST /delete', async (ctx) => {
+	let data = JSON.parse(ctx.request.body);
 	await FeedRepo.deleteFeed(data.uid);
-	return { ok: 1 };
-};
+	ctx.json = { ok: 1 };
+});
 
-controller['GET /list'] = async () => {
+router.addRoute('GET /list', async (ctx) => {
 	let list = await FeedRepo.getAllFeeds();
 	list.sort((a, b) => {
 		return a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1;
 	});
-	return list;
-};
+	ctx.json = list;
+});
 
-controller['POST /save'] = async (data) => {
+router.addRoute('POST /save', async (ctx) => {
+	let data = JSON.parse(ctx.request.body);
 	let feed = await FeedRepo.getById(data.uid);
 	Object.keys(data).forEach(key => {
 		feed[key] = data[key];
 	});
 	await FeedRepo.updateFeed(feed);
-	return feed;
-};
+	ctx.json = feed;
+});
 
-controller['POST /refreshsecret'] = async (data) => {
+router.addRoute('POST /refreshsecret', async (ctx) => {
+	let data = JSON.parse(ctx.request.body);
 	let feed = await FeedRepo.getById(data.uid);
 	feed.secret = crypto.randomBytes(8).toString('hex'),
 	await FeedRepo.updateFeed(feed);
 	return feed;
-};
+});
 
-module.exports = {
-	controller
-};
+export default router

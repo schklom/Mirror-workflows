@@ -1,13 +1,12 @@
-const { default: emere } = require('@stormking/emere')
-// require('nightmare-load-filter')(Nightmare)
+import emere from '@stormking/emere';
 const userAgent = process.env.USER_AGENT || 'Feedropolis RSS Generator';
 
-module.exports = function(loadParams) {
+export default function(loadParams) {
 	const headers = { ...(loadParams.headers || {}) };
 	if (loadParams.cookies) {
 		headers.Cookie = loadParams.cookies;
 	}
-	const params = {
+	const params: emere.RunScript = {
 		url: loadParams.url,
 		header: headers,
 		waitAfterLoad: loadParams.waitTime,
@@ -19,5 +18,5 @@ module.exports = function(loadParams) {
 		params.body = loadParams.body;
 		params.method = 'POST';
 	}
-	return emere(params)
+	return emere.default(params)
 }

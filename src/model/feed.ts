@@ -1,6 +1,10 @@
 
 
-class Feed {
+export default class Feed {
+
+	settings: Record<string,any>;
+	id: number;
+	lastCheck: Date;
 
 	constructor({
 		settings,
@@ -14,4 +18,3 @@ class Feed {
 
 }
 
-module.exports = Feed;

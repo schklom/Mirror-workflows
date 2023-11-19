@@ -1,14 +1,15 @@
-const connection = require('./base');
+import connection from "./base.js";
 
 const table = 'feed_items';
 
-async function insertIfNotExists(data, feedId) {
+export async function insertIfNotExists(data, feedId: number) {
 	let exists = await connection(table)
 		.where({
 			feed: feedId,
 			link: data.link
 		}).count();
-	if (exists[0].count > 0) return;
+	let count = ~~exists[0].count;
+	if (count > 0) return;
 	await connection(table)
 		.insert({
 			feed: feedId,
@@ -20,16 +21,9 @@ async function insertIfNotExists(data, feedId) {
 		});
 }
 
-async function getItemsForFeed(feedId, max) {
+export async function getItemsForFeed(feedId: number, max: number) {
 	return connection(table)
 		.where('feed', feedId)
 		.orderBy('added', 'desc')
 		.limit(max);
-}
-
-
-
-module.exports = {
-	insertIfNotExists,
-	getItemsForFeed
 }

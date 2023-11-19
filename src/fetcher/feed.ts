@@ -1,16 +1,18 @@
-const { DOMParser } = require('xmldom')
-const select = require('xpath.js')
-const nightmareFetcher = require('./nightmare');
-const simpleFetcher = require('./fetch');
-const { Feed } = require('feed');
-const debug = require('debug')('ap:feed');
-const url = require('url');
-const getFilteredHtml = require('./getfilteredhtml');
+import { DOMParser } from 'xmldom'
+import select from 'xpath.js'
+import nightmareFetcher from './nightmare.js';
+import simpleFetcher from './fetch.js';
+import { Feed } from 'feed';
+import Debug from 'debug';
+import { URL } from 'node:url';
+import getFilteredHtml from './getfilteredhtml.js';
+const debug = Debug('ap:feed');
 
-async function generateFeedFromSettings(settings) {
+
+export async function generateFeedFromSettings(settings) {
 	debug('generateFeedFromSettings', settings);
 	let html = await getHtml(settings.loadparams);
-	html = await getFilteredHtml({ input: html });
+	html = await getFilteredHtml({ input: html, baseUrl: settings.url });
 	debug('html filtered size', html.length);
 	let doc = await getDom(html);
 	// debug('dom', doc);
@@ -18,12 +20,12 @@ async function generateFeedFromSettings(settings) {
 	debug('feedData', feedData);
 	let siteData = extractSitedata(doc, html, settings);
 	feedData = sanitizeFeedData(feedData, siteData);
-	let feed = createFeed(settings, feedData, siteData);
+	let feed = createFeed(settings, feedData);
 	debug('feed', feed);
 	return feed;
 }
 
-function extractSitedata(doc, html, settings) {
+export function extractSitedata(doc, html, settings) {
 	let res = {
 		title: '',
 		description: '',
@@ -55,7 +57,7 @@ function sanitizeFeedData(feedData, siteData) {
 			added: new Date()
 		}
 		if (v.link.length > 255) {
-			debug('link too long to save', link);
+			debug('link too long to save', v.link);
 			return null;
 		}
 		if (v.title.length > 255) {
@@ -71,7 +73,7 @@ function sanitizeFeedData(feedData, siteData) {
 	}).filter(e => !!e)
 }
 
-function getDom(html) {
+export function getDom(html) {
 	// debug('html', html);
 	return new DOMParser({
 		errorHandler: {
@@ -88,7 +90,7 @@ function getDom(html) {
 	}).parseFromString(html, 'text/html');
 }
 
-async function getHtml(loadParams) {
+export async function getHtml(loadParams) {
 	let html;
 	debug('getHtml', loadParams);
 	if (loadParams.loadScripts) {
@@ -99,7 +101,7 @@ async function getHtml(loadParams) {
 	return html;
 }
 
-function extractDataXpath(doc, settings) {
+export function extractDataXpath(doc, settings) {
 	let data = [];
 	let entries = select(doc, settings.pathEntry);
 	debug('entries', entries.length);
@@ -145,7 +147,7 @@ function extractDataXpath(doc, settings) {
 
 const baseUrl = process.env.BASE_URL || 'http://localhost';
 
-function createFeed(settings, feedData) {
+export function createFeed(settings, feedData) {
 	let favUrl = new URL(settings.url);
 	favUrl.pathname = '/favicon.ico';
 	favUrl.search = '';
@@ -158,7 +160,8 @@ function createFeed(settings, feedData) {
 		generator: 'FeedroPolis',
 		feedLinks: {
 			atom: new URL(`/feed/get/${settings.uid || 0}/${settings.secret || 'none'}/`, new URL(baseUrl)).href
-		}
+		},
+		copyright: ''
 	});
 	feedData.forEach(({ title, link, description, added, image }) => {
 		const item = {
@@ -175,13 +178,4 @@ function createFeed(settings, feedData) {
 		feed.addItem(item);
 	});
 	return feed;
-}
-
-module.exports = {
-	generateFeedFromSettings,
-	getHtml,
-	getDom,
-	extractDataXpath,
-	extractSitedata,
-	createFeed
 }

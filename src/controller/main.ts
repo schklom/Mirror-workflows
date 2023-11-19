@@ -1,15 +1,17 @@
-const getFilteredHtml = require('../../fetcher/getfilteredhtml');
-const { generateFeedFromSettings, getHtml, getDom, extractSitedata } = require('../../fetcher/feed');
-// const URL = require('url');
-const { XMLSerializer } = require('xmldom');
+import Router from 'koa-better-router';
+import getFilteredHtml from '../fetcher/getfilteredhtml.js';
+import { generateFeedFromSettings, getHtml, getDom, extractSitedata } from '../fetcher/feed.js';
+import { XMLSerializer } from 'xmldom';
 
-const methods = {};
-const controller = {};
+const router = Router({
+	prefix: '/api/main'
+});
 
 const injectScript = './dist/inner.js';
 // URL.resolve( baseUrl, '/inner.js' );
 
-controller['POST /load-page'] = async (data, ctx) => {
+router.addRoute('POST /load-page', async (ctx) => {
+	let data = JSON.parse(ctx.request.body);
 	ctx.session.url = data.url;
 	ctx.session.loadParams = data;
 	let html = await getHtml(data);
@@ -23,20 +25,20 @@ controller['POST /load-page'] = async (data, ctx) => {
 	let siteData = extractSitedata(dom, html, { url: data.url });
 	html = new XMLSerializer().serializeToString(dom);
 	ctx.session.loadedPage = html;
-	return { ok: true, length: html.length, title: siteData.title, description: siteData.description  }
-}
+	ctx.json = { ok: true, length: html.length, title: siteData.title, description: siteData.description  }
+})
 
-controller['POST /set-selectors'] = async (data, ctx) => {
+router.addRoute('POST /set-selectors', async (ctx) => {
+	let data = JSON.parse(ctx.request.body);
 	ctx.session.selectors = data;
-	let settings = {};
+	let settings: Record<string,any> = {};
 	settings.url = ctx.session.loadParams.url;
 	settings.loadparams = { ...ctx.session.loadParams };
 	settings.selectors = { ...ctx.session.selectors };
 	let feed = await generateFeedFromSettings(settings);
 	ctx.session.generated = feed.atom1();
-	return { ok: true }
-}
+	ctx.json = { ok: true }
+})
 
-methods.controller = controller;
 
-module.exports = methods;
+export default router;

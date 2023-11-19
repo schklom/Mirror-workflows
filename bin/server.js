@@ -1,21 +1,40 @@
-const env = require('dotenv');
-env.config({ path: '.env.local' });
-env.config({ path: '.env' });
-const port = process.env.APP_PORT || 3000;
-const { runMigrations, waitForDatabase } = require('../src/server/db');
+import env from 'dotenv';
+env.config({
+    path: '.env.local'
+});
+env.config({
+    path: '.env'
+});
+import createApp from '../dist/server.js';
+import connection from '../dist/repository/base.js';
+import {
+    runMigrations,
+    waitForDatabase
+} from '../dist/repository/util.js';
+Error.stackTraceLimit = 999;
 
 async function run() {
-	const dbUri = new URL(process.env.DATABASE_URL || '');
-	await waitForDatabase(dbUri);
-	await runMigrations(dbUri);
-	const App = require("../src/server/server");
-	App.listen(port);
-	const Cron = require('../src/fetcher/cron');
-	Cron.start();
+    console.log(process.env.DATABASE_URL);
+    const dbUri = new URL(process.env.DATABASE_URL || '');
+    console.log('waiting for db...');
+    await waitForDatabase(dbUri);
+    console.log('executing migrations...');
+    await runMigrations(dbUri);
+    // console.log('starting server with env', process.env);
+	const app = createApp();
+	app.listen(3000);
+	await connection.raw('select 1')
+	console.log('db connection aquired');
 }
 
 run()
-	.catch(e => {
-		console.error(e);
-		process.exit(1);
-	});
+    .catch(e => {
+        console.error(e);
+        process.exit(1);
+    });
+
+process.on('SIGTERM', () => {
+	app.close();
+})
+
+

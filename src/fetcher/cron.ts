@@ -1,7 +1,8 @@
-const FeedRepo = require('../server/repository/feed');
-const FeedItemRepo = require('../server/repository/feed-items');
-const { generateFeedFromSettings } = require('./feed');
-const debug = require('debug')('ap:cron');
+import * as FeedRepo from '../repository/feed.js';
+import * as FeedItemRepo from '../repository/feed-items.js';
+import { generateFeedFromSettings } from './feed.js';
+import Debug from 'debug';
+const debug = Debug('ap:cron');
 
 const baseInterval = (parseInt(process.env.CRON_BASE) || 50) * 1000;
 const rngInterval = (parseInt(process.env.CRON_RNG) || 20) * 1000;
@@ -20,12 +21,12 @@ async function run() {
 	running = false;
 }
 
-function start() {
+export function start() {
 	if (timer || running) return;
 	debug('started cron');
 	run();
 }
-function stop() {
+export function stop() {
 	if (!timer) return;
 	clearTimeout(timer);
 	timer = null;
@@ -39,7 +40,7 @@ let backoffIntervals = [
 ];
 const maxErrorCount = 3;
 
-async function fetchNextFeed() {
+export async function fetchNextFeed() {
 	let feedSettings = await FeedRepo.getNextFeedInQueue();
 	if (!feedSettings) return;
 	debug('cron check', feedSettings);
@@ -89,10 +90,4 @@ function updateNextCheck(feedSettings, error) {
 	next.setMinutes( next.getMinutes() + feedSettings.checkinterval + errorInterval );
 	feedSettings.nextcheck = next;
 	feedSettings.errorcount = error ? feedSettings.errorcount+1 : 0;
-}
-
-module.exports = {
-	fetchNextFeed,
-	start,
-	stop
 }

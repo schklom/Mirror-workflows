@@ -1,4 +1,3 @@
-const debug = require('debug')('sambience-rrm');
 
 class Manager {
 

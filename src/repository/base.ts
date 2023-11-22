@@ -31,5 +31,9 @@ const connection = knex({
 	}
 })
 
+process.on('SIGTERM', () => {
+	connection.destroy();
+})
+
 export default connection;
 

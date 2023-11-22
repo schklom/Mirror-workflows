@@ -1,6 +1,6 @@
 import Router from 'koa-better-router';
-import getFilteredHtml from '../fetcher/getfilteredhtml.js';
-import { generateFeedFromSettings, getHtml, getDom, extractSitedata } from '../fetcher/feed.js';
+import getFilteredHtml from '../service/getfilteredhtml.js';
+import { generateFeedFromSettings, getHtml, getDom, extractSitedata } from '../service/feed.js';
 import { XMLSerializer } from 'xmldom';
 import { FeedModel } from '../util/types.js';
 

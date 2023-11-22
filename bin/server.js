@@ -7,10 +7,9 @@ env.config({
 });
 import createApp from '../dist/server.js';
 import connection from '../dist/repository/base.js';
-import {
-    runMigrations,
-    waitForDatabase
-} from '../dist/repository/util.js';
+import { runMigrations, waitForDatabase } from '../dist/repository/util.js';
+import * as CronService from '../dist/service/cron.js';
+import * as CleanService from '../dist/service/cleanup.js';
 Error.stackTraceLimit = 999;
 
 async function run() {
@@ -25,6 +24,8 @@ async function run() {
 	app.listen(3000);
 	await connection.raw('select 1')
 	console.log('db connection aquired');
+	CronService.start()
+	CleanService.start();
 }
 
 run()
@@ -35,6 +36,8 @@ run()
 
 process.on('SIGTERM', () => {
 	app.close();
-})
+	CronService.stop();
+	CleanService.stop();
+});
 
 

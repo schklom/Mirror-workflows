@@ -1,5 +1,5 @@
 import Router from 'koa-better-router';
-import { createFeed } from '../fetcher/feed.js';
+import { createFeed } from '../service/feed.js';
 import * as FeedRepo from '../repository/feed.js';
 import * as FeedItemRepo from '../repository/feed-items.js';
 
@@ -34,7 +34,8 @@ router.addRoute('GET /feed/get/:id/:secret', async (ctx, next) => {
 	ctx.response.type = 'text/xml';
 	ctx.response.status = 200;
 	ctx.response.body = feed.atom1();
-	return next()
+	await FeedRepo.updateLastRetrieval(feedSettings.uid);
+	return next();
 });
 
 export default router

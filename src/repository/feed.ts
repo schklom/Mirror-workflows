@@ -34,3 +34,17 @@ export async function getById(id: number): Promise<Feed | null> {
 	let res = await connection(table).where({ uid: id }).select('*');
 	return res.length ? res[0] : null;
 }
+
+export async function findByLastRetrievalBefore(date: Date): Promise<Feed[]> {
+	let res = await connection(table).where('lastretrieval', '<', date).select();
+	return res;
+}
+
+export async function findByCreatedBefore(date: Date): Promise<Feed[]> {
+	let res = await connection(table).where('created', '<', date).select();
+	return res;
+}
+
+export async function updateLastRetrieval(uid: number) {
+	await connection(table).where({ uid }).update({ lastretrieval: new Date() });
+}

@@ -13,7 +13,7 @@ textarea {
 @dark: #000233;
 @table: #12838b;
 
-html,body,#wrap {
+html,body,#app {
 	height: 100%;
 }
 body {
@@ -26,8 +26,23 @@ body {
     background-position: bottom;
 }
 #wrap {
-	backdrop-filter: blur(6px);
 	padding: 1em;
+}
+#app {
+	backdrop-filter: blur(4px);
+}
+#wrap > header {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-between;
+	align-items: center;
+}
+#wrap > header > h1 {
+	margin: 0;
+}
+#wrap > header > .info {
+	font-size: 70%;
+	color: #eee;
 }
 
 /* Accordion styles */

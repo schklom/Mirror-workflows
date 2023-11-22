@@ -1,9 +1,8 @@
 import { fileURLToPath, URL } from 'node:url'
-import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import multi from '@rollup/plugin-multi-entry';
 
+process.env.VITE_BUILD_TIME = new Date().toISOString()
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
@@ -15,19 +14,7 @@ export default defineConfig({
 		}
 	},
 	build: {
-		target: 'esnext',
-		// rollupOptions: {
-		// 	input: {
-		// 		index: resolve(__dirname, 'index.html'),
-		// 		inner: resolve(__dirname, 'inner.html'),
-		// 	},
-		// 	output: {
-		// 		manualChunks: {},
-		// 		dir: 'dist',
-		// 		chunkFileNames: 'assets/[name].js',
-		// 		entryFileNames: 'assets/[name].js'
-		// 	}
-		// },
+		target: 'esnext'
 	},
 	server: {
 		proxy: {

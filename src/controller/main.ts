@@ -8,10 +8,11 @@ const router = Router({
 	prefix: '/api/main'
 });
 
-const injectScript = './dist/inner.js';
+const injectScript = './ui-dist/assets/inner.js';
 
 router.addRoute('POST /load-page', async (ctx) => {
-	let data = JSON.parse(ctx.request.body);
+	// console.log('load-page', ctx.request.body);
+	let data = ctx.request.body;
 	ctx.session.url = data.url;
 	ctx.session.loadParams = data;
 	let html = await getHtml(data);
@@ -29,7 +30,7 @@ router.addRoute('POST /load-page', async (ctx) => {
 })
 
 router.addRoute('POST /set-selectors', async (ctx) => {
-	let data = JSON.parse(ctx.request.body);
+	let data = ctx.request.body;
 	ctx.session.selectors = data;
 	const settings: FeedModel = {
 		uid: 0,

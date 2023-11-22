@@ -7,7 +7,7 @@ const router = Router({
 });
 
 router.addRoute('POST /create', async (ctx) => {
-	let data = JSON.parse(ctx.request.body);
+	let data = ctx.request.body;
 	let e = {
 		title: data.title,
 		description: data.description,
@@ -37,7 +37,7 @@ router.addRoute('POST /create', async (ctx) => {
 });
 
 router.addRoute('POST /delete', async (ctx) => {
-	let data = JSON.parse(ctx.request.body);
+	let data = ctx.request.body;
 	await FeedRepo.deleteFeed(data.uid);
 	ctx.json = { ok: 1 };
 });
@@ -51,7 +51,7 @@ router.addRoute('GET /list', async (ctx) => {
 });
 
 router.addRoute('POST /save', async (ctx) => {
-	let data = JSON.parse(ctx.request.body);
+	let data = ctx.request.body;
 	let feed = await FeedRepo.getById(data.uid);
 	Object.keys(data).forEach(key => {
 		feed[key] = data[key];
@@ -61,7 +61,7 @@ router.addRoute('POST /save', async (ctx) => {
 });
 
 router.addRoute('POST /refreshsecret', async (ctx) => {
-	let data = JSON.parse(ctx.request.body);
+	let data = ctx.request.body;
 	let feed = await FeedRepo.getById(data.uid);
 	feed.secret = crypto.randomBytes(8).toString('hex'),
 	await FeedRepo.updateFeed(feed);

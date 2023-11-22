@@ -16,18 +16,18 @@ export default defineConfig({
 	},
 	build: {
 		target: 'esnext',
-		rollupOptions: {
-			input: {
-				index: resolve(__dirname, 'index.html'),
-				inner: resolve(__dirname, 'inner.html'),
-			},
-			output: {
-				manualChunks: {},
-				dir: 'dist',
-				chunkFileNames: 'assets/[name].js',
-				entryFileNames: 'assets/[name].js'
-			}
-		},
+		// rollupOptions: {
+		// 	input: {
+		// 		index: resolve(__dirname, 'index.html'),
+		// 		inner: resolve(__dirname, 'inner.html'),
+		// 	},
+		// 	output: {
+		// 		manualChunks: {},
+		// 		dir: 'dist',
+		// 		chunkFileNames: 'assets/[name].js',
+		// 		entryFileNames: 'assets/[name].js'
+		// 	}
+		// },
 	},
 	server: {
 		proxy: {

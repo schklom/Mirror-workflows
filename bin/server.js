@@ -20,7 +20,7 @@ async function run() {
     await waitForDatabase(dbUri);
     console.log('executing migrations...');
     await runMigrations(dbUri);
-    // console.log('starting server with env', process.env);
+    console.log('starting server with env', process.env);
 	const app = createApp();
 	app.listen(3000);
 	await connection.raw('select 1')

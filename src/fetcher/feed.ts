@@ -6,7 +6,7 @@ import { Feed } from 'feed';
 import Debug from 'debug';
 import { URL } from 'node:url';
 import getFilteredHtml from './getfilteredhtml.js';
-import { FeedItem, FeedSettings, SiteData, FeedModel, FeedLoadParams, FeedSelector } from '../util/types.js';
+import { FeedItem, SiteData, FeedModel, FeedLoadParams, FeedSelector } from '../util/types.js';
 const debug = Debug('ap:feed');
 
 

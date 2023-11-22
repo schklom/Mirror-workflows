@@ -1,11 +1,11 @@
 
-exports.up = function(knex) {
+export async function up(knex) {
 	return knex.schema.alterTable('feed_items', t => {
 		t.string('image');
 	});
 };
 
-exports.down = function(knex) {
+export async function down(knex) {
 	return knex.schema.alterTable('feed_items', t => {
 		t.dropColumn('image');
 	});

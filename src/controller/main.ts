@@ -8,7 +8,7 @@ const router = Router({
 	prefix: '/api/main'
 });
 
-const injectScript = './ui-dist/assets/inner.js';
+const injectScript = './ui/dist/inner.js';
 
 router.addRoute('POST /load-page', async (ctx) => {
 	// console.log('load-page', ctx.request.body);

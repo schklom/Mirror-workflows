@@ -20,7 +20,7 @@ export function waitForDatabase(dbUri): Promise<void> {
 
 export function runMigrations(dbUri): Promise<void> {
 	return new Promise(function(resolve, reject) {
-		let cmd = `node node_modules/knex/bin/cli.js --migrations-directory migrations --client pg --connection ${dbUri.href} migrate:latest`;
+		let cmd = `node_modules/.bin/knex --migrations-directory migrations --client pg --connection ${dbUri.href} migrate:latest`;
 		debug(cmd);
 		let p = exec(cmd, {}, (err) => {
 			if (err) reject(err);

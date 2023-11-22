@@ -5,15 +5,19 @@ RUN npm i -g pnpm
 RUN mkdir /app
 RUN chown node:node -R /app
 USER node
+ENV NODE_ENV staging
 WORKDIR /app
-ADD pnpm-lock.yaml .
-# ADD package-lock.json .
-ADD package.json .
 RUN pnpm config set store-dir .pnpm-store
-RUN pnpm install
 
 ADD --chown=1000:1000 . /app/
 
+WORKDIR /app/ui
+RUN pnpm install
+RUN pnpm run build-only && pnpm run build:inner
+RUN rm -rf node_modules src public
+
+WORKDIR /app
+RUN pnpm install
 RUN pnpm run build
 ENV NODE_ENV production
 RUN pnpm install

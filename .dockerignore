@@ -1,0 +1,8 @@
+/node_modules/
+/ui/node_modules/
+/ui/cypress/
+/.git/
+.env*
+Dockerfile*
+docker-compose*
+todo.md

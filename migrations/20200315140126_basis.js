@@ -1,5 +1,5 @@
 
-exports.up = async function(knex) {
+export async function up(knex) {
 	return Promise.all([
 		knex.schema.createTable('feeds', t => {
 			t.increments('uid').primary();
@@ -33,6 +33,6 @@ exports.up = async function(knex) {
 
 };
 
-exports.down = async function(knex) {
+export async function down(knex) {
 	knex.schema.dropTable('feeds')
 };

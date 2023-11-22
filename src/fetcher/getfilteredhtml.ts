@@ -48,7 +48,7 @@ export default async function run({
 		} else {
 			content = await FS.readFile(url, { encoding: 'utf8' });
 		}
-		$('body').append(`<script>${content}</script>`)
+		$('body').append(`<script type="module">${content}</script>`)
 	}
 	return $.html();
 }

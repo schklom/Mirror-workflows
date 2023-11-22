@@ -8,6 +8,8 @@ import FeedRouter from './controller/feed.js';
 import MainRouter from './controller/main.js';
 import RawRouter from './controller/raw.js';
 
+const UiDir = './ui/dist/'
+
 export default function createApp() {
 	const app = new koa();
 
@@ -20,7 +22,7 @@ export default function createApp() {
 		store: cookieStorage
 	}, app));
 
-	app.use( serve('./ui-dist/'),{
+	app.use( serve(UiDir),{
 		maxage : 0,
 		hidden : false,
 		index : "index.html",
@@ -76,7 +78,7 @@ export default function createApp() {
 	app.use(async (ctx,next) => {
 		await next();
 		if ('json' in ctx) {
-			console.log('writing response', ctx.json);
+			// console.log('writing response', ctx.json);
 			ctx.response.body = JSON.stringify({ ok: true, data: ctx.json });
 		}
 	});

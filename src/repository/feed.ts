@@ -15,8 +15,12 @@ export async function deleteFeed(id: number) {
 	return connection(table).where({ uid: id }).del();
 }
 
-export async function getAllFeeds(): Promise<Feed[]> {
-	return connection(table).select('*');
+export async function getAllFeeds(managmentkey?: string): Promise<Feed[]> {
+	if (managmentkey) {
+		return connection(table).where('managementkey', managmentkey).select();
+	} else {
+		return connection(table).select('*');
+	}
 }
 
 export async function getNextFeedInQueue(): Promise<Feed> {

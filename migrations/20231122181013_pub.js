@@ -9,7 +9,7 @@ export async function up(knex) {
 
 export async function down(knex) {
 	return knex.schema.alterTable('feeds', t => {
-		t.dropColumn('managmentkey');
+		t.dropColumn('managementkey');
 		t.dropColumn('lastretrieval');
 	});
 };

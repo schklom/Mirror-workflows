@@ -49,6 +49,8 @@ router.addRoute('POST /set-selectors', async (ctx) => {
 		loadparams: { ...ctx.session.loadParams },
 		selectors: { ...ctx.session.selectors },
 		secret: 'temp',
+		managementkey: 'temp',
+		lastretrieval: new Date()
 	};
 	let feed = await generateFeedFromSettings(settings);
 	ctx.session.generated = feed.atom1();

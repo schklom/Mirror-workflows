@@ -32,8 +32,8 @@ export type FeedSelector = {
 }
 
 export type FeedModel = {
-	uid: number;
-	lastcheck: Date;
+	uid: number
+	lastcheck: Date
 	nextcheck: Date
 	created: Date
 	noitemsiserror: boolean;
@@ -48,6 +48,8 @@ export type FeedModel = {
 	url: string
 	loadparams: FeedLoadParams
 	selectors: FeedSelector
+	managementkey: string
+	lastretrieval: Date
 }
 
 export type FetchParams = {

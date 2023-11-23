@@ -1,5 +1,6 @@
 import RRM from './rrm'
 import EventEmitter from 'eventemitter3';
+import { getKey } from './local-key';
 
 export const EventHub = new EventEmitter();
 
@@ -33,6 +34,10 @@ export async function ajax(action: string, data?: any, post?: boolean) {
 	if (action[0] === '/') action = action.substring(1);
 	let url = `${document.location.origin}/${action}`;
 	let method = data ? 'POST' : 'GET';
+	let key = await getKey();
+	if (key) {
+		url += `?mgmtKey=${key}`;
+	}
 	let body: any = undefined;
 	if (data) {
 		body = JSON.stringify(data);

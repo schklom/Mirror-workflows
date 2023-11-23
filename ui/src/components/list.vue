@@ -134,11 +134,6 @@ export default {
 	},
 	created() {
 	},
-	computed: {
-		link(item) {
-			return `${document.location.origin}/api/feed/get/${item.uid}/${item.secret}/`
-		}
-	},
 	methods: {
 		async deleteFeed() {
 			await ajax('/api/feed/delete', { uid: this.edit!.uid }, true)

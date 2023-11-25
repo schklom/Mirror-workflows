@@ -6,6 +6,7 @@ stages:
 
 variables:
   ESLINT_PATHS: js plugins
+  REGISTRY_PROJECT: cthulhoo
 
 include:
   - project: 'ci/ci-templates'

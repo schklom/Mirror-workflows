@@ -72,7 +72,7 @@ class Sanitizer {
 		$res = trim($str); if (!$res) return '';
 
 		$doc = new DOMDocument();
-		$doc->loadHTML('<?xml encoding="UTF-8">' . $res);
+		$doc->loadHTML('<meta charset="UTF-8">' . $res);
 		$xpath = new DOMXPath($doc);
 
 		// is it a good idea to possibly rewrite urls to our own prefix?

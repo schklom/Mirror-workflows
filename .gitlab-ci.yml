@@ -75,6 +75,14 @@ phpunit-integration:
     - export TTRSS_DB_NAME=postgres
     - export TTRSS_DB_PASS=password
     - php82 vendor/bin/phpunit --group integration --do-not-cache-result --log-junit phpunit-report.xml --coverage-cobertura phpunit-coverage.xml --coverage-text --colors=never
+  artifacts:
+    when: always
+    reports:
+      junit: phpunit-report.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: phpunit-coverage.xml
+  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
 
 selenium:
   image: ${SELENIUM_IMAGE}

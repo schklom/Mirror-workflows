@@ -22,7 +22,7 @@ include:
 phpunit:
   extends: .phpunit
   variables:
-    PHPUNIT_ARGS: --exclude integration
+    PHPUNIT_ARGS: --exclude integration --coverage-filter classes --coverage-filter include
 
 eslint:
   extends: .eslint

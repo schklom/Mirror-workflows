@@ -28,6 +28,7 @@
     },
     "require-dev": {
         "phpstan/phpstan": "1.10.3",
-        "phpunit/phpunit": "9.5.16"
+        "phpunit/phpunit": "9.5.16",
+		"phpunit/php-code-coverage": "^9.2"
     }
 }

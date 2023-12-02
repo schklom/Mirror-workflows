@@ -68,5 +68,5 @@ class SeleniumTest(unittest.TestCase):
 
         assert self.driver.find_element(by=By.CSS_SELECTOR, value="#feedTree").is_displayed()
 
-with open('selenium-results.xml', 'wb') as output:
+with open('selenium-report.xml', 'wb') as output:
     unittest.main(testRunner=xmlrunner.XMLTestRunner(output=output))

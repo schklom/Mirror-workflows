@@ -2,6 +2,7 @@
 
 import os
 import unittest
+import xmlrunner
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -67,4 +68,5 @@ class SeleniumTest(unittest.TestCase):
 
         assert self.driver.find_element(by=By.CSS_SELECTOR, value="#feedTree").is_displayed()
 
-unittest.main()
+with open('selenium-results.xml', 'wb') as output:
+    unittest.main(testRunner=xmlrunner.XMLTestRunner(output=output))

@@ -95,6 +95,10 @@ selenium:
     - python3 tests/integration/selenium_test.py
   needs:
     - job: phpunit-integration
+  artifacts:
+    when: always
+    reports:
+      junit: selenium-report.xml
 
 ttrss-web-nginx:publish:
   stage: publish

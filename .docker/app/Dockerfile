@@ -1,17 +1,17 @@
 ARG PROXY_REGISTRY
-FROM ${PROXY_REGISTRY}alpine:3.18
+FROM ${PROXY_REGISTRY}alpine:3.19
 EXPOSE 9000/tcp
 
 ENV SCRIPT_ROOT=/opt/tt-rss
 ENV SRC_DIR=/src/tt-rss/
 
-RUN apk add --no-cache dcron php82 php82-fpm php82-phar php82-sockets php82-pecl-apcu \
-	php82-pdo php82-gd php82-pgsql php82-pdo_pgsql php82-xmlwriter php82-opcache \
-	php82-mbstring php82-intl php82-xml php82-curl php82-simplexml \
-	php82-session php82-tokenizer php82-dom php82-fileinfo php82-ctype \
-	php82-json php82-iconv php82-pcntl php82-posix php82-zip php82-exif \
-	php82-openssl git postgresql-client sudo php82-pecl-xdebug rsync tzdata && \
-	sed -i 's/\(memory_limit =\) 128M/\1 256M/' /etc/php82/php.ini && \
+RUN apk add --no-cache dcron php83 php83-fpm php83-phar php83-sockets php83-pecl-apcu \
+	php83-pdo php83-gd php83-pgsql php83-pdo_pgsql php83-xmlwriter php83-opcache \
+	php83-mbstring php83-intl php83-xml php83-curl php83-simplexml \
+	php83-session php83-tokenizer php83-dom php83-fileinfo php83-ctype \
+	php83-json php83-iconv php83-pcntl php83-posix php83-zip php83-exif \
+	php83-openssl git postgresql-client sudo php83-pecl-xdebug rsync tzdata && \
+	sed -i 's/\(memory_limit =\) 128M/\1 256M/' /etc/php83/php.ini && \
 	sed -i -e 's/^listen = 127.0.0.1:9000/listen = 9000/' \
 		-e 's/;\(clear_env\) = .*/\1 = no/i' \
 		-e 's/;\(pm.status_path = \/status\)/\1/i' \
@@ -19,7 +19,7 @@ RUN apk add --no-cache dcron php82 php82-fpm php82-phar php82-sockets php82-pecl
 		-e 's/^\(user\|group\) = .*/\1 = app/i' \
 		-e 's/;\(php_admin_value\[error_log\]\) = .*/\1 = \/tmp\/error.log/' \
 		-e 's/;\(php_admin_flag\[log_errors\]\) = .*/\1 = on/' \
-			/etc/php82/php-fpm.d/www.conf && \
+			/etc/php83/php-fpm.d/www.conf && \
 	mkdir -p /var/www ${SCRIPT_ROOT}/config.d
 
 ARG CI_COMMIT_BRANCH
@@ -87,7 +87,7 @@ ENV TTRSS_DB_HOST="db"
 ENV TTRSS_DB_PORT="5432"
 
 ENV TTRSS_MYSQL_CHARSET="UTF8"
-ENV TTRSS_PHP_EXECUTABLE="/usr/bin/php82"
+ENV TTRSS_PHP_EXECUTABLE="/usr/bin/php83"
 ENV TTRSS_PLUGINS="auth_internal, note, nginx_xaccel"
 
 CMD ${SCRIPT_ROOT}/startup.sh

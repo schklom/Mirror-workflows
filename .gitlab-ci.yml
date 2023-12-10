@@ -56,7 +56,7 @@ phpdoc:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $PHPDOC_DEPLOY_SSH_KEY != null
   script:
-    - php82 /phpDocumentor.phar -d classes -d include -t phpdoc --visibility=public
+    - php83 /phpDocumentor.phar -d classes -d include -t phpdoc --visibility=public
     - mkdir -p ~/.ssh &&
         cp ${PHPDOC_DEPLOY_SSH_KEY} ~/.ssh/id_ed25519 &&
         chmod 0600 ~/.ssh/id_ed25519
@@ -74,7 +74,7 @@ phpunit-integration:
     - export TTRSS_DB_USER=postgres
     - export TTRSS_DB_NAME=postgres
     - export TTRSS_DB_PASS=password
-    - php82 vendor/bin/phpunit --group integration --do-not-cache-result --log-junit phpunit-report.xml --coverage-cobertura phpunit-coverage.xml --coverage-text --colors=never
+    - php83 vendor/bin/phpunit --group integration --do-not-cache-result --log-junit phpunit-report.xml --coverage-cobertura phpunit-coverage.xml --coverage-text --colors=never
   artifacts:
     when: always
     reports:

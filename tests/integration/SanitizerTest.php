@@ -9,5 +9,12 @@ final class SanitizerTest extends TestCase {
 			Sanitizer::sanitize('<p>中文</p>')
 		);
 	}
+
+	public function test_sanitize_keep_figure(): void {
+		$this->assertEquals(
+			'<figure>Content</figure>',
+			Sanitizer::sanitize('<figure>Content</figure>')
+		);
+	}
 }
 

@@ -46,7 +46,7 @@ export class StoriesDown implements IGetPosts {
 					}
 				}
 
-				const shortcode = new URL(postIgUrl).pathname.slice(3, -1);
+				const shortcode = new URL(postIgUrl).pathname.slice(3);
 
 				posts.push({
 					id: shortcodeToMediaId(shortcode),

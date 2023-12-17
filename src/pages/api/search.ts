@@ -21,7 +21,7 @@ async function search(req: NextApiRequest, res: NextApiResponse) {
 		throw new ApiError(HttpStatusCode.BadRequest, "You should provide a query");
 	}
 
-	const searchService = await getRandomProvider<IGetSearch>("Tags");
+	const searchService = await getRandomProvider<IGetSearch>("Search");
 	const searchInfo = await searchService.search(q);
 
 	await redis.setex(`search:${q}`, expireTime, JSON.stringify(searchInfo));

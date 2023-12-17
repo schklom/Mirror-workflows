@@ -2,6 +2,7 @@ import {
 	IGetComments,
 	IGetPost,
 	IGetPosts,
+	IGetSearch,
 	IGetStories,
 	IgetPostsOptions,
 } from "./types/functions";
@@ -15,8 +16,9 @@ import { convertToBase64, extractTagsAndUsers } from "@/utils/text";
 import { Comment, Post, PostsResponse, Story } from "./types";
 import { PostsMain } from "./wizstat";
 import { fetchJSON } from "@/utils/fetch";
+import { ResultsQuery } from "./greatfon";
 
-export class Imgsed implements IGetPost, IGetPosts, IGetComments, IGetStories {
+export class Imgsed implements IGetPost, IGetPosts, IGetComments, IGetStories, IGetSearch {
 	constructor(private scraper: AxiosScraper | PlaywrightScraper) {}
 
 	private async scrapePosts(username: string): Promise<PostsResponse> {
@@ -186,5 +188,32 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments, IGetStories {
 			});
 		});
 		return comments;
+	}
+
+	async search(query: string): Promise<ResultsQuery> {
+		const html = await this.scraper.getHtml({ path: `search/${query}/` });
+		const $ = cheerio.load(html);
+
+		const accounts: {
+			username: string;
+			profilePicture: string;
+		}[] = [];
+		const hashtags: { tag: string }[] = [];
+
+		$(".user-item").each((_i, $user) => {
+			const $img = $($user).find(".img>img");
+			const imgUrl =
+				$img.attr("class") === "lazy" ? String($img.data("src")) : String($img.attr("src"));
+
+			accounts.push({
+				username: $($user).find(".username").text().replace("@", ""),
+				profilePicture: proxyUrl(convertToInstagramUrl(imgUrl)),
+			});
+		});
+
+		return {
+			accounts,
+			hashtags,
+		};
 	}
 }

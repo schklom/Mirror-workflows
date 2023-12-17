@@ -206,7 +206,7 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments, IGetStories, I
 				$img.attr("class") === "lazy" ? String($img.data("src")) : String($img.attr("src"));
 
 			accounts.push({
-				username: $($user).find(".username").text().replace("@", ""),
+				username: $($user).find(".username").text().replace("@", "").trim(),
 				profilePicture: proxyUrl(convertToInstagramUrl(imgUrl)),
 			});
 		});

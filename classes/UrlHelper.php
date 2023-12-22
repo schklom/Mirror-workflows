@@ -17,7 +17,19 @@ class UrlHelper {
 	static string $fetch_last_modified;
 	static string $fetch_effective_url;
 	static string $fetch_effective_ip_addr;
-	static bool $fetch_curl_used;
+
+	private static ?GuzzleHttp\ClientInterface $client = null;
+
+	private static function get_client(): GuzzleHttp\ClientInterface {
+		if (self::$client == null) {
+			self::$client = new GuzzleHttp\Client([
+				GuzzleHttp\RequestOptions::COOKIES => false,
+				GuzzleHttp\RequestOptions::PROXY => Config::get(Config::HTTP_PROXY) ?: null,
+			]);
+		}
+
+		return self::$client;
+	}
 
 	/**
 	 * @param array<string, string|int> $parts
@@ -184,57 +196,32 @@ class UrlHelper {
 	/**
 	 * @return false|string
 	 */
-	static function resolve_redirects(string $url, int $timeout, int $nest = 0) {
+	static function resolve_redirects(string $url, int $timeout) {
 		$span = Tracer::start(__METHOD__);
 		$span->setAttribute('func.args', json_encode(func_get_args()));
+		$client = self::get_client();
 
-		// too many redirects
-		if ($nest > 10) {
+		try {
+			$response = $client->request('HEAD', $url, [
+				GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => $timeout ?: Config::get(Config::FILE_FETCH_CONNECT_TIMEOUT),
+				GuzzleHttp\RequestOptions::TIMEOUT => $timeout ?: Config::get(Config::FILE_FETCH_TIMEOUT),
+				GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => ['max' => 10, 'track_redirects' => true, 'http_errors' => false],
+				GuzzleHttp\RequestOptions::HEADERS => [
+					'User-Agent' => Config::get_user_agent(),
+					'Connection' => 'close',
+				],
+			]);
+		} catch (GuzzleHttp\Exception\GuzzleException $ex) {
+			// TODO: catch just the "too many redirects" exception, and set a different 'error' for general issues
 			$span->setAttribute('error', 'too many redirects');
 			$span->end();
 			return false;
 		}
 
-		$context_options = array(
-			'http' => array(
-					'header' => array(
-						'Connection: close'
-					),
-					'method' => 'HEAD',
-					'timeout' => $timeout,
-					'protocol_version'=> 1.1)
-			);
-
-		if (Config::get(Config::HTTP_PROXY)) {
-			$context_options['http']['request_fulluri'] = true;
-			$context_options['http']['proxy'] = Config::get(Config::HTTP_PROXY);
-		}
-
-		$context = stream_context_create($context_options);
-
-		// PHP 8 changed the second param from int to bool, but we still support PHP >= 7.4.0
-		// @phpstan-ignore-next-line
-		$headers = get_headers($url, 0, $context);
-
-		if (is_array($headers)) {
-			$headers = array_reverse($headers); // last one is the correct one
-
-			foreach($headers as $header) {
-				if (stripos($header, 'Location:') === 0) {
-					$url = self::rewrite_relative($url, trim(substr($header, strlen('Location:'))));
-
-					return self::resolve_redirects($url, $timeout, $nest + 1);
-				}
-			}
-
-			$span->end();
-			return $url;
-		}
-
-		$span->setAttribute('error', 'request failed');
+		// If a history header value doesn't exist there was no redirection and the original URL is fine.
+		$history_header = $response->getHeader(GuzzleHttp\RedirectMiddleware::HISTORY_HEADER);
 		$span->end();
-		// request failed?
-		return false;
+		return ($history_header ? end($history_header) : $url);
 	}
 
 	/**
@@ -244,13 +231,14 @@ class UrlHelper {
 	// TODO: max_size currently only works for CURL transfers
 	// TODO: multiple-argument way is deprecated, first parameter is a hash now
 	public static function fetch($options /* previously: 0: $url , 1: $type = false, 2: $login = false, 3: $pass = false,
-				4: $post_query = false, 5: $timeout = false, 6: $timestamp = 0, 7: $useragent = false*/) {
+				4: $post_query = false, 5: $timeout = false, 6: $timestamp = 0, 7: $useragent = false, 8: $retry_once_request = false */) {
+		$span = Tracer::start(__METHOD__);
+		$span->setAttribute('func.args', json_encode(func_get_args()));
 
 		self::$fetch_last_error = "";
 		self::$fetch_last_error_code = -1;
 		self::$fetch_last_error_content = "";
 		self::$fetch_last_content_type = "";
-		self::$fetch_curl_used = false;
 		self::$fetch_last_modified = "";
 		self::$fetch_effective_url = "";
 		self::$fetch_effective_ip_addr = "";
@@ -258,7 +246,7 @@ class UrlHelper {
 		if (!is_array($options)) {
 
 			// falling back on compatibility shim
-			$option_names = [ "url", "type", "login", "pass", "post_query", "timeout", "last_modified", "useragent" ];
+			$option_names = [ "url", "type", "login", "pass", "post_query", "timeout", "last_modified", "useragent", "retry-once-request" ];
 			$tmp = [];
 
 			for ($i = 0; $i < func_num_args(); $i++) {
@@ -275,14 +263,12 @@ class UrlHelper {
 					"post_query" => @func_get_arg(4),
 					"timeout" => @func_get_arg(5),
 					"timestamp" => @func_get_arg(6),
-					"useragent" => @func_get_arg(7)
+					"useragent" => @func_get_arg(7),
+					"retry-once-request" => @func_get_arg(8),
 			); */
 		}
+
 		$url = $options["url"];
-
-		$span = Tracer::start(__METHOD__);
-		$span->setAttribute('func.args', json_encode(func_get_args()));
-
 		$type = isset($options["type"]) ? $options["type"] : false;
 		$login = isset($options["login"]) ? $options["login"] : false;
 		$pass = isset($options["pass"]) ? $options["pass"] : false;
@@ -303,8 +289,7 @@ class UrlHelper {
 		$url = self::validate($url, true);
 
 		if (!$url) {
-			self::$fetch_last_error = "Requested URL failed extended validation.";
-
+			self::$fetch_last_error = 'Requested URL failed extended validation.';
 			$span->setAttribute('error', self::$fetch_last_error);
 			$span->end();
 			return false;
@@ -313,319 +298,146 @@ class UrlHelper {
 		$url_host = parse_url($url, PHP_URL_HOST);
 		$ip_addr = gethostbyname($url_host);
 
-		if (!$ip_addr || strpos($ip_addr, "127.") === 0) {
+		if (!$ip_addr || strpos($ip_addr, '127.') === 0) {
 			self::$fetch_last_error = "URL hostname failed to resolve or resolved to a loopback address ($ip_addr)";
-
 			$span->setAttribute('error', self::$fetch_last_error);
 			$span->end();
 			return false;
 		}
 
-		if (function_exists('curl_init') && !ini_get("open_basedir")) {
+		$req_options = [
+			GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => $timeout ?: Config::get(Config::FILE_FETCH_CONNECT_TIMEOUT),
+			GuzzleHttp\RequestOptions::TIMEOUT => $timeout ?: Config::get(Config::FILE_FETCH_TIMEOUT),
+			GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => $followlocation ? ['max' => 20, 'track_redirects' => true] : false,
+			GuzzleHttp\RequestOptions::HEADERS => [
+				'User-Agent' => $useragent ?: Config::get_user_agent(),
+			],
+		];
 
-			self::$fetch_curl_used = true;
+		if ($last_modified && !$post_query)
+			$req_options[GuzzleHttp\RequestOptions::HEADERS]['If-Modified-Since'] = $last_modified;
 
-			$ch = curl_init($url);
+		if ($http_accept)
+			$req_options[GuzzleHttp\RequestOptions::HEADERS]['Accept'] = $http_accept;
 
-			if (!$ch) {
-				self::$fetch_last_error = "curl_init() failed";
-				$span->setAttribute('error', self::$fetch_last_error);
-				$span->end();
-				return false;
+		if  ($http_referrer)
+			$req_options[GuzzleHttp\RequestOptions::HEADERS]['Referer'] = $http_referrer;
+
+		if ($login && $pass)
+			$req_options[GuzzleHttp\RequestOptions::AUTH] = [$login, $pass];
+
+		if ($post_query)
+			$req_options[GuzzleHttp\RequestOptions::FORM_PARAMS] = $post_query;
+
+		if ($max_size) {
+			$req_options[GuzzleHttp\RequestOptions::PROGRESS] = function($download_size, $downloaded, $upload_size, $uploaded) use(&$max_size, $url) {
+				//Debug::log("[curl progressfunction] $downloaded $max_size", Debug::$LOG_EXTENDED);
+
+				if ($downloaded > $max_size) {
+					Debug::log("[UrlHelper] fetch error: max size of $max_size bytes exceeded when downloading $url .  Aborting.", Debug::LOG_VERBOSE);
+					throw new \LengthException("Download exceeded size limit");
+				}
+			};
+
+			# Alternative/supplement to `progress` checking
+			$req_options[GuzzleHttp\RequestOptions::ON_HEADERS] = function(Psr\Http\Message\ResponseInterface $response) use(&$max_size, $url) {
+				$content_length = $response->getHeaderLine('Content-Length');
+				if ($content_length > $max_size) {
+					Debug::log("[UrlHelper] fetch error: server indicated (via 'Content-Length: {$content_length}') max size of $max_size bytes " .
+							"would be exceeded when downloading $url .  Aborting.", Debug::LOG_VERBOSE);
+						throw new \LengthException("Server sent 'Content-Length' exceeding download limit");
+				}
+			};
+		}
+
+		$client = self::get_client();
+
+		try {
+			if (($options['retry-once-request'] ?? null) instanceof Psr\Http\Message\RequestInterface) {
+				$response = $client->send($options['retry-once-request']);
+			} else {
+				$response = $client->request($post_query ? 'POST' : 'GET', $url, $req_options);
 			}
+		} catch (\LengthException $ex) {
+			// 'Content-Length' exceeded the download limit
+			self::$fetch_last_error = (string) $ex;
+			$span->setAttribute('error', self::$fetch_last_error);
+			$span->end();
+			return false;
+		} catch (GuzzleHttp\Exception\GuzzleException $ex) {
+			self::$fetch_last_error = (string) $ex;
 
-			$curl_http_headers = [];
+			if ($ex instanceof GuzzleHttp\Exception\RequestException) {
+				if ($ex instanceof GuzzleHttp\Exception\BadResponseException) {
+					// 4xx or 5xx
+					self::$fetch_last_error_code = $ex->getResponse()->getStatusCode();
 
-			if ($last_modified && !$post_query)
-				array_push($curl_http_headers, "If-Modified-Since: $last_modified");
+					# TODO: Retry with CURLAUTH_ANY if the response code is 403?  Was this actually an issue before?
+					# https://docs.guzzlephp.org/en/stable/faq.html#how-can-i-add-custom-curl-options
+					// if (self::$fetch_last_error_code === 403) {}
 
-			if ($http_accept)
-				array_push($curl_http_headers, "Accept: " . $http_accept);
+					self::$fetch_last_content_type = $ex->getResponse()->getHeaderLine('content-type');
 
-			if (count($curl_http_headers) > 0)
-				curl_setopt($ch, CURLOPT_HTTPHEADER, $curl_http_headers);
+					if ($type && strpos(self::$fetch_last_content_type, "$type") === false)
+						self::$fetch_last_error_content = (string) $ex->getResponse()->getBody();
+				} elseif (array_key_exists('errno', $ex->getHandlerContext())) {
+					$errno = (int) $ex->getHandlerContext()['errno'];
 
-			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout ? $timeout : Config::get(Config::FILE_FETCH_CONNECT_TIMEOUT));
-			curl_setopt($ch, CURLOPT_TIMEOUT, $timeout ? $timeout : Config::get(Config::FILE_FETCH_TIMEOUT));
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, $followlocation);
-			curl_setopt($ch, CURLOPT_MAXREDIRS, 20);
-			curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_HEADER, true);
-			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-			curl_setopt($ch, CURLOPT_USERAGENT, $useragent ? $useragent : Config::get_user_agent());
-			curl_setopt($ch, CURLOPT_ENCODING, "");
-			curl_setopt($ch, CURLOPT_COOKIEJAR, "/dev/null");
-
-			if  ($http_referrer)
-				curl_setopt($ch, CURLOPT_REFERER, $http_referrer);
-
-			if ($max_size) {
-				curl_setopt($ch, CURLOPT_NOPROGRESS, false);
-				curl_setopt($ch, CURLOPT_BUFFERSIZE, 16384); // needed to get 5 arguments in progress function?
-
-				// holy shit closures in php
-				// download & upload are *expected* sizes respectively, could be zero
-				curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, function($curl_handle, $download_size, $downloaded, $upload_size, $uploaded) use(&$max_size, $url) {
-					//Debug::log("[curl progressfunction] $downloaded $max_size", Debug::$LOG_EXTENDED);
-
-					if ($downloaded > $max_size) {
-						Debug::log("[UrlHelper] fetch error: curl reached max size of $max_size bytes downloading $url, aborting.", Debug::LOG_VERBOSE);
-						return 1;
-					}
-
-					return 0;
-				});
-
-			}
-
-			if (Config::get(Config::HTTP_PROXY)) {
-				curl_setopt($ch, CURLOPT_PROXY, Config::get(Config::HTTP_PROXY));
-			}
-
-			if ($post_query) {
-				curl_setopt($ch, CURLOPT_POST, true);
-				curl_setopt($ch, CURLOPT_POSTFIELDS, $post_query);
-			}
-
-			if ($login && $pass)
-				curl_setopt($ch, CURLOPT_USERPWD, "$login:$pass");
-
-			$ret = @curl_exec($ch);
-			$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-			// CURLAUTH_BASIC didn't work, let's retry with CURLAUTH_ANY in case it's actually something
-			// unusual like NTLM...
-			if ($http_code == 403 && $login && $pass) {
-				curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
-
-				$ret = @curl_exec($ch);
-			}
-
-			if (curl_errno($ch) === 23 || curl_errno($ch) === 61) {
-				curl_setopt($ch, CURLOPT_ENCODING, 'none');
-				$ret = @curl_exec($ch);
-			}
-
-			$headers_length = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-			$headers = explode("\r\n", substr($ret, 0, $headers_length));
-			$contents = substr($ret, $headers_length);
-
-			foreach ($headers as $header) {
-				if (strstr($header, ": ") !== false) {
-					list ($key, $value) = explode(": ", $header);
-
-					if (strtolower($key) == "last-modified") {
-						self::$fetch_last_modified = $value;
+					// By default, all supported encoding types are sent via `Accept-Encoding` and decoding of
+					// responses with `Content-Encoding` is automatically attempted.  If this fails, we do a
+					// single retry with `Accept-Encoding: none` to try and force an unencoded response.
+					if (($errno === \CURLE_WRITE_ERROR || $errno === \CURLE_BAD_CONTENT_ENCODING) &&
+						!array_key_exists('retry-once-request', $options)) {
+						$options['retry-once-request'] = $ex->getRequest()->withHeader('Accept-Encoding', 'none');
+						return self::fetch($options);
 					}
 				}
-
-				if (substr(strtolower($header), 0, 7) == 'http/1.') {
-					self::$fetch_last_error_code = (int) substr($header, 9, 3);
-					self::$fetch_last_error = $header;
-				}
 			}
 
-			$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-			self::$fetch_last_content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-
-			self::$fetch_effective_url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
-
-			if (!self::validate(self::$fetch_effective_url, true)) {
-				self::$fetch_last_error = "URL received after redirection failed extended validation.";
-
-				$span->setAttribute('error', self::$fetch_last_error);
-				$span->end();
-				return false;
-			}
-
-			self::$fetch_effective_ip_addr = gethostbyname(parse_url(self::$fetch_effective_url, PHP_URL_HOST));
-
-			if (!self::$fetch_effective_ip_addr || strpos(self::$fetch_effective_ip_addr, "127.") === 0) {
-				self::$fetch_last_error = "URL hostname received after redirection failed to resolve or resolved to a loopback address (".self::$fetch_effective_ip_addr.")";
-
-				$span->setAttribute('error', self::$fetch_last_error);
-				$span->end();
-				return false;
-			}
-
-			self::$fetch_last_error_code = $http_code;
-
-			if ($http_code != 200 || $type && strpos(self::$fetch_last_content_type, "$type") === false) {
-
-				if (curl_errno($ch) != 0) {
-					self::$fetch_last_error .=  "; " . curl_errno($ch) . " " . curl_error($ch);
-				} else {
-					self::$fetch_last_error = "HTTP Code: $http_code ";
-				}
-
-				self::$fetch_last_error_content = $contents;
-				curl_close($ch);
-
-				$span->setAttribute('error', self::$fetch_last_error);
-				$span->end();
-				return false;
-			}
-
-			if (!$contents) {
-				if (curl_errno($ch) === 0) {
-					self::$fetch_last_error = 'Successful response, but no content was received.';
-				} else {
-					self::$fetch_last_error = curl_errno($ch) . " " . curl_error($ch);
-				}
-				curl_close($ch);
-
-				$span->setAttribute('error', self::$fetch_last_error);
-				$span->end();
-				return false;
-			}
-
-			curl_close($ch);
-
-			$is_gzipped = RSSUtils::is_gzipped($contents);
-
-			if ($is_gzipped && is_string($contents)) {
-				$tmp = @gzdecode($contents);
-
-				if ($tmp) $contents = $tmp;
-			}
-
+			$span->setAttribute('error', self::$fetch_last_error);
 			$span->end();
 
-			return $contents;
-		} else {
-
-			self::$fetch_curl_used = false;
-
-			if ($login && $pass){
-				$url_parts = array();
-
-				preg_match("/(^[^:]*):\/\/(.*)/", $url, $url_parts);
-
-				$pass = urlencode($pass);
-
-				if ($url_parts[1] && $url_parts[2]) {
-					$url = $url_parts[1] . "://$login:$pass@" . $url_parts[2];
-				}
-			}
-
-			// TODO: should this support POST requests or not? idk
-
-			 $context_options = array(
-				  'http' => array(
-						'header' => array(
-							'Connection: close'
-						),
-						'method' => 'GET',
-						'ignore_errors' => true,
-						'timeout' => $timeout ? $timeout : Config::get(Config::FILE_FETCH_TIMEOUT),
-						'protocol_version'=> 1.1)
-				  );
-
-			if (!$post_query && $last_modified)
-				array_push($context_options['http']['header'], "If-Modified-Since: $last_modified");
-
-			if ($http_accept)
-				array_push($context_options['http']['header'], "Accept: $http_accept");
-
-			if ($http_referrer)
-				array_push($context_options['http']['header'], "Referer: $http_referrer");
-
-			if (Config::get(Config::HTTP_PROXY)) {
-				$context_options['http']['request_fulluri'] = true;
-				$context_options['http']['proxy'] = Config::get(Config::HTTP_PROXY);
-			}
-
-			$context = stream_context_create($context_options);
-
-			$old_error = error_get_last();
-
-			self::$fetch_effective_url = self::resolve_redirects($url, $timeout ? $timeout : Config::get(Config::FILE_FETCH_CONNECT_TIMEOUT));
-
-			if (!self::validate(self::$fetch_effective_url, true)) {
-				self::$fetch_last_error = "URL received after redirection failed extended validation.";
-
-				$span->setAttribute('error', self::$fetch_last_error);
-				$span->end();
-				return false;
-			}
-
-			self::$fetch_effective_ip_addr = gethostbyname(parse_url(self::$fetch_effective_url, PHP_URL_HOST));
-
-			if (!self::$fetch_effective_ip_addr || strpos(self::$fetch_effective_ip_addr, "127.") === 0) {
-				self::$fetch_last_error = "URL hostname received after redirection failed to resolve or resolved to a loopback address (".self::$fetch_effective_ip_addr.")";
-
-				$span->setAttribute('error', self::$fetch_last_error);
-				$span->end();
-				return false;
-			}
-
-			$data = @file_get_contents($url, false, $context);
-
-			if ($data === false) {
-				self::$fetch_last_error = "'file_get_contents' failed.";
-
-				$span->setAttribute('error', self::$fetch_last_error);
-				$span->end();
-				return false;
-			}
-
-			foreach ($http_response_header as $header) {
-				if (strstr($header, ": ") !== false) {
-					list ($key, $value) = explode(": ", $header);
-
-					$key = strtolower($key);
-
-					if ($key == 'content-type') {
-						self::$fetch_last_content_type = $value;
-						// don't abort here b/c there might be more than one
-						// e.g. if we were being redirected -- last one is the right one
-					} else if ($key == 'last-modified') {
-						self::$fetch_last_modified = $value;
-					} else if ($key == 'location') {
-						self::$fetch_effective_url = $value;
-					}
-				}
-
-				if (substr(strtolower($header), 0, 7) == 'http/1.') {
-					self::$fetch_last_error_code = (int) substr($header, 9, 3);
-					self::$fetch_last_error = $header;
-				}
-			}
-
-			if (self::$fetch_last_error_code != 200) {
-				$error = error_get_last();
-
-				if (($error['message'] ?? '') != ($old_error['message'] ?? '')) {
-					self::$fetch_last_error .= "; " . $error["message"];
-				}
-
-				self::$fetch_last_error_content = $data;
-
-				$span->setAttribute('error', self::$fetch_last_error);
-				$span->end();
-				return false;
-			}
-
-			if ($data) {
-				$is_gzipped = RSSUtils::is_gzipped($data);
-
-				if ($is_gzipped) {
-					$tmp = @gzdecode($data);
-
-					if ($tmp) $data = $tmp;
-				}
-
-				$span->end();
-				return $data;
-			} else {
-				self::$fetch_last_error = 'Successful response, but no content was received.';
-
-				$span->setAttribute('error', self::$fetch_last_error);
-				$span->end();
-				return false;
-			}
+			return false;
 		}
+
+		// Keep setting expected 'fetch_last_error_code' and 'fetch_last_error' values
+		self::$fetch_last_error_code = $response->getStatusCode();
+		self::$fetch_last_error = "HTTP/{$response->getProtocolVersion()} {$response->getStatusCode()} {$response->getReasonPhrase()}";
+		self::$fetch_last_modified = $response->getHeaderLine('last-modified');
+		self::$fetch_last_content_type = $response->getHeaderLine('content-type');
+
+		// If a history header value doesn't exist there was no redirection and the original URL is fine.
+		$history_header = $response->getHeader(GuzzleHttp\RedirectMiddleware::HISTORY_HEADER);
+		self::$fetch_effective_url = $history_header ? end($history_header) : $url;
+
+		if (!self::validate(self::$fetch_effective_url, true)) {
+			self::$fetch_last_error = "URL received after redirection failed extended validation.";
+			$span->setAttribute('error', self::$fetch_last_error);
+			$span->end();
+			return false;
+		}
+
+		self::$fetch_effective_ip_addr = gethostbyname(parse_url(self::$fetch_effective_url, PHP_URL_HOST));
+
+		if (!self::$fetch_effective_ip_addr || strpos(self::$fetch_effective_ip_addr, '127.') === 0) {
+			self::$fetch_last_error = 'URL hostname received after redirection failed to resolve or resolved to a loopback address (' .
+				self::$fetch_effective_ip_addr . ')';
+			$span->setAttribute('error', self::$fetch_last_error);
+			$span->end();
+			return false;
+		}
+
+		$body = (string) $response->getBody();
+
+		if (!$body) {
+			self::$fetch_last_error = 'Successful response, but no content was received.';
+			$span->setAttribute('error', self::$fetch_last_error);
+			$span->end();
+			return false;
+		}
+
+		$span->end();
+		return $body;
 	}
 
 	/**

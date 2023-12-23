@@ -80,7 +80,7 @@ final class UrlHelperTest extends TestCase {
 			$this->assertFalse($result);
 		}
 
-		$mock->append(new Response(200, ['Content-Length' => PHP_INT_MAX]));
+		$mock->append(new Response(200, ['Content-Length' => (string) PHP_INT_MAX]));
 		$result = UrlHelper::fetch('https://www.example.com/very-large-content-length');
 		$this->assertFalse($result);
 

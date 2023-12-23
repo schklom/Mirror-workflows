@@ -205,15 +205,15 @@ class UrlHelper {
 			$response = $client->request('HEAD', $url, [
 				GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => $timeout ?: Config::get(Config::FILE_FETCH_CONNECT_TIMEOUT),
 				GuzzleHttp\RequestOptions::TIMEOUT => $timeout ?: Config::get(Config::FILE_FETCH_TIMEOUT),
-				GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => ['max' => 10, 'track_redirects' => true, 'http_errors' => false],
+				GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => ['max' => 10, 'track_redirects' => true],
+				GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
 				GuzzleHttp\RequestOptions::HEADERS => [
 					'User-Agent' => Config::get_user_agent(),
 					'Connection' => 'close',
 				],
 			]);
-		} catch (GuzzleHttp\Exception\GuzzleException $ex) {
-			// TODO: catch just the "too many redirects" exception, and set a different 'error' for general issues
-			$span->setAttribute('error', 'too many redirects');
+		} catch (Exception $ex) {
+			$span->setAttribute('error', (string) $ex);
 			$span->end();
 			return false;
 		}

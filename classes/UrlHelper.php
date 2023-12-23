@@ -231,7 +231,8 @@ class UrlHelper {
 	// TODO: max_size currently only works for CURL transfers
 	// TODO: multiple-argument way is deprecated, first parameter is a hash now
 	public static function fetch($options /* previously: 0: $url , 1: $type = false, 2: $login = false, 3: $pass = false,
-				4: $post_query = false, 5: $timeout = false, 6: $timestamp = 0, 7: $useragent = false, 8: $retry_once_request = false */) {
+				4: $post_query = false, 5: $timeout = false, 6: $timestamp = 0, 7: $useragent = false, 8: $retry_once_request = false,
+				9: $auth_type = "basic" */) {
 		$span = Tracer::start(__METHOD__);
 		$span->setAttribute('func.args', json_encode(func_get_args()));
 
@@ -246,7 +247,7 @@ class UrlHelper {
 		if (!is_array($options)) {
 
 			// falling back on compatibility shim
-			$option_names = [ "url", "type", "login", "pass", "post_query", "timeout", "last_modified", "useragent", "retry-once-request" ];
+			$option_names = [ "url", "type", "login", "pass", "post_query", "timeout", "last_modified", "useragent", "retry-once-request", "auth_type" ];
 			$tmp = [];
 
 			for ($i = 0; $i < func_num_args(); $i++) {
@@ -265,6 +266,7 @@ class UrlHelper {
 					"timestamp" => @func_get_arg(6),
 					"useragent" => @func_get_arg(7),
 					"retry-once-request" => @func_get_arg(8),
+					"auth_type" => @func_get_arg(9),
 			); */
 		}
 
@@ -272,6 +274,7 @@ class UrlHelper {
 		$type = isset($options["type"]) ? $options["type"] : false;
 		$login = isset($options["login"]) ? $options["login"] : false;
 		$pass = isset($options["pass"]) ? $options["pass"] : false;
+		$auth_type = isset($options["auth_type"]) ? $options["auth_type"] : "basic";
 		$post_query = isset($options["post_query"]) ? $options["post_query"] : false;
 		$timeout = isset($options["timeout"]) ? $options["timeout"] : false;
 		$last_modified = isset($options["last_modified"]) ? $options["last_modified"] : "";
@@ -312,6 +315,7 @@ class UrlHelper {
 			GuzzleHttp\RequestOptions::HEADERS => [
 				'User-Agent' => $useragent ?: Config::get_user_agent(),
 			],
+			'curl' => [],
 		];
 
 		if ($last_modified && !$post_query)
@@ -323,8 +327,15 @@ class UrlHelper {
 		if  ($http_referrer)
 			$req_options[GuzzleHttp\RequestOptions::HEADERS]['Referer'] = $http_referrer;
 
-		if ($login && $pass)
+		if ($login && $pass && in_array($auth_type, ['basic', 'digest', 'ntlm'])) {
+			// Let Guzzle handle the details for auth types it supports
 			$req_options[GuzzleHttp\RequestOptions::AUTH] = [$login, $pass];
+		} elseif ($auth_type === 'any') {
+			// https://docs.guzzlephp.org/en/stable/faq.html#how-can-i-add-custom-curl-options
+			$req_options['curl'][\CURLOPT_HTTPAUTH] = \CURLAUTH_ANY;
+			if ($login && $pass)
+				$req_options['curl'][\CURLOPT_USERPWD] = "$login:$pass";
+		}
 
 		if ($post_query)
 			$req_options[GuzzleHttp\RequestOptions::FORM_PARAMS] = $post_query;
@@ -359,7 +370,7 @@ class UrlHelper {
 				$response = $client->request($post_query ? 'POST' : 'GET', $url, $req_options);
 			}
 		} catch (\LengthException $ex) {
-			// 'Content-Length' exceeded the download limit
+			// Either 'Content-Length' indicated the download limit would be exceeded, or the transfer actually exceeded the download limit.
 			self::$fetch_last_error = (string) $ex;
 			$span->setAttribute('error', self::$fetch_last_error);
 			$span->end();
@@ -372,9 +383,14 @@ class UrlHelper {
 					// 4xx or 5xx
 					self::$fetch_last_error_code = $ex->getResponse()->getStatusCode();
 
-					# TODO: Retry with CURLAUTH_ANY if the response code is 403?  Was this actually an issue before?
-					# https://docs.guzzlephp.org/en/stable/faq.html#how-can-i-add-custom-curl-options
-					// if (self::$fetch_last_error_code === 403) {}
+					// If credentials were provided and we got a 403 back, retry once with auth type 'any'
+					// to attempt compatibility with unusual configurations.
+					if ($login && $pass && self::$fetch_last_error_code === 403
+						&& isset($options['auth_type']) && $options['auth_type'] !== 'any') {
+						$options['auth_type'] = 'any';
+						$span->end();
+						return self::fetch($options);
+					}
 
 					self::$fetch_last_content_type = $ex->getResponse()->getHeaderLine('content-type');
 
@@ -389,6 +405,7 @@ class UrlHelper {
 					if (($errno === \CURLE_WRITE_ERROR || $errno === \CURLE_BAD_CONTENT_ENCODING) &&
 						!array_key_exists('retry-once-request', $options)) {
 						$options['retry-once-request'] = $ex->getRequest()->withHeader('Accept-Encoding', 'none');
+						$span->end();
 						return self::fetch($options);
 					}
 				}

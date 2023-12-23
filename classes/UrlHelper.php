@@ -231,7 +231,7 @@ class UrlHelper {
 	// TODO: max_size currently only works for CURL transfers
 	// TODO: multiple-argument way is deprecated, first parameter is a hash now
 	public static function fetch($options /* previously: 0: $url , 1: $type = false, 2: $login = false, 3: $pass = false,
-				4: $post_query = false, 5: $timeout = false, 6: $timestamp = 0, 7: $useragent = false, 8: $retry_once_request = false,
+				4: $post_query = false, 5: $timeout = false, 6: $timestamp = 0, 7: $useragent = false, 8: $encoding = false,
 				9: $auth_type = "basic" */) {
 		$span = Tracer::start(__METHOD__);
 		$span->setAttribute('func.args', json_encode(func_get_args()));
@@ -247,7 +247,7 @@ class UrlHelper {
 		if (!is_array($options)) {
 
 			// falling back on compatibility shim
-			$option_names = [ "url", "type", "login", "pass", "post_query", "timeout", "last_modified", "useragent", "retry-once-request", "auth_type" ];
+			$option_names = [ "url", "type", "login", "pass", "post_query", "timeout", "last_modified", "useragent", "encoding", "auth_type" ];
 			$tmp = [];
 
 			for ($i = 0; $i < func_num_args(); $i++) {
@@ -265,7 +265,7 @@ class UrlHelper {
 					"timeout" => @func_get_arg(5),
 					"timestamp" => @func_get_arg(6),
 					"useragent" => @func_get_arg(7),
-					"retry-once-request" => @func_get_arg(8),
+					"encoding" => @func_get_arg(8),
 					"auth_type" => @func_get_arg(9),
 			); */
 		}
@@ -283,6 +283,7 @@ class UrlHelper {
 		$max_size = isset($options["max_size"]) ? $options["max_size"] : Config::get(Config::MAX_DOWNLOAD_FILE_SIZE); // in bytes
 		$http_accept = isset($options["http_accept"]) ? $options["http_accept"] : false;
 		$http_referrer = isset($options["http_referrer"]) ? $options["http_referrer"] : false;
+		$encoding = isset($options["encoding"]) ? $options["encoding"] : false;
 
 		$url = ltrim($url, ' ');
 		$url = str_replace(' ', '%20', $url);
@@ -324,6 +325,9 @@ class UrlHelper {
 		if ($http_accept)
 			$req_options[GuzzleHttp\RequestOptions::HEADERS]['Accept'] = $http_accept;
 
+		if ($encoding)
+			$req_options[GuzzleHttp\RequestOptions::HEADERS]['Accept-Encoding'] = $encoding;
+
 		if  ($http_referrer)
 			$req_options[GuzzleHttp\RequestOptions::HEADERS]['Referer'] = $http_referrer;
 
@@ -364,11 +368,7 @@ class UrlHelper {
 		$client = self::get_client();
 
 		try {
-			if (($options['retry-once-request'] ?? null) instanceof Psr\Http\Message\RequestInterface) {
-				$response = $client->send($options['retry-once-request']);
-			} else {
-				$response = $client->request($post_query ? 'POST' : 'GET', $url, $req_options);
-			}
+			$response = $client->request($post_query ? 'POST' : 'GET', $url, $req_options);
 		} catch (\LengthException $ex) {
 			// Either 'Content-Length' indicated the download limit would be exceeded, or the transfer actually exceeded the download limit.
 			self::$fetch_last_error = (string) $ex;
@@ -403,8 +403,8 @@ class UrlHelper {
 					// responses with `Content-Encoding` is automatically attempted.  If this fails, we do a
 					// single retry with `Accept-Encoding: none` to try and force an unencoded response.
 					if (($errno === \CURLE_WRITE_ERROR || $errno === \CURLE_BAD_CONTENT_ENCODING) &&
-						!array_key_exists('retry-once-request', $options)) {
-						$options['retry-once-request'] = $ex->getRequest()->withHeader('Accept-Encoding', 'none');
+						$ex->getRequest()->getHeaderLine('accept-encoding') !== 'none') {
+						$options['encoding'] = 'none';
 						$span->end();
 						return self::fetch($options);
 					}

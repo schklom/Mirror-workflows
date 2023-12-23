@@ -18,7 +18,7 @@ class UrlHelper {
 	static string $fetch_effective_url;
 	static string $fetch_effective_ip_addr;
 
-	private static ?GuzzleHttp\ClientInterface $client = null;
+	public static ?GuzzleHttp\ClientInterface $client = null;
 
 	private static function get_client(): GuzzleHttp\ClientInterface {
 		if (self::$client == null) {
@@ -385,8 +385,7 @@ class UrlHelper {
 
 					// If credentials were provided and we got a 403 back, retry once with auth type 'any'
 					// to attempt compatibility with unusual configurations.
-					if ($login && $pass && self::$fetch_last_error_code === 403
-						&& isset($options['auth_type']) && $options['auth_type'] !== 'any') {
+					if ($login && $pass && self::$fetch_last_error_code === 403 && $auth_type !== 'any') {
 						$options['auth_type'] = 'any';
 						$span->end();
 						return self::fetch($options);

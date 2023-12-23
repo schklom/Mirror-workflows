@@ -268,7 +268,7 @@ const	CommonDialogs = {
 							<table width='100%' id='error-feeds-list'>
 
 							${reply.map((row) => `
-								<tr data-row-id='${row.id}'>
+								<tr data-row-id='${row.id}' style='vertical-align: top'>
 									<td class='checkbox'>
 										<input onclick='Tables.onRowChecked(this)' dojoType="dijit.form.CheckBox"
 											type="checkbox">

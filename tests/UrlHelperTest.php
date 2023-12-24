@@ -102,13 +102,19 @@ final class UrlHelperTest extends TestCase {
 		$this->assertFalse($result);
 		$this->assertEquals('Successful response, but no content was received.', UrlHelper::$fetch_last_error);
 
-		// Currently failing with `Error: Undefined constant "CURLOPT_HTTPAUTH"`.
-		// $mock->append(
-		// 	new Response(403, []),
-		// 	new Response(200, [], 'Hello, World'),
-		// );
-		// $result = UrlHelper::fetch(['url' => 'https://example.com/requires-credentials', 'login' => 'some_username', 'pass' => 'some_password']);
-		// $this->assertEquals(200, UrlHelper::$fetch_last_error_code);
-		// $this->assertEquals('Hello, World', $result);
+		// Fake a 403 for basic auth and success with `CURLAUTH_ANY` in the retry attempt
+		$mock->append(
+			new Response(403, []),
+			new Response(200, [], 'Hello, World'),
+		);
+		$result = UrlHelper::fetch([
+			'url' => 'https://example.com/requires-credentials',
+			'login' => 'some_username',
+			'pass' => 'some_password',
+			'auth_type' => 'basic',
+		]);
+		$this->assertEquals(200, UrlHelper::$fetch_last_error_code);
+		$this->assertEquals('Hello, World', $result);
+		$this->assertEquals($mock->getLastOptions()['curl'][\CURLOPT_HTTPAUTH], \CURLAUTH_ANY);
 	}
 }

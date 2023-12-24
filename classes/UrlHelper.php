@@ -333,7 +333,7 @@ class UrlHelper {
 
 		if ($login && $pass && in_array($auth_type, ['basic', 'digest', 'ntlm'])) {
 			// Let Guzzle handle the details for auth types it supports
-			$req_options[GuzzleHttp\RequestOptions::AUTH] = [$login, $pass];
+			$req_options[GuzzleHttp\RequestOptions::AUTH] = [$login, $pass, $auth_type];
 		} elseif ($auth_type === 'any') {
 			// https://docs.guzzlephp.org/en/stable/faq.html#how-can-i-add-custom-curl-options
 			$req_options['curl'][\CURLOPT_HTTPAUTH] = \CURLAUTH_ANY;

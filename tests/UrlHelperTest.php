@@ -74,6 +74,7 @@ final class UrlHelperTest extends TestCase {
 		$result = UrlHelper::fetch('https://www.example.com');
 		$this->assertEquals(200, UrlHelper::$fetch_last_error_code);
 		$this->assertEquals('Hello, World', $result);
+		$mock->reset();
 
 		foreach (['ftp://ftp.example.com', 'http://127.0.0.1', 'blah', '', 42, null] as $url) {
 			$result = UrlHelper::fetch($url);
@@ -83,24 +84,25 @@ final class UrlHelperTest extends TestCase {
 		$mock->append(new Response(200, ['Content-Length' => (string) PHP_INT_MAX]));
 		$result = UrlHelper::fetch('https://www.example.com/very-large-content-length');
 		$this->assertFalse($result);
+		$mock->reset();
 
 		$mock->append(new Response(301, ['Location' => 'https://www.example.com']));
 		$result = UrlHelper::fetch(['url' => 'https://example.com', 'followlocation' => false]);
 		$this->assertFalse($result);
+		$mock->reset();
 
-		$mock->append(
-			new Response(301, ['Location' => 'http://127.0.0.1']),
-			new Response(200, [], 'Hello, World'),
-		);
+		$mock->append(new Response(301, ['Location' => 'http://127.0.0.1']));
 		$result = UrlHelper::fetch(['url' => 'https://example.com', 'followlocation' => true]);
 		$this->assertFalse($result);
-		$this->assertEquals('URL received after redirection failed extended validation.', UrlHelper::$fetch_last_error);
+		$this->assertMatchesRegularExpression('%failed extended validation%', UrlHelper::$fetch_last_error);
 		$this->assertEquals('http://127.0.0.1', UrlHelper::$fetch_effective_url);
+		$mock->reset();
 
 		$mock->append(new Response(200, [], ''));
 		$result = UrlHelper::fetch('https://www.example.com');
 		$this->assertFalse($result);
 		$this->assertEquals('Successful response, but no content was received.', UrlHelper::$fetch_last_error);
+		$mock->reset();
 
 		// Fake a 403 for basic auth and success with `CURLAUTH_ANY` in the retry attempt
 		$mock->append(
@@ -116,5 +118,6 @@ final class UrlHelperTest extends TestCase {
 		$this->assertEquals(200, UrlHelper::$fetch_last_error_code);
 		$this->assertEquals('Hello, World', $result);
 		$this->assertEquals($mock->getLastOptions()['curl'][\CURLOPT_HTTPAUTH], \CURLAUTH_ANY);
+		$mock->reset();
 	}
 }

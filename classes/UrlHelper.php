@@ -1,4 +1,9 @@
 <?php
+
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
+
 class UrlHelper {
 	const EXTRA_HREF_SCHEMES = [
 		"magnet",
@@ -312,12 +317,27 @@ class UrlHelper {
 		$req_options = [
 			GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => $timeout ?: Config::get(Config::FILE_FETCH_CONNECT_TIMEOUT),
 			GuzzleHttp\RequestOptions::TIMEOUT => $timeout ?: Config::get(Config::FILE_FETCH_TIMEOUT),
-			GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => $followlocation ? ['max' => 20, 'track_redirects' => true] : false,
 			GuzzleHttp\RequestOptions::HEADERS => [
 				'User-Agent' => $useragent ?: Config::get_user_agent(),
 			],
 			'curl' => [],
 		];
+
+		if ($followlocation) {
+			$req_options[GuzzleHttp\RequestOptions::ALLOW_REDIRECTS] = [
+				'max' => 20,
+				'track_redirects' => true,
+				'on_redirect' => function(RequestInterface $request, ResponseInterface $response, UriInterface $uri) {
+					if (!self::validate($uri, true)) {
+						self::$fetch_effective_url = (string) $uri;
+						throw new GuzzleHttp\Exception\RequestException('URL received during redirection failed extended validation.',
+							$request, $response);
+					}
+				},
+			];
+		} else {
+			$req_options[GuzzleHttp\RequestOptions::ALLOW_REDIRECTS] = false;
+		}
 
 		if ($last_modified && !$post_query)
 			$req_options[GuzzleHttp\RequestOptions::HEADERS]['If-Modified-Since'] = $last_modified;
@@ -355,7 +375,7 @@ class UrlHelper {
 			};
 
 			# Alternative/supplement to `progress` checking
-			$req_options[GuzzleHttp\RequestOptions::ON_HEADERS] = function(Psr\Http\Message\ResponseInterface $response) use(&$max_size, $url) {
+			$req_options[GuzzleHttp\RequestOptions::ON_HEADERS] = function(ResponseInterface $response) use(&$max_size, $url) {
 				$content_length = $response->getHeaderLine('Content-Length');
 				if ($content_length > $max_size) {
 					Debug::log("[UrlHelper] fetch error: server indicated (via 'Content-Length: {$content_length}') max size of $max_size bytes " .
@@ -426,6 +446,7 @@ class UrlHelper {
 		$history_header = $response->getHeader(GuzzleHttp\RedirectMiddleware::HISTORY_HEADER);
 		self::$fetch_effective_url = $history_header ? end($history_header) : $url;
 
+		// This shouldn't be necessary given the checks that occur during potential redirects, but we'll do it anyway.
 		if (!self::validate(self::$fetch_effective_url, true)) {
 			self::$fetch_last_error = "URL received after redirection failed extended validation.";
 			$span->setAttribute('error', self::$fetch_last_error);

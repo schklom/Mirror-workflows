@@ -2007,7 +2007,7 @@ class RSSUtils {
 
 		$favicon_urls = [];
 
-		if ($html = @UrlHelper::fetch($url)) {
+		if ($html = @UrlHelper::fetch(['url' => $url])) {
 
 			$doc = new DOMDocument();
 			if (@$doc->loadHTML($html)) {

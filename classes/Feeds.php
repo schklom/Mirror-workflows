@@ -1145,7 +1145,7 @@ class Feeds extends Handler_Protected {
 			},
 			$url, $auth_login, $auth_pass);
 
-		$contents = UrlHelper::fetch($url, false, $auth_login, $auth_pass);
+		$contents = UrlHelper::fetch(['url' => $url, 'login' => $auth_login, 'pass' => $auth_pass]);
 
 		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_SUBSCRIBE_FEED,
 			function ($result) use (&$contents) {

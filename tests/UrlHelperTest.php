@@ -71,18 +71,18 @@ final class UrlHelperTest extends TestCase {
 		]);
 
 		$mock->append(new Response(200, [], 'Hello, World'));
-		$result = UrlHelper::fetch('https://www.example.com');
+		$result = UrlHelper::fetch(['url' => 'https://www.example.com']);
 		$this->assertEquals(200, UrlHelper::$fetch_last_error_code);
 		$this->assertEquals('Hello, World', $result);
 		$mock->reset();
 
 		foreach (['ftp://ftp.example.com', 'http://127.0.0.1', 'blah', '', 42, null] as $url) {
-			$result = UrlHelper::fetch($url);
+			$result = UrlHelper::fetch(['url' => $url]);
 			$this->assertFalse($result);
 		}
 
 		$mock->append(new Response(200, ['Content-Length' => (string) PHP_INT_MAX]));
-		$result = UrlHelper::fetch('https://www.example.com/very-large-content-length');
+		$result = UrlHelper::fetch(['url' => 'https://www.example.com/very-large-content-length']);
 		$this->assertFalse($result);
 		$mock->reset();
 
@@ -99,7 +99,7 @@ final class UrlHelperTest extends TestCase {
 		$mock->reset();
 
 		$mock->append(new Response(200, [], ''));
-		$result = UrlHelper::fetch('https://www.example.com');
+		$result = UrlHelper::fetch(['url' => 'https://www.example.com']);
 		$this->assertFalse($result);
 		$this->assertEquals('Successful response, but no content was received.', UrlHelper::$fetch_last_error);
 		$mock->reset();

@@ -11,7 +11,7 @@ class Af_Comics_Explosm extends Af_ComicFilter {
 
 				$doc = new DOMDocument();
 
-				if (@$doc->loadHTML(UrlHelper::fetch($article["link"]))) {
+				if (@$doc->loadHTML(UrlHelper::fetch(['url' => $article['link']]))) {
 					$xpath = new DOMXPath($doc);
 					$basenode = $xpath->query('//div[contains(@class, "MainComic__ComicImage")]//img')->item(0);
 

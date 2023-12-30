@@ -8,15 +8,16 @@ class Af_Comics_Tfd extends Af_ComicFilter {
 	function process(&$article) {
 		if (strpos($article["link"], "toothpastefordinner.com") !== false ||
 		    strpos($article["link"], "marriedtothesea.com") !== false) {
-			$res = UrlHelper::fetch($article["link"], false, false, false,
-				false, false, 0,
-				"Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)");
+			$res = UrlHelper::fetch([
+				'url' => $article['link'],
+				'useragent' => 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)',
+			]);
 
 			if (!$res) return false;
 
 			$doc = new DOMDocument();
 
-			$res = UrlHelper::fetch($article["link"]);
+			$res = UrlHelper::fetch(['url' => $article["link"]]);
 
 			if ($res && $doc->loadHTML($res)) {
 				$xpath = new DOMXPath($doc);

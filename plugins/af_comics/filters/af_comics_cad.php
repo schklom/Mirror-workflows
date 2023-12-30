@@ -10,9 +10,10 @@ class Af_Comics_Cad extends Af_ComicFilter {
 			if (strpos($article["title"], "News:") === false) {
 				$doc = new DOMDocument();
 
-				$res = UrlHelper::fetch($article["link"], false, false, false,
-					false, false, 0,
-					"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0");
+				$res = UrlHelper::fetch([
+					'url' => $article['link'],
+					'useragent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0',
+				]);
 
 				if (!$res && UrlHelper::$fetch_last_error_content)
 					$res = UrlHelper::$fetch_last_error_content;

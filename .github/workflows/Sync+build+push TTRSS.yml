@@ -38,7 +38,7 @@ jobs:
       - name: repo-sync
         uses: wei/git-sync@v3
         with:
-          source_repo: "https://gitlab.tt-rss.org/tt-rss/ttrss-docker-compose"
+          source_repo: "https://git.tt-rss.org/fox/tt-rss.git"
           source_branch: "master"
           destination_repo: "git@github.com:schklom/Mirror-workflows.git"
           destination_branch: "TTRSS-docker"
@@ -110,8 +110,8 @@ jobs:
       - name: Build and push TTRSS app
         uses: docker/build-push-action@v5.1.0
         with:
-          context: ./app
-          file: ./app/Dockerfile
+          context: ./.docker/app/
+          file: ./.docker/app/Dockerfile
           #platforms: linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6
           platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
           pull: true
@@ -121,8 +121,8 @@ jobs:
       - name: Build and push TTRSS web-nginx
         uses: docker/build-push-action@v5.1.0
         with:
-          context: ./web-nginx
-          file: ./web-nginx/Dockerfile
+          context: ./.docker/web-nginx/
+          file: ./.docker/web-nginx/Dockerfile
           #platforms: linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6
           platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
           pull: true
@@ -165,8 +165,8 @@ jobs:
       - name: Build and push TTRSS app (with file logging)
         uses: docker/build-push-action@v5.1.0
         with:
-          context: ./
-          file: ./Dockerfile
+          context: ./.docker/
+          file: ./.docker/Dockerfile
           #platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
           platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
           pull: true

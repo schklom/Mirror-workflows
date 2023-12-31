@@ -11,7 +11,7 @@ class Af_Comics_Twp extends Af_ComicFilter {
 
 				$doc = new DOMDocument();
 
-				$res = UrlHelper::fetch($article["link"]);
+				$res = UrlHelper::fetch(['url' => $article['link']]);
 
 				if ($res && $doc->loadHTML($res)) {
 					$xpath = new DOMXpath($doc);

@@ -16,6 +16,16 @@ const KEYCODE_ARROW_RIGHT = 39;
 
 window.addEventListener("load", (event) => init());
 
+window.onclick = function (event) {
+    // hide the dropdowns if clicking outside of their respective buttons
+    if (event.target.id != "cameraDropDownButtonInner") {
+        document.getElementById("cameraDropDown").style.display = "None";
+    }
+    if (event.target.id != "locateDropDownButtonInner") {
+        document.getElementById("locateDropDown").style.display = "None";
+    }
+}
+
 function init() {
     var div;
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
@@ -68,13 +78,16 @@ function setupOnClicks() {
     document.getElementById("locateButton").addEventListener("click", async () => await prepareForLogin());
     document.getElementById("locateOlder").addEventListener("click", async () => await locateOlder());
     document.getElementById("locateNewer").addEventListener("click", async () => await locateNewer());
-    document.getElementById("locate").addEventListener("click", () => sendToPhone("locate"));
+    document.getElementById("locate").addEventListener("click", () => showLocateDropDown());
+    document.getElementById("locateAll").addEventListener("click", () => sendToPhone("locate"));
+    document.getElementById("locateGps").addEventListener("click", () => sendToPhone("locate gps"));
+    document.getElementById("locateCellular").addEventListener("click", () => sendToPhone("locate cell"));
     document.getElementById("ring").addEventListener("click", () => sendToPhone("ring"));
     document.getElementById("lock").addEventListener("click", () => sendToPhone("lock"));
     document.getElementById("delete").addEventListener("click", () => prepareDeleteDevice());
     document.getElementById("cameraFront").addEventListener("click", () => sendToPhone("camera front"));
     document.getElementById("cameraBack").addEventListener("click", () => sendToPhone("camera back"));
-    document.getElementById("takePicture").addEventListener("click", () => dropDownBtn());
+    document.getElementById("takePicture").addEventListener("click", () => showCameraDropDown());
     document.getElementById("showPicture").addEventListener("click", async () => await showLatestPicture());
 }
 
@@ -228,6 +241,10 @@ async function getPrivateKey(password) {
 }
 
 // Section: Locate
+
+function showLocateDropDown() {
+    document.getElementById("locateDropDown").style.display = "block";
+}
 
 async function locate(requestedIndex) {
     if (!globalAccessToken) {
@@ -481,15 +498,10 @@ function displaySinglePicture(picture) {
     document.body.appendChild(div);
 }
 
-function dropDownBtn() {
+// Section: Camera
+
+function showCameraDropDown() {
     document.getElementById("cameraDropDown").style.display = "block";
-}
-
-
-window.onclick = function (event) {
-    if (!event.target.matches('.imgDopDownBtn')) {
-        document.getElementById("cameraDropDown").style.display = "None";
-    }
 }
 
 // Section: Welcome popup

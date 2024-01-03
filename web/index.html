@@ -87,9 +87,16 @@
                             <p id="timeView">Time</p>
                         </div>
 
-                        <button type="button" class="imageButton" title="Locate" id="locate">
-                            <img src="assets/Locate.png" height="36" />
-                        </button>
+                        <div class="dropdown">
+                            <button type="button" class="imageButton dropDownBtn" title="Locate" id="locate">
+                                <img src="assets/Locate.png" height="36" id="locateDropDownButtonInner" />
+                            </button>
+                            <div id="locateDropDown" class="dropdown-content">
+                                <button title="All" id="locateAll">All</button>
+                                <button title="GPS" id="locateGps">GPS</button>
+                                <button title="Cellular" id="locateCellular">Cellular</button>
+                            </div>
+                        </div>
                         <button type="button" class="imageButton" title="Ring" id="ring">
                             <img src="assets/Ring.png" height="36" />
                         </button>
@@ -101,7 +108,7 @@
                         </button>
                         <div class="dropdown">
                             <button type="button" class="imageButton dropDownBtn" title="Camera" id="takePicture">
-                                <img class="imgDopDownBtn" src="assets/Camera.png" height="36" />
+                                <img src="assets/Camera.png" height="36" id="cameraDropDownButtonInner" />
                             </button>
                             <div id="cameraDropDown" class="dropdown-content">
                                 <button title="front" id="cameraFront">Front</button>
@@ -146,9 +153,16 @@
                             <p id="timeView">Time</p>
                         </div>
 
-                        <button type="button" class="imageButton" title="Locate" id="locate">
-                            <img src="assets/Locate.png" height="24" />
-                        </button>
+                        <div class="dropdown">
+                            <button type="button" class="imageButton dropDownBtn" title="Locate" id="locate">
+                                <img src="assets/Locate.png" height="24" id="locateDropDownButtonInner" />
+                            </button>
+                            <div id="locateDropDown" class="dropdown-content">
+                                <button title="All" id="locateAll">All</button>
+                                <button title="GPS" id="locateGps">GPS</button>
+                                <button title="Cellular" id="locateCellular">Cellular</button>
+                            </div>
+                        </div>
                         <button type="button" class="imageButton" title="Ring" id="ring">
                             <img src="assets/Ring.png" height="24" />
                         </button>
@@ -160,7 +174,7 @@
                         </button>
                         <div class="dropdown">
                             <button type="button" class="imageButton dropDownBtn" title="Camera" id="takePicture">
-                                <img class="imgDopDownBtn" src="assets/Camera.png" height="24" />
+                                <img src="assets/Camera.png" height="24" id="cameraDropDownButtonInner" />
                             </button>
                             <div id="cameraDropDown" class="dropdown-content">
                                 <button title="front" id="cameraFront">Front</button>

@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "argon2-browser": "^1.18.0",
+    "leaflet": "^1.9.4",
+    "toastedjs": "^0.0.2"
+  }
+}

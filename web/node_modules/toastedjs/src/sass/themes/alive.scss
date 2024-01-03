@@ -1,0 +1,16 @@
+@include toasted-theme('alive') {
+
+  font-weight: 700;
+  border-radius: 2px;
+  background-color: white;
+  color: #007FFF;
+  box-shadow: 0 12px 44px 0 rgba(10, 21, 84, 0.24);
+
+  @include toasted-theme-type('success', #4CAF50);
+  @include toasted-theme-type('error', #F44336);
+  @include toasted-theme-type('info',#3F51B5);
+
+  @include toasted-theme-part('action', #007FFF);
+  @include toasted-theme-part('material-icons', #FFC107);
+
+}

@@ -21,7 +21,6 @@ FROM debian:bookworm-slim
 RUN apt update && apt install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /fmd /fmd/server
-COPY --from=builder /go/src/findmydeviceserver/node_modules /fmd/web/node_modules
 COPY --from=builder /usr/lib/libobjectbox.so /usr/lib/libobjectbox.so
 
 COPY web /fmd/web

@@ -16,7 +16,7 @@ export default function Stories({ profile, stories, error }: Props) {
 
 	const meta = {
 		title: `${profile.fullname} (@${profile.username}) - Stories`,
-		description: `Watch Instagram stories from ${profile.fullname} (@${profile.username}) privatly`,
+		description: `View Instagram stories from ${profile.fullname} (@${profile.username}) privately`,
 	};
 
 	return (

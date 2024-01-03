@@ -15,7 +15,7 @@ export default function ProfilePage({ profile, posts, stories, error }: Props) {
 
 	const meta = {
 		title: `${profile.fullname} (@${profile.username})`,
-		description: `See Instagram photos and videos from ${profile.fullname} (@${profile.username}) privatly`,
+		description: `View Instagram photos and videos from ${profile.fullname} (@${profile.username}) privately`,
 	};
 
 	return (

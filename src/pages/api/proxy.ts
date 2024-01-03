@@ -30,7 +30,7 @@ async function proxy(req: NextApiRequest, res: NextApiResponse) {
 	}
 
 	if (!url) {
-		throw new ApiError(HttpStatusCode.BadRequest, "url is required");
+		throw new ApiError(HttpStatusCode.BadRequest, "URL is required");
 	}
 
 	const RGXRESULTS = SERVICESRGX.map((rgx) => rgx.test(url));

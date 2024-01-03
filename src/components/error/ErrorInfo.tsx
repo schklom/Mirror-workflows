@@ -14,9 +14,9 @@ export function ErrorInfo({ statusCode }: Props) {
 	const msg = is403
 		? "This instance is being blocked"
 		: is404
-		? "We couldn't find what you are looking for"
+		? "We couldn't find what you're looking for"
 		: is504
-		? "The provider chosen, didn't respond"
+		? "The chosen provider didn't respond"
 		: "Something went wrong...";
 
 	return (
@@ -31,7 +31,7 @@ export function ErrorInfo({ statusCode }: Props) {
 				<ErrorMessage
 					statusCode={statusCode}
 					includeInstances={false}
-					title="We couldn't find what you are looking for"
+					title="We couldn't find what you're looking for"
 				>
 					<>
 						You can try again:
@@ -44,8 +44,9 @@ export function ErrorInfo({ statusCode }: Props) {
 					could:
 				</ErrorMessage>
 			) : is504 ? (
-				<ErrorMessage statusCode={statusCode} title="The provider chosen, didn't respond">
-					You could try refreshing the page to select another random provider or you could
+				<ErrorMessage statusCode={statusCode} title="The chosen provider didn't respond">
+					You could try refreshing the page to select another random provider or you 
+                    could:
 				</ErrorMessage>
 			) : (
 				<ErrorMessage statusCode={statusCode} title="Something went wrong...">

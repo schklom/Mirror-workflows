@@ -6,7 +6,7 @@ export default function Settings() {
 			meta={{
 				title: "Settings",
 				description:
-					"Costumize your expirence with Proxigram, the private front-end for Instagram",
+					"Customise your experience with Proxigram, the private frontend for Instagram",
 			}}
 		>
 			<h2>Page under construction</h2>

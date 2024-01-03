@@ -4,7 +4,7 @@ import { env } from "env.mjs";
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
 	if (!env.RSS) {
-		ctx.res.write("RSS are disabled");
+		ctx.res.write("RSS is disabled");
 		ctx.res.end();
 		return {
 			props: {},

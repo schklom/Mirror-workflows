@@ -110,7 +110,8 @@ func postLocation(w http.ResponseWriter, r *http.Request) {
 	isModern := postLocationModern(w, body)
 	if !isModern {
 		postLocationLegacy(w, body)
-		}
+	}
+	w.WriteHeader(http.StatusOK)
 }
 
 func postLocationModern(w http.ResponseWriter, body []byte) bool {
@@ -234,6 +235,7 @@ func postPicture(w http.ResponseWriter, r *http.Request) {
 
 	picture := data.Data
 	uio.AddPicture(id, picture)
+	w.WriteHeader(http.StatusOK)
 }
 
 // ------- Public/Private Keys -------
@@ -317,6 +319,7 @@ func postCommand(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	uio.SetCommandToUser(id, data.Data)
+	w.WriteHeader(http.StatusOK)
 	pushUser(id)
 }
 
@@ -352,6 +355,7 @@ func postPushLink(w http.ResponseWriter, r *http.Request) {
 	}
 
 	uio.SetPushUrl(id, data.Data)
+	w.WriteHeader(http.StatusOK)
 }
 
 // ------- Authentication, Login -------
@@ -435,6 +439,7 @@ func deleteDevice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	uio.DeleteUser(id)
+	w.WriteHeader(http.StatusOK)
 }
 
 func createDevice(w http.ResponseWriter, r *http.Request) {

@@ -2,6 +2,8 @@
 
 ## Introduction ##
 
+[Demo Site](https://feedropolis.cryptic.link/)
+
 Feedropolis is a Atom feed generator. It can take any site that is accessible directly via an URL, parse its contents via XPATH and generate an Atom feed from the result.
 
 How to parse each site is selected by the user in a visual GUI. Feedropolis can even handle content that is rendered by javascript. The only requirement is that the page and content is accessible directly by URL.

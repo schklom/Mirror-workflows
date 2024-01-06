@@ -18,6 +18,16 @@ const nextConfig = {
 				destination: "/tag/:tag",
 				permanent: true,
 			},
+			{
+				source: "/reel/:shortcode",
+				destination: "/p/:shortcode",
+				permanent: true,
+			},
+			{
+				source: "/api/reel/:shortcode",
+				destination: "/api/p/:shortcode",
+				permanent: true,
+			},
 		];
 	},
 };

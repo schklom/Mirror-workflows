@@ -5,7 +5,7 @@ export default function Home() {
 	const meta = {
 		title: "Home",
 		description:
-			"Proxigram, an alternative open sorce front-end for Instagram focused on privacy. Watch Instagram accounts without an account and privatly",
+			"Proxigram, an open source alternative frontend for Instagram. View Instagram profiles privately without an account",
 	};
 
 	return (
@@ -14,7 +14,7 @@ export default function Home() {
 				Welcome to Proxigram!
 			</h2>
 			<p className="mx-2 text-center text-lg">
-				An alternative open source frontend for Instagram
+				An open source alternative frontend for Instagram
 			</p>
 			<SearchForm />
 		</Layout>

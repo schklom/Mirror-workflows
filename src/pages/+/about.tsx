@@ -6,7 +6,7 @@ export default function About() {
 			meta={{
 				title: "About",
 				description:
-					"What is Proxigram? Learn more about Proxigram. The alternative front-end for Instagram",
+					"What is Proxigram? Learn more about Proxigram, the alternative frontend for Instagram",
 			}}
 		>
 			<h2>Page under construction</h2>

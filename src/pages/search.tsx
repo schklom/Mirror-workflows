@@ -16,7 +16,7 @@ export default function Search({ accounts, hashtags, error }: Props) {
 
 	const meta = {
 		title: `Search results for ${router.query.q}`,
-		description: `Search results for ${router.query.q} on Proxigram, a privacy frontend alternative to Instagram. Watch accounts without and account`,
+		description: `Search results for ${router.query.q} on Proxigram, an alternative frontend for Instagram. View profiles privately without an account`,
 	};
 
 	return (

@@ -41,7 +41,7 @@
 ## About The Project
 
 Proxigram: A privacy focused and and open source front-end for Instagram.
-Inspired by [ProxiTox](https://github.com/pablouser1/ProxiTok), [Nitter](https://github.com/zedeus/nitter/), [LibreMdb](https://codeberg.org/zyachel/libremdb), and [many others](https://github.com/digitalblossom/alternative-frontends)
+Inspired by [ProxiTok](https://github.com/pablouser1/ProxiTok), [Nitter](https://github.com/zedeus/nitter/), [LibreMdb](https://codeberg.org/zyachel/libremdb), and [many others](https://github.com/digitalblossom/alternative-frontends)
 
 ### Why?
 

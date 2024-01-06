@@ -17,7 +17,7 @@ export default function Tag({ tag, error }: Props) {
 
 	const meta = {
 		title: tag.tag,
-		description: `See posts tagged with #${tag.tag} on Instagram privatly with Proxigram`,
+		description: `View posts tagged with #${tag.tag} on Instagram privately with Proxigram`,
 	};
 
 	return (

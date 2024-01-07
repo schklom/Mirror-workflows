@@ -4,7 +4,7 @@ import Debug from 'debug';
 const debug = Debug('ap:cleanup');
 
 const InactiveInterval = process.env.DELETE_FEEDS_INACTIVE_HOURS ? parseInt(process.env.DELETE_FEEDS_INACTIVE_HOURS) : 0;
-const ActiveInterval = process.env.DELETE_FEEDS_INACTIVE_RNG_HOURS ? parseInt(process.env.DELETE_FEEDS_INACTIVE_RNG_HOURS) : 0;
+const ActiveInterval = process.env.DELETE_FEEDS_ACTIVE_HOURS ? parseInt(process.env.DELETE_FEEDS_ACTIVE_HOURS) : 0;
 const ActiveCleanup = InactiveInterval > 0 || ActiveInterval > 0;
 
 let timer: NodeJS.Timeout;

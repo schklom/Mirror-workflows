@@ -1,0 +1,17 @@
+# This is an example config file for FMD Server
+
+# The ports FMD Server should listen on
+PortSecure: 8443
+PortInsecure: 8080
+
+# The length for the user IDs that are generated
+UserIdLength: 5
+
+# How many location points or pictures FMD Server should save per account
+MaxSavedLoc: 1000
+MaxSavedPic: 10
+
+# If RegistrationToken is non-empty, FMD Server will require the FMD app to provide this token during registration.
+# Set this to a long random string if you want your instance to be private and not open to registrations by anyone.
+# You can e.g. generate a 32 character string with your password manager.
+RegistrationToken: ""

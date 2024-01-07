@@ -15,30 +15,29 @@ import (
 	"strings"
 
 	"findmydeviceserver/user"
+
+	"gopkg.in/yaml.v3"
 )
 
 // Some IO variables
-var version = "v0.4.0"
-var webDir = "web"
+var VERSION = "v0.4.0"
+var WEB_DIR = "web"
 var uio user.UserIO
 
 // Server Config
-const serverCert = "server.crt"
-const serverKey = "server.key"
-const configFile = "config.json"
-
-var filesDir string
-
-var serverConfig config
+const SERVER_CERT = "server.crt"
+const SERVER_KEY = "server.key"
+const CONFIG_FILE = "config.yml"
 
 var isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]*$`).MatchString
 
 type config struct {
-	PortSecure   int
-	PortUnsecure int
-	IdLength     int
-	MaxSavedLoc  int
-	MaxSavedPic  int
+	PortSecure        int    `yaml:"PortSecure"`
+	PortInsecure      int    `yaml:"PortInsecure"`
+	UserIdLength      int    `yaml:"UserIdLength"`
+	MaxSavedLoc       int    `yaml:"MaxSavedLoc"`
+	MaxSavedPic       int    `yaml:"MaxSavedPic"`
+	RegistrationToken string `yaml:"RegistrationToken"`
 }
 
 // Deprecated: used only by old clients. Modern clients use the opaque DataPackage.
@@ -52,10 +51,11 @@ type locationData struct {
 }
 
 type registrationData struct {
-	Salt           string `'json:"salt"`
-	HashedPassword string `'json:"hashedPassword"`
-	PubKey         string `'json:"pubKey"`
-	PrivKey        string `'json:"privKey"`
+	Salt              string `'json:"salt"`
+	HashedPassword    string `'json:"hashedPassword"`
+	PubKey            string `'json:"pubKey"`
+	PrivKey           string `'json:"privKey"`
+	RegistrationToken string `'json:"registrationToken"`
 }
 
 type passwordUpdateData struct {
@@ -442,13 +442,25 @@ func deleteDevice(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func createDevice(w http.ResponseWriter, r *http.Request) {
+type createDeviceHandler struct {
+	RegistrationToken string
+}
+
+func (h createDeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var reg registrationData
 	err := json.NewDecoder(r.Body).Decode(&reg)
 	if err != nil {
+		fmt.Println("ERROR: decoding json:", err)
 		http.Error(w, "Meeep!, Error - createDevice", http.StatusBadRequest)
 		return
 	}
+
+	if h.RegistrationToken != "" && h.RegistrationToken != reg.RegistrationToken {
+		fmt.Println("ERROR: invalid RegistrationToken!")
+		http.Error(w, "Meeep!, Error - createDevice", http.StatusUnauthorized)
+		return
+	}
+
 	id := uio.CreateNewUser(reg.PrivKey, reg.PubKey, reg.Salt, reg.HashedPassword)
 
 	accessToken := user.AccessToken{DeviceId: id, Token: ""}
@@ -460,7 +472,7 @@ func createDevice(w http.ResponseWriter, r *http.Request) {
 // ------- Main Web Request Handling -------
 
 func getVersion(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(fmt.Sprint(version)))
+	w.Write([]byte(fmt.Sprint(VERSION)))
 }
 
 func mainLocation(w http.ResponseWriter, r *http.Request) {
@@ -490,16 +502,22 @@ func mainCommand(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func mainDevice(w http.ResponseWriter, r *http.Request) {
+type mainDeviceHandler struct {
+	createDeviceHandler createDeviceHandler
+}
+
+func (h mainDeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
 		deleteDevice(w, r)
 	case http.MethodPut:
-		createDevice(w, r)
+		h.createDeviceHandler.ServeHTTP(w, r)
 	}
 }
 
-func handleRequests() {
+func handleRequests(filesDir string, webDir string, config config) {
+	mainDeviceHandler := mainDeviceHandler{createDeviceHandler{config.RegistrationToken}}
+
 	http.Handle("/", http.FileServer(http.Dir(webDir)))
 	http.HandleFunc("/command", mainCommand)
 	http.HandleFunc("/command/", mainCommand)
@@ -515,8 +533,8 @@ func handleRequests() {
 	http.HandleFunc("/key/", getPrivKey)
 	http.HandleFunc("/pubKey", getPubKey)
 	http.HandleFunc("/pubKey/", getPubKey)
-	http.HandleFunc("/device", mainDevice)
-	http.HandleFunc("/device/", mainDevice)
+	http.Handle("/device", mainDeviceHandler)
+	http.Handle("/device/", mainDeviceHandler)
 	http.HandleFunc("/password", postPassword)
 	http.HandleFunc("/password/", postPassword)
 	http.HandleFunc("/push", postPushLink)
@@ -527,59 +545,62 @@ func handleRequests() {
 	http.HandleFunc("/requestAccess/", requestAccess)
 	http.HandleFunc("/version", getVersion)
 	http.HandleFunc("/version/", getVersion)
-	if fileExists(filepath.Join(filesDir, serverKey)) {
-		securePort := ":" + strconv.Itoa(serverConfig.PortSecure)
-		err := http.ListenAndServeTLS(securePort, filepath.Join(filesDir, serverCert), filepath.Join(filesDir, serverKey), nil)
+
+	if fileExists(filepath.Join(filesDir, SERVER_KEY)) {
+		securePort := ":" + strconv.Itoa(config.PortSecure)
+		err := http.ListenAndServeTLS(securePort, filepath.Join(filesDir, SERVER_CERT), filepath.Join(filesDir, SERVER_KEY), nil)
 		if err != nil {
 			fmt.Println("HTTPS won't be available.", err)
 		}
 	}
-	unsecurePort := ":" + strconv.Itoa(serverConfig.PortUnsecure)
-	log.Fatal(http.ListenAndServe(unsecurePort, nil))
+	insecureAddr := ":" + strconv.Itoa(config.PortInsecure)
+	log.Fatal(http.ListenAndServe(insecureAddr, nil))
 }
 
-func initServer() {
-	if filesDir == "" {
-		executableFile, err := os.Executable()
-		if err != nil {
-			filesDir = "."
-		} else {
-			dir, _ := filepath.Split(executableFile)
-			filesDir = dir
-		}
-	}
-	webDir = filepath.Join(filesDir, webDir)
+func load_config(filesDir string) config {
+	fmt.Println("Init: Loading Config...")
 
-	fmt.Println("Init: FMD-Data directory: ", filesDir)
-
-	fmt.Println("Init: Preparing FMD-Server...")
-
-	fmt.Println("Init: Preparing Config...")
-
-	configFilePath := filepath.Join(filesDir, configFile)
+	configFilePath := filepath.Join(filesDir, CONFIG_FILE)
 
 	configRead := true
 	configContent, err := os.ReadFile(configFilePath)
 	if err != nil {
+		fmt.Println("ERROR: reading config file: ", err)
 		configRead = false
 	}
-	err = json.Unmarshal(configContent, &serverConfig)
-	if err != nil {
-		configRead = false
-	}
-	//Create DefaultConfig when no config available
-	if !configRead {
-		serverConfig = config{PortSecure: 1008, PortUnsecure: 1020, IdLength: 5, MaxSavedLoc: 1000, MaxSavedPic: 10}
-		configToString, _ := json.MarshalIndent(serverConfig, "", " ")
-		err := os.WriteFile(configFilePath, configToString, 0644)
-		fmt.Println(err)
-	}
-	isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]{1,` + strconv.Itoa(serverConfig.IdLength) + `}$`).MatchString
 
-	fmt.Println("Init: Preparing Devices")
+	serverConfig := config{}
+	err = yaml.Unmarshal(configContent, &serverConfig)
+	if err != nil {
+		fmt.Println("ERROR: unmarshaling config file: ", err)
+		configRead = false
+	}
+
+	if !configRead {
+		fmt.Println("WARN: No config found! Using defaults.")
+		serverConfig = config{PortSecure: 8443, PortInsecure: 8080, UserIdLength: 5, MaxSavedLoc: 1000, MaxSavedPic: 10, RegistrationToken: ""}
+	}
+	//fmt.Printf("INFO: Using config %+v\n", serverConfig)
+
+	isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]{1,` + strconv.Itoa(serverConfig.UserIdLength) + `}$`).MatchString
+
+	return serverConfig
+}
+
+func init_db(filesDir string, config config) {
+	fmt.Println("Init: Loading database")
 	uio = user.UserIO{}
-	uio.Init(filesDir, serverConfig.IdLength, serverConfig.MaxSavedLoc, serverConfig.MaxSavedPic)
-	fmt.Printf("Init: Devices registered\n\n")
+	uio.Init(filesDir, config.UserIdLength, config.MaxSavedLoc, config.MaxSavedPic)
+}
+
+func get_cwd() string {
+	executableFile, err := os.Executable()
+	if err != nil {
+		return "."
+	} else {
+		dir, _ := filepath.Split(executableFile)
+		return dir
+	}
 }
 
 func fileExists(filename string) bool {
@@ -591,13 +612,18 @@ func fileExists(filename string) bool {
 }
 
 func main() {
-	flag.StringVar(&filesDir, "d", "", "Specifiy data directory. Default is the directory of the executable.")
+	filesDir := ""
+	cwd := get_cwd()
+	flag.StringVar(&filesDir, "d", cwd, "Specifiy data directory. Default is the directory of the executable.")
 	flag.Parse()
+	fmt.Println("Init: FMD-Data directory: ", filesDir)
 
-	initServer()
+	webDir := filepath.Join(filesDir, WEB_DIR)
+	config := load_config(filesDir)
+	init_db(filesDir, config)
 
-	fmt.Println("FMD - Server - ", version)
+	fmt.Println("FMD Server ", VERSION)
 	fmt.Println("Starting Server")
-	fmt.Printf("Port: %d(unsecure) %d(secure)\n", serverConfig.PortUnsecure, serverConfig.PortSecure)
-	handleRequests()
+	fmt.Printf("Port: %d (insecure) %d (secure)\n", config.PortInsecure, config.PortSecure)
+	handleRequests(filesDir, webDir, config)
 }

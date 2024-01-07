@@ -31,7 +31,7 @@ RUN mkdir /fmd/objectbox \
       && chown fmd-user:fmd-user /fmd/objectbox
 USER fmd-user
 
-EXPOSE 1020/tcp
+EXPOSE 8080/tcp
 VOLUME /data
 
 

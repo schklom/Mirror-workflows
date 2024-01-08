@@ -32,8 +32,6 @@
 
 	startup_gettext();
 
-	$script_started = microtime(true);
-
 	if (!init_plugins()) {
 		return;
 	}

@@ -260,8 +260,6 @@ class Prefs {
 
 			list ($def_val, $type_hint) = self::_DEFAULTS[$pref_name];
 
-			$cached_value = $this->_get_cache($pref_name, $owner_uid, $profile_id);
-
 			if ($this->_is_cached($pref_name, $owner_uid, $profile_id)) {
 				$cached_value = $this->_get_cache($pref_name, $owner_uid, $profile_id);
 				return Config::cast_to($cached_value, $type_hint);

@@ -606,7 +606,7 @@ class Article extends Handler_Protected {
 				foreach ($elems as $e) {
 					if ($e->nodeName == "iframe") {
 						$matches = [];
-						if ($rrr = preg_match("/\/embed\/([\w-]+)/", $e->getAttribute("src"), $matches)) {
+						if (preg_match("/\/embed\/([\w-]+)/", $e->getAttribute("src"), $matches)) {
 							$article_image = "https://img.youtube.com/vi/" . $matches[1] . "/hqdefault.jpg";
 							$article_stream = "https://youtu.be/" . $matches[1];
 							$article_kind = Article::ARTICLE_KIND_YOUTUBE;

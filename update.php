@@ -188,7 +188,6 @@
 	Debug::log("Lock: $lock_filename");
 
 	$lock_handle = make_lockfile($lock_filename);
-	$must_exit = false;
 
 	if (isset($options["task"]) && isset($options["pidlock"])) {
 		$waits = $options["task"] * 5;
@@ -511,8 +510,6 @@
 			Debug::log("Error: User not found: $login");
 			exit(1);
 		}
-
-		$rc = -1;
 
 		if ($enable) {
 			Debug::log("Enabling API access for user $login...");

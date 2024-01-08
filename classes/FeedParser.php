@@ -52,7 +52,6 @@ class FeedParser {
 	}
 
 	function init() : void {
-		$root = $this->doc->firstChild;
 		$xpath = new DOMXPath($this->doc);
 		$xpath->registerNamespace('atom', 'http://www.w3.org/2005/Atom');
 		$xpath->registerNamespace('atom03', 'http://purl.org/atom/ns#');

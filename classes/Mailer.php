@@ -12,7 +12,7 @@ class Mailer {
 		$to_address = $params["to_address"];
 		$subject = $params["subject"];
 		$message = $params["message"];
-		$message_html = $params["message_html"] ?? "";
+		// $message_html = $params["message_html"] ?? "";
 		$from_name = $params["from_name"] ?? Config::get(Config::SMTP_FROM_NAME);
 		$from_address = $params["from_address"] ?? Config::get(Config::SMTP_FROM_ADDRESS);
 		$additional_headers = $params["headers"] ?? [];

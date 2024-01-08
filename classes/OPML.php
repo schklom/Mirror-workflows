@@ -612,8 +612,6 @@ class OPML extends Handler_Protected {
 	function opml_import(int $owner_uid, string $filename = "") {
 		if (!$owner_uid) return;
 
-		$doc = false;
-
 		if (!$filename) {
 			if ($_FILES['opml_file']['error'] != 0) {
 				print_error(T_sprintf("Upload failed with error code %d",
@@ -643,8 +641,6 @@ class OPML extends Handler_Protected {
 			$this->opml_notice(T_sprintf("Error: file is not readable: %s", $filename));
 			return false;
 		}
-
-		$loaded = false;
 
 		$doc = new DOMDocument();
 

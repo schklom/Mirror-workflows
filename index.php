@@ -45,7 +45,7 @@
 
 	<style type="text/css">
 	<?php
-		foreach (PluginHost::getInstance()->get_plugins() as $n => $p) {
+		foreach (PluginHost::getInstance()->get_plugins() as $p) {
 			if (method_exists($p, "get_css")) {
 				echo $p->get_css();
 			}

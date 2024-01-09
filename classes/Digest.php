@@ -17,7 +17,7 @@ class Digest
 
 		$pdo = Db::pdo();
 
-		$res = $pdo->query("SELECT id,email FROM ttrss_users
+		$res = $pdo->query("SELECT id, login, email FROM ttrss_users
 				WHERE email != '' AND (last_digest_sent IS NULL OR $interval_qpart)");
 
 		while ($line = $res->fetch()) {
@@ -191,7 +191,7 @@ class Digest
 
 			$tpl_t->addBlock('article');
 
-			if ($headlines[$i]['feed_title'] != $headlines[$i + 1]['feed_title']) {
+			if (!isset($headlines[$i + 1]) || $headlines[$i]['feed_title'] != $headlines[$i + 1]['feed_title']) {
 				$tpl->addBlock('feed');
 				$tpl_t->addBlock('feed');
 			}

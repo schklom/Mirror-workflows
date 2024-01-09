@@ -197,9 +197,13 @@ class Pref_System extends Handler_Administrative {
 						<?= \Controls\hidden_tag("op", "Pref_System") ?>
 						<?= \Controls\hidden_tag("method", "sendTestEmail") ?>
 
+						<?php
+							$user = ORM::for_table('ttrss_users')->find_one($_SESSION["uid"]);
+						?>
+
 						<fieldset>
 							<label><?= __("To:") ?></label>
-							<?= \Controls\input_tag("mail_address", "", "text", ['required' => 1]) ?>
+							<?= \Controls\input_tag("mail_address",$user->email, "text", ['required' => 1]) ?>
 							<?= \Controls\submit_tag(__("Send test email")) ?>
 							<span style="display: none; margin-left : 10px" class="alert alert-error" id="mail-test-result">...</span>
 						</fieldset>

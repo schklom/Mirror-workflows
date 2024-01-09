@@ -391,12 +391,12 @@ class UrlHelper {
 			$response = $client->request($post_query ? 'POST' : 'GET', $url, $req_options);
 		} catch (\LengthException $ex) {
 			// Either 'Content-Length' indicated the download limit would be exceeded, or the transfer actually exceeded the download limit.
-			self::$fetch_last_error = (string) $ex;
+			self::$fetch_last_error = $ex->getMessage();
 			$span->setAttribute('error', self::$fetch_last_error);
 			$span->end();
 			return false;
 		} catch (GuzzleHttp\Exception\GuzzleException $ex) {
-			self::$fetch_last_error = (string) $ex;
+			self::$fetch_last_error = $ex->getMessage();
 
 			if ($ex instanceof GuzzleHttp\Exception\RequestException) {
 				if ($ex instanceof GuzzleHttp\Exception\BadResponseException) {

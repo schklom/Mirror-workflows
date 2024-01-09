@@ -92,7 +92,8 @@ class Digest
 		$tpl->readTemplateFromFile("digest_template_html.txt");
 		$tpl_t->readTemplateFromFile("digest_template.txt");
 
-		$user_tz_string = get_pref(Prefs::USER_TIMEZONE, $user_id);
+		$user_tz_string = Prefs::get(Prefs::USER_TIMEZONE, $user_id);
+		$min_score = Prefs::get(Prefs::DIGEST_MIN_SCORE, $user_id);
 
 		if ($user_tz_string == 'Automatic')
 			$user_tz_string = 'GMT';
@@ -136,10 +137,10 @@ class Digest
 				AND $interval_qpart
 				AND ttrss_user_entries.owner_uid = :user_id
 				AND unread = true
-				AND score >= 0
+				AND score >= :min_score
 			ORDER BY ttrss_feed_categories.title, ttrss_feeds.title, score DESC, date_updated DESC
 			LIMIT " . (int)$limit);
-		$sth->execute([':user_id' => $user_id]);
+		$sth->execute([':user_id' => $user_id, ':min_score' => $min_score]);
 
 		$headlines_count = 0;
 		$headlines = array();

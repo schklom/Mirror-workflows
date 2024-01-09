@@ -38,6 +38,8 @@
 
 	/**
 	 * @return bool|int|null|string
+	 *
+	 * @deprecated by Prefs::get()
 	 */
 	function get_pref(string $pref_name, int $owner_uid = null) {
 		return Prefs::get($pref_name, $owner_uid ? $owner_uid : $_SESSION["uid"], $_SESSION["profile"] ?? null);
@@ -45,6 +47,8 @@
 
 	/**
 	 * @param bool|int|string $value
+	 *
+	 * @deprecated by Prefs::set()
 	 */
 	function set_pref(string $pref_name, $value, int $owner_uid = null, bool $strip_tags = true): bool {
 		return Prefs::set($pref_name, $value, $owner_uid ? $owner_uid : $_SESSION["uid"], $_SESSION["profile"] ?? null, $strip_tags);

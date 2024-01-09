@@ -74,6 +74,7 @@ class Pref_Prefs extends Handler_Protected {
 				Prefs::DIGEST_ENABLE,
 				Prefs::DIGEST_CATCHUP,
 				Prefs::DIGEST_PREFERRED_TIME,
+				Prefs::DIGEST_MIN_SCORE,
 			],
 			__('Advanced') => [
 				Prefs::BLACKLISTED_TAGS,
@@ -127,6 +128,7 @@ class Pref_Prefs extends Handler_Protected {
 			Prefs::DEBUG_HEADLINE_IDS => array(__("Show article and feed IDs"), __("In the headlines buffer")),
 			Prefs::DISABLE_CONDITIONAL_COUNTERS => array(__("Disable conditional counter updates"), __("May increase server load")),
 			Prefs::CDM_ENABLE_GRID => array(__("Grid view"), __("On wider screens, if always expanded")),
+			Prefs::DIGEST_MIN_SCORE => array(__("Required score"), __("Include articles with this or above score into digest")),
 		];
 
 		// hidden in the main prefs UI (use to hide things that have description set above)
@@ -688,7 +690,7 @@ class Pref_Prefs extends Handler_Protected {
 						}
 
 					} else if (in_array($pref_name, [Prefs::FRESH_ARTICLE_MAX_AGE,
-							Prefs::PURGE_OLD_DAYS, Prefs::LONG_DATE_FORMAT, Prefs::SHORT_DATE_FORMAT])) {
+							Prefs::PURGE_OLD_DAYS, Prefs::LONG_DATE_FORMAT, Prefs::SHORT_DATE_FORMAT, Prefs::DIGEST_MIN_SCORE])) {
 
 						if ($pref_name == Prefs::PURGE_OLD_DAYS && Config::get(Config::FORCE_ARTICLE_PURGE) != 0) {
 							$attributes = ["disabled" => true, "required" => true];

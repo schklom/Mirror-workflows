@@ -61,6 +61,7 @@ class Prefs {
 	const DISABLE_CONDITIONAL_COUNTERS = "DISABLE_CONDITIONAL_COUNTERS";
 	const WIDESCREEN_MODE = "WIDESCREEN_MODE";
 	const CDM_ENABLE_GRID = "CDM_ENABLE_GRID";
+	const DIGEST_MIN_SCORE = "DIGEST_MIN_SCORE";
 
 	private const _DEFAULTS = [
 		Prefs::PURGE_OLD_DAYS => [ 60, Config::T_INT ],
@@ -122,6 +123,7 @@ class Prefs {
 		Prefs::DISABLE_CONDITIONAL_COUNTERS => [ false, Config::T_BOOL ],
 		Prefs::WIDESCREEN_MODE => [ false, Config::T_BOOL ],
 		Prefs::CDM_ENABLE_GRID => [ false, Config::T_BOOL ],
+		Prefs::DIGEST_MIN_SCORE => [ 0, Config::T_INT ],
 	];
 
 	const _PROFILE_BLACKLIST = [
@@ -138,6 +140,7 @@ class Prefs {
 		//Prefs::SORT_HEADLINES_BY_FEED_DATE,
 		Prefs::SSL_CERT_SERIAL,
 		Prefs::DIGEST_PREFERRED_TIME,
+		Prefs::DIGEST_MIN_SCORE,
 		Prefs::_PREFS_MIGRATED
 	];
 
@@ -247,7 +250,7 @@ class Prefs {
 	/**
 	 * @return bool|int|null|string
 	 */
-	static function get(string $pref_name, int $owner_uid, ?int $profile_id) {
+	static function get(string $pref_name, int $owner_uid, ?int $profile_id = null) {
 		return self::get_instance()->_get($pref_name, $owner_uid, $profile_id);
 	}
 

@@ -206,7 +206,7 @@ class DiskCache implements Cache_Adapter {
 	}
 
 	public function __construct(string $dir) {
-		foreach (PluginHost::getInstance()->get_plugins() as $n => $p) {
+		foreach (PluginHost::getInstance()->get_plugins() as $p) {
 			if (implements_interface($p, "Cache_Adapter")) {
 
 				/** @var Cache_Adapter $p */

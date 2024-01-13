@@ -250,7 +250,6 @@ class UserHelper {
 	static function reset_password(int $uid, bool $format_output = false, string $new_password = ""): void {
 
 		$user = ORM::for_table('ttrss_users')->find_one($uid);
-		$message = "";
 
 		if ($user) {
 

@@ -1225,13 +1225,10 @@ class Pref_Prefs extends Handler_Protected {
 							$proc = proc_open("git clone " . escapeshellarg($plugin['clone_url']) . " " . $tmp_dir,
 											$descriptorspec, $pipes, sys_get_temp_dir());
 
-							$status = 0;
-
 							if (is_resource($proc)) {
 								$rv["stdout"] = stream_get_contents($pipes[1]);
 								$rv["stderr"] = stream_get_contents($pipes[2]);
-								$status = proc_close($proc);
-								$rv["git_status"] = $status;
+								$rv["git_status"] = proc_close($proc);
 
 								// yeah I know about mysterious RC = -1
 								if (file_exists("$tmp_dir/init.php")) {
@@ -1548,7 +1545,7 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	function deleteAppPasswords(): void {
-		$passwords = ORM::for_table('ttrss_app_passwords')
+		ORM::for_table('ttrss_app_passwords')
 			->where('owner_uid', $_SESSION['uid'])
 			->where_in('id', $_REQUEST['ids'] ?? [])
 			->delete_many();

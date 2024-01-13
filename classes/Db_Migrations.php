@@ -35,7 +35,7 @@ class Db_Migrations {
 
 		$sth = $this->pdo->query("SELECT * FROM {$this->migrations_table}");
 
-		if ($res = $sth->fetch()) {
+		if ($sth->fetch()) {
 			$sth = $this->pdo->prepare("UPDATE {$this->migrations_table} SET schema_version = ?");
 		} else {
 			$sth = $this->pdo->prepare("INSERT INTO {$this->migrations_table} (schema_version) VALUES (?)");

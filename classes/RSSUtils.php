@@ -873,7 +873,7 @@ class RSSUtils {
 
 					$pdo->commit();
 
-					$entry_obj = ORM::for_table('ttrss_entries')
+					ORM::for_table('ttrss_entries')
 						->find_one($base_entry_id)
 						->set('date_updated', Db::NOW())
 						->save();
@@ -1028,7 +1028,7 @@ class RSSUtils {
 					WHERE guid IN (?, ?, ?)");
 				$csth->execute([$entry_guid, $entry_guid_hashed, $entry_guid_hashed_compat]);
 
-				if (!$row = $csth->fetch()) {
+				if (!$csth->fetch()) {
 
 					Debug::log("base guid [$entry_guid or $entry_guid_hashed] not found, creating...", Debug::LOG_VERBOSE);
 
@@ -1746,7 +1746,6 @@ class RSSUtils {
 	/** migrates favicons from legacy storage in feed-icons/ to cache/feed-icons/using new naming (sans .ico suffix) */
 	static function migrate_feed_icons() : void {
 		$old_dir = Config::get(Config::ICONS_DIR);
-		$new_dir = Config::get(Config::CACHE_DIR) . '/feed-icons';
 
 		$dh = opendir($old_dir);
 

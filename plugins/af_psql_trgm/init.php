@@ -385,7 +385,7 @@ class Af_Psql_Trgm extends Plugin {
 			$sth = $this->pdo->prepare("SELECT id FROM ttrss_feeds WHERE id = ? AND owner_uid = ?");
 			$sth->execute([$feed, $_SESSION['uid']]);
 
-			if ($row = $sth->fetch()) {
+			if ($sth->fetch()) {
 				array_push($tmp, $feed);
 			}
 		}

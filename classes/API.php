@@ -691,20 +691,6 @@ class API extends Handler {
 				}
 			}
 
-			$params = array(
-				"feed" => $feed_id,
-				"limit" => $limit,
-				"view_mode" => $view_mode,
-				"cat_view" => $is_cat,
-				"search" => $search,
-				"override_order" => $order,
-				"offset" => $offset,
-				"since_id" => $since_id,
-				"include_children" => $include_nested,
-				"check_first_id" => $check_first_id,
-				"skip_first_id_check" => $skip_first_id_check
-			);
-
 			$qfh_ret = [];
 
 			if (!$is_cat && is_numeric($feed_id) && $feed_id < PLUGIN_FEED_BASE_INDEX && $feed_id > LABEL_BASE_INDEX) {

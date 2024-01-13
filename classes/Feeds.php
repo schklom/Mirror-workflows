@@ -1132,8 +1132,6 @@ class Feeds extends Handler_Protected {
 			return ["code" => 8];
 		}
 
-		$pdo = Db::pdo();
-
 		$url = UrlHelper::validate($url);
 
 		if (!$url) return ["code" => 2];
@@ -1276,8 +1274,6 @@ class Feeds extends Handler_Protected {
 	 * @return false|int false if the category/feed couldn't be found by title, otherwise its ID
 	 */
 	static function _find_by_title(string $title, bool $cat = false, int $owner_uid = 0) {
-
-		$res = false;
 
 		if ($cat) {
 			$res = ORM::for_table('ttrss_feed_categories')
@@ -1735,7 +1731,6 @@ class Feeds extends Handler_Protected {
 			$vfeed_query_part = $override_vfeed;
 		}
 
-		$feed_title = "";
 		$feed_site_url = "";
 		$last_error = "";
 		$last_updated = "";
@@ -2157,7 +2152,7 @@ class Feeds extends Handler_Protected {
 	}
 
 	static function _clear_access_keys(int $owner_uid): void {
-		$key = ORM::for_table('ttrss_access_keys')
+		ORM::for_table('ttrss_access_keys')
 			->where('owner_uid', $owner_uid)
 			->delete_many();
 	}
@@ -2168,7 +2163,7 @@ class Feeds extends Handler_Protected {
 	 * @see Handler_Public#generate_syndicated_feed()
 	 */
 	static function _update_access_key(string $feed_id, bool $is_cat, int $owner_uid): ?string {
-		$key = ORM::for_table('ttrss_access_keys')
+		ORM::for_table('ttrss_access_keys')
 			->where('owner_uid', $owner_uid)
 			->where('feed_id', $feed_id)
 			->where('is_cat', $is_cat)
@@ -2212,8 +2207,6 @@ class Feeds extends Handler_Protected {
 		if (!$purge_interval) $purge_interval = self::_get_purge_interval($feed_id);
 
 		$pdo = Db::pdo();
-
-		$owner_uid = false;
 		$rows_deleted = 0;
 
 		$sth = $pdo->prepare("SELECT owner_uid FROM ttrss_feeds WHERE id = ?");

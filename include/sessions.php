@@ -93,7 +93,7 @@
 		$sth = \Db::pdo()->prepare("SELECT id FROM ttrss_sessions WHERE id=?");
 		$sth->execute([$id]);
 
-		if ($row = $sth->fetch()) {
+		if ($sth->fetch()) {
 			$sth = \Db::pdo()->prepare("UPDATE ttrss_sessions SET data=?, expire=? WHERE id=?");
 			$sth->execute([$data, $expire, $id]);
 		} else {

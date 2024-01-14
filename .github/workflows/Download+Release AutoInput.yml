@@ -28,7 +28,7 @@ jobs:
 
       - name: Get apk from Google Drive
         run: |
-          filename="./AutoInput.Direct.apk"
+          filename="AutoInput.Direct.apk"
           echo "filename=${filename}" >> $GITHUB_ENV
           fileid=${{ secrets.AUTOINPUT_GOOGLE_DRIVE_FILE_ID }}
           url="https://drive.google.com/uc?export=download&confirm=t&id=${fileid}"

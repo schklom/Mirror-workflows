@@ -31,8 +31,10 @@ jobs:
           filename="./Tasker.Direct.apk"
           echo "filename=${filename}" >> $GITHUB_ENV
           fileid=${{ secrets.TASKER_GOOGLE_DRIVE_FILE_ID }}
-          url="https://drive.google.com/uc?export=download&confirm=t&id=${fileid}"
-          curl -L "https://drive.google.com/uc?export=download&confirm=t&id=${fileid}" -o ${filename}
+          url="https://drive.usercontent.google.com/download?id=${fileid}&export=download&authuser=0&confirm=t"
+          curl -L "https://drive.usercontent.google.com/download?id=${fileid}&export=download&authuser=0&confirm=t=${fileid}" -o ${filename}
+
+          
       
       - name: Store md5 hash of new apk
         run: md5sum "${{ env.filename }}" | cut -d " " -f 1 > hash_new_file

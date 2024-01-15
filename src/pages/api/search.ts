@@ -21,11 +21,16 @@ async function search(req: NextApiRequest, res: NextApiResponse) {
 		throw new ApiError(HttpStatusCode.BadRequest, "You should provide a query");
 	}
 
-	const searchService = await getRandomProvider<IGetSearch>("Search");
-	const searchInfo = await searchService.search(q);
+	try {
+		const url = new URL(q);
+		res.redirect(url.pathname);
+	} catch (error) {
+		const searchService = await getRandomProvider<IGetSearch>("Search");
+		const searchInfo = await searchService.search(q);
 
-	await redis.setex(`search:${q}`, expireTime, JSON.stringify(searchInfo));
-	res.json(searchInfo);
+		await redis.setex(`search:${q}`, expireTime, JSON.stringify(searchInfo));
+		res.json(searchInfo);
+	}
 }
 
 export default async function apiHandler(req: NextApiRequest, res: NextApiResponse) {

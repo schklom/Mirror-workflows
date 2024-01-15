@@ -9,8 +9,22 @@ export function SearchForm() {
 		e.preventDefault();
 
 		const formData = new FormData(e.currentTarget);
-		const q = formData.get("q");
-		router.push(`/search?q=${q?.toString().toLowerCase()}`);
+		const query = formData.get("q")?.toString();
+		if (query) {
+			try {
+				const url = new URL(query);
+				router.push(url.pathname);
+			} catch (error) {
+				if (query.startsWith("@")) {
+					router.push(`/${query.slice(1)}`);
+					return;
+				} else if (query.startsWith("#")) {
+					router.push(`/tag/${query.slice(1)}`);
+					return;
+				}
+				router.push(`/search?q=${query.toLowerCase()}`);
+			}
+		}
 	};
 
 	return (

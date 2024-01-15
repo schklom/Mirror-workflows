@@ -60,31 +60,44 @@ export default function Search({ accounts, hashtags, error }: Props) {
 }
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+	const q = ctx.query.q as string;
+
 	try {
-		const q = ctx.query.q as string;
-		const result = await axiosInstance.get<ResultsQuery>(`search/?q=${q}`);
-
-		return {
-			props: {
-				...result.data,
-			},
-		};
+		const url = new URL(q);
+		if (url) {
+			return {
+				redirect: {
+					destination: url.pathname,
+					permanent: false,
+				},
+			};
+		}
 	} catch (error) {
-		if (isAxiosError(error)) {
-			if (error.response) {
-				const { status, statusText } = error.response;
-				ctx.res.statusCode = status;
-				ctx.res.statusMessage = statusText;
+		try {
+			const result = await axiosInstance.get<ResultsQuery>(`search/?q=${q}`);
 
-				return {
-					props: {
-						error: {
-							statusCode: error.response.status,
+			return {
+				props: {
+					...result.data,
+				},
+			};
+		} catch (error) {
+			if (isAxiosError(error)) {
+				if (error.response) {
+					const { status, statusText } = error.response;
+					ctx.res.statusCode = status;
+					ctx.res.statusMessage = statusText;
+
+					return {
+						props: {
+							error: {
+								statusCode: error.response.status,
+							},
+							accounts: null,
+							hashtags: null,
 						},
-						accounts: null,
-						hashtags: null,
-					},
-				};
+					};
+				}
 			}
 		}
 	}

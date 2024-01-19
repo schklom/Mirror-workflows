@@ -1,7 +1,7 @@
 ARG PROXY_REGISTRY
 FROM ${PROXY_REGISTRY}nginx:alpine
 
-HEALTHCHECK CMD curl --fail http://localhost/tt-rss/index.php || exit 1
+HEALTHCHECK CMD curl --fail http://localhost${APP_BASE}/index.php || exit 1
 
 COPY .docker/web-nginx/nginx.conf /etc/nginx/templates/nginx.conf.template
 

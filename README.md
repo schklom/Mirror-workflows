@@ -19,7 +19,7 @@ we recommend to run FMD Server with Docker.
 Quickly try FMD Server on your laptop from the command line:
 
 ```
-docker build --tag fmd-git https://gitlab.com/Nulide/findmydeviceserver.git#v0.4.0
+docker build --tag fmd-git https://gitlab.com/Nulide/findmydeviceserver.git#v0.5.0
 docker run --rm -p 8080:8080 fmd-git
 ```
 
@@ -42,7 +42,7 @@ The following is an (incomplete) example for deploying FMD Server with Docker Co
 version: '3'
 services:
     fmd:
-        build: https://gitlab.com/Nulide/findmydeviceserver.git#v0.4.0
+        build: https://gitlab.com/Nulide/findmydeviceserver.git#v0.5.0
         container_name: fmd
         ports:
          - 127.0.0.1:8080:8080

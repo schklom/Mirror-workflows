@@ -806,35 +806,35 @@ class RSSUtils {
 
 				// enclosures
 
+				/** @var array<int, FeedEnclosure> */
 				$enclosures = array();
 
 				$encs = $item->get_enclosures();
 
-				if (is_array($encs)) {
-					foreach ($encs as $e) {
+				foreach ($encs as $e) {
+					$pluginhost->chain_hooks_callback(PluginHost::HOOK_ENCLOSURE_IMPORTED,
+						function ($result) use (&$e) {
+							$e = $result;
+						},
+						$e, $feed);
 
-						$pluginhost->chain_hooks_callback(PluginHost::HOOK_ENCLOSURE_IMPORTED,
-							function ($result) use (&$e) {
-								$e = $result;
-							},
-							$e, $feed);
+					$e->link = UrlHelper::rewrite_relative($feed_obj->site_url, $e->link, "", "", $e->type);
 
-						// TODO: Just use FeedEnclosure (and modify it to cover whatever justified this)?
-						$e_item = array(
-							UrlHelper::rewrite_relative($feed_obj->site_url, $e->link, "", "", $e->type),
-							$e->type, $e->length, $e->title, $e->width, $e->height);
+					if (!$e->link) {
+						Debug::log('Skipping enclosure whose link failed validation.', Debug::LOG_VERBOSE);
+						continue;
+					}
 
-						// Yet another episode of "mysql utf8_general_ci is gimped"
-						if (Config::get(Config::DB_TYPE) == "mysql" && Config::get(Config::MYSQL_CHARSET) != "UTF8MB4") {
-							for ($i = 0; $i < count($e_item); $i++) {
-								if (is_string($e_item[$i])) {
-									$e_item[$i] = self::strip_utf8mb4($e_item[$i]);
-								}
+					// Yet another episode of "mysql utf8_general_ci is gimped"
+					if (Config::get(Config::DB_TYPE) == "mysql" && Config::get(Config::MYSQL_CHARSET) != "UTF8MB4") {
+						foreach ((array)$e as $prop => $val) {
+							if (is_string($val)) {
+								$e->$prop = self::strip_utf8mb4($val);
 							}
 						}
-
-						array_push($enclosures, $e_item);
 					}
+
+					array_push($enclosures, $e);
 				}
 
 				$article = array("owner_uid" => $feed_obj->owner_uid, // read only
@@ -1000,6 +1000,7 @@ class RSSUtils {
 				$entry_language = $article["language"];
 				$entry_timestamp = $article["timestamp"];
 				$num_comments = $article["num_comments"];
+				/** @var array<int, FeedEnclosure> */
 				$enclosures = $article["enclosures"];
 
 				if ($entry_timestamp == -1 || !$entry_timestamp || $entry_timestamp > time()) {
@@ -1235,17 +1236,10 @@ class RSSUtils {
 							(?, ?, ?, ?, ?, ?, ?)");
 
 				foreach ($enclosures as $enc) {
-					$enc_url = $enc[0];
-					$enc_type = $enc[1];
-					$enc_dur = (int)$enc[2];
-					$enc_title = $enc[3];
-					$enc_width = intval($enc[4]);
-					$enc_height = intval($enc[5]);
-
-					$esth->execute([$enc_url, $enc_type, $entry_ref_id]);
+					$esth->execute([$enc->link, $enc->type, $entry_ref_id]);
 
 					if (!$esth->fetch()) {
-						$usth->execute([$enc_url, $enc_type, (string)$enc_title, $enc_dur, $entry_ref_id, $enc_width, $enc_height]);
+						$usth->execute([$enc->link, $enc->type, (string)$enc->title, (int)$enc->length, $entry_ref_id, (int)$enc->width, (int)$enc->height]);
 					}
 				}
 
@@ -1360,7 +1354,7 @@ class RSSUtils {
 	/**
 	 * TODO: move to DiskCache?
 	 *
-	 * @param array<int, array<string>> $enclosures An array of "enclosure arrays" [string $link, string $type, string $length, string, $title, string $width, string $height]
+	 * @param array<int, FeedEnclosure> $enclosures
 	 * @see RSSUtils::update_rss_feed()
 	 * @see FeedEnclosure
 	 */
@@ -1370,8 +1364,8 @@ class RSSUtils {
 		if ($cache->is_writable()) {
 			foreach ($enclosures as $enc) {
 
-				if (preg_match("/(image|audio|video)/", $enc[1])) {
-					$src = UrlHelper::rewrite_relative($site_url, $enc[0]);
+				if (preg_match("/(image|audio|video)/", $enc->type)) {
+					$src = UrlHelper::rewrite_relative($site_url, $enc->link);
 
 					$local_filename = sha1($src);
 

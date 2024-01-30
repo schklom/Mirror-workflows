@@ -146,7 +146,8 @@ func (u *UserIO) generateNewId() string {
 }
 
 func genRandomString(length int) string {
-	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+	// a-z, A-Z, 0-9 excluding 0, O, l, and 1 (see #29)
+	var letters = []rune("abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ23456789")
 	s := make([]rune, length)
 	for i := range s {
 		nBig, err := rand.Int(rand.Reader, big.NewInt(int64(len(letters))))

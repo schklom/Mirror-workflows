@@ -68,7 +68,7 @@ phpdoc:
 phpunit-integration:
   image: ${PHP_IMAGE}
   variables:
-    TEST_HELM_REPO: https://gitlab.tt-rss.org/tt-rss/helm-charts/tt-rss
+    TEST_HELM_REPO: oci://registry.fakecake.org/infra/helm-charts/tt-rss
   extends: .integration-test
   script:
     - export K8S_NAMESPACE=$(kubectl get pods -o=custom-columns=NS:.metadata.namespace | tail -1)
@@ -90,7 +90,7 @@ phpunit-integration:
 selenium:
   image: ${SELENIUM_IMAGE}
   variables:
-    TEST_HELM_REPO: https://gitlab.tt-rss.org/tt-rss/helm-charts/tt-rss
+    TEST_HELM_REPO: oci://registry.fakecake.org/infra/helm-charts/tt-rss
     SELENIUM_GRID_ENDPOINT: http://selenium-hub.selenium-grid.svc.cluster.local:4444/wd/hub
   extends: .integration-test
   script:

@@ -18,6 +18,9 @@ include:
   - project: 'ci/ci-templates'
     ref: master
     file: .ci-integration-test.yml
+  - project: 'ci/ci-templates'
+    ref: master
+    file: .ci-deploy-helm-chart.yml
 
 phpunit:
   extends: .phpunit

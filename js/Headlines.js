@@ -470,7 +470,7 @@ const Headlines = {
 			const vgrhdr = `<div data-feed-id='${hl.feed_id}' class='feed-title'>
 									<div class="pull-right icon-feed" title="${App.escapeHtml(hl.feed_title)}"
 										onclick="Feeds.open({feed:${hl.feed_id}})">${Feeds.renderIcon(hl.feed_id, hl.has_icon)}</div>
-									<a class="title" href="#" onclick="Feeds.open({feed:${hl.feed_id}})">${hl.feed_title}</a>
+									<a class="title" target="_blank" rel="noopener noreferrer" href="${App.escapeHtml(hl.site_url)}">${hl.feed_title}</a>
 									<a class="catchup" title="${__('mark feed as read')}" onclick="Feeds.catchupFeedInGroup(${hl.feed_id})" href="#">
 										<i class="icon-done material-icons">done_all</i>
 									</a>
@@ -518,8 +518,8 @@ const Headlines = {
 								${hl.cdm_excerpt ? hl.cdm_excerpt : ""}
 							</span>
 
-							<a href="#" class="feed vfeedMenuAttach" style="background-color: ${hl.feed_bg_color}" data-feed-id="${hl.feed_id}"
-								onclick="Feeds.open({feed:${hl.feed_id}})">${hl.feed_title}</a>
+							<a class="feed vfeedMenuAttach" style="background-color: ${hl.feed_bg_color}" data-feed-id="${hl.feed_id}"
+								target="_blank" rel="noopener noreferrer" href="${App.escapeHtml(hl.site_url)}">${hl.feed_title}</a>
 
 							<span class="updated" title="${hl.imported}">${hl.updated}</span>
 

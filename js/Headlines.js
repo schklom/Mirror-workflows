@@ -468,7 +468,8 @@ const Headlines = {
 
 		if (headlines.vfeed_group_enabled && hl.feed_title && this.vgroup_last_feed != hl.feed_id) {
 			const vgrhdr = `<div data-feed-id='${hl.feed_id}' class='feed-title'>
-									<div class="pull-right">${Feeds.renderIcon(hl.feed_id, hl.has_icon)}</div>
+									<div class="pull-right icon-feed" title="${App.escapeHtml(hl.feed_title)}"
+										onclick="Feeds.open({feed:${hl.feed_id}})">${Feeds.renderIcon(hl.feed_id, hl.has_icon)}</div>
 									<a class="title" href="#" onclick="Feeds.open({feed:${hl.feed_id}})">${hl.feed_title}</a>
 									<a class="catchup" title="${__('mark feed as read')}" onclick="Feeds.catchupFeedInGroup(${hl.feed_id})" href="#">
 										<i class="icon-done material-icons">done_all</i>

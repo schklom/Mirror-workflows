@@ -444,7 +444,7 @@ class RSSUtils {
 				$feed_data = $result;
 				Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)), Debug::LOG_VERBOSE);
 			},
-			$feed_data, $hff_feed_url, $hff_owner_uid, $feed, $last_article_timestamp, $auth_login, $auth_pass);
+			$feed_data, $hff_feed_url, $hff_owner_uid, $feed, $last_article_timestamp, $feed_obj->auth_login, $feed_obj->auth_pass);
 
 		if ($feed_data) {
 			Debug::log("feed data has been modified by a plugin.", Debug::LOG_VERBOSE);

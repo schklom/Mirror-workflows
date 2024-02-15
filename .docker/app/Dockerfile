@@ -39,7 +39,7 @@ ADD .docker/app/updater.sh ${SCRIPT_ROOT}
 ADD .docker/app/dcron.sh ${SCRIPT_ROOT}
 ADD .docker/app/backup.sh /etc/periodic/weekly/backup
 
-RUN chmod 0755 ${SCRIPT_ROOT}/*.sh
+RUN chmod 0755 ${SCRIPT_ROOT}/*.sh /etc/periodic/weekly/backup
 
 ADD .docker/app/index.php ${SCRIPT_ROOT}
 ADD .docker/app/config.docker.php ${SCRIPT_ROOT}

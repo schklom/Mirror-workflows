@@ -125,20 +125,19 @@ update-prod:
     - cd chart
     - git config user.name "Gitlab CI"
     - git config user.email "noreply@example.com"
-    - yq -ei '.app.image.tag = "'${CI_COMMIT_SHORT_SHA}'"' values-prod.yaml
-    - yq -ei '.web.image.tag = "'${CI_COMMIT_SHORT_SHA}'"' values-prod.yaml
+    - yq -ei '.imageTag = "'${CI_COMMIT_SHORT_SHA}'"' values-prod.yaml
     - git diff
     - git add .
     - git commit -m "update image tag to ${CI_COMMIT_SHORT_SHA}"
     - git push origin master
 
-update-demo:
-  extends: .deploy-helm-chart
-  variables:
-    HELM_CHART: oci://registry.fakecake.org/infra/helm-charts/tt-rss
-    HELM_VALUES: .helm/values-demo.yaml
-    HELM_RELEASE: tt-rss-demo
-    HELM_ARGS: --set imageTag=${CI_COMMIT_SHORT_SHA}
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_REGISTRY_USER != null && $UPDATE_DEMO == "true"
-  stage: publish
+#update-demo:
+#  extends: .deploy-helm-chart
+#  variables:
+#    HELM_CHART: oci://registry.fakecake.org/infra/helm-charts/tt-rss
+#    HELM_VALUES: .helm/values-demo.yaml
+#    HELM_RELEASE: tt-rss-demo
+#    HELM_ARGS: --set imageTag=${CI_COMMIT_SHORT_SHA}
+#  rules:
+#    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_REGISTRY_USER != null && $UPDATE_DEMO == "true"
+#  stage: publish

@@ -116,6 +116,7 @@ ttrss-fpm-pgsql-static:publish:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/app/Dockerfile
 
 update-prod:
+  image: ${INFRA_IMAGE}
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $PROD_HELM_TOKEN != null
   stage: publish

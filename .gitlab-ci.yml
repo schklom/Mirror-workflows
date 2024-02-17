@@ -121,6 +121,8 @@ update-prod:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $PROD_HELM_TOKEN != null
   stage: publish
   script:
+    - git config user.name "Gitlab CI"
+    - git config user.email "noreply@example.com"
     - git clone https://token:${PROD_HELM_TOKEN}@gitlab.fakecake.org/git/helm-charts/tt-rss-prod.git chart
     - cd chart
     - yq -ei '.app.image.tag = "${CI_COMMIT_SHORT_SHA}"' values-prod.yaml

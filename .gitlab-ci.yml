@@ -125,9 +125,10 @@ update-prod:
     - cd chart
     - git config user.name "Gitlab CI"
     - git config user.email "noreply@example.com"
-    - yq -ei '.app.image.tag = "${CI_COMMIT_SHORT_SHA}"' values-prod.yaml
-    - yq -ei '.web.image.tag = "${CI_COMMIT_SHORT_SHA}"' values-prod.yaml
+    - yq -ei '.app.image.tag = "'${CI_COMMIT_SHORT_SHA}'"' values-prod.yaml
+    - yq -ei '.web.image.tag = "'${CI_COMMIT_SHORT_SHA}'"' values-prod.yaml
     - git diff
+    - git add .
     - git commit -m "update image tag to ${CI_COMMIT_SHORT_SHA}"
     - git push origin master
 

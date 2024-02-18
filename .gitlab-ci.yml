@@ -20,7 +20,7 @@ include:
     file: .ci-integration-test.yml
   - project: 'ci/ci-templates'
     ref: master
-    file: .ci-deploy-helm-chart.yml
+    file: .ci-update-helm-imagetag.yml
 
 phpunit:
   extends: .phpunit
@@ -115,34 +115,22 @@ ttrss-fpm-pgsql-static:publish:
   variables:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/app/Dockerfile
 
-update-prod:
-  image: ${INFRA_IMAGE}
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $PROD_HELM_TOKEN != null
-  stage: publish
-  script:
-    - git clone https://token:${PROD_HELM_TOKEN}@gitlab.fakecake.org/git/helm-charts/tt-rss-prod.git chart
-    - cd chart
-    - git config user.name "Gitlab CI"
-    - git config user.email "noreply@example.com"
-    - yq -ei '.imageTag = "'${CI_COMMIT_SHORT_SHA}'"' values-prod.yaml
-    - git diff
-    - git add .
-    - git commit -m "update image tag to ${CI_COMMIT_SHORT_SHA}"
-    - git push origin master
-
 update-demo:
-  image: ${INFRA_IMAGE}
+  extends: .update-helm-imagetag
+  variables:
+    CHART_REPO: gitlab.fakecake.org/git/helm-charts/tt-rss.git
+    CHART_VALUES: values-demo.yaml
+    ACCESS_TOKEN: ${DEMO_HELM_TOKEN}
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $DEMO_HELM_TOKEN != null
   stage: publish
-  script:
-    - git clone https://token:${DEMO_HELM_TOKEN}@gitlab.fakecake.org/git/helm-charts/tt-rss.git chart
-    - cd chart
-    - git config user.name "Gitlab CI"
-    - git config user.email "noreply@example.com"
-    - yq -ei '.imageTag = "'${CI_COMMIT_SHORT_SHA}'"' values-demo.yaml
-    - git diff
-    - git add .
-    - git commit -m "update image tag to ${CI_COMMIT_SHORT_SHA}"
-    - git push origin master
+
+update-prod:
+  extends: .update-helm-imagetag
+  variables:
+    CHART_REPO: gitlab.fakecake.org/git/helm-charts/tt-rss-prod.git
+    CHART_VALUES: values-prod.yaml
+    ACCESS_TOKEN: ${PROD_HELM_TOKEN}
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $PROD_HELM_TOKEN != null
+  stage: publish

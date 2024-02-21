@@ -49,6 +49,21 @@
 					$_SESSION["login_error_msg"] = __("Session failed to validate (account is disabled)");
 					return false;
 				}
+
+				// default to true because there might not be any hooks and this is our last check
+				$hook_result = true;
+
+				\PluginHost::getInstance()->chain_hooks_callback(\PluginHost::HOOK_VALIDATE_SESSION,
+					function ($result) use (&$hook_result) {
+						$hook_result = $result;
+
+						if (!$result) {
+							return true;
+						}
+					});
+
+				return $hook_result;
+
 			} else {
 				$_SESSION["login_error_msg"] = __("Session failed to validate (user not found)");
 				return false;

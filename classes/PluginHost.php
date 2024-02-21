@@ -199,6 +199,9 @@ class PluginHost {
 	/** @see Plugin::hook_loginform_additional_buttons() */
 	const HOOK_LOGINFORM_ADDITIONAL_BUTTONS = "hook_loginform_additional_buttons";
 
+	/** @see Plugin::hook_validate_session() */
+	const HOOK_VALIDATE_SESSION = "hook_validate_session";
+
 	const KIND_ALL = 1;
 	const KIND_SYSTEM = 2;
 	const KIND_USER = 3;

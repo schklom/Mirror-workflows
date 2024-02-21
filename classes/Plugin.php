@@ -706,4 +706,11 @@ abstract class Plugin {
 	function hook_loginform_additional_buttons() {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
+
+	/** Returns false if session is considered invalid, true cascades to next handler */
+	function hook_validate_session(): bool {
+		user_error("Dummy method invoked.", E_USER_ERROR);
+		return false;
+	}
+
 }

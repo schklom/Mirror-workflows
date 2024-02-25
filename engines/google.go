@@ -281,7 +281,10 @@ func (_ *GoogleTranslate) Translate(text string, from, to string) (TranslationRe
 			if len(json_) > 1 && json_[1] != nil {
 				if len(json_[1].([]interface{})[0].([]interface{})) > 0 {
 					if len(json_[1].([]interface{})[0].([]interface{})[0].([]interface{})) > 1 {
-						pronunciation = json_[1].([]interface{})[0].([]interface{})[0].([]interface{})[1].(string)
+						raw := json_[1].([]interface{})[0].([]interface{})[0].([]interface{})[1]
+						if raw != nil {
+							pronunciation = raw.(string)
+						}
 					}
 				}
 			}

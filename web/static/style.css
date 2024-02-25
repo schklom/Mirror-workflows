@@ -81,6 +81,10 @@ button:focus {
     outline: 1px solid #478061;
 }
 
+#pronunciation {
+    color: grey;
+    width: 100%;
+}
 
 body {
     justify-content: center;

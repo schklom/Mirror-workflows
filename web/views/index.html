@@ -74,6 +74,9 @@
             <div class="item-wrapper">
                 <textarea id="output" class="translation item" dir="auto" placeholder="Translation"
                     readonly>{{.Translation.TranslatedText}}</textarea>
+                {{if .Translation.Pronunciation}}
+                <span id="pronunciation">{{.Translation.Pronunciation}}</span>
+                {{end}}
                 {{if .TtsTo}}
                 <audio controls>
                     <source type="audio/mpeg" src="{{ .TtsTo }}">

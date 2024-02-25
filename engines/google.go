@@ -128,6 +128,7 @@ func (_ *GoogleTranslate) Translate(text string, from, to string) (TranslationRe
 		[]interface{}{text, from, to, true},
 		[]interface{}{nil},
 	}
+
 	reqJSONString, err := json.Marshal(reqJSON)
 	if err != nil {
 		fmt.Println("Error:", err)
@@ -156,6 +157,8 @@ func (_ *GoogleTranslate) Translate(text string, from, to string) (TranslationRe
 	responseTextList := regexp.MustCompile(`\n\d+\n(.*)\n\d+\n`).FindStringSubmatch(responseText)
 	definitions := make(map[string][]map[string]interface{})
 	translations := make(map[string]map[string]map[string]interface{})
+	pronunciation := ""
+
 	if len(responseTextList) > 0 {
 		responseText = responseTextList[1]
 		var raw []interface{}
@@ -271,9 +274,16 @@ func (_ *GoogleTranslate) Translate(text string, from, to string) (TranslationRe
 					}
 				}
 			}
-
 			if len(json_) > 0 && json_[0] != nil && len(json_[0].([]interface{})) > 2 && json_[0].([]interface{})[2] != nil {
 				from = json_[0].([]interface{})[2].(string)
+			}
+
+			if len(json_) > 1 && json_[1] != nil {
+				if len(json_[1].([]interface{})[0].([]interface{})) > 0 {
+					if len(json_[1].([]interface{})[0].([]interface{})[0].([]interface{})) > 1 {
+						pronunciation = json_[1].([]interface{})[0].([]interface{})[0].([]interface{})[1].(string)
+					}
+				}
 			}
 
 		}
@@ -288,5 +298,6 @@ func (_ *GoogleTranslate) Translate(text string, from, to string) (TranslationRe
 		Definitions:    definitions,
 		Translations:   translations,
 		TranslatedText: translatedText,
+		Pronunciation:  pronunciation,
 	}, nil
 }

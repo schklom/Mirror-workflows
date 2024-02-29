@@ -145,10 +145,11 @@ export class Wizstat implements IGetProfile, IGetPost, IGetPosts, IGetComments {
 			thumb: proxyUrl(
 				convertToInstagramUrl(
 					($(".media-wrap").find("img").data("src") as string) ||
-						($(".media-wrap").find("img").attr("src") as string),
+						($(".media-wrap").find("img").attr("src") as string) ||
+							($(".media-wrap").find("video").attr("poster") as string),
 				),
 			),
-			isVideo: $(".media-wrap").attr("href") ? true : false,
+			isVideo: $(".media-wrap.media-video video").attr("src") ? true : false,
 			isSideCard: $(".swiper-wrapper").length > 0,
 			sidecard: [],
 		};
@@ -178,8 +179,8 @@ export class Wizstat implements IGetProfile, IGetPost, IGetPosts, IGetComments {
 		}
 
 		if (post.isVideo) {
-			const video = $(".media-wrap").attr("href") as string;
-			post.video = proxyUrl(video);
+			const video = $(".media-wrap").find("video").attr("src") as string;
+			post.video = proxyUrl(convertToInstagramUrl(video));
 		}
 
 		return post;

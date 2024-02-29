@@ -91,7 +91,7 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments, IGetStories, I
 	async getPost(shortcode: string): Promise<Post> {
 		const html = await this.scraper.getHtml({ path: `p/${shortcode}/` });
 		const $ = cheerio.load(html);
-		const isVideo = $(".media-wrap").data("video") ? true : false;
+		const isVideo = $(".media-video").data("src") ? true : false;
 
 		const post: Post = {
 			id: shortcodeToMediaId(shortcode),
@@ -99,13 +99,7 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments, IGetStories, I
 			author: {
 				name: $(".fullname>a").text(),
 				username: $(".username>a").text().replace("@", ""),
-				avatar: proxyUrl(
-					convertToInstagramUrl(
-						$(".user > div:nth-child(1) > a:nth-child(1) > img:nth-child(1)").attr(
-							"src",
-						) as string,
-					),
-				),
+				avatar: proxyUrl(convertToInstagramUrl($(".user img").attr("src") as string)),
 			},
 			description: $(".desc").text(),
 			...extractTagsAndUsers($(".desc").text()),
@@ -119,7 +113,7 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments, IGetStories, I
 			thumb: proxyUrl(
 				convertToInstagramUrl(
 					isVideo
-						? ($(".media-wrap > img:nth-child(2)").attr("src") as string)
+						? ($(".media-wrap video").attr("poster") as string)
 						: ($(".media-wrap > img:nth-child(1)").attr("src") as string),
 				),
 			),
@@ -141,7 +135,7 @@ export class Imgsed implements IGetPost, IGetPosts, IGetComments, IGetStories, I
 		}
 
 		if (post.isVideo) {
-			const video = $(".media-wrap").data("video") as string;
+			const video = $(".media-wrap").data("src") as string;
 			post.video = proxyUrl(video);
 		}
 

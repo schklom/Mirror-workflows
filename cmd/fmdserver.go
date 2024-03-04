@@ -326,6 +326,11 @@ func postCommand(w http.ResponseWriter, r *http.Request) {
 func pushUser(id string) {
 	pushUrl := strings.Replace(uio.GetPushUrl(id), "/UP?", "/message?", -1)
 
+	if len(pushUrl) == 0 {
+		fmt.Printf("Cannot push user %s. Reason: pushUrl is empty. They should install a UnifiedPush distributor on their phone.", id)
+		return
+	}
+
 	var jsonData = []byte(`{
 		"message": "fmd app wakeup",
 		"priority": 5

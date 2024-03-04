@@ -1,6 +1,7 @@
 # FMD Server
 
-This is the official server for FMD ("Find My Device") written in Go.
+This is the official server for [FindMyDevice (FMD)](https://gitlab.com/Nulide/findmydevice)
+written in Go.
 
 The FMD app can register an account on FMD Server.
 The app can then upload its location at regular intervals.
@@ -126,6 +127,13 @@ The community has developed implementations of FMD Server in other languages/fra
 
 - [FindMyDeviceServerPHP](https://gitlab.com/Playit3110/FindMyDeviceServerPHP)
 - [Django Find My Device](https://gitlab.com/jedie/django-find-my-device)
+
+## Donate
+
+<script src="https://liberapay.com/Nulide/widgets/button.js"></script>
+<noscript><a href="https://liberapay.com/Nulide/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
+
+<a href='https://ko-fi.com/H2H35JLOY' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi4.png?v=2' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
 ## License
 

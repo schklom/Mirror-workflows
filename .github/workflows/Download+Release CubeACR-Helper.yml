@@ -76,7 +76,7 @@ jobs:
         
       - name: Release apk if hashes are different
         if: ${{ env.current_hash != env.new_hash }}
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.tagname }}
           body: "New version of CubeACR-Helper"

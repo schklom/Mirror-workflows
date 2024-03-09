@@ -111,7 +111,7 @@ jobs:
       - name: Delete previous release
         run: git push --delete origin Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.LOCALTAG }}
       - name: Release apk
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.REMOTETAG }}
           #files: ./app/build/outputs/apk/app-debug.apk

@@ -38,7 +38,7 @@ jobs:
           echo "version=${ver}" >> $GITHUB_ENV
       
       - name: Release apk
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           ####tag_name: Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.REMOTETAG }}
           tag_name: "${{ env.version }}"

@@ -13,8 +13,8 @@
     "test:unit": "cypress run --component",
     "test:unit:dev": "cypress open --component",
     "build-only": "vite build",
-	"build:inner": "rollup --config rollup.inner.js",
-    "type-check": "vue-tsc --noEmit -p tsconfig.cypress-ct.json --composite false"
+    "build:inner": "rollup --config rollup.inner.js",
+    "type-check": "vue-tsc --noEmit -p tsconfig.node.json --composite false"
   },
   "dependencies": {
     "eventemitter3": "^5.0.1",
@@ -31,7 +31,6 @@
     "@types/node": "^18.18.5",
     "@vitejs/plugin-vue": "^4.4.0",
     "@vue/tsconfig": "^0.4.0",
-    "cypress": "^13.3.1",
     "less": "^4.2.0",
     "npm-run-all2": "^6.1.1",
     "rollup": "^4.5.1",

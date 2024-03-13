@@ -55,8 +55,12 @@ router.addRoute('POST /delete', async (ctx) => {
 
 router.addRoute('GET /list', async (ctx) => {
 	const mgmtKey = ctx.query.mgmtKey;
+	const isPubInstance = !!process.env.PUB_INSTANCE;
 	const adminKey = process.env.PUB_ADMIN_MGMT_KEY;
-	let useKey = mgmtKey === adminKey ? null : mgmtKey ? mgmtKey : '-';
+	let useKey = !isPubInstance ? null
+		: adminKey && mgmtKey === adminKey ? null
+		: mgmtKey ? mgmtKey
+		: '-';
 	let list = await FeedRepo.getAllFeeds(useKey);
 	list.sort((a, b) => {
 		return a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1;

@@ -47,7 +47,7 @@ jobs:
         # with:
           # source_repo: "https://github.com/hkalexling/Mango.git"
           # source_branch: "master"
-          # destination_branch: "SimplyTranslate"
+          # destination_branch: "Protonmail-bridge"
           # github_token: ${{ secrets.REPO_SYNC_GITHUB_SYNC_PERSONAL_ACCESS_TOKEN }}
       - name: Checkout
         uses: actions/checkout@v4
@@ -97,7 +97,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          #repository: 'schklom/SimplyTranslate'
+          #repository: 'schklom/Protonmail-bridge'
           ref: 'Protonmail-bridge' # branch
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
@@ -121,7 +121,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       # https://github.com/docker/build-push-action#multi-platform-image
-      - name: Build and push SimplyTranslate
+      - name: Build and push Protonmail-bridge
         uses: docker/build-push-action@v5.1.0
         with:
           context: ./build

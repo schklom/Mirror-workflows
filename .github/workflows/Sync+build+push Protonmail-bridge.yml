@@ -1,0 +1,134 @@
+name: Sync+build+push Protonmail-bridge
+
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  get_commits:
+    #if: false
+    runs-on: ubuntu-latest
+    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    outputs:
+      LOCAL: ${{ steps.commits.outputs.SETLOCAL }}
+      REMOTE: ${{ steps.commits.outputs.SETREMOTE }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: 'Protonmail-bridge' # branch
+      - name: set local and remote latest commit as environment variables
+        id: commits        
+        # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+        # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
+        run: |
+          echo "SETREMOTE=$(git ls-remote https://github.com/shenxn/protonmail-bridge-docker HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+          echo "SETLOCAL=$(cat last_sync_with_original_repo_commit_id)" >> $GITHUB_OUTPUT
+  
+  repo_sync:
+    needs: [get_commits]
+    runs-on: ubuntu-latest
+    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    #if: false
+    if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
+    steps:
+      - name: repo-sync
+        uses: wei/git-sync@v3
+        with:
+          source_repo: "https://github.com/shenxn/protonmail-bridge-docker"
+          source_branch: "main"
+          destination_repo: "git@github.com:schklom/Mirror-workflows.git"
+          destination_branch: "Protonmail-bridge"
+          ssh_private_key: ${{ secrets.GITSYNCACTION }}
+        # uses: repo-sync/github-sync@v2
+        # with:
+          # source_repo: "https://github.com/hkalexling/Mango.git"
+          # source_branch: "master"
+          # destination_branch: "SimplyTranslate"
+          # github_token: ${{ secrets.REPO_SYNC_GITHUB_SYNC_PERSONAL_ACCESS_TOKEN }}
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: 'Protonmail-bridge' # branch
+      - name: get most recent commit id on original repo, for next comparison on sync PART 1
+        run: git ls-remote https://github.com/shenxn/protonmail-bridge-docker HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
+       
+      - name: Delete Actions inside
+        run: rm -rf .github/
+      
+      - name: Commit and push the change
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Add last_sync_with_original_repo_commit_id
+
+      - name: Changes
+        run: |
+          filename="build/Dockerfile"
+          sed -i "s/carlosedp/golang:1.18/golang:latest/" $filename
+          
+          # filename=".github/workflows/build.yaml"
+          # # Line numbers to delete between
+          # beginplusone=$(sed -n '/driver-opts: network=host/=' $filename)
+          # begin_line=$((beginplusone - 1))
+          # end_line=$(sed -n '/steps.scan.outputs.sarif/= $filename)
+          # sed -i '${begin_line},${end_line}d' $filename
+          
+          # sed -i "s|DOCKER_REPO: /protonmail-bridge|build/Dockerfile|" $filename
+          # sed -iE "s|PLATFORMS: linux/arm64/v8.*|PLATFORMS: linux/arm64/v8|" $filename
+          # sed -i "s/secrets.REGISTRY_USERNAME/secrets.DOCKERHUB_USERNAME/" $filename
+          # sed -i "s/secrets.REGISTRY_PASSWORD/secrets.DOCKERHUB_TOKEN/" $filename
+
+          # delete_line=$(sed -n "/github.event_name != 'pull_request/=" $filename)
+          # sed -i '${delete_line}d' $filename
+      
+      - name: Commit and push the change
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Patch to work
+
+  build_push:
+    needs: [repo_sync]
+    #needs: [get_commits]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          #repository: 'schklom/SimplyTranslate'
+          ref: 'Protonmail-bridge' # branch
+      # https://github.com/docker/setup-qemu-action#usage
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        #with:
+          #image: tonistiigi/binfmt:latest
+          #platforms: all
+          #platforms: arm/v7
+      # https://github.com/marketplace/actions/docker-setup-buildx
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3.2.0
+        #with:
+          #install: true
+      #- name: Available platforms
+      #  run: echo ${{ steps.buildx.outputs.platforms }}
+      # https://github.com/docker/login-action#docker-hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # https://github.com/docker/build-push-action#multi-platform-image
+      - name: Build and push SimplyTranslate
+        uses: docker/build-push-action@v5.1.0
+        with:
+          context: .
+          file: Dockerfile
+          #platforms: linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6
+          platforms: linux/arm64
+          pull: true
+          push: true
+          tags: |
+            schklom/protonmail-bridge:latest

@@ -13,8 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     outputs:
-      LOCAL: ${{ steps.commits.outputs.SETLOCAL }}
-      REMOTE: ${{ steps.commits.outputs.SETREMOTE }}
+      LOCAL_FORK: ${{ steps.commits.outputs.SETLOCAL_FORK }}
+      REMOTE_FORK: ${{ steps.commits.outputs.SETREMOTE_FORK }}
+      LOCAL_PARENT: ${{ steps.commits.outputs.SETLOCAL_PARENT }}
+      REMOTE_PARENT: ${{ steps.commits.outputs.SETREMOTE_PARENT }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,15 +27,17 @@ jobs:
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
         run: |
-          echo "SETREMOTE=$(git ls-remote https://github.com/shenxn/protonmail-bridge-docker HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
-          echo "SETLOCAL=$(cat last_sync_with_original_repo_commit_id)" >> $GITHUB_OUTPUT
+          echo "SETREMOTE_FORK=$(git ls-remote https://github.com/shenxn/protonmail-bridge-docker HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+          echo "SETLOCAL_FORK=$(cat last_sync_with_original_repo_commit_id)" >> $GITHUB_OUTPUT
+          echo "SETREMOTE_PARENT=$(git ls-remote https://github.com/ProtonMail/proton-bridge HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+          echo "SETLOCAL_PARENT=$(cat last_sync_with_original_parent_repo_commit_id)" >> $GITHUB_OUTPUT
   
   repo_sync:
     needs: [get_commits]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     #if: false
-    if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
+    if: needs.get_commits.outputs.LOCAL_FORK != needs.get_commits.outputs.REMOTE_FORK || needs.get_commits.outputs.LOCAL_PARENT != needs.get_commits.outputs.REMOTE_PARENT
     steps:
       - name: repo-sync
         uses: wei/git-sync@v3
@@ -54,7 +58,9 @@ jobs:
         with:
           ref: 'Protonmail-bridge' # branch
       - name: get most recent commit id on original repo, for next comparison on sync PART 1
-        run: git ls-remote https://github.com/shenxn/protonmail-bridge-docker HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
+        run: |
+          git ls-remote https://github.com/shenxn/protonmail-bridge-docker HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
+          git ls-remote https://github.com/ProtonMail/proton-bridge HEAD | awk '{ print $1 }' > last_sync_with_original_parent_repo_commit_id
        
       - name: Delete Actions inside
         run: rm -rf .github/
@@ -62,7 +68,7 @@ jobs:
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: Add last_sync_with_original_repo_commit_id
+          commit_message: Add last_sync_with_original_repo_commit_id + last_sync_with_original_parent_repo_commit_id
 
       - name: Changes
         run: |
@@ -87,7 +93,7 @@ jobs:
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: Patch to work
+          commit_message: Patch to compile
 
   build_push:
     needs: [repo_sync]

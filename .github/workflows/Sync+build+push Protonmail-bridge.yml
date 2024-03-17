@@ -39,7 +39,7 @@ jobs:
         uses: wei/git-sync@v3
         with:
           source_repo: "https://github.com/shenxn/protonmail-bridge-docker"
-          source_branch: "main"
+          source_branch: "master"
           destination_repo: "git@github.com:schklom/Mirror-workflows.git"
           destination_branch: "Protonmail-bridge"
           ssh_private_key: ${{ secrets.GITSYNCACTION }}

@@ -67,7 +67,7 @@ jobs:
       - name: Changes
         run: |
           filename="build/Dockerfile"
-          sed -i "s/carlosedp/golang:1.18/golang:latest/" $filename
+          sed -i "s|carlosedp/golang:1.18|golang:latest|" $filename
           
           # filename=".github/workflows/build.yaml"
           # # Line numbers to delete between

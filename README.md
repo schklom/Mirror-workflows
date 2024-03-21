@@ -16,7 +16,7 @@ The Actions are defined in the directory .github/workflows. Secrets are used for
 - Mango [![Sync+build+push Mango](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20Mango.yml/badge.svg)](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20Mango.yml)
 - Home-Assistant-Extra [![Sync+build+push Home-Assistant](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20Home-Assistant.yml/badge.svg)](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20Home-Assistant.yml)
 - ~Nitter~ (bug)
-- SimplyTranslate [![Sync+build+push SimplyTranslate](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20SimplyTranslate.yml/badge.svg)](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20SimplyTranslate.yml)
+- ~SimplyTranslate [![Sync+build+push SimplyTranslate](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20SimplyTranslate.yml/badge.svg)](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20SimplyTranslate.yml)~
 - ~Wikiless~ (original repository is gone temporarily for legal reasons)
 - ~Quetre~
 - Node-Red [![Sync+build+push Node-Red](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20Node-Red.yml/badge.svg)](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20Node-Red.yml)

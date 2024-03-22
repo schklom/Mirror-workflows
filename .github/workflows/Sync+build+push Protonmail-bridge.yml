@@ -70,25 +70,10 @@ jobs:
         with:
           commit_message: Add last_sync_with_original_repo_commit_id + last_sync_with_original_parent_repo_commit_id
 
-      - name: Changes
+      - name: Change golang image
         run: |
           filename="build/Dockerfile"
           sed -i "s|carlosedp/golang:1.18|golang:latest|" $filename
-          
-          # filename=".github/workflows/build.yaml"
-          # # Line numbers to delete between
-          # beginplusone=$(sed -n '/driver-opts: network=host/=' $filename)
-          # begin_line=$((beginplusone - 1))
-          # end_line=$(sed -n '/steps.scan.outputs.sarif/= $filename)
-          # sed -i '${begin_line},${end_line}d' $filename
-          
-          # sed -i "s|DOCKER_REPO: /protonmail-bridge|build/Dockerfile|" $filename
-          # sed -iE "s|PLATFORMS: linux/arm64/v8.*|PLATFORMS: linux/arm64/v8|" $filename
-          # sed -i "s/secrets.REGISTRY_USERNAME/secrets.DOCKERHUB_USERNAME/" $filename
-          # sed -i "s/secrets.REGISTRY_PASSWORD/secrets.DOCKERHUB_TOKEN/" $filename
-
-          # delete_line=$(sed -n "/github.event_name != 'pull_request/=" $filename)
-          # sed -i '${delete_line}d' $filename
       
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v5

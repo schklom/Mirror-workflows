@@ -665,10 +665,12 @@ class Pref_Filters extends Handler_Protected {
 				<div dojoType='fox.Toolbar'>
 
 					<div style='float : right; padding-right : 4px;'>
-						<input dojoType="dijit.form.TextBox" id="filter_search" size="20" type="search"
-							value="<?= htmlspecialchars($filter_search) ?>">
-						<button dojoType="dijit.form.Button" onclick="dijit.byId('filterTree').reload()">
-							<?= __('Search') ?></button>
+						<form dojoType="dijit.form.Form" onsubmit="dijit.byId('filterTree').reload(); return false;">
+							<input dojoType="dijit.form.TextBox" id="filter_search" size="20" type="search"
+								value="<?= htmlspecialchars($filter_search) ?>">
+							<button dojoType="dijit.form.Button" type="submit">
+								<?= __('Search') ?></button>
+						</form>
 					</div>
 
 					<div dojoType="fox.form.DropDownButton">

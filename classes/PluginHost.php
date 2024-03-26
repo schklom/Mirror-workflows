@@ -429,7 +429,7 @@ class PluginHost {
 	/**
 	 * @param PluginHost::KIND_* $kind
 	 */
-	function load_all(int $kind, int $owner_uid = null, bool $skip_init = false): void {
+	function load_all(int $kind, ?int $owner_uid = null, bool $skip_init = false): void {
 		$span = Tracer::start(__METHOD__);
 		$span->setAttribute('func.args', json_encode(func_get_args()));
 
@@ -447,7 +447,7 @@ class PluginHost {
 	/**
 	 * @param PluginHost::KIND_* $kind
 	 */
-	function load(string $classlist, int $kind, int $owner_uid = null, bool $skip_init = false): void {
+	function load(string $classlist, int $kind, ?int $owner_uid = null, bool $skip_init = false): void {
 		$span = Tracer::start(__METHOD__);
 		$span->setAttribute('func.args', json_encode(func_get_args()));
 

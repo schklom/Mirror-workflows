@@ -41,7 +41,7 @@
 	 *
 	 * @deprecated by Prefs::get()
 	 */
-	function get_pref(string $pref_name, int $owner_uid = null) {
+	function get_pref(string $pref_name, ?int $owner_uid = null) {
 		return Prefs::get($pref_name, $owner_uid ? $owner_uid : $_SESSION["uid"], $_SESSION["profile"] ?? null);
 	}
 
@@ -50,7 +50,7 @@
 	 *
 	 * @deprecated by Prefs::set()
 	 */
-	function set_pref(string $pref_name, $value, int $owner_uid = null, bool $strip_tags = true): bool {
+	function set_pref(string $pref_name, $value, ?int $owner_uid = null, bool $strip_tags = true): bool {
 		return Prefs::set($pref_name, $value, $owner_uid ? $owner_uid : $_SESSION["uid"], $_SESSION["profile"] ?? null, $strip_tags);
 	}
 
@@ -212,7 +212,7 @@
 	 *
 	 * @return false|string The HTML, or false if an error occurred.
 	 */
-	function sanitize(string $str, bool $force_remove_images = false, int $owner = null, string $site_url = null, array $highlight_words = null, int $article_id = null) {
+	function sanitize(string $str, bool $force_remove_images = false, ?int $owner = null, ?string $site_url = null, ?array $highlight_words = null, ?int $article_id = null) {
 		return Sanitizer::sanitize($str, $force_remove_images, $owner, $site_url, $highlight_words, $article_id);
 	}
 
@@ -251,17 +251,17 @@
 	}
 
 	/** @deprecated by UserHelper::authenticate() */
-	function authenticate_user(string $login = null, string $password = null, bool $check_only = false, string $service = null): bool {
+	function authenticate_user(?string $login = null, ?string $password = null, bool $check_only = false, ?string $service = null): bool {
 		return UserHelper::authenticate($login, $password, $check_only, $service);
 	}
 
 	/** @deprecated by TimeHelper::smart_date_time() */
-	function smart_date_time(int $timestamp, int $tz_offset = 0, int $owner_uid = null, bool $eta_min = false): string {
+	function smart_date_time(int $timestamp, int $tz_offset = 0, ?int $owner_uid = null, bool $eta_min = false): string {
 		return TimeHelper::smart_date_time($timestamp, $tz_offset, $owner_uid, $eta_min);
 	}
 
 	/** @deprecated by TimeHelper::make_local_datetime() */
-	function make_local_datetime(string $timestamp, bool $long, int $owner_uid = null, bool $no_smart_dt = false, bool $eta_min = false): string {
+	function make_local_datetime(string $timestamp, bool $long, ?int $owner_uid = null, bool $no_smart_dt = false, bool $eta_min = false): string {
 		return TimeHelper::make_local_datetime($timestamp, $long, $owner_uid, $no_smart_dt, $eta_min);
 	}
 

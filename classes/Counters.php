@@ -15,11 +15,11 @@ class Counters {
 	}
 
 	/**
-	 * @param array<int> $feed_ids
-	 * @param array<int> $label_ids
+	 * @param array<int>|null $feed_ids
+	 * @param array<int>|null $label_ids
 	 * @return array<int, array<string, int|string>>
 	 */
-	static function get_conditional(array $feed_ids = null, array $label_ids = null): array {
+	static function get_conditional(?array $feed_ids = null, ?array $label_ids = null): array {
 		return [
 			...self::get_global(),
 			...self::get_virt(),
@@ -52,10 +52,10 @@ class Counters {
 	}
 
 	/**
-	 * @param array<int> $cat_ids
+	 * @param array<int>|null $cat_ids
 	 * @return array<int, array<string, int|string>>
 	 */
-	private static function get_cats(array $cat_ids = null): array {
+	private static function get_cats(?array $cat_ids = null): array {
 		$ret = [];
 
 		/* Labels category */
@@ -141,10 +141,10 @@ class Counters {
 	}
 
 	/**
-	 * @param array<int> $feed_ids
+	 * @param array<int>|null $feed_ids
 	 * @return array<int, array<string, int|string>>
 	 */
-	private static function get_feeds(array $feed_ids = null): array {
+	private static function get_feeds(?array $feed_ids = null): array {
 		$span = Tracer::start(__METHOD__);
 
 		$ret = [];
@@ -300,10 +300,10 @@ class Counters {
 	}
 
 	/**
-	 * @param array<int> $label_ids
+	 * @param array<int>|null $label_ids
 	 * @return array<int, array<string, int|string>>
 	 */
-	static function get_labels(array $label_ids = null): array {
+	static function get_labels(?array $label_ids = null): array {
 		$span = Tracer::start(__METHOD__);
 
 		$ret = [];

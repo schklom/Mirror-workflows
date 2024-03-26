@@ -58,7 +58,7 @@ class UserHelper {
 		}
 	}
 
-	static function authenticate(string $login = null, string $password = null, bool $check_only = false, string $service = null): bool {
+	static function authenticate(?string $login = null, ?string $password = null, bool $check_only = false, ?string $service = null): bool {
 		if (!Config::get(Config::SINGLE_USER_MODE)) {
 			$user_id = false;
 			$auth_module = false;
@@ -130,7 +130,7 @@ class UserHelper {
 		}
 	}
 
-	static function load_user_plugins(int $owner_uid, PluginHost $pluginhost = null): void {
+	static function load_user_plugins(int $owner_uid, ?PluginHost $pluginhost = null): void {
 
 		if (!$pluginhost) $pluginhost = PluginHost::getInstance();
 

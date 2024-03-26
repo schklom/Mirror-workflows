@@ -155,8 +155,8 @@
 	/**
 	 * @param array<string, mixed> $attributes
 	 */
-   function select_feeds_cats(string $name, int $default_id = null, array $attributes = [],
-                  bool $include_all_cats = true, string $root_id = null, int $nest_level = 0, string $id = ""): string {
+   function select_feeds_cats(string $name, ?int $default_id = null, array $attributes = [],
+                  bool $include_all_cats = true, ?string $root_id = null, int $nest_level = 0, string $id = ""): string {
 
       $ret = "";
 

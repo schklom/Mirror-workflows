@@ -2127,7 +2127,7 @@ class Feeds extends Handler_Protected {
 			$cat->delete();
 	}
 
-	static function _add_cat(string $title, int $owner_uid, int $parent_cat = null, int $order_id = 0): bool {
+	static function _add_cat(string $title, int $owner_uid, ?int $parent_cat = null, int $order_id = 0): bool {
 
 		$cat = ORM::for_table('ttrss_feed_categories')
 			->where('owner_uid', $owner_uid)

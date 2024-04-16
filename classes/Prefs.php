@@ -193,14 +193,14 @@ class Prefs {
 	/**
 	 * @return array<int, array<string, bool|int|null|string>>
 	 */
-	static function get_all(int $owner_uid, int $profile_id = null) {
+	static function get_all(int $owner_uid, ?int $profile_id = null) {
 		return self::get_instance()->_get_all($owner_uid, $profile_id);
 	}
 
 	/**
 	 * @return array<int, array<string, bool|int|null|string>>
 	 */
-	private function _get_all(int $owner_uid, int $profile_id = null) {
+	private function _get_all(int $owner_uid, ?int $profile_id = null) {
 		$rv = [];
 
 		$ref = new ReflectionClass(get_class($this));

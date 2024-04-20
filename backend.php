@@ -25,7 +25,6 @@
 
 	require_once "autoload.php";
 	require_once "sessions.php";
-	require_once "functions.php";
 
 	$op = (string)clean($op);
 	$method = (string)clean($method);

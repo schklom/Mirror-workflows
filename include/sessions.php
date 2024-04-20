@@ -4,7 +4,6 @@
 	use UserHelper;
 
 	require_once "autoload.php";
-	require_once "functions.php";
 	require_once "errorhandler.php";
 	require_once "lib/gettext/gettext.inc.php";
 

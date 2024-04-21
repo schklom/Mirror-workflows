@@ -114,4 +114,5 @@ return array(
     '157bbd0180425c7142fbaf1b1646bec3' => $vendorDir . '/open-telemetry/exporter-otlp/_register.php',
     '9b38cf48e83f5d8f60375221cd213eee' => $vendorDir . '/phpstan/phpstan/bootstrap.php',
     'ec07570ca5a812141189b1fa81503674' => $vendorDir . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
+    '1c27df0e838db1c8a6427db7c5db3db2' => $baseDir . '/include/functions.php',
 );

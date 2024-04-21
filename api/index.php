@@ -11,7 +11,6 @@
 	define('NO_SESSION_AUTOSTART', true);
 
 	require_once "autoload.php";
-	require_once "functions.php";
 	require_once "sessions.php";
 
 	ini_set('session.use_cookies', "0");

@@ -2097,8 +2097,8 @@ class Feeds extends Handler_Protected {
 		$doc = new DOMDocument();
 		if (@$doc->loadHTML($content)) {
 			$xpath = new DOMXPath($doc);
-			$entries = $xpath->query('/html/head/link[@rel="alternate" and '.
-				'(contains(@type,"rss") or contains(@type,"atom"))]|/html/head/link[@rel="feed"]');
+			$entries = $xpath->query('/html/*[self::head or self::body]/link[@rel="alternate" and '.
+				'(contains(@type,"rss") or contains(@type,"atom"))]|/html/*[self::head or self::body]/link[@rel="feed"]');
 
 			foreach ($entries as $entry) {
 				if ($entry->hasAttribute('href')) {

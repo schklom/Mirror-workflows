@@ -112,6 +112,7 @@ jobs:
         with:
           context: ./
           file: ./.docker/app/Dockerfile
+          build-args: BUILDKIT_CONTEXT_KEEP_GIT_DIR=1
           #platforms: linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6
           platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
           pull: true
@@ -167,6 +168,7 @@ jobs:
         with:
           context: ./
           file: ./Dockerfile
+          build-args: BUILDKIT_CONTEXT_KEEP_GIT_DIR=1
           #platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le,linux/s390x
           platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
           pull: true

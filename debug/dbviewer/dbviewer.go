@@ -1,4 +1,4 @@
-package dbviewer
+package main
 
 import (
 	"bufio"
@@ -14,6 +14,7 @@ func main() {
 	uio.Init(".", 5, 1000, 10)
 	reader := bufio.NewReader(os.Stdin)
 	var run = true
+	fmt.Print("FMD DB Viewer")
 	for run {
 		fmt.Print("-> ")
 		text, _ := reader.ReadString('\n')

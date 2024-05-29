@@ -35,6 +35,12 @@ func initDB(path string) *UserBox {
 	return u
 }
 
+func (u *UserBox) GetLastID() int {
+	query := u.Query(User_.Id.OrderDesc())
+	li, _ := query.Find()
+	return int(li[0].Id)
+}
+
 func (u *UserBox) GetByID(id string) *User {
 	uQuery := u.Query(User_.UID.Equals(id, true))
 	foundUser, _ := uQuery.Find()

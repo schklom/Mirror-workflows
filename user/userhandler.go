@@ -13,20 +13,20 @@ type UserIO struct {
 	maxSavedLoc  int
 	maxSavedPic  int
 	ACC          AccessController
-	UB           *UserBox
+	UB           *FMDDB
 }
 
 func (u *UserIO) Init(path string, userIDLength int, maxSavedLoc int, maxSavedPic int) {
 	u.userIDLength = userIDLength
 	u.maxSavedLoc = maxSavedLoc
 	u.maxSavedPic = maxSavedPic
-	path = filepath.Join(path, "objectbox")
-	u.UB = initDB(path)
+	path = filepath.Join(path, "fmd.db")
+	u.UB = initSQLite(path)
 }
 
 func (u *UserIO) CreateNewUser(privKey string, pubKey string, salt string, hashedPassword string) string {
 	id := u.generateNewId()
-	u.UB.Put(&User{UID: id, Salt: salt, HashedPassword: hashedPassword, PrivateKey: privKey, PublicKey: pubKey})
+	u.UB.Create(&FMDUser{UID: id, Salt: salt, HashedPassword: hashedPassword, PrivateKey: privKey, PublicKey: pubKey})
 	return id
 }
 
@@ -35,44 +35,47 @@ func (u *UserIO) UpdateUserPassword(id string, privKey string, salt string, hash
 	user.HashedPassword = hashedPassword
 	user.Salt = salt
 	user.PrivateKey = privKey
-	u.UB.Update(user)
+	u.UB.Save(user)
 }
 
 func (u *UserIO) AddLocation(id string, loc string) {
 	user := u.UB.GetByID(id)
 
-	user.LocationData = append(user.LocationData, loc)
+	u.UB.Create(Location{Position: loc, UserID: user.Id})
 
-	if len(user.LocationData) > u.maxSavedLoc {
-		user.LocationData = user.LocationData[(len(user.LocationData) - u.maxSavedLoc):]
+	if len(user.Locations) > u.maxSavedLoc {
+		locationsToDelete := user.Locations[:(len(user.Locations) - u.maxSavedLoc)]
+		for _, locationToDelete := range locationsToDelete {
+			u.UB.Delete(locationToDelete)
+		}
 	}
-	u.UB.Update(user)
 }
 
 func (u *UserIO) AddPicture(id string, pic string) {
 	user := u.UB.GetByID(id)
-
-	user.Pictures = append(user.Pictures, pic)
+	u.UB.Create(Picture{Content: pic, UserID: user.Id})
 
 	if len(user.Pictures) > u.maxSavedPic {
-		user.Pictures = user.Pictures[(len(user.Pictures) - u.maxSavedPic):]
+		picturesToDelete := user.Pictures[:(len(user.Pictures) - u.maxSavedPic)]
+		for _, pictureToDelete := range picturesToDelete {
+			u.UB.Delete(pictureToDelete)
+		}
 	}
-	u.UB.Update(user)
 }
 
 func (u *UserIO) DeleteUser(id string) {
 	user := u.UB.GetByID(id)
 
-	u.UB.Remove(user)
+	u.UB.Delete(user)
 }
 
 func (u *UserIO) GetLocation(id string, idx int) string {
 	user := u.UB.GetByID(id)
-	if idx < 0 || idx >= len(user.LocationData) {
-		fmt.Printf("Location out of bounds: %d, max=%d\n", idx, len(user.LocationData)-1)
+	if idx < 0 || idx >= len(user.Locations) {
+		fmt.Printf("Location out of bounds: %d, max=%d\n", idx, len(user.Locations)-1)
 		return ""
 	}
-	return user.LocationData[idx]
+	return user.Locations[idx].Position
 }
 
 func (u *UserIO) GetPicture(id string, idx int) string {
@@ -80,7 +83,7 @@ func (u *UserIO) GetPicture(id string, idx int) string {
 	if len(user.Pictures) == 0 {
 		return "Picture not found"
 	}
-	return user.Pictures[idx]
+	return user.Pictures[idx].Content
 }
 
 func (u *UserIO) GetPictureSize(id string) int {
@@ -90,7 +93,7 @@ func (u *UserIO) GetPictureSize(id string) int {
 
 func (u *UserIO) GetLocationSize(id string) int {
 	user := u.UB.GetByID(id)
-	return len(user.LocationData)
+	return len(user.Locations)
 }
 
 func (u *UserIO) GetPrivateKey(id string) string {
@@ -101,7 +104,7 @@ func (u *UserIO) GetPrivateKey(id string) string {
 func (u *UserIO) SetPrivateKey(id string, key string) {
 	user := u.UB.GetByID(id)
 	user.PrivateKey = key
-	u.UB.Update(user)
+	u.UB.Save(user)
 }
 
 func (u *UserIO) GetPublicKey(id string) string {
@@ -112,13 +115,13 @@ func (u *UserIO) GetPublicKey(id string) string {
 func (u *UserIO) SetPublicKey(id string, key string) {
 	user := u.UB.GetByID(id)
 	user.PublicKey = key
-	u.UB.Update(user)
+	u.UB.Save(user)
 }
 
 func (u *UserIO) SetCommandToUser(id string, ctu string) {
 	user := u.UB.GetByID(id)
 	user.CommandToUser = ctu
-	u.UB.Update(user)
+	u.UB.Save(user)
 }
 
 func (u *UserIO) GetCommandToUser(id string) string {
@@ -129,7 +132,7 @@ func (u *UserIO) GetCommandToUser(id string) string {
 func (u *UserIO) SetPushUrl(id string, pushUrl string) {
 	user := u.UB.GetByID(id)
 	user.PushUrl = pushUrl
-	u.UB.Update(user)
+	u.UB.Save(user)
 }
 
 func (u *UserIO) GetPushUrl(id string) string {

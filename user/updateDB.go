@@ -60,3 +60,17 @@ func (db *DBBox) migrateToV2(u *UserBox) {
 		u.Update(user)
 	}
 }
+
+func (db *DBBox) migrateToV3(u *UserBox) {
+	fmt.Println("DB: Migrating to v2 ...")
+	ids, _ := u.Query().FindIds()
+
+	// Remove dummy salts
+	for _, id := range ids {
+		user, _ := u.Get(id)
+		if user.Salt == "cafe" {
+			user.Salt = ""
+		}
+		u.Update(user)
+	}
+}

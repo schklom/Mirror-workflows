@@ -61,16 +61,26 @@ func (db *DBBox) migrateToV2(u *UserBox) {
 	}
 }
 
-func (db *DBBox) migrateToV3(u *UserBox) {
-	fmt.Println("DB: Migrating to v2 ...")
+func migrateToV3(u *UserBox, newDB *FMDDB) {
+	fmt.Println("DB: Migrating to v3 ...")
 	ids, _ := u.Query().FindIds()
 
-	// Remove dummy salts
-	for _, id := range ids {
+	// Migrate to SQL Database
+
+	for i, id := range ids {
+		fmt.Println("Migrating " + fmt.Sprint(i) + "/" + fmt.Sprint(len(ids)))
 		user, _ := u.Get(id)
-		if user.Salt == "cafe" {
-			user.Salt = ""
+		newUser := FMDUser{UID: user.UID, Salt: user.Salt, HashedPassword: user.HashedPassword,
+			PrivateKey: user.PrivateKey, PublicKey: user.PublicKey, CommandToUser: user.CommandToUser, PushUrl: user.PushUrl}
+		for _, location := range user.LocationData {
+			newLoc := Location{Position: location}
+			newUser.Locations = append(newUser.Locations, newLoc)
 		}
-		u.Update(user)
+		for _, picture := range user.Pictures {
+			newPic := Picture{Content: picture}
+			newUser.Pictures = append(newUser.Pictures, newPic)
+		}
+		newDB.Create(&newUser)
 	}
+	newDB.Create(&DBSetting{Setting: "version", Value: "3"})
 }

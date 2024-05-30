@@ -1,10 +1,14 @@
 package user
 
 import (
+	"log"
+	"os"
+
 	"github.com/objectbox/objectbox-go/objectbox"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 //go:generate go run github.com/objectbox/objectbox-go/cmd/objectbox-gogen
@@ -61,28 +65,42 @@ type Picture struct {
 }
 
 // For GORM (SQL)
-type DBSettings struct {
+type DBSetting struct {
 	Id      uint64
 	Setting string `gorm:"uniqueIndex"`
 	Value   string
 }
 
 func initSQLite(path string) *FMDDB {
-	db, _ := gorm.Open(sqlite.Open(path), &gorm.Config{})
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		logger.Config{
+			IgnoreRecordNotFoundError: false, // Ignore ErrRecordNotFound error for logger
+		},
+	)
+	db, _ := gorm.Open(sqlite.Open(path), &gorm.Config{
+		Logger: newLogger,
+	})
 	db.AutoMigrate(&FMDUser{}, &Location{}, &Picture{})
-	db.AutoMigrate(&DBSettings{})
+	db.AutoMigrate(&DBSetting{})
 	return &FMDDB{DB: db}
 }
 
 func (db *FMDDB) GetLastID() int {
 	var user FMDUser
 	db.DB.Last(&user)
+	if user.Id == 0 {
+		return -1
+	}
 	return int(user.Id)
 }
 
 func (db *FMDDB) GetByID(id string) *FMDUser {
 	var user = FMDUser{UID: id}
-	db.DB.First(&user)
+	db.DB.Preload("Pictures").Preload("Locations").Where(&user).First(&user)
+	if user.Id == 0 {
+		return nil
+	}
 	return &user
 }
 
@@ -91,7 +109,7 @@ func (db *FMDDB) Save(value interface{}) {
 }
 
 func (db *FMDDB) Create(value interface{}) {
-	db.DB.Save(value)
+	db.DB.Create(value)
 }
 
 func (db *FMDDB) Delete(value interface{}) {

@@ -12,3 +12,6 @@ config.yml
 # binaries
 fmdserver
 fmdDBViewer
+cmd/fmd.db
+cmd/config.yml2
+cmd/__debug_bin4154895520

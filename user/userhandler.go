@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"fmt"
 	"math/big"
+	"os"
 	"path/filepath"
 	"strings"
 )
@@ -20,8 +21,24 @@ func (u *UserIO) Init(path string, userIDLength int, maxSavedLoc int, maxSavedPi
 	u.userIDLength = userIDLength
 	u.maxSavedLoc = maxSavedLoc
 	u.maxSavedPic = maxSavedPic
-	path = filepath.Join(path, "fmd.db")
-	u.UB = initSQLite(path)
+	dbPath := filepath.Join(path, "fmd.db")
+	_, err := os.Stat(dbPath)
+	if os.IsNotExist(err) { // Check if SQL Database exists
+		fmt.Println("No SQL DB found")
+		objectBoxPath := filepath.Join(path, "objectbox")
+		_, err := os.Stat(objectBoxPath)
+		print(objectBoxPath)
+		fmt.Println(err)
+		if err == nil { // If the SQL Database doesn't exist, check for an objectbox Databse to migrate
+			fmt.Println("ObjectBox DB to migrate found")
+			oldDB := initObjectBox(objectBoxPath)
+			newDB := initSQLite(dbPath)
+			migrateToV3(oldDB, newDB)
+		}
+
+	}
+	u.UB = initSQLite(dbPath)
+
 }
 
 func (u *UserIO) CreateNewUser(privKey string, pubKey string, salt string, hashedPassword string) string {
@@ -41,7 +58,7 @@ func (u *UserIO) UpdateUserPassword(id string, privKey string, salt string, hash
 func (u *UserIO) AddLocation(id string, loc string) {
 	user := u.UB.GetByID(id)
 
-	u.UB.Create(Location{Position: loc, UserID: user.Id})
+	u.UB.Create(&Location{Position: loc, UserID: user.Id})
 
 	if len(user.Locations) > u.maxSavedLoc {
 		locationsToDelete := user.Locations[:(len(user.Locations) - u.maxSavedLoc)]
@@ -53,7 +70,7 @@ func (u *UserIO) AddLocation(id string, loc string) {
 
 func (u *UserIO) AddPicture(id string, pic string) {
 	user := u.UB.GetByID(id)
-	u.UB.Create(Picture{Content: pic, UserID: user.Id})
+	u.UB.Create(&Picture{Content: pic, UserID: user.Id})
 
 	if len(user.Pictures) > u.maxSavedPic {
 		picturesToDelete := user.Pictures[:(len(user.Pictures) - u.maxSavedPic)]
@@ -104,7 +121,7 @@ func (u *UserIO) GetPrivateKey(id string) string {
 func (u *UserIO) SetPrivateKey(id string, key string) {
 	user := u.UB.GetByID(id)
 	user.PrivateKey = key
-	u.UB.Save(user)
+	u.UB.Save(&user)
 }
 
 func (u *UserIO) GetPublicKey(id string) string {
@@ -115,13 +132,13 @@ func (u *UserIO) GetPublicKey(id string) string {
 func (u *UserIO) SetPublicKey(id string, key string) {
 	user := u.UB.GetByID(id)
 	user.PublicKey = key
-	u.UB.Save(user)
+	u.UB.Save(&user)
 }
 
 func (u *UserIO) SetCommandToUser(id string, ctu string) {
 	user := u.UB.GetByID(id)
 	user.CommandToUser = ctu
-	u.UB.Save(user)
+	u.UB.Save(&user)
 }
 
 func (u *UserIO) GetCommandToUser(id string) string {
@@ -132,7 +149,7 @@ func (u *UserIO) GetCommandToUser(id string) string {
 func (u *UserIO) SetPushUrl(id string, pushUrl string) {
 	user := u.UB.GetByID(id)
 	user.PushUrl = pushUrl
-	u.UB.Save(user)
+	u.UB.Save(&user)
 }
 
 func (u *UserIO) GetPushUrl(id string) string {

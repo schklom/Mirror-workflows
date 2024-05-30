@@ -126,20 +126,3 @@ func initObjectBox(path string) *UserBox {
 
 	return u
 }
-
-// Deprecated for migration of ObjectBox DB
-func (u *UserBox) GetLastIDObjectBox() int {
-	query := u.Query(User_.Id.OrderDesc())
-	li, _ := query.Find()
-	return int(li[0].Id)
-}
-
-// Deprecated for migration of ObjectBox DB
-func (u *UserBox) GetByIDObjectBox(id string) *User {
-	uQuery := u.Query(User_.UID.Equals(id, true))
-	foundUser, _ := uQuery.Find()
-	if len(foundUser) == 0 {
-		return nil
-	}
-	return foundUser[0]
-}

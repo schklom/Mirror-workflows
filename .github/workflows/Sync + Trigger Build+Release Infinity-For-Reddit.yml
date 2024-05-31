@@ -80,7 +80,7 @@ jobs:
           user_agent="android:personal-app:0.0.1 (by /u/$reddit_username)"
           # https://github.com/Docile-Alligator/Infinity-For-Reddit/issues/1648#issuecomment-2140935760
           # remove android from user-agent
-          user_agent="android:personal-app:0.0.1 (by /u/$reddit_username)"
+          user_agent="personal-app:0.0.1 (by /u/$reddit_username)"
 
 
           # Change some code for user_agent and api key

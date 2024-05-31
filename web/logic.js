@@ -328,9 +328,11 @@ async function locate(requestedIndex) {
     document.getElementById("providerView").innerHTML = loc.provider;
     document.getElementById("batView").innerHTML = loc.bat + " %";
 
+
     const target = L.latLng(loc.lat, loc.lon);
     markers.clearLayers();
-    L.marker(target).addTo(markers);
+
+    L.marker(target).bindTooltip(time.toLocaleString()).addTo(markers);
     map.setView(target, 16);
 }
 

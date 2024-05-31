@@ -48,6 +48,7 @@ type FMDUser struct {
 	PrivateKey     string
 	PublicKey      string
 	CommandToUser  string
+	CommandLogs    []CommandLogEntry `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
 	PushUrl        string
 	Locations      []Location `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
 	Pictures       []Picture  `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
@@ -67,6 +68,14 @@ type Picture struct {
 	Content string // elements must be string-encoded JSON structures
 }
 
+// Location Table of the Users
+type CommandLogEntry struct {
+	Id        uint64 `gorm:"primaryKey"`
+	UserID    uint64
+	Timestamp int64
+	Content   string
+}
+
 // Settings Table GORM (SQL)
 type DBSetting struct {
 	Id      uint64 `gorm:"primaryKey"`
@@ -84,7 +93,7 @@ func initSQLite(path string) *FMDDB {
 	db, _ := gorm.Open(sqlite.Open(path), &gorm.Config{
 		Logger: newLogger,
 	})
-	db.AutoMigrate(&FMDUser{}, &Location{}, &Picture{})
+	db.AutoMigrate(&FMDUser{}, &Location{}, &Picture{}, &CommandLogEntry{})
 	db.AutoMigrate(&DBSetting{})
 	return &FMDDB{DB: db}
 }
@@ -100,7 +109,7 @@ func (db *FMDDB) GetLastID() int {
 
 func (db *FMDDB) GetByID(id string) *FMDUser {
 	var user = FMDUser{UID: id}
-	db.DB.Preload("Locations").Preload("Pictures").Where(&user).First(&user)
+	db.DB.Preload("Locations").Preload("Pictures").Preload("CommandLogs").Where(&user).First(&user)
 	if user.Id == 0 {
 		return nil
 	}

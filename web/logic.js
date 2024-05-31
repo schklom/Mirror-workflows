@@ -92,6 +92,7 @@ function setupOnClicks() {
     document.getElementById("cameraBack").addEventListener("click", () => sendToPhone("camera back"));
     document.getElementById("takePicture").addEventListener("click", () => showCameraDropDown());
     document.getElementById("showPicture").addEventListener("click", async () => await showLatestPicture());
+    document.getElementById("showCommandLogs").addEventListener("click", async () => await showCommandLogs());
 }
 
 function checkWebCryptoApiAvailable() {
@@ -426,6 +427,29 @@ function sendToPhone(message) {
     })
 }
 
+async function showCommandLogs() {
+    if (!globalAccessToken) {
+        console.log("Missing accessToken!");
+        return;
+    }
+
+    response = await fetch("./commandLogs", {
+        method: 'PUT',
+        body: JSON.stringify({
+            IDT: globalAccessToken,
+            Data: "",
+        }),
+        headers: {
+            'Content-type': 'application/json'
+        }
+    });
+    if (!response.ok) {
+        throw response.status;
+    }
+    const json = await response.json();
+    displayCommandLogs(json.Data)
+}
+
 // Section: Picture
 
 async function showLatestPicture() {
@@ -530,6 +554,29 @@ function displaySinglePicture(picture) {
     }, false);
     buttonDiv.appendChild(afterBtn)
     div.appendChild(buttonDiv)
+    document.body.appendChild(div);
+}
+
+function displayCommandLogs(logs) {
+    var div = document.createElement("div");
+    div.classList.add("prompt");
+
+    var logP = document.createElement("p");
+    logP.id = "commandlogs"
+    logP.innerHTML = logs;
+    div.appendChild(logP);
+
+    var buttonDiv = document.createElement("div");
+    buttonDiv.className = "center";
+
+    var btn = document.createElement("button");
+    btn.innerHTML = "close";
+    btn.addEventListener('click', function () {
+        document.body.removeChild(div);
+    }, false);
+    buttonDiv.appendChild(btn);
+
+    div.appendChild(buttonDiv);
     document.body.appendChild(div);
 }
 

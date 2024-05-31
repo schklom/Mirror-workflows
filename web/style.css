@@ -224,3 +224,7 @@ footer {
     height: 50%;
     width: 50%;
 }
+
+#commandlogs {
+    white-space: pre-line;
+}

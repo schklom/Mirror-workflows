@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 type UserIO struct {
@@ -84,6 +85,7 @@ func (u *UserIO) DeleteUser(uid string) {
 	user := u.UB.GetByID(uid)
 	u.UB.DB.Where("user_id = ?", user.Id).Delete(&Picture{})
 	u.UB.DB.Where("user_id = ?", user.Id).Delete(&Location{})
+	u.UB.DB.Where("user_id = ?", user.Id).Delete(&CommandLogEntry{})
 	u.UB.Delete(&user)
 }
 
@@ -139,12 +141,29 @@ func (u *UserIO) SetPublicKey(id string, key string) {
 func (u *UserIO) SetCommandToUser(id string, ctu string) {
 	user := u.UB.GetByID(id)
 	user.CommandToUser = ctu
+	if ctu != "" {
+		timestamp := time.Now().Unix()
+		comLogEntry := CommandLogEntry{UserID: user.Id, Timestamp: timestamp, Content: "New Com sent " + ctu}
+		u.UB.Create(&comLogEntry)
+	}
 	u.UB.Save(&user)
 }
 
 func (u *UserIO) GetCommandToUser(id string) string {
 	user := u.UB.GetByID(id)
+	timestamp := time.Now().Unix()
+	comLogEntry := CommandLogEntry{UserID: user.Id, Timestamp: timestamp, Content: "Comand received from device"}
+	u.UB.Create(&comLogEntry)
 	return user.CommandToUser
+}
+
+func (u *UserIO) GetCommandLogs(id string) string {
+	user := u.UB.GetByID(id)
+	commandLogs := ""
+	for _, logEntry := range user.CommandLogs {
+		commandLogs += time.Unix(logEntry.Timestamp, 0).String() + ": " + logEntry.Content + "\n"
+	}
+	return commandLogs
 }
 
 func (u *UserIO) SetPushUrl(id string, pushUrl string) {

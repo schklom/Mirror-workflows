@@ -323,6 +323,34 @@ func postCommand(w http.ResponseWriter, r *http.Request) {
 	pushUser(id)
 }
 
+func getCommandLog(w http.ResponseWriter, r *http.Request) {
+	var data DataPackage
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		http.Error(w, "Meeep!, Error - getCommandLog 1", http.StatusBadRequest)
+		return
+	}
+	id := uio.ACC.CheckAccessToken(data.IDT)
+	if id == "" {
+		http.Error(w, "Meeep!, Error - getCommandLog 2", http.StatusBadRequest)
+		return
+	}
+	commandLogs := uio.GetCommandLogs(id)
+	if commandLogs != "" {
+		reply := DataPackage{IDT: data.IDT, Data: commandLogs}
+		result, _ := json.Marshal(reply)
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(result))
+		uio.SetCommandToUser(id, "")
+	} else {
+		reply := DataPackage{IDT: data.IDT, Data: ""}
+		result, _ := json.Marshal(reply)
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(result))
+	}
+
+}
+
 func pushUser(id string) {
 	pushUrl := strings.Replace(uio.GetPushUrl(id), "/UP?", "/message?", -1)
 
@@ -526,6 +554,8 @@ func handleRequests(filesDir string, webDir string, config config) {
 	http.Handle("/", http.FileServer(http.Dir(webDir)))
 	http.HandleFunc("/command", mainCommand)
 	http.HandleFunc("/command/", mainCommand)
+	http.HandleFunc("/commandLogs", getCommandLog)
+	http.HandleFunc("/commandLogs/", getCommandLog)
 	http.HandleFunc("/location", mainLocation)
 	http.HandleFunc("/location/", mainLocation)
 	http.HandleFunc("/locationDataSize", getLocationDataSize)

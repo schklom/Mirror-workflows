@@ -2,6 +2,8 @@ var map, markers;
 
 var newestLocationDataIndex;
 var currentLocationDataIndx = 0;
+var locCache = new Map();
+
 var currentId;
 var globalPrivateKey;
 var globalAccessToken = "";
@@ -319,6 +321,17 @@ async function locate(requestedIndex) {
         setNoLocationDataAvailable("Error parsing location data");
         return;
     }
+    if (!locCache.has(currentLocationDataIndx)) {
+        locCache.set(currentLocationDataIndx, loc);
+
+        const mapArray = Array.from(locCache);
+
+        const sortedByKeyArray = mapArray.sort((a, b) => a[0] - b[0]);
+
+        locCache = new Map(sortedByKeyArray);
+    }
+
+
     const time = new Date(loc.time);
 
     document.getElementsByClassName("deviceInfo")[0].style.display = "block";
@@ -327,12 +340,17 @@ async function locate(requestedIndex) {
     document.getElementById("timeView").innerHTML = time.toLocaleTimeString();
     document.getElementById("providerView").innerHTML = loc.provider;
     document.getElementById("batView").innerHTML = loc.bat + " %";
-
-
-    const target = L.latLng(loc.lat, loc.lon);
+    target = null
+    lat_long = []
     markers.clearLayers();
-
-    L.marker(target).bindTooltip(time.toLocaleString()).addTo(markers);
+    locCache.forEach((locEntry, key) => {
+        target = L.latLng(locEntry.lat, locEntry.lon);
+        lat_long.push(target)
+        locTime = new Date(locEntry.time);
+        L.marker(target).bindTooltip(time.toLocaleString()).addTo(markers);
+    });
+    L.polyline(lat_long, { color: 'blue' }).addTo(markers);
+    target = L.latLng(loc.lat, loc.lon);
     map.setView(target, 16);
 }
 

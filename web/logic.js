@@ -389,7 +389,7 @@ async function locateOlder() {
         currentLocationDataIndx -= 1;
         await locate(currentLocationDataIndx);
     } else {
-        currentLocationDataIndx = newestLocationDataIndex;
+        currentLocationDataIndx = 0;
     }
 }
 

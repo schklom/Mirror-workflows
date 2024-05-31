@@ -13,7 +13,7 @@ import (
 
 //go:generate go run github.com/objectbox/objectbox-go/cmd/objectbox-gogen
 
-// For ObjectBox
+// For ObjectBox (Deprecated)
 type User struct {
 	Id             uint64
 	UID            string `objectbox:"unique"`
@@ -39,6 +39,7 @@ type DB struct {
 }
 
 // For GORM (SQL)
+// User Table
 type FMDUser struct {
 	Id             uint64 `gorm:"primaryKey"`
 	UID            string `gorm:"uniqueIndex"`
@@ -48,25 +49,27 @@ type FMDUser struct {
 	PublicKey      string
 	CommandToUser  string
 	PushUrl        string
-	Locations      []Location `gorm:"foreignKey:UserID"`
-	Pictures       []Picture  `gorm:"foreignKey:UserID"`
+	Locations      []Location `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
+	Pictures       []Picture  `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
 }
 
+// Location Table of the Users
 type Location struct {
 	Id       uint64 `gorm:"primaryKey"`
 	UserID   uint64
 	Position string // elements must be string-encoded JSON structures
 }
 
+// Picture Table for the Users
 type Picture struct {
 	Id      uint64 `gorm:"primaryKey"`
 	UserID  uint64
 	Content string // elements must be string-encoded JSON structures
 }
 
-// For GORM (SQL)
+// Settings Table GORM (SQL)
 type DBSetting struct {
-	Id      uint64
+	Id      uint64 `gorm:"primaryKey"`
 	Setting string `gorm:"uniqueIndex"`
 	Value   string
 }
@@ -97,7 +100,7 @@ func (db *FMDDB) GetLastID() int {
 
 func (db *FMDDB) GetByID(id string) *FMDUser {
 	var user = FMDUser{UID: id}
-	db.DB.Preload("Pictures").Preload("Locations").Where(&user).First(&user)
+	db.DB.Preload("Locations").Preload("Pictures").Where(&user).First(&user)
 	if user.Id == 0 {
 		return nil
 	}
@@ -116,7 +119,7 @@ func (db *FMDDB) Delete(value interface{}) {
 	db.DB.Delete(value)
 }
 
-// Deprecated for migration of ObjectBox DB
+// Deprecated for migration of ObjectBox DB only.
 func initObjectBox(path string) *UserBox {
 	ob, _ := objectbox.NewBuilder().MaxSizeInKb(10 * 1048576).Model(ObjectBoxModel()).Directory(path).Build()
 

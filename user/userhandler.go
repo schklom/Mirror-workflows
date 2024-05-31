@@ -52,7 +52,7 @@ func (u *UserIO) UpdateUserPassword(id string, privKey string, salt string, hash
 	user.HashedPassword = hashedPassword
 	user.Salt = salt
 	user.PrivateKey = privKey
-	u.UB.Save(user)
+	u.UB.Save(&user)
 }
 
 func (u *UserIO) AddLocation(id string, loc string) {
@@ -63,7 +63,7 @@ func (u *UserIO) AddLocation(id string, loc string) {
 	if len(user.Locations) > u.maxSavedLoc {
 		locationsToDelete := user.Locations[:(len(user.Locations) - u.maxSavedLoc)]
 		for _, locationToDelete := range locationsToDelete {
-			u.UB.Delete(locationToDelete)
+			u.UB.Delete(&locationToDelete)
 		}
 	}
 }
@@ -75,15 +75,16 @@ func (u *UserIO) AddPicture(id string, pic string) {
 	if len(user.Pictures) > u.maxSavedPic {
 		picturesToDelete := user.Pictures[:(len(user.Pictures) - u.maxSavedPic)]
 		for _, pictureToDelete := range picturesToDelete {
-			u.UB.Delete(pictureToDelete)
+			u.UB.Delete(&pictureToDelete)
 		}
 	}
 }
 
-func (u *UserIO) DeleteUser(id string) {
-	user := u.UB.GetByID(id)
-
-	u.UB.Delete(user)
+func (u *UserIO) DeleteUser(uid string) {
+	user := u.UB.GetByID(uid)
+	u.UB.DB.Where("user_id = ?", user.Id).Delete(&Picture{})
+	u.UB.DB.Where("user_id = ?", user.Id).Delete(&Location{})
+	u.UB.Delete(&user)
 }
 
 func (u *UserIO) GetLocation(id string, idx int) string {

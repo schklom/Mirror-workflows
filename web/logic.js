@@ -321,6 +321,8 @@ async function locate(requestedIndex) {
         setNoLocationDataAvailable("Error parsing location data");
         return;
     }
+    // Check if location is already in cache
+    // If not add the location and rearrange the items
     if (!locCache.has(currentLocationDataIndx)) {
         locCache.set(currentLocationDataIndx, loc);
 
@@ -340,16 +342,20 @@ async function locate(requestedIndex) {
     document.getElementById("timeView").innerHTML = time.toLocaleTimeString();
     document.getElementById("providerView").innerHTML = loc.provider;
     document.getElementById("batView").innerHTML = loc.bat + " %";
-    target = null
-    lat_long = []
+
+    lat_long = []   // All locations in an array. Needed for the line between points.
     markers.clearLayers();
+
+    //Iterate through the cache and add every point to the map
     locCache.forEach((locEntry, key) => {
         target = L.latLng(locEntry.lat, locEntry.lon);
         lat_long.push(target)
         locTime = new Date(locEntry.time);
         L.marker(target).bindTooltip(time.toLocaleString()).addTo(markers);
     });
+    // Add the lines between the points
     L.polyline(lat_long, { color: 'blue' }).addTo(markers);
+    //Zoom to the currently selected point
     target = L.latLng(loc.lat, loc.lon);
     map.setView(target, 16);
 }

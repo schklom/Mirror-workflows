@@ -161,7 +161,7 @@ func (u *UserIO) GetCommandLogs(id string) string {
 	user := u.UB.GetByID(id)
 	commandLogs := ""
 	for _, logEntry := range user.CommandLogs {
-		commandLogs += time.Unix(logEntry.Timestamp, 0).String() + ": " + logEntry.Content + "\n"
+		commandLogs += time.Unix(logEntry.Timestamp, 0).UTC().Format(time.RFC822) + ": " + logEntry.Content + "\n"
 	}
 	return commandLogs
 }

@@ -2,6 +2,7 @@ package user
 
 import (
 	"crypto/rand"
+	"findmydeviceserver/utils"
 	"fmt"
 	"math/big"
 	"os"
@@ -143,7 +144,8 @@ func (u *UserIO) SetCommandToUser(id string, ctu string) {
 	user.CommandToUser = ctu
 	if ctu != "" {
 		timestamp := time.Now().Unix()
-		comLogEntry := CommandLogEntry{UserID: user.Id, Timestamp: timestamp, Content: "New Com sent " + ctu}
+		logContent := utils.RsaEncrypt(user.PublicKey, "New Com sent "+ctu)
+		comLogEntry := CommandLogEntry{UserID: user.Id, Timestamp: timestamp, Content: logContent}
 		u.UB.Create(&comLogEntry)
 	}
 	u.UB.Save(&user)
@@ -152,7 +154,8 @@ func (u *UserIO) SetCommandToUser(id string, ctu string) {
 func (u *UserIO) GetCommandToUser(id string) string {
 	user := u.UB.GetByID(id)
 	timestamp := time.Now().Unix()
-	comLogEntry := CommandLogEntry{UserID: user.Id, Timestamp: timestamp, Content: "Comand received from device"}
+	logContent := utils.RsaEncrypt(user.PublicKey, "Command \""+user.CommandToUser+"\" received by device!")
+	comLogEntry := CommandLogEntry{UserID: user.Id, Timestamp: timestamp, Content: logContent}
 	u.UB.Create(&comLogEntry)
 	return user.CommandToUser
 }

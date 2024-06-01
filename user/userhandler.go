@@ -2,6 +2,7 @@ package user
 
 import (
 	"crypto/rand"
+	"encoding/json"
 	"findmydeviceserver/utils"
 	"fmt"
 	"math/big"
@@ -144,8 +145,10 @@ func (u *UserIO) SetCommandToUser(id string, ctu string) {
 	user.CommandToUser = ctu
 	if ctu != "" {
 		timestamp := time.Now().Unix()
-		logContent := utils.RsaEncrypt(user.PublicKey, "New Com sent "+ctu)
-		comLogEntry := CommandLogEntry{UserID: user.Id, Timestamp: timestamp, Content: logContent}
+		logEntry := CommandLogPackage{TimeStamp: timestamp, Log: "New Com sent " + ctu}
+		jsonLog, _ := json.Marshal(logEntry)
+		logEntryEncrypted := utils.RsaEncrypt(user.PublicKey, string(jsonLog[:]))
+		comLogEntry := CommandLogEntry{UserID: user.Id, Content: logEntryEncrypted}
 		u.UB.Create(&comLogEntry)
 	}
 	u.UB.Save(&user)
@@ -154,8 +157,10 @@ func (u *UserIO) SetCommandToUser(id string, ctu string) {
 func (u *UserIO) GetCommandToUser(id string) string {
 	user := u.UB.GetByID(id)
 	timestamp := time.Now().Unix()
-	logContent := utils.RsaEncrypt(user.PublicKey, "Command \""+user.CommandToUser+"\" received by device!")
-	comLogEntry := CommandLogEntry{UserID: user.Id, Timestamp: timestamp, Content: logContent}
+	logEntry := CommandLogPackage{TimeStamp: timestamp, Log: "Command \"" + user.CommandToUser + "\" received by device!"}
+	jsonLog, _ := json.Marshal(logEntry)
+	logEntryEncrypted := utils.RsaEncrypt(user.PublicKey, string(jsonLog[:]))
+	comLogEntry := CommandLogEntry{UserID: user.Id, Content: logEntryEncrypted}
 	u.UB.Create(&comLogEntry)
 	return user.CommandToUser
 }
@@ -164,7 +169,7 @@ func (u *UserIO) GetCommandLogs(id string) string {
 	user := u.UB.GetByID(id)
 	commandLogs := ""
 	for _, logEntry := range user.CommandLogs {
-		commandLogs += time.Unix(logEntry.Timestamp, 0).UTC().Format(time.RFC822) + ": " + logEntry.Content + "\n"
+		commandLogs += logEntry.Content + "\n"
 	}
 	return commandLogs
 }

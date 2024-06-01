@@ -70,10 +70,15 @@ type Picture struct {
 
 // Location Table of the Users
 type CommandLogEntry struct {
-	Id        uint64 `gorm:"primaryKey"`
-	UserID    uint64
-	Timestamp int64
-	Content   string
+	Id      uint64 `gorm:"primaryKey"`
+	UserID  uint64
+	Content string // string-encoded JSON structures
+}
+
+// This will be the content of the CommandLogEntry in the DB
+type CommandLogPackage struct {
+	TimeStamp int64  `'json:"timestamp"`
+	Log       string `'json:"log"`
 }
 
 // Settings Table GORM (SQL)

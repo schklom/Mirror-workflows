@@ -43,7 +43,10 @@ The following is an (incomplete) example for deploying FMD Server with Docker Co
 version: '3'
 services:
     fmd:
-        build: https://gitlab.com/Nulide/findmydeviceserver.git#v0.5.0
+        # Use the prebuilt image
+        image: registry.gitlab.com/nulide/findmydeviceserver:v0.5.0
+        # Or build the image yourself
+        # build: https://gitlab.com/Nulide/findmydeviceserver.git#v0.5.0
         container_name: fmd
         ports:
          - 127.0.0.1:8080:8080

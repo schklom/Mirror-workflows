@@ -29,12 +29,12 @@ if [ -z $SKIP_RSYNC_ON_STARTUP ]; then
 		mkdir -p $DST_DIR
 		chown $OWNER_UID:$OWNER_GID $DST_DIR
 
-		sudo -u app rsync -a \
+		sudo -u app rsync -a --no-owner \
 			$SRC_DIR/ $DST_DIR/
 	else
 		chown -R $OWNER_UID:$OWNER_GID $DST_DIR
 
-		sudo -u app rsync -a --delete \
+		sudo -u app rsync -a --no-owner --delete \
 			--exclude /cache \
 			--exclude /lock \
 			--exclude /feed-icons \
@@ -44,7 +44,7 @@ if [ -z $SKIP_RSYNC_ON_STARTUP ]; then
 			--exclude /themes.local \
 			$SRC_DIR/ $DST_DIR/
 
-		sudo -u app rsync -a --delete \
+		sudo -u app rsync -a --no-owner --delete \
 			$SRC_DIR/plugins.local/nginx_xaccel \
 			$DST_DIR/plugins.local/nginx_xaccel
 	fi

@@ -904,10 +904,12 @@ class Pref_Feeds extends Handler_Protected {
 		<div dojoType="dijit.layout.BorderContainer" gutters="false">
 			<div region='top' dojoType="fox.Toolbar">
 				<div style='float : right'>
-					<input dojoType="dijit.form.TextBox" id="feed_search" size="20" type="search"
-						value="<?= htmlspecialchars($feed_search) ?>">
-					<button dojoType="dijit.form.Button" onclick="dijit.byId('feedTree').reload()">
-						<?= __('Search') ?></button>
+					<form dojoType="dijit.form.Form" onsubmit="dijit.byId('feedTree').reload(); return false;">
+						<input dojoType="dijit.form.TextBox" id="feed_search" size="20" type="search"
+							value="<?= htmlspecialchars($feed_search) ?>">
+						<button dojoType="dijit.form.Button" type="submit">
+							<?= __('Search') ?></button>
+					</form>
 				</div>
 
 				<div dojoType="fox.form.DropDownButton">

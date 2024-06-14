@@ -251,6 +251,27 @@ const	CommonDialogs = {
 							alert(__("No feeds selected."));
 						}
 					},
+					debugSelected: function() {
+						const sel_rows = this.getSelectedFeeds();
+
+						if (sel_rows.length > 0) {
+							if (confirm(__("Debug selected feeds?"))) {
+								Notify.progress("Opening debugger for selected feeds...", true);
+
+								for (let i = 0; i < sel_rows.length; i++) {
+									/* global __csrf_token */
+									App.postOpenWindow("backend.php", {
+										op: "Feeds",
+										method: "updatedebugger",
+										feed_id: sel_rows[i],
+										csrf_token: __csrf_token,
+									});
+								}
+							}
+						} else {
+							alert(__("No feeds selected."));
+						}
+					},
 					content: `
 						<div dojoType="fox.Toolbar">
 							<div dojoType="fox.form.DropDownButton">
@@ -289,6 +310,9 @@ const	CommonDialogs = {
 						<footer>
 							<button style='float : left' class='alt-danger' dojoType='dijit.form.Button' onclick='App.dialogOf(this).removeSelected()'>
 								${__('Unsubscribe from selected feeds')}
+							</button>
+							<button style='float : left' class='alt-info' dojoType='dijit.form.Button' onclick='App.dialogOf(this).debugSelected()'>
+								${__('Debug selected feeds')}
 							</button>
 							<button dojoType='dijit.form.Button' class='alt-primary' type='submit'>
 								${__('Close this window')}

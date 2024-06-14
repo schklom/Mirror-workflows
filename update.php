@@ -8,7 +8,6 @@
 	chdir(__DIR__);
 
 	require_once "autoload.php";
-	require_once "functions.php";
 
 
 	if (php_sapi_name() != "cli") {

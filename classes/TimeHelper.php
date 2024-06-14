@@ -1,7 +1,7 @@
 <?php
 class TimeHelper {
 
-	static function smart_date_time(int $timestamp, int $tz_offset = 0, int $owner_uid = null, bool $eta_min = false): string {
+	static function smart_date_time(int $timestamp, int $tz_offset = 0, ?int $owner_uid = null, bool $eta_min = false): string {
 		if (!$owner_uid) $owner_uid = $_SESSION['uid'];
 
 		if ($eta_min && time() + $tz_offset - $timestamp < 3600) {
@@ -21,7 +21,7 @@ class TimeHelper {
 		}
 	}
 
-	static function make_local_datetime(?string $timestamp, bool $long, int $owner_uid = null,
+	static function make_local_datetime(?string $timestamp, bool $long, ?int $owner_uid = null,
 					bool $no_smart_dt = false, bool $eta_min = false): string {
 
 		if (!$owner_uid) $owner_uid = $_SESSION['uid'];

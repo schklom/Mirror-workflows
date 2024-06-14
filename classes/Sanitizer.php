@@ -62,7 +62,7 @@ class Sanitizer {
 	 *
 	 * @return false|string The HTML, or false if an error occurred.
 	 */
-	public static function sanitize(string $str, ?bool $force_remove_images = false, int $owner = null, string $site_url = null, array $highlight_words = null, int $article_id = null) {
+	public static function sanitize(string $str, ?bool $force_remove_images = false, ?int $owner = null, ?string $site_url = null, ?array $highlight_words = null, ?int $article_id = null) {
 		$span = OpenTelemetry\API\Trace\Span::getCurrent();
 		$span->addEvent("Sanitizer::sanitize");
 

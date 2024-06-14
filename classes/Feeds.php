@@ -453,7 +453,7 @@ class Feeds extends Handler_Protected {
 
 					if ($num_errors > 0) {
 						$reply['content'] .= "<br/>";
-						$reply['content'] .= "<a class=\"text-muted\" href=\"#\" onclick=\"CommonDialogs.showFeedsWithErrors()\">" .
+						$reply['content'] .= "<a class=\"text-muted\" href=\"#\" onclick=\"CommonDialogs.showFeedsWithErrors(); return false\">" .
 							__('Some feeds have update errors (click for details)') . "</a>";
 					}
 					$reply['content'] .= "</span></p></div>";
@@ -603,7 +603,7 @@ class Feeds extends Handler_Protected {
 
 		if ($num_errors > 0) {
 			$reply['headlines']['content'] .= "<br/>";
-			$reply['headlines']['content'] .= "<a class=\"text-muted\" href=\"#\" onclick=\"CommonDialogs.showFeedsWithErrors()\">".
+			$reply['headlines']['content'] .= "<a class=\"text-muted\" href=\"#\" onclick=\"CommonDialogs.showFeedsWithErrors(); return false\">".
 				__('Some feeds have update errors (click for details)')."</a>";
 		}
 		$reply['headlines']['content'] .= "</span></p>";
@@ -2097,8 +2097,8 @@ class Feeds extends Handler_Protected {
 		$doc = new DOMDocument();
 		if (@$doc->loadHTML($content)) {
 			$xpath = new DOMXPath($doc);
-			$entries = $xpath->query('/html/head/link[@rel="alternate" and '.
-				'(contains(@type,"rss") or contains(@type,"atom"))]|/html/head/link[@rel="feed"]');
+			$entries = $xpath->query('/html/*[self::head or self::body]/link[@rel="alternate" and '.
+				'(contains(@type,"rss") or contains(@type,"atom"))]|/html/*[self::head or self::body]/link[@rel="feed"]');
 
 			foreach ($entries as $entry) {
 				if ($entry->hasAttribute('href')) {
@@ -2127,7 +2127,7 @@ class Feeds extends Handler_Protected {
 			$cat->delete();
 	}
 
-	static function _add_cat(string $title, int $owner_uid, int $parent_cat = null, int $order_id = 0): bool {
+	static function _add_cat(string $title, int $owner_uid, ?int $parent_cat = null, int $order_id = 0): bool {
 
 		$cat = ORM::for_table('ttrss_feed_categories')
 			->where('owner_uid', $owner_uid)

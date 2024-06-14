@@ -1511,7 +1511,7 @@ class RSSUtils {
 	 *
 	 * @return array<int, array<string, string>> An array of filter action arrays with keys "type" and "param"
 	 */
-	static function get_article_filters(array $filters, string $title, string $content, string $link, string $author, array $tags, array &$matched_rules = null, array &$matched_filters = null): array {
+	static function get_article_filters(array $filters, string $title, string $content, string $link, string $author, array $tags, ?array &$matched_rules = null, ?array &$matched_filters = null): array {
 		$span = Tracer::start(__METHOD__);
 
 		$matches = array();

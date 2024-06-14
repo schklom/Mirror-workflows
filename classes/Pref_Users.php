@@ -210,11 +210,13 @@ class Pref_Users extends Handler_Administrative {
 					<div dojoType='fox.Toolbar'>
 
 						<div style='float : right'>
-							<input dojoType='dijit.form.TextBox' id='user_search' size='20' type='search'
-								value="<?= htmlspecialchars($user_search) ?>">
-							<button dojoType='dijit.form.Button' onclick='Users.reload()'>
-								<?= __('Search') ?>
-							</button>
+							<form dojoType="dijit.form.Form" onsubmit="Users.reload(); return false;">
+								<input dojoType='dijit.form.TextBox' id='user_search' size='20' type='search'
+									value="<?= htmlspecialchars($user_search) ?>">
+								<button dojoType='dijit.form.Button' type='submit'>
+									<?= __('Search') ?>
+								</button>
+							</form>
 						</div>
 
 						<div dojoType='fox.form.DropDownButton'>

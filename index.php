@@ -12,7 +12,6 @@
 
 	require_once "autoload.php";
 	require_once "sessions.php";
-	require_once "functions.php";
 
 	Config::sanity_check();
 

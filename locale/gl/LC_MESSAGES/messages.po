@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-06-05 11:48+0300\n"
-"PO-Revision-Date: 2022-11-23 11:05+0000\n"
-"Last-Translator: xosé m. <correoxm@disroot.org>\n"
-"Language-Team: Galician <https://weblate.tt-rss.org/projects/tt-rss/messages/"
-"gl/>\n"
+"PO-Revision-Date: 2024-06-15 06:29+0000\n"
+"Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
+"Language-Team: Galician <https://hosted.weblate.org/projects/tt-rss/webui/gl/"
+">\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2\n"
+"X-Generator: Weblate 5.6-dev\n"
 
 #: backend.php:60
 msgid "Use default"
@@ -210,16 +210,16 @@ msgstr "Buscar..."
 
 #: index.php:266
 msgid "Feed actions:"
-msgstr "Accións da fonte:"
+msgstr "Accións da canle:"
 
 #: index.php:267 plugins/bookmarklets/init.php:40
 #: plugins/bookmarklets/init.php:74
 msgid "Subscribe to feed..."
-msgstr "Subscribir a fonte..."
+msgstr "Subscribir a canle..."
 
 #: index.php:268
 msgid "Edit this feed..."
-msgstr "Editar esta fonte..."
+msgstr "Editar esta canle..."
 
 #: index.php:269 classes/pref/feeds.php:939 js/CommonDialogs.js:609
 #: js/PrefFeedTree.js:109
@@ -228,11 +228,11 @@ msgstr "Retirar subscrición"
 
 #: index.php:270
 msgid "All feeds:"
-msgstr "Tódalas fontes:"
+msgstr "Tódalas canles:"
 
 #: index.php:272
 msgid "(Un)hide read feeds"
-msgstr "(Des)agochar fontes lidas"
+msgstr "(Des)agochar canles lidas"
 
 #: index.php:273
 msgid "UI layout:"
@@ -248,7 +248,7 @@ msgstr "Activar modo pantalla completa"
 
 #: index.php:278
 msgid "Toggle expand all articles"
-msgstr "Activar Despregar tódolos artigos"
+msgstr "Activar Despregar todos os artigos"
 
 #: index.php:279
 msgid "Other actions:"
@@ -385,8 +385,8 @@ msgstr ""
 #, php-format
 msgid "(%d feed)"
 msgid_plural "(%d feeds)"
-msgstr[0] "(%d fonte)"
-msgstr[1] "(%d fontes)"
+msgstr[0] "(%d canle)(%d canles)"
+msgstr[1] ""
 
 #: classes/pref/feeds.php:249 classes/pref/filters.php:934
 #: classes/digest.php:119 classes/feeds.php:1391 classes/opml.php:568
@@ -531,11 +531,11 @@ msgstr "Nada"
 
 #: classes/pref/feeds.php:931 classes/rpc.php:628 js/CommonDialogs.js:34
 msgid "Subscribe to feed"
-msgstr "Subscribir a fonte"
+msgstr "Subscribir a canle"
 
 #: classes/pref/feeds.php:933
 msgid "Edit selected feeds"
-msgstr "Editar fontes elexidas"
+msgstr "Editar canles elexidas"
 
 #: classes/pref/feeds.php:935 classes/pref/feeds.php:950
 #: classes/pref/filters.php:690
@@ -580,7 +580,7 @@ msgstr "Mostra URL"
 
 #: classes/pref/feeds.php:1042
 msgid "Clear all generated URLs"
-msgstr "Limpar tódolos URLs creados"
+msgstr "Limpar todos os URLs creados"
 
 #: classes/pref/feeds.php:1054
 msgid "My feeds"
@@ -602,7 +602,7 @@ msgstr "Complementos"
 #: classes/pref/filters.php:210 classes/pref/filters.php:221
 #: classes/pref/filters.php:441 classes/pref/filters.php:881
 msgid "All feeds"
-msgstr "Tódalas fontes"
+msgstr "Tódalas canles"
 
 #: classes/pref/filters.php:232 classes/pref/filters.php:461
 msgid "(inverse)"
@@ -765,15 +765,15 @@ msgstr "horas"
 
 #: classes/pref/prefs.php:114
 msgid "Hide read feeds"
-msgstr "Agochar fontes lidas"
+msgstr "Agochar canles lidas"
 
 #: classes/pref/prefs.php:115
 msgid "Always show special feeds"
-msgstr "Mostrar sempre fontes especiais"
+msgstr "Mostrar sempre canles especiais"
 
 #: classes/pref/prefs.php:115
 msgid "While hiding read feeds"
-msgstr "Mentras se agochan fontes lidas"
+msgstr "Mentras se agochan canles lidas"
 
 #: classes/pref/prefs.php:116
 msgid "Long date format"
@@ -789,7 +789,7 @@ msgstr ""
 
 #: classes/pref/prefs.php:117
 msgid "Automatically show next feed"
-msgstr "Mostrar automáticamente a seguinte fonte"
+msgstr "Mostrar automáticamente a seguinte canle"
 
 #: classes/pref/prefs.php:117
 msgid "After marking one as read"
@@ -825,11 +825,11 @@ msgstr "Zona horaria"
 
 #: classes/pref/prefs.php:125
 msgid "Group by feed"
-msgstr "Agrupar por fonte"
+msgstr "Agrupar por canle"
 
 #: classes/pref/prefs.php:125
 msgid "Group multiple-feed output by originating feed"
-msgstr "Agrupa a saída de varias fontes por fonte de orixe"
+msgstr "Agrupa a saída de varias canles por canle de orixe"
 
 #: classes/pref/prefs.php:126
 msgid "Language"
@@ -849,7 +849,7 @@ msgstr "Pode producir entradas duplicadas"
 
 #: classes/pref/prefs.php:129
 msgid "Show article and feed IDs"
-msgstr "Mostra IDs do artigo e da fonte"
+msgstr "Mostra IDs do artigo e da canle"
 
 #: classes/pref/prefs.php:129
 msgid "In the headlines buffer"
@@ -1203,7 +1203,7 @@ msgstr "Erro Git [RC=%d]: %s"
 
 #: classes/feeds.php:59 classes/feeds.php:512
 msgid "Feed not found."
-msgstr "Non se atopa a fonte."
+msgstr "Non se atopa a canle."
 
 #: classes/feeds.php:126
 msgid "Never"
@@ -1240,8 +1240,8 @@ msgid ""
 "from article header context menu (applies to all selected articles) or use a "
 "filter."
 msgstr ""
-"Non hai artigos que mostrar. Podes asocialle etiquetas aos artigos de xeito "
-"manual desde menú contextual no titular do artigo (aplícase a tódolos "
+"Non hai artigos que mostrar. Podes asignarlle etiquetas aos artigos de xeito "
+"manual desde o menú contextual no titular do artigo (aplícase a todos os "
 "artigos seleccionados) ou usar un filtro."
 
 #: classes/feeds.php:413
@@ -1251,15 +1251,15 @@ msgstr "Non hai artigos que mostrar."
 #: classes/feeds.php:430 classes/feeds.php:584
 #, php-format
 msgid "Feeds last updated at %s"
-msgstr "Actualizáronse as fontes en %s"
+msgstr "Actualizáronse as canles en %s"
 
 #: classes/feeds.php:442 classes/feeds.php:596
 msgid "Some feeds have update errors (click for details)"
-msgstr "Algunhas fontes actualizáronse con erros (preme para detalles)"
+msgstr "Algunhas canles actualizáronse con erros (preme para detalles)"
 
 #: classes/feeds.php:573
 msgid "No feed selected."
-msgstr "Non hai fonte seleccionada."
+msgstr "Non hai canle seleccionada."
 
 #: classes/feeds.php:1248
 msgid "Starred articles"
@@ -1283,7 +1283,7 @@ msgstr "Lido recentemente"
 
 #: classes/feeds.php:1393
 msgid "Special"
-msgstr "Especial"
+msgstr "Categoría"
 
 #: classes/feeds.php:1488
 #, php-format
@@ -1310,12 +1310,12 @@ msgstr "Volver aos axustes"
 #: classes/opml.php:324
 #, php-format
 msgid "Adding feed: %s"
-msgstr "Engadindo fonte: %s"
+msgstr "Engadindo canle: %s"
 
 #: classes/opml.php:344
 #, php-format
 msgid "Duplicate feed: %s"
-msgstr "Duplicar fonte: %s"
+msgstr "Duplicar canle: %s"
 
 #: classes/opml.php:358
 #, php-format
@@ -1370,19 +1370,19 @@ msgstr "Navegación"
 
 #: classes/rpc.php:586
 msgid "Open next feed"
-msgstr "Abrir fonte seguinte"
+msgstr "Abrir canle seguinte"
 
 #: classes/rpc.php:587
 msgid "Open next unread feed"
-msgstr "Abrir seguinte fonte non lida"
+msgstr "Abrir seguinte canle non lida"
 
 #: classes/rpc.php:588
 msgid "Open previous feed"
-msgstr "Abrir fonte anterior"
+msgstr "Abrir canle anterior"
 
 #: classes/rpc.php:589
 msgid "Open previous unread feed"
-msgstr "Abrir fonte anterior non lida"
+msgstr "Abrir canle anterior non lida"
 
 #: classes/rpc.php:590
 msgid "Open next article (in combined mode, scroll down)"
@@ -1498,7 +1498,7 @@ msgstr "Selección do artigo"
 
 #: classes/rpc.php:619
 msgid "Select all articles"
-msgstr "Seleccionar tódolos artigos"
+msgstr "Seleccionar todos os artigos"
 
 #: classes/rpc.php:620
 msgid "Select unread"
@@ -1526,16 +1526,16 @@ msgstr "Fonte"
 
 #: classes/rpc.php:626
 msgid "Refresh current feed"
-msgstr "Actualizar fonte actual"
+msgstr "Actualizar canle actual"
 
 #: classes/rpc.php:627
 msgid "Un/hide read feeds"
-msgstr "Agochar/Mostrar fontes lidas"
+msgstr "Agochar/Mostrar canles lidas"
 
 #: classes/rpc.php:629 js/CommonDialogs.js:357 js/FeedTree.js:99
 #: js/Headlines.js:1579 js/Headlines.js:1644 js/PrefFeedTree.js:103
 msgid "Edit feed"
-msgstr "Editar fonte"
+msgstr "Editar canle"
 
 #: classes/rpc.php:631
 msgid "Reverse headlines"
@@ -1551,7 +1551,7 @@ msgstr "Activar vista en grella"
 
 #: classes/rpc.php:634
 msgid "Debug feed update"
-msgstr "Depurar actualización da fonte"
+msgstr "Depurar actualización da canle"
 
 #: classes/rpc.php:635
 msgid "Debug viewfeed()"
@@ -1559,7 +1559,7 @@ msgstr "Depurar viewfeed()"
 
 #: classes/rpc.php:636 js/FeedTree.js:164
 msgid "Mark all feeds as read"
-msgstr "Marcar tódalas fontes como lidas"
+msgstr "Marcar todas as canles como lidas"
 
 #: classes/rpc.php:637
 msgid "Un/collapse current category"
@@ -1665,7 +1665,7 @@ msgstr "Lonxitude mínima do título:"
 
 #: plugins/af_psql_trgm/init.php:193
 msgid "Enable for all feeds."
-msgstr "Activar para tódalas fontes."
+msgstr "Activar para todas as canles."
 
 #: plugins/af_psql_trgm/init.php:212 plugins/af_readability/init.php:109
 msgid "Currently enabled for (click to edit):"
@@ -1794,7 +1794,7 @@ msgstr "Non se puido subscribir a <b>%s</b>."
 #: plugins/bookmarklets/init.php:112
 #, php-format
 msgid "No feeds found in <b>%s</b>."
-msgstr "Non se atopan fontes en <b>%s</b>."
+msgstr "Non se atopan canles en <b>%s</b>."
 
 #: plugins/bookmarklets/init.php:118
 #, php-format
@@ -1804,11 +1804,11 @@ msgstr ""
 
 #: plugins/bookmarklets/init.php:129
 msgid "Multiple feed URLs found:"
-msgstr "Atopáronse varios URLs da fonte:"
+msgstr "Atopáronse varios URLs da canle:"
 
 #: plugins/bookmarklets/init.php:137
 msgid "Subscribe to selected feed"
-msgstr "Subscribirse á fonte seleccionada"
+msgstr "Subscribirse á canle seleccionada"
 
 #: plugins/bookmarklets/init.php:155
 msgid "Edit subscription options"
@@ -1840,7 +1840,7 @@ msgstr "Compartir"
 
 #: plugins/bookmarklets/init.php:285
 msgid "Shared article will appear in the Published feed."
-msgstr "O artigo compartido aparecerá na fonte Publicados."
+msgstr "O artigo compartido aparecerá na canle Publicados."
 
 #: plugins/bookmarklets/init.php:324 include/login_form.php:177
 msgid "Log in"
@@ -1861,7 +1861,7 @@ msgid ""
 "in in your browser and click on the link to subscribe to it."
 msgstr ""
 "Arrastra a ligazón inferior á barra de ferramentas do teu navegador, abre a "
-"fonte que che interesa e preme na ligazón para subscribirte a ela."
+"canle que che interesa e preme na ligazón para subscribirte a ela."
 
 #: plugins/bookmarklets/init.php:356
 msgid "Subscribe in Tiny Tiny RSS"
@@ -1986,7 +1986,7 @@ msgstr "O demoño de actualización non está en execución."
 
 #: js/App.js:519
 msgid "Update daemon is not updating feeds."
-msgstr "O demoño de actualización non está actualizando as fontes."
+msgstr "O demoño de actualización non está actualizando as canles."
 
 #: js/App.js:606
 #, java-printf-format
@@ -2023,7 +2023,7 @@ msgstr "Antes activa o complemento mail ou mailto."
 
 #: js/App.js:1169 js/App.js:1283 js/CommonDialogs.js:349
 msgid "You can't edit this kind of feed."
-msgstr "Non podes editar este tipo de fonte."
+msgstr "Non podes editar este tipo de canle."
 
 #: js/App.js:1241
 msgid "Please enable af_readability first."
@@ -2031,7 +2031,7 @@ msgstr "Activa primeiro af_readability."
 
 #: js/App.js:1292
 msgid "Please select some feed first."
-msgstr "Primeiro selecciona algunha fonte."
+msgstr "Primeiro selecciona algunha canle."
 
 #: js/App.js:1297
 msgid "You can't unsubscribe from the category."
@@ -2095,8 +2095,8 @@ msgid ""
 "Provided URL is a HTML page referencing multiple feeds, please select "
 "required feed from the dropdown menu below."
 msgstr ""
-"O URL proporcionado é unha páxina HTML que referencia varias fontes, elixe a "
-"fonte de interese desde o menú despregable inferior."
+"O URL proporcionado é unha páxina HTML que referencia varias canles, elixe a "
+"canle de interese desde o menú despregable inferior."
 
 #: js/CommonDialogs.js:137
 msgid ""
@@ -2108,7 +2108,7 @@ msgstr ""
 
 #: js/CommonDialogs.js:150
 msgid "You are already subscribed to this feed."
-msgstr "Xa tes unha subscrición a esta fonte."
+msgstr "Xa tes unha subscrición a esta canle."
 
 #: js/CommonDialogs.js:154
 #, java-printf-format, javascript-format
@@ -2121,11 +2121,11 @@ msgstr "O URL indicado non semella válido."
 
 #: js/CommonDialogs.js:166
 msgid "Specified URL doesn't seem to contain any feeds."
-msgstr "O URL indicado non semella conter ningunha fonte."
+msgstr "O URL indicado non semella conter ningunha canle."
 
 #: js/CommonDialogs.js:179
 msgid "Expand to select feed"
-msgstr "Desprega para seleccionar a fonte"
+msgstr "Desprega para seleccionar a canle"
 
 #: js/CommonDialogs.js:191
 #, java-printf-format, javascript-format
@@ -2139,7 +2139,7 @@ msgstr "Fallou a validación XML: %s"
 
 #: js/CommonDialogs.js:197
 msgid "Error while creating feed database entry."
-msgstr "Erro ao crear a entrada na base de datos da fonte."
+msgstr "Erro ao crear a entrada na base de datos da canle."
 
 #: js/CommonDialogs.js:200
 msgid "You are not allowed to perform this operation."
@@ -2151,16 +2151,16 @@ msgstr "Fontes con fallo na actualización"
 
 #: js/CommonDialogs.js:230 js/PrefFeedTree.js:488
 msgid "Remove selected feeds?"
-msgstr "Eliminar fontes seleccionadas?"
+msgstr "Eliminar canles seleccionadas?"
 
 #: js/CommonDialogs.js:231 js/PrefFeedTree.js:489
 msgid "Removing selected feeds..."
-msgstr "Eliminando as fontes..."
+msgstr "Eliminando as canles..."
 
 #: js/CommonDialogs.js:251 js/PrefFeedTree.js:217 js/PrefFeedTree.js:286
 #: js/PrefFeedTree.js:302 js/PrefFeedTree.js:507
 msgid "No feeds selected."
-msgstr "Non hai fontes seleccionadas."
+msgstr "Non hai canles seleccionadas."
 
 #: js/CommonDialogs.js:304
 msgid "Please enter label caption:"
@@ -2168,7 +2168,7 @@ msgstr "Escribe o nome da etiqueta:"
 
 #: js/CommonDialogs.js:326
 msgid "Removing feed..."
-msgstr "Eliminando a fonte..."
+msgstr "Eliminando a canle..."
 
 #: js/CommonDialogs.js:374
 msgid "Please select an image file."
@@ -2188,7 +2188,7 @@ msgstr "Eliminar a icona gardada?"
 
 #: js/CommonDialogs.js:428
 msgid "Removing feed icon..."
-msgstr "Eliminando a icona da fonte..."
+msgstr "Eliminando a icona da canle..."
 
 #: js/CommonDialogs.js:431
 msgid "Feed icon removed."
@@ -2205,11 +2205,11 @@ msgstr "Subindo nova icona..."
 
 #: js/CommonDialogs.js:627 js/Headlines.js:639
 msgid "Show as feed"
-msgstr "Mostrar como fonte"
+msgstr "Mostrar como canle"
 
 #: js/CommonDialogs.js:629
 msgid "Generate new syndication address for this feed?"
-msgstr "Crear un novo enderezo de sindicación para esta fonte?"
+msgstr "Crear un novo enderezo de sindicación para esta canle?"
 
 #: js/CommonDialogs.js:631
 msgid "Trying to change address..."
@@ -2217,7 +2217,7 @@ msgstr "Intentando cambiar o enderezo..."
 
 #: js/CommonDialogs.js:649
 msgid "Could not change feed URL."
-msgstr "Non se cambiou o URL da fonte."
+msgstr "Non se cambiou o URL da canle."
 
 #: js/CommonDialogs.js:656
 #, java-printf-format, javascript-format
@@ -2312,7 +2312,7 @@ msgstr "Abrir sitio"
 
 #: js/FeedTree.js:114 js/Headlines.js:1594
 msgid "Debug feed"
-msgstr "Depurar fonte"
+msgstr "Depurar canle"
 
 #: js/FeedTree.js:137
 msgid "(Un)collapse"
@@ -2332,11 +2332,11 @@ msgstr ""
 
 #: js/Feeds.js:419
 msgid "Mark all articles as read?"
-msgstr "Marcar tódolos artigos como lidos?"
+msgstr "Marcar todos os artigos como lidos?"
 
 #: js/Feeds.js:423
 msgid "Marking all feeds as read..."
-msgstr "Marcando tódalas fontes como lidas..."
+msgstr "Marcando todas as canles como lidas..."
 
 #: js/Feeds.js:440
 msgid "Mark %w in %s older than 1 day as read?"
@@ -2360,12 +2360,12 @@ msgstr "resultados da busca"
 
 #: js/Feeds.js:452
 msgid "all articles"
-msgstr "tódolos artigos"
+msgstr "todos os artigos"
 
 #: js/Feeds.js:493
 #, java-printf-format, javascript-format
 msgid "Mark all articles in %s as read?"
-msgstr "Marcar tódolos artigos en %s como lidos?"
+msgstr "Marcar todos os artigos en %s como lidos?"
 
 #: js/Feeds.js:628
 msgid "Search syntax"
@@ -2381,11 +2381,11 @@ msgstr "Seleccionar..."
 
 #: js/Headlines.js:822 js/Headlines.js:876 js/Headlines.js:893
 msgid "Click to open next unread feed."
-msgstr "Preme para abrir a seguinte fonte non lida."
+msgstr "Preme para abrir a seguinte canle non lida."
 
 #: js/Headlines.js:890
 msgid "New articles found, reload feed to continue."
-msgstr "Hai novos artigos, recarga a fonte para continuar."
+msgstr "Hai novos artigos, recarga a canle para continuar."
 
 #: js/Headlines.js:1099
 #, java-printf-format, javascript-format
@@ -2456,7 +2456,7 @@ msgstr "Marcar grupo como lido"
 
 #: js/Headlines.js:1637
 msgid "Mark feed as read"
-msgstr "Marcar fonte como lida"
+msgstr "Marcar canle como lida"
 
 #: js/PrefFeedTree.js:83
 msgid "Edit category"
@@ -2471,7 +2471,7 @@ msgstr "Eliminar categoría"
 msgid ""
 "Remove category %s? Any nested feeds would be placed into Uncategorized."
 msgstr ""
-"Eliminar a categoría %s? Tódalas fontes que conteña irán a Sen Categoría."
+"Eliminar a categoría %s? Tódalas canles que conteña irán a Sen Categoría."
 
 #: js/PrefFeedTree.js:190
 msgid "Removing category..."
@@ -2479,11 +2479,11 @@ msgstr "Eliminando a categoría..."
 
 #: js/PrefFeedTree.js:202
 msgid "Unsubscribe from selected feeds?"
-msgstr "Retirar a subscrición ás fontes seleccionadas?"
+msgstr "Retirar a subscrición ás canles seleccionadas?"
 
 #: js/PrefFeedTree.js:204
 msgid "Unsubscribing from selected feeds..."
-msgstr "Retirando a subscrición ás fontes..."
+msgstr "Retirando a subscrición ás canles..."
 
 #: js/PrefFeedTree.js:252
 msgid "Remove selected categories?"
@@ -2499,11 +2499,11 @@ msgstr "Sen categorías seleccionadas."
 
 #: js/PrefFeedTree.js:313
 msgid "Edit multiple feeds"
-msgstr "Editar múltiples fontes"
+msgstr "Editar múltiples canles"
 
 #: js/PrefFeedTree.js:342
 msgid "Save changes to selected feeds?"
-msgstr "Gardar os cambios ás fontes seleccionadas?"
+msgstr "Gardar os cambios ás canles seleccionadas?"
 
 #: js/PrefFeedTree.js:391
 msgid "Category title:"
@@ -2515,11 +2515,11 @@ msgstr "Creando categoría..."
 
 #: js/PrefFeedTree.js:409
 msgid "Subscribing to feeds..."
-msgstr "Subscribindose as fontes..."
+msgstr "Subscribindose as canles..."
 
 #: js/PrefFeedTree.js:427
 msgid "One valid feed per line (no detection is done)"
-msgstr "Unha soa fonte válida por liña (non se validarán)"
+msgstr "Unha soa canle válida por liña (non se validarán)"
 
 #: js/PrefFeedTree.js:480
 msgid "Feeds without recent updates"
@@ -2527,7 +2527,7 @@ msgstr "Fontes sen actualizacións recentes"
 
 #: js/PrefFeedTree.js:530 js/CommonDialogs.js:277
 msgid "Click to edit feed"
-msgstr "Preme para editar a fonte"
+msgstr "Preme para editar a canle"
 
 #: js/PrefFilterTree.js:57
 msgid "Inverse"
@@ -2560,7 +2560,7 @@ msgstr "Eliminar os contrasinais da app seleccionada?"
 #: js/PrefHelpers.js:45
 msgid "This will invalidate all previously generated feed URLs. Continue?"
 msgstr ""
-"Esto vai invalidar tódolos URLs das fontes creados anteriormente. Continuar?"
+"Esto vai invalidar todos os URLs das canles creados anteriormente. Continuar?"
 
 #: js/PrefHelpers.js:46 plugins/share/share_prefs.js:6
 msgid "Clearing URLs..."
@@ -2880,7 +2880,7 @@ msgstr "Eliminar a compartición deste artigo?"
 #: plugins/share/share_prefs.js:5
 msgid "This will invalidate all previously shared article URLs. Continue?"
 msgstr ""
-"Esto invalidará tódolos URL de artigo previamente compartidos. Continuar?"
+"Esto invalidará todos os URL de artigo previamente compartidos. Continuar?"
 
 #: plugins/shorten_expanded/init.js:32
 msgid "Expand article"
@@ -2913,7 +2913,7 @@ msgstr ""
 
 #: js/CommonDialogs.js:53
 msgid "Feed or site URL"
-msgstr "URL do sitio ou fonte"
+msgstr "URL do sitio ou canle"
 
 #: js/CommonDialogs.js:68
 msgid "Available feeds"
@@ -2925,19 +2925,19 @@ msgstr "Acceso"
 
 #: js/CommonDialogs.js:101
 msgid "This feed requires authentication."
-msgstr "Esta fonte require autenticación."
+msgstr "Esta canle require autenticación."
 
 #: js/CommonDialogs.js:291 js/PrefFeedTree.js:544
 msgid "Unsubscribe from selected feeds"
-msgstr "Retirar subscrición das fontes seleccionadas"
+msgstr "Retirar subscrición das canles seleccionadas"
 
 #: js/CommonDialogs.js:502
 msgid "Feed title"
-msgstr "Título da fonte"
+msgstr "Título da canle"
 
 #: js/CommonDialogs.js:509
 msgid "Feed URL"
-msgstr "URL da fonte"
+msgstr "URL da canle"
 
 #: js/CommonDialogs.js:528
 msgid "Site URL:"
@@ -2990,7 +2990,7 @@ msgstr "Utilizado para a relación entre palabras"
 
 #: js/Headlines.js:471
 msgid "mark feed as read"
-msgstr "marcar fonte como lida"
+msgstr "marcar canle como lida"
 
 #: js/Headlines.js:524
 msgid "Span all columns"
@@ -2998,7 +2998,7 @@ msgstr "Despregar tódas columnas"
 
 #: js/Headlines.js:665
 msgid "Invert"
-msgstr "Invertir"
+msgstr "Inverter"
 
 #: js/Headlines.js:673
 msgid "Set score"
@@ -3022,7 +3022,7 @@ msgstr "Cambiar nome da categoría a:"
 
 #: js/PrefFeedTree.js:455
 msgid "Feeds require authentication."
-msgstr "A fonte require autenticación."
+msgstr "A canle require autenticación."
 
 #: js/PrefHelpers.js:229
 msgid "Clone"

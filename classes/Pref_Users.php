@@ -251,11 +251,11 @@ class Pref_Users extends Handler_Administrative {
 
 						<tr>
 							<th></th>
-							<th><a href='#' onclick="Users.reload('login')"><?= ('Login') ?></a></th>
-							<th><a href='#' onclick="Users.reload('access_level')"><?= ('Access Level') ?></a></th>
-							<th><a href='#' onclick="Users.reload('num_feeds')"><?= ('Subscribed feeds') ?></a></th>
-							<th><a href='#' onclick="Users.reload('created')"><?= ('Registered') ?></a></th>
-							<th><a href='#' onclick="Users.reload('last_login')"><?= ('Last login') ?></a></th>
+							<th><a href='#' onclick="Users.reload('login')"><?= __('Login') ?></a></th>
+							<th><a href='#' onclick="Users.reload('access_level')"><?= __('Access level') ?></a></th>
+							<th><a href='#' onclick="Users.reload('num_feeds')"><?= __('Subscribed feeds') ?></a></th>
+							<th><a href='#' onclick="Users.reload('created')"><?= __('Registered') ?></a></th>
+							<th><a href='#' onclick="Users.reload('last_login')"><?= __('Last login') ?></a></th>
 						</tr>
 
 						<?php

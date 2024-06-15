@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: TT-RSS CZech\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-05 11:48+0300\n"
+"POT-Creation-Date: 2024-06-15 14:03+0300\n"
 "PO-Revision-Date: 2022-08-21 07:45+0000\n"
 "Last-Translator: Marek Pavelka <mara.pavelka@gmail.com>\n"
 "Language-Team: Czech <https://weblate.tt-rss.org/projects/tt-rss/messages/cs/"
@@ -19,201 +19,206 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: Weblate 4.13.1\n"
 
-#: backend.php:60
+#: backend.php:65
 msgid "Use default"
 msgstr "Použít výchozí"
 
-#: backend.php:61
+#: backend.php:66
 msgid "Never purge"
 msgstr "Nikdy nečistit"
 
-#: backend.php:62
+#: backend.php:67
 msgid "1 week old"
 msgstr "starší než týden"
 
-#: backend.php:63
+#: backend.php:68
 msgid "2 weeks old"
 msgstr "starší než 2 týdny"
 
-#: backend.php:64
+#: backend.php:69
 msgid "1 month old"
 msgstr "starší než měsíc"
 
-#: backend.php:65
+#: backend.php:70
 msgid "2 months old"
 msgstr "starší než 2 měsíce"
 
-#: backend.php:66
+#: backend.php:71
 msgid "3 months old"
 msgstr "starší než 3 měsíce"
 
-#: backend.php:69
+#: backend.php:74
 msgid "Default interval"
 msgstr "Výchozí interval"
 
-#: backend.php:70 backend.php:80
+#: backend.php:75 backend.php:85
 msgid "Disable updates"
 msgstr "Zakázat aktualizace"
 
-#: backend.php:71 backend.php:81
+#: backend.php:76 backend.php:86
 msgid "15 minutes"
 msgstr "15 minut"
 
-#: backend.php:72 backend.php:82
+#: backend.php:77 backend.php:87
 msgid "30 minutes"
 msgstr "30 minut"
 
-#: backend.php:73 backend.php:83
+#: backend.php:78 backend.php:88
 msgid "Hourly"
 msgstr "Každou hodinu"
 
-#: backend.php:74 backend.php:84
+#: backend.php:79 backend.php:89
 msgid "4 hours"
 msgstr "4 hodiny"
 
-#: backend.php:75 backend.php:85
+#: backend.php:80 backend.php:90
 msgid "12 hours"
 msgstr "12 hodin"
 
-#: backend.php:76 backend.php:86
+#: backend.php:81 backend.php:91
 msgid "Daily"
 msgstr "Denně"
 
-#: backend.php:77 backend.php:87
+#: backend.php:82 backend.php:92
 msgid "Weekly"
 msgstr "Týdně"
 
-#: backend.php:90 classes/pref/feeds.php:547 classes/pref/feeds.php:600
+#: backend.php:95 classes/Pref_Feeds.php:551 classes/Pref_Feeds.php:604
 msgid "Disabled"
 msgstr "Zakázáno"
 
-#: backend.php:91
+#: backend.php:96
 msgid "Read Only"
 msgstr "Pouze pro čtení"
 
-#: backend.php:92 classes/pref/system.php:123
+#: backend.php:97 classes/Pref_System.php:123
 msgid "User"
 msgstr "Uživatel"
 
-#: backend.php:93
+#: backend.php:98
 msgid "Power User"
 msgstr "Uživatel s rozšířenými pravomocemi"
 
-#: backend.php:94
+#: backend.php:99
 msgid "Administrator"
 msgstr "Administrátor"
 
-#: index.php:134 index.php:148 index.php:300 prefs.php:119
-#: classes/pref/prefs.php:890 classes/pref/prefs.php:940
-#: classes/pref/system.php:218 js/Article.js:290 js/Article.js:352
-#: js/CommonDialogs.js:310 js/CommonDialogs.js:467 js/CommonDialogs.js:622
-#: js/CommonFilters.js:278 js/CommonFilters.js:408 js/Feeds.js:468
-#: js/Headlines.js:354 js/Headlines.js:538 js/PrefFeedTree.js:175
-#: js/PrefFeedTree.js:182 js/PrefFeedTree.js:306 js/PrefFeedTree.js:383
-#: js/PrefFilterTree.js:117 js/PrefHelpers.js:27 js/PrefHelpers.js:39
-#: js/PrefHelpers.js:62 js/PrefHelpers.js:115 js/PrefHelpers.js:243
-#: js/PrefHelpers.js:294 js/PrefHelpers.js:445 js/PrefHelpers.js:456
-#: js/PrefUsers.js:112 plugins/af_psql_trgm/init.js:7
-#: plugins/af_readability/init.js:19 plugins/note/note.js:38
-#: plugins/share/share.js:56 js/CommonFilters.js:182
+#: index.php:133 index.php:147 index.php:300 prefs.php:125
+#: classes/Pref_Prefs.php:895 classes/Pref_Prefs.php:945
+#: classes/Pref_System.php:222 js/PrefFilterTree.js:126 js/CommonFilters.js:278
+#: js/CommonFilters.js:408 js/Headlines.js:356 js/Headlines.js:541
+#: js/PrefHelpers.js:27 js/PrefHelpers.js:39 js/PrefHelpers.js:62
+#: js/PrefHelpers.js:115 js/PrefHelpers.js:243 js/PrefHelpers.js:294
+#: js/PrefHelpers.js:445 js/PrefHelpers.js:456 js/Article.js:288
+#: js/Article.js:364 js/Feeds.js:492 js/PrefUsers.js:112 js/PrefFeedTree.js:186
+#: js/PrefFeedTree.js:193 js/PrefFeedTree.js:317 js/PrefFeedTree.js:394
+#: js/CommonDialogs.js:334 js/CommonDialogs.js:491 js/CommonDialogs.js:646
+#: plugins/note/note.js:38 plugins/share/share.js:56
+#: plugins/af_psql_trgm/init.js:7 js/CommonFilters.js:182
 msgid "Loading, please wait..."
 msgstr "Načítání, čekejte..."
 
-#: index.php:173 prefs.php:128 js/App.js:494
+#: index.php:172 prefs.php:134 js/App.js:494
 msgid "Communication problem with server."
 msgstr "Chyba při komunikaci se serverem."
 
-#: index.php:176 prefs.php:130
+#: index.php:175 prefs.php:136
 msgid "Recent entries found in event log."
 msgstr "Poslední záznamy nalezené v protokolu událostí."
 
-#: index.php:179
+#: index.php:178
 msgid "Updates are available from Git."
 msgstr "Jsou dostupné aktualizace z Git."
 
-#: index.php:189 js/Headlines.js:661
+#: index.php:188 js/Headlines.js:664
 msgid "Show articles"
 msgstr "Zobrazit články"
 
-#: index.php:192
+#: index.php:191
 msgid "Adaptive"
 msgstr "Adaptivní"
 
-#: index.php:193
+#: index.php:192
 msgid "All Articles"
 msgstr "Všechny články"
 
-#: index.php:194 classes/rpc.php:643
+#: index.php:193 classes/RPC.php:668
 msgid "Starred"
 msgstr "Označeno hvězdičkou"
 
-#: index.php:195 classes/rpc.php:644
+#: index.php:194 classes/RPC.php:669
 msgid "Published"
 msgstr "Publikováno"
 
-#: index.php:196 js/Headlines.js:664
+#: index.php:195 js/Headlines.js:667
 msgid "Unread"
 msgstr "Nepřečteno"
 
-#: index.php:197
+#: index.php:196
 msgid "With Note"
 msgstr "S poznámkou"
 
-#: index.php:200
+#: index.php:199
 msgid "Sort articles"
 msgstr "Seřadit články"
 
-#: index.php:204
+#: index.php:203
 msgid "Default"
 msgstr "Výchozí"
 
-#: index.php:205
+#: index.php:204
 msgid "Newest first"
 msgstr "Nejdříve nejnovější"
 
-#: index.php:206
+#: index.php:205
 msgid "Oldest first"
 msgstr "Nejdříve nejstarší"
 
-#: index.php:207 js/CommonFilters.js:435
+#: index.php:206 js/CommonFilters.js:435
 msgid "Title"
 msgstr "Název"
 
-#: index.php:220 index.php:271 classes/rpc.php:630 js/FeedTree.js:92
-#: js/FeedTree.js:131 js/Headlines.js:1573 js/Headlines.js:672
+#: index.php:219 index.php:271 classes/RPC.php:655 js/Headlines.js:1576
+#: js/FeedTree.js:92 js/FeedTree.js:131 js/Headlines.js:675
 msgid "Mark as read"
 msgstr "Označit jako přečtené"
 
-#: index.php:221
+#: index.php:220
 msgid "Older than one day"
 msgstr "Starší než jeden den"
 
-#: index.php:222
+#: index.php:221
 msgid "Older than one week"
 msgstr "Starší než jeden týden"
 
-#: index.php:223
+#: index.php:222
 msgid "Older than two weeks"
 msgstr "Starší než dva týdny"
 
-#: index.php:238
+#: index.php:237
 msgid "Actions..."
 msgstr "Akce..."
 
-#: index.php:264
+#: index.php:263
 msgid "Preferences..."
 msgstr "Předvolby..."
 
-#: index.php:265 js/PrefHelpers.js:614
+#: index.php:264 js/PrefHelpers.js:614
 msgid "Search..."
 msgstr "Hledat..."
+
+#: index.php:265
+#, fuzzy
+#| msgid "Search %s..."
+msgid "Search feeds..."
+msgstr "Hledat %s..."
 
 #: index.php:266
 msgid "Feed actions:"
 msgstr "Akce kanálů:"
 
 #: index.php:267 plugins/bookmarklets/init.php:40
-#: plugins/bookmarklets/init.php:74
+#: plugins/bookmarklets/init.php:75
 msgid "Subscribe to feed..."
 msgstr "Přihlásit se k odběru kanálu..."
 
@@ -221,8 +226,8 @@ msgstr "Přihlásit se k odběru kanálu..."
 msgid "Edit this feed..."
 msgstr "Upravit tento kanál..."
 
-#: index.php:269 classes/pref/feeds.php:939 js/CommonDialogs.js:609
-#: js/PrefFeedTree.js:109
+#: index.php:269 classes/Pref_Feeds.php:937 js/PrefFeedTree.js:120
+#: js/CommonDialogs.js:633
 msgid "Unsubscribe"
 msgstr "Odhlásit odběr"
 
@@ -238,11 +243,11 @@ msgstr "Zobrazit nebo skrýt přečtené kanály"
 msgid "UI layout:"
 msgstr "Rozložení uživatelského rozhraní:"
 
-#: index.php:274 classes/rpc.php:639
+#: index.php:274 classes/RPC.php:664
 msgid "Toggle combined mode"
 msgstr "Přepnout kombinovaný režim"
 
-#: index.php:276 classes/rpc.php:616
+#: index.php:276 classes/RPC.php:641
 msgid "Toggle widescreen mode"
 msgstr "Přepnout širokoúhlý režim"
 
@@ -262,527 +267,170 @@ msgstr "Nápověda ke klávesovým zkratkám"
 msgid "Logout"
 msgstr "Odhlásit se"
 
-#: prefs.php:20 prefs.php:139 classes/pref/prefs.php:942 classes/rpc.php:646
+#: prefs.php:26 prefs.php:145 classes/Pref_Prefs.php:947 classes/RPC.php:671
 msgid "Preferences"
 msgstr "Předvolby"
 
-#: prefs.php:132
+#: prefs.php:138
 msgid "Exit preferences"
 msgstr "Opustit předvolby"
 
-#: prefs.php:142 classes/pref/feeds.php:128 classes/pref/feeds.php:928
-#: classes/pref/prefs.php:48
+#: prefs.php:148 classes/Pref_Prefs.php:46 classes/Pref_Feeds.php:123
+#: classes/Pref_Feeds.php:926
 msgid "Feeds"
 msgstr "Kanály"
 
-#: prefs.php:146 classes/pref/filters.php:241
+#: prefs.php:152 classes/Pref_Filters.php:242
 msgid "Filters"
 msgstr "Filtry"
 
-#: prefs.php:150 classes/pref/labels.php:23 classes/feeds.php:1395
+#: prefs.php:156 classes/Pref_Labels.php:23 classes/Feeds.php:1453
 msgid "Labels"
 msgstr "Štítky"
 
-#: prefs.php:155
+#: prefs.php:161
 msgid "Users"
 msgstr "Uživatelé"
 
-#: prefs.php:158
+#: prefs.php:164
 msgid "System"
 msgstr "Systém"
 
-#: classes/handler/public.php:287 classes/pref/prefs.php:1463
-#: include/login_form.php:132
-msgid "Default profile"
-msgstr "Výchozí profil"
-
-#: classes/handler/public.php:416
-msgid "Incorrect username or password"
-msgstr "Nesprávné uživatelské jméno nebo heslo"
-
-#: classes/handler/public.php:468
-msgid "Password recovery"
-msgstr "Obnovení hesla"
-
-#: classes/handler/public.php:505 classes/handler/public.php:535
-#: classes/handler/public.php:595 classes/handler/public.php:712
-#: classes/handler/public.php:719 classes/handler/public.php:742
-#: plugins/bookmarklets/init.php:93 plugins/bookmarklets/init.php:138
-#: plugins/bookmarklets/init.php:156 plugins/bookmarklets/init.php:161
-msgid "Return to Tiny Tiny RSS"
-msgstr "Zpět do Tiny Tiny RSS"
-
-#: classes/handler/public.php:508
-msgid ""
-"You will need to provide valid account name and email. Password reset link "
-"will be sent to your email address."
-msgstr ""
-"Budete muset zadat platný název a e-mail účtu. Odkaz na obnovení hesla bude "
-"zaslán na vaši e-mailovou adresu."
-
-#: classes/handler/public.php:515 classes/pref/feeds.php:658
-#: plugins/bookmarklets/init.php:304 include/login_form.php:103
-#: js/CommonDialogs.js:567 js/PrefUsers.js:64
-msgid "Login:"
-msgstr "Přihlášení:"
-
-#: classes/handler/public.php:520
-msgid "Email:"
-msgstr "E-mail:"
-
-#: classes/handler/public.php:528
-#, php-format
-msgid "How much is %d + %d:"
-msgstr "Kolik je %d plus %d:"
-
-#: classes/handler/public.php:534 classes/pref/users.php:240
-msgid "Reset password"
-msgstr "Obnovit heslo"
-
-#: classes/handler/public.php:545
-msgid "Some of the required form parameters are missing or incorrect."
-msgstr "Některé z požadovaných parametrů formuláře chybí nebo jsou nesprávné."
-
-#: classes/handler/public.php:549 classes/handler/public.php:601
-msgid "Go back"
-msgstr "Jít zpět"
-
-#: classes/handler/public.php:587
-msgid "[tt-rss] Password reset request"
-msgstr "[tt-rss] Vyžadováno obnovení hesla"
-
-#: classes/handler/public.php:597
-msgid "Sorry, login and email combination not found."
-msgstr "Bohužel, kombinace přihlašovacího jména a e-mailu nebyla nalezena."
-
-#: classes/handler/public.php:617
-msgid "Your access level is insufficient to run this script."
-msgstr "Nemáte dostatečnou úroveň přístupu pro spuštění tohoto skriptu."
-
-#: classes/handler/public.php:679
-msgid "Database Updater"
-msgstr "Aktualizační nástroj databáze"
-
-#: classes/handler/public.php:692
-#, php-format
-msgid "Performing updates to version %d"
-msgstr "Provádění aktualizace na verzi %d"
-
-#: classes/handler/public.php:707 classes/handler/public.php:734
-#: js/PrefHelpers.js:418 js/PrefHelpers.js:764
-msgid "Update"
-msgstr "Aktualizovat"
-
-#: classes/handler/public.php:727
-#, php-format
-msgid "Database schema needs update to the latest version (%d to %d)."
-msgstr "Schéma databáze potřebuje aktualizaci na nejnovější verzi (%d na %d)."
-
-#: classes/pref/feeds.php:77 classes/pref/feeds.php:236
-#: classes/pref/feeds.php:285 classes/pref/feeds.php:291
-#: classes/pref/feeds.php:321
-#, php-format
-msgid "(%d feed)"
-msgid_plural "(%d feeds)"
-msgstr[0] "(%d kanál)"
-msgstr[1] "(%d kanály)"
-msgstr[2] "(%d kanálů)"
-
-#: classes/pref/feeds.php:249 classes/pref/filters.php:934
-#: classes/digest.php:119 classes/feeds.php:1391 classes/opml.php:568
-#: include/controls.php:217
-msgid "Uncategorized"
-msgstr "Bez kategorie"
-
-#: classes/pref/feeds.php:545
-#, php-format
-msgid "(%d day)"
-msgid_plural "(%d days)"
-msgstr[0] "(%d den)"
-msgstr[1] "(%d dny)"
-msgstr[2] "(%d dní)"
-
-#: classes/pref/feeds.php:551
-#, php-format
-msgid "%d day"
-msgid_plural "%d days"
-msgstr[0] "%d den"
-msgstr[1] "%d dny"
-msgstr[2] "%d dní"
-
-#: classes/pref/feeds.php:582
-msgid "Check to enable field"
-msgstr "Zaškrtněte pro povolení pole"
-
-#: classes/pref/feeds.php:598
-#, php-format
-msgid "(%d days)"
-msgstr "(%d dní)"
-
-#: classes/pref/feeds.php:603 js/CommonDialogs.js:482
-msgid "Include in e-mail digest"
-msgstr "Zahrnout do e-mailového výtahu"
-
-#: classes/pref/feeds.php:604 js/CommonDialogs.js:483
-msgid "Always display image attachments"
-msgstr "Vždy zobrazovat obrázkové přílohy"
-
-#: classes/pref/feeds.php:605 classes/pref/prefs.php:123
-#: js/CommonDialogs.js:484
-msgid "Do not embed media"
-msgstr "Nevkládat média"
-
-#: classes/pref/feeds.php:606 js/CommonDialogs.js:485
-msgid "Cache media"
-msgstr "Ukládat média do mezipaměti"
-
-#: classes/pref/feeds.php:607 js/CommonDialogs.js:486
-msgid "Mark updated articles as unread"
-msgstr "Označit aktualizované články jako nepřečtené"
-
-#: classes/pref/feeds.php:618 classes/pref/prefs.php:40 js/CommonDialogs.js:493
-msgid "General"
-msgstr "Obecné"
-
-#: classes/pref/feeds.php:622 js/CommonDialogs.js:61 js/CommonDialogs.js:522
-#: js/PrefFeedTree.js:436
-msgid "Place in category:"
-msgstr "Umístit do kategorie:"
-
-#: classes/pref/feeds.php:630 js/Feeds.js:619 js/CommonDialogs.js:538
-msgid "Language:"
-msgstr "Jazyk:"
-
-#: classes/pref/feeds.php:641 js/CommonDialogs.js:548
-msgid "Update interval:"
-msgstr "Interval aktualizace:"
-
-#: classes/pref/feeds.php:648 js/CommonDialogs.js:554
-msgid "Article purging:"
-msgstr "Čištění článků:"
-
-#: classes/pref/feeds.php:655 plugins/auth_internal/init.php:81
-#: js/PrefFeedTree.js:444 js/CommonDialogs.js:564
-msgid "Authentication"
-msgstr "Ověření"
-
-#: classes/pref/feeds.php:664 plugins/bookmarklets/init.php:311
-#: include/login_form.php:112 js/CommonDialogs.js:573
-msgid "Password:"
-msgstr "Heslo:"
-
-#: classes/pref/feeds.php:671 js/CommonDialogs.js:580
-msgid "Options"
-msgstr "Volby"
-
-#: classes/pref/feeds.php:687 classes/pref/prefs.php:317
-#: plugins/af_psql_trgm/init.php:199 plugins/af_readability/init.php:92
-#: plugins/af_redditimgur/init.php:124 plugins/note/init.php:49
-#: plugins/nsfw/init.php:105 js/CommonDialogs.js:610 js/CommonFilters.js:237
-#: js/CommonFilters.js:321 js/CommonFilters.js:523 js/Article.js:358
-#: js/PrefLabelTree.js:170 js/PrefUsers.js:119
-msgid "Save"
-msgstr "Uložit"
-
-#: classes/pref/feeds.php:688 plugins/bookmarklets/init.php:284
-#: plugins/note/init.php:50 js/CommonDialogs.js:611 js/CommonFilters.js:238
-#: js/CommonFilters.js:322 js/CommonFilters.js:524 js/CommonFilters.js:528
-#: js/Article.js:361 js/CommonDialogs.js:111 js/Feeds.js:633
-#: js/PrefFeedTree.js:464 js/PrefHelpers.js:232 js/PrefHelpers.js:306
-#: js/PrefLabelTree.js:173 js/PrefUsers.js:122
-msgid "Cancel"
-msgstr "Zrušit"
-
-#: classes/pref/feeds.php:890
-msgid "Feeds with errors"
-msgstr "Kanály s chybami"
-
-#: classes/pref/feeds.php:896
-msgid "Inactive feeds"
-msgstr "Neaktivní kanály"
-
-#: classes/pref/feeds.php:914 classes/pref/filters.php:670
-#: classes/pref/prefs.php:844 classes/pref/users.php:217 js/Feeds.js:637
-#: js/Feeds.js:632
-msgid "Search"
-msgstr "Hledat"
-
-#: classes/pref/feeds.php:918 classes/pref/filters.php:674
-#: classes/pref/labels.php:179 classes/pref/prefs.php:849
-#: classes/pref/prefs.php:1502 classes/pref/users.php:222
-#: js/CommonFilters.js:443 js/CommonFilters.js:476 js/CommonDialogs.js:257
-#: js/PrefFeedTree.js:513 js/PrefHelpers.js:184
-msgid "Select"
-msgstr "Vybrat"
-
-#: classes/pref/feeds.php:921 classes/pref/filters.php:677
-#: classes/pref/prefs.php:852 classes/pref/prefs.php:1505
-#: classes/pref/users.php:225 js/CommonFilters.js:447 js/CommonFilters.js:479
-#: js/CommonDialogs.js:260 js/Headlines.js:663 js/PrefFeedTree.js:516
-#: js/PrefHelpers.js:187
-msgid "All"
-msgstr "Vše"
-
-#: classes/pref/feeds.php:923 classes/pref/filters.php:679
-#: classes/pref/prefs.php:854 classes/pref/prefs.php:1507
-#: classes/pref/users.php:227 js/CommonFilters.js:449 js/CommonFilters.js:481
-#: js/CommonDialogs.js:262 js/Headlines.js:666 js/PrefFeedTree.js:518
-#: js/PrefHelpers.js:189
-msgid "None"
-msgstr "Žádný"
-
-#: classes/pref/feeds.php:931 classes/rpc.php:628 js/CommonDialogs.js:34
-msgid "Subscribe to feed"
-msgstr "Přihlásit se k odběru kanálu"
-
-#: classes/pref/feeds.php:933
-msgid "Edit selected feeds"
-msgstr "Upravit vybrané kanály"
-
-#: classes/pref/feeds.php:935 classes/pref/feeds.php:950
-#: classes/pref/filters.php:690
-msgid "Reset sort order"
-msgstr "Obnovit pořadí řazení"
-
-#: classes/pref/feeds.php:937 js/PrefFeedTree.js:406
-msgid "Batch subscribe"
-msgstr "Dávkové přihlášení k odběru"
-
-#: classes/pref/feeds.php:945
-msgid "Categories"
-msgstr "Kategorie"
-
-#: classes/pref/feeds.php:948
-msgid "Add category"
-msgstr "Přidat kategorii"
-
-#: classes/pref/feeds.php:952 classes/pref/prefs.php:416 js/PrefHelpers.js:227
-msgid "Remove selected"
-msgstr "Odebrat vybrané"
-
-#: classes/pref/feeds.php:997
-msgid "Choose file..."
-msgstr "Zvolte soubor..."
-
-#: classes/pref/feeds.php:1005
-msgid "Import OPML"
-msgstr "Importovat OPML"
-
-#: classes/pref/feeds.php:1016
-msgid "Export OPML"
-msgstr "Exportovat OPML"
-
-#: classes/pref/feeds.php:1021
-msgid "Include tt-rss settings"
-msgstr "Zahrnout nastavení tt-rss"
-
-#: classes/pref/feeds.php:1037
-msgid "Display URL"
-msgstr "Zobrazit URL"
-
-#: classes/pref/feeds.php:1042
-msgid "Clear all generated URLs"
-msgstr "Vymazat všechny vygenerované URL"
-
-#: classes/pref/feeds.php:1054
-msgid "My feeds"
-msgstr "Mé kanály"
-
-#: classes/pref/feeds.php:1059
-msgid "OPML"
-msgstr "OPML"
-
-#: classes/pref/feeds.php:1064
-msgid "Sharing"
-msgstr "Sdílení"
-
-#: classes/pref/feeds.php:1077 classes/pref/prefs.php:945
-#: js/CommonDialogs.js:604
-msgid "Plugins"
-msgstr "Moduly"
-
-#: classes/pref/filters.php:210 classes/pref/filters.php:221
-#: classes/pref/filters.php:441 classes/pref/filters.php:881
-msgid "All feeds"
-msgstr "Všechny kanály"
-
-#: classes/pref/filters.php:232 classes/pref/filters.php:461
-msgid "(inverse)"
-msgstr "(inverzní)"
-
-#: classes/pref/filters.php:228 classes/pref/filters.php:460
-#, php-format
-msgid "%s on %s in %s %s"
-msgstr "%s na %s v %s %s"
-
-#: classes/pref/filters.php:684 classes/rpc.php:649
-msgid "Create filter"
-msgstr "Vytvořit filtr"
-
-#: classes/pref/filters.php:686
-msgid "Combine"
-msgstr "Kombinovat"
-
-#: classes/pref/filters.php:688 classes/pref/users.php:236
-#: js/CommonDialogs.js:602 js/CommonFilters.js:521
-msgid "Remove"
-msgstr "Odebrat"
-
-#: classes/pref/filters.php:692
-msgid "Toggle rule display"
-msgstr "Přepnout zobrazení pravidla"
-
-#: classes/pref/filters.php:751
-msgid "[No caption]"
-msgstr "[Bez titulku]"
-
-#: classes/pref/filters.php:753
-#, php-format
-msgid "%s (%d rule)"
-msgid_plural "%s (%d rules)"
-msgstr[0] "%s (%d pravidlo)"
-msgstr[1] "%s (%d pravidla)"
-msgstr[2] "%s (%d pravidel)"
-
-#: classes/pref/filters.php:767
-msgid "matches any rule"
-msgstr "odpovídá jakémukoliv pravidlu"
-
-#: classes/pref/filters.php:768
-msgid "inverse"
-msgstr "inverzní"
-
-#: classes/pref/filters.php:771
-#, php-format
-msgid "%s (+%d action)"
-msgid_plural "%s (+%d actions)"
-msgstr[0] "%s (+%d akce)"
-msgstr[1] "%s (+%d akce)"
-msgstr[2] "%s (+%d akcí)"
-
-#: classes/pref/labels.php:167
+#: classes/Pref_Labels.php:167
 #, php-format
 msgid "Created label <b>%s</b>"
 msgstr "Vytvořen štítek <b>%s</b>"
 
-#: classes/pref/prefs.php:61
+#: classes/Pref_Labels.php:179 classes/Pref_Prefs.php:853
+#: classes/Pref_Prefs.php:1501 classes/Pref_Feeds.php:916
+#: classes/Pref_Users.php:223 classes/Pref_Filters.php:677
+#: js/CommonFilters.js:443 js/CommonFilters.js:476 js/PrefHelpers.js:184
+#: js/PrefFeedTree.js:524 js/CommonDialogs.js:278
+msgid "Select"
+msgstr "Vybrat"
+
+#: classes/Pref_Prefs.php:38 classes/Pref_Feeds.php:622 js/CommonDialogs.js:517
+msgid "General"
+msgstr "Obecné"
+
+#: classes/Pref_Prefs.php:59
 msgid "Articles"
 msgstr "Články"
 
-#: classes/pref/prefs.php:75
+#: classes/Pref_Prefs.php:73
 msgid "Digest"
 msgstr "Výtah"
 
-#: classes/pref/prefs.php:80
+#: classes/Pref_Prefs.php:79
 msgid "Advanced"
 msgstr "Rozšířené"
 
-#: classes/pref/prefs.php:91
+#: classes/Pref_Prefs.php:90
 msgid "Debugging"
 msgstr "Ladění"
 
-#: classes/pref/prefs.php:97
+#: classes/Pref_Prefs.php:96
 msgid "Never apply these tags automatically (comma-separated list)."
 msgstr "Nikdy nepoužívat tyto štítky automaticky (čárkami oddělený seznam)."
 
-#: classes/pref/prefs.php:101
+#: classes/Pref_Prefs.php:100
 msgid "Blacklisted tags"
 msgstr "Zakázané štítky"
 
-#: classes/pref/prefs.php:102
+#: classes/Pref_Prefs.php:101
 msgid "Default language"
 msgstr "Výchozí jazyk"
 
-#: classes/pref/prefs.php:102
+#: classes/Pref_Prefs.php:101
 msgid "Used for full-text search"
 msgstr "Použito pro fulltextové vyhledávání"
 
-#: classes/pref/prefs.php:103
+#: classes/Pref_Prefs.php:102
 msgid "Mark read on scroll"
 msgstr "Označit jako přečtené při posouvání"
 
-#: classes/pref/prefs.php:103
+#: classes/Pref_Prefs.php:102
 msgid "Mark articles as read as you scroll past them"
 msgstr "Označit články jako přečtené při posouvání přes ně"
 
-#: classes/pref/prefs.php:104
+#: classes/Pref_Prefs.php:103
 msgid "Always expand articles"
 msgstr "Vždy rozbalovat články"
 
-#: classes/pref/prefs.php:105
+#: classes/Pref_Prefs.php:104
 msgid "Combined mode"
 msgstr "Kombinovaný režim"
 
-#: classes/pref/prefs.php:105
+#: classes/Pref_Prefs.php:104
 msgid "Show flat list of articles instead of separate panels"
 msgstr "Zobrazit plochý seznam článků namísto oddělených panelů"
 
-#: classes/pref/prefs.php:106
+#: classes/Pref_Prefs.php:105
 msgid "Confirm marking feeds as read"
 msgstr "Potvrdit označení kanálů jako přečtených"
 
-#: classes/pref/prefs.php:107
+#: classes/Pref_Prefs.php:106
 msgid "Default update interval"
 msgstr "Výchozí interval aktualizace"
 
-#: classes/pref/prefs.php:108
+#: classes/Pref_Prefs.php:107
 msgid "Mark sent articles as read"
 msgstr "Označit odeslané články jako přečtené"
 
-#: classes/pref/prefs.php:109
+#: classes/Pref_Prefs.php:108
 msgid "Enable digest"
 msgstr "Povolit výtah"
 
-#: classes/pref/prefs.php:109
+#: classes/Pref_Prefs.php:108
 msgid "Send daily digest of new (and unread) headlines to your e-mail address"
 msgstr ""
 "Odeslat denní výtah nových (a nepřečtených) nadpisů na vaši e-mailovou adresu"
 
-#: classes/pref/prefs.php:110
+#: classes/Pref_Prefs.php:109
 msgid "Try to send around this time"
 msgstr "Pokusit se odeslat kolem tohoto času"
 
-#: classes/pref/prefs.php:110
+#: classes/Pref_Prefs.php:109
 msgid "Time in UTC"
 msgstr "Čas v UTC"
 
-#: classes/pref/prefs.php:111
+#: classes/Pref_Prefs.php:110
 msgid "Enable API"
 msgstr "Povolit API"
 
-#: classes/pref/prefs.php:111
+#: classes/Pref_Prefs.php:110
 msgid "Allows accessing this account through the API"
 msgstr "Umožňuje přístup k tomuto účtu přes rozhraní API"
 
-#: classes/pref/prefs.php:112
+#: classes/Pref_Prefs.php:111
 msgid "Enable categories"
 msgstr "Povolit kategorie"
 
-#: classes/pref/prefs.php:113
+#: classes/Pref_Prefs.php:112
 msgid "Maximum age of fresh articles"
 msgstr "Maximální stáří nových článků"
 
-#: classes/pref/prefs.php:113
+#: classes/Pref_Prefs.php:112
 msgid "hours"
 msgstr "hodiny"
 
-#: classes/pref/prefs.php:114
+#: classes/Pref_Prefs.php:113
 msgid "Hide read feeds"
 msgstr "Skrýt přečtené kanály"
 
-#: classes/pref/prefs.php:115
+#: classes/Pref_Prefs.php:114
 msgid "Always show special feeds"
 msgstr "Vždy zobrazovat speciální kanály"
 
-#: classes/pref/prefs.php:115
+#: classes/Pref_Prefs.php:114
 msgid "While hiding read feeds"
 msgstr "Při skrývání číst kanály"
 
-#: classes/pref/prefs.php:116
+#: classes/Pref_Prefs.php:115
 msgid "Long date format"
 msgstr "Dlouhý formát data"
 
-#: classes/pref/prefs.php:116
+#: classes/Pref_Prefs.php:115
 msgid ""
 "Syntax is identical to PHP <a href='http://php.net/manual/function.date."
 "php'>date()</a> function."
@@ -790,123 +438,146 @@ msgstr ""
 "Syntaxe je shodná s funkcí PHP <a href='https://www.php.net/manual/en/"
 "function.date.php'>date()</a>."
 
-#: classes/pref/prefs.php:117
+#: classes/Pref_Prefs.php:116
 msgid "Automatically show next feed"
 msgstr "Automaticky zobrazit další kanál"
 
-#: classes/pref/prefs.php:117
+#: classes/Pref_Prefs.php:116
 msgid "After marking one as read"
 msgstr "Po označení jednoho jako přečteného"
 
-#: classes/pref/prefs.php:118
+#: classes/Pref_Prefs.php:117
 msgid "Purge articles older than"
 msgstr "Vyčistit články starší než"
 
-#: classes/pref/prefs.php:118
+#: classes/Pref_Prefs.php:117
 msgid "<strong>days</strong> (0 disables)"
 msgstr "<strong>dní</strong> (0 zakáže)"
 
-#: classes/pref/prefs.php:119
+#: classes/Pref_Prefs.php:118
 msgid "Purge unread articles"
 msgstr "Vyčistit nepřečtené články"
 
-#: classes/pref/prefs.php:120
+#: classes/Pref_Prefs.php:119
 msgid "Short date format"
 msgstr "Krátký formát data"
 
-#: classes/pref/prefs.php:121
+#: classes/Pref_Prefs.php:120
 msgid "Show content preview in headlines"
 msgstr "Zobrazit náhled obsahu v nadpisech"
 
-#: classes/pref/prefs.php:122
+#: classes/Pref_Prefs.php:121
 msgid "SSL client certificate"
 msgstr "Certifikát klienta SSL"
 
-#: classes/pref/prefs.php:124
+#: classes/Pref_Prefs.php:122 classes/Pref_Feeds.php:609
+#: js/CommonDialogs.js:508
+msgid "Do not embed media"
+msgstr "Nevkládat média"
+
+#: classes/Pref_Prefs.php:123
 msgid "Time zone"
 msgstr "Časové pásmo"
 
-#: classes/pref/prefs.php:125
+#: classes/Pref_Prefs.php:124
 msgid "Group by feed"
 msgstr "Seskupit podle kanálu"
 
-#: classes/pref/prefs.php:125
+#: classes/Pref_Prefs.php:124
 msgid "Group multiple-feed output by originating feed"
 msgstr "Seskupit vícekanálový výstup podle prvotního kanálu"
 
-#: classes/pref/prefs.php:126
+#: classes/Pref_Prefs.php:125
 msgid "Language"
 msgstr "Jazyk"
 
-#: classes/pref/prefs.php:127
+#: classes/Pref_Prefs.php:126
 msgid "Theme"
 msgstr "Motiv"
 
-#: classes/pref/prefs.php:128
+#: classes/Pref_Prefs.php:127
 msgid "Don't enforce DISTINCT headlines"
 msgstr "Nevynucovat JEDINEČNÉ nadpisy"
 
-#: classes/pref/prefs.php:128
+#: classes/Pref_Prefs.php:127
 msgid "May produce duplicate entries"
 msgstr "Může vytvářet duplicitní položky"
 
-#: classes/pref/prefs.php:129
+#: classes/Pref_Prefs.php:128
 msgid "Show article and feed IDs"
 msgstr "Zobrazit identifikátory článků a kanálů"
 
-#: classes/pref/prefs.php:129
+#: classes/Pref_Prefs.php:128
 msgid "In the headlines buffer"
 msgstr "Ve vyrovnávací paměti nadpisů"
 
-#: classes/pref/prefs.php:130
+#: classes/Pref_Prefs.php:129
 msgid "Disable conditional counter updates"
 msgstr "Zakázat podmíněný čítač aktualizací"
 
-#: classes/pref/prefs.php:130
+#: classes/Pref_Prefs.php:129
 msgid "May increase server load"
 msgstr "Může zvýšit zatížení serveru"
 
-#: classes/pref/prefs.php:131
+#: classes/Pref_Prefs.php:130
 msgid "Grid view"
 msgstr "Zobrazení v mřížce"
 
-#: classes/pref/prefs.php:131
+#: classes/Pref_Prefs.php:130
 msgid "On wider screens, if always expanded"
 msgstr "Na širších obrazovkách, pokud je vždy rozbaleno"
 
-#: classes/pref/prefs.php:232
+#: classes/Pref_Prefs.php:131
+#, fuzzy
+#| msgid "Set score"
+msgid "Required score"
+msgstr "Nastavit hodnocení"
+
+#: classes/Pref_Prefs.php:131
+msgid "Include articles with this or above score"
+msgstr ""
+
+#: classes/Pref_Prefs.php:233
 msgid "The configuration was saved."
 msgstr "Konfigurace byla uložena."
 
-#: classes/pref/prefs.php:274
+#: classes/Pref_Prefs.php:275
 msgid "Your personal data has been saved."
 msgstr "Vaše osobní údaje byly uloženy."
 
-#: classes/pref/prefs.php:304
+#: classes/Pref_Prefs.php:305
 msgid "Full name:"
 msgstr "Celé jméno:"
 
-#: classes/pref/prefs.php:309 js/PrefUsers.js:98
+#: classes/Pref_Prefs.php:310 js/PrefUsers.js:98
 msgid "E-mail:"
 msgstr "E-mail:"
 
-#: classes/pref/prefs.php:368
+#: classes/Pref_Prefs.php:318 classes/Pref_Feeds.php:691
+#: plugins/nsfw/init.php:105 plugins/note/init.php:49
+#: plugins/af_psql_trgm/init.php:218 js/CommonFilters.js:237
+#: js/CommonFilters.js:321 js/CommonFilters.js:523 js/CommonDialogs.js:634
+#: js/Article.js:370 js/PrefUsers.js:119 js/PrefLabelTree.js:170
+msgid "Save"
+msgstr "Uložit"
+
+#: classes/Pref_Prefs.php:367
 msgid "Old password:"
 msgstr "Staré heslo:"
 
-#: classes/pref/prefs.php:373 js/PrefUsers.js:84
+#: classes/Pref_Prefs.php:372 js/PrefUsers.js:84
 msgid "New password:"
 msgstr "Nové heslo:"
 
-#: classes/pref/prefs.php:378
+#: classes/Pref_Prefs.php:377
 msgid "Confirm password:"
 msgstr "Potvrdit heslo:"
 
-#: classes/pref/prefs.php:386 js/PrefUsers.js:86
+#: classes/Pref_Prefs.php:385 js/PrefUsers.js:86
 msgid "Change password"
 msgstr "Změnit heslo"
 
-#: classes/pref/prefs.php:393
+#: classes/Pref_Prefs.php:392
 #, php-format
 msgid ""
 "Authentication module used for this session (<b>%s</b>) does not provide an "
@@ -915,166 +586,202 @@ msgstr ""
 "Ověřovací modul použitý pro tuto relaci (<b>%s</b>) neposkytuje schopnost "
 "nastavit hesla."
 
-#: classes/pref/prefs.php:410
+#: classes/Pref_Prefs.php:409
 msgid "Generate password"
 msgstr "Generovat heslo"
 
-#: classes/pref/prefs.php:452 classes/pref/prefs.php:504
+#: classes/Pref_Prefs.php:415 classes/Pref_Feeds.php:950 js/PrefHelpers.js:227
+msgid "Remove selected"
+msgstr "Odebrat vybrané"
+
+#: classes/Pref_Prefs.php:451 classes/Pref_Prefs.php:503
 msgid "Your password:"
 msgstr "Vaše heslo:"
 
-#: classes/pref/prefs.php:460
+#: classes/Pref_Prefs.php:459
 msgid "Disable OTP"
 msgstr "Zakázat jednorázové heslo"
 
-#: classes/pref/prefs.php:482
+#: classes/Pref_Prefs.php:481
 msgid "OTP secret:"
 msgstr "Tajné jednorázové heslo:"
 
-#: classes/pref/prefs.php:509
+#: classes/Pref_Prefs.php:508
 msgid "Verification code:"
 msgstr "Ověřovací kód:"
 
-#: classes/pref/prefs.php:517
+#: classes/Pref_Prefs.php:516
 msgid "Enable OTP"
 msgstr "Povolit jednorázové heslo"
 
-#: classes/pref/prefs.php:531
+#: classes/Pref_Prefs.php:530
 msgid "Personal data"
 msgstr "Osobní údaje"
 
-#: classes/pref/prefs.php:534 js/CommonDialogs.js:89 js/PrefFeedTree.js:447
+#: classes/Pref_Prefs.php:533 js/PrefFeedTree.js:458 js/CommonDialogs.js:89
 msgid "Password"
 msgstr "Heslo"
 
-#: classes/pref/prefs.php:537
+#: classes/Pref_Prefs.php:536
 msgid "App passwords"
 msgstr "Hesla aplikace"
 
-#: classes/pref/prefs.php:540
+#: classes/Pref_Prefs.php:543
 msgid "Authenticator (OTP)"
 msgstr "Ověřovací aplikace (Jednorázové heslo)"
 
-#: classes/pref/prefs.php:551
+#: classes/Pref_Prefs.php:554
 msgid "Some preferences are only available in default profile."
 msgstr "Některé předvolby jsou dostupné pouze ve výchozím profilu."
 
-#: classes/pref/prefs.php:643
+#: classes/Pref_Prefs.php:647
 msgid "default"
 msgstr "výchozí"
 
-#: classes/pref/prefs.php:651
+#: classes/Pref_Prefs.php:655
 msgid "Customize"
 msgstr "Přizpůsobit"
 
-#: classes/pref/prefs.php:653
+#: classes/Pref_Prefs.php:657
 msgid "More themes..."
 msgstr "Více motivů..."
 
-#: classes/pref/prefs.php:684
+#: classes/Pref_Prefs.php:688
 msgid "Preview"
 msgstr "Náhled"
 
-#: classes/pref/prefs.php:710
+#: classes/Pref_Prefs.php:714
 msgid "Register"
 msgstr "Registrovat"
 
-#: classes/pref/prefs.php:714 classes/pref/system.php:100
+#: classes/Pref_Prefs.php:718 classes/Pref_System.php:100
 msgid "Clear"
 msgstr "Vymazat"
 
-#: classes/pref/prefs.php:718 classes/pref/prefs.php:884
-#: plugins/bookmarklets/init.php:365 js/CommonDialogs.js:665
+#: classes/Pref_Prefs.php:722 classes/Pref_Prefs.php:889
+#: plugins/bookmarklets/init.php:367 js/CommonDialogs.js:689
 msgid "More info..."
 msgstr "Více informací..."
 
-#: classes/pref/prefs.php:726
+#: classes/Pref_Prefs.php:730
 #, php-format
 msgid "Current server time: %s"
 msgstr "Aktuální čas na serveru: %s"
 
-#: classes/pref/prefs.php:774
+#: classes/Pref_Prefs.php:778
 msgid "Save configuration"
 msgstr "Uložit konfiguraci"
 
-#: classes/pref/prefs.php:777
+#: classes/Pref_Prefs.php:781
 msgid "Save and exit"
 msgstr "Uložit a ukončit"
 
-#: classes/pref/prefs.php:784 js/PrefHelpers.js:127
+#: classes/Pref_Prefs.php:788 js/PrefHelpers.js:127
 msgid "Manage profiles"
 msgstr "Spravovat profily"
 
-#: classes/pref/prefs.php:789
+#: classes/Pref_Prefs.php:793
 msgid "Reset to defaults"
 msgstr "Obnovit na výchozí hodnoty"
 
-#: classes/pref/prefs.php:882
+#: classes/Pref_Prefs.php:848 classes/Pref_Feeds.php:911
+#: classes/Pref_Users.php:217 classes/Pref_Filters.php:672 js/Feeds.js:661
+#: js/Feeds.js:656 js/Feeds.js:711
+msgid "Search"
+msgstr "Hledat"
+
+#: classes/Pref_Prefs.php:856 classes/Pref_Prefs.php:1504
+#: classes/Pref_Feeds.php:919 classes/Pref_Users.php:226
+#: classes/Pref_Filters.php:680 js/CommonFilters.js:447 js/CommonFilters.js:479
+#: js/Headlines.js:666 js/PrefHelpers.js:187 js/PrefFeedTree.js:527
+#: js/CommonDialogs.js:281
+msgid "All"
+msgstr "Vše"
+
+#: classes/Pref_Prefs.php:858 classes/Pref_Prefs.php:1506
+#: classes/Pref_Feeds.php:921 classes/Pref_Users.php:228
+#: classes/Pref_Filters.php:682 js/CommonFilters.js:449 js/CommonFilters.js:481
+#: js/Headlines.js:669 js/PrefHelpers.js:189 js/PrefFeedTree.js:529
+#: js/CommonDialogs.js:283
+msgid "None"
+msgstr "Žádný"
+
+#: classes/Pref_Prefs.php:887
 #, php-format
 msgid ""
 "The following plugins use per-feed content hooks. This may cause excessive "
-"data usage and origin server load resulting in a ban of your instance: <b>"
-"%s</b>"
+"data usage and origin server load resulting in a ban of your instance: "
+"<b>%s</b>"
 msgstr ""
 "Následující doplňky používají \"háčkování\" obsahu jednotlivých zdrojů. To "
 "může způsobit nadměrné využití dat a počáteční zatížení serveru vedoucí k "
 "zablokování vaší instance: <b>%s</b>"
 
-#: classes/pref/prefs.php:898 js/CommonFilters.js:235
+#: classes/Pref_Prefs.php:903 js/CommonFilters.js:235
 msgid "More info"
 msgstr "Více informací"
 
-#: classes/pref/prefs.php:901
+#: classes/Pref_Prefs.php:906
 msgid "Enable selected"
 msgstr "Povolit vybrané"
 
-#: classes/pref/prefs.php:904
+#: classes/Pref_Prefs.php:909
 msgid "Reload"
 msgstr "Znovu načíst"
 
-#: classes/pref/prefs.php:911
+#: classes/Pref_Prefs.php:916
 msgid "Check for updates"
 msgstr "Zkontrolovat aktualizace"
 
-#: classes/pref/prefs.php:918
+#: classes/Pref_Prefs.php:923
 msgid "Install plugin"
 msgstr "Nainstalovat modul"
 
-#: classes/pref/prefs.php:931
+#: classes/Pref_Prefs.php:936
 msgid "Personal data / Authentication"
 msgstr "Osobní údaje / Ověření"
 
-#: classes/pref/prefs.php:979
+#: classes/Pref_Prefs.php:950 classes/Pref_Feeds.php:1065
+#: js/CommonDialogs.js:628
+msgid "Plugins"
+msgstr "Moduly"
+
+#: classes/Pref_Prefs.php:984
 msgid "Incorrect one time password"
 msgstr "Nesprávné jednorázové heslo"
 
-#: classes/pref/prefs.php:982 classes/pref/prefs.php:1021
+#: classes/Pref_Prefs.php:987 classes/Pref_Prefs.php:1026
 msgid "Incorrect password"
 msgstr "Nesprávné heslo"
 
-#: classes/pref/prefs.php:1036
+#: classes/Pref_Prefs.php:1041
 #, php-format
 msgid "v%.2f, by %s"
 msgstr "v%.2f, od %s"
 
-#: classes/pref/prefs.php:1050
+#: classes/Pref_Prefs.php:1055
 #, php-format
 msgid "v%s, by %s"
 msgstr "v%s, od %s"
 
-#: classes/pref/prefs.php:1516
+#: classes/Pref_Prefs.php:1462 classes/Handler_Public.php:292
+#: include/login_form.php:153
+msgid "Default profile"
+msgstr "Výchozí profil"
+
+#: classes/Pref_Prefs.php:1515
 msgid "Description"
 msgstr "Popis"
 
-#: classes/pref/prefs.php:1517
+#: classes/Pref_Prefs.php:1516
 msgid "Created"
 msgstr "Vytvořeno"
 
-#: classes/pref/prefs.php:1518
+#: classes/Pref_Prefs.php:1517
 msgid "Last used"
 msgstr "Naposledy použito"
 
-#: classes/pref/prefs.php:1563
+#: classes/Pref_Prefs.php:1562
 #, php-format
 msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
@@ -1083,161 +790,123 @@ msgstr ""
 "Vygenerované heslo <strong>%s</strong> pro %s. Zapamatujte si ho pro budoucí "
 "potřebu."
 
-#: classes/pref/system.php:24
+#: classes/Mailer.php:51
+#, php-format
+msgid "Unknown error while sending mail. Hooks tried: %d."
+msgstr "Neznámá chyba při odesílání e-mailu. Vyzkoušené vychytávky: %d."
+
+#: classes/TimeHelper.php:8
+#, php-format
+msgid "%d min"
+msgstr "%d min"
+
+#: classes/Pref_System.php:24
 msgid "Test message from tt-rss"
 msgstr "Testovací zpráva z tt-rss"
 
-#: classes/pref/system.php:81 js/PrefHelpers.js:622
+#: classes/Pref_System.php:81 js/PrefHelpers.js:622
 msgid "Refresh"
 msgstr "Obnovit"
 
-#: classes/pref/system.php:86
+#: classes/Pref_System.php:86
 msgid "&lt;&lt;"
 msgstr "&lt;&lt;"
 
-#: classes/pref/system.php:90
+#: classes/Pref_System.php:90
 #, php-format
 msgid "Page %d of %d"
 msgstr "Stránka %d z %d"
 
-#: classes/pref/system.php:95
+#: classes/Pref_System.php:95
 msgid "&gt;&gt;"
 msgstr "&gt;&gt;"
 
-#: classes/pref/system.php:104
+#: classes/Pref_System.php:104
 msgid "Severity:"
 msgstr "Závažnost:"
 
-#: classes/pref/system.php:108
+#: classes/Pref_System.php:108
 msgid "Errors"
 msgstr "Chyby"
 
-#: classes/pref/system.php:109
+#: classes/Pref_System.php:109
 msgid "Warnings"
 msgstr "Upozornění"
 
-#: classes/pref/system.php:110
+#: classes/Pref_System.php:110
 msgid "Everything"
 msgstr "Vše"
 
-#: classes/pref/system.php:120
+#: classes/Pref_System.php:120
 msgid "Error"
 msgstr "Chyba"
 
-#: classes/pref/system.php:121
+#: classes/Pref_System.php:121
 msgid "Filename"
 msgstr "Název souboru"
 
-#: classes/pref/system.php:122
+#: classes/Pref_System.php:122
 msgid "Message"
 msgstr "Zpráva"
 
-#: classes/pref/system.php:124
+#: classes/Pref_System.php:124
 msgid "Date"
 msgstr "Datum"
 
-#: classes/pref/system.php:168
+#: classes/Pref_System.php:168
 msgid "Event log"
 msgstr "Protokol událostí"
 
-#: classes/pref/system.php:174
+#: classes/Pref_System.php:174
 msgid "Mail configuration"
 msgstr "Konfigurace e-mailu"
 
-#: classes/pref/system.php:201
+#: classes/Pref_System.php:205
 msgid "To:"
 msgstr "Komu:"
 
-#: classes/pref/system.php:203
+#: classes/Pref_System.php:207
 msgid "Send test email"
 msgstr "Odeslat testovací e-mail"
 
-#: classes/pref/system.php:209
+#: classes/Pref_System.php:213
 msgid "PHP Information"
 msgstr "Informace o PHP"
 
-#: classes/pref/users.php:56
-msgid "Registered"
-msgstr "Registrován"
-
-#: classes/pref/users.php:61
-msgid "Last logged in"
-msgstr "Naposledy přihlášen"
-
-#: classes/pref/users.php:66
-msgid "Subscribed feeds"
-msgstr "Odebírané kanály"
-
-#: classes/pref/users.php:71
-msgid "Stored articles"
-msgstr "Uložené články"
-
-#: classes/pref/users.php:101 classes/userhelper.php:240
-msgid "User not found"
-msgstr "Uživatel nenalezen"
-
-#: classes/pref/users.php:171
-#, php-format
-msgid "Added user %s with password %s"
-msgstr "Přidán uživatel %s s heslem %s"
-
-#: classes/pref/users.php:174
-#, php-format
-msgid "Could not create user %s"
-msgstr "Nelze vytvořit uživatele %s"
-
-#: classes/pref/users.php:177
-#, php-format
-msgid "User %s already exists."
-msgstr "Uživatel %s již existuje."
-
-#: classes/pref/users.php:232
-msgid "Create user"
-msgstr "Vytvořit uživatele"
-
-#: classes/pref/users.php:272
-msgid "Click to edit"
-msgstr "Klikněte pro úpravu"
-
-#: classes/config.php:373
-#, php-format
-msgid "Git error [RC=%d]: %s"
-msgstr "Chyba Git [RC=%d]: %s"
-
-#: classes/feeds.php:59 classes/feeds.php:512
+#: classes/Feeds.php:98 classes/Feeds.php:524
 msgid "Feed not found."
 msgstr "Kanál nenalezen."
 
-#: classes/feeds.php:126
+#: classes/Feeds.php:163
 msgid "Never"
 msgstr "Nikdy"
 
-#: classes/feeds.php:209 classes/feeds.php:1256
+#: classes/Feeds.php:246 classes/Feeds.php:1314
 msgid "Archived articles"
 msgstr "Archivované články"
 
-#: classes/feeds.php:302
+#: classes/Feeds.php:336
 msgid "Collapse article"
 msgstr "Sbalit článek"
 
-#: classes/feeds.php:325
+#: classes/Feeds.php:355
 #, php-format
 msgid "Imported at %s"
 msgstr "Importováno v %s"
 
-#: classes/feeds.php:401
+#: classes/Feeds.php:417
 msgid "No unread articles found to display."
 msgstr "Nenalezeny žádné nepřečtené články k zobrazení."
 
-#: classes/feeds.php:404
+#: classes/Feeds.php:420
 msgid "No updated articles found to display."
 msgstr "Nenalezeny žádné aktualizované články k zobrazení."
 
-#: classes/feeds.php:407
+#: classes/Feeds.php:423
 msgid "No starred articles found to display."
 msgstr "Nenalezeny žádné články označené hvězdičkou k zobrazení."
 
-#: classes/feeds.php:411
+#: classes/Feeds.php:427
 msgid ""
 "No articles found to display. You can assign articles to labels manually "
 "from article header context menu (applies to all selected articles) or use a "
@@ -1247,639 +916,741 @@ msgstr ""
 "z místní nabídky v záhlaví článku (použije se pro všechny vybrané články) "
 "nebo použít filtr."
 
-#: classes/feeds.php:413
+#: classes/Feeds.php:429
 msgid "No articles found to display."
 msgstr "Nenalezeny žádné články k zobrazení."
 
-#: classes/feeds.php:430 classes/feeds.php:584
+#: classes/Feeds.php:446 classes/Feeds.php:596
 #, php-format
 msgid "Feeds last updated at %s"
 msgstr "Kanál naposledy aktualizován v %s"
 
-#: classes/feeds.php:442 classes/feeds.php:596
+#: classes/Feeds.php:457 classes/Feeds.php:607
 msgid "Some feeds have update errors (click for details)"
 msgstr "Některé kanály mají chyby aktualizace (klikněte pro podrobnosti)"
 
-#: classes/feeds.php:573
+#: classes/Feeds.php:585
 msgid "No feed selected."
 msgstr "Není vybrán žádný kanál."
 
-#: classes/feeds.php:1248
+#: classes/Feeds.php:1306
 msgid "Starred articles"
 msgstr "Články označené hvězdičkou"
 
-#: classes/feeds.php:1250
+#: classes/Feeds.php:1308
 msgid "Published articles"
 msgstr "Publikované články"
 
-#: classes/feeds.php:1252
+#: classes/Feeds.php:1310
 msgid "Fresh articles"
 msgstr "Nové články"
 
-#: classes/feeds.php:1254 classes/rpc.php:641
+#: classes/Feeds.php:1312 classes/RPC.php:666
 msgid "All articles"
 msgstr "Všechny články"
 
-#: classes/feeds.php:1258 classes/rpc.php:645
+#: classes/Feeds.php:1316 classes/RPC.php:670
 msgid "Recently read"
 msgstr "Nedávno přečtené"
 
-#: classes/feeds.php:1393
+#: classes/Feeds.php:1449 classes/Pref_Feeds.php:250 classes/Digest.php:123
+#: classes/Pref_Filters.php:929 classes/OPML.php:568 include/controls.php:217
+msgid "Uncategorized"
+msgstr "Bez kategorie"
+
+#: classes/Feeds.php:1451
 msgid "Special"
 msgstr "Speciální"
 
-#: classes/feeds.php:1488
+#: classes/Feeds.php:1549
 #, php-format
 msgid "Incorrect search syntax: %s."
 msgstr "Nesprávná syntaxe hledání: %s."
 
-#: classes/feeds.php:1678
+#: classes/Feeds.php:1739
 #, php-format
 msgid "Search results: %s"
 msgstr "Výsledky hledání: %s"
 
-#: classes/opml.php:31 classes/opml.php:35
-msgid "OPML Utility"
-msgstr "Nástroj OPML"
-
-#: classes/opml.php:39
-msgid "Importing OPML..."
-msgstr "Importování OPML..."
-
-#: classes/opml.php:44
-msgid "Return to preferences"
-msgstr "Zpět do předvoleb"
-
-#: classes/opml.php:324
+#: classes/Pref_Feeds.php:72 classes/Pref_Feeds.php:232
+#: classes/Pref_Feeds.php:286 classes/Pref_Feeds.php:292
+#: classes/Pref_Feeds.php:322
 #, php-format
-msgid "Adding feed: %s"
-msgstr "Přidávání kanálu: %s"
+msgid "(%d feed)"
+msgid_plural "(%d feeds)"
+msgstr[0] "(%d kanál)"
+msgstr[1] "(%d kanály)"
+msgstr[2] "(%d kanálů)"
 
-#: classes/opml.php:344
+#: classes/Pref_Feeds.php:549
 #, php-format
-msgid "Duplicate feed: %s"
-msgstr "Duplicitní kanál: %s"
+msgid "(%d day)"
+msgid_plural "(%d days)"
+msgstr[0] "(%d den)"
+msgstr[1] "(%d dny)"
+msgstr[2] "(%d dní)"
 
-#: classes/opml.php:358
+#: classes/Pref_Feeds.php:555
 #, php-format
-msgid "Adding label %s"
-msgstr "Přidávání štítku %s"
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] "%d den"
+msgstr[1] "%d dny"
+msgstr[2] "%d dní"
 
-#: classes/opml.php:361
+#: classes/Pref_Feeds.php:586
+msgid "Check to enable field"
+msgstr "Zaškrtněte pro povolení pole"
+
+#: classes/Pref_Feeds.php:602
 #, php-format
-msgid "Duplicate label: %s"
-msgstr "Duplicitní štítek: %s"
+msgid "(%d days)"
+msgstr "(%d dní)"
 
-#: classes/opml.php:373
+#: classes/Pref_Feeds.php:607 js/CommonDialogs.js:506
+msgid "Include in e-mail digest"
+msgstr "Zahrnout do e-mailového výtahu"
+
+#: classes/Pref_Feeds.php:608 js/CommonDialogs.js:507
+msgid "Always display image attachments"
+msgstr "Vždy zobrazovat obrázkové přílohy"
+
+#: classes/Pref_Feeds.php:610 js/CommonDialogs.js:509
+msgid "Cache media"
+msgstr "Ukládat média do mezipaměti"
+
+#: classes/Pref_Feeds.php:611 js/CommonDialogs.js:510
+msgid "Mark updated articles as unread"
+msgstr "Označit aktualizované články jako nepřečtené"
+
+#: classes/Pref_Feeds.php:626 js/PrefFeedTree.js:447 js/CommonDialogs.js:61
+#: js/CommonDialogs.js:546
+msgid "Place in category:"
+msgstr "Umístit do kategorie:"
+
+#: classes/Pref_Feeds.php:634 js/Feeds.js:643 js/CommonDialogs.js:562
+msgid "Language:"
+msgstr "Jazyk:"
+
+#: classes/Pref_Feeds.php:645 js/CommonDialogs.js:572
+msgid "Update interval:"
+msgstr "Interval aktualizace:"
+
+#: classes/Pref_Feeds.php:652 js/CommonDialogs.js:578
+msgid "Article purging:"
+msgstr "Čištění článků:"
+
+#: classes/Pref_Feeds.php:659 plugins/auth_internal/init.php:82
+#: js/PrefFeedTree.js:455 js/CommonDialogs.js:588
+msgid "Authentication"
+msgstr "Ověření"
+
+#: classes/Pref_Feeds.php:662 classes/Handler_Public.php:516
+#: plugins/bookmarklets/init.php:306 include/login_form.php:124
+#: js/PrefUsers.js:64 js/CommonDialogs.js:591
+msgid "Login:"
+msgstr "Přihlášení:"
+
+#: classes/Pref_Feeds.php:668 plugins/bookmarklets/init.php:313
+#: include/login_form.php:133 js/CommonDialogs.js:597
+msgid "Password:"
+msgstr "Heslo:"
+
+#: classes/Pref_Feeds.php:675 js/CommonDialogs.js:604
+msgid "Options"
+msgstr "Volby"
+
+#: classes/Pref_Feeds.php:692 plugins/note/init.php:50
+#: plugins/bookmarklets/init.php:286 js/CommonFilters.js:238
+#: js/CommonFilters.js:322 js/CommonFilters.js:524 js/CommonFilters.js:528
+#: js/CommonDialogs.js:635 js/PrefHelpers.js:232 js/PrefHelpers.js:306
+#: js/Article.js:373 js/Feeds.js:657 js/Feeds.js:712 js/PrefUsers.js:122
+#: js/PrefFeedTree.js:475 js/CommonDialogs.js:111 js/PrefLabelTree.js:173
+msgid "Cancel"
+msgstr "Zrušit"
+
+#: classes/Pref_Feeds.php:886
+msgid "Feeds with errors"
+msgstr "Kanály s chybami"
+
+#: classes/Pref_Feeds.php:892
+msgid "Inactive feeds"
+msgstr "Neaktivní kanály"
+
+#: classes/Pref_Feeds.php:929 classes/RPC.php:653 js/CommonDialogs.js:34
+msgid "Subscribe to feed"
+msgstr "Přihlásit se k odběru kanálu"
+
+#: classes/Pref_Feeds.php:931
+msgid "Edit selected feeds"
+msgstr "Upravit vybrané kanály"
+
+#: classes/Pref_Feeds.php:933 classes/Pref_Feeds.php:948
+#: classes/Pref_Filters.php:693
+msgid "Reset sort order"
+msgstr "Obnovit pořadí řazení"
+
+#: classes/Pref_Feeds.php:935 js/PrefFeedTree.js:417
+msgid "Batch subscribe"
+msgstr "Dávkové přihlášení k odběru"
+
+#: classes/Pref_Feeds.php:943
+msgid "Categories"
+msgstr "Kategorie"
+
+#: classes/Pref_Feeds.php:946
+msgid "Add category"
+msgstr "Přidat kategorii"
+
+#: classes/Pref_Feeds.php:985
+msgid "Choose file..."
+msgstr "Zvolte soubor..."
+
+#: classes/Pref_Feeds.php:993
+msgid "Import OPML"
+msgstr "Importovat OPML"
+
+#: classes/Pref_Feeds.php:1004
+msgid "Export OPML"
+msgstr "Exportovat OPML"
+
+#: classes/Pref_Feeds.php:1009
+msgid "Include tt-rss settings"
+msgstr "Zahrnout nastavení tt-rss"
+
+#: classes/Pref_Feeds.php:1025
+msgid "Display URL"
+msgstr "Zobrazit URL"
+
+#: classes/Pref_Feeds.php:1030
+msgid "Clear all generated URLs"
+msgstr "Vymazat všechny vygenerované URL"
+
+#: classes/Pref_Feeds.php:1042
+msgid "My feeds"
+msgstr "Mé kanály"
+
+#: classes/Pref_Feeds.php:1047
+msgid "OPML"
+msgstr "OPML"
+
+#: classes/Pref_Feeds.php:1052
+msgid "Sharing"
+msgstr "Sdílení"
+
+#: classes/Pref_Users.php:56 classes/Pref_Users.php:257
+msgid "Registered"
+msgstr "Registrován"
+
+#: classes/Pref_Users.php:61
+msgid "Last logged in"
+msgstr "Naposledy přihlášen"
+
+#: classes/Pref_Users.php:66 classes/Pref_Users.php:256
+msgid "Subscribed feeds"
+msgstr "Odebírané kanály"
+
+#: classes/Pref_Users.php:71
+msgid "Stored articles"
+msgstr "Uložené články"
+
+#: classes/Pref_Users.php:100 classes/UserHelper.php:269
+msgid "User not found"
+msgstr "Uživatel nenalezen"
+
+#: classes/Pref_Users.php:170
 #, php-format
-msgid "Setting preference key %s to %s"
-msgstr "Nastavení klíče předvoleb %s na %s"
+msgid "Added user %s with password %s"
+msgstr "Přidán uživatel %s s heslem %s"
 
-#: classes/opml.php:409
+#: classes/Pref_Users.php:173
 #, php-format
-msgid "Adding filter %s..."
-msgstr "Přidávání filtru %s..."
+msgid "Could not create user %s"
+msgstr "Nelze vytvořit uživatele %s"
 
-#: classes/opml.php:568
+#: classes/Pref_Users.php:176
 #, php-format
-msgid "Processing category: %s"
-msgstr "Zpracovávání kategorie: %s"
+msgid "User %s already exists."
+msgstr "Uživatel %s již existuje."
 
-#: classes/opml.php:619
+#: classes/Pref_Users.php:233
+msgid "Create user"
+msgstr "Vytvořit uživatele"
+
+#: classes/Pref_Users.php:237 classes/Pref_Filters.php:691
+#: js/CommonFilters.js:521 js/CommonDialogs.js:626
+msgid "Remove"
+msgstr "Odebrat"
+
+#: classes/Pref_Users.php:241 classes/Handler_Public.php:535
+msgid "Reset password"
+msgstr "Obnovit heslo"
+
+#: classes/Pref_Users.php:254 js/PrefFeedTree.js:457 js/CommonDialogs.js:85
+msgid "Login"
+msgstr "Přihlášení"
+
+#: classes/Pref_Users.php:255
+msgid "Access level"
+msgstr "Úroveň přístupu"
+
+#: classes/Pref_Users.php:258
+msgid "Last login"
+msgstr "Poslední přihlášení"
+
+#: classes/Pref_Users.php:273
+msgid "Click to edit"
+msgstr "Klikněte pro úpravu"
+
+#: classes/Config.php:402
 #, php-format
-msgid "Upload failed with error code %d"
-msgstr "Nahrávání selhalo s kódem chyby %d"
+msgid "Git error [RC=%d]: %s"
+msgstr "Chyba Git [RC=%d]: %s"
 
-#: classes/opml.php:631
-msgid "Unable to move uploaded file."
-msgstr "Nelze přesunout nahraný soubor."
+#: classes/Pref_Filters.php:211 classes/Pref_Filters.php:222
+#: classes/Pref_Filters.php:442 classes/Pref_Filters.php:876
+msgid "All feeds"
+msgstr "Všechny kanály"
 
-#: classes/opml.php:635
-msgid "Error: please upload OPML file."
-msgstr "Chyba: nahrajte soubor OPML."
+#: classes/Pref_Filters.php:233 classes/Pref_Filters.php:462
+msgid "(inverse)"
+msgstr "(inverzní)"
 
-#: classes/opml.php:643
+#: classes/Pref_Filters.php:229 classes/Pref_Filters.php:461
 #, php-format
-msgid "Error: file is not readable: %s"
-msgstr "Chyba: soubor není čitelný: %s"
+msgid "%s on %s in %s %s"
+msgstr "%s na %s v %s %s"
 
-#: classes/opml.php:671
-msgid "Error while parsing document."
-msgstr "Chyba při zpracování dokumentu."
+#: classes/Pref_Filters.php:687 classes/RPC.php:674
+msgid "Create filter"
+msgstr "Vytvořit filtr"
 
-#: classes/rpc.php:585
-msgid "Navigation"
-msgstr "Navigace"
+#: classes/Pref_Filters.php:689
+msgid "Combine"
+msgstr "Kombinovat"
 
-#: classes/rpc.php:586
-msgid "Open next feed"
-msgstr "Otevřít další kanál"
+#: classes/Pref_Filters.php:695
+msgid "Toggle rule display"
+msgstr "Přepnout zobrazení pravidla"
 
-#: classes/rpc.php:587
-msgid "Open next unread feed"
-msgstr "Otevřít další nepřečtený kanál"
+#: classes/Pref_Filters.php:746
+msgid "[No caption]"
+msgstr "[Bez titulku]"
 
-#: classes/rpc.php:588
-msgid "Open previous feed"
-msgstr "Otevřít předchozí kanál"
-
-#: classes/rpc.php:589
-msgid "Open previous unread feed"
-msgstr "Otevřít předchozí nepřečtený kanál"
-
-#: classes/rpc.php:590
-msgid "Open next article (in combined mode, scroll down)"
-msgstr "Otevřít další článek (v kombinovaném režimu, posouvat dolů)"
-
-#: classes/rpc.php:591
-msgid "Open previous article (in combined mode, scroll up)"
-msgstr "Otevřít předchozí článek (v kombinovaném režimu, posouvat nahoru)"
-
-#: classes/rpc.php:592
-msgid "Scroll headlines by one page down"
-msgstr "Posunout nadpisy o stránku dolů"
-
-#: classes/rpc.php:593
-msgid "Scroll headlines by one page up"
-msgstr "Posunout nadpisy o stránku nahoru"
-
-#: classes/rpc.php:594
-msgid "Open next article"
-msgstr "Otevřít další článek"
-
-#: classes/rpc.php:595
-msgid "Open previous article"
-msgstr "Otevřít předchozí článek"
-
-#: classes/rpc.php:596
-msgid "Move to next article (don't expand)"
-msgstr "Přejít na další článek (nerozbalovat)"
-
-#: classes/rpc.php:597
-msgid "Move to previous article (don't expand)"
-msgstr "Přejít na předchozí článek (nerozbalovat)"
-
-#: classes/rpc.php:598
-msgid "Show search dialog"
-msgstr "Zobrazit dialogové okno hledání"
-
-#: classes/rpc.php:599
-msgid "Cancel active search"
-msgstr "Zrušit aktivní hledání"
-
-#: classes/rpc.php:600
-msgid "Article"
-msgstr "Článek"
-
-#: classes/rpc.php:601 js/Headlines.js:1446 js/Headlines.js:669
-msgid "Toggle starred"
-msgstr "Přepnout označeno hvězdičkou"
-
-#: classes/rpc.php:602 js/Headlines.js:1458 js/Headlines.js:670
-msgid "Toggle published"
-msgstr "Přepnout publikováno"
-
-#: classes/rpc.php:603 js/Headlines.js:1433 js/Headlines.js:668
-msgid "Toggle unread"
-msgstr "Přepnout nepřečteno"
-
-#: classes/rpc.php:604
-msgid "Edit tags"
-msgstr "Upravit štítky"
-
-#: classes/rpc.php:605
-msgid "Open in new window"
-msgstr "Otevřít v novém okně"
-
-#: classes/rpc.php:606 js/Headlines.js:1479
-msgid "Mark below as read"
-msgstr "Označit pod jako přečtené"
-
-#: classes/rpc.php:607 js/Headlines.js:1472
-msgid "Mark above as read"
-msgstr "Označit nad jako přečtené"
-
-#: classes/rpc.php:608
-msgid "Scroll down"
-msgstr "Posunout dolů"
-
-#: classes/rpc.php:609
-msgid "Scroll up"
-msgstr "Posunout nahoru"
-
-#: classes/rpc.php:610
-msgid "Scroll down page"
-msgstr "Posunout o stránku dolů"
-
-#: classes/rpc.php:611
-msgid "Scroll up page"
-msgstr "Posunout o stránku nahoru"
-
-#: classes/rpc.php:612
-msgid "Select article under cursor"
-msgstr "Vybrat článek pod kurzorem"
-
-#: classes/rpc.php:613
-msgid "Email article"
-msgstr "Odeslat článek e-mailem"
-
-#: classes/rpc.php:614
-msgid "Close/collapse article"
-msgstr "Zavřít nebo sbalit článek"
-
-#: classes/rpc.php:615
-msgid "Toggle article expansion (combined mode)"
-msgstr "Přepnout rozbalení článku (kombinovaný režim)"
-
-#: classes/rpc.php:617
-msgid "Toggle full article text via Readability"
-msgstr "Přepnout text celého článku prostřednictvím Readability"
-
-#: classes/rpc.php:618
-msgid "Article selection"
-msgstr "Výběr článků"
-
-#: classes/rpc.php:619
-msgid "Select all articles"
-msgstr "Vybrat všechny články"
-
-#: classes/rpc.php:620
-msgid "Select unread"
-msgstr "Vybrat nepřečtené"
-
-#: classes/rpc.php:621
-msgid "Select starred"
-msgstr "Vybrat označené hvězdičkou"
-
-#: classes/rpc.php:622
-msgid "Select published"
-msgstr "Vybrat publikované"
-
-#: classes/rpc.php:623
-msgid "Invert selection"
-msgstr "Invertovat výběr"
-
-#: classes/rpc.php:624
-msgid "Deselect everything"
-msgstr "Zrušit výběr všeho"
-
-#: classes/rpc.php:625
-msgid "Feed"
-msgstr "Kanál"
-
-#: classes/rpc.php:626
-msgid "Refresh current feed"
-msgstr "Obnovit aktuální kanál"
-
-#: classes/rpc.php:627
-msgid "Un/hide read feeds"
-msgstr "Zobrazit nebo skrýt přečtené kanály"
-
-#: classes/rpc.php:629 js/CommonDialogs.js:357 js/FeedTree.js:99
-#: js/Headlines.js:1579 js/Headlines.js:1644 js/PrefFeedTree.js:103
-msgid "Edit feed"
-msgstr "Upravit kanál"
-
-#: classes/rpc.php:631
-msgid "Reverse headlines"
-msgstr "Obrácené pořadí nadpisů"
-
-#: classes/rpc.php:632
-msgid "Toggle headline grouping"
-msgstr "Přepnout seskupování nadpisů"
-
-#: classes/rpc.php:633
-msgid "Toggle grid view"
-msgstr "Přepnout zobrazení v mřížce"
-
-#: classes/rpc.php:634
-msgid "Debug feed update"
-msgstr "Ladit aktualizaci kanálů"
-
-#: classes/rpc.php:635
-msgid "Debug viewfeed()"
-msgstr "Ladit viewfeed()"
-
-#: classes/rpc.php:636 js/FeedTree.js:164
-msgid "Mark all feeds as read"
-msgstr "Označit všechny kanály jako přečtené"
-
-#: classes/rpc.php:637
-msgid "Un/collapse current category"
-msgstr "Rozbalit nebo sbalit aktuální kategorii"
-
-#: classes/rpc.php:638
-msgid "Toggle auto expand in combined mode"
-msgstr "Přepnout automatické rozbalení v kombinovaném režimu"
-
-#: classes/rpc.php:640
-msgid "Go to"
-msgstr "Přejít na"
-
-#: classes/rpc.php:642
-msgid "Fresh"
-msgstr "Nové"
-
-#: classes/rpc.php:647
-msgid "Other"
-msgstr "Ostatní"
-
-#: classes/rpc.php:648
-msgid "Create label"
-msgstr "Vytvořit štítek"
-
-#: classes/rpc.php:650
-msgid "Un/collapse sidebar"
-msgstr "Rozbalit nebo sbalit postranní panel"
-
-#: classes/rpc.php:651
-msgid "Show help dialog"
-msgstr "Zobrazit dialogové okno nápovědy"
-
-#: classes/rpc.php:790
-msgid "Shift"
-msgstr "Shift"
-
-#: classes/rpc.php:793
-msgid "Ctrl"
-msgstr "Ctrl"
-
-#: classes/rpc.php:818 plugins/af_psql_trgm/init.php:118
-#: plugins/share/init.php:283 js/PrefHelpers.js:498 js/App.js:661
-#: js/CommonDialogs.js:22 js/CommonDialogs.js:294 js/CommonDialogs.js:671
-#: js/CommonFilters.js:102 js/Feeds.js:272 js/PrefFeedTree.js:547
-#: js/PrefHelpers.js:66 js/PrefHelpers.js:821
-msgid "Close this window"
-msgstr "Zavřít toto okno"
-
-#: classes/timehelper.php:8
+#: classes/Pref_Filters.php:748
 #, php-format
-msgid "%d min"
-msgstr "%d min"
+msgid "%s (%d rule)"
+msgid_plural "%s (%d rules)"
+msgstr[0] "%s (%d pravidlo)"
+msgstr[1] "%s (%d pravidla)"
+msgstr[2] "%s (%d pravidel)"
 
-#: classes/userhelper.php:238
+#: classes/Pref_Filters.php:762
+msgid "matches any rule"
+msgstr "odpovídá jakémukoliv pravidlu"
+
+#: classes/Pref_Filters.php:763
+msgid "inverse"
+msgstr "inverzní"
+
+#: classes/Pref_Filters.php:766
+#, php-format
+msgid "%s (+%d action)"
+msgid_plural "%s (+%d actions)"
+msgstr[0] "%s (+%d akce)"
+msgstr[1] "%s (+%d akce)"
+msgstr[2] "%s (+%d akcí)"
+
+#: classes/UserHelper.php:267
 #, php-format
 msgid "Changed password of user %s to %s"
 msgstr "Změněno heslo uživatele %s na %s"
 
-#: classes/mailer.php:60
+#: classes/OPML.php:31 classes/OPML.php:35
+msgid "OPML Utility"
+msgstr "Nástroj OPML"
+
+#: classes/OPML.php:39
+msgid "Importing OPML..."
+msgstr "Importování OPML..."
+
+#: classes/OPML.php:44
+msgid "Return to preferences"
+msgstr "Zpět do předvoleb"
+
+#: classes/OPML.php:324
 #, php-format
-msgid "Unknown error while sending mail. Hooks tried: %d."
-msgstr "Neznámá chyba při odesílání e-mailu. Vyzkoušené vychytávky: %d."
+msgid "Adding feed: %s"
+msgstr "Přidávání kanálu: %s"
 
-#: plugins/af_comics/init.php:60
-msgid "Feeds supported by af_comics"
-msgstr "Kanály podporované af_comics"
-
-#: plugins/af_comics/init.php:62
-msgid "The following comics are currently supported:"
-msgstr "Nyní jsou podporovány následující komiksy:"
-
-#: plugins/af_psql_trgm/init.php:36
+#: classes/OPML.php:344
 #, php-format
-msgid "Data saved (%s, %d)"
-msgstr "Data uložena (%s, %d)"
+msgid "Duplicate feed: %s"
+msgstr "Duplicitní kanál: %s"
 
-#: plugins/af_psql_trgm/init.php:127
-msgid "Show related articles"
-msgstr "Zobrazit související články"
+#: classes/OPML.php:358
+#, php-format
+msgid "Adding label %s"
+msgstr "Přidávání štítku %s"
 
-#: plugins/af_psql_trgm/init.php:140
-msgid "Mark similar articles as read (af_psql_trgm)"
-msgstr "Označit podobné články jako přečtené (af_psql_trgm)"
+#: classes/OPML.php:361
+#, php-format
+msgid "Duplicate label: %s"
+msgstr "Duplicitní štítek: %s"
 
-#: plugins/af_psql_trgm/init.php:170
-msgid "Minimum similarity:"
-msgstr "Minimální podobnost:"
+#: classes/OPML.php:373
+#, php-format
+msgid "Setting preference key %s to %s"
+msgstr "Nastavení klíče předvoleb %s na %s"
 
-#: plugins/af_psql_trgm/init.php:178
+#: classes/OPML.php:409
+#, php-format
+msgid "Adding filter %s..."
+msgstr "Přidávání filtru %s..."
+
+#: classes/OPML.php:568
+#, php-format
+msgid "Processing category: %s"
+msgstr "Zpracovávání kategorie: %s"
+
+#: classes/OPML.php:617
+#, php-format
+msgid "Upload failed with error code %d"
+msgstr "Nahrávání selhalo s kódem chyby %d"
+
+#: classes/OPML.php:629
+msgid "Unable to move uploaded file."
+msgstr "Nelze přesunout nahraný soubor."
+
+#: classes/OPML.php:633
+msgid "Error: please upload OPML file."
+msgstr "Chyba: nahrajte soubor OPML."
+
+#: classes/OPML.php:641
+#, php-format
+msgid "Error: file is not readable: %s"
+msgstr "Chyba: soubor není čitelný: %s"
+
+#: classes/OPML.php:667
+msgid "Error while parsing document."
+msgstr "Chyba při zpracování dokumentu."
+
+#: classes/RPC.php:610
+msgid "Navigation"
+msgstr "Navigace"
+
+#: classes/RPC.php:611
+msgid "Open next feed"
+msgstr "Otevřít další kanál"
+
+#: classes/RPC.php:612
+msgid "Open next unread feed"
+msgstr "Otevřít další nepřečtený kanál"
+
+#: classes/RPC.php:613
+msgid "Open previous feed"
+msgstr "Otevřít předchozí kanál"
+
+#: classes/RPC.php:614
+msgid "Open previous unread feed"
+msgstr "Otevřít předchozí nepřečtený kanál"
+
+#: classes/RPC.php:615
+msgid "Open next article (in combined mode, scroll down)"
+msgstr "Otevřít další článek (v kombinovaném režimu, posouvat dolů)"
+
+#: classes/RPC.php:616
+msgid "Open previous article (in combined mode, scroll up)"
+msgstr "Otevřít předchozí článek (v kombinovaném režimu, posouvat nahoru)"
+
+#: classes/RPC.php:617
+msgid "Scroll headlines by one page down"
+msgstr "Posunout nadpisy o stránku dolů"
+
+#: classes/RPC.php:618
+msgid "Scroll headlines by one page up"
+msgstr "Posunout nadpisy o stránku nahoru"
+
+#: classes/RPC.php:619
+msgid "Open next article"
+msgstr "Otevřít další článek"
+
+#: classes/RPC.php:620
+msgid "Open previous article"
+msgstr "Otevřít předchozí článek"
+
+#: classes/RPC.php:621
+msgid "Move to next article (don't expand)"
+msgstr "Přejít na další článek (nerozbalovat)"
+
+#: classes/RPC.php:622
+msgid "Move to previous article (don't expand)"
+msgstr "Přejít na předchozí článek (nerozbalovat)"
+
+#: classes/RPC.php:623
+msgid "Show search dialog"
+msgstr "Zobrazit dialogové okno hledání"
+
+#: classes/RPC.php:624
+msgid "Cancel active search"
+msgstr "Zrušit aktivní hledání"
+
+#: classes/RPC.php:625
+msgid "Article"
+msgstr "Článek"
+
+#: classes/RPC.php:626 js/Headlines.js:1449 js/Headlines.js:672
+msgid "Toggle starred"
+msgstr "Přepnout označeno hvězdičkou"
+
+#: classes/RPC.php:627 js/Headlines.js:1461 js/Headlines.js:673
+msgid "Toggle published"
+msgstr "Přepnout publikováno"
+
+#: classes/RPC.php:628 js/Headlines.js:1436 js/Headlines.js:671
+msgid "Toggle unread"
+msgstr "Přepnout nepřečteno"
+
+#: classes/RPC.php:629
+msgid "Edit tags"
+msgstr "Upravit štítky"
+
+#: classes/RPC.php:630
+msgid "Open in new window"
+msgstr "Otevřít v novém okně"
+
+#: classes/RPC.php:631 js/Headlines.js:1482
+msgid "Mark below as read"
+msgstr "Označit pod jako přečtené"
+
+#: classes/RPC.php:632 js/Headlines.js:1475
+msgid "Mark above as read"
+msgstr "Označit nad jako přečtené"
+
+#: classes/RPC.php:633
+msgid "Scroll down"
+msgstr "Posunout dolů"
+
+#: classes/RPC.php:634
+msgid "Scroll up"
+msgstr "Posunout nahoru"
+
+#: classes/RPC.php:635
+msgid "Scroll down page"
+msgstr "Posunout o stránku dolů"
+
+#: classes/RPC.php:636
+msgid "Scroll up page"
+msgstr "Posunout o stránku nahoru"
+
+#: classes/RPC.php:637
+msgid "Select article under cursor"
+msgstr "Vybrat článek pod kurzorem"
+
+#: classes/RPC.php:638
+msgid "Email article"
+msgstr "Odeslat článek e-mailem"
+
+#: classes/RPC.php:639
+msgid "Close/collapse article"
+msgstr "Zavřít nebo sbalit článek"
+
+#: classes/RPC.php:640
+msgid "Toggle article expansion (combined mode)"
+msgstr "Přepnout rozbalení článku (kombinovaný režim)"
+
+#: classes/RPC.php:642
+msgid "Toggle full article text via Readability"
+msgstr "Přepnout text celého článku prostřednictvím Readability"
+
+#: classes/RPC.php:643
+msgid "Article selection"
+msgstr "Výběr článků"
+
+#: classes/RPC.php:644
+msgid "Select all articles"
+msgstr "Vybrat všechny články"
+
+#: classes/RPC.php:645
+msgid "Select unread"
+msgstr "Vybrat nepřečtené"
+
+#: classes/RPC.php:646
+msgid "Select starred"
+msgstr "Vybrat označené hvězdičkou"
+
+#: classes/RPC.php:647
+msgid "Select published"
+msgstr "Vybrat publikované"
+
+#: classes/RPC.php:648
+msgid "Invert selection"
+msgstr "Invertovat výběr"
+
+#: classes/RPC.php:649
+msgid "Deselect everything"
+msgstr "Zrušit výběr všeho"
+
+#: classes/RPC.php:650
+msgid "Feed"
+msgstr "Kanál"
+
+#: classes/RPC.php:651
+msgid "Refresh current feed"
+msgstr "Obnovit aktuální kanál"
+
+#: classes/RPC.php:652
+msgid "Un/hide read feeds"
+msgstr "Zobrazit nebo skrýt přečtené kanály"
+
+#: classes/RPC.php:654 js/Headlines.js:1582 js/Headlines.js:1647
+#: js/PrefFeedTree.js:114 js/CommonDialogs.js:381 js/FeedTree.js:99
+msgid "Edit feed"
+msgstr "Upravit kanál"
+
+#: classes/RPC.php:656
+msgid "Reverse headlines"
+msgstr "Obrácené pořadí nadpisů"
+
+#: classes/RPC.php:657
+msgid "Toggle headline grouping"
+msgstr "Přepnout seskupování nadpisů"
+
+#: classes/RPC.php:658
+msgid "Toggle grid view"
+msgstr "Přepnout zobrazení v mřížce"
+
+#: classes/RPC.php:659
+msgid "Debug feed update"
+msgstr "Ladit aktualizaci kanálů"
+
+#: classes/RPC.php:660
+msgid "Debug viewfeed()"
+msgstr "Ladit viewfeed()"
+
+#: classes/RPC.php:661 js/FeedTree.js:164
+msgid "Mark all feeds as read"
+msgstr "Označit všechny kanály jako přečtené"
+
+#: classes/RPC.php:662
+msgid "Un/collapse current category"
+msgstr "Rozbalit nebo sbalit aktuální kategorii"
+
+#: classes/RPC.php:663
+msgid "Toggle auto expand in combined mode"
+msgstr "Přepnout automatické rozbalení v kombinovaném režimu"
+
+#: classes/RPC.php:665
+msgid "Go to"
+msgstr "Přejít na"
+
+#: classes/RPC.php:667
+msgid "Fresh"
+msgstr "Nové"
+
+#: classes/RPC.php:672
+msgid "Other"
+msgstr "Ostatní"
+
+#: classes/RPC.php:673
+msgid "Create label"
+msgstr "Vytvořit štítek"
+
+#: classes/RPC.php:675
+msgid "Un/collapse sidebar"
+msgstr "Rozbalit nebo sbalit postranní panel"
+
+#: classes/RPC.php:676
+msgid "Show help dialog"
+msgstr "Zobrazit dialogové okno nápovědy"
+
+#: classes/RPC.php:814
+msgid "Shift"
+msgstr "Shift"
+
+#: classes/RPC.php:817
+msgid "Ctrl"
+msgstr "Ctrl"
+
+#: classes/RPC.php:842 plugins/share/init.php:284
+#: plugins/af_psql_trgm/init.php:135 js/PrefHelpers.js:498
+#: js/CommonFilters.js:102 js/PrefHelpers.js:66 js/PrefHelpers.js:821
+#: js/Feeds.js:296 js/PrefFeedTree.js:558 js/CommonDialogs.js:22
+#: js/CommonDialogs.js:318 js/CommonDialogs.js:695 js/App.js:661
+msgid "Close this window"
+msgstr "Zavřít toto okno"
+
+#: classes/Handler_Public.php:416
+msgid "Incorrect username or password"
+msgstr "Nesprávné uživatelské jméno nebo heslo"
+
+#: classes/Handler_Public.php:469
+msgid "Password recovery"
+msgstr "Obnovení hesla"
+
+#: classes/Handler_Public.php:506 classes/Handler_Public.php:536
+#: classes/Handler_Public.php:596 classes/Handler_Public.php:713
+#: classes/Handler_Public.php:720 classes/Handler_Public.php:743
+#: plugins/bookmarklets/init.php:94 plugins/bookmarklets/init.php:139
+#: plugins/bookmarklets/init.php:157 plugins/bookmarklets/init.php:162
+msgid "Return to Tiny Tiny RSS"
+msgstr "Zpět do Tiny Tiny RSS"
+
+#: classes/Handler_Public.php:509
 msgid ""
-"PostgreSQL trigram extension returns string similarity as a floating point "
-"number (0-1). Setting it too low might produce false positives, zero "
-"disables checking."
+"You will need to provide valid account name and email. Password reset link "
+"will be sent to your email address."
 msgstr ""
-"Rozšíření trigramu PostgreSQL vrací řetězcovou podobnost jako číslo s "
-"plovoucí desetinnou čárkou (0-1). Nastavení příliš nízké hodnoty může "
-"způsobit falešně pozitivní výsledky, nula kontrolu zakáže."
+"Budete muset zadat platný název a e-mail účtu. Odkaz na obnovení hesla bude "
+"zaslán na vaši e-mailovou adresu."
 
-#: plugins/af_psql_trgm/init.php:183
-msgid "Minimum title length:"
-msgstr "Minimální délka názvu:"
+#: classes/Handler_Public.php:521
+msgid "Email:"
+msgstr "E-mail:"
 
-#: plugins/af_psql_trgm/init.php:193
-msgid "Enable for all feeds."
-msgstr "Povolit pro všechny kanály."
-
-#: plugins/af_psql_trgm/init.php:212 plugins/af_readability/init.php:109
-msgid "Currently enabled for (click to edit):"
-msgstr "Aktuálně povoleno pro (klikněte pro úpravu):"
-
-#: plugins/af_psql_trgm/init.php:232
-msgid "Similarity (af_psql_trgm)"
-msgstr "Podobnost (af_psql_trgm)"
-
-#: plugins/af_psql_trgm/init.php:238
-msgid "Mark similar articles as read"
-msgstr "Označit podobné články jako přečtené"
-
-#: plugins/af_readability/init.php:28
-msgid "Data saved."
-msgstr "Data uložena."
-
-#: plugins/af_readability/init.php:45
-msgid "Inline content"
-msgstr "Vložený obsah"
-
-#: plugins/af_readability/init.php:46
-msgid "Append content"
-msgstr "Připojit obsah"
-
-#: plugins/af_readability/init.php:55
-msgid "Toggle full article text"
-msgstr "Přepnout úplný text článku"
-
-#: plugins/af_readability/init.php:65
-msgid "Readability settings (af_readability)"
-msgstr "Nastavení Readability (af_readability)"
-
-#: plugins/af_readability/init.php:86
-msgid ""
-"Provide full-text services to core code (bookmarklets) and other plugins"
-msgstr ""
-"Zadejte fulltextové služby pro základní kód (záložkové aplety) a další moduly"
-
-#: plugins/af_readability/init.php:116
-msgid "(append)"
-msgstr "(připojit)"
-
-#: plugins/af_readability/init.php:131
-msgid "Readability"
-msgstr "Readability"
-
-#: plugins/af_readability/init.php:136
-msgid "Inline article content"
-msgstr "Vložený obsah článku"
-
-#: plugins/af_readability/init.php:142
-msgid "Append to summary, instead of replacing it"
-msgstr "Připojit k souhrnu namísto jeho nahrazení"
-
-#: plugins/af_redditimgur/init.php:68
-msgid "Reddit content settings (af_redditimgur)"
-msgstr "Nastavení obsahu Redditu (af_redditimgur)"
-
-#: plugins/af_redditimgur/init.php:86
-msgid "Apply tags to NSFW posts (comma-separated list):"
-msgstr ""
-"Použít štítky na příspěvky Neotvírat v práci (čárkami oddělený seznam):"
-
-#: plugins/af_redditimgur/init.php:95
-msgid "Extract missing content using Readability (requires af_readability)"
-msgstr ""
-"Extrahovat chybějící obsah pomocí Readability (vyžaduje af_readability)"
-
-#: plugins/af_redditimgur/init.php:102
-msgid "Enable additional duplicate checking"
-msgstr "Povolit dodatečnou kontrolu duplicit"
-
-#: plugins/af_redditimgur/init.php:109
+#: classes/Handler_Public.php:529
 #, php-format
-msgid "Rewrite Reddit URLs to %s"
-msgstr "Přepsat adresy URL Redditu na %s"
+msgid "How much is %d + %d:"
+msgstr "Kolik je %d plus %d:"
 
-#: plugins/af_redditimgur/init.php:117
-msgid "Import score, limit maximum to:"
-msgstr "Importovat skóre, omezit maximum na:"
+#: classes/Handler_Public.php:546
+msgid "Some of the required form parameters are missing or incorrect."
+msgstr "Některé z požadovaných parametrů formuláře chybí nebo jsou nesprávné."
 
-#: plugins/af_redditimgur/init.php:148
-msgid "Configuration saved"
-msgstr "Konfigurace uložena"
+#: classes/Handler_Public.php:550 classes/Handler_Public.php:602
+msgid "Go back"
+msgstr "Jít zpět"
 
-#: plugins/auth_internal/init.php:92
-msgid "Please enter verification code (OTP):"
-msgstr "Zadejte ověřovací kód (jednorázové heslo):"
+#: classes/Handler_Public.php:588
+msgid "[tt-rss] Password reset request"
+msgstr "[tt-rss] Vyžadováno obnovení hesla"
 
-#: plugins/auth_internal/init.php:94
-msgid "Continue"
-msgstr "Pokračovat"
+#: classes/Handler_Public.php:598
+msgid "Sorry, login and email combination not found."
+msgstr "Bohužel, kombinace přihlašovacího jména a e-mailu nebyla nalezena."
 
-#: plugins/auth_internal/init.php:133
-msgid "Too many authentication attempts, throttled."
-msgstr "Příliš mnoho pokusů o ověření, omezeno."
+#: classes/Handler_Public.php:618
+msgid "Your access level is insufficient to run this script."
+msgstr "Nemáte dostatečnou úroveň přístupu pro spuštění tohoto skriptu."
 
-#: plugins/auth_internal/init.php:240
-msgid "Password has been changed."
-msgstr "Heslo bylo změněno."
+#: classes/Handler_Public.php:680
+msgid "Database Updater"
+msgstr "Aktualizační nástroj databáze"
 
-#: plugins/auth_internal/init.php:242
-msgid "Old password is incorrect."
-msgstr "Staré heslo je nesprávné."
-
-#: plugins/bookmarklets/init.php:90 js/CommonDialogs.js:108
-#: js/PrefFeedTree.js:461
-msgid "Subscribe"
-msgstr "Přihlásit se k odběru"
-
-#: plugins/bookmarklets/init.php:103
+#: classes/Handler_Public.php:693
 #, php-format
-msgid "Already subscribed to <b>%s</b>."
-msgstr "Již přihlášen k odběru <b>%s</b>."
+msgid "Performing updates to version %d"
+msgstr "Provádění aktualizace na verzi %d"
 
-#: plugins/bookmarklets/init.php:106
+#: classes/Handler_Public.php:708 classes/Handler_Public.php:735
+#: js/PrefHelpers.js:418 js/PrefHelpers.js:764
+msgid "Update"
+msgstr "Aktualizovat"
+
+#: classes/Handler_Public.php:728
 #, php-format
-msgid "Subscribed to <b>%s</b>."
-msgstr "Přihlášen k odběru <b>%s</b>."
-
-#: plugins/bookmarklets/init.php:109
-#, php-format
-msgid "Could not subscribe to <b>%s</b>."
-msgstr "Nelze se přihlásit k odběru <b>%s</b>."
-
-#: plugins/bookmarklets/init.php:112
-#, php-format
-msgid "No feeds found in <b>%s</b>."
-msgstr "Nenalezeny žádné kanály v <b>%s</b>."
-
-#: plugins/bookmarklets/init.php:118
-#, php-format
-msgid "Could not subscribe to <b>%s</b>.<br>Can't download the Feed URL."
-msgstr "Nelze se přihlásit k odběru <b>%s</b>.<br>Nelze stáhnout URL kanálu."
-
-#: plugins/bookmarklets/init.php:129
-msgid "Multiple feed URLs found:"
-msgstr "Nalezeno více URL kanálů:"
-
-#: plugins/bookmarklets/init.php:137
-msgid "Subscribe to selected feed"
-msgstr "Přihlásit se k odběru vybraného kanálu"
-
-#: plugins/bookmarklets/init.php:155
-msgid "Edit subscription options"
-msgstr "Upravit volby odběru"
-
-#: plugins/bookmarklets/init.php:186 plugins/bookmarklets/init.php:362
-msgid "Share with Tiny Tiny RSS"
-msgstr "Sdílet s Tiny Tiny RSS"
-
-#: plugins/bookmarklets/init.php:258
-msgid "Title:"
-msgstr "Název:"
-
-#: plugins/bookmarklets/init.php:263 js/CommonDialogs.js:507
-msgid "URL:"
-msgstr "URL:"
-
-#: plugins/bookmarklets/init.php:268
-msgid "Content:"
-msgstr "Obsah:"
-
-#: plugins/bookmarklets/init.php:273
-msgid "Labels:"
-msgstr "Štítky:"
-
-#: plugins/bookmarklets/init.php:283
-msgid "Share"
-msgstr "Sdílet"
-
-#: plugins/bookmarklets/init.php:285
-msgid "Shared article will appear in the Published feed."
-msgstr "Sdílený článek se objeví v kanálu Publikováno."
-
-#: plugins/bookmarklets/init.php:324 include/login_form.php:177
-msgid "Log in"
-msgstr "Přihlásit se"
-
-#: plugins/bookmarklets/init.php:344
-#, php-format
-msgid "Subscribe to %s in Tiny Tiny RSS?"
-msgstr "Přihlásit se k odběru %s v Tiny Tiny RSS?"
-
-#: plugins/bookmarklets/init.php:351
-msgid "Bookmarklets"
-msgstr "Záložkové aplety"
-
-#: plugins/bookmarklets/init.php:353
-msgid ""
-"Drag the link below to your browser toolbar, open the feed you're interested "
-"in in your browser and click on the link to subscribe to it."
-msgstr ""
-"Přetáhněte níže uvedený odkaz na panel nástrojů prohlížeče, otevřete v "
-"prohlížeči kanál, o který máte zájem, a klikněte na odkaz pro přihlášení k "
-"jeho odběru."
-
-#: plugins/bookmarklets/init.php:356
-msgid "Subscribe in Tiny Tiny RSS"
-msgstr "Přihlásit se k odběru v Tiny Tiny RSS"
-
-#: plugins/bookmarklets/init.php:359
-msgid "Use this bookmarklet to publish arbitrary pages using Tiny Tiny RSS"
-msgstr ""
-"Použijte tento záložkový aplet pro publikování libovolných stránek pomocí "
-"Tiny Tiny RSS"
-
-#: plugins/note/init.php:24 plugins/note/note.js:16
-msgid "Edit article note"
-msgstr "Upravit poznámku článku"
+msgid "Database schema needs update to the latest version (%d to %d)."
+msgstr "Schéma databáze potřebuje aktualizaci na nejnovější verzi (%d na %d)."
 
 #: plugins/nsfw/init.php:46
 msgid "Not safe for work (click to toggle)"
@@ -1897,6 +1668,14 @@ msgstr "Štítky považované za Neotvírat v práci (oddělené čárkami):"
 msgid "Configuration saved."
 msgstr "Konfigurace uložena."
 
+#: plugins/note/init.php:24 plugins/note/note.js:16
+msgid "Edit article note"
+msgstr "Upravit poznámku článku"
+
+#: plugins/toggle_sidebar/init.php:23
+msgid "Toggle sidebar"
+msgstr "Přepnout postranní panel"
+
 #: plugins/share/init.php:43
 msgid "Article unshared"
 msgstr "Články nejsou sdíleny"
@@ -1913,323 +1692,288 @@ msgstr "Sdílené URL vymazány."
 msgid "Share by URL"
 msgstr "Sdílet pomocí URL"
 
-#: plugins/share/init.php:264
+#: plugins/share/init.php:265
 msgid "You can share this article by the following unique URL:"
 msgstr "Tento článek můžete sdílet pomocí následující jedinečné URL:"
 
-#: plugins/share/init.php:276
+#: plugins/share/init.php:277
 msgid "Article not found."
 msgstr "Článek nenalezen."
 
-#: plugins/share/init.php:281
+#: plugins/share/init.php:282
 msgid "Unshare article"
 msgstr "Zrušit sdílení článku"
 
-#: plugins/share/init.php:282 js/CommonDialogs.js:668
+#: plugins/share/init.php:283 js/CommonDialogs.js:692
 msgid "Generate new URL"
 msgstr "Generovat novou URL"
 
-#: plugins/toggle_sidebar/init.php:23
-msgid "Toggle sidebar"
-msgstr "Přepnout postranní panel"
+#: plugins/af_psql_trgm/init.php:34
+#, php-format
+msgid "Data saved (%s, %d)"
+msgstr "Data uložena (%s, %d)"
 
-#: include/functions.php:58
-msgid "Detect automatically"
-msgstr "Automaticky detekovat"
+#: plugins/af_psql_trgm/init.php:144
+msgid "Show related articles"
+msgstr "Zobrazit související články"
 
-#: include/login_form.php:124
-msgid "I forgot my password"
-msgstr "Zapomněl jsem heslo"
+#: plugins/af_psql_trgm/init.php:157
+msgid "Mark similar articles as read (af_psql_trgm)"
+msgstr "Označit podobné články jako přečtené (af_psql_trgm)"
 
-#: include/login_form.php:129
-msgid "Profile:"
-msgstr "Profil:"
+#: plugins/af_psql_trgm/init.php:185
+msgid "Minimum similarity:"
+msgstr "Minimální podobnost:"
 
-#: include/login_form.php:142
-msgid "Use less traffic"
-msgstr "Používat méně provozu"
+#: plugins/af_psql_trgm/init.php:194
+msgid ""
+"PostgreSQL trigram extension returns string similarity as a floating point "
+"number (0-1). Setting it too low might produce false positives, zero "
+"disables checking."
+msgstr ""
+"Rozšíření trigramu PostgreSQL vrací řetězcovou podobnost jako číslo s "
+"plovoucí desetinnou čárkou (0-1). Nastavení příliš nízké hodnoty může "
+"způsobit falešně pozitivní výsledky, nula kontrolu zakáže."
 
-#: include/login_form.php:146
-msgid "Does not display images in articles, reduces automatic refreshes."
-msgstr "Nezobrazuje obrázky v článcích, snižuje automatická obnovení."
+#: plugins/af_psql_trgm/init.php:196
+#, fuzzy
+#| msgid ""
+#| "PostgreSQL trigram extension returns string similarity as a floating "
+#| "point number (0-1). Setting it too low might produce false positives, "
+#| "zero disables checking."
+msgid ""
+"Setting this value too low might produce false positives, zero disables "
+"checking."
+msgstr ""
+"Rozšíření trigramu PostgreSQL vrací řetězcovou podobnost jako číslo s "
+"plovoucí desetinnou čárkou (0-1). Nastavení příliš nízké hodnoty může "
+"způsobit falešně pozitivní výsledky, nula kontrolu zakáže."
 
-#: include/login_form.php:154 js/CommonDialogs.js:16
-msgid "Safe mode"
-msgstr "Bezpečný režim"
+#: plugins/af_psql_trgm/init.php:202
+msgid "Minimum title length:"
+msgstr "Minimální délka názvu:"
 
-#: include/login_form.php:159
-msgid "Uses default theme and prevents all plugins from loading."
-msgstr "Používá výchozí motiv a brání všem modulům v načtení."
+#: plugins/af_psql_trgm/init.php:212
+msgid "Enable for all feeds."
+msgstr "Povolit pro všechny kanály."
 
-#: include/login_form.php:167
-msgid "Remember me"
-msgstr "Zapamatovat si mě"
+#: plugins/af_psql_trgm/init.php:231
+msgid "Currently enabled for (click to edit):"
+msgstr "Aktuálně povoleno pro (klikněte pro úpravu):"
 
-#: include/sessions.php:44
+#: plugins/af_psql_trgm/init.php:251
+msgid "Similarity (af_psql_trgm)"
+msgstr "Podobnost (af_psql_trgm)"
+
+#: plugins/af_psql_trgm/init.php:257
+msgid "Mark similar articles as read"
+msgstr "Označit podobné články jako přečtené"
+
+#: plugins/bookmarklets/init.php:91 js/PrefFeedTree.js:472
+#: js/CommonDialogs.js:108
+msgid "Subscribe"
+msgstr "Přihlásit se k odběru"
+
+#: plugins/bookmarklets/init.php:104
+#, php-format
+msgid "Already subscribed to <b>%s</b>."
+msgstr "Již přihlášen k odběru <b>%s</b>."
+
+#: plugins/bookmarklets/init.php:107
+#, php-format
+msgid "Subscribed to <b>%s</b>."
+msgstr "Přihlášen k odběru <b>%s</b>."
+
+#: plugins/bookmarklets/init.php:110
+#, php-format
+msgid "Could not subscribe to <b>%s</b>."
+msgstr "Nelze se přihlásit k odběru <b>%s</b>."
+
+#: plugins/bookmarklets/init.php:113
+#, php-format
+msgid "No feeds found in <b>%s</b>."
+msgstr "Nenalezeny žádné kanály v <b>%s</b>."
+
+#: plugins/bookmarklets/init.php:119
+#, php-format
+msgid "Could not subscribe to <b>%s</b>.<br>Can't download the Feed URL."
+msgstr "Nelze se přihlásit k odběru <b>%s</b>.<br>Nelze stáhnout URL kanálu."
+
+#: plugins/bookmarklets/init.php:130
+msgid "Multiple feed URLs found:"
+msgstr "Nalezeno více URL kanálů:"
+
+#: plugins/bookmarklets/init.php:138
+msgid "Subscribe to selected feed"
+msgstr "Přihlásit se k odběru vybraného kanálu"
+
+#: plugins/bookmarklets/init.php:156
+msgid "Edit subscription options"
+msgstr "Upravit volby odběru"
+
+#: plugins/bookmarklets/init.php:187 plugins/bookmarklets/init.php:364
+msgid "Share with Tiny Tiny RSS"
+msgstr "Sdílet s Tiny Tiny RSS"
+
+#: plugins/bookmarklets/init.php:260
+msgid "Title:"
+msgstr "Název:"
+
+#: plugins/bookmarklets/init.php:265 js/CommonDialogs.js:531
+msgid "URL:"
+msgstr "URL:"
+
+#: plugins/bookmarklets/init.php:270
+msgid "Content:"
+msgstr "Obsah:"
+
+#: plugins/bookmarklets/init.php:275
+msgid "Labels:"
+msgstr "Štítky:"
+
+#: plugins/bookmarklets/init.php:285
+msgid "Share"
+msgstr "Sdílet"
+
+#: plugins/bookmarklets/init.php:287
+msgid "Shared article will appear in the Published feed."
+msgstr "Sdílený článek se objeví v kanálu Publikováno."
+
+#: plugins/bookmarklets/init.php:326 include/login_form.php:198
+msgid "Log in"
+msgstr "Přihlásit se"
+
+#: plugins/bookmarklets/init.php:346
+#, php-format
+msgid "Subscribe to %s in Tiny Tiny RSS?"
+msgstr "Přihlásit se k odběru %s v Tiny Tiny RSS?"
+
+#: plugins/bookmarklets/init.php:353
+msgid "Bookmarklets"
+msgstr "Záložkové aplety"
+
+#: plugins/bookmarklets/init.php:355
+msgid ""
+"Drag the link below to your browser toolbar, open the feed you're interested "
+"in in your browser and click on the link to subscribe to it."
+msgstr ""
+"Přetáhněte níže uvedený odkaz na panel nástrojů prohlížeče, otevřete v "
+"prohlížeči kanál, o který máte zájem, a klikněte na odkaz pro přihlášení k "
+"jeho odběru."
+
+#: plugins/bookmarklets/init.php:358
+msgid "Subscribe in Tiny Tiny RSS"
+msgstr "Přihlásit se k odběru v Tiny Tiny RSS"
+
+#: plugins/bookmarklets/init.php:361
+msgid "Use this bookmarklet to publish arbitrary pages using Tiny Tiny RSS"
+msgstr ""
+"Použijte tento záložkový aplet pro publikování libovolných stránek pomocí "
+"Tiny Tiny RSS"
+
+#: plugins/auth_internal/init.php:93
+msgid "Please enter verification code (OTP):"
+msgstr "Zadejte ověřovací kód (jednorázové heslo):"
+
+#: plugins/auth_internal/init.php:95
+msgid "Continue"
+msgstr "Pokračovat"
+
+#: plugins/auth_internal/init.php:134
+msgid "Too many authentication attempts, throttled."
+msgstr "Příliš mnoho pokusů o ověření, omezeno."
+
+#: plugins/auth_internal/init.php:241
+msgid "Password has been changed."
+msgstr "Heslo bylo změněno."
+
+#: plugins/auth_internal/init.php:243
+msgid "Old password is incorrect."
+msgstr "Staré heslo je nesprávné."
+
+#: plugins/af_comics/init.php:63
+msgid "Feeds supported by af_comics"
+msgstr "Kanály podporované af_comics"
+
+#: plugins/af_comics/init.php:65
+msgid "The following comics are currently supported:"
+msgstr "Nyní jsou podporovány následující komiksy:"
+
+#: include/sessions.php:43
 msgid "Session failed to validate (password changed)"
 msgstr "Nepodařilo se ověřit relaci (změnilo se heslo)"
 
-#: include/sessions.php:49
+#: include/sessions.php:48
 msgid "Session failed to validate (account is disabled)"
 msgstr "Nepodařilo se ověřit relaci (účet je zakázán)"
 
-#: include/sessions.php:53
+#: include/sessions.php:67
 msgid "Session failed to validate (user not found)"
 msgstr "Nepodařilo se ověřit relaci (uživatel nebyl nalezen)"
 
-#: js/App.js:314
-msgid "This function is only available in combined mode."
-msgstr "Tato funkce je dostupná pouze v kombinovaném režimu."
+#: include/functions.php:62
+msgid "Detect automatically"
+msgstr "Automaticky detekovat"
 
-#: js/App.js:445
-msgid "Keyboard shortcuts"
-msgstr "Klávesové zkratky"
+#: include/login_form.php:145
+msgid "I forgot my password"
+msgstr "Zapomněl jsem heslo"
 
-#: js/App.js:506
-msgid "Update daemon is not running."
-msgstr "Démon aktualizací není spuštěný."
+#: include/login_form.php:150
+msgid "Profile:"
+msgstr "Profil:"
 
-#: js/App.js:519
-msgid "Update daemon is not updating feeds."
-msgstr "Démon aktualizací neaktualizuje kanály."
+#: include/login_form.php:163
+msgid "Use less traffic"
+msgstr "Používat méně provozu"
 
-#: js/App.js:606
-#, java-printf-format
-msgid ""
-"URL scheme reported by your browser (%a) doesn't match server-configured "
-"SELF_URL_PATH (%b), check X-Forwarded-Proto."
-msgstr ""
-"Schéma URL nahlášené vaším prohlížečem (%a) neodpovídá SELF_URL_PATH "
-"nakonfigurované na serveru (%b), zkontrolujte X-Forwarded-Proto."
+#: include/login_form.php:167
+msgid "Does not display images in articles, reduces automatic refreshes."
+msgstr "Nezobrazuje obrázky v článcích, snižuje automatická obnovení."
 
-#: js/App.js:613
-msgid "Fatal error"
-msgstr "Závažná chyba"
+#: include/login_form.php:175 js/CommonDialogs.js:16
+msgid "Safe mode"
+msgstr "Bezpečný režim"
 
-#: js/App.js:638
-msgid "Unhandled exception"
-msgstr "Neošetřená výjimka"
+#: include/login_form.php:180
+msgid "Uses default theme and prevents all plugins from loading."
+msgstr "Používá výchozí motiv a brání všem modulům v načtení."
 
-#: js/App.js:871
-msgid "Updates for Tiny Tiny RSS are available."
-msgstr "Jsou dostupné aktualizace pro Tiny Tiny RSS."
+#: include/login_form.php:188
+msgid "Remember me"
+msgstr "Zapamatovat si mě"
 
-#: js/App.js:874
-msgid "Updates for some local plugins are available."
-msgstr "Jsou dostupné aktualizace pro některé místní moduly."
+#: js/PrefFilterTree.js:63 js/CommonFilters.js:225
+msgid "in"
+msgstr "v"
 
-#: js/App.js:917
-msgid "Widescreen is not available in combined mode."
-msgstr "Širokoúhlá obrazovka není dostupná v kombinovaném režimu."
+#: js/PrefFilterTree.js:66
+msgid "Inverse"
+msgstr "Inverzní"
 
-#: js/App.js:1118
-msgid "Please enable mail or mailto plugin first."
-msgstr "Nejdříve povolte modul mail nebo mailto."
+#: js/PrefFilterTree.js:136 js/PrefFilterTree.js:165
+msgid "No filters selected."
+msgstr "Nejsou vybrány žádné filtry."
 
-#: js/App.js:1169 js/App.js:1283 js/CommonDialogs.js:349
-msgid "You can't edit this kind of feed."
-msgstr "Nemůžete upravit tento druh kanálu."
+#: js/PrefFilterTree.js:140
+msgid "Combine selected filters?"
+msgstr "Kombinovat vybrané filtry?"
 
-#: js/App.js:1241
-msgid "Please enable af_readability first."
-msgstr "Nejdříve povolte af_readability."
+#: js/PrefFilterTree.js:141
+msgid "Joining filters..."
+msgstr "Spojování filtrů..."
 
-#: js/App.js:1292
-msgid "Please select some feed first."
-msgstr "Nejdříve vyberte nějaký kanál."
+#: js/PrefFilterTree.js:152
+msgid "Remove selected filters?"
+msgstr "Odebrat vybrané filtry?"
 
-#: js/App.js:1297
-msgid "You can't unsubscribe from the category."
-msgstr "Nemůžete odhlásit odběr kategorie."
+#: js/PrefFilterTree.js:153
+msgid "Removing selected filters..."
+msgstr "Odebírání vybraných filtrů..."
 
-#: js/App.js:1303 js/CommonDialogs.js:323 js/CommonDialogs.js:364
-#, java-printf-format, javascript-format
-msgid "Unsubscribe from %s?"
-msgstr "Odhlásit odběr %s?"
-
-#: js/Article.js:36
-msgid "Please enter new score for selected articles:"
-msgstr "Zadejte nové hodnocení pro vybrané články:"
-
-#: js/Article.js:62 js/Headlines.js:947 js/Headlines.js:973 js/Headlines.js:985
-#: js/Headlines.js:1128 js/Headlines.js:1145 js/Headlines.js:1162
-#: js/Headlines.js:1299
-msgid "No articles selected."
-msgstr "Nejsou vybrány žádné články."
-
-#: js/Article.js:70
-msgid "Please enter new score for this article:"
-msgstr "Zadejte nové hodnocení pro tento článek:"
-
-#: js/Article.js:130
-msgid "Article URL:"
-msgstr "URL článku:"
-
-#: js/Article.js:132
-msgid "No URL could be displayed for this article."
-msgstr "Pro tento článek nemůže být zobrazena žádná adresa URL."
-
-#: js/Article.js:154
-msgid "no tags"
-msgstr "žádné štítky"
-
-#: js/Article.js:246
-msgid "comments"
-msgstr "komentáře"
-
-#: js/Article.js:249
-msgid "comment"
-msgid_plural "comments"
-msgstr[0] "komentář"
-msgstr[1] "komentáře"
-msgstr[2] "komentářů"
-
-#: js/Article.js:340
-msgid "Article tags"
-msgstr "Štítky článku"
-
-#: js/Article.js:347
-msgid "Tags for this article (separated by commas):"
-msgstr "Štítky pro tento článek (oddělené čárkami):"
-
-#: js/Article.js:367
-msgid "Saving article tags..."
-msgstr "Ukládání štítků článku…"
-
-#: js/CommonDialogs.js:45
-msgid ""
-"Provided URL is a HTML page referencing multiple feeds, please select "
-"required feed from the dropdown menu below."
-msgstr ""
-"Zadaná adresa URL je stránka HTML odkazující na více kanálů, vyberte "
-"požadovaný kanál z níže uvedené rozevírací nabídky."
-
-#: js/CommonDialogs.js:137
-msgid ""
-"Failed to parse output. This can indicate server timeout and/or network "
-"issues. Backend output was logged to browser console."
-msgstr ""
-"Nepodařilo se zpracovat výstup. To může znamenat vypršení časového limitu "
-"serveru a/nebo problémy se sítí. Výstup vnitřního jádra byl zaznamenán do "
-"konzole prohlížeče."
-
-#: js/CommonDialogs.js:150
-msgid "You are already subscribed to this feed."
-msgstr "Již jste přihlášeni k odběru tohoto kanálu."
-
-#: js/CommonDialogs.js:154
-#, java-printf-format, javascript-format
-msgid "Subscribed to %s"
-msgstr "Přihlášen k odběru %s"
-
-#: js/CommonDialogs.js:163
-msgid "Specified URL seems to be invalid."
-msgstr "Zdá se, že zadaná URL je neplatná."
-
-#: js/CommonDialogs.js:166
-msgid "Specified URL doesn't seem to contain any feeds."
-msgstr "Zdá se, že zadaná URL neobsahuje žádné kanály."
-
-#: js/CommonDialogs.js:179
-msgid "Expand to select feed"
-msgstr "Rozbalte pro výběr kanálu"
-
-#: js/CommonDialogs.js:191
-#, java-printf-format, javascript-format
-msgid "Couldn't download the specified URL: %s"
-msgstr "Nelze stáhnout zadanou URL: %s"
-
-#: js/CommonDialogs.js:194
-#, java-printf-format, javascript-format
-msgid "XML validation failed: %s"
-msgstr "Ověření XML selhalo: %s"
-
-#: js/CommonDialogs.js:197
-msgid "Error while creating feed database entry."
-msgstr "Chyba při vytváření záznamu v databázi kanálu."
-
-#: js/CommonDialogs.js:200
-msgid "You are not allowed to perform this operation."
-msgstr "Nejste oprávněni k provedení této operace."
-
-#: js/CommonDialogs.js:222
-msgid "Feeds with update errors"
-msgstr "Kanály s chybami aktualizace"
-
-#: js/CommonDialogs.js:230 js/PrefFeedTree.js:488
-msgid "Remove selected feeds?"
-msgstr "Odebrat vybrané kanály?"
-
-#: js/CommonDialogs.js:231 js/PrefFeedTree.js:489
-msgid "Removing selected feeds..."
-msgstr "Odebírání vybraných kanálů..."
-
-#: js/CommonDialogs.js:251 js/PrefFeedTree.js:217 js/PrefFeedTree.js:286
-#: js/PrefFeedTree.js:302 js/PrefFeedTree.js:507
-msgid "No feeds selected."
-msgstr "Nejsou vybrány žádné kanály."
-
-#: js/CommonDialogs.js:304
-msgid "Please enter label caption:"
-msgstr "Zadejte titulek štítku:"
-
-#: js/CommonDialogs.js:326
-msgid "Removing feed..."
-msgstr "Odebírání kanálu..."
-
-#: js/CommonDialogs.js:374
-msgid "Please select an image file."
-msgstr "Vyberte soubor obrázku."
-
-#: js/CommonDialogs.js:394
-msgid "Icon file is too large."
-msgstr "Soubor ikony je příliš velký."
-
-#: js/CommonDialogs.js:397
-msgid "Upload failed."
-msgstr "Nahrávání selhalo."
-
-#: js/CommonDialogs.js:427
-msgid "Remove stored feed icon?"
-msgstr "Odebrat uloženou ikonu kanálu?"
-
-#: js/CommonDialogs.js:428
-msgid "Removing feed icon..."
-msgstr "Odebírání ikony kanálu..."
-
-#: js/CommonDialogs.js:431
-msgid "Feed icon removed."
-msgstr "Ikona kanálu odebrána."
-
-#: js/CommonDialogs.js:451 js/CommonFilters.js:396 js/PrefFeedTree.js:354
-#: js/PrefUsers.js:42
-msgid "Saving data..."
-msgstr "Ukládání dat..."
-
-#: js/CommonDialogs.js:598
-msgid "Upload new icon..."
-msgstr "Nahrát novou ikonu…"
-
-#: js/CommonDialogs.js:627 js/Headlines.js:639
-msgid "Show as feed"
-msgstr "Zobrazit jako kanál"
-
-#: js/CommonDialogs.js:629
-msgid "Generate new syndication address for this feed?"
-msgstr "Generovat novou adresu syndikace pro tento kanál?"
-
-#: js/CommonDialogs.js:631
-msgid "Trying to change address..."
-msgstr "Pokus o změnu adresy..."
-
-#: js/CommonDialogs.js:649
-msgid "Could not change feed URL."
-msgstr "Nelze změnit URL kanálu."
-
-#: js/CommonDialogs.js:656
-#, java-printf-format, javascript-format
-msgid "%s can be accessed via the following secret URL:"
-msgstr "K %s lze přistupovat pomocí následující tajné URL:"
+#: js/common.js:468
+msgid "Click to close"
+msgstr "Klikněte pro zavření"
 
 #: js/CommonFilters.js:14
 msgid "Edit filter"
@@ -2277,10 +2021,6 @@ msgstr "Inverzní porovnání regulárního výrazu"
 msgid "on"
 msgstr "zapnuto"
 
-#: js/CommonFilters.js:225 js/PrefFilterTree.js:54
-msgid "in"
-msgstr "v"
-
 #: js/CommonFilters.js:251
 msgid "Edit action"
 msgstr "Upravit akci"
@@ -2296,6 +2036,11 @@ msgstr "Odebrat filtr?"
 #: js/CommonFilters.js:366
 msgid "Removing filter..."
 msgstr "Odebírání filtru..."
+
+#: js/CommonFilters.js:396 js/PrefUsers.js:42 js/PrefFeedTree.js:365
+#: js/CommonDialogs.js:475
+msgid "Saving data..."
+msgstr "Ukládání dat..."
 
 #: js/CommonFilters.js:453 js/CommonFilters.js:485 js/PrefHelpers.js:195
 msgid "Add"
@@ -2313,88 +2058,29 @@ msgstr "Test"
 msgid "Create"
 msgstr "Vytvořit"
 
-#: js/FeedTree.js:105 js/Headlines.js:1585
-msgid "Open site"
-msgstr "Otevřít stránku"
-
-#: js/FeedTree.js:114 js/Headlines.js:1594
-msgid "Debug feed"
-msgstr "Ladit kanál"
-
-#: js/FeedTree.js:137
-msgid "(Un)collapse"
-msgstr "Rozbalit nebo sbalit"
-
-#: js/Feeds.js:262
-msgid "Your password is at default value"
-msgstr "Vaše heslo má výchozí hodnotu"
-
-#: js/Feeds.js:264
-msgid ""
-"You are using default tt-rss password. Please change it in the Preferences "
-"(Personal data / Authentication)."
-msgstr ""
-"Používáte výchozí heslo tt-rss. Změňte ho v Předvolbách (Osobní údaje / "
-"Ověření)."
-
-#: js/Feeds.js:419
-msgid "Mark all articles as read?"
-msgstr "Označit všechny články jako přečtené?"
-
-#: js/Feeds.js:423
-msgid "Marking all feeds as read..."
-msgstr "Označování všech kanálů jako přečtených..."
-
-#: js/Feeds.js:440
-msgid "Mark %w in %s older than 1 day as read?"
-msgstr "Označit %w v %s starší než 1 den jako přečtené?"
-
-#: js/Feeds.js:443
-msgid "Mark %w in %s older than 1 week as read?"
-msgstr "Označit %w v %s starší než 1 týden jako přečtené?"
-
-#: js/Feeds.js:446
-msgid "Mark %w in %s older than 2 weeks as read?"
-msgstr "Označit %w v %s starší než 2 týdny jako přečtené?"
-
-#: js/Feeds.js:449
-msgid "Mark %w in %s as read?"
-msgstr "Označit %w v %s jako přečtené?"
-
-#: js/Feeds.js:452
-msgid "search results"
-msgstr "výsledky hledání"
-
-#: js/Feeds.js:452
-msgid "all articles"
-msgstr "všechny články"
-
-#: js/Feeds.js:493
-#, java-printf-format, javascript-format
-msgid "Mark all articles in %s as read?"
-msgstr "Označit všechny články v %s jako přečtené?"
-
-#: js/Feeds.js:628
-msgid "Search syntax"
-msgstr "Syntaxe hledání"
-
-#: js/Headlines.js:648
+#: js/Headlines.js:651
 msgid "Cancel search"
 msgstr "Zrušit hledání"
 
-#: js/Headlines.js:662
+#: js/Headlines.js:665
 msgid "Select..."
 msgstr "Vybrat..."
 
-#: js/Headlines.js:822 js/Headlines.js:876 js/Headlines.js:893
+#: js/Headlines.js:825 js/Headlines.js:879 js/Headlines.js:896
 msgid "Click to open next unread feed."
 msgstr "Klikněte pro otevření dalšího nepřečteného kanálu."
 
-#: js/Headlines.js:890
+#: js/Headlines.js:893
 msgid "New articles found, reload feed to continue."
 msgstr "Nalezeny nové články, načtěte znovu kanál pro pokračování."
 
-#: js/Headlines.js:1099
+#: js/Headlines.js:950 js/Headlines.js:976 js/Headlines.js:988
+#: js/Headlines.js:1131 js/Headlines.js:1148 js/Headlines.js:1165
+#: js/Headlines.js:1302 js/Article.js:62
+msgid "No articles selected."
+msgstr "Nejsou vybrány žádné články."
+
+#: js/Headlines.js:1102
 #, java-printf-format, javascript-format
 msgid "%d article selected"
 msgid_plural "%d articles selected"
@@ -2402,7 +2088,7 @@ msgstr[0] "%d vybraný článek"
 msgstr[1] "%d vybrané články"
 msgstr[2] "%d vybraných článků"
 
-#: js/Headlines.js:1170
+#: js/Headlines.js:1173
 #, java-printf-format, javascript-format
 msgid "Delete %d selected article in %s?"
 msgid_plural "Delete %d selected articles in %s?"
@@ -2410,7 +2096,7 @@ msgstr[0] "Odstranit %d vybraný článek v %s?"
 msgstr[1] "Odstranit %d vybrané články v %s?"
 msgstr[2] "Odstranit %d vybraných článků v %s?"
 
-#: js/Headlines.js:1172
+#: js/Headlines.js:1175
 #, java-printf-format, javascript-format
 msgid "Delete %d selected article?"
 msgid_plural "Delete %d selected articles?"
@@ -2418,7 +2104,7 @@ msgstr[0] "Odstranit %d vybraný článek?"
 msgstr[1] "Odstranit %d vybrané články?"
 msgstr[2] "Odstranit %d vybraných článků?"
 
-#: js/Headlines.js:1305
+#: js/Headlines.js:1308
 #, java-printf-format, javascript-format
 msgid "Mark %d selected article in %s as read?"
 msgid_plural "Mark %d selected articles in %s as read?"
@@ -2426,15 +2112,15 @@ msgstr[0] "Označit %d vybraný článek v %s jako přečtený?"
 msgstr[1] "Označit %d vybrané články v %s jako přečtené?"
 msgstr[2] "Označit %d vybraných článků v %s jako přečtené?"
 
-#: js/Headlines.js:1321
+#: js/Headlines.js:1324
 msgid "No article is selected."
 msgstr "Není vybrán žádný článek."
 
-#: js/Headlines.js:1356
+#: js/Headlines.js:1359
 msgid "No articles found to mark"
 msgstr "Nenalezeny žádné články k označení"
 
-#: js/Headlines.js:1358
+#: js/Headlines.js:1361
 #, java-printf-format, javascript-format
 msgid "Mark %d article as read?"
 msgid_plural "Mark %d articles as read?"
@@ -2442,129 +2128,42 @@ msgstr[0] "Označit %d článek jako přečtený?"
 msgstr[1] "Označit %d články jako přečtené?"
 msgstr[2] "Označit %d článků jako přečtené?"
 
-#: js/Headlines.js:1417
+#: js/Headlines.js:1420
 msgid "Open original article"
 msgstr "Otevřít původní článek"
 
-#: js/Headlines.js:1424
+#: js/Headlines.js:1427
 msgid "Display article URL"
 msgstr "Zobrazit URL článku"
 
-#: js/Headlines.js:1531
+#: js/Headlines.js:1534
 msgid "Assign label"
 msgstr "Přiřadit štítek"
 
-#: js/Headlines.js:1536
+#: js/Headlines.js:1539
 msgid "Remove label"
 msgstr "Odebrat štítek"
 
-#: js/Headlines.js:1615
+#: js/Headlines.js:1588 js/FeedTree.js:105 js/Headlines.js:473
+#: js/Headlines.js:522 js/Headlines.js:591
+msgid "Open site"
+msgstr "Otevřít stránku"
+
+#: js/Headlines.js:1597 js/FeedTree.js:114
+msgid "Debug feed"
+msgstr "Ladit kanál"
+
+#: js/Headlines.js:1618
 msgid "Select articles in group"
 msgstr "Vybrat články ve skupině"
 
-#: js/Headlines.js:1625
+#: js/Headlines.js:1628
 msgid "Mark group as read"
 msgstr "Označit skupinu jako přečtenou"
 
-#: js/Headlines.js:1637
+#: js/Headlines.js:1640
 msgid "Mark feed as read"
 msgstr "Označit kanál jako přečtený"
-
-#: js/PrefFeedTree.js:83
-msgid "Edit category"
-msgstr "Upravit kategorii"
-
-#: js/PrefFeedTree.js:90
-msgid "Remove category"
-msgstr "Odebrat kategorii"
-
-#: js/PrefFeedTree.js:189
-#, java-printf-format, javascript-format
-msgid ""
-"Remove category %s? Any nested feeds would be placed into Uncategorized."
-msgstr ""
-"Odebrat kategorii %s? Všechny vnořené kanály budou umístěny do kategorie "
-"Nezařazeno."
-
-#: js/PrefFeedTree.js:190
-msgid "Removing category..."
-msgstr "Odebírání kategorie..."
-
-#: js/PrefFeedTree.js:202
-msgid "Unsubscribe from selected feeds?"
-msgstr "Odhlásit odběr vybraných kanálů?"
-
-#: js/PrefFeedTree.js:204
-msgid "Unsubscribing from selected feeds..."
-msgstr "Odhlašování odběru vybraných kanálů..."
-
-#: js/PrefFeedTree.js:252
-msgid "Remove selected categories?"
-msgstr "Odebrat vybrané kategorie?"
-
-#: js/PrefFeedTree.js:253
-msgid "Removing selected categories..."
-msgstr "Odebírání vybraných kategorií..."
-
-#: js/PrefFeedTree.js:265
-msgid "No categories selected."
-msgstr "Nejsou vybrány žádné kategorie."
-
-#: js/PrefFeedTree.js:313
-msgid "Edit multiple feeds"
-msgstr "Upravit více kanálů"
-
-#: js/PrefFeedTree.js:342
-msgid "Save changes to selected feeds?"
-msgstr "Uložit změny ve vybraných kanálech?"
-
-#: js/PrefFeedTree.js:391
-msgid "Category title:"
-msgstr "Název kategorie:"
-
-#: js/PrefFeedTree.js:394
-msgid "Creating category..."
-msgstr "Vytváření kategorie..."
-
-#: js/PrefFeedTree.js:409
-msgid "Subscribing to feeds..."
-msgstr "Přihlašování k odběru kanálů..."
-
-#: js/PrefFeedTree.js:427
-msgid "One valid feed per line (no detection is done)"
-msgstr "Jeden platný kanál na řádek (neprobíhá žádná detekce)"
-
-#: js/PrefFeedTree.js:480
-msgid "Feeds without recent updates"
-msgstr "Kanály bez nedávných aktualizací"
-
-#: js/PrefFeedTree.js:530 js/CommonDialogs.js:277
-msgid "Click to edit feed"
-msgstr "Klikněte pro úpravu kanálu"
-
-#: js/PrefFilterTree.js:57
-msgid "Inverse"
-msgstr "Inverzní"
-
-#: js/PrefFilterTree.js:127 js/PrefFilterTree.js:156
-msgid "No filters selected."
-msgstr "Nejsou vybrány žádné filtry."
-
-#: js/PrefFilterTree.js:131
-msgid "Combine selected filters?"
-msgstr "Kombinovat vybrané filtry?"
-
-#: js/PrefFilterTree.js:132
-msgid "Joining filters..."
-msgstr "Spojování filtrů..."
-
-#: js/PrefFilterTree.js:143
-msgid "Remove selected filters?"
-msgstr "Odebrat vybrané filtry?"
-
-#: js/PrefFilterTree.js:144
-msgid "Removing selected filters..."
-msgstr "Odebírání vybraných filtrů..."
 
 #: js/PrefHelpers.js:20
 msgid "Remove selected app passwords?"
@@ -2783,33 +2382,107 @@ msgstr ""
 "Pokud jste importovali štítky a/nebo filtry, budete možná muset znovu načíst "
 "předvolby pro zobrazení nových dat."
 
-#: js/PrefLabelTree.js:71
-msgid "Edit label"
-msgstr "Upravit popisek"
+#: js/Article.js:36
+msgid "Please enter new score for selected articles:"
+msgstr "Zadejte nové hodnocení pro vybrané články:"
 
-#: js/PrefLabelTree.js:143
-msgid "Foreground:"
-msgstr "Popředí:"
+#: js/Article.js:70
+msgid "Please enter new score for this article:"
+msgstr "Zadejte nové hodnocení pro tento článek:"
 
-#: js/PrefLabelTree.js:144
-msgid "Background:"
-msgstr "Pozadí:"
+#: js/Article.js:130
+msgid "Article URL:"
+msgstr "URL článku:"
 
-#: js/PrefLabelTree.js:189
-msgid "Reset selected labels to default colors?"
-msgstr "Obnovit vybrané štítky na výchozí barvy?"
+#: js/Article.js:132
+msgid "No URL could be displayed for this article."
+msgstr "Pro tento článek nemůže být zobrazena žádná adresa URL."
 
-#: js/PrefLabelTree.js:202 js/PrefLabelTree.js:222
-msgid "No labels selected."
-msgstr "Nejsou vybrány žádné štítky."
+#: js/Article.js:152
+msgid "no tags"
+msgstr "žádné štítky"
 
-#: js/PrefLabelTree.js:209
-msgid "Remove selected labels?"
-msgstr "Odebrat vybrané štítky?"
+#: js/Article.js:244
+msgid "comments"
+msgstr "komentáře"
 
-#: js/PrefLabelTree.js:210
-msgid "Removing selected labels..."
-msgstr "Odebírání vybraných štítků..."
+#: js/Article.js:247
+msgid "comment"
+msgid_plural "comments"
+msgstr[0] "komentář"
+msgstr[1] "komentáře"
+msgstr[2] "komentářů"
+
+#: js/Article.js:352
+msgid "Article tags"
+msgstr "Štítky článku"
+
+#: js/Article.js:359
+msgid "Tags for this article (separated by commas):"
+msgstr "Štítky pro tento článek (oddělené čárkami):"
+
+#: js/Article.js:379
+msgid "Saving article tags..."
+msgstr "Ukládání štítků článku…"
+
+#: js/Feeds.js:286
+msgid "Your password is at default value"
+msgstr "Vaše heslo má výchozí hodnotu"
+
+#: js/Feeds.js:288
+msgid ""
+"You are using default tt-rss password. Please change it in the Preferences "
+"(Personal data / Authentication)."
+msgstr ""
+"Používáte výchozí heslo tt-rss. Změňte ho v Předvolbách (Osobní údaje / "
+"Ověření)."
+
+#: js/Feeds.js:443
+msgid "Mark all articles as read?"
+msgstr "Označit všechny články jako přečtené?"
+
+#: js/Feeds.js:447
+msgid "Marking all feeds as read..."
+msgstr "Označování všech kanálů jako přečtených..."
+
+#: js/Feeds.js:464
+msgid "Mark %w in %s older than 1 day as read?"
+msgstr "Označit %w v %s starší než 1 den jako přečtené?"
+
+#: js/Feeds.js:467
+msgid "Mark %w in %s older than 1 week as read?"
+msgstr "Označit %w v %s starší než 1 týden jako přečtené?"
+
+#: js/Feeds.js:470
+msgid "Mark %w in %s older than 2 weeks as read?"
+msgstr "Označit %w v %s starší než 2 týdny jako přečtené?"
+
+#: js/Feeds.js:473
+msgid "Mark %w in %s as read?"
+msgstr "Označit %w v %s jako přečtené?"
+
+#: js/Feeds.js:476
+msgid "search results"
+msgstr "výsledky hledání"
+
+#: js/Feeds.js:476
+msgid "all articles"
+msgstr "všechny články"
+
+#: js/Feeds.js:517
+#, java-printf-format, javascript-format
+msgid "Mark all articles in %s as read?"
+msgstr "Označit všechny články v %s jako přečtené?"
+
+#: js/Feeds.js:652
+msgid "Search syntax"
+msgstr "Syntaxe hledání"
+
+#: js/Feeds.js:716
+#, fuzzy
+#| msgid "Search %s..."
+msgid "Search feeds"
+msgstr "Hledat %s..."
 
 #: js/PrefUsers.js:19
 msgid "Please enter username:"
@@ -2851,21 +2524,329 @@ msgstr ""
 msgid "Removing selected users..."
 msgstr "Odebírání vybraných uživatelů..."
 
-#: js/common.js:449
-msgid "Click to close"
-msgstr "Klikněte pro zavření"
+#: js/PrefFeedTree.js:94
+msgid "Edit category"
+msgstr "Upravit kategorii"
 
-#: plugins/af_psql_trgm/init.js:6
-msgid "Related articles"
-msgstr "Související články"
+#: js/PrefFeedTree.js:101
+msgid "Remove category"
+msgstr "Odebrat kategorii"
 
-#: plugins/af_readability/init.js:31
-msgid "Unable to fetch full text for this article"
-msgstr "Nelze načíst úplný text pro tento článek"
+#: js/PrefFeedTree.js:200
+#, java-printf-format, javascript-format
+msgid ""
+"Remove category %s? Any nested feeds would be placed into Uncategorized."
+msgstr ""
+"Odebrat kategorii %s? Všechny vnořené kanály budou umístěny do kategorie "
+"Nezařazeno."
+
+#: js/PrefFeedTree.js:201
+msgid "Removing category..."
+msgstr "Odebírání kategorie..."
+
+#: js/PrefFeedTree.js:213
+msgid "Unsubscribe from selected feeds?"
+msgstr "Odhlásit odběr vybraných kanálů?"
+
+#: js/PrefFeedTree.js:215
+msgid "Unsubscribing from selected feeds..."
+msgstr "Odhlašování odběru vybraných kanálů..."
+
+#: js/PrefFeedTree.js:228 js/PrefFeedTree.js:297 js/PrefFeedTree.js:313
+#: js/PrefFeedTree.js:518 js/CommonDialogs.js:251 js/CommonDialogs.js:272
+msgid "No feeds selected."
+msgstr "Nejsou vybrány žádné kanály."
+
+#: js/PrefFeedTree.js:263
+msgid "Remove selected categories?"
+msgstr "Odebrat vybrané kategorie?"
+
+#: js/PrefFeedTree.js:264
+msgid "Removing selected categories..."
+msgstr "Odebírání vybraných kategorií..."
+
+#: js/PrefFeedTree.js:276
+msgid "No categories selected."
+msgstr "Nejsou vybrány žádné kategorie."
+
+#: js/PrefFeedTree.js:324
+msgid "Edit multiple feeds"
+msgstr "Upravit více kanálů"
+
+#: js/PrefFeedTree.js:353
+msgid "Save changes to selected feeds?"
+msgstr "Uložit změny ve vybraných kanálech?"
+
+#: js/PrefFeedTree.js:402
+msgid "Category title:"
+msgstr "Název kategorie:"
+
+#: js/PrefFeedTree.js:405
+msgid "Creating category..."
+msgstr "Vytváření kategorie..."
+
+#: js/PrefFeedTree.js:420
+msgid "Subscribing to feeds..."
+msgstr "Přihlašování k odběru kanálů..."
+
+#: js/PrefFeedTree.js:438
+msgid "One valid feed per line (no detection is done)"
+msgstr "Jeden platný kanál na řádek (neprobíhá žádná detekce)"
+
+#: js/PrefFeedTree.js:491
+msgid "Feeds without recent updates"
+msgstr "Kanály bez nedávných aktualizací"
+
+#: js/PrefFeedTree.js:499 js/CommonDialogs.js:230
+msgid "Remove selected feeds?"
+msgstr "Odebrat vybrané kanály?"
+
+#: js/PrefFeedTree.js:500 js/CommonDialogs.js:231
+msgid "Removing selected feeds..."
+msgstr "Odebírání vybraných kanálů..."
+
+#: js/PrefFeedTree.js:541 js/CommonDialogs.js:298
+msgid "Click to edit feed"
+msgstr "Klikněte pro úpravu kanálu"
+
+#: js/CommonDialogs.js:45
+msgid ""
+"Provided URL is a HTML page referencing multiple feeds, please select "
+"required feed from the dropdown menu below."
+msgstr ""
+"Zadaná adresa URL je stránka HTML odkazující na více kanálů, vyberte "
+"požadovaný kanál z níže uvedené rozevírací nabídky."
+
+#: js/CommonDialogs.js:137
+msgid ""
+"Failed to parse output. This can indicate server timeout and/or network "
+"issues. Backend output was logged to browser console."
+msgstr ""
+"Nepodařilo se zpracovat výstup. To může znamenat vypršení časového limitu "
+"serveru a/nebo problémy se sítí. Výstup vnitřního jádra byl zaznamenán do "
+"konzole prohlížeče."
+
+#: js/CommonDialogs.js:150
+msgid "You are already subscribed to this feed."
+msgstr "Již jste přihlášeni k odběru tohoto kanálu."
+
+#: js/CommonDialogs.js:154
+#, java-printf-format, javascript-format
+msgid "Subscribed to %s"
+msgstr "Přihlášen k odběru %s"
+
+#: js/CommonDialogs.js:163
+msgid "Specified URL seems to be invalid."
+msgstr "Zdá se, že zadaná URL je neplatná."
+
+#: js/CommonDialogs.js:166
+msgid "Specified URL doesn't seem to contain any feeds."
+msgstr "Zdá se, že zadaná URL neobsahuje žádné kanály."
+
+#: js/CommonDialogs.js:179
+msgid "Expand to select feed"
+msgstr "Rozbalte pro výběr kanálu"
+
+#: js/CommonDialogs.js:191
+#, java-printf-format, javascript-format
+msgid "Couldn't download the specified URL: %s"
+msgstr "Nelze stáhnout zadanou URL: %s"
+
+#: js/CommonDialogs.js:194
+#, java-printf-format, javascript-format
+msgid "XML validation failed: %s"
+msgstr "Ověření XML selhalo: %s"
+
+#: js/CommonDialogs.js:197
+msgid "Error while creating feed database entry."
+msgstr "Chyba při vytváření záznamu v databázi kanálu."
+
+#: js/CommonDialogs.js:200
+msgid "You are not allowed to perform this operation."
+msgstr "Nejste oprávněni k provedení této operace."
+
+#: js/CommonDialogs.js:222
+msgid "Feeds with update errors"
+msgstr "Kanály s chybami aktualizace"
+
+#: js/CommonDialogs.js:258
+#, fuzzy
+#| msgid "Remove selected feeds?"
+msgid "Debug selected feeds?"
+msgstr "Odebrat vybrané kanály?"
+
+#: js/CommonDialogs.js:259
+#, fuzzy
+#| msgid "Removing selected feeds..."
+msgid "Opening debugger for selected feeds..."
+msgstr "Odebírání vybraných kanálů..."
+
+#: js/CommonDialogs.js:328
+msgid "Please enter label caption:"
+msgstr "Zadejte titulek štítku:"
+
+#: js/CommonDialogs.js:347 js/CommonDialogs.js:388 js/App.js:1304
+#, java-printf-format, javascript-format
+msgid "Unsubscribe from %s?"
+msgstr "Odhlásit odběr %s?"
+
+#: js/CommonDialogs.js:350
+msgid "Removing feed..."
+msgstr "Odebírání kanálu..."
+
+#: js/CommonDialogs.js:373 js/App.js:1167 js/App.js:1284
+msgid "You can't edit this kind of feed."
+msgstr "Nemůžete upravit tento druh kanálu."
+
+#: js/CommonDialogs.js:398
+msgid "Please select an image file."
+msgstr "Vyberte soubor obrázku."
+
+#: js/CommonDialogs.js:418
+msgid "Icon file is too large."
+msgstr "Soubor ikony je příliš velký."
+
+#: js/CommonDialogs.js:421
+msgid "Upload failed."
+msgstr "Nahrávání selhalo."
+
+#: js/CommonDialogs.js:451
+msgid "Remove stored feed icon?"
+msgstr "Odebrat uloženou ikonu kanálu?"
+
+#: js/CommonDialogs.js:452
+msgid "Removing feed icon..."
+msgstr "Odebírání ikony kanálu..."
+
+#: js/CommonDialogs.js:455
+msgid "Feed icon removed."
+msgstr "Ikona kanálu odebrána."
+
+#: js/CommonDialogs.js:622
+msgid "Upload new icon..."
+msgstr "Nahrát novou ikonu…"
+
+#: js/CommonDialogs.js:651 js/Headlines.js:642
+msgid "Show as feed"
+msgstr "Zobrazit jako kanál"
+
+#: js/CommonDialogs.js:653
+msgid "Generate new syndication address for this feed?"
+msgstr "Generovat novou adresu syndikace pro tento kanál?"
+
+#: js/CommonDialogs.js:655
+msgid "Trying to change address..."
+msgstr "Pokus o změnu adresy..."
+
+#: js/CommonDialogs.js:673
+msgid "Could not change feed URL."
+msgstr "Nelze změnit URL kanálu."
+
+#: js/CommonDialogs.js:680
+#, java-printf-format, javascript-format
+msgid "%s can be accessed via the following secret URL:"
+msgstr "K %s lze přistupovat pomocí následující tajné URL:"
+
+#: js/App.js:314
+msgid "This function is only available in combined mode."
+msgstr "Tato funkce je dostupná pouze v kombinovaném režimu."
+
+#: js/App.js:445
+msgid "Keyboard shortcuts"
+msgstr "Klávesové zkratky"
+
+#: js/App.js:506
+msgid "Update daemon is not running."
+msgstr "Démon aktualizací není spuštěný."
+
+#: js/App.js:519
+msgid "Update daemon is not updating feeds."
+msgstr "Démon aktualizací neaktualizuje kanály."
+
+#: js/App.js:606
+#, java-printf-format
+msgid ""
+"URL scheme reported by your browser (%a) doesn't match server-configured "
+"SELF_URL_PATH (%b), check X-Forwarded-Proto."
+msgstr ""
+"Schéma URL nahlášené vaším prohlížečem (%a) neodpovídá SELF_URL_PATH "
+"nakonfigurované na serveru (%b), zkontrolujte X-Forwarded-Proto."
+
+#: js/App.js:613
+msgid "Fatal error"
+msgstr "Závažná chyba"
+
+#: js/App.js:638
+msgid "Unhandled exception"
+msgstr "Neošetřená výjimka"
+
+#: js/App.js:873
+msgid "Updates for Tiny Tiny RSS are available."
+msgstr "Jsou dostupné aktualizace pro Tiny Tiny RSS."
+
+#: js/App.js:876
+msgid "Updates for some local plugins are available."
+msgstr "Jsou dostupné aktualizace pro některé místní moduly."
+
+#: js/App.js:919
+msgid "Widescreen is not available in combined mode."
+msgstr "Širokoúhlá obrazovka není dostupná v kombinovaném režimu."
+
+#: js/App.js:1116
+msgid "Please enable mail or mailto plugin first."
+msgstr "Nejdříve povolte modul mail nebo mailto."
+
+#: js/App.js:1239
+msgid "Please enable af_readability first."
+msgstr "Nejdříve povolte af_readability."
+
+#: js/App.js:1293
+msgid "Please select some feed first."
+msgstr "Nejdříve vyberte nějaký kanál."
+
+#: js/App.js:1298
+msgid "You can't unsubscribe from the category."
+msgstr "Nemůžete odhlásit odběr kategorie."
+
+#: js/FeedTree.js:137
+msgid "(Un)collapse"
+msgstr "Rozbalit nebo sbalit"
+
+#: js/PrefLabelTree.js:71
+msgid "Edit label"
+msgstr "Upravit popisek"
+
+#: js/PrefLabelTree.js:143
+msgid "Foreground:"
+msgstr "Popředí:"
+
+#: js/PrefLabelTree.js:144
+msgid "Background:"
+msgstr "Pozadí:"
+
+#: js/PrefLabelTree.js:189
+msgid "Reset selected labels to default colors?"
+msgstr "Obnovit vybrané štítky na výchozí barvy?"
+
+#: js/PrefLabelTree.js:202 js/PrefLabelTree.js:222
+msgid "No labels selected."
+msgstr "Nejsou vybrány žádné štítky."
+
+#: js/PrefLabelTree.js:209
+msgid "Remove selected labels?"
+msgstr "Odebrat vybrané štítky?"
+
+#: js/PrefLabelTree.js:210
+msgid "Removing selected labels..."
+msgstr "Odebírání vybraných štítků..."
 
 #: plugins/note/note.js:19
 msgid "Saving article note..."
 msgstr "Ukládání poznámky článku..."
+
+#: plugins/share/share_prefs.js:5
+msgid "This will invalidate all previously shared article URLs. Continue?"
+msgstr "Zneplatní všechny dříve vygenerované URL sdílených článků. Pokračovat?"
 
 #: plugins/share/share.js:7
 msgid "Share article by URL"
@@ -2887,77 +2868,13 @@ msgstr "Nelze změnit URL."
 msgid "Remove sharing for this article?"
 msgstr "Odebrat sdílení pro tento článek?"
 
-#: plugins/share/share_prefs.js:5
-msgid "This will invalidate all previously shared article URLs. Continue?"
-msgstr "Zneplatní všechny dříve vygenerované URL sdílených článků. Pokračovat?"
+#: plugins/af_psql_trgm/init.js:6
+msgid "Related articles"
+msgstr "Související články"
 
 #: plugins/shorten_expanded/init.js:32
 msgid "Expand article"
 msgstr "Rozbalit článek"
-
-#: js/App.js:646
-msgid "Stack trace"
-msgstr "Sledování zásobníku"
-
-#: js/App.js:653
-msgid "Additional information"
-msgstr "Dodatečné informace"
-
-#: js/Article.js:207
-msgid "Attachments"
-msgstr "Přílohy"
-
-#: js/Article.js:319 js/Headlines.js:551
-msgid "Edit tags for this article"
-msgstr "Upravit značky pro tento článek"
-
-#: js/CommonDialogs.js:18
-msgid ""
-"Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. "
-"You will need to log out and back in to disable it."
-msgstr ""
-"Tiny Tiny RSS běží v nouzovém režimu. Všechny motivy a moduly jsou zakázány. "
-"Pro jeho vypnutí se budete muset odhlásit a znovu přihlásit."
-
-#: js/CommonDialogs.js:53
-msgid "Feed or site URL"
-msgstr "Kanál nebo URL stránky"
-
-#: js/CommonDialogs.js:68
-msgid "Available feeds"
-msgstr "Dostupné kanály"
-
-#: js/CommonDialogs.js:85 js/PrefFeedTree.js:446
-msgid "Login"
-msgstr "Přihlášení"
-
-#: js/CommonDialogs.js:101
-msgid "This feed requires authentication."
-msgstr "Tento kanál vyžaduje ověření."
-
-#: js/CommonDialogs.js:291 js/PrefFeedTree.js:544
-msgid "Unsubscribe from selected feeds"
-msgstr "Odhlásit odběr vybraných kanálů"
-
-#: js/CommonDialogs.js:502
-msgid "Feed title"
-msgstr "Název kanálu"
-
-#: js/CommonDialogs.js:509
-msgid "Feed URL"
-msgstr "URL kanálu"
-
-#: js/CommonDialogs.js:528
-msgid "Site URL:"
-msgstr "URL stránky:"
-
-#: js/CommonDialogs.js:530
-msgid "Site URL"
-msgstr "URL stránky"
-
-#: js/CommonDialogs.js:593
-msgid "Icon"
-msgstr "Ikona"
 
 #: js/CommonFilters.js:71
 msgid "No recent articles matching this filter have been found."
@@ -2983,54 +2900,37 @@ msgstr "Odpovídá"
 msgid "Apply actions"
 msgstr "Použít akce"
 
-#: js/Feeds.js:269
-msgid "Open Preferences"
-msgstr "Otevřít Předvolby"
-
-#: js/Feeds.js:612
-#, javascript-format
-msgid "Search %s..."
-msgstr "Hledat %s..."
-
-#: js/Feeds.js:621
-msgid "Used for word stemming"
-msgstr "Použito pro rozklad slov"
-
-#: js/Headlines.js:471
+#: js/Headlines.js:474
 msgid "mark feed as read"
 msgstr "označit kanál jako přečtený"
 
-#: js/Headlines.js:524
+#: js/Headlines.js:527
 msgid "Span all columns"
 msgstr "Překlenout všechny sloupce"
 
-#: js/Headlines.js:665
+#: js/Headlines.js:554 js/Article.js:317
+msgid "Edit tags for this article"
+msgstr "Upravit značky pro tento článek"
+
+#: js/Headlines.js:668
 msgid "Invert"
 msgstr "Invertovat"
 
-#: js/Headlines.js:673
+#: js/Headlines.js:676
 msgid "Set score"
 msgstr "Nastavit hodnocení"
 
-#: js/Headlines.js:682
+#: js/Headlines.js:685
 msgid "Delete permanently"
 msgstr "Trvale odstranit"
 
-#: js/Headlines.js:913
+#: js/Headlines.js:916
 msgid ""
 "Could not update headlines (invalid object received - see error console for "
 "details)"
 msgstr ""
 "Nelze aktualizovat nadpisy (obdržen neplatný objekt – podrobnosti v chybové "
 "konzoli)"
-
-#: js/PrefFeedTree.js:379
-msgid "Rename category to:"
-msgstr "Přejmenovat kategorii na:"
-
-#: js/PrefFeedTree.js:455
-msgid "Feeds require authentication."
-msgstr "Kanály vyžadují ověření."
 
 #: js/PrefHelpers.js:229
 msgid "Clone"
@@ -3076,9 +2976,26 @@ msgstr[0] "Čekající aktualizace pro %d modul"
 msgstr[1] "Čekající aktualizace pro %d moduly"
 msgstr[2] "Čekající aktualizace pro %d modulů"
 
-#: js/PrefLabelTree.js:126
-msgid "Caption"
-msgstr "Titulek"
+#: js/Article.js:205
+msgid "Attachments"
+msgstr "Přílohy"
+
+#: js/Feeds.js:293
+msgid "Open Preferences"
+msgstr "Otevřít Předvolby"
+
+#: js/Feeds.js:636
+#, javascript-format
+msgid "Search %s..."
+msgstr "Hledat %s..."
+
+#: js/Feeds.js:645
+msgid "Used for word stemming"
+msgstr "Použito pro rozklad slov"
+
+#: js/Feeds.js:705
+msgid "Show feeds matching..."
+msgstr ""
 
 #: js/PrefUsers.js:76
 msgid "Access level: "
@@ -3091,6 +3008,136 @@ msgstr "Jednorázové heslo povoleno"
 #: js/PrefUsers.js:104
 msgid "User details"
 msgstr "Podrobnosti o uživateli"
+
+#: js/PrefFeedTree.js:390
+msgid "Rename category to:"
+msgstr "Přejmenovat kategorii na:"
+
+#: js/PrefFeedTree.js:466
+msgid "Feeds require authentication."
+msgstr "Kanály vyžadují ověření."
+
+#: js/PrefFeedTree.js:555 js/CommonDialogs.js:312
+msgid "Unsubscribe from selected feeds"
+msgstr "Odhlásit odběr vybraných kanálů"
+
+#: js/CommonDialogs.js:18
+msgid ""
+"Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. "
+"You will need to log out and back in to disable it."
+msgstr ""
+"Tiny Tiny RSS běží v nouzovém režimu. Všechny motivy a moduly jsou zakázány. "
+"Pro jeho vypnutí se budete muset odhlásit a znovu přihlásit."
+
+#: js/CommonDialogs.js:53
+msgid "Feed or site URL"
+msgstr "Kanál nebo URL stránky"
+
+#: js/CommonDialogs.js:68
+msgid "Available feeds"
+msgstr "Dostupné kanály"
+
+#: js/CommonDialogs.js:101
+msgid "This feed requires authentication."
+msgstr "Tento kanál vyžaduje ověření."
+
+#: js/CommonDialogs.js:315
+#, fuzzy
+#| msgid "Edit selected feeds"
+msgid "Debug selected feeds"
+msgstr "Upravit vybrané kanály"
+
+#: js/CommonDialogs.js:526
+msgid "Feed title"
+msgstr "Název kanálu"
+
+#: js/CommonDialogs.js:533
+msgid "Feed URL"
+msgstr "URL kanálu"
+
+#: js/CommonDialogs.js:552
+msgid "Site URL:"
+msgstr "URL stránky:"
+
+#: js/CommonDialogs.js:554
+msgid "Site URL"
+msgstr "URL stránky"
+
+#: js/CommonDialogs.js:617
+msgid "Icon"
+msgstr "Ikona"
+
+#: js/App.js:646
+msgid "Stack trace"
+msgstr "Sledování zásobníku"
+
+#: js/App.js:653
+msgid "Additional information"
+msgstr "Dodatečné informace"
+
+#: js/PrefLabelTree.js:126
+msgid "Caption"
+msgstr "Titulek"
+
+#~ msgid "Data saved."
+#~ msgstr "Data uložena."
+
+#~ msgid "Inline content"
+#~ msgstr "Vložený obsah"
+
+#~ msgid "Append content"
+#~ msgstr "Připojit obsah"
+
+#~ msgid "Toggle full article text"
+#~ msgstr "Přepnout úplný text článku"
+
+#~ msgid "Readability settings (af_readability)"
+#~ msgstr "Nastavení Readability (af_readability)"
+
+#~ msgid ""
+#~ "Provide full-text services to core code (bookmarklets) and other plugins"
+#~ msgstr ""
+#~ "Zadejte fulltextové služby pro základní kód (záložkové aplety) a další "
+#~ "moduly"
+
+#~ msgid "(append)"
+#~ msgstr "(připojit)"
+
+#~ msgid "Readability"
+#~ msgstr "Readability"
+
+#~ msgid "Inline article content"
+#~ msgstr "Vložený obsah článku"
+
+#~ msgid "Append to summary, instead of replacing it"
+#~ msgstr "Připojit k souhrnu namísto jeho nahrazení"
+
+#~ msgid "Reddit content settings (af_redditimgur)"
+#~ msgstr "Nastavení obsahu Redditu (af_redditimgur)"
+
+#~ msgid "Apply tags to NSFW posts (comma-separated list):"
+#~ msgstr ""
+#~ "Použít štítky na příspěvky Neotvírat v práci (čárkami oddělený seznam):"
+
+#~ msgid "Extract missing content using Readability (requires af_readability)"
+#~ msgstr ""
+#~ "Extrahovat chybějící obsah pomocí Readability (vyžaduje af_readability)"
+
+#~ msgid "Enable additional duplicate checking"
+#~ msgstr "Povolit dodatečnou kontrolu duplicit"
+
+#, php-format
+#~ msgid "Rewrite Reddit URLs to %s"
+#~ msgstr "Přepsat adresy URL Redditu na %s"
+
+#~ msgid "Import score, limit maximum to:"
+#~ msgstr "Importovat skóre, omezit maximum na:"
+
+#~ msgid "Configuration saved"
+#~ msgstr "Konfigurace uložena"
+
+#~ msgid "Unable to fetch full text for this article"
+#~ msgstr "Nelze načíst úplný text pro tento článek"
 
 #~ msgid "Error: unable to find moved OPML file."
 #~ msgstr "Chyba: nelze nalézt přesunutý soubor OPML."
@@ -3406,9 +3453,6 @@ msgstr "Podrobnosti o uživateli"
 
 #~ msgid "Access Level"
 #~ msgstr "Úroveň přístupu"
-
-#~ msgid "Last login"
-#~ msgstr "Poslední přihlášení"
 
 #~ msgid "No users defined."
 #~ msgstr "Nejsou definováni žádní uživatelé."
@@ -3877,9 +3921,6 @@ msgstr "Podrobnosti o uživateli"
 #~ msgid "E-mail"
 #~ msgstr "E-mail"
 
-#~ msgid "Access level"
-#~ msgstr "Úroveň přístupu"
-
 #~ msgid ""
 #~ "One time passwords are currently enabled. Enter your current password "
 #~ "below to disable."
@@ -4064,15 +4105,15 @@ msgstr "Podrobnosti o uživateli"
 #~ "vyžádání."
 
 #~ msgid ""
-#~ "Download more plugins at tt-rss.org <a class=\"visibleLink\" target="
-#~ "\"_blank\" href=\"http://tt-rss.org/forum/viewforum.php?f=22\">forums</a> "
-#~ "or <a target=\"_blank\" class=\"visibleLink\" href=\"http://tt-rss.org/"
-#~ "wiki/Plugins\">wiki</a>."
+#~ "Download more plugins at tt-rss.org <a class=\"visibleLink\" "
+#~ "target=\"_blank\" href=\"http://tt-rss.org/forum/viewforum.php?"
+#~ "f=22\">forums</a> or <a target=\"_blank\" class=\"visibleLink\" "
+#~ "href=\"http://tt-rss.org/wiki/Plugins\">wiki</a>."
 #~ msgstr ""
-#~ "Stáhnout více modulů na <a class=\"visibleLink\" target=\"_blank\" href="
-#~ "\"http://tt-rss.org/forum/viewforum.php?f=22\">fórech</a> nebo <a target="
-#~ "\"_blank\" class=\"visibleLink\" href=\"http://tt-rss.org/wiki/Plugins"
-#~ "\">wiki</a> tt-rss.org."
+#~ "Stáhnout více modulů na <a class=\"visibleLink\" target=\"_blank\" "
+#~ "href=\"http://tt-rss.org/forum/viewforum.php?f=22\">fórech</a> nebo <a "
+#~ "target=\"_blank\" class=\"visibleLink\" href=\"http://tt-rss.org/wiki/"
+#~ "Plugins\">wiki</a> tt-rss.org."
 
 #~ msgid "Linked"
 #~ msgstr "Propojeno"

@@ -9,10 +9,10 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-15 14:03+0300\n"
-"PO-Revision-Date: 2024-06-15 13:45+0000\n"
+"PO-Revision-Date: 2024-06-15 15:44+0000\n"
 "Last-Translator: Ptsa Daniel <ptsa1987@gmail.com>\n"
-"Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/tt-"
-"rss/webui/zh_Hans/>\n"
+"Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
+"tt-rss/webui/zh_Hans/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -209,23 +209,21 @@ msgid "Search..."
 msgstr "搜索..."
 
 #: index.php:265
-#, fuzzy
-#| msgid "Search %s..."
 msgid "Search feeds..."
-msgstr "搜索 %s ..."
+msgstr "搜索供稿..."
 
 #: index.php:266
 msgid "Feed actions:"
-msgstr "订阅源动作："
+msgstr "供稿动作："
 
 #: index.php:267 plugins/bookmarklets/init.php:40
 #: plugins/bookmarklets/init.php:75
 msgid "Subscribe to feed..."
-msgstr "订阅信息源..."
+msgstr "订阅供稿..."
 
 #: index.php:268
 msgid "Edit this feed..."
-msgstr "编辑订阅源..."
+msgstr "编辑供稿..."
 
 #: index.php:269 classes/Pref_Feeds.php:937 js/PrefFeedTree.js:120
 #: js/CommonDialogs.js:633
@@ -234,7 +232,7 @@ msgstr "取消订阅"
 
 #: index.php:270
 msgid "All feeds:"
-msgstr "全部订阅源："
+msgstr "全部供稿："
 
 #: index.php:272
 msgid "(Un)hide read feeds"
@@ -279,7 +277,7 @@ msgstr "退出偏好设置"
 #: prefs.php:148 classes/Pref_Prefs.php:46 classes/Pref_Feeds.php:123
 #: classes/Pref_Feeds.php:926
 msgid "Feeds"
-msgstr "订阅源"
+msgstr "供稿"
 
 #: prefs.php:152 classes/Pref_Filters.php:242
 msgid "Filters"
@@ -368,7 +366,7 @@ msgstr "将文章列表展开显示，而不是将标题和内容分别显示"
 
 #: classes/Pref_Prefs.php:105
 msgid "Confirm marking feeds as read"
-msgstr "标记订阅源为已读之前弹出确认"
+msgstr "标记供稿为已读之前弹出确认"
 
 #: classes/Pref_Prefs.php:106
 msgid "Default update interval"
@@ -416,15 +414,15 @@ msgstr "小时"
 
 #: classes/Pref_Prefs.php:113
 msgid "Hide read feeds"
-msgstr "显示/隐藏 已读信息"
+msgstr "隐藏 已读供稿"
 
 #: classes/Pref_Prefs.php:114
 msgid "Always show special feeds"
-msgstr "始终显示特殊订阅源"
+msgstr "始终显示特殊供稿"
 
 #: classes/Pref_Prefs.php:114
 msgid "While hiding read feeds"
-msgstr "隐藏已读订阅源"
+msgstr "隐藏已读供稿"
 
 #: classes/Pref_Prefs.php:115
 msgid "Long date format"
@@ -440,7 +438,7 @@ msgstr ""
 
 #: classes/Pref_Prefs.php:116
 msgid "Automatically show next feed"
-msgstr "自动显示下一个订阅源"
+msgstr "自动显示下一个供稿"
 
 #: classes/Pref_Prefs.php:116
 msgid "After marking one as read"
@@ -481,11 +479,11 @@ msgstr "时区"
 
 #: classes/Pref_Prefs.php:124
 msgid "Group by feed"
-msgstr "分组显示订阅源"
+msgstr "分组显示供稿"
 
 #: classes/Pref_Prefs.php:124
 msgid "Group multiple-feed output by originating feed"
-msgstr "按订阅源分组显示,不是聚合在一起"
+msgstr "按供稿分组显示,不是聚合在一起"
 
 #: classes/Pref_Prefs.php:125
 msgid "Language"
@@ -505,7 +503,7 @@ msgstr "可能会产生重复的条目"
 
 #: classes/Pref_Prefs.php:128
 msgid "Show article and feed IDs"
-msgstr "显示文章和订阅源ID"
+msgstr "显示文章和供稿ID"
 
 #: classes/Pref_Prefs.php:128
 msgid "In the headlines buffer"
@@ -528,14 +526,12 @@ msgid "On wider screens, if always expanded"
 msgstr "在宽屏上总是展开"
 
 #: classes/Pref_Prefs.php:131
-#, fuzzy
-#| msgid "Set score"
 msgid "Required score"
-msgstr "评分"
+msgstr "所需评分"
 
 #: classes/Pref_Prefs.php:131
 msgid "Include articles with this or above score"
-msgstr ""
+msgstr "包括此分数或以上分数的文章"
 
 #: classes/Pref_Prefs.php:233
 msgid "The configuration was saved."
@@ -710,8 +706,7 @@ msgid ""
 "The following plugins use per-feed content hooks. This may cause excessive "
 "data usage and origin server load resulting in a ban of your instance: "
 "<b>%s</b>"
-msgstr ""
-"以下插件使用按Feed内容挂钩。这可能会导致过多的数据使用和原始服务器负载，从而"
+msgstr "以下插件使用和供稿内容挂钩。这可能会导致过多的数据使用和原始服务器负载，从而"
 "导致您的实例被禁：<b>%s</b>"
 
 #: classes/Pref_Prefs.php:903 js/CommonFilters.js:235
@@ -810,7 +805,7 @@ msgstr "&lt;&lt;"
 #: classes/Pref_System.php:90
 #, php-format
 msgid "Page %d of %d"
-msgstr ""
+msgstr "第 %d页, 共 %d 页"
 
 #: classes/Pref_System.php:95
 msgid "&gt;&gt;"
@@ -870,7 +865,7 @@ msgstr "PHP信息"
 
 #: classes/Feeds.php:98 classes/Feeds.php:524
 msgid "Feed not found."
-msgstr "找不到订阅源。"
+msgstr "找不到供稿。"
 
 #: classes/Feeds.php:163
 msgid "Never"
@@ -915,15 +910,15 @@ msgstr "暂时没有文章。"
 #: classes/Feeds.php:446 classes/Feeds.php:596
 #, php-format
 msgid "Feeds last updated at %s"
-msgstr "订阅源最后更新时间：%s"
+msgstr "供稿最后更新时间：%s"
 
 #: classes/Feeds.php:457 classes/Feeds.php:607
 msgid "Some feeds have update errors (click for details)"
-msgstr "部分订阅源更新错误（点击了解详情）"
+msgstr "部分供稿更新错误（点击了解详情）"
 
 #: classes/Feeds.php:585
 msgid "No feed selected."
-msgstr "未选择订阅源。"
+msgstr "未选择供稿。"
 
 #: classes/Feeds.php:1306
 msgid "Starred articles"
@@ -970,7 +965,7 @@ msgstr "搜索结果：%s"
 #, php-format
 msgid "(%d feed)"
 msgid_plural "(%d feeds)"
-msgstr[0] "(%d 个订阅源)"
+msgstr[0] "(%d 个供稿)"
 
 #: classes/Pref_Feeds.php:549
 #, php-format
@@ -1057,19 +1052,19 @@ msgstr "取消"
 
 #: classes/Pref_Feeds.php:886
 msgid "Feeds with errors"
-msgstr "有错误的订阅源"
+msgstr "有错误的供稿"
 
 #: classes/Pref_Feeds.php:892
 msgid "Inactive feeds"
-msgstr "未活动的订阅源"
+msgstr "未活动的供稿"
 
 #: classes/Pref_Feeds.php:929 classes/RPC.php:653 js/CommonDialogs.js:34
 msgid "Subscribe to feed"
-msgstr "订阅信息源"
+msgstr "订阅供稿"
 
 #: classes/Pref_Feeds.php:931
 msgid "Edit selected feeds"
-msgstr "编辑选定的订阅源"
+msgstr "编辑选定的供稿"
 
 #: classes/Pref_Feeds.php:933 classes/Pref_Feeds.php:948
 #: classes/Pref_Filters.php:693
@@ -1114,7 +1109,7 @@ msgstr "清空所有生成的 URL"
 
 #: classes/Pref_Feeds.php:1042
 msgid "My feeds"
-msgstr "我的订阅源"
+msgstr "我的供稿"
 
 #: classes/Pref_Feeds.php:1047
 msgid "OPML"
@@ -1134,7 +1129,7 @@ msgstr "上次登录"
 
 #: classes/Pref_Users.php:66 classes/Pref_Users.php:256
 msgid "Subscribed feeds"
-msgstr "订阅的信息源"
+msgstr "订阅的供稿"
 
 #: classes/Pref_Users.php:71
 msgid "Stored articles"
@@ -1196,7 +1191,7 @@ msgstr "Git错误[RC =%d]：%s"
 #: classes/Pref_Filters.php:211 classes/Pref_Filters.php:222
 #: classes/Pref_Filters.php:442 classes/Pref_Filters.php:876
 msgid "All feeds"
-msgstr "全部订阅源"
+msgstr "全部供稿"
 
 #: classes/Pref_Filters.php:233 classes/Pref_Filters.php:462
 msgid "(inverse)"
@@ -1263,12 +1258,12 @@ msgstr "返回偏好设置"
 #: classes/OPML.php:324
 #, php-format
 msgid "Adding feed: %s"
-msgstr "添加订阅源: %s"
+msgstr "添加供稿: %s"
 
 #: classes/OPML.php:344
 #, php-format
 msgid "Duplicate feed: %s"
-msgstr "重复的订阅源:%s"
+msgstr "重复的供稿:%s"
 
 #: classes/OPML.php:358
 #, php-format
@@ -1323,19 +1318,19 @@ msgstr "导航"
 
 #: classes/RPC.php:611
 msgid "Open next feed"
-msgstr "显示下一个订阅源"
+msgstr "显示下一个供稿"
 
 #: classes/RPC.php:612
 msgid "Open next unread feed"
-msgstr "打开下一个未读订阅源"
+msgstr "打开下一个未读供稿"
 
 #: classes/RPC.php:613
 msgid "Open previous feed"
-msgstr "显示前一个订阅源"
+msgstr "显示前一个供稿"
 
 #: classes/RPC.php:614
 msgid "Open previous unread feed"
-msgstr "打开上一个未读订阅源"
+msgstr "打开上一个未读供稿"
 
 #: classes/RPC.php:615
 msgid "Open next article (in combined mode, scroll down)"
@@ -1475,20 +1470,20 @@ msgstr "取消全选"
 
 #: classes/RPC.php:650
 msgid "Feed"
-msgstr "订阅源"
+msgstr "供稿"
 
 #: classes/RPC.php:651
 msgid "Refresh current feed"
-msgstr "刷新当前订阅源"
+msgstr "刷新当前供稿"
 
 #: classes/RPC.php:652
 msgid "Un/hide read feeds"
-msgstr "显示/隐藏 已读信息"
+msgstr "显示/隐藏 已读供稿"
 
 #: classes/RPC.php:654 js/Headlines.js:1582 js/Headlines.js:1647
 #: js/PrefFeedTree.js:114 js/CommonDialogs.js:381 js/FeedTree.js:99
 msgid "Edit feed"
-msgstr "编辑订阅源"
+msgstr "编辑供稿"
 
 #: classes/RPC.php:656
 msgid "Reverse headlines"
@@ -1504,7 +1499,7 @@ msgstr "切换网格视图"
 
 #: classes/RPC.php:659
 msgid "Debug feed update"
-msgstr "调试订阅源更新"
+msgstr "调试供稿更新"
 
 #: classes/RPC.php:660
 msgid "Debug viewfeed()"
@@ -1512,7 +1507,7 @@ msgstr "调试 viewfeed()"
 
 #: classes/RPC.php:661 js/FeedTree.js:164
 msgid "Mark all feeds as read"
-msgstr "标记所有订阅源为已读"
+msgstr "标记所有供稿为已读"
 
 #: classes/RPC.php:662
 msgid "Un/collapse current category"
@@ -1715,17 +1710,10 @@ msgstr ""
 "能导致错误的结果，0 为关闭相似度检查。"
 
 #: plugins/af_psql_trgm/init.php:196
-#, fuzzy
-#| msgid ""
-#| "PostgreSQL trigram extension returns string similarity as a floating "
-#| "point number (0-1). Setting it too low might produce false positives, "
-#| "zero disables checking."
 msgid ""
 "Setting this value too low might produce false positives, zero disables "
 "checking."
-msgstr ""
-"PostgreSQL trigram 扩展将返回一个文本相似度的浮点数（0-1）。设置过低的阈值可"
-"能导致错误的结果，0 为关闭相似度检查。"
+msgstr "设置过低的阈值可能导致错误的结果，0 为关闭相似度检查。"
 
 #: plugins/af_psql_trgm/init.php:202
 msgid "Minimum title length:"
@@ -1733,7 +1721,7 @@ msgstr "最短标题长度："
 
 #: plugins/af_psql_trgm/init.php:212
 msgid "Enable for all feeds."
-msgstr "为所有订阅源启用。"
+msgstr "为所有供稿启用。"
 
 #: plugins/af_psql_trgm/init.php:231
 msgid "Currently enabled for (click to edit):"
@@ -1770,20 +1758,20 @@ msgstr "无法订阅到 <b>%s</b>。"
 #: plugins/bookmarklets/init.php:113
 #, php-format
 msgid "No feeds found in <b>%s</b>."
-msgstr "在 <b>%s</b> 中没有找到订阅源。"
+msgstr "在 <b>%s</b> 中没有找到供稿。"
 
 #: plugins/bookmarklets/init.php:119
 #, php-format
 msgid "Could not subscribe to <b>%s</b>.<br>Can't download the Feed URL."
-msgstr "无法订阅 <b>%s</b>。<br>无法下载订阅源的 URL。"
+msgstr "无法订阅 <b>%s</b>。<br>无法下载供稿的 URL。"
 
 #: plugins/bookmarklets/init.php:130
 msgid "Multiple feed URLs found:"
-msgstr "发现了多个订阅源:"
+msgstr "发现了多个供稿:"
 
 #: plugins/bookmarklets/init.php:138
 msgid "Subscribe to selected feed"
-msgstr "订阅选中的订阅源"
+msgstr "订阅选中的供稿"
 
 #: plugins/bookmarklets/init.php:156
 msgid "Edit subscription options"
@@ -1815,7 +1803,7 @@ msgstr "分享"
 
 #: plugins/bookmarklets/init.php:287
 msgid "Shared article will appear in the Published feed."
-msgstr "分享的文章将会出现在已发布的订阅源中。"
+msgstr "分享的文章将会出现在已发布的供稿中。"
 
 #: plugins/bookmarklets/init.php:326 include/login_form.php:198
 msgid "Log in"
@@ -1834,9 +1822,8 @@ msgstr "小书签"
 msgid ""
 "Drag the link below to your browser toolbar, open the feed you're interested "
 "in in your browser and click on the link to subscribe to it."
-msgstr ""
-"将以下链接拖拽至您的浏览器书签，在浏览器中打开您想看的订阅源，然后点击链接以"
-"订阅。"
+msgstr "将以下链接拖拽至您的浏览器书签，在浏览器中打开您想看的供稿，然后点击链接以订"
+"阅。"
 
 #: plugins/bookmarklets/init.php:358
 msgid "Subscribe in Tiny Tiny RSS"
@@ -1868,7 +1855,7 @@ msgstr "原密码输入错误。"
 
 #: plugins/af_comics/init.php:63
 msgid "Feeds supported by af_comics"
-msgstr "af_comics 的 feed 源"
+msgstr "af_comics 的供稿"
 
 #: plugins/af_comics/init.php:65
 msgid "The following comics are currently supported:"
@@ -2043,7 +2030,7 @@ msgstr "选择..."
 
 #: js/Headlines.js:825 js/Headlines.js:879 js/Headlines.js:896
 msgid "Click to open next unread feed."
-msgstr "点击打开下一个未读订阅源。"
+msgstr "点击打开下一个未读供稿。"
 
 #: js/Headlines.js:893
 msgid "New articles found, reload feed to continue."
@@ -2116,7 +2103,7 @@ msgstr "打开网站"
 
 #: js/Headlines.js:1597 js/FeedTree.js:114
 msgid "Debug feed"
-msgstr "调试订阅源"
+msgstr "调试供稿"
 
 #: js/Headlines.js:1618
 msgid "Select articles in group"
@@ -2128,7 +2115,7 @@ msgstr "将分类标记为已读"
 
 #: js/Headlines.js:1640
 msgid "Mark feed as read"
-msgstr "标记订阅源为已读"
+msgstr "标记供稿为已读"
 
 #: js/PrefHelpers.js:20
 msgid "Remove selected app passwords?"
@@ -2136,7 +2123,7 @@ msgstr "删除所选的APP密码？"
 
 #: js/PrefHelpers.js:45
 msgid "This will invalidate all previously generated feed URLs. Continue?"
-msgstr "这将使之前生成的信息源 URL 将会回到未认证状态。是否继续？"
+msgstr "这将使之前生成的供稿 URL 失效。是否继续？"
 
 #: js/PrefHelpers.js:46 plugins/share/share_prefs.js:6
 msgid "Clearing URLs..."
@@ -2399,7 +2386,7 @@ msgstr "将所有文章标记为已读？"
 
 #: js/Feeds.js:447
 msgid "Marking all feeds as read..."
-msgstr "标记所有订阅源为已读..."
+msgstr "标记所有供稿为已读..."
 
 #: js/Feeds.js:464
 msgid "Mark %w in %s older than 1 day as read?"
@@ -2435,10 +2422,8 @@ msgid "Search syntax"
 msgstr "搜索语法"
 
 #: js/Feeds.js:716
-#, fuzzy
-#| msgid "Search %s..."
 msgid "Search feeds"
-msgstr "搜索 %s ..."
+msgstr "搜索供稿"
 
 #: js/PrefUsers.js:19
 msgid "Please enter username:"
@@ -2490,7 +2475,7 @@ msgstr "删除分类"
 #, java-printf-format, javascript-format
 msgid ""
 "Remove category %s? Any nested feeds would be placed into Uncategorized."
-msgstr "删除类别 %s？该类别下的源将被归入未分类中。"
+msgstr "删除类别 %s？该类别下的供稿将被归入未分类中。"
 
 #: js/PrefFeedTree.js:201
 msgid "Removing category..."
@@ -2498,16 +2483,16 @@ msgstr "删除分类..."
 
 #: js/PrefFeedTree.js:213
 msgid "Unsubscribe from selected feeds?"
-msgstr "退订选择订阅源？"
+msgstr "退订选择的供稿？"
 
 #: js/PrefFeedTree.js:215
 msgid "Unsubscribing from selected feeds..."
-msgstr "取消订阅选中的订阅源..."
+msgstr "取消订阅选中的供稿..."
 
 #: js/PrefFeedTree.js:228 js/PrefFeedTree.js:297 js/PrefFeedTree.js:313
 #: js/PrefFeedTree.js:518 js/CommonDialogs.js:251 js/CommonDialogs.js:272
 msgid "No feeds selected."
-msgstr "没有选中订阅源。"
+msgstr "没有选中供稿。"
 
 #: js/PrefFeedTree.js:263
 msgid "Remove selected categories?"
@@ -2523,11 +2508,11 @@ msgstr "没有选中分类。"
 
 #: js/PrefFeedTree.js:324
 msgid "Edit multiple feeds"
-msgstr "编辑多个订阅源"
+msgstr "编辑多个供稿"
 
 #: js/PrefFeedTree.js:353
 msgid "Save changes to selected feeds?"
-msgstr "保存对订阅源的更改？"
+msgstr "保存对供稿的更改？"
 
 #: js/PrefFeedTree.js:402
 msgid "Category title:"
@@ -2539,34 +2524,33 @@ msgstr "创建分类..."
 
 #: js/PrefFeedTree.js:420
 msgid "Subscribing to feeds..."
-msgstr "订阅信息源.."
+msgstr "订阅供稿.."
 
 #: js/PrefFeedTree.js:438
 msgid "One valid feed per line (no detection is done)"
-msgstr "每行添加一条RSS源（未进行检测）"
+msgstr "每行添加一条供稿（未进行检测）"
 
 #: js/PrefFeedTree.js:491
 msgid "Feeds without recent updates"
-msgstr "最近没更新的订阅源"
+msgstr "最近没更新的供稿"
 
 #: js/PrefFeedTree.js:499 js/CommonDialogs.js:230
 msgid "Remove selected feeds?"
-msgstr "移除选中的订阅源？"
+msgstr "移除选中的供稿？"
 
 #: js/PrefFeedTree.js:500 js/CommonDialogs.js:231
 msgid "Removing selected feeds..."
-msgstr "正在移除选中的订阅源..."
+msgstr "正在移除选中的供稿..."
 
 #: js/PrefFeedTree.js:541 js/CommonDialogs.js:298
 msgid "Click to edit feed"
-msgstr "点击以编辑订阅源"
+msgstr "点击以编辑供稿"
 
 #: js/CommonDialogs.js:45
 msgid ""
 "Provided URL is a HTML page referencing multiple feeds, please select "
 "required feed from the dropdown menu below."
-msgstr ""
-"提供的URL是引用多个订阅源的HTML页面，请从下面的下拉菜单中选择所需的订阅源。"
+msgstr "提供的URL是引用多个供稿的HTML页面，请从下面的下拉菜单中选择所需的供稿。"
 
 #: js/CommonDialogs.js:137
 msgid ""
@@ -2578,7 +2562,7 @@ msgstr ""
 
 #: js/CommonDialogs.js:150
 msgid "You are already subscribed to this feed."
-msgstr "您已经订阅过这个订阅源啦。"
+msgstr "您已经订阅过这个供稿啦。"
 
 #: js/CommonDialogs.js:154
 #, java-printf-format, javascript-format
@@ -2591,11 +2575,11 @@ msgstr "指定的 URL 无效。"
 
 #: js/CommonDialogs.js:166
 msgid "Specified URL doesn't seem to contain any feeds."
-msgstr "指定的 URL 没有包含任何订阅源。"
+msgstr "指定的 URL 没有包含任何供稿。"
 
 #: js/CommonDialogs.js:179
 msgid "Expand to select feed"
-msgstr "展开选择的订阅源"
+msgstr "展开选择的供稿"
 
 #: js/CommonDialogs.js:191
 #, java-printf-format, javascript-format
@@ -2609,7 +2593,7 @@ msgstr "XML 验证失败：%s"
 
 #: js/CommonDialogs.js:197
 msgid "Error while creating feed database entry."
-msgstr "创建订阅源数据库条目时出错。"
+msgstr "创建供稿数据库条目时出错。"
 
 #: js/CommonDialogs.js:200
 msgid "You are not allowed to perform this operation."
@@ -2617,19 +2601,15 @@ msgstr "您无权执行此操作。"
 
 #: js/CommonDialogs.js:222
 msgid "Feeds with update errors"
-msgstr "订阅源更新错误"
+msgstr "供稿更新错误"
 
 #: js/CommonDialogs.js:258
-#, fuzzy
-#| msgid "Remove selected feeds?"
 msgid "Debug selected feeds?"
-msgstr "移除选中的订阅源？"
+msgstr "调试选定的供稿？"
 
 #: js/CommonDialogs.js:259
-#, fuzzy
-#| msgid "Removing selected feeds..."
 msgid "Opening debugger for selected feeds..."
-msgstr "正在移除选中的订阅源..."
+msgstr "正在打开选定供稿的调试器..."
 
 #: js/CommonDialogs.js:328
 msgid "Please enter label caption:"
@@ -2642,11 +2622,11 @@ msgstr "从 %s 取消订阅？"
 
 #: js/CommonDialogs.js:350
 msgid "Removing feed..."
-msgstr "删除 feed..."
+msgstr "删除供稿..."
 
 #: js/CommonDialogs.js:373 js/App.js:1167 js/App.js:1284
 msgid "You can't edit this kind of feed."
-msgstr "您无法编辑这种类型的订阅源。"
+msgstr "您无法编辑这种类型的供稿。"
 
 #: js/CommonDialogs.js:398
 msgid "Please select an image file."
@@ -2662,15 +2642,15 @@ msgstr "上传失败。"
 
 #: js/CommonDialogs.js:451
 msgid "Remove stored feed icon?"
-msgstr "移除已保存的订阅源图标？"
+msgstr "移除已保存的供稿图标？"
 
 #: js/CommonDialogs.js:452
 msgid "Removing feed icon..."
-msgstr "移除订阅源图标..."
+msgstr "移除供稿图标..."
 
 #: js/CommonDialogs.js:455
 msgid "Feed icon removed."
-msgstr "订阅源图标已删除."
+msgstr "供稿图标已删除."
 
 #: js/CommonDialogs.js:622
 msgid "Upload new icon..."
@@ -2678,11 +2658,11 @@ msgstr "上载新图示..."
 
 #: js/CommonDialogs.js:651 js/Headlines.js:642
 msgid "Show as feed"
-msgstr "以订阅源显示"
+msgstr "以供稿显示"
 
 #: js/CommonDialogs.js:653
 msgid "Generate new syndication address for this feed?"
-msgstr "为本订阅源生成新的群地址？"
+msgstr "为本供稿生成新的联合地址？"
 
 #: js/CommonDialogs.js:655
 msgid "Trying to change address..."
@@ -2690,7 +2670,7 @@ msgstr "尝试更改地址..."
 
 #: js/CommonDialogs.js:673
 msgid "Could not change feed URL."
-msgstr "无法更改订阅源网址。"
+msgstr "无法更改供稿网址。"
 
 #: js/CommonDialogs.js:680
 #, java-printf-format, javascript-format
@@ -2711,7 +2691,7 @@ msgstr "更新守护程序未运行。"
 
 #: js/App.js:519
 msgid "Update daemon is not updating feeds."
-msgstr "更新程序未更新订阅源."
+msgstr "更新程序未更新供稿."
 
 #: js/App.js:606
 #, java-printf-format
@@ -2752,7 +2732,7 @@ msgstr "请先启用af_readability."
 
 #: js/App.js:1293
 msgid "Please select some feed first."
-msgstr "请先选择订阅源。"
+msgstr "请先选择供稿。"
 
 #: js/App.js:1298
 msgid "You can't unsubscribe from the category."
@@ -2852,7 +2832,7 @@ msgstr "应用操作"
 
 #: js/Headlines.js:474
 msgid "mark feed as read"
-msgstr "标记信息源为已读"
+msgstr "标记供稿为已读"
 
 #: js/Headlines.js:527
 msgid "Span all columns"
@@ -2941,7 +2921,7 @@ msgstr "词干提取"
 
 #: js/Feeds.js:705
 msgid "Show feeds matching..."
-msgstr ""
+msgstr "显示符合的供稿..."
 
 #: js/PrefUsers.js:76
 msgid "Access level: "
@@ -2961,11 +2941,11 @@ msgstr "更名分类到:"
 
 #: js/PrefFeedTree.js:466
 msgid "Feeds require authentication."
-msgstr "Feed需要登录认证。"
+msgstr "供稿需要登录认证。"
 
 #: js/PrefFeedTree.js:555 js/CommonDialogs.js:312
 msgid "Unsubscribe from selected feeds"
-msgstr "退订选中的信息源"
+msgstr "退订选中的供稿"
 
 #: js/CommonDialogs.js:18
 msgid ""
@@ -2977,29 +2957,27 @@ msgstr ""
 
 #: js/CommonDialogs.js:53
 msgid "Feed or site URL"
-msgstr "信息源或网站 URL"
+msgstr "供稿或网站 URL"
 
 #: js/CommonDialogs.js:68
 msgid "Available feeds"
-msgstr "可用的订阅源"
+msgstr "可用的供稿"
 
 #: js/CommonDialogs.js:101
 msgid "This feed requires authentication."
-msgstr "这个订阅源需要认证."
+msgstr "这个供稿需要认证."
 
 #: js/CommonDialogs.js:315
-#, fuzzy
-#| msgid "Edit selected feeds"
 msgid "Debug selected feeds"
-msgstr "编辑选定的订阅源"
+msgstr "编辑选定的供稿"
 
 #: js/CommonDialogs.js:526
 msgid "Feed title"
-msgstr "订阅源标题"
+msgstr "供稿标题"
 
 #: js/CommonDialogs.js:533
 msgid "Feed URL"
-msgstr "信息源 URL"
+msgstr "供稿 URL"
 
 #: js/CommonDialogs.js:552
 msgid "Site URL:"

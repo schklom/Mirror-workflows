@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-15 14:03+0300\n"
-"PO-Revision-Date: 2024-06-15 15:44+0000\n"
+"PO-Revision-Date: 2024-06-16 17:09+0000\n"
 "Last-Translator: Ptsa Daniel <ptsa1987@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "tt-rss/webui/zh_Hans/>\n"
@@ -495,7 +495,7 @@ msgstr "主题"
 
 #: classes/Pref_Prefs.php:127
 msgid "Don't enforce DISTINCT headlines"
-msgstr "不要强制DISTINCT 标题"
+msgstr "不要强制使用不同的标题"
 
 #: classes/Pref_Prefs.php:127
 msgid "May produce duplicate entries"

@@ -1,17 +1,23 @@
 stages:
   - lint
   - build
+  - push
   - test
   - publish
 
 variables:
   ESLINT_PATHS: js plugins
   REGISTRY_PROJECT: cthulhoo
+  IMAGE_TAR_FPM: image-fpm.tar
+  IMAGE_TAR_WEB: image-web.tar
 
 include:
   - project: 'ci/ci-templates'
     ref: master
     file: .ci-build-docker-kaniko.yml
+  - project: 'ci/ci-templates'
+    ref: master
+    file: .ci-registry-push.yml
   - project: 'ci/ci-templates'
     ref: master
     file: .ci-lint-common.yml
@@ -33,25 +39,45 @@ eslint:
 phpstan:
   extends: .phpstan
 
-ttrss-web-nginx:branch:
-  extends: .build-branch
-  variables:
-    DOCKERFILE: ${CI_PROJECT_DIR}/.docker/web-nginx/Dockerfile
-
-ttrss-fpm-pgsql-static:branch:
-  extends: .build-branch
+ttrss-fpm-pgsql-static:build:
+  extends: .build-docker-kaniko-no-push
   variables:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/app/Dockerfile
+    IMAGE_TAR: ${IMAGE_TAR_FPM}
 
-ttrss-web-nginx:
-  extends: .build-master-commit-only
+ttrss-fpm-pgsql-static:push-master-commit-only:
+  extends: .crane-image-registry-push-master-commit-only
+  variables:
+    IMAGE_TAR: ${IMAGE_TAR_FPM}
+  needs:
+    - job: ttrss-fpm-pgsql-static:build
+
+ttrss-fpm-pgsql-static:push-branch:
+  extends: .crane-image-registry-push-branch
+  variables:
+    IMAGE_TAR: ${IMAGE_TAR_FPM}
+  needs:
+    - job: ttrss-fpm-pgsql-static:build
+
+ttrss-web-nginx:build:
+  extends: .build-docker-kaniko-no-push
   variables:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/web-nginx/Dockerfile
+    IMAGE_TAR: ${IMAGE_TAR_WEB}
 
-ttrss-fpm-pgsql-static:
-  extends: .build-master-commit-only
+ttrss-web-nginx:push-master-commit-only:
+  extends: .crane-image-registry-push-master-commit-only
   variables:
-    DOCKERFILE: ${CI_PROJECT_DIR}/.docker/app/Dockerfile
+    IMAGE_TAR: ${IMAGE_TAR_WEB}
+  needs:
+    - job: ttrss-web-nginx:build
+
+ttrss-web-nginx:push-branch:
+  extends: .crane-image-registry-push-branch
+  variables:
+    IMAGE_TAR: ${IMAGE_TAR_WEB}
+  needs:
+    - job: ttrss-web-nginx:build
 
 phpdoc:
   image: ${PHP_IMAGE}
@@ -103,19 +129,48 @@ selenium:
     reports:
       junit: selenium-report.xml
 
-ttrss-web-nginx:publish:
-  stage: publish
-  extends: .build-master
-  variables:
-    DOCKERFILE: ${CI_PROJECT_DIR}/.docker/web-nginx/Dockerfile
-
 ttrss-fpm-pgsql-static:publish:
   stage: publish
-  extends: .build-master
+  extends: .crane-image-registry-push-master
   variables:
-    DOCKERFILE: ${CI_PROJECT_DIR}/.docker/app/Dockerfile
+    IMAGE_TAR: ${IMAGE_TAR_FPM}
+  needs:
+    - job: ttrss-fpm-pgsql-static:build
+    - job: phpunit-integration
+    - job: selenium
+
+ttrss-fpm-pgsql-static:publish-docker-hub:
+  stage: publish
+  extends: .crane-image-registry-push-master-docker-hub
+  variables:
+    IMAGE_TAR: ${IMAGE_TAR_FPM}
+  needs:
+    - job: ttrss-fpm-pgsql-static:build
+    - job: phpunit-integration
+    - job: selenium
+
+ttrss-web-nginx:publish:
+  stage: publish
+  extends: .crane-image-registry-push-master
+  variables:
+    IMAGE_TAR: ${IMAGE_TAR_WEB}
+  needs:
+    - job: ttrss-web-nginx:build
+    - job: phpunit-integration
+    - job: selenium
+
+ttrss-web-nginx:publish-docker-hub:
+  stage: publish
+  extends: .crane-image-registry-push-master-docker-hub
+  variables:
+    IMAGE_TAR: ${IMAGE_TAR_WEB}
+  needs:
+    - job: ttrss-web-nginx:build
+    - job: phpunit-integration
+    - job: selenium
 
 update-demo:
+  stage: publish
   extends: .update-helm-imagetag
   variables:
     CHART_REPO: gitlab.fakecake.org/git/helm-charts/tt-rss.git
@@ -123,9 +178,9 @@ update-demo:
     ACCESS_TOKEN: ${DEMO_HELM_TOKEN}
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $DEMO_HELM_TOKEN != null
-  stage: publish
 
 update-prod:
+  stage: publish
   extends: .update-helm-imagetag
   variables:
     CHART_REPO: gitlab.fakecake.org/git/helm-charts/tt-rss-prod.git
@@ -133,4 +188,3 @@ update-prod:
     ACCESS_TOKEN: ${PROD_HELM_TOKEN}
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $PROD_HELM_TOKEN != null
-  stage: publish

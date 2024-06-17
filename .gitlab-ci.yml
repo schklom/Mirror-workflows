@@ -149,6 +149,16 @@ ttrss-fpm-pgsql-static:publish-docker-hub:
     - job: phpunit-integration
     - job: selenium
 
+ttrss-fpm-pgsql-static:publish-gitlab:
+  stage: publish
+  extends: .crane-image-registry-push-master-gitlab
+  variables:
+    IMAGE_TAR: ${IMAGE_TAR_FPM}
+  needs:
+    - job: ttrss-fpm-pgsql-static:build
+    - job: phpunit-integration
+    - job: selenium
+
 ttrss-web-nginx:publish:
   stage: publish
   extends: .crane-image-registry-push-master
@@ -162,6 +172,16 @@ ttrss-web-nginx:publish:
 ttrss-web-nginx:publish-docker-hub:
   stage: publish
   extends: .crane-image-registry-push-master-docker-hub
+  variables:
+    IMAGE_TAR: ${IMAGE_TAR_WEB}
+  needs:
+    - job: ttrss-web-nginx:build
+    - job: phpunit-integration
+    - job: selenium
+
+ttrss-web-nginx:publish-gitlab:
+  stage: publish
+  extends: .crane-image-registry-push-master-gitlab
   variables:
     IMAGE_TAR: ${IMAGE_TAR_WEB}
   needs:

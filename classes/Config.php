@@ -238,7 +238,7 @@ class Config {
 		Config::FILE_FETCH_TIMEOUT => [ 45,								Config::T_INT ],
 		Config::FILE_FETCH_CONNECT_TIMEOUT => [ 15,					Config::T_INT ],
 		Config::DAEMON_UPDATE_LOGIN_LIMIT => [ 30,					Config::T_INT ],
-		Config::DAEMON_FEED_LIMIT => [ 500,								Config::T_INT ],
+		Config::DAEMON_FEED_LIMIT => [ 50,								Config::T_INT ],
 		Config::DAEMON_SLEEP_INTERVAL => [ 120,						Config::T_INT ],
 		Config::MAX_CACHE_FILE_SIZE => [ 64*1024*1024,				Config::T_INT ],
 		Config::MAX_DOWNLOAD_FILE_SIZE => [ 16*1024*1024,			Config::T_INT ],

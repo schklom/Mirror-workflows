@@ -121,6 +121,9 @@ class Config {
 	/** max concurrent update jobs forking update daemon starts */
 	const DAEMON_MAX_JOBS = "DAEMON_MAX_JOBS";
 
+	/** log level for update daemon */
+	const DAEMON_LOG_LEVEL = "DAEMON_LOG_LEVEL";
+
 	/** How long to wait for response when requesting feed from a site (seconds)  */
 	const FEED_FETCH_TIMEOUT = "FEED_FETCH_TIMEOUT";
 
@@ -229,6 +232,7 @@ class Config {
 																					Config::T_STRING ],
 		Config::DAEMON_MAX_CHILD_RUNTIME => [ 1800,					Config::T_INT ],
 		Config::DAEMON_MAX_JOBS => [ 2,									Config::T_INT ],
+		Config::DAEMON_LOG_LEVEL => [ Debug::LOG_NORMAL,			Config::T_INT ],
 		Config::FEED_FETCH_TIMEOUT => [ 45,								Config::T_INT ],
 		Config::FEED_FETCH_NO_CACHE_TIMEOUT => [ 15,					Config::T_INT ],
 		Config::FILE_FETCH_TIMEOUT => [ 45,								Config::T_INT ],

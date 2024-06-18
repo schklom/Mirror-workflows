@@ -133,7 +133,7 @@
 		print "Tiny Tiny RSS update daemon.\n\n";
 		print "Options:\n";
 		print "  --log FILE           - log messages to FILE\n";
-        print "  --log-level N        - log verbosity level\n";
+		print "  --log-level N        - log verbosity level\n";
 		print "  --tasks N            - amount of update tasks to spawn\n";
 		print "                         default: " . Config::get(Config::DAEMON_MAX_JOBS) . "\n";
 		print "  --interval N         - task spawn interval\n";
@@ -144,9 +144,13 @@
 
     Debug::set_enabled(true);
 
+	 $log_level = Debug::map_loglevel(Config::get(Config::DAEMON_LOG_LEVEL));
+
     if (isset($options["log-level"])) {
-        Debug::set_loglevel(Debug::map_loglevel((int)$options["log-level"]));
-    }
+		$log_level = Debug::map_loglevel((int)$options["log-level"]);
+	 }
+
+	 Debug::set_loglevel((int) $log_level);
 
     if (isset($options["log"])) {
         Debug::set_quiet(isset($options['quiet']));
@@ -246,7 +250,7 @@
 
 					$my_pid = posix_getpid();
 
-					passthru(Config::get(Config::PHP_EXECUTABLE) . " update.php --daemon-loop $quiet $log --task $j --pidlock $my_pid");
+					passthru(Config::get(Config::PHP_EXECUTABLE) . " update.php --daemon-loop $quiet $log --log-level $log_level --task $j --pidlock $my_pid");
 
 					sleep(1);
 

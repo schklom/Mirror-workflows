@@ -148,7 +148,7 @@ class RSSUtils {
 				$updstart_thresh_qpart
 				$query_order $query_limit";
 
-		//print "$query\n";
+		Debug::log("base feed query: $query", Debug::LOG_EXTENDED);
 
 		$res = $pdo->query($query);
 
@@ -189,7 +189,7 @@ class RSSUtils {
 				$update_limit_qpart
 			ORDER BY f.id $query_limit";
 
-		//print "$user_query\n";
+		Debug::log("per-user feed query: $user_query", Debug::LOG_EXTENDED);
 
 		// since we have feed xml cached, we can deal with other feeds with the same url
 		$usth = $pdo->prepare($user_query);

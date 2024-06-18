@@ -108,7 +108,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       # https://github.com/docker/build-push-action#multi-platform-image
       - name: Build and push TTRSS app
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./
           file: ./.docker/app/Dockerfile
@@ -120,7 +120,7 @@ jobs:
           tags: |
             schklom/ttrss-app:latest
       - name: Build and push TTRSS web-nginx
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./
           file: ./.docker/web-nginx/Dockerfile
@@ -164,7 +164,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       # https://github.com/docker/build-push-action#multi-platform-image
       - name: Build and push TTRSS app (with file logging)
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./
           file: ./Dockerfile

@@ -79,14 +79,40 @@ class RSSUtils {
 
 		$pdo = Db::pdo();
 
+		$feeds_in_the_future = ORM::for_table('ttrss_feeds')
+			->where_raw("last_updated > NOW() OR last_update_started > NOW()")
+			->limit(25)
+			->find_many();
+
+		if (count($feeds_in_the_future) > 0) {
+			Debug::log("found feeds (limit 25) with update times in the future (current server time: ".date("Y-m-d H:i:s", time())."):");
+			foreach ($feeds_in_the_future as $feed) {
+				Debug::log("=> {$feed->feed_url} (ID: {$feed->id}, U: {$feed->owner_uid}): last updated {$feed->last_updated}, update started: {$feed->last_update_started}");
+			}
+		}
+
 		if (!Config::get(Config::SINGLE_USER_MODE) && Config::get(Config::DAEMON_UPDATE_LOGIN_LIMIT) > 0) {
 			$login_limit = (int) Config::get(Config::DAEMON_UPDATE_LOGIN_LIMIT);
 
 			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$login_thresh_qpart = "AND last_login >= NOW() - INTERVAL '$login_limit days'";
+				$not_logged_in_users_query = "last_login < NOW() - INTERVAL '$login_limit days'";
 			} else {
 				$login_thresh_qpart = "AND last_login >= DATE_SUB(NOW(), INTERVAL $login_limit DAY)";
+				$not_logged_in_users_query = "last_login < DATE_SUB(NOW(), INTERVAL $login_limit DAY)";
 			}
+
+			$not_logged_in_users = ORM::for_table('ttrss_users')
+				->where_raw($not_logged_in_users_query)
+				->find_many();
+
+			if (count($not_logged_in_users) > 0) {
+				Debug::log("feeds will not be updated for these users because of DAEMON_UPDATE_LOGIN_LIMIT check ({$login_limit} days):");
+				foreach ($not_logged_in_users as $user) {
+					Debug::log("=> {$user->login}, last logged in: {$user->last_login}");
+				}
+			}
+
 		} else {
 			$login_thresh_qpart = "";
 		}

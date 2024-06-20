@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-15 14:03+0300\n"
-"PO-Revision-Date: 2024-06-20 13:09+0000\n"
-"Last-Translator: Chih-Hsuan Yen <yan12125@users.noreply.hosted.weblate.org>\n"
+"PO-Revision-Date: 2024-06-21 18:10+0000\n"
+"Last-Translator: TonyRL <TonyRL@users.noreply.github.com>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
 "tt-rss/webui/zh_Hant/>\n"
 "Language: zh_TW\n"
@@ -89,7 +89,7 @@ msgstr "已停用"
 
 #: backend.php:96
 msgid "Read Only"
-msgstr "僅限讀取"
+msgstr "唯讀"
 
 #: backend.php:97 classes/Pref_System.php:123
 msgid "User"
@@ -250,10 +250,8 @@ msgid "Toggle widescreen mode"
 msgstr "切換版面顯示"
 
 #: index.php:278
-#, fuzzy
-#| msgid "Always expand articles"
 msgid "Toggle expand all articles"
-msgstr "永遠展開文章"
+msgstr "切換展開文章"
 
 #: index.php:279
 msgid "Other actions:"
@@ -1399,7 +1397,7 @@ msgstr "編輯自訂標籤"
 
 #: classes/RPC.php:630
 msgid "Open in new window"
-msgstr "在新視窗打開文章"
+msgstr "在新視窗開啟文章"
 
 #: classes/RPC.php:631 js/Headlines.js:1482
 msgid "Mark below as read"
@@ -1715,17 +1713,10 @@ msgstr ""
 "限可能導致誤判，設定為 0 將關閉相似度檢查。"
 
 #: plugins/af_psql_trgm/init.php:196
-#, fuzzy
-#| msgid ""
-#| "PostgreSQL trigram extension returns string similarity as a floating "
-#| "point number (0-1). Setting it too low might produce false positives, "
-#| "zero disables checking."
 msgid ""
 "Setting this value too low might produce false positives, zero disables "
 "checking."
-msgstr ""
-"PostgreSQL trigram 擴充套件將傳回一個字串相似度的浮點數（0-1）。設定過低的界"
-"限可能導致誤判，設定為 0 將關閉相似度檢查。"
+msgstr "設定過低的數值可能導致誤判，設定為 0 將關閉相似度檢查。"
 
 #: plugins/af_psql_trgm/init.php:202
 msgid "Minimum title length:"
@@ -1834,8 +1825,7 @@ msgstr "書籤"
 msgid ""
 "Drag the link below to your browser toolbar, open the feed you're interested "
 "in in your browser and click on the link to subscribe to it."
-msgstr ""
-"將以下連結按鈕拖曳至您的瀏覽器書籤工具列。之後在瀏覽器中打開您想看的摘要，然"
+msgstr "將以下連結按鈕拖曳至您的瀏覽器書籤工具列。之後在瀏覽器中開啟您想看的摘要，然"
 "後按下此連結按鈕即可訂閱。"
 
 #: plugins/bookmarklets/init.php:358
@@ -2044,7 +2034,7 @@ msgstr "選擇..."
 
 #: js/Headlines.js:825 js/Headlines.js:879 js/Headlines.js:896
 msgid "Click to open next unread feed."
-msgstr "點擊以打開下一個未讀的摘要。"
+msgstr "點擊以開啟下一個未讀的摘要。"
 
 #: js/Headlines.js:893
 msgid "New articles found, reload feed to continue."
@@ -2096,7 +2086,7 @@ msgstr[0] "要將 %d 篇文章標記為已讀嗎？"
 
 #: js/Headlines.js:1420
 msgid "Open original article"
-msgstr "打開原始文章"
+msgstr "開啟原始文章"
 
 #: js/Headlines.js:1427
 msgid "Display article URL"
@@ -2112,10 +2102,8 @@ msgstr "移除預定義標籤"
 
 #: js/Headlines.js:1588 js/FeedTree.js:105 js/Headlines.js:473
 #: js/Headlines.js:522 js/Headlines.js:591
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open site"
-msgstr "顯示下一個摘要"
+msgstr "開啟網站"
 
 #: js/Headlines.js:1597 js/FeedTree.js:114
 msgid "Debug feed"
@@ -2438,10 +2426,8 @@ msgid "Search syntax"
 msgstr "搜尋語法"
 
 #: js/Feeds.js:716
-#, fuzzy
-#| msgid "Search %s..."
 msgid "Search feeds"
-msgstr "搜尋 %s..."
+msgstr "搜尋摘要"
 
 #: js/PrefUsers.js:19
 msgid "Please enter username:"
@@ -2937,7 +2923,7 @@ msgstr "附件"
 
 #: js/Feeds.js:293
 msgid "Open Preferences"
-msgstr "打開偏好設定"
+msgstr "開啟偏好設定"
 
 #: js/Feeds.js:636
 #, javascript-format
@@ -2950,7 +2936,7 @@ msgstr "用於詞幹提取"
 
 #: js/Feeds.js:705
 msgid "Show feeds matching..."
-msgstr ""
+msgstr "顯示符合的摘要…"
 
 #: js/PrefUsers.js:76
 msgid "Access level: "
@@ -3005,8 +2991,6 @@ msgid "Debug selected feeds"
 msgstr "編輯所選的摘要"
 
 #: js/CommonDialogs.js:526
-#, fuzzy
-#| msgid "Feed Title"
 msgid "Feed title"
 msgstr "摘要標題"
 

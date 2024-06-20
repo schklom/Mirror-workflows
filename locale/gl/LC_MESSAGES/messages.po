@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-15 14:03+0300\n"
-"PO-Revision-Date: 2024-06-15 06:29+0000\n"
+"PO-Revision-Date: 2024-06-19 04:09+0000\n"
 "Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/tt-rss/webui/gl/"
 ">\n"
@@ -208,10 +208,8 @@ msgid "Search..."
 msgstr "Buscar..."
 
 #: index.php:265
-#, fuzzy
-#| msgid "Search %s..."
 msgid "Search feeds..."
-msgstr "Buscar %s..."
+msgstr "Buscar canles..."
 
 #: index.php:266
 msgid "Feed actions:"
@@ -529,14 +527,12 @@ msgid "On wider screens, if always expanded"
 msgstr "En pantallas máis anchas, se sempre expandido"
 
 #: classes/Pref_Prefs.php:131
-#, fuzzy
-#| msgid "Set score"
 msgid "Required score"
-msgstr "Establecer puntuación"
+msgstr "Valoración requerida"
 
 #: classes/Pref_Prefs.php:131
 msgid "Include articles with this or above score"
-msgstr ""
+msgstr "Incluír artigos con esta ou superior valoración"
 
 #: classes/Pref_Prefs.php:233
 msgid "The configuration was saved."
@@ -1189,14 +1185,10 @@ msgid "Login"
 msgstr "Acceso"
 
 #: classes/Pref_Users.php:255
-#, fuzzy
-#| msgid "Access level: "
 msgid "Access level"
-msgstr "Nivel de acceso: "
+msgstr "Nivel de acceso"
 
 #: classes/Pref_Users.php:258
-#, fuzzy
-#| msgid "Last logged in"
 msgid "Last login"
 msgstr "Última conexión"
 
@@ -1737,18 +1729,12 @@ msgstr ""
 "positivos, o cero desactiva a comprobación."
 
 #: plugins/af_psql_trgm/init.php:196
-#, fuzzy
-#| msgid ""
-#| "PostgreSQL trigram extension returns string similarity as a floating "
-#| "point number (0-1). Setting it too low might produce false positives, "
-#| "zero disables checking."
 msgid ""
 "Setting this value too low might produce false positives, zero disables "
 "checking."
 msgstr ""
-"A extensión PostgreSQL trigram devolve cadeas semellantes como números de "
-"punto flotante (0-1). Establecer un valor demasiado baixo produce falsos "
-"positivos, o cero desactiva a comprobación."
+"Establecer un valor demasiado baixo podería dar falsos positivos, o cero "
+"desactiva a comprobación."
 
 #: plugins/af_psql_trgm/init.php:202
 msgid "Minimum title length:"
@@ -2476,10 +2462,8 @@ msgid "Search syntax"
 msgstr "Sintaxe da busca"
 
 #: js/Feeds.js:716
-#, fuzzy
-#| msgid "Search %s..."
 msgid "Search feeds"
-msgstr "Buscar %s..."
+msgstr "Buscar canles"
 
 #: js/PrefUsers.js:19
 msgid "Please enter username:"
@@ -2665,16 +2649,12 @@ msgid "Feeds with update errors"
 msgstr "Fontes con fallo na actualización"
 
 #: js/CommonDialogs.js:258
-#, fuzzy
-#| msgid "Remove selected feeds?"
 msgid "Debug selected feeds?"
-msgstr "Eliminar canles seleccionadas?"
+msgstr "Depurar canles seleccionadas?"
 
 #: js/CommonDialogs.js:259
-#, fuzzy
-#| msgid "Removing selected feeds..."
 msgid "Opening debugger for selected feeds..."
-msgstr "Eliminando as canles..."
+msgstr "Abrindo o depurador para as canles seleccionadas..."
 
 #: js/CommonDialogs.js:328
 msgid "Please enter label caption:"
@@ -2991,7 +2971,7 @@ msgstr "Utilizado para a relación entre palabras"
 
 #: js/Feeds.js:705
 msgid "Show feeds matching..."
-msgstr ""
+msgstr "Mostrar canles que concordan..."
 
 #: js/PrefUsers.js:76
 msgid "Access level: "
@@ -3039,10 +3019,8 @@ msgid "This feed requires authentication."
 msgstr "Esta canle require autenticación."
 
 #: js/CommonDialogs.js:315
-#, fuzzy
-#| msgid "Edit selected feeds"
 msgid "Debug selected feeds"
-msgstr "Editar canles elexidas"
+msgstr "Depurar canles seleccionadas"
 
 #: js/CommonDialogs.js:526
 msgid "Feed title"

@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-15 14:03+0300\n"
-"PO-Revision-Date: 2022-08-25 06:49+0000\n"
-"Last-Translator: TonyRL <tony_lao@outlook.com>\n"
-"Language-Team: Chinese (Traditional) <https://weblate.tt-rss.org/projects/tt-"
-"rss/messages/zh_Hant/>\n"
+"PO-Revision-Date: 2024-06-20 13:09+0000\n"
+"Last-Translator: Chih-Hsuan Yen <yan12125@users.noreply.hosted.weblate.org>\n"
+"Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
+"tt-rss/webui/zh_Hant/>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14\n"
+"X-Generator: Weblate 5.6-rc\n"
 
 #: backend.php:65
 msgid "Use default"
@@ -88,10 +88,8 @@ msgid "Disabled"
 msgstr "已停用"
 
 #: backend.php:96
-#, fuzzy
-#| msgid "Readability"
 msgid "Read Only"
-msgstr "Readability"
+msgstr "僅限讀取"
 
 #: backend.php:97 classes/Pref_System.php:123
 msgid "User"
@@ -210,10 +208,8 @@ msgid "Search..."
 msgstr "搜尋..."
 
 #: index.php:265
-#, fuzzy
-#| msgid "Search %s..."
 msgid "Search feeds..."
-msgstr "搜尋 %s..."
+msgstr "搜尋摘要..."
 
 #: index.php:266
 msgid "Feed actions:"
@@ -531,14 +527,12 @@ msgid "On wider screens, if always expanded"
 msgstr "在寬螢幕上永遠展開文章"
 
 #: classes/Pref_Prefs.php:131
-#, fuzzy
-#| msgid "Set score"
 msgid "Required score"
-msgstr "評分"
+msgstr "要求的分數"
 
 #: classes/Pref_Prefs.php:131
 msgid "Include articles with this or above score"
-msgstr ""
+msgstr "包含這個分數以上的文章"
 
 #: classes/Pref_Prefs.php:233
 msgid "The configuration was saved."

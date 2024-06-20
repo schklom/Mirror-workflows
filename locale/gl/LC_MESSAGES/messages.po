@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-15 14:03+0300\n"
-"PO-Revision-Date: 2024-06-19 04:09+0000\n"
+"PO-Revision-Date: 2024-06-20 13:09+0000\n"
 "Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/tt-rss/webui/gl/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.6-dev\n"
+"X-Generator: Weblate 5.6-rc\n"
 
 #: backend.php:65
 msgid "Use default"
@@ -350,7 +350,7 @@ msgstr "Marcar como lido ao desprazar"
 
 #: classes/Pref_Prefs.php:102
 msgid "Mark articles as read as you scroll past them"
-msgstr "Marca os artigos como listos a medida que te desprazas neles"
+msgstr "Marca os artigos como lidos a medida que te desprazas neles"
 
 #: classes/Pref_Prefs.php:103
 msgid "Always expand articles"
@@ -524,7 +524,7 @@ msgstr "Vista en grella"
 
 #: classes/Pref_Prefs.php:130
 msgid "On wider screens, if always expanded"
-msgstr "En pantallas máis anchas, se sempre expandido"
+msgstr "En pantallas máis anchas, se sempre está estendida"
 
 #: classes/Pref_Prefs.php:131
 msgid "Required score"

@@ -8,16 +8,15 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-15 14:03+0300\n"
-"PO-Revision-Date: 2022-08-21 07:45+0000\n"
-"Last-Translator: Patrick Ahles <p.ahles+weblate@gmail.com>\n"
-"Language-Team: Dutch <https://weblate.tt-rss.org/projects/tt-rss/messages/nl/"
-">\n"
+"PO-Revision-Date: 2024-06-21 18:10+0000\n"
+"Last-Translator: Patrick Ahles <p.ahles@gmail.com>\n"
+"Language-Team: Dutch <https://hosted.weblate.org/projects/tt-rss/webui/nl/>\n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13.1\n"
+"X-Generator: Weblate 5.6-rc\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: _\n"
 "X-Poedit-Basepath: .\n"
@@ -92,7 +91,7 @@ msgstr "Uitschakelen"
 
 #: backend.php:96
 msgid "Read Only"
-msgstr "Read Only"
+msgstr "Alleen lezen"
 
 #: backend.php:97 classes/Pref_System.php:123
 msgid "User"
@@ -211,10 +210,8 @@ msgid "Search..."
 msgstr "Zoeken..."
 
 #: index.php:265
-#, fuzzy
-#| msgid "Search %s..."
 msgid "Search feeds..."
-msgstr "Zoeken %s..."
+msgstr "Doorzoek feeds..."
 
 #: index.php:266
 msgid "Feed actions:"
@@ -534,14 +531,12 @@ msgid "On wider screens, if always expanded"
 msgstr "Op bredere schermen, als altijd uitgeklapt"
 
 #: classes/Pref_Prefs.php:131
-#, fuzzy
-#| msgid "Set score"
 msgid "Required score"
-msgstr "Geef score"
+msgstr "Benodigde score"
 
 #: classes/Pref_Prefs.php:131
 msgid "Include articles with this or above score"
-msgstr ""
+msgstr "Neem artikelen op met deze of hogere score"
 
 #: classes/Pref_Prefs.php:233
 msgid "The configuration was saved."
@@ -1738,17 +1733,11 @@ msgstr ""
 "controleren uit."
 
 #: plugins/af_psql_trgm/init.php:196
-#, fuzzy
-#| msgid ""
-#| "PostgreSQL trigram extension returns string similarity as a floating "
-#| "point number (0-1). Setting it too low might produce false positives, "
-#| "zero disables checking."
 msgid ""
 "Setting this value too low might produce false positives, zero disables "
 "checking."
 msgstr ""
-"PostgreSQL trigram extensie geeft string overeenkomst weer als een floating "
-"point nummer (0-1). Het te laag instellen geeft valse positieven, nul zet "
+"Het te laag instellen van deze waarde geeft valse positieven, nul zet "
 "controleren uit."
 
 #: plugins/af_psql_trgm/init.php:202
@@ -2478,10 +2467,8 @@ msgid "Search syntax"
 msgstr "Zoeksyntax"
 
 #: js/Feeds.js:716
-#, fuzzy
-#| msgid "Search %s..."
 msgid "Search feeds"
-msgstr "Zoeken %s..."
+msgstr "Doorzoek feeds"
 
 #: js/PrefUsers.js:19
 msgid "Please enter username:"
@@ -2669,16 +2656,12 @@ msgid "Feeds with update errors"
 msgstr "Feeds met update-fouten"
 
 #: js/CommonDialogs.js:258
-#, fuzzy
-#| msgid "Remove selected feeds?"
 msgid "Debug selected feeds?"
-msgstr "Geselecteerde feeds verwijderen?"
+msgstr "Debug geselecteerde feeds?"
 
 #: js/CommonDialogs.js:259
-#, fuzzy
-#| msgid "Removing selected feeds..."
 msgid "Opening debugger for selected feeds..."
-msgstr "Geselecteerde feeds verwijderen..."
+msgstr "Openen debugger geselecteerde feeds..."
 
 #: js/CommonDialogs.js:328
 msgid "Please enter label caption:"
@@ -2982,7 +2965,7 @@ msgstr "Bijlagen"
 
 #: js/Feeds.js:293
 msgid "Open Preferences"
-msgstr "Voorkeuren"
+msgstr "Open voorkeuren"
 
 #: js/Feeds.js:636
 #, javascript-format
@@ -2995,7 +2978,7 @@ msgstr "Gebruikt voor woordstam"
 
 #: js/Feeds.js:705
 msgid "Show feeds matching..."
-msgstr ""
+msgstr "Toon bijpassende feeds..."
 
 #: js/PrefUsers.js:76
 msgid "Access level: "
@@ -3042,10 +3025,8 @@ msgid "This feed requires authentication."
 msgstr "Deze feed vereist authenticatie."
 
 #: js/CommonDialogs.js:315
-#, fuzzy
-#| msgid "Edit selected feeds"
 msgid "Debug selected feeds"
-msgstr "Bewerk geselecteerde feeds"
+msgstr "Debug geselecteerde feeds"
 
 #: js/CommonDialogs.js:526
 msgid "Feed title"

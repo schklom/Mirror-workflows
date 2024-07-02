@@ -10,17 +10,17 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-15 14:03+0300\n"
-"PO-Revision-Date: 2021-03-27 22:30+0000\n"
-"Last-Translator: Piotr <piotrdev+ttrss@outlook.com>\n"
-"Language-Team: Polish <https://weblate.tt-rss.org/projects/tt-rss/messages/"
-"pl/>\n"
+"PO-Revision-Date: 2024-06-30 07:44+0000\n"
+"Last-Translator: Anarion Dunedain <anarion@go2.pl>\n"
+"Language-Team: Polish <https://hosted.weblate.org/projects/tt-rss/webui/pl/>"
+"\n"
 "Language: pl_PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.5.2\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+"X-Generator: Weblate 5.7-dev\n"
 
 #: backend.php:65
 msgid "Use default"
@@ -91,10 +91,8 @@ msgid "Disabled"
 msgstr "Wyłączone"
 
 #: backend.php:96
-#, fuzzy
-#| msgid "Readability"
 msgid "Read Only"
-msgstr "Readability"
+msgstr "Tylko do odczytu"
 
 #: backend.php:97 classes/Pref_System.php:123
 msgid "User"
@@ -213,10 +211,8 @@ msgid "Search..."
 msgstr "Szukaj..."
 
 #: index.php:265
-#, fuzzy
-#| msgid "Search %s..."
 msgid "Search feeds..."
-msgstr "Szukaj %s..."
+msgstr "Przeszukaj kanały..."
 
 #: index.php:266
 msgid "Feed actions:"
@@ -246,7 +242,7 @@ msgstr "Pokaż/Ukryj przeczytane kanały"
 
 #: index.php:273
 msgid "UI layout:"
-msgstr ""
+msgstr "Układ UI:"
 
 #: index.php:274 classes/RPC.php:664
 msgid "Toggle combined mode"
@@ -257,10 +253,8 @@ msgid "Toggle widescreen mode"
 msgstr "Przełącz tryb szerokoekranowy"
 
 #: index.php:278
-#, fuzzy
-#| msgid "Always expand articles"
 msgid "Toggle expand all articles"
-msgstr "Zawsze rozwijaj artykuły"
+msgstr "Przełącz rozwijanie wszystkich artykułów"
 
 #: index.php:279
 msgid "Other actions:"
@@ -531,24 +525,20 @@ msgid "May increase server load"
 msgstr "Może zwiększać obciążenie serwera"
 
 #: classes/Pref_Prefs.php:130
-#, fuzzy
-#| msgid "Preview"
 msgid "Grid view"
-msgstr "Podgląd"
+msgstr "Widok siatki"
 
 #: classes/Pref_Prefs.php:130
 msgid "On wider screens, if always expanded"
-msgstr ""
+msgstr "Na szerszych ekranach, jeśli zawsze rozwinięte"
 
 #: classes/Pref_Prefs.php:131
-#, fuzzy
-#| msgid "Set score"
 msgid "Required score"
-msgstr "Oceń"
+msgstr "Wymagany wynik"
 
 #: classes/Pref_Prefs.php:131
 msgid "Include articles with this or above score"
-msgstr ""
+msgstr "Uwzględnij artykuły z takim lub większym wynikiem"
 
 #: classes/Pref_Prefs.php:233
 msgid "The configuration was saved."
@@ -616,14 +606,12 @@ msgid "Disable OTP"
 msgstr "Wyłącz hasła jednorazowe"
 
 #: classes/Pref_Prefs.php:481
-#, fuzzy
-#| msgid "OTP Key:"
 msgid "OTP secret:"
-msgstr "Klucz OTP:"
+msgstr "Sekret OTP:"
 
 #: classes/Pref_Prefs.php:508
 msgid "Verification code:"
-msgstr ""
+msgstr "Kod weryfikacyjny:"
 
 #: classes/Pref_Prefs.php:516
 msgid "Enable OTP"
@@ -808,7 +796,7 @@ msgstr ""
 #: classes/Mailer.php:51
 #, php-format
 msgid "Unknown error while sending mail. Hooks tried: %d."
-msgstr ""
+msgstr "Nieznany błąd podczas wysyłania poczty. Wypróbowane haki: %d."
 
 #: classes/TimeHelper.php:8
 #, php-format
@@ -1247,10 +1235,8 @@ msgid "Combine"
 msgstr "Połącz"
 
 #: classes/Pref_Filters.php:695
-#, fuzzy
-#| msgid "Toggle feedlist"
 msgid "Toggle rule display"
-msgstr "Przełącz listę kanałów"
+msgstr "Przełącz wyświetlanie reguł"
 
 #: classes/Pref_Filters.php:746
 msgid "[No caption]"
@@ -1348,7 +1334,7 @@ msgstr "Błąd: proszę wgrać plik OPML."
 #: classes/OPML.php:641
 #, php-format
 msgid "Error: file is not readable: %s"
-msgstr ""
+msgstr "Błąd: pliku nie można odczytać: %s"
 
 #: classes/OPML.php:667
 msgid "Error while parsing document."
@@ -1363,20 +1349,16 @@ msgid "Open next feed"
 msgstr "Przejdź do następnego kanału"
 
 #: classes/RPC.php:612
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open next unread feed"
-msgstr "Przejdź do następnego kanału"
+msgstr "Otwórz następny nieprzeczytany kanał"
 
 #: classes/RPC.php:613
 msgid "Open previous feed"
 msgstr "Otwórz poprzedni kanał"
 
 #: classes/RPC.php:614
-#, fuzzy
-#| msgid "Open previous feed"
 msgid "Open previous unread feed"
-msgstr "Otwórz poprzedni kanał"
+msgstr "Otwórz poprzedni nieprzeczytany kanał"
 
 #: classes/RPC.php:615
 msgid "Open next article (in combined mode, scroll down)"
@@ -1540,10 +1522,8 @@ msgid "Toggle headline grouping"
 msgstr "Przełącz grupowanie nagłówków"
 
 #: classes/RPC.php:658
-#, fuzzy
-#| msgid "Toggle sidebar"
 msgid "Toggle grid view"
-msgstr "Przełącz panel boczny"
+msgstr "Przełącz widok siatki"
 
 #: classes/RPC.php:659
 msgid "Debug feed update"
@@ -1685,10 +1665,8 @@ msgstr ""
 "b>)."
 
 #: plugins/nsfw/init.php:46
-#, fuzzy
-#| msgid "Not work safe (click to toggle)"
 msgid "Not safe for work (click to toggle)"
-msgstr "„Niewłaściwe w pracy” (kliknij aby przełączyć)"
+msgstr "Nie nadaje się do pracy (kliknij, aby przełączyć)"
 
 #: plugins/nsfw/init.php:80
 msgid "NSFW Plugin"
@@ -1770,18 +1748,12 @@ msgstr ""
 "poziomu może dawać fałszywe wyniki pozytywne; zero wyłącza sprawdzanie."
 
 #: plugins/af_psql_trgm/init.php:196
-#, fuzzy
-#| msgid ""
-#| "PostgreSQL trigram extension returns string similarity as a floating "
-#| "point number (0-1). Setting it too low might produce false positives, "
-#| "zero disables checking."
 msgid ""
 "Setting this value too low might produce false positives, zero disables "
 "checking."
 msgstr ""
-"Rozszerzenie trigram PostgreSQL zwraca wartość podobieństwa ciągów "
-"tekstowych jako liczbę zmiennoprzecinkową (0-1). Ustawienie zbyt niskiego "
-"poziomu może dawać fałszywe wyniki pozytywne; zero wyłącza sprawdzanie."
+"Ustawienie tej wartości na zbyt niską może powodować fałszywe alarmy, zero "
+"wyłącza sprawdzanie."
 
 #: plugins/af_psql_trgm/init.php:202
 msgid "Minimum title length:"
@@ -1907,10 +1879,8 @@ msgstr ""
 "Użyj tej Skryptozakładki aby publikować dowolne strony używając Tiny Tiny RSS"
 
 #: plugins/auth_internal/init.php:93
-#, fuzzy
-#| msgid "Please enter label caption:"
 msgid "Please enter verification code (OTP):"
-msgstr "Proszę wprowadzić opis etykiety:"
+msgstr "Wprowadź kod weryfikacyjny (OTP):"
 
 #: plugins/auth_internal/init.php:95
 msgid "Continue"
@@ -1918,7 +1888,7 @@ msgstr "Kontynuuj"
 
 #: plugins/auth_internal/init.php:134
 msgid "Too many authentication attempts, throttled."
-msgstr ""
+msgstr "Zbyt wiele prób uwierzytelnienia, dostęp ograniczony."
 
 #: plugins/auth_internal/init.php:241
 msgid "Password has been changed."
@@ -1941,10 +1911,8 @@ msgid "Session failed to validate (password changed)"
 msgstr "Nie powiodła się weryfikacja sesji (zmienione hasło)"
 
 #: include/sessions.php:48
-#, fuzzy
-#| msgid "Session failed to validate (user agent changed)"
 msgid "Session failed to validate (account is disabled)"
-msgstr "Nie powiodła się weryfikacja sesji (zmieniona przeglądarka)"
+msgstr "Walidacja sesji nie powiodła się (konto jest wyłączone)"
 
 #: include/sessions.php:67
 msgid "Session failed to validate (user not found)"
@@ -2029,10 +1997,8 @@ msgid "Looking for articles (%d processed, %f found)..."
 msgstr "Szukanie artykułów (%d przetworzonych, %f znalezionych)…"
 
 #: js/CommonFilters.js:73
-#, fuzzy
-#| msgid "Found %d articles matching this filter:"
 msgid "Articles matching this filter:"
-msgstr "Znaleziono %d artykułów pasujących do tego filtra:"
+msgstr "Artykuły pasujące do tego filtra:"
 
 #: js/CommonFilters.js:75
 #, java-printf-format, javascript-format
@@ -2044,10 +2010,8 @@ msgid "Error while trying to get filter test results."
 msgstr "Błąd podczas próby uzyskania wyników testu filtru."
 
 #: js/CommonFilters.js:96
-#, fuzzy
-#| msgid "Looking for plugins..."
 msgid "Looking for articles..."
-msgstr "Szukam wtyczek..."
+msgstr "Szukam artykułów..."
 
 #: js/CommonFilters.js:175
 msgid "Edit rule"
@@ -2190,10 +2154,8 @@ msgstr "Usuń etykietę"
 
 #: js/Headlines.js:1588 js/FeedTree.js:105 js/Headlines.js:473
 #: js/Headlines.js:522 js/Headlines.js:591
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open site"
-msgstr "Przejdź do następnego kanału"
+msgstr "Otwórz stronę"
 
 #: js/Headlines.js:1597 js/FeedTree.js:114
 msgid "Debug feed"
@@ -2239,13 +2201,11 @@ msgstr "Wyczyścić dziennik?"
 
 #: js/PrefHelpers.js:135
 msgid "Name for cloned profile:"
-msgstr ""
+msgstr "Nazwa dla sklonowanego profilu:"
 
 #: js/PrefHelpers.js:145
-#, fuzzy
-#| msgid "Please select an image file."
 msgid "Please select a single profile to clone."
-msgstr "Wybierz obrazek."
+msgstr "Wybierz jeden profil do sklonowania."
 
 #: js/PrefHelpers.js:153
 msgid ""
@@ -2271,7 +2231,7 @@ msgstr "(aktywny)"
 
 #: js/PrefHelpers.js:219
 msgid "(empty)"
-msgstr ""
+msgstr "(pusty)"
 
 #: js/PrefHelpers.js:242
 msgid "Activate selected profile?"
@@ -2306,10 +2266,9 @@ msgid "Reset to defaults?"
 msgstr "Przywrócić ustawienia domyślne?"
 
 #: js/PrefHelpers.js:373
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Error while parsing document."
+#, java-printf-format, javascript-format
 msgid "Error while loading plugins list: %s."
-msgstr "Błąd przetwarzania dokumentu."
+msgstr "Błąd podczas ładowania listy wtyczek: %s."
 
 #: js/PrefHelpers.js:422
 msgid "Clear data"
@@ -2531,10 +2490,8 @@ msgid "Search syntax"
 msgstr "Składnia wyszukiwania"
 
 #: js/Feeds.js:716
-#, fuzzy
-#| msgid "Search %s..."
 msgid "Search feeds"
-msgstr "Szukaj %s..."
+msgstr "Przeszukaj kanały"
 
 #: js/PrefUsers.js:19
 msgid "Please enter username:"
@@ -2712,30 +2669,24 @@ msgid "XML validation failed: %s"
 msgstr "Weryfikacja XML nie powiodła się: %s"
 
 #: js/CommonDialogs.js:197
-#, fuzzy
-#| msgid "Error while parsing document."
 msgid "Error while creating feed database entry."
-msgstr "Błąd przetwarzania dokumentu."
+msgstr "Błąd podczas tworzenia wpisu kanału w bazie danych."
 
 #: js/CommonDialogs.js:200
 msgid "You are not allowed to perform this operation."
-msgstr ""
+msgstr "Nie możesz wykonać tej operacji."
 
 #: js/CommonDialogs.js:222
 msgid "Feeds with update errors"
 msgstr "Kanały z błędami aktualizacji"
 
 #: js/CommonDialogs.js:258
-#, fuzzy
-#| msgid "Remove selected feeds?"
 msgid "Debug selected feeds?"
-msgstr "Usunąć wybrane kanały?"
+msgstr "Debugować wybrane kanały?"
 
 #: js/CommonDialogs.js:259
-#, fuzzy
-#| msgid "Removing selected feeds..."
 msgid "Opening debugger for selected feeds..."
-msgstr "Usuwanie wybranych kanałów..."
+msgstr "Otwieranie debuggera dla wybranych kanałów..."
 
 #: js/CommonDialogs.js:328
 msgid "Please enter label caption:"
@@ -2804,10 +2755,8 @@ msgid "%s can be accessed via the following secret URL:"
 msgstr "„%s” może zostać udostępniony korzystając z tego prywatnego adresu:"
 
 #: js/App.js:314
-#, fuzzy
-#| msgid "Widescreen is not available in combined mode."
 msgid "This function is only available in combined mode."
-msgstr "Opcja szerokiego ekranu nie jest dostępna w trybie scalonym."
+msgstr "Ta funkcja jest dostępna tylko w trybie łączonym."
 
 #: js/App.js:445
 msgid "Keyboard shortcuts"
@@ -2933,10 +2882,8 @@ msgid "Related articles"
 msgstr "Artykuły powiązane"
 
 #: plugins/shorten_expanded/init.js:32
-#, fuzzy
-#| msgid "Email article"
 msgid "Expand article"
-msgstr "Prześlij artykuł e-mailem"
+msgstr "Rozwiń artykuł"
 
 #: js/CommonFilters.js:71
 msgid "No recent articles matching this filter have been found."
@@ -2963,13 +2910,12 @@ msgid "Apply actions"
 msgstr "Zastosuj działania"
 
 #: js/Headlines.js:474
-#, fuzzy
 msgid "mark feed as read"
-msgstr "Oznacz kanał jako przeczytany"
+msgstr "oznacz kanał jako przeczytany"
 
 #: js/Headlines.js:527
 msgid "Span all columns"
-msgstr ""
+msgstr "Rozciągnij na wszystkie kolumny"
 
 #: js/Headlines.js:554 js/Article.js:317
 msgid "Edit tags for this article"
@@ -2997,48 +2943,35 @@ msgstr ""
 
 #: js/PrefHelpers.js:229
 msgid "Clone"
-msgstr ""
+msgstr "Sklonuj"
 
 #: js/PrefHelpers.js:231
-#, fuzzy
-#| msgid "Activate profile"
 msgid "Activate"
-msgstr "Aktywuj profil"
+msgstr "Aktywuj"
 
 #: js/PrefHelpers.js:299
 msgid "Apply"
 msgstr "Zastosuj"
 
 #: js/PrefHelpers.js:303
-#, fuzzy
-#| msgid "Save and exit"
 msgid "Save and reload"
-msgstr "Zapisz i wyjdż"
+msgstr "Zapisz i wczytaj ponownie"
 
 #: js/PrefHelpers.js:352
 msgid "Selected plugins have been enabled. Reload?"
 msgstr "Wybrane wtyczki zostały włączone. Przeładować?"
 
 #: js/PrefHelpers.js:400
-#, fuzzy
-#| msgid ""
-#| "System plugins are enabled in <strong>config.php</strong> for all users."
 msgid "System plugins are enabled using global configuration."
-msgstr ""
-"Wtyczki systemowe są włączane dla wszystkich użytkowników w pliku "
-"<strong>config.php</strong>."
+msgstr "Wtyczki systemowe są włączane za pomocą konfiguracji globalnej."
 
 #: js/PrefHelpers.js:577
-#, fuzzy
-#| msgid "Uninstall"
 msgid "Install"
-msgstr "Odinstaluj"
+msgstr "Zainstaluj"
 
 #: js/PrefHelpers.js:654
-#, fuzzy
-#| msgid "Playing..."
 msgid "Updating..."
-msgstr "Odtwarzam..."
+msgstr "Aktualizuję..."
 
 #: js/PrefHelpers.js:687
 msgid "Updates complete"
@@ -3071,17 +3004,15 @@ msgstr "Używane do tworzenia słów"
 
 #: js/Feeds.js:705
 msgid "Show feeds matching..."
-msgstr ""
+msgstr "Pokaż kanały pasujące do..."
 
 #: js/PrefUsers.js:76
 msgid "Access level: "
 msgstr "Poziom dostępu: "
 
 #: js/PrefUsers.js:92
-#, fuzzy
-#| msgid "Enabled"
 msgid "OTP enabled"
-msgstr "Włączone"
+msgstr "OTP włączone"
 
 #: js/PrefUsers.js:104
 msgid "User details"
@@ -3121,14 +3052,10 @@ msgid "This feed requires authentication."
 msgstr "Ten kanał wymaga uwierzytelniania."
 
 #: js/CommonDialogs.js:315
-#, fuzzy
-#| msgid "Edit selected feeds"
 msgid "Debug selected feeds"
-msgstr "Edytuj wybrane kanały"
+msgstr "Debuguj wybrane kanały"
 
 #: js/CommonDialogs.js:526
-#, fuzzy
-#| msgid "Feed Title"
 msgid "Feed title"
 msgstr "Tytuł kanału"
 
@@ -3154,7 +3081,7 @@ msgstr "Zrzut stosu"
 
 #: js/App.js:653
 msgid "Additional information"
-msgstr ""
+msgstr "Dodatkowe informacje"
 
 #: js/PrefLabelTree.js:126
 msgid "Caption"

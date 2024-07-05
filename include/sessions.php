@@ -72,79 +72,72 @@
 		return true;
 	}
 
-	function ttrss_open(string $savePath, string $sessionName): bool {
-		return true;
-	}
+	if (\Config::get_schema_version() >= 0) {
+		// TODO: look into making these behave closer to what SessionHandlerInterface intends
+		session_set_save_handler(new class() implements \SessionHandlerInterface {
+			public function open(string $path, string $name): bool {
+				return true;
+			}
 
-	function ttrss_read(string $id): string {
-		global $session_expire;
+			public function close(): bool {
+				return true;
+			}
 
-		$sth = \Db::pdo()->prepare("SELECT data FROM ttrss_sessions WHERE id=?");
-		$sth->execute([$id]);
+			/**
+			 * @todo set return type to string|false, and remove ReturnTypeWillChange, when min supported is PHP 8
+			 * @return string|false
+			 */
+			#[\ReturnTypeWillChange]
+			public function read(string $id) {
+				global $session_expire;
 
-		if ($row = $sth->fetch()) {
-				return base64_decode($row["data"]);
+				$sth = \Db::pdo()->prepare('SELECT data FROM ttrss_sessions WHERE id=?');
+				$sth->execute([$id]);
 
-		} else {
+				if ($row = $sth->fetch()) {
+					return base64_decode($row['data']);
+				}
+
 				$expire = time() + $session_expire;
 
 				$sth = \Db::pdo()->prepare("INSERT INTO ttrss_sessions (id, data, expire)
 					VALUES (?, '', ?)");
-				$sth->execute([$id, $expire]);
+				return $sth->execute([$id, $expire]) ? '' : false;
+			}
 
-				return "";
+			public function write(string $id, string $data): bool {
+				global $session_expire;
 
-		}
+				$data = base64_encode($data);
+				$expire = time() + $session_expire;
 
-	}
+				$sth = \Db::pdo()->prepare('SELECT id FROM ttrss_sessions WHERE id=?');
+				$sth->execute([$id]);
 
-	function ttrss_write(string $id, string $data): bool {
-		global $session_expire;
+				if ($sth->fetch()) {
+					$sth = \Db::pdo()->prepare('UPDATE ttrss_sessions SET data=?, expire=? WHERE id=?');
+					return $sth->execute([$data, $expire, $id]);
+				}
 
-		$data = base64_encode($data);
-		$expire = time() + $session_expire;
+				$sth = \Db::pdo()->prepare('INSERT INTO ttrss_sessions (id, data, expire) VALUES (?, ?, ?)');
+				return $sth->execute([$id, $data, $expire]);
+			}
 
-		$sth = \Db::pdo()->prepare("SELECT id FROM ttrss_sessions WHERE id=?");
-		$sth->execute([$id]);
+			public function destroy(string $id): bool {
+				$sth = \Db::pdo()->prepare('DELETE FROM ttrss_sessions WHERE id = ?');
+				return $sth->execute([$id]);
+			}
 
-		if ($sth->fetch()) {
-			$sth = \Db::pdo()->prepare("UPDATE ttrss_sessions SET data=?, expire=? WHERE id=?");
-			$sth->execute([$data, $expire, $id]);
-		} else {
-			$sth = \Db::pdo()->prepare("INSERT INTO ttrss_sessions (id, data, expire)
-				VALUES (?, ?, ?)");
-			$sth->execute([$id, $data, $expire]);
-		}
-
-		return true;
-	}
-
-	function ttrss_close(): bool {
-		return true;
-	}
-
-	function ttrss_destroy(string $id): bool {
-		$sth = \Db::pdo()->prepare("DELETE FROM ttrss_sessions WHERE id = ?");
-		$sth->execute([$id]);
-
-		return true;
-	}
-
-	function ttrss_gc(int $lifetime): bool {
-		\Db::pdo()->query("DELETE FROM ttrss_sessions WHERE expire < " . time());
-
-		return true;
-	}
-
-	if (\Config::get_schema_version() >= 0) {
-		session_set_save_handler('\Sessions\ttrss_open',
-			'\Sessions\ttrss_close', '\Sessions\ttrss_read',
-			'\Sessions\ttrss_write', '\Sessions\ttrss_destroy',
-			'\Sessions\ttrss_gc'); // @phpstan-ignore-line
-			// PHPStan complains about '\Sessions\ttrss_gc' if its $lifetime param isn't marked as string,
-			// but the docs say it's an int.  If it is actually a string it'll get coerced to an int.
-
-		register_shutdown_function('session_write_close');
+			/**
+			 * @todo set return type to int|false, and remove ReturnTypeWillChange, when min supported is PHP 8
+			 * @return int|false the number of deleted sessions on success, or false on failure
+			 */
+			#[\ReturnTypeWillChange]
+			public function gc(int $max_lifetime) {
+				$result = \Db::pdo()->query('DELETE FROM ttrss_sessions WHERE expire < ' . time());
+				return $result === false ? false : $result->rowCount();
+			}
+		});
 
 		if (!defined('NO_SESSION_AUTOSTART')) {
 			if (isset($_COOKIE[session_name()])) {

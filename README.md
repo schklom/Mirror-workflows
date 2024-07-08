@@ -39,7 +39,6 @@ The following is an (incomplete) example for deploying FMD Server with Docker Co
 
 `docker-compose.yml`
 ```yml
-version: '3'
 services:
     fmd:
         # Use the prebuilt image

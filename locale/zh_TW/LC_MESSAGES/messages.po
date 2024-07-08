@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-15 14:03+0300\n"
-"PO-Revision-Date: 2024-06-21 18:10+0000\n"
-"Last-Translator: TonyRL <TonyRL@users.noreply.github.com>\n"
+"PO-Revision-Date: 2024-07-09 14:09+0000\n"
+"Last-Translator: oopzzozzo <ek3ru8m4@gmail.com>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
 "tt-rss/webui/zh_Hant/>\n"
 "Language: zh_TW\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.6-rc\n"
+"X-Generator: Weblate 5.7-dev\n"
 
 #: backend.php:65
 msgid "Use default"
@@ -783,7 +783,7 @@ msgstr "已為 %s 產生密碼 <strong>%s</strong>。請牢記以備將來參考
 #: classes/Mailer.php:51
 #, php-format
 msgid "Unknown error while sending mail. Hooks tried: %d."
-msgstr ""
+msgstr "發送郵件時遇到不明錯誤。已嘗試：%d。"
 
 #: classes/TimeHelper.php:8
 #, php-format
@@ -1309,7 +1309,7 @@ msgstr "錯誤：請上傳 OPML 文件。"
 #: classes/OPML.php:641
 #, php-format
 msgid "Error: file is not readable: %s"
-msgstr ""
+msgstr "錯誤：無法讀取檔案：%s"
 
 #: classes/OPML.php:667
 msgid "Error while parsing document."
@@ -2597,30 +2597,25 @@ msgid "XML validation failed: %s"
 msgstr "XML驗證失敗：%s"
 
 #: js/CommonDialogs.js:197
-#, fuzzy
-#| msgid "Error while parsing document."
 msgid "Error while creating feed database entry."
-msgstr "解析文檔時發生錯誤。"
+msgstr "新增摘要至資料庫時發生錯誤。"
 
 #: js/CommonDialogs.js:200
+#, fuzzy
 msgid "You are not allowed to perform this operation."
-msgstr ""
+msgstr "您沒有權限。"
 
 #: js/CommonDialogs.js:222
 msgid "Feeds with update errors"
 msgstr "更新錯誤的摘要"
 
 #: js/CommonDialogs.js:258
-#, fuzzy
-#| msgid "Remove selected feeds?"
 msgid "Debug selected feeds?"
-msgstr "移除選取的摘要？"
+msgstr "除錯選取的摘要？"
 
 #: js/CommonDialogs.js:259
-#, fuzzy
-#| msgid "Removing selected feeds..."
 msgid "Opening debugger for selected feeds..."
-msgstr "正在移除所選的摘要..."
+msgstr "正在啟動偵錯器，開啟所選的摘要..."
 
 #: js/CommonDialogs.js:328
 msgid "Please enter label caption:"
@@ -2689,10 +2684,8 @@ msgid "%s can be accessed via the following secret URL:"
 msgstr "您可以透過此 URL 分享%s："
 
 #: js/App.js:314
-#, fuzzy
-#| msgid "Widescreen is not available in combined mode."
 msgid "This function is only available in combined mode."
-msgstr "在合併模式下無法使用寬螢幕模式。"
+msgstr "僅適用於合併模式。"
 
 #: js/App.js:445
 msgid "Keyboard shortcuts"
@@ -2849,7 +2842,7 @@ msgstr "標記摘要為已讀"
 
 #: js/Headlines.js:527
 msgid "Span all columns"
-msgstr ""
+msgstr "展開每一欄"
 
 #: js/Headlines.js:554 js/Article.js:317
 msgid "Edit tags for this article"
@@ -2886,10 +2879,8 @@ msgid "Apply"
 msgstr "套用"
 
 #: js/PrefHelpers.js:303
-#, fuzzy
-#| msgid "Save and exit"
 msgid "Save and reload"
-msgstr "儲存並退出"
+msgstr "儲存並重新載入"
 
 #: js/PrefHelpers.js:352
 msgid "Selected plugins have been enabled. Reload?"
@@ -2897,7 +2888,7 @@ msgstr "已啟用所選擴充套件。重新載入？"
 
 #: js/PrefHelpers.js:400
 msgid "System plugins are enabled using global configuration."
-msgstr ""
+msgstr "全域設定啟用系統擴充套件。"
 
 #: js/PrefHelpers.js:577
 msgid "Install"
@@ -2943,10 +2934,8 @@ msgid "Access level: "
 msgstr "帳號等級： "
 
 #: js/PrefUsers.js:92
-#, fuzzy
-#| msgid "Enabled"
 msgid "OTP enabled"
-msgstr "已啟用"
+msgstr "已啟用 OTP"
 
 #: js/PrefUsers.js:104
 msgid "User details"
@@ -2985,10 +2974,8 @@ msgid "This feed requires authentication."
 msgstr "這個摘要需要認證。"
 
 #: js/CommonDialogs.js:315
-#, fuzzy
-#| msgid "Edit selected feeds"
 msgid "Debug selected feeds"
-msgstr "編輯所選的摘要"
+msgstr "偵錯選取的摘要"
 
 #: js/CommonDialogs.js:526
 msgid "Feed title"

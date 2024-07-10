@@ -2074,27 +2074,14 @@ class RSSUtils {
 			$srcset, $matches, PREG_SET_ORDER
 		);
 
-		foreach ($matches as $m) {
-			array_push($matches, [
-				"url" => trim($m["url"]),
-				"size" => trim($m["size"])
-			]);
-		}
-
-		return $matches;
+		return array_map(fn(array $m) => ['url' => trim($m['url']), 'size' => trim($m['size'])], $matches);
 	}
 
 	/**
 	 * @param array<int, array<string, string>> $matches An array of srcset subitem arrays with keys "url" and "size"
 	 */
 	static function encode_srcset(array $matches): string {
-		$tokens = [];
-
-		foreach ($matches as $m) {
-			array_push($tokens, trim($m["url"]) . " " . trim($m["size"]));
-		}
-
-		return implode(",", $tokens);
+		return implode(',', array_map(fn(array $m) => trim($m['url']) . ' ' . trim($m['size']), $matches));
 	}
 
 	static function function_enabled(string $func): bool {

@@ -156,7 +156,7 @@ class UserHelper {
 			startup_gettext();
 			self::load_user_plugins($_SESSION["uid"]);
 		} else {
-			if (!\Sessions\validate_session())
+			if (!Sessions::validate_session())
 				$_SESSION["uid"] = null;
 
 			if (empty($_SESSION["uid"])) {

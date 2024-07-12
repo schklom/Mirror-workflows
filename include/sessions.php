@@ -5,6 +5,8 @@ require_once 'autoload.php';
 require_once 'errorhandler.php';
 
 $sessions = new \Sessions;
+$sessions->configure();
+$sessions->extend_session();
 
 if (\Config::get_schema_version() >= 0) {
 	session_set_save_handler($sessions);

@@ -1,16 +1,23 @@
 <?php
 require_once 'lib/gettext/gettext.inc.php';
 
-// TODO: look into making this behave closer to what SessionHandlerInterface intends
+/**
+ * @todo look into making this behave closer to what SessionHandlerInterface intends
+ */
 class Sessions implements \SessionHandlerInterface {
 	private int $session_expire;
 	private string $session_name;
 
 	public function __construct() {
-		$this->session_expire = min(2147483647 - time() - 1, max(\Config::get(\Config::SESSION_COOKIE_LIFETIME), 86400));
-		$this->session_name = \Config::get(\Config::SESSION_NAME);
+		$this->session_expire = min(2147483647 - time() - 1, max(Config::get(Config::SESSION_COOKIE_LIFETIME), 86400));
+		$this->session_name = Config::get(Config::SESSION_NAME);
+	}
 
-		if (\Config::is_server_https()) {
+	/**
+	 * Adjusts session-related PHP configuration options
+	 */
+	public function configure(): void {
+		if (Config::is_server_https()) {
 			ini_set('session.cookie_secure', 'true');
 		}
 
@@ -19,10 +26,15 @@ class Sessions implements \SessionHandlerInterface {
 		ini_set('session.use_only_cookies', 'true');
 		ini_set('session.gc_maxlifetime', $this->session_expire);
 		ini_set('session.cookie_lifetime', '0');
+	}
 
-		// prolong PHP session cookie
+	/**
+	 * Extend the validity of the PHP session cookie (if it exists)
+	 * @return bool Whether the new cookie was set successfully
+	 */
+	public function extend_session(): bool {
 		if (isset($_COOKIE[$this->session_name])) {
-			setcookie($this->session_name,
+			return setcookie($this->session_name,
 				$_COOKIE[$this->session_name],
 				time() + $this->session_expire,
 				ini_get('session.cookie_path'),
@@ -30,6 +42,7 @@ class Sessions implements \SessionHandlerInterface {
 				ini_get('session.cookie_secure'),
 				ini_get('session.cookie_httponly'));
 		}
+		return false;
 	}
 
 	public function open(string $path, string $name): bool {

@@ -51,7 +51,9 @@ services:
         ports:
          - 127.0.0.1:8080:8080
         volumes:
-            - './data:/fmd/objectbox/'
+            - './data/fmd.sqlite:/fmd/fmd.sqlite'
+            # Deprecated Objectbox storage. Mount if you want it auto-migrated to SQLite.
+            #- './data:/fmd/objectbox/'
         restart: unless-stopped
 ```
 
@@ -59,9 +61,8 @@ Replace the version with the [latest release](https://gitlab.com/Nulide/findmyde
 
 *Persisting storage:*
 FMD has a database and needs to persist it across container restarts.
-You need to mount a Docker volume at `/fmd/objectbox/` inside the container.
+You need to mount a Docker volume with a file `/fmd/fmd.sqlite` inside the container.
 It must be readable and writable by uid 1000 (ideally it is owned by uid 1000).
-This example mounts a folder named `./data` (in the current directory outside the container).
 
 *Networking:*
 FMD Server listens for HTTP connections on port 8080.

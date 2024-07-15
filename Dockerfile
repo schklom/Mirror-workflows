@@ -11,7 +11,12 @@ ADD https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh obj
 RUN chmod u+x objectbox-install.sh \
       && ./objectbox-install.sh
 
-COPY . ./
+# Only copy Go files to avoid rebuilding Go when only web files have changed
+COPY go.mod .
+COPY go.sum .
+COPY cmd/ cmd/
+COPY user/ user/
+COPY utils/ utils/
 
 RUN go build -o /fmd cmd/fmdserver.go
 

@@ -1,7 +1,7 @@
 FROM golang:bookworm AS builder
 
 WORKDIR /go/src/findmydeviceserver
-ENV GOPATH /go
+ENV GOPATH=/go
 
 # pre-download and only redownload in subsequent builds if they change
 COPY go.mod go.sum ./

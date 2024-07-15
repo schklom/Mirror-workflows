@@ -28,6 +28,7 @@
     <script src="./picture.js"></script>
     <script src="./node_modules/argon2-browser/lib/argon2.js"></script>
 </head>
+
 <body>
 
     <div id="head">
@@ -35,18 +36,21 @@
             <h2>Find My Device</h2>
         </div>
         <br>
-        <div id="login">
+        <div id="loginContainer">
             <div class="center">
-                <p>This server tracks all your registered devices.<br>Please enter the device-id to receive the latest
-                    location:</p>
+                <p>This server tracks all your registered devices.</p>
             </div>
             <br>
             <div class="center">
-                <input type="text" id="fmdid" name="fmdid" autocomplete="fmdid">
-                <br><br>
-            </div>
-            <div class="center">
-                <button id="locateButton" type="button">LOCATE</button>
+                <form id="loginForm">
+                    <input type="text" id="fmdid" name="fmdid" placeholder="FMD ID" required>
+                    <br>
+
+                    <input type="password" id="password" name="password" placeholder="Password" required>
+                    <br>
+
+                    <button id="locateButton" type="submit">LOCATE</button>
+                </form>
             </div>
         </div>
     </div>

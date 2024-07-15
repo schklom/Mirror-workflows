@@ -95,9 +95,13 @@ func initSQLite(path string) *FMDDB {
 			IgnoreRecordNotFoundError: false, // Ignore ErrRecordNotFound error for logger
 		},
 	)
-	db, _ := gorm.Open(sqlite.Open(path), &gorm.Config{
+	db, err := gorm.Open(sqlite.Open(path), &gorm.Config{
 		Logger: newLogger,
 	})
+	if err != nil {
+		log.Fatal("Failed to open database: ", err)
+		return nil
+	}
 	db.AutoMigrate(&FMDUser{}, &Location{}, &Picture{}, &CommandLogEntry{})
 	db.AutoMigrate(&DBSetting{})
 	return &FMDDB{DB: db}

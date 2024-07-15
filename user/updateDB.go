@@ -61,7 +61,7 @@ func (db *DBBox) migrateToV2(u *UserBox) {
 	}
 }
 
-func migrateToV3(u *UserBox, newDB *FMDDB) {
+func migrateObjectboxToSQL(u *UserBox, newDB *FMDDB) {
 	fmt.Println("DB: Migrating to v3 ...")
 	ids, _ := u.Query().FindIds()
 

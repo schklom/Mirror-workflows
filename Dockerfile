@@ -31,9 +31,11 @@ COPY --from=builder /usr/lib/libobjectbox.so /usr/lib/libobjectbox.so
 COPY web /fmd/web
 COPY extra /fmd/extra
 
+# Old objectbox dir
+RUN mkdir /fmd/objectbox
+
 RUN useradd --create-home --uid 1000 fmd-user
-RUN mkdir /fmd/objectbox \
-      && chown fmd-user:fmd-user /fmd/objectbox
+RUN chown -R fmd-user:fmd-user /fmd/
 USER fmd-user
 
 EXPOSE 8080/tcp

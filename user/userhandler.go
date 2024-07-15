@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"findmydeviceserver/utils"
 	"fmt"
+	"log"
 	"math/big"
 	"os"
 	"path/filepath"
@@ -24,24 +25,33 @@ func (u *UserIO) Init(path string, userIDLength int, maxSavedLoc int, maxSavedPi
 	u.userIDLength = userIDLength
 	u.maxSavedLoc = maxSavedLoc
 	u.maxSavedPic = maxSavedPic
-	dbPath := filepath.Join(path, "fmd.db")
+
+	dbPath := filepath.Join(path, "fmd.sqlite")
+	log.Println("dbPath:", dbPath)
+
+	// Check if SQL Database exists
 	_, err := os.Stat(dbPath)
-	if os.IsNotExist(err) { // Check if SQL Database exists
-		fmt.Println("No SQL DB found")
+	if os.IsNotExist(err) {
+		log.Println("No SQLite DB found")
+
+		_, err = os.Create(dbPath)
+		if err != nil {
+			log.Fatal("Failed to create database:", err)
+		}
+
+		// Migrate old objectbox, if it exists
 		objectBoxPath := filepath.Join(path, "objectbox")
 		_, err := os.Stat(objectBoxPath)
-		print(objectBoxPath)
-		fmt.Println(err)
-		if err == nil { // If the SQL Database doesn't exist, check for an objectbox Databse to migrate
+		log.Println("objectBoxPath: ", objectBoxPath)
+		if err == nil {
 			fmt.Println("ObjectBox DB to migrate found")
 			oldDB := initObjectBox(objectBoxPath)
 			newDB := initSQLite(dbPath)
-			migrateToV3(oldDB, newDB)
+			migrateObjectboxToSQL(oldDB, newDB)
 		}
 
 	}
 	u.UB = initSQLite(dbPath)
-
 }
 
 func (u *UserIO) CreateNewUser(privKey string, pubKey string, salt string, hashedPassword string) string {

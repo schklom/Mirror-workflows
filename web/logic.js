@@ -72,13 +72,17 @@ function init() {
 
 function setupOnClicks() {
     document.getElementById("welcomeConfirm").addEventListener("click", () => welcomeFinish());
-    document.getElementById("fmdid").addEventListener("keyup", (event) => {
-        if (event.key == "Enter") {
-            prepareForLogin();
-        }
+    document.getElementById("loginForm").addEventListener("submit", async (event) => {
+        // don't send a request to the server, we do it manually
+        event.preventDefault();
+
+        let fmdid = document.getElementById("fmdid").value;
+        let password = document.getElementById("password").value;
+        await doLogin(fmdid, password);
+
+        return false;
     });
 
-    document.getElementById("locateButton").addEventListener("click", async () => await prepareForLogin());
     document.getElementById("locateOlder").addEventListener("click", async () => await locateOlder());
     document.getElementById("locateNewer").addEventListener("click", async () => await locateNewer());
     document.getElementById("locate").addEventListener("click", () => showLocateDropDown());
@@ -105,58 +109,6 @@ function checkWebCryptoApiAvailable() {
 
 // Section: Login
 
-function onFmdIdKeyPressed(event) {
-    if (event.keyCode == KEYCODE_ENTER) {
-        prepareForLogin();
-    }
-}
-
-async function prepareForLogin() {
-    let idInput = document.getElementById('fmdid');
-    if (idInput.value != "" && globalPrivateKey == null) {
-
-        var div = document.createElement("div");
-        div.id = "passwordPrompt";
-        div.classList.add("prompt");
-
-        var label = document.createElement("label");
-        label.id = "password_prompt_label";
-        label.className = "center"
-        label.innerHTML = "Please enter the password:";
-        label.for = "password_prompt_input";
-        div.appendChild(label);
-
-        div.appendChild(document.createElement("br"));
-
-        var centedInnerDiv = document.createElement("div");
-        centedInnerDiv.className = "center";
-        div.appendChild(centedInnerDiv);
-
-        var input = document.createElement("input");
-        input.id = "password_prompt_input";
-        input.type = "password";
-        centedInnerDiv.appendChild(input);
-
-        div.appendChild(document.createElement("br"));
-        div.appendChild(document.createElement("br"));
-
-        document.body.appendChild(div);
-
-        input.focus();
-        input.addEventListener("keyup", function (e) {
-            if (event.keyCode == KEYCODE_ENTER) {
-                if (input.value != "") {
-                    document.body.removeChild(div);
-                    doLogin(idInput.value, input.value);
-                }
-            }
-        }, false);
-
-    } else {
-        await locate(-1);
-    }
-}
-
 async function doLogin(fmdid, password) {
     currentId = fmdid;
     if (password == "") {
@@ -182,12 +134,10 @@ async function doLogin(fmdid, password) {
 
     try {
         await tryLoginWithHash(fmdid, modernPasswordHash);
-        // fall through to locate()
     } catch {
         console.log("Modern hash failed, trying legacy hash.");
         try {
             await tryLoginWithHash(fmdid, legacyPasswordHash);
-            // fall through to locate()
         } catch (statusCode) {
             if (statusCode == 423) {
                 alert("Too many attempts. Try again in 10 minutes.");
@@ -206,7 +156,7 @@ async function doLogin(fmdid, password) {
         return;
     }
 
-    loginDiv = document.getElementById("login");
+    loginDiv = document.getElementById("loginContainer");
     if (loginDiv != null) {
         loginDiv.parentNode.removeChild(loginDiv);
     }

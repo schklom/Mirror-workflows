@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-15 14:03+0300\n"
-"PO-Revision-Date: 2024-07-09 14:09+0000\n"
-"Last-Translator: oopzzozzo <ek3ru8m4@gmail.com>\n"
+"PO-Revision-Date: 2024-07-12 15:09+0000\n"
+"Last-Translator: TonyRL <TonyRL@users.noreply.github.com>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
 "tt-rss/webui/zh_Hant/>\n"
 "Language: zh_TW\n"
@@ -585,7 +585,7 @@ msgstr "產生密碼"
 
 #: classes/Pref_Prefs.php:415 classes/Pref_Feeds.php:950 js/PrefHelpers.js:227
 msgid "Remove selected"
-msgstr "移除所選的"
+msgstr "移除已選取"
 
 #: classes/Pref_Prefs.php:451 classes/Pref_Prefs.php:503
 msgid "Your password:"
@@ -715,7 +715,7 @@ msgstr "更多資訊"
 
 #: classes/Pref_Prefs.php:906
 msgid "Enable selected"
-msgstr "啟用所選"
+msgstr "啟用已選取"
 
 #: classes/Pref_Prefs.php:909
 msgid "Reload"
@@ -901,8 +901,7 @@ msgid ""
 "No articles found to display. You can assign articles to labels manually "
 "from article header context menu (applies to all selected articles) or use a "
 "filter."
-msgstr ""
-"本標籤下沒有文章。您可以透過文章標題上的右鍵選單（會套用到全部所選的文章）或"
+msgstr "本標籤下沒有文章。您可以透過文章標題上的右鍵選單（會套用到全部選取的文章）或"
 "使用過濾器的方式為文章新增標籤。"
 
 #: classes/Feeds.php:429
@@ -1066,7 +1065,7 @@ msgstr "訂閱摘要"
 
 #: classes/Pref_Feeds.php:931
 msgid "Edit selected feeds"
-msgstr "編輯所選的摘要"
+msgstr "編輯選取的摘要"
 
 #: classes/Pref_Feeds.php:933 classes/Pref_Feeds.php:948
 #: classes/Pref_Filters.php:693
@@ -1923,7 +1922,7 @@ msgstr "沒有選取任何過濾器。"
 
 #: js/PrefFilterTree.js:140
 msgid "Combine selected filters?"
-msgstr "要合併所選的過濾器嗎？"
+msgstr "要合併選取的過濾器嗎？"
 
 #: js/PrefFilterTree.js:141
 msgid "Joining filters..."
@@ -1931,11 +1930,11 @@ msgstr "加入過濾器..."
 
 #: js/PrefFilterTree.js:152
 msgid "Remove selected filters?"
-msgstr "移除所選的過濾器？"
+msgstr "移除選取的過濾器？"
 
 #: js/PrefFilterTree.js:153
 msgid "Removing selected filters..."
-msgstr "正在移除所選的過濾器..."
+msgstr "正在移除選取的過濾器..."
 
 #: js/common.js:468
 msgid "Click to close"
@@ -2050,13 +2049,13 @@ msgstr "未選取任何文章。"
 #, java-printf-format, javascript-format
 msgid "%d article selected"
 msgid_plural "%d articles selected"
-msgstr[0] "已選擇 %d 篇文章"
+msgstr[0] "已選取 %d 篇文章"
 
 #: js/Headlines.js:1173
 #, java-printf-format, javascript-format
 msgid "Delete %d selected article in %s?"
 msgid_plural "Delete %d selected articles in %s?"
-msgstr[0] "要刪除 %d 篇所選的文章（在%s中）嗎？"
+msgstr[0] "要刪除 %d 篇選取的文章（在 %s 中）嗎？"
 
 #: js/Headlines.js:1175
 #, java-printf-format, javascript-format
@@ -2123,7 +2122,7 @@ msgstr "標記摘要為已讀"
 
 #: js/PrefHelpers.js:20
 msgid "Remove selected app passwords?"
-msgstr "移除所選的 App 密碼？"
+msgstr "移除選取的 App 密碼？"
 
 #: js/PrefHelpers.js:45
 msgid "This will invalidate all previously generated feed URLs. Continue?"
@@ -2160,7 +2159,7 @@ msgstr "要移除選取的設定檔嗎？使用中和預設設定檔不會被移
 
 #: js/PrefHelpers.js:154
 msgid "Removing selected profiles..."
-msgstr "正在移除所選的設定檔..."
+msgstr "正在移除選取的設定檔..."
 
 #: js/PrefHelpers.js:163
 msgid "No profiles selected."
@@ -2334,7 +2333,7 @@ msgstr "如果您已經匯入標籤或過濾器，您可能需要重新載入來
 
 #: js/Article.js:36
 msgid "Please enter new score for selected articles:"
-msgstr "請輸入所選文章的新分數："
+msgstr "請輸入選取文章的新分數："
 
 #: js/Article.js:70
 msgid "Please enter new score for this article:"
@@ -2544,7 +2543,7 @@ msgstr "移除選取的摘要？"
 
 #: js/PrefFeedTree.js:500 js/CommonDialogs.js:231
 msgid "Removing selected feeds..."
-msgstr "正在移除所選的摘要..."
+msgstr "正在移除選取的摘要..."
 
 #: js/PrefFeedTree.js:541 js/CommonDialogs.js:298
 msgid "Click to edit feed"
@@ -2615,7 +2614,7 @@ msgstr "除錯選取的摘要？"
 
 #: js/CommonDialogs.js:259
 msgid "Opening debugger for selected feeds..."
-msgstr "正在啟動偵錯器，開啟所選的摘要..."
+msgstr "正在為選取的摘要啟動偵錯器…"
 
 #: js/CommonDialogs.js:328
 msgid "Please enter label caption:"
@@ -2884,7 +2883,7 @@ msgstr "儲存並重新載入"
 
 #: js/PrefHelpers.js:352
 msgid "Selected plugins have been enabled. Reload?"
-msgstr "已啟用所選擴充套件。重新載入？"
+msgstr "已啟用選取的擴充套件。重新載入？"
 
 #: js/PrefHelpers.js:400
 msgid "System plugins are enabled using global configuration."

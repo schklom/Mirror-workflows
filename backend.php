@@ -44,7 +44,7 @@
 	}
 
 	if (!empty($_SESSION["uid"])) {
-		if (!\Sessions\validate_session()) {
+		if (!Sessions::validate_session()) {
 			header("Content-Type: text/json");
 			print Errors::to_json(Errors::E_UNAUTHORIZED);
 

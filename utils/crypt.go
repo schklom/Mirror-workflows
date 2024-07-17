@@ -1,17 +1,70 @@
 package utils
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/sha256"
 	"crypto/x509"
 	"encoding/base64"
 	"encoding/pem"
 )
 
-func RsaEncrypt(ciphertext string, publicKey string) string {
-	cipherbytes := []byte(ciphertext)
-	pubKey := []byte(publicKey)
-	block, _ := pem.Decode(pubKey)
+func encryptWithAESGCM(plaintext, key []byte) []byte {
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil
+	}
+	iv := generateSecureRandomKey(12)
+
+	aesGCM, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil
+	}
+	ciphertext := aesGCM.Seal(nil, iv, plaintext, nil)
+	result := append(iv, ciphertext...)
+
+	return result
+}
+
+func wrapSessionKeyOAEP(publicKey *rsa.PublicKey, sessionKey []byte) ([]byte, error) {
+	label := []byte("")
+	hash := sha256.New()
+	ciphertext, err := rsa.EncryptOAEP(hash, rand.Reader, publicKey, sessionKey, label)
+	if err != nil {
+		return nil, err
+	}
+
+	return ciphertext, nil
+}
+
+func concatByteArrays(arrays ...[]byte) []byte {
+	result := []byte("")
+	for _, arr := range arrays {
+		result = append(result, arr...)
+	}
+
+	return result
+}
+
+func generateSecureRandomKey(size int) []byte {
+	key := make([]byte, size)
+	_, err := rand.Read(key)
+	if err != nil {
+		return nil
+	}
+	return key
+}
+
+func RsaEncrypt(publicKeyString string, ciphertext string) string {
+	sessionKey := generateSecureRandomKey(32)
+	msgBytes := []byte(ciphertext)
+	ivAndAesCiphertext := encryptWithAESGCM(msgBytes, sessionKey)
+
+	//pubKeyBytes := []byte(DecodeBase64(publicKeyString))
+	publicKeyString = "-----BEGIN PUBLIC KEY-----\n" + publicKeyString + "\n-----END PUBLIC KEY-----"
+	block, _ := pem.Decode([]byte(publicKeyString))
 	if block == nil {
 		return ""
 	}
@@ -19,10 +72,10 @@ func RsaEncrypt(ciphertext string, publicKey string) string {
 	if err != nil {
 		return ""
 	}
-	res, err := rsa.EncryptPKCS1v15(rand.Reader, pub.(*rsa.PublicKey), cipherbytes)
-	if err != nil {
-		return ""
-	}
+
+	sessionKeyPacket, _ := wrapSessionKeyOAEP(pub.(*rsa.PublicKey), sessionKey)
+	res := concatByteArrays(sessionKeyPacket, ivAndAesCiphertext)
+
 	return EncodeBase64(res)
 }
 

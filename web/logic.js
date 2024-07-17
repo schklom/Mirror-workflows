@@ -397,9 +397,9 @@ async function showCommandLogs() {
         throw response.status;
     }
     const json = await response.json();
-    displayCommandLogs(json.Data)
+    logs = await parseCommandLogs(globalPrivateKey, json.Data);
+    displayCommandLogs(logs)
 }
-
 // Section: Picture
 
 async function showLatestPicture() {

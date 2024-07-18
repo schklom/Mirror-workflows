@@ -1935,6 +1935,7 @@ return array(
     'SebastianBergmann\\Version' => $vendorDir . '/sebastian/version/src/Version.php',
     'SensitiveParameter' => $vendorDir . '/symfony/polyfill-php82/Resources/stubs/SensitiveParameter.php',
     'SensitiveParameterValue' => $vendorDir . '/symfony/polyfill-php82/Resources/stubs/SensitiveParameterValue.php',
+    'Sessions' => $baseDir . '/classes/Sessions.php',
     'Soundasleep\\Html2Text' => $vendorDir . '/soundasleep/html2text/src/Html2Text.php',
     'Soundasleep\\Html2TextException' => $vendorDir . '/soundasleep/html2text/src/Html2TextException.php',
     'Stringable' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',

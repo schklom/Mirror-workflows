@@ -9,7 +9,7 @@ ENV SCRIPT_ROOT=/opt/tt-rss
 ENV SRC_DIR=/src/tt-rss/
 
 RUN [ ! -z ${ALPINE_MIRROR} ] && \
-		sed -i.bak "s#dl-cdn.alpinelinux.org#${ALPINE_MIRROR}#" /etc/apk/repositories && \
+		sed -i.bak "s#dl-cdn.alpinelinux.org#${ALPINE_MIRROR}#" /etc/apk/repositories ; \
 	apk add --no-cache dcron php83 php83-fpm php83-phar php83-sockets php83-pecl-apcu \
 	php83-pdo php83-gd php83-pgsql php83-pdo_pgsql php83-xmlwriter php83-opcache \
 	php83-mbstring php83-intl php83-xml php83-curl php83-simplexml \

@@ -79,17 +79,27 @@ ttrss-web-nginx:push-branch:
   needs:
     - job: ttrss-web-nginx:build
 
-phpdoc:
+phpdoc:build:
   image: ${PHP_IMAGE}
-  stage: publish
+  stage: lint
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $PHPDOC_DEPLOY_SSH_KEY != null
+    - if: $CI_COMMIT_BRANCH # == $CI_DEFAULT_BRANCH && $PHPDOC_DEPLOY_SSH_KEY != null
   script:
     - php83 /phpDocumentor.phar -d classes -d include -t phpdoc --visibility=public
-    - mkdir -p ~/.ssh &&
-        cp ${PHPDOC_DEPLOY_SSH_KEY} ~/.ssh/id_ed25519 &&
-        chmod 0600 ~/.ssh/id_ed25519
-    - rsync -av -e 'ssh -o StrictHostKeyChecking=no' phpdoc/ ${PHPDOC_DEPLOY_HOST}:phpdoc/
+  artifacts:
+    paths:
+      - phpdoc
+
+phpdoc:publish:
+  extends: .build-docker-kaniko
+  stage: lint
+  needs:
+    - job: phpdoc:build
+  rules:
+    - if: $CI_COMMIT_BRANCH # == $CI_DEFAULT_BRANCH
+  variables:
+    DOCKERFILE: ${CI_PROJECT_DIR}/.docker/phpdoc/Dockerfile
+    VERSION: latest
 
 phpunit-integration:
   image: ${PHP_IMAGE}

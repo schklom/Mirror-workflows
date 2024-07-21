@@ -99,6 +99,7 @@ phpdoc:publish:
     - if: $CI_COMMIT_BRANCH # == $CI_DEFAULT_BRANCH
   variables:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/phpdoc/Dockerfile
+    NAME: ttrss-phpdoc
     VERSION: latest
 
 phpunit-integration:

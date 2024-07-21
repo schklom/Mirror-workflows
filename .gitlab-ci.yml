@@ -81,9 +81,9 @@ ttrss-web-nginx:push-branch:
 
 phpdoc:build:
   image: ${PHP_IMAGE}
-  stage: lint
+  stage: publish
   rules:
-    - if: $CI_COMMIT_BRANCH # == $CI_DEFAULT_BRANCH && $PHPDOC_DEPLOY_SSH_KEY != null
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
     - php83 /phpDocumentor.phar -d classes -d include -t phpdoc --visibility=public
   artifacts:
@@ -92,11 +92,11 @@ phpdoc:build:
 
 phpdoc:publish:
   extends: .build-docker-kaniko
-  stage: lint
+  stage: publish
   needs:
     - job: phpdoc:build
   rules:
-    - if: $CI_COMMIT_BRANCH # == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   variables:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/phpdoc/Dockerfile
     NAME: ttrss-phpdoc

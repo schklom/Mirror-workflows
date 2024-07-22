@@ -78,7 +78,7 @@ jobs:
           ref: 'Pi.Alert' # branch
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.1.0
+        uses: docker/setup-qemu-action@v3.2.0
         #with:
           #image: tonistiigi/binfmt:latest
           #platforms: all

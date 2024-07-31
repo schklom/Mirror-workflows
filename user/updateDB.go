@@ -68,7 +68,7 @@ func migrateObjectboxToSQL(u *UserBox, newDB *FMDDB) {
 	// Migrate to SQL Database
 
 	for i, id := range ids {
-		fmt.Println("Migrating " + fmt.Sprint(i) + "/" + fmt.Sprint(len(ids)))
+		fmt.Println("Migrating " + fmt.Sprint(i) + "/" + fmt.Sprint(len(ids)-1))
 		user, _ := u.Get(id)
 		newUser := FMDUser{UID: user.UID, Salt: user.Salt, HashedPassword: user.HashedPassword,
 			PrivateKey: user.PrivateKey, PublicKey: user.PublicKey, CommandToUser: user.CommandToUser, PushUrl: user.PushUrl}

@@ -27,12 +27,11 @@ func (u *UserIO) Init(path string, userIDLength int, maxSavedLoc int, maxSavedPi
 	u.maxSavedPic = maxSavedPic
 
 	dbPath := filepath.Join(path, "fmd.sqlite")
-	log.Println("dbPath:", dbPath)
 
 	// Check if SQL Database exists
 	_, err := os.Stat(dbPath)
 	if os.IsNotExist(err) {
-		log.Println("No SQLite DB found")
+		fmt.Println("No SQLite DB found")
 
 		_, err = os.Create(dbPath)
 		if err != nil {
@@ -42,12 +41,13 @@ func (u *UserIO) Init(path string, userIDLength int, maxSavedLoc int, maxSavedPi
 		// Migrate old objectbox, if it exists
 		objectBoxPath := filepath.Join(path, "objectbox")
 		_, err := os.Stat(objectBoxPath)
-		log.Println("objectBoxPath: ", objectBoxPath)
 		if err == nil {
-			fmt.Println("ObjectBox DB to migrate found")
+			fmt.Println("Found ObjectBox DB to migrate")
 			oldDB := initObjectBox(objectBoxPath)
 			newDB := initSQLite(dbPath)
 			migrateObjectboxToSQL(oldDB, newDB)
+		} else {
+			fmt.Println("Creating new DB")
 		}
 
 	}
@@ -155,7 +155,7 @@ func (u *UserIO) SetCommandToUser(id string, ctu string) {
 	user.CommandToUser = ctu
 	if ctu != "" {
 		timestamp := time.Now().Unix()
-		logEntry := CommandLogPackage{TimeStamp: timestamp, Log: "New Com sent " + ctu}
+		logEntry := CommandLogPackage{TimeStamp: timestamp, Log: "Command \"" + ctu + "\" sent to server!"}
 		jsonLog, _ := json.Marshal(logEntry)
 		logEntryEncrypted := utils.RsaEncrypt(user.PublicKey, string(jsonLog[:]))
 		comLogEntry := CommandLogEntry{UserID: user.Id, Content: logEntryEncrypted}

@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-15 14:03+0300\n"
-"PO-Revision-Date: 2019-07-20 18:11+0000\n"
-"Last-Translator: Roberto Michán Sánchez <robertoms258@gmail.com>\n"
-"Language-Team: Spanish <https://weblate.tt-rss.org/projects/tt-rss/messages/"
-"es/>\n"
-"Language: es_ES\n"
+"PO-Revision-Date: 2024-07-30 13:09+0000\n"
+"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/tt-rss/webui/es/>"
+"\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.7.1\n"
+"X-Generator: Weblate 5.7-dev\n"
 
 #: backend.php:65
 msgid "Use default"
@@ -84,15 +84,12 @@ msgid "Weekly"
 msgstr "Semanalmente"
 
 #: backend.php:95 classes/Pref_Feeds.php:551 classes/Pref_Feeds.php:604
-#, fuzzy
 msgid "Disabled"
-msgstr "Desactivar contraseñas de un solo uso"
+msgstr "Desactivado"
 
 #: backend.php:96
-#, fuzzy
-#| msgid "Readability"
 msgid "Read Only"
-msgstr "Readability"
+msgstr "Solo lectura"
 
 #: backend.php:97 classes/Pref_System.php:123
 msgid "User"
@@ -211,10 +208,8 @@ msgid "Search..."
 msgstr "Buscar..."
 
 #: index.php:265
-#, fuzzy
-#| msgid "Search %s..."
 msgid "Search feeds..."
-msgstr "Buscar %s..."
+msgstr "Buscar feeds…"
 
 #: index.php:266
 msgid "Feed actions:"
@@ -243,10 +238,8 @@ msgid "(Un)hide read feeds"
 msgstr "Ocultar/Mostrar fuentes leídas"
 
 #: index.php:273
-#, fuzzy
-#| msgid "Reset UI layout"
 msgid "UI layout:"
-msgstr "Reajustar la interfaz"
+msgstr "Diseño de la interfaz de usuario:"
 
 #: index.php:274 classes/RPC.php:664
 msgid "Toggle combined mode"
@@ -257,10 +250,8 @@ msgid "Toggle widescreen mode"
 msgstr "Alternar modo de pantalla ancha"
 
 #: index.php:278
-#, fuzzy
-#| msgid "Always expand articles"
 msgid "Toggle expand all articles"
-msgstr "Siempre expandir artículos"
+msgstr "Alternar expandir todos los artículos"
 
 #: index.php:279
 msgid "Other actions:"
@@ -334,7 +325,7 @@ msgstr "Avanzado"
 
 #: classes/Pref_Prefs.php:90
 msgid "Debugging"
-msgstr ""
+msgstr "Depuración"
 
 #: classes/Pref_Prefs.php:96
 msgid "Never apply these tags automatically (comma-separated list)."
@@ -506,12 +497,11 @@ msgstr "Tema"
 
 #: classes/Pref_Prefs.php:127
 msgid "Don't enforce DISTINCT headlines"
-msgstr ""
+msgstr "No impongas titulares DISTINTOS"
 
 #: classes/Pref_Prefs.php:127
-#, fuzzy
 msgid "May produce duplicate entries"
-msgstr "Permitir artículos duplicados"
+msgstr "Puedes crear entradas duplicadas"
 
 #: classes/Pref_Prefs.php:128
 #, fuzzy

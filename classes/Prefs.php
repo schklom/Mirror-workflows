@@ -303,11 +303,7 @@ class Prefs {
 	 */
 	private function _get_cache(string $pref_name, int $owner_uid, ?int $profile_id) {
 		$cache_key = sprintf("%d/%d/%s", $owner_uid, $profile_id, $pref_name);
-
-		if (isset($this->cache[$cache_key]))
-			return $this->cache[$cache_key];
-
-		return null;
+		return $this->cache[$cache_key] ?? null;
 	}
 
 	/**

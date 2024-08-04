@@ -586,11 +586,7 @@ class PluginHost {
 		$method = strtolower($method);
 
 		if (isset($this->handlers[$handler])) {
-			if (isset($this->handlers[$handler]["*"])) {
-				return $this->handlers[$handler]["*"];
-			} else {
-				return $this->handlers[$handler][$method];
-			}
+			return $this->handlers[$handler]["*"] ?? $this->handlers[$handler][$method];
 		}
 
 		return false;
@@ -752,15 +748,8 @@ class PluginHost {
 
 		if ($profile_id) {
 			$idx = get_class($sender);
-
 			$this->load_data();
-
-			if (isset($this->storage[$idx][$profile_id][$name])) {
-				return $this->storage[$idx][$profile_id][$name];
-			} else {
-				return $default_value;
-			}
-
+			return $this->storage[$idx][$profile_id][$name] ?? $default_value;
 		} else {
 			return $this->get($sender, $name, $default_value);
 		}
@@ -772,14 +761,8 @@ class PluginHost {
 	 */
 	function get(Plugin $sender, string $name, $default_value = false) {
 		$idx = get_class($sender);
-
 		$this->load_data();
-
-		if (isset($this->storage[$idx][$name])) {
-			return $this->storage[$idx][$name];
-		} else {
-			return $default_value;
-		}
+		return $this->storage[$idx][$name] ?? $default_value;
 	}
 
 	/**

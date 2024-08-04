@@ -1495,23 +1495,23 @@ class Feeds extends Handler_Protected {
 		// right before adding them to SQL part
 
 		$feed = $params["feed"];
-		$limit = isset($params["limit"]) ? $params["limit"] : 30;
+		$limit = $params["limit"] ?? 30;
 		$view_mode = $params["view_mode"];
-		$cat_view = isset($params["cat_view"]) ? $params["cat_view"] : false;
-		$search = isset($params["search"]) ? $params["search"] : false;
-		$search_language = isset($params["search_language"]) ? $params["search_language"] : "";
-		$override_order = isset($params["override_order"]) ? $params["override_order"] : false;
-		$offset = isset($params["offset"]) ? $params["offset"] : 0;
-		$owner_uid = isset($params["owner_uid"]) ? $params["owner_uid"] : $_SESSION["uid"];
-		$since_id = isset($params["since_id"]) ? $params["since_id"] : 0;
-		$include_children = isset($params["include_children"]) ? $params["include_children"] : false;
-		$ignore_vfeed_group = isset($params["ignore_vfeed_group"]) ? $params["ignore_vfeed_group"] : false;
-		$override_strategy = isset($params["override_strategy"]) ? $params["override_strategy"] : false;
-		$override_vfeed = isset($params["override_vfeed"]) ? $params["override_vfeed"] : false;
-		$start_ts = isset($params["start_ts"]) ? $params["start_ts"] : false;
-		$check_first_id = isset($params["check_first_id"]) ? $params["check_first_id"] : false;
-		$skip_first_id_check = isset($params["skip_first_id_check"]) ? $params["skip_first_id_check"] : false;
-		//$order_by = isset($params["order_by"]) ? $params["order_by"] : false;
+		$cat_view = $params["cat_view"] ?? false;
+		$search = $params["search"] ?? false;
+		$search_language = $params["search_language"] ?? "";
+		$override_order = $params["override_order"] ?? false;
+		$offset = $params["offset"] ?? 0;
+		$owner_uid = $params["owner_uid"] ?? $_SESSION["uid"];
+		$since_id = $params["since_id"] ?? 0;
+		$include_children = $params["include_children"] ?? false;
+		$ignore_vfeed_group = $params["ignore_vfeed_group"] ?? false;
+		$override_strategy = $params["override_strategy"] ?? false;
+		$override_vfeed = $params["override_vfeed"] ?? false;
+		$start_ts = $params["start_ts"] ?? false;
+		$check_first_id = $params["check_first_id"] ?? false;
+		$skip_first_id_check = $params["skip_first_id_check"] ?? false;
+		//$order_by = $params["order_by"] ?? false;
 
 		$ext_tables_part = "";
 		$limit_query_part = "";

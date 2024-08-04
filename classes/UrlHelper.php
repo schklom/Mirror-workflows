@@ -276,19 +276,19 @@ class UrlHelper {
 		}
 
 		$url = $options["url"];
-		$type = isset($options["type"]) ? $options["type"] : false;
-		$login = isset($options["login"]) ? $options["login"] : false;
-		$pass = isset($options["pass"]) ? $options["pass"] : false;
-		$auth_type = isset($options["auth_type"]) ? $options["auth_type"] : "basic";
-		$post_query = isset($options["post_query"]) ? $options["post_query"] : false;
-		$timeout = isset($options["timeout"]) ? $options["timeout"] : false;
-		$last_modified = isset($options["last_modified"]) ? $options["last_modified"] : "";
-		$useragent = isset($options["useragent"]) ? $options["useragent"] : false;
-		$followlocation = isset($options["followlocation"]) ? $options["followlocation"] : true;
-		$max_size = isset($options["max_size"]) ? $options["max_size"] : Config::get(Config::MAX_DOWNLOAD_FILE_SIZE); // in bytes
-		$http_accept = isset($options["http_accept"]) ? $options["http_accept"] : false;
-		$http_referrer = isset($options["http_referrer"]) ? $options["http_referrer"] : false;
-		$encoding = isset($options["encoding"]) ? $options["encoding"] : false;
+		$type = $options["type"] ?? false;
+		$login = $options["login"] ?? false;
+		$pass = $options["pass"] ?? false;
+		$auth_type = $options["auth_type"] ?? "basic";
+		$post_query = $options["post_query"] ?? false;
+		$timeout = $options["timeout"] ?? false;
+		$last_modified = $options["last_modified"] ?? "";
+		$useragent = $options["useragent"] ?? false;
+		$followlocation = $options["followlocation"] ?? true;
+		$max_size = $options["max_size"] ?? Config::get(Config::MAX_DOWNLOAD_FILE_SIZE); // in bytes
+		$http_accept = $options["http_accept"] ?? false;
+		$http_referrer = $options["http_referrer"] ?? false;
+		$encoding = $options["encoding"] ?? false;
 
 		$url = ltrim($url, ' ');
 		$url = str_replace(' ', '%20', $url);

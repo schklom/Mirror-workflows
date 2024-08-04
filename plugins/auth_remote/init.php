@@ -64,13 +64,13 @@ class Auth_Remote extends Auth_Base {
 				// LemonLDAP can send user informations via HTTP HEADER
 				if (Config::get(Config::AUTH_AUTO_CREATE)) {
 					// update user name
-					$fullname = isset($_SERVER['HTTP_USER_NAME']) ? $_SERVER['HTTP_USER_NAME'] : ($_SERVER['AUTHENTICATE_CN'] ?? "");
+					$fullname = $_SERVER['HTTP_USER_NAME'] ?? $_SERVER['AUTHENTICATE_CN'] ?? '';
 					if ($fullname){
 						$sth = $this->pdo->prepare("UPDATE ttrss_users SET full_name = ? WHERE id = ?");
 						$sth->execute([$fullname, $user_id]);
 					}
 					// update user mail
-					$email = isset($_SERVER['HTTP_USER_MAIL']) ? $_SERVER['HTTP_USER_MAIL'] : ($_SERVER['AUTHENTICATE_MAIL'] ?? "");
+					$email = $_SERVER['HTTP_USER_MAIL'] ?? $_SERVER['AUTHENTICATE_MAIL'] ?? '';
 					if ($email){
 						$sth = $this->pdo->prepare("UPDATE ttrss_users SET email = ? WHERE id = ?");
 						$sth->execute([$email, $user_id]);

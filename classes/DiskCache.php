@@ -410,7 +410,7 @@ class DiskCache implements Cache_Adapter {
 		$mimetype = $this->adapter->get_mime_type(basename($filename));
 
 		if ($mimetype)
-			return isset($this->mimeMap[$mimetype]) ? $this->mimeMap[$mimetype] : "";
+			return $this->mimeMap[$mimetype] ?? "";
 		else
 			return "";
 	}

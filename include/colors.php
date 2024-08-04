@@ -156,10 +156,7 @@ function _resolve_htmlcolor(string $color): string {
 
 	$color = strtolower($color);
 
-	if (isset($htmlcolors[$color]))
-		return $htmlcolors[$color];
-	else
-		return $color;
+	return $htmlcolors[$color] ?? $color;
 }
 
 /**

@@ -1481,17 +1481,11 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	private function _get_short_desc(string $pref_name): string {
-		if (isset($this->pref_help[$pref_name][0])) {
-			return $this->pref_help[$pref_name][0];
-		}
-		return "";
+		return $this->pref_help[$pref_name][0] ?? "";
 	}
 
 	private function _get_help_text(string $pref_name): string {
-		if (isset($this->pref_help[$pref_name][1])) {
-			return $this->pref_help[$pref_name][1];
-		}
-		return "";
+		return $this->pref_help[$pref_name][1] ?? "";
 	}
 
 	private function appPasswordList(): void {

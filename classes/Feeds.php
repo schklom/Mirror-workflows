@@ -18,12 +18,9 @@ class Feeds extends Handler_Protected {
 	const FEED_ALL = -4;
 
 	/**
-	 * a special case feed used to display auxiliary information when there's nothing to load (e.g. no stuff in fresh feed)
-	 *
-	 * TODO: Remove this and 'Feeds::_generate_dashboard_feed()'?  It only seems to be used if 'Feeds::view()' (also potentially removable)
-	 * gets passed the ID.
+	 * -5 was FEED_DASHBOARD, intended to be used when there
+	 * was nothing to show, but the related code was unused
 	 */
-	const FEED_DASHBOARD = -5;
 
 	/** special feed for recently read articles */
 	const FEED_RECENTLY_READ = -6;
@@ -492,11 +489,6 @@ class Feeds extends Handler_Protected {
 
 		if (is_numeric($feed)) $feed = (int) $feed;
 
-		if ($feed == Feeds::FEED_DASHBOARD) {
-			print json_encode($this->_generate_dashboard_feed());
-			return;
-		}
-
 		$sth = false;
 		if ($feed < LABEL_BASE_INDEX) {
 
@@ -569,50 +561,6 @@ class Feeds extends Handler_Protected {
 		$reply['runtime-info'] = RPC::_make_runtime_info();
 
 		print json_encode($reply);
-	}
-
-	/**
-	 * @return array<string, array<string, mixed>>
-	 */
-	private function _generate_dashboard_feed(): array {
-		$reply = array();
-
-		$reply['headlines']['id'] = Feeds::FEED_DASHBOARD;
-		$reply['headlines']['is_cat'] = false;
-
-		$reply['headlines']['toolbar'] = '';
-
-		$reply['headlines']['content'] = "<div class='whiteBox'>".__('No feed selected.');
-
-		$reply['headlines']['content'] .= "<p><span class=\"text-muted\">";
-
-		$sth = $this->pdo->prepare("SELECT ".SUBSTRING_FOR_DATE."(MAX(last_updated), 1, 19) AS last_updated FROM ttrss_feeds
-			WHERE owner_uid = ?");
-		$sth->execute([$_SESSION['uid']]);
-		$row = $sth->fetch();
-
-		$last_updated = TimeHelper::make_local_datetime($row["last_updated"], false);
-
-		$reply['headlines']['content'] .= sprintf(__("Feeds last updated at %s"), $last_updated);
-
-		$num_errors = ORM::for_table('ttrss_feeds')
-			->where_not_equal('last_error', '')
-			->where('owner_uid', $_SESSION['uid'])
-			->where_gte('update_interval', 0)
-			->count('id');
-
-		if ($num_errors > 0) {
-			$reply['headlines']['content'] .= "<br/>";
-			$reply['headlines']['content'] .= "<a class=\"text-muted\" href=\"#\" onclick=\"CommonDialogs.showFeedsWithErrors(); return false\">".
-				__('Some feeds have update errors (click for details)')."</a>";
-		}
-		$reply['headlines']['content'] .= "</span></p>";
-
-		$reply['headlines-info'] = array("count" => 0,
-			"unread" => 0,
-			"disable_cache" => true);
-
-		return $reply;
 	}
 
 	/**

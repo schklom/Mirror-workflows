@@ -34,6 +34,9 @@ services:
 
   updater:
     image: cthulhoo/ttrss-fpm-pgsql-static:latest
+    build:
+      dockerfile: .docker/app/Dockerfile
+      context: .
     restart: unless-stopped
     env_file:
       - .env

@@ -62,6 +62,7 @@ class UserHelper {
 		if (!Config::get(Config::SINGLE_USER_MODE)) {
 			$user_id = false;
 			$auth_module = false;
+			$login = mb_strtolower($login);
 
 			PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_AUTH_USER,
 				function ($result, $plugin) use (&$user_id, &$auth_module) {
@@ -222,7 +223,7 @@ class UserHelper {
 
 	static function find_user_by_login(string $login): ?int {
 		$user = ORM::for_table('ttrss_users')
-			->where('login', $login)
+			->where_raw('LOWER(login) = LOWER(?)', [$login])
 			->find_one();
 
 		if ($user)

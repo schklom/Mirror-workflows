@@ -116,7 +116,7 @@ class Auth_Internal extends Auth_Base implements IAuthModule2 {
 
 		if ($login) {
 			$user = ORM::for_table('ttrss_users')
-				->where('login', $login)
+				->where_raw('LOWER(login) = LOWER(?)', [$login])
 				->find_one();
 
 			if ($user) {

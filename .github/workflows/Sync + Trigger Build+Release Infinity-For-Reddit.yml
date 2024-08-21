@@ -93,7 +93,8 @@ jobs:
           # use double quotes to use bash variable inside sed, then escape double quotes inside via \"
           sed -ir "s|public static final String USER_AGENT = \".*?\";|public static final String USER_AGENT = \"$user_agent\";|" $file
 
-
+      - name: Sign the APKs
+        run: |
           ## DISABLED BECAUSE I SIGN IT IN THE WORKFLOW DEFINED BELOW
           ## Add Keystore
           #file="app/build.gradle"
@@ -113,9 +114,9 @@ jobs:
           #        keyPassword "Infinity"
           #    }
           #}"
-          sed -i "\|$where_to_add|r"<(echo "$what_to_add") $file
-
-          # Sign the APK
+          #sed -i "\|$where_to_add|r"<(echo "$what_to_add") $file
+          
+          # Sign the APKs
           # Need to escape the dollar double bracket
           file=".github/workflows/build.yml"
           what_to_add="
@@ -132,6 +133,8 @@ jobs:
           where_to_add="name: Upload apk"
           sed -i "\|$where_to_add|r"<(echo "$what_to_add") $file
 
+      - name: Release the APKs
+        run: |
           # Add the release of the artifact at the end of the build action
           # Need to escape the dollar double bracket
           # https://github.com/orgs/community/discussions/26621#discussioncomment-3840420

@@ -116,6 +116,7 @@ jobs:
           sed -i "\|$where_to_add|r"<(echo "$what_to_add") $file
 
           # Sign the APK
+          # Need to escape the dollar double bracket
           file=".github/workflows/build.yml"
           what_to_add="
               - name: Sign APK
@@ -123,10 +124,10 @@ jobs:
                 uses: ilharp/sign-android-release@v1
                 with:
                   releaseDir: app/build/outputs/apk/
-                  signingKey: ${{ secrets.APK_KEYSTORE_FILE_BASE64 }}
-                  keyAlias: ${{ secrets.APK_KEYSTORE_ALIAS }}
-                  keyStorePassword: ${{ secrets.APK_KEYSTORE_PASSWORD }}
-                  keyPassword: ${{ secrets.APK_KEYSTORE_PASSWORD }}
+                  signingKey: ${{ '\${{ secrets.APK_KEYSTORE_FILE_BASE64 }}' }}
+                  keyAlias: ${{ '\${{ secrets.APK_KEYSTORE_ALIAS }}' }}
+                  keyStorePassword: ${{ '\${{ secrets.APK_KEYSTORE_PASSWORD }}' }}
+                  keyPassword: ${{ '\${{ secrets.APK_KEYSTORE_PASSWORD }}' }}
           "
           where_to_add="name: Upload apk"
           sed -i "\|$where_to_add|r"<(echo "$what_to_add") $file

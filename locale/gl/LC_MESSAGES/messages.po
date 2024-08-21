@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-15 14:03+0300\n"
-"PO-Revision-Date: 2024-06-20 13:09+0000\n"
+"PO-Revision-Date: 2024-08-21 09:44+0000\n"
 "Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/tt-rss/webui/gl/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.6-rc\n"
+"X-Generator: Weblate 5.7\n"
 
 #: backend.php:65
 msgid "Use default"
@@ -305,7 +305,7 @@ msgstr "Etiqueta creada <b>%s</b>"
 #: js/CommonFilters.js:443 js/CommonFilters.js:476 js/PrefHelpers.js:184
 #: js/PrefFeedTree.js:524 js/CommonDialogs.js:278
 msgid "Select"
-msgstr "Elexir"
+msgstr "Seleccionar"
 
 #: classes/Pref_Prefs.php:38 classes/Pref_Feeds.php:622 js/CommonDialogs.js:517
 msgid "General"
@@ -1098,7 +1098,7 @@ msgstr "Engadir categoría"
 
 #: classes/Pref_Feeds.php:985
 msgid "Choose file..."
-msgstr "Elexir ficheiro..."
+msgstr "Elixir ficheiro..."
 
 #: classes/Pref_Feeds.php:993
 msgid "Import OPML"
@@ -1437,7 +1437,7 @@ msgstr "Ir á páxina superior"
 
 #: classes/RPC.php:637
 msgid "Select article under cursor"
-msgstr "Elexir artigo baixo o cursor"
+msgstr "Seleccionar artigo baixo o cursor"
 
 #: classes/RPC.php:638
 msgid "Email article"

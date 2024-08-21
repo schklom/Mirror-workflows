@@ -94,21 +94,48 @@ jobs:
           sed -ir "s|public static final String USER_AGENT = \".*?\";|public static final String USER_AGENT = \"$user_agent\";|" $file
 
 
-          # Add Keystore
-          file="app/build.gradle"
-          wget "https://github.com/TanukiAI/Infinity-keystore/raw/main/Infinity.jks"
-          # multi-line insert before match "   signingConfigs {" (add one space after "i"
-          # This feels dirty, if someone knows how to do it better please tell me
-          # Need to backslash the first delimeter since I don't use "s"
-          # Need to escape the first space after "i" then sed escapes the others
-          sed -i '\|    buildTypes {|i\    signingConfigs {\n        release {\n            storeFile file("/Infinity.jks")\n            storePassword "Infinity"\n            keyAlias "Infinity"\n            keyPassword "Infinity"\n        }\n    }' $file
+          ## DISABLED BECAUSE I SIGN IT IN THE WORKFLOW DEFINED BELOW
+          ## Add Keystore
+          #file="app/build.gradle"
+          #wget "https://github.com/TanukiAI/Infinity-keystore/raw/main/Infinity.jks"
+          ## multi-line insert before match "   signingConfigs {" (add one space after "i"
+          ## This feels dirty, if someone knows how to do it better please tell me
+          ## Need to backslash the first delimeter since I don't use "s"
+          ## Need to escape the first space after "i" then sed escapes the others
+          #sed -i '\|    buildTypes {|i\    signingConfigs {\n        release {\n            storeFile file("/Infinity.jks")\n            storePassword "Infinity"\n            keyAlias "Infinity"\n            keyPassword "Infinity"\n        }\n    }' $file
+          # Try the same with a heredoc?
+          #where_to_add="    buildTypes {"
+          #what_to_add="    signingConfigs {
+          #    release {
+          #        storeFile file("/Infinity.jks")
+          #        storePassword "Infinity"
+          #        keyAlias "Infinity"
+          #        keyPassword "Infinity"
+          #    }
+          #}"
+          sed -i "\|$where_to_add|r"<(echo "$what_to_add") $file
 
+          # Sign the APK
+          file=".github/workflows/build.yml"
+          what_to_add="
+              - name: Sign APK
+                id: sign_apk
+                uses: ilharp/sign-android-release@v1
+                with:
+                  releaseDir: app/build/outputs/apk/
+                  signingKey: ${{ secrets.APK_KEYSTORE_FILE_BASE64 }}
+                  keyAlias: ${{ secrets.APK_KEYSTORE_ALIAS }}
+                  keyStorePassword: ${{ secrets.APK_KEYSTORE_PASSWORD }}
+                  keyPassword: ${{ secrets.APK_KEYSTORE_PASSWORD }}
+          "
+          where_to_add="name: Upload apk"
+          sed -i "\|$where_to_add|r"<(echo "$what_to_add") $file
 
           # Add the release of the artifact at the end of the build action
           # Need to escape the dollar double bracket
           # https://github.com/orgs/community/discussions/26621#discussioncomment-3840420
-          # The script says it should be app/build/outputs/apk/release/app-release-unsigned.apk
-          # But I can't install it, so I switch to app/build/outputs/apk/debug/app-debug.apk
+          ## The script says it should be app/build/outputs/apk/release/app-release-unsigned.apk
+          ## But I can't install it, so I switch to app/build/outputs/apk/debug/app-debug.apk
           file=".github/workflows/build.yml"
           echo "" >> $file
           echo "    - name: Release Infinity-For-Reddit APK ${{ needs.get_version.outputs.REMOTE }}" >> $file
@@ -116,9 +143,17 @@ jobs:
           echo "      with:" >> $file
           echo "        tag_name: \"${{ needs.get_version.outputs.REMOTE }}\"" >> $file
           echo "        body: New version of Infinity-For-Reddit" >> $file
-          echo "        files: app/build/outputs/apk/debug/app-debug.apk" >> $file
+          # OLD
+          #echo "        files: app/build/outputs/apk/debug/app-debug.apk" >> $file
+          # NEW
+          echo "        files: |" >> $file
+          echo "          app/build/outputs/apk/release/app-release-unsigned-signed.apk" >> $file
+          echo "          app/build/outputs/apk/minifiedRelease/app-minifiedRelease-unsigned-signed.apk" >> $file
+          echo "          app/build/outputs/apk/debug/app-debug-signed.apk" >> $file
+          
           echo "        repository: schklom/Infinity-For-Reddit" >> $file
           echo "        token: ${{ '\${{ secrets.PAT_GITHUB_ACTION }}' }}" >> $file
+          
       
       - name: Remove pointless workflow
         run: rm .github/workflows/codeql*

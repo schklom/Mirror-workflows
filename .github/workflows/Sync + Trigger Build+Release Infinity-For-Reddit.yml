@@ -31,9 +31,7 @@ jobs:
         # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
         run: |
           echo "SETREMOTE=$(git ls-remote --tags https://github.com/Docile-Alligator/Infinity-For-Reddit.git | grep -v 'beta' | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3)" >> $GITHUB_OUTPUT
-          echo "SETREMOTE=$(git ls-remote --tags https://github.com/Docile-Alligator/Infinity-For-Reddit.git | grep -v 'beta' | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3)"
           echo "SETLOCAL=$(cat last_sync_with_original_repo_version)" >> $GITHUB_OUTPUT
-          echo "SETLOCAL=$(cat last_sync_with_original_repo_version)"
 
   repo_sync_master:
     needs: [get_version]

@@ -655,7 +655,7 @@ class Pref_Prefs extends Handler_Protected {
 						<?= \Controls\button_tag(\Controls\icon("palette") . " " . __("Customize"), "",
 								["onclick" => "Helpers.Prefs.customizeCSS()"]) ?>
 						<?= \Controls\button_tag(\Controls\icon("open_in_new") . " " . __("More themes..."), "",
-								["class" => "alt-info", "onclick" => "window.open(\"https://tt-rss.org/wiki/Themes\")"]) ?>
+								["class" => "alt-info", "onclick" => "window.open(\"https://tt-rss.org/Themes/\")"]) ?>
 
 						<?php
 
@@ -898,7 +898,7 @@ class Pref_Prefs extends Handler_Protected {
 				</div>
 				<div dojoType="dijit.layout.ContentPane" region="bottom">
 
-					<button dojoType='dijit.form.Button' class="alt-info pull-right" onclick='window.open("https://tt-rss.org/wiki/Plugins")'>
+					<button dojoType='dijit.form.Button' class="alt-info pull-right" onclick='window.open("https://tt-rss.org/Plugins/")'>
 						<i class='material-icons'>help</i>
 						<?= __("More info") ?>
 					</button>

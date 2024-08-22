@@ -1,14 +1,5 @@
 <?php
-
-	// we need a separate check here because functions.php might get parsed
-	// incorrectly before 5.3 because of :: syntax.
-	if (version_compare(PHP_VERSION, '7.4.0', '<')) {
-		print "<b>Fatal Error</b>: PHP version 7.4.0 or newer required. You're using " . PHP_VERSION . ".\n";
-		exit;
-	}
-
-	set_include_path(__DIR__ ."/include" . PATH_SEPARATOR .
-		get_include_path());
+	set_include_path(__DIR__ . "/include" . PATH_SEPARATOR . get_include_path());
 
 	require_once "autoload.php";
 	require_once "sessions.php";

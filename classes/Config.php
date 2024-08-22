@@ -665,8 +665,8 @@ class Config {
 
 						<?php foreach ($errors as $error) { echo self::format_error($error); } ?>
 
-						<p>You might want to check tt-rss <a target="_blank" href="https://tt-rss.org/wiki.php">wiki</a> or the
-							<a target="_blank" href="https://community.tt-rss.org/">forums</a> for more information. Please search the forums before creating new topic
+						<p>You might want to check the tt-rss <a target="_blank" href="https://tt-rss.org/wiki/InstallationNotes/">wiki</a> or
+							<a target="_blank" href="https://community.tt-rss.org/">forums</a> for more information. Please search the forums before creating a new topic
 							for your question.</p>
 					</div>
 				</body>
@@ -681,8 +681,8 @@ class Config {
 				echo " * " . strip_tags($error)."\n";
 			}
 
-			echo "\nYou might want to check tt-rss wiki or the forums for more information.\n";
-			echo "Please search the forums before creating new topic for your question.\n";
+			echo "\nYou might want to check the tt-rss wiki or forums for more information.\n";
+			echo "Please search the forums before creating a new topic for your question.\n";
 
 			exit(1);
 		}

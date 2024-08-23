@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-15 14:03+0300\n"
-"PO-Revision-Date: 2024-07-30 13:09+0000\n"
+"PO-Revision-Date: 2024-08-24 18:09+0000\n"
 "Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/tt-rss/webui/es/>"
 "\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.7.1-dev\n"
 
 #: backend.php:65
 msgid "Use default"
@@ -504,14 +504,12 @@ msgid "May produce duplicate entries"
 msgstr "Puedes crear entradas duplicadas"
 
 #: classes/Pref_Prefs.php:128
-#, fuzzy
 msgid "Show article and feed IDs"
-msgstr "Mostrar artículos"
+msgstr "Mostrar ID de artículos y feeds"
 
 #: classes/Pref_Prefs.php:128
-#, fuzzy
 msgid "In the headlines buffer"
-msgstr "Ordenar titulares por fecha de la fuente"
+msgstr "En el búfer de los titulares"
 
 #: classes/Pref_Prefs.php:129
 #, fuzzy

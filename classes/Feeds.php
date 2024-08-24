@@ -2235,7 +2235,7 @@ class Feeds extends Handler_Protected {
 	 * @return array{0: string, 1: array<int, string>} [$search_query_part, $search_words]
 	 */
 	private static function _search_to_sql(string $search, string $search_language, int $owner_uid): array {
-		$keywords = str_getcsv(preg_replace('/(-?\w+)\:"(\w+)/', '"{$1}:{$2}', trim($search)), ' ');
+		$keywords = str_getcsv(preg_replace('/(-?\w+)\:"(\w+)/', '"{$1}:{$2}', trim($search)), ' ', '"', '');
 		$query_keywords = array();
 		$search_words = array();
 		$search_query_leftover = array();

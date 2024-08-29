@@ -644,12 +644,10 @@ const Headlines = {
 						<i class='icon-syndicate material-icons'>rss_feed</i>
 					</a>
 					${tb.site_url ?
-						`<a class="feed_title" target="_blank" href="${App.escapeHtml(tb.site_url)}" title="${tb.last_updated}">${tb.title}</a>`	:
-						`<span class="feed_title">${tb.title}</span>`}
-					${search_query ?
-						`
-						<span class='cancel_search'>(<a href='#' onclick='Feeds.cancelSearch()'>${__("Cancel search")}</a>)</span>
-						` : ''}
+						`<a class="feed_title" target="_blank" href="${App.escapeHtml(tb.site_url)}" title="${tb.last_updated}">${tb.title}</a>` :
+							`${search_query ? `<a href="#" onclick="Feeds.search(); return false" class="feed_title" title="${App.escapeHtml(search_query)}">${tb.title}</a>
+							<span class="cancel_search">(<a href="#" onclick="Feeds.cancelSearch(); return false">${__("Cancel search")}</a>)</span>` :
+								`<span class="feed_title">${tb.title}</span>`}`}
 					${tb.error ? `<i title="${App.escapeHtml(tb.error)}" class='material-icons icon-error'>error</i>` : ''}
 					<span id='feed_current_unread' style='display: none'></span>
 				</span>

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-15 14:03+0300\n"
-"PO-Revision-Date: 2024-08-21 09:44+0000\n"
+"PO-Revision-Date: 2024-08-31 04:09+0000\n"
 "Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/tt-rss/webui/gl/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7\n"
+"X-Generator: Weblate 5.7.1-dev\n"
 
 #: backend.php:65
 msgid "Use default"
@@ -975,8 +975,8 @@ msgstr "Resultados da busca: %s"
 #, php-format
 msgid "(%d feed)"
 msgid_plural "(%d feeds)"
-msgstr[0] "(%d canle)(%d canles)"
-msgstr[1] ""
+msgstr[0] "(%d canle)"
+msgstr[1] "(%d canles)"
 
 #: classes/Pref_Feeds.php:549
 #, php-format
@@ -1409,7 +1409,7 @@ msgstr "Editar etiquetas"
 
 #: classes/RPC.php:630
 msgid "Open in new window"
-msgstr "Abrir en nova ventá"
+msgstr "Abrir en nova xanela"
 
 #: classes/RPC.php:631 js/Headlines.js:1482
 msgid "Mark below as read"
@@ -1570,7 +1570,7 @@ msgstr "Control"
 #: js/Feeds.js:296 js/PrefFeedTree.js:558 js/CommonDialogs.js:22
 #: js/CommonDialogs.js:318 js/CommonDialogs.js:695 js/App.js:661
 msgid "Close this window"
-msgstr "Pechar esta ventá"
+msgstr "Pechar esta xanela"
 
 #: classes/Handler_Public.php:416
 msgid "Incorrect username or password"

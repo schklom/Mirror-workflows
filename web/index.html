@@ -38,9 +38,11 @@
         </div>
         <br>
         <div id="loginContainer">
-            <div class="center">
-                <p>This server tracks all your registered devices.</p>
-            </div>
+            <p class="center">
+                This platform is for locating and controlling your registered devices.
+                <br>
+                You need to have FMD installed on your mobile device.
+            </p>
             <br>
             <div class="center">
                 <form id="loginForm">
@@ -200,44 +202,16 @@
                 </div>
             </div>
 
-            <div id="welcomePrompt" class="prompt invisible">
-                <h3 class="center">Welcome</h3><br>
-                <div class="center">
-                    <p>
-                        Hello and welcome to FMD. <br>
-                        This platform is for locating and controlling you registered devices. <br>
-                        You need to have FMD installed on your mobile device before you can do so. <br>
-                        Get the app on F-Droid:
-                    </p>
-                </div>
-                <div class="center">
-                    <a href="https://f-droid.org/packages/de.nulide.findmydevice/">
-                        <div class="center">
-                            <img src="assets/f-droid-badge.png" alt="Get it on F-Droid" id="f-droid-badge">
-                        </div>
-                    </a>
-                </div>
-                <br>
-                <p>We save one</p>
-                <div class="tooltip">Cookie
-                    <span class="tooltiptext">
-                        The cookie is for knowing if we showed you this
-                        welcome text.</span>
-                </div>
-                <p> the way.</p>
-                <br>
-                <br>
-                <div class="center">
-                    <button type="button" id="welcomeConfirm">OK</button>
-                </div>
-            </div>
-
             <div class="center">
                 <p>FMD Server</p>
                 <a href="https://gitlab.com/Nulide/findmydeviceserver/-/releases" target="_blank"
                     id="version">v0.0.0</a>
                 <a href="https://gitlab.com/Nulide/findmydeviceserver/" target="_blank">Source Code</a>
                 <a href="ds.html">Privacy Notice</a>
+
+                <a href="https://f-droid.org/packages/de.nulide.findmydevice/" target="_blank">
+                    <img src="assets/f-droid-badge.png" alt="Get it on F-Droid" id="f-droid-badge">
+                </a>
             </div>
         </div>
     </footer>

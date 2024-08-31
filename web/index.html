@@ -63,156 +63,153 @@
         <div id="map"></div>
     </div>
 
+    <div class="deviceInfo" id="desktop">
+        <div class="row">
+            <div class="column-left">
+                <div class="center">
+                    <img src="assets/Smartphone.png" height="96" />
+                </div>
+                <div class="center margin-top">
+                    <p id="batView">Data</p>
+                </div>
+            </div>
+            <div class="column-middle">
+                <h3 id="idView" class="inline">ID</h3>
+                <p> - </p>
+                <p id="providerView">Data</p>
+
+                <div>
+                    <button type="button" class="imageButton" title="Previous Location" id="locateOlder">
+                        <img src="assets/Left.png" height="24" />
+                    </button>
+                    <button type="button" class="imageButton" title="Next Location" id="locateNewer">
+                        <img src="assets/Right.png" height="24" />
+                    </button>
+                </div>
+
+                <div>
+                    <p id="datetime">data from </p>
+                    <p id="dateView">Date</p>
+                    <p id="timeView">Time</p>
+                </div>
+
+                <div class="dropdown">
+                    <button type="button" class="imageButton dropDownBtn" title="Locate" id="locate">
+                        <img src="assets/Locate.png" height="36" id="locateDropDownButtonInner" />
+                    </button>
+                    <div id="locateDropDown" class="dropdown-content">
+                        <button title="All" id="locateAll">All</button>
+                        <button title="GPS" id="locateGps">GPS</button>
+                        <button title="Cellular" id="locateCellular">Cellular</button>
+                    </div>
+                </div>
+                <button type="button" class="imageButton" title="Ring" id="ring">
+                    <img src="assets/Ring.png" height="36" />
+                </button>
+                <button type="button" class="imageButton" title="Lock" id="lock">
+                    <img src="assets/Locked.png" height="36" />
+                </button>
+                <button type="button" class="imageButton" title="Delete" id="delete">
+                    <img src="assets/Delete.png" height="36" />
+                </button>
+                <div class="dropdown">
+                    <button type="button" class="imageButton dropDownBtn" title="Camera" id="takePicture">
+                        <img src="assets/Camera.png" height="36" id="cameraDropDownButtonInner" />
+                    </button>
+                    <div id="cameraDropDown" class="dropdown-content">
+                        <button title="front" id="cameraFront">Front</button>
+                        <button title="back" id="cameraBack">Back</button>
+                    </div>
+                </div>
+                <button type="button" class="imageButton" title="Picture" id="showPicture">
+                    <img src="assets/Picture.png" height="36" />
+                </button>
+                <button type="button" class="imageButton" title="CommandLogs" id="showCommandLogs">
+                    <img src="assets/CommandLogs.png" height="36" />
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="deviceInfo" id="mobile">
+        <div class="row">
+            <div class="column-left">
+                <div class="center">
+                    <img src="assets/Smartphone.png" height="48" />
+                </div>
+                <div class="center margin-top">
+                    <p id="batView">Data</p>
+                </div>
+            </div>
+            <div class="column-middle">
+                <h3 id="idView">ID</h3>
+                <p> - </p>
+                <p id="providerView">Data</p>
+
+                <div>
+                    <button type="button" class="imageButton" title="Previous Location" id="locateOlder">
+                        <img src="assets/Left.png" height="24" />
+                    </button>
+                    <button type="button" class="imageButton" title="Next Location" id="locateNewer">
+                        <img src="assets/Right.png" height="24" />
+                    </button>
+                </div>
+
+                <div>
+                    <p id="datetime">data from </p>
+                    <p id="dateView">Date</p>
+                    <p id="timeView">Time</p>
+                </div>
+
+                <div class="dropdown">
+                    <button type="button" class="imageButton dropDownBtn" title="Locate" id="locate">
+                        <img src="assets/Locate.png" height="24" id="locateDropDownButtonInner" />
+                    </button>
+                    <div id="locateDropDown" class="dropdown-content">
+                        <button title="All" id="locateAll">All</button>
+                        <button title="GPS" id="locateGps">GPS</button>
+                        <button title="Cellular" id="locateCellular">Cellular</button>
+                    </div>
+                </div>
+                <button type="button" class="imageButton" title="Ring" id="ring">
+                    <img src="assets/Ring.png" height="24" />
+                </button>
+                <button type="button" class="imageButton" title="Lock" id="lock">
+                    <img src="assets/Locked.png" height="24" />
+                </button>
+                <button type="button" class="imageButton" title="Delete" id="delete">
+                    <img src="assets/Delete.png" height="24" />
+                </button>
+                <div class="dropdown">
+                    <button type="button" class="imageButton dropDownBtn" title="Camera" id="takePicture">
+                        <img src="assets/Camera.png" height="24" id="cameraDropDownButtonInner" />
+                    </button>
+                    <div id="cameraDropDown" class="dropdown-content">
+                        <button title="front" id="cameraFront">Front</button>
+                        <button title="back" id="cameraBack">Back</button>
+                    </div>
+                </div>
+                <button type="button" class="imageButton" title="Picture" id="showPicture">
+                    <img src="assets/Picture.png" height="24" />
+                </button>
+                <button type="button" class="imageButton" title="CommandLogs" id="showCommandLogs">
+                    <img src="assets/CommandLogs.png" height="36" />
+                </button>
+            </div>
+        </div>
+    </div>
+
     <footer>
-        <div>
-            <div class="deviceInfo" id="desktop">
-                <div class="row">
-                    <div class="column-left">
-                        <div class="center">
-                            <img src="assets/Smartphone.png" height="96" />
-                        </div>
-                        <div class="center margin-top">
-                            <p id="batView">Data</p>
-                        </div>
-                    </div>
-                    <div class="column-middle">
-                        <h3 id="idView" class="inline">ID</h3>
-                        <p> - </p>
-                        <p id="providerView">Data</p>
+        <div class="center">
+            <p>FMD Server</p>
+            <a href="https://gitlab.com/Nulide/findmydeviceserver/-/releases" target="_blank" id="version">v0.0.0</a>
+            <a href="https://gitlab.com/Nulide/findmydeviceserver/" target="_blank">Source Code</a>
+            <a href="ds.html">Privacy Notice</a>
 
-                        <div>
-                            <button type="button" class="imageButton" title="Previous Location" id="locateOlder">
-                                <img src="assets/Left.png" height="24" />
-                            </button>
-                            <button type="button" class="imageButton" title="Next Location" id="locateNewer">
-                                <img src="assets/Right.png" height="24" />
-                            </button>
-                        </div>
-
-                        <div>
-                            <p id="datetime">data from </p>
-                            <p id="dateView">Date</p>
-                            <p id="timeView">Time</p>
-                        </div>
-
-                        <div class="dropdown">
-                            <button type="button" class="imageButton dropDownBtn" title="Locate" id="locate">
-                                <img src="assets/Locate.png" height="36" id="locateDropDownButtonInner" />
-                            </button>
-                            <div id="locateDropDown" class="dropdown-content">
-                                <button title="All" id="locateAll">All</button>
-                                <button title="GPS" id="locateGps">GPS</button>
-                                <button title="Cellular" id="locateCellular">Cellular</button>
-                            </div>
-                        </div>
-                        <button type="button" class="imageButton" title="Ring" id="ring">
-                            <img src="assets/Ring.png" height="36" />
-                        </button>
-                        <button type="button" class="imageButton" title="Lock" id="lock">
-                            <img src="assets/Locked.png" height="36" />
-                        </button>
-                        <button type="button" class="imageButton" title="Delete" id="delete">
-                            <img src="assets/Delete.png" height="36" />
-                        </button>
-                        <div class="dropdown">
-                            <button type="button" class="imageButton dropDownBtn" title="Camera" id="takePicture">
-                                <img src="assets/Camera.png" height="36" id="cameraDropDownButtonInner" />
-                            </button>
-                            <div id="cameraDropDown" class="dropdown-content">
-                                <button title="front" id="cameraFront">Front</button>
-                                <button title="back" id="cameraBack">Back</button>
-                            </div>
-                        </div>
-                        <button type="button" class="imageButton" title="Picture" id="showPicture">
-                            <img src="assets/Picture.png" height="36" />
-                        </button>
-                        <button type="button" class="imageButton" title="CommandLogs" id="showCommandLogs">
-                            <img src="assets/CommandLogs.png" height="36" />
-                        </button>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="deviceInfo" id="mobile">
-                <div class="row">
-                    <div class="column-left">
-                        <div class="center">
-                            <img src="assets/Smartphone.png" height="48" />
-                        </div>
-                        <div class="center margin-top">
-                            <p id="batView">Data</p>
-                        </div>
-                    </div>
-                    <div class="column-middle">
-                        <h3 id="idView">ID</h3>
-                        <p> - </p>
-                        <p id="providerView">Data</p>
-
-                        <div>
-                            <button type="button" class="imageButton" title="Previous Location" id="locateOlder">
-                                <img src="assets/Left.png" height="24" />
-                            </button>
-                            <button type="button" class="imageButton" title="Next Location" id="locateNewer">
-                                <img src="assets/Right.png" height="24" />
-                            </button>
-                        </div>
-
-                        <div>
-                            <p id="datetime">data from </p>
-                            <p id="dateView">Date</p>
-                            <p id="timeView">Time</p>
-                        </div>
-
-                        <div class="dropdown">
-                            <button type="button" class="imageButton dropDownBtn" title="Locate" id="locate">
-                                <img src="assets/Locate.png" height="24" id="locateDropDownButtonInner" />
-                            </button>
-                            <div id="locateDropDown" class="dropdown-content">
-                                <button title="All" id="locateAll">All</button>
-                                <button title="GPS" id="locateGps">GPS</button>
-                                <button title="Cellular" id="locateCellular">Cellular</button>
-                            </div>
-                        </div>
-                        <button type="button" class="imageButton" title="Ring" id="ring">
-                            <img src="assets/Ring.png" height="24" />
-                        </button>
-                        <button type="button" class="imageButton" title="Lock" id="lock">
-                            <img src="assets/Locked.png" height="24" />
-                        </button>
-                        <button type="button" class="imageButton" title="Delete" id="delete">
-                            <img src="assets/Delete.png" height="24" />
-                        </button>
-                        <div class="dropdown">
-                            <button type="button" class="imageButton dropDownBtn" title="Camera" id="takePicture">
-                                <img src="assets/Camera.png" height="24" id="cameraDropDownButtonInner" />
-                            </button>
-                            <div id="cameraDropDown" class="dropdown-content">
-                                <button title="front" id="cameraFront">Front</button>
-                                <button title="back" id="cameraBack">Back</button>
-                            </div>
-                        </div>
-                        <button type="button" class="imageButton" title="Picture" id="showPicture">
-                            <img src="assets/Picture.png" height="24" />
-                        </button>
-                        <button type="button" class="imageButton" title="CommandLogs" id="showCommandLogs">
-                            <img src="assets/CommandLogs.png" height="36" />
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="center">
-                <p>FMD Server</p>
-                <a href="https://gitlab.com/Nulide/findmydeviceserver/-/releases" target="_blank"
-                    id="version">v0.0.0</a>
-                <a href="https://gitlab.com/Nulide/findmydeviceserver/" target="_blank">Source Code</a>
-                <a href="ds.html">Privacy Notice</a>
-
-                <a href="https://f-droid.org/packages/de.nulide.findmydevice/" target="_blank">
-                    <img src="assets/f-droid-badge.png" alt="Get it on F-Droid" id="f-droid-badge">
-                </a>
-            </div>
+            <a href="https://f-droid.org/packages/de.nulide.findmydevice/" target="_blank">
+                <img src="assets/f-droid-badge.png" alt="Get it on F-Droid" id="f-droid-badge">
+            </a>
         </div>
     </footer>
 

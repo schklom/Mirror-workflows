@@ -221,8 +221,7 @@ footer {
 }
 
 #f-droid-badge {
-    height: 50%;
-    width: 50%;
+    width: 200px;
 }
 
 #commandlogs {

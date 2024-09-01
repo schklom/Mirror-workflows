@@ -61,17 +61,11 @@ function init() {
             versionView.innerHTML = versionCode;
         })
 
-    if (getWelcomeCookie() == "") {
-        welcomePrompt = document.getElementById('welcomePrompt');
-        welcomePrompt.style.visibility = 'visible';
-    }
-
     setupOnClicks()
     checkWebCryptoApiAvailable()
 }
 
 function setupOnClicks() {
-    document.getElementById("welcomeConfirm").addEventListener("click", () => welcomeFinish());
     document.getElementById("loginForm").addEventListener("submit", async (event) => {
         // don't send a request to the server, we do it manually
         event.preventDefault();
@@ -535,33 +529,6 @@ function displayCommandLogs(logs) {
 
 function showCameraDropDown() {
     document.getElementById("cameraDropDown").style.display = "block";
-}
-
-// Section: Welcome popup
-
-function getWelcomeCookie() {
-    let name = "welcome=";
-    let decodedCookie = decodeURIComponent(document.cookie);
-    let ca = decodedCookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return "";
-}
-
-function welcomeFinish() {
-    const d = new Date();
-    d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
-    let expires = "expires=" + d.toUTCString();
-    document.cookie = "welcome=true;" + expires + ";path=/;SameSite=Strict";
-    welcomePrompt = document.getElementById('welcomePrompt');
-    welcomePrompt.style.visibility = 'hidden';
 }
 
 // Section: Delete device

@@ -89,6 +89,7 @@ function setupOnClicks() {
     document.getElementById("locateAll").addEventListener("click", () => sendToPhone("locate"));
     document.getElementById("locateGps").addEventListener("click", () => sendToPhone("locate gps"));
     document.getElementById("locateCellular").addEventListener("click", () => sendToPhone("locate cell"));
+    document.getElementById("locateLast").addEventListener("click", () => sendToPhone("locate last"));
     document.getElementById("ring").addEventListener("click", () => sendToPhone("ring"));
     document.getElementById("lock").addEventListener("click", () => sendToPhone("lock"));
     document.getElementById("delete").addEventListener("click", () => prepareDeleteDevice());

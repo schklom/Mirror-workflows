@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-15 14:03+0300\n"
-"PO-Revision-Date: 2024-08-26 16:09+0000\n"
+"PO-Revision-Date: 2024-09-06 10:09+0000\n"
 "Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/tt-rss/webui/es/>"
 "\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7.1-dev\n"
+"X-Generator: Weblate 5.8-dev\n"
 
 #: backend.php:65
 msgid "Use default"
@@ -776,9 +776,8 @@ msgid "Created"
 msgstr "Creado"
 
 #: classes/Pref_Prefs.php:1517
-#, fuzzy
 msgid "Last used"
-msgstr "Última actualización:"
+msgstr "Última vez utilizado"
 
 #: classes/Pref_Prefs.php:1562
 #, php-format
@@ -786,6 +785,8 @@ msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
 "reference."
 msgstr ""
+"Contraseña generada <strong>%s</strong> para %s. Recuérdalo para futuras "
+"consultas."
 
 #: classes/Mailer.php:51
 #, php-format
@@ -799,7 +800,7 @@ msgstr "%d min"
 
 #: classes/Pref_System.php:24
 msgid "Test message from tt-rss"
-msgstr ""
+msgstr "Mensaje de prueba tt-rss"
 
 #: classes/Pref_System.php:81 js/PrefHelpers.js:622
 msgid "Refresh"
@@ -807,34 +808,32 @@ msgstr "Actualizar"
 
 #: classes/Pref_System.php:86
 msgid "&lt;&lt;"
-msgstr ""
+msgstr "&lt;&lt;"
 
 #: classes/Pref_System.php:90
 #, php-format
 msgid "Page %d of %d"
-msgstr ""
+msgstr "Página %d de %d"
 
 #: classes/Pref_System.php:95
 msgid "&gt;&gt;"
-msgstr ""
+msgstr "&gt;&gt;"
 
 #: classes/Pref_System.php:104
 msgid "Severity:"
-msgstr ""
+msgstr "Gravedad:"
 
 #: classes/Pref_System.php:108
-#, fuzzy
 msgid "Errors"
-msgstr "Error"
+msgstr "Errores"
 
 #: classes/Pref_System.php:109
 msgid "Warnings"
-msgstr ""
+msgstr "Advertencias"
 
 #: classes/Pref_System.php:110
-#, fuzzy
 msgid "Everything"
-msgstr "Deseleccionar todo"
+msgstr "Todo"
 
 #: classes/Pref_System.php:120
 msgid "Error"
@@ -853,25 +852,20 @@ msgid "Date"
 msgstr "Fecha"
 
 #: classes/Pref_System.php:168
-#, fuzzy
-#| msgid "Event Log"
 msgid "Event log"
-msgstr "Registro de Eventos"
+msgstr "Registro de incidencias"
 
 #: classes/Pref_System.php:174
-#, fuzzy
-#| msgid "Save configuration"
 msgid "Mail configuration"
-msgstr "Guardar la configuración"
+msgstr "Configuración del correo"
 
 #: classes/Pref_System.php:205
 msgid "To:"
 msgstr "Para:"
 
 #: classes/Pref_System.php:207
-#, fuzzy
 msgid "Send test email"
-msgstr "Enviar correo electrónico"
+msgstr "Enviar correo de prueba"
 
 #: classes/Pref_System.php:213
 msgid "PHP Information"
@@ -987,27 +981,27 @@ msgstr[0] "(%d fuente)"
 msgstr[1] "(%d fuentes)"
 
 #: classes/Pref_Feeds.php:549
-#, fuzzy, php-format
+#, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
-msgstr[0] "(%d fuente)"
-msgstr[1] "(%d fuentes)"
+msgstr[0] "(%d día)"
+msgstr[1] "(%d días)"
 
 #: classes/Pref_Feeds.php:555
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d día"
+msgstr[1] "%d días"
 
 #: classes/Pref_Feeds.php:586
 msgid "Check to enable field"
 msgstr "Marcar para habilitar el campo"
 
 #: classes/Pref_Feeds.php:602
-#, fuzzy, php-format
+#, php-format
 msgid "(%d days)"
-msgstr "(%d fuente)"
+msgstr "(%d días)"
 
 #: classes/Pref_Feeds.php:607 js/CommonDialogs.js:506
 msgid "Include in e-mail digest"
@@ -1035,9 +1029,8 @@ msgid "Language:"
 msgstr "Idioma:"
 
 #: classes/Pref_Feeds.php:645 js/CommonDialogs.js:572
-#, fuzzy
 msgid "Update interval:"
-msgstr "Intervalo de actualización por defecto"
+msgstr "Intervalo de actualización:"
 
 #: classes/Pref_Feeds.php:652 js/CommonDialogs.js:578
 msgid "Article purging:"
@@ -1118,10 +1111,8 @@ msgid "Export OPML"
 msgstr "Exportar OPML"
 
 #: classes/Pref_Feeds.php:1009
-#, fuzzy
-#| msgid "Include settings"
 msgid "Include tt-rss settings"
-msgstr "Incluir preferencias"
+msgstr "Incluir ajustes tt-rss"
 
 #: classes/Pref_Feeds.php:1025
 msgid "Display URL"
@@ -1132,18 +1123,16 @@ msgid "Clear all generated URLs"
 msgstr "Limpiar todas las URLs generadas"
 
 #: classes/Pref_Feeds.php:1042
-#, fuzzy
 msgid "My feeds"
-msgstr "Mis fuentes"
+msgstr "Mis feeds"
 
 #: classes/Pref_Feeds.php:1047
 msgid "OPML"
 msgstr "OPML"
 
 #: classes/Pref_Feeds.php:1052
-#, fuzzy
 msgid "Sharing"
-msgstr "Compartir"
+msgstr "Compartiendo"
 
 #: classes/Pref_Users.php:56 classes/Pref_Users.php:257
 msgid "Registered"
@@ -1210,9 +1199,9 @@ msgid "Click to edit"
 msgstr "Pulse aquí para editar"
 
 #: classes/Config.php:402
-#, fuzzy, php-format
+#, php-format
 msgid "Git error [RC=%d]: %s"
-msgstr "Error crítico"
+msgstr "Error de Git [RC=%d]: %s"
 
 #: classes/Pref_Filters.php:211 classes/Pref_Filters.php:222
 #: classes/Pref_Filters.php:442 classes/Pref_Filters.php:876
@@ -1237,9 +1226,8 @@ msgid "Combine"
 msgstr "Combinar"
 
 #: classes/Pref_Filters.php:695
-#, fuzzy
 msgid "Toggle rule display"
-msgstr "Cambiar la lista de fuentes"
+msgstr "Conmutar la visualización de reglas"
 
 #: classes/Pref_Filters.php:746
 msgid "[No caption]"
@@ -1335,7 +1323,7 @@ msgstr "Error: por favor, suba un fichero OPML."
 #: classes/OPML.php:641
 #, php-format
 msgid "Error: file is not readable: %s"
-msgstr ""
+msgstr "Error: archivo no legible: %s"
 
 #: classes/OPML.php:667
 msgid "Error while parsing document."
@@ -1350,40 +1338,32 @@ msgid "Open next feed"
 msgstr "Abrir la fuente siguiente"
 
 #: classes/RPC.php:612
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open next unread feed"
-msgstr "Abrir la fuente siguiente"
+msgstr "Abrir el siguiente feed no leído"
 
 #: classes/RPC.php:613
 msgid "Open previous feed"
 msgstr "Abrir la fuente siguiente"
 
 #: classes/RPC.php:614
-#, fuzzy
-#| msgid "Open previous feed"
 msgid "Open previous unread feed"
-msgstr "Abrir la fuente siguiente"
+msgstr "Abrir el anterior feed no leído"
 
 #: classes/RPC.php:615
-#, fuzzy
 msgid "Open next article (in combined mode, scroll down)"
-msgstr "Abrir artículo siguiente (no desplazar artículos largos)"
+msgstr "Abrir el siguiente artículo (en modo combinado, desplázate hacia abajo)"
 
 #: classes/RPC.php:616
-#, fuzzy
 msgid "Open previous article (in combined mode, scroll up)"
-msgstr "Abrir artículo anterior (no desplazar artículos largos)"
+msgstr "Abrir el artículo anterior (en modo combinado, desplázate hacia arriba)"
 
 #: classes/RPC.php:617
-#, fuzzy
 msgid "Scroll headlines by one page down"
-msgstr "Mostrar el sumario del artículo en una nueva pestaña o ventana"
+msgstr "Desplazar los titulares una página hacia abajo"
 
 #: classes/RPC.php:618
-#, fuzzy
 msgid "Scroll headlines by one page up"
-msgstr "Seleccionar los artículos del grupo"
+msgstr "Desplazar los titulares una página hacia arriba"
 
 #: classes/RPC.php:619
 msgid "Open next article"
@@ -1394,23 +1374,20 @@ msgid "Open previous article"
 msgstr "Abrir el artículo anterior"
 
 #: classes/RPC.php:621
-#, fuzzy
 msgid "Move to next article (don't expand)"
-msgstr "Ir al artículo siguiente (no expandir ni marcar como leído)"
+msgstr "Pasar al artículo siguiente (no ampliar)"
 
 #: classes/RPC.php:622
-#, fuzzy
 msgid "Move to previous article (don't expand)"
-msgstr "Ir al artículo anterior (no expandir ni marcar como leído)"
+msgstr "Volver al artículo anterior (no ampliar)"
 
 #: classes/RPC.php:623
 msgid "Show search dialog"
 msgstr "Mostrar el diálogo de búsqueda"
 
 #: classes/RPC.php:624
-#, fuzzy
 msgid "Cancel active search"
-msgstr "Cancelar búsqueda"
+msgstr "Cancelar búsqueda activa"
 
 #: classes/RPC.php:625
 msgid "Article"
@@ -1453,14 +1430,12 @@ msgid "Scroll up"
 msgstr "Desplazarse hacia arriba"
 
 #: classes/RPC.php:635
-#, fuzzy
 msgid "Scroll down page"
-msgstr "Desplazarse abajo"
+msgstr "Desplázate hacia abajo"
 
 #: classes/RPC.php:636
-#, fuzzy
 msgid "Scroll up page"
-msgstr "Desplazarse hacia arriba"
+msgstr "Desplázate hacia arriba"
 
 #: classes/RPC.php:637
 msgid "Select article under cursor"
@@ -1480,7 +1455,7 @@ msgstr "Alternar expansión de los artículos (modo combinado)"
 
 #: classes/RPC.php:642
 msgid "Toggle full article text via Readability"
-msgstr ""
+msgstr "Texto completo del artículo a través de Readability"
 
 #: classes/RPC.php:643
 msgid "Article selection"
@@ -1536,10 +1511,8 @@ msgid "Toggle headline grouping"
 msgstr "Cambiar agrupación de titulares"
 
 #: classes/RPC.php:658
-#, fuzzy
-#| msgid "Toggle sidebar"
 msgid "Toggle grid view"
-msgstr "Alternar la barra lateral"
+msgstr "Alternar vista de cuadrícula"
 
 #: classes/RPC.php:659
 msgid "Debug feed update"
@@ -1670,28 +1643,21 @@ msgid "Update"
 msgstr "Actualizar"
 
 #: classes/Handler_Public.php:728
-#, fuzzy, php-format
-#| msgid ""
-#| "Tiny Tiny RSS database needs update to the latest version (%d to %d)."
+#, php-format
 msgid "Database schema needs update to the latest version (%d to %d)."
-msgstr ""
-"Su base de datos Tiny Tiny RSS necesita actualizarse a la última versión (%d "
-"to %d)."
+msgstr "Tu base de datos necesita actualizarse a la última versión (%d a %d)."
 
 #: plugins/nsfw/init.php:46
-#, fuzzy
-#| msgid "Not work safe (click to toggle)"
 msgid "Not safe for work (click to toggle)"
-msgstr "NSFW (click para alternar)"
+msgstr "No es seguro para trabajar (haz clic para alternar)"
 
 #: plugins/nsfw/init.php:80
 msgid "NSFW Plugin"
 msgstr "Extensión NSFW"
 
 #: plugins/nsfw/init.php:95
-#, fuzzy
 msgid "Tags to consider NSFW (comma-separated):"
-msgstr "Etiquetas que se considerarán NSFW (separadas por comas)"
+msgstr "Etiquetas NSFW a considerar (separadas por comas):"
 
 #: plugins/nsfw/init.php:117
 msgid "Configuration saved."
@@ -1706,9 +1672,8 @@ msgid "Toggle sidebar"
 msgstr "Alternar la barra lateral"
 
 #: plugins/share/init.php:43
-#, fuzzy
 msgid "Article unshared"
-msgstr "Artículos compartidos mediante URL"
+msgstr "Artículo sin compartir"
 
 #: plugins/share/init.php:58
 msgid "Unshare all articles"
@@ -1748,9 +1713,8 @@ msgid "Show related articles"
 msgstr "Mostrar artículos relacionados"
 
 #: plugins/af_psql_trgm/init.php:157
-#, fuzzy
 msgid "Mark similar articles as read (af_psql_trgm)"
-msgstr "Marcar artículos similares como leídos"
+msgstr "Marcar artículos similares como leídos (af_psql_trgm)"
 
 #: plugins/af_psql_trgm/init.php:185
 msgid "Minimum similarity:"
@@ -1767,36 +1731,28 @@ msgstr ""
 "pueden producir falsos positivos, cero deshabilita la comprobación."
 
 #: plugins/af_psql_trgm/init.php:196
-#, fuzzy
-#| msgid ""
-#| "PostgreSQL trigram extension returns string similarity as a floating "
-#| "point number (0-1). Setting it too low might produce false positives, "
-#| "zero disables checking."
 msgid ""
 "Setting this value too low might produce false positives, zero disables "
 "checking."
 msgstr ""
-"La extensión  trigram de PostgreSQL devuelve similitud de cadena como un "
-"número de punto flotante (0-1). Si se ajusta a un valor demasiado bajo se "
-"pueden producir falsos positivos, cero deshabilita la comprobación."
+"Establecer este valor demasiado bajo podría producir falsos positivos, cero "
+"desactiva la comprobación."
 
 #: plugins/af_psql_trgm/init.php:202
 msgid "Minimum title length:"
 msgstr "Longitud mínima del título:"
 
 #: plugins/af_psql_trgm/init.php:212
-#, fuzzy
 msgid "Enable for all feeds."
-msgstr "Habilitar para todas las fuentes:"
+msgstr "Activar para todos los feeds."
 
 #: plugins/af_psql_trgm/init.php:231
 msgid "Currently enabled for (click to edit):"
 msgstr "Actualmente habilitado para (click para editar):"
 
 #: plugins/af_psql_trgm/init.php:251
-#, fuzzy
 msgid "Similarity (af_psql_trgm)"
-msgstr "Similitud (pg_trgm)"
+msgstr "Similitud (af_psql_trgm)"
 
 #: plugins/af_psql_trgm/init.php:257
 msgid "Mark similar articles as read"
@@ -1906,20 +1862,16 @@ msgstr ""
 "Use este bookmarklet para publicar cualquier página usando Tiny Tiny RSS"
 
 #: plugins/auth_internal/init.php:93
-#, fuzzy
-#| msgid "Please enter label caption:"
 msgid "Please enter verification code (OTP):"
-msgstr "Por favor, introduzca el nombre del marcador:"
+msgstr "Por favor, introduce el código de verificación (OTP):"
 
 #: plugins/auth_internal/init.php:95
-#, fuzzy
-#| msgid "Content"
 msgid "Continue"
-msgstr "Contenido"
+msgstr "Continuar"
 
 #: plugins/auth_internal/init.php:134
 msgid "Too many authentication attempts, throttled."
-msgstr ""
+msgstr "Demasiados intentos de inicio de sesión, limitados."
 
 #: plugins/auth_internal/init.php:241
 msgid "Password has been changed."
@@ -1942,10 +1894,8 @@ msgid "Session failed to validate (password changed)"
 msgstr "No se pudo validar la sesión (ha cambiado la contraseña)"
 
 #: include/sessions.php:48
-#, fuzzy
-#| msgid "Session failed to validate (user agent changed)"
 msgid "Session failed to validate (account is disabled)"
-msgstr "No se pudo validar la sesión (ha cambiado el agente de usuario)"
+msgstr "No se ha podido validar la sesión (la cuenta está desactivada)"
 
 #: include/sessions.php:67
 msgid "Session failed to validate (user not found)"
@@ -1974,11 +1924,11 @@ msgstr ""
 
 #: include/login_form.php:175 js/CommonDialogs.js:16
 msgid "Safe mode"
-msgstr ""
+msgstr "Modo seguro"
 
 #: include/login_form.php:180
 msgid "Uses default theme and prevents all plugins from loading."
-msgstr ""
+msgstr "Utiliza el tema por defecto y evita que se carguen todos los plugins."
 
 #: include/login_form.php:188
 msgid "Remember me"
@@ -2023,10 +1973,8 @@ msgid "Edit filter"
 msgstr "Editar filtro"
 
 #: js/CommonFilters.js:14
-#, fuzzy
-#| msgid "Create filter"
 msgid "Create new filter"
-msgstr "Crear filtro"
+msgstr "Crear un nuevo filtro"
 
 #: js/CommonFilters.js:45
 #, java-printf-format, javascript-format
@@ -2034,10 +1982,8 @@ msgid "Looking for articles (%d processed, %f found)..."
 msgstr "Buscando artículos (%d procesados, %f encontrados)..."
 
 #: js/CommonFilters.js:73
-#, fuzzy
-#| msgid "Found %d articles matching this filter:"
 msgid "Articles matching this filter:"
-msgstr "Encontrados %d artículos coincidentes con este filtro:"
+msgstr "Artículos que coinciden con este filtro:"
 
 #: js/CommonFilters.js:75
 #, java-printf-format, javascript-format
@@ -2050,10 +1996,8 @@ msgstr ""
 "Error mientras se intentaba obtener los resultados de la prueba del filtro."
 
 #: js/CommonFilters.js:96
-#, fuzzy
-#| msgid "Rescoring articles..."
 msgid "Looking for articles..."
-msgstr "Reiniciando la puntuación de los artículos..."
+msgstr "Buscando artículos..."
 
 #: js/CommonFilters.js:175
 msgid "Edit rule"

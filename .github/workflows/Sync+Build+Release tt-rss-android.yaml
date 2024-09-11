@@ -56,6 +56,17 @@ jobs:
           #source_branch: "refs/tags/*"
           #destination_branch: "refs/tags/*"
           destination_ssh_private_key: ${{ secrets.GITSYNCACTION }}
+      
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Remove HEAD branch if it exists
+        run: |
+          git fetch origin
+          if git show-ref --verify --quiet refs/heads/HEAD; then
+            git push origin --delete HEAD
+          else
+            echo "HEAD branch does not exist. No action required."
+          fi
 
   build_ttrss_on_master:
     needs: [repo_sync_master]

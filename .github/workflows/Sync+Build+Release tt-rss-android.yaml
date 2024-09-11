@@ -37,6 +37,8 @@ jobs:
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITSYNCACTION }}
     steps:
       - name: outputs
         run: |
@@ -62,9 +64,27 @@ jobs:
         with:
           token: ${{ secrets.PAT_GITHUB_ACTION }}
       
-      - name: Remove HEAD branch from schklom/tt-rss-android if it exists
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITSYNCACTION }}
+      - name: Remove HEAD branch from schklom/tt-rss-android if it exists (part 1)
+        run: |
+          # Configure Git to use the PAT for authentication
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Remove HEAD branch from schklom/tt-rss-android if it exists (part 2)
+        run: |
+          # Configure Git to use the PAT for authentication
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add foreign-repo https://$GITHUB_TOKEN@github.com/schklom/tt-rss-android.git
+      - name: Remove HEAD branch from schklom/tt-rss-android if it exists (part 3)
+        run: |
+          # Configure Git to use the PAT for authentication
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add foreign-repo https://$GITHUB_TOKEN@github.com/schklom/tt-rss-android.git
+
+          # Fetch the latest branches from the foreign repository
+          git fetch foreign-repo
+      - name: Remove HEAD branch from schklom/tt-rss-android if it exists (part 4)
         run: |
           # Configure Git to use the PAT for authentication
           git config --global user.name "github-actions[bot]"

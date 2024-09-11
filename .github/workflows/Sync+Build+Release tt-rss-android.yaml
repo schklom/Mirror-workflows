@@ -42,8 +42,8 @@ jobs:
     steps:
       - name: outputs
         run: |
-          echo "${{needs.get_commits.outputs.LOCAL}}"
-          echo "${{needs.get_commits.outputs.REMOTE}}"
+          echo "${{ needs.get_commits.outputs.LOCAL }}"
+          echo "${{ needs.get_commits.outputs.REMOTE }}"
     
       - name: repo-sync master branch
         uses: wei/git-sync@v3
@@ -74,13 +74,15 @@ jobs:
           # Configure Git to use the PAT for authentication
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git remote add foreign-repo https://${GITHUB_TOKEN}@github.com/schklom/tt-rss-android.git
+          
+          #git remote add foreign-repo https://${GITHUB_TOKEN}@github.com/schklom/tt-rss-android.git
+          git remote add foreign-repo https://github.com/schklom/tt-rss-android.git
       - name: Remove HEAD branch from schklom/tt-rss-android if it exists (part 3)
         run: |
           # Configure Git to use the PAT for authentication
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git remote add foreign-repo https://${GITHUB_TOKEN}@github.com/schklom/tt-rss-android.git
+          git remote add foreign-repo https://github.com/schklom/tt-rss-android.git
 
           # Fetch the latest branches from the foreign repository
           git fetch foreign-repo
@@ -89,7 +91,7 @@ jobs:
           # Configure Git to use the PAT for authentication
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git remote add foreign-repo https://${GITHUB_TOKEN}@github.com/schklom/tt-rss-android.git
+          git remote add foreign-repo https://github.com/schklom/tt-rss-android.git
 
           # Fetch the latest branches from the foreign repository
           git fetch foreign-repo

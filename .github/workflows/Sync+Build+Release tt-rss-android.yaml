@@ -104,6 +104,19 @@ jobs:
       #- name: Delete previous release
       #  run: git push --delete origin Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.LOCALTAG }}
       
+      - name: Sign APK
+        id: sign_apk
+        uses: ilharp/sign-android-release@v1
+        with:
+          releaseDir: app/build/outputs/apk/
+          signingKey: ${{ secrets.APK_KEYSTORE_FILE_BASE64 }}
+          keyAlias: ${{ secrets.APK_KEYSTORE_ALIAS }}
+          keyStorePassword: ${{ secrets.APK_KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.APK_KEYSTORE_PASSWORD }}
+      
+      - name: LS
+        run: ls -AlhR ./
+      
       - name: Set the version
         id: step_one
         run: |

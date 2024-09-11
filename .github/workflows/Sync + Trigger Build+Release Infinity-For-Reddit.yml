@@ -64,6 +64,23 @@ jobs:
           repository: 'schklom/Infinity-For-Reddit'
           ref: 'master' # branch
           token: ${{ secrets.PAT_GITHUB_ACTION }}
+
+      - name: Remove HEAD branch from schklom/tt-rss-android if it exists
+        run: |
+          # Configure Git to use the PAT for authentication
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add foreign-repo https://github.com/schklom/Infinity-For-Reddit.git
+
+          # Fetch the latest branches from the foreign repository
+          git fetch foreign-repo
+
+          # Check if the HEAD branch exists in the foreign repository and delete it if it does
+          if git show-ref --verify --quiet refs/remotes/foreign-repo/HEAD; then
+            git push foreign-repo --delete HEAD
+          else
+            echo "HEAD branch does not exist in the foreign repository. No action required."
+          fi
       
       - name: get most recent version on original repo, for next comparison on sync
         run: git ls-remote --tags https://github.com/Docile-Alligator/Infinity-For-Reddit.git | grep -v 'beta' | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3 > last_sync_with_original_repo_version

@@ -73,6 +73,16 @@ jobs:
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
       - name: Setup JDK+Android
         run: sudo apt-get install openjdk-11-jdk git adb -y
+      - name: Cache Gradle Wrapper and Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./.gradle/wrapper
+            ./.gradle/caches
+      - name: Add mavenCentral repo
+        run: |
+          sed '/maven { url "https:\/\/jitpack.io" }/i\        mavenCentral()' build.gradle
+          cat build.gradle
       - name: Gradlew executable
         run: chmod +x gradlew
       - name: Build apk

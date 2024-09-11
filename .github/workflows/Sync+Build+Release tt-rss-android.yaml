@@ -58,7 +58,10 @@ jobs:
           destination_ssh_private_key: ${{ secrets.GITSYNCACTION }}
       
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_GITHUB_ACTION }}
+      
       - name: Remove HEAD branch if it exists
         run: |
           git fetch origin

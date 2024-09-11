@@ -106,7 +106,7 @@ jobs:
       - name: Build with Gradle
         run: |
           chmod +x gradlew
-          ./gradlew build
+          ./gradlew --no-daemon
       
       - name: Sign APK
         id: sign_apk

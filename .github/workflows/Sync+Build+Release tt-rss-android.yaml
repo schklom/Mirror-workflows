@@ -100,16 +100,13 @@ jobs:
           distribution: 'temurin'
           java-version: 17
       
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-      
       - name: LS
         run: ls -AlhR .
       
       - name: Build with Gradle
         run: |
           chmod +x gradlew
-          ./gradlew --no-daemon
+          ./gradlew --no-daemon assembleRelease
       
       - name: Sign APK
         id: sign_apk

@@ -90,10 +90,6 @@ jobs:
         with:
           repository: 'schklom/tt-rss-android'
           ref: 'master' # branch
-      - name: LS
-        run: |
-          pwd
-          ls -alhR .
       - name: Update package lists
         run: sudo apt-get update
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
@@ -103,6 +99,9 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 17
+      
+      - name: LS
+        run: ls -AlhR .
       
       - name: Build with Gradle
         run: ./gradlew build

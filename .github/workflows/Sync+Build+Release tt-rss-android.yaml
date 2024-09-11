@@ -77,10 +77,11 @@ jobs:
           echo "${LATEST_VERSION}"
           # LATEST_VERSION="openjdk-11-jdk"
           sudo apt-get install ${LATEST_VERSION} git adb -y
-      - name: Update (too) old dependencies that cause problems
-        run: |
-          sed -i 's/jp.wasabeef:glide-transformations:2.0.2/jp.wasabeef:glide-transformations:4.3.0/' org.fox.ttrss/build.gradle
-          cat org.fox.ttrss/build.gradle
+      
+      #- name: Update (too) old dependencies that cause problems
+      #  run: |
+      #    sed -i 's/jp.wasabeef:glide-transformations:2.0.2/jp.wasabeef:glide-transformations:4.3.0/' org.fox.ttrss/build.gradle
+      #    cat org.fox.ttrss/build.gradle
           
       #- name: Cache Gradle Wrapper and Dependencies
       #  uses: actions/cache@v3
@@ -88,15 +89,16 @@ jobs:
       #    path: |
       #      ./.gradle/wrapper
       #      ./.gradle/caches
-      - name: Add mavenCentral repo and a custom
-        run: |
-          sed -i '/clojars.org\/repo/i\        mavenCentral()' build.gradle
-          sed -i "/mavenCentral()/i\        maven {url 'http:\/\/dl.bintray.com\/amulyakhare\/maven' }" build.gradle
-          cat build.gradle
+      #- name: Add mavenCentral repo and a custom
+      #  run: |
+      #    sed -i '/clojars.org\/repo/i\        mavenCentral()' build.gradle
+      #    sed -i "/mavenCentral()/i\        maven {url 'http:\/\/dl.bintray.com\/amulyakhare\/maven' }" build.gradle
+      #    cat build.gradle
       - name: Gradlew executable
         run: chmod +x gradlew
       - name: Build apk
         run: ./gradlew --no-daemon --refresh-dependencies assembleDebug
+        #run: ./gradlew --no-daemon --refresh-dependencies assembleRelease
       - name: LS
         run: ls -AlhR ./
       #- name: Delete previous release

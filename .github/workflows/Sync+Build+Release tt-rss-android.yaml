@@ -91,7 +91,9 @@ jobs:
           repository: 'schklom/tt-rss-android'
           ref: 'master' # branch
       - name: LS
-        run: ls -alhR .
+        run: |
+          pwd
+          ls -alhR .
       - name: Update package lists
         run: sudo apt-get update
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation

@@ -72,7 +72,7 @@ jobs:
           git remote add foreign-repo https://github.com/schklom/tt-rss-android.git
 
           # Fetch the latest branches from the foreign repository
-          #git fetch foreign-repo
+          git fetch foreign-repo
 
           # Check if the HEAD branch exists in the foreign repository and delete it if it does
           if git show-ref --verify --quiet refs/remotes/foreign-repo/HEAD; then

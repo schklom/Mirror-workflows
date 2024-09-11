@@ -36,7 +36,7 @@ jobs:
     needs: [get_commits]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    #if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
+    if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
     steps:
       - name: outputs
         run: |
@@ -56,28 +56,6 @@ jobs:
           #source_branch: "refs/tags/*"
           #destination_branch: "refs/tags/*"
           destination_ssh_private_key: ${{ secrets.GITSYNCACTION }}
-      
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PAT_GITHUB_ACTION }}
-      
-      - name: Remove HEAD branch from schklom/tt-rss-android if it exists
-        run: |
-          # Configure Git to use the PAT for authentication
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git remote add foreign-repo https://github.com/schklom/tt-rss-android.git
-
-          # Fetch the latest branches from the foreign repository
-          git fetch foreign-repo
-
-          # Check if the HEAD branch exists in the foreign repository and delete it if it does
-          if git show-ref --verify --quiet refs/remotes/foreign-repo/HEAD; then
-            git push foreign-repo --delete HEAD
-          else
-            echo "HEAD branch does not exist in the foreign repository. No action required."
-          fi
 
   build_ttrss_on_master:
     needs: [repo_sync_master]
@@ -94,15 +72,10 @@ jobs:
         run: sudo apt-get update
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
       - name: Setup JDK+Android
-        run: |
-          LATEST_VERSION=$(apt-cache search openjdk | grep -E '^openjdk-[0-9]+-jdk-headless' | awk -F' ' '{print $1}' | sort -V | tail -n 1)
-          echo "${LATEST_VERSION}"
-          LATEST_VERSION="openjdk-11-jdk"
-          sudo apt-get install ${LATEST_VERSION} git adb -y
+        run: sudo apt-get install openjdk-11-jdk git adb -y
       - name: Gradlew executable
         run: chmod +x gradlew
       - name: Build apk
-        #run: ./gradlew --no-daemon assembleRelease
         run: ./gradlew --no-daemon assembleDebug
       - name: LS
         run: ls -AlhR ./

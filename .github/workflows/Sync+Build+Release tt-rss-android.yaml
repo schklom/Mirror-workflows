@@ -80,8 +80,7 @@ jobs:
       - name: Update (too) old dependencies that cause problems
         run: |
           sed -i 's/jp.wasabeef:glide-transformations:2.0.2/jp.wasabeef:glide-transformations:4.3.0/' org.fox.ttrss/build.gradle
-          sed -i 's/jp.wasabeef:glide-transformations:2.0.2/jp.wasabeef:glide-transformations:4.3.0/' org.fox.ttrss/build.gradle
-          sed -i 's/com.otaliastudios:nestedscrollcoordinatorlayout:1.0.3/' org.fox.ttrss/build.gradle
+          cat org.fox.ttrss/build.gradle
           
       #- name: Cache Gradle Wrapper and Dependencies
       #  uses: actions/cache@v3

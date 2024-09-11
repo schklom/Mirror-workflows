@@ -36,14 +36,12 @@ jobs:
     needs: [get_commits]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    #if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITSYNCACTION }}
+    if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
     steps:
       - name: outputs
         run: |
-          echo "${{ needs.get_commits.outputs.LOCAL }}"
-          echo "${{ needs.get_commits.outputs.REMOTE }}"
+          echo "${{needs.get_commits.outputs.LOCAL}}"
+          echo "${{needs.get_commits.outputs.REMOTE}}"
     
       - name: repo-sync master branch
         uses: wei/git-sync@v3
@@ -58,29 +56,7 @@ jobs:
           #source_branch: "refs/tags/*"
           #destination_branch: "refs/tags/*"
           destination_ssh_private_key: ${{ secrets.GITSYNCACTION }}
-      
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PAT_GITHUB_ACTION }}
-      
-      - name: Remove HEAD branch from schklom/tt-rss-android if it exists
-        run: |
-          # Configure Git to use the PAT for authentication
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git remote add foreign-repo https://github.com/schklom/tt-rss-android.git
 
-          # Fetch the latest branches from the foreign repository
-          git fetch foreign-repo
-
-          # Check if the HEAD branch exists in the foreign repository and delete it if it does
-          if git show-ref --verify --quiet refs/remotes/foreign-repo/HEAD; then
-            git push foreign-repo --delete HEAD
-          else
-            echo "HEAD branch does not exist in the foreign repository. No action required."
-          fi
-  
   build_ttrss_on_master:
     needs: [repo_sync_master]
     runs-on: ubuntu-latest
@@ -89,38 +65,18 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: 'schklom/tt-rss-android'
+          ####ref: 'Gadgetbridge-osmand-experiments' # branch
+          #ref: 'osmand-experiments' # branch
           ref: 'master' # branch
       - name: Update package lists
         run: sudo apt-get update
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
-      # https://github.com/gradle/actions/tree/main/setup-gradle
-      # https://gitlab.tt-rss.org/ci/ci-templates/-/blob/master/.ci-build-apk-fdroid.yml?ref_type=heads
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: 17
-      
-      - name: LS
-        run: ls -AlhR .
-      
-      - name: Build with Gradle
-        run: |
-          export GRADLE_USER_HOME=`pwd`/.gradle
-          echo "${GRADLE_USER_HOME}"
-          chmod +x gradlew
-          bash ./gradlew --no-daemon assembleDebug
-      
-      - name: Sign APK
-        id: sign_apk
-        uses: ilharp/sign-android-release@v1
-        with:
-          releaseDir: app/build/outputs/apk/
-          signingKey: ${{ secrets.APK_KEYSTORE_FILE_BASE64 }}
-          keyAlias: ${{ secrets.APK_KEYSTORE_ALIAS }}
-          keyStorePassword: ${{ secrets.APK_KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.APK_KEYSTORE_PASSWORD }}
-      
+      - name: Setup JDK+Android
+        run: sudo apt-get install openjdk-11-jdk git adb -y
+      - name: Gradlew executable
+        run: chmod +x gradlew
+      - name: Build apk
+        run: ./gradlew --no-daemon assembleDebug
       - name: LS
         run: ls -AlhR ./
       #- name: Delete previous release
@@ -133,13 +89,6 @@ jobs:
           # Truncate commit id to 8 characters
           ver=${ver:0:8}
           echo "version=${ver}" >> $GITHUB_ENV
-
-      - name: Upload apk
-        uses: actions/upload-artifact@v3
-        with:
-          name: tt-rss-${{ env.version }}
-          path: app/build/outputs/apk/
-          if-no-files-found: error
       
       - name: Release apk
         uses: softprops/action-gh-release@v2
@@ -154,3 +103,4 @@ jobs:
           files: ./org.fox.ttrss/build/outputs/apk/debug/org.fox.ttrss-debug.apk
           repository: "schklom/tt-rss-android"
           token: ${{ secrets.PAT_GITHUB_ACTION }}
+

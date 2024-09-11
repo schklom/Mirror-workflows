@@ -76,7 +76,7 @@ jobs:
       - name: Gradlew executable
         run: chmod +x gradlew
       - name: Build apk
-        run: ./gradlew --no-daemon assembleDebug
+        run: ./gradlew --no-daemon assembleRelease
       - name: LS
         run: ls -AlhR ./
       #- name: Delete previous release

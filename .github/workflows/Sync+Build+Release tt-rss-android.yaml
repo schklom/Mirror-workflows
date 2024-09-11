@@ -109,7 +109,7 @@ jobs:
           export GRADLE_USER_HOME=`pwd`/.gradle
           echo "${GRADLE_USER_HOME}"
           chmod +x gradlew
-          bash ./gradlew --no-daemon assembleRelease
+          bash ./gradlew --no-daemon assembleDebug
       
       - name: Sign APK
         id: sign_apk

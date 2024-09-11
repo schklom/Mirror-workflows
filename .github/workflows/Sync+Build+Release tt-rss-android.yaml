@@ -94,6 +94,7 @@ jobs:
         run: sudo apt-get update
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
       # https://github.com/gradle/actions/tree/main/setup-gradle
+      # https://gitlab.tt-rss.org/ci/ci-templates/-/blob/master/.ci-build-apk-fdroid.yml?ref_type=heads
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -105,8 +106,9 @@ jobs:
       
       - name: Build with Gradle
         run: |
+          export GRADLE_USER_HOME=`pwd`/.gradle
           chmod +x gradlew
-          ./gradlew --no-daemon assembleRelease
+          ./gradlew --no-daemon assembleFdroid
       
       - name: Sign APK
         id: sign_apk

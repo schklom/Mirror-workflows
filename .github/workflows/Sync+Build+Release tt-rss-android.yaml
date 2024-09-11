@@ -81,7 +81,7 @@ jobs:
             ./.gradle/caches
       - name: Add mavenCentral repo
         run: |
-          sed '/maven { url "https:\/\/jitpack.io" }/i\        mavenCentral()' build.gradle
+          sed -i '/clojars.org\/repo/i\        mavenCentral()' build.gradle
           cat build.gradle
       - name: Gradlew executable
         run: chmod +x gradlew

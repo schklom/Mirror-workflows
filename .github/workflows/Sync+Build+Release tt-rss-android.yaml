@@ -72,7 +72,10 @@ jobs:
         run: sudo apt-get update
       # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
       - name: Setup JDK+Android
-        run: sudo apt-get install openjdk-11-jdk git adb -y
+        run: |
+          LATEST_VERSION=$(apt-cache search openjdk | grep -E '^openjdk-[0-9]+-jdk-headless' | awk -F' ' '{print $1}' | sort -V | tail -n 1)
+          echo "${LATEST_VERSION}"
+          sudo apt-get install ${LATEST_VERSION} git adb -y
       - name: Gradlew executable
         run: chmod +x gradlew
       - name: Build apk

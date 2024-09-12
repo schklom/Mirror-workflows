@@ -96,7 +96,7 @@ phpdoc:publish:
   needs:
     - job: phpdoc:build
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $REGISTRY_USER != null && $REGISTRY_PASSWORD != null
   variables:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/phpdoc/Dockerfile
     NAME: ttrss-phpdoc

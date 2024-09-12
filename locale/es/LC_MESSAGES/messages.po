@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-15 14:03+0300\n"
-"PO-Revision-Date: 2024-08-26 16:09+0000\n"
+"PO-Revision-Date: 2024-09-09 20:09+0000\n"
 "Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/tt-rss/webui/es/>"
 "\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7.1-dev\n"
+"X-Generator: Weblate 5.8-dev\n"
 
 #: backend.php:65
 msgid "Use default"
@@ -776,9 +776,8 @@ msgid "Created"
 msgstr "Creado"
 
 #: classes/Pref_Prefs.php:1517
-#, fuzzy
 msgid "Last used"
-msgstr "Última actualización:"
+msgstr "Última vez utilizado"
 
 #: classes/Pref_Prefs.php:1562
 #, php-format
@@ -786,11 +785,13 @@ msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
 "reference."
 msgstr ""
+"Contraseña generada <strong>%s</strong> para %s. Recuérdalo para futuras "
+"consultas."
 
 #: classes/Mailer.php:51
 #, php-format
 msgid "Unknown error while sending mail. Hooks tried: %d."
-msgstr ""
+msgstr "Error desconocido al enviar correo. Hooks probados: %d ."
 
 #: classes/TimeHelper.php:8
 #, php-format
@@ -799,7 +800,7 @@ msgstr "%d min"
 
 #: classes/Pref_System.php:24
 msgid "Test message from tt-rss"
-msgstr ""
+msgstr "Mensaje de prueba tt-rss"
 
 #: classes/Pref_System.php:81 js/PrefHelpers.js:622
 msgid "Refresh"
@@ -807,34 +808,32 @@ msgstr "Actualizar"
 
 #: classes/Pref_System.php:86
 msgid "&lt;&lt;"
-msgstr ""
+msgstr "&lt;&lt;"
 
 #: classes/Pref_System.php:90
 #, php-format
 msgid "Page %d of %d"
-msgstr ""
+msgstr "Página %d de %d"
 
 #: classes/Pref_System.php:95
 msgid "&gt;&gt;"
-msgstr ""
+msgstr "&gt;&gt;"
 
 #: classes/Pref_System.php:104
 msgid "Severity:"
-msgstr ""
+msgstr "Gravedad:"
 
 #: classes/Pref_System.php:108
-#, fuzzy
 msgid "Errors"
-msgstr "Error"
+msgstr "Errores"
 
 #: classes/Pref_System.php:109
 msgid "Warnings"
-msgstr ""
+msgstr "Advertencias"
 
 #: classes/Pref_System.php:110
-#, fuzzy
 msgid "Everything"
-msgstr "Deseleccionar todo"
+msgstr "Todo"
 
 #: classes/Pref_System.php:120
 msgid "Error"
@@ -853,25 +852,20 @@ msgid "Date"
 msgstr "Fecha"
 
 #: classes/Pref_System.php:168
-#, fuzzy
-#| msgid "Event Log"
 msgid "Event log"
-msgstr "Registro de Eventos"
+msgstr "Registro de incidencias"
 
 #: classes/Pref_System.php:174
-#, fuzzy
-#| msgid "Save configuration"
 msgid "Mail configuration"
-msgstr "Guardar la configuración"
+msgstr "Configuración del correo"
 
 #: classes/Pref_System.php:205
 msgid "To:"
 msgstr "Para:"
 
 #: classes/Pref_System.php:207
-#, fuzzy
 msgid "Send test email"
-msgstr "Enviar correo electrónico"
+msgstr "Enviar correo de prueba"
 
 #: classes/Pref_System.php:213
 msgid "PHP Information"
@@ -987,27 +981,27 @@ msgstr[0] "(%d fuente)"
 msgstr[1] "(%d fuentes)"
 
 #: classes/Pref_Feeds.php:549
-#, fuzzy, php-format
+#, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
-msgstr[0] "(%d fuente)"
-msgstr[1] "(%d fuentes)"
+msgstr[0] "(%d día)"
+msgstr[1] "(%d días)"
 
 #: classes/Pref_Feeds.php:555
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d día"
+msgstr[1] "%d días"
 
 #: classes/Pref_Feeds.php:586
 msgid "Check to enable field"
 msgstr "Marcar para habilitar el campo"
 
 #: classes/Pref_Feeds.php:602
-#, fuzzy, php-format
+#, php-format
 msgid "(%d days)"
-msgstr "(%d fuente)"
+msgstr "(%d días)"
 
 #: classes/Pref_Feeds.php:607 js/CommonDialogs.js:506
 msgid "Include in e-mail digest"
@@ -1035,9 +1029,8 @@ msgid "Language:"
 msgstr "Idioma:"
 
 #: classes/Pref_Feeds.php:645 js/CommonDialogs.js:572
-#, fuzzy
 msgid "Update interval:"
-msgstr "Intervalo de actualización por defecto"
+msgstr "Intervalo de actualización:"
 
 #: classes/Pref_Feeds.php:652 js/CommonDialogs.js:578
 msgid "Article purging:"
@@ -1118,10 +1111,8 @@ msgid "Export OPML"
 msgstr "Exportar OPML"
 
 #: classes/Pref_Feeds.php:1009
-#, fuzzy
-#| msgid "Include settings"
 msgid "Include tt-rss settings"
-msgstr "Incluir preferencias"
+msgstr "Incluir ajustes tt-rss"
 
 #: classes/Pref_Feeds.php:1025
 msgid "Display URL"
@@ -1132,18 +1123,16 @@ msgid "Clear all generated URLs"
 msgstr "Limpiar todas las URLs generadas"
 
 #: classes/Pref_Feeds.php:1042
-#, fuzzy
 msgid "My feeds"
-msgstr "Mis fuentes"
+msgstr "Mis feeds"
 
 #: classes/Pref_Feeds.php:1047
 msgid "OPML"
 msgstr "OPML"
 
 #: classes/Pref_Feeds.php:1052
-#, fuzzy
 msgid "Sharing"
-msgstr "Compartir"
+msgstr "Compartiendo"
 
 #: classes/Pref_Users.php:56 classes/Pref_Users.php:257
 msgid "Registered"
@@ -1210,9 +1199,9 @@ msgid "Click to edit"
 msgstr "Pulse aquí para editar"
 
 #: classes/Config.php:402
-#, fuzzy, php-format
+#, php-format
 msgid "Git error [RC=%d]: %s"
-msgstr "Error crítico"
+msgstr "Error de Git [RC=%d]: %s"
 
 #: classes/Pref_Filters.php:211 classes/Pref_Filters.php:222
 #: classes/Pref_Filters.php:442 classes/Pref_Filters.php:876
@@ -1237,9 +1226,8 @@ msgid "Combine"
 msgstr "Combinar"
 
 #: classes/Pref_Filters.php:695
-#, fuzzy
 msgid "Toggle rule display"
-msgstr "Cambiar la lista de fuentes"
+msgstr "Conmutar la visualización de reglas"
 
 #: classes/Pref_Filters.php:746
 msgid "[No caption]"
@@ -1335,7 +1323,7 @@ msgstr "Error: por favor, suba un fichero OPML."
 #: classes/OPML.php:641
 #, php-format
 msgid "Error: file is not readable: %s"
-msgstr ""
+msgstr "Error: archivo no legible: %s"
 
 #: classes/OPML.php:667
 msgid "Error while parsing document."
@@ -1350,40 +1338,32 @@ msgid "Open next feed"
 msgstr "Abrir la fuente siguiente"
 
 #: classes/RPC.php:612
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open next unread feed"
-msgstr "Abrir la fuente siguiente"
+msgstr "Abrir el siguiente feed no leído"
 
 #: classes/RPC.php:613
 msgid "Open previous feed"
 msgstr "Abrir la fuente siguiente"
 
 #: classes/RPC.php:614
-#, fuzzy
-#| msgid "Open previous feed"
 msgid "Open previous unread feed"
-msgstr "Abrir la fuente siguiente"
+msgstr "Abrir el anterior feed no leído"
 
 #: classes/RPC.php:615
-#, fuzzy
 msgid "Open next article (in combined mode, scroll down)"
-msgstr "Abrir artículo siguiente (no desplazar artículos largos)"
+msgstr "Abrir el siguiente artículo (en modo combinado, desplázate hacia abajo)"
 
 #: classes/RPC.php:616
-#, fuzzy
 msgid "Open previous article (in combined mode, scroll up)"
-msgstr "Abrir artículo anterior (no desplazar artículos largos)"
+msgstr "Abrir el artículo anterior (en modo combinado, desplázate hacia arriba)"
 
 #: classes/RPC.php:617
-#, fuzzy
 msgid "Scroll headlines by one page down"
-msgstr "Mostrar el sumario del artículo en una nueva pestaña o ventana"
+msgstr "Desplazar los titulares una página hacia abajo"
 
 #: classes/RPC.php:618
-#, fuzzy
 msgid "Scroll headlines by one page up"
-msgstr "Seleccionar los artículos del grupo"
+msgstr "Desplazar los titulares una página hacia arriba"
 
 #: classes/RPC.php:619
 msgid "Open next article"
@@ -1394,23 +1374,20 @@ msgid "Open previous article"
 msgstr "Abrir el artículo anterior"
 
 #: classes/RPC.php:621
-#, fuzzy
 msgid "Move to next article (don't expand)"
-msgstr "Ir al artículo siguiente (no expandir ni marcar como leído)"
+msgstr "Pasar al artículo siguiente (no ampliar)"
 
 #: classes/RPC.php:622
-#, fuzzy
 msgid "Move to previous article (don't expand)"
-msgstr "Ir al artículo anterior (no expandir ni marcar como leído)"
+msgstr "Volver al artículo anterior (no ampliar)"
 
 #: classes/RPC.php:623
 msgid "Show search dialog"
 msgstr "Mostrar el diálogo de búsqueda"
 
 #: classes/RPC.php:624
-#, fuzzy
 msgid "Cancel active search"
-msgstr "Cancelar búsqueda"
+msgstr "Cancelar búsqueda activa"
 
 #: classes/RPC.php:625
 msgid "Article"
@@ -1453,14 +1430,12 @@ msgid "Scroll up"
 msgstr "Desplazarse hacia arriba"
 
 #: classes/RPC.php:635
-#, fuzzy
 msgid "Scroll down page"
-msgstr "Desplazarse abajo"
+msgstr "Desplázate hacia abajo"
 
 #: classes/RPC.php:636
-#, fuzzy
 msgid "Scroll up page"
-msgstr "Desplazarse hacia arriba"
+msgstr "Desplázate hacia arriba"
 
 #: classes/RPC.php:637
 msgid "Select article under cursor"
@@ -1480,7 +1455,7 @@ msgstr "Alternar expansión de los artículos (modo combinado)"
 
 #: classes/RPC.php:642
 msgid "Toggle full article text via Readability"
-msgstr ""
+msgstr "Texto completo del artículo a través de Readability"
 
 #: classes/RPC.php:643
 msgid "Article selection"
@@ -1536,10 +1511,8 @@ msgid "Toggle headline grouping"
 msgstr "Cambiar agrupación de titulares"
 
 #: classes/RPC.php:658
-#, fuzzy
-#| msgid "Toggle sidebar"
 msgid "Toggle grid view"
-msgstr "Alternar la barra lateral"
+msgstr "Alternar vista de cuadrícula"
 
 #: classes/RPC.php:659
 msgid "Debug feed update"
@@ -1670,28 +1643,21 @@ msgid "Update"
 msgstr "Actualizar"
 
 #: classes/Handler_Public.php:728
-#, fuzzy, php-format
-#| msgid ""
-#| "Tiny Tiny RSS database needs update to the latest version (%d to %d)."
+#, php-format
 msgid "Database schema needs update to the latest version (%d to %d)."
-msgstr ""
-"Su base de datos Tiny Tiny RSS necesita actualizarse a la última versión (%d "
-"to %d)."
+msgstr "Tu base de datos necesita actualizarse a la última versión (%d a %d)."
 
 #: plugins/nsfw/init.php:46
-#, fuzzy
-#| msgid "Not work safe (click to toggle)"
 msgid "Not safe for work (click to toggle)"
-msgstr "NSFW (click para alternar)"
+msgstr "No es seguro para trabajar (haz clic para alternar)"
 
 #: plugins/nsfw/init.php:80
 msgid "NSFW Plugin"
 msgstr "Extensión NSFW"
 
 #: plugins/nsfw/init.php:95
-#, fuzzy
 msgid "Tags to consider NSFW (comma-separated):"
-msgstr "Etiquetas que se considerarán NSFW (separadas por comas)"
+msgstr "Etiquetas NSFW a considerar (separadas por comas):"
 
 #: plugins/nsfw/init.php:117
 msgid "Configuration saved."
@@ -1706,9 +1672,8 @@ msgid "Toggle sidebar"
 msgstr "Alternar la barra lateral"
 
 #: plugins/share/init.php:43
-#, fuzzy
 msgid "Article unshared"
-msgstr "Artículos compartidos mediante URL"
+msgstr "Artículo sin compartir"
 
 #: plugins/share/init.php:58
 msgid "Unshare all articles"
@@ -1748,9 +1713,8 @@ msgid "Show related articles"
 msgstr "Mostrar artículos relacionados"
 
 #: plugins/af_psql_trgm/init.php:157
-#, fuzzy
 msgid "Mark similar articles as read (af_psql_trgm)"
-msgstr "Marcar artículos similares como leídos"
+msgstr "Marcar artículos similares como leídos (af_psql_trgm)"
 
 #: plugins/af_psql_trgm/init.php:185
 msgid "Minimum similarity:"
@@ -1767,36 +1731,28 @@ msgstr ""
 "pueden producir falsos positivos, cero deshabilita la comprobación."
 
 #: plugins/af_psql_trgm/init.php:196
-#, fuzzy
-#| msgid ""
-#| "PostgreSQL trigram extension returns string similarity as a floating "
-#| "point number (0-1). Setting it too low might produce false positives, "
-#| "zero disables checking."
 msgid ""
 "Setting this value too low might produce false positives, zero disables "
 "checking."
 msgstr ""
-"La extensión  trigram de PostgreSQL devuelve similitud de cadena como un "
-"número de punto flotante (0-1). Si se ajusta a un valor demasiado bajo se "
-"pueden producir falsos positivos, cero deshabilita la comprobación."
+"Establecer este valor demasiado bajo podría producir falsos positivos, cero "
+"desactiva la comprobación."
 
 #: plugins/af_psql_trgm/init.php:202
 msgid "Minimum title length:"
 msgstr "Longitud mínima del título:"
 
 #: plugins/af_psql_trgm/init.php:212
-#, fuzzy
 msgid "Enable for all feeds."
-msgstr "Habilitar para todas las fuentes:"
+msgstr "Activar para todos los feeds."
 
 #: plugins/af_psql_trgm/init.php:231
 msgid "Currently enabled for (click to edit):"
 msgstr "Actualmente habilitado para (click para editar):"
 
 #: plugins/af_psql_trgm/init.php:251
-#, fuzzy
 msgid "Similarity (af_psql_trgm)"
-msgstr "Similitud (pg_trgm)"
+msgstr "Similitud (af_psql_trgm)"
 
 #: plugins/af_psql_trgm/init.php:257
 msgid "Mark similar articles as read"
@@ -1906,20 +1862,16 @@ msgstr ""
 "Use este bookmarklet para publicar cualquier página usando Tiny Tiny RSS"
 
 #: plugins/auth_internal/init.php:93
-#, fuzzy
-#| msgid "Please enter label caption:"
 msgid "Please enter verification code (OTP):"
-msgstr "Por favor, introduzca el nombre del marcador:"
+msgstr "Por favor, introduce el código de verificación (OTP):"
 
 #: plugins/auth_internal/init.php:95
-#, fuzzy
-#| msgid "Content"
 msgid "Continue"
-msgstr "Contenido"
+msgstr "Continuar"
 
 #: plugins/auth_internal/init.php:134
 msgid "Too many authentication attempts, throttled."
-msgstr ""
+msgstr "Demasiados intentos de inicio de sesión, limitados."
 
 #: plugins/auth_internal/init.php:241
 msgid "Password has been changed."
@@ -1942,10 +1894,8 @@ msgid "Session failed to validate (password changed)"
 msgstr "No se pudo validar la sesión (ha cambiado la contraseña)"
 
 #: include/sessions.php:48
-#, fuzzy
-#| msgid "Session failed to validate (user agent changed)"
 msgid "Session failed to validate (account is disabled)"
-msgstr "No se pudo validar la sesión (ha cambiado el agente de usuario)"
+msgstr "No se ha podido validar la sesión (la cuenta está desactivada)"
 
 #: include/sessions.php:67
 msgid "Session failed to validate (user not found)"
@@ -1974,11 +1924,11 @@ msgstr ""
 
 #: include/login_form.php:175 js/CommonDialogs.js:16
 msgid "Safe mode"
-msgstr ""
+msgstr "Modo seguro"
 
 #: include/login_form.php:180
 msgid "Uses default theme and prevents all plugins from loading."
-msgstr ""
+msgstr "Utiliza el tema por defecto y evita que se carguen todos los plugins."
 
 #: include/login_form.php:188
 msgid "Remember me"
@@ -2017,16 +1967,12 @@ msgid "Click to close"
 msgstr "Clic para cerrar"
 
 #: js/CommonFilters.js:14
-#, fuzzy
-#| msgid "Edit Filter"
 msgid "Edit filter"
 msgstr "Editar filtro"
 
 #: js/CommonFilters.js:14
-#, fuzzy
-#| msgid "Create filter"
 msgid "Create new filter"
-msgstr "Crear filtro"
+msgstr "Crear un nuevo filtro"
 
 #: js/CommonFilters.js:45
 #, java-printf-format, javascript-format
@@ -2034,10 +1980,8 @@ msgid "Looking for articles (%d processed, %f found)..."
 msgstr "Buscando artículos (%d procesados, %f encontrados)..."
 
 #: js/CommonFilters.js:73
-#, fuzzy
-#| msgid "Found %d articles matching this filter:"
 msgid "Articles matching this filter:"
-msgstr "Encontrados %d artículos coincidentes con este filtro:"
+msgstr "Artículos que coinciden con este filtro:"
 
 #: js/CommonFilters.js:75
 #, java-printf-format, javascript-format
@@ -2050,10 +1994,8 @@ msgstr ""
 "Error mientras se intentaba obtener los resultados de la prueba del filtro."
 
 #: js/CommonFilters.js:96
-#, fuzzy
-#| msgid "Rescoring articles..."
 msgid "Looking for articles..."
-msgstr "Reiniciando la puntuación de los artículos..."
+msgstr "Buscando artículos..."
 
 #: js/CommonFilters.js:175
 msgid "Edit rule"
@@ -2194,10 +2136,8 @@ msgstr "Borrar marcador"
 
 #: js/Headlines.js:1588 js/FeedTree.js:105 js/Headlines.js:473
 #: js/Headlines.js:522 js/Headlines.js:591
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open site"
-msgstr "Abrir la fuente siguiente"
+msgstr "Abrir sitio"
 
 #: js/Headlines.js:1597 js/FeedTree.js:114
 msgid "Debug feed"
@@ -2216,9 +2156,8 @@ msgid "Mark feed as read"
 msgstr "Marcar fuente como leída"
 
 #: js/PrefHelpers.js:20
-#, fuzzy
 msgid "Remove selected app passwords?"
-msgstr "¿Eliminar los usuarios seleccionados?"
+msgstr "¿Eliminar las contraseñas de las aplicaciones seleccionadas?"
 
 #: js/PrefHelpers.js:45
 msgid "This will invalidate all previously generated feed URLs. Continue?"
@@ -2233,10 +2172,8 @@ msgid "Generated URLs cleared."
 msgstr "Borradas todas las URLs generadas."
 
 #: js/PrefHelpers.js:59
-#, fuzzy
-#| msgid "Digest"
 msgid "Digest preview"
-msgstr "Correos recopilatorios"
+msgstr "Avance del resumen"
 
 #: js/PrefHelpers.js:113
 msgid "Clear event log?"
@@ -2244,12 +2181,11 @@ msgstr "¿Borrar registro de eventos?"
 
 #: js/PrefHelpers.js:135
 msgid "Name for cloned profile:"
-msgstr ""
+msgstr "Nombre para el perfil clonado:"
 
 #: js/PrefHelpers.js:145
-#, fuzzy
 msgid "Please select a single profile to clone."
-msgstr "Seleccione un archivo de imagen para cargar."
+msgstr "Por favor, selecciona un único perfil para clonar."
 
 #: js/PrefHelpers.js:153
 msgid ""
@@ -2276,7 +2212,7 @@ msgstr "(activo)"
 
 #: js/PrefHelpers.js:219
 msgid "(empty)"
-msgstr ""
+msgstr "(vacío)"
 
 #: js/PrefHelpers.js:242
 msgid "Activate selected profile?"
@@ -2303,16 +2239,17 @@ msgid ""
 "User CSS has been applied, you might need to reload the page to see all "
 "changes."
 msgstr ""
+"Se ha aplicado CSS del usuario, es posible que tengas que volver a cargar la "
+"página para ver todos los cambios."
 
 #: js/PrefHelpers.js:329
 msgid "Reset to defaults?"
 msgstr "¿Restaurar las opciones por defecto?"
 
 #: js/PrefHelpers.js:373
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Error while parsing document."
+#, java-printf-format, javascript-format
 msgid "Error while loading plugins list: %s."
-msgstr "Error mientras se analizaba el documento."
+msgstr "Error al cargar la lista de plugins: %s."
 
 #: js/PrefHelpers.js:422
 msgid "Clear data"
@@ -2320,126 +2257,102 @@ msgstr "Borrar datos"
 
 #: js/PrefHelpers.js:425
 msgid "Uninstall"
-msgstr ""
+msgstr "Desinstalar"
 
 #: js/PrefHelpers.js:437 js/PrefHelpers.js:596
 msgid "Could not find any plugins for this search query."
-msgstr ""
+msgstr "No se ha encontrado ningún plugin para esta búsqueda."
 
 #: js/PrefHelpers.js:444
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Clear stored data for this plugin?"
+#, java-printf-format, javascript-format
 msgid "Clear stored data for %s?"
-msgstr "¿Borrar los datos guardados por esta extensión?"
+msgstr "¿Borrar datos almacenados para %s?"
 
 #: js/PrefHelpers.js:453
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "User plugins"
+#, java-printf-format, javascript-format
 msgid "Uninstall plugin %s?"
-msgstr "Extensiones de usuario"
+msgstr "¿Desinstalar el plugin %s?"
 
 #: js/PrefHelpers.js:462
-#, fuzzy
-#| msgid "Registration failed."
 msgid "Plugin uninstallation failed."
-msgstr "El registro ha fallado."
+msgstr "Error en la desinstalación del plugin."
 
 #: js/PrefHelpers.js:478
-#, fuzzy
-#| msgid "Mail plugin"
 msgid "Available plugins"
-msgstr "Extensión de correo"
+msgstr "Plugins disponibles"
 
 #: js/PrefHelpers.js:491
-#, fuzzy
-#| msgid "Link instance"
 msgid "Plugin installer"
-msgstr "Enlazar instancia"
+msgstr "Instalador de plugins"
 
 #: js/PrefHelpers.js:494
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Importing, please wait..."
+#, java-printf-format, javascript-format
 msgid "Installing %s, please wait..."
-msgstr "Importando, espere por favor..."
+msgstr "Instalando %s, por favor espere..."
 
 #: js/PrefHelpers.js:509 js/PrefHelpers.js:551 js/PrefHelpers.js:662
 msgid "Operation failed: check event log."
-msgstr ""
+msgstr "Operación fallida: compruebe el registro de eventos."
 
 #: js/PrefHelpers.js:513
-#, fuzzy
-#| msgid "E-mail has been changed."
 msgid "Plugin has been installed."
-msgstr "El correo electrónico ha sido cambiado."
+msgstr "El plugin ha sido instalado."
 
 #: js/PrefHelpers.js:517
 msgid "Plugin is already installed."
-msgstr ""
+msgstr "El plugin ya está instalado."
 
 #: js/PrefHelpers.js:527 js/PrefHelpers.js:679 js/PrefHelpers.js:745
 #, java-printf-format, javascript-format
 msgid "Exited with RC: %d"
-msgstr ""
+msgstr "Finalizado con RC: %d"
 
 #: js/PrefHelpers.js:576
 msgid "Already installed"
-msgstr ""
+msgstr "Ya está instalado"
 
 #: js/PrefHelpers.js:587
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Updated"
+#, java-printf-format, javascript-format
 msgid "Updated: %s"
-msgstr "Actualizados"
+msgstr "Actualizado: %s"
 
 #: js/PrefHelpers.js:604
 msgid "Looking for plugins..."
-msgstr ""
+msgstr "Buscando plugins..."
 
 #: js/PrefHelpers.js:623 js/PrefHelpers.js:765
-#, fuzzy
 msgid "Close"
-msgstr "cerrar"
+msgstr "Cerrar"
 
 #: js/PrefHelpers.js:641
-#, fuzzy
-#| msgid "User plugins"
 msgid "Update plugins"
-msgstr "Extensiones de usuario"
+msgstr "Actualizar plugins"
 
 #: js/PrefHelpers.js:656
-#, fuzzy
-#| msgid "Uploading, please wait..."
 msgid "Updating, please wait..."
-msgstr "Cargando. Por favor, espere..."
+msgstr "Actualizando, por favor espere..."
 
 #: js/PrefHelpers.js:680
-#, fuzzy
-#| msgid "Updated"
 msgid "Update done."
-msgstr "Actualizados"
+msgstr "Actualización realizada."
 
 #: js/PrefHelpers.js:704
-#, fuzzy
-#| msgid "No actions available"
 msgid "No updates available"
-msgstr "Ninguna acción disponible"
+msgstr "No hay actualizaciones"
 
 #: js/PrefHelpers.js:716
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Checking version... "
+#, java-printf-format, javascript-format
 msgid "Checking: %s"
-msgstr "Comprobando la versión..."
+msgstr "Comprobando: %s"
 
 #: js/PrefHelpers.js:723
 #, java-printf-format, javascript-format
 msgid "%s: Operation failed: check event log."
-msgstr ""
+msgstr "%s: Operación fallida: comprueba el registro de eventos."
 
 #: js/PrefHelpers.js:746
-#, fuzzy
-#| msgid "Ready to update."
 msgid "Ready to update"
-msgstr "Listo para actualizar"
+msgstr "Preparado para actualizar"
 
 #: js/PrefHelpers.js:791
 msgid "Please choose an OPML file first."
@@ -2474,9 +2387,8 @@ msgid "Article URL:"
 msgstr "URL del artículo:"
 
 #: js/Article.js:132
-#, fuzzy
 msgid "No URL could be displayed for this article."
-msgstr "¿No compartir este artículo?"
+msgstr "No se ha podido mostrar ninguna URL para este artículo."
 
 #: js/Article.js:152
 msgid "no tags"
@@ -2493,10 +2405,8 @@ msgstr[0] "comentario"
 msgstr[1] "comentarios"
 
 #: js/Article.js:352
-#, fuzzy
-#| msgid "Articles"
 msgid "Article tags"
-msgstr "Artículos"
+msgstr "Etiquetas del artículo"
 
 #: js/Article.js:359
 msgid "Tags for this article (separated by commas):"
@@ -2560,10 +2470,8 @@ msgid "Search syntax"
 msgstr "Sintaxis de búsqueda"
 
 #: js/Feeds.js:716
-#, fuzzy
-#| msgid "Search %s..."
 msgid "Search feeds"
-msgstr "Buscar %s..."
+msgstr "Buscar feeds"
 
 #: js/PrefUsers.js:19
 msgid "Please enter username:"
@@ -2650,10 +2558,8 @@ msgid "No categories selected."
 msgstr "Ninguna categoría seleccionada."
 
 #: js/PrefFeedTree.js:324
-#, fuzzy
-#| msgid "Edit Multiple Feeds"
 msgid "Edit multiple feeds"
-msgstr "Editar múltiples fuentes"
+msgstr "Editar múltiples feeds"
 
 #: js/PrefFeedTree.js:353
 msgid "Save changes to selected feeds?"
@@ -2696,6 +2602,9 @@ msgid ""
 "Provided URL is a HTML page referencing multiple feeds, please select "
 "required feed from the dropdown menu below."
 msgstr ""
+"La URL proporcionada es una página HTML que hace referencia a varias "
+"fuentes. Seleccione la fuente deseada en el menú desplegable que aparece a "
+"continuación."
 
 #: js/CommonDialogs.js:137
 msgid ""
@@ -2738,30 +2647,24 @@ msgid "XML validation failed: %s"
 msgstr "Fallo de validación de XML: %s"
 
 #: js/CommonDialogs.js:197
-#, fuzzy
-#| msgid "Error while parsing document."
 msgid "Error while creating feed database entry."
-msgstr "Error mientras se analizaba el documento."
+msgstr "Error al crear una entrada en la base de datos de feed."
 
 #: js/CommonDialogs.js:200
 msgid "You are not allowed to perform this operation."
-msgstr ""
+msgstr "No está permitido realizar esta operación."
 
 #: js/CommonDialogs.js:222
 msgid "Feeds with update errors"
 msgstr "Fuentes con errores de actualización"
 
 #: js/CommonDialogs.js:258
-#, fuzzy
-#| msgid "Remove selected feeds?"
 msgid "Debug selected feeds?"
-msgstr "¿Borrar fuentes seleccionadas?"
+msgstr "¿Borrar feeds seleccionadas?"
 
 #: js/CommonDialogs.js:259
-#, fuzzy
-#| msgid "Changing category of selected feeds..."
 msgid "Opening debugger for selected feeds..."
-msgstr "Cambiando la categoría de las fuentes seleccionadas..."
+msgstr "Abrir depurador para feeds seleccionadas..."
 
 #: js/CommonDialogs.js:328
 msgid "Please enter label caption:"
@@ -2781,13 +2684,12 @@ msgid "You can't edit this kind of feed."
 msgstr "No puede editar esta clase de fuente."
 
 #: js/CommonDialogs.js:398
-#, fuzzy
 msgid "Please select an image file."
-msgstr "Seleccione un archivo de imagen para cargar."
+msgstr "Por favor, seleccione un archivo de imagen."
 
 #: js/CommonDialogs.js:418
 msgid "Icon file is too large."
-msgstr ""
+msgstr "El archivo de iconos es demasiado grande."
 
 #: js/CommonDialogs.js:421
 msgid "Upload failed."
@@ -2806,9 +2708,8 @@ msgid "Feed icon removed."
 msgstr "Icono de la fuente borrado."
 
 #: js/CommonDialogs.js:622
-#, fuzzy
 msgid "Upload new icon..."
-msgstr "¿Cargar un nuevo icono para esta fuente?"
+msgstr "Cargar nuevo icono..."
 
 #: js/CommonDialogs.js:651 js/Headlines.js:642
 msgid "Show as feed"
@@ -2832,28 +2733,20 @@ msgid "%s can be accessed via the following secret URL:"
 msgstr "%s puede ser accedido desde la siguiente URL secreta:"
 
 #: js/App.js:314
-#, fuzzy
-#| msgid "Widescreen is not available in combined mode."
 msgid "This function is only available in combined mode."
-msgstr "El modo de pantalla ancha no está disponible en el modo combinado."
+msgstr "Esta función solo está disponible en modo combinado."
 
 #: js/App.js:445
 msgid "Keyboard shortcuts"
 msgstr "Atajos de teclado"
 
 #: js/App.js:506
-#, fuzzy
 msgid "Update daemon is not running."
-msgstr ""
-"<span onclick=\"App.explainError(3)\">El demonio de actualización no está "
-"actualizando las fuentes.</span>"
+msgstr "La actualización de daemon no se esta ejecutando."
 
 #: js/App.js:519
-#, fuzzy
 msgid "Update daemon is not updating feeds."
-msgstr ""
-"<span onclick=\"App.explainError(3)\">El demonio de actualización no está "
-"actualizando las fuentes.</span>"
+msgstr "La actualización de daemon no actualiza los feeds."
 
 #: js/App.js:606
 #, java-printf-format
@@ -2861,6 +2754,8 @@ msgid ""
 "URL scheme reported by your browser (%a) doesn't match server-configured "
 "SELF_URL_PATH (%b), check X-Forwarded-Proto."
 msgstr ""
+"El esquema de URL informado por su navegador (%a) no coincide con el "
+"SELF_URL_PATH configurado por el servidor (%b), compruebe X-Forwarded-Proto."
 
 #: js/App.js:613
 msgid "Fatal error"
@@ -2871,14 +2766,12 @@ msgid "Unhandled exception"
 msgstr "Excepción no controlada"
 
 #: js/App.js:873
-#, fuzzy
-#| msgid "New version of Tiny Tiny RSS is available!"
 msgid "Updates for Tiny Tiny RSS are available."
-msgstr "¡Nueva versión de Tiny Tiny RSS disponible!"
+msgstr "Ya están disponibles las actualizaciones de Tiny Tiny RSS."
 
 #: js/App.js:876
 msgid "Updates for some local plugins are available."
-msgstr ""
+msgstr "Ya están disponibles las actualizaciones de algunos plugins locales."
 
 #: js/App.js:919
 msgid "Widescreen is not available in combined mode."
@@ -2889,9 +2782,8 @@ msgid "Please enable mail or mailto plugin first."
 msgstr "Por favor, habilite primero la extensión de correo."
 
 #: js/App.js:1239
-#, fuzzy
 msgid "Please enable af_readability first."
-msgstr "Por favor, habilite primero la extensión de correo."
+msgstr "Por favor, active primero af_readability."
 
 #: js/App.js:1293
 msgid "Please select some feed first."
@@ -2906,10 +2798,8 @@ msgid "(Un)collapse"
 msgstr "(Des)plegar"
 
 #: js/PrefLabelTree.js:71
-#, fuzzy
-#| msgid "Edit rule"
 msgid "Edit label"
-msgstr "Editar regla"
+msgstr "Editar etiqueta"
 
 #: js/PrefLabelTree.js:143
 msgid "Foreground:"
@@ -2968,10 +2858,8 @@ msgid "Related articles"
 msgstr "Artículos relacionados"
 
 #: plugins/shorten_expanded/init.js:32
-#, fuzzy
-#| msgid "Email article"
 msgid "Expand article"
-msgstr "Enviar artículo por correo"
+msgstr "Ampliar el artículo"
 
 #: js/CommonFilters.js:71
 msgid "No recent articles matching this filter have been found."
@@ -3003,7 +2891,7 @@ msgstr "Marcar fuente como leída"
 
 #: js/Headlines.js:527
 msgid "Span all columns"
-msgstr ""
+msgstr "Extender todas las columnas"
 
 #: js/Headlines.js:554 js/Article.js:317
 msgid "Edit tags for this article"
@@ -3019,7 +2907,7 @@ msgstr "Definir puntuación"
 
 #: js/Headlines.js:685
 msgid "Delete permanently"
-msgstr ""
+msgstr "Borrar permanentemente"
 
 #: js/Headlines.js:916
 msgid ""
@@ -3031,54 +2919,47 @@ msgstr ""
 
 #: js/PrefHelpers.js:229
 msgid "Clone"
-msgstr ""
+msgstr "Clonar"
 
 #: js/PrefHelpers.js:231
-#, fuzzy
 msgid "Activate"
-msgstr "Adaptable"
+msgstr "Activar"
 
 #: js/PrefHelpers.js:299
 msgid "Apply"
-msgstr ""
+msgstr "Aplicar"
 
 #: js/PrefHelpers.js:303
-#, fuzzy
 msgid "Save and reload"
-msgstr "Marcar artículos anteriores como leídos"
+msgstr "Guardar y volver a cargar"
 
 #: js/PrefHelpers.js:352
 msgid "Selected plugins have been enabled. Reload?"
-msgstr ""
+msgstr "Se han activado los plugins seleccionados. ¿Recargar?"
 
 #: js/PrefHelpers.js:400
 msgid "System plugins are enabled using global configuration."
 msgstr ""
+"Los complementos del sistema se activan mediante la configuración global."
 
 #: js/PrefHelpers.js:577
-#, fuzzy
-#| msgid "Mail plugin"
 msgid "Install"
-msgstr "Extensión de correo"
+msgstr "Instalar"
 
 #: js/PrefHelpers.js:654
-#, fuzzy
-#| msgid "Playing..."
 msgid "Updating..."
-msgstr "Reproduciendo..."
+msgstr "Actualizando..."
 
 #: js/PrefHelpers.js:687
-#, fuzzy
-#| msgid "Upload complete."
 msgid "Updates complete"
-msgstr "Subida completa."
+msgstr "Actualizaciones finalizadas"
 
 #: js/PrefHelpers.js:701
 #, javascript-format
 msgid "Updates pending for %d plugin"
 msgid_plural "Updates pending for %d plugins"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Actualizaciones pendientes para el plugin %d"
+msgstr[1] "Actualizaciones pendientes para %d plugins"
 
 #: js/Article.js:205
 msgid "Attachments"
@@ -3101,17 +2982,15 @@ msgstr ""
 
 #: js/Feeds.js:705
 msgid "Show feeds matching..."
-msgstr ""
+msgstr "Mostrar feeds que coincidan..."
 
 #: js/PrefUsers.js:76
 msgid "Access level: "
 msgstr "Nivel de acceso:· "
 
 #: js/PrefUsers.js:92
-#, fuzzy
-#| msgid "Enabled"
 msgid "OTP enabled"
-msgstr "Habilitado"
+msgstr "OTP activado"
 
 #: js/PrefUsers.js:104
 msgid "User details"
@@ -3134,6 +3013,9 @@ msgid ""
 "Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. "
 "You will need to log out and back in to disable it."
 msgstr ""
+"Tiny Tiny RSS se ejecuta en modo seguro. Todos los temas y plugins están "
+"desactivados. Tendrás que cerrar la sesión y volver a entrar para "
+"desactivarlo."
 
 #: js/CommonDialogs.js:53
 msgid "Feed or site URL"
@@ -3148,16 +3030,12 @@ msgid "This feed requires authentication."
 msgstr "Esta fuente requiere autenticación."
 
 #: js/CommonDialogs.js:315
-#, fuzzy
-#| msgid "Edit selected feeds"
 msgid "Debug selected feeds"
-msgstr "Editar fuentes seleccionadas"
+msgstr "Depurar feeds seleccionados"
 
 #: js/CommonDialogs.js:526
-#, fuzzy
-#| msgid "Feed Title"
 msgid "Feed title"
-msgstr "Título de la fuente"
+msgstr "Título del feed"
 
 #: js/CommonDialogs.js:533
 msgid "Feed URL"
@@ -3177,12 +3055,11 @@ msgstr "Icono"
 
 #: js/App.js:646
 msgid "Stack trace"
-msgstr ""
+msgstr "Rastros en el registro"
 
 #: js/App.js:653
-#, fuzzy
 msgid "Additional information"
-msgstr "Mostrar información adicional en la lista de fuentes"
+msgstr "Información adicional"
 
 #: js/PrefLabelTree.js:126
 msgid "Caption"

@@ -1,5 +1,3 @@
-# dummy change for MR
-
 stages:
   - lint
   - build

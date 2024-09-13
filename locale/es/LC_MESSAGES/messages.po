@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-15 14:03+0300\n"
-"PO-Revision-Date: 2024-09-09 20:09+0000\n"
-"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
+"PO-Revision-Date: 2024-09-13 20:06+0000\n"
+"Last-Translator: Nikolas <nikolas@zmail.gr>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/tt-rss/webui/es/>"
 "\n"
 "Language: es\n"
@@ -1726,7 +1726,7 @@ msgid ""
 "number (0-1). Setting it too low might produce false positives, zero "
 "disables checking."
 msgstr ""
-"La extensión  trigram de PostgreSQL devuelve similitud de cadena como un "
+"La extensión trigram de PostgreSQL devuelve similitud de cadena como un "
 "número de punto flotante (0-1). Si se ajusta a un valor demasiado bajo se "
 "pueden producir falsos positivos, cero deshabilita la comprobación."
 
@@ -2450,7 +2450,7 @@ msgstr "¿Marcar %w en %s de más de 2 semanas de antigüedad como leídos?"
 
 #: js/Feeds.js:473
 msgid "Mark %w in %s as read?"
-msgstr "¿Marcar %w en %s  como leídos?"
+msgstr "¿Marcar %w en %s como leídos?"
 
 #: js/Feeds.js:476
 msgid "search results"

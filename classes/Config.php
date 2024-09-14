@@ -490,13 +490,9 @@ class Config {
 			$proto = self::is_server_https() ? 'https' : 'http';
 
 			$self_url_path = $proto . '://' . $_SERVER["HTTP_HOST"] . parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
-			$self_url_path = preg_replace("/(\/api\/{1,})?(\w+\.php)?(\?.*$)?$/", "", $self_url_path);
+			$self_url_path = preg_replace("/(\/api\/{1,}|\/plugins(.local)?\/.{1,}\/{1,})?(\w+\.php)?(\?.*$)?$/", "", $self_url_path);
 
-			if (substr($self_url_path, -1) === "/") {
-				return substr($self_url_path, 0, -1);
-			} else {
-				return $self_url_path;
-			}
+			return rtrim($self_url_path, "/");
 		}
 	}
 	/* sanity check stuff */

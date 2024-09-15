@@ -116,6 +116,18 @@ final class SelfUrlPathTest extends TestCase {
 		);
 	}
 
+	public function test_self_url_j(): void {
+		$_SERVER = [];
+
+		$_SERVER["HTTP_HOST"] = "example.com";
+		$_SERVER["REQUEST_URI"] = "/tt-rss/plugins.local/example/api/longpath/test.php/reader/api/0/stream/items/ids?n=1000&output=json&s=user/-/state/com.google/starred";
+
+		$this->assertEquals(
+			'http://example.com/tt-rss',
+			Config::get_self_url(true)
+		);
+	}
+
 	public function test_get_self_dir(): void {
 		$this->assertEquals(
 			dirname(__DIR__), # we're in (app)/tests/

@@ -65,6 +65,13 @@ type passwordUpdateData struct {
 	PrivKey        string `'json:"privKey"`
 }
 
+// This is historically grown, and was originally a DataPackage
+type loginData struct {
+	IDT                    string
+	PasswordHash           string `json:"Data"`
+	SessionDurationSeconds uint64
+}
+
 // universal package for string transfer
 // IDT = DeviceID or AccessToken
 // If both will be send. ID is always IDT
@@ -414,7 +421,7 @@ func requestSalt(w http.ResponseWriter, r *http.Request) {
 }
 
 func requestAccess(w http.ResponseWriter, r *http.Request) {
-	var data DataPackage
+	var data loginData
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
 		http.Error(w, "Meeep!, Error - requestAccess 1", http.StatusBadRequest)
@@ -429,7 +436,7 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		uio.SetCommandToUser(data.IDT, "423")
 		return
 	}
-	granted, accessToken := uio.RequestAccess(data.IDT, data.Data)
+	accessToken, granted := uio.RequestAccess(data.IDT, data.PasswordHash, data.SessionDurationSeconds)
 	if granted {
 		accessTokenReply := DataPackage{IDT: data.IDT, Data: accessToken.Token}
 		result, _ := json.Marshal(accessTokenReply)

@@ -94,6 +94,23 @@ To fix this increase the maximum body size, e.g to 20 MB:
 client_max_body_size 20m;
 ```
 
+### Without Reverse Proxy
+
+> ⚠️ This setup is untested and provided for your convenience only.
+
+If you don't want to use a reverse proxy, FMD Server can terminate TLS for you.
+However, you need to manage (and regularly renew!) the certificates.
+
+1. Get a TLS certificate for your domain.
+1. Mount the certificate and the private key into the container:
+
+```yml
+# other lines omitted
+volumes:
+    - ./server.crt:/fmd/server.crt:ro
+    - ./server.key:/fmd/server.key:ro
+```
+
 ## Configuring FMD Server
 
 The [`config.example.yml`](config.example.yml) contains the available options to configure FMD Server.

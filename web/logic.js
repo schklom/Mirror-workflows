@@ -75,7 +75,8 @@ function setupOnClicks() {
 
         let fmdid = document.getElementById("fmdid").value;
         let password = document.getElementById("password").value;
-        await doLogin(fmdid, password);
+        let useLongSession = document.getElementById("useLongSession").checked;
+        await doLogin(fmdid, password, useLongSession);
 
         return false;
     });
@@ -107,7 +108,15 @@ function checkWebCryptoApiAvailable() {
 
 // Section: Login
 
-async function doLogin(fmdid, password) {
+const DURATION_DEFAULT_SECS = 15 * 60;      // 15 mins
+const DURATION_LONG_SECS = 7 * 24 * 60 * 60 // 1 week
+
+async function doLogin(fmdid, password, useLongSession) {
+    let sessionDurationSeconds = DURATION_DEFAULT_SECS;
+    if (useLongSession) {
+        sessionDurationSeconds = DURATION_LONG_SECS;
+    }
+
     currentId = fmdid;
     if (password == "") {
         alert("Password is empty.");
@@ -131,11 +140,11 @@ async function doLogin(fmdid, password) {
     legacyPasswordHash = hashPasswordForLoginLegacy(password, salt);
 
     try {
-        await tryLoginWithHash(fmdid, modernPasswordHash);
+        await tryLoginWithHash(fmdid, modernPasswordHash, sessionDurationSeconds);
     } catch {
         console.log("Modern hash failed, trying legacy hash.");
         try {
-            await tryLoginWithHash(fmdid, legacyPasswordHash);
+            await tryLoginWithHash(fmdid, legacyPasswordHash, sessionDurationSeconds);
         } catch (statusCode) {
             if (statusCode == 423) {
                 alert("Too many attempts. Try again in 10 minutes.");
@@ -162,12 +171,13 @@ async function doLogin(fmdid, password) {
     await locate(-1);
 }
 
-async function tryLoginWithHash(fmdid, passwordHash) {
+async function tryLoginWithHash(fmdid, passwordHash, sessionDurationSeconds) {
     const response = await fetch("./requestAccess", {
         method: 'PUT',
         body: JSON.stringify({
             IDT: fmdid,
             Data: passwordHash,
+            SessionDurationSeconds: sessionDurationSeconds,
         }),
         headers: {
             'Content-type': 'application/json'

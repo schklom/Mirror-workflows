@@ -42,27 +42,27 @@ type config struct {
 
 // Deprecated: used only by old clients. Modern clients use the opaque DataPackage.
 type locationData struct {
-	IDT      string `'json:"idt"`
-	Provider string `'json:"provider"`
-	Date     uint64 `'json:"date"`
-	Bat      string `'json:"bat"`
-	Lon      string `json:"lon"`
-	Lat      string `json:"lat"`
+	IDT      string
+	Provider string
+	Date     uint64
+	Bat      string
+	Lon      string
+	Lat      string
 }
 
 type registrationData struct {
-	Salt              string `'json:"salt"`
-	HashedPassword    string `'json:"hashedPassword"`
-	PubKey            string `'json:"pubKey"`
-	PrivKey           string `'json:"privKey"`
-	RegistrationToken string `'json:"registrationToken"`
+	Salt              string
+	HashedPassword    string
+	PubKey            string
+	PrivKey           string
+	RegistrationToken string
 }
 
 type passwordUpdateData struct {
-	IDT            string `'json:"idt"`
-	Salt           string `'json:"salt"`
-	HashedPassword string `'json:"hashedPassword"`
-	PrivKey        string `'json:"privKey"`
+	IDT            string
+	Salt           string
+	HashedPassword string
+	PrivKey        string
 }
 
 // This is historically grown, and was originally a DataPackage
@@ -76,8 +76,8 @@ type loginData struct {
 // IDT = DeviceID or AccessToken
 // If both will be send. ID is always IDT
 type DataPackage struct {
-	IDT  string `'json:"Identifier"`
-	Data string `'json:"Data"`
+	IDT  string
+	Data string
 }
 
 // ------- Location -------

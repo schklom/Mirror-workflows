@@ -15,6 +15,9 @@ const KEYCODE_ENTER = 13;
 const KEYCODE_ARROW_LEFT = 37;
 const KEYCODE_ARROW_RIGHT = 39;
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 window.addEventListener("load", (event) => init());
 
@@ -197,6 +200,18 @@ async function getPrivateKey(password) {
     globalPrivateKey = await unwrapPrivateKey(password, keyData.Data);
 }
 
+async function tokenExpiredRedirect(){
+    const toasted = new Toasted({
+        position: 'top-center',
+        duration: 3000
+    })
+    toasted.show('Session expired, please log in again.');
+
+    await sleep(3000);
+
+    window.location.replace("/");
+}
+
 // Section: Locate
 
 function showLocateDropDown() {
@@ -218,6 +233,10 @@ async function locate(requestedIndex) {
             'Content-type': 'application/json'
         }
     });
+    if (response.status == 401) {
+        tokenExpiredRedirect();
+        return
+    }
     if (!response.ok) {
         throw response.status;
     }
@@ -348,13 +367,13 @@ async function locateNewer() {
 
 // Section: Command
 
-function sendToPhone(message) {
+async function sendToPhone(message) {
     if (!globalAccessToken) {
         console.log("Missing accessToken!");
         return;
     }
 
-    fetch("./command", {
+    response = await fetch("./command", {
         method: 'POST',
         body: JSON.stringify({
             IDT: globalAccessToken,
@@ -363,13 +382,19 @@ function sendToPhone(message) {
         headers: {
             'Content-type': 'application/json'
         }
-    }).then(function (response) {
-        var toasted = new Toasted({
-            position: 'top-center',
-            duration: 2000
-        })
-        toasted.show('Command send!')
-    })
+    });
+    if (response.status == 401) {
+        tokenExpiredRedirect();
+        return
+    }
+    if (!response.ok) {
+        throw response.status;
+    }
+    var toasted = new Toasted({
+        position: 'top-center',
+        duration: 2000
+    });
+    toasted.show('Command send!');
 }
 
 async function showCommandLogs() {
@@ -388,6 +413,10 @@ async function showCommandLogs() {
             'Content-type': 'application/json'
         }
     });
+    if (response.status == 401) {
+        tokenExpiredRedirect();
+        return
+    }
     if (!response.ok) {
         throw response.status;
     }
@@ -412,6 +441,10 @@ async function showLatestPicture() {
             'Content-type': 'application/json'
         }
     });
+    if (response.status == 401) {
+        tokenExpiredRedirect();
+        return
+    }
     if (!response.ok) {
         throw response.status;
     }
@@ -445,6 +478,10 @@ async function loadPicture(index) {
             'Content-type': 'application/json'
         }
     });
+    if (response.status == 401) {
+        tokenExpiredRedirect();
+        return
+    }
     if (!response.ok) {
         throw response.status;
     }

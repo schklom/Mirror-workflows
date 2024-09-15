@@ -26,7 +26,7 @@ func (u *UserIO) Init(path string, userIDLength int, maxSavedLoc int, maxSavedPi
 	u.maxSavedLoc = maxSavedLoc
 	u.maxSavedPic = maxSavedPic
 
-	dbPath := filepath.Join(path, "fmd.sqlite")
+	dbPath := filepath.Join(path, "db", "fmd.sqlite")
 
 	// Check if SQL Database exists
 	_, err := os.Stat(dbPath)

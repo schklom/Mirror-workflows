@@ -33,6 +33,7 @@ COPY extra /fmd/extra
 
 # Old objectbox dir
 RUN mkdir /fmd/objectbox
+RUN mkdir /fmd/db
 
 RUN useradd --create-home --uid 1000 fmd-user
 RUN chown -R fmd-user:fmd-user /fmd/

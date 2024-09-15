@@ -1,6 +1,9 @@
 package user
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
 type AccessController struct {
 	accessTokens []AccessToken
@@ -72,7 +75,7 @@ func (a *AccessController) ResetLock(id string) {
 	}
 }
 
-func (a *AccessController) CheckAccessToken(toCheck string) string {
+func (a *AccessController) CheckAccessToken(toCheck string) (string, error) {
 	for index, id := range a.accessTokens {
 		if id.Token == toCheck {
 			expirationTime := id.CreationTime + DURATION_TOKEN_VALID_MINS
@@ -80,13 +83,13 @@ func (a *AccessController) CheckAccessToken(toCheck string) string {
 			if tokenExpired {
 				a.accessTokens[index] = a.accessTokens[len(a.accessTokens)-1]
 				a.accessTokens = a.accessTokens[:len(a.accessTokens)-1]
-				return ""
+				return "", errors.New("token expired")
 			} else {
-				return id.DeviceId
+				return id.DeviceId, nil
 			}
 		}
 	}
-	return ""
+	return "", errors.New("token not found")
 }
 
 func (a *AccessController) CheckForDuplicates(toCheck string) bool {

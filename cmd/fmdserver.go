@@ -548,6 +548,21 @@ func (h mainDeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Adds various security headers.
+// Check your deployment with https://securityheaders.com.
+func securityHeadersMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("X-Frame-Options", "DENY")
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+		w.Header().Set("X-Xss-Protection", "1; mode=block")
+		w.Header().Set("Content-Security-Policy", "default-src 'self' ; img-src 'self' data: https://*.tile.osm.org ; script-src 'self' 'wasm-unsafe-eval' ; upgrade-insecure-requests")
+		w.Header().Set("Permissions-Policy", "camera=(), microphone=()")
+		w.Header().Set("Referrer-Policy", "same-origin")
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func handleRequests(filesDir string, webDir string, config config) {
 	mux := http.NewServeMux()
 
@@ -583,15 +598,18 @@ func handleRequests(filesDir string, webDir string, config config) {
 	mux.HandleFunc("/version", getVersion)
 	mux.HandleFunc("/version/", getVersion)
 
+	muxFinal := http.NewServeMux()
+	muxFinal.Handle("/", securityHeadersMiddleware(mux))
+
 	if fileExists(filepath.Join(filesDir, SERVER_KEY)) {
 		securePort := ":" + strconv.Itoa(config.PortSecure)
-		err := http.ListenAndServeTLS(securePort, filepath.Join(filesDir, SERVER_CERT), filepath.Join(filesDir, SERVER_KEY), mux)
+		err := http.ListenAndServeTLS(securePort, filepath.Join(filesDir, SERVER_CERT), filepath.Join(filesDir, SERVER_KEY), muxFinal)
 		if err != nil {
 			fmt.Println("HTTPS won't be available.", err)
 		}
 	}
 	insecureAddr := ":" + strconv.Itoa(config.PortInsecure)
-	log.Fatal(http.ListenAndServe(insecureAddr, mux))
+	log.Fatal(http.ListenAndServe(insecureAddr, muxFinal))
 }
 
 func load_config(filesDir string) config {

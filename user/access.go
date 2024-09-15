@@ -27,23 +27,23 @@ type LockedId struct {
 // So to allow 3 attempts we need to allow 3 * 2 requests.
 const MAX_ALLOWED_ATTEMPTS = 3 * 2
 
-const DURATION_LOCKED_MINS = 10 * 60
-const DURATION_TOKEN_VALID_MINS = 15 * 60
+const DURATION_LOCKED_SECS = 10 * 60
+const DURATION_TOKEN_VALID_SECS = 15 * 60
 
 func (a *AccessController) IncrementLock(id string) {
 	for index, lId := range a.lockedIDs {
 		if lId.DeviceId == id {
 			if lId.Timestamp < time.Now().Unix() {
 				a.lockedIDs[index].Failed = 1
-				a.lockedIDs[index].Timestamp = time.Now().Unix() + DURATION_LOCKED_MINS
+				a.lockedIDs[index].Timestamp = time.Now().Unix() + DURATION_LOCKED_SECS
 			} else {
 				a.lockedIDs[index].Failed++
-				a.lockedIDs[index].Timestamp = time.Now().Unix() + DURATION_LOCKED_MINS
+				a.lockedIDs[index].Timestamp = time.Now().Unix() + DURATION_LOCKED_SECS
 			}
 			return
 		}
 	}
-	lId := LockedId{DeviceId: id, Timestamp: time.Now().Unix() + DURATION_LOCKED_MINS, Failed: 1}
+	lId := LockedId{DeviceId: id, Timestamp: time.Now().Unix() + DURATION_LOCKED_SECS, Failed: 1}
 	a.lockedIDs = append(a.lockedIDs, lId)
 }
 
@@ -78,7 +78,7 @@ func (a *AccessController) ResetLock(id string) {
 func (a *AccessController) CheckAccessToken(toCheck string) (string, error) {
 	for index, id := range a.accessTokens {
 		if id.Token == toCheck {
-			expirationTime := id.CreationTime + DURATION_TOKEN_VALID_MINS
+			expirationTime := id.CreationTime + DURATION_TOKEN_VALID_SECS
 			tokenExpired := expirationTime < time.Now().Unix()
 			if tokenExpired {
 				a.accessTokens[index] = a.accessTokens[len(a.accessTokens)-1]

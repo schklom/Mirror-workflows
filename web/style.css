@@ -83,6 +83,7 @@ footer {
     border: 1px solid black;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     border: none;

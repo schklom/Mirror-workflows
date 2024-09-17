@@ -32,35 +32,26 @@
 
 <body>
 
-    <div id="head">
-        <div class="center">
-            <h2>Find My Device</h2>
-        </div>
+    <h2 class="center-column">Find My Device</h2>
+
+    <div id="loginContainer" class="center-column">
+        <p>
+            This platform is for locating and controlling your devices.
+            To get started, install FMD on your mobile device and use it to register an account on FMD Server.
+        </p>
         <br>
-        <div id="loginContainer">
-            <p class="center">
-                This platform is for locating and controlling your registered devices.
-                <br>
-                You need to have FMD installed on your mobile device.
-            </p>
-            <br>
-            <div class="center">
-                <form id="loginForm">
-                    <input type="text" id="fmdid" name="fmdid" placeholder="FMD ID" required>
-                    <br>
+        <form id="loginForm" class="center-column">
+            <input type="text" id="fmdid" name="fmdid" placeholder="FMD ID" required>
 
-                    <input type="password" id="password" name="password" placeholder="Password" required>
-                    <br>
+            <input type="password" id="password" name="password" placeholder="Password" required>
 
-                    <input type="checkbox" id="useLongSession">
-                    <label for="useLongSession">Remember me for one week</label>
-
-                    <div class="center">
-                        <button id="locateButton" type="submit">LOCATE</button>
-                    </div>
-                </form>
+            <div>
+                <input type="checkbox" id="useLongSession">
+                <label for="useLongSession">Remember me for one week</label>
             </div>
-        </div>
+
+            <button id="loginButton" type="submit">Log in</button>
+        </form>
     </div>
 
     <div id="dataView">
@@ -70,10 +61,10 @@
     <div class="deviceInfo" id="desktop">
         <div class="row">
             <div class="column-left">
-                <div class="center">
+                <div class="center-row">
                     <img src="assets/Smartphone.png" height="96" />
                 </div>
-                <div class="center margin-top">
+                <div class="center-row margin-top">
                     <p id="batView">Data</p>
                 </div>
             </div>
@@ -140,10 +131,10 @@
     <div class="deviceInfo" id="mobile">
         <div class="row">
             <div class="column-left">
-                <div class="center">
+                <div class="center-row">
                     <img src="assets/Smartphone.png" height="48" />
                 </div>
-                <div class="center margin-top">
+                <div class="center-row margin-top">
                     <p id="batView">Data</p>
                 </div>
             </div>
@@ -207,7 +198,7 @@
     </div>
 
     <footer>
-        <div class="center">
+        <div class="center-row">
             <p>FMD Server</p>
             <a href="https://gitlab.com/Nulide/findmydeviceserver/-/releases" target="_blank" id="version">v0.0.0</a>
             <a href="https://gitlab.com/Nulide/findmydeviceserver/" target="_blank">Source Code</a>

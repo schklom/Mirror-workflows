@@ -299,19 +299,15 @@ func getCommand(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	commandAsString := uio.GetCommandToUser(id)
-	if commandAsString != "" {
-		reply := DataPackage{IDT: data.IDT, Data: commandAsString}
-		result, _ := json.Marshal(reply)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(result))
-		uio.SetCommandToUser(id, "")
-	} else {
-		reply := DataPackage{IDT: data.IDT, Data: ""}
-		result, _ := json.Marshal(reply)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(result))
-	}
 
+	// commandAsString may be an empty string, that's fine
+	reply := DataPackage{IDT: data.IDT, Data: commandAsString}
+	result, _ := json.Marshal(reply)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(result))
+
+	// Clear the command so that the app only GETs it once
+	uio.SetCommandToUser(id, "")
 }
 
 func postCommand(w http.ResponseWriter, r *http.Request) {
@@ -343,19 +339,14 @@ func getCommandLog(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
 	}
-	commandLogs := uio.GetCommandLogs(id)
-	if commandLogs != "" {
-		reply := DataPackage{IDT: data.IDT, Data: commandLogs}
-		result, _ := json.Marshal(reply)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(result))
-	} else {
-		reply := DataPackage{IDT: data.IDT, Data: ""}
-		result, _ := json.Marshal(reply)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(result))
-	}
 
+	commandLogs := uio.GetCommandLogs(id)
+
+	// commandLogs may be empty, that's fine
+	reply := DataPackage{IDT: data.IDT, Data: commandLogs}
+	result, _ := json.Marshal(reply)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(result))
 }
 
 func pushUser(id string) {

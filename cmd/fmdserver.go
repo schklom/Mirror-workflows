@@ -19,10 +19,8 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// Some IO variables
 var VERSION = "v0.5.1"
 var WEB_DIR = "web"
-var uio user.UserIO
 
 // Server Config
 const SERVER_CERT = "server.crt"
@@ -30,6 +28,8 @@ const SERVER_KEY = "server.key"
 const CONFIG_FILE = "config.yml"
 
 var isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]*$`).MatchString
+
+var uio user.UserRepository
 
 type config struct {
 	PortSecure        int    `yaml:"PortSecure"`
@@ -656,7 +656,7 @@ func load_config(filesDir string) config {
 
 func init_db(filesDir string, config config) {
 	fmt.Println("Init: Loading database")
-	uio = user.UserIO{}
+	uio = user.UserRepository{}
 	uio.Init(filesDir, config.UserIdLength, config.MaxSavedLoc, config.MaxSavedPic)
 }
 

@@ -57,10 +57,9 @@ func generateSecureRandomKey(size int) []byte {
 	return key
 }
 
-func RsaEncrypt(publicKeyString string, ciphertext string) string {
+func RsaEncrypt(publicKeyString string, message []byte) string {
 	sessionKey := generateSecureRandomKey(32)
-	msgBytes := []byte(ciphertext)
-	ivAndAesCiphertext := encryptWithAESGCM(msgBytes, sessionKey)
+	ivAndAesCiphertext := encryptWithAESGCM(message, sessionKey)
 
 	//pubKeyBytes := []byte(DecodeBase64(publicKeyString))
 	publicKeyString = "-----BEGIN PUBLIC KEY-----\n" + publicKeyString + "\n-----END PUBLIC KEY-----"

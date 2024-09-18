@@ -359,6 +359,8 @@ func getCommandLog(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// ------- Push -------
+
 func pushUser(id string) {
 	pushUrl := strings.Replace(uio.GetPushUrl(id), "/UP?", "/message?", -1)
 
@@ -382,7 +384,24 @@ func pushUser(id string) {
 	}
 }
 
-func postPushLink(w http.ResponseWriter, r *http.Request) {
+func getPushUrl(w http.ResponseWriter, r *http.Request) {
+	var data DataPackage
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		http.Error(w, "Meeep!, Error - getIsPushRegistered 1", http.StatusBadRequest)
+		return
+	}
+	id, err := uio.ACC.CheckAccessToken(data.IDT)
+	if err != nil {
+		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
+		return
+	}
+
+	url := uio.GetPushUrl(id)
+	w.Write([]byte(fmt.Sprint(url)))
+}
+
+func postPushUrl(w http.ResponseWriter, r *http.Request) {
 	var data DataPackage
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
@@ -547,6 +566,19 @@ func mainCommand(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func mainPushUrl(w http.ResponseWriter, r *http.Request) {
+	// This is inverted, and not nice, but it has grown historically...
+	// Ideally the HTTP methods would be GET and PUT (or possibly POST).
+	// But the app is using PUT to set the URL, so we need to keep that.
+	// And we cannot have a body in GET requests, so we need to use POST.
+	switch r.Method {
+	case http.MethodPost:
+		getPushUrl(w, r)
+	case http.MethodPut:
+		postPushUrl(w, r)
+	}
+}
+
 type mainDeviceHandler struct {
 	createDeviceHandler createDeviceHandler
 }
@@ -601,8 +633,8 @@ func handleRequests(filesDir string, webDir string, config config) {
 	mux.Handle("/device/", mainDeviceHandler)
 	mux.HandleFunc("/password", postPassword)
 	mux.HandleFunc("/password/", postPassword)
-	mux.HandleFunc("/push", postPushLink)
-	mux.HandleFunc("/push/", postPushLink)
+	mux.HandleFunc("/push", mainPushUrl)
+	mux.HandleFunc("/push/", mainPushUrl)
 	mux.HandleFunc("/salt", requestSalt)
 	mux.HandleFunc("/salt/", requestSalt)
 	mux.HandleFunc("/requestAccess", requestAccess)

@@ -247,3 +247,17 @@ footer {
     line-height: 28px;
     white-space: pre-line;
 }
+
+#pushWarning {
+    margin: 10px;
+}
+
+#pushWarning > p {
+    color: #ff3333;
+    margin: 0;
+}
+
+#pushWarning > p > a {
+    color: #ff3333;
+    margin: 0;
+}

@@ -19,8 +19,8 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var VERSION = "v0.5.1"
-var WEB_DIR = "web"
+const VERSION = "v0.5.1"
+const WEB_DIR = "web"
 
 // Server Config
 const SERVER_CERT = "server.crt"
@@ -517,7 +517,7 @@ func (h createDeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // ------- Main Web Request Handling -------
 
 func getVersion(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(fmt.Sprint(VERSION)))
+	fmt.Fprint(w, VERSION)
 }
 
 func mainLocation(w http.ResponseWriter, r *http.Request) {

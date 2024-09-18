@@ -145,7 +145,7 @@ func initObjectBox(path string) *UserBox {
 
 	u := BoxForUser(ob)
 	dbc := BoxForDB(ob)
-	dbc.MigrateDatabase(u)
+	dbc.MigrateObjectbox(u)
 
 	return u
 }

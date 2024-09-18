@@ -5,10 +5,11 @@ import (
 	"strconv"
 )
 
-var CurrentVersion = 2
+const CurrentObjectBoxVersion = 2
+const CurrentSqlVersion = 1
 
-func (db *DBBox) MigrateDatabase(u *UserBox) {
-	fmt.Println("DB: Migrating datatabase ...")
+func (db *DBBox) MigrateObjectbox(u *UserBox) {
+	fmt.Println("DB: Migrating objextbox ...")
 	dbquery := db.Query(DB_.Setting.Equals("version", true))
 	foundSettings, _ := dbquery.Find()
 	if len(foundSettings) == 0 {
@@ -31,9 +32,9 @@ func (db *DBBox) MigrateDatabase(u *UserBox) {
 	if versionInt < 2 {
 		db.migrateToV2(u)
 	}
-	foundSettings[0].Value = strconv.Itoa(CurrentVersion)
+	foundSettings[0].Value = strconv.Itoa(CurrentObjectBoxVersion)
 	db.Update(foundSettings[0])
-	fmt.Println("DB: Migration finished")
+	fmt.Println("DB: Migrating Objectbox finished")
 }
 
 func (db *DBBox) migrateToV1(u *UserBox) {
@@ -61,26 +62,33 @@ func (db *DBBox) migrateToV2(u *UserBox) {
 	}
 }
 
-func migrateObjectboxToSQL(u *UserBox, newDB *FMDDB) {
-	fmt.Println("DB: Migrating to v3 ...")
-	ids, _ := u.Query().FindIds()
-
-	// Migrate to SQL Database
+func migrateObjectboxToSQL(box *UserBox, sql *FMDDB) {
+	fmt.Println("DB: Migrating Objectbox to SQL ...")
+	ids, _ := box.Query().FindIds()
 
 	for i, id := range ids {
-		fmt.Println("Migrating " + fmt.Sprint(i) + "/" + fmt.Sprint(len(ids)-1))
-		user, _ := u.Get(id)
-		newUser := FMDUser{UID: user.UID, Salt: user.Salt, HashedPassword: user.HashedPassword,
-			PrivateKey: user.PrivateKey, PublicKey: user.PublicKey, CommandToUser: user.CommandToUser, PushUrl: user.PushUrl}
-		for _, location := range user.LocationData {
+		fmt.Printf("Migrating user %d/%d\n", i, len(ids)-1)
+		oldUser, _ := box.Get(id)
+		newUser := FMDUser{
+			UID:            oldUser.UID,
+			Salt:           oldUser.Salt,
+			HashedPassword: oldUser.HashedPassword,
+			PrivateKey:     oldUser.PrivateKey,
+			PublicKey:      oldUser.PublicKey,
+			CommandToUser:  oldUser.CommandToUser,
+			PushUrl:        oldUser.PushUrl,
+		}
+
+		for _, location := range oldUser.LocationData {
 			newLoc := Location{Position: location}
 			newUser.Locations = append(newUser.Locations, newLoc)
 		}
-		for _, picture := range user.Pictures {
+
+		for _, picture := range oldUser.Pictures {
 			newPic := Picture{Content: picture}
 			newUser.Pictures = append(newUser.Pictures, newPic)
 		}
-		newDB.Create(&newUser)
+		sql.Create(&newUser)
 	}
-	newDB.Create(&DBSetting{Setting: "version", Value: "3"})
+	sql.Create(&DBSetting{Setting: "version", Value: fmt.Sprint(CurrentSqlVersion)})
 }

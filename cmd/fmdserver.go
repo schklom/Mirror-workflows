@@ -349,7 +349,6 @@ func getCommandLog(w http.ResponseWriter, r *http.Request) {
 		result, _ := json.Marshal(reply)
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(result))
-		uio.SetCommandToUser(id, "")
 	} else {
 		reply := DataPackage{IDT: data.IDT, Data: ""}
 		result, _ := json.Marshal(reply)

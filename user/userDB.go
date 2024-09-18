@@ -143,7 +143,7 @@ func initObjectBox(path string) *UserBox {
 
 	u := BoxForUser(ob)
 	dbc := BoxForDB(ob)
-	dbc.updateDB(u)
+	dbc.MigrateDatabase(u)
 
 	return u
 }

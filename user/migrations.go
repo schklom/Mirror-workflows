@@ -7,7 +7,7 @@ import (
 
 var CurrentVersion = 2
 
-func (db *DBBox) updateDB(u *UserBox) {
+func (db *DBBox) MigrateDatabase(u *UserBox) {
 	fmt.Println("DB: Migrating datatabase ...")
 	dbquery := db.Query(DB_.Setting.Equals("version", true))
 	foundSettings, _ := dbquery.Find()

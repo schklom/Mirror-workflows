@@ -86,7 +86,7 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 	var request DataPackage
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - getLocation 1", http.StatusBadRequest)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 	id, err := uio.ACC.CheckAccessToken(request.IDT)
@@ -166,7 +166,7 @@ func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 	var request DataPackage
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - getLocationDataSize 1", http.StatusBadRequest)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 	id, err := uio.ACC.CheckAccessToken(request.IDT)
@@ -189,7 +189,7 @@ func getPicture(w http.ResponseWriter, r *http.Request) {
 	var request DataPackage
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - getPicture 1", http.StatusBadRequest)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 	id, err := uio.ACC.CheckAccessToken(request.IDT)
@@ -211,7 +211,7 @@ func getPictureSize(w http.ResponseWriter, r *http.Request) {
 	var request DataPackage
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - getPictureSize 1", http.StatusBadRequest)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 	id, err := uio.ACC.CheckAccessToken(request.IDT)
@@ -232,7 +232,7 @@ func postPicture(w http.ResponseWriter, r *http.Request) {
 	var data DataPackage
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - postPicture 1", http.StatusBadRequest)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 	id, err := uio.ACC.CheckAccessToken(data.IDT)
@@ -252,7 +252,7 @@ func getPrivKey(w http.ResponseWriter, r *http.Request) {
 	var request DataPackage
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - getPrivKey 1", http.StatusBadRequest)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 	id, err := uio.ACC.CheckAccessToken(request.IDT)
@@ -270,7 +270,7 @@ func getPubKey(w http.ResponseWriter, r *http.Request) {
 	var request DataPackage
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - getPubKey 1", http.StatusBadRequest)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 	id, err := uio.ACC.CheckAccessToken(request.IDT)
@@ -290,7 +290,7 @@ func getCommand(w http.ResponseWriter, r *http.Request) {
 	var data DataPackage
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - getCommand 1", http.StatusBadRequest)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 	id, err := uio.ACC.CheckAccessToken(data.IDT)
@@ -318,7 +318,7 @@ func postCommand(w http.ResponseWriter, r *http.Request) {
 	var data DataPackage
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - postCommand 1", http.StatusBadRequest)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 	id, err := uio.ACC.CheckAccessToken(data.IDT)
@@ -335,7 +335,7 @@ func getCommandLog(w http.ResponseWriter, r *http.Request) {
 	var data DataPackage
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - getCommandLog 1", http.StatusBadRequest)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 	id, err := uio.ACC.CheckAccessToken(data.IDT)
@@ -386,7 +386,7 @@ func postPushLink(w http.ResponseWriter, r *http.Request) {
 	var data DataPackage
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - postCommand 1", http.StatusBadRequest)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 	id, err := uio.ACC.CheckAccessToken(data.IDT)
@@ -405,11 +405,11 @@ func requestSalt(w http.ResponseWriter, r *http.Request) {
 	var data DataPackage
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - requestSalt 1", http.StatusBadRequest)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 	if !isIdValid(data.IDT) {
-		http.Error(w, "Meeep!, Error - requestSalt 2", http.StatusBadRequest)
+		http.Error(w, "Invalid FMD ID", http.StatusBadRequest)
 		return
 	}
 	salt := uio.GetSalt(data.IDT)
@@ -424,15 +424,15 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 	var data loginData
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - requestAccess 1", http.StatusBadRequest)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 	if !isIdValid(data.IDT) {
-		http.Error(w, "Meeep!, Error - requestAccess 2", http.StatusBadRequest)
+		http.Error(w, "Invalid FMD ID", http.StatusBadRequest)
 		return
 	}
 	if uio.ACC.IsLocked(data.IDT) {
-		http.Error(w, "Meeep!, Error - requestAccess 3", http.StatusLocked)
+		http.Error(w, "Account is locked", http.StatusLocked)
 		uio.SetCommandToUser(data.IDT, "423")
 		return
 	}
@@ -444,7 +444,7 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		w.Write(result)
 	} else {
 		uio.ACC.IncrementLock(data.IDT)
-		http.Error(w, "Meeep!, Error - requestAccess 4", http.StatusForbidden)
+		http.Error(w, "Access denied", http.StatusForbidden)
 	}
 }
 
@@ -452,7 +452,7 @@ func postPassword(w http.ResponseWriter, r *http.Request) {
 	var data passwordUpdateData
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - password", http.StatusBadRequest)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 	id, err := uio.ACC.CheckAccessToken(data.IDT)
@@ -475,7 +475,7 @@ func deleteDevice(w http.ResponseWriter, r *http.Request) {
 	var data DataPackage
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		http.Error(w, "Meeep!, Error - deleteDevice 1", http.StatusBadRequest)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 	id, err := uio.ACC.CheckAccessToken(data.IDT)
@@ -496,13 +496,13 @@ func (h createDeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&reg)
 	if err != nil {
 		fmt.Println("ERROR: decoding json:", err)
-		http.Error(w, "Meeep!, Error - createDevice", http.StatusBadRequest)
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 
 	if h.RegistrationToken != "" && h.RegistrationToken != reg.RegistrationToken {
 		fmt.Println("ERROR: invalid RegistrationToken!")
-		http.Error(w, "Meeep!, Error - createDevice", http.StatusUnauthorized)
+		http.Error(w, "Registration Token not valid", http.StatusUnauthorized)
 		return
 	}
 

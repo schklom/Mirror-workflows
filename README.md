@@ -35,6 +35,10 @@ FMD Server's API (and hence the app) always works over HTTP - but this is highly
 
 ### Self-hosting with Docker Compose
 
+> ⚠️ FMD Server is still pre-1.0. Therefore, minor versions can introduce breaking changes.
+> It is recommended to pin a version and read [the changelog](https://gitlab.com/Nulide/findmydeviceserver/-/releases)
+> before upgrading.
+
 The following is an (incomplete) example for deploying FMD Server with Docker Compose.
 
 `docker-compose.yml`

@@ -19,7 +19,7 @@ we recommend to run FMD Server with Docker.
 
 Quickly try FMD Server on your laptop from the command line:
 
-```
+```bash
 docker run --rm -p 8080:8080 registry.gitlab.com/nulide/findmydeviceserver:v0.5.0
 ```
 
@@ -35,6 +35,10 @@ FMD Server's API (and hence the app) always works over HTTP - but this is highly
 
 ### Self-hosting with Docker Compose
 
+> ⚠️ FMD Server is still pre-1.0. Therefore, minor versions can introduce breaking changes.
+> It is recommended to pin a version and read [the changelog](https://gitlab.com/Nulide/findmydeviceserver/-/releases)
+> before upgrading.
+
 The following is an (incomplete) example for deploying FMD Server with Docker Compose.
 
 `docker-compose.yml`
@@ -49,9 +53,9 @@ services:
         ports:
          - 127.0.0.1:8080:8080
         volumes:
-            - './data/fmd.sqlite:/fmd/fmd.sqlite'
+            - './fmddata/db/:/fmd/db/'
             # Deprecated Objectbox storage. Mount if you want it auto-migrated to SQLite.
-            #- './data:/fmd/objectbox/'
+            #- './fmddata:/fmd/objectbox/'
         restart: unless-stopped
 ```
 
@@ -59,7 +63,7 @@ Replace the version with the [latest release](https://gitlab.com/Nulide/findmyde
 
 *Persisting storage:*
 FMD has a database and needs to persist it across container restarts.
-You need to mount a Docker volume with a file `/fmd/fmd.sqlite` inside the container.
+You need to mount a Docker volume to the directory `/fmd/db/` (inside the container).
 It must be readable and writable by uid 1000 (ideally it is owned by uid 1000).
 
 *Networking:*
@@ -103,6 +107,23 @@ If you host FMD Server in a subdirectory, e.g., `https://example.com/fmd/`, you 
 your proxy to strip the subdirectory before forwarding the request to the backend.
 FMD Server does not know how to resolve `/fmd/api/`, it only knows about `/api/`.
 
+### Without Reverse Proxy
+
+> ⚠️ This setup is untested and provided for your convenience only.
+
+If you don't want to use a reverse proxy, FMD Server can terminate TLS for you.
+However, you need to manage (and regularly renew!) the certificates.
+
+1. Get a TLS certificate for your domain.
+1. Mount the certificate and the private key into the container:
+
+```yml
+# other lines omitted
+volumes:
+    - ./server.crt:/fmd/server.crt:ro
+    - ./server.key:/fmd/server.key:ro
+```
+
 ## Configuring FMD Server
 
 The [`config.example.yml`](config.example.yml) contains the available options to configure FMD Server.
@@ -124,7 +145,7 @@ NOTE: `yml` not `yaml`!
 
 A simple way to test code changes is to build a container image locally and run that:
 
-```
+```bash
 docker build -t fmd-local .
 docker run --rm -p 8080:8080 fmd-local
 ```

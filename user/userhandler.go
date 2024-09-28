@@ -26,7 +26,7 @@ func (u *UserIO) Init(path string, userIDLength int, maxSavedLoc int, maxSavedPi
 	u.maxSavedLoc = maxSavedLoc
 	u.maxSavedPic = maxSavedPic
 
-	dbPath := filepath.Join(path, "fmd.sqlite")
+	dbPath := filepath.Join(path, "db", "fmd.sqlite")
 
 	// Check if SQL Database exists
 	_, err := os.Stat(dbPath)
@@ -229,14 +229,14 @@ func (u *UserIO) GetSalt(id string) string {
 	return getSaltFromArgon2EncodedHash(user.HashedPassword)
 }
 
-func (u *UserIO) RequestAccess(id string, hashedPW string) (bool, AccessToken) {
+func (u *UserIO) RequestAccess(id string, hashedPW string, sessionDurationSeconds uint64) (*AccessToken, bool) {
 	user := u.UB.GetByID(id)
 	if user != nil {
 		if strings.EqualFold(strings.ToLower(user.HashedPassword), strings.ToLower(hashedPW)) {
 			u.ACC.ResetLock(id)
-			return true, u.ACC.PutAccess(id)
+			token := u.ACC.CreateNewAccessToken(id, sessionDurationSeconds)
+			return &token, true
 		}
 	}
-	var a AccessToken
-	return false, a
+	return nil, false
 }

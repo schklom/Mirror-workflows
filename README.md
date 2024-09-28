@@ -98,6 +98,15 @@ To fix this increase the maximum body size, e.g to 20 MB:
 client_max_body_size 20m;
 ```
 
+#### Hosting in a subdirectory
+
+The FMD Server binary (whether run in Docker or not) assumes that request paths start at the root ("/").
+That is, it assumes that you host FMD Server on a (sub-)domain, e.g., `https://fmd.example.com`.
+
+If you host FMD Server in a subdirectory, e.g., `https://example.com/fmd/`, you need to configure
+your proxy to strip the subdirectory before forwarding the request to the backend.
+FMD Server does not know how to resolve `/fmd/api/`, it only knows about `/api/`.
+
 ### Without Reverse Proxy
 
 > ⚠️ This setup is untested and provided for your convenience only.

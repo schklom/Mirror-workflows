@@ -19,7 +19,7 @@ we recommend to run FMD Server with Docker.
 
 Quickly try FMD Server on your laptop from the command line:
 
-```
+```bash
 docker run --rm -p 8080:8080 registry.gitlab.com/nulide/findmydeviceserver:v0.5.0
 ```
 
@@ -49,9 +49,9 @@ services:
         ports:
          - 127.0.0.1:8080:8080
         volumes:
-            - './data/fmd.sqlite:/fmd/fmd.sqlite'
+            - './fmddata/db/:/fmd/db/'
             # Deprecated Objectbox storage. Mount if you want it auto-migrated to SQLite.
-            #- './data:/fmd/objectbox/'
+            #- './fmddata:/fmd/objectbox/'
         restart: unless-stopped
 ```
 
@@ -59,7 +59,7 @@ Replace the version with the [latest release](https://gitlab.com/Nulide/findmyde
 
 *Persisting storage:*
 FMD has a database and needs to persist it across container restarts.
-You need to mount a Docker volume with a file `/fmd/fmd.sqlite` inside the container.
+You need to mount a Docker volume to the directory `/fmd/db/` (inside the container).
 It must be readable and writable by uid 1000 (ideally it is owned by uid 1000).
 
 *Networking:*
@@ -132,7 +132,7 @@ NOTE: `yml` not `yaml`!
 
 A simple way to test code changes is to build a container image locally and run that:
 
-```
+```bash
 docker build -t fmd-local .
 docker run --rm -p 8080:8080 fmd-local
 ```

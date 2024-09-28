@@ -42,35 +42,42 @@ type config struct {
 
 // Deprecated: used only by old clients. Modern clients use the opaque DataPackage.
 type locationData struct {
-	IDT      string `'json:"idt"`
-	Provider string `'json:"provider"`
-	Date     uint64 `'json:"date"`
-	Bat      string `'json:"bat"`
-	Lon      string `json:"lon"`
-	Lat      string `json:"lat"`
+	IDT      string
+	Provider string
+	Date     uint64
+	Bat      string
+	Lon      string
+	Lat      string
 }
 
 type registrationData struct {
-	Salt              string `'json:"salt"`
-	HashedPassword    string `'json:"hashedPassword"`
-	PubKey            string `'json:"pubKey"`
-	PrivKey           string `'json:"privKey"`
-	RegistrationToken string `'json:"registrationToken"`
+	Salt              string
+	HashedPassword    string
+	PubKey            string
+	PrivKey           string
+	RegistrationToken string
 }
 
 type passwordUpdateData struct {
-	IDT            string `'json:"idt"`
-	Salt           string `'json:"salt"`
-	HashedPassword string `'json:"hashedPassword"`
-	PrivKey        string `'json:"privKey"`
+	IDT            string
+	Salt           string
+	HashedPassword string
+	PrivKey        string
+}
+
+// This is historically grown, and was originally a DataPackage
+type loginData struct {
+	IDT                    string
+	PasswordHash           string `json:"Data"`
+	SessionDurationSeconds uint64
 }
 
 // universal package for string transfer
 // IDT = DeviceID or AccessToken
 // If both will be send. ID is always IDT
 type DataPackage struct {
-	IDT  string `'json:"Identifier"`
-	Data string `'json:"Data"`
+	IDT  string
+	Data string
 }
 
 // ------- Location -------
@@ -82,9 +89,9 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getLocation 1", http.StatusBadRequest)
 		return
 	}
-	id := uio.ACC.CheckAccessToken(request.IDT)
-	if id == "" {
-		http.Error(w, "Meeep!, Error - getLocation 2", http.StatusBadRequest)
+	id, err := uio.ACC.CheckAccessToken(request.IDT)
+	if err != nil {
+		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
 	}
 	index, _ := strconv.Atoi(request.Data)
@@ -126,9 +133,9 @@ func postLocationModern(w http.ResponseWriter, body []byte) bool {
 		// not a valid modern location package
 		return false
 	}
-	id := uio.ACC.CheckAccessToken(request.IDT)
-	if id == "" {
-		http.Error(w, "Meeep!, Error - postLocationModern 2", http.StatusBadRequest)
+	id, err := uio.ACC.CheckAccessToken(request.IDT)
+	if err != nil {
+		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return true
 	}
 
@@ -144,9 +151,9 @@ func postLocationLegacy(w http.ResponseWriter, body []byte) bool {
 		fmt.Println("Failed to decode as locationData:", err)
 		return false
 	}
-	id := uio.ACC.CheckAccessToken(location.IDT)
-	if id == "" {
-		http.Error(w, "Meeep!, Error - postLocationLegacy 2", http.StatusBadRequest)
+	id, err := uio.ACC.CheckAccessToken(location.IDT)
+	if err != nil {
+		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return true
 	}
 
@@ -162,9 +169,9 @@ func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getLocationDataSize 1", http.StatusBadRequest)
 		return
 	}
-	id := uio.ACC.CheckAccessToken(request.IDT)
-	if id == "" {
-		http.Error(w, "Meeep!, Error - getLocationDataSize 2", http.StatusBadRequest)
+	id, err := uio.ACC.CheckAccessToken(request.IDT)
+	if err != nil {
+		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
 	}
 
@@ -185,11 +192,12 @@ func getPicture(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getPicture 1", http.StatusBadRequest)
 		return
 	}
-	id := uio.ACC.CheckAccessToken(request.IDT)
-	if id == "" {
-		http.Error(w, "Meeep!, Error - getPicture 2", http.StatusBadRequest)
+	id, err := uio.ACC.CheckAccessToken(request.IDT)
+	if err != nil {
+		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
 	}
+
 	index, _ := strconv.Atoi(request.Data)
 	if index == -1 {
 		index = uio.GetPictureSize(id)
@@ -206,9 +214,9 @@ func getPictureSize(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getPictureSize 1", http.StatusBadRequest)
 		return
 	}
-	id := uio.ACC.CheckAccessToken(request.IDT)
-	if id == "" {
-		http.Error(w, "Meeep!, Error - getPictureSize 2", http.StatusBadRequest)
+	id, err := uio.ACC.CheckAccessToken(request.IDT)
+	if err != nil {
+		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
 	}
 
@@ -227,9 +235,9 @@ func postPicture(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - postPicture 1", http.StatusBadRequest)
 		return
 	}
-	id := uio.ACC.CheckAccessToken(data.IDT)
-	if id == "" {
-		http.Error(w, "Meeep!, Error - postPicture 2", http.StatusBadRequest)
+	id, err := uio.ACC.CheckAccessToken(data.IDT)
+	if err != nil {
+		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
 	}
 
@@ -247,9 +255,9 @@ func getPrivKey(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getPrivKey 1", http.StatusBadRequest)
 		return
 	}
-	id := uio.ACC.CheckAccessToken(request.IDT)
-	if id == "" {
-		http.Error(w, "Meeep!, Error - getPrivKey 2", http.StatusBadRequest)
+	id, err := uio.ACC.CheckAccessToken(request.IDT)
+	if err != nil {
+		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
 	}
 	dataReply := DataPackage{IDT: request.IDT, Data: uio.GetPrivateKey(id)}
@@ -265,9 +273,9 @@ func getPubKey(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getPubKey 1", http.StatusBadRequest)
 		return
 	}
-	id := uio.ACC.CheckAccessToken(request.IDT)
-	if id == "" {
-		http.Error(w, "Meeep!, Error - getPubKey 2", http.StatusBadRequest)
+	id, err := uio.ACC.CheckAccessToken(request.IDT)
+	if err != nil {
+		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
 	}
 	dataReply := DataPackage{IDT: request.IDT, Data: uio.GetPublicKey(id)}
@@ -285,9 +293,9 @@ func getCommand(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getCommand 1", http.StatusBadRequest)
 		return
 	}
-	id := uio.ACC.CheckAccessToken(data.IDT)
-	if id == "" {
-		http.Error(w, "Meeep!, Error - getCommand 2", http.StatusBadRequest)
+	id, err := uio.ACC.CheckAccessToken(data.IDT)
+	if err != nil {
+		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
 	}
 	commandAsString := uio.GetCommandToUser(id)
@@ -313,9 +321,9 @@ func postCommand(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - postCommand 1", http.StatusBadRequest)
 		return
 	}
-	id := uio.ACC.CheckAccessToken(data.IDT)
-	if id == "" {
-		http.Error(w, "Meeep!, Error - postCommand 2", http.StatusBadRequest)
+	id, err := uio.ACC.CheckAccessToken(data.IDT)
+	if err != nil {
+		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
 	}
 	uio.SetCommandToUser(id, data.Data)
@@ -330,9 +338,9 @@ func getCommandLog(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getCommandLog 1", http.StatusBadRequest)
 		return
 	}
-	id := uio.ACC.CheckAccessToken(data.IDT)
-	if id == "" {
-		http.Error(w, "Meeep!, Error - getCommandLog 2", http.StatusBadRequest)
+	id, err := uio.ACC.CheckAccessToken(data.IDT)
+	if err != nil {
+		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
 	}
 	commandLogs := uio.GetCommandLogs(id)
@@ -381,9 +389,9 @@ func postPushLink(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - postCommand 1", http.StatusBadRequest)
 		return
 	}
-	id := uio.ACC.CheckAccessToken(data.IDT)
-	if id == "" {
-		http.Error(w, "Meeep!, Error - postCommand 2", http.StatusBadRequest)
+	id, err := uio.ACC.CheckAccessToken(data.IDT)
+	if err != nil {
+		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
 	}
 
@@ -413,7 +421,7 @@ func requestSalt(w http.ResponseWriter, r *http.Request) {
 }
 
 func requestAccess(w http.ResponseWriter, r *http.Request) {
-	var data DataPackage
+	var data loginData
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
 		http.Error(w, "Meeep!, Error - requestAccess 1", http.StatusBadRequest)
@@ -428,7 +436,7 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		uio.SetCommandToUser(data.IDT, "423")
 		return
 	}
-	granted, accessToken := uio.RequestAccess(data.IDT, data.Data)
+	accessToken, granted := uio.RequestAccess(data.IDT, data.PasswordHash, data.SessionDurationSeconds)
 	if granted {
 		accessTokenReply := DataPackage{IDT: data.IDT, Data: accessToken.Token}
 		result, _ := json.Marshal(accessTokenReply)
@@ -447,7 +455,11 @@ func postPassword(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - password", http.StatusBadRequest)
 		return
 	}
-	id := uio.ACC.CheckAccessToken(data.IDT)
+	id, err := uio.ACC.CheckAccessToken(data.IDT)
+	if err != nil {
+		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
+		return
+	}
 
 	uio.UpdateUserPassword(id, data.PrivKey, data.Salt, data.HashedPassword)
 
@@ -466,9 +478,9 @@ func deleteDevice(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - deleteDevice 1", http.StatusBadRequest)
 		return
 	}
-	id := uio.ACC.CheckAccessToken(data.IDT)
-	if id == "" {
-		http.Error(w, "Meeep!, Error - deleteDevice 2", http.StatusBadRequest)
+	id, err := uio.ACC.CheckAccessToken(data.IDT)
+	if err != nil {
+		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
 	}
 	uio.DeleteUser(id)

@@ -15,6 +15,9 @@ const KEYCODE_ENTER = 13;
 const KEYCODE_ARROW_LEFT = 37;
 const KEYCODE_ARROW_RIGHT = 39;
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 window.addEventListener("load", (event) => init());
 
@@ -72,7 +75,8 @@ function setupOnClicks() {
 
         let fmdid = document.getElementById("fmdid").value;
         let password = document.getElementById("password").value;
-        await doLogin(fmdid, password);
+        let useLongSession = document.getElementById("useLongSession").checked;
+        await doLogin(fmdid, password, useLongSession);
 
         return false;
     });
@@ -104,7 +108,15 @@ function checkWebCryptoApiAvailable() {
 
 // Section: Login
 
-async function doLogin(fmdid, password) {
+const DURATION_DEFAULT_SECS = 15 * 60;      // 15 mins
+const DURATION_LONG_SECS = 7 * 24 * 60 * 60 // 1 week
+
+async function doLogin(fmdid, password, useLongSession) {
+    let sessionDurationSeconds = DURATION_DEFAULT_SECS;
+    if (useLongSession) {
+        sessionDurationSeconds = DURATION_LONG_SECS;
+    }
+
     currentId = fmdid;
     if (password == "") {
         alert("Password is empty.");
@@ -128,11 +140,11 @@ async function doLogin(fmdid, password) {
     legacyPasswordHash = hashPasswordForLoginLegacy(password, salt);
 
     try {
-        await tryLoginWithHash(fmdid, modernPasswordHash);
+        await tryLoginWithHash(fmdid, modernPasswordHash, sessionDurationSeconds);
     } catch {
         console.log("Modern hash failed, trying legacy hash.");
         try {
-            await tryLoginWithHash(fmdid, legacyPasswordHash);
+            await tryLoginWithHash(fmdid, legacyPasswordHash, sessionDurationSeconds);
         } catch (statusCode) {
             if (statusCode == 423) {
                 alert("Too many attempts. Try again in 10 minutes.");
@@ -159,12 +171,13 @@ async function doLogin(fmdid, password) {
     await locate(-1);
 }
 
-async function tryLoginWithHash(fmdid, passwordHash) {
+async function tryLoginWithHash(fmdid, passwordHash, sessionDurationSeconds) {
     const response = await fetch("./requestAccess", {
         method: 'PUT',
         body: JSON.stringify({
             IDT: fmdid,
             Data: passwordHash,
+            SessionDurationSeconds: sessionDurationSeconds,
         }),
         headers: {
             'Content-type': 'application/json'
@@ -197,6 +210,18 @@ async function getPrivateKey(password) {
     globalPrivateKey = await unwrapPrivateKey(password, keyData.Data);
 }
 
+async function tokenExpiredRedirect(){
+    const toasted = new Toasted({
+        position: 'top-center',
+        duration: 3000
+    })
+    toasted.show('Session expired, please log in again.');
+
+    await sleep(3000);
+
+    window.location.replace("/");
+}
+
 // Section: Locate
 
 function showLocateDropDown() {
@@ -218,6 +243,10 @@ async function locate(requestedIndex) {
             'Content-type': 'application/json'
         }
     });
+    if (response.status == 401) {
+        tokenExpiredRedirect();
+        return
+    }
     if (!response.ok) {
         throw response.status;
     }
@@ -348,13 +377,13 @@ async function locateNewer() {
 
 // Section: Command
 
-function sendToPhone(message) {
+async function sendToPhone(message) {
     if (!globalAccessToken) {
         console.log("Missing accessToken!");
         return;
     }
 
-    fetch("./command", {
+    response = await fetch("./command", {
         method: 'POST',
         body: JSON.stringify({
             IDT: globalAccessToken,
@@ -363,13 +392,19 @@ function sendToPhone(message) {
         headers: {
             'Content-type': 'application/json'
         }
-    }).then(function (response) {
-        var toasted = new Toasted({
-            position: 'top-center',
-            duration: 2000
-        })
-        toasted.show('Command send!')
-    })
+    });
+    if (response.status == 401) {
+        tokenExpiredRedirect();
+        return
+    }
+    if (!response.ok) {
+        throw response.status;
+    }
+    var toasted = new Toasted({
+        position: 'top-center',
+        duration: 2000
+    });
+    toasted.show('Command send!');
 }
 
 async function showCommandLogs() {
@@ -388,6 +423,10 @@ async function showCommandLogs() {
             'Content-type': 'application/json'
         }
     });
+    if (response.status == 401) {
+        tokenExpiredRedirect();
+        return
+    }
     if (!response.ok) {
         throw response.status;
     }
@@ -412,6 +451,10 @@ async function showLatestPicture() {
             'Content-type': 'application/json'
         }
     });
+    if (response.status == 401) {
+        tokenExpiredRedirect();
+        return
+    }
     if (!response.ok) {
         throw response.status;
     }
@@ -445,6 +488,10 @@ async function loadPicture(index) {
             'Content-type': 'application/json'
         }
     });
+    if (response.status == 401) {
+        tokenExpiredRedirect();
+        return
+    }
     if (!response.ok) {
         throw response.status;
     }

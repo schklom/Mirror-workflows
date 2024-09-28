@@ -548,48 +548,68 @@ func (h mainDeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Adds various security headers.
+// Check your deployment with https://securityheaders.com.
+func securityHeadersMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("X-Frame-Options", "DENY")
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+		w.Header().Set("X-Xss-Protection", "1; mode=block")
+		w.Header().Set("Content-Security-Policy", "default-src 'self' ; img-src 'self' data: https://*.tile.osm.org ; script-src 'self' 'wasm-unsafe-eval' ; upgrade-insecure-requests")
+		w.Header().Set("Permissions-Policy", "camera=(), microphone=()")
+		w.Header().Set("Referrer-Policy", "same-origin")
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func handleRequests(filesDir string, webDir string, config config) {
+	mux := http.NewServeMux()
+
 	mainDeviceHandler := mainDeviceHandler{createDeviceHandler{config.RegistrationToken}}
 
-	http.Handle("/", http.FileServer(http.Dir(webDir)))
-	http.HandleFunc("/command", mainCommand)
-	http.HandleFunc("/command/", mainCommand)
-	http.HandleFunc("/commandLogs", getCommandLog)
-	http.HandleFunc("/commandLogs/", getCommandLog)
-	http.HandleFunc("/location", mainLocation)
-	http.HandleFunc("/location/", mainLocation)
-	http.HandleFunc("/locationDataSize", getLocationDataSize)
-	http.HandleFunc("/locationDataSize/", getLocationDataSize)
-	http.HandleFunc("/picture", mainPicture)
-	http.HandleFunc("/picture/", mainPicture)
-	http.HandleFunc("/pictureSize", getPictureSize)
-	http.HandleFunc("/pictureSize/", getPictureSize)
-	http.HandleFunc("/key", getPrivKey)
-	http.HandleFunc("/key/", getPrivKey)
-	http.HandleFunc("/pubKey", getPubKey)
-	http.HandleFunc("/pubKey/", getPubKey)
-	http.Handle("/device", mainDeviceHandler)
-	http.Handle("/device/", mainDeviceHandler)
-	http.HandleFunc("/password", postPassword)
-	http.HandleFunc("/password/", postPassword)
-	http.HandleFunc("/push", postPushLink)
-	http.HandleFunc("/push/", postPushLink)
-	http.HandleFunc("/salt", requestSalt)
-	http.HandleFunc("/salt/", requestSalt)
-	http.HandleFunc("/requestAccess", requestAccess)
-	http.HandleFunc("/requestAccess/", requestAccess)
-	http.HandleFunc("/version", getVersion)
-	http.HandleFunc("/version/", getVersion)
+	mux.Handle("/", http.FileServer(http.Dir(webDir)))
+	mux.HandleFunc("/command", mainCommand)
+	mux.HandleFunc("/command/", mainCommand)
+	mux.HandleFunc("/commandLogs", getCommandLog)
+	mux.HandleFunc("/commandLogs/", getCommandLog)
+	mux.HandleFunc("/location", mainLocation)
+	mux.HandleFunc("/location/", mainLocation)
+	mux.HandleFunc("/locationDataSize", getLocationDataSize)
+	mux.HandleFunc("/locationDataSize/", getLocationDataSize)
+	mux.HandleFunc("/picture", mainPicture)
+	mux.HandleFunc("/picture/", mainPicture)
+	mux.HandleFunc("/pictureSize", getPictureSize)
+	mux.HandleFunc("/pictureSize/", getPictureSize)
+	mux.HandleFunc("/key", getPrivKey)
+	mux.HandleFunc("/key/", getPrivKey)
+	mux.HandleFunc("/pubKey", getPubKey)
+	mux.HandleFunc("/pubKey/", getPubKey)
+	mux.Handle("/device", mainDeviceHandler)
+	mux.Handle("/device/", mainDeviceHandler)
+	mux.HandleFunc("/password", postPassword)
+	mux.HandleFunc("/password/", postPassword)
+	mux.HandleFunc("/push", postPushLink)
+	mux.HandleFunc("/push/", postPushLink)
+	mux.HandleFunc("/salt", requestSalt)
+	mux.HandleFunc("/salt/", requestSalt)
+	mux.HandleFunc("/requestAccess", requestAccess)
+	mux.HandleFunc("/requestAccess/", requestAccess)
+	mux.HandleFunc("/version", getVersion)
+	mux.HandleFunc("/version/", getVersion)
+
+	muxFinal := http.NewServeMux()
+	muxFinal.Handle("/", securityHeadersMiddleware(mux))
 
 	if fileExists(filepath.Join(filesDir, SERVER_KEY)) {
 		securePort := ":" + strconv.Itoa(config.PortSecure)
-		err := http.ListenAndServeTLS(securePort, filepath.Join(filesDir, SERVER_CERT), filepath.Join(filesDir, SERVER_KEY), nil)
+		err := http.ListenAndServeTLS(securePort, filepath.Join(filesDir, SERVER_CERT), filepath.Join(filesDir, SERVER_KEY), muxFinal)
 		if err != nil {
 			fmt.Println("HTTPS won't be available.", err)
 		}
 	}
 	insecureAddr := ":" + strconv.Itoa(config.PortInsecure)
-	log.Fatal(http.ListenAndServe(insecureAddr, nil))
+	log.Fatal(http.ListenAndServe(insecureAddr, muxFinal))
 }
 
 func load_config(filesDir string) config {

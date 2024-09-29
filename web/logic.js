@@ -168,6 +168,8 @@ async function doLogin(fmdid, password, useLongSession) {
         loginDiv.parentNode.removeChild(loginDiv);
     }
 
+    setupPushWarning();
+
     await locate(-1);
 }
 
@@ -210,7 +212,7 @@ async function getPrivateKey(password) {
     globalPrivateKey = await unwrapPrivateKey(password, keyData.Data);
 }
 
-async function tokenExpiredRedirect(){
+async function tokenExpiredRedirect() {
     const toasted = new Toasted({
         position: 'top-center',
         duration: 3000
@@ -220,6 +222,48 @@ async function tokenExpiredRedirect(){
     await sleep(3000);
 
     window.location.replace("/");
+}
+
+// Section: Push Warning
+
+async function setupPushWarning() {
+    if (!globalAccessToken) {
+        console.log("Missing accessToken!");
+        return;
+    }
+
+    response = await fetch("/push", {
+        method: 'POST',
+        body: JSON.stringify({
+            IDT: globalAccessToken,
+            Data: "",
+        }),
+        headers: {
+            'Content-type': 'application/json'
+        }
+    });
+    if (response.status == 401) {
+        tokenExpiredRedirect();
+        return
+    }
+    if (!response.ok) {
+        throw response.status;
+    }
+
+    const pushUrl = await response.text();
+
+    const ele = document.getElementById("pushWarning");
+    if (pushUrl) {
+        ele.innerHTML = ""
+    } else {
+        ele.innerHTML = `
+            <p>
+                It looks like UnifiedPush is not configured for this device.
+                Without push, FMD Server cannot control the device.
+                See <a href="https://gitlab.com/Nulide/findmydevice/-/wikis/PushSupport" target="_blank">the wiki</a> for more information.
+            </p>
+        `
+    }
 }
 
 // Section: Locate

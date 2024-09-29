@@ -603,7 +603,7 @@ func handleRequests(filesDir string, webDir string, config config) {
 	apiV1Mux := http.NewServeMux()
 	apiV1Mux.HandleFunc("/command", mainCommand)
 	apiV1Mux.HandleFunc("/command/", mainCommand)
-	/
+	//Disabled Feature: CommandLogs
 	//apiV1Mux.HandleFunc("/commandLogs", getCommandLog)
 	//apiV1Mux.HandleFunc("/commandLogs/", getCommandLog)
 	apiV1Mux.HandleFunc("/location", mainLocation)

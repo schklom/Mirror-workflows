@@ -102,7 +102,9 @@ func initSQLite(path string) *FMDDB {
 		log.Fatal("Failed to open database: ", err)
 		return nil
 	}
-	db.AutoMigrate(&FMDUser{}, &Location{}, &Picture{}, &CommandLogEntry{})
+	//Disabled Feature: CommandLogs
+	//db.AutoMigrate(&FMDUser{}, &Location{}, &Picture{}, &CommandLogEntry{})
+	db.AutoMigrate(&FMDUser{}, &Location{}, &Picture{})
 	db.AutoMigrate(&DBSetting{})
 	return &FMDDB{DB: db}
 }

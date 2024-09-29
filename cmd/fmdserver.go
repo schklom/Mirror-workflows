@@ -19,10 +19,8 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// Some IO variables
-var VERSION = "v0.5.1"
-var WEB_DIR = "web"
-var uio user.UserIO
+const VERSION = "v0.5.1"
+const WEB_DIR = "web"
 
 // Server Config
 const SERVER_CERT = "server.crt"
@@ -30,6 +28,8 @@ const SERVER_KEY = "server.key"
 const CONFIG_FILE = "config.yml"
 
 var isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]*$`).MatchString
+
+var uio user.UserRepository
 
 type config struct {
 	PortSecure        int    `yaml:"PortSecure"`
@@ -299,19 +299,15 @@ func getCommand(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	commandAsString := uio.GetCommandToUser(id)
-	if commandAsString != "" {
-		reply := DataPackage{IDT: data.IDT, Data: commandAsString}
-		result, _ := json.Marshal(reply)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(result))
-		uio.SetCommandToUser(id, "")
-	} else {
-		reply := DataPackage{IDT: data.IDT, Data: ""}
-		result, _ := json.Marshal(reply)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(result))
-	}
 
+	// commandAsString may be an empty string, that's fine
+	reply := DataPackage{IDT: data.IDT, Data: commandAsString}
+	result, _ := json.Marshal(reply)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(result))
+
+	// Clear the command so that the app only GETs it once
+	uio.SetCommandToUser(id, "")
 }
 
 func postCommand(w http.ResponseWriter, r *http.Request) {
@@ -343,20 +339,14 @@ func getCommandLog(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
 	}
-	commandLogs := uio.GetCommandLogs(id)
-	if commandLogs != "" {
-		reply := DataPackage{IDT: data.IDT, Data: commandLogs}
-		result, _ := json.Marshal(reply)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(result))
-		uio.SetCommandToUser(id, "")
-	} else {
-		reply := DataPackage{IDT: data.IDT, Data: ""}
-		result, _ := json.Marshal(reply)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(result))
-	}
 
+	commandLogs := uio.GetCommandLogs(id)
+
+	// commandLogs may be empty, that's fine
+	reply := DataPackage{IDT: data.IDT, Data: commandLogs}
+	result, _ := json.Marshal(reply)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(result))
 }
 
 // ------- Push -------
@@ -536,7 +526,7 @@ func (h createDeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // ------- Main Web Request Handling -------
 
 func getVersion(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(fmt.Sprint(VERSION)))
+	fmt.Fprint(w, VERSION)
 }
 
 func mainLocation(w http.ResponseWriter, r *http.Request) {
@@ -694,7 +684,7 @@ func load_config(filesDir string) config {
 
 func init_db(filesDir string, config config) {
 	fmt.Println("Init: Loading database")
-	uio = user.UserIO{}
+	uio = user.UserRepository{}
 	uio.Init(filesDir, config.UserIdLength, config.MaxSavedLoc, config.MaxSavedPic)
 }
 

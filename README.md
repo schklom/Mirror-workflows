@@ -55,7 +55,7 @@ services:
         volumes:
             - './fmddata/db/:/fmd/db/'
             # Deprecated Objectbox storage. Mount if you want it auto-migrated to SQLite.
-            #- './fmddata:/fmd/objectbox/'
+            #- './fmddata/objectbox/:/fmd/objectbox/'
         restart: unless-stopped
 ```
 

@@ -192,12 +192,6 @@ class Config {
 	/** delay updates for this feed if received HTTP 429 (Too Many Requests) for this amount of seconds (base value, actual delay is base...base*2) */
 	const HTTP_429_THROTTLE_INTERVAL = "HTTP_429_THROTTLE_INTERVAL";
 
-	/** host running Jaeger collector to receive traces (disabled if empty) */
-	const OPENTELEMETRY_ENDPOINT = "OPENTELEMETRY_ENDPOINT";
-
-	/** Jaeger service name */
-	const OPENTELEMETRY_SERVICE = "OPENTELEMETRY_SERVICE";
-
 	/** default values for all global configuration options */
 	private const _DEFAULTS = [
 		Config::DB_TYPE => [ "pgsql", 									Config::T_STRING ],
@@ -255,9 +249,7 @@ class Config {
 		Config::AUTH_MIN_INTERVAL => [ 5,								Config::T_INT ],
 		Config::HTTP_USER_AGENT => [ 'Tiny Tiny RSS/%s (https://tt-rss.org/)',
 																					Config::T_STRING ],
-		Config::HTTP_429_THROTTLE_INTERVAL => [ 3600,				Config::T_INT ],
-		Config::OPENTELEMETRY_ENDPOINT => [ "",							Config::T_STRING ],
-		Config::OPENTELEMETRY_SERVICE => [ "tt-rss",					Config::T_STRING ],
+		Config::HTTP_429_THROTTLE_INTERVAL => [ 3600,				Config::T_INT ]
 	];
 
 	/** @var Config|null */

@@ -9,7 +9,7 @@
 		{
 			"name": "j4mie/idiorm",
 			"type": "vcs",
-			"url": "https://dev.tt-rss.org/fox/idiorm.git"
+			"url": "https://git.tt-rss.org/fox/idiorm.git"
 		}
 	],
 	"autoload": {
@@ -25,7 +25,6 @@
 		"chillerlan/php-qrcode": "^4.3.3",
 		"mervick/material-design-icons": "^2.2",
 		"j4mie/idiorm": "dev-master",
-		"open-telemetry/exporter-otlp": "^1.0",
 		"php-http/guzzle7-adapter": "^1.0",
 		"soundasleep/html2text": "^2.1",
 		"guzzlehttp/guzzle": "^7.0"

@@ -69,8 +69,6 @@ class RSSUtils {
 	 * @param array<string, false|string> $options
 	 */
 	static function update_daemon_common(int $limit = 0, array $options = []): int {
-		$span = Tracer::start(__METHOD__);
-
 		if (!$limit) $limit = Config::get(Config::DAEMON_FEED_LIMIT);
 
 		if (Config::get_schema_version() != Config::SCHEMA_VERSION) {
@@ -312,8 +310,6 @@ class RSSUtils {
 		// Send feed digests by email if needed.
 		Digest::send_headlines_digests();
 
-		$span->end();
-
 		return $nf;
 	}
 
@@ -380,9 +376,6 @@ class RSSUtils {
 
 	static function update_rss_feed(int $feed, bool $no_cache = false, bool $html_output = false) : bool {
 
-		$span = Tracer::start(__METHOD__);
-		$span->setAttribute('func.args', json_encode(func_get_args()));
-
 		Debug::enable_html($html_output);
 		Debug::log("start", Debug::LOG_VERBOSE);
 
@@ -418,19 +411,16 @@ class RSSUtils {
 			if ($user) {
 				if ($user->access_level == UserHelper::ACCESS_LEVEL_READONLY) {
 					Debug::log("error: denied update for $feed: permission denied by owner access level");
-					$span->end();
 					return false;
 				}
 			} else {
 				// this would indicate database corruption of some kind
 				Debug::log("error: owner not found for feed: $feed");
-				$span->end();
 				return false;
 			}
 
 		} else {
 			Debug::log("error: feeds table record not found for feed: $feed");
-			$span->end();
 			return false;
 		}
 
@@ -589,7 +579,6 @@ class RSSUtils {
 				$feed_obj->save();
 			}
 
-			$span->end();
 			return $error_message == "";
 		}
 
@@ -731,7 +720,6 @@ class RSSUtils {
 				]);
 
 				$feed_obj->save();
-				$span->end();
 				return true; // no articles
 			}
 
@@ -740,8 +728,6 @@ class RSSUtils {
 			$tstart = time();
 
 			foreach ($items as $item) {
-				$a_span = Tracer::start('article');
-
 				$pdo->beginTransaction();
 
 				Debug::log(Debug::SEPARATOR, Debug::LOG_VERBOSE);
@@ -1327,7 +1313,6 @@ class RSSUtils {
 				Debug::log("article processed.", Debug::LOG_VERBOSE);
 
 				$pdo->commit();
-				$a_span->end();
 			}
 
 			Debug::log(Debug::SEPARATOR, Debug::LOG_VERBOSE);
@@ -1368,12 +1353,10 @@ class RSSUtils {
 			unset($rss);
 
 			Debug::log("update failed.", Debug::LOG_VERBOSE);
-			$span->end();
 			return false;
 		}
 
 		Debug::log("update done.", Debug::LOG_VERBOSE);
-		$span->end();
 		return true;
 	}
 
@@ -1446,6 +1429,7 @@ class RSSUtils {
 
 				$entries = $xpath->query('(//img[@src]|//source[@src|@srcset]|//video[@poster|@src])');
 
+				/** @var DOMElement $entry */
 				foreach ($entries as $entry) {
 					foreach (array('src', 'poster') as $attr) {
 						if ($entry->hasAttribute($attr) && strpos($entry->getAttribute($attr), "data:") !== 0) {
@@ -1538,8 +1522,6 @@ class RSSUtils {
 	 * @return array<int, array<string, string>> An array of filter action arrays with keys "type" and "param"
 	 */
 	static function get_article_filters(array $filters, string $title, string $content, string $link, string $author, array $tags, ?array &$matched_rules = null, ?array &$matched_filters = null): array {
-		$span = Tracer::start(__METHOD__);
-
 		$matches = array();
 
 		foreach ($filters as $filter) {
@@ -1625,8 +1607,6 @@ class RSSUtils {
 				}
 			}
 		}
-
-		$span->end();
 
 		return $matches;
 	}
@@ -2033,20 +2013,21 @@ class RSSUtils {
 				$xpath = new DOMXPath($doc);
 
 				$base = $xpath->query('/html/head/base[@href]');
+
+				/** @var DOMElement $b */
 				foreach ($base as $b) {
 					$url = UrlHelper::rewrite_relative($url, $b->getAttribute("href"));
 					break;
 				}
 
 				$entries = $xpath->query('/html/head/link[@rel="shortcut icon" or @rel="icon" or @rel="alternate icon"]');
-				if (count($entries) > 0) {
-					foreach ($entries as $entry) {
-						$favicon_url = UrlHelper::rewrite_relative($url, $entry->getAttribute("href"));
 
-						if ($favicon_url)
-							array_push($favicon_urls, $favicon_url);
+				/** @var DOMElement $entry */
+				foreach ($entries as $entry) {
+					$favicon_url = UrlHelper::rewrite_relative($url, $entry->getAttribute("href"));
 
-					}
+					if ($favicon_url)
+						array_push($favicon_urls, $favicon_url);
 				}
 			}
 		}

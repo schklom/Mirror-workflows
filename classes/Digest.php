@@ -2,8 +2,6 @@
 class Digest
 {
 	static function send_headlines_digests(): void {
-		$span = Tracer::start(__METHOD__);
-
 		$user_limit = 15; // amount of users to process (e.g. emails to send out)
 		$limit = 1000; // maximum amount of headlines to include
 
@@ -77,7 +75,6 @@ class Digest
 			}
 		}
 
-		$span->end();
 		Debug::log("All done.");
 	}
 

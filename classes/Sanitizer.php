@@ -9,6 +9,8 @@ class Sanitizer {
 		$entries = $xpath->query('//*');
 
 		foreach ($entries as $entry) {
+			/** @var DOMElement $entry */
+
 			if (!in_array($entry->nodeName, $allowed_elements)) {
 				$entry->parentNode->removeChild($entry);
 			}
@@ -63,9 +65,6 @@ class Sanitizer {
 	 * @return false|string The HTML, or false if an error occurred.
 	 */
 	public static function sanitize(string $str, ?bool $force_remove_images = false, ?int $owner = null, ?string $site_url = null, ?array $highlight_words = null, ?int $article_id = null) {
-		$span = OpenTelemetry\API\Trace\Span::getCurrent();
-		$span->addEvent("Sanitizer::sanitize");
-
 		if (!$owner && isset($_SESSION["uid"]))
 			$owner = $_SESSION["uid"];
 
@@ -81,6 +80,7 @@ class Sanitizer {
 
 		$entries = $xpath->query('(//a[@href]|//img[@src]|//source[@srcset|@src]|//video[@poster])');
 
+		/** @var DOMElement $entry */
 		foreach ($entries as $entry) {
 
 			if ($entry->hasAttribute('href')) {
@@ -143,6 +143,8 @@ class Sanitizer {
 		}
 
 		$entries = $xpath->query('//iframe');
+
+		/** @var DOMElement $entry */
 		foreach ($entries as $entry) {
 			if (!self::iframe_whitelisted($entry)) {
 				$entry->setAttribute('sandbox', 'allow-scripts');

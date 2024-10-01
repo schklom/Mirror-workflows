@@ -342,16 +342,8 @@ class PluginHost {
 	 */
 	function chain_hooks_callback(string $hook, Closure $callback, &...$args): void {
 		$method = strtolower((string)$hook);
-		$span = OpenTelemetry\API\Trace\Span::getCurrent();
-		$span->addEvent("chain_hooks_callback: $hook");
 
 		foreach ($this->get_hooks((string)$hook) as $plugin) {
-			//Debug::log("invoking: " . get_class($plugin) . "->$hook()", Debug::$LOG_VERBOSE);
-
-			//$p_span = Tracer::start("$hook - " . get_class($plugin));
-
-			$span->addEvent("$hook - " . get_class($plugin));
-
 			try {
 				if ($callback($plugin->$method(...$args), $plugin))
 					break;
@@ -360,11 +352,7 @@ class PluginHost {
 			} catch (Error $err) {
 				user_error($err, E_USER_WARNING);
 			}
-
-			//$p_span->end();
 		}
-
-		//$span->end();
 	}
 
 	/**
@@ -430,9 +418,6 @@ class PluginHost {
 	 * @param PluginHost::KIND_* $kind
 	 */
 	function load_all(int $kind, ?int $owner_uid = null, bool $skip_init = false): void {
-		$span = Tracer::start(__METHOD__);
-		$span->setAttribute('func.args', json_encode(func_get_args()));
-
 		$plugins = [...(glob("plugins/*") ?: []), ...(glob("plugins.local/*") ?: [])];
 		$plugins = array_filter($plugins, "is_dir");
 		$plugins = array_map("basename", $plugins);
@@ -440,17 +425,12 @@ class PluginHost {
 		asort($plugins);
 
 		$this->load(join(",", $plugins), (int)$kind, $owner_uid, $skip_init);
-
-		$span->end();
 	}
 
 	/**
 	 * @param PluginHost::KIND_* $kind
 	 */
 	function load(string $classlist, int $kind, ?int $owner_uid = null, bool $skip_init = false): void {
-		$span = Tracer::start(__METHOD__);
-		$span->setAttribute('func.args', json_encode(func_get_args()));
-
 		$plugins = explode(",", $classlist);
 
 		$this->owner_uid = (int) $owner_uid;
@@ -458,8 +438,6 @@ class PluginHost {
 		foreach ($plugins as $class) {
 			$class = trim($class);
 			$class_file = strtolower(basename(clean($class)));
-
-			$span->addEvent("$class_file: load");
 
 			// try system plugin directory first
 			$file = Config::get_self_dir() . "/plugins/$class_file/init.php";
@@ -485,8 +463,6 @@ class PluginHost {
 					}
 
 					$_SESSION["safe_mode"] = 1;
-
-					$span->setAttribute('error', 'plugin is blacklisted');
 					continue;
 				}
 
@@ -497,8 +473,6 @@ class PluginHost {
 
 				} catch (Error $err) {
 					user_error($err, E_USER_WARNING);
-
-					$span->setAttribute('error', $err);
 					continue;
 				}
 
@@ -508,8 +482,6 @@ class PluginHost {
 
 					if ($plugin_api < self::API_VERSION) {
 						user_error("Plugin $class is not compatible with current API version (need: " . self::API_VERSION . ", got: $plugin_api)", E_USER_WARNING);
-
-						$span->setAttribute('error', 'plugin is not compatible with API version');
 						continue;
 					}
 
@@ -517,8 +489,6 @@ class PluginHost {
 						_bindtextdomain($class, dirname($file) . "/locale");
 						_bind_textdomain_codeset($class, "UTF-8");
 					}
-
-					$span->addEvent("$class_file: initialize");
 
 					try {
 						switch ($kind) {
@@ -549,7 +519,6 @@ class PluginHost {
 		}
 
 		$this->load_data();
-		$span->end();
 	}
 
 	function is_system(Plugin $plugin): bool {
@@ -638,17 +607,12 @@ class PluginHost {
 	}
 
 	private function load_data(): void {
-		$span = OpenTelemetry\API\Trace\Span::getCurrent();
-		$span->addEvent('load plugin data');
-
 		if ($this->owner_uid && !$this->data_loaded && Config::get_schema_version() > 100)  {
 			$sth = $this->pdo->prepare("SELECT name, content FROM ttrss_plugin_storage
 				WHERE owner_uid = ?");
 			$sth->execute([$this->owner_uid]);
 
 			while ($line = $sth->fetch()) {
-				$span->addEvent($line["name"] . ': unserialize');
-
 				$this->storage[$line["name"]] = unserialize($line["content"]);
 			}
 
@@ -658,9 +622,6 @@ class PluginHost {
 
 	private function save_data(string $plugin): void {
 		if ($this->owner_uid) {
-			$span = OpenTelemetry\API\Trace\Span::getCurrent();
-			$span->addEvent(__METHOD__ . ": $plugin");
-
 			if (!$this->pdo_data)
 				$this->pdo_data = Db::instance()->pdo_connect();
 

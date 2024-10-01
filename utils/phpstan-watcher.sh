@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export PHP_IMAGE=registry.fakecake.org/infra/php8.3-alpine:3.19
+export PHP_IMAGE=registry.fakecake.org/infra/php8.3-alpine3.20
 
 docker run --rm -v $(pwd):/app -v /tmp/phpstan:/tmp/phpstan \
 	--workdir /app ${PHP_IMAGE} \

@@ -145,8 +145,6 @@ class Counters {
 	 * @return array<int, array<string, int|string>>
 	 */
 	private static function get_feeds(?array $feed_ids = null): array {
-		$span = Tracer::start(__METHOD__);
-
 		$ret = [];
 
 		$pdo = Db::pdo();
@@ -212,8 +210,6 @@ class Counters {
 
 		}
 
-		$span->end();
-
 		return $ret;
 	}
 
@@ -221,8 +217,6 @@ class Counters {
 	 * @return array<int, array<string, int|string>>
 	 */
 	private static function get_global(): array {
-		$span = Tracer::start(__METHOD__);
-
 		$ret = [
 			[
 				"id" => "global-unread",
@@ -239,8 +233,6 @@ class Counters {
 			"counter" => $subcribed_feeds
 		]);
 
-		$span->end();
-
 		return $ret;
 	}
 
@@ -248,8 +240,6 @@ class Counters {
 	 * @return array<int, array<string, int|string>>
 	 */
 	private static function get_virt(): array {
-		$span = Tracer::start(__METHOD__);
-
 		$ret = [];
 
 		foreach ([Feeds::FEED_ARCHIVED, Feeds::FEED_STARRED, Feeds::FEED_PUBLISHED,
@@ -295,7 +285,6 @@ class Counters {
 			}
 		}
 
-		$span->end();
 		return $ret;
 	}
 
@@ -304,8 +293,6 @@ class Counters {
 	 * @return array<int, array<string, int|string>>
 	 */
 	static function get_labels(?array $label_ids = null): array {
-		$span = Tracer::start(__METHOD__);
-
 		$ret = [];
 
 		$pdo = Db::pdo();
@@ -356,7 +343,6 @@ class Counters {
 			array_push($ret, $cv);
 		}
 
-		$span->end();
 		return $ret;
 	}
 }

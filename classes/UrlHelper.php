@@ -202,8 +202,6 @@ class UrlHelper {
 	 * @return false|string
 	 */
 	static function resolve_redirects(string $url, int $timeout) {
-		$span = Tracer::start(__METHOD__);
-		$span->setAttribute('func.args', json_encode(func_get_args()));
 		$client = self::get_client();
 
 		try {
@@ -218,14 +216,11 @@ class UrlHelper {
 				],
 			]);
 		} catch (Exception $ex) {
-			$span->setAttribute('error', (string) $ex);
-			$span->end();
 			return false;
 		}
 
 		// If a history header value doesn't exist there was no redirection and the original URL is fine.
 		$history_header = $response->getHeader(GuzzleHttp\RedirectMiddleware::HISTORY_HEADER);
-		$span->end();
 		return ($history_header ? end($history_header) : $url);
 	}
 
@@ -238,8 +233,6 @@ class UrlHelper {
 	public static function fetch($options /* previously: 0: $url , 1: $type = false, 2: $login = false, 3: $pass = false,
 				4: $post_query = false, 5: $timeout = false, 6: $timestamp = 0, 7: $useragent = false, 8: $encoding = false,
 				9: $auth_type = "basic" */) {
-		$span = Tracer::start(__METHOD__);
-		$span->setAttribute('func.args', json_encode(func_get_args()));
 
 		self::$fetch_last_error = "";
 		self::$fetch_last_error_code = -1;
@@ -299,8 +292,6 @@ class UrlHelper {
 
 		if (!$url) {
 			self::$fetch_last_error = 'Requested URL failed extended validation.';
-			$span->setAttribute('error', self::$fetch_last_error);
-			$span->end();
 			return false;
 		}
 
@@ -309,8 +300,6 @@ class UrlHelper {
 
 		if (!$ip_addr || strpos($ip_addr, '127.') === 0) {
 			self::$fetch_last_error = "URL hostname failed to resolve or resolved to a loopback address ($ip_addr)";
-			$span->setAttribute('error', self::$fetch_last_error);
-			$span->end();
 			return false;
 		}
 
@@ -392,8 +381,6 @@ class UrlHelper {
 		} catch (\LengthException $ex) {
 			// Either 'Content-Length' indicated the download limit would be exceeded, or the transfer actually exceeded the download limit.
 			self::$fetch_last_error = $ex->getMessage();
-			$span->setAttribute('error', self::$fetch_last_error);
-			$span->end();
 			return false;
 		} catch (GuzzleHttp\Exception\GuzzleException $ex) {
 			self::$fetch_last_error = $ex->getMessage();
@@ -407,7 +394,6 @@ class UrlHelper {
 					// to attempt compatibility with unusual configurations.
 					if ($login && $pass && self::$fetch_last_error_code === 403 && $auth_type !== 'any') {
 						$options['auth_type'] = 'any';
-						$span->end();
 						return self::fetch($options);
 					}
 
@@ -424,14 +410,10 @@ class UrlHelper {
 					if (($errno === \CURLE_WRITE_ERROR || $errno === \CURLE_BAD_CONTENT_ENCODING) &&
 						$ex->getRequest()->getHeaderLine('accept-encoding') !== 'none') {
 						$options['encoding'] = 'none';
-						$span->end();
 						return self::fetch($options);
 					}
 				}
 			}
-
-			$span->setAttribute('error', self::$fetch_last_error);
-			$span->end();
 
 			return false;
 		}
@@ -449,8 +431,6 @@ class UrlHelper {
 		// This shouldn't be necessary given the checks that occur during potential redirects, but we'll do it anyway.
 		if (!self::validate(self::$fetch_effective_url, true)) {
 			self::$fetch_last_error = "URL received after redirection failed extended validation.";
-			$span->setAttribute('error', self::$fetch_last_error);
-			$span->end();
 			return false;
 		}
 
@@ -459,8 +439,6 @@ class UrlHelper {
 		if (!self::$fetch_effective_ip_addr || strpos(self::$fetch_effective_ip_addr, '127.') === 0) {
 			self::$fetch_last_error = 'URL hostname received after redirection failed to resolve or resolved to a loopback address (' .
 				self::$fetch_effective_ip_addr . ')';
-			$span->setAttribute('error', self::$fetch_last_error);
-			$span->end();
 			return false;
 		}
 
@@ -468,12 +446,9 @@ class UrlHelper {
 
 		if (!$body) {
 			self::$fetch_last_error = 'Successful response, but no content was received.';
-			$span->setAttribute('error', self::$fetch_last_error);
-			$span->end();
 			return false;
 		}
 
-		$span->end();
 		return $body;
 	}
 

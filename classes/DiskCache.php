@@ -221,11 +221,7 @@ class DiskCache implements Cache_Adapter {
 	}
 
 	public function remove(string $filename): bool {
-		$span = Tracer::start(__METHOD__);
-		$span->setAttribute('file.name', $filename);
-
 		$rc = $this->adapter->remove($filename);
-		$span->end();
 
 		return $rc;
 	}
@@ -251,9 +247,6 @@ class DiskCache implements Cache_Adapter {
 	}
 
 	public function exists(string $filename): bool {
-		$span = OpenTelemetry\API\Trace\Span::getCurrent();
-		$span->addEvent("DiskCache::exists: $filename");
-
 		$rc = $this->adapter->exists(basename($filename));
 
 		return $rc;
@@ -263,11 +256,7 @@ class DiskCache implements Cache_Adapter {
 	 * @return int|false -1 if the file doesn't exist, false if an error occurred, size in bytes otherwise
 	 */
 	public function get_size(string $filename) {
-		$span = Tracer::start(__METHOD__);
-		$span->setAttribute('file.name', $filename);
-
 		$rc = $this->adapter->get_size(basename($filename));
-		$span->end();
 
 		return $rc;
 	}
@@ -278,11 +267,7 @@ class DiskCache implements Cache_Adapter {
 	 * @return int|false Bytes written or false if an error occurred.
 	 */
 	public function put(string $filename, $data) {
-		$span = Tracer::start(__METHOD__);
-		$rc = $this->adapter->put(basename($filename), $data);
-		$span->end();
-
-		return $rc;
+		return $this->adapter->put(basename($filename), $data);
 	}
 
 	/** @deprecated we can't assume cached files are local, and other storages
@@ -326,17 +311,12 @@ class DiskCache implements Cache_Adapter {
 	}
 
 	public function send(string $filename) {
-		$span = Tracer::start(__METHOD__);
-		$span->setAttribute('file.name', $filename);
-
 		$filename = basename($filename);
 
 		if (!$this->exists($filename)) {
 			header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 			echo "File not found.";
 
-			$span->setAttribute('error', '404 not found');
-			$span->end();
 			return false;
 		}
 
@@ -346,8 +326,6 @@ class DiskCache implements Cache_Adapter {
 		if (($_SERVER['HTTP_IF_MODIFIED_SINCE'] ?? '') == $gmt_modified || ($_SERVER['HTTP_IF_NONE_MATCH'] ?? '') == $file_mtime) {
 			header('HTTP/1.1 304 Not Modified');
 
-			$span->setAttribute('error', '304 not modified');
-			$span->end();
 			return false;
 		}
 
@@ -365,9 +343,6 @@ class DiskCache implements Cache_Adapter {
 			header("Content-type: text/plain");
 
 			print "Stored file has disallowed content type ($mimetype)";
-
-			$span->setAttribute('error', '400 disallowed content type');
-			$span->end();
 			return false;
 		}
 
@@ -389,13 +364,7 @@ class DiskCache implements Cache_Adapter {
 
 		header_remove("Pragma");
 
-		$span->setAttribute('mimetype', $mimetype);
-
-		$rc = $this->adapter->send($filename);
-
-		$span->end();
-
-		return $rc;
+		return $this->adapter->send($filename);
 	}
 
 	public function get_full_path(string $filename): string {
@@ -424,13 +393,9 @@ class DiskCache implements Cache_Adapter {
 	// plugins work on original source URLs used before caching
 	// NOTE: URLs should be already absolutized because this is called after sanitize()
 	static public function rewrite_urls(string $str): string {
-		$span = OpenTelemetry\API\Trace\Span::getCurrent();
-		$span->addEvent("DiskCache::rewrite_urls");
-
 		$res = trim($str);
 
 		if (!$res) {
-			$span->end();
 			return '';
 		}
 
@@ -439,13 +404,12 @@ class DiskCache implements Cache_Adapter {
 			$xpath = new DOMXPath($doc);
 			$cache = DiskCache::instance("images");
 
-			$entries = $xpath->query('(//img[@src]|//source[@src|@srcset]|//video[@poster|@src])');
-
 			$need_saving = false;
 
-			foreach ($entries as $entry) {
-				$span->addEvent("entry: " . $entry->tagName);
+			$entries = $xpath->query('(//img[@src]|//source[@src|@srcset]|//video[@poster|@src])');
 
+			/** @var DOMElement $entry */
+			foreach ($entries as $entry) {
 				foreach (array('src', 'poster') as $attr) {
 					if ($entry->hasAttribute($attr)) {
 						$url = $entry->getAttribute($attr);

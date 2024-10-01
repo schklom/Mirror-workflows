@@ -62,9 +62,6 @@ class Feeds extends Handler_Protected {
 
 		$disable_cache = false;
 
-		$span = Tracer::start(__METHOD__);
-		$span->setAttribute('func.args', json_encode(func_get_args()));
-
 		$reply = [];
 		$rgba_cache = [];
 		$topmost_article_ids = [];
@@ -166,7 +163,6 @@ class Feeds extends Handler_Protected {
 		$reply['search_query'] = [$search, $search_language];
 		$reply['vfeed_group_enabled'] = $vfeed_group_enabled;
 
-		$span->addEvent('plugin_menu_items');
 
 		$plugin_menu_items = "";
 		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM2,
@@ -200,13 +196,10 @@ class Feeds extends Handler_Protected {
 					},
 					$feed, $cat_view, $qfh_ret);
 
-		$span->addEvent('articles');
-
 		$headlines_count = 0;
 
 		if ($result instanceof PDOStatement) {
 			while ($line = $result->fetch(PDO::FETCH_ASSOC)) {
-				$span->addEvent('article: ' . $line['id']);
 
 				++$headlines_count;
 
@@ -366,8 +359,6 @@ class Feeds extends Handler_Protected {
 			    //setting feed headline background color, needs to change text color based on dark/light
 				$fav_color = $line['favicon_avg_color'] ?? false;
 
-				$span->addEvent("colors");
-
 				require_once "colors.php";
 
 				if (!isset($rgba_cache[$feed_id])) {
@@ -381,8 +372,6 @@ class Feeds extends Handler_Protected {
 				if (isset($rgba_cache[$feed_id])) {
 				    $line['feed_bg_color'] = 'rgba(' . implode(",", $rgba_cache[$feed_id]) . ',0.3)';
 				}
-
-				$span->addEvent("HOOK_RENDER_ARTICLE_CDM");
 
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE_CDM,
 					function ($result, $plugin) use (&$line) {
@@ -460,8 +449,6 @@ class Feeds extends Handler_Protected {
 				$reply['first_id_changed'] = true;
 			}
 		}
-
-		$span->end();
 
 		return array($topmost_article_ids, $headlines_count, $feed, $disable_cache, $reply);
 	}
@@ -926,10 +913,6 @@ class Feeds extends Handler_Protected {
 	 * @throws PDOException
 	 */
 	static function _get_counters($feed, bool $is_cat = false, bool $unread_only = false, ?int $owner_uid = null): int {
-		$span = OpenTelemetry\API\Trace\Span::getCurrent();
-
-		$span->addEvent(__METHOD__ . ": $feed ($is_cat)");
-
 		$n_feed = (int) $feed;
 		$need_entries = false;
 
@@ -952,14 +935,11 @@ class Feeds extends Handler_Protected {
 			$handler = PluginHost::getInstance()->get_feed_handler($feed_id);
 			if (implements_interface($handler, 'IVirtualFeed')) {
 				/** @var IVirtualFeed $handler */
-				//$span->end();
 				return $handler->get_unread($feed_id);
 			} else {
-				//$span->end();
 				return 0;
 			}
 		} else if ($n_feed == Feeds::FEED_RECENTLY_READ) {
-			//$span->end();
 			return 0;
 		// tags
 		} else if ($feed != "0" && $n_feed == 0) {
@@ -973,7 +953,6 @@ class Feeds extends Handler_Protected {
 			$row = $sth->fetch();
 
 			// Handle 'SUM()' returning null if there are no results
-			//$span->end();
 			return $row["count"] ?? 0;
 
 		} else if ($n_feed == Feeds::FEED_STARRED) {
@@ -1007,7 +986,6 @@ class Feeds extends Handler_Protected {
 
 			$label_id = Labels::feed_to_label_id($feed);
 
-			//$span->end();
 			return self::_get_label_unread($label_id, $owner_uid);
 		}
 
@@ -1027,7 +1005,6 @@ class Feeds extends Handler_Protected {
 			$sth->execute([$owner_uid]);
 			$row = $sth->fetch();
 
-			//$span->end();
 			return $row["unread"];
 
 		} else {
@@ -1040,7 +1017,6 @@ class Feeds extends Handler_Protected {
 			$sth->execute([$feed, $owner_uid]);
 			$row = $sth->fetch();
 
-			//$span->end();
 			return $row["unread"];
 		}
 	}
@@ -1433,10 +1409,6 @@ class Feeds extends Handler_Protected {
 	 * @return array<int, mixed> $result, $feed_title, $feed_site_url, $last_error, $last_updated, $highlight_words, $first_id, $is_vfeed, $query_error_override
 	 */
 	static function _get_headlines($params): array {
-
-		$span = Tracer::start(__METHOD__);
-		$span->setAttribute('func.args', json_encode(func_get_args()));
-
 		$pdo = Db::pdo();
 
 		// WARNING: due to highly dynamic nature of this query its going to quote parameters
@@ -1928,8 +1900,6 @@ class Feeds extends Handler_Protected {
 			$res = $pdo->query($query);
 		}
 
-		$span->end();
-
 		return array($res, $feed_title, $feed_site_url, $last_error, $last_updated, $search_words, $first_id, $vfeed_query_part != "", $query_error_override);
 	}
 
@@ -2048,6 +2018,7 @@ class Feeds extends Handler_Protected {
 			$entries = $xpath->query('/html/*[self::head or self::body]/link[@rel="alternate" and '.
 				'(contains(@type,"rss") or contains(@type,"atom"))]|/html/*[self::head or self::body]/link[@rel="feed"]');
 
+			/** @var DOMElement|null $entry */
 			foreach ($entries as $entry) {
 				if ($entry->hasAttribute('href')) {
 					$title = $entry->getAttribute('title');

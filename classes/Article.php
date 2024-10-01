@@ -298,8 +298,6 @@ class Article extends Handler_Protected {
 	 * @return array{'formatted': string, 'entries': array<int, array<string, mixed>>}
 	 */
 	static function _format_enclosures(int $id, bool $always_display_enclosures, string $article_content, bool $hide_images = false): array {
-		$span = Tracer::start(__METHOD__);
-
 		$enclosures = self::_get_enclosures($id);
 		$enclosures_formatted = "";
 
@@ -326,7 +324,6 @@ class Article extends Handler_Protected {
 			$enclosures_formatted, $enclosures, $id, $always_display_enclosures, $article_content, $hide_images);
 
 		if (!empty($enclosures_formatted)) {
-			$span->end();
 			return [
 					'formatted' => $enclosures_formatted,
 					'entries' => []
@@ -370,7 +367,6 @@ class Article extends Handler_Protected {
 			}
 		}
 
-		$span->end();
 		return $rv;
 	}
 
@@ -378,8 +374,6 @@ class Article extends Handler_Protected {
 	 * @return array<int, string>
 	 */
 	static function _get_tags(int $id, int $owner_uid = 0, ?string $tag_cache = null): array {
-		$span = Tracer::start(__METHOD__);
-
 		$a_id = $id;
 
 		if (!$owner_uid) $owner_uid = $_SESSION["uid"];
@@ -427,7 +421,6 @@ class Article extends Handler_Protected {
 			$sth->execute([$tags_str, $id, $owner_uid]);
 		}
 
-		$span->end();
 		return $tags;
 	}
 
@@ -522,8 +515,6 @@ class Article extends Handler_Protected {
 	 * @return array<int, array<int, int|string>>
 	 */
 	static function _get_labels(int $id, ?int $owner_uid = null): array {
-		$span = Tracer::start(__METHOD__);
-
 		$rv = array();
 
 		if (!$owner_uid) $owner_uid = $_SESSION["uid"];
@@ -569,8 +560,6 @@ class Article extends Handler_Protected {
 		else
 			Labels::update_cache($owner_uid, $id, array("no-labels" => 1));
 
-		$span->end();
-
 		return $rv;
 	}
 
@@ -581,8 +570,6 @@ class Article extends Handler_Protected {
 	 * @return array<int, Article::ARTICLE_KIND_*|string>
 	 */
 	static function _get_image(array $enclosures, string $content, string $site_url, array $headline) {
-		$span = Tracer::start(__METHOD__);
-
 		$article_image = "";
 		$article_stream = "";
 		$article_kind = 0;
@@ -603,6 +590,7 @@ class Article extends Handler_Protected {
 				$tmpxpath = new DOMXPath($tmpdoc);
 				$elems = $tmpxpath->query('(//img[@src]|//video[@poster]|//iframe[contains(@src , "youtube.com/embed/")])');
 
+				/** @var DOMElement $e */
 				foreach ($elems as $e) {
 					if ($e->nodeName == "iframe") {
 						$matches = [];
@@ -660,8 +648,6 @@ class Article extends Handler_Protected {
 		if ($article_stream && $cache->exists(sha1($article_stream)))
 			$article_stream = $cache->get_url(sha1($article_stream));
 
-		$span->end();
-
 		return [$article_image, $article_stream, $article_kind];
 	}
 
@@ -674,8 +660,6 @@ class Article extends Handler_Protected {
 	static function _labels_of(array $article_ids) {
 		if (count($article_ids) == 0)
 			return [];
-
-		$span = Tracer::start(__METHOD__);
 
 		$entries = ORM::for_table('ttrss_entries')
 			->table_alias('e')
@@ -696,8 +680,6 @@ class Article extends Handler_Protected {
 			}
 		}
 
-		$span->end();
-
 		return array_unique($rv);
 	}
 
@@ -708,8 +690,6 @@ class Article extends Handler_Protected {
 	static function _feeds_of(array $article_ids) {
 		if (count($article_ids) == 0)
 			return [];
-
-		$span = Tracer::start(__METHOD__);
 
 		$entries = ORM::for_table('ttrss_entries')
 			->table_alias('e')
@@ -722,8 +702,6 @@ class Article extends Handler_Protected {
 		foreach ($entries as $entry) {
 			array_push($rv, $entry->feed_id);
 		}
-
-		$span->end();
 
 		return array_unique($rv);
 	}

@@ -11,8 +11,6 @@
 
 	if (!init_plugins()) return;
 
-	$span = OpenTelemetry\API\Trace\Span::getCurrent();
-
 	$method = (string)clean($_REQUEST["op"]);
 
 	// shortcut syntax for public (exposed) methods (?op=plugin--pmethod&...params)
@@ -38,34 +36,30 @@
 		user_error("Refusing to invoke method $method which starts with underscore.", E_USER_WARNING);
 		header("Content-Type: text/json");
 		print Errors::to_json(Errors::E_UNAUTHORIZED);
-		$span->setAttribute('error', Errors::E_UNAUTHORIZED);
+
 		return;
 	}
 
 	if (implements_interface($handler, "IHandler") && $handler->before($method)) {
-		$span->addEvent("construct/$method");
+
 		if ($method && method_exists($handler, $method)) {
 			$reflection = new ReflectionMethod($handler, $method);
 
 			if ($reflection->getNumberOfRequiredParameters() == 0) {
-				$span->addEvent("invoke/$method");
 				$handler->$method();
 			} else {
 				user_error("Refusing to invoke method $method which has required parameters.", E_USER_WARNING);
 				header("Content-Type: text/json");
 				print Errors::to_json(Errors::E_UNAUTHORIZED);
-				$span->setAttribute('error', Errors::E_UNAUTHORIZED);
+
 			}
 		} else if (method_exists($handler, 'index')) {
-			$span->addEvent("index");
 			$handler->index();
 		}
-		$span->addEvent("after/$method");
+
 		$handler->after();
 		return;
 	}
 
 	header("Content-Type: text/plain");
 	print Errors::to_json(Errors::E_UNKNOWN_METHOD);
-	$span->setAttribute('error', Errors::E_UNKNOWN_METHOD);
-

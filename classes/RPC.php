@@ -106,8 +106,6 @@ class RPC extends Handler_Protected {
 	}
 
 	function getAllCounters(): void {
-		$span = Tracer::start(__METHOD__);
-
 		@$seq = (int) $_REQUEST['seq'];
 
 		$feed_id_count = (int) ($_REQUEST["feed_id_count"] ?? -1);
@@ -134,7 +132,6 @@ class RPC extends Handler_Protected {
 			'seq' => $seq
 		];
 
-		$span->end();
 		print json_encode($reply);
 	}
 
@@ -176,8 +173,6 @@ class RPC extends Handler_Protected {
 	}
 
 	function sanityCheck(): void {
-		$span = Tracer::start(__METHOD__);
-
 		$_SESSION["hasSandbox"] = self::_param_to_bool($_REQUEST["hasSandbox"] ?? false);
 		$_SESSION["clientTzOffset"] = clean($_REQUEST["clientTzOffset"]);
 
@@ -209,8 +204,6 @@ class RPC extends Handler_Protected {
 		} else {
 			print Errors::to_json($error, $error_params);
 		}
-
-		$span->end();
 	}
 
 	/*function completeLabels() {
@@ -254,8 +247,6 @@ class RPC extends Handler_Protected {
 	}
 
 	static function updaterandomfeed_real(): void {
-		$span = Tracer::start(__METHOD__);
-
 		$default_interval = (int) Prefs::get_default(Prefs::DEFAULT_UPDATE_INTERVAL);
 
 		// Test if the feed need a update (update interval exceded).
@@ -344,8 +335,6 @@ class RPC extends Handler_Protected {
 		} else {
 			print json_encode(array("message" => "NOTHING_TO_UPDATE"));
 		}
-
-		$span->end();
 	}
 
 	function updaterandomfeed(): void {
@@ -401,8 +390,6 @@ class RPC extends Handler_Protected {
 	}
 
 	function log(): void {
-		$span = Tracer::start(__METHOD__);
-
 		$msg = clean($_REQUEST['msg'] ?? "");
 		$file = basename(clean($_REQUEST['file'] ?? ""));
 		$line = (int) clean($_REQUEST['line'] ?? 0);
@@ -414,13 +401,9 @@ class RPC extends Handler_Protected {
 
 			echo json_encode(array("message" => "HOST_ERROR_LOGGED"));
 		}
-
-		$span->end();
 	}
 
 	function checkforupdates(): void {
-		$span = Tracer::start(__METHOD__);
-
 		$rv = ["changeset" => [], "plugins" => []];
 
 		$version = Config::get_version(false);
@@ -446,8 +429,6 @@ class RPC extends Handler_Protected {
 			$rv["plugins"] = Pref_Prefs::_get_updated_plugins();
 		}
 
-		$span->end();
-
 		print json_encode($rv);
 	}
 
@@ -455,8 +436,6 @@ class RPC extends Handler_Protected {
 	 * @return array<string, mixed>
 	 */
 	private function _make_init_params(): array {
-		$span = Tracer::start(__METHOD__);
-
 		$params = array();
 
 		foreach ([Prefs::ON_CATCHUP_SHOW_NEXT_FEED, Prefs::HIDE_READ_FEEDS,
@@ -509,8 +488,6 @@ class RPC extends Handler_Protected {
 		$params["icon_blank"] = $this->image_to_base64("images/blank_icon.gif");
 		$params["labels"] = Labels::get_all($_SESSION["uid"]);
 
-		$span->end();
-
 		return $params;
 	}
 
@@ -530,8 +507,6 @@ class RPC extends Handler_Protected {
 	 * @return array<string, mixed>
 	 */
 	static function _make_runtime_info(): array {
-		$span = Tracer::start(__METHOD__);
-
 		$data = array();
 
 		$pdo = Db::pdo();
@@ -596,8 +571,6 @@ class RPC extends Handler_Protected {
 				}
 			}
 		}
-
-		$span->end();
 
 		return $data;
 	}

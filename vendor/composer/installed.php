@@ -3,7 +3,7 @@
         'name' => '__root__',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '8fcc68baf5b0ff964a0a4a045353462586e0e316',
+        'reference' => 'df33ddaea1e46b5b923440d6383fa3ae85c4d60b',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         '__root__' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '8fcc68baf5b0ff964a0a4a045353462586e0e316',
+            'reference' => 'df33ddaea1e46b5b923440d6383fa3ae85c4d60b',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -146,45 +146,6 @@
             'install_path' => __DIR__ . '/../phar-io/version',
             'aliases' => array(),
             'dev_requirement' => true,
-        ),
-        'php-http/async-client-implementation' => array(
-            'dev_requirement' => false,
-            'provided' => array(
-                0 => '1.0',
-            ),
-        ),
-        'php-http/client-implementation' => array(
-            'dev_requirement' => false,
-            'provided' => array(
-                0 => '1.0',
-            ),
-        ),
-        'php-http/guzzle7-adapter' => array(
-            'pretty_version' => '1.0.0',
-            'version' => '1.0.0.0',
-            'reference' => 'fb075a71dbfa4847cf0c2938c4e5a9c478ef8b01',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../php-http/guzzle7-adapter',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
-        'php-http/httplug' => array(
-            'pretty_version' => '2.4.0',
-            'version' => '2.4.0.0',
-            'reference' => '625ad742c360c8ac580fcc647a1541d29e257f67',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../php-http/httplug',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
-        'php-http/promise' => array(
-            'pretty_version' => '1.1.0',
-            'version' => '1.1.0.0',
-            'reference' => '4c4c1f9b7289a2ec57cde7f1e9762a5789506f88',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../php-http/promise',
-            'aliases' => array(),
-            'dev_requirement' => false,
         ),
         'phpdocumentor/reflection-common' => array(
             'pretty_version' => '2.2.0',

@@ -8,10 +8,9 @@ class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
 {
     public static $files = array (
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
-        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         'a4ecaeafb8cfb009ad0e052c90355e98' => __DIR__ . '/..' . '/beberlei/assert/lib/Assert/functions.php',
-        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
+        '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
         '51fcf4e06c07cc00c920b44bcd900e7a' => __DIR__ . '/..' . '/thecodingmachine/safe/deprecated/apc.php',
         '288267919fedd3829a7732b5fb202197' => __DIR__ . '/..' . '/thecodingmachine/safe/deprecated/array.php',
         'a88cd08cfbf1600f7d5de6e587eee1fa' => __DIR__ . '/..' . '/thecodingmachine/safe/deprecated/datetime.php',
@@ -99,6 +98,7 @@ class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
         '4af1dca6db8c527c6eed27bff85ff0e5' => __DIR__ . '/..' . '/thecodingmachine/safe/generated/yaz.php',
         'fe43ca06499ac37bc2dedd823af71eb5' => __DIR__ . '/..' . '/thecodingmachine/safe/generated/zip.php',
         '356736db98a6834f0a886b8d509b0ecd' => __DIR__ . '/..' . '/thecodingmachine/safe/generated/zlib.php',
+        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '9b38cf48e83f5d8f60375221cd213eee' => __DIR__ . '/..' . '/phpstan/phpstan/bootstrap.php',
         'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
         '1c27df0e838db1c8a6427db7c5db3db2' => __DIR__ . '/../..' . '/include/functions.php',
@@ -133,12 +133,6 @@ class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
         'O' => 
         array (
             'OTPHP\\' => 6,
-        ),
-        'H' => 
-        array (
-            'Http\\Promise\\' => 13,
-            'Http\\Client\\' => 12,
-            'Http\\Adapter\\Guzzle7\\' => 21,
         ),
         'G' => 
         array (
@@ -204,18 +198,6 @@ class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
         'OTPHP\\' => 
         array (
             0 => __DIR__ . '/..' . '/spomky-labs/otphp/src',
-        ),
-        'Http\\Promise\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/php-http/promise/src',
-        ),
-        'Http\\Client\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/php-http/httplug/src',
-        ),
-        'Http\\Adapter\\Guzzle7\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/php-http/guzzle7-adapter/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
@@ -396,22 +378,6 @@ class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
         'Handler_Administrative' => __DIR__ . '/../..' . '/classes/Handler_Administrative.php',
         'Handler_Protected' => __DIR__ . '/../..' . '/classes/Handler_Protected.php',
         'Handler_Public' => __DIR__ . '/../..' . '/classes/Handler_Public.php',
-        'Http\\Adapter\\Guzzle7\\Client' => __DIR__ . '/..' . '/php-http/guzzle7-adapter/src/Client.php',
-        'Http\\Adapter\\Guzzle7\\Exception\\UnexpectedValueException' => __DIR__ . '/..' . '/php-http/guzzle7-adapter/src/Exception/UnexpectedValueException.php',
-        'Http\\Adapter\\Guzzle7\\Promise' => __DIR__ . '/..' . '/php-http/guzzle7-adapter/src/Promise.php',
-        'Http\\Client\\Exception' => __DIR__ . '/..' . '/php-http/httplug/src/Exception.php',
-        'Http\\Client\\Exception\\HttpException' => __DIR__ . '/..' . '/php-http/httplug/src/Exception/HttpException.php',
-        'Http\\Client\\Exception\\NetworkException' => __DIR__ . '/..' . '/php-http/httplug/src/Exception/NetworkException.php',
-        'Http\\Client\\Exception\\RequestAwareTrait' => __DIR__ . '/..' . '/php-http/httplug/src/Exception/RequestAwareTrait.php',
-        'Http\\Client\\Exception\\RequestException' => __DIR__ . '/..' . '/php-http/httplug/src/Exception/RequestException.php',
-        'Http\\Client\\Exception\\TransferException' => __DIR__ . '/..' . '/php-http/httplug/src/Exception/TransferException.php',
-        'Http\\Client\\HttpAsyncClient' => __DIR__ . '/..' . '/php-http/httplug/src/HttpAsyncClient.php',
-        'Http\\Client\\HttpClient' => __DIR__ . '/..' . '/php-http/httplug/src/HttpClient.php',
-        'Http\\Client\\Promise\\HttpFulfilledPromise' => __DIR__ . '/..' . '/php-http/httplug/src/Promise/HttpFulfilledPromise.php',
-        'Http\\Client\\Promise\\HttpRejectedPromise' => __DIR__ . '/..' . '/php-http/httplug/src/Promise/HttpRejectedPromise.php',
-        'Http\\Promise\\FulfilledPromise' => __DIR__ . '/..' . '/php-http/promise/src/FulfilledPromise.php',
-        'Http\\Promise\\Promise' => __DIR__ . '/..' . '/php-http/promise/src/Promise.php',
-        'Http\\Promise\\RejectedPromise' => __DIR__ . '/..' . '/php-http/promise/src/RejectedPromise.php',
         'IAuthModule' => __DIR__ . '/../..' . '/classes/IAuthModule.php',
         'IAuthModule2' => __DIR__ . '/../..' . '/classes/IAuthModule2.php',
         'ICatchall' => __DIR__ . '/../..' . '/classes/ICatchall.php',

@@ -120,7 +120,9 @@ func (db *FMDDB) GetLastID() int {
 
 func (db *FMDDB) GetByID(id string) *FMDUser {
 	var user = FMDUser{UID: id}
-	db.DB.Preload("Locations").Preload("Pictures").Preload("CommandLogs").Where(&user).First(&user)
+	//Disabled Feature: CommandLogs
+	//db.DB.Preload("Locations").Preload("Pictures").Preload("CommandLogs").Where(&user).First(&user)
+	db.DB.Preload("Locations").Preload("Pictures").Where(&user).First(&user)
 	if user.Id == 0 {
 		return nil
 	}

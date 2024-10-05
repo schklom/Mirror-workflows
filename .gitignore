@@ -1,8 +1,6 @@
-# Local objectbox data
-data/
-
-# Objectbox
+# Databases
 *.mdb
+*.sqlite
 
 # FMD Server config
 config.json

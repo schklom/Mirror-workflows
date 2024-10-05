@@ -19,7 +19,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-const VERSION = "v0.5.1"
+const VERSION = "v0.6.0"
 const WEB_DIR = "web"
 
 // Server Config

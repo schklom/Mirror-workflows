@@ -9,9 +9,6 @@ variables:
   DOCKER_TLS_CERT_DIR: "/certs"
 
 before_script:
-  - wget https://raw.githubusercontent.com/objectbox/objectbox-go/main/install.sh
-  - chmod +x install.sh
-  - (yes | ./install.sh ;) || exit_code=$?
   # Fix "cmd/fmdserver.go:19:2: no required module provides package gopkg.in/yaml.v3; to add it:" (only an issue in CI...)
   - go get gopkg.in/yaml.v3
 

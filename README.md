@@ -54,8 +54,6 @@ services:
          - 127.0.0.1:8080:8080
         volumes:
             - './fmddata/db/:/fmd/db/'
-            # Deprecated Objectbox storage. Mount if you want it auto-migrated to SQLite.
-            #- './fmddata/objectbox/:/fmd/objectbox/'
         restart: unless-stopped
 ```
 
@@ -144,15 +142,11 @@ NOTE: `yml` not `yaml`!
 
 ## Developing
 
-A simple way to test code changes is to build a container image locally and run that:
+To run the Go code:
 
 ```bash
-docker build -t fmd-local .
-docker run --rm -p 8080:8080 fmd-local
+go run cmd/fmdserver.go
 ```
-
-Alternatively, you can use `go build` directly and run the resulting binary,
-but you will need to install objectbox and the node modules.
 
 ## Other Implementations
 

@@ -6,38 +6,13 @@ import (
 	"log"
 	"os"
 
-	"github.com/objectbox/objectbox-go/objectbox"
-
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
-//go:generate go run github.com/objectbox/objectbox-go/cmd/objectbox-gogen
-
-// For ObjectBox (Deprecated)
-type User struct {
-	Id             uint64
-	UID            string `objectbox:"unique"`
-	Salt           string // may be empty. In Argon2 the HashedPassword contains the salt.
-	HashedPassword string
-	PrivateKey     string
-	PublicKey      string
-	CommandToUser  string
-	PushUrl        string
-	LocationData   []string // elements must be string-encoded JSON structures
-	Pictures       []string // elements are base64 encoded encrypted images
-}
-
 type FMDDB struct {
 	DB *gorm.DB
-}
-
-// For ObjectBox
-type DB struct {
-	Id      uint64
-	Setting string `objectbox:"unique"`
-	Value   string
 }
 
 // For GORM (SQL)
@@ -148,15 +123,4 @@ func (db *FMDDB) Create(value interface{}) {
 
 func (db *FMDDB) Delete(value interface{}) {
 	db.DB.Delete(value)
-}
-
-// Deprecated for migration of ObjectBox DB only.
-func initObjectBox(path string) *UserBox {
-	ob, _ := objectbox.NewBuilder().MaxSizeInKb(10 * 1048576).Model(ObjectBoxModel()).Directory(path).Build()
-
-	u := BoxForUser(ob)
-	dbc := BoxForDB(ob)
-	dbc.MigrateObjectbox(u)
-
-	return u
 }

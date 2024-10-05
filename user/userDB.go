@@ -65,20 +65,20 @@ type Location struct {
 type Picture struct {
 	Id      uint64 `gorm:"primaryKey"`
 	UserID  uint64
-	Content string // elements must be string-encoded JSON structures
+	Content string // elements are base64 encoded encrypted images
 }
 
 // Location Table of the Users
 type CommandLogEntry struct {
 	Id      uint64 `gorm:"primaryKey"`
 	UserID  uint64
-	Content string // string-encoded JSON structures
+	Content string // encrypted CommandLogEntryContent
 }
 
-// This will be the content of the CommandLogEntry in the DB
-type CommandLogPackage struct {
-	TimeStamp int64  `'json:"timestamp"`
-	Log       string `'json:"log"`
+// Content of the CommandLogEntry
+type CommandLogEntryContent struct {
+	Timestamp int64
+	Log       string
 }
 
 // Settings Table GORM (SQL)
@@ -145,7 +145,7 @@ func initObjectBox(path string) *UserBox {
 
 	u := BoxForUser(ob)
 	dbc := BoxForDB(ob)
-	dbc.MigrateDatabase(u)
+	dbc.MigrateObjectbox(u)
 
 	return u
 }

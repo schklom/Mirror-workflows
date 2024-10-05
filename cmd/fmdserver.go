@@ -340,10 +340,10 @@ func getCommandLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	commandLogs := uio.GetCommandLogs(id)
+	commandLog := uio.GetCommandLog(id)
 
 	// commandLogs may be empty, that's fine
-	reply := DataPackage{IDT: data.IDT, Data: commandLogs}
+	reply := DataPackage{IDT: data.IDT, Data: commandLog}
 	result, _ := json.Marshal(reply)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(result))

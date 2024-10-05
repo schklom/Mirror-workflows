@@ -150,38 +150,46 @@ func (u *UserRepository) SetPublicKey(id string, key string) {
 	u.UB.Save(&user)
 }
 
-func (u *UserRepository) SetCommandToUser(id string, ctu string) {
+func (u *UserRepository) addCommandLogEntry(user *FMDUser, entry string) {
+	timestamp := time.Now().Unix()
+
+	logEntry := CommandLogEntryContent{Timestamp: timestamp, Log: entry}
+	jsonLog, _ := json.Marshal(logEntry)
+
+	logEntryEncrypted := utils.RsaEncrypt(user.PublicKey, jsonLog)
+	comLogEntry := CommandLogEntry{UserID: user.Id, Content: logEntryEncrypted}
+
+	u.UB.Create(&comLogEntry)
+}
+
+func (u *UserRepository) SetCommandToUser(id string, cmd string) {
 	user := u.UB.GetByID(id)
-	user.CommandToUser = ctu
-	if ctu != "" {
-		timestamp := time.Now().Unix()
-		logEntry := CommandLogPackage{TimeStamp: timestamp, Log: "Command \"" + ctu + "\" sent to server!"}
-		jsonLog, _ := json.Marshal(logEntry)
-		logEntryEncrypted := utils.RsaEncrypt(user.PublicKey, string(jsonLog[:]))
-		comLogEntry := CommandLogEntry{UserID: user.Id, Content: logEntryEncrypted}
-		u.UB.Create(&comLogEntry)
+	user.CommandToUser = cmd
+
+	if cmd != "" {
+		logEntry := fmt.Sprintf("Command \"%s\" sent to server!", cmd)
+		u.addCommandLogEntry(user, logEntry)
 	}
 	u.UB.Save(&user)
 }
 
 func (u *UserRepository) GetCommandToUser(id string) string {
 	user := u.UB.GetByID(id)
-	timestamp := time.Now().Unix()
-	logEntry := CommandLogPackage{TimeStamp: timestamp, Log: "Command \"" + user.CommandToUser + "\" received by device!"}
-	jsonLog, _ := json.Marshal(logEntry)
-	logEntryEncrypted := utils.RsaEncrypt(user.PublicKey, string(jsonLog[:]))
-	comLogEntry := CommandLogEntry{UserID: user.Id, Content: logEntryEncrypted}
-	u.UB.Create(&comLogEntry)
+
+	if user.CommandToUser != "" {
+		logEntry := fmt.Sprintf("Command \"%s\" received by device!", user.CommandToUser)
+		u.addCommandLogEntry(user, logEntry)
+	}
 	return user.CommandToUser
 }
 
-func (u *UserRepository) GetCommandLogs(id string) string {
+func (u *UserRepository) GetCommandLog(id string) string {
 	user := u.UB.GetByID(id)
-	commandLogs := ""
+	commandLog := ""
 	for _, logEntry := range user.CommandLogs {
-		commandLogs += logEntry.Content + "\n"
+		commandLog += logEntry.Content + "\n"
 	}
-	return commandLogs
+	return commandLog
 }
 
 func (u *UserRepository) SetPushUrl(id string, pushUrl string) {

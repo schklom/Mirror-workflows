@@ -15,3 +15,7 @@ MaxSavedPic: 10
 # Set this to a long random string if you want your instance to be private and not open to registrations by anyone.
 # You can e.g. generate a 32 character string with your password manager.
 RegistrationToken: ""
+
+# Paths to the server cert and private key (for letting Go terminate TLS)
+ServerCrt: "" # fullchain.pem
+ServerKey: "" # privkey.pem

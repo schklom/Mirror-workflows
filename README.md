@@ -109,12 +109,13 @@ FMD Server does not know how to resolve `/fmd/api/`, it only knows about `/api/`
 
 ### Without Reverse Proxy
 
-> ⚠️ This setup is untested and provided for your convenience only.
+> ⚠️ This setup is not recommended and provided for your convenience only.
 
 If you don't want to use a reverse proxy, FMD Server can terminate TLS for you.
 However, you need to manage (and regularly renew!) the certificates.
 
 1. Get a TLS certificate for your domain.
+1. Set the `ServerCrt` and `ServerKey` in the config file (see below).
 1. Mount the certificate and the private key into the container:
 
 ```yml

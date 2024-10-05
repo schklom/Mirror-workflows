@@ -10,18 +10,19 @@ RUN go mod download && go mod verify
 # Only copy Go files to avoid rebuilding Go when only web files have changed
 COPY go.mod .
 COPY go.sum .
+COPY main.go .
 COPY cmd/ cmd/
 COPY user/ user/
 COPY utils/ utils/
 
-RUN go build -o /fmd cmd/fmdserver.go
+RUN go build -o /tmp/fmd main.go
 
 
 FROM debian:bookworm-slim
 
 RUN apt update && apt install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /fmd /fmd/server
+COPY --from=builder /tmp/fmd /fmd/server
 
 COPY web /fmd/web
 COPY extra /fmd/extra
@@ -30,10 +31,12 @@ RUN mkdir /fmd/db
 
 RUN useradd --create-home --uid 1000 fmd-user
 RUN chown -R fmd-user:fmd-user /fmd/
+
 USER fmd-user
+WORKDIR /fmd
 
 EXPOSE 8080/tcp
 EXPOSE 8443/tcp
 VOLUME /data
 
-ENTRYPOINT ["/fmd/server"]
+ENTRYPOINT ["/fmd/server", "serve"]

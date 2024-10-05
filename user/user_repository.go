@@ -22,31 +22,31 @@ type UserRepository struct {
 	UB           *FMDDB
 }
 
-func (u *UserRepository) Init(path string, userIDLength int, maxSavedLoc int, maxSavedPic int) {
+func (u *UserRepository) Init(dbDir string, userIDLength int, maxSavedLoc int, maxSavedPic int) {
 	u.userIDLength = userIDLength
 	u.maxSavedLoc = maxSavedLoc
 	u.maxSavedPic = maxSavedPic
 
-	dbPath := filepath.Join(path, "db", "fmd.sqlite")
+	dbFile := filepath.Join(dbDir, "fmd.sqlite")
 
 	// Check if SQL Database exists
-	_, err := os.Stat(dbPath)
+	_, err := os.Stat(dbFile)
 	if os.IsNotExist(err) {
 		fmt.Println("No SQLite DB found")
 
 		// Create directory
-		err := os.MkdirAll(filepath.Join(path, "db"), 0770)
+		err := os.MkdirAll(filepath.Join(dbDir), 0770)
 		if err != nil {
 			log.Fatal("Failed to create dbDir:", err)
 		}
 
 		// Create file
-		_, err = os.Create(dbPath)
+		_, err = os.Create(dbFile)
 		if err != nil {
 			log.Fatal("Failed to create database:", err)
 		}
 	}
-	u.UB = initSQLite(dbPath)
+	u.UB = initSQLite(dbFile)
 }
 
 func (u *UserRepository) CheckAccessTokenAndGetUser(providedAccessToken string) (*FMDUser, error) {

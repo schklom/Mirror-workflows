@@ -33,7 +33,7 @@ nil-safety:
 compile:
   stage: build
   script:
-    - go build -o fmdserver cmd/fmdserver.go
+    - go build -o fmdserver
   artifacts:
     paths:
       - fmdserver

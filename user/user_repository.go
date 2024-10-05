@@ -33,6 +33,13 @@ func (u *UserRepository) Init(path string, userIDLength int, maxSavedLoc int, ma
 	if os.IsNotExist(err) {
 		fmt.Println("No SQLite DB found")
 
+		// Create directory
+		err := os.MkdirAll(filepath.Join(path, "db"), 0770)
+		if err != nil {
+			log.Fatal("Failed to create dbDir:", err)
+		}
+
+		// Create file
 		_, err = os.Create(dbPath)
 		if err != nil {
 			log.Fatal("Failed to create database:", err)
@@ -40,7 +47,7 @@ func (u *UserRepository) Init(path string, userIDLength int, maxSavedLoc int, ma
 
 		// Migrate old objectbox, if it exists
 		objectBoxPath := filepath.Join(path, "objectbox")
-		_, err := os.Stat(objectBoxPath)
+		_, err = os.Stat(objectBoxPath)
 		if err == nil {
 			fmt.Println("Found ObjectBox DB to migrate")
 			oldDB := initObjectBox(objectBoxPath)

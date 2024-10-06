@@ -95,7 +95,8 @@ function setupOnClicks() {
     document.getElementById("cameraBack").addEventListener("click", () => sendToPhone("camera back"));
     document.getElementById("takePicture").addEventListener("click", () => showCameraDropDown());
     document.getElementById("showPicture").addEventListener("click", async () => await showLatestPicture());
-    document.getElementById("showCommandLogs").addEventListener("click", async () => await showCommandLogs());
+    //Disabled Feature: CommandLogs
+    //document.getElementById("showCommandLogs").addEventListener("click", async () => await showCommandLogs());
 }
 
 function checkWebCryptoApiAvailable() {

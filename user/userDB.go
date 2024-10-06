@@ -125,7 +125,7 @@ func (db *FMDDB) GetByID(id string) *FMDUser {
 	//Disabled Feature: CommandLogs
 	//db.DB.Preload("Locations").Preload("Pictures").Preload("CommandLogs").Where(&user).First(&user)
 	now := time.Now()
-	db.DB.Where(&user).First(&user)
+	db.DB.Where(&user).Find(&user)
 	elapsed := time.Since(now)
 	fmt.Printf("ById With Data Elapsed time: %s\n", elapsed)
 	if user.Id == 0 {
@@ -139,7 +139,7 @@ func (db *FMDDB) GetByIDWithLocationData(id string) *FMDUser {
 	//Disabled Feature: CommandLogs
 	//db.DB.Preload("Locations").Preload("Pictures").Preload("CommandLogs").Where(&user).First(&user)
 	now := time.Now()
-	db.DB.Preload("Locations").Where(&user).First(&user)
+	db.DB.Preload("Locations").Where(&user).Find(&user)
 	elapsed := time.Since(now)
 	fmt.Printf("ById With Data Elapsed time: %s\n", elapsed)
 	if user.Id == 0 {
@@ -153,7 +153,7 @@ func (db *FMDDB) GetByIDWithPictureData(id string) *FMDUser {
 	//Disabled Feature: CommandLogs
 	//db.DB.Preload("Locations").Preload("Pictures").Preload("CommandLogs").Where(&user).First(&user)
 	now := time.Now()
-	db.DB.Preload("Pictures").Where(&user).First(&user)
+	db.DB.Preload("Pictures").Where(&user).Find(&user)
 	elapsed := time.Since(now)
 	fmt.Printf("ById With Data Elapsed time: %s\n", elapsed)
 	if user.Id == 0 {

@@ -17,5 +17,5 @@ MaxSavedPic: 10
 RegistrationToken: ""
 
 # Paths to the server cert and private key (for letting Go terminate TLS)
-ServerCrt: "" # fullchain.pem
-ServerKey: "" # privkey.pem
+ServerCrt: "" # /path/to/fullchain.pem
+ServerKey: "" # /path/to/privkey.pem

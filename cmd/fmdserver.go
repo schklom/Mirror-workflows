@@ -678,10 +678,6 @@ func load_config(filesDir string) config {
 	}
 	//fmt.Printf("INFO: Using config %+v\n", serverConfig)
 
-	//Update CertPaths for Working Dir
-	serverConfig.ServerCrt = filepath.Join(filesDir, serverConfig.ServerCrt)
-	serverConfig.ServerKey = filepath.Join(filesDir, serverConfig.ServerKey)
-
 	isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]{1,` + strconv.Itoa(serverConfig.UserIdLength) + `}$`).MatchString
 
 	return serverConfig

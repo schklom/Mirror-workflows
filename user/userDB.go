@@ -1,10 +1,8 @@
 package user
 
 import (
-	"fmt"
 	"log"
 	"os"
-	"time"
 
 	"github.com/objectbox/objectbox-go/objectbox"
 
@@ -124,10 +122,7 @@ func (db *FMDDB) GetByID(id string) *FMDUser {
 	var user = FMDUser{UID: id}
 	//Disabled Feature: CommandLogs
 	//db.DB.Preload("Locations").Preload("Pictures").Preload("CommandLogs").Where(&user).First(&user)
-	now := time.Now()
 	db.DB.Where(&user).Find(&user)
-	elapsed := time.Since(now)
-	fmt.Printf("ById With Data Elapsed time: %s\n", elapsed)
 	if user.Id == 0 {
 		return nil
 	}
@@ -138,10 +133,7 @@ func (db *FMDDB) GetByIDWithLocationData(id string) *FMDUser {
 	var user = FMDUser{UID: id}
 	//Disabled Feature: CommandLogs
 	//db.DB.Preload("Locations").Preload("Pictures").Preload("CommandLogs").Where(&user).First(&user)
-	now := time.Now()
 	db.DB.Preload("Locations").Where(&user).Find(&user)
-	elapsed := time.Since(now)
-	fmt.Printf("ById With Data Elapsed time: %s\n", elapsed)
 	if user.Id == 0 {
 		return nil
 	}
@@ -152,10 +144,7 @@ func (db *FMDDB) GetByIDWithPictureData(id string) *FMDUser {
 	var user = FMDUser{UID: id}
 	//Disabled Feature: CommandLogs
 	//db.DB.Preload("Locations").Preload("Pictures").Preload("CommandLogs").Where(&user).First(&user)
-	now := time.Now()
 	db.DB.Preload("Pictures").Where(&user).Find(&user)
-	elapsed := time.Since(now)
-	fmt.Printf("ById With Data Elapsed time: %s\n", elapsed)
 	if user.Id == 0 {
 		return nil
 	}

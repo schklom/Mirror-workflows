@@ -71,7 +71,7 @@ type Picture struct {
 // Location Table of the Users
 type CommandLogEntry struct {
 	Id      uint64 `gorm:"primaryKey"`
-	UserID  uint64
+	UserID  uint64 `gorm:"index"`
 	Content string // encrypted CommandLogEntryContent
 }
 

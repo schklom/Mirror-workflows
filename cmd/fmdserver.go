@@ -23,8 +23,6 @@ const VERSION = "v0.6.0"
 const WEB_DIR = "web"
 
 // Server Config
-const SERVER_CERT = "server.crt"
-const SERVER_KEY = "server.key"
 const CONFIG_FILE = "config.yml"
 
 var isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]*$`).MatchString
@@ -38,6 +36,8 @@ type config struct {
 	MaxSavedLoc       int    `yaml:"MaxSavedLoc"`
 	MaxSavedPic       int    `yaml:"MaxSavedPic"`
 	RegistrationToken string `yaml:"RegistrationToken"`
+	ServerCrt         string `yaml:"ServerCrt"`
+	ServerKey         string `yaml:"ServerKey"`
 }
 
 // Deprecated: used only by old clients. Modern clients use the opaque DataPackage.
@@ -597,7 +597,7 @@ func securityHeadersMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func handleRequests(filesDir string, webDir string, config config) {
+func handleRequests(webDir string, config config) {
 	mainDeviceHandler := mainDeviceHandler{createDeviceHandler{config.RegistrationToken}}
 
 	apiV1Mux := http.NewServeMux()
@@ -642,9 +642,9 @@ func handleRequests(filesDir string, webDir string, config config) {
 	muxFinal.Handle("/", securityHeadersMiddleware(apiV1Mux)) // deprecated
 	muxFinal.Handle("/api/v1/", http.StripPrefix("/api/v1", securityHeadersMiddleware(apiV1Mux)))
 
-	if fileExists(filepath.Join(filesDir, SERVER_KEY)) {
+	if fileExists(config.ServerCrt) && fileExists(config.ServerKey) {
 		securePort := ":" + strconv.Itoa(config.PortSecure)
-		err := http.ListenAndServeTLS(securePort, filepath.Join(filesDir, SERVER_CERT), filepath.Join(filesDir, SERVER_KEY), muxFinal)
+		err := http.ListenAndServeTLS(securePort, config.ServerCrt, config.ServerKey, muxFinal)
 		if err != nil {
 			fmt.Println("HTTPS won't be available.", err)
 		}
@@ -721,5 +721,5 @@ func main() {
 	fmt.Println("FMD Server ", VERSION)
 	fmt.Println("Starting Server")
 	fmt.Printf("Port: %d (insecure) %d (secure)\n", config.PortInsecure, config.PortSecure)
-	handleRequests(filesDir, webDir, config)
+	handleRequests(webDir, config)
 }

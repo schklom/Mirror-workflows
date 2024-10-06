@@ -59,14 +59,14 @@ type FMDUser struct {
 // Location Table of the Users
 type Location struct {
 	Id       uint64 `gorm:"primaryKey"`
-	UserID   uint64
+	UserID   uint64 `gorm:"index"`
 	Position string // elements must be string-encoded JSON structures
 }
 
 // Picture Table for the Users
 type Picture struct {
 	Id      uint64 `gorm:"primaryKey"`
-	UserID  uint64
+	UserID  uint64 `gorm:"index"`
 	Content string // elements are base64 encoded encrypted images
 }
 

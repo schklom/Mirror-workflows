@@ -69,7 +69,7 @@ func (u *UserRepository) UpdateUserPassword(id string, privKey string, salt stri
 }
 
 func (u *UserRepository) AddLocation(id string, loc string) {
-	user := u.UB.GetByID(id)
+	user := u.UB.GetByIDWithLocationData(id)
 
 	u.UB.Create(&Location{Position: loc, UserID: user.Id})
 
@@ -82,7 +82,7 @@ func (u *UserRepository) AddLocation(id string, loc string) {
 }
 
 func (u *UserRepository) AddPicture(id string, pic string) {
-	user := u.UB.GetByID(id)
+	user := u.UB.GetByIDWithPictureData(id)
 	u.UB.Create(&Picture{Content: pic, UserID: user.Id})
 
 	if len(user.Pictures) > u.maxSavedPic {
@@ -102,7 +102,7 @@ func (u *UserRepository) DeleteUser(uid string) {
 }
 
 func (u *UserRepository) GetLocation(id string, idx int) string {
-	user := u.UB.GetByID(id)
+	user := u.UB.GetByIDWithLocationData(id)
 	if idx < 0 || idx >= len(user.Locations) {
 		fmt.Printf("Location out of bounds: %d, max=%d\n", idx, len(user.Locations)-1)
 		return ""
@@ -111,7 +111,7 @@ func (u *UserRepository) GetLocation(id string, idx int) string {
 }
 
 func (u *UserRepository) GetPicture(id string, idx int) string {
-	user := u.UB.GetByID(id)
+	user := u.UB.GetByIDWithPictureData(id)
 	if len(user.Pictures) == 0 {
 		return "Picture not found"
 	}
@@ -119,12 +119,12 @@ func (u *UserRepository) GetPicture(id string, idx int) string {
 }
 
 func (u *UserRepository) GetPictureSize(id string) int {
-	user := u.UB.GetByID(id)
+	user := u.UB.GetByIDWithPictureData(id)
 	return len(user.Pictures)
 }
 
 func (u *UserRepository) GetLocationSize(id string) int {
-	user := u.UB.GetByID(id)
+	user := u.UB.GetByIDWithLocationData(id)
 	return len(user.Locations)
 }
 

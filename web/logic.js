@@ -54,7 +54,7 @@ function init() {
     map.setView(target, 1.5);
 
     var versionView = document.getElementById('version');
-    fetch("/api/v1/version", {
+    fetch("./api/v1/version", {
         method: 'GET'
     })
         .then(function (response) {
@@ -124,7 +124,7 @@ async function doLogin(fmdid, password, useLongSession) {
         return;
     }
 
-    let response = await fetch("/api/v1/salt", {
+    let response = await fetch("./api/v1/salt", {
         method: 'PUT',
         body: JSON.stringify({
             IDT: fmdid,
@@ -175,7 +175,7 @@ async function doLogin(fmdid, password, useLongSession) {
 }
 
 async function tryLoginWithHash(fmdid, passwordHash, sessionDurationSeconds) {
-    const response = await fetch("/api/v1/requestAccess", {
+    const response = await fetch("./api/v1/requestAccess", {
         method: 'PUT',
         body: JSON.stringify({
             IDT: fmdid,
@@ -196,7 +196,7 @@ async function tryLoginWithHash(fmdid, passwordHash, sessionDurationSeconds) {
 }
 
 async function getPrivateKey(password) {
-    response = await fetch("/api/v1/key", {
+    response = await fetch("./api/v1/key", {
         method: 'PUT',
         body: JSON.stringify({
             IDT: globalAccessToken,
@@ -278,7 +278,7 @@ async function locate(requestedIndex) {
         console.log("Missing accessToken!");
         return;
     }
-    let response = await fetch("/api/v1/locationDataSize", {
+    let response = await fetch("./api/v1/locationDataSize", {
         method: 'PUT',
         body: JSON.stringify({
             IDT: globalAccessToken,
@@ -319,7 +319,7 @@ async function locate(requestedIndex) {
         return
     }
 
-    response = await fetch("/api/v1/location", {
+    response = await fetch("./api/v1/location", {
         method: 'PUT',
         body: JSON.stringify({
             IDT: globalAccessToken,
@@ -428,7 +428,7 @@ async function sendToPhone(message) {
         return;
     }
 
-    response = await fetch("/api/v1/command", {
+    response = await fetch("./api/v1/command", {
         method: 'POST',
         body: JSON.stringify({
             IDT: globalAccessToken,
@@ -458,7 +458,7 @@ async function showCommandLogs() {
         return;
     }
 
-    response = await fetch("/api/v1/commandLogs", {
+    response = await fetch("./api/v1/commandLogs", {
         method: 'PUT',
         body: JSON.stringify({
             IDT: globalAccessToken,
@@ -486,7 +486,7 @@ async function showLatestPicture() {
         console.log("Missing accessToken!");
         return;
     }
-    const response = await fetch("/api/v1/pictureSize", {
+    const response = await fetch("./api/v1/pictureSize", {
         method: 'PUT',
         body: JSON.stringify({
             IDT: globalAccessToken,
@@ -523,7 +523,7 @@ async function loadPicture(index) {
         console.log("Missing accessToken!");
         return;
     }
-    const response = await fetch("/api/v1/picture", {
+    const response = await fetch("./api/v1/picture", {
         method: 'PUT',
         body: JSON.stringify({
             IDT: globalAccessToken,

@@ -4,9 +4,8 @@
     "description": "Locate and control your devices from a web interface.",
     "icons": [
         {
-            "src": "favicon.ico",
-            "type": "image/x-icon",
-            "sizes": "456x505"
+            "src": "FMD.svg",
+            "sizes": "any"
         }
     ],
     "display": "standalone",

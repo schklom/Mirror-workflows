@@ -61,9 +61,6 @@ jobs:
         run: |
           git ls-remote https://github.com/shenxn/protonmail-bridge-docker HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
           git ls-remote https://github.com/ProtonMail/proton-bridge HEAD | awk '{ print $1 }' > last_sync_with_original_parent_repo_commit_id
-       
-      - name: Delete Actions inside
-        run: rm -rf .github/
       
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v5

@@ -210,11 +210,13 @@ func (u *UserRepository) GetPushUrl(user *FMDUser) string {
 }
 
 func (u *UserRepository) generateNewId() string {
-	newId := genRandomString(u.userIDLength)
-	for u.UB.GetByID(newId) != nil {
-		newId = genRandomString(u.userIDLength)
+	for {
+		newId := genRandomString(u.userIDLength)
+		user, _ := u.UB.GetByID(newId)
+		if user == nil {
+			return newId
+		}
 	}
-	return newId
 }
 
 func genRandomString(length int) string {
@@ -233,8 +235,8 @@ func genRandomString(length int) string {
 }
 
 func (u *UserRepository) GetSalt(id string) string {
-	user := u.UB.GetByID(id)
-	if user == nil {
+	user, err := u.UB.GetByID(id)
+	if err != nil {
 		return ""
 	}
 	if user.Salt != "" {

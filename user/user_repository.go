@@ -61,6 +61,14 @@ func (u *UserRepository) Init(path string, userIDLength int, maxSavedLoc int, ma
 	u.UB = initSQLite(dbPath)
 }
 
+func (u *UserRepository) CheckAccessTokenAndGetUser(providedAccessToken string) (*FMDUser, error) {
+	userId, err := u.ACC.CheckAccessToken(providedAccessToken)
+	if err != nil {
+		return nil, err
+	}
+	return u.UB.GetByID(userId)
+}
+
 func (u *UserRepository) CreateNewUser(privKey string, pubKey string, salt string, hashedPassword string) string {
 	id := u.generateNewId()
 	u.UB.Create(&FMDUser{UID: id, Salt: salt, HashedPassword: hashedPassword, PrivateKey: privKey, PublicKey: pubKey})

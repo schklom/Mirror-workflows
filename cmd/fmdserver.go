@@ -89,7 +89,7 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	id, err := uio.ACC.CheckAccessToken(request.IDT)
+	user, err := uio.CheckAccessTokenAndGetUser(request.IDT)
 	if err != nil {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
@@ -133,7 +133,7 @@ func postLocationModern(w http.ResponseWriter, body []byte) bool {
 		// not a valid modern location package
 		return false
 	}
-	id, err := uio.ACC.CheckAccessToken(request.IDT)
+	user, err := uio.CheckAccessTokenAndGetUser(request.IDT)
 	if err != nil {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return true
@@ -151,7 +151,7 @@ func postLocationLegacy(w http.ResponseWriter, body []byte) bool {
 		fmt.Println("Failed to decode as locationData:", err)
 		return false
 	}
-	id, err := uio.ACC.CheckAccessToken(location.IDT)
+	user, err := uio.CheckAccessTokenAndGetUser(location.IDT)
 	if err != nil {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return true
@@ -169,7 +169,7 @@ func getLocationDataSize(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	id, err := uio.ACC.CheckAccessToken(request.IDT)
+	user, err := uio.CheckAccessTokenAndGetUser(request.IDT)
 	if err != nil {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
@@ -192,7 +192,7 @@ func getPicture(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	id, err := uio.ACC.CheckAccessToken(request.IDT)
+	user, err := uio.CheckAccessTokenAndGetUser(request.IDT)
 	if err != nil {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
@@ -214,7 +214,7 @@ func getPictureSize(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	id, err := uio.ACC.CheckAccessToken(request.IDT)
+	user, err := uio.CheckAccessTokenAndGetUser(request.IDT)
 	if err != nil {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
@@ -235,7 +235,7 @@ func postPicture(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	id, err := uio.ACC.CheckAccessToken(data.IDT)
+	user, err := uio.CheckAccessTokenAndGetUser(data.IDT)
 	if err != nil {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
@@ -255,7 +255,7 @@ func getPrivKey(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	id, err := uio.ACC.CheckAccessToken(request.IDT)
+	user, err := uio.CheckAccessTokenAndGetUser(request.IDT)
 	if err != nil {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
@@ -273,7 +273,7 @@ func getPubKey(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	id, err := uio.ACC.CheckAccessToken(request.IDT)
+	user, err := uio.CheckAccessTokenAndGetUser(request.IDT)
 	if err != nil {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
@@ -293,7 +293,7 @@ func getCommand(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	id, err := uio.ACC.CheckAccessToken(data.IDT)
+	user, err := uio.CheckAccessTokenAndGetUser(data.IDT)
 	if err != nil {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
@@ -317,7 +317,7 @@ func postCommand(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	id, err := uio.ACC.CheckAccessToken(data.IDT)
+	user, err := uio.CheckAccessTokenAndGetUser(data.IDT)
 	if err != nil {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
@@ -334,7 +334,7 @@ func getCommandLog(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	id, err := uio.ACC.CheckAccessToken(data.IDT)
+	user, err := uio.CheckAccessTokenAndGetUser(data.IDT)
 	if err != nil {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
@@ -385,7 +385,7 @@ func getPushUrl(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Meeep!, Error - getIsPushRegistered 1", http.StatusBadRequest)
 		return
 	}
-	id, err := uio.ACC.CheckAccessToken(data.IDT)
+	user, err := uio.CheckAccessTokenAndGetUser(data.IDT)
 	if err != nil {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
@@ -402,7 +402,7 @@ func postPushUrl(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	id, err := uio.ACC.CheckAccessToken(data.IDT)
+	user, err := uio.CheckAccessTokenAndGetUser(data.IDT)
 	if err != nil {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
@@ -468,7 +468,7 @@ func postPassword(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	id, err := uio.ACC.CheckAccessToken(data.IDT)
+	user, err := uio.CheckAccessTokenAndGetUser(data.IDT)
 	if err != nil {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
@@ -491,7 +491,7 @@ func deleteDevice(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	id, err := uio.ACC.CheckAccessToken(data.IDT)
+	user, err := uio.CheckAccessTokenAndGetUser(data.IDT)
 	if err != nil {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return

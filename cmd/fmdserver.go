@@ -446,21 +446,22 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid FMD ID", http.StatusBadRequest)
 		return
 	}
-	if uio.ACC.IsLocked(data.IDT) {
+
+	accessToken, err := uio.RequestAccess(data.IDT, data.PasswordHash, data.SessionDurationSeconds)
+
+	if err == user.ErrAccountLocked {
 		http.Error(w, "Account is locked", http.StatusLocked)
-		uio.SetCommandToUser(data.IDT, "423")
 		return
 	}
-	accessToken, granted := uio.RequestAccess(data.IDT, data.PasswordHash, data.SessionDurationSeconds)
-	if granted {
-		accessTokenReply := DataPackage{IDT: data.IDT, Data: accessToken.Token}
-		result, _ := json.Marshal(accessTokenReply)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(result)
-	} else {
-		uio.ACC.IncrementLock(data.IDT)
+	if err != nil {
 		http.Error(w, "Access denied", http.StatusForbidden)
+		return
 	}
+
+	accessTokenReply := DataPackage{IDT: data.IDT, Data: accessToken.Token}
+	result, _ := json.Marshal(accessTokenReply)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(result)
 }
 
 func postPassword(w http.ResponseWriter, r *http.Request) {

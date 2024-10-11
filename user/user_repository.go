@@ -3,6 +3,7 @@ package user
 import (
 	"crypto/rand"
 	"encoding/json"
+	"errors"
 	"findmydeviceserver/utils"
 	"fmt"
 	"log"
@@ -245,14 +246,25 @@ func (u *UserRepository) GetSalt(id string) string {
 	return getSaltFromArgon2EncodedHash(user.HashedPassword)
 }
 
-func (u *UserRepository) RequestAccess(id string, hashedPW string, sessionDurationSeconds uint64) (*AccessToken, bool) {
-	user := u.UB.GetByID(id)
-	if user != nil {
-		if strings.EqualFold(strings.ToLower(user.HashedPassword), strings.ToLower(hashedPW)) {
-			u.ACC.ResetLock(id)
-			token := u.ACC.CreateNewAccessToken(id, sessionDurationSeconds)
-			return &token, true
-		}
+var ErrAccountLocked = errors.New("too many attempts, account locked")
+
+func (u *UserRepository) RequestAccess(id string, hashedPW string, sessionDurationSeconds uint64) (*AccessToken, error) {
+	user, err := u.UB.GetByID(id)
+	if err != nil {
+		return nil, err
 	}
-	return nil, false
+
+	if u.ACC.IsLocked(id) {
+		u.SetCommandToUser(user, "423")
+		return nil, ErrAccountLocked
+	}
+
+	if strings.EqualFold(strings.ToLower(user.HashedPassword), strings.ToLower(hashedPW)) {
+		u.ACC.ResetLock(id)
+		token := u.ACC.CreateNewAccessToken(id, sessionDurationSeconds)
+		return &token, nil
+	} else {
+		u.ACC.IncrementLock(id)
+		return nil, errors.New("wrong password")
+	}
 }

@@ -1,6 +1,8 @@
 package user
 
 import (
+	"errors"
+	"fmt"
 	"log"
 	"os"
 
@@ -118,37 +120,22 @@ func (db *FMDDB) GetLastID() int {
 	return int(user.Id)
 }
 
-func (db *FMDDB) GetByID(id string) *FMDUser {
+func (db *FMDDB) GetByID(id string) (*FMDUser, error) {
 	var user = FMDUser{UID: id}
-	//Disabled Feature: CommandLogs
-	//db.DB.Preload("Locations").Preload("Pictures").Preload("CommandLogs").Where(&user).First(&user)
 	db.DB.Where(&user).Find(&user)
 	if user.Id == 0 {
-		return nil
+		fmt.Println("User not found:", id)
+		return nil, errors.New("user not found")
 	}
-	return &user
+	return &user, nil
 }
 
-func (db *FMDDB) GetByIDWithLocationData(id string) *FMDUser {
-	var user = FMDUser{UID: id}
-	//Disabled Feature: CommandLogs
-	//db.DB.Preload("Locations").Preload("Pictures").Preload("CommandLogs").Where(&user).First(&user)
+func (db *FMDDB) PreloadLocations(user *FMDUser) {
 	db.DB.Preload("Locations").Where(&user).Find(&user)
-	if user.Id == 0 {
-		return nil
-	}
-	return &user
 }
 
-func (db *FMDDB) GetByIDWithPictureData(id string) *FMDUser {
-	var user = FMDUser{UID: id}
-	//Disabled Feature: CommandLogs
-	//db.DB.Preload("Locations").Preload("Pictures").Preload("CommandLogs").Where(&user).First(&user)
+func (db *FMDDB) PreloadPictures(user *FMDUser) {
 	db.DB.Preload("Pictures").Where(&user).Find(&user)
-	if user.Id == 0 {
-		return nil
-	}
-	return &user
 }
 
 func (db *FMDDB) Save(value interface{}) {

@@ -83,7 +83,7 @@ func (u *UserRepository) UpdateUserPassword(user *FMDUser, privKey string, salt 
 }
 
 func (u *UserRepository) AddLocation(user *FMDUser, loc string) {
-	//user := u.UB.GetByIDWithLocationData(id)
+	u.UB.PreloadLocations(user)
 
 	u.UB.Create(&Location{Position: loc, UserID: user.Id})
 
@@ -96,7 +96,8 @@ func (u *UserRepository) AddLocation(user *FMDUser, loc string) {
 }
 
 func (u *UserRepository) AddPicture(user *FMDUser, pic string) {
-	//user := u.UB.GetByIDWithPictureData(id)
+	u.UB.PreloadPictures(user)
+
 	u.UB.Create(&Picture{Content: pic, UserID: user.Id})
 
 	if len(user.Pictures) > u.maxSavedPic {
@@ -115,7 +116,8 @@ func (u *UserRepository) DeleteUser(user *FMDUser) {
 }
 
 func (u *UserRepository) GetLocation(user *FMDUser, idx int) string {
-	// user := u.UB.GetByIDWithLocationData(id)
+	u.UB.PreloadLocations(user)
+
 	if idx < 0 || idx >= len(user.Locations) {
 		fmt.Printf("Location out of bounds: %d, max=%d\n", idx, len(user.Locations)-1)
 		return ""
@@ -124,7 +126,8 @@ func (u *UserRepository) GetLocation(user *FMDUser, idx int) string {
 }
 
 func (u *UserRepository) GetPicture(user *FMDUser, idx int) string {
-	// user := u.UB.GetByIDWithPictureData(id)
+	u.UB.PreloadPictures(user)
+
 	if len(user.Pictures) == 0 {
 		return "Picture not found"
 	}
@@ -132,12 +135,12 @@ func (u *UserRepository) GetPicture(user *FMDUser, idx int) string {
 }
 
 func (u *UserRepository) GetPictureSize(user *FMDUser) int {
-	// user := u.UB.GetByIDWithPictureData(id)
+	u.UB.PreloadPictures(user)
 	return len(user.Pictures)
 }
 
 func (u *UserRepository) GetLocationSize(user *FMDUser) int {
-	// user := u.UB.GetByIDWithLocationData(id)
+	u.UB.PreloadLocations(user)
 	return len(user.Locations)
 }
 

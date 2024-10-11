@@ -363,11 +363,15 @@ func pushUser(id string) {
 		"message": "fmd app wakeup",
 		"priority": 5
 	}`)
-	request, _ := http.NewRequest("POST", pushUrl, bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", pushUrl, bytes.NewBuffer(jsonData))
+	if err != nil {
+		fmt.Println("Error building push request:", err)
+		return
+	}
 	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
 
 	client := &http.Client{}
-	_, err := client.Do(request)
+	_, err = client.Do(request)
 	if err != nil {
 		fmt.Println("Error sending push: ", err)
 		return
@@ -701,7 +705,7 @@ func get_cwd() string {
 
 func fileExists(filename string) bool {
 	info, err := os.Stat(filename)
-	if os.IsNotExist(err) {
+	if os.IsNotExist(err) || info == nil {
 		return false
 	}
 	return !info.IsDir()

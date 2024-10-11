@@ -27,6 +27,12 @@ format:
     - go vet $(go list ./... | grep -v /vendor/)
     - go test -race $(go list ./... | grep -v /vendor/)
 
+nil-safety:
+  stage: test
+  script:
+    - go install go.uber.org/nilaway/cmd/nilaway@latest
+    - nilaway -include-pkgs="findmydeviceserver" ./...
+
 compile:
   stage: build
   script:

@@ -3,6 +3,7 @@ package user
 import (
 	"crypto/rand"
 	"encoding/json"
+	"errors"
 	"findmydeviceserver/utils"
 	"fmt"
 	"log"
@@ -61,22 +62,29 @@ func (u *UserRepository) Init(path string, userIDLength int, maxSavedLoc int, ma
 	u.UB = initSQLite(dbPath)
 }
 
+func (u *UserRepository) CheckAccessTokenAndGetUser(providedAccessToken string) (*FMDUser, error) {
+	userId, err := u.ACC.CheckAccessToken(providedAccessToken)
+	if err != nil {
+		return nil, err
+	}
+	return u.UB.GetByID(userId)
+}
+
 func (u *UserRepository) CreateNewUser(privKey string, pubKey string, salt string, hashedPassword string) string {
 	id := u.generateNewId()
 	u.UB.Create(&FMDUser{UID: id, Salt: salt, HashedPassword: hashedPassword, PrivateKey: privKey, PublicKey: pubKey})
 	return id
 }
 
-func (u *UserRepository) UpdateUserPassword(id string, privKey string, salt string, hashedPassword string) {
-	user := u.UB.GetByID(id)
+func (u *UserRepository) UpdateUserPassword(user *FMDUser, privKey string, salt string, hashedPassword string) {
 	user.HashedPassword = hashedPassword
 	user.Salt = salt
 	user.PrivateKey = privKey
 	u.UB.Save(&user)
 }
 
-func (u *UserRepository) AddLocation(id string, loc string) {
-	user := u.UB.GetByIDWithLocationData(id)
+func (u *UserRepository) AddLocation(user *FMDUser, loc string) {
+	u.UB.PreloadLocations(user)
 
 	u.UB.Create(&Location{Position: loc, UserID: user.Id})
 
@@ -88,8 +96,9 @@ func (u *UserRepository) AddLocation(id string, loc string) {
 	}
 }
 
-func (u *UserRepository) AddPicture(id string, pic string) {
-	user := u.UB.GetByIDWithPictureData(id)
+func (u *UserRepository) AddPicture(user *FMDUser, pic string) {
+	u.UB.PreloadPictures(user)
+
 	u.UB.Create(&Picture{Content: pic, UserID: user.Id})
 
 	if len(user.Pictures) > u.maxSavedPic {
@@ -100,16 +109,16 @@ func (u *UserRepository) AddPicture(id string, pic string) {
 	}
 }
 
-func (u *UserRepository) DeleteUser(uid string) {
-	user := u.UB.GetByID(uid)
+func (u *UserRepository) DeleteUser(user *FMDUser) {
 	u.UB.DB.Where("user_id = ?", user.Id).Delete(&Picture{})
 	u.UB.DB.Where("user_id = ?", user.Id).Delete(&Location{})
 	u.UB.DB.Where("user_id = ?", user.Id).Delete(&CommandLogEntry{})
 	u.UB.Delete(&user)
 }
 
-func (u *UserRepository) GetLocation(id string, idx int) string {
-	user := u.UB.GetByIDWithLocationData(id)
+func (u *UserRepository) GetLocation(user *FMDUser, idx int) string {
+	u.UB.PreloadLocations(user)
+
 	if idx < 0 || idx >= len(user.Locations) {
 		fmt.Printf("Location out of bounds: %d, max=%d\n", idx, len(user.Locations)-1)
 		return ""
@@ -117,42 +126,39 @@ func (u *UserRepository) GetLocation(id string, idx int) string {
 	return user.Locations[idx].Position
 }
 
-func (u *UserRepository) GetPicture(id string, idx int) string {
-	user := u.UB.GetByIDWithPictureData(id)
+func (u *UserRepository) GetPicture(user *FMDUser, idx int) string {
+	u.UB.PreloadPictures(user)
+
 	if len(user.Pictures) == 0 {
 		return "Picture not found"
 	}
 	return user.Pictures[idx].Content
 }
 
-func (u *UserRepository) GetPictureSize(id string) int {
-	user := u.UB.GetByIDWithPictureData(id)
+func (u *UserRepository) GetPictureSize(user *FMDUser) int {
+	u.UB.PreloadPictures(user)
 	return len(user.Pictures)
 }
 
-func (u *UserRepository) GetLocationSize(id string) int {
-	user := u.UB.GetByIDWithLocationData(id)
+func (u *UserRepository) GetLocationSize(user *FMDUser) int {
+	u.UB.PreloadLocations(user)
 	return len(user.Locations)
 }
 
-func (u *UserRepository) GetPrivateKey(id string) string {
-	user := u.UB.GetByID(id)
+func (u *UserRepository) GetPrivateKey(user *FMDUser) string {
 	return user.PrivateKey
 }
 
-func (u *UserRepository) SetPrivateKey(id string, key string) {
-	user := u.UB.GetByID(id)
+func (u *UserRepository) SetPrivateKey(user *FMDUser, key string) {
 	user.PrivateKey = key
 	u.UB.Save(&user)
 }
 
-func (u *UserRepository) GetPublicKey(id string) string {
-	user := u.UB.GetByID(id)
+func (u *UserRepository) GetPublicKey(user *FMDUser) string {
 	return user.PublicKey
 }
 
-func (u *UserRepository) SetPublicKey(id string, key string) {
-	user := u.UB.GetByID(id)
+func (u *UserRepository) SetPublicKey(user *FMDUser, key string) {
 	user.PublicKey = key
 	u.UB.Save(&user)
 }
@@ -169,8 +175,7 @@ func (u *UserRepository) addCommandLogEntry(user *FMDUser, entry string) {
 	u.UB.Create(&comLogEntry)
 }
 
-func (u *UserRepository) SetCommandToUser(id string, cmd string) {
-	user := u.UB.GetByID(id)
+func (u *UserRepository) SetCommandToUser(user *FMDUser, cmd string) {
 	user.CommandToUser = cmd
 
 	if cmd != "" {
@@ -180,9 +185,7 @@ func (u *UserRepository) SetCommandToUser(id string, cmd string) {
 	u.UB.Save(&user)
 }
 
-func (u *UserRepository) GetCommandToUser(id string) string {
-	user := u.UB.GetByID(id)
-
+func (u *UserRepository) GetCommandToUser(user *FMDUser) string {
 	if user.CommandToUser != "" {
 		logEntry := fmt.Sprintf("Command \"%s\" received by device!", user.CommandToUser)
 		u.addCommandLogEntry(user, logEntry)
@@ -190,8 +193,7 @@ func (u *UserRepository) GetCommandToUser(id string) string {
 	return user.CommandToUser
 }
 
-func (u *UserRepository) GetCommandLog(id string) string {
-	user := u.UB.GetByID(id)
+func (u *UserRepository) GetCommandLog(user *FMDUser) string {
 	commandLog := ""
 	for _, logEntry := range user.CommandLogs {
 		commandLog += logEntry.Content + "\n"
@@ -199,23 +201,23 @@ func (u *UserRepository) GetCommandLog(id string) string {
 	return commandLog
 }
 
-func (u *UserRepository) SetPushUrl(id string, pushUrl string) {
-	user := u.UB.GetByID(id)
+func (u *UserRepository) SetPushUrl(user *FMDUser, pushUrl string) {
 	user.PushUrl = pushUrl
 	u.UB.Save(&user)
 }
 
-func (u *UserRepository) GetPushUrl(id string) string {
-	user := u.UB.GetByID(id)
+func (u *UserRepository) GetPushUrl(user *FMDUser) string {
 	return user.PushUrl
 }
 
 func (u *UserRepository) generateNewId() string {
-	newId := genRandomString(u.userIDLength)
-	for u.UB.GetByID(newId) != nil {
-		newId = genRandomString(u.userIDLength)
+	for {
+		newId := genRandomString(u.userIDLength)
+		user, _ := u.UB.GetByID(newId)
+		if user == nil {
+			return newId
+		}
 	}
-	return newId
 }
 
 func genRandomString(length int) string {
@@ -234,8 +236,8 @@ func genRandomString(length int) string {
 }
 
 func (u *UserRepository) GetSalt(id string) string {
-	user := u.UB.GetByID(id)
-	if user == nil {
+	user, err := u.UB.GetByID(id)
+	if err != nil {
 		return ""
 	}
 	if user.Salt != "" {
@@ -244,14 +246,25 @@ func (u *UserRepository) GetSalt(id string) string {
 	return getSaltFromArgon2EncodedHash(user.HashedPassword)
 }
 
-func (u *UserRepository) RequestAccess(id string, hashedPW string, sessionDurationSeconds uint64) (*AccessToken, bool) {
-	user := u.UB.GetByID(id)
-	if user != nil {
-		if strings.EqualFold(strings.ToLower(user.HashedPassword), strings.ToLower(hashedPW)) {
-			u.ACC.ResetLock(id)
-			token := u.ACC.CreateNewAccessToken(id, sessionDurationSeconds)
-			return &token, true
-		}
+var ErrAccountLocked = errors.New("too many attempts, account locked")
+
+func (u *UserRepository) RequestAccess(id string, hashedPW string, sessionDurationSeconds uint64) (*AccessToken, error) {
+	user, err := u.UB.GetByID(id)
+	if err != nil {
+		return nil, err
 	}
-	return nil, false
+
+	if u.ACC.IsLocked(id) {
+		u.SetCommandToUser(user, "423")
+		return nil, ErrAccountLocked
+	}
+
+	if strings.EqualFold(strings.ToLower(user.HashedPassword), strings.ToLower(hashedPW)) {
+		u.ACC.ResetLock(id)
+		token := u.ACC.CreateNewAccessToken(id, sessionDurationSeconds)
+		return &token, nil
+	} else {
+		u.ACC.IncrementLock(id)
+		return nil, errors.New("wrong password")
+	}
 }

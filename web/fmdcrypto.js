@@ -3,15 +3,6 @@ function base64Decode(encodedData) {
     return Uint8Array.from(atob(encodedData), c => c.charCodeAt(0))
 }
 
-
-// Legacy crypto uses libraries that we ship (CryptoJS and JSEncrypt).
-// Modern crpyto uses the WebCrypto API:
-// https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API
-//
-// WARNING: The legacy crypto contains known issues and is only included for
-//          compatibility with old clients.
-//          See https://gitlab.com/Nulide/findmydeviceserver/-/issues/22
-
 const AES_GCM_IV_SIZE_BYTES = 12;
 
 const RSA_KEY_SIZE_BYTES = 3072 / 8;
@@ -31,13 +22,6 @@ const CONTEXT_STRING_LOGIN = "context:loginAuthentication";
 async function hashPasswordForLoginModern(password, salt) {
     const res = await hashPasswordArgon2(CONTEXT_STRING_LOGIN + password, salt);
     return res.encoded // string
-}
-
-function hashPasswordForLoginLegacy(password, salt) {
-    return CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt), {
-        keySize: 256 / 32,
-        iterations: 1867 * 2
-    }).toString();
 }
 
 async function hashPasswordForKeyWrap(password, salt) {
@@ -72,13 +56,7 @@ async function unwrapPrivateKey(password, keyData) {
     try {
         return await unwrapPrivateKeyModern(password, keyData);
     } catch (error) {
-        console.log("Modern unwrapKey failed, trying legacy:", error);
-    }
-    try {
-        return unwrapPrivateKeyLegacy(password, keyData);
-    }
-    catch (error) {
-        console.log("Legacy unwrapKey failed:", error);
+        console.log("unwrapKey failed:", error);
     }
     return -1
 }
@@ -110,10 +88,6 @@ async function unwrapPrivateKeyModern(password, keyData) { // -> CryptoKey
     return rsaCryptoKey;
 }
 
-function unwrapPrivateKeyLegacy(password, keyData) {
-    return decryptAESLegacy(password, keyData)
-}
-
 // Section: Symmetric crypto
 
 async function decryptPacketModern(rsaCryptoKey, packetBase64) {
@@ -130,29 +104,4 @@ async function decryptPacketModern(rsaCryptoKey, packetBase64) {
 
     const plaintextString = new TextDecoder().decode(plaintext);
     return plaintextString
-}
-
-// XXX: Remove this in a few months/a year when all clients had reasonable time to upgrade
-function decryptAESLegacy(password, ciphertext) {
-    keySize = 256;
-    ivSize = 128;
-    iterationCount = 1867;
-
-    let ivLength = ivSize / 4;
-    let saltLength = keySize / 4;
-
-    let iv = ciphertext.substr(saltLength, ivLength);
-    let encrypted = ciphertext.substring(ivLength + saltLength);
-
-    let salt = ciphertext.substr(0, saltLength);
-    let derivedAesKey = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt), {
-        keySize: keySize / 32,
-        iterations: iterationCount
-    });
-
-    let cipherParams = CryptoJS.lib.CipherParams.create({
-        ciphertext: CryptoJS.enc.Base64.parse(encrypted)
-    });
-    let decrypted = CryptoJS.AES.decrypt(cipherParams, derivedAesKey, { iv: CryptoJS.enc.Hex.parse(iv) });
-    return decrypted.toString(CryptoJS.enc.Utf8);
 }

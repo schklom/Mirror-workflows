@@ -23,7 +23,7 @@ type LockedId struct {
 	Timestamp int64
 }
 
-const MAX_ALLOWED_ATTEMPTS = 3
+const MAX_ALLOWED_ATTEMPTS = 5
 
 const DURATION_LOCKED_SECS = 10 * 60          // 10 mins
 const DEFAULT_TOKEN_VALID_SECS = 15 * 60      // 15 mins

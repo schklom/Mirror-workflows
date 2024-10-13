@@ -97,6 +97,8 @@ function setupOnClicks() {
     document.getElementById("showPicture").addEventListener("click", async () => await showLatestPicture());
     //Disabled Feature: CommandLogs
     //document.getElementById("showCommandLogs").addEventListener("click", async () => await showCommandLogs());
+
+    document.getElementById("deleteAccountButton").addEventListener("click", async () => await deleteAccount());
 }
 
 function checkWebCryptoApiAvailable() {
@@ -213,16 +215,20 @@ async function getPrivateKey(password) {
     globalPrivateKey = await unwrapPrivateKey(password, keyData.Data);
 }
 
-async function tokenExpiredRedirect() {
+async function redirectToLogin(toastMessage) {
     const toasted = new Toasted({
         position: 'top-center',
         duration: 3000
     })
-    toasted.show('Session expired, please log in again.');
+    toasted.show(toastMessage);
 
     await sleep(3000);
 
     window.location.replace("/");
+}
+
+async function tokenExpiredRedirect() {
+    redirectToLogin('Session expired, please log in again.');
 }
 
 // Section: Push Warning
@@ -667,4 +673,39 @@ function prepareDeleteDevice() {
         }
     }, false);
 
+}
+
+// Section: Delete Account
+
+async function deleteAccount() {
+    if (!confirm("Do you really want to delete this account and all associated data from the server?")) {
+        const toasted = new Toasted({
+            position: 'top-center',
+            duration: 3000
+        })
+        toasted.show("Account deletion cancelled");
+        return;
+    }
+    if (!globalAccessToken) {
+        console.log("Missing accessToken!");
+        return;
+    }
+    const response = await fetch("api/v1/device", {
+        method: 'POST',
+        body: JSON.stringify({
+            IDT: globalAccessToken,
+            Data: ""
+        }),
+        headers: {
+            'Content-type': 'application/json'
+        }
+    });
+    if (response.status == 401) {
+        tokenExpiredRedirect();
+        return
+    }
+    if (!response.ok) {
+        throw response.status;
+    }
+    redirectToLogin("Account deleted");
 }

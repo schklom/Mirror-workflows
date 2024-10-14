@@ -29,6 +29,9 @@ window.onclick = function (event) {
     if (event.target.id != "locateDropDownButtonInner") {
         document.getElementById("locateDropDown").style.display = "None";
     }
+    if (event.target.id != "settingsDropDownButtonInner") {
+        document.getElementById("settingsDropDown").style.display = "None";
+    }
 }
 
 function init() {
@@ -94,11 +97,12 @@ function setupOnClicks() {
     document.getElementById("cameraFront").addEventListener("click", () => sendToPhone("camera front"));
     document.getElementById("cameraBack").addEventListener("click", () => sendToPhone("camera back"));
     document.getElementById("takePicture").addEventListener("click", () => showCameraDropDown());
+    document.getElementById("openSettings").addEventListener("click", () => showSettingsDropDown());
     document.getElementById("showPicture").addEventListener("click", async () => await showLatestPicture());
     //Disabled Feature: CommandLogs
     //document.getElementById("showCommandLogs").addEventListener("click", async () => await showCommandLogs());
 
-    document.getElementById("deleteAccountButton").addEventListener("click", async () => await deleteAccount());
+    document.getElementById("deleteAccount").addEventListener("click", async () => await deleteAccount());
 }
 
 function checkWebCryptoApiAvailable() {
@@ -627,6 +631,12 @@ function displayCommandLogs(logs) {
 
 function showCameraDropDown() {
     document.getElementById("cameraDropDown").style.display = "block";
+}
+
+// Section: Settings
+
+function showSettingsDropDown() {
+    document.getElementById("settingsDropDown").style.display = "block";
 }
 
 // Section: Delete device

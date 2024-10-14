@@ -116,8 +116,13 @@ func getAllLocations(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	data := uio.GetAllLocations(user)
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		http.Error(w, "Failed to export data", http.StatusConflict)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte(fmt.Sprint(string(data))))
+	w.Write([]byte(fmt.Sprint(string(jsonData))))
 }
 
 func postLocation(w http.ResponseWriter, r *http.Request) {

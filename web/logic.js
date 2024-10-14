@@ -714,7 +714,7 @@ async function deleteAccount() {
     });
     if (response.status == 401) {
         tokenExpiredRedirect();
-        return
+        return;
     }
     if (!response.ok) {
         throw response.status;
@@ -744,13 +744,13 @@ async function exportData() {
     });
     if (response.status == 401) {
         tokenExpiredRedirect();
-        return
+        return;
     }
     if (!response.ok) {
         throw response.status;
     }
-    locationsCSV = "Date,Provider,Battery Percentage,Longitude,Latitude\n"
-    locationsAsJSON = await locationsData.json()
+    locationsCSV = "Date,Provider,Battery Percentage,Longitude,Latitude\n";
+    locationsAsJSON = await locationsData.json();
     for (locationJSON of locationsAsJSON){
         loc = await parseLocation(globalPrivateKey, JSON.parse(locationJSON))
         locationsCSV+=loc.time+","+loc.provider+","+loc.bat+","+loc.lon+","+loc.lat+"\n"
@@ -772,11 +772,28 @@ async function exportData() {
     if (!response.ok) {
         throw response.status;
     }
-    picturesAsJSON = await picturesData.json()
-    pictures = []
+    picturesAsJSON = await picturesData.json();
+    pictures = [];
     for (picture of picturesAsJSON){
-        pic = await parsePicture(globalPrivateKey, picture)
-        pictures.push(pic)
+        pic = await parsePicture(globalPrivateKey, picture);
+        pictures.push(pic);
     }
-    //console.log(pictures[0])
+    var zip = new JSZip();
+    zip.file("locations.csv",locationsCSV);
+    var img = zip.folder("pictures");
+    for ([index,pic] of pictures.entries()){
+        img.file(String(index)+".png", pic, { base64: true });
+    }
+    zip.generateAsync({type:"blob"}).then(function(content){
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(content);
+        link.download = "fmdexport.zip";
+
+        // Append to the document and trigger download
+        document.body.appendChild(link);
+        link.click();
+
+        // Clean up
+        document.body.removeChild(link);
+    });
 }

@@ -229,6 +229,28 @@ func getPicture(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(fmt.Sprint(string(data))))
 }
 
+func getAllPictures(w http.ResponseWriter, r *http.Request) {
+	var request DataPackage
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+	user, err := uio.CheckAccessTokenAndGetUser(request.IDT)
+	if err != nil {
+		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
+		return
+	}
+	data := uio.GetAllPictures(user)
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		http.Error(w, "Failed to export data", http.StatusConflict)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(fmt.Sprint(string(jsonData))))
+}
+
 func getPictureSize(w http.ResponseWriter, r *http.Request) {
 	var request DataPackage
 	err := json.NewDecoder(r.Body).Decode(&request)
@@ -643,6 +665,8 @@ func handleRequests(webDir string, config config) {
 	apiV1Mux.HandleFunc("/locationDataSize/", getLocationDataSize)
 	apiV1Mux.HandleFunc("/picture", mainPicture)
 	apiV1Mux.HandleFunc("/picture/", mainPicture)
+	apiV1Mux.HandleFunc("/pictures", getAllPictures)
+	apiV1Mux.HandleFunc("/pictures/", getAllPictures)
 	apiV1Mux.HandleFunc("/pictureSize", getPictureSize)
 	apiV1Mux.HandleFunc("/pictureSize/", getPictureSize)
 	apiV1Mux.HandleFunc("/key", getPrivKey)

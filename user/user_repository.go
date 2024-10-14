@@ -146,6 +146,21 @@ func (u *UserRepository) GetPicture(user *FMDUser, idx int) string {
 	return user.Pictures[idx].Content
 }
 
+func (u *UserRepository) GetAllPictures(user *FMDUser) []string {
+	u.UB.PreloadPictures(user)
+
+	if len(user.Pictures) == 0 {
+		return []string{}
+	}
+
+	pictures := make([]string, len(user.Pictures))
+	for i, picture := range user.Pictures {
+		pictures[i] = picture.Content
+	}
+
+	return pictures
+}
+
 func (u *UserRepository) GetPictureSize(user *FMDUser) int {
 	u.UB.PreloadPictures(user)
 	return len(user.Pictures)

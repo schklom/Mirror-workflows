@@ -103,6 +103,23 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(fmt.Sprint(string(data))))
 }
 
+func getAllLocations(w http.ResponseWriter, r *http.Request) {
+	var request DataPackage
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+	user, err := uio.CheckAccessTokenAndGetUser(request.IDT)
+	if err != nil {
+		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
+		return
+	}
+	data := uio.GetAllLocations(user)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(fmt.Sprint(string(data))))
+}
+
 func postLocation(w http.ResponseWriter, r *http.Request) {
 	// Extract the body first. We can only read it once. If we read it twice
 	// (e.g. once in postLocationModern and then postLocationLegacy) it will be
@@ -615,6 +632,8 @@ func handleRequests(webDir string, config config) {
 	//apiV1Mux.HandleFunc("/commandLogs/", getCommandLog)
 	apiV1Mux.HandleFunc("/location", mainLocation)
 	apiV1Mux.HandleFunc("/location/", mainLocation)
+	apiV1Mux.HandleFunc("/locations", getAllLocations)
+	apiV1Mux.HandleFunc("/locations/", getAllLocations)
 	apiV1Mux.HandleFunc("/locationDataSize", getLocationDataSize)
 	apiV1Mux.HandleFunc("/locationDataSize/", getLocationDataSize)
 	apiV1Mux.HandleFunc("/picture", mainPicture)

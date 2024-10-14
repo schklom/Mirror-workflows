@@ -126,6 +126,17 @@ func (u *UserRepository) GetLocation(user *FMDUser, idx int) string {
 	return user.Locations[idx].Position
 }
 
+func (u *UserRepository) GetAllLocations(user *FMDUser) string {
+	u.UB.PreloadLocations(user)
+
+	locations := make([]string, len(user.Locations))
+	for i, location := range user.Locations {
+		locations[i] = location.Position
+	}
+
+	return strings.Join(locations, ",")
+}
+
 func (u *UserRepository) GetPicture(user *FMDUser, idx int) string {
 	u.UB.PreloadPictures(user)
 

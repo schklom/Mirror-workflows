@@ -732,7 +732,7 @@ async function exportData() {
         console.log("Missing accessToken!");
         return;
     }
-    const data = await fetch("api/v1/locations", {
+    const locationsData = await fetch("api/v1/locations", {
         method: 'POST',
         body: JSON.stringify({
             IDT: globalAccessToken,
@@ -750,10 +750,33 @@ async function exportData() {
         throw response.status;
     }
     locationsCSV = "Date,Provider,Battery Percentage,Longitude,Latitude\n"
-    locations = await data.json()
-    for (locationJSON of locations){
-        locationData = await parseLocation(globalPrivateKey, JSON.parse(locationJSON))
-        locationsCSV+=locationData.time+","+locationData.provider+","+locationData.bat+","+locationData.lon+","+locationData.lat+"\n"
+    locationsAsJSON = await locationsData.json()
+    for (locationJSON of locationsAsJSON){
+        loc = await parseLocation(globalPrivateKey, JSON.parse(locationJSON))
+        locationsCSV+=loc.time+","+loc.provider+","+loc.bat+","+loc.lon+","+loc.lat+"\n"
     }
-    //console.log(locationsCSV)
+    const picturesData = await fetch("api/v1/pictures", {
+        method: 'POST',
+        body: JSON.stringify({
+            IDT: globalAccessToken,
+            Data: ""
+        }),
+        headers: {
+            'Content-type': 'application/json'
+        }
+    });
+    if (response.status == 401) {
+        tokenExpiredRedirect();
+        return
+    }
+    if (!response.ok) {
+        throw response.status;
+    }
+    picturesAsJSON = await picturesData.json()
+    pictures = []
+    for (picture of picturesAsJSON){
+        pic = await parsePicture(globalPrivateKey, picture)
+        pictures.push(pic)
+    }
+    //console.log(pictures[0])
 }

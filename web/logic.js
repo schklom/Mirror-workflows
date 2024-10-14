@@ -103,6 +103,8 @@ function setupOnClicks() {
     //document.getElementById("showCommandLogs").addEventListener("click", async () => await showCommandLogs());
 
     document.getElementById("deleteAccount").addEventListener("click", async () => await deleteAccount());
+    document.getElementById("exportData").addEventListener("click", async () => await exportData());
+
 }
 
 function checkWebCryptoApiAvailable() {
@@ -718,4 +720,40 @@ async function deleteAccount() {
         throw response.status;
     }
     redirectToLogin("Account deleted");
+}
+
+// Section: Export Data
+
+async function exportData() {
+    if (!confirm("Would you like to download and export all data associated with your account?")) {
+        return;
+    }
+    if (!globalAccessToken) {
+        console.log("Missing accessToken!");
+        return;
+    }
+    const data = await fetch("api/v1/locations", {
+        method: 'POST',
+        body: JSON.stringify({
+            IDT: globalAccessToken,
+            Data: ""
+        }),
+        headers: {
+            'Content-type': 'application/json'
+        }
+    });
+    if (response.status == 401) {
+        tokenExpiredRedirect();
+        return
+    }
+    if (!response.ok) {
+        throw response.status;
+    }
+    locationsCSV = "Date,Provider,Battery Percentage,Longitude,Latitude\n"
+    locations = await data.json()
+    for (locationJSON of locations){
+        locationData = await parseLocation(globalPrivateKey, JSON.parse(locationJSON))
+        locationsCSV+=locationData.time+","+locationData.provider+","+locationData.bat+","+locationData.lon+","+locationData.lat+"\n"
+    }
+    //console.log(locationsCSV)
 }

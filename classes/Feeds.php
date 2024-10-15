@@ -547,7 +547,13 @@ class Feeds extends Handler_Protected {
 		// this is parsed by handleRpcJson() on first viewfeed() to set cdm expanded, etc
 		$reply['runtime-info'] = RPC::_make_runtime_info();
 
-		print json_encode($reply);
+		if (!empty($_REQUEST["debug"])) {
+			print "\n*** HEADLINE DATA ***\n";
+
+			print json_encode($reply, JSON_PRETTY_PRINT);
+		} else {
+			print json_encode($reply);
+		}
 	}
 
 	/**
@@ -2375,6 +2381,12 @@ class Feeds extends Handler_Protected {
 			$search_query_part = implode("AND ", $query_keywords);
 		else
 			$search_query_part = "false";
+
+		if (!empty($_REQUEST["debug"])) {
+			print "\n*** SEARCH_TO_SQL ***\n";
+			print "QUERY: $search_query_part\n";
+			print "WORDS: " . json_encode($search_words) . "\n";
+		}
 
 		return array($search_query_part, $search_words);
 	}

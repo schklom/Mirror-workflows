@@ -1158,8 +1158,20 @@ const App = {
          };
 
          this.hotkey_actions["feed_debug_viewfeed"] = () => {
-            App.postOpenWindow("backend.php", {op: "Feeds", method: "view",
-               feed: Feeds.getActive(), timestamps: 1, debug: 1, cat: Feeds.activeIsCat(), csrf_token: __csrf_token});
+
+				let query = {
+					...{op: "Feeds", method: "view", feed: Feeds.getActive(), timestamps: 1,
+							debug: 1, cat: Feeds.activeIsCat(), csrf_token: __csrf_token},
+					...dojo.formToObject("toolbar-main")
+				};
+
+				if (Feeds._search_query) {
+					query = Object.assign(query, Feeds._search_query);
+				}
+
+				console.log('debug_viewfeed', query);
+
+				App.postOpenWindow("backend.php", query);
          };
 
          this.hotkey_actions["feed_edit"] = () => {

@@ -38,7 +38,7 @@
 			"label": "gulp: default",
 			"options": {
 				"env": {
-					"PATH": "${env:PATH}:/usr/lib/sdk/node16/bin/"
+					"PATH": "${workspaceRoot}/node_modules/.bin:$PATH"
 				}
 			}
 		}

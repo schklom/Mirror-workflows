@@ -1,11 +1,11 @@
 name: Sync+build+push Web-whisper
 
-#on:
+on:
   # Triggers the workflow on push or pull request events but only for the main branch
   #schedule:
     # * is a special character in YAML so you have to quote this string
     #- cron:  '0 0 * * *'
-  #workflow_dispatch: # Allows manually triggering from the Actions page
+  workflow_dispatch: # Allows manually triggering from the Actions page
 
 jobs:
   get_commits:

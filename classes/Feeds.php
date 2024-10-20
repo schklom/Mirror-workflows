@@ -2212,7 +2212,13 @@ class Feeds extends Handler_Protected {
 	 * @return array{0: string, 1: array<int, string>} [$search_query_part, $search_words]
 	 */
 	private static function _search_to_sql(string $search, string $search_language, int $owner_uid): array {
-		$keywords = str_getcsv(preg_replace('/(-?\w+)\:"(\w+)/', '"{$1}:{$2}', trim($search)), ' ', '"', '');
+		// Modify the search string so that 'keyword:"foo bar"' becomes '"keyword:foo bar"'.
+		// This is needed so potential command pairs are grouped correctly.
+		$search_csv_str = preg_replace('/(-?\w+)\:"(\w+)/', '"$1:$2', trim($search));
+
+		// $keywords will be an array like ['"title:hello world"', 'some', 'words']
+		$keywords = str_getcsv($search_csv_str, ' ', '"', '');
+
 		$query_keywords = array();
 		$search_words = array();
 		$search_query_leftover = array();
@@ -2271,7 +2277,6 @@ class Feeds extends Handler_Protected {
 					}
 					break;
 				case "star":
-
 					if ($commandpair[1]) {
 						if ($commandpair[1] == "true")
 							array_push($query_keywords, "($not (marked = true))");

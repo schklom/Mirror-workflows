@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-while ! pg_isready -h $TTRSS_DB_HOST -U $TTRSS_DB_USER; do
+while ! pg_isready -h $TTRSS_DB_HOST -U $TTRSS_DB_USER -p $TTRSS_DB_PORT; do
 	echo waiting until $TTRSS_DB_HOST is ready...
 	sleep 3
 done
@@ -84,7 +84,7 @@ else
 	echo skipping local plugin updates, disabled.
 fi
 
-PSQL="psql -q -h $TTRSS_DB_HOST -U $TTRSS_DB_USER $TTRSS_DB_NAME"
+PSQL="psql -q -h $TTRSS_DB_HOST -p $TTRSS_DB_PORT -U $TTRSS_DB_USER $TTRSS_DB_NAME"
 
 $PSQL -c "create extension if not exists pg_trgm"
 

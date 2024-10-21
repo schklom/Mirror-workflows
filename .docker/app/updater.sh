@@ -15,7 +15,7 @@ if ! id app; then
 	adduser -D -h /var/www/html -G app -u $OWNER_UID app
 fi
 
-while ! pg_isready -h $TTRSS_DB_HOST -U $TTRSS_DB_USER; do
+while ! pg_isready -h $TTRSS_DB_HOST -U $TTRSS_DB_USER -p $TTRSS_DB_PORT; do
 	echo waiting until $TTRSS_DB_HOST is ready...
 	sleep 3
 done

@@ -88,13 +88,6 @@ PSQL="psql -q -h $TTRSS_DB_HOST -p $TTRSS_DB_PORT -U $TTRSS_DB_USER $TTRSS_DB_NA
 
 $PSQL -c "create extension if not exists pg_trgm"
 
-RESTORE_SCHEMA=${SCRIPT_ROOT}/restore-schema.sql.gz
-
-if [ -r $RESTORE_SCHEMA ]; then
-	$PSQL -c "drop schema public cascade; create schema public;"
-	zcat $RESTORE_SCHEMA | $PSQL
-fi
-
 # this was previously generated
 rm -f $DST_DIR/config.php.bak
 
@@ -120,6 +113,11 @@ sed -i.bak "s/^\(pm.max_children\) = \(.*\)/\1 = ${PHP_WORKER_MAX_CHILDREN}/" \
 	/etc/php83/php-fpm.d/www.conf
 
 sudo -Eu app php83 $DST_DIR/update.php --update-schema=force-yes
+
+find ${SCRIPT_ROOT}/sql/post-up.d/ -type f -name '*.sql' | while read F; do
+	echo applying SQL patch file: $F
+	$PSQL -f $F
+done
 
 if [ ! -z "$ADMIN_USER_PASS" ]; then
 	sudo -Eu app php83 $DST_DIR/update.php --user-set-password "admin:$ADMIN_USER_PASS"

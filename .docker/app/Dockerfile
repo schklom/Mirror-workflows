@@ -25,7 +25,7 @@ RUN [ ! -z ${ALPINE_MIRROR} ] && \
 		-e 's/;\(php_admin_value\[error_log\]\) = .*/\1 = \/tmp\/error.log/' \
 		-e 's/;\(php_admin_flag\[log_errors\]\) = .*/\1 = on/' \
 			/etc/php83/php-fpm.d/www.conf && \
-	mkdir -p /var/www ${SCRIPT_ROOT}/config.d ${SCRIPT_ROOT}/sql/post-up.d
+	mkdir -p /var/www ${SCRIPT_ROOT}/config.d ${SCRIPT_ROOT}/sql/post-init.d
 
 ARG CI_COMMIT_BRANCH
 ENV CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH}

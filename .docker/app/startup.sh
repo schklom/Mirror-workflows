@@ -114,11 +114,6 @@ sed -i.bak "s/^\(pm.max_children\) = \(.*\)/\1 = ${PHP_WORKER_MAX_CHILDREN}/" \
 
 sudo -Eu app php83 $DST_DIR/update.php --update-schema=force-yes
 
-find ${SCRIPT_ROOT}/sql/post-up.d/ -type f -name '*.sql' | while read F; do
-	echo applying SQL patch file: $F
-	$PSQL -f $F
-done
-
 if [ ! -z "$ADMIN_USER_PASS" ]; then
 	sudo -Eu app php83 $DST_DIR/update.php --user-set-password "admin:$ADMIN_USER_PASS"
 else
@@ -155,6 +150,11 @@ rm -f /tmp/error.log && mkfifo /tmp/error.log && chown app:app /tmp/error.log
 
 unset ADMIN_USER_PASS
 unset AUTO_CREATE_USER_PASS
+
+find ${SCRIPT_ROOT}/sql/post-init.d/ -type f -name '*.sql' | while read F; do
+	echo applying SQL patch file: $F
+	$PSQL -f $F
+done
 
 touch $DST_DIR/.app_is_ready
 

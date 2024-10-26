@@ -240,30 +240,7 @@ async function tokenExpiredRedirect() {
 // Section: Push Warning
 
 async function setupPushWarning() {
-    if (!globalAccessToken) {
-        console.log("Missing accessToken!");
-        return;
-    }
-
-    response = await fetch("/push", {
-        method: 'POST',
-        body: JSON.stringify({
-            IDT: globalAccessToken,
-            Data: "",
-        }),
-        headers: {
-            'Content-type': 'application/json'
-        }
-    });
-    if (response.status == 401) {
-        tokenExpiredRedirect();
-        return
-    }
-    if (!response.ok) {
-        throw response.status;
-    }
-
-    const pushUrl = await response.text();
+    const pushUrl = await getPushUrl(globalAccessToken);
 
     const ele = document.getElementById("pushWarning");
     if (pushUrl) {

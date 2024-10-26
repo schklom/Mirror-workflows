@@ -757,14 +757,22 @@ async function exportData() {
         pictures.push(pic);
     }
 
+    // General info
+    const pushUrl = await getPushUrl(globalAccessToken);
+    const generalInfo = {
+        "fmdId": currentId,
+        "pushUrl": pushUrl,
+    };
+
     // ZIP everything
     var zip = new JSZip();
+    zip.file("info.json", JSON.stringify(generalInfo));
     zip.file("locations.csv", locationsCSV);
     var img = zip.folder("pictures");
     for ([index, pic] of pictures.entries()) {
         img.file(String(index) + ".png", pic, { base64: true });
     }
-    let content = await zip.generateAsync({ type: "blob" });
+    const content = await zip.generateAsync({ type: "blob" });
 
     const formattedDate = new Date().toISOString().split('T')[0];
 

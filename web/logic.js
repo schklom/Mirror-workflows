@@ -729,6 +729,8 @@ async function exportData() {
         console.log("Missing accessToken!");
         return;
     }
+
+    // Locations
     const locationsData = await fetch("api/v1/locations", {
         method: 'POST',
         body: JSON.stringify({
@@ -748,10 +750,12 @@ async function exportData() {
     }
     locationsCSV = "Date,Provider,Battery Percentage,Longitude,Latitude\n";
     locationsAsJSON = await locationsData.json();
-    for (locationJSON of locationsAsJSON){
+    for (locationJSON of locationsAsJSON) {
         loc = await parseLocation(globalPrivateKey, JSON.parse(locationJSON))
-        locationsCSV+=loc.time+","+loc.provider+","+loc.bat+","+loc.lon+","+loc.lat+"\n"
+        locationsCSV += loc.time + "," + loc.provider + "," + loc.bat + "," + loc.lon + "," + loc.lat + "\n"
     }
+
+    // Pictures
     const picturesData = await fetch("api/v1/pictures", {
         method: 'POST',
         body: JSON.stringify({
@@ -771,26 +775,28 @@ async function exportData() {
     }
     picturesAsJSON = await picturesData.json();
     pictures = [];
-    for (picture of picturesAsJSON){
+    for (picture of picturesAsJSON) {
         pic = await parsePicture(globalPrivateKey, picture);
         pictures.push(pic);
     }
+
+    // ZIP everything
     var zip = new JSZip();
-    zip.file("locations.csv",locationsCSV);
+    zip.file("locations.csv", locationsCSV);
     var img = zip.folder("pictures");
-    for ([index,pic] of pictures.entries()){
-        img.file(String(index)+".png", pic, { base64: true });
+    for ([index, pic] of pictures.entries()) {
+        img.file(String(index) + ".png", pic, { base64: true });
     }
-    zip.generateAsync({type:"blob"}).then(function(content){
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(content);
-        link.download = "fmdexport.zip";
+    let content = await zip.generateAsync({ type: "blob" });
 
-        // Append to the document and trigger download
-        document.body.appendChild(link);
-        link.click();
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(content);
+    link.download = "fmdexport.zip";
 
-        // Clean up
-        document.body.removeChild(link);
-    });
+    // Append to the document and trigger download
+    document.body.appendChild(link);
+    link.click();
+
+    // Clean up
+    document.body.removeChild(link);
 }

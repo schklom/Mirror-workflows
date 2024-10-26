@@ -789,9 +789,11 @@ async function exportData() {
     }
     let content = await zip.generateAsync({ type: "blob" });
 
+    const formattedDate = new Date().toISOString().split('T')[0];
+
     const link = document.createElement('a');
     link.href = URL.createObjectURL(content);
-    link.download = "fmdexport.zip";
+    link.download = `fmd-export-${formattedDate}.zip`;
 
     // Append to the document and trigger download
     document.body.appendChild(link);

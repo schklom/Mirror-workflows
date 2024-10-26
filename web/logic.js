@@ -708,7 +708,7 @@ async function exportData() {
     }
 
     // Locations
-    const locationsData = await fetch("api/v1/locations", {
+    var response = await fetch("api/v1/locations", {
         method: 'POST',
         body: JSON.stringify({
             IDT: globalAccessToken,
@@ -725,15 +725,15 @@ async function exportData() {
     if (!response.ok) {
         throw response.status;
     }
-    locationsCSV = "Date,Provider,Battery Percentage,Longitude,Latitude\n";
-    locationsAsJSON = await locationsData.json();
+    var locationsCSV = "Date,Provider,Battery Percentage,Longitude,Latitude\n";
+    const locationsAsJSON = await response.json();
     for (locationJSON of locationsAsJSON) {
         loc = await parseLocation(globalPrivateKey, JSON.parse(locationJSON))
         locationsCSV += new Date(loc.time).toISOString() + "," + loc.provider + "," + loc.bat + "," + loc.lon + "," + loc.lat + "\n"
     }
 
     // Pictures
-    const picturesData = await fetch("api/v1/pictures", {
+    response = await fetch("api/v1/pictures", {
         method: 'POST',
         body: JSON.stringify({
             IDT: globalAccessToken,
@@ -750,8 +750,8 @@ async function exportData() {
     if (!response.ok) {
         throw response.status;
     }
-    picturesAsJSON = await picturesData.json();
-    pictures = [];
+    const picturesAsJSON = await response.json();
+    var pictures = [];
     for (picture of picturesAsJSON) {
         pic = await parsePicture(globalPrivateKey, picture);
         pictures.push(pic);

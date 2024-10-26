@@ -729,7 +729,7 @@ async function exportData() {
     locationsAsJSON = await locationsData.json();
     for (locationJSON of locationsAsJSON) {
         loc = await parseLocation(globalPrivateKey, JSON.parse(locationJSON))
-        locationsCSV += loc.time + "," + loc.provider + "," + loc.bat + "," + loc.lon + "," + loc.lat + "\n"
+        locationsCSV += new Date(loc.time).toISOString() + "," + loc.provider + "," + loc.bat + "," + loc.lon + "," + loc.lat + "\n"
     }
 
     // Pictures

@@ -725,9 +725,6 @@ async function deleteAccount() {
 // Section: Export Data
 
 async function exportData() {
-    if (!confirm("Would you like to download and export all data associated with your account?")) {
-        return;
-    }
     if (!globalAccessToken) {
         console.log("Missing accessToken!");
         return;

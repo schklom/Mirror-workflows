@@ -240,30 +240,7 @@ async function tokenExpiredRedirect() {
 // Section: Push Warning
 
 async function setupPushWarning() {
-    if (!globalAccessToken) {
-        console.log("Missing accessToken!");
-        return;
-    }
-
-    response = await fetch("/push", {
-        method: 'POST',
-        body: JSON.stringify({
-            IDT: globalAccessToken,
-            Data: "",
-        }),
-        headers: {
-            'Content-type': 'application/json'
-        }
-    });
-    if (response.status == 401) {
-        tokenExpiredRedirect();
-        return
-    }
-    if (!response.ok) {
-        throw response.status;
-    }
-
-    const pushUrl = await response.text();
+    const pushUrl = await getPushUrl(globalAccessToken);
 
     const ele = document.getElementById("pushWarning");
     if (pushUrl) {
@@ -725,14 +702,13 @@ async function deleteAccount() {
 // Section: Export Data
 
 async function exportData() {
-    if (!confirm("Would you like to download and export all data associated with your account?")) {
-        return;
-    }
     if (!globalAccessToken) {
         console.log("Missing accessToken!");
         return;
     }
-    const locationsData = await fetch("api/v1/locations", {
+
+    // Locations
+    var response = await fetch("api/v1/locations", {
         method: 'POST',
         body: JSON.stringify({
             IDT: globalAccessToken,
@@ -749,13 +725,15 @@ async function exportData() {
     if (!response.ok) {
         throw response.status;
     }
-    locationsCSV = "Date,Provider,Battery Percentage,Longitude,Latitude\n";
-    locationsAsJSON = await locationsData.json();
-    for (locationJSON of locationsAsJSON){
+    var locationsCSV = "Date,Provider,Battery Percentage,Longitude,Latitude\n";
+    const locationsAsJSON = await response.json();
+    for (locationJSON of locationsAsJSON) {
         loc = await parseLocation(globalPrivateKey, JSON.parse(locationJSON))
-        locationsCSV+=loc.time+","+loc.provider+","+loc.bat+","+loc.lon+","+loc.lat+"\n"
+        locationsCSV += new Date(loc.time).toISOString() + "," + loc.provider + "," + loc.bat + "," + loc.lon + "," + loc.lat + "\n"
     }
-    const picturesData = await fetch("api/v1/pictures", {
+
+    // Pictures
+    response = await fetch("api/v1/pictures", {
         method: 'POST',
         body: JSON.stringify({
             IDT: globalAccessToken,
@@ -772,28 +750,40 @@ async function exportData() {
     if (!response.ok) {
         throw response.status;
     }
-    picturesAsJSON = await picturesData.json();
-    pictures = [];
-    for (picture of picturesAsJSON){
+    const picturesAsJSON = await response.json();
+    var pictures = [];
+    for (picture of picturesAsJSON) {
         pic = await parsePicture(globalPrivateKey, picture);
         pictures.push(pic);
     }
+
+    // General info
+    const pushUrl = await getPushUrl(globalAccessToken);
+    const generalInfo = {
+        "fmdId": currentId,
+        "pushUrl": pushUrl,
+    };
+
+    // ZIP everything
     var zip = new JSZip();
-    zip.file("locations.csv",locationsCSV);
+    zip.file("info.json", JSON.stringify(generalInfo));
+    zip.file("locations.csv", locationsCSV);
     var img = zip.folder("pictures");
-    for ([index,pic] of pictures.entries()){
-        img.file(String(index)+".png", pic, { base64: true });
+    for ([index, pic] of pictures.entries()) {
+        img.file(String(index) + ".png", pic, { base64: true });
     }
-    zip.generateAsync({type:"blob"}).then(function(content){
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(content);
-        link.download = "fmdexport.zip";
+    const content = await zip.generateAsync({ type: "blob" });
 
-        // Append to the document and trigger download
-        document.body.appendChild(link);
-        link.click();
+    const formattedDate = new Date().toISOString().split('T')[0];
 
-        // Clean up
-        document.body.removeChild(link);
-    });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(content);
+    link.download = `fmd-export-${formattedDate}.zip`;
+
+    // Append to the document and trigger download
+    document.body.appendChild(link);
+    link.click();
+
+    // Clean up
+    document.body.removeChild(link);
 }

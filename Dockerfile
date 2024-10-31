@@ -8,13 +8,11 @@ RUN apk update && \
 RUN PY_LOCAL_PATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d | cut -d " " -f 1) && \
     PY_LOCAL_PATH="${PY_LOCAL_PATH%.bak}" && \
     if [[ -d "${PY_LOCAL_PATH}.bak" ]]; then \
-        echo "diff" \
-        diff -Bqr "${PY_LOCAL_PATH}" "${PY_LOCAL_PATH}.bak" \
-        echo "Deleting the non-bak folder" \
+        echo -e "\nDeleting the non-bak folder ${PY_LOCAL_PATH}\n" \
         rm -rf "${PY_LOCAL_PATH}" \
-        echo "Renaming bak folder to non-bak" \
+        echo -e "\nRenaming ${PY_LOCAL_PATH}.bak to ${PY_LOCAL_PATH}\n" \
         mv "${PY_LOCAL_PATH}.bak" "${PY_LOCAL_PATH}" \
-        echo "Change ownership of the folder" \
+        echo -e "\nChange ownership of the folder ${PY_LOCAL_PATH}\n" \
         chown -R abc:abc "${PY_LOCAL_PATH}"; \
     fi
 

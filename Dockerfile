@@ -10,19 +10,19 @@ RUN PY_LOCAL_PATH=$(cat py_path); if [[ -d "${PY_LOCAL_PATH}.bak" ]]; then touch
 RUN PY_LOCAL_PATH=$(cat py_path); \
     echo "py_path=${PY_LOCAL_PATH}"; \
     if [[ -d "${PY_LOCAL_PATH}.bak" ]]; then \
-        echo -e "\nDeleting ${PY_LOCAL_PATH}\n" \
-        rm -rf "${PY_LOCAL_PATH}" \
+        echo -e "\nDeleting ${PY_LOCAL_PATH}\n"; \
+        rm -rf "${PY_LOCAL_PATH}"; \
         \
-        echo -e "\nRenaming ${PY_LOCAL_PATH}.bak to ${PY_LOCAL_PATH}\n" \
-        mv "${PY_LOCAL_PATH}.bak" "${PY_LOCAL_PATH}" \
+        echo -e "\nRenaming ${PY_LOCAL_PATH}.bak to ${PY_LOCAL_PATH}\n"; \
+        mv "${PY_LOCAL_PATH}.bak" "${PY_LOCAL_PATH}"; \
         \
-        echo -e "\nls -alh /usr/local/lib\n" \
-        ls -alh "/usr/local/lib" \
+        echo -e "\nls -alh /usr/local/lib\n"; \
+        ls -alh "/usr/local/lib"; \
         \
-        echo -e "\nChange ownership of the folder ${PY_LOCAL_PATH}\n" \
+        echo -e "\nChange ownership of the folder ${PY_LOCAL_PATH}\n"; \
         chown -R abc:abc "${PY_LOCAL_PATH}"; \
         \
-        echo -e "\nls -alh /usr/local/lib\n" \
+        echo -e "\nls -alh /usr/local/lib\n"; \
         ls -alh "/usr/local/lib"; \
     fi
 

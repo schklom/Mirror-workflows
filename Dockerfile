@@ -23,7 +23,7 @@ RUN PY_LOCAL_PATH=$(cat py_path); \
         chown -R abc:abc "${PY_LOCAL_PATH}"; \
         \
         echo -e "\nls -alh /usr/local/lib\n" \
-        ls -alh "/usr/local/lib" \
+        ls -alh "/usr/local/lib"; \
     fi
 
 RUN find /usr/local/lib -maxdepth 1 -name python* -type d

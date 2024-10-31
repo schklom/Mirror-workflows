@@ -13,7 +13,7 @@ RUN PY_LOCAL_PATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d | cut 
         echo -e "\nRenaming ${PY_LOCAL_PATH}.bak to ${PY_LOCAL_PATH}\n" \
         mv "${PY_LOCAL_PATH}.bak" "${PY_LOCAL_PATH}" \
         echo -e "\nls -alh /usr/local/lib | grep python\n" \
-        ls -alh /usr/local/lib | grep python \
+        ls -alh /usr/local/lib | grep "python" \
         echo -e "\nManual move\n" \
         mv "/usr/local/lib/python3.12" "/usr/local/lib/python3.12" \
         echo -e "\nls -alh /usr/local/lib | grep python\n" \

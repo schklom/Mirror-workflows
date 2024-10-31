@@ -9,17 +9,23 @@ RUN PY_LOCAL_PATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d | cut 
     PY_LOCAL_PATH="${PY_LOCAL_PATH%.bak}" && \
     if [[ -d "${PY_LOCAL_PATH}.bak" ]]; then \
         echo -e "\nDeleting the non-bak folder ${PY_LOCAL_PATH}\n" \
-        rm -rf "${PY_LOCAL_PATH}" \
+        rm -rf "${PY_LOCAL_PATH}" > temprm \
         echo -e "\nRenaming ${PY_LOCAL_PATH}.bak to ${PY_LOCAL_PATH}\n" \
-        mv "${PY_LOCAL_PATH}.bak" "${PY_LOCAL_PATH}" \
+        mv "${PY_LOCAL_PATH}.bak" "${PY_LOCAL_PATH}" > tempmv \
         echo -e "\nls -alh /usr/local/lib\n" \
-        ls -alh "/usr/local/lib" \
+        ls -alh "/usr/local/lib" > templs1 \
         echo -e "\nManual move\n" \
-        mv "/usr/local/lib/python3.12" "/usr/local/lib/python3.12" \
+        mv "/usr/local/lib/python3.12" "/usr/local/lib/python3.12" > tempmv2 \
         echo -e "\nls -alh /usr/local/lib\n" \
-        ls -alh "/usr/local/lib" \
+        ls -alh "/usr/local/lib" > templs2 \
         echo -e "\nChange ownership of the folder ${PY_LOCAL_PATH}\n" \
-        chown -R abc:abc "${PY_LOCAL_PATH}"; \
+        chown -R abc:abc "${PY_LOCAL_PATH}" > tempchown; \
     fi
 
+RUN cat temprm
+RUN cat tempmv
+RUN cat templs1
+RUN cat tempmv2
+RUN cat templs2
+RUN cat tempchown
 RUN find /usr/local/lib -maxdepth 1 -name python* -type d

@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: TinyTinyRSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-06-15 14:03+0300\n"
-"PO-Revision-Date: 2014-08-13 19:15+0300\n"
-"Last-Translator: عبد الناصر سعيد الثبيتي <abdunnasir@althobaity.com>\n"
-"Language-Team: Arabic <abdunnasir@althobaity.com>\n"
+"PO-Revision-Date: 2024-10-24 14:15+0000\n"
+"Last-Translator: Younes <git@younes.io>\n"
+"Language-Team: Arabic (Saudi Arabia) <https://hosted.weblate.org/projects/"
+"tt-rss/webui/ar_SA/>\n"
 "Language: ar_SA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.7\n"
+"X-Generator: Weblate 5.8.2-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: backend.php:65
@@ -56,28 +57,24 @@ msgid "Disable updates"
 msgstr "عطّل التحديثات"
 
 #: backend.php:76 backend.php:86
-#, fuzzy
 msgid "15 minutes"
-msgstr "كل ١٥ دقيقة"
+msgstr "١٥ دقيقة"
 
 #: backend.php:77 backend.php:87
-#, fuzzy
 msgid "30 minutes"
-msgstr "كل ٣٠ دقيقة"
+msgstr "٣٠ دقيقة"
 
 #: backend.php:78 backend.php:88
 msgid "Hourly"
 msgstr "كل ساعة"
 
 #: backend.php:79 backend.php:89
-#, fuzzy
 msgid "4 hours"
-msgstr "كل ٤ ساعات"
+msgstr "٤ ساعات"
 
 #: backend.php:80 backend.php:90
-#, fuzzy
 msgid "12 hours"
-msgstr "كل ١٢ ساعة"
+msgstr "١٢ ساعة"
 
 #: backend.php:81 backend.php:91
 msgid "Daily"

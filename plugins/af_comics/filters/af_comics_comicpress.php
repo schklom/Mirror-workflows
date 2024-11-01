@@ -28,7 +28,7 @@ class Af_Comics_ComicPress extends Af_ComicFilter {
 
 				if ($res && $doc->loadHTML($res)) {
 					$xpath = new DOMXPath($doc);
-					$basenode = $xpath->query('//div[@id="comic"]')->item(0);
+					$basenode = $xpath->query('//div[@id="comic"]|//img[contains(@class, "wp-post-image")]/..')->item(0);
 
 					if ($basenode) {
 						$article["content"] = $doc->saveHTML($basenode);

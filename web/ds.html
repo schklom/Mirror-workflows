@@ -13,48 +13,65 @@
 
 <body>
 
-    <div class="center">
-        <h2>FMD Server</h2>
-    </div>
+    <h1 class="center-column">FMD Server</h1>
 
-    <div class="center">
-        <h2>Privacy Notice</h2>
-    </div>
+    <h2 class="center-column">Privacy Notice</h2>
 
     <h3>What data is stored when visiting the website?</h3>
-    <p>To establish a connection your IP address is transmitted, but not saved. While using the website the private key
-        and the user-id will be saved temporarily in your browser, but will be removed when leaving the page.</p>
+    <p>
+        To establish a connection, your IP address is transmitted, but not saved.
+        The private key and the FMD ID are saved temporarily in your browser. They are removed when leaving the page.
+    </p>
 
     <h3>What data is stored on the server?</h3>
-    <p>The server stores the plaintext random user id and your password hash. It also stores all encrypted data uploaded by
-        your phone: location, date, any pictures, battery level, the public key, and the encrypted private key.</p>
+    <p>In plaintext:</p>
+    <ul>
+        <li>FMD ID</li>
+        <li>Password Hash</li>
+        <li>Push URL</li>
+        <li>Public key</li>
+        <li>Command to be delivered to the phone</li>
+    </ul>
+
+    <p>Encrypted:</p>
+    <ul>
+        <li>Private key</li>
+        <li>If uploaded: pictures</li>
+        <li>If uploaded: locations (lat, lon, battery level, timestamp)</li>
+    </ul>
+    <p>Important: you need to keep your password safe! Your password is used to unlock the encrypted private key.</p>
 
     <h3>Is my data transferred/sold/etc?</h3>
-    <p>Your data is only used to provide the functionality of finding your device. It is not given to other parties.</p>
-
-    <h3>Is my data encrypted?</h3>
-    <p>Yes, except the user id all data is encrypted. But you need to keep your password safe!</p>
+    <p>
+        Your data is only used to provide the functionality of finding and controlling your device.
+        It is not given to other parties.
+    </p>
 
     <h3>How exactly does the encryption work?</h3>
     <p>
         Your device creates an RSA-3072 keypair during registration. The private key is encrypted symmetrically with
-        AES-GCM-256 with the Argon2 hash of your password as a key. Then the keypair is uploaded to the server.
-        <br>
-        Every time your device sends data it uses the public key to encrypt this data and uploads the encrypted data to
+        AES-GCM-256 with an Argon2 hash of your password as a key. Then the keypair is uploaded to the server.
+    </p>
+    <p>
+        Every time your device sends data, it uses the public key to encrypt this data and uploads the encrypted data to
         the server.
-        <br>
-        When you access the web page and enter your user id and password, the web page derives a different Argon2 hash
+    </p>
+
+    <p>
+        When you access the web page and enter your user id and password, the web page derives another Argon2 hash (with
+        a different context string)
         from your password and sends it to the server. This proves to the server that you know the password without
         actually sending it to the server.
         The web page then downloads the keypair from the server and decrypts the RSA private key.
-        It can then download any other data, such as the location, and locally decrypt it in your browser.
+        It can then download any other data, such as the location, and can locally decrypt them in your browser using
+        the RSA private key.
     </p>
 
     <h3>Who has access to the data?</h3>
     <p>Only the server operator has access to the database. But all important data is encrypted anyway.</p>
 
     <h3>How can I delete my data from the server?</h3>
-    <p>You can delete your account the using "Delete Account" button in the web interface and in the Android app.</p>
+    <p>You can delete your account using the "Delete Account" button in the web interface and in the Android app.</p>
 
 </body>
 

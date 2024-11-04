@@ -1,17 +1,7 @@
 FROM ghcr.io/linuxserver/homeassistant:latest
 
 RUN apk update && \
-    apk add --no-cache iputils espeak alsa-utils && \
-    apk cache clean
-
-RUN ls -alh /
-RUN ls -alh /pythoncompiled
-
-ENV PYTHONHOME=/pythoncompiled
-ENV PYTHONPATH=/pythoncompiled/lib/python3.12:/pythoncompiled/lib/python3.12/lib-dynload
-
-# watchman integration requires this version, I need to force the downgrade
-RUN python3 -m pip install --force-reinstall -vvv "prettytable==3.10.0"
+    apk add --no-cache iputils espeak alsa-utils
 
 # To avoid the mess in https://github.com/linuxserver/docker-homeassistant/blob/main/root/etc/s6-overlay/s6-rc.d/init-config-homeassistant/run
 RUN PY_LOCAL_PATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d | cut -d " " -f 1 | sed -E "s/.bak$//"); \
@@ -26,3 +16,9 @@ RUN PY_LOCAL_PATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d | cut 
         echo -e "\nChange ownership of the folder ${PY_LOCAL_PATH}\n"; \
         chown -R abc:abc "${PY_LOCAL_PATH}"; \
     fi
+
+RUN find /usr/local/lib -maxdepth 1 -name python* -type d 
+
+# watchman integration requires this version, I need to force the downgrade
+RUN PYTHONPATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d) \
+    python3 -m pip install --force-reinstall -vvv "prettytable==3.10.0"

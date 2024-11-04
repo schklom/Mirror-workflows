@@ -5,8 +5,8 @@ RUN apk update && \
     apk cache clean
 
 RUN python3 -m pip list
-# watchman integration requires this
-RUN python3 -m pip install -vvv "prettytable==3.10.0"
+# watchman integration requires this version, I need to force the downgrade
+RUN python3 -m pip install --force-reinstall -vvv "prettytable==3.10.0"
 
 # To avoid the mess in https://github.com/linuxserver/docker-homeassistant/blob/main/root/etc/s6-overlay/s6-rc.d/init-config-homeassistant/run
 RUN PY_LOCAL_PATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d | cut -d " " -f 1 | sed -E "s/.bak$//"); \

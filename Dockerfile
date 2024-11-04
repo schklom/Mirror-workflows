@@ -4,7 +4,6 @@ RUN apk update && \
     apk add --no-cache iputils espeak alsa-utils && \
     apk cache clean
 
-RUN python3 -m pip list
 # watchman integration requires this version, I need to force the downgrade
 RUN python3 -m pip install --force-reinstall -vvv "prettytable==3.10.0"
 

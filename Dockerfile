@@ -4,6 +4,12 @@ RUN apk update && \
     apk add --no-cache iputils espeak alsa-utils && \
     apk cache clean
 
+RUN ls -alh /
+RUN ls -alh /pythoncompiled
+
+ENV PYTHONHOME=/pythoncompiled
+ENV PYTHONPATH=/pythoncompiled/lib/python3.12:/pythoncompiled/lib/python3.12/lib-dynload
+
 # watchman integration requires this version, I need to force the downgrade
 RUN python3 -m pip install --force-reinstall -vvv "prettytable==3.10.0"
 

@@ -4,8 +4,11 @@ RUN apk update && \
     apk add --no-cache iputils espeak alsa-utils && \
     apk cache clean
 
+RUN env
+RUN pip list
+RUN pip show
 # watchman integration requires this
-RUN pip install --force-reinstall -v "prettytable==3.10.0"
+RUN pip install -vvv "prettytable==3.10.0"
 
 # To avoid the mess in https://github.com/linuxserver/docker-homeassistant/blob/main/root/etc/s6-overlay/s6-rc.d/init-config-homeassistant/run
 RUN PY_LOCAL_PATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d | cut -d " " -f 1 | sed -E "s/.bak$//"); \

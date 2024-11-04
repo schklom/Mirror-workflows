@@ -17,8 +17,6 @@ RUN PY_LOCAL_PATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d | cut 
         chown -R abc:abc "${PY_LOCAL_PATH}"; \
     fi
 
-RUN find /usr/local/lib -maxdepth 1 -name python* -type d 
-
 # watchman integration requires this version, I need to force the downgrade
 RUN PYTHONPATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d) \
     python3 -m pip install --force-reinstall -vvv "prettytable==3.10.0"

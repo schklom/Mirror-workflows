@@ -1,5 +1,15 @@
 # This is an example config file for FMD Server
 
+# Listening precedence: socket > HTTPS > HTTP
+
+# Path to listening UNIX socket. If empty, no unix sockets will be used.
+UnixSocketPath: "" # /tmp/fmd.sock
+# Permissions to set on the socket after it is created. If < 0, no
+# modifications are made. This considered insecure practice, if you
+# do it, consider setting a umask for the daemon user before starting it.
+# Must start with a leading 0.
+UnixSocketChmod: 0660
+
 # The ports FMD Server should listen on
 PortSecure: 8443
 PortInsecure: 8080

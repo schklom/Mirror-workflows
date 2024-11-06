@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io/fs"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -31,6 +33,8 @@ var uio user.UserRepository
 type config struct {
 	PortSecure        int    `yaml:"PortSecure"`
 	PortInsecure      int    `yaml:"PortInsecure"`
+	UnixSocketPath    string `yaml:"UnixSocketPath"`
+	UnixSocketChmod   uint32 `yaml:"UnixSocketChmod"`
 	UserIdLength      int    `yaml:"UserIdLength"`
 	MaxSavedLoc       int    `yaml:"MaxSavedLoc"`
 	MaxSavedPic       int    `yaml:"MaxSavedPic"`
@@ -606,7 +610,7 @@ func securityHeadersMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func handleRequests(webDir string, config config) {
+func buildServeMux(webDir string, config config) *http.ServeMux {
 	mainDeviceHandler := mainDeviceHandler{createDeviceHandler{config.RegistrationToken}}
 
 	apiV1Mux := http.NewServeMux()
@@ -655,15 +659,56 @@ func handleRequests(webDir string, config config) {
 	muxFinal.Handle("/", securityHeadersMiddleware(apiV1Mux)) // deprecated
 	muxFinal.Handle("/api/v1/", http.StripPrefix("/api/v1", securityHeadersMiddleware(apiV1Mux)))
 
-	if fileExists(config.ServerCrt) && fileExists(config.ServerKey) {
+	return muxFinal
+}
+
+func handleRequests(webDir string, config config) {
+	mux := buildServeMux(webDir, config)
+
+	if len(config.UnixSocketPath) > 0 {
+		_, err := os.Stat(config.UnixSocketPath)
+		if err == nil { // socket already exists
+			err = os.Remove(config.UnixSocketPath)
+			if err != nil {
+				log.Fatalf("could not remove existing unix socket: %s", config.UnixSocketPath)
+			}
+		}
+		unixListener, err := net.Listen("unix", config.UnixSocketPath)
+		if err != nil {
+			log.Fatalf("error on opening unix socket, %s", err.Error())
+		}
+		fm := fs.FileMode(config.UnixSocketChmod)
+		err = os.Chmod(config.UnixSocketPath, fm)
+		if err != nil {
+			log.Fatalf("error modifying permissions %x on unix socket %s, %s", fm, config.UnixSocketPath, err.Error())
+		}
+		server := http.Server{Handler: mux}
+		err = server.Serve(unixListener)
+		if err != nil {
+			fmt.Printf("error on serving %s, %s", config.UnixSocketPath, err.Error())
+		}
+		err = server.Close()
+		if err != nil {
+			fmt.Printf("error on closing unix server, %s", err.Error())
+		}
+		err = unixListener.Close()
+		if err != nil {
+			fmt.Printf("error on closing unix listener, %s", err.Error())
+		}
+		// ignore error for now
+		os.Remove(config.UnixSocketPath)
+	} else if config.PortSecure > -1 && fileExists(config.ServerCrt) && fileExists(config.ServerKey) {
 		securePort := ":" + strconv.Itoa(config.PortSecure)
-		err := http.ListenAndServeTLS(securePort, config.ServerCrt, config.ServerKey, muxFinal)
+		err := http.ListenAndServeTLS(securePort, config.ServerCrt, config.ServerKey, mux)
 		if err != nil {
 			fmt.Println("HTTPS won't be available.", err)
 		}
+	} else if config.PortInsecure > -1 {
+		insecureAddr := ":" + strconv.Itoa(config.PortInsecure)
+		log.Fatal(http.ListenAndServe(insecureAddr, mux))
+	} else {
+		log.Fatal("no address to listen on")
 	}
-	insecureAddr := ":" + strconv.Itoa(config.PortInsecure)
-	log.Fatal(http.ListenAndServe(insecureAddr, muxFinal))
 }
 
 func load_config(filesDir string) config {
@@ -687,7 +732,7 @@ func load_config(filesDir string) config {
 
 	if !configRead {
 		fmt.Println("WARN: No config found! Using defaults.")
-		serverConfig = config{PortSecure: 8443, PortInsecure: 8080, UserIdLength: 5, MaxSavedLoc: 1000, MaxSavedPic: 10, RegistrationToken: ""}
+		serverConfig = config{PortSecure: 8443, PortInsecure: 8080, UserIdLength: 5, MaxSavedLoc: 1000, MaxSavedPic: 10, RegistrationToken: "", UnixSocketPath: "", UnixSocketChmod: 0660}
 	}
 	//fmt.Printf("INFO: Using config %+v\n", serverConfig)
 
@@ -733,6 +778,6 @@ func main() {
 
 	fmt.Println("FMD Server ", VERSION)
 	fmt.Println("Starting Server")
-	fmt.Printf("Port: %d (insecure) %d (secure)\n", config.PortInsecure, config.PortSecure)
+	fmt.Printf("Port: %d (insecure) %d (secure) '%s' (unixsocket)\n", config.PortInsecure, config.PortSecure, config.UnixSocketPath)
 	handleRequests(webDir, config)
 }

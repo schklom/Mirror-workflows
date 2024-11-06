@@ -34,6 +34,5 @@ USER fmd-user
 
 EXPOSE 8080/tcp
 EXPOSE 8443/tcp
-VOLUME /data
 
 ENTRYPOINT ["/fmd/server"]

@@ -4,6 +4,8 @@ Each branch mirrors a repo's main (or master) branch (easier to build with Actio
 
 Actions synchronize the branches to repos, build Dockerfiles into images, and push these images to Docker Hub.
 
+Images are only updated if the last recorded commits of the parent repositories (store in files) match the latest current ones at the build-time. This minimizes the frequency of updates that Docker hosts need to make whenever they check for updates, and avoids wasting lots of computations.
+
 The Actions are defined in the directory .github/workflows. Secrets are used for sensitive information.
 
 ### Branches currently working:

@@ -13,8 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     outputs:
+      # https://github.com/shenxn/protonmail-bridge-docker
       LOCAL_FORK: ${{ steps.commits.outputs.SETLOCAL_FORK }}
       REMOTE_FORK: ${{ steps.commits.outputs.SETREMOTE_FORK }}
+      # https://github.com/ProtonMail/proton-bridge
       LOCAL_PARENT: ${{ steps.commits.outputs.SETLOCAL_PARENT }}
       REMOTE_PARENT: ${{ steps.commits.outputs.SETREMOTE_PARENT }}
     steps:

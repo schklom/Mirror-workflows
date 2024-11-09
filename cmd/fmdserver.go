@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -126,62 +125,21 @@ func getAllLocations(w http.ResponseWriter, r *http.Request) {
 }
 
 func postLocation(w http.ResponseWriter, r *http.Request) {
-	// Extract the body first. We can only read it once. If we read it twice
-	// (e.g. once in postLocationModern and then postLocationLegacy) it will be
-	// empty the second time we read it.
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		fmt.Println("Failed to read body:", err)
-		http.Error(w, "", http.StatusInternalServerError)
-		return
-	}
-	// Try the modern method. If it fails fall back to legacy method.
-	isModern := postLocationModern(w, body)
-	if !isModern {
-		postLocationLegacy(w, body)
-	}
-	w.WriteHeader(http.StatusOK)
-}
-
-func postLocationModern(w http.ResponseWriter, body []byte) bool {
 	var request DataPackage
-	err := json.Unmarshal(body, &request)
+	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
-		// could not decode as DataPackage, try the fallback
-		fmt.Println("Failed to decode as DataPackage:", err)
-		return false
-	}
-	if len(request.Data) == 0 {
-		// not a valid modern location package
-		return false
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
 	}
 	user, err := uio.CheckAccessTokenAndGetUser(request.IDT)
 	if err != nil {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
-		return true
+		return
 	}
 
 	locationAsString, _ := json.MarshalIndent(request, "", " ")
 	uio.AddLocation(user, string(locationAsString))
-	return true
-}
-
-func postLocationLegacy(w http.ResponseWriter, body []byte) bool {
-	var location locationData
-	err := json.Unmarshal(body, &location)
-	if err != nil {
-		fmt.Println("Failed to decode as locationData:", err)
-		return false
-	}
-	user, err := uio.CheckAccessTokenAndGetUser(location.IDT)
-	if err != nil {
-		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
-		return true
-	}
-
-	locationAsString, _ := json.MarshalIndent(location, "", " ")
-	uio.AddLocation(user, string(locationAsString))
-	return true
+	w.WriteHeader(http.StatusOK)
 }
 
 func getLocationDataSize(w http.ResponseWriter, r *http.Request) {

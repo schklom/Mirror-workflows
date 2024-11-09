@@ -146,24 +146,18 @@ async function doLogin(fmdid, password, useLongSession) {
     let salt = saltJson.Data;
 
     modernPasswordHash = await hashPasswordForLoginModern(password, salt);
-    legacyPasswordHash = hashPasswordForLoginLegacy(password, salt);
 
     try {
         await tryLoginWithHash(fmdid, modernPasswordHash, sessionDurationSeconds);
-    } catch {
-        console.log("Modern hash failed, trying legacy hash.");
-        try {
-            await tryLoginWithHash(fmdid, legacyPasswordHash, sessionDurationSeconds);
-        } catch (statusCode) {
-            if (statusCode == 423) {
-                alert("Too many attempts. Try again in 10 minutes.");
-            } else if (statusCode == 403) {
-                alert("Wrong ID or wrong password.");
-            } else {
-                alert("Unhandled error: " + statusCode);
-            }
-            return;
+    } catch (statusCode) {
+        if (statusCode == 423) {
+            alert("Too many attempts. Try again in 10 minutes.");
+        } else if (statusCode == 403) {
+            alert("Wrong ID or wrong password.");
+        } else {
+            alert("Unhandled error: " + statusCode);
         }
+        return;
     }
 
     await getPrivateKey(password);

@@ -23,10 +23,7 @@ type LockedId struct {
 	Timestamp int64
 }
 
-// A login attempt by the webclient with the wrong password generates 2 requests.
-// One with the modern hash, and a second with the legacy hash.
-// So to allow 3 attempts we need to allow 3 * 2 requests.
-const MAX_ALLOWED_ATTEMPTS = 3 * 2
+const MAX_ALLOWED_ATTEMPTS = 5
 
 const DURATION_LOCKED_SECS = 10 * 60          // 10 mins
 const DEFAULT_TOKEN_VALID_SECS = 15 * 60      // 15 mins

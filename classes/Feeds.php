@@ -2212,18 +2212,22 @@ class Feeds extends Handler_Protected {
 	 * @return array{0: string, 1: array<int, string>} [$search_query_part, $search_words]
 	 */
 	private static function _search_to_sql(string $search, string $search_language, int $owner_uid): array {
-		$keywords = str_getcsv(preg_replace('/(-?\w+)\:"(\w+)/', '"{$1}:{$2}', trim($search)), ' ', '"', '');
+		// Modify the search string so that 'keyword:"foo bar"' becomes '"keyword:foo bar"'.
+		// This is needed so potential command pairs are grouped correctly.
+		$search_csv_str = preg_replace('/(-?\w+)\:"(\w+)/', '"$1:$2', trim($search));
+
+		// $keywords will be an array like ['"title:hello world"', 'some', 'words']
+		$keywords = str_getcsv($search_csv_str, ' ', '"', '');
+
 		$query_keywords = array();
 		$search_words = array();
 		$search_query_leftover = array();
 
 		$pdo = Db::pdo();
 
-		if ($search_language)
-			$search_language = $pdo->quote(mb_strtolower($search_language));
-		else
-			$search_language = $pdo->quote(mb_strtolower(get_pref(Prefs::DEFAULT_SEARCH_LANGUAGE, $owner_uid)));
+		$search_language = $pdo->quote(mb_strtolower($search_language ?: get_pref(Prefs::DEFAULT_SEARCH_LANGUAGE, $owner_uid)));
 
+		/** @var string $k a keyword pair (not yet split) or standalone value */
 		foreach ($keywords as $k) {
 			if (strpos($k, "-") === 0) {
 				$k = substr($k, 1);
@@ -2232,38 +2236,42 @@ class Feeds extends Handler_Protected {
 				$not = "";
 			}
 
-			$commandpair = explode(":", mb_strtolower($k), 2);
+			$keyword_pair = explode(':', mb_strtolower($k), 2);
+			$keyword_name = $keyword_pair[0];
+			$keyword_value = empty($keyword_pair[1]) ? '' : trim($keyword_pair[1]);
 
-			switch ($commandpair[0]) {
+			// NOTE: If there's a keyword match but no keyword value we fall back to doing
+			// a search in article title and content.
+			switch ($keyword_name) {
 				case "title":
-					if ($commandpair[1]) {
+					if ($keyword_value) {
 						array_push($query_keywords, "($not (LOWER(ttrss_entries.title) LIKE ".
-							$pdo->quote('%' . mb_strtolower($commandpair[1]) . '%') ."))");
+							$pdo->quote("%{$keyword_value}%") ."))");
 					} else {
-						array_push($query_keywords, "(UPPER(ttrss_entries.title) $not LIKE UPPER('%$k%')
+						array_push($query_keywords, "(UPPER(ttrss_entries.title) $not LIKE UPPER(".$pdo->quote("%$k%").")
 								OR UPPER(ttrss_entries.content) $not LIKE UPPER(".$pdo->quote("%$k%")."))");
 						array_push($search_words, $k);
 					}
 					break;
 				case "author":
-					if ($commandpair[1]) {
+					if ($keyword_value) {
 						array_push($query_keywords, "($not (LOWER(author) LIKE ".
-							$pdo->quote('%' . mb_strtolower($commandpair[1]) . '%')."))");
+							$pdo->quote("%{$keyword_value}%")."))");
 					} else {
-						array_push($query_keywords, "(UPPER(ttrss_entries.title) $not LIKE UPPER('%$k%')
+						array_push($query_keywords, "(UPPER(ttrss_entries.title) $not LIKE UPPER(".$pdo->quote("%$k%").")
 								OR UPPER(ttrss_entries.content) $not LIKE UPPER(".$pdo->quote("%$k%")."))");
 						array_push($search_words, $k);
 					}
 					break;
 				case "note":
-					if ($commandpair[1]) {
-						if ($commandpair[1] == "true")
+					if ($keyword_value) {
+						if ($keyword_value == "true")
 							array_push($query_keywords, "($not (note IS NOT NULL AND note != ''))");
-						else if ($commandpair[1] == "false")
+						else if ($keyword_value == "false")
 							array_push($query_keywords, "($not (note IS NULL OR note = ''))");
 						else
 							array_push($query_keywords, "($not (LOWER(note) LIKE ".
-								$pdo->quote('%' . mb_strtolower($commandpair[1]) . '%')."))");
+								$pdo->quote("%{$keyword_value}%")."))");
 					} else {
 						array_push($query_keywords, "(UPPER(ttrss_entries.title) $not LIKE UPPER(".$pdo->quote("%$k%").")
 								OR UPPER(ttrss_entries.content) $not LIKE UPPER(".$pdo->quote("%$k%")."))");
@@ -2271,9 +2279,8 @@ class Feeds extends Handler_Protected {
 					}
 					break;
 				case "star":
-
-					if ($commandpair[1]) {
-						if ($commandpair[1] == "true")
+					if ($keyword_value) {
+						if ($keyword_value == "true")
 							array_push($query_keywords, "($not (marked = true))");
 						else
 							array_push($query_keywords, "($not (marked = false))");
@@ -2284,12 +2291,11 @@ class Feeds extends Handler_Protected {
 					}
 					break;
 				case "pub":
-					if ($commandpair[1]) {
-						if ($commandpair[1] == "true")
+					if ($keyword_value) {
+						if ($keyword_value == "true")
 							array_push($query_keywords, "($not (published = true))");
 						else
 							array_push($query_keywords, "($not (published = false))");
-
 					} else {
 						array_push($query_keywords, "(UPPER(ttrss_entries.title) $not LIKE UPPER('%$k%')
 								OR UPPER(ttrss_entries.content) $not LIKE UPPER(".$pdo->quote("%$k%")."))");
@@ -2297,8 +2303,8 @@ class Feeds extends Handler_Protected {
 					}
 					break;
 				case "label":
-					if ($commandpair[1]) {
-						$label_id = Labels::find_id($commandpair[1], $_SESSION["uid"]);
+					if ($keyword_value) {
+						$label_id = Labels::find_id($keyword_value, $_SESSION["uid"]);
 
 						if ($label_id) {
 							array_push($query_keywords, "($not
@@ -2315,8 +2321,8 @@ class Feeds extends Handler_Protected {
 					}
 					break;
 				case "unread":
-					if ($commandpair[1]) {
-						if ($commandpair[1] == "true")
+					if ($keyword_value) {
+						if ($keyword_value == "true")
 							array_push($query_keywords, "($not (unread = true))");
 						else
 							array_push($query_keywords, "($not (unread = false))");
@@ -2328,22 +2334,24 @@ class Feeds extends Handler_Protected {
 					}
 					break;
 				default:
+					// @{date} handling
 					if (strpos($k, "@") === 0) {
-
 						$user_tz_string = get_pref(Prefs::USER_TIMEZONE, $_SESSION['uid']);
 						$orig_ts = strtotime(substr($k, 1));
 						$k = date("Y-m-d", TimeHelper::convert_timestamp($orig_ts, $user_tz_string, 'UTC'));
 
 						//$k = date("Y-m-d", strtotime(substr($k, 1)));
 
-						array_push($query_keywords, "(".SUBSTRING_FOR_DATE."(updated,1,LENGTH('$k')) $not = '$k')");
+						array_push($query_keywords, "(".SUBSTRING_FOR_DATE."(updated,1,LENGTH(".$pdo->quote($k).")) $not = ".$pdo->quote($k).")");
 					} else {
+						// treat as leftover text
+
+						// TODO: handle multiword strings in the fulltext search
+						$k = mb_strtolower($k);
 
 						if (Config::get(Config::DB_TYPE) == "pgsql") {
-							$k = mb_strtolower($k);
 							array_push($search_query_leftover, $not ? "!$k" : $k);
 						} else {
-							$k = mb_strtolower($k);
 							array_push($search_query_leftover, $not ? "-$k" : $k);
 
 							//array_push($query_keywords, "(UPPER(ttrss_entries.title) $not LIKE UPPER(".$pdo->quote("%$k%").")

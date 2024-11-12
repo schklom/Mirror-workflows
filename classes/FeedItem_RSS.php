@@ -34,7 +34,7 @@ class FeedItem_RSS extends FeedItem_Common {
 		$links = $this->xpath->query("atom:link", $this->elem);
 
 		foreach ($links as $link) {
-			if ($link && $link->hasAttribute("href") &&
+			if ($link->hasAttribute("href") &&
 				(!$link->hasAttribute("rel")
 					|| $link->getAttribute("rel") == "alternate"
 					|| $link->getAttribute("rel") == "standout")) {

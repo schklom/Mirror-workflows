@@ -103,12 +103,12 @@ class Feeds extends Handler_Protected {
 		$qfh_ret = [];
 
 		if (!$cat_view && is_numeric($feed) && $feed < PLUGIN_FEED_BASE_INDEX && $feed > LABEL_BASE_INDEX) {
-
-			/** @var IVirtualFeed|false $handler */
 			$handler = PluginHost::getInstance()->get_feed_handler(
 				PluginHost::feed_to_pfeed_id($feed));
 
-			if ($handler) {
+			if ($handler && implements_interface($handler, 'IVirtualFeed')) {
+				/** @var Plugin&IVirtualFeed $handler */
+
 				$options = array(
 					"limit" => $limit,
 					"view_mode" => $view_mode,
@@ -246,7 +246,7 @@ class Feeds extends Handler_Protected {
 						$label_cache = json_decode($label_cache, true);
 
 						if ($label_cache) {
-							if ($label_cache["no-labels"] ?? 0 == 1)
+							if (($label_cache["no-labels"] ?? 0) == 1)
 								$labels = [];
 							else
 								$labels = $label_cache;
@@ -940,7 +940,7 @@ class Feeds extends Handler_Protected {
 			$feed_id = PluginHost::feed_to_pfeed_id($feed);
 			$handler = PluginHost::getInstance()->get_feed_handler($feed_id);
 			if (implements_interface($handler, 'IVirtualFeed')) {
-				/** @var IVirtualFeed $handler */
+				/** @var Plugin&IVirtualFeed $handler */
 				return $handler->get_unread($feed_id);
 			} else {
 				return 0;

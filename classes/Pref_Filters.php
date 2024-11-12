@@ -714,7 +714,6 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	function editrule(): void {
-		/** @var array<int, int|string> */
 		$feed_ids = explode(",", clean($_REQUEST["ids"]));
 
 		print json_encode([

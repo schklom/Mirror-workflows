@@ -386,6 +386,7 @@ class PluginHost {
 	 * @param PluginHost::HOOK_* $type
 	 */
 	function del_hook(string $type, Plugin $sender): void {
+		/** @phpstan-ignore function.alreadyNarrowedType ($type might not exist) */
 		if (is_array($this->hooks[$type])) {
 			foreach (array_keys($this->hooks[$type]) as $prio) {
 				$key = array_search($sender, $this->hooks[$type][$prio]);
@@ -589,7 +590,7 @@ class PluginHost {
 		}
 	}
 
-	/** @return array<string, array{'description': string, 'suffix': string, 'arghelp': string, 'class': Plugin}>> command type -> details array */
+	/** @return array<string, array{'description': string, 'suffix': string, 'arghelp': string, 'class': Plugin}> command type -> details array */
 	function get_commands() {
 		return $this->commands;
 	}

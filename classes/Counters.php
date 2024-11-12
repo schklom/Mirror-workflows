@@ -264,25 +264,21 @@ class Counters {
 			array_push($ret, $cv);
 		}
 
-		$feeds = PluginHost::getInstance()->get_feeds(Feeds::CATEGORY_SPECIAL);
+		foreach (PluginHost::getInstance()->get_feeds(Feeds::CATEGORY_SPECIAL) as $feed) {
+			/** @var IVirtualFeed $feed['sender'] */
 
-		if (is_array($feeds)) {
-			foreach ($feeds as $feed) {
-				/** @var IVirtualFeed $feed['sender'] */
+			if (!implements_interface($feed['sender'], 'IVirtualFeed'))
+				continue;
 
-				if (!implements_interface($feed['sender'], 'IVirtualFeed'))
-					continue;
+			$cv = [
+				"id" => PluginHost::pfeed_to_feed_id($feed['id']),
+				"counter" => $feed['sender']->get_unread($feed['id'])
+			];
 
-				$cv = [
-					"id" => PluginHost::pfeed_to_feed_id($feed['id']),
-					"counter" => $feed['sender']->get_unread($feed['id'])
-				];
+			if (method_exists($feed['sender'], 'get_total'))
+				$cv["auxcounter"] = $feed['sender']->get_total($feed['id']);
 
-				if (method_exists($feed['sender'], 'get_total'))
-					$cv["auxcounter"] = $feed['sender']->get_total($feed['id']);
-
-				array_push($ret, $cv);
-			}
+			array_push($ret, $cv);
 		}
 
 		return $ret;

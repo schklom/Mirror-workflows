@@ -235,7 +235,7 @@ class API extends Handler {
 	}
 
 	function updateArticle(): bool {
-		$article_ids = explode(",", clean($_REQUEST["article_ids"]));
+		$article_ids = array_filter(explode(",", clean($_REQUEST["article_ids"] ?? "")));
 		$mode = (int) clean($_REQUEST["mode"]);
 		$data = clean($_REQUEST["data"] ?? "");
 		$field_raw = (int)clean($_REQUEST["field"]);
@@ -550,26 +550,22 @@ class API extends Handler {
 
 			/* Virtual feeds */
 
-			$vfeeds = PluginHost::getInstance()->get_feeds(Feeds::CATEGORY_SPECIAL);
+			foreach (PluginHost::getInstance()->get_feeds(Feeds::CATEGORY_SPECIAL) as $feed) {
+				if (!implements_interface($feed['sender'], 'IVirtualFeed'))
+					continue;
 
-			if (is_array($vfeeds)) {
-				foreach ($vfeeds as $feed) {
-					if (!implements_interface($feed['sender'], 'IVirtualFeed'))
-						continue;
+				/** @var IVirtualFeed $feed['sender'] */
+				$unread = $feed['sender']->get_unread($feed['id']);
 
-					/** @var IVirtualFeed $feed['sender'] */
-					$unread = $feed['sender']->get_unread($feed['id']);
+				if ($unread || !$unread_only) {
+					$row = [
+						'id' => PluginHost::pfeed_to_feed_id($feed['id']),
+						'title' => $feed['title'],
+						'unread' => $unread,
+						'cat_id' => Feeds::CATEGORY_SPECIAL,
+					];
 
-					if ($unread || !$unread_only) {
-						$row = [
-							'id' => PluginHost::pfeed_to_feed_id($feed['id']),
-							'title' => $feed['title'],
-							'unread' => $unread,
-							'cat_id' => Feeds::CATEGORY_SPECIAL,
-						];
-
-						array_push($feeds, $row);
-					}
+					array_push($feeds, $row);
 				}
 			}
 
@@ -696,10 +692,11 @@ class API extends Handler {
 			if (!$is_cat && is_numeric($feed_id) && $feed_id < PLUGIN_FEED_BASE_INDEX && $feed_id > LABEL_BASE_INDEX) {
 				$pfeed_id = PluginHost::feed_to_pfeed_id($feed_id);
 
-				/** @var IVirtualFeed|false $handler */
 				$handler = PluginHost::getInstance()->get_feed_handler($pfeed_id);
 
-				if ($handler) {
+				if ($handler && implements_interface($handler, 'IVirtualFeed')) {
+					/** @var Plugin&IVirtualFeed $handler */
+
 					$params = array(
 						"feed" => $feed_id,
 						"limit" => $limit,
@@ -858,7 +855,7 @@ class API extends Handler {
 
 					array_push($headlines, $headline_row);
 				}
-			} else if (is_numeric($result) && $result == -1) {
+			} else if ($result == -1) {
 				$headlines_header['first_id_changed'] = true;
 			}
 

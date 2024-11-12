@@ -2,40 +2,38 @@
 /**
  * @param array<int, array<string, mixed>> $trace
  */
-function format_backtrace($trace): string {
+function format_backtrace(array $trace): string {
 	$rv = "";
 	$idx = 1;
 
-	if (is_array($trace)) {
-		foreach ($trace as $e) {
-			if (isset($e["file"]) && isset($e["line"])) {
-				$fmt_args = [];
+	foreach ($trace as $e) {
+		if (isset($e["file"]) && isset($e["line"])) {
+			$fmt_args = [];
 
-				if (is_array($e["args"] ?? false)) {
-					foreach ($e["args"] as $a) {
-						if (is_object($a)) {
-							array_push($fmt_args, "{" . get_class($a) . "}");
-						} else if (is_array($a)) {
-							array_push($fmt_args, "[" . truncate_string(json_encode($a), 256, "...")) . "]";
-						} else if (is_resource($a)) {
-							array_push($fmt_args, truncate_string(get_resource_type($a), 256, "..."));
-						} else if (is_string($a)) {
-							array_push($fmt_args, truncate_string($a, 256, "..."));
-						}
+			if (is_array($e["args"] ?? false)) {
+				foreach ($e["args"] as $a) {
+					if (is_object($a)) {
+						array_push($fmt_args, "{" . get_class($a) . "}");
+					} else if (is_array($a)) {
+						array_push($fmt_args, "[" . truncate_string(json_encode($a), 256, "...")) . "]";
+					} else if (is_resource($a)) {
+						array_push($fmt_args, truncate_string(get_resource_type($a), 256, "..."));
+					} else if (is_string($a)) {
+						array_push($fmt_args, truncate_string($a, 256, "..."));
 					}
 				}
-
-				$filename = str_replace(dirname(__DIR__) . "/", "", $e["file"]);
-
-				$rv .= sprintf("%d. %s(%s): %s(%s)\n",
-					$idx,
-					$filename,
-					$e["line"],
-					$e["function"],
-					implode(", ", $fmt_args));
-
-				$idx++;
 			}
+
+			$filename = str_replace(dirname(__DIR__) . "/", "", $e["file"]);
+
+			$rv .= sprintf("%d. %s(%s): %s(%s)\n",
+				$idx,
+				$filename,
+				$e["line"],
+				$e["function"],
+				implode(", ", $fmt_args));
+
+			$idx++;
 		}
 	}
 

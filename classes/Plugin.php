@@ -76,7 +76,7 @@ abstract class Plugin {
 	 *
 	 * @return string */
 	function __($msgid) {
-		/** @var Plugin $this -- this is a strictly template-related hack */
+		// this is a strictly template-related hack
 		return _dgettext(PluginHost::object_to_domain($this), $msgid);
 	}
 
@@ -87,7 +87,7 @@ abstract class Plugin {
 	 *
 	 * @return string */
 	function _ngettext($singular, $plural, $number) {
-		/** @var Plugin $this -- this is a strictly template-related hack */
+		// this is a strictly template-related hack
 		return _dngettext(PluginHost::object_to_domain($this), $singular, $plural, $number);
 	}
 

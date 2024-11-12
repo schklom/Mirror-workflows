@@ -503,7 +503,6 @@ class UserHelper {
 
 			return $authenticator->check_password($owner_uid, $password);
 		} else {
-			/** @var Auth_Internal|false $authenticator -- this is only here to make check_password() visible to static analyzer */
 			$authenticator = PluginHost::getInstance()->get_plugin($_SESSION["auth_module"]);
 
 			if ($authenticator &&

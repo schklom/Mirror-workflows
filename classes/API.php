@@ -693,9 +693,7 @@ class API extends Handler {
 
 				$handler = PluginHost::getInstance()->get_feed_handler($pfeed_id);
 
-				if ($handler && implements_interface($handler, 'IVirtualFeed')) {
-					/** @var Plugin&IVirtualFeed $handler */
-
+				if ($handler) {
 					$params = array(
 						"feed" => $feed_id,
 						"limit" => $limit,

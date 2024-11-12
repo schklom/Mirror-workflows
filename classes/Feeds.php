@@ -106,9 +106,7 @@ class Feeds extends Handler_Protected {
 			$handler = PluginHost::getInstance()->get_feed_handler(
 				PluginHost::feed_to_pfeed_id($feed));
 
-			if ($handler && implements_interface($handler, 'IVirtualFeed')) {
-				/** @var Plugin&IVirtualFeed $handler */
-
+			if ($handler) {
 				$options = array(
 					"limit" => $limit,
 					"view_mode" => $view_mode,
@@ -936,15 +934,10 @@ class Feeds extends Handler_Protected {
 
 		if ($is_cat) {
 			return self::_get_cat_unread($n_feed, $owner_uid);
-		} else if(is_numeric($feed) && $feed < PLUGIN_FEED_BASE_INDEX && $feed > LABEL_BASE_INDEX) { // virtual Feed
+		} else if (is_numeric($feed) && $feed < PLUGIN_FEED_BASE_INDEX && $feed > LABEL_BASE_INDEX) { // virtual Feed
 			$feed_id = PluginHost::feed_to_pfeed_id($feed);
 			$handler = PluginHost::getInstance()->get_feed_handler($feed_id);
-			if (implements_interface($handler, 'IVirtualFeed')) {
-				/** @var Plugin&IVirtualFeed $handler */
-				return $handler->get_unread($feed_id);
-			} else {
-				return 0;
-			}
+			return $handler ? $handler->get_unread($feed_id) : 0;
 		} else if ($n_feed == Feeds::FEED_RECENTLY_READ) {
 			return 0;
 		// tags

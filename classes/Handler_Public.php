@@ -53,8 +53,7 @@ class Handler_Public extends Handler {
 			$handler = $tmppluginhost->get_feed_handler(
 				PluginHost::feed_to_pfeed_id((int)$feed));
 
-			if ($handler && implements_interface($handler, 'IVirtualFeed')) {
-				/** @var Plugin&IVirtualFeed $handler */
+			if ($handler) {
 				$qfh_ret = $handler->get_headlines(PluginHost::feed_to_pfeed_id((int)$feed), $params);
 			} else {
 				user_error("Failed to find handler for plugin feed ID: $feed", E_USER_ERROR);

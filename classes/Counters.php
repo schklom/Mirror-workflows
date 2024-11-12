@@ -265,10 +265,10 @@ class Counters {
 		}
 
 		foreach (PluginHost::getInstance()->get_feeds(Feeds::CATEGORY_SPECIAL) as $feed) {
-			/** @var IVirtualFeed $feed['sender'] */
-
 			if (!implements_interface($feed['sender'], 'IVirtualFeed'))
 				continue;
+
+			/** @var Plugin&IVirtualFeed $feed['sender'] */
 
 			$cv = [
 				"id" => PluginHost::pfeed_to_feed_id($feed['id']),

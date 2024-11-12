@@ -50,7 +50,7 @@ class UserHelper {
 	 */
 	public static function map_access_level(int $level) : int {
 		if (in_array($level, self::ACCESS_LEVELS)) {
-			/** @phpstan-ignore-next-line */
+			/** @phpstan-ignore return.type (yes it is a UserHelper::ACCESS_LEVEL_* value) */
 			return $level;
 		} else {
 			user_error("Passed invalid user access level: $level", E_USER_WARNING);

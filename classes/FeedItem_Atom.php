@@ -43,7 +43,6 @@ class FeedItem_Atom extends FeedItem_Common {
 		$links = $this->elem->getElementsByTagName("link");
 
 		foreach ($links as $link) {
-			/** @phpstan-ignore-next-line */
 			if ($link->hasAttribute("href") &&
 				(!$link->hasAttribute("rel")
 					|| $link->getAttribute("rel") == "alternate"
@@ -181,7 +180,6 @@ class FeedItem_Atom extends FeedItem_Common {
 		$encs = [];
 
 		foreach ($links as $link) {
-			/** @phpstan-ignore-next-line */
 			if ($link->hasAttribute("href") && $link->hasAttribute("rel")) {
 				$base = $this->xpath->evaluate("string(ancestor-or-self::*[@xml:base][1]/@xml:base)", $link);
 

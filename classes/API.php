@@ -300,10 +300,9 @@ class API extends Handler {
 	}
 
 	function getArticle(): bool {
-		$article_ids = explode(',', clean($_REQUEST['article_id'] ?? ''));
+		$article_ids = array_filter(explode(',', clean($_REQUEST['article_id'] ?? '')));
 		$sanitize_content = self::_param_to_bool($_REQUEST['sanitize'] ?? true);
 
-		// @phpstan-ignore-next-line
 		if (count($article_ids)) {
 			$entries = ORM::for_table('ttrss_entries')
 				->table_alias('e')

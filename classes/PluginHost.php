@@ -386,8 +386,7 @@ class PluginHost {
 	 * @param PluginHost::HOOK_* $type
 	 */
 	function del_hook(string $type, Plugin $sender): void {
-		/** @phpstan-ignore function.alreadyNarrowedType ($type might not exist) */
-		if (is_array($this->hooks[$type])) {
+		if (array_key_exists($type, $this->hooks)) {
 			foreach (array_keys($this->hooks[$type]) as $prio) {
 				$key = array_search($sender, $this->hooks[$type][$prio]);
 

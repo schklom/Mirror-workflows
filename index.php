@@ -36,8 +36,9 @@
 	<style type="text/css">
 	<?php
 		foreach (PluginHost::getInstance()->get_plugins() as $p) {
-			if (method_exists($p, "get_css")) {
-				echo $p->get_css();
+			$css = $p->get_css();
+			if ($css) {
+				echo $css;
 			}
 		}
 	?>
@@ -73,16 +74,14 @@
 	<script type="text/javascript">
 	<?php
 		foreach (PluginHost::getInstance()->get_plugins() as $n => $p) {
-			if (method_exists($p, "get_js")) {
-			    $script = $p->get_js();
+			$script = $p->get_js();
 
-			    if ($script) {
-					echo "try {
-					    $script
-					} catch (e) {
-                        console.warn('failed to initialize plugin JS: $n', e);
-                    }";
-				}
+			if ($script) {
+				echo "try {
+					$script
+				} catch (e) {
+					console.warn('failed to initialize plugin JS: $n', e);
+				}";
 			}
 		}
 	?>

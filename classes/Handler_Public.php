@@ -54,8 +54,6 @@ class Handler_Public extends Handler {
 				PluginHost::feed_to_pfeed_id((int)$feed));
 
 			if ($handler) {
-				// 'get_headlines' is implemented by the plugin.
-				// @phpstan-ignore-next-line
 				$qfh_ret = $handler->get_headlines(PluginHost::feed_to_pfeed_id((int)$feed), $params);
 			} else {
 				user_error("Failed to find handler for plugin feed ID: $feed", E_USER_ERROR);

@@ -115,9 +115,6 @@ class Pref_Filters extends Handler_Protected {
 		$glue = $filter['match_any_rule'] ? " OR " :  " AND ";
 		$scope_qpart = join($glue, $scope_qparts);
 
-		/** @phpstan-ignore-next-line */
-		if (!$scope_qpart) $scope_qpart = "true";
-
 		$rv = array();
 
 		//while ($found < $limit && $offset < $limit * 1000 && time() - $started < ini_get("max_execution_time") * 0.7) {
@@ -714,7 +711,6 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	function editrule(): void {
-		/** @var array<int, int|string> */
 		$feed_ids = explode(",", clean($_REQUEST["ids"]));
 
 		print json_encode([

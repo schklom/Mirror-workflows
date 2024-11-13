@@ -50,7 +50,7 @@ class UserHelper {
 	 */
 	public static function map_access_level(int $level) : int {
 		if (in_array($level, self::ACCESS_LEVELS)) {
-			/** @phpstan-ignore-next-line */
+			/** @phpstan-ignore return.type (yes it is a UserHelper::ACCESS_LEVEL_* value) */
 			return $level;
 		} else {
 			user_error("Passed invalid user access level: $level", E_USER_WARNING);
@@ -503,7 +503,6 @@ class UserHelper {
 
 			return $authenticator->check_password($owner_uid, $password);
 		} else {
-			/** @var Auth_Internal|false $authenticator -- this is only here to make check_password() visible to static analyzer */
 			$authenticator = PluginHost::getInstance()->get_plugin($_SESSION["auth_module"]);
 
 			if ($authenticator &&

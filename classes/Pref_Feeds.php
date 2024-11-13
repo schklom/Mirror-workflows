@@ -240,8 +240,7 @@ class Pref_Feeds extends Handler_Protected {
 			/**
 			 * Uncategorized is a special case.
 			 *
-			 * Define a minimal array shape to help PHPStan with the type of $cat['items']
-			 * @var array{items: array<int, array<string, mixed>>} $cat
+			 * @var array{id: string, bare_id: int, auxcounter: int, name: string, items: array<int, array<string, mixed>>, type: 'category', checkbox: bool, unread: int, child_unread: int}
 			 */
 			$cat = [
 				'id' => 'CAT:0',

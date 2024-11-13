@@ -177,7 +177,7 @@ class Pref_Prefs extends Handler_Protected {
 		$authenticator = PluginHost::getInstance()->get_plugin($_SESSION["auth_module"]);
 
 		if (implements_interface($authenticator, "IAuthModule2")) {
-			/** @var IAuthModule2 $authenticator */
+			/** @var Plugin&IAuthModule2 $authenticator */
 			print format_notice($authenticator->change_password($_SESSION["uid"], $old_pw, $new_pw));
 		} else {
 			print "ERROR: ".format_error("Function not supported by authentication module.");
@@ -976,7 +976,7 @@ class Pref_Prefs extends Handler_Protected {
 
 		$authenticator = PluginHost::getInstance()->get_plugin($_SESSION["auth_module"]);
 
-		/** @var Auth_Internal|false $authenticator -- this is only here to make check_password() visible to static analyzer */
+		/** @var Auth_Internal|null $authenticator -- this is only here to make check_password() visible to static analyzer */
 		if ($authenticator->check_password($_SESSION["uid"], $password)) {
 			if (UserHelper::enable_otp($_SESSION["uid"], $otp_check)) {
 				print "OK";
@@ -991,7 +991,7 @@ class Pref_Prefs extends Handler_Protected {
 	function otpdisable(): void {
 		$password = clean($_REQUEST["password"]);
 
-		/** @var Auth_Internal|false $authenticator -- this is only here to make check_password() visible to static analyzer */
+		/** @var Auth_Internal|null $authenticator -- this is only here to make check_password() visible to static analyzer */
 		$authenticator = PluginHost::getInstance()->get_plugin($_SESSION["auth_module"]);
 
 		if ($authenticator->check_password($_SESSION["uid"], $password)) {
@@ -1316,14 +1316,8 @@ class Pref_Prefs extends Handler_Protected {
 
 	function updateLocalPlugins(): void {
 		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN) {
-			$plugins = explode(",", $_REQUEST["plugins"] ?? "");
-
-			if ($plugins !== false) {
-				$plugins = array_filter($plugins, 'strlen');
-			}
-
+			$plugins = array_filter(explode(",", $_REQUEST["plugins"] ?? ""), "strlen");
 			$root_dir = Config::get_self_dir();
-
 			$rv = [];
 
 			if ($plugins) {

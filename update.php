@@ -215,7 +215,7 @@
 	}
 
 	if (isset($options["daemon"])) {
-		// @phpstan-ignore-next-line
+		// @phpstan-ignore while.alwaysTrue (single process daemon will always run)
 		while (true) {
 			$quiet = (isset($options["quiet"])) ? "--quiet" : "";
 			$log = isset($options['log']) ? '--log '.$options['log'] : '';

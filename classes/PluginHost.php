@@ -386,7 +386,7 @@ class PluginHost {
 	 * @param PluginHost::HOOK_* $type
 	 */
 	function del_hook(string $type, Plugin $sender): void {
-		if (is_array($this->hooks[$type])) {
+		if (array_key_exists($type, $this->hooks)) {
 			foreach (array_keys($this->hooks[$type]) as $prio) {
 				$key = array_search($sender, $this->hooks[$type][$prio]);
 
@@ -589,7 +589,7 @@ class PluginHost {
 		}
 	}
 
-	/** @return array<string, array{'description': string, 'suffix': string, 'arghelp': string, 'class': Plugin}>> command type -> details array */
+	/** @return array<string, array{'description': string, 'suffix': string, 'arghelp': string, 'class': Plugin}> command type -> details array */
 	function get_commands() {
 		return $this->commands;
 	}
@@ -782,12 +782,21 @@ class PluginHost {
 		return $this->feeds[$cat_id] ?? [];
 	}
 
-	// convert feed_id (e.g. -129) to pfeed_id first
+	/**
+	 * convert feed_id (e.g. -129) to pfeed_id first
+	 * 
+	 * @return (Plugin&IVirtualFeed)|null
+	 */
 	function get_feed_handler(int $pfeed_id): ?Plugin {
 		foreach ($this->feeds as $cat) {
 			foreach ($cat as $feed) {
 				if ($feed['id'] == $pfeed_id) {
-					return $feed['sender'];
+					if (implements_interface($feed['sender'], 'IVirtualFeed')) {
+						/** @var Plugin&IVirtualFeed $feed['sender'] */
+						return $feed['sender'];
+					} else {
+						return null;
+					}
 				}
 			}
 		}

@@ -163,7 +163,7 @@ class Digest
 			$article_labels = Article::_get_labels($line["ref_id"], $user_id);
 			$article_labels_formatted = "";
 
-			if (is_array($article_labels) && count($article_labels) > 0) {
+			if (count($article_labels) > 0) {
 				$article_labels_formatted = implode(", ", array_map(fn($a) => $a[1], $article_labels));
 			}
 

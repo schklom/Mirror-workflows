@@ -103,8 +103,6 @@ class Feeds extends Handler_Protected {
 		$qfh_ret = [];
 
 		if (!$cat_view && is_numeric($feed) && $feed < PLUGIN_FEED_BASE_INDEX && $feed > LABEL_BASE_INDEX) {
-
-			/** @var IVirtualFeed|false $handler */
 			$handler = PluginHost::getInstance()->get_feed_handler(
 				PluginHost::feed_to_pfeed_id($feed));
 
@@ -246,7 +244,7 @@ class Feeds extends Handler_Protected {
 						$label_cache = json_decode($label_cache, true);
 
 						if ($label_cache) {
-							if ($label_cache["no-labels"] ?? 0 == 1)
+							if (($label_cache["no-labels"] ?? 0) == 1)
 								$labels = [];
 							else
 								$labels = $label_cache;
@@ -936,15 +934,10 @@ class Feeds extends Handler_Protected {
 
 		if ($is_cat) {
 			return self::_get_cat_unread($n_feed, $owner_uid);
-		} else if(is_numeric($feed) && $feed < PLUGIN_FEED_BASE_INDEX && $feed > LABEL_BASE_INDEX) { // virtual Feed
+		} else if (is_numeric($feed) && $feed < PLUGIN_FEED_BASE_INDEX && $feed > LABEL_BASE_INDEX) { // virtual Feed
 			$feed_id = PluginHost::feed_to_pfeed_id($feed);
 			$handler = PluginHost::getInstance()->get_feed_handler($feed_id);
-			if (implements_interface($handler, 'IVirtualFeed')) {
-				/** @var IVirtualFeed $handler */
-				return $handler->get_unread($feed_id);
-			} else {
-				return 0;
-			}
+			return $handler ? $handler->get_unread($feed_id) : 0;
 		} else if ($n_feed == Feeds::FEED_RECENTLY_READ) {
 			return 0;
 		// tags
@@ -1067,7 +1060,7 @@ class Feeds extends Handler_Protected {
 		if (!$url) return ["code" => 2];
 
 		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_PRE_SUBSCRIBE,
-			/** @phpstan-ignore-next-line */
+			/** @phpstan-ignore closure.unusedUse, closure.unusedUse, closure.unusedUse */
 			function ($result) use (&$url, &$auth_login, &$auth_pass) {
 				// arguments are updated inside the hook (if needed)
 			},

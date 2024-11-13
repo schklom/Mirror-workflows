@@ -4,7 +4,7 @@
 	"license": ["MIT"],
 	"keywords": ["dev", "static analysis"],
 	"require": {
-		"php": "^7.2|^8.0"
+		"php": "^7.4|^8.0"
 	},
 	"conflict": {
 		"phpstan/phpstan-shim": "*"
@@ -15,5 +15,12 @@
 	],
 	"autoload": {
 		"files": ["bootstrap.php"]
+	},
+	"support": {
+		"issues": "https://github.com/phpstan/phpstan/issues",
+		"forum": "https://github.com/phpstan/phpstan/discussions",
+		"source": "https://github.com/phpstan/phpstan-src",
+		"docs": "https://phpstan.org/user-guide/getting-started",
+		"security": "https://github.com/phpstan/phpstan/security/policy"
 	}
 }

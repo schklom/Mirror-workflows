@@ -6,7 +6,7 @@ parameters:
    reportUnmatchedIgnoredErrors: false
    ignoreErrors:
       # set_include_path detection issue
-      - message: '#"(autoload|colors|errorhandler|login_form|sessions)\.php"#'
+      - message: '#"(autoload|colors|config|errorhandler|login_form|sessions)\.php"#'
         identifier: requireOnce.fileNotFound
 
       # undetected as DOMElement

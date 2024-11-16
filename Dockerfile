@@ -25,7 +25,6 @@ RUN apt update && apt install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 COPY --from=builder /tmp/fmd /fmd/server
 
 COPY web /fmd/web
-COPY extra /fmd/extra
 
 RUN mkdir /fmd/db
 

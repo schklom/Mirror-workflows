@@ -14,6 +14,13 @@ At its core, FMD is just a binary that you can run directly.
 If you are experienced and have settled on your own way to deploy applications,
 feel free to stick to that.
 
+```bash
+go run main.go serve
+# or
+go build
+./findmydeviceserver serve
+```
+
 Alternatively, or if you are new to hosting applications,
 we recommend to run FMD Server with Docker.
 
@@ -139,14 +146,6 @@ volumes:
 ```
 
 NOTE: `yml` not `yaml`!
-
-## Developing
-
-To run the Go code:
-
-```bash
-go run cmd/fmdserver.go
-```
 
 ## Other Implementations
 

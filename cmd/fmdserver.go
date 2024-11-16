@@ -1,9 +1,8 @@
-package main
+package cmd
 
 import (
 	"bytes"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io/fs"
 	"log"
@@ -19,12 +18,6 @@ import (
 
 	"gopkg.in/yaml.v3"
 )
-
-const VERSION = "v0.7.0"
-const WEB_DIR = "web"
-
-// Server Config
-const CONFIG_FILE = "config.yml"
 
 var isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]*$`).MatchString
 
@@ -673,6 +666,7 @@ func handleRequests(webDir string, config config) {
 				log.Fatalf("could not remove existing unix socket: %s", config.UnixSocketPath)
 			}
 		}
+		fmt.Printf("Listening on unix socket %s \n", config.UnixSocketPath)
 		unixListener, err := net.Listen("unix", config.UnixSocketPath)
 		if err != nil {
 			log.Fatalf("error on opening unix socket, %s", err.Error())
@@ -699,11 +693,13 @@ func handleRequests(webDir string, config config) {
 		os.Remove(config.UnixSocketPath)
 	} else if config.PortSecure > -1 && fileExists(config.ServerCrt) && fileExists(config.ServerKey) {
 		securePort := ":" + strconv.Itoa(config.PortSecure)
+		fmt.Printf("Listening on port %d (secure)\n", config.PortSecure)
 		err := http.ListenAndServeTLS(securePort, config.ServerCrt, config.ServerKey, mux)
 		if err != nil {
 			fmt.Println("HTTPS won't be available.", err)
 		}
 	} else if config.PortInsecure > -1 {
+		fmt.Printf("Listening on port: %d (insecure)\n", config.PortInsecure)
 		insecureAddr := ":" + strconv.Itoa(config.PortInsecure)
 		log.Fatal(http.ListenAndServe(insecureAddr, mux))
 	} else {
@@ -711,13 +707,11 @@ func handleRequests(webDir string, config config) {
 	}
 }
 
-func load_config(filesDir string) config {
+func loadConfig(configPath string) config {
 	fmt.Println("Init: Loading Config...")
 
-	configFilePath := filepath.Join(filesDir, CONFIG_FILE)
-
 	configRead := true
-	configContent, err := os.ReadFile(configFilePath)
+	configContent, err := os.ReadFile(configPath)
 	if err != nil {
 		fmt.Println("ERROR: reading config file: ", err)
 		configRead = false
@@ -741,13 +735,13 @@ func load_config(filesDir string) config {
 	return serverConfig
 }
 
-func init_db(filesDir string, config config) {
+func initDb(dbDir string, config config) {
 	fmt.Println("Init: Loading database")
 	uio = user.UserRepository{}
-	uio.Init(filesDir, config.UserIdLength, config.MaxSavedLoc, config.MaxSavedPic)
+	uio.Init(dbDir, config.UserIdLength, config.MaxSavedLoc, config.MaxSavedPic)
 }
 
-func get_cwd() string {
+func getCwd() string {
 	executableFile, err := os.Executable()
 	if err != nil {
 		return "."
@@ -765,19 +759,17 @@ func fileExists(filename string) bool {
 	return !info.IsDir()
 }
 
-func main() {
-	filesDir := ""
-	cwd := get_cwd()
-	flag.StringVar(&filesDir, "d", cwd, "Specifiy data directory. Default is the directory of the executable.")
-	flag.Parse()
-	fmt.Println("Init: FMD-Data directory: ", filesDir)
+func RunServer(configPath string, dbDir string, webDir string) {
+	fmt.Println("Init: configPath: ", configPath)
+	fmt.Println("Init: dbDir: ", dbDir)
+	fmt.Println("Init: webDir: ", webDir)
 
-	webDir := filepath.Join(filesDir, WEB_DIR)
-	config := load_config(filesDir)
-	init_db(filesDir, config)
+	// Initialisation
+	config := loadConfig(configPath)
+	initDb(dbDir, config)
 
+	// Run server
 	fmt.Println("FMD Server ", VERSION)
 	fmt.Println("Starting Server")
-	fmt.Printf("Port: %d (insecure) %d (secure) '%s' (unixsocket)\n", config.PortInsecure, config.PortSecure, config.UnixSocketPath)
 	handleRequests(webDir, config)
 }

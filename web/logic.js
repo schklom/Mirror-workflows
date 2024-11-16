@@ -64,7 +64,7 @@ function init() {
             return response.text();
         })
         .then(function (versionCode) {
-            versionView.innerHTML = versionCode;
+            versionView.textContent = versionCode;
         })
 
     setupOnClicks()
@@ -238,7 +238,7 @@ async function setupPushWarning() {
 
     const ele = document.getElementById("pushWarning");
     if (pushUrl) {
-        ele.innerHTML = ""
+        ele.textContent = ""
     } else {
         ele.innerHTML = `
             <p>
@@ -340,11 +340,11 @@ async function locate(requestedIndex) {
     const time = new Date(loc.time);
 
     document.getElementsByClassName("deviceInfo")[0].style.display = "block";
-    document.getElementById("idView").innerHTML = currentId;
-    document.getElementById("dateView").innerHTML = time.toLocaleDateString();
-    document.getElementById("timeView").innerHTML = time.toLocaleTimeString();
-    document.getElementById("providerView").innerHTML = loc.provider;
-    document.getElementById("batView").innerHTML = loc.bat + " %";
+    document.getElementById("idView").textContent = currentId;
+    document.getElementById("dateView").textContent = time.toLocaleDateString();
+    document.getElementById("timeView").textContent = time.toLocaleTimeString();
+    document.getElementById("providerView").textContent = loc.provider;
+    document.getElementById("batView").textContent = loc.bat + " %";
 
     lat_long = []   // All locations in an array. Needed for the line between points.
     markers.clearLayers();
@@ -365,11 +365,11 @@ async function locate(requestedIndex) {
 
 function setNoLocationDataAvailable(text) {
     document.getElementsByClassName("deviceInfo")[0].style.display = "block";
-    document.getElementById("idView").innerHTML = currentId;
-    document.getElementById("dateView").innerHTML = text;
-    document.getElementById("timeView").innerHTML = text;
-    document.getElementById("providerView").innerHTML = text;
-    document.getElementById("batView").innerHTML = "? %";
+    document.getElementById("idView").textContent = currentId;
+    document.getElementById("dateView").textContent = text;
+    document.getElementById("timeView").textContent = text;
+    document.getElementById("providerView").textContent = text;
+    document.getElementById("batView").textContent = "? %";
 }
 
 document.addEventListener("keydown", function (event) {
@@ -544,7 +544,7 @@ function displaySinglePicture(picture) {
     buttonDiv.className = "center"
 
     var beforeBtn = document.createElement("button");
-    beforeBtn.innerHTML = "<-"
+    beforeBtn.textContent = "<-"
     beforeBtn.addEventListener('click', function () {
         document.body.removeChild(div)
         currentPictureIndex -= 1;
@@ -556,14 +556,14 @@ function displaySinglePicture(picture) {
     buttonDiv.appendChild(beforeBtn)
 
     var btn = document.createElement("button");
-    btn.innerHTML = "close"
+    btn.textContent = "close"
     btn.addEventListener('click', function () {
         document.body.removeChild(div)
     }, false);
     buttonDiv.appendChild(btn)
 
     var afterBtn = document.createElement("button");
-    afterBtn.innerHTML = "->"
+    afterBtn.textContent = "->"
     afterBtn.addEventListener('click', function () {
         document.body.removeChild(div)
         currentPictureIndex += 1;
@@ -590,7 +590,7 @@ function displayCommandLogs(logs) {
     buttonDiv.className = "center";
 
     var btn = document.createElement("button");
-    btn.innerHTML = "close";
+    btn.textContent = "close";
     btn.addEventListener('click', function () {
         document.body.removeChild(div);
     }, false);
@@ -627,7 +627,7 @@ function prepareDeleteDevice() {
     var label = document.createElement("label");
     label.id = "password_prompt_label";
     label.className = "center"
-    label.innerHTML = "Please enter the device pin:";
+    label.textContent = "Please enter the device pin:";
     label.for = "password_prompt_input";
     div.appendChild(label);
 

@@ -147,6 +147,11 @@ volumes:
 
 NOTE: `yml` not `yaml`!
 
+
+## Other ways to install
+
+- [AUR package](https://aur.archlinux.org/packages/findmydeviceserver), maintained by @Chris__
+
 ## Other Implementations
 
 The community has developed implementations of FMD Server in other languages/frameworks:

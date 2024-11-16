@@ -495,7 +495,7 @@ async function showLatestPicture() {
         toasted.show('No picture available')
         return;
     }
-    newestPictureSize = parseInt(json.Data, 10);
+    const newestPictureSize = parseInt(json.Data, 10);
     newestPictureIndex = newestPictureSize - 1
     currentPictureIndex = newestPictureSize - 1;
     await loadPicture(currentPictureIndex);
@@ -531,18 +531,22 @@ async function loadPicture(index) {
 function displaySinglePicture(picture) {
     var div = document.createElement("div");
     div.id = "imagePrompt";
+    div.className = "center-column"
 
-    var imageDiv = document.createElement("div");
+    // Picture header
+    var titleDiv = document.createTextNode(`Image ${currentPictureIndex + 1} of ${newestPictureIndex + 1}`)
+    div.appendChild(titleDiv)
+
+    // Image view
     var img = document.createElement("img");
-    imageDiv.className = "center"
     img.id = "imageFromDevice"
     img.src = "data:image/jpeg;base64," + picture
-    imageDiv.appendChild(img)
-    div.appendChild(imageDiv)
+    div.appendChild(img)
 
+    // Button row
     var buttonDiv = document.createElement("div");
-    buttonDiv.className = "center"
 
+    // Back button
     var beforeBtn = document.createElement("button");
     beforeBtn.textContent = "<-"
     beforeBtn.addEventListener('click', function () {
@@ -555,6 +559,7 @@ function displaySinglePicture(picture) {
     }, false);
     buttonDiv.appendChild(beforeBtn)
 
+    // Close button
     var btn = document.createElement("button");
     btn.textContent = "close"
     btn.addEventListener('click', function () {
@@ -562,6 +567,7 @@ function displaySinglePicture(picture) {
     }, false);
     buttonDiv.appendChild(btn)
 
+    // Forward/next button
     var afterBtn = document.createElement("button");
     afterBtn.textContent = "->"
     afterBtn.addEventListener('click', function () {
@@ -573,6 +579,7 @@ function displaySinglePicture(picture) {
         loadPicture(currentPictureIndex);
     }, false);
     buttonDiv.appendChild(afterBtn)
+
     div.appendChild(buttonDiv)
     document.body.appendChild(div);
 }

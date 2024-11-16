@@ -70,7 +70,6 @@ footer {
 }
 
 .center-column {
-    width: 100%;
     border: 1px solid black;
     display: flex;
     flex-direction: column;
@@ -80,7 +79,6 @@ footer {
 }
 
 .center-row {
-    width: 100%;
     border: 1px solid black;
     display: flex;
     flex-direction: row;

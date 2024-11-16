@@ -69,7 +69,7 @@ Replace the version with the [latest release](https://gitlab.com/Nulide/findmyde
 *Persisting storage:*
 FMD has a database and needs to persist it across container restarts.
 You need to mount a Docker volume to the directory `/fmd/db/` (inside the container).
-It must be readable and writable by uid 1000 (ideally it is owned by uid 1000).
+**It must be readable and writable by uid 1000** (ideally it is owned by uid 1000).
 
 *Networking:*
 FMD Server listens for HTTP connections on port 8080.

@@ -127,7 +127,9 @@ class UserHelper {
 			$_SESSION["csrf_token"] = bin2hex(get_random_bytes(16));
 
 		if (Config::get_schema_version() >= 120) {
-			$_SESSION["language"] = get_pref(Prefs::USER_LANGUAGE, $owner_uid);
+			// TODO: USER_LANGUAGE is currently profile-specific, so we should pass it in here,
+			// but $_SESSION['profile'] isn't currently available until after the login flow completes.
+			$_SESSION["language"] = Prefs::get(Prefs::USER_LANGUAGE, $owner_uid);
 		}
 	}
 
@@ -136,7 +138,8 @@ class UserHelper {
 		if (!$pluginhost) $pluginhost = PluginHost::getInstance();
 
 		if ($owner_uid && Config::get_schema_version() >= 100 && empty($_SESSION["safe_mode"])) {
-			$plugins = get_pref(Prefs::_ENABLED_PLUGINS, $owner_uid);
+			$profile = isset($_SESSION['uid']) && $owner_uid == $_SESSION['uid'] && isset($_SESSION['profile']) ? $_SESSION['profile'] : null;
+			$plugins = Prefs::get(Prefs::_ENABLED_PLUGINS, $owner_uid, $profile);
 
 			$pluginhost->load((string)$plugins, PluginHost::KIND_USER, $owner_uid);
 
@@ -192,7 +195,7 @@ class UserHelper {
 	}
 
 	static function print_user_stylesheet(): void {
-		$value = get_pref(Prefs::USER_STYLESHEET);
+		$value = Prefs::get(Prefs::USER_STYLESHEET, $_SESSION['uid'], $_SESSION['profile'] ?? null);
 
 		if ($value) {
 			print "<style type='text/css' id='user_css_style'>";

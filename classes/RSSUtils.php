@@ -321,7 +321,7 @@ class RSSUtils {
 
 		if ($feed) {
 			$pluginhost = new PluginHost();
-			$user_plugins = get_pref(Prefs::_ENABLED_PLUGINS, $feed->owner_uid);
+			$user_plugins = Prefs::get(Prefs::_ENABLED_PLUGINS, $feed->owner_uid);
 
 			$pluginhost->load(Config::get(Config::PLUGINS), PluginHost::KIND_ALL);
 			$pluginhost->load((string)$user_plugins, PluginHost::KIND_USER, $feed->owner_uid);
@@ -403,7 +403,7 @@ class RSSUtils {
 
 			$feed_language = mb_strtolower($feed_obj->feed_language);
 
-			if (!$feed_language) $feed_language = mb_strtolower(get_pref(Prefs::DEFAULT_SEARCH_LANGUAGE, $feed_obj->owner_uid));
+			if (!$feed_language) $feed_language = mb_strtolower(Prefs::get(Prefs::DEFAULT_SEARCH_LANGUAGE, $feed_obj->owner_uid));
 			if (!$feed_language) $feed_language = 'simple';
 
 			$user = ORM::for_table('ttrss_users')->find_one($feed_obj->owner_uid);
@@ -436,7 +436,7 @@ class RSSUtils {
 		$cache_filename = sha1($feed_obj->feed_url) . ".xml";
 
 		$pluginhost = new PluginHost();
-		$user_plugins = get_pref(Prefs::_ENABLED_PLUGINS, $feed_obj->owner_uid);
+		$user_plugins = Prefs::get(Prefs::_ENABLED_PLUGINS, $feed_obj->owner_uid);
 
 		$pluginhost->load(Config::get(Config::PLUGINS), PluginHost::KIND_ALL);
 		$pluginhost->load((string)$user_plugins, PluginHost::KIND_USER, $feed_obj->owner_uid);
@@ -1274,7 +1274,7 @@ class RSSUtils {
 				$entry_tags = FeedItem_Common::normalize_categories(
 						array_diff($entry_tags,
 							FeedItem_Common::normalize_categories(explode(",",
-								get_pref(Prefs::BLACKLISTED_TAGS, $feed_obj->owner_uid)))));
+								Prefs::get(Prefs::BLACKLISTED_TAGS, $feed_obj->owner_uid)))));
 
 				Debug::log("resulting article tags: " . implode(", ", $entry_tags), Debug::LOG_VERBOSE);
 

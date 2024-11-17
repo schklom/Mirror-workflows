@@ -42,8 +42,9 @@ class RPC extends Handler_Protected {
 
 	function togglepref(): void {
 		$key = clean($_REQUEST["key"]);
-		set_pref($key, !get_pref($key));
-		$value = get_pref($key);
+		$profile = $_SESSION['profile'] ?? null;
+		Prefs::set($key, !Prefs::get($key, $_SESSION['uid'], $profile), $_SESSION['uid'], $profile);
+		$value = Prefs::get($key, $_SESSION['uid'], $profile);
 
 		print json_encode(array("param" =>$key, "value" => $value));
 	}
@@ -53,7 +54,7 @@ class RPC extends Handler_Protected {
 		$key = clean($_REQUEST['key']);
 		$value = $_REQUEST['value'];
 
-		set_pref($key, $value, $_SESSION["uid"], $key != 'USER_STYLESHEET');
+		Prefs::set($key, $value, $_SESSION['uid'], $_SESSION['profile'] ?? null, $key != 'USER_STYLESHEET');
 
 		print json_encode(array("param" =>$key, "value" => $value));
 	}
@@ -124,7 +125,8 @@ class RPC extends Handler_Protected {
 		else
 			$label_ids = array_map("intval", clean($_REQUEST["label_ids"] ?? []));
 
-		$counters = is_array($feed_ids) && !get_pref(Prefs::DISABLE_CONDITIONAL_COUNTERS) ?
+		$counters = is_array($feed_ids)
+			&& !Prefs::get(Prefs::DISABLE_CONDITIONAL_COUNTERS, $_SESSION['uid'], $_SESSION['profile'] ?? null) ?
 			Counters::get_conditional($feed_ids, $label_ids) : Counters::get_all();
 
 		$reply = [
@@ -241,7 +243,7 @@ class RPC extends Handler_Protected {
 	function setWidescreen(): void {
 		$wide = (int) clean($_REQUEST["wide"]);
 
-		set_pref(Prefs::WIDESCREEN_MODE, $wide);
+		Prefs::set(Prefs::WIDESCREEN_MODE, $wide, $_SESSION['uid'], $_SESSION['profile'] ?? null);
 
 		print json_encode(["wide" => $wide]);
 	}
@@ -436,6 +438,7 @@ class RPC extends Handler_Protected {
 	 * @return array<string, mixed>
 	 */
 	private function _make_init_params(): array {
+		$profile = $_SESSION['profile'] ?? null;
 		$params = array();
 
 		foreach ([Prefs::ON_CATCHUP_SHOW_NEXT_FEED, Prefs::HIDE_READ_FEEDS,
@@ -444,21 +447,21 @@ class RPC extends Handler_Protected {
 			Prefs::FRESH_ARTICLE_MAX_AGE, Prefs::HIDE_READ_SHOWS_SPECIAL,
 			Prefs::COMBINED_DISPLAY_MODE, Prefs::DEBUG_HEADLINE_IDS, Prefs::CDM_ENABLE_GRID] as $param) {
 
-			$params[strtolower($param)] = (int) get_pref($param);
+			$params[strtolower($param)] = (int) Prefs::get($param, $_SESSION['uid'], $profile);
 		}
 
 		$params["safe_mode"] = !empty($_SESSION["safe_mode"]);
 		$params["check_for_updates"] = Config::get(Config::CHECK_FOR_UPDATES);
 		$params["icons_url"] = Config::get_self_url() . '/public.php';
 		$params["cookie_lifetime"] = Config::get(Config::SESSION_COOKIE_LIFETIME);
-		$params["default_view_mode"] = get_pref(Prefs::_DEFAULT_VIEW_MODE);
-		$params["default_view_limit"] = (int) get_pref(Prefs::_DEFAULT_VIEW_LIMIT);
-		$params["default_view_order_by"] = get_pref(Prefs::_DEFAULT_VIEW_ORDER_BY);
+		$params["default_view_mode"] = Prefs::get(Prefs::_DEFAULT_VIEW_MODE, $_SESSION['uid'], $profile);
+		$params["default_view_limit"] = (int) Prefs::get(Prefs::_DEFAULT_VIEW_LIMIT, $_SESSION['uid'], $profile);
+		$params["default_view_order_by"] = Prefs::get(Prefs::_DEFAULT_VIEW_ORDER_BY, $_SESSION['uid'], $profile);
 		$params["bw_limit"] = (int) ($_SESSION["bw_limit"] ?? false);
 		$params["is_default_pw"] = UserHelper::is_default_password();
 		$params["label_base_index"] = LABEL_BASE_INDEX;
 
-		$theme = get_pref(Prefs::USER_CSS_THEME);
+		$theme = Prefs::get(Prefs::USER_CSS_THEME, $_SESSION['uid'], $profile);
 		$params["theme"] = theme_exists($theme) ? $theme : "";
 
 		$params["plugins"] = implode(", ", PluginHost::getInstance()->get_plugin_names());
@@ -480,7 +483,7 @@ class RPC extends Handler_Protected {
 		$params["max_feed_id"] = (int) $max_feed_id;
 		$params["num_feeds"] = (int) $num_feeds;
 		$params["hotkeys"] = $this->get_hotkeys_map();
-		$params["widescreen"] = (int) get_pref(Prefs::WIDESCREEN_MODE);
+		$params["widescreen"] = (int) Prefs::get(Prefs::WIDESCREEN_MODE, $_SESSION['uid'], $profile);
 		$params['simple_update'] = Config::get(Config::SIMPLE_UPDATE_MODE);
 		$params["icon_indicator_white"] = $this->image_to_base64("images/indicator_white.gif");
 		$params["icon_oval"] = $this->image_to_base64("images/oval.svg");
@@ -521,7 +524,7 @@ class RPC extends Handler_Protected {
 
 		$data["max_feed_id"] = (int) $max_feed_id;
 		$data["num_feeds"] = (int) $num_feeds;
-		$data['cdm_expanded'] = get_pref(Prefs::CDM_EXPANDED);
+		$data['cdm_expanded'] = Prefs::get(Prefs::CDM_EXPANDED, $_SESSION['uid'], $_SESSION['profile'] ?? null);
 		$data["labels"] = Labels::get_all($_SESSION["uid"]);
 
 		if (Config::get(Config::LOG_DESTINATION) == 'sql' && $_SESSION['access_level'] >= UserHelper::ACCESS_LEVEL_ADMIN) {

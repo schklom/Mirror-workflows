@@ -42,8 +42,9 @@ class Handler_Public extends Handler {
 		);
 
 		if (!$is_cat && is_numeric($feed) && $feed < PLUGIN_FEED_BASE_INDEX && $feed > LABEL_BASE_INDEX) {
-
-			$user_plugins = get_pref(Prefs::_ENABLED_PLUGINS, $owner_uid);
+			// TODO: _ENABLED_PLUGINS is profile-specific, so use of the default profile's plugins here should
+			// be called out in the docs, and/or access key stuff (see 'rss()') should also consider the profile
+			$user_plugins = Prefs::get(Prefs::_ENABLED_PLUGINS, $owner_uid);
 
 			$tmppluginhost = new PluginHost();
 			$tmppluginhost->load(Config::get(Config::PLUGINS), PluginHost::KIND_ALL);

@@ -337,7 +337,7 @@ class Article extends Handler_Protected {
 
 		$rv['can_inline'] = isset($_SESSION["uid"]) &&
 									empty($_SESSION["bw_limit"]) &&
-									!get_pref(Prefs::STRIP_IMAGES) &&
+									!Prefs::get(Prefs::STRIP_IMAGES, $_SESSION["uid"], $_SESSION["profile"] ?? null) &&
 									($always_display_enclosures || !preg_match("/<img/i", $article_content));
 
 		$rv['inline_text_only'] = $hide_images && $rv['can_inline'];

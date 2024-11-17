@@ -60,6 +60,8 @@ class Feeds extends Handler_Protected {
 					int $offset, string $override_order, bool $include_children, ?int $check_first_id = null,
 					?bool $skip_first_id_check = false, ? string $order_by = ''): array {
 
+		$profile = $_SESSION['profile'] ?? null;
+
 		$disable_cache = false;
 
 		$reply = [];
@@ -144,7 +146,7 @@ class Feeds extends Handler_Protected {
 			$qfh_ret = $this->_get_headlines($params);
 		}
 
-		$vfeed_group_enabled = get_pref(Prefs::VFEED_GROUP_BY_FEED) &&
+		$vfeed_group_enabled = Prefs::get(Prefs::VFEED_GROUP_BY_FEED, $_SESSION['uid'], $profile) &&
 			!(in_array($feed, self::NEVER_GROUP_FEEDS) && !$cat_view);
 
 		$result = $qfh_ret[0]; // this could be either a PDO query result or a -1 if first id changed
@@ -201,7 +203,7 @@ class Feeds extends Handler_Protected {
 
 				++$headlines_count;
 
-				if (!get_pref(Prefs::SHOW_CONTENT_PREVIEW)) {
+				if (!Prefs::get(Prefs::SHOW_CONTENT_PREVIEW, $_SESSION['uid'], $profile)) {
 					$line["content_preview"] = "";
 				} else {
 					$line["content_preview"] =  "&mdash; " . truncate_string(strip_tags($line["content"]), 250);
@@ -318,12 +320,12 @@ class Feeds extends Handler_Protected {
 				$line["content"] = Sanitizer::sanitize($line["content"],
 					$line['hide_images'], null, $line["site_url"], $highlight_words, $line["id"]);
 
-				if (!get_pref(Prefs::CDM_EXPANDED)) {
+				if (!Prefs::get(Prefs::CDM_EXPANDED, $_SESSION['uid'], $profile)) {
 					$line["cdm_excerpt"] = "<span class='collapse'>
 						<i class='material-icons' onclick='return Article.cdmUnsetActive(event)'
 								title=\"" . __("Collapse article") . "\">remove_circle</i></span>";
 
-					if (get_pref(Prefs::SHOW_CONTENT_PREVIEW)) {
+					if (Prefs::get(Prefs::SHOW_CONTENT_PREVIEW, $_SESSION['uid'], $profile)) {
 						$line["cdm_excerpt"] .= "<span class='excerpt'>" . $line["content_preview"] . "</span>";
 					}
 				}
@@ -460,6 +462,8 @@ class Feeds extends Handler_Protected {
 	}
 
 	function view(): void {
+		$profile = $_SESSION['profile'] ?? null;
+
 		$reply = array();
 
 		$feed = $_REQUEST["feed"];
@@ -502,8 +506,8 @@ class Feeds extends Handler_Protected {
 			return;
 		}
 
-		set_pref(Prefs::_DEFAULT_VIEW_MODE, $view_mode);
-		set_pref(Prefs::_DEFAULT_VIEW_ORDER_BY, $order_by);
+		Prefs::set(Prefs::_DEFAULT_VIEW_MODE, $view_mode, $_SESSION['uid'], $profile);
+		Prefs::set(Prefs::_DEFAULT_VIEW_ORDER_BY, $order_by, $_SESSION['uid'], $profile);
 
 		/* bump login timestamp if needed */
 		if (time() - $_SESSION["last_login_update"] > 3600) {
@@ -584,7 +588,7 @@ class Feeds extends Handler_Protected {
 			"show_language" => Config::get(Config::DB_TYPE) == "pgsql",
 			"show_syntax_help" => count(PluginHost::getInstance()->get_hooks(PluginHost::HOOK_SEARCH)) == 0,
 			"all_languages" => Pref_Feeds::get_ts_languages(),
-			"default_language" => get_pref(Prefs::DEFAULT_SEARCH_LANGUAGE)
+			"default_language" => Prefs::get(Prefs::DEFAULT_SEARCH_LANGUAGE, $_SESSION['uid'], $_SESSION['profile'] ?? null)
 		]);
 	}
 
@@ -738,8 +742,8 @@ class Feeds extends Handler_Protected {
 	 * @param array<int, string> $search
 	 */
 	static function _catchup(string $feed_id_or_tag_name, bool $cat_view, ?int $owner_uid = null, string $mode = 'all', ?array $search = null): void {
-
 		if (!$owner_uid) $owner_uid = $_SESSION['uid'];
+		$profile = isset($_SESSION['uid']) && $owner_uid == $_SESSION['uid'] && isset($_SESSION['profile']) ? $_SESSION['profile'] : null;
 
 		$pdo = Db::pdo();
 
@@ -858,7 +862,7 @@ class Feeds extends Handler_Protected {
 
 				if ($feed_id == Feeds::FEED_FRESH) {
 
-					$intl = (int) get_pref(Prefs::FRESH_ARTICLE_MAX_AGE);
+					$intl = (int) Prefs::get(Prefs::FRESH_ARTICLE_MAX_AGE, $owner_uid, $profile);
 
 					if (Config::get(Config::DB_TYPE) == "pgsql") {
 						$match_part = "date_entered > NOW() - INTERVAL '$intl hour' ";
@@ -923,6 +927,7 @@ class Feeds extends Handler_Protected {
 		$pdo = Db::pdo();
 
 		if (!$owner_uid) $owner_uid = $_SESSION["uid"];
+		$profile = isset($_SESSION['uid']) && $owner_uid == $_SESSION['uid'] && isset($_SESSION['profile']) ? $_SESSION['profile'] : null;
 
 		if ($unread_only) {
 			$unread_qpart = "unread = true";
@@ -961,7 +966,7 @@ class Feeds extends Handler_Protected {
 		} else if ($n_feed == Feeds::FEED_FRESH) {
 			$match_part = "unread = true AND score >= 0";
 
-			$intl = (int) get_pref(Prefs::FRESH_ARTICLE_MAX_AGE, $owner_uid);
+			$intl = (int) Prefs::get(Prefs::FRESH_ARTICLE_MAX_AGE, $owner_uid, $profile);
 
 			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$match_part .= " AND date_entered > NOW() - INTERVAL '$intl hour' ";
@@ -1422,6 +1427,7 @@ class Feeds extends Handler_Protected {
 		$override_order = $params["override_order"] ?? false;
 		$offset = $params["offset"] ?? 0;
 		$owner_uid = $params["owner_uid"] ?? $_SESSION["uid"];
+		$profile = $owner_uid == $_SESSION["uid"] && isset($_SESSION["profile"]) ? $_SESSION["profile"] : null;
 		$since_id = $params["since_id"] ?? 0;
 		$include_children = $params["include_children"] ?? false;
 		$ignore_vfeed_group = $params["ignore_vfeed_group"] ?? false;
@@ -1608,7 +1614,7 @@ class Feeds extends Handler_Protected {
 		} else if ($feed == Feeds::FEED_FRESH) { // fresh virtual feed
 			$query_strategy_part = "unread = true AND score >= 0";
 
-			$intl = (int) get_pref(Prefs::FRESH_ARTICLE_MAX_AGE, $owner_uid);
+			$intl = (int) Prefs::get(Prefs::FRESH_ARTICLE_MAX_AGE, $owner_uid, $profile);
 
 			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$query_strategy_part .= " AND date_entered > NOW() - INTERVAL '$intl hour' ";
@@ -1664,7 +1670,7 @@ class Feeds extends Handler_Protected {
 					$ssth = $pdo->prepare("SELECT title,site_url,last_error,last_updated
 							FROM ttrss_feeds WHERE id = ? AND owner_uid = ?");
 					$ssth->execute([$feed, $owner_uid]);
-                    $row = $ssth->fetch();
+					$row = $ssth->fetch();
 
 					$feed_title = $row["title"];
 					$feed_site_url = $row["site_url"];
@@ -1701,7 +1707,8 @@ class Feeds extends Handler_Protected {
 
 		if (is_numeric($feed)) {
 			// proper override_order applied above
-			if ($vfeed_query_part && !$ignore_vfeed_group && get_pref(Prefs::VFEED_GROUP_BY_FEED, $owner_uid)) {
+			if ($vfeed_query_part && !$ignore_vfeed_group
+				&& Prefs::get(Prefs::VFEED_GROUP_BY_FEED, $owner_uid, $profile)) {
 
 				if (!(in_array($feed, self::NEVER_GROUP_BY_DATE) && !$cat_view)) {
 					$yyiw_desc = $order_by == "date_reverse" ? "" : "desc";
@@ -1745,7 +1752,8 @@ class Feeds extends Handler_Protected {
 			}
 
 			// except for Labels category
-			if (get_pref(Prefs::HEADLINES_NO_DISTINCT, $owner_uid) && !($feed == Feeds::CATEGORY_LABELS && $cat_view)) {
+			if (Prefs::get(Prefs::HEADLINES_NO_DISTINCT, $owner_uid, $profile)
+				&& !($feed == Feeds::CATEGORY_LABELS && $cat_view)) {
 				$distinct_qpart = "";
 			}
 
@@ -1839,7 +1847,7 @@ class Feeds extends Handler_Protected {
 		} else {
 			// browsing by tag
 
-			if (get_pref(Prefs::HEADLINES_NO_DISTINCT, $owner_uid)) {
+			if (Prefs::get(Prefs::HEADLINES_NO_DISTINCT, $owner_uid, $profile)) {
 				$distinct_qpart = "";
 			} else {
 				if (Config::get(Config::DB_TYPE) == "pgsql") {
@@ -2133,12 +2141,13 @@ class Feeds extends Handler_Protected {
 		if ($row = $sth->fetch()) {
 			$owner_uid = $row["owner_uid"];
 
+
 			if (Config::get(Config::FORCE_ARTICLE_PURGE) != 0) {
 				Debug::log("purge_feed: FORCE_ARTICLE_PURGE is set, overriding interval to " . Config::get(Config::FORCE_ARTICLE_PURGE), Debug::LOG_VERBOSE);
 				$purge_unread = true;
 				$purge_interval = Config::get(Config::FORCE_ARTICLE_PURGE);
 			} else {
-				$purge_unread = get_pref(Prefs::PURGE_UNREAD_ARTICLES, $owner_uid);
+				$purge_unread = Prefs::get(Prefs::PURGE_UNREAD_ARTICLES, $owner_uid);
 			}
 
 			$purge_interval = (int) $purge_interval;
@@ -2195,7 +2204,7 @@ class Feeds extends Handler_Protected {
 			if ($feed->purge_interval != 0)
 				return $feed->purge_interval;
 			else
-				return get_pref(Prefs::PURGE_OLD_DAYS, $feed->owner_uid);
+				return Prefs::get(Prefs::PURGE_OLD_DAYS, $feed->owner_uid);
 		} else {
 			return -1;
 		}
@@ -2203,6 +2212,7 @@ class Feeds extends Handler_Protected {
 
 	/**
 	 * @return array{0: string, 1: array<int, string>} [$search_query_part, $search_words]
+	 * @todo $owner_uid and $_SESSION['uid'] are being used interchangeably-- maybe also pass in the profile so prefs can be correct
 	 */
 	private static function _search_to_sql(string $search, string $search_language, int $owner_uid): array {
 		// Modify the search string so that 'keyword:"foo bar"' becomes '"keyword:foo bar"'.
@@ -2218,7 +2228,8 @@ class Feeds extends Handler_Protected {
 
 		$pdo = Db::pdo();
 
-		$search_language = $pdo->quote(mb_strtolower($search_language ?: get_pref(Prefs::DEFAULT_SEARCH_LANGUAGE, $owner_uid)));
+		// TODO: profile should be used here or DEFAULT_SEARCH_LANGUAGE added to Prefs::_PROFILE_BLACKLIST
+		$search_language = $pdo->quote(mb_strtolower($search_language ?: Prefs::get(Prefs::DEFAULT_SEARCH_LANGUAGE, $owner_uid)));
 
 		/** @var string $k a keyword pair (not yet split) or standalone value */
 		foreach ($keywords as $k) {
@@ -2329,7 +2340,7 @@ class Feeds extends Handler_Protected {
 				default:
 					// @{date} handling
 					if (strpos($k, "@") === 0) {
-						$user_tz_string = get_pref(Prefs::USER_TIMEZONE, $_SESSION['uid']);
+						$user_tz_string = Prefs::get(Prefs::USER_TIMEZONE, $_SESSION['uid']);
 						$orig_ts = strtotime(substr($k, 1));
 						$k = date("Y-m-d", TimeHelper::convert_timestamp($orig_ts, $user_tz_string, 'UTC'));
 

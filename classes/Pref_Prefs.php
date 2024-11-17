@@ -185,6 +185,8 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	function saveconfig(): void {
+		$profile = $_SESSION['profile'] ?? null;
+
 		$boolean_prefs = explode(",", clean($_POST["boolean_prefs"]));
 
 		foreach ($boolean_prefs as $pref) {
@@ -199,7 +201,7 @@ class Pref_Prefs extends Handler_Protected {
 
 			switch ($pref_name) {
 				case Prefs::DIGEST_PREFERRED_TIME:
-					if (get_pref(Prefs::DIGEST_PREFERRED_TIME) != $value) {
+					if (Prefs::get(Prefs::DIGEST_PREFERRED_TIME, $_SESSION['uid']) != $value) {
 
 						$sth = $this->pdo->prepare("UPDATE ttrss_users SET
 							last_digest_sent = NULL WHERE id = ?");
@@ -212,7 +214,7 @@ class Pref_Prefs extends Handler_Protected {
 					break;
 
 				case Prefs::USER_CSS_THEME:
-					if (!$need_reload) $need_reload = get_pref($pref_name) != $value;
+					if (!$need_reload) $need_reload = Prefs::get(Prefs::USER_CSS_THEME, $_SESSION['uid'], $profile) != $value;
 					break;
 
 				case Prefs::BLACKLISTED_TAGS:
@@ -223,7 +225,7 @@ class Pref_Prefs extends Handler_Protected {
 			}
 
 			if (Prefs::is_valid($pref_name)) {
-				Prefs::set($pref_name, $value, $_SESSION["uid"], $_SESSION["profile"] ?? null);
+				Prefs::set($pref_name, $value, $_SESSION['uid'], $profile);
 			}
 		}
 
@@ -802,7 +804,7 @@ class Pref_Prefs extends Handler_Protected {
 
 	function getPluginsList(): void {
 		$system_enabled = array_map("trim", explode(",", (string)Config::get(Config::PLUGINS)));
-		$user_enabled = array_map("trim", explode(",", get_pref(Prefs::_ENABLED_PLUGINS)));
+		$user_enabled = array_map('trim', explode(',', Prefs::get(Prefs::_ENABLED_PLUGINS, $_SESSION['uid'], $_SESSION['profile'] ?? null)));
 
 		$tmppluginhost = new PluginHost();
 		$tmppluginhost->load_all($tmppluginhost::KIND_ALL, $_SESSION["uid"], true);
@@ -1031,7 +1033,7 @@ class Pref_Prefs extends Handler_Protected {
 	function setplugins(): void {
 		$plugins = array_filter($_REQUEST["plugins"] ?? [], 'clean');
 
-		set_pref(Prefs::_ENABLED_PLUGINS, implode(",", $plugins));
+		Prefs::set(Prefs::_ENABLED_PLUGINS, implode(',', $plugins), $_SESSION['uid'], $_SESSION['profile'] ?? null);
 	}
 
 	function _get_plugin_version(Plugin $plugin): string {
@@ -1350,7 +1352,7 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	function customizeCSS(): void {
-		$value = get_pref(Prefs::USER_STYLESHEET);
+		$value = Prefs::get(Prefs::USER_STYLESHEET, $_SESSION['uid'], $_SESSION['profile'] ?? null);
 		$value = str_replace("<br/>", "\n", $value);
 
 		print json_encode(["value" => $value]);

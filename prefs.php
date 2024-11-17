@@ -19,7 +19,7 @@
     <meta name="viewport" content="initial-scale=1,width=device-width" />
 
 	<?php if ($_SESSION["uid"] && empty($_SESSION["safe_mode"])) {
-		$theme = get_pref(Prefs::USER_CSS_THEME);
+		$theme = Prefs::get(Prefs::USER_CSS_THEME, $_SESSION['uid'], $_SESSION['profile'] ?? null);
 		if ($theme && theme_exists("$theme")) {
 			echo stylesheet_tag(get_theme_path($theme), ['id' => 'theme_css']);
 		}

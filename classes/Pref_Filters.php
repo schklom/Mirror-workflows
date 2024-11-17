@@ -873,7 +873,7 @@ class Pref_Filters extends Handler_Protected {
 			}
 		}
 
-		if (get_pref(Prefs::ENABLE_FEED_CATS)) {
+		if (Prefs::get(Prefs::ENABLE_FEED_CATS, $_SESSION['uid'], $_SESSION['profile'] ?? null)) {
 
 			if (!$root_id) $root_id = null;
 

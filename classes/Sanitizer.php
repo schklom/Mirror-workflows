@@ -68,6 +68,8 @@ class Sanitizer {
 		if (!$owner && isset($_SESSION["uid"]))
 			$owner = $_SESSION["uid"];
 
+		$profile = isset($_SESSION['uid']) && $owner == $_SESSION['uid'] && isset($_SESSION['profile']) ? $_SESSION['profile'] : null;
+
 		$res = trim($str); if (!$res) return '';
 
 		$doc = new DOMDocument();
@@ -117,8 +119,7 @@ class Sanitizer {
 			}
 
 			if ($entry->hasAttribute('src') &&
-					($owner && get_pref(Prefs::STRIP_IMAGES, $owner)) || $force_remove_images || ($_SESSION["bw_limit"] ?? false)) {
-
+					($owner && Prefs::get(Prefs::STRIP_IMAGES, $owner, $profile)) || $force_remove_images || ($_SESSION['bw_limit'] ?? false)) {
 				$p = $doc->createElement('p');
 
 				$a = $doc->createElement('a');

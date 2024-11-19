@@ -38,7 +38,7 @@ class API extends Handler {
 				return false;
 			}
 
-			if (!empty($_SESSION["uid"]) && $method != "logout" && !get_pref(Prefs::ENABLE_API_ACCESS)) {
+			if (!empty($_SESSION["uid"]) && $method != "logout" && !Prefs::get(Prefs::ENABLE_API_ACCESS, $_SESSION["uid"])) {
 				$this->_wrap(self::STATUS_ERR, array("error" => self::E_API_DISABLED));
 				return false;
 			}
@@ -74,7 +74,7 @@ class API extends Handler {
 		if (Config::get(Config::SINGLE_USER_MODE)) $login = "admin";
 
 		if ($uid = UserHelper::find_user_by_login($login)) {
-			if (get_pref(Prefs::ENABLE_API_ACCESS, $uid)) {
+			if (Prefs::get(Prefs::ENABLE_API_ACCESS, $uid)) {
 				if (UserHelper::authenticate($login, $password, false,  Auth_Base::AUTH_SERVICE_API)) {
 
 					// needed for _get_config()
@@ -421,7 +421,7 @@ class API extends Handler {
 	function getPref(): bool {
 		$pref_name = clean($_REQUEST["pref_name"]);
 
-		return $this->_wrap(self::STATUS_OK, array("value" => get_pref($pref_name)));
+		return $this->_wrap(self::STATUS_OK, array("value" => Prefs::get($pref_name, $_SESSION["uid"], $_SESSION["profile"] ?? null)));
 	}
 
 	function getLabels(): bool {

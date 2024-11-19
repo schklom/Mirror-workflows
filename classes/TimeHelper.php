@@ -3,20 +3,21 @@ class TimeHelper {
 
 	static function smart_date_time(int $timestamp, int $tz_offset = 0, ?int $owner_uid = null, bool $eta_min = false): string {
 		if (!$owner_uid) $owner_uid = $_SESSION['uid'];
+		$profile = isset($_SESSION['uid']) && $owner_uid == $_SESSION['uid'] && isset($_SESSION['profile']) ? $_SESSION['profile'] : null;
 
 		if ($eta_min && time() + $tz_offset - $timestamp < 3600) {
 			return T_sprintf("%d min", date("i", time() + $tz_offset - $timestamp));
 		} else if (date("Y.m.d", $timestamp) == date("Y.m.d", time() + $tz_offset)) {
-			$format = get_pref(Prefs::SHORT_DATE_FORMAT, $owner_uid);
+			$format = Prefs::get(Prefs::SHORT_DATE_FORMAT, $owner_uid, $profile);
 			if (strpos((strtolower($format)), "a") === false)
 				return date("G:i", $timestamp);
 			else
 				return date("g:i a", $timestamp);
 		} else if (date("Y", $timestamp) == date("Y", time() + $tz_offset)) {
-			$format = get_pref(Prefs::SHORT_DATE_FORMAT, $owner_uid);
+			$format = Prefs::get(Prefs::SHORT_DATE_FORMAT, $owner_uid, $profile);
 			return date($format, $timestamp);
 		} else {
-			$format = get_pref(Prefs::LONG_DATE_FORMAT, $owner_uid);
+			$format = Prefs::get(Prefs::LONG_DATE_FORMAT, $owner_uid, $profile);
 			return date($format, $timestamp);
 		}
 	}
@@ -25,6 +26,8 @@ class TimeHelper {
 					bool $no_smart_dt = false, bool $eta_min = false): string {
 
 		if (!$owner_uid) $owner_uid = $_SESSION['uid'];
+		$profile = isset($_SESSION['uid']) && $owner_uid == $_SESSION['uid'] && isset($_SESSION['profile']) ? $_SESSION['profile'] : null;
+
 		if (!$timestamp) $timestamp = '1970-01-01 0:00';
 
 		global $utc_tz;
@@ -37,7 +40,7 @@ class TimeHelper {
 		# We store date in UTC internally
 		$dt = new DateTime($timestamp, $utc_tz);
 
-		$user_tz_string = get_pref(Prefs::USER_TIMEZONE, $owner_uid);
+		$user_tz_string = Prefs::get(Prefs::USER_TIMEZONE, $owner_uid);
 
 		if ($user_tz_string != 'Automatic') {
 
@@ -59,9 +62,9 @@ class TimeHelper {
 				$tz_offset, $owner_uid, $eta_min);
 		} else {
 			if ($long)
-				$format = get_pref(Prefs::LONG_DATE_FORMAT, $owner_uid);
+				$format = Prefs::get(Prefs::LONG_DATE_FORMAT, $owner_uid, $profile);
 			else
-				$format = get_pref(Prefs::SHORT_DATE_FORMAT, $owner_uid);
+				$format = Prefs::get(Prefs::SHORT_DATE_FORMAT, $owner_uid, $profile);
 
 			return date($format, $user_timestamp);
 		}

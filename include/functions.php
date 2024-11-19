@@ -148,7 +148,7 @@
 		}
 
 		if (!empty($_SESSION["uid"]) && get_schema_version() >= 120) {
-			$pref_locale = get_pref(Prefs::USER_LANGUAGE, $_SESSION["uid"]);
+			$pref_locale = Prefs::get(Prefs::USER_LANGUAGE, $_SESSION["uid"], $_SESSION["profile"] ?? null);
 
 			if (!empty($pref_locale) && $pref_locale != 'auto') {
 				$selected_locale = $pref_locale;

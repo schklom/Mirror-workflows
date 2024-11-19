@@ -363,6 +363,9 @@ class OPML extends Handler_Protected {
 		}
 	}
 
+	/**
+	 * @todo support passing in $profile so 'update.php --opml-import' can import prefs to a user profile
+	 */
 	private function opml_import_preference(DOMNode $node, int $owner_uid, int $nest): void {
 		$attrs = $node->attributes;
 		$pref_name = $attrs->getNamedItem('pref-name')->nodeValue;
@@ -373,7 +376,7 @@ class OPML extends Handler_Protected {
 			$this->opml_notice(T_sprintf("Setting preference key %s to %s",
 				$pref_name, $pref_value), $nest);
 
-			set_pref($pref_name, $pref_value, $owner_uid);
+			Prefs::set($pref_name, $pref_value, $owner_uid, $_SESSION['profile'] ?? null);
 		}
 	}
 

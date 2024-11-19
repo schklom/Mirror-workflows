@@ -112,6 +112,7 @@ class Pref_Feeds extends Handler_Protected {
 	 * @return array<string, array<int|string, mixed>|string>
 	 */
 	function _makefeedtree(): array {
+		$profile = $_SESSION['profile'] ?? null;
 
 		if (clean($_REQUEST['mode'] ?? 0) != 2)
 			$search = $_SESSION["prefs_feed_search"] ?? "";
@@ -125,7 +126,7 @@ class Pref_Feeds extends Handler_Protected {
 		$root['param'] = 0;
 		$root['type'] = 'category';
 
-		$enable_cats = get_pref(Prefs::ENABLE_FEED_CATS);
+		$enable_cats = Prefs::get(Prefs::ENABLE_FEED_CATS, $_SESSION['uid'], $profile);
 
 		if (clean($_REQUEST['mode'] ?? 0) == 2) {
 
@@ -175,7 +176,7 @@ class Pref_Feeds extends Handler_Protected {
 				ttrss_labels2 WHERE owner_uid = ? ORDER by caption");
 			$sth->execute([$_SESSION['uid']]);
 
-			if (get_pref(Prefs::ENABLE_FEED_CATS)) {
+			if (Prefs::get(Prefs::ENABLE_FEED_CATS, $_SESSION['uid'], $profile)) {
 				$cat = $this->feedlist_init_cat(Feeds::CATEGORY_LABELS);
 			} else {
 				$cat['items'] = [];
@@ -522,6 +523,8 @@ class Pref_Feeds extends Handler_Protected {
 		global $purge_intervals;
 		global $update_intervals;
 
+		$profile = $_SESSION['profile'] ?? null;
+
 		$feed_id = (int)clean($_REQUEST["id"]);
 
 		$row = ORM::for_table('ttrss_feeds')
@@ -538,11 +541,11 @@ class Pref_Feeds extends Handler_Protected {
 			$row["icon"] = Feeds::_get_icon($feed_id);
 
 			$local_update_intervals = $update_intervals;
-			$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[get_pref(Prefs::DEFAULT_UPDATE_INTERVAL)]);
+			$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[Prefs::get(Prefs::DEFAULT_UPDATE_INTERVAL, $_SESSION['uid'])]);
 
 			if (Config::get(Config::FORCE_ARTICLE_PURGE) == 0) {
 				$local_purge_intervals = $purge_intervals;
-				$default_purge_interval = get_pref(Prefs::PURGE_OLD_DAYS);
+				$default_purge_interval = Prefs::get(Prefs::PURGE_OLD_DAYS, $_SESSION['uid']);
 
 				if ($default_purge_interval > 0)
 				$local_purge_intervals[0] .= " " . T_nsprintf('(%d day)', '(%d days)', $default_purge_interval, $default_purge_interval);
@@ -559,7 +562,7 @@ class Pref_Feeds extends Handler_Protected {
 			print json_encode([
 				"feed" => $row,
 				"cats" => [
-					"enabled" => get_pref(Prefs::ENABLE_FEED_CATS),
+					"enabled" => Prefs::get(Prefs::ENABLE_FEED_CATS, $_SESSION['uid'], $profile),
 					"select" => \Controls\select_feeds_cats("cat_id", $row["cat_id"]),
 				],
 				"plugin_data" => $plugin_data,
@@ -573,7 +576,7 @@ class Pref_Feeds extends Handler_Protected {
 				],
 				"lang" => [
 					"enabled" => Config::get(Config::DB_TYPE) == "pgsql",
-					"default" => get_pref(Prefs::DEFAULT_SEARCH_LANGUAGE),
+					"default" => Prefs::get(Prefs::DEFAULT_SEARCH_LANGUAGE, $_SESSION['uid'], $profile),
 					"all" => $this::get_ts_languages(),
 					]
 				]);
@@ -592,10 +595,10 @@ class Pref_Feeds extends Handler_Protected {
 		$feed_ids = clean($_REQUEST["ids"]);
 
 		$local_update_intervals = $update_intervals;
-		$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[get_pref(Prefs::DEFAULT_UPDATE_INTERVAL)]);
+		$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[Prefs::get(Prefs::DEFAULT_UPDATE_INTERVAL, $_SESSION['uid'])]);
 
 		$local_purge_intervals = $purge_intervals;
-		$default_purge_interval = get_pref(Prefs::PURGE_OLD_DAYS);
+		$default_purge_interval = Prefs::get(Prefs::PURGE_OLD_DAYS, $_SESSION['uid']);
 
 		if ($default_purge_interval > 0)
 			$local_purge_intervals[0] .= " " . T_sprintf("(%d days)", $default_purge_interval);
@@ -620,7 +623,7 @@ class Pref_Feeds extends Handler_Protected {
 		<div dojoType="dijit.layout.TabContainer" style="height : 450px">
 			<div dojoType="dijit.layout.ContentPane" title="<?= __('General') ?>">
 				<section>
-				<?php if (get_pref(Prefs::ENABLE_FEED_CATS)) { ?>
+				<?php if (Prefs::get(Prefs::ENABLE_FEED_CATS, $_SESSION['uid'], $_SESSION['profile'] ?? null)) { ?>
 					<fieldset>
 						<label><?= __('Place in category:') ?></label>
 						<?= \Controls\select_feeds_cats("cat_id", null, ['disabled' => '1']) ?>
@@ -827,7 +830,7 @@ class Pref_Feeds extends Handler_Protected {
 						break;
 
 					case "cat_id":
-						if (get_pref(Prefs::ENABLE_FEED_CATS)) {
+						if (Prefs::get(Prefs::ENABLE_FEED_CATS, $_SESSION['uid'], $_SESSION['profile'] ?? null)) {
 							$qpart = "cat_id = ?";
 							$qparams = $cat_id ? [$cat_id] : [null];
 						}
@@ -937,7 +940,7 @@ class Pref_Feeds extends Handler_Protected {
 					</div>
 				</div>
 
-				<?php if (get_pref(Prefs::ENABLE_FEED_CATS)) { ?>
+				<?php if (Prefs::get(Prefs::ENABLE_FEED_CATS, $_SESSION['uid'], $_SESSION['profile'] ?? null)) { ?>
 					<div dojoType="fox.form.DropDownButton">
 						<span><?= __('Categories') ?></span>
 						<div dojoType="dijit.Menu" style="display: none">
@@ -1196,7 +1199,7 @@ class Pref_Feeds extends Handler_Protected {
 
 	function batchSubscribe(): void {
 		print json_encode([
-			"enable_cats" => (int)get_pref(Prefs::ENABLE_FEED_CATS),
+			"enable_cats" => (int)Prefs::get(Prefs::ENABLE_FEED_CATS, $_SESSION['uid'], $_SESSION['profile'] ?? null),
 			"cat_select" => \Controls\select_feeds_cats("cat")
 		]);
 	}

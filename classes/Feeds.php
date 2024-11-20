@@ -1427,7 +1427,7 @@ class Feeds extends Handler_Protected {
 		$override_order = $params["override_order"] ?? false;
 		$offset = $params["offset"] ?? 0;
 		$owner_uid = $params["owner_uid"] ?? $_SESSION["uid"];
-		$profile = $owner_uid == $_SESSION["uid"] && isset($_SESSION["profile"]) ? $_SESSION["profile"] : null;
+		$profile = isset($_SESSION["uid"]) && $owner_uid == $_SESSION["uid"] && isset($_SESSION["profile"]) ? $_SESSION["profile"] : null;
 		$since_id = $params["since_id"] ?? 0;
 		$include_children = $params["include_children"] ?? false;
 		$ignore_vfeed_group = $params["ignore_vfeed_group"] ?? false;

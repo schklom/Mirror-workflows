@@ -1,6 +1,4 @@
 <?php
-use chillerlan\QRCode;
-
 class Pref_Prefs extends Handler_Protected {
 	/** @var array<Prefs::*, array<int, string>> */
 	private array $pref_help = [];
@@ -467,7 +465,7 @@ class Pref_Prefs extends Handler_Protected {
 
 			} else {
 
-				print "<img src=".($this->_get_otp_qrcode_img()).">";
+				print "<img src='{$this->_get_otp_qrcode_img()}' style='width: 25%'>";
 
 				print_notice("You will need to generate app passwords for API clients if you enable OTP.");
 

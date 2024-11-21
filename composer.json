@@ -22,7 +22,7 @@
 	},
 	"require": {
 		"spomky-labs/otphp": "^10.0",
-		"chillerlan/php-qrcode": "^4.3.3",
+		"chillerlan/php-qrcode": "^5.0.3",
 		"mervick/material-design-icons": "^2.2",
 		"j4mie/idiorm": "dev-master",
 		"soundasleep/html2text": "^2.1",

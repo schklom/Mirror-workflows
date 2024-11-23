@@ -239,66 +239,49 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	function getfiltertree(): void {
-		$root = array();
-		$root['id'] = 'root';
-		$root['name'] = __('Filters');
-		$root['enabled'] = true;
-		$root['items'] = array();
+		$root = [
+			'id' => 'root',
+			'name' =>  __('Filters'),
+			'enabled' => true,
+			'items' => []
+		];
 
 		$filter_search = ($_SESSION["prefs_filter_search"] ?? "");
 
-		$sth = $this->pdo->prepare("SELECT *,
-			(SELECT action_param FROM ttrss_filters2_actions
-				WHERE filter_id = ttrss_filters2.id ORDER BY id LIMIT 1) AS action_param,
-			(SELECT action_id FROM ttrss_filters2_actions
-				WHERE filter_id = ttrss_filters2.id ORDER BY id LIMIT 1) AS action_id,
-			(SELECT description FROM ttrss_filter_actions
-				WHERE id = (SELECT action_id FROM ttrss_filters2_actions
-					WHERE filter_id = ttrss_filters2.id ORDER BY id LIMIT 1)) AS action_name,
-			(SELECT reg_exp FROM ttrss_filters2_rules
-				WHERE filter_id = ttrss_filters2.id ORDER BY id LIMIT 1) AS reg_exp
-			FROM ttrss_filters2 WHERE
-			owner_uid = ? ORDER BY order_id, title");
-		$sth->execute([$_SESSION['uid']]);
+		$filters = ORM::for_table('ttrss_filters2')
+			->where('owner_uid', $_SESSION['uid'])
+			->order_by_asc(['order_id', 'title'])
+			->find_many();
 
-		$folder = array();
-		$folder['items'] = array();
+		$folder = [
+			'items' => []
+		];
 
-		while ($line = $sth->fetch()) {
+		foreach ($filters as $filter) {
+			$name = $this->_get_name($filter->id);
 
-			$name = $this->_get_name($line["id"]);
+			if ($filter_search &&
+				mb_strpos($filter->title, $filter_search) === false &&
+					!ORM::for_table('ttrss_filters2_rules')
+						->where('filter_id', $filter->id)
+						->where_raw('LOWER(reg_exp) LIKE ?', ["%$filter_search%"])
+						->find_one()) {
 
-			$match_ok = false;
-			if ($filter_search) {
-				if (mb_strpos($line['title'], $filter_search) !== false) {
-					$match_ok = true;
-				}
-
-				$rules_sth = $this->pdo->prepare("SELECT reg_exp
-					FROM ttrss_filters2_rules WHERE filter_id = ?");
-				$rules_sth->execute([$line['id']]);
-
-				while ($rule_line = $rules_sth->fetch()) {
-					if (mb_strpos($rule_line['reg_exp'], $filter_search) !== false) {
-						$match_ok = true;
-						break;
-					}
-				}
+					continue;
 			}
 
-			$filter = array();
-			$filter['id'] = 'FILTER:' . $line['id'];
-			$filter['bare_id'] = $line['id'];
-			$filter['name'] = $name[0];
-			$filter['param'] = $name[1];
-			$filter['checkbox'] = false;
-			$filter['last_triggered'] = $line["last_triggered"] ? TimeHelper::make_local_datetime($line["last_triggered"], false) : null;
-			$filter['enabled'] = sql_bool_to_bool($line["enabled"]);
-			$filter['rules'] = $this->_get_rules_list($line['id']);
+			$item = [
+				'id' => 'FILTER:' . $filter->id,
+				'bare_id' => $filter->id,
+				'name' => $name[0],
+				'param' => $name[1],
+				'checkbox' => false,
+				'last_triggered' => $filter->last_triggered ? TimeHelper::make_local_datetime($filter->last_triggered, false) : null,
+				'enabled' => sql_bool_to_bool($filter->enabled),
+				'rules' => $this->_get_rules_list($filter->id)
+			];
 
-			if (!$filter_search || $match_ok) {
-				array_push($folder['items'], $filter);
-			}
+			array_push($folder['items'], $item);
 		}
 
 		$root['items'] = $folder['items'];

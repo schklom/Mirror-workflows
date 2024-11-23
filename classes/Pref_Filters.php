@@ -10,6 +10,7 @@ class Pref_Filters extends Handler_Protected {
 	const PARAM_ACTIONS = [self::ACTION_TAG, self::ACTION_SCORE,
 		self::ACTION_LABEL, self::ACTION_PLUGIN, self::ACTION_REMOVE_TAG];
 
+	/** @var array<int,array<mixed>> $action_descriptions */
 	private $action_descriptions = [];
 
 	function before(string $method) : bool {

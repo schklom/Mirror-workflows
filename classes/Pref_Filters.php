@@ -188,60 +188,49 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	private function _get_rules_list(int $filter_id): string {
-		$sth = $this->pdo->prepare("SELECT reg_exp,
-			inverse,
-			match_on,
-			feed_id,
-			cat_id,
-			cat_filter,
-			ttrss_filter_types.description AS field
-			FROM
-				ttrss_filters2_rules, ttrss_filter_types
-			WHERE
-				filter_id = ? AND filter_type = ttrss_filter_types.id
-			ORDER BY reg_exp");
-		$sth->execute([$filter_id]);
+		$rules = ORM::for_table('ttrss_filters2_rules')
+			->table_alias('r')
+			->join('ttrss_filter_types', ['r.filter_type', '=', 't.id'], 't')
+			->where('filter_id', $filter_id)
+			->select_many_expr('r.*, t.description AS field')
+			->find_many();
 
 		$rv = "";
 
-		while ($line = $sth->fetch()) {
+		foreach ($rules as $rule) {
+			if ($rule->match_on) {
+					$feeds = json_decode($rule->match_on, true);
+					$feeds_fmt = [];
 
-		    if ($line["match_on"]) {
-		        $feeds = json_decode($line["match_on"], true);
-		        $feeds_fmt = [];
+					foreach ($feeds as $feed_id) {
 
-                foreach ($feeds as $feed_id) {
+						if (strpos($feed_id, "CAT:") === 0) {
+							$feed_id = (int)substr($feed_id, 4);
+							array_push($feeds_fmt, Feeds::_get_cat_title($feed_id));
+						} else {
+							if ($feed_id)
+									array_push($feeds_fmt, Feeds::_get_title((int)$feed_id));
+							else
+									array_push($feeds_fmt, __("All feeds"));
+						}
+					}
 
-                    if (strpos($feed_id, "CAT:") === 0) {
-                        $feed_id = (int)substr($feed_id, 4);
-                        array_push($feeds_fmt, Feeds::_get_cat_title($feed_id));
-                    } else {
-                        if ($feed_id)
-                            array_push($feeds_fmt, Feeds::_get_title((int)$feed_id));
-                        else
-                            array_push($feeds_fmt, __("All feeds"));
-                    }
-                }
+					$where = implode(", ", $feeds_fmt);
 
-                $where = implode(", ", $feeds_fmt);
+			} else {
+				$where = $rule->cat_filter ?
+						Feeds::_get_cat_title($rule->cat_id ?? 0) :
+					($rule->feed_id ?
+						Feeds::_get_title($rule->feed_id) : __("All feeds"));
+			}
 
-            } else {
+			$inverse_class = $rule->inverse ? "inverse" : "";
 
-                $where = $line["cat_filter"] ?
-                    Feeds::_get_cat_title($line["cat_id"] ?? 0) :
-                    ($line["feed_id"] ?
-                        Feeds::_get_title($line["feed_id"]) : __("All feeds"));
-            }
-
-#			$where = $line["cat_id"] . "/" . $line["feed_id"];
-
-			$inverse = $line["inverse"] ? "inverse" : "";
-
-			$rv .= "<li class='$inverse'>" . T_sprintf("%s on %s in %s %s",
-				htmlspecialchars($line["reg_exp"]),
-				$line["field"],
+			$rv .= "<li class='$inverse_class'>" . T_sprintf("%s on %s in %s %s",
+				htmlspecialchars($rule->reg_exp),
+				$rule->field,
 				$where,
-				$line["inverse"] ? __("(inverse)") : "") . "</li>";
+				$rule->inverse ? __("(inverse)") : "") . "</li>";
 		}
 
 		return $rv;

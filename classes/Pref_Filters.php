@@ -209,9 +209,9 @@ class Pref_Filters extends Handler_Protected {
 							array_push($feeds_fmt, Feeds::_get_cat_title($feed_id));
 						} else {
 							if ($feed_id)
-									array_push($feeds_fmt, Feeds::_get_title((int)$feed_id));
+								array_push($feeds_fmt, Feeds::_get_title((int)$feed_id));
 							else
-									array_push($feeds_fmt, __("All feeds"));
+								array_push($feeds_fmt, __("All feeds"));
 						}
 					}
 

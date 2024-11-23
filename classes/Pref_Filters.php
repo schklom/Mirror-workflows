@@ -773,7 +773,7 @@ class Pref_Filters extends Handler_Protected {
 				$actions_summary = array_slice($actions_summary, 0, self::MAX_ACTIONS_TO_DISPLAY);
 
 				array_push($actions_summary,
-					sprintf(_ngettext("(+%d action)", "(+%d actions)", $actions_not_shown), $actions_not_shown));
+					"<em class='text-muted'>" . sprintf(_ngettext("(+%d action)", "(+%d actions)", $actions_not_shown), $actions_not_shown)) . "</em>";
 			}
 
 			return [implode(", ", $title_summary), implode("<br/>", $actions_summary)];

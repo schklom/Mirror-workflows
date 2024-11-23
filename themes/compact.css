@@ -1151,7 +1151,7 @@ body.ttrss_utility .text-warning {
 }
 body.ttrss_main .text-muted,
 body.ttrss_utility .text-muted {
-  color: #555;
+  color: #888888;
 }
 body.ttrss_main .text-small,
 body.ttrss_utility .text-small,
@@ -1509,6 +1509,9 @@ body.ttrss_prefs h4 {
   font-family: system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 600;
   color: #555;
+}
+body.ttrss_prefs .text-muted {
+  color: #888888;
 }
 body.ttrss_prefs .dijitContentPane > h1:first-of-type,
 body.ttrss_prefs .dijitContentPane > h2:first-of-type,

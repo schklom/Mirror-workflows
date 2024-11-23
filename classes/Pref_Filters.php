@@ -192,7 +192,7 @@ class Pref_Filters extends Handler_Protected {
 			->table_alias('r')
 			->join('ttrss_filter_types', ['r.filter_type', '=', 't.id'], 't')
 			->where('filter_id', $filter_id)
-			->select_many_expr('r.*, t.description AS field')
+			->select_many(['r.*', 'field' => 't.description'])
 			->find_many();
 
 		$rv = "";

@@ -485,7 +485,7 @@ class Pref_Filters extends Handler_Protected {
 			return "";
 		}
 
-		$title = $this->action_descriptions[$action['action_id']]['description'] ??
+		$title = __($this->action_descriptions[$action['action_id']]['description']) ??
 			T_sprintf('Unknown action: %d', $action['action_id']);
 
 		if ($action["action_id"] == self::ACTION_PLUGIN) {

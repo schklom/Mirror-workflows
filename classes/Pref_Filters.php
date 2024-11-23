@@ -735,8 +735,8 @@ class Pref_Filters extends Handler_Protected {
 			->select('f.inverse')
 			->select_expr('COUNT(DISTINCT r.id)', 'num_rules')
 			->select_expr('COUNT(DISTINCT a.id)', 'num_actions')
-			->join('ttrss_filters2_rules', ['r.filter_id', '=', 'f.id'], 'r')
-			->join('ttrss_filters2_actions', ['a.filter_id', '=', 'f.id'], 'a')
+			->left_outer_join('ttrss_filters2_rules', ['r.filter_id', '=', 'f.id'], 'r')
+			->left_outer_join('ttrss_filters2_actions', ['a.filter_id', '=', 'f.id'], 'a')
 			->where('f.id', $id)
 			->group_by_expr('f.title, f.match_any_rule, f.inverse')
 			->find_one();

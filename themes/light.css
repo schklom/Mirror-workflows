@@ -1716,6 +1716,13 @@ body.ttrss_prefs .phpinfo td.v {
   font-family: monospace;
   word-break: break-all;
 }
+body.ttrss_prefs ul.actions_summary {
+  float: right;
+  margin-right: 16px;
+  margin-top: 0;
+  list-style-type: none;
+  text-align: right;
+}
 body.ttrss_prefs #filterNewRuleDlg .dijitValidationTextAreaError,
 body.ttrss_main #filterNewRuleDlg .dijitValidationTextAreaError {
   background: #ffc0c0;
@@ -1752,6 +1759,15 @@ body.ttrss_utility fieldset > label.checkbox {
 }
 body.ttrss_prefs[hide-filter-rules="true"] ul.filterRules {
   display: none;
+}
+body.ttrss_prefs[hide-filter-rules="true"] ul.actions_summary li {
+  display: inline;
+}
+body.ttrss_prefs[hide-filter-rules="true"] ul.actions_summary li:after {
+  content: ", ";
+}
+body.ttrss_prefs[hide-filter-rules="true"] ul.actions_summary li:last-child:after {
+  content: " ";
 }
 body.ttrss_utility.sanity_failed {
   background: #900;
@@ -1963,11 +1979,6 @@ body.ttrss_utility.share_popup .content {
 }
 .flat .dijitTree .dijitTreeNode .dijitTreeRow.dijitTreeRowSelected {
   color: white;
-}
-.flat .dijitTree .labelParam {
-  float: right;
-  margin-right: 16px;
-  text-align: right;
 }
 .flat .dijitTree .dijitTreeRow.filterDisabled {
   opacity: 0.5;

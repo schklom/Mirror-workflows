@@ -268,6 +268,15 @@ body.ttrss_prefs {
 			word-break : break-all;
 		}
 	}
+
+	ul.actions_summary {
+		float : right;
+		margin-right : 16px;
+		margin-top : 0;
+		list-style-type : none;
+		text-align : right;
+	}
+
 }
 
 body.ttrss_prefs,
@@ -315,4 +324,17 @@ body.ttrss_prefs[hide-filter-rules="true"] {
 	ul.filterRules {
 		display : none;
 	}
+
+	ul.actions_summary li {
+		display : inline;
+	}
+
+	ul.actions_summary li:after {
+		content: ", ";
+	}
+
+	ul.actions_summary li:last-child:after {
+		content: " ";
+	}
+
 }

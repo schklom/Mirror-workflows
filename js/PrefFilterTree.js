@@ -28,8 +28,8 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			const rules = this.model.store.getValue(args.item, 'rules');
 
 			if (param) {
-				param = dojo.doc.createElement('span');
-				param.className = (enabled != false) ? 'labelParam' : 'labelParam filterDisabled';
+				param = dojo.doc.createElement('ul');
+				param.className = (enabled != false) ? 'actions_summary' : 'actions_summary filterDisabled';
 				param.innerHTML = args.item.param[0];
 				domConstruct.place(param, tnode.rowNode, 'first');
 			}

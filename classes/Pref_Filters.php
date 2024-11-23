@@ -286,20 +286,6 @@ class Pref_Filters extends Handler_Protected {
 				}
 			}
 
-			if ($line['action_id'] == self::ACTION_LABEL) {
-				$label_sth = $this->pdo->prepare("SELECT fg_color, bg_color
-					FROM ttrss_labels2 WHERE caption = ? AND
-						owner_uid = ?");
-				$label_sth->execute([$line['action_param'], $_SESSION['uid']]);
-
-				if ($label_row = $label_sth->fetch()) {
-					//$fg_color = $label_row["fg_color"];
-					$bg_color = $label_row["bg_color"];
-
-					$name[1] = "<i class=\"material-icons\" style='color : $bg_color; margin-right : 4px'>label</i>" . $name[1];
-				}
-			}
-
 			$filter = array();
 			$filter['id'] = 'FILTER:' . $line['id'];
 			$filter['bare_id'] = $line['id'];
@@ -759,13 +745,13 @@ class Pref_Filters extends Handler_Protected {
 					continue;
 				}
 
-				array_push($actions_summary, self::_get_action_name($action));
+				array_push($actions_summary, "<li>" . self::_get_action_name($action) . "</li>");
 			}
 
 			// inject a fake action description using cumulative filter score
 			if ($cumulative_score != 0) {
 				array_unshift($actions_summary,
-					self::_get_action_name(["action_id" => self::ACTION_SCORE, "action_param" => $cumulative_score]));
+					"<li>" . self::_get_action_name(["action_id" => self::ACTION_SCORE, "action_param" => $cumulative_score]) . "</li>");
 			}
 
 			if (count($actions_summary) > self::MAX_ACTIONS_TO_DISPLAY) {
@@ -773,10 +759,10 @@ class Pref_Filters extends Handler_Protected {
 				$actions_summary = array_slice($actions_summary, 0, self::MAX_ACTIONS_TO_DISPLAY);
 
 				array_push($actions_summary,
-					"<em class='text-muted'>" . sprintf(_ngettext("(+%d action)", "(+%d actions)", $actions_not_shown), $actions_not_shown)) . "</em>";
+					"<li class='text-muted'><em>" . sprintf(_ngettext("(+%d action)", "(+%d actions)", $actions_not_shown), $actions_not_shown)) . "</em></li>";
 			}
 
-			return [implode(", ", $title_summary), implode("<br/>", $actions_summary)];
+			return [implode(", ", $title_summary), implode("", $actions_summary)];
 		}
 
 		return [];

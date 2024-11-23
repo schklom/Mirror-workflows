@@ -197,7 +197,7 @@ class Labels
 	/**
 	 * @return false|int false if the check for an existing label failed, otherwise the number of rows inserted (1 on success)
 	 */
-	static function create(string $caption, ?string $fg_color = '', ?string $bg_color = '', ?int $owner_uid = null)	{
+	static function create(string $caption, ?string $fg_color = '', ?string $bg_color = '', ?int $owner_uid = null): false|int	{
 
 		if (!$owner_uid) $owner_uid = $_SESSION['uid'];
 

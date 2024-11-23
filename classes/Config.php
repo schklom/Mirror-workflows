@@ -296,7 +296,7 @@ class Config {
 	 * based on source git tree commit used when creating the package
 	 * @return array<string, mixed>|string
 	 */
-	static function get_version(bool $as_string = true) {
+	static function get_version(bool $as_string = true): array|string {
 		return self::get_instance()->_get_version($as_string);
 	}
 
@@ -314,7 +314,7 @@ class Config {
 	/**
 	 * @return array<string, mixed>|string
 	 */
-	private function _get_version(bool $as_string = true) {
+	private function _get_version(bool $as_string = true): array|string {
 		$root_dir = self::get_self_dir();
 
 		if (empty($this->version)) {
@@ -423,10 +423,7 @@ class Config {
 		return self::get_migrations()->get_version();
 	}
 
-	/**
-	 * @return bool|int|string
-	 */
-	static function cast_to(string $value, int $type_hint) {
+	static function cast_to(string $value, int $type_hint): bool|int|string {
 		switch ($type_hint) {
 			case self::T_BOOL:
 				return sql_bool_to_bool($value);
@@ -437,10 +434,7 @@ class Config {
 		}
 	}
 
-	/**
-	 * @return bool|int|string
-	 */
-	private function _get(string $param) {
+	private function _get(string $param): bool|int|string {
 		list ($value, $type_hint) = $this->params[$param];
 
 		return $this->cast_to($value, $type_hint);
@@ -458,10 +452,7 @@ class Config {
 		$instance->_add($param, $default, $type_hint);
 	}
 
-	/**
-	 * @return bool|int|string
-	 */
-	static function get(string $param) {
+	static function get(string $param): bool|int|string {
 		$instance = self::get_instance();
 
 		return $instance->_get($param);

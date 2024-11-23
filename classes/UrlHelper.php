@@ -65,7 +65,7 @@ class UrlHelper {
 				$rel_url,
 				string $owner_element = "",
 				string $owner_attribute = "",
-				string $content_type = "") {
+				string $content_type = ""): false|string {
 
 		$rel_parts = parse_url($rel_url);
 
@@ -136,7 +136,7 @@ class UrlHelper {
 	/** extended filtering involves validation for safe ports and loopback
 	 * @return false|string false if something went wrong, otherwise the URL string
 	 */
-	static function validate(string $url, bool $extended_filtering = false) {
+	static function validate(string $url, bool $extended_filtering = false): false|string {
 
 		$url = clean($url);
 
@@ -198,10 +198,7 @@ class UrlHelper {
 		return $url;
 	}
 
-	/**
-	 * @return false|string
-	 */
-	static function resolve_redirects(string $url, int $timeout) {
+	static function resolve_redirects(string $url, int $timeout): false|string {
 		$client = self::get_client();
 
 		try {
@@ -230,9 +227,9 @@ class UrlHelper {
 	 */
 	// TODO: max_size currently only works for CURL transfers
 	// TODO: multiple-argument way is deprecated, first parameter is a hash now
-	public static function fetch($options /* previously: 0: $url , 1: $type = false, 2: $login = false, 3: $pass = false,
+	public static function fetch(array|string $options /* previously: 0: $url , 1: $type = false, 2: $login = false, 3: $pass = false,
 				4: $post_query = false, 5: $timeout = false, 6: $timestamp = 0, 7: $useragent = false, 8: $encoding = false,
-				9: $auth_type = "basic" */) {
+				9: $auth_type = "basic" */): false|string {
 
 		self::$fetch_last_error = "";
 		self::$fetch_last_error_code = -1;
@@ -455,7 +452,7 @@ class UrlHelper {
 	/**
 	 * @return false|string false if the provided URL didn't match expected patterns, otherwise the video ID string
 	 */
-	public static function url_to_youtube_vid(string $url) {
+	public static function url_to_youtube_vid(string $url): false|string {
 		$url = str_replace("youtube.com", "youtube-nocookie.com", $url);
 
 		$regexps = [

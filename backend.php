@@ -120,7 +120,6 @@
 		}
 
 		if ($override) {
-			/** @var Plugin|IHandler|ICatchall $handler */
 			$handler = $override;
 		} else {
 			$reflection = new ReflectionClass($op);

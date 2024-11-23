@@ -3,7 +3,7 @@ abstract class FeedItem {
 	abstract function get_id(): string;
 
 	/** @return int|false a timestamp on success, false otherwise */
-	abstract function get_date();
+	abstract function get_date(): false|int;
 
 	abstract function get_link(): string;
 	abstract function get_title(): string;

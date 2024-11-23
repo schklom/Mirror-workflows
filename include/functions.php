@@ -33,20 +33,16 @@
 	}
 
 	/**
-	 * @return bool|int|null|string
-	 *
 	 * @deprecated by Prefs::get()
 	 */
-	function get_pref(string $pref_name, ?int $owner_uid = null) {
+	function get_pref(string $pref_name, ?int $owner_uid = null): bool|int|null|string {
 		return Prefs::get($pref_name, $owner_uid ? $owner_uid : $_SESSION["uid"], $_SESSION["profile"] ?? null);
 	}
 
 	/**
-	 * @param bool|int|string $value
-	 *
 	 * @deprecated by Prefs::set()
 	 */
-	function set_pref(string $pref_name, $value, ?int $owner_uid = null, bool $strip_tags = true): bool {
+	function set_pref(string $pref_name, bool|int|string $value, ?int $owner_uid = null, bool $strip_tags = true): bool {
 		return Prefs::set($pref_name, $value, $owner_uid ? $owner_uid : $_SESSION["uid"], $_SESSION["profile"] ?? null, $strip_tags);
 	}
 
@@ -176,7 +172,7 @@
 	 *
 	 * @return array<string, mixed>|string
 	 */
-	function get_version() {
+	function get_version(): array|string {
 		return Config::get_version();
 	}
 
@@ -197,7 +193,7 @@
 	 * @return int
 	 * @throws PDOException
 	 */
-	function getFeedUnread($feed, bool $is_cat = false): int {
+	function getFeedUnread(int|string $feed, bool $is_cat = false): int {
 		return Feeds::_get_counters($feed, $is_cat, true, $_SESSION["uid"]);
 	}
 
@@ -208,7 +204,7 @@
 	 *
 	 * @return false|string The HTML, or false if an error occurred.
 	 */
-	function sanitize(string $str, bool $force_remove_images = false, ?int $owner = null, ?string $site_url = null, ?array $highlight_words = null, ?int $article_id = null) {
+	function sanitize(string $str, bool $force_remove_images = false, ?int $owner = null, ?string $site_url = null, ?array $highlight_words = null, ?int $article_id = null): false|string {
 		return Sanitizer::sanitize($str, $force_remove_images, $owner, $site_url, $highlight_words, $article_id);
 	}
 
@@ -216,9 +212,9 @@
 	 * @deprecated by UrlHelper::fetch()
 	 *
 	 * @param array<string, bool|int|string>|string $params
-	 * @return bool|string false if something went wrong, otherwise string contents
+	 * @return false|string false if something went wrong, otherwise string contents
 	 */
-	function fetch_file_contents($params) {
+	function fetch_file_contents(array|string $params): false|string {
 		return UrlHelper::fetch($params);
 	}
 
@@ -240,9 +236,9 @@
 	/**
 	 * @deprecated by UrlHelper::validate()
 	 *
-	 * @return bool|string false if something went wrong, otherwise the URL string
+	 * @return false|string false if something went wrong, otherwise the URL string
 	 */
-	function validate_url(string $url) {
+	function validate_url(string $url): false|string {
 		return UrlHelper::validate($url);
 	}
 
@@ -271,12 +267,8 @@
 
 	/**
 	 * This is used for user http parameters unless HTML code is actually needed.
-	 *
-	 * @param mixed $param
-	 *
-	 * @return mixed|null
 	 */
-	function clean($param) {
+	function clean(mixed $param): mixed {
 		if (is_array($param)) {
 			return array_map("trim", array_map("strip_tags", $param));
 		} else if (is_string($param)) {
@@ -351,7 +343,6 @@
 	/** Convert values accepted by tt-rss as true/false to PHP booleans
 	 * @see https://tt-rss.org/ApiReference/#boolean-values
 	 * @param null|string $s null values are considered false
-	 * @return bool
 	 */
 	function sql_bool_to_bool(?string $s): bool {
 		return $s && ($s !== "f" && $s !== "false"); //no-op for PDO, backwards compat for legacy layer
@@ -443,7 +434,7 @@
 		/**
 		 * @return false|string The decoded string or false if an error occurred.
 		 */
-		function gzdecode(string $string) { // no support for 2nd argument
+		function gzdecode(string $string): false|string { // no support for 2nd argument
 			return file_get_contents('compress.zlib://data:who/cares;base64,'.
 				base64_encode($string));
 		}
@@ -476,10 +467,7 @@
 		return null;
 	}
 
-	/**
-	 * @param object|string $class
-	 */
-	function implements_interface($class, string $interface): bool {
+	function implements_interface(object|string $class, string $interface): bool {
 		$class_implemented_interfaces = class_implements($class);
 
 		if ($class_implemented_interfaces) {

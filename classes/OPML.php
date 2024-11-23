@@ -8,9 +8,9 @@ class OPML extends Handler_Protected {
 	}
 
 	/**
-	 * @return bool|int|void false if writing the file failed, true if printing succeeded, int if bytes were written to a file, or void if $owner_uid is missing
+	 * @return bool|int|null false if writing the file failed, true if printing succeeded, int if bytes were written to a file, or null if $owner_uid is missing
 	 */
-	function export() {
+	function export(): bool|int|null {
 		$output_name = sprintf("tt-rss_%s_%s.opml", $_SESSION["name"], date("Y-m-d"));
 		$include_settings = $_REQUEST["include_settings"] == "1";
 		$owner_uid = $_SESSION["uid"];
@@ -126,10 +126,10 @@ class OPML extends Handler_Protected {
 	}
 
 	/**
-	 * @return bool|int|void false if writing the file failed, true if printing succeeded, int if bytes were written to a file, or void if $owner_uid is missing
+	 * @return bool|int|null false if writing the file failed, true if printing succeeded, int if bytes were written to a file, or null if $owner_uid is missing
 	 */
-	function opml_export(string $filename, int $owner_uid, bool $hide_private_feeds = false, bool $include_settings = true, bool $file_output = false) {
-		if (!$owner_uid) return;
+	function opml_export(string $filename, int $owner_uid, bool $hide_private_feeds = false, bool $include_settings = true, bool $file_output = false): bool|int|null {
+		if (!$owner_uid) return null;
 
 		if (!$file_output)
 			if (!isset($_REQUEST["debug"])) {
@@ -610,10 +610,10 @@ class OPML extends Handler_Protected {
 
 	/** $filename is optional; assumes HTTP upload with $_FILES otherwise */
 	/**
-	 * @return bool|void false on failure, true if successful, void if $owner_uid is missing
+	 * @return bool|null false on failure, true if successful, null if $owner_uid is missing
 	 */
-	function opml_import(int $owner_uid, string $filename = "") {
-		if (!$owner_uid) return;
+	function opml_import(int $owner_uid, string $filename = ""): ?bool {
+		if (!$owner_uid) return null;
 
 		if (!$filename) {
 			if ($_FILES['opml_file']['error'] != 0) {

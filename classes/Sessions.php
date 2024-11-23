@@ -53,12 +53,8 @@ class Sessions implements \SessionHandlerInterface {
 		return true;
 	}
 
-	/**
-	 * @todo set return type to string|false, and remove ReturnTypeWillChange, when min supported is PHP 8
-	 * @return string|false
-	 */
 	#[\ReturnTypeWillChange]
-	public function read(string $id) {
+	public function read(string $id): false|string {
 		$sth = Db::pdo()->prepare('SELECT data FROM ttrss_sessions WHERE id=?');
 		$sth->execute([$id]);
 
@@ -95,11 +91,10 @@ class Sessions implements \SessionHandlerInterface {
 	}
 
 	/**
-	 * @todo set return type to int|false, and remove ReturnTypeWillChange, when min supported is PHP 8
 	 * @return int|false the number of deleted sessions on success, or false on failure
 	 */
 	#[\ReturnTypeWillChange]
-	public function gc(int $max_lifetime) {
+	public function gc(int $max_lifetime): false|int {
 		$result = Db::pdo()->query('DELETE FROM ttrss_sessions WHERE expire < ' . time());
 		return $result === false ? false : $result->rowCount();
 	}

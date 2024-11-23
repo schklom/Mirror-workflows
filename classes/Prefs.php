@@ -164,10 +164,7 @@ class Prefs {
 		return isset(self::_DEFAULTS[$pref_name]);
 	}
 
-	/**
-	 * @return bool|int|null|string
-	 */
-	static function get_default(string $pref_name) {
+	static function get_default(string $pref_name): bool|int|null|string {
 		if (self::is_valid($pref_name))
 			return self::_DEFAULTS[$pref_name][0];
 		else
@@ -193,14 +190,14 @@ class Prefs {
 	/**
 	 * @return array<int, array<string, bool|int|null|string>>
 	 */
-	static function get_all(int $owner_uid, ?int $profile_id = null) {
+	static function get_all(int $owner_uid, ?int $profile_id = null): array {
 		return self::get_instance()->_get_all($owner_uid, $profile_id);
 	}
 
 	/**
 	 * @return array<int, array<string, bool|int|null|string>>
 	 */
-	private function _get_all(int $owner_uid, ?int $profile_id = null) {
+	private function _get_all(int $owner_uid, ?int $profile_id = null): array {
 		$rv = [];
 
 		$ref = new ReflectionClass(get_class($this));
@@ -247,17 +244,11 @@ class Prefs {
 		}
 	}
 
-	/**
-	 * @return bool|int|null|string
-	 */
-	static function get(string $pref_name, int $owner_uid, ?int $profile_id = null) {
+	static function get(string $pref_name, int $owner_uid, ?int $profile_id = null): bool|int|null|string {
 		return self::get_instance()->_get($pref_name, $owner_uid, $profile_id);
 	}
 
-	/**
-	 * @return bool|int|null|string
-	 */
-	private function _get(string $pref_name, int $owner_uid, ?int $profile_id) {
+	private function _get(string $pref_name, int $owner_uid, ?int $profile_id): bool|int|null|string {
 		if (isset(self::_DEFAULTS[$pref_name])) {
 			if (!$profile_id || in_array($pref_name, self::_PROFILE_BLACKLIST)) $profile_id = null;
 
@@ -298,34 +289,22 @@ class Prefs {
 		return isset($this->cache[$cache_key]);
 	}
 
-	/**
-	 * @return bool|int|null|string
-	 */
-	private function _get_cache(string $pref_name, int $owner_uid, ?int $profile_id) {
+	private function _get_cache(string $pref_name, int $owner_uid, ?int $profile_id): bool|int|null|string {
 		$cache_key = sprintf("%d/%d/%s", $owner_uid, $profile_id, $pref_name);
 		return $this->cache[$cache_key] ?? null;
 	}
 
-	/**
-	 * @param bool|int|string $value
-	 */
-	private function _set_cache(string $pref_name, $value, int $owner_uid, ?int $profile_id): void {
+	private function _set_cache(string $pref_name, bool|int|string $value, int $owner_uid, ?int $profile_id): void {
 		$cache_key = sprintf("%d/%d/%s", $owner_uid, $profile_id, $pref_name);
 
 		$this->cache[$cache_key] = $value;
 	}
 
-	/**
-	 * @param bool|int|string $value
-	 */
-	static function set(string $pref_name, $value, int $owner_uid, ?int $profile_id, bool $strip_tags = true): bool {
+	static function set(string $pref_name, bool|int|string $value, int $owner_uid, ?int $profile_id, bool $strip_tags = true): bool {
 		return self::get_instance()->_set($pref_name, $value, $owner_uid, $profile_id);
 	}
 
-	/**
-	 * @param bool|int|string $value
-	 */
-	private function _set(string $pref_name, $value, int $owner_uid, ?int $profile_id, bool $strip_tags = true): bool {
+	private function _set(string $pref_name, bool|int|string $value, int $owner_uid, ?int $profile_id, bool $strip_tags = true): bool {
 		if (!$profile_id) $profile_id = null;
 
 		if ($profile_id && in_array($pref_name, self::_PROFILE_BLACKLIST))

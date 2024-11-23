@@ -13,7 +13,7 @@ class FeedItem_RSS extends FeedItem_Common {
 	/**
 	 * @return int|false a timestamp on success, false otherwise
 	 */
-	function get_date() {
+	function get_date(): false|int {
 		$pubDate = $this->elem->getElementsByTagName("pubDate")->item(0);
 
 		if ($pubDate) {

@@ -5,10 +5,6 @@
 	/** @deprecated by Config::SCHEMA_VERSION */
 	define('SCHEMA_VERSION', Config::SCHEMA_VERSION);
 
-	if (version_compare(PHP_VERSION, '8.0.0', '<')) {
-		libxml_disable_entity_loader(true);
-	}
-
 	libxml_use_internal_errors(true);
 
 	// separate test because this is included before sanity checks
@@ -147,7 +143,7 @@
 			}
 		}
 
-		if (!empty($_SESSION["uid"]) && get_schema_version() >= 120) {
+		if (!empty($_SESSION["uid"]) && Config::get_schema_version() >= 120) {
 			$pref_locale = Prefs::get(Prefs::USER_LANGUAGE, $_SESSION["uid"], $_SESSION["profile"] ?? null);
 
 			if (!empty($pref_locale) && $pref_locale != 'auto') {

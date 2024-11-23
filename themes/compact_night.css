@@ -1151,7 +1151,7 @@ body.ttrss_utility .text-warning {
 }
 body.ttrss_main .text-muted,
 body.ttrss_utility .text-muted {
-  color: #ccc;
+  color: #999999;
 }
 body.ttrss_main .text-small,
 body.ttrss_utility .text-small,
@@ -1510,6 +1510,9 @@ body.ttrss_prefs h4 {
   font-weight: 600;
   color: #ccc;
 }
+body.ttrss_prefs .text-muted {
+  color: #999999;
+}
 body.ttrss_prefs .dijitContentPane > h1:first-of-type,
 body.ttrss_prefs .dijitContentPane > h2:first-of-type,
 body.ttrss_prefs .dijitContentPane > h3:first-of-type {
@@ -1866,6 +1869,7 @@ body.ttrss_prefs[hide-filter-rules="true"] ul.filterRules {
 .flat .dijitTree .labelParam {
   float: right;
   margin-right: 16px;
+  text-align: right;
 }
 .flat .dijitTree .dijitTreeRow.filterDisabled {
   opacity: 0.5;

@@ -10,6 +10,22 @@ class Pref_Filters extends Handler_Protected {
 	const PARAM_ACTIONS = [self::ACTION_TAG, self::ACTION_SCORE,
 		self::ACTION_LABEL, self::ACTION_PLUGIN, self::ACTION_REMOVE_TAG];
 
+	const MAX_ACTIONS_TO_DISPLAY = 3;
+
+	/** @var array<int,array<mixed>> $action_descriptions */
+	private $action_descriptions = [];
+
+	function before(string $method) : bool {
+
+		$descriptions = ORM::for_table("ttrss_filter_actions")->find_array();
+
+		foreach ($descriptions as $desc) {
+			$this->action_descriptions[$desc['id']] = $desc;
+		}
+
+		return parent::before($method);
+	}
+
 	function csrf_ignore(string $method): bool {
 		$csrf_ignored = array("index", "getfiltertree", "savefilterorder");
 
@@ -174,60 +190,49 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	private function _get_rules_list(int $filter_id): string {
-		$sth = $this->pdo->prepare("SELECT reg_exp,
-			inverse,
-			match_on,
-			feed_id,
-			cat_id,
-			cat_filter,
-			ttrss_filter_types.description AS field
-			FROM
-				ttrss_filters2_rules, ttrss_filter_types
-			WHERE
-				filter_id = ? AND filter_type = ttrss_filter_types.id
-			ORDER BY reg_exp");
-		$sth->execute([$filter_id]);
+		$rules = ORM::for_table('ttrss_filters2_rules')
+			->table_alias('r')
+			->join('ttrss_filter_types', ['r.filter_type', '=', 't.id'], 't')
+			->where('filter_id', $filter_id)
+			->select_many(['r.*', 'field' => 't.description'])
+			->find_many();
 
 		$rv = "";
 
-		while ($line = $sth->fetch()) {
+		foreach ($rules as $rule) {
+			if ($rule->match_on) {
+					$feeds = json_decode($rule->match_on, true);
+					$feeds_fmt = [];
 
-		    if ($line["match_on"]) {
-		        $feeds = json_decode($line["match_on"], true);
-		        $feeds_fmt = [];
+					foreach ($feeds as $feed_id) {
 
-                foreach ($feeds as $feed_id) {
+						if (strpos($feed_id, "CAT:") === 0) {
+							$feed_id = (int)substr($feed_id, 4);
+							array_push($feeds_fmt, Feeds::_get_cat_title($feed_id));
+						} else {
+							if ($feed_id)
+								array_push($feeds_fmt, Feeds::_get_title((int)$feed_id));
+							else
+								array_push($feeds_fmt, __("All feeds"));
+						}
+					}
 
-                    if (strpos($feed_id, "CAT:") === 0) {
-                        $feed_id = (int)substr($feed_id, 4);
-                        array_push($feeds_fmt, Feeds::_get_cat_title($feed_id));
-                    } else {
-                        if ($feed_id)
-                            array_push($feeds_fmt, Feeds::_get_title((int)$feed_id));
-                        else
-                            array_push($feeds_fmt, __("All feeds"));
-                    }
-                }
+					$where = implode(", ", $feeds_fmt);
 
-                $where = implode(", ", $feeds_fmt);
+			} else {
+				$where = $rule->cat_filter ?
+						Feeds::_get_cat_title($rule->cat_id ?? 0) :
+					($rule->feed_id ?
+						Feeds::_get_title($rule->feed_id) : __("All feeds"));
+			}
 
-            } else {
+			$inverse_class = $rule->inverse ? "inverse" : "";
 
-                $where = $line["cat_filter"] ?
-                    Feeds::_get_cat_title($line["cat_id"] ?? 0) :
-                    ($line["feed_id"] ?
-                        Feeds::_get_title($line["feed_id"]) : __("All feeds"));
-            }
-
-#			$where = $line["cat_id"] . "/" . $line["feed_id"];
-
-			$inverse = $line["inverse"] ? "inverse" : "";
-
-			$rv .= "<li class='$inverse'>" . T_sprintf("%s on %s in %s %s",
-				htmlspecialchars($line["reg_exp"]),
-				$line["field"],
+			$rv .= "<li class='$inverse_class'>" . T_sprintf("%s on %s in %s %s",
+				htmlspecialchars($rule->reg_exp),
+				$rule->field,
 				$where,
-				$line["inverse"] ? __("(inverse)") : "") . "</li>";
+				$rule->inverse ? __("(inverse)") : "") . "</li>";
 		}
 
 		return $rv;
@@ -464,39 +469,31 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	/**
-	 * @param array<string, mixed>|null $action
+	 * @param array<string,mixed>|ArrayAccess<string, mixed>|null $action
 	 */
-	private function _get_action_name(?array $action = null): string {
+	private function _get_action_name(array|ArrayAccess|null $action = null): string {
 		if (!$action) {
 			return "";
 		}
 
-		$sth = $this->pdo->prepare("SELECT description FROM
-			ttrss_filter_actions WHERE id = ?");
-		$sth->execute([(int)$action["action_id"]]);
+		$title = __($this->action_descriptions[$action['action_id']]['description']) ??
+			T_sprintf('Unknown action: %d', $action['action_id']);
 
-		$title = "";
+		if ($action["action_id"] == self::ACTION_PLUGIN) {
+			list ($pfclass, $pfaction) = explode(":", $action["action_param"]);
 
-		if ($row = $sth->fetch()) {
+			$filter_actions = PluginHost::getInstance()->get_filter_actions();
 
-			$title = __($row["description"]);
-
-			if ($action["action_id"] == self::ACTION_PLUGIN) {
-				list ($pfclass, $pfaction) = explode(":", $action["action_param"]);
-
-				$filter_actions = PluginHost::getInstance()->get_filter_actions();
-
-				foreach ($filter_actions as $fclass => $factions) {
-					foreach ($factions as $faction) {
-						if ($pfaction == $faction["action"] && $pfclass == $fclass) {
-							$title .= ": " . $fclass . ": " . $faction["description"];
-							break;
-						}
+			foreach ($filter_actions as $fclass => $factions) {
+				foreach ($factions as $faction) {
+					if ($pfaction == $faction["action"] && $pfclass == $fclass) {
+						$title .= ": " . $fclass . ": " . $faction["description"];
+						break;
 					}
 				}
-			} else if (in_array($action["action_id"], self::PARAM_ACTIONS)) {
-				$title .= ": " . $action["action_param"];
 			}
+		} else if (in_array($action["action_id"], self::PARAM_ACTIONS)) {
+			$title .= ": " . $action["action_param"];
 		}
 
 		return $title;
@@ -723,45 +720,63 @@ class Pref_Filters extends Handler_Protected {
 	 */
 	private function _get_name(int $id): array {
 
-		$sth = $this->pdo->prepare(
-			"SELECT title,match_any_rule,f.inverse AS inverse,COUNT(DISTINCT r.id) AS num_rules,COUNT(DISTINCT a.id) AS num_actions
-				FROM ttrss_filters2 AS f LEFT JOIN ttrss_filters2_rules AS r
-					ON (r.filter_id = f.id)
-						LEFT JOIN ttrss_filters2_actions AS a
-							ON (a.filter_id = f.id) WHERE f.id = ? GROUP BY f.title, f.match_any_rule, f.inverse");
-		$sth->execute([$id]);
+		$filter = ORM::for_table("ttrss_filters2")
+			->table_alias('f')
+			->select('f.title')
+			->select('f.match_any_rule')
+			->select('f.inverse')
+			->select_expr('COUNT(DISTINCT r.id)', 'num_rules')
+			->select_expr('COUNT(DISTINCT a.id)', 'num_actions')
+			->left_outer_join('ttrss_filters2_rules', ['r.filter_id', '=', 'f.id'], 'r')
+			->left_outer_join('ttrss_filters2_actions', ['a.filter_id', '=', 'f.id'], 'a')
+			->where('f.id', $id)
+			->group_by_expr('f.title, f.match_any_rule, f.inverse')
+			->find_one();
 
-		if ($row = $sth->fetch()) {
+		if ($filter) {
+			$title_summary = [
+				sprintf(
+				_ngettext("%s (%d rule)", "%s (%d rules)", (int) $filter->num_rules),
+				($filter->title ? $filter->title : __("[No caption]")),
+				$filter->num_rules)];
 
-			$title = $row["title"];
-			$num_rules = $row["num_rules"];
-			$num_actions = $row["num_actions"];
-			$match_any_rule = $row["match_any_rule"];
-			$inverse = $row["inverse"];
+			if ($filter->match_any_rule) array_push($title_summary, __("matches any rule"));
+			if ($filter->inverse) array_push($title_summary, __("inverse"));
 
-			if (!$title) $title = __("[No caption]");
+			$actions = ORM::for_table("ttrss_filters2_actions")
+				->where("filter_id", $id)
+				->order_by_asc('id')
+				->find_many();
 
-			$title = sprintf(_ngettext("%s (%d rule)", "%s (%d rules)", (int) $num_rules), $title, $num_rules);
+			/** @var array<string> $actions_summary */
+			$actions_summary = [];
+			$cumulative_score = 0;
 
-			$sth = $this->pdo->prepare("SELECT * FROM ttrss_filters2_actions
-				WHERE filter_id = ? ORDER BY id LIMIT 1");
-			$sth->execute([$id]);
+			// we're going to show a summary adjustment so we skip individual score action descriptions here
+			foreach ($actions as $action) {
+				if ($action->action_id == self::ACTION_SCORE) {
+					$cumulative_score += (int) $action->action_param;
+					continue;
+				}
 
-			$actions = "";
-
-			if ($line = $sth->fetch()) {
-				$actions = $this->_get_action_name($line);
-
-				$num_actions -= 1;
+				array_push($actions_summary, self::_get_action_name($action));
 			}
 
-			if ($match_any_rule) $title .= " (" . __("matches any rule") . ")";
-			if ($inverse) $title .= " (" . __("inverse") . ")";
+			// inject a fake action description using cumulative filter score
+			if ($cumulative_score != 0) {
+				array_unshift($actions_summary,
+					self::_get_action_name(["action_id" => self::ACTION_SCORE, "action_param" => $cumulative_score]));
+			}
 
-			if ($num_actions > 0)
-				$actions = sprintf(_ngettext("%s (+%d action)", "%s (+%d actions)", (int) $num_actions), $actions, $num_actions);
+			if (count($actions_summary) > self::MAX_ACTIONS_TO_DISPLAY) {
+				$actions_not_shown = count($actions_summary) - self::MAX_ACTIONS_TO_DISPLAY;
+				$actions_summary = array_slice($actions_summary, 0, self::MAX_ACTIONS_TO_DISPLAY);
 
-			return [$title, $actions];
+				array_push($actions_summary,
+					"<em class='text-muted'>" . sprintf(_ngettext("(+%d action)", "(+%d actions)", $actions_not_shown), $actions_not_shown)) . "</em>";
+			}
+
+			return [implode(", ", $title_summary), implode("<br/>", $actions_summary)];
 		}
 
 		return [];

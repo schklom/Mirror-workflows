@@ -324,7 +324,9 @@ const	Filters = {
 						</form>
 					`);
 
-					dijit.byId("filterDlg_actionSelect").attr('value', action.action_id);
+					const actionSelect = dijit.byId("filterDlg_actionSelect").attr('value', action.action_id);
+
+					edit_action_dialog.toggleParam(actionSelect);
 
 					/*xhr.post("backend.php", {op: 'Pref_Filters', method: 'newaction', action: actionStr}, (reply) => {
 						edit_action_dialog.attr('content', reply);

@@ -464,9 +464,9 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	/**
-	 * @param array<string, mixed>|null $action
+	 * @param array<string,mixed>|ArrayAccess<string, mixed>|null $action
 	 */
-	private function _get_action_name(?array $action = null): string {
+	private function _get_action_name(array|ArrayAccess|null $action = null): string {
 		if (!$action) {
 			return "";
 		}
@@ -723,45 +723,51 @@ class Pref_Filters extends Handler_Protected {
 	 */
 	private function _get_name(int $id): array {
 
-		$sth = $this->pdo->prepare(
-			"SELECT title,match_any_rule,f.inverse AS inverse,COUNT(DISTINCT r.id) AS num_rules,COUNT(DISTINCT a.id) AS num_actions
-				FROM ttrss_filters2 AS f LEFT JOIN ttrss_filters2_rules AS r
-					ON (r.filter_id = f.id)
-						LEFT JOIN ttrss_filters2_actions AS a
-							ON (a.filter_id = f.id) WHERE f.id = ? GROUP BY f.title, f.match_any_rule, f.inverse");
-		$sth->execute([$id]);
+		$filter = ORM::for_table("ttrss_filters2")
+			->table_alias('f')
+			->select('f.title')
+			->select('f.match_any_rule')
+			->select('f.inverse')
+			->select_expr('COUNT(DISTINCT r.id)', 'num_rules')
+			->select_expr('COUNT(DISTINCT a.id)', 'num_actions')
+			->join('ttrss_filters2_rules', ['r.filter_id', '=', 'f.id'], 'r')
+			->join('ttrss_filters2_actions', ['a.filter_id', '=', 'f.id'], 'a')
+			->where('f.id', $id)
+			->group_by_expr('f.title, f.match_any_rule, f.inverse')
+			->find_one();
 
-		if ($row = $sth->fetch()) {
+		if ($filter) {
+			$title_summary = [
+				sprintf(
+				_ngettext("%s (%d rule)", "%s (%d rules)", (int) $filter->num_rules),
+				($filter->title ? $filter->title : __("[No caption]")),
+				$filter->num_rules)];
 
-			$title = $row["title"];
-			$num_rules = $row["num_rules"];
-			$num_actions = $row["num_actions"];
-			$match_any_rule = $row["match_any_rule"];
-			$inverse = $row["inverse"];
+			if ($filter->match_any_rule) array_push($title_summary, __("matches any rule"));
+			if ($filter->inverse) array_push($title_summary, __("inverse"));
 
-			if (!$title) $title = __("[No caption]");
+			$actions = ORM::for_table("ttrss_filters2_actions")
+				->where("filter_id", $id)
+				->order_by_asc('id')
+				->find_many();
 
-			$title = sprintf(_ngettext("%s (%d rule)", "%s (%d rules)", (int) $num_rules), $title, $num_rules);
+			$actions_summary = "";
+			$cumulative_score = 0;
 
-			$sth = $this->pdo->prepare("SELECT * FROM ttrss_filters2_actions
-				WHERE filter_id = ? ORDER BY id LIMIT 1");
-			$sth->execute([$id]);
+			foreach ($actions as $action) {
+				if ($action->action_id == self::ACTION_SCORE)
+					$cumulative_score += (int) $action->action_param;
 
-			$actions = "";
-
-			if ($line = $sth->fetch()) {
-				$actions = $this->_get_action_name($line);
-
-				$num_actions -= 1;
+				if ($actions_summary == "")
+					$actions_summary = self::_get_action_name($action);
 			}
 
-			if ($match_any_rule) $title .= " (" . __("matches any rule") . ")";
-			if ($inverse) $title .= " (" . __("inverse") . ")";
+			if ($cumulative_score) array_push($title_summary, T_sprintf("sets score: %d", $cumulative_score));
 
-			if ($num_actions > 0)
-				$actions = sprintf(_ngettext("%s (+%d action)", "%s (+%d actions)", (int) $num_actions), $actions, $num_actions);
+			if (count($actions) > 1)
+				$actions_summary .= " " . sprintf(_ngettext("(+%d action)", "(+%d actions)", count($actions) - 1), count($actions) - 1);
 
-			return [$title, $actions];
+			return [implode(", ", $title_summary), $actions_summary];
 		}
 
 		return [];

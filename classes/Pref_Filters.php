@@ -286,10 +286,11 @@ class Pref_Filters extends Handler_Protected {
 
 		$root['items'] = $folder['items'];
 
-		$fl = array();
-		$fl['identifier'] = 'id';
-		$fl['label'] = 'name';
-		$fl['items'] = array($root);
+		$fl = [
+			'identifier' => 'id',
+			'label' => 'name',
+			'items' => [$root]
+		];
 
 		print json_encode($fl);
 	}

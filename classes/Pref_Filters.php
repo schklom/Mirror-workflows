@@ -10,6 +10,19 @@ class Pref_Filters extends Handler_Protected {
 	const PARAM_ACTIONS = [self::ACTION_TAG, self::ACTION_SCORE,
 		self::ACTION_LABEL, self::ACTION_PLUGIN, self::ACTION_REMOVE_TAG];
 
+	private $action_descriptions = [];
+
+	function before(string $method) : bool {
+
+		$descriptions = ORM::for_table("ttrss_filter_actions")->find_array();
+
+		foreach ($descriptions as $desc) {
+			$this->action_descriptions[$desc['id']] = $desc;
+		}
+
+		return parent::before($method);
+	}
+
 	function csrf_ignore(string $method): bool {
 		$csrf_ignored = array("index", "getfiltertree", "savefilterorder");
 
@@ -471,32 +484,24 @@ class Pref_Filters extends Handler_Protected {
 			return "";
 		}
 
-		$sth = $this->pdo->prepare("SELECT description FROM
-			ttrss_filter_actions WHERE id = ?");
-		$sth->execute([(int)$action["action_id"]]);
+		$title = $this->action_descriptions[$action['action_id']]['description'] ??
+			T_sprintf('Unknown action: %d', $action['action_id']);
 
-		$title = "";
+		if ($action["action_id"] == self::ACTION_PLUGIN) {
+			list ($pfclass, $pfaction) = explode(":", $action["action_param"]);
 
-		if ($row = $sth->fetch()) {
+			$filter_actions = PluginHost::getInstance()->get_filter_actions();
 
-			$title = __($row["description"]);
-
-			if ($action["action_id"] == self::ACTION_PLUGIN) {
-				list ($pfclass, $pfaction) = explode(":", $action["action_param"]);
-
-				$filter_actions = PluginHost::getInstance()->get_filter_actions();
-
-				foreach ($filter_actions as $fclass => $factions) {
-					foreach ($factions as $faction) {
-						if ($pfaction == $faction["action"] && $pfclass == $fclass) {
-							$title .= ": " . $fclass . ": " . $faction["description"];
-							break;
-						}
+			foreach ($filter_actions as $fclass => $factions) {
+				foreach ($factions as $faction) {
+					if ($pfaction == $faction["action"] && $pfclass == $fclass) {
+						$title .= ": " . $fclass . ": " . $faction["description"];
+						break;
 					}
 				}
-			} else if (in_array($action["action_id"], self::PARAM_ACTIONS)) {
-				$title .= ": " . $action["action_param"];
 			}
+		} else if (in_array($action["action_id"], self::PARAM_ACTIONS)) {
+			$title .= ": " . $action["action_param"];
 		}
 
 		return $title;

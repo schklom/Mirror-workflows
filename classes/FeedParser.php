@@ -72,19 +72,15 @@ class FeedParser {
 			$root = $root_list->item(0);
 
 			if ($root) {
-				switch (mb_strtolower($root->tagName)) {
-				case "rdf:rdf":
-					$this->type = $this::FEED_RDF;
-					break;
-				case "channel":
-					$this->type = $this::FEED_RSS;
-					break;
-				case "feed":
-				case "atom:feed":
-					$this->type = $this::FEED_ATOM;
-					break;
-				default:
-					$this->error ??= "Unknown/unsupported feed type";
+				$this->type = match (mb_strtolower($root->tagName)) {
+					'rdf:rdf' => $this::FEED_RDF,
+					'channel' => $this::FEED_RSS,
+					'feed', 'atom:feed' => $this::FEED_ATOM,
+					default => null,
+				};
+
+				if (!$this->type) {
+					$this->error ??= 'Unknown/unsupported feed type';
 					return;
 				}
 			}

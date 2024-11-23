@@ -397,23 +397,14 @@ class Feeds extends Handler_Protected {
 				if ($query_error_override) {
 					$message = $query_error_override;
 				} else {
-					switch ($view_mode) {
-						case "unread":
-							$message = __("No unread articles found to display.");
-							break;
-						case "updated":
-							$message = __("No updated articles found to display.");
-							break;
-						case "marked":
-							$message = __("No starred articles found to display.");
-							break;
-						default:
-							if ($feed < LABEL_BASE_INDEX) {
-								$message = __("No articles found to display. You can assign articles to labels manually from article header context menu (applies to all selected articles) or use a filter.");
-							} else {
-								$message = __("No articles found to display.");
-							}
-					}
+					$message = match ($view_mode) {
+						'unread' => __('No unread articles found to display.'),
+						'updated' => __('No updated articles found to display.'),
+						'marked' => __('No starred articles found to display.'),
+						default => $feed < LABEL_BASE_INDEX ?
+							__('No articles found to display. You can assign articles to labels manually from article header context menu (applies to all selected articles) or use a filter.')
+							: __('No articles found to display.'),
+					};
 				}
 
 				if (!$offset && $message) {
@@ -1153,26 +1144,15 @@ class Feeds extends Handler_Protected {
 	 * @return false|string false if the icon ID was unrecognized, otherwise, the icon identifier string
 	 */
 	static function _get_icon(int $id): false|string {
-		switch ($id) {
-			case Feeds::FEED_ARCHIVED:
-				return "archive";
-			case Feeds::FEED_STARRED:
-				return "star";
-			case Feeds::FEED_PUBLISHED:
-				return "rss_feed";
-			case Feeds::FEED_FRESH:
-				return "whatshot";
-			case Feeds::FEED_ALL:
-				return "inbox";
-			case Feeds::FEED_RECENTLY_READ:
-				return "restore";
-			default:
-				if ($id < LABEL_BASE_INDEX) {
-					return "label";
-				} else {
-					return self::_get_icon_url($id);
-				}
-		}
+		return match ($id) {
+			Feeds::FEED_ARCHIVED => 'archive',
+			Feeds::FEED_STARRED => 'star',
+			Feeds::FEED_PUBLISHED => 'rss_feed',
+			Feeds::FEED_FRESH => 'whatshot',
+			Feeds::FEED_ALL => 'inbox',
+			Feeds::FEED_RECENTLY_READ => 'restore',
+			default => $id < LABEL_BASE_INDEX ? 'label' : self::_get_icon_url($id),
+		};
 	}
 
 	/**

@@ -424,14 +424,11 @@ class Config {
 	}
 
 	static function cast_to(string $value, int $type_hint): bool|int|string {
-		switch ($type_hint) {
-			case self::T_BOOL:
-				return sql_bool_to_bool($value);
-			case self::T_INT:
-				return (int) $value;
-			default:
-				return $value;
-		}
+		return match ($type_hint) {
+			self::T_BOOL => sql_bool_to_bool($value),
+			self::T_INT => (int) $value,
+			default => $value,
+		};
 	}
 
 	private function _get(string $param): bool|int|string {

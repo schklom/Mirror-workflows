@@ -41,12 +41,8 @@ function format_backtrace(array $trace): string {
 }
 
 function ttrss_error_handler(int $errno, string $errstr, string $file, int $line): bool {
-        // return true in order to avoid default error handling by PHP
-	if (version_compare(PHP_VERSION, '8.0.0', '<')) {
-		if (error_reporting() == 0 || !$errno) return true;
-	} else {
-		if (!(error_reporting() & $errno)) return true;
-	}
+	// return true in order to avoid default error handling by PHP
+	if (!(error_reporting() & $errno)) return true;
 
 	$file = substr(str_replace(dirname(__DIR__), "", $file), 1);
 

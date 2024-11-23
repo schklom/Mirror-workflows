@@ -647,15 +647,7 @@ class OPML extends Handler_Protected {
 
 		$doc = new DOMDocument();
 
-		if (version_compare(PHP_VERSION, '8.0.0', '<')) {
-			libxml_disable_entity_loader(false);
-		}
-
 		$loaded = $doc->load($tmp_file);
-
-		if (version_compare(PHP_VERSION, '8.0.0', '<')) {
-			libxml_disable_entity_loader(true);
-		}
 
 		// only remove temporary i.e. HTTP uploaded files
 		if (!$filename)

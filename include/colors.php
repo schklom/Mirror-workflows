@@ -221,7 +221,7 @@ function _color_hue2rgb(float $m1, float $m2, float $h): int {
  * @return array{0: int, 1: int, 2: int}
  */
 function _color_unpack(string $hex, bool $normalize = false): array {
-	$hex = strpos($hex, '#') !== 0 ? _resolve_htmlcolor($hex) : substr($hex, 1);
+	$hex = str_starts_with($hex, '#') ? substr($hex, 1) : _resolve_htmlcolor($hex);
 
 	if (strlen($hex) == 4) {
 		$hex = $hex[1] . $hex[1] . $hex[2] . $hex[2] . $hex[3] . $hex[3];

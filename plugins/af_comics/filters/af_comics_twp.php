@@ -7,7 +7,7 @@ class Af_Comics_Twp extends Af_ComicFilter {
 
 	function process(&$article) {
 
-		if (strpos($article["link"], "threewordphrase.com") !== false) {
+		if (str_contains($article["link"], "threewordphrase.com")) {
 
 				$doc = new DOMDocument();
 

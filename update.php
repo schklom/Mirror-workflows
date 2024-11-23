@@ -123,7 +123,7 @@
 		$options_help = [];
 
 		foreach ($options_map as $option => $descr) {
-			if (substr($option, -1) === ":")
+			if (str_ends_with($option, ':'))
 				$option = substr($option, 0, -1);
 
 			$help_key = trim(sprintf("--%s %s",

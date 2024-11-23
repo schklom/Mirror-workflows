@@ -138,7 +138,7 @@
 					   onblur="UtilityApp.fetchProfiles()"
 					   value="<?= $_SESSION["fake_password"] ?? "" ?>"/>
 			</fieldset>
-			<?php if (strpos(Config::get(Config::PLUGINS), "auth_internal") !== false) { ?>
+			<?php if (str_contains(Config::get(Config::PLUGINS), "auth_internal")) { ?>
 				<fieldset class="align-right">
 					<a href="public.php?op=forgotpass"><?= __("I forgot my password") ?></a>
 				</fieldset>

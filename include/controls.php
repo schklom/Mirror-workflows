@@ -46,7 +46,7 @@
 	 */
    function input_tag(string $name, string $value, string $type = "text", array $attributes = [], string $id = ""): string {
       $attributes_str = attributes_to_string($attributes);
-      $dojo_type = strpos($attributes_str, "dojoType") === false ? "dojoType='dijit.form.TextBox'" : "";
+      $dojo_type = str_contains($attributes_str, "dojoType") ? "" : "dojoType='dijit.form.TextBox'";
 
       return "<input name=\"".htmlspecialchars($name)."\" $dojo_type ".attributes_to_string($attributes)." id=\"".htmlspecialchars($id)."\"
          type=\"$type\" value=\"".htmlspecialchars($value)."\">";
@@ -86,7 +86,7 @@
 	 */
    function select_tag(string $name, mixed $value, array $values, array $attributes = [], string $id = ""): string {
       $attributes_str = attributes_to_string($attributes);
-      $dojo_type = strpos($attributes_str, "dojoType") === false ? "dojoType='fox.form.Select'" : "";
+      $dojo_type = str_contains($attributes_str, "dojoType") ? "" : "dojoType='fox.form.Select'";
 
       $rv = "<select $dojo_type name=\"".htmlspecialchars($name)."\"
          id=\"".htmlspecialchars($id)."\" name=\"".htmlspecialchars($name)."\" $attributes_str>";
@@ -115,7 +115,7 @@
 	 */
    function select_hash(string $name, $value, array $values, array $attributes = [], string $id = ""): string {
       $attributes_str = attributes_to_string($attributes);
-      $dojo_type = strpos($attributes_str, "dojoType") === false ? "dojoType='fox.form.Select'" : "";
+      $dojo_type = str_contains($attributes_str, "dojoType") ? "" : "dojoType='fox.form.Select'";
 
       $rv = "<select $dojo_type name=\"".htmlspecialchars($name)."\"
          id=\"".htmlspecialchars($id)."\" name=\"".htmlspecialchars($name)."\" $attributes_str>";

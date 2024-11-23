@@ -7,7 +7,7 @@ class Af_Comics_Explosm extends Af_ComicFilter {
 
 	function process(&$article) {
 
-		if (strpos($article["link"], "explosm.net/comics") !== false) {
+		if (str_contains($article["link"], "explosm.net/comics")) {
 
 				$doc = new DOMDocument();
 

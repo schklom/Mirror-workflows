@@ -190,7 +190,7 @@ class Db_Migrations {
 
 		if (file_exists($filename)) {
 			$lines = array_filter(preg_split("/[\r\n]/", file_get_contents($filename)),
-				fn($line) => strlen(trim($line)) > 0 && strpos($line, "--") !== 0);
+				fn($line) => strlen(trim($line)) > 0 && !str_starts_with($line, "--"));
 
 			return array_filter(explode(";", implode("", $lines)),
 				fn($line) => strlen(trim($line)) > 0 && !in_array(strtolower($line), ["begin", "commit"]));

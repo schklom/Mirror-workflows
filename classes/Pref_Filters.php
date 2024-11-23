@@ -106,7 +106,7 @@ class Pref_Filters extends Handler_Protected {
 				/** @var int|string $feed_id may be a category string (e.g. 'CAT:7') or feed ID int */
 				foreach ($rule["feed_id"] as $feed_id) {
 
-				if (strpos("$feed_id", "CAT:") === 0) {
+				if (str_starts_with("$feed_id", "CAT:")) {
 						$cat_id = (int) substr("$feed_id", 4);
 						array_push($scope_inner_qparts, "cat_id = " . $cat_id);
 					} else if (is_numeric($feed_id) && $feed_id > 0) {
@@ -206,7 +206,7 @@ class Pref_Filters extends Handler_Protected {
 
 					foreach ($feeds as $feed_id) {
 
-						if (strpos($feed_id, "CAT:") === 0) {
+						if (str_starts_with($feed_id, "CAT:")) {
 							$feed_id = (int)substr($feed_id, 4);
 							array_push($feeds_fmt, Feeds::_get_cat_title($feed_id));
 						} else {
@@ -404,7 +404,7 @@ class Pref_Filters extends Handler_Protected {
 
 		foreach ($feeds as $feed_id) {
 
-            if (strpos($feed_id, "CAT:") === 0) {
+            if (str_starts_with($feed_id, "CAT:")) {
                 $feed_id = (int)substr($feed_id, 4);
                 array_push($feeds_fmt, Feeds::_get_cat_title($feed_id));
             } else {

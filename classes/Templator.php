@@ -5,7 +5,7 @@ class Templator extends MiniTemplator {
 
 	/* this reads tt-rss template from templates.local/ or templates/ if only base filename is given */
 	function readTemplateFromFile ($fileName) {
-		if (strpos($fileName, "/") === false) {
+		if (!str_contains($fileName, "/")) {
 
 			$fileName = basename($fileName);
 

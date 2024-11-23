@@ -23,7 +23,7 @@ class RPC extends Handler_Protected {
 
 			for ($i = 0; $i < $l10n->total; $i++) {
 				if (isset($l10n->table_originals[$i * 2 + 2]) && $orig = $l10n->get_original_string($i)) {
-					if(strpos($orig, "\000") !== false) { // Plural forms
+					if(str_contains($orig, "\000")) { // Plural forms
 						$key = explode(chr(0), $orig);
 
 						$rv[$key[0]] = _ngettext($key[0], $key[1], 1); // Singular
@@ -774,7 +774,7 @@ class RPC extends Handler_Protected {
 
 				if (!empty($omap[$action])) {
 					foreach ($omap[$action] as $sequence) {
-						if (strpos($sequence, "|") !== false) {
+						if (str_contains($sequence, "|")) {
 							$sequence = substr($sequence,
 								strpos($sequence, "|")+1,
 								strlen($sequence));

@@ -86,7 +86,7 @@ class UrlHelper {
 			return self::validate($rel_url);
 
 		// protocol-relative URL (rare but they exist)
-		} else if (strpos($rel_url, "//") === 0) {
+		} else if (str_starts_with($rel_url, "//")) {
 			return self::validate("https:" . $rel_url);
 		// allow some extra schemes for A href
 		} else if (in_array($rel_parts["scheme"] ?? "", self::EXTRA_HREF_SCHEMES, true) &&
@@ -118,10 +118,10 @@ class UrlHelper {
 				// 1. absolute relative path (/test.html) = no-op, proceed as is
 
 				// 2. dotslash relative URI (./test.html) - strip "./", append base path
-				if (strpos($rel_parts['path'], './') === 0) {
+				if (str_starts_with($rel_parts['path'], './')) {
 					$rel_parts['path'] = $base_path . substr($rel_parts['path'], 2);
 				// 3. anything else relative (test.html) - append dirname() of base path
-				} else if (strpos($rel_parts['path'], '/') !== 0) {
+				} else if (!str_starts_with($rel_parts['path'], '/')) {
 					$rel_parts['path'] = $base_path . $rel_parts['path'];
 				}
 
@@ -141,7 +141,7 @@ class UrlHelper {
 		$url = clean($url);
 
 		# fix protocol-relative URLs
-		if (strpos($url, "//") === 0)
+		if (str_starts_with($url, "//"))
 			$url = "https:" . $url;
 
 		$tokens = parse_url($url);
@@ -191,7 +191,8 @@ class UrlHelper {
 			if (!in_array($tokens['port'] ?? '', [80, 443, '']))
 				return false;
 
-			if (strtolower($tokens['host']) == 'localhost' || $tokens['host'] == '::1' || strpos($tokens['host'], '127.') === 0)
+			if (strtolower($tokens['host']) == 'localhost' || $tokens['host'] == '::1'
+				|| str_starts_with($tokens['host'], '127.'))
 				return false;
 		}
 
@@ -295,7 +296,7 @@ class UrlHelper {
 		$url_host = parse_url($url, PHP_URL_HOST);
 		$ip_addr = gethostbyname($url_host);
 
-		if (!$ip_addr || strpos($ip_addr, '127.') === 0) {
+		if (!$ip_addr || str_starts_with($ip_addr, '127.')) {
 			self::$fetch_last_error = "URL hostname failed to resolve or resolved to a loopback address ($ip_addr)";
 			return false;
 		}
@@ -396,7 +397,7 @@ class UrlHelper {
 
 					self::$fetch_last_content_type = $ex->getResponse()->getHeaderLine('content-type');
 
-					if ($type && strpos(self::$fetch_last_content_type, "$type") === false)
+					if ($type && !str_contains(self::$fetch_last_content_type, "$type"))
 						self::$fetch_last_error_content = (string) $ex->getResponse()->getBody();
 				} elseif (array_key_exists('errno', $ex->getHandlerContext())) {
 					$errno = (int) $ex->getHandlerContext()['errno'];
@@ -433,7 +434,7 @@ class UrlHelper {
 
 		self::$fetch_effective_ip_addr = gethostbyname(parse_url(self::$fetch_effective_url, PHP_URL_HOST));
 
-		if (!self::$fetch_effective_ip_addr || strpos(self::$fetch_effective_ip_addr, '127.') === 0) {
+		if (!self::$fetch_effective_ip_addr || str_starts_with(self::$fetch_effective_ip_addr, '127.')) {
 			self::$fetch_last_error = 'URL hostname received after redirection failed to resolve or resolved to a loopback address (' .
 				self::$fetch_effective_ip_addr . ')';
 			return false;

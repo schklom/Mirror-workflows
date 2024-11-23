@@ -9,7 +9,7 @@ class TimeHelper {
 			return T_sprintf("%d min", date("i", time() + $tz_offset - $timestamp));
 		} else if (date("Y.m.d", $timestamp) == date("Y.m.d", time() + $tz_offset)) {
 			$format = Prefs::get(Prefs::SHORT_DATE_FORMAT, $owner_uid, $profile);
-			if (strpos((strtolower($format)), "a") === false)
+			if (!str_contains((strtolower($format)), "a"))
 				return date("G:i", $timestamp);
 			else
 				return date("g:i a", $timestamp);

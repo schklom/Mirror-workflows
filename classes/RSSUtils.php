@@ -1432,7 +1432,7 @@ class RSSUtils {
 				/** @var DOMElement $entry */
 				foreach ($entries as $entry) {
 					foreach (array('src', 'poster') as $attr) {
-						if ($entry->hasAttribute($attr) && strpos($entry->getAttribute($attr), "data:") !== 0) {
+						if ($entry->hasAttribute($attr) && !str_starts_with($entry->getAttribute($attr), "data:")) {
 							self::cache_media_url($cache, $entry->getAttribute($attr), $site_url);
 						}
 					}
@@ -1753,7 +1753,7 @@ class RSSUtils {
 
 		if ($dh) {
 			while (($old_filename = readdir($dh)) !== false) {
-				if (strpos($old_filename, ".ico") !== false) {
+				if (str_ends_with($old_filename, ".ico")) {
 					$new_filename = str_replace(".ico", "", $old_filename);
 					$old_full_path = "$old_dir/$old_filename";
 

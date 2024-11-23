@@ -217,7 +217,7 @@ class OPML extends Handler_Protected {
 						$match = [];
 						foreach (json_decode($tmp_line["match_on"], true) as $feed_id) {
 
-							if (strpos($feed_id, "CAT:") === 0) {
+							if (str_starts_with($feed_id, "CAT:")) {
 								$feed_id = (int)substr($feed_id, 4);
 								if ($feed_id) {
 									array_push($match, [Feeds::_get_cat_title($feed_id), true, false]);

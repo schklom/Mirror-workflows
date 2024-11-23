@@ -14,7 +14,7 @@
 	$method = (string)clean($_REQUEST["op"]);
 
 	// shortcut syntax for public (exposed) methods (?op=plugin--pmethod&...params)
-	if (strpos($method, PluginHost::PUBLIC_METHOD_DELIMITER) !== false) {
+	if (str_contains($method, PluginHost::PUBLIC_METHOD_DELIMITER)) {
 		list ($plugin, $pmethod) = explode(PluginHost::PUBLIC_METHOD_DELIMITER, $method, 2);
 
 		// TODO: better implementation that won't modify $_REQUEST
@@ -32,7 +32,7 @@
 		$handler = new Handler_Public($_REQUEST);
 	}
 
-	if (strpos($method, "_") === 0) {
+	if (str_starts_with($method, "_")) {
 		user_error("Refusing to invoke method $method which starts with underscore.", E_USER_WARNING);
 		header("Content-Type: text/json");
 		print Errors::to_json(Errors::E_UNAUTHORIZED);

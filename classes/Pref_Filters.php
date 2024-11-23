@@ -10,6 +10,8 @@ class Pref_Filters extends Handler_Protected {
 	const PARAM_ACTIONS = [self::ACTION_TAG, self::ACTION_SCORE,
 		self::ACTION_LABEL, self::ACTION_PLUGIN, self::ACTION_REMOVE_TAG];
 
+	const MAX_ACTIONS_TO_DISPLAY = 3;
+
 	/** @var array<int,array<mixed>> $action_descriptions */
 	private $action_descriptions = [];
 
@@ -746,23 +748,35 @@ class Pref_Filters extends Handler_Protected {
 				->order_by_asc('id')
 				->find_many();
 
-			$actions_summary = "";
+			/** @var array<string> $actions_summary */
+			$actions_summary = [];
 			$cumulative_score = 0;
 
+			// we're going to show a summary adjustment so we skip individual score action descriptions here
 			foreach ($actions as $action) {
-				if ($action->action_id == self::ACTION_SCORE)
+				if ($action->action_id == self::ACTION_SCORE) {
 					$cumulative_score += (int) $action->action_param;
+					continue;
+				}
 
-				if ($actions_summary == "")
-					$actions_summary = self::_get_action_name($action);
+				array_push($actions_summary, self::_get_action_name($action));
 			}
 
-			if ($cumulative_score) array_push($title_summary, T_sprintf("sets score: %d", $cumulative_score));
+			// inject a fake action description using cumulative filter score
+			if ($cumulative_score != 0) {
+				array_unshift($actions_summary,
+					self::_get_action_name(["action_id" => self::ACTION_SCORE, "action_param" => $cumulative_score]));
+			}
 
-			if (count($actions) > 1)
-				$actions_summary .= " " . sprintf(_ngettext("(+%d action)", "(+%d actions)", count($actions) - 1), count($actions) - 1);
+			if (count($actions_summary) > self::MAX_ACTIONS_TO_DISPLAY) {
+				$actions_not_shown = count($actions_summary) - self::MAX_ACTIONS_TO_DISPLAY;
+				$actions_summary = array_slice($actions_summary, 0, self::MAX_ACTIONS_TO_DISPLAY);
 
-			return [implode(", ", $title_summary), $actions_summary];
+				array_push($actions_summary,
+					sprintf(_ngettext("(+%d action)", "(+%d actions)", $actions_not_shown), $actions_not_shown));
+			}
+
+			return [implode(", ", $title_summary), implode("<br/>", $actions_summary)];
 		}
 
 		return [];

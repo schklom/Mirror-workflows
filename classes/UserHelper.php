@@ -383,30 +383,18 @@ class UserHelper {
 	 * @return false|string False if the password couldn't be hashed, otherwise the hash string.
 	 */
 	static function hash_password(string $pass, string $salt, string $algo = self::HASH_ALGOS[0]): false|string {
-		$pass_hash = "";
+		$pass_hash = match ($algo) {
+			self::HASH_ALGO_SHA1 => sha1($pass),
+			self::HASH_ALGO_SHA1X => sha1("$salt:$pass"),
+			self::HASH_ALGO_MODE2, self::HASH_ALGO_SSHA256 => hash('sha256', $salt . $pass),
+			self::HASH_ALGO_SSHA512 => hash('sha512', $salt . $pass),
+			default => null,
+		};
 
-		switch ($algo) {
-			case self::HASH_ALGO_SHA1:
-				$pass_hash = sha1($pass);
-				break;
-			case self::HASH_ALGO_SHA1X:
-				$pass_hash = sha1("$salt:$pass");
-				break;
-			case self::HASH_ALGO_MODE2:
-			case self::HASH_ALGO_SSHA256:
-				$pass_hash = hash('sha256', $salt . $pass);
-				break;
-			case self::HASH_ALGO_SSHA512:
-				$pass_hash = hash('sha512', $salt . $pass);
-				break;
-			default:
-				user_error("hash_password: unknown hash algo: $algo", E_USER_ERROR);
-		}
+		if ($pass_hash === null)
+			user_error("hash_password: unknown hash algo: $algo", E_USER_ERROR);
 
-		if ($pass_hash)
-			return "$algo:$pass_hash";
-		else
-			return false;
+		return $pass_hash ? "$algo:$pass_hash" : false;
 	}
 
 	/**

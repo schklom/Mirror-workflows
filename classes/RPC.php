@@ -785,16 +785,11 @@ class RPC extends Handler_Protected {
 								if (strlen($keys[$i]) > 1) {
 									$tmp = '';
 									foreach (str_split($keys[$i]) as $c) {
-										switch ($c) {
-											case '*':
-												$tmp .= __('Shift') . '+';
-												break;
-											case '^':
-												$tmp .= __('Ctrl') . '+';
-												break;
-											default:
-												$tmp .= $c;
-										}
+										$tmp .= match ($c) {
+											'*' => __('Shift') . '+',
+											'^' => __('Ctrl') . '+',
+											default => $c,
+										};
 									}
 									$keys[$i] = $tmp;
 								}

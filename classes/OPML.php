@@ -590,19 +590,12 @@ class OPML extends Handler_Protected {
 						$dst_cat_id = $cat_id;
 					}
 
-					switch ($cat_title) {
-					case "tt-rss-prefs":
-						$this->opml_import_preference($node, $owner_uid, $nest+1);
-						break;
-					case "tt-rss-labels":
-						$this->opml_import_label($node, $owner_uid, $nest+1);
-						break;
-					case "tt-rss-filters":
-						$this->opml_import_filter($node, $owner_uid, $nest+1);
-						break;
-					default:
-						$this->opml_import_feed($node, $dst_cat_id, $owner_uid, $nest+1);
-					}
+					match ($cat_title) {
+						'tt-rss-prefs' => $this->opml_import_preference($node, $owner_uid, $nest+1),
+						'tt-rss-labels' => $this->opml_import_label($node, $owner_uid, $nest+1),
+						'tt-rss-filters' => $this->opml_import_filter($node, $owner_uid, $nest+1),
+						default => $this->opml_import_feed($node, $dst_cat_id, $owner_uid, $nest+1),
+					};
 				}
 			}
 		}

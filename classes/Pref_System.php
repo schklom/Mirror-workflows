@@ -38,16 +38,11 @@ class Pref_System extends Handler_Administrative {
 	}
 
 	private function _log_viewer(int $page, int $severity): void {
-		$errno_values = [];
-
-		switch ($severity) {
-			case E_USER_ERROR:
-				$errno_values = [ E_ERROR, E_USER_ERROR, E_PARSE, E_COMPILE_ERROR ];
-				break;
-			case E_USER_WARNING:
-				$errno_values = [ E_ERROR, E_USER_ERROR, E_PARSE, E_COMPILE_ERROR, E_WARNING, E_USER_WARNING, E_DEPRECATED, E_USER_DEPRECATED ];
-				break;
-		}
+		$errno_values = match ($severity) {
+			E_USER_ERROR => [E_ERROR, E_USER_ERROR, E_PARSE, E_COMPILE_ERROR],
+			E_USER_WARNING => [E_ERROR, E_USER_ERROR, E_PARSE, E_COMPILE_ERROR, E_WARNING, E_USER_WARNING, E_DEPRECATED, E_USER_DEPRECATED],
+			default => [],
+		};
 
 		if (count($errno_values) > 0) {
 			$errno_qmarks = arr_qmarks($errno_values);

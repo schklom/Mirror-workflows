@@ -57,19 +57,12 @@ class Logger {
 	}
 
 	function __construct() {
-		switch (Config::get(Config::LOG_DESTINATION)) {
-		case self::LOG_DEST_SQL:
-			$this->adapter = new Logger_SQL();
-			break;
-		case self::LOG_DEST_SYSLOG:
-			$this->adapter = new Logger_Syslog();
-			break;
-		case self::LOG_DEST_STDOUT:
-			$this->adapter = new Logger_Stdout();
-			break;
-		default:
-			$this->adapter = null;
-		}
+		$this->adapter = match (Config::get(Config::LOG_DESTINATION)) {
+			self::LOG_DEST_SQL => new Logger_SQL(),
+			self::LOG_DEST_SYSLOG => new Logger_Syslog(),
+			self::LOG_DEST_STDOUT => new Logger_Stdout(),
+			default => null,
+		};
 
 		if ($this->adapter && !implements_interface($this->adapter, "Logger_Adapter"))
 			user_error("Adapter for LOG_DESTINATION: " . Config::LOG_DESTINATION . " does not implement required interface.", E_USER_ERROR);

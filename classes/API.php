@@ -241,7 +241,6 @@ class API extends Handler {
 		$field_raw = (int)clean($_REQUEST["field"]);
 
 		$field = "";
-		$set_to = "";
 		$additional_fields = "";
 
 		switch ($field_raw) {
@@ -265,20 +264,17 @@ class API extends Handler {
 				break;
 		};
 
-		switch ($mode) {
-			case 1:
-				$set_to = "true";
-				break;
-			case 0:
-				$set_to = "false";
-				break;
-			case 2:
-				$set_to = "NOT $field";
-				break;
-		}
+		$set_to = match ($mode) {
+			0 => 'false',
+			1 => 'true',
+			2 => "NOT $field",
+			default => null,
+		};
 
-		if ($field == "note") $set_to = $this->pdo->quote($data);
-		if ($field == "score") $set_to = (int) $data;
+		if ($field == 'note')
+			$set_to = $this->pdo->quote($data);
+		elseif ($field == 'score')
+			$set_to = (int) $data;
 
 		if ($field && $set_to && count($article_ids) > 0) {
 

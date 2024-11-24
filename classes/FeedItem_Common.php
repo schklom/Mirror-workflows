@@ -171,7 +171,7 @@ abstract class FeedItem_Common extends FeedItem {
 	/**
 	 * @return false|string false on failure, otherwise string contents
 	 */
-	function subtree_or_text(DOMElement $node) {
+	function subtree_or_text(DOMElement $node): false|string {
 		if ($this->count_children($node) == 0) {
 			return $node->nodeValue;
 		} else {

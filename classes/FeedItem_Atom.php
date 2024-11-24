@@ -15,7 +15,7 @@ class FeedItem_Atom extends FeedItem_Common {
 	/**
 	 * @return int|false a timestamp on success, false otherwise
 	 */
-	function get_date() {
+	function get_date(): false|int {
 		$updated = $this->elem->getElementsByTagName("updated")->item(0);
 
 		if ($updated) {

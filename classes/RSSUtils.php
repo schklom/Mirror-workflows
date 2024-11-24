@@ -1785,10 +1785,7 @@ class RSSUtils {
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_HOUSE_KEEPING);
 	}
 
-	/**
-	 * @return false|string
-	 */
-	static function update_favicon(string $site_url, int $feed) {
+	static function update_favicon(string $site_url, int $feed): false|string {
 		$favicon_urls = self::get_favicon_urls($site_url);
 
 		if (count($favicon_urls) == 0) {
@@ -1983,7 +1980,7 @@ class RSSUtils {
 	 * @access public
 	 * @return false|string The favicon URL string, or false if none was found.
 	 */
-	static function get_favicon_url(string $url) {
+	static function get_favicon_url(string $url): false|string {
 
 		$favicon_urls = self::get_favicon_urls($url);
 

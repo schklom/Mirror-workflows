@@ -165,7 +165,7 @@ class Auth_Internal extends Auth_Base implements IAuthModule2 {
 	 * @throws PDOException
 	 * @throws Exception
 	 */
-	function check_password(int $owner_uid, string $password, string $service = '') {
+	function check_password(int $owner_uid, string $password, string $service = ''): false|int {
 
 		$user = ORM::for_table('ttrss_users')->find_one($owner_uid);
 
@@ -252,7 +252,7 @@ class Auth_Internal extends Auth_Base implements IAuthModule2 {
 	 * @throws PDOException
 	 * @throws Exception
 	 */
-	private function check_app_password(string $login, string $password, string $service) {
+	private function check_app_password(string $login, string $password, string $service): false|int {
 		$sth = $this->pdo->prepare("SELECT p.id, p.pwd_hash, u.id AS uid
 			FROM ttrss_app_passwords p, ttrss_users u
 			WHERE p.owner_uid = u.id AND LOWER(u.login) = LOWER(?) AND service = ?");

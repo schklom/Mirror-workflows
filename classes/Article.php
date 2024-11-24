@@ -569,7 +569,7 @@ class Article extends Handler_Protected {
 	 *
 	 * @return array<int, Article::ARTICLE_KIND_*|string>
 	 */
-	static function _get_image(array $enclosures, string $content, string $site_url, array $headline) {
+	static function _get_image(array $enclosures, string $content, string $site_url, array $headline): array {
 		$article_image = "";
 		$article_stream = "";
 		$article_kind = 0;

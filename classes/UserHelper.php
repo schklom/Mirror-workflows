@@ -370,7 +370,6 @@ class UserHelper {
 
 	/**
 	 * @param null|int $owner_uid if null, checks current user via session-specific auth module, if set works on internal database only
-	 * @return bool
 	 * @throws PDOException
 	 * @throws Exception
 	 */
@@ -383,7 +382,7 @@ class UserHelper {
 	 *
 	 * @return false|string False if the password couldn't be hashed, otherwise the hash string.
 	 */
-	static function hash_password(string $pass, string $salt, string $algo = self::HASH_ALGOS[0]) {
+	static function hash_password(string $pass, string $salt, string $algo = self::HASH_ALGOS[0]): false|string {
 		$pass_hash = "";
 
 		switch ($algo) {
@@ -498,7 +497,6 @@ class UserHelper {
 	/**
 	 * @param null|int $owner_uid if null, checks current user via session-specific auth module, if set works on internal database only
 	 * @param string $password password to compare hash against
-	 * @return bool
 	 */
 	static function user_has_password(?int $owner_uid, string $password) : bool {
 		if ($owner_uid) {

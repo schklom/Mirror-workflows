@@ -81,11 +81,10 @@
    }
 
 	/**
-	 * @param mixed $value
 	 * @param array<int|string, string> $values
 	 * @param array<string, mixed> $attributes
 	 */
-   function select_tag(string $name, $value, array $values, array $attributes = [], string $id = ""): string {
+   function select_tag(string $name, mixed $value, array $values, array $attributes = [], string $id = ""): string {
       $attributes_str = attributes_to_string($attributes);
       $dojo_type = strpos($attributes_str, "dojoType") === false ? "dojoType='fox.form.Select'" : "";
 

@@ -53,10 +53,9 @@ class Feeds extends Handler_Protected {
 	}
 
 	/**
-	 * @param string|int $feed
 	 * @return array{0: array<int, int>, 1: int, 2: int, 3: bool, 4: array<string, mixed>} $topmost_article_ids, $headlines_count, $feed, $disable_cache, $reply
 	 */
-	private function _format_headlines_list($feed, string $method, string $view_mode, int $limit, bool $cat_view,
+	private function _format_headlines_list(int|string $feed, string $method, string $view_mode, int $limit, bool $cat_view,
 					int $offset, string $override_order, bool $include_children, ?int $check_first_id = null,
 					?bool $skip_first_id_check = false, ? string $order_by = ''): array {
 
@@ -914,13 +913,9 @@ class Feeds extends Handler_Protected {
 
 	/**
 	 * @param int|string $feed feed id or tag name
-	 * @param bool $is_cat
-	 * @param bool $unread_only
-	 * @param null|int $owner_uid
-	 * @return int
 	 * @throws PDOException
 	 */
-	static function _get_counters($feed, bool $is_cat = false, bool $unread_only = false, ?int $owner_uid = null): int {
+	static function _get_counters(int|string $feed, bool $is_cat = false, bool $unread_only = false, ?int $owner_uid = null): int {
 		$n_feed = (int) $feed;
 		$need_entries = false;
 
@@ -1157,7 +1152,7 @@ class Feeds extends Handler_Protected {
 	/**
 	 * @return false|string false if the icon ID was unrecognized, otherwise, the icon identifier string
 	 */
-	static function _get_icon(int $id) {
+	static function _get_icon(int $id): false|string {
 		switch ($id) {
 			case Feeds::FEED_ARCHIVED:
 				return "archive";
@@ -1183,7 +1178,7 @@ class Feeds extends Handler_Protected {
 	/**
 	 * @return false|int false if the feed couldn't be found by URL+owner, otherwise the feed ID
 	 */
-	static function _find_by_url(string $feed_url, int $owner_uid) {
+	static function _find_by_url(string $feed_url, int $owner_uid): false|int {
 		$feed = ORM::for_table('ttrss_feeds')
 			->where('owner_uid', $owner_uid)
 			->where('feed_url', $feed_url)
@@ -1201,7 +1196,7 @@ class Feeds extends Handler_Protected {
 	 *
 	 * @return false|int false if the category/feed couldn't be found by title, otherwise its ID
 	 */
-	static function _find_by_title(string $title, bool $cat = false, int $owner_uid = 0) {
+	static function _find_by_title(string $title, bool $cat = false, int $owner_uid = 0): false|int {
 
 		if ($cat) {
 			$res = ORM::for_table('ttrss_feed_categories')
@@ -1222,10 +1217,7 @@ class Feeds extends Handler_Protected {
 		}
 	}
 
-	/**
-	 * @param string|int $id
-	 */
-	static function _get_title($id, bool $cat = false): string {
+	static function _get_title(int|string $id, bool $cat = false): string {
 		$pdo = Db::pdo();
 
 		if ($cat) {

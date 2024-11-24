@@ -550,7 +550,7 @@ class PluginHost {
 	/**
 	 * @return false|Plugin false if the handler couldn't be found, otherwise the Plugin/handler
 	 */
-	function lookup_handler(string $handler, string $method) {
+	function lookup_handler(string $handler, string $method): false|Plugin {
 		$handler = str_replace("-", "_", strtolower($handler));
 		$method = strtolower($method);
 
@@ -579,7 +579,7 @@ class PluginHost {
 	/**
 	 * @return false|Plugin false if the command couldn't be found, otherwise the registered Plugin
 	 */
-	function lookup_command(string $command) {
+	function lookup_command(string $command): false|Plugin {
 		$command = "-" . strtolower($command);
 
 		if (array_key_exists($command, $this->commands)) {
@@ -730,7 +730,7 @@ class PluginHost {
 	 * @param array<int|string, mixed> $default_value
 	 * @return array<int|string, mixed>
 	 */
-	function get_array(Plugin $sender, string $name, array $default_value = []) {
+	function get_array(Plugin $sender, string $name, array $default_value = []): array {
 		$tmp = $this->get($sender, $name);
 
 		if (!is_array($tmp)) $tmp = $default_value;

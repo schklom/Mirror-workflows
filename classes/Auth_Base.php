@@ -15,11 +15,11 @@ abstract class Auth_Base extends Plugin implements IAuthModule {
 	/** Auto-creates specified user if allowed by system configuration.
 	 * Can be used instead of find_user_by_login() by external auth modules
 	 * @param string $login
-	 * @param string|false $password
+	 * @param null|string|false $password
 	 * @throws Exception
 	 * @throws PDOException
 	 */
-	function auto_create_user(string $login, false|string $password = false): ?int {
+	function auto_create_user(string $login, null|false|string $password = false): ?int {
 		if ($login && Config::get(Config::AUTH_AUTO_CREATE)) {
 			$user_id = UserHelper::find_user_by_login($login);
 

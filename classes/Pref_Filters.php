@@ -261,10 +261,10 @@ class Pref_Filters extends Handler_Protected {
 			$name = $this->_get_name($filter->id);
 
 			if ($filter_search &&
-				mb_strpos($filter->title, $filter_search) === false &&
+				mb_stripos($filter->title, $filter_search) === false &&
 					!ORM::for_table('ttrss_filters2_rules')
 						->where('filter_id', $filter->id)
-						->where_raw('LOWER(reg_exp) LIKE ?', ["%$filter_search%"])
+						->where_raw('LOWER(reg_exp) LIKE LOWER(?)', ["%$filter_search%"])
 						->find_one()) {
 
 					continue;

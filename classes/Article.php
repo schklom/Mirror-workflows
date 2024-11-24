@@ -623,7 +623,7 @@ class Article extends Handler_Protected {
 
 			if (!$article_image)
 				foreach ($enclosures as $enc) {
-					if (strpos($enc["content_type"], "image/") !== false) {
+					if (str_contains($enc["content_type"], "image/")) {
 						$article_image = $enc["content_url"];
 						break;
 					}

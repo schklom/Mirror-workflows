@@ -8,15 +8,15 @@ class Af_Comics_ComicPress extends Af_ComicFilter {
 	}
 
 	function process(&$article) {
-		if (strpos($article["guid"], "bunicomic.com") !== false ||
-				strpos($article["guid"], "buttersafe.com") !== false ||
-				strpos($article["guid"], "extrafabulouscomics.com") !== false ||
-				strpos($article["guid"], "danbydraws.com") !== false ||
-				strpos($article["guid"], "theduckwebcomics.com/Powerup_Comics") !== false ||
-				strpos($article["guid"], "happyjar.com") !== false ||
-				strpos($article["guid"], "nedroid.com") !== false ||
-				strpos($article["guid"], "stonetoss.com") !== false ||
-				strpos($article["guid"], "csectioncomics.com") !== false) {
+		if (str_contains($article["guid"], "bunicomic.com") ||
+				str_contains($article["guid"], "buttersafe.com") ||
+				str_contains($article["guid"], "extrafabulouscomics.com") ||
+				str_contains($article["guid"], "danbydraws.com") ||
+				str_contains($article["guid"], "theduckwebcomics.com/Powerup_Comics") ||
+				str_contains($article["guid"], "happyjar.com") ||
+				str_contains($article["guid"], "nedroid.com") ||
+				str_contains($article["guid"], "stonetoss.com") ||
+				str_contains($article["guid"], "csectioncomics.com")) {
 
 				// lol at people who block clients by user agent
 				// oh noes my ad revenue Q_Q

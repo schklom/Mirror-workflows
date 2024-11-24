@@ -510,7 +510,7 @@ class Config {
 
 		$errors = [];
 
-		if (strpos(self::get(Config::PLUGINS), "auth_") === false) {
+		if (!str_contains(self::get(Config::PLUGINS), "auth_")) {
 			array_push($errors, "Please enable at least one authentication module via PLUGINS");
 		}
 

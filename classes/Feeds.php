@@ -152,8 +152,8 @@ class Feeds extends Handler_Protected {
 		$feed_title = $qfh_ret[1];
 		$feed_site_url = $qfh_ret[2];
 		$last_error = $qfh_ret[3];
-		$last_updated = strpos($qfh_ret[4] ?? "", '1970-') === false ?
-			TimeHelper::make_local_datetime($qfh_ret[4], false) : __("Never");
+		$last_updated = str_contains($qfh_ret[4] ?? "", '1970-') ?
+			__("Never") : TimeHelper::make_local_datetime($qfh_ret[4], false);
 		$highlight_words = $qfh_ret[5];
 		$reply['first_id'] = $qfh_ret[6];
 		$reply['is_vfeed'] = $qfh_ret[7];
@@ -1073,7 +1073,7 @@ class Feeds extends Handler_Protected {
 			return array("code" => 5, "message" => UrlHelper::$fetch_last_error);
 		}
 
-		if (mb_strpos(UrlHelper::$fetch_last_content_type, "html") !== false && self::_is_html($contents)) {
+		if (str_contains(UrlHelper::$fetch_last_content_type, "html") && self::_is_html($contents)) {
 			$feedUrls = self::_get_feeds_from_html($url, $contents);
 
 			if (count($feedUrls) == 0) {
@@ -2205,7 +2205,7 @@ class Feeds extends Handler_Protected {
 
 		/** @var string $k a keyword pair (not yet split) or standalone value */
 		foreach ($keywords as $k) {
-			if (strpos($k, "-") === 0) {
+			if (str_starts_with($k, "-")) {
 				$k = substr($k, 1);
 				$not = "NOT";
 			} else {
@@ -2311,7 +2311,7 @@ class Feeds extends Handler_Protected {
 					break;
 				default:
 					// @{date} handling
-					if (strpos($k, "@") === 0) {
+					if (str_starts_with($k, "@")) {
 						$user_tz_string = Prefs::get(Prefs::USER_TIMEZONE, $_SESSION['uid']);
 						$orig_ts = strtotime(substr($k, 1));
 						$k = date("Y-m-d", TimeHelper::convert_timestamp($orig_ts, $user_tz_string, 'UTC'));

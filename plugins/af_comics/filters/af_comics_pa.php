@@ -6,7 +6,7 @@ class Af_Comics_Pa extends Af_ComicFilter {
 	}
 
 	function process(&$article) {
-		if (strpos($article["link"], "penny-arcade.com") !== false && strpos($article["title"], "Comic:") !== false) {
+		if (str_contains($article["link"], "penny-arcade.com") && str_contains($article["title"], "Comic:")) {
 
 				$doc = new DOMDocument();
 
@@ -22,7 +22,7 @@ class Af_Comics_Pa extends Af_ComicFilter {
 			return true;
 		}
 
-		if (strpos($article["link"], "penny-arcade.com") !== false && strpos($article["title"], "News Post:") !== false) {
+		if (str_contains($article["link"], "penny-arcade.com") && str_contains($article["title"], "News Post:")) {
 				$doc = new DOMDocument();
 
 				$res = UrlHelper::fetch(['url' => $article['link']]);

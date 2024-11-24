@@ -205,7 +205,7 @@ class Cache_Starred_Images extends Plugin {
 
 			foreach ($entries as $entry) {
 
-				if ($entry->hasAttribute('src') && strpos($entry->getAttribute('src'), "data:") !== 0) {
+				if ($entry->hasAttribute('src') && !str_starts_with($entry->getAttribute('src'), "data:")) {
 
 					$has_images = true;
 

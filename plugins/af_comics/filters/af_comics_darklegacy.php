@@ -7,7 +7,7 @@ class Af_Comics_DarkLegacy extends Af_ComicFilter {
 
 	function process(&$article) {
 
-		if (strpos($article["guid"], "darklegacycomics.com") !== false) {
+		if (str_contains($article["guid"], "darklegacycomics.com")) {
 				$res = UrlHelper::fetch([
 					'url' => $article['link'],
 					'useragent' => 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)',

@@ -385,7 +385,7 @@ class Pref_Feeds extends Handler_Protected {
 
 				if ($item['_reference']) {
 
-					if (strpos($id, "FEED") === 0) {
+					if (str_starts_with($id, "FEED")) {
 
 						$feed = ORM::for_table('ttrss_feeds')
 							->where('owner_uid', $_SESSION['uid'])
@@ -396,7 +396,7 @@ class Pref_Feeds extends Handler_Protected {
 							$feed->cat_id = ($item_id != "root" && $bare_item_id) ? $bare_item_id : null;
 							$feed->save();
 						}
-					} else if (strpos($id, "CAT:") === 0) {
+					} else if (str_starts_with($id, "CAT:")) {
 						$this->process_category_order($data_map, $item['_reference'], $item_id,
 							$nest_level+1);
 

@@ -6,8 +6,8 @@ class Af_Comics_Cad extends Af_ComicFilter {
 	}
 
 	function process(&$article) {
-		if (strpos($article["link"], "cad-comic.com") !== false) {
-			if (strpos($article["title"], "News:") === false) {
+		if (str_contains($article["link"], "cad-comic.com")) {
+			if (!str_contains($article["title"], "News:")) {
 				$doc = new DOMDocument();
 
 				$res = UrlHelper::fetch([

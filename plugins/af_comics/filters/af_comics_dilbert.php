@@ -7,8 +7,8 @@ class Af_Comics_Dilbert extends Af_ComicFilter {
 	}
 
 	function process(&$article) {
-		if (strpos($article["link"], "dilbert.com") !== false ||
-			strpos($article["link"], "/DilbertDailyStrip") !== false) {
+		if (str_contains($article["link"], "dilbert.com") ||
+			str_contains($article["link"], "/DilbertDailyStrip")) {
 				$res = UrlHelper::fetch([
 					'url' => $article['link'],
 					'useragent' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:50.0) Gecko/20100101 Firefox/50.0',
@@ -34,7 +34,7 @@ class Af_Comics_Dilbert extends Af_ComicFilter {
 
 					foreach ($matches as $tag) {
 						// Only strings starting with a number sign are considered tags
-						if ( substr($tag->textContent, 0, 1) == '#' ) {
+						if (str_starts_with($tag->textContent, '#')) {
 							$tags[] = mb_strtolower(substr($tag->textContent, 1), 'utf-8');
 						}
 					}

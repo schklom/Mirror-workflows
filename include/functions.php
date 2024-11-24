@@ -279,11 +279,7 @@
 	}
 
 	function with_trailing_slash(string $str) : string {
-		if (substr($str, -1) === "/") {
-			return $str;
-		} else {
-			return "$str/";
-		}
+		return str_ends_with($str, '/') ? $str : "$str/";
 	}
 
 	function make_password(int $length = 12): string {

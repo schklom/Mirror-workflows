@@ -96,7 +96,7 @@
 	];
 
 	// shortcut syntax for plugin methods (?op=plugin--pmethod&...params)
-	/* if (strpos($op, PluginHost::PUBLIC_METHOD_DELIMITER) !== false) {
+	/* if (str_contains($op, PluginHost::PUBLIC_METHOD_DELIMITER)) {
 		list ($plugin, $pmethod) = explode(PluginHost::PUBLIC_METHOD_DELIMITER, $op, 2);
 
 		// TODO: better implementation that won't modify $_REQUEST
@@ -111,7 +111,7 @@
 
 	if (class_exists($op) || $override) {
 
-		if (strpos($method, "_") === 0) {
+		if (str_starts_with($method, "_")) {
 			user_error("Refusing to invoke method $method of handler $op which starts with underscore.", E_USER_WARNING);
 			header("Content-Type: text/json");
 			print Errors::to_json(Errors::E_UNAUTHORIZED);

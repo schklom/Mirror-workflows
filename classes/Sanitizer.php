@@ -20,11 +20,11 @@ class Sanitizer {
 
 				foreach ($entry->attributes as $attr) {
 
-					if (strpos($attr->nodeName, 'on') === 0) {
+					if (str_starts_with($attr->nodeName, 'on')) {
 						array_push($attrs_to_remove, $attr);
 					}
 
-					if (strpos($attr->nodeName, "data-") === 0) {
+					if (str_starts_with($attr->nodeName, 'data-')) {
 						array_push($attrs_to_remove, $attr);
 					}
 

@@ -1,7 +1,7 @@
 <?php
 class API extends Handler {
 
-	const API_LEVEL  = 21;
+	const API_LEVEL  = 22;
 
 	const STATUS_OK  = 0;
 	const STATUS_ERR = 1;
@@ -405,11 +405,13 @@ class API extends Handler {
 		$feed_id = clean($_REQUEST["feed_id"]);
 		$is_cat = self::_param_to_bool($_REQUEST["is_cat"] ?? false);
 		$mode = clean($_REQUEST["mode"] ?? "");
+		$search_query = clean($_REQUEST["search_query"] ?? "");
+		$search_lang = clean($_REQUEST["search_lang"] ?? "");
 
 		if (!in_array($mode, ["all", "1day", "1week", "2week"]))
 			$mode = "all";
 
-		Feeds::_catchup($feed_id, $is_cat, $_SESSION["uid"], $mode);
+		Feeds::_catchup($feed_id, $is_cat, $_SESSION["uid"], $mode, [$search_query, $search_lang]);
 
 		return $this->_wrap(self::STATUS_OK, array("status" => "OK"));
 	}

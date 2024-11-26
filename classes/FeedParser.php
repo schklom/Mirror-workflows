@@ -79,7 +79,7 @@ class FeedParser {
 					default => null,
 				};
 
-				if (!$this->type) {
+				if ($this->type === null) {
 					$this->error ??= 'Unknown/unsupported feed type';
 					return;
 				}

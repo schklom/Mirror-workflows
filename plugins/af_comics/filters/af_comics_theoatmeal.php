@@ -16,7 +16,7 @@ class Af_Comics_TheOatmeal extends Af_ComicFilter {
 
 				if ($res && $doc->loadHTML($res)) {
 					$xpath = new DOMXPath($doc);
-					$basenode = $xpath->query('//div[@id="comic"]//img')->item(0);
+					$basenode = $xpath->query('//div[@class="post"]|//div[@id="comic"]//img')->item(0);
 
 					if ($basenode) {
 						$article["content"] = $doc->saveHTML($basenode);

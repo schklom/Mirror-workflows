@@ -25,6 +25,7 @@ class FeedParser {
 	/** @var DOMXPath|null */
 	private $xpath;
 
+	const FEED_UNKNOWN = -1;
 	const FEED_RDF = 0;
 	const FEED_RSS = 1;
 	const FEED_ATOM = 2;
@@ -76,10 +77,10 @@ class FeedParser {
 					'rdf:rdf' => $this::FEED_RDF,
 					'channel' => $this::FEED_RSS,
 					'feed', 'atom:feed' => $this::FEED_ATOM,
-					default => null,
+					default => $this::FEED_UNKNOWN,
 				};
 
-				if (!$this->type) {
+				if ($this->type === $this::FEED_UNKNOWN) {
 					$this->error ??= 'Unknown/unsupported feed type';
 					return;
 				}

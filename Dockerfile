@@ -4,6 +4,8 @@ RUN apk update && \
     apk add --no-cache iputils espeak alsa-utils
 
 # To avoid the mess in https://github.com/linuxserver/docker-homeassistant/blob/main/root/etc/s6-overlay/s6-rc.d/init-config-homeassistant/run
+# This may introduce a overlayfs bug apparently, and this prevents letting PUID:PGID own the folder (https://github.com/linuxserver/docker-homeassistant/issues/116)
+# But I don't have a bug on my server and I don't care about PUID:PGID, so this is fine
 RUN PY_LOCAL_PATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d | cut -d " " -f 1 | sed -E "s/.bak$//"); \
     echo "py_path=${PY_LOCAL_PATH}"; \
     if [[ -d "${PY_LOCAL_PATH}.bak" ]]; then \

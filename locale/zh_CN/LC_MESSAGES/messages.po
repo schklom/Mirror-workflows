@@ -8,11 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-15 14:03+0300\n"
+"POT-Creation-Date: 2024-11-28 08:14+0300\n"
 "PO-Revision-Date: 2024-06-16 17:09+0000\n"
 "Last-Translator: Ptsa Daniel <ptsa1987@gmail.com>\n"
-"Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
-"tt-rss/webui/zh_Hans/>\n"
+"Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/tt-"
+"rss/webui/zh_Hans/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,98 +20,98 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 5.6-dev\n"
 
-#: backend.php:65
+#: backend.php:61
 msgid "Use default"
 msgstr "使用默认"
 
-#: backend.php:66
+#: backend.php:62
 msgid "Never purge"
 msgstr "从不清理"
 
-#: backend.php:67
+#: backend.php:63
 msgid "1 week old"
 msgstr "1周前"
 
-#: backend.php:68
+#: backend.php:64
 msgid "2 weeks old"
 msgstr "2周前"
 
-#: backend.php:69
+#: backend.php:65
 msgid "1 month old"
 msgstr "1个月前"
 
-#: backend.php:70
+#: backend.php:66
 msgid "2 months old"
 msgstr "2个月前"
 
-#: backend.php:71
+#: backend.php:67
 msgid "3 months old"
 msgstr "3个月前"
 
-#: backend.php:74
+#: backend.php:70
 msgid "Default interval"
 msgstr "默认间隔"
 
-#: backend.php:75 backend.php:85
+#: backend.php:71 backend.php:81
 msgid "Disable updates"
 msgstr "禁用更新"
 
-#: backend.php:76 backend.php:86
+#: backend.php:72 backend.php:82
 msgid "15 minutes"
 msgstr "每15分钟"
 
-#: backend.php:77 backend.php:87
+#: backend.php:73 backend.php:83
 msgid "30 minutes"
 msgstr "每30分钟"
 
-#: backend.php:78 backend.php:88
+#: backend.php:74 backend.php:84
 msgid "Hourly"
 msgstr "每小时"
 
-#: backend.php:79 backend.php:89
+#: backend.php:75 backend.php:85
 msgid "4 hours"
 msgstr "每4小时"
 
-#: backend.php:80 backend.php:90
+#: backend.php:76 backend.php:86
 msgid "12 hours"
 msgstr "每12小时"
 
-#: backend.php:81 backend.php:91
+#: backend.php:77 backend.php:87
 msgid "Daily"
 msgstr "每天"
 
-#: backend.php:82 backend.php:92
+#: backend.php:78 backend.php:88
 msgid "Weekly"
 msgstr "每周"
 
-#: backend.php:95 classes/Pref_Feeds.php:551 classes/Pref_Feeds.php:604
+#: backend.php:91 classes/Pref_Feeds.php:553 classes/Pref_Feeds.php:606
 msgid "Disabled"
 msgstr "禁用"
 
-#: backend.php:96
+#: backend.php:92
 msgid "Read Only"
 msgstr "只读"
 
-#: backend.php:97 classes/Pref_System.php:123
+#: backend.php:93 classes/Pref_System.php:118
 msgid "User"
 msgstr "普通用户"
 
-#: backend.php:98
+#: backend.php:94
 msgid "Power User"
 msgstr "高级用户"
 
-#: backend.php:99
+#: backend.php:95
 msgid "Administrator"
 msgstr "管理员"
 
-#: index.php:133 index.php:147 index.php:300 prefs.php:125
+#: index.php:123 index.php:137 index.php:290 prefs.php:115
 #: classes/Pref_Prefs.php:895 classes/Pref_Prefs.php:945
-#: classes/Pref_System.php:222 js/PrefFilterTree.js:126 js/CommonFilters.js:278
-#: js/CommonFilters.js:408 js/Headlines.js:356 js/Headlines.js:541
+#: classes/Pref_System.php:217 js/PrefFilterTree.js:126 js/CommonFilters.js:278
+#: js/CommonFilters.js:410 js/Headlines.js:356 js/Headlines.js:541
 #: js/PrefHelpers.js:27 js/PrefHelpers.js:39 js/PrefHelpers.js:62
 #: js/PrefHelpers.js:115 js/PrefHelpers.js:243 js/PrefHelpers.js:294
 #: js/PrefHelpers.js:445 js/PrefHelpers.js:456 js/Article.js:288
-#: js/Article.js:364 js/Feeds.js:492 js/PrefUsers.js:112 js/PrefFeedTree.js:186
+#: js/Article.js:364 js/Feeds.js:491 js/PrefUsers.js:112 js/PrefFeedTree.js:186
 #: js/PrefFeedTree.js:193 js/PrefFeedTree.js:317 js/PrefFeedTree.js:394
 #: js/CommonDialogs.js:334 js/CommonDialogs.js:491 js/CommonDialogs.js:646
 #: plugins/note/note.js:38 plugins/share/share.js:56
@@ -119,179 +119,179 @@ msgstr "管理员"
 msgid "Loading, please wait..."
 msgstr "读取中，请稍候……"
 
-#: index.php:172 prefs.php:134 js/App.js:494
+#: index.php:162 prefs.php:124 js/App.js:494
 msgid "Communication problem with server."
 msgstr "连接服务器出错."
 
-#: index.php:175 prefs.php:136
+#: index.php:165 prefs.php:126
 msgid "Recent entries found in event log."
 msgstr "在事件日志中找到的最近条目."
 
-#: index.php:178
+#: index.php:168
 msgid "Updates are available from Git."
 msgstr "可从Git获得更新."
 
-#: index.php:188 js/Headlines.js:664
+#: index.php:178 js/Headlines.js:662
 msgid "Show articles"
 msgstr "显示文章"
 
-#: index.php:191
+#: index.php:181
 msgid "Adaptive"
 msgstr "自动适应"
 
-#: index.php:192
+#: index.php:182
 msgid "All Articles"
 msgstr "全部文章"
 
-#: index.php:193 classes/RPC.php:668
+#: index.php:183 classes/RPC.php:644
 msgid "Starred"
 msgstr "加星标的"
 
-#: index.php:194 classes/RPC.php:669
+#: index.php:184 classes/RPC.php:645
 msgid "Published"
 msgstr "已发布"
 
-#: index.php:195 js/Headlines.js:667
+#: index.php:185 js/Headlines.js:665
 msgid "Unread"
 msgstr "未读"
 
-#: index.php:196
+#: index.php:186
 msgid "With Note"
 msgstr "笔记"
 
-#: index.php:199
+#: index.php:189
 msgid "Sort articles"
 msgstr "排序文章"
 
-#: index.php:203
+#: index.php:193
 msgid "Default"
 msgstr "默认"
 
-#: index.php:204
+#: index.php:194
 msgid "Newest first"
 msgstr "最新优先"
 
-#: index.php:205
+#: index.php:195
 msgid "Oldest first"
 msgstr "最早优先"
 
-#: index.php:206 js/CommonFilters.js:435
+#: index.php:196 js/CommonFilters.js:437
 msgid "Title"
 msgstr "标题"
 
-#: index.php:219 index.php:271 classes/RPC.php:655 js/Headlines.js:1576
-#: js/FeedTree.js:92 js/FeedTree.js:131 js/Headlines.js:675
+#: index.php:209 index.php:261 classes/RPC.php:631 js/Headlines.js:1574
+#: js/FeedTree.js:92 js/FeedTree.js:131 js/Headlines.js:673
 msgid "Mark as read"
 msgstr "标记为已读"
 
-#: index.php:220
+#: index.php:210
 msgid "Older than one day"
 msgstr "一天前"
 
-#: index.php:221
+#: index.php:211
 msgid "Older than one week"
 msgstr "一周前"
 
-#: index.php:222
+#: index.php:212
 msgid "Older than two weeks"
 msgstr "两周前"
 
-#: index.php:237
+#: index.php:227
 msgid "Actions..."
 msgstr "操作..."
 
-#: index.php:263
+#: index.php:253
 msgid "Preferences..."
 msgstr "偏好设置..."
 
-#: index.php:264 js/PrefHelpers.js:614
+#: index.php:254 js/PrefHelpers.js:614
 msgid "Search..."
 msgstr "搜索..."
 
-#: index.php:265
+#: index.php:255
 msgid "Search feeds..."
 msgstr "搜索供稿..."
 
-#: index.php:266
+#: index.php:256
 msgid "Feed actions:"
 msgstr "供稿动作："
 
-#: index.php:267 plugins/bookmarklets/init.php:40
+#: index.php:257 plugins/bookmarklets/init.php:40
 #: plugins/bookmarklets/init.php:75
 msgid "Subscribe to feed..."
 msgstr "订阅供稿..."
 
-#: index.php:268
+#: index.php:258
 msgid "Edit this feed..."
 msgstr "编辑供稿..."
 
-#: index.php:269 classes/Pref_Feeds.php:937 js/PrefFeedTree.js:120
+#: index.php:259 classes/Pref_Feeds.php:939 js/PrefFeedTree.js:120
 #: js/CommonDialogs.js:633
 msgid "Unsubscribe"
 msgstr "取消订阅"
 
-#: index.php:270
+#: index.php:260
 msgid "All feeds:"
 msgstr "全部供稿："
 
-#: index.php:272
+#: index.php:262
 msgid "(Un)hide read feeds"
 msgstr "隐藏/显示 已读"
 
-#: index.php:273
+#: index.php:263
 msgid "UI layout:"
 msgstr "界面布局："
 
-#: index.php:274 classes/RPC.php:664
+#: index.php:264 classes/RPC.php:640
 msgid "Toggle combined mode"
 msgstr "切换合并模式"
 
-#: index.php:276 classes/RPC.php:641
+#: index.php:266 classes/RPC.php:617
 msgid "Toggle widescreen mode"
 msgstr "切换宽屏模式"
 
-#: index.php:278
+#: index.php:268
 msgid "Toggle expand all articles"
 msgstr "切换 展开文章"
 
-#: index.php:279
+#: index.php:269
 msgid "Other actions:"
 msgstr "其他操作："
 
-#: index.php:280
+#: index.php:270
 msgid "Keyboard shortcuts help"
 msgstr "快捷键帮助"
 
-#: index.php:289
+#: index.php:279
 msgid "Logout"
 msgstr "注销"
 
-#: prefs.php:26 prefs.php:145 classes/Pref_Prefs.php:947 classes/RPC.php:671
+#: prefs.php:18 prefs.php:135 classes/Pref_Prefs.php:947 classes/RPC.php:647
 msgid "Preferences"
 msgstr "偏好设置"
 
-#: prefs.php:138
+#: prefs.php:128
 msgid "Exit preferences"
 msgstr "退出偏好设置"
 
-#: prefs.php:148 classes/Pref_Prefs.php:46 classes/Pref_Feeds.php:123
-#: classes/Pref_Feeds.php:926
+#: prefs.php:138 classes/Pref_Prefs.php:44 classes/Pref_Feeds.php:124
+#: classes/Pref_Feeds.php:928
 msgid "Feeds"
 msgstr "供稿"
 
-#: prefs.php:152 classes/Pref_Filters.php:242
+#: prefs.php:142 classes/Pref_Filters.php:244
 msgid "Filters"
 msgstr "过滤器"
 
-#: prefs.php:156 classes/Pref_Labels.php:23 classes/Feeds.php:1453
+#: prefs.php:146 classes/Pref_Labels.php:23 classes/Feeds.php:1353
 msgid "Labels"
 msgstr "预定义标签"
 
-#: prefs.php:161
+#: prefs.php:151
 msgid "Users"
 msgstr "用户"
 
-#: prefs.php:164
+#: prefs.php:154
 msgid "System"
 msgstr "系统"
 
@@ -301,134 +301,134 @@ msgid "Created label <b>%s</b>"
 msgstr "创建预定义标签 <b>%s</b>"
 
 #: classes/Pref_Labels.php:179 classes/Pref_Prefs.php:853
-#: classes/Pref_Prefs.php:1501 classes/Pref_Feeds.php:916
-#: classes/Pref_Users.php:223 classes/Pref_Filters.php:677
-#: js/CommonFilters.js:443 js/CommonFilters.js:476 js/PrefHelpers.js:184
+#: classes/Pref_Prefs.php:1489 classes/Pref_Feeds.php:918
+#: classes/Pref_Users.php:223 classes/Pref_Filters.php:641
+#: js/CommonFilters.js:445 js/CommonFilters.js:478 js/PrefHelpers.js:184
 #: js/PrefFeedTree.js:524 js/CommonDialogs.js:278
 msgid "Select"
 msgstr "选择"
 
-#: classes/Pref_Prefs.php:38 classes/Pref_Feeds.php:622 js/CommonDialogs.js:517
+#: classes/Pref_Prefs.php:36 classes/Pref_Feeds.php:624 js/CommonDialogs.js:517
 msgid "General"
 msgstr "通用"
 
-#: classes/Pref_Prefs.php:59
+#: classes/Pref_Prefs.php:57
 msgid "Articles"
 msgstr "文章"
 
-#: classes/Pref_Prefs.php:73
+#: classes/Pref_Prefs.php:71
 msgid "Digest"
 msgstr "摘要"
 
-#: classes/Pref_Prefs.php:79
+#: classes/Pref_Prefs.php:77
 msgid "Advanced"
 msgstr "高级"
 
-#: classes/Pref_Prefs.php:90
+#: classes/Pref_Prefs.php:88
 msgid "Debugging"
 msgstr "调试中"
 
-#: classes/Pref_Prefs.php:96
+#: classes/Pref_Prefs.php:94
 msgid "Never apply these tags automatically (comma-separated list)."
 msgstr "不要自动应用这些标签（以逗号分隔的列表）。"
 
-#: classes/Pref_Prefs.php:100
+#: classes/Pref_Prefs.php:98
 msgid "Blacklisted tags"
 msgstr "被列入黑名单的标签"
 
-#: classes/Pref_Prefs.php:101
+#: classes/Pref_Prefs.php:99
 msgid "Default language"
 msgstr "默认语言"
 
-#: classes/Pref_Prefs.php:101
+#: classes/Pref_Prefs.php:99
 msgid "Used for full-text search"
 msgstr "用于全文搜索"
 
-#: classes/Pref_Prefs.php:102
+#: classes/Pref_Prefs.php:100
 msgid "Mark read on scroll"
 msgstr "滚动时标记为已读"
 
-#: classes/Pref_Prefs.php:102
+#: classes/Pref_Prefs.php:100
 msgid "Mark articles as read as you scroll past them"
 msgstr "滚动时标记文章为已读"
 
-#: classes/Pref_Prefs.php:103
+#: classes/Pref_Prefs.php:101
 msgid "Always expand articles"
 msgstr "始终展开文章"
 
-#: classes/Pref_Prefs.php:104
+#: classes/Pref_Prefs.php:102
 msgid "Combined mode"
 msgstr "合并模式"
 
-#: classes/Pref_Prefs.php:104
+#: classes/Pref_Prefs.php:102
 msgid "Show flat list of articles instead of separate panels"
 msgstr "将文章列表展开显示，而不是将标题和内容分别显示"
 
-#: classes/Pref_Prefs.php:105
+#: classes/Pref_Prefs.php:103
 msgid "Confirm marking feeds as read"
 msgstr "标记供稿为已读之前弹出确认"
 
-#: classes/Pref_Prefs.php:106
+#: classes/Pref_Prefs.php:104
 msgid "Default update interval"
 msgstr "默认更新间隔"
 
-#: classes/Pref_Prefs.php:107
+#: classes/Pref_Prefs.php:105
 msgid "Mark sent articles as read"
 msgstr "将发送的文章标记为已读"
 
-#: classes/Pref_Prefs.php:108
+#: classes/Pref_Prefs.php:106
 msgid "Enable digest"
 msgstr "启用电子邮件摘要"
 
-#: classes/Pref_Prefs.php:108
+#: classes/Pref_Prefs.php:106
 msgid "Send daily digest of new (and unread) headlines to your e-mail address"
 msgstr "每天将更新的和未读的文章标题通过邮件发送摘要到您设置的邮箱中"
 
-#: classes/Pref_Prefs.php:109
+#: classes/Pref_Prefs.php:107
 msgid "Try to send around this time"
 msgstr "在特定时间发送摘要"
 
-#: classes/Pref_Prefs.php:109
+#: classes/Pref_Prefs.php:107
 msgid "Time in UTC"
 msgstr "UTC时区"
 
-#: classes/Pref_Prefs.php:110
+#: classes/Pref_Prefs.php:108
 msgid "Enable API"
 msgstr "启用API"
 
-#: classes/Pref_Prefs.php:110
+#: classes/Pref_Prefs.php:108
 msgid "Allows accessing this account through the API"
 msgstr "允许外部客户端通过 API 来访问该账户"
 
-#: classes/Pref_Prefs.php:111
+#: classes/Pref_Prefs.php:109
 msgid "Enable categories"
 msgstr "启用类别"
 
-#: classes/Pref_Prefs.php:112
+#: classes/Pref_Prefs.php:110
 msgid "Maximum age of fresh articles"
 msgstr "最新更新文章的保鲜期（以小时为单位）"
 
-#: classes/Pref_Prefs.php:112
+#: classes/Pref_Prefs.php:110
 msgid "hours"
 msgstr "小时"
 
-#: classes/Pref_Prefs.php:113
+#: classes/Pref_Prefs.php:111
 msgid "Hide read feeds"
 msgstr "隐藏 已读供稿"
 
-#: classes/Pref_Prefs.php:114
+#: classes/Pref_Prefs.php:112
 msgid "Always show special feeds"
 msgstr "始终显示特殊供稿"
 
-#: classes/Pref_Prefs.php:114
+#: classes/Pref_Prefs.php:112
 msgid "While hiding read feeds"
 msgstr "隐藏已读供稿"
 
-#: classes/Pref_Prefs.php:115
+#: classes/Pref_Prefs.php:113
 msgid "Long date format"
 msgstr "长时间格式"
 
-#: classes/Pref_Prefs.php:115
+#: classes/Pref_Prefs.php:113
 msgid ""
 "Syntax is identical to PHP <a href='http://php.net/manual/function.date."
 "php'>date()</a> function."
@@ -436,100 +436,100 @@ msgstr ""
 "所使用的语法与 PHP <a href='http://php.net/manual/function.date.php'>date()</"
 "a>函数相同."
 
-#: classes/Pref_Prefs.php:116
+#: classes/Pref_Prefs.php:114
 msgid "Automatically show next feed"
 msgstr "自动显示下一个供稿"
 
-#: classes/Pref_Prefs.php:116
+#: classes/Pref_Prefs.php:114
 msgid "After marking one as read"
 msgstr "标记为已读后"
 
-#: classes/Pref_Prefs.php:117
+#: classes/Pref_Prefs.php:115
 msgid "Purge articles older than"
 msgstr "清除旧文章"
 
-#: classes/Pref_Prefs.php:117
+#: classes/Pref_Prefs.php:115
 msgid "<strong>days</strong> (0 disables)"
 msgstr "<strong>天</strong>(0 表示关闭)"
 
-#: classes/Pref_Prefs.php:118
+#: classes/Pref_Prefs.php:116
 msgid "Purge unread articles"
 msgstr "清除未读文章"
 
-#: classes/Pref_Prefs.php:119
+#: classes/Pref_Prefs.php:117
 msgid "Short date format"
 msgstr "短时间格式"
 
-#: classes/Pref_Prefs.php:120
+#: classes/Pref_Prefs.php:118
 msgid "Show content preview in headlines"
 msgstr "在标题中显示内容预览"
 
-#: classes/Pref_Prefs.php:121
+#: classes/Pref_Prefs.php:119
 msgid "SSL client certificate"
 msgstr "SSL客户端证书"
 
-#: classes/Pref_Prefs.php:122 classes/Pref_Feeds.php:609
+#: classes/Pref_Prefs.php:120 classes/Pref_Feeds.php:611
 #: js/CommonDialogs.js:508
 msgid "Do not embed media"
 msgstr "不要嵌入图片"
 
-#: classes/Pref_Prefs.php:123
+#: classes/Pref_Prefs.php:121
 msgid "Time zone"
 msgstr "时区"
 
-#: classes/Pref_Prefs.php:124
+#: classes/Pref_Prefs.php:122
 msgid "Group by feed"
 msgstr "分组显示供稿"
 
-#: classes/Pref_Prefs.php:124
+#: classes/Pref_Prefs.php:122
 msgid "Group multiple-feed output by originating feed"
 msgstr "按供稿分组显示,不是聚合在一起"
 
-#: classes/Pref_Prefs.php:125
+#: classes/Pref_Prefs.php:123
 msgid "Language"
 msgstr "语言"
 
-#: classes/Pref_Prefs.php:126
+#: classes/Pref_Prefs.php:124
 msgid "Theme"
 msgstr "主题"
 
-#: classes/Pref_Prefs.php:127
+#: classes/Pref_Prefs.php:125
 msgid "Don't enforce DISTINCT headlines"
 msgstr "不要强制使用不同的标题"
 
-#: classes/Pref_Prefs.php:127
+#: classes/Pref_Prefs.php:125
 msgid "May produce duplicate entries"
 msgstr "可能会产生重复的条目"
 
-#: classes/Pref_Prefs.php:128
+#: classes/Pref_Prefs.php:126
 msgid "Show article and feed IDs"
 msgstr "显示文章和供稿ID"
 
-#: classes/Pref_Prefs.php:128
+#: classes/Pref_Prefs.php:126
 msgid "In the headlines buffer"
 msgstr "在标题缓冲区"
 
-#: classes/Pref_Prefs.php:129
+#: classes/Pref_Prefs.php:127
 msgid "Disable conditional counter updates"
 msgstr "禁用条件计数器更新"
 
-#: classes/Pref_Prefs.php:129
+#: classes/Pref_Prefs.php:127
 msgid "May increase server load"
 msgstr "可能会增加服务器负载"
 
-#: classes/Pref_Prefs.php:130
+#: classes/Pref_Prefs.php:128
 msgid "Grid view"
 msgstr "网格视图"
 
-#: classes/Pref_Prefs.php:130
+#: classes/Pref_Prefs.php:128
 msgid "On wider screens, if always expanded"
 msgstr "在宽屏上总是展开"
 
-#: classes/Pref_Prefs.php:131
+#: classes/Pref_Prefs.php:129
 msgid "Required score"
 msgstr "所需评分"
 
-#: classes/Pref_Prefs.php:131
+#: classes/Pref_Prefs.php:129
 msgid "Include articles with this or above score"
 msgstr "包括此分数或以上分数的文章"
 
@@ -549,10 +549,10 @@ msgstr "全名:"
 msgid "E-mail:"
 msgstr "电子邮件："
 
-#: classes/Pref_Prefs.php:318 classes/Pref_Feeds.php:691
+#: classes/Pref_Prefs.php:318 classes/Pref_Feeds.php:693
 #: plugins/nsfw/init.php:105 plugins/note/init.php:49
 #: plugins/af_psql_trgm/init.php:218 js/CommonFilters.js:237
-#: js/CommonFilters.js:321 js/CommonFilters.js:523 js/CommonDialogs.js:634
+#: js/CommonFilters.js:321 js/CommonFilters.js:525 js/CommonDialogs.js:634
 #: js/Article.js:370 js/PrefUsers.js:119 js/PrefLabelTree.js:170
 msgid "Save"
 msgstr "保存"
@@ -584,7 +584,7 @@ msgstr "用于此会话的身份验证模块(<b>%s</b>)不提供设置密码的�
 msgid "Generate password"
 msgstr "生成密码"
 
-#: classes/Pref_Prefs.php:415 classes/Pref_Feeds.php:950 js/PrefHelpers.js:227
+#: classes/Pref_Prefs.php:415 classes/Pref_Feeds.php:952 js/PrefHelpers.js:227
 msgid "Remove selected"
 msgstr "移除选中"
 
@@ -648,7 +648,7 @@ msgstr "预览"
 msgid "Register"
 msgstr "注册"
 
-#: classes/Pref_Prefs.php:718 classes/Pref_System.php:100
+#: classes/Pref_Prefs.php:718 classes/Pref_System.php:95
 msgid "Clear"
 msgstr "清空"
 
@@ -678,24 +678,24 @@ msgstr "管理偏好文件"
 msgid "Reset to defaults"
 msgstr "恢复到默认"
 
-#: classes/Pref_Prefs.php:848 classes/Pref_Feeds.php:911
-#: classes/Pref_Users.php:217 classes/Pref_Filters.php:672 js/Feeds.js:661
-#: js/Feeds.js:656 js/Feeds.js:711
+#: classes/Pref_Prefs.php:848 classes/Pref_Feeds.php:913
+#: classes/Pref_Users.php:217 classes/Pref_Filters.php:636 js/Feeds.js:660
+#: js/Feeds.js:655 js/Feeds.js:710
 msgid "Search"
 msgstr "搜索"
 
-#: classes/Pref_Prefs.php:856 classes/Pref_Prefs.php:1504
-#: classes/Pref_Feeds.php:919 classes/Pref_Users.php:226
-#: classes/Pref_Filters.php:680 js/CommonFilters.js:447 js/CommonFilters.js:479
-#: js/Headlines.js:666 js/PrefHelpers.js:187 js/PrefFeedTree.js:527
+#: classes/Pref_Prefs.php:856 classes/Pref_Prefs.php:1492
+#: classes/Pref_Feeds.php:921 classes/Pref_Users.php:226
+#: classes/Pref_Filters.php:644 js/CommonFilters.js:449 js/CommonFilters.js:481
+#: js/Headlines.js:664 js/PrefHelpers.js:187 js/PrefFeedTree.js:527
 #: js/CommonDialogs.js:281
 msgid "All"
 msgstr "全部"
 
-#: classes/Pref_Prefs.php:858 classes/Pref_Prefs.php:1506
-#: classes/Pref_Feeds.php:921 classes/Pref_Users.php:228
-#: classes/Pref_Filters.php:682 js/CommonFilters.js:449 js/CommonFilters.js:481
-#: js/Headlines.js:669 js/PrefHelpers.js:189 js/PrefFeedTree.js:529
+#: classes/Pref_Prefs.php:858 classes/Pref_Prefs.php:1494
+#: classes/Pref_Feeds.php:923 classes/Pref_Users.php:228
+#: classes/Pref_Filters.php:646 js/CommonFilters.js:451 js/CommonFilters.js:483
+#: js/Headlines.js:667 js/PrefHelpers.js:189 js/PrefFeedTree.js:529
 #: js/CommonDialogs.js:283
 msgid "None"
 msgstr "无"
@@ -706,7 +706,8 @@ msgid ""
 "The following plugins use per-feed content hooks. This may cause excessive "
 "data usage and origin server load resulting in a ban of your instance: "
 "<b>%s</b>"
-msgstr "以下插件使用和供稿内容挂钩。这可能会导致过多的数据使用和原始服务器负载，从而"
+msgstr ""
+"以下插件使用和供稿内容挂钩。这可能会导致过多的数据使用和原始服务器负载，从而"
 "导致您的实例被禁：<b>%s</b>"
 
 #: classes/Pref_Prefs.php:903 js/CommonFilters.js:235
@@ -733,7 +734,7 @@ msgstr "安装插件"
 msgid "Personal data / Authentication"
 msgstr "个人数据 / 用户认证"
 
-#: classes/Pref_Prefs.php:950 classes/Pref_Feeds.php:1065
+#: classes/Pref_Prefs.php:950 classes/Pref_Feeds.php:1067
 #: js/CommonDialogs.js:628
 msgid "Plugins"
 msgstr "插件"
@@ -756,24 +757,24 @@ msgstr "v%.2f, 由 %s 提供"
 msgid "v%s, by %s"
 msgstr "v%s., 由 %s 提供"
 
-#: classes/Pref_Prefs.php:1462 classes/Handler_Public.php:292
-#: include/login_form.php:153
+#: classes/Pref_Prefs.php:1456 classes/Handler_Public.php:291
+#: include/login_form.php:151
 msgid "Default profile"
 msgstr "默认偏好设置"
 
-#: classes/Pref_Prefs.php:1515
+#: classes/Pref_Prefs.php:1503
 msgid "Description"
 msgstr "描述"
 
-#: classes/Pref_Prefs.php:1516
+#: classes/Pref_Prefs.php:1504
 msgid "Created"
 msgstr "创建"
 
-#: classes/Pref_Prefs.php:1517
+#: classes/Pref_Prefs.php:1505
 msgid "Last used"
 msgstr "最后使用"
 
-#: classes/Pref_Prefs.php:1562
+#: classes/Pref_Prefs.php:1550
 #, php-format
 msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
@@ -785,7 +786,7 @@ msgstr "生成密码<strong>%s</strong>为%s . 请记住它，以备将来参考
 msgid "Unknown error while sending mail. Hooks tried: %d."
 msgstr "发送邮件时出现未知错误。尝试的挂钩：%d。"
 
-#: classes/TimeHelper.php:8
+#: classes/TimeHelper.php:9
 #, php-format
 msgid "%d min"
 msgstr "%d 分钟"
@@ -794,172 +795,168 @@ msgstr "%d 分钟"
 msgid "Test message from tt-rss"
 msgstr "来自tt-rss的测试消息"
 
-#: classes/Pref_System.php:81 js/PrefHelpers.js:622
+#: classes/Pref_System.php:76 js/PrefHelpers.js:622
 msgid "Refresh"
 msgstr "刷新"
 
-#: classes/Pref_System.php:86
+#: classes/Pref_System.php:81
 msgid "&lt;&lt;"
 msgstr "&lt;&lt;"
 
-#: classes/Pref_System.php:90
+#: classes/Pref_System.php:85
 #, php-format
 msgid "Page %d of %d"
 msgstr "第 %d页, 共 %d 页"
 
-#: classes/Pref_System.php:95
+#: classes/Pref_System.php:90
 msgid "&gt;&gt;"
 msgstr "&gt;&gt;"
 
-#: classes/Pref_System.php:104
+#: classes/Pref_System.php:99
 msgid "Severity:"
 msgstr "严重:"
 
-#: classes/Pref_System.php:108
+#: classes/Pref_System.php:103
 msgid "Errors"
 msgstr "错误"
 
-#: classes/Pref_System.php:109
+#: classes/Pref_System.php:104
 msgid "Warnings"
 msgstr "警告"
 
-#: classes/Pref_System.php:110
+#: classes/Pref_System.php:105
 msgid "Everything"
 msgstr "全部"
 
-#: classes/Pref_System.php:120
+#: classes/Pref_System.php:115
 msgid "Error"
 msgstr "错误"
 
-#: classes/Pref_System.php:121
+#: classes/Pref_System.php:116
 msgid "Filename"
 msgstr "文件名"
 
-#: classes/Pref_System.php:122
+#: classes/Pref_System.php:117
 msgid "Message"
 msgstr "消息"
 
-#: classes/Pref_System.php:124
+#: classes/Pref_System.php:119
 msgid "Date"
 msgstr "日期"
 
-#: classes/Pref_System.php:168
+#: classes/Pref_System.php:163
 msgid "Event log"
 msgstr "事件日志"
 
-#: classes/Pref_System.php:174
+#: classes/Pref_System.php:169
 msgid "Mail configuration"
 msgstr "邮件配置"
 
-#: classes/Pref_System.php:205
+#: classes/Pref_System.php:200
 msgid "To:"
 msgstr "收信人："
 
-#: classes/Pref_System.php:207
+#: classes/Pref_System.php:202
 msgid "Send test email"
 msgstr "发送测试邮件"
 
-#: classes/Pref_System.php:213
+#: classes/Pref_System.php:208
 msgid "PHP Information"
 msgstr "PHP信息"
 
-#: classes/Feeds.php:98 classes/Feeds.php:524
+#: classes/Feeds.php:93 classes/Feeds.php:495
 msgid "Feed not found."
 msgstr "找不到供稿。"
 
-#: classes/Feeds.php:163
+#: classes/Feeds.php:156
 msgid "Never"
 msgstr "从不"
 
-#: classes/Feeds.php:246 classes/Feeds.php:1314
+#: classes/Feeds.php:235 classes/Feeds.php:1214
 msgid "Archived articles"
 msgstr "存档的文章"
 
-#: classes/Feeds.php:336
+#: classes/Feeds.php:325
 msgid "Collapse article"
 msgstr "折叠文章"
 
-#: classes/Feeds.php:355
+#: classes/Feeds.php:344
 #, php-format
 msgid "Imported at %s"
 msgstr "从%s导入"
 
-#: classes/Feeds.php:417
+#: classes/Feeds.php:401
 msgid "No unread articles found to display."
 msgstr "没有未读文章。"
 
-#: classes/Feeds.php:420
+#: classes/Feeds.php:402
 msgid "No updated articles found to display."
 msgstr "没有最新更新的文章。"
 
-#: classes/Feeds.php:423
+#: classes/Feeds.php:403
 msgid "No starred articles found to display."
 msgstr "没有加星标的文章。"
 
-#: classes/Feeds.php:427
+#: classes/Feeds.php:405
 msgid ""
 "No articles found to display. You can assign articles to labels manually "
 "from article header context menu (applies to all selected articles) or use a "
 "filter."
 msgstr "本标签下没有文章。你可以通过手动或过滤器的方式为文章添加预定义标签。"
 
-#: classes/Feeds.php:429
+#: classes/Feeds.php:406
 msgid "No articles found to display."
 msgstr "暂时没有文章。"
 
-#: classes/Feeds.php:446 classes/Feeds.php:596
+#: classes/Feeds.php:422
 #, php-format
 msgid "Feeds last updated at %s"
 msgstr "供稿最后更新时间：%s"
 
-#: classes/Feeds.php:457 classes/Feeds.php:607
+#: classes/Feeds.php:433
 msgid "Some feeds have update errors (click for details)"
 msgstr "部分供稿更新错误（点击了解详情）"
 
-#: classes/Feeds.php:585
-msgid "No feed selected."
-msgstr "未选择供稿。"
-
-#: classes/Feeds.php:1306
+#: classes/Feeds.php:1206
 msgid "Starred articles"
 msgstr "加星标文章"
 
-#: classes/Feeds.php:1308
+#: classes/Feeds.php:1208
 msgid "Published articles"
 msgstr "已发布文章"
 
-#: classes/Feeds.php:1310
+#: classes/Feeds.php:1210
 msgid "Fresh articles"
 msgstr "最新更新的文章"
 
-#: classes/Feeds.php:1312 classes/RPC.php:666
+#: classes/Feeds.php:1212 classes/RPC.php:642
 msgid "All articles"
 msgstr "全部文章"
 
-#: classes/Feeds.php:1316 classes/RPC.php:670
+#: classes/Feeds.php:1216 classes/RPC.php:646
 msgid "Recently read"
 msgstr "最近的阅读"
 
-#: classes/Feeds.php:1449 classes/Pref_Feeds.php:250 classes/Digest.php:123
-#: classes/Pref_Filters.php:929 classes/OPML.php:568 include/controls.php:217
+#: classes/Feeds.php:1349 classes/Pref_Feeds.php:250 classes/Digest.php:120
+#: classes/Pref_Filters.php:910 classes/OPML.php:571 include/controls.php:216
 msgid "Uncategorized"
 msgstr "未分类"
 
-#: classes/Feeds.php:1451
+#: classes/Feeds.php:1351
 msgid "Special"
 msgstr "特殊区域"
 
-#: classes/Feeds.php:1549
+#: classes/Feeds.php:1446
 #, php-format
 msgid "Incorrect search syntax: %s."
 msgstr "搜索语法不正确：%s ."
 
-#: classes/Feeds.php:1739
+#: classes/Feeds.php:1636
 #, php-format
 msgid "Search results: %s"
 msgstr "搜索结果：%s"
 
-#: classes/Pref_Feeds.php:72 classes/Pref_Feeds.php:232
+#: classes/Pref_Feeds.php:72 classes/Pref_Feeds.php:233
 #: classes/Pref_Feeds.php:286 classes/Pref_Feeds.php:292
 #: classes/Pref_Feeds.php:322
 #, php-format
@@ -967,155 +964,155 @@ msgid "(%d feed)"
 msgid_plural "(%d feeds)"
 msgstr[0] "(%d 个供稿)"
 
-#: classes/Pref_Feeds.php:549
+#: classes/Pref_Feeds.php:551
 #, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
 msgstr[0] "(%d 天)"
 
-#: classes/Pref_Feeds.php:555
+#: classes/Pref_Feeds.php:557
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d 天"
 
-#: classes/Pref_Feeds.php:586
+#: classes/Pref_Feeds.php:588
 msgid "Check to enable field"
 msgstr "勾选以启用"
 
-#: classes/Pref_Feeds.php:602
+#: classes/Pref_Feeds.php:604
 #, php-format
 msgid "(%d days)"
 msgstr "(%d 天)"
 
-#: classes/Pref_Feeds.php:607 js/CommonDialogs.js:506
+#: classes/Pref_Feeds.php:609 js/CommonDialogs.js:506
 msgid "Include in e-mail digest"
 msgstr "包含电子邮件摘要"
 
-#: classes/Pref_Feeds.php:608 js/CommonDialogs.js:507
+#: classes/Pref_Feeds.php:610 js/CommonDialogs.js:507
 msgid "Always display image attachments"
 msgstr "始终显示图片附件"
 
-#: classes/Pref_Feeds.php:610 js/CommonDialogs.js:509
+#: classes/Pref_Feeds.php:612 js/CommonDialogs.js:509
 msgid "Cache media"
 msgstr "媒体缓存"
 
-#: classes/Pref_Feeds.php:611 js/CommonDialogs.js:510
+#: classes/Pref_Feeds.php:613 js/CommonDialogs.js:510
 msgid "Mark updated articles as unread"
 msgstr "将已更新的文章标记为未读"
 
-#: classes/Pref_Feeds.php:626 js/PrefFeedTree.js:447 js/CommonDialogs.js:61
+#: classes/Pref_Feeds.php:628 js/PrefFeedTree.js:447 js/CommonDialogs.js:61
 #: js/CommonDialogs.js:546
 msgid "Place in category:"
 msgstr "加入到类别："
 
-#: classes/Pref_Feeds.php:634 js/Feeds.js:643 js/CommonDialogs.js:562
+#: classes/Pref_Feeds.php:636 js/Feeds.js:642 js/CommonDialogs.js:562
 msgid "Language:"
 msgstr "语言："
 
-#: classes/Pref_Feeds.php:645 js/CommonDialogs.js:572
+#: classes/Pref_Feeds.php:647 js/CommonDialogs.js:572
 msgid "Update interval:"
 msgstr "更新间隔："
 
-#: classes/Pref_Feeds.php:652 js/CommonDialogs.js:578
+#: classes/Pref_Feeds.php:654 js/CommonDialogs.js:578
 msgid "Article purging:"
 msgstr "文章清理："
 
-#: classes/Pref_Feeds.php:659 plugins/auth_internal/init.php:82
+#: classes/Pref_Feeds.php:661 plugins/auth_internal/init.php:82
 #: js/PrefFeedTree.js:455 js/CommonDialogs.js:588
 msgid "Authentication"
 msgstr "登录认证"
 
-#: classes/Pref_Feeds.php:662 classes/Handler_Public.php:516
-#: plugins/bookmarklets/init.php:306 include/login_form.php:124
+#: classes/Pref_Feeds.php:664 classes/Handler_Public.php:515
+#: plugins/bookmarklets/init.php:306 include/login_form.php:122
 #: js/PrefUsers.js:64 js/CommonDialogs.js:591
 msgid "Login:"
 msgstr "登陆："
 
-#: classes/Pref_Feeds.php:668 plugins/bookmarklets/init.php:313
-#: include/login_form.php:133 js/CommonDialogs.js:597
+#: classes/Pref_Feeds.php:670 plugins/bookmarklets/init.php:313
+#: include/login_form.php:131 js/CommonDialogs.js:597
 msgid "Password:"
 msgstr "密码："
 
-#: classes/Pref_Feeds.php:675 js/CommonDialogs.js:604
+#: classes/Pref_Feeds.php:677 js/CommonDialogs.js:604
 msgid "Options"
 msgstr "选项"
 
-#: classes/Pref_Feeds.php:692 plugins/note/init.php:50
+#: classes/Pref_Feeds.php:694 plugins/note/init.php:50
 #: plugins/bookmarklets/init.php:286 js/CommonFilters.js:238
-#: js/CommonFilters.js:322 js/CommonFilters.js:524 js/CommonFilters.js:528
+#: js/CommonFilters.js:322 js/CommonFilters.js:526 js/CommonFilters.js:530
 #: js/CommonDialogs.js:635 js/PrefHelpers.js:232 js/PrefHelpers.js:306
-#: js/Article.js:373 js/Feeds.js:657 js/Feeds.js:712 js/PrefUsers.js:122
+#: js/Article.js:373 js/Feeds.js:656 js/Feeds.js:711 js/PrefUsers.js:122
 #: js/PrefFeedTree.js:475 js/CommonDialogs.js:111 js/PrefLabelTree.js:173
 msgid "Cancel"
 msgstr "取消"
 
-#: classes/Pref_Feeds.php:886
+#: classes/Pref_Feeds.php:888
 msgid "Feeds with errors"
 msgstr "有错误的供稿"
 
-#: classes/Pref_Feeds.php:892
+#: classes/Pref_Feeds.php:894
 msgid "Inactive feeds"
 msgstr "未活动的供稿"
 
-#: classes/Pref_Feeds.php:929 classes/RPC.php:653 js/CommonDialogs.js:34
+#: classes/Pref_Feeds.php:931 classes/RPC.php:629 js/CommonDialogs.js:34
 msgid "Subscribe to feed"
 msgstr "订阅供稿"
 
-#: classes/Pref_Feeds.php:931
+#: classes/Pref_Feeds.php:933
 msgid "Edit selected feeds"
 msgstr "编辑选定的供稿"
 
-#: classes/Pref_Feeds.php:933 classes/Pref_Feeds.php:948
-#: classes/Pref_Filters.php:693
+#: classes/Pref_Feeds.php:935 classes/Pref_Feeds.php:950
+#: classes/Pref_Filters.php:657
 msgid "Reset sort order"
 msgstr "重置排序"
 
-#: classes/Pref_Feeds.php:935 js/PrefFeedTree.js:417
+#: classes/Pref_Feeds.php:937 js/PrefFeedTree.js:417
 msgid "Batch subscribe"
 msgstr "批量订阅"
 
-#: classes/Pref_Feeds.php:943
+#: classes/Pref_Feeds.php:945
 msgid "Categories"
 msgstr "分类"
 
-#: classes/Pref_Feeds.php:946
+#: classes/Pref_Feeds.php:948
 msgid "Add category"
 msgstr "增加分类"
 
-#: classes/Pref_Feeds.php:985
+#: classes/Pref_Feeds.php:987
 msgid "Choose file..."
 msgstr "选择文件..."
 
-#: classes/Pref_Feeds.php:993
+#: classes/Pref_Feeds.php:995
 msgid "Import OPML"
 msgstr "导入 OPML"
 
-#: classes/Pref_Feeds.php:1004
+#: classes/Pref_Feeds.php:1006
 msgid "Export OPML"
 msgstr "导出 OPML"
 
-#: classes/Pref_Feeds.php:1009
+#: classes/Pref_Feeds.php:1011
 msgid "Include tt-rss settings"
 msgstr "包括tt-rss设置"
 
-#: classes/Pref_Feeds.php:1025
+#: classes/Pref_Feeds.php:1027
 msgid "Display URL"
 msgstr "显示 URL"
 
-#: classes/Pref_Feeds.php:1030
+#: classes/Pref_Feeds.php:1032
 msgid "Clear all generated URLs"
 msgstr "清空所有生成的 URL"
 
-#: classes/Pref_Feeds.php:1042
+#: classes/Pref_Feeds.php:1044
 msgid "My feeds"
 msgstr "我的供稿"
 
-#: classes/Pref_Feeds.php:1047
+#: classes/Pref_Feeds.php:1049
 msgid "OPML"
 msgstr "OPML"
 
-#: classes/Pref_Feeds.php:1052
+#: classes/Pref_Feeds.php:1054
 msgid "Sharing"
 msgstr "分享"
 
@@ -1135,7 +1132,7 @@ msgstr "订阅的供稿"
 msgid "Stored articles"
 msgstr "存储的文章"
 
-#: classes/Pref_Users.php:100 classes/UserHelper.php:269
+#: classes/Pref_Users.php:100 classes/UserHelper.php:273
 msgid "User not found"
 msgstr "未找到用户"
 
@@ -1158,12 +1155,12 @@ msgstr "用户%s已存在。"
 msgid "Create user"
 msgstr "创建用户"
 
-#: classes/Pref_Users.php:237 classes/Pref_Filters.php:691
-#: js/CommonFilters.js:521 js/CommonDialogs.js:626
+#: classes/Pref_Users.php:237 classes/Pref_Filters.php:655
+#: js/CommonFilters.js:523 js/CommonDialogs.js:626
 msgid "Remove"
 msgstr "移除"
 
-#: classes/Pref_Users.php:241 classes/Handler_Public.php:535
+#: classes/Pref_Users.php:241 classes/Handler_Public.php:534
 msgid "Reset password"
 msgstr "重置密码"
 
@@ -1183,62 +1180,82 @@ msgstr "最后登陆"
 msgid "Click to edit"
 msgstr "点击进行编辑"
 
-#: classes/Config.php:402
+#: classes/Config.php:398
 #, php-format
 msgid "Git error [RC=%d]: %s"
 msgstr "Git错误[RC =%d]：%s"
 
-#: classes/Pref_Filters.php:211 classes/Pref_Filters.php:222
-#: classes/Pref_Filters.php:442 classes/Pref_Filters.php:876
+#: classes/Pref_Filters.php:216 classes/Pref_Filters.php:226
+#: classes/Pref_Filters.php:414 classes/Pref_Filters.php:857
 msgid "All feeds"
 msgstr "全部供稿"
 
-#: classes/Pref_Filters.php:233 classes/Pref_Filters.php:462
+#: classes/Pref_Filters.php:235 classes/Pref_Filters.php:434
 msgid "(inverse)"
 msgstr "(反选)"
 
-#: classes/Pref_Filters.php:229 classes/Pref_Filters.php:461
+#: classes/Pref_Filters.php:231 classes/Pref_Filters.php:433
 #, php-format
 msgid "%s on %s in %s %s"
 msgstr "%s on %s in %s %s"
 
-#: classes/Pref_Filters.php:687 classes/RPC.php:674
+#: classes/Pref_Filters.php:450
+#, fuzzy, php-format
+#| msgid "Unknown option: %s"
+msgid "Unknown action: %d"
+msgstr "未知选项： %s"
+
+#: classes/Pref_Filters.php:651 classes/RPC.php:650
 msgid "Create filter"
 msgstr "创建过滤器"
 
-#: classes/Pref_Filters.php:689
+#: classes/Pref_Filters.php:653
 msgid "Combine"
 msgstr "合并"
 
-#: classes/Pref_Filters.php:695
+#: classes/Pref_Filters.php:659
 msgid "Toggle rule display"
 msgstr "切换 显示规则"
 
-#: classes/Pref_Filters.php:746
-msgid "[No caption]"
-msgstr "[无标题]"
-
-#: classes/Pref_Filters.php:748
+#: classes/Pref_Filters.php:709
 #, php-format
 msgid "%s (%d rule)"
 msgid_plural "%s (%d rules)"
 msgstr[0] "%s (%d 规则)"
 
-#: classes/Pref_Filters.php:762
+#: classes/Pref_Filters.php:710
+msgid "[No caption]"
+msgstr "[无标题]"
+
+#: classes/Pref_Filters.php:713
 msgid "matches any rule"
 msgstr "匹配任意规则"
 
-#: classes/Pref_Filters.php:763
+#: classes/Pref_Filters.php:714
 msgid "inverse"
 msgstr "反选"
 
-#: classes/Pref_Filters.php:766
-#, php-format
-msgid "%s (+%d action)"
-msgid_plural "%s (+%d actions)"
+#: classes/Pref_Filters.php:746
+#, fuzzy, php-format
+#| msgid "%s (+%d action)"
+#| msgid_plural "%s (+%d actions)"
+msgid "(+%d action)"
+msgid_plural "(+%d actions)"
 msgstr[0] "%s (+%d 操作)"
 
-#: classes/UserHelper.php:267
+#: classes/Sessions.php:112
+msgid "Session failed to validate (password changed)"
+msgstr "无法验证会话（密码错误）"
+
+#: classes/Sessions.php:117
+msgid "Session failed to validate (account is disabled)"
+msgstr "会话验证失败（帐户已禁用）"
+
+#: classes/Sessions.php:136
+msgid "Session failed to validate (user not found)"
+msgstr "无法验证会话（没有找到该用户）"
+
+#: classes/UserHelper.php:271
 #, php-format
 msgid "Changed password of user %s to %s"
 msgstr "用户%s ，密码修改为%s"
@@ -1275,354 +1292,354 @@ msgstr "添加预定义标签%s"
 msgid "Duplicate label: %s"
 msgstr "重复预定义标签: %s"
 
-#: classes/OPML.php:373
+#: classes/OPML.php:376
 #, php-format
 msgid "Setting preference key %s to %s"
 msgstr "将偏好按键从 %s 设置为 %s"
 
-#: classes/OPML.php:409
+#: classes/OPML.php:412
 #, php-format
 msgid "Adding filter %s..."
 msgstr "增加过滤器%s..."
 
-#: classes/OPML.php:568
+#: classes/OPML.php:571
 #, php-format
 msgid "Processing category: %s"
 msgstr "加入到类别:%s"
 
-#: classes/OPML.php:617
+#: classes/OPML.php:613
 #, php-format
 msgid "Upload failed with error code %d"
 msgstr "上传错误，错误代码：%d"
 
-#: classes/OPML.php:629
+#: classes/OPML.php:625
 msgid "Unable to move uploaded file."
 msgstr "无法移动已上传文件."
 
-#: classes/OPML.php:633
+#: classes/OPML.php:629
 msgid "Error: please upload OPML file."
 msgstr "错误：请上传 OPML 文件。"
 
-#: classes/OPML.php:641
+#: classes/OPML.php:637
 #, php-format
 msgid "Error: file is not readable: %s"
 msgstr "错误：文件不可读：%s"
 
-#: classes/OPML.php:667
+#: classes/OPML.php:655
 msgid "Error while parsing document."
 msgstr "解析文档时发生错误。"
 
-#: classes/RPC.php:610
+#: classes/RPC.php:586
 msgid "Navigation"
 msgstr "导航"
 
-#: classes/RPC.php:611
+#: classes/RPC.php:587
 msgid "Open next feed"
 msgstr "显示下一个供稿"
 
-#: classes/RPC.php:612
+#: classes/RPC.php:588
 msgid "Open next unread feed"
 msgstr "打开下一个未读供稿"
 
-#: classes/RPC.php:613
+#: classes/RPC.php:589
 msgid "Open previous feed"
 msgstr "显示前一个供稿"
 
-#: classes/RPC.php:614
+#: classes/RPC.php:590
 msgid "Open previous unread feed"
 msgstr "打开上一个未读供稿"
 
-#: classes/RPC.php:615
+#: classes/RPC.php:591
 msgid "Open next article (in combined mode, scroll down)"
 msgstr "打开下一篇文章（在合并模式下，向下滚动）"
 
-#: classes/RPC.php:616
+#: classes/RPC.php:592
 msgid "Open previous article (in combined mode, scroll up)"
 msgstr "打开上一篇文章（在合并模式下，向上滚动）"
 
-#: classes/RPC.php:617
+#: classes/RPC.php:593
 msgid "Scroll headlines by one page down"
 msgstr "将标题向下翻一页"
 
-#: classes/RPC.php:618
+#: classes/RPC.php:594
 msgid "Scroll headlines by one page up"
 msgstr "将标题向上翻一页"
 
-#: classes/RPC.php:619
+#: classes/RPC.php:595
 msgid "Open next article"
 msgstr "显示下一篇文章"
 
-#: classes/RPC.php:620
+#: classes/RPC.php:596
 msgid "Open previous article"
 msgstr "显示前一篇文章"
 
-#: classes/RPC.php:621
+#: classes/RPC.php:597
 msgid "Move to next article (don't expand)"
 msgstr "打开下一篇文章 (不要展开)"
 
-#: classes/RPC.php:622
+#: classes/RPC.php:598
 msgid "Move to previous article (don't expand)"
 msgstr "打开上一篇文章 (不要展开)"
 
-#: classes/RPC.php:623
+#: classes/RPC.php:599
 msgid "Show search dialog"
 msgstr "显示搜索对话框"
 
-#: classes/RPC.php:624
+#: classes/RPC.php:600
 msgid "Cancel active search"
 msgstr "取消活动搜索"
 
-#: classes/RPC.php:625
+#: classes/RPC.php:601
 msgid "Article"
 msgstr "全部文章"
 
-#: classes/RPC.php:626 js/Headlines.js:1449 js/Headlines.js:672
+#: classes/RPC.php:602 js/Headlines.js:1447 js/Headlines.js:670
 msgid "Toggle starred"
 msgstr "加星此文章"
 
-#: classes/RPC.php:627 js/Headlines.js:1461 js/Headlines.js:673
+#: classes/RPC.php:603 js/Headlines.js:1459 js/Headlines.js:671
 msgid "Toggle published"
 msgstr "发布此文章"
 
-#: classes/RPC.php:628 js/Headlines.js:1436 js/Headlines.js:671
+#: classes/RPC.php:604 js/Headlines.js:1434 js/Headlines.js:669
 msgid "Toggle unread"
 msgstr "标记为未读"
 
-#: classes/RPC.php:629
+#: classes/RPC.php:605
 msgid "Edit tags"
 msgstr "编辑自定义标签"
 
-#: classes/RPC.php:630
+#: classes/RPC.php:606
 msgid "Open in new window"
 msgstr "在新窗口打开文章"
 
-#: classes/RPC.php:631 js/Headlines.js:1482
+#: classes/RPC.php:607 js/Headlines.js:1480
 msgid "Mark below as read"
 msgstr "将下面文章标为已读"
 
-#: classes/RPC.php:632 js/Headlines.js:1475
+#: classes/RPC.php:608 js/Headlines.js:1473
 msgid "Mark above as read"
 msgstr "将上面文章标为已读"
 
-#: classes/RPC.php:633
+#: classes/RPC.php:609
 msgid "Scroll down"
 msgstr "向下滚动"
 
-#: classes/RPC.php:634
+#: classes/RPC.php:610
 msgid "Scroll up"
 msgstr "向上滚动"
 
-#: classes/RPC.php:635
+#: classes/RPC.php:611
 msgid "Scroll down page"
 msgstr "向下滚动页面"
 
-#: classes/RPC.php:636
+#: classes/RPC.php:612
 msgid "Scroll up page"
 msgstr "向上滚动页面"
 
-#: classes/RPC.php:637
+#: classes/RPC.php:613
 msgid "Select article under cursor"
 msgstr "选择鼠标指向的文章"
 
-#: classes/RPC.php:638
+#: classes/RPC.php:614
 msgid "Email article"
 msgstr "通过邮件发送文章"
 
-#: classes/RPC.php:639
+#: classes/RPC.php:615
 msgid "Close/collapse article"
 msgstr "关闭/折叠文章"
 
-#: classes/RPC.php:640
+#: classes/RPC.php:616
 msgid "Toggle article expansion (combined mode)"
 msgstr "切换文章展开 (合并模式)"
 
-#: classes/RPC.php:642
+#: classes/RPC.php:618
 msgid "Toggle full article text via Readability"
 msgstr "查看全文(使用Readability)"
 
-#: classes/RPC.php:643
+#: classes/RPC.php:619
 msgid "Article selection"
 msgstr "文章选择"
 
-#: classes/RPC.php:644
+#: classes/RPC.php:620
 msgid "Select all articles"
 msgstr "选择所有文章"
 
-#: classes/RPC.php:645
+#: classes/RPC.php:621
 msgid "Select unread"
 msgstr "选择未读文章"
 
-#: classes/RPC.php:646
+#: classes/RPC.php:622
 msgid "Select starred"
 msgstr "选择加星标文章"
 
-#: classes/RPC.php:647
+#: classes/RPC.php:623
 msgid "Select published"
 msgstr "选择已发布文章"
 
-#: classes/RPC.php:648
+#: classes/RPC.php:624
 msgid "Invert selection"
 msgstr "反选文章"
 
-#: classes/RPC.php:649
+#: classes/RPC.php:625
 msgid "Deselect everything"
 msgstr "取消全选"
 
-#: classes/RPC.php:650
+#: classes/RPC.php:626
 msgid "Feed"
 msgstr "供稿"
 
-#: classes/RPC.php:651
+#: classes/RPC.php:627
 msgid "Refresh current feed"
 msgstr "刷新当前供稿"
 
-#: classes/RPC.php:652
+#: classes/RPC.php:628
 msgid "Un/hide read feeds"
 msgstr "显示/隐藏 已读供稿"
 
-#: classes/RPC.php:654 js/Headlines.js:1582 js/Headlines.js:1647
+#: classes/RPC.php:630 js/Headlines.js:1580 js/Headlines.js:1645
 #: js/PrefFeedTree.js:114 js/CommonDialogs.js:381 js/FeedTree.js:99
 msgid "Edit feed"
 msgstr "编辑供稿"
 
-#: classes/RPC.php:656
+#: classes/RPC.php:632
 msgid "Reverse headlines"
 msgstr "反向排序"
 
-#: classes/RPC.php:657
+#: classes/RPC.php:633
 msgid "Toggle headline grouping"
 msgstr "切换标题分组"
 
-#: classes/RPC.php:658
+#: classes/RPC.php:634
 msgid "Toggle grid view"
 msgstr "切换网格视图"
 
-#: classes/RPC.php:659
+#: classes/RPC.php:635
 msgid "Debug feed update"
 msgstr "调试供稿更新"
 
-#: classes/RPC.php:660
+#: classes/RPC.php:636
 msgid "Debug viewfeed()"
 msgstr "调试 viewfeed()"
 
-#: classes/RPC.php:661 js/FeedTree.js:164
+#: classes/RPC.php:637 js/FeedTree.js:164
 msgid "Mark all feeds as read"
 msgstr "标记所有供稿为已读"
 
-#: classes/RPC.php:662
+#: classes/RPC.php:638
 msgid "Un/collapse current category"
 msgstr "展开/折叠 当前分类"
 
-#: classes/RPC.php:663
+#: classes/RPC.php:639
 msgid "Toggle auto expand in combined mode"
 msgstr "切换合并模式中的自动展开功能"
 
-#: classes/RPC.php:665
+#: classes/RPC.php:641
 msgid "Go to"
 msgstr "跳转至"
 
-#: classes/RPC.php:667
+#: classes/RPC.php:643
 msgid "Fresh"
 msgstr "最新的"
 
-#: classes/RPC.php:672
+#: classes/RPC.php:648
 msgid "Other"
 msgstr "其他"
 
-#: classes/RPC.php:673
+#: classes/RPC.php:649
 msgid "Create label"
 msgstr "创建预定义标签"
 
-#: classes/RPC.php:675
+#: classes/RPC.php:651
 msgid "Un/collapse sidebar"
 msgstr "收起侧边栏"
 
-#: classes/RPC.php:676
+#: classes/RPC.php:652
 msgid "Show help dialog"
 msgstr "显示帮助对话框"
 
-#: classes/RPC.php:814
+#: classes/RPC.php:789
 msgid "Shift"
 msgstr "Shift"
 
-#: classes/RPC.php:817
+#: classes/RPC.php:790
 msgid "Ctrl"
 msgstr "Ctrl"
 
-#: classes/RPC.php:842 plugins/share/init.php:284
+#: classes/RPC.php:813 plugins/share/init.php:284
 #: plugins/af_psql_trgm/init.php:135 js/PrefHelpers.js:498
 #: js/CommonFilters.js:102 js/PrefHelpers.js:66 js/PrefHelpers.js:821
-#: js/Feeds.js:296 js/PrefFeedTree.js:558 js/CommonDialogs.js:22
+#: js/Feeds.js:295 js/PrefFeedTree.js:558 js/CommonDialogs.js:22
 #: js/CommonDialogs.js:318 js/CommonDialogs.js:695 js/App.js:661
 msgid "Close this window"
 msgstr "关闭本窗口"
 
-#: classes/Handler_Public.php:416
+#: classes/Handler_Public.php:415
 msgid "Incorrect username or password"
 msgstr "用户名或密码错误"
 
-#: classes/Handler_Public.php:469
+#: classes/Handler_Public.php:468
 msgid "Password recovery"
 msgstr "找回密码"
 
-#: classes/Handler_Public.php:506 classes/Handler_Public.php:536
-#: classes/Handler_Public.php:596 classes/Handler_Public.php:713
-#: classes/Handler_Public.php:720 classes/Handler_Public.php:743
+#: classes/Handler_Public.php:505 classes/Handler_Public.php:535
+#: classes/Handler_Public.php:595 classes/Handler_Public.php:712
+#: classes/Handler_Public.php:719 classes/Handler_Public.php:742
 #: plugins/bookmarklets/init.php:94 plugins/bookmarklets/init.php:139
 #: plugins/bookmarklets/init.php:157 plugins/bookmarklets/init.php:162
 msgid "Return to Tiny Tiny RSS"
 msgstr "返回至 Tiny Tiny RSS"
 
-#: classes/Handler_Public.php:509
+#: classes/Handler_Public.php:508
 msgid ""
 "You will need to provide valid account name and email. Password reset link "
 "will be sent to your email address."
 msgstr "你需要提供合法的用户名和Email地址。密码重置链接将会发送到你的Email中。"
 
-#: classes/Handler_Public.php:521
+#: classes/Handler_Public.php:520
 msgid "Email:"
 msgstr "电子邮箱："
 
-#: classes/Handler_Public.php:529
+#: classes/Handler_Public.php:528
 #, php-format
 msgid "How much is %d + %d:"
 msgstr "%d+%d 等于几:"
 
-#: classes/Handler_Public.php:546
+#: classes/Handler_Public.php:545
 msgid "Some of the required form parameters are missing or incorrect."
 msgstr "表单中的信息不完整或不正确。"
 
-#: classes/Handler_Public.php:550 classes/Handler_Public.php:602
+#: classes/Handler_Public.php:549 classes/Handler_Public.php:601
 msgid "Go back"
 msgstr "返回"
 
-#: classes/Handler_Public.php:588
+#: classes/Handler_Public.php:587
 msgid "[tt-rss] Password reset request"
 msgstr "[tt-rss] 密码重置请求"
 
-#: classes/Handler_Public.php:598
+#: classes/Handler_Public.php:597
 msgid "Sorry, login and email combination not found."
 msgstr "对不起，没有找到用户名和Email组合。"
 
-#: classes/Handler_Public.php:618
+#: classes/Handler_Public.php:617
 msgid "Your access level is insufficient to run this script."
 msgstr "访问级别不足，无法运行脚本。"
 
-#: classes/Handler_Public.php:680
+#: classes/Handler_Public.php:679
 msgid "Database Updater"
 msgstr "数据库更新管理器"
 
-#: classes/Handler_Public.php:693
+#: classes/Handler_Public.php:692
 #, php-format
 msgid "Performing updates to version %d"
 msgstr "正在更新版本 %d"
 
-#: classes/Handler_Public.php:708 classes/Handler_Public.php:735
+#: classes/Handler_Public.php:707 classes/Handler_Public.php:734
 #: js/PrefHelpers.js:418 js/PrefHelpers.js:764
 msgid "Update"
 msgstr "更新列表"
 
-#: classes/Handler_Public.php:728
+#: classes/Handler_Public.php:727
 #, php-format
 msgid "Database schema needs update to the latest version (%d to %d)."
 msgstr "数据库需要升级到最新版(%d 到 %d )."
@@ -1805,7 +1822,7 @@ msgstr "分享"
 msgid "Shared article will appear in the Published feed."
 msgstr "分享的文章将会出现在已发布的供稿中。"
 
-#: plugins/bookmarklets/init.php:326 include/login_form.php:198
+#: plugins/bookmarklets/init.php:326 include/login_form.php:196
 msgid "Log in"
 msgstr "登录"
 
@@ -1822,7 +1839,8 @@ msgstr "小书签"
 msgid ""
 "Drag the link below to your browser toolbar, open the feed you're interested "
 "in in your browser and click on the link to subscribe to it."
-msgstr "将以下链接拖拽至您的浏览器书签，在浏览器中打开您想看的供稿，然后点击链接以订"
+msgstr ""
+"将以下链接拖拽至您的浏览器书签，在浏览器中打开您想看的供稿，然后点击链接以订"
 "阅。"
 
 #: plugins/bookmarklets/init.php:358
@@ -1861,47 +1879,35 @@ msgstr "af_comics 的供稿"
 msgid "The following comics are currently supported:"
 msgstr "漫画支持支持："
 
-#: include/sessions.php:43
-msgid "Session failed to validate (password changed)"
-msgstr "无法验证会话（密码错误）"
-
-#: include/sessions.php:48
-msgid "Session failed to validate (account is disabled)"
-msgstr "会话验证失败（帐户已禁用）"
-
-#: include/sessions.php:67
-msgid "Session failed to validate (user not found)"
-msgstr "无法验证会话（没有找到该用户）"
-
-#: include/functions.php:62
+#: include/functions.php:54
 msgid "Detect automatically"
 msgstr "自动检测"
 
-#: include/login_form.php:145
+#: include/login_form.php:143
 msgid "I forgot my password"
 msgstr "忘记密码"
 
-#: include/login_form.php:150
+#: include/login_form.php:148
 msgid "Profile:"
 msgstr "偏好："
 
-#: include/login_form.php:163
+#: include/login_form.php:161
 msgid "Use less traffic"
 msgstr "省流量"
 
-#: include/login_form.php:167
+#: include/login_form.php:165
 msgid "Does not display images in articles, reduces automatic refreshes."
 msgstr "不显示文章中的图片，减少自动刷新。"
 
-#: include/login_form.php:175 js/CommonDialogs.js:16
+#: include/login_form.php:173 js/CommonDialogs.js:16
 msgid "Safe mode"
 msgstr "安全模式"
 
-#: include/login_form.php:180
+#: include/login_form.php:178
 msgid "Uses default theme and prevents all plugins from loading."
 msgstr "使用默认主题，并禁用所有插件。"
 
-#: include/login_form.php:188
+#: include/login_form.php:186
 msgid "Remember me"
 msgstr "记住我"
 
@@ -1991,129 +1997,129 @@ msgstr "编辑动作"
 msgid "Add action"
 msgstr "添加操作"
 
-#: js/CommonFilters.js:361
+#: js/CommonFilters.js:363
 msgid "Remove filter?"
 msgstr "移除过滤器?"
 
-#: js/CommonFilters.js:366
+#: js/CommonFilters.js:368
 msgid "Removing filter..."
 msgstr "移除过滤器..."
 
-#: js/CommonFilters.js:396 js/PrefUsers.js:42 js/PrefFeedTree.js:365
+#: js/CommonFilters.js:398 js/PrefUsers.js:42 js/PrefFeedTree.js:365
 #: js/CommonDialogs.js:475
 msgid "Saving data..."
 msgstr "正在保存数据.."
 
-#: js/CommonFilters.js:453 js/CommonFilters.js:485 js/PrefHelpers.js:195
+#: js/CommonFilters.js:455 js/CommonFilters.js:487 js/PrefHelpers.js:195
 msgid "Add"
 msgstr "添加"
 
-#: js/CommonFilters.js:456 js/CommonFilters.js:488
+#: js/CommonFilters.js:458 js/CommonFilters.js:490
 msgid "Delete"
 msgstr "删除"
 
-#: js/CommonFilters.js:522 js/CommonFilters.js:526
+#: js/CommonFilters.js:524 js/CommonFilters.js:528
 msgid "Test"
 msgstr "测试"
 
-#: js/CommonFilters.js:527
+#: js/CommonFilters.js:529
 msgid "Create"
 msgstr "创建"
 
-#: js/Headlines.js:651
+#: js/Headlines.js:649
 msgid "Cancel search"
 msgstr "取消搜索"
 
-#: js/Headlines.js:665
+#: js/Headlines.js:663
 msgid "Select..."
 msgstr "选择..."
 
-#: js/Headlines.js:825 js/Headlines.js:879 js/Headlines.js:896
+#: js/Headlines.js:823 js/Headlines.js:877 js/Headlines.js:894
 msgid "Click to open next unread feed."
 msgstr "点击打开下一个未读供稿。"
 
-#: js/Headlines.js:893
+#: js/Headlines.js:891
 msgid "New articles found, reload feed to continue."
 msgstr "找到新文章，点击重新加载。"
 
-#: js/Headlines.js:950 js/Headlines.js:976 js/Headlines.js:988
-#: js/Headlines.js:1131 js/Headlines.js:1148 js/Headlines.js:1165
-#: js/Headlines.js:1302 js/Article.js:62
+#: js/Headlines.js:948 js/Headlines.js:974 js/Headlines.js:986
+#: js/Headlines.js:1129 js/Headlines.js:1146 js/Headlines.js:1163
+#: js/Headlines.js:1300 js/Article.js:62
 msgid "No articles selected."
 msgstr "未选中任何文章。"
 
-#: js/Headlines.js:1102
+#: js/Headlines.js:1100
 #, java-printf-format, javascript-format
 msgid "%d article selected"
 msgid_plural "%d articles selected"
 msgstr[0] "%d 篇文章被选定"
 
-#: js/Headlines.js:1173
+#: js/Headlines.js:1171
 #, java-printf-format, javascript-format
 msgid "Delete %d selected article in %s?"
 msgid_plural "Delete %d selected articles in %s?"
 msgstr[0] "删除%d,在%s选中的文章?"
 
-#: js/Headlines.js:1175
+#: js/Headlines.js:1173
 #, java-printf-format, javascript-format
 msgid "Delete %d selected article?"
 msgid_plural "Delete %d selected articles?"
 msgstr[0] "删除选中的 %d 篇文章？"
 
-#: js/Headlines.js:1308
+#: js/Headlines.js:1306
 #, java-printf-format, javascript-format
 msgid "Mark %d selected article in %s as read?"
 msgid_plural "Mark %d selected articles in %s as read?"
 msgstr[0] "标记%d为已读,在%s中选择的文章？"
 
-#: js/Headlines.js:1324
+#: js/Headlines.js:1322
 msgid "No article is selected."
 msgstr "未选中任何文章。"
 
-#: js/Headlines.js:1359
+#: js/Headlines.js:1357
 msgid "No articles found to mark"
 msgstr "未找到需要标记的文章"
 
-#: js/Headlines.js:1361
+#: js/Headlines.js:1359
 #, java-printf-format, javascript-format
 msgid "Mark %d article as read?"
 msgid_plural "Mark %d articles as read?"
 msgstr[0] "将 %d 篇文章标记为已读？"
 
-#: js/Headlines.js:1420
+#: js/Headlines.js:1418
 msgid "Open original article"
 msgstr "打开原文"
 
-#: js/Headlines.js:1427
+#: js/Headlines.js:1425
 msgid "Display article URL"
 msgstr "显示网址"
 
-#: js/Headlines.js:1534
+#: js/Headlines.js:1532
 msgid "Assign label"
 msgstr "添加预定义标签"
 
-#: js/Headlines.js:1539
+#: js/Headlines.js:1537
 msgid "Remove label"
 msgstr "移除预定义标签"
 
-#: js/Headlines.js:1588 js/FeedTree.js:105 js/Headlines.js:473
+#: js/Headlines.js:1586 js/FeedTree.js:105 js/Headlines.js:473
 #: js/Headlines.js:522 js/Headlines.js:591
 msgid "Open site"
 msgstr "打开网站"
 
-#: js/Headlines.js:1597 js/FeedTree.js:114
+#: js/Headlines.js:1595 js/FeedTree.js:114
 msgid "Debug feed"
 msgstr "调试供稿"
 
-#: js/Headlines.js:1618
+#: js/Headlines.js:1616
 msgid "Select articles in group"
 msgstr "选择分类中的文章"
 
-#: js/Headlines.js:1628
+#: js/Headlines.js:1626
 msgid "Mark group as read"
 msgstr "将分类标记为已读"
 
-#: js/Headlines.js:1640
+#: js/Headlines.js:1638
 msgid "Mark feed as read"
 msgstr "标记供稿为已读"
 
@@ -2369,59 +2375,59 @@ msgstr "本文的标签，请用逗号分开："
 msgid "Saving article tags..."
 msgstr "保存文章标签..."
 
-#: js/Feeds.js:286
+#: js/Feeds.js:285
 msgid "Your password is at default value"
 msgstr "您还在使用系统默认的密码，请修改"
 
-#: js/Feeds.js:288
+#: js/Feeds.js:287
 msgid ""
 "You are using default tt-rss password. Please change it in the Preferences "
 "(Personal data / Authentication)."
 msgstr ""
 "您正在使用默认的tt-rss密码.请在偏好设置（个人数据/身份验证）中进行更改."
 
-#: js/Feeds.js:443
+#: js/Feeds.js:442
 msgid "Mark all articles as read?"
 msgstr "将所有文章标记为已读？"
 
-#: js/Feeds.js:447
+#: js/Feeds.js:446
 msgid "Marking all feeds as read..."
 msgstr "标记所有供稿为已读..."
 
-#: js/Feeds.js:464
+#: js/Feeds.js:463
 msgid "Mark %w in %s older than 1 day as read?"
 msgstr "将 %s 中 %w 1天前的文章标记为已读?"
 
-#: js/Feeds.js:467
+#: js/Feeds.js:466
 msgid "Mark %w in %s older than 1 week as read?"
 msgstr "将 %s 中 %w 1周前的文章标记为已读?"
 
-#: js/Feeds.js:470
+#: js/Feeds.js:469
 msgid "Mark %w in %s older than 2 weeks as read?"
 msgstr "将 %s 中 %w 2周前的文章标记为已读?"
 
-#: js/Feeds.js:473
+#: js/Feeds.js:472
 msgid "Mark %w in %s as read?"
 msgstr "将 %s 中的 %w 标记为已读?"
 
-#: js/Feeds.js:476
+#: js/Feeds.js:475
 msgid "search results"
 msgstr "搜索结果"
 
-#: js/Feeds.js:476
+#: js/Feeds.js:475
 msgid "all articles"
 msgstr "全部文章"
 
-#: js/Feeds.js:517
+#: js/Feeds.js:516
 #, java-printf-format, javascript-format
 msgid "Mark all articles in %s as read?"
 msgstr "将选中的 %s 篇文章标记为已读?"
 
-#: js/Feeds.js:652
+#: js/Feeds.js:651
 msgid "Search syntax"
 msgstr "搜索语法"
 
-#: js/Feeds.js:716
+#: js/Feeds.js:715
 msgid "Search feeds"
 msgstr "搜索供稿"
 
@@ -2550,7 +2556,8 @@ msgstr "点击以编辑供稿"
 msgid ""
 "Provided URL is a HTML page referencing multiple feeds, please select "
 "required feed from the dropdown menu below."
-msgstr "提供的URL是引用多个供稿的HTML页面，请从下面的下拉菜单中选择所需的供稿。"
+msgstr ""
+"提供的URL是引用多个供稿的HTML页面，请从下面的下拉菜单中选择所需的供稿。"
 
 #: js/CommonDialogs.js:137
 msgid ""
@@ -2615,7 +2622,7 @@ msgstr "正在打开选定供稿的调试器..."
 msgid "Please enter label caption:"
 msgstr "请填写预定义标签的说明："
 
-#: js/CommonDialogs.js:347 js/CommonDialogs.js:388 js/App.js:1304
+#: js/CommonDialogs.js:347 js/CommonDialogs.js:388 js/App.js:1316
 #, java-printf-format, javascript-format
 msgid "Unsubscribe from %s?"
 msgstr "从 %s 取消订阅？"
@@ -2624,7 +2631,7 @@ msgstr "从 %s 取消订阅？"
 msgid "Removing feed..."
 msgstr "删除供稿..."
 
-#: js/CommonDialogs.js:373 js/App.js:1167 js/App.js:1284
+#: js/CommonDialogs.js:373 js/App.js:1179 js/App.js:1296
 msgid "You can't edit this kind of feed."
 msgstr "您无法编辑这种类型的供稿。"
 
@@ -2726,15 +2733,15 @@ msgstr "在合并模式下无法启用宽屏."
 msgid "Please enable mail or mailto plugin first."
 msgstr "请先启用邮件或邮件插件。"
 
-#: js/App.js:1239
+#: js/App.js:1251
 msgid "Please enable af_readability first."
 msgstr "请先启用af_readability."
 
-#: js/App.js:1293
+#: js/App.js:1305
 msgid "Please select some feed first."
 msgstr "请先选择供稿。"
 
-#: js/App.js:1298
+#: js/App.js:1310
 msgid "You can't unsubscribe from the category."
 msgstr "您不能取消订阅一个类别。"
 
@@ -2810,23 +2817,23 @@ msgstr "展开文章"
 msgid "No recent articles matching this filter have been found."
 msgstr "找不到与此过滤器匹配的文章。"
 
-#: js/CommonFilters.js:419
+#: js/CommonFilters.js:421
 msgid "Enabled"
 msgstr "已启用"
 
-#: js/CommonFilters.js:420
+#: js/CommonFilters.js:422
 msgid "Match any rule"
 msgstr "匹配任意规则"
 
-#: js/CommonFilters.js:421
+#: js/CommonFilters.js:423
 msgid "Inverse matching"
 msgstr "反向匹配"
 
-#: js/CommonFilters.js:439
+#: js/CommonFilters.js:441
 msgid "Match"
 msgstr "匹配"
 
-#: js/CommonFilters.js:472
+#: js/CommonFilters.js:474
 msgid "Apply actions"
 msgstr "应用操作"
 
@@ -2842,19 +2849,19 @@ msgstr "跨越所有列"
 msgid "Edit tags for this article"
 msgstr "为本文编辑自定义标签"
 
-#: js/Headlines.js:668
+#: js/Headlines.js:666
 msgid "Invert"
 msgstr "反选"
 
-#: js/Headlines.js:676
+#: js/Headlines.js:674
 msgid "Set score"
 msgstr "评分"
 
-#: js/Headlines.js:685
+#: js/Headlines.js:683
 msgid "Delete permanently"
 msgstr "永久删除"
 
-#: js/Headlines.js:916
+#: js/Headlines.js:914
 msgid ""
 "Could not update headlines (invalid object received - see error console for "
 "details)"
@@ -2906,20 +2913,20 @@ msgstr[0] "%d 插件准备更新"
 msgid "Attachments"
 msgstr "附件"
 
-#: js/Feeds.js:293
+#: js/Feeds.js:292
 msgid "Open Preferences"
 msgstr "偏好设置"
 
-#: js/Feeds.js:636
+#: js/Feeds.js:635
 #, javascript-format
 msgid "Search %s..."
 msgstr "搜索 %s ..."
 
-#: js/Feeds.js:645
+#: js/Feeds.js:644
 msgid "Used for word stemming"
 msgstr "词干提取"
 
-#: js/Feeds.js:705
+#: js/Feeds.js:704
 msgid "Show feeds matching..."
 msgstr "显示符合的供稿..."
 
@@ -3002,6 +3009,9 @@ msgstr "附加信息"
 #: js/PrefLabelTree.js:126
 msgid "Caption"
 msgstr "标题"
+
+#~ msgid "No feed selected."
+#~ msgstr "未选择供稿。"
 
 #~ msgid "Data saved."
 #~ msgstr "数据已保存."
@@ -4150,9 +4160,6 @@ msgstr "标题"
 #, fuzzy
 #~ msgid "Unread First"
 #~ msgstr "未读优先"
-
-#~ msgid "Unknown option: %s"
-#~ msgstr "未知选项： %s"
 
 #~ msgid "Assign articles to labels automatically"
 #~ msgstr "为文章自动分配预定义标签？"

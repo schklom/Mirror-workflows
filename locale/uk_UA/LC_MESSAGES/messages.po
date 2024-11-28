@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-06-15 14:03+0300\n"
+"POT-Creation-Date: 2024-11-28 08:14+0300\n"
 "PO-Revision-Date: 2022-06-19 10:42+0000\n"
 "Last-Translator: Андрій Жук <zhouck@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.tt-rss.org/projects/tt-rss/"
@@ -20,98 +20,98 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.13\n"
 
-#: backend.php:65
+#: backend.php:61
 msgid "Use default"
 msgstr "Типово"
 
-#: backend.php:66
+#: backend.php:62
 msgid "Never purge"
 msgstr "Ніколи не чистити"
 
-#: backend.php:67
+#: backend.php:63
 msgid "1 week old"
 msgstr "Старіше 1 тижня"
 
-#: backend.php:68
+#: backend.php:64
 msgid "2 weeks old"
 msgstr "Старіше 2 тижнів"
 
-#: backend.php:69
+#: backend.php:65
 msgid "1 month old"
 msgstr "Старіше за місяць"
 
-#: backend.php:70
+#: backend.php:66
 msgid "2 months old"
 msgstr "Старіше за 2 місяці"
 
-#: backend.php:71
+#: backend.php:67
 msgid "3 months old"
 msgstr "Старіше за 3 місяці"
 
-#: backend.php:74
+#: backend.php:70
 msgid "Default interval"
 msgstr "Типовий проміжок"
 
-#: backend.php:75 backend.php:85
+#: backend.php:71 backend.php:81
 msgid "Disable updates"
 msgstr "Вимкнути оновлення"
 
-#: backend.php:76 backend.php:86
+#: backend.php:72 backend.php:82
 msgid "15 minutes"
 msgstr "15 хвилин"
 
-#: backend.php:77 backend.php:87
+#: backend.php:73 backend.php:83
 msgid "30 minutes"
 msgstr "30 хвилин"
 
-#: backend.php:78 backend.php:88
+#: backend.php:74 backend.php:84
 msgid "Hourly"
 msgstr "Кожну годину"
 
-#: backend.php:79 backend.php:89
+#: backend.php:75 backend.php:85
 msgid "4 hours"
 msgstr "Раз на 4 години"
 
-#: backend.php:80 backend.php:90
+#: backend.php:76 backend.php:86
 msgid "12 hours"
 msgstr "Раз на 12 годин"
 
-#: backend.php:81 backend.php:91
+#: backend.php:77 backend.php:87
 msgid "Daily"
 msgstr "Раз на день"
 
-#: backend.php:82 backend.php:92
+#: backend.php:78 backend.php:88
 msgid "Weekly"
 msgstr "Раз на тиждень"
 
-#: backend.php:95 classes/Pref_Feeds.php:551 classes/Pref_Feeds.php:604
+#: backend.php:91 classes/Pref_Feeds.php:553 classes/Pref_Feeds.php:606
 msgid "Disabled"
 msgstr "Вимкнуто"
 
-#: backend.php:96
+#: backend.php:92
 msgid "Read Only"
 msgstr "Лише читання"
 
-#: backend.php:97 classes/Pref_System.php:123
+#: backend.php:93 classes/Pref_System.php:118
 msgid "User"
 msgstr "Користувач"
 
-#: backend.php:98
+#: backend.php:94
 msgid "Power User"
 msgstr "Просунутий користувач"
 
-#: backend.php:99
+#: backend.php:95
 msgid "Administrator"
 msgstr "Адміністратор"
 
-#: index.php:133 index.php:147 index.php:300 prefs.php:125
+#: index.php:123 index.php:137 index.php:290 prefs.php:115
 #: classes/Pref_Prefs.php:895 classes/Pref_Prefs.php:945
-#: classes/Pref_System.php:222 js/PrefFilterTree.js:126 js/CommonFilters.js:278
-#: js/CommonFilters.js:408 js/Headlines.js:356 js/Headlines.js:541
+#: classes/Pref_System.php:217 js/PrefFilterTree.js:126 js/CommonFilters.js:278
+#: js/CommonFilters.js:410 js/Headlines.js:356 js/Headlines.js:541
 #: js/PrefHelpers.js:27 js/PrefHelpers.js:39 js/PrefHelpers.js:62
 #: js/PrefHelpers.js:115 js/PrefHelpers.js:243 js/PrefHelpers.js:294
 #: js/PrefHelpers.js:445 js/PrefHelpers.js:456 js/Article.js:288
-#: js/Article.js:364 js/Feeds.js:492 js/PrefUsers.js:112 js/PrefFeedTree.js:186
+#: js/Article.js:364 js/Feeds.js:491 js/PrefUsers.js:112 js/PrefFeedTree.js:186
 #: js/PrefFeedTree.js:193 js/PrefFeedTree.js:317 js/PrefFeedTree.js:394
 #: js/CommonDialogs.js:334 js/CommonDialogs.js:491 js/CommonDialogs.js:646
 #: plugins/note/note.js:38 plugins/share/share.js:56
@@ -119,181 +119,181 @@ msgstr "Адміністратор"
 msgid "Loading, please wait..."
 msgstr "Йде завантаження, зачекайте, будь ласка..."
 
-#: index.php:172 prefs.php:134 js/App.js:494
+#: index.php:162 prefs.php:124 js/App.js:494
 msgid "Communication problem with server."
 msgstr "Проблеми зв’язку з сервером."
 
-#: index.php:175 prefs.php:136
+#: index.php:165 prefs.php:126
 msgid "Recent entries found in event log."
 msgstr "Знайдено свіжі записи в журналі подій."
 
-#: index.php:178
+#: index.php:168
 msgid "Updates are available from Git."
 msgstr "Доступні оновлення з Git."
 
-#: index.php:188 js/Headlines.js:664
+#: index.php:178 js/Headlines.js:662
 msgid "Show articles"
 msgstr "Показати статті"
 
-#: index.php:191
+#: index.php:181
 msgid "Adaptive"
 msgstr "Адаптивно"
 
-#: index.php:192
+#: index.php:182
 msgid "All Articles"
 msgstr "Всі статті"
 
-#: index.php:193 classes/RPC.php:668
+#: index.php:183 classes/RPC.php:644
 msgid "Starred"
 msgstr "Позначені зірочкою"
 
-#: index.php:194 classes/RPC.php:669
+#: index.php:184 classes/RPC.php:645
 msgid "Published"
 msgstr "Опубліковані"
 
-#: index.php:195 js/Headlines.js:667
+#: index.php:185 js/Headlines.js:665
 msgid "Unread"
 msgstr "Непрочитані"
 
-#: index.php:196
+#: index.php:186
 msgid "With Note"
 msgstr "З нотаткою"
 
-#: index.php:199
+#: index.php:189
 msgid "Sort articles"
 msgstr "Сортувати статті"
 
-#: index.php:203
+#: index.php:193
 msgid "Default"
 msgstr "Типово"
 
-#: index.php:204
+#: index.php:194
 msgid "Newest first"
 msgstr "Спочатку нові"
 
-#: index.php:205
+#: index.php:195
 msgid "Oldest first"
 msgstr "Спочатку старіші"
 
-#: index.php:206 js/CommonFilters.js:435
+#: index.php:196 js/CommonFilters.js:437
 msgid "Title"
 msgstr "Заголовок"
 
-#: index.php:219 index.php:271 classes/RPC.php:655 js/Headlines.js:1576
-#: js/FeedTree.js:92 js/FeedTree.js:131 js/Headlines.js:675
+#: index.php:209 index.php:261 classes/RPC.php:631 js/Headlines.js:1574
+#: js/FeedTree.js:92 js/FeedTree.js:131 js/Headlines.js:673
 msgid "Mark as read"
 msgstr "Позначити канал як прочитаний"
 
-#: index.php:220
+#: index.php:210
 msgid "Older than one day"
 msgstr "Старіше за день"
 
-#: index.php:221
+#: index.php:211
 msgid "Older than one week"
 msgstr "Старіше за тиждень"
 
-#: index.php:222
+#: index.php:212
 msgid "Older than two weeks"
 msgstr "Старіше за два тижні"
 
-#: index.php:237
+#: index.php:227
 msgid "Actions..."
 msgstr "Дії..."
 
-#: index.php:263
+#: index.php:253
 msgid "Preferences..."
 msgstr "Налаштування..."
 
-#: index.php:264 js/PrefHelpers.js:614
+#: index.php:254 js/PrefHelpers.js:614
 msgid "Search..."
 msgstr "Пошук..."
 
-#: index.php:265
+#: index.php:255
 #, fuzzy
 #| msgid "Search %s..."
 msgid "Search feeds..."
 msgstr "Пошук %s..."
 
-#: index.php:266
+#: index.php:256
 msgid "Feed actions:"
 msgstr "Дії з каналами:"
 
-#: index.php:267 plugins/bookmarklets/init.php:40
+#: index.php:257 plugins/bookmarklets/init.php:40
 #: plugins/bookmarklets/init.php:75
 msgid "Subscribe to feed..."
 msgstr "Підписатися на канал..."
 
-#: index.php:268
+#: index.php:258
 msgid "Edit this feed..."
 msgstr "Змінити цей канал..."
 
-#: index.php:269 classes/Pref_Feeds.php:937 js/PrefFeedTree.js:120
+#: index.php:259 classes/Pref_Feeds.php:939 js/PrefFeedTree.js:120
 #: js/CommonDialogs.js:633
 msgid "Unsubscribe"
 msgstr "Відписатися"
 
-#: index.php:270
+#: index.php:260
 msgid "All feeds:"
 msgstr "Всі канали:"
 
-#: index.php:272
+#: index.php:262
 msgid "(Un)hide read feeds"
 msgstr "Показати/приховати прочитані канали"
 
-#: index.php:273
+#: index.php:263
 msgid "UI layout:"
 msgstr "Схема UI:"
 
-#: index.php:274 classes/RPC.php:664
+#: index.php:264 classes/RPC.php:640
 msgid "Toggle combined mode"
 msgstr "Перемкнути комбінований режим"
 
-#: index.php:276 classes/RPC.php:641
+#: index.php:266 classes/RPC.php:617
 msgid "Toggle widescreen mode"
 msgstr "Перемкнути повний екран"
 
-#: index.php:278
+#: index.php:268
 msgid "Toggle expand all articles"
 msgstr "(Не/)Розгортати всі статті"
 
-#: index.php:279
+#: index.php:269
 msgid "Other actions:"
 msgstr "Інші дії:"
 
-#: index.php:280
+#: index.php:270
 msgid "Keyboard shortcuts help"
 msgstr "Допомога з клавіатурних скорочень"
 
-#: index.php:289
+#: index.php:279
 msgid "Logout"
 msgstr "Вихід"
 
-#: prefs.php:26 prefs.php:145 classes/Pref_Prefs.php:947 classes/RPC.php:671
+#: prefs.php:18 prefs.php:135 classes/Pref_Prefs.php:947 classes/RPC.php:647
 msgid "Preferences"
 msgstr "Налаштування"
 
-#: prefs.php:138
+#: prefs.php:128
 msgid "Exit preferences"
 msgstr "Закрити налаштування"
 
-#: prefs.php:148 classes/Pref_Prefs.php:46 classes/Pref_Feeds.php:123
-#: classes/Pref_Feeds.php:926
+#: prefs.php:138 classes/Pref_Prefs.php:44 classes/Pref_Feeds.php:124
+#: classes/Pref_Feeds.php:928
 msgid "Feeds"
 msgstr "Канали"
 
-#: prefs.php:152 classes/Pref_Filters.php:242
+#: prefs.php:142 classes/Pref_Filters.php:244
 msgid "Filters"
 msgstr "Фільтри"
 
-#: prefs.php:156 classes/Pref_Labels.php:23 classes/Feeds.php:1453
+#: prefs.php:146 classes/Pref_Labels.php:23 classes/Feeds.php:1353
 msgid "Labels"
 msgstr "Мітки"
 
-#: prefs.php:161
+#: prefs.php:151
 msgid "Users"
 msgstr "Користувачі"
 
-#: prefs.php:164
+#: prefs.php:154
 msgid "System"
 msgstr "Система"
 
@@ -303,137 +303,137 @@ msgid "Created label <b>%s</b>"
 msgstr "Створена мітка <b>%s</b>"
 
 #: classes/Pref_Labels.php:179 classes/Pref_Prefs.php:853
-#: classes/Pref_Prefs.php:1501 classes/Pref_Feeds.php:916
-#: classes/Pref_Users.php:223 classes/Pref_Filters.php:677
-#: js/CommonFilters.js:443 js/CommonFilters.js:476 js/PrefHelpers.js:184
+#: classes/Pref_Prefs.php:1489 classes/Pref_Feeds.php:918
+#: classes/Pref_Users.php:223 classes/Pref_Filters.php:641
+#: js/CommonFilters.js:445 js/CommonFilters.js:478 js/PrefHelpers.js:184
 #: js/PrefFeedTree.js:524 js/CommonDialogs.js:278
 msgid "Select"
 msgstr "Обрати"
 
-#: classes/Pref_Prefs.php:38 classes/Pref_Feeds.php:622 js/CommonDialogs.js:517
+#: classes/Pref_Prefs.php:36 classes/Pref_Feeds.php:624 js/CommonDialogs.js:517
 msgid "General"
 msgstr "Основні"
 
-#: classes/Pref_Prefs.php:59
+#: classes/Pref_Prefs.php:57
 msgid "Articles"
 msgstr "Статті"
 
-#: classes/Pref_Prefs.php:73
+#: classes/Pref_Prefs.php:71
 msgid "Digest"
 msgstr "Дайджест"
 
-#: classes/Pref_Prefs.php:79
+#: classes/Pref_Prefs.php:77
 msgid "Advanced"
 msgstr "Розширені"
 
-#: classes/Pref_Prefs.php:90
+#: classes/Pref_Prefs.php:88
 msgid "Debugging"
 msgstr "Налагодження"
 
-#: classes/Pref_Prefs.php:96
+#: classes/Pref_Prefs.php:94
 msgid "Never apply these tags automatically (comma-separated list)."
 msgstr ""
 "Ніколи не застосовувати ці теги автоматично (список розділений комами)."
 
-#: classes/Pref_Prefs.php:100
+#: classes/Pref_Prefs.php:98
 msgid "Blacklisted tags"
 msgstr "Чорний список тегів"
 
-#: classes/Pref_Prefs.php:101
+#: classes/Pref_Prefs.php:99
 msgid "Default language"
 msgstr "Типова мова"
 
-#: classes/Pref_Prefs.php:101
+#: classes/Pref_Prefs.php:99
 msgid "Used for full-text search"
 msgstr "Використовується для повнотекстового пошуку"
 
-#: classes/Pref_Prefs.php:102
+#: classes/Pref_Prefs.php:100
 msgid "Mark read on scroll"
 msgstr "Позначати статті прочитаними при прокручуванні"
 
-#: classes/Pref_Prefs.php:102
+#: classes/Pref_Prefs.php:100
 msgid "Mark articles as read as you scroll past them"
 msgstr "Позначати статті прочитаними, коли ви прокручуєте нижче за них"
 
-#: classes/Pref_Prefs.php:103
+#: classes/Pref_Prefs.php:101
 msgid "Always expand articles"
 msgstr "Завжди розгортати статті"
 
-#: classes/Pref_Prefs.php:104
+#: classes/Pref_Prefs.php:102
 msgid "Combined mode"
 msgstr "Комбінований режим"
 
-#: classes/Pref_Prefs.php:104
+#: classes/Pref_Prefs.php:102
 msgid "Show flat list of articles instead of separate panels"
 msgstr "Показувати плаский список статей замість показу окремих панелей"
 
-#: classes/Pref_Prefs.php:105
+#: classes/Pref_Prefs.php:103
 msgid "Confirm marking feeds as read"
 msgstr "Підтверджувати позначення каналу прочитаним"
 
-#: classes/Pref_Prefs.php:106
+#: classes/Pref_Prefs.php:104
 msgid "Default update interval"
 msgstr "Типовий інтервал оновлення"
 
-#: classes/Pref_Prefs.php:107
+#: classes/Pref_Prefs.php:105
 msgid "Mark sent articles as read"
 msgstr "Позначати відправлені статті прочитаними"
 
-#: classes/Pref_Prefs.php:108
+#: classes/Pref_Prefs.php:106
 msgid "Enable digest"
 msgstr "Включити дайджест електронною поштою"
 
-#: classes/Pref_Prefs.php:108
+#: classes/Pref_Prefs.php:106
 msgid "Send daily digest of new (and unread) headlines to your e-mail address"
 msgstr ""
 "Ця опція дозволяє надсилати щоденний дайджест нових (та непрочитаних) "
 "заголовків на ваші електронні адреси"
 
-#: classes/Pref_Prefs.php:109
+#: classes/Pref_Prefs.php:107
 msgid "Try to send around this time"
 msgstr "Спробувати надсилати дайджест близько вказаного часу"
 
-#: classes/Pref_Prefs.php:109
+#: classes/Pref_Prefs.php:107
 msgid "Time in UTC"
 msgstr "Час в UTC"
 
-#: classes/Pref_Prefs.php:110
+#: classes/Pref_Prefs.php:108
 msgid "Enable API"
 msgstr "Увімкнути API"
 
-#: classes/Pref_Prefs.php:110
+#: classes/Pref_Prefs.php:108
 msgid "Allows accessing this account through the API"
 msgstr "Дозволяє мати доступ до цього облікового запису через API"
 
-#: classes/Pref_Prefs.php:111
+#: classes/Pref_Prefs.php:109
 msgid "Enable categories"
 msgstr "Дозволити категорії"
 
-#: classes/Pref_Prefs.php:112
+#: classes/Pref_Prefs.php:110
 msgid "Maximum age of fresh articles"
 msgstr "Найдовший вік нових статей (в годинах)"
 
-#: classes/Pref_Prefs.php:112
+#: classes/Pref_Prefs.php:110
 msgid "hours"
 msgstr "годин"
 
-#: classes/Pref_Prefs.php:113
+#: classes/Pref_Prefs.php:111
 msgid "Hide read feeds"
 msgstr "Сховати/показати прочитані канали"
 
-#: classes/Pref_Prefs.php:114
+#: classes/Pref_Prefs.php:112
 msgid "Always show special feeds"
 msgstr "Завжди показувати спеціальні канали"
 
-#: classes/Pref_Prefs.php:114
+#: classes/Pref_Prefs.php:112
 msgid "While hiding read feeds"
 msgstr "Коли приховуються прочитані канали"
 
-#: classes/Pref_Prefs.php:115
+#: classes/Pref_Prefs.php:113
 msgid "Long date format"
 msgstr "Довгий формат дати"
 
-#: classes/Pref_Prefs.php:115
+#: classes/Pref_Prefs.php:113
 msgid ""
 "Syntax is identical to PHP <a href='http://php.net/manual/function.date."
 "php'>date()</a> function."
@@ -441,102 +441,102 @@ msgstr ""
 "Використовується синтаксис, ідентичний до функції PHP <a href='http://php."
 "net/manual/function.date.php'>date()</a>."
 
-#: classes/Pref_Prefs.php:116
+#: classes/Pref_Prefs.php:114
 msgid "Automatically show next feed"
 msgstr "Автоматично показувати наступний канал"
 
-#: classes/Pref_Prefs.php:116
+#: classes/Pref_Prefs.php:114
 msgid "After marking one as read"
 msgstr "Після позначення каналу прочитаним"
 
-#: classes/Pref_Prefs.php:117
+#: classes/Pref_Prefs.php:115
 msgid "Purge articles older than"
 msgstr "Витирати статті старші за"
 
-#: classes/Pref_Prefs.php:117
+#: classes/Pref_Prefs.php:115
 msgid "<strong>days</strong> (0 disables)"
 msgstr "<strong>днів</strong>(0 щоб вимкнути)"
 
-#: classes/Pref_Prefs.php:118
+#: classes/Pref_Prefs.php:116
 msgid "Purge unread articles"
 msgstr "Витирати непрочитані статті"
 
-#: classes/Pref_Prefs.php:119
+#: classes/Pref_Prefs.php:117
 msgid "Short date format"
 msgstr "Короткий формат дати"
 
-#: classes/Pref_Prefs.php:120
+#: classes/Pref_Prefs.php:118
 msgid "Show content preview in headlines"
 msgstr "Показувати передогляд вмісту в списку заголовків"
 
-#: classes/Pref_Prefs.php:121
+#: classes/Pref_Prefs.php:119
 msgid "SSL client certificate"
 msgstr "Вхід із клієнтським SSL сертифікатом"
 
-#: classes/Pref_Prefs.php:122 classes/Pref_Feeds.php:609
+#: classes/Pref_Prefs.php:120 classes/Pref_Feeds.php:611
 #: js/CommonDialogs.js:508
 msgid "Do not embed media"
 msgstr "Не вбудовувати медіа"
 
-#: classes/Pref_Prefs.php:123
+#: classes/Pref_Prefs.php:121
 msgid "Time zone"
 msgstr "Часова зона"
 
-#: classes/Pref_Prefs.php:124
+#: classes/Pref_Prefs.php:122
 msgid "Group by feed"
 msgstr "Кращі 25 каналів"
 
-#: classes/Pref_Prefs.php:124
+#: classes/Pref_Prefs.php:122
 msgid "Group multiple-feed output by originating feed"
 msgstr "Групувати мульти-канали за основним каналом"
 
-#: classes/Pref_Prefs.php:125
+#: classes/Pref_Prefs.php:123
 msgid "Language"
 msgstr "Мова"
 
-#: classes/Pref_Prefs.php:126
+#: classes/Pref_Prefs.php:124
 msgid "Theme"
 msgstr "Тема"
 
-#: classes/Pref_Prefs.php:127
+#: classes/Pref_Prefs.php:125
 msgid "Don't enforce DISTINCT headlines"
 msgstr "Не вимагати унікальності заголовків"
 
-#: classes/Pref_Prefs.php:127
+#: classes/Pref_Prefs.php:125
 msgid "May produce duplicate entries"
 msgstr "Може створювати дублікати статей"
 
-#: classes/Pref_Prefs.php:128
+#: classes/Pref_Prefs.php:126
 msgid "Show article and feed IDs"
 msgstr "Показати ідентифікатори статті та каналу"
 
-#: classes/Pref_Prefs.php:128
+#: classes/Pref_Prefs.php:126
 msgid "In the headlines buffer"
 msgstr "В буфері заголовків"
 
-#: classes/Pref_Prefs.php:129
+#: classes/Pref_Prefs.php:127
 msgid "Disable conditional counter updates"
 msgstr "Вимкнути оновлення умовного лічильника"
 
-#: classes/Pref_Prefs.php:129
+#: classes/Pref_Prefs.php:127
 msgid "May increase server load"
 msgstr "Може збільшувати навантаження на сервер"
 
-#: classes/Pref_Prefs.php:130
+#: classes/Pref_Prefs.php:128
 msgid "Grid view"
 msgstr "Табличний вигляд"
 
-#: classes/Pref_Prefs.php:130
+#: classes/Pref_Prefs.php:128
 msgid "On wider screens, if always expanded"
 msgstr "На широких екранах, чи завжди розгорнуто"
 
-#: classes/Pref_Prefs.php:131
+#: classes/Pref_Prefs.php:129
 #, fuzzy
 #| msgid "Set score"
 msgid "Required score"
 msgstr "Оцінити"
 
-#: classes/Pref_Prefs.php:131
+#: classes/Pref_Prefs.php:129
 msgid "Include articles with this or above score"
 msgstr ""
 
@@ -556,10 +556,10 @@ msgstr "Повне ім’я:"
 msgid "E-mail:"
 msgstr "Пошта (@):"
 
-#: classes/Pref_Prefs.php:318 classes/Pref_Feeds.php:691
+#: classes/Pref_Prefs.php:318 classes/Pref_Feeds.php:693
 #: plugins/nsfw/init.php:105 plugins/note/init.php:49
 #: plugins/af_psql_trgm/init.php:218 js/CommonFilters.js:237
-#: js/CommonFilters.js:321 js/CommonFilters.js:523 js/CommonDialogs.js:634
+#: js/CommonFilters.js:321 js/CommonFilters.js:525 js/CommonDialogs.js:634
 #: js/Article.js:370 js/PrefUsers.js:119 js/PrefLabelTree.js:170
 msgid "Save"
 msgstr "Зберегти"
@@ -593,7 +593,7 @@ msgstr ""
 msgid "Generate password"
 msgstr "Створити пароль"
 
-#: classes/Pref_Prefs.php:415 classes/Pref_Feeds.php:950 js/PrefHelpers.js:227
+#: classes/Pref_Prefs.php:415 classes/Pref_Feeds.php:952 js/PrefHelpers.js:227
 msgid "Remove selected"
 msgstr "Вилучити обрані"
 
@@ -657,7 +657,7 @@ msgstr "Передогляд"
 msgid "Register"
 msgstr "Реєстрація"
 
-#: classes/Pref_Prefs.php:718 classes/Pref_System.php:100
+#: classes/Pref_Prefs.php:718 classes/Pref_System.php:95
 msgid "Clear"
 msgstr "Очистити"
 
@@ -687,24 +687,24 @@ msgstr "Керування профілями"
 msgid "Reset to defaults"
 msgstr "Скинути на типові"
 
-#: classes/Pref_Prefs.php:848 classes/Pref_Feeds.php:911
-#: classes/Pref_Users.php:217 classes/Pref_Filters.php:672 js/Feeds.js:661
-#: js/Feeds.js:656 js/Feeds.js:711
+#: classes/Pref_Prefs.php:848 classes/Pref_Feeds.php:913
+#: classes/Pref_Users.php:217 classes/Pref_Filters.php:636 js/Feeds.js:660
+#: js/Feeds.js:655 js/Feeds.js:710
 msgid "Search"
 msgstr "Пошук"
 
-#: classes/Pref_Prefs.php:856 classes/Pref_Prefs.php:1504
-#: classes/Pref_Feeds.php:919 classes/Pref_Users.php:226
-#: classes/Pref_Filters.php:680 js/CommonFilters.js:447 js/CommonFilters.js:479
-#: js/Headlines.js:666 js/PrefHelpers.js:187 js/PrefFeedTree.js:527
+#: classes/Pref_Prefs.php:856 classes/Pref_Prefs.php:1492
+#: classes/Pref_Feeds.php:921 classes/Pref_Users.php:226
+#: classes/Pref_Filters.php:644 js/CommonFilters.js:449 js/CommonFilters.js:481
+#: js/Headlines.js:664 js/PrefHelpers.js:187 js/PrefFeedTree.js:527
 #: js/CommonDialogs.js:281
 msgid "All"
 msgstr "Всі"
 
-#: classes/Pref_Prefs.php:858 classes/Pref_Prefs.php:1506
-#: classes/Pref_Feeds.php:921 classes/Pref_Users.php:228
-#: classes/Pref_Filters.php:682 js/CommonFilters.js:449 js/CommonFilters.js:481
-#: js/Headlines.js:669 js/PrefHelpers.js:189 js/PrefFeedTree.js:529
+#: classes/Pref_Prefs.php:858 classes/Pref_Prefs.php:1494
+#: classes/Pref_Feeds.php:923 classes/Pref_Users.php:228
+#: classes/Pref_Filters.php:646 js/CommonFilters.js:451 js/CommonFilters.js:483
+#: js/Headlines.js:667 js/PrefHelpers.js:189 js/PrefFeedTree.js:529
 #: js/CommonDialogs.js:283
 msgid "None"
 msgstr "Жоден"
@@ -744,7 +744,7 @@ msgstr "Встановити додаток"
 msgid "Personal data / Authentication"
 msgstr "Персональні дані / Автентифікація"
 
-#: classes/Pref_Prefs.php:950 classes/Pref_Feeds.php:1065
+#: classes/Pref_Prefs.php:950 classes/Pref_Feeds.php:1067
 #: js/CommonDialogs.js:628
 msgid "Plugins"
 msgstr "Додатки"
@@ -767,24 +767,24 @@ msgstr "v%.2f, від %s"
 msgid "v%s, by %s"
 msgstr "v%s, від %s"
 
-#: classes/Pref_Prefs.php:1462 classes/Handler_Public.php:292
-#: include/login_form.php:153
+#: classes/Pref_Prefs.php:1456 classes/Handler_Public.php:291
+#: include/login_form.php:151
 msgid "Default profile"
 msgstr "Типовий профіль"
 
-#: classes/Pref_Prefs.php:1515
+#: classes/Pref_Prefs.php:1503
 msgid "Description"
 msgstr "Опис"
 
-#: classes/Pref_Prefs.php:1516
+#: classes/Pref_Prefs.php:1504
 msgid "Created"
 msgstr "Створено"
 
-#: classes/Pref_Prefs.php:1517
+#: classes/Pref_Prefs.php:1505
 msgid "Last used"
 msgstr "Останні використані"
 
-#: classes/Pref_Prefs.php:1562
+#: classes/Pref_Prefs.php:1550
 #, php-format
 msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
@@ -798,7 +798,7 @@ msgstr ""
 msgid "Unknown error while sending mail. Hooks tried: %d."
 msgstr "Невідома помилка при відправленні листа. Спробували хуки: %d."
 
-#: classes/TimeHelper.php:8
+#: classes/TimeHelper.php:9
 #, php-format
 msgid "%d min"
 msgstr "%d хв"
@@ -807,109 +807,109 @@ msgstr "%d хв"
 msgid "Test message from tt-rss"
 msgstr "Перевіряюче повідомлення від tt-rss"
 
-#: classes/Pref_System.php:81 js/PrefHelpers.js:622
+#: classes/Pref_System.php:76 js/PrefHelpers.js:622
 msgid "Refresh"
 msgstr "Оновити"
 
-#: classes/Pref_System.php:86
+#: classes/Pref_System.php:81
 msgid "&lt;&lt;"
 msgstr "&lt;&lt;"
 
-#: classes/Pref_System.php:90
+#: classes/Pref_System.php:85
 #, php-format
 msgid "Page %d of %d"
 msgstr "Сторінка %d з %d"
 
-#: classes/Pref_System.php:95
+#: classes/Pref_System.php:90
 msgid "&gt;&gt;"
 msgstr "&gt;&gt;"
 
-#: classes/Pref_System.php:104
+#: classes/Pref_System.php:99
 msgid "Severity:"
 msgstr "Важливість:"
 
-#: classes/Pref_System.php:108
+#: classes/Pref_System.php:103
 msgid "Errors"
 msgstr "Помилки"
 
-#: classes/Pref_System.php:109
+#: classes/Pref_System.php:104
 msgid "Warnings"
 msgstr "Попередження"
 
-#: classes/Pref_System.php:110
+#: classes/Pref_System.php:105
 msgid "Everything"
 msgstr "Все"
 
-#: classes/Pref_System.php:120
+#: classes/Pref_System.php:115
 msgid "Error"
 msgstr "Помилка"
 
-#: classes/Pref_System.php:121
+#: classes/Pref_System.php:116
 msgid "Filename"
 msgstr "Назва файла"
 
-#: classes/Pref_System.php:122
+#: classes/Pref_System.php:117
 msgid "Message"
 msgstr "Повідомлення"
 
-#: classes/Pref_System.php:124
+#: classes/Pref_System.php:119
 msgid "Date"
 msgstr "Дата"
 
-#: classes/Pref_System.php:168
+#: classes/Pref_System.php:163
 msgid "Event log"
 msgstr "Журнал подій"
 
-#: classes/Pref_System.php:174
+#: classes/Pref_System.php:169
 msgid "Mail configuration"
 msgstr "Поштова конфігурація"
 
-#: classes/Pref_System.php:205
+#: classes/Pref_System.php:200
 msgid "To:"
 msgstr "До:"
 
-#: classes/Pref_System.php:207
+#: classes/Pref_System.php:202
 msgid "Send test email"
 msgstr "Відправити тестовий лист"
 
-#: classes/Pref_System.php:213
+#: classes/Pref_System.php:208
 msgid "PHP Information"
 msgstr "Інформація про PHP"
 
-#: classes/Feeds.php:98 classes/Feeds.php:524
+#: classes/Feeds.php:93 classes/Feeds.php:495
 msgid "Feed not found."
 msgstr "Канал не знайдено."
 
-#: classes/Feeds.php:163
+#: classes/Feeds.php:156
 msgid "Never"
 msgstr "Ніколи"
 
-#: classes/Feeds.php:246 classes/Feeds.php:1314
+#: classes/Feeds.php:235 classes/Feeds.php:1214
 msgid "Archived articles"
 msgstr "Архівовані статті"
 
-#: classes/Feeds.php:336
+#: classes/Feeds.php:325
 msgid "Collapse article"
 msgstr "Згорнути статтю"
 
-#: classes/Feeds.php:355
+#: classes/Feeds.php:344
 #, php-format
 msgid "Imported at %s"
 msgstr "Імпортовано в %s"
 
-#: classes/Feeds.php:417
+#: classes/Feeds.php:401
 msgid "No unread articles found to display."
 msgstr "Не знайдено непрочитаних статей."
 
-#: classes/Feeds.php:420
+#: classes/Feeds.php:402
 msgid "No updated articles found to display."
 msgstr "Не знайдено оновлених статей."
 
-#: classes/Feeds.php:423
+#: classes/Feeds.php:403
 msgid "No starred articles found to display."
 msgstr "Не знайдено статей з зірочкою."
 
-#: classes/Feeds.php:427
+#: classes/Feeds.php:405
 msgid ""
 "No articles found to display. You can assign articles to labels manually "
 "from article header context menu (applies to all selected articles) or use a "
@@ -919,63 +919,59 @@ msgstr ""
 "статті за допомогою контекстного меню (застосовується до всіх обраних "
 "статей) або використати фільтр."
 
-#: classes/Feeds.php:429
+#: classes/Feeds.php:406
 msgid "No articles found to display."
 msgstr "Не знайдено статей для показу."
 
-#: classes/Feeds.php:446 classes/Feeds.php:596
+#: classes/Feeds.php:422
 #, php-format
 msgid "Feeds last updated at %s"
 msgstr "Останнє оновлення каналу о %s"
 
-#: classes/Feeds.php:457 classes/Feeds.php:607
+#: classes/Feeds.php:433
 msgid "Some feeds have update errors (click for details)"
 msgstr "Деякі канали мають помилки (клацніть для подробиць)"
 
-#: classes/Feeds.php:585
-msgid "No feed selected."
-msgstr "Жоден канал не обрано."
-
-#: classes/Feeds.php:1306
+#: classes/Feeds.php:1206
 msgid "Starred articles"
 msgstr "Статті, позначені зірочкою"
 
-#: classes/Feeds.php:1308
+#: classes/Feeds.php:1208
 msgid "Published articles"
 msgstr "Опубліковані статті"
 
-#: classes/Feeds.php:1310
+#: classes/Feeds.php:1210
 msgid "Fresh articles"
 msgstr "Свіжі статті"
 
-#: classes/Feeds.php:1312 classes/RPC.php:666
+#: classes/Feeds.php:1212 classes/RPC.php:642
 msgid "All articles"
 msgstr "Всі статті"
 
-#: classes/Feeds.php:1316 classes/RPC.php:670
+#: classes/Feeds.php:1216 classes/RPC.php:646
 msgid "Recently read"
 msgstr "Нещодавно прочитані"
 
-#: classes/Feeds.php:1449 classes/Pref_Feeds.php:250 classes/Digest.php:123
-#: classes/Pref_Filters.php:929 classes/OPML.php:568 include/controls.php:217
+#: classes/Feeds.php:1349 classes/Pref_Feeds.php:250 classes/Digest.php:120
+#: classes/Pref_Filters.php:910 classes/OPML.php:571 include/controls.php:216
 msgid "Uncategorized"
 msgstr "Без категорії"
 
-#: classes/Feeds.php:1451
+#: classes/Feeds.php:1351
 msgid "Special"
 msgstr "Особливі"
 
-#: classes/Feeds.php:1549
+#: classes/Feeds.php:1446
 #, php-format
 msgid "Incorrect search syntax: %s."
 msgstr "Неправильний синтаксис пошуку: %s."
 
-#: classes/Feeds.php:1739
+#: classes/Feeds.php:1636
 #, php-format
 msgid "Search results: %s"
 msgstr "Результати пошуку: %s"
 
-#: classes/Pref_Feeds.php:72 classes/Pref_Feeds.php:232
+#: classes/Pref_Feeds.php:72 classes/Pref_Feeds.php:233
 #: classes/Pref_Feeds.php:286 classes/Pref_Feeds.php:292
 #: classes/Pref_Feeds.php:322
 #, php-format
@@ -985,7 +981,7 @@ msgstr[0] "(%d канал)"
 msgstr[1] "(%d канали)"
 msgstr[2] "(%d каналів)"
 
-#: classes/Pref_Feeds.php:549
+#: classes/Pref_Feeds.php:551
 #, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
@@ -993,7 +989,7 @@ msgstr[0] "(%d день)"
 msgstr[1] "(%d дні)"
 msgstr[2] "(%d днів)"
 
-#: classes/Pref_Feeds.php:555
+#: classes/Pref_Feeds.php:557
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
@@ -1001,143 +997,143 @@ msgstr[0] "%d день"
 msgstr[1] "%d днів"
 msgstr[2] "%d днів"
 
-#: classes/Pref_Feeds.php:586
+#: classes/Pref_Feeds.php:588
 msgid "Check to enable field"
 msgstr "Перевірити доступність поля"
 
-#: classes/Pref_Feeds.php:602
+#: classes/Pref_Feeds.php:604
 #, php-format
 msgid "(%d days)"
 msgstr "(%d днів)"
 
-#: classes/Pref_Feeds.php:607 js/CommonDialogs.js:506
+#: classes/Pref_Feeds.php:609 js/CommonDialogs.js:506
 msgid "Include in e-mail digest"
 msgstr "Включати в поштовий дайджест"
 
-#: classes/Pref_Feeds.php:608 js/CommonDialogs.js:507
+#: classes/Pref_Feeds.php:610 js/CommonDialogs.js:507
 msgid "Always display image attachments"
 msgstr "Завжди показувати долучення зображень"
 
-#: classes/Pref_Feeds.php:610 js/CommonDialogs.js:509
+#: classes/Pref_Feeds.php:612 js/CommonDialogs.js:509
 msgid "Cache media"
 msgstr "Кешувати медіа"
 
-#: classes/Pref_Feeds.php:611 js/CommonDialogs.js:510
+#: classes/Pref_Feeds.php:613 js/CommonDialogs.js:510
 msgid "Mark updated articles as unread"
 msgstr "Позначати оновлені статті як непрочитані"
 
-#: classes/Pref_Feeds.php:626 js/PrefFeedTree.js:447 js/CommonDialogs.js:61
+#: classes/Pref_Feeds.php:628 js/PrefFeedTree.js:447 js/CommonDialogs.js:61
 #: js/CommonDialogs.js:546
 msgid "Place in category:"
 msgstr "Розмістити в категорії:"
 
-#: classes/Pref_Feeds.php:634 js/Feeds.js:643 js/CommonDialogs.js:562
+#: classes/Pref_Feeds.php:636 js/Feeds.js:642 js/CommonDialogs.js:562
 msgid "Language:"
 msgstr "Мова:"
 
-#: classes/Pref_Feeds.php:645 js/CommonDialogs.js:572
+#: classes/Pref_Feeds.php:647 js/CommonDialogs.js:572
 msgid "Update interval:"
 msgstr "Інтервал оновлення:"
 
-#: classes/Pref_Feeds.php:652 js/CommonDialogs.js:578
+#: classes/Pref_Feeds.php:654 js/CommonDialogs.js:578
 msgid "Article purging:"
 msgstr "Видалення статей:"
 
-#: classes/Pref_Feeds.php:659 plugins/auth_internal/init.php:82
+#: classes/Pref_Feeds.php:661 plugins/auth_internal/init.php:82
 #: js/PrefFeedTree.js:455 js/CommonDialogs.js:588
 msgid "Authentication"
 msgstr "Автентифікація"
 
-#: classes/Pref_Feeds.php:662 classes/Handler_Public.php:516
-#: plugins/bookmarklets/init.php:306 include/login_form.php:124
+#: classes/Pref_Feeds.php:664 classes/Handler_Public.php:515
+#: plugins/bookmarklets/init.php:306 include/login_form.php:122
 #: js/PrefUsers.js:64 js/CommonDialogs.js:591
 msgid "Login:"
 msgstr "Ім’я:"
 
-#: classes/Pref_Feeds.php:668 plugins/bookmarklets/init.php:313
-#: include/login_form.php:133 js/CommonDialogs.js:597
+#: classes/Pref_Feeds.php:670 plugins/bookmarklets/init.php:313
+#: include/login_form.php:131 js/CommonDialogs.js:597
 msgid "Password:"
 msgstr "Пароль:"
 
-#: classes/Pref_Feeds.php:675 js/CommonDialogs.js:604
+#: classes/Pref_Feeds.php:677 js/CommonDialogs.js:604
 msgid "Options"
 msgstr "Опції"
 
-#: classes/Pref_Feeds.php:692 plugins/note/init.php:50
+#: classes/Pref_Feeds.php:694 plugins/note/init.php:50
 #: plugins/bookmarklets/init.php:286 js/CommonFilters.js:238
-#: js/CommonFilters.js:322 js/CommonFilters.js:524 js/CommonFilters.js:528
+#: js/CommonFilters.js:322 js/CommonFilters.js:526 js/CommonFilters.js:530
 #: js/CommonDialogs.js:635 js/PrefHelpers.js:232 js/PrefHelpers.js:306
-#: js/Article.js:373 js/Feeds.js:657 js/Feeds.js:712 js/PrefUsers.js:122
+#: js/Article.js:373 js/Feeds.js:656 js/Feeds.js:711 js/PrefUsers.js:122
 #: js/PrefFeedTree.js:475 js/CommonDialogs.js:111 js/PrefLabelTree.js:173
 msgid "Cancel"
 msgstr "Скасувати"
 
-#: classes/Pref_Feeds.php:886
+#: classes/Pref_Feeds.php:888
 msgid "Feeds with errors"
 msgstr "Канали з помилками"
 
-#: classes/Pref_Feeds.php:892
+#: classes/Pref_Feeds.php:894
 msgid "Inactive feeds"
 msgstr "Неактивні канали"
 
-#: classes/Pref_Feeds.php:929 classes/RPC.php:653 js/CommonDialogs.js:34
+#: classes/Pref_Feeds.php:931 classes/RPC.php:629 js/CommonDialogs.js:34
 msgid "Subscribe to feed"
 msgstr "Підписатися на канал"
 
-#: classes/Pref_Feeds.php:931
+#: classes/Pref_Feeds.php:933
 msgid "Edit selected feeds"
 msgstr "Змінити обрані канали"
 
-#: classes/Pref_Feeds.php:933 classes/Pref_Feeds.php:948
-#: classes/Pref_Filters.php:693
+#: classes/Pref_Feeds.php:935 classes/Pref_Feeds.php:950
+#: classes/Pref_Filters.php:657
 msgid "Reset sort order"
 msgstr "Скинути порядок сортування"
 
-#: classes/Pref_Feeds.php:935 js/PrefFeedTree.js:417
+#: classes/Pref_Feeds.php:937 js/PrefFeedTree.js:417
 msgid "Batch subscribe"
 msgstr "Масова підписка"
 
-#: classes/Pref_Feeds.php:943
+#: classes/Pref_Feeds.php:945
 msgid "Categories"
 msgstr "Категорії"
 
-#: classes/Pref_Feeds.php:946
+#: classes/Pref_Feeds.php:948
 msgid "Add category"
 msgstr "Додати категорію"
 
-#: classes/Pref_Feeds.php:985
+#: classes/Pref_Feeds.php:987
 msgid "Choose file..."
 msgstr "Оберіть файл..."
 
-#: classes/Pref_Feeds.php:993
+#: classes/Pref_Feeds.php:995
 msgid "Import OPML"
 msgstr "Імпорт OPML"
 
-#: classes/Pref_Feeds.php:1004
+#: classes/Pref_Feeds.php:1006
 msgid "Export OPML"
 msgstr "Експорт OPML"
 
-#: classes/Pref_Feeds.php:1009
+#: classes/Pref_Feeds.php:1011
 msgid "Include tt-rss settings"
 msgstr "Включати налаштування tt-rss"
 
-#: classes/Pref_Feeds.php:1025
+#: classes/Pref_Feeds.php:1027
 msgid "Display URL"
 msgstr "Показати посилання"
 
-#: classes/Pref_Feeds.php:1030
+#: classes/Pref_Feeds.php:1032
 msgid "Clear all generated URLs"
 msgstr "Прибрати всі створені посилання"
 
-#: classes/Pref_Feeds.php:1042
+#: classes/Pref_Feeds.php:1044
 msgid "My feeds"
 msgstr "Мої канали"
 
-#: classes/Pref_Feeds.php:1047
+#: classes/Pref_Feeds.php:1049
 msgid "OPML"
 msgstr "OPML"
 
-#: classes/Pref_Feeds.php:1052
+#: classes/Pref_Feeds.php:1054
 msgid "Sharing"
 msgstr "Поширення"
 
@@ -1157,7 +1153,7 @@ msgstr "Підписані канали"
 msgid "Stored articles"
 msgstr "Збережені статті"
 
-#: classes/Pref_Users.php:100 classes/UserHelper.php:269
+#: classes/Pref_Users.php:100 classes/UserHelper.php:273
 msgid "User not found"
 msgstr "Користувач не знайдений"
 
@@ -1180,12 +1176,12 @@ msgstr "Користувач %s вже існує."
 msgid "Create user"
 msgstr "Додати користувача"
 
-#: classes/Pref_Users.php:237 classes/Pref_Filters.php:691
-#: js/CommonFilters.js:521 js/CommonDialogs.js:626
+#: classes/Pref_Users.php:237 classes/Pref_Filters.php:655
+#: js/CommonFilters.js:523 js/CommonDialogs.js:626
 msgid "Remove"
 msgstr "Вилучити"
 
-#: classes/Pref_Users.php:241 classes/Handler_Public.php:535
+#: classes/Pref_Users.php:241 classes/Handler_Public.php:534
 msgid "Reset password"
 msgstr "Скинути пароль"
 
@@ -1205,42 +1201,43 @@ msgstr "Останній вхід"
 msgid "Click to edit"
 msgstr "Клацнути для зміни"
 
-#: classes/Config.php:402
+#: classes/Config.php:398
 #, php-format
 msgid "Git error [RC=%d]: %s"
 msgstr "Git error [RC=%d]: %s"
 
-#: classes/Pref_Filters.php:211 classes/Pref_Filters.php:222
-#: classes/Pref_Filters.php:442 classes/Pref_Filters.php:876
+#: classes/Pref_Filters.php:216 classes/Pref_Filters.php:226
+#: classes/Pref_Filters.php:414 classes/Pref_Filters.php:857
 msgid "All feeds"
 msgstr "Всі канали"
 
-#: classes/Pref_Filters.php:233 classes/Pref_Filters.php:462
+#: classes/Pref_Filters.php:235 classes/Pref_Filters.php:434
 msgid "(inverse)"
 msgstr "(обернутий)"
 
-#: classes/Pref_Filters.php:229 classes/Pref_Filters.php:461
+#: classes/Pref_Filters.php:231 classes/Pref_Filters.php:433
 #, php-format
 msgid "%s on %s in %s %s"
 msgstr "%s на %s в %s%s"
 
-#: classes/Pref_Filters.php:687 classes/RPC.php:674
+#: classes/Pref_Filters.php:450
+#, php-format
+msgid "Unknown action: %d"
+msgstr ""
+
+#: classes/Pref_Filters.php:651 classes/RPC.php:650
 msgid "Create filter"
 msgstr "Створити фільтр"
 
-#: classes/Pref_Filters.php:689
+#: classes/Pref_Filters.php:653
 msgid "Combine"
 msgstr "Об’єднувати"
 
-#: classes/Pref_Filters.php:695
+#: classes/Pref_Filters.php:659
 msgid "Toggle rule display"
 msgstr "Перемкнути показ правила"
 
-#: classes/Pref_Filters.php:746
-msgid "[No caption]"
-msgstr "[Без заголовку]"
-
-#: classes/Pref_Filters.php:748
+#: classes/Pref_Filters.php:709
 #, php-format
 msgid "%s (%d rule)"
 msgid_plural "%s (%d rules)"
@@ -1248,23 +1245,41 @@ msgstr[0] "%s (%d правило)"
 msgstr[1] "%s (%d правила)"
 msgstr[2] "%s (%d правил)"
 
-#: classes/Pref_Filters.php:762
+#: classes/Pref_Filters.php:710
+msgid "[No caption]"
+msgstr "[Без заголовку]"
+
+#: classes/Pref_Filters.php:713
 msgid "matches any rule"
 msgstr "задовольняє будь якому правилу"
 
-#: classes/Pref_Filters.php:763
+#: classes/Pref_Filters.php:714
 msgid "inverse"
 msgstr "(обернутий)"
 
-#: classes/Pref_Filters.php:766
-#, php-format
-msgid "%s (+%d action)"
-msgid_plural "%s (+%d actions)"
+#: classes/Pref_Filters.php:746
+#, fuzzy, php-format
+#| msgid "%s (+%d action)"
+#| msgid_plural "%s (+%d actions)"
+msgid "(+%d action)"
+msgid_plural "(+%d actions)"
 msgstr[0] "%s (+%d дія)"
 msgstr[1] "%s (+%d дії)"
 msgstr[2] "%s (+%d дій)"
 
-#: classes/UserHelper.php:267
+#: classes/Sessions.php:112
+msgid "Session failed to validate (password changed)"
+msgstr "Не вдається перевірити сесію (змінився пароль)"
+
+#: classes/Sessions.php:117
+msgid "Session failed to validate (account is disabled)"
+msgstr "Не вдається перевірити сесію (обліковий запис вимкнено)"
+
+#: classes/Sessions.php:136
+msgid "Session failed to validate (user not found)"
+msgstr "Не вдається перевірити сесію (користувача не знайдено)"
+
+#: classes/UserHelper.php:271
 #, php-format
 msgid "Changed password of user %s to %s"
 msgstr "Змінено пароль користувача %s на %s"
@@ -1301,355 +1316,355 @@ msgstr "Додаю мітку %s"
 msgid "Duplicate label: %s"
 msgstr "Мітка вже існує: %s"
 
-#: classes/OPML.php:373
+#: classes/OPML.php:376
 #, php-format
 msgid "Setting preference key %s to %s"
 msgstr "Встановлюю ключ налаштувань %s в %s"
 
-#: classes/OPML.php:409
+#: classes/OPML.php:412
 #, php-format
 msgid "Adding filter %s..."
 msgstr "Додаю фільтр %s..."
 
-#: classes/OPML.php:568
+#: classes/OPML.php:571
 #, php-format
 msgid "Processing category: %s"
 msgstr "Опрацьовую категорію: %s"
 
-#: classes/OPML.php:617
+#: classes/OPML.php:613
 #, php-format
 msgid "Upload failed with error code %d"
 msgstr "Завантаження завершилося з помилкою %d"
 
-#: classes/OPML.php:629
+#: classes/OPML.php:625
 msgid "Unable to move uploaded file."
 msgstr "Не вдалося перемістити завантажений файл."
 
-#: classes/OPML.php:633
+#: classes/OPML.php:629
 msgid "Error: please upload OPML file."
 msgstr "Помилка: завантажуйте OPML файл."
 
-#: classes/OPML.php:641
+#: classes/OPML.php:637
 #, php-format
 msgid "Error: file is not readable: %s"
 msgstr "Помилка: не вдалося прочитати файл %s"
 
-#: classes/OPML.php:667
+#: classes/OPML.php:655
 msgid "Error while parsing document."
 msgstr "Помилка розбору документу."
 
-#: classes/RPC.php:610
+#: classes/RPC.php:586
 msgid "Navigation"
 msgstr "Навігація"
 
-#: classes/RPC.php:611
+#: classes/RPC.php:587
 msgid "Open next feed"
 msgstr "Відкрити наступний канал"
 
-#: classes/RPC.php:612
+#: classes/RPC.php:588
 msgid "Open next unread feed"
 msgstr "Відкрити наступний непрочитаний канал"
 
-#: classes/RPC.php:613
+#: classes/RPC.php:589
 msgid "Open previous feed"
 msgstr "Відкрити попередній канал"
 
-#: classes/RPC.php:614
+#: classes/RPC.php:590
 msgid "Open previous unread feed"
 msgstr "Відкрити попередній непрочитаний канал"
 
-#: classes/RPC.php:615
+#: classes/RPC.php:591
 msgid "Open next article (in combined mode, scroll down)"
 msgstr "Відкрити наступну статтю (в комбінованому режимі, прокрутка вниз)"
 
-#: classes/RPC.php:616
+#: classes/RPC.php:592
 msgid "Open previous article (in combined mode, scroll up)"
 msgstr "Відкрити попередню статтю (в комбінованому режимі, прокрутка вверх)"
 
-#: classes/RPC.php:617
+#: classes/RPC.php:593
 msgid "Scroll headlines by one page down"
 msgstr "Прокрутити заголовки на одну сторінку вниз"
 
-#: classes/RPC.php:618
+#: classes/RPC.php:594
 msgid "Scroll headlines by one page up"
 msgstr "Прокрутити заголовки на одну сторінку вгору"
 
-#: classes/RPC.php:619
+#: classes/RPC.php:595
 msgid "Open next article"
 msgstr "Відкрити наступну статтю"
 
-#: classes/RPC.php:620
+#: classes/RPC.php:596
 msgid "Open previous article"
 msgstr "Відкрити попередню статтю"
 
-#: classes/RPC.php:621
+#: classes/RPC.php:597
 msgid "Move to next article (don't expand)"
 msgstr "Перейти до наступної статті (не розгортати)"
 
-#: classes/RPC.php:622
+#: classes/RPC.php:598
 msgid "Move to previous article (don't expand)"
 msgstr "Перейти до попередньої статті (не розгортати)"
 
-#: classes/RPC.php:623
+#: classes/RPC.php:599
 msgid "Show search dialog"
 msgstr "Показати діалог пошуку"
 
-#: classes/RPC.php:624
+#: classes/RPC.php:600
 msgid "Cancel active search"
 msgstr "Скасувати активний пошук"
 
-#: classes/RPC.php:625
+#: classes/RPC.php:601
 msgid "Article"
 msgstr "Стаття"
 
-#: classes/RPC.php:626 js/Headlines.js:1449 js/Headlines.js:672
+#: classes/RPC.php:602 js/Headlines.js:1447 js/Headlines.js:670
 msgid "Toggle starred"
 msgstr "Позначити/зняти відмітку"
 
-#: classes/RPC.php:627 js/Headlines.js:1461 js/Headlines.js:673
+#: classes/RPC.php:603 js/Headlines.js:1459 js/Headlines.js:671
 msgid "Toggle published"
 msgstr "Опубліковано/не опубліковано"
 
-#: classes/RPC.php:628 js/Headlines.js:1436 js/Headlines.js:671
+#: classes/RPC.php:604 js/Headlines.js:1434 js/Headlines.js:669
 msgid "Toggle unread"
 msgstr "Прочитано/не прочитано"
 
-#: classes/RPC.php:629
+#: classes/RPC.php:605
 msgid "Edit tags"
 msgstr "Змінити теги"
 
-#: classes/RPC.php:630
+#: classes/RPC.php:606
 msgid "Open in new window"
 msgstr "Відкрити в новому вікні"
 
-#: classes/RPC.php:631 js/Headlines.js:1482
+#: classes/RPC.php:607 js/Headlines.js:1480
 msgid "Mark below as read"
 msgstr "Позначити статті нижче як прочитані"
 
-#: classes/RPC.php:632 js/Headlines.js:1475
+#: classes/RPC.php:608 js/Headlines.js:1473
 msgid "Mark above as read"
 msgstr "Позначити статті вище як прочитані"
 
-#: classes/RPC.php:633
+#: classes/RPC.php:609
 msgid "Scroll down"
 msgstr "Гортати донизу"
 
-#: classes/RPC.php:634
+#: classes/RPC.php:610
 msgid "Scroll up"
 msgstr "Гортати уверх"
 
-#: classes/RPC.php:635
+#: classes/RPC.php:611
 msgid "Scroll down page"
 msgstr "Прокрутити вниз"
 
-#: classes/RPC.php:636
+#: classes/RPC.php:612
 msgid "Scroll up page"
 msgstr "Прокрутити вгору"
 
-#: classes/RPC.php:637
+#: classes/RPC.php:613
 msgid "Select article under cursor"
 msgstr "Обрати статтю під курсором"
 
-#: classes/RPC.php:638
+#: classes/RPC.php:614
 msgid "Email article"
 msgstr "Надіслати статтю поштою"
 
-#: classes/RPC.php:639
+#: classes/RPC.php:615
 msgid "Close/collapse article"
 msgstr "Закрити/згорнути статтю"
 
-#: classes/RPC.php:640
+#: classes/RPC.php:616
 msgid "Toggle article expansion (combined mode)"
 msgstr "Перемкнути розтягнення статті (комбінований режим)"
 
-#: classes/RPC.php:642
+#: classes/RPC.php:618
 msgid "Toggle full article text via Readability"
 msgstr "Переключити на повний текст статті через Readability"
 
-#: classes/RPC.php:643
+#: classes/RPC.php:619
 msgid "Article selection"
 msgstr "Вибрати статтю"
 
-#: classes/RPC.php:644
+#: classes/RPC.php:620
 msgid "Select all articles"
 msgstr "Вибрати всі статті"
 
-#: classes/RPC.php:645
+#: classes/RPC.php:621
 msgid "Select unread"
 msgstr "Вибрати непрочитані"
 
-#: classes/RPC.php:646
+#: classes/RPC.php:622
 msgid "Select starred"
 msgstr "Вибрати позначені зірочкою"
 
-#: classes/RPC.php:647
+#: classes/RPC.php:623
 msgid "Select published"
 msgstr "Вибрати опубліковані"
 
-#: classes/RPC.php:648
+#: classes/RPC.php:624
 msgid "Invert selection"
 msgstr "Інвертувати вибір"
 
-#: classes/RPC.php:649
+#: classes/RPC.php:625
 msgid "Deselect everything"
 msgstr "Зняти вибір з усіх"
 
-#: classes/RPC.php:650
+#: classes/RPC.php:626
 msgid "Feed"
 msgstr "Канал"
 
-#: classes/RPC.php:651
+#: classes/RPC.php:627
 msgid "Refresh current feed"
 msgstr "Оновити поточний канал"
 
-#: classes/RPC.php:652
+#: classes/RPC.php:628
 msgid "Un/hide read feeds"
 msgstr "Сховати/показати прочитані канали"
 
-#: classes/RPC.php:654 js/Headlines.js:1582 js/Headlines.js:1647
+#: classes/RPC.php:630 js/Headlines.js:1580 js/Headlines.js:1645
 #: js/PrefFeedTree.js:114 js/CommonDialogs.js:381 js/FeedTree.js:99
 msgid "Edit feed"
 msgstr "Змінити канал"
 
-#: classes/RPC.php:656
+#: classes/RPC.php:632
 msgid "Reverse headlines"
 msgstr "Зворотній порядок заголовків"
 
-#: classes/RPC.php:657
+#: classes/RPC.php:633
 msgid "Toggle headline grouping"
 msgstr "Перемкнути групування заголовків"
 
-#: classes/RPC.php:658
+#: classes/RPC.php:634
 msgid "Toggle grid view"
 msgstr "Перемкнути табличний вигляд"
 
-#: classes/RPC.php:659
+#: classes/RPC.php:635
 msgid "Debug feed update"
 msgstr "Налагодження оновлень каналу"
 
-#: classes/RPC.php:660
+#: classes/RPC.php:636
 msgid "Debug viewfeed()"
 msgstr "Налагодження оновлення каналу"
 
-#: classes/RPC.php:661 js/FeedTree.js:164
+#: classes/RPC.php:637 js/FeedTree.js:164
 msgid "Mark all feeds as read"
 msgstr "Позначити всі канали як прочитані"
 
-#: classes/RPC.php:662
+#: classes/RPC.php:638
 msgid "Un/collapse current category"
 msgstr "Згорнути/розгорнути поточну категорію"
 
-#: classes/RPC.php:663
+#: classes/RPC.php:639
 msgid "Toggle auto expand in combined mode"
 msgstr "Перемкнути автоматичне розгортання в комбінованому режимі"
 
-#: classes/RPC.php:665
+#: classes/RPC.php:641
 msgid "Go to"
 msgstr "Перейти до"
 
-#: classes/RPC.php:667
+#: classes/RPC.php:643
 msgid "Fresh"
 msgstr "Свіжі"
 
-#: classes/RPC.php:672
+#: classes/RPC.php:648
 msgid "Other"
 msgstr "Інші"
 
-#: classes/RPC.php:673
+#: classes/RPC.php:649
 msgid "Create label"
 msgstr "Створити мітку"
 
-#: classes/RPC.php:675
+#: classes/RPC.php:651
 msgid "Un/collapse sidebar"
 msgstr "Показати/приховати бічну панель"
 
-#: classes/RPC.php:676
+#: classes/RPC.php:652
 msgid "Show help dialog"
 msgstr "Показати діалог допомоги"
 
-#: classes/RPC.php:814
+#: classes/RPC.php:789
 msgid "Shift"
 msgstr "Shift"
 
-#: classes/RPC.php:817
+#: classes/RPC.php:790
 msgid "Ctrl"
 msgstr "Ctrl"
 
-#: classes/RPC.php:842 plugins/share/init.php:284
+#: classes/RPC.php:813 plugins/share/init.php:284
 #: plugins/af_psql_trgm/init.php:135 js/PrefHelpers.js:498
 #: js/CommonFilters.js:102 js/PrefHelpers.js:66 js/PrefHelpers.js:821
-#: js/Feeds.js:296 js/PrefFeedTree.js:558 js/CommonDialogs.js:22
+#: js/Feeds.js:295 js/PrefFeedTree.js:558 js/CommonDialogs.js:22
 #: js/CommonDialogs.js:318 js/CommonDialogs.js:695 js/App.js:661
 msgid "Close this window"
 msgstr "Закрити це вікно"
 
-#: classes/Handler_Public.php:416
+#: classes/Handler_Public.php:415
 msgid "Incorrect username or password"
 msgstr "Неправильне ім’я чи пароль"
 
-#: classes/Handler_Public.php:469
+#: classes/Handler_Public.php:468
 msgid "Password recovery"
 msgstr "Відновлення пароля"
 
-#: classes/Handler_Public.php:506 classes/Handler_Public.php:536
-#: classes/Handler_Public.php:596 classes/Handler_Public.php:713
-#: classes/Handler_Public.php:720 classes/Handler_Public.php:743
+#: classes/Handler_Public.php:505 classes/Handler_Public.php:535
+#: classes/Handler_Public.php:595 classes/Handler_Public.php:712
+#: classes/Handler_Public.php:719 classes/Handler_Public.php:742
 #: plugins/bookmarklets/init.php:94 plugins/bookmarklets/init.php:139
 #: plugins/bookmarklets/init.php:157 plugins/bookmarklets/init.php:162
 msgid "Return to Tiny Tiny RSS"
 msgstr "Повернутися до Tiny Tiny RSS"
 
-#: classes/Handler_Public.php:509
+#: classes/Handler_Public.php:508
 msgid ""
 "You will need to provide valid account name and email. Password reset link "
 "will be sent to your email address."
 msgstr ""
 "Вкажіть коректне ім’я та пароль. Пароль прийде на вашу електронну адресу."
 
-#: classes/Handler_Public.php:521
+#: classes/Handler_Public.php:520
 msgid "Email:"
 msgstr "Ел. пошта:"
 
-#: classes/Handler_Public.php:529
+#: classes/Handler_Public.php:528
 #, php-format
 msgid "How much is %d + %d:"
 msgstr "Скільки буде %d плюс %d:"
 
-#: classes/Handler_Public.php:546
+#: classes/Handler_Public.php:545
 msgid "Some of the required form parameters are missing or incorrect."
 msgstr "Декілька необхідних параметрів форми відсутні або неправильні."
 
-#: classes/Handler_Public.php:550 classes/Handler_Public.php:602
+#: classes/Handler_Public.php:549 classes/Handler_Public.php:601
 msgid "Go back"
 msgstr "Назад"
 
-#: classes/Handler_Public.php:588
+#: classes/Handler_Public.php:587
 msgid "[tt-rss] Password reset request"
 msgstr "[tt-rss] Запит на скидання пароля"
 
-#: classes/Handler_Public.php:598
+#: classes/Handler_Public.php:597
 msgid "Sorry, login and email combination not found."
 msgstr "Пробачте, але комбінацію імені/паролю не знайдено."
 
-#: classes/Handler_Public.php:618
+#: classes/Handler_Public.php:617
 msgid "Your access level is insufficient to run this script."
 msgstr "Ваш рівень доступу недостатній для запуску сценарію."
 
-#: classes/Handler_Public.php:680
+#: classes/Handler_Public.php:679
 msgid "Database Updater"
 msgstr "Оновлювач бази даних"
 
-#: classes/Handler_Public.php:693
+#: classes/Handler_Public.php:692
 #, php-format
 msgid "Performing updates to version %d"
 msgstr "Йде оновлення до версії %d"
 
-#: classes/Handler_Public.php:708 classes/Handler_Public.php:735
+#: classes/Handler_Public.php:707 classes/Handler_Public.php:734
 #: js/PrefHelpers.js:418 js/PrefHelpers.js:764
 msgid "Update"
 msgstr "Оновити"
 
-#: classes/Handler_Public.php:728
+#: classes/Handler_Public.php:727
 #, php-format
 msgid "Database schema needs update to the latest version (%d to %d)."
 msgstr "Схема база даних потребує оновлення до останньої версії (з %d до %d)."
@@ -1843,7 +1858,7 @@ msgstr "Поширити"
 msgid "Shared article will appear in the Published feed."
 msgstr "Поширені статті з’являться на каналі Опубліковані."
 
-#: plugins/bookmarklets/init.php:326 include/login_form.php:198
+#: plugins/bookmarklets/init.php:326 include/login_form.php:196
 msgid "Log in"
 msgstr "Увійти"
 
@@ -1903,47 +1918,35 @@ msgstr "Канали, що підтримуються af_comics"
 msgid "The following comics are currently supported:"
 msgstr "Наступні комікси наразі підтримуються:"
 
-#: include/sessions.php:43
-msgid "Session failed to validate (password changed)"
-msgstr "Не вдається перевірити сесію (змінився пароль)"
-
-#: include/sessions.php:48
-msgid "Session failed to validate (account is disabled)"
-msgstr "Не вдається перевірити сесію (обліковий запис вимкнено)"
-
-#: include/sessions.php:67
-msgid "Session failed to validate (user not found)"
-msgstr "Не вдається перевірити сесію (користувача не знайдено)"
-
-#: include/functions.php:62
+#: include/functions.php:54
 msgid "Detect automatically"
 msgstr "Визначати автоматично"
 
-#: include/login_form.php:145
+#: include/login_form.php:143
 msgid "I forgot my password"
 msgstr "Я забув свій пароль"
 
-#: include/login_form.php:150
+#: include/login_form.php:148
 msgid "Profile:"
 msgstr "Профіль:"
 
-#: include/login_form.php:163
+#: include/login_form.php:161
 msgid "Use less traffic"
 msgstr "Використовувати менше трафіку"
 
-#: include/login_form.php:167
+#: include/login_form.php:165
 msgid "Does not display images in articles, reduces automatic refreshes."
 msgstr "Не показувати зображення у статтях, зменшує кількість автооновлень."
 
-#: include/login_form.php:175 js/CommonDialogs.js:16
+#: include/login_form.php:173 js/CommonDialogs.js:16
 msgid "Safe mode"
 msgstr "Безпечний режим"
 
-#: include/login_form.php:180
+#: include/login_form.php:178
 msgid "Uses default theme and prevents all plugins from loading."
 msgstr "Використовує типову тему та блокує завантаження будь-яких плагінів."
 
-#: include/login_form.php:188
+#: include/login_form.php:186
 msgid "Remember me"
 msgstr "Запам’ятати мене"
 
@@ -2033,58 +2036,58 @@ msgstr "Змінити дію"
 msgid "Add action"
 msgstr "Додати дію"
 
-#: js/CommonFilters.js:361
+#: js/CommonFilters.js:363
 msgid "Remove filter?"
 msgstr "Видалити фільтр?"
 
-#: js/CommonFilters.js:366
+#: js/CommonFilters.js:368
 msgid "Removing filter..."
 msgstr "Видалення фільтру..."
 
-#: js/CommonFilters.js:396 js/PrefUsers.js:42 js/PrefFeedTree.js:365
+#: js/CommonFilters.js:398 js/PrefUsers.js:42 js/PrefFeedTree.js:365
 #: js/CommonDialogs.js:475
 msgid "Saving data..."
 msgstr "Збереження даних..."
 
-#: js/CommonFilters.js:453 js/CommonFilters.js:485 js/PrefHelpers.js:195
+#: js/CommonFilters.js:455 js/CommonFilters.js:487 js/PrefHelpers.js:195
 msgid "Add"
 msgstr "Додати"
 
-#: js/CommonFilters.js:456 js/CommonFilters.js:488
+#: js/CommonFilters.js:458 js/CommonFilters.js:490
 msgid "Delete"
 msgstr "Видалити"
 
-#: js/CommonFilters.js:522 js/CommonFilters.js:526
+#: js/CommonFilters.js:524 js/CommonFilters.js:528
 msgid "Test"
 msgstr "Перевірка"
 
-#: js/CommonFilters.js:527
+#: js/CommonFilters.js:529
 msgid "Create"
 msgstr "Створити"
 
-#: js/Headlines.js:651
+#: js/Headlines.js:649
 msgid "Cancel search"
 msgstr "Скасувати пошук"
 
-#: js/Headlines.js:665
+#: js/Headlines.js:663
 msgid "Select..."
 msgstr "Обрати..."
 
-#: js/Headlines.js:825 js/Headlines.js:879 js/Headlines.js:896
+#: js/Headlines.js:823 js/Headlines.js:877 js/Headlines.js:894
 msgid "Click to open next unread feed."
 msgstr "Клацніть, що відкрити наступний непрочитаний канал."
 
-#: js/Headlines.js:893
+#: js/Headlines.js:891
 msgid "New articles found, reload feed to continue."
 msgstr "Знайдено нові статті, перезавантажте канал щоб продовжити."
 
-#: js/Headlines.js:950 js/Headlines.js:976 js/Headlines.js:988
-#: js/Headlines.js:1131 js/Headlines.js:1148 js/Headlines.js:1165
-#: js/Headlines.js:1302 js/Article.js:62
+#: js/Headlines.js:948 js/Headlines.js:974 js/Headlines.js:986
+#: js/Headlines.js:1129 js/Headlines.js:1146 js/Headlines.js:1163
+#: js/Headlines.js:1300 js/Article.js:62
 msgid "No articles selected."
 msgstr "Немає обраних статей."
 
-#: js/Headlines.js:1102
+#: js/Headlines.js:1100
 #, java-printf-format, javascript-format
 msgid "%d article selected"
 msgid_plural "%d articles selected"
@@ -2092,7 +2095,7 @@ msgstr[0] "%d стаття виділена"
 msgstr[1] "%d статті виділені"
 msgstr[2] "%d статей виділені"
 
-#: js/Headlines.js:1173
+#: js/Headlines.js:1171
 #, java-printf-format, javascript-format
 msgid "Delete %d selected article in %s?"
 msgid_plural "Delete %d selected articles in %s?"
@@ -2100,7 +2103,7 @@ msgstr[0] "Видалити %d виділену статтю в %s?"
 msgstr[1] "Видалити %d виділені статті в %s?"
 msgstr[2] "Видалити %d виділених статей в %s?"
 
-#: js/Headlines.js:1175
+#: js/Headlines.js:1173
 #, java-printf-format, javascript-format
 msgid "Delete %d selected article?"
 msgid_plural "Delete %d selected articles?"
@@ -2108,7 +2111,7 @@ msgstr[0] "Видалити %d виділену статтю?"
 msgstr[1] "Видалити %d виділені статті?"
 msgstr[2] "Видалити %d виділених статей?"
 
-#: js/Headlines.js:1308
+#: js/Headlines.js:1306
 #, java-printf-format, javascript-format
 msgid "Mark %d selected article in %s as read?"
 msgid_plural "Mark %d selected articles in %s as read?"
@@ -2116,15 +2119,15 @@ msgstr[0] "Позначити %d виділену статтю %s прочита
 msgstr[1] "Позначити %d виділені статті %s прочитаними?"
 msgstr[2] "Позначити %d виділених статей %s прочитаними?"
 
-#: js/Headlines.js:1324
+#: js/Headlines.js:1322
 msgid "No article is selected."
 msgstr "Не вибрано жодної статті."
 
-#: js/Headlines.js:1359
+#: js/Headlines.js:1357
 msgid "No articles found to mark"
 msgstr "Статей для позначення не знайдено"
 
-#: js/Headlines.js:1361
+#: js/Headlines.js:1359
 #, java-printf-format, javascript-format
 msgid "Mark %d article as read?"
 msgid_plural "Mark %d articles as read?"
@@ -2132,40 +2135,40 @@ msgstr[0] "Позначити %d статтю прочитаною?"
 msgstr[1] "Позначити %d статті прочитаними?"
 msgstr[2] "Позначити %d статей прочитаними?"
 
-#: js/Headlines.js:1420
+#: js/Headlines.js:1418
 msgid "Open original article"
 msgstr "Відкрити оригінальну статтю"
 
-#: js/Headlines.js:1427
+#: js/Headlines.js:1425
 msgid "Display article URL"
 msgstr "Показати посилання на статтю"
 
-#: js/Headlines.js:1534
+#: js/Headlines.js:1532
 msgid "Assign label"
 msgstr "Призначити мітку"
 
-#: js/Headlines.js:1539
+#: js/Headlines.js:1537
 msgid "Remove label"
 msgstr "Видалити мітку"
 
-#: js/Headlines.js:1588 js/FeedTree.js:105 js/Headlines.js:473
+#: js/Headlines.js:1586 js/FeedTree.js:105 js/Headlines.js:473
 #: js/Headlines.js:522 js/Headlines.js:591
 msgid "Open site"
 msgstr "Відкрити сайт"
 
-#: js/Headlines.js:1597 js/FeedTree.js:114
+#: js/Headlines.js:1595 js/FeedTree.js:114
 msgid "Debug feed"
 msgstr "Налагодження каналу"
 
-#: js/Headlines.js:1618
+#: js/Headlines.js:1616
 msgid "Select articles in group"
 msgstr "Обрати статті в групі"
 
-#: js/Headlines.js:1628
+#: js/Headlines.js:1626
 msgid "Mark group as read"
 msgstr "Позначити групу як прочитану"
 
-#: js/Headlines.js:1640
+#: js/Headlines.js:1638
 msgid "Mark feed as read"
 msgstr "Позначити канал як прочитаний"
 
@@ -2433,11 +2436,11 @@ msgstr "Теги для статті (розділені комами):"
 msgid "Saving article tags..."
 msgstr "Збереження тегів статті..."
 
-#: js/Feeds.js:286
+#: js/Feeds.js:285
 msgid "Your password is at default value"
 msgstr "Ваш пароль має типове значення"
 
-#: js/Feeds.js:288
+#: js/Feeds.js:287
 msgid ""
 "You are using default tt-rss password. Please change it in the Preferences "
 "(Personal data / Authentication)."
@@ -2445,48 +2448,48 @@ msgstr ""
 "Ви використовуєте типовий пароль tt-rss. Будь ласка, змініть його в "
 "Налаштуваннях (Персональні дані / Автентифікація)."
 
-#: js/Feeds.js:443
+#: js/Feeds.js:442
 msgid "Mark all articles as read?"
 msgstr "Позначити всі статті прочитаними?"
 
-#: js/Feeds.js:447
+#: js/Feeds.js:446
 msgid "Marking all feeds as read..."
 msgstr "Позначення всіх статей прочитаними..."
 
-#: js/Feeds.js:464
+#: js/Feeds.js:463
 msgid "Mark %w in %s older than 1 day as read?"
 msgstr "Позначити %w в %s, що старші за 1 день, прочитаними?"
 
-#: js/Feeds.js:467
+#: js/Feeds.js:466
 msgid "Mark %w in %s older than 1 week as read?"
 msgstr "Позначити %w в %s, що старші за 1 тиждень, прочитаними?"
 
-#: js/Feeds.js:470
+#: js/Feeds.js:469
 msgid "Mark %w in %s older than 2 weeks as read?"
 msgstr "Позначити %w в %s, що старші за 2 тижні, прочитаними?"
 
-#: js/Feeds.js:473
+#: js/Feeds.js:472
 msgid "Mark %w in %s as read?"
 msgstr "Позначити %w в %s прочитаними?"
 
-#: js/Feeds.js:476
+#: js/Feeds.js:475
 msgid "search results"
 msgstr "результати пошуку"
 
-#: js/Feeds.js:476
+#: js/Feeds.js:475
 msgid "all articles"
 msgstr "всі статті"
 
-#: js/Feeds.js:517
+#: js/Feeds.js:516
 #, java-printf-format, javascript-format
 msgid "Mark all articles in %s as read?"
 msgstr "Позначити всі статті в %s прочитаними?"
 
-#: js/Feeds.js:652
+#: js/Feeds.js:651
 msgid "Search syntax"
 msgstr "Синтаксис пошуку"
 
-#: js/Feeds.js:716
+#: js/Feeds.js:715
 #, fuzzy
 #| msgid "Search %s..."
 msgid "Search feeds"
@@ -2691,7 +2694,7 @@ msgstr "Видалення виділених каналів..."
 msgid "Please enter label caption:"
 msgstr "Будь ласка, введіть заголовок мітки:"
 
-#: js/CommonDialogs.js:347 js/CommonDialogs.js:388 js/App.js:1304
+#: js/CommonDialogs.js:347 js/CommonDialogs.js:388 js/App.js:1316
 #, java-printf-format, javascript-format
 msgid "Unsubscribe from %s?"
 msgstr "Відписатися від %s?"
@@ -2700,7 +2703,7 @@ msgstr "Відписатися від %s?"
 msgid "Removing feed..."
 msgstr "Видалення каналу..."
 
-#: js/CommonDialogs.js:373 js/App.js:1167 js/App.js:1284
+#: js/CommonDialogs.js:373 js/App.js:1179 js/App.js:1296
 msgid "You can't edit this kind of feed."
 msgstr "Ви не можете змінювати такий канал."
 
@@ -2802,15 +2805,15 @@ msgstr "Широкоекранний показ недоступний в ком
 msgid "Please enable mail or mailto plugin first."
 msgstr "Будь ласка, увімкніть додаток mail чи mailto."
 
-#: js/App.js:1239
+#: js/App.js:1251
 msgid "Please enable af_readability first."
 msgstr "Будь ласка, увімкніть af_readability."
 
-#: js/App.js:1293
+#: js/App.js:1305
 msgid "Please select some feed first."
 msgstr "Будь ласка, оберіть деякі канали."
 
-#: js/App.js:1298
+#: js/App.js:1310
 msgid "You can't unsubscribe from the category."
 msgstr "Ви не можете відписатися від цієї категорії."
 
@@ -2888,23 +2891,23 @@ msgstr "Розгорнути статтю"
 msgid "No recent articles matching this filter have been found."
 msgstr "Не знайдено свіжих статей, що відповідають цьому фільтру."
 
-#: js/CommonFilters.js:419
+#: js/CommonFilters.js:421
 msgid "Enabled"
 msgstr "Увімкнутий"
 
-#: js/CommonFilters.js:420
+#: js/CommonFilters.js:422
 msgid "Match any rule"
 msgstr "Задовольняє будь яке з правил"
 
-#: js/CommonFilters.js:421
+#: js/CommonFilters.js:423
 msgid "Inverse matching"
 msgstr "Обернути фільтр"
 
-#: js/CommonFilters.js:439
+#: js/CommonFilters.js:441
 msgid "Match"
 msgstr "Шукати збіг"
 
-#: js/CommonFilters.js:472
+#: js/CommonFilters.js:474
 msgid "Apply actions"
 msgstr "Застосувати дії"
 
@@ -2920,19 +2923,19 @@ msgstr ""
 msgid "Edit tags for this article"
 msgstr "Змінити мітки для цієї статті"
 
-#: js/Headlines.js:668
+#: js/Headlines.js:666
 msgid "Invert"
 msgstr "Обернути"
 
-#: js/Headlines.js:676
+#: js/Headlines.js:674
 msgid "Set score"
 msgstr "Оцінити"
 
-#: js/Headlines.js:685
+#: js/Headlines.js:683
 msgid "Delete permanently"
 msgstr "Видалити незворотньо"
 
-#: js/Headlines.js:916
+#: js/Headlines.js:914
 msgid ""
 "Could not update headlines (invalid object received - see error console for "
 "details)"
@@ -2988,22 +2991,22 @@ msgstr[2] "Оновлення очікує для %d плагінів"
 msgid "Attachments"
 msgstr "Вкладення"
 
-#: js/Feeds.js:293
+#: js/Feeds.js:292
 msgid "Open Preferences"
 msgstr "Відкрити Налаштування"
 
-#: js/Feeds.js:636
+#: js/Feeds.js:635
 #, javascript-format
 msgid "Search %s..."
 msgstr "Пошук %s..."
 
-#: js/Feeds.js:645
+#: js/Feeds.js:644
 msgid "Used for word stemming"
 msgstr ""
 "Використовується для <a href=https://uk.wikipedia.org/wiki/"
 "%D0%A1%D1%82%D0%B5%D0%BC%D1%96%D0%BD%D0%B3>стемінгу</a>"
 
-#: js/Feeds.js:705
+#: js/Feeds.js:704
 msgid "Show feeds matching..."
 msgstr ""
 
@@ -3088,6 +3091,9 @@ msgstr "Додаткова інформація"
 #: js/PrefLabelTree.js:126
 msgid "Caption"
 msgstr "Заголовок"
+
+#~ msgid "No feed selected."
+#~ msgstr "Жоден канал не обрано."
 
 #~ msgid "Data saved."
 #~ msgstr "Дані збережено."

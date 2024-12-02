@@ -12,6 +12,7 @@ The Actions are defined in the directory .github/workflows. Secrets are used for
 
 ### Branches currently working:
 
+- Duplicati-Dockerfile [![Sync+build+push Duplicati](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20Duplicati.yml/badge.svg)](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20Duplicati.yml)
 - Protonmail-bridge [![Sync+build+push Spreed](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20Protonmail-bridge.yml/badge.svg)](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20Protonmail-bridge.yml)
 - Spreed [![Sync+build+push Spreed](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20Spreed.yml/badge.svg)](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20Spreed.yml)
 - TT-RSS [![Sync+build+push TTRSS](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20TTRSS.yml/badge.svg)](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20TTRSS.yml)

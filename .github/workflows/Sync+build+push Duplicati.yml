@@ -39,7 +39,7 @@ jobs:
           # source_repo: "https://github.com/duplicati/duplicati"
           # source_branch: "master"
           # destination_repo: "git@github.com:schklom/Mirror-workflows.git"
-          # destination_branch: "Home-Assistant"
+          # destination_branch: "Duplicati-Dockerfile"
           # ssh_private_key: ${{ secrets.GITSYNCACTION }}
       - name: Checkout
         uses: actions/checkout@v4
@@ -54,7 +54,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       #- uses: actions/checkout@v4
         #with:
-          #ref: 'Home-Assistant-Extra'
+          #ref: 'Duplicati-Dockerfile'
       #- name: app dockerfile
       #  run: sed -r 's/^FROM ([a-zA-Z]+)(.*)$/FROM arm32v7\/\1\2/' src/app/Dockerfile > src/app/Dockerfile
       #- name: adapt web dockerfile
@@ -75,7 +75,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          #repository: 'schklom/Home-Assistant-Extra'
+          #repository: 'schklom/Duplicati-Dockerfile'
           ref: 'Duplicati-Dockerfile' # branch
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU

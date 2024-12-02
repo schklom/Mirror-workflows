@@ -5,4 +5,7 @@ read through existing issues, and really make sure that the permission are set c
 The standard set-up is tested, so if something doesn't work, it is probably a configuration issue on your side.
 Try to debug it yourself before opening an issue.
 
+Please clear your browser cache (and/or use a private window) before opening an issue.
+Especially after upgrading the server to a new version, this resolves most issues.
+
 Every issue and every comment ("I have the same problem") creates email traffic for the maintainers, which keeps them from doing development work.

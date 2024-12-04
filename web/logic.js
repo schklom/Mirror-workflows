@@ -361,6 +361,17 @@ async function locate(requestedIndex) {
     //Zoom to the currently selected point
     target = L.latLng(loc.lat, loc.lon);
     map.setView(target, 16);
+
+    updateLocateOlderButton(requestedIndex);
+}
+
+function updateLocateOlderButton(requestedIndex) {
+    var button = document.getElementById("locateOlder");
+    if (requestedIndex <= 0) {
+        button.disabled = true;
+    } else {
+        button.disabled = false;
+    }
 }
 
 function setNoLocationDataAvailable(text) {

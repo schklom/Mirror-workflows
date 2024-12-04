@@ -64,6 +64,11 @@ button:active {
     background-color: #318f2f;
 }
 
+button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
 footer {
     padding: 10px;
     z-index: 2;

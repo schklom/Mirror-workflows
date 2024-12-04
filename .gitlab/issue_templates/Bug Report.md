@@ -1,5 +1,6 @@
 - [ ] I have searched for duplicates (including closed issues)
 - [ ] I have read the [wiki](https://gitlab.com/Nulide/findmydevice/-/wikis/home)
+- [ ] I have cleared the browser cache
 
 ### Bug Summary
 

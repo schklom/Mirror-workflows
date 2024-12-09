@@ -8,15 +8,19 @@ ARG ALPINE_MIRROR
 ENV SCRIPT_ROOT=/opt/tt-rss
 ENV SRC_DIR=/src/tt-rss/
 
+# Used to centralize the PHP version suffix for packages and paths
+ENV PHP_SUFFIX=84
+
 RUN [ ! -z ${ALPINE_MIRROR} ] && \
-		sed -i.bak "s#dl-cdn.alpinelinux.org#${ALPINE_MIRROR}#" /etc/apk/repositories ; \
-	apk add --no-cache dcron php84 php84-fpm php84-phar php84-sockets php84-pecl-apcu \
-	php84-pdo php84-gd php84-pgsql php84-pdo_pgsql php84-xmlwriter php84-opcache \
-	php84-mbstring php84-intl php84-xml php84-curl php84-simplexml \
-	php84-session php84-tokenizer php84-dom php84-fileinfo php84-ctype \
-	php84-json php84-iconv php84-pcntl php84-posix php84-zip php84-exif \
-	php84-openssl git postgresql-client sudo php84-pecl-xdebug rsync tzdata && \
-	sed -i 's/\(memory_limit =\) 128M/\1 256M/' /etc/php84/php.ini && \
+	sed -i.bak "s#dl-cdn.alpinelinux.org#${ALPINE_MIRROR}#" /etc/apk/repositories ; \
+	apk add --no-cache dcron php${PHP_SUFFIX} \
+		$(for p in ctype curl dom exif fileinfo fpm gd iconv intl json mbstring opcache \
+			openssl pcntl pdo pdo_pgsql pecl-apcu pecl-xdebug phar posix session simplexml sockets tokenizer xml xmlwriter zip; do \
+			php_pkgs="$php_pkgs php${PHP_SUFFIX}-$p"; \
+		done; \
+		echo $php_pkgs) \
+		git postgresql-client rsync sudo tzdata && \
+	sed -i 's/\(memory_limit =\) 128M/\1 256M/' /etc/php${PHP_SUFFIX}/php.ini && \
 	sed -i -e 's/^listen = 127.0.0.1:9000/listen = 9000/' \
 		-e 's/;\(clear_env\) = .*/\1 = no/i' \
 		-e 's/;\(pm.status_path = \/status\)/\1/i' \
@@ -24,7 +28,7 @@ RUN [ ! -z ${ALPINE_MIRROR} ] && \
 		-e 's/^\(user\|group\) = .*/\1 = app/i' \
 		-e 's/;\(php_admin_value\[error_log\]\) = .*/\1 = \/tmp\/error.log/' \
 		-e 's/;\(php_admin_flag\[log_errors\]\) = .*/\1 = on/' \
-			/etc/php84/php-fpm.d/www.conf && \
+			/etc/php${PHP_SUFFIX}/php-fpm.d/www.conf && \
 	mkdir -p /var/www ${SCRIPT_ROOT}/config.d ${SCRIPT_ROOT}/sql/post-init.d
 
 ARG CI_COMMIT_BRANCH
@@ -92,7 +96,7 @@ ENV TTRSS_DB_HOST="db"
 ENV TTRSS_DB_PORT="5432"
 
 ENV TTRSS_MYSQL_CHARSET="UTF8"
-ENV TTRSS_PHP_EXECUTABLE="/usr/bin/php84"
+ENV TTRSS_PHP_EXECUTABLE="/usr/bin/php${PHP_SUFFIX}"
 ENV TTRSS_PLUGINS="auth_internal, note, nginx_xaccel"
 
 CMD ${SCRIPT_ROOT}/startup.sh

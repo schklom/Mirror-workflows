@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-28 08:14+0300\n"
-"PO-Revision-Date: 2024-06-21 18:10+0000\n"
+"PO-Revision-Date: 2024-11-29 21:00+0000\n"
 "Last-Translator: Patrick Ahles <p.ahles@gmail.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/tt-rss/webui/nl/>\n"
 "Language: nl_NL\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.6-rc\n"
+"X-Generator: Weblate 5.9-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: _\n"
 "X-Poedit-Basepath: .\n"
@@ -1216,10 +1216,9 @@ msgid "%s on %s in %s %s"
 msgstr "%s op %s in %s %s"
 
 #: classes/Pref_Filters.php:450
-#, fuzzy, php-format
-#| msgid "Unknown option: %s"
+#, php-format
 msgid "Unknown action: %d"
-msgstr "Onbekende optie: %s"
+msgstr "Onbekende actie: %d"
 
 #: classes/Pref_Filters.php:651 classes/RPC.php:650
 msgid "Create filter"
@@ -1253,13 +1252,11 @@ msgid "inverse"
 msgstr "omkeren"
 
 #: classes/Pref_Filters.php:746
-#, fuzzy, php-format
-#| msgid "%s (+%d action)"
-#| msgid_plural "%s (+%d actions)"
+#, php-format
 msgid "(+%d action)"
 msgid_plural "(+%d actions)"
-msgstr[0] "%s (+%d actie)"
-msgstr[1] "%s (+%d acties)"
+msgstr[0] "(+%d actie)"
+msgstr[1] "(+%d acties)"
 
 #: classes/Sessions.php:112
 msgid "Session failed to validate (password changed)"

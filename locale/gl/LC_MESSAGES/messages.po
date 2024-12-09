@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-11-28 08:14+0300\n"
-"PO-Revision-Date: 2024-09-19 07:02+0000\n"
+"PO-Revision-Date: 2024-11-29 21:00+0000\n"
 "Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/tt-rss/webui/gl/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -1214,7 +1214,7 @@ msgstr "%s en %s en %s %s"
 #: classes/Pref_Filters.php:450
 #, php-format
 msgid "Unknown action: %d"
-msgstr ""
+msgstr "Acción descoñecida: %d"
 
 #: classes/Pref_Filters.php:651 classes/RPC.php:650
 msgid "Create filter"
@@ -1248,13 +1248,11 @@ msgid "inverse"
 msgstr "inversa"
 
 #: classes/Pref_Filters.php:746
-#, fuzzy, php-format
-#| msgid "%s (+%d action)"
-#| msgid_plural "%s (+%d actions)"
+#, php-format
 msgid "(+%d action)"
 msgid_plural "(+%d actions)"
-msgstr[0] "%s (+%d acción)"
-msgstr[1] "%s (+%d accións)"
+msgstr[0] "(+%d acción)"
+msgstr[1] "(+%d accións)"
 
 #: classes/Sessions.php:112
 msgid "Session failed to validate (password changed)"

@@ -13,13 +13,13 @@ ENV PHP_SUFFIX=84
 
 RUN [ ! -z ${ALPINE_MIRROR} ] && \
 	sed -i.bak "s#dl-cdn.alpinelinux.org#${ALPINE_MIRROR}#" /etc/apk/repositories ; \
-	apk add --no-cache dcron php${PHP_SUFFIX} \
+	apk add --no-cache dcron git postgresql-client rsync sudo tzdata \
+		php${PHP_SUFFIX} \
 		$(for p in ctype curl dom exif fileinfo fpm gd iconv intl json mbstring opcache \
 			openssl pcntl pdo pdo_pgsql pecl-apcu pecl-xdebug phar posix session simplexml sockets tokenizer xml xmlwriter zip; do \
 			php_pkgs="$php_pkgs php${PHP_SUFFIX}-$p"; \
 		done; \
-		echo $php_pkgs) \
-		git postgresql-client rsync sudo tzdata && \
+		echo $php_pkgs) && \
 	sed -i 's/\(memory_limit =\) 128M/\1 256M/' /etc/php${PHP_SUFFIX}/php.ini && \
 	sed -i -e 's/^listen = 127.0.0.1:9000/listen = 9000/' \
 		-e 's/;\(clear_env\) = .*/\1 = no/i' \

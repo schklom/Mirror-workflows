@@ -1,6 +1,6 @@
 ARG PROXY_REGISTRY
 
-FROM ${PROXY_REGISTRY}alpine:3.20
+FROM ${PROXY_REGISTRY}alpine:3.21
 EXPOSE 9000/tcp
 
 ARG ALPINE_MIRROR
@@ -8,15 +8,19 @@ ARG ALPINE_MIRROR
 ENV SCRIPT_ROOT=/opt/tt-rss
 ENV SRC_DIR=/src/tt-rss/
 
+# Used to centralize the PHP version suffix for packages and paths
+ENV PHP_SUFFIX=84
+
 RUN [ ! -z ${ALPINE_MIRROR} ] && \
-		sed -i.bak "s#dl-cdn.alpinelinux.org#${ALPINE_MIRROR}#" /etc/apk/repositories ; \
-	apk add --no-cache dcron php83 php83-fpm php83-phar php83-sockets php83-pecl-apcu \
-	php83-pdo php83-gd php83-pgsql php83-pdo_pgsql php83-xmlwriter php83-opcache \
-	php83-mbstring php83-intl php83-xml php83-curl php83-simplexml \
-	php83-session php83-tokenizer php83-dom php83-fileinfo php83-ctype \
-	php83-json php83-iconv php83-pcntl php83-posix php83-zip php83-exif \
-	php83-openssl git postgresql-client sudo php83-pecl-xdebug rsync tzdata && \
-	sed -i 's/\(memory_limit =\) 128M/\1 256M/' /etc/php83/php.ini && \
+	sed -i.bak "s#dl-cdn.alpinelinux.org#${ALPINE_MIRROR}#" /etc/apk/repositories ; \
+	apk add --no-cache ca-certificates dcron git postgresql-client rsync sudo tzdata \
+		php${PHP_SUFFIX} \
+		$(for p in ctype curl dom exif fileinfo fpm gd iconv intl json mbstring opcache \
+			openssl pcntl pdo pdo_pgsql pecl-apcu pecl-xdebug phar posix session simplexml sockets tokenizer xml xmlwriter zip; do \
+			php_pkgs="$php_pkgs php${PHP_SUFFIX}-$p"; \
+		done; \
+		echo $php_pkgs) && \
+	sed -i 's/\(memory_limit =\) 128M/\1 256M/' /etc/php${PHP_SUFFIX}/php.ini && \
 	sed -i -e 's/^listen = 127.0.0.1:9000/listen = 9000/' \
 		-e 's/;\(clear_env\) = .*/\1 = no/i' \
 		-e 's/;\(pm.status_path = \/status\)/\1/i' \
@@ -24,7 +28,7 @@ RUN [ ! -z ${ALPINE_MIRROR} ] && \
 		-e 's/^\(user\|group\) = .*/\1 = app/i' \
 		-e 's/;\(php_admin_value\[error_log\]\) = .*/\1 = \/tmp\/error.log/' \
 		-e 's/;\(php_admin_flag\[log_errors\]\) = .*/\1 = on/' \
-			/etc/php83/php-fpm.d/www.conf && \
+			/etc/php${PHP_SUFFIX}/php-fpm.d/www.conf && \
 	mkdir -p /var/www ${SCRIPT_ROOT}/config.d ${SCRIPT_ROOT}/sql/post-init.d
 
 ARG CI_COMMIT_BRANCH
@@ -92,7 +96,7 @@ ENV TTRSS_DB_HOST="db"
 ENV TTRSS_DB_PORT="5432"
 
 ENV TTRSS_MYSQL_CHARSET="UTF8"
-ENV TTRSS_PHP_EXECUTABLE="/usr/bin/php83"
+ENV TTRSS_PHP_EXECUTABLE="/usr/bin/php${PHP_SUFFIX}"
 ENV TTRSS_PLUGINS="auth_internal, note, nginx_xaccel"
 
 CMD ${SCRIPT_ROOT}/startup.sh

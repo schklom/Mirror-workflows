@@ -1,29 +1,23 @@
 <?php
 class FeedParser {
+	private DOMDocument $doc;
 
-	/** @var DOMDocument */
-	private $doc;
-
-	/** @var string|null */
-	private $error = null;
+	private ?string $error = null;
 
 	/** @var array<string> */
-	private $libxml_errors = [];
+	private array $libxml_errors = [];
 
 	/** @var array<FeedItem> */
-	private $items = [];
+	private array $items = [];
 
-	/** @var string|null */
-	private $link;
+	private ?string $link = null;
 
-	/** @var string|null */
-	private $title;
+	private ?string $title = null;
 
 	/** @var FeedParser::FEED_*|null */
-	private $type;
+	private ?int $type = null;
 
-	/** @var DOMXPath|null */
-	private $xpath;
+	private ?DOMXPath $xpath = null;
 
 	const FEED_UNKNOWN = -1;
 	const FEED_RDF = 0;

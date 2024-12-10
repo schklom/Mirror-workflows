@@ -1,10 +1,9 @@
 <?php
 class DiskCache implements Cache_Adapter {
-	/** @var Cache_Adapter $adapter */
-	private $adapter;
+	private Cache_Adapter $adapter;
 
 	/** @var array<string, DiskCache> $instances */
-	private static $instances = [];
+	private static array $instances = [];
 
 	/**
 	 * https://stackoverflow.com/a/53662733

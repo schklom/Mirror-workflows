@@ -13,7 +13,7 @@ class Pref_Filters extends Handler_Protected {
 	const MAX_ACTIONS_TO_DISPLAY = 3;
 
 	/** @var array<int,array<mixed>> $action_descriptions */
-	private $action_descriptions = [];
+	private array $action_descriptions = [];
 
 	function before(string $method) : bool {
 

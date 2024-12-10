@@ -1,11 +1,8 @@
 <?php
-class Db
-{
-	/** @var Db $instance */
-	private static $instance;
+class Db {
+	private static ?Db $instance = null;
 
-	/** @var PDO|null $pdo */
-	private $pdo;
+	private ?PDO $pdo = null;
 
 	function __construct() {
 		ORM::configure(self::get_dsn());

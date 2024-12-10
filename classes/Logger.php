@@ -1,10 +1,8 @@
 <?php
 class Logger {
-	/** @var Logger|null */
-	private static $instance;
+	private static ?Logger $instance = null;
 
-	/** @var Logger_Adapter|null */
-	private $adapter;
+	private ?Logger_Adapter $adapter = null;
 
 	const LOG_DEST_SQL = "sql";
 	const LOG_DEST_STDOUT = "stdout";

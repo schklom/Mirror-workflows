@@ -3,12 +3,8 @@ use PHPUnit\Framework\TestCase;
 
 /** @group integration */
 final class ApiTest extends TestCase {
-
-	/** @var string */
-	private $api_url;
-
-	/** @var string */
-	private $sid;
+	private string $api_url;
+	private string $sid;
 
 	function __construct() {
 		$this->api_url = getenv('API_URL');

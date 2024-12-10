@@ -1,19 +1,10 @@
 <?php
 abstract class FeedItem_Common extends FeedItem {
-	/** @var DOMElement */
-	protected $elem;
-
-	/** @var DOMDocument */
-	protected $doc;
-
-	/** @var DOMXPath */
-	protected $xpath;
-
-	function __construct(DOMElement $elem, DOMDocument $doc, DOMXPath $xpath) {
-		$this->elem = $elem;
-		$this->xpath = $xpath;
-		$this->doc = $doc;
-
+	function __construct(
+		protected readonly DOMElement $elem,
+		protected readonly DOMDocument $doc,
+		protected readonly DOMXPath $xpath,
+	) {
 		try {
 			$source = $elem->getElementsByTagName("source")->item(0);
 
@@ -97,13 +88,13 @@ abstract class FeedItem_Common extends FeedItem {
 		$enclosures = $this->xpath->query("media:content", $this->elem);
 
 		foreach ($enclosures as $enclosure) {
-			$enc = new FeedEnclosure();
-
-			$enc->type = clean($enclosure->getAttribute("type"));
-			$enc->link = clean($enclosure->getAttribute("url"));
-			$enc->length = clean($enclosure->getAttribute("length"));
-			$enc->height = clean($enclosure->getAttribute("height"));
-			$enc->width = clean($enclosure->getAttribute("width"));
+			$enc = new FeedEnclosure(
+				type: clean($enclosure->getAttribute('type')),
+				link: clean($enclosure->getAttribute('url')),
+				length: clean($enclosure->getAttribute('length')),
+				height: clean($enclosure->getAttribute('height')),
+				width: clean($enclosure->getAttribute('width')),
+			);
 
 			$medium = clean($enclosure->getAttribute("medium"));
 			if (!$enc->type && $medium) {
@@ -119,17 +110,17 @@ abstract class FeedItem_Common extends FeedItem {
 		$enclosures = $this->xpath->query("media:group", $this->elem);
 
 		foreach ($enclosures as $enclosure) {
-			$enc = new FeedEnclosure();
-
 			/** @var DOMElement|null */
 			$content = $this->xpath->query("media:content", $enclosure)->item(0);
 
 			if ($content) {
-				$enc->type = clean($content->getAttribute("type"));
-				$enc->link = clean($content->getAttribute("url"));
-				$enc->length = clean($content->getAttribute("length"));
-				$enc->height = clean($content->getAttribute("height"));
-				$enc->width = clean($content->getAttribute("width"));
+				$enc = new FeedEnclosure(
+					type: clean($content->getAttribute('type')),
+					link: clean($content->getAttribute('url')),
+					length: clean($content->getAttribute('length')),
+					height: clean($content->getAttribute('height')),
+					width: clean($content->getAttribute('width')),
+				);
 
 				$medium = clean($content->getAttribute("medium"));
 				if (!$enc->type && $medium) {
@@ -151,14 +142,12 @@ abstract class FeedItem_Common extends FeedItem {
 		$enclosures = $this->xpath->query("media:thumbnail", $this->elem);
 
 		foreach ($enclosures as $enclosure) {
-			$enc = new FeedEnclosure();
-
-			$enc->type = "image/generic";
-			$enc->link = clean($enclosure->getAttribute("url"));
-			$enc->height = clean($enclosure->getAttribute("height"));
-			$enc->width = clean($enclosure->getAttribute("width"));
-
-			array_push($encs, $enc);
+			$encs[] = new FeedEnclosure(
+				type: 'image/generic',
+				link: clean($enclosure->getAttribute('url')),
+				height: clean($enclosure->getAttribute('height')),
+				width: clean($enclosure->getAttribute('width')),
+			);
 		}
 
 		return $encs;

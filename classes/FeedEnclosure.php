@@ -1,21 +1,11 @@
 <?php
 class FeedEnclosure {
-	/** @var string */
-	public $link;
-
-	/** @var string */
-	public $type;
-
-	/** @var string */
-	public $length;
-
-	/** @var string */
-	public $title;
-
-	/** @var string */
-	public $height;
-
-	/** @var string */
-	public $width;
+	function __construct(
+		public string $link = '',
+		public string $type = '',
+		public string $length = '',
+		public string $title = '',
+		public string $height = '',
+		public string $width = '',
+	) {}
 }
-

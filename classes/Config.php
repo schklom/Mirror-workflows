@@ -252,17 +252,15 @@ class Config {
 		Config::HTTP_429_THROTTLE_INTERVAL => [ 3600,				Config::T_INT ]
 	];
 
-	/** @var Config|null */
-	private static $instance;
+	private static ?Config $instance = null;
 
 	/** @var array<string, array<bool|int|string>> */
-	private $params = [];
+	private array $params = [];
 
 	/** @var array<string, mixed> */
-	private $version = [];
+	private array $version = [];
 
-	/** @var Db_Migrations|null $migrations */
-	private $migrations;
+	private Db_Migrations $migrations;
 
 	public static function get_instance() : Config {
 		if (self::$instance == null)

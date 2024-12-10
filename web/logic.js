@@ -298,7 +298,7 @@ async function locate(requestedIndex) {
     }
 
     if (requestedIndex < 0) {
-        setNoLocationDataAvailable("No data available");
+        setNoLocationDataAvailable("The server has not yet stored a location for this device. Try requesting a location with the button below!");
         return
     }
 
@@ -321,7 +321,7 @@ async function locate(requestedIndex) {
         loc = await parseLocation(globalPrivateKey, locationData);
     } catch (error) {
         console.log(error);
-        setNoLocationDataAvailable("Error parsing location data");
+        setNoLocationDataAvailable("Error parsing location data, see the dev console.");
         return;
     }
     // Check if location is already in cache
@@ -341,9 +341,7 @@ async function locate(requestedIndex) {
 
     document.getElementsByClassName("deviceInfo")[0].style.display = "block";
     document.getElementById("idView").textContent = currentId;
-    document.getElementById("dateView").textContent = time.toLocaleDateString();
-    document.getElementById("timeView").textContent = time.toLocaleTimeString();
-    document.getElementById("providerView").textContent = loc.provider;
+    document.getElementById("locationInfo").textContent = `${loc.provider} on ${time.toLocaleDateString()} at ${time.toLocaleTimeString()}`
     document.getElementById("batView").textContent = loc.bat + " %";
 
     lat_long = []   // All locations in an array. Needed for the line between points.
@@ -374,12 +372,10 @@ function updateLocateOlderButton(requestedIndex) {
     }
 }
 
-function setNoLocationDataAvailable(text) {
+function setNoLocationDataAvailable(reasonMessage) {
     document.getElementsByClassName("deviceInfo")[0].style.display = "block";
     document.getElementById("idView").textContent = currentId;
-    document.getElementById("dateView").textContent = text;
-    document.getElementById("timeView").textContent = text;
-    document.getElementById("providerView").textContent = text;
+    document.getElementById("locationInfo").textContent = reasonMessage;
     document.getElementById("batView").textContent = "? %";
 }
 

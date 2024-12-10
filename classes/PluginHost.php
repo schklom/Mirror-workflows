@@ -851,14 +851,12 @@ class PluginHost {
 	 */
 	function get_method_url(Plugin $sender, string $method, array $params = []): string  {
 		return Config::get_self_url() . "/backend.php?" .
-			http_build_query(
-				array_merge(
-					[
-						"op" => "pluginhandler",
-						"plugin" => strtolower(get_class($sender)),
-						"method" => $method
-					],
-					$params));
+			http_build_query([
+				'op' => 'pluginhandler',
+				'plugin' => strtolower(get_class($sender)),
+				'method' => $method,
+				...$params,
+			]);
 	}
 
 	// shortcut syntax (disabled for now)
@@ -880,12 +878,10 @@ class PluginHost {
 	function get_public_method_url(Plugin $sender, string $method, array $params = []): ?string  {
 		if ($sender->is_public_method($method)) {
 			return Config::get_self_url() . "/public.php?" .
-				http_build_query(
-					array_merge(
-						[
-							"op" => strtolower(get_class($sender) . self::PUBLIC_METHOD_DELIMITER . $method),
-						],
-						$params));
+				http_build_query([
+					'op' => strtolower(get_class($sender) . self::PUBLIC_METHOD_DELIMITER . $method),
+					...$params,
+				]);
 		}
 		user_error("get_public_method_url: requested method '$method' of '" . get_class($sender) . "' is private.");
 		return null;

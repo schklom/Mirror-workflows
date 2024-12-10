@@ -301,8 +301,11 @@ class DiskCache implements Cache_Adapter {
 		if ($this->exists($local_filename) && !$force)
 			return true;
 
-		$data = UrlHelper::fetch(array_merge(["url" => $url,
-							"max_size" => Config::get(Config::MAX_CACHE_FILE_SIZE)], $options));
+		$data = UrlHelper::fetch([
+			'url' => $url,
+			'max_size' => Config::get(Config::MAX_CACHE_FILE_SIZE),
+			...$options,
+		]);
 
 		if ($data)
 			return $this->put($local_filename, $data) > 0;

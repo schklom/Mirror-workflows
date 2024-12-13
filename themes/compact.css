@@ -29,6 +29,9 @@ body.ttrss_main {
 body.ttrss_main :focus {
   outline: none;
 }
+body.ttrss_main select[multiple="multiple"] option {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
 body.ttrss_main .post {
   padding: 0;
   font-size: 13px;
@@ -1509,6 +1512,9 @@ body.ttrss_prefs h4 {
   font-family: system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 600;
   color: #555;
+}
+body.ttrss_prefs select[multiple="multiple"] option {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 body.ttrss_prefs .text-muted {
   color: #888888;

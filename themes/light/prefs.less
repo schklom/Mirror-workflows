@@ -75,9 +75,21 @@ body.ttrss_prefs {
 		background : @color-panel-bg;
 	}
 
-	#feedTree .dijitTreeContent {
-		display : inline-flex;
-		margin-left : 4px;
+	#feedTree {
+		.dijitTreeRow {
+			display : flex;
+		}
+
+		.feedParam {
+			order : 3;
+			margin-right : 4px;
+		}
+
+		.dijitTreeContent {
+			display : inline-flex;
+			margin-left : 4px;
+			flex-grow : 2;
+		}
 	}
 
 	.dijitDialog #pref-profiles-list .dijitInlineEditBoxDisplayMode {

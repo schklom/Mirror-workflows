@@ -1564,9 +1564,17 @@ body.ttrss_prefs .dijitAccordionTitleSelected i.material-icons {
 body.ttrss_prefs #feedsTab {
   background: #222;
 }
+body.ttrss_prefs #feedTree .dijitTreeRow {
+  display: flex;
+}
+body.ttrss_prefs #feedTree .feedParam {
+  order: 3;
+  margin-right: 4px;
+}
 body.ttrss_prefs #feedTree .dijitTreeContent {
   display: inline-flex;
   margin-left: 4px;
+  flex-grow: 2;
 }
 body.ttrss_prefs .dijitDialog #pref-profiles-list .dijitInlineEditBoxDisplayMode {
   padding: 0px;
@@ -1894,9 +1902,6 @@ body.ttrss_prefs[hide-filter-rules="true"] ul.actions_summary li:last-child:afte
 }
 .flat .dijitTree .dijitTreeRow.filterDisabled .filterRules {
   filter: saturate(0%);
-}
-.flat .dijitTree .feedParam {
-  float: right;
 }
 .flat .dijitTree .filterRules {
   font-size: 12px;

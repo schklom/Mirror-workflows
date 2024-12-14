@@ -76,11 +76,15 @@ class Pref_Feeds extends Handler_Protected {
 		}
 
 		$feeds_obj = ORM::for_table('ttrss_feeds')
+			->table_alias('f')
 			->select_many('id', 'title', 'last_error', 'update_interval')
 			->select_expr(SUBSTRING_FOR_DATE.'(last_updated,1,19)', 'last_updated')
+			->left_outer_join('ttrss_user_entries', [ 'ue.feed_id', '=', 'f.id'], 'ue')
+			->select_expr('COUNT(ue.int_id) AS num_articles')
 			->where(['cat_id' => $cat_id, 'owner_uid' => $_SESSION['uid']])
 			->order_by_asc('order_id')
-			->order_by_asc('title');
+			->order_by_asc('title')
+			->group_by('id');
 
 		if ($search) {
 			$feeds_obj->where_raw('(LOWER(title) LIKE ? OR LOWER(feed_url) LIKE LOWER(?))', ["%$search%", "%$search%"]);
@@ -96,7 +100,10 @@ class Pref_Feeds extends Handler_Protected {
 				'unread' => -1,
 				'error' => $feed->last_error,
 				'icon' => Feeds::_get_icon($feed->id),
-				'param' => TimeHelper::make_local_datetime($feed->last_updated, true),
+				'param' => T_sprintf(
+					_ngettext("(%d article / %s)", "(%d articles / %s)", $feed->num_articles),
+					$feed->num_articles,
+					TimeHelper::make_local_datetime($feed->last_updated, true)),
 				'updates_disabled' => (int)($feed->update_interval < 0),
 			]);
 		}
@@ -256,12 +263,16 @@ class Pref_Feeds extends Handler_Protected {
 			];
 
 			$feeds_obj = ORM::for_table('ttrss_feeds')
+				->table_alias('f')
 				->select_many('id', 'title', 'last_error', 'update_interval')
 				->select_expr(SUBSTRING_FOR_DATE.'(last_updated,1,19)', 'last_updated')
+				->left_outer_join('ttrss_user_entries', [ 'ue.feed_id', '=', 'f.id'], 'ue')
+				->select_expr('COUNT(ue.int_id) AS num_articles')
 				->where('owner_uid', $_SESSION['uid'])
 				->where_null('cat_id')
 				->order_by_asc('order_id')
-				->order_by_asc('title');
+				->order_by_asc('title')
+				->group_by('id');
 
 			if ($search) {
 				$feeds_obj->where_raw('(LOWER(title) LIKE ? OR LOWER(feed_url) LIKE LOWER(?))', ["%$search%", "%$search%"]);
@@ -276,7 +287,10 @@ class Pref_Feeds extends Handler_Protected {
 					'checkbox' => false,
 					'error' => $feed->last_error,
 					'icon' => Feeds::_get_icon($feed->id),
-					'param' => TimeHelper::make_local_datetime($feed->last_updated, true),
+					'param' => T_sprintf(
+						_ngettext("(%d article / %s)", "(%d articles / %s)", $feed->num_articles),
+						$feed->num_articles,
+						TimeHelper::make_local_datetime($feed->last_updated, true)),
 					'unread' => -1,
 					'type' => 'feed',
 					'updates_disabled' => (int)($feed->update_interval < 0),
@@ -293,11 +307,15 @@ class Pref_Feeds extends Handler_Protected {
 
 		} else {
 			$feeds_obj = ORM::for_table('ttrss_feeds')
+				->table_alias('f')
 				->select_many('id', 'title', 'last_error', 'update_interval')
 				->select_expr(SUBSTRING_FOR_DATE.'(last_updated,1,19)', 'last_updated')
+				->left_outer_join('ttrss_user_entries', [ 'ue.feed_id', '=', 'f.id'], 'ue')
+				->select_expr('COUNT(ue.int_id) AS num_articles')
 				->where('owner_uid', $_SESSION['uid'])
 				->order_by_asc('order_id')
-				->order_by_asc('title');
+				->order_by_asc('title')
+				->group_by('id');
 
 			if ($search) {
 				$feeds_obj->where_raw('(LOWER(title) LIKE ? OR LOWER(feed_url) LIKE LOWER(?))', ["%$search%", "%$search%"]);
@@ -312,7 +330,10 @@ class Pref_Feeds extends Handler_Protected {
 					'checkbox' => false,
 					'error' => $feed->last_error,
 					'icon' => Feeds::_get_icon($feed->id),
-					'param' => TimeHelper::make_local_datetime($feed->last_updated, true),
+					'param' => T_sprintf(
+						_ngettext("(%d article / %s)", "(%d articles / %s)", $feed->num_articles),
+						$feed->num_articles,
+						TimeHelper::make_local_datetime($feed->last_updated, true)),
 					'unread' => -1,
 					'type' => 'feed',
 					'updates_disabled' => (int)($feed->update_interval < 0),

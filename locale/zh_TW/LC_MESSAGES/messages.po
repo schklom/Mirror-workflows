@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-28 08:14+0300\n"
+"POT-Creation-Date: 2024-12-14 12:17+0300\n"
 "PO-Revision-Date: 2024-07-12 15:09+0000\n"
 "Last-Translator: TonyRL <TonyRL@users.noreply.github.com>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/tt-"
@@ -83,7 +83,7 @@ msgstr "每天"
 msgid "Weekly"
 msgstr "每周"
 
-#: backend.php:91 classes/Pref_Feeds.php:553 classes/Pref_Feeds.php:606
+#: backend.php:91 classes/Pref_Feeds.php:574 classes/Pref_Feeds.php:627
 msgid "Disabled"
 msgstr "已停用"
 
@@ -224,7 +224,7 @@ msgstr "訂閱摘要..."
 msgid "Edit this feed..."
 msgstr "編輯摘要..."
 
-#: index.php:259 classes/Pref_Feeds.php:939 js/PrefFeedTree.js:120
+#: index.php:259 classes/Pref_Feeds.php:960 js/PrefFeedTree.js:120
 #: js/CommonDialogs.js:633
 msgid "Unsubscribe"
 msgstr "取消訂閱"
@@ -273,8 +273,8 @@ msgstr "偏好設定"
 msgid "Exit preferences"
 msgstr "退出偏好設定"
 
-#: prefs.php:138 classes/Pref_Prefs.php:44 classes/Pref_Feeds.php:124
-#: classes/Pref_Feeds.php:928
+#: prefs.php:138 classes/Pref_Prefs.php:44 classes/Pref_Feeds.php:131
+#: classes/Pref_Feeds.php:949
 msgid "Feeds"
 msgstr "摘要"
 
@@ -300,14 +300,14 @@ msgid "Created label <b>%s</b>"
 msgstr "建立預定義標籤 <b>%s</b>"
 
 #: classes/Pref_Labels.php:179 classes/Pref_Prefs.php:853
-#: classes/Pref_Prefs.php:1489 classes/Pref_Feeds.php:918
+#: classes/Pref_Prefs.php:1489 classes/Pref_Feeds.php:939
 #: classes/Pref_Users.php:223 classes/Pref_Filters.php:641
 #: js/CommonFilters.js:445 js/CommonFilters.js:478 js/PrefHelpers.js:184
 #: js/PrefFeedTree.js:524 js/CommonDialogs.js:278
 msgid "Select"
 msgstr "選擇"
 
-#: classes/Pref_Prefs.php:36 classes/Pref_Feeds.php:624 js/CommonDialogs.js:517
+#: classes/Pref_Prefs.php:36 classes/Pref_Feeds.php:645 js/CommonDialogs.js:517
 msgid "General"
 msgstr "通用"
 
@@ -467,7 +467,7 @@ msgstr "在標題中顯示內容預覽"
 msgid "SSL client certificate"
 msgstr "SSL 客戶端證書"
 
-#: classes/Pref_Prefs.php:120 classes/Pref_Feeds.php:611
+#: classes/Pref_Prefs.php:120 classes/Pref_Feeds.php:632
 #: js/CommonDialogs.js:508
 msgid "Do not embed media"
 msgstr "不要嵌入媒體"
@@ -548,7 +548,7 @@ msgstr "全名："
 msgid "E-mail:"
 msgstr "電子郵件："
 
-#: classes/Pref_Prefs.php:318 classes/Pref_Feeds.php:693
+#: classes/Pref_Prefs.php:318 classes/Pref_Feeds.php:714
 #: plugins/nsfw/init.php:105 plugins/note/init.php:49
 #: plugins/af_psql_trgm/init.php:218 js/CommonFilters.js:237
 #: js/CommonFilters.js:321 js/CommonFilters.js:525 js/CommonDialogs.js:634
@@ -583,7 +583,7 @@ msgstr "此工作階段的身份驗證模組（<b>%s</b>）不提供設定密碼
 msgid "Generate password"
 msgstr "產生密碼"
 
-#: classes/Pref_Prefs.php:415 classes/Pref_Feeds.php:952 js/PrefHelpers.js:227
+#: classes/Pref_Prefs.php:415 classes/Pref_Feeds.php:973 js/PrefHelpers.js:227
 msgid "Remove selected"
 msgstr "移除已選取"
 
@@ -677,14 +677,14 @@ msgstr "管理設定檔"
 msgid "Reset to defaults"
 msgstr "重設為預設"
 
-#: classes/Pref_Prefs.php:848 classes/Pref_Feeds.php:913
+#: classes/Pref_Prefs.php:848 classes/Pref_Feeds.php:934
 #: classes/Pref_Users.php:217 classes/Pref_Filters.php:636 js/Feeds.js:660
 #: js/Feeds.js:655 js/Feeds.js:710
 msgid "Search"
 msgstr "搜尋"
 
 #: classes/Pref_Prefs.php:856 classes/Pref_Prefs.php:1492
-#: classes/Pref_Feeds.php:921 classes/Pref_Users.php:226
+#: classes/Pref_Feeds.php:942 classes/Pref_Users.php:226
 #: classes/Pref_Filters.php:644 js/CommonFilters.js:449 js/CommonFilters.js:481
 #: js/Headlines.js:664 js/PrefHelpers.js:187 js/PrefFeedTree.js:527
 #: js/CommonDialogs.js:281
@@ -692,7 +692,7 @@ msgid "All"
 msgstr "全部"
 
 #: classes/Pref_Prefs.php:858 classes/Pref_Prefs.php:1494
-#: classes/Pref_Feeds.php:923 classes/Pref_Users.php:228
+#: classes/Pref_Feeds.php:944 classes/Pref_Users.php:228
 #: classes/Pref_Filters.php:646 js/CommonFilters.js:451 js/CommonFilters.js:483
 #: js/Headlines.js:667 js/PrefHelpers.js:189 js/PrefFeedTree.js:529
 #: js/CommonDialogs.js:283
@@ -733,7 +733,7 @@ msgstr "安裝擴充套件"
 msgid "Personal data / Authentication"
 msgstr "個人資料與驗證"
 
-#: classes/Pref_Prefs.php:950 classes/Pref_Feeds.php:1067
+#: classes/Pref_Prefs.php:950 classes/Pref_Feeds.php:1088
 #: js/CommonDialogs.js:628
 msgid "Plugins"
 msgstr "擴充套件"
@@ -938,7 +938,7 @@ msgstr "全部文章"
 msgid "Recently read"
 msgstr "最近閱讀"
 
-#: classes/Feeds.php:1349 classes/Pref_Feeds.php:250 classes/Digest.php:120
+#: classes/Feeds.php:1349 classes/Pref_Feeds.php:257 classes/Digest.php:120
 #: classes/Pref_Filters.php:910 classes/OPML.php:571 include/controls.php:216
 msgid "Uncategorized"
 msgstr "未分類"
@@ -957,89 +957,98 @@ msgstr "不正確的搜尋語法： %s。"
 msgid "Search results: %s"
 msgstr "搜尋結果： %s"
 
-#: classes/Pref_Feeds.php:72 classes/Pref_Feeds.php:233
-#: classes/Pref_Feeds.php:286 classes/Pref_Feeds.php:292
-#: classes/Pref_Feeds.php:322
+#: classes/Pref_Feeds.php:72 classes/Pref_Feeds.php:240
+#: classes/Pref_Feeds.php:300 classes/Pref_Feeds.php:306
+#: classes/Pref_Feeds.php:343
 #, php-format
 msgid "(%d feed)"
 msgid_plural "(%d feeds)"
 msgstr[0] "（%d 個摘要）"
 
-#: classes/Pref_Feeds.php:551
+#: classes/Pref_Feeds.php:104 classes/Pref_Feeds.php:291
+#: classes/Pref_Feeds.php:334
+#, fuzzy, php-format
+#| msgid "%d article selected"
+#| msgid_plural "%d articles selected"
+msgid "(%d article / %s)"
+msgid_plural "(%d articles / %s)"
+msgstr[0] "已選取 %d 篇文章"
+
+#: classes/Pref_Feeds.php:572
 #, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
 msgstr[0] "（%d 天）"
 
-#: classes/Pref_Feeds.php:557
+#: classes/Pref_Feeds.php:578
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d 天"
 
-#: classes/Pref_Feeds.php:588
+#: classes/Pref_Feeds.php:609
 msgid "Check to enable field"
 msgstr "勾選以啟用"
 
-#: classes/Pref_Feeds.php:604
+#: classes/Pref_Feeds.php:625
 #, php-format
 msgid "(%d days)"
 msgstr "（%d 天）"
 
-#: classes/Pref_Feeds.php:609 js/CommonDialogs.js:506
+#: classes/Pref_Feeds.php:630 js/CommonDialogs.js:506
 msgid "Include in e-mail digest"
 msgstr "包含電子郵件摘要"
 
-#: classes/Pref_Feeds.php:610 js/CommonDialogs.js:507
+#: classes/Pref_Feeds.php:631 js/CommonDialogs.js:507
 msgid "Always display image attachments"
 msgstr "始終顯示影像附件"
 
-#: classes/Pref_Feeds.php:612 js/CommonDialogs.js:509
+#: classes/Pref_Feeds.php:633 js/CommonDialogs.js:509
 msgid "Cache media"
 msgstr "媒體快取"
 
-#: classes/Pref_Feeds.php:613 js/CommonDialogs.js:510
+#: classes/Pref_Feeds.php:634 js/CommonDialogs.js:510
 msgid "Mark updated articles as unread"
 msgstr "將已更新的文章標記為未讀"
 
-#: classes/Pref_Feeds.php:628 js/PrefFeedTree.js:447 js/CommonDialogs.js:61
+#: classes/Pref_Feeds.php:649 js/PrefFeedTree.js:447 js/CommonDialogs.js:61
 #: js/CommonDialogs.js:546
 msgid "Place in category:"
 msgstr "加入到類別："
 
-#: classes/Pref_Feeds.php:636 js/Feeds.js:642 js/CommonDialogs.js:562
+#: classes/Pref_Feeds.php:657 js/Feeds.js:642 js/CommonDialogs.js:562
 msgid "Language:"
 msgstr "語言："
 
-#: classes/Pref_Feeds.php:647 js/CommonDialogs.js:572
+#: classes/Pref_Feeds.php:668 js/CommonDialogs.js:572
 msgid "Update interval:"
 msgstr "更新間隔："
 
-#: classes/Pref_Feeds.php:654 js/CommonDialogs.js:578
+#: classes/Pref_Feeds.php:675 js/CommonDialogs.js:578
 msgid "Article purging:"
 msgstr "文章清理："
 
-#: classes/Pref_Feeds.php:661 plugins/auth_internal/init.php:82
+#: classes/Pref_Feeds.php:682 plugins/auth_internal/init.php:82
 #: js/PrefFeedTree.js:455 js/CommonDialogs.js:588
 msgid "Authentication"
 msgstr "登入驗證"
 
-#: classes/Pref_Feeds.php:664 classes/Handler_Public.php:515
+#: classes/Pref_Feeds.php:685 classes/Handler_Public.php:515
 #: plugins/bookmarklets/init.php:306 include/login_form.php:122
 #: js/PrefUsers.js:64 js/CommonDialogs.js:591
 msgid "Login:"
 msgstr "登入："
 
-#: classes/Pref_Feeds.php:670 plugins/bookmarklets/init.php:313
+#: classes/Pref_Feeds.php:691 plugins/bookmarklets/init.php:313
 #: include/login_form.php:131 js/CommonDialogs.js:597
 msgid "Password:"
 msgstr "密碼："
 
-#: classes/Pref_Feeds.php:677 js/CommonDialogs.js:604
+#: classes/Pref_Feeds.php:698 js/CommonDialogs.js:604
 msgid "Options"
 msgstr "選項"
 
-#: classes/Pref_Feeds.php:694 plugins/note/init.php:50
+#: classes/Pref_Feeds.php:715 plugins/note/init.php:50
 #: plugins/bookmarklets/init.php:286 js/CommonFilters.js:238
 #: js/CommonFilters.js:322 js/CommonFilters.js:526 js/CommonFilters.js:530
 #: js/CommonDialogs.js:635 js/PrefHelpers.js:232 js/PrefHelpers.js:306
@@ -1048,72 +1057,72 @@ msgstr "選項"
 msgid "Cancel"
 msgstr "取消"
 
-#: classes/Pref_Feeds.php:888
+#: classes/Pref_Feeds.php:909
 msgid "Feeds with errors"
 msgstr "有錯誤的摘要"
 
-#: classes/Pref_Feeds.php:894
+#: classes/Pref_Feeds.php:915
 msgid "Inactive feeds"
 msgstr "不活躍的摘要"
 
-#: classes/Pref_Feeds.php:931 classes/RPC.php:629 js/CommonDialogs.js:34
+#: classes/Pref_Feeds.php:952 classes/RPC.php:629 js/CommonDialogs.js:34
 msgid "Subscribe to feed"
 msgstr "訂閱摘要"
 
-#: classes/Pref_Feeds.php:933
+#: classes/Pref_Feeds.php:954
 msgid "Edit selected feeds"
 msgstr "編輯選取的摘要"
 
-#: classes/Pref_Feeds.php:935 classes/Pref_Feeds.php:950
+#: classes/Pref_Feeds.php:956 classes/Pref_Feeds.php:971
 #: classes/Pref_Filters.php:657
 msgid "Reset sort order"
 msgstr "重新排序"
 
-#: classes/Pref_Feeds.php:937 js/PrefFeedTree.js:417
+#: classes/Pref_Feeds.php:958 js/PrefFeedTree.js:417
 msgid "Batch subscribe"
 msgstr "批次訂閱"
 
-#: classes/Pref_Feeds.php:945
+#: classes/Pref_Feeds.php:966
 msgid "Categories"
 msgstr "類別"
 
-#: classes/Pref_Feeds.php:948
+#: classes/Pref_Feeds.php:969
 msgid "Add category"
 msgstr "新增類別"
 
-#: classes/Pref_Feeds.php:987
+#: classes/Pref_Feeds.php:1008
 msgid "Choose file..."
 msgstr "選擇檔案..."
 
-#: classes/Pref_Feeds.php:995
+#: classes/Pref_Feeds.php:1016
 msgid "Import OPML"
 msgstr "匯入 OPML"
 
-#: classes/Pref_Feeds.php:1006
+#: classes/Pref_Feeds.php:1027
 msgid "Export OPML"
 msgstr "匯出 OPML"
 
-#: classes/Pref_Feeds.php:1011
+#: classes/Pref_Feeds.php:1032
 msgid "Include tt-rss settings"
 msgstr "包含 tt-rss 設定"
 
-#: classes/Pref_Feeds.php:1027
+#: classes/Pref_Feeds.php:1048
 msgid "Display URL"
 msgstr "顯示 URL"
 
-#: classes/Pref_Feeds.php:1032
+#: classes/Pref_Feeds.php:1053
 msgid "Clear all generated URLs"
 msgstr "清空所有產生的 URL"
 
-#: classes/Pref_Feeds.php:1044
+#: classes/Pref_Feeds.php:1065
 msgid "My feeds"
 msgstr "我的摘要"
 
-#: classes/Pref_Feeds.php:1049
+#: classes/Pref_Feeds.php:1070
 msgid "OPML"
 msgstr "OPML"
 
-#: classes/Pref_Feeds.php:1054
+#: classes/Pref_Feeds.php:1075
 msgid "Sharing"
 msgstr "分享"
 

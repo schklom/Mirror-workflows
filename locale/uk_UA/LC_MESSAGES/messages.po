@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-28 08:14+0300\n"
+"POT-Creation-Date: 2024-12-14 12:17+0300\n"
 "PO-Revision-Date: 2022-06-19 10:42+0000\n"
 "Last-Translator: Андрій Жук <zhouck@gmail.com>\n"
 "Language-Team: Ukrainian <https://weblate.tt-rss.org/projects/tt-rss/"
@@ -84,7 +84,7 @@ msgstr "Раз на день"
 msgid "Weekly"
 msgstr "Раз на тиждень"
 
-#: backend.php:91 classes/Pref_Feeds.php:553 classes/Pref_Feeds.php:606
+#: backend.php:91 classes/Pref_Feeds.php:574 classes/Pref_Feeds.php:627
 msgid "Disabled"
 msgstr "Вимкнуто"
 
@@ -227,7 +227,7 @@ msgstr "Підписатися на канал..."
 msgid "Edit this feed..."
 msgstr "Змінити цей канал..."
 
-#: index.php:259 classes/Pref_Feeds.php:939 js/PrefFeedTree.js:120
+#: index.php:259 classes/Pref_Feeds.php:960 js/PrefFeedTree.js:120
 #: js/CommonDialogs.js:633
 msgid "Unsubscribe"
 msgstr "Відписатися"
@@ -276,8 +276,8 @@ msgstr "Налаштування"
 msgid "Exit preferences"
 msgstr "Закрити налаштування"
 
-#: prefs.php:138 classes/Pref_Prefs.php:44 classes/Pref_Feeds.php:124
-#: classes/Pref_Feeds.php:928
+#: prefs.php:138 classes/Pref_Prefs.php:44 classes/Pref_Feeds.php:131
+#: classes/Pref_Feeds.php:949
 msgid "Feeds"
 msgstr "Канали"
 
@@ -303,14 +303,14 @@ msgid "Created label <b>%s</b>"
 msgstr "Створена мітка <b>%s</b>"
 
 #: classes/Pref_Labels.php:179 classes/Pref_Prefs.php:853
-#: classes/Pref_Prefs.php:1489 classes/Pref_Feeds.php:918
+#: classes/Pref_Prefs.php:1489 classes/Pref_Feeds.php:939
 #: classes/Pref_Users.php:223 classes/Pref_Filters.php:641
 #: js/CommonFilters.js:445 js/CommonFilters.js:478 js/PrefHelpers.js:184
 #: js/PrefFeedTree.js:524 js/CommonDialogs.js:278
 msgid "Select"
 msgstr "Обрати"
 
-#: classes/Pref_Prefs.php:36 classes/Pref_Feeds.php:624 js/CommonDialogs.js:517
+#: classes/Pref_Prefs.php:36 classes/Pref_Feeds.php:645 js/CommonDialogs.js:517
 msgid "General"
 msgstr "Основні"
 
@@ -473,7 +473,7 @@ msgstr "Показувати передогляд вмісту в списку �
 msgid "SSL client certificate"
 msgstr "Вхід із клієнтським SSL сертифікатом"
 
-#: classes/Pref_Prefs.php:120 classes/Pref_Feeds.php:611
+#: classes/Pref_Prefs.php:120 classes/Pref_Feeds.php:632
 #: js/CommonDialogs.js:508
 msgid "Do not embed media"
 msgstr "Не вбудовувати медіа"
@@ -556,7 +556,7 @@ msgstr "Повне ім’я:"
 msgid "E-mail:"
 msgstr "Пошта (@):"
 
-#: classes/Pref_Prefs.php:318 classes/Pref_Feeds.php:693
+#: classes/Pref_Prefs.php:318 classes/Pref_Feeds.php:714
 #: plugins/nsfw/init.php:105 plugins/note/init.php:49
 #: plugins/af_psql_trgm/init.php:218 js/CommonFilters.js:237
 #: js/CommonFilters.js:321 js/CommonFilters.js:525 js/CommonDialogs.js:634
@@ -593,7 +593,7 @@ msgstr ""
 msgid "Generate password"
 msgstr "Створити пароль"
 
-#: classes/Pref_Prefs.php:415 classes/Pref_Feeds.php:952 js/PrefHelpers.js:227
+#: classes/Pref_Prefs.php:415 classes/Pref_Feeds.php:973 js/PrefHelpers.js:227
 msgid "Remove selected"
 msgstr "Вилучити обрані"
 
@@ -687,14 +687,14 @@ msgstr "Керування профілями"
 msgid "Reset to defaults"
 msgstr "Скинути на типові"
 
-#: classes/Pref_Prefs.php:848 classes/Pref_Feeds.php:913
+#: classes/Pref_Prefs.php:848 classes/Pref_Feeds.php:934
 #: classes/Pref_Users.php:217 classes/Pref_Filters.php:636 js/Feeds.js:660
 #: js/Feeds.js:655 js/Feeds.js:710
 msgid "Search"
 msgstr "Пошук"
 
 #: classes/Pref_Prefs.php:856 classes/Pref_Prefs.php:1492
-#: classes/Pref_Feeds.php:921 classes/Pref_Users.php:226
+#: classes/Pref_Feeds.php:942 classes/Pref_Users.php:226
 #: classes/Pref_Filters.php:644 js/CommonFilters.js:449 js/CommonFilters.js:481
 #: js/Headlines.js:664 js/PrefHelpers.js:187 js/PrefFeedTree.js:527
 #: js/CommonDialogs.js:281
@@ -702,7 +702,7 @@ msgid "All"
 msgstr "Всі"
 
 #: classes/Pref_Prefs.php:858 classes/Pref_Prefs.php:1494
-#: classes/Pref_Feeds.php:923 classes/Pref_Users.php:228
+#: classes/Pref_Feeds.php:944 classes/Pref_Users.php:228
 #: classes/Pref_Filters.php:646 js/CommonFilters.js:451 js/CommonFilters.js:483
 #: js/Headlines.js:667 js/PrefHelpers.js:189 js/PrefFeedTree.js:529
 #: js/CommonDialogs.js:283
@@ -744,7 +744,7 @@ msgstr "Встановити додаток"
 msgid "Personal data / Authentication"
 msgstr "Персональні дані / Автентифікація"
 
-#: classes/Pref_Prefs.php:950 classes/Pref_Feeds.php:1067
+#: classes/Pref_Prefs.php:950 classes/Pref_Feeds.php:1088
 #: js/CommonDialogs.js:628
 msgid "Plugins"
 msgstr "Додатки"
@@ -952,7 +952,7 @@ msgstr "Всі статті"
 msgid "Recently read"
 msgstr "Нещодавно прочитані"
 
-#: classes/Feeds.php:1349 classes/Pref_Feeds.php:250 classes/Digest.php:120
+#: classes/Feeds.php:1349 classes/Pref_Feeds.php:257 classes/Digest.php:120
 #: classes/Pref_Filters.php:910 classes/OPML.php:571 include/controls.php:216
 msgid "Uncategorized"
 msgstr "Без категорії"
@@ -971,9 +971,9 @@ msgstr "Неправильний синтаксис пошуку: %s."
 msgid "Search results: %s"
 msgstr "Результати пошуку: %s"
 
-#: classes/Pref_Feeds.php:72 classes/Pref_Feeds.php:233
-#: classes/Pref_Feeds.php:286 classes/Pref_Feeds.php:292
-#: classes/Pref_Feeds.php:322
+#: classes/Pref_Feeds.php:72 classes/Pref_Feeds.php:240
+#: classes/Pref_Feeds.php:300 classes/Pref_Feeds.php:306
+#: classes/Pref_Feeds.php:343
 #, php-format
 msgid "(%d feed)"
 msgid_plural "(%d feeds)"
@@ -981,7 +981,18 @@ msgstr[0] "(%d канал)"
 msgstr[1] "(%d канали)"
 msgstr[2] "(%d каналів)"
 
-#: classes/Pref_Feeds.php:551
+#: classes/Pref_Feeds.php:104 classes/Pref_Feeds.php:291
+#: classes/Pref_Feeds.php:334
+#, fuzzy, php-format
+#| msgid "%d article selected"
+#| msgid_plural "%d articles selected"
+msgid "(%d article / %s)"
+msgid_plural "(%d articles / %s)"
+msgstr[0] "%d стаття виділена"
+msgstr[1] "%d статті виділені"
+msgstr[2] "%d статей виділені"
+
+#: classes/Pref_Feeds.php:572
 #, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
@@ -989,7 +1000,7 @@ msgstr[0] "(%d день)"
 msgstr[1] "(%d дні)"
 msgstr[2] "(%d днів)"
 
-#: classes/Pref_Feeds.php:557
+#: classes/Pref_Feeds.php:578
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
@@ -997,69 +1008,69 @@ msgstr[0] "%d день"
 msgstr[1] "%d днів"
 msgstr[2] "%d днів"
 
-#: classes/Pref_Feeds.php:588
+#: classes/Pref_Feeds.php:609
 msgid "Check to enable field"
 msgstr "Перевірити доступність поля"
 
-#: classes/Pref_Feeds.php:604
+#: classes/Pref_Feeds.php:625
 #, php-format
 msgid "(%d days)"
 msgstr "(%d днів)"
 
-#: classes/Pref_Feeds.php:609 js/CommonDialogs.js:506
+#: classes/Pref_Feeds.php:630 js/CommonDialogs.js:506
 msgid "Include in e-mail digest"
 msgstr "Включати в поштовий дайджест"
 
-#: classes/Pref_Feeds.php:610 js/CommonDialogs.js:507
+#: classes/Pref_Feeds.php:631 js/CommonDialogs.js:507
 msgid "Always display image attachments"
 msgstr "Завжди показувати долучення зображень"
 
-#: classes/Pref_Feeds.php:612 js/CommonDialogs.js:509
+#: classes/Pref_Feeds.php:633 js/CommonDialogs.js:509
 msgid "Cache media"
 msgstr "Кешувати медіа"
 
-#: classes/Pref_Feeds.php:613 js/CommonDialogs.js:510
+#: classes/Pref_Feeds.php:634 js/CommonDialogs.js:510
 msgid "Mark updated articles as unread"
 msgstr "Позначати оновлені статті як непрочитані"
 
-#: classes/Pref_Feeds.php:628 js/PrefFeedTree.js:447 js/CommonDialogs.js:61
+#: classes/Pref_Feeds.php:649 js/PrefFeedTree.js:447 js/CommonDialogs.js:61
 #: js/CommonDialogs.js:546
 msgid "Place in category:"
 msgstr "Розмістити в категорії:"
 
-#: classes/Pref_Feeds.php:636 js/Feeds.js:642 js/CommonDialogs.js:562
+#: classes/Pref_Feeds.php:657 js/Feeds.js:642 js/CommonDialogs.js:562
 msgid "Language:"
 msgstr "Мова:"
 
-#: classes/Pref_Feeds.php:647 js/CommonDialogs.js:572
+#: classes/Pref_Feeds.php:668 js/CommonDialogs.js:572
 msgid "Update interval:"
 msgstr "Інтервал оновлення:"
 
-#: classes/Pref_Feeds.php:654 js/CommonDialogs.js:578
+#: classes/Pref_Feeds.php:675 js/CommonDialogs.js:578
 msgid "Article purging:"
 msgstr "Видалення статей:"
 
-#: classes/Pref_Feeds.php:661 plugins/auth_internal/init.php:82
+#: classes/Pref_Feeds.php:682 plugins/auth_internal/init.php:82
 #: js/PrefFeedTree.js:455 js/CommonDialogs.js:588
 msgid "Authentication"
 msgstr "Автентифікація"
 
-#: classes/Pref_Feeds.php:664 classes/Handler_Public.php:515
+#: classes/Pref_Feeds.php:685 classes/Handler_Public.php:515
 #: plugins/bookmarklets/init.php:306 include/login_form.php:122
 #: js/PrefUsers.js:64 js/CommonDialogs.js:591
 msgid "Login:"
 msgstr "Ім’я:"
 
-#: classes/Pref_Feeds.php:670 plugins/bookmarklets/init.php:313
+#: classes/Pref_Feeds.php:691 plugins/bookmarklets/init.php:313
 #: include/login_form.php:131 js/CommonDialogs.js:597
 msgid "Password:"
 msgstr "Пароль:"
 
-#: classes/Pref_Feeds.php:677 js/CommonDialogs.js:604
+#: classes/Pref_Feeds.php:698 js/CommonDialogs.js:604
 msgid "Options"
 msgstr "Опції"
 
-#: classes/Pref_Feeds.php:694 plugins/note/init.php:50
+#: classes/Pref_Feeds.php:715 plugins/note/init.php:50
 #: plugins/bookmarklets/init.php:286 js/CommonFilters.js:238
 #: js/CommonFilters.js:322 js/CommonFilters.js:526 js/CommonFilters.js:530
 #: js/CommonDialogs.js:635 js/PrefHelpers.js:232 js/PrefHelpers.js:306
@@ -1068,72 +1079,72 @@ msgstr "Опції"
 msgid "Cancel"
 msgstr "Скасувати"
 
-#: classes/Pref_Feeds.php:888
+#: classes/Pref_Feeds.php:909
 msgid "Feeds with errors"
 msgstr "Канали з помилками"
 
-#: classes/Pref_Feeds.php:894
+#: classes/Pref_Feeds.php:915
 msgid "Inactive feeds"
 msgstr "Неактивні канали"
 
-#: classes/Pref_Feeds.php:931 classes/RPC.php:629 js/CommonDialogs.js:34
+#: classes/Pref_Feeds.php:952 classes/RPC.php:629 js/CommonDialogs.js:34
 msgid "Subscribe to feed"
 msgstr "Підписатися на канал"
 
-#: classes/Pref_Feeds.php:933
+#: classes/Pref_Feeds.php:954
 msgid "Edit selected feeds"
 msgstr "Змінити обрані канали"
 
-#: classes/Pref_Feeds.php:935 classes/Pref_Feeds.php:950
+#: classes/Pref_Feeds.php:956 classes/Pref_Feeds.php:971
 #: classes/Pref_Filters.php:657
 msgid "Reset sort order"
 msgstr "Скинути порядок сортування"
 
-#: classes/Pref_Feeds.php:937 js/PrefFeedTree.js:417
+#: classes/Pref_Feeds.php:958 js/PrefFeedTree.js:417
 msgid "Batch subscribe"
 msgstr "Масова підписка"
 
-#: classes/Pref_Feeds.php:945
+#: classes/Pref_Feeds.php:966
 msgid "Categories"
 msgstr "Категорії"
 
-#: classes/Pref_Feeds.php:948
+#: classes/Pref_Feeds.php:969
 msgid "Add category"
 msgstr "Додати категорію"
 
-#: classes/Pref_Feeds.php:987
+#: classes/Pref_Feeds.php:1008
 msgid "Choose file..."
 msgstr "Оберіть файл..."
 
-#: classes/Pref_Feeds.php:995
+#: classes/Pref_Feeds.php:1016
 msgid "Import OPML"
 msgstr "Імпорт OPML"
 
-#: classes/Pref_Feeds.php:1006
+#: classes/Pref_Feeds.php:1027
 msgid "Export OPML"
 msgstr "Експорт OPML"
 
-#: classes/Pref_Feeds.php:1011
+#: classes/Pref_Feeds.php:1032
 msgid "Include tt-rss settings"
 msgstr "Включати налаштування tt-rss"
 
-#: classes/Pref_Feeds.php:1027
+#: classes/Pref_Feeds.php:1048
 msgid "Display URL"
 msgstr "Показати посилання"
 
-#: classes/Pref_Feeds.php:1032
+#: classes/Pref_Feeds.php:1053
 msgid "Clear all generated URLs"
 msgstr "Прибрати всі створені посилання"
 
-#: classes/Pref_Feeds.php:1044
+#: classes/Pref_Feeds.php:1065
 msgid "My feeds"
 msgstr "Мої канали"
 
-#: classes/Pref_Feeds.php:1049
+#: classes/Pref_Feeds.php:1070
 msgid "OPML"
 msgstr "OPML"
 
-#: classes/Pref_Feeds.php:1054
+#: classes/Pref_Feeds.php:1075
 msgid "Sharing"
 msgstr "Поширення"
 

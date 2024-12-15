@@ -23,8 +23,8 @@ class PluginHost {
 	/** @var array<string, array<string, mixed>> plugin name -> (potential profile array) -> key -> value  */
 	private array $storage = [];
 
-	/** @var array<int, array<int, array{'id': int, 'title': string, 'sender': Plugin, 'icon': string}>> */
-	private array $feeds = [];
+	/** @var array<int, array{'id': int, 'title': string, 'sender': Plugin, 'icon': string}> */
+	private array $special_feeds = [];
 
 	/** @var array<string, Plugin> API method name, Plugin sender */
 	private array $api_methods = [];
@@ -759,44 +759,51 @@ class PluginHost {
 		}
 	}
 
-	// Plugin feed functions are *EXPERIMENTAL*!
+	/**
+	 * Add a special (plugin-provided) feed
+	 *
+	 * @param int $cat_id only -1 (Feeds::CATEGORY_SPECIAL) is supported
+	 * @return false|positive-int false if $cat_id was not -1 (Feeds::CATEGORY_SPECIAL),
+	 *                            otherwise a positive integer ID that might change between executions
+	 */
+	function add_feed(int $cat_id, string $title, string $icon, Plugin $sender): false|int {
+		if ($cat_id !== Feeds::CATEGORY_SPECIAL)
+			return false;
 
-	// cat_id: only -1 (Feeds::CATEGORY_SPECIAL) is supported (Special)
-	function add_feed(int $cat_id, string $title, string $icon, Plugin $sender): int {
+		$id = count($this->special_feeds);
 
-		if (empty($this->feeds[$cat_id]))
-			$this->feeds[$cat_id] = [];
-
-		$id = count($this->feeds[$cat_id]);
-
-		array_push($this->feeds[$cat_id],
-			['id' => $id, 'title' => $title, 'sender' => $sender, 'icon' => $icon]);
+		$this->special_feeds[] = [
+			'id' => $id,
+			'title' => $title,
+			'sender' => $sender,
+			'icon' => $icon,
+		];
 
 		return $id;
 	}
 
 	/**
+	 * Get special (plugin-provided) feeds
+	 *
+	 * @param int $cat_id only -1 (Feeds::CATEGORY_SPECIAL) is supported
 	 * @return array<int, array{'id': int, 'title': string, 'sender': Plugin, 'icon': string}>
 	 */
 	function get_feeds(int $cat_id) {
-		return $this->feeds[$cat_id] ?? [];
+		return $cat_id === Feeds::CATEGORY_SPECIAL ? $this->special_feeds : [];
 	}
 
 	/**
-	 * convert feed_id (e.g. -129) to pfeed_id first
-	 * @return (Plugin&IVirtualFeed)|null
+	 * Get the Plugin handling a specific virtual feed.
+	 *
+	 * Convert feed_id (e.g. -129) to pfeed_id first.
+	 *
+	 * @return (Plugin&IVirtualFeed)|null a Plugin that implements IVirtualFeed, otherwise null
 	 */
 	function get_feed_handler(int $pfeed_id): ?Plugin {
-		foreach ($this->feeds as $cat) {
-			foreach ($cat as $feed) {
-				if ($feed['id'] == $pfeed_id) {
-					if (implements_interface($feed['sender'], 'IVirtualFeed')) {
-						/** @var Plugin&IVirtualFeed $feed['sender'] */
-						return $feed['sender'];
-					} else {
-						return null;
-					}
-				}
+		foreach ($this->special_feeds as $feed) {
+			if ($feed['id'] == $pfeed_id) {
+				/** @var Plugin&IVirtualFeed $feed['sender'] */
+				return implements_interface($feed['sender'], 'IVirtualFeed') ? $feed['sender'] : null;
 			}
 		}
 		return null;

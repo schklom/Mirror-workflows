@@ -152,8 +152,7 @@ class Feeds extends Handler_Protected {
 		$feed_title = $qfh_ret[1];
 		$feed_site_url = $qfh_ret[2];
 		$last_error = $qfh_ret[3];
-		$last_updated = str_contains($qfh_ret[4] ?? "", '1970-') ?
-			__("Never") : TimeHelper::make_local_datetime($qfh_ret[4], false);
+		$last_updated = TimeHelper::make_local_datetime($qfh_ret[4], false);
 		$highlight_words = $qfh_ret[5];
 		$reply['first_id'] = $qfh_ret[6];
 		$reply['is_vfeed'] = $qfh_ret[7];

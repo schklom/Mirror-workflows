@@ -2,6 +2,10 @@
 class TimeHelper {
 
 	static function smart_date_time(int $timestamp, int $tz_offset = 0, ?int $owner_uid = null, bool $eta_min = false): string {
+		// i.e. if the Unix epoch
+		if ($timestamp - $tz_offset === 0)
+			return __('Never');
+
 		if (!$owner_uid) $owner_uid = $_SESSION['uid'];
 		$profile = isset($_SESSION['uid']) && $owner_uid == $_SESSION['uid'] && isset($_SESSION['profile']) ? $_SESSION['profile'] : null;
 

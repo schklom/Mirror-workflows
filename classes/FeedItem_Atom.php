@@ -184,11 +184,10 @@ class FeedItem_Atom extends FeedItem_Common {
 				$base = $this->xpath->evaluate("string(ancestor-or-self::*[@xml:base][1]/@xml:base)", $link);
 
 				if ($link->getAttribute("rel") == "enclosure") {
-					$enc = new FeedEnclosure(
-						type: clean($link->getAttribute('type')),
-						length: clean($link->getAttribute('length')),
-						link: clean($link->getAttribute('href')),
-					);
+					$enc = new FeedEnclosure();
+					$enc->type = clean($link->getAttribute('type'));
+					$enc->length = clean($link->getAttribute('length'));
+					$enc->link = clean($link->getAttribute('href'));
 
 					if (!empty($base)) {
 						$enc->link = UrlHelper::rewrite_relative($base, $enc->link);

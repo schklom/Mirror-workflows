@@ -784,8 +784,9 @@ class PluginHost {
 
 	/**
 	 * convert feed_id (e.g. -129) to pfeed_id first
+	 * @return (Plugin&IVirtualFeed)|null
 	 */
-	function get_feed_handler(int $pfeed_id): (Plugin&IVirtualFeed)|null {
+	function get_feed_handler(int $pfeed_id): ?Plugin {
 		foreach ($this->feeds as $cat) {
 			foreach ($cat as $feed) {
 				if ($feed['id'] == $pfeed_id) {

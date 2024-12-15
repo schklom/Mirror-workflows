@@ -763,8 +763,8 @@ class PluginHost {
 	 * Add a special (plugin-provided) feed
 	 *
 	 * @param int $cat_id only -1 (Feeds::CATEGORY_SPECIAL) is supported
-	 * @return false|positive-int false if $cat_id was not -1 (Feeds::CATEGORY_SPECIAL),
-	 *                            otherwise a positive integer ID that might change between executions
+	 * @return false|int false if the feed wasn't added (e.g. $cat_id wasn't Feeds::CATEGORY_SPECIAL),
+	 *                   otherwise an integer "feed ID" that might change between executions
 	 */
 	function add_feed(int $cat_id, string $title, string $icon, Plugin $sender): false|int {
 		if ($cat_id !== Feeds::CATEGORY_SPECIAL)

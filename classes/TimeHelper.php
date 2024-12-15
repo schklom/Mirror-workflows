@@ -26,7 +26,10 @@ class TimeHelper {
 		}
 	}
 
-	static function make_local_datetime(?string $timestamp, bool $long, ?int $owner_uid = null,
+	/**
+	 * @param bool $long Whether to display the datetime in a 'long' format.  Only used if $no_smart_dt is true.
+	 */
+	static function make_local_datetime(?string $timestamp, bool $long = false, ?int $owner_uid = null,
 					bool $no_smart_dt = false, bool $eta_min = false): string {
 
 		if (!$owner_uid) $owner_uid = $_SESSION['uid'];

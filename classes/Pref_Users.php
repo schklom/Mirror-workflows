@@ -35,11 +35,9 @@ class Pref_Users extends Handler_Administrative {
 
 			if ($row = $sth->fetch()) {
 
-				$last_login = TimeHelper::make_local_datetime(
-					$row["last_login"], true);
+				$last_login = TimeHelper::make_local_datetime($row['last_login']);
 
-				$created = TimeHelper::make_local_datetime(
-					$row["created"], true);
+				$created = TimeHelper::make_local_datetime($row['created']);
 
 				$stored_articles = $row["stored_articles"];
 
@@ -282,8 +280,8 @@ class Pref_Users extends Handler_Administrative {
 									</td>
 									<td><?= $access_level_names[$user["access_level"]] ?></td>
 									<td><?= $user["num_feeds"] ?></td>
-									<td class='text-muted'><?= TimeHelper::make_local_datetime($user["created"], false) ?></td>
-									<td class='text-muted'><?= TimeHelper::make_local_datetime($user["last_login"], false) ?></td>
+									<td class='text-muted'><?= TimeHelper::make_local_datetime($user['created']) ?></td>
+									<td class='text-muted'><?= TimeHelper::make_local_datetime($user['last_login']) ?></td>
 								</tr>
 						<?php } ?>
 					</table>

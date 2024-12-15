@@ -183,7 +183,7 @@ class Counters {
 		while ($line = $sth->fetch()) {
 
 			$id = $line["id"];
-			$last_updated = TimeHelper::make_local_datetime($line['last_updated'], false);
+			$last_updated = TimeHelper::make_local_datetime($line['last_updated']);
 
 			if (Feeds::_has_icon($id)) {
 				$ts = filemtime(Feeds::_get_icon_file($id));

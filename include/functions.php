@@ -253,7 +253,7 @@
 	}
 
 	/** @deprecated by TimeHelper::make_local_datetime() */
-	function make_local_datetime(string $timestamp, bool $long, ?int $owner_uid = null, bool $no_smart_dt = false, bool $eta_min = false): string {
+	function make_local_datetime(string $timestamp, bool $long = false, ?int $owner_uid = null, bool $no_smart_dt = false, bool $eta_min = false): string {
 		return TimeHelper::make_local_datetime($timestamp, $long, $owner_uid, $no_smart_dt, $eta_min);
 	}
 

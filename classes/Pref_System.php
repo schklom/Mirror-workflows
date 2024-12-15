@@ -143,7 +143,7 @@ class Pref_System extends Handler_Administrative {
 							<td class='errstr'><?= $line["errstr"] . "\n" .  $line["context"] ?></td>
 							<td class='login'><?= $line["login"] ?></td>
 							<td class='timestamp'>
-								<?= TimeHelper::make_local_datetime($line["created_at"], false) ?>
+								<?= TimeHelper::make_local_datetime($line['created_at']) ?>
 							</td>
 						</tr>
 					<?php } ?>

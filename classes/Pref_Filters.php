@@ -276,7 +276,7 @@ class Pref_Filters extends Handler_Protected {
 				'name' => $name[0],
 				'param' => $name[1],
 				'checkbox' => false,
-				'last_triggered' => $filter->last_triggered ? TimeHelper::make_local_datetime($filter->last_triggered, false) : null,
+				'last_triggered' => $filter->last_triggered ? TimeHelper::make_local_datetime($filter->last_triggered) : null,
 				'enabled' => sql_bool_to_bool($filter->enabled),
 				'rules' => $this->_get_rules_list($filter->id)
 			];

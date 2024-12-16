@@ -183,17 +183,13 @@ class Counters {
 		while ($line = $sth->fetch()) {
 
 			$id = $line["id"];
-			$last_updated = TimeHelper::make_local_datetime($line['last_updated'], false);
+			$last_updated = TimeHelper::make_local_datetime($line['last_updated']);
 
 			if (Feeds::_has_icon($id)) {
 				$ts = filemtime(Feeds::_get_icon_file($id));
 			} else {
 				$ts = 0;
 			}
-
-			// hide default un-updated timestamp i.e. 1970-01-01 (?) -fox
-			if ((int)date('Y') - (int)date('Y', strtotime($line['last_updated'] ?? '')) > 2)
-				$last_updated = '';
 
 			$cv = [
 				"id" => $id,

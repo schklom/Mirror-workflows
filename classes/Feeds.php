@@ -152,8 +152,7 @@ class Feeds extends Handler_Protected {
 		$feed_title = $qfh_ret[1];
 		$feed_site_url = $qfh_ret[2];
 		$last_error = $qfh_ret[3];
-		$last_updated = str_contains($qfh_ret[4] ?? "", '1970-') ?
-			__("Never") : TimeHelper::make_local_datetime($qfh_ret[4], false);
+		$last_updated = TimeHelper::make_local_datetime($qfh_ret[4]);
 		$highlight_words = $qfh_ret[5];
 		$reply['first_id'] = $qfh_ret[6];
 		$reply['is_vfeed'] = $qfh_ret[7];
@@ -338,11 +337,11 @@ class Feeds extends Handler_Protected {
 					$line["enclosures"] = [ 'formatted' => '', 'entries' => [] ];
 				}
 
-				$line["updated_long"] = TimeHelper::make_local_datetime($line["updated"],true);
-				$line["updated"] = TimeHelper::make_local_datetime($line["updated"], false, null, false, true);
+				$line["updated_long"] = TimeHelper::make_local_datetime($line["updated"]);
+				$line["updated"] = TimeHelper::make_local_datetime($line["updated"], eta_min: true);
 
 				$line['imported'] = T_sprintf("Imported at %s",
-					TimeHelper::make_local_datetime($line["date_entered"], false));
+					TimeHelper::make_local_datetime($line['date_entered']));
 
 				if ($line["tag_cache"])
 					$tags = explode(",", $line["tag_cache"]);
@@ -417,7 +416,7 @@ class Feeds extends Handler_Protected {
 					$sth->execute([$_SESSION['uid']]);
 					$row = $sth->fetch();
 
-					$last_updated = TimeHelper::make_local_datetime($row["last_updated"], false);
+					$last_updated = TimeHelper::make_local_datetime($row['last_updated']);
 
 					$reply['content'] .= sprintf(__("Feeds last updated at %s"), $last_updated);
 

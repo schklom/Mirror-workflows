@@ -103,7 +103,7 @@ class Pref_Feeds extends Handler_Protected {
 				'param' => T_sprintf(
 					_ngettext("(%d article / %s)", "(%d articles / %s)", $feed->num_articles),
 					$feed->num_articles,
-					TimeHelper::make_local_datetime($feed->last_updated, true)),
+					TimeHelper::make_local_datetime($feed->last_updated)),
 				'updates_disabled' => (int)($feed->update_interval < 0),
 			]);
 		}
@@ -290,7 +290,7 @@ class Pref_Feeds extends Handler_Protected {
 					'param' => T_sprintf(
 						_ngettext("(%d article / %s)", "(%d articles / %s)", $feed->num_articles),
 						$feed->num_articles,
-						TimeHelper::make_local_datetime($feed->last_updated, true)),
+						TimeHelper::make_local_datetime($feed->last_updated)),
 					'unread' => -1,
 					'type' => 'feed',
 					'updates_disabled' => (int)($feed->update_interval < 0),
@@ -333,7 +333,7 @@ class Pref_Feeds extends Handler_Protected {
 					'param' => T_sprintf(
 						_ngettext("(%d article / %s)", "(%d articles / %s)", $feed->num_articles),
 						$feed->num_articles,
-						TimeHelper::make_local_datetime($feed->last_updated, true)),
+						TimeHelper::make_local_datetime($feed->last_updated)),
 					'unread' => -1,
 					'type' => 'feed',
 					'updates_disabled' => (int)($feed->update_interval < 0),
@@ -1161,7 +1161,7 @@ class Pref_Feeds extends Handler_Protected {
 			->find_array();
 
 		foreach ($inactive_feeds as $inactive_feed) {
-			$inactive_feed['last_article'] = TimeHelper::make_local_datetime($inactive_feed['last_article'], false);
+			$inactive_feed['last_article'] = TimeHelper::make_local_datetime($inactive_feed['last_article']);
 		}
 
 		print json_encode($inactive_feeds);

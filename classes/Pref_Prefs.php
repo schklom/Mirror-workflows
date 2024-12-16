@@ -1520,10 +1520,10 @@ class Pref_Prefs extends Handler_Protected {
 							<?= htmlspecialchars($pass["title"]) ?>
 						</td>
 						<td class='text-muted'>
-							<?= TimeHelper::make_local_datetime($pass['created'], false) ?>
+							<?= TimeHelper::make_local_datetime($pass['created']) ?>
 						</td>
 						<td class='text-muted'>
-							<?= TimeHelper::make_local_datetime($pass['last_used'], false) ?>
+							<?= TimeHelper::make_local_datetime($pass['last_used']) ?>
 						</td>
 					</tr>
 				<?php } ?>

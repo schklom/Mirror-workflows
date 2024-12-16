@@ -153,8 +153,7 @@ class Digest
 
 			array_push($affected_ids, $line["ref_id"]);
 
-			$updated = TimeHelper::make_local_datetime($line['last_updated'], false,
-				$user_id);
+			$updated = TimeHelper::make_local_datetime($line['last_updated'], owner_uid: $user_id);
 
 			if (Prefs::get(Prefs::ENABLE_FEED_CATS, $user_id)) {
 				$line['feed_title'] = $line['cat_title'] . " / " . $line['feed_title'];

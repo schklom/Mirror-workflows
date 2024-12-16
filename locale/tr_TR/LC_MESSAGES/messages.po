@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-28 08:14+0300\n"
+"POT-Creation-Date: 2024-12-14 12:17+0300\n"
 "PO-Revision-Date: 2024-06-24 19:09+0000\n"
 "Last-Translator: Oğuz Ersen <oguz@ersen.moe>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/tt-rss/webui/tr/"
@@ -87,7 +87,7 @@ msgstr "Günde bir"
 msgid "Weekly"
 msgstr "Haftada bir"
 
-#: backend.php:91 classes/Pref_Feeds.php:553 classes/Pref_Feeds.php:606
+#: backend.php:91 classes/Pref_Feeds.php:574 classes/Pref_Feeds.php:627
 msgid "Disabled"
 msgstr "Devre dışı"
 
@@ -229,7 +229,7 @@ msgstr "Özet akışına üye ol"
 msgid "Edit this feed..."
 msgstr "Bu özet akışını düzenle..."
 
-#: index.php:259 classes/Pref_Feeds.php:939 js/PrefFeedTree.js:120
+#: index.php:259 classes/Pref_Feeds.php:960 js/PrefFeedTree.js:120
 #: js/CommonDialogs.js:633
 msgid "Unsubscribe"
 msgstr "Üyelikten çık"
@@ -279,8 +279,8 @@ msgstr "Tercihler"
 msgid "Exit preferences"
 msgstr "Tercihleri kapat"
 
-#: prefs.php:138 classes/Pref_Prefs.php:44 classes/Pref_Feeds.php:124
-#: classes/Pref_Feeds.php:928
+#: prefs.php:138 classes/Pref_Prefs.php:44 classes/Pref_Feeds.php:131
+#: classes/Pref_Feeds.php:949
 msgid "Feeds"
 msgstr "Özet akışları"
 
@@ -306,14 +306,14 @@ msgid "Created label <b>%s</b>"
 msgstr "Arama başlığı tanımlandı <b>%s</b>"
 
 #: classes/Pref_Labels.php:179 classes/Pref_Prefs.php:853
-#: classes/Pref_Prefs.php:1489 classes/Pref_Feeds.php:918
+#: classes/Pref_Prefs.php:1489 classes/Pref_Feeds.php:939
 #: classes/Pref_Users.php:223 classes/Pref_Filters.php:641
 #: js/CommonFilters.js:445 js/CommonFilters.js:478 js/PrefHelpers.js:184
 #: js/PrefFeedTree.js:524 js/CommonDialogs.js:278
 msgid "Select"
 msgstr "Seç"
 
-#: classes/Pref_Prefs.php:36 classes/Pref_Feeds.php:624 js/CommonDialogs.js:517
+#: classes/Pref_Prefs.php:36 classes/Pref_Feeds.php:645 js/CommonDialogs.js:517
 msgid "General"
 msgstr "Genel"
 
@@ -493,7 +493,7 @@ msgstr "Başlıklar listesinde yazı içeriğini göster"
 msgid "SSL client certificate"
 msgstr "SSL istemci sertifikası"
 
-#: classes/Pref_Prefs.php:120 classes/Pref_Feeds.php:611
+#: classes/Pref_Prefs.php:120 classes/Pref_Feeds.php:632
 #: js/CommonDialogs.js:508
 #, fuzzy
 msgid "Do not embed media"
@@ -583,7 +583,7 @@ msgstr "Ad soyad:"
 msgid "E-mail:"
 msgstr "E-posta adresi:"
 
-#: classes/Pref_Prefs.php:318 classes/Pref_Feeds.php:693
+#: classes/Pref_Prefs.php:318 classes/Pref_Feeds.php:714
 #: plugins/nsfw/init.php:105 plugins/note/init.php:49
 #: plugins/af_psql_trgm/init.php:218 js/CommonFilters.js:237
 #: js/CommonFilters.js:321 js/CommonFilters.js:525 js/CommonDialogs.js:634
@@ -618,7 +618,7 @@ msgstr ""
 msgid "Generate password"
 msgstr "Parola oluştur"
 
-#: classes/Pref_Prefs.php:415 classes/Pref_Feeds.php:952 js/PrefHelpers.js:227
+#: classes/Pref_Prefs.php:415 classes/Pref_Feeds.php:973 js/PrefHelpers.js:227
 msgid "Remove selected"
 msgstr "Seçileni kaldır"
 
@@ -713,14 +713,14 @@ msgstr "Profilleri yönet"
 msgid "Reset to defaults"
 msgstr "Öntanımlılara geri dön"
 
-#: classes/Pref_Prefs.php:848 classes/Pref_Feeds.php:913
+#: classes/Pref_Prefs.php:848 classes/Pref_Feeds.php:934
 #: classes/Pref_Users.php:217 classes/Pref_Filters.php:636 js/Feeds.js:660
 #: js/Feeds.js:655 js/Feeds.js:710
 msgid "Search"
 msgstr "Ara"
 
 #: classes/Pref_Prefs.php:856 classes/Pref_Prefs.php:1492
-#: classes/Pref_Feeds.php:921 classes/Pref_Users.php:226
+#: classes/Pref_Feeds.php:942 classes/Pref_Users.php:226
 #: classes/Pref_Filters.php:644 js/CommonFilters.js:449 js/CommonFilters.js:481
 #: js/Headlines.js:664 js/PrefHelpers.js:187 js/PrefFeedTree.js:527
 #: js/CommonDialogs.js:281
@@ -728,7 +728,7 @@ msgid "All"
 msgstr "Tümü"
 
 #: classes/Pref_Prefs.php:858 classes/Pref_Prefs.php:1494
-#: classes/Pref_Feeds.php:923 classes/Pref_Users.php:228
+#: classes/Pref_Feeds.php:944 classes/Pref_Users.php:228
 #: classes/Pref_Filters.php:646 js/CommonFilters.js:451 js/CommonFilters.js:483
 #: js/Headlines.js:667 js/PrefHelpers.js:189 js/PrefFeedTree.js:529
 #: js/CommonDialogs.js:283
@@ -767,7 +767,7 @@ msgstr "Eklenti kur"
 msgid "Personal data / Authentication"
 msgstr "Kişisel bilgi / Yetkilendirme"
 
-#: classes/Pref_Prefs.php:950 classes/Pref_Feeds.php:1067
+#: classes/Pref_Prefs.php:950 classes/Pref_Feeds.php:1088
 #: js/CommonDialogs.js:628
 msgid "Plugins"
 msgstr "Eklentiler"
@@ -976,7 +976,7 @@ msgstr "Tüm yazılar"
 msgid "Recently read"
 msgstr "Yakın zamanda okunanlar"
 
-#: classes/Feeds.php:1349 classes/Pref_Feeds.php:250 classes/Digest.php:120
+#: classes/Feeds.php:1349 classes/Pref_Feeds.php:257 classes/Digest.php:120
 #: classes/Pref_Filters.php:910 classes/OPML.php:571 include/controls.php:216
 msgid "Uncategorized"
 msgstr "Kategorilenmemiş"
@@ -995,92 +995,100 @@ msgstr "Hatalı arama söz dizimi: %s."
 msgid "Search results: %s"
 msgstr "Arama sonuçları: %s"
 
-#: classes/Pref_Feeds.php:72 classes/Pref_Feeds.php:233
-#: classes/Pref_Feeds.php:286 classes/Pref_Feeds.php:292
-#: classes/Pref_Feeds.php:322
+#: classes/Pref_Feeds.php:72 classes/Pref_Feeds.php:240
+#: classes/Pref_Feeds.php:300 classes/Pref_Feeds.php:306
+#: classes/Pref_Feeds.php:343
 #, fuzzy, php-format
 msgid "(%d feed)"
 msgid_plural "(%d feeds)"
 msgstr[0] "(%d özet akışı)"
 msgstr[1] "(%d özet akışı)"
 
-#: classes/Pref_Feeds.php:551
+#: classes/Pref_Feeds.php:104 classes/Pref_Feeds.php:291
+#: classes/Pref_Feeds.php:334
+#, fuzzy, php-format
+msgid "(%d article / %s)"
+msgid_plural "(%d articles / %s)"
+msgstr[0] "%d yazı seçildi"
+msgstr[1] "%d yazı seçildi"
+
+#: classes/Pref_Feeds.php:572
 #, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
 msgstr[0] "(%d gün)"
 msgstr[1] "(%d gün)"
 
-#: classes/Pref_Feeds.php:557
+#: classes/Pref_Feeds.php:578
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d gün"
 msgstr[1] "%d gün"
 
-#: classes/Pref_Feeds.php:588
+#: classes/Pref_Feeds.php:609
 msgid "Check to enable field"
 msgstr "Veri alanını etkinleştirmek için tıklayın"
 
-#: classes/Pref_Feeds.php:604
+#: classes/Pref_Feeds.php:625
 #, php-format
 msgid "(%d days)"
 msgstr "(%d gün)"
 
-#: classes/Pref_Feeds.php:609 js/CommonDialogs.js:506
+#: classes/Pref_Feeds.php:630 js/CommonDialogs.js:506
 msgid "Include in e-mail digest"
 msgstr "E-posta özetine ekle"
 
-#: classes/Pref_Feeds.php:610 js/CommonDialogs.js:507
+#: classes/Pref_Feeds.php:631 js/CommonDialogs.js:507
 msgid "Always display image attachments"
 msgstr "Daima resimleri göster"
 
-#: classes/Pref_Feeds.php:612 js/CommonDialogs.js:509
+#: classes/Pref_Feeds.php:633 js/CommonDialogs.js:509
 msgid "Cache media"
 msgstr ""
 
-#: classes/Pref_Feeds.php:613 js/CommonDialogs.js:510
+#: classes/Pref_Feeds.php:634 js/CommonDialogs.js:510
 msgid "Mark updated articles as unread"
 msgstr "Yenilenen yazıları okunmamış işaretle"
 
-#: classes/Pref_Feeds.php:628 js/PrefFeedTree.js:447 js/CommonDialogs.js:61
+#: classes/Pref_Feeds.php:649 js/PrefFeedTree.js:447 js/CommonDialogs.js:61
 #: js/CommonDialogs.js:546
 msgid "Place in category:"
 msgstr "Kategoriye yerleştir"
 
-#: classes/Pref_Feeds.php:636 js/Feeds.js:642 js/CommonDialogs.js:562
+#: classes/Pref_Feeds.php:657 js/Feeds.js:642 js/CommonDialogs.js:562
 msgid "Language:"
 msgstr "Dil:"
 
-#: classes/Pref_Feeds.php:647 js/CommonDialogs.js:572
+#: classes/Pref_Feeds.php:668 js/CommonDialogs.js:572
 msgid "Update interval:"
 msgstr "Yenileme zaman aralığı:"
 
-#: classes/Pref_Feeds.php:654 js/CommonDialogs.js:578
+#: classes/Pref_Feeds.php:675 js/CommonDialogs.js:578
 msgid "Article purging:"
 msgstr "Yazıları temizleme:"
 
-#: classes/Pref_Feeds.php:661 plugins/auth_internal/init.php:82
+#: classes/Pref_Feeds.php:682 plugins/auth_internal/init.php:82
 #: js/PrefFeedTree.js:455 js/CommonDialogs.js:588
 msgid "Authentication"
 msgstr "Doğrulama"
 
-#: classes/Pref_Feeds.php:664 classes/Handler_Public.php:515
+#: classes/Pref_Feeds.php:685 classes/Handler_Public.php:515
 #: plugins/bookmarklets/init.php:306 include/login_form.php:122
 #: js/PrefUsers.js:64 js/CommonDialogs.js:591
 msgid "Login:"
 msgstr "Oturum aç:"
 
-#: classes/Pref_Feeds.php:670 plugins/bookmarklets/init.php:313
+#: classes/Pref_Feeds.php:691 plugins/bookmarklets/init.php:313
 #: include/login_form.php:131 js/CommonDialogs.js:597
 msgid "Password:"
 msgstr "Şifre:"
 
-#: classes/Pref_Feeds.php:677 js/CommonDialogs.js:604
+#: classes/Pref_Feeds.php:698 js/CommonDialogs.js:604
 msgid "Options"
 msgstr "Opsiyonlar"
 
-#: classes/Pref_Feeds.php:694 plugins/note/init.php:50
+#: classes/Pref_Feeds.php:715 plugins/note/init.php:50
 #: plugins/bookmarklets/init.php:286 js/CommonFilters.js:238
 #: js/CommonFilters.js:322 js/CommonFilters.js:526 js/CommonFilters.js:530
 #: js/CommonDialogs.js:635 js/PrefHelpers.js:232 js/PrefHelpers.js:306
@@ -1089,73 +1097,73 @@ msgstr "Opsiyonlar"
 msgid "Cancel"
 msgstr "İptal"
 
-#: classes/Pref_Feeds.php:888
+#: classes/Pref_Feeds.php:909
 msgid "Feeds with errors"
 msgstr "Hatalı özet akışları"
 
-#: classes/Pref_Feeds.php:894
+#: classes/Pref_Feeds.php:915
 msgid "Inactive feeds"
 msgstr "Aktif olmayan özet akışları"
 
-#: classes/Pref_Feeds.php:931 classes/RPC.php:629 js/CommonDialogs.js:34
+#: classes/Pref_Feeds.php:952 classes/RPC.php:629 js/CommonDialogs.js:34
 msgid "Subscribe to feed"
 msgstr "Özet akışına abone ol"
 
-#: classes/Pref_Feeds.php:933
+#: classes/Pref_Feeds.php:954
 msgid "Edit selected feeds"
 msgstr "Seçili özet akışlarını düzenle"
 
-#: classes/Pref_Feeds.php:935 classes/Pref_Feeds.php:950
+#: classes/Pref_Feeds.php:956 classes/Pref_Feeds.php:971
 #: classes/Pref_Filters.php:657
 msgid "Reset sort order"
 msgstr "Sıralamayı eski haline getir"
 
-#: classes/Pref_Feeds.php:937 js/PrefFeedTree.js:417
+#: classes/Pref_Feeds.php:958 js/PrefFeedTree.js:417
 msgid "Batch subscribe"
 msgstr "Toplu abone ol"
 
-#: classes/Pref_Feeds.php:945
+#: classes/Pref_Feeds.php:966
 msgid "Categories"
 msgstr "Kategoriler"
 
-#: classes/Pref_Feeds.php:948
+#: classes/Pref_Feeds.php:969
 msgid "Add category"
 msgstr "Kategori ekle"
 
-#: classes/Pref_Feeds.php:987
+#: classes/Pref_Feeds.php:1008
 msgid "Choose file..."
 msgstr "Dosya seç..."
 
-#: classes/Pref_Feeds.php:995
+#: classes/Pref_Feeds.php:1016
 msgid "Import OPML"
 msgstr "OPML'den içe aktar"
 
-#: classes/Pref_Feeds.php:1006
+#: classes/Pref_Feeds.php:1027
 msgid "Export OPML"
 msgstr "OPML'i dışa aktar"
 
-#: classes/Pref_Feeds.php:1011
+#: classes/Pref_Feeds.php:1032
 msgid "Include tt-rss settings"
 msgstr "tt-rss ayarlarını dahil et"
 
-#: classes/Pref_Feeds.php:1027
+#: classes/Pref_Feeds.php:1048
 msgid "Display URL"
 msgstr "Adresi göster"
 
-#: classes/Pref_Feeds.php:1032
+#: classes/Pref_Feeds.php:1053
 msgid "Clear all generated URLs"
 msgstr "Tüm üretilmiş adresleri temizle"
 
-#: classes/Pref_Feeds.php:1044
+#: classes/Pref_Feeds.php:1065
 #, fuzzy
 msgid "My feeds"
 msgstr "Daha fazla özet akışı"
 
-#: classes/Pref_Feeds.php:1049
+#: classes/Pref_Feeds.php:1070
 msgid "OPML"
 msgstr "OPML"
 
-#: classes/Pref_Feeds.php:1054
+#: classes/Pref_Feeds.php:1075
 msgid "Sharing"
 msgstr "Paylaşım"
 

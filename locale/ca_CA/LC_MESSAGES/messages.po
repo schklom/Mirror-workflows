@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: messages\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-28 08:14+0300\n"
+"POT-Creation-Date: 2024-12-14 12:17+0300\n"
 "PO-Revision-Date: 2019-03-02 12:02+0000\n"
 "Last-Translator: Marc Bres <marc.bres@gmail.com>\n"
 "Language-Team: Catalan <https://weblate.tt-rss.org/projects/tt-rss/messages/"
@@ -83,7 +83,7 @@ msgstr "Diàriament"
 msgid "Weekly"
 msgstr "Setmanalment"
 
-#: backend.php:91 classes/Pref_Feeds.php:553 classes/Pref_Feeds.php:606
+#: backend.php:91 classes/Pref_Feeds.php:574 classes/Pref_Feeds.php:627
 #, fuzzy
 msgid "Disabled"
 msgstr "Desactivar contrasenyes d'un sol ús (OTP)"
@@ -229,7 +229,7 @@ msgstr "Subscriviu-vos al canal..."
 msgid "Edit this feed..."
 msgstr "Edita aquest canal..."
 
-#: index.php:259 classes/Pref_Feeds.php:939 js/PrefFeedTree.js:120
+#: index.php:259 classes/Pref_Feeds.php:960 js/PrefFeedTree.js:120
 #: js/CommonDialogs.js:633
 msgid "Unsubscribe"
 msgstr "Dóna't de baixa"
@@ -282,8 +282,8 @@ msgstr "Preferències"
 msgid "Exit preferences"
 msgstr "Surt de les preferències"
 
-#: prefs.php:138 classes/Pref_Prefs.php:44 classes/Pref_Feeds.php:124
-#: classes/Pref_Feeds.php:928
+#: prefs.php:138 classes/Pref_Prefs.php:44 classes/Pref_Feeds.php:131
+#: classes/Pref_Feeds.php:949
 msgid "Feeds"
 msgstr "Canals"
 
@@ -309,14 +309,14 @@ msgid "Created label <b>%s</b>"
 msgstr "S'ha creat l'etiqueta <b>%s</b>"
 
 #: classes/Pref_Labels.php:179 classes/Pref_Prefs.php:853
-#: classes/Pref_Prefs.php:1489 classes/Pref_Feeds.php:918
+#: classes/Pref_Prefs.php:1489 classes/Pref_Feeds.php:939
 #: classes/Pref_Users.php:223 classes/Pref_Filters.php:641
 #: js/CommonFilters.js:445 js/CommonFilters.js:478 js/PrefHelpers.js:184
 #: js/PrefFeedTree.js:524 js/CommonDialogs.js:278
 msgid "Select"
 msgstr "Seleccionar"
 
-#: classes/Pref_Prefs.php:36 classes/Pref_Feeds.php:624 js/CommonDialogs.js:517
+#: classes/Pref_Prefs.php:36 classes/Pref_Feeds.php:645 js/CommonDialogs.js:517
 msgid "General"
 msgstr "General"
 
@@ -481,7 +481,7 @@ msgstr "Mostra la previsualització de contingut a la llista de capçaleres"
 msgid "SSL client certificate"
 msgstr "Certificat client SSL"
 
-#: classes/Pref_Prefs.php:120 classes/Pref_Feeds.php:611
+#: classes/Pref_Prefs.php:120 classes/Pref_Feeds.php:632
 #: js/CommonDialogs.js:508
 msgid "Do not embed media"
 msgstr "No mostris imatges en els articles"
@@ -570,7 +570,7 @@ msgstr "Nom complet:"
 msgid "E-mail:"
 msgstr "Adreça electrònica:"
 
-#: classes/Pref_Prefs.php:318 classes/Pref_Feeds.php:693
+#: classes/Pref_Prefs.php:318 classes/Pref_Feeds.php:714
 #: plugins/nsfw/init.php:105 plugins/note/init.php:49
 #: plugins/af_psql_trgm/init.php:218 js/CommonFilters.js:237
 #: js/CommonFilters.js:321 js/CommonFilters.js:525 js/CommonDialogs.js:634
@@ -606,7 +606,7 @@ msgstr ""
 msgid "Generate password"
 msgstr "Generar nova URL"
 
-#: classes/Pref_Prefs.php:415 classes/Pref_Feeds.php:952 js/PrefHelpers.js:227
+#: classes/Pref_Prefs.php:415 classes/Pref_Feeds.php:973 js/PrefHelpers.js:227
 msgid "Remove selected"
 msgstr "Eliminar seleccionades"
 
@@ -704,14 +704,14 @@ msgstr "Gestionar perfils"
 msgid "Reset to defaults"
 msgstr "Torna als paràmetres per defecte"
 
-#: classes/Pref_Prefs.php:848 classes/Pref_Feeds.php:913
+#: classes/Pref_Prefs.php:848 classes/Pref_Feeds.php:934
 #: classes/Pref_Users.php:217 classes/Pref_Filters.php:636 js/Feeds.js:660
 #: js/Feeds.js:655 js/Feeds.js:710
 msgid "Search"
 msgstr "Cerca"
 
 #: classes/Pref_Prefs.php:856 classes/Pref_Prefs.php:1492
-#: classes/Pref_Feeds.php:921 classes/Pref_Users.php:226
+#: classes/Pref_Feeds.php:942 classes/Pref_Users.php:226
 #: classes/Pref_Filters.php:644 js/CommonFilters.js:449 js/CommonFilters.js:481
 #: js/Headlines.js:664 js/PrefHelpers.js:187 js/PrefFeedTree.js:527
 #: js/CommonDialogs.js:281
@@ -719,7 +719,7 @@ msgid "All"
 msgstr "Tot"
 
 #: classes/Pref_Prefs.php:858 classes/Pref_Prefs.php:1494
-#: classes/Pref_Feeds.php:923 classes/Pref_Users.php:228
+#: classes/Pref_Feeds.php:944 classes/Pref_Users.php:228
 #: classes/Pref_Filters.php:646 js/CommonFilters.js:451 js/CommonFilters.js:483
 #: js/Headlines.js:667 js/PrefHelpers.js:189 js/PrefFeedTree.js:529
 #: js/CommonDialogs.js:283
@@ -765,7 +765,7 @@ msgstr "Connector de correu"
 msgid "Personal data / Authentication"
 msgstr "Dades personals / Autenticació"
 
-#: classes/Pref_Prefs.php:950 classes/Pref_Feeds.php:1067
+#: classes/Pref_Prefs.php:950 classes/Pref_Feeds.php:1088
 #: js/CommonDialogs.js:628
 msgid "Plugins"
 msgstr "Connectors"
@@ -981,7 +981,7 @@ msgstr "Tots els articles"
 msgid "Recently read"
 msgstr "Llegits recentment"
 
-#: classes/Feeds.php:1349 classes/Pref_Feeds.php:250 classes/Digest.php:120
+#: classes/Feeds.php:1349 classes/Pref_Feeds.php:257 classes/Digest.php:120
 #: classes/Pref_Filters.php:910 classes/OPML.php:571 include/controls.php:216
 msgid "Uncategorized"
 msgstr "Sense categoria"
@@ -1000,93 +1000,101 @@ msgstr ""
 msgid "Search results: %s"
 msgstr "Resultats de la cerca: %s"
 
-#: classes/Pref_Feeds.php:72 classes/Pref_Feeds.php:233
-#: classes/Pref_Feeds.php:286 classes/Pref_Feeds.php:292
-#: classes/Pref_Feeds.php:322
+#: classes/Pref_Feeds.php:72 classes/Pref_Feeds.php:240
+#: classes/Pref_Feeds.php:300 classes/Pref_Feeds.php:306
+#: classes/Pref_Feeds.php:343
 #, fuzzy, php-format
 msgid "(%d feed)"
 msgid_plural "(%d feeds)"
 msgstr[0] "Edita el canal"
 msgstr[1] "Edita el canal"
 
-#: classes/Pref_Feeds.php:551
+#: classes/Pref_Feeds.php:104 classes/Pref_Feeds.php:291
+#: classes/Pref_Feeds.php:334
+#, fuzzy, php-format
+msgid "(%d article / %s)"
+msgid_plural "(%d articles / %s)"
+msgstr[0] "No hi ha cap article seleccionat."
+msgstr[1] "No hi ha cap article seleccionat."
+
+#: classes/Pref_Feeds.php:572
 #, fuzzy, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
 msgstr[0] "Edita el canal"
 msgstr[1] "Edita el canal"
 
-#: classes/Pref_Feeds.php:557
+#: classes/Pref_Feeds.php:578
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: classes/Pref_Feeds.php:588
+#: classes/Pref_Feeds.php:609
 msgid "Check to enable field"
 msgstr "Seleccioneu-ho per activar els camps"
 
-#: classes/Pref_Feeds.php:604
+#: classes/Pref_Feeds.php:625
 #, fuzzy, php-format
 msgid "(%d days)"
 msgstr "Edita el canal"
 
-#: classes/Pref_Feeds.php:609 js/CommonDialogs.js:506
+#: classes/Pref_Feeds.php:630 js/CommonDialogs.js:506
 msgid "Include in e-mail digest"
 msgstr "Inclou-lo en el resum diari per correu electrònic"
 
-#: classes/Pref_Feeds.php:610 js/CommonDialogs.js:507
+#: classes/Pref_Feeds.php:631 js/CommonDialogs.js:507
 msgid "Always display image attachments"
 msgstr "Mostra les imatges adjuntes"
 
-#: classes/Pref_Feeds.php:612 js/CommonDialogs.js:509
+#: classes/Pref_Feeds.php:633 js/CommonDialogs.js:509
 msgid "Cache media"
 msgstr "Cache d'imatges"
 
-#: classes/Pref_Feeds.php:613 js/CommonDialogs.js:510
+#: classes/Pref_Feeds.php:634 js/CommonDialogs.js:510
 msgid "Mark updated articles as unread"
 msgstr "Marcar articles actualitzats com a no llegits"
 
-#: classes/Pref_Feeds.php:628 js/PrefFeedTree.js:447 js/CommonDialogs.js:61
+#: classes/Pref_Feeds.php:649 js/PrefFeedTree.js:447 js/CommonDialogs.js:61
 #: js/CommonDialogs.js:546
 msgid "Place in category:"
 msgstr "Posa'l a la categoria:"
 
-#: classes/Pref_Feeds.php:636 js/Feeds.js:642 js/CommonDialogs.js:562
+#: classes/Pref_Feeds.php:657 js/Feeds.js:642 js/CommonDialogs.js:562
 msgid "Language:"
 msgstr "Idioma:"
 
-#: classes/Pref_Feeds.php:647 js/CommonDialogs.js:572
+#: classes/Pref_Feeds.php:668 js/CommonDialogs.js:572
 #, fuzzy
 msgid "Update interval:"
 msgstr "Interval d'actualització per defecte"
 
-#: classes/Pref_Feeds.php:654 js/CommonDialogs.js:578
+#: classes/Pref_Feeds.php:675 js/CommonDialogs.js:578
 msgid "Article purging:"
 msgstr "Neteja d'articles:"
 
-#: classes/Pref_Feeds.php:661 plugins/auth_internal/init.php:82
+#: classes/Pref_Feeds.php:682 plugins/auth_internal/init.php:82
 #: js/PrefFeedTree.js:455 js/CommonDialogs.js:588
 msgid "Authentication"
 msgstr "Autenticació"
 
-#: classes/Pref_Feeds.php:664 classes/Handler_Public.php:515
+#: classes/Pref_Feeds.php:685 classes/Handler_Public.php:515
 #: plugins/bookmarklets/init.php:306 include/login_form.php:122
 #: js/PrefUsers.js:64 js/CommonDialogs.js:591
 msgid "Login:"
 msgstr "Usuari:"
 
-#: classes/Pref_Feeds.php:670 plugins/bookmarklets/init.php:313
+#: classes/Pref_Feeds.php:691 plugins/bookmarklets/init.php:313
 #: include/login_form.php:131 js/CommonDialogs.js:597
 msgid "Password:"
 msgstr "Contrasenya:"
 
-#: classes/Pref_Feeds.php:677 js/CommonDialogs.js:604
+#: classes/Pref_Feeds.php:698 js/CommonDialogs.js:604
 msgid "Options"
 msgstr "Opcions"
 
-#: classes/Pref_Feeds.php:694 plugins/note/init.php:50
+#: classes/Pref_Feeds.php:715 plugins/note/init.php:50
 #: plugins/bookmarklets/init.php:286 js/CommonFilters.js:238
 #: js/CommonFilters.js:322 js/CommonFilters.js:526 js/CommonFilters.js:530
 #: js/CommonDialogs.js:635 js/PrefHelpers.js:232 js/PrefHelpers.js:306
@@ -1095,75 +1103,75 @@ msgstr "Opcions"
 msgid "Cancel"
 msgstr "Cancel·la"
 
-#: classes/Pref_Feeds.php:888
+#: classes/Pref_Feeds.php:909
 msgid "Feeds with errors"
 msgstr "Canals amb errors"
 
-#: classes/Pref_Feeds.php:894
+#: classes/Pref_Feeds.php:915
 msgid "Inactive feeds"
 msgstr "Canals inactius"
 
-#: classes/Pref_Feeds.php:931 classes/RPC.php:629 js/CommonDialogs.js:34
+#: classes/Pref_Feeds.php:952 classes/RPC.php:629 js/CommonDialogs.js:34
 msgid "Subscribe to feed"
 msgstr "Subscriu-te al canal"
 
-#: classes/Pref_Feeds.php:933
+#: classes/Pref_Feeds.php:954
 msgid "Edit selected feeds"
 msgstr "Editar canals seleccionats"
 
-#: classes/Pref_Feeds.php:935 classes/Pref_Feeds.php:950
+#: classes/Pref_Feeds.php:956 classes/Pref_Feeds.php:971
 #: classes/Pref_Filters.php:657
 msgid "Reset sort order"
 msgstr "Reiniciar ordenació"
 
-#: classes/Pref_Feeds.php:937 js/PrefFeedTree.js:417
+#: classes/Pref_Feeds.php:958 js/PrefFeedTree.js:417
 msgid "Batch subscribe"
 msgstr "Subscripció en lot"
 
-#: classes/Pref_Feeds.php:945
+#: classes/Pref_Feeds.php:966
 msgid "Categories"
 msgstr "Categories"
 
-#: classes/Pref_Feeds.php:948
+#: classes/Pref_Feeds.php:969
 msgid "Add category"
 msgstr "Afegir categoria"
 
-#: classes/Pref_Feeds.php:987
+#: classes/Pref_Feeds.php:1008
 msgid "Choose file..."
 msgstr "Triar fitxer..."
 
-#: classes/Pref_Feeds.php:995
+#: classes/Pref_Feeds.php:1016
 msgid "Import OPML"
 msgstr "Importar OPML"
 
-#: classes/Pref_Feeds.php:1006
+#: classes/Pref_Feeds.php:1027
 msgid "Export OPML"
 msgstr "Exportar OPML"
 
-#: classes/Pref_Feeds.php:1011
+#: classes/Pref_Feeds.php:1032
 #, fuzzy
 #| msgid "Include settings"
 msgid "Include tt-rss settings"
 msgstr "Incloure preferències"
 
-#: classes/Pref_Feeds.php:1027
+#: classes/Pref_Feeds.php:1048
 msgid "Display URL"
 msgstr "Mostrar URL"
 
-#: classes/Pref_Feeds.php:1032
+#: classes/Pref_Feeds.php:1053
 msgid "Clear all generated URLs"
 msgstr "Eliminar totes les URLs generades"
 
-#: classes/Pref_Feeds.php:1044
+#: classes/Pref_Feeds.php:1065
 #, fuzzy
 msgid "My feeds"
 msgstr "Els meus canals"
 
-#: classes/Pref_Feeds.php:1049
+#: classes/Pref_Feeds.php:1070
 msgid "OPML"
 msgstr "OPML"
 
-#: classes/Pref_Feeds.php:1054
+#: classes/Pref_Feeds.php:1075
 #, fuzzy
 msgid "Sharing"
 msgstr "Compartir"

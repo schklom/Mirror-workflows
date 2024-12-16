@@ -142,12 +142,11 @@ class FeedItem_RSS extends FeedItem_Common {
 
 		foreach ($enclosures as $enclosure) {
 			$enc = new FeedEnclosure();
-
-			$enc->type = clean($enclosure->getAttribute("type"));
-			$enc->link = clean($enclosure->getAttribute("url"));
-			$enc->length = clean($enclosure->getAttribute("length"));
-			$enc->height = clean($enclosure->getAttribute("height"));
-			$enc->width = clean($enclosure->getAttribute("width"));
+			$enc->type = clean($enclosure->getAttribute('type'));
+			$enc->link = clean($enclosure->getAttribute('url'));
+			$enc->length = clean($enclosure->getAttribute('length'));
+			$enc->height = clean($enclosure->getAttribute('height'));
+			$enc->width = clean($enclosure->getAttribute('width'));
 
 			array_push($encs, $enc);
 		}

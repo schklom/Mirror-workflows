@@ -185,10 +185,9 @@ class FeedItem_Atom extends FeedItem_Common {
 
 				if ($link->getAttribute("rel") == "enclosure") {
 					$enc = new FeedEnclosure();
-
-					$enc->type = clean($link->getAttribute("type"));
-					$enc->length = clean($link->getAttribute("length"));
-					$enc->link = clean($link->getAttribute("href"));
+					$enc->type = clean($link->getAttribute('type'));
+					$enc->length = clean($link->getAttribute('length'));
+					$enc->link = clean($link->getAttribute('href'));
 
 					if (!empty($base)) {
 						$enc->link = UrlHelper::rewrite_relative($base, $enc->link);

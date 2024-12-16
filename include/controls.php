@@ -56,21 +56,21 @@
 	 * @param array<string, mixed> $attributes
 	 */
    function number_spinner_tag(string $name, string $value, array $attributes = [], string $id = ""): string {
-      return input_tag($name, $value, "text", array_merge(["dojoType" => "dijit.form.NumberSpinner"], $attributes), $id);
+      return input_tag($name, $value, 'text', ['dojoType' => 'dijit.form.NumberSpinner', ...$attributes], $id);
    }
 
 	/**
 	 * @param array<string, mixed> $attributes
 	 */
    function submit_tag(string $value, array $attributes = []): string {
-      return button_tag($value, "submit", array_merge(["class" => "alt-primary"], $attributes));
+      return button_tag($value, 'submit', ['class' => 'alt-primary', ...$attributes]);
    }
 
 	/**
 	 * @param array<string, mixed> $attributes
 	 */
    function cancel_dialog_tag(string $value, array $attributes = []): string {
-      return button_tag($value, "", array_merge(["onclick" => "App.dialogOf(this).hide()"], $attributes));
+      return button_tag($value, '', ['onclick' => 'App.dialogOf(this).hide()', ...$attributes]);
    }
 
 	/**

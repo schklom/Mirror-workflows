@@ -14,8 +14,7 @@ class API extends Handler {
 	const E_OPERATION_FAILED = "E_OPERATION_FAILED";
 	const E_NOT_FOUND = "E_NOT_FOUND";
 
-	/** @var int|null */
-	private $seq;
+	private ?int $seq = null;
 
 	/**
 	 * @param array<int|string, mixed> $reply

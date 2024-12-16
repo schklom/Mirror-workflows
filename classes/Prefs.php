@@ -144,14 +144,12 @@ class Prefs {
 		Prefs::_PREFS_MIGRATED
 	];
 
-	/** @var Prefs|null */
-	private static $instance;
+	private static ?Prefs $instance = null;
 
 	/** @var array<string, bool|int|string> */
-	private $cache = [];
+	private array $cache = [];
 
-	/** @var PDO */
-	private $pdo;
+	private ?PDO $pdo = null;
 
 	public static function get_instance() : Prefs {
 		if (self::$instance == null)

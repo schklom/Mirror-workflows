@@ -5,15 +5,13 @@
  */
 function stylesheet_tag(string $filename, array $attributes = []): string {
 
-	$attributes_str = \Controls\attributes_to_string(
-		array_merge(
-			[
-				"href" => "$filename?" . filemtime($filename),
-				"rel" => "stylesheet",
-				"type" => "text/css",
-				"data-orig-href" => $filename
-			],
-			$attributes));
+	$attributes_str = \Controls\attributes_to_string([
+		'href' => "$filename?" . filemtime($filename),
+		'rel' => 'stylesheet',
+		'type' => 'text/css',
+		'data-orig-href' => $filename,
+		...$attributes,
+	]);
 
 	return "<link $attributes_str/>\n";
 }
@@ -22,14 +20,12 @@ function stylesheet_tag(string $filename, array $attributes = []): string {
  * @param array<string, mixed> $attributes
  */
 function javascript_tag(string $filename, array $attributes = []): string {
-	$attributes_str = \Controls\attributes_to_string(
-		array_merge(
-			[
-				"src" => "$filename?" . filemtime($filename),
-				"type" => "text/javascript",
-				"charset" => "utf-8"
-			],
-			$attributes));
+	$attributes_str = \Controls\attributes_to_string([
+		'src' => "$filename?" . filemtime($filename),
+		'type' => 'text/javascript',
+		'charset' => 'utf-8',
+		...$attributes,
+	]);
 
 	return "<script $attributes_str></script>\n";
 }

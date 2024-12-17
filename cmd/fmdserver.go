@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strconv"
 	"strings"
 
@@ -18,8 +17,6 @@ import (
 
 	"gopkg.in/yaml.v3"
 )
-
-var isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]*$`).MatchString
 
 var uio user.UserRepository
 
@@ -51,6 +48,7 @@ type registrationData struct {
 	HashedPassword    string
 	PubKey            string
 	PrivKey           string
+	RequestedUsername string
 	RegistrationToken string
 }
 
@@ -422,7 +420,7 @@ func requestSalt(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	if !isIdValid(data.IDT) {
+	if !user.IsUserIdValid(data.IDT) {
 		http.Error(w, "Invalid FMD ID", http.StatusBadRequest)
 		return
 	}
@@ -441,7 +439,7 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	if !isIdValid(data.IDT) {
+	if !user.IsUserIdValid(data.IDT) {
 		http.Error(w, "Invalid FMD ID", http.StatusBadRequest)
 		return
 	}
@@ -521,7 +519,11 @@ func (h createDeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id := uio.CreateNewUser(reg.PrivKey, reg.PubKey, reg.Salt, reg.HashedPassword)
+	id, err := uio.CreateNewUser(reg.PrivKey, reg.PubKey, reg.Salt, reg.HashedPassword, reg.RequestedUsername)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to create username: %s", err.Error()), http.StatusBadRequest)
+		return
+	}
 
 	accessToken := user.AccessToken{DeviceId: id, Token: ""}
 	result, _ := json.Marshal(accessToken)
@@ -729,8 +731,6 @@ func loadConfig(configPath string) config {
 		serverConfig = config{PortSecure: 8443, PortInsecure: 8080, UserIdLength: 5, MaxSavedLoc: 1000, MaxSavedPic: 10, RegistrationToken: "", UnixSocketPath: "", UnixSocketChmod: 0660}
 	}
 	//fmt.Printf("INFO: Using config %+v\n", serverConfig)
-
-	isIdValid = regexp.MustCompile(`^[a-zA-Z0-9]{1,` + strconv.Itoa(serverConfig.UserIdLength) + `}$`).MatchString
 
 	return serverConfig
 }

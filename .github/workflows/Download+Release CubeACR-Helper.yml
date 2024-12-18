@@ -28,7 +28,7 @@ jobs:
 
       - name: Get apk from https://cubeacr.app
         run: |
-          filename="./CubeACR-Helper.apk"
+          filename="CubeACR-Helper.apk"
           echo "filename=${filename}" >> $GITHUB_ENV
           url=$(curl 'https://cubeacr.app' | grep --only-matching --max-count=1 '/.*\.apk')
           curl "https://cubeacr.app${url}" -o ${filename}
@@ -52,7 +52,7 @@ jobs:
       - name: Find version number
         if: ${{ env.current_hash != env.new_hash }}
         run: |
-          sudo apt-get install -y aapt
+          sudo apt install -y aapt
           version=`aapt d badging ${{ env.filename }} | grep -Po "(?<=\sversionName=')([0-9.]+)"`
           echo "version=${version}" >> $GITHUB_ENV
 #          unzip -d apk_files ${{ env.filename }}

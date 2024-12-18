@@ -28,7 +28,7 @@ jobs:
 
       - name: Get apk from Google Drive
         run: |
-          filename="./AutoInput.Direct.apk"
+          filename="AutoInput.Direct.apk"
           echo "filename=${filename}" >> $GITHUB_ENV
           fileid=${{ secrets.AUTOINPUT_GOOGLE_DRIVE_FILE_ID }}
           url="https://drive.usercontent.google.com/download?id=${fileid}&export=download&authuser=0&confirm=t"
@@ -53,7 +53,7 @@ jobs:
       - name: Find version number
         if: ${{ env.current_hash != env.new_hash }}
         run: |
-          sudo apt-get install -y aapt
+          sudo apt install -y aapt
           ls -alh
           version=`aapt dump badging ${{ env.filename }} | grep -Po "(?<=\sversionName=')([0-9.]+)"`
           echo "version=${version}" >> $GITHUB_ENV

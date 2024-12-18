@@ -28,13 +28,11 @@ jobs:
 
       - name: Get apk from Google Drive
         run: |
-          filename="./Tasker.Direct.apk"
+          filename="Tasker.Direct.apk"
           echo "filename=${filename}" >> $GITHUB_ENV
           fileid=${{ secrets.TASKER_GOOGLE_DRIVE_FILE_ID }}
           url="https://drive.usercontent.google.com/download?id=${fileid}&export=download&authuser=0&confirm=t"
           curl -L "https://drive.usercontent.google.com/download?id=${fileid}&export=download&authuser=0&confirm=t=${fileid}" -o ${filename}
-
-          
       
       - name: Store md5 hash of new apk
         run: md5sum "${{ env.filename }}" | cut -d " " -f 1 > hash_new_file
@@ -55,7 +53,7 @@ jobs:
       - name: Find version number
         if: ${{ env.current_hash != env.new_hash }}
         run: |
-          sudo apt-get install -y aapt
+          sudo apt install -y aapt
           ls -alh
           version=`aapt dump badging ${{ env.filename }} | grep -Po "(?<=\sversionName=')([0-9.]+)"`
           echo "version=${version}" >> $GITHUB_ENV

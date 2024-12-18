@@ -4,7 +4,7 @@ name: Download+Release Tasker
 on:
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '0 0 * * SUN,WED' # Google causes problems sometimes when downloads are too frequent
+    - cron:  '3 0 * * SUN,WED' # Google causes problems sometimes when downloads are too frequent
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:

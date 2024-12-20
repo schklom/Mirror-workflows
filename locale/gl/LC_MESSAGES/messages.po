@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-14 12:17+0300\n"
-"PO-Revision-Date: 2024-11-29 21:00+0000\n"
+"PO-Revision-Date: 2024-12-17 07:00+0000\n"
 "Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/tt-rss/webui/gl/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.9\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -976,13 +976,11 @@ msgstr[1] "(%d canles)"
 
 #: classes/Pref_Feeds.php:104 classes/Pref_Feeds.php:291
 #: classes/Pref_Feeds.php:334
-#, fuzzy, php-format
-#| msgid "%d article selected"
-#| msgid_plural "%d articles selected"
+#, php-format
 msgid "(%d article / %s)"
 msgid_plural "(%d articles / %s)"
-msgstr[0] "%d artigo seleccionado"
-msgstr[1] "%d artigos seleccionados"
+msgstr[0] "(%d artigo / %s)"
+msgstr[1] "(%d artigos / %s)"
 
 #: classes/Pref_Feeds.php:572
 #, php-format

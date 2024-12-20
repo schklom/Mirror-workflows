@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-14 12:17+0300\n"
-"PO-Revision-Date: 2024-11-29 21:00+0000\n"
+"PO-Revision-Date: 2024-12-17 07:00+0000\n"
 "Last-Translator: Patrick Ahles <p.ahles@gmail.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/tt-rss/webui/nl/>\n"
 "Language: nl_NL\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.9\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: _\n"
 "X-Poedit-Basepath: .\n"
@@ -980,13 +980,11 @@ msgstr[1] "(%d feeds)"
 
 #: classes/Pref_Feeds.php:104 classes/Pref_Feeds.php:291
 #: classes/Pref_Feeds.php:334
-#, fuzzy, php-format
-#| msgid "%d article selected"
-#| msgid_plural "%d articles selected"
+#, php-format
 msgid "(%d article / %s)"
 msgid_plural "(%d articles / %s)"
-msgstr[0] "%d artikel geselecteerd"
-msgstr[1] "%d artikelen geselecteerd"
+msgstr[0] "(%d artikel / %s)"
+msgstr[1] "(%d artikelen / %s)"
 
 #: classes/Pref_Feeds.php:572
 #, php-format

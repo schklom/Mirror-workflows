@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-14 12:17+0300\n"
-"PO-Revision-Date: 2024-12-15 16:01+0000\n"
+"PO-Revision-Date: 2024-12-29 10:00+0000\n"
 "Last-Translator: Dario Di Ludovico <dariottolo@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/tt-rss/webui/it/>"
 "\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-rc\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -983,8 +983,8 @@ msgstr[1] "(%d notiziari)"
 #, php-format
 msgid "(%d article / %s)"
 msgid_plural "(%d articles / %s)"
-msgstr[0] "%d articolo"
-msgstr[1] "%d articoli"
+msgstr[0] "(%d articolo /%s)"
+msgstr[1] "(%d articoli %s)"
 
 #: classes/Pref_Feeds.php:572
 #, php-format
@@ -1226,7 +1226,7 @@ msgstr "%s su %s in %s %s"
 #: classes/Pref_Filters.php:450
 #, php-format
 msgid "Unknown action: %d"
-msgstr "Azione sconosciuta: %s"
+msgstr "Azione sconosciuta: %d"
 
 #: classes/Pref_Filters.php:651 classes/RPC.php:650
 msgid "Create filter"
@@ -1263,8 +1263,8 @@ msgstr "inverso"
 #, php-format
 msgid "(+%d action)"
 msgid_plural "(+%d actions)"
-msgstr[0] "%s (+%d azione)"
-msgstr[1] "%s (+%d azioni)"
+msgstr[0] "(+%d azione)"
+msgstr[1] "(+%d azioni)"
 
 #: classes/Sessions.php:112
 msgid "Session failed to validate (password changed)"
@@ -2081,7 +2081,7 @@ msgstr "Nuovi articoli ricevuti, ricarica il notiziario per continuare."
 #: js/Headlines.js:1129 js/Headlines.js:1146 js/Headlines.js:1163
 #: js/Headlines.js:1300 js/Article.js:62
 msgid "No articles selected."
-msgstr "Nessun articolo selezionato."
+msgstr "Articoli non selezionati."
 
 #: js/Headlines.js:1100
 #, java-printf-format, javascript-format

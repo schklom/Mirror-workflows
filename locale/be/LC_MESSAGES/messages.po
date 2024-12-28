@@ -8,17 +8,17 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-14 12:17+0300\n"
-"PO-Revision-Date: 2022-04-18 19:08+0000\n"
-"Last-Translator: Mikalai <me@mikalaidaronin.info>\n"
-"Language-Team: Belarusian <https://weblate.tt-rss.org/projects/tt-rss/"
-"messages/be/>\n"
+"PO-Revision-Date: 2024-12-29 10:00+0000\n"
+"Last-Translator: Mikalai Daronin <lassana@users.noreply.hosted.weblate.org>\n"
+"Language-Team: Belarusian <https://hosted.weblate.org/projects/tt-rss/webui/"
+"be/>\n"
 "Language: be\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.11.2\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -89,10 +89,8 @@ msgid "Disabled"
 msgstr "Выключана"
 
 #: backend.php:92
-#, fuzzy
-#| msgid "Readability"
 msgid "Read Only"
-msgstr "Зручнасць чытання (Readability)"
+msgstr "Толькі чытанне"
 
 #: backend.php:93 classes/Pref_System.php:118
 msgid "User"
@@ -211,10 +209,8 @@ msgid "Search..."
 msgstr "Пошук..."
 
 #: index.php:255
-#, fuzzy
-#| msgid "Search..."
 msgid "Search feeds..."
-msgstr "Пошук..."
+msgstr "Пошук каналаў..."
 
 #: index.php:256
 msgid "Feed actions:"
@@ -244,7 +240,7 @@ msgstr "Паказаць/схаваць прачытаныя каналы"
 
 #: index.php:263
 msgid "UI layout:"
-msgstr ""
+msgstr "Схема UI:"
 
 #: index.php:264 classes/RPC.php:640
 msgid "Toggle combined mode"
@@ -255,10 +251,8 @@ msgid "Toggle widescreen mode"
 msgstr "Пераключыць рэжым шырокага экрана"
 
 #: index.php:268
-#, fuzzy
-#| msgid "Always expand articles"
 msgid "Toggle expand all articles"
-msgstr "Заўсёды разгортваць артыкулы"
+msgstr "Пераключыць разгортванне ўсіх артыкулаў"
 
 #: index.php:269
 msgid "Other actions:"
@@ -536,14 +530,12 @@ msgid "On wider screens, if always expanded"
 msgstr "На шырокіх экранах, калі заўсёды разгорнута"
 
 #: classes/Pref_Prefs.php:129
-#, fuzzy
-#| msgid "Set score"
 msgid "Required score"
-msgstr "Ацаніць"
+msgstr "Неабходны рэйтынг"
 
 #: classes/Pref_Prefs.php:129
 msgid "Include articles with this or above score"
-msgstr ""
+msgstr "Дадаць артыкулы з гэтым рэйтынгам або вышэй"
 
 #: classes/Pref_Prefs.php:233
 msgid "The configuration was saved."
@@ -801,7 +793,7 @@ msgstr ""
 #: classes/Mailer.php:51
 #, php-format
 msgid "Unknown error while sending mail. Hooks tried: %d."
-msgstr ""
+msgstr "Невядомая памылка пры дасыланні пісьма. Спрабавалі хукі: %d."
 
 #: classes/TimeHelper.php:9
 #, php-format
@@ -989,14 +981,12 @@ msgstr[2] "(%d каналаў)"
 
 #: classes/Pref_Feeds.php:104 classes/Pref_Feeds.php:291
 #: classes/Pref_Feeds.php:334
-#, fuzzy, php-format
-#| msgid "%d article selected"
-#| msgid_plural "%d articles selected"
+#, php-format
 msgid "(%d article / %s)"
 msgid_plural "(%d articles / %s)"
-msgstr[0] "%d артыкул выбраны"
-msgstr[1] "%d артыкулы выбраны"
-msgstr[2] "%d артыкулаў выбраны"
+msgstr[0] "(%d артыкул выбраны / %s)"
+msgstr[1] "(%d артыкулы выбраны / %s)"
+msgstr[2] "(%d артыкулаў выбраны / %s)"
 
 #: classes/Pref_Feeds.php:572
 #, php-format
@@ -1203,20 +1193,14 @@ msgid "Reset password"
 msgstr "Скінуць пароль"
 
 #: classes/Pref_Users.php:254 js/PrefFeedTree.js:457 js/CommonDialogs.js:85
-#, fuzzy
-#| msgid "Login:"
 msgid "Login"
-msgstr "Імя карыстальніка:"
+msgstr "Імя карыстальніка"
 
 #: classes/Pref_Users.php:255
-#, fuzzy
-#| msgid "Access level: "
 msgid "Access level"
-msgstr "Узровень доступу: "
+msgstr "Узровень доступу"
 
 #: classes/Pref_Users.php:258
-#, fuzzy
-#| msgid "Last logged in"
 msgid "Last login"
 msgstr "Апошні ўваход"
 
@@ -1246,7 +1230,7 @@ msgstr "%s у %s ва %s %s"
 #: classes/Pref_Filters.php:450
 #, php-format
 msgid "Unknown action: %d"
-msgstr ""
+msgstr "Невядомае дзеянне: %d"
 
 #: classes/Pref_Filters.php:651 classes/RPC.php:650
 msgid "Create filter"
@@ -1257,10 +1241,8 @@ msgid "Combine"
 msgstr "Камбінаваць"
 
 #: classes/Pref_Filters.php:659
-#, fuzzy
-#| msgid "Toggle published"
 msgid "Toggle rule display"
-msgstr "Дадаць/выдаліць з апублікаванага"
+msgstr "Пераключыць паказ правіла"
 
 #: classes/Pref_Filters.php:709
 #, php-format
@@ -1283,24 +1265,20 @@ msgid "inverse"
 msgstr "адваротны"
 
 #: classes/Pref_Filters.php:746
-#, fuzzy, php-format
-#| msgid "%s (+%d action)"
-#| msgid_plural "%s (+%d actions)"
+#, php-format
 msgid "(+%d action)"
 msgid_plural "(+%d actions)"
-msgstr[0] "%s (+%d дзеянне)"
-msgstr[1] "%s (+%d дзеянні)"
-msgstr[2] "%s (+%d дзеянняў)"
+msgstr[0] "(+%d дзеянне)"
+msgstr[1] "(+%d дзеянні)"
+msgstr[2] "(+%d дзеянняў)"
 
 #: classes/Sessions.php:112
 msgid "Session failed to validate (password changed)"
 msgstr "Немагчыма пацвердзіць сесію (пароль быў зменены)"
 
 #: classes/Sessions.php:117
-#, fuzzy
-#| msgid "Session failed to validate (password changed)"
 msgid "Session failed to validate (account is disabled)"
-msgstr "Немагчыма пацвердзіць сесію (пароль быў зменены)"
+msgstr "Немагчыма пацвердзіць сесію (карыстальнік выключаны)"
 
 #: classes/Sessions.php:136
 msgid "Session failed to validate (user not found)"
@@ -1374,7 +1352,7 @@ msgstr "Памылка: калі ласка, запампуйце OPML файл.
 #: classes/OPML.php:637
 #, php-format
 msgid "Error: file is not readable: %s"
-msgstr ""
+msgstr "Памылка: немагчыма прачытаць файл: %s"
 
 #: classes/OPML.php:655
 msgid "Error while parsing document."
@@ -1784,18 +1762,12 @@ msgstr ""
 "ілжывыя станоўчыя вынікі, 0 выключае праверку."
 
 #: plugins/af_psql_trgm/init.php:196
-#, fuzzy
-#| msgid ""
-#| "PostgreSQL trigram extension returns string similarity as a floating "
-#| "point number (0-1). Setting it too low might produce false positives, "
-#| "zero disables checking."
 msgid ""
 "Setting this value too low might produce false positives, zero disables "
 "checking."
 msgstr ""
-"Пашырэнне PostgreSQL trigram вяртае падабенства радкоў у выглядзе лічбы з "
-"плаваючай коскай (0-1). Устанаўленне вельмі нізкага значэння можа стварыць "
-"ілжывыя станоўчыя вынікі, 0 выключае праверку."
+"Устанаўленне вельмі нізкага значэння можа стварыць ілжывыя станоўчыя вынікі, "
+"0 выключае праверку."
 
 #: plugins/af_psql_trgm/init.php:202
 msgid "Minimum title length:"
@@ -2184,10 +2156,8 @@ msgstr "Выдаліць пазнаку"
 
 #: js/Headlines.js:1586 js/FeedTree.js:105 js/Headlines.js:473
 #: js/Headlines.js:522 js/Headlines.js:591
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open site"
-msgstr "Адчыніць наступны канал"
+msgstr "Адчыніць сайт"
 
 #: js/Headlines.js:1595 js/FeedTree.js:114
 msgid "Debug feed"
@@ -2298,10 +2268,9 @@ msgid "Reset to defaults?"
 msgstr "Скінуць да стандартных значэнняў?"
 
 #: js/PrefHelpers.js:373
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Error while parsing document."
+#, java-printf-format, javascript-format
 msgid "Error while loading plugins list: %s."
-msgstr "Памылка разбору дакумента."
+msgstr "Памылка разбору дакумента: %s."
 
 #: js/PrefHelpers.js:422
 msgid "Clear data"
@@ -2523,10 +2492,8 @@ msgid "Search syntax"
 msgstr "Сінтаксіс пошуку"
 
 #: js/Feeds.js:715
-#, fuzzy
-#| msgid "Search..."
 msgid "Search feeds"
-msgstr "Пошук..."
+msgstr "Пошук каналаў..."
 
 #: js/PrefUsers.js:19
 msgid "Please enter username:"
@@ -2702,30 +2669,24 @@ msgid "XML validation failed: %s"
 msgstr "Памылка праверкі XML: %s"
 
 #: js/CommonDialogs.js:197
-#, fuzzy
-#| msgid "Error while parsing document."
 msgid "Error while creating feed database entry."
-msgstr "Памылка разбору дакумента."
+msgstr "Памылка стварэння запісу для канала."
 
 #: js/CommonDialogs.js:200
 msgid "You are not allowed to perform this operation."
-msgstr ""
+msgstr "Вам не дазволена выконваць гэтую аперацыю."
 
 #: js/CommonDialogs.js:222
 msgid "Feeds with update errors"
 msgstr "Каналы з памылкамі абнаўлення"
 
 #: js/CommonDialogs.js:258
-#, fuzzy
-#| msgid "Remove selected feeds?"
 msgid "Debug selected feeds?"
-msgstr "Выдаліць выбраныя каналы?"
+msgstr "Адладзіць выбраныя каналы?"
 
 #: js/CommonDialogs.js:259
-#, fuzzy
-#| msgid "Removing selected feeds..."
 msgid "Opening debugger for selected feeds..."
-msgstr "Выдаленне выбраных каналаў..."
+msgstr "Запуск адладчыка для выбраных каналаў..."
 
 #: js/CommonDialogs.js:328
 msgid "Please enter label caption:"
@@ -2794,10 +2755,8 @@ msgid "%s can be accessed via the following secret URL:"
 msgstr "%s даступны па наступнай сакрэтнай спасылцы:"
 
 #: js/App.js:314
-#, fuzzy
-#| msgid "Widescreen is not available in combined mode."
 msgid "This function is only available in combined mode."
-msgstr "Рэжым шырокага экрана не даступны ў камбінаваным рэжыме."
+msgstr "Гэтая функцыянальнасць не даступная ў камбінаваным рэжыме."
 
 #: js/App.js:445
 msgid "Keyboard shortcuts"
@@ -2931,48 +2890,36 @@ msgid "No recent articles matching this filter have been found."
 msgstr "Не знойдзена нядаўніх артыкулаў, якія адпавядаюць гэтаму фільтру."
 
 #: js/CommonFilters.js:421
-#, fuzzy
-#| msgid "Enable API"
 msgid "Enabled"
-msgstr "Уключыць API"
+msgstr "Уключана"
 
 #: js/CommonFilters.js:422
-#, fuzzy
-#| msgid "matches any rule"
 msgid "Match any rule"
-msgstr "задавальняе любому правілу"
+msgstr "Задавальняе любому правілу"
 
 #: js/CommonFilters.js:423
-#, fuzzy
-#| msgid "Inverse regular expression matching"
 msgid "Inverse matching"
-msgstr "Інвертаваць супадзенне з рэгулярным выразам"
+msgstr "Інвертаваць супадзенне"
 
 #: js/CommonFilters.js:441
 msgid "Match"
-msgstr ""
+msgstr "Шукаць"
 
 #: js/CommonFilters.js:474
-#, fuzzy
-#| msgid "Add action"
 msgid "Apply actions"
-msgstr "Дадаць дзеянне"
+msgstr "Ужыць дзеянне"
 
 #: js/Headlines.js:474
-#, fuzzy
-#| msgid "Mark feed as read"
 msgid "mark feed as read"
-msgstr "Пазначыць канал як прачытаны"
+msgstr "пазначыць канал як прачытаны"
 
 #: js/Headlines.js:527
 msgid "Span all columns"
-msgstr ""
+msgstr "Расцягнуць усе калонкі"
 
 #: js/Headlines.js:554 js/Article.js:317
-#, fuzzy
-#| msgid "Remove sharing for this article?"
 msgid "Edit tags for this article"
-msgstr "Выдаліць доступ да гэтага артыкула?"
+msgstr "Змяніць тэгі да гэтага артыкула"
 
 #: js/Headlines.js:666
 msgid "Invert"
@@ -3007,10 +2954,8 @@ msgid "Apply"
 msgstr "Ужыць"
 
 #: js/PrefHelpers.js:303
-#, fuzzy
-#| msgid "Save and exit"
 msgid "Save and reload"
-msgstr "Захаваць і выйсці"
+msgstr "Захаваць і перазагрузіць"
 
 #: js/PrefHelpers.js:352
 msgid "Selected plugins have been enabled. Reload?"
@@ -3018,19 +2963,15 @@ msgstr "Выбраныя плагіны былі ўключаны. Пераза�
 
 #: js/PrefHelpers.js:400
 msgid "System plugins are enabled using global configuration."
-msgstr ""
+msgstr "Сістэмныя плагіны ўключаны праз глабальныя налады."
 
 #: js/PrefHelpers.js:577
-#, fuzzy
-#| msgid "Uninstall"
 msgid "Install"
-msgstr "Высталяваць"
+msgstr "Усталяваць"
 
 #: js/PrefHelpers.js:654
-#, fuzzy
-#| msgid "Updating, please wait..."
 msgid "Updating..."
-msgstr "Абнаўленне, калі ласка, пачакайце..."
+msgstr "Абнаўленне..."
 
 #: js/PrefHelpers.js:687
 msgid "Updates complete"
@@ -3049,16 +2990,13 @@ msgid "Attachments"
 msgstr "Прымацаванні"
 
 #: js/Feeds.js:292
-#, fuzzy
-#| msgid "Preferences"
 msgid "Open Preferences"
-msgstr "Налады"
+msgstr "Адчыніць налады"
 
 #: js/Feeds.js:635
-#, fuzzy, javascript-format
-#| msgid "Search..."
+#, javascript-format
 msgid "Search %s..."
-msgstr "Пошук..."
+msgstr "Пошук %s..."
 
 #: js/Feeds.js:644
 msgid "Used for word stemming"
@@ -3066,7 +3004,7 @@ msgstr "Выкарыстоўваецца для стэмінгу слоў"
 
 #: js/Feeds.js:704
 msgid "Show feeds matching..."
-msgstr ""
+msgstr "Паказаць адпаведныя каналы..."
 
 #: js/PrefUsers.js:76
 msgid "Access level: "
@@ -3074,21 +3012,19 @@ msgstr "Узровень доступу: "
 
 #: js/PrefUsers.js:92
 msgid "OTP enabled"
-msgstr ""
+msgstr "OTP уключана"
 
 #: js/PrefUsers.js:104
 msgid "User details"
-msgstr ""
+msgstr "Інфармацыя аб карыстальніку"
 
 #: js/PrefFeedTree.js:390
 msgid "Rename category to:"
 msgstr "Пераназваць катэгорыю як:"
 
 #: js/PrefFeedTree.js:466
-#, fuzzy
-#| msgid "This feed requires authentication."
 msgid "Feeds require authentication."
-msgstr "Гэты канал патрабуе аўтэнтыфікацыю."
+msgstr "Каналы патрабуюць аўтэнтыфікацыю."
 
 #: js/PrefFeedTree.js:555 js/CommonDialogs.js:312
 msgid "Unsubscribe from selected feeds"
@@ -3104,7 +3040,7 @@ msgstr ""
 
 #: js/CommonDialogs.js:53
 msgid "Feed or site URL"
-msgstr ""
+msgstr "Спасылка на канал або сайт"
 
 #: js/CommonDialogs.js:68
 msgid "Available feeds"
@@ -3115,36 +3051,28 @@ msgid "This feed requires authentication."
 msgstr "Гэты канал патрабуе аўтэнтыфікацыю."
 
 #: js/CommonDialogs.js:315
-#, fuzzy
-#| msgid "Edit selected feeds"
 msgid "Debug selected feeds"
-msgstr "Змяніць выбраныя каналы"
+msgstr "Адладзіць выбраныя каналы"
 
 #: js/CommonDialogs.js:526
-#, fuzzy
-#| msgid "Feed actions:"
 msgid "Feed title"
-msgstr "Дзеянні з каналамі:"
+msgstr "Назва канала"
 
 #: js/CommonDialogs.js:533
-#, fuzzy
-#| msgid "Feed"
 msgid "Feed URL"
-msgstr "Канал"
+msgstr "Спасылка на канал"
 
 #: js/CommonDialogs.js:552
 msgid "Site URL:"
 msgstr "Спасылка на сайт:"
 
 #: js/CommonDialogs.js:554
-#, fuzzy
-#| msgid "Site URL:"
 msgid "Site URL"
-msgstr "Спасылка на сайт:"
+msgstr "Спасылка на сайт"
 
 #: js/CommonDialogs.js:617
 msgid "Icon"
-msgstr ""
+msgstr "Піктаграма"
 
 #: js/App.js:646
 msgid "Stack trace"
@@ -3152,13 +3080,11 @@ msgstr "Трасіроўка стэка"
 
 #: js/App.js:653
 msgid "Additional information"
-msgstr ""
+msgstr "Дадатковая інфармацыя"
 
 #: js/PrefLabelTree.js:126
-#, fuzzy
-#| msgid "Options"
 msgid "Caption"
-msgstr "Опцыі"
+msgstr "Загаловак"
 
 #~ msgid "No feed selected."
 #~ msgstr "Не выбраны ніводны канал."

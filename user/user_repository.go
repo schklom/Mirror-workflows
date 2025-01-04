@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -59,10 +60,48 @@ func (u *UserRepository) CheckAccessTokenAndGetUser(providedAccessToken string) 
 	return u.UB.GetByID(userId)
 }
 
-func (u *UserRepository) CreateNewUser(privKey string, pubKey string, salt string, hashedPassword string) string {
-	id := u.generateNewId()
+var ErrUsernameInvalid = errors.New("the requested username must be alphanumeric")
+var ErrUsernameTooLong = errors.New("the requested username must be <= 64 characters")
+var ErrUsernameNotAvailable = errors.New("the requested username is not available")
+
+// alphanumeric and - and _
+var IsUserIdValid = regexp.MustCompile("^[-_a-zA-Z0-9]+$").MatchString
+
+const USERNAME_MAX_LENGTH = 64
+
+func (u *UserRepository) CreateNewUser(
+	privKey string,
+	pubKey string,
+	salt string,
+	hashedPassword string,
+	requestedUsername string,
+) (string, error) {
+	id := ""
+	if requestedUsername != "" {
+		if !IsUserIdValid(requestedUsername) {
+			fmt.Printf("ERROR: Username is not alphanumeric: %s\n", requestedUsername)
+			return "", ErrUsernameInvalid
+		}
+
+		if len(requestedUsername) > USERNAME_MAX_LENGTH {
+			fmt.Printf("ERROR: Username is too long (%d > %d): %s\n", len(requestedUsername), USERNAME_MAX_LENGTH, requestedUsername)
+			return "", ErrUsernameTooLong
+		}
+
+		user, _ := u.UB.GetByID(requestedUsername)
+		if user != nil {
+			fmt.Printf("ERROR: Username is already taken: %s\n", requestedUsername)
+			return "", ErrUsernameNotAvailable
+		}
+
+		id = requestedUsername
+	} else {
+		id = u.generateNewId()
+	}
+	fmt.Printf("INFO: Registering new user: %s\n", id)
+
 	u.UB.Create(&FMDUser{UID: id, Salt: salt, HashedPassword: hashedPassword, PrivateKey: privKey, PublicKey: pubKey})
-	return id
+	return id, nil
 }
 
 func (u *UserRepository) UpdateUserPassword(user *FMDUser, privKey string, salt string, hashedPassword string) {

@@ -469,8 +469,9 @@ module.exports = function(redis) {
     }
 
     if(req.query && req.query.lang) {
-      return req.query.lang
-    }
+-      return req.query.lang
++      return req.query.lang.toLowerCase()
+     }
 
     if(req.cookies && req.cookies.default_lang) {
       return req.cookies.default_lang

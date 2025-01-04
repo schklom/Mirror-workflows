@@ -12,6 +12,7 @@ var newestPictureIndex;
 var currentPictureIndex;
 
 const KEYCODE_ENTER = 13;
+const KEYCODE_ESCAPE = 27;
 const KEYCODE_ARROW_LEFT = 37;
 const KEYCODE_ARROW_RIGHT = 39;
 
@@ -629,11 +630,6 @@ function showSettingsDropDown() {
 // Section: Delete device
 
 function prepareDeleteDevice() {
-    var submit = function (pin) {
-        document.body.removeChild(div);
-        sendToPhone('delete ' + pin);
-    };
-
     var div = document.createElement("div");
     div.id = "passwordPrompt";
     div.classList.add("prompt");
@@ -662,14 +658,21 @@ function prepareDeleteDevice() {
     document.body.appendChild(div);
 
     input.focus();
-    input.addEventListener("keyup", function (e) {
+    input.addEventListener("keyup", function (event) {
         if (event.keyCode == KEYCODE_ENTER) {
-            if (input.value != "") {
-                submit(input.value);
+            const pin = input.value;
+            if (pin != "") {
+                document.body.removeChild(div);
+                sendToPhone("delete " + pin);
             }
         }
     }, false);
-
+    window.addEventListener("keyup", function removeDeletePinDialog(event) {
+        if (event.keyCode == KEYCODE_ESCAPE) {
+            document.body.removeChild(div);
+            window.removeEventListener("keyup", removeDeletePinDialog);
+        }
+    }, false);
 }
 
 // Section: Delete Account

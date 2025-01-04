@@ -1,6 +1,7 @@
 package user
 
 import (
+	"bytes"
 	"crypto/rand"
 	"encoding/json"
 	"errors"
@@ -8,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"math/big"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -194,6 +196,7 @@ func (u *UserRepository) SetCommandToUser(user *FMDUser, cmd string) {
 	if cmd != "" {
 		logEntry := fmt.Sprintf("Command \"%s\" sent to server!", cmd)
 		u.addCommandLogEntry(user, logEntry)
+		u.pushUser(user)
 	}
 	u.UB.Save(&user)
 }
@@ -279,5 +282,32 @@ func (u *UserRepository) RequestAccess(id string, hashedPW string, sessionDurati
 	} else {
 		u.ACC.IncrementLock(id)
 		return nil, errors.New("wrong password")
+	}
+}
+
+func (u *UserRepository) pushUser(user *FMDUser) {
+	pushUrl := strings.Replace(u.GetPushUrl(user), "/UP?", "/message?", -1)
+
+	if len(pushUrl) == 0 {
+		fmt.Printf("Cannot push user %s. Reason: pushUrl is empty. They should install a UnifiedPush distributor on their phone.", user.UID)
+		return
+	}
+
+	var jsonData = []byte(`{
+		"message": "fmd app wakeup",
+		"priority": 5
+	}`)
+	request, err := http.NewRequest("POST", pushUrl, bytes.NewBuffer(jsonData))
+	if err != nil {
+		fmt.Println("Error building push request:", err)
+		return
+	}
+	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
+
+	client := &http.Client{}
+	_, err = client.Do(request)
+	if err != nil {
+		fmt.Println("Error sending push: ", err)
+		return
 	}
 }

@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/fs"
@@ -12,7 +11,6 @@ import (
 	"path/filepath"
 	"regexp"
 	"strconv"
-	"strings"
 
 	"findmydeviceserver/user"
 
@@ -325,7 +323,6 @@ func postCommand(w http.ResponseWriter, r *http.Request) {
 	}
 	uio.SetCommandToUser(user, data.Data)
 	w.WriteHeader(http.StatusOK)
-	pushUser(user)
 }
 
 func getCommandLog(w http.ResponseWriter, r *http.Request) {
@@ -351,33 +348,6 @@ func getCommandLog(w http.ResponseWriter, r *http.Request) {
 }
 
 // ------- Push -------
-
-func pushUser(user *user.FMDUser) {
-	pushUrl := strings.Replace(uio.GetPushUrl(user), "/UP?", "/message?", -1)
-
-	if len(pushUrl) == 0 {
-		fmt.Printf("Cannot push user %s. Reason: pushUrl is empty. They should install a UnifiedPush distributor on their phone.", user.UID)
-		return
-	}
-
-	var jsonData = []byte(`{
-		"message": "fmd app wakeup",
-		"priority": 5
-	}`)
-	request, err := http.NewRequest("POST", pushUrl, bytes.NewBuffer(jsonData))
-	if err != nil {
-		fmt.Println("Error building push request:", err)
-		return
-	}
-	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
-
-	client := &http.Client{}
-	_, err = client.Do(request)
-	if err != nil {
-		fmt.Println("Error sending push: ", err)
-		return
-	}
-}
 
 func getPushUrl(w http.ResponseWriter, r *http.Request) {
 	var data DataPackage

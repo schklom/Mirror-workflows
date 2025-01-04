@@ -1,5 +1,10 @@
 # This is an example config file for FMD Server
 
+# Warning: if you use a config file but remove some keys, the YAML parser will
+# assign YAML's default values to these keys, e.g., an empty string or the integer 0.
+# This is important for ports: on Linux, port 0 will select a random port.
+# Therefore, it is recommended to explicitly configure all options.
+
 # Listening precedence: socket > HTTPS > HTTP
 
 # Path to listening UNIX socket. If empty, no unix sockets will be used.

@@ -10,7 +10,7 @@
     "express": "^4.21.2",
     "got": "^14.4.5",
     "node-html-parser": "^7.0.1",
-    "redis": "^4.0.1"
+    "redis": "^4.7.0"
   },
   "devDependencies": {},
   "scripts": {

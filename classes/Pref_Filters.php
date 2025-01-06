@@ -506,7 +506,7 @@ class Pref_Filters extends Handler_Protected {
 		$sth->execute([...$ids, $_SESSION['uid']]);
 	}
 
-	private function _copy_rules_and_actions(int $filter_id, ?int $src_filter_id = null): bool {
+	private function _clone_rules_and_actions(int $filter_id, ?int $src_filter_id = null): bool {
 		$sth = $this->pdo->prepare('INSERT INTO ttrss_filters2_rules
 					(filter_id, reg_exp, inverse, filter_type, feed_id, cat_id, match_on, cat_filter)
 					SELECT :filter_id, reg_exp, inverse, filter_type, feed_id, cat_id, match_on, cat_filter
@@ -646,13 +646,13 @@ class Pref_Filters extends Handler_Protected {
 			if ($src_filter_id === null)
 				$this->_save_rules_and_actions($filter_id);
 			else
-				$this->_copy_rules_and_actions($filter_id, $src_filter_id);
+				$this->_clone_rules_and_actions($filter_id, $src_filter_id);
 		}
 
 		$this->pdo->commit();
 	}
 
-	function copy(): void {
+	function clone(): void {
 		/** @var array<int, int> */
 		$src_filter_ids = array_map('intval', array_filter(explode(',', clean($_REQUEST['ids'] ?? ''))));
 
@@ -665,7 +665,7 @@ class Pref_Filters extends Handler_Protected {
 			// see checkbox_to_sql_bool() for 0+1 justification
 			$this->add([
 				'src_filter_id' => $src_filter->id,
-				'title' => sprintf(__('Copy of %s'), $src_filter->title),
+				'title' => sprintf(__('Clone of %s'), $src_filter->title),
 				'enabled' => 0,
 				'match_any_rule' => $src_filter->match_any_rule ? 1 : 0,
 				'inverse' => $src_filter->inverse ? 1 : 0,
@@ -707,8 +707,8 @@ class Pref_Filters extends Handler_Protected {
 
 					<button dojoType="dijit.form.Button" onclick="return Filters.edit()">
 						<?= __('Create filter') ?></button>
-					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').copySelectedFilters()">
-						<?= __('Copy') ?></button>
+					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').cloneSelectedFilters()">
+						<?= __('Clone') ?></button>
 					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').joinSelectedFilters()">
 						<?= __('Combine') ?></button>
 					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').removeSelectedFilters()">

@@ -167,27 +167,28 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 
 			return false;
 		},
-		copySelectedFilters: function() {
+		cloneSelectedFilters: function() {
 			const sel_rows = this.getSelectedFilters();
 
 			if (sel_rows.length > 0) {
-				const query = {op: "Pref_Filters", method: "copy", ids: sel_rows.toString()};
+				const query = {op: "Pref_Filters", method: "clone", ids: sel_rows.toString()};
 				let proceed = false;
 
 				if (sel_rows.length === 1) {
 					const selected_filter = this.model.getCheckedItems()[0];
-					const new_title = prompt(__("Name for copied filter:"), 'Copy - ' + this.model.store.getValue(selected_filter, "bare_name"));
+					const new_title = prompt(__("Name for new filter:"),
+						__("Clone of %s").replace("%s", this.model.store.getValue(selected_filter, "bare_name")));
 
 					if (new_title) {
 						query.new_title = new_title;
 						proceed = true;
 					}
 				} else if (sel_rows.length > 1) {
-					proceed = confirm(__("Copy selected filters?"));
+					proceed = confirm(__("Clone selected filters?"));
 				}
 
 				if (proceed) {
-					Notify.progress("Copying selected filters...");
+					Notify.progress(__("Cloning selected filters..."));
 
 					xhr.post("backend.php", query, () => {
 						this.reload();

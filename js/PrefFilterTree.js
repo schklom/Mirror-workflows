@@ -167,6 +167,28 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 
 			return false;
 		},
+		copySelectedFilters: function() {
+			const sel_rows = this.getSelectedFilters();
+
+			if (sel_rows.length > 0) {
+				if (confirm(__("Copy selected filters?"))) {
+					Notify.progress("Copying selected filters...");
+
+					const query = {
+						op: "Pref_Filters", method: "copy",
+						ids: sel_rows.toString()
+					};
+
+					xhr.post("backend.php", query, () => {
+						this.reload();
+					});
+				}
+			} else {
+				alert(__("No filters selected."));
+			}
+
+			return false;
+		},
 });
 });
 

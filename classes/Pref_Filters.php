@@ -505,6 +505,25 @@ class Pref_Filters extends Handler_Protected {
 		$sth->execute([...$ids, $_SESSION['uid']]);
 	}
 
+	private function _copy_rules_and_actions(int $filter_id, ?int $src_filter_id = null): bool {
+		$sth = $this->pdo->prepare('INSERT INTO ttrss_filters2_rules
+					(filter_id, reg_exp, inverse, filter_type, feed_id, cat_id, match_on, cat_filter)
+					SELECT :filter_id, reg_exp, inverse, filter_type, feed_id, cat_id, match_on, cat_filter
+					FROM ttrss_filters2_rules
+					WHERE filter_id = :src_filter_id');
+
+		if (!$sth->execute(['filter_id' => $filter_id, 'src_filter_id' => $src_filter_id]))
+			return false;
+
+		$sth = $this->pdo->prepare('INSERT INTO ttrss_filters2_actions
+			(filter_id, action_id, action_param)
+			SELECT :filter_id, action_id, action_param
+			FROM ttrss_filters2_actions
+			WHERE filter_id = :src_filter_id');
+
+		return $sth->execute(['filter_id' => $filter_id, 'src_filter_id' => $src_filter_id]);
+	}
+
 	private function _save_rules_and_actions(int $filter_id): void {
 
 		$sth = $this->pdo->prepare("DELETE FROM ttrss_filters2_rules WHERE filter_id = ?");
@@ -587,11 +606,24 @@ class Pref_Filters extends Handler_Protected {
 		}
 	}
 
-	function add(): void {
-		$enabled = checkbox_to_sql_bool($_REQUEST["enabled"] ?? false);
-		$match_any_rule = checkbox_to_sql_bool($_REQUEST["match_any_rule"] ?? false);
-		$title = clean($_REQUEST["title"]);
-		$inverse = checkbox_to_sql_bool($_REQUEST["inverse"] ?? false);
+	/**
+	 * @param null|array{'src_filter_id': int, 'title': string, 'enabled': 0|1, 'match_any_rule': 0|1, 'inverse': 0|1} $props
+	 */
+	function add(?array $props = null): void {
+		if ($props === null) {
+			$src_filter_id = null;
+			$title = clean($_REQUEST['title']);
+			$enabled = checkbox_to_sql_bool($_REQUEST['enabled'] ?? false);
+			$match_any_rule = checkbox_to_sql_bool($_REQUEST['match_any_rule'] ?? false);
+			$inverse = checkbox_to_sql_bool($_REQUEST['inverse'] ?? false);
+		} else {
+			// see checkbox_to_sql_bool() for 0 vs false justification
+			$src_filter_id = $props['src_filter_id'];
+			$title = clean($props['title']);
+			$enabled = $props['enabled'];
+			$match_any_rule = $props['match_any_rule'];
+			$inverse = $props['inverse'];
+		}
 
 		$this->pdo->beginTransaction();
 
@@ -609,10 +641,35 @@ class Pref_Filters extends Handler_Protected {
 
 		if ($row = $sth->fetch()) {
 			$filter_id = $row['id'];
-			$this->_save_rules_and_actions($filter_id);
+
+			if ($src_filter_id === null)
+				$this->_save_rules_and_actions($filter_id);
+			else
+				$this->_copy_rules_and_actions($filter_id, $src_filter_id);
 		}
 
 		$this->pdo->commit();
+	}
+
+	function copy(): void {
+		/** @var array<int, int> */
+		$src_filter_ids = array_map('intval', array_filter(explode(',', clean($_REQUEST['ids'] ?? ''))));
+
+		$src_filters = ORM::for_table('ttrss_filters2')
+			->where('owner_uid', $_SESSION['uid'])
+			->where_id_in($src_filter_ids)
+			->find_many();
+
+		foreach ($src_filters as $src_filter) {
+			// see checkbox_to_sql_bool() for 0+1 justification
+			$this->add([
+				'src_filter_id' => $src_filter->id,
+				'title' => sprintf(__('Copy of %s'), $src_filter->title),
+				'enabled' => 0,
+				'match_any_rule' => $src_filter->match_any_rule ? 1 : 0,
+				'inverse' => $src_filter->inverse ? 1 : 0,
+			]);
+		}
 	}
 
 	function index(): void {
@@ -649,6 +706,8 @@ class Pref_Filters extends Handler_Protected {
 
 					<button dojoType="dijit.form.Button" onclick="return Filters.edit()">
 						<?= __('Create filter') ?></button>
+					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').copySelectedFilters()">
+						<?= __('Copy') ?></button>
 					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').joinSelectedFilters()">
 						<?= __('Combine') ?></button>
 					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').removeSelectedFilters()">

@@ -176,11 +176,11 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 
 				if (sel_rows.length === 1) {
 					const selected_filter = this.model.getCheckedItems()[0];
-					const new_title = prompt(__("Name for new filter:"),
+					const new_filter_title = prompt(__("Name for new filter:"),
 						__("Clone of %s").replace("%s", this.model.store.getValue(selected_filter, "bare_name")));
 
-					if (new_title) {
-						query.new_title = new_title;
+					if (new_filter_title) {
+						query.new_filter_title = new_filter_title;
 						proceed = true;
 					}
 				} else if (sel_rows.length > 1) {

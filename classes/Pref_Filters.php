@@ -655,6 +655,7 @@ class Pref_Filters extends Handler_Protected {
 	function clone(): void {
 		/** @var array<int, int> */
 		$src_filter_ids = array_map('intval', array_filter(explode(',', clean($_REQUEST['ids'] ?? ''))));
+		$new_filter_title = count($src_filter_ids) === 1 ? clean($_REQUEST['new_filter_title'] ?? null) : null;
 
 		$src_filters = ORM::for_table('ttrss_filters2')
 			->where('owner_uid', $_SESSION['uid'])
@@ -665,7 +666,7 @@ class Pref_Filters extends Handler_Protected {
 			// see checkbox_to_sql_bool() for 0+1 justification
 			$this->add([
 				'src_filter_id' => $src_filter->id,
-				'title' => sprintf(__('Clone of %s'), $src_filter->title),
+				'title' => $new_filter_title ?? sprintf(__('Clone of %s'), $src_filter->title),
 				'enabled' => 0,
 				'match_any_rule' => $src_filter->match_any_rule ? 1 : 0,
 				'inverse' => $src_filter->inverse ? 1 : 0,

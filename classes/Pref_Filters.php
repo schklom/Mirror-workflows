@@ -763,58 +763,54 @@ class Pref_Filters extends Handler_Protected {
 			->group_by_expr('f.title, f.match_any_rule, f.inverse')
 			->find_one();
 
-		if ($filter) {
-			$title = $filter->title ?: __('[No caption]');
-			$title_summary = [
-				sprintf(
-				_ngettext("%s (%d rule)", "%s (%d rules)", (int) $filter->num_rules),
-				$title,
-				$filter->num_rules)];
+		$title = $filter->title ?: __('[No caption]');
+		$title_summary = [
+			sprintf(
+			_ngettext("%s (%d rule)", "%s (%d rules)", (int) $filter->num_rules),
+			$title,
+			$filter->num_rules)];
 
-			if ($filter->match_any_rule) array_push($title_summary, __("matches any rule"));
-			if ($filter->inverse) array_push($title_summary, __("inverse"));
+		if ($filter->match_any_rule) array_push($title_summary, __("matches any rule"));
+		if ($filter->inverse) array_push($title_summary, __("inverse"));
 
-			$actions = ORM::for_table("ttrss_filters2_actions")
-				->where("filter_id", $id)
-				->order_by_asc('id')
-				->find_many();
+		$actions = ORM::for_table("ttrss_filters2_actions")
+			->where("filter_id", $id)
+			->order_by_asc('id')
+			->find_many();
 
-			/** @var array<string> $actions_summary */
-			$actions_summary = [];
-			$cumulative_score = 0;
+		/** @var array<string> $actions_summary */
+		$actions_summary = [];
+		$cumulative_score = 0;
 
-			// we're going to show a summary adjustment so we skip individual score action descriptions here
-			foreach ($actions as $action) {
-				if ($action->action_id == self::ACTION_SCORE) {
-					$cumulative_score += (int) $action->action_param;
-					continue;
-				}
-
-				array_push($actions_summary, "<li>" . self::_get_action_name($action) . "</li>");
+		// we're going to show a summary adjustment so we skip individual score action descriptions here
+		foreach ($actions as $action) {
+			if ($action->action_id == self::ACTION_SCORE) {
+				$cumulative_score += (int) $action->action_param;
+				continue;
 			}
 
-			// inject a fake action description using cumulative filter score
-			if ($cumulative_score != 0) {
-				array_unshift($actions_summary,
-					"<li>" . self::_get_action_name(["action_id" => self::ACTION_SCORE, "action_param" => $cumulative_score]) . "</li>");
-			}
-
-			if (count($actions_summary) > self::MAX_ACTIONS_TO_DISPLAY) {
-				$actions_not_shown = count($actions_summary) - self::MAX_ACTIONS_TO_DISPLAY;
-				$actions_summary = array_slice($actions_summary, 0, self::MAX_ACTIONS_TO_DISPLAY);
-
-				array_push($actions_summary,
-					"<li class='text-muted'><em>" . sprintf(_ngettext("(+%d action)", "(+%d actions)", $actions_not_shown), $actions_not_shown)) . "</em></li>";
-			}
-
-			return [
-				'title' => $title,
-				'title_summary' => implode(', ', $title_summary),
-				'actions_summary' => implode('', $actions_summary),
-			];
+			array_push($actions_summary, "<li>" . self::_get_action_name($action) . "</li>");
 		}
 
-		return [];
+		// inject a fake action description using cumulative filter score
+		if ($cumulative_score != 0) {
+			array_unshift($actions_summary,
+				"<li>" . self::_get_action_name(["action_id" => self::ACTION_SCORE, "action_param" => $cumulative_score]) . "</li>");
+		}
+
+		if (count($actions_summary) > self::MAX_ACTIONS_TO_DISPLAY) {
+			$actions_not_shown = count($actions_summary) - self::MAX_ACTIONS_TO_DISPLAY;
+			$actions_summary = array_slice($actions_summary, 0, self::MAX_ACTIONS_TO_DISPLAY);
+
+			array_push($actions_summary,
+				"<li class='text-muted'><em>" . sprintf(_ngettext("(+%d action)", "(+%d actions)", $actions_not_shown), $actions_not_shown)) . "</em></li>";
+		}
+
+		return [
+			'title' => $title,
+			'title_summary' => implode(', ', $title_summary),
+			'actions_summary' => implode('', $actions_summary),
+		];
 	}
 
 	function join(): void {

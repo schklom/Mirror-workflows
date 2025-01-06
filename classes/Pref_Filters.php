@@ -258,7 +258,7 @@ class Pref_Filters extends Handler_Protected {
 		];
 
 		foreach ($filters as $filter) {
-			$name = $this->_get_name($filter->id);
+			$details = $this->_get_details($filter->id);
 
 			if ($filter_search &&
 				mb_stripos($filter->title, $filter_search) === false &&
@@ -273,8 +273,9 @@ class Pref_Filters extends Handler_Protected {
 			$item = [
 				'id' => 'FILTER:' . $filter->id,
 				'bare_id' => $filter->id,
-				'name' => $name[0],
-				'param' => $name[1],
+				'bare_name' => $details['title'],
+				'name' => $details['title_summary'],
+				'param' => $details['actions_summary'],
 				'checkbox' => false,
 				'last_triggered' => $filter->last_triggered ? TimeHelper::make_local_datetime($filter->last_triggered) : null,
 				'enabled' => sql_bool_to_bool($filter->enabled),
@@ -745,9 +746,9 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	/**
-	 * @return array<int, string>
+	 * @return array{'title': string, 'title_summary': string, 'actions_summary': string}
 	 */
-	private function _get_name(int $id): array {
+	private function _get_details(int $id): array {
 
 		$filter = ORM::for_table("ttrss_filters2")
 			->table_alias('f')
@@ -763,10 +764,11 @@ class Pref_Filters extends Handler_Protected {
 			->find_one();
 
 		if ($filter) {
+			$title = $filter->title ?: __('[No caption]');
 			$title_summary = [
 				sprintf(
 				_ngettext("%s (%d rule)", "%s (%d rules)", (int) $filter->num_rules),
-				($filter->title ? $filter->title : __("[No caption]")),
+				$title,
 				$filter->num_rules)];
 
 			if ($filter->match_any_rule) array_push($title_summary, __("matches any rule"));
@@ -805,7 +807,11 @@ class Pref_Filters extends Handler_Protected {
 					"<li class='text-muted'><em>" . sprintf(_ngettext("(+%d action)", "(+%d actions)", $actions_not_shown), $actions_not_shown)) . "</em></li>";
 			}
 
-			return [implode(", ", $title_summary), implode("", $actions_summary)];
+			return [
+				'title' => $title,
+				'title_summary' => implode(', ', $title_summary),
+				'actions_summary' => implode('', $actions_summary),
+			];
 		}
 
 		return [];

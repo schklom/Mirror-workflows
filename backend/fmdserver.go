@@ -31,16 +31,6 @@ type config struct {
 	ServerKey         string `yaml:"ServerKey"`
 }
 
-// Deprecated: used only by old clients. Modern clients use the opaque DataPackage.
-type locationData struct {
-	IDT      string
-	Provider string
-	Date     uint64
-	Bat      string
-	Lon      string
-	Lat      string
-}
-
 type registrationData struct {
 	Salt              string
 	HashedPassword    string

@@ -7,7 +7,7 @@ async function getPushUrl(accessToken) {
         throw "Missing accessToken!";
     }
 
-    const response = await fetch("/push", {
+    const response = await fetch("api/v1/push", {
         method: 'POST',
         body: JSON.stringify({
             IDT: accessToken,

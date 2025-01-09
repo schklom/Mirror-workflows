@@ -258,7 +258,7 @@ class Pref_Filters extends Handler_Protected {
 		];
 
 		foreach ($filters as $filter) {
-			$name = $this->_get_name($filter->id);
+			$details = $this->_get_details($filter->id);
 
 			if ($filter_search &&
 				mb_stripos($filter->title, $filter_search) === false &&
@@ -273,8 +273,9 @@ class Pref_Filters extends Handler_Protected {
 			$item = [
 				'id' => 'FILTER:' . $filter->id,
 				'bare_id' => $filter->id,
-				'name' => $name[0],
-				'param' => $name[1],
+				'bare_name' => $details['title'],
+				'name' => $details['title_summary'],
+				'param' => $details['actions_summary'],
 				'checkbox' => false,
 				'last_triggered' => $filter->last_triggered ? TimeHelper::make_local_datetime($filter->last_triggered) : null,
 				'enabled' => sql_bool_to_bool($filter->enabled),
@@ -505,6 +506,25 @@ class Pref_Filters extends Handler_Protected {
 		$sth->execute([...$ids, $_SESSION['uid']]);
 	}
 
+	private function _clone_rules_and_actions(int $filter_id, ?int $src_filter_id = null): bool {
+		$sth = $this->pdo->prepare('INSERT INTO ttrss_filters2_rules
+					(filter_id, reg_exp, inverse, filter_type, feed_id, cat_id, match_on, cat_filter)
+					SELECT :filter_id, reg_exp, inverse, filter_type, feed_id, cat_id, match_on, cat_filter
+					FROM ttrss_filters2_rules
+					WHERE filter_id = :src_filter_id');
+
+		if (!$sth->execute(['filter_id' => $filter_id, 'src_filter_id' => $src_filter_id]))
+			return false;
+
+		$sth = $this->pdo->prepare('INSERT INTO ttrss_filters2_actions
+			(filter_id, action_id, action_param)
+			SELECT :filter_id, action_id, action_param
+			FROM ttrss_filters2_actions
+			WHERE filter_id = :src_filter_id');
+
+		return $sth->execute(['filter_id' => $filter_id, 'src_filter_id' => $src_filter_id]);
+	}
+
 	private function _save_rules_and_actions(int $filter_id): void {
 
 		$sth = $this->pdo->prepare("DELETE FROM ttrss_filters2_rules WHERE filter_id = ?");
@@ -587,11 +607,24 @@ class Pref_Filters extends Handler_Protected {
 		}
 	}
 
-	function add(): void {
-		$enabled = checkbox_to_sql_bool($_REQUEST["enabled"] ?? false);
-		$match_any_rule = checkbox_to_sql_bool($_REQUEST["match_any_rule"] ?? false);
-		$title = clean($_REQUEST["title"]);
-		$inverse = checkbox_to_sql_bool($_REQUEST["inverse"] ?? false);
+	/**
+	 * @param null|array{'src_filter_id': int, 'title': string, 'enabled': 0|1, 'match_any_rule': 0|1, 'inverse': 0|1} $props
+	 */
+	function add(?array $props = null): void {
+		if ($props === null) {
+			$src_filter_id = null;
+			$title = clean($_REQUEST['title']);
+			$enabled = checkbox_to_sql_bool($_REQUEST['enabled'] ?? false);
+			$match_any_rule = checkbox_to_sql_bool($_REQUEST['match_any_rule'] ?? false);
+			$inverse = checkbox_to_sql_bool($_REQUEST['inverse'] ?? false);
+		} else {
+			// see checkbox_to_sql_bool() for 0 vs false justification
+			$src_filter_id = $props['src_filter_id'];
+			$title = clean($props['title']);
+			$enabled = $props['enabled'];
+			$match_any_rule = $props['match_any_rule'];
+			$inverse = $props['inverse'];
+		}
 
 		$this->pdo->beginTransaction();
 
@@ -609,10 +642,36 @@ class Pref_Filters extends Handler_Protected {
 
 		if ($row = $sth->fetch()) {
 			$filter_id = $row['id'];
-			$this->_save_rules_and_actions($filter_id);
+
+			if ($src_filter_id === null)
+				$this->_save_rules_and_actions($filter_id);
+			else
+				$this->_clone_rules_and_actions($filter_id, $src_filter_id);
 		}
 
 		$this->pdo->commit();
+	}
+
+	function clone(): void {
+		/** @var array<int, int> */
+		$src_filter_ids = array_map('intval', array_filter(explode(',', clean($_REQUEST['ids'] ?? ''))));
+		$new_filter_title = count($src_filter_ids) === 1 ? clean($_REQUEST['new_filter_title'] ?? null) : null;
+
+		$src_filters = ORM::for_table('ttrss_filters2')
+			->where('owner_uid', $_SESSION['uid'])
+			->where_id_in($src_filter_ids)
+			->find_many();
+
+		foreach ($src_filters as $src_filter) {
+			// see checkbox_to_sql_bool() for 0+1 justification
+			$this->add([
+				'src_filter_id' => $src_filter->id,
+				'title' => $new_filter_title ?? sprintf(__('Clone of %s'), $src_filter->title),
+				'enabled' => 0,
+				'match_any_rule' => $src_filter->match_any_rule ? 1 : 0,
+				'inverse' => $src_filter->inverse ? 1 : 0,
+			]);
+		}
 	}
 
 	function index(): void {
@@ -649,6 +708,8 @@ class Pref_Filters extends Handler_Protected {
 
 					<button dojoType="dijit.form.Button" onclick="return Filters.edit()">
 						<?= __('Create filter') ?></button>
+					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').cloneSelectedFilters()">
+						<?= __('Clone') ?></button>
 					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').joinSelectedFilters()">
 						<?= __('Combine') ?></button>
 					<button dojoType="dijit.form.Button" onclick="return dijit.byId('filterTree').removeSelectedFilters()">
@@ -686,9 +747,9 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	/**
-	 * @return array<int, string>
+	 * @return array{'title': string, 'title_summary': string, 'actions_summary': string}
 	 */
-	private function _get_name(int $id): array {
+	private function _get_details(int $id): array {
 
 		$filter = ORM::for_table("ttrss_filters2")
 			->table_alias('f')
@@ -703,53 +764,54 @@ class Pref_Filters extends Handler_Protected {
 			->group_by_expr('f.title, f.match_any_rule, f.inverse')
 			->find_one();
 
-		if ($filter) {
-			$title_summary = [
-				sprintf(
-				_ngettext("%s (%d rule)", "%s (%d rules)", (int) $filter->num_rules),
-				($filter->title ? $filter->title : __("[No caption]")),
-				$filter->num_rules)];
+		$title = $filter->title ?: __('[No caption]');
+		$title_summary = [
+			sprintf(
+			_ngettext("%s (%d rule)", "%s (%d rules)", (int) $filter->num_rules),
+			$title,
+			$filter->num_rules)];
 
-			if ($filter->match_any_rule) array_push($title_summary, __("matches any rule"));
-			if ($filter->inverse) array_push($title_summary, __("inverse"));
+		if ($filter->match_any_rule) array_push($title_summary, __("matches any rule"));
+		if ($filter->inverse) array_push($title_summary, __("inverse"));
 
-			$actions = ORM::for_table("ttrss_filters2_actions")
-				->where("filter_id", $id)
-				->order_by_asc('id')
-				->find_many();
+		$actions = ORM::for_table("ttrss_filters2_actions")
+			->where("filter_id", $id)
+			->order_by_asc('id')
+			->find_many();
 
-			/** @var array<string> $actions_summary */
-			$actions_summary = [];
-			$cumulative_score = 0;
+		/** @var array<string> $actions_summary */
+		$actions_summary = [];
+		$cumulative_score = 0;
 
-			// we're going to show a summary adjustment so we skip individual score action descriptions here
-			foreach ($actions as $action) {
-				if ($action->action_id == self::ACTION_SCORE) {
-					$cumulative_score += (int) $action->action_param;
-					continue;
-				}
-
-				array_push($actions_summary, "<li>" . self::_get_action_name($action) . "</li>");
+		// we're going to show a summary adjustment so we skip individual score action descriptions here
+		foreach ($actions as $action) {
+			if ($action->action_id == self::ACTION_SCORE) {
+				$cumulative_score += (int) $action->action_param;
+				continue;
 			}
 
-			// inject a fake action description using cumulative filter score
-			if ($cumulative_score != 0) {
-				array_unshift($actions_summary,
-					"<li>" . self::_get_action_name(["action_id" => self::ACTION_SCORE, "action_param" => $cumulative_score]) . "</li>");
-			}
-
-			if (count($actions_summary) > self::MAX_ACTIONS_TO_DISPLAY) {
-				$actions_not_shown = count($actions_summary) - self::MAX_ACTIONS_TO_DISPLAY;
-				$actions_summary = array_slice($actions_summary, 0, self::MAX_ACTIONS_TO_DISPLAY);
-
-				array_push($actions_summary,
-					"<li class='text-muted'><em>" . sprintf(_ngettext("(+%d action)", "(+%d actions)", $actions_not_shown), $actions_not_shown)) . "</em></li>";
-			}
-
-			return [implode(", ", $title_summary), implode("", $actions_summary)];
+			array_push($actions_summary, "<li>" . self::_get_action_name($action) . "</li>");
 		}
 
-		return [];
+		// inject a fake action description using cumulative filter score
+		if ($cumulative_score != 0) {
+			array_unshift($actions_summary,
+				"<li>" . self::_get_action_name(["action_id" => self::ACTION_SCORE, "action_param" => $cumulative_score]) . "</li>");
+		}
+
+		if (count($actions_summary) > self::MAX_ACTIONS_TO_DISPLAY) {
+			$actions_not_shown = count($actions_summary) - self::MAX_ACTIONS_TO_DISPLAY;
+			$actions_summary = array_slice($actions_summary, 0, self::MAX_ACTIONS_TO_DISPLAY);
+
+			array_push($actions_summary,
+				"<li class='text-muted'><em>" . sprintf(_ngettext("(+%d action)", "(+%d actions)", $actions_not_shown), $actions_not_shown)) . "</em></li>";
+		}
+
+		return [
+			'title' => $title,
+			'title_summary' => implode(', ', $title_summary),
+			'actions_summary' => implode('', $actions_summary),
+		];
 	}
 
 	function join(): void {

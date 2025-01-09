@@ -167,6 +167,39 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 
 			return false;
 		},
+		cloneSelectedFilters: function() {
+			const sel_rows = this.getSelectedFilters();
+
+			if (sel_rows.length > 0) {
+				const query = {op: "Pref_Filters", method: "clone", ids: sel_rows.toString()};
+				let proceed = false;
+
+				if (sel_rows.length === 1) {
+					const selected_filter = this.model.getCheckedItems()[0];
+					const new_filter_title = prompt(__("Name for new filter:"),
+						__("Clone of %s").replace("%s", this.model.store.getValue(selected_filter, "bare_name")));
+
+					if (new_filter_title) {
+						query.new_filter_title = new_filter_title;
+						proceed = true;
+					}
+				} else if (sel_rows.length > 1) {
+					proceed = confirm(__("Clone selected filters?"));
+				}
+
+				if (proceed) {
+					Notify.progress(__("Cloning selected filters..."));
+
+					xhr.post("backend.php", query, () => {
+						this.reload();
+					});
+				}
+			} else {
+				alert(__("No filters selected."));
+			}
+
+			return false;
+		},
 });
 });
 

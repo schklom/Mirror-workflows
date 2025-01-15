@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"findmydeviceserver/backend"
+
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +15,7 @@ var (
 		Use:   "serve",
 		Short: "Run the server",
 		Run: func(cmd *cobra.Command, args []string) {
-			RunServer(configPath, dbDir, webDir)
+			backend.RunServer(configPath, dbDir, webDir)
 		},
 	}
 )

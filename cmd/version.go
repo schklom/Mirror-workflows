@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"findmydeviceserver/backend"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -10,7 +11,7 @@ var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the FMD Server version",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(VERSION)
+		fmt.Println(backend.VERSION)
 	},
 }
 

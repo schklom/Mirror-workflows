@@ -13,9 +13,10 @@ jobs:
     outputs:
       LOCAL_BRANCH: Wikiless
       REMOTE_REPOSITORY_1: https://github.com/Metastem/wikiless
-      REMOTE_REPOSITORY_1_BRANCH: ${{ steps.commits.outputs.SET_REMOTE_REPOSITORY_1_BRANCH }}
+      REMOTE_REPOSITORY_1_BRANCH: ${{ steps.branch_name.outputs.SET_REMOTE_REPOSITORY_1_BRANCH }}
     steps:
       - name: find HEAD branch name dynamically
+        id: branch_name
         run: echo "SET_REMOTE_REPOSITORY_1_BRANCH=$(git ls-remote --symref https://github.com/Metastem/wikiless HEAD | grep '^ref:' | cut -d' ' -f2 | sed 's|refs/heads/||' | awk '{print $1}') >> $GITHUB_OUTPUT"
       
   get_commits:

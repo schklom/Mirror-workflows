@@ -68,7 +68,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: $LOCAL_BRANCH
+          ref: ${{ needs.parameters.outputs.LOCAL_BRANCH }}
       - name: get most recent commit id on original repo, for next comparison on sync
         run: git ls-remote "$REMOTE_REPOSITORY_1" "$REMOTE_REPOSITORY_1_BRANCH" | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
       - name: Commit and push the change

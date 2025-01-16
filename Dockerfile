@@ -12,6 +12,7 @@ COPY go.mod .
 COPY go.sum .
 COPY main.go .
 COPY cmd/ cmd/
+COPY backend/ backend/
 COPY user/ user/
 COPY utils/ utils/
 

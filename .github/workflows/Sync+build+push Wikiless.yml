@@ -17,7 +17,7 @@ jobs:
     steps:
       - name: find HEAD branch name dynamically
         id: branch_name
-        run: echo "SET_REMOTE_REPOSITORY_1_BRANCH=$(git ls-remote --symref https://github.com/Metastem/wikiless HEAD | grep '^ref:' | cut -d' ' -f2 | sed 's|refs/heads/||' | awk '{print $1}') >> $GITHUB_OUTPUT"
+        run: echo "SET_REMOTE_REPOSITORY_1_BRANCH=$(git ls-remote --symref https://github.com/Metastem/wikiless HEAD | grep '^ref:' | cut -d' ' -f2 | sed 's|refs/heads/||' | awk '{print $1}')" >> $GITHUB_OUTPUT
       
   get_commits:
     needs: [parameters]

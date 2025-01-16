@@ -1,11 +1,16 @@
 # Mirror-workflows
 
-***DISCLAIMER***: I maintain this README and repo in my spare time, mainly for myself. Not everything here is kept updated constantly, it's a best-effort situation. I also do not test all images I build, so if an image fails and I am not running it and seeing it fail, I will not notice, so let me know in an issue and I will do what I can.
+## Disclaimer
+If people use my version of Infinity-For-Reddit (it uses my username and api key), i will change the parameters and make the repository private). Feel free to copy my setup, and use your own username and api keys. The details are in the Action yaml file, and you can ask me by opening issues.
 
+I maintain this repo in my spare time, mainly for myself. Not everything here is kept updated constantly, it's a best-effort situation. I also do not test all images I build, so if an image fails and I am not running it and seeing it fail, I will not notice, so let me know in an issue and I will do what I can.
+
+## What does this repo do?
 Each branch mirrors a repo's main (or master) branch (easier to build with Actions than having one repo for each repo I want to mirror).
 
 Actions synchronize the branches to repos, build Dockerfiles into images, and push these images to Docker Hub.
 
+## How often are images updated?
 Images are only updated if the last recorded commits of the parent repositories (store in files) match the latest current ones at the build-time. This minimizes the frequency of updates that Docker hosts need to make whenever they check for updates, and avoids wasting lots of computations.
 
 The Actions are defined in the directory .github/workflows. Secrets are used for sensitive information.
@@ -30,6 +35,3 @@ The Actions are defined in the directory .github/workflows. Secrets are used for
 - ~Quetre~
 - ~tt-rss-android (complete repo, not branch)~ (Can be updated on Obtainium from https://srv.tt-rss.org/fdroid/updates/org.fox.ttrss.json with Override Source set to HTML)
 
-
-## Disclaimer
-If people use my version of Infinity-For-Reddit (it uses my username and api key), i will change the parameters and make the repository private). Feel free to copy my setup, and use your own username and api keys. The details are in the Action yaml file, and you can ask me by opening issues.

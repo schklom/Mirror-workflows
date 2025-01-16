@@ -25,7 +25,6 @@ jobs:
     env:
       REMOTE_REPOSITORY_1: ${{ needs.parameters.outputs.REMOTE_REPOSITORY_1 }}
       REMOTE_REPOSITORY_1_BRANCH: ${{ needs.parameters.outputs.REMOTE_REPOSITORY_1_BRANCH }}
-      LOCAL_BRANCH: ${{ needs.parameters.outputs.LOCAL_BRANCH }}
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     outputs:
       LOCAL: ${{ steps.commits.outputs.SETLOCAL }}
@@ -34,7 +33,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: $LOCAL_BRANCH
+          ref: ${{ needs.parameters.outputs.LOCAL_BRANCH }}
       - name: set local and remote latest commit as environment variables
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
@@ -51,7 +50,6 @@ jobs:
     env:
       REMOTE_REPOSITORY_1: ${{ needs.parameters.outputs.REMOTE_REPOSITORY_1 }}
       REMOTE_REPOSITORY_1_BRANCH: ${{ needs.parameters.outputs.REMOTE_REPOSITORY_1_BRANCH }}
-      LOCAL_BRANCH: ${{ needs.parameters.outputs.LOCAL_BRANCH }}
     steps:
       - name: repo-sync
         uses: wei/git-sync@v3
@@ -59,7 +57,7 @@ jobs:
           source_repo: "$REMOTE_REPOSITORY_1"
           source_branch: "$REMOTE_REPOSITORY_1_BRANCH"
           destination_repo: "git@github.com:schklom/Mirror-workflows.git"
-          destination_branch: "$LOCAL_BRANCH"
+          destination_branch: ${{ needs.parameters.outputs.LOCAL_BRANCH }}
           ssh_private_key: ${{ secrets.GITSYNCACTION }}
         # uses: repo-sync/github-sync@v2
         # with:

@@ -22,9 +22,6 @@ jobs:
   get_commits:
     needs: [parameters]
     runs-on: ubuntu-latest
-    env:
-      REMOTE_REPOSITORY_1: ${{ needs.parameters.outputs.REMOTE_REPOSITORY_1 }}
-      REMOTE_REPOSITORY_1_BRANCH: ${{ needs.parameters.outputs.REMOTE_REPOSITORY_1_BRANCH }}
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     outputs:
       LOCAL: ${{ steps.commits.outputs.SETLOCAL }}
@@ -33,13 +30,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ needs.parameters.outputs.LOCAL_BRANCH }}
+          ref: "${{ needs.parameters.outputs.LOCAL_BRANCH }}"
       - name: set local and remote latest commit as environment variables
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
         run: |
-          echo "SETREMOTE=$(git ls-remote '$REMOTE_REPOSITORY_1' '$REMOTE_REPOSITORY_1_BRANCH' | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+          echo "SETREMOTE=$(git ls-remote ${{ needs.parameters.outputs.REMOTE_REPOSITORY_1 }} ${{ needs.parameters.outputs.REMOTE_REPOSITORY_1_BRANCH }} | awk '{ print $1 }')" >> $GITHUB_OUTPUT
           echo "SETLOCAL=$(cat last_sync_with_original_repo_commit_id)" >> $GITHUB_OUTPUT
   
   repo_sync:
@@ -47,17 +44,14 @@ jobs:
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
-    env:
-      REMOTE_REPOSITORY_1: ${{ needs.parameters.outputs.REMOTE_REPOSITORY_1 }}
-      REMOTE_REPOSITORY_1_BRANCH: ${{ needs.parameters.outputs.REMOTE_REPOSITORY_1_BRANCH }}
     steps:
       - name: repo-sync
         uses: wei/git-sync@v3
         with:
-          source_repo: "$REMOTE_REPOSITORY_1"
-          source_branch: "$REMOTE_REPOSITORY_1_BRANCH"
+          source_repo: "${{ needs.parameters.outputs.REMOTE_REPOSITORY_1 }}"
+          source_branch: "${{ needs.parameters.outputs.REMOTE_REPOSITORY_1_BRANCH }}"
           destination_repo: "git@github.com:schklom/Mirror-workflows.git"
-          destination_branch: ${{ needs.parameters.outputs.LOCAL_BRANCH }}
+          destination_branch: "${{ needs.parameters.outputs.LOCAL_BRANCH }}"
           ssh_private_key: ${{ secrets.GITSYNCACTION }}
         # uses: repo-sync/github-sync@v2
         # with:
@@ -68,9 +62,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ needs.parameters.outputs.LOCAL_BRANCH }}
+          ref: "${{ needs.parameters.outputs.LOCAL_BRANCH }}"
       - name: get most recent commit id on original repo, for next comparison on sync
-        run: git ls-remote "$REMOTE_REPOSITORY_1" "$REMOTE_REPOSITORY_1_BRANCH" | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
+        run: git ls-remote "${{ needs.parameters.outputs.REMOTE_REPOSITORY_1 }}" "${{ needs.parameters.outputs.REMOTE_REPOSITORY_1_BRANCH }}" | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v5
         with:

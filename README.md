@@ -23,9 +23,9 @@ The Actions are defined in the directory .github/workflows. Secrets are used for
 - Infinity-For-Reddit (complete repo, not branch) [![Sync + Trigger Build+Release Infinity-For-Reddit](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync%20+%20Trigger%20Build+Release%20Infinity-For-Reddit.yml/badge.svg)](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync%20+%20Trigger%20Build+Release%20Infinity-For-Reddit.yml) and [![Build](https://github.com/schklom/Infinity-For-Reddit/actions/workflows/build.yml/badge.svg)](https://github.com/schklom/Infinity-For-Reddit/actions/workflows/build.yml)
 - ~Feedropolis~
 - ~Bibliogram~ (c.f. https://todo.sr.ht/~cadence/bibliogram-issues/51#event-174552) is discontinued :'(
-- ~FindMyDeviceServer~ (developer has a Docker image for popular platforms now, https://gitlab.com/Nulide/findmydeviceserver. I will delete my image at some time, there is no point. See https://hub.docker.com/r/schklom/findmydeviceserver for how to move to the new image)
+- FindMyDeviceServer [![Sync+build+push FindMyDeviceServer](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20FindMyDeviceServer.yml/badge.svg)](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20FindMyDeviceServer.yml) (developer has a Docker image for popular platforms now, https://gitlab.com/Nulide/findmydeviceserver. I will delete my image at some time, there is no point. See https://hub.docker.com/r/schklom/findmydeviceserver for how to move to the new image)
 - ~Nitter~ (bug)
-- ~SimplyTranslate [![Sync+build+push SimplyTranslate](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20SimplyTranslate.yml/badge.svg)](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20SimplyTranslate.yml)~
+- SimplyTranslate [![Sync+build+push SimplyTranslateNEW](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20SimplyTranslateNEW.yml/badge.svg)](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20SimplyTranslateNEW.yml)
 - ~Wikiless~ (original repository is gone temporarily for legal reasons)
 - ~Quetre~
 - ~tt-rss-android (complete repo, not branch)~ (Can be updated on Obtainium from https://srv.tt-rss.org/fdroid/updates/org.fox.ttrss.json with Override Source set to HTML)

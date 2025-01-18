@@ -41,7 +41,7 @@ jobs:
           echo "SETLOCAL=$(cat last_sync_with_original_repo_release_version)" >> $GITHUB_OUTPUT
   
   repo-sync:
-    needs: [get_commits]
+    needs: [get_commits, parameters]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
@@ -52,7 +52,7 @@ jobs:
           ref: ${{ needs.parameters.outputs.LOCAL_BRANCH }}
       - name: get most recent commit id on original repo, for next comparison on sync
         #run: git ls-remote https://github.com/node-red/node-red-docker.git HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
-        run: git ls-remote --tags '${{ needs.parameters.outputs.REMOTE_REPOSITORY_1 }}' | sed -E 's|.*refs/.*?/v?||' | sort --field-separator=/ --version-sort | tail -1 > last_sync_with_original_repo_release_version
+        run: echo '${{ needs.get_commits.outputs.REMOTE }}' > last_sync_with_original_repo_release_version
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v5
         with:

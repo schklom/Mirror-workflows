@@ -1,4 +1,7 @@
 FROM nodered/node-red
 # RUN npm install passport-openidconnect
-RUN /sbin/apk add strace
+USER root
+RUN apk add strace
+USER node-red
+
 RUN strace -f npm install passport-openidconnect

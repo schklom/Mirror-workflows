@@ -37,7 +37,7 @@ jobs:
         # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
         run: |
           # echo "SETREMOTE=$(git ls-remote ${{ needs.parameters.outputs.REMOTE_REPOSITORY_1 }} ${{ needs.parameters.outputs.REMOTE_REPOSITORY_1_BRANCH }} | awk '{ print $1 }')" >> $GITHUB_OUTPUT
-          echo "SETREMOTE=$(git ls-remote --tags '${{ needs.parameters.outputs.REMOTE_REPOSITORY_1 }} ${{ needs.parameters.outputs.REMOTE_REPOSITORY_1_BRANCH }}' | sed -E 's|.*refs/.*?/v?||' | sort --field-separator=/ --version-sort | tail -1)" >> $GITHUB_OUTPUT
+          echo "SETREMOTE=$(git ls-remote --tags '${{ needs.parameters.outputs.REMOTE_REPOSITORY_1 }}' | sed -E 's|.*refs/.*?/v?||' | sort --field-separator=/ --version-sort | tail -1)" >> $GITHUB_OUTPUT
           echo "SETLOCAL=$(cat last_sync_with_original_repo_release_version)" >> $GITHUB_OUTPUT
   
   repo-sync:

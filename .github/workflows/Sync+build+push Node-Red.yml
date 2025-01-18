@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       LOCAL_BRANCH: Node-Red
-      REMOTE_REPOSITORY_1: https://github.com/node-red/node-red-docker.git
+      REMOTE_REPOSITORY_1: https://github.com/node-red/node-red-docker
       REMOTE_REPOSITORY_1_BRANCH: ${{ steps.branch_name.outputs.SET_REMOTE_REPOSITORY_1_BRANCH }}
     steps:
       - name: find HEAD branch name dynamically
@@ -30,7 +30,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: "${{ needs.parameters.outputs.LOCAL_BRANCH }}"
+          ref: ${{ needs.parameters.outputs.LOCAL_BRANCH }}
       - name: set commits as environment variables
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
@@ -49,7 +49,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
         with:
-          ref: "${{ needs.parameters.outputs.LOCAL_BRANCH }}"
+          ref: ${{ needs.parameters.outputs.LOCAL_BRANCH }}
       - name: get most recent commit id on original repo, for next comparison on sync
         #run: git ls-remote https://github.com/node-red/node-red-docker.git HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
         run: git ls-remote --tags '${{ needs.parameters.outputs.REMOTE_REPOSITORY_1 }}' | sed -E 's|.*refs/.*?/v?||' | sort --field-separator=/ --version-sort | tail -1 > last_sync_with_original_repo_release_version
@@ -65,7 +65,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: "${{ needs.parameters.outputs.LOCAL_BRANCH }}"
+          ref: ${{ needs.parameters.outputs.LOCAL_BRANCH }}
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.3.0
@@ -88,7 +88,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       # https://github.com/docker/build-push-action#multi-platform-image
-      - name: Build and push Node-Red (with extra npm package)
+      - name: Build and push ${{ needs.parameters.outputs.LOCAL_BRANCH }}
         uses: docker/build-push-action@v6
         with:
           context: ./

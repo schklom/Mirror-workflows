@@ -8,22 +8,37 @@ on:
   workflow_dispatch:
 
 jobs:
+  parameters:
+    runs-on: ubuntu-latest
+    outputs:
+      LOCAL_BRANCH: Node-Red
+      REMOTE_REPOSITORY_1: https://github.com/node-red/node-red-docker.git
+      REMOTE_REPOSITORY_1_BRANCH: ${{ steps.branch_name.outputs.SET_REMOTE_REPOSITORY_1_BRANCH }}
+    steps:
+      - name: find HEAD branch name dynamically
+        id: branch_name
+        run: echo "SET_REMOTE_REPOSITORY_1_BRANCH=$(git ls-remote --symref https://github.com/node-red/node-red-docker.git HEAD | grep '^ref:' | cut -d' ' -f2 | sed 's|refs/heads/||' | awk '{print $1}')" >> $GITHUB_OUTPUT
+  
   get_commits:
+    needs: [parameters]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     outputs:
       LOCAL: ${{ steps.commits.outputs.SETLOCAL }}
       REMOTE: ${{ steps.commits.outputs.SETREMOTE }} 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: "${{ needs.parameters.outputs.LOCAL_BRANCH }}"
       - name: set commits as environment variables
         id: commits
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
         run: |
-          # echo "SETREMOTE=$(git ls-remote https://github.com/node-red/node-red-docker.git HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
-          echo "SETREMOTE=$(git ls-remote --tags https://github.com/node-red/node-red-docker | sed -E 's|.*refs/.*?/v?||' | sort --field-separator=/ --version-sort | tail -1)" >> $GITHUB_OUTPUT
+          # echo "SETREMOTE=$(git ls-remote ${{ needs.parameters.outputs.REMOTE_REPOSITORY_1 }} ${{ needs.parameters.outputs.REMOTE_REPOSITORY_1_BRANCH }} | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+          echo "SETREMOTE=$(git ls-remote --tags '${{ needs.parameters.outputs.REMOTE_REPOSITORY_1 }} ${{ needs.parameters.outputs.REMOTE_REPOSITORY_1_BRANCH }}' | sed -E 's|.*refs/.*?/v?||' | sort --field-separator=/ --version-sort | tail -1)" >> $GITHUB_OUTPUT
           echo "SETLOCAL=$(cat last_sync_with_original_repo_release_version)" >> $GITHUB_OUTPUT
-          echo $GITHUB_OUTPUT
   
   repo-sync:
     needs: [get_commits]
@@ -34,10 +49,10 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
         with:
-          ref: 'Node-Red'
+          ref: "${{ needs.parameters.outputs.LOCAL_BRANCH }}"
       - name: get most recent commit id on original repo, for next comparison on sync
         #run: git ls-remote https://github.com/node-red/node-red-docker.git HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
-        run: git ls-remote --tags https://github.com/node-red/node-red-docker | sed -E 's|.*refs/.*?/v?||' | sort --field-separator=/ --version-sort | tail -1 > last_sync_with_original_repo_release_version
+        run: git ls-remote --tags '${{ needs.parameters.outputs.REMOTE_REPOSITORY_1 }}' | sed -E 's|.*refs/.*?/v?||' | sort --field-separator=/ --version-sort | tail -1 > last_sync_with_original_repo_release_version
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
@@ -50,8 +65,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          #repository: 'schklom/Node-Red'
-          ref: 'Node-Red' # branch
+          ref: "${{ needs.parameters.outputs.LOCAL_BRANCH }}"
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.3.0

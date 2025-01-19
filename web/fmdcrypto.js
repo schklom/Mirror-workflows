@@ -1,6 +1,14 @@
-// function base64Encode(stringToEncode) { return btoa(stringToEncode) }
-function base64Decode(encodedData) {
-    return Uint8Array.from(atob(encodedData), c => c.charCodeAt(0))
+// See https://developer.mozilla.org/en-US/docs/Web/API/Window/btoa#examples
+
+function base64Decode(encodedString) {
+    return Uint8Array.from(atob(encodedString), c => c.charCodeAt(0))
+}
+
+function base64Encode(bytesToEncode) {
+    const binString = Array.from(bytesToEncode, (byte) =>
+        String.fromCodePoint(byte),
+    ).join("");
+    return btoa(binString);
 }
 
 const AES_GCM_IV_SIZE_BYTES = 12;
@@ -78,14 +86,31 @@ async function unwrapPrivateKeyModern(password, keyData) { // -> CryptoKey
     const binaryDer = base64Decode(pemString);
 
     // XXX: It would be nice to use unwrapKey instead of decrypt+importKey
-    const rsaCryptoKey = await window.crypto.subtle.importKey(
+    // XXX: If redesigned from scratch, there should be key separation between encryption and signing.
+    const rsaEncKey = await window.crypto.subtle.importKey(
         "pkcs8",
         binaryDer,
         { name: "RSA-OAEP", hash: "SHA-256" },
         false, // extractability
         ["decrypt"] // keyUsages
     );
-    return rsaCryptoKey;
+    const rsaSigKey = await window.crypto.subtle.importKey(
+        "pkcs8",
+        binaryDer,
+        { name: "RSA-PSS", hash: "SHA-256" },
+        false, // extractability
+        ["sign"] // keyUsages
+    );
+    return [rsaEncKey, rsaSigKey];
+}
+
+async function sign(rsaCryptoKey, msg) {
+    const msgBytes = new TextEncoder().encode(msg);
+    const pssParams = { name: "RSA-PSS", saltLength: 32 }
+    const sig = await window.crypto.subtle.sign(pssParams, rsaCryptoKey, msgBytes);
+    const sigBytes = new Uint8Array(sig);
+    const sigBase64 = base64Encode(sigBytes);
+    return sigBase64
 }
 
 // Section: Symmetric crypto

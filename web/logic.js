@@ -6,6 +6,7 @@ var locCache = new Map();
 
 var currentId;
 var globalPrivateKey;
+var globalPrivateSigKey;
 var globalAccessToken = "";
 
 var newestPictureIndex;
@@ -213,7 +214,10 @@ async function getPrivateKey(password) {
         throw response.status;
     }
     const keyData = await response.json();
-    globalPrivateKey = await unwrapPrivateKey(password, keyData.Data);
+
+    const [rsaEncKey, rsaSigKey] = await unwrapPrivateKey(password, keyData.Data);
+    globalPrivateKey = rsaEncKey;
+    globalPrivateSigKey = rsaSigKey;
 }
 
 async function redirectToLogin(toastMessage) {
@@ -419,11 +423,16 @@ async function sendToPhone(message) {
         return;
     }
 
+    const time = Date.now();
+    const sig = await sign(globalPrivateSigKey, `${time}:${message}`);
+
     response = await fetch("api/v1/command", {
         method: 'POST',
         body: JSON.stringify({
             IDT: globalAccessToken,
             Data: message,
+            UnixTime: time,
+            CmdSig: sig,
         }),
         headers: {
             'Content-type': 'application/json'
@@ -436,7 +445,7 @@ async function sendToPhone(message) {
     if (!response.ok) {
         throw response.status;
     }
-    var toasted = new Toasted({
+    const toasted = new Toasted({
         position: 'top-center',
         duration: 2000
     });

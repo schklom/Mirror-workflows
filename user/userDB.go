@@ -25,6 +25,8 @@ type FMDUser struct {
 	PrivateKey     string
 	PublicKey      string
 	CommandToUser  string
+	CommandTime    uint64
+	CommandSig     string
 	CommandLogs    []CommandLogEntry `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
 	PushUrl        string
 	Locations      []Location `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`

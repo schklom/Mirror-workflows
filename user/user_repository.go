@@ -229,23 +229,26 @@ func (u *UserRepository) addCommandLogEntry(user *FMDUser, entry string) {
 	u.UB.Create(&comLogEntry)
 }
 
-func (u *UserRepository) SetCommandToUser(user *FMDUser, cmd string) {
+func (u *UserRepository) SetCommandToUser(user *FMDUser, cmd string, cmdTime uint64, cmdSig string) {
 	user.CommandToUser = cmd
+	user.CommandTime = cmdTime
+	user.CommandSig = cmdSig
 
 	if cmd != "" {
-		logEntry := fmt.Sprintf("Command \"%s\" sent to server!", cmd)
-		u.addCommandLogEntry(user, logEntry)
+		//logEntry := fmt.Sprintf("Command \"%s\" sent to server!", cmd)
+		//u.addCommandLogEntry(user, logEntry)
+
 		u.pushUser(user)
 	}
 	u.UB.Save(&user)
 }
 
-func (u *UserRepository) GetCommandToUser(user *FMDUser) string {
+func (u *UserRepository) GetCommandToUser(user *FMDUser) (string, uint64, string) {
 	if user.CommandToUser != "" {
 		logEntry := fmt.Sprintf("Command \"%s\" received by device!", user.CommandToUser)
 		u.addCommandLogEntry(user, logEntry)
 	}
-	return user.CommandToUser
+	return user.CommandToUser, user.CommandTime, user.CommandSig
 }
 
 func (u *UserRepository) GetCommandLog(user *FMDUser) string {
@@ -310,7 +313,9 @@ func (u *UserRepository) RequestAccess(id string, hashedPW string, sessionDurati
 	}
 
 	if u.ACC.IsLocked(id) {
-		u.SetCommandToUser(user, "423")
+		// Cannot sign since the server sets this.
+		// This is the only "command" that is allowed to be unsigned.
+		u.SetCommandToUser(user, "423", 0, "")
 		return nil, ErrAccountLocked
 	}
 

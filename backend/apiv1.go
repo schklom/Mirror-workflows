@@ -32,6 +32,14 @@ type loginData struct {
 	SessionDurationSeconds uint64
 }
 
+// suboptimal naming for backwards compatibility
+type commandData struct {
+	IDT      string // access token
+	Data     string // plaintext command
+	UnixTime uint64 // unix time in milliseconds
+	CmdSig   string // base64-encoded signature over "UnixTime:Data"
+}
+
 // universal package for string transfer
 // IDT = DeviceID or AccessToken
 // If both will be send. ID is always IDT
@@ -263,20 +271,20 @@ func getCommand(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
 	}
-	commandAsString := uio.GetCommandToUser(user)
+	cmd, time, sig := uio.GetCommandToUser(user)
 
 	// commandAsString may be an empty string, that's fine
-	reply := DataPackage{IDT: data.IDT, Data: commandAsString}
+	reply := commandData{IDT: data.IDT, Data: cmd, UnixTime: time, CmdSig: sig}
 	result, _ := json.Marshal(reply)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte(result))
 
 	// Clear the command so that the app only GETs it once
-	uio.SetCommandToUser(user, "")
+	uio.SetCommandToUser(user, "", 0, "")
 }
 
 func postCommand(w http.ResponseWriter, r *http.Request) {
-	var data DataPackage
+	var data commandData
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
@@ -287,7 +295,7 @@ func postCommand(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Access Token not valid", http.StatusUnauthorized)
 		return
 	}
-	uio.SetCommandToUser(user, data.Data)
+	uio.SetCommandToUser(user, data.Data, data.UnixTime, data.CmdSig)
 	w.WriteHeader(http.StatusOK)
 }
 

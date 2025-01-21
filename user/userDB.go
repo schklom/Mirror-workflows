@@ -2,10 +2,9 @@ package user
 
 import (
 	"errors"
-	"fmt"
-	"log"
 	"os"
 
+	"github.com/rs/zerolog/log"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -69,7 +68,7 @@ type DBSetting struct {
 
 func initSQLite(path string) *FMDDB {
 	newLogger := logger.New(
-		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		&log.Logger, // io writer
 		logger.Config{
 			IgnoreRecordNotFoundError: false, // Ignore ErrRecordNotFound error for logger
 		},
@@ -78,7 +77,8 @@ func initSQLite(path string) *FMDDB {
 		Logger: newLogger,
 	})
 	if err != nil {
-		log.Fatal("Failed to open database: ", err)
+		log.Fatal().Err(err).Msg("failed to open database")
+		os.Exit(1) // make nilaway happy
 		return nil
 	}
 	//Disabled Feature: CommandLogs
@@ -101,7 +101,7 @@ func (db *FMDDB) GetByID(id string) (*FMDUser, error) {
 	var user = FMDUser{UID: id}
 	db.DB.Where(&user).Find(&user)
 	if user.Id == 0 {
-		fmt.Println("User not found:", id)
+		log.Warn().Str("userid", id).Msg("user not found")
 		return nil, errors.New("user not found")
 	}
 	return &user, nil

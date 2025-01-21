@@ -2,15 +2,14 @@ package backend
 
 import (
 	"findmydeviceserver/user"
-	"fmt"
 	"io/fs"
-	"log"
 	"net"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strconv"
 
+	"github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v3"
 )
 
@@ -37,69 +36,95 @@ func handleRequests(webDir string, config config) {
 		if err == nil { // socket already exists
 			err = os.Remove(config.UnixSocketPath)
 			if err != nil {
-				log.Fatalf("could not remove existing unix socket: %s", config.UnixSocketPath)
+				log.Fatal().
+					Str("UnixSocketPath", config.UnixSocketPath).
+					Msg("could not remove existing unix socket")
 			}
 		}
-		fmt.Printf("Listening on unix socket %s \n", config.UnixSocketPath)
+
+		log.Info().
+			Str("UnixSocketPath", config.UnixSocketPath).
+			Msg("listening on unix socket")
+
 		unixListener, err := net.Listen("unix", config.UnixSocketPath)
 		if err != nil {
-			log.Fatalf("error on opening unix socket, %s", err.Error())
+			if err != nil {
+				log.Fatal().Err(err).Msg("cannot open unix socket")
+				os.Exit(1) // make nilaway happy
+			}
 		}
+
 		fm := fs.FileMode(config.UnixSocketChmod)
 		err = os.Chmod(config.UnixSocketPath, fm)
 		if err != nil {
-			log.Fatalf("error modifying permissions %x on unix socket %s, %s", fm, config.UnixSocketPath, err.Error())
+			log.Error().
+				Err(err).
+				Str("fm", fm.String()).
+				Msg("error modifying unix socket permissions")
 		}
+
 		server := http.Server{Handler: mux}
 		err = server.Serve(unixListener)
 		if err != nil {
-			fmt.Printf("error on serving %s, %s", config.UnixSocketPath, err.Error())
+			log.Error().Err(err).Msg("error serving unix server")
 		}
+
 		err = server.Close()
 		if err != nil {
-			fmt.Printf("error on closing unix server, %s", err.Error())
+			log.Error().Err(err).Msg("error closing unix server")
 		}
+
 		err = unixListener.Close()
 		if err != nil {
-			fmt.Printf("error on closing unix listener, %s", err.Error())
+			log.Error().Err(err).Msg("error closing unix listener")
 		}
 		// ignore error for now
 		os.Remove(config.UnixSocketPath)
+
 	} else if config.PortSecure > -1 && fileExists(config.ServerCrt) && fileExists(config.ServerKey) {
+		log.Info().
+			Int("PortSecure", config.PortSecure).
+			Msg("listening on secure port")
 		securePort := ":" + strconv.Itoa(config.PortSecure)
-		fmt.Printf("Listening on port %d (secure)\n", config.PortSecure)
 		err := http.ListenAndServeTLS(securePort, config.ServerCrt, config.ServerKey, mux)
 		if err != nil {
-			fmt.Println("HTTPS won't be available.", err)
+			log.Fatal().Err(err).Msg("failed to serve with TLS")
 		}
+
 	} else if config.PortInsecure > -1 {
-		fmt.Printf("Listening on port: %d (insecure)\n", config.PortInsecure)
+		log.Info().
+			Int("PortInsecure", config.PortInsecure).
+			Msg("listening on insecure port")
 		insecureAddr := ":" + strconv.Itoa(config.PortInsecure)
-		log.Fatal(http.ListenAndServe(insecureAddr, mux))
+		err := http.ListenAndServe(insecureAddr, mux)
+		if err != nil {
+			log.Fatal().Err(err).Msg("failed to serve with HTTP")
+		}
+
 	} else {
-		log.Fatal("no address to listen on")
+		log.Fatal().Msg("no address to listen on")
 	}
 }
 
 func loadConfig(configPath string) config {
-	fmt.Println("Init: Loading Config...")
+	log.Info().Msg("loading config")
 
 	configRead := true
 	configContent, err := os.ReadFile(configPath)
 	if err != nil {
-		fmt.Println("ERROR: reading config file: ", err)
+		log.Error().Err(err).Msg("cannot read config file")
 		configRead = false
 	}
 
 	serverConfig := config{}
 	err = yaml.Unmarshal(configContent, &serverConfig)
 	if err != nil {
-		fmt.Println("ERROR: unmarshaling config file: ", err)
+		log.Error().Err(err).Msg("cannot unmarshal config file")
 		configRead = false
 	}
 
 	if !configRead {
-		fmt.Println("WARN: No config found! Using defaults.")
+		log.Warn().Msg("no config found, using defaults")
 		serverConfig = config{PortSecure: 8443, PortInsecure: 8080, UserIdLength: 5, MaxSavedLoc: 1000, MaxSavedPic: 10, RegistrationToken: "", UnixSocketPath: "", UnixSocketChmod: 0660}
 	}
 	//fmt.Printf("INFO: Using config %+v\n", serverConfig)
@@ -108,7 +133,7 @@ func loadConfig(configPath string) config {
 }
 
 func initDb(dbDir string, config config) {
-	fmt.Println("Init: Loading database")
+	log.Info().Msg("loading database")
 	uio = user.UserRepository{}
 	uio.Init(dbDir, config.UserIdLength, config.MaxSavedLoc, config.MaxSavedPic)
 }
@@ -132,16 +157,17 @@ func fileExists(filename string) bool {
 }
 
 func RunServer(configPath string, dbDir string, webDir string) {
-	fmt.Println("Init: configPath: ", configPath)
-	fmt.Println("Init: dbDir: ", dbDir)
-	fmt.Println("Init: webDir: ", webDir)
+	log.Info().
+		Str("version", VERSION).
+		Str("configPath", configPath).
+		Str("dbDir", dbDir).
+		Str("webDir", webDir).
+		Msg("starting FMD Server")
 
 	// Initialisation
 	config := loadConfig(configPath)
 	initDb(dbDir, config)
 
 	// Run server
-	fmt.Println("FMD Server ", VERSION)
-	fmt.Println("Starting Server")
 	handleRequests(webDir, config)
 }

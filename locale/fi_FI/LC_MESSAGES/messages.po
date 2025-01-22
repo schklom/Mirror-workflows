@@ -10,16 +10,16 @@ msgstr ""
 "Project-Id-Version: tt-rss 1.7.6\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-14 12:17+0300\n"
-"PO-Revision-Date: 2024-12-06 09:00+0000\n"
+"PO-Revision-Date: 2025-01-17 06:51+0000\n"
 "Last-Translator: Ricky Tigg <ricky.tigg@gmail.com>\n"
-"Language-Team: Finnish <https://hosted.weblate.org/projects/tt-rss/webui/fi/"
-">\n"
+"Language-Team: Finnish <https://hosted.weblate.org/projects/tt-rss/webui/fi/>"
+"\n"
 "Language: fi_FI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -981,13 +981,11 @@ msgstr[1] "(%d syötettä)"
 
 #: classes/Pref_Feeds.php:104 classes/Pref_Feeds.php:291
 #: classes/Pref_Feeds.php:334
-#, fuzzy, php-format
-#| msgid "%d article selected"
-#| msgid_plural "%d articles selected"
+#, php-format
 msgid "(%d article / %s)"
 msgid_plural "(%d articles / %s)"
-msgstr[0] "%d artikkeli valittu"
-msgstr[1] "%d artikkelia valittu"
+msgstr[0] "(%d artikkeli / %s)"
+msgstr[1] "(%d artikkelia / %s)"
 
 #: classes/Pref_Feeds.php:572
 #, php-format

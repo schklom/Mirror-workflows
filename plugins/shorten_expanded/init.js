@@ -76,7 +76,7 @@ require(['dojo/_base/kernel', 'dojo/ready'], (dojo, ready) => {
 
 				self.shorten_if_needed(row);
 			});
-		})),
+		}));
 
 		PluginHost.register(PluginHost.HOOK_ARTICLE_RENDERED_CDM, function(row) {
 			self.process_row(row);

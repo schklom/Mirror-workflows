@@ -2,13 +2,16 @@
 
 Plugins.Shorten_Expanded = {
 	threshold: 1.5, // of window height
-	observer: new ResizeObserver((entries) => {
-		entries.forEach((entry) => {
-			const row = entry.target;
-
-			Plugins.Shorten_Expanded.shorten_if_needed(row);
-		});
-	}),
+	debounce: (callback, wait) => {
+		let timeoutId = null;
+		return (...args) => {
+			window.clearTimeout(timeoutId);
+			timeoutId = window.setTimeout(() => {
+				callback(...args);
+			}, wait);
+		};
+	},
+	observer: false,
 	shorten_if_needed: function(row) {
 
 		const content = row.querySelector(".content");
@@ -63,10 +66,20 @@ Plugins.Shorten_Expanded = {
 	}
 }
 
-require(['dojo/_base/kernel', 'dojo/ready'], function  (dojo, ready) {
-	ready(function() {
+require(['dojo/_base/kernel', 'dojo/ready'], (dojo, ready) => {
+	ready(() => {
+		const self = Plugins.Shorten_Expanded;
+
+		self.observer = new ResizeObserver(self.debounce((entries) => {
+			entries.forEach((entry) => {
+				const row = entry.target;
+
+				self.shorten_if_needed(row);
+			});
+		})),
+
 		PluginHost.register(PluginHost.HOOK_ARTICLE_RENDERED_CDM, function(row) {
-			Plugins.Shorten_Expanded.process_row(row);
+			self.process_row(row);
 			return true;
 		});
 	});

@@ -21,15 +21,17 @@ RUN PY_LOCAL_PATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d | cut 
 
 # Get python package requirements for the watchman and waste collection addons
 RUN PYTHONPATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d); \
-    URL="https://raw.githubusercontent.com/dummylabs/thewatchman/refs/heads/main/custom_components/watchman/manifest.json"; \
+    URL="https://raw.githubusercontent.com/dummylabs/thewatchman/refs/heads/main/requirements_test.txt"; \
     # Fetch the manifest.json and extract required packages
-    REQUIRED_PACKAGES=$(curl -s $URL | jq -r '.requirements[]' | tr "\n" " "); \
-    echo "Installing required packages: $REQUIRED_PACKAGES"; \
-    python3 -m pip install -vvv "$REQUIRED_PACKAGES"
+    curl -s $URL | grep -v '[-]r requirements.txt' > /tmp/requirements.txt; \
+    echo "Installing required packages"; \
+    python3 -m pip install -vvv -r /tmp/requirements.txt; \
+    rm /tmp/requirements.txt
 
 RUN PYTHONPATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d); \
-    URL="https://raw.githubusercontent.com/mampfes/hacs_waste_collection_schedule/refs/heads/master/custom_components/waste_collection_schedule/manifest.json"; \
+    URL="https://raw.githubusercontent.com/mampfes/hacs_waste_collection_schedule/refs/heads/master/requirements.txt"; \
     # Fetch the manifest.json and extract required packages
-    REQUIRED_PACKAGES=$(curl -s $URL | jq -r '.requirements[]' | tr "\n" " "); \
-    echo "Installing required packages: $REQUIRED_PACKAGES"; \
-    python3 -m pip install -vvv "$REQUIRED_PACKAGES"
+    curl -s $URL | grep -v '[-]r requirements.txt' > /tmp/requirements.txt; \
+    echo "Installing required packages"; \
+    python3 -m pip install -vvv -r /tmp/requirements.txt; \
+    rm /tmp/requirements.txt

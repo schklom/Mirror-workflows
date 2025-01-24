@@ -26,4 +26,4 @@ RUN PYTHONPATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d) \
 # waste collection addon requires icalevents
 # https://github.com/mampfes/hacs_waste_collection_schedule/blob/master/custom_components/waste_collection_schedule/manifest.json#L9
 RUN PYTHONPATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d) \
-    python3 -m pip install --force-reinstall -vvv "icalevents"
+    python3 -m pip install -vvv icalendar icalevents beautifulsoup4 lxml pycryptodome

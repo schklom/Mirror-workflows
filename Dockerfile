@@ -19,11 +19,17 @@ RUN PY_LOCAL_PATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d | cut 
         chown -R abc:abc "${PY_LOCAL_PATH}"; \
     fi
 
-# watchman integration requires this version, I need to force the downgrade
+# Get python package requirements for the watchman and waste collection addons
 RUN PYTHONPATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d) \
-    python3 -m pip install --force-reinstall -vvv "prettytable==3.10.0"
+    URL="https://raw.githubusercontent.com/dummylabs/thewatchman/refs/heads/main/custom_components/watchman/manifest.json" \
+    # Fetch the manifest.json and extract required packages
+    REQUIRED_PACKAGES=$(curl -s $URL | jq -r '.requirements[]') \
+    echo "Installing required packages: $REQUIRED_PACKAGES" \
+    python3 -m pip install -vvv "$REQUIRED_PACKAGES"
 
-# waste collection addon requires icalevents
-# https://github.com/mampfes/hacs_waste_collection_schedule/blob/master/custom_components/waste_collection_schedule/manifest.json#L9
 RUN PYTHONPATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d) \
-    python3 -m pip install -vvv icalendar icalevents beautifulsoup4 lxml pycryptodome
+    URL="https://raw.githubusercontent.com/mampfes/hacs_waste_collection_schedule/refs/heads/master/custom_components/waste_collection_schedule/manifest.json" \
+    # Fetch the manifest.json and extract required packages
+    REQUIRED_PACKAGES=$(curl -s $URL | jq -r '.requirements[]') \
+    echo "Installing required packages: $REQUIRED_PACKAGES" \
+    python3 -m pip install -vvv "$REQUIRED_PACKAGES"

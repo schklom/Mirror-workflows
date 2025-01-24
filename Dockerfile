@@ -17,7 +17,7 @@ RUN PY_LOCAL_PATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d | cut 
         mv "${PY_LOCAL_PATH}.bak" "${PY_LOCAL_PATH}"; \
         \
         echo -e "\nChange ownership of the folder ${PY_LOCAL_PATH}\n"; \
-        chown -R abc:abc "${PY_LOCAL_PATH}"; \
+        chown -R 33:33 "${PY_LOCAL_PATH}"; \
     fi
 
 # Get python package requirements for the watchman and waste collection addons
@@ -39,5 +39,5 @@ RUN PYTHONPATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d); \
 
 # Redo a chown just in case
 RUN PYTHONPATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d); \
-    chown -R abc:abc "${PYTHONPATH}"
+    chown -R 33:33 "${PYTHONPATH}"
 RUN

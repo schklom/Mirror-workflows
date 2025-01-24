@@ -1,5 +1,6 @@
 FROM linuxserver/homeassistant:latest
 
+# To ping (iputils), and to speak words into any audio output device (espeak + alsa-utils)
 RUN apk update && \
     apk add --no-cache iputils espeak alsa-utils 
 
@@ -19,13 +20,14 @@ RUN PY_LOCAL_PATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d | cut 
         chown -R abc:abc "${PY_LOCAL_PATH}"; \
     fi
 
+USER abc:abc
 # Get python package requirements for the watchman and waste collection addons
 RUN PYTHONPATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d); \
     URL="https://raw.githubusercontent.com/dummylabs/thewatchman/refs/heads/main/requirements_test.txt"; \
     # Fetch the manifest.json and extract required packages
     curl -s $URL | grep -v '[-]r requirements.txt' > /tmp/requirements.txt; \
     echo "Installing required packages"; \
-    python3 -m pip install -vvv -r /tmp/requirements.txt; \
+    python3 -m pip install -r /tmp/requirements.txt; \
     rm /tmp/requirements.txt
 
 RUN PYTHONPATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d); \
@@ -33,5 +35,5 @@ RUN PYTHONPATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d); \
     # Fetch the manifest.json and extract required packages
     curl -s $URL | grep -v '[-]r requirements.txt' > /tmp/requirements.txt; \
     echo "Installing required packages"; \
-    python3 -m pip install -vvv -r /tmp/requirements.txt; \
+    python3 -m pip install -r /tmp/requirements.txt; \
     rm /tmp/requirements.txt

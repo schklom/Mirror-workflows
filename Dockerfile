@@ -1,7 +1,7 @@
-FROM ghcr.io/linuxserver/homeassistant:latest
+FROM linuxserver/homeassistant:latest
 
 RUN apk update && \
-    apk add --no-cache iputils espeak alsa-utils
+    apk add --no-cache iputils espeak alsa-utils 
 
 # To avoid the mess in https://github.com/linuxserver/docker-homeassistant/blob/main/root/etc/s6-overlay/s6-rc.d/init-config-homeassistant/run
 # This may introduce a overlayfs bug apparently, and this prevents letting PUID:PGID own the folder (https://github.com/linuxserver/docker-homeassistant/issues/116)
@@ -22,3 +22,8 @@ RUN PY_LOCAL_PATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d | cut 
 # watchman integration requires this version, I need to force the downgrade
 RUN PYTHONPATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d) \
     python3 -m pip install --force-reinstall -vvv "prettytable==3.10.0"
+
+# waste collection addon requires icalevents
+# https://github.com/mampfes/hacs_waste_collection_schedule/blob/master/custom_components/waste_collection_schedule/manifest.json#L9
+RUN PYTHONPATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d) \
+    python3 -m pip install --force-reinstall -vvv "icalevents"

@@ -18,7 +18,7 @@ if pg_isready -h $TTRSS_DB_HOST -U $TTRSS_DB_USER -p $TTRSS_DB_PORT; then
 	echo backing up tt-rss local directories to $DST_DIR/$DST_FILE...
 
 	tar -cz -f $DST_DIR/$DST_FILE $APP_ROOT/*.local \
-		$APP_ROOT/feed-icons/ \
+		$APP_ROOT/cache/feed-icons/ \
 		$APP_ROOT/config.php
 
 	echo cleaning up...

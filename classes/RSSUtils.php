@@ -1743,7 +1743,10 @@ class RSSUtils {
 		$tmph->run_hooks(PluginHost::HOOK_HOUSE_KEEPING);
 	}
 
-	/** migrates favicons from legacy storage in feed-icons/ to cache/feed-icons/using new naming (sans .ico suffix) */
+	/**
+	 * migrates favicons from legacy storage in feed-icons/ to cache/feed-icons/using new naming (sans .ico suffix)
+	 * @todo Remove this and Config::ICONS_DIR at some point
+	 */
 	static function migrate_feed_icons() : void {
 		$old_dir = Config::get(Config::ICONS_DIR);
 

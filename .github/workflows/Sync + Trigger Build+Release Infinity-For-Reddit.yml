@@ -65,7 +65,7 @@ jobs:
           ref: 'master' # branch
           token: ${{ secrets.PAT_GITHUB_ACTION }}
 
-      - name: Remove HEAD branch from schklom/tt-rss-android if it exists
+      - name: Remove HEAD branch from schklom/Infinity-For-Reddit if it exists
         run: |
           # Configure Git to use the PAT for authentication
           git config --global user.name "github-actions[bot]"

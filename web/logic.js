@@ -321,9 +321,9 @@ async function locate(requestedIndex) {
         throw response.status;
     }
     const locationData = await response.json();
-    var loc;
+    var selectedLoc;
     try {
-        loc = await parseLocation(globalPrivateKey, locationData);
+        selectedLoc = await parseLocation(globalPrivateKey, locationData);
     } catch (error) {
         console.log(error);
         setNoLocationDataAvailable("Error parsing location data, see the dev console.");
@@ -332,27 +332,25 @@ async function locate(requestedIndex) {
     // Check if location is already in cache
     // If not add the location and rearrange the items
     if (!locCache.has(currentLocationDataIndx)) {
-        locCache.set(currentLocationDataIndx, loc);
+        locCache.set(currentLocationDataIndx, selectedLoc);
 
         const mapArray = Array.from(locCache);
-
         const sortedByKeyArray = mapArray.sort((a, b) => a[0] - b[0]);
 
         locCache = new Map(sortedByKeyArray);
     }
 
-
-    const time = new Date(loc.time);
+    const selectedLocTime = new Date(selectedLoc.time);
 
     document.getElementsByClassName("deviceInfo")[0].style.display = "block";
     document.getElementById("idView").textContent = currentId;
-    document.getElementById("locationInfo").textContent = `${loc.provider} on ${time.toLocaleDateString()} at ${time.toLocaleTimeString()}`
-    document.getElementById("batView").textContent = loc.bat + " %";
+    document.getElementById("locationInfo").textContent = `${selectedLoc.provider} on ${selectedLocTime.toLocaleDateString()} at ${selectedLocTime.toLocaleTimeString()}`
+    document.getElementById("batView").textContent = selectedLoc.bat + " %";
 
     lat_long = []   // All locations in an array. Needed for the line between points.
     markers.clearLayers();
 
-    //Iterate through the cache and add every point to the map
+    // Iterate through the cache and add every point to the map
     locCache.forEach((locEntry, key) => {
         target = L.latLng(locEntry.lat, locEntry.lon);
         lat_long.push(target)
@@ -362,7 +360,7 @@ async function locate(requestedIndex) {
     // Add the lines between the points
     L.polyline(lat_long, { color: 'blue' }).addTo(markers);
     //Zoom to the currently selected point
-    target = L.latLng(loc.lat, loc.lon);
+    target = L.latLng(selectedLoc.lat, selectedLoc.lon);
     map.setView(target, 16);
 
     updateLocateOlderButton(requestedIndex);

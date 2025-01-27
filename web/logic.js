@@ -1,8 +1,7 @@
 var map, markers;
 
-var newestLocationDataIndex;
-var currentLocationDataIndx = 0;
-var locCache = new Map();
+var currentLocIdx = -1;
+const locCache = new Array();
 
 var currentId;
 var globalPrivateKey;
@@ -284,25 +283,24 @@ async function locate(requestedIndex) {
         throw response.status;
     }
     const locationDataSizeJson = await response.json();
-    newestLocationSize = parseInt(locationDataSizeJson.Data, 10);
-    newestLocationDataIndex = newestLocationSize - 1;
+    const highestLocIndex = parseInt(locationDataSizeJson.Data, 10) - 1;
 
-    if (requestedIndex > newestLocationDataIndex) {
-        currentLocationDataIndx = newestLocationDataIndex; // reset
+    if (requestedIndex > highestLocIndex) {
+        currentLocIdx = highestLocIndex; // reset
         const toasted = new Toasted({
             position: 'top-center',
             duration: 3000
         })
         toasted.show('No newer locations');
+        // Nothing to do, finish here
         return
+    } else if (requestedIndex == -1) {
+        currentLocIdx = highestLocIndex;
+    } else {
+        currentLocIdx = requestedIndex;
     }
 
-    if (requestedIndex == -1) {
-        requestedIndex = newestLocationDataIndex;
-        currentLocationDataIndx = newestLocationDataIndex;
-    }
-
-    if (requestedIndex < 0) {
+    if (currentLocIdx < 0) {
         setNoLocationDataAvailable("The server has not yet stored a location for this device. Try requesting a location with the button below!");
         return
     }
@@ -311,7 +309,7 @@ async function locate(requestedIndex) {
         method: 'PUT',
         body: JSON.stringify({
             IDT: globalAccessToken,
-            Data: requestedIndex.toString()
+            Data: currentLocIdx.toString()
         }),
         headers: {
             'Content-type': 'application/json'
@@ -331,13 +329,12 @@ async function locate(requestedIndex) {
     }
     // Check if location is already in cache
     // If not add the location and rearrange the items
-    if (!locCache.has(currentLocationDataIndx)) {
-        locCache.set(currentLocationDataIndx, selectedLoc);
-
-        const mapArray = Array.from(locCache);
-        const sortedByKeyArray = mapArray.sort((a, b) => a[0] - b[0]);
-
-        locCache = new Map(sortedByKeyArray);
+    if (!locCache.find((val) => val["idx"] == currentLocIdx)) {
+        locCache.push({
+            "idx": currentLocIdx,
+            "loc": selectedLoc,
+        });
+        locCache.sort((a, b) => a["idx"] - b["idx"]);
     }
 
     const selectedLocTime = new Date(selectedLoc.time);
@@ -347,28 +344,35 @@ async function locate(requestedIndex) {
     document.getElementById("locationInfo").textContent = `${selectedLoc.provider} on ${selectedLocTime.toLocaleDateString()} at ${selectedLocTime.toLocaleTimeString()}`
     document.getElementById("batView").textContent = selectedLoc.bat + " %";
 
+    // TODO: This could be more efficient. No need to re-draw everything all the time.
     lat_long = []   // All locations in an array. Needed for the line between points.
     markers.clearLayers();
 
     // Iterate through the cache and add every point to the map
-    locCache.forEach((locEntry, key) => {
-        target = L.latLng(locEntry.lat, locEntry.lon);
+    locCache.forEach((locPair) => {
+        const index = locPair["idx"];
+        const locEntry = locPair["loc"];
+
+        const target = L.latLng(locEntry.lat, locEntry.lon);
         lat_long.push(target)
         locTime = new Date(locEntry.time);
-        L.marker(target).bindTooltip(locTime.toLocaleString()).addTo(markers);
+
+        const marker = L.marker(target).bindTooltip(locTime.toLocaleString()).addTo(markers);
+        if (index == currentLocIdx) {
+            // Zoom to the currently selected point
+            map.setView(target, 16);
+        }
     });
+
     // Add the lines between the points
     L.polyline(lat_long, { color: 'blue' }).addTo(markers);
-    //Zoom to the currently selected point
-    target = L.latLng(selectedLoc.lat, selectedLoc.lon);
-    map.setView(target, 16);
 
-    updateLocateOlderButton(requestedIndex);
+    updateLocateOlderButton(currentLocIdx);
 }
 
-function updateLocateOlderButton(requestedIndex) {
+function updateLocateOlderButton(index) {
     var button = document.getElementById("locateOlder");
-    if (requestedIndex <= 0) {
+    if (index <= 0) {
         button.disabled = true;
     } else {
         button.disabled = false;
@@ -398,18 +402,18 @@ function cycleThroughLocationsWithArrowKeys(event) {
 }
 
 async function locateOlder() {
-    if (globalPrivateKey != null && currentLocationDataIndx > 0) {
-        currentLocationDataIndx -= 1;
-        await locate(currentLocationDataIndx);
+    if (globalPrivateKey != null && currentLocIdx > 0) {
+        currentLocIdx -= 1;
+        await locate(currentLocIdx);
     } else {
-        currentLocationDataIndx = 0;
+        currentLocIdx = 0;
     }
 }
 
 async function locateNewer() {
     if (globalPrivateKey != null) {
-        currentLocationDataIndx += 1;
-        await locate(currentLocationDataIndx);
+        currentLocIdx += 1;
+        await locate(currentLocIdx);
     }
 }
 

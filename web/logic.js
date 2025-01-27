@@ -355,7 +355,7 @@ async function locate(requestedIndex) {
         target = L.latLng(locEntry.lat, locEntry.lon);
         lat_long.push(target)
         locTime = new Date(locEntry.time);
-        L.marker(target).bindTooltip(time.toLocaleString()).addTo(markers);
+        L.marker(target).bindTooltip(locTime.toLocaleString()).addTo(markers);
     });
     // Add the lines between the points
     L.polyline(lat_long, { color: 'blue' }).addTo(markers);

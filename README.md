@@ -17,7 +17,7 @@ https://github.com/Metastem/Wikiless/wiki
 
 # Usage
 
-Visit ```http://localhost:3000``` in your web browser to use Wikiless locally.
+Visit ```http://localhost:8180``` in your web browser to use Wikiless locally.
 
 # Contributing
 
@@ -26,4 +26,3 @@ Contributions are welcome!
 # License
 
 This project is licensed under the GNU Affero General Public License v3.0.
-

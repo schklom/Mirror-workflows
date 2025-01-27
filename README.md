@@ -34,4 +34,4 @@ The Actions are defined in the directory .github/workflows. Secrets are used for
 - Wikiless (original repository was forked) [![Sync+build+push Wikiless](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20Wikiless.yml/badge.svg)](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20Wikiless.yml)
 - ~Quetre~
 - ~tt-rss-android (complete repo, not branch)~ (Can be updated on Obtainium from https://srv.tt-rss.org/fdroid/updates/org.fox.ttrss.json with Override Source set to HTML)
-
+- Matterbridge [![Sync+build+push Matterbridge](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20Matterbridge.yml/badge.svg)](https://github.com/schklom/Mirror-workflows/actions/workflows/Sync+build+push%20Matterbridge.yml)

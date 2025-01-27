@@ -366,22 +366,19 @@ class API extends Handler {
 	}
 
 	/**
+	 * @see RPC::_make_init_params()
+	 * @see RPC::_make_runtime_info()
 	 * @return array<string, array<string, string>|bool|int|string>
 	 */
 	private function _get_config(): array {
-		$config = [
-			"icons_dir" => Config::get(Config::ICONS_DIR),
-			"icons_url" => Config::get(Config::ICONS_URL)
+		return [
+			'custom_sort_types' => $this->_get_custom_sort_types(),
+			'daemon_is_running' => file_is_locked('update_daemon.lock'),
+			'icons_url' => Config::get_self_url() . '/public.php',
+			'num_feeds' => ORM::for_table('ttrss_feeds')
+				->where('owner_uid', $_SESSION['uid'])
+				->count(),
 		];
-
-		$config["daemon_is_running"] = file_is_locked("update_daemon.lock");
-		$config["custom_sort_types"] = $this->_get_custom_sort_types();
-
-		$config["num_feeds"] = ORM::for_table('ttrss_feeds')
-			->where('owner_uid', $_SESSION['uid'])
-			->count();
-
-		return $config;
 	}
 
 	function getConfig(): bool {

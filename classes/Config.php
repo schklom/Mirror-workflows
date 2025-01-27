@@ -73,9 +73,6 @@ class Config {
 	/** directory for feed favicons (directory must be writable) */
 	const ICONS_DIR = "ICONS_DIR";
 
-	/** URL for feed favicons */
-	const ICONS_URL = "ICONS_URL";
-
 	/** auto create users authenticated via external modules */
 	const AUTH_AUTO_CREATE = "AUTH_AUTO_CREATE";
 
@@ -208,7 +205,6 @@ class Config {
 		Config::LOCK_DIRECTORY => [ "lock",								Config::T_STRING ],
 		Config::CACHE_DIR => [ "cache",									Config::T_STRING ],
 		Config::ICONS_DIR => [ "feed-icons",							Config::T_STRING ],
-		Config::ICONS_URL => [ "feed-icons",							Config::T_STRING ],
 		Config::AUTH_AUTO_CREATE => [ "true",							Config::T_BOOL ],
 		Config::AUTH_AUTO_LOGIN => [ "true",							Config::T_BOOL ],
 		Config::FORCE_ARTICLE_PURGE => [ 0,								Config::T_INT ],

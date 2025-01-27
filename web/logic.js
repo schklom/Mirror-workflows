@@ -359,6 +359,9 @@ async function locate(requestedIndex) {
 
         const marker = L.marker(target).bindTooltip(locTime.toLocaleString()).addTo(markers);
         if (index == currentLocIdx) {
+            // Highlight the selected marker
+            marker._icon.classList.add("marker-selected");
+
             // Zoom to the currently selected point
             map.setView(target, 16);
         }

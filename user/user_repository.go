@@ -7,7 +7,6 @@ import (
 	"errors"
 	"findmydeviceserver/utils"
 	"fmt"
-	"log"
 	"math/big"
 	"net/http"
 	"os"
@@ -15,6 +14,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/rs/zerolog/log"
 )
 
 type UserRepository struct {
@@ -35,18 +36,18 @@ func (u *UserRepository) Init(dbDir string, userIDLength int, maxSavedLoc int, m
 	// Check if SQL Database exists
 	_, err := os.Stat(dbFile)
 	if os.IsNotExist(err) {
-		fmt.Println("No SQLite DB found")
+		log.Info().Msg("no SQLite DB found, creating one")
 
 		// Create directory
 		err := os.MkdirAll(filepath.Join(dbDir), 0770)
 		if err != nil {
-			log.Fatal("Failed to create dbDir:", err)
+			log.Fatal().Err(err).Msg("failed to create dbDir")
 		}
 
 		// Create file
 		_, err = os.Create(dbFile)
 		if err != nil {
-			log.Fatal("Failed to create database:", err)
+			log.Fatal().Err(err).Msg("failed to create database file")
 		}
 	}
 	u.UB = initSQLite(dbFile)
@@ -79,18 +80,22 @@ func (u *UserRepository) CreateNewUser(
 	id := ""
 	if requestedUsername != "" {
 		if !IsUserIdValid(requestedUsername) {
-			fmt.Printf("ERROR: Username is not alphanumeric: %s\n", requestedUsername)
+			log.Warn().Str("userid", requestedUsername).Msg("requested username is not alphanumeric")
 			return "", ErrUsernameInvalid
 		}
 
 		if len(requestedUsername) > USERNAME_MAX_LENGTH {
-			fmt.Printf("ERROR: Username is too long (%d > %d): %s\n", len(requestedUsername), USERNAME_MAX_LENGTH, requestedUsername)
+			log.Warn().
+				Str("userid", requestedUsername).
+				Int("actualLength", len(requestedUsername)).
+				Int("maxLength", USERNAME_MAX_LENGTH).
+				Msg("requested username is too long")
 			return "", ErrUsernameTooLong
 		}
 
 		user, _ := u.UB.GetByID(requestedUsername)
 		if user != nil {
-			fmt.Printf("ERROR: Username is already taken: %s\n", requestedUsername)
+			log.Warn().Str("userid", requestedUsername).Msg("requested username is already taken")
 			return "", ErrUsernameNotAvailable
 		}
 
@@ -98,13 +103,15 @@ func (u *UserRepository) CreateNewUser(
 	} else {
 		id = u.generateNewId()
 	}
-	fmt.Printf("INFO: Registering new user: %s\n", id)
+	log.Info().Str("userid", requestedUsername).Msg("registering new user")
 
 	u.UB.Create(&FMDUser{UID: id, Salt: salt, HashedPassword: hashedPassword, PrivateKey: privKey, PublicKey: pubKey})
 	return id, nil
 }
 
 func (u *UserRepository) UpdateUserPassword(user *FMDUser, privKey string, salt string, hashedPassword string) {
+	log.Info().Str("userid", user.UID).Msg("changing password for user")
+
 	user.HashedPassword = hashedPassword
 	user.Salt = salt
 	user.PrivateKey = privKey
@@ -138,6 +145,8 @@ func (u *UserRepository) AddPicture(user *FMDUser, pic string) {
 }
 
 func (u *UserRepository) DeleteUser(user *FMDUser) {
+	log.Info().Str("userid", user.UID).Msg("deleting user")
+
 	u.UB.DB.Where("user_id = ?", user.Id).Delete(&Picture{})
 	u.UB.DB.Where("user_id = ?", user.Id).Delete(&Location{})
 	u.UB.DB.Where("user_id = ?", user.Id).Delete(&CommandLogEntry{})
@@ -148,7 +157,10 @@ func (u *UserRepository) GetLocation(user *FMDUser, idx int) string {
 	u.UB.PreloadLocations(user)
 
 	if idx < 0 || idx >= len(user.Locations) {
-		fmt.Printf("Location out of bounds: %d, max=%d\n", idx, len(user.Locations)-1)
+		log.Warn().
+			Int("idx", idx).
+			Int("max", len(user.Locations)-1).
+			Msg("requested location is out of bounds")
 		return ""
 	}
 	return user.Locations[idx].Position
@@ -204,6 +216,7 @@ func (u *UserRepository) GetPrivateKey(user *FMDUser) string {
 }
 
 func (u *UserRepository) SetPrivateKey(user *FMDUser, key string) {
+	log.Info().Str("userid", user.UID).Msg("changing private key for user")
 	user.PrivateKey = key
 	u.UB.Save(&user)
 }
@@ -213,6 +226,7 @@ func (u *UserRepository) GetPublicKey(user *FMDUser) string {
 }
 
 func (u *UserRepository) SetPublicKey(user *FMDUser, key string) {
+	log.Info().Str("userid", user.UID).Msg("changing public key for user")
 	user.PublicKey = key
 	u.UB.Save(&user)
 }
@@ -333,7 +347,7 @@ func (u *UserRepository) pushUser(user *FMDUser) {
 	pushUrl := strings.Replace(u.GetPushUrl(user), "/UP?", "/message?", -1)
 
 	if len(pushUrl) == 0 {
-		fmt.Printf("Cannot push user %s. Reason: pushUrl is empty. They should install a UnifiedPush distributor on their phone.", user.UID)
+		log.Warn().Str("userid", user.UID).Msg("cannot push user, no push URL, they need to install a UnifiedPush distributor app")
 		return
 	}
 
@@ -343,7 +357,7 @@ func (u *UserRepository) pushUser(user *FMDUser) {
 	}`)
 	request, err := http.NewRequest("POST", pushUrl, bytes.NewBuffer(jsonData))
 	if err != nil {
-		fmt.Println("Error building push request:", err)
+		log.Error().Err(err).Str("userid", user.UID).Msg("failed to build push request")
 		return
 	}
 	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
@@ -351,7 +365,7 @@ func (u *UserRepository) pushUser(user *FMDUser) {
 	client := &http.Client{}
 	_, err = client.Do(request)
 	if err != nil {
-		fmt.Println("Error sending push: ", err)
+		log.Error().Err(err).Str("userid", user.UID).Msg("failed to send push to user")
 		return
 	}
 }

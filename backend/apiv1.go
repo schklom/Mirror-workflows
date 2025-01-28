@@ -7,6 +7,8 @@ import (
 	"strconv"
 
 	"findmydeviceserver/user"
+
+	"github.com/rs/zerolog/log"
 )
 
 type registrationData struct {
@@ -454,13 +456,12 @@ func (h createDeviceHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var reg registrationData
 	err := json.NewDecoder(r.Body).Decode(&reg)
 	if err != nil {
-		fmt.Println("ERROR: decoding json:", err)
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
 
 	if h.RegistrationToken != "" && h.RegistrationToken != reg.RegistrationToken {
-		fmt.Println("ERROR: invalid RegistrationToken!")
+		log.Error().Msg("invalid RegistrationToken")
 		http.Error(w, "Registration Token not valid", http.StatusUnauthorized)
 		return
 	}

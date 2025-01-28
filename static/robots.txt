@@ -1,3 +1,6 @@
 user-agent: *
 Allow: /$
 Disallow: /
+
+User-agent: archive.org_bot
+Disallow: /

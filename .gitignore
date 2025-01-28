@@ -20,3 +20,7 @@ cmd/__debug_bin378745479
 *.crt
 *.key
 cmd/test/web
+
+# Release builds
+*.zip
+*.zip.sha256sum

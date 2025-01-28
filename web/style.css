@@ -117,7 +117,7 @@ footer {
     display: inline;
 }
 
-#loginContainer > p {
+#loginContainer>p {
     max-width: 550px;
 }
 
@@ -236,6 +236,11 @@ footer {
     z-index: 1;
 }
 
+/* https://stackoverflow.com/a/61982880/11076036 */
+.marker-selected {
+    filter: hue-rotate(120deg);
+}
+
 .tooltip:hover .tooltiptext {
     visibility: visible;
 }
@@ -256,12 +261,12 @@ footer {
     margin: 10px;
 }
 
-#pushWarning > p {
+#pushWarning>p {
     color: #ff3333;
     margin: 0;
 }
 
-#pushWarning > p > a {
+#pushWarning>p>a {
     color: #ff3333;
     margin: 0;
 }

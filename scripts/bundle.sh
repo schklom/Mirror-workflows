@@ -67,6 +67,7 @@ TZ=utc zip -X "$ZIPNAME" \
     $WEBFILES \
     config.example.yml \
     gen_cert.sh \
+    LICENSE \
     nginx-example.conf \
     goversion.txt
 

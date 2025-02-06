@@ -60,7 +60,7 @@ jobs:
           ref: 'Matterbridge' # branch
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.3.0
+        uses: docker/setup-qemu-action@v3.4.0
         #with:
           #image: tonistiigi/binfmt:latest
           #platforms: all

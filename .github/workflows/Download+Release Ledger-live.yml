@@ -1,10 +1,10 @@
-name: Download+Release Ledger-live
+name: "(doesn't work) Download+Release Ledger-live"
 
 # Controls when the workflow will run
 on:
-  schedule:
+  #schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '3 0 * * SUN,WED' # Google causes problems sometimes when downloads are too frequent
+    #- cron:  '3 0 * * SUN,WED' # Google causes problems sometimes when downloads are too frequent
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:

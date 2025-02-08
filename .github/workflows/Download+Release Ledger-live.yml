@@ -1,0 +1,74 @@
+name: Download+Release Tasker
+
+# Controls when the workflow will run
+on:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '3 0 * * SUN,WED' # Google causes problems sometimes when downloads are too frequent
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  apk:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: 'schklom/Ledger-live-download'
+          ref: 'main' # branch
+          token: ${{ secrets.PAT_GITHUB_ACTION }}
+
+      - name: Get latest appimage
+        run: |
+          filename=`curl "https://download.live.ledger.com/latest-linux.yml" | grep "path:" | grep -o "ledger.*AppImage"`
+          version_new_appimage=`echo $filename | grep -oP "\d+[.]\d+[.]\d+"`
+          link="https://download.live.ledger.com/latest-linux.yml/$file"
+          curl "$link" -o "$filename"
+
+          echo "$version_new_appimage" > version_new_appimage
+          echo "filename=$(echo $filename)" >> $GITHUB_ENV
+      
+      - name: Read versions
+        run: |
+          echo "version_current_appimage=$(cat version_current_appimage)" >> $GITHUB_ENV
+          echo "version_new_appimage=${cat version_new_appimage}" >> $GITHUB_ENV
+      
+      - name: Record last update date and update current version
+        if: ${{ env.version_current_appimage != env.version_new_appimage }}
+        run: |
+          date +%Y-%m-%d_%H-%M > last_update_date
+          echo "last_update_date_env=$(cat last_update_date)" >> $GITHUB_ENV
+          mv version_new_appimage version_current_appimage
+            
+      - name: Write tag name
+        if: ${{ env.version_current_appimage != env.version_current_appimage }}
+        #run: echo "tagname=${{ env.version }}_${{ env.last_update_date_env }}" >> $GITHUB_ENV
+        run: |
+          ver="${{ env.version_current_appimage }}"
+          last_update="${{ env.last_update_date_env }}"
+          tagname="${ver}_${last_update}"
+          echo "tagname=${tagname}" >> $GITHUB_ENV
+      
+      - name: Commit and push the change
+        if: ${{ env.version_current_appimage != env.version_current_appimage }}
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Update the apk, its hash, and update date
+        
+      - name: Release apk if hashes are different
+        if: ${{ env.version_current_appimage != env.version_current_appimage }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.tagname }}
+          body: "New version of Ledger-live AppImage"
+          files: ${{ env.filename }}
+          repository: "schklom/Ledger-live-download"
+          token: ${{ secrets.PAT_GITHUB_ACTION }}

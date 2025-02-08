@@ -54,7 +54,7 @@ jobs:
         run: |
           ver="${{ env.version_current_appimage }}"
           last_update="${{ env.last_update_date_env }}"
-          tagname="${ver}_${last_update}"
+          tagname="${{ env.version_current_appimage }}_${last_update}"
           echo "tagname=${tagname}" >> $GITHUB_ENV
       
       - name: Commit and push the change

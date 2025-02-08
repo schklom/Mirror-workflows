@@ -54,6 +54,7 @@ jobs:
         run: |
           last_update="${{ env.last_update_date_env }}"
           echo "tagname=${{ env.version_new_appimage }}" >> $GITHUB_ENV
+          ls -alh
       
       - name: Commit and push the change
         if: ${{ env.version_current_appimage != env.version_new_appimage }}

@@ -49,7 +49,7 @@ jobs:
           mv version_new_appimage version_current_appimage
             
       - name: Write tag name
-        if: ${{ env.version_current_appimage != env.version_current_appimage }}
+        if: ${{ env.version_current_appimage != env.version_new_appimage }}
         #run: echo "tagname=${{ env.version }}_${{ env.last_update_date_env }}" >> $GITHUB_ENV
         run: |
           ver="${{ env.version_current_appimage }}"
@@ -58,13 +58,13 @@ jobs:
           echo "tagname=${tagname}" >> $GITHUB_ENV
       
       - name: Commit and push the change
-        if: ${{ env.version_current_appimage != env.version_current_appimage }}
+        if: ${{ env.version_current_appimage != env.version_new_appimage }}
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Update the apk, its hash, and update date
         
       - name: Release file if versions are different
-        if: ${{ env.version_current_appimage != env.version_current_appimage }}
+        if: ${{ env.version_current_appimage != env.version_new_appimage }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.tagname }}

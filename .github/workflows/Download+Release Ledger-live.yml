@@ -30,7 +30,7 @@ jobs:
         run: |
           filename=`curl "https://download.live.ledger.com/latest-linux.yml" | grep "path:" | grep -o "ledger.*AppImage"`
           version_new_appimage=`echo $filename | grep -oP "\d+[.]\d+[.]\d+"`
-          link="https://download.live.ledger.com/latest-linux.yml/$file"
+          link="https://download.live.ledger.com/latest-linux.yml/$filename"
           curl "$link" -o "$filename"
 
           echo "$version_new_appimage" > version_new_appimage

@@ -63,7 +63,7 @@ jobs:
         with:
           commit_message: Update the apk, its hash, and update date
         
-      - name: Release apk if hashes are different
+      - name: Release file if versions are different
         if: ${{ env.version_current_appimage != env.version_current_appimage }}
         uses: softprops/action-gh-release@v2
         with:

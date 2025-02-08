@@ -72,7 +72,7 @@ const	Filters = {
 
 											loading_message.innerHTML = __("Articles matching this filter:");
 										} else {
-											loading_message.innerHTML = __("Found %d articles matching this filter:")
+											loading_message.innerHTML = __("Found at least %d articles matching this filter:")
 												.replace("%d", test_dialog.results);
 										}
 

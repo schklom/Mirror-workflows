@@ -39,7 +39,7 @@ jobs:
       - name: Read versions
         run: |
           echo "version_current_appimage=$(cat version_current_appimage)" >> $GITHUB_ENV
-          echo "version_new_appimage=${cat version_new_appimage}" >> $GITHUB_ENV
+          echo "version_new_appimage=$(cat version_new_appimage)" >> $GITHUB_ENV
       
       - name: Record last update date and update current version
         if: ${{ env.version_current_appimage != env.version_new_appimage }}

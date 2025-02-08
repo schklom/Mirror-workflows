@@ -70,43 +70,38 @@ class Pref_Filters extends Handler_Protected {
 		$offset = (int) clean($_REQUEST["offset"]);
 		$limit = (int) clean($_REQUEST["limit"]);
 
-		$filter = array();
-
-		$filter["enabled"] = true;
-		$filter["match_any_rule"] = checkbox_to_sql_bool($_REQUEST["match_any_rule"] ?? false);
-		$filter["inverse"] = checkbox_to_sql_bool($_REQUEST["inverse"] ?? false);
-
-		$filter["rules"] = array();
-		$filter["actions"] = array("dummy-action");
-
-		$res = $this->pdo->query("SELECT id,name FROM ttrss_filter_types");
+		$filter = [
+			'enabled' => true,
+			'match_any_rule' => checkbox_to_sql_bool($_REQUEST['match_any_rule'] ?? false),
+			'inverse' => checkbox_to_sql_bool($_REQUEST['inverse'] ?? false),
+			'rules' => [],
+			'actions' => ['dummy-action'],
+		];
 
 		/** @var array<int, string> */
 		$filter_types = [];
 
-		while ($line = $res->fetch()) {
-			$filter_types[$line["id"]] = $line["name"];
+		foreach (ORM::for_table('ttrss_filter_types')->find_many() as $filter_type) {
+			$filter_types[$filter_type->id] = $filter_type->name;
 		}
 
-		$scope_qparts = array();
+		$scope_qparts = [];
 
-		$rctr = 0;
-
-		/** @var string $r */
-		foreach (clean($_REQUEST["rule"]) AS $r) {
+		/** @var string $rule_json */
+		foreach (clean($_REQUEST['rule']) as $rule_json) {
 			/** @var array{'reg_exp': string, 'filter_type': int, 'feed_id': array<int, int|string>, 'name': string}|null */
-			$rule = json_decode($r, true);
+			$rule = json_decode($rule_json, true);
 
-			if ($rule && $rctr < 5) {
-				$rule["type"] = $filter_types[$rule["filter_type"]];
-				unset($rule["filter_type"]);
+			if (is_array($rule)) {
+				$rule['type'] = $filter_types[$rule['filter_type']];
+				unset($rule['filter_type']);
+				array_push($filter['rules'], $rule);
 
 				$scope_inner_qparts = [];
 
 				/** @var int|string $feed_id may be a category string (e.g. 'CAT:7') or feed ID int */
 				foreach ($rule["feed_id"] as $feed_id) {
-
-				if (str_starts_with("$feed_id", "CAT:")) {
+					if (str_starts_with("$feed_id", "CAT:")) {
 						$cat_id = (int) substr("$feed_id", 4);
 						array_push($scope_inner_qparts, "cat_id = " . $cat_id);
 					} else if (is_numeric($feed_id) && $feed_id > 0) {
@@ -114,56 +109,33 @@ class Pref_Filters extends Handler_Protected {
 					}
 				}
 
-				if (count($scope_inner_qparts) > 0) {
-				array_push($scope_qparts, "(" . implode(" OR ", $scope_inner_qparts) . ")");
-				}
-
-				array_push($filter["rules"], $rule);
-
-				++$rctr;
-			} else {
-				break;
+				if (count($scope_inner_qparts) > 0)
+					array_push($scope_qparts, '(' . implode(' OR ', $scope_inner_qparts) . ')');
 			}
 		}
 
-		if (count($scope_qparts) == 0) $scope_qparts = ["true"];
+		$query = ORM::for_table('ttrss_entries')
+			->table_alias('e')
+			->select_many('e.title', 'e.content', 'e.date_entered', 'e.link', 'e.author', 'ue.tag_cache',
+				['feed_id' => 'f.id', 'feed_title' => 'f.title', 'cat_id' => 'fc.id'])
+			->join('ttrss_user_entries', [ 'ue.ref_id', '=', 'e.id'], 'ue')
+			->left_outer_join('ttrss_feeds', ['f.id', '=', 'ue.feed_id'], 'f')
+			->left_outer_join('ttrss_feed_categories', ['fc.id', '=', 'f.cat_id'], 'fc')
+			->where('ue.owner_uid', $_SESSION['uid'])
+			->order_by_desc('e.date_entered')
+			->limit($limit)
+			->offset($offset);
 
-		$glue = $filter['match_any_rule'] ? " OR " :  " AND ";
-		$scope_qpart = join($glue, $scope_qparts);
+		if (count($scope_qparts) > 0)
+			$query->where_raw(join($filter['match_any_rule'] ? ' OR ' : ' AND ', $scope_qparts));
 
-		$rv = array();
+		$rv = [];
 
-		//while ($found < $limit && $offset < $limit * 1000 && time() - $started < ini_get("max_execution_time") * 0.7) {
-
-		$sth = $this->pdo->prepare("SELECT ttrss_entries.id,
-				ttrss_entries.title,
-				ttrss_feeds.id AS feed_id,
-				ttrss_feeds.title AS feed_title,
-				ttrss_feed_categories.id AS cat_id,
-				content,
-				date_entered,
-				link,
-				author,
-				tag_cache
-			FROM
-				ttrss_entries, ttrss_user_entries
-					LEFT JOIN ttrss_feeds ON (feed_id = ttrss_feeds.id)
-					LEFT JOIN ttrss_feed_categories ON (ttrss_feeds.cat_id = ttrss_feed_categories.id)
-			WHERE
-				ref_id = ttrss_entries.id AND
-				($scope_qpart) AND
-				ttrss_user_entries.owner_uid = ?
-			ORDER BY date_entered DESC LIMIT $limit OFFSET $offset");
-
-		$sth->execute([$_SESSION['uid']]);
-
-		while ($line = $sth->fetch()) {
-
+		foreach ($query->find_array() as $line) {
 			$rc = RSSUtils::get_article_filters(array($filter), $line['title'], $line['content'], $line['link'],
 				$line['author'], explode(",", $line['tag_cache']));
 
 			if (count($rc) > 0) {
-
 				$line["content_preview"] = truncate_string(strip_tags($line["content"]), 200, '&hellip;');
 
 				$excerpt_length = 100;
@@ -176,13 +148,10 @@ class Pref_Filters extends Handler_Protected {
 
 				$content_preview = $line["content_preview"];
 
-				$tmp = "<li><span class='title'>" . $line["title"] . "</span><br/>" .
+				$rv[] = "<li><span class='title'>" . $line["title"] . "</span><br/>" .
 					"<span class='feed'>" . $line['feed_title'] . "</span>, <span class='date'>" . mb_substr($line["date_entered"], 0, 16) . "</span>" .
 					"<div class='preview text-muted'>" . $content_preview . "</div>" .
 					"</li>";
-
-				array_push($rv, $tmp);
-
 			}
 		}
 

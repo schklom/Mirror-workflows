@@ -10,6 +10,8 @@ Each branch mirrors a repo's main (or master) branch (easier to build with Actio
 
 Actions synchronize the branches to repos, build Dockerfiles into images, and push these images to Docker Hub.
 
+A handful of Actions download an APK file (for Android) from an official website and releases it in a related repository: Tasker "Direct Purchase" version (without Google's Payment system to get a license) is at https://github.com/schklom/Tasker-apk, and Tasker's plugin Auto-Input is at https://github.com/schklom/AutoInput-apk.
+
 ## How often are images updated?
 Images are only updated if the last recorded commits of the parent repositories (store in files) match the latest current ones at the build-time. This minimizes the frequency of updates that Docker hosts need to make whenever they check for updates, and avoids wasting lots of computations.
 

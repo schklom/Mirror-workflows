@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 
 env:
-  LOCAL_REPOSITORY_SSH: git@github.com:schklom/Veracrypt-fedora.git
-  LOCAL_REPOSITORY: https://github.com/schklom/Veracrypt-fedora.git
+  LOCAL_REPOSITORY_SSH: git@github.com:schklom/VeraCrypt.git
+  LOCAL_REPOSITORY: https://github.com/schklom/VeraCrypt.git
   REMOTE_REPOSITORY: https://github.com/veracrypt/VeraCrypt.git
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel

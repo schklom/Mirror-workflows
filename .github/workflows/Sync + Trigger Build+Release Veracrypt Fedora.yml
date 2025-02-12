@@ -1,0 +1,99 @@
+name: Sync + Trigger Build+Release Veracrypt Fedora
+
+# Controls when the workflow will run
+on:
+  #schedule:
+    # * is a special character in YAML so you have to quote this string
+    #- cron:  '0 0 * * *'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  LOCAL_REPOSITORY_SSH: git@github.com:schklom/Veracrypt-fedora.git
+  LOCAL_REPOSITORY: https://github.com/schklom/Veracrypt-fedora.git
+  REMOTE_REPOSITORY: https://github.com/veracrypt/VeraCrypt.git
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+
+  get_version:
+    runs-on: ubuntu-latest
+    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    outputs:
+      REMOTE: ${{ steps.commits.outputs.SETREMOTE }} 
+      LOCAL: ${{ steps.commits.outputs.SETLOCAL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.LOCAL_REPOSITORY }}
+          ref: 'master' # branch
+      
+      - name: set local and remote latest version as environment variables
+        id: commits
+        # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+        # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
+        run: |
+          echo "SETREMOTE=$(git ls-remote --tags ${{ env.REMOTE_REPOSITORY }} | grep -v 'beta' | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3)" >> $GITHUB_OUTPUT
+          echo "SETLOCAL=$(cat last_sync_with_original_repo_version)" >> $GITHUB_OUTPUT
+
+  repo_sync_master:
+    needs: [get_version]
+    runs-on: ubuntu-latest
+    # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
+    if: needs.get_version.outputs.LOCAL != needs.get_version.outputs.REMOTE
+    steps:
+      - name: outputs
+        run: |
+          echo "${{ needs.get_version.outputs.LOCAL }}"
+          echo "${{ needs.get_version.outputs.REMOTE }}"
+    
+      - name: repo-sync master branch
+        uses: wei/git-sync@v3
+        with:
+          source_repo: ${{ env.REMOTE_REPOSITORY }}
+          source_branch: "refs/remotes/source/*"
+          #source_branch: "master"
+          ####destination_repo: "git@github.com:schklom/Mirror-workflows.git"
+          destination_repo: "${{ env.LOCAL_REPOSITORY_SSH }}"
+          ####destination_branch: "Gadgetbridge-osmand-experiments"
+          destination_branch: "refs/heads/*"
+          #source_branch: "refs/tags/*"
+          #destination_branch: "refs/tags/*"
+          destination_ssh_private_key: ${{ secrets.GITSYNCACTION }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: '${{ env.LOCAL_REPOSITORY }}'
+          ref: 'master' # branch
+          token: ${{ secrets.PAT_GITHUB_ACTION }}
+
+      - name: Remove HEAD branch from local repository if it exists
+        run: |
+          # Configure Git to use the PAT for authentication
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add foreign-repo ${{ env.LOCAL_REPOSITORY }}
+
+          # Fetch the latest branches from the foreign repository
+          git fetch foreign-repo
+
+          # Check if the HEAD branch exists in the foreign repository and delete it if it does
+          if git show-ref --verify --quiet refs/remotes/foreign-repo/HEAD; then
+            git push foreign-repo --delete HEAD
+          else
+            echo "HEAD branch does not exist in the foreign repository. No action required."
+          fi
+      
+      - name: get most recent version on original repo, for next comparison on sync
+        run: git ls-remote --tags ${{ env.REMOTE_REPOSITORY }} | grep -v 'beta' | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3 > last_sync_with_original_repo_version
+
+      - name: Changes to build a RPM for Fedora
+        run: sed -i "s|deb|rpm|g" .github/workflows/build-linux.yml
+                
+      - name: Commit and push the change
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Change some GitHub Action words: from deb to rpm"

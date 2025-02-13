@@ -89,7 +89,7 @@ jobs:
           fi
       
       - name: get most recent version on original repo, for next comparison on sync
-        run: git ls-remote --tags ${{ env.REMOTE_REPOSITORY }} | grep -v 'beta' | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3 > last_sync_with_original_repo_version
+        run: git ls-remote --tags ${{ env.REMOTE_REPOSITORY }} | grep -P "VeraCrypt_\d" | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3 > last_sync_with_original_repo_version
 
       - name: Changes to build a RPM for Fedora
         run: |

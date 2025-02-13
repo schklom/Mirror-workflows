@@ -43,7 +43,7 @@ jobs:
     needs: [get_version]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    if: needs.get_version.outputs.LOCAL != needs.get_version.outputs.REMOTE
+    #if: needs.get_version.outputs.LOCAL != needs.get_version.outputs.REMOTE
     steps:
       - name: outputs
         run: |
@@ -106,6 +106,13 @@ jobs:
 
           # Add workflow trigger
           sed -i '\|on:|a\   workflow_dispatch:' "$file"
+
+          # Run on a fedora container
+          what_to_add="
+              container:
+                image: fedora:latest
+          "
+          sed -i '\|runs-on: ubuntu|r<(echo "$what_to_add") "$file"
                 
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v5

@@ -92,7 +92,18 @@ jobs:
         run: git ls-remote --tags ${{ env.REMOTE_REPOSITORY }} | grep -v 'beta' | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3 > last_sync_with_original_repo_version
 
       - name: Changes to build a RPM for Fedora
-        run: sed -i "s|deb|rpm|g" .github/workflows/build-linux.yml
+        run: |
+          file=".github/workflows/build-linux.yml"
+          sed -i "s|_deb|_rpm|g" "$file"
+          sed -i "s|.deb|.rpm|g" "$file"
+          sed -i "s|veracrypt-gui-debs|veracrypt-gui-rpms|g" "$file"
+          sed -i "s|veracrypt-console-debs|veracrypt-console-rpms|g" "$file"
+          sed -i "s|sudo apt-get update && ||g" "$file"
+          sed -i "s|apt-get update|rpm-ostree install|g" "$file"
+          sed -i "s|apt-get install|rpm-ostree install|g" "$file"
+          sed -i "s|apt install|rpm-ostree install|g" "$file"
+          sed -i "s|apt remove|rpm-ostree uninstall|g" "$file"
+          
                 
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v5

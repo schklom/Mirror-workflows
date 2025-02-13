@@ -67,7 +67,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          repository: '${{ env.LOCAL_REPOSITORY }}'
+          repository: ${{ env.LOCAL_REPOSITORY_SHORT }}
           ref: 'master' # branch
           token: ${{ secrets.PAT_GITHUB_ACTION }}
 

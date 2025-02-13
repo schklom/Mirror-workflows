@@ -103,7 +103,9 @@ jobs:
           sed -i "s|apt-get install|rpm-ostree install|g" "$file"
           sed -i "s|apt install|rpm-ostree install|g" "$file"
           sed -i "s|apt remove|rpm-ostree uninstall|g" "$file"
-          
+
+          # Add workflow trigger
+          sed -i '|on:|a\   workflow_dispatch:' "$file"
                 
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v5

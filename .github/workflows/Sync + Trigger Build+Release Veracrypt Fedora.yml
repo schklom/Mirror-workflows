@@ -99,10 +99,9 @@ jobs:
           sed -i "s|veracrypt-gui-debs|veracrypt-gui-rpms|g" "$file"
           sed -i "s|veracrypt-console-debs|veracrypt-console-rpms|g" "$file"
           sed -i "s|sudo apt-get update && ||g" "$file"
-          sed -i "s|apt-get update|rpm-ostree install|g" "$file"
-          sed -i "s|apt-get install|rpm-ostree install|g" "$file"
-          sed -i "s|apt install|rpm-ostree install|g" "$file"
-          sed -i "s|apt remove|rpm-ostree uninstall|g" "$file"
+          sed -i "s|apt-get install|dnf install|g" "$file"
+          sed -i "s|apt install|dnf install|g" "$file"
+          sed -i "s|apt remove|dnf remove|g" "$file"
 
           # Add workflow trigger
           sed -E -i '\|^on:|a\  workflow_dispatch:' "$file"

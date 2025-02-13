@@ -36,7 +36,7 @@ jobs:
         # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
         # https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
         run: |
-          echo "SETREMOTE=$(git ls-remote --tags ${{ env.REMOTE_REPOSITORY }} | grep -v 'beta' | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3)" >> $GITHUB_OUTPUT
+          echo "SETREMOTE=$(git ls-remote --tags ${{ env.REMOTE_REPOSITORY }} | grep -P "VeraCrypt_\d" | tail -n 1 | awk '{ print $2 }' | cut -d '/' -f 3)" >> $GITHUB_OUTPUT
           echo "SETLOCAL=$(cat last_sync_with_original_repo_version)" >> $GITHUB_OUTPUT
 
   repo_sync_master:

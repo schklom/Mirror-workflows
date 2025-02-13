@@ -93,9 +93,11 @@ jobs:
 
       - name: Changes to build a RPM for Fedora
         run: |
-          file=".github/workflows/build-linux.yml"
+          file_linux=".github/workflows/build-linux.yml"
+          file=".github/workflows/build-linux-fedora.yml"
+          cp "$file_linux" "$file" 
           sed -i "s|_deb|_rpm|g" "$file"
-          sed -i "s|.deb|.rpm|g" "$file"
+          sed -i "s|[.]deb|.rpm|g" "$file"
           sed -i "s|veracrypt-gui-debs|veracrypt-gui-rpms|g" "$file"
           sed -i "s|veracrypt-console-debs|veracrypt-console-rpms|g" "$file"
           sed -i "s|sudo apt-get update && ||g" "$file"
@@ -112,6 +114,11 @@ jobs:
                 image: fedora:latest
           "
           sed -i "\|runs-on: ubuntu|r"<(echo "$what_to_add") "$file"
+
+          # Some package names need to be adapted
+          sed -i "s|libpcsclite-dev|pcsc-lite pcsc-lite-libs pcsc-lite-devel|g" "$file"
+          sed -i "s|libfuse-dev|fuse-devel|g" "$file"
+          sed -i "s|libgtk-3-dev|gtk3-devel|g" "$file"
                 
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v5

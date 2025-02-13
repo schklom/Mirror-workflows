@@ -105,7 +105,7 @@ jobs:
           sed -i "s|apt remove|rpm-ostree uninstall|g" "$file"
 
           # Add workflow trigger
-          sed -i '\|on:|a\    workflow_dispatch:' "$file"
+          sed -i '\|on:|a\  workflow_dispatch:' "$file"
 
           # Run on a fedora container
           what_to_add="

@@ -112,7 +112,7 @@ jobs:
               container:
                 image: fedora:latest
           "
-          sed -i '\|runs-on: ubuntu|r<(echo "$what_to_add") "$file"
+          sed -i "\|runs-on: ubuntu|r"<(echo "$what_to_add") "$file"
                 
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v5

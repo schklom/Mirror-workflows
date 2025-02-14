@@ -26,12 +26,12 @@ jobs:
         run: |
           echo "SETREMOTE=$(git ls-remote https://github.com/duplicati/duplicati refs/heads/master | awk '{ print $1 }')" >> $GITHUB_OUTPUT
           echo "SETLOCAL=$(cat last_sync_with_original_repo_commit_id)" >> $GITHUB_OUTPUT
-  
+
   repo_sync:
     needs: [get_commits]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
+    if: ${{ needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE || github.event_name == 'workflow_dispatch' }}
     steps:
       # - name: repo-sync
         # uses: wei/git-sync@v3

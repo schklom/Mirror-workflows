@@ -89,13 +89,13 @@ jobs:
         with:
           #repository: 'schklom/Protonmail-bridge'
           ref: 'Protonmail-bridge' # branch
-      # https://github.com/docker/setup-qemu-action#usage
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.4.0
-        #with:
-          #image: tonistiigi/binfmt:latest
-          #platforms: all
-          #platforms: arm/v7
+      ## https://github.com/docker/setup-qemu-action#usage
+      #- name: Set up QEMU
+      #  uses: docker/setup-qemu-action@v3.4.0
+      #  #with:
+      #    #image: tonistiigi/binfmt:latest
+      #    #platforms: all
+      #    #platforms: arm/v7
       # https://github.com/marketplace/actions/docker-setup-buildx
       - name: Set up Docker Buildx
         id: buildx
@@ -117,11 +117,11 @@ jobs:
           context: ./build
           file: ./build/Dockerfile
           #platforms: linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/mips64le,linux/mips64,linux/arm/v7,linux/arm/v6
-          platforms: linux/amd64,linux/arm/v7
+          #platforms: linux/amd64
           pull: true
           push: true
           tags: |
-            schklom/protonmail-bridge:latest
+            schklom/protonmail-bridge:latest-amd64
   
   build_push_arm64:
     #needs: [repo_sync]
@@ -156,4 +156,4 @@ jobs:
           pull: true
           push: true
           tags: |
-            schklom/protonmail-bridge:arm64
+            schklom/protonmail-bridge:latest-arm64

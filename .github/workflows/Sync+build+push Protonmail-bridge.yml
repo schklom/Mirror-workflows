@@ -9,7 +9,7 @@ on:
 
 jobs:
   get_commits:
-    #if: false
+    if: false
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
     outputs:
@@ -38,8 +38,8 @@ jobs:
     needs: [get_commits]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    #if: false
-    if: ${{ needs.get_commits.outputs.LOCAL_FORK != needs.get_commits.outputs.REMOTE_FORK || needs.get_commits.outputs.LOCAL_PARENT != needs.get_commits.outputs.REMOTE_PARENT || github.event_name == 'workflow_dispatch' }}
+    if: false
+    #if: ${{ needs.get_commits.outputs.LOCAL_FORK != needs.get_commits.outputs.REMOTE_FORK || needs.get_commits.outputs.LOCAL_PARENT != needs.get_commits.outputs.REMOTE_PARENT || github.event_name == 'workflow_dispatch' }}
     steps:
       - name: repo-sync
         uses: wei/git-sync@v3
@@ -80,7 +80,7 @@ jobs:
           commit_message: Patch to compile
 
   build_push:
-    needs: [repo_sync]
+    #needs: [repo_sync]
     #needs: [get_commits]
     runs-on: ubuntu-latest
     steps:

@@ -44,7 +44,7 @@ jobs:
     needs: [get_commits, parameters]
     runs-on: ubuntu-latest
     # https://lannonbr.com/blog/2020-04-16-gh-actions-job-outputs
-    if: needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE
+    if: ${{ needs.get_commits.outputs.LOCAL != needs.get_commits.outputs.REMOTE || github.event_name == 'workflow_dispatch' }}
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4

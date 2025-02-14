@@ -77,7 +77,7 @@ jobs:
         with:
           commit_message: Patch to compile
 
-  build_push:
+  build_push_amd64:
     needs: [repo_sync]
     #needs: [get_commits]
     runs-on: ubuntu-latest

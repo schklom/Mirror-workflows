@@ -43,16 +43,13 @@ const	Filters = {
 												.replace("%f", test_dialog.results)
 												.replace("%d", offset);
 
-										for (let i = 0; i < result.items.length; i++) {
-											const tmp = dojo.create("div", { innerHTML: result.items[i]});
-
-											results_list.innerHTML += tmp.innerHTML;
-										}
+										results_list.innerHTML += result.items.reduce((current, item) => current + `<li><span class='title'>${item.title}</span><br>
+												<span class='feed'>${item.feed_title}</span>, <span class='date'>${item.date}</span>
+												<div class='preview text-muted'>${item.content_preview}</div></li>`, '');
 
 										// get the next batch if there may be more available and testing limits haven't been reached
 										if (result.pre_filtering_count === test_dialog.limit &&
-												test_dialog.results < 30 &&
-												offset < test_dialog.max_offset) {
+											test_dialog.results < 30 && offset < test_dialog.max_offset) {
 											window.setTimeout(function () {
 												test_dialog.getTestResults(params, offset + test_dialog.limit);
 											}, 0);

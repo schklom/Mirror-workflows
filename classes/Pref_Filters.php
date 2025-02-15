@@ -151,10 +151,12 @@ class Pref_Filters extends Handler_Protected {
 					},
 					$entry, $excerpt_length);
 
-				$rv['items'][] = "<li><span class='title'>" . $entry["title"] . "</span><br/>" .
-					"<span class='feed'>" . $entry['feed_title'] . "</span>, <span class='date'>" . mb_substr($entry["date_entered"], 0, 16) . "</span>" .
-					"<div class='preview text-muted'>" . $entry["content_preview"] . "</div>" .
-					"</li>";
+				$rv['items'][] = [
+					'title' => $entry['title'],
+					'feed_title' => $entry['feed_title'],
+					'date' => mb_substr($entry['date_entered'], 0, 16),
+					'content_preview' => $entry['content_preview'],
+				];
 			}
 		}
 

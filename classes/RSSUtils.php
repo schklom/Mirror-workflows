@@ -1514,10 +1514,11 @@ class RSSUtils {
 	} */
 
 	/**
+	 * @todo rename this method to indicate it returns the filter actions that should be ran
 	 * @param array<int, array<string, mixed>> $filters
 	 * @param array<int, string> $tags
-	 * @param array<int, array<string, mixed>>|null $matched_rules
-	 * @param array<int, array<string, mixed>>|null $matched_filters
+	 * @param array<int, array<string, mixed>>|null &$matched_rules
+	 * @param array<int, array<string, mixed>>|null &$matched_filters
 	 *
 	 * @return array<int, array<string, string>> An array of filter action arrays with keys "type" and "param"
 	 */

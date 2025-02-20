@@ -129,29 +129,34 @@ class Pref_Filters extends Handler_Protected {
 		if (count($scope_qparts) > 0)
 			$query->where_raw(join($filter['match_any_rule'] ? ' OR ' : ' AND ', $scope_qparts));
 
-		$rv = [];
+		$entries = $query->find_array();
 
-		foreach ($query->find_array() as $line) {
-			$rc = RSSUtils::get_article_filters(array($filter), $line['title'], $line['content'], $line['link'],
-				$line['author'], explode(",", $line['tag_cache']));
+		$rv = [
+			'pre_filtering_count' => count($entries),
+			'items' => [],
+		];
+
+		foreach ($entries as $entry) {
+			$rc = RSSUtils::get_article_filters(array($filter), $entry['title'], $entry['content'], $entry['link'],
+				$entry['author'], explode(",", $entry['tag_cache']));
 
 			if (count($rc) > 0) {
-				$line["content_preview"] = truncate_string(strip_tags($line["content"]), 200, '&hellip;');
+				$entry["content_preview"] = truncate_string(strip_tags($entry["content"]), 200, '&hellip;');
 
 				$excerpt_length = 100;
 
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_QUERY_HEADLINES,
-					function ($result) use (&$line) {
-						$line = $result;
+					function ($result) use (&$entry) {
+						$entry = $result;
 					},
-					$line, $excerpt_length);
+					$entry, $excerpt_length);
 
-				$content_preview = $line["content_preview"];
-
-				$rv[] = "<li><span class='title'>" . $line["title"] . "</span><br/>" .
-					"<span class='feed'>" . $line['feed_title'] . "</span>, <span class='date'>" . mb_substr($line["date_entered"], 0, 16) . "</span>" .
-					"<div class='preview text-muted'>" . $content_preview . "</div>" .
-					"</li>";
+				$rv['items'][] = [
+					'title' => $entry['title'],
+					'feed_title' => $entry['feed_title'],
+					'date' => mb_substr($entry['date_entered'], 0, 16),
+					'content_preview' => $entry['content_preview'],
+				];
 			}
 		}
 

@@ -30,52 +30,45 @@ const	Filters = {
 						params.offset = offset;
 						params.limit = test_dialog.limit;
 
-						console.log("getTestResults:" + offset);
-
 						xhr.json("backend.php", params, (result) => {
 							try {
 								if (result && test_dialog && test_dialog.open) {
-									test_dialog.results += result.length;
-
-									console.log("got results:" + result.length);
-
 									const loading_message = test_dialog.domNode.querySelector(".loading-message");
 									const results_list = test_dialog.domNode.querySelector(".filter-results-list");
 
-									loading_message.innerHTML = __("Looking for articles (%d processed, %f found)...")
-											.replace("%f", test_dialog.results)
-											.replace("%d", offset);
+									if (result.pre_filtering_count > 0) {
+										test_dialog.results += result.items.length;
 
-									console.log(offset + " " + test_dialog.max_offset);
+										loading_message.innerHTML = __("Looking for articles (%d processed, %f found)...")
+												.replace("%f", test_dialog.results)
+												.replace("%d", offset);
 
-									for (let i = 0; i < result.length; i++) {
-										const tmp = dojo.create("div", { innerHTML: result[i]});
+										results_list.innerHTML += result.items.reduce((current, item) => current + `<li><span class='title'>${item.title}</span><br>
+												<span class='feed'>${item.feed_title}</span>, <span class='date'>${item.date}</span>
+												<div class='preview text-muted'>${item.content_preview}</div></li>`, '');
 
-										results_list.innerHTML += tmp.innerHTML;
+										// get the next batch if there may be more available and testing limits haven't been reached
+										if (result.pre_filtering_count === test_dialog.limit &&
+											test_dialog.results < 30 && offset < test_dialog.max_offset) {
+											window.setTimeout(function () {
+												test_dialog.getTestResults(params, offset + test_dialog.limit);
+											}, 0);
+
+											return;
+										}
 									}
 
-									if (test_dialog.results < 30 && offset < test_dialog.max_offset) {
+									// all done-- either the backend found no more pre-filtering entries, or test limits were reached
+									test_dialog.domNode.querySelector(".loading-indicator").hide();
 
-										// get the next batch
-										window.setTimeout(function () {
-											test_dialog.getTestResults(params, offset + test_dialog.limit);
-										}, 0);
+									if (test_dialog.results == 0) {
+										results_list.innerHTML = `<li class="text-center text-muted">
+											${__('No recent articles matching this filter have been found.')}</li>`;
 
+										loading_message.innerHTML = __("Articles matching this filter:");
 									} else {
-										// all done
-
-										test_dialog.domNode.querySelector(".loading-indicator").hide();
-
-										if (test_dialog.results == 0) {
-											results_list.innerHTML = `<li class="text-center text-muted">
-												${__('No recent articles matching this filter have been found.')}</li>`;
-
-											loading_message.innerHTML = __("Articles matching this filter:");
-										} else {
-											loading_message.innerHTML = __("Found at least %d articles matching this filter:")
-												.replace("%d", test_dialog.results);
-										}
-
+										loading_message.innerHTML = __("Found at least %d articles matching this filter:")
+											.replace("%d", test_dialog.results);
 									}
 
 								} else if (!result) {

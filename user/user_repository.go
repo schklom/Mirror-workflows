@@ -320,13 +320,18 @@ func (u *UserRepository) GetSalt(id string) string {
 
 var ErrAccountLocked = errors.New("too many attempts, account locked")
 
-func (u *UserRepository) RequestAccess(id string, hashedPW string, sessionDurationSeconds uint64) (*AccessToken, error) {
+func (u *UserRepository) RequestAccess(id string, hashedPW string, sessionDurationSeconds uint64, remoteIp string) (*AccessToken, error) {
 	user, err := u.UB.GetByID(id)
 	if err != nil {
 		return nil, err
 	}
 
 	if u.ACC.IsLocked(id) {
+		log.Warn().
+			Str("userid", user.UID).
+			Str("remoteIp", remoteIp).
+			Msg("blocked login attempt")
+
 		// Cannot sign since the server sets this.
 		// This is the only "command" that is allowed to be unsigned.
 		u.SetCommandToUser(user, "423", 0, "")
@@ -339,6 +344,10 @@ func (u *UserRepository) RequestAccess(id string, hashedPW string, sessionDurati
 		return &token, nil
 	} else {
 		u.ACC.IncrementLock(id)
+		log.Warn().
+			Str("userid", user.UID).
+			Str("remoteIp", remoteIp).
+			Msg("failed login attempt")
 		return nil, errors.New("wrong password")
 	}
 }

@@ -36,3 +36,9 @@ RegistrationToken: ""
 # Paths to the server cert and private key (for letting Go terminate TLS)
 ServerCrt: "" # /path/to/fullchain.pem
 ServerKey: "" # /path/to/privkey.pem
+
+# The name of the header field in which your reverse proxy records the remote IP of the client being proxied.
+# Keep this empty if you are not using a reverse proxy.
+# Security warning: your reverse proxy MUST set this header!
+# If the value of this header comes from an untrusted location (e.g., it is set by the original client), this can lead to security issues.
+RemoteIpHeader: "" # X-Real-IP

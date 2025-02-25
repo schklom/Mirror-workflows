@@ -26,6 +26,7 @@ type config struct {
 	RegistrationToken string `yaml:"RegistrationToken"`
 	ServerCrt         string `yaml:"ServerCrt"`
 	ServerKey         string `yaml:"ServerKey"`
+	RemoteIpHeader    string `yaml:"RemoteIpHeader"`
 }
 
 func handleRequests(webDir string, config config) {

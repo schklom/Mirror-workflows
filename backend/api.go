@@ -2,6 +2,16 @@ package backend
 
 import "net/http"
 
+var remoteIpHeaderName string = ""
+
+func getRemoteIp(r *http.Request) string {
+	remoteIp := r.Header.Get(remoteIpHeaderName)
+	if remoteIp == "" {
+		remoteIp = r.RemoteAddr
+	}
+	return remoteIp
+}
+
 // Adds various security headers.
 // Check your deployment with https://securityheaders.com.
 func securityHeadersMiddleware(next http.Handler) http.Handler {
@@ -18,6 +28,9 @@ func securityHeadersMiddleware(next http.Handler) http.Handler {
 }
 
 func buildServeMux(webDir string, config config) *http.ServeMux {
+	// Workaround: cache value in global field to avoid needing to pass down the config into the API code
+	remoteIpHeaderName = config.RemoteIpHeader
+
 	mainDeviceHandler := mainDeviceHandler{createDeviceHandler{config.RegistrationToken}}
 
 	apiV1Mux := http.NewServeMux()

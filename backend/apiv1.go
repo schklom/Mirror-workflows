@@ -392,7 +392,7 @@ func requestAccess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessToken, err := uio.RequestAccess(data.IDT, data.PasswordHash, data.SessionDurationSeconds)
+	accessToken, err := uio.RequestAccess(data.IDT, data.PasswordHash, data.SessionDurationSeconds, getRemoteIp(r))
 
 	if err == user.ErrAccountLocked {
 		http.Error(w, "Account is locked", http.StatusLocked)

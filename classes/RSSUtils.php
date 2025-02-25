@@ -2,6 +2,17 @@
 class RSSUtils {
 
 	/**
+	 * @link https://developer.mozilla.org/docs/Web/HTTP/MIME_types/Common_types
+	 */
+	const FAVICON_ALLOWED_MIME_TYPES = [
+		'image/bmp',
+		'image/gif',
+		'image/jpeg',
+		'image/png',
+		'image/vnd.microsoft.icon',
+	];
+
+	/**
 	 * @param array<string, mixed> $article
 	 */
 	static function calculate_article_hash(array $article, PluginHost $pluginhost): string {
@@ -1808,39 +1819,22 @@ class RSSUtils {
 			]);
 
 			if (!$contents) {
-				Debug::log("favicon: fetching $favicon_url failed, skipping...", Debug::LOG_VERBOSE);
+				Debug::log("favicon: fetching $favicon_url failed.  Skipping...", Debug::LOG_VERBOSE);
 				break;
 			}
 
-			// TODO: we could use mime_conent_type() here instead of below hacks but we'll need to
-			// save every favicon to disk and go from there.
-			// also, if SVG is allowed in the future, we'll need to specifically forbid 'image/svg+xml'.
+			$finfo = new finfo(FILEINFO_MIME_TYPE);
+			$mime_type = $finfo->buffer($contents);
 
-			// Crude image type matching.
-			// Patterns gleaned from the file(1) source code.
-			if (preg_match('/^\x00\x00\x01\x00/', $contents)) {
-				// 0       string  \000\000\001\000        MS Windows icon resource
-				//error_log("update_favicon: favicon_url=$favicon_url isa MS Windows icon resource");
+			if ($mime_type === false) {
+				Debug::log("favicon: $favicon_url MIME type couldn't be detected.  Skipping...", Debug::LOG_VERBOSE);
+				break;
 			}
-			elseif (preg_match('/^GIF8/', $contents)) {
-				// 0       string          GIF8            GIF image data
-				//error_log("update_favicon: favicon_url=$favicon_url isa GIF image");
-			}
-			elseif (preg_match('/^\x89PNG\x0d\x0a\x1a\x0a/', $contents)) {
-				// 0       string          \x89PNG\x0d\x0a\x1a\x0a         PNG image data
-				//error_log("update_favicon: favicon_url=$favicon_url isa PNG image");
-			}
-			elseif (preg_match('/^\xff\xd8/', $contents)) {
-				// 0       beshort         0xffd8          JPEG image data
-				//error_log("update_favicon: favicon_url=$favicon_url isa JPG image");
-			}
-			elseif (preg_match('/^BM/', $contents)) {
-				// 0	string		BM	PC bitmap (OS2, Windows BMP files)
-				//error_log("update_favicon, favicon_url=$favicon_url isa BMP image");
-			}
-			else {
-				//error_log("update_favicon: favicon_url=$favicon_url isa UNKNOWN type");
-				Debug::log("favicon $favicon_url type is unknown, skipping...", Debug::LOG_VERBOSE);
+
+			Debug::log("favicon: $favicon_url MIME type '$mime_type'", Debug::LOG_VERBOSE);
+
+			if (!in_array($mime_type, self::FAVICON_ALLOWED_MIME_TYPES)) {
+				Debug::log("favicon: $favicon_url MIME type '$mime_type' is not allowed.  Skipping...", Debug::LOG_VERBOSE);
 				break;
 			}
 

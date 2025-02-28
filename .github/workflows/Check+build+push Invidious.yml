@@ -70,7 +70,7 @@ jobs:
           ref: 'Invidious' # branch
       # https://github.com/docker/setup-qemu-action#usage
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.5.0
+        uses: docker/setup-qemu-action@v3.6.0
         with:
           #image: tonistiigi/binfmt:latest
           #platforms: all

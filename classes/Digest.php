@@ -7,11 +7,7 @@ class Digest
 
 		Debug::log("Sending digests, batch of max $user_limit users, headline limit = $limit");
 
-		if (Config::get(Config::DB_TYPE) == "pgsql") {
-			$interval_qpart = "last_digest_sent < NOW() - INTERVAL '1 days'";
-		} else /* if (Config::get(Config::DB_TYPE) == "mysql") */ {
-			$interval_qpart = "last_digest_sent < DATE_SUB(NOW(), INTERVAL 1 DAY)";
-		}
+		$interval_qpart = Db::past_comparison_qpart('last_digest_sent', '<', 1, 'day');
 
 		$pdo = Db::pdo();
 
@@ -107,11 +103,7 @@ class Digest
 
 		$affected_ids = array();
 
-		if (Config::get(Config::DB_TYPE) == "pgsql") {
-			$interval_qpart = "ttrss_entries.date_updated > NOW() - INTERVAL '$days days'";
-		} else /* if (Config::get(Config::DB_TYPE) == "mysql") */ {
-			$interval_qpart = "ttrss_entries.date_updated > DATE_SUB(NOW(), INTERVAL $days DAY)";
-		}
+		$interval_qpart = Db::past_comparison_qpart('ttrss_entries.date_updated', '>', $days, 'day');
 
 		$pdo = Db::pdo();
 

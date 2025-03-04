@@ -281,11 +281,8 @@ class RPC extends Handler_Protected {
 		}
 
 		// Test if feed is currently being updated by another process.
-		if (Config::get(Config::DB_TYPE) == "pgsql") {
-			$updstart_thresh_qpart = "AND (last_update_started IS NULL OR last_update_started < NOW() - INTERVAL '5 minutes')";
-		} else {
-			$updstart_thresh_qpart = "AND (last_update_started IS NULL OR last_update_started < DATE_SUB(NOW(), INTERVAL 5 MINUTE))";
-		}
+		$updstart_thresh_qpart = 'AND (last_update_started IS NULL OR '
+			. Db::past_comparison_qpart('last_update_started', '<', 5, 'minute') . ')';
 
 		$random_qpart = Db::sql_random_function();
 
@@ -528,11 +525,7 @@ class RPC extends Handler_Protected {
 		$data["labels"] = Labels::get_all($_SESSION["uid"]);
 
 		if (Config::get(Config::LOG_DESTINATION) == 'sql' && $_SESSION['access_level'] >= UserHelper::ACCESS_LEVEL_ADMIN) {
-			if (Config::get(Config::DB_TYPE) == 'pgsql') {
-				$log_interval = "created_at > NOW() - interval '1 hour'";
-			} else {
-				$log_interval = "created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)";
-			}
+			$log_interval = Db::past_comparison_qpart('created_at', '>', 1, 'hour');
 
 			$sth = $pdo->prepare("SELECT COUNT(id) AS cid
 				FROM ttrss_error_log

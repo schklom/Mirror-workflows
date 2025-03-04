@@ -125,12 +125,6 @@ class UserHelper {
 
 		if (empty($_SESSION["csrf_token"]))
 			$_SESSION["csrf_token"] = bin2hex(get_random_bytes(16));
-
-		if (Config::get_schema_version() >= 120) {
-			// TODO: USER_LANGUAGE is currently profile-specific, so we should pass it in here,
-			// but $_SESSION['profile'] isn't currently available until after the login flow completes.
-			$_SESSION["language"] = Prefs::get(Prefs::USER_LANGUAGE, $owner_uid);
-		}
 	}
 
 	static function load_user_plugins(int $owner_uid, ?PluginHost $pluginhost = null): void {

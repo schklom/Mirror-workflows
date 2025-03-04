@@ -207,14 +207,10 @@ class Pref_Prefs extends Handler_Protected {
 
 					}
 					break;
-				case Prefs::USER_LANGUAGE:
-					if (!$need_reload) $need_reload = $_SESSION["language"] != $value;
-					break;
-
 				case Prefs::USER_CSS_THEME:
-					if (!$need_reload) $need_reload = Prefs::get(Prefs::USER_CSS_THEME, $_SESSION['uid'], $profile) != $value;
+				case Prefs::USER_LANGUAGE:
+					if (!$need_reload) $need_reload = Prefs::get($pref_name, $_SESSION['uid'], $profile) != $value;
 					break;
-
 				case Prefs::BLACKLISTED_TAGS:
 					$cats = FeedItem_Common::normalize_categories(explode(",", $value));
 					asort($cats);

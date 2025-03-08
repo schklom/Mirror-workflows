@@ -103,13 +103,8 @@ class RSSUtils {
 		if (!Config::get(Config::SINGLE_USER_MODE) && Config::get(Config::DAEMON_UPDATE_LOGIN_LIMIT) > 0) {
 			$login_limit = (int) Config::get(Config::DAEMON_UPDATE_LOGIN_LIMIT);
 
-			if (Config::get(Config::DB_TYPE) == "pgsql") {
-				$login_thresh_qpart = "AND last_login >= NOW() - INTERVAL '$login_limit days'";
-				$not_logged_in_users_query = "last_login < NOW() - INTERVAL '$login_limit days'";
-			} else {
-				$login_thresh_qpart = "AND last_login >= DATE_SUB(NOW(), INTERVAL $login_limit DAY)";
-				$not_logged_in_users_query = "last_login < DATE_SUB(NOW(), INTERVAL $login_limit DAY)";
-			}
+			$login_thresh_qpart = 'AND ' . Db::past_comparison_qpart('last_login', '>=', $login_limit, 'day');
+			$not_logged_in_users_query = Db::past_comparison_qpart('last_login', '<', $login_limit, 'day');
 
 			$not_logged_in_users = ORM::for_table('ttrss_users')
 				->where_raw($not_logged_in_users_query)
@@ -157,11 +152,9 @@ class RSSUtils {
 		}
 
 		// Test if feed is currently being updated by another process.
-		if (Config::get(Config::DB_TYPE) == "pgsql") {
-			$updstart_thresh_qpart = "AND (last_update_started IS NULL OR last_update_started < NOW() - INTERVAL '10 minutes')";
-		} else {
-			$updstart_thresh_qpart = "AND (last_update_started IS NULL OR last_update_started < DATE_SUB(NOW(), INTERVAL 10 MINUTE))";
-		}
+		// TODO: Update RPC::updaterandomfeed_real() to also use 10 minutes?
+		$updstart_thresh_qpart = 'AND (last_update_started IS NULL OR '
+			. Db::past_comparison_qpart('last_update_started', '<', 10, 'minute') . ')';
 
 		$query_limit = $limit ? sprintf("LIMIT %d", $limit) : "";
 
@@ -395,11 +388,7 @@ class RSSUtils {
 		/** @var DiskCache $cache */
 		$cache = DiskCache::instance('feeds');
 
-		if (Config::get(Config::DB_TYPE) == "pgsql") {
-			$favicon_interval_qpart = "favicon_last_checked < NOW() - INTERVAL '12 hour'";
-		} else {
-			$favicon_interval_qpart = "favicon_last_checked < DATE_SUB(NOW(), INTERVAL 12 HOUR)";
-		}
+		$favicon_interval_qpart = Db::past_comparison_qpart('favicon_last_checked', '<', 12, 'hour');
 
 		$feed_obj = ORM::for_table('ttrss_feeds')
 				->select_expr("ttrss_feeds.*,
@@ -1462,16 +1451,9 @@ class RSSUtils {
 
 	static function expire_error_log(): void {
 		Debug::log("Removing old error log entries...");
-
 		$pdo = Db::pdo();
-
-		if (Config::get(Config::DB_TYPE) == "pgsql") {
-			$pdo->query("DELETE FROM ttrss_error_log
-				WHERE created_at < NOW() - INTERVAL '7 days'");
-		} else {
-			$pdo->query("DELETE FROM ttrss_error_log
-				WHERE created_at < DATE_SUB(NOW(), INTERVAL 7 DAY)");
-		}
+		$pdo->query('DELETE FROM ttrss_error_log
+			WHERE ' . Db::past_comparison_qpart('created_at', '<', 7, 'day'));
 	}
 
 	/**
@@ -1716,13 +1698,8 @@ class RSSUtils {
 
 			$pdo->beginTransaction();
 
-			$days = Config::get(Config::DAEMON_UNSUCCESSFUL_DAYS_LIMIT);
-
-			if (Config::get(Config::DB_TYPE) == "pgsql") {
-				$interval_query = "last_successful_update < NOW() - INTERVAL '$days days' AND last_updated > NOW() - INTERVAL '1 days'";
-			} else /* if (Config::get(Config::DB_TYPE) == "mysql") */ {
-				$interval_query = "last_successful_update < DATE_SUB(NOW(), INTERVAL $days DAY) AND last_updated > DATE_SUB(NOW(), INTERVAL 1 DAY)";
-			}
+			$interval_query = Db::past_comparison_qpart('last_successful_update', '<', Config::get(Config::DAEMON_UNSUCCESSFUL_DAYS_LIMIT), 'day')
+				. ' AND ' . Db::past_comparison_qpart('last_updated', '>', 1, 'day');
 
 			$sth = $pdo->prepare("SELECT id, title, owner_uid
 				FROM ttrss_feeds

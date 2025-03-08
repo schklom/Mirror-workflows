@@ -33,14 +33,7 @@
 	}
 
 	function cleanup_tags(int $days = 14, int $limit = 1000): int {
-
-		$days = (int) $days;
-
-		if (Config::get(Config::DB_TYPE) == "pgsql") {
-			$interval_query = "e.date_updated < NOW() - INTERVAL '$days days'";
-		} else /*if (Config::get(Config::DB_TYPE) == "mysql") */ {
-			$interval_query = "e.date_updated < DATE_SUB(NOW(), INTERVAL $days DAY)";
-		}
+		$interval_query = Db::past_comparison_qpart('e.date_updated', '<', $days, 'day');
 
 		$tags_deleted = 0;
 		$limit_part = 500;

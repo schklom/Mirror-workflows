@@ -756,33 +756,10 @@ class Feeds extends Handler_Protected {
 			$search_qpart = "true";
 		}
 
-		// TODO: all this interval stuff needs some generic generator function
-
-		switch ($mode) {
-			case "1day":
-				if (Config::get(Config::DB_TYPE) == "pgsql") {
-					$date_qpart = "date_entered < NOW() - INTERVAL '1 day' ";
-				} else {
-					$date_qpart = "date_entered < DATE_SUB(NOW(), INTERVAL 1 DAY) ";
-				}
-				break;
-			case "1week":
-				if (Config::get(Config::DB_TYPE) == "pgsql") {
-					$date_qpart = "date_entered < NOW() - INTERVAL '1 week' ";
-				} else {
-					$date_qpart = "date_entered < DATE_SUB(NOW(), INTERVAL 1 WEEK) ";
-				}
-				break;
-			case "2week":
-				if (Config::get(Config::DB_TYPE) == "pgsql") {
-					$date_qpart = "date_entered < NOW() - INTERVAL '2 week' ";
-				} else {
-					$date_qpart = "date_entered < DATE_SUB(NOW(), INTERVAL 2 WEEK) ";
-				}
-				break;
-			default:
-				$date_qpart = "true";
-		}
+		$date_qpart = match ($mode) {
+			'1day', '1week', '2week' => Db::past_comparison_qpart('date_entered', '<', (int) substr($mode, 0, 1), substr($mode, 1)),
+			default => 'true',
+		};
 
 		if (is_numeric($feed_id_or_tag_name)) {
 			$feed_id = (int) $feed_id_or_tag_name;
@@ -853,12 +830,7 @@ class Feeds extends Handler_Protected {
 
 					$intl = (int) Prefs::get(Prefs::FRESH_ARTICLE_MAX_AGE, $owner_uid, $profile);
 
-					if (Config::get(Config::DB_TYPE) == "pgsql") {
-						$match_part = "date_entered > NOW() - INTERVAL '$intl hour' ";
-					} else {
-						$match_part = "date_entered > DATE_SUB(NOW(),
-							INTERVAL $intl HOUR) ";
-					}
+					$match_part = Db::past_comparison_qpart('date_entered', '>', $intl, 'hour');
 
 					$sth = $pdo->prepare("UPDATE ttrss_user_entries
 						SET unread = false, last_read = NOW() WHERE ref_id IN
@@ -949,15 +921,8 @@ class Feeds extends Handler_Protected {
 		} else if ($n_feed == Feeds::FEED_PUBLISHED) {
 			$match_part = "published = true";
 		} else if ($n_feed == Feeds::FEED_FRESH) {
-			$match_part = "unread = true AND score >= 0";
-
 			$intl = (int) Prefs::get(Prefs::FRESH_ARTICLE_MAX_AGE, $owner_uid, $profile);
-
-			if (Config::get(Config::DB_TYPE) == "pgsql") {
-				$match_part .= " AND date_entered > NOW() - INTERVAL '$intl hour' ";
-			} else {
-				$match_part .= " AND date_entered > DATE_SUB(NOW(), INTERVAL $intl HOUR) ";
-			}
+			$match_part = 'unread = true AND score >= 0 AND ' . Db::past_comparison_qpart('date_entered', '>', $intl, 'hour');
 
 			$need_entries = true;
 
@@ -1568,13 +1533,8 @@ class Feeds extends Handler_Protected {
 
 			}
 		} else if ($feed == Feeds::FEED_RECENTLY_READ) { // recently read
-			$query_strategy_part = "unread = false AND last_read IS NOT NULL";
-
-			if (Config::get(Config::DB_TYPE) == "pgsql") {
-				$query_strategy_part .= " AND last_read > NOW() - INTERVAL '1 DAY' ";
-			} else {
-				$query_strategy_part .= " AND last_read > DATE_SUB(NOW(), INTERVAL 1 DAY) ";
-			}
+			$query_strategy_part = 'unread = false AND last_read IS NOT NULL AND '
+				. Db::past_comparison_qpart('last_read', '>', 1, 'day');
 
 			$vfeed_query_part = "ttrss_feeds.title AS feed_title,";
 			$allow_archived = true;
@@ -1583,15 +1543,10 @@ class Feeds extends Handler_Protected {
 			if (!$override_order) $override_order = "last_read DESC";
 
 		} else if ($feed == Feeds::FEED_FRESH) { // fresh virtual feed
-			$query_strategy_part = "unread = true AND score >= 0";
-
 			$intl = (int) Prefs::get(Prefs::FRESH_ARTICLE_MAX_AGE, $owner_uid, $profile);
 
-			if (Config::get(Config::DB_TYPE) == "pgsql") {
-				$query_strategy_part .= " AND date_entered > NOW() - INTERVAL '$intl hour' ";
-			} else {
-				$query_strategy_part .= " AND date_entered > DATE_SUB(NOW(), INTERVAL $intl HOUR) ";
-			}
+			$query_strategy_part = 'unread = true AND score >= 0 AND '
+				. Db::past_comparison_qpart('date_entered', '>', $intl, 'hour');
 
 			$vfeed_query_part = "ttrss_feeds.title AS feed_title,";
 		} else if ($feed == Feeds::FEED_ALL) { // all articles virtual feed
@@ -1712,13 +1667,12 @@ class Feeds extends Handler_Protected {
 			if ($feed == Feeds::FEED_FRESH)
 				$first_id_query_strategy_part = "true";
 
-			if (Config::get(Config::DB_TYPE) == "pgsql") {
-				$sanity_interval_qpart = "date_entered >= NOW() - INTERVAL '1 hour' AND";
+			$sanity_interval_qpart = Db::past_comparison_qpart('date_entered', '>=', 1, 'hour') . ' AND ';
 
+			if (Config::get(Config::DB_TYPE) == "pgsql") {
 				$distinct_columns = str_replace("desc", "", strtolower($order_by));
 				$distinct_qpart = "DISTINCT ON (id, $distinct_columns)";
 			} else {
-				$sanity_interval_qpart = "date_entered >= DATE_SUB(NOW(), INTERVAL 1 hour) AND";
 				$distinct_qpart = "DISTINCT"; //fallback
 			}
 

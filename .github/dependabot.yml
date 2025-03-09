@@ -36,3 +36,14 @@ updates:
     allowed-updates:
       - match:
           update-type: "all"
+
+  # Docker dependencies
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    labels:
+      - "docker"
+    allowed-updates:
+      - match:
+          update-type: "all"

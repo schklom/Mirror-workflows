@@ -1,9 +1,6 @@
 module.exports.removeCacheFiles = function() {
   const config = require('../config');
 
-  if(req.url.includes('render/svg/')) {
-    mime = 'image/svg+xml'
-}
   async function deleteStatic() {
     const fs = require('fs');
     const wiki_files = './media/wikipedia/';

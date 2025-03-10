@@ -88,14 +88,14 @@ module.exports = (app, utils) => {
     return handleWikiPage(req, res, '/wiki/')
   })
 
-  app.get('/wiki//:page?/:sub_page?', (req, res, next) => {
-    const page = req.params.page
-    if(page) {
-      // issue #25
-      req.params.page = `/${req.params.page}`
+  app.get('/wiki/:page?/:sub_page?', (req, res, next) => {
+    const pageName = req.params.page
+    if (pageName.startsWith('File:')) {
+        const mediaPath = `/media/wikipedia/commons/${pageName.split(':')[1]}`
+        return res.redirect(mediaPath);
     }
     return handleWikiPage(req, res, '/wiki/')
-  })
+})
 
   // Handle the search request and redirect to the correct wiki page
   app.get('/w/index.php', (req, res, next) => {

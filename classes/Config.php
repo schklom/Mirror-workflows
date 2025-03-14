@@ -189,6 +189,9 @@ class Config {
 	/** delay updates for this feed if received HTTP 429 (Too Many Requests) for this amount of seconds (base value, actual delay is base...base*2) */
 	const HTTP_429_THROTTLE_INTERVAL = "HTTP_429_THROTTLE_INTERVAL";
 
+	/** disables login form controls except HOOK_LOGINFORM_ADDITIONAL_BUTTONS (for SSO providers), also prevents logging in through auth_internal */
+	const DISABLE_LOGIN_FORM = "DISABLE_LOGIN_FORM";
+
 	/** default values for all global configuration options */
 	private const _DEFAULTS = [
 		Config::DB_TYPE => [ "pgsql", 									Config::T_STRING ],
@@ -245,7 +248,8 @@ class Config {
 		Config::AUTH_MIN_INTERVAL => [ 5,								Config::T_INT ],
 		Config::HTTP_USER_AGENT => [ 'Tiny Tiny RSS/%s (https://tt-rss.org/)',
 																					Config::T_STRING ],
-		Config::HTTP_429_THROTTLE_INTERVAL => [ 3600,				Config::T_INT ]
+		Config::HTTP_429_THROTTLE_INTERVAL => [ 3600,				Config::T_INT ],
+		Config::DISABLE_LOGIN_FORM => [ "",								Config::T_BOOL ]
 	];
 
 	private static ?Config $instance = null;

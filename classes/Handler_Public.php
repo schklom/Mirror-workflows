@@ -431,6 +431,13 @@ class Handler_Public extends Handler {
 	}
 
 	function forgotpass(): void {
+		if (Config::get(Config::DISABLE_LOGIN_FORM) || !str_contains(Config::get(Config::PLUGINS), "auth_internal")) {
+			header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden");
+			echo "Forbidden.";
+
+			return;
+		}
+
 		startup_gettext();
 		session_start();
 

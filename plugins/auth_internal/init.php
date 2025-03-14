@@ -15,6 +15,9 @@ class Auth_Internal extends Auth_Base implements IAuthModule2 {
 	/** @param string $service */
 	function authenticate($login, $password, $service = '') {
 
+		if (Config::get(Config::DISABLE_LOGIN_FORM))
+			return false;
+
 		$otp = (int) ($_REQUEST["otp"] ?? 0);
 
 		// don't bother with null/null logins for auth_external etc

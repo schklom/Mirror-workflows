@@ -121,79 +121,84 @@
 			<fieldset>
 				<label><?= __("Login:") ?></label>
 				<input name="login" id="login" dojoType="dijit.form.TextBox" type="text"
-					   onchange="UtilityApp.fetchProfiles()"
-					   onfocus="UtilityApp.fetchProfiles()"
-					   onblur="UtilityApp.fetchProfiles()"
-					   required="1" value="<?= $_SESSION["fake_login"] ?? "" ?>" />
+					onchange="UtilityApp.fetchProfiles()"
+					onfocus="UtilityApp.fetchProfiles()"
+					onblur="UtilityApp.fetchProfiles()"
+					<?= Config::get(Config::DISABLE_LOGIN_FORM) ? 'disabled="disabled"' : '' ?>
+					required="1" value="<?= $_SESSION["fake_login"] ?? "" ?>" />
 			</fieldset>
 
 			<fieldset>
 				<label><?= __("Password:") ?></label>
 
 				<input type="password" name="password" required="1"
-					   dojoType="dijit.form.TextBox"
-					   class="input input-text"
-					   onchange="UtilityApp.fetchProfiles()"
-					   onfocus="UtilityApp.fetchProfiles()"
-					   onblur="UtilityApp.fetchProfiles()"
-					   value="<?= $_SESSION["fake_password"] ?? "" ?>"/>
+					dojoType="dijit.form.TextBox"
+					class="input input-text"
+					onchange="UtilityApp.fetchProfiles()"
+					onfocus="UtilityApp.fetchProfiles()"
+					onblur="UtilityApp.fetchProfiles()"
+					<?= Config::get(Config::DISABLE_LOGIN_FORM) ? 'disabled="disabled"' : '' ?>
+					value="<?= $_SESSION["fake_password"] ?? "" ?>"/>
 			</fieldset>
-			<?php if (str_contains(Config::get(Config::PLUGINS), "auth_internal")) { ?>
+			<?php if (!Config::get(Config::DISABLE_LOGIN_FORM) && str_contains(Config::get(Config::PLUGINS), "auth_internal")) { ?>
 				<fieldset class="align-right">
 					<a href="public.php?op=forgotpass"><?= __("I forgot my password") ?></a>
 				</fieldset>
 			<?php } ?>
 
-			<fieldset>
-				<label><?= __("Profile:") ?></label>
+			<?php if (!Config::get(Config::DISABLE_LOGIN_FORM)) { ?>
+				<fieldset>
+					<label><?= __("Profile:") ?></label>
 
-				<select disabled='disabled' name="profile" id="profile" dojoType='dijit.form.Select'>
-					<option><?= __("Default profile") ?></option>
-				</select>
-			</fieldset>
-
-			<fieldset class="narrow">
-				<label> </label>
-
-				<label id="bw_limit_label">
-					<?= \Controls\checkbox_tag("bw_limit", false, "",
-									["onchange" => 'UtilityApp.bwLimitChange(this)'], 'bw_limit') ?>
-					<?= __("Use less traffic") ?></label>
-			</fieldset>
-
-			<div dojoType="dijit.Tooltip" connectId="bw_limit_label" position="below" style="display:none">
-				<?= __("Does not display images in articles, reduces automatic refreshes."); ?>
-			</div>
-
-			<fieldset class="narrow">
-				<label> </label>
-
-				<label id="safe_mode_label">
-					<?= \Controls\checkbox_tag("safe_mode") ?>
-					<?= __("Safe mode") ?>
-				</label>
-			</fieldset>
-
-			<div dojoType="dijit.Tooltip" connectId="safe_mode_label" position="below" style="display:none">
-				<?= __("Uses default theme and prevents all plugins from loading."); ?>
-			</div>
-			<?php if (Config::get(Config::SESSION_COOKIE_LIFETIME) > 0) { ?>
+					<select disabled='disabled' name="profile" id="profile" dojoType='dijit.form.Select'>
+						<option><?= __("Default profile") ?></option>
+					</select>
+				</fieldset>
 
 				<fieldset class="narrow">
 					<label> </label>
-					<label>
-						<?= \Controls\checkbox_tag("remember_me") ?>
-						<?= __("Remember me") ?>
+
+					<label id="bw_limit_label">
+						<?= \Controls\checkbox_tag("bw_limit", false, "",
+								["onchange" => 'UtilityApp.bwLimitChange(this)'], 'bw_limit') ?>
+						<?= __("Use less traffic") ?></label>
+				</fieldset>
+
+				<div dojoType="dijit.Tooltip" connectId="bw_limit_label" position="below" style="display:none">
+					<?= __("Does not display images in articles, reduces automatic refreshes."); ?>
+				</div>
+
+				<fieldset class="narrow">
+					<label> </label>
+
+					<label id="safe_mode_label">
+						<?= \Controls\checkbox_tag("safe_mode") ?>
+						<?= __("Safe mode") ?>
 					</label>
 				</fieldset>
 
+				<div dojoType="dijit.Tooltip" connectId="safe_mode_label" position="below" style="display:none">
+					<?= __("Uses default theme and prevents all plugins from loading."); ?>
+				</div>
+
+				<?php if (Config::get(Config::SESSION_COOKIE_LIFETIME) > 0) { ?>
+					<fieldset class="narrow">
+						<label> </label>
+						<label>
+							<?= \Controls\checkbox_tag("remember_me") ?>
+							<?= __("Remember me") ?>
+						</label>
+					</fieldset>
+				<?php } ?>
 			<?php } ?>
 
 			<hr/>
 
 			<fieldset class="align-right">
 				<label> </label>
+				<?php if (!Config::get(Config::DISABLE_LOGIN_FORM)) { ?>
 				<?= \Controls\submit_tag(__('Log in')) ?>
+				<?php } ?>
 				<?php PluginHost::getInstance()->run_hooks(PluginHost::HOOK_LOGINFORM_ADDITIONAL_BUTTONS) ?>
 			</fieldset>
 

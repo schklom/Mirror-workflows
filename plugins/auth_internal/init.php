@@ -15,9 +15,6 @@ class Auth_Internal extends Auth_Base implements IAuthModule2 {
 	/** @param string $service */
 	function authenticate($login, $password, $service = '') {
 
-		if (Config::get(Config::DISABLE_LOGIN_FORM))
-			return false;
-
 		$otp = (int) ($_REQUEST["otp"] ?? 0);
 
 		// don't bother with null/null logins for auth_external etc
@@ -31,6 +28,9 @@ class Auth_Internal extends Auth_Base implements IAuthModule2 {
 				if ($service && Config::get_schema_version() > 138) {
 					return $this->check_app_password($login, $password, $service);
 				}
+
+				if (Config::get(Config::DISABLE_LOGIN_FORM))
+					return false;
 
 				if ($otp) {
 					if ($this->check_password($user_id, $password) && UserHelper::check_otp($user_id, $otp))
@@ -116,6 +116,9 @@ class Auth_Internal extends Auth_Base implements IAuthModule2 {
 			if ($user_id)
 				return $user_id;
 		}
+
+		if (Config::get(Config::DISABLE_LOGIN_FORM))
+			return false;
 
 		if ($login) {
 			$user = ORM::for_table('ttrss_users')

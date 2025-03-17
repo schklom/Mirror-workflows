@@ -750,7 +750,7 @@ class Feeds extends Handler_Protected {
 
 			// fall back in case of no plugins
 			if (empty($search_qpart)) {
-				list($search_qpart, $search_words) = self::_search_to_sql($search[0], $search[1], $owner_uid);
+				list($search_qpart, $search_words) = self::_search_to_sql($search[0], $search[1], $owner_uid, $profile);
 			}
 		} else {
 			$search_qpart = "true";
@@ -1394,7 +1394,7 @@ class Feeds extends Handler_Protected {
 
 			// fall back in case of no plugins
 			if (!$search_query_part) {
-				list($search_query_part, $search_words) = self::_search_to_sql($search, $search_language, $owner_uid);
+				list($search_query_part, $search_words) = self::_search_to_sql($search, $search_language, $owner_uid, $profile);
 			}
 
 			if (Config::get(Config::DB_TYPE) == "pgsql") {
@@ -2137,9 +2137,8 @@ class Feeds extends Handler_Protected {
 
 	/**
 	 * @return array{0: string, 1: array<int, string>} [$search_query_part, $search_words]
-	 * @todo $owner_uid and $_SESSION['uid'] are being used interchangeably-- maybe also pass in the profile so prefs can be correct
 	 */
-	private static function _search_to_sql(string $search, string $search_language, int $owner_uid): array {
+	private static function _search_to_sql(string $search, string $search_language, int $owner_uid, ?int $profile): array {
 		// Modify the search string so that 'keyword:"foo bar"' becomes '"keyword:foo bar"'.
 		// This is needed so potential command pairs are grouped correctly.
 		$search_csv_str = preg_replace('/(-?\w+)\:"(\w+)/', '"$1:$2', trim($search));
@@ -2152,9 +2151,6 @@ class Feeds extends Handler_Protected {
 		$search_query_leftover = array();
 
 		$pdo = Db::pdo();
-
-		// TODO: profile should be used here or DEFAULT_SEARCH_LANGUAGE added to Prefs::_PROFILE_BLACKLIST
-		$search_language = $pdo->quote(mb_strtolower($search_language ?: Prefs::get(Prefs::DEFAULT_SEARCH_LANGUAGE, $owner_uid)));
 
 		/** @var string $k a keyword pair (not yet split) or standalone value */
 		foreach ($keywords as $k) {
@@ -2233,7 +2229,7 @@ class Feeds extends Handler_Protected {
 					break;
 				case "label":
 					if ($keyword_value) {
-						$label_id = Labels::find_id($keyword_value, $_SESSION["uid"]);
+						$label_id = Labels::find_id($keyword_value, $owner_uid);
 
 						if ($label_id) {
 							array_push($query_keywords, "($not
@@ -2265,7 +2261,7 @@ class Feeds extends Handler_Protected {
 				default:
 					// @{date} handling
 					if (str_starts_with($k, "@")) {
-						$user_tz_string = Prefs::get(Prefs::USER_TIMEZONE, $_SESSION['uid']);
+						$user_tz_string = Prefs::get(Prefs::USER_TIMEZONE, $owner_uid);
 						$orig_ts = strtotime(substr($k, 1));
 						$k = date("Y-m-d", TimeHelper::convert_timestamp($orig_ts, $user_tz_string, 'UTC'));
 
@@ -2303,6 +2299,8 @@ class Feeds extends Handler_Protected {
 				} else {
 					$tsquery = $pdo->quote(implode(" & ", $search_query_leftover));
 				}
+
+				$search_language = $pdo->quote(mb_strtolower($search_language ?: Prefs::get(Prefs::DEFAULT_SEARCH_LANGUAGE, $owner_uid, $profile)));
 
 				array_push($query_keywords,
 					"(tsvector_combined @@ to_tsquery($search_language, $tsquery))");

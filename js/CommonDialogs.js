@@ -58,10 +58,15 @@ const	CommonDialogs = {
 										${App.getInitParam('enable_feed_cats') ?
 										`
 											<fieldset>
-												<label class='inline'>${__('Place in category:')}</label>
+												<label>${__('Place in category:')}</label>
 												${reply.cat_select}
 											</fieldset>
 										` : ''}
+
+										<fieldset>
+											<label>${__("Update interval:")}</label>
+											${App.FormFields.select_hash("update_interval", 0, reply.intervals.update)}
+										</fieldset>
 									</section>
 
 									<div id="feedDlg_feedsContainer" style="display : none">

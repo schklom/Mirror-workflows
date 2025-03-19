@@ -567,8 +567,16 @@ class Feeds extends Handler_Protected {
 	}
 
 	function subscribeToFeed(): void {
+		global $update_intervals;
+
+		$local_update_intervals = $update_intervals;
+		$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[Prefs::get(Prefs::DEFAULT_UPDATE_INTERVAL, $_SESSION['uid'])]);
+
 		print json_encode([
-			"cat_select" => \Controls\select_feeds_cats("cat")
+			"cat_select" => \Controls\select_feeds_cats("cat"),
+			"intervals" => [
+				"update" => $local_update_intervals
+			]
 		]);
 	}
 
@@ -981,8 +989,9 @@ class Feeds extends Handler_Protected {
 		$need_auth = isset($_REQUEST['need_auth']);
 		$login = $need_auth ? clean($_REQUEST['login']) : '';
 		$pass = $need_auth ? clean($_REQUEST['pass']) : '';
+		$update_interval = (int) clean($_REQUEST['update_interval'] ?? 0);
 
-		$rc = Feeds::_subscribe($feed, $cat, $login, $pass);
+		$rc = Feeds::_subscribe($feed, $cat, $login, $pass, $update_interval);
 
 		print json_encode(array("result" => $rc));
 	}
@@ -1002,7 +1011,7 @@ class Feeds extends Handler_Protected {
 	 *                 7 - Error while creating feed database entry.
 	 *                 8 - Permission denied (ACCESS_LEVEL_READONLY).
 	 */
-	static function _subscribe(string $url, int $cat_id = 0, string $auth_login = '', string $auth_pass = ''): array {
+	static function _subscribe(string $url, int $cat_id = 0, string $auth_login = '', string $auth_pass = '', int $update_interval = 0): array {
 
 		$user = ORM::for_table("ttrss_users")->find_one($_SESSION['uid']);
 
@@ -1067,6 +1076,7 @@ class Feeds extends Handler_Protected {
 				'auth_login' => (string)$auth_login,
 				'auth_pass' => (string)$auth_pass,
 				'update_method' => 0,
+				'update_interval' => $update_interval,
 				'auth_pass_encrypted' => false,
 			]);
 
@@ -2281,7 +2291,7 @@ class Feeds extends Handler_Protected {
 							// Term '"foo bar baz"' becomes '(foo <-> bar <-> baz)' ("<->" meaning "immediately followed by").
 							if (preg_match('/\s+/', $k))
 								$k = '(' . preg_replace('/\s+/', ' <-> ', $k) . ')';
-	
+
 							array_push($search_query_leftover, $not ? "!$k" : $k);
 						} else {
 							array_push($search_query_leftover, $not ? "-$k" : $k);

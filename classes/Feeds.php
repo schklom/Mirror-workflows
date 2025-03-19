@@ -2143,6 +2143,9 @@ class Feeds extends Handler_Protected {
 		// This is needed so potential command pairs are grouped correctly.
 		$search_csv_str = preg_replace('/(-?\w+)\:"(\w+)/', '"$1:$2', trim($search));
 
+		// '-"hello world"' --> '"-hello world"' so negated phrases work
+		$search_csv_str = preg_replace('/-"([^"]+?")/', '"-$1', $search_csv_str);
+
 		// $keywords will be an array like ['"title:hello world"', 'some', 'words']
 		$keywords = str_getcsv($search_csv_str, ' ', '"', '');
 
@@ -2160,6 +2163,8 @@ class Feeds extends Handler_Protected {
 			} else {
 				$not = "";
 			}
+
+			$k = trim($k);
 
 			$keyword_pair = explode(':', mb_strtolower($k), 2);
 			$keyword_name = $keyword_pair[0];
@@ -2265,22 +2270,21 @@ class Feeds extends Handler_Protected {
 						$orig_ts = strtotime(substr($k, 1));
 						$k = date("Y-m-d", TimeHelper::convert_timestamp($orig_ts, $user_tz_string, 'UTC'));
 
-						//$k = date("Y-m-d", strtotime(substr($k, 1)));
-
 						array_push($query_keywords, "(".SUBSTRING_FOR_DATE."(updated,1,LENGTH(".$pdo->quote($k).")) $not = ".$pdo->quote($k).")");
 					} else {
 						// treat as leftover text
 
-						// TODO: handle multiword strings in the fulltext search
 						$k = mb_strtolower($k);
 
 						if (Config::get(Config::DB_TYPE) == "pgsql") {
+							// A hacky way for phrases (e.g. "hello world") to get through PDO quoting.
+							// Term '"foo bar baz"' becomes '(foo <-> bar <-> baz)' ("<->" meaning "immediately followed by").
+							if (preg_match('/\s+/', $k))
+								$k = '(' . preg_replace('/\s+/', ' <-> ', $k) . ')';
+	
 							array_push($search_query_leftover, $not ? "!$k" : $k);
 						} else {
 							array_push($search_query_leftover, $not ? "-$k" : $k);
-
-							//array_push($query_keywords, "(UPPER(ttrss_entries.title) $not LIKE UPPER(".$pdo->quote("%$k%").")
-							//	OR UPPER(ttrss_entries.content) $not LIKE UPPER(".$pdo->quote("%$k%")."))");
 						}
 
 						if (!$not) array_push($search_words, $k);

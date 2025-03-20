@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-14 12:17+0300\n"
-"PO-Revision-Date: 2025-03-19 17:49+0000\n"
+"PO-Revision-Date: 2025-03-20 19:24+0000\n"
 "Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/tt-rss/webui/ta/>\n"
 "Language: ta\n"
@@ -1705,40 +1705,40 @@ msgstr "பகிரப்பட்ட முகவரி கள் அழிக
 
 #: plugins/share/init.php:93
 msgid "Share by URL"
-msgstr ""
+msgstr "முகவரி ஆல் பங்கு"
 
 #: plugins/share/init.php:265
 msgid "You can share this article by the following unique URL:"
-msgstr ""
+msgstr "இந்த கட்டுரையை பின்வரும் தனித்துவமான முகவரி மூலம் பகிரலாம்:"
 
 #: plugins/share/init.php:277
 msgid "Article not found."
-msgstr ""
+msgstr "கட்டுரை காணப்படவில்லை."
 
 #: plugins/share/init.php:282
 msgid "Unshare article"
-msgstr ""
+msgstr "சேர் கட்டுரை"
 
 #: plugins/share/init.php:283 js/CommonDialogs.js:692
 msgid "Generate new URL"
-msgstr ""
+msgstr "புதிய முகவரி ஐ உருவாக்குங்கள்"
 
 #: plugins/af_psql_trgm/init.php:34
 #, php-format
 msgid "Data saved (%s, %d)"
-msgstr ""
+msgstr "தரவு சேமிக்கப்பட்டது ( %s, %d)"
 
 #: plugins/af_psql_trgm/init.php:144
 msgid "Show related articles"
-msgstr ""
+msgstr "தொடர்புடைய கட்டுரைகளைக் காட்டு"
 
 #: plugins/af_psql_trgm/init.php:157
 msgid "Mark similar articles as read (af_psql_trgm)"
-msgstr ""
+msgstr "Read (af_psql_trgm) போன்ற கட்டுரைகளை குறிக்கவும்"
 
 #: plugins/af_psql_trgm/init.php:185
 msgid "Minimum similarity:"
-msgstr ""
+msgstr "குறைந்தபட்ச ஒற்றுமை:"
 
 #: plugins/af_psql_trgm/init.php:194
 msgid ""
@@ -1746,980 +1746,1014 @@ msgid ""
 "number (0-1). Setting it too low might produce false positives, zero "
 "disables checking."
 msgstr ""
+"Postgresql Trigram நீட்டிப்பு ஒரு மிதக்கும் புள்ளி எண்ணாக (0-1) சரம் ஒற்றுமையை "
+"வழங்குகிறது. அதை மிகக் குறைவாக அமைப்பது தவறான நேர்மறைகளை உருவாக்கக்கூடும், பூச்சியம் "
+"சோதனையை முடக்குகிறது."
 
 #: plugins/af_psql_trgm/init.php:196
 msgid ""
 "Setting this value too low might produce false positives, zero disables "
 "checking."
 msgstr ""
+"இந்த மதிப்பை மிகக் குறைவாக அமைப்பது தவறான நேர்மறைகளை உருவாக்கக்கூடும், பூச்சியம் "
+"சோதனையை முடக்குகிறது."
 
 #: plugins/af_psql_trgm/init.php:202
 msgid "Minimum title length:"
-msgstr ""
+msgstr "குறைந்தபட்ச தலைப்பு நீளம்:"
 
 #: plugins/af_psql_trgm/init.php:212
 msgid "Enable for all feeds."
-msgstr ""
+msgstr "அனைத்து ஊட்டங்களுக்கும் இயக்கு."
 
 #: plugins/af_psql_trgm/init.php:231
 msgid "Currently enabled for (click to edit):"
-msgstr ""
+msgstr "தற்போது இயக்கப்பட்டுள்ளது (திருத்த கிளிக்):"
 
 #: plugins/af_psql_trgm/init.php:251
 msgid "Similarity (af_psql_trgm)"
-msgstr ""
+msgstr "ஒற்றுமை (AF_PSQL_TRGM)"
 
 #: plugins/af_psql_trgm/init.php:257
 msgid "Mark similar articles as read"
-msgstr ""
+msgstr "இதே போன்ற கட்டுரைகளை வாசிக்கவும்"
 
 #: plugins/bookmarklets/init.php:91 js/PrefFeedTree.js:472
 #: js/CommonDialogs.js:108
 msgid "Subscribe"
-msgstr ""
+msgstr "குழுசேர்"
 
 #: plugins/bookmarklets/init.php:104
 #, php-format
 msgid "Already subscribed to <b>%s</b>."
-msgstr ""
+msgstr "ஏற்கனவே <b>%s </b> க்கு குழுசேப்பட்டுள்ளது."
 
 #: plugins/bookmarklets/init.php:107
 #, php-format
 msgid "Subscribed to <b>%s</b>."
-msgstr ""
+msgstr "<b>%s </b> க்கு குழுசேர்ந்தது."
 
 #: plugins/bookmarklets/init.php:110
 #, php-format
 msgid "Could not subscribe to <b>%s</b>."
-msgstr ""
+msgstr "<b>%s </b> க்கு குழுசேர முடியவில்லை."
 
 #: plugins/bookmarklets/init.php:113
 #, php-format
 msgid "No feeds found in <b>%s</b>."
-msgstr ""
+msgstr "<b>%s </b> இல் எந்த ஊட்டங்களும் காணப்படவில்லை."
 
 #: plugins/bookmarklets/init.php:119
 #, php-format
 msgid "Could not subscribe to <b>%s</b>.<br>Can't download the Feed URL."
 msgstr ""
+"<b>%s </b> க்கு குழுசேர முடியவில்லை. <br> தீவன முகவரி ஐ பதிவிறக்கம் செய்ய முடியாது."
 
 #: plugins/bookmarklets/init.php:130
 msgid "Multiple feed URLs found:"
-msgstr ""
+msgstr "பல தீவன முகவரி கள் காணப்படுகின்றன:"
 
 #: plugins/bookmarklets/init.php:138
 msgid "Subscribe to selected feed"
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டத்திற்கு குழுசேரவும்"
 
 #: plugins/bookmarklets/init.php:156
 msgid "Edit subscription options"
-msgstr ""
+msgstr "சந்தா விருப்பங்களைத் திருத்தவும்"
 
 #: plugins/bookmarklets/init.php:187 plugins/bookmarklets/init.php:364
 msgid "Share with Tiny Tiny RSS"
-msgstr ""
+msgstr "சிறிய சிறிய ஆர்.எச்.எச் உடன் பகிர்ந்து கொள்ளுங்கள்"
 
 #: plugins/bookmarklets/init.php:260
 msgid "Title:"
-msgstr ""
+msgstr "தலைப்பு:"
 
 #: plugins/bookmarklets/init.php:265 js/CommonDialogs.js:531
 msgid "URL:"
-msgstr ""
+msgstr "URL:"
 
 #: plugins/bookmarklets/init.php:270
 msgid "Content:"
-msgstr ""
+msgstr "திருப்தி:"
 
 #: plugins/bookmarklets/init.php:275
 msgid "Labels:"
-msgstr ""
+msgstr "லேபிள்கள்:"
 
 #: plugins/bookmarklets/init.php:285
 msgid "Share"
-msgstr ""
+msgstr "பங்கு"
 
 #: plugins/bookmarklets/init.php:287
 msgid "Shared article will appear in the Published feed."
-msgstr ""
+msgstr "பகிரப்பட்ட கட்டுரை வெளியிடப்பட்ட ஊட்டத்தில் தோன்றும்."
 
 #: plugins/bookmarklets/init.php:326 include/login_form.php:196
 msgid "Log in"
-msgstr ""
+msgstr "புகுபதிகை"
 
 #: plugins/bookmarklets/init.php:346
 #, php-format
 msgid "Subscribe to %s in Tiny Tiny RSS?"
-msgstr ""
+msgstr "சிறிய சிறிய RSS இல் %s க்கு குழுசேரவா?"
 
 #: plugins/bookmarklets/init.php:353
 msgid "Bookmarklets"
-msgstr ""
+msgstr "புக்மார்க்குகள்"
 
 #: plugins/bookmarklets/init.php:355
 msgid ""
 "Drag the link below to your browser toolbar, open the feed you're interested "
 "in in your browser and click on the link to subscribe to it."
 msgstr ""
+"கீழே உள்ள இணைப்பை உங்கள் உலாவி கருவிப்பட்டியில் இழுத்து, உங்கள் உலாவியில் நீங்கள் விரும்பும் "
+"ஊட்டத்தைத் திறந்து, அதற்கு குழுசேர இணைப்பைக் சொடுக்கு செய்க."
 
 #: plugins/bookmarklets/init.php:358
 msgid "Subscribe in Tiny Tiny RSS"
-msgstr ""
+msgstr "சிறிய சிறிய RSS இல் குழுசேரவும்"
 
 #: plugins/bookmarklets/init.php:361
 msgid "Use this bookmarklet to publish arbitrary pages using Tiny Tiny RSS"
 msgstr ""
+"சிறிய சிறிய RSS ஐப் பயன்படுத்தி தன்னிச்சையான பக்கங்களை வெளியிட இந்த புக்மார்க்கெட் "
+"பயன்படுத்தவும்"
 
 #: plugins/auth_internal/init.php:93
 msgid "Please enter verification code (OTP):"
-msgstr ""
+msgstr "சரிபார்ப்பு குறியீட்டை (OTP) உள்ளிடவும்:"
 
 #: plugins/auth_internal/init.php:95
 msgid "Continue"
-msgstr ""
+msgstr "தொடரவும்"
 
 #: plugins/auth_internal/init.php:134
 msgid "Too many authentication attempts, throttled."
-msgstr ""
+msgstr "பல அங்கீகார முயற்சிகள், தூண்டப்பட்டன."
 
 #: plugins/auth_internal/init.php:241
 msgid "Password has been changed."
-msgstr ""
+msgstr "கடவுச்சொல் மாற்றப்பட்டுள்ளது."
 
 #: plugins/auth_internal/init.php:243
 msgid "Old password is incorrect."
-msgstr ""
+msgstr "பழைய கடவுச்சொல் தவறானது."
 
 #: plugins/af_comics/init.php:63
 msgid "Feeds supported by af_comics"
-msgstr ""
+msgstr "AF_COMICS ஆல் ஆதரிக்கப்படும் ஊட்டங்கள்"
 
 #: plugins/af_comics/init.php:65
 msgid "The following comics are currently supported:"
-msgstr ""
+msgstr "பின்வரும் காமிக்ச் தற்போது ஆதரிக்கப்பட்டுள்ளது:"
 
 #: include/functions.php:54
 msgid "Detect automatically"
-msgstr ""
+msgstr "தானாகவே கண்டறியவும்"
 
 #: include/login_form.php:143
 msgid "I forgot my password"
-msgstr ""
+msgstr "எனது கடவுச்சொல்லை மறந்துவிட்டேன்"
 
 #: include/login_form.php:148
 msgid "Profile:"
-msgstr ""
+msgstr "சுயவிவரம்:"
 
 #: include/login_form.php:161
 msgid "Use less traffic"
-msgstr ""
+msgstr "குறைந்த போக்குவரத்தைப் பயன்படுத்துங்கள்"
 
 #: include/login_form.php:165
 msgid "Does not display images in articles, reduces automatic refreshes."
 msgstr ""
+"கட்டுரைகளில் படங்களை காண்பிக்காது, தானியங்கி புதுப்பிப்புகளைக் குறைக்கிறது."
 
 #: include/login_form.php:173 js/CommonDialogs.js:16
 msgid "Safe mode"
-msgstr ""
+msgstr "பாதுகாப்பான பயன்முறை"
 
 #: include/login_form.php:178
 msgid "Uses default theme and prevents all plugins from loading."
 msgstr ""
+"இயல்புநிலை கருப்பொருளைப் பயன்படுத்துகிறது மற்றும் அனைத்து செருகுநிரல்களையும் ஏற்றுவதைத் "
+"தடுக்கிறது."
 
 #: include/login_form.php:186
 msgid "Remember me"
-msgstr ""
+msgstr "என்னை நினைவில் கொள்ளுங்கள்"
 
 #: js/PrefFilterTree.js:63 js/CommonFilters.js:225
 msgid "in"
-msgstr ""
+msgstr "இல்"
 
 #: js/PrefFilterTree.js:66
 msgid "Inverse"
-msgstr ""
+msgstr "தலைகீழ்"
 
 #: js/PrefFilterTree.js:136 js/PrefFilterTree.js:165
 msgid "No filters selected."
-msgstr ""
+msgstr "வடிப்பான்கள் எதுவும் தேர்ந்தெடுக்கப்படவில்லை."
 
 #: js/PrefFilterTree.js:140
 msgid "Combine selected filters?"
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட வடிப்பான்களை இணைக்கவா?"
 
 #: js/PrefFilterTree.js:141
 msgid "Joining filters..."
-msgstr ""
+msgstr "வடிப்பான்களில் சேருதல் ..."
 
 #: js/PrefFilterTree.js:152
 msgid "Remove selected filters?"
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட வடிப்பான்களை அகற்றவா?"
 
 #: js/PrefFilterTree.js:153
 msgid "Removing selected filters..."
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட வடிப்பான்களை நீக்குதல் ..."
 
 #: js/common.js:468
 msgid "Click to close"
-msgstr ""
+msgstr "மூட சொடுக்கு செய்க"
 
 #: js/CommonFilters.js:14
 msgid "Edit filter"
-msgstr ""
+msgstr "வடிகட்டியைத் திருத்து"
 
 #: js/CommonFilters.js:14
 msgid "Create new filter"
-msgstr ""
+msgstr "புதிய வடிப்பானை உருவாக்கவும்"
 
 #: js/CommonFilters.js:45
 #, java-printf-format, javascript-format
 msgid "Looking for articles (%d processed, %f found)..."
-msgstr ""
+msgstr "கட்டுரைகளைத் தேடுவது ( %d பதப்படுத்தப்பட்டது, %f காணப்பட்டது) ..."
 
 #: js/CommonFilters.js:73
 msgid "Articles matching this filter:"
-msgstr ""
+msgstr "இந்த வடிப்பானுடன் பொருந்தக்கூடிய கட்டுரைகள்:"
 
 #: js/CommonFilters.js:75
 #, java-printf-format, javascript-format
 msgid "Found %d articles matching this filter:"
-msgstr ""
+msgstr "இந்த வடிப்பானுடன் பொருந்தக்கூடிய %d கட்டுரைகள் காணப்படுகின்றன:"
 
 #: js/CommonFilters.js:84
 msgid "Error while trying to get filter test results."
-msgstr ""
+msgstr "வடிகட்டி சோதனை முடிவுகளைப் பெற முயற்சிக்கும்போது பிழை."
 
 #: js/CommonFilters.js:96
 msgid "Looking for articles..."
-msgstr ""
+msgstr "கட்டுரைகளைத் தேடுகிறது ..."
 
 #: js/CommonFilters.js:175
 msgid "Edit rule"
-msgstr ""
+msgstr "விதியைத் திருத்து"
 
 #: js/CommonFilters.js:175
 msgid "Add rule"
-msgstr ""
+msgstr "விதியைச் சேர்க்கவும்"
 
 #: js/CommonFilters.js:219
 msgid "Inverse regular expression matching"
-msgstr ""
+msgstr "தலைகீழ் வழக்கமான வெளிப்பாடு பொருத்தம்"
 
 #: js/CommonFilters.js:223
 msgid "on"
-msgstr ""
+msgstr "ஆன்"
 
 #: js/CommonFilters.js:251
 msgid "Edit action"
-msgstr ""
+msgstr "செயலைத் திருத்து"
 
 #: js/CommonFilters.js:251
 msgid "Add action"
-msgstr ""
+msgstr "செயலைச் சேர்க்கவும்"
 
 #: js/CommonFilters.js:363
 msgid "Remove filter?"
-msgstr ""
+msgstr "வடிகட்டியை அகற்றவா?"
 
 #: js/CommonFilters.js:368
 msgid "Removing filter..."
-msgstr ""
+msgstr "வடிகட்டியை நீக்குதல் ..."
 
 #: js/CommonFilters.js:398 js/PrefUsers.js:42 js/PrefFeedTree.js:365
 #: js/CommonDialogs.js:475
 msgid "Saving data..."
-msgstr ""
+msgstr "தரவைச் சேமித்தல் ..."
 
 #: js/CommonFilters.js:455 js/CommonFilters.js:487 js/PrefHelpers.js:195
 msgid "Add"
-msgstr ""
+msgstr "கூட்டு"
 
 #: js/CommonFilters.js:458 js/CommonFilters.js:490
 msgid "Delete"
-msgstr ""
+msgstr "நீக்கு"
 
 #: js/CommonFilters.js:524 js/CommonFilters.js:528
 msgid "Test"
-msgstr ""
+msgstr "தேர்வு"
 
 #: js/CommonFilters.js:529
 msgid "Create"
-msgstr ""
+msgstr "உருவாக்கு"
 
 #: js/Headlines.js:649
 msgid "Cancel search"
-msgstr ""
+msgstr "தேடலை ரத்துசெய்"
 
 #: js/Headlines.js:663
 msgid "Select..."
-msgstr ""
+msgstr "தேர்ந்தெடுக்கவும் ..."
 
 #: js/Headlines.js:823 js/Headlines.js:877 js/Headlines.js:894
 msgid "Click to open next unread feed."
-msgstr ""
+msgstr "அடுத்த படிக்காத ஊட்டத்தைத் திறக்க சொடுக்கு செய்க."
 
 #: js/Headlines.js:891
 msgid "New articles found, reload feed to continue."
-msgstr ""
+msgstr "புதிய கட்டுரைகள் கண்டுபிடிக்கப்பட்டன, தொடர ஊட்டத்தை மீண்டும் ஏற்றவும்."
 
 #: js/Headlines.js:948 js/Headlines.js:974 js/Headlines.js:986
 #: js/Headlines.js:1129 js/Headlines.js:1146 js/Headlines.js:1163
 #: js/Headlines.js:1300 js/Article.js:62
 msgid "No articles selected."
-msgstr ""
+msgstr "கட்டுரைகள் எதுவும் தேர்ந்தெடுக்கப்படவில்லை."
 
 #: js/Headlines.js:1100
 #, java-printf-format, javascript-format
 msgid "%d article selected"
 msgid_plural "%d articles selected"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d கட்டுரை தேர்ந்தெடுக்கப்பட்டது"
+msgstr[1] "%d கட்டுரைகள் தேர்ந்தெடுக்கப்பட்டன"
 
 #: js/Headlines.js:1171
 #, java-printf-format, javascript-format
 msgid "Delete %d selected article in %s?"
 msgid_plural "Delete %d selected articles in %s?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s இல் %d தேர்ந்தெடுக்கப்பட்ட கட்டுரையை நீக்கவா?"
+msgstr[1] "%s இல் தேர்ந்தெடுக்கப்பட்ட கட்டுரைகளை நீக்கவா?"
 
 #: js/Headlines.js:1173
 #, java-printf-format, javascript-format
 msgid "Delete %d selected article?"
 msgid_plural "Delete %d selected articles?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d தேர்ந்தெடுக்கப்பட்ட கட்டுரையை நீக்கவா?"
+msgstr[1] "தேர்ந்தெடுக்கப்பட்ட %d தேர்ந்தெடுக்கப்பட்ட கட்டுரைகளை நீக்கவா?"
 
 #: js/Headlines.js:1306
 #, java-printf-format, javascript-format
 msgid "Mark %d selected article in %s as read?"
 msgid_plural "Mark %d selected articles in %s as read?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s இல் %d தேர்ந்தெடுக்கப்பட்ட கட்டுரையை வாசித்தபடி?"
+msgstr[1] "மார்க் %d தேர்ந்தெடுக்கப்பட்ட கட்டுரைகள் %s இல் படிக்க வேண்டுமா?"
 
 #: js/Headlines.js:1322
 msgid "No article is selected."
-msgstr ""
+msgstr "எந்த கட்டுரையும் தேர்ந்தெடுக்கப்படவில்லை."
 
 #: js/Headlines.js:1357
 msgid "No articles found to mark"
-msgstr ""
+msgstr "குறிக்க கட்டுரைகள் எதுவும் கிடைக்கவில்லை"
 
 #: js/Headlines.js:1359
 #, java-printf-format, javascript-format
 msgid "Mark %d article as read?"
 msgid_plural "Mark %d articles as read?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "மார்க் %d கட்டுரை படிக்க?"
+msgstr[1] "%d கட்டுரைகள் படிக்க?"
 
 #: js/Headlines.js:1418
 msgid "Open original article"
-msgstr ""
+msgstr "அசல் கட்டுரை திறந்த"
 
 #: js/Headlines.js:1425
 msgid "Display article URL"
-msgstr ""
+msgstr "கட்டுரை முகவரி ஐக் காண்பி"
 
 #: js/Headlines.js:1532
 msgid "Assign label"
-msgstr ""
+msgstr "லேபிளை ஒதுக்கவும்"
 
 #: js/Headlines.js:1537
 msgid "Remove label"
-msgstr ""
+msgstr "லேபிளை அகற்று"
 
 #: js/Headlines.js:1586 js/FeedTree.js:105 js/Headlines.js:473
 #: js/Headlines.js:522 js/Headlines.js:591
 msgid "Open site"
-msgstr ""
+msgstr "திறந்த தளம்"
 
 #: js/Headlines.js:1595 js/FeedTree.js:114
 msgid "Debug feed"
-msgstr ""
+msgstr "பிழைத்திருத்த ஊட்டம்"
 
 #: js/Headlines.js:1616
 msgid "Select articles in group"
-msgstr ""
+msgstr "குழுவில் கட்டுரைகளைத் தேர்ந்தெடுக்கவும்"
 
 #: js/Headlines.js:1626
 msgid "Mark group as read"
-msgstr ""
+msgstr "மார்க் குழு படிக்க"
 
 #: js/Headlines.js:1638
 msgid "Mark feed as read"
-msgstr ""
+msgstr "தீவனத்தை படிக்க"
 
 #: js/PrefHelpers.js:20
 msgid "Remove selected app passwords?"
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட பயன்பாட்டு கடவுச்சொற்களை அகற்றவா?"
 
 #: js/PrefHelpers.js:45
 msgid "This will invalidate all previously generated feed URLs. Continue?"
 msgstr ""
+"இது முன்னர் உருவாக்கப்பட்ட அனைத்து தீவன முகவரி களையும் செல்லாது. தொடரவா?"
 
 #: js/PrefHelpers.js:46 plugins/share/share_prefs.js:6
 msgid "Clearing URLs..."
-msgstr ""
+msgstr "முகவரி களை அழித்தல் ..."
 
 #: js/PrefHelpers.js:49
 msgid "Generated URLs cleared."
-msgstr ""
+msgstr "உருவாக்கப்பட்ட முகவரி கள் அழிக்கப்பட்டன."
 
 #: js/PrefHelpers.js:59
 msgid "Digest preview"
-msgstr ""
+msgstr "முன்னோட்டத்தை சீரணிக்கவும்"
 
 #: js/PrefHelpers.js:113
 msgid "Clear event log?"
-msgstr ""
+msgstr "தெளிவான நிகழ்வு பதிவு?"
 
 #: js/PrefHelpers.js:135
 msgid "Name for cloned profile:"
-msgstr ""
+msgstr "நகலி செய்யப்பட்ட சுயவிவரத்திற்கான பெயர்:"
 
 #: js/PrefHelpers.js:145
 msgid "Please select a single profile to clone."
-msgstr ""
+msgstr "குளோனுக்கு ஒற்றை சுயவிவரத்தைத் தேர்ந்தெடுக்கவும்."
 
 #: js/PrefHelpers.js:153
 msgid ""
 "Remove selected profiles? Active and default profiles will not be removed."
 msgstr ""
+"தேர்ந்தெடுக்கப்பட்ட சுயவிவரங்களை அகற்றவா? செயலில் மற்றும் இயல்புநிலை சுயவிவரங்கள் "
+"அகற்றப்படாது."
 
 #: js/PrefHelpers.js:154
 msgid "Removing selected profiles..."
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட சுயவிவரங்களை நீக்குதல் ..."
 
 #: js/PrefHelpers.js:163
 msgid "No profiles selected."
-msgstr ""
+msgstr "சுயவிவரங்கள் எதுவும் தேர்ந்தெடுக்கப்படவில்லை."
 
 #: js/PrefHelpers.js:168
 msgid "Creating profile..."
-msgstr ""
+msgstr "சுயவிவரத்தை உருவாக்குதல் ..."
 
 #: js/PrefHelpers.js:218
 msgid "(active)"
-msgstr ""
+msgstr "(செயலில்)"
 
 #: js/PrefHelpers.js:219
 msgid "(empty)"
-msgstr ""
+msgstr "(காலியாக)"
 
 #: js/PrefHelpers.js:242
 msgid "Activate selected profile?"
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட சுயவிவரத்தை செயல்படுத்தவா?"
 
 #: js/PrefHelpers.js:251
 msgid "Please choose a profile to activate."
-msgstr ""
+msgstr "செயல்படுத்த ஒரு சுயவிவரத்தைத் தேர்வுசெய்க."
 
 #: js/PrefHelpers.js:264
 msgid "Customize stylesheet"
-msgstr ""
+msgstr "ச்டைல்சீட்டைத் தனிப்பயனாக்குங்கள்"
 
 #: js/PrefHelpers.js:280
 msgid ""
 "You can override colors, fonts and layout of your currently selected theme "
 "with custom CSS declarations here."
 msgstr ""
+"தனிப்பயன் சிஎச்எச் அறிவிப்புகளுடன் நீங்கள் தற்போது தேர்ந்தெடுக்கப்பட்ட கருப்பொருளின் வண்ணங்கள், "
+"எழுத்துருக்கள் மற்றும் தளவமைப்பை மேலெழுதலாம்."
 
 #: js/PrefHelpers.js:289
 msgid ""
 "User CSS has been applied, you might need to reload the page to see all "
 "changes."
 msgstr ""
+"பயனர் சிஎச்எச் பயன்படுத்தப்பட்டுள்ளது, எல்லா மாற்றங்களையும் காண நீங்கள் பக்கத்தை மீண்டும் ஏற்ற "
+"வேண்டும்."
 
 #: js/PrefHelpers.js:329
 msgid "Reset to defaults?"
-msgstr ""
+msgstr "இயல்புநிலைக்கு மீட்டமைக்கவா?"
 
 #: js/PrefHelpers.js:373
 #, java-printf-format, javascript-format
 msgid "Error while loading plugins list: %s."
-msgstr ""
+msgstr "செருகுநிரல்களை ஏற்றும்போது பிழை பட்டியல்: %s."
 
 #: js/PrefHelpers.js:422
 msgid "Clear data"
-msgstr ""
+msgstr "தரவை அழிக்கவும்"
 
 #: js/PrefHelpers.js:425
 msgid "Uninstall"
-msgstr ""
+msgstr "நிறுவல் நீக்க"
 
 #: js/PrefHelpers.js:437 js/PrefHelpers.js:596
 msgid "Could not find any plugins for this search query."
 msgstr ""
+"இந்த தேடல் வினவலுக்கான எந்த செருகுநிரல்களையும் கண்டுபிடிக்க முடியவில்லை."
 
 #: js/PrefHelpers.js:444
 #, java-printf-format, javascript-format
 msgid "Clear stored data for %s?"
-msgstr ""
+msgstr "%s க்கு சேமிக்கப்பட்ட தரவை அழிக்கவா?"
 
 #: js/PrefHelpers.js:453
 #, java-printf-format, javascript-format
 msgid "Uninstall plugin %s?"
-msgstr ""
+msgstr "சொருகி %s நிறுவல் நீக்கவா?"
 
 #: js/PrefHelpers.js:462
 msgid "Plugin uninstallation failed."
-msgstr ""
+msgstr "சொருகி நிறுவல் நீக்குதல் தோல்வியடைந்தது."
 
 #: js/PrefHelpers.js:478
 msgid "Available plugins"
-msgstr ""
+msgstr "கிடைக்கும் செருகுநிரல்கள்"
 
 #: js/PrefHelpers.js:491
 msgid "Plugin installer"
-msgstr ""
+msgstr "சொருகி நிறுவி"
 
 #: js/PrefHelpers.js:494
 #, java-printf-format, javascript-format
 msgid "Installing %s, please wait..."
-msgstr ""
+msgstr "%s ஐ நிறுவுதல், தயவுசெய்து காத்திருங்கள் ..."
 
 #: js/PrefHelpers.js:509 js/PrefHelpers.js:551 js/PrefHelpers.js:662
 msgid "Operation failed: check event log."
-msgstr ""
+msgstr "செயல்பாடு தோல்வியுற்றது: நிகழ்வு பதிவை சரிபார்க்கவும்."
 
 #: js/PrefHelpers.js:513
 msgid "Plugin has been installed."
-msgstr ""
+msgstr "சொருகி நிறுவப்பட்டுள்ளது."
 
 #: js/PrefHelpers.js:517
 msgid "Plugin is already installed."
-msgstr ""
+msgstr "சொருகி ஏற்கனவே நிறுவப்பட்டுள்ளது."
 
 #: js/PrefHelpers.js:527 js/PrefHelpers.js:679 js/PrefHelpers.js:745
 #, java-printf-format, javascript-format
 msgid "Exited with RC: %d"
-msgstr ""
+msgstr "ஆர்.சி உடன் வெளியேறியது: %d"
 
 #: js/PrefHelpers.js:576
 msgid "Already installed"
-msgstr ""
+msgstr "ஏற்கனவே நிறுவப்பட்டுள்ளது"
 
 #: js/PrefHelpers.js:587
 #, java-printf-format, javascript-format
 msgid "Updated: %s"
-msgstr ""
+msgstr "புதுப்பிக்கப்பட்டது: %s"
 
 #: js/PrefHelpers.js:604
 msgid "Looking for plugins..."
-msgstr ""
+msgstr "செருகுநிரல்களைத் தேடுகிறது ..."
 
 #: js/PrefHelpers.js:623 js/PrefHelpers.js:765
 msgid "Close"
-msgstr ""
+msgstr "மூடு"
 
 #: js/PrefHelpers.js:641
 msgid "Update plugins"
-msgstr ""
+msgstr "செருகுநிரல்களைப் புதுப்பிக்கவும்"
 
 #: js/PrefHelpers.js:656
 msgid "Updating, please wait..."
-msgstr ""
+msgstr "புதுப்பித்தல், தயவுசெய்து காத்திருங்கள் ..."
 
 #: js/PrefHelpers.js:680
 msgid "Update done."
-msgstr ""
+msgstr "புதுப்பிப்பு முடிந்தது."
 
 #: js/PrefHelpers.js:704
 msgid "No updates available"
-msgstr ""
+msgstr "புதுப்பிப்புகள் எதுவும் கிடைக்கவில்லை"
 
 #: js/PrefHelpers.js:716
 #, java-printf-format, javascript-format
 msgid "Checking: %s"
-msgstr ""
+msgstr "சோதனை: %s"
 
 #: js/PrefHelpers.js:723
 #, java-printf-format, javascript-format
 msgid "%s: Operation failed: check event log."
-msgstr ""
+msgstr "%s: செயல்பாடு தோல்வியுற்றது: நிகழ்வு பதிவை சரிபார்க்கவும்."
 
 #: js/PrefHelpers.js:746
 msgid "Ready to update"
-msgstr ""
+msgstr "புதுப்பிக்க தயாராக உள்ளது"
 
 #: js/PrefHelpers.js:791
 msgid "Please choose an OPML file first."
-msgstr ""
+msgstr "முதலில் OPML கோப்பைத் தேர்வுசெய்க."
 
 #: js/PrefHelpers.js:794
 msgid "Importing, please wait..."
-msgstr ""
+msgstr "இறக்குமதி, தயவுசெய்து காத்திருங்கள் ..."
 
 #: js/PrefHelpers.js:803
 msgid "OPML Import"
-msgstr ""
+msgstr "OPML இறக்குமதி"
 
 #: js/PrefHelpers.js:814
 msgid ""
 "If you have imported labels and/or filters, you might need to reload "
 "preferences to see your new data."
 msgstr ""
+"நீங்கள் லேபிள்கள் மற்றும்/அல்லது வடிப்பான்களை இறக்குமதி செய்திருந்தால், உங்கள் புதிய தரவைக் கா"
+"ண விருப்பங்களை மீண்டும் ஏற்ற வேண்டும்."
 
 #: js/Article.js:36
 msgid "Please enter new score for selected articles:"
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட கட்டுரைகளுக்கு புதிய மதிப்பெண்ணை உள்ளிடவும்:"
 
 #: js/Article.js:70
 msgid "Please enter new score for this article:"
-msgstr ""
+msgstr "இந்த கட்டுரைக்கு புதிய மதிப்பெண்ணை உள்ளிடவும்:"
 
 #: js/Article.js:130
 msgid "Article URL:"
-msgstr ""
+msgstr "கட்டுரை URL:"
 
 #: js/Article.js:132
 msgid "No URL could be displayed for this article."
-msgstr ""
+msgstr "இந்த கட்டுரைக்கு எந்த முகவரி ஐ காட்ட முடியவில்லை."
 
 #: js/Article.js:152
 msgid "no tags"
-msgstr ""
+msgstr "குறிச்சொற்கள் இல்லை"
 
 #: js/Article.js:244
 msgid "comments"
-msgstr ""
+msgstr "கருத்துகள்"
 
 #: js/Article.js:247
 msgid "comment"
 msgid_plural "comments"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "கருத்து"
+msgstr[1] "கருத்துகள்"
 
 #: js/Article.js:352
 msgid "Article tags"
-msgstr ""
+msgstr "கட்டுரை குறிச்சொற்கள்"
 
 #: js/Article.js:359
 msgid "Tags for this article (separated by commas):"
-msgstr ""
+msgstr "இந்த கட்டுரைக்கான குறிச்சொற்கள் (காற்புள்ளிகளால் பிரிக்கப்பட்டன):"
 
 #: js/Article.js:379
 msgid "Saving article tags..."
-msgstr ""
+msgstr "கட்டுரை குறிச்சொற்களைச் சேமிக்கிறது ..."
 
 #: js/Feeds.js:285
 msgid "Your password is at default value"
-msgstr ""
+msgstr "உங்கள் கடவுச்சொல் இயல்புநிலை மதிப்பில் உள்ளது"
 
 #: js/Feeds.js:287
 msgid ""
 "You are using default tt-rss password. Please change it in the Preferences "
 "(Personal data / Authentication)."
 msgstr ""
+"நீங்கள் இயல்புநிலை TT-RSS கடவுச்சொல்லைப் பயன்படுத்துகிறீர்கள். தயவுசெய்து அதை "
+"விருப்பத்தேர்வுகளில் மாற்றவும் (தனிப்பட்ட தரவு / அங்கீகாரம்)."
 
 #: js/Feeds.js:442
 msgid "Mark all articles as read?"
-msgstr ""
+msgstr "எல்லா கட்டுரைகளையும் வாசித்தபடி குறிக்கவும்?"
 
 #: js/Feeds.js:446
 msgid "Marking all feeds as read..."
-msgstr ""
+msgstr "எல்லா ஊட்டங்களையும் படித்தபடி குறிப்பது ..."
 
 #: js/Feeds.js:463
 msgid "Mark %w in %s older than 1 day as read?"
-msgstr ""
+msgstr "1 நாளுக்கு மேல் %w இல் %w ஐப் படித்தபடி குறிக்கவும்?"
 
 #: js/Feeds.js:466
 msgid "Mark %w in %s older than 1 week as read?"
-msgstr ""
+msgstr "1 வாரத்தை விட %w இல் %w ஐப் படித்தபடி குறிக்கவும்?"
 
 #: js/Feeds.js:469
 msgid "Mark %w in %s older than 2 weeks as read?"
-msgstr ""
+msgstr "2 வாரங்களை விட %w இல் %w ஐப் படிக்க வேண்டுமா?"
 
 #: js/Feeds.js:472
 msgid "Mark %w in %s as read?"
-msgstr ""
+msgstr "%W இல் %w இல் படிக்கவா?"
 
 #: js/Feeds.js:475
 msgid "search results"
-msgstr ""
+msgstr "தேடல் முடிவுகள்"
 
 #: js/Feeds.js:475
 msgid "all articles"
-msgstr ""
+msgstr "அனைத்து கட்டுரைகளும்"
 
 #: js/Feeds.js:516
 #, java-printf-format, javascript-format
 msgid "Mark all articles in %s as read?"
-msgstr ""
+msgstr "அனைத்து கட்டுரைகளையும் %s இல் படிக்கவா?"
 
 #: js/Feeds.js:651
 msgid "Search syntax"
-msgstr ""
+msgstr "தொடரியல் தேடல்"
 
 #: js/Feeds.js:715
 msgid "Search feeds"
-msgstr ""
+msgstr "தேடல் ஊட்டங்கள்"
 
 #: js/PrefUsers.js:19
 msgid "Please enter username:"
-msgstr ""
+msgstr "பயனர்பெயரை உள்ளிடவும்:"
 
 #: js/PrefUsers.js:22
 msgid "Adding user..."
-msgstr ""
+msgstr "பயனரைச் சேர்ப்பது ..."
 
 #: js/PrefUsers.js:39 js/PrefUsers.js:60
 msgid "Edit user"
-msgstr ""
+msgstr "பயனரைத் திருத்து"
 
 #: js/PrefUsers.js:136 js/PrefUsers.js:175
 msgid "No users selected."
-msgstr ""
+msgstr "எந்த பயனர்களும் தேர்ந்தெடுக்கப்படவில்லை."
 
 #: js/PrefUsers.js:141
 msgid "Please select one user."
-msgstr ""
+msgstr "ஒரு பயனரைத் தேர்ந்தெடுக்கவும்."
 
 #: js/PrefUsers.js:145
 msgid "Reset password of selected user?"
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட பயனரின் கடவுச்சொல்லை மீட்டமைக்கவா?"
 
 #: js/PrefUsers.js:146
 msgid "Resetting password for selected user..."
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட பயனருக்கான கடவுச்சொல்லை மீட்டமைத்தல் ..."
 
 #: js/PrefUsers.js:161
 msgid ""
 "Remove selected users? Neither default admin nor your account will be "
 "removed."
 msgstr ""
+"தேர்ந்தெடுக்கப்பட்ட பயனர்களை அகற்றவா? இயல்புநிலை நிர்வாகமோ அல்லது உங்கள் கணக்கோ "
+"அகற்றப்படாது."
 
 #: js/PrefUsers.js:162
 msgid "Removing selected users..."
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட பயனர்களை நீக்குதல் ..."
 
 #: js/PrefFeedTree.js:94
 msgid "Edit category"
-msgstr ""
+msgstr "வகையைத் திருத்து"
 
 #: js/PrefFeedTree.js:101
 msgid "Remove category"
-msgstr ""
+msgstr "வகையை அகற்று"
 
 #: js/PrefFeedTree.js:200
 #, java-printf-format, javascript-format
 msgid ""
 "Remove category %s? Any nested feeds would be placed into Uncategorized."
 msgstr ""
+"வகை %s ஐ அகற்றவா? எந்தவொரு உள்ளமைக்கப்பட்ட ஊட்டங்களும் வகைப்படுத்தப்படாத நிலையில் "
+"வைக்கப்படும்."
 
 #: js/PrefFeedTree.js:201
 msgid "Removing category..."
-msgstr ""
+msgstr "வகையை நீக்குதல் ..."
 
 #: js/PrefFeedTree.js:213
 msgid "Unsubscribe from selected feeds?"
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களிலிருந்து குழுவிலகவா?"
 
 #: js/PrefFeedTree.js:215
 msgid "Unsubscribing from selected feeds..."
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களிலிருந்து குழுவிலகுவது ..."
 
 #: js/PrefFeedTree.js:228 js/PrefFeedTree.js:297 js/PrefFeedTree.js:313
 #: js/PrefFeedTree.js:518 js/CommonDialogs.js:251 js/CommonDialogs.js:272
 msgid "No feeds selected."
-msgstr ""
+msgstr "எந்த ஊட்டங்களும் தேர்ந்தெடுக்கப்படவில்லை."
 
 #: js/PrefFeedTree.js:263
 msgid "Remove selected categories?"
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட வகைகளை அகற்றவா?"
 
 #: js/PrefFeedTree.js:264
 msgid "Removing selected categories..."
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட வகைகளை நீக்குதல் ..."
 
 #: js/PrefFeedTree.js:276
 msgid "No categories selected."
-msgstr ""
+msgstr "வகைகள் எதுவும் தேர்ந்தெடுக்கப்படவில்லை."
 
 #: js/PrefFeedTree.js:324
 msgid "Edit multiple feeds"
-msgstr ""
+msgstr "பல ஊட்டங்களைத் திருத்தவும்"
 
 #: js/PrefFeedTree.js:353
 msgid "Save changes to selected feeds?"
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களில் மாற்றங்களைச் சேமிக்கவா?"
 
 #: js/PrefFeedTree.js:402
 msgid "Category title:"
-msgstr ""
+msgstr "வகை தலைப்பு:"
 
 #: js/PrefFeedTree.js:405
 msgid "Creating category..."
-msgstr ""
+msgstr "வகையை உருவாக்குதல் ..."
 
 #: js/PrefFeedTree.js:420
 msgid "Subscribing to feeds..."
-msgstr ""
+msgstr "ஊட்டங்களுக்கு குழுசேர்வது ..."
 
 #: js/PrefFeedTree.js:438
 msgid "One valid feed per line (no detection is done)"
 msgstr ""
+"ஒரு வரிக்கு ஒரு செல்லுபடியாகும் ஊட்டம் (கண்டறிதல் எதுவும் செய்யப்படவில்லை)"
 
 #: js/PrefFeedTree.js:491
 msgid "Feeds without recent updates"
-msgstr ""
+msgstr "அண்மைக் கால புதுப்பிப்புகள் இல்லாமல் ஊட்டங்கள்"
 
 #: js/PrefFeedTree.js:499 js/CommonDialogs.js:230
 msgid "Remove selected feeds?"
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களை அகற்றவா?"
 
 #: js/PrefFeedTree.js:500 js/CommonDialogs.js:231
 msgid "Removing selected feeds..."
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களை நீக்குதல் ..."
 
 #: js/PrefFeedTree.js:541 js/CommonDialogs.js:298
 msgid "Click to edit feed"
-msgstr ""
+msgstr "ஊட்டத்தைத் திருத்த சொடுக்கு செய்க"
 
 #: js/CommonDialogs.js:45
 msgid ""
 "Provided URL is a HTML page referencing multiple feeds, please select "
 "required feed from the dropdown menu below."
 msgstr ""
+"வழங்கப்பட்ட முகவரி என்பது பல ஊட்டங்களைக் குறிக்கும் உஉகுமொ பக்கமாகும், தயவுசெய்து கீழே உள்"
+"ள கீழ்தோன்றும் மெனுவிலிருந்து தேவையான ஊட்டத்தைத் தேர்ந்தெடுக்கவும்."
 
 #: js/CommonDialogs.js:137
 msgid ""
 "Failed to parse output. This can indicate server timeout and/or network "
 "issues. Backend output was logged to browser console."
 msgstr ""
+"வெளியீட்டை அலசத் தவறிவிட்டது. இது சேவையக நேரம் முடிந்தது மற்றும்/அல்லது பிணைய "
+"சிக்கல்களைக் குறிக்கலாம். பின்தளத்தில் வெளியீடு உலாவி கன்சோலுக்கு உள்நுழைந்துள்ளது."
 
 #: js/CommonDialogs.js:150
 msgid "You are already subscribed to this feed."
-msgstr ""
+msgstr "இந்த ஊட்டத்திற்கு நீங்கள் ஏற்கனவே சந்தா செலுத்தியுள்ளீர்கள்."
 
 #: js/CommonDialogs.js:154
 #, java-printf-format, javascript-format
 msgid "Subscribed to %s"
-msgstr ""
+msgstr "%s க்கு குழுசேர்ந்தது"
 
 #: js/CommonDialogs.js:163
 msgid "Specified URL seems to be invalid."
-msgstr ""
+msgstr "குறிப்பிட்ட முகவரி தவறானது என்று தெரிகிறது."
 
 #: js/CommonDialogs.js:166
 msgid "Specified URL doesn't seem to contain any feeds."
-msgstr ""
+msgstr "குறிப்பிட்ட முகவரி இல் எந்த ஊட்டங்களும் இருப்பதாகத் தெரியவில்லை."
 
 #: js/CommonDialogs.js:179
 msgid "Expand to select feed"
-msgstr ""
+msgstr "தீவனத்தைத் தேர்ந்தெடுக்க விரிவாக்கவும்"
 
 #: js/CommonDialogs.js:191
 #, java-printf-format, javascript-format
 msgid "Couldn't download the specified URL: %s"
-msgstr ""
+msgstr "குறிப்பிட்ட முகவரி ஐ பதிவிறக்கம் செய்ய முடியவில்லை: %s"
 
 #: js/CommonDialogs.js:194
 #, java-printf-format, javascript-format
 msgid "XML validation failed: %s"
-msgstr ""
+msgstr "எக்ச்எம்எல் சரிபார்ப்பு தோல்வியுற்றது: %s"
 
 #: js/CommonDialogs.js:197
 msgid "Error while creating feed database entry."
-msgstr ""
+msgstr "தீவன தரவுத்தள நுழைவை உருவாக்கும் போது பிழை."
 
 #: js/CommonDialogs.js:200
 msgid "You are not allowed to perform this operation."
-msgstr ""
+msgstr "இந்த செயல்பாட்டைச் செய்ய உங்களுக்கு இசைவு இல்லை."
 
 #: js/CommonDialogs.js:222
 msgid "Feeds with update errors"
-msgstr ""
+msgstr "புதுப்பிப்பு பிழைகள் மூலம் ஊட்டங்கள்"
 
 #: js/CommonDialogs.js:258
 msgid "Debug selected feeds?"
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களை பிழைத்திருத்தமா?"
 
 #: js/CommonDialogs.js:259
 msgid "Opening debugger for selected feeds..."
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களுக்கு பிழைத்திருத்தியைத் திறத்தல் ..."
 
 #: js/CommonDialogs.js:328
 msgid "Please enter label caption:"
-msgstr ""
+msgstr "சிட்டை தலைப்பை உள்ளிடவும்:"
 
 #: js/CommonDialogs.js:347 js/CommonDialogs.js:388 js/App.js:1316
 #, java-printf-format, javascript-format
 msgid "Unsubscribe from %s?"
-msgstr ""
+msgstr "%s இலிருந்து குழுவிலகவா?"
 
 #: js/CommonDialogs.js:350
 msgid "Removing feed..."
-msgstr ""
+msgstr "ஊட்டத்தை நீக்குதல் ..."
 
 #: js/CommonDialogs.js:373 js/App.js:1179 js/App.js:1296
 msgid "You can't edit this kind of feed."
-msgstr ""
+msgstr "இந்த வகையான ஊட்டத்தை நீங்கள் திருத்த முடியாது."
 
 #: js/CommonDialogs.js:398
 msgid "Please select an image file."
-msgstr ""
+msgstr "படக் கோப்பைத் தேர்ந்தெடுக்கவும்."
 
 #: js/CommonDialogs.js:418
 msgid "Icon file is too large."
-msgstr ""
+msgstr "படவுரு கோப்பு மிகப் பெரியது."
 
 #: js/CommonDialogs.js:421
 msgid "Upload failed."
-msgstr ""
+msgstr "பதிவேற்றம் தோல்வியடைந்தது."
 
 #: js/CommonDialogs.js:451
 msgid "Remove stored feed icon?"
-msgstr ""
+msgstr "சேமிக்கப்பட்ட தீவன ஐகானை அகற்றவா?"
 
 #: js/CommonDialogs.js:452
 msgid "Removing feed icon..."
-msgstr ""
+msgstr "தீவன ஐகானை நீக்குதல் ..."
 
 #: js/CommonDialogs.js:455
 msgid "Feed icon removed."
-msgstr ""
+msgstr "தீவன படவுரு அகற்றப்பட்டது."
 
 #: js/CommonDialogs.js:622
 msgid "Upload new icon..."
-msgstr ""
+msgstr "புதிய ஐகானைப் பதிவேற்றவும் ..."
 
 #: js/CommonDialogs.js:651 js/Headlines.js:642
 msgid "Show as feed"
-msgstr ""
+msgstr "தீவனமாகக் காட்டு"
 
 #: js/CommonDialogs.js:653
 msgid "Generate new syndication address for this feed?"
-msgstr ""
+msgstr "இந்த ஊட்டத்திற்கு புதிய சிண்டிகேசன் முகவரியை உருவாக்கவா?"
 
 #: js/CommonDialogs.js:655
 msgid "Trying to change address..."
-msgstr ""
+msgstr "முகவரியை மாற்ற முயற்சிக்கிறது ..."
 
 #: js/CommonDialogs.js:673
 msgid "Could not change feed URL."
-msgstr ""
+msgstr "தீவன முகவரி ஐ மாற்ற முடியவில்லை."
 
 #: js/CommonDialogs.js:680
 #, java-printf-format, javascript-format
 msgid "%s can be accessed via the following secret URL:"
-msgstr ""
+msgstr "பின்வரும் ரகசிய முகவரி வழியாக %களை அணுகலாம்:"
 
 #: js/App.js:314
 msgid "This function is only available in combined mode."
-msgstr ""
+msgstr "இந்த செயல்பாடு ஒருங்கிணைந்த பயன்முறையில் மட்டுமே கிடைக்கிறது."
 
 #: js/App.js:445
 msgid "Keyboard shortcuts"
-msgstr ""
+msgstr "விசைப்பலகை குறுக்குவழிகள்"
 
 #: js/App.js:506
 msgid "Update daemon is not running."
-msgstr ""
+msgstr "புதுப்பிப்பு டீமான் இயங்கவில்லை."
 
 #: js/App.js:519
 msgid "Update daemon is not updating feeds."
-msgstr ""
+msgstr "புதுப்பிப்பு டீமான் ஊட்டங்களை புதுப்பிக்கவில்லை."
 
 #: js/App.js:606
 #, java-printf-format
@@ -2727,303 +2761,310 @@ msgid ""
 "URL scheme reported by your browser (%a) doesn't match server-configured "
 "SELF_URL_PATH (%b), check X-Forwarded-Proto."
 msgstr ""
+"உங்கள் உலாவியால் அறிவிக்கப்பட்ட முகவரி திட்டம் (%A) சேவையக-கட்டமைக்கப்பட்ட SELF_URL_PATH "
+"(%B) உடன் பொருந்தாது, எக்ச்-முன்னோடி-புரோட்டோவை சரிபார்க்கவும்."
 
 #: js/App.js:613
 msgid "Fatal error"
-msgstr ""
+msgstr "அபாயகரமான பிழை"
 
 #: js/App.js:638
 msgid "Unhandled exception"
-msgstr ""
+msgstr "தடையற்ற விதிவிலக்கு"
 
 #: js/App.js:873
 msgid "Updates for Tiny Tiny RSS are available."
-msgstr ""
+msgstr "சிறிய சிறிய RSS க்கான புதுப்பிப்புகள் கிடைக்கின்றன."
 
 #: js/App.js:876
 msgid "Updates for some local plugins are available."
-msgstr ""
+msgstr "சில உள்ளக செருகுநிரல்களுக்கான புதுப்பிப்புகள் கிடைக்கின்றன."
 
 #: js/App.js:919
 msgid "Widescreen is not available in combined mode."
-msgstr ""
+msgstr "ஒருங்கிணைந்த பயன்முறையில் அகலத்திரை கிடைக்கவில்லை."
 
 #: js/App.js:1116
 msgid "Please enable mail or mailto plugin first."
-msgstr ""
+msgstr "முதலில் அஞ்சல் அல்லது மெயில்டோ சொருகி இயக்கவும்."
 
 #: js/App.js:1251
 msgid "Please enable af_readability first."
-msgstr ""
+msgstr "முதலில் AF_READABLICAL ஐ இயக்கவும்."
 
 #: js/App.js:1305
 msgid "Please select some feed first."
-msgstr ""
+msgstr "முதலில் சில ஊட்டங்களைத் தேர்ந்தெடுக்கவும்."
 
 #: js/App.js:1310
 msgid "You can't unsubscribe from the category."
-msgstr ""
+msgstr "நீங்கள் வகையிலிருந்து குழுவிலக முடியாது."
 
 #: js/FeedTree.js:137
 msgid "(Un)collapse"
-msgstr ""
+msgstr "(அன்) சரிவு"
 
 #: js/PrefLabelTree.js:71
 msgid "Edit label"
-msgstr ""
+msgstr "லேபிளைத் திருத்து"
 
 #: js/PrefLabelTree.js:143
 msgid "Foreground:"
-msgstr ""
+msgstr "முன்புறம்:"
 
 #: js/PrefLabelTree.js:144
 msgid "Background:"
-msgstr ""
+msgstr "பின்னணி:"
 
 #: js/PrefLabelTree.js:189
 msgid "Reset selected labels to default colors?"
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட லேபிள்களை இயல்புநிலை வண்ணங்களுக்கு மீட்டமைக்கவா?"
 
 #: js/PrefLabelTree.js:202 js/PrefLabelTree.js:222
 msgid "No labels selected."
-msgstr ""
+msgstr "லேபிள்கள் எதுவும் தேர்ந்தெடுக்கப்படவில்லை."
 
 #: js/PrefLabelTree.js:209
 msgid "Remove selected labels?"
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட லேபிள்களை அகற்றவா?"
 
 #: js/PrefLabelTree.js:210
 msgid "Removing selected labels..."
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட லேபிள்களை நீக்குதல் ..."
 
 #: plugins/note/note.js:19
 msgid "Saving article note..."
-msgstr ""
+msgstr "கட்டுரை சேமிக்கிறது குறிப்பு ..."
 
 #: plugins/share/share_prefs.js:5
 msgid "This will invalidate all previously shared article URLs. Continue?"
-msgstr ""
+msgstr "இது முன்னர் பகிரப்பட்ட அனைத்து கட்டுரை முகவரி களையும் செல்லாது. தொடரவா?"
 
 #: plugins/share/share.js:7
 msgid "Share article by URL"
-msgstr ""
+msgstr "முகவரி ஆல் கட்டுரையைப் பகிரவும்"
 
 #: plugins/share/share.js:9
 msgid "Generate new share URL for this article?"
-msgstr ""
+msgstr "இந்த கட்டுரைக்கு புதிய பங்கு முகவரி ஐ உருவாக்கவா?"
 
 #: plugins/share/share.js:11
 msgid "Trying to change URL..."
-msgstr ""
+msgstr "முகவரி ஐ மாற்ற முயற்சிக்கிறது ..."
 
 #: plugins/share/share.js:34
 msgid "Could not change URL."
-msgstr ""
+msgstr "முகவரி ஐ மாற்ற முடியவில்லை."
 
 #: plugins/share/share.js:42
 msgid "Remove sharing for this article?"
-msgstr ""
+msgstr "இந்த கட்டுரைக்கான பகிர்வை அகற்றவா?"
 
 #: plugins/af_psql_trgm/init.js:6
 msgid "Related articles"
-msgstr ""
+msgstr "தொடர்புடைய கட்டுரைகள்"
 
 #: plugins/shorten_expanded/init.js:32
 msgid "Expand article"
-msgstr ""
+msgstr "கட்டுரையை விரிவாக்குங்கள்"
 
 #: js/CommonFilters.js:71
 msgid "No recent articles matching this filter have been found."
 msgstr ""
+"இந்த வடிப்பானுடன் பொருந்தக்கூடிய அண்மைக் கால கட்டுரைகள் எதுவும் கண்டறியப்படவில்லை."
 
 #: js/CommonFilters.js:421
 msgid "Enabled"
-msgstr ""
+msgstr "இயக்கப்பட்டது"
 
 #: js/CommonFilters.js:422
 msgid "Match any rule"
-msgstr ""
+msgstr "எந்த விதியையும் பொருத்துங்கள்"
 
 #: js/CommonFilters.js:423
 msgid "Inverse matching"
-msgstr ""
+msgstr "தலைகீழ் பொருத்தம்"
 
 #: js/CommonFilters.js:441
 msgid "Match"
-msgstr ""
+msgstr "போட்டி"
 
 #: js/CommonFilters.js:474
 msgid "Apply actions"
-msgstr ""
+msgstr "செயல்களைப் பயன்படுத்துங்கள்"
 
 #: js/Headlines.js:474
 msgid "mark feed as read"
-msgstr ""
+msgstr "தீவனத்தை படிக்க"
 
 #: js/Headlines.js:527
 msgid "Span all columns"
-msgstr ""
+msgstr "அனைத்து நெடுவரிசைகளையும் பரப்பவும்"
 
 #: js/Headlines.js:554 js/Article.js:317
 msgid "Edit tags for this article"
-msgstr ""
+msgstr "இந்த கட்டுரைக்கான குறிச்சொற்களைத் திருத்தவும்"
 
 #: js/Headlines.js:666
 msgid "Invert"
-msgstr ""
+msgstr "தலைகீழ்"
 
 #: js/Headlines.js:674
 msgid "Set score"
-msgstr ""
+msgstr "மதிப்பெண் அமைக்கவும்"
 
 #: js/Headlines.js:683
 msgid "Delete permanently"
-msgstr ""
+msgstr "நிரந்தரமாக நீக்கு"
 
 #: js/Headlines.js:914
 msgid ""
 "Could not update headlines (invalid object received - see error console for "
 "details)"
 msgstr ""
+"தலைப்புச் செய்திகளைப் புதுப்பிக்க முடியவில்லை (தவறான பொருள் பெறப்பட்டது - விவரங்களுக்கு "
+"பிழை கன்சோலைப் பார்க்கவும்)"
 
 #: js/PrefHelpers.js:229
 msgid "Clone"
-msgstr ""
+msgstr "நகலி"
 
 #: js/PrefHelpers.js:231
 msgid "Activate"
-msgstr ""
+msgstr "செயல்படுத்து"
 
 #: js/PrefHelpers.js:299
 msgid "Apply"
-msgstr ""
+msgstr "இடு"
 
 #: js/PrefHelpers.js:303
 msgid "Save and reload"
-msgstr ""
+msgstr "சேமித்து மீண்டும் ஏற்றவும்"
 
 #: js/PrefHelpers.js:352
 msgid "Selected plugins have been enabled. Reload?"
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட செருகுநிரல்கள் இயக்கப்பட்டுள்ளன. மீண்டும் ஏற்றவா?"
 
 #: js/PrefHelpers.js:400
 msgid "System plugins are enabled using global configuration."
-msgstr ""
+msgstr "உலகளாவிய உள்ளமைவைப் பயன்படுத்தி கணினி செருகுநிரல்கள் இயக்கப்பட்டுள்ளன."
 
 #: js/PrefHelpers.js:577
 msgid "Install"
-msgstr ""
+msgstr "நிறுவவும்"
 
 #: js/PrefHelpers.js:654
 msgid "Updating..."
-msgstr ""
+msgstr "புதுப்பித்தல் ..."
 
 #: js/PrefHelpers.js:687
 msgid "Updates complete"
-msgstr ""
+msgstr "புதுப்பிப்புகள் முடிந்தது"
 
 #: js/PrefHelpers.js:701
 #, javascript-format
 msgid "Updates pending for %d plugin"
 msgid_plural "Updates pending for %d plugins"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "புதுப்பிப்புகள் %d சொருகி நிலுவையில் உள்ளன"
+msgstr[1] "புதுப்பிப்புகள் %d செருகுநிரல்களுக்கு நிலுவையில் உள்ளன"
 
 #: js/Article.js:205
 msgid "Attachments"
-msgstr ""
+msgstr "இணைப்புகள்"
 
 #: js/Feeds.js:292
 msgid "Open Preferences"
-msgstr ""
+msgstr "திறந்த விருப்பத்தேர்வுகள்"
 
 #: js/Feeds.js:635
 #, javascript-format
 msgid "Search %s..."
-msgstr ""
+msgstr "தேடல் %s ..."
 
 #: js/Feeds.js:644
 msgid "Used for word stemming"
-msgstr ""
+msgstr "சொல் தண்டு பயன்படுத்தப்படுகிறது"
 
 #: js/Feeds.js:704
 msgid "Show feeds matching..."
-msgstr ""
+msgstr "ஊட்டங்கள் பொருத்தத்தைக் காட்டு ..."
 
 #: js/PrefUsers.js:76
 msgid "Access level: "
-msgstr ""
+msgstr "அணுகல் நிலை: "
 
 #: js/PrefUsers.js:92
 msgid "OTP enabled"
-msgstr ""
+msgstr "OTP இயக்கப்பட்டது"
 
 #: js/PrefUsers.js:104
 msgid "User details"
-msgstr ""
+msgstr "பயனர் விவரங்கள்"
 
 #: js/PrefFeedTree.js:390
 msgid "Rename category to:"
-msgstr ""
+msgstr "வகையை மறுபெயரிடுங்கள்:"
 
 #: js/PrefFeedTree.js:466
 msgid "Feeds require authentication."
-msgstr ""
+msgstr "ஊட்டங்களுக்கு ஏற்பு தேவை."
 
 #: js/PrefFeedTree.js:555 js/CommonDialogs.js:312
 msgid "Unsubscribe from selected feeds"
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களிலிருந்து குழுவிலகவும்"
 
 #: js/CommonDialogs.js:18
 msgid ""
 "Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. "
 "You will need to log out and back in to disable it."
 msgstr ""
+"சிறிய சிறிய ஆர்எச்எச் பாதுகாப்பான பயன்முறையில் இயங்குகிறது. அனைத்து கருப்பொருள்கள் மற்றும்"
+" செருகுநிரல்கள் முடக்கப்பட்டுள்ளன. அதை முடக்க நீங்கள் வெளியேறி மீண்டும் உள்ளே செல்ல வேண்டும்."
 
 #: js/CommonDialogs.js:53
 msgid "Feed or site URL"
-msgstr ""
+msgstr "தீவனம் அல்லது தள முகவரி"
 
 #: js/CommonDialogs.js:68
 msgid "Available feeds"
-msgstr ""
+msgstr "கிடைக்கும் ஊட்டங்கள்"
 
 #: js/CommonDialogs.js:101
 msgid "This feed requires authentication."
-msgstr ""
+msgstr "இந்த ஊட்டத்திற்கு ஏற்பு தேவை."
 
 #: js/CommonDialogs.js:315
 msgid "Debug selected feeds"
-msgstr ""
+msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களை பிழைத்திருத்த"
 
 #: js/CommonDialogs.js:526
 msgid "Feed title"
-msgstr ""
+msgstr "தீவன தலைப்பு"
 
 #: js/CommonDialogs.js:533
 msgid "Feed URL"
-msgstr ""
+msgstr "முகவரி க்கு உணவளிக்கவும்"
 
 #: js/CommonDialogs.js:552
 msgid "Site URL:"
-msgstr ""
+msgstr "தள URL:"
 
 #: js/CommonDialogs.js:554
 msgid "Site URL"
-msgstr ""
+msgstr "தள முகவரி"
 
 #: js/CommonDialogs.js:617
 msgid "Icon"
-msgstr ""
+msgstr "படவுரு"
 
 #: js/App.js:646
 msgid "Stack trace"
-msgstr ""
+msgstr "ச்டாக் சுவடு"
 
 #: js/App.js:653
 msgid "Additional information"
-msgstr ""
+msgstr "கூடுதல் தகவல்"
 
 #: js/PrefLabelTree.js:126
 msgid "Caption"
-msgstr ""
+msgstr "தலைப்பு"

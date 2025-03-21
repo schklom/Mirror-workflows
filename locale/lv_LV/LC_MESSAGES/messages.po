@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-14 12:17+0300\n"
-"PO-Revision-Date: 2024-12-17 07:00+0000\n"
+"PO-Revision-Date: 2025-03-21 16:11+0000\n"
 "Last-Translator: Edgars Andersons <Edgars+Weblate@gaitenis.id.lv>\n"
 "Language-Team: Latvian <https://hosted.weblate.org/projects/tt-rss/webui/lv/>"
 "\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Weblate 5.9\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -77,7 +77,7 @@ msgstr "12 stundas"
 
 #: backend.php:77 backend.php:87
 msgid "Daily"
-msgstr "Ik dienas"
+msgstr "Ik dienu"
 
 #: backend.php:78 backend.php:88
 msgid "Weekly"
@@ -136,7 +136,7 @@ msgstr "Rādīt rakstus"
 
 #: index.php:181
 msgid "Adaptive"
-msgstr "Adaptīvs"
+msgstr "Pielāgojams"
 
 #: index.php:182
 msgid "All Articles"
@@ -168,11 +168,11 @@ msgstr "Noklusējuma"
 
 #: index.php:194
 msgid "Newest first"
-msgstr "Jaunāko vispirms"
+msgstr "Vispirms jaunākos"
 
 #: index.php:195
 msgid "Oldest first"
-msgstr "Vecāko vispirms"
+msgstr "Vispirms vecākos"
 
 #: index.php:196 js/CommonFilters.js:437
 msgid "Title"
@@ -185,15 +185,15 @@ msgstr "Atzīmēt kā lasītu"
 
 #: index.php:210
 msgid "Older than one day"
-msgstr "Par dienu vecākus"
+msgstr "Vecākus par dienu"
 
 #: index.php:211
 msgid "Older than one week"
-msgstr "Par nedēļu vecākus"
+msgstr "Vecākus par nedēļu"
 
 #: index.php:212
 msgid "Older than two weeks"
-msgstr "Par divām nedēļām vecākus"
+msgstr "Vecākus par divām nedēļām"
 
 #: index.php:227
 msgid "Actions..."
@@ -222,12 +222,12 @@ msgstr "Abonēt barotni..."
 
 #: index.php:258
 msgid "Edit this feed..."
-msgstr "Mainīt šo barotni..."
+msgstr "Labot šo barotni..."
 
 #: index.php:259 classes/Pref_Feeds.php:960 js/PrefFeedTree.js:120
 #: js/CommonDialogs.js:633
 msgid "Unsubscribe"
-msgstr "Dzēst"
+msgstr "Atcelt abonementu"
 
 #: index.php:260
 msgid "All feeds:"
@@ -243,7 +243,7 @@ msgstr "Saskarnes izkārtojums:"
 
 #: index.php:264 classes/RPC.php:640
 msgid "Toggle combined mode"
-msgstr "Pārslēgt kombinēto režīmu"
+msgstr "Pārslēgt apvienoto režīmu"
 
 #: index.php:266 classes/RPC.php:617
 msgid "Toggle widescreen mode"
@@ -259,7 +259,7 @@ msgstr "Citas darbības:"
 
 #: index.php:270
 msgid "Keyboard shortcuts help"
-msgstr "Isinājumtaustiņu palīdzība"
+msgstr "Palīdzība par īsinājumtaustiņiem"
 
 #: index.php:279
 msgid "Logout"
@@ -377,7 +377,7 @@ msgstr "Atzīmēt nosūtītos rakstus kā izlasītus"
 
 #: classes/Pref_Prefs.php:106
 msgid "Enable digest"
-msgstr "Ieslēgt īssavilkumu"
+msgstr "Iespējot īssavilkumu"
 
 #: classes/Pref_Prefs.php:106
 msgid "Send daily digest of new (and unread) headlines to your e-mail address"
@@ -423,11 +423,11 @@ msgstr "Vienmēr rādīt īpašās barotnes"
 
 #: classes/Pref_Prefs.php:112
 msgid "While hiding read feeds"
-msgstr "Kamēr paslēpj izlasītās barotnes"
+msgstr "Kamēr izlasītās barotnes ir paslēptas"
 
 #: classes/Pref_Prefs.php:113
 msgid "Long date format"
-msgstr "Garais datumu formāts"
+msgstr "Garais datumu veidols"
 
 #: classes/Pref_Prefs.php:113
 msgid ""
@@ -435,11 +435,11 @@ msgid ""
 "php'>date()</a> function."
 msgstr ""
 "Pieraksts ir tāds pats kā PHP funkcijai <a href='http://php.net/manual/"
-"function.date.php'>date()</a>."
+"function.date.php'><code>date()</code></a>."
 
 #: classes/Pref_Prefs.php:114
 msgid "Automatically show next feed"
-msgstr "Automātiski rādīt nākamo barotni"
+msgstr "Automātiski parādīt nākamo barotni"
 
 #: classes/Pref_Prefs.php:114
 msgid "After marking one as read"

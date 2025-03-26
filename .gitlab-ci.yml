@@ -123,6 +123,8 @@ phpunit-integration:
         coverage_format: cobertura
         path: phpunit-coverage.xml
   coverage: '/^\s*Lines:\s*\d+.\d+\%/'
+  tags:
+    - $RUNNER_TAG_INTEGRATION
 
 selenium:
   image: ${SELENIUM_IMAGE}
@@ -144,6 +146,8 @@ selenium:
     when: always
     reports:
       junit: selenium-report.xml
+  tags:
+    - $RUNNER_TAG_INTEGRATION
 
 ttrss-fpm-pgsql-static:publish:
   stage: publish

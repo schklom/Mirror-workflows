@@ -10,6 +10,7 @@ on:
       - main
     paths:
       - ".github/workflows/Sync+build+push Protonmail-bridge.yml"
+  
   workflow_dispatch:
 
 jobs:

@@ -80,6 +80,7 @@
 					"uk_UA" => "Українська",
 					"sv_SE" => "Svenska",
 					"fi_FI" => "Suomi",
+					"ta"    => "Tamil",
 					"tr_TR" => "Türkçe");
 
 		return $t;

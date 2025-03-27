@@ -36,8 +36,9 @@ jobs:
         run: |
           echo "SETREMOTE_FORK=$(git ls-remote https://github.com/shenxn/protonmail-bridge-docker HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
           echo "SETLOCAL_FORK=$(cat last_sync_with_original_repo_commit_id)" >> $GITHUB_OUTPUT
-          echo "SETREMOTE_PARENT=$(git ls-remote https://github.com/ProtonMail/proton-bridge HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
-          echo "SETLOCAL_PARENT=$(cat last_sync_with_original_parent_repo_commit_id)" >> $GITHUB_OUTPUT
+          # The latest version has a GitHub-only pre-release tag. So we use GitHub API to find the latest non-pre-release version
+          echo "SETREMOTE_PARENT=$(curl -s 'https://api.github.com/repos/ProtonMail/proton-bridge/releases' | jq -r '[.[] | select(.prerelease == false)][0].published_at')" >> $GITHUB_OUTPUT
+          echo "SETLOCAL_PARENT=$(cat last_sync_with_original_parent_repo_latest_published_date)" >> $GITHUB_OUTPUT
   
   repo_sync:
     needs: [get_commits]
@@ -66,12 +67,12 @@ jobs:
       - name: get most recent commit id on original repo, for next comparison on sync PART 1
         run: |
           git ls-remote https://github.com/shenxn/protonmail-bridge-docker HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
-          git ls-remote https://github.com/ProtonMail/proton-bridge HEAD | awk '{ print $1 }' > last_sync_with_original_parent_repo_commit_id
+          curl -s 'https://api.github.com/repos/ProtonMail/proton-bridge/releases' | jq -r '[.[] | select(.prerelease == false)][0].published_at' > last_sync_with_original_parent_repo_latest_published_date
       
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: Add last_sync_with_original_repo_commit_id + last_sync_with_original_parent_repo_commit_id
+          commit_message: Add last_sync_with_original_repo_commit_id + last_sync_with_original_parent_repo_latest_published_date
 
       # - name: Change golang image
         # run: |

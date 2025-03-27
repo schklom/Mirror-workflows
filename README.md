@@ -154,10 +154,19 @@ NOTE: `yml` not `yaml`!
 
 ## Other Implementations
 
-The community has developed implementations of FMD Server in other languages/frameworks:
+The community has developed the following alternative servers:
 
 - [FindMyDeviceServerPHP](https://gitlab.com/Playit3110/FindMyDeviceServerPHP)
 - [Django Find My Device](https://gitlab.com/jedie/django-find-my-device)
+
+The community has developed the following alternative clients:
+
+- [JavaScript](https://github.com/AirplanegoBrr/fmd-js-api)
+- [Python](https://github.com/kinkerl/findmydevice_python)
+
+**These implementations are unofficial, and are not audited by the FMD authors.**
+Links are provided for your convenience only.
+Use at your own risk.
 
 ## Donate
 

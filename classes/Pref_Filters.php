@@ -70,6 +70,7 @@ class Pref_Filters extends Handler_Protected {
 		$offset = (int) clean($_REQUEST["offset"]);
 		$limit = (int) clean($_REQUEST["limit"]);
 
+		// catchall fake filter which includes all rules
 		$filter = [
 			'enabled' => true,
 			'match_any_rule' => checkbox_to_sql_bool($_REQUEST['match_any_rule'] ?? false),
@@ -103,7 +104,10 @@ class Pref_Filters extends Handler_Protected {
 				foreach ($rule["feed_id"] as $feed_id) {
 					if (str_starts_with("$feed_id", "CAT:")) {
 						$cat_id = (int) substr("$feed_id", 4);
-						array_push($scope_inner_qparts, "cat_id = " . $cat_id);
+						if ($cat_id > 0)
+							array_push($scope_inner_qparts, "cat_id = " . $cat_id);
+						else
+							array_push($scope_inner_qparts, "cat_id IS NULL");
 					} else if (is_numeric($feed_id) && $feed_id > 0) {
 						array_push($scope_inner_qparts, "feed_id = " . (int)$feed_id);
 					}
@@ -137,8 +141,29 @@ class Pref_Filters extends Handler_Protected {
 		];
 
 		foreach ($entries as $entry) {
-			$rc = RSSUtils::get_article_filters(array($filter), $entry['title'], $entry['content'], $entry['link'],
-				$entry['author'], explode(",", $entry['tag_cache']));
+
+			// temporary filter which will be used to compare against returned article
+			$feed_filter = $filter;
+			$feed_filter['rules'] = [];
+
+			// only add rules which match result from specific feed or category ID or rules matching all feeds
+			// @phpstan-ignore foreach.emptyArray
+			foreach ($filter['rules'] as $rule) {
+				foreach ($rule['feed_id'] as $rule_feed) {
+					if (($rule_feed === 'CAT:0' && $entry['cat_id'] === null) || 			// rule matches Uncategorized
+							$rule_feed === 'CAT:' . $entry['cat_id'] ||                    // rule matches category
+							$rule_feed === $entry['feed_id'] ||                            // rule matches feed
+							$rule_feed === '0') {                                          // rule matches all feeds
+
+						$feed_filter['rules'][] = $rule;
+					}
+				}
+			}
+
+			$matched_rules = [];
+
+			$rc = RSSUtils::get_article_filters([$feed_filter], $entry['title'], $entry['content'], $entry['link'],
+				$entry['author'], explode(",", $entry['tag_cache']), $matched_rules);
 
 			if (count($rc) > 0) {
 				$entry["content_preview"] = truncate_string(strip_tags($entry["content"]), 200, '&hellip;');
@@ -156,6 +181,7 @@ class Pref_Filters extends Handler_Protected {
 					'feed_title' => $entry['feed_title'],
 					'date' => mb_substr($entry['date_entered'], 0, 16),
 					'content_preview' => $entry['content_preview'],
+					'matched_rules' => $matched_rules,
 				];
 			}
 		}

@@ -27,7 +27,7 @@ const CONTEXT_STRING_LOGIN = "context:loginAuthentication";
 
 // Section: Password and hashing
 
-async function hashPasswordForLoginModern(password, salt) {
+async function hashPasswordForLogin(password, salt) {
     const res = await hashPasswordArgon2(CONTEXT_STRING_LOGIN + password, salt);
     return res.encoded // string
 }
@@ -62,14 +62,14 @@ async function hashPasswordArgon2(password, salt) {
 
 async function unwrapPrivateKey(password, keyData) {
     try {
-        return await unwrapPrivateKeyModern(password, keyData);
+        return await unwrapPrivateKey(password, keyData);
     } catch (error) {
         console.log("unwrapKey failed:", error);
     }
     return -1
 }
 
-async function unwrapPrivateKeyModern(password, keyData) { // -> CryptoKey
+async function unwrapPrivateKey(password, keyData) { // -> CryptoKey
     const concatBytes = base64Decode(keyData);
     const saltBytes = concatBytes.slice(0, ARGON2_SALT_LENGTH);
     const ivBytes = concatBytes.slice(ARGON2_SALT_LENGTH, ARGON2_SALT_LENGTH + AES_GCM_IV_SIZE_BYTES);
@@ -115,7 +115,7 @@ async function sign(rsaCryptoKey, msg) {
 
 // Section: Symmetric crypto
 
-async function decryptPacketModern(rsaCryptoKey, packetBase64) {
+async function decryptPacket(rsaCryptoKey, packetBase64) {
     const concatBytes = base64Decode(packetBase64);
     const sessionKeyPacketBytes = concatBytes.slice(0, RSA_KEY_SIZE_BYTES);
     const ivBytes = concatBytes.slice(RSA_KEY_SIZE_BYTES, RSA_KEY_SIZE_BYTES + AES_GCM_IV_SIZE_BYTES);

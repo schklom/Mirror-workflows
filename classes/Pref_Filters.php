@@ -181,10 +181,12 @@ class Pref_Filters extends Handler_Protected {
 					$can_highlight_content = false;
 					$can_highlight_title = false;
 
-					$matches[] = $rule['regexp_matches'][0];
+					$rule_regexp_match = mb_substr(strip_tags($rule['regexp_matches'][0]), 0, 200);
+
+					$matches[] = $rule_regexp_match;
 
 					if (in_array($rule['type'], ['content', 'both'])) {
-						$match_index = mb_strpos($entry_content_text, $rule['regexp_matches'][0]);
+						$match_index = mb_strpos($entry_content_text, $rule_regexp_match);
 						$content_preview = truncate_string(mb_substr($entry_content_text, $match_index), 200);
 
 						if ($match_index > 0)
@@ -228,7 +230,7 @@ class Pref_Filters extends Handler_Protected {
 					'feed_title' => $entry['feed_title'],
 					'date' => mb_substr($entry['date_entered'], 0, 16),
 					'content_preview' => $content_preview,
-					'matched_rules' => $matched_rules,
+					'matched_rules' => $matched_rules, // TODO shorten object passed to frontend
 				];
 			}
 		}

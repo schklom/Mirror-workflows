@@ -59,6 +59,65 @@ class Sanitizer {
 		return parse_url(Config::get_self_url(), PHP_URL_SCHEME) == 'https';
 	}
 
+	/** @param array<string> $words */
+	public static function highlight_words_str(string $str, array $words) : string {
+		$doc = new DOMDocument();
+
+		if ($doc->loadHTML('<?xml encoding="UTF-8"><span>' . $str . '</span>')) {
+			$xpath = new DOMXPath($doc);
+
+			if (self::highlight_words($doc, $xpath, $words)) {
+				$res = $doc->saveHTML();
+
+				/* strip everything outside of <body>...</body> */
+				$res_frag = array();
+
+				if (preg_match('/<body>(.*)<\/body>/is', $res, $res_frag)) {
+					return $res_frag[1];
+				} else {
+					return $res;
+				}
+			}
+		}
+
+		return $str;
+	}
+
+	/** @param array<string> $words */
+	public static function highlight_words(DOMDocument &$doc, DOMXPath $xpath, array $words) : bool {
+		$rv = false;
+
+		foreach ($words as $word) {
+
+			// http://stackoverflow.com/questions/4081372/highlight-keywords-in-a-paragraph
+			$elements = $xpath->query("//*/text()");
+
+			foreach ($elements as $child) {
+
+				$fragment = $doc->createDocumentFragment();
+				$text = $child->textContent;
+
+				while (($pos = mb_stripos($text, $word)) !== false) {
+					$fragment->appendChild(new DOMText(mb_substr($text, 0, (int)$pos)));
+					$word = mb_substr($text, (int)$pos, mb_strlen($word));
+					$highlight = $doc->createElement('span');
+					$highlight->appendChild(new DOMText($word));
+					$highlight->setAttribute('class', 'highlight');
+					$fragment->appendChild($highlight);
+					$text = mb_substr($text, $pos + mb_strlen($word));
+				}
+
+				if (!empty($text)) $fragment->appendChild(new DOMText($text));
+
+				$child->parentNode->replaceChild($fragment, $child);
+
+				$rv = true;
+			}
+		}
+
+		return $rv;
+	}
+
 	/**
 	 * @param array<int, string>|null $highlight_words Words to highlight in the HTML output.
 	 *
@@ -197,34 +256,8 @@ class Sanitizer {
 			$div->appendChild($entry);
 		}
 
-		if (is_array($highlight_words)) {
-			foreach ($highlight_words as $word) {
-
-				// http://stackoverflow.com/questions/4081372/highlight-keywords-in-a-paragraph
-
-				$elements = $xpath->query("//*/text()");
-
-				foreach ($elements as $child) {
-
-					$fragment = $doc->createDocumentFragment();
-					$text = $child->textContent;
-
-					while (($pos = mb_stripos($text, $word)) !== false) {
-						$fragment->appendChild(new DOMText(mb_substr($text, 0, (int)$pos)));
-						$word = mb_substr($text, (int)$pos, mb_strlen($word));
-						$highlight = $doc->createElement('span');
-						$highlight->appendChild(new DOMText($word));
-						$highlight->setAttribute('class', 'highlight');
-						$fragment->appendChild($highlight);
-						$text = mb_substr($text, $pos + mb_strlen($word));
-					}
-
-					if (!empty($text)) $fragment->appendChild(new DOMText($text));
-
-					$child->parentNode->replaceChild($fragment, $child);
-				}
-			}
-		}
+		if (is_array($highlight_words))
+			self::highlight_words($doc, $xpath, $highlight_words);
 
 		$res = $doc->saveHTML();
 

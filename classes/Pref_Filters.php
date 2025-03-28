@@ -176,11 +176,43 @@ class Pref_Filters extends Handler_Protected {
 					},
 					$entry, $excerpt_length);
 
+				$matches = [];
+
+				$content_preview = $entry["content_preview"];
+				$content_title = $entry["title"];
+
+				// is it even possible to have multiple matched rules here?
+				foreach ($matched_rules as $rule) {
+					$can_highlight_content = false;
+					$can_highlight_title = false;
+
+					$matches[] = $rule['regexp_matches'][0];
+
+					switch ($rule['type']) {
+						case "both":
+							$can_highlight_title = true;
+							$can_highlight_content = true;
+							break;
+						case "title":
+							$can_highlight_title = true;
+							break;
+						case "content":
+							$can_highlight_content = true;
+							break;
+					}
+
+					if ($can_highlight_content)
+						$content_preview = Sanitizer::highlight_words_str($content_preview, $matches);
+
+					if ($can_highlight_title)
+						$content_title = Sanitizer::highlight_words_str($content_title, $matches);
+				}
+
 				$rv['items'][] = [
-					'title' => $entry['title'],
+					'title' => $content_title,
 					'feed_title' => $entry['feed_title'],
 					'date' => mb_substr($entry['date_entered'], 0, 16),
-					'content_preview' => $entry['content_preview'],
+					'content_preview' => $content_preview,
 					'matched_rules' => $matched_rules,
 				];
 			}

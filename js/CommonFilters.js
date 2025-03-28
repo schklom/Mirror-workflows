@@ -20,7 +20,7 @@ const	Filters = {
 			PARAM_ACTIONS: [4, 6, 7, 9, 10],
 			filter_info: {},
 			formatMatchedRules: function(rules) {
-				return rules.map((r) => r.regexp_matches[0] + ' - ' + r.reg_exp).join('\n');
+				return rules.map((r) => r.regexp_matches[0] + ' - ' + r.reg_exp + ' (' + r.type + ')').join('\n');
 			},
 			test: function() {
 				const test_dialog = new fox.SingleUseDialog({

@@ -152,7 +152,7 @@ class Pref_Filters extends Handler_Protected {
 				foreach ($rule['feed_id'] as $rule_feed) {
 					if (($rule_feed === 'CAT:0' && $entry['cat_id'] === null) || 			// rule matches Uncategorized
 							$rule_feed === 'CAT:' . $entry['cat_id'] ||                    // rule matches category
-							$rule_feed === $entry['feed_id'] ||                            // rule matches feed
+							(int)$rule_feed === $entry['feed_id'] ||                            // rule matches feed
 							$rule_feed === '0') {                                          // rule matches all feeds
 
 						$feed_filter['rules'][] = $rule;
@@ -162,31 +162,43 @@ class Pref_Filters extends Handler_Protected {
 
 			$matched_rules = [];
 
+			$entry_tags = explode(",", $entry['tag_cache']);
+
 			$rc = RSSUtils::get_article_filters([$feed_filter], $entry['title'], $entry['content'], $entry['link'],
-				$entry['author'], explode(",", $entry['tag_cache']), $matched_rules);
+				$entry['author'], $entry_tags, $matched_rules);
 
 			if (count($rc) > 0) {
-				$entry["content_preview"] = truncate_string(strip_tags($entry["content"]), 200, '&hellip;');
-
-				$excerpt_length = 100;
-
-				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_QUERY_HEADLINES,
-					function ($result) use (&$entry) {
-						$entry = $result;
-					},
-					$entry, $excerpt_length);
+				$entry_content_text = strip_tags($entry["content"]);
+				$content_preview = "";
 
 				$matches = [];
 
-				$content_preview = $entry["content_preview"];
-				$content_title = $entry["title"];
+				$entry_title = $entry["title"];
 
-				// is it even possible to have multiple matched rules here?
+				// technically only one rule may match *here* because we're testing a single (fake) filter defined above
+				// let's keep this forward-compatible in case we'll want to return multiple rules for whatever reason
 				foreach ($matched_rules as $rule) {
 					$can_highlight_content = false;
 					$can_highlight_title = false;
 
 					$matches[] = $rule['regexp_matches'][0];
+
+					if (in_array($rule['type'], ['content', 'both'])) {
+						$match_index = mb_strpos($entry_content_text, $rule['regexp_matches'][0]);
+						$content_preview = truncate_string(mb_substr($entry_content_text, $match_index), 200);
+
+						if ($match_index > 0)
+							$content_preview = '&hellip;' . $content_preview;
+
+					} else if ($rule['type'] == 'link') {
+						$content_preview = $entry['link'];
+					} else if ($rule['type'] == 'author') {
+						$content_preview = $entry['author'];
+					} else if ($rule['type'] == 'tag') {
+						$content_preview = '<i class="material-icons">label_outline</i> ' . implode(', ', $entry_tags);
+					} else {
+						$content_preview = "&mdash;";
+					}
 
 					switch ($rule['type']) {
 						case "both":
@@ -197,6 +209,9 @@ class Pref_Filters extends Handler_Protected {
 							$can_highlight_title = true;
 							break;
 						case "content":
+						case "link":
+						case "author":
+						case "tag":
 							$can_highlight_content = true;
 							break;
 					}
@@ -205,11 +220,11 @@ class Pref_Filters extends Handler_Protected {
 						$content_preview = Sanitizer::highlight_words_str($content_preview, $matches);
 
 					if ($can_highlight_title)
-						$content_title = Sanitizer::highlight_words_str($content_title, $matches);
+						$entry_title = Sanitizer::highlight_words_str($entry_title, $matches);
 				}
 
 				$rv['items'][] = [
-					'title' => $content_title,
+					'title' => $entry_title,
 					'feed_title' => $entry['feed_title'],
 					'date' => mb_substr($entry['date_entered'], 0, 16),
 					'content_preview' => $content_preview,

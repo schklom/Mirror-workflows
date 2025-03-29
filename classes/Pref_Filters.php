@@ -168,7 +168,6 @@ class Pref_Filters extends Handler_Protected {
 				$entry['author'], $entry_tags, $matched_rules);
 
 			if (count($rc) > 0) {
-				$entry_content_text = strip_tags($entry["content"]);
 				$content_preview = "";
 
 				$matches = [];
@@ -186,6 +185,9 @@ class Pref_Filters extends Handler_Protected {
 					$matches[] = $rule_regexp_match;
 
 					if (in_array($rule['type'], ['content', 'both'])) {
+						// also stripping [\r\n\t] to match what's done for content in RSSUtils#get_article_filters()
+						$entry_content_text = strip_tags(preg_replace("/[\r\n\t]/", "", $entry["content"]));
+
 						$match_index = mb_strpos($entry_content_text, $rule_regexp_match);
 						$content_preview = truncate_string(mb_substr($entry_content_text, $match_index), 200);
 

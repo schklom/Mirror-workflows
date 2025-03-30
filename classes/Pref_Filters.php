@@ -171,6 +171,7 @@ class Pref_Filters extends Handler_Protected {
 				$content_preview = "";
 
 				$matches = [];
+				$rules = [];
 
 				$entry_title = $entry["title"];
 
@@ -183,6 +184,11 @@ class Pref_Filters extends Handler_Protected {
 					$rule_regexp_match = mb_substr(strip_tags($rule['regexp_matches'][0]), 0, 200);
 
 					$matches[] = $rule_regexp_match;
+
+					$rules[] = [
+						'reg_exp' => $rule['reg_exp'],
+						'type' => $rule['type']
+					];
 
 					if (in_array($rule['type'], ['content', 'both'])) {
 						// also stripping [\r\n\t] to match what's done for content in RSSUtils#get_article_filters()
@@ -232,7 +238,7 @@ class Pref_Filters extends Handler_Protected {
 					'feed_title' => $entry['feed_title'],
 					'date' => mb_substr($entry['date_entered'], 0, 16),
 					'content_preview' => $content_preview,
-					'matched_rules' => $matched_rules, // TODO shorten object passed to frontend
+					'rules' => $rules
 				];
 			}
 		}

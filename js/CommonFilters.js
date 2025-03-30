@@ -19,9 +19,6 @@ const	Filters = {
 			ACTION_REMOVE_TAG: 10,
 			PARAM_ACTIONS: [4, 6, 7, 9, 10],
 			filter_info: {},
-			formatMatchedRules: function(rules) {
-				return rules.map((r) => r.reg_exp + ' (' + r.type + ')').join('\n');
-			},
 			test: function() {
 				const test_dialog = new fox.SingleUseDialog({
 					title: "Test Filter",
@@ -46,7 +43,7 @@ const	Filters = {
 												.replace("%f", test_dialog.results)
 												.replace("%d", offset);
 
-										results_list.innerHTML += result.items.reduce((current, item) => current + `<li title="${App.escapeHtml(dialog.formatMatchedRules(item.rules))}"><span class='title'>${item.title}</span>
+										results_list.innerHTML += result.items.reduce((current, item) => current + `<li title="${App.escapeHtml(item.rules.join('\n'))}"><span class='title'>${item.title}</span>
 												&mdash; <span class='feed'>${item.feed_title}</span>, <span class='date'>${item.date}</span>
 												<div class='preview text-muted'>${item.content_preview}</div></li>`, '');
 

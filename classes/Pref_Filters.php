@@ -95,7 +95,6 @@ class Pref_Filters extends Handler_Protected {
 
 			if (is_array($rule)) {
 				$rule['type'] = $filter_types[$rule['filter_type']];
-				unset($rule['filter_type']);
 				array_push($filter['rules'], $rule);
 
 				$scope_inner_qparts = [];
@@ -185,10 +184,7 @@ class Pref_Filters extends Handler_Protected {
 
 					$matches[] = $rule_regexp_match;
 
-					$rules[] = [
-						'reg_exp' => $rule['reg_exp'],
-						'type' => $rule['type']
-					];
+					$rules[] = self::_get_rule_name($rule, '');
 
 					if (in_array($rule['type'], ['content', 'both'])) {
 						// also stripping [\r\n\t] to match what's done for content in RSSUtils#get_article_filters()
@@ -452,7 +448,7 @@ class Pref_Filters extends Handler_Protected {
 	/**
 	 * @param array<string, mixed>|null $rule
 	 */
-	private function _get_rule_name(?array $rule = null): string {
+	private function _get_rule_name(?array $rule = null, string $format = 'html'): string {
 		if (!$rule) $rule = json_decode(clean($_REQUEST["rule"]), true);
 
 		$feeds = $rule["feed_id"];
@@ -487,10 +483,14 @@ class Pref_Filters extends Handler_Protected {
 
 		$inverse = isset($rule["inverse"]) ? "inverse" : "";
 
-		return "<span class='filterRule $inverse'>" .
-			T_sprintf("%s on %s in %s %s", htmlspecialchars($rule["reg_exp"]),
-			"<span class='field'>$filter_type</span>", "<span class='feed'>$feed</span>", isset($rule["inverse"]) ? __("(inverse)") : "") . "</span>";
-	}
+		if ($format === 'html')
+			return "<span class='filterRule $inverse'>" .
+				T_sprintf("%s on %s in %s %s", htmlspecialchars($rule["reg_exp"]),
+				"<span class='field'>$filter_type</span>", "<span class='feed'>$feed</span>", isset($rule["inverse"]) ? __("(inverse)") : "") . "</span>";
+		else
+			return T_sprintf("%s on %s in %s %s", $rule["reg_exp"],
+				$filter_type, $feed, isset($rule["inverse"]) ? __("(inverse)") : "");
+		}
 
 	function printRuleName(): void {
 		print $this->_get_rule_name(json_decode(clean($_REQUEST["rule"]), true));

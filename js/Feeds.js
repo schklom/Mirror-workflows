@@ -23,7 +23,7 @@ const	Feeds = {
 	infscroll_disabled: 0,
 	_infscroll_timeout: false,
 	_filter_query: false, // TODO: figure out the UI for this
-	_search_query: false,
+	_search_query: null,
 	last_search_query: [],
 	_viewfeed_wait_timeout: false,
 	_feeds_holder_observer: new IntersectionObserver(
@@ -159,7 +159,7 @@ const	Feeds = {
 		this.reload();
 	},
 	cancelSearch: function() {
-		this._search_query = "";
+		this._search_query = null;
 		this.reloadCurrent();
 	},
 	// null = get all data, [] would give empty response for specific type
@@ -270,6 +270,9 @@ const	Feeds = {
 
 		console.log('got hash', hash);
 
+		if (hash.query)
+			this._search_query = {query: hash.query, search_language: hash.search_language};
+
 		if (hash.f != undefined) {
 			this.open({feed: parseInt(hash.f), is_cat: parseInt(hash.c)});
 		} else {
@@ -329,7 +332,12 @@ const	Feeds = {
 		console.log('setActive', id, is_cat);
 
 		window.requestIdleCallback(() => {
-			App.Hash.set({f: id, c: is_cat ? 1 : 0});
+			App.Hash.set({
+				f: id,
+				c: is_cat ? 1 : 0,
+				query: Feeds._search_query?.query,
+				search_language: Feeds._search_query?.search_language,
+			});
 		});
 
 		this._active_feed_id = id;
@@ -664,7 +672,7 @@ const	Feeds = {
 
 										// disallow empty queries
 										if (!Feeds._search_query.query)
-											Feeds._search_query = false;
+											Feeds._search_query = null;
 
 										this.hide();
 										Feeds.reloadCurrent();

@@ -32,6 +32,7 @@ parameters:
       - plugins.local/**/tests/*
       - plugins.local/*/vendor/intervention/*
       - plugins.local/*/vendor/psr/log/*
+      - plugins.local/af_readability/*
       - plugins.local/cache_s3/vendor/*
       - plugins/**/test/*
       - plugins/**/Test/*

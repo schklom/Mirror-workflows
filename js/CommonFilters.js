@@ -43,8 +43,8 @@ const	Filters = {
 												.replace("%f", test_dialog.results)
 												.replace("%d", offset);
 
-										results_list.innerHTML += result.items.reduce((current, item) => current + `<li><span class='title'>${item.title}</span><br>
-												<span class='feed'>${item.feed_title}</span>, <span class='date'>${item.date}</span>
+										results_list.innerHTML += result.items.reduce((current, item) => current + `<li title="${App.escapeHtml(item.rules.join('\n'))}"><span class='title'>${item.title}</span>
+												&mdash; <span class='feed'>${item.feed_title}</span>, <span class='date'>${item.date}</span>
 												<div class='preview text-muted'>${item.content_preview}</div></li>`, '');
 
 										// get the next batch if there may be more available and testing limits haven't been reached

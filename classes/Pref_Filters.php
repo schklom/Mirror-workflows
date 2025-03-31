@@ -70,6 +70,7 @@ class Pref_Filters extends Handler_Protected {
 		$offset = (int) clean($_REQUEST["offset"]);
 		$limit = (int) clean($_REQUEST["limit"]);
 
+		// catchall fake filter which includes all rules
 		$filter = [
 			'enabled' => true,
 			'match_any_rule' => checkbox_to_sql_bool($_REQUEST['match_any_rule'] ?? false),
@@ -94,7 +95,6 @@ class Pref_Filters extends Handler_Protected {
 
 			if (is_array($rule)) {
 				$rule['type'] = $filter_types[$rule['filter_type']];
-				unset($rule['filter_type']);
 				array_push($filter['rules'], $rule);
 
 				$scope_inner_qparts = [];
@@ -103,7 +103,10 @@ class Pref_Filters extends Handler_Protected {
 				foreach ($rule["feed_id"] as $feed_id) {
 					if (str_starts_with("$feed_id", "CAT:")) {
 						$cat_id = (int) substr("$feed_id", 4);
-						array_push($scope_inner_qparts, "cat_id = " . $cat_id);
+						if ($cat_id > 0)
+							array_push($scope_inner_qparts, "cat_id = " . $cat_id);
+						else
+							array_push($scope_inner_qparts, "cat_id IS NULL");
 					} else if (is_numeric($feed_id) && $feed_id > 0) {
 						array_push($scope_inner_qparts, "feed_id = " . (int)$feed_id);
 					}
@@ -137,25 +140,101 @@ class Pref_Filters extends Handler_Protected {
 		];
 
 		foreach ($entries as $entry) {
-			$rc = RSSUtils::get_article_filters(array($filter), $entry['title'], $entry['content'], $entry['link'],
-				$entry['author'], explode(",", $entry['tag_cache']));
+
+			// temporary filter which will be used to compare against returned article
+			$feed_filter = $filter;
+			$feed_filter['rules'] = [];
+
+			// only add rules which match result from specific feed or category ID or rules matching all feeds
+			// @phpstan-ignore foreach.emptyArray
+			foreach ($filter['rules'] as $rule) {
+				foreach ($rule['feed_id'] as $rule_feed) {
+					if (($rule_feed === 'CAT:0' && $entry['cat_id'] === null) || 			// rule matches Uncategorized
+							$rule_feed === 'CAT:' . $entry['cat_id'] ||                    // rule matches category
+							(int)$rule_feed === $entry['feed_id'] ||                            // rule matches feed
+							$rule_feed === '0') {                                          // rule matches all feeds
+
+						$feed_filter['rules'][] = $rule;
+					}
+				}
+			}
+
+			$matched_rules = [];
+
+			$entry_tags = explode(",", $entry['tag_cache']);
+
+			$rc = RSSUtils::get_article_filters([$feed_filter], $entry['title'], $entry['content'], $entry['link'],
+				$entry['author'], $entry_tags, $matched_rules);
 
 			if (count($rc) > 0) {
-				$entry["content_preview"] = truncate_string(strip_tags($entry["content"]), 200, '&hellip;');
+				$content_preview = "";
 
-				$excerpt_length = 100;
+				$matches = [];
+				$rules = [];
 
-				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_QUERY_HEADLINES,
-					function ($result) use (&$entry) {
-						$entry = $result;
-					},
-					$entry, $excerpt_length);
+				$entry_title = $entry["title"];
+
+				// technically only one rule may match *here* because we're testing a single (fake) filter defined above
+				// let's keep this forward-compatible in case we'll want to return multiple rules for whatever reason
+				foreach ($matched_rules as $rule) {
+					$can_highlight_content = false;
+					$can_highlight_title = false;
+
+					$rule_regexp_match = mb_substr(strip_tags($rule['regexp_matches'][0]), 0, 200);
+
+					$matches[] = $rule_regexp_match;
+
+					$rules[] = self::_get_rule_name($rule, '');
+
+					if (in_array($rule['type'], ['content', 'both'])) {
+						// also stripping [\r\n\t] to match what's done for content in RSSUtils#get_article_filters()
+						$entry_content_text = strip_tags(preg_replace("/[\r\n\t]/", "", $entry["content"]));
+
+						$match_index = mb_strpos($entry_content_text, $rule_regexp_match);
+						$content_preview = truncate_string(mb_substr($entry_content_text, $match_index), 200);
+
+						if ($match_index > 0)
+							$content_preview = '&hellip;' . $content_preview;
+
+					} else if ($rule['type'] == 'link') {
+						$content_preview = $entry['link'];
+					} else if ($rule['type'] == 'author') {
+						$content_preview = $entry['author'];
+					} else if ($rule['type'] == 'tag') {
+						$content_preview = '<i class="material-icons">label_outline</i> ' . implode(', ', $entry_tags);
+					} else {
+						$content_preview = "&mdash;";
+					}
+
+					switch ($rule['type']) {
+						case "both":
+							$can_highlight_title = true;
+							$can_highlight_content = true;
+							break;
+						case "title":
+							$can_highlight_title = true;
+							break;
+						case "content":
+						case "link":
+						case "author":
+						case "tag":
+							$can_highlight_content = true;
+							break;
+					}
+
+					if ($can_highlight_content)
+						$content_preview = Sanitizer::highlight_words_str($content_preview, $matches);
+
+					if ($can_highlight_title)
+						$entry_title = Sanitizer::highlight_words_str($entry_title, $matches);
+				}
 
 				$rv['items'][] = [
-					'title' => $entry['title'],
+					'title' => $entry_title,
 					'feed_title' => $entry['feed_title'],
 					'date' => mb_substr($entry['date_entered'], 0, 16),
-					'content_preview' => $entry['content_preview'],
+					'content_preview' => $content_preview,
+					'rules' => $rules
 				];
 			}
 		}
@@ -369,7 +448,7 @@ class Pref_Filters extends Handler_Protected {
 	/**
 	 * @param array<string, mixed>|null $rule
 	 */
-	private function _get_rule_name(?array $rule = null): string {
+	private function _get_rule_name(?array $rule = null, string $format = 'html'): string {
 		if (!$rule) $rule = json_decode(clean($_REQUEST["rule"]), true);
 
 		$feeds = $rule["feed_id"];
@@ -404,10 +483,14 @@ class Pref_Filters extends Handler_Protected {
 
 		$inverse = isset($rule["inverse"]) ? "inverse" : "";
 
-		return "<span class='filterRule $inverse'>" .
-			T_sprintf("%s on %s in %s %s", htmlspecialchars($rule["reg_exp"]),
-			"<span class='field'>$filter_type</span>", "<span class='feed'>$feed</span>", isset($rule["inverse"]) ? __("(inverse)") : "") . "</span>";
-	}
+		if ($format === 'html')
+			return "<span class='filterRule $inverse'>" .
+				T_sprintf("%s on %s in %s %s", htmlspecialchars($rule["reg_exp"]),
+				"<span class='field'>$filter_type</span>", "<span class='feed'>$feed</span>", isset($rule["inverse"]) ? __("(inverse)") : "") . "</span>";
+		else
+			return T_sprintf("%s on %s in %s %s", $rule["reg_exp"],
+				$filter_type, $feed, isset($rule["inverse"]) ? __("(inverse)") : "");
+		}
 
 	function printRuleName(): void {
 		print $this->_get_rule_name(json_decode(clean($_REQUEST["rule"]), true));

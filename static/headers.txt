@@ -1,3 +1,0 @@
-X-Robots-Tag: noimageai
-X-Robots-Tag: noai
-tdm-reservation: 1

@@ -27,13 +27,16 @@ class Af_Comics_Gocomics extends Af_ComicFilter {
 		if (preg_match('#^https?://(?:feeds\.feedburner\.com/uclick|www\.gocomics\.com)/([-a-z0-9]+)$#i', $url, $comic)) {
 			$site_url = 'https://www.gocomics.com/' . $comic[1];
 
-			$article_link = $site_url . date('/Y/m/d');
+			// no date suffix here since /whatever/$TODAY redirects to /whatever
+			$article_link = $site_url;
 
 			$body = UrlHelper::fetch(array('url' => $article_link, 'type' => 'text/html', 'followlocation' => false));
 
 			$feed_title = htmlspecialchars($comic[1]);
 			$site_url = htmlspecialchars($site_url);
-			$article_link = htmlspecialchars($article_link);
+
+			// add the date suffix here to uniquely identify the "article" and provide the permalink
+			$article_link = htmlspecialchars($article_link) . date('/Y-m-d');
 
 			$tpl = new Templator();
 
@@ -51,7 +54,7 @@ class Af_Comics_Gocomics extends Af_ComicFilter {
 					$xpath = new DOMXPath($doc);
 
 					/** @var DOMElement|null $node */
-					$node = $xpath->query('//picture[contains(@class, "item-comic-image")]/img')->item(0);
+					$node = $xpath->query('//button[@aria-label="Expand comic"]/img')->item(0);
 
 					if ($node) {
 						$title = $xpath->query('//h1')->item(0);

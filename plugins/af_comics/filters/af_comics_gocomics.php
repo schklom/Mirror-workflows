@@ -36,7 +36,7 @@ class Af_Comics_Gocomics extends Af_ComicFilter {
 			$site_url = htmlspecialchars($site_url);
 
 			// add the date suffix here to uniquely identify the "article" and provide the permalink
-			$article_link = htmlspecialchars($article_link) . date('/Y-m-d');
+			$article_link = htmlspecialchars($article_link) . date('/Y/m/d');
 
 			$tpl = new Templator();
 

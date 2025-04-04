@@ -334,7 +334,10 @@ class RSSUtils {
 			$basic_info = [];
 
 			$pluginhost->run_hooks_callback(PluginHost::HOOK_FEED_BASIC_INFO, function ($result) use (&$basic_info) {
-				$basic_info = $result;
+				if ($result && (!empty($result['title']) || !empty($result['site_url']))) {
+					$basic_info = $result;
+					return true;
+				}
 			}, $basic_info, $feed->feed_url, $feed->owner_uid, $feed_id, $feed->auth_login, $feed->auth_pass);
 
 			if (!$basic_info) {

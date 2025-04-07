@@ -8,8 +8,6 @@ class Config {
 
 	const SCHEMA_VERSION = 147;
 
-	const SODIUM_ALGO = 'xchacha20poly1305_ietf';
-
 	/** override default values, defined below in _DEFAULTS[], prefixing with _ENVVAR_PREFIX:
 	 *
 	 * DB_TYPE becomes:
@@ -194,11 +192,8 @@ class Config {
 	/** disables login form controls except HOOK_LOGINFORM_ADDITIONAL_BUTTONS (for SSO providers), also prevents logging in through auth_internal */
 	const DISABLE_LOGIN_FORM = "DISABLE_LOGIN_FORM";
 
-	/** optional symmetric encryption key for Sodium library (XChaCha20-Poly1305) - generate using bin2hex(sodium_crypto_aead_xchacha20poly1305_ietf_keygen())
-	 *
-	 * if set, used to transparently encrypt stored session data in the database
-	*/
-	const SODIUM_ENCRYPTION_KEY = "SODIUM_ENCRYPTION_KEY";
+	/** optional key to transparently encrypt stored session data using Sodium library (XChaCha20-Poly1305) - generate using bin2hex(sodium_crypto_aead_xchacha20poly1305_ietf_keygen()) */
+	const SESSION_ENCRYPTION_KEY = "SESSION_ENCRYPTION_KEY";
 
 	/** default values for all global configuration options */
 	private const _DEFAULTS = [
@@ -258,7 +253,7 @@ class Config {
 																					Config::T_STRING ],
 		Config::HTTP_429_THROTTLE_INTERVAL => [ 3600,				Config::T_INT ],
 		Config::DISABLE_LOGIN_FORM => [ "",								Config::T_BOOL ],
-		Config::SODIUM_ENCRYPTION_KEY => [ "",                   Config::T_STRING ]
+		Config::SESSION_ENCRYPTION_KEY => [ "",                  Config::T_STRING ]
 	];
 
 	private static ?Config $instance = null;
@@ -305,48 +300,6 @@ class Config {
 	 */
 	static function get_version(bool $as_string = true): array|string {
 		return self::get_instance()->_get_version($as_string);
-	}
-
-	/** encrypts provided ciphertext using Sodium symmetric encryption key if available via Config::SODIUM_ENCRYPTION_KEY
-	 *
-	 * @return array<string,mixed>|false encrypted data object containing algo, nonce, and encrypted data or false if encryption failed
-	 *
-	*/
-	static function encrypt_string(string $ciphertext) : array|false {
-		$key = Config::get(Config::SODIUM_ENCRYPTION_KEY);
-		$nonce = \random_bytes(\SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
-
-		$payload = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt($ciphertext, '', $nonce, hex2bin($key));
-
-		if ($payload) {
-			$encrypted_data = [
-				'algo' => self::SODIUM_ALGO,
-				'nonce' => $nonce,
-				'payload' => $payload,
-			];
-
-			return $encrypted_data;
-		}
-
-		throw new Exception("Config::encrypt_string() failed to encrypt ciphertext");
-	}
-
-	/** decrypts payload of encrypted object if Config::SODIUM_ENCRYPTION_KEY is available and object is in correct format
-	 *
-	 * @param array<string,mixed> $encrypted_data
-	 *
-	 * @return string|false decrypted string payload or false if decryption failed
-	 */
-	static function decrypt_string(array $encrypted_data) : string|false {
-		$key = Config::get(Config::SODIUM_ENCRYPTION_KEY);
-
-		if ($encrypted_data['algo'] === self::SODIUM_ALGO) {
-			$payload = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($encrypted_data['payload'], '', $encrypted_data['nonce'], hex2bin($key));
-
-			return $payload;
-		}
-
-		throw new Exception('Config::decrypt_string() failed to decrypt passed encrypted data');
 	}
 
 	// returns version showing (if possible) full timestamp of commit id

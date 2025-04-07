@@ -9,7 +9,7 @@ class Sessions implements \SessionHandlerInterface {
 	private string $session_name;
 
 	public function __construct() {
-		$this->session_expire = min(2147483647 - time() - 1, max(Config::get(Config::SESSION_COOKIE_LIFETIME), 86400));
+		$this->session_expire = min(2147483647 - time() - 1, Config::get(Config::SESSION_COOKIE_LIFETIME));
 		$this->session_name = Config::get(Config::SESSION_NAME);
 	}
 
@@ -29,11 +29,11 @@ class Sessions implements \SessionHandlerInterface {
 	}
 
 	/**
-	 * Extend the validity of the PHP session cookie (if it exists)
+	 * Extend the validity of the PHP session cookie (if it exists) and is persistent (expire > 0)
 	 * @return bool Whether the new cookie was set successfully
 	 */
 	public function extend_session(): bool {
-		if (isset($_COOKIE[$this->session_name])) {
+		if (isset($_COOKIE[$this->session_name]) && $this->session_expire > 0) {
 			return setcookie($this->session_name,
 				$_COOKIE[$this->session_name],
 				time() + $this->session_expire,

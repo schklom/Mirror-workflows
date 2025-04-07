@@ -58,7 +58,17 @@ class Sessions implements \SessionHandlerInterface {
 		$sth->execute([$id]);
 
 		if ($row = $sth->fetch()) {
-			return base64_decode($row['data']);
+			$data = base64_decode($row['data']);
+
+			if (Config::get(Config::SODIUM_ENCRYPTION_KEY)) {
+				$unserialized_data = unserialize($data);
+
+				if ($unserialized_data !== false)
+					return Config::decrypt_string($unserialized_data);
+			}
+
+			// if Sodium key is missing or session data is not in serialized format, return as-is
+			return $data;
 		}
 
 		$expire = time() + $this->session_expire;
@@ -69,7 +79,12 @@ class Sessions implements \SessionHandlerInterface {
 	}
 
 	public function write(string $id, string $data): bool {
+
+		if (Config::get(Config::SODIUM_ENCRYPTION_KEY))
+			$data = serialize(Config::encrypt_string($data));
+
 		$data = base64_encode($data);
+
 		$expire = time() + $this->session_expire;
 
 		$sth = Db::pdo()->prepare('SELECT id FROM ttrss_sessions WHERE id=?');

@@ -8,8 +8,6 @@ class Sessions implements \SessionHandlerInterface {
 	private int $session_expire;
 	private string $session_name;
 
-	private const SODIUM_ALGO = 'xchacha20poly1305_ietf';
-
 	public function __construct() {
 		$this->session_expire = min(2147483647 - time() - 1, Config::get(Config::SESSION_COOKIE_LIFETIME));
 		$this->session_name = Config::get(Config::SESSION_NAME);
@@ -55,48 +53,6 @@ class Sessions implements \SessionHandlerInterface {
 		return true;
 	}
 
-	/** encrypts provided ciphertext using Sodium symmetric encryption key if available via Config::SESSION_ENCRYPTION_KEY
-	 *
-	 * @return array<string,mixed> encrypted data object containing algo, nonce, and encrypted data
-	 *
-	*/
-	private function encrypt_string(string $ciphertext) : array {
-		$key = Config::get(Config::SESSION_ENCRYPTION_KEY);
-		$nonce = \random_bytes(\SODIUM_CRYPTO_AEAD_XCHACHA20POLY1305_IETF_NPUBBYTES);
-
-		$payload = sodium_crypto_aead_xchacha20poly1305_ietf_encrypt($ciphertext, '', $nonce, hex2bin($key));
-
-		if ($payload) {
-			$encrypted_data = [
-				'algo' => self::SODIUM_ALGO,
-				'nonce' => $nonce,
-				'payload' => $payload,
-			];
-
-			return $encrypted_data;
-		}
-
-		throw new Exception("Config::encrypt_string() failed to encrypt ciphertext");
-	}
-
-	/** decrypts payload of encrypted object if Config::SESSION_ENCRYPTION_KEY is available and object is in correct format
-	 *
-	 * @param array<string,mixed> $encrypted_data
-	 *
-	 * @return string decrypted string payload
-	 */
-	private function decrypt_string(array $encrypted_data) : string {
-		$key = Config::get(Config::SESSION_ENCRYPTION_KEY);
-
-		if ($encrypted_data['algo'] === self::SODIUM_ALGO) {
-			$payload = sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($encrypted_data['payload'], '', $encrypted_data['nonce'], hex2bin($key));
-
-			return $payload;
-		}
-
-		throw new Exception('Config::decrypt_string() failed to decrypt passed encrypted data');
-	}
-
 	public function read(string $id): false|string {
 		$sth = Db::pdo()->prepare('SELECT data FROM ttrss_sessions WHERE id=?');
 		$sth->execute([$id]);
@@ -104,14 +60,14 @@ class Sessions implements \SessionHandlerInterface {
 		if ($row = $sth->fetch()) {
 			$data = base64_decode($row['data']);
 
-			if (Config::get(Config::SESSION_ENCRYPTION_KEY)) {
+			if (Config::get(Config::ENCRYPTION_KEY)) {
 				$unserialized_data = @unserialize($data); // avoid leaking plaintext session via error message
 
 				if ($unserialized_data !== false)
-					return $this->decrypt_string($unserialized_data);
+					return Crypt::decrypt_string($unserialized_data);
 			}
 
-			// if Sodium key is missing or session data is not in serialized format, return as-is
+			// if encryption key is missing or session data is not in serialized format, assume plaintext data and return as-is
 			return $data;
 		}
 
@@ -124,8 +80,8 @@ class Sessions implements \SessionHandlerInterface {
 
 	public function write(string $id, string $data): bool {
 
-		if (Config::get(Config::SESSION_ENCRYPTION_KEY))
-			$data = serialize($this->encrypt_string($data));
+		if (Config::get(Config::ENCRYPTION_KEY))
+			$data = serialize(Crypt::encrypt_string($data));
 
 		$data = base64_encode($data);
 

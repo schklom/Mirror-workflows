@@ -192,8 +192,8 @@ class Config {
 	/** disables login form controls except HOOK_LOGINFORM_ADDITIONAL_BUTTONS (for SSO providers), also prevents logging in through auth_internal */
 	const DISABLE_LOGIN_FORM = "DISABLE_LOGIN_FORM";
 
-	/** optional key to transparently encrypt stored session data using Sodium library (XChaCha20-Poly1305) - generate using bin2hex(sodium_crypto_aead_xchacha20poly1305_ietf_keygen()) */
-	const SESSION_ENCRYPTION_KEY = "SESSION_ENCRYPTION_KEY";
+	/** optional key to transparently encrypt sensitive data (currently limited to sessions); key is a 32 byte hex string may be generated using update.php --gen-encryption-key */
+	const ENCRYPTION_KEY = "ENCRYPTION_KEY";
 
 	/** default values for all global configuration options */
 	private const _DEFAULTS = [
@@ -253,7 +253,7 @@ class Config {
 																					Config::T_STRING ],
 		Config::HTTP_429_THROTTLE_INTERVAL => [ 3600,				Config::T_INT ],
 		Config::DISABLE_LOGIN_FORM => [ "",								Config::T_BOOL ],
-		Config::SESSION_ENCRYPTION_KEY => [ "",                  Config::T_STRING ]
+		Config::ENCRYPTION_KEY => [ "",                  Config::T_STRING ]
 	];
 
 	private static ?Config $instance = null;

@@ -84,6 +84,7 @@
 		"update-schema::" => ["[force-yes]", "update database schema, optionally without prompting"],
 		"force-update" => "mark all feeds as pending update",
 		"gen-search-idx" => "generate basic PostgreSQL fulltext search index",
+		"gen-encryption-key" => "generate an encryption key (ChaCha20-Poly1305)",
 		"plugins-list" => "list installed plugins",
 		"debug-feed:" => ["N", "update specified feed with debug output enabled"],
 		"force-refetch" => "debug update: force refetch feed data",
@@ -321,6 +322,10 @@
 				break;
 			}
 		}
+	}
+
+	if (isset($options["gen-encryption-key"])) {
+		echo "Generated encryption key: " . bin2hex(Crypt::generate_key()) . "\n";
 	}
 
 	if (isset($options["plugins-list"])) {

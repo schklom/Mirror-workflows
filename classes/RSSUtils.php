@@ -331,6 +331,8 @@ class RSSUtils {
 			$pluginhost->load((string)$user_plugins, PluginHost::KIND_USER, $feed->owner_uid);
 			//$pluginhost->load_data();
 
+			$feed_auth_pass_plaintext = Feeds::decrypt_feed_pass($feed->auth_pass);
+
 			$basic_info = [];
 
 			$pluginhost->run_hooks_callback(PluginHost::HOOK_FEED_BASIC_INFO, function ($result) use (&$basic_info) {
@@ -338,13 +340,13 @@ class RSSUtils {
 					$basic_info = $result;
 					return true;
 				}
-			}, $basic_info, $feed->feed_url, $feed->owner_uid, $feed_id, $feed->auth_login, $feed->auth_pass);
+			}, $basic_info, $feed->feed_url, $feed->owner_uid, $feed_id, $feed->auth_login, $feed_auth_pass_plaintext);
 
 			if (!$basic_info) {
 				$feed_data = UrlHelper::fetch([
 					'url' => $feed->feed_url,
 					'login' => $feed->auth_login,
-					'pass' => $feed->auth_pass,
+					'pass' => $feed_auth_pass_plaintext,
 					'timeout' => Config::get(Config::FEED_FETCH_TIMEOUT),
 				]);
 
@@ -458,12 +460,14 @@ class RSSUtils {
 		$hff_owner_uid = $feed_obj->owner_uid;
 		$hff_feed_url = $feed_obj->feed_url;
 
+		$feed_auth_pass_plaintext = Feeds::decrypt_feed_pass($feed_obj->auth_pass);
+
 		$pluginhost->chain_hooks_callback(PluginHost::HOOK_FETCH_FEED,
 			function ($result, $plugin) use (&$feed_data, $start_ts) {
 				$feed_data = $result;
 				Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)), Debug::LOG_VERBOSE);
 			},
-			$feed_data, $hff_feed_url, $hff_owner_uid, $feed, $last_article_timestamp, $feed_obj->auth_login, $feed_obj->auth_pass);
+			$feed_data, $hff_feed_url, $hff_owner_uid, $feed, $last_article_timestamp, $feed_obj->auth_login, $feed_auth_pass_plaintext);
 
 		if ($feed_data) {
 			Debug::log("feed data has been modified by a plugin.", Debug::LOG_VERBOSE);
@@ -510,7 +514,7 @@ class RSSUtils {
 			$feed_data = UrlHelper::fetch([
 				"url" => $feed_obj->feed_url,
 				"login" => $feed_obj->auth_login,
-				"pass" => $feed_obj->auth_pass,
+				"pass" => $feed_auth_pass_plaintext,
 				"timeout" => $no_cache ? Config::get(Config::FEED_FETCH_NO_CACHE_TIMEOUT) : Config::get(Config::FEED_FETCH_TIMEOUT),
 				"last_modified" => $force_refetch ? "" : $feed_obj->last_modified
 			]);

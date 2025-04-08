@@ -6,7 +6,7 @@ class Config {
 	const T_STRING = 2;
 	const T_INT = 3;
 
-	const SCHEMA_VERSION = 147;
+	const SCHEMA_VERSION = 148;
 
 	/** override default values, defined below in _DEFAULTS[], prefixing with _ENVVAR_PREFIX:
 	 *
@@ -192,7 +192,8 @@ class Config {
 	/** disables login form controls except HOOK_LOGINFORM_ADDITIONAL_BUTTONS (for SSO providers), also prevents logging in through auth_internal */
 	const DISABLE_LOGIN_FORM = "DISABLE_LOGIN_FORM";
 
-	/** optional key to transparently encrypt sensitive data (currently limited to sessions); key is a 32 byte hex string may be generated using update.php --gen-encryption-key */
+	/** optional key to transparently encrypt sensitive data (currently limited to sessions and feed passwords),
+	 * key is a 32 byte hex string which may be generated using `update.php --gen-encryption-key` */
 	const ENCRYPTION_KEY = "ENCRYPTION_KEY";
 
 	/** default values for all global configuration options */

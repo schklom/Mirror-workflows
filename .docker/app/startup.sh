@@ -156,8 +156,6 @@ find ${SCRIPT_ROOT}/sql/post-init.d/ -type f -name '*.sql' | while read F; do
 	$PSQL -f $F
 done
 
-unset PGPASSWORD
-
 touch $DST_DIR/.app_is_ready
 
 exec /usr/sbin/php-fpm${PHP_SUFFIX} --nodaemonize --force-stderr

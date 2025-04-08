@@ -462,6 +462,18 @@ class RSSUtils {
 
 		$feed_auth_pass_plaintext = Feeds::decrypt_feed_pass($feed_obj->auth_pass);
 
+		// transparently encrypt plaintext password if possible
+		if ($feed_obj->auth_pass && $feed_auth_pass_plaintext === $feed_obj->auth_pass) {
+			$key = Config::get(Config::ENCRYPTION_KEY);
+
+			if ($key) {
+				Debug::log("encrypting stored plaintext feed password...", Debug::LOG_VERBOSE);
+
+				$feed_obj->auth_pass = base64_encode(serialize(Crypt::encrypt_string($feed_auth_pass_plaintext)));
+				$feed_obj->save();
+			}
+		}
+
 		$pluginhost->chain_hooks_callback(PluginHost::HOOK_FETCH_FEED,
 			function ($result, $plugin) use (&$feed_data, $start_ts) {
 				$feed_data = $result;

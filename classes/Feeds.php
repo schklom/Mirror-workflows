@@ -2376,5 +2376,29 @@ class Feeds extends Handler_Protected {
 		return [$query, $skip_first_id];
 	}
 
+
+	/** decrypts encrypted feed password if possible (key is available and data is a base64-encoded serialized object)
+	 *
+	 * @param $auth_pass possibly encrypted feed password
+	 *
+	 * @return string plaintext representation of an encrypted feed password if encrypted or plaintext password otherwise
+	 * */
+	static function decrypt_feed_pass(string $auth_pass) : string {
+		$key = Config::get(Config::ENCRYPTION_KEY);
+
+		if ($auth_pass && $key) {
+			$auth_pass_serialized = @base64_decode($auth_pass);
+
+			if ($auth_pass_serialized) {
+				$unserialized_data = @unserialize($auth_pass_serialized);
+
+				if ($unserialized_data !== false)
+					return Crypt::decrypt_string($unserialized_data);
+			}
+		}
+
+		return $auth_pass;
+	}
+
 }
 

@@ -6,7 +6,7 @@ class Config {
 	const T_STRING = 2;
 	const T_INT = 3;
 
-	const SCHEMA_VERSION = 147;
+	const SCHEMA_VERSION = 148;
 
 	/** override default values, defined below in _DEFAULTS[], prefixing with _ENVVAR_PREFIX:
 	 *
@@ -192,6 +192,10 @@ class Config {
 	/** disables login form controls except HOOK_LOGINFORM_ADDITIONAL_BUTTONS (for SSO providers), also prevents logging in through auth_internal */
 	const DISABLE_LOGIN_FORM = "DISABLE_LOGIN_FORM";
 
+	/** optional key to transparently encrypt sensitive data (currently limited to sessions and feed passwords),
+	 * key is a 32 byte hex string which may be generated using `update.php --gen-encryption-key` */
+	const ENCRYPTION_KEY = "ENCRYPTION_KEY";
+
 	/** default values for all global configuration options */
 	private const _DEFAULTS = [
 		Config::DB_TYPE => [ "pgsql", 									Config::T_STRING ],
@@ -249,7 +253,8 @@ class Config {
 		Config::HTTP_USER_AGENT => [ 'Tiny Tiny RSS/%s (https://tt-rss.org/)',
 																					Config::T_STRING ],
 		Config::HTTP_429_THROTTLE_INTERVAL => [ 3600,				Config::T_INT ],
-		Config::DISABLE_LOGIN_FORM => [ "",								Config::T_BOOL ]
+		Config::DISABLE_LOGIN_FORM => [ "",								Config::T_BOOL ],
+		Config::ENCRYPTION_KEY => [ "",                  Config::T_STRING ]
 	];
 
 	private static ?Config $instance = null;

@@ -560,6 +560,7 @@ class Pref_Feeds extends Handler_Protected {
 			ob_end_clean();
 
 			$row["icon"] = Feeds::_get_icon($feed_id);
+			$row["auth_pass"] = Feeds::decrypt_feed_pass($row["auth_pass"]);
 
 			$local_update_intervals = $update_intervals;
 			$local_update_intervals[0] .= sprintf(" (%s)", $update_intervals[Prefs::get(Prefs::DEFAULT_UPDATE_INTERVAL, $_SESSION['uid'])]);
@@ -745,6 +746,11 @@ class Pref_Feeds extends Handler_Protected {
 		$mark_unread_on_update = checkbox_to_sql_bool($_POST["mark_unread_on_update"] ?? "");
 
 		$feed_language = clean($_POST["feed_language"] ?? "");
+
+		$key = Config::get(Config::ENCRYPTION_KEY);
+
+		if ($key && $auth_pass)
+			$auth_pass = base64_encode(serialize(Crypt::encrypt_string($auth_pass)));
 
 		if (!$batch) {
 

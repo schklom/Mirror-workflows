@@ -88,7 +88,7 @@ module.exports = (app, utils) => {
     const pageName = req.params.page;
     if (pageName && pageName.startsWith('File:')) {
         const encodedFileName = encodeURIComponent(pageName.split(':')[1])
-        const mediaPath = `/media/wikipedia/commons/${encodedFileName}`
+        const mediaPath = `/media/wikipedia/commons/thumb/${encodedFileName}
         return res.redirect(mediaPath)
     }
     return handleWikiPage(req, res, '/wiki/')

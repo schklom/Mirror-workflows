@@ -168,6 +168,17 @@ The community has developed the following alternative clients:
 Links are provided for your convenience only.
 Use at your own risk.
 
+## Logs
+
+Logs are written to stderr and to syslog.
+
+To view the messages in syslog:
+
+```sh
+journalctl -t fmd-server
+less /var/log/syslog | grep fmd-server
+```
+
 ## Donate
 
 <script src="https://liberapay.com/Nulide/widgets/button.js"></script>

@@ -128,6 +128,7 @@ class Cache_Starred_Images extends Plugin {
 		if ($article_id) {
 			$entries = $xpath->query('(//img[@src])|(//video/source[@src])');
 
+			/** @var DOMElement $entry */
 			foreach ($entries as $entry) {
 				if ($entry->hasAttribute('src')) {
 					$src = UrlHelper::rewrite_relative($site_url, $entry->getAttribute('src'));
@@ -203,6 +204,7 @@ class Cache_Starred_Images extends Plugin {
 			$xpath = new DOMXPath($doc);
 			$entries = $xpath->query('(//img[@src])|(//video/source[@src])');
 
+			/** @var DOMElement $entry */
 			foreach ($entries as $entry) {
 
 				if ($entry->hasAttribute('src') && !str_starts_with($entry->getAttribute('src'), "data:")) {

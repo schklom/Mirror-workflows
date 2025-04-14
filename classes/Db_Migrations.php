@@ -23,7 +23,7 @@ class Db_Migrations {
 	}
 
 	function initialize(string $root_path, string $migrations_table, bool $base_is_latest = true, int $max_version_override = 0): void {
-		$this->base_path = "$root_path/" . Config::get(Config::DB_TYPE);
+		$this->base_path = "$root_path/pgsql";
 		$this->migrations_path = $this->base_path . "/migrations";
 		$this->migrations_table = $migrations_table;
 		$this->base_is_latest = $base_is_latest;

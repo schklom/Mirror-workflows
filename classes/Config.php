@@ -18,13 +18,16 @@ class Config {
 	 *
 	 * or config.php:
 	 *
-	 * putenv('TTRSS_DB_TYPE=pgsql');
+	 * putenv('TTRSS_DB_HOST=my-patroni.example.com');
 	 *
 	 * note lack of quotes and spaces before and after "=".
 	 *
 	*/
 
-	/** database type: pgsql */
+	/** this is kept for backwards/plugin compatibility, the only supported database is PostgreSQL
+	 *
+	 * @deprecated could be replaced with default (and only) value: `pgsql`
+	*/
 	const DB_TYPE = "DB_TYPE";
 
 	/** database server hostname */

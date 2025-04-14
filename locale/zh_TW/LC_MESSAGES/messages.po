@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-12-14 12:17+0300\n"
-"PO-Revision-Date: 2024-07-12 15:09+0000\n"
+"PO-Revision-Date: 2025-04-08 00:41+0000\n"
 "Last-Translator: TonyRL <TonyRL@users.noreply.github.com>\n"
-"Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/tt-"
-"rss/webui/zh_Hant/>\n"
+"Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
+"projects/tt-rss/webui/zh_Hant/>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -197,7 +197,7 @@ msgstr "兩個禮拜以前"
 
 #: index.php:227
 msgid "Actions..."
-msgstr "動作..."
+msgstr "操作..."
 
 #: index.php:253
 msgid "Preferences..."
@@ -498,7 +498,7 @@ msgstr "不強制一致的標題"
 
 #: classes/Pref_Prefs.php:125
 msgid "May produce duplicate entries"
-msgstr "可能產生重復的項目"
+msgstr "可能產生重複的項目"
 
 #: classes/Pref_Prefs.php:126
 msgid "Show article and feed IDs"
@@ -967,12 +967,10 @@ msgstr[0] "（%d 個摘要）"
 
 #: classes/Pref_Feeds.php:104 classes/Pref_Feeds.php:291
 #: classes/Pref_Feeds.php:334
-#, fuzzy, php-format
-#| msgid "%d article selected"
-#| msgid_plural "%d articles selected"
+#, php-format
 msgid "(%d article / %s)"
 msgid_plural "(%d articles / %s)"
-msgstr[0] "已選取 %d 篇文章"
+msgstr[0] "（已選取 %d 篇文章／%s）"
 
 #: classes/Pref_Feeds.php:572
 #, php-format
@@ -1210,10 +1208,9 @@ msgid "%s on %s in %s %s"
 msgstr "%s 在 %s 在%s %s"
 
 #: classes/Pref_Filters.php:450
-#, fuzzy, php-format
-#| msgid "Unknown option: %s"
+#, php-format
 msgid "Unknown action: %d"
-msgstr "未知選項： %s"
+msgstr "未知操作： %d"
 
 #: classes/Pref_Filters.php:651 classes/RPC.php:650
 msgid "Create filter"
@@ -1224,9 +1221,8 @@ msgid "Combine"
 msgstr "合併"
 
 #: classes/Pref_Filters.php:659
-#, fuzzy
 msgid "Toggle rule display"
-msgstr "收縮側邊欄"
+msgstr "切換顯示規則"
 
 #: classes/Pref_Filters.php:709
 #, php-format
@@ -1247,21 +1243,18 @@ msgid "inverse"
 msgstr "反向選取"
 
 #: classes/Pref_Filters.php:746
-#, fuzzy, php-format
-#| msgid "%s (+%d action)"
-#| msgid_plural "%s (+%d actions)"
+#, php-format
 msgid "(+%d action)"
 msgid_plural "(+%d actions)"
-msgstr[0] "%s（+%d 個操作）"
+msgstr[0] "（+%d 個操作）"
 
 #: classes/Sessions.php:112
 msgid "Session failed to validate (password changed)"
 msgstr "無法驗證工作階段（IP 錯誤）"
 
 #: classes/Sessions.php:117
-#, fuzzy
 msgid "Session failed to validate (account is disabled)"
-msgstr "無法驗證會話（IP 錯誤）"
+msgstr "無法驗證工作階段（帳號已停用）"
 
 #: classes/Sessions.php:136
 msgid "Session failed to validate (user not found)"
@@ -2615,9 +2608,8 @@ msgid "Error while creating feed database entry."
 msgstr "新增摘要至資料庫時發生錯誤。"
 
 #: js/CommonDialogs.js:200
-#, fuzzy
 msgid "You are not allowed to perform this operation."
-msgstr "您沒有權限。"
+msgstr "您沒有權限執行此操作。"
 
 #: js/CommonDialogs.js:222
 msgid "Feeds with update errors"
@@ -3001,11 +2993,11 @@ msgstr "摘要 URL"
 
 #: js/CommonDialogs.js:552
 msgid "Site URL:"
-msgstr "網址："
+msgstr "網站："
 
 #: js/CommonDialogs.js:554
 msgid "Site URL"
-msgstr "網站 URL"
+msgstr "網站"
 
 #: js/CommonDialogs.js:617
 msgid "Icon"

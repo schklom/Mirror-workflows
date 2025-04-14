@@ -59,7 +59,7 @@ class Cache_Starred_Images extends Plugin {
 				site_url != '' AND
 				ttrss_user_entries.owner_uid = ? AND
 				plugin_data NOT LIKE '%starred_cache_images%'
-			ORDER BY ".Db::sql_random_function()." LIMIT 100");
+			ORDER BY RANDOM() LIMIT 100");
 
 		if ($sth->execute([$this->host->get_owner_uid()])) {
 

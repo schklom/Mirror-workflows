@@ -269,8 +269,6 @@ class RPC extends Handler_Protected {
 		$updstart_thresh_qpart = 'AND (last_update_started IS NULL OR '
 			. Db::past_comparison_qpart('last_update_started', '<', 5, 'minute') . ')';
 
-		$random_qpart = Db::sql_random_function();
-
 		$pdo = Db::pdo();
 
 		// we could be invoked from public.php with no active session
@@ -290,7 +288,7 @@ class RPC extends Handler_Protected {
 				$owner_check_qpart
 				$update_limit_qpart
 				$updstart_thresh_qpart
-			ORDER BY $random_qpart LIMIT 30";
+			ORDER BY RANDOM() LIMIT 30";
 
 		$res = $pdo->query($query);
 

@@ -71,6 +71,7 @@ class Db {
 		return self::$instance->pdo;
 	}
 
+	/** @deprecated usages should be replaced with `RANDOM()` */
 	public static function sql_random_function(): string {
 		return "RANDOM()";
 	}

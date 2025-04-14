@@ -591,10 +591,6 @@ class Pref_Prefs extends Handler_Protected {
 					continue;
 				}
 
-				if ($pref_name == Prefs::DEFAULT_SEARCH_LANGUAGE && Config::get(Config::DB_TYPE) != "pgsql") {
-					continue;
-				}
-
 				if (isset($prefs_available[$pref_name])) {
 
 					$item = $prefs_available[$pref_name];

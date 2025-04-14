@@ -88,9 +88,7 @@ class Db_Migrations {
 			$lines = $this->get_lines($version);
 
 			if (count($lines) > 0) {
-				// mysql doesn't support transactions for DDL statements
-				if (Config::get(Config::DB_TYPE) != "mysql")
-					$this->pdo->beginTransaction();
+				$this->pdo->beginTransaction();
 
 				foreach ($lines as $line) {
 					Debug::log($line, Debug::LOG_EXTENDED);
@@ -107,8 +105,7 @@ class Db_Migrations {
 				else
 					$this->set_version($version);
 
-				if (Config::get(Config::DB_TYPE) != "mysql")
-					$this->pdo->commit();
+				$this->pdo->commit();
 
 				Debug::log("Migration finished, current version: " . $this->get_version(), Debug::LOG_VERBOSE);
 

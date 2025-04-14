@@ -217,17 +217,6 @@ class Feeds extends Handler_Protected {
 
 				$id = $line["id"];
 
-				// frontend doesn't expect pdo returning booleans as strings on mysql
-				if (Config::get(Config::DB_TYPE) == "mysql") {
-					foreach (["unread", "marked", "published"] as $k) {
-						if (is_integer($line[$k])) {
-							$line[$k] = $line[$k] === 1;
-						} else {
-							$line[$k] = $line[$k] === "1";
-						}
-					}
-				}
-
 				// normalize archived feed
 				if ($line['feed_id'] === null) {
 					$line['feed_id'] = Feeds::FEED_ARCHIVED;
@@ -582,7 +571,7 @@ class Feeds extends Handler_Protected {
 
 	function search(): void {
 		print json_encode([
-			"show_language" => Config::get(Config::DB_TYPE) == "pgsql",
+			"show_language" => true,
 			"show_syntax_help" => count(PluginHost::getInstance()->get_hooks(PluginHost::HOOK_SEARCH)) == 0,
 			"all_languages" => Pref_Feeds::get_ts_languages(),
 			"default_language" => Prefs::get(Prefs::DEFAULT_SEARCH_LANGUAGE, $_SESSION['uid'], $_SESSION['profile'] ?? null)
@@ -1407,18 +1396,16 @@ class Feeds extends Handler_Protected {
 				list($search_query_part, $search_words) = self::_search_to_sql($search, $search_language, $owner_uid, $profile);
 			}
 
-			if (Config::get(Config::DB_TYPE) == "pgsql") {
-				$test_sth = $pdo->prepare("select $search_query_part
-					FROM ttrss_entries, ttrss_user_entries WHERE id = ref_id limit 1");
+			$test_sth = $pdo->prepare("select $search_query_part
+				FROM ttrss_entries, ttrss_user_entries WHERE id = ref_id limit 1");
 
-				try {
-					$test_sth->execute();
-				} catch (PDOException $e) {
-					// looks like tsquery syntax is invalid
-					$search_query_part = "false";
+			try {
+				$test_sth->execute();
+			} catch (PDOException $e) {
+				// looks like tsquery syntax is invalid
+				$search_query_part = "false";
 
-					$query_error_override = T_sprintf("Incorrect search syntax: %s.", implode(" ", $search_words));
-				}
+				$query_error_override = T_sprintf("Incorrect search syntax: %s.", implode(" ", $search_words));
 			}
 
 			$search_query_part .= " AND ";
@@ -1635,11 +1622,7 @@ class Feeds extends Handler_Protected {
 
 		$first_id = 0;
 
-		if (Config::get(Config::DB_TYPE) == "pgsql") {
-			$yyiw_qpart = "to_char(date_entered, 'IYYY-IW') AS yyiw";
-		} else {
-			$yyiw_qpart = "date_format(date_entered, '%Y-%u') AS yyiw";
-		}
+		$yyiw_qpart = "to_char(date_entered, 'IYYY-IW') AS yyiw";
 
 		if (is_numeric($feed)) {
 			// proper override_order applied above
@@ -1679,12 +1662,8 @@ class Feeds extends Handler_Protected {
 
 			$sanity_interval_qpart = Db::past_comparison_qpart('date_entered', '>=', 1, 'hour') . ' AND ';
 
-			if (Config::get(Config::DB_TYPE) == "pgsql") {
-				$distinct_columns = str_replace("desc", "", strtolower($order_by));
-				$distinct_qpart = "DISTINCT ON (id, $distinct_columns)";
-			} else {
-				$distinct_qpart = "DISTINCT"; //fallback
-			}
+			$distinct_columns = str_replace("desc", "", strtolower($order_by));
+			$distinct_qpart = "DISTINCT ON (id, $distinct_columns)";
 
 			// except for Labels category
 			if (Prefs::get(Prefs::HEADLINES_NO_DISTINCT, $owner_uid, $profile)
@@ -1785,12 +1764,8 @@ class Feeds extends Handler_Protected {
 			if (Prefs::get(Prefs::HEADLINES_NO_DISTINCT, $owner_uid, $profile)) {
 				$distinct_qpart = "";
 			} else {
-				if (Config::get(Config::DB_TYPE) == "pgsql") {
-					$distinct_columns = str_replace("desc", "", strtolower($order_by));
-					$distinct_qpart = "DISTINCT ON (id, $distinct_columns)";
-				} else {
-					$distinct_qpart = "DISTINCT"; //fallback
-				}
+				$distinct_columns = str_replace("desc", "", strtolower($order_by));
+				$distinct_qpart = "DISTINCT ON (id, $distinct_columns)";
 			}
 
 			$query = "SELECT $distinct_qpart
@@ -2099,27 +2074,14 @@ class Feeds extends Handler_Protected {
 			else
 				$query_limit = "";
 
-			if (Config::get(Config::DB_TYPE) == "pgsql") {
-				$sth = $pdo->prepare("DELETE FROM ttrss_user_entries
-					USING ttrss_entries
-					WHERE ttrss_entries.id = ref_id AND
-					marked = false AND
-					feed_id = ? AND
-					$query_limit
-					ttrss_entries.date_updated < NOW() - INTERVAL '$purge_interval days'");
-				$sth->execute([$feed_id]);
-
-			} else {
-				$sth  = $pdo->prepare("DELETE FROM ttrss_user_entries
-					USING ttrss_user_entries, ttrss_entries
-					WHERE ttrss_entries.id = ref_id AND
-					marked = false AND
-					feed_id = ? AND
-					$query_limit
-					ttrss_entries.date_updated < DATE_SUB(NOW(), INTERVAL $purge_interval DAY)");
-				$sth->execute([$feed_id]);
-
-			}
+			$sth = $pdo->prepare("DELETE FROM ttrss_user_entries
+				USING ttrss_entries
+				WHERE ttrss_entries.id = ref_id AND
+				marked = false AND
+				feed_id = ? AND
+				$query_limit
+				ttrss_entries.date_updated < NOW() - INTERVAL '$purge_interval days'");
+			$sth->execute([$feed_id]);
 
 			$rows_deleted = $sth->rowCount();
 
@@ -2286,16 +2248,12 @@ class Feeds extends Handler_Protected {
 
 						$k = mb_strtolower($k);
 
-						if (Config::get(Config::DB_TYPE) == "pgsql") {
-							// A hacky way for phrases (e.g. "hello world") to get through PDO quoting.
-							// Term '"foo bar baz"' becomes '(foo <-> bar <-> baz)' ("<->" meaning "immediately followed by").
-							if (preg_match('/\s+/', $k))
-								$k = '(' . preg_replace('/\s+/', ' <-> ', $k) . ')';
+						// A hacky way for phrases (e.g. "hello world") to get through PDO quoting.
+						// Term '"foo bar baz"' becomes '(foo <-> bar <-> baz)' ("<->" meaning "immediately followed by").
+						if (preg_match('/\s+/', $k))
+							$k = '(' . preg_replace('/\s+/', ' <-> ', $k) . ')';
 
-							array_push($search_query_leftover, $not ? "!$k" : $k);
-						} else {
-							array_push($search_query_leftover, $not ? "-$k" : $k);
-						}
+						array_push($search_query_leftover, $not ? "!$k" : $k);
 
 						if (!$not) array_push($search_words, $k);
 					}
@@ -2304,26 +2262,18 @@ class Feeds extends Handler_Protected {
 
 		if (count($search_query_leftover) > 0) {
 
-			if (Config::get(Config::DB_TYPE) == "pgsql") {
-
-				// if there's no joiners consider this a "simple" search and
-				// concatenate everything with &, otherwise don't try to mess with tsquery syntax
-				if (preg_match("/[&|]/", implode(" " , $search_query_leftover))) {
-					$tsquery = $pdo->quote(implode(" ", $search_query_leftover));
-				} else {
-					$tsquery = $pdo->quote(implode(" & ", $search_query_leftover));
-				}
-
-				$search_language = $pdo->quote(mb_strtolower($search_language ?: Prefs::get(Prefs::DEFAULT_SEARCH_LANGUAGE, $owner_uid, $profile)));
-
-				array_push($query_keywords,
-					"(tsvector_combined @@ to_tsquery($search_language, $tsquery))");
+			// if there's no joiners consider this a "simple" search and
+			// concatenate everything with &, otherwise don't try to mess with tsquery syntax
+			if (preg_match("/[&|]/", implode(" " , $search_query_leftover))) {
+				$tsquery = $pdo->quote(implode(" ", $search_query_leftover));
 			} else {
-				$ft_query = $pdo->quote(implode(" ", $search_query_leftover));
-
-				array_push($query_keywords,
-					"MATCH (ttrss_entries.title, ttrss_entries.content) AGAINST ($ft_query IN BOOLEAN MODE)");
+				$tsquery = $pdo->quote(implode(" & ", $search_query_leftover));
 			}
+
+			$search_language = $pdo->quote(mb_strtolower($search_language ?: Prefs::get(Prefs::DEFAULT_SEARCH_LANGUAGE, $owner_uid, $profile)));
+
+			array_push($query_keywords,
+				"(tsvector_combined @@ to_tsquery($search_language, $tsquery))");
 		}
 
 		if (count($query_keywords) > 0)

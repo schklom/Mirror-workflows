@@ -35,11 +35,6 @@ class RSSUtils {
 		return sha1(implode(",", $pluginhost->get_plugin_names()) . $tmp);
 	}
 
-	// Strips utf8mb4 characters (i.e. emoji) for mysql
-	static function strip_utf8mb4(string $str): string {
-		return preg_replace('/[\x{10000}-\x{10FFFF}]/u', "\xEF\xBF\xBD", $str);
-	}
-
 	static function cleanup_feed_browser(): void {
 		$pdo = Db::pdo();
 		$pdo->query("DELETE FROM ttrss_feedbrowser_cache");
@@ -123,33 +118,18 @@ class RSSUtils {
 
 		$default_interval = (int) Prefs::get_default(Prefs::DEFAULT_UPDATE_INTERVAL);
 
-		if (Config::get(Config::DB_TYPE) == "pgsql") {
-			$update_limit_qpart = "AND ((
-					update_interval = 0
-						AND (p.value IS NULL OR p.value != '-1')
-						AND last_updated < NOW() - CAST((COALESCE(p.value, '$default_interval') || ' minutes') AS INTERVAL)
-				) OR (
-					update_interval > 0
-					AND last_updated < NOW() - CAST((update_interval || ' minutes') AS INTERVAL)
-				) OR (
-					update_interval >= 0
-						AND (p.value IS NULL OR p.value != '-1')
-						AND (last_updated = '1970-01-01 00:00:00' OR last_updated IS NULL)
-				))";
-		} else {
-			$update_limit_qpart = "AND ((
-					update_interval = 0
-						AND (p.value IS NULL OR p.value != '-1')
-						AND last_updated < DATE_SUB(NOW(), INTERVAL CONVERT(COALESCE(p.value, '$default_interval'), SIGNED INTEGER) MINUTE)
-				) OR (
-					update_interval > 0
-						AND last_updated < DATE_SUB(NOW(), INTERVAL update_interval MINUTE)
-				) OR (
-					update_interval >= 0
-						AND (p.value IS NULL OR p.value != '-1')
-						AND (last_updated = '1970-01-01 00:00:00' OR last_updated IS NULL)
-				))";
-		}
+		$update_limit_qpart = "AND ((
+				update_interval = 0
+					AND (p.value IS NULL OR p.value != '-1')
+					AND last_updated < NOW() - CAST((COALESCE(p.value, '$default_interval') || ' minutes') AS INTERVAL)
+			) OR (
+				update_interval > 0
+				AND last_updated < NOW() - CAST((update_interval || ' minutes') AS INTERVAL)
+			) OR (
+				update_interval >= 0
+					AND (p.value IS NULL OR p.value != '-1')
+					AND (last_updated = '1970-01-01 00:00:00' OR last_updated IS NULL)
+			))";
 
 		// Test if feed is currently being updated by another process.
 		// TODO: Update RPC::updaterandomfeed_real() to also use 10 minutes?
@@ -159,10 +139,7 @@ class RSSUtils {
 		$query_limit = $limit ? sprintf("LIMIT %d", $limit) : "";
 
 		// Update the least recently updated feeds first
-		$query_order = "ORDER BY last_updated";
-
-		if (Config::get(Config::DB_TYPE) == "pgsql")
-			$query_order .= " NULLS FIRST";
+		$query_order = "ORDER BY last_updated NULLS FIRST";
 
 		$query = "SELECT f.feed_url, f.last_updated
 			FROM
@@ -856,15 +833,6 @@ class RSSUtils {
 						continue;
 					}
 
-					// Yet another episode of "mysql utf8_general_ci is gimped"
-					if (Config::get(Config::DB_TYPE) == "mysql" && Config::get(Config::MYSQL_CHARSET) != "UTF8MB4") {
-						foreach ((array)$e as $prop => $val) {
-							if (is_string($val)) {
-								$e->$prop = self::strip_utf8mb4($val);
-							}
-						}
-					}
-
 					array_push($enclosures, $e);
 				}
 
@@ -934,16 +902,6 @@ class RSSUtils {
 				}
 
 				Debug::log("plugin data: {$entry_plugin_data}", Debug::LOG_VERBOSE);
-
-				// Workaround: 4-byte unicode requires utf8mb4 in MySQL. See https://tt-rss.org/forum/viewtopic.php?f=1&t=3377&p=20077#p20077
-				if (Config::get(Config::DB_TYPE) == "mysql" && Config::get(Config::MYSQL_CHARSET) != "UTF8MB4") {
-					foreach ($article as $k => $v) {
-						// i guess we'll have to take the risk of 4byte unicode labels & tags here
-						if (is_string($article[$k])) {
-							$article[$k] = self::strip_utf8mb4($v);
-						}
-					}
-				}
 
 				/* Collect article tags here so we could filter by them: */
 
@@ -1186,14 +1144,9 @@ class RSSUtils {
 
 					Debug::log("resulting RID: $entry_ref_id, IID: $entry_int_id", Debug::LOG_VERBOSE);
 
-					if (Config::get(Config::DB_TYPE) == "pgsql")
-						$tsvector_qpart = "tsvector_combined = to_tsvector(:ts_lang, :ts_content),";
-					else
-						$tsvector_qpart = "";
-
 					$sth = $pdo->prepare("UPDATE ttrss_entries
 						SET title = :title,
-							$tsvector_qpart
+							tsvector_combined = to_tsvector(:ts_lang, :ts_content),
 							content = :content,
 							content_hash = :content_hash,
 							updated = :updated,
@@ -1212,12 +1165,10 @@ class RSSUtils {
 						":plugin_data" => $entry_plugin_data,
 						":author" => "$entry_author",
 						":lang" => $entry_language,
-						":id" => $ref_id];
-
-					if (Config::get(Config::DB_TYPE) == "pgsql") {
-						$params[":ts_lang"] = $feed_language;
-						$params[":ts_content"] = mb_substr(strip_tags($entry_title) . " " . \Soundasleep\Html2Text::convert($entry_content), 0, 900000);
-					}
+						":id" => $ref_id,
+						":ts_lang" => $feed_language,
+						":ts_content" => mb_substr(strip_tags($entry_title) . " " . \Soundasleep\Html2Text::convert($entry_content), 0, 900000)
+						];
 
 					$sth->execute($params);
 

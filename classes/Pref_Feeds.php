@@ -15,12 +15,8 @@ class Pref_Feeds extends Handler_Protected {
 	 * @return array<int, string>
 	 */
 	public static function get_ts_languages(): array {
-		if (Config::get(Config::DB_TYPE) == 'pgsql') {
-			return array_map('ucfirst',
-				array_column(ORM::for_table('pg_ts_config')->select('cfgname')->find_array(), 'cfgname'));
-		}
-
-		return [];
+		return array_map('ucfirst',
+			array_column(ORM::for_table('pg_ts_config')->select('cfgname')->find_array(), 'cfgname'));
 	}
 
 	function renameCat(): void {
@@ -597,7 +593,7 @@ class Pref_Feeds extends Handler_Protected {
 					"access_level" => $user->access_level
 				],
 				"lang" => [
-					"enabled" => Config::get(Config::DB_TYPE) == "pgsql",
+					"enabled" => true,
 					"default" => Prefs::get(Prefs::DEFAULT_SEARCH_LANGUAGE, $_SESSION['uid'], $profile),
 					"all" => $this::get_ts_languages(),
 					]
@@ -653,13 +649,11 @@ class Pref_Feeds extends Handler_Protected {
 					</fieldset>
 				<?php } ?>
 
-				<?php	if (Config::get(Config::DB_TYPE) == "pgsql") { ?>
 					<fieldset>
 						<label><?= __('Language:') ?></label>
 						<?= \Controls\select_tag("feed_language", "", $this::get_ts_languages(), ["disabled"=> 1]) ?>
 						<?= $this->_batch_toggle_checkbox("feed_language") ?>
 					</fieldset>
-				<?php } ?>
 				</section>
 
 				<hr/>
@@ -1141,12 +1135,6 @@ class Pref_Feeds extends Handler_Protected {
 
 	function inactiveFeeds(): void {
 
-		if (Config::get(Config::DB_TYPE) == "pgsql") {
-			$interval_qpart = "NOW() - INTERVAL '3 months'";
-		} else {
-			$interval_qpart = "DATE_SUB(NOW(), INTERVAL 3 MONTH)";
-		}
-
 		$inactive_feeds = ORM::for_table('ttrss_feeds')
 			->table_alias('f')
 			->select_many('f.id', 'f.title', 'f.site_url', 'f.feed_url')
@@ -1158,7 +1146,7 @@ class Pref_Feeds extends Handler_Protected {
 				"(SELECT MAX(ttrss_entries.updated)
 				FROM ttrss_entries
 				JOIN ttrss_user_entries ON ttrss_entries.id = ttrss_user_entries.ref_id
-				WHERE ttrss_user_entries.feed_id = f.id) < $interval_qpart")
+				WHERE ttrss_user_entries.feed_id = f.id) < NOW() - INTERVAL '3 months'")
 			->group_by('f.title')
 			->group_by('f.id')
 			->group_by('f.site_url')

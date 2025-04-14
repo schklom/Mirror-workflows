@@ -91,6 +91,7 @@ abstract class FeedItem_Common extends FeedItem {
 
 		$enclosures = $this->xpath->query("media:content", $this->elem);
 
+		/** @var DOMElement $enclosure */
 		foreach ($enclosures as $enclosure) {
 			$enc = new FeedEnclosure();
 			$enc->type = clean($enclosure->getAttribute('type'));
@@ -143,6 +144,7 @@ abstract class FeedItem_Common extends FeedItem {
 
 		$enclosures = $this->xpath->query("media:thumbnail", $this->elem);
 
+		/** @var DOMElement $enclosure */
 		foreach ($enclosures as $enclosure) {
 			$enc = new FeedEnclosure();
 			$enc->type = 'image/generic';
@@ -192,10 +194,6 @@ abstract class FeedItem_Common extends FeedItem {
 				$cat = 't:' . $cat;
 
 			$cat = preg_replace('/[,\'\"]/', "", $cat);
-
-			if (Config::get(Config::DB_TYPE) == "mysql") {
-				$cat = preg_replace('/[\x{10000}-\x{10FFFF}]/u', "\xEF\xBF\xBD", $cat);
-			}
 
 			if (mb_strlen($cat) > 250)
 				$cat = mb_substr($cat, 0, 250);

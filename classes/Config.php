@@ -26,7 +26,7 @@ class Config {
 
 	/** this is kept for backwards/plugin compatibility, the only supported database is PostgreSQL
 	 *
-	 * @deprecated could be replaced with default (and only) value: `pgsql`
+	 * @deprecated usages of `Config::get(Config::DB_TYPE)` should be replaced with default (and only) value: `pgsql` or removed
 	*/
 	const DB_TYPE = "DB_TYPE";
 

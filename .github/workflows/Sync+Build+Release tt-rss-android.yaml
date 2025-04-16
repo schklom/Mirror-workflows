@@ -113,6 +113,8 @@ jobs:
           keyAlias: ${{ secrets.APK_KEYSTORE_ALIAS }}
           keyStorePassword: ${{ secrets.APK_KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.APK_KEYSTORE_PASSWORD }}
+          # https://github.com/ilharp/sign-android-release/issues/24#issuecomment-2414013354
+          buildToolsVersion: 35.0.0
       
       - name: LS
         run: ls -AlhR ./

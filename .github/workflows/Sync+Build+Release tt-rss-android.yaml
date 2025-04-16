@@ -68,41 +68,17 @@ jobs:
           ####ref: 'Gadgetbridge-osmand-experiments' # branch
           #ref: 'osmand-experiments' # branch
           ref: 'master' # branch
-      - name: Update package lists
-        run: sudo apt-get update
-      # https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Developer-Documentation
-      - name: Setup JDK+Android
-        run: |
-          LATEST_VERSION=$(apt-cache search openjdk | grep -E '^openjdk-[0-9]+-jdk-headless' | awk -F' ' '{print $1}' | sort -V | tail -n 1)
-          echo "${LATEST_VERSION}"
-          # LATEST_VERSION="openjdk-11-jdk"
-          sudo apt-get install ${LATEST_VERSION} git adb -y
-      
-      #- name: Update (too) old dependencies that cause problems
-      #  run: |
-      #    sed -i 's/jp.wasabeef:glide-transformations:2.0.2/jp.wasabeef:glide-transformations:4.3.0/' org.fox.ttrss/build.gradle
-      #    cat org.fox.ttrss/build.gradle
-          
-      #- name: Cache Gradle Wrapper and Dependencies
-      #  uses: actions/cache@v3
-      #  with:
-      #    path: |
-      #      ./.gradle/wrapper
-      #      ./.gradle/caches
-      #- name: Add mavenCentral repo and a custom
-      #  run: |
-      #    sed -i '/clojars.org\/repo/i\        mavenCentral()' build.gradle
-      #    sed -i "/mavenCentral()/i\        maven {url 'http:\/\/dl.bintray.com\/amulyakhare\/maven' }" build.gradle
-      #    cat build.gradle
-      - name: Gradlew executable
-        run: chmod +x gradlew
-      - name: Build apk
-        run: ./gradlew --no-daemon --refresh-dependencies assembleDebug
-        #run: ./gradlew --no-daemon --refresh-dependencies assembleRelease
-      - name: LS
-        run: ls -AlhR ./
-      #- name: Delete previous release
-      #  run: git push --delete origin Gadgetbridge-osmand-experiments-${{ needs.get_commit_and_tag.outputs.LOCALTAG }}
+
+      - name: Set-up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+  
+      - name: Setup and build with Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build -x lint
       
       - name: Sign APK
         id: sign_apk

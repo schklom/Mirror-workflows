@@ -86,7 +86,7 @@ jobs:
       
       - name: Sign APK
         id: sign_apk
-        uses: ilharp/sign-android-release@v1
+        uses: ilharp/sign-android-release@v2
         with:
           releaseDir: app/build/outputs/apk/
           signingKey: ${{ secrets.APK_KEYSTORE_FILE_BASE64 }}

@@ -3,7 +3,7 @@ async function parseCommandLogs(rsaCryptoKey, commandLogsData) {
     logResult = ""
     for (logEntry of logEntries) {
         if (logEntry != "") {
-            logData = await decryptPacketModern(rsaCryptoKey, logEntry);
+            logData = await decryptPacket(rsaCryptoKey, logEntry);
             logDataObj = JSON.parse(logData)
             timestamp = new Date(parseInt(logDataObj.TimeStamp)*1000);
             logResult += timestamp.toLocaleString()+": "+logDataObj.Log +"\n"

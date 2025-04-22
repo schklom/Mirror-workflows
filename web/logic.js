@@ -146,10 +146,10 @@ async function doLogin(fmdid, password, useLongSession) {
     let saltJson = await response.json();
     let salt = saltJson.Data;
 
-    modernPasswordHash = await hashPasswordForLoginModern(password, salt);
+    let passwordHash = await hashPasswordForLogin(password, salt);
 
     try {
-        await tryLoginWithHash(fmdid, modernPasswordHash, sessionDurationSeconds);
+        await tryLoginWithHash(fmdid, passwordHash, sessionDurationSeconds);
     } catch (statusCode) {
         if (statusCode == 423) {
             alert("Too many attempts. Try again in 10 minutes.");

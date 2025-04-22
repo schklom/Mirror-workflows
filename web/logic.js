@@ -146,7 +146,17 @@ async function doLogin(fmdid, password, useLongSession) {
     let saltJson = await response.json();
     let salt = saltJson.Data;
 
-    let passwordHash = await hashPasswordForLogin(password, salt);
+    let passwordHash;
+    try {
+        passwordHash = await hashPasswordForLogin(password, salt);
+    } catch (error) {
+        console.log(error.message, error.code);
+        alert("Failed to hash password!\n\n"
+            + `The error was: ${error.message}\n\n`
+            + "If you use Vanadium, please enable JavaScript JIT (needed for WebAssembly). "
+            + "Then reload the page and try again.");
+        return;
+    }
 
     try {
         await tryLoginWithHash(fmdid, passwordHash, sessionDurationSeconds);

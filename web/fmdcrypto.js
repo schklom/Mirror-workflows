@@ -41,21 +41,16 @@ async function hashPasswordArgon2(password, salt) {
     if (typeof salt === "string") {
         salt = base64Decode(salt);
     }
-    try {
-        let res = await argon2.hash({
-            type: argon2.ArgonType.Argon2id,
-            pass: password,
-            salt: salt,
-            time: ARGON2_T,
-            parallelism: ARGON2_P,
-            mem: ARGON2_M,
-            hashLen: ARGON2_HASH_LENGTH,
-        });
-        return res;
-    } catch (error) {
-        console.log(error.messsage, error.code);
-        return "";
-    }
+    let res = await argon2.hash({
+        type: argon2.ArgonType.Argon2id,
+        pass: password,
+        salt: salt,
+        time: ARGON2_T,
+        parallelism: ARGON2_P,
+        mem: ARGON2_M,
+        hashLen: ARGON2_HASH_LENGTH,
+    });
+    return res;
 }
 
 // Section: Asymmetric crypto (key wrap)

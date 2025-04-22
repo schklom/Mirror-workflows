@@ -360,6 +360,15 @@ func (u *UserRepository) pushUser(user *FMDUser) {
 		return
 	}
 
+	// Hack: not a real encrypted WebPush request, but made to look like one.
+	// Should work, since we use push only as a wake-up mechanism, not for sending any real data.
+	// Keep the JSON data (instead of an AES ciphertext) to keep ntfy happy.
+	// Long term, we may want to implement proper encrypted WebPush.
+	//
+	// https://codeberg.org/UnifiedPush/specifications/pulls/1#issuecomment-2281675
+	// https://codeberg.org/UnifiedPush/common-proxies/src/commit/200caa145b/gateway/generic.go
+	// https://datatracker.ietf.org/doc/html/rfc8030
+	// https://datatracker.ietf.org/doc/html/rfc8291
 	var jsonData = []byte(`{
 		"message": "fmd app wakeup",
 		"priority": 5
@@ -369,7 +378,9 @@ func (u *UserRepository) pushUser(user *FMDUser) {
 		log.Error().Err(err).Str("userid", user.UID).Msg("failed to build push request")
 		return
 	}
-	request.Header.Set("Content-Type", "application/json; charset=UTF-8")
+	request.Header.Set("Content-Encoding", "aes128gcm")
+	request.Header.Set("TTL", "86400") // cache for one day max
+	request.Header.Set("Urgency", "high")
 
 	client := &http.Client{}
 	_, err = client.Do(request)

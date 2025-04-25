@@ -24,12 +24,6 @@ class Cache_Starred_Images extends Plugin {
 		$this->cache = DiskCache::instance("starred-images");
 		$this->cache_status = DiskCache::instance("starred-images.status-files");
 
-		if ($this->cache->make_dir())
-			chmod($this->cache->get_dir(), 0777);
-
-		if ($this->cache_status->make_dir())
-			chmod($this->cache_status->get_dir(), 0777);
-
 		if (!$this->cache->exists(".no-auto-expiry"))
 			$this->cache->put(".no-auto-expiry", "");
 

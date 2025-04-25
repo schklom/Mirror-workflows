@@ -4,6 +4,7 @@
   "description": "",
   "devDependencies": {
     "eslint": "^7.9.0",
+    "eslint-formatter-gitlab": "^5.1.0",
     "gulp": "^4.0.2",
     "gulp-less": "^4.0.1",
     "gulp-touch-fd": "^2.0.0",

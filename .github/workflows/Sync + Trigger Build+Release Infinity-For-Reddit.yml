@@ -48,12 +48,15 @@ jobs:
         uses: wei/git-sync@v3
         with:
           source_repo: "https://github.com/Docile-Alligator/Infinity-For-Reddit.git"
-          source_branch: "refs/remotes/source/*"
-          #source_branch: "master"
-          ####destination_repo: "git@github.com:schklom/Mirror-workflows.git"
           destination_repo: "git@github.com:schklom/Infinity-For-Reddit.git"
+          #source_branch: "refs/remotes/source/*"
+          #destination_branch: "refs/heads/*"
+          
+          source_branch: "master"
+          destination_branch: "master"
+          
+          ####destination_repo: "git@github.com:schklom/Mirror-workflows.git"
           ####destination_branch: "Gadgetbridge-osmand-experiments"
-          destination_branch: "refs/heads/*"
           #source_branch: "refs/tags/*"
           #destination_branch: "refs/tags/*"
           destination_ssh_private_key: ${{ secrets.GITSYNCACTION }}

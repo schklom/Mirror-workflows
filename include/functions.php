@@ -116,24 +116,21 @@
 				// create a list like "en" => 0.8
 				$langs = array_combine($lang_parse[1], $lang_parse[4]);
 
-				/** @phpstan-ignore function.alreadyNarrowedType (PHP 7.4 will return false if array_value has an issue) */
-				if (is_array($langs)) {
-					// set default to 1 for any without q factor
-					foreach ($langs as $lang => $val) {
-						if ($val === '') $langs[$lang] = 1;
-					}
+				// set default to 1 for any without q factor
+				foreach ($langs as $lang => $val) {
+					if ($val === '') $langs[$lang] = 1;
+				}
 
-					// sort list based on value
-					arsort($langs, SORT_NUMERIC);
+				// sort list based on value
+				arsort($langs, SORT_NUMERIC);
 
-					foreach (array_keys($langs) as $lang) {
-						$lang = strtolower($lang);
+				foreach (array_keys($langs) as $lang) {
+					$lang = strtolower($lang);
 
-						foreach ($valid_langs as $vlang => $vlocale) {
-							if ($vlang == $lang) {
-								$selected_locale = $vlocale;
-								break 2;
-							}
+					foreach ($valid_langs as $vlang => $vlocale) {
+						if ($vlang == $lang) {
+							$selected_locale = $vlocale;
+							break 2;
 						}
 					}
 				}

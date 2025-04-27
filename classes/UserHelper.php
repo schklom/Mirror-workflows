@@ -181,10 +181,8 @@ class UserHelper {
 				$_SESSION["last_login_update"] = time();
 			}
 
-			if ($_SESSION["uid"]) {
-				startup_gettext();
-				self::load_user_plugins($_SESSION["uid"]);
-			}
+			startup_gettext();
+			self::load_user_plugins($_SESSION["uid"]);
 		}
 	}
 

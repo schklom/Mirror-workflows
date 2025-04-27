@@ -55,7 +55,8 @@
 		} else /* if (method_exists($handler, 'index')) */ {
 			$handler->index($method);
 		}
-		$handler->after();
+		// API isn't currently overriding Handler#after()
+		// $handler->after();
 	}
 
 	header("Api-Content-Length: " . ob_get_length());

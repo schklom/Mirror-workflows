@@ -80,6 +80,7 @@ class FeedItem_Atom extends FeedItem_Common {
 
 				$elems = $tmpxpath->query("(//*[@href]|//*[@src])");
 
+				/** @var DOMElement $elem */
 				foreach ($elems as $elem) {
 					if ($elem->hasAttribute("href")) {
 						$elem->setAttribute("href",
@@ -210,6 +211,7 @@ class FeedItem_Atom extends FeedItem_Common {
 			return clean($lang);
 		} else {
 			// Fall back to the language declared on the feed, if any.
+			/** @var DOMElement|DOMNode $child */
 			foreach ($this->doc->childNodes as $child) {
 				if (method_exists($child, "getAttributeNS")) {
 					return clean($child->getAttributeNS(self::NS_XML, "lang"));

@@ -85,15 +85,13 @@ class Article extends Handler_Protected {
 					content = ?, content_hash = ? WHERE id = ?");
 				$sth->execute([$content, $content_hash, $ref_id]);
 
-				if (Config::get(Config::DB_TYPE) == "pgsql") {
-					$sth = $pdo->prepare("UPDATE ttrss_entries
-					SET tsvector_combined = to_tsvector( :ts_content)
-					WHERE id = :id");
-					$params = [
-						":ts_content" => mb_substr(\Soundasleep\Html2Text::convert($content), 0, 900000),
-						":id" => $ref_id];
-					$sth->execute($params);
-				}
+				$sth = $pdo->prepare("UPDATE ttrss_entries
+				SET tsvector_combined = to_tsvector( :ts_content)
+				WHERE id = :id");
+				$params = [
+					":ts_content" => mb_substr(\Soundasleep\Html2Text::convert($content), 0, 900000),
+					":id" => $ref_id];
+				$sth->execute($params);
 
 				$sth = $pdo->prepare("UPDATE ttrss_user_entries SET published = true,
 						last_published = NOW() WHERE
@@ -130,15 +128,15 @@ class Article extends Handler_Protected {
 
 			if ($row = $sth->fetch()) {
 				$ref_id = $row["id"];
-				if (Config::get(Config::DB_TYPE) == "pgsql"){
-					$sth = $pdo->prepare("UPDATE ttrss_entries
-					SET tsvector_combined = to_tsvector( :ts_content)
-					WHERE id = :id");
-					$params = [
-						":ts_content" => mb_substr(\Soundasleep\Html2Text::convert($content), 0, 900000),
-						":id" => $ref_id];
-					$sth->execute($params);
-				}
+
+				$sth = $pdo->prepare("UPDATE ttrss_entries
+				SET tsvector_combined = to_tsvector( :ts_content)
+				WHERE id = :id");
+				$params = [
+					":ts_content" => mb_substr(\Soundasleep\Html2Text::convert($content), 0, 900000),
+					":id" => $ref_id];
+				$sth->execute($params);
+
 				$sth = $pdo->prepare("INSERT INTO ttrss_user_entries
 					(ref_id, uuid, feed_id, orig_feed_id, owner_uid, published, tag_cache, label_cache,
 						last_read, note, unread, last_published)
@@ -465,16 +463,9 @@ class Article extends Handler_Protected {
 
 	static function _purge_orphans(): void {
 
-        // purge orphaned posts in main content table
-
-        if (Config::get(Config::DB_TYPE) == "mysql")
-            $limit_qpart = "LIMIT 5000";
-        else
-            $limit_qpart = "";
-
         $pdo = Db::pdo();
         $res = $pdo->query("DELETE FROM ttrss_entries WHERE
-			NOT EXISTS (SELECT ref_id FROM ttrss_user_entries WHERE ref_id = id) $limit_qpart");
+			NOT EXISTS (SELECT ref_id FROM ttrss_user_entries WHERE ref_id = id)");
 
         if (Debug::enabled()) {
             $rows = $res->rowCount();

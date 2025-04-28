@@ -63,41 +63,22 @@ class Af_Psql_Trgm extends Plugin {
 
 			print "<p>$title</p>";
 
-			if (Config::get(Config::DB_TYPE) == "pgsql") {
-				$sth = $this->pdo->prepare("SELECT ttrss_entries.id AS id,
-					feed_id,
-					ttrss_entries.title AS title,
-					updated, link,
-					ttrss_feeds.title AS feed_title,
-					SIMILARITY(ttrss_entries.title, :title) AS sm
-				FROM
-					ttrss_entries, ttrss_user_entries LEFT JOIN ttrss_feeds ON (ttrss_feeds.id = feed_id)
-				WHERE
-					ttrss_entries.id = ref_id AND
-					ttrss_user_entries.owner_uid = :owner_uid AND
-					ttrss_entries.id != :id AND
-					date_entered >= NOW() - INTERVAL '2 weeks'
-				ORDER BY
-					sm DESC, date_entered DESC
-				LIMIT 10");
-			} else {
-				$sth = $this->pdo->prepare("SELECT ttrss_entries.id AS id,
-					feed_id,
-					ttrss_entries.title AS title,
-					updated, link,
-					ttrss_feeds.title AS feed_title,
-					(MATCH (ttrss_entries.title) AGAINST (:title) / LENGTH(ttrss_entries.title)) AS sm
-				FROM
-					ttrss_entries, ttrss_user_entries LEFT JOIN ttrss_feeds ON (ttrss_feeds.id = feed_id)
-				WHERE
-					ttrss_entries.id = ref_id AND
-					ttrss_user_entries.owner_uid = :owner_uid AND
-					ttrss_entries.id != :id AND
-					date_entered >= DATE_SUB(NOW(), INTERVAL 2 WEEK)
-				ORDER BY
-					sm DESC, date_entered DESC
-				LIMIT 10");
-			}
+			$sth = $this->pdo->prepare("SELECT ttrss_entries.id AS id,
+				feed_id,
+				ttrss_entries.title AS title,
+				updated, link,
+				ttrss_feeds.title AS feed_title,
+				SIMILARITY(ttrss_entries.title, :title) AS sm
+			FROM
+				ttrss_entries, ttrss_user_entries LEFT JOIN ttrss_feeds ON (ttrss_feeds.id = feed_id)
+			WHERE
+				ttrss_entries.id = ref_id AND
+				ttrss_user_entries.owner_uid = :owner_uid AND
+				ttrss_entries.id != :id AND
+				date_entered >= NOW() - INTERVAL '2 weeks'
+			ORDER BY
+				sm DESC, date_entered DESC
+			LIMIT 10");
 
 			$sth->execute(['title' => $title, "owner_uid" => $owner_uid, "id" => $id]);
 
@@ -157,12 +138,10 @@ class Af_Psql_Trgm extends Plugin {
 			title="<i class='material-icons'>extension</i> <?= __('Mark similar articles as read (af_psql_trgm)') ?>">
 
 			<?php
-			if (Config::get(Config::DB_TYPE) == "pgsql") {
-				$res = $this->pdo->query("select 'similarity'::regproc");
+			$res = $this->pdo->query("select 'similarity'::regproc");
 
-				if (!$res || !$res->fetch()) {
-					print_error("pg_trgm extension not found.");
-				}
+			if (!$res || !$res->fetch()) {
+				print_error("pg_trgm extension not found.");
 			} ?>
 
 			<form dojoType="dijit.form.Form">
@@ -190,11 +169,7 @@ class Af_Psql_Trgm extends Plugin {
 						name="similarity" value="<?= htmlspecialchars($similarity) ?>">
 
 					<div dojoType='dijit.Tooltip' connectId='psql_trgm_similarity' position='below'>
-						<?php if (Config::get(Config::DB_TYPE) == "pgsql") { ?>
-							<?= __("PostgreSQL trigram extension returns string similarity as a floating point number (0-1). Setting it too low might produce false positives, zero disables checking.") ?>
-						<?php } else { ?>
-							<?= __("Setting this value too low might produce false positives, zero disables checking.") ?>
-						<?php } ?>
+						<?= __("PostgreSQL trigram extension returns string similarity as a floating point number (0-1). Setting it too low might produce false positives, zero disables checking.") ?>
 					</div>
 				</fieldset>
 
@@ -283,10 +258,8 @@ class Af_Psql_Trgm extends Plugin {
 
 	function hook_article_filter($article) {
 
-		if (Config::get(Config::DB_TYPE) == "pgsql") {
-			$res = $this->pdo->query("select 'similarity'::regproc");
-			if (!$res || !$res->fetch()) return $article;
-		}
+		$res = $this->pdo->query("select 'similarity'::regproc");
+		if (!$res || !$res->fetch()) return $article;
 
 		$enable_globally = $this->host->get($this, "enable_globally");
 
@@ -336,21 +309,11 @@ class Af_Psql_Trgm extends Plugin {
 			return $article;
 		} */
 
-		if (Config::get(Config::DB_TYPE) == "pgsql") {
-			$sth = $this->pdo->prepare("SELECT MAX(SIMILARITY(title, :title)) AS ms
-				FROM ttrss_entries, ttrss_user_entries WHERE ref_id = id AND
-				date_entered >= NOW() - interval '1 day' AND
-				guid != :guid AND
-				owner_uid = :uid");
-		} else {
-			$sth = $this->pdo->prepare("SELECT (MATCH(title) AGAINST (:title) / LENGTH(title)) AS ms
-				FROM ttrss_entries, ttrss_user_entries WHERE ref_id = id AND
-					date_entered >= DATE_SUB(NOW(), INTERVAL 1 DAY) AND
-					guid != :guid AND
-					owner_uid = :uid
-					ORDER BY ms DESC
-					LIMIT 1");
-		}
+		$sth = $this->pdo->prepare("SELECT MAX(SIMILARITY(title, :title)) AS ms
+			FROM ttrss_entries, ttrss_user_entries WHERE ref_id = id AND
+			date_entered >= NOW() - interval '1 day' AND
+			guid != :guid AND
+			owner_uid = :uid");
 
 		$sth->execute(['title' => $title_escaped, 'guid' => $entry_guid, 'uid' => $owner_uid]);
 

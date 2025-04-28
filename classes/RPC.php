@@ -252,39 +252,22 @@ class RPC extends Handler_Protected {
 		$default_interval = (int) Prefs::get_default(Prefs::DEFAULT_UPDATE_INTERVAL);
 
 		// Test if the feed need a update (update interval exceded).
-		if (Config::get(Config::DB_TYPE) == "pgsql") {
-			$update_limit_qpart = "AND ((
-					update_interval = 0
-						AND (p.value IS NULL OR p.value != '-1')
-						AND last_updated < NOW() - CAST((COALESCE(p.value, '$default_interval') || ' minutes') AS INTERVAL)
-				) OR (
-					update_interval > 0
-						AND last_updated < NOW() - CAST((update_interval || ' minutes') AS INTERVAL)
-				) OR (
-					update_interval >= 0
-						AND (p.value IS NULL OR p.value != '-1')
-						AND (last_updated = '1970-01-01 00:00:00' OR last_updated IS NULL)
-				))";
-		} else {
-			$update_limit_qpart = "AND ((
-					update_interval = 0
-						AND (p.value IS NULL OR p.value != '-1')
-						AND last_updated < DATE_SUB(NOW(), INTERVAL CONVERT(COALESCE(p.value, '$default_interval'), SIGNED INTEGER) MINUTE)
-				) OR (
-					update_interval > 0
-						AND last_updated < DATE_SUB(NOW(), INTERVAL update_interval MINUTE)
-				) OR (
-					update_interval >= 0
-						AND (p.value IS NULL OR p.value != '-1')
-						AND (last_updated = '1970-01-01 00:00:00' OR last_updated IS NULL)
-				))";
-		}
+		$update_limit_qpart = "AND ((
+				update_interval = 0
+					AND (p.value IS NULL OR p.value != '-1')
+					AND last_updated < NOW() - CAST((COALESCE(p.value, '$default_interval') || ' minutes') AS INTERVAL)
+			) OR (
+				update_interval > 0
+					AND last_updated < NOW() - CAST((update_interval || ' minutes') AS INTERVAL)
+			) OR (
+				update_interval >= 0
+					AND (p.value IS NULL OR p.value != '-1')
+					AND (last_updated = '1970-01-01 00:00:00' OR last_updated IS NULL)
+			))";
 
 		// Test if feed is currently being updated by another process.
 		$updstart_thresh_qpart = 'AND (last_update_started IS NULL OR '
 			. Db::past_comparison_qpart('last_update_started', '<', 5, 'minute') . ')';
-
-		$random_qpart = Db::sql_random_function();
 
 		$pdo = Db::pdo();
 
@@ -305,7 +288,7 @@ class RPC extends Handler_Protected {
 				$owner_check_qpart
 				$update_limit_qpart
 				$updstart_thresh_qpart
-			ORDER BY $random_qpart LIMIT 30";
+			ORDER BY RANDOM() LIMIT 30";
 
 		$res = $pdo->query($query);
 

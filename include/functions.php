@@ -26,11 +26,7 @@
 
 	require_once "autoload.php";
 
-	if (Config::get(Config::DB_TYPE) == "pgsql") {
-		define('SUBSTRING_FOR_DATE', 'SUBSTRING_FOR_DATE');
-	} else {
-		define('SUBSTRING_FOR_DATE', 'SUBSTRING');
-	}
+	define('SUBSTRING_FOR_DATE', 'SUBSTRING_FOR_DATE');
 
 	/**
 	 * @deprecated by Prefs::get()

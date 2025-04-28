@@ -18,13 +18,16 @@ class Config {
 	 *
 	 * or config.php:
 	 *
-	 * putenv('TTRSS_DB_TYPE=pgsql');
+	 * putenv('TTRSS_DB_HOST=my-patroni.example.com');
 	 *
 	 * note lack of quotes and spaces before and after "=".
 	 *
 	*/
 
-	/** database type: pgsql or mysql */
+	/** this is kept for backwards/plugin compatibility, the only supported database is PostgreSQL
+	 *
+	 * @deprecated usages of `Config::get(Config::DB_TYPE)` should be replaced with default (and only) value: `pgsql` or removed
+	*/
 	const DB_TYPE = "DB_TYPE";
 
 	/** database server hostname */
@@ -41,10 +44,6 @@ class Config {
 
 	/** database server port */
 	const DB_PORT = "DB_PORT";
-
-	/** connection charset for MySQL. if you have a legacy database and/or experience
-	 * garbage unicode characters with this option, try setting it to a blank string. */
-	const MYSQL_CHARSET = "MYSQL_CHARSET";
 
 	/** this is a fallback falue for the CLI SAPI, it should be set to a fully-qualified tt-rss URL */
 	const SELF_URL_PATH = "SELF_URL_PATH";
@@ -204,7 +203,6 @@ class Config {
 		Config::DB_NAME => [ "", 											Config::T_STRING ],
 		Config::DB_PASS => [ "", 											Config::T_STRING ],
 		Config::DB_PORT => [ "5432",										Config::T_STRING ],
-		Config::MYSQL_CHARSET => [ "UTF8",								Config::T_STRING ],
 		Config::SELF_URL_PATH => [ "https://example.com/tt-rss", Config::T_STRING ],
 		Config::SINGLE_USER_MODE => [ "",								Config::T_BOOL ],
 		Config::SIMPLE_UPDATE_MODE => [ "",								Config::T_BOOL ],
@@ -481,25 +479,6 @@ class Config {
 	}
 	/* sanity check stuff */
 
-	/** checks for mysql tables not using InnoDB (tt-rss is incompatible with MyISAM)
-	 * @return array<int, array<string, string>> A list of entries identifying tt-rss tables with bad config
-	 */
-	private static function check_mysql_tables() {
-		$pdo = Db::pdo();
-
-		$sth = $pdo->prepare("SELECT engine, table_name FROM information_schema.tables WHERE
-				table_schema = ? AND table_name LIKE 'ttrss_%' AND engine != 'InnoDB'");
-		$sth->execute([self::get(Config::DB_NAME)]);
-
-		$bad_tables = [];
-
-		while ($line = $sth->fetch()) {
-			array_push($bad_tables, $line);
-		}
-
-		return $bad_tables;
-	}
-
 	static function sanity_check(): void {
 
 		/*
@@ -601,29 +580,6 @@ class Config {
 		if (php_sapi_name() != "cli") {
 			if (self::get_schema_version() < 0) {
 				array_push($errors, "Base database schema is missing. Either load it manually or perform a migration (<code>update.php --update-schema</code>)");
-			}
-		}
-
-		if (self::get(Config::DB_TYPE) == "mysql") {
-			$bad_tables = self::check_mysql_tables();
-
-			if (count($bad_tables) > 0) {
-				$bad_tables_fmt = [];
-
-				foreach ($bad_tables as $bt) {
-					array_push($bad_tables_fmt, sprintf("%s (%s)", $bt['table_name'], $bt['engine']));
-				}
-
-				$msg = "<p>The following tables use an unsupported MySQL engine: <b>" .
-					implode(", ", $bad_tables_fmt) . "</b>.</p>";
-
-				$msg .= "<p>The only supported engine on MySQL is InnoDB. MyISAM lacks functionality to run
-					tt-rss.
-					Please backup your data (via OPML) and re-import the schema before continuing.</p>
-					<p><b>WARNING: importing the schema would mean LOSS OF ALL YOUR DATA.</b></p>";
-
-
-				array_push($errors, $msg);
 			}
 		}
 

@@ -53,7 +53,7 @@ class Cache_Starred_Images extends Plugin {
 				site_url != '' AND
 				ttrss_user_entries.owner_uid = ? AND
 				plugin_data NOT LIKE '%starred_cache_images%'
-			ORDER BY ".Db::sql_random_function()." LIMIT 100");
+			ORDER BY RANDOM() LIMIT 100");
 
 		if ($sth->execute([$this->host->get_owner_uid()])) {
 
@@ -122,6 +122,7 @@ class Cache_Starred_Images extends Plugin {
 		if ($article_id) {
 			$entries = $xpath->query('(//img[@src])|(//video/source[@src])');
 
+			/** @var DOMElement $entry */
 			foreach ($entries as $entry) {
 				if ($entry->hasAttribute('src')) {
 					$src = UrlHelper::rewrite_relative($site_url, $entry->getAttribute('src'));
@@ -197,6 +198,7 @@ class Cache_Starred_Images extends Plugin {
 			$xpath = new DOMXPath($doc);
 			$entries = $xpath->query('(//img[@src])|(//video/source[@src])');
 
+			/** @var DOMElement $entry */
 			foreach ($entries as $entry) {
 
 				if ($entry->hasAttribute('src') && !str_starts_with($entry->getAttribute('src'), "data:")) {

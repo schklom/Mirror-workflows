@@ -33,6 +33,7 @@ class FeedItem_RSS extends FeedItem_Common {
 	function get_link(): string {
 		$links = $this->xpath->query("atom:link", $this->elem);
 
+		/** @var DOMElement $link */
 		foreach ($links as $link) {
 			if ($link->hasAttribute("href") &&
 				(!$link->hasAttribute("rel")

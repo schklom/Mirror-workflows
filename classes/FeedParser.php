@@ -213,6 +213,7 @@ class FeedParser {
 		case $this::FEED_ATOM:
 			$links = $this->xpath->query("//atom:feed/atom:link");
 
+			/** @var DOMElement $link */
 			foreach ($links as $link) {
 				if (!$rel || $link->hasAttribute('rel') && $link->getAttribute('rel') == $rel) {
 					array_push($rv, clean(trim($link->getAttribute('href'))));
@@ -222,6 +223,7 @@ class FeedParser {
 		case $this::FEED_RSS:
 			$links = $this->xpath->query("//atom:link");
 
+			/** @var DOMElement $link */
 			foreach ($links as $link) {
 				if (!$rel || $link->hasAttribute('rel') && $link->getAttribute('rel') == $rel) {
 					array_push($rv, clean(trim($link->getAttribute('href'))));

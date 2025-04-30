@@ -14,6 +14,7 @@ return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Config' => $baseDir . '/classes/Config.php',
     'Counters' => $baseDir . '/classes/Counters.php',
+    'Crypt' => $baseDir . '/classes/Crypt.php',
     'Db' => $baseDir . '/classes/Db.php',
     'Db_Migrations' => $baseDir . '/classes/Db_Migrations.php',
     'Db_Prefs' => $baseDir . '/classes/Db_Prefs.php',

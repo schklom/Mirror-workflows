@@ -143,9 +143,6 @@ class PluginHost {
 	/** @see Plugin::hook_format_article() */
 	const HOOK_FORMAT_ARTICLE = "hook_format_article";
 
-	/** @see Plugin::hook_format_article_cdm() */
-	const HOOK_FORMAT_ARTICLE_CDM = "hook_format_article_cdm";
-
 	/** @see Plugin::hook_feed_basic_info() */
 	const HOOK_FEED_BASIC_INFO = "hook_feed_basic_info";
 

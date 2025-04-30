@@ -63,9 +63,9 @@ class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
     public static $prefixDirsPsr4 = array (
         'phpDocumentor\\Reflection\\' => 
         array (
-            0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
-            2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+            0 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
         ),
         'chillerlan\\Settings\\' => 
         array (
@@ -147,6 +147,7 @@ class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Config' => __DIR__ . '/../..' . '/classes/Config.php',
         'Counters' => __DIR__ . '/../..' . '/classes/Counters.php',
+        'Crypt' => __DIR__ . '/../..' . '/classes/Crypt.php',
         'Db' => __DIR__ . '/../..' . '/classes/Db.php',
         'Db_Migrations' => __DIR__ . '/../..' . '/classes/Db_Migrations.php',
         'Db_Prefs' => __DIR__ . '/../..' . '/classes/Db_Prefs.php',

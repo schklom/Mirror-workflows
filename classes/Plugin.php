@@ -713,4 +713,23 @@ abstract class Plugin {
 		return false;
 	}
 
+	/** Invoked after passed article IDs were either marked (i.e. starred) or unmarked.
+	 * **Note** resulting state of the articles is not passed to this function (because
+	 * tt-rss may do invert operation on ID range), you will need to get this from the database.
+	 * @param array<int> $article_ids ref_ids
+	 * @return void
+	 */
+	function hook_articles_marked(array $article_ids) {
+		user_error("Dummy method invoked.", E_USER_ERROR);
+	}
+
+	/** Invoked after passed article IDs were either published or unpublished.
+	 * **Note** resulting state of the articles is not passed to this function (because
+	 * tt-rss may do invert operation on ID range), you will need to get this from the database.
+	 * @param array<int> $article_ids ref_ids
+	 * @return void
+	 */
+	function hook_articles_published(array $article_ids) {
+		user_error("Dummy method invoked.", E_USER_ERROR);
+	}
 }

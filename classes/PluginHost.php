@@ -199,6 +199,12 @@ class PluginHost {
 	/** @see Plugin::hook_validate_session() */
 	const HOOK_VALIDATE_SESSION = "hook_validate_session";
 
+	/** @see Plugin::hook_articles_marked() */
+	const HOOK_ARTICLES_MARKED = "hook_articles_marked";
+
+	/** @see Plugin::hook_articles_published() */
+	const HOOK_ARTICLES_PUBLISHED = "hook_articles_published";
+
 	const KIND_ALL = 1;
 	const KIND_SYSTEM = 2;
 	const KIND_USER = 3;

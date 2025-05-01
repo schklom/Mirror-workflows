@@ -69,6 +69,8 @@ class RPC extends Handler_Protected {
 
 		$sth->execute([$mark, $id, $_SESSION['uid']]);
 
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_MARKED, [$id]);
+
 		print json_encode(array("message" => "UPDATE_COUNTERS"));
 	}
 
@@ -94,6 +96,8 @@ class RPC extends Handler_Protected {
 			WHERE ref_id = ? AND owner_uid = ?");
 
 		$sth->execute([$pub, $id, $_SESSION['uid']]);
+
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_PUBLISHED, [$id]);
 
 		print json_encode(array("message" => "UPDATE_COUNTERS"));
 	}
@@ -345,6 +349,8 @@ class RPC extends Handler_Protected {
 		}
 
 		$sth->execute([...$ids, $_SESSION['uid']]);
+
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_MARKED, $ids);
 	}
 
 	/**
@@ -369,6 +375,8 @@ class RPC extends Handler_Protected {
 		}
 
 		$sth->execute([...$ids, $_SESSION['uid']]);
+
+		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_PUBLISHED, $ids);
 	}
 
 	function log(): void {

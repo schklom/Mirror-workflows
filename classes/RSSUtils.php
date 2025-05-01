@@ -1132,6 +1132,12 @@ class RSSUtils {
 						$sth->execute([$ref_id, $feed_obj->owner_uid, $feed, $unread, $last_read_qpart, $marked,
 							$published, $score]);
 
+						if ($marked)
+							PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_MARKED, [$ref_id]);
+
+						if ($published)
+							PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_PUBLISHED, [$ref_id]);
+
 						$sth = $pdo->prepare("SELECT int_id FROM ttrss_user_entries WHERE
 								ref_id = ? AND owner_uid = ? AND
 								feed_id = ? LIMIT 1");

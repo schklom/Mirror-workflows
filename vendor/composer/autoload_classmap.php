@@ -990,6 +990,7 @@ return array(
     'RPC' => $baseDir . '/classes/RPC.php',
     'RSSUtils' => $baseDir . '/classes/RSSUtils.php',
     'Sanitizer' => $baseDir . '/classes/Sanitizer.php',
+    'Scheduler' => $baseDir . '/classes/Scheduler.php',
     'SebastianBergmann\\CliParser\\AmbiguousOptionException' => $vendorDir . '/sebastian/cli-parser/src/exceptions/AmbiguousOptionException.php',
     'SebastianBergmann\\CliParser\\Exception' => $vendorDir . '/sebastian/cli-parser/src/exceptions/Exception.php',
     'SebastianBergmann\\CliParser\\OptionDoesNotAllowArgumentException' => $vendorDir . '/sebastian/cli-parser/src/exceptions/OptionDoesNotAllowArgumentException.php',

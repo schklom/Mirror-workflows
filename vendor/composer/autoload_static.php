@@ -1131,6 +1131,7 @@ class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
         'RPC' => __DIR__ . '/../..' . '/classes/RPC.php',
         'RSSUtils' => __DIR__ . '/../..' . '/classes/RSSUtils.php',
         'Sanitizer' => __DIR__ . '/../..' . '/classes/Sanitizer.php',
+        'Scheduler' => __DIR__ . '/../..' . '/classes/Scheduler.php',
         'SebastianBergmann\\CliParser\\AmbiguousOptionException' => __DIR__ . '/..' . '/sebastian/cli-parser/src/exceptions/AmbiguousOptionException.php',
         'SebastianBergmann\\CliParser\\Exception' => __DIR__ . '/..' . '/sebastian/cli-parser/src/exceptions/Exception.php',
         'SebastianBergmann\\CliParser\\OptionDoesNotAllowArgumentException' => __DIR__ . '/..' . '/sebastian/cli-parser/src/exceptions/OptionDoesNotAllowArgumentException.php',

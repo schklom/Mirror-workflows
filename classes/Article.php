@@ -98,6 +98,8 @@ class Article extends Handler_Protected {
 						int_id = ? AND owner_uid = ?");
 				$sth->execute([$int_id, $owner_uid]);
 
+				PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_PUBLISHED, [$ref_id]);
+
 			} else {
 
 				$sth = $pdo->prepare("INSERT INTO ttrss_user_entries
@@ -106,6 +108,8 @@ class Article extends Handler_Protected {
 					VALUES
 					(?, '', NULL, NULL, ?, true, '', '', NOW(), '', false, NOW())");
 				$sth->execute([$ref_id, $owner_uid]);
+
+				PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_PUBLISHED, [$ref_id]);
 			}
 
 			if (count($labels) != 0) {
@@ -143,6 +147,8 @@ class Article extends Handler_Protected {
 					VALUES
 					(?, '', NULL, NULL, ?, true, '', '', NOW(), '', false, NOW())");
 				$sth->execute([$ref_id, $owner_uid]);
+
+				PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_PUBLISHED, [$ref_id]);
 
 				if (count($labels) != 0) {
 					foreach ($labels as $label) {

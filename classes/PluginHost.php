@@ -972,6 +972,8 @@ class PluginHost {
 				$rc = (int) $task['callback']();
 				$task_duration = time() - $task_started;
 
+				++$tasks_run;
+
 				Debug::log("Task $task_name has finished in $task_duration seconds with RC=$rc, recording timestamp...");
 
 				if ($task_record) {

@@ -35,11 +35,6 @@ class RSSUtils {
 		return sha1(implode(",", $pluginhost->get_plugin_names()) . $tmp);
 	}
 
-	static function cleanup_feed_browser(): void {
-		$pdo = Db::pdo();
-		$pdo->query("DELETE FROM ttrss_feedbrowser_cache");
-	}
-
 	static function cleanup_feed_icons(): void {
 		$pdo = Db::pdo();
 		$sth = $pdo->prepare("SELECT id FROM ttrss_feeds WHERE id = ?");
@@ -80,6 +75,8 @@ class RSSUtils {
 		if (Config::get_schema_version() != Config::SCHEMA_VERSION) {
 			die("Schema version is wrong, please upgrade the database.\n");
 		}
+
+		self::init_housekeeping_tasks();
 
 		$pdo = Db::pdo();
 
@@ -1432,15 +1429,6 @@ class RSSUtils {
 			WHERE ' . Db::past_comparison_qpart('created_at', '<', 7, 'day'));
 	}
 
-	/**
-	 * @deprecated table not used
-	 */
-	static function expire_feed_archive(): void {
-		$pdo = Db::pdo();
-
-		$pdo->query("DELETE FROM ttrss_archived_feeds");
-	}
-
 	static function expire_lock_files(): void {
 		Debug::log("Removing old lock files...", Debug::LOG_VERBOSE);
 
@@ -1659,14 +1647,6 @@ class RSSUtils {
 			mb_strtolower(strip_tags($title), 'utf-8'));
 	}
 
-	/* counter cache is no longer used, if called truncate leftover data */
-	static function cleanup_counters_cache(): void {
-		$pdo = Db::pdo();
-
-		$pdo->query("DELETE FROM ttrss_counters_cache");
-		$pdo->query("DELETE FROM ttrss_cat_counters_cache");
-	}
-
 	static function disable_failed_feeds(): void {
 		if (Config::get(Config::DAEMON_UNSUCCESSFUL_DAYS_LIMIT) > 0) {
 
@@ -1735,21 +1715,68 @@ class RSSUtils {
 		}
 	}
 
+	/** Init all system tasks which are run periodically by updater in housekeeping_common() */
+	static function init_housekeeping_tasks() : void {
+		Debug::log('Registering scheduled tasks for housekeeping...');
+
+		PluginHost::getInstance()->add_scheduled_task('purge_orphans', '@daily',
+			function() {
+				Article::_purge_orphans(); return 0;
+			}
+		);
+
+		PluginHost::getInstance()->add_scheduled_task('disk_cache_expire_all', '@daily',
+			function() {
+				$cache = DiskCache::instance("");
+				$cache->expire_all();
+
+				return 0;
+			}
+		);
+
+		PluginHost::getInstance()->add_scheduled_task('expire_error_log', '@hourly',
+			function() {
+				self::expire_error_log();
+
+				return 0;
+			}
+		);
+
+		PluginHost::getInstance()->add_scheduled_task('expire_lock_files', '@hourly',
+			function() {
+				self::expire_lock_files();
+
+				return 0;
+			}
+		);
+
+		PluginHost::getInstance()->add_scheduled_task('disable_failed_feeds', '@daily',
+			function() {
+				self::disable_failed_feeds();
+
+				return 0;
+			}
+		);
+
+		PluginHost::getInstance()->add_scheduled_task('migrate_feed_icons', '@daily',
+			function() {
+				self::migrate_feed_icons();
+
+				return 0;
+			}
+		);
+
+		PluginHost::getInstance()->add_scheduled_task('cleanup_feed_icons', '@daily',
+			function() {
+				self::cleanup_feed_icons();
+
+				return 0;
+			}
+		);
+	}
+
 	static function housekeeping_common(): void {
-		$cache = DiskCache::instance("");
-		$cache->expire_all();
-
-		self::migrate_feed_icons();
-		self::expire_lock_files();
-		self::expire_error_log();
-		self::expire_feed_archive();
-		self::cleanup_feed_browser();
-		self::cleanup_feed_icons();
-		self::disable_failed_feeds();
-
-		Article::_purge_orphans();
-		self::cleanup_counters_cache();
-
+		PluginHost::getInstance()->run_due_tasks();
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_HOUSE_KEEPING);
 	}
 

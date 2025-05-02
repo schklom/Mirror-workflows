@@ -6,7 +6,7 @@ class Config {
 	const T_STRING = 2;
 	const T_INT = 3;
 
-	const SCHEMA_VERSION = 149;
+	const SCHEMA_VERSION = 150;
 
 	/** override default values, defined below in _DEFAULTS[], prefixing with _ENVVAR_PREFIX:
 	 *

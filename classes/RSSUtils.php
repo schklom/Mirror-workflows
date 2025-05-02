@@ -1721,7 +1721,9 @@ class RSSUtils {
 
 		PluginHost::getInstance()->add_scheduled_task('purge_orphans', '@daily',
 			function() {
-				Article::_purge_orphans(); return 0;
+				Article::_purge_orphans();
+
+				return 0;
 			}
 		);
 

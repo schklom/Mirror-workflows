@@ -82,8 +82,6 @@ class RPC extends Handler_Protected {
 			WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
 		$sth->execute([...$ids, $_SESSION['uid']]);
 
-		Article::_purge_orphans();
-
 		print json_encode(array("message" => "UPDATE_COUNTERS"));
 	}
 
@@ -310,10 +308,6 @@ class RPC extends Handler_Protected {
 				break;
 			}
 		}
-
-		// Purge orphans and cleanup tags
-		Article::_purge_orphans();
-		//cleanup_tags(14, 50000);
 
 		if ($num_updated > 0) {
 			print json_encode(array("message" => "UPDATE_COUNTERS",

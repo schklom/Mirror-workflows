@@ -32,9 +32,6 @@ class PluginHost {
 	/** @var array<string, array<int, array{'action': string, 'description': string, 'sender': Plugin}>> */
 	private array $plugin_actions = [];
 
-	/** @var array<string, mixed> */
-	private array $scheduled_tasks = [];
-
 	private ?int $owner_uid = null;
 
 	private bool $data_loaded = false;
@@ -909,99 +906,5 @@ class PluginHost {
 		$ref = new ReflectionClass(get_class($plugin));
 		return basename(dirname(dirname($ref->getFileName()))) == "plugins.local";
 	}
-
-	/**
-	 * Adds a backend scheduled task which will be executed by updater (if due) when idle during
-	 * RSSUtils::housekeeping_common().
-	 *
-	 * The granularity is not strictly guaranteed, housekeeping is invoked several times per hour
-	 * depending on how fast feed batch was processed, but no more than once per minute.
-	 *
-	 * Tasks are not run in user context and are available to system plugins only. Task names may not
-	 * overlap.
-	 *
-	 * Tasks should return an integer value (return code) which is stored in the database, a value of
-	 * 0 is considered successful.
-	 *
-	 * @param string $task_name unique name for this task, plugins should prefix this with plugin name
-	 * @param string $cron_expression schedule for this task in cron format
-	 * @param Closure $callback task code that gets executed
-	*/
-	function add_scheduled_task(string $task_name, string $cron_expression, Closure $callback) : bool {
-		$task_name = strtolower($task_name);
-
-		if (isset($this->scheduled_tasks[$task_name])) {
-			user_error("Attempted to override already registered scheduled task $task_name", E_USER_WARNING);
-			return false;
-		} else {
-			$cron = new Cron\CronExpression($cron_expression);
-
-			$this->scheduled_tasks[$task_name] = [
-				"cron" => $cron,
-				"callback" => $callback,
-			];
-			return true;
-		}
-	}
-
-	/**
-	 * Execute scheduled tasks which are due to run and record last run timestamps.
-	 * @return void
-	 */
-	function run_due_tasks() {
-		Debug::log('Processing all scheduled tasks...');
-
-		$tasks_run = 0;
-
-		foreach ($this->scheduled_tasks as $task_name => $task) {
-			$last_run = '1970-01-01 00:00';
-
-			$task_record = ORM::for_table('ttrss_scheduled_tasks')
-				->where('task_name', $task_name)
-				->find_one();
-
-			if ($task_record)
-				$last_run = $task_record->last_run;
-
-			Debug::log("Checking scheduled task: $task_name, last run: $last_run");
-
-			// because we don't schedule tasks every minute, we assume that task is due if its
-			// next estimated run based on previous timestamp is in the past
-			if ($task['cron']->getNextRunDate($last_run)->getTimestamp() - time() < 0) {
-				Debug::log("Task $task_name is due, executing...");
-
-				$task_started = time();
-				$rc = (int) $task['callback']();
-				$task_duration = time() - $task_started;
-
-				++$tasks_run;
-
-				Debug::log("Task $task_name has finished in $task_duration seconds with RC=$rc, recording timestamp...");
-
-				if ($task_record) {
-					$task_record->last_run = Db::NOW();
-					$task_record->last_duration = $task_duration;
-					$task_record->last_rc = $rc;
-
-					$task_record->save();
-				} else {
-					$task_record = ORM::for_table('ttrss_scheduled_tasks')->create();
-
-					$task_record->set([
-						'task_name' => $task_name,
-						'last_duration' => $task_duration,
-						'last_rc' => $rc,
-						'last_run' => Db::NOW(),
-					]);
-
-					$task_record->save();
-				}
-			}
-		}
-
-		Debug::log("Finished with $tasks_run tasks executed.");
-	}
-
-	// TODO implement some sort of automatic cleanup for orphan task execution records
 
 }

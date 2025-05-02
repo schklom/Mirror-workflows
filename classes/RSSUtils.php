@@ -1715,7 +1715,9 @@ class RSSUtils {
 	static function init_housekeeping_tasks() : void {
 		Debug::log('Registering scheduled tasks for housekeeping...');
 
-		PluginHost::getInstance()->add_scheduled_task('purge_orphans', '@daily',
+		$scheduler = Scheduler::getInstance();
+
+		$scheduler->add_scheduled_task('purge_orphans', '@daily',
 			function() {
 				Article::_purge_orphans();
 
@@ -1723,7 +1725,7 @@ class RSSUtils {
 			}
 		);
 
-		PluginHost::getInstance()->add_scheduled_task('disk_cache_expire_all', '@daily',
+		$scheduler->add_scheduled_task('disk_cache_expire_all', '@daily',
 			function() {
 				$cache = DiskCache::instance("");
 				$cache->expire_all();
@@ -1732,7 +1734,7 @@ class RSSUtils {
 			}
 		);
 
-		PluginHost::getInstance()->add_scheduled_task('expire_error_log', '@hourly',
+		$scheduler->add_scheduled_task('expire_error_log', '@hourly',
 			function() {
 				self::expire_error_log();
 
@@ -1740,7 +1742,7 @@ class RSSUtils {
 			}
 		);
 
-		PluginHost::getInstance()->add_scheduled_task('expire_lock_files', '@hourly',
+		$scheduler->add_scheduled_task('expire_lock_files', '@hourly',
 			function() {
 				self::expire_lock_files();
 
@@ -1748,7 +1750,7 @@ class RSSUtils {
 			}
 		);
 
-		PluginHost::getInstance()->add_scheduled_task('disable_failed_feeds', '@daily',
+		$scheduler->add_scheduled_task('disable_failed_feeds', '@daily',
 			function() {
 				self::disable_failed_feeds();
 
@@ -1756,7 +1758,7 @@ class RSSUtils {
 			}
 		);
 
-		PluginHost::getInstance()->add_scheduled_task('migrate_feed_icons', '@daily',
+		$scheduler->add_scheduled_task('migrate_feed_icons', '@daily',
 			function() {
 				self::migrate_feed_icons();
 
@@ -1764,7 +1766,7 @@ class RSSUtils {
 			}
 		);
 
-		PluginHost::getInstance()->add_scheduled_task('cleanup_feed_icons', '@daily',
+		$scheduler->add_scheduled_task('cleanup_feed_icons', '@daily',
 			function() {
 				self::cleanup_feed_icons();
 
@@ -1772,7 +1774,7 @@ class RSSUtils {
 			}
 		);
 
-		PluginHost::getInstance()->add_scheduled_task('send_headlines_digests', '@hourly',
+		$scheduler->add_scheduled_task('send_headlines_digests', '@hourly',
 			function() {
 				Digest::send_headlines_digests();
 
@@ -1782,7 +1784,8 @@ class RSSUtils {
 	}
 
 	static function housekeeping_common(): void {
-		PluginHost::getInstance()->run_due_tasks();
+		Scheduler::getInstance()->run_due_tasks();
+
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_HOUSE_KEEPING);
 	}
 

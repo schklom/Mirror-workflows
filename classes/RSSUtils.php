@@ -1126,10 +1126,10 @@ class RSSUtils {
 							$published, $score]);
 
 						if ($marked)
-							PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_MARKED, [$ref_id]);
+							PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_MARK_TOGGLED, [$ref_id]);
 
 						if ($published)
-							PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_PUBLISHED, [$ref_id]);
+							PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_PUBLISH_TOGGLED, [$ref_id]);
 
 						$sth = $pdo->prepare("SELECT int_id FROM ttrss_user_entries WHERE
 								ref_id = ? AND owner_uid = ? AND

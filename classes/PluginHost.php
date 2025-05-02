@@ -202,11 +202,11 @@ class PluginHost {
 	/** @see Plugin::hook_validate_session() */
 	const HOOK_VALIDATE_SESSION = "hook_validate_session";
 
-	/** @see Plugin::hook_articles_marked() */
-	const HOOK_ARTICLES_MARKED = "hook_articles_marked";
+	/** @see Plugin::hook_articles_mark_toggled() */
+	const HOOK_ARTICLES_MARK_TOGGLED = "hook_articles_mark_toggled";
 
-	/** @see Plugin::hook_articles_published() */
-	const HOOK_ARTICLES_PUBLISHED = "hook_articles_published";
+	/** @see Plugin::hook_articles_publish_toggled() */
+	const HOOK_ARTICLES_PUBLISH_TOGGLED = "hook_articles_publish_toggled";
 
 	const KIND_ALL = 1;
 	const KIND_SYSTEM = 2;

@@ -285,10 +285,10 @@ class API extends Handler {
 			$sth->execute([...$article_ids, $_SESSION['uid']]);
 
 			if ($field == 'marked')
-				PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_MARKED, $article_ids);
+				PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_MARK_TOGGLED, $article_ids);
 
 			if ($field == 'published')
-				PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_PUBLISHED, $article_ids);
+				PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_PUBLISH_TOGGLED, $article_ids);
 
 			$num_updated = $sth->rowCount();
 

@@ -965,7 +965,9 @@ class PluginHost {
 
 			Debug::log("Checking scheduled task: $task_name, last run: $last_run");
 
-			if ($task['cron']->isDue($last_run)) {
+			// because we don't schedule tasks every minute, we assume that task is due if its
+			// next estimated run based on previous timestamp is in the past
+			if ($task['cron']->getNextRunDate($last_run)->getTimestamp() - time() < 0) {
 				Debug::log("Task $task_name is due, executing...");
 
 				$task_started = time();
@@ -977,7 +979,7 @@ class PluginHost {
 				Debug::log("Task $task_name has finished in $task_duration seconds with RC=$rc, recording timestamp...");
 
 				if ($task_record) {
-					$task_record->last_run = time();
+					$task_record->last_run = Db::NOW();
 					$task_record->last_duration = $task_duration;
 					$task_record->last_rc = $rc;
 

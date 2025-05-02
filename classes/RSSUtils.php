@@ -129,7 +129,6 @@ class RSSUtils {
 			))";
 
 		// Test if feed is currently being updated by another process.
-		// TODO: Update RPC::updaterandomfeed_real() to also use 10 minutes?
 		$updstart_thresh_qpart = 'AND (last_update_started IS NULL OR '
 			. Db::past_comparison_qpart('last_update_started', '<', 10, 'minute') . ')';
 

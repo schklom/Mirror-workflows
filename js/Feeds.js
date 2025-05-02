@@ -743,13 +743,6 @@ const	Feeds = {
 		dialog.show();
 
 	},
-	updateRandom: function() {
-		console.log("in update_random_feed");
-
-		xhr.json("backend.php", {op: "RPC", method: "updaterandomfeed"}, () => {
-			//
-		});
-	},
 	renderIcon: function(feed_id, exists) {
 		const icon_url = App.getInitParam("icons_url") + '?' + dojo.objectToQuery({op: 'feed_icon', id: feed_id});
 

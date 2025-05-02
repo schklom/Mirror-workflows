@@ -360,20 +360,6 @@ class Handler_Public extends Handler {
 		header('HTTP/1.1 403 Forbidden');
 	}
 
-	function updateTask(): void {
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK);
-	}
-
-	function housekeepingTask(): void {
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_HOUSE_KEEPING);
-	}
-
-	function globalUpdateFeeds(): void {
-		RPC::updaterandomfeed_real();
-
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_UPDATE_TASK);
-	}
-
 	function login(): void {
 		if (!Config::get(Config::SINGLE_USER_MODE)) {
 

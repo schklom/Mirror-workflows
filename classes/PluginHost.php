@@ -968,12 +968,15 @@ class PluginHost {
 			if ($task['cron']->isDue($last_run)) {
 				Debug::log("Task $task_name is due, executing...");
 
+				$task_started = time();
 				$rc = (int) $task['callback']();
+				$task_duration = time() - $task_started;
 
-				Debug::log("Task $task_name has finished with RC=$rc, recording timestamp...");
+				Debug::log("Task $task_name has finished in $task_duration seconds with RC=$rc, recording timestamp...");
 
 				if ($task_record) {
 					$task_record->last_run = time();
+					$task_record->last_duration = $task_duration;
 					$task_record->last_rc = $rc;
 
 					$task_record->save();
@@ -982,6 +985,7 @@ class PluginHost {
 
 					$task_record->set([
 						'task_name' => $task_name,
+						'last_duration' => $task_duration,
 						'last_rc' => $rc,
 						'last_run' => Db::NOW(),
 					]);

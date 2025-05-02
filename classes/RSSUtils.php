@@ -1734,22 +1734,6 @@ class RSSUtils {
 			}
 		);
 
-		$scheduler->add_scheduled_task('expire_error_log', '@hourly',
-			function() {
-				self::expire_error_log();
-
-				return 0;
-			}
-		);
-
-		$scheduler->add_scheduled_task('expire_lock_files', '@hourly',
-			function() {
-				self::expire_lock_files();
-
-				return 0;
-			}
-		);
-
 		$scheduler->add_scheduled_task('disable_failed_feeds', '@daily',
 			function() {
 				self::disable_failed_feeds();
@@ -1769,6 +1753,22 @@ class RSSUtils {
 		$scheduler->add_scheduled_task('cleanup_feed_icons', '@daily',
 			function() {
 				self::cleanup_feed_icons();
+
+				return 0;
+			}
+		);
+
+		$scheduler->add_scheduled_task('expire_error_log', '@hourly',
+			function() {
+				self::expire_error_log();
+
+				return 0;
+			}
+		);
+
+		$scheduler->add_scheduled_task('expire_lock_files', '@hourly',
+			function() {
+				self::expire_lock_files();
 
 				return 0;
 			}

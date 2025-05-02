@@ -285,9 +285,6 @@ class RSSUtils {
 			self::housekeeping_user($owner_uid);
 		}
 
-		// Send feed digests by email if needed.
-		Digest::send_headlines_digests();
-
 		return $nf;
 	}
 
@@ -1771,6 +1768,14 @@ class RSSUtils {
 		PluginHost::getInstance()->add_scheduled_task('cleanup_feed_icons', '@daily',
 			function() {
 				self::cleanup_feed_icons();
+
+				return 0;
+			}
+		);
+
+		PluginHost::getInstance()->add_scheduled_task('send_headlines_digests', '@hourly',
+			function() {
+				Digest::send_headlines_digests();
 
 				return 0;
 			}

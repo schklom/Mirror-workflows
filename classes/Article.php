@@ -98,7 +98,7 @@ class Article extends Handler_Protected {
 						int_id = ? AND owner_uid = ?");
 				$sth->execute([$int_id, $owner_uid]);
 
-				PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_PUBLISHED, [$ref_id]);
+				PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_PUBLISH_TOGGLED, [$ref_id]);
 
 			} else {
 
@@ -109,7 +109,7 @@ class Article extends Handler_Protected {
 					(?, '', NULL, NULL, ?, true, '', '', NOW(), '', false, NOW())");
 				$sth->execute([$ref_id, $owner_uid]);
 
-				PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_PUBLISHED, [$ref_id]);
+				PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_PUBLISH_TOGGLED, [$ref_id]);
 			}
 
 			if (count($labels) != 0) {
@@ -148,7 +148,7 @@ class Article extends Handler_Protected {
 					(?, '', NULL, NULL, ?, true, '', '', NOW(), '', false, NOW())");
 				$sth->execute([$ref_id, $owner_uid]);
 
-				PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_PUBLISHED, [$ref_id]);
+				PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_PUBLISH_TOGGLED, [$ref_id]);
 
 				if (count($labels) != 0) {
 					foreach ($labels as $label) {

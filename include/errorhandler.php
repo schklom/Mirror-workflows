@@ -49,6 +49,11 @@ function ttrss_error_handler(int $errno, string $errstr, string $file, int $line
 	$context = format_backtrace(debug_backtrace());
 	$errstr = truncate_middle($errstr, 16384, " (...) ");
 
+	if (php_sapi_name() == 'cli' && class_exists("Debug")) {
+		Debug::log("!! Exception: $errstr ($file:$line)");
+		Debug::log($context);
+	}
+
 	if (class_exists("Logger"))
 		return Logger::log_error((int)$errno, $errstr, $file, (int)$line, $context);
 	else
@@ -69,6 +74,11 @@ function ttrss_fatal_handler(): bool {
 		$context = format_backtrace(debug_backtrace());
 
 		$file = substr(str_replace(dirname(__DIR__), "", $file), 1);
+
+		if (php_sapi_name() == 'cli' && class_exists("Debug")) {
+			Debug::log("!! Fatal error: $errstr ($file:$line)");
+			Debug::log($context);
+		}
 
 		if (class_exists("Logger"))
 			return Logger::log_error((int)$errno, $errstr, $file, (int)$line, $context);

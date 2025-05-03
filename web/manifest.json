@@ -1,5 +1,5 @@
 {
-    "name": "Find My Device Server",
+    "name": "FMD Server",
     "short_name": "FMD Server",
     "description": "Locate and control your devices from a web interface.",
     "icons": [

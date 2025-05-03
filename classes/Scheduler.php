@@ -74,7 +74,7 @@ class Scheduler {
 			// because we don't schedule tasks every minute, we assume that task is due if its
 			// next estimated run based on previous timestamp is in the past
 			if ($task['cron']->getNextRunDate($last_run)->getTimestamp() - time() < 0) {
-				Debug::log("Task $task_name is due, executing...");
+				Debug::log("=> Scheduled task $task_name is due, executing...");
 
 				$task_started = time();
 
@@ -90,10 +90,10 @@ class Scheduler {
 
 				if ($rc === 0) {
 					++$tasks_succeeded;
-					Debug::log("Task $task_name has finished in $task_duration seconds.");
+					Debug::log("<= Scheduled task $task_name has finished in $task_duration seconds.");
 				} else {
 					$tasks_failed++;
-					Debug::log("Task $task_name has failed with RC: $rc after $task_duration seconds.");
+					Debug::log("!! Scheduled task $task_name has failed with RC: $rc after $task_duration seconds.");
 				}
 
 				if ($task_record) {
@@ -117,7 +117,7 @@ class Scheduler {
 			}
 		}
 
-		Debug::log("Finished with $tasks_succeeded tasks succeeded and $tasks_failed tasks failed.");
+		Debug::log("Processing scheduled tasks finished with $tasks_succeeded tasks succeeded and $tasks_failed tasks failed.");
 	}
 
 	// TODO implement some sort of automatic cleanup for orphan task execution records

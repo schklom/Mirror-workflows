@@ -93,22 +93,7 @@ class RSSUtils {
 		}
 
 		if (!Config::get(Config::SINGLE_USER_MODE) && Config::get(Config::DAEMON_UPDATE_LOGIN_LIMIT) > 0) {
-			$login_limit = (int) Config::get(Config::DAEMON_UPDATE_LOGIN_LIMIT);
-
-			$login_thresh_qpart = 'AND ' . Db::past_comparison_qpart('last_login', '>=', $login_limit, 'day');
-			$not_logged_in_users_query = Db::past_comparison_qpart('last_login', '<', $login_limit, 'day');
-
-			$not_logged_in_users = ORM::for_table('ttrss_users')
-				->where_raw($not_logged_in_users_query)
-				->find_many();
-
-			if (count($not_logged_in_users) > 0) {
-				Debug::log("feeds will not be updated for these users because of DAEMON_UPDATE_LOGIN_LIMIT check ({$login_limit} days):");
-				foreach ($not_logged_in_users as $user) {
-					Debug::log("=> {$user->login}, last logged in: {$user->last_login}");
-				}
-			}
-
+			$login_thresh_qpart = 'AND ' . Db::past_comparison_qpart('last_login', '>=', Config::get(Config::DAEMON_UPDATE_LOGIN_LIMIT), 'day');
 		} else {
 			$login_thresh_qpart = "";
 		}
@@ -1753,6 +1738,29 @@ class RSSUtils {
 		$scheduler->add_scheduled_task('cleanup_feed_icons', '@daily',
 			function() {
 				self::cleanup_feed_icons();
+
+				return 0;
+			}
+		);
+
+		$scheduler->add_scheduled_task('log_daemon_update_login_limit_users', '@daily',
+			function() {
+				$login_limit = Config::get(Config::DAEMON_UPDATE_LOGIN_LIMIT);
+
+				if (!Config::get(Config::SINGLE_USER_MODE) && $login_limit > 0) {
+					$not_logged_in_users = ORM::for_table('ttrss_users')
+						->select_many('login', 'last_login')
+						->where_not_in('access_level', [UserHelper::ACCESS_LEVEL_DISABLED, UserHelper::ACCESS_LEVEL_READONLY])
+						->where_raw("last_login < NOW() - INTERVAL '$login_limit days'")
+						->find_many();
+
+					if (count($not_logged_in_users) > 0) {
+						Debug::log("Feeds will not be updated for these users because of DAEMON_UPDATE_LOGIN_LIMIT check ({$login_limit} days):");
+						foreach ($not_logged_in_users as $user) {
+							Debug::log("=> {$user->login}, last logged in: {$user->last_login}");
+						}
+					}
+				}
 
 				return 0;
 			}

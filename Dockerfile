@@ -55,4 +55,4 @@ EXPOSE 8080/tcp
 EXPOSE 8443/tcp
 
 # XXX: Using $BIN_FILE doesn't work
-ENTRYPOINT ["/opt/fmd-server", "serve"]
+ENTRYPOINT ["/opt/fmd-server", "serve", "--db-dir", "/var/lib/fmd-server/db", "--web-dir", "/usr/share/fmd-server/web"]

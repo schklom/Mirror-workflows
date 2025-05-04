@@ -33,8 +33,8 @@ const CONF_REMOTE_IP_HEADER = "RemoteIpHeader"
 // See the descriptions in config.example.yml,
 // And keep the default values in sync!.
 func setDefaults(config *viper.Viper) {
-	config.SetDefault(CONF_DATABASE_DIR, "/var/lib/fmd-server/db/")
-	config.SetDefault(CONF_WEB_DIR, "/usr/share/fmd-server/web/")
+	config.SetDefault(CONF_DATABASE_DIR, "./db/")
+	config.SetDefault(CONF_WEB_DIR, "./web/")
 
 	config.SetDefault(CONF_UNIX_SOCKET_PATH, "")
 	config.SetDefault(CONF_UNIX_SOCKET_CHMOD, 0600)

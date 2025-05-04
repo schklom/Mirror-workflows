@@ -82,8 +82,6 @@ class RPC extends Handler_Protected {
 			WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
 		$sth->execute([...$ids, $_SESSION['uid']]);
 
-		Article::_purge_orphans();
-
 		print json_encode(array("message" => "UPDATE_COUNTERS"));
 	}
 
@@ -252,81 +250,6 @@ class RPC extends Handler_Protected {
 		print json_encode(["wide" => $wide]);
 	}
 
-	static function updaterandomfeed_real(): void {
-		$default_interval = (int) Prefs::get_default(Prefs::DEFAULT_UPDATE_INTERVAL);
-
-		// Test if the feed need a update (update interval exceded).
-		$update_limit_qpart = "AND ((
-				update_interval = 0
-					AND (p.value IS NULL OR p.value != '-1')
-					AND last_updated < NOW() - CAST((COALESCE(p.value, '$default_interval') || ' minutes') AS INTERVAL)
-			) OR (
-				update_interval > 0
-					AND last_updated < NOW() - CAST((update_interval || ' minutes') AS INTERVAL)
-			) OR (
-				update_interval >= 0
-					AND (p.value IS NULL OR p.value != '-1')
-					AND (last_updated = '1970-01-01 00:00:00' OR last_updated IS NULL)
-			))";
-
-		// Test if feed is currently being updated by another process.
-		$updstart_thresh_qpart = 'AND (last_update_started IS NULL OR '
-			. Db::past_comparison_qpart('last_update_started', '<', 5, 'minute') . ')';
-
-		$pdo = Db::pdo();
-
-		// we could be invoked from public.php with no active session
-		if (!empty($_SESSION["uid"])) {
-			$owner_check_qpart = "AND f.owner_uid = ".$pdo->quote($_SESSION["uid"]);
-		} else {
-			$owner_check_qpart = "";
-		}
-
-		$query = "SELECT f.feed_url,f.id
-			FROM
-				ttrss_feeds f, ttrss_users u LEFT JOIN ttrss_user_prefs2 p ON
-					(p.owner_uid = u.id AND profile IS NULL AND pref_name = 'DEFAULT_UPDATE_INTERVAL')
-			WHERE
-				f.owner_uid = u.id AND
-				u.access_level NOT IN (".sprintf("%d, %d", UserHelper::ACCESS_LEVEL_DISABLED, UserHelper::ACCESS_LEVEL_READONLY).")
-				$owner_check_qpart
-				$update_limit_qpart
-				$updstart_thresh_qpart
-			ORDER BY RANDOM() LIMIT 30";
-
-		$res = $pdo->query($query);
-
-		$num_updated = 0;
-
-		$tstart = time();
-
-		while ($line = $res->fetch()) {
-			$feed_id = $line["id"];
-
-			if (time() - $tstart < ini_get("max_execution_time") * 0.7) {
-				RSSUtils::update_rss_feed($feed_id, true);
-				++$num_updated;
-			} else {
-				break;
-			}
-		}
-
-		// Purge orphans and cleanup tags
-		Article::_purge_orphans();
-		//cleanup_tags(14, 50000);
-
-		if ($num_updated > 0) {
-			print json_encode(array("message" => "UPDATE_COUNTERS",
-				"num_updated" => $num_updated));
-		} else {
-			print json_encode(array("message" => "NOTHING_TO_UPDATE"));
-		}
-	}
-
-	function updaterandomfeed(): void {
-		self::updaterandomfeed_real();
-	}
-
 	/**
 	 * @param array<int, int> $ids
 	 */
@@ -472,7 +395,6 @@ class RPC extends Handler_Protected {
 		$params["num_feeds"] = (int) $num_feeds;
 		$params["hotkeys"] = $this->get_hotkeys_map();
 		$params["widescreen"] = (int) Prefs::get(Prefs::WIDESCREEN_MODE, $_SESSION['uid'], $profile);
-		$params['simple_update'] = Config::get(Config::SIMPLE_UPDATE_MODE);
 		$params["icon_indicator_white"] = $this->image_to_base64("images/indicator_white.gif");
 		$params["icon_oval"] = $this->image_to_base64("images/oval.svg");
 		$params["icon_three_dots"] = $this->image_to_base64("images/three-dots.svg");

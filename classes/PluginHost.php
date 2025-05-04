@@ -906,4 +906,5 @@ class PluginHost {
 		$ref = new ReflectionClass(get_class($plugin));
 		return basename(dirname(dirname($ref->getFileName()))) == "plugins.local";
 	}
+
 }

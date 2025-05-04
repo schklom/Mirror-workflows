@@ -829,11 +829,6 @@ const App = {
 
          Headlines.initScrollHandler();
 
-         if (this.getInitParam("simple_update")) {
-            console.log("scheduling simple feed updater...");
-            window.setInterval(() => { Feeds.updateRandom() }, 30 * 1000);
-         }
-
          if (this.getInitParam('check_for_updates')) {
             window.setInterval(() => {
                this.checkForUpdates();

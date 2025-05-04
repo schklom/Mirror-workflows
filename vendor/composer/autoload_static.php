@@ -58,6 +58,10 @@ class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
             'Doctrine\\Instantiator\\' => 22,
             'DeepCopy\\' => 9,
         ),
+        'C' => 
+        array (
+            'Cron\\' => 5,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -132,6 +136,10 @@ class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
         ),
+        'Cron\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron',
+        ),
     );
 
     public static $fallbackDirsPsr4 = array (
@@ -147,6 +155,16 @@ class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Config' => __DIR__ . '/../..' . '/classes/Config.php',
         'Counters' => __DIR__ . '/../..' . '/classes/Counters.php',
+        'Cron\\AbstractField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/AbstractField.php',
+        'Cron\\CronExpression' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/CronExpression.php',
+        'Cron\\DayOfMonthField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/DayOfMonthField.php',
+        'Cron\\DayOfWeekField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/DayOfWeekField.php',
+        'Cron\\FieldFactory' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/FieldFactory.php',
+        'Cron\\FieldFactoryInterface' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/FieldFactoryInterface.php',
+        'Cron\\FieldInterface' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/FieldInterface.php',
+        'Cron\\HoursField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/HoursField.php',
+        'Cron\\MinutesField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/MinutesField.php',
+        'Cron\\MonthField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/MonthField.php',
         'Crypt' => __DIR__ . '/../..' . '/classes/Crypt.php',
         'Db' => __DIR__ . '/../..' . '/classes/Db.php',
         'Db_Migrations' => __DIR__ . '/../..' . '/classes/Db_Migrations.php',
@@ -1113,6 +1131,7 @@ class ComposerStaticInit19fc2ff1c0f9a92279c7979386bb2056
         'RPC' => __DIR__ . '/../..' . '/classes/RPC.php',
         'RSSUtils' => __DIR__ . '/../..' . '/classes/RSSUtils.php',
         'Sanitizer' => __DIR__ . '/../..' . '/classes/Sanitizer.php',
+        'Scheduler' => __DIR__ . '/../..' . '/classes/Scheduler.php',
         'SebastianBergmann\\CliParser\\AmbiguousOptionException' => __DIR__ . '/..' . '/sebastian/cli-parser/src/exceptions/AmbiguousOptionException.php',
         'SebastianBergmann\\CliParser\\Exception' => __DIR__ . '/..' . '/sebastian/cli-parser/src/exceptions/Exception.php',
         'SebastianBergmann\\CliParser\\OptionDoesNotAllowArgumentException' => __DIR__ . '/..' . '/sebastian/cli-parser/src/exceptions/OptionDoesNotAllowArgumentException.php',

@@ -14,7 +14,7 @@
 
 	/* Public calls compatibility shim */
 
-	$public_calls = array("globalUpdateFeeds", "rss", "getUnread", "getProfiles", "share");
+	$public_calls = array("rss", "getUnread", "getProfiles", "share");
 
 	if (array_search($op, $public_calls) !== false) {
 		header("Location: public.php?" . $_SERVER['QUERY_STRING']);

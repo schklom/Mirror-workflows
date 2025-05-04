@@ -6,7 +6,7 @@ class Config {
 	const T_STRING = 2;
 	const T_INT = 3;
 
-	const SCHEMA_VERSION = 149;
+	const SCHEMA_VERSION = 150;
 
 	/** override default values, defined below in _DEFAULTS[], prefixing with _ENVVAR_PREFIX:
 	 *
@@ -52,13 +52,6 @@ class Config {
 	 * multiple users and authentication. enabling this assumes you have
 	 * your tt-rss directory protected by other means (e.g. http auth). */
 	const SINGLE_USER_MODE = "SINGLE_USER_MODE";
-
-	/** enables fallback update mode where tt-rss tries to update feeds in
-	 * background while tt-rss is open in your browser.
-	 * if you don't have a lot of feeds and don't want to or can't run
-	 * background processes while not running tt-rss, this method is generally
-	 * viable to keep your feeds up to date. */
-	const SIMPLE_UPDATE_MODE = "SIMPLE_UPDATE_MODE";
 
 	/** use this PHP CLI executable to start various tasks */
 	const PHP_EXECUTABLE = "PHP_EXECUTABLE";
@@ -205,7 +198,6 @@ class Config {
 		Config::DB_PORT => [ "5432",										Config::T_STRING ],
 		Config::SELF_URL_PATH => [ "https://example.com/tt-rss", Config::T_STRING ],
 		Config::SINGLE_USER_MODE => [ "",								Config::T_BOOL ],
-		Config::SIMPLE_UPDATE_MODE => [ "",								Config::T_BOOL ],
 		Config::PHP_EXECUTABLE => [ "/usr/bin/php",					Config::T_STRING ],
 		Config::LOCK_DIRECTORY => [ "lock",								Config::T_STRING ],
 		Config::CACHE_DIR => [ "cache",									Config::T_STRING ],
@@ -282,6 +274,13 @@ class Config {
 		foreach ($ref->getConstants() as $const => $cvalue) {
 			if (isset(self::_DEFAULTS[$const])) {
 				$override = getenv(self::_ENVVAR_PREFIX . $const);
+
+				// cleanup original env var after importing (unless it's a background process)
+				if (php_sapi_name() != "cli") {
+					putenv(self::_ENVVAR_PREFIX . $const . '=');
+					unset($_ENV[self::_ENVVAR_PREFIX . $const]);
+					unset($_SERVER[self::_ENVVAR_PREFIX . $const]);
+				}
 
 				list ($defval, $deftype) = self::_DEFAULTS[$const];
 
@@ -440,6 +439,13 @@ class Config {
 
 	private function _add(string $param, string $default, int $type_hint): void {
 		$override = getenv(self::_ENVVAR_PREFIX . $param);
+
+		// cleanup original env var after importing (unless it's a background process)
+		if (php_sapi_name() != "cli") {
+			putenv(self::_ENVVAR_PREFIX . $param . '=');
+			unset($_ENV[self::_ENVVAR_PREFIX . $param]);
+			unset($_SERVER[self::_ENVVAR_PREFIX . $param]);
+		}
 
 		$this->params[$param] = [ self::cast_to($override !== false ? $override : $default, $type_hint), $type_hint ];
 	}

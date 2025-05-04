@@ -1702,12 +1702,6 @@ class RSSUtils {
 
 		$scheduler = Scheduler::getInstance();
 
-		$scheduler->add_scheduled_task('purge_orphaned_scheduled_tasks', '@weekly',
-			function() use ($scheduler) {
-				return $scheduler->purge_orphaned_tasks();
-			}
-		);
-
 		$scheduler->add_scheduled_task('purge_orphans', '@daily',
 			function() {
 				Article::_purge_orphans();

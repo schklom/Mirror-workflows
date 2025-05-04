@@ -7,6 +7,14 @@ class Scheduler {
 	/** @var array<string, mixed> */
 	private array $scheduled_tasks = [];
 
+	function __construct() {
+		$this->add_scheduled_task('purge_orphaned_scheduled_tasks', '@weekly',
+			function() {
+				return $this->purge_orphaned_tasks();
+			}
+		);
+	}
+
 	public static function getInstance(): Scheduler {
 		if (self::$instance == null)
 			self::$instance = new self();
@@ -126,7 +134,7 @@ class Scheduler {
 	 *
 	 * @return int 0 if successful, 1 on failure
 	 */
-	function purge_orphaned_tasks(): int {
+	private function purge_orphaned_tasks(): int {
 		if (!$this->scheduled_tasks) {
 			Debug::log(__METHOD__ . ' was invoked before scheduled tasks have been registered.  This should never happen.');
 			return 1;

@@ -400,6 +400,8 @@ create table ttrss_scheduled_tasks(
 	task_name varchar(250) unique not null,
 	last_duration integer not null,
 	last_rc integer not null,
-	last_run timestamp not null default NOW());
+	last_run timestamp not null default NOW(),
+	last_cron_expression varchar(250) not null,
+	owner_uid integer default null references ttrss_users(id) ON DELETE CASCADE);
 
 commit;

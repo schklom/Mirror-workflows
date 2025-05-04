@@ -3,16 +3,23 @@ class Scheduler {
 	private static ?Scheduler $instance = null;
 
 	const TASK_RC_EXCEPTION = -100;
+	const DEFAULT_NAME = 'Default Scheduler';
 
 	/** @var array<string, mixed> */
 	private array $scheduled_tasks = [];
 
-	function __construct() {
-		$this->add_scheduled_task('purge_orphaned_scheduled_tasks', '@weekly',
-			function() {
-				return $this->purge_orphaned_tasks();
-			}
-		);
+	private string $name;
+
+	function __construct(string $name = self::DEFAULT_NAME) {
+		$this->set_name($name);
+
+		if ($name === self::DEFAULT_NAME) {
+			$this->add_scheduled_task('purge_orphaned_scheduled_tasks', '@weekly',
+				function() {
+					return $this->purge_orphaned_tasks();
+				}
+			);
+		}
 	}
 
 	public static function getInstance(): Scheduler {
@@ -20,6 +27,11 @@ class Scheduler {
 			self::$instance = new self();
 
 		return self::$instance;
+	}
+
+	/** Sets specific identifier for this instance of Scheduler used in debug logging */
+	public function set_name(string $name) : void {
+		$this->name = $name;
 	}
 
 	/**
@@ -42,13 +54,13 @@ class Scheduler {
 		$task_name = strtolower($task_name);
 
 		if (isset($this->scheduled_tasks[$task_name])) {
-			user_error("Attempted to override already registered scheduled task $task_name", E_USER_WARNING);
+			user_error("[$this->name] Attempted to override already registered scheduled task $task_name", E_USER_WARNING);
 			return false;
 		} else {
 			try {
 				$cron = new Cron\CronExpression($cron_expression);
 			} catch (InvalidArgumentException $e) {
-				user_error("Attempt to register scheduled task $task_name failed: " . $e->getMessage(), E_USER_WARNING);
+				user_error("[$this->name] Attempt to register scheduled task $task_name failed: " . $e->getMessage(), E_USER_WARNING);
 				return false;
 			}
 
@@ -64,7 +76,7 @@ class Scheduler {
 	 * Execute scheduled tasks which are due to run and record last run timestamps.
 	 */
 	function run_due_tasks() : void {
-		Debug::log('Processing all scheduled tasks...');
+		Debug::log("[$this->name] Processing all scheduled tasks...");
 
 		$tasks_succeeded = 0;
 		$tasks_failed = 0;
@@ -89,7 +101,7 @@ class Scheduler {
 				try {
 					$rc = (int) $task['callback']();
 				} catch (Exception $e) {
-					user_error("Scheduled task $task_name failed with exception: " . $e->getMessage(), E_USER_WARNING);
+					user_error("[$this->name] Scheduled task $task_name failed with exception: " . $e->getMessage(), E_USER_WARNING);
 
 					$rc = self::TASK_RC_EXCEPTION;
 				}
@@ -108,6 +120,7 @@ class Scheduler {
 					$task_record->last_run = Db::NOW();
 					$task_record->last_duration = $task_duration;
 					$task_record->last_rc = $rc;
+					$task_record->last_cron_expression = $task['cron']->getExpression();
 
 					$task_record->save();
 				} else {
@@ -118,6 +131,7 @@ class Scheduler {
 						'last_duration' => $task_duration,
 						'last_rc' => $rc,
 						'last_run' => Db::NOW(),
+						'last_cron_expression' => $task['cron']->getExpression()
 					]);
 
 					$task_record->save();
@@ -125,7 +139,7 @@ class Scheduler {
 			}
 		}
 
-		Debug::log("Processing scheduled tasks finished with $tasks_succeeded tasks succeeded and $tasks_failed tasks failed.");
+		Debug::log("[$this->name] Processing scheduled tasks finished with $tasks_succeeded tasks succeeded and $tasks_failed tasks failed.");
 	}
 
 	/**

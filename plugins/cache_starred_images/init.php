@@ -31,78 +31,78 @@ class Cache_Starred_Images extends Plugin {
 			$this->cache_status->put(".no-auto-expiry", "");
 
 		if ($this->cache->is_writable() && $this->cache_status->is_writable()) {
-			$host->add_hook($host::HOOK_HOUSE_KEEPING, $this);
+
+			$host->add_scheduled_task($this, "cache_starred_images", "@hourly", function() {
+				Debug::log("caching media of starred articles for user " . $this->host->get_owner_uid() . "...");
+
+				$sth = $this->pdo->prepare("SELECT content, ttrss_entries.title,
+						ttrss_user_entries.owner_uid, link, site_url, ttrss_entries.id, plugin_data
+					FROM ttrss_entries, ttrss_user_entries LEFT JOIN ttrss_feeds ON
+						(ttrss_user_entries.feed_id = ttrss_feeds.id)
+					WHERE ref_id = ttrss_entries.id AND
+						marked = true AND
+						site_url != '' AND
+						ttrss_user_entries.owner_uid = ? AND
+						plugin_data NOT LIKE '%starred_cache_images%'
+					ORDER BY RANDOM() LIMIT 100");
+
+				if ($sth->execute([$this->host->get_owner_uid()])) {
+
+					$usth = $this->pdo->prepare("UPDATE ttrss_entries SET plugin_data = ? WHERE id = ?");
+
+					while ($line = $sth->fetch()) {
+						Debug::log("processing article " . $line["title"], Debug::LOG_VERBOSE);
+
+						if ($line["site_url"]) {
+							$success = $this->cache_article_images($line["content"], $line["site_url"], $line["owner_uid"], $line["id"]);
+
+							if ($success) {
+								$plugin_data = "starred_cache_images," . $line["owner_uid"] . ":" . $line["plugin_data"];
+
+								$usth->execute([$plugin_data, $line['id']]);
+							}
+						}
+					}
+				}
+			});
+
+			$host->add_scheduled_task($this, "expire_caches", "@daily", function() {
+
+				Debug::log("expiring {$this->cache->get_dir()} and {$this->cache_status->get_dir()}...");
+
+				$files = [
+					...(glob($this->cache->get_dir() . "/*-*") ?: []),
+					...(glob($this->cache_status->get_dir() . "/*.status") ?: []),
+				];
+
+				asort($files);
+
+				$last_article_id = 0;
+				$article_exists = 1;
+
+				foreach ($files as $file) {
+					list ($article_id, $hash) = explode("-", basename($file));
+
+					if ($article_id != $last_article_id) {
+						$last_article_id = $article_id;
+
+						$sth = $this->pdo->prepare("SELECT id FROM ttrss_entries WHERE id = ?");
+						$sth->execute([$article_id]);
+
+						$article_exists = $sth->fetch();
+					}
+
+					if (!$article_exists) {
+						unlink($file);
+					}
+				}
+
+			});
+
 			$host->add_hook($host::HOOK_ENCLOSURE_ENTRY, $this);
 			$host->add_hook($host::HOOK_SANITIZE, $this);
 		} else {
 			user_error("Starred cache directory ".$this->cache->get_dir()." (or status cache subdir in status-files/) is not writable.", E_USER_WARNING);
-		}
-	}
-
-	/** since HOOK_UPDATE_TASK is not available to user plugins, this hook is a next best thing */
-	function hook_house_keeping() {
-
-		Debug::log("caching media of starred articles for user " . $this->host->get_owner_uid() . "...");
-
-		$sth = $this->pdo->prepare("SELECT content, ttrss_entries.title,
-				ttrss_user_entries.owner_uid, link, site_url, ttrss_entries.id, plugin_data
-			FROM ttrss_entries, ttrss_user_entries LEFT JOIN ttrss_feeds ON
-				(ttrss_user_entries.feed_id = ttrss_feeds.id)
-			WHERE ref_id = ttrss_entries.id AND
-				marked = true AND
-				site_url != '' AND
-				ttrss_user_entries.owner_uid = ? AND
-				plugin_data NOT LIKE '%starred_cache_images%'
-			ORDER BY RANDOM() LIMIT 100");
-
-		if ($sth->execute([$this->host->get_owner_uid()])) {
-
-			$usth = $this->pdo->prepare("UPDATE ttrss_entries SET plugin_data = ? WHERE id = ?");
-
-			while ($line = $sth->fetch()) {
-				Debug::log("processing article " . $line["title"], Debug::LOG_VERBOSE);
-
-				if ($line["site_url"]) {
-					$success = $this->cache_article_images($line["content"], $line["site_url"], $line["owner_uid"], $line["id"]);
-
-					if ($success) {
-						$plugin_data = "starred_cache_images," . $line["owner_uid"] . ":" . $line["plugin_data"];
-
-						$usth->execute([$plugin_data, $line['id']]);
-					}
-				}
-			}
-		}
-
-		/* actual housekeeping */
-
-		Debug::log("expiring {$this->cache->get_dir()} and {$this->cache_status->get_dir()}...");
-
-		$files = [
-			...(glob($this->cache->get_dir() . "/*-*") ?: []),
-			...(glob($this->cache_status->get_dir() . "/*.status") ?: []),
-		];
-
-		asort($files);
-
-		$last_article_id = 0;
-		$article_exists = 1;
-
-		foreach ($files as $file) {
-			list ($article_id, $hash) = explode("-", basename($file));
-
-			if ($article_id != $last_article_id) {
-				$last_article_id = $article_id;
-
-				$sth = $this->pdo->prepare("SELECT id FROM ttrss_entries WHERE id = ?");
-				$sth->execute([$article_id]);
-
-				$article_exists = $sth->fetch();
-			}
-
-			if (!$article_exists) {
-				unlink($file);
-			}
 		}
 	}
 

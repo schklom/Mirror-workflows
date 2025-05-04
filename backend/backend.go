@@ -6,48 +6,41 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strconv"
 
 	"github.com/rs/zerolog/log"
-	"gopkg.in/yaml.v3"
+	"github.com/spf13/viper"
 )
 
 var uio user.UserRepository
 
-type config struct {
-	PortSecure        int    `yaml:"PortSecure"`
-	PortInsecure      int    `yaml:"PortInsecure"`
-	UnixSocketPath    string `yaml:"UnixSocketPath"`
-	UnixSocketChmod   uint32 `yaml:"UnixSocketChmod"`
-	UserIdLength      int    `yaml:"UserIdLength"`
-	MaxSavedLoc       int    `yaml:"MaxSavedLoc"`
-	MaxSavedPic       int    `yaml:"MaxSavedPic"`
-	RegistrationToken string `yaml:"RegistrationToken"`
-	ServerCrt         string `yaml:"ServerCrt"`
-	ServerKey         string `yaml:"ServerKey"`
-	RemoteIpHeader    string `yaml:"RemoteIpHeader"`
-}
+func handleRequests(config *viper.Viper) {
+	mux := buildServeMux(config)
 
-func handleRequests(webDir string, config config) {
-	mux := buildServeMux(webDir, config)
+	// Cache config values (to avoid re-reading them between usages, which has the risk of them changing)
+	socketPath := config.GetString(CONF_UNIX_SOCKET_PATH)
+	socketChmod := config.GetInt(CONF_UNIX_SOCKET_CHMOD)
+	portSecure := config.GetInt(CONF_PORT_SECURE)
+	portInsecure := config.GetInt(CONF_PORT_INSECURE)
+	serverCrt := config.GetString(CONF_SERVER_CERT)
+	serverKey := config.GetString(CONF_SERVER_KEY)
 
-	if len(config.UnixSocketPath) > 0 {
-		_, err := os.Stat(config.UnixSocketPath)
+	if len(socketPath) > 0 {
+		_, err := os.Stat(socketPath)
 		if err == nil { // socket already exists
-			err = os.Remove(config.UnixSocketPath)
+			err = os.Remove(socketPath)
 			if err != nil {
 				log.Fatal().
-					Str("UnixSocketPath", config.UnixSocketPath).
+					Str("UnixSocketPath", socketPath).
 					Msg("could not remove existing unix socket")
 			}
 		}
 
 		log.Info().
-			Str("UnixSocketPath", config.UnixSocketPath).
+			Str("UnixSocketPath", socketPath).
 			Msg("listening on unix socket")
 
-		unixListener, err := net.Listen("unix", config.UnixSocketPath)
+		unixListener, err := net.Listen("unix", socketPath)
 		if err != nil {
 			if err != nil {
 				log.Fatal().Err(err).Msg("cannot open unix socket")
@@ -55,8 +48,8 @@ func handleRequests(webDir string, config config) {
 			}
 		}
 
-		fm := fs.FileMode(config.UnixSocketChmod)
-		err = os.Chmod(config.UnixSocketPath, fm)
+		fm := fs.FileMode(socketChmod)
+		err = os.Chmod(socketPath, fm)
 		if err != nil {
 			log.Error().
 				Err(err).
@@ -80,23 +73,23 @@ func handleRequests(webDir string, config config) {
 			log.Error().Err(err).Msg("error closing unix listener")
 		}
 		// ignore error for now
-		os.Remove(config.UnixSocketPath)
+		os.Remove(socketPath)
 
-	} else if config.PortSecure > -1 && fileExists(config.ServerCrt) && fileExists(config.ServerKey) {
+	} else if portSecure > -1 && fileExists(serverCrt) && fileExists(serverKey) {
 		log.Info().
-			Int("PortSecure", config.PortSecure).
+			Int("PortSecure", portSecure).
 			Msg("listening on secure port")
-		securePort := ":" + strconv.Itoa(config.PortSecure)
-		err := http.ListenAndServeTLS(securePort, config.ServerCrt, config.ServerKey, mux)
+		securePort := ":" + strconv.Itoa(portSecure)
+		err := http.ListenAndServeTLS(securePort, serverCrt, serverKey, mux)
 		if err != nil {
 			log.Fatal().Err(err).Msg("failed to serve with TLS")
 		}
 
-	} else if config.PortInsecure > -1 {
+	} else if portInsecure > -1 {
 		log.Info().
-			Int("PortInsecure", config.PortInsecure).
+			Int("PortInsecure", portInsecure).
 			Msg("listening on insecure port")
-		insecureAddr := ":" + strconv.Itoa(config.PortInsecure)
+		insecureAddr := ":" + strconv.Itoa(portInsecure)
 		err := http.ListenAndServe(insecureAddr, mux)
 		if err != nil {
 			log.Fatal().Err(err).Msg("failed to serve with HTTP")
@@ -107,46 +100,15 @@ func handleRequests(webDir string, config config) {
 	}
 }
 
-func loadConfig(configPath string) config {
-	log.Info().Msg("loading config")
-
-	configRead := true
-	configContent, err := os.ReadFile(configPath)
-	if err != nil {
-		log.Error().Err(err).Msg("cannot read config file")
-		configRead = false
-	}
-
-	serverConfig := config{}
-	err = yaml.Unmarshal(configContent, &serverConfig)
-	if err != nil {
-		log.Error().Err(err).Msg("cannot unmarshal config file")
-		configRead = false
-	}
-
-	if !configRead {
-		log.Warn().Msg("no config found, using defaults")
-		serverConfig = config{PortSecure: 8443, PortInsecure: 8080, UserIdLength: 5, MaxSavedLoc: 1000, MaxSavedPic: 10, RegistrationToken: "", UnixSocketPath: "", UnixSocketChmod: 0660}
-	}
-	//fmt.Printf("INFO: Using config %+v\n", serverConfig)
-
-	return serverConfig
-}
-
-func initDb(dbDir string, config config) {
+func initDb(config *viper.Viper) {
 	log.Info().Msg("loading database")
 	uio = user.UserRepository{}
-	uio.Init(dbDir, config.UserIdLength, config.MaxSavedLoc, config.MaxSavedPic)
-}
-
-func getCwd() string {
-	executableFile, err := os.Executable()
-	if err != nil {
-		return "."
-	} else {
-		dir, _ := filepath.Split(executableFile)
-		return dir
-	}
+	uio.Init(
+		config.GetString(CONF_DATABASE_DIR),
+		config.GetInt(CONF_USER_ID_LENGTH),
+		config.GetInt(CONF_MAX_SAVED_LOC),
+		config.GetInt(CONF_MAX_SAVED_PIC),
+	)
 }
 
 func fileExists(filename string) bool {
@@ -157,18 +119,16 @@ func fileExists(filename string) bool {
 	return !info.IsDir()
 }
 
-func RunServer(configPath string, dbDir string, webDir string) {
+func RunServer(config *viper.Viper) {
 	log.Info().
 		Str("version", VERSION).
-		Str("configPath", configPath).
-		Str("dbDir", dbDir).
-		Str("webDir", webDir).
+		Str("dbDir", config.GetString(CONF_DATABASE_DIR)).
+		Str("webDir", config.GetString(CONF_WEB_DIR)).
 		Msg("starting FMD Server")
 
 	// Initialisation
-	config := loadConfig(configPath)
-	initDb(dbDir, config)
+	initDb(config)
 
 	// Run server
-	handleRequests(webDir, config)
+	handleRequests(config)
 }

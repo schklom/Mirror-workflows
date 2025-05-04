@@ -1,6 +1,10 @@
 package backend
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/spf13/viper"
+)
 
 var remoteIpHeaderName string = ""
 
@@ -27,11 +31,11 @@ func securityHeadersMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func buildServeMux(webDir string, config config) *http.ServeMux {
+func buildServeMux(config *viper.Viper) *http.ServeMux {
 	// Workaround: cache value in global field to avoid needing to pass down the config into the API code
-	remoteIpHeaderName = config.RemoteIpHeader
+	remoteIpHeaderName = config.GetString(CONF_REMOTE_IP_HEADER)
 
-	mainDeviceHandler := mainDeviceHandler{createDeviceHandler{config.RegistrationToken}}
+	mainDeviceHandler := mainDeviceHandler{createDeviceHandler{config.GetString(CONF_REGISTRATION_TOKEN)}}
 
 	apiV1Mux := http.NewServeMux()
 	apiV1Mux.HandleFunc("/command", mainCommand)
@@ -72,7 +76,7 @@ func buildServeMux(webDir string, config config) *http.ServeMux {
 	// Until then, as a side-effect, the static files are also served under /api/v1/.
 	// staticFilesMux := http.NewServeMux()
 	// staticFilesMux.Handle("/", http.FileServer(http.Dir(webDir)))
-	apiV1Mux.Handle("/", http.FileServer(http.Dir(webDir)))
+	apiV1Mux.Handle("/", http.FileServer(http.Dir(config.GetString(CONF_WEB_DIR))))
 
 	muxFinal := http.NewServeMux()
 	// muxFinal.Handle("/", securityHeadersMiddleware(staticFilesMux))

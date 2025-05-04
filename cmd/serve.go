@@ -9,15 +9,18 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
 
 var (
+	config viper.Viper = backend.InitConfig()
+
 	configPath string
-	dbDir      string
-	webDir     string
+	dbDir      string // used indirectly via config.BindPFlag
+	webDir     string // same as dbDir
 	jsonLog    bool
 
 	serveCmd = &cobra.Command{
@@ -25,7 +28,8 @@ var (
 		Short: "Run the server",
 		Run: func(cmd *cobra.Command, args []string) {
 			setupLogging(jsonLog)
-			backend.RunServer(configPath, dbDir, webDir)
+			backend.ReadConfigFile(&config, configPath)
+			backend.RunServer(&config)
 		},
 	}
 )
@@ -58,10 +62,14 @@ func setupLogging(jsonLog bool) {
 func init() {
 	rootCmd.AddCommand(serveCmd)
 
-	serveCmd.Flags().StringVarP(&configPath, "config", "c", "config.yml", "Path to the config file")
+	// No default values as those are handled by the config
+	serveCmd.Flags().StringVarP(&configPath, "config", "c", "", "Path to the config file")
 
-	serveCmd.Flags().StringVarP(&dbDir, "db-dir", "d", "db/", "Path to the database directory")
-	serveCmd.Flags().StringVarP(&webDir, "web-dir", "w", "web/", "Path to the web static files directory")
+	serveCmd.Flags().StringVarP(&dbDir, "db-dir", "d", "", "Path to the database directory")
+	serveCmd.Flags().StringVarP(&webDir, "web-dir", "w", "", "Path to the web static files directory")
+
+	config.BindPFlag(backend.CONF_DATABASE_DIR, serveCmd.Flags().Lookup("db-dir"))
+	config.BindPFlag(backend.CONF_WEB_DIR, serveCmd.Flags().Lookup("web-dir"))
 
 	serveCmd.Flags().BoolVar(&jsonLog, "log-json", false, "Print log messages as JSON. This only affects stderr. Syslog always uses JSON.")
 }

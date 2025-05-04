@@ -28,6 +28,38 @@ class Pref_System extends Handler_Administrative {
 		print json_encode(['rc' => $rc, 'error' => $mailer->error()]);
 	}
 
+	function getscheduledtasks(): void {
+		?>
+		<table width='100%' class='event-log'>
+		<tr>
+			<th><?= __("Task name") ?></th>
+			<th><?= __("Last executed") ?></th>
+			<th><?= __("Duration (seconds)") ?></th>
+			<th><?= __("Return code") ?></th>
+		</tr>
+		<?php
+
+		$task_records = ORM::for_table('ttrss_scheduled_tasks')
+			->find_many();
+
+		foreach ($task_records as $task) {
+			$row_style = $task->last_rc === 0 ? 'text-success' : 'text-error';
+
+			?>
+			<tr>
+				<td class="<?= $row_style ?>"><?= $task->task_name ?></td>
+				<td><?= TimeHelper::make_local_datetime($task->last_run) ?></td>
+				<td><?= $task->last_duration ?></td>
+				<td><?= $task->last_rc ?></td>
+			</tr>
+			<?php
+		}
+
+		?>
+		</table>
+		<?php
+	}
+
 	function getphpinfo(): void {
 		ob_start();
 		phpinfo();
@@ -205,18 +237,18 @@ class Pref_System extends Handler_Administrative {
 					</form>
 				</div>
 			</div>
-			<div dojoType='dijit.layout.AccordionPane' title='<i class="material-icons">info</i> <?= __('PHP Information') ?>'>
+			<div dojoType='dijit.layout.AccordionPane' title='<i class="material-icons">alarm</i> <?= __('Scheduled tasks') ?>'>
 					<script type='dojo/method' event='onSelected' args='evt'>
 						if (this.domNode.querySelector('.loading'))
 							window.setTimeout(() => {
-								xhr.post("backend.php", {op: 'Pref_System', method: 'getphpinfo'}, (reply) => {
+								xhr.post("backend.php", {op: 'Pref_System', method: 'getscheduledtasks'}, (reply) => {
 									this.attr('content', `<div class='phpinfo'>${reply}</div>`);
 								});
 							}, 200);
 					</script>
 					<span class='loading'><?= __("Loading, please wait...") ?></span>
 			</div>
-			<div dojoType='dijit.layout.AccordionPane' title='<i class="material-icons">info</i> <?= __('Scheduled tasks') ?>'>
+			<div dojoType='dijit.layout.AccordionPane' title='<i class="material-icons">info</i> <?= __('PHP Information') ?>'>
 					<script type='dojo/method' event='onSelected' args='evt'>
 						if (this.domNode.querySelector('.loading'))
 							window.setTimeout(() => {

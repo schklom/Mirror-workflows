@@ -106,9 +106,44 @@ func ReadConfigFile(config *viper.Viper, configFilePath string) {
 		Str("configFile", config.ConfigFileUsed()).
 		Msg("using config")
 
+	if config.ConfigFileUsed() == "/etc/fmd-server/config.yml" {
+		mergeUserConfigFile(config)
+	}
+
 	// TODO: support auto-reload??
 	// config.OnConfigChange(func(e fsnotify.Event) {
 	// 	// TODO
 	// })
 	// config.WatchConfig()
+}
+
+// Merge the local.yml into the config.yml (when using /etc/fmd-server/).
+//
+// This is similar to how fail2ban uses jail.conf and jail.local:
+// it allows packagers to use config.yml and allows admins put their settings in local.yml.
+// Thus admins don't have to edit the packager's config.yml (which would
+// cause conflicts if a package update changes the config.yml).
+//
+// Values in local.yml override their counterpart in config.yml.
+func mergeUserConfigFile(config *viper.Viper) {
+	local := viper.New()
+
+	// We cannot use SetConfigFile() because then the ConfigFileNotFoundError trick below does not work
+	local.AddConfigPath("/etc/fmd-server/")
+	local.SetConfigName("local")
+	local.SetConfigType("yaml")
+
+	err := local.ReadInConfig()
+	if err != nil {
+		_, ok := err.(viper.ConfigFileNotFoundError)
+		if !ok {
+			// fail to alert the admin
+			log.Fatal().Err(err).Msg("failed to read /etc/fmd-server/local.yml")
+		}
+		return
+	}
+
+	// Merge the local settings into the global config.
+	// Local settings override global settings!
+	config.MergeConfigMap(local.AllSettings())
 }

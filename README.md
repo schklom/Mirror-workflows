@@ -60,6 +60,17 @@ However, this requires root privileges to create and chown the required location
 
 The Dockerfile uses the recommended locations, so mount your volumes there (as shown below).
 
+### Config file and packaging
+
+When `/etc/fmd-server/config.yml` is present and used, FMD Server also reads in `/etc/fmd-server/local.yml`.
+
+This is similar to how fail2ban uses jail.conf and jail.local:
+it allows packagers to use config.yml and allows admins put their settings in local.yml.
+Thus admins don't have to edit the packager's config.yml (which would
+cause conflicts if a package update changes the config.yml).
+
+Values in local.yml override their counterpart in config.yml.
+
 ### Self-hosting with Docker Compose
 
 > ⚠️ FMD Server is still pre-1.0. Therefore, minor versions can introduce breaking changes.

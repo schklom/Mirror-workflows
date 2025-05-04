@@ -120,5 +120,30 @@ class Scheduler {
 		Debug::log("Processing scheduled tasks finished with $tasks_succeeded tasks succeeded and $tasks_failed tasks failed.");
 	}
 
-	// TODO implement some sort of automatic cleanup for orphan task execution records
+	/**
+	 * Purge records of scheduled tasks that aren't currently registered
+	 * and haven't ran for a long time.
+	 *
+	 * @return int 0 if successful, 1 on failure
+	 */
+	function purge_orphaned_tasks(): int {
+		if (!$this->scheduled_tasks) {
+			Debug::log(__METHOD__ . ' was invoked before scheduled tasks have been registered.  This should never happen.');
+			return 1;
+		}
+
+		$result = ORM::for_table('ttrss_scheduled_tasks')
+			->where_not_in('task_name', array_keys($this->scheduled_tasks))
+			->where_raw("last_run < NOW() - INTERVAL '5 weeks'")
+			->delete_many();
+
+		if ($result) {
+			$deleted_count = ORM::get_last_statement()->rowCount();
+
+			if ($deleted_count)
+				Debug::log("Purged {$deleted_count} orphaned scheduled tasks.");
+		}
+
+		return $result ? 0 : 1;
+	}
 }

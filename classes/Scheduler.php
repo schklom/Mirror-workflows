@@ -3,20 +3,23 @@ class Scheduler {
 	private static ?Scheduler $instance = null;
 
 	const TASK_RC_EXCEPTION = -100;
+	const DEFAULT_NAME = 'Default Scheduler';
 
 	/** @var array<string, mixed> */
 	private array $scheduled_tasks = [];
 
 	private string $name;
 
-	function __construct(string $name = 'Default Scheduler') {
+	function __construct(string $name = self::DEFAULT_NAME) {
 		$this->set_name($name);
 
-		$this->add_scheduled_task('purge_orphaned_scheduled_tasks', '@weekly',
-			function() {
-				return $this->purge_orphaned_tasks();
-			}
-		);
+		if ($name === self::DEFAULT_NAME) {
+			$this->add_scheduled_task('purge_orphaned_scheduled_tasks', '@weekly',
+				function() {
+					return $this->purge_orphaned_tasks();
+				}
+			);
+		}
 	}
 
 	public static function getInstance(): Scheduler {

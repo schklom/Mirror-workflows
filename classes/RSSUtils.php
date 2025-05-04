@@ -1666,6 +1666,7 @@ class RSSUtils {
 
 		UserHelper::load_user_plugins($owner_uid, $tmph);
 
+		$tmph->run_due_tasks();
 		$tmph->run_hooks(PluginHost::HOOK_HOUSE_KEEPING);
 	}
 
@@ -1794,7 +1795,10 @@ class RSSUtils {
 	static function housekeeping_common(): void {
 		Scheduler::getInstance()->run_due_tasks();
 
-		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_HOUSE_KEEPING);
+		$pluginhost = PluginHost::getInstance();
+
+		$pluginhost->run_due_tasks();
+		$pluginhost->run_hooks(PluginHost::HOOK_HOUSE_KEEPING);
 	}
 
 	static function update_favicon(string $site_url, int $feed): false|string {

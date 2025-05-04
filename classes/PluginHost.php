@@ -38,6 +38,8 @@ class PluginHost {
 
 	private static ?PluginHost $instance = null;
 
+	private ?Scheduler $scheduler = null;
+
 	const API_VERSION = 2;
 	const PUBLIC_METHOD_DELIMITER = "--";
 
@@ -215,6 +217,7 @@ class PluginHost {
 
 	function __construct() {
 		$this->pdo = Db::pdo();
+		$this->scheduler = new Scheduler('PluginHost Scheduler');
 		$this->storage = [];
 	}
 
@@ -437,6 +440,10 @@ class PluginHost {
 		$plugins = explode(",", $classlist);
 
 		$this->owner_uid = (int) $owner_uid;
+
+		if ($this->owner_uid) {
+			$this->set_scheduler_name("PluginHost Scheduler for UID $owner_uid");
+		}
 
 		foreach ($plugins as $class) {
 			$class = trim($class);
@@ -907,4 +914,30 @@ class PluginHost {
 		return basename(dirname(dirname($ref->getFileName()))) == "plugins.local";
 	}
 
+	/**
+	 * This exposes sheduled tasks functionality to plugins. For system plugins, tasks registered here are
+	 * executed (if due) during housekeeping. For user plugins, tasks are only run after any feeds owned by
+	 * the user have been processed in an update batch (which means user is not inactive).
+	 *
+	 * This behaviour mirrors that of `HOOK_HOUSE_KEEPING` for user plugins.
+	 *
+	 * @see Scheduler::add_scheduled_task()
+	 * @see Plugin::hook_house_keeping()
+	*/
+	function add_scheduled_task(Plugin $sender, string $task_name, string $cron_expression, Closure $callback): bool {
+		if ($this->is_system($sender))
+			$task_name = get_class($sender) . ':' . $task_name;
+		else
+			$task_name = get_class($sender) . ':' . $task_name . ':' . $this->owner_uid;
+
+		return $this->scheduler->add_scheduled_task($task_name, $cron_expression, $callback);
+	}
+
+	function run_due_tasks() : void {
+		$this->scheduler->run_due_tasks();
+	}
+
+	private function set_scheduler_name(string $name) : void {
+		$this->scheduler->set_name($name);
+	}
 }

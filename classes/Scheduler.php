@@ -117,6 +117,7 @@ class Scheduler {
 					$task_record->last_run = Db::NOW();
 					$task_record->last_duration = $task_duration;
 					$task_record->last_rc = $rc;
+					$task_record->last_cron_expression = $task['cron']->getExpression();
 
 					$task_record->save();
 				} else {
@@ -127,6 +128,7 @@ class Scheduler {
 						'last_duration' => $task_duration,
 						'last_rc' => $rc,
 						'last_run' => Db::NOW(),
+						'last_cron_expression' => $task['cron']->getExpression()
 					]);
 
 					$task_record->save();

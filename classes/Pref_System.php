@@ -33,6 +33,7 @@ class Pref_System extends Handler_Administrative {
 		<table width='100%' class='event-log'>
 		<tr>
 			<th><?= __("Task name") ?></th>
+			<th><?= __("Schedule") ?></th>
 			<th><?= __("Last executed") ?></th>
 			<th><?= __("Duration (seconds)") ?></th>
 			<th><?= __("Return code") ?></th>
@@ -40,6 +41,7 @@ class Pref_System extends Handler_Administrative {
 		<?php
 
 		$task_records = ORM::for_table('ttrss_scheduled_tasks')
+			->order_by_asc(['last_cron_expression', 'task_name'])
 			->find_many();
 
 		foreach ($task_records as $task) {
@@ -48,6 +50,7 @@ class Pref_System extends Handler_Administrative {
 			?>
 			<tr>
 				<td class="<?= $row_style ?>"><?= $task->task_name ?></td>
+				<td><?= $task->last_cron_expression ?></td>
 				<td><?= TimeHelper::make_local_datetime($task->last_run) ?></td>
 				<td><?= $task->last_duration ?></td>
 				<td><?= $task->last_rc ?></td>

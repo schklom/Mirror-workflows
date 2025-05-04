@@ -63,7 +63,7 @@ find . -type d -exec chmod 750 {} \;
 # Reproducibility: Fix timezone.
 # Reproducibility: Use -X to remove subfields such as 0x7875.
 TZ=utc zip -X "$ZIPNAME" \
-    findmydeviceserver \
+    fmd-server \
     $WEBFILES \
     config.example.yml \
     gen_cert.sh \

@@ -1,4 +1,4 @@
-module findmydeviceserver
+module fmd-server
 
 go 1.23.0
 

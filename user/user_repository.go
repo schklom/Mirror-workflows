@@ -5,7 +5,7 @@ import (
 	"crypto/rand"
 	"encoding/json"
 	"errors"
-	"findmydeviceserver/utils"
+	"fmd-server/utils"
 	"fmt"
 	"math/big"
 	"net/http"

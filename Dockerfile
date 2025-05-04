@@ -1,6 +1,6 @@
 FROM golang:1.24-bookworm AS builder
 
-WORKDIR /go/src/findmydeviceserver
+WORKDIR /go/src/fmd-server
 ENV GOPATH=/go
 
 # pre-download and only redownload in subsequent builds if they change

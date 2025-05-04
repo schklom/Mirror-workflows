@@ -1,6 +1,6 @@
 package main
 
-import "findmydeviceserver/cmd"
+import "fmd-server/cmd"
 
 func main() {
 	cmd.Execute()

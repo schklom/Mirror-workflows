@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"findmydeviceserver/user"
+	"fmd-server/user"
 
 	"github.com/rs/zerolog/log"
 )

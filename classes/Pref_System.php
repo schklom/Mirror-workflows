@@ -216,6 +216,17 @@ class Pref_System extends Handler_Administrative {
 					</script>
 					<span class='loading'><?= __("Loading, please wait...") ?></span>
 			</div>
+			<div dojoType='dijit.layout.AccordionPane' title='<i class="material-icons">info</i> <?= __('Scheduled tasks') ?>'>
+					<script type='dojo/method' event='onSelected' args='evt'>
+						if (this.domNode.querySelector('.loading'))
+							window.setTimeout(() => {
+								xhr.post("backend.php", {op: 'Pref_System', method: 'getphpinfo'}, (reply) => {
+									this.attr('content', `<div class='phpinfo'>${reply}</div>`);
+								});
+							}, 200);
+					</script>
+					<span class='loading'><?= __("Loading, please wait...") ?></span>
+			</div>
 
 			<?php PluginHost::getInstance()->run_hooks(PluginHost::HOOK_PREFS_TAB, "prefSystem") ?>
 		</div>

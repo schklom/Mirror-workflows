@@ -275,13 +275,6 @@ class Config {
 			if (isset(self::_DEFAULTS[$const])) {
 				$override = getenv(self::_ENVVAR_PREFIX . $const);
 
-				// cleanup original env var after importing (unless it's a background process)
-				if (php_sapi_name() != "cli") {
-					putenv(self::_ENVVAR_PREFIX . $const . '=');
-					unset($_ENV[self::_ENVVAR_PREFIX . $const]);
-					unset($_SERVER[self::_ENVVAR_PREFIX . $const]);
-				}
-
 				list ($defval, $deftype) = self::_DEFAULTS[$const];
 
 				$this->params[$cvalue] = [ self::cast_to($override !== false ? $override : $defval, $deftype), $deftype ];
@@ -439,13 +432,6 @@ class Config {
 
 	private function _add(string $param, string $default, int $type_hint): void {
 		$override = getenv(self::_ENVVAR_PREFIX . $param);
-
-		// cleanup original env var after importing (unless it's a background process)
-		if (php_sapi_name() != "cli") {
-			putenv(self::_ENVVAR_PREFIX . $param . '=');
-			unset($_ENV[self::_ENVVAR_PREFIX . $param]);
-			unset($_SERVER[self::_ENVVAR_PREFIX . $param]);
-		}
 
 		$this->params[$param] = [ self::cast_to($override !== false ? $override : $default, $type_hint), $type_hint ];
 	}

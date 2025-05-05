@@ -998,9 +998,10 @@ class RSSUtils {
 					Debug::log("base guid [$entry_guid or $entry_guid_hashed] not found, creating...", Debug::LOG_VERBOSE);
 
 					// base post entry does not exist, create it
-					$usth = $pdo->prepare(
+					$isth = $pdo->prepare(
 						"INSERT INTO ttrss_entries
 							(title,
+							tsvector_combined,
 							guid,
 							link,
 							updated,
@@ -1015,25 +1016,38 @@ class RSSUtils {
 							lang,
 							author)
 						VALUES
-							(?, ?, ?, ?, ?, ?,
+							(:title,
+							to_tsvector(:ts_lang, :ts_content),
+							:guid,
+							:link,
+							:updated,
+							:content,
+							:content_hash,
 							false,
 							NOW(),
-							?, ?, ?, ?,	?, ?) RETURNING id");
+							:date_entered,
+							:comments,
+							:num_comments,
+							:plugin_data,
+							:lang,
+							:author) RETURNING id");
 
-						$usth->execute([$entry_title,
-							$entry_guid_hashed,
-							$entry_link,
-							$entry_timestamp_fmt,
-							"$entry_content",
-							$entry_current_hash,
-							$date_feed_processed,
-							$entry_comments,
-							(int)$num_comments,
-							$entry_plugin_data,
-							"$entry_language",
-							"$entry_author"]);
+						$isth->execute([":title" => $entry_title,
+							":ts_lang" => $feed_language,
+							":ts_content" => mb_substr(strip_tags($entry_title) . " " . \Soundasleep\Html2Text::convert($entry_content), 0, 900000),
+							":guid" => $entry_guid_hashed,
+							":link" => $entry_link,
+							":updated" => $entry_timestamp_fmt,
+							":content" => $entry_content,
+							":content_hash" => $entry_current_hash,
+							":date_entered" => $date_feed_processed,
+							":comments" => $entry_comments,
+							":num_comments" => (int)$num_comments,
+							":plugin_data" => $entry_plugin_data,
+							":lang" => $entry_language,
+							":author" => $entry_author]);
 
-						$row = $usth->fetch();
+						$row = $isth->fetch();
 
 						Debug::log("insert returned RID: " . $row['id'], Debug::LOG_VERBOSE);
 						$base_record_created = true;

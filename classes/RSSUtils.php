@@ -702,8 +702,6 @@ class RSSUtils {
 			$tstart = time();
 
 			foreach ($items as $item) {
-				$pdo->beginTransaction();
-
 				Debug::log(Debug::SEPARATOR, Debug::LOG_VERBOSE);
 
 				if (Debug::get_loglevel() >= 3) {
@@ -712,7 +710,6 @@ class RSSUtils {
 
 				if (ini_get("max_execution_time") > 0 && time() - $tstart >= ((float)ini_get("max_execution_time") * 0.7)) {
 					Debug::log("looks like there's too many articles to process at once, breaking out.", Debug::LOG_VERBOSE);
-					$pdo->commit();
 					break;
 				}
 
@@ -721,7 +718,6 @@ class RSSUtils {
 				if (!$entry_guid) $entry_guid = self::make_guid_from_title($item->get_title());
 
 				if (!$entry_guid) {
-					$pdo->commit();
 					continue;
 				}
 
@@ -847,8 +843,6 @@ class RSSUtils {
 					// update date_updated column so that we don't get horrible
 					// dupes when the entry gets purged and reinserted again e.g.
 					// in the case of SLOW SLOW OMG SLOW updating feeds
-
-					$pdo->commit();
 
 					ORM::for_table('ttrss_entries')
 						->find_one($base_entry_id)
@@ -1053,7 +1047,6 @@ class RSSUtils {
 
 					if (self::find_article_filter($article_filters, "filter")) {
 						Debug::log("article is filtered out, nothing to do.", Debug::LOG_VERBOSE);
-						$pdo->commit();
 						continue;
 					}
 
@@ -1061,8 +1054,10 @@ class RSSUtils {
 
 					Debug::log("initial score: $score [including plugin modifier: $entry_score_modifier]", Debug::LOG_VERBOSE);
 
-					// check for user post link to main table
+					Debug::log("begin pdo transaction...", Debug::LOG_VERBOSE);
+					$pdo->beginTransaction();
 
+					// check for user post link to main table
 					$sth = $pdo->prepare("SELECT ref_id, int_id FROM ttrss_user_entries WHERE
 							ref_id = ? AND owner_uid = ?");
 					$sth->execute([$ref_id, $feed_obj->owner_uid]);
@@ -1264,9 +1259,10 @@ class RSSUtils {
 					]);
 				}
 
-				Debug::log("article processed.", Debug::LOG_VERBOSE);
-
+				Debug::log("commit pdo transaction...", Debug::LOG_VERBOSE);
 				$pdo->commit();
+
+				Debug::log("article processed.", Debug::LOG_VERBOSE);
 			}
 
 			Debug::log(Debug::SEPARATOR, Debug::LOG_VERBOSE);

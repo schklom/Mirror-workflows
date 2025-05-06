@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-14 12:17+0300\n"
-"PO-Revision-Date: 2025-03-20 19:24+0000\n"
+"POT-Creation-Date: 2025-05-04 13:44+0300\n"
+"PO-Revision-Date: 2025-05-05 16:06+0000\n"
 "Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/tt-rss/webui/ta/>\n"
 "Language: ta\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.11-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -82,7 +82,7 @@ msgstr "நாள்தோறும்"
 msgid "Weekly"
 msgstr "வாராந்திர"
 
-#: backend.php:91 classes/Pref_Feeds.php:574 classes/Pref_Feeds.php:627
+#: backend.php:91 classes/Pref_Feeds.php:571 classes/Pref_Feeds.php:624
 msgid "Disabled"
 msgstr "முடக்கப்பட்டது"
 
@@ -90,7 +90,7 @@ msgstr "முடக்கப்பட்டது"
 msgid "Read Only"
 msgstr "படிக்கவும்"
 
-#: backend.php:93 classes/Pref_System.php:118
+#: backend.php:93 classes/Pref_System.php:150
 msgid "User"
 msgstr "பயனர்"
 
@@ -103,17 +103,18 @@ msgid "Administrator"
 msgstr "நிர்வாகி"
 
 #: index.php:123 index.php:137 index.php:290 prefs.php:115
-#: classes/Pref_Prefs.php:895 classes/Pref_Prefs.php:945
-#: classes/Pref_System.php:217 js/PrefFilterTree.js:126 js/CommonFilters.js:278
-#: js/CommonFilters.js:410 js/Headlines.js:356 js/Headlines.js:541
+#: classes/Pref_Prefs.php:887 classes/Pref_Prefs.php:937
+#: classes/Pref_System.php:249 classes/Pref_System.php:260
+#: js/PrefFeedTree.js:186 js/PrefFeedTree.js:193 js/PrefFeedTree.js:317
+#: js/PrefFeedTree.js:394 js/Feeds.js:499 js/PrefFilterTree.js:126
+#: js/CommonFilters.js:271 js/CommonFilters.js:403 js/Article.js:288
+#: js/Article.js:364 js/CommonDialogs.js:339 js/CommonDialogs.js:496
+#: js/CommonDialogs.js:651 js/Headlines.js:356 js/Headlines.js:541
 #: js/PrefHelpers.js:27 js/PrefHelpers.js:39 js/PrefHelpers.js:62
 #: js/PrefHelpers.js:115 js/PrefHelpers.js:243 js/PrefHelpers.js:294
-#: js/PrefHelpers.js:445 js/PrefHelpers.js:456 js/Article.js:288
-#: js/Article.js:364 js/Feeds.js:491 js/PrefUsers.js:112 js/PrefFeedTree.js:186
-#: js/PrefFeedTree.js:193 js/PrefFeedTree.js:317 js/PrefFeedTree.js:394
-#: js/CommonDialogs.js:334 js/CommonDialogs.js:491 js/CommonDialogs.js:646
-#: plugins/note/note.js:38 plugins/share/share.js:56
-#: plugins/af_psql_trgm/init.js:7 js/CommonFilters.js:182
+#: js/PrefHelpers.js:445 js/PrefHelpers.js:456 js/PrefUsers.js:112
+#: plugins/share/share.js:56 plugins/af_psql_trgm/init.js:7
+#: plugins/note/note.js:38 js/CommonFilters.js:175
 msgid "Loading, please wait..."
 msgstr "ஏற்றுகிறது, தயவுசெய்து காத்திருங்கள் ..."
 
@@ -141,11 +142,11 @@ msgstr "தகவமைப்பு"
 msgid "All Articles"
 msgstr "அனைத்து கட்டுரைகளும்"
 
-#: index.php:183 classes/RPC.php:644
+#: index.php:183 classes/RPC.php:550
 msgid "Starred"
 msgstr "நடித்தார்"
 
-#: index.php:184 classes/RPC.php:645
+#: index.php:184 classes/RPC.php:551
 msgid "Published"
 msgstr "வெளியிடப்பட்டது"
 
@@ -173,11 +174,11 @@ msgstr "புதிய முதல்"
 msgid "Oldest first"
 msgstr "முதலில் பழமையானது"
 
-#: index.php:196 js/CommonFilters.js:437
+#: index.php:196 js/CommonFilters.js:430
 msgid "Title"
 msgstr "தலைப்பு"
 
-#: index.php:209 index.php:261 classes/RPC.php:631 js/Headlines.js:1574
+#: index.php:209 index.php:261 classes/RPC.php:537 js/Headlines.js:1574
 #: js/FeedTree.js:92 js/FeedTree.js:131 js/Headlines.js:673
 msgid "Mark as read"
 msgstr "படித்தபடி குறி"
@@ -224,7 +225,7 @@ msgid "Edit this feed..."
 msgstr "இந்த ஊட்டத்தைத் திருத்து ..."
 
 #: index.php:259 classes/Pref_Feeds.php:960 js/PrefFeedTree.js:120
-#: js/CommonDialogs.js:633
+#: js/CommonDialogs.js:638
 msgid "Unsubscribe"
 msgstr "குழுவிலகவும்"
 
@@ -240,11 +241,11 @@ msgstr "(Un) வாசிப்பு ஊட்டங்களை மறைக�
 msgid "UI layout:"
 msgstr "இடைமுகம் தளவமைப்பு:"
 
-#: index.php:264 classes/RPC.php:640
+#: index.php:264 classes/RPC.php:546
 msgid "Toggle combined mode"
 msgstr "ஒருங்கிணைந்த பயன்முறையை மாற்றவும்"
 
-#: index.php:266 classes/RPC.php:617
+#: index.php:266 classes/RPC.php:523
 msgid "Toggle widescreen mode"
 msgstr "அகலத்திரை பயன்முறையை மாற்றவும்"
 
@@ -264,7 +265,7 @@ msgstr "விசைப்பலகை குறுக்குவழிகள�
 msgid "Logout"
 msgstr "வெளியேற்றம்"
 
-#: prefs.php:18 prefs.php:135 classes/Pref_Prefs.php:947 classes/RPC.php:647
+#: prefs.php:18 prefs.php:135 classes/RPC.php:553 classes/Pref_Prefs.php:939
 msgid "Preferences"
 msgstr "விருப்பத்தேர்வுகள்"
 
@@ -272,16 +273,16 @@ msgstr "விருப்பத்தேர்வுகள்"
 msgid "Exit preferences"
 msgstr "வெளியேறும் விருப்பத்தேர்வுகள்"
 
-#: prefs.php:138 classes/Pref_Prefs.php:44 classes/Pref_Feeds.php:131
-#: classes/Pref_Feeds.php:949
+#: prefs.php:138 classes/Pref_Feeds.php:127 classes/Pref_Feeds.php:949
+#: classes/Pref_Prefs.php:44
 msgid "Feeds"
 msgstr "ஊட்டங்கள்"
 
-#: prefs.php:142 classes/Pref_Filters.php:244
+#: prefs.php:142 classes/Pref_Filters.php:297
 msgid "Filters"
 msgstr "வடிப்பான்கள்"
 
-#: prefs.php:146 classes/Pref_Labels.php:23 classes/Feeds.php:1353
+#: prefs.php:146 classes/Feeds.php:1316 classes/Pref_Labels.php:23
 msgid "Labels"
 msgstr "சிட்டைகள்"
 
@@ -293,22 +294,862 @@ msgstr "பயனர்கள்"
 msgid "System"
 msgstr "மண்டலம்"
 
-#: classes/Pref_Labels.php:167
-#, php-format
-msgid "Created label <b>%s</b>"
-msgstr "சிட்டை <b>%s </b> ஐ உருவாக்கியது"
+#: classes/Handler_Public.php:291 classes/Pref_Prefs.php:1448
+#: include/login_form.php:154
+msgid "Default profile"
+msgstr "இயல்புநிலை சுயவிவரம்"
 
-#: classes/Pref_Labels.php:179 classes/Pref_Prefs.php:853
-#: classes/Pref_Prefs.php:1489 classes/Pref_Feeds.php:939
-#: classes/Pref_Users.php:223 classes/Pref_Filters.php:641
-#: js/CommonFilters.js:445 js/CommonFilters.js:478 js/PrefHelpers.js:184
-#: js/PrefFeedTree.js:524 js/CommonDialogs.js:278
+#: classes/Handler_Public.php:401
+msgid "Incorrect username or password"
+msgstr "தவறான பயனர்பெயர் அல்லது கடவுச்சொல்"
+
+#: classes/Handler_Public.php:461
+msgid "Password recovery"
+msgstr "கடவுச்சொல் மீட்பு"
+
+#: classes/Handler_Public.php:498 classes/Handler_Public.php:528
+#: classes/Handler_Public.php:588 classes/Handler_Public.php:705
+#: classes/Handler_Public.php:712 classes/Handler_Public.php:735
+#: plugins/bookmarklets/init.php:94 plugins/bookmarklets/init.php:139
+#: plugins/bookmarklets/init.php:157 plugins/bookmarklets/init.php:162
+msgid "Return to Tiny Tiny RSS"
+msgstr "சிறிய சிறிய ஆர்.எச்.எச்"
+
+#: classes/Handler_Public.php:501
+msgid ""
+"You will need to provide valid account name and email. Password reset link "
+"will be sent to your email address."
+msgstr ""
+"நீங்கள் சரியான கணக்கு பெயர் மற்றும் மின்னஞ்சலை வழங்க வேண்டும். கடவுச்சொல் மீட்டமைப்பு இணைப்பு "
+"உங்கள் மின்னஞ்சல் முகவரிக்கு அனுப்பப்படும்."
+
+#: classes/Handler_Public.php:508 classes/Pref_Feeds.php:680
+#: plugins/bookmarklets/init.php:306 include/login_form.php:122
+#: js/CommonDialogs.js:596 js/PrefUsers.js:64
+msgid "Login:"
+msgstr "உள்நுழைவு:"
+
+#: classes/Handler_Public.php:513
+msgid "Email:"
+msgstr "மின்னஞ்சல்:"
+
+#: classes/Handler_Public.php:521
+#, php-format
+msgid "How much is %d + %d:"
+msgstr "%d + %d:"
+
+#: classes/Handler_Public.php:527 classes/Pref_Users.php:239
+msgid "Reset password"
+msgstr "கடவுச்சொல்லை மீட்டமைக்கவும்"
+
+#: classes/Handler_Public.php:538
+msgid "Some of the required form parameters are missing or incorrect."
+msgstr "தேவையான சில படிவ அளவுருக்கள் காணவில்லை அல்லது தவறானவை."
+
+#: classes/Handler_Public.php:542 classes/Handler_Public.php:594
+msgid "Go back"
+msgstr "திரும்பிச் செல்லுங்கள்"
+
+#: classes/Handler_Public.php:580
+msgid "[tt-rss] Password reset request"
+msgstr "[TT-RSS] கடவுச்சொல் மீட்டமைப்பு கோரிக்கை"
+
+#: classes/Handler_Public.php:590
+msgid "Sorry, login and email combination not found."
+msgstr "மன்னிக்கவும், உள்நுழைவு மற்றும் மின்னஞ்சல் சேர்க்கை கிடைக்கவில்லை."
+
+#: classes/Handler_Public.php:610
+msgid "Your access level is insufficient to run this script."
+msgstr "இந்த ச்கிரிப்டை இயக்க உங்கள் அணுகல் நிலை போதுமானதாக இல்லை."
+
+#: classes/Handler_Public.php:672
+msgid "Database Updater"
+msgstr "தரவுத்தள புதுப்பிப்பு"
+
+#: classes/Handler_Public.php:685
+#, php-format
+msgid "Performing updates to version %d"
+msgstr "பதிப்பு %d க்கு புதுப்பிப்புகளைச் செய்கிறது"
+
+#: classes/Handler_Public.php:700 classes/Handler_Public.php:727
+#: js/PrefHelpers.js:418 js/PrefHelpers.js:764
+msgid "Update"
+msgstr "புதுப்பிப்பு"
+
+#: classes/Handler_Public.php:720
+#, php-format
+msgid "Database schema needs update to the latest version (%d to %d)."
+msgstr "தரவுத்தள ச்கீமா அண்மைக் கால பதிப்பிற்கு புதுப்பிப்பு தேவை ( %d முதல் %d வரை)."
+
+#: classes/Pref_Filters.php:269 classes/Pref_Filters.php:279
+#: classes/Pref_Filters.php:468 classes/Pref_Filters.php:976
+msgid "All feeds"
+msgstr "அனைத்து ஊட்டங்களும்"
+
+#: classes/Pref_Filters.php:288 classes/Pref_Filters.php:489
+#: classes/Pref_Filters.php:492
+msgid "(inverse)"
+msgstr "(தலைகீழ்)"
+
+#: classes/Pref_Filters.php:284 classes/Pref_Filters.php:488
+#: classes/Pref_Filters.php:491
+#, php-format
+msgid "%s on %s in %s %s"
+msgstr "%s %s இல் %s %s"
+
+#: classes/Pref_Filters.php:508
+#, php-format
+msgid "Unknown action: %d"
+msgstr "தெரியாத செயல்: %d"
+
+#: classes/Pref_Filters.php:726 js/PrefFilterTree.js:180
+#, fuzzy, java-printf-format, javascript-format, php-format
+#| msgid "Clone"
+msgid "Clone of %s"
+msgstr "நகலி"
+
+#: classes/Pref_Filters.php:752 classes/Pref_Users.php:215
+#: classes/Pref_Feeds.php:934 classes/Pref_Prefs.php:840 js/Feeds.js:668
+#: js/Feeds.js:663 js/Feeds.js:718
+msgid "Search"
+msgstr "தேடல்"
+
+#: classes/Pref_Filters.php:757 classes/Pref_Users.php:221
+#: classes/Pref_Feeds.php:939 classes/Pref_Prefs.php:845
+#: classes/Pref_Prefs.php:1481 classes/Pref_Labels.php:179
+#: js/CommonFilters.js:438 js/CommonFilters.js:471 js/PrefFeedTree.js:524
+#: js/CommonDialogs.js:283 js/PrefHelpers.js:184
 msgid "Select"
 msgstr "தேர்ந்தெடு"
 
-#: classes/Pref_Prefs.php:36 classes/Pref_Feeds.php:645 js/CommonDialogs.js:517
+#: classes/Pref_Filters.php:760 classes/Pref_Users.php:224
+#: classes/Pref_Feeds.php:942 classes/Pref_Prefs.php:848
+#: classes/Pref_Prefs.php:1484 js/CommonFilters.js:442 js/CommonFilters.js:474
+#: js/PrefFeedTree.js:527 js/CommonDialogs.js:286 js/Headlines.js:664
+#: js/PrefHelpers.js:187
+msgid "All"
+msgstr "அனைத்தும்"
+
+#: classes/Pref_Filters.php:762 classes/Pref_Users.php:226
+#: classes/Pref_Feeds.php:944 classes/Pref_Prefs.php:850
+#: classes/Pref_Prefs.php:1486 js/CommonFilters.js:444 js/CommonFilters.js:476
+#: js/PrefFeedTree.js:529 js/CommonDialogs.js:288 js/Headlines.js:667
+#: js/PrefHelpers.js:189
+msgid "None"
+msgstr "எதுவுமில்லை"
+
+#: classes/Pref_Filters.php:767 classes/RPC.php:556
+msgid "Create filter"
+msgstr "வடிகட்டியை உருவாக்கவும்"
+
+#: classes/Pref_Filters.php:769 js/PrefHelpers.js:229
+msgid "Clone"
+msgstr "நகலி"
+
+#: classes/Pref_Filters.php:771
+msgid "Combine"
+msgstr "இணைக்கவும்"
+
+#: classes/Pref_Filters.php:773 classes/Pref_Users.php:235
+#: js/CommonFilters.js:516 js/CommonDialogs.js:631
+msgid "Remove"
+msgstr "அகற்று"
+
+#: classes/Pref_Filters.php:775 classes/Pref_Feeds.php:956
+#: classes/Pref_Feeds.php:971
+msgid "Reset sort order"
+msgstr "வரிசையை மீட்டமைக்கவும்"
+
+#: classes/Pref_Filters.php:777
+msgid "Toggle rule display"
+msgstr "விதி காட்சியை மாற்றவும்"
+
+#: classes/Pref_Filters.php:824
+msgid "[No caption]"
+msgstr "[தலைப்பு இல்லை]"
+
+#: classes/Pref_Filters.php:827
+#, php-format
+msgid "%s (%d rule)"
+msgid_plural "%s (%d rules)"
+msgstr[0] "%s (%d விதி)"
+msgstr[1] "%s (%d விதிகள்)"
+
+#: classes/Pref_Filters.php:831
+msgid "matches any rule"
+msgstr "எந்த விதியையும் பொருத்துகிறது"
+
+#: classes/Pref_Filters.php:832
+msgid "inverse"
+msgstr "தலைகீழ்"
+
+#: classes/Pref_Filters.php:864
+#, php-format
+msgid "(+%d action)"
+msgid_plural "(+%d actions)"
+msgstr[0] "(+%d செயல்)"
+msgstr[1] "(+%d செயல்கள்)"
+
+#: classes/Pref_Filters.php:1029 classes/Digest.php:112
+#: classes/Pref_Feeds.php:253 classes/Feeds.php:1312 classes/OPML.php:571
+#: include/controls.php:216
+msgid "Uncategorized"
+msgstr "வகைப்படுத்தப்படாதது"
+
+#: classes/RPC.php:492
+msgid "Navigation"
+msgstr "வானோடல்"
+
+#: classes/RPC.php:493
+msgid "Open next feed"
+msgstr "அடுத்த ஊட்டத்தைத் திறக்கவும்"
+
+#: classes/RPC.php:494
+msgid "Open next unread feed"
+msgstr "அடுத்த படிக்காத ஊட்டத்தைத் திறக்கவும்"
+
+#: classes/RPC.php:495
+msgid "Open previous feed"
+msgstr "முந்தைய ஊட்டத்தைத் திறக்கவும்"
+
+#: classes/RPC.php:496
+msgid "Open previous unread feed"
+msgstr "முந்தைய படிக்காத ஊட்டத்தைத் திறக்கவும்"
+
+#: classes/RPC.php:497
+msgid "Open next article (in combined mode, scroll down)"
+msgstr "அடுத்த கட்டுரையைத் திறக்கவும் (ஒருங்கிணைந்த பயன்முறையில், கீழே உருட்டவும்)"
+
+#: classes/RPC.php:498
+msgid "Open previous article (in combined mode, scroll up)"
+msgstr "முந்தைய கட்டுரையைத் திறக்கவும் (ஒருங்கிணைந்த பயன்முறையில், உருட்டவும்)"
+
+#: classes/RPC.php:499
+msgid "Scroll headlines by one page down"
+msgstr "ஒரு பக்கத்தால் தலைப்புச் செய்திகளை உருட்டவும்"
+
+#: classes/RPC.php:500
+msgid "Scroll headlines by one page up"
+msgstr "தலைப்புச் செய்திகளை ஒரு பக்கத்தால் உருட்டவும்"
+
+#: classes/RPC.php:501
+msgid "Open next article"
+msgstr "அடுத்த கட்டுரையைத் திறக்கவும்"
+
+#: classes/RPC.php:502
+msgid "Open previous article"
+msgstr "முந்தைய கட்டுரையைத் திறக்கவும்"
+
+#: classes/RPC.php:503
+msgid "Move to next article (don't expand)"
+msgstr "அடுத்த கட்டுரைக்கு செல்லுங்கள் (விரிவாக்க வேண்டாம்)"
+
+#: classes/RPC.php:504
+msgid "Move to previous article (don't expand)"
+msgstr "முந்தைய கட்டுரைக்கு செல்லுங்கள் (விரிவாக்க வேண்டாம்)"
+
+#: classes/RPC.php:505
+msgid "Show search dialog"
+msgstr "தேடல் உரையாடலைக் காட்டு"
+
+#: classes/RPC.php:506
+msgid "Cancel active search"
+msgstr "செயலில் தேடலை ரத்துசெய்"
+
+#: classes/RPC.php:507
+msgid "Article"
+msgstr "கட்டுரை"
+
+#: classes/RPC.php:508 js/Headlines.js:1447 js/Headlines.js:670
+msgid "Toggle starred"
+msgstr "டோகல் நடித்தார்"
+
+#: classes/RPC.php:509 js/Headlines.js:1459 js/Headlines.js:671
+msgid "Toggle published"
+msgstr "மாற்று வெளியீடு"
+
+#: classes/RPC.php:510 js/Headlines.js:1434 js/Headlines.js:669
+msgid "Toggle unread"
+msgstr "படிக்காமல் மாறவும்"
+
+#: classes/RPC.php:511
+msgid "Edit tags"
+msgstr "குறிச்சொற்களைத் திருத்து"
+
+#: classes/RPC.php:512
+msgid "Open in new window"
+msgstr "புதிய சாளரத்தில் திறக்கவும்"
+
+#: classes/RPC.php:513 js/Headlines.js:1480
+msgid "Mark below as read"
+msgstr "படிக்க கீழே குறிக்கவும்"
+
+#: classes/RPC.php:514 js/Headlines.js:1473
+msgid "Mark above as read"
+msgstr "படிக்க மேலே குறிக்கவும்"
+
+#: classes/RPC.php:515
+msgid "Scroll down"
+msgstr "கீழே உருட்டவும்"
+
+#: classes/RPC.php:516
+msgid "Scroll up"
+msgstr "மேலே உருட்டவும்"
+
+#: classes/RPC.php:517
+msgid "Scroll down page"
+msgstr "பக்கத்தை உருட்டவும்"
+
+#: classes/RPC.php:518
+msgid "Scroll up page"
+msgstr "பக்கத்தை உருட்டவும்"
+
+#: classes/RPC.php:519
+msgid "Select article under cursor"
+msgstr "கர்சரின் கீழ் கட்டுரையைத் தேர்ந்தெடுக்கவும்"
+
+#: classes/RPC.php:520
+msgid "Email article"
+msgstr "மின்னஞ்சல் கட்டுரை"
+
+#: classes/RPC.php:521
+msgid "Close/collapse article"
+msgstr "கட்டுரையை மூடு/சரிவு"
+
+#: classes/RPC.php:522
+msgid "Toggle article expansion (combined mode)"
+msgstr "கட்டுரை விரிவாக்கத்தை மாற்றவும் (ஒருங்கிணைந்த பயன்முறை)"
+
+#: classes/RPC.php:524
+msgid "Toggle full article text via Readability"
+msgstr "முழு கட்டுரை உரையை வாசிப்பு வழியாக மாற்றவும்"
+
+#: classes/RPC.php:525
+msgid "Article selection"
+msgstr "கட்டுரை தேர்வு"
+
+#: classes/RPC.php:526
+msgid "Select all articles"
+msgstr "எல்லா கட்டுரைகளையும் தேர்ந்தெடுக்கவும்"
+
+#: classes/RPC.php:527
+msgid "Select unread"
+msgstr "படிக்கத் தேர்ந்தெடுக்கவும்"
+
+#: classes/RPC.php:528
+msgid "Select starred"
+msgstr "நட்சத்திரமிட்டதைத் தேர்ந்தெடுக்கவும்"
+
+#: classes/RPC.php:529
+msgid "Select published"
+msgstr "வெளியிடப்பட்டதைத் தேர்ந்தெடுக்கவும்"
+
+#: classes/RPC.php:530
+msgid "Invert selection"
+msgstr "தலைகீழ் தேர்வு"
+
+#: classes/RPC.php:531
+msgid "Deselect everything"
+msgstr "எல்லாவற்றையும் தேர்வு செய்யுங்கள்"
+
+#: classes/RPC.php:532
+msgid "Feed"
+msgstr "தீவனம்"
+
+#: classes/RPC.php:533
+msgid "Refresh current feed"
+msgstr "தற்போதைய ஊட்டத்தைப் புதுப்பிக்கவும்"
+
+#: classes/RPC.php:534
+msgid "Un/hide read feeds"
+msgstr "அன்/மறை வாசிப்பு ஊட்டங்கள்"
+
+#: classes/RPC.php:535 classes/Pref_Feeds.php:952 js/CommonDialogs.js:34
+msgid "Subscribe to feed"
+msgstr "ஊட்டத்திற்கு குழுசேரவும்"
+
+#: classes/RPC.php:536 js/PrefFeedTree.js:114 js/CommonDialogs.js:386
+#: js/Headlines.js:1580 js/Headlines.js:1645 js/FeedTree.js:99
+msgid "Edit feed"
+msgstr "ஊட்டத்தைத் திருத்து"
+
+#: classes/RPC.php:538
+msgid "Reverse headlines"
+msgstr "தலைகீழ் தலைப்புச் செய்திகள்"
+
+#: classes/RPC.php:539
+msgid "Toggle headline grouping"
+msgstr "தலைப்பு குழுவை மாற்றவும்"
+
+#: classes/RPC.php:540
+msgid "Toggle grid view"
+msgstr "கட்டம் பார்வையை மாற்றவும்"
+
+#: classes/RPC.php:541
+msgid "Debug feed update"
+msgstr "பிழைத்திருத்த ஊட்ட புதுப்பிப்பு"
+
+#: classes/RPC.php:542
+msgid "Debug viewfeed()"
+msgstr "பிழைத்திருத்த பார்வை ()"
+
+#: classes/RPC.php:543 js/FeedTree.js:164
+msgid "Mark all feeds as read"
+msgstr "எல்லா ஊட்டங்களையும் படிக்கும்படி குறிக்கவும்"
+
+#: classes/RPC.php:544
+msgid "Un/collapse current category"
+msgstr "ஐ.நா/சரிவு தற்போதைய வகை"
+
+#: classes/RPC.php:545
+msgid "Toggle auto expand in combined mode"
+msgstr "ஒருங்கிணைந்த பயன்முறையில் ஆட்டோ விரிவாக்கவும்"
+
+#: classes/RPC.php:547
+msgid "Go to"
+msgstr "செல்"
+
+#: classes/RPC.php:548 classes/Feeds.php:1175
+msgid "All articles"
+msgstr "அனைத்து கட்டுரைகளும்"
+
+#: classes/RPC.php:549
+msgid "Fresh"
+msgstr "புதியது"
+
+#: classes/RPC.php:552 classes/Feeds.php:1179
+msgid "Recently read"
+msgstr "அண்மைக் காலத்தில் படியுங்கள்"
+
+#: classes/RPC.php:554
+msgid "Other"
+msgstr "மற்றொன்று"
+
+#: classes/RPC.php:555
+msgid "Create label"
+msgstr "லேபிளை உருவாக்கவும்"
+
+#: classes/RPC.php:557
+msgid "Un/collapse sidebar"
+msgstr "A/சரிவு பக்கப்பட்டி"
+
+#: classes/RPC.php:558
+msgid "Show help dialog"
+msgstr "உதவி உரையாடலைக் காட்டு"
+
+#: classes/RPC.php:695
+msgid "Shift"
+msgstr "உயர்த்து"
+
+#: classes/RPC.php:696
+msgid "Ctrl"
+msgstr "கட்டுப்பாடு"
+
+#: classes/RPC.php:719 plugins/share/init.php:284
+#: plugins/af_psql_trgm/init.php:116 js/PrefHelpers.js:498
+#: js/PrefFeedTree.js:558 js/Feeds.js:298 js/App.js:661 js/CommonFilters.js:95
+#: js/CommonDialogs.js:22 js/CommonDialogs.js:323 js/CommonDialogs.js:700
+#: js/PrefHelpers.js:66 js/PrefHelpers.js:821
+msgid "Close this window"
+msgstr "இந்த சாளரத்தை மூடு"
+
+#: classes/Pref_Users.php:54 classes/Pref_Users.php:255
+msgid "Registered"
+msgstr "பதிவுசெய்யப்பட்டது"
+
+#: classes/Pref_Users.php:59
+msgid "Last logged in"
+msgstr "கடைசியாக உள்நுழைந்தது"
+
+#: classes/Pref_Users.php:64 classes/Pref_Users.php:254
+msgid "Subscribed feeds"
+msgstr "சந்தா ஊட்டங்கள்"
+
+#: classes/Pref_Users.php:69
+msgid "Stored articles"
+msgstr "சேமிக்கப்பட்ட கட்டுரைகள்"
+
+#: classes/Pref_Users.php:98 classes/UserHelper.php:265
+msgid "User not found"
+msgstr "பயனர் கண்டுபிடிக்கப்படவில்லை"
+
+#: classes/Pref_Users.php:168
+#, php-format
+msgid "Added user %s with password %s"
+msgstr "கடவுச்சொல் %s உடன் பயனர் %s ஐச் சேர்த்தது"
+
+#: classes/Pref_Users.php:171
+#, php-format
+msgid "Could not create user %s"
+msgstr "பயனர் %s உருவாக்க முடியவில்லை"
+
+#: classes/Pref_Users.php:174
+#, php-format
+msgid "User %s already exists."
+msgstr "பயனர் %s ஏற்கனவே உள்ளன."
+
+#: classes/Pref_Users.php:231
+msgid "Create user"
+msgstr "பயனரை உருவாக்கு"
+
+#: classes/Pref_Users.php:252 js/PrefFeedTree.js:457 js/CommonDialogs.js:90
+msgid "Login"
+msgstr "புகுபதிவு"
+
+#: classes/Pref_Users.php:253
+msgid "Access level"
+msgstr "அணுகல் நிலை"
+
+#: classes/Pref_Users.php:256
+msgid "Last login"
+msgstr "கடைசி உள்நுழைவு"
+
+#: classes/Pref_Users.php:271
+msgid "Click to edit"
+msgstr "திருத்த சொடுக்கு செய்க"
+
+#: classes/Pref_Feeds.php:68 classes/Pref_Feeds.php:236
+#: classes/Pref_Feeds.php:296 classes/Pref_Feeds.php:302
+#: classes/Pref_Feeds.php:339
+#, php-format
+msgid "(%d feed)"
+msgid_plural "(%d feeds)"
+msgstr[0] "(%d ஊட்ட)"
+msgstr[1] "(%d ஊட்டங்கள்)"
+
+#: classes/Pref_Feeds.php:100 classes/Pref_Feeds.php:287
+#: classes/Pref_Feeds.php:330
+#, php-format
+msgid "(%d article / %s)"
+msgid_plural "(%d articles / %s)"
+msgstr[0] "(%d கட்டுரைகள்)"
+msgstr[1] "( %d கட்டுரைகள் / %s)"
+
+#: classes/Pref_Feeds.php:569
+#, php-format
+msgid "(%d day)"
+msgid_plural "(%d days)"
+msgstr[0] "(%d நாள்)"
+msgstr[1] "(%d நாட்கள்)"
+
+#: classes/Pref_Feeds.php:575
+#, php-format
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] "%d நாள்"
+msgstr[1] "%d நாட்கள்"
+
+#: classes/Pref_Feeds.php:606
+msgid "Check to enable field"
+msgstr "புலத்தை இயக்க சரிபார்க்கவும்"
+
+#: classes/Pref_Feeds.php:622
+#, php-format
+msgid "(%d days)"
+msgstr "(%d நாட்கள்)"
+
+#: classes/Pref_Feeds.php:627 js/CommonDialogs.js:511
+msgid "Include in e-mail digest"
+msgstr "மின்னஞ்சல் டைசெச்டில் சேர்க்கவும்"
+
+#: classes/Pref_Feeds.php:628 js/CommonDialogs.js:512
+msgid "Always display image attachments"
+msgstr "பட இணைப்புகளை எப்போதும் காண்பி"
+
+#: classes/Pref_Feeds.php:629 classes/Pref_Prefs.php:120
+#: js/CommonDialogs.js:513
+msgid "Do not embed media"
+msgstr "மீடியாவை உட்பொதிக்க வேண்டாம்"
+
+#: classes/Pref_Feeds.php:630 js/CommonDialogs.js:514
+msgid "Cache media"
+msgstr "நடுத்தர கேச்"
+
+#: classes/Pref_Feeds.php:631 js/CommonDialogs.js:515
+msgid "Mark updated articles as unread"
+msgstr "புதுப்பிக்கப்பட்ட கட்டுரைகளை படிக்காததாகக் குறிக்கவும்"
+
+#: classes/Pref_Feeds.php:642 classes/Pref_Prefs.php:36 js/CommonDialogs.js:522
 msgid "General"
 msgstr "பொது"
+
+#: classes/Pref_Feeds.php:646 js/PrefFeedTree.js:447 js/CommonDialogs.js:61
+#: js/CommonDialogs.js:551
+msgid "Place in category:"
+msgstr "பிரிவில் இடம்:"
+
+#: classes/Pref_Feeds.php:653 js/Feeds.js:650 js/CommonDialogs.js:567
+msgid "Language:"
+msgstr "மொழி:"
+
+#: classes/Pref_Feeds.php:663 js/CommonDialogs.js:67 js/CommonDialogs.js:577
+msgid "Update interval:"
+msgstr "புதுப்பிப்பு இடைவெளி:"
+
+#: classes/Pref_Feeds.php:670 js/CommonDialogs.js:583
+msgid "Article purging:"
+msgstr "கட்டுரை சுத்திகரிப்பு:"
+
+#: classes/Pref_Feeds.php:677 plugins/auth_internal/init.php:85
+#: js/PrefFeedTree.js:455 js/CommonDialogs.js:593
+msgid "Authentication"
+msgstr "ஏற்பு"
+
+#: classes/Pref_Feeds.php:686 plugins/bookmarklets/init.php:313
+#: include/login_form.php:132 js/CommonDialogs.js:602
+msgid "Password:"
+msgstr "கடவுச்சொல்:"
+
+#: classes/Pref_Feeds.php:693 js/CommonDialogs.js:609
+msgid "Options"
+msgstr "விருப்பங்கள்"
+
+#: classes/Pref_Feeds.php:709 classes/Pref_Prefs.php:314
+#: plugins/nsfw/init.php:105 plugins/af_psql_trgm/init.php:193
+#: plugins/note/init.php:49 js/CommonFilters.js:230 js/CommonFilters.js:314
+#: js/CommonFilters.js:518 js/CommonDialogs.js:639 js/Article.js:370
+#: js/PrefUsers.js:119 js/PrefLabelTree.js:170
+msgid "Save"
+msgstr "சேமி"
+
+#: classes/Pref_Feeds.php:710 plugins/bookmarklets/init.php:286
+#: plugins/note/init.php:50 js/CommonFilters.js:231 js/CommonFilters.js:315
+#: js/CommonFilters.js:519 js/CommonFilters.js:523 js/CommonDialogs.js:640
+#: js/PrefFeedTree.js:475 js/Feeds.js:664 js/Feeds.js:719 js/Article.js:373
+#: js/CommonDialogs.js:116 js/PrefHelpers.js:232 js/PrefHelpers.js:306
+#: js/PrefUsers.js:122 js/PrefLabelTree.js:173
+msgid "Cancel"
+msgstr "ரத்துசெய்"
+
+#: classes/Pref_Feeds.php:909
+msgid "Feeds with errors"
+msgstr "பிழைகளுடன் ஊட்டங்கள்"
+
+#: classes/Pref_Feeds.php:915
+msgid "Inactive feeds"
+msgstr "செயலற்ற ஊட்டங்கள்"
+
+#: classes/Pref_Feeds.php:954
+msgid "Edit selected feeds"
+msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களைத் திருத்தவும்"
+
+#: classes/Pref_Feeds.php:958 js/PrefFeedTree.js:417
+msgid "Batch subscribe"
+msgstr "தொகுதி குழுசேர்"
+
+#: classes/Pref_Feeds.php:966
+msgid "Categories"
+msgstr "வகைகள்"
+
+#: classes/Pref_Feeds.php:969
+msgid "Add category"
+msgstr "வகையைச் சேர்க்கவும்"
+
+#: classes/Pref_Feeds.php:973 classes/Pref_Prefs.php:411 js/PrefHelpers.js:227
+msgid "Remove selected"
+msgstr "தேர்ந்தெடுக்கப்பட்டதை அகற்று"
+
+#: classes/Pref_Feeds.php:1008
+msgid "Choose file..."
+msgstr "கோப்பைத் தேர்வுசெய்க ..."
+
+#: classes/Pref_Feeds.php:1016
+msgid "Import OPML"
+msgstr "OPML ஐ இறக்குமதி செய்க"
+
+#: classes/Pref_Feeds.php:1027
+msgid "Export OPML"
+msgstr "OPML ஏற்றுமதி"
+
+#: classes/Pref_Feeds.php:1032
+msgid "Include tt-rss settings"
+msgstr "TT-RSS அமைப்புகளைச் சேர்க்கவும்"
+
+#: classes/Pref_Feeds.php:1048
+msgid "Display URL"
+msgstr "முகவரி ஐக் காண்பி"
+
+#: classes/Pref_Feeds.php:1053
+msgid "Clear all generated URLs"
+msgstr "உருவாக்கப்பட்ட அனைத்து முகவரி களையும் அழிக்கவும்"
+
+#: classes/Pref_Feeds.php:1065
+msgid "My feeds"
+msgstr "எனது ஊட்டங்கள்"
+
+#: classes/Pref_Feeds.php:1070
+msgid "OPML"
+msgstr "OPML"
+
+#: classes/Pref_Feeds.php:1075
+msgid "Sharing"
+msgstr "பகிர்வு"
+
+#: classes/Pref_Feeds.php:1088 classes/Pref_Prefs.php:942
+#: js/CommonDialogs.js:633
+msgid "Plugins"
+msgstr "செருகுநிரல்கள்"
+
+#: classes/Feeds.php:93 classes/Feeds.php:483
+msgid "Feed not found."
+msgstr "தீவனம் கிடைக்கவில்லை."
+
+#: classes/Feeds.php:223 classes/Feeds.php:1177
+msgid "Archived articles"
+msgstr "காப்பகப்படுத்தப்பட்ட கட்டுரைகள்"
+
+#: classes/Feeds.php:313
+msgid "Collapse article"
+msgstr "கட்டுரை சரிவு"
+
+#: classes/Feeds.php:332
+#, php-format
+msgid "Imported at %s"
+msgstr "%s இல் இறக்குமதி செய்யப்பட்டது"
+
+#: classes/Feeds.php:389
+msgid "No unread articles found to display."
+msgstr "காட்சிக்கு படிக்காத கட்டுரைகள் எதுவும் கிடைக்கவில்லை."
+
+#: classes/Feeds.php:390
+msgid "No updated articles found to display."
+msgstr "காண்பிக்க புதுப்பிக்கப்பட்ட கட்டுரைகள் எதுவும் கிடைக்கவில்லை."
+
+#: classes/Feeds.php:391
+msgid "No starred articles found to display."
+msgstr "காண்பிக்க நட்சத்திரமிட்ட கட்டுரைகள் எதுவும் கிடைக்கவில்லை."
+
+#: classes/Feeds.php:393
+msgid ""
+"No articles found to display. You can assign articles to labels manually "
+"from article header context menu (applies to all selected articles) or use a "
+"filter."
+msgstr ""
+"காண்பிக்க கட்டுரைகள் எதுவும் கிடைக்கவில்லை. கட்டுரை தலைப்பு சூழல் மெனுவிலிருந்து "
+"கைமுறையாக லேபிள்களுக்கு கட்டுரைகளை ஒதுக்கலாம் (தேர்ந்தெடுக்கப்பட்ட அனைத்து "
+"கட்டுரைகளுக்கும் பொருந்தும்) அல்லது வடிகட்டியைப் பயன்படுத்தலாம்."
+
+#: classes/Feeds.php:394
+msgid "No articles found to display."
+msgstr "காண்பிக்க கட்டுரைகள் எதுவும் கிடைக்கவில்லை."
+
+#: classes/Feeds.php:410
+#, php-format
+msgid "Feeds last updated at %s"
+msgstr "கடைசியாக %s இல் புதுப்பிக்கப்பட்டது"
+
+#: classes/Feeds.php:421
+msgid "Some feeds have update errors (click for details)"
+msgstr "சில ஊட்டங்கள் புதுப்பிப்பு பிழைகள் உள்ளன (விவரங்களுக்கு சொடுக்கு செய்க)"
+
+#: classes/Feeds.php:1169
+msgid "Starred articles"
+msgstr "நட்சத்திர கட்டுரைகள்"
+
+#: classes/Feeds.php:1171
+msgid "Published articles"
+msgstr "வெளியிடப்பட்ட கட்டுரைகள்"
+
+#: classes/Feeds.php:1173
+msgid "Fresh articles"
+msgstr "புதிய கட்டுரைகள்"
+
+#: classes/Feeds.php:1314
+msgid "Special"
+msgstr "சிறப்பு"
+
+#: classes/Feeds.php:1408
+#, php-format
+msgid "Incorrect search syntax: %s."
+msgstr "தவறான தேடல் தொடரியல்: %s."
+
+#: classes/Feeds.php:1587
+#, php-format
+msgid "Search results: %s"
+msgstr "தேடல் முடிவுகள்: %s"
+
+#: classes/OPML.php:31 classes/OPML.php:35
+msgid "OPML Utility"
+msgstr "OPML பயன்பாடு"
+
+#: classes/OPML.php:39
+msgid "Importing OPML..."
+msgstr "OPML ஐ இறக்குமதி செய்கிறது ..."
+
+#: classes/OPML.php:44
+msgid "Return to preferences"
+msgstr "விருப்பங்களுக்குத் திரும்பு"
+
+#: classes/OPML.php:324
+#, php-format
+msgid "Adding feed: %s"
+msgstr "ஊட்டத்தைச் சேர்ப்பது: %s"
+
+#: classes/OPML.php:344
+#, php-format
+msgid "Duplicate feed: %s"
+msgstr "நகல் ஊட்டம்: %s"
+
+#: classes/OPML.php:358
+#, php-format
+msgid "Adding label %s"
+msgstr "சிட்டை %s ஐ சேர்க்கிறது"
+
+#: classes/OPML.php:361
+#, php-format
+msgid "Duplicate label: %s"
+msgstr "நகல் லேபிள்: %s"
+
+#: classes/OPML.php:376
+#, php-format
+msgid "Setting preference key %s to %s"
+msgstr "முன்னுரிமை விசை %s க்கு %s அமைத்தல்"
+
+#: classes/OPML.php:412
+#, php-format
+msgid "Adding filter %s..."
+msgstr "வடிகட்டி %s ஐ சேர்க்கிறது ..."
+
+#: classes/OPML.php:571
+#, php-format
+msgid "Processing category: %s"
+msgstr "செயலாக்க வகை: %s"
+
+#: classes/OPML.php:613
+#, php-format
+msgid "Upload failed with error code %d"
+msgstr "பிழைக் குறியீடு %d உடன் பதிவேற்றம் தோல்வியடைந்தது"
+
+#: classes/OPML.php:625
+msgid "Unable to move uploaded file."
+msgstr "பதிவேற்றிய கோப்பை நகர்த்த முடியவில்லை."
+
+#: classes/OPML.php:629
+msgid "Error: please upload OPML file."
+msgstr "பிழை: தயவுசெய்து OPML கோப்பைப் பதிவேற்றவும்."
+
+#: classes/OPML.php:637
+#, php-format
+msgid "Error: file is not readable: %s"
+msgstr "பிழை: கோப்பு படிக்க முடியாது: %s"
+
+#: classes/OPML.php:655
+msgid "Error while parsing document."
+msgstr "ஆவணத்தை பாகுபடுத்தும் போது பிழை."
+
+#: classes/TimeHelper.php:7
+msgid "Never"
+msgstr "ஒருபோதும்"
+
+#: classes/TimeHelper.php:13
+#, php-format
+msgid "%d min"
+msgstr "%d மணித்துளி"
+
+#: classes/Mailer.php:51
+#, php-format
+msgid "Unknown error while sending mail. Hooks tried: %d."
+msgstr "அஞ்சலை அனுப்பும்போது தெரியாத பிழை. கொக்கிகள் முயற்சித்தன: %d."
 
 #: classes/Pref_Prefs.php:57
 msgid "Articles"
@@ -469,11 +1310,6 @@ msgstr "தலைப்புச் செய்திகளில் உள்�
 msgid "SSL client certificate"
 msgstr "எச்எச்எல் கிளையன்ட் சான்றிதழ்"
 
-#: classes/Pref_Prefs.php:120 classes/Pref_Feeds.php:632
-#: js/CommonDialogs.js:508
-msgid "Do not embed media"
-msgstr "மீடியாவை உட்பொதிக்க வேண்டாம்"
-
 #: classes/Pref_Prefs.php:121
 msgid "Time zone"
 msgstr "நேர மண்டலம்"
@@ -534,47 +1370,39 @@ msgstr "தேவையான மதிப்பெண்"
 msgid "Include articles with this or above score"
 msgstr "இந்த அல்லது அதற்கு மேற்பட்ட மதிப்பெண்ணுடன் கட்டுரைகளைச் சேர்க்கவும்"
 
-#: classes/Pref_Prefs.php:233
+#: classes/Pref_Prefs.php:229
 msgid "The configuration was saved."
 msgstr "உள்ளமைவு சேமிக்கப்பட்டது."
 
-#: classes/Pref_Prefs.php:275
+#: classes/Pref_Prefs.php:271
 msgid "Your personal data has been saved."
 msgstr "உங்கள் தனிப்பட்ட தரவு சேமிக்கப்பட்டுள்ளது."
 
-#: classes/Pref_Prefs.php:305
+#: classes/Pref_Prefs.php:301
 msgid "Full name:"
 msgstr "முழு பெயர்:"
 
-#: classes/Pref_Prefs.php:310 js/PrefUsers.js:98
+#: classes/Pref_Prefs.php:306 js/PrefUsers.js:98
 msgid "E-mail:"
 msgstr "மின்னஞ்சல்:"
 
-#: classes/Pref_Prefs.php:318 classes/Pref_Feeds.php:714
-#: plugins/nsfw/init.php:105 plugins/note/init.php:49
-#: plugins/af_psql_trgm/init.php:218 js/CommonFilters.js:237
-#: js/CommonFilters.js:321 js/CommonFilters.js:525 js/CommonDialogs.js:634
-#: js/Article.js:370 js/PrefUsers.js:119 js/PrefLabelTree.js:170
-msgid "Save"
-msgstr "சேமி"
-
-#: classes/Pref_Prefs.php:367
+#: classes/Pref_Prefs.php:363
 msgid "Old password:"
 msgstr "பழைய கடவுச்சொல்:"
 
-#: classes/Pref_Prefs.php:372 js/PrefUsers.js:84
+#: classes/Pref_Prefs.php:368 js/PrefUsers.js:84
 msgid "New password:"
 msgstr "புதிய கடவுச்சொல்:"
 
-#: classes/Pref_Prefs.php:377
+#: classes/Pref_Prefs.php:373
 msgid "Confirm password:"
 msgstr "கடவுச்சொல்லை உறுதிப்படுத்தவும்:"
 
-#: classes/Pref_Prefs.php:385 js/PrefUsers.js:86
+#: classes/Pref_Prefs.php:381 js/PrefUsers.js:86
 msgid "Change password"
 msgstr "கடவுச்சொல்லை மாற்றவும்"
 
-#: classes/Pref_Prefs.php:392
+#: classes/Pref_Prefs.php:388
 #, php-format
 msgid ""
 "Authentication module used for this session (<b>%s</b>) does not provide an "
@@ -583,202 +1411,166 @@ msgstr ""
 "இந்த அமர்வுக்கு பயன்படுத்தப்படும் அங்கீகார தொகுதி (<b>%s </b>) கடவுச்சொற்களை அமைக்கும் "
 "திறனை வழங்காது."
 
-#: classes/Pref_Prefs.php:409
+#: classes/Pref_Prefs.php:405
 msgid "Generate password"
 msgstr "கடவுச்சொல்லை உருவாக்குங்கள்"
 
-#: classes/Pref_Prefs.php:415 classes/Pref_Feeds.php:973 js/PrefHelpers.js:227
-msgid "Remove selected"
-msgstr "தேர்ந்தெடுக்கப்பட்டதை அகற்று"
-
-#: classes/Pref_Prefs.php:451 classes/Pref_Prefs.php:503
+#: classes/Pref_Prefs.php:447 classes/Pref_Prefs.php:499
 msgid "Your password:"
 msgstr "உங்கள் கடவுச்சொல்:"
 
-#: classes/Pref_Prefs.php:459
+#: classes/Pref_Prefs.php:455
 msgid "Disable OTP"
 msgstr "OTP ஐ முடக்கு"
 
-#: classes/Pref_Prefs.php:481
+#: classes/Pref_Prefs.php:477
 msgid "OTP secret:"
 msgstr "OTP ரகசியம்:"
 
-#: classes/Pref_Prefs.php:508
+#: classes/Pref_Prefs.php:504
 msgid "Verification code:"
 msgstr "சரிபார்ப்பு குறியீடு:"
 
-#: classes/Pref_Prefs.php:516
+#: classes/Pref_Prefs.php:512
 msgid "Enable OTP"
 msgstr "OTP ஐ இயக்கவும்"
 
-#: classes/Pref_Prefs.php:530
+#: classes/Pref_Prefs.php:526
 msgid "Personal data"
 msgstr "தனிப்பட்ட செய்தி"
 
-#: classes/Pref_Prefs.php:533 js/PrefFeedTree.js:458 js/CommonDialogs.js:89
+#: classes/Pref_Prefs.php:529 js/PrefFeedTree.js:458 js/CommonDialogs.js:94
 msgid "Password"
 msgstr "கடவுச்சொல்"
 
-#: classes/Pref_Prefs.php:536
+#: classes/Pref_Prefs.php:532
 msgid "App passwords"
 msgstr "பயன்பாட்டு கடவுச்சொற்கள்"
 
-#: classes/Pref_Prefs.php:543
+#: classes/Pref_Prefs.php:539
 msgid "Authenticator (OTP)"
 msgstr "நம்பகத்தன்மை (OTP)"
 
-#: classes/Pref_Prefs.php:554
+#: classes/Pref_Prefs.php:550
 msgid "Some preferences are only available in default profile."
 msgstr "சில விருப்பத்தேர்வுகள் இயல்புநிலை சுயவிவரத்தில் மட்டுமே கிடைக்கின்றன."
 
-#: classes/Pref_Prefs.php:647
+#: classes/Pref_Prefs.php:639
 msgid "default"
 msgstr "இயல்புநிலை"
 
-#: classes/Pref_Prefs.php:655
+#: classes/Pref_Prefs.php:647
 msgid "Customize"
 msgstr "தனிப்பயனாக்கு"
 
-#: classes/Pref_Prefs.php:657
+#: classes/Pref_Prefs.php:649
 msgid "More themes..."
 msgstr "மேலும் கருப்பொருள்கள் ..."
 
-#: classes/Pref_Prefs.php:688
+#: classes/Pref_Prefs.php:680
 msgid "Preview"
 msgstr "முன்னோட்டம்"
 
-#: classes/Pref_Prefs.php:714
+#: classes/Pref_Prefs.php:706
 msgid "Register"
 msgstr "பதிவு செய்யுங்கள்"
 
-#: classes/Pref_Prefs.php:718 classes/Pref_System.php:95
+#: classes/Pref_Prefs.php:710 classes/Pref_System.php:127
 msgid "Clear"
 msgstr "தெளிவான"
 
-#: classes/Pref_Prefs.php:722 classes/Pref_Prefs.php:889
-#: plugins/bookmarklets/init.php:367 js/CommonDialogs.js:689
+#: classes/Pref_Prefs.php:714 classes/Pref_Prefs.php:881
+#: plugins/bookmarklets/init.php:367 js/CommonDialogs.js:694
 msgid "More info..."
 msgstr "மேலும் செய்தி ..."
 
-#: classes/Pref_Prefs.php:730
+#: classes/Pref_Prefs.php:722
 #, php-format
 msgid "Current server time: %s"
 msgstr "தற்போதைய சேவையக நேரம்: %s"
 
-#: classes/Pref_Prefs.php:778
+#: classes/Pref_Prefs.php:770
 msgid "Save configuration"
 msgstr "உள்ளமைவைச் சேமிக்கவும்"
 
-#: classes/Pref_Prefs.php:781
+#: classes/Pref_Prefs.php:773
 msgid "Save and exit"
 msgstr "சேமித்து வெளியேறவும்"
 
-#: classes/Pref_Prefs.php:788 js/PrefHelpers.js:127
+#: classes/Pref_Prefs.php:780 js/PrefHelpers.js:127
 msgid "Manage profiles"
 msgstr "சுயவிவரங்களை நிர்வகிக்கவும்"
 
-#: classes/Pref_Prefs.php:793
+#: classes/Pref_Prefs.php:785
 msgid "Reset to defaults"
 msgstr "இயல்புநிலைகளுக்கு மீட்டமைக்கவும்"
 
-#: classes/Pref_Prefs.php:848 classes/Pref_Feeds.php:934
-#: classes/Pref_Users.php:217 classes/Pref_Filters.php:636 js/Feeds.js:660
-#: js/Feeds.js:655 js/Feeds.js:710
-msgid "Search"
-msgstr "தேடல்"
-
-#: classes/Pref_Prefs.php:856 classes/Pref_Prefs.php:1492
-#: classes/Pref_Feeds.php:942 classes/Pref_Users.php:226
-#: classes/Pref_Filters.php:644 js/CommonFilters.js:449 js/CommonFilters.js:481
-#: js/Headlines.js:664 js/PrefHelpers.js:187 js/PrefFeedTree.js:527
-#: js/CommonDialogs.js:281
-msgid "All"
-msgstr "அனைத்தும்"
-
-#: classes/Pref_Prefs.php:858 classes/Pref_Prefs.php:1494
-#: classes/Pref_Feeds.php:944 classes/Pref_Users.php:228
-#: classes/Pref_Filters.php:646 js/CommonFilters.js:451 js/CommonFilters.js:483
-#: js/Headlines.js:667 js/PrefHelpers.js:189 js/PrefFeedTree.js:529
-#: js/CommonDialogs.js:283
-msgid "None"
-msgstr "எதுவுமில்லை"
-
-#: classes/Pref_Prefs.php:887
+#: classes/Pref_Prefs.php:879
 #, php-format
 msgid ""
 "The following plugins use per-feed content hooks. This may cause excessive "
 "data usage and origin server load resulting in a ban of your instance: "
 "<b>%s</b>"
 msgstr ""
-"பின்வரும் செருகுநிரல்கள் ஒரு ஃபீட் உள்ளடக்க கொக்கிகளைப் பயன்படுத்துகின்றன. இது அதிகப்படியா"
-"ன தரவு பயன்பாடு மற்றும் மூல சேவையக சுமை ஆகியவற்றை ஏற்படுத்தக்கூடும், இதன் விளைவாக உங்கள்"
-" உதாரணத்தின் தடை: <b>%s </b>"
+"பின்வரும் செருகுநிரல்கள் ஒரு ஃபீட் உள்ளடக்க கொக்கிகளைப் பயன்படுத்துகின்றன. இது "
+"அதிகப்படியான தரவு பயன்பாடு மற்றும் மூல சேவையக சுமை ஆகியவற்றை ஏற்படுத்தக்கூடும், இதன் "
+"விளைவாக உங்கள் உதாரணத்தின் தடை: <b>%s </b>"
 
-#: classes/Pref_Prefs.php:903 js/CommonFilters.js:235
+#: classes/Pref_Prefs.php:895 js/CommonFilters.js:228
 msgid "More info"
 msgstr "மேலும் செய்தி"
 
-#: classes/Pref_Prefs.php:906
+#: classes/Pref_Prefs.php:898
 msgid "Enable selected"
 msgstr "தேர்ந்தெடுக்கப்பட்டதை இயக்கவும்"
 
-#: classes/Pref_Prefs.php:909
+#: classes/Pref_Prefs.php:901
 msgid "Reload"
 msgstr "ஏற்றவும்"
 
-#: classes/Pref_Prefs.php:916
+#: classes/Pref_Prefs.php:908
 msgid "Check for updates"
 msgstr "புதுப்பிப்புகளை சரிபார்க்கவும்"
 
-#: classes/Pref_Prefs.php:923
+#: classes/Pref_Prefs.php:915
 msgid "Install plugin"
 msgstr "சொருகி நிறுவவும்"
 
-#: classes/Pref_Prefs.php:936
+#: classes/Pref_Prefs.php:928
 msgid "Personal data / Authentication"
 msgstr "தனிப்பட்ட தரவு / ஏற்பு"
 
-#: classes/Pref_Prefs.php:950 classes/Pref_Feeds.php:1088
-#: js/CommonDialogs.js:628
-msgid "Plugins"
-msgstr "செருகுநிரல்கள்"
-
-#: classes/Pref_Prefs.php:984
+#: classes/Pref_Prefs.php:976
 msgid "Incorrect one time password"
 msgstr "ஒரு முறை கடவுச்சொல் தவறானது"
 
-#: classes/Pref_Prefs.php:987 classes/Pref_Prefs.php:1026
+#: classes/Pref_Prefs.php:979 classes/Pref_Prefs.php:1018
 msgid "Incorrect password"
 msgstr "தவறான கடவுச்சொல்"
 
-#: classes/Pref_Prefs.php:1041
+#: classes/Pref_Prefs.php:1033
 #, php-format
 msgid "v%.2f, by %s"
 msgstr "v %.2f, %s ஆல்"
 
-#: classes/Pref_Prefs.php:1055
+#: classes/Pref_Prefs.php:1047
 #, php-format
 msgid "v%s, by %s"
 msgstr "v %s, %s ஆல்"
 
-#: classes/Pref_Prefs.php:1456 classes/Handler_Public.php:291
-#: include/login_form.php:151
-msgid "Default profile"
-msgstr "இயல்புநிலை சுயவிவரம்"
-
-#: classes/Pref_Prefs.php:1503
+#: classes/Pref_Prefs.php:1495
 msgid "Description"
 msgstr "விவரம்"
 
-#: classes/Pref_Prefs.php:1504
+#: classes/Pref_Prefs.php:1496
 msgid "Created"
 msgstr "உருவாக்கப்பட்டது"
 
-#: classes/Pref_Prefs.php:1505
+#: classes/Pref_Prefs.php:1497
 msgid "Last used"
 msgstr "கடைசியாக பயன்படுத்தப்பட்டது"
 
-#: classes/Pref_Prefs.php:1550
+#: classes/Pref_Prefs.php:1542
 #, php-format
 msgid ""
 "Generated password <strong>%s</strong> for %s. Please remember it for future "
@@ -787,905 +1579,155 @@ msgstr ""
 "உருவாக்கப்பட்ட கடவுச்சொல் <strong> %s </strong> %s க்கு. எதிர்கால குறிப்புக்கு "
 "தயவுசெய்து நினைவில் கொள்ளுங்கள்."
 
-#: classes/Mailer.php:51
+#: classes/UserHelper.php:263
 #, php-format
-msgid "Unknown error while sending mail. Hooks tried: %d."
-msgstr "அஞ்சலை அனுப்பும்போது தெரியாத பிழை. கொக்கிகள் முயற்சித்தன: %d."
+msgid "Changed password of user %s to %s"
+msgstr "பயனர் %s இன் கடவுச்சொல்லை %s க்கு மாற்றியது"
 
-#: classes/TimeHelper.php:9
+#: classes/Config.php:391
 #, php-format
-msgid "%d min"
-msgstr "%d மணித்துளி"
+msgid "Git error [RC=%d]: %s"
+msgstr "Git பிழை [rc = %d]: %s"
+
+#: classes/Sessions.php:125
+msgid "Session failed to validate (password changed)"
+msgstr "அமர்வு சரிபார்க்கத் தவறிவிட்டது (கடவுச்சொல் மாற்றப்பட்டது)"
+
+#: classes/Sessions.php:130
+msgid "Session failed to validate (account is disabled)"
+msgstr "அமர்வு சரிபார்க்கத் தவறிவிட்டது (கணக்கு முடக்கப்பட்டுள்ளது)"
+
+#: classes/Sessions.php:149
+msgid "Session failed to validate (user not found)"
+msgstr "அமர்வு சரிபார்க்கத் தவறிவிட்டது (பயனர் கண்டுபிடிக்கப்படவில்லை)"
+
+#: classes/Pref_Labels.php:167
+#, php-format
+msgid "Created label <b>%s</b>"
+msgstr "சிட்டை <b>%s </b> ஐ உருவாக்கியது"
 
 #: classes/Pref_System.php:24
 msgid "Test message from tt-rss"
 msgstr "TT-RSS இலிருந்து செய்தி சோதனை"
 
-#: classes/Pref_System.php:76 js/PrefHelpers.js:622
+#: classes/Pref_System.php:35
+msgid "Task name"
+msgstr ""
+
+#: classes/Pref_System.php:36
+#, fuzzy
+#| msgid "Last used"
+msgid "Last executed"
+msgstr "கடைசியாக பயன்படுத்தப்பட்டது"
+
+#: classes/Pref_System.php:37
+msgid "Duration (seconds)"
+msgstr ""
+
+#: classes/Pref_System.php:38
+msgid "Return code"
+msgstr ""
+
+#: classes/Pref_System.php:108 js/PrefHelpers.js:622
 msgid "Refresh"
 msgstr "புதுப்பிப்பு"
 
-#: classes/Pref_System.php:81
+#: classes/Pref_System.php:113
 msgid "&lt;&lt;"
-msgstr "& lt; & lt;"
+msgstr "&lt;&lt;"
 
-#: classes/Pref_System.php:85
+#: classes/Pref_System.php:117
 #, php-format
 msgid "Page %d of %d"
 msgstr "பக்கம் %d கீழ் %d"
 
-#: classes/Pref_System.php:90
+#: classes/Pref_System.php:122
 msgid "&gt;&gt;"
-msgstr "& gt; & gt;"
+msgstr "&gt;&gt;"
 
-#: classes/Pref_System.php:99
+#: classes/Pref_System.php:131
 msgid "Severity:"
 msgstr "தீவிரம்:"
 
-#: classes/Pref_System.php:103
+#: classes/Pref_System.php:135
 msgid "Errors"
 msgstr "பிழைகள்"
 
-#: classes/Pref_System.php:104
+#: classes/Pref_System.php:136
 msgid "Warnings"
 msgstr "எச்சரிக்கைகள்"
 
-#: classes/Pref_System.php:105
+#: classes/Pref_System.php:137
 msgid "Everything"
 msgstr "எல்லாம்"
 
-#: classes/Pref_System.php:115
+#: classes/Pref_System.php:147
 msgid "Error"
 msgstr "பிழை"
 
-#: classes/Pref_System.php:116
+#: classes/Pref_System.php:148
 msgid "Filename"
 msgstr "கோப்புப்பெயர்"
 
-#: classes/Pref_System.php:117
+#: classes/Pref_System.php:149
 msgid "Message"
 msgstr "செய்தி"
 
-#: classes/Pref_System.php:119
+#: classes/Pref_System.php:151
 msgid "Date"
 msgstr "திகதி"
 
-#: classes/Pref_System.php:163
+#: classes/Pref_System.php:195
 msgid "Event log"
 msgstr "நிகழ்வு பதிவு"
 
-#: classes/Pref_System.php:169
+#: classes/Pref_System.php:201
 msgid "Mail configuration"
 msgstr "அஞ்சல் உள்ளமைவு"
 
-#: classes/Pref_System.php:200
+#: classes/Pref_System.php:232
 msgid "To:"
 msgstr "இதற்கு:"
 
-#: classes/Pref_System.php:202
+#: classes/Pref_System.php:234
 msgid "Send test email"
 msgstr "சோதனை மின்னஞ்சலை அனுப்பவும்"
 
-#: classes/Pref_System.php:208
+#: classes/Pref_System.php:240
+msgid "Scheduled tasks"
+msgstr ""
+
+#: classes/Pref_System.php:251
 msgid "PHP Information"
 msgstr "பிஎச்பி செய்தி"
 
-#: classes/Feeds.php:93 classes/Feeds.php:495
-msgid "Feed not found."
-msgstr "தீவனம் கிடைக்கவில்லை."
-
-#: classes/Feeds.php:156
-msgid "Never"
-msgstr "ஒருபோதும்"
-
-#: classes/Feeds.php:235 classes/Feeds.php:1214
-msgid "Archived articles"
-msgstr "காப்பகப்படுத்தப்பட்ட கட்டுரைகள்"
-
-#: classes/Feeds.php:325
-msgid "Collapse article"
-msgstr "கட்டுரை சரிவு"
-
-#: classes/Feeds.php:344
-#, php-format
-msgid "Imported at %s"
-msgstr "%s இல் இறக்குமதி செய்யப்பட்டது"
-
-#: classes/Feeds.php:401
-msgid "No unread articles found to display."
-msgstr "காட்சிக்கு படிக்காத கட்டுரைகள் எதுவும் கிடைக்கவில்லை."
-
-#: classes/Feeds.php:402
-msgid "No updated articles found to display."
-msgstr "காண்பிக்க புதுப்பிக்கப்பட்ட கட்டுரைகள் எதுவும் கிடைக்கவில்லை."
-
-#: classes/Feeds.php:403
-msgid "No starred articles found to display."
-msgstr "காண்பிக்க நட்சத்திரமிட்ட கட்டுரைகள் எதுவும் கிடைக்கவில்லை."
-
-#: classes/Feeds.php:405
-msgid ""
-"No articles found to display. You can assign articles to labels manually "
-"from article header context menu (applies to all selected articles) or use a "
-"filter."
-msgstr ""
-"காண்பிக்க கட்டுரைகள் எதுவும் கிடைக்கவில்லை. கட்டுரை தலைப்பு சூழல் மெனுவிலிருந்து "
-"கைமுறையாக லேபிள்களுக்கு கட்டுரைகளை ஒதுக்கலாம் (தேர்ந்தெடுக்கப்பட்ட அனைத்து கட்டுரைகளுக்கும்"
-" பொருந்தும்) அல்லது வடிகட்டியைப் பயன்படுத்தலாம்."
-
-#: classes/Feeds.php:406
-msgid "No articles found to display."
-msgstr "காண்பிக்க கட்டுரைகள் எதுவும் கிடைக்கவில்லை."
-
-#: classes/Feeds.php:422
-#, php-format
-msgid "Feeds last updated at %s"
-msgstr "கடைசியாக %s இல் புதுப்பிக்கப்பட்டது"
-
-#: classes/Feeds.php:433
-msgid "Some feeds have update errors (click for details)"
-msgstr "சில ஊட்டங்கள் புதுப்பிப்பு பிழைகள் உள்ளன (விவரங்களுக்கு சொடுக்கு செய்க)"
-
-#: classes/Feeds.php:1206
-msgid "Starred articles"
-msgstr "நட்சத்திர கட்டுரைகள்"
-
-#: classes/Feeds.php:1208
-msgid "Published articles"
-msgstr "வெளியிடப்பட்ட கட்டுரைகள்"
-
-#: classes/Feeds.php:1210
-msgid "Fresh articles"
-msgstr "புதிய கட்டுரைகள்"
-
-#: classes/Feeds.php:1212 classes/RPC.php:642
-msgid "All articles"
-msgstr "அனைத்து கட்டுரைகளும்"
-
-#: classes/Feeds.php:1216 classes/RPC.php:646
-msgid "Recently read"
-msgstr "அண்மைக் காலத்தில் படியுங்கள்"
-
-#: classes/Feeds.php:1349 classes/Pref_Feeds.php:257 classes/Digest.php:120
-#: classes/Pref_Filters.php:910 classes/OPML.php:571 include/controls.php:216
-msgid "Uncategorized"
-msgstr "வகைப்படுத்தப்படாதது"
-
-#: classes/Feeds.php:1351
-msgid "Special"
-msgstr "சிறப்பு"
-
-#: classes/Feeds.php:1446
-#, php-format
-msgid "Incorrect search syntax: %s."
-msgstr "தவறான தேடல் தொடரியல்: %s."
-
-#: classes/Feeds.php:1636
-#, php-format
-msgid "Search results: %s"
-msgstr "தேடல் முடிவுகள்: %s"
-
-#: classes/Pref_Feeds.php:72 classes/Pref_Feeds.php:240
-#: classes/Pref_Feeds.php:300 classes/Pref_Feeds.php:306
-#: classes/Pref_Feeds.php:343
-#, php-format
-msgid "(%d feed)"
-msgid_plural "(%d feeds)"
-msgstr[0] "(%d ஊட்ட)"
-msgstr[1] "(%d ஊட்டங்கள்)"
-
-#: classes/Pref_Feeds.php:104 classes/Pref_Feeds.php:291
-#: classes/Pref_Feeds.php:334
-#, php-format
-msgid "(%d article / %s)"
-msgid_plural "(%d articles / %s)"
-msgstr[0] "(%d கட்டுரைகள்)"
-msgstr[1] "( %d கட்டுரைகள் / %s)"
-
-#: classes/Pref_Feeds.php:572
-#, php-format
-msgid "(%d day)"
-msgid_plural "(%d days)"
-msgstr[0] "(%d நாள்)"
-msgstr[1] "(%d நாட்கள்)"
-
-#: classes/Pref_Feeds.php:578
-#, php-format
-msgid "%d day"
-msgid_plural "%d days"
-msgstr[0] "%d நாள்"
-msgstr[1] "%d நாட்கள்"
-
-#: classes/Pref_Feeds.php:609
-msgid "Check to enable field"
-msgstr "புலத்தை இயக்க சரிபார்க்கவும்"
-
-#: classes/Pref_Feeds.php:625
-#, php-format
-msgid "(%d days)"
-msgstr "(%d நாட்கள்)"
-
-#: classes/Pref_Feeds.php:630 js/CommonDialogs.js:506
-msgid "Include in e-mail digest"
-msgstr "மின்னஞ்சல் டைசெச்டில் சேர்க்கவும்"
-
-#: classes/Pref_Feeds.php:631 js/CommonDialogs.js:507
-msgid "Always display image attachments"
-msgstr "பட இணைப்புகளை எப்போதும் காண்பி"
-
-#: classes/Pref_Feeds.php:633 js/CommonDialogs.js:509
-msgid "Cache media"
-msgstr "நடுத்தர கேச்"
-
-#: classes/Pref_Feeds.php:634 js/CommonDialogs.js:510
-msgid "Mark updated articles as unread"
-msgstr "புதுப்பிக்கப்பட்ட கட்டுரைகளை படிக்காததாகக் குறிக்கவும்"
-
-#: classes/Pref_Feeds.php:649 js/PrefFeedTree.js:447 js/CommonDialogs.js:61
-#: js/CommonDialogs.js:546
-msgid "Place in category:"
-msgstr "பிரிவில் இடம்:"
-
-#: classes/Pref_Feeds.php:657 js/Feeds.js:642 js/CommonDialogs.js:562
-msgid "Language:"
-msgstr "மொழி:"
-
-#: classes/Pref_Feeds.php:668 js/CommonDialogs.js:572
-msgid "Update interval:"
-msgstr "புதுப்பிப்பு இடைவெளி:"
-
-#: classes/Pref_Feeds.php:675 js/CommonDialogs.js:578
-msgid "Article purging:"
-msgstr "கட்டுரை சுத்திகரிப்பு:"
-
-#: classes/Pref_Feeds.php:682 plugins/auth_internal/init.php:82
-#: js/PrefFeedTree.js:455 js/CommonDialogs.js:588
-msgid "Authentication"
-msgstr "ஏற்பு"
-
-#: classes/Pref_Feeds.php:685 classes/Handler_Public.php:515
-#: plugins/bookmarklets/init.php:306 include/login_form.php:122
-#: js/PrefUsers.js:64 js/CommonDialogs.js:591
-msgid "Login:"
-msgstr "உள்நுழைவு:"
-
-#: classes/Pref_Feeds.php:691 plugins/bookmarklets/init.php:313
-#: include/login_form.php:131 js/CommonDialogs.js:597
-msgid "Password:"
-msgstr "கடவுச்சொல்:"
-
-#: classes/Pref_Feeds.php:698 js/CommonDialogs.js:604
-msgid "Options"
-msgstr "விருப்பங்கள்"
-
-#: classes/Pref_Feeds.php:715 plugins/note/init.php:50
-#: plugins/bookmarklets/init.php:286 js/CommonFilters.js:238
-#: js/CommonFilters.js:322 js/CommonFilters.js:526 js/CommonFilters.js:530
-#: js/CommonDialogs.js:635 js/PrefHelpers.js:232 js/PrefHelpers.js:306
-#: js/Article.js:373 js/Feeds.js:656 js/Feeds.js:711 js/PrefUsers.js:122
-#: js/PrefFeedTree.js:475 js/CommonDialogs.js:111 js/PrefLabelTree.js:173
-msgid "Cancel"
-msgstr "ரத்துசெய்"
-
-#: classes/Pref_Feeds.php:909
-msgid "Feeds with errors"
-msgstr "பிழைகளுடன் ஊட்டங்கள்"
-
-#: classes/Pref_Feeds.php:915
-msgid "Inactive feeds"
-msgstr "செயலற்ற ஊட்டங்கள்"
-
-#: classes/Pref_Feeds.php:952 classes/RPC.php:629 js/CommonDialogs.js:34
-msgid "Subscribe to feed"
-msgstr "ஊட்டத்திற்கு குழுசேரவும்"
-
-#: classes/Pref_Feeds.php:954
-msgid "Edit selected feeds"
-msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களைத் திருத்தவும்"
-
-#: classes/Pref_Feeds.php:956 classes/Pref_Feeds.php:971
-#: classes/Pref_Filters.php:657
-msgid "Reset sort order"
-msgstr "வரிசையை மீட்டமைக்கவும்"
-
-#: classes/Pref_Feeds.php:958 js/PrefFeedTree.js:417
-msgid "Batch subscribe"
-msgstr "தொகுதி குழுசேர்"
-
-#: classes/Pref_Feeds.php:966
-msgid "Categories"
-msgstr "வகைகள்"
-
-#: classes/Pref_Feeds.php:969
-msgid "Add category"
-msgstr "வகையைச் சேர்க்கவும்"
-
-#: classes/Pref_Feeds.php:1008
-msgid "Choose file..."
-msgstr "கோப்பைத் தேர்வுசெய்க ..."
-
-#: classes/Pref_Feeds.php:1016
-msgid "Import OPML"
-msgstr "OPML ஐ இறக்குமதி செய்க"
-
-#: classes/Pref_Feeds.php:1027
-msgid "Export OPML"
-msgstr "OPML ஏற்றுமதி"
-
-#: classes/Pref_Feeds.php:1032
-msgid "Include tt-rss settings"
-msgstr "TT-RSS அமைப்புகளைச் சேர்க்கவும்"
-
-#: classes/Pref_Feeds.php:1048
-msgid "Display URL"
-msgstr "முகவரி ஐக் காண்பி"
-
-#: classes/Pref_Feeds.php:1053
-msgid "Clear all generated URLs"
-msgstr "உருவாக்கப்பட்ட அனைத்து முகவரி களையும் அழிக்கவும்"
-
-#: classes/Pref_Feeds.php:1065
-msgid "My feeds"
-msgstr "எனது ஊட்டங்கள்"
-
-#: classes/Pref_Feeds.php:1070
-msgid "OPML"
-msgstr "OPML"
-
-#: classes/Pref_Feeds.php:1075
-msgid "Sharing"
-msgstr "பகிர்வு"
-
-#: classes/Pref_Users.php:56 classes/Pref_Users.php:257
-msgid "Registered"
-msgstr "பதிவுசெய்யப்பட்டது"
-
-#: classes/Pref_Users.php:61
-msgid "Last logged in"
-msgstr "கடைசியாக உள்நுழைந்தது"
-
-#: classes/Pref_Users.php:66 classes/Pref_Users.php:256
-msgid "Subscribed feeds"
-msgstr "சந்தா ஊட்டங்கள்"
-
-#: classes/Pref_Users.php:71
-msgid "Stored articles"
-msgstr "சேமிக்கப்பட்ட கட்டுரைகள்"
-
-#: classes/Pref_Users.php:100 classes/UserHelper.php:273
-msgid "User not found"
-msgstr "பயனர் கண்டுபிடிக்கப்படவில்லை"
-
-#: classes/Pref_Users.php:170
-#, php-format
-msgid "Added user %s with password %s"
-msgstr "கடவுச்சொல் %s உடன் பயனர் %s ஐச் சேர்த்தது"
-
-#: classes/Pref_Users.php:173
-#, php-format
-msgid "Could not create user %s"
-msgstr "பயனர் %களை உருவாக்க முடியவில்லை"
-
-#: classes/Pref_Users.php:176
-#, php-format
-msgid "User %s already exists."
-msgstr "பயனர் %s ஏற்கனவே உள்ளன."
-
-#: classes/Pref_Users.php:233
-msgid "Create user"
-msgstr "பயனரை உருவாக்கு"
-
-#: classes/Pref_Users.php:237 classes/Pref_Filters.php:655
-#: js/CommonFilters.js:523 js/CommonDialogs.js:626
-msgid "Remove"
-msgstr "அகற்று"
-
-#: classes/Pref_Users.php:241 classes/Handler_Public.php:534
-msgid "Reset password"
-msgstr "கடவுச்சொல்லை மீட்டமைக்கவும்"
-
-#: classes/Pref_Users.php:254 js/PrefFeedTree.js:457 js/CommonDialogs.js:85
-msgid "Login"
-msgstr "புகுபதிவு"
-
-#: classes/Pref_Users.php:255
-msgid "Access level"
-msgstr "அணுகல் நிலை"
-
-#: classes/Pref_Users.php:258
-msgid "Last login"
-msgstr "கடைசி உள்நுழைவு"
-
-#: classes/Pref_Users.php:273
-msgid "Click to edit"
-msgstr "திருத்த சொடுக்கு செய்க"
-
-#: classes/Config.php:398
-#, php-format
-msgid "Git error [RC=%d]: %s"
-msgstr "Git பிழை [rc = %d]: %s"
-
-#: classes/Pref_Filters.php:216 classes/Pref_Filters.php:226
-#: classes/Pref_Filters.php:414 classes/Pref_Filters.php:857
-msgid "All feeds"
-msgstr "அனைத்து ஊட்டங்களும்"
-
-#: classes/Pref_Filters.php:235 classes/Pref_Filters.php:434
-msgid "(inverse)"
-msgstr "(தலைகீழ்)"
-
-#: classes/Pref_Filters.php:231 classes/Pref_Filters.php:433
-#, php-format
-msgid "%s on %s in %s %s"
-msgstr "%s %s இல் %s %s"
-
-#: classes/Pref_Filters.php:450
-#, php-format
-msgid "Unknown action: %d"
-msgstr "தெரியாத செயல்: %d"
-
-#: classes/Pref_Filters.php:651 classes/RPC.php:650
-msgid "Create filter"
-msgstr "வடிகட்டியை உருவாக்கவும்"
-
-#: classes/Pref_Filters.php:653
-msgid "Combine"
-msgstr "இணைக்கவும்"
-
-#: classes/Pref_Filters.php:659
-msgid "Toggle rule display"
-msgstr "விதி காட்சியை மாற்றவும்"
-
-#: classes/Pref_Filters.php:709
-#, php-format
-msgid "%s (%d rule)"
-msgid_plural "%s (%d rules)"
-msgstr[0] "%s (%d விதி)"
-msgstr[1] "%s (%d விதிகள்)"
-
-#: classes/Pref_Filters.php:710
-msgid "[No caption]"
-msgstr "[தலைப்பு இல்லை]"
-
-#: classes/Pref_Filters.php:713
-msgid "matches any rule"
-msgstr "எந்த விதியையும் பொருத்துகிறது"
-
-#: classes/Pref_Filters.php:714
-msgid "inverse"
-msgstr "தலைகீழ்"
-
-#: classes/Pref_Filters.php:746
-#, php-format
-msgid "(+%d action)"
-msgid_plural "(+%d actions)"
-msgstr[0] "(+%d செயல்)"
-msgstr[1] "(+%d செயல்கள்)"
-
-#: classes/Sessions.php:112
-msgid "Session failed to validate (password changed)"
-msgstr "அமர்வு சரிபார்க்கத் தவறிவிட்டது (கடவுச்சொல் மாற்றப்பட்டது)"
-
-#: classes/Sessions.php:117
-msgid "Session failed to validate (account is disabled)"
-msgstr "அமர்வு சரிபார்க்கத் தவறிவிட்டது (கணக்கு முடக்கப்பட்டுள்ளது)"
-
-#: classes/Sessions.php:136
-msgid "Session failed to validate (user not found)"
-msgstr "அமர்வு சரிபார்க்கத் தவறிவிட்டது (பயனர் கண்டுபிடிக்கப்படவில்லை)"
-
-#: classes/UserHelper.php:271
-#, php-format
-msgid "Changed password of user %s to %s"
-msgstr "பயனர் %s இன் கடவுச்சொல்லை %s க்கு மாற்றியது"
-
-#: classes/OPML.php:31 classes/OPML.php:35
-msgid "OPML Utility"
-msgstr "OPML பயன்பாடு"
-
-#: classes/OPML.php:39
-msgid "Importing OPML..."
-msgstr "OPML ஐ இறக்குமதி செய்கிறது ..."
-
-#: classes/OPML.php:44
-msgid "Return to preferences"
-msgstr "விருப்பங்களுக்குத் திரும்பு"
-
-#: classes/OPML.php:324
-#, php-format
-msgid "Adding feed: %s"
-msgstr "ஊட்டத்தைச் சேர்ப்பது: %s"
-
-#: classes/OPML.php:344
-#, php-format
-msgid "Duplicate feed: %s"
-msgstr "நகல் ஊட்டம்: %s"
-
-#: classes/OPML.php:358
-#, php-format
-msgid "Adding label %s"
-msgstr "சிட்டை %s ஐ சேர்க்கிறது"
-
-#: classes/OPML.php:361
-#, php-format
-msgid "Duplicate label: %s"
-msgstr "நகல் லேபிள்: %s"
-
-#: classes/OPML.php:376
-#, php-format
-msgid "Setting preference key %s to %s"
-msgstr "முன்னுரிமை விசை %s க்கு %s க்கு அமைத்தல்"
-
-#: classes/OPML.php:412
-#, php-format
-msgid "Adding filter %s..."
-msgstr "வடிகட்டி %s ஐ சேர்க்கிறது ..."
-
-#: classes/OPML.php:571
-#, php-format
-msgid "Processing category: %s"
-msgstr "செயலாக்க வகை: %s"
-
-#: classes/OPML.php:613
-#, php-format
-msgid "Upload failed with error code %d"
-msgstr "பிழைக் குறியீடு %d உடன் பதிவேற்றம் தோல்வியடைந்தது"
-
-#: classes/OPML.php:625
-msgid "Unable to move uploaded file."
-msgstr "பதிவேற்றிய கோப்பை நகர்த்த முடியவில்லை."
-
-#: classes/OPML.php:629
-msgid "Error: please upload OPML file."
-msgstr "பிழை: தயவுசெய்து OPML கோப்பைப் பதிவேற்றவும்."
-
-#: classes/OPML.php:637
-#, php-format
-msgid "Error: file is not readable: %s"
-msgstr "பிழை: கோப்பு படிக்க முடியாது: %s"
-
-#: classes/OPML.php:655
-msgid "Error while parsing document."
-msgstr "ஆவணத்தை பாகுபடுத்தும் போது பிழை."
-
-#: classes/RPC.php:586
-msgid "Navigation"
-msgstr "வானோடல்"
-
-#: classes/RPC.php:587
-msgid "Open next feed"
-msgstr "அடுத்த ஊட்டத்தைத் திறக்கவும்"
-
-#: classes/RPC.php:588
-msgid "Open next unread feed"
-msgstr "அடுத்த படிக்காத ஊட்டத்தைத் திறக்கவும்"
-
-#: classes/RPC.php:589
-msgid "Open previous feed"
-msgstr "முந்தைய ஊட்டத்தைத் திறக்கவும்"
-
-#: classes/RPC.php:590
-msgid "Open previous unread feed"
-msgstr "முந்தைய படிக்காத ஊட்டத்தைத் திறக்கவும்"
-
-#: classes/RPC.php:591
-msgid "Open next article (in combined mode, scroll down)"
-msgstr ""
-"அடுத்த கட்டுரையைத் திறக்கவும் (ஒருங்கிணைந்த பயன்முறையில், கீழே உருட்டவும்)"
-
-#: classes/RPC.php:592
-msgid "Open previous article (in combined mode, scroll up)"
-msgstr "முந்தைய கட்டுரையைத் திறக்கவும் (ஒருங்கிணைந்த பயன்முறையில், உருட்டவும்)"
-
-#: classes/RPC.php:593
-msgid "Scroll headlines by one page down"
-msgstr "ஒரு பக்கத்தால் தலைப்புச் செய்திகளை உருட்டவும்"
-
-#: classes/RPC.php:594
-msgid "Scroll headlines by one page up"
-msgstr "தலைப்புச் செய்திகளை ஒரு பக்கத்தால் உருட்டவும்"
-
-#: classes/RPC.php:595
-msgid "Open next article"
-msgstr "அடுத்த கட்டுரையைத் திறக்கவும்"
-
-#: classes/RPC.php:596
-msgid "Open previous article"
-msgstr "முந்தைய கட்டுரையைத் திறக்கவும்"
-
-#: classes/RPC.php:597
-msgid "Move to next article (don't expand)"
-msgstr "அடுத்த கட்டுரைக்கு செல்லுங்கள் (விரிவாக்க வேண்டாம்)"
-
-#: classes/RPC.php:598
-msgid "Move to previous article (don't expand)"
-msgstr "முந்தைய கட்டுரைக்கு செல்லுங்கள் (விரிவாக்க வேண்டாம்)"
-
-#: classes/RPC.php:599
-msgid "Show search dialog"
-msgstr "தேடல் உரையாடலைக் காட்டு"
-
-#: classes/RPC.php:600
-msgid "Cancel active search"
-msgstr "செயலில் தேடலை ரத்துசெய்"
-
-#: classes/RPC.php:601
-msgid "Article"
-msgstr "கட்டுரை"
-
-#: classes/RPC.php:602 js/Headlines.js:1447 js/Headlines.js:670
-msgid "Toggle starred"
-msgstr "டோகல் நடித்தார்"
-
-#: classes/RPC.php:603 js/Headlines.js:1459 js/Headlines.js:671
-msgid "Toggle published"
-msgstr "மாற்று வெளியீடு"
-
-#: classes/RPC.php:604 js/Headlines.js:1434 js/Headlines.js:669
-msgid "Toggle unread"
-msgstr "படிக்காமல் மாறவும்"
-
-#: classes/RPC.php:605
-msgid "Edit tags"
-msgstr "குறிச்சொற்களைத் திருத்து"
-
-#: classes/RPC.php:606
-msgid "Open in new window"
-msgstr "புதிய சாளரத்தில் திறக்கவும்"
-
-#: classes/RPC.php:607 js/Headlines.js:1480
-msgid "Mark below as read"
-msgstr "படிக்க கீழே குறிக்கவும்"
-
-#: classes/RPC.php:608 js/Headlines.js:1473
-msgid "Mark above as read"
-msgstr "படிக்க மேலே குறிக்கவும்"
-
-#: classes/RPC.php:609
-msgid "Scroll down"
-msgstr "கீழே உருட்டவும்"
-
-#: classes/RPC.php:610
-msgid "Scroll up"
-msgstr "மேலே உருட்டவும்"
-
-#: classes/RPC.php:611
-msgid "Scroll down page"
-msgstr "பக்கத்தை உருட்டவும்"
-
-#: classes/RPC.php:612
-msgid "Scroll up page"
-msgstr "பக்கத்தை உருட்டவும்"
-
-#: classes/RPC.php:613
-msgid "Select article under cursor"
-msgstr "கர்சரின் கீழ் கட்டுரையைத் தேர்ந்தெடுக்கவும்"
-
-#: classes/RPC.php:614
-msgid "Email article"
-msgstr "மின்னஞ்சல் கட்டுரை"
-
-#: classes/RPC.php:615
-msgid "Close/collapse article"
-msgstr "கட்டுரையை மூடு/சரிவு"
-
-#: classes/RPC.php:616
-msgid "Toggle article expansion (combined mode)"
-msgstr "கட்டுரை விரிவாக்கத்தை மாற்றவும் (ஒருங்கிணைந்த பயன்முறை)"
-
-#: classes/RPC.php:618
-msgid "Toggle full article text via Readability"
-msgstr "முழு கட்டுரை உரையை வாசிப்பு வழியாக மாற்றவும்"
-
-#: classes/RPC.php:619
-msgid "Article selection"
-msgstr "கட்டுரை தேர்வு"
-
-#: classes/RPC.php:620
-msgid "Select all articles"
-msgstr "எல்லா கட்டுரைகளையும் தேர்ந்தெடுக்கவும்"
-
-#: classes/RPC.php:621
-msgid "Select unread"
-msgstr "படிக்கத் தேர்ந்தெடுக்கவும்"
-
-#: classes/RPC.php:622
-msgid "Select starred"
-msgstr "நட்சத்திரமிட்டதைத் தேர்ந்தெடுக்கவும்"
-
-#: classes/RPC.php:623
-msgid "Select published"
-msgstr "வெளியிடப்பட்டதைத் தேர்ந்தெடுக்கவும்"
-
-#: classes/RPC.php:624
-msgid "Invert selection"
-msgstr "தலைகீழ் தேர்வு"
-
-#: classes/RPC.php:625
-msgid "Deselect everything"
-msgstr "எல்லாவற்றையும் தேர்வு செய்யுங்கள்"
-
-#: classes/RPC.php:626
-msgid "Feed"
-msgstr "தீவனம்"
-
-#: classes/RPC.php:627
-msgid "Refresh current feed"
-msgstr "தற்போதைய ஊட்டத்தைப் புதுப்பிக்கவும்"
-
-#: classes/RPC.php:628
-msgid "Un/hide read feeds"
-msgstr "அன்/மறை வாசிப்பு ஊட்டங்கள்"
-
-#: classes/RPC.php:630 js/Headlines.js:1580 js/Headlines.js:1645
-#: js/PrefFeedTree.js:114 js/CommonDialogs.js:381 js/FeedTree.js:99
-msgid "Edit feed"
-msgstr "ஊட்டத்தைத் திருத்து"
-
-#: classes/RPC.php:632
-msgid "Reverse headlines"
-msgstr "தலைகீழ் தலைப்புச் செய்திகள்"
-
-#: classes/RPC.php:633
-msgid "Toggle headline grouping"
-msgstr "தலைப்பு குழுவை மாற்றவும்"
-
-#: classes/RPC.php:634
-msgid "Toggle grid view"
-msgstr "கட்டம் பார்வையை மாற்றவும்"
-
-#: classes/RPC.php:635
-msgid "Debug feed update"
-msgstr "பிழைத்திருத்த ஊட்ட புதுப்பிப்பு"
-
-#: classes/RPC.php:636
-msgid "Debug viewfeed()"
-msgstr "பிழைத்திருத்த பார்வை ()"
-
-#: classes/RPC.php:637 js/FeedTree.js:164
-msgid "Mark all feeds as read"
-msgstr "எல்லா ஊட்டங்களையும் படிக்கும்படி குறிக்கவும்"
-
-#: classes/RPC.php:638
-msgid "Un/collapse current category"
-msgstr "ஐ.நா/சரிவு தற்போதைய வகை"
-
-#: classes/RPC.php:639
-msgid "Toggle auto expand in combined mode"
-msgstr "ஒருங்கிணைந்த பயன்முறையில் ஆட்டோ விரிவாக்கவும்"
-
-#: classes/RPC.php:641
-msgid "Go to"
-msgstr "செல்"
-
-#: classes/RPC.php:643
-msgid "Fresh"
-msgstr "புதியது"
-
-#: classes/RPC.php:648
-msgid "Other"
-msgstr "மற்றொன்று"
-
-#: classes/RPC.php:649
-msgid "Create label"
-msgstr "லேபிளை உருவாக்கவும்"
-
-#: classes/RPC.php:651
-msgid "Un/collapse sidebar"
-msgstr "A/சரிவு பக்கப்பட்டி"
-
-#: classes/RPC.php:652
-msgid "Show help dialog"
-msgstr "உதவி உரையாடலைக் காட்டு"
-
-#: classes/RPC.php:789
-msgid "Shift"
-msgstr "உயர்த்து"
-
-#: classes/RPC.php:790
-msgid "Ctrl"
-msgstr "கட்டுப்பாடு"
-
-#: classes/RPC.php:813 plugins/share/init.php:284
-#: plugins/af_psql_trgm/init.php:135 js/PrefHelpers.js:498
-#: js/CommonFilters.js:102 js/PrefHelpers.js:66 js/PrefHelpers.js:821
-#: js/Feeds.js:295 js/PrefFeedTree.js:558 js/CommonDialogs.js:22
-#: js/CommonDialogs.js:318 js/CommonDialogs.js:695 js/App.js:661
-msgid "Close this window"
-msgstr "இந்த சாளரத்தை மூடு"
-
-#: classes/Handler_Public.php:415
-msgid "Incorrect username or password"
-msgstr "தவறான பயனர்பெயர் அல்லது கடவுச்சொல்"
-
-#: classes/Handler_Public.php:468
-msgid "Password recovery"
-msgstr "கடவுச்சொல் மீட்பு"
-
-#: classes/Handler_Public.php:505 classes/Handler_Public.php:535
-#: classes/Handler_Public.php:595 classes/Handler_Public.php:712
-#: classes/Handler_Public.php:719 classes/Handler_Public.php:742
-#: plugins/bookmarklets/init.php:94 plugins/bookmarklets/init.php:139
-#: plugins/bookmarklets/init.php:157 plugins/bookmarklets/init.php:162
-msgid "Return to Tiny Tiny RSS"
-msgstr "சிறிய சிறிய ஆர்.எச்.எச்"
-
-#: classes/Handler_Public.php:508
-msgid ""
-"You will need to provide valid account name and email. Password reset link "
-"will be sent to your email address."
-msgstr ""
-"நீங்கள் சரியான கணக்கு பெயர் மற்றும் மின்னஞ்சலை வழங்க வேண்டும். கடவுச்சொல் மீட்டமைப்பு இணைப்பு "
-"உங்கள் மின்னஞ்சல் முகவரிக்கு அனுப்பப்படும்."
-
-#: classes/Handler_Public.php:520
-msgid "Email:"
-msgstr "மின்னஞ்சல்:"
-
-#: classes/Handler_Public.php:528
-#, php-format
-msgid "How much is %d + %d:"
-msgstr "%d + %d:"
-
-#: classes/Handler_Public.php:545
-msgid "Some of the required form parameters are missing or incorrect."
-msgstr "தேவையான சில படிவ அளவுருக்கள் காணவில்லை அல்லது தவறானவை."
-
-#: classes/Handler_Public.php:549 classes/Handler_Public.php:601
-msgid "Go back"
-msgstr "திரும்பிச் செல்லுங்கள்"
-
-#: classes/Handler_Public.php:587
-msgid "[tt-rss] Password reset request"
-msgstr "[TT-RSS] கடவுச்சொல் மீட்டமைப்பு கோரிக்கை"
-
-#: classes/Handler_Public.php:597
-msgid "Sorry, login and email combination not found."
-msgstr "மன்னிக்கவும், உள்நுழைவு மற்றும் மின்னஞ்சல் சேர்க்கை கிடைக்கவில்லை."
-
-#: classes/Handler_Public.php:617
-msgid "Your access level is insufficient to run this script."
-msgstr "இந்த ச்கிரிப்டை இயக்க உங்கள் அணுகல் நிலை போதுமானதாக இல்லை."
-
-#: classes/Handler_Public.php:679
-msgid "Database Updater"
-msgstr "தரவுத்தள புதுப்பிப்பு"
-
-#: classes/Handler_Public.php:692
-#, php-format
-msgid "Performing updates to version %d"
-msgstr "பதிப்பு %d க்கு புதுப்பிப்புகளைச் செய்கிறது"
-
-#: classes/Handler_Public.php:707 classes/Handler_Public.php:734
-#: js/PrefHelpers.js:418 js/PrefHelpers.js:764
-msgid "Update"
-msgstr "புதுப்பிப்பு"
-
-#: classes/Handler_Public.php:727
-#, php-format
-msgid "Database schema needs update to the latest version (%d to %d)."
-msgstr ""
-"தரவுத்தள ச்கீமா அண்மைக் கால பதிப்பிற்கு புதுப்பிப்பு தேவை ( %d முதல் %d வரை)."
-
-#: plugins/nsfw/init.php:46
-msgid "Not safe for work (click to toggle)"
-msgstr "வேலைக்கு பாதுகாப்பாக இல்லை (மாற்று சொடுக்கு செய்யவும்)"
-
-#: plugins/nsfw/init.php:80
-msgid "NSFW Plugin"
-msgstr "NSFW சொருகி"
-
-#: plugins/nsfw/init.php:95
-msgid "Tags to consider NSFW (comma-separated):"
-msgstr "NSFW (கமாவால் பிரிக்கப்பட்ட) கருத்தில் கொள்ள வேண்டிய குறிச்சொற்கள்:"
-
-#: plugins/nsfw/init.php:117
-msgid "Configuration saved."
-msgstr "உள்ளமைவு சேமிக்கப்பட்டது."
-
-#: plugins/note/init.php:24 plugins/note/note.js:16
-msgid "Edit article note"
-msgstr "கட்டுரை குறிப்பைத் திருத்து"
+#: plugins/af_comics/init.php:63
+msgid "Feeds supported by af_comics"
+msgstr "AF_COMICS ஆல் ஆதரிக்கப்படும் ஊட்டங்கள்"
+
+#: plugins/af_comics/init.php:65
+msgid "The following comics are currently supported:"
+msgstr "பின்வரும் காமிக்ச் தற்போது ஆதரிக்கப்பட்டுள்ளது:"
+
+#: plugins/auth_internal/init.php:96
+msgid "Please enter verification code (OTP):"
+msgstr "சரிபார்ப்பு குறியீட்டை (OTP) உள்ளிடவும்:"
+
+#: plugins/auth_internal/init.php:98
+msgid "Continue"
+msgstr "தொடரவும்"
+
+#: plugins/auth_internal/init.php:140
+msgid "Too many authentication attempts, throttled."
+msgstr "பல அங்கீகார முயற்சிகள், தூண்டப்பட்டன."
+
+#: plugins/auth_internal/init.php:247
+msgid "Password has been changed."
+msgstr "கடவுச்சொல் மாற்றப்பட்டுள்ளது."
+
+#: plugins/auth_internal/init.php:249
+msgid "Old password is incorrect."
+msgstr "பழைய கடவுச்சொல் தவறானது."
 
 #: plugins/toggle_sidebar/init.php:23
 msgid "Toggle sidebar"
@@ -1719,67 +1761,28 @@ msgstr "கட்டுரை காணப்படவில்லை."
 msgid "Unshare article"
 msgstr "சேர் கட்டுரை"
 
-#: plugins/share/init.php:283 js/CommonDialogs.js:692
+#: plugins/share/init.php:283 js/CommonDialogs.js:697
 msgid "Generate new URL"
 msgstr "புதிய முகவரி ஐ உருவாக்குங்கள்"
 
-#: plugins/af_psql_trgm/init.php:34
-#, php-format
-msgid "Data saved (%s, %d)"
-msgstr "தரவு சேமிக்கப்பட்டது ( %s, %d)"
+#: plugins/nsfw/init.php:46
+msgid "Not safe for work (click to toggle)"
+msgstr "வேலைக்கு பாதுகாப்பாக இல்லை (மாற்று சொடுக்கு செய்யவும்)"
 
-#: plugins/af_psql_trgm/init.php:144
-msgid "Show related articles"
-msgstr "தொடர்புடைய கட்டுரைகளைக் காட்டு"
+#: plugins/nsfw/init.php:80
+msgid "NSFW Plugin"
+msgstr "NSFW சொருகி"
 
-#: plugins/af_psql_trgm/init.php:157
-msgid "Mark similar articles as read (af_psql_trgm)"
-msgstr "Read (af_psql_trgm) போன்ற கட்டுரைகளை குறிக்கவும்"
+#: plugins/nsfw/init.php:95
+msgid "Tags to consider NSFW (comma-separated):"
+msgstr "NSFW (கமாவால் பிரிக்கப்பட்ட) கருத்தில் கொள்ள வேண்டிய குறிச்சொற்கள்:"
 
-#: plugins/af_psql_trgm/init.php:185
-msgid "Minimum similarity:"
-msgstr "குறைந்தபட்ச ஒற்றுமை:"
-
-#: plugins/af_psql_trgm/init.php:194
-msgid ""
-"PostgreSQL trigram extension returns string similarity as a floating point "
-"number (0-1). Setting it too low might produce false positives, zero "
-"disables checking."
-msgstr ""
-"Postgresql Trigram நீட்டிப்பு ஒரு மிதக்கும் புள்ளி எண்ணாக (0-1) சரம் ஒற்றுமையை "
-"வழங்குகிறது. அதை மிகக் குறைவாக அமைப்பது தவறான நேர்மறைகளை உருவாக்கக்கூடும், பூச்சியம் "
-"சோதனையை முடக்குகிறது."
-
-#: plugins/af_psql_trgm/init.php:196
-msgid ""
-"Setting this value too low might produce false positives, zero disables "
-"checking."
-msgstr ""
-"இந்த மதிப்பை மிகக் குறைவாக அமைப்பது தவறான நேர்மறைகளை உருவாக்கக்கூடும், பூச்சியம் "
-"சோதனையை முடக்குகிறது."
-
-#: plugins/af_psql_trgm/init.php:202
-msgid "Minimum title length:"
-msgstr "குறைந்தபட்ச தலைப்பு நீளம்:"
-
-#: plugins/af_psql_trgm/init.php:212
-msgid "Enable for all feeds."
-msgstr "அனைத்து ஊட்டங்களுக்கும் இயக்கு."
-
-#: plugins/af_psql_trgm/init.php:231
-msgid "Currently enabled for (click to edit):"
-msgstr "தற்போது இயக்கப்பட்டுள்ளது (திருத்த கிளிக்):"
-
-#: plugins/af_psql_trgm/init.php:251
-msgid "Similarity (af_psql_trgm)"
-msgstr "ஒற்றுமை (AF_PSQL_TRGM)"
-
-#: plugins/af_psql_trgm/init.php:257
-msgid "Mark similar articles as read"
-msgstr "இதே போன்ற கட்டுரைகளை வாசிக்கவும்"
+#: plugins/nsfw/init.php:117
+msgid "Configuration saved."
+msgstr "உள்ளமைவு சேமிக்கப்பட்டது."
 
 #: plugins/bookmarklets/init.php:91 js/PrefFeedTree.js:472
-#: js/CommonDialogs.js:108
+#: js/CommonDialogs.js:113
 msgid "Subscribe"
 msgstr "குழுசேர்"
 
@@ -1829,7 +1832,7 @@ msgstr "சிறிய சிறிய ஆர்.எச்.எச் உடன�
 msgid "Title:"
 msgstr "தலைப்பு:"
 
-#: plugins/bookmarklets/init.php:265 js/CommonDialogs.js:531
+#: plugins/bookmarklets/init.php:265 js/CommonDialogs.js:536
 msgid "URL:"
 msgstr "URL:"
 
@@ -1849,7 +1852,7 @@ msgstr "பங்கு"
 msgid "Shared article will appear in the Published feed."
 msgstr "பகிரப்பட்ட கட்டுரை வெளியிடப்பட்ட ஊட்டத்தில் தோன்றும்."
 
-#: plugins/bookmarklets/init.php:326 include/login_form.php:196
+#: plugins/bookmarklets/init.php:326 include/login_form.php:200
 msgid "Log in"
 msgstr "புகுபதிகை"
 
@@ -1880,70 +1883,313 @@ msgstr ""
 "சிறிய சிறிய RSS ஐப் பயன்படுத்தி தன்னிச்சையான பக்கங்களை வெளியிட இந்த புக்மார்க்கெட் "
 "பயன்படுத்தவும்"
 
-#: plugins/auth_internal/init.php:93
-msgid "Please enter verification code (OTP):"
-msgstr "சரிபார்ப்பு குறியீட்டை (OTP) உள்ளிடவும்:"
+#: plugins/af_psql_trgm/init.php:34
+#, php-format
+msgid "Data saved (%s, %d)"
+msgstr "தரவு சேமிக்கப்பட்டது ( %s, %d)"
 
-#: plugins/auth_internal/init.php:95
-msgid "Continue"
-msgstr "தொடரவும்"
+#: plugins/af_psql_trgm/init.php:125
+msgid "Show related articles"
+msgstr "தொடர்புடைய கட்டுரைகளைக் காட்டு"
 
-#: plugins/auth_internal/init.php:134
-msgid "Too many authentication attempts, throttled."
-msgstr "பல அங்கீகார முயற்சிகள், தூண்டப்பட்டன."
+#: plugins/af_psql_trgm/init.php:138
+msgid "Mark similar articles as read (af_psql_trgm)"
+msgstr "Read (af_psql_trgm) போன்ற கட்டுரைகளை குறிக்கவும்"
 
-#: plugins/auth_internal/init.php:241
-msgid "Password has been changed."
-msgstr "கடவுச்சொல் மாற்றப்பட்டுள்ளது."
+#: plugins/af_psql_trgm/init.php:164
+msgid "Minimum similarity:"
+msgstr "குறைந்தபட்ச ஒற்றுமை:"
 
-#: plugins/auth_internal/init.php:243
-msgid "Old password is incorrect."
-msgstr "பழைய கடவுச்சொல் தவறானது."
+#: plugins/af_psql_trgm/init.php:172
+msgid ""
+"PostgreSQL trigram extension returns string similarity as a floating point "
+"number (0-1). Setting it too low might produce false positives, zero "
+"disables checking."
+msgstr ""
+"Postgresql Trigram நீட்டிப்பு ஒரு மிதக்கும் புள்ளி எண்ணாக (0-1) சரம் ஒற்றுமையை "
+"வழங்குகிறது. அதை மிகக் குறைவாக அமைப்பது தவறான நேர்மறைகளை உருவாக்கக்கூடும், பூச்சியம் "
+"சோதனையை முடக்குகிறது."
 
-#: plugins/af_comics/init.php:63
-msgid "Feeds supported by af_comics"
-msgstr "AF_COMICS ஆல் ஆதரிக்கப்படும் ஊட்டங்கள்"
+#: plugins/af_psql_trgm/init.php:177
+msgid "Minimum title length:"
+msgstr "குறைந்தபட்ச தலைப்பு நீளம்:"
 
-#: plugins/af_comics/init.php:65
-msgid "The following comics are currently supported:"
-msgstr "பின்வரும் காமிக்ச் தற்போது ஆதரிக்கப்பட்டுள்ளது:"
+#: plugins/af_psql_trgm/init.php:187
+msgid "Enable for all feeds."
+msgstr "அனைத்து ஊட்டங்களுக்கும் இயக்கு."
 
-#: include/functions.php:54
-msgid "Detect automatically"
-msgstr "தானாகவே கண்டறியவும்"
+#: plugins/af_psql_trgm/init.php:206
+msgid "Currently enabled for (click to edit):"
+msgstr "தற்போது இயக்கப்பட்டுள்ளது (திருத்த கிளிக்):"
 
-#: include/login_form.php:143
+#: plugins/af_psql_trgm/init.php:226
+msgid "Similarity (af_psql_trgm)"
+msgstr "ஒற்றுமை (AF_PSQL_TRGM)"
+
+#: plugins/af_psql_trgm/init.php:232
+msgid "Mark similar articles as read"
+msgstr "இதே போன்ற கட்டுரைகளை வாசிக்கவும்"
+
+#: plugins/note/init.php:24 plugins/note/note.js:16
+msgid "Edit article note"
+msgstr "கட்டுரை குறிப்பைத் திருத்து"
+
+#: include/login_form.php:145
 msgid "I forgot my password"
 msgstr "எனது கடவுச்சொல்லை மறந்துவிட்டேன்"
 
-#: include/login_form.php:148
+#: include/login_form.php:151
 msgid "Profile:"
 msgstr "சுயவிவரம்:"
 
-#: include/login_form.php:161
+#: include/login_form.php:164
 msgid "Use less traffic"
 msgstr "குறைந்த போக்குவரத்தைப் பயன்படுத்துங்கள்"
 
-#: include/login_form.php:165
+#: include/login_form.php:168
 msgid "Does not display images in articles, reduces automatic refreshes."
-msgstr ""
-"கட்டுரைகளில் படங்களை காண்பிக்காது, தானியங்கி புதுப்பிப்புகளைக் குறைக்கிறது."
+msgstr "கட்டுரைகளில் படங்களை காண்பிக்காது, தானியங்கி புதுப்பிப்புகளைக் குறைக்கிறது."
 
-#: include/login_form.php:173 js/CommonDialogs.js:16
+#: include/login_form.php:176 js/CommonDialogs.js:16
 msgid "Safe mode"
 msgstr "பாதுகாப்பான பயன்முறை"
 
-#: include/login_form.php:178
+#: include/login_form.php:181
 msgid "Uses default theme and prevents all plugins from loading."
 msgstr ""
 "இயல்புநிலை கருப்பொருளைப் பயன்படுத்துகிறது மற்றும் அனைத்து செருகுநிரல்களையும் ஏற்றுவதைத் "
 "தடுக்கிறது."
 
-#: include/login_form.php:186
+#: include/login_form.php:189
 msgid "Remember me"
 msgstr "என்னை நினைவில் கொள்ளுங்கள்"
 
-#: js/PrefFilterTree.js:63 js/CommonFilters.js:225
+#: include/functions.php:50
+msgid "Detect automatically"
+msgstr "தானாகவே கண்டறியவும்"
+
+#: js/common.js:468
+msgid "Click to close"
+msgstr "மூட சொடுக்கு செய்க"
+
+#: js/PrefFeedTree.js:94
+msgid "Edit category"
+msgstr "வகையைத் திருத்து"
+
+#: js/PrefFeedTree.js:101
+msgid "Remove category"
+msgstr "வகையை அகற்று"
+
+#: js/PrefFeedTree.js:200
+#, java-printf-format, javascript-format
+msgid ""
+"Remove category %s? Any nested feeds would be placed into Uncategorized."
+msgstr ""
+"வகை %s ஐ அகற்றவா? எந்தவொரு உள்ளமைக்கப்பட்ட ஊட்டங்களும் வகைப்படுத்தப்படாத நிலையில் "
+"வைக்கப்படும்."
+
+#: js/PrefFeedTree.js:201
+msgid "Removing category..."
+msgstr "வகையை நீக்குதல் ..."
+
+#: js/PrefFeedTree.js:213
+msgid "Unsubscribe from selected feeds?"
+msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களிலிருந்து குழுவிலகவா?"
+
+#: js/PrefFeedTree.js:215
+msgid "Unsubscribing from selected feeds..."
+msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களிலிருந்து குழுவிலகுவது ..."
+
+#: js/PrefFeedTree.js:228 js/PrefFeedTree.js:297 js/PrefFeedTree.js:313
+#: js/PrefFeedTree.js:518 js/CommonDialogs.js:256 js/CommonDialogs.js:277
+msgid "No feeds selected."
+msgstr "எந்த ஊட்டங்களும் தேர்ந்தெடுக்கப்படவில்லை."
+
+#: js/PrefFeedTree.js:263
+msgid "Remove selected categories?"
+msgstr "தேர்ந்தெடுக்கப்பட்ட வகைகளை அகற்றவா?"
+
+#: js/PrefFeedTree.js:264
+msgid "Removing selected categories..."
+msgstr "தேர்ந்தெடுக்கப்பட்ட வகைகளை நீக்குதல் ..."
+
+#: js/PrefFeedTree.js:276
+msgid "No categories selected."
+msgstr "வகைகள் எதுவும் தேர்ந்தெடுக்கப்படவில்லை."
+
+#: js/PrefFeedTree.js:324
+msgid "Edit multiple feeds"
+msgstr "பல ஊட்டங்களைத் திருத்தவும்"
+
+#: js/PrefFeedTree.js:353
+msgid "Save changes to selected feeds?"
+msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களில் மாற்றங்களைச் சேமிக்கவா?"
+
+#: js/PrefFeedTree.js:365 js/CommonFilters.js:391 js/CommonDialogs.js:480
+#: js/PrefUsers.js:42
+msgid "Saving data..."
+msgstr "தரவைச் சேமித்தல் ..."
+
+#: js/PrefFeedTree.js:402
+msgid "Category title:"
+msgstr "வகை தலைப்பு:"
+
+#: js/PrefFeedTree.js:405
+msgid "Creating category..."
+msgstr "வகையை உருவாக்குதல் ..."
+
+#: js/PrefFeedTree.js:420
+msgid "Subscribing to feeds..."
+msgstr "ஊட்டங்களுக்கு குழுசேர்வது ..."
+
+#: js/PrefFeedTree.js:438
+msgid "One valid feed per line (no detection is done)"
+msgstr "ஒரு வரிக்கு ஒரு செல்லுபடியாகும் ஊட்டம் (கண்டறிதல் எதுவும் செய்யப்படவில்லை)"
+
+#: js/PrefFeedTree.js:491
+msgid "Feeds without recent updates"
+msgstr "அண்மைக் கால புதுப்பிப்புகள் இல்லாமல் ஊட்டங்கள்"
+
+#: js/PrefFeedTree.js:499 js/CommonDialogs.js:235
+msgid "Remove selected feeds?"
+msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களை அகற்றவா?"
+
+#: js/PrefFeedTree.js:500 js/CommonDialogs.js:236
+msgid "Removing selected feeds..."
+msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களை நீக்குதல் ..."
+
+#: js/PrefFeedTree.js:541 js/CommonDialogs.js:303
+msgid "Click to edit feed"
+msgstr "ஊட்டத்தைத் திருத்த சொடுக்கு செய்க"
+
+#: js/Feeds.js:288
+msgid "Your password is at default value"
+msgstr "உங்கள் கடவுச்சொல் இயல்புநிலை மதிப்பில் உள்ளது"
+
+#: js/Feeds.js:290
+msgid ""
+"You are using default tt-rss password. Please change it in the Preferences "
+"(Personal data / Authentication)."
+msgstr ""
+"நீங்கள் இயல்புநிலை TT-RSS கடவுச்சொல்லைப் பயன்படுத்துகிறீர்கள். தயவுசெய்து அதை "
+"விருப்பத்தேர்வுகளில் மாற்றவும் (தனிப்பட்ட தரவு / அங்கீகாரம்)."
+
+#: js/Feeds.js:450
+msgid "Mark all articles as read?"
+msgstr "எல்லா கட்டுரைகளையும் வாசித்தபடி குறிக்கவும்?"
+
+#: js/Feeds.js:454
+msgid "Marking all feeds as read..."
+msgstr "எல்லா ஊட்டங்களையும் படித்தபடி குறிப்பது ..."
+
+#: js/Feeds.js:471
+msgid "Mark %w in %s older than 1 day as read?"
+msgstr "1 நாளுக்கு மேல் %w இல் %w ஐப் படித்தபடி குறிக்கவும்?"
+
+#: js/Feeds.js:474
+msgid "Mark %w in %s older than 1 week as read?"
+msgstr "1 வாரத்தை விட %w இல் %w ஐப் படித்தபடி குறிக்கவும்?"
+
+#: js/Feeds.js:477
+msgid "Mark %w in %s older than 2 weeks as read?"
+msgstr "2 வாரங்களை விட %w இல் %w ஐப் படிக்க வேண்டுமா?"
+
+#: js/Feeds.js:480
+msgid "Mark %w in %s as read?"
+msgstr "%W இல் %w இல் படிக்கவா?"
+
+#: js/Feeds.js:483
+msgid "search results"
+msgstr "தேடல் முடிவுகள்"
+
+#: js/Feeds.js:483
+msgid "all articles"
+msgstr "அனைத்து கட்டுரைகளும்"
+
+#: js/Feeds.js:524
+#, java-printf-format, javascript-format
+msgid "Mark all articles in %s as read?"
+msgstr "அனைத்து கட்டுரைகளையும் %s இல் படிக்கவா?"
+
+#: js/Feeds.js:659
+msgid "Search syntax"
+msgstr "தொடரியல் தேடல்"
+
+#: js/Feeds.js:723
+msgid "Search feeds"
+msgstr "தேடல் ஊட்டங்கள்"
+
+#: js/App.js:314
+msgid "This function is only available in combined mode."
+msgstr "இந்த செயல்பாடு ஒருங்கிணைந்த பயன்முறையில் மட்டுமே கிடைக்கிறது."
+
+#: js/App.js:445
+msgid "Keyboard shortcuts"
+msgstr "விசைப்பலகை குறுக்குவழிகள்"
+
+#: js/App.js:506
+msgid "Update daemon is not running."
+msgstr "புதுப்பிப்பு டீமான் இயங்கவில்லை."
+
+#: js/App.js:519
+msgid "Update daemon is not updating feeds."
+msgstr "புதுப்பிப்பு டீமான் ஊட்டங்களை புதுப்பிக்கவில்லை."
+
+#: js/App.js:606
+#, java-printf-format
+msgid ""
+"URL scheme reported by your browser (%a) doesn't match server-configured "
+"SELF_URL_PATH (%b), check X-Forwarded-Proto."
+msgstr ""
+"உங்கள் உலாவியால் அறிவிக்கப்பட்ட முகவரி திட்டம் (%a) சேவையக-கட்டமைக்கப்பட்ட SELF_URL_PATH "
+"(%b) உடன் பொருந்தாது, எக்ச்-முன்னோடி-புரோட்டோவை சரிபார்க்கவும்."
+
+#: js/App.js:613
+msgid "Fatal error"
+msgstr "அபாயகரமான பிழை"
+
+#: js/App.js:638
+msgid "Unhandled exception"
+msgstr "தடையற்ற விதிவிலக்கு"
+
+#: js/App.js:868
+msgid "Updates for Tiny Tiny RSS are available."
+msgstr "சிறிய சிறிய RSS க்கான புதுப்பிப்புகள் கிடைக்கின்றன."
+
+#: js/App.js:871
+msgid "Updates for some local plugins are available."
+msgstr "சில உள்ளக செருகுநிரல்களுக்கான புதுப்பிப்புகள் கிடைக்கின்றன."
+
+#: js/App.js:914
+msgid "Widescreen is not available in combined mode."
+msgstr "ஒருங்கிணைந்த பயன்முறையில் அகலத்திரை கிடைக்கவில்லை."
+
+#: js/App.js:1111
+msgid "Please enable mail or mailto plugin first."
+msgstr "முதலில் அஞ்சல் அல்லது மெயில்டோ சொருகி இயக்கவும்."
+
+#: js/App.js:1174 js/App.js:1291 js/CommonDialogs.js:378
+msgid "You can't edit this kind of feed."
+msgstr "இந்த வகையான ஊட்டத்தை நீங்கள் திருத்த முடியாது."
+
+#: js/App.js:1246
+msgid "Please enable af_readability first."
+msgstr "முதலில் AF_READABLICAL ஐ இயக்கவும்."
+
+#: js/App.js:1300
+msgid "Please select some feed first."
+msgstr "முதலில் சில ஊட்டங்களைத் தேர்ந்தெடுக்கவும்."
+
+#: js/App.js:1305
+msgid "You can't unsubscribe from the category."
+msgstr "நீங்கள் வகையிலிருந்து குழுவிலக முடியாது."
+
+#: js/App.js:1311 js/CommonDialogs.js:352 js/CommonDialogs.js:393
+#, java-printf-format, javascript-format
+msgid "Unsubscribe from %s?"
+msgstr "%s இலிருந்து குழுவிலகவா?"
+
+#: js/PrefFilterTree.js:63 js/CommonFilters.js:218
 msgid "in"
 msgstr "இல்"
 
@@ -1951,7 +2197,7 @@ msgstr "இல்"
 msgid "Inverse"
 msgstr "தலைகீழ்"
 
-#: js/PrefFilterTree.js:136 js/PrefFilterTree.js:165
+#: js/PrefFilterTree.js:136 js/PrefFilterTree.js:165 js/PrefFilterTree.js:198
 msgid "No filters selected."
 msgstr "வடிப்பான்கள் எதுவும் தேர்ந்தெடுக்கப்படவில்லை."
 
@@ -1971,9 +2217,23 @@ msgstr "தேர்ந்தெடுக்கப்பட்ட வடிப�
 msgid "Removing selected filters..."
 msgstr "தேர்ந்தெடுக்கப்பட்ட வடிப்பான்களை நீக்குதல் ..."
 
-#: js/common.js:468
-msgid "Click to close"
-msgstr "மூட சொடுக்கு செய்க"
+#: js/PrefFilterTree.js:179
+#, fuzzy
+#| msgid "Name for cloned profile:"
+msgid "Name for new filter:"
+msgstr "நகலி செய்யப்பட்ட சுயவிவரத்திற்கான பெயர்:"
+
+#: js/PrefFilterTree.js:187
+#, fuzzy
+#| msgid "Combine selected filters?"
+msgid "Clone selected filters?"
+msgstr "தேர்ந்தெடுக்கப்பட்ட வடிப்பான்களை இணைக்கவா?"
+
+#: js/PrefFilterTree.js:191
+#, fuzzy
+#| msgid "Removing selected filters..."
+msgid "Cloning selected filters..."
+msgstr "தேர்ந்தெடுக்கப்பட்ட வடிப்பான்களை நீக்குதல் ..."
 
 #: js/CommonFilters.js:14
 msgid "Edit filter"
@@ -1983,80 +2243,248 @@ msgstr "வடிகட்டியைத் திருத்து"
 msgid "Create new filter"
 msgstr "புதிய வடிப்பானை உருவாக்கவும்"
 
-#: js/CommonFilters.js:45
+#: js/CommonFilters.js:42
 #, java-printf-format, javascript-format
 msgid "Looking for articles (%d processed, %f found)..."
 msgstr "கட்டுரைகளைத் தேடுவது ( %d பதப்படுத்தப்பட்டது, %f காணப்பட்டது) ..."
 
-#: js/CommonFilters.js:73
+#: js/CommonFilters.js:68
 msgid "Articles matching this filter:"
 msgstr "இந்த வடிப்பானுடன் பொருந்தக்கூடிய கட்டுரைகள்:"
 
-#: js/CommonFilters.js:75
-#, java-printf-format, javascript-format
-msgid "Found %d articles matching this filter:"
+#: js/CommonFilters.js:70
+#, fuzzy, java-printf-format, javascript-format
+#| msgid "Found %d articles matching this filter:"
+msgid "Found at least %d articles matching this filter:"
 msgstr "இந்த வடிப்பானுடன் பொருந்தக்கூடிய %d கட்டுரைகள் காணப்படுகின்றன:"
 
-#: js/CommonFilters.js:84
+#: js/CommonFilters.js:77
 msgid "Error while trying to get filter test results."
 msgstr "வடிகட்டி சோதனை முடிவுகளைப் பெற முயற்சிக்கும்போது பிழை."
 
-#: js/CommonFilters.js:96
+#: js/CommonFilters.js:89
 msgid "Looking for articles..."
 msgstr "கட்டுரைகளைத் தேடுகிறது ..."
 
-#: js/CommonFilters.js:175
+#: js/CommonFilters.js:168
 msgid "Edit rule"
 msgstr "விதியைத் திருத்து"
 
-#: js/CommonFilters.js:175
+#: js/CommonFilters.js:168
 msgid "Add rule"
 msgstr "விதியைச் சேர்க்கவும்"
 
-#: js/CommonFilters.js:219
+#: js/CommonFilters.js:212
 msgid "Inverse regular expression matching"
 msgstr "தலைகீழ் வழக்கமான வெளிப்பாடு பொருத்தம்"
 
-#: js/CommonFilters.js:223
+#: js/CommonFilters.js:216
 msgid "on"
 msgstr "ஆன்"
 
-#: js/CommonFilters.js:251
+#: js/CommonFilters.js:244
 msgid "Edit action"
 msgstr "செயலைத் திருத்து"
 
-#: js/CommonFilters.js:251
+#: js/CommonFilters.js:244
 msgid "Add action"
 msgstr "செயலைச் சேர்க்கவும்"
 
-#: js/CommonFilters.js:363
+#: js/CommonFilters.js:356
 msgid "Remove filter?"
 msgstr "வடிகட்டியை அகற்றவா?"
 
-#: js/CommonFilters.js:368
+#: js/CommonFilters.js:361
 msgid "Removing filter..."
 msgstr "வடிகட்டியை நீக்குதல் ..."
 
-#: js/CommonFilters.js:398 js/PrefUsers.js:42 js/PrefFeedTree.js:365
-#: js/CommonDialogs.js:475
-msgid "Saving data..."
-msgstr "தரவைச் சேமித்தல் ..."
-
-#: js/CommonFilters.js:455 js/CommonFilters.js:487 js/PrefHelpers.js:195
+#: js/CommonFilters.js:448 js/CommonFilters.js:480 js/PrefHelpers.js:195
 msgid "Add"
 msgstr "கூட்டு"
 
-#: js/CommonFilters.js:458 js/CommonFilters.js:490
+#: js/CommonFilters.js:451 js/CommonFilters.js:483
 msgid "Delete"
 msgstr "நீக்கு"
 
-#: js/CommonFilters.js:524 js/CommonFilters.js:528
+#: js/CommonFilters.js:517 js/CommonFilters.js:521
 msgid "Test"
 msgstr "தேர்வு"
 
-#: js/CommonFilters.js:529
+#: js/CommonFilters.js:522
 msgid "Create"
 msgstr "உருவாக்கு"
+
+#: js/Article.js:36
+msgid "Please enter new score for selected articles:"
+msgstr "தேர்ந்தெடுக்கப்பட்ட கட்டுரைகளுக்கு புதிய மதிப்பெண்ணை உள்ளிடவும்:"
+
+#: js/Article.js:62 js/Headlines.js:948 js/Headlines.js:974 js/Headlines.js:986
+#: js/Headlines.js:1129 js/Headlines.js:1146 js/Headlines.js:1163
+#: js/Headlines.js:1300
+msgid "No articles selected."
+msgstr "கட்டுரைகள் எதுவும் தேர்ந்தெடுக்கப்படவில்லை."
+
+#: js/Article.js:70
+msgid "Please enter new score for this article:"
+msgstr "இந்த கட்டுரைக்கு புதிய மதிப்பெண்ணை உள்ளிடவும்:"
+
+#: js/Article.js:130
+msgid "Article URL:"
+msgstr "கட்டுரை URL:"
+
+#: js/Article.js:132
+msgid "No URL could be displayed for this article."
+msgstr "இந்த கட்டுரைக்கு எந்த முகவரி ஐ காட்ட முடியவில்லை."
+
+#: js/Article.js:152
+msgid "no tags"
+msgstr "குறிச்சொற்கள் இல்லை"
+
+#: js/Article.js:244
+msgid "comments"
+msgstr "கருத்துகள்"
+
+#: js/Article.js:247
+msgid "comment"
+msgid_plural "comments"
+msgstr[0] "கருத்து"
+msgstr[1] "கருத்துகள்"
+
+#: js/Article.js:352
+msgid "Article tags"
+msgstr "கட்டுரை குறிச்சொற்கள்"
+
+#: js/Article.js:359
+msgid "Tags for this article (separated by commas):"
+msgstr "இந்த கட்டுரைக்கான குறிச்சொற்கள் (காற்புள்ளிகளால் பிரிக்கப்பட்டன):"
+
+#: js/Article.js:379
+msgid "Saving article tags..."
+msgstr "கட்டுரை குறிச்சொற்களைச் சேமிக்கிறது ..."
+
+#: js/CommonDialogs.js:45
+msgid ""
+"Provided URL is a HTML page referencing multiple feeds, please select "
+"required feed from the dropdown menu below."
+msgstr ""
+"வழங்கப்பட்ட முகவரி என்பது பல ஊட்டங்களைக் குறிக்கும் உஉகுமொ பக்கமாகும், தயவுசெய்து கீழே "
+"உள்ள கீழ்தோன்றும் மெனுவிலிருந்து தேவையான ஊட்டத்தைத் தேர்ந்தெடுக்கவும்."
+
+#: js/CommonDialogs.js:142
+msgid ""
+"Failed to parse output. This can indicate server timeout and/or network "
+"issues. Backend output was logged to browser console."
+msgstr ""
+"வெளியீட்டை அலசத் தவறிவிட்டது. இது சேவையக நேரம் முடிந்தது மற்றும்/அல்லது பிணைய "
+"சிக்கல்களைக் குறிக்கலாம். பின்தளத்தில் வெளியீடு உலாவி கன்சோலுக்கு உள்நுழைந்துள்ளது."
+
+#: js/CommonDialogs.js:155
+msgid "You are already subscribed to this feed."
+msgstr "இந்த ஊட்டத்திற்கு நீங்கள் ஏற்கனவே சந்தா செலுத்தியுள்ளீர்கள்."
+
+#: js/CommonDialogs.js:159
+#, java-printf-format, javascript-format
+msgid "Subscribed to %s"
+msgstr "%s க்கு குழுசேர்ந்தது"
+
+#: js/CommonDialogs.js:168
+msgid "Specified URL seems to be invalid."
+msgstr "குறிப்பிட்ட முகவரி தவறானது என்று தெரிகிறது."
+
+#: js/CommonDialogs.js:171
+msgid "Specified URL doesn't seem to contain any feeds."
+msgstr "குறிப்பிட்ட முகவரி இல் எந்த ஊட்டங்களும் இருப்பதாகத் தெரியவில்லை."
+
+#: js/CommonDialogs.js:184
+msgid "Expand to select feed"
+msgstr "தீவனத்தைத் தேர்ந்தெடுக்க விரிவாக்கவும்"
+
+#: js/CommonDialogs.js:196
+#, java-printf-format, javascript-format
+msgid "Couldn't download the specified URL: %s"
+msgstr "குறிப்பிட்ட முகவரி ஐ பதிவிறக்கம் செய்ய முடியவில்லை: %s"
+
+#: js/CommonDialogs.js:199
+#, java-printf-format, javascript-format
+msgid "XML validation failed: %s"
+msgstr "எக்ச்எம்எல் சரிபார்ப்பு தோல்வியுற்றது: %s"
+
+#: js/CommonDialogs.js:202
+msgid "Error while creating feed database entry."
+msgstr "தீவன தரவுத்தள நுழைவை உருவாக்கும் போது பிழை."
+
+#: js/CommonDialogs.js:205
+msgid "You are not allowed to perform this operation."
+msgstr "இந்த செயல்பாட்டைச் செய்ய உங்களுக்கு இசைவு இல்லை."
+
+#: js/CommonDialogs.js:227
+msgid "Feeds with update errors"
+msgstr "புதுப்பிப்பு பிழைகள் மூலம் ஊட்டங்கள்"
+
+#: js/CommonDialogs.js:263
+msgid "Debug selected feeds?"
+msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களை பிழைத்திருத்தமா?"
+
+#: js/CommonDialogs.js:264
+msgid "Opening debugger for selected feeds..."
+msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களுக்கு பிழைத்திருத்தியைத் திறத்தல் ..."
+
+#: js/CommonDialogs.js:333
+msgid "Please enter label caption:"
+msgstr "சிட்டை தலைப்பை உள்ளிடவும்:"
+
+#: js/CommonDialogs.js:355
+msgid "Removing feed..."
+msgstr "ஊட்டத்தை நீக்குதல் ..."
+
+#: js/CommonDialogs.js:403
+msgid "Please select an image file."
+msgstr "படக் கோப்பைத் தேர்ந்தெடுக்கவும்."
+
+#: js/CommonDialogs.js:423
+msgid "Icon file is too large."
+msgstr "படவுரு கோப்பு மிகப் பெரியது."
+
+#: js/CommonDialogs.js:426
+msgid "Upload failed."
+msgstr "பதிவேற்றம் தோல்வியடைந்தது."
+
+#: js/CommonDialogs.js:456
+msgid "Remove stored feed icon?"
+msgstr "சேமிக்கப்பட்ட தீவன ஐகானை அகற்றவா?"
+
+#: js/CommonDialogs.js:457
+msgid "Removing feed icon..."
+msgstr "தீவன ஐகானை நீக்குதல் ..."
+
+#: js/CommonDialogs.js:460
+msgid "Feed icon removed."
+msgstr "தீவன படவுரு அகற்றப்பட்டது."
+
+#: js/CommonDialogs.js:627
+msgid "Upload new icon..."
+msgstr "புதிய ஐகானைப் பதிவேற்றவும் ..."
+
+#: js/CommonDialogs.js:656 js/Headlines.js:642
+msgid "Show as feed"
+msgstr "தீவனமாகக் காட்டு"
+
+#: js/CommonDialogs.js:658
+msgid "Generate new syndication address for this feed?"
+msgstr "இந்த ஊட்டத்திற்கு புதிய சிண்டிகேசன் முகவரியை உருவாக்கவா?"
+
+#: js/CommonDialogs.js:660
+msgid "Trying to change address..."
+msgstr "முகவரியை மாற்ற முயற்சிக்கிறது ..."
+
+#: js/CommonDialogs.js:678
+msgid "Could not change feed URL."
+msgstr "தீவன முகவரி ஐ மாற்ற முடியவில்லை."
+
+#: js/CommonDialogs.js:685
+#, java-printf-format, javascript-format
+msgid "%s can be accessed via the following secret URL:"
+msgstr "பின்வரும் ரகசிய முகவரி வழியாக %s அணுகலாம்:"
 
 #: js/Headlines.js:649
 msgid "Cancel search"
@@ -2074,12 +2502,6 @@ msgstr "அடுத்த படிக்காத ஊட்டத்தைத�
 msgid "New articles found, reload feed to continue."
 msgstr "புதிய கட்டுரைகள் கண்டுபிடிக்கப்பட்டன, தொடர ஊட்டத்தை மீண்டும் ஏற்றவும்."
 
-#: js/Headlines.js:948 js/Headlines.js:974 js/Headlines.js:986
-#: js/Headlines.js:1129 js/Headlines.js:1146 js/Headlines.js:1163
-#: js/Headlines.js:1300 js/Article.js:62
-msgid "No articles selected."
-msgstr "கட்டுரைகள் எதுவும் தேர்ந்தெடுக்கப்படவில்லை."
-
 #: js/Headlines.js:1100
 #, java-printf-format, javascript-format
 msgid "%d article selected"
@@ -2091,22 +2513,22 @@ msgstr[1] "%d கட்டுரைகள் தேர்ந்தெடுக�
 #, java-printf-format, javascript-format
 msgid "Delete %d selected article in %s?"
 msgid_plural "Delete %d selected articles in %s?"
-msgstr[0] "%s இல் %d தேர்ந்தெடுக்கப்பட்ட கட்டுரையை நீக்கவா?"
-msgstr[1] "%s இல் தேர்ந்தெடுக்கப்பட்ட கட்டுரைகளை நீக்கவா?"
+msgstr[0] "தேர்ந்தெடுக்கப்பட்ட %d கட்டுரையை %s இல் நீக்கவா?"
+msgstr[1] "தேர்ந்தெடுக்கப்பட்ட %d கட்டுரைகளை %s இல் நீக்கவா?"
 
 #: js/Headlines.js:1173
 #, java-printf-format, javascript-format
 msgid "Delete %d selected article?"
 msgid_plural "Delete %d selected articles?"
-msgstr[0] "%d தேர்ந்தெடுக்கப்பட்ட கட்டுரையை நீக்கவா?"
-msgstr[1] "தேர்ந்தெடுக்கப்பட்ட %d தேர்ந்தெடுக்கப்பட்ட கட்டுரைகளை நீக்கவா?"
+msgstr[0] "தேர்ந்தெடுக்கப்பட்ட %d கட்டுரையை நீக்கவா?"
+msgstr[1] "தேர்ந்தெடுக்கப்பட்ட %d கட்டுரைகளை நீக்கவா?"
 
 #: js/Headlines.js:1306
 #, java-printf-format, javascript-format
 msgid "Mark %d selected article in %s as read?"
 msgid_plural "Mark %d selected articles in %s as read?"
-msgstr[0] "%s இல் %d தேர்ந்தெடுக்கப்பட்ட கட்டுரையை வாசித்தபடி?"
-msgstr[1] "மார்க் %d தேர்ந்தெடுக்கப்பட்ட கட்டுரைகள் %s இல் படிக்க வேண்டுமா?"
+msgstr[0] "%d தேர்ந்தெடுக்கப்பட்ட கட்டுரையை வாசித்தபடி %s இல் குறி?"
+msgstr[1] "%d தேர்ந்தெடுக்கப்பட்ட கட்டுரைகளை வாசித்தபடி %s இல் குறி?"
 
 #: js/Headlines.js:1322
 msgid "No article is selected."
@@ -2166,8 +2588,7 @@ msgstr "தேர்ந்தெடுக்கப்பட்ட பயன்�
 
 #: js/PrefHelpers.js:45
 msgid "This will invalidate all previously generated feed URLs. Continue?"
-msgstr ""
-"இது முன்னர் உருவாக்கப்பட்ட அனைத்து தீவன முகவரி களையும் செல்லாது. தொடரவா?"
+msgstr "இது முன்னர் உருவாக்கப்பட்ட அனைத்து தீவன முகவரி களையும் செல்லாது. தொடரவா?"
 
 #: js/PrefHelpers.js:46 plugins/share/share_prefs.js:6
 msgid "Clearing URLs..."
@@ -2267,8 +2688,7 @@ msgstr "நிறுவல் நீக்க"
 
 #: js/PrefHelpers.js:437 js/PrefHelpers.js:596
 msgid "Could not find any plugins for this search query."
-msgstr ""
-"இந்த தேடல் வினவலுக்கான எந்த செருகுநிரல்களையும் கண்டுபிடிக்க முடியவில்லை."
+msgstr "இந்த தேடல் வினவலுக்கான எந்த செருகுநிரல்களையும் கண்டுபிடிக்க முடியவில்லை."
 
 #: js/PrefHelpers.js:444
 #, java-printf-format, javascript-format
@@ -2378,107 +2798,12 @@ msgid ""
 "If you have imported labels and/or filters, you might need to reload "
 "preferences to see your new data."
 msgstr ""
-"நீங்கள் லேபிள்கள் மற்றும்/அல்லது வடிப்பான்களை இறக்குமதி செய்திருந்தால், உங்கள் புதிய தரவைக் கா"
-"ண விருப்பங்களை மீண்டும் ஏற்ற வேண்டும்."
+"நீங்கள் லேபிள்கள் மற்றும்/அல்லது வடிப்பான்களை இறக்குமதி செய்திருந்தால், உங்கள் புதிய தரவைக் "
+"காண விருப்பங்களை மீண்டும் ஏற்ற வேண்டும்."
 
-#: js/Article.js:36
-msgid "Please enter new score for selected articles:"
-msgstr "தேர்ந்தெடுக்கப்பட்ட கட்டுரைகளுக்கு புதிய மதிப்பெண்ணை உள்ளிடவும்:"
-
-#: js/Article.js:70
-msgid "Please enter new score for this article:"
-msgstr "இந்த கட்டுரைக்கு புதிய மதிப்பெண்ணை உள்ளிடவும்:"
-
-#: js/Article.js:130
-msgid "Article URL:"
-msgstr "கட்டுரை URL:"
-
-#: js/Article.js:132
-msgid "No URL could be displayed for this article."
-msgstr "இந்த கட்டுரைக்கு எந்த முகவரி ஐ காட்ட முடியவில்லை."
-
-#: js/Article.js:152
-msgid "no tags"
-msgstr "குறிச்சொற்கள் இல்லை"
-
-#: js/Article.js:244
-msgid "comments"
-msgstr "கருத்துகள்"
-
-#: js/Article.js:247
-msgid "comment"
-msgid_plural "comments"
-msgstr[0] "கருத்து"
-msgstr[1] "கருத்துகள்"
-
-#: js/Article.js:352
-msgid "Article tags"
-msgstr "கட்டுரை குறிச்சொற்கள்"
-
-#: js/Article.js:359
-msgid "Tags for this article (separated by commas):"
-msgstr "இந்த கட்டுரைக்கான குறிச்சொற்கள் (காற்புள்ளிகளால் பிரிக்கப்பட்டன):"
-
-#: js/Article.js:379
-msgid "Saving article tags..."
-msgstr "கட்டுரை குறிச்சொற்களைச் சேமிக்கிறது ..."
-
-#: js/Feeds.js:285
-msgid "Your password is at default value"
-msgstr "உங்கள் கடவுச்சொல் இயல்புநிலை மதிப்பில் உள்ளது"
-
-#: js/Feeds.js:287
-msgid ""
-"You are using default tt-rss password. Please change it in the Preferences "
-"(Personal data / Authentication)."
-msgstr ""
-"நீங்கள் இயல்புநிலை TT-RSS கடவுச்சொல்லைப் பயன்படுத்துகிறீர்கள். தயவுசெய்து அதை "
-"விருப்பத்தேர்வுகளில் மாற்றவும் (தனிப்பட்ட தரவு / அங்கீகாரம்)."
-
-#: js/Feeds.js:442
-msgid "Mark all articles as read?"
-msgstr "எல்லா கட்டுரைகளையும் வாசித்தபடி குறிக்கவும்?"
-
-#: js/Feeds.js:446
-msgid "Marking all feeds as read..."
-msgstr "எல்லா ஊட்டங்களையும் படித்தபடி குறிப்பது ..."
-
-#: js/Feeds.js:463
-msgid "Mark %w in %s older than 1 day as read?"
-msgstr "1 நாளுக்கு மேல் %w இல் %w ஐப் படித்தபடி குறிக்கவும்?"
-
-#: js/Feeds.js:466
-msgid "Mark %w in %s older than 1 week as read?"
-msgstr "1 வாரத்தை விட %w இல் %w ஐப் படித்தபடி குறிக்கவும்?"
-
-#: js/Feeds.js:469
-msgid "Mark %w in %s older than 2 weeks as read?"
-msgstr "2 வாரங்களை விட %w இல் %w ஐப் படிக்க வேண்டுமா?"
-
-#: js/Feeds.js:472
-msgid "Mark %w in %s as read?"
-msgstr "%W இல் %w இல் படிக்கவா?"
-
-#: js/Feeds.js:475
-msgid "search results"
-msgstr "தேடல் முடிவுகள்"
-
-#: js/Feeds.js:475
-msgid "all articles"
-msgstr "அனைத்து கட்டுரைகளும்"
-
-#: js/Feeds.js:516
-#, java-printf-format, javascript-format
-msgid "Mark all articles in %s as read?"
-msgstr "அனைத்து கட்டுரைகளையும் %s இல் படிக்கவா?"
-
-#: js/Feeds.js:651
-msgid "Search syntax"
-msgstr "தொடரியல் தேடல்"
-
-#: js/Feeds.js:715
-msgid "Search feeds"
-msgstr "தேடல் ஊட்டங்கள்"
+#: js/FeedTree.js:137
+msgid "(Un)collapse"
+msgstr "(அன்) சரிவு"
 
 #: js/PrefUsers.js:19
 msgid "Please enter username:"
@@ -2520,290 +2845,6 @@ msgstr ""
 msgid "Removing selected users..."
 msgstr "தேர்ந்தெடுக்கப்பட்ட பயனர்களை நீக்குதல் ..."
 
-#: js/PrefFeedTree.js:94
-msgid "Edit category"
-msgstr "வகையைத் திருத்து"
-
-#: js/PrefFeedTree.js:101
-msgid "Remove category"
-msgstr "வகையை அகற்று"
-
-#: js/PrefFeedTree.js:200
-#, java-printf-format, javascript-format
-msgid ""
-"Remove category %s? Any nested feeds would be placed into Uncategorized."
-msgstr ""
-"வகை %s ஐ அகற்றவா? எந்தவொரு உள்ளமைக்கப்பட்ட ஊட்டங்களும் வகைப்படுத்தப்படாத நிலையில் "
-"வைக்கப்படும்."
-
-#: js/PrefFeedTree.js:201
-msgid "Removing category..."
-msgstr "வகையை நீக்குதல் ..."
-
-#: js/PrefFeedTree.js:213
-msgid "Unsubscribe from selected feeds?"
-msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களிலிருந்து குழுவிலகவா?"
-
-#: js/PrefFeedTree.js:215
-msgid "Unsubscribing from selected feeds..."
-msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களிலிருந்து குழுவிலகுவது ..."
-
-#: js/PrefFeedTree.js:228 js/PrefFeedTree.js:297 js/PrefFeedTree.js:313
-#: js/PrefFeedTree.js:518 js/CommonDialogs.js:251 js/CommonDialogs.js:272
-msgid "No feeds selected."
-msgstr "எந்த ஊட்டங்களும் தேர்ந்தெடுக்கப்படவில்லை."
-
-#: js/PrefFeedTree.js:263
-msgid "Remove selected categories?"
-msgstr "தேர்ந்தெடுக்கப்பட்ட வகைகளை அகற்றவா?"
-
-#: js/PrefFeedTree.js:264
-msgid "Removing selected categories..."
-msgstr "தேர்ந்தெடுக்கப்பட்ட வகைகளை நீக்குதல் ..."
-
-#: js/PrefFeedTree.js:276
-msgid "No categories selected."
-msgstr "வகைகள் எதுவும் தேர்ந்தெடுக்கப்படவில்லை."
-
-#: js/PrefFeedTree.js:324
-msgid "Edit multiple feeds"
-msgstr "பல ஊட்டங்களைத் திருத்தவும்"
-
-#: js/PrefFeedTree.js:353
-msgid "Save changes to selected feeds?"
-msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களில் மாற்றங்களைச் சேமிக்கவா?"
-
-#: js/PrefFeedTree.js:402
-msgid "Category title:"
-msgstr "வகை தலைப்பு:"
-
-#: js/PrefFeedTree.js:405
-msgid "Creating category..."
-msgstr "வகையை உருவாக்குதல் ..."
-
-#: js/PrefFeedTree.js:420
-msgid "Subscribing to feeds..."
-msgstr "ஊட்டங்களுக்கு குழுசேர்வது ..."
-
-#: js/PrefFeedTree.js:438
-msgid "One valid feed per line (no detection is done)"
-msgstr ""
-"ஒரு வரிக்கு ஒரு செல்லுபடியாகும் ஊட்டம் (கண்டறிதல் எதுவும் செய்யப்படவில்லை)"
-
-#: js/PrefFeedTree.js:491
-msgid "Feeds without recent updates"
-msgstr "அண்மைக் கால புதுப்பிப்புகள் இல்லாமல் ஊட்டங்கள்"
-
-#: js/PrefFeedTree.js:499 js/CommonDialogs.js:230
-msgid "Remove selected feeds?"
-msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களை அகற்றவா?"
-
-#: js/PrefFeedTree.js:500 js/CommonDialogs.js:231
-msgid "Removing selected feeds..."
-msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களை நீக்குதல் ..."
-
-#: js/PrefFeedTree.js:541 js/CommonDialogs.js:298
-msgid "Click to edit feed"
-msgstr "ஊட்டத்தைத் திருத்த சொடுக்கு செய்க"
-
-#: js/CommonDialogs.js:45
-msgid ""
-"Provided URL is a HTML page referencing multiple feeds, please select "
-"required feed from the dropdown menu below."
-msgstr ""
-"வழங்கப்பட்ட முகவரி என்பது பல ஊட்டங்களைக் குறிக்கும் உஉகுமொ பக்கமாகும், தயவுசெய்து கீழே உள்"
-"ள கீழ்தோன்றும் மெனுவிலிருந்து தேவையான ஊட்டத்தைத் தேர்ந்தெடுக்கவும்."
-
-#: js/CommonDialogs.js:137
-msgid ""
-"Failed to parse output. This can indicate server timeout and/or network "
-"issues. Backend output was logged to browser console."
-msgstr ""
-"வெளியீட்டை அலசத் தவறிவிட்டது. இது சேவையக நேரம் முடிந்தது மற்றும்/அல்லது பிணைய "
-"சிக்கல்களைக் குறிக்கலாம். பின்தளத்தில் வெளியீடு உலாவி கன்சோலுக்கு உள்நுழைந்துள்ளது."
-
-#: js/CommonDialogs.js:150
-msgid "You are already subscribed to this feed."
-msgstr "இந்த ஊட்டத்திற்கு நீங்கள் ஏற்கனவே சந்தா செலுத்தியுள்ளீர்கள்."
-
-#: js/CommonDialogs.js:154
-#, java-printf-format, javascript-format
-msgid "Subscribed to %s"
-msgstr "%s க்கு குழுசேர்ந்தது"
-
-#: js/CommonDialogs.js:163
-msgid "Specified URL seems to be invalid."
-msgstr "குறிப்பிட்ட முகவரி தவறானது என்று தெரிகிறது."
-
-#: js/CommonDialogs.js:166
-msgid "Specified URL doesn't seem to contain any feeds."
-msgstr "குறிப்பிட்ட முகவரி இல் எந்த ஊட்டங்களும் இருப்பதாகத் தெரியவில்லை."
-
-#: js/CommonDialogs.js:179
-msgid "Expand to select feed"
-msgstr "தீவனத்தைத் தேர்ந்தெடுக்க விரிவாக்கவும்"
-
-#: js/CommonDialogs.js:191
-#, java-printf-format, javascript-format
-msgid "Couldn't download the specified URL: %s"
-msgstr "குறிப்பிட்ட முகவரி ஐ பதிவிறக்கம் செய்ய முடியவில்லை: %s"
-
-#: js/CommonDialogs.js:194
-#, java-printf-format, javascript-format
-msgid "XML validation failed: %s"
-msgstr "எக்ச்எம்எல் சரிபார்ப்பு தோல்வியுற்றது: %s"
-
-#: js/CommonDialogs.js:197
-msgid "Error while creating feed database entry."
-msgstr "தீவன தரவுத்தள நுழைவை உருவாக்கும் போது பிழை."
-
-#: js/CommonDialogs.js:200
-msgid "You are not allowed to perform this operation."
-msgstr "இந்த செயல்பாட்டைச் செய்ய உங்களுக்கு இசைவு இல்லை."
-
-#: js/CommonDialogs.js:222
-msgid "Feeds with update errors"
-msgstr "புதுப்பிப்பு பிழைகள் மூலம் ஊட்டங்கள்"
-
-#: js/CommonDialogs.js:258
-msgid "Debug selected feeds?"
-msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களை பிழைத்திருத்தமா?"
-
-#: js/CommonDialogs.js:259
-msgid "Opening debugger for selected feeds..."
-msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களுக்கு பிழைத்திருத்தியைத் திறத்தல் ..."
-
-#: js/CommonDialogs.js:328
-msgid "Please enter label caption:"
-msgstr "சிட்டை தலைப்பை உள்ளிடவும்:"
-
-#: js/CommonDialogs.js:347 js/CommonDialogs.js:388 js/App.js:1316
-#, java-printf-format, javascript-format
-msgid "Unsubscribe from %s?"
-msgstr "%s இலிருந்து குழுவிலகவா?"
-
-#: js/CommonDialogs.js:350
-msgid "Removing feed..."
-msgstr "ஊட்டத்தை நீக்குதல் ..."
-
-#: js/CommonDialogs.js:373 js/App.js:1179 js/App.js:1296
-msgid "You can't edit this kind of feed."
-msgstr "இந்த வகையான ஊட்டத்தை நீங்கள் திருத்த முடியாது."
-
-#: js/CommonDialogs.js:398
-msgid "Please select an image file."
-msgstr "படக் கோப்பைத் தேர்ந்தெடுக்கவும்."
-
-#: js/CommonDialogs.js:418
-msgid "Icon file is too large."
-msgstr "படவுரு கோப்பு மிகப் பெரியது."
-
-#: js/CommonDialogs.js:421
-msgid "Upload failed."
-msgstr "பதிவேற்றம் தோல்வியடைந்தது."
-
-#: js/CommonDialogs.js:451
-msgid "Remove stored feed icon?"
-msgstr "சேமிக்கப்பட்ட தீவன ஐகானை அகற்றவா?"
-
-#: js/CommonDialogs.js:452
-msgid "Removing feed icon..."
-msgstr "தீவன ஐகானை நீக்குதல் ..."
-
-#: js/CommonDialogs.js:455
-msgid "Feed icon removed."
-msgstr "தீவன படவுரு அகற்றப்பட்டது."
-
-#: js/CommonDialogs.js:622
-msgid "Upload new icon..."
-msgstr "புதிய ஐகானைப் பதிவேற்றவும் ..."
-
-#: js/CommonDialogs.js:651 js/Headlines.js:642
-msgid "Show as feed"
-msgstr "தீவனமாகக் காட்டு"
-
-#: js/CommonDialogs.js:653
-msgid "Generate new syndication address for this feed?"
-msgstr "இந்த ஊட்டத்திற்கு புதிய சிண்டிகேசன் முகவரியை உருவாக்கவா?"
-
-#: js/CommonDialogs.js:655
-msgid "Trying to change address..."
-msgstr "முகவரியை மாற்ற முயற்சிக்கிறது ..."
-
-#: js/CommonDialogs.js:673
-msgid "Could not change feed URL."
-msgstr "தீவன முகவரி ஐ மாற்ற முடியவில்லை."
-
-#: js/CommonDialogs.js:680
-#, java-printf-format, javascript-format
-msgid "%s can be accessed via the following secret URL:"
-msgstr "பின்வரும் ரகசிய முகவரி வழியாக %களை அணுகலாம்:"
-
-#: js/App.js:314
-msgid "This function is only available in combined mode."
-msgstr "இந்த செயல்பாடு ஒருங்கிணைந்த பயன்முறையில் மட்டுமே கிடைக்கிறது."
-
-#: js/App.js:445
-msgid "Keyboard shortcuts"
-msgstr "விசைப்பலகை குறுக்குவழிகள்"
-
-#: js/App.js:506
-msgid "Update daemon is not running."
-msgstr "புதுப்பிப்பு டீமான் இயங்கவில்லை."
-
-#: js/App.js:519
-msgid "Update daemon is not updating feeds."
-msgstr "புதுப்பிப்பு டீமான் ஊட்டங்களை புதுப்பிக்கவில்லை."
-
-#: js/App.js:606
-#, java-printf-format
-msgid ""
-"URL scheme reported by your browser (%a) doesn't match server-configured "
-"SELF_URL_PATH (%b), check X-Forwarded-Proto."
-msgstr ""
-"உங்கள் உலாவியால் அறிவிக்கப்பட்ட முகவரி திட்டம் (%A) சேவையக-கட்டமைக்கப்பட்ட SELF_URL_PATH "
-"(%B) உடன் பொருந்தாது, எக்ச்-முன்னோடி-புரோட்டோவை சரிபார்க்கவும்."
-
-#: js/App.js:613
-msgid "Fatal error"
-msgstr "அபாயகரமான பிழை"
-
-#: js/App.js:638
-msgid "Unhandled exception"
-msgstr "தடையற்ற விதிவிலக்கு"
-
-#: js/App.js:873
-msgid "Updates for Tiny Tiny RSS are available."
-msgstr "சிறிய சிறிய RSS க்கான புதுப்பிப்புகள் கிடைக்கின்றன."
-
-#: js/App.js:876
-msgid "Updates for some local plugins are available."
-msgstr "சில உள்ளக செருகுநிரல்களுக்கான புதுப்பிப்புகள் கிடைக்கின்றன."
-
-#: js/App.js:919
-msgid "Widescreen is not available in combined mode."
-msgstr "ஒருங்கிணைந்த பயன்முறையில் அகலத்திரை கிடைக்கவில்லை."
-
-#: js/App.js:1116
-msgid "Please enable mail or mailto plugin first."
-msgstr "முதலில் அஞ்சல் அல்லது மெயில்டோ சொருகி இயக்கவும்."
-
-#: js/App.js:1251
-msgid "Please enable af_readability first."
-msgstr "முதலில் AF_READABLICAL ஐ இயக்கவும்."
-
-#: js/App.js:1305
-msgid "Please select some feed first."
-msgstr "முதலில் சில ஊட்டங்களைத் தேர்ந்தெடுக்கவும்."
-
-#: js/App.js:1310
-msgid "You can't unsubscribe from the category."
-msgstr "நீங்கள் வகையிலிருந்து குழுவிலக முடியாது."
-
-#: js/FeedTree.js:137
-msgid "(Un)collapse"
-msgstr "(அன்) சரிவு"
-
 #: js/PrefLabelTree.js:71
 msgid "Edit label"
 msgstr "லேபிளைத் திருத்து"
@@ -2832,14 +2873,6 @@ msgstr "தேர்ந்தெடுக்கப்பட்ட லேபி�
 msgid "Removing selected labels..."
 msgstr "தேர்ந்தெடுக்கப்பட்ட லேபிள்களை நீக்குதல் ..."
 
-#: plugins/note/note.js:19
-msgid "Saving article note..."
-msgstr "கட்டுரை சேமிக்கிறது குறிப்பு ..."
-
-#: plugins/share/share_prefs.js:5
-msgid "This will invalidate all previously shared article URLs. Continue?"
-msgstr "இது முன்னர் பகிரப்பட்ட அனைத்து கட்டுரை முகவரி களையும் செல்லாது. தொடரவா?"
-
 #: plugins/share/share.js:7
 msgid "Share article by URL"
 msgstr "முகவரி ஆல் கட்டுரையைப் பகிரவும்"
@@ -2860,38 +2893,135 @@ msgstr "முகவரி ஐ மாற்ற முடியவில்லை
 msgid "Remove sharing for this article?"
 msgstr "இந்த கட்டுரைக்கான பகிர்வை அகற்றவா?"
 
+#: plugins/share/share_prefs.js:5
+msgid "This will invalidate all previously shared article URLs. Continue?"
+msgstr "இது முன்னர் பகிரப்பட்ட அனைத்து கட்டுரை முகவரி களையும் செல்லாது. தொடரவா?"
+
+#: plugins/shorten_expanded/init.js:35
+msgid "Expand article"
+msgstr "கட்டுரையை விரிவாக்குங்கள்"
+
 #: plugins/af_psql_trgm/init.js:6
 msgid "Related articles"
 msgstr "தொடர்புடைய கட்டுரைகள்"
 
-#: plugins/shorten_expanded/init.js:32
-msgid "Expand article"
-msgstr "கட்டுரையை விரிவாக்குங்கள்"
+#: plugins/note/note.js:19
+msgid "Saving article note..."
+msgstr "கட்டுரை சேமிக்கிறது குறிப்பு ..."
 
-#: js/CommonFilters.js:71
+#: js/PrefFeedTree.js:390
+msgid "Rename category to:"
+msgstr "வகையை மறுபெயரிடுங்கள்:"
+
+#: js/PrefFeedTree.js:466
+msgid "Feeds require authentication."
+msgstr "ஊட்டங்களுக்கு ஏற்பு தேவை."
+
+#: js/PrefFeedTree.js:555 js/CommonDialogs.js:317
+msgid "Unsubscribe from selected feeds"
+msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களிலிருந்து குழுவிலகவும்"
+
+#: js/Feeds.js:295
+msgid "Open Preferences"
+msgstr "திறந்த விருப்பத்தேர்வுகள்"
+
+#: js/Feeds.js:643
+#, javascript-format
+msgid "Search %s..."
+msgstr "தேடல் %s ..."
+
+#: js/Feeds.js:652
+msgid "Used for word stemming"
+msgstr "சொல் தண்டு பயன்படுத்தப்படுகிறது"
+
+#: js/Feeds.js:712
+msgid "Show feeds matching..."
+msgstr "ஊட்டங்கள் பொருத்தத்தைக் காட்டு ..."
+
+#: js/App.js:646
+msgid "Stack trace"
+msgstr "ச்டாக் சுவடு"
+
+#: js/App.js:653
+msgid "Additional information"
+msgstr "கூடுதல் தகவல்"
+
+#: js/CommonFilters.js:66
 msgid "No recent articles matching this filter have been found."
-msgstr ""
-"இந்த வடிப்பானுடன் பொருந்தக்கூடிய அண்மைக் கால கட்டுரைகள் எதுவும் கண்டறியப்படவில்லை."
+msgstr "இந்த வடிப்பானுடன் பொருந்தக்கூடிய அண்மைக் கால கட்டுரைகள் எதுவும் கண்டறியப்படவில்லை."
 
-#: js/CommonFilters.js:421
+#: js/CommonFilters.js:414
 msgid "Enabled"
 msgstr "இயக்கப்பட்டது"
 
-#: js/CommonFilters.js:422
+#: js/CommonFilters.js:415
 msgid "Match any rule"
 msgstr "எந்த விதியையும் பொருத்துங்கள்"
 
-#: js/CommonFilters.js:423
+#: js/CommonFilters.js:416
 msgid "Inverse matching"
 msgstr "தலைகீழ் பொருத்தம்"
 
-#: js/CommonFilters.js:441
+#: js/CommonFilters.js:434
 msgid "Match"
 msgstr "போட்டி"
 
-#: js/CommonFilters.js:474
+#: js/CommonFilters.js:467
 msgid "Apply actions"
 msgstr "செயல்களைப் பயன்படுத்துங்கள்"
+
+#: js/Article.js:205
+msgid "Attachments"
+msgstr "இணைப்புகள்"
+
+#: js/Article.js:317 js/Headlines.js:554
+msgid "Edit tags for this article"
+msgstr "இந்த கட்டுரைக்கான குறிச்சொற்களைத் திருத்தவும்"
+
+#: js/CommonDialogs.js:18
+msgid ""
+"Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. "
+"You will need to log out and back in to disable it."
+msgstr ""
+"சிறிய சிறிய ஆர்எச்எச் பாதுகாப்பான பயன்முறையில் இயங்குகிறது. அனைத்து கருப்பொருள்கள் "
+"மற்றும் செருகுநிரல்கள் முடக்கப்பட்டுள்ளன. அதை முடக்க நீங்கள் வெளியேறி மீண்டும் உள்ளே செல்ல "
+"வேண்டும்."
+
+#: js/CommonDialogs.js:53
+msgid "Feed or site URL"
+msgstr "தீவனம் அல்லது தள முகவரி"
+
+#: js/CommonDialogs.js:73
+msgid "Available feeds"
+msgstr "கிடைக்கும் ஊட்டங்கள்"
+
+#: js/CommonDialogs.js:106
+msgid "This feed requires authentication."
+msgstr "இந்த ஊட்டத்திற்கு ஏற்பு தேவை."
+
+#: js/CommonDialogs.js:320
+msgid "Debug selected feeds"
+msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களை பிழைத்திருத்த"
+
+#: js/CommonDialogs.js:531
+msgid "Feed title"
+msgstr "தீவன தலைப்பு"
+
+#: js/CommonDialogs.js:538
+msgid "Feed URL"
+msgstr "முகவரி க்கு உணவளிக்கவும்"
+
+#: js/CommonDialogs.js:557
+msgid "Site URL:"
+msgstr "தள URL:"
+
+#: js/CommonDialogs.js:559
+msgid "Site URL"
+msgstr "தள முகவரி"
+
+#: js/CommonDialogs.js:622
+msgid "Icon"
+msgstr "படவுரு"
 
 #: js/Headlines.js:474
 msgid "mark feed as read"
@@ -2900,10 +3030,6 @@ msgstr "தீவனத்தை படிக்க"
 #: js/Headlines.js:527
 msgid "Span all columns"
 msgstr "அனைத்து நெடுவரிசைகளையும் பரப்பவும்"
-
-#: js/Headlines.js:554 js/Article.js:317
-msgid "Edit tags for this article"
-msgstr "இந்த கட்டுரைக்கான குறிச்சொற்களைத் திருத்தவும்"
 
 #: js/Headlines.js:666
 msgid "Invert"
@@ -2924,10 +3050,6 @@ msgid ""
 msgstr ""
 "தலைப்புச் செய்திகளைப் புதுப்பிக்க முடியவில்லை (தவறான பொருள் பெறப்பட்டது - விவரங்களுக்கு "
 "பிழை கன்சோலைப் பார்க்கவும்)"
-
-#: js/PrefHelpers.js:229
-msgid "Clone"
-msgstr "நகலி"
 
 #: js/PrefHelpers.js:231
 msgid "Activate"
@@ -2968,27 +3090,6 @@ msgid_plural "Updates pending for %d plugins"
 msgstr[0] "புதுப்பிப்புகள் %d சொருகி நிலுவையில் உள்ளன"
 msgstr[1] "புதுப்பிப்புகள் %d செருகுநிரல்களுக்கு நிலுவையில் உள்ளன"
 
-#: js/Article.js:205
-msgid "Attachments"
-msgstr "இணைப்புகள்"
-
-#: js/Feeds.js:292
-msgid "Open Preferences"
-msgstr "திறந்த விருப்பத்தேர்வுகள்"
-
-#: js/Feeds.js:635
-#, javascript-format
-msgid "Search %s..."
-msgstr "தேடல் %s ..."
-
-#: js/Feeds.js:644
-msgid "Used for word stemming"
-msgstr "சொல் தண்டு பயன்படுத்தப்படுகிறது"
-
-#: js/Feeds.js:704
-msgid "Show feeds matching..."
-msgstr "ஊட்டங்கள் பொருத்தத்தைக் காட்டு ..."
-
 #: js/PrefUsers.js:76
 msgid "Access level: "
 msgstr "அணுகல் நிலை: "
@@ -3001,70 +3102,13 @@ msgstr "OTP இயக்கப்பட்டது"
 msgid "User details"
 msgstr "பயனர் விவரங்கள்"
 
-#: js/PrefFeedTree.js:390
-msgid "Rename category to:"
-msgstr "வகையை மறுபெயரிடுங்கள்:"
-
-#: js/PrefFeedTree.js:466
-msgid "Feeds require authentication."
-msgstr "ஊட்டங்களுக்கு ஏற்பு தேவை."
-
-#: js/PrefFeedTree.js:555 js/CommonDialogs.js:312
-msgid "Unsubscribe from selected feeds"
-msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களிலிருந்து குழுவிலகவும்"
-
-#: js/CommonDialogs.js:18
-msgid ""
-"Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. "
-"You will need to log out and back in to disable it."
-msgstr ""
-"சிறிய சிறிய ஆர்எச்எச் பாதுகாப்பான பயன்முறையில் இயங்குகிறது. அனைத்து கருப்பொருள்கள் மற்றும்"
-" செருகுநிரல்கள் முடக்கப்பட்டுள்ளன. அதை முடக்க நீங்கள் வெளியேறி மீண்டும் உள்ளே செல்ல வேண்டும்."
-
-#: js/CommonDialogs.js:53
-msgid "Feed or site URL"
-msgstr "தீவனம் அல்லது தள முகவரி"
-
-#: js/CommonDialogs.js:68
-msgid "Available feeds"
-msgstr "கிடைக்கும் ஊட்டங்கள்"
-
-#: js/CommonDialogs.js:101
-msgid "This feed requires authentication."
-msgstr "இந்த ஊட்டத்திற்கு ஏற்பு தேவை."
-
-#: js/CommonDialogs.js:315
-msgid "Debug selected feeds"
-msgstr "தேர்ந்தெடுக்கப்பட்ட ஊட்டங்களை பிழைத்திருத்த"
-
-#: js/CommonDialogs.js:526
-msgid "Feed title"
-msgstr "தீவன தலைப்பு"
-
-#: js/CommonDialogs.js:533
-msgid "Feed URL"
-msgstr "முகவரி க்கு உணவளிக்கவும்"
-
-#: js/CommonDialogs.js:552
-msgid "Site URL:"
-msgstr "தள URL:"
-
-#: js/CommonDialogs.js:554
-msgid "Site URL"
-msgstr "தள முகவரி"
-
-#: js/CommonDialogs.js:617
-msgid "Icon"
-msgstr "படவுரு"
-
-#: js/App.js:646
-msgid "Stack trace"
-msgstr "ச்டாக் சுவடு"
-
-#: js/App.js:653
-msgid "Additional information"
-msgstr "கூடுதல் தகவல்"
-
 #: js/PrefLabelTree.js:126
 msgid "Caption"
 msgstr "தலைப்பு"
+
+#~ msgid ""
+#~ "Setting this value too low might produce false positives, zero disables "
+#~ "checking."
+#~ msgstr ""
+#~ "இந்த மதிப்பை மிகக் குறைவாக அமைப்பது தவறான நேர்மறைகளை உருவாக்கக்கூடும், பூச்சியம் "
+#~ "சோதனையை முடக்குகிறது."

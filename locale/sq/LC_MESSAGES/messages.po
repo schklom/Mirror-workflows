@@ -7,130 +7,133 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-14 12:17+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"POT-Creation-Date: 2025-05-04 13:44+0300\n"
+"PO-Revision-Date: 2025-05-05 16:06+0000\n"
+"Last-Translator: Besnik Bleta <besnik@programeshqip.org>\n"
+"Language-Team: Albanian <https://hosted.weblate.org/projects/tt-rss/webui/sq/"
+">\n"
 "Language: sq\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: backend.php:61
 msgid "Use default"
-msgstr ""
+msgstr "Përdor parazgjedhjen"
 
 #: backend.php:62
 msgid "Never purge"
-msgstr ""
+msgstr "Mos i spastro kurrë"
 
 #: backend.php:63
 msgid "1 week old"
-msgstr ""
+msgstr "1 javë të vjetër"
 
 #: backend.php:64
 msgid "2 weeks old"
-msgstr ""
+msgstr "2 javë të vjetër"
 
 #: backend.php:65
 msgid "1 month old"
-msgstr ""
+msgstr "1 muaj të vjetër"
 
 #: backend.php:66
 msgid "2 months old"
-msgstr ""
+msgstr "2 muaj të vjetër"
 
 #: backend.php:67
 msgid "3 months old"
-msgstr ""
+msgstr "3 muaj të vjetër"
 
 #: backend.php:70
 msgid "Default interval"
-msgstr ""
+msgstr "Interval parazgjedhje"
 
 #: backend.php:71 backend.php:81
 msgid "Disable updates"
-msgstr ""
+msgstr "Çaktivizo përditësimet"
 
 #: backend.php:72 backend.php:82
 msgid "15 minutes"
-msgstr ""
+msgstr "15 minuta"
 
 #: backend.php:73 backend.php:83
 msgid "30 minutes"
-msgstr ""
+msgstr "30 minuta"
 
 #: backend.php:74 backend.php:84
 msgid "Hourly"
-msgstr ""
+msgstr "Çdo orë"
 
 #: backend.php:75 backend.php:85
 msgid "4 hours"
-msgstr ""
+msgstr "4 orë"
 
 #: backend.php:76 backend.php:86
 msgid "12 hours"
-msgstr ""
+msgstr "12 orë"
 
 #: backend.php:77 backend.php:87
 msgid "Daily"
-msgstr ""
+msgstr "Përditë"
 
 #: backend.php:78 backend.php:88
 msgid "Weekly"
-msgstr ""
+msgstr "Çdo javë"
 
-#: backend.php:91 classes/Pref_Feeds.php:574 classes/Pref_Feeds.php:627
+#: backend.php:91 classes/Pref_Feeds.php:571 classes/Pref_Feeds.php:624
 msgid "Disabled"
-msgstr ""
+msgstr "Të çaktivizuara"
 
 #: backend.php:92
 msgid "Read Only"
-msgstr ""
+msgstr "Vetëm Lexim"
 
-#: backend.php:93 classes/Pref_System.php:118
+#: backend.php:93 classes/Pref_System.php:150
 msgid "User"
-msgstr ""
+msgstr "Përdorues"
 
 #: backend.php:94
 msgid "Power User"
-msgstr ""
+msgstr "Përdorues i Sprovuar"
 
 #: backend.php:95
 msgid "Administrator"
-msgstr ""
+msgstr "Përgjegjës"
 
 #: index.php:123 index.php:137 index.php:290 prefs.php:115
-#: classes/Pref_Prefs.php:895 classes/Pref_Prefs.php:945
-#: classes/Pref_System.php:217 js/PrefFilterTree.js:126 js/CommonFilters.js:278
-#: js/CommonFilters.js:410 js/Headlines.js:356 js/Headlines.js:541
+#: classes/Pref_Prefs.php:887 classes/Pref_Prefs.php:937
+#: classes/Pref_System.php:249 classes/Pref_System.php:260
+#: js/PrefFeedTree.js:186 js/PrefFeedTree.js:193 js/PrefFeedTree.js:317
+#: js/PrefFeedTree.js:394 js/Feeds.js:499 js/PrefFilterTree.js:126
+#: js/CommonFilters.js:271 js/CommonFilters.js:403 js/Article.js:288
+#: js/Article.js:364 js/CommonDialogs.js:339 js/CommonDialogs.js:496
+#: js/CommonDialogs.js:651 js/Headlines.js:356 js/Headlines.js:541
 #: js/PrefHelpers.js:27 js/PrefHelpers.js:39 js/PrefHelpers.js:62
 #: js/PrefHelpers.js:115 js/PrefHelpers.js:243 js/PrefHelpers.js:294
-#: js/PrefHelpers.js:445 js/PrefHelpers.js:456 js/Article.js:288
-#: js/Article.js:364 js/Feeds.js:491 js/PrefUsers.js:112 js/PrefFeedTree.js:186
-#: js/PrefFeedTree.js:193 js/PrefFeedTree.js:317 js/PrefFeedTree.js:394
-#: js/CommonDialogs.js:334 js/CommonDialogs.js:491 js/CommonDialogs.js:646
-#: plugins/note/note.js:38 plugins/share/share.js:56
-#: plugins/af_psql_trgm/init.js:7 js/CommonFilters.js:182
+#: js/PrefHelpers.js:445 js/PrefHelpers.js:456 js/PrefUsers.js:112
+#: plugins/share/share.js:56 plugins/af_psql_trgm/init.js:7
+#: plugins/note/note.js:38 js/CommonFilters.js:175
 msgid "Loading, please wait..."
-msgstr ""
+msgstr "Po ngarkohet, ju lutemi, pritni…"
 
 #: index.php:162 prefs.php:124 js/App.js:494
 msgid "Communication problem with server."
-msgstr ""
+msgstr "Problem komunikimi me shërbyesin."
 
 #: index.php:165 prefs.php:126
 msgid "Recent entries found in event log."
-msgstr ""
+msgstr "U gjetën zëra të freskët te regjistri i veprimtarisë."
 
 #: index.php:168
 msgid "Updates are available from Git."
-msgstr ""
+msgstr "Përditësime ka në Git."
 
 #: index.php:178 js/Headlines.js:662
 msgid "Show articles"
-msgstr ""
+msgstr "Shfaqi artikujt"
 
 #: index.php:181
 msgid "Adaptive"
@@ -138,967 +141,833 @@ msgstr ""
 
 #: index.php:182
 msgid "All Articles"
-msgstr ""
+msgstr "Krejt Artikujt"
 
-#: index.php:183 classes/RPC.php:644
+#: index.php:183 classes/RPC.php:550
 msgid "Starred"
-msgstr ""
+msgstr "Me yll"
 
-#: index.php:184 classes/RPC.php:645
+#: index.php:184 classes/RPC.php:551
 msgid "Published"
-msgstr ""
+msgstr "Të botuar"
 
 #: index.php:185 js/Headlines.js:665
 msgid "Unread"
-msgstr ""
+msgstr "Të palexuar"
 
 #: index.php:186
 msgid "With Note"
-msgstr ""
+msgstr "Me Shënim"
 
 #: index.php:189
 msgid "Sort articles"
-msgstr ""
+msgstr "Renditi artikujt"
 
 #: index.php:193
 msgid "Default"
-msgstr ""
+msgstr "Parazgjedhje"
 
 #: index.php:194
 msgid "Newest first"
-msgstr ""
+msgstr "Më të rinjtë së pari"
 
 #: index.php:195
 msgid "Oldest first"
-msgstr ""
+msgstr "Më të vjetrit së pari"
 
-#: index.php:196 js/CommonFilters.js:437
+#: index.php:196 js/CommonFilters.js:430
 msgid "Title"
-msgstr ""
+msgstr "Titull"
 
-#: index.php:209 index.php:261 classes/RPC.php:631 js/Headlines.js:1574
+#: index.php:209 index.php:261 classes/RPC.php:537 js/Headlines.js:1574
 #: js/FeedTree.js:92 js/FeedTree.js:131 js/Headlines.js:673
 msgid "Mark as read"
-msgstr ""
+msgstr "Vëri shenjë si i lexuar"
 
 #: index.php:210
 msgid "Older than one day"
-msgstr ""
+msgstr "Më të vjetër se një ditë"
 
 #: index.php:211
 msgid "Older than one week"
-msgstr ""
+msgstr "Më të vjetër se një javë"
 
 #: index.php:212
 msgid "Older than two weeks"
-msgstr ""
+msgstr "Më të vjetër se dy javë"
 
 #: index.php:227
 msgid "Actions..."
-msgstr ""
+msgstr "Veprime…"
 
 #: index.php:253
 msgid "Preferences..."
-msgstr ""
+msgstr "Parapëlqime…"
 
 #: index.php:254 js/PrefHelpers.js:614
 msgid "Search..."
-msgstr ""
+msgstr "Kërkoni…"
 
 #: index.php:255
 msgid "Search feeds..."
-msgstr ""
+msgstr "Kërkoni në prurjet…"
 
 #: index.php:256
 msgid "Feed actions:"
-msgstr ""
+msgstr "Veprime prurjesh:"
 
 #: index.php:257 plugins/bookmarklets/init.php:40
 #: plugins/bookmarklets/init.php:75
 msgid "Subscribe to feed..."
-msgstr ""
+msgstr "Pajtohuni te prurje…"
 
 #: index.php:258
 msgid "Edit this feed..."
-msgstr ""
+msgstr "Përpunoni këtë prurjeje…"
 
 #: index.php:259 classes/Pref_Feeds.php:960 js/PrefFeedTree.js:120
-#: js/CommonDialogs.js:633
+#: js/CommonDialogs.js:638
 msgid "Unsubscribe"
-msgstr ""
+msgstr "Shpajtohuni"
 
 #: index.php:260
 msgid "All feeds:"
-msgstr ""
+msgstr "Krejt prurjet:"
 
 #: index.php:262
 msgid "(Un)hide read feeds"
-msgstr ""
+msgstr "(Sh)fshih prurje të lexuara"
 
 #: index.php:263
 msgid "UI layout:"
-msgstr ""
+msgstr "Skemë UI:"
 
-#: index.php:264 classes/RPC.php:640
+#: index.php:264 classes/RPC.php:546
 msgid "Toggle combined mode"
-msgstr ""
+msgstr "Aktivizo/çaktivizo mënyrën e ndërthurur"
 
-#: index.php:266 classes/RPC.php:617
+#: index.php:266 classes/RPC.php:523
 msgid "Toggle widescreen mode"
-msgstr ""
+msgstr "Kalo/dil nga mënyra “Me ekran të gjerë”"
 
 #: index.php:268
 msgid "Toggle expand all articles"
-msgstr ""
+msgstr "Aktivizo/çaktivizo “Zgjeroji krejt artikujt”"
 
 #: index.php:269
 msgid "Other actions:"
-msgstr ""
+msgstr "Veprime të tjera:"
 
 #: index.php:270
 msgid "Keyboard shortcuts help"
-msgstr ""
+msgstr "Ndihmë mbi shkurtore tastiere"
 
 #: index.php:279
 msgid "Logout"
-msgstr ""
+msgstr "Dalje"
 
-#: prefs.php:18 prefs.php:135 classes/Pref_Prefs.php:947 classes/RPC.php:647
+#: prefs.php:18 prefs.php:135 classes/RPC.php:553 classes/Pref_Prefs.php:939
 msgid "Preferences"
-msgstr ""
+msgstr "Parapëlqime"
 
 #: prefs.php:128
 msgid "Exit preferences"
-msgstr ""
+msgstr "Parapëlqime daljesh"
 
-#: prefs.php:138 classes/Pref_Prefs.php:44 classes/Pref_Feeds.php:131
-#: classes/Pref_Feeds.php:949
+#: prefs.php:138 classes/Pref_Feeds.php:127 classes/Pref_Feeds.php:949
+#: classes/Pref_Prefs.php:44
 msgid "Feeds"
-msgstr ""
+msgstr "Prurje"
 
-#: prefs.php:142 classes/Pref_Filters.php:244
+#: prefs.php:142 classes/Pref_Filters.php:297
 msgid "Filters"
-msgstr ""
+msgstr "Filtra"
 
-#: prefs.php:146 classes/Pref_Labels.php:23 classes/Feeds.php:1353
+#: prefs.php:146 classes/Feeds.php:1316 classes/Pref_Labels.php:23
 msgid "Labels"
-msgstr ""
+msgstr "Etiketa"
 
 #: prefs.php:151
 msgid "Users"
-msgstr ""
+msgstr "Përdorues"
 
 #: prefs.php:154
 msgid "System"
-msgstr ""
+msgstr "Sistem"
 
-#: classes/Pref_Labels.php:167
-#, php-format
-msgid "Created label <b>%s</b>"
-msgstr ""
-
-#: classes/Pref_Labels.php:179 classes/Pref_Prefs.php:853
-#: classes/Pref_Prefs.php:1489 classes/Pref_Feeds.php:939
-#: classes/Pref_Users.php:223 classes/Pref_Filters.php:641
-#: js/CommonFilters.js:445 js/CommonFilters.js:478 js/PrefHelpers.js:184
-#: js/PrefFeedTree.js:524 js/CommonDialogs.js:278
-msgid "Select"
-msgstr ""
-
-#: classes/Pref_Prefs.php:36 classes/Pref_Feeds.php:645 js/CommonDialogs.js:517
-msgid "General"
-msgstr ""
-
-#: classes/Pref_Prefs.php:57
-msgid "Articles"
-msgstr ""
-
-#: classes/Pref_Prefs.php:71
-msgid "Digest"
-msgstr ""
-
-#: classes/Pref_Prefs.php:77
-msgid "Advanced"
-msgstr ""
-
-#: classes/Pref_Prefs.php:88
-msgid "Debugging"
-msgstr ""
-
-#: classes/Pref_Prefs.php:94
-msgid "Never apply these tags automatically (comma-separated list)."
-msgstr ""
-
-#: classes/Pref_Prefs.php:98
-msgid "Blacklisted tags"
-msgstr ""
-
-#: classes/Pref_Prefs.php:99
-msgid "Default language"
-msgstr ""
-
-#: classes/Pref_Prefs.php:99
-msgid "Used for full-text search"
-msgstr ""
-
-#: classes/Pref_Prefs.php:100
-msgid "Mark read on scroll"
-msgstr ""
-
-#: classes/Pref_Prefs.php:100
-msgid "Mark articles as read as you scroll past them"
-msgstr ""
-
-#: classes/Pref_Prefs.php:101
-msgid "Always expand articles"
-msgstr ""
-
-#: classes/Pref_Prefs.php:102
-msgid "Combined mode"
-msgstr ""
-
-#: classes/Pref_Prefs.php:102
-msgid "Show flat list of articles instead of separate panels"
-msgstr ""
-
-#: classes/Pref_Prefs.php:103
-msgid "Confirm marking feeds as read"
-msgstr ""
-
-#: classes/Pref_Prefs.php:104
-msgid "Default update interval"
-msgstr ""
-
-#: classes/Pref_Prefs.php:105
-msgid "Mark sent articles as read"
-msgstr ""
-
-#: classes/Pref_Prefs.php:106
-msgid "Enable digest"
-msgstr ""
-
-#: classes/Pref_Prefs.php:106
-msgid "Send daily digest of new (and unread) headlines to your e-mail address"
-msgstr ""
-
-#: classes/Pref_Prefs.php:107
-msgid "Try to send around this time"
-msgstr ""
-
-#: classes/Pref_Prefs.php:107
-msgid "Time in UTC"
-msgstr ""
-
-#: classes/Pref_Prefs.php:108
-msgid "Enable API"
-msgstr ""
-
-#: classes/Pref_Prefs.php:108
-msgid "Allows accessing this account through the API"
-msgstr ""
-
-#: classes/Pref_Prefs.php:109
-msgid "Enable categories"
-msgstr ""
-
-#: classes/Pref_Prefs.php:110
-msgid "Maximum age of fresh articles"
-msgstr ""
-
-#: classes/Pref_Prefs.php:110
-msgid "hours"
-msgstr ""
-
-#: classes/Pref_Prefs.php:111
-msgid "Hide read feeds"
-msgstr ""
-
-#: classes/Pref_Prefs.php:112
-msgid "Always show special feeds"
-msgstr ""
-
-#: classes/Pref_Prefs.php:112
-msgid "While hiding read feeds"
-msgstr ""
-
-#: classes/Pref_Prefs.php:113
-msgid "Long date format"
-msgstr ""
-
-#: classes/Pref_Prefs.php:113
-msgid ""
-"Syntax is identical to PHP <a href='http://php.net/manual/function.date."
-"php'>date()</a> function."
-msgstr ""
-
-#: classes/Pref_Prefs.php:114
-msgid "Automatically show next feed"
-msgstr ""
-
-#: classes/Pref_Prefs.php:114
-msgid "After marking one as read"
-msgstr ""
-
-#: classes/Pref_Prefs.php:115
-msgid "Purge articles older than"
-msgstr ""
-
-#: classes/Pref_Prefs.php:115
-msgid "<strong>days</strong> (0 disables)"
-msgstr ""
-
-#: classes/Pref_Prefs.php:116
-msgid "Purge unread articles"
-msgstr ""
-
-#: classes/Pref_Prefs.php:117
-msgid "Short date format"
-msgstr ""
-
-#: classes/Pref_Prefs.php:118
-msgid "Show content preview in headlines"
-msgstr ""
-
-#: classes/Pref_Prefs.php:119
-msgid "SSL client certificate"
-msgstr ""
-
-#: classes/Pref_Prefs.php:120 classes/Pref_Feeds.php:632
-#: js/CommonDialogs.js:508
-msgid "Do not embed media"
-msgstr ""
-
-#: classes/Pref_Prefs.php:121
-msgid "Time zone"
-msgstr ""
-
-#: classes/Pref_Prefs.php:122
-msgid "Group by feed"
-msgstr ""
-
-#: classes/Pref_Prefs.php:122
-msgid "Group multiple-feed output by originating feed"
-msgstr ""
-
-#: classes/Pref_Prefs.php:123
-msgid "Language"
-msgstr ""
-
-#: classes/Pref_Prefs.php:124
-msgid "Theme"
-msgstr ""
-
-#: classes/Pref_Prefs.php:125
-msgid "Don't enforce DISTINCT headlines"
-msgstr ""
-
-#: classes/Pref_Prefs.php:125
-msgid "May produce duplicate entries"
-msgstr ""
-
-#: classes/Pref_Prefs.php:126
-msgid "Show article and feed IDs"
-msgstr ""
-
-#: classes/Pref_Prefs.php:126
-msgid "In the headlines buffer"
-msgstr ""
-
-#: classes/Pref_Prefs.php:127
-msgid "Disable conditional counter updates"
-msgstr ""
-
-#: classes/Pref_Prefs.php:127
-msgid "May increase server load"
-msgstr ""
-
-#: classes/Pref_Prefs.php:128
-msgid "Grid view"
-msgstr ""
-
-#: classes/Pref_Prefs.php:128
-msgid "On wider screens, if always expanded"
-msgstr ""
-
-#: classes/Pref_Prefs.php:129
-msgid "Required score"
-msgstr ""
-
-#: classes/Pref_Prefs.php:129
-msgid "Include articles with this or above score"
-msgstr ""
-
-#: classes/Pref_Prefs.php:233
-msgid "The configuration was saved."
-msgstr ""
-
-#: classes/Pref_Prefs.php:275
-msgid "Your personal data has been saved."
-msgstr ""
-
-#: classes/Pref_Prefs.php:305
-msgid "Full name:"
-msgstr ""
-
-#: classes/Pref_Prefs.php:310 js/PrefUsers.js:98
-msgid "E-mail:"
-msgstr ""
-
-#: classes/Pref_Prefs.php:318 classes/Pref_Feeds.php:714
-#: plugins/nsfw/init.php:105 plugins/note/init.php:49
-#: plugins/af_psql_trgm/init.php:218 js/CommonFilters.js:237
-#: js/CommonFilters.js:321 js/CommonFilters.js:525 js/CommonDialogs.js:634
-#: js/Article.js:370 js/PrefUsers.js:119 js/PrefLabelTree.js:170
-msgid "Save"
-msgstr ""
-
-#: classes/Pref_Prefs.php:367
-msgid "Old password:"
-msgstr ""
-
-#: classes/Pref_Prefs.php:372 js/PrefUsers.js:84
-msgid "New password:"
-msgstr ""
-
-#: classes/Pref_Prefs.php:377
-msgid "Confirm password:"
-msgstr ""
-
-#: classes/Pref_Prefs.php:385 js/PrefUsers.js:86
-msgid "Change password"
-msgstr ""
-
-#: classes/Pref_Prefs.php:392
-#, php-format
-msgid ""
-"Authentication module used for this session (<b>%s</b>) does not provide an "
-"ability to set passwords."
-msgstr ""
-
-#: classes/Pref_Prefs.php:409
-msgid "Generate password"
-msgstr ""
-
-#: classes/Pref_Prefs.php:415 classes/Pref_Feeds.php:973 js/PrefHelpers.js:227
-msgid "Remove selected"
-msgstr ""
-
-#: classes/Pref_Prefs.php:451 classes/Pref_Prefs.php:503
-msgid "Your password:"
-msgstr ""
-
-#: classes/Pref_Prefs.php:459
-msgid "Disable OTP"
-msgstr ""
-
-#: classes/Pref_Prefs.php:481
-msgid "OTP secret:"
-msgstr ""
-
-#: classes/Pref_Prefs.php:508
-msgid "Verification code:"
-msgstr ""
-
-#: classes/Pref_Prefs.php:516
-msgid "Enable OTP"
-msgstr ""
-
-#: classes/Pref_Prefs.php:530
-msgid "Personal data"
-msgstr ""
-
-#: classes/Pref_Prefs.php:533 js/PrefFeedTree.js:458 js/CommonDialogs.js:89
-msgid "Password"
-msgstr ""
-
-#: classes/Pref_Prefs.php:536
-msgid "App passwords"
-msgstr ""
-
-#: classes/Pref_Prefs.php:543
-msgid "Authenticator (OTP)"
-msgstr ""
-
-#: classes/Pref_Prefs.php:554
-msgid "Some preferences are only available in default profile."
-msgstr ""
-
-#: classes/Pref_Prefs.php:647
-msgid "default"
-msgstr ""
-
-#: classes/Pref_Prefs.php:655
-msgid "Customize"
-msgstr ""
-
-#: classes/Pref_Prefs.php:657
-msgid "More themes..."
-msgstr ""
-
-#: classes/Pref_Prefs.php:688
-msgid "Preview"
-msgstr ""
-
-#: classes/Pref_Prefs.php:714
-msgid "Register"
-msgstr ""
-
-#: classes/Pref_Prefs.php:718 classes/Pref_System.php:95
-msgid "Clear"
-msgstr ""
-
-#: classes/Pref_Prefs.php:722 classes/Pref_Prefs.php:889
-#: plugins/bookmarklets/init.php:367 js/CommonDialogs.js:689
-msgid "More info..."
-msgstr ""
-
-#: classes/Pref_Prefs.php:730
-#, php-format
-msgid "Current server time: %s"
-msgstr ""
-
-#: classes/Pref_Prefs.php:778
-msgid "Save configuration"
-msgstr ""
-
-#: classes/Pref_Prefs.php:781
-msgid "Save and exit"
-msgstr ""
-
-#: classes/Pref_Prefs.php:788 js/PrefHelpers.js:127
-msgid "Manage profiles"
-msgstr ""
-
-#: classes/Pref_Prefs.php:793
-msgid "Reset to defaults"
-msgstr ""
-
-#: classes/Pref_Prefs.php:848 classes/Pref_Feeds.php:934
-#: classes/Pref_Users.php:217 classes/Pref_Filters.php:636 js/Feeds.js:660
-#: js/Feeds.js:655 js/Feeds.js:710
-msgid "Search"
-msgstr ""
-
-#: classes/Pref_Prefs.php:856 classes/Pref_Prefs.php:1492
-#: classes/Pref_Feeds.php:942 classes/Pref_Users.php:226
-#: classes/Pref_Filters.php:644 js/CommonFilters.js:449 js/CommonFilters.js:481
-#: js/Headlines.js:664 js/PrefHelpers.js:187 js/PrefFeedTree.js:527
-#: js/CommonDialogs.js:281
-msgid "All"
-msgstr ""
-
-#: classes/Pref_Prefs.php:858 classes/Pref_Prefs.php:1494
-#: classes/Pref_Feeds.php:944 classes/Pref_Users.php:228
-#: classes/Pref_Filters.php:646 js/CommonFilters.js:451 js/CommonFilters.js:483
-#: js/Headlines.js:667 js/PrefHelpers.js:189 js/PrefFeedTree.js:529
-#: js/CommonDialogs.js:283
-msgid "None"
-msgstr ""
-
-#: classes/Pref_Prefs.php:887
-#, php-format
-msgid ""
-"The following plugins use per-feed content hooks. This may cause excessive "
-"data usage and origin server load resulting in a ban of your instance: "
-"<b>%s</b>"
-msgstr ""
-
-#: classes/Pref_Prefs.php:903 js/CommonFilters.js:235
-msgid "More info"
-msgstr ""
-
-#: classes/Pref_Prefs.php:906
-msgid "Enable selected"
-msgstr ""
-
-#: classes/Pref_Prefs.php:909
-msgid "Reload"
-msgstr ""
-
-#: classes/Pref_Prefs.php:916
-msgid "Check for updates"
-msgstr ""
-
-#: classes/Pref_Prefs.php:923
-msgid "Install plugin"
-msgstr ""
-
-#: classes/Pref_Prefs.php:936
-msgid "Personal data / Authentication"
-msgstr ""
-
-#: classes/Pref_Prefs.php:950 classes/Pref_Feeds.php:1088
-#: js/CommonDialogs.js:628
-msgid "Plugins"
-msgstr ""
-
-#: classes/Pref_Prefs.php:984
-msgid "Incorrect one time password"
-msgstr ""
-
-#: classes/Pref_Prefs.php:987 classes/Pref_Prefs.php:1026
-msgid "Incorrect password"
-msgstr ""
-
-#: classes/Pref_Prefs.php:1041
-#, php-format
-msgid "v%.2f, by %s"
-msgstr ""
-
-#: classes/Pref_Prefs.php:1055
-#, php-format
-msgid "v%s, by %s"
-msgstr ""
-
-#: classes/Pref_Prefs.php:1456 classes/Handler_Public.php:291
-#: include/login_form.php:151
+#: classes/Handler_Public.php:291 classes/Pref_Prefs.php:1448
+#: include/login_form.php:154
 msgid "Default profile"
-msgstr ""
+msgstr "Profil parazgjedhje"
 
-#: classes/Pref_Prefs.php:1503
-msgid "Description"
-msgstr ""
+#: classes/Handler_Public.php:401
+msgid "Incorrect username or password"
+msgstr "Emër përdoruesi ose fjalëkalim i pasaktë"
 
-#: classes/Pref_Prefs.php:1504
-msgid "Created"
-msgstr ""
+#: classes/Handler_Public.php:461
+msgid "Password recovery"
+msgstr "Rimarrje fjalëkalimi"
 
-#: classes/Pref_Prefs.php:1505
-msgid "Last used"
-msgstr ""
+#: classes/Handler_Public.php:498 classes/Handler_Public.php:528
+#: classes/Handler_Public.php:588 classes/Handler_Public.php:705
+#: classes/Handler_Public.php:712 classes/Handler_Public.php:735
+#: plugins/bookmarklets/init.php:94 plugins/bookmarklets/init.php:139
+#: plugins/bookmarklets/init.php:157 plugins/bookmarklets/init.php:162
+msgid "Return to Tiny Tiny RSS"
+msgstr "Kthehuni te Tiny Tiny RSS"
 
-#: classes/Pref_Prefs.php:1550
-#, php-format
+#: classes/Handler_Public.php:501
 msgid ""
-"Generated password <strong>%s</strong> for %s. Please remember it for future "
-"reference."
+"You will need to provide valid account name and email. Password reset link "
+"will be sent to your email address."
 msgstr ""
+"Do t’ju duhet të jepni një emër dhe email të vlefshëm llogarie. Lidhja e "
+"ricaktimit të fjalëkalimit do të dërgohet te adresa juaj email."
 
-#: classes/Mailer.php:51
+#: classes/Handler_Public.php:508 classes/Pref_Feeds.php:680
+#: plugins/bookmarklets/init.php:306 include/login_form.php:122
+#: js/CommonDialogs.js:596 js/PrefUsers.js:64
+msgid "Login:"
+msgstr "Hyrje:"
+
+#: classes/Handler_Public.php:513
+msgid "Email:"
+msgstr "Email:"
+
+#: classes/Handler_Public.php:521
 #, php-format
-msgid "Unknown error while sending mail. Hooks tried: %d."
-msgstr ""
+msgid "How much is %d + %d:"
+msgstr "Sa bën %d + %d:"
 
-#: classes/TimeHelper.php:9
+#: classes/Handler_Public.php:527 classes/Pref_Users.php:239
+msgid "Reset password"
+msgstr "Ricaktoni fjalëkalimin"
+
+#: classes/Handler_Public.php:538
+msgid "Some of the required form parameters are missing or incorrect."
+msgstr ""
+"Disa nga parametrat e domosdoshëm të formularit mungojnë ose janë të pasaktë."
+
+#: classes/Handler_Public.php:542 classes/Handler_Public.php:594
+msgid "Go back"
+msgstr "Shko mbrapsht"
+
+#: classes/Handler_Public.php:580
+msgid "[tt-rss] Password reset request"
+msgstr "[tt-rss] Kërkesë ricaktimi fjalëkalimi"
+
+#: classes/Handler_Public.php:590
+msgid "Sorry, login and email combination not found."
+msgstr "Na ndjeni, s’u gjet ndërthurje kredencialesh hyrjesh dhe email."
+
+#: classes/Handler_Public.php:610
+msgid "Your access level is insufficient to run this script."
+msgstr "Lejet tuaja janë të pamjaftueshme për xhirimin e këtij programthi."
+
+#: classes/Handler_Public.php:672
+msgid "Database Updater"
+msgstr "Përditësues Baze të Dhënash"
+
+#: classes/Handler_Public.php:685
 #, php-format
-msgid "%d min"
+msgid "Performing updates to version %d"
+msgstr "Po kryhen përditësime për versionin %d"
+
+#: classes/Handler_Public.php:700 classes/Handler_Public.php:727
+#: js/PrefHelpers.js:418 js/PrefHelpers.js:764
+msgid "Update"
 msgstr ""
 
-#: classes/Pref_System.php:24
-msgid "Test message from tt-rss"
-msgstr ""
-
-#: classes/Pref_System.php:76 js/PrefHelpers.js:622
-msgid "Refresh"
-msgstr ""
-
-#: classes/Pref_System.php:81
-msgid "&lt;&lt;"
-msgstr ""
-
-#: classes/Pref_System.php:85
+#: classes/Handler_Public.php:720
 #, php-format
-msgid "Page %d of %d"
+msgid "Database schema needs update to the latest version (%d to %d)."
 msgstr ""
+"Skema e bazës së të dhënave lyp përditësim me versionin më të ri (%d në %d)."
 
-#: classes/Pref_System.php:90
-msgid "&gt;&gt;"
-msgstr ""
+#: classes/Pref_Filters.php:269 classes/Pref_Filters.php:279
+#: classes/Pref_Filters.php:468 classes/Pref_Filters.php:976
+msgid "All feeds"
+msgstr "Krejt prurjet"
 
-#: classes/Pref_System.php:99
-msgid "Severity:"
-msgstr ""
+#: classes/Pref_Filters.php:288 classes/Pref_Filters.php:489
+#: classes/Pref_Filters.php:492
+msgid "(inverse)"
+msgstr "(së prapthi)"
 
-#: classes/Pref_System.php:103
-msgid "Errors"
-msgstr ""
-
-#: classes/Pref_System.php:104
-msgid "Warnings"
-msgstr ""
-
-#: classes/Pref_System.php:105
-msgid "Everything"
-msgstr ""
-
-#: classes/Pref_System.php:115
-msgid "Error"
-msgstr ""
-
-#: classes/Pref_System.php:116
-msgid "Filename"
-msgstr ""
-
-#: classes/Pref_System.php:117
-msgid "Message"
-msgstr ""
-
-#: classes/Pref_System.php:119
-msgid "Date"
-msgstr ""
-
-#: classes/Pref_System.php:163
-msgid "Event log"
-msgstr ""
-
-#: classes/Pref_System.php:169
-msgid "Mail configuration"
-msgstr ""
-
-#: classes/Pref_System.php:200
-msgid "To:"
-msgstr ""
-
-#: classes/Pref_System.php:202
-msgid "Send test email"
-msgstr ""
-
-#: classes/Pref_System.php:208
-msgid "PHP Information"
-msgstr ""
-
-#: classes/Feeds.php:93 classes/Feeds.php:495
-msgid "Feed not found."
-msgstr ""
-
-#: classes/Feeds.php:156
-msgid "Never"
-msgstr ""
-
-#: classes/Feeds.php:235 classes/Feeds.php:1214
-msgid "Archived articles"
-msgstr ""
-
-#: classes/Feeds.php:325
-msgid "Collapse article"
-msgstr ""
-
-#: classes/Feeds.php:344
+#: classes/Pref_Filters.php:284 classes/Pref_Filters.php:488
+#: classes/Pref_Filters.php:491
 #, php-format
-msgid "Imported at %s"
-msgstr ""
+msgid "%s on %s in %s %s"
+msgstr "%s më %s te %s %s"
 
-#: classes/Feeds.php:401
-msgid "No unread articles found to display."
-msgstr ""
-
-#: classes/Feeds.php:402
-msgid "No updated articles found to display."
-msgstr ""
-
-#: classes/Feeds.php:403
-msgid "No starred articles found to display."
-msgstr ""
-
-#: classes/Feeds.php:405
-msgid ""
-"No articles found to display. You can assign articles to labels manually "
-"from article header context menu (applies to all selected articles) or use a "
-"filter."
-msgstr ""
-
-#: classes/Feeds.php:406
-msgid "No articles found to display."
-msgstr ""
-
-#: classes/Feeds.php:422
+#: classes/Pref_Filters.php:508
 #, php-format
-msgid "Feeds last updated at %s"
-msgstr ""
+msgid "Unknown action: %d"
+msgstr "Veprim i panjohur: %d"
 
-#: classes/Feeds.php:433
-msgid "Some feeds have update errors (click for details)"
-msgstr ""
+#: classes/Pref_Filters.php:726 js/PrefFilterTree.js:180
+#, fuzzy, java-printf-format, javascript-format, php-format
+#| msgid "Clone"
+msgid "Clone of %s"
+msgstr "Klonoje"
 
-#: classes/Feeds.php:1206
-msgid "Starred articles"
-msgstr ""
+#: classes/Pref_Filters.php:752 classes/Pref_Users.php:215
+#: classes/Pref_Feeds.php:934 classes/Pref_Prefs.php:840 js/Feeds.js:668
+#: js/Feeds.js:663 js/Feeds.js:718
+msgid "Search"
+msgstr "Kërko"
 
-#: classes/Feeds.php:1208
-msgid "Published articles"
-msgstr ""
+#: classes/Pref_Filters.php:757 classes/Pref_Users.php:221
+#: classes/Pref_Feeds.php:939 classes/Pref_Prefs.php:845
+#: classes/Pref_Prefs.php:1481 classes/Pref_Labels.php:179
+#: js/CommonFilters.js:438 js/CommonFilters.js:471 js/PrefFeedTree.js:524
+#: js/CommonDialogs.js:283 js/PrefHelpers.js:184
+msgid "Select"
+msgstr "Përzgjidhni"
 
-#: classes/Feeds.php:1210
-msgid "Fresh articles"
-msgstr ""
+#: classes/Pref_Filters.php:760 classes/Pref_Users.php:224
+#: classes/Pref_Feeds.php:942 classes/Pref_Prefs.php:848
+#: classes/Pref_Prefs.php:1484 js/CommonFilters.js:442 js/CommonFilters.js:474
+#: js/PrefFeedTree.js:527 js/CommonDialogs.js:286 js/Headlines.js:664
+#: js/PrefHelpers.js:187
+msgid "All"
+msgstr "Krejt"
 
-#: classes/Feeds.php:1212 classes/RPC.php:642
-msgid "All articles"
-msgstr ""
+#: classes/Pref_Filters.php:762 classes/Pref_Users.php:226
+#: classes/Pref_Feeds.php:944 classes/Pref_Prefs.php:850
+#: classes/Pref_Prefs.php:1486 js/CommonFilters.js:444 js/CommonFilters.js:476
+#: js/PrefFeedTree.js:529 js/CommonDialogs.js:288 js/Headlines.js:667
+#: js/PrefHelpers.js:189
+msgid "None"
+msgstr "Asnjë"
 
-#: classes/Feeds.php:1216 classes/RPC.php:646
-msgid "Recently read"
-msgstr ""
+#: classes/Pref_Filters.php:767 classes/RPC.php:556
+msgid "Create filter"
+msgstr "Krijoni filtër"
 
-#: classes/Feeds.php:1349 classes/Pref_Feeds.php:257 classes/Digest.php:120
-#: classes/Pref_Filters.php:910 classes/OPML.php:571 include/controls.php:216
+#: classes/Pref_Filters.php:769 js/PrefHelpers.js:229
+msgid "Clone"
+msgstr "Klonoje"
+
+#: classes/Pref_Filters.php:771
+msgid "Combine"
+msgstr "Ndërthuri"
+
+#: classes/Pref_Filters.php:773 classes/Pref_Users.php:235
+#: js/CommonFilters.js:516 js/CommonDialogs.js:631
+msgid "Remove"
+msgstr "Hiqe"
+
+#: classes/Pref_Filters.php:775 classes/Pref_Feeds.php:956
+#: classes/Pref_Feeds.php:971
+msgid "Reset sort order"
+msgstr "Zero Radhë Renditjeje"
+
+#: classes/Pref_Filters.php:777
+msgid "Toggle rule display"
+msgstr "Shfaq/Fshih rregull"
+
+#: classes/Pref_Filters.php:824
+msgid "[No caption]"
+msgstr "[Pa përshkrim]"
+
+#: classes/Pref_Filters.php:827
+#, php-format
+msgid "%s (%d rule)"
+msgid_plural "%s (%d rules)"
+msgstr[0] "%s (%d rregull)"
+msgstr[1] "%s (%d rregulla)"
+
+#: classes/Pref_Filters.php:831
+msgid "matches any rule"
+msgstr "ka përkim me çfarëdo rregulli"
+
+#: classes/Pref_Filters.php:832
+msgid "inverse"
+msgstr "së prapthi"
+
+#: classes/Pref_Filters.php:864
+#, php-format
+msgid "(+%d action)"
+msgid_plural "(+%d actions)"
+msgstr[0] "(+%d veprim)"
+msgstr[1] "(+%d veprime)"
+
+#: classes/Pref_Filters.php:1029 classes/Digest.php:112
+#: classes/Pref_Feeds.php:253 classes/Feeds.php:1312 classes/OPML.php:571
+#: include/controls.php:216
 msgid "Uncategorized"
+msgstr "Të pakategorizuar"
+
+#: classes/RPC.php:492
+msgid "Navigation"
+msgstr "Lëvizje"
+
+#: classes/RPC.php:493
+msgid "Open next feed"
+msgstr "Hap prurjen pasuese"
+
+#: classes/RPC.php:494
+msgid "Open next unread feed"
+msgstr "Hap prurjen pasuese të palexuar"
+
+#: classes/RPC.php:495
+msgid "Open previous feed"
+msgstr "Hap prurjen e mëparshme"
+
+#: classes/RPC.php:496
+msgid "Open previous unread feed"
+msgstr "Hap prurjen e mëparshme të palexuar"
+
+#: classes/RPC.php:497
+msgid "Open next article (in combined mode, scroll down)"
+msgstr "Hap artikullin pasues (nën mënyrën e ndërthurur, rrëshqit për poshtë)"
+
+#: classes/RPC.php:498
+msgid "Open previous article (in combined mode, scroll up)"
+msgstr ""
+"Hap artikullin e mëparshëm (nën mënyrën e ndërthurur, rrëshqit për sipër)"
+
+#: classes/RPC.php:499
+msgid "Scroll headlines by one page down"
+msgstr "Rrëshqit nëpër tituj me hap një faqe poshtë"
+
+#: classes/RPC.php:500
+msgid "Scroll headlines by one page up"
+msgstr "Rrëshqit nëpër tituj me hap një faqe sipër"
+
+#: classes/RPC.php:501
+msgid "Open next article"
+msgstr "Hap artikullin pasues"
+
+#: classes/RPC.php:502
+msgid "Open previous article"
+msgstr "Hap artikullin e mëparshëm"
+
+#: classes/RPC.php:503
+msgid "Move to next article (don't expand)"
+msgstr "Kalo te artikulli pasues (mos e zgjero)"
+
+#: classes/RPC.php:504
+msgid "Move to previous article (don't expand)"
+msgstr "Kalo te artikulli i mëparshëm (mos e zgjero)"
+
+#: classes/RPC.php:505
+msgid "Show search dialog"
+msgstr "Shfaq dialog kërkimesh"
+
+#: classes/RPC.php:506
+msgid "Cancel active search"
+msgstr "Anulo kërkimin aktiv"
+
+#: classes/RPC.php:507
+msgid "Article"
+msgstr "Artikull"
+
+#: classes/RPC.php:508 js/Headlines.js:1447 js/Headlines.js:670
+msgid "Toggle starred"
+msgstr "Shfaq/fshih ata me yll"
+
+#: classes/RPC.php:509 js/Headlines.js:1459 js/Headlines.js:671
+msgid "Toggle published"
+msgstr "Shfaq/fshih të botuarit"
+
+#: classes/RPC.php:510 js/Headlines.js:1434 js/Headlines.js:669
+msgid "Toggle unread"
+msgstr "Shfaq/fshih të palexuarit"
+
+#: classes/RPC.php:511
+msgid "Edit tags"
+msgstr "Përpunoni etiketa"
+
+#: classes/RPC.php:512
+msgid "Open in new window"
+msgstr "Hape në dritare të re"
+
+#: classes/RPC.php:513 js/Headlines.js:1480
+msgid "Mark below as read"
+msgstr "Vëri shenjë si të lexuar prurjes më poshtë"
+
+#: classes/RPC.php:514 js/Headlines.js:1473
+msgid "Mark above as read"
+msgstr "Vëri shenjë si të lexuar prurjes më sipër"
+
+#: classes/RPC.php:515
+msgid "Scroll down"
+msgstr "Rrëshqit për poshtë"
+
+#: classes/RPC.php:516
+msgid "Scroll up"
+msgstr "Rrëshqit për sipër"
+
+#: classes/RPC.php:517
+msgid "Scroll down page"
+msgstr "Rrëshqit poshtë në faqe"
+
+#: classes/RPC.php:518
+msgid "Scroll up page"
+msgstr "Rrëshqit sipër në faqe"
+
+#: classes/RPC.php:519
+msgid "Select article under cursor"
+msgstr "Përzgjidh artikullin nën kursor"
+
+#: classes/RPC.php:520
+msgid "Email article"
+msgstr "Dërgojeni artikullin me email"
+
+#: classes/RPC.php:521
+msgid "Close/collapse article"
+msgstr "Mbylle/palose artikullin"
+
+#: classes/RPC.php:522
+msgid "Toggle article expansion (combined mode)"
+msgstr "Zgjero/tkurr artikullin (mënyra e ndërthurur)"
+
+#: classes/RPC.php:524
+msgid "Toggle full article text via Readability"
 msgstr ""
 
-#: classes/Feeds.php:1351
-msgid "Special"
+#: classes/RPC.php:525
+msgid "Article selection"
+msgstr "Përzgjedhje artikujsh"
+
+#: classes/RPC.php:526
+msgid "Select all articles"
+msgstr "Përzgjidhi krejt artikujt"
+
+#: classes/RPC.php:527
+msgid "Select unread"
+msgstr "Përzgjidh të palexuarit"
+
+#: classes/RPC.php:528
+msgid "Select starred"
+msgstr "Përzgjidh ata me yll"
+
+#: classes/RPC.php:529
+msgid "Select published"
+msgstr "Përzgjidh të botuarit"
+
+#: classes/RPC.php:530
+msgid "Invert selection"
+msgstr "Përmbyse përzgjedhjen"
+
+#: classes/RPC.php:531
+msgid "Deselect everything"
+msgstr "Hiq përzgjedhjen për gjithçka"
+
+#: classes/RPC.php:532
+msgid "Feed"
+msgstr "Prurje"
+
+#: classes/RPC.php:533
+msgid "Refresh current feed"
+msgstr "Rifresko prurjen e tanishme"
+
+#: classes/RPC.php:534
+msgid "Un/hide read feeds"
+msgstr "Shfaq/fshih prurje të lexuara"
+
+#: classes/RPC.php:535 classes/Pref_Feeds.php:952 js/CommonDialogs.js:34
+msgid "Subscribe to feed"
+msgstr "Pajtohuni te prurja"
+
+#: classes/RPC.php:536 js/PrefFeedTree.js:114 js/CommonDialogs.js:386
+#: js/Headlines.js:1580 js/Headlines.js:1645 js/FeedTree.js:99
+msgid "Edit feed"
+msgstr "Përpunoni prurjen"
+
+#: classes/RPC.php:538
+msgid "Reverse headlines"
+msgstr "Përmbys titujt"
+
+#: classes/RPC.php:539
+msgid "Toggle headline grouping"
+msgstr "Aktivizo/çaktivizo grupim titujsh"
+
+#: classes/RPC.php:540
+msgid "Toggle grid view"
+msgstr "Aktivizo/çaktivizo pamjen mozaik"
+
+#: classes/RPC.php:541
+msgid "Debug feed update"
+msgstr "Diagnostiko përditësim prurjeje"
+
+#: classes/RPC.php:542
+msgid "Debug viewfeed()"
 msgstr ""
 
-#: classes/Feeds.php:1446
+#: classes/RPC.php:543 js/FeedTree.js:164
+msgid "Mark all feeds as read"
+msgstr "Vëru shenjë krejt prurjeve si të lexuara"
+
+#: classes/RPC.php:544
+msgid "Un/collapse current category"
+msgstr "Zgjeroje/tkurre kategorinë e tanishme"
+
+#: classes/RPC.php:545
+msgid "Toggle auto expand in combined mode"
+msgstr "Aktivizo/çaktivizo zgjerim të automatizuar nën mënyrën e ndërthurur"
+
+#: classes/RPC.php:547
+msgid "Go to"
+msgstr "Shko te"
+
+#: classes/RPC.php:548 classes/Feeds.php:1175
+msgid "All articles"
+msgstr "Krejt artikujt"
+
+#: classes/RPC.php:549
+msgid "Fresh"
+msgstr ""
+
+#: classes/RPC.php:552 classes/Feeds.php:1179
+msgid "Recently read"
+msgstr "Lexuar së fundi"
+
+#: classes/RPC.php:554
+msgid "Other"
+msgstr "Tjetër"
+
+#: classes/RPC.php:555
+msgid "Create label"
+msgstr "Krijoni etiketë"
+
+#: classes/RPC.php:557
+msgid "Un/collapse sidebar"
+msgstr "Shfaq/Fshih anështyllën"
+
+#: classes/RPC.php:558
+msgid "Show help dialog"
+msgstr "Shfaq dialog ndihmësi"
+
+#: classes/RPC.php:695
+msgid "Shift"
+msgstr "Tasti Shift"
+
+#: classes/RPC.php:696
+msgid "Ctrl"
+msgstr "Tasti Ctrl"
+
+#: classes/RPC.php:719 plugins/share/init.php:284
+#: plugins/af_psql_trgm/init.php:116 js/PrefHelpers.js:498
+#: js/PrefFeedTree.js:558 js/Feeds.js:298 js/App.js:661 js/CommonFilters.js:95
+#: js/CommonDialogs.js:22 js/CommonDialogs.js:323 js/CommonDialogs.js:700
+#: js/PrefHelpers.js:66 js/PrefHelpers.js:821
+msgid "Close this window"
+msgstr "Mbylle këtë dritare"
+
+#: classes/Pref_Users.php:54 classes/Pref_Users.php:255
+msgid "Registered"
+msgstr ""
+
+#: classes/Pref_Users.php:59
+msgid "Last logged in"
+msgstr "Hyrë së fundi më"
+
+#: classes/Pref_Users.php:64 classes/Pref_Users.php:254
+msgid "Subscribed feeds"
+msgstr "Prurje me pajtim"
+
+#: classes/Pref_Users.php:69
+msgid "Stored articles"
+msgstr "Artikuj të depozituar"
+
+#: classes/Pref_Users.php:98 classes/UserHelper.php:265
+msgid "User not found"
+msgstr "Përdoruesi s’u gjet"
+
+#: classes/Pref_Users.php:168
 #, php-format
-msgid "Incorrect search syntax: %s."
-msgstr ""
+msgid "Added user %s with password %s"
+msgstr "U shtua përdoruesi %s me fjalëkalimin %s"
 
-#: classes/Feeds.php:1636
+#: classes/Pref_Users.php:171
 #, php-format
-msgid "Search results: %s"
-msgstr ""
+msgid "Could not create user %s"
+msgstr "S’u krijua dot përdoruesi %s"
 
-#: classes/Pref_Feeds.php:72 classes/Pref_Feeds.php:240
-#: classes/Pref_Feeds.php:300 classes/Pref_Feeds.php:306
-#: classes/Pref_Feeds.php:343
+#: classes/Pref_Users.php:174
+#, php-format
+msgid "User %s already exists."
+msgstr "Përdoruesi %s ekziston tashmë."
+
+#: classes/Pref_Users.php:231
+msgid "Create user"
+msgstr "Krijoni përdorues"
+
+#: classes/Pref_Users.php:252 js/PrefFeedTree.js:457 js/CommonDialogs.js:90
+msgid "Login"
+msgstr "Hyrje"
+
+#: classes/Pref_Users.php:253
+msgid "Access level"
+msgstr "Shkallë hyrjeje"
+
+#: classes/Pref_Users.php:256
+msgid "Last login"
+msgstr "Hyrja e fundit më"
+
+#: classes/Pref_Users.php:271
+msgid "Click to edit"
+msgstr "Klikoni për ta përpunuar"
+
+#: classes/Pref_Feeds.php:68 classes/Pref_Feeds.php:236
+#: classes/Pref_Feeds.php:296 classes/Pref_Feeds.php:302
+#: classes/Pref_Feeds.php:339
 #, php-format
 msgid "(%d feed)"
 msgid_plural "(%d feeds)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(%d prurje)"
+msgstr[1] "(%d prurje)"
 
-#: classes/Pref_Feeds.php:104 classes/Pref_Feeds.php:291
-#: classes/Pref_Feeds.php:334
+#: classes/Pref_Feeds.php:100 classes/Pref_Feeds.php:287
+#: classes/Pref_Feeds.php:330
 #, php-format
 msgid "(%d article / %s)"
 msgid_plural "(%d articles / %s)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(%d artikull / %s)"
+msgstr[1] "(%d artikuj / %s)"
 
-#: classes/Pref_Feeds.php:572
+#: classes/Pref_Feeds.php:569
 #, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "(%d ditë)"
+msgstr[1] "(%d ditë)"
 
-#: classes/Pref_Feeds.php:578
+#: classes/Pref_Feeds.php:575
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d ditë"
+msgstr[1] "%d ditë"
 
-#: classes/Pref_Feeds.php:609
+#: classes/Pref_Feeds.php:606
 msgid "Check to enable field"
-msgstr ""
+msgstr "I vini shenjë që të fusha të aktivizohet"
 
-#: classes/Pref_Feeds.php:625
+#: classes/Pref_Feeds.php:622
 #, php-format
 msgid "(%d days)"
-msgstr ""
+msgstr "(%d ditë)"
 
-#: classes/Pref_Feeds.php:630 js/CommonDialogs.js:506
+#: classes/Pref_Feeds.php:627 js/CommonDialogs.js:511
 msgid "Include in e-mail digest"
-msgstr ""
+msgstr "Përfshije në përmbledhje me email"
 
-#: classes/Pref_Feeds.php:631 js/CommonDialogs.js:507
+#: classes/Pref_Feeds.php:628 js/CommonDialogs.js:512
 msgid "Always display image attachments"
-msgstr ""
+msgstr "Shfaq përherë bashkëngjitje figurash"
 
-#: classes/Pref_Feeds.php:633 js/CommonDialogs.js:509
+#: classes/Pref_Feeds.php:629 classes/Pref_Prefs.php:120
+#: js/CommonDialogs.js:513
+msgid "Do not embed media"
+msgstr "Mos trupëzo media"
+
+#: classes/Pref_Feeds.php:630 js/CommonDialogs.js:514
 msgid "Cache media"
-msgstr ""
+msgstr "Ruaj media në fshehtinë"
 
-#: classes/Pref_Feeds.php:634 js/CommonDialogs.js:510
+#: classes/Pref_Feeds.php:631 js/CommonDialogs.js:515
 msgid "Mark updated articles as unread"
-msgstr ""
+msgstr "Artikujve të përditësuar vëru shenjë si të palexuar"
 
-#: classes/Pref_Feeds.php:649 js/PrefFeedTree.js:447 js/CommonDialogs.js:61
-#: js/CommonDialogs.js:546
+#: classes/Pref_Feeds.php:642 classes/Pref_Prefs.php:36 js/CommonDialogs.js:522
+msgid "General"
+msgstr "Të përgjithshme"
+
+#: classes/Pref_Feeds.php:646 js/PrefFeedTree.js:447 js/CommonDialogs.js:61
+#: js/CommonDialogs.js:551
 msgid "Place in category:"
 msgstr ""
 
-#: classes/Pref_Feeds.php:657 js/Feeds.js:642 js/CommonDialogs.js:562
+#: classes/Pref_Feeds.php:653 js/Feeds.js:650 js/CommonDialogs.js:567
 msgid "Language:"
-msgstr ""
+msgstr "Gjuhë:"
 
-#: classes/Pref_Feeds.php:668 js/CommonDialogs.js:572
+#: classes/Pref_Feeds.php:663 js/CommonDialogs.js:67 js/CommonDialogs.js:577
 msgid "Update interval:"
-msgstr ""
+msgstr "Interval përditësimi:"
 
-#: classes/Pref_Feeds.php:675 js/CommonDialogs.js:578
+#: classes/Pref_Feeds.php:670 js/CommonDialogs.js:583
 msgid "Article purging:"
-msgstr ""
+msgstr "Spastrim artikujsh:"
 
-#: classes/Pref_Feeds.php:682 plugins/auth_internal/init.php:82
-#: js/PrefFeedTree.js:455 js/CommonDialogs.js:588
+#: classes/Pref_Feeds.php:677 plugins/auth_internal/init.php:85
+#: js/PrefFeedTree.js:455 js/CommonDialogs.js:593
 msgid "Authentication"
-msgstr ""
+msgstr "Mirëfilltësim"
 
-#: classes/Pref_Feeds.php:685 classes/Handler_Public.php:515
-#: plugins/bookmarklets/init.php:306 include/login_form.php:122
-#: js/PrefUsers.js:64 js/CommonDialogs.js:591
-msgid "Login:"
-msgstr ""
-
-#: classes/Pref_Feeds.php:691 plugins/bookmarklets/init.php:313
-#: include/login_form.php:131 js/CommonDialogs.js:597
+#: classes/Pref_Feeds.php:686 plugins/bookmarklets/init.php:313
+#: include/login_form.php:132 js/CommonDialogs.js:602
 msgid "Password:"
-msgstr ""
+msgstr "Fjalëkalim:"
 
-#: classes/Pref_Feeds.php:698 js/CommonDialogs.js:604
+#: classes/Pref_Feeds.php:693 js/CommonDialogs.js:609
 msgid "Options"
-msgstr ""
+msgstr "Mundësi"
 
-#: classes/Pref_Feeds.php:715 plugins/note/init.php:50
-#: plugins/bookmarklets/init.php:286 js/CommonFilters.js:238
-#: js/CommonFilters.js:322 js/CommonFilters.js:526 js/CommonFilters.js:530
-#: js/CommonDialogs.js:635 js/PrefHelpers.js:232 js/PrefHelpers.js:306
-#: js/Article.js:373 js/Feeds.js:656 js/Feeds.js:711 js/PrefUsers.js:122
-#: js/PrefFeedTree.js:475 js/CommonDialogs.js:111 js/PrefLabelTree.js:173
+#: classes/Pref_Feeds.php:709 classes/Pref_Prefs.php:314
+#: plugins/nsfw/init.php:105 plugins/af_psql_trgm/init.php:193
+#: plugins/note/init.php:49 js/CommonFilters.js:230 js/CommonFilters.js:314
+#: js/CommonFilters.js:518 js/CommonDialogs.js:639 js/Article.js:370
+#: js/PrefUsers.js:119 js/PrefLabelTree.js:170
+msgid "Save"
+msgstr "Ruaje"
+
+#: classes/Pref_Feeds.php:710 plugins/bookmarklets/init.php:286
+#: plugins/note/init.php:50 js/CommonFilters.js:231 js/CommonFilters.js:315
+#: js/CommonFilters.js:519 js/CommonFilters.js:523 js/CommonDialogs.js:640
+#: js/PrefFeedTree.js:475 js/Feeds.js:664 js/Feeds.js:719 js/Article.js:373
+#: js/CommonDialogs.js:116 js/PrefHelpers.js:232 js/PrefHelpers.js:306
+#: js/PrefUsers.js:122 js/PrefLabelTree.js:173
 msgid "Cancel"
-msgstr ""
+msgstr "Anuloje"
 
 #: classes/Pref_Feeds.php:909
 msgid "Feeds with errors"
-msgstr ""
+msgstr "Prurje me gabime"
 
 #: classes/Pref_Feeds.php:915
 msgid "Inactive feeds"
-msgstr ""
-
-#: classes/Pref_Feeds.php:952 classes/RPC.php:629 js/CommonDialogs.js:34
-msgid "Subscribe to feed"
-msgstr ""
+msgstr "Prurje jo aktive"
 
 #: classes/Pref_Feeds.php:954
 msgid "Edit selected feeds"
-msgstr ""
-
-#: classes/Pref_Feeds.php:956 classes/Pref_Feeds.php:971
-#: classes/Pref_Filters.php:657
-msgid "Reset sort order"
-msgstr ""
+msgstr "Përpunoni prurjet e përzgjedhura"
 
 #: classes/Pref_Feeds.php:958 js/PrefFeedTree.js:417
 msgid "Batch subscribe"
-msgstr ""
+msgstr "Pajtim në masë"
 
 #: classes/Pref_Feeds.php:966
 msgid "Categories"
-msgstr ""
+msgstr "Kategori"
 
 #: classes/Pref_Feeds.php:969
 msgid "Add category"
-msgstr ""
+msgstr "Shtoni kategori"
+
+#: classes/Pref_Feeds.php:973 classes/Pref_Prefs.php:411 js/PrefHelpers.js:227
+msgid "Remove selected"
+msgstr "Hiq të përzgjedhurën"
 
 #: classes/Pref_Feeds.php:1008
 msgid "Choose file..."
-msgstr ""
+msgstr "Zgjidhni kartelë…"
 
 #: classes/Pref_Feeds.php:1016
 msgid "Import OPML"
-msgstr ""
+msgstr "Importo OPML"
 
 #: classes/Pref_Feeds.php:1027
 msgid "Export OPML"
-msgstr ""
+msgstr "Eksporto OPML"
 
 #: classes/Pref_Feeds.php:1032
 msgid "Include tt-rss settings"
-msgstr ""
+msgstr "Përfshi rregullime tt-rss"
 
 #: classes/Pref_Feeds.php:1048
 msgid "Display URL"
@@ -1106,194 +975,134 @@ msgstr ""
 
 #: classes/Pref_Feeds.php:1053
 msgid "Clear all generated URLs"
-msgstr ""
+msgstr "Spastro krejt URL-të e prodhuara"
 
 #: classes/Pref_Feeds.php:1065
 msgid "My feeds"
-msgstr ""
+msgstr "Prurjet e mia"
 
 #: classes/Pref_Feeds.php:1070
 msgid "OPML"
-msgstr ""
+msgstr "OPML"
 
 #: classes/Pref_Feeds.php:1075
 msgid "Sharing"
-msgstr ""
+msgstr "Ndarje me të tjerë"
 
-#: classes/Pref_Users.php:56 classes/Pref_Users.php:257
-msgid "Registered"
-msgstr ""
+#: classes/Pref_Feeds.php:1088 classes/Pref_Prefs.php:942
+#: js/CommonDialogs.js:633
+msgid "Plugins"
+msgstr "Shtojca"
 
-#: classes/Pref_Users.php:61
-msgid "Last logged in"
-msgstr ""
+#: classes/Feeds.php:93 classes/Feeds.php:483
+msgid "Feed not found."
+msgstr "Prurja s’u gjet."
 
-#: classes/Pref_Users.php:66 classes/Pref_Users.php:256
-msgid "Subscribed feeds"
-msgstr ""
+#: classes/Feeds.php:223 classes/Feeds.php:1177
+msgid "Archived articles"
+msgstr "Artikuj të arkivuar"
 
-#: classes/Pref_Users.php:71
-msgid "Stored articles"
-msgstr ""
+#: classes/Feeds.php:313
+msgid "Collapse article"
+msgstr "Palose artikullin"
 
-#: classes/Pref_Users.php:100 classes/UserHelper.php:273
-msgid "User not found"
-msgstr ""
-
-#: classes/Pref_Users.php:170
+#: classes/Feeds.php:332
 #, php-format
-msgid "Added user %s with password %s"
-msgstr ""
+msgid "Imported at %s"
+msgstr "Importuar më %s"
 
-#: classes/Pref_Users.php:173
+#: classes/Feeds.php:389
+msgid "No unread articles found to display."
+msgstr "S’u gjetën artikuj të palexuar për shfaqje."
+
+#: classes/Feeds.php:390
+msgid "No updated articles found to display."
+msgstr "S’u gjetën artikuj të përditësuar për shfaqje."
+
+#: classes/Feeds.php:391
+msgid "No starred articles found to display."
+msgstr "S’u gjetën artikuj me yll për shfaqje."
+
+#: classes/Feeds.php:393
+msgid ""
+"No articles found to display. You can assign articles to labels manually "
+"from article header context menu (applies to all selected articles) or use a "
+"filter."
+msgstr ""
+"S’u gjetën artikuj për shfaqje. Mund t’u caktoni artikujve etiketa dorazi, "
+"që nga menu konteksti kryeje artikulli (vlen për krejt artikujt e "
+"përzgjedhur), ose të përdorni një filtër."
+
+#: classes/Feeds.php:394
+msgid "No articles found to display."
+msgstr "S’u gjetën artikuj për shfaqje."
+
+#: classes/Feeds.php:410
 #, php-format
-msgid "Could not create user %s"
-msgstr ""
+msgid "Feeds last updated at %s"
+msgstr "Prurje të përditësuara së fundi më %s"
 
-#: classes/Pref_Users.php:176
+#: classes/Feeds.php:421
+msgid "Some feeds have update errors (click for details)"
+msgstr "Disa prurje kanë gabime përditësimi (klikoni për hollësi)"
+
+#: classes/Feeds.php:1169
+msgid "Starred articles"
+msgstr "Artikuj me yll"
+
+#: classes/Feeds.php:1171
+msgid "Published articles"
+msgstr "Artikuj të botuar"
+
+#: classes/Feeds.php:1173
+msgid "Fresh articles"
+msgstr "Artikuj të freskët"
+
+#: classes/Feeds.php:1314
+msgid "Special"
+msgstr "Specialë"
+
+#: classes/Feeds.php:1408
 #, php-format
-msgid "User %s already exists."
-msgstr ""
+msgid "Incorrect search syntax: %s."
+msgstr "Sintaksë e pasaktë kërkimesh: %s."
 
-#: classes/Pref_Users.php:233
-msgid "Create user"
-msgstr ""
-
-#: classes/Pref_Users.php:237 classes/Pref_Filters.php:655
-#: js/CommonFilters.js:523 js/CommonDialogs.js:626
-msgid "Remove"
-msgstr ""
-
-#: classes/Pref_Users.php:241 classes/Handler_Public.php:534
-msgid "Reset password"
-msgstr ""
-
-#: classes/Pref_Users.php:254 js/PrefFeedTree.js:457 js/CommonDialogs.js:85
-msgid "Login"
-msgstr ""
-
-#: classes/Pref_Users.php:255
-msgid "Access level"
-msgstr ""
-
-#: classes/Pref_Users.php:258
-msgid "Last login"
-msgstr ""
-
-#: classes/Pref_Users.php:273
-msgid "Click to edit"
-msgstr ""
-
-#: classes/Config.php:398
+#: classes/Feeds.php:1587
 #, php-format
-msgid "Git error [RC=%d]: %s"
-msgstr ""
-
-#: classes/Pref_Filters.php:216 classes/Pref_Filters.php:226
-#: classes/Pref_Filters.php:414 classes/Pref_Filters.php:857
-msgid "All feeds"
-msgstr ""
-
-#: classes/Pref_Filters.php:235 classes/Pref_Filters.php:434
-msgid "(inverse)"
-msgstr ""
-
-#: classes/Pref_Filters.php:231 classes/Pref_Filters.php:433
-#, php-format
-msgid "%s on %s in %s %s"
-msgstr ""
-
-#: classes/Pref_Filters.php:450
-#, php-format
-msgid "Unknown action: %d"
-msgstr ""
-
-#: classes/Pref_Filters.php:651 classes/RPC.php:650
-msgid "Create filter"
-msgstr ""
-
-#: classes/Pref_Filters.php:653
-msgid "Combine"
-msgstr ""
-
-#: classes/Pref_Filters.php:659
-msgid "Toggle rule display"
-msgstr ""
-
-#: classes/Pref_Filters.php:709
-#, php-format
-msgid "%s (%d rule)"
-msgid_plural "%s (%d rules)"
-msgstr[0] ""
-msgstr[1] ""
-
-#: classes/Pref_Filters.php:710
-msgid "[No caption]"
-msgstr ""
-
-#: classes/Pref_Filters.php:713
-msgid "matches any rule"
-msgstr ""
-
-#: classes/Pref_Filters.php:714
-msgid "inverse"
-msgstr ""
-
-#: classes/Pref_Filters.php:746
-#, php-format
-msgid "(+%d action)"
-msgid_plural "(+%d actions)"
-msgstr[0] ""
-msgstr[1] ""
-
-#: classes/Sessions.php:112
-msgid "Session failed to validate (password changed)"
-msgstr ""
-
-#: classes/Sessions.php:117
-msgid "Session failed to validate (account is disabled)"
-msgstr ""
-
-#: classes/Sessions.php:136
-msgid "Session failed to validate (user not found)"
-msgstr ""
-
-#: classes/UserHelper.php:271
-#, php-format
-msgid "Changed password of user %s to %s"
-msgstr ""
+msgid "Search results: %s"
+msgstr "Përfundime kërkimi: %s"
 
 #: classes/OPML.php:31 classes/OPML.php:35
 msgid "OPML Utility"
-msgstr ""
+msgstr "Mjet OPML"
 
 #: classes/OPML.php:39
 msgid "Importing OPML..."
-msgstr ""
+msgstr "Po importohet OPML…"
 
 #: classes/OPML.php:44
 msgid "Return to preferences"
-msgstr ""
+msgstr "Kthehu te parapëlqimet"
 
 #: classes/OPML.php:324
 #, php-format
 msgid "Adding feed: %s"
-msgstr ""
+msgstr "Po shtohet prurje: %s"
 
 #: classes/OPML.php:344
 #, php-format
 msgid "Duplicate feed: %s"
-msgstr ""
+msgstr "Përsëdyte prurjen: %s"
 
 #: classes/OPML.php:358
 #, php-format
 msgid "Adding label %s"
-msgstr ""
+msgstr "Po shtohet etiketa %s"
 
 #: classes/OPML.php:361
 #, php-format
 msgid "Duplicate label: %s"
-msgstr ""
+msgstr "Përsëdyte etiketën: %s"
 
 #: classes/OPML.php:376
 #, php-format
@@ -1303,534 +1112,760 @@ msgstr ""
 #: classes/OPML.php:412
 #, php-format
 msgid "Adding filter %s..."
-msgstr ""
+msgstr "Po shtohet filtër %s…"
 
 #: classes/OPML.php:571
 #, php-format
 msgid "Processing category: %s"
-msgstr ""
+msgstr "Kategori që po përpunohet: %s"
 
 #: classes/OPML.php:613
 #, php-format
 msgid "Upload failed with error code %d"
-msgstr ""
+msgstr "Ngarkimi dështoi me kod gabimi %d"
 
 #: classes/OPML.php:625
 msgid "Unable to move uploaded file."
-msgstr ""
+msgstr "S’arrihet të lëvizet kartela e ngarkuar."
 
 #: classes/OPML.php:629
 msgid "Error: please upload OPML file."
-msgstr ""
+msgstr "Gabim: ju lutemi, ngarkoni një kartelë OPML."
 
 #: classes/OPML.php:637
 #, php-format
 msgid "Error: file is not readable: %s"
-msgstr ""
+msgstr "Gabim: kartela s’është e lexueshme: %s"
 
 #: classes/OPML.php:655
 msgid "Error while parsing document."
-msgstr ""
-
-#: classes/RPC.php:586
-msgid "Navigation"
-msgstr ""
-
-#: classes/RPC.php:587
-msgid "Open next feed"
-msgstr ""
-
-#: classes/RPC.php:588
-msgid "Open next unread feed"
-msgstr ""
-
-#: classes/RPC.php:589
-msgid "Open previous feed"
-msgstr ""
-
-#: classes/RPC.php:590
-msgid "Open previous unread feed"
-msgstr ""
-
-#: classes/RPC.php:591
-msgid "Open next article (in combined mode, scroll down)"
-msgstr ""
-
-#: classes/RPC.php:592
-msgid "Open previous article (in combined mode, scroll up)"
-msgstr ""
-
-#: classes/RPC.php:593
-msgid "Scroll headlines by one page down"
-msgstr ""
-
-#: classes/RPC.php:594
-msgid "Scroll headlines by one page up"
-msgstr ""
-
-#: classes/RPC.php:595
-msgid "Open next article"
-msgstr ""
-
-#: classes/RPC.php:596
-msgid "Open previous article"
-msgstr ""
-
-#: classes/RPC.php:597
-msgid "Move to next article (don't expand)"
-msgstr ""
-
-#: classes/RPC.php:598
-msgid "Move to previous article (don't expand)"
-msgstr ""
-
-#: classes/RPC.php:599
-msgid "Show search dialog"
-msgstr ""
-
-#: classes/RPC.php:600
-msgid "Cancel active search"
-msgstr ""
-
-#: classes/RPC.php:601
-msgid "Article"
-msgstr ""
-
-#: classes/RPC.php:602 js/Headlines.js:1447 js/Headlines.js:670
-msgid "Toggle starred"
-msgstr ""
-
-#: classes/RPC.php:603 js/Headlines.js:1459 js/Headlines.js:671
-msgid "Toggle published"
-msgstr ""
-
-#: classes/RPC.php:604 js/Headlines.js:1434 js/Headlines.js:669
-msgid "Toggle unread"
-msgstr ""
-
-#: classes/RPC.php:605
-msgid "Edit tags"
-msgstr ""
-
-#: classes/RPC.php:606
-msgid "Open in new window"
-msgstr ""
-
-#: classes/RPC.php:607 js/Headlines.js:1480
-msgid "Mark below as read"
-msgstr ""
-
-#: classes/RPC.php:608 js/Headlines.js:1473
-msgid "Mark above as read"
-msgstr ""
-
-#: classes/RPC.php:609
-msgid "Scroll down"
-msgstr ""
-
-#: classes/RPC.php:610
-msgid "Scroll up"
-msgstr ""
+msgstr "Gabim teksa analizohej dokumenti."
 
-#: classes/RPC.php:611
-msgid "Scroll down page"
-msgstr ""
-
-#: classes/RPC.php:612
-msgid "Scroll up page"
-msgstr ""
-
-#: classes/RPC.php:613
-msgid "Select article under cursor"
-msgstr ""
-
-#: classes/RPC.php:614
-msgid "Email article"
-msgstr ""
-
-#: classes/RPC.php:615
-msgid "Close/collapse article"
-msgstr ""
-
-#: classes/RPC.php:616
-msgid "Toggle article expansion (combined mode)"
-msgstr ""
-
-#: classes/RPC.php:618
-msgid "Toggle full article text via Readability"
-msgstr ""
-
-#: classes/RPC.php:619
-msgid "Article selection"
-msgstr ""
-
-#: classes/RPC.php:620
-msgid "Select all articles"
-msgstr ""
-
-#: classes/RPC.php:621
-msgid "Select unread"
-msgstr ""
-
-#: classes/RPC.php:622
-msgid "Select starred"
-msgstr ""
-
-#: classes/RPC.php:623
-msgid "Select published"
-msgstr ""
-
-#: classes/RPC.php:624
-msgid "Invert selection"
-msgstr ""
+#: classes/TimeHelper.php:7
+msgid "Never"
+msgstr "Kurrë"
 
-#: classes/RPC.php:625
-msgid "Deselect everything"
-msgstr ""
-
-#: classes/RPC.php:626
-msgid "Feed"
-msgstr ""
-
-#: classes/RPC.php:627
-msgid "Refresh current feed"
-msgstr ""
-
-#: classes/RPC.php:628
-msgid "Un/hide read feeds"
-msgstr ""
+#: classes/TimeHelper.php:13
+#, php-format
+msgid "%d min"
+msgstr "%d min."
 
-#: classes/RPC.php:630 js/Headlines.js:1580 js/Headlines.js:1645
-#: js/PrefFeedTree.js:114 js/CommonDialogs.js:381 js/FeedTree.js:99
-msgid "Edit feed"
-msgstr ""
+#: classes/Mailer.php:51
+#, php-format
+msgid "Unknown error while sending mail. Hooks tried: %d."
+msgstr "Gabim i panjohur teksa dërgohej postë. Hook-e të përdorur: %d"
 
-#: classes/RPC.php:632
-msgid "Reverse headlines"
-msgstr ""
+#: classes/Pref_Prefs.php:57
+msgid "Articles"
+msgstr "Artikuj"
 
-#: classes/RPC.php:633
-msgid "Toggle headline grouping"
-msgstr ""
+#: classes/Pref_Prefs.php:71
+msgid "Digest"
+msgstr "Përmbledhje"
 
-#: classes/RPC.php:634
-msgid "Toggle grid view"
-msgstr ""
+#: classes/Pref_Prefs.php:77
+msgid "Advanced"
+msgstr "Të mëtejshme"
 
-#: classes/RPC.php:635
-msgid "Debug feed update"
-msgstr ""
+#: classes/Pref_Prefs.php:88
+msgid "Debugging"
+msgstr "Diagnostikim"
 
-#: classes/RPC.php:636
-msgid "Debug viewfeed()"
+#: classes/Pref_Prefs.php:94
+msgid "Never apply these tags automatically (comma-separated list)."
 msgstr ""
+"Mos i apliko kurrë automatikisht këto etiketa (listë vlerash ndarë me "
+"presje)."
 
-#: classes/RPC.php:637 js/FeedTree.js:164
-msgid "Mark all feeds as read"
-msgstr ""
+#: classes/Pref_Prefs.php:98
+msgid "Blacklisted tags"
+msgstr "Etiketa në listë bllokimesh"
 
-#: classes/RPC.php:638
-msgid "Un/collapse current category"
-msgstr ""
+#: classes/Pref_Prefs.php:99
+msgid "Default language"
+msgstr "Gjuhë parazgjedhje"
 
-#: classes/RPC.php:639
-msgid "Toggle auto expand in combined mode"
-msgstr ""
+#: classes/Pref_Prefs.php:99
+msgid "Used for full-text search"
+msgstr "Përdorur për kërkim në krejt tekstin"
 
-#: classes/RPC.php:641
-msgid "Go to"
-msgstr ""
+#: classes/Pref_Prefs.php:100
+msgid "Mark read on scroll"
+msgstr "Vëru shenjë si të lexuar gjatë rrëshqitjesh"
 
-#: classes/RPC.php:643
-msgid "Fresh"
-msgstr ""
+#: classes/Pref_Prefs.php:100
+msgid "Mark articles as read as you scroll past them"
+msgstr "Vëru shenjë artikujve si të lexuar, teksa rrëshqisni nëpër ta"
 
-#: classes/RPC.php:648
-msgid "Other"
-msgstr ""
+#: classes/Pref_Prefs.php:101
+msgid "Always expand articles"
+msgstr "Zgjeroji përherë artikujt"
 
-#: classes/RPC.php:649
-msgid "Create label"
-msgstr ""
+#: classes/Pref_Prefs.php:102
+msgid "Combined mode"
+msgstr "Mënyra e ndërthurur"
 
-#: classes/RPC.php:651
-msgid "Un/collapse sidebar"
-msgstr ""
+#: classes/Pref_Prefs.php:102
+msgid "Show flat list of articles instead of separate panels"
+msgstr "Shfaq listë të sheshtë të artikujve, në vend se panele ndarazi"
 
-#: classes/RPC.php:652
-msgid "Show help dialog"
-msgstr ""
+#: classes/Pref_Prefs.php:103
+msgid "Confirm marking feeds as read"
+msgstr "Ripohoni vënien shenjë prurjeve si të lexuara"
 
-#: classes/RPC.php:789
-msgid "Shift"
-msgstr ""
+#: classes/Pref_Prefs.php:104
+msgid "Default update interval"
+msgstr "Interval parazgjedhje përditësimesh"
 
-#: classes/RPC.php:790
-msgid "Ctrl"
-msgstr ""
+#: classes/Pref_Prefs.php:105
+msgid "Mark sent articles as read"
+msgstr "Artikujve të dërguar vëru shenjë si të lexuar"
 
-#: classes/RPC.php:813 plugins/share/init.php:284
-#: plugins/af_psql_trgm/init.php:135 js/PrefHelpers.js:498
-#: js/CommonFilters.js:102 js/PrefHelpers.js:66 js/PrefHelpers.js:821
-#: js/Feeds.js:295 js/PrefFeedTree.js:558 js/CommonDialogs.js:22
-#: js/CommonDialogs.js:318 js/CommonDialogs.js:695 js/App.js:661
-msgid "Close this window"
-msgstr ""
+#: classes/Pref_Prefs.php:106
+msgid "Enable digest"
+msgstr "Aktivizo përmbledhje"
 
-#: classes/Handler_Public.php:415
-msgid "Incorrect username or password"
+#: classes/Pref_Prefs.php:106
+msgid "Send daily digest of new (and unread) headlines to your e-mail address"
 msgstr ""
+"Dërgoni te adresa juaj email përmbledhje të përditshme titujsh të rinj (dhe "
+"të palexuar)"
 
-#: classes/Handler_Public.php:468
-msgid "Password recovery"
-msgstr ""
+#: classes/Pref_Prefs.php:107
+msgid "Try to send around this time"
+msgstr "Provo ta dërgosh afërsisht në këtë kohë"
 
-#: classes/Handler_Public.php:505 classes/Handler_Public.php:535
-#: classes/Handler_Public.php:595 classes/Handler_Public.php:712
-#: classes/Handler_Public.php:719 classes/Handler_Public.php:742
-#: plugins/bookmarklets/init.php:94 plugins/bookmarklets/init.php:139
-#: plugins/bookmarklets/init.php:157 plugins/bookmarklets/init.php:162
-msgid "Return to Tiny Tiny RSS"
-msgstr ""
+#: classes/Pref_Prefs.php:107
+msgid "Time in UTC"
+msgstr "Koha, në UTC"
 
-#: classes/Handler_Public.php:508
+#: classes/Pref_Prefs.php:108
+msgid "Enable API"
+msgstr "Aktivizo API"
+
+#: classes/Pref_Prefs.php:108
+msgid "Allows accessing this account through the API"
+msgstr "Lejon përdorimin e kësaj llogarie përmes API-t"
+
+#: classes/Pref_Prefs.php:109
+msgid "Enable categories"
+msgstr "Aktivizo kategori"
+
+#: classes/Pref_Prefs.php:110
+msgid "Maximum age of fresh articles"
+msgstr "Moshë maksimum për artikuj të rinj"
+
+#: classes/Pref_Prefs.php:110
+msgid "hours"
+msgstr "orë"
+
+#: classes/Pref_Prefs.php:111
+msgid "Hide read feeds"
+msgstr "Fshihi prurjet e lexuara"
+
+#: classes/Pref_Prefs.php:112
+msgid "Always show special feeds"
+msgstr "Shfaq përherë prurjet speciale"
+
+#: classes/Pref_Prefs.php:112
+msgid "While hiding read feeds"
+msgstr "Teksa kalohen të fshehura prurje të lexuara"
+
+#: classes/Pref_Prefs.php:113
+msgid "Long date format"
+msgstr "Format i gjatë datash"
+
+#: classes/Pref_Prefs.php:113
 msgid ""
-"You will need to provide valid account name and email. Password reset link "
-"will be sent to your email address."
+"Syntax is identical to PHP <a href='http://php.net/manual/function.date."
+"php'>date()</a> function."
+msgstr ""
+"Sintaksa është identike me funksionin <a href='http://php.net/manual/"
+"function.date.php'>date()</a> të PHP-së."
+
+#: classes/Pref_Prefs.php:114
+msgid "Automatically show next feed"
+msgstr "Shfaq automatikisht prurjen pasuese"
+
+#: classes/Pref_Prefs.php:114
+msgid "After marking one as read"
+msgstr "Pas vënies shenjë njërës si e lexuar"
+
+#: classes/Pref_Prefs.php:115
+msgid "Purge articles older than"
+msgstr "Spastro artikuj më të vjetër se"
+
+#: classes/Pref_Prefs.php:115
+msgid "<strong>days</strong> (0 disables)"
+msgstr "<strong>ditë</strong> (0 e çaktivizon)"
+
+#: classes/Pref_Prefs.php:116
+msgid "Purge unread articles"
+msgstr "Spastro artikuj të palexuar"
+
+#: classes/Pref_Prefs.php:117
+msgid "Short date format"
+msgstr "Format i shkurtër datash"
+
+#: classes/Pref_Prefs.php:118
+msgid "Show content preview in headlines"
+msgstr "Shfaq te titujt paraparje lënde"
+
+#: classes/Pref_Prefs.php:119
+msgid "SSL client certificate"
+msgstr "Dëshmi SSL klienti"
+
+#: classes/Pref_Prefs.php:121
+msgid "Time zone"
+msgstr "Zonë kohore"
+
+#: classes/Pref_Prefs.php:122
+msgid "Group by feed"
+msgstr "Grupoji sipas prurjesh"
+
+#: classes/Pref_Prefs.php:122
+msgid "Group multiple-feed output by originating feed"
+msgstr "Grupo lëndë prurjesh të shumta sipas prurjes së origjinës"
+
+#: classes/Pref_Prefs.php:123
+msgid "Language"
+msgstr "Gjuhë"
+
+#: classes/Pref_Prefs.php:124
+msgid "Theme"
+msgstr "Temë"
+
+#: classes/Pref_Prefs.php:125
+msgid "Don't enforce DISTINCT headlines"
+msgstr "Mos apliko me detyrim tituj DISTINCT"
+
+#: classes/Pref_Prefs.php:125
+msgid "May produce duplicate entries"
+msgstr "Mund të prodhojë zëra të përsëdytur"
+
+#: classes/Pref_Prefs.php:126
+msgid "Show article and feed IDs"
+msgstr "Shfaq ID-ra artikujsh dhe prurjesh"
+
+#: classes/Pref_Prefs.php:126
+msgid "In the headlines buffer"
+msgstr "Te buffer-i i titujve"
+
+#: classes/Pref_Prefs.php:127
+msgid "Disable conditional counter updates"
+msgstr "Çaktivizo përditësime numëratori të kushtëzuar"
+
+#: classes/Pref_Prefs.php:127
+msgid "May increase server load"
+msgstr "Mund të rrisë ngarkesën e shërbyesit"
+
+#: classes/Pref_Prefs.php:128
+msgid "Grid view"
+msgstr "Pamje mozaik"
+
+#: classes/Pref_Prefs.php:128
+msgid "On wider screens, if always expanded"
 msgstr ""
 
-#: classes/Handler_Public.php:520
-msgid "Email:"
-msgstr ""
+#: classes/Pref_Prefs.php:129
+msgid "Required score"
+msgstr "Vlerësim i domosdoshëm"
 
-#: classes/Handler_Public.php:528
+#: classes/Pref_Prefs.php:129
+msgid "Include articles with this or above score"
+msgstr "Përfshi artikuj me këtë vlerësim ose më sipër"
+
+#: classes/Pref_Prefs.php:229
+msgid "The configuration was saved."
+msgstr "Formësimi u ruajt."
+
+#: classes/Pref_Prefs.php:271
+msgid "Your personal data has been saved."
+msgstr "Të dhënat tuaja personale u ruajtën."
+
+#: classes/Pref_Prefs.php:301
+msgid "Full name:"
+msgstr "Emër i plotë:"
+
+#: classes/Pref_Prefs.php:306 js/PrefUsers.js:98
+msgid "E-mail:"
+msgstr "Email:"
+
+#: classes/Pref_Prefs.php:363
+msgid "Old password:"
+msgstr "Fjalëkalimi i vjetër:"
+
+#: classes/Pref_Prefs.php:368 js/PrefUsers.js:84
+msgid "New password:"
+msgstr "Fjalëkalimi i ri:"
+
+#: classes/Pref_Prefs.php:373
+msgid "Confirm password:"
+msgstr "Ripohoni fjalëkalimin:"
+
+#: classes/Pref_Prefs.php:381 js/PrefUsers.js:86
+msgid "Change password"
+msgstr "Ndryshoni fjalëkalimin"
+
+#: classes/Pref_Prefs.php:388
 #, php-format
-msgid "How much is %d + %d:"
+msgid ""
+"Authentication module used for this session (<b>%s</b>) does not provide an "
+"ability to set passwords."
+msgstr ""
+"Moduli i mirëfilltësimeve i përdorur për këtë sesion (<b>%s</b>) nuk ofron "
+"aftësinë për caktim fjalëkalimesh."
+
+#: classes/Pref_Prefs.php:405
+msgid "Generate password"
+msgstr "Prodho fjalëkalim"
+
+#: classes/Pref_Prefs.php:447 classes/Pref_Prefs.php:499
+msgid "Your password:"
+msgstr "Fjalëkalimi juaj:"
+
+#: classes/Pref_Prefs.php:455
+msgid "Disable OTP"
+msgstr "Çaktivizo OTP"
+
+#: classes/Pref_Prefs.php:477
+msgid "OTP secret:"
+msgstr "E fshehtë OTP:"
+
+#: classes/Pref_Prefs.php:504
+msgid "Verification code:"
+msgstr "Kod verifikimi:"
+
+#: classes/Pref_Prefs.php:512
+msgid "Enable OTP"
+msgstr "Aktivizo OTP"
+
+#: classes/Pref_Prefs.php:526
+msgid "Personal data"
+msgstr "Të dhëna personale"
+
+#: classes/Pref_Prefs.php:529 js/PrefFeedTree.js:458 js/CommonDialogs.js:94
+msgid "Password"
+msgstr "Fjalëkalim"
+
+#: classes/Pref_Prefs.php:532
+msgid "App passwords"
+msgstr "Fjalëkalime aplikacionesh"
+
+#: classes/Pref_Prefs.php:539
+msgid "Authenticator (OTP)"
+msgstr "Mirëfilltësues (OTP)"
+
+#: classes/Pref_Prefs.php:550
+msgid "Some preferences are only available in default profile."
+msgstr "Disa parapëlqime janë të mundshme vetëm te profili parazgjedhje."
+
+#: classes/Pref_Prefs.php:639
+msgid "default"
+msgstr "parazgjedhje"
+
+#: classes/Pref_Prefs.php:647
+msgid "Customize"
+msgstr "Përshtateni"
+
+#: classes/Pref_Prefs.php:649
+msgid "More themes..."
+msgstr "Më tepër tema…"
+
+#: classes/Pref_Prefs.php:680
+msgid "Preview"
+msgstr "Paraparje"
+
+#: classes/Pref_Prefs.php:706
+msgid "Register"
 msgstr ""
 
-#: classes/Handler_Public.php:545
-msgid "Some of the required form parameters are missing or incorrect."
-msgstr ""
+#: classes/Pref_Prefs.php:710 classes/Pref_System.php:127
+msgid "Clear"
+msgstr "Spastroje"
 
-#: classes/Handler_Public.php:549 classes/Handler_Public.php:601
-msgid "Go back"
-msgstr ""
+#: classes/Pref_Prefs.php:714 classes/Pref_Prefs.php:881
+#: plugins/bookmarklets/init.php:367 js/CommonDialogs.js:694
+msgid "More info..."
+msgstr "Më tepër hollësi…"
 
-#: classes/Handler_Public.php:587
-msgid "[tt-rss] Password reset request"
-msgstr ""
-
-#: classes/Handler_Public.php:597
-msgid "Sorry, login and email combination not found."
-msgstr ""
-
-#: classes/Handler_Public.php:617
-msgid "Your access level is insufficient to run this script."
-msgstr ""
-
-#: classes/Handler_Public.php:679
-msgid "Database Updater"
-msgstr ""
-
-#: classes/Handler_Public.php:692
+#: classes/Pref_Prefs.php:722
 #, php-format
-msgid "Performing updates to version %d"
-msgstr ""
+msgid "Current server time: %s"
+msgstr "Kohë aktuale e shërbyesit: %s"
 
-#: classes/Handler_Public.php:707 classes/Handler_Public.php:734
-#: js/PrefHelpers.js:418 js/PrefHelpers.js:764
-msgid "Update"
-msgstr ""
+#: classes/Pref_Prefs.php:770
+msgid "Save configuration"
+msgstr "Ruaje formësimin"
 
-#: classes/Handler_Public.php:727
+#: classes/Pref_Prefs.php:773
+msgid "Save and exit"
+msgstr "Ruaje dhe dil"
+
+#: classes/Pref_Prefs.php:780 js/PrefHelpers.js:127
+msgid "Manage profiles"
+msgstr "Administroni profile"
+
+#: classes/Pref_Prefs.php:785
+msgid "Reset to defaults"
+msgstr "Riktheje te parazgjedhjet"
+
+#: classes/Pref_Prefs.php:879
 #, php-format
-msgid "Database schema needs update to the latest version (%d to %d)."
+msgid ""
+"The following plugins use per-feed content hooks. This may cause excessive "
+"data usage and origin server load resulting in a ban of your instance: "
+"<b>%s</b>"
+msgstr ""
+"Shtojcat vijuese përdorin grremça lënde me bazë prurjet. Kjo mund të "
+"shkaktojë përdorim të tepruar të dhënash dhe ngarkesë të tepërt të "
+"shërbyesve origjinalë, duke sjellë dëbimin prej tyre të instancës suaj: "
+"<b>%s</b>"
+
+#: classes/Pref_Prefs.php:895 js/CommonFilters.js:228
+msgid "More info"
+msgstr "Më tepër hollësi"
+
+#: classes/Pref_Prefs.php:898
+msgid "Enable selected"
+msgstr "Aktivizo të përzgjedhurën"
+
+#: classes/Pref_Prefs.php:901
+msgid "Reload"
+msgstr "Ringarkoje"
+
+#: classes/Pref_Prefs.php:908
+msgid "Check for updates"
+msgstr "Kontrollo për përditësime"
+
+#: classes/Pref_Prefs.php:915
+msgid "Install plugin"
+msgstr "Instaloje shtojcën"
+
+#: classes/Pref_Prefs.php:928
+msgid "Personal data / Authentication"
+msgstr "Të dhëna personale / Mirëfilltësim"
+
+#: classes/Pref_Prefs.php:976
+msgid "Incorrect one time password"
+msgstr "Fjalëkalim vetëm-për-një-herë i gabuar"
+
+#: classes/Pref_Prefs.php:979 classes/Pref_Prefs.php:1018
+msgid "Incorrect password"
+msgstr "Fjalëkalim i pasaktë"
+
+#: classes/Pref_Prefs.php:1033
+#, php-format
+msgid "v%.2f, by %s"
+msgstr "v%.2f, nga %s"
+
+#: classes/Pref_Prefs.php:1047
+#, php-format
+msgid "v%s, by %s"
+msgstr "v%s, nga %s"
+
+#: classes/Pref_Prefs.php:1495
+msgid "Description"
+msgstr "Përshkrim"
+
+#: classes/Pref_Prefs.php:1496
+msgid "Created"
+msgstr "Krijuar më"
+
+#: classes/Pref_Prefs.php:1497
+msgid "Last used"
+msgstr "Përdorur së fundi më"
+
+#: classes/Pref_Prefs.php:1542
+#, php-format
+msgid ""
+"Generated password <strong>%s</strong> for %s. Please remember it for future "
+"reference."
+msgstr ""
+"U prodhua fjalëkalim <strong>%s</strong> për %s. Ju lutemi, mbajeni mend, "
+"për përdorim të ardhshëm."
+
+#: classes/UserHelper.php:263
+#, php-format
+msgid "Changed password of user %s to %s"
+msgstr "U ndryshua fjalëkalimi për përdoruesin %s te %s"
+
+#: classes/Config.php:391
+#, php-format
+msgid "Git error [RC=%d]: %s"
+msgstr "Gabim git [RC=%d]: %s"
+
+#: classes/Sessions.php:125
+msgid "Session failed to validate (password changed)"
+msgstr "S’u arrit të vlerësohet sesioni (ka ndryshuar fjalëkalimi)"
+
+#: classes/Sessions.php:130
+msgid "Session failed to validate (account is disabled)"
+msgstr "S’u arrit të vlerësohet sesioni (llogaria është çaktivizuar)"
+
+#: classes/Sessions.php:149
+msgid "Session failed to validate (user not found)"
+msgstr "S’u arrit të vlerësohet sesioni (s’u gjet përdoruesi)"
+
+#: classes/Pref_Labels.php:167
+#, php-format
+msgid "Created label <b>%s</b>"
+msgstr "U krijua etiketa <b>%1$s</b>"
+
+#: classes/Pref_System.php:24
+msgid "Test message from tt-rss"
+msgstr "Mesazh provë nga tt-rss"
+
+#: classes/Pref_System.php:35
+msgid "Task name"
 msgstr ""
 
-#: plugins/nsfw/init.php:46
-msgid "Not safe for work (click to toggle)"
+#: classes/Pref_System.php:36
+#, fuzzy
+#| msgid "Last used"
+msgid "Last executed"
+msgstr "Përdorur së fundi më"
+
+#: classes/Pref_System.php:37
+msgid "Duration (seconds)"
 msgstr ""
 
-#: plugins/nsfw/init.php:80
-msgid "NSFW Plugin"
+#: classes/Pref_System.php:38
+msgid "Return code"
 msgstr ""
 
-#: plugins/nsfw/init.php:95
-msgid "Tags to consider NSFW (comma-separated):"
+#: classes/Pref_System.php:108 js/PrefHelpers.js:622
+msgid "Refresh"
+msgstr "Rifreskoje"
+
+#: classes/Pref_System.php:113
+msgid "&lt;&lt;"
+msgstr "&lt;&lt;"
+
+#: classes/Pref_System.php:117
+#, php-format
+msgid "Page %d of %d"
+msgstr "Faqe %d nga %d"
+
+#: classes/Pref_System.php:122
+msgid "&gt;&gt;"
+msgstr "&gt;&gt;"
+
+#: classes/Pref_System.php:131
+msgid "Severity:"
+msgstr "Rëndësi:"
+
+#: classes/Pref_System.php:135
+msgid "Errors"
+msgstr "Gabime"
+
+#: classes/Pref_System.php:136
+msgid "Warnings"
+msgstr "Sinjalizime"
+
+#: classes/Pref_System.php:137
+msgid "Everything"
+msgstr "Gjithçka"
+
+#: classes/Pref_System.php:147
+msgid "Error"
+msgstr "Gabim"
+
+#: classes/Pref_System.php:148
+msgid "Filename"
+msgstr "Emër kartele"
+
+#: classes/Pref_System.php:149
+msgid "Message"
+msgstr "Mesazh"
+
+#: classes/Pref_System.php:151
+msgid "Date"
+msgstr "Datë"
+
+#: classes/Pref_System.php:195
+msgid "Event log"
+msgstr "Regjistër veprimtarish"
+
+#: classes/Pref_System.php:201
+msgid "Mail configuration"
+msgstr "Formësim poste"
+
+#: classes/Pref_System.php:232
+msgid "To:"
+msgstr "Për:"
+
+#: classes/Pref_System.php:234
+msgid "Send test email"
+msgstr "Dërgo email provë"
+
+#: classes/Pref_System.php:240
+msgid "Scheduled tasks"
 msgstr ""
 
-#: plugins/nsfw/init.php:117
-msgid "Configuration saved."
-msgstr ""
+#: classes/Pref_System.php:251
+msgid "PHP Information"
+msgstr "Informacion PHP"
 
-#: plugins/note/init.php:24 plugins/note/note.js:16
-msgid "Edit article note"
-msgstr ""
+#: plugins/af_comics/init.php:63
+msgid "Feeds supported by af_comics"
+msgstr "Prurje të mbuluara nga af_comics"
+
+#: plugins/af_comics/init.php:65
+msgid "The following comics are currently supported:"
+msgstr "Aktualisht mbulohen tregimet vijues me figura:"
+
+#: plugins/auth_internal/init.php:96
+msgid "Please enter verification code (OTP):"
+msgstr "Ju lutemi, jepni kod verifikimi (OTP):"
+
+#: plugins/auth_internal/init.php:98
+msgid "Continue"
+msgstr "Vazhdo"
+
+#: plugins/auth_internal/init.php:140
+msgid "Too many authentication attempts, throttled."
+msgstr "Shumë përpjekje mirëfilltësimi, u ndalua."
+
+#: plugins/auth_internal/init.php:247
+msgid "Password has been changed."
+msgstr "Fjalëkalimi është ndryshuar."
+
+#: plugins/auth_internal/init.php:249
+msgid "Old password is incorrect."
+msgstr "Fjalëkalimi i vjetër është i pasaktë."
 
 #: plugins/toggle_sidebar/init.php:23
 msgid "Toggle sidebar"
-msgstr ""
+msgstr "Shfaq/fshih anështyllën"
 
 #: plugins/share/init.php:43
 msgid "Article unshared"
-msgstr ""
+msgstr "U hoq ndarje artikulli me të tjerë"
 
 #: plugins/share/init.php:58
 msgid "Unshare all articles"
-msgstr ""
+msgstr "Hiq ndarjen me të tjerë për krejt artikujt"
 
 #: plugins/share/init.php:69
 msgid "Shared URLs cleared."
-msgstr ""
+msgstr "U spastruan URL-të e ndara me të tjerët."
 
 #: plugins/share/init.php:93
 msgid "Share by URL"
-msgstr ""
+msgstr "Ndajeni me të tjerët përmes URL-je"
 
 #: plugins/share/init.php:265
 msgid "You can share this article by the following unique URL:"
-msgstr ""
+msgstr "Këtë artikull mund ta ndani me të tjerë përmes URL unike vijuese:"
 
 #: plugins/share/init.php:277
 msgid "Article not found."
-msgstr ""
+msgstr "Artikulli s’u gjet."
 
 #: plugins/share/init.php:282
 msgid "Unshare article"
-msgstr ""
+msgstr "Hiqja ndarjen me të tjerë artikullit"
 
-#: plugins/share/init.php:283 js/CommonDialogs.js:692
+#: plugins/share/init.php:283 js/CommonDialogs.js:697
 msgid "Generate new URL"
-msgstr ""
+msgstr "Prodho URL të re"
 
-#: plugins/af_psql_trgm/init.php:34
-#, php-format
-msgid "Data saved (%s, %d)"
-msgstr ""
+#: plugins/nsfw/init.php:46
+msgid "Not safe for work (click to toggle)"
+msgstr "Jo e parrezik për punë (klikoni që të shfaqet/fshihet)"
 
-#: plugins/af_psql_trgm/init.php:144
-msgid "Show related articles"
-msgstr ""
+#: plugins/nsfw/init.php:80
+msgid "NSFW Plugin"
+msgstr "Shtojcë NSFW"
 
-#: plugins/af_psql_trgm/init.php:157
-msgid "Mark similar articles as read (af_psql_trgm)"
-msgstr ""
+#: plugins/nsfw/init.php:95
+msgid "Tags to consider NSFW (comma-separated):"
+msgstr "Etiketa për t’u konsideruar NSFW (ndarë me presje):"
 
-#: plugins/af_psql_trgm/init.php:185
-msgid "Minimum similarity:"
-msgstr ""
-
-#: plugins/af_psql_trgm/init.php:194
-msgid ""
-"PostgreSQL trigram extension returns string similarity as a floating point "
-"number (0-1). Setting it too low might produce false positives, zero "
-"disables checking."
-msgstr ""
-
-#: plugins/af_psql_trgm/init.php:196
-msgid ""
-"Setting this value too low might produce false positives, zero disables "
-"checking."
-msgstr ""
-
-#: plugins/af_psql_trgm/init.php:202
-msgid "Minimum title length:"
-msgstr ""
-
-#: plugins/af_psql_trgm/init.php:212
-msgid "Enable for all feeds."
-msgstr ""
-
-#: plugins/af_psql_trgm/init.php:231
-msgid "Currently enabled for (click to edit):"
-msgstr ""
-
-#: plugins/af_psql_trgm/init.php:251
-msgid "Similarity (af_psql_trgm)"
-msgstr ""
-
-#: plugins/af_psql_trgm/init.php:257
-msgid "Mark similar articles as read"
-msgstr ""
+#: plugins/nsfw/init.php:117
+msgid "Configuration saved."
+msgstr "Formësimi u ruajt."
 
 #: plugins/bookmarklets/init.php:91 js/PrefFeedTree.js:472
-#: js/CommonDialogs.js:108
+#: js/CommonDialogs.js:113
 msgid "Subscribe"
-msgstr ""
+msgstr "Pajtohuni"
 
 #: plugins/bookmarklets/init.php:104
 #, php-format
 msgid "Already subscribed to <b>%s</b>."
-msgstr ""
+msgstr "Tashmë i pajtuar te <b>%s</b>."
 
 #: plugins/bookmarklets/init.php:107
 #, php-format
 msgid "Subscribed to <b>%s</b>."
-msgstr ""
+msgstr "U pajtuat te <b>%s</b>."
 
 #: plugins/bookmarklets/init.php:110
 #, php-format
 msgid "Could not subscribe to <b>%s</b>."
-msgstr ""
+msgstr "S’u bë dot pajtimi te <b>%s</b>."
 
 #: plugins/bookmarklets/init.php:113
 #, php-format
 msgid "No feeds found in <b>%s</b>."
-msgstr ""
+msgstr "Te <b>%s</b> s’u gjetën prurje."
 
 #: plugins/bookmarklets/init.php:119
 #, php-format
 msgid "Could not subscribe to <b>%s</b>.<br>Can't download the Feed URL."
 msgstr ""
+"S’u bë dot pajtimi te <b>%s</b>.<br>S’mund të shkarkohet URL-ja e Prurjes."
 
 #: plugins/bookmarklets/init.php:130
 msgid "Multiple feed URLs found:"
-msgstr ""
+msgstr "U gjetën URL të shumta prurjeje:"
 
 #: plugins/bookmarklets/init.php:138
 msgid "Subscribe to selected feed"
-msgstr ""
+msgstr "Pajtohuni te prurja e përzgjedhur"
 
 #: plugins/bookmarklets/init.php:156
 msgid "Edit subscription options"
-msgstr ""
+msgstr "Përpunoni mundësi pajtimi"
 
 #: plugins/bookmarklets/init.php:187 plugins/bookmarklets/init.php:364
 msgid "Share with Tiny Tiny RSS"
-msgstr ""
+msgstr "Ndajeni me të tjerë përmes Tiny Tiny RSS"
 
 #: plugins/bookmarklets/init.php:260
 msgid "Title:"
-msgstr ""
+msgstr "Titull:"
 
-#: plugins/bookmarklets/init.php:265 js/CommonDialogs.js:531
+#: plugins/bookmarklets/init.php:265 js/CommonDialogs.js:536
 msgid "URL:"
-msgstr ""
+msgstr "URL:"
 
 #: plugins/bookmarklets/init.php:270
 msgid "Content:"
-msgstr ""
+msgstr "Lëndë:"
 
 #: plugins/bookmarklets/init.php:275
 msgid "Labels:"
-msgstr ""
+msgstr "Etiketa:"
 
 #: plugins/bookmarklets/init.php:285
 msgid "Share"
-msgstr ""
+msgstr "Ndajeni me të tjerë"
 
 #: plugins/bookmarklets/init.php:287
 msgid "Shared article will appear in the Published feed."
-msgstr ""
+msgstr "Artikujt e ndarë me të tjerë do të shfaqet te prurja “Të botuar”."
 
-#: plugins/bookmarklets/init.php:326 include/login_form.php:196
+#: plugins/bookmarklets/init.php:326 include/login_form.php:200
 msgid "Log in"
-msgstr ""
+msgstr "Hyni"
 
 #: plugins/bookmarklets/init.php:346
 #, php-format
 msgid "Subscribe to %s in Tiny Tiny RSS?"
-msgstr ""
+msgstr "Të pajtohet te %s përmes Tiny Tiny RSS?"
 
 #: plugins/bookmarklets/init.php:353
 msgid "Bookmarklets"
@@ -1841,76 +1876,326 @@ msgid ""
 "Drag the link below to your browser toolbar, open the feed you're interested "
 "in in your browser and click on the link to subscribe to it."
 msgstr ""
+"Tërhiqeni lidhjen më poshtë te paneli i shfletuesit tuaj, hapeni në "
+"shfletuesin tuaj prurjen që ju intereson dhe klikoni mbi lidhjen që të "
+"pajtoheni në të."
 
 #: plugins/bookmarklets/init.php:358
 msgid "Subscribe in Tiny Tiny RSS"
-msgstr ""
+msgstr "Pajtohuni përmes Tiny Tiny RSS"
 
 #: plugins/bookmarklets/init.php:361
 msgid "Use this bookmarklet to publish arbitrary pages using Tiny Tiny RSS"
 msgstr ""
+"Përdoreni këtë aplikacionth faqerojtësish që të botoni faqe arbitrare përmes "
+"Tiny Tiny RSS"
 
-#: plugins/auth_internal/init.php:93
-msgid "Please enter verification code (OTP):"
+#: plugins/af_psql_trgm/init.php:34
+#, php-format
+msgid "Data saved (%s, %d)"
+msgstr "Të dhëna të ruajtura (%s, %d)"
+
+#: plugins/af_psql_trgm/init.php:125
+msgid "Show related articles"
+msgstr "Shfaq artikuj të afërt"
+
+#: plugins/af_psql_trgm/init.php:138
+msgid "Mark similar articles as read (af_psql_trgm)"
+msgstr "Vëru shenjë si të lexuar artikujve të ngjashëm (af_psql_trgm)"
+
+#: plugins/af_psql_trgm/init.php:164
+msgid "Minimum similarity:"
+msgstr "Ngjashmëri minimum:"
+
+#: plugins/af_psql_trgm/init.php:172
+msgid ""
+"PostgreSQL trigram extension returns string similarity as a floating point "
+"number (0-1). Setting it too low might produce false positives, zero "
+"disables checking."
 msgstr ""
+"Zgjerimi PostgreSQL trigram jep ngjashmëri vargjesh si një numër me presje "
+"dhjetore të lëvizshme (0-1). Vënia e saj shumë poshtë mund të prodhojë "
+"pozitivë të rremë, zeroja e çaktivizon kontrollin."
 
-#: plugins/auth_internal/init.php:95
-msgid "Continue"
-msgstr ""
+#: plugins/af_psql_trgm/init.php:177
+msgid "Minimum title length:"
+msgstr "Gjatësi minimum titulli:"
 
-#: plugins/auth_internal/init.php:134
-msgid "Too many authentication attempts, throttled."
-msgstr ""
+#: plugins/af_psql_trgm/init.php:187
+msgid "Enable for all feeds."
+msgstr "Aktivizoje për krejt prurjet."
 
-#: plugins/auth_internal/init.php:241
-msgid "Password has been changed."
-msgstr ""
+#: plugins/af_psql_trgm/init.php:206
+msgid "Currently enabled for (click to edit):"
+msgstr "Aktualisht e aktivizuar për (klikoni për ta përpunuar):"
 
-#: plugins/auth_internal/init.php:243
-msgid "Old password is incorrect."
-msgstr ""
+#: plugins/af_psql_trgm/init.php:226
+msgid "Similarity (af_psql_trgm)"
+msgstr "Ngjashmëri (af_psql_trgm)"
 
-#: plugins/af_comics/init.php:63
-msgid "Feeds supported by af_comics"
-msgstr ""
+#: plugins/af_psql_trgm/init.php:232
+msgid "Mark similar articles as read"
+msgstr "Vëru shenjë si të lexuar artikujve të ngjashëm"
 
-#: plugins/af_comics/init.php:65
-msgid "The following comics are currently supported:"
-msgstr ""
+#: plugins/note/init.php:24 plugins/note/note.js:16
+msgid "Edit article note"
+msgstr "Përpunoni shënim artikulli"
 
-#: include/functions.php:54
-msgid "Detect automatically"
-msgstr ""
-
-#: include/login_form.php:143
+#: include/login_form.php:145
 msgid "I forgot my password"
-msgstr ""
+msgstr "Harrova fjalëkalimin tim"
 
-#: include/login_form.php:148
+#: include/login_form.php:151
 msgid "Profile:"
-msgstr ""
+msgstr "Profil:"
 
-#: include/login_form.php:161
+#: include/login_form.php:164
 msgid "Use less traffic"
-msgstr ""
+msgstr "Përdor më pak trafik"
 
-#: include/login_form.php:165
+#: include/login_form.php:168
 msgid "Does not display images in articles, reduces automatic refreshes."
-msgstr ""
+msgstr "Mos shfaq figura në artikuj, redukton rifreskimet e automatizuara."
 
-#: include/login_form.php:173 js/CommonDialogs.js:16
+#: include/login_form.php:176 js/CommonDialogs.js:16
 msgid "Safe mode"
-msgstr ""
+msgstr "Mënyrë e parrezik"
 
-#: include/login_form.php:178
+#: include/login_form.php:181
 msgid "Uses default theme and prevents all plugins from loading."
-msgstr ""
+msgstr "Përdor temën parazgjedhje dhe pengon ngarkimin e krejt shtojcave."
 
-#: include/login_form.php:186
+#: include/login_form.php:189
 msgid "Remember me"
-msgstr ""
+msgstr "Mbamë mend"
 
-#: js/PrefFilterTree.js:63 js/CommonFilters.js:225
+#: include/functions.php:50
+msgid "Detect automatically"
+msgstr "Pikase automatikisht"
+
+#: js/common.js:468
+msgid "Click to close"
+msgstr "Klikoni që të mbyllet"
+
+#: js/PrefFeedTree.js:94
+msgid "Edit category"
+msgstr "Përpunoni kategori"
+
+#: js/PrefFeedTree.js:101
+msgid "Remove category"
+msgstr "Hiqe kategorinë"
+
+#: js/PrefFeedTree.js:200
+#, java-printf-format, javascript-format
+msgid ""
+"Remove category %s? Any nested feeds would be placed into Uncategorized."
+msgstr ""
+"Të hiqet kategoria %s? Çfarëdo prurjesh brenda saj do të kalohen te “Të "
+"pakategorizuar”."
+
+#: js/PrefFeedTree.js:201
+msgid "Removing category..."
+msgstr "Po hiqet kategoria…"
+
+#: js/PrefFeedTree.js:213
+msgid "Unsubscribe from selected feeds?"
+msgstr "Të bëhet shpajtimi prej prurjeve të përzgjedhura?"
+
+#: js/PrefFeedTree.js:215
+msgid "Unsubscribing from selected feeds..."
+msgstr "Po bëhet shpajtimi prej prurjeve të përzgjedhura…"
+
+#: js/PrefFeedTree.js:228 js/PrefFeedTree.js:297 js/PrefFeedTree.js:313
+#: js/PrefFeedTree.js:518 js/CommonDialogs.js:256 js/CommonDialogs.js:277
+msgid "No feeds selected."
+msgstr "S’u përzgjodhën prurje."
+
+#: js/PrefFeedTree.js:263
+msgid "Remove selected categories?"
+msgstr "Të hiqen kategoritë e përzgjedhura?"
+
+#: js/PrefFeedTree.js:264
+msgid "Removing selected categories..."
+msgstr "Po hiqem kategoritë e përzgjedhura…"
+
+#: js/PrefFeedTree.js:276
+msgid "No categories selected."
+msgstr "S’u përzgjodhën kategori."
+
+#: js/PrefFeedTree.js:324
+msgid "Edit multiple feeds"
+msgstr "Prurje prurje të shumta"
+
+#: js/PrefFeedTree.js:353
+msgid "Save changes to selected feeds?"
+msgstr "Të ruhen ndryshimet te prurjet e përzgjedhura?"
+
+#: js/PrefFeedTree.js:365 js/CommonFilters.js:391 js/CommonDialogs.js:480
+#: js/PrefUsers.js:42
+msgid "Saving data..."
+msgstr "Po ruhen të dhëna…"
+
+#: js/PrefFeedTree.js:402
+msgid "Category title:"
+msgstr "Titull kategorie:"
+
+#: js/PrefFeedTree.js:405
+msgid "Creating category..."
+msgstr "Po krijohet kategori…"
+
+#: js/PrefFeedTree.js:420
+msgid "Subscribing to feeds..."
+msgstr "Po bëhet pajtime te prurje…"
+
+#: js/PrefFeedTree.js:438
+msgid "One valid feed per line (no detection is done)"
+msgstr "Një prurje e vlefshme për rresht (s’bëhet pikasje)"
+
+#: js/PrefFeedTree.js:491
+msgid "Feeds without recent updates"
+msgstr "Prurje pa përditësime së fundi"
+
+#: js/PrefFeedTree.js:499 js/CommonDialogs.js:235
+msgid "Remove selected feeds?"
+msgstr "Të hiqen prurjet e përzgjedhura?"
+
+#: js/PrefFeedTree.js:500 js/CommonDialogs.js:236
+msgid "Removing selected feeds..."
+msgstr "Po hiqen prurjet e përzgjedhura…"
+
+#: js/PrefFeedTree.js:541 js/CommonDialogs.js:303
+msgid "Click to edit feed"
+msgstr "Klikoni që të përpunoni prurje"
+
+#: js/Feeds.js:288
+msgid "Your password is at default value"
+msgstr "Fjalëkalimi juaj është në vlerën parazgjedhje"
+
+#: js/Feeds.js:290
+msgid ""
+"You are using default tt-rss password. Please change it in the Preferences "
+"(Personal data / Authentication)."
+msgstr ""
+"Po përdorni fjalëkalimin parazgjedhje për tt-rss. Ju lutemi, ndryshojeni te "
+"Parapëlqimet (Të dhëna personale / Mirëfilltësim)."
+
+#: js/Feeds.js:450
+msgid "Mark all articles as read?"
+msgstr "T’u vihet shenjë krejt artikujve si të lexuar?"
+
+#: js/Feeds.js:454
+msgid "Marking all feeds as read..."
+msgstr "Po u vihet shenjë krejt artikujve si të lexuar…"
+
+#: js/Feeds.js:471
+msgid "Mark %w in %s older than 1 day as read?"
+msgstr "T’i vihet shenjë %w te %s më i vjetër se 1 ditë si i lexuar?"
+
+#: js/Feeds.js:474
+msgid "Mark %w in %s older than 1 week as read?"
+msgstr "T’i vihet shenjë %w te %s më i vjetër se 1 javë si i lexuar?"
+
+#: js/Feeds.js:477
+msgid "Mark %w in %s older than 2 weeks as read?"
+msgstr "T’i vihet shenjë %w te %s më i vjetër se 2 javë si i lexuar?"
+
+#: js/Feeds.js:480
+msgid "Mark %w in %s as read?"
+msgstr "T’i vihet shenjë %w te %s si i lexuar?"
+
+#: js/Feeds.js:483
+msgid "search results"
+msgstr "përfundime kërkimi"
+
+#: js/Feeds.js:483
+msgid "all articles"
+msgstr "krejt artikujt"
+
+#: js/Feeds.js:524
+#, java-printf-format, javascript-format
+msgid "Mark all articles in %s as read?"
+msgstr "T’u vihet shenjë krejt artikujve në %s si të lexuar?"
+
+#: js/Feeds.js:659
+msgid "Search syntax"
+msgstr "Sintaksë kërkimesh"
+
+#: js/Feeds.js:723
+msgid "Search feeds"
+msgstr "Kërko te prurjet"
+
+#: js/App.js:314
+msgid "This function is only available in combined mode."
+msgstr "Ky funksion është i përdorshëm vetëm nën mënyrën e ndërthurur."
+
+#: js/App.js:445
+msgid "Keyboard shortcuts"
+msgstr "Shkurtore tastiere"
+
+#: js/App.js:506
+msgid "Update daemon is not running."
+msgstr "Demoni i përditësimeve s’po xhiron."
+
+#: js/App.js:519
+msgid "Update daemon is not updating feeds."
+msgstr "Demoni i përditësimeve s’po përditëson prurjet."
+
+#: js/App.js:606
+#, java-printf-format
+msgid ""
+"URL scheme reported by your browser (%a) doesn't match server-configured "
+"SELF_URL_PATH (%b), check X-Forwarded-Proto."
+msgstr ""
+"Skema e URL-ve e treguar nga shfletuesi juaj (%a) nuk përkon me "
+"SELF_URL_PATH (%b) e formësuar të shërbyesit, kontrolloni X-Forwarded-Proto."
+
+#: js/App.js:613
+msgid "Fatal error"
+msgstr "Gabim fatal"
+
+#: js/App.js:638
+msgid "Unhandled exception"
+msgstr "Përjashtim i patrajtuar"
+
+#: js/App.js:868
+msgid "Updates for Tiny Tiny RSS are available."
+msgstr "Ka gati përditësime për Tiny Tiny RSS."
+
+#: js/App.js:871
+msgid "Updates for some local plugins are available."
+msgstr "Ka gati përditësime për disa shtojca vendore."
+
+#: js/App.js:914
+msgid "Widescreen is not available in combined mode."
+msgstr "“Widescreen” s’është i përdorshëm nën mënyrën e ndërthurur."
+
+#: js/App.js:1111
+msgid "Please enable mail or mailto plugin first."
+msgstr ""
+"Ju lutemi, së pari aktivizoni shtojcë për funksionin “mail” ose “mailto”"
+
+#: js/App.js:1174 js/App.js:1291 js/CommonDialogs.js:378
+msgid "You can't edit this kind of feed."
+msgstr "S’mund të përpunoni këtë lloj prurjeje"
+
+#: js/App.js:1246
+msgid "Please enable af_readability first."
+msgstr "Ju lutemi, së pari aktivizoni af_readability."
+
+#: js/App.js:1300
+msgid "Please select some feed first."
+msgstr "Ju lutemi, së pari përzgjidhni ndonjë prurje."
+
+#: js/App.js:1305
+msgid "You can't unsubscribe from the category."
+msgstr "S’mund të shpajtoheni nga kategoria."
+
+#: js/App.js:1311 js/CommonDialogs.js:352 js/CommonDialogs.js:393
+#, java-printf-format, javascript-format
+msgid "Unsubscribe from %s?"
+msgstr "Të shpajtohet prej %s?"
+
+#: js/PrefFilterTree.js:63 js/CommonFilters.js:218
 msgid "in"
 msgstr ""
 
@@ -1918,13 +2203,13 @@ msgstr ""
 msgid "Inverse"
 msgstr ""
 
-#: js/PrefFilterTree.js:136 js/PrefFilterTree.js:165
+#: js/PrefFilterTree.js:136 js/PrefFilterTree.js:165 js/PrefFilterTree.js:198
 msgid "No filters selected."
-msgstr ""
+msgstr "S’u përzgjodhën filtra."
 
 #: js/PrefFilterTree.js:140
 msgid "Combine selected filters?"
-msgstr ""
+msgstr "Të ndërthuren filtrat e përzgjedhur?"
 
 #: js/PrefFilterTree.js:141
 msgid "Joining filters..."
@@ -1932,350 +2217,535 @@ msgstr ""
 
 #: js/PrefFilterTree.js:152
 msgid "Remove selected filters?"
-msgstr ""
+msgstr "Të hiqen filtrat e përzgjedhur?"
 
 #: js/PrefFilterTree.js:153
 msgid "Removing selected filters..."
-msgstr ""
+msgstr "Po hiqen filtrat e përzgjedhur…"
 
-#: js/common.js:468
-msgid "Click to close"
-msgstr ""
+#: js/PrefFilterTree.js:179
+#, fuzzy
+#| msgid "Name for cloned profile:"
+msgid "Name for new filter:"
+msgstr "Emër për profil të klonuar:"
+
+#: js/PrefFilterTree.js:187
+#, fuzzy
+#| msgid "Combine selected filters?"
+msgid "Clone selected filters?"
+msgstr "Të ndërthuren filtrat e përzgjedhur?"
+
+#: js/PrefFilterTree.js:191
+#, fuzzy
+#| msgid "Removing selected filters..."
+msgid "Cloning selected filters..."
+msgstr "Po hiqen filtrat e përzgjedhur…"
 
 #: js/CommonFilters.js:14
 msgid "Edit filter"
-msgstr ""
+msgstr "Përpunoni filtër"
 
 #: js/CommonFilters.js:14
 msgid "Create new filter"
-msgstr ""
+msgstr "Krijoni filtër të ri"
 
-#: js/CommonFilters.js:45
+#: js/CommonFilters.js:42
 #, java-printf-format, javascript-format
 msgid "Looking for articles (%d processed, %f found)..."
-msgstr ""
+msgstr "Po shihet për artikuj (%d të analizuar, %f të gjetur)…"
 
-#: js/CommonFilters.js:73
+#: js/CommonFilters.js:68
 msgid "Articles matching this filter:"
-msgstr ""
+msgstr "Artikuj që kanë përkim me këtë filtër:"
 
-#: js/CommonFilters.js:75
-#, java-printf-format, javascript-format
-msgid "Found %d articles matching this filter:"
-msgstr ""
+#: js/CommonFilters.js:70
+#, fuzzy, java-printf-format, javascript-format
+#| msgid "Found %d articles matching this filter:"
+msgid "Found at least %d articles matching this filter:"
+msgstr "U gjetën %d artikuj që kanë përkim me këtë filtër:"
 
-#: js/CommonFilters.js:84
+#: js/CommonFilters.js:77
 msgid "Error while trying to get filter test results."
-msgstr ""
+msgstr "Gabim teksa provohej të merreshin përfundime filtri test."
 
-#: js/CommonFilters.js:96
+#: js/CommonFilters.js:89
 msgid "Looking for articles..."
-msgstr ""
+msgstr "Po shihet për artikuj…"
 
-#: js/CommonFilters.js:175
+#: js/CommonFilters.js:168
 msgid "Edit rule"
-msgstr ""
+msgstr "Përpunoni rregull"
 
-#: js/CommonFilters.js:175
+#: js/CommonFilters.js:168
 msgid "Add rule"
-msgstr ""
+msgstr "Shtoni rregull"
 
-#: js/CommonFilters.js:219
+#: js/CommonFilters.js:212
 msgid "Inverse regular expression matching"
 msgstr ""
 
-#: js/CommonFilters.js:223
+#: js/CommonFilters.js:216
 msgid "on"
 msgstr ""
 
-#: js/CommonFilters.js:251
+#: js/CommonFilters.js:244
 msgid "Edit action"
-msgstr ""
+msgstr "Përpunoni veprimin"
 
-#: js/CommonFilters.js:251
+#: js/CommonFilters.js:244
 msgid "Add action"
-msgstr ""
+msgstr "Shtoni veprim"
 
-#: js/CommonFilters.js:363
+#: js/CommonFilters.js:356
 msgid "Remove filter?"
-msgstr ""
+msgstr "Të hiqet filtri?"
 
-#: js/CommonFilters.js:368
+#: js/CommonFilters.js:361
 msgid "Removing filter..."
-msgstr ""
+msgstr "Po hiqet filtri…"
 
-#: js/CommonFilters.js:398 js/PrefUsers.js:42 js/PrefFeedTree.js:365
-#: js/CommonDialogs.js:475
-msgid "Saving data..."
-msgstr ""
-
-#: js/CommonFilters.js:455 js/CommonFilters.js:487 js/PrefHelpers.js:195
+#: js/CommonFilters.js:448 js/CommonFilters.js:480 js/PrefHelpers.js:195
 msgid "Add"
-msgstr ""
+msgstr "Shto"
 
-#: js/CommonFilters.js:458 js/CommonFilters.js:490
+#: js/CommonFilters.js:451 js/CommonFilters.js:483
 msgid "Delete"
-msgstr ""
+msgstr "Fshije"
 
-#: js/CommonFilters.js:524 js/CommonFilters.js:528
+#: js/CommonFilters.js:517 js/CommonFilters.js:521
 msgid "Test"
+msgstr "Provë"
+
+#: js/CommonFilters.js:522
+msgid "Create"
+msgstr "Krijoni"
+
+#: js/Article.js:36
+msgid "Please enter new score for selected articles:"
+msgstr "Ju lutemi, jepni vlerësimin e ri për artikujt e përzgjedhur:"
+
+#: js/Article.js:62 js/Headlines.js:948 js/Headlines.js:974 js/Headlines.js:986
+#: js/Headlines.js:1129 js/Headlines.js:1146 js/Headlines.js:1163
+#: js/Headlines.js:1300
+msgid "No articles selected."
+msgstr "Pa artikuj të përzgjedhur."
+
+#: js/Article.js:70
+msgid "Please enter new score for this article:"
+msgstr "Ju lutemi, jepni vlerësimin e ri për këtë artikull:"
+
+#: js/Article.js:130
+msgid "Article URL:"
+msgstr "URL artikulli:"
+
+#: js/Article.js:132
+msgid "No URL could be displayed for this article."
+msgstr "Për këtë artikulli s’mund të shfaqej ndonjë URL."
+
+#: js/Article.js:152
+msgid "no tags"
+msgstr "s’ka etiketa"
+
+#: js/Article.js:244
+msgid "comments"
+msgstr "komente"
+
+#: js/Article.js:247
+msgid "comment"
+msgid_plural "comments"
+msgstr[0] "koment"
+msgstr[1] "komente"
+
+#: js/Article.js:352
+msgid "Article tags"
+msgstr "Etiketa artikulli"
+
+#: js/Article.js:359
+msgid "Tags for this article (separated by commas):"
+msgstr "Etiketa për këtë artikull (ndarë me presje):"
+
+#: js/Article.js:379
+msgid "Saving article tags..."
+msgstr "Po ruhen etiketa artikulli…"
+
+#: js/CommonDialogs.js:45
+msgid ""
+"Provided URL is a HTML page referencing multiple feeds, please select "
+"required feed from the dropdown menu below."
+msgstr ""
+"URL-ja e dhënë është një faqe HTML që përmban referenca te prurje të shumta, "
+"ju lutemi, përzgjidhni prurjen e duhur që nga menuja hapmbyll më poshtë."
+
+#: js/CommonDialogs.js:142
+msgid ""
+"Failed to parse output. This can indicate server timeout and/or network "
+"issues. Backend output was logged to browser console."
+msgstr ""
+"S’u arrit të analizohej ç’u prodhuat. Kjo mund të tregojë probleme mbarimi "
+"kohe shërbyesi dhe/ose rrjeti. Ç’u prodhua nga mekanizmi i pasmë është "
+"regjistruar te konsola e shfletuesit."
+
+#: js/CommonDialogs.js:155
+msgid "You are already subscribed to this feed."
+msgstr "Jeni tashmë i pajtuar te kjo prurje."
+
+#: js/CommonDialogs.js:159
+#, java-printf-format, javascript-format
+msgid "Subscribed to %s"
+msgstr "U pajtua te %s"
+
+#: js/CommonDialogs.js:168
+msgid "Specified URL seems to be invalid."
+msgstr "URL-ja e dhënë duket të jetë e pavlefshme."
+
+#: js/CommonDialogs.js:171
+msgid "Specified URL doesn't seem to contain any feeds."
+msgstr "URL-ja e treguar s’duket se përmban ndonjë prurje."
+
+#: js/CommonDialogs.js:184
+msgid "Expand to select feed"
 msgstr ""
 
-#: js/CommonFilters.js:529
-msgid "Create"
+#: js/CommonDialogs.js:196
+#, java-printf-format, javascript-format
+msgid "Couldn't download the specified URL: %s"
+msgstr "S’u shkarkua dot URL-ja e treguar: %s"
+
+#: js/CommonDialogs.js:199
+#, java-printf-format, javascript-format
+msgid "XML validation failed: %s"
+msgstr "Vlerësimi XML dështoi: %s"
+
+#: js/CommonDialogs.js:202
+msgid "Error while creating feed database entry."
+msgstr "Gabim teksa krijohej zë baze të dhënash prurjesh."
+
+#: js/CommonDialogs.js:205
+msgid "You are not allowed to perform this operation."
+msgstr "S’keni leje të kryeni këtë veprim."
+
+#: js/CommonDialogs.js:227
+msgid "Feeds with update errors"
+msgstr "Prurje me gabime përditësimi"
+
+#: js/CommonDialogs.js:263
+msgid "Debug selected feeds?"
+msgstr "Të diagnostikohen prurjet e përzgjedhura?"
+
+#: js/CommonDialogs.js:264
+msgid "Opening debugger for selected feeds..."
+msgstr "Po hapet diagnostikuesi për prurjet e përzgjedhura…"
+
+#: js/CommonDialogs.js:333
+msgid "Please enter label caption:"
+msgstr "Ju lutemi, jepni përshkrim etikete:"
+
+#: js/CommonDialogs.js:355
+msgid "Removing feed..."
+msgstr "Po hiqet prurja…"
+
+#: js/CommonDialogs.js:403
+msgid "Please select an image file."
+msgstr "Ju lutemi, përzgjidhni një kartelë figurë."
+
+#: js/CommonDialogs.js:423
+msgid "Icon file is too large."
+msgstr "Kartela e ikonës është shumë e madhe."
+
+#: js/CommonDialogs.js:426
+msgid "Upload failed."
+msgstr "Ngarkimi dështoi."
+
+#: js/CommonDialogs.js:456
+msgid "Remove stored feed icon?"
+msgstr "Të hiqet ikona e depozituar e prurjes?"
+
+#: js/CommonDialogs.js:457
+msgid "Removing feed icon..."
+msgstr "Po hiqet ikonë prurjeje…"
+
+#: js/CommonDialogs.js:460
+msgid "Feed icon removed."
+msgstr "U hoq ikonë prurjeje."
+
+#: js/CommonDialogs.js:627
+msgid "Upload new icon..."
+msgstr "Ngarkoni ikonë të re…"
+
+#: js/CommonDialogs.js:656 js/Headlines.js:642
+msgid "Show as feed"
+msgstr "Shfaqe si prurje"
+
+#: js/CommonDialogs.js:658
+msgid "Generate new syndication address for this feed?"
 msgstr ""
+
+#: js/CommonDialogs.js:660
+msgid "Trying to change address..."
+msgstr "Po provohet të ndryshohet adresë…"
+
+#: js/CommonDialogs.js:678
+msgid "Could not change feed URL."
+msgstr "S’u ndryshua dot URL prurjeje."
+
+#: js/CommonDialogs.js:685
+#, java-printf-format, javascript-format
+msgid "%s can be accessed via the following secret URL:"
+msgstr "%s mund të përdoret përmes URL-së së fshehtë vijuese:"
 
 #: js/Headlines.js:649
 msgid "Cancel search"
-msgstr ""
+msgstr "Anuloje kërkimin"
 
 #: js/Headlines.js:663
 msgid "Select..."
-msgstr ""
+msgstr "Përzgjidhni…"
 
 #: js/Headlines.js:823 js/Headlines.js:877 js/Headlines.js:894
 msgid "Click to open next unread feed."
-msgstr ""
+msgstr "Hap prurjen pasuese të palexuar."
 
 #: js/Headlines.js:891
 msgid "New articles found, reload feed to continue."
-msgstr ""
-
-#: js/Headlines.js:948 js/Headlines.js:974 js/Headlines.js:986
-#: js/Headlines.js:1129 js/Headlines.js:1146 js/Headlines.js:1163
-#: js/Headlines.js:1300 js/Article.js:62
-msgid "No articles selected."
-msgstr ""
+msgstr "U gjetën artikuj të rinj, që të vazhdohet, ringarkoni prurjen."
 
 #: js/Headlines.js:1100
 #, java-printf-format, javascript-format
 msgid "%d article selected"
 msgid_plural "%d articles selected"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d artikull i përzgjedhur"
+msgstr[1] "%d artikuj të përzgjedhur"
 
 #: js/Headlines.js:1171
 #, java-printf-format, javascript-format
 msgid "Delete %d selected article in %s?"
 msgid_plural "Delete %d selected articles in %s?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Të fshihet %d artikull i përzgjedhur te %s?"
+msgstr[1] "Të fshihen %d artikujt e përzgjedhur te %s?"
 
 #: js/Headlines.js:1173
 #, java-printf-format, javascript-format
 msgid "Delete %d selected article?"
 msgid_plural "Delete %d selected articles?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Të fshihet %d artikull i përzgjedhur?"
+msgstr[1] "Të fshihen %d artikujt e përzgjedhur?"
 
 #: js/Headlines.js:1306
 #, java-printf-format, javascript-format
 msgid "Mark %d selected article in %s as read?"
 msgid_plural "Mark %d selected articles in %s as read?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "T’i vihet shenjë si i lexuar %d artikulli të përzgjedhur te %s?"
+msgstr[1] "T’u vihet shenjë si të lexuar %d artikujve të përzgjedhur te %s?"
 
 #: js/Headlines.js:1322
 msgid "No article is selected."
-msgstr ""
+msgstr "S’është përzgjedhur artikull."
 
 #: js/Headlines.js:1357
 msgid "No articles found to mark"
-msgstr ""
+msgstr "S’u gjet artikull për t’i vënë shenjë"
 
 #: js/Headlines.js:1359
 #, java-printf-format, javascript-format
 msgid "Mark %d article as read?"
 msgid_plural "Mark %d articles as read?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "T’i vihet shenjë %d artikulli si i lexuar?"
+msgstr[1] "T’u vihet shenjë %d artikujve si të lexuar?"
 
 #: js/Headlines.js:1418
 msgid "Open original article"
-msgstr ""
+msgstr "Hap artikullin origjinal"
 
 #: js/Headlines.js:1425
 msgid "Display article URL"
-msgstr ""
+msgstr "Shfaq URL artikulli"
 
 #: js/Headlines.js:1532
 msgid "Assign label"
-msgstr ""
+msgstr "Caktojini etiketë"
 
 #: js/Headlines.js:1537
 msgid "Remove label"
-msgstr ""
+msgstr "Hiqe etiketën"
 
 #: js/Headlines.js:1586 js/FeedTree.js:105 js/Headlines.js:473
 #: js/Headlines.js:522 js/Headlines.js:591
 msgid "Open site"
-msgstr ""
+msgstr "Hap sajtin"
 
 #: js/Headlines.js:1595 js/FeedTree.js:114
 msgid "Debug feed"
-msgstr ""
+msgstr "Diagnostikojeni prurjen"
 
 #: js/Headlines.js:1616
 msgid "Select articles in group"
-msgstr ""
+msgstr "Përzgjidhni artikuj në grup"
 
 #: js/Headlines.js:1626
 msgid "Mark group as read"
-msgstr ""
+msgstr "Vëri shenjë grupit si të Lexuar"
 
 #: js/Headlines.js:1638
 msgid "Mark feed as read"
-msgstr ""
+msgstr "Vëri shenjë prurjes si e lexuar"
 
 #: js/PrefHelpers.js:20
 msgid "Remove selected app passwords?"
-msgstr ""
+msgstr "Të hiqen fjalëkalime të përzgjedhur aplikacionesh?"
 
 #: js/PrefHelpers.js:45
 msgid "This will invalidate all previously generated feed URLs. Continue?"
 msgstr ""
+"Kjo do të bëjë të pavlefshme krejt URL-të e prodhuara më parë për prurjet. "
+"Të vazhdohet?"
 
 #: js/PrefHelpers.js:46 plugins/share/share_prefs.js:6
 msgid "Clearing URLs..."
-msgstr ""
+msgstr "Po spastrohen URL-të…"
 
 #: js/PrefHelpers.js:49
 msgid "Generated URLs cleared."
-msgstr ""
+msgstr "U spastruan URL të prodhuara."
 
 #: js/PrefHelpers.js:59
 msgid "Digest preview"
-msgstr ""
+msgstr "Paraparje përmbledhjeje"
 
 #: js/PrefHelpers.js:113
 msgid "Clear event log?"
-msgstr ""
+msgstr "Të spastrohet regjistër veprimtarish?"
 
 #: js/PrefHelpers.js:135
 msgid "Name for cloned profile:"
-msgstr ""
+msgstr "Emër për profil të klonuar:"
 
 #: js/PrefHelpers.js:145
 msgid "Please select a single profile to clone."
-msgstr ""
+msgstr "Ju lutemi, përzgjidhni një profil të vetëm për klonim."
 
 #: js/PrefHelpers.js:153
 msgid ""
 "Remove selected profiles? Active and default profiles will not be removed."
 msgstr ""
+"Të hiqen profilet e përzgjedhur? Profilet aktive dhe parazgjedhje s’do të "
+"hiqen."
 
 #: js/PrefHelpers.js:154
 msgid "Removing selected profiles..."
-msgstr ""
+msgstr "Po hiqen profile të përzgjedhur…"
 
 #: js/PrefHelpers.js:163
 msgid "No profiles selected."
-msgstr ""
+msgstr "S’u përzgjodhën profile."
 
 #: js/PrefHelpers.js:168
 msgid "Creating profile..."
-msgstr ""
+msgstr "Po krijohet profil…"
 
 #: js/PrefHelpers.js:218
 msgid "(active)"
-msgstr ""
+msgstr "(aktiv)"
 
 #: js/PrefHelpers.js:219
 msgid "(empty)"
-msgstr ""
+msgstr "(i zbrazët)"
 
 #: js/PrefHelpers.js:242
 msgid "Activate selected profile?"
-msgstr ""
+msgstr "Të aktivizohet profili i përzgjedhur?"
 
 #: js/PrefHelpers.js:251
 msgid "Please choose a profile to activate."
-msgstr ""
+msgstr "Ju lutemi, zgjidhni një profil për t’u aktivizuar."
 
 #: js/PrefHelpers.js:264
 msgid "Customize stylesheet"
-msgstr ""
+msgstr "Përshtatni fletëstil"
 
 #: js/PrefHelpers.js:280
 msgid ""
 "You can override colors, fonts and layout of your currently selected theme "
 "with custom CSS declarations here."
 msgstr ""
+"Mundeni të anashkaloni ngjyra, shkronja dhe skemë të temës suaj të "
+"përzgjedhur aktualisht përmes deklaratash CSS të përshtatura, këtu."
 
 #: js/PrefHelpers.js:289
 msgid ""
 "User CSS has been applied, you might need to reload the page to see all "
 "changes."
 msgstr ""
+"U aplikua CSS përdoruesi, mund t’ju duhet të ringarkoni faqen, që të shihni "
+"krejt ndryshimet."
 
 #: js/PrefHelpers.js:329
 msgid "Reset to defaults?"
-msgstr ""
+msgstr "Të rikthehet te parazgjedhjet?"
 
 #: js/PrefHelpers.js:373
 #, java-printf-format, javascript-format
 msgid "Error while loading plugins list: %s."
-msgstr ""
+msgstr "Gabim teksa ngarkohej listë shtojcash: %s."
 
 #: js/PrefHelpers.js:422
 msgid "Clear data"
-msgstr ""
+msgstr "Spastro të dhënat"
 
 #: js/PrefHelpers.js:425
 msgid "Uninstall"
-msgstr ""
+msgstr "Çinstaloje"
 
 #: js/PrefHelpers.js:437 js/PrefHelpers.js:596
 msgid "Could not find any plugins for this search query."
-msgstr ""
+msgstr "S’u gjet dot ndonjë shtojcë për këtë varg kërkimi."
 
 #: js/PrefHelpers.js:444
 #, java-printf-format, javascript-format
 msgid "Clear stored data for %s?"
-msgstr ""
+msgstr "Të spastrohen të dhënat e depozituara për %s?"
 
 #: js/PrefHelpers.js:453
 #, java-printf-format, javascript-format
 msgid "Uninstall plugin %s?"
-msgstr ""
+msgstr "Të çinstalohet shtojca %s?"
 
 #: js/PrefHelpers.js:462
 msgid "Plugin uninstallation failed."
-msgstr ""
+msgstr "Çinstalimi i shtojcës dështoi."
 
 #: js/PrefHelpers.js:478
 msgid "Available plugins"
-msgstr ""
+msgstr "Shtojca të gatshme"
 
 #: js/PrefHelpers.js:491
 msgid "Plugin installer"
-msgstr ""
+msgstr "Instalues shtojcash"
 
 #: js/PrefHelpers.js:494
 #, java-printf-format, javascript-format
 msgid "Installing %s, please wait..."
-msgstr ""
+msgstr "Po instalohet %s, ju lutemi, prisni…"
 
 #: js/PrefHelpers.js:509 js/PrefHelpers.js:551 js/PrefHelpers.js:662
 msgid "Operation failed: check event log."
-msgstr ""
+msgstr "Veprimi dështoi: shihni regjistër veprimtarie."
 
 #: js/PrefHelpers.js:513
 msgid "Plugin has been installed."
-msgstr ""
+msgstr "Shtojca u instalua."
 
 #: js/PrefHelpers.js:517
 msgid "Plugin is already installed."
-msgstr ""
+msgstr "Shtojca është tashmë e instaluar."
 
 #: js/PrefHelpers.js:527 js/PrefHelpers.js:679 js/PrefHelpers.js:745
 #, java-printf-format, javascript-format
 msgid "Exited with RC: %d"
-msgstr ""
+msgstr "U dol me RC: %d"
 
 #: js/PrefHelpers.js:576
 msgid "Already installed"
-msgstr ""
+msgstr "Tashmë e instaluar"
 
 #: js/PrefHelpers.js:587
 #, java-printf-format, javascript-format
@@ -2284,27 +2754,27 @@ msgstr ""
 
 #: js/PrefHelpers.js:604
 msgid "Looking for plugins..."
-msgstr ""
+msgstr "Po shihet për shtojca…"
 
 #: js/PrefHelpers.js:623 js/PrefHelpers.js:765
 msgid "Close"
-msgstr ""
+msgstr "Mbylle"
 
 #: js/PrefHelpers.js:641
 msgid "Update plugins"
-msgstr ""
+msgstr "Përditësoji shtojcat"
 
 #: js/PrefHelpers.js:656
 msgid "Updating, please wait..."
-msgstr ""
+msgstr "Po përditësohet, ju lutemi, pritni…"
 
 #: js/PrefHelpers.js:680
 msgid "Update done."
-msgstr ""
+msgstr "Përditësimi u krye."
 
 #: js/PrefHelpers.js:704
 msgid "No updates available"
-msgstr ""
+msgstr "S’ka përditësime"
 
 #: js/PrefHelpers.js:716
 #, java-printf-format, javascript-format
@@ -2314,443 +2784,79 @@ msgstr ""
 #: js/PrefHelpers.js:723
 #, java-printf-format, javascript-format
 msgid "%s: Operation failed: check event log."
-msgstr ""
+msgstr "%s: Veprimi dështoi: shihni regjistër veprimtarie."
 
 #: js/PrefHelpers.js:746
 msgid "Ready to update"
-msgstr ""
+msgstr "Gati për përditësim"
 
 #: js/PrefHelpers.js:791
 msgid "Please choose an OPML file first."
-msgstr ""
+msgstr "Ju lutemi, së pari zgjidhni një kartelë OPML."
 
 #: js/PrefHelpers.js:794
 msgid "Importing, please wait..."
-msgstr ""
+msgstr "Po importohet, ju lutemi, prisni…"
 
 #: js/PrefHelpers.js:803
 msgid "OPML Import"
-msgstr ""
+msgstr "Importim OPML"
 
 #: js/PrefHelpers.js:814
 msgid ""
 "If you have imported labels and/or filters, you might need to reload "
 "preferences to see your new data."
 msgstr ""
+"Nëse keni importuar etiketa dhe/ose filtra, mund t’ju duhet të ringarkoni "
+"parapëlqimet që të shihni të dhënat tuaja."
 
-#: js/Article.js:36
-msgid "Please enter new score for selected articles:"
-msgstr ""
-
-#: js/Article.js:70
-msgid "Please enter new score for this article:"
-msgstr ""
-
-#: js/Article.js:130
-msgid "Article URL:"
-msgstr ""
-
-#: js/Article.js:132
-msgid "No URL could be displayed for this article."
-msgstr ""
-
-#: js/Article.js:152
-msgid "no tags"
-msgstr ""
-
-#: js/Article.js:244
-msgid "comments"
-msgstr ""
-
-#: js/Article.js:247
-msgid "comment"
-msgid_plural "comments"
-msgstr[0] ""
-msgstr[1] ""
-
-#: js/Article.js:352
-msgid "Article tags"
-msgstr ""
-
-#: js/Article.js:359
-msgid "Tags for this article (separated by commas):"
-msgstr ""
-
-#: js/Article.js:379
-msgid "Saving article tags..."
-msgstr ""
-
-#: js/Feeds.js:285
-msgid "Your password is at default value"
-msgstr ""
-
-#: js/Feeds.js:287
-msgid ""
-"You are using default tt-rss password. Please change it in the Preferences "
-"(Personal data / Authentication)."
-msgstr ""
-
-#: js/Feeds.js:442
-msgid "Mark all articles as read?"
-msgstr ""
-
-#: js/Feeds.js:446
-msgid "Marking all feeds as read..."
-msgstr ""
-
-#: js/Feeds.js:463
-msgid "Mark %w in %s older than 1 day as read?"
-msgstr ""
-
-#: js/Feeds.js:466
-msgid "Mark %w in %s older than 1 week as read?"
-msgstr ""
-
-#: js/Feeds.js:469
-msgid "Mark %w in %s older than 2 weeks as read?"
-msgstr ""
-
-#: js/Feeds.js:472
-msgid "Mark %w in %s as read?"
-msgstr ""
-
-#: js/Feeds.js:475
-msgid "search results"
-msgstr ""
-
-#: js/Feeds.js:475
-msgid "all articles"
-msgstr ""
-
-#: js/Feeds.js:516
-#, java-printf-format, javascript-format
-msgid "Mark all articles in %s as read?"
-msgstr ""
-
-#: js/Feeds.js:651
-msgid "Search syntax"
-msgstr ""
-
-#: js/Feeds.js:715
-msgid "Search feeds"
+#: js/FeedTree.js:137
+msgid "(Un)collapse"
 msgstr ""
 
 #: js/PrefUsers.js:19
 msgid "Please enter username:"
-msgstr ""
+msgstr "Ju lutemi, jepni emër përdoruesi:"
 
 #: js/PrefUsers.js:22
 msgid "Adding user..."
-msgstr ""
+msgstr "Po shtohet përdorues…"
 
 #: js/PrefUsers.js:39 js/PrefUsers.js:60
 msgid "Edit user"
-msgstr ""
+msgstr "Përpunoni përdorues"
 
 #: js/PrefUsers.js:136 js/PrefUsers.js:175
 msgid "No users selected."
-msgstr ""
+msgstr "S’u përzgjodhën përdorues."
 
 #: js/PrefUsers.js:141
 msgid "Please select one user."
-msgstr ""
+msgstr "Ju lutemi, përzgjidhni një përdorues."
 
 #: js/PrefUsers.js:145
 msgid "Reset password of selected user?"
-msgstr ""
+msgstr "Të ricaktohet fjalëkalimi për përdoruesin e përzgjedhur?"
 
 #: js/PrefUsers.js:146
 msgid "Resetting password for selected user..."
-msgstr ""
+msgstr "Po ricaktohet fjalëkalimi për përdoruesin e përzgjedhur…"
 
 #: js/PrefUsers.js:161
 msgid ""
 "Remove selected users? Neither default admin nor your account will be "
 "removed."
 msgstr ""
+"Të hiqen përdoruesit e përzgjedhur? S’do të hiqen as përgjegjësi "
+"parazgjedhje, as llogaria juaj."
 
 #: js/PrefUsers.js:162
 msgid "Removing selected users..."
-msgstr ""
-
-#: js/PrefFeedTree.js:94
-msgid "Edit category"
-msgstr ""
-
-#: js/PrefFeedTree.js:101
-msgid "Remove category"
-msgstr ""
-
-#: js/PrefFeedTree.js:200
-#, java-printf-format, javascript-format
-msgid ""
-"Remove category %s? Any nested feeds would be placed into Uncategorized."
-msgstr ""
-
-#: js/PrefFeedTree.js:201
-msgid "Removing category..."
-msgstr ""
-
-#: js/PrefFeedTree.js:213
-msgid "Unsubscribe from selected feeds?"
-msgstr ""
-
-#: js/PrefFeedTree.js:215
-msgid "Unsubscribing from selected feeds..."
-msgstr ""
-
-#: js/PrefFeedTree.js:228 js/PrefFeedTree.js:297 js/PrefFeedTree.js:313
-#: js/PrefFeedTree.js:518 js/CommonDialogs.js:251 js/CommonDialogs.js:272
-msgid "No feeds selected."
-msgstr ""
-
-#: js/PrefFeedTree.js:263
-msgid "Remove selected categories?"
-msgstr ""
-
-#: js/PrefFeedTree.js:264
-msgid "Removing selected categories..."
-msgstr ""
-
-#: js/PrefFeedTree.js:276
-msgid "No categories selected."
-msgstr ""
-
-#: js/PrefFeedTree.js:324
-msgid "Edit multiple feeds"
-msgstr ""
-
-#: js/PrefFeedTree.js:353
-msgid "Save changes to selected feeds?"
-msgstr ""
-
-#: js/PrefFeedTree.js:402
-msgid "Category title:"
-msgstr ""
-
-#: js/PrefFeedTree.js:405
-msgid "Creating category..."
-msgstr ""
-
-#: js/PrefFeedTree.js:420
-msgid "Subscribing to feeds..."
-msgstr ""
-
-#: js/PrefFeedTree.js:438
-msgid "One valid feed per line (no detection is done)"
-msgstr ""
-
-#: js/PrefFeedTree.js:491
-msgid "Feeds without recent updates"
-msgstr ""
-
-#: js/PrefFeedTree.js:499 js/CommonDialogs.js:230
-msgid "Remove selected feeds?"
-msgstr ""
-
-#: js/PrefFeedTree.js:500 js/CommonDialogs.js:231
-msgid "Removing selected feeds..."
-msgstr ""
-
-#: js/PrefFeedTree.js:541 js/CommonDialogs.js:298
-msgid "Click to edit feed"
-msgstr ""
-
-#: js/CommonDialogs.js:45
-msgid ""
-"Provided URL is a HTML page referencing multiple feeds, please select "
-"required feed from the dropdown menu below."
-msgstr ""
-
-#: js/CommonDialogs.js:137
-msgid ""
-"Failed to parse output. This can indicate server timeout and/or network "
-"issues. Backend output was logged to browser console."
-msgstr ""
-
-#: js/CommonDialogs.js:150
-msgid "You are already subscribed to this feed."
-msgstr ""
-
-#: js/CommonDialogs.js:154
-#, java-printf-format, javascript-format
-msgid "Subscribed to %s"
-msgstr ""
-
-#: js/CommonDialogs.js:163
-msgid "Specified URL seems to be invalid."
-msgstr ""
-
-#: js/CommonDialogs.js:166
-msgid "Specified URL doesn't seem to contain any feeds."
-msgstr ""
-
-#: js/CommonDialogs.js:179
-msgid "Expand to select feed"
-msgstr ""
-
-#: js/CommonDialogs.js:191
-#, java-printf-format, javascript-format
-msgid "Couldn't download the specified URL: %s"
-msgstr ""
-
-#: js/CommonDialogs.js:194
-#, java-printf-format, javascript-format
-msgid "XML validation failed: %s"
-msgstr ""
-
-#: js/CommonDialogs.js:197
-msgid "Error while creating feed database entry."
-msgstr ""
-
-#: js/CommonDialogs.js:200
-msgid "You are not allowed to perform this operation."
-msgstr ""
-
-#: js/CommonDialogs.js:222
-msgid "Feeds with update errors"
-msgstr ""
-
-#: js/CommonDialogs.js:258
-msgid "Debug selected feeds?"
-msgstr ""
-
-#: js/CommonDialogs.js:259
-msgid "Opening debugger for selected feeds..."
-msgstr ""
-
-#: js/CommonDialogs.js:328
-msgid "Please enter label caption:"
-msgstr ""
-
-#: js/CommonDialogs.js:347 js/CommonDialogs.js:388 js/App.js:1316
-#, java-printf-format, javascript-format
-msgid "Unsubscribe from %s?"
-msgstr ""
-
-#: js/CommonDialogs.js:350
-msgid "Removing feed..."
-msgstr ""
-
-#: js/CommonDialogs.js:373 js/App.js:1179 js/App.js:1296
-msgid "You can't edit this kind of feed."
-msgstr ""
-
-#: js/CommonDialogs.js:398
-msgid "Please select an image file."
-msgstr ""
-
-#: js/CommonDialogs.js:418
-msgid "Icon file is too large."
-msgstr ""
-
-#: js/CommonDialogs.js:421
-msgid "Upload failed."
-msgstr ""
-
-#: js/CommonDialogs.js:451
-msgid "Remove stored feed icon?"
-msgstr ""
-
-#: js/CommonDialogs.js:452
-msgid "Removing feed icon..."
-msgstr ""
-
-#: js/CommonDialogs.js:455
-msgid "Feed icon removed."
-msgstr ""
-
-#: js/CommonDialogs.js:622
-msgid "Upload new icon..."
-msgstr ""
-
-#: js/CommonDialogs.js:651 js/Headlines.js:642
-msgid "Show as feed"
-msgstr ""
-
-#: js/CommonDialogs.js:653
-msgid "Generate new syndication address for this feed?"
-msgstr ""
-
-#: js/CommonDialogs.js:655
-msgid "Trying to change address..."
-msgstr ""
-
-#: js/CommonDialogs.js:673
-msgid "Could not change feed URL."
-msgstr ""
-
-#: js/CommonDialogs.js:680
-#, java-printf-format, javascript-format
-msgid "%s can be accessed via the following secret URL:"
-msgstr ""
-
-#: js/App.js:314
-msgid "This function is only available in combined mode."
-msgstr ""
-
-#: js/App.js:445
-msgid "Keyboard shortcuts"
-msgstr ""
-
-#: js/App.js:506
-msgid "Update daemon is not running."
-msgstr ""
-
-#: js/App.js:519
-msgid "Update daemon is not updating feeds."
-msgstr ""
-
-#: js/App.js:606
-#, java-printf-format
-msgid ""
-"URL scheme reported by your browser (%a) doesn't match server-configured "
-"SELF_URL_PATH (%b), check X-Forwarded-Proto."
-msgstr ""
-
-#: js/App.js:613
-msgid "Fatal error"
-msgstr ""
-
-#: js/App.js:638
-msgid "Unhandled exception"
-msgstr ""
-
-#: js/App.js:873
-msgid "Updates for Tiny Tiny RSS are available."
-msgstr ""
-
-#: js/App.js:876
-msgid "Updates for some local plugins are available."
-msgstr ""
-
-#: js/App.js:919
-msgid "Widescreen is not available in combined mode."
-msgstr ""
-
-#: js/App.js:1116
-msgid "Please enable mail or mailto plugin first."
-msgstr ""
-
-#: js/App.js:1251
-msgid "Please enable af_readability first."
-msgstr ""
-
-#: js/App.js:1305
-msgid "Please select some feed first."
-msgstr ""
-
-#: js/App.js:1310
-msgid "You can't unsubscribe from the category."
-msgstr ""
-
-#: js/FeedTree.js:137
-msgid "(Un)collapse"
-msgstr ""
+msgstr "Po hiqen përdoruesit e përzgjedhur…"
 
 #: js/PrefLabelTree.js:71
 msgid "Edit label"
-msgstr ""
+msgstr "Përpunoni etiketë"
 
 #: js/PrefLabelTree.js:143
 msgid "Foreground:"
@@ -2758,243 +2864,90 @@ msgstr ""
 
 #: js/PrefLabelTree.js:144
 msgid "Background:"
-msgstr ""
+msgstr "Sfond:"
 
 #: js/PrefLabelTree.js:189
 msgid "Reset selected labels to default colors?"
-msgstr ""
+msgstr "Të rikthehen etiketat e përzgjedhura te ngjyrat parazgjedhje?"
 
 #: js/PrefLabelTree.js:202 js/PrefLabelTree.js:222
 msgid "No labels selected."
-msgstr ""
+msgstr "S’u përzgjodhën etiketat."
 
 #: js/PrefLabelTree.js:209
 msgid "Remove selected labels?"
-msgstr ""
+msgstr "Të hiqen etiketat e përzgjedhura?"
 
 #: js/PrefLabelTree.js:210
 msgid "Removing selected labels..."
-msgstr ""
+msgstr "Të hiqen etiketat e përzgjedhura…"
 
-#: plugins/note/note.js:19
-msgid "Saving article note..."
-msgstr ""
+#: plugins/share/share.js:7
+msgid "Share article by URL"
+msgstr "Ndajeni artikullin me të tjerët përmes URL-së"
+
+#: plugins/share/share.js:9
+msgid "Generate new share URL for this article?"
+msgstr "Të prodhohet URL e re ndarjeje me të tjerë për këtë artikull?"
+
+#: plugins/share/share.js:11
+msgid "Trying to change URL..."
+msgstr "Po provohet të ndryshohet URL…"
+
+#: plugins/share/share.js:34
+msgid "Could not change URL."
+msgstr "S’u ndryshua dot URL."
+
+#: plugins/share/share.js:42
+msgid "Remove sharing for this article?"
+msgstr "Të hiqet ndarja me të tjerët për këtë artikull?"
 
 #: plugins/share/share_prefs.js:5
 msgid "This will invalidate all previously shared article URLs. Continue?"
 msgstr ""
+"Kjo do të bëjë të pavlefshme URL-të e krejt artikujve që keni ndarë me të "
+"tjerët më parë. Të vazhdohet?"
 
-#: plugins/share/share.js:7
-msgid "Share article by URL"
-msgstr ""
-
-#: plugins/share/share.js:9
-msgid "Generate new share URL for this article?"
-msgstr ""
-
-#: plugins/share/share.js:11
-msgid "Trying to change URL..."
-msgstr ""
-
-#: plugins/share/share.js:34
-msgid "Could not change URL."
-msgstr ""
-
-#: plugins/share/share.js:42
-msgid "Remove sharing for this article?"
-msgstr ""
+#: plugins/shorten_expanded/init.js:35
+msgid "Expand article"
+msgstr "Zgjeroje artikullin"
 
 #: plugins/af_psql_trgm/init.js:6
 msgid "Related articles"
-msgstr ""
+msgstr "Artikuj të afërt"
 
-#: plugins/shorten_expanded/init.js:32
-msgid "Expand article"
-msgstr ""
-
-#: js/CommonFilters.js:71
-msgid "No recent articles matching this filter have been found."
-msgstr ""
-
-#: js/CommonFilters.js:421
-msgid "Enabled"
-msgstr ""
-
-#: js/CommonFilters.js:422
-msgid "Match any rule"
-msgstr ""
-
-#: js/CommonFilters.js:423
-msgid "Inverse matching"
-msgstr ""
-
-#: js/CommonFilters.js:441
-msgid "Match"
-msgstr ""
-
-#: js/CommonFilters.js:474
-msgid "Apply actions"
-msgstr ""
-
-#: js/Headlines.js:474
-msgid "mark feed as read"
-msgstr ""
-
-#: js/Headlines.js:527
-msgid "Span all columns"
-msgstr ""
-
-#: js/Headlines.js:554 js/Article.js:317
-msgid "Edit tags for this article"
-msgstr ""
-
-#: js/Headlines.js:666
-msgid "Invert"
-msgstr ""
-
-#: js/Headlines.js:674
-msgid "Set score"
-msgstr ""
-
-#: js/Headlines.js:683
-msgid "Delete permanently"
-msgstr ""
-
-#: js/Headlines.js:914
-msgid ""
-"Could not update headlines (invalid object received - see error console for "
-"details)"
-msgstr ""
-
-#: js/PrefHelpers.js:229
-msgid "Clone"
-msgstr ""
-
-#: js/PrefHelpers.js:231
-msgid "Activate"
-msgstr ""
-
-#: js/PrefHelpers.js:299
-msgid "Apply"
-msgstr ""
-
-#: js/PrefHelpers.js:303
-msgid "Save and reload"
-msgstr ""
-
-#: js/PrefHelpers.js:352
-msgid "Selected plugins have been enabled. Reload?"
-msgstr ""
-
-#: js/PrefHelpers.js:400
-msgid "System plugins are enabled using global configuration."
-msgstr ""
-
-#: js/PrefHelpers.js:577
-msgid "Install"
-msgstr ""
-
-#: js/PrefHelpers.js:654
-msgid "Updating..."
-msgstr ""
-
-#: js/PrefHelpers.js:687
-msgid "Updates complete"
-msgstr ""
-
-#: js/PrefHelpers.js:701
-#, javascript-format
-msgid "Updates pending for %d plugin"
-msgid_plural "Updates pending for %d plugins"
-msgstr[0] ""
-msgstr[1] ""
-
-#: js/Article.js:205
-msgid "Attachments"
-msgstr ""
-
-#: js/Feeds.js:292
-msgid "Open Preferences"
-msgstr ""
-
-#: js/Feeds.js:635
-#, javascript-format
-msgid "Search %s..."
-msgstr ""
-
-#: js/Feeds.js:644
-msgid "Used for word stemming"
-msgstr ""
-
-#: js/Feeds.js:704
-msgid "Show feeds matching..."
-msgstr ""
-
-#: js/PrefUsers.js:76
-msgid "Access level: "
-msgstr ""
-
-#: js/PrefUsers.js:92
-msgid "OTP enabled"
-msgstr ""
-
-#: js/PrefUsers.js:104
-msgid "User details"
-msgstr ""
+#: plugins/note/note.js:19
+msgid "Saving article note..."
+msgstr "Po ruhet shënim artikulli…"
 
 #: js/PrefFeedTree.js:390
 msgid "Rename category to:"
-msgstr ""
+msgstr "Riemërtojeni kategorinë si:"
 
 #: js/PrefFeedTree.js:466
 msgid "Feeds require authentication."
-msgstr ""
+msgstr "Prurjet lypin mirëfilltësim."
 
-#: js/PrefFeedTree.js:555 js/CommonDialogs.js:312
+#: js/PrefFeedTree.js:555 js/CommonDialogs.js:317
 msgid "Unsubscribe from selected feeds"
+msgstr "Shpajtohu nga prurjet e përzgjedhura"
+
+#: js/Feeds.js:295
+msgid "Open Preferences"
+msgstr "Hap Parapëlqimet"
+
+#: js/Feeds.js:643
+#, javascript-format
+msgid "Search %s..."
+msgstr "Kërko për %s…"
+
+#: js/Feeds.js:652
+msgid "Used for word stemming"
 msgstr ""
 
-#: js/CommonDialogs.js:18
-msgid ""
-"Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. "
-"You will need to log out and back in to disable it."
-msgstr ""
-
-#: js/CommonDialogs.js:53
-msgid "Feed or site URL"
-msgstr ""
-
-#: js/CommonDialogs.js:68
-msgid "Available feeds"
-msgstr ""
-
-#: js/CommonDialogs.js:101
-msgid "This feed requires authentication."
-msgstr ""
-
-#: js/CommonDialogs.js:315
-msgid "Debug selected feeds"
-msgstr ""
-
-#: js/CommonDialogs.js:526
-msgid "Feed title"
-msgstr ""
-
-#: js/CommonDialogs.js:533
-msgid "Feed URL"
-msgstr ""
-
-#: js/CommonDialogs.js:552
-msgid "Site URL:"
-msgstr ""
-
-#: js/CommonDialogs.js:554
-msgid "Site URL"
-msgstr ""
-
-#: js/CommonDialogs.js:617
-msgid "Icon"
-msgstr ""
+#: js/Feeds.js:712
+msgid "Show feeds matching..."
+msgstr "Shfaq prurje me përkim…"
 
 #: js/App.js:646
 msgid "Stack trace"
@@ -3002,8 +2955,171 @@ msgstr ""
 
 #: js/App.js:653
 msgid "Additional information"
+msgstr "Informacion shtesë"
+
+#: js/CommonFilters.js:66
+msgid "No recent articles matching this filter have been found."
+msgstr "S’u gjetën artikuj të freskët që kanë përkim me këtë filtër."
+
+#: js/CommonFilters.js:414
+msgid "Enabled"
 msgstr ""
+
+#: js/CommonFilters.js:415
+msgid "Match any rule"
+msgstr "Kërko përkim me çfarëdo rregulli"
+
+#: js/CommonFilters.js:416
+msgid "Inverse matching"
+msgstr ""
+
+#: js/CommonFilters.js:434
+msgid "Match"
+msgstr ""
+
+#: js/CommonFilters.js:467
+msgid "Apply actions"
+msgstr "Aplikoji veprimet"
+
+#: js/Article.js:205
+msgid "Attachments"
+msgstr "Bashkëngjitje"
+
+#: js/Article.js:317 js/Headlines.js:554
+msgid "Edit tags for this article"
+msgstr "Përpunoni etiketa për këtë artikull"
+
+#: js/CommonDialogs.js:18
+msgid ""
+"Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. "
+"You will need to log out and back in to disable it."
+msgstr ""
+"Tiny Tiny RSS po funksionon nën mënyrën e parrezik. Janë çaktivizuar krejt "
+"temat dhe shtojcat. Që të çaktivizohet kjo mënyrë, do t’ju duhet të dilni "
+"nga llogaria dhe të rihyni."
+
+#: js/CommonDialogs.js:53
+msgid "Feed or site URL"
+msgstr "URL prurjeje ose sajti"
+
+#: js/CommonDialogs.js:73
+msgid "Available feeds"
+msgstr "Prurje të gatshme"
+
+#: js/CommonDialogs.js:106
+msgid "This feed requires authentication."
+msgstr "Kjo prurje lyp mirëfilltësim."
+
+#: js/CommonDialogs.js:320
+msgid "Debug selected feeds"
+msgstr "Diagnostiko prurjet e përzgjedhura"
+
+#: js/CommonDialogs.js:531
+msgid "Feed title"
+msgstr "Titull prurjeje"
+
+#: js/CommonDialogs.js:538
+msgid "Feed URL"
+msgstr "URL Prurjeje"
+
+#: js/CommonDialogs.js:557
+msgid "Site URL:"
+msgstr "URL Sajti:"
+
+#: js/CommonDialogs.js:559
+msgid "Site URL"
+msgstr "URL Sajti"
+
+#: js/CommonDialogs.js:622
+msgid "Icon"
+msgstr "Ikonë"
+
+#: js/Headlines.js:474
+msgid "mark feed as read"
+msgstr "vëri shenjë prurjes si e lexuar"
+
+#: js/Headlines.js:527
+msgid "Span all columns"
+msgstr ""
+
+#: js/Headlines.js:666
+msgid "Invert"
+msgstr "Përmbyse"
+
+#: js/Headlines.js:674
+msgid "Set score"
+msgstr "Caktojini vlerësim"
+
+#: js/Headlines.js:683
+msgid "Delete permanently"
+msgstr "Fshije përgjithmonë"
+
+#: js/Headlines.js:914
+msgid ""
+"Could not update headlines (invalid object received - see error console for "
+"details)"
+msgstr ""
+"S’u përditësuan dot titujt (u mor objekt i pavlefshëm - për hollësi shihni "
+"konsolën e gabimeve)"
+
+#: js/PrefHelpers.js:231
+msgid "Activate"
+msgstr "Aktivizoje"
+
+#: js/PrefHelpers.js:299
+msgid "Apply"
+msgstr "Aplikoje"
+
+#: js/PrefHelpers.js:303
+msgid "Save and reload"
+msgstr "Ruaje dhe ringarkoje"
+
+#: js/PrefHelpers.js:352
+msgid "Selected plugins have been enabled. Reload?"
+msgstr "Janë aktivizuar shtojcat e përzgjedhura. Të ringarkohen?"
+
+#: js/PrefHelpers.js:400
+msgid "System plugins are enabled using global configuration."
+msgstr "Shtojcat e sistemit aktivizohen duke përdorur formësimin global."
+
+#: js/PrefHelpers.js:577
+msgid "Install"
+msgstr "Instaloje"
+
+#: js/PrefHelpers.js:654
+msgid "Updating..."
+msgstr "Po përditësohet…"
+
+#: js/PrefHelpers.js:687
+msgid "Updates complete"
+msgstr "Përditësime të plotësuara"
+
+#: js/PrefHelpers.js:701
+#, javascript-format
+msgid "Updates pending for %d plugin"
+msgid_plural "Updates pending for %d plugins"
+msgstr[0] "Përditësime pezull për %d shtojcë"
+msgstr[1] "Përditësime pezull për %d shtojca"
+
+#: js/PrefUsers.js:76
+msgid "Access level: "
+msgstr "Shkallë hyrjeje: "
+
+#: js/PrefUsers.js:92
+msgid "OTP enabled"
+msgstr "OTP e aktivizuar"
+
+#: js/PrefUsers.js:104
+msgid "User details"
+msgstr "Hollësi përdoruesi"
 
 #: js/PrefLabelTree.js:126
 msgid "Caption"
-msgstr ""
+msgstr "Përshkrim"
+
+#~ msgid ""
+#~ "Setting this value too low might produce false positives, zero disables "
+#~ "checking."
+#~ msgstr ""
+#~ "Vënia e saj shumë poshtë mund të prodhojë pozitivë të rremë, zeroja e "
+#~ "çaktivizon kontrollin."

@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2025-03-21 16:11+0000\n"
+"PO-Revision-Date: 2025-05-06 17:02+0000\n"
 "Last-Translator: Edgars Andersons <Edgars+Weblate@gaitenis.id.lv>\n"
-"Language-Team: Latvian <https://hosted.weblate.org/projects/tt-rss/webui/lv/"
-">\n"
+"Language-Team: Latvian <https://hosted.weblate.org/projects/tt-rss/webui/lv/>"
+"\n"
 "Language: lv_LV\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Weblate 5.11-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -281,7 +281,7 @@ msgstr "Barotnes"
 
 #: prefs.php:142 classes/Pref_Filters.php:297
 msgid "Filters"
-msgstr "Filtri"
+msgstr "Atlasītāji"
 
 #: prefs.php:146 classes/Feeds.php:1316 classes/Pref_Labels.php:23
 msgid "Labels"
@@ -405,10 +405,9 @@ msgid "Unknown action: %d"
 msgstr "Nezināma darbība %d"
 
 #: classes/Pref_Filters.php:726 js/PrefFilterTree.js:180
-#, fuzzy, java-printf-format, javascript-format, php-format
-#| msgid "Clone"
+#, java-printf-format, javascript-format, php-format
 msgid "Clone of %s"
-msgstr "Klonēt"
+msgstr "%s klons"
 
 #: classes/Pref_Filters.php:752 classes/Pref_Users.php:215
 #: classes/Pref_Feeds.php:934 classes/Pref_Prefs.php:840 js/Feeds.js:668
@@ -442,7 +441,7 @@ msgstr "Nevienu"
 
 #: classes/Pref_Filters.php:767 classes/RPC.php:556
 msgid "Create filter"
-msgstr "Izveidot filtru"
+msgstr "Izveidot atlasītāju"
 
 #: classes/Pref_Filters.php:769 js/PrefHelpers.js:229
 msgid "Clone"
@@ -1029,7 +1028,7 @@ msgid ""
 msgstr ""
 "Netika atrasts neviens raksts, ko attēlot. Iezīmēm var pašrocīgi piesaistīt "
 "rakstus no raksta galvenes konteksta izvēlnes (tiek pielietots visiem "
-"atlasītajiem rakstiem) vai izmantot atlasi."
+"atlasītajiem rakstiem) vai izmantot atlasītāju."
 
 #: classes/Feeds.php:394
 msgid "No articles found to display."
@@ -1615,21 +1614,19 @@ msgstr "Pārbaudes ziņojums no tt-rss"
 
 #: classes/Pref_System.php:35
 msgid "Task name"
-msgstr ""
+msgstr "Uzdevuma nosaukums"
 
 #: classes/Pref_System.php:36
-#, fuzzy
-#| msgid "Last connected"
 msgid "Last executed"
-msgstr "Pēdējo reizi pieteicies"
+msgstr "Pēdējo reizi izpildīts"
 
 #: classes/Pref_System.php:37
 msgid "Duration (seconds)"
-msgstr ""
+msgstr "Ilgums (sekundes)"
 
 #: classes/Pref_System.php:38
 msgid "Return code"
-msgstr ""
+msgstr "Atgriešanas kods"
 
 #: classes/Pref_System.php:108 js/PrefHelpers.js:622
 msgid "Refresh"
@@ -1698,7 +1695,7 @@ msgstr "Nosūtīt pārbaudes e-pasta ziņojumu"
 
 #: classes/Pref_System.php:240
 msgid "Scheduled tasks"
-msgstr ""
+msgstr "Paredzētie uzdevumi"
 
 #: classes/Pref_System.php:251
 msgid "PHP Information"
@@ -2197,49 +2194,43 @@ msgstr "Apgriezt"
 
 #: js/PrefFilterTree.js:136 js/PrefFilterTree.js:165 js/PrefFilterTree.js:198
 msgid "No filters selected."
-msgstr "Nav atlasīta neviena atlase."
+msgstr "Nav atlasīts neviens atlasītājs."
 
 #: js/PrefFilterTree.js:140
 msgid "Combine selected filters?"
-msgstr "Apvienot atlasītās atlases?"
+msgstr "Apvienot atlasītās atasītājus?"
 
 #: js/PrefFilterTree.js:141
 msgid "Joining filters..."
-msgstr "Apvieno filtrus..."
+msgstr "Apvieno atlasītājus..."
 
 #: js/PrefFilterTree.js:152
 msgid "Remove selected filters?"
-msgstr "Noņemt atlasītās atlases?"
+msgstr "Noņemt atlasītos atlasītājus?"
 
 #: js/PrefFilterTree.js:153
 msgid "Removing selected filters..."
-msgstr "Noņemt atlasītās atlases..."
+msgstr "Noņemt atlasītos atlasītājus..."
 
 #: js/PrefFilterTree.js:179
-#, fuzzy
-#| msgid "Name for cloned profile:"
 msgid "Name for new filter:"
-msgstr "Klonētā profila nosaukums:"
+msgstr "Jaunā atlasītāja nosaukums:"
 
 #: js/PrefFilterTree.js:187
-#, fuzzy
-#| msgid "Combine selected filters?"
 msgid "Clone selected filters?"
-msgstr "Apvienot atlasītās atlases?"
+msgstr "Klonēt atlasītos atlasītājus?"
 
 #: js/PrefFilterTree.js:191
-#, fuzzy
-#| msgid "Removing selected filters..."
 msgid "Cloning selected filters..."
-msgstr "Noņemt atlasītās atlases..."
+msgstr "Klonē atlasītos atlasītājus..."
 
 #: js/CommonFilters.js:14
 msgid "Edit filter"
-msgstr "Labot atlasi"
+msgstr "Labot atlasītāju"
 
 #: js/CommonFilters.js:14
 msgid "Create new filter"
-msgstr "Izveidot jaunu atlasi"
+msgstr "Izveidot jaunu atlasītāju"
 
 #: js/CommonFilters.js:42
 #, java-printf-format, javascript-format
@@ -2248,17 +2239,16 @@ msgstr "Meklē rakstus (%d apstrādāti, %f atrasti)..."
 
 #: js/CommonFilters.js:68
 msgid "Articles matching this filter:"
-msgstr "Raksti, kas atbilst šai atlasei:"
+msgstr "Raksti, kas atbilst šim atlasītājam:"
 
 #: js/CommonFilters.js:70
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Found %d articles matching this filter:"
+#, java-printf-format, javascript-format
 msgid "Found at least %d articles matching this filter:"
-msgstr "Atrasti %d raksti, kas atbilst šai atlasei:"
+msgstr "Atrasti vismaz %d raksti, kas atbilst šim atlasītājam:"
 
 #: js/CommonFilters.js:77
 msgid "Error while trying to get filter test results."
-msgstr "Kļūda atlases pārbaudes iznākuma iegūšanas laikā."
+msgstr "Kļūda atlasītāja pārbaudes iznākuma iegūšanas laikā."
 
 #: js/CommonFilters.js:89
 msgid "Looking for articles..."
@@ -2290,11 +2280,11 @@ msgstr "Pievienot darbību"
 
 #: js/CommonFilters.js:356
 msgid "Remove filter?"
-msgstr "Noņemt atlasi?"
+msgstr "Noņemt atlasītāju?"
 
 #: js/CommonFilters.js:361
 msgid "Removing filter..."
-msgstr "Noņem atlasi..."
+msgstr "Noņem atlasītāju..."
 
 #: js/CommonFilters.js:448 js/CommonFilters.js:480 js/PrefHelpers.js:195
 msgid "Add"
@@ -2795,7 +2785,7 @@ msgid ""
 "If you have imported labels and/or filters, you might need to reload "
 "preferences to see your new data."
 msgstr ""
-"Ja ir ievietotas iezīmes un/vai atlases, varētu būt nepieciešams pārlādēt "
+"Ja ir ievietotas iezīmes un/vai atlasītāji, varētu būt nepieciešams pārlādēt "
 "iestatījumus, lai redzētu savus jaunos datus."
 
 #: js/FeedTree.js:137
@@ -2947,7 +2937,7 @@ msgstr "Papildu informācija"
 
 #: js/CommonFilters.js:66
 msgid "No recent articles matching this filter have been found."
-msgstr "Netika atrasts neviens nesens raksts, kas atbilst šai atlasei."
+msgstr "Netika atrasts neviens nesens raksts, kas atbilst šim atlasītājam."
 
 #: js/CommonFilters.js:414
 msgid "Enabled"

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2025-05-05 16:06+0000\n"
+"PO-Revision-Date: 2025-05-06 17:02+0000\n"
 "Last-Translator: Besnik Bleta <besnik@programeshqip.org>\n"
 "Language-Team: Albanian <https://hosted.weblate.org/projects/tt-rss/webui/sq/"
 ">\n"
@@ -406,10 +406,9 @@ msgid "Unknown action: %d"
 msgstr "Veprim i panjohur: %d"
 
 #: classes/Pref_Filters.php:726 js/PrefFilterTree.js:180
-#, fuzzy, java-printf-format, javascript-format, php-format
-#| msgid "Clone"
+#, java-printf-format, javascript-format, php-format
 msgid "Clone of %s"
-msgstr "Klonoje"
+msgstr "Klon i %s"
 
 #: classes/Pref_Filters.php:752 classes/Pref_Users.php:215
 #: classes/Pref_Feeds.php:934 classes/Pref_Prefs.php:840 js/Feeds.js:668
@@ -1107,7 +1106,7 @@ msgstr "Përsëdyte etiketën: %s"
 #: classes/OPML.php:376
 #, php-format
 msgid "Setting preference key %s to %s"
-msgstr ""
+msgstr "Kyçi i parapëlqimit %s po vihet si %s"
 
 #: classes/OPML.php:412
 #, php-format
@@ -1153,7 +1152,7 @@ msgstr "%d min."
 #: classes/Mailer.php:51
 #, php-format
 msgid "Unknown error while sending mail. Hooks tried: %d."
-msgstr "Gabim i panjohur teksa dërgohej postë. Hook-e të përdorur: %d"
+msgstr "Gabim i panjohur teksa dërgohej postë. Hook-e të përdorur: %d."
 
 #: classes/Pref_Prefs.php:57
 msgid "Articles"
@@ -1610,7 +1609,7 @@ msgstr "S’u arrit të vlerësohet sesioni (s’u gjet përdoruesi)"
 #: classes/Pref_Labels.php:167
 #, php-format
 msgid "Created label <b>%s</b>"
-msgstr "U krijua etiketa <b>%1$s</b>"
+msgstr "U krijua etiketa <b>%s</b>"
 
 #: classes/Pref_System.php:24
 msgid "Test message from tt-rss"
@@ -1621,10 +1620,8 @@ msgid "Task name"
 msgstr ""
 
 #: classes/Pref_System.php:36
-#, fuzzy
-#| msgid "Last used"
 msgid "Last executed"
-msgstr "Përdorur së fundi më"
+msgstr "Ekzekutuar së fundi më"
 
 #: classes/Pref_System.php:37
 msgid "Duration (seconds)"
@@ -2172,11 +2169,11 @@ msgstr "“Widescreen” s’është i përdorshëm nën mënyrën e ndërthurur
 #: js/App.js:1111
 msgid "Please enable mail or mailto plugin first."
 msgstr ""
-"Ju lutemi, së pari aktivizoni shtojcë për funksionin “mail” ose “mailto”"
+"Ju lutemi, së pari aktivizoni shtojcë për funksionin “mail” ose “mailto”."
 
 #: js/App.js:1174 js/App.js:1291 js/CommonDialogs.js:378
 msgid "You can't edit this kind of feed."
-msgstr "S’mund të përpunoni këtë lloj prurjeje"
+msgstr "S’mund të përpunoni këtë lloj prurjeje."
 
 #: js/App.js:1246
 msgid "Please enable af_readability first."
@@ -2224,22 +2221,16 @@ msgid "Removing selected filters..."
 msgstr "Po hiqen filtrat e përzgjedhur…"
 
 #: js/PrefFilterTree.js:179
-#, fuzzy
-#| msgid "Name for cloned profile:"
 msgid "Name for new filter:"
-msgstr "Emër për profil të klonuar:"
+msgstr "Emër për flitrin e ri:"
 
 #: js/PrefFilterTree.js:187
-#, fuzzy
-#| msgid "Combine selected filters?"
 msgid "Clone selected filters?"
-msgstr "Të ndërthuren filtrat e përzgjedhur?"
+msgstr "Të clonohen filtrat e përzgjedhur?"
 
 #: js/PrefFilterTree.js:191
-#, fuzzy
-#| msgid "Removing selected filters..."
 msgid "Cloning selected filters..."
-msgstr "Po hiqen filtrat e përzgjedhur…"
+msgstr "Po klonohen filtrat e përzgjedhur…"
 
 #: js/CommonFilters.js:14
 msgid "Edit filter"
@@ -2259,10 +2250,9 @@ msgid "Articles matching this filter:"
 msgstr "Artikuj që kanë përkim me këtë filtër:"
 
 #: js/CommonFilters.js:70
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Found %d articles matching this filter:"
+#, java-printf-format, javascript-format
 msgid "Found at least %d articles matching this filter:"
-msgstr "U gjetën %d artikuj që kanë përkim me këtë filtër:"
+msgstr "U gjetën e pakta %d artikuj që kanë përkim me këtë filtër:"
 
 #: js/CommonFilters.js:77
 msgid "Error while trying to get filter test results."

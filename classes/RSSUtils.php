@@ -990,15 +990,18 @@ class RSSUtils {
 					WHERE guid IN (?, ?, ?)");
 				$csth->execute([$entry_guid, $entry_guid_hashed, $entry_guid_hashed_compat]);
 
-				if (!$csth->fetch()) {
+				if ($row = $csth->fetch()) {
+					Debug::log("select returned RID: " . $row['id'], Debug::LOG_VERBOSE);
+					$base_record_created = false;
 
+				} else {
 					Debug::log("base guid [$entry_guid or $entry_guid_hashed] not found, creating...", Debug::LOG_VERBOSE);
 
 					// base post entry does not exist, create it
-
-					$usth = $pdo->prepare(
+					$isth = $pdo->prepare(
 						"INSERT INTO ttrss_entries
 							(title,
+							tsvector_combined,
 							guid,
 							link,
 							updated,
@@ -1013,34 +1016,49 @@ class RSSUtils {
 							lang,
 							author)
 						VALUES
-							(?, ?, ?, ?, ?, ?,
+							(:title,
+							to_tsvector(:ts_lang, :ts_content),
+							:guid,
+							:link,
+							:updated,
+							:content,
+							:content_hash,
 							false,
 							NOW(),
-							?, ?, ?, ?,	?, ?)");
+							:date_entered,
+							:comments,
+							:num_comments,
+							:plugin_data,
+							:lang,
+							:author) RETURNING id");
 
-						$usth->execute([$entry_title,
-							$entry_guid_hashed,
-							$entry_link,
-							$entry_timestamp_fmt,
-							"$entry_content",
-							$entry_current_hash,
-							$date_feed_processed,
-							$entry_comments,
-							(int)$num_comments,
-							$entry_plugin_data,
-							"$entry_language",
-							"$entry_author"]);
+						$isth->execute([":title" => $entry_title,
+							":ts_lang" => $feed_language,
+							":ts_content" => mb_substr(strip_tags($entry_title) . " " . \Soundasleep\Html2Text::convert($entry_content), 0, 900000),
+							":guid" => $entry_guid_hashed,
+							":link" => $entry_link,
+							":updated" => $entry_timestamp_fmt,
+							":content" => $entry_content,
+							":content_hash" => $entry_current_hash,
+							":date_entered" => $date_feed_processed,
+							":comments" => $entry_comments,
+							":num_comments" => (int)$num_comments,
+							":plugin_data" => $entry_plugin_data,
+							":lang" => $entry_language,
+							":author" => $entry_author]);
 
-				}
+						$row = $isth->fetch();
 
-				$csth->execute([$entry_guid, $entry_guid_hashed, $entry_guid_hashed_compat]);
+						Debug::log("insert returned RID: " . $row['id'], Debug::LOG_VERBOSE);
+						$base_record_created = true;
+					}
 
 				$entry_ref_id = 0;
 				$entry_int_id = 0;
 
-				if ($row = $csth->fetch()) {
+				if ($row['id']) {
 
-					Debug::log("base guid found, checking for user record", Debug::LOG_VERBOSE);
+					Debug::log("base record with RID: " . $row['id'] . " found, checking for user record", Debug::LOG_VERBOSE);
 
 					$ref_id = $row['id'];
 					$entry_ref_id = $ref_id;
@@ -1100,56 +1118,54 @@ class RSSUtils {
 								(ref_id, owner_uid, feed_id, unread, last_read, marked,
 								published, score, tag_cache, label_cache, uuid,
 								last_marked, last_published)
-							VALUES (?, ?, ?, ?, ?, ?, ?, ?, '', '', '', ".$last_marked.", ".$last_published.")");
+							VALUES (?, ?, ?, ?, ?, ?, ?, ?, '', '', '', ".$last_marked.", ".$last_published.")
+							RETURNING int_id");
 
 						$sth->execute([$ref_id, $feed_obj->owner_uid, $feed, $unread, $last_read_qpart, $marked,
 							$published, $score]);
+
+						if ($row = $sth->fetch())
+							$entry_int_id = $row['int_id'];
 
 						if ($marked)
 							PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_MARK_TOGGLED, [$ref_id]);
 
 						if ($published)
 							PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_PUBLISH_TOGGLED, [$ref_id]);
-
-						$sth = $pdo->prepare("SELECT int_id FROM ttrss_user_entries WHERE
-								ref_id = ? AND owner_uid = ? AND
-								feed_id = ? LIMIT 1");
-
-						$sth->execute([$ref_id, $feed_obj->owner_uid, $feed]);
-
-						if ($row = $sth->fetch())
-							$entry_int_id = $row['int_id'];
 					}
 
 					Debug::log("resulting RID: $entry_ref_id, IID: $entry_int_id", Debug::LOG_VERBOSE);
 
-					$sth = $pdo->prepare("UPDATE ttrss_entries
-						SET title = :title,
-							tsvector_combined = to_tsvector(:ts_lang, :ts_content),
-							content = :content,
-							content_hash = :content_hash,
-							updated = :updated,
-							date_updated = NOW(),
-							num_comments = :num_comments,
-							plugin_data = :plugin_data,
-							author = :author,
-							lang = :lang
-						WHERE id = :id");
+					// it's pointless to update base record we've just created
+					if (!$base_record_created) {
+						$sth = $pdo->prepare("UPDATE ttrss_entries
+							SET title = :title,
+								tsvector_combined = to_tsvector(:ts_lang, :ts_content),
+								content = :content,
+								content_hash = :content_hash,
+								updated = :updated,
+								date_updated = NOW(),
+								num_comments = :num_comments,
+								plugin_data = :plugin_data,
+								author = :author,
+								lang = :lang
+							WHERE id = :id");
 
-					$params = [":title" => $entry_title,
-						":content" => "$entry_content",
-						":content_hash" => $entry_current_hash,
-						":updated" => $entry_timestamp_fmt,
-						":num_comments" => (int)$num_comments,
-						":plugin_data" => $entry_plugin_data,
-						":author" => "$entry_author",
-						":lang" => $entry_language,
-						":id" => $ref_id,
-						":ts_lang" => $feed_language,
-						":ts_content" => mb_substr(strip_tags($entry_title) . " " . \Soundasleep\Html2Text::convert($entry_content), 0, 900000)
-						];
+						$params = [":title" => $entry_title,
+							":content" => "$entry_content",
+							":content_hash" => $entry_current_hash,
+							":updated" => $entry_timestamp_fmt,
+							":num_comments" => (int)$num_comments,
+							":plugin_data" => $entry_plugin_data,
+							":author" => "$entry_author",
+							":lang" => $entry_language,
+							":id" => $ref_id,
+							":ts_lang" => $feed_language,
+							":ts_content" => mb_substr(strip_tags($entry_title) . " " . \Soundasleep\Html2Text::convert($entry_content), 0, 900000)
+							];
 
-					$sth->execute($params);
+						$sth->execute($params);
+					}
 
 					// update aux data
 					$sth = $pdo->prepare("UPDATE ttrss_user_entries

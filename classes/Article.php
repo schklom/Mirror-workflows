@@ -124,18 +124,15 @@ class Article extends Handler_Protected {
 			$sth = $pdo->prepare("INSERT INTO ttrss_entries
 				(title, guid, link, updated, content, content_hash, date_entered, date_updated)
 				VALUES
-				(?, ?, ?, NOW(), ?, ?, NOW(), NOW())");
+				(?, ?, ?, NOW(), ?, ?, NOW(), NOW()) RETURNING id");
 			$sth->execute([$title, $guid, $url, $content, $content_hash]);
-
-			$sth = $pdo->prepare("SELECT id FROM ttrss_entries WHERE guid = ?");
-			$sth->execute([$guid]);
 
 			if ($row = $sth->fetch()) {
 				$ref_id = $row["id"];
 
 				$sth = $pdo->prepare("UPDATE ttrss_entries
-				SET tsvector_combined = to_tsvector( :ts_content)
-				WHERE id = :id");
+					SET tsvector_combined = to_tsvector( :ts_content)
+					WHERE id = :id");
 				$params = [
 					":ts_content" => mb_substr(\Soundasleep\Html2Text::convert($content), 0, 900000),
 					":id" => $ref_id];

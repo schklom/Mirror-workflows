@@ -689,13 +689,9 @@ class Pref_Filters extends Handler_Protected {
 
 		$sth = $this->pdo->prepare("INSERT INTO ttrss_filters2
 			(owner_uid, match_any_rule, enabled, title, inverse) VALUES
-			(?, ?, ?, ?, ?)");
+			(?, ?, ?, ?, ?) RETURNING id");
 
 		$sth->execute([$_SESSION['uid'], $match_any_rule, $enabled, $title, $inverse]);
-
-		$sth = $this->pdo->prepare("SELECT MAX(id) AS id FROM ttrss_filters2
-			WHERE owner_uid = ?");
-		$sth->execute([$_SESSION['uid']]);
 
 		if ($row = $sth->fetch()) {
 			$filter_id = $row['id'];

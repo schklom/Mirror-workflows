@@ -397,13 +397,9 @@ class OPML extends Handler_Protected {
 				//print "F: $title, $inverse, $enabled, $match_any_rule";
 
 				$sth = $this->pdo->prepare("INSERT INTO ttrss_filters2 (match_any_rule,enabled,inverse,title,owner_uid)
-					VALUES (?, ?, ?, ?, ?)");
+					VALUES (?, ?, ?, ?, ?) RETURNING id");
 
 				$sth->execute([$match_any_rule, $enabled, $inverse, $title, $owner_uid]);
-
-				$sth = $this->pdo->prepare("SELECT MAX(id) AS id FROM ttrss_filters2 WHERE
-					owner_uid = ?");
-				$sth->execute([$owner_uid]);
 
 				$row = $sth->fetch();
 				$filter_id = $row['id'];

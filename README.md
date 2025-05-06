@@ -1,6 +1,6 @@
 # FMD Server
 
-This is the official server for [FindMyDevice (FMD)](https://gitlab.com/Nulide/findmydevice)
+This is the official server for [FMD Android](https://gitlab.com/Nulide/findmydevice)
 written in Go.
 
 The FMD app can register an account on FMD Server.

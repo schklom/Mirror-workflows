@@ -28,7 +28,7 @@ nil-safety:
   stage: test
   script:
     - go install go.uber.org/nilaway/cmd/nilaway@latest
-    - nilaway -include-pkgs="findmydeviceserver" ./...
+    - nilaway -include-pkgs="fmd-server" ./...
 
 compile:
   stage: build

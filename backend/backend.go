@@ -1,7 +1,7 @@
 package backend
 
 import (
-	"findmydeviceserver/user"
+	"fmd-server/user"
 	"io/fs"
 	"net"
 	"net/http"

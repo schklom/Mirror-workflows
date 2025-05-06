@@ -18,7 +18,7 @@ feel free to stick to that.
 go run main.go serve
 # or
 go build
-./findmydeviceserver serve
+./fmd-server serve
 ```
 
 Alternatively, or if you are new to hosting applications,

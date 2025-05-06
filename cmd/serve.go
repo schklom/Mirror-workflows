@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"findmydeviceserver/backend"
+	"fmd-server/backend"
 	"fmt"
 	"io"
 	"log/syslog"

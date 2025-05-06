@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"findmydeviceserver/backend"
+	"fmd-server/backend"
 	"fmt"
 
 	"github.com/spf13/cobra"

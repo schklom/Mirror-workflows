@@ -1,3 +1,3 @@
 package backend
 
-const VERSION = "v0.10.0"
+const VERSION = "v0.11.0"

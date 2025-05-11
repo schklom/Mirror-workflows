@@ -1,6 +1,6 @@
 # FMD Server
 
-This is the official server for [FMD Android](https://gitlab.com/Nulide/findmydevice)
+This is the official server for [FMD Android](https://gitlab.com/fmd-foss/fmd-android)
 written in Go.
 
 The FMD app can register an account on FMD Server.
@@ -27,7 +27,7 @@ we recommend to run FMD Server with Docker.
 Quickly try FMD Server on your laptop from the command line:
 
 ```bash
-docker run --rm -p 8080:8080 registry.gitlab.com/nulide/findmydeviceserver:v0.10.0
+docker run --rm -p 8080:8080 registry.gitlab.com/fmd-foss/fmd-server:v0.11.0
 ```
 
 You can now visit FMD Server's web interface in your browser at http://localhost:8080.
@@ -74,7 +74,7 @@ Values in local.yml override their counterpart in config.yml.
 ### Self-hosting with Docker Compose
 
 > ⚠️ FMD Server is still pre-1.0. Therefore, minor versions can introduce breaking changes.
-> It is recommended to pin a version and read [the changelog](https://gitlab.com/Nulide/findmydeviceserver/-/releases)
+> It is recommended to pin a version and read [the changelog](https://gitlab.com/fmd-foss/fmd-server/-/releases)
 > before upgrading.
 
 The following is an (incomplete) example for deploying FMD Server with Docker Compose.
@@ -84,9 +84,9 @@ The following is an (incomplete) example for deploying FMD Server with Docker Co
 services:
     fmd:
         # Use the prebuilt image
-        image: registry.gitlab.com/nulide/findmydeviceserver:v0.10.0
+        image: registry.gitlab.com/fmd-foss/fmd-server:v0.10.0
         # Or build the image yourself
-        # build: https://gitlab.com/Nulide/findmydeviceserver.git#v0.10.0
+        # build: https://gitlab.com/fmd-foss/fmd-server.git#v0.10.0
         container_name: fmd
         ports:
          - 127.0.0.1:8080:8080
@@ -95,7 +95,7 @@ services:
         restart: unless-stopped
 ```
 
-Replace the version with the [latest release](https://gitlab.com/Nulide/findmydeviceserver/-/releases).
+Replace the version with the [latest release](https://gitlab.com/fmd-foss/fmd-server/-/releases).
 
 *Persisting storage:*
 FMD has a database and needs to persist it across container restarts.

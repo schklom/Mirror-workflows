@@ -23,19 +23,36 @@ FROM debian:bookworm-slim
 
 RUN apt update && apt install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /tmp/fmd /fmd/server
+# Create user
+RUN useradd --no-create-home --uid 1000 fmd-server
 
-COPY web /fmd/web
+# Copy files and configure permissions
 
-RUN mkdir /fmd/db
+ARG BIN_FILE=/opt/fmd-server
+ARG WEB_BASE_DIR=/usr/share/fmd-server
+ARG DB_DIR=/var/lib/fmd-server/db
 
-RUN useradd --create-home --uid 1000 fmd-user
-RUN chown -R fmd-user:fmd-user /fmd/
+COPY --from=builder /tmp/fmd $BIN_FILE
 
-USER fmd-user
-WORKDIR /fmd
+RUN chown fmd-server:fmd-server $BIN_FILE
+RUN chmod 0550 $BIN_FILE
+
+RUN mkdir -p $WEB_BASE_DIR
+COPY web $WEB_BASE_DIR/web
+
+RUN chown -R fmd-server:fmd-server $WEB_BASE_DIR
+RUN chmod -R 0444 $WEB_BASE_DIR
+
+RUN mkdir -p $DB_DIR
+
+RUN chown -R fmd-server:fmd-server $DB_DIR
+RUN chmod -R 0660 $DB_DIR
+
+# Change to user
+USER fmd-server
 
 EXPOSE 8080/tcp
 EXPOSE 8443/tcp
 
-ENTRYPOINT ["/fmd/server", "serve"]
+# XXX: Using $BIN_FILE doesn't work
+ENTRYPOINT ["/opt/fmd-server", "serve", "--db-dir", "/var/lib/fmd-server/db", "--web-dir", "/usr/share/fmd-server/web"]

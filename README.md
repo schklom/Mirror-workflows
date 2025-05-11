@@ -40,6 +40,37 @@ On all other origins **the web interface only works over HTTPS**.
 (This is a requirement of the WebCrypto API.
 FMD Server's API (and hence the app) always works over HTTP - but this is highly discouraged in production.)
 
+## Paths
+
+FMD Server uses the following paths:
+
+|                                    | Default location | Recommended location         |
+|------------------------------------|------------------|------------------------------|
+| Config file                        | `./config.yml`   | `/etc/fmd-server/config.yml` |
+| Directory with the SQLite database | `./db/`          | `/var/lib/fmd-server/db/`    |
+| Directory with web static files    | `./web/`         | `/usr/share/fmd-server/web/` |
+
+These can be configured via CLI flags.
+The directories can also be configured in the config file.
+
+The default location is the current working directory, because it is expected to be writable by the current user.
+
+When installing FMD Server as an admin, use the recommended locations for a more Unix-like setup.
+However, this requires root privileges to create and chown the required locations (hence it is not the default).
+
+The Dockerfile uses the recommended locations, so mount your volumes there (as shown below).
+
+### Config file and packaging
+
+When `/etc/fmd-server/config.yml` is present and used, FMD Server also reads in `/etc/fmd-server/local.yml`.
+
+This is similar to how fail2ban uses jail.conf and jail.local:
+it allows packagers to use config.yml and allows admins put their settings in local.yml.
+Thus admins don't have to edit the packager's config.yml (which would
+cause conflicts if a package update changes the config.yml).
+
+Values in local.yml override their counterpart in config.yml.
+
 ### Self-hosting with Docker Compose
 
 > ⚠️ FMD Server is still pre-1.0. Therefore, minor versions can introduce breaking changes.
@@ -60,7 +91,7 @@ services:
         ports:
          - 127.0.0.1:8080:8080
         volumes:
-            - './fmddata/db/:/fmd/db/'
+            - './fmddata/db/:/var/lib/fmd-server/db/'
         restart: unless-stopped
 ```
 
@@ -68,7 +99,7 @@ Replace the version with the [latest release](https://gitlab.com/Nulide/findmyde
 
 *Persisting storage:*
 FMD has a database and needs to persist it across container restarts.
-You need to mount a Docker volume to the directory `/fmd/db/` (inside the container).
+You need to mount a Docker volume to the directory `/var/lib/fmd-server/db/` (inside the container).
 **It must be readable and writable by uid 1000** (ideally it is owned by uid 1000).
 
 *Networking:*
@@ -126,27 +157,56 @@ However, you need to manage (and regularly renew!) the certificates.
 ```yml
 # other lines omitted
 volumes:
-    - ./server.crt:/fmd/server.crt:ro
-    - ./server.key:/fmd/server.key:ro
+    - ./server.crt:/etc/fmd-server/server.crt:ro
+    - ./server.key:/etc/fmd-server/server.key:ro
 ```
 
 ## Configuring FMD Server
 
+### Via config file
+
 The [`config.example.yml`](config.example.yml) contains the available options to configure FMD Server.
 Copy this file to `config.yml` and edit it to your liking.
 
-The `config.yml` should be in the same directory as the binary.
-With Docker you can mount it with `-v ./config.yml:/fmd/config.yml:ro` (for CLI)
+By default, FMD Server will look for the `config.yml` at `/etc/fmd-server/config.yml`
+and in the current working directory.
+You can pass a custom location with `--config`.
+
+With Docker you can mount it with `-v ./config.yml:/etc/fmd-server/config.yml:ro` (for CLI)
 or for Compose:
 
 ```yml
 # other lines omitted
 volumes:
-    - ./config.yml:/fmd/config.yml:ro
+    - ./config.yml:/etc/fmd-server/config.yml:ro
 ```
 
 NOTE: `yml` not `yaml`!
 
+### Via environment variables
+
+All values that can be set in the config file can also be set via environment variables.
+Simply set `FMD_CONFIGFIELDNAME`, e.g. `FMD_PORTINSECURE`.
+
+```yml
+services:
+  fmd:
+    environment:
+      FMD_PORTINSECURE: 8888
+    # other lines omitted
+```
+
+### Via CLI flags
+
+Some values can also be set via CLI flags.
+See `fmd-server serve --help` for details.
+
+### Precedence
+
+FMD Server uses [Viper](https://github.com/spf13/viper), which has the following precedence rules
+(from highest to lowest):
+
+CLI flag > env var > config file value > default value
 
 ## Other ways to install
 

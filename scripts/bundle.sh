@@ -29,8 +29,8 @@ mkdir $BUILDDIR
 pushd $BUILDDIR
 
 # Do a clean checkout to avoid that uncomitted files sneak into the build
-git clone --quiet "https://gitlab.com/Nulide/findmydeviceserver.git"
-pushd findmydeviceserver
+git clone --quiet "https://gitlab.com/fmd-foss/fmd-server.git" fmd-server
+pushd fmd-server
 git checkout --quiet "$REF"
 
 # Reproducibility: Disable cgo.

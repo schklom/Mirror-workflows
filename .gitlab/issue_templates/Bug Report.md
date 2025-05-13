@@ -1,5 +1,5 @@
 - [ ] I have searched for duplicates (including closed issues)
-- [ ] I have read the [wiki](https://gitlab.com/Nulide/findmydevice/-/wikis/home)
+- [ ] I have read the [docs](https://fmd-foss.org/docs/overview)
 - [ ] I have cleared the browser cache
 
 ### Bug Summary

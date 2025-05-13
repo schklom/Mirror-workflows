@@ -27,6 +27,7 @@ RUN apt update && apt install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN useradd --no-create-home --uid 1000 fmd-server
 
 # Copy files and configure permissions
+# Note that the directories must be executable (for file listing, etc.)
 
 ARG BIN_FILE=/opt/fmd-server
 ARG WEB_BASE_DIR=/usr/share/fmd-server
@@ -42,11 +43,13 @@ COPY web $WEB_BASE_DIR/web
 
 RUN chown -R fmd-server:fmd-server $WEB_BASE_DIR
 RUN chmod -R 0444 $WEB_BASE_DIR
+RUN find $WEB_BASE_DIR -type d -exec chmod 0554 {} +
 
 RUN mkdir -p $DB_DIR
 
 RUN chown -R fmd-server:fmd-server $DB_DIR
 RUN chmod -R 0660 $DB_DIR
+RUN chmod 0770 $DB_DIR
 
 # Change to user
 USER fmd-server

@@ -84,9 +84,9 @@ The following is an (incomplete) example for deploying FMD Server with Docker Co
 services:
     fmd:
         # Use the prebuilt image
-        image: registry.gitlab.com/fmd-foss/fmd-server:v0.10.0
+        image: registry.gitlab.com/fmd-foss/fmd-server:v0.11.0
         # Or build the image yourself
-        # build: https://gitlab.com/fmd-foss/fmd-server.git#v0.10.0
+        # build: https://gitlab.com/fmd-foss/fmd-server.git#v0.11.0
         container_name: fmd
         ports:
          - 127.0.0.1:8080:8080

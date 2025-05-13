@@ -29,8 +29,8 @@ mkdir $BUILDDIR
 pushd $BUILDDIR
 
 # Do a clean checkout to avoid that uncomitted files sneak into the build
-git clone --quiet "https://gitlab.com/Nulide/findmydeviceserver.git"
-pushd findmydeviceserver
+git clone --quiet "https://gitlab.com/fmd-foss/fmd-server.git" fmd-server
+pushd fmd-server
 git checkout --quiet "$REF"
 
 # Reproducibility: Disable cgo.
@@ -39,6 +39,7 @@ export CGO_ENABLED=0
 
 # Reproducibility: Trim metadata.
 # https://xnacly.me/posts/2023/go-metadata/
+echo "Compiling Go..."
 go build -ldflags="-w -s -buildid=" -trimpath
 
 # Reproducibility: Include go version in ZIP.
@@ -56,6 +57,8 @@ find . -type f -exec touch -d "$GITTIME" {} +
 # Reproducibility: normalize file permissions (different build systems can have a different umask)
 find . -type f -exec chmod 640 {} \;
 find . -type d -exec chmod 750 {} \;
+
+echo "Zipping file..."
 
 # Package all files
 # Shellcheck ignore reason: we need the variable to split words by string

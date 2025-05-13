@@ -258,7 +258,7 @@ async function setupPushWarning() {
             <p>
                 It looks like UnifiedPush is not configured for this device.
                 Without push, FMD Server cannot control the device.
-                See <a href="https://gitlab.com/Nulide/findmydevice/-/wikis/PushSupport" target="_blank">the wiki</a> for more information.
+                See <a href="https://fmd-foss.org/docs/fmd-android/push" target="_blank">the docs</a> for more information.
             </p>
         `
     }

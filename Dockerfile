@@ -21,7 +21,9 @@ RUN go build -o /tmp/fmd main.go
 
 FROM debian:bookworm-slim
 
-RUN apt update && apt install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt update && \
+    apt install --no-install-recommends -y ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 
 # Create user
 RUN useradd --no-create-home --uid 1000 fmd-server

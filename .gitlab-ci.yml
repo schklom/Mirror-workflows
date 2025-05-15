@@ -7,8 +7,12 @@ variables:
   # https://docs.gitlab.com/ee/user/packages/container_registry/build_and_push_images.html#container-registry-examples-with-gitlab-cicd
   # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker-in-docker-with-tls-enabled-in-the-docker-executor
   DOCKER_TLS_CERT_DIR: "/certs"
+  # SonarQube
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+  GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
 
-before_script:
+# https://docs.gitlab.com/ci/yaml/yaml_optimization/#yaml-anchors-for-scripts
+.go-setup: &go-setup
   # Fix "cmd/fmdserver.go:19:2: no required module provides package gopkg.in/yaml.v3; to add it:" (only an issue in CI...)
   - go get gopkg.in/yaml.v3
 
@@ -19,6 +23,7 @@ stages:
 format:
   stage: test
   script:
+    - *go-setup
     - go mod tidy
     - go fmt $(go list ./... | grep -v /vendor/)
     - go vet $(go list ./... | grep -v /vendor/)
@@ -27,12 +32,29 @@ format:
 nil-safety:
   stage: test
   script:
+    - *go-setup
     - go install go.uber.org/nilaway/cmd/nilaway@latest
     - nilaway -include-pkgs="fmd-server" ./...
+
+sonarcloud-check:
+  stage: test
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - sonar-scanner
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 
 compile:
   stage: build
   script:
+    - *go-setup
     - go build -o fmdserver
   artifacts:
     paths:

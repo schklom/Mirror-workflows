@@ -33,23 +33,23 @@ ARG BIN_FILE=/opt/fmd-server
 ARG WEB_BASE_DIR=/usr/share/fmd-server
 ARG DB_DIR=/var/lib/fmd-server/db
 
-COPY --from=builder /tmp/fmd $BIN_FILE
+COPY --from=builder /tmp/fmd "$BIN_FILE"
 
-RUN chown fmd-server:fmd-server $BIN_FILE
-RUN chmod 0550 $BIN_FILE
+RUN chown fmd-server:fmd-server "$BIN_FILE" && \
+    chmod 0550 "$BIN_FILE"
 
-RUN mkdir -p $WEB_BASE_DIR
-COPY web $WEB_BASE_DIR/web
+RUN mkdir -p "$WEB_BASE_DIR"
+COPY web "$WEB_BASE_DIR"/web
 
-RUN chown -R fmd-server:fmd-server $WEB_BASE_DIR
-RUN chmod -R 0444 $WEB_BASE_DIR
-RUN find $WEB_BASE_DIR -type d -exec chmod 0554 {} +
+RUN chown -R fmd-server:fmd-server "$WEB_BASE_DIR" && \
+    chmod -R 0444 "$WEB_BASE_DIR" && \
+    find "$WEB_BASE_DIR" -type d -exec chmod 0554 {} +
 
-RUN mkdir -p $DB_DIR
+RUN mkdir -p "$DB_DIR"
 
-RUN chown -R fmd-server:fmd-server $DB_DIR
-RUN chmod -R 0660 $DB_DIR
-RUN chmod 0770 $DB_DIR
+RUN chown -R fmd-server:fmd-server "$DB_DIR" && \
+    chmod -R 0660 "$DB_DIR" && \
+    chmod 0770 "$DB_DIR"
 
 # Change to user
 USER fmd-server

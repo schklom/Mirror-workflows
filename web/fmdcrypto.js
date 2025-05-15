@@ -55,16 +55,7 @@ async function hashPasswordArgon2(password, salt) {
 
 // Section: Asymmetric crypto (key wrap)
 
-async function unwrapPrivateKey(password, keyData) {
-    try {
-        return await unwrapPrivateKey(password, keyData);
-    } catch (error) {
-        console.log("unwrapKey failed:", error);
-    }
-    return -1
-}
-
-async function unwrapPrivateKey(password, keyData) { // -> CryptoKey
+async function unwrapPrivateKey(password, keyData) { // -> (CryptoKey, CryptoKey)
     const concatBytes = base64Decode(keyData);
     const saltBytes = concatBytes.slice(0, ARGON2_SALT_LENGTH);
     const ivBytes = concatBytes.slice(ARGON2_SALT_LENGTH, ARGON2_SALT_LENGTH + AES_GCM_IV_SIZE_BYTES);

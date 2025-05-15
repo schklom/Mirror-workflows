@@ -36,7 +36,7 @@ window.onclick = function (event) {
 }
 
 function init() {
-    var div;
+    let div;
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         div = document.getElementById("desktop");
         document.getElementsByClassName("column-left")[1].style.width = "12%";
@@ -46,7 +46,7 @@ function init() {
     }
     div.parentNode.removeChild(div);
 
-    var element = document.getElementById('map');
+    const element = document.getElementById('map');
     map = L.map(element);
     markers = L.layerGroup().addTo(map);
 
@@ -54,10 +54,10 @@ function init() {
         attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    var target = L.latLng('57', '13');
+    const target = L.latLng('57', '13');
     map.setView(target, 1.5);
 
-    var versionView = document.getElementById('version');
+    const versionView = document.getElementById('version');
     fetch("api/v1/version", {
         method: 'GET'
     })
@@ -171,13 +171,16 @@ async function doLogin(fmdid, password, useLongSession) {
         return;
     }
 
-    await getPrivateKey(password);
-    if (globalPrivateKey == -1) {
-        alert("Failed to get private key!");
+    try {
+        await getPrivateKey(password);
+    } catch (error) {
+        console.log(error.message, error.code);
+        alert("Failed to get private key!\n\n"
+            + `The error was: ${error.message}`);
         return;
     }
 
-    loginDiv = document.getElementById("loginContainer");
+    const loginDiv = document.getElementById("loginContainer");
     if (loginDiv != null) {
         loginDiv.parentNode.removeChild(loginDiv);
     }
@@ -209,7 +212,7 @@ async function tryLoginWithHash(fmdid, passwordHash, sessionDurationSeconds) {
 }
 
 async function getPrivateKey(password) {
-    response = await fetch("api/v1/key", {
+    const response = await fetch("api/v1/key", {
         method: 'PUT',
         body: JSON.stringify({
             IDT: globalAccessToken,
@@ -329,7 +332,7 @@ async function locate(requestedIndex) {
         throw response.status;
     }
     const locationData = await response.json();
-    var selectedLoc;
+    let selectedLoc;
     try {
         selectedLoc = await parseLocation(globalPrivateKey, locationData);
     } catch (error) {
@@ -355,7 +358,7 @@ async function locate(requestedIndex) {
     document.getElementById("batView").textContent = selectedLoc.bat + " %";
 
     // TODO: This could be more efficient. No need to re-draw everything all the time.
-    lat_long = []   // All locations in an array. Needed for the line between points.
+    const lat_long = []   // All locations in an array. Needed for the line between points.
     markers.clearLayers();
 
     // Iterate through the cache and add every point to the map
@@ -365,7 +368,7 @@ async function locate(requestedIndex) {
 
         const target = L.latLng(locEntry.lat, locEntry.lon);
         lat_long.push(target)
-        locTime = new Date(locEntry.time);
+        const locTime = new Date(locEntry.time);
 
         const marker = L.marker(target).bindTooltip(locTime.toLocaleString()).addTo(markers);
         if (index == currentLocIdx) {
@@ -384,7 +387,7 @@ async function locate(requestedIndex) {
 }
 
 function updateLocateOlderButton(index) {
-    var button = document.getElementById("locateOlder");
+    const button = document.getElementById("locateOlder");
     if (index <= 0) {
         button.disabled = true;
     } else {
@@ -441,7 +444,7 @@ async function sendToPhone(message) {
     const time = Date.now();
     const sig = await sign(globalPrivateSigKey, `${time}:${message}`);
 
-    response = await fetch("api/v1/command", {
+    const response = await fetch("api/v1/command", {
         method: 'POST',
         body: JSON.stringify({
             IDT: globalAccessToken,
@@ -473,7 +476,7 @@ async function showCommandLogs() {
         return;
     }
 
-    response = await fetch("api/v1/commandLogs", {
+    const response = await fetch("api/v1/commandLogs", {
         method: 'PUT',
         body: JSON.stringify({
             IDT: globalAccessToken,
@@ -491,7 +494,7 @@ async function showCommandLogs() {
         throw response.status;
     }
     const json = await response.json();
-    logs = await parseCommandLogs(globalPrivateKey, json.Data);
+    const logs = await parseCommandLogs(globalPrivateKey, json.Data);
     displayCommandLogs(logs)
 }
 // Section: Picture
@@ -561,25 +564,25 @@ async function loadPicture(index) {
 }
 
 function displaySinglePicture(picture) {
-    var div = document.createElement("div");
+    const div = document.createElement("div");
     div.id = "imagePrompt";
     div.className = "center-column"
 
     // Picture header
-    var titleDiv = document.createTextNode(`Image ${currentPictureIndex + 1} of ${newestPictureIndex + 1}`)
+    const titleDiv = document.createTextNode(`Image ${currentPictureIndex + 1} of ${newestPictureIndex + 1}`)
     div.appendChild(titleDiv)
 
     // Image view
-    var img = document.createElement("img");
+    const img = document.createElement("img");
     img.id = "imageFromDevice"
     img.src = "data:image/jpeg;base64," + picture
     div.appendChild(img)
 
     // Button row
-    var buttonDiv = document.createElement("div");
+    const buttonDiv = document.createElement("div");
 
     // Back button
-    var beforeBtn = document.createElement("button");
+    const beforeBtn = document.createElement("button");
     beforeBtn.textContent = "<-"
     beforeBtn.addEventListener('click', function () {
         document.body.removeChild(div)
@@ -592,7 +595,7 @@ function displaySinglePicture(picture) {
     buttonDiv.appendChild(beforeBtn)
 
     // Close button
-    var btn = document.createElement("button");
+    const btn = document.createElement("button");
     btn.textContent = "close"
     btn.addEventListener('click', function () {
         document.body.removeChild(div)
@@ -600,7 +603,7 @@ function displaySinglePicture(picture) {
     buttonDiv.appendChild(btn)
 
     // Forward/next button
-    var afterBtn = document.createElement("button");
+    const afterBtn = document.createElement("button");
     afterBtn.textContent = "->"
     afterBtn.addEventListener('click', function () {
         document.body.removeChild(div)
@@ -617,18 +620,18 @@ function displaySinglePicture(picture) {
 }
 
 function displayCommandLogs(logs) {
-    var div = document.createElement("div");
+    const div = document.createElement("div");
     div.classList.add("prompt");
 
-    var logP = document.createElement("p");
+    const logP = document.createElement("p");
     logP.id = "commandlogs"
     logP.innerHTML = logs;
     div.appendChild(logP);
 
-    var buttonDiv = document.createElement("div");
+    const buttonDiv = document.createElement("div");
     buttonDiv.className = "center";
 
-    var btn = document.createElement("button");
+    const btn = document.createElement("button");
     btn.textContent = "close";
     btn.addEventListener('click', function () {
         document.body.removeChild(div);
@@ -654,11 +657,11 @@ function showSettingsDropDown() {
 // Section: Delete device
 
 function prepareDeleteDevice() {
-    var div = document.createElement("div");
+    const div = document.createElement("div");
     div.id = "passwordPrompt";
     div.classList.add("prompt");
 
-    var label = document.createElement("label");
+    const label = document.createElement("label");
     label.id = "password_prompt_label";
     label.className = "center"
     label.textContent = "Please enter the device pin:";
@@ -667,11 +670,11 @@ function prepareDeleteDevice() {
 
     div.appendChild(document.createElement("br"));
 
-    var centedInnerDiv = document.createElement("div");
+    const centedInnerDiv = document.createElement("div");
     centedInnerDiv.className = "center";
     div.appendChild(centedInnerDiv);
 
-    var input = document.createElement("input");
+    const input = document.createElement("input");
     input.id = "password_prompt_input";
     input.type = "password";
     centedInnerDiv.appendChild(input);
@@ -743,7 +746,7 @@ async function exportData() {
     }
 
     // Locations
-    var response = await fetch("api/v1/locations", {
+    let response = await fetch("api/v1/locations", {
         method: 'POST',
         body: JSON.stringify({
             IDT: globalAccessToken,
@@ -760,10 +763,10 @@ async function exportData() {
     if (!response.ok) {
         throw response.status;
     }
-    var locationsCSV = "Date,Provider,Battery Percentage,Longitude,Latitude\n";
+    let locationsCSV = "Date,Provider,Battery Percentage,Longitude,Latitude\n";
     const locationsAsJSON = await response.json();
-    for (locationJSON of locationsAsJSON) {
-        loc = await parseLocation(globalPrivateKey, JSON.parse(locationJSON))
+    for (let locationJSON of locationsAsJSON) {
+        const loc = await parseLocation(globalPrivateKey, JSON.parse(locationJSON))
         locationsCSV += new Date(loc.time).toISOString() + "," + loc.provider + "," + loc.bat + "," + loc.lon + "," + loc.lat + "\n"
     }
 
@@ -786,9 +789,9 @@ async function exportData() {
         throw response.status;
     }
     const picturesAsJSON = await response.json();
-    var pictures = [];
-    for (picture of picturesAsJSON) {
-        pic = await parsePicture(globalPrivateKey, picture);
+    const pictures = [];
+    for (let picture of picturesAsJSON) {
+        const pic = await parsePicture(globalPrivateKey, picture);
         pictures.push(pic);
     }
 
@@ -800,12 +803,12 @@ async function exportData() {
     };
 
     // ZIP everything
-    var zip = new JSZip();
+    const zip = new JSZip();
     zip.file("info.json", JSON.stringify(generalInfo));
     zip.file("locations.csv", locationsCSV);
-    var img = zip.folder("pictures");
-    for ([index, pic] of pictures.entries()) {
-        img.file(String(index) + ".png", pic, { base64: true });
+    const picturesFolder = zip.folder("pictures");
+    for (let [index, pic] of pictures.entries()) {
+        picturesFolder.file(String(index) + ".png", pic, { base64: true });
     }
     const content = await zip.generateAsync({ type: "blob" });
 

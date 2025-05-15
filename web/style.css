@@ -75,22 +75,20 @@ footer {
 }
 
 .center-column {
-    border: 1px solid black;
+    border: none;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border: none;
 }
 
 .center-row {
-    border: 1px solid black;
+    border: none;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    border: none;
 }
 
 .column-left {

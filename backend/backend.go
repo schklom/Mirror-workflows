@@ -26,55 +26,7 @@ func handleRequests(config *viper.Viper) {
 	serverKey := config.GetString(CONF_SERVER_KEY)
 
 	if len(socketPath) > 0 {
-		_, err := os.Stat(socketPath)
-		if err == nil { // socket already exists
-			err = os.Remove(socketPath)
-			if err != nil {
-				log.Fatal().
-					Str("UnixSocketPath", socketPath).
-					Msg("could not remove existing unix socket")
-			}
-		}
-
-		log.Info().
-			Str("UnixSocketPath", socketPath).
-			Msg("listening on unix socket")
-
-		unixListener, err := net.Listen("unix", socketPath)
-		if err != nil {
-			if err != nil {
-				log.Fatal().Err(err).Msg("cannot open unix socket")
-				os.Exit(1) // make nilaway happy
-			}
-		}
-
-		fm := fs.FileMode(socketChmod)
-		err = os.Chmod(socketPath, fm)
-		if err != nil {
-			log.Error().
-				Err(err).
-				Str("fm", fm.String()).
-				Msg("error modifying unix socket permissions")
-		}
-
-		server := http.Server{Handler: mux}
-		err = server.Serve(unixListener)
-		if err != nil {
-			log.Error().Err(err).Msg("error serving unix server")
-		}
-
-		err = server.Close()
-		if err != nil {
-			log.Error().Err(err).Msg("error closing unix server")
-		}
-
-		err = unixListener.Close()
-		if err != nil {
-			log.Error().Err(err).Msg("error closing unix listener")
-		}
-		// ignore error for now
-		os.Remove(socketPath)
-
+		handleRequestsSocket(mux, socketPath, socketChmod)
 	} else if portSecure > -1 && fileExists(serverCrt) && fileExists(serverKey) {
 		log.Info().
 			Int("PortSecure", portSecure).
@@ -84,7 +36,6 @@ func handleRequests(config *viper.Viper) {
 		if err != nil {
 			log.Fatal().Err(err).Msg("failed to serve with TLS")
 		}
-
 	} else if portInsecure > -1 {
 		log.Info().
 			Int("PortInsecure", portInsecure).
@@ -98,6 +49,57 @@ func handleRequests(config *viper.Viper) {
 	} else {
 		log.Fatal().Msg("no address to listen on")
 	}
+}
+
+func handleRequestsSocket(mux *http.ServeMux, socketPath string, socketChmod int) {
+	_, err := os.Stat(socketPath)
+	if err == nil { // socket already exists
+		err = os.Remove(socketPath)
+		if err != nil {
+			log.Fatal().
+				Str("UnixSocketPath", socketPath).
+				Msg("could not remove existing unix socket")
+		}
+	}
+
+	log.Info().
+		Str("UnixSocketPath", socketPath).
+		Msg("listening on unix socket")
+
+	unixListener, err := net.Listen("unix", socketPath)
+	if err != nil {
+		if err != nil {
+			log.Fatal().Err(err).Msg("cannot open unix socket")
+			os.Exit(1) // make nilaway happy
+		}
+	}
+
+	fm := fs.FileMode(socketChmod)
+	err = os.Chmod(socketPath, fm)
+	if err != nil {
+		log.Error().
+			Err(err).
+			Str("fm", fm.String()).
+			Msg("error modifying unix socket permissions")
+	}
+
+	server := http.Server{Handler: mux}
+	err = server.Serve(unixListener)
+	if err != nil {
+		log.Error().Err(err).Msg("error serving unix server")
+	}
+
+	err = server.Close()
+	if err != nil {
+		log.Error().Err(err).Msg("error closing unix server")
+	}
+
+	err = unixListener.Close()
+	if err != nil {
+		log.Error().Err(err).Msg("error closing unix listener")
+	}
+	// ignore error for now
+	os.Remove(socketPath)
 }
 
 func initDb(config *viper.Viper) {

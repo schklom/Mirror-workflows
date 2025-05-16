@@ -1,12 +1,12 @@
 async function parseCommandLogs(rsaCryptoKey, commandLogsData) {
-    logEntries = commandLogsData.split("\n")
-    logResult = ""
-    for (logEntry of logEntries) {
+    const logEntries = commandLogsData.split("\n")
+    let logResult = ""
+    for (let logEntry of logEntries) {
         if (logEntry != "") {
-            logData = await decryptPacket(rsaCryptoKey, logEntry);
-            logDataObj = JSON.parse(logData)
-            timestamp = new Date(parseInt(logDataObj.TimeStamp)*1000);
-            logResult += timestamp.toLocaleString()+": "+logDataObj.Log +"\n"
+            const logData = await decryptPacket(rsaCryptoKey, logEntry);
+            const logDataObj = JSON.parse(logData)
+            const timestamp = new Date(parseInt(logDataObj.TimeStamp) * 1000);
+            logResult += timestamp.toLocaleString() + ": " + logDataObj.Log + "\n"
         }
     }
     return logResult

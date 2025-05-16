@@ -59,7 +59,10 @@
 		// $handler->after();
 	}
 
-	header("Api-Content-Length: " . ob_get_length());
+	$content_length = ob_get_length();
+
+	header("Api-Content-Length: $content_length");
+	header("Content-Length: $content_length");
 
 	ob_end_flush();
 

@@ -143,9 +143,6 @@ func (u *UserRepository) AddPicture(user *FMDUser, pic string) {
 func (u *UserRepository) DeleteUser(user *FMDUser) {
 	log.Info().Str("userid", user.UID).Msg("deleting user")
 
-	u.UB.DB.Where("user_id = ?", user.Id).Delete(&Picture{})
-	u.UB.DB.Where("user_id = ?", user.Id).Delete(&Location{})
-	u.UB.DB.Where("user_id = ?", user.Id).Delete(&CommandLogEntry{})
 	u.UB.Delete(&user)
 }
 

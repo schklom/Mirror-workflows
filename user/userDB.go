@@ -7,6 +7,7 @@ import (
 	"github.com/glebarez/sqlite"
 	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
 )
 
@@ -73,8 +74,10 @@ func initSQLite(path string) *FMDDB {
 		&log.Logger, // io writer
 		logger.Config{
 			IgnoreRecordNotFoundError: false, // Ignore ErrRecordNotFound error for logger
+			LogLevel:                  logger.Warn,
 		},
 	)
+
 	db, err := gorm.Open(sqlite.Open(path), &gorm.Config{
 		Logger: newLogger,
 	})
@@ -83,10 +86,21 @@ func initSQLite(path string) *FMDDB {
 		os.Exit(1) // make nilaway happy
 		return nil
 	}
+
+	// XXX: FK cascading deletion doesn't seem to work. But enabled FK anyway, just to be sure.
+	// https://www.sqlite.org/foreignkeys.html#fk_enable
+	res := db.Exec("PRAGMA foreign_keys = ON; PRAGMA secure_delete = ON")
+	if res.Error != nil {
+		log.Fatal().Err(err).Msg("failed setting pragmas")
+		os.Exit(1) // make nilaway happy
+		return nil
+	}
+
 	//Disabled Feature: CommandLogs
 	//db.AutoMigrate(&FMDUser{}, &Location{}, &Picture{}, &CommandLogEntry{})
 	db.AutoMigrate(&FMDUser{}, &Location{}, &Picture{})
 	db.AutoMigrate(&DBSetting{})
+
 	return &FMDDB{DB: db}
 }
 
@@ -126,5 +140,9 @@ func (db *FMDDB) Create(value interface{}) {
 }
 
 func (db *FMDDB) Delete(value interface{}) {
-	db.DB.Delete(value)
+	// Theoretically, this should work via foreign key + cascade.
+	// It works when manually executing SQL commands via DB Browser, but not via gorm??
+	// Thus, we manually select the associations here to do the cascading deletion.
+	// https://gorm.io/docs/associations.html#Delete-Associations
+	db.DB.Select(clause.Associations).Delete(value)
 }

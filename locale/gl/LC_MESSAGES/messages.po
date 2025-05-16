@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2024-12-17 07:00+0000\n"
+"PO-Revision-Date: 2025-05-09 04:01+0000\n"
 "Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/tt-rss/webui/gl/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -405,10 +405,9 @@ msgid "Unknown action: %d"
 msgstr "Acción descoñecida: %d"
 
 #: classes/Pref_Filters.php:726 js/PrefFilterTree.js:180
-#, fuzzy, java-printf-format, javascript-format, php-format
-#| msgid "Clone"
+#, java-printf-format, javascript-format, php-format
 msgid "Clone of %s"
-msgstr "Clonar"
+msgstr "Clon de %s"
 
 #: classes/Pref_Filters.php:752 classes/Pref_Users.php:215
 #: classes/Pref_Feeds.php:934 classes/Pref_Prefs.php:840 js/Feeds.js:668
@@ -1613,21 +1612,19 @@ msgstr "Mensaxe de proba desde tt-rss"
 
 #: classes/Pref_System.php:35
 msgid "Task name"
-msgstr ""
+msgstr "Nome da tarefa"
 
 #: classes/Pref_System.php:36
-#, fuzzy
-#| msgid "Last used"
 msgid "Last executed"
-msgstr "Último uso"
+msgstr "Última acción"
 
 #: classes/Pref_System.php:37
 msgid "Duration (seconds)"
-msgstr ""
+msgstr "Duración (segundos)"
 
 #: classes/Pref_System.php:38
 msgid "Return code"
-msgstr ""
+msgstr "Código de retorno"
 
 #: classes/Pref_System.php:108 js/PrefHelpers.js:622
 msgid "Refresh"
@@ -1696,7 +1693,7 @@ msgstr "Enviar email de proba"
 
 #: classes/Pref_System.php:240
 msgid "Scheduled tasks"
-msgstr ""
+msgstr "Tarefas programadas"
 
 #: classes/Pref_System.php:251
 msgid "PHP Information"
@@ -2215,22 +2212,16 @@ msgid "Removing selected filters..."
 msgstr "Retirando os filtros seleccionados..."
 
 #: js/PrefFilterTree.js:179
-#, fuzzy
-#| msgid "Name for cloned profile:"
 msgid "Name for new filter:"
-msgstr "Nome do perfil clonado:"
+msgstr "Nome para o novo filtro:"
 
 #: js/PrefFilterTree.js:187
-#, fuzzy
-#| msgid "Combine selected filters?"
 msgid "Clone selected filters?"
-msgstr "Combinar os filtros seleccionados?"
+msgstr "Clonar os filtros seleccionados?"
 
 #: js/PrefFilterTree.js:191
-#, fuzzy
-#| msgid "Removing selected filters..."
 msgid "Cloning selected filters..."
-msgstr "Retirando os filtros seleccionados..."
+msgstr "Clonando os filtros seleccionados..."
 
 #: js/CommonFilters.js:14
 msgid "Edit filter"
@@ -2250,10 +2241,9 @@ msgid "Articles matching this filter:"
 msgstr "Artigos que concordan co filtro:"
 
 #: js/CommonFilters.js:70
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Found %d articles matching this filter:"
+#, java-printf-format, javascript-format
 msgid "Found at least %d articles matching this filter:"
-msgstr "Atopados %d artigos de acordo a este filtro:"
+msgstr "Atopáronse polo menos %d artigos de acordo a este filtro:"
 
 #: js/CommonFilters.js:77
 msgid "Error while trying to get filter test results."

@@ -1,15 +1,15 @@
-var map, markers;
+let map, markers;
 
-var currentLocIdx = -1;
+let currentLocIdx = -1;
 const locCache = new Array();
 
-var currentId;
-var globalPrivateKey;
-var globalPrivateSigKey;
-var globalAccessToken = "";
+let currentId;
+let globalPrivateKey;
+let globalPrivateSigKey;
+let globalAccessToken = "";
 
-var newestPictureIndex;
-var currentPictureIndex;
+let newestPictureIndex;
+let currentPictureIndex;
 
 const KEYCODE_ENTER = 13;
 const KEYCODE_ESCAPE = 27;

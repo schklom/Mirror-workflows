@@ -307,6 +307,7 @@ func postCommand(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+/*
 func getCommandLog(w http.ResponseWriter, r *http.Request) {
 	var data DataPackage
 	err := json.NewDecoder(r.Body).Decode(&data)
@@ -328,6 +329,7 @@ func getCommandLog(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(HEADER_CONTENT_TYPE, CT_APPLICATION_JSON)
 	w.Write([]byte(result))
 }
+*/
 
 // ------- Push -------
 

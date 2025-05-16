@@ -3,17 +3,13 @@ package user
 import (
 	"bytes"
 	"crypto/rand"
-	"encoding/json"
 	"errors"
-	"fmd-server/utils"
-	"fmt"
 	"math/big"
 	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/rs/zerolog/log"
 )
@@ -231,6 +227,7 @@ func (u *UserRepository) SetPublicKey(user *FMDUser, key string) {
 	u.UB.Save(&user)
 }
 
+/*
 func (u *UserRepository) addCommandLogEntry(user *FMDUser, entry string) {
 	timestamp := time.Now().Unix()
 
@@ -242,6 +239,7 @@ func (u *UserRepository) addCommandLogEntry(user *FMDUser, entry string) {
 
 	u.UB.Create(&comLogEntry)
 }
+*/
 
 func (u *UserRepository) SetCommandToUser(user *FMDUser, cmd string, cmdTime uint64, cmdSig string) {
 	user.CommandToUser = cmd
@@ -258,13 +256,14 @@ func (u *UserRepository) SetCommandToUser(user *FMDUser, cmd string, cmdTime uin
 }
 
 func (u *UserRepository) GetCommandToUser(user *FMDUser) (string, uint64, string) {
-	if user.CommandToUser != "" {
-		logEntry := fmt.Sprintf("Command \"%s\" received by device!", user.CommandToUser)
-		u.addCommandLogEntry(user, logEntry)
-	}
+	// if user.CommandToUser != "" {
+	// 	logEntry := fmt.Sprintf("Command \"%s\" received by device!", user.CommandToUser)
+	// 	u.addCommandLogEntry(user, logEntry)
+	// }
 	return user.CommandToUser, user.CommandTime, user.CommandSig
 }
 
+/*
 func (u *UserRepository) GetCommandLog(user *FMDUser) string {
 	commandLog := ""
 	for _, logEntry := range user.CommandLogs {
@@ -272,6 +271,7 @@ func (u *UserRepository) GetCommandLog(user *FMDUser) string {
 	}
 	return commandLog
 }
+*/
 
 func (u *UserRepository) SetPushUrl(user *FMDUser, pushUrl string) {
 	user.PushUrl = pushUrl

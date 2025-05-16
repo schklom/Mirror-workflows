@@ -4,8 +4,8 @@ import (
 	"errors"
 	"os"
 
-	"github.com/rs/zerolog/log"
 	"github.com/glebarez/sqlite"
+	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -26,10 +26,10 @@ type FMDUser struct {
 	CommandToUser  string
 	CommandTime    uint64
 	CommandSig     string
-	CommandLogs    []CommandLogEntry `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
 	PushUrl        string
 	Locations      []Location `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
 	Pictures       []Picture  `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
+	//CommandLogs    []CommandLogEntry `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
 }
 
 // Location Table of the Users
@@ -46,6 +46,7 @@ type Picture struct {
 	Content string // elements are base64 encoded encrypted images
 }
 
+/*
 // Location Table of the Users
 type CommandLogEntry struct {
 	Id      uint64 `gorm:"primaryKey"`
@@ -58,6 +59,7 @@ type CommandLogEntryContent struct {
 	Timestamp int64
 	Log       string
 }
+*/
 
 // Settings Table GORM (SQL)
 type DBSetting struct {

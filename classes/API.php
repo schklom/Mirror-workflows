@@ -1,7 +1,7 @@
 <?php
 class API extends Handler {
 
-	const API_LEVEL  = 22;
+	const API_LEVEL  = 23;
 
 	const STATUS_OK  = 0;
 	const STATUS_ERR = 1;
@@ -618,7 +618,7 @@ class API extends Handler {
 
 			/* API only: -3 (Feeds::CATEGORY_ALL_EXCEPT_VIRTUAL) All feeds, excluding virtual feeds (e.g. Labels and such) */
 			$feeds_obj = ORM::for_table('ttrss_feeds')
-				->select_many('id', 'feed_url', 'cat_id', 'title', 'order_id')
+				->select_many('id', 'feed_url', 'cat_id', 'title', 'order_id', 'last_error', 'update_interval')
 				->select_expr(SUBSTRING_FOR_DATE.'(last_updated,1,19)', 'last_updated')
 				->where('owner_uid', $_SESSION['uid'])
 				->order_by_asc('order_id')
@@ -645,6 +645,8 @@ class API extends Handler {
 						'cat_id' => (int) $feed->cat_id,
 						'last_updated' => (int) strtotime($feed->last_updated ?? ''),
 						'order_id' => (int) $feed->order_id,
+						'last_error' => $feed->last_error,
+						'update_interval' => (int) $feed->update_interval,
 					];
 
 					array_push($feeds, $row);

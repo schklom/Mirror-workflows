@@ -93,7 +93,7 @@ class RSSUtils {
 		}
 
 		if (!Config::get(Config::SINGLE_USER_MODE) && Config::get(Config::DAEMON_UPDATE_LOGIN_LIMIT) > 0) {
-			$login_thresh_qpart = 'AND ' . Db::past_comparison_qpart('last_login', '>=', Config::get(Config::DAEMON_UPDATE_LOGIN_LIMIT), 'day');
+			$login_thresh_qpart = "AND last_login >= NOW() - INTERVAL '" . Config::get(Config::DAEMON_UPDATE_LOGIN_LIMIT) . " day'";
 		} else {
 			$login_thresh_qpart = "";
 		}
@@ -113,15 +113,10 @@ class RSSUtils {
 					AND (last_updated = '1970-01-01 00:00:00' OR last_updated IS NULL)
 			))";
 
-		// Test if feed is currently being updated by another process.
-		$updstart_thresh_qpart = 'AND (last_update_started IS NULL OR '
-			. Db::past_comparison_qpart('last_update_started', '<', 10, 'minute') . ')';
-
 		$query_limit = $limit ? sprintf("LIMIT %d", $limit) : "";
 
-		// Update the least recently updated feeds first
-		$query_order = "ORDER BY last_updated NULLS FIRST";
-
+		// The 'last_update_started' check is to determine if the feed is currently being updated by another process.
+		// Update the least recently updated feeds first.
 		$query = "SELECT f.feed_url, f.last_updated
 			FROM
 				ttrss_feeds f, ttrss_users u LEFT JOIN ttrss_user_prefs2 p ON
@@ -131,8 +126,8 @@ class RSSUtils {
 				u.access_level NOT IN (".sprintf("%d, %d", UserHelper::ACCESS_LEVEL_DISABLED, UserHelper::ACCESS_LEVEL_READONLY).")
 				$login_thresh_qpart
 				$update_limit_qpart
-				$updstart_thresh_qpart
-				$query_order $query_limit";
+				AND (last_update_started IS NULL OR last_update_started < NOW() - INTERVAL '10 minute')
+				ORDER BY last_updated NULLS FIRST $query_limit";
 
 		Debug::log("base feed query: $query", Debug::LOG_EXTENDED);
 
@@ -348,13 +343,11 @@ class RSSUtils {
 		/** @var DiskCache $cache */
 		$cache = DiskCache::instance('feeds');
 
-		$favicon_interval_qpart = Db::past_comparison_qpart('favicon_last_checked', '<', 12, 'hour');
-
 		$feed_obj = ORM::for_table('ttrss_feeds')
 				->select_expr("ttrss_feeds.*,
 					".SUBSTRING_FOR_DATE."(last_unconditional, 1, 19) AS last_unconditional,
 					(favicon_is_custom IS NOT TRUE AND
-						(favicon_last_checked IS NULL OR $favicon_interval_qpart)) AS favicon_needs_check")
+						(favicon_last_checked IS NULL OR favicon_last_checked < NOW() - INTERVAL '12 hour')) AS favicon_needs_check")
 				->find_one($feed);
 
 		if ($feed_obj) {
@@ -1418,8 +1411,7 @@ class RSSUtils {
 	static function expire_error_log(): void {
 		Debug::log("Removing old error log entries...");
 		$pdo = Db::pdo();
-		$pdo->query('DELETE FROM ttrss_error_log
-			WHERE ' . Db::past_comparison_qpart('created_at', '<', 7, 'day'));
+		$pdo->query("DELETE FROM ttrss_error_log WHERE created_at < NOW() - INTERVAL '1 week'");
 	}
 
 	static function expire_lock_files(): void {
@@ -1647,13 +1639,11 @@ class RSSUtils {
 
 			$pdo->beginTransaction();
 
-			$interval_query = Db::past_comparison_qpart('last_successful_update', '<', Config::get(Config::DAEMON_UNSUCCESSFUL_DAYS_LIMIT), 'day')
-				. ' AND ' . Db::past_comparison_qpart('last_updated', '>', 1, 'day');
+			$failing_feeds_qpart = "update_interval != -1 AND last_successful_update IS NOT NULL "
+				. "AND last_successful_update < NOW() - INTERVAL '" . Config::get(Config::DAEMON_UNSUCCESSFUL_DAYS_LIMIT) . " day' "
+				. "AND last_updated > NOW() - INTERVAL '1 day'";
 
-			$sth = $pdo->prepare("SELECT id, title, owner_uid
-				FROM ttrss_feeds
-				WHERE update_interval != -1 AND last_successful_update IS NOT NULL AND $interval_query");
-
+			$sth = $pdo->prepare("SELECT id, title, owner_uid FROM ttrss_feeds WHERE $failing_feeds_qpart");
 			$sth->execute();
 
 			while ($row = $sth->fetch()) {
@@ -1665,8 +1655,7 @@ class RSSUtils {
 					clean($row["title"]), Config::get(Config::DAEMON_UNSUCCESSFUL_DAYS_LIMIT)));
 			}
 
-			$sth = $pdo->prepare("UPDATE ttrss_feeds SET update_interval = -1 WHERE
-				update_interval != -1 AND last_successful_update IS NOT NULL AND $interval_query");
+			$sth = $pdo->prepare("UPDATE ttrss_feeds SET update_interval = -1 WHERE $failing_feeds_qpart");
 			$sth->execute();
 
 			$pdo->commit();

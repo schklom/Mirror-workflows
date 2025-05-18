@@ -310,7 +310,7 @@ class API extends Handler {
 				->select_many('e.id', 'e.guid', 'e.title', 'e.link', 'e.author', 'e.content', 'e.lang', 'e.comments',
 					'ue.feed_id', 'ue.int_id', 'ue.marked', 'ue.unread', 'ue.published', 'ue.score', 'ue.note')
 				->select_many_expr([
-					'updated' => SUBSTRING_FOR_DATE.'(updated,1,16)',
+					'updated' => 'SUBSTRING_FOR_DATE(updated,1,16)',
 					'feed_title' => '(SELECT title FROM ttrss_feeds WHERE id = ue.feed_id)',
 					'site_url' => '(SELECT site_url FROM ttrss_feeds WHERE id = ue.feed_id)',
 					'hide_images' => '(SELECT hide_images FROM ttrss_feeds WHERE id = feed_id)',
@@ -619,7 +619,7 @@ class API extends Handler {
 			/* API only: -3 (Feeds::CATEGORY_ALL_EXCEPT_VIRTUAL) All feeds, excluding virtual feeds (e.g. Labels and such) */
 			$feeds_obj = ORM::for_table('ttrss_feeds')
 				->select_many('id', 'feed_url', 'cat_id', 'title', 'order_id', 'last_error', 'update_interval')
-				->select_expr(SUBSTRING_FOR_DATE.'(last_updated,1,19)', 'last_updated')
+				->select_expr('SUBSTRING_FOR_DATE(last_updated,1,19)', 'last_updated')
 				->where('owner_uid', $_SESSION['uid'])
 				->order_by_asc('order_id')
 				->order_by_asc('title');
@@ -670,7 +670,7 @@ class API extends Handler {
 
 				$feed = ORM::for_table('ttrss_feeds')
 					->select_many('id', 'cache_images')
-					->select_expr(SUBSTRING_FOR_DATE.'(last_updated,1,19)', 'last_updated')
+					->select_expr('SUBSTRING_FOR_DATE(last_updated,1,19)', 'last_updated')
 					->find_one($feed_id);
 
 				if ($feed) {

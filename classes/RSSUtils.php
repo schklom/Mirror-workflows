@@ -345,7 +345,7 @@ class RSSUtils {
 
 		$feed_obj = ORM::for_table('ttrss_feeds')
 				->select_expr("ttrss_feeds.*,
-					".SUBSTRING_FOR_DATE."(last_unconditional, 1, 19) AS last_unconditional,
+					SUBSTRING_FOR_DATE(last_unconditional, 1, 19) AS last_unconditional,
 					(favicon_is_custom IS NOT TRUE AND
 						(favicon_last_checked IS NULL OR favicon_last_checked < NOW() - INTERVAL '12 hour')) AS favicon_needs_check")
 				->find_one($feed);

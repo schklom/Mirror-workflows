@@ -23,7 +23,8 @@
 
 	require_once "autoload.php";
 
-	define('SUBSTRING_FOR_DATE', 'SUBSTRING_FOR_DATE');
+	/** @deprecated use the 'SUBSTRING_FOR_DATE' string directly */
+	const SUBSTRING_FOR_DATE = 'SUBSTRING_FOR_DATE';
 
 	/**
 	 * @deprecated by Prefs::get()

@@ -400,8 +400,8 @@ class Feeds extends Handler_Protected {
 
 					$reply['content'] .= "<p><span class=\"text-muted\">";
 
-					$sth = $this->pdo->prepare("SELECT " . SUBSTRING_FOR_DATE . "(MAX(last_updated), 1, 19) AS last_updated FROM ttrss_feeds
-                        WHERE owner_uid = ?");
+					$sth = $this->pdo->prepare("SELECT SUBSTRING_FOR_DATE(MAX(last_updated), 1, 19) AS last_updated
+						FROM ttrss_feeds WHERE owner_uid = ?");
 					$sth->execute([$_SESSION['uid']]);
 					$row = $sth->fetch();
 
@@ -2239,7 +2239,7 @@ class Feeds extends Handler_Protected {
 						$orig_ts = strtotime(substr($k, 1));
 						$k = date("Y-m-d", TimeHelper::convert_timestamp($orig_ts, $user_tz_string, 'UTC'));
 
-						array_push($query_keywords, "(".SUBSTRING_FOR_DATE."(updated,1,LENGTH(".$pdo->quote($k).")) $not = ".$pdo->quote($k).")");
+						array_push($query_keywords, "(SUBSTRING_FOR_DATE(updated,1,LENGTH(".$pdo->quote($k).")) $not = ".$pdo->quote($k).")");
 					} else {
 						// treat as leftover text
 

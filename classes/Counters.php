@@ -157,7 +157,7 @@ class Counters {
 
 			$sth = $pdo->prepare("SELECT f.id,
 					f.title,
-					".SUBSTRING_FOR_DATE."(f.last_updated,1,19) AS last_updated,
+					SUBSTRING_FOR_DATE(f.last_updated,1,19) AS last_updated,
 					f.last_error,
 					SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
 					SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked
@@ -169,7 +169,7 @@ class Counters {
 		} else {
 			$sth = $pdo->prepare("SELECT f.id,
 					f.title,
-					".SUBSTRING_FOR_DATE."(f.last_updated,1,19) AS last_updated,
+					SUBSTRING_FOR_DATE(f.last_updated,1,19) AS last_updated,
 					f.last_error,
 					SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
 					SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked

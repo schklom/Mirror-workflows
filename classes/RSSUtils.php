@@ -679,7 +679,7 @@ class RSSUtils {
 
 			$items = $rss->get_items();
 
-			if (!is_array($items)) {
+			if (count($items) === 0) {
 				Debug::log("no articles found.", Debug::LOG_VERBOSE);
 
 				$feed_obj->set([

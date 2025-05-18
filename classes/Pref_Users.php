@@ -6,7 +6,7 @@ class Pref_Users extends Handler_Administrative {
 
 		function edit(): void {
 			$user = ORM::for_table('ttrss_users')
-				->select_expr("id,login,access_level,email,full_name,otp_enabled")
+				->select_many('id', 'login', 'access_level', 'email', 'full_name', 'otp_enabled')
 				->find_one((int)$_REQUEST["id"])
 				->as_array();
 
@@ -23,30 +23,25 @@ class Pref_Users extends Handler_Administrative {
 		function userdetails(): void {
 			$id = (int) clean($_REQUEST["id"]);
 
-			$sth = $this->pdo->prepare("SELECT login,
-				SUBSTRING_FOR_DATE(last_login,1,16) AS last_login,
-				access_level,
-				(SELECT COUNT(int_id) FROM ttrss_user_entries
-					WHERE owner_uid = id) AS stored_articles,
-				SUBSTRING_FOR_DATE(created,1,16) AS created
-				FROM ttrss_users
-				WHERE id = ?");
-			$sth->execute([$id]);
+			$user = ORM::for_table('ttrss_users')
+				->table_alias('u')
+				->select_many('u.login', 'u.access_level')
+				->select_many_expr([
+					'created' => 'SUBSTRING_FOR_DATE(u.created,1,16)',
+					'last_login' => 'SUBSTRING_FOR_DATE(u.last_login,1,16)',
+					'stored_articles' => '(SELECT COUNT(ue.int_id) FROM ttrss_user_entries ue WHERE ue.owner_uid = u.id)',
+				])
+				->find_one($id);
 
-			if ($row = $sth->fetch()) {
+			if ($user) {
+				$created = TimeHelper::make_local_datetime($user->created);
+				$last_login = TimeHelper::make_local_datetime($user->last_login);
 
-				$last_login = TimeHelper::make_local_datetime($row['last_login']);
-
-				$created = TimeHelper::make_local_datetime($row['created']);
-
-				$stored_articles = $row["stored_articles"];
-
-				$sth = $this->pdo->prepare("SELECT COUNT(id) as num_feeds FROM ttrss_feeds
-					WHERE owner_uid = ?");
-				$sth->execute([$id]);
-				$row = $sth->fetch();
-
-				$num_feeds = $row["num_feeds"];
+				$user_owned_feeds = ORM::for_table('ttrss_feeds')
+					->select_many('id', 'title', 'site_url')
+					->where('owner_uid', $id)
+					->order_by_expr('LOWER(title)')
+					->find_many();
 
 				?>
 
@@ -62,31 +57,25 @@ class Pref_Users extends Handler_Administrative {
 
 				<fieldset>
 					<label><?= __('Subscribed feeds') ?>:</label>
-					<?= $num_feeds ?>
+					<?= count($user_owned_feeds) ?>
 				</fieldset>
 
 				<fieldset>
 					<label><?= __('Stored articles') ?>:</label>
-					<?= $stored_articles ?>
+					<?= $user->stored_articles ?>
 				</fieldset>
 
-				<?php
-					$sth = $this->pdo->prepare("SELECT id,title,site_url FROM ttrss_feeds
-						WHERE owner_uid = ? ORDER BY title");
-					$sth->execute([$id]);
-				?>
-
 				<ul class="panel panel-scrollable list list-unstyled">
-					<?php while ($row = $sth->fetch()) { ?>
+					<?php foreach ($user_owned_feeds as $feed) { ?>
 						<li>
 							<?php
-								$icon_url = Feeds::_get_icon_url($row['id'], 'images/blank_icon.gif');
+								$icon_url = Feeds::_get_icon_url($feed->id, 'images/blank_icon.gif');
 							?>
 
 							<img class="icon" src="<?= htmlspecialchars($icon_url) ?>">
 
-							<a target="_blank" href="<?= htmlspecialchars($row["site_url"]) ?>">
-								<?= htmlspecialchars($row["title"]) ?>
+							<a target="_blank" href="<?= htmlspecialchars($feed->site_url) ?>">
+								<?= htmlspecialchars($feed->title) ?>
 							</a>
 						</li>
 					<?php } ?>
@@ -134,14 +123,9 @@ class Pref_Users extends Handler_Administrative {
 
 			foreach ($ids as $id) {
 				if ($id != $_SESSION["uid"] && $id != 1) {
-					$sth = $this->pdo->prepare("DELETE FROM ttrss_tags WHERE owner_uid = ?");
-					$sth->execute([$id]);
-
-					$sth = $this->pdo->prepare("DELETE FROM ttrss_feeds WHERE owner_uid = ?");
-					$sth->execute([$id]);
-
-					$sth = $this->pdo->prepare("DELETE FROM ttrss_users WHERE id = ?");
-					$sth->execute([$id]);
+					ORM::for_table('ttrss_tags')->where('owner_uid', $id)->delete_many();
+					ORM::for_table('ttrss_feeds')->where('owner_uid', $id)->delete_many();
+					ORM::for_table('ttrss_users')->where('id', $id)->delete_many();
 				}
 			}
 		}

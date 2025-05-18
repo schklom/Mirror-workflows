@@ -438,13 +438,12 @@ class RPC extends Handler_Protected {
 		$data["labels"] = Labels::get_all($_SESSION["uid"]);
 
 		if (Config::get(Config::LOG_DESTINATION) == 'sql' && $_SESSION['access_level'] >= UserHelper::ACCESS_LEVEL_ADMIN) {
-			$log_interval = Db::past_comparison_qpart('created_at', '>', 1, 'hour');
 
 			$sth = $pdo->prepare("SELECT COUNT(id) AS cid
 				FROM ttrss_error_log
 			WHERE
 				errno NOT IN (".E_USER_NOTICE.", ".E_USER_DEPRECATED.") AND
-				$log_interval AND
+				created_at > NOW() - INTERVAL '1 hour' AND
 				errstr NOT LIKE '%Returning bool from comparison function is deprecated%' AND
 				errstr NOT LIKE '%imagecreatefromstring(): Data is not in a recognized format%'");
 			$sth->execute();

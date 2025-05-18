@@ -33,8 +33,6 @@
 	}
 
 	function cleanup_tags(int $days = 14, int $limit = 1000): int {
-		$interval_query = Db::past_comparison_qpart('e.date_updated', '<', $days, 'day');
-
 		$tags_deleted = 0;
 		$limit_part = 500;
 
@@ -45,7 +43,7 @@
 				->join('ttrss_user_entries', ['ue.int_id', '=', 't.post_int_id'], 'ue')
 				->join('ttrss_entries', ['e.id', '=', 'ue.ref_id'], 'e')
 				->where_not_equal('ue.tag_cache', '')
-				->where_raw($interval_query)
+				->where_raw("e.date_updated < NOW() - INTERVAL '$days day'")
 				->limit($limit_part)
 				->find_many();
 

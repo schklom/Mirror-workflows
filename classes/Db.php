@@ -75,24 +75,4 @@ class Db {
 	public static function sql_random_function(): string {
 		return "RANDOM()";
 	}
-
-	/**
-	 * Helper to build a query part comparing a field against a past datetime (determined by "$now - $some_interval")
-	 *
-	 * The example below could be read as "last_digest_sent is older than 1 day ago".
-	 * ```php
-	 * Db::past_comparison_qpart('last_digest_sent', '<', 1, 'day');
-	 * ```
-	 *
-	 * @todo validate value of $unit and fail if invalid (or massage if practical)?
-	 * @link https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-INTERVAL-INPUT
-	 * @param string $field the table field being checked
-	 * @param '<'|'>'|'<='|'>='|'=' $operator the comparison operator
-	 * @param positive-int $quantity the amount of $unit
-	 * @param 'year'|'month'|'week'|'day'|'hour'|'minute'|'second' $unit the unit of time for $quantity (see links for more info)
-	 * @return string the query part string
-	 */
-	static function past_comparison_qpart(string $field, string $operator, int $quantity, string $unit): string {
-		return "$field $operator NOW() - INTERVAL '$quantity $unit' ";
-	}
 }

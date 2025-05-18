@@ -754,7 +754,7 @@ class Feeds extends Handler_Protected {
 		}
 
 		$date_qpart = match ($mode) {
-			'1day', '1week', '2week' => Db::past_comparison_qpart('date_entered', '<', (int) substr($mode, 0, 1), substr($mode, 1)),
+			'1day', '1week', '2week' => "date_entered < NOW() - INTERVAL '" . (int) substr($mode, 0, 1) . " " . substr($mode, 1) . "'",
 			default => 'true',
 		};
 
@@ -827,13 +827,12 @@ class Feeds extends Handler_Protected {
 
 					$intl = (int) Prefs::get(Prefs::FRESH_ARTICLE_MAX_AGE, $owner_uid, $profile);
 
-					$match_part = Db::past_comparison_qpart('date_entered', '>', $intl, 'hour');
-
 					$sth = $pdo->prepare("UPDATE ttrss_user_entries
 						SET unread = false, last_read = NOW() WHERE ref_id IN
 							(SELECT id FROM
 								(SELECT DISTINCT id FROM ttrss_entries, ttrss_user_entries WHERE ref_id = id
-									AND owner_uid = ? AND score >= 0 AND unread = true AND $date_qpart AND $match_part AND $search_qpart) as tmp)");
+									AND owner_uid = ? AND score >= 0 AND unread = true AND date_entered > NOW() - INTERVAL '$intl hour'
+									AND $date_qpart AND $search_qpart) as tmp)");
 					$sth->execute([$owner_uid]);
 				}
 
@@ -919,7 +918,7 @@ class Feeds extends Handler_Protected {
 			$match_part = "published = true";
 		} else if ($n_feed == Feeds::FEED_FRESH) {
 			$intl = (int) Prefs::get(Prefs::FRESH_ARTICLE_MAX_AGE, $owner_uid, $profile);
-			$match_part = 'unread = true AND score >= 0 AND ' . Db::past_comparison_qpart('date_entered', '>', $intl, 'hour');
+			$match_part = "unread = true AND score >= 0 AND date_entered > NOW() - INTERVAL '$intl hour'";
 
 			$need_entries = true;
 
@@ -1530,8 +1529,8 @@ class Feeds extends Handler_Protected {
 
 			}
 		} else if ($feed == Feeds::FEED_RECENTLY_READ) { // recently read
-			$query_strategy_part = 'unread = false AND last_read IS NOT NULL AND '
-				. Db::past_comparison_qpart('last_read', '>', 1, 'day');
+			$query_strategy_part = "unread = false AND last_read IS NOT NULL AND
+				last_read > NOW() - INTERVAL '1 day'";
 
 			$vfeed_query_part = "ttrss_feeds.title AS feed_title,";
 			$allow_archived = true;
@@ -1542,8 +1541,8 @@ class Feeds extends Handler_Protected {
 		} else if ($feed == Feeds::FEED_FRESH) { // fresh virtual feed
 			$intl = (int) Prefs::get(Prefs::FRESH_ARTICLE_MAX_AGE, $owner_uid, $profile);
 
-			$query_strategy_part = 'unread = true AND score >= 0 AND '
-				. Db::past_comparison_qpart('date_entered', '>', $intl, 'hour');
+			$query_strategy_part = "unread = true AND score >= 0 AND
+				date_entered > NOW() - INTERVAL '$intl hour'";
 
 			$vfeed_query_part = "ttrss_feeds.title AS feed_title,";
 		} else if ($feed == Feeds::FEED_ALL) { // all articles virtual feed
@@ -1660,8 +1659,6 @@ class Feeds extends Handler_Protected {
 			if ($feed == Feeds::FEED_FRESH)
 				$first_id_query_strategy_part = "true";
 
-			$sanity_interval_qpart = Db::past_comparison_qpart('date_entered', '>=', 1, 'hour') . ' AND ';
-
 			$distinct_columns = str_replace("desc", "", strtolower($order_by));
 			$distinct_qpart = "DISTINCT ON (id, $distinct_columns)";
 
@@ -1695,7 +1692,7 @@ class Feeds extends Handler_Protected {
 						$search_query_part
 						$start_ts_query_part
 						$since_id_part
-						$sanity_interval_qpart
+						date_entered >= NOW() - INTERVAL '1 hour' AND
 						$first_id_query_strategy_part ORDER BY $order_by LIMIT 1";
 
 				if (!empty($_REQUEST["debug"])) {

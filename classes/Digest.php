@@ -7,12 +7,10 @@ class Digest
 
 		Debug::log("Sending digests, batch of max $user_limit users, headline limit = $limit");
 
-		$interval_qpart = Db::past_comparison_qpart('last_digest_sent', '<', 1, 'day');
-
 		$pdo = Db::pdo();
 
 		$res = $pdo->query("SELECT id, login, email FROM ttrss_users
-				WHERE email != '' AND (last_digest_sent IS NULL OR $interval_qpart)");
+				WHERE email != '' AND (last_digest_sent IS NULL OR last_digest_sent < NOW() - INTERVAL '1 day')");
 
 		while ($line = $res->fetch()) {
 
@@ -102,9 +100,6 @@ class Digest
 		$tpl_t->setVariable('TTRSS_HOST', Config::get_self_url());
 
 		$affected_ids = array();
-
-		$interval_qpart = Db::past_comparison_qpart('ttrss_entries.date_updated', '>', $days, 'day');
-
 		$pdo = Db::pdo();
 
 		$sth = $pdo->prepare("SELECT ttrss_entries.title,
@@ -123,7 +118,7 @@ class Digest
 			WHERE
 				ref_id = ttrss_entries.id AND feed_id = ttrss_feeds.id
 				AND include_in_digest = true
-				AND $interval_qpart
+				AND ttrss_entries.date_updated > NOW() - INTERVAL '$days day'
 				AND ttrss_user_entries.owner_uid = :user_id
 				AND unread = true
 				AND score >= :min_score

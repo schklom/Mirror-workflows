@@ -147,63 +147,34 @@ class Counters {
 	private static function get_feeds(?array $feed_ids = null): array {
 		$ret = [];
 
-		$pdo = Db::pdo();
+		if (is_array($feed_ids) && count($feed_ids) === 0)
+			return $ret;
 
-		if (is_array($feed_ids)) {
-			if (count($feed_ids) == 0)
-				return [];
+		$feeds = ORM::for_table('ttrss_feeds')
+			->table_alias('f')
+			->select_many('f.id', 'f.title', 'f.last_error')
+			->select_many_expr([
+				'count' => 'SUM(CASE WHEN ue.unread THEN 1 ELSE 0 END)',
+				'count_marked' => 'SUM(CASE WHEN ue.marked THEN 1 ELSE 0 END)',
+				'last_updated' => 'SUBSTRING_FOR_DATE(f.last_updated,1,19)',
+			])
+			->join('ttrss_user_entries', [ 'ue.feed_id', '=', 'f.id'], 'ue')
+			->where('ue.owner_uid', $_SESSION['uid'])
+			->group_by('f.id');
 
-			$feed_ids_qmarks = arr_qmarks($feed_ids);
+		if (is_array($feed_ids))
+			$feeds->where_in('f.id', $feed_ids);
 
-			$sth = $pdo->prepare("SELECT f.id,
-					f.title,
-					SUBSTRING_FOR_DATE(f.last_updated,1,19) AS last_updated,
-					f.last_error,
-					SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
-					SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked
-				FROM ttrss_feeds f, ttrss_user_entries ue
-				WHERE f.id = ue.feed_id AND ue.owner_uid = ? AND f.id IN ($feed_ids_qmarks)
-				GROUP BY f.id");
-
-			$sth->execute([$_SESSION['uid'], ...$feed_ids]);
-		} else {
-			$sth = $pdo->prepare("SELECT f.id,
-					f.title,
-					SUBSTRING_FOR_DATE(f.last_updated,1,19) AS last_updated,
-					f.last_error,
-					SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
-					SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked
-				FROM ttrss_feeds f, ttrss_user_entries ue
-				WHERE f.id = ue.feed_id AND ue.owner_uid = :uid
-				GROUP BY f.id");
-
-			$sth->execute(["uid" => $_SESSION['uid']]);
-		}
-
-		while ($line = $sth->fetch()) {
-
-			$id = $line["id"];
-			$last_updated = TimeHelper::make_local_datetime($line['last_updated']);
-
-			if (Feeds::_has_icon($id)) {
-				$ts = filemtime(Feeds::_get_icon_file($id));
-			} else {
-				$ts = 0;
-			}
-
-			$cv = [
-				"id" => $id,
-				"updated" => $last_updated,
-				"counter" => (int) $line["count"],
-				"markedcounter" => (int) $line["count_marked"],
-				"ts" => (int) $ts
+		foreach ($feeds->find_many() as $feed) {
+			$ret[] = [
+				'id' => $feed->id,
+				'title' => truncate_string($feed->title, 30),
+				'error' => $feed->last_error,
+				'updated' => TimeHelper::make_local_datetime($feed->last_updated),
+				'counter' => (int) $feed->count,
+				'markedcounter' => (int) $feed->count_marked,
+				'ts' => Feeds::_has_icon($feed->id) ? (int) filemtime(Feeds::_get_icon_file($feed->id)) : 0,
 			];
-
-			$cv["error"] = $line["last_error"];
-			$cv["title"] = truncate_string($line["title"], 30);
-
-			array_push($ret, $cv);
-
 		}
 
 		return $ret;

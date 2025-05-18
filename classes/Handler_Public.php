@@ -755,6 +755,11 @@ class Handler_Public extends Handler {
 		$cache = DiskCache::instance($cache_dir);
 
 		if ($cache->exists($filename)) {
+			$size = $cache->get_size($filename);
+
+			if ($size && $size > 0)
+				header("Content-Length: $size");
+
 			$cache->send($filename);
 		} else {
 			header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");

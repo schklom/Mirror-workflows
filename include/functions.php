@@ -11,11 +11,8 @@
 	if (function_exists("mb_internal_encoding")) mb_internal_encoding("UTF-8");
 
 	date_default_timezone_set('UTC');
-	if (defined('E_DEPRECATED')) {
-		error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
-	} else {
-		error_reporting(E_ALL & ~E_NOTICE);
-	}
+
+	error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
 	ini_set('display_errors', "false");
 	ini_set('display_startup_errors', "false");
@@ -26,7 +23,8 @@
 
 	require_once "autoload.php";
 
-	define('SUBSTRING_FOR_DATE', 'SUBSTRING_FOR_DATE');
+	/** @deprecated use the 'SUBSTRING_FOR_DATE' string directly */
+	const SUBSTRING_FOR_DATE = 'SUBSTRING_FOR_DATE';
 
 	/**
 	 * @deprecated by Prefs::get()

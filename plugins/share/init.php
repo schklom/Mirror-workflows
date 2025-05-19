@@ -123,7 +123,7 @@ class Share extends Plugin {
 		$pdo = Db::pdo();
 
 		$sth = $pdo->prepare("SELECT id,title,link,content,feed_id,comments,int_id,lang,
-			".SUBSTRING_FOR_DATE."(updated,1,16) as updated,
+			SUBSTRING_FOR_DATE(updated,1,16) as updated,
 			(SELECT site_url FROM ttrss_feeds WHERE id = feed_id) as site_url,
 			(SELECT title FROM ttrss_feeds WHERE id = feed_id) as feed_title,
 			(SELECT hide_images FROM ttrss_feeds WHERE id = feed_id) as hide_images,

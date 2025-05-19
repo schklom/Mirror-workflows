@@ -110,7 +110,7 @@ class Digest
 				link,
 				score,
 				content,
-				".SUBSTRING_FOR_DATE."(last_updated,1,19) AS last_updated
+				SUBSTRING_FOR_DATE(last_updated,1,19) AS last_updated
 			FROM
 				ttrss_user_entries,ttrss_entries,ttrss_feeds
 			LEFT JOIN

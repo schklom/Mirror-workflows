@@ -120,7 +120,7 @@ class Cache_Starred_Images extends Plugin {
 		$xpath = new DOMXPath($doc);
 
 		if ($article_id) {
-			$entries = $xpath->query('(//img[@src])|(//video/source[@src])');
+			$entries = $xpath->query('(//img[@src]|//source[@src|@srcset]|//video[@poster|@src])');
 
 			/** @var DOMElement $entry */
 			foreach ($entries as $entry) {
@@ -160,6 +160,10 @@ class Cache_Starred_Images extends Plugin {
 		return false;
 	}
 
+	/**
+	 * @todo retry on partial success
+	 * @return bool true if any media was successfully cached or no valid media was found, otherwise false
+	 */
 	private function cache_article_images(string $content, string $site_url, int $owner_uid, int $article_id) : bool {
 		$status_filename = $article_id . "-" . sha1($site_url) . ".status";
 
@@ -191,24 +195,43 @@ class Cache_Starred_Images extends Plugin {
 
 		$doc = new DOMDocument();
 
-		$has_images = false;
+		$has_media = false;
 		$success = false;
 
 		if (@$doc->loadHTML('<?xml encoding="UTF-8">' . $content)) {
 			$xpath = new DOMXPath($doc);
-			$entries = $xpath->query('(//img[@src])|(//video/source[@src])');
+			$entries = $xpath->query('(//img[@src]|//source[@src|@srcset]|//video[@poster|@src])');
 
-			/** @var DOMElement $entry */
+			/**
+			 * @see RSSUtils::cache_media()
+			 * @var DOMElement $entry
+			 */
 			foreach ($entries as $entry) {
+				foreach (['src', 'poster'] as $attr) {
+					if ($entry->hasAttribute($attr) && !str_starts_with($entry->getAttribute($attr), 'data:')) {
+						$url = UrlHelper::rewrite_relative($site_url, $entry->getAttribute($attr));
 
-				if ($entry->hasAttribute('src') && !str_starts_with($entry->getAttribute('src'), "data:")) {
+						if ($url) {
+							$has_media = true;
 
-					$has_images = true;
+							if ($this->cache_url($article_id, $url))
+								$success = true;
+						}
+					}
+				}
 
-					$src = UrlHelper::rewrite_relative($site_url, $entry->getAttribute('src'));
+				if ($entry->hasAttribute('srcset')) {
+					$matches = RSSUtils::decode_srcset($entry->getAttribute('srcset'));
 
-					if ($this->cache_url($article_id, $src)) {
-						$success = true;
+					for ($i = 0; $i < count($matches); $i++) {
+						$url = UrlHelper::rewrite_relative($site_url, $matches[$i]['url']);
+
+						if ($url) {
+							$has_media = true;
+
+							if ($this->cache_url($article_id, $url))
+								$success = true;
+						}
 					}
 				}
 			}
@@ -220,7 +243,7 @@ class Cache_Starred_Images extends Plugin {
 		if ($esth->execute([$article_id])) {
 			while ($enc = $esth->fetch()) {
 
-				$has_images = true;
+				$has_media = true;
 				$url = UrlHelper::rewrite_relative($site_url, $enc["content_url"]);
 
 				if ($this->cache_url($article_id, $url)) {
@@ -229,7 +252,7 @@ class Cache_Starred_Images extends Plugin {
 			}
 		}
 
-		return $success || !$has_images;
+		return $success || !$has_media;
 	}
 
 	function api_version() {

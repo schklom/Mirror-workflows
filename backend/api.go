@@ -1,6 +1,7 @@
 package backend
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/spf13/viper"
@@ -16,14 +17,26 @@ func getRemoteIp(r *http.Request) string {
 	return remoteIp
 }
 
+// Create content for config.js from config
+func createConfigJs(tileServerUrl string) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		const content = `
+		/* js config from config.yml (or env-var or ...) */
+		const tileServerUrl = "%s";
+		`
+		w.Header().Set(HEADER_CONTENT_TYPE, CT_TEXT_JAVASCRIPT)
+		w.Write([]byte(fmt.Sprintf(content, tileServerUrl)))
+	})
+}
+
 // Adds various security headers.
 // Check your deployment with https://securityheaders.com.
-func securityHeadersMiddleware(next http.Handler) http.Handler {
+func securityHeadersMiddleware(next http.Handler, tileServerOrigin string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("X-Frame-Options", "DENY")
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("X-Xss-Protection", "1; mode=block")
-		w.Header().Set("Content-Security-Policy", "default-src 'self' ; img-src 'self' data: https://*.tile.openstreetmap.org ; script-src 'self' 'wasm-unsafe-eval' ; upgrade-insecure-requests")
+		w.Header().Set("Content-Security-Policy", "default-src 'self' ; img-src 'self' data: "+tileServerOrigin+" ; script-src 'self' 'wasm-unsafe-eval' ; upgrade-insecure-requests")
 		w.Header().Set("Permissions-Policy", "camera=(), microphone=()")
 		w.Header().Set("Referrer-Policy", "same-origin")
 
@@ -34,6 +47,8 @@ func securityHeadersMiddleware(next http.Handler) http.Handler {
 func buildServeMux(config *viper.Viper) *http.ServeMux {
 	// Workaround: cache value in global field to avoid needing to pass down the config into the API code
 	remoteIpHeaderName = config.GetString(CONF_REMOTE_IP_HEADER)
+
+	tileServerUrl, tileServerOrigin := validateTileServerUrl(config.GetString(CONF_TILE_SERVER_URL))
 
 	mainDeviceHandler := mainDeviceHandler{createDeviceHandler{config.GetString(CONF_REGISTRATION_TOKEN)}}
 
@@ -79,9 +94,10 @@ func buildServeMux(config *viper.Viper) *http.ServeMux {
 	apiV1Mux.Handle("/", http.FileServer(http.Dir(config.GetString(CONF_WEB_DIR))))
 
 	muxFinal := http.NewServeMux()
-	// muxFinal.Handle("/", securityHeadersMiddleware(staticFilesMux))
-	muxFinal.Handle("/", securityHeadersMiddleware(apiV1Mux)) // deprecated
-	muxFinal.Handle("/api/v1/", http.StripPrefix("/api/v1", securityHeadersMiddleware(apiV1Mux)))
+	// muxFinal.Handle("/", securityHeadersMiddleware(staticFilesMux, clean_tile_server_url))
+	muxFinal.Handle("/", securityHeadersMiddleware(apiV1Mux, tileServerOrigin)) // deprecated
+	muxFinal.Handle("/api/v1/", http.StripPrefix("/api/v1", securityHeadersMiddleware(apiV1Mux, tileServerOrigin)))
+	muxFinal.Handle("/config.js", securityHeadersMiddleware(createConfigJs(tileServerUrl), tileServerOrigin))
 
 	return muxFinal
 }

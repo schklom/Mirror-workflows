@@ -50,7 +50,8 @@ function init() {
     map = L.map(element);
     markers = L.layerGroup().addTo(map);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // tileServerUrl is from config.js which is dynamically created by the server
+    L.tileLayer(tileServerUrl, {
         attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 

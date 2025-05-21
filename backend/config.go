@@ -1,6 +1,10 @@
 package backend
 
 import (
+	"net/url"
+	"os"
+	"strings"
+
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/viper"
 )
@@ -28,6 +32,12 @@ const CONF_SERVER_KEY = "ServerKey"
 
 const CONF_REMOTE_IP_HEADER = "RemoteIpHeader"
 
+const CONF_TILE_SERVER_URL = "TileServerUrl"
+
+// Default values
+
+const DEF_TILE_SERVER_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+
 // Set the default values for all config fields.
 //
 // See the descriptions in config.example.yml,
@@ -53,6 +63,8 @@ func setDefaults(config *viper.Viper) {
 	config.SetDefault(CONF_SERVER_KEY, "")
 
 	config.SetDefault(CONF_REMOTE_IP_HEADER, "")
+
+	config.SetDefault(CONF_TILE_SERVER_URL, DEF_TILE_SERVER_URL)
 }
 
 // Initialise a config struct with all default values.
@@ -146,4 +158,41 @@ func mergeUserConfigFile(config *viper.Viper) {
 	// Merge the local settings into the global config.
 	// Local settings override global settings!
 	config.MergeConfigMap(local.AllSettings())
+}
+
+// Validate the tile server URL.
+// Returns both the original raw URL and the origin (suitable for putting in a CSP).
+//
+// Expected input is something like:
+// https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
+func validateTileServerUrl(raw string) (string, string) {
+	if raw == "" {
+		raw = DEF_TILE_SERVER_URL
+	}
+
+	// url.Parse fails on {s} because that is not a valid domain name,
+	// Replace it with a wildcard domain, since the CSP needs that anyway.
+	cleanDomain := strings.Replace(raw, "{s}", "*", 1)
+
+	// Check that (apart from the {s} template) this is a valid URL
+	u, err := url.Parse(cleanDomain)
+	if err != nil {
+		log.Fatal().Err(err).Msg("TileServerUrl is not a valid URL")
+		os.Exit(1) // make nilaway happy
+	}
+	if u.Scheme == "" {
+		log.Warn().
+			Str("TileServerUrl", u.String()).
+			Msg("TileServerUrl has no scheme")
+	}
+	if u.Host == "" {
+		log.Warn().
+			Str("TileServerUrl", u.String()).
+			Msg("TileServerUrl has no host")
+	}
+
+	// Origin == scheme, hostname, port (u.Host includes the port)
+	origin := u.Scheme + "://" + u.Host
+
+	return raw, origin
 }

@@ -13,6 +13,7 @@ import (
 
 const HEADER_CONTENT_TYPE = "Content-Type"
 const CT_APPLICATION_JSON = "application/json"
+const CT_TEXT_JAVASCRIPT = "text/javascript"
 
 const ERR_ACCESS_TOKEN_INVALID = "Access token not valid"
 const ERR_JSON_INVALID = "Invalid JSON"

@@ -557,18 +557,18 @@ abstract class Plugin {
 		return -1;
 	}
 
-	/** Invoked when filter is triggered on an article, may be used to implement logging for filters
-	 * NOTE: $article_filters should be renamed $filter_actions because that's what this is
+	/**
+	 * Invoked when filtering is triggered on an article. May be used to implement logging for filters, etc.
 	 * @param int $feed_id
 	 * @param int $owner_uid
 	 * @param array<string,mixed> $article
 	 * @param array<string,mixed> $matched_filters
 	 * @param array<string,string|bool|int> $matched_rules
-	 * @param array<string,string> $article_filters
+	 * @param array<int, array{'type': string, 'param': string}> $article_filter_actions An array of filter actions from matched filters
 	 * @return void
 	 * @see PluginHost::HOOK_FILTER_TRIGGERED
 	 */
-	function hook_filter_triggered($feed_id, $owner_uid, $article, $matched_filters, $matched_rules, $article_filters) {
+	function hook_filter_triggered($feed_id, $owner_uid, $article, $matched_filters, $matched_rules, $article_filter_actions) {
 		user_error("Dummy method invoked.", E_USER_ERROR);
 	}
 

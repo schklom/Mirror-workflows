@@ -163,10 +163,10 @@ class Pref_Filters extends Handler_Protected {
 
 			$entry_tags = explode(",", $entry['tag_cache']);
 
-			$rc = RSSUtils::get_article_filters([$feed_filter], $entry['title'], $entry['content'], $entry['link'],
+			$article_filter_actions = RSSUtils::eval_article_filters([$feed_filter], $entry['title'], $entry['content'], $entry['link'],
 				$entry['author'], $entry_tags, $matched_rules);
 
-			if (count($rc) > 0) {
+			if (count($article_filter_actions) > 0) {
 				$content_preview = "";
 
 				$matches = [];
@@ -187,7 +187,7 @@ class Pref_Filters extends Handler_Protected {
 					$rules[] = self::_get_rule_name($rule, '');
 
 					if (in_array($rule['type'], ['content', 'both'])) {
-						// also stripping [\r\n\t] to match what's done for content in RSSUtils#get_article_filters()
+						// also stripping [\r\n\t] to match what's done for content in RSSUtils#eval_article_filters()
 						$entry_content_text = strip_tags(preg_replace("/[\r\n\t]/", "", $entry["content"]));
 
 						$match_index = mb_strpos($entry_content_text, $rule_regexp_match);

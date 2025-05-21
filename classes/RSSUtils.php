@@ -875,13 +875,12 @@ class RSSUtils {
 				$matched_rules = [];
 				$matched_filters = [];
 
-				$article_filters = self::get_article_filters($filters, $article["title"],
+				$article_filter_actions = self::eval_article_filters($filters, $article["title"],
 					$article["content"], $article["link"], $article["author"],
 					$article["tags"], $matched_rules, $matched_filters);
 
-				// $article_filters should be renamed to something like $filter_actions; actual filter objects are in $matched_filters
 				$pluginhost->run_hooks(PluginHost::HOOK_FILTER_TRIGGERED,
-					$feed, $feed_obj->owner_uid, $article, $matched_filters, $matched_rules, $article_filters);
+					$feed, $feed_obj->owner_uid, $article, $matched_filters, $matched_rules, $article_filter_actions);
 
 				$matched_filter_ids = array_map(fn(array $f) => $f['id'], $matched_filters);
 
@@ -912,21 +911,24 @@ class RSSUtils {
 
 					Debug::log("filter actions: ", Debug::LOG_VERBOSE);
 
-					if (count($article_filters) != 0) {
-						print_r($article_filters);
+					if (count($article_filter_actions) != 0) {
+						print_r($article_filter_actions);
 					}
 				}
 
-				$plugin_filter_names = self::find_article_filters($article_filters, "plugin");
-				$plugin_filter_actions = $pluginhost->get_filter_actions();
+				// filter actions of type 'plugin' sourced from filters that matched the article
+				$plugin_filter_actions = self::find_article_filter_actions($article_filter_actions, "plugin");
 
-				if (count($plugin_filter_names) > 0) {
+				// the actual set of available plugin actions registered via PluginHost#add_filter_action()
+				$pluginhost_filter_actions = $pluginhost->get_filter_actions();
+
+				if (count($plugin_filter_actions) > 0) {
 					Debug::log("applying plugin filter actions...", Debug::LOG_VERBOSE);
 
-					foreach ($plugin_filter_names as $pfn) {
-						list($pfclass,$pfaction) = explode(":", $pfn["param"]);
+					foreach ($plugin_filter_actions as $pfa) {
+						list($pfclass,$pfaction) = explode(":", $pfa["param"]);
 
-						if (isset($plugin_filter_actions[$pfclass])) {
+						if (isset($pluginhost_filter_actions[$pfclass])) {
 							$plugin = $pluginhost->get_plugin($pfclass);
 
 							Debug::log("... $pfclass: $pfaction", Debug::LOG_VERBOSE);
@@ -1058,12 +1060,12 @@ class RSSUtils {
 					$ref_id = $row['id'];
 					$entry_ref_id = $ref_id;
 
-					if (self::find_article_filter($article_filters, "filter")) {
+					if (self::has_article_filter_action($article_filter_actions, "filter")) {
 						Debug::log("article is filtered out, nothing to do.", Debug::LOG_VERBOSE);
 						continue;
 					}
 
-					$score = self::calculate_article_score($article_filters) + $entry_score_modifier;
+					$score = self::calculate_article_score($article_filter_actions) + $entry_score_modifier;
 
 					Debug::log("initial score: $score [including plugin modifier: $entry_score_modifier]", Debug::LOG_VERBOSE);
 
@@ -1085,7 +1087,7 @@ class RSSUtils {
 
 						Debug::log("user record not found, creating...", Debug::LOG_VERBOSE);
 
-						if ($score >= -500 && !self::find_article_filter($article_filters, 'catchup') && !$entry_force_catchup) {
+						if ($score >= -500 && !self::has_article_filter_action($article_filter_actions, 'catchup') && !$entry_force_catchup) {
 							$unread = 1;
 							$last_read_qpart = null;
 						} else {
@@ -1093,13 +1095,13 @@ class RSSUtils {
 							$last_read_qpart = date("Y-m-d H:i"); // we can't use NOW() here because it gets quoted
 						}
 
-						if (self::find_article_filter($article_filters, 'mark') || $score > 1000) {
+						if (self::has_article_filter_action($article_filter_actions, 'mark') || $score > 1000) {
 							$marked = 1;
 						} else {
 							$marked = 0;
 						}
 
-						if (self::find_article_filter($article_filters, 'publish')) {
+						if (self::has_article_filter_action($article_filter_actions, 'publish')) {
 							$published = 1;
 						} else {
 							$published = 0;
@@ -1169,7 +1171,7 @@ class RSSUtils {
 
 					if ($feed_obj->mark_unread_on_update &&
 						!$entry_force_catchup &&
-						!self::find_article_filter($article_filters, 'catchup')) {
+						!self::has_article_filter_action($article_filter_actions, 'catchup')) {
 
 						Debug::log("article updated, marking unread as requested.", Debug::LOG_VERBOSE);
 
@@ -1189,7 +1191,7 @@ class RSSUtils {
 
 				Debug::log("assigning labels [filters]...", Debug::LOG_VERBOSE);
 
-				self::assign_article_to_label_filters($entry_ref_id, $article_filters,
+				self::assign_article_to_label_filters($entry_ref_id, $article_filter_actions,
 					$feed_obj->owner_uid, $article_labels);
 
 				if ($feed_obj->cache_images)
@@ -1216,17 +1218,17 @@ class RSSUtils {
 				}
 
 				// check for manual tags (we have to do it here since they're loaded from filters)
-				foreach ($article_filters as $f) {
-					if ($f["type"] == "tag") {
-						$entry_tags = [...$entry_tags, ...FeedItem_Common::normalize_categories(explode(",", $f["param"]))];
+				foreach ($article_filter_actions as $fa) {
+					if ($fa["type"] == "tag") {
+						$entry_tags = [...$entry_tags, ...FeedItem_Common::normalize_categories(explode(",", $fa["param"]))];
 					}
 				}
 
 				// like boring tags, but filter-based
-				foreach ($article_filters as $f) {
-					if ($f["type"] == "ignore-tag") {
+				foreach ($article_filter_actions as $fa) {
+					if ($fa["type"] == "ignore-tag") {
 						$entry_tags = array_diff($entry_tags,
-							FeedItem_Common::normalize_categories(explode(",", $f["param"])));
+							FeedItem_Common::normalize_categories(explode(",", $fa["param"])));
 					}
 				}
 
@@ -1438,35 +1440,16 @@ class RSSUtils {
 	}
 
 	/**
-	 * Source: http://www.php.net/manual/en/function.parse-url.php#104527
-	 * Returns the url query as associative array
+	 * Evaluate filter rules against an article.
 	 *
-	 * @param    string    query
-	 * @return    array    params
-	 */
-	/* static function convertUrlQuery($query) {
-		$queryParts = explode('&', $query);
-
-		$params = array();
-
-		foreach ($queryParts as $param) {
-			$item = explode('=', $param);
-			$params[$item[0]] = $item[1];
-		}
-
-		return $params;
-	} */
-
-	/**
-	 * @todo rename this method to indicate it returns the filter actions that should be ran
 	 * @param array<int, array<string, mixed>> $filters
 	 * @param array<int, string> $tags
-	 * @param array<int, array<string, mixed>>|null &$matched_rules
-	 * @param array<int, array<string, mixed>>|null &$matched_filters
+	 * @param array<int, array<string, mixed>>|null &$matched_rules An array of the last rule from each matching filter, otherwise null (default) or the original value
+	 * @param array<int, array<string, mixed>>|null &$matched_filters An array of the matching filters, otherwise null (default) or the original value
 	 *
-	 * @return array<int, array<string, string>> An array of filter action arrays with keys "type" and "param"
+	 * @return array<int, array{'type': string, 'param': string}> An array of filter actions from matched filters
 	 */
-	static function get_article_filters(array $filters, string $title, string $content, string $link, string $author, array $tags, ?array &$matched_rules = null, ?array &$matched_filters = null): array {
+	static function eval_article_filters(array $filters, string $title, string $content, string $link, string $author, array $tags, ?array &$matched_rules = null, ?array &$matched_filters = null): array {
 		$matches = array();
 
 		foreach ($filters as $filter) {
@@ -1557,44 +1540,44 @@ class RSSUtils {
 	}
 
 	/**
-	 * @param array<int, array<string, string>> $filters An array of filter action arrays with keys "type" and "param"
+	 * @param array<int, array{'type': string, 'param': string}> $filter_actions An array of all filter actions from filters that matched an article
 	 *
-	 * @return array<string, string>|null A filter action array with keys "type" and "param"
+	 * @return bool Whether a filter action of type $filter_action_type exists
 	 */
-	static function find_article_filter(array $filters, string $filter_name): ?array {
-		foreach ($filters as $f) {
-			if ($f["type"] == $filter_name) {
-				return $f;
+	static function has_article_filter_action(array $filter_actions, string $filter_action_type): bool {
+		foreach ($filter_actions as $fa) {
+			if ($fa["type"] == $filter_action_type) {
+				return true;
 			};
 		}
-		return null;
+		return false;
 	}
 
 	/**
-	 * @param array<int, array<string, string>> $filters An array of filter action arrays with keys "type" and "param"
+	 * @param array<int, array{'type': string, 'param': string}> $filter_actions An array of all filter actions from filters that matched an article
 	 *
-	 * @return array<int, array<string, string>> An array of filter action arrays with keys "type" and "param"
+	 * @return array<int, array{'type': string, 'param': string}> An array of filter actions of type $filter_action_type
 	 */
-	static function find_article_filters(array $filters, string $filter_name): array {
+	static function find_article_filter_actions(array $filter_actions, string $filter_action_type): array {
 		$results = array();
 
-		foreach ($filters as $f) {
-			if ($f["type"] == $filter_name) {
-				array_push($results, $f);
+		foreach ($filter_actions as $fa) {
+			if ($fa["type"] == $filter_action_type) {
+				array_push($results, $fa);
 			};
 		}
 		return $results;
 	}
 
 	/**
-	 * @param array<int, array<string, string>> $filters An array of filter action arrays with keys "type" and "param"
+	 * @param array<int, array{'type': string, 'param': string}> $filter_actions An array of all filter actions from filters that matched an article
 	 */
-	static function calculate_article_score(array $filters): int {
+	static function calculate_article_score(array $filter_actions): int {
 		$score = 0;
 
-		foreach ($filters as $f) {
-			if ($f["type"] == "score") {
-				$score += $f["param"];
+		foreach ($filter_actions as $fa) {
+			if ($fa["type"] == "score") {
+				$score += $fa["param"];
 			};
 		}
 		return $score;
@@ -1616,14 +1599,14 @@ class RSSUtils {
 	}
 
 	/**
-	 * @param array<int, array<string, string>> $filters An array of filter action arrays with keys "type" and "param"
+	 * @param array<int, array{'type': string, 'param': string}> $filter_actions An array of filter actions from matched filters
 	 * @param array<int, array<int, int|string>> $article_labels An array of label arrays like [int $feed_id, string $caption, string $fg_color, string $bg_color]
 	 */
-	static function assign_article_to_label_filters(int $id, array $filters, int $owner_uid, $article_labels): void {
-		foreach ($filters as $f) {
-			if ($f["type"] == "label") {
-				if (!self::labels_contains_caption($article_labels, $f["param"])) {
-					Labels::add_article($id, $f["param"], $owner_uid);
+	static function assign_article_to_label_filters(int $id, array $filter_actions, int $owner_uid, $article_labels): void {
+		foreach ($filter_actions as $fa) {
+			if ($fa["type"] == "label") {
+				if (!self::labels_contains_caption($article_labels, $fa["param"])) {
+					Labels::add_article($id, $fa["param"], $owner_uid);
 				}
 			}
 		}
@@ -1866,9 +1849,9 @@ class RSSUtils {
 	}
 
 	/**
-	 * @return array<int, array<string, mixed>> An array of filter arrays with keys "id", "match_any_rule", "inverse", "rules", and "actions"
+	 * @return array<int, array{'id': int, 'match_any_rule': bool, 'inverse': bool, 'rules': array<int,mixed>, 'actions': array<int,mixed>}> An array of filters
 	 */
-	static function load_filters(int $feed_id, int $owner_uid) {
+	static function load_filters(int $feed_id, int $owner_uid): array {
 		$filters = array();
 
 		$feed_id = (int) $feed_id;

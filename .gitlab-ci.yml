@@ -42,15 +42,8 @@ ttrss-fpm-pgsql-static:build:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/app/Dockerfile
     IMAGE_TAR: ${IMAGE_TAR_FPM}
 
-ttrss-fpm-pgsql-static:push-master-commit-only-gitlab:
-  extends: .crane-image-registry-push-master-commit-only-gitlab
-  variables:
-    IMAGE_TAR: ${IMAGE_TAR_FPM}
-  needs:
-    - job: ttrss-fpm-pgsql-static:build
-
-ttrss-fpm-pgsql-static:push-branch-gitlab:
-  extends: .crane-image-registry-push-branch-gitlab
+ttrss-fpm-pgsql-static:push-commit-only-gitlab:
+  extends: .crane-image-registry-push-commit-only-gitlab
   variables:
     IMAGE_TAR: ${IMAGE_TAR_FPM}
   needs:
@@ -62,15 +55,8 @@ ttrss-web-nginx:build:
     DOCKERFILE: ${CI_PROJECT_DIR}/.docker/web-nginx/Dockerfile
     IMAGE_TAR: ${IMAGE_TAR_WEB}
 
-ttrss-web-nginx:push-master-commit-only-gitlab:
-  extends: .crane-image-registry-push-master-commit-only-gitlab
-  variables:
-    IMAGE_TAR: ${IMAGE_TAR_WEB}
-  needs:
-    - job: ttrss-web-nginx:build
-
-ttrss-web-nginx:push-branch-gitlab:
-  extends: .crane-image-registry-push-branch-gitlab
+ttrss-web-nginx:push-commit-only-gitlab:
+  extends: .crane-image-registry-push-commit-only-gitlab
   variables:
     IMAGE_TAR: ${IMAGE_TAR_WEB}
   needs:

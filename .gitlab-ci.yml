@@ -23,9 +23,6 @@ include:
     file: .ci-lint-common.yml
   - project: 'ci/ci-templates'
     ref: master
-    file: .ci-integration-test.yml
-  - project: 'ci/ci-templates'
-    ref: master
     file: .ci-update-helm-imagetag.yml
 
 phpunit:

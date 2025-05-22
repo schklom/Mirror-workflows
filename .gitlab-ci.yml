@@ -117,6 +117,9 @@ phpunit-integration:
       alias: web-nginx
   rules:
     - if: $CI_COMMIT_BRANCH
+  needs:
+    - job: ttrss-fpm-pgsql-static:push-commit-only-gitlab
+    - job: ttrss-web-nginx:push-commit-only-gitlab
   before_script:
     # wait for everything to start
     - |

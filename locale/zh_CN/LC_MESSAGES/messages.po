@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2024-12-27 08:00+0000\n"
-"Last-Translator: qx100 <oa1gozib1@mozmail.com>\n"
+"PO-Revision-Date: 2025-05-22 08:58+0000\n"
+"Last-Translator: Ptsa Daniel <ptsa1987@gmail.com>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/tt-rss/webui/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -403,10 +403,9 @@ msgid "Unknown action: %d"
 msgstr "未知操作： %d"
 
 #: classes/Pref_Filters.php:726 js/PrefFilterTree.js:180
-#, fuzzy, java-printf-format, javascript-format, php-format
-#| msgid "Clone"
+#, java-printf-format, javascript-format, php-format
 msgid "Clone of %s"
-msgstr "克隆"
+msgstr "%s的克隆"
 
 #: classes/Pref_Filters.php:752 classes/Pref_Users.php:215
 #: classes/Pref_Feeds.php:934 classes/Pref_Prefs.php:840 js/Feeds.js:668
@@ -1595,21 +1594,19 @@ msgstr "来自tt-rss的测试消息"
 
 #: classes/Pref_System.php:35
 msgid "Task name"
-msgstr ""
+msgstr "任务名称"
 
 #: classes/Pref_System.php:36
-#, fuzzy
-#| msgid "Last connected"
 msgid "Last executed"
-msgstr "上次连接"
+msgstr "上次执行时间"
 
 #: classes/Pref_System.php:37
 msgid "Duration (seconds)"
-msgstr ""
+msgstr "持续时间（秒）"
 
 #: classes/Pref_System.php:38
 msgid "Return code"
-msgstr ""
+msgstr "返回代码"
 
 #: classes/Pref_System.php:108 js/PrefHelpers.js:622
 msgid "Refresh"
@@ -1678,7 +1675,7 @@ msgstr "发送测试邮件"
 
 #: classes/Pref_System.php:240
 msgid "Scheduled tasks"
-msgstr ""
+msgstr "计划的任务"
 
 #: classes/Pref_System.php:251
 msgid "PHP Information"
@@ -2192,22 +2189,16 @@ msgid "Removing selected filters..."
 msgstr "移除选定的过滤器..."
 
 #: js/PrefFilterTree.js:179
-#, fuzzy
-#| msgid "Name for cloned profile:"
 msgid "Name for new filter:"
-msgstr "被克隆的配置文件名称："
+msgstr "新筛选器的名称："
 
 #: js/PrefFilterTree.js:187
-#, fuzzy
-#| msgid "Combine selected filters?"
 msgid "Clone selected filters?"
-msgstr "合并选定的过滤器？"
+msgstr "是否克隆所选筛选器？"
 
 #: js/PrefFilterTree.js:191
-#, fuzzy
-#| msgid "Removing selected filters..."
 msgid "Cloning selected filters..."
-msgstr "移除选定的过滤器..."
+msgstr "克隆所选筛选器..."
 
 #: js/CommonFilters.js:14
 msgid "Edit filter"
@@ -2227,10 +2218,9 @@ msgid "Articles matching this filter:"
 msgstr "符合此过滤条件的文章："
 
 #: js/CommonFilters.js:70
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Found %d articles matching this filter:"
+#, java-printf-format, javascript-format
 msgid "Found at least %d articles matching this filter:"
-msgstr "找到与过滤器匹配的%d篇文章："
+msgstr "找到%d篇符合此筛选器的文章："
 
 #: js/CommonFilters.js:77
 msgid "Error while trying to get filter test results."

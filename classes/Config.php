@@ -62,9 +62,6 @@ class Config {
 	/** base directory for local cache (must be writable) */
 	const CACHE_DIR = "CACHE_DIR";
 
-	/** directory for feed favicons (directory must be writable) */
-	const ICONS_DIR = "ICONS_DIR";
-
 	/** auto create users authenticated via external modules */
 	const AUTH_AUTO_CREATE = "AUTH_AUTO_CREATE";
 
@@ -199,9 +196,6 @@ class Config {
 	/** scheduled task, value should be valid cron expression */
 	const SCHEDULE_DISABLE_FAILED_FEEDS = "SCHEDULE_DISABLE_FAILED_FEEDS";
 
-	/** scheduled task to migrate feed icons from legacy dir, value should be valid cron expression */
-	const SCHEDULE_MIGRATE_FEED_ICONS = "SCHEDULE_MIGRATE_FEED_ICONS";
-
 	/** scheduled task to cleanup feed icons, value should be valid cron expression */
 	const SCHEDULE_CLEANUP_FEED_ICONS = "SCHEDULE_CLEANUP_FEED_ICONS";
 
@@ -230,7 +224,6 @@ class Config {
 		Config::PHP_EXECUTABLE => [ "/usr/bin/php",					Config::T_STRING ],
 		Config::LOCK_DIRECTORY => [ "lock",								Config::T_STRING ],
 		Config::CACHE_DIR => [ "cache",									Config::T_STRING ],
-		Config::ICONS_DIR => [ "feed-icons",							Config::T_STRING ],
 		Config::AUTH_AUTO_CREATE => [ "true",							Config::T_BOOL ],
 		Config::AUTH_AUTO_LOGIN => [ "true",							Config::T_BOOL ],
 		Config::FORCE_ARTICLE_PURGE => [ 0,								Config::T_INT ],
@@ -277,7 +270,6 @@ class Config {
 		Config::SCHEDULE_PURGE_ORPHANS => ["@daily", 				Config::T_STRING],
 		Config::SCHEDULE_DISK_CACHE_EXPIRE_ALL => ["@daily", 		Config::T_STRING],
 		Config::SCHEDULE_DISABLE_FAILED_FEEDS => ["@daily", 		Config::T_STRING],
-		Config::SCHEDULE_MIGRATE_FEED_ICONS => ["@daily", 			Config::T_STRING],
 		Config::SCHEDULE_CLEANUP_FEED_ICONS => ["@daily", 			Config::T_STRING],
 		Config::SCHEDULE_LOG_DAEMON_UPDATE_LOGIN_LIMIT_USERS =>
 																	["@daily",	Config::T_STRING],
@@ -590,10 +582,6 @@ class Config {
 
 		if (!is_writable(self::get(Config::CACHE_DIR) . "/export")) {
 			array_push($errors, "Data export cache is not writable (chmod -R 777 ".self::get(Config::CACHE_DIR)."/export)");
-		}
-
-		if (!is_writable(self::get(Config::ICONS_DIR))) {
-			array_push($errors, "ICONS_DIR defined in config.php is not writable (chmod -R 777 ".self::get(Config::ICONS_DIR).").\n");
 		}
 
 		if (!is_writable(self::get(Config::LOCK_DIRECTORY))) {

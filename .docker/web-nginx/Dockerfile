@@ -8,6 +8,7 @@ COPY .docker/web-nginx/nginx.conf /etc/nginx/templates/nginx.conf.template
 # By default, nginx will send the php requests to "app" server, but this server
 # name can be overridden at runtime by passing an APP_UPSTREAM env var
 ENV APP_UPSTREAM=${APP_UPSTREAM:-app}
+ENV APP_FASTCGI_PASS="${APP_FASTCGI_PASS:-\$backend}"
 
 # Webroot (defaults to /var/www/html)
 ENV APP_WEB_ROOT=${APP_WEB_ROOT:-/var/www/html}

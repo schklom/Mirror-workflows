@@ -188,7 +188,9 @@ class Config {
 	 * key is a 32 byte hex string which may be generated using `update.php --gen-encryption-key` */
 	const ENCRYPTION_KEY = "ENCRYPTION_KEY";
 
-	/** scheduled task to purge orphaned articles, value should be valid cron expression */
+	/** scheduled task to purge orphaned articles, value should be valid cron expression
+	 * @see https://github.com/dragonmantank/cron-expression/blob/master/README.md#cron-expressions
+	*/
 	const SCHEDULE_PURGE_ORPHANS = "SCHEDULE_PURGE_ORPHANS";
 
 	/** scheduled task to expire disk cache, value should be valid cron expression */

@@ -1697,7 +1697,7 @@ class RSSUtils {
 			}
 		);
 
-		$scheduler->add_scheduled_task('disk_cache_expire_all', Config::get(Config::SCHEDULE_PURGE_ORPHANS),
+		$scheduler->add_scheduled_task('disk_cache_expire_all', Config::get(Config::SCHEDULE_DISK_CACHE_EXPIRE_ALL),
 			function() {
 				$cache = DiskCache::instance("");
 				$cache->expire_all();

@@ -1689,7 +1689,7 @@ class RSSUtils {
 
 		$scheduler = Scheduler::getInstance();
 
-		$scheduler->add_scheduled_task('purge_orphans', '@daily',
+		$scheduler->add_scheduled_task('purge_orphans', Config::get(Config::SCHEDULE_PURGE_ORPHANS),
 			function() {
 				Article::_purge_orphans();
 
@@ -1697,7 +1697,7 @@ class RSSUtils {
 			}
 		);
 
-		$scheduler->add_scheduled_task('disk_cache_expire_all', '@daily',
+		$scheduler->add_scheduled_task('disk_cache_expire_all', Config::get(Config::SCHEDULE_PURGE_ORPHANS),
 			function() {
 				$cache = DiskCache::instance("");
 				$cache->expire_all();
@@ -1706,7 +1706,7 @@ class RSSUtils {
 			}
 		);
 
-		$scheduler->add_scheduled_task('disable_failed_feeds', '@daily',
+		$scheduler->add_scheduled_task('disable_failed_feeds', Config::get(Config::SCHEDULE_DISABLE_FAILED_FEEDS),
 			function() {
 				self::disable_failed_feeds();
 
@@ -1714,7 +1714,7 @@ class RSSUtils {
 			}
 		);
 
-		$scheduler->add_scheduled_task('migrate_feed_icons', '@daily',
+		$scheduler->add_scheduled_task('migrate_feed_icons', Config::get(Config::SCHEDULE_MIGRATE_FEED_ICONS),
 			function() {
 				self::migrate_feed_icons();
 
@@ -1722,7 +1722,7 @@ class RSSUtils {
 			}
 		);
 
-		$scheduler->add_scheduled_task('cleanup_feed_icons', '@daily',
+		$scheduler->add_scheduled_task('cleanup_feed_icons', Config::get(Config::SCHEDULE_CLEANUP_FEED_ICONS),
 			function() {
 				self::cleanup_feed_icons();
 
@@ -1730,7 +1730,7 @@ class RSSUtils {
 			}
 		);
 
-		$scheduler->add_scheduled_task('log_daemon_update_login_limit_users', '@daily',
+		$scheduler->add_scheduled_task('log_daemon_update_login_limit_users', Config::get(Config::SCHEDULE_LOG_DAEMON_UPDATE_LOGIN_LIMIT_USERS),
 			function() {
 				$login_limit = Config::get(Config::DAEMON_UPDATE_LOGIN_LIMIT);
 
@@ -1753,7 +1753,7 @@ class RSSUtils {
 			}
 		);
 
-		$scheduler->add_scheduled_task('expire_error_log', '@hourly',
+		$scheduler->add_scheduled_task('expire_error_log', Config::get(Config::SCHEDULE_EXPIRE_ERROR_LOG),
 			function() {
 				self::expire_error_log();
 
@@ -1761,7 +1761,7 @@ class RSSUtils {
 			}
 		);
 
-		$scheduler->add_scheduled_task('expire_lock_files', '@hourly',
+		$scheduler->add_scheduled_task('expire_lock_files', Config::get(Config::SCHEDULE_EXPIRE_LOCK_FILES),
 			function() {
 				self::expire_lock_files();
 
@@ -1769,7 +1769,7 @@ class RSSUtils {
 			}
 		);
 
-		$scheduler->add_scheduled_task('send_headlines_digests', '@hourly',
+		$scheduler->add_scheduled_task('send_headlines_digests', Config::get(Config::SCHEDULE_SEND_HEADLINES_DIGESTS),
 			function() {
 				Digest::send_headlines_digests();
 

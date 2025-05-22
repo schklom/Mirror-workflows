@@ -188,6 +188,33 @@ class Config {
 	 * key is a 32 byte hex string which may be generated using `update.php --gen-encryption-key` */
 	const ENCRYPTION_KEY = "ENCRYPTION_KEY";
 
+	/** scheduled task to purge orphaned articles, value should be valid cron expression */
+	const SCHEDULE_PURGE_ORPHANS = "SCHEDULE_PURGE_ORPHANS";
+
+	/** scheduled task to expire disk cache, value should be valid cron expression */
+	const SCHEDULE_DISK_CACHE_EXPIRE_ALL = "SCHEDULE_DISK_CACHE_EXPIRE_ALL";
+
+	/** scheduled task, value should be valid cron expression */
+	const SCHEDULE_DISABLE_FAILED_FEEDS = "SCHEDULE_DISABLE_FAILED_FEEDS";
+
+	/** scheduled task to migrate feed icons from legacy dir, value should be valid cron expression */
+	const SCHEDULE_MIGRATE_FEED_ICONS = "SCHEDULE_MIGRATE_FEED_ICONS";
+
+	/** scheduled task to cleanup feed icons, value should be valid cron expression */
+	const SCHEDULE_CLEANUP_FEED_ICONS = "SCHEDULE_CLEANUP_FEED_ICONS";
+
+	/** scheduled task to disable feed updates of inactive users, value should be valid cron expression */
+	const SCHEDULE_LOG_DAEMON_UPDATE_LOGIN_LIMIT_USERS = "SCHEDULE_LOG_DAEMON_UPDATE_LOGIN_LIMIT_USERS";
+
+	/** scheduled task to cleanup error log, value should be valid cron expression */
+	const SCHEDULE_EXPIRE_ERROR_LOG = "SCHEDULE_EXPIRE_ERROR_LOG";
+
+	/** scheduled task to cleanup update daemon lock files, value should be valid cron expression */
+	const SCHEDULE_EXPIRE_LOCK_FILES = "SCHEDULE_EXPIRE_LOCK_FILES";
+
+	/** scheduled task to send digests, value should be valid cron expression */
+	const SCHEDULE_SEND_HEADLINES_DIGESTS = "SCHEDULE_SEND_HEADLINES_DIGESTS";
+
 	/** default values for all global configuration options */
 	private const _DEFAULTS = [
 		Config::DB_TYPE => [ "pgsql", 									Config::T_STRING ],
@@ -244,7 +271,17 @@ class Config {
 																					Config::T_STRING ],
 		Config::HTTP_429_THROTTLE_INTERVAL => [ 3600,				Config::T_INT ],
 		Config::DISABLE_LOGIN_FORM => [ "",								Config::T_BOOL ],
-		Config::ENCRYPTION_KEY => [ "",                  Config::T_STRING ]
+		Config::ENCRYPTION_KEY => [ "",                  			Config::T_STRING ],
+		Config::SCHEDULE_PURGE_ORPHANS => ["@daily", 				Config::T_STRING],
+		Config::SCHEDULE_DISK_CACHE_EXPIRE_ALL => ["@daily", 		Config::T_STRING],
+		Config::SCHEDULE_DISABLE_FAILED_FEEDS => ["@daily", 		Config::T_STRING],
+		Config::SCHEDULE_MIGRATE_FEED_ICONS => ["@daily", 			Config::T_STRING],
+		Config::SCHEDULE_CLEANUP_FEED_ICONS => ["@daily", 			Config::T_STRING],
+		Config::SCHEDULE_LOG_DAEMON_UPDATE_LOGIN_LIMIT_USERS =>
+																	["@daily",	Config::T_STRING],
+		Config::SCHEDULE_EXPIRE_ERROR_LOG => ["@hourly", 			Config::T_STRING],
+		Config::SCHEDULE_EXPIRE_LOCK_FILES => ["@hourly", 			Config::T_STRING],
+		Config::SCHEDULE_SEND_HEADLINES_DIGESTS => ["@hourly", 	Config::T_STRING],
 	];
 
 	private static ?Config $instance = null;

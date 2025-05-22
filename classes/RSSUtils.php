@@ -1656,33 +1656,6 @@ class RSSUtils {
 		$tmph->run_hooks(PluginHost::HOOK_HOUSE_KEEPING);
 	}
 
-	/**
-	 * migrates favicons from legacy storage in feed-icons/ to cache/feed-icons/using new naming (sans .ico suffix)
-	 * @todo Remove this and Config::ICONS_DIR at some point
-	 */
-	static function migrate_feed_icons() : void {
-		$old_dir = Config::get(Config::ICONS_DIR);
-
-		$dh = opendir($old_dir);
-
-		$cache = DiskCache::instance('feed-icons');
-
-		if ($dh) {
-			while (($old_filename = readdir($dh)) !== false) {
-				if (str_ends_with($old_filename, ".ico")) {
-					$new_filename = str_replace(".ico", "", $old_filename);
-					$old_full_path = "$old_dir/$old_filename";
-
-					if (is_file($old_full_path) && $cache->put($new_filename, file_get_contents($old_full_path))) {
-						unlink($old_full_path);
-					}
-				}
-			}
-
-			closedir($dh);
-		}
-	}
-
 	/** Init all system tasks which are run periodically by updater in housekeeping_common() */
 	static function init_housekeeping_tasks() : void {
 		Debug::log('Registering scheduled tasks for housekeeping...');
@@ -1709,14 +1682,6 @@ class RSSUtils {
 		$scheduler->add_scheduled_task('disable_failed_feeds', Config::get(Config::SCHEDULE_DISABLE_FAILED_FEEDS),
 			function() {
 				self::disable_failed_feeds();
-
-				return 0;
-			}
-		);
-
-		$scheduler->add_scheduled_task('migrate_feed_icons', Config::get(Config::SCHEDULE_MIGRATE_FEED_ICONS),
-			function() {
-				self::migrate_feed_icons();
 
 				return 0;
 			}

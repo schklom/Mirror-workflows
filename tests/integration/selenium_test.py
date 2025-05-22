@@ -18,6 +18,8 @@ class SeleniumTest(unittest.TestCase):
         self.driver = webdriver.Remote(command_executor=SELENIUM_GRID_ENDPOINT, options=webdriver.ChromeOptions())
         self.base_url = f"http://tt-rss-{CI_COMMIT_SHORT_SHA}-app.{K8S_NAMESPACE}.svc.cluster.local/tt-rss"
 
+        self.driver.set_page_load_timeout(10)
+
     def tearDown(self):
         self.driver.quit()
 

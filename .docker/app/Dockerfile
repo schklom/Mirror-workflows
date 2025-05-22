@@ -7,6 +7,7 @@ ARG ALPINE_MIRROR
 
 ENV SCRIPT_ROOT=/opt/tt-rss
 ENV SRC_DIR=/src/tt-rss/
+ENV APP_WEB_ROOT=/var/www/html
 
 # Used to centralize the PHP version suffix for packages and paths
 ENV PHP_SUFFIX=84

@@ -118,6 +118,8 @@ phpunit-integration:
     AUTO_CREATE_USER_PASS: 'test'
     AUTO_CREATE_USER_ACCESS_LEVEL: '10'
     AUTO_CREATE_USER_ENABLE_API: 'true'
+    API_URL: http://web-nginx/tt-rss/api/
+    HEALTHCHECK_URL: http://web-nginx/tt-rss/public.php?op=healthcheck
   services:
     - name: registry.fakecake.org/docker.io/postgres:15-alpine
       alias: db
@@ -128,12 +130,12 @@ phpunit-integration:
   rules:
     - if: $CI_COMMIT_BRANCH && $REGISTRY_USER != null
   script:
-    - export API_URL="http://web-nginx/tt-rss/api/"
     - |
       for a in `seq 1 15`; do
-        php83 vendor/bin/phpunit --group integration --do-not-cache-result --log-junit phpunit-report.xml --coverage-cobertura phpunit-coverage.xml --coverage-text --colors=never && exit 0
-        sleep 10
+        curl -fvs ${HEALTHCHECK_URL} && break
+        sleep 5
       done
+    - php83 vendor/bin/phpunit --group integration --do-not-cache-result --log-junit phpunit-report.xml --coverage-cobertura phpunit-coverage.xml --coverage-text --colors=never
   artifacts:
     when: always
     reports:

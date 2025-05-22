@@ -123,11 +123,11 @@ phpunit-integration:
     API_URL: ${APP_URL}/api/
     HEALTHCHECK_URL: ${APP_URL}/public.php?op=healthcheck
   services:
-    - name: registry.fakecake.org/docker.io/postgres:15-alpine
+    - &svc_db name: registry.fakecake.org/docker.io/postgres:15-alpine
       alias: db
-    - name: registry.fakecake.org/cthulhoo/ttrss-fpm-pgsql-static:${CI_COMMIT_SHORT_SHA}
+    - &svc_app name: registry.fakecake.org/cthulhoo/ttrss-fpm-pgsql-static:${CI_COMMIT_SHORT_SHA}
       alias: app
-    - name: registry.fakecake.org/cthulhoo/ttrss-web-nginx:${CI_COMMIT_SHORT_SHA}
+    - &svc_web name: registry.fakecake.org/cthulhoo/ttrss-web-nginx:${CI_COMMIT_SHORT_SHA}
       alias: web-nginx
   rules:
     - if: $CI_COMMIT_BRANCH && $REGISTRY_USER != null
@@ -155,12 +155,9 @@ selenium:
   variables:
     SELENIUM_GRID_ENDPOINT: http://selenium:4444/wd/hub
   services:
-    - name: registry.fakecake.org/docker.io/postgres:15-alpine
-      alias: db
-    - name: registry.fakecake.org/cthulhoo/ttrss-fpm-pgsql-static:${CI_COMMIT_SHORT_SHA}
-      alias: app
-    - name: registry.fakecake.org/cthulhoo/ttrss-web-nginx:${CI_COMMIT_SHORT_SHA}
-      alias: web-nginx
+    - *svc_db
+    - *svc_app
+    - *svc_web
     - name: registry.fakecake.org/docker.io/selenium/standalone-chrome:4.32.0-20250515
       alias: selenium
   script:

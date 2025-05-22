@@ -119,8 +119,9 @@ phpunit-integration:
     AUTO_CREATE_USER_PASS: 'test'
     AUTO_CREATE_USER_ACCESS_LEVEL: '10'
     AUTO_CREATE_USER_ENABLE_API: 'true'
-    API_URL: http://web-nginx/tt-rss/api/
-    HEALTHCHECK_URL: http://web-nginx/tt-rss/public.php?op=healthcheck
+    APP_URL: http://web-nginx/tt-rss
+    API_URL: ${APP_URL}/api/
+    HEALTHCHECK_URL: ${APP_URL}/public.php?op=healthcheck
   services:
     - name: registry.fakecake.org/docker.io/postgres:15-alpine
       alias: db
@@ -130,12 +131,14 @@ phpunit-integration:
       alias: web-nginx
   rules:
     - if: $CI_COMMIT_BRANCH && $REGISTRY_USER != null
-  script:
+  before_script:
+    # wait for everything to start
     - |
       for a in `seq 1 15`; do
-        curl -fvs ${HEALTHCHECK_URL} && break
+        curl -fs ${HEALTHCHECK_URL} && break
         sleep 5
       done
+  script:
     - php83 vendor/bin/phpunit --group integration --do-not-cache-result --log-junit phpunit-report.xml --coverage-cobertura phpunit-coverage.xml --coverage-text --colors=never
   artifacts:
     when: always
@@ -147,31 +150,30 @@ phpunit-integration:
   coverage: '/^\s*Lines:\s*\d+.\d+\%/'
 
 selenium:
+  extends: phpunit-integration
   image: ${SELENIUM_IMAGE}
   variables:
-    TEST_HELM_REPO: oci://registry.fakecake.org/infra/helm-charts/tt-rss
     SELENIUM_GRID_ENDPOINT: http://selenium:4444/wd/hub
-    FF_NETWORK_PER_BUILD: "true"
-  extends: .integration-test
   services:
-      - name: registry.fakecake.org/docker.io/selenium/standalone-chrome:4.32.0-20250515
-        alias: selenium
+    - name: registry.fakecake.org/docker.io/postgres:15-alpine
+      alias: db
+    - name: registry.fakecake.org/cthulhoo/ttrss-fpm-pgsql-static:${CI_COMMIT_SHORT_SHA}
+      alias: app
+    - name: registry.fakecake.org/cthulhoo/ttrss-web-nginx:${CI_COMMIT_SHORT_SHA}
+      alias: web-nginx
+    - name: registry.fakecake.org/docker.io/selenium/standalone-chrome:4.32.0-20250515
+      alias: selenium
   script:
-    - export K8S_NAMESPACE=$(kubectl get pods -o=custom-columns=NS:.metadata.namespace | tail -1)
     - |
       for i in `seq 1 10`; do
         echo attempt $i...
         python3 tests/integration/selenium_test.py && break
         sleep 10
       done
-  needs:
-    - job: phpunit-integration
   artifacts:
     when: always
     reports:
       junit: selenium-report.xml
-  tags:
-    - $RUNNER_TAG_INTEGRATION
 
 ttrss-fpm-pgsql-static:publish:
   stage: publish

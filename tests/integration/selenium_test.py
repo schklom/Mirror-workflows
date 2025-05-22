@@ -13,10 +13,10 @@ class SeleniumTest(unittest.TestCase):
     def setUp(self):
         CI_COMMIT_SHORT_SHA = os.getenv("CI_COMMIT_SHORT_SHA")
         SELENIUM_GRID_ENDPOINT = os.getenv("SELENIUM_GRID_ENDPOINT")
-        K8S_NAMESPACE = os.getenv("K8S_NAMESPACE")
+        APP_URL = os.getenv("APP_URL")
 
         self.driver = webdriver.Remote(command_executor=SELENIUM_GRID_ENDPOINT, options=webdriver.ChromeOptions())
-        self.base_url = f"http://tt-rss-{CI_COMMIT_SHORT_SHA}-app.{K8S_NAMESPACE}.svc.cluster.local/tt-rss"
+        self.base_url = APP_URL
 
         self.driver.implicitly_wait(5)
 

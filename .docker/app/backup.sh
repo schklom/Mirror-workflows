@@ -2,7 +2,7 @@
 
 DST_DIR=/backups
 KEEP_DAYS=28
-APP_ROOT=$APP_WEB_ROOT/tt-rss
+APP_ROOT=$APP_INSTALL_BASE_DIR/tt-rss
 
 if pg_isready -h $TTRSS_DB_HOST -U $TTRSS_DB_USER -p $TTRSS_DB_PORT; then
 	DST_FILE=ttrss-backup-$(date +%Y%m%d).sql.gz

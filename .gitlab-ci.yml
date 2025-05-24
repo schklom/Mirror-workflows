@@ -139,6 +139,14 @@ phpunit-integration:
         path: phpunit-coverage.xml
   coverage: '/^\s*Lines:\s*\d+.\d+\%/'
 
+phpunit-integration:root-location:
+  variables:
+    APP_WEB_ROOT: /builds/shared-root/tt-rss
+    APP_INSTALL_BASE_DIR: /builds/shared-root
+    APP_BASE: ""
+    APP_URL: http://web-nginx
+  extends: phpunit-integration
+
 selenium:
   extends: phpunit-integration
   image: ${SELENIUM_IMAGE}

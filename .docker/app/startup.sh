@@ -11,18 +11,18 @@ unset HTTP_HOST
 
 if ! id app >/dev/null 2>&1; then
 	addgroup -g $OWNER_GID app
-	adduser -D -h $APP_WEB_ROOT -G app -u $OWNER_UID app
+	adduser -D -h $APP_INSTALL_BASE_DIR -G app -u $OWNER_UID app
 fi
 
 update-ca-certificates || true
 
-DST_DIR=$APP_WEB_ROOT/tt-rss
+DST_DIR=$APP_INSTALL_BASE_DIR/tt-rss
 
 [ -e $DST_DIR ] && rm -f $DST_DIR/.app_is_ready
 
 export PGPASSWORD=$TTRSS_DB_PASS
 
-[ ! -e $APP_WEB_ROOT/index.php ] && cp ${SCRIPT_ROOT}/index.php $APP_WEB_ROOT
+[ ! -e $APP_INSTALL_BASE_DIR/index.php ] && cp ${SCRIPT_ROOT}/index.php $APP_INSTALL_BASE_DIR
 
 if [ -z $SKIP_RSYNC_ON_STARTUP ]; then
 	if [ ! -d $DST_DIR ]; then

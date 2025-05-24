@@ -97,6 +97,7 @@ phpunit-integration:
     TTRSS_DB_PASS: ${POSTGRES_PASSWORD}
     FF_NETWORK_PER_BUILD: "true"
     APP_WEB_ROOT: /builds/shared-root
+    APP_INSTALL_BASE_DIR: ${APP_WEB_ROOT}
     APP_FASTCGI_PASS: app:9000 # skip resolver
     AUTO_CREATE_USER: test
     AUTO_CREATE_USER_PASS: 'test'

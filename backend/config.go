@@ -44,7 +44,7 @@ const DEF_TILE_SERVER_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 // And keep the default values in sync!.
 func setDefaults(config *viper.Viper) {
 	config.SetDefault(CONF_DATABASE_DIR, "./db/")
-	config.SetDefault(CONF_WEB_DIR, "./web/")
+	config.SetDefault(CONF_WEB_DIR, "")
 
 	config.SetDefault(CONF_UNIX_SOCKET_PATH, "")
 	config.SetDefault(CONF_UNIX_SOCKET_CHMOD, 0600)

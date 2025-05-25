@@ -48,7 +48,7 @@ FMD Server uses the following paths:
 |------------------------------------|------------------|------------------------------|
 | Config file                        | `./config.yml`   | `/etc/fmd-server/config.yml` |
 | Directory with the SQLite database | `./db/`          | `/var/lib/fmd-server/db/`    |
-| Directory with web static files    | `./web/`         | `/usr/share/fmd-server/web/` |
+| Directory with web static files    | `""` (embedded)  | `/usr/share/fmd-server/web/` |
 
 These can be configured via CLI flags.
 The directories can also be configured in the config file.
@@ -207,6 +207,14 @@ FMD Server uses [Viper](https://github.com/spf13/viper), which has the following
 (from highest to lowest):
 
 CLI flag > env var > config file value > default value
+
+## Web static files
+
+The static files for the website are included in the Go binary using [`go:embed`](https://pkg.go.dev/embed).
+This is the recommended way to use FMD Server.
+
+If you want to manually provide the `web/` directory (for example, for custom styling), you can provide a custom path with the `--web-dir` option.
+This disables the embedded static files and instead reads all static files from the provided path.
 
 ## Other ways to install
 

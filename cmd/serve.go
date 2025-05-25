@@ -66,7 +66,7 @@ func init() {
 	serveCmd.Flags().StringVarP(&configPath, "config", "c", "", "Path to the config file")
 
 	serveCmd.Flags().StringVarP(&dbDir, "db-dir", "d", "", "Path to the database directory")
-	serveCmd.Flags().StringVarP(&webDir, "web-dir", "w", "", "Path to the web static files directory")
+	serveCmd.Flags().StringVarP(&webDir, "web-dir", "w", "", "Optional path to the web static files directory. If unset, the embedded static files are used")
 
 	config.BindPFlag(backend.CONF_DATABASE_DIR, serveCmd.Flags().Lookup("db-dir"))
 	config.BindPFlag(backend.CONF_WEB_DIR, serveCmd.Flags().Lookup("web-dir"))

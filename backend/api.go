@@ -1,6 +1,7 @@
 package backend
 
 import (
+	frontend "fmd-server/web"
 	"fmt"
 	"net/http"
 
@@ -90,8 +91,13 @@ func buildServeMux(config *viper.Viper) *http.ServeMux {
 	// Uncomment this once the API v1 is no longer hosted at the root "/" (because we cannot have two "/" in muxFinal).
 	// Until then, as a side-effect, the static files are also served under /api/v1/.
 	// staticFilesMux := http.NewServeMux()
-	// staticFilesMux.Handle("/", http.FileServer(http.Dir(webDir)))
-	apiV1Mux.Handle("/", http.FileServer(http.Dir(config.GetString(CONF_WEB_DIR))))
+	// staticFilesMux.Handle("/", http.FileServer(http.FS(frontend.WebDir())))
+	// Handling --web-dir parameter/config
+	if config.GetString(CONF_WEB_DIR) == "" {
+		apiV1Mux.Handle("/", http.FileServer(http.FS(frontend.WebDir())))
+	} else {
+		apiV1Mux.Handle("/", http.FileServer(http.Dir(config.GetString(CONF_WEB_DIR))))
+	}
 
 	muxFinal := http.NewServeMux()
 	// muxFinal.Handle("/", securityHeadersMiddleware(staticFilesMux, clean_tile_server_url))

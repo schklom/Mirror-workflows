@@ -7,7 +7,6 @@ ENV GOPATH=/go
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 
-# Only copy Go files to avoid rebuilding Go when only web files have changed
 COPY go.mod .
 COPY go.sum .
 COPY main.go .
@@ -15,6 +14,7 @@ COPY cmd/ cmd/
 COPY backend/ backend/
 COPY user/ user/
 COPY utils/ utils/
+COPY web/ web/
 
 RUN go build -o /tmp/fmd main.go
 
@@ -32,20 +32,12 @@ RUN useradd --no-create-home --uid 1000 fmd-server
 # Note that the directories must be executable (for file listing, etc.)
 
 ARG BIN_FILE=/opt/fmd-server
-ARG WEB_BASE_DIR=/usr/share/fmd-server
 ARG DB_DIR=/var/lib/fmd-server/db
 
 COPY --from=builder /tmp/fmd "$BIN_FILE"
 
 RUN chown fmd-server:fmd-server "$BIN_FILE" && \
     chmod 0550 "$BIN_FILE"
-
-RUN mkdir -p "$WEB_BASE_DIR"
-COPY web "$WEB_BASE_DIR"/web
-
-RUN chown -R fmd-server:fmd-server "$WEB_BASE_DIR" && \
-    chmod -R 0444 "$WEB_BASE_DIR" && \
-    find "$WEB_BASE_DIR" -type d -exec chmod 0554 {} +
 
 RUN mkdir -p "$DB_DIR"
 
@@ -60,4 +52,4 @@ EXPOSE 8080/tcp
 EXPOSE 8443/tcp
 
 # XXX: Using $BIN_FILE doesn't work
-ENTRYPOINT ["/opt/fmd-server", "serve", "--db-dir", "/var/lib/fmd-server/db", "--web-dir", "/usr/share/fmd-server/web"]
+ENTRYPOINT ["/opt/fmd-server", "serve", "--db-dir", "/var/lib/fmd-server/db"]

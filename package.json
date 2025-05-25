@@ -6,9 +6,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-	"watch": "tsc --watch",
-	"build": "tsc",
-	"start": "node --experimental-json-modules --unhandled-rejections=strict bin/server.js",
+    "watch": "tsc --watch",
+    "build": "tsc",
+    "start": "node --experimental-json-modules --unhandled-rejections=strict bin/server.js",
     "migrate": "node bin/migrate.js",
     "build:docker": "podman build . -t docker.io/stormworks/feedropolis --pull"
   },
@@ -16,28 +16,27 @@
   "author": "",
   "license": "AGPL-3.0-or-later",
   "dependencies": {
-    "@stormking/emere": "^2.0.1",
-    "axios": "^1.6.2",
-    "cheerio": "1.0.0-rc.12",
-    "co-body": "^6.1.0",
-    "debug": "^4.3.4",
-    "dotenv": "^16.3.1",
+    "@stormking/emere": "^2.0.3",
+    "axios": "^1.9.0",
+    "cheerio": "1.0.0",
+    "co-body": "^6.2.0",
+    "debug": "^4.4.1",
+    "dotenv": "^16.5.0",
     "feed": "^4.2.2",
-    "json-stringify-safe": "^5.0.1",
-    "knex": "^3.0.1",
-    "koa": "^2.14.2",
+    "knex": "^3.1.0",
+    "koa": "^2.16.1",
     "koa-better-router": "^2.1.1",
     "koa-session": "^6.4.0",
     "koa-static": "^5.0.0",
-    "lru-cache": "^10.0.3",
-    "pg": "^8.11.3",
+    "lru-cache": "^10.4.3",
+    "pg": "^8.16.0",
     "xmldom": "^0.6.0",
     "xpath.js": "^1.1.0"
   },
   "devDependencies": {
-    "@types/node": "^20.9.2",
-    "ts-node": "^10.9.1",
-    "tsx": "^4.1.4",
-    "typescript": "^5.2.2"
+    "@types/node": "^20.17.50",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
   }
 }

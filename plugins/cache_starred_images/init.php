@@ -1,6 +1,9 @@
 <?php
 class Cache_Starred_Images extends Plugin {
 
+	const SCHEDULE_CACHE_STARRED_IMAGES = "SCHEDULE_CACHE_STARRED_IMAGES";
+	const SCHEDULE_CACHE_STARRED_IMAGES_EXPIRE_CACHES = "SCHEDULE_CACHE_STARRED_IMAGES_EXPIRE_CACHES";
+
 	/** @var PluginHost $host */
 	private $host;
 
@@ -24,6 +27,9 @@ class Cache_Starred_Images extends Plugin {
 		$this->cache = DiskCache::instance("starred-images");
 		$this->cache_status = DiskCache::instance("starred-images.status-files");
 
+		Config::add(self::SCHEDULE_CACHE_STARRED_IMAGES, "@hourly", Config::T_STRING);
+		Config::add(self::SCHEDULE_CACHE_STARRED_IMAGES_EXPIRE_CACHES, "@daily", Config::T_STRING);
+
 		if (!$this->cache->exists(".no-auto-expiry"))
 			$this->cache->put(".no-auto-expiry", "");
 
@@ -32,7 +38,9 @@ class Cache_Starred_Images extends Plugin {
 
 		if ($this->cache->is_writable() && $this->cache_status->is_writable()) {
 
-			$host->add_scheduled_task($this, "cache_starred_images", "@hourly", function() {
+			$host->add_scheduled_task($this, "cache_starred_images",
+				Config::get(self::SCHEDULE_CACHE_STARRED_IMAGES), function() {
+
 				Debug::log("caching media of starred articles for user " . $this->host->get_owner_uid() . "...");
 
 				$sth = $this->pdo->prepare("SELECT content, ttrss_entries.title,
@@ -66,7 +74,8 @@ class Cache_Starred_Images extends Plugin {
 				}
 			});
 
-			$host->add_scheduled_task($this, "expire_caches", "@daily", function() {
+			$host->add_scheduled_task($this, "expire_caches",
+				Config::get(self::SCHEDULE_CACHE_STARRED_IMAGES_EXPIRE_CACHES), function() {
 
 				Debug::log("expiring {$this->cache->get_dir()} and {$this->cache_status->get_dir()}...");
 

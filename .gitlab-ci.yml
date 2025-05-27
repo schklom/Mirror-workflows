@@ -249,3 +249,15 @@ update-prod:
     ACCESS_TOKEN: ${PROD_HELM_TOKEN}
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $PROD_HELM_TOKEN != null
+
+# https://about.gitlab.com/blog/how-to-automatically-create-a-new-mr-on-gitlab-with-gitlab-ci/
+weblate-integration-auto-mr:
+  image: ${INFRA_IMAGE}
+  stage: publish
+  rules:
+    - if: $CI_COMMIT_BRANCH == "weblate-integration" && $AUTO_MR_TOKEN != null
+  script:
+    - HOST=${CI_PROJECT_URL} CI_PROJECT_ID=${CI_PROJECT_ID}
+      CI_COMMIT_REF_NAME=${CI_COMMIT_REF_NAME}
+      GITLAB_USER_ID=${GITLAB_USER_ID}
+      PRIVATE_TOKEN=${AUTO_MR_TOKEN} ./utils/autoMergeRequest.sh

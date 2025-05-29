@@ -73,7 +73,7 @@ final class ApiTest extends TestCase {
 	}
 
 	public function test_subscribeToFeed() : void {
-		$resp = $this->api(["op" => "subscribeToFeed", "feed_url" => "https://tt-rss.org/feeds/tt-rss.xml"]);
+		$resp = $this->api(["op" => "subscribeToFeed", "feed_url" => "https://gitlab.tt-rss.org/tt-rss/tt-rss.atom"]);
 		$this->common_assertions($resp);
 
 		$this->assertArrayHasKey("feed_id", $resp['content']['status']);

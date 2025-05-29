@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2025-05-21 09:03+0000\n"
+"PO-Revision-Date: 2025-05-28 18:03+0000\n"
 "Last-Translator: Achim Schumacher <1d3.26f.7b6@7e5.7c1.org>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/tt-rss/webui/de/>"
 "\n"
@@ -265,7 +265,7 @@ msgstr "Andere Aktionen:"
 
 #: index.php:270
 msgid "Keyboard shortcuts help"
-msgstr "Tastaturkürzel"
+msgstr "Hilfe zu Tastaturkürzel"
 
 #: index.php:279
 msgid "Logout"
@@ -408,16 +408,14 @@ msgid "%s on %s in %s %s"
 msgstr "%s innerhalb %s von %s %s"
 
 #: classes/Pref_Filters.php:508
-#, fuzzy, php-format
-#| msgid "Unknown option: %s"
+#, php-format
 msgid "Unknown action: %d"
-msgstr "Unbekannte Option: %s"
+msgstr "Unbekannte Aktion: %d"
 
 #: classes/Pref_Filters.php:726 js/PrefFilterTree.js:180
-#, fuzzy, java-printf-format, javascript-format, php-format
-#| msgid "Clone"
+#, java-printf-format, javascript-format, php-format
 msgid "Clone of %s"
-msgstr "Kopieren"
+msgstr "Kopie von %s"
 
 #: classes/Pref_Filters.php:752 classes/Pref_Users.php:215
 #: classes/Pref_Feeds.php:934 classes/Pref_Prefs.php:840 js/Feeds.js:668
@@ -495,13 +493,11 @@ msgid "inverse"
 msgstr "umgekehrt"
 
 #: classes/Pref_Filters.php:864
-#, fuzzy, php-format
-#| msgid "%s (+%d action)"
-#| msgid_plural "%s (+%d actions)"
+#, php-format
 msgid "(+%d action)"
 msgid_plural "(+%d actions)"
-msgstr[0] "%s (+%d Aktion)"
-msgstr[1] "%s (+%d Aktionen)"
+msgstr[0] "(+%d Aktion)"
+msgstr[1] "(+%d Aktionen)"
 
 #: classes/Pref_Filters.php:1029 classes/Digest.php:112
 #: classes/Pref_Feeds.php:253 classes/Feeds.php:1312 classes/OPML.php:571
@@ -832,13 +828,11 @@ msgstr[1] "(%d Feeds)"
 
 #: classes/Pref_Feeds.php:100 classes/Pref_Feeds.php:287
 #: classes/Pref_Feeds.php:330
-#, fuzzy, php-format
-#| msgid "%d article selected"
-#| msgid_plural "%d articles selected"
+#, php-format
 msgid "(%d article / %s)"
 msgid_plural "(%d articles / %s)"
-msgstr[0] "%d Artikel ausgewählt"
-msgstr[1] "%d Artikel ausgewählt"
+msgstr[0] "(%d Artikel ausgewählt / %s)"
+msgstr[1] "(%d Artikel ausgewählt / %s)"
 
 #: classes/Pref_Feeds.php:569
 #, php-format
@@ -1179,7 +1173,7 @@ msgstr "Erweiterte Einstellungen"
 
 #: classes/Pref_Prefs.php:88
 msgid "Debugging"
-msgstr "Debuggen"
+msgstr "Fehlersuche"
 
 #: classes/Pref_Prefs.php:94
 msgid "Never apply these tags automatically (comma-separated list)."
@@ -1625,13 +1619,11 @@ msgstr "Testnachricht von tt-rss"
 
 #: classes/Pref_System.php:35
 msgid "Task name"
-msgstr ""
+msgstr "Aufgabenname"
 
 #: classes/Pref_System.php:36
-#, fuzzy
-#| msgid "Last connected"
 msgid "Last executed"
-msgstr "Zuletzt verbunden"
+msgstr "Zuletzt ausgeführt"
 
 #: classes/Pref_System.php:37
 msgid "Duration (seconds)"
@@ -1708,7 +1700,7 @@ msgstr "Test-E-Mail senden"
 
 #: classes/Pref_System.php:240
 msgid "Scheduled tasks"
-msgstr ""
+msgstr "Geplante Aufgaben"
 
 #: classes/Pref_System.php:251
 msgid "PHP Information"
@@ -2234,22 +2226,16 @@ msgid "Removing selected filters..."
 msgstr "Ausgewählte Filter werden entfernt..."
 
 #: js/PrefFilterTree.js:179
-#, fuzzy
-#| msgid "Name for cloned profile:"
 msgid "Name for new filter:"
-msgstr "Name des kopierten Profils:"
+msgstr "Name des neuen Filters:"
 
 #: js/PrefFilterTree.js:187
-#, fuzzy
-#| msgid "Combine selected filters?"
 msgid "Clone selected filters?"
-msgstr "Ausgewählte Filter zusammenfügen?"
+msgstr "Ausgewählte Filter klonen?"
 
 #: js/PrefFilterTree.js:191
-#, fuzzy
-#| msgid "Removing selected filters..."
 msgid "Cloning selected filters..."
-msgstr "Ausgewählte Filter werden entfernt..."
+msgstr "Klone ausgewählte Filter..."
 
 #: js/CommonFilters.js:14
 msgid "Edit filter"
@@ -2269,10 +2255,9 @@ msgid "Articles matching this filter:"
 msgstr "Filter entsprechende Artikel:"
 
 #: js/CommonFilters.js:70
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Found %d articles matching this filter:"
+#, java-printf-format, javascript-format
 msgid "Found at least %d articles matching this filter:"
-msgstr "Es wurden %d passende Artikel gefunden:"
+msgstr "Es wurden mindestens %d passende Artikel gefunden:"
 
 #: js/CommonFilters.js:77
 msgid "Error while trying to get filter test results."
@@ -3047,7 +3032,7 @@ msgstr "den Feed als gelesen markieren"
 
 #: js/Headlines.js:527
 msgid "Span all columns"
-msgstr ""
+msgstr "Auf alle Spalten ausbreiten"
 
 #: js/Headlines.js:666
 msgid "Invert"

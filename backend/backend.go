@@ -68,10 +68,8 @@ func handleRequestsSocket(mux *http.ServeMux, socketPath string, socketChmod int
 
 	unixListener, err := net.Listen("unix", socketPath)
 	if err != nil {
-		if err != nil {
-			log.Fatal().Err(err).Msg("cannot open unix socket")
-			os.Exit(1) // make nilaway happy
-		}
+		log.Fatal().Err(err).Msg("cannot open unix socket")
+		os.Exit(1) // make nilaway happy
 	}
 
 	fm := fs.FileMode(socketChmod)

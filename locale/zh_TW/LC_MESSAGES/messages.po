@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2025-04-08 00:41+0000\n"
+"PO-Revision-Date: 2025-05-31 16:03+0000\n"
 "Last-Translator: TonyRL <TonyRL@users.noreply.github.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/tt-rss/webui/zh_Hant/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.11-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -1596,13 +1596,11 @@ msgstr "來自tt-rss的測試訊息"
 
 #: classes/Pref_System.php:35
 msgid "Task name"
-msgstr ""
+msgstr "工作名稱"
 
 #: classes/Pref_System.php:36
-#, fuzzy
-#| msgid "Last connected"
 msgid "Last executed"
-msgstr "上次連接"
+msgstr "上次執行"
 
 #: classes/Pref_System.php:37
 msgid "Duration (seconds)"
@@ -1679,7 +1677,7 @@ msgstr "發送測試郵件"
 
 #: classes/Pref_System.php:240
 msgid "Scheduled tasks"
-msgstr ""
+msgstr "已排程的工作"
 
 #: classes/Pref_System.php:251
 msgid "PHP Information"

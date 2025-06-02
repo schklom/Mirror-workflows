@@ -34,7 +34,7 @@
 
 	if (str_starts_with($method, "_")) {
 		user_error("Refusing to invoke method $method which starts with underscore.", E_USER_WARNING);
-		header("Content-Type: text/json");
+		header("Content-Type: application/json");
 		print Errors::to_json(Errors::E_UNAUTHORIZED);
 
 		return;
@@ -49,7 +49,7 @@
 				$handler->$method();
 			} else {
 				user_error("Refusing to invoke method $method which has required parameters.", E_USER_WARNING);
-				header("Content-Type: text/json");
+				header("Content-Type: application/json");
 				print Errors::to_json(Errors::E_UNAUTHORIZED);
 
 			}

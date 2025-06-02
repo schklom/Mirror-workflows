@@ -35,7 +35,7 @@
 		return;
 	}
 
-	header("Content-Type: text/json; charset=utf-8");
+	header("Content-Type: application/json; charset=utf-8");
 
 	if (Config::get(Config::SINGLE_USER_MODE)) {
 		UserHelper::authenticate("admin", null);
@@ -43,7 +43,7 @@
 
 	if (!empty($_SESSION["uid"])) {
 		if (!Sessions::validate_session()) {
-			header("Content-Type: text/json");
+			header("Content-Type: application/json");
 			print Errors::to_json(Errors::E_UNAUTHORIZED);
 
 			return;
@@ -113,7 +113,7 @@
 
 		if (str_starts_with($method, "_")) {
 			user_error("Refusing to invoke method $method of handler $op which starts with underscore.", E_USER_WARNING);
-			header("Content-Type: text/json");
+			header("Content-Type: application/json");
 			print Errors::to_json(Errors::E_UNAUTHORIZED);
 
 			return;
@@ -142,7 +142,7 @@
 							$handler->$method();
 						} else {
 							user_error("Refusing to invoke method $method of handler $op which has required parameters.", E_USER_WARNING);
-							header("Content-Type: text/json");
+							header("Content-Type: application/json");
 
 							print Errors::to_json(Errors::E_UNAUTHORIZED);
 						}
@@ -150,7 +150,7 @@
 						if (method_exists($handler, "catchall")) {
 							$handler->catchall($method);
 						} else {
-							header("Content-Type: text/json");
+							header("Content-Type: application/json");
 
 							print Errors::to_json(Errors::E_UNKNOWN_METHOD, ["info" => get_class($handler) . "->$method"]);
 						}
@@ -159,14 +159,14 @@
 					$handler->after();
 					return;
 				} else {
-					header("Content-Type: text/json");
+					header("Content-Type: application/json");
 					print Errors::to_json(Errors::E_UNAUTHORIZED);
 
 					return;
 				}
 			} else {
 				user_error("Refusing to invoke method $method of handler $op with invalid CSRF token.", E_USER_WARNING);
-				header("Content-Type: text/json");
+				header("Content-Type: application/json");
 				print Errors::to_json(Errors::E_UNAUTHORIZED);
 
 				return;
@@ -174,6 +174,6 @@
 		}
 	}
 
-	header("Content-Type: text/json");
+	header("Content-Type: application/json");
 	print Errors::to_json(Errors::E_UNKNOWN_METHOD, [ "info" => (isset($handler) ? get_class($handler) : "UNKNOWN:".$op) . "->$method"]);
 

@@ -88,6 +88,7 @@ class Handler_Public extends Handler {
 			$tpl->readTemplateFromFile("generated_feed.txt");
 
 			$tpl->setVariable('FEED_TITLE', $feed_title, true);
+			$tpl->setVariable('FEED_UPDATED', date('c'), true);
 			$tpl->setVariable('VERSION', Config::get_version(), true);
 			$tpl->setVariable('FEED_URL', htmlspecialchars($feed_self_url), true);
 

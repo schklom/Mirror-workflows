@@ -25,13 +25,11 @@ class Handler_Public extends Handler {
 		list($override_order, $skip_first_id_check) = Feeds::_order_to_override_query($order);
 
 		if (!$override_order) {
-			$override_order = "date_entered DESC, updated DESC";
-
-			if ($feed == Feeds::FEED_PUBLISHED && !$is_cat) {
-				$override_order = "last_published DESC";
-			} else if ($feed == Feeds::FEED_STARRED && !$is_cat) {
-				$override_order = "last_marked DESC";
-			}
+			$override_order = match (true) {
+				$feed == Feeds::FEED_PUBLISHED && !$is_cat => 'last_published DESC',
+				$feed == Feeds::FEED_STARRED && !$is_cat => 'last_marked DESC',
+				default => 'date_entered DESC, updated DESC',
+			};
 		}
 
 		$params = array(
@@ -94,6 +92,7 @@ class Handler_Public extends Handler {
 			$tpl->setVariable('FEED_URL', htmlspecialchars($feed_self_url), true);
 
 			$tpl->setVariable('SELF_URL', htmlspecialchars(Config::get_self_url()), true);
+
 			while ($line = $result->fetch()) {
 
 				$line["content_preview"] = Sanitizer::sanitize(truncate_string(strip_tags($line["content"]), 100, '...'));
@@ -187,14 +186,14 @@ class Handler_Public extends Handler {
 			}
 
 			print $tmp;
-		} else if ($format == 'json') {
+		} else { // $format == 'json'
 
-			$feed = array();
-
-			$feed['title'] = $feed_title;
-			$feed['feed_url'] = $feed_self_url;
-			$feed['self_url'] = Config::get_self_url();
-			$feed['articles'] = [];
+			$feed = [
+				'title' => $feed_title,
+				'feed_url' => $feed_self_url,
+				'self_url' => Config::get_self_url(),
+				'articles' => [],
+			];
 
 			while ($line = $result->fetch()) {
 
@@ -213,30 +212,26 @@ class Handler_Public extends Handler {
 					},
 					$line, $feed, $is_cat, $owner_uid);
 
-				$article = array();
-
-				$article['id'] = $line['link'];
-				$article['link']	= $line['link'];
-				$article['title'] = $line['title'];
-				$article['excerpt'] = $line["content_preview"];
-				$article['content'] = Sanitizer::sanitize($line["content"], false, $owner_uid, $feed_site_url, null, $line["id"]);
-				$article['updated'] = date('c', strtotime($line["updated"] ?? ''));
-
-				if (!empty($line['note'])) $article['note'] = $line['note'];
-				if (!empty($line['author'])) $article['author'] = $line['author'];
-
-				$article['source'] = [
-					'link' => $line['site_url'] ? $line["site_url"] : Config::get_self_url(),
-					'title' => $line['feed_title'] ?? $feed_title
+				$article = [
+					'id' => $line['link'],
+					'link' => $line['link'],
+					'title' => $line['title'],
+					'content' => Sanitizer::sanitize($line['content'], false, $owner_uid, $feed_site_url, null, $line['id']),
+					'updated' => date('c', strtotime($line['updated'] ?? '')),
+					'source' => [
+						'link' => $line['site_url'] ?: Config::get_self_url(),
+						'title' => $line['feed_title'] ?? $feed_title,
+					],
 				];
 
-				if (count($line["tags"]) > 0) {
-					$article['tags'] = array();
+				if (!empty($line['note']))
+					$article['note'] = $line['note'];
 
-					foreach ($line["tags"] as $tag) {
-						array_push($article['tags'], $tag);
-					}
-				}
+				if (!empty($line['author']))
+					$article['author'] = $line['author'];
+
+				if (count($line['tags']) > 0)
+					$article['tags'] = $line['tags'];
 
 				$enclosures = Article::_get_enclosures($line["id"]);
 
@@ -244,11 +239,11 @@ class Handler_Public extends Handler {
 					$article['enclosures'] = array();
 
 					foreach ($enclosures as $e) {
-						$type = $e['content_type'];
-						$url = $e['content_url'];
-						$length = $e['duration'];
-
-						array_push($article['enclosures'], array("url" => $url, "type" => $type, "length" => $length));
+						$article['enclosures'][] = [
+							'url' => $e['content_url'],
+							'type' => $e['content_type'],
+							'length' => $e['duration'],
+						];
 					}
 				}
 

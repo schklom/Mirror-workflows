@@ -8,6 +8,13 @@ class Handler_Public extends Handler {
 		int $limit, int $offset, string $search, string $view_mode = "",
 		string $format = 'atom', string $order = "", string $orig_guid = "", string $start_ts = ""): void {
 
+		// fail early if the requested format isn't recognized
+		if (!in_array($format, ['atom', 'json'])) {
+			header('Content-Type: text/plain; charset=utf-8');
+			print "Unknown format: $format.";
+			return;
+		}
+
 		$note_style = 	"background-color : #fff7d5;
 			border-width : 1px; ".
 			"padding : 5px; border-style : dashed; border-color : #e7d796;".
@@ -251,9 +258,6 @@ class Handler_Public extends Handler {
 			header("Content-Type: application/json; charset=utf-8");
 			print json_encode($feed);
 
-		} else {
-			header("Content-Type: text/plain; charset=utf-8");
-			print "Unknown format: $format.";
 		}
 	}
 

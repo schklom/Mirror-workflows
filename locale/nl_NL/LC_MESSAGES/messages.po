@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2024-12-17 07:00+0000\n"
+"PO-Revision-Date: 2025-06-03 12:01+0000\n"
 "Last-Translator: Patrick Ahles <p.ahles@gmail.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/tt-rss/webui/nl/>\n"
 "Language: nl_NL\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9\n"
+"X-Generator: Weblate 5.12-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: _\n"
 "X-Poedit-Basepath: .\n"
@@ -407,10 +407,9 @@ msgid "Unknown action: %d"
 msgstr "Onbekende actie: %d"
 
 #: classes/Pref_Filters.php:726 js/PrefFilterTree.js:180
-#, fuzzy, java-printf-format, javascript-format, php-format
-#| msgid "Clone"
+#, java-printf-format, javascript-format, php-format
 msgid "Clone of %s"
-msgstr "Klonen"
+msgstr "Kloon van %s"
 
 #: classes/Pref_Filters.php:752 classes/Pref_Users.php:215
 #: classes/Pref_Feeds.php:934 classes/Pref_Prefs.php:840 js/Feeds.js:668
@@ -1617,21 +1616,19 @@ msgstr "Testbericht van tt-rss"
 
 #: classes/Pref_System.php:35
 msgid "Task name"
-msgstr ""
+msgstr "Taaknaam"
 
 #: classes/Pref_System.php:36
-#, fuzzy
-#| msgid "Last connected"
 msgid "Last executed"
-msgstr "Laatst verbonden"
+msgstr "Laatst uitgevoerd"
 
 #: classes/Pref_System.php:37
 msgid "Duration (seconds)"
-msgstr ""
+msgstr "Duur (secondes)"
 
 #: classes/Pref_System.php:38
 msgid "Return code"
-msgstr ""
+msgstr "Terugmeldcode"
 
 #: classes/Pref_System.php:108 js/PrefHelpers.js:622
 msgid "Refresh"
@@ -1700,7 +1697,7 @@ msgstr "Verzend test e-mail"
 
 #: classes/Pref_System.php:240
 msgid "Scheduled tasks"
-msgstr ""
+msgstr "Geagendeerde taken"
 
 #: classes/Pref_System.php:251
 msgid "PHP Information"
@@ -2223,22 +2220,16 @@ msgid "Removing selected filters..."
 msgstr "Geselecteerde filters verwijderen..."
 
 #: js/PrefFilterTree.js:179
-#, fuzzy
-#| msgid "Name for cloned profile:"
 msgid "Name for new filter:"
-msgstr "Naam voor gekloond profiel:"
+msgstr "Naam voor nieuw filter:"
 
 #: js/PrefFilterTree.js:187
-#, fuzzy
-#| msgid "Combine selected filters?"
 msgid "Clone selected filters?"
-msgstr "Geselecteerde filters combineren?"
+msgstr "Geselecteerde filters klonen?"
 
 #: js/PrefFilterTree.js:191
-#, fuzzy
-#| msgid "Removing selected filters..."
 msgid "Cloning selected filters..."
-msgstr "Geselecteerde filters verwijderen..."
+msgstr "Geselecteerde filters aan het klonen..."
 
 #: js/CommonFilters.js:14
 msgid "Edit filter"
@@ -2258,10 +2249,9 @@ msgid "Articles matching this filter:"
 msgstr "Artikelen die overeenkomen met dit filter:"
 
 #: js/CommonFilters.js:70
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Found %d articles matching this filter:"
+#, java-printf-format, javascript-format
 msgid "Found at least %d articles matching this filter:"
-msgstr "%d artikelen gevonden volgens dit filter:"
+msgstr "Minstens %d artikelen gevonden volgens dit filter:"
 
 #: js/CommonFilters.js:77
 msgid "Error while trying to get filter test results."

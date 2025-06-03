@@ -248,7 +248,7 @@ class Handler_Public extends Handler {
 				array_push($feed['articles'], $article);
 			}
 
-			header("Content-Type: text/json; charset=utf-8");
+			header("Content-Type: application/json; charset=utf-8");
 			print json_encode($feed);
 
 		} else {
@@ -320,7 +320,7 @@ class Handler_Public extends Handler {
 
 			header("Location: " . $redirect_url);
 		} else {
-			header("Content-Type: text/json");
+			header("Content-Type: application/json");
 			print Errors::to_json(Errors::E_UNAUTHORIZED);
 		}
 	}
@@ -806,17 +806,17 @@ class Handler_Public extends Handler {
 					$plugin->$method();
 				} else {
 					user_error("PluginHandler[PUBLIC]: Requested private method '$method' of plugin '$plugin_name'.", E_USER_WARNING);
-					header("Content-Type: text/json");
+					header("Content-Type: application/json");
 					print Errors::to_json(Errors::E_UNAUTHORIZED);
 				}
 			} else {
 				user_error("PluginHandler[PUBLIC]: Requested unknown method '$method' of plugin '$plugin_name'.", E_USER_WARNING);
-				header("Content-Type: text/json");
+				header("Content-Type: application/json");
 				print Errors::to_json(Errors::E_UNKNOWN_METHOD);
 			}
 		} else {
 			user_error("PluginHandler[PUBLIC]: Requested method '$method' of unknown plugin '$plugin_name'.", E_USER_WARNING);
-			header("Content-Type: text/json");
+			header("Content-Type: application/json");
 			print Errors::to_json(Errors::E_UNKNOWN_PLUGIN, ['plugin' => $plugin_name]);
 		}
 	}

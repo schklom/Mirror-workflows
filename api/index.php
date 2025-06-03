@@ -31,7 +31,7 @@
 
 	if (!empty($_SESSION["uid"])) {
 		if (!Sessions::validate_session()) {
-			header("Content-Type: text/json");
+			header("Content-Type: application/json");
 
 			print json_encode([
 						"seq" => -1,

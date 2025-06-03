@@ -30,7 +30,7 @@ class API extends Handler {
 
 	function before(string $method): bool {
 		if (parent::before($method)) {
-			header("Content-Type: text/json");
+			header("Content-Type: application/json");
 
 			if (empty($_SESSION["uid"]) && $method != "login" && $method != "isloggedin") {
 				$this->_wrap(self::STATUS_ERR, array("error" => self::E_NOT_LOGGED_IN));

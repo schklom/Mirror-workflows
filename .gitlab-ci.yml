@@ -68,7 +68,7 @@ phpdoc:build:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
-    - php83 /phpDocumentor.phar -d classes -d include -t phpdoc --visibility=public
+    - php84 /phpDocumentor.phar -d classes -d include -t phpdoc --visibility=public
   artifacts:
     paths:
       - phpdoc
@@ -129,7 +129,7 @@ phpunit-integration:
         sleep 5
       done
   script:
-    - php83 vendor/bin/phpunit --group integration --do-not-cache-result --log-junit phpunit-report.xml --coverage-cobertura phpunit-coverage.xml --coverage-text --colors=never
+    - php84 vendor/bin/phpunit --group integration --do-not-cache-result --log-junit phpunit-report.xml --coverage-cobertura phpunit-coverage.xml --coverage-text --colors=never
   artifacts:
     when: always
     reports:

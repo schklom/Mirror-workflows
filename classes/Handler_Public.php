@@ -15,12 +15,11 @@ class Handler_Public extends Handler {
 			return;
 		}
 
-		$note_style = 	"background-color : #fff7d5;
-			border-width : 1px; ".
-			"padding : 5px; border-style : dashed; border-color : #e7d796;".
-			"margin-bottom : 1em; color : #9a8c59;";
+		$note_style = 'color: #9a8c59; background-color: #fff7d5; '
+			. 'border: 1px dashed #e7d796; padding: 5px; margin-bottom: 1em;';
 
-		if (!$limit) $limit = 60;
+		if (!$limit)
+			$limit = 60;
 
 		list($override_order, $skip_first_id_check) = Feeds::_order_to_override_query($order);
 
@@ -80,7 +79,8 @@ class Handler_Public extends Handler {
 			"/public.php?op=rss&id=$feed&key=" .
 			Feeds::_get_access_key($feed, false, $owner_uid);
 
-		if (!$feed_site_url) $feed_site_url = Config::get_self_url();
+		if (!$feed_site_url)
+			$feed_site_url = Config::get_self_url();
 
 		if ($format == 'atom') {
 			$tpl = new Templator();
@@ -126,8 +126,7 @@ class Handler_Public extends Handler {
 				$content = DiskCache::rewrite_urls($content);
 
 				if ($line['note']) {
-					$content = "<div style=\"$note_style\">Article note: " . $line['note'] . "</div>" .
-						$content;
+					$content = "<div style=\"$note_style\">Article note: " . $line['note'] . "</div>" . $content;
 					$tpl->setVariable('ARTICLE_NOTE', htmlspecialchars($line['note']), true);
 				}
 
@@ -154,7 +153,7 @@ class Handler_Public extends Handler {
 					foreach ($enclosures as $e) {
 						$type = htmlspecialchars($e['content_type']);
 						$url = htmlspecialchars($e['content_url']);
-						$length = $e['duration'] ? $e['duration'] : 1;
+						$length = $e['duration'] ?: 1;
 
 						$tpl->setVariable('ARTICLE_ENCLOSURE_URL', $url, true);
 						$tpl->setVariable('ARTICLE_ENCLOSURE_TYPE', $type, true);

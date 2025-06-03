@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2025-05-06 17:02+0000\n"
+"PO-Revision-Date: 2025-06-03 12:01+0000\n"
 "Last-Translator: Edgars Andersons <Edgars+Weblate@gaitenis.id.lv>\n"
 "Language-Team: Latvian <https://hosted.weblate.org/projects/tt-rss/webui/lv/>"
 "\n"
@@ -137,23 +137,23 @@ msgstr "Rādīt rakstus"
 
 #: index.php:181
 msgid "Adaptive"
-msgstr "Pielāgojams"
+msgstr "Pielāgojošs"
 
 #: index.php:182
 msgid "All Articles"
-msgstr "Visus rakstus"
+msgstr "Visi raksti"
 
 #: index.php:183 classes/RPC.php:550
 msgid "Starred"
-msgstr "Zvaigžņotos"
+msgstr "Atzīmēti ar zvaigzni"
 
 #: index.php:184 classes/RPC.php:551
 msgid "Published"
-msgstr "Publicētos"
+msgstr "Publicētie"
 
 #: index.php:185 js/Headlines.js:665
 msgid "Unread"
-msgstr "Nelasītos"
+msgstr "Nelasītie"
 
 #: index.php:186
 msgid "With Note"
@@ -169,11 +169,11 @@ msgstr "Noklusējuma"
 
 #: index.php:194
 msgid "Newest first"
-msgstr "Vispirms jaunākos"
+msgstr "Vispirms jaunākie"
 
 #: index.php:195
 msgid "Oldest first"
-msgstr "Vispirms vecākos"
+msgstr "Vispirms vecākie"
 
 #: index.php:196 js/CommonFilters.js:430
 msgid "Title"
@@ -1298,7 +1298,7 @@ msgstr "<strong>dienas</strong> (0 atspējo)"
 
 #: classes/Pref_Prefs.php:116
 msgid "Purge unread articles"
-msgstr "Dzēst nelasītos rakstus"
+msgstr "Iztīrīt nelasītos rakstus"
 
 #: classes/Pref_Prefs.php:117
 msgid "Short date format"
@@ -2190,7 +2190,7 @@ msgstr "kur"
 
 #: js/PrefFilterTree.js:66
 msgid "Inverse"
-msgstr "Apgriezt"
+msgstr "Apvērst"
 
 #: js/PrefFilterTree.js:136 js/PrefFilterTree.js:165 js/PrefFilterTree.js:198
 msgid "No filters selected."

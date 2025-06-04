@@ -10,16 +10,16 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2024-12-29 10:00+0000\n"
+"PO-Revision-Date: 2025-06-03 19:38+0000\n"
 "Last-Translator: Dario Di Ludovico <dariottolo@gmail.com>\n"
-"Language-Team: Italian <https://hosted.weblate.org/projects/tt-rss/webui/it/"
-">\n"
+"Language-Team: Italian <https://hosted.weblate.org/projects/tt-rss/webui/it/>"
+"\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -408,10 +408,9 @@ msgid "Unknown action: %d"
 msgstr "Azione sconosciuta: %d"
 
 #: classes/Pref_Filters.php:726 js/PrefFilterTree.js:180
-#, fuzzy, java-printf-format, javascript-format, php-format
-#| msgid "Clone"
+#, java-printf-format, javascript-format, php-format
 msgid "Clone of %s"
-msgstr "Clona"
+msgstr "Clone di %s"
 
 #: classes/Pref_Filters.php:752 classes/Pref_Users.php:215
 #: classes/Pref_Feeds.php:934 classes/Pref_Prefs.php:840 js/Feeds.js:668
@@ -603,7 +602,7 @@ msgstr "Scorri sù"
 
 #: classes/RPC.php:517
 msgid "Scroll down page"
-msgstr "Scorri giù"
+msgstr "Scorri giù la pagina"
 
 #: classes/RPC.php:518
 msgid "Scroll up page"
@@ -1618,25 +1617,23 @@ msgstr "Messaggio di test da tt-rss"
 
 #: classes/Pref_System.php:35
 msgid "Task name"
-msgstr ""
+msgstr "Nome dell'attività"
 
 #: classes/Pref_System.php:36
-#, fuzzy
-#| msgid "Last connected"
 msgid "Last executed"
-msgstr "Ultima connessione"
+msgstr "Ultima esecuzione"
 
 #: classes/Pref_System.php:37
 msgid "Duration (seconds)"
-msgstr ""
+msgstr "Durata (in secondi)"
 
 #: classes/Pref_System.php:38
 msgid "Return code"
-msgstr ""
+msgstr "Codice restituito"
 
 #: classes/Pref_System.php:108 js/PrefHelpers.js:622
 msgid "Refresh"
-msgstr "Aggiorna"
+msgstr "Aggiornare"
 
 #: classes/Pref_System.php:113
 msgid "&lt;&lt;"
@@ -1701,7 +1698,7 @@ msgstr "Invia email di test"
 
 #: classes/Pref_System.php:240
 msgid "Scheduled tasks"
-msgstr ""
+msgstr "Attività programmate"
 
 #: classes/Pref_System.php:251
 msgid "PHP Information"
@@ -2226,22 +2223,16 @@ msgid "Removing selected filters..."
 msgstr "Rimuovendo i filtri selezionati..."
 
 #: js/PrefFilterTree.js:179
-#, fuzzy
-#| msgid "Name for cloned profile:"
 msgid "Name for new filter:"
-msgstr "Nome del profilo clonato:"
+msgstr "Nome del nuovo filtro:"
 
 #: js/PrefFilterTree.js:187
-#, fuzzy
-#| msgid "Combine selected filters?"
 msgid "Clone selected filters?"
-msgstr "Unire i filtri selezionati?"
+msgstr "Clonare i filtri selezionati?"
 
 #: js/PrefFilterTree.js:191
-#, fuzzy
-#| msgid "Removing selected filters..."
 msgid "Cloning selected filters..."
-msgstr "Rimuovendo i filtri selezionati..."
+msgstr "Sto clonando i filtri selezionati..."
 
 #: js/CommonFilters.js:14
 msgid "Edit filter"
@@ -2261,10 +2252,9 @@ msgid "Articles matching this filter:"
 msgstr "Articoli che corrispondono a questo filtro:"
 
 #: js/CommonFilters.js:70
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Found %d articles matching this filter:"
+#, java-printf-format, javascript-format
 msgid "Found at least %d articles matching this filter:"
-msgstr "Trovati %d articoli che corrispondono a questo filtro:"
+msgstr "Trovati almeno %d articoli che corrispondono a questo filtro:"
 
 #: js/CommonFilters.js:77
 msgid "Error while trying to get filter test results."

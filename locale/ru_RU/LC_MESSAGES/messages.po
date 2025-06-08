@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2025-06-08 13:42+0000\n"
+"PO-Revision-Date: 2025-06-08 15:27+0000\n"
 "Last-Translator: Yurt Page <yurtpage@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/tt-rss/webui/ru/>"
 "\n"
@@ -153,11 +153,11 @@ msgstr "Отмеченные"
 
 #: index.php:184 classes/RPC.php:551
 msgid "Published"
-msgstr "Опубликован"
+msgstr "Опубликованные"
 
 #: index.php:185 js/Headlines.js:665
 msgid "Unread"
-msgstr "Новые"
+msgstr "Выбрать непрочитанные"
 
 #: index.php:186
 msgid "With Note"
@@ -181,7 +181,7 @@ msgstr "Сначала старые"
 
 #: index.php:196 js/CommonFilters.js:430
 msgid "Title"
-msgstr "Заголовок"
+msgstr "По заголовку"
 
 #: index.php:209 index.php:261 classes/RPC.php:537 js/Headlines.js:1574
 #: js/FeedTree.js:92 js/FeedTree.js:131 js/Headlines.js:673
@@ -422,7 +422,7 @@ msgstr ""
 #: classes/Pref_Feeds.php:934 classes/Pref_Prefs.php:840 js/Feeds.js:668
 #: js/Feeds.js:663 js/Feeds.js:718
 msgid "Search"
-msgstr "Поиск"
+msgstr "Искать"
 
 #: classes/Pref_Filters.php:757 classes/Pref_Users.php:221
 #: classes/Pref_Feeds.php:939 classes/Pref_Prefs.php:845
@@ -823,7 +823,7 @@ msgstr "Добавить пользователя"
 
 #: classes/Pref_Users.php:252 js/PrefFeedTree.js:457 js/CommonDialogs.js:90
 msgid "Login"
-msgstr "Пользователь"
+msgstr "Логин"
 
 #: classes/Pref_Users.php:253
 msgid "Access level"
@@ -896,7 +896,7 @@ msgstr "Не показывать медиа-контент"
 
 #: classes/Pref_Feeds.php:630 js/CommonDialogs.js:514
 msgid "Cache media"
-msgstr "Кэшировать медиа-контент"
+msgstr "Скачивать медиа контент"
 
 #: classes/Pref_Feeds.php:631 js/CommonDialogs.js:515
 msgid "Mark updated articles as unread"
@@ -1223,7 +1223,7 @@ msgstr "Используется для полнотекстового поис�
 
 #: classes/Pref_Prefs.php:100
 msgid "Mark read on scroll"
-msgstr "Обозначать статьи прочитанными при прокрутке"
+msgstr "Отмечать при прокрутке"
 
 #: classes/Pref_Prefs.php:100
 msgid "Mark articles as read as you scroll past them"
@@ -1579,7 +1579,7 @@ msgstr "Активировать выбранные плагины"
 
 #: classes/Pref_Prefs.php:901
 msgid "Reload"
-msgstr ""
+msgstr "Обновить"
 
 #: classes/Pref_Prefs.php:908
 #, fuzzy
@@ -1781,10 +1781,8 @@ msgid "Please enter verification code (OTP):"
 msgstr "Пожалуйста, введите заголовок метки:"
 
 #: plugins/auth_internal/init.php:98
-#, fuzzy
-#| msgid "Content"
 msgid "Continue"
-msgstr "Содержимое"
+msgstr "Продолжить"
 
 #: plugins/auth_internal/init.php:140
 msgid "Too many authentication attempts, throttled."
@@ -1920,7 +1918,7 @@ msgstr "Метки:"
 
 #: plugins/bookmarklets/init.php:285
 msgid "Share"
-msgstr "Опубликовать"
+msgstr "Поделиться"
 
 #: plugins/bookmarklets/init.php:287
 msgid "Shared article will appear in the Published feed."
@@ -2865,7 +2863,7 @@ msgstr ""
 
 #: js/PrefHelpers.js:623 js/PrefHelpers.js:765
 msgid "Close"
-msgstr ""
+msgstr "Закрыть"
 
 #: js/PrefHelpers.js:641
 #, fuzzy

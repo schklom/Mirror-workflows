@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2025-06-08 15:27+0000\n"
+"PO-Revision-Date: 2025-06-08 16:07+0000\n"
 "Last-Translator: Yurt Page <yurtpage@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/tt-rss/webui/ru/>"
 "\n"
@@ -85,15 +85,12 @@ msgid "Weekly"
 msgstr "Раз в неделю"
 
 #: backend.php:91 classes/Pref_Feeds.php:571 classes/Pref_Feeds.php:624
-#, fuzzy
 msgid "Disabled"
-msgstr "Отключить одноразовый пароль"
+msgstr "Отключено"
 
 #: backend.php:92
-#, fuzzy
-#| msgid "Readability"
 msgid "Read Only"
-msgstr "Удобство чтения"
+msgstr "Только для чтения"
 
 #: backend.php:93 classes/Pref_System.php:150
 msgid "User"
@@ -157,7 +154,7 @@ msgstr "Опубликованные"
 
 #: index.php:185 js/Headlines.js:665
 msgid "Unread"
-msgstr "Выбрать непрочитанные"
+msgstr "Непрочитанные"
 
 #: index.php:186
 msgid "With Note"
@@ -422,7 +419,7 @@ msgstr ""
 #: classes/Pref_Feeds.php:934 classes/Pref_Prefs.php:840 js/Feeds.js:668
 #: js/Feeds.js:663 js/Feeds.js:718
 msgid "Search"
-msgstr "Искать"
+msgstr "Поиск"
 
 #: classes/Pref_Filters.php:757 classes/Pref_Users.php:221
 #: classes/Pref_Feeds.php:939 classes/Pref_Prefs.php:845
@@ -1085,7 +1082,7 @@ msgstr "Отмеченные"
 
 #: classes/Feeds.php:1171
 msgid "Published articles"
-msgstr "Опубликованные"
+msgstr "Опубликованные статьи"
 
 #: classes/Feeds.php:1173
 msgid "Fresh articles"

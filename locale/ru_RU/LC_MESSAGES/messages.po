@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2025-06-08 16:07+0000\n"
+"PO-Revision-Date: 2025-06-09 17:02+0000\n"
 "Last-Translator: Yurt Page <yurtpage@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/tt-rss/webui/ru/>"
 "\n"
@@ -26,35 +26,35 @@ msgstr "По умолчанию"
 
 #: backend.php:62
 msgid "Never purge"
-msgstr "Никогда"
+msgstr "Никогда не удалять"
 
 #: backend.php:63
 msgid "1 week old"
-msgstr "Неделя"
+msgstr "Недельной давности"
 
 #: backend.php:64
 msgid "2 weeks old"
-msgstr "Две недели"
+msgstr "Двухнедельной давности"
 
 #: backend.php:65
 msgid "1 month old"
-msgstr "Один месяц"
+msgstr "Месячной давности"
 
 #: backend.php:66
 msgid "2 months old"
-msgstr "Два месяца"
+msgstr "Двухмесячной давности"
 
 #: backend.php:67
 msgid "3 months old"
-msgstr "Три месяца"
+msgstr "Трёхмесячной давности"
 
 #: backend.php:70
 msgid "Default interval"
-msgstr "По умолчанию"
+msgstr "Интервал по умолчанию"
 
 #: backend.php:71 backend.php:81
 msgid "Disable updates"
-msgstr "Не обновлять"
+msgstr "Отключить обновления"
 
 #: backend.php:72 backend.php:82
 msgid "15 minutes"
@@ -86,7 +86,7 @@ msgstr "Раз в неделю"
 
 #: backend.php:91 classes/Pref_Feeds.php:571 classes/Pref_Feeds.php:624
 msgid "Disabled"
-msgstr "Отключено"
+msgstr "Выключено"
 
 #: backend.php:92
 msgid "Read Only"
@@ -98,7 +98,7 @@ msgstr "Пользователь"
 
 #: backend.php:94
 msgid "Power User"
-msgstr "Активный пользователь"
+msgstr "Главный пользователь"
 
 #: backend.php:95
 msgid "Administrator"
@@ -118,7 +118,7 @@ msgstr "Администратор"
 #: plugins/share/share.js:56 plugins/af_psql_trgm/init.js:7
 #: plugins/note/note.js:38 js/CommonFilters.js:175
 msgid "Loading, please wait..."
-msgstr "Идет загрузка..."
+msgstr "Идёт загрузка, пожалуйста подождите..."
 
 #: index.php:162 prefs.php:124 js/App.js:494
 msgid "Communication problem with server."
@@ -178,12 +178,12 @@ msgstr "Сначала старые"
 
 #: index.php:196 js/CommonFilters.js:430
 msgid "Title"
-msgstr "По заголовку"
+msgstr "Заголовок"
 
 #: index.php:209 index.php:261 classes/RPC.php:537 js/Headlines.js:1574
 #: js/FeedTree.js:92 js/FeedTree.js:131 js/Headlines.js:673
 msgid "Mark as read"
-msgstr "Как прочитанные"
+msgstr "Пометить как прочитанные"
 
 #: index.php:210
 msgid "Older than one day"
@@ -210,23 +210,21 @@ msgid "Search..."
 msgstr "Поиск..."
 
 #: index.php:255
-#, fuzzy
-#| msgid "Search %s..."
 msgid "Search feeds..."
-msgstr "Поиск %s…"
+msgstr "Поиск лент..."
 
 #: index.php:256
 msgid "Feed actions:"
-msgstr "Действия над каналами:"
+msgstr "Действия над лентой:"
 
 #: index.php:257 plugins/bookmarklets/init.php:40
 #: plugins/bookmarklets/init.php:75
 msgid "Subscribe to feed..."
-msgstr "Подписаться на канал..."
+msgstr "Подписаться на ленту..."
 
 #: index.php:258
 msgid "Edit this feed..."
-msgstr "Редактировать канал..."
+msgstr "Изменить ленту..."
 
 #: index.php:259 classes/Pref_Feeds.php:960 js/PrefFeedTree.js:120
 #: js/CommonDialogs.js:638
@@ -235,7 +233,7 @@ msgstr "Отписаться"
 
 #: index.php:260
 msgid "All feeds:"
-msgstr "Все каналы:"
+msgstr "Все ленты:"
 
 #: index.php:262
 msgid "(Un)hide read feeds"
@@ -254,10 +252,8 @@ msgid "Toggle widescreen mode"
 msgstr "Переключить широкоэкранный режим"
 
 #: index.php:268
-#, fuzzy
-#| msgid "Always expand articles"
 msgid "Toggle expand all articles"
-msgstr "Всегда разворачивать статьи"
+msgstr "Переключить разворачивание статьей"
 
 #: index.php:269
 msgid "Other actions:"
@@ -265,7 +261,7 @@ msgstr "Другие действия:"
 
 #: index.php:270
 msgid "Keyboard shortcuts help"
-msgstr "Горячие клавиши"
+msgstr "Справка по горячим клавишам"
 
 #: index.php:279
 msgid "Logout"
@@ -282,7 +278,7 @@ msgstr "Закрыть настройки"
 #: prefs.php:138 classes/Pref_Feeds.php:127 classes/Pref_Feeds.php:949
 #: classes/Pref_Prefs.php:44
 msgid "Feeds"
-msgstr "Каналы"
+msgstr "Ленты"
 
 #: prefs.php:142 classes/Pref_Filters.php:297
 msgid "Filters"
@@ -333,11 +329,11 @@ msgstr ""
 #: plugins/bookmarklets/init.php:306 include/login_form.php:122
 #: js/CommonDialogs.js:596 js/PrefUsers.js:64
 msgid "Login:"
-msgstr "Логин:"
+msgstr "Имя пользователя:"
 
 #: classes/Handler_Public.php:513
 msgid "Email:"
-msgstr "E-mail:"
+msgstr "Почта:"
 
 #: classes/Handler_Public.php:521
 #, php-format
@@ -358,11 +354,12 @@ msgstr "Перейти назад"
 
 #: classes/Handler_Public.php:580
 msgid "[tt-rss] Password reset request"
-msgstr "[tt-rss] Уведомление о смене пароля"
+msgstr "[tt-rss] Запрос смены пароля"
 
 #: classes/Handler_Public.php:590
 msgid "Sorry, login and email combination not found."
-msgstr "Извините, комбинация логина и электронного адреса не обнаружена."
+msgstr ""
+"Извините, комбинация имени пользователя и электронной почты не обнаружена."
 
 #: classes/Handler_Public.php:610
 msgid "Your access level is insufficient to run this script."
@@ -392,12 +389,12 @@ msgstr ""
 #: classes/Pref_Filters.php:269 classes/Pref_Filters.php:279
 #: classes/Pref_Filters.php:468 classes/Pref_Filters.php:976
 msgid "All feeds"
-msgstr "Все каналы"
+msgstr "Все ленты"
 
 #: classes/Pref_Filters.php:288 classes/Pref_Filters.php:489
 #: classes/Pref_Filters.php:492
 msgid "(inverse)"
-msgstr "(Инвертирован)"
+msgstr "(инвертировано)"
 
 #: classes/Pref_Filters.php:284 classes/Pref_Filters.php:488
 #: classes/Pref_Filters.php:491
@@ -413,7 +410,7 @@ msgstr "Неизвестное действие: %d"
 #: classes/Pref_Filters.php:726 js/PrefFilterTree.js:180
 #, java-printf-format, javascript-format, php-format
 msgid "Clone of %s"
-msgstr ""
+msgstr "Клон от %s"
 
 #: classes/Pref_Filters.php:752 classes/Pref_Users.php:215
 #: classes/Pref_Feeds.php:934 classes/Pref_Prefs.php:840 js/Feeds.js:668
@@ -451,7 +448,7 @@ msgstr "Создать фильтр"
 
 #: classes/Pref_Filters.php:769 js/PrefHelpers.js:229
 msgid "Clone"
-msgstr ""
+msgstr "Клонировать"
 
 #: classes/Pref_Filters.php:771
 msgid "Combine"
@@ -468,13 +465,12 @@ msgid "Reset sort order"
 msgstr "Сбросить сортировку"
 
 #: classes/Pref_Filters.php:777
-#, fuzzy
 msgid "Toggle rule display"
-msgstr "Переключить Список Каналов"
+msgstr "Переключить отображение правил"
 
 #: classes/Pref_Filters.php:824
 msgid "[No caption]"
-msgstr "[Нет заголовка]"
+msgstr "[Без заголовка]"
 
 #: classes/Pref_Filters.php:827
 #, php-format
@@ -512,43 +508,35 @@ msgstr "Навигация"
 
 #: classes/RPC.php:493
 msgid "Open next feed"
-msgstr "Открыть следующий канал"
+msgstr "Открыть следующую ленту"
 
 #: classes/RPC.php:494
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open next unread feed"
-msgstr "Открыть следующий канал"
+msgstr "Открыть следующую непрочитанную ленту"
 
 #: classes/RPC.php:495
 msgid "Open previous feed"
-msgstr "Открыть предыдущий канал"
+msgstr "Открыть предыдущую непрочитанную ленту"
 
 #: classes/RPC.php:496
-#, fuzzy
-#| msgid "Open previous feed"
 msgid "Open previous unread feed"
-msgstr "Открыть предыдущий канал"
+msgstr "Открыть предыдущую ленту"
 
 #: classes/RPC.php:497
-#, fuzzy
 msgid "Open next article (in combined mode, scroll down)"
 msgstr "Открыть следующую статью (не прокручивать длинные статьи)"
 
 #: classes/RPC.php:498
-#, fuzzy
 msgid "Open previous article (in combined mode, scroll up)"
 msgstr "Открыть предыдущую статью (не прокручивать длинные статьи)"
 
 #: classes/RPC.php:499
-#, fuzzy
 msgid "Scroll headlines by one page down"
 msgstr "Показать детали статьи в новом окне"
 
 #: classes/RPC.php:500
-#, fuzzy
 msgid "Scroll headlines by one page up"
-msgstr "Выбрать статьи в группе"
+msgstr "Прокрутить заголовки на одну страницу вверх"
 
 #: classes/RPC.php:501
 msgid "Open next article"
@@ -559,24 +547,20 @@ msgid "Open previous article"
 msgstr "Открыть предыдущую статью"
 
 #: classes/RPC.php:503
-#, fuzzy
 msgid "Move to next article (don't expand)"
 msgstr "Перейти к следующей статье (не разворачивать или помечать прочитанной)"
 
 #: classes/RPC.php:504
-#, fuzzy
 msgid "Move to previous article (don't expand)"
-msgstr ""
-"Перейти к предыдущей статье (не разворачивать или помечать прочитанной)"
+msgstr "Перейти к предыдущей статье (не разворачивать или помечать прочитанной)"
 
 #: classes/RPC.php:505
 msgid "Show search dialog"
 msgstr "Показать диалог поиска"
 
 #: classes/RPC.php:506
-#, fuzzy
 msgid "Cancel active search"
-msgstr "Отменить поиск"
+msgstr "Отменить активный поиск"
 
 #: classes/RPC.php:507
 msgid "Article"
@@ -619,14 +603,12 @@ msgid "Scroll up"
 msgstr "Пролистать вверх"
 
 #: classes/RPC.php:517
-#, fuzzy
 msgid "Scroll down page"
-msgstr "Пролистать вниз"
+msgstr "Пролистать страницу вниз"
 
 #: classes/RPC.php:518
-#, fuzzy
 msgid "Scroll up page"
-msgstr "Пролистать вверх"
+msgstr "Пролистать страницу вверх"
 
 #: classes/RPC.php:519
 msgid "Select article under cursor"
@@ -634,7 +616,7 @@ msgstr "Выбрать статью под курсором мыши"
 
 #: classes/RPC.php:520
 msgid "Email article"
-msgstr "Отправить по почте"
+msgstr "Отправить статью по почте"
 
 #: classes/RPC.php:521
 msgid "Close/collapse article"
@@ -678,11 +660,11 @@ msgstr "Снять выделение"
 
 #: classes/RPC.php:532
 msgid "Feed"
-msgstr "Канал"
+msgstr "Лента"
 
 #: classes/RPC.php:533
 msgid "Refresh current feed"
-msgstr "Обновить активный канал"
+msgstr "Обновить активную ленту"
 
 #: classes/RPC.php:534
 msgid "Un/hide read feeds"
@@ -690,12 +672,12 @@ msgstr "Показать/скрыть прочитанные"
 
 #: classes/RPC.php:535 classes/Pref_Feeds.php:952 js/CommonDialogs.js:34
 msgid "Subscribe to feed"
-msgstr "Подписаться на канал"
+msgstr "Подписаться на ленту"
 
 #: classes/RPC.php:536 js/PrefFeedTree.js:114 js/CommonDialogs.js:386
 #: js/Headlines.js:1580 js/Headlines.js:1645 js/FeedTree.js:99
 msgid "Edit feed"
-msgstr "Редактировать канал"
+msgstr "Изменить ленту"
 
 #: classes/RPC.php:538
 msgid "Reverse headlines"
@@ -706,22 +688,20 @@ msgid "Toggle headline grouping"
 msgstr "Включить группировку заголовков"
 
 #: classes/RPC.php:540
-#, fuzzy
-#| msgid "Toggle sidebar"
 msgid "Toggle grid view"
-msgstr "Переключить боковую панель"
+msgstr "Переключить вид сетки"
 
 #: classes/RPC.php:541
 msgid "Debug feed update"
-msgstr "Отлаживать обновление канала"
+msgstr "Отлаживать обновление ленты"
 
 #: classes/RPC.php:542
 msgid "Debug viewfeed()"
-msgstr "Отлаживать обновление канала"
+msgstr "Отлаживать viewfeed()"
 
 #: classes/RPC.php:543 js/FeedTree.js:164
 msgid "Mark all feeds as read"
-msgstr "Отметить все каналы как прочитанные"
+msgstr "Отметить все ленты как прочитанные"
 
 #: classes/RPC.php:544
 msgid "Un/collapse current category"
@@ -789,7 +769,7 @@ msgstr "Последний вход"
 
 #: classes/Pref_Users.php:64 classes/Pref_Users.php:254
 msgid "Subscribed feeds"
-msgstr "Подписан на каналы"
+msgstr "Подписан на ленты"
 
 #: classes/Pref_Users.php:69
 msgid "Stored articles"
@@ -820,7 +800,7 @@ msgstr "Добавить пользователя"
 
 #: classes/Pref_Users.php:252 js/PrefFeedTree.js:457 js/CommonDialogs.js:90
 msgid "Login"
-msgstr "Логин"
+msgstr "Имя пользователя"
 
 #: classes/Pref_Users.php:253
 msgid "Access level"
@@ -832,7 +812,7 @@ msgstr "Последний вход"
 
 #: classes/Pref_Users.php:271
 msgid "Click to edit"
-msgstr "Щёлкните для редактирования"
+msgstr "Щёлкните для изменения"
 
 #: classes/Pref_Feeds.php:68 classes/Pref_Feeds.php:236
 #: classes/Pref_Feeds.php:296 classes/Pref_Feeds.php:302
@@ -854,12 +834,12 @@ msgstr[1] "(%d статьи из %s)"
 msgstr[2] "(%d статей из %s)"
 
 #: classes/Pref_Feeds.php:569
-#, fuzzy, php-format
+#, php-format
 msgid "(%d day)"
 msgid_plural "(%d days)"
-msgstr[0] "(%d канал)"
-msgstr[1] "(%d канала)"
-msgstr[2] "(%d каналов)"
+msgstr[0] "(%d день)"
+msgstr[1] "(%d дня)"
+msgstr[2] "(%d дней)"
 
 #: classes/Pref_Feeds.php:575
 #, php-format
@@ -874,9 +854,9 @@ msgid "Check to enable field"
 msgstr "Проверить доступность поля"
 
 #: classes/Pref_Feeds.php:622
-#, fuzzy, php-format
+#, php-format
 msgid "(%d days)"
-msgstr "(%d канал)"
+msgstr "(%d дней)"
 
 #: classes/Pref_Feeds.php:627 js/CommonDialogs.js:511
 msgid "Include in e-mail digest"
@@ -893,7 +873,7 @@ msgstr "Не показывать медиа-контент"
 
 #: classes/Pref_Feeds.php:630 js/CommonDialogs.js:514
 msgid "Cache media"
-msgstr "Скачивать медиа контент"
+msgstr "Кэшировать медиа-контент"
 
 #: classes/Pref_Feeds.php:631 js/CommonDialogs.js:515
 msgid "Mark updated articles as unread"
@@ -953,15 +933,15 @@ msgstr "Отмена"
 
 #: classes/Pref_Feeds.php:909
 msgid "Feeds with errors"
-msgstr "Каналы с ошибками"
+msgstr "Ленты с ошибками"
 
 #: classes/Pref_Feeds.php:915
 msgid "Inactive feeds"
-msgstr "Неактивные каналы"
+msgstr "Неактивные ленты"
 
 #: classes/Pref_Feeds.php:954
 msgid "Edit selected feeds"
-msgstr "Редактировать выбранные каналы"
+msgstr "Изменить выбранные ленты"
 
 #: classes/Pref_Feeds.php:958 js/PrefFeedTree.js:417
 msgid "Batch subscribe"
@@ -985,39 +965,35 @@ msgstr "Выберите файл..."
 
 #: classes/Pref_Feeds.php:1016
 msgid "Import OPML"
-msgstr "Импортировать OPML"
+msgstr "Импортировать из файла OPML"
 
 #: classes/Pref_Feeds.php:1027
 msgid "Export OPML"
-msgstr "Экспортировать OPML"
+msgstr "Экспортировать в файл OPML"
 
 #: classes/Pref_Feeds.php:1032
-#, fuzzy
-#| msgid "Include settings"
 msgid "Include tt-rss settings"
 msgstr "Включить настройки"
 
 #: classes/Pref_Feeds.php:1048
 msgid "Display URL"
-msgstr "Показать URL"
+msgstr "Показать URL-адрес"
 
 #: classes/Pref_Feeds.php:1053
 msgid "Clear all generated URLs"
-msgstr "Очистить все созданные URL"
+msgstr "Очистить все сгенерированные URL-адресы"
 
 #: classes/Pref_Feeds.php:1065
-#, fuzzy
 msgid "My feeds"
-msgstr "Мои каналы"
+msgstr "Мои ленты"
 
 #: classes/Pref_Feeds.php:1070
 msgid "OPML"
 msgstr "OPML"
 
 #: classes/Pref_Feeds.php:1075
-#, fuzzy
 msgid "Sharing"
-msgstr "Опубликовать"
+msgstr "Публикация"
 
 #: classes/Pref_Feeds.php:1088 classes/Pref_Prefs.php:942
 #: js/CommonDialogs.js:633
@@ -1026,7 +1002,7 @@ msgstr "Дополнения"
 
 #: classes/Feeds.php:93 classes/Feeds.php:483
 msgid "Feed not found."
-msgstr "Канал не найден."
+msgstr "Лента не найдена."
 
 #: classes/Feeds.php:223 classes/Feeds.php:1177
 msgid "Archived articles"
@@ -1047,7 +1023,7 @@ msgstr "Не найдено не прочитанных статей."
 
 #: classes/Feeds.php:390
 msgid "No updated articles found to display."
-msgstr "Не найдено не прочитанных статей."
+msgstr "Не найдено не обновлённых статей."
 
 #: classes/Feeds.php:391
 msgid "No starred articles found to display."
@@ -1070,15 +1046,15 @@ msgstr "Статей не найдено."
 #: classes/Feeds.php:410
 #, php-format
 msgid "Feeds last updated at %s"
-msgstr "Последнее обновление в %s"
+msgstr "Последнее обновление лент было в %s"
 
 #: classes/Feeds.php:421
 msgid "Some feeds have update errors (click for details)"
-msgstr "Некоторые каналы не могут быть обновлены (щёлкните для подробностей)"
+msgstr "Некоторые ленты не могут быть обновлены (щёлкните для подробностей)"
 
 #: classes/Feeds.php:1169
 msgid "Starred articles"
-msgstr "Отмеченные"
+msgstr "Отмеченные статьи"
 
 #: classes/Feeds.php:1171
 msgid "Published articles"
@@ -1086,7 +1062,7 @@ msgstr "Опубликованные статьи"
 
 #: classes/Feeds.php:1173
 msgid "Fresh articles"
-msgstr "Свежие"
+msgstr "Свежие статьи"
 
 #: classes/Feeds.php:1314
 msgid "Special"
@@ -1117,12 +1093,12 @@ msgstr "Вернуться к настройкам"
 #: classes/OPML.php:324
 #, php-format
 msgid "Adding feed: %s"
-msgstr "Добавляю канал: %s"
+msgstr "Добавление ленты: %s"
 
 #: classes/OPML.php:344
 #, php-format
 msgid "Duplicate feed: %s"
-msgstr "Канал уже существует: %s"
+msgstr "Лента уже существует: %s"
 
 #: classes/OPML.php:358
 #, php-format
@@ -1183,7 +1159,7 @@ msgstr "%d мин"
 #: classes/Mailer.php:51
 #, php-format
 msgid "Unknown error while sending mail. Hooks tried: %d."
-msgstr ""
+msgstr "Неизвестная ошибка при отправке почты. Попробовали %d хук."
 
 #: classes/Pref_Prefs.php:57
 msgid "Articles"
@@ -1204,7 +1180,7 @@ msgstr "Отладка"
 #: classes/Pref_Prefs.php:94
 msgid "Never apply these tags automatically (comma-separated list)."
 msgstr ""
-"Никогда не назначать эти тэги автоматически (список разделенный запятыми)."
+"Никогда не назначать эти теги автоматически (список разделенный запятыми)."
 
 #: classes/Pref_Prefs.php:98
 msgid "Blacklisted tags"
@@ -1220,7 +1196,7 @@ msgstr "Используется для полнотекстового поис�
 
 #: classes/Pref_Prefs.php:100
 msgid "Mark read on scroll"
-msgstr "Отмечать при прокрутке"
+msgstr "Обозначать статьи прочитанными при прокрутке"
 
 #: classes/Pref_Prefs.php:100
 msgid "Mark articles as read as you scroll past them"
@@ -1240,7 +1216,7 @@ msgstr "Показать развёрнутый список статей, вм�
 
 #: classes/Pref_Prefs.php:103
 msgid "Confirm marking feeds as read"
-msgstr "Подтверждать обозначение канала прочитанным"
+msgstr "Подтверждать отмечание ленты прочитанной"
 
 #: classes/Pref_Prefs.php:104
 msgid "Default update interval"
@@ -1290,15 +1266,15 @@ msgstr "часа(ов)"
 
 #: classes/Pref_Prefs.php:111
 msgid "Hide read feeds"
-msgstr "Скрыть прочитанные каналы"
+msgstr "Скрыть прочитанные ленты"
 
 #: classes/Pref_Prefs.php:112
 msgid "Always show special feeds"
-msgstr "Всегда показывать специальные каналы"
+msgstr "Всегда показывать специальные ленты"
 
 #: classes/Pref_Prefs.php:112
 msgid "While hiding read feeds"
-msgstr "Когда скрываются прочитанные каналы"
+msgstr "Когда скрываются прочитанные ленты"
 
 #: classes/Pref_Prefs.php:113
 msgid "Long date format"
@@ -1314,7 +1290,7 @@ msgstr ""
 
 #: classes/Pref_Prefs.php:114
 msgid "Automatically show next feed"
-msgstr "Автоматически показывать следующий канал"
+msgstr "Автоматически показывать следующую ленту"
 
 #: classes/Pref_Prefs.php:114
 msgid "After marking one as read"
@@ -1350,11 +1326,11 @@ msgstr "Часовой пояс"
 
 #: classes/Pref_Prefs.php:122
 msgid "Group by feed"
-msgstr "Группировать по каналу"
+msgstr "Группировать по лентам"
 
 #: classes/Pref_Prefs.php:122
 msgid "Group multiple-feed output by originating feed"
-msgstr "Группировать многопоточный канал по исходному"
+msgstr "Группировать многопоточную ленту по исходной ленте"
 
 #: classes/Pref_Prefs.php:123
 msgid "Language"
@@ -1362,52 +1338,43 @@ msgstr "Язык"
 
 #: classes/Pref_Prefs.php:124
 msgid "Theme"
-msgstr "Тема"
+msgstr "Тема оформления"
 
 #: classes/Pref_Prefs.php:125
 msgid "Don't enforce DISTINCT headlines"
-msgstr ""
+msgstr "Не требовать уникальности заголовков"
 
 #: classes/Pref_Prefs.php:125
-#, fuzzy
 msgid "May produce duplicate entries"
 msgstr "Разрешить дубликаты статей"
 
 #: classes/Pref_Prefs.php:126
-#, fuzzy
 msgid "Show article and feed IDs"
-msgstr "Показать статьи"
+msgstr "Показать статьи и идентификаторы лент"
 
 #: classes/Pref_Prefs.php:126
-#, fuzzy
 msgid "In the headlines buffer"
-msgstr "Сортировать каналы по дате, указанной в канале"
+msgstr "В первых словах"
 
 #: classes/Pref_Prefs.php:127
-#, fuzzy
-#| msgid "Disable updates"
 msgid "Disable conditional counter updates"
-msgstr "Не обновлять"
+msgstr "Отключить условный счётчик обновлений"
 
 #: classes/Pref_Prefs.php:127
 msgid "May increase server load"
 msgstr "Может увеличить нагрузку на сервер"
 
 #: classes/Pref_Prefs.php:128
-#, fuzzy
-#| msgid "Preview article"
 msgid "Grid view"
-msgstr "Предварительный просмотр"
+msgstr "Просмотр в сетке"
 
 #: classes/Pref_Prefs.php:128
 msgid "On wider screens, if always expanded"
-msgstr ""
+msgstr "На широких экранах, если разворачивание включено"
 
 #: classes/Pref_Prefs.php:129
-#, fuzzy
-#| msgid "Set score"
 msgid "Required score"
-msgstr "Оценить"
+msgstr "Обязательная оценка"
 
 #: classes/Pref_Prefs.php:129
 msgid "Include articles with this or above score"
@@ -1455,9 +1422,8 @@ msgstr ""
 "смены паролей."
 
 #: classes/Pref_Prefs.php:405
-#, fuzzy
 msgid "Generate password"
-msgstr "Создать новую ссылку"
+msgstr "Сгенерировать пароль"
 
 #: classes/Pref_Prefs.php:447 classes/Pref_Prefs.php:499
 msgid "Your password:"
@@ -1468,8 +1434,6 @@ msgid "Disable OTP"
 msgstr "Отключить одноразовый пароль"
 
 #: classes/Pref_Prefs.php:477
-#, fuzzy
-#| msgid "OTP Key:"
 msgid "OTP secret:"
 msgstr "Ключ OTP:"
 
@@ -1494,9 +1458,8 @@ msgid "App passwords"
 msgstr "Пароли приложения"
 
 #: classes/Pref_Prefs.php:539
-#, fuzzy
 msgid "Authenticator (OTP)"
-msgstr "Авторизация"
+msgstr "Аутентификатор (OTP, одноразовый код)"
 
 #: classes/Pref_Prefs.php:550
 msgid "Some preferences are only available in default profile."
@@ -1515,8 +1478,6 @@ msgid "More themes..."
 msgstr "Больше тем…"
 
 #: classes/Pref_Prefs.php:680
-#, fuzzy
-#| msgid "Preview article"
 msgid "Preview"
 msgstr "Предварительный просмотр"
 
@@ -1543,9 +1504,8 @@ msgid "Save configuration"
 msgstr "Сохранить конфигурацию"
 
 #: classes/Pref_Prefs.php:773
-#, fuzzy
 msgid "Save and exit"
-msgstr "Отметить статьи выше как прочитанные"
+msgstr "Сохранить и выйти"
 
 #: classes/Pref_Prefs.php:780 js/PrefHelpers.js:127
 msgid "Manage profiles"
@@ -1562,33 +1522,29 @@ msgid ""
 "data usage and origin server load resulting in a ban of your instance: "
 "<b>%s</b>"
 msgstr ""
+"Следующие дополнения используют хуки по содержимому в лентах. Это может "
+"привести к чрезмерному использованию данных и нагрузке на сервер-источник, "
+"что может привести к блокированию вашего сервера: <b>%s</b>"
 
 #: classes/Pref_Prefs.php:895 js/CommonFilters.js:228
-#, fuzzy
 msgid "More info"
-msgstr "подробнее"
+msgstr "Подробнее"
 
 #: classes/Pref_Prefs.php:898
-#, fuzzy
-#| msgid "Enable selected plugins"
 msgid "Enable selected"
-msgstr "Активировать выбранные плагины"
+msgstr "Включить выбранные дополнения"
 
 #: classes/Pref_Prefs.php:901
 msgid "Reload"
 msgstr "Обновить"
 
 #: classes/Pref_Prefs.php:908
-#, fuzzy
-#| msgid "Perform updates"
 msgid "Check for updates"
-msgstr "Применить обновления"
+msgstr "Проверить обновления"
 
 #: classes/Pref_Prefs.php:915
-#, fuzzy
-#| msgid "Mail plugin"
 msgid "Install plugin"
-msgstr "Почтовый плагин"
+msgstr "Установить дополнение"
 
 #: classes/Pref_Prefs.php:928
 msgid "Personal data / Authentication"
@@ -1596,7 +1552,7 @@ msgstr "Персональные данные / Аутентификация"
 
 #: classes/Pref_Prefs.php:976
 msgid "Incorrect one time password"
-msgstr "Неверный одноразовый пароль"
+msgstr "Неверный одноразовый код"
 
 #: classes/Pref_Prefs.php:979 classes/Pref_Prefs.php:1018
 msgid "Incorrect password"
@@ -1617,9 +1573,8 @@ msgid "Description"
 msgstr "Описание"
 
 #: classes/Pref_Prefs.php:1496
-#, fuzzy
 msgid "Created"
-msgstr "Создать"
+msgstr "Создано"
 
 #: classes/Pref_Prefs.php:1497
 msgid "Last used"
@@ -1645,12 +1600,11 @@ msgstr "Ошибка Git [RC=%d]: %s"
 
 #: classes/Sessions.php:125
 msgid "Session failed to validate (password changed)"
-msgstr "Ошибка проверки сессии (пароль изменен)"
+msgstr "Ошибка проверки сессии (пароль изменён)"
 
 #: classes/Sessions.php:130
-#, fuzzy
 msgid "Session failed to validate (account is disabled)"
-msgstr "Ошибка проверки сессии (изменился идентификатор броузера)"
+msgstr "Ошибка проверки сессии (учётная запись отключена)"
 
 #: classes/Sessions.php:149
 msgid "Session failed to validate (user not found)"
@@ -1663,25 +1617,23 @@ msgstr "Добавлена метка <b>%s</b>"
 
 #: classes/Pref_System.php:24
 msgid "Test message from tt-rss"
-msgstr ""
+msgstr "Проверочное сообщение из tt-rss"
 
 #: classes/Pref_System.php:35
 msgid "Task name"
-msgstr ""
+msgstr "Название задания"
 
 #: classes/Pref_System.php:36
-#, fuzzy
-#| msgid "Last connected"
 msgid "Last executed"
 msgstr "Последнее соединение"
 
 #: classes/Pref_System.php:37
 msgid "Duration (seconds)"
-msgstr ""
+msgstr "Продолжительность (секунд)"
 
 #: classes/Pref_System.php:38
 msgid "Return code"
-msgstr ""
+msgstr "Код возврата"
 
 #: classes/Pref_System.php:108 js/PrefHelpers.js:622
 msgid "Refresh"
@@ -1689,7 +1641,7 @@ msgstr "Обновить"
 
 #: classes/Pref_System.php:113
 msgid "&lt;&lt;"
-msgstr ""
+msgstr "&lt;&lt;"
 
 #: classes/Pref_System.php:117
 #, php-format
@@ -1698,25 +1650,23 @@ msgstr "Страница %d из %d"
 
 #: classes/Pref_System.php:122
 msgid "&gt;&gt;"
-msgstr ""
+msgstr "&gt;&gt;"
 
 #: classes/Pref_System.php:131
 msgid "Severity:"
-msgstr "Строгость:"
+msgstr "Важность:"
 
 #: classes/Pref_System.php:135
-#, fuzzy
 msgid "Errors"
-msgstr "Ошибка"
+msgstr "Ошибки"
 
 #: classes/Pref_System.php:136
 msgid "Warnings"
 msgstr "Предупреждения"
 
 #: classes/Pref_System.php:137
-#, fuzzy
 msgid "Everything"
-msgstr "Снять выделение"
+msgstr "Всё"
 
 #: classes/Pref_System.php:147
 msgid "Error"
@@ -1735,29 +1685,24 @@ msgid "Date"
 msgstr "Дата"
 
 #: classes/Pref_System.php:195
-#, fuzzy
-#| msgid "Event Log"
 msgid "Event log"
 msgstr "Журнал событий"
 
 #: classes/Pref_System.php:201
-#, fuzzy
-#| msgid "Save configuration"
 msgid "Mail configuration"
-msgstr "Сохранить конфигурацию"
+msgstr "Конфигурация почты"
 
 #: classes/Pref_System.php:232
 msgid "To:"
 msgstr "Кому:"
 
 #: classes/Pref_System.php:234
-#, fuzzy
 msgid "Send test email"
-msgstr "Отправить письмо"
+msgstr "Отправить проверочное письмо"
 
 #: classes/Pref_System.php:240
 msgid "Scheduled tasks"
-msgstr ""
+msgstr "Запланированные задания"
 
 #: classes/Pref_System.php:251
 msgid "PHP Information"
@@ -1772,18 +1717,16 @@ msgid "The following comics are currently supported:"
 msgstr "Поддерживаются следующие комиксы:"
 
 #: plugins/auth_internal/init.php:96
-#, fuzzy
-#| msgid "Please enter label caption:"
 msgid "Please enter verification code (OTP):"
-msgstr "Пожалуйста, введите заголовок метки:"
+msgstr "Пожалуйста, введите одноразовый код подтверждения (OTP):"
 
 #: plugins/auth_internal/init.php:98
 msgid "Continue"
-msgstr "Продолжить"
+msgstr "Содержимое"
 
 #: plugins/auth_internal/init.php:140
 msgid "Too many authentication attempts, throttled."
-msgstr ""
+msgstr "Слишком много попыток входа, приостановлено."
 
 #: plugins/auth_internal/init.php:247
 msgid "Password has been changed."
@@ -1798,7 +1741,6 @@ msgid "Toggle sidebar"
 msgstr "Переключить боковую панель"
 
 #: plugins/share/init.php:43
-#, fuzzy
 msgid "Article unshared"
 msgstr "Расшарить статью по ссылке"
 
@@ -1808,16 +1750,17 @@ msgstr "Убрать все статьи из общего доступа"
 
 #: plugins/share/init.php:69
 msgid "Shared URLs cleared."
-msgstr "Общие URL очищены."
+msgstr "Опубликованные URL-адреса очищены."
 
 #: plugins/share/init.php:93
 msgid "Share by URL"
-msgstr "Опубликовать статью по URL"
+msgstr "Опубликовать статью по URL-адресу"
 
 #: plugins/share/init.php:265
 msgid "You can share this article by the following unique URL:"
 msgstr ""
-"Вы можете опубликовать данную статью с помощью следующего уникального URL:"
+"Вы можете опубликовать данную статью с помощью следующего уникального "
+"URL-адреса:"
 
 #: plugins/share/init.php:277
 msgid "Article not found."
@@ -1829,11 +1772,9 @@ msgstr "Убрать статью из общего доступа"
 
 #: plugins/share/init.php:283 js/CommonDialogs.js:697
 msgid "Generate new URL"
-msgstr "Создать новую ссылку"
+msgstr "Сгенерировать новый URL-адрес"
 
 #: plugins/nsfw/init.php:46
-#, fuzzy
-#| msgid "Not work safe (click to toggle)"
 msgid "Not safe for work (click to toggle)"
 msgstr "Не безопасно на работе (кликните, чтоб переключить)"
 
@@ -1859,7 +1800,7 @@ msgstr "Подписаться"
 #: plugins/bookmarklets/init.php:104
 #, php-format
 msgid "Already subscribed to <b>%s</b>."
-msgstr "Канал <b>%s</b> уже подписан."
+msgstr "Вы уже подписаны на <b>%s</b>."
 
 #: plugins/bookmarklets/init.php:107
 #, php-format
@@ -1874,24 +1815,24 @@ msgstr "Не могу подписаться на <b>%s</b>."
 #: plugins/bookmarklets/init.php:113
 #, php-format
 msgid "No feeds found in <b>%s</b>."
-msgstr "Не найдены каналы в <b>%s</b>."
+msgstr "Не найдены ленты в <b>%s</b>."
 
 #: plugins/bookmarklets/init.php:119
 #, php-format
 msgid "Could not subscribe to <b>%s</b>.<br>Can't download the Feed URL."
-msgstr "Не могу подписаться на <b>%s</b>. Не могу загрузить URL канала."
+msgstr "Не могу подписаться на <b>%s</b>. Не могу скачать из URL-адреса ленты."
 
 #: plugins/bookmarklets/init.php:130
 msgid "Multiple feed URLs found:"
-msgstr "Найдено несколько URL каналов:"
+msgstr "Найдено несколько URL-адресов лент:"
 
 #: plugins/bookmarklets/init.php:138
 msgid "Subscribe to selected feed"
-msgstr "Подписаться на выбранный канал"
+msgstr "Подписаться на выбранную ленту"
 
 #: plugins/bookmarklets/init.php:156
 msgid "Edit subscription options"
-msgstr "Редактировать опции подписки"
+msgstr "Изменить опции подписки"
 
 #: plugins/bookmarklets/init.php:187 plugins/bookmarklets/init.php:364
 msgid "Share with Tiny Tiny RSS"
@@ -1903,7 +1844,7 @@ msgstr "Заголовок:"
 
 #: plugins/bookmarklets/init.php:265 js/CommonDialogs.js:536
 msgid "URL:"
-msgstr "URL:"
+msgstr "URL-адрес:"
 
 #: plugins/bookmarklets/init.php:270
 msgid "Content:"
@@ -1915,11 +1856,11 @@ msgstr "Метки:"
 
 #: plugins/bookmarklets/init.php:285
 msgid "Share"
-msgstr "Поделиться"
+msgstr "Опубликовать"
 
 #: plugins/bookmarklets/init.php:287
 msgid "Shared article will appear in the Published feed."
-msgstr "Опубликованная статья появится в канале \"Опубликованные\"."
+msgstr "Опубликованная статья появится в ленте «Опубликованные»."
 
 #: plugins/bookmarklets/init.php:326 include/login_form.php:200
 msgid "Log in"
@@ -1939,8 +1880,8 @@ msgid ""
 "Drag the link below to your browser toolbar, open the feed you're interested "
 "in in your browser and click on the link to subscribe to it."
 msgstr ""
-"Перетащите ссылку ниже на панель Вашего броузера, откройте интересующий Вас "
-"канал и нажмите на ссылку, чтоб подписаться на него."
+"Перетащите ссылку ниже на панель вашего обозревателя, откройте интересующую "
+"вас ленту и нажмите на ссылку, чтоб подписаться на неё."
 
 #: plugins/bookmarklets/init.php:358
 msgid "Subscribe in Tiny Tiny RSS"
@@ -1962,9 +1903,8 @@ msgid "Show related articles"
 msgstr "Показать похожие статьи"
 
 #: plugins/af_psql_trgm/init.php:138
-#, fuzzy
 msgid "Mark similar articles as read (af_psql_trgm)"
-msgstr "Пометить похожие статьи как прочитанные"
+msgstr "Пометить похожие статьи как прочитанные (af_psql_trgm)"
 
 #: plugins/af_psql_trgm/init.php:164
 msgid "Minimum similarity:"
@@ -1993,7 +1933,6 @@ msgid "Currently enabled for (click to edit):"
 msgstr "Сейчас включён для (нажмите для изменения):"
 
 #: plugins/af_psql_trgm/init.php:226
-#, fuzzy
 msgid "Similarity (af_psql_trgm)"
 msgstr "Сходство (pg_trgm)"
 
@@ -2055,9 +1994,7 @@ msgstr "Удалить категорию"
 #, java-printf-format, javascript-format
 msgid ""
 "Remove category %s? Any nested feeds would be placed into Uncategorized."
-msgstr ""
-"Удалите категорию %s? Все вложенные каналы будут помещены в \"Без "
-"категории\"."
+msgstr "Удалить категорию %s? Все её ленты будут помещены в «Без категории»."
 
 #: js/PrefFeedTree.js:201
 msgid "Removing category..."
@@ -2065,16 +2002,16 @@ msgstr "Удаляю категорию..."
 
 #: js/PrefFeedTree.js:213
 msgid "Unsubscribe from selected feeds?"
-msgstr "Отписаться от выбранных каналов?"
+msgstr "Отписаться от выбранных лент?"
 
 #: js/PrefFeedTree.js:215
 msgid "Unsubscribing from selected feeds..."
-msgstr "Выбранные каналы удаляются..."
+msgstr "Отписка от выбранных лент..."
 
 #: js/PrefFeedTree.js:228 js/PrefFeedTree.js:297 js/PrefFeedTree.js:313
 #: js/PrefFeedTree.js:518 js/CommonDialogs.js:256 js/CommonDialogs.js:277
 msgid "No feeds selected."
-msgstr "Нет выбранных каналов."
+msgstr "Нет выбранных лент."
 
 #: js/PrefFeedTree.js:263
 msgid "Remove selected categories?"
@@ -2089,14 +2026,12 @@ msgid "No categories selected."
 msgstr "Нет выбранных категорий."
 
 #: js/PrefFeedTree.js:324
-#, fuzzy
-#| msgid "Edit Multiple Feeds"
 msgid "Edit multiple feeds"
-msgstr "Редактировать несколько каналов"
+msgstr "Редактировать несколько лент"
 
 #: js/PrefFeedTree.js:353
 msgid "Save changes to selected feeds?"
-msgstr "Сохранить изменения выбранных каналов?"
+msgstr "Сохранить изменения в выбранных лентах?"
 
 #: js/PrefFeedTree.js:365 js/CommonFilters.js:391 js/CommonDialogs.js:480
 #: js/PrefUsers.js:42
@@ -2113,23 +2048,23 @@ msgstr "Создаю категорию..."
 
 #: js/PrefFeedTree.js:420
 msgid "Subscribing to feeds..."
-msgstr "Подписываюсь на каналы..."
+msgstr "Подписывание на ленты..."
 
 #: js/PrefFeedTree.js:438
 msgid "One valid feed per line (no detection is done)"
-msgstr "Один действительный RSS канал на строчку (проверка не производится)"
+msgstr "Одна RSS лента на строчку (определение не делается)"
 
 #: js/PrefFeedTree.js:491
 msgid "Feeds without recent updates"
-msgstr "Давно не обновлявшиеся каналы"
+msgstr "Давно не обновлявшиеся ленты"
 
 #: js/PrefFeedTree.js:499 js/CommonDialogs.js:235
 msgid "Remove selected feeds?"
-msgstr "Удалить выбранные каналы?"
+msgstr "Удалить выбранные ленты?"
 
 #: js/PrefFeedTree.js:500 js/CommonDialogs.js:236
 msgid "Removing selected feeds..."
-msgstr "Выбранные каналы удаляются..."
+msgstr "Удаление выбранных лент..."
 
 #: js/PrefFeedTree.js:541 js/CommonDialogs.js:303
 msgid "Click to edit feed"
@@ -2153,7 +2088,7 @@ msgstr "Пометить все статьи как прочитанные?"
 
 #: js/Feeds.js:454
 msgid "Marking all feeds as read..."
-msgstr "Помечаю все каналы как прочитанные..."
+msgstr "Все ленты помечаются как прочитанные..."
 
 #: js/Feeds.js:471
 msgid "Mark %w in %s older than 1 day as read?"
@@ -2193,10 +2128,8 @@ msgid "Search feeds"
 msgstr "Поиск лент"
 
 #: js/App.js:314
-#, fuzzy
-#| msgid "Widescreen is not available in combined mode."
 msgid "This function is only available in combined mode."
-msgstr "Широкоэкранный режим недоступен в комбинированном режиме."
+msgstr "Эта функциональность доступна только в комбинированном режиме."
 
 #: js/App.js:445
 msgid "Keyboard shortcuts"
@@ -2216,6 +2149,8 @@ msgid ""
 "URL scheme reported by your browser (%a) doesn't match server-configured "
 "SELF_URL_PATH (%b), check X-Forwarded-Proto."
 msgstr ""
+"Схема URL-адреса, которую передал ваш обозреватель (%a), не совпадает с "
+"настроенной на сервере SELF_URL_PATH (%b), проверьте X-Forwarded-Proto."
 
 #: js/App.js:613
 msgid "Fatal error"
@@ -2231,7 +2166,7 @@ msgstr "Доступная новая версия Tiny Tiny RSS."
 
 #: js/App.js:871
 msgid "Updates for some local plugins are available."
-msgstr ""
+msgstr "Доступны обновления для некоторых установленных дополнений."
 
 #: js/App.js:914
 msgid "Widescreen is not available in combined mode."
@@ -2243,20 +2178,19 @@ msgstr "Пожалуйста, сначала включите дополнени
 
 #: js/App.js:1174 js/App.js:1291 js/CommonDialogs.js:378
 msgid "You can't edit this kind of feed."
-msgstr "Вы не можете редактировать этот канал."
+msgstr "Вы не можете изменить эту ленту."
 
 #: js/App.js:1246
-#, fuzzy
 msgid "Please enable af_readability first."
-msgstr "Пожалуйста, сначала включите плагин mail или mailto."
+msgstr "Пожалуйста, сначала включите дополнение af_readability."
 
 #: js/App.js:1300
 msgid "Please select some feed first."
-msgstr "Пожалуйста выберите какой-нибудь канал."
+msgstr "Пожалуйста сначала выберите какую-нибудь ленту."
 
 #: js/App.js:1305
 msgid "You can't unsubscribe from the category."
-msgstr "Нельзя отписаться от категории."
+msgstr "Нельзя отписаться от этой категории."
 
 #: js/App.js:1311 js/CommonDialogs.js:352 js/CommonDialogs.js:393
 #, java-printf-format, javascript-format
@@ -2296,28 +2230,20 @@ msgid "Name for new filter:"
 msgstr "Название нового фильтра:"
 
 #: js/PrefFilterTree.js:187
-#, fuzzy
-#| msgid "Combine selected filters?"
 msgid "Clone selected filters?"
-msgstr "Комбинировать выбранные фильтры?"
+msgstr "Клонировать выбранные фильтры?"
 
 #: js/PrefFilterTree.js:191
-#, fuzzy
-#| msgid "Removing selected filters..."
 msgid "Cloning selected filters..."
-msgstr "Выбранные фильтры удаляются..."
+msgstr "Клонирование выбранных фильтров..."
 
 #: js/CommonFilters.js:14
-#, fuzzy
-#| msgid "Edit Filter"
 msgid "Edit filter"
 msgstr "Редактировать фильтр"
 
 #: js/CommonFilters.js:14
-#, fuzzy
-#| msgid "Create filter"
 msgid "Create new filter"
-msgstr "Создать фильтр"
+msgstr "Создать новый фильтр"
 
 #: js/CommonFilters.js:42
 #, java-printf-format, javascript-format
@@ -2325,24 +2251,19 @@ msgid "Looking for articles (%d processed, %f found)..."
 msgstr "Ищем статьи (%d обработано, %f найдено)..."
 
 #: js/CommonFilters.js:68
-#, fuzzy
-#| msgid "Found %d articles matching this filter:"
 msgid "Articles matching this filter:"
-msgstr "Найдено %d удовлетворяющих фильтру статей:"
+msgstr "Статьи удовлетворяющих этому фильтру:"
 
 #: js/CommonFilters.js:70
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Found %d articles matching this filter:"
+#, java-printf-format, javascript-format
 msgid "Found at least %d articles matching this filter:"
-msgstr "Найдено %d удовлетворяющих фильтру статей:"
+msgstr "Найдено %d статей удовлетворяющих этому фильтру:"
 
 #: js/CommonFilters.js:77
 msgid "Error while trying to get filter test results."
 msgstr "Ошибка при попытке загрузить больше результатов."
 
 #: js/CommonFilters.js:89
-#, fuzzy
-#| msgid "Rescoring articles..."
 msgid "Looking for articles..."
 msgstr "Переоценка статей..."
 
@@ -2359,9 +2280,8 @@ msgid "Inverse regular expression matching"
 msgstr "Инвертировать совпадение с регулярным выражением"
 
 #: js/CommonFilters.js:216
-#, fuzzy
 msgid "on"
-msgstr "Ничего"
+msgstr "на"
 
 #: js/CommonFilters.js:244
 msgid "Edit action"
@@ -2411,7 +2331,7 @@ msgstr "Пожалуйста, укажите новый рейтинг для э
 
 #: js/Article.js:130
 msgid "Article URL:"
-msgstr "URL статьи:"
+msgstr "URL-адрес статьи:"
 
 #: js/Article.js:132
 msgid "No URL could be displayed for this article."
@@ -2433,10 +2353,8 @@ msgstr[1] "комментария"
 msgstr[2] "комментариев"
 
 #: js/Article.js:352
-#, fuzzy
-#| msgid "Articles"
 msgid "Article tags"
-msgstr "Статьи"
+msgstr "Метки статьи"
 
 #: js/Article.js:359
 msgid "Tags for this article (separated by commas):"
@@ -2444,15 +2362,15 @@ msgstr "Теги для этой статьи (разделенные запят
 
 #: js/Article.js:379
 msgid "Saving article tags..."
-msgstr "Сохранить теги статьи..."
+msgstr "Сохранить метки статьи..."
 
 #: js/CommonDialogs.js:45
 msgid ""
 "Provided URL is a HTML page referencing multiple feeds, please select "
 "required feed from the dropdown menu below."
 msgstr ""
-"Эта ссылка - HTML страница, которая включает в себя несколько каналов. "
-"Выберите нужный из списка внизу."
+"Эта ссылка - HTML страница, которая содержащая несколько лент. Выберите "
+"несколько лент из списка внизу."
 
 #: js/CommonDialogs.js:142
 msgid ""
@@ -2465,7 +2383,7 @@ msgstr ""
 
 #: js/CommonDialogs.js:155
 msgid "You are already subscribed to this feed."
-msgstr "Вы уже подписаны на этот канал."
+msgstr "Вы уже подписаны на эту ленту."
 
 #: js/CommonDialogs.js:159
 #, java-printf-format, javascript-format
@@ -2478,16 +2396,16 @@ msgstr "Указанный URL выглядит неправильно."
 
 #: js/CommonDialogs.js:171
 msgid "Specified URL doesn't seem to contain any feeds."
-msgstr "Указанный URL не содержит каналов."
+msgstr "Указанный URL-адрес не содержит каких либо лент."
 
 #: js/CommonDialogs.js:184
 msgid "Expand to select feed"
-msgstr "Развернуть к выбранному каналу"
+msgstr "Развернуть к выбранной ленте"
 
 #: js/CommonDialogs.js:196
 #, java-printf-format, javascript-format
 msgid "Couldn't download the specified URL: %s"
-msgstr "Не могу загрузить указанный URL: %s"
+msgstr "Не могу скачать по указанному URL-адресу: %s"
 
 #: js/CommonDialogs.js:199
 #, java-printf-format, javascript-format
@@ -2495,28 +2413,22 @@ msgid "XML validation failed: %s"
 msgstr "Проверка XML прошла неудачно: %s"
 
 #: js/CommonDialogs.js:202
-#, fuzzy
-#| msgid "Error while parsing document."
 msgid "Error while creating feed database entry."
-msgstr "Ошибка при разборе документа."
+msgstr "Ошибка при создании базы данных лент."
 
 #: js/CommonDialogs.js:205
 msgid "You are not allowed to perform this operation."
-msgstr ""
+msgstr "Вам не разрешается выполнять эту операцию."
 
 #: js/CommonDialogs.js:227
 msgid "Feeds with update errors"
-msgstr "Канала с ошибками обновления"
+msgstr "Ленты с ошибками обновления"
 
 #: js/CommonDialogs.js:263
-#, fuzzy
-#| msgid "Remove selected feeds?"
 msgid "Debug selected feeds?"
-msgstr "Удалить выбранные каналы?"
+msgstr "Отладить выбранные ленты?"
 
 #: js/CommonDialogs.js:264
-#, fuzzy
-#| msgid "Changing category of selected feeds..."
 msgid "Opening debugger for selected feeds..."
 msgstr "Идет изменение категории..."
 
@@ -2526,16 +2438,15 @@ msgstr "Пожалуйста, введите заголовок метки:"
 
 #: js/CommonDialogs.js:355
 msgid "Removing feed..."
-msgstr "Канал удаляется..."
+msgstr "Лента удаляется..."
 
 #: js/CommonDialogs.js:403
-#, fuzzy
 msgid "Please select an image file."
 msgstr "Пожалуйста, выберите файл с изображением для загрузки."
 
 #: js/CommonDialogs.js:423
 msgid "Icon file is too large."
-msgstr ""
+msgstr "Файл значка слишком большой."
 
 #: js/CommonDialogs.js:426
 msgid "Upload failed."
@@ -2543,15 +2454,15 @@ msgstr "Ошибка загрузки."
 
 #: js/CommonDialogs.js:456
 msgid "Remove stored feed icon?"
-msgstr "Удалить сохраненную иконку канала?"
+msgstr "Удалить сохранённый значок ленты?"
 
 #: js/CommonDialogs.js:457
 msgid "Removing feed icon..."
-msgstr "Удаляется иконка канала..."
+msgstr "Удаляется значок ленты..."
 
 #: js/CommonDialogs.js:460
 msgid "Feed icon removed."
-msgstr "Иконка канала удалена."
+msgstr "Значок ленты удалён."
 
 #: js/CommonDialogs.js:627
 msgid "Upload new icon..."
@@ -2559,11 +2470,11 @@ msgstr "Загрузить новый значок..."
 
 #: js/CommonDialogs.js:656 js/Headlines.js:642
 msgid "Show as feed"
-msgstr "Показать как канал"
+msgstr "Показать как ленту"
 
 #: js/CommonDialogs.js:658
 msgid "Generate new syndication address for this feed?"
-msgstr "Создать новый адрес распространения для этого канала?"
+msgstr "Создать новый адрес распространения для этой ленты?"
 
 #: js/CommonDialogs.js:660
 msgid "Trying to change address..."
@@ -2571,12 +2482,12 @@ msgstr "Попытка изменить адрес.."
 
 #: js/CommonDialogs.js:678
 msgid "Could not change feed URL."
-msgstr "Не получилось изменить URL канала."
+msgstr "Не получилось изменить URL-адрес ленты."
 
 #: js/CommonDialogs.js:685
 #, java-printf-format, javascript-format
 msgid "%s can be accessed via the following secret URL:"
-msgstr "Вы можете опубликовать %s с помощью следующего секретного URL:"
+msgstr "Вы можете опубликовать %s с помощью следующего секретного URL-адреса:"
 
 #: js/Headlines.js:649
 msgid "Cancel search"
@@ -2588,11 +2499,11 @@ msgstr "Выбрать..."
 
 #: js/Headlines.js:823 js/Headlines.js:877 js/Headlines.js:894
 msgid "Click to open next unread feed."
-msgstr "Щёлкните чтоб открыть следующий непрочитанный канал."
+msgstr "Щёлкните чтоб открыть следующую непрочитанную ленту."
 
 #: js/Headlines.js:891
 msgid "New articles found, reload feed to continue."
-msgstr "Найдены новые статьи, обновите канал для продолжения."
+msgstr "Найдены новые статьи, обновите ленту для продолжения."
 
 #: js/Headlines.js:1100
 #, java-printf-format, javascript-format
@@ -2648,7 +2559,7 @@ msgstr "Показать оригинальное содержимое стат�
 
 #: js/Headlines.js:1425
 msgid "Display article URL"
-msgstr "Отобразить URL статьи"
+msgstr "Отобразить URL-адрес статьи"
 
 #: js/Headlines.js:1532
 msgid "Assign label"
@@ -2660,14 +2571,12 @@ msgstr "Удалить метку"
 
 #: js/Headlines.js:1586 js/FeedTree.js:105 js/Headlines.js:473
 #: js/Headlines.js:522 js/Headlines.js:591
-#, fuzzy
-#| msgid "Open next feed"
 msgid "Open site"
-msgstr "Открыть следующий канал"
+msgstr "Открыть следующий ленту"
 
 #: js/Headlines.js:1595 js/FeedTree.js:114
 msgid "Debug feed"
-msgstr "Отладка канала"
+msgstr "Отладка ленты"
 
 #: js/Headlines.js:1616
 msgid "Select articles in group"
@@ -2679,31 +2588,29 @@ msgstr "Пометить группу как прочитанную"
 
 #: js/Headlines.js:1638
 msgid "Mark feed as read"
-msgstr "Отметить канал как прочитанный"
+msgstr "Отметить ленту как прочитанную"
 
 #: js/PrefHelpers.js:20
-#, fuzzy
 msgid "Remove selected app passwords?"
 msgstr "Удалить выбранных пользователей?"
 
 #: js/PrefHelpers.js:45
 msgid "This will invalidate all previously generated feed URLs. Continue?"
 msgstr ""
-"Это сделает недействительными все ранее созданные URL канала. Продолжить?"
+"Это сделает недействительными все ранее созданные URL-адреса ленты. "
+"Продолжить?"
 
 #: js/PrefHelpers.js:46 plugins/share/share_prefs.js:6
 msgid "Clearing URLs..."
-msgstr "Очистка URL..."
+msgstr "Очистка URL-адресов..."
 
 #: js/PrefHelpers.js:49
 msgid "Generated URLs cleared."
-msgstr "Созданные URL очищены."
+msgstr "Созданные URL-адреса очищены."
 
 #: js/PrefHelpers.js:59
-#, fuzzy
-#| msgid "Digest"
 msgid "Digest preview"
-msgstr "Дайджест"
+msgstr "Посмотреть дайджест"
 
 #: js/PrefHelpers.js:113
 msgid "Clear event log?"
@@ -2711,12 +2618,11 @@ msgstr "Очистить журнал?"
 
 #: js/PrefHelpers.js:135
 msgid "Name for cloned profile:"
-msgstr ""
+msgstr "Название для скопированного профиля:"
 
 #: js/PrefHelpers.js:145
-#, fuzzy
 msgid "Please select a single profile to clone."
-msgstr "Пожалуйста, выберите файл с изображением для загрузки."
+msgstr "Пожалуйста, выберите профиль для клонирования."
 
 #: js/PrefHelpers.js:153
 msgid ""
@@ -2742,7 +2648,7 @@ msgstr "(активно)"
 
 #: js/PrefHelpers.js:219
 msgid "(empty)"
-msgstr ""
+msgstr "(пусто)"
 
 #: js/PrefHelpers.js:242
 msgid "Activate selected profile?"
@@ -2787,11 +2693,11 @@ msgstr "Очистить данные"
 
 #: js/PrefHelpers.js:425
 msgid "Uninstall"
-msgstr ""
+msgstr "Удалить"
 
 #: js/PrefHelpers.js:437 js/PrefHelpers.js:596
 msgid "Could not find any plugins for this search query."
-msgstr ""
+msgstr "Не удалось найти дополнения по этому поисковому запросу."
 
 #: js/PrefHelpers.js:444
 #, java-printf-format, javascript-format
@@ -2804,22 +2710,16 @@ msgid "Uninstall plugin %s?"
 msgstr "Удалить дополнение %s?"
 
 #: js/PrefHelpers.js:462
-#, fuzzy
-#| msgid "Registration failed."
 msgid "Plugin uninstallation failed."
-msgstr "Неудачная регистрация."
+msgstr "Не удалось удалить дополнение."
 
 #: js/PrefHelpers.js:478
-#, fuzzy
-#| msgid "Mail plugin"
 msgid "Available plugins"
-msgstr "Почтовый плагин"
+msgstr "Доступные дополнения"
 
 #: js/PrefHelpers.js:491
-#, fuzzy
-#| msgid "Link instance"
 msgid "Plugin installer"
-msgstr "Связать инсталляцию"
+msgstr "Установка дополнений"
 
 #: js/PrefHelpers.js:494
 #, java-printf-format, javascript-format
@@ -2828,26 +2728,24 @@ msgstr "Установка %s, пожалуйста, подождите..."
 
 #: js/PrefHelpers.js:509 js/PrefHelpers.js:551 js/PrefHelpers.js:662
 msgid "Operation failed: check event log."
-msgstr ""
+msgstr "Операция неуспешна: проверьте журнал событий."
 
 #: js/PrefHelpers.js:513
-#, fuzzy
-#| msgid "E-mail has been changed."
 msgid "Plugin has been installed."
-msgstr "E-mail был изменен."
+msgstr "Дополнение было установлено."
 
 #: js/PrefHelpers.js:517
 msgid "Plugin is already installed."
-msgstr ""
+msgstr "Дополнение уже установлено."
 
 #: js/PrefHelpers.js:527 js/PrefHelpers.js:679 js/PrefHelpers.js:745
 #, java-printf-format, javascript-format
 msgid "Exited with RC: %d"
-msgstr ""
+msgstr "Завершилось с кодом возврата (RC): %d"
 
 #: js/PrefHelpers.js:576
 msgid "Already installed"
-msgstr ""
+msgstr "Уже установлено"
 
 #: js/PrefHelpers.js:587
 #, java-printf-format, javascript-format
@@ -2856,31 +2754,25 @@ msgstr "Обновлено: %s"
 
 #: js/PrefHelpers.js:604
 msgid "Looking for plugins..."
-msgstr ""
+msgstr "Поиск дополнений..."
 
 #: js/PrefHelpers.js:623 js/PrefHelpers.js:765
 msgid "Close"
 msgstr "Закрыть"
 
 #: js/PrefHelpers.js:641
-#, fuzzy
-#| msgid "User plugins"
 msgid "Update plugins"
-msgstr "Пользовательские плагины"
+msgstr "Обновить дополнения"
 
 #: js/PrefHelpers.js:656
-#, fuzzy
-#| msgid "Uploading, please wait..."
 msgid "Updating, please wait..."
-msgstr "Идет загрузка, пожалуйста подождите..."
+msgstr "Идет обновление, пожалуйста подождите..."
 
 #: js/PrefHelpers.js:680
 msgid "Update done."
 msgstr "Обновление завершено."
 
 #: js/PrefHelpers.js:704
-#, fuzzy
-#| msgid "No actions available"
 msgid "No updates available"
 msgstr "Нет доступных действий"
 
@@ -2892,7 +2784,7 @@ msgstr "Проверка: %s"
 #: js/PrefHelpers.js:723
 #, java-printf-format, javascript-format
 msgid "%s: Operation failed: check event log."
-msgstr ""
+msgstr "%s: Операция неуспешна: проверьте журнал событий."
 
 #: js/PrefHelpers.js:746
 msgid "Ready to update"
@@ -2963,10 +2855,8 @@ msgid "Removing selected users..."
 msgstr "Выбранные пользователи удаляются..."
 
 #: js/PrefLabelTree.js:71
-#, fuzzy
-#| msgid "Edit rule"
 msgid "Edit label"
-msgstr "Редактировать правило"
+msgstr "Изменить ярлык"
 
 #: js/PrefLabelTree.js:143
 msgid "Foreground:"
@@ -2994,7 +2884,7 @@ msgstr "Выбранные метки удаляются..."
 
 #: plugins/share/share.js:7
 msgid "Share article by URL"
-msgstr "Расшарить статью по ссылке"
+msgstr "Поделиться статьёй по ссылке"
 
 #: plugins/share/share.js:9
 msgid "Generate new share URL for this article?"
@@ -3002,11 +2892,11 @@ msgstr "Создать новый публичный URL для этой ста�
 
 #: plugins/share/share.js:11
 msgid "Trying to change URL..."
-msgstr "Пытаюсь изменить URL..."
+msgstr "Пытаюсь изменить URL-адрес..."
 
 #: plugins/share/share.js:34
 msgid "Could not change URL."
-msgstr "Не получилось изменить URL."
+msgstr "Не получилось изменить URL-адрес."
 
 #: plugins/share/share.js:42
 msgid "Remove sharing for this article?"
@@ -3015,12 +2905,10 @@ msgstr "Убрать данную статью из публичного дос�
 #: plugins/share/share_prefs.js:5
 msgid "This will invalidate all previously shared article URLs. Continue?"
 msgstr ""
-"Это сделает недействительными все ранее опубликованные URL статьи. "
+"Это сделает недействительными все ранее опубликованные URL-адреса статей. "
 "Продолжить?"
 
 #: plugins/shorten_expanded/init.js:35
-#, fuzzy
-#| msgid "Email article"
 msgid "Expand article"
 msgstr "Отправить по почте"
 
@@ -3038,11 +2926,11 @@ msgstr "Переименовать категорию в:"
 
 #: js/PrefFeedTree.js:466
 msgid "Feeds require authentication."
-msgstr "Каналы требуют авторизацию."
+msgstr "Ленты требующие авторизации."
 
 #: js/PrefFeedTree.js:555 js/CommonDialogs.js:317
 msgid "Unsubscribe from selected feeds"
-msgstr "Отписаться от выбранных каналов"
+msgstr "Отписаться от выбранных лент"
 
 #: js/Feeds.js:295
 msgid "Open Preferences"
@@ -3055,20 +2943,19 @@ msgstr "Поиск %s…"
 
 #: js/Feeds.js:652
 msgid "Used for word stemming"
-msgstr "Используется стемминга слов"
+msgstr "Используется для отоснования слова (стемминга)"
 
 #: js/Feeds.js:712
 msgid "Show feeds matching..."
-msgstr ""
+msgstr "Показать совпадающие ленты..."
 
 #: js/App.js:646
 msgid "Stack trace"
-msgstr ""
+msgstr "Трассировка ошибки"
 
 #: js/App.js:653
-#, fuzzy
 msgid "Additional information"
-msgstr "Показывать расширенную информацию в списке каналов"
+msgstr "Показывать расширенную информацию в списке лент"
 
 #: js/CommonFilters.js:66
 msgid "No recent articles matching this filter have been found."
@@ -3076,7 +2963,7 @@ msgstr "Не найдено недавних статей, удовлетвор�
 
 #: js/CommonFilters.js:414
 msgid "Enabled"
-msgstr "Включен"
+msgstr "Включено"
 
 #: js/CommonFilters.js:415
 msgid "Match any rule"
@@ -3112,31 +2999,27 @@ msgstr ""
 
 #: js/CommonDialogs.js:53
 msgid "Feed or site URL"
-msgstr "Канал или URL сайта"
+msgstr "Лента или URL-адрес сайта"
 
 #: js/CommonDialogs.js:73
 msgid "Available feeds"
-msgstr "Доступные каналы"
+msgstr "Доступные ленты"
 
 #: js/CommonDialogs.js:106
 msgid "This feed requires authentication."
-msgstr "Этот канал требует авторизации."
+msgstr "Для этой ленты требуется авторизация."
 
 #: js/CommonDialogs.js:320
-#, fuzzy
-#| msgid "Edit selected feeds"
 msgid "Debug selected feeds"
-msgstr "Редактировать выбранные каналы"
+msgstr "Отладить выбранные ленты"
 
 #: js/CommonDialogs.js:531
-#, fuzzy
-#| msgid "Feed Title"
 msgid "Feed title"
-msgstr "Заголовок"
+msgstr "Заголовок ленты"
 
 #: js/CommonDialogs.js:538
 msgid "Feed URL"
-msgstr "URL канала"
+msgstr "URL-адрес ленты"
 
 #: js/CommonDialogs.js:557
 msgid "Site URL:"
@@ -3148,15 +3031,15 @@ msgstr "Сайт"
 
 #: js/CommonDialogs.js:622
 msgid "Icon"
-msgstr "Иконка"
+msgstr "Значок"
 
 #: js/Headlines.js:474
 msgid "mark feed as read"
-msgstr "Отметить канал как прочитанный"
+msgstr "отметить ленту как прочитанную"
 
 #: js/Headlines.js:527
 msgid "Span all columns"
-msgstr ""
+msgstr "Растянуть все столбцы"
 
 #: js/Headlines.js:666
 msgid "Invert"
@@ -3179,43 +3062,32 @@ msgstr ""
 "в консоли ошибок)"
 
 #: js/PrefHelpers.js:231
-#, fuzzy
 msgid "Activate"
-msgstr "Адаптивно"
+msgstr "Включить"
 
 #: js/PrefHelpers.js:299
 msgid "Apply"
 msgstr "Применить"
 
 #: js/PrefHelpers.js:303
-#, fuzzy
 msgid "Save and reload"
-msgstr "Отметить статьи выше как прочитанные"
+msgstr "Сохранить и перегрузить"
 
 #: js/PrefHelpers.js:352
 msgid "Selected plugins have been enabled. Reload?"
-msgstr ""
+msgstr "Выбранные дополнения были включены. Перегрузить?"
 
 #: js/PrefHelpers.js:400
-#, fuzzy
-#| msgid ""
-#| "System plugins are enabled in <strong>config.php</strong> for all users."
 msgid "System plugins are enabled using global configuration."
-msgstr ""
-"Системные плагины включены в <strong>config.php</strong> для всех "
-"пользователей."
+msgstr "Системные дополнения включаются через глобальную конфигурацию ."
 
 #: js/PrefHelpers.js:577
-#, fuzzy
-#| msgid "Mail plugin"
 msgid "Install"
-msgstr "Почтовый плагин"
+msgstr "Установить"
 
 #: js/PrefHelpers.js:654
-#, fuzzy
-#| msgid "Playing..."
 msgid "Updating..."
-msgstr "Проигрываю..."
+msgstr "Обновление..."
 
 #: js/PrefHelpers.js:687
 msgid "Updates complete"
@@ -3225,23 +3097,21 @@ msgstr "Обновление завершено"
 #, javascript-format
 msgid "Updates pending for %d plugin"
 msgid_plural "Updates pending for %d plugins"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Обновления доступны для %d дополнения"
+msgstr[1] "Обновления доступны для %d дополнений"
+msgstr[2] "Обновления доступны для %d дополнений"
 
 #: js/PrefUsers.js:76
 msgid "Access level: "
 msgstr "Уровень доступа: "
 
 #: js/PrefUsers.js:92
-#, fuzzy
-#| msgid "Enabled"
 msgid "OTP enabled"
-msgstr "Включен"
+msgstr "Включён одноразовый код OTP"
 
 #: js/PrefUsers.js:104
 msgid "User details"
-msgstr "Подробнее"
+msgstr "Подробности о пользователе"
 
 #: js/PrefLabelTree.js:126
 msgid "Caption"

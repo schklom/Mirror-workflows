@@ -8,17 +8,17 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2021-02-26 10:23+0000\n"
-"Last-Translator: Andrew Dolgov <fox@fakecake.org>\n"
-"Language-Team: Russian <https://weblate.tt-rss.org/projects/tt-rss/messages/"
-"ru/>\n"
+"PO-Revision-Date: 2025-06-08 13:42+0000\n"
+"Last-Translator: Yurt Page <yurtpage@gmail.com>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/tt-rss/webui/ru/>"
+"\n"
 "Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.5\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -245,10 +245,8 @@ msgid "(Un)hide read feeds"
 msgstr "Показать/скрыть прочитанные"
 
 #: index.php:263
-#, fuzzy
-#| msgid "Reset UI layout"
 msgid "UI layout:"
-msgstr "Сбросить панели"
+msgstr "Макет интерфейса:"
 
 #: index.php:264 classes/RPC.php:546
 msgid "Toggle combined mode"
@@ -388,13 +386,11 @@ msgid "Update"
 msgstr "Обновить"
 
 #: classes/Handler_Public.php:720
-#, fuzzy, php-format
-#| msgid ""
-#| "Tiny Tiny RSS database needs update to the latest version (%d to %d)."
+#, php-format
 msgid "Database schema needs update to the latest version (%d to %d)."
 msgstr ""
-"Базе данных Tiny Tiny RSS потребуется обновление до последней версии  (с "
-"<b>%d</b> до <b>%d</b>)."
+"Базе данных потребуется обновление до последней версии (с <b>%d</b> до "
+"<b>%d</b>)."
 
 #: classes/Pref_Filters.php:269 classes/Pref_Filters.php:279
 #: classes/Pref_Filters.php:468 classes/Pref_Filters.php:976
@@ -413,10 +409,9 @@ msgid "%s on %s in %s %s"
 msgstr "%s на %s в %s %s"
 
 #: classes/Pref_Filters.php:508
-#, fuzzy, php-format
-#| msgid "Unknown option: %s"
+#, php-format
 msgid "Unknown action: %d"
-msgstr "Неизвестная опция: %s"
+msgstr "Неизвестное действие: %d"
 
 #: classes/Pref_Filters.php:726 js/PrefFilterTree.js:180
 #, java-printf-format, javascript-format, php-format
@@ -501,14 +496,12 @@ msgid "inverse"
 msgstr "обратный"
 
 #: classes/Pref_Filters.php:864
-#, fuzzy, php-format
-#| msgid "%s (+%d action)"
-#| msgid_plural "%s (+%d actions)"
+#, php-format
 msgid "(+%d action)"
 msgid_plural "(+%d actions)"
-msgstr[0] "%s (+%d действие)"
-msgstr[1] "%s (+%d действия)"
-msgstr[2] "%s (+%d действий)"
+msgstr[0] "(+%d действие)"
+msgstr[1] "(+%d действия)"
+msgstr[2] "(+%d действий)"
 
 #: classes/Pref_Filters.php:1029 classes/Digest.php:112
 #: classes/Pref_Feeds.php:253 classes/Feeds.php:1312 classes/OPML.php:571
@@ -856,14 +849,12 @@ msgstr[2] "(%d каналов)"
 
 #: classes/Pref_Feeds.php:100 classes/Pref_Feeds.php:287
 #: classes/Pref_Feeds.php:330
-#, fuzzy, php-format
-#| msgid "%d article selected"
-#| msgid_plural "%d articles selected"
+#, php-format
 msgid "(%d article / %s)"
 msgid_plural "(%d articles / %s)"
-msgstr[0] "%d статья выбрана"
-msgstr[1] "%d статьи выбрано"
-msgstr[2] "%d статей выбрано"
+msgstr[0] "(%d статья из %s)"
+msgstr[1] "(%d статьи из %s)"
+msgstr[2] "(%d статей из %s)"
 
 #: classes/Pref_Feeds.php:569
 #, fuzzy, php-format
@@ -925,9 +916,8 @@ msgid "Language:"
 msgstr "Язык:"
 
 #: classes/Pref_Feeds.php:663 js/CommonDialogs.js:67 js/CommonDialogs.js:577
-#, fuzzy
 msgid "Update interval:"
-msgstr "Интервал обновления по умолчанию"
+msgstr "Интервал обновления по умолчанию:"
 
 #: classes/Pref_Feeds.php:670 js/CommonDialogs.js:583
 msgid "Article purging:"
@@ -1035,7 +1025,7 @@ msgstr "Опубликовать"
 #: classes/Pref_Feeds.php:1088 classes/Pref_Prefs.php:942
 #: js/CommonDialogs.js:633
 msgid "Plugins"
-msgstr "Плагины"
+msgstr "Дополнения"
 
 #: classes/Feeds.php:93 classes/Feeds.php:483
 msgid "Feed not found."
@@ -1178,7 +1168,7 @@ msgstr "Ошибка: пожалуйста загрузите OPML файл."
 #: classes/OPML.php:637
 #, php-format
 msgid "Error: file is not readable: %s"
-msgstr ""
+msgstr "Ошибка: не удаётся прочитать файл: %s"
 
 #: classes/OPML.php:655
 msgid "Error while parsing document."
@@ -1404,7 +1394,7 @@ msgstr "Не обновлять"
 
 #: classes/Pref_Prefs.php:127
 msgid "May increase server load"
-msgstr ""
+msgstr "Может увеличить нагрузку на сервер"
 
 #: classes/Pref_Prefs.php:128
 #, fuzzy
@@ -1424,7 +1414,7 @@ msgstr "Оценить"
 
 #: classes/Pref_Prefs.php:129
 msgid "Include articles with this or above score"
-msgstr ""
+msgstr "Включить статьи с рейтингом равным или выше"
 
 #: classes/Pref_Prefs.php:229
 msgid "The configuration was saved."
@@ -1488,7 +1478,7 @@ msgstr "Ключ OTP:"
 
 #: classes/Pref_Prefs.php:504
 msgid "Verification code:"
-msgstr ""
+msgstr "Код подтверждения:"
 
 #: classes/Pref_Prefs.php:512
 msgid "Enable OTP"
@@ -1503,9 +1493,8 @@ msgid "Password"
 msgstr "Пароль"
 
 #: classes/Pref_Prefs.php:532
-#, fuzzy
 msgid "App passwords"
-msgstr "Старый пароль:"
+msgstr "Пароли приложения"
 
 #: classes/Pref_Prefs.php:539
 #, fuzzy
@@ -1622,10 +1611,9 @@ msgid "v%.2f, by %s"
 msgstr "v%.2f, by %s"
 
 #: classes/Pref_Prefs.php:1047
-#, fuzzy, php-format
-#| msgid "v%.2f, by %s"
+#, php-format
 msgid "v%s, by %s"
-msgstr "v%.2f, by %s"
+msgstr "v%s, от %s"
 
 #: classes/Pref_Prefs.php:1495
 msgid "Description"
@@ -1637,9 +1625,8 @@ msgid "Created"
 msgstr "Создать"
 
 #: classes/Pref_Prefs.php:1497
-#, fuzzy
 msgid "Last used"
-msgstr "Последнее обновление:"
+msgstr "Последнее использование"
 
 #: classes/Pref_Prefs.php:1542
 #, php-format
@@ -1655,9 +1642,9 @@ msgid "Changed password of user %s to %s"
 msgstr "Пароль пользователя %s изменен на %s"
 
 #: classes/Config.php:391
-#, fuzzy, php-format
+#, php-format
 msgid "Git error [RC=%d]: %s"
-msgstr "Фатальная ошибка"
+msgstr "Ошибка Git [RC=%d]: %s"
 
 #: classes/Sessions.php:125
 msgid "Session failed to validate (password changed)"
@@ -1857,12 +1844,13 @@ msgstr "Не безопасно на работе (кликните, чтоб п
 
 #: plugins/nsfw/init.php:80
 msgid "NSFW Plugin"
-msgstr "Не-безопасно-на-работе плагин"
+msgstr "Дополнения с вызывающим содержимым"
 
 #: plugins/nsfw/init.php:95
-#, fuzzy
 msgid "Tags to consider NSFW (comma-separated):"
-msgstr "Теги для признания Не Безопасным на Работе (разделенные запятой)"
+msgstr ""
+"Теги для признания вызывающими материалами (насилие, эротика). Список "
+"разделённый запятой:"
 
 #: plugins/nsfw/init.php:117
 msgid "Configuration saved."
@@ -1908,7 +1896,7 @@ msgstr "Подписаться на выбранный канал"
 
 #: plugins/bookmarklets/init.php:156
 msgid "Edit subscription options"
-msgstr "Редактировать опции  подписки"
+msgstr "Редактировать опции подписки"
 
 #: plugins/bookmarklets/init.php:187 plugins/bookmarklets/init.php:364
 msgid "Share with Tiny Tiny RSS"
@@ -2002,9 +1990,8 @@ msgid "Minimum title length:"
 msgstr "Минимальная длинна заголовка:"
 
 #: plugins/af_psql_trgm/init.php:187
-#, fuzzy
 msgid "Enable for all feeds."
-msgstr "Включить для всех каналов:"
+msgstr "Включить для всех лент."
 
 #: plugins/af_psql_trgm/init.php:206
 msgid "Currently enabled for (click to edit):"
@@ -2047,7 +2034,7 @@ msgstr "Безопасный режим"
 
 #: include/login_form.php:181
 msgid "Uses default theme and prevents all plugins from loading."
-msgstr "Использует тему по умолчанию и отключает все плагины."
+msgstr "Использует тему по умолчанию и отключает все дополнения."
 
 #: include/login_form.php:189
 msgid "Remember me"
@@ -2207,10 +2194,8 @@ msgid "Search syntax"
 msgstr "Синтаксис запросов"
 
 #: js/Feeds.js:723
-#, fuzzy
-#| msgid "Search %s..."
 msgid "Search feeds"
-msgstr "Поиск %s…"
+msgstr "Поиск лент"
 
 #: js/App.js:314
 #, fuzzy
@@ -2223,18 +2208,12 @@ msgid "Keyboard shortcuts"
 msgstr "Горячие Клавиши"
 
 #: js/App.js:506
-#, fuzzy
 msgid "Update daemon is not running."
-msgstr ""
-"<span onclick=\"App.explainError(3)\">Демон обновления не обновляет каналы</"
-"span>"
+msgstr "Служба обновления не работает."
 
 #: js/App.js:519
-#, fuzzy
 msgid "Update daemon is not updating feeds."
-msgstr ""
-"<span onclick=\"App.explainError(3)\">Демон обновления не обновляет каналы</"
-"span>"
+msgstr "Служба обновления не обновляет ленты."
 
 #: js/App.js:606
 #, java-printf-format
@@ -2252,10 +2231,8 @@ msgid "Unhandled exception"
 msgstr "Необрабатываемое исключение"
 
 #: js/App.js:868
-#, fuzzy
-#| msgid "New version of Tiny Tiny RSS is available!"
 msgid "Updates for Tiny Tiny RSS are available."
-msgstr "Доступная новая версия Tiny Tiny RSS!"
+msgstr "Доступная новая версия Tiny Tiny RSS."
 
 #: js/App.js:871
 msgid "Updates for some local plugins are available."
@@ -2267,7 +2244,7 @@ msgstr "Широкоэкранный режим недоступен в комб
 
 #: js/App.js:1111
 msgid "Please enable mail or mailto plugin first."
-msgstr "Пожалуйста, сначала включите плагин mail или mailto."
+msgstr "Пожалуйста, сначала включите дополнение mail или mailto."
 
 #: js/App.js:1174 js/App.js:1291 js/CommonDialogs.js:378
 msgid "You can't edit this kind of feed."
@@ -2320,10 +2297,8 @@ msgid "Removing selected filters..."
 msgstr "Выбранные фильтры удаляются..."
 
 #: js/PrefFilterTree.js:179
-#, fuzzy
-#| msgid "Create filter"
 msgid "Name for new filter:"
-msgstr "Создать фильтр"
+msgstr "Название нового фильтра:"
 
 #: js/PrefFilterTree.js:187
 #, fuzzy
@@ -2444,9 +2419,8 @@ msgid "Article URL:"
 msgstr "URL статьи:"
 
 #: js/Article.js:132
-#, fuzzy
 msgid "No URL could be displayed for this article."
-msgstr "Убрать данную статью из публичного доступа?"
+msgstr "Для этой статьи не может быть отображен URL-адрес."
 
 #: js/Article.js:152
 msgid "no tags"
@@ -2585,9 +2559,8 @@ msgid "Feed icon removed."
 msgstr "Иконка канала удалена."
 
 #: js/CommonDialogs.js:627
-#, fuzzy
 msgid "Upload new icon..."
-msgstr "Загрузить новую иконку для канала?"
+msgstr "Загрузить новый значок..."
 
 #: js/CommonDialogs.js:656 js/Headlines.js:642
 msgid "Show as feed"
@@ -2809,10 +2782,9 @@ msgid "Reset to defaults?"
 msgstr "Сбросить настройки?"
 
 #: js/PrefHelpers.js:373
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Error while parsing document."
+#, java-printf-format, javascript-format
 msgid "Error while loading plugins list: %s."
-msgstr "Ошибка при разборе документа."
+msgstr "Ошибка при загрузке списка дополнений: %s."
 
 #: js/PrefHelpers.js:422
 msgid "Clear data"
@@ -2827,16 +2799,14 @@ msgid "Could not find any plugins for this search query."
 msgstr ""
 
 #: js/PrefHelpers.js:444
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Clear stored data for this plugin?"
+#, java-printf-format, javascript-format
 msgid "Clear stored data for %s?"
-msgstr "Удалить сохраненные данные для этого плагина?"
+msgstr "Удалить сохранённые данные для %s?"
 
 #: js/PrefHelpers.js:453
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "User plugins"
+#, java-printf-format, javascript-format
 msgid "Uninstall plugin %s?"
-msgstr "Пользовательские плагины"
+msgstr "Удалить дополнение %s?"
 
 #: js/PrefHelpers.js:462
 #, fuzzy
@@ -2857,10 +2827,9 @@ msgid "Plugin installer"
 msgstr "Связать инсталляцию"
 
 #: js/PrefHelpers.js:494
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Importing, please wait..."
+#, java-printf-format, javascript-format
 msgid "Installing %s, please wait..."
-msgstr "Идет импорт, пожалуйста, подождите..."
+msgstr "Установка %s, пожалуйста, подождите..."
 
 #: js/PrefHelpers.js:509 js/PrefHelpers.js:551 js/PrefHelpers.js:662
 msgid "Operation failed: check event log."
@@ -2886,10 +2855,9 @@ msgid "Already installed"
 msgstr ""
 
 #: js/PrefHelpers.js:587
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Updated"
+#, java-printf-format, javascript-format
 msgid "Updated: %s"
-msgstr "Обновлено"
+msgstr "Обновлено: %s"
 
 #: js/PrefHelpers.js:604
 msgid "Looking for plugins..."
@@ -2912,10 +2880,8 @@ msgid "Updating, please wait..."
 msgstr "Идет загрузка, пожалуйста подождите..."
 
 #: js/PrefHelpers.js:680
-#, fuzzy
-#| msgid "Updated"
 msgid "Update done."
-msgstr "Обновлено"
+msgstr "Обновление завершено."
 
 #: js/PrefHelpers.js:704
 #, fuzzy
@@ -2924,10 +2890,9 @@ msgid "No updates available"
 msgstr "Нет доступных действий"
 
 #: js/PrefHelpers.js:716
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Checking version... "
+#, java-printf-format, javascript-format
 msgid "Checking: %s"
-msgstr "Проверяется версия... "
+msgstr "Проверка: %s"
 
 #: js/PrefHelpers.js:723
 #, java-printf-format, javascript-format
@@ -2935,9 +2900,8 @@ msgid "%s: Operation failed: check event log."
 msgstr ""
 
 #: js/PrefHelpers.js:746
-#, fuzzy
 msgid "Ready to update"
-msgstr "Готовы к обновлению."
+msgstr "Готово к обновлению"
 
 #: js/PrefHelpers.js:791
 msgid "Please choose an OPML file first."
@@ -3148,7 +3112,7 @@ msgid ""
 "Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. "
 "You will need to log out and back in to disable it."
 msgstr ""
-"Tiny Tiny RSS работает в безопасном режиме. Все темы и плагины отключены. "
+"Tiny Tiny RSS работает в безопасном режиме. Все темы и дополнения отключены. "
 "Чтобы отключить этот режим, нужно выйти и войти снова."
 
 #: js/CommonDialogs.js:53
@@ -3259,10 +3223,8 @@ msgid "Updating..."
 msgstr "Проигрываю..."
 
 #: js/PrefHelpers.js:687
-#, fuzzy
-#| msgid "Upload complete."
 msgid "Updates complete"
-msgstr "Загрузка завершена."
+msgstr "Обновление завершено"
 
 #: js/PrefHelpers.js:701
 #, javascript-format

@@ -122,6 +122,6 @@ jobs:
           sed -i "s|libayatana-appindicator3-dev|libayatana-appindicator-gtk3-devel|g" "$file"
                 
       - name: Commit and push the change
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v6
         with:
           commit_message: "Change some GitHub Action words: from deb to rpm"

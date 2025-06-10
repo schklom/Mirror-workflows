@@ -72,7 +72,7 @@ jobs:
       
       - name: Commit and push the change
         if: ${{ env.current_hash != env.new_hash }}
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v6
         with:
           commit_message: Update the apk, its hash, and update date
         

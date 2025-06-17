@@ -985,19 +985,23 @@ class Feeds extends Handler_Protected {
 	}
 
 	/**
-	 * @return array<string, mixed> (code => Status code, message => error message if available)
+	 * @return array{code: int, message?: string}|array{code: int, feeds: array<string>}|array{code: int, feed_id: int}
+	 * code - status code (see below)
+	 * message - optional error message
+	 * feeds - list of discovered feed URLs
+	 * feed_id - ID of the existing or added feed
 	 *
-	 *                 0 - OK, Feed already exists
-	 *                 1 - OK, Feed added
-	 *                 2 - Invalid URL
-	 *                 3 - URL content is HTML, no feeds available
-	 *                 4 - URL content is HTML which contains multiple feeds.
-	 *                     Here you should call extractfeedurls in rpc-backend
-	 *                     to get all possible feeds.
-	 *                 5 - Couldn't download the URL content.
-	 *                 6 - Content is an invalid XML.
-	 *                 7 - Error while creating feed database entry.
-	 *                 8 - Permission denied (ACCESS_LEVEL_READONLY).
+	 * 0 - OK, Feed already exists
+	 * 1 - OK, Feed added
+	 * 2 - Invalid URL
+	 * 3 - URL content is HTML, no feeds available
+	 * 4 - URL content is HTML which contains multiple feeds.
+	 *     Here you should call extractfeedurls in rpc-backend
+	 *     to get all possible feeds.
+	 * 5 - Couldn't download the URL content.
+	 * 6 - Content is an invalid XML.
+	 * 7 - Error while creating feed database entry.
+	 * 8 - Permission denied (ACCESS_LEVEL_READONLY).
 	 */
 	static function _subscribe(string $url, int $cat_id = 0, string $auth_login = '', string $auth_pass = '', int $update_interval = 0): array {
 
@@ -1038,7 +1042,7 @@ class Feeds extends Handler_Protected {
 			$feedUrls = self::_get_feeds_from_html($url, $contents);
 
 			if (count($feedUrls) == 0) {
-				return array("code" => 3);
+				return array("code" => 3, "message" => truncate_string($contents, 1000, '…'));
 			} else if (count($feedUrls) > 1) {
 				return array("code" => 4, "feeds" => $feedUrls);
 			}

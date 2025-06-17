@@ -168,7 +168,9 @@ const	CommonDialogs = {
 													dialog.show_error(__("Specified URL seems to be invalid."));
 													break;
 												case 3:
-													dialog.show_error(__("Specified URL doesn't seem to contain any feeds."));
+													dialog.show_error(`<span title="${App.escapeHtml(rc['message'])}" style="text-decoration: underline dotted">
+														${__("Specified URL doesn't seem to contain any feeds.")}
+														</span>`);
 													break;
 												case 4:
 													{

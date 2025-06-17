@@ -999,7 +999,7 @@ class Feeds extends Handler_Protected {
 	 *     Here you should call extractfeedurls in rpc-backend
 	 *     to get all possible feeds.
 	 * 5 - Couldn't download the URL content.
-	 * 6 - Content is an invalid XML.
+	 * 6 - currently unused
 	 * 7 - Error while creating feed database entry.
 	 * 8 - Permission denied (ACCESS_LEVEL_READONLY).
 	 */

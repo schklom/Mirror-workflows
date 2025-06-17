@@ -197,9 +197,6 @@ const	CommonDialogs = {
 												case 5:
 													dialog.show_error(__("Couldn't download the specified URL: %s").replace("%s", App.escapeHtml(rc['message'])));
 													break;
-												case 6:
-													dialog.show_error(__("XML validation failed: %s").replace("%s", rc['message']));
-													break;
 												case 7:
 													dialog.show_error(__("Error while creating feed database entry."));
 													break;

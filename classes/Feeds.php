@@ -1035,7 +1035,7 @@ class Feeds extends Handler_Protected {
 				UrlHelper::$fetch_last_error .= " (feed behind Cloudflare)";
 			}
 
-			return array("code" => 5, "message" => UrlHelper::$fetch_last_error);
+			return array("code" => 5, "message" => truncate_string(UrlHelper::$fetch_last_error, 1000, '…'));
 		}
 
 		if (str_contains(UrlHelper::$fetch_last_content_type, "html") && self::_is_html($contents)) {

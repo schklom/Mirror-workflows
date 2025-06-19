@@ -1013,7 +1013,10 @@ class Feeds extends Handler_Protected {
 
 		$url = UrlHelper::validate($url);
 
-		if (!$url) return ["code" => 2];
+		if (!$url) {
+			Logger::log(E_USER_NOTICE, "An attempt to subscribe to '{$url}' failed due to URL validation (User: '{$user->login}'; ID: {$user->id}).");
+			return ["code" => 2];
+		}
 
 		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_PRE_SUBSCRIBE,
 			/** @phpstan-ignore closure.unusedUse, closure.unusedUse, closure.unusedUse */
@@ -1035,14 +1038,20 @@ class Feeds extends Handler_Protected {
 				UrlHelper::$fetch_last_error .= " (feed behind Cloudflare)";
 			}
 
-			return array("code" => 5, "message" => truncate_string(UrlHelper::$fetch_last_error, 1000, '…'));
+			Logger::log(E_USER_NOTICE, "An attempt to subscribe to '{$url}' failed (User: '{$user->login}'; ID: {$user->id}).",
+				truncate_string(UrlHelper::$fetch_last_error, 500, '…'));
+
+			return array("code" => 5, "message" => truncate_string(clean(UrlHelper::$fetch_last_error), 250, '…'));
 		}
 
 		if (str_contains(UrlHelper::$fetch_last_content_type, "html") && self::_is_html($contents)) {
 			$feedUrls = self::_get_feeds_from_html($url, $contents);
 
 			if (count($feedUrls) == 0) {
-				return array("code" => 3, "message" => truncate_string($contents, 1000, '…'));
+				Logger::log(E_USER_NOTICE, "An attempt to subscribe to '{$url}' failed due to content being HTML without detected feed URLs (User: '{$user->login}'; ID: {$user->id}).",
+					truncate_string($contents, 500, '…'));
+
+				return array("code" => 3, "message" => truncate_string(clean($contents), 250, '…'));
 			} else if (count($feedUrls) > 1) {
 				return array("code" => 4, "feeds" => $feedUrls);
 			}

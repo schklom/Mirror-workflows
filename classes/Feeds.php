@@ -985,19 +985,23 @@ class Feeds extends Handler_Protected {
 	}
 
 	/**
-	 * @return array<string, mixed> (code => Status code, message => error message if available)
+	 * @return array{code: int, message?: string}|array{code: int, feeds: array<string>}|array{code: int, feed_id: int}
+	 * code - status code (see below)
+	 * message - optional error message
+	 * feeds - list of discovered feed URLs
+	 * feed_id - ID of the existing or added feed
 	 *
-	 *                 0 - OK, Feed already exists
-	 *                 1 - OK, Feed added
-	 *                 2 - Invalid URL
-	 *                 3 - URL content is HTML, no feeds available
-	 *                 4 - URL content is HTML which contains multiple feeds.
-	 *                     Here you should call extractfeedurls in rpc-backend
-	 *                     to get all possible feeds.
-	 *                 5 - Couldn't download the URL content.
-	 *                 6 - Content is an invalid XML.
-	 *                 7 - Error while creating feed database entry.
-	 *                 8 - Permission denied (ACCESS_LEVEL_READONLY).
+	 * 0 - OK, Feed already exists
+	 * 1 - OK, Feed added
+	 * 2 - Invalid URL
+	 * 3 - URL content is HTML, no feeds available
+	 * 4 - URL content is HTML which contains multiple feeds.
+	 *     Here you should call extractfeedurls in rpc-backend
+	 *     to get all possible feeds.
+	 * 5 - Couldn't download the URL content.
+	 * 6 - currently unused
+	 * 7 - Error while creating feed database entry.
+	 * 8 - Permission denied (ACCESS_LEVEL_READONLY).
 	 */
 	static function _subscribe(string $url, int $cat_id = 0, string $auth_login = '', string $auth_pass = '', int $update_interval = 0): array {
 
@@ -1009,7 +1013,10 @@ class Feeds extends Handler_Protected {
 
 		$url = UrlHelper::validate($url);
 
-		if (!$url) return ["code" => 2];
+		if (!$url) {
+			Logger::log(E_USER_NOTICE, "An attempt to subscribe to '{$url}' failed due to URL validation (User: '{$user->login}'; ID: {$user->id}).");
+			return ["code" => 2];
+		}
 
 		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_PRE_SUBSCRIBE,
 			/** @phpstan-ignore closure.unusedUse, closure.unusedUse, closure.unusedUse */
@@ -1031,14 +1038,20 @@ class Feeds extends Handler_Protected {
 				UrlHelper::$fetch_last_error .= " (feed behind Cloudflare)";
 			}
 
-			return array("code" => 5, "message" => UrlHelper::$fetch_last_error);
+			Logger::log(E_USER_NOTICE, "An attempt to subscribe to '{$url}' failed (User: '{$user->login}'; ID: {$user->id}).",
+				truncate_string(UrlHelper::$fetch_last_error, 500, '…'));
+
+			return array("code" => 5, "message" => truncate_string(clean(UrlHelper::$fetch_last_error), 250, '…'));
 		}
 
 		if (str_contains(UrlHelper::$fetch_last_content_type, "html") && self::_is_html($contents)) {
 			$feedUrls = self::_get_feeds_from_html($url, $contents);
 
 			if (count($feedUrls) == 0) {
-				return array("code" => 3);
+				Logger::log(E_USER_NOTICE, "An attempt to subscribe to '{$url}' failed due to content being HTML without detected feed URLs (User: '{$user->login}'; ID: {$user->id}).",
+					truncate_string($contents, 500, '…'));
+
+				return array("code" => 3, "message" => truncate_string(clean($contents), 250, '…'));
 			} else if (count($feedUrls) > 1) {
 				return array("code" => 4, "feeds" => $feedUrls);
 			}

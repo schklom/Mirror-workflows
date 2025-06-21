@@ -118,10 +118,10 @@ const	CommonDialogs = {
 									</footer>
 								</form>
 							`,
-							show_error: function (msg) {
+							show_error: function (msg, additional_info) {
 								const elem = App.byId("fadd_error_message");
 
-								elem.innerHTML = msg;
+								elem.innerHTML = `${msg}${additional_info ? `<br><br><h4>${__('Additional information')}</h4>${additional_info}` : ''}`;
 
 								Element.show(elem);
 							},
@@ -168,7 +168,7 @@ const	CommonDialogs = {
 													dialog.show_error(__("Specified URL seems to be invalid."));
 													break;
 												case 3:
-													dialog.show_error(__("Specified URL doesn't seem to contain any feeds."));
+													dialog.show_error(__("Specified URL doesn't seem to contain any feeds."), App.escapeHtml(rc['message']));
 													break;
 												case 4:
 													{
@@ -193,10 +193,7 @@ const	CommonDialogs = {
 													}
 													break;
 												case 5:
-													dialog.show_error(__("Couldn't download the specified URL: %s").replace("%s", rc['message']));
-													break;
-												case 6:
-													dialog.show_error(__("XML validation failed: %s").replace("%s", rc['message']));
+													dialog.show_error(__("Couldn't download the specified URL."), App.escapeHtml(rc['message']));
 													break;
 												case 7:
 													dialog.show_error(__("Error while creating feed database entry."));

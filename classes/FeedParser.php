@@ -14,8 +14,8 @@ class FeedParser {
 
 	private ?string $title = null;
 
-	/** @var FeedParser::FEED_*|null */
-	private ?int $type = null;
+	/** @var FeedParser::FEED_* */
+	private int $type;
 
 	private ?DOMXPath $xpath = null;
 
@@ -27,6 +27,9 @@ class FeedParser {
 	function __construct(string $data) {
 		libxml_use_internal_errors(true);
 		libxml_clear_errors();
+
+		$this->type = $this::FEED_UNKNOWN;
+
 		$this->doc = new DOMDocument();
 		$this->doc->loadXML($data);
 
@@ -43,71 +46,54 @@ class FeedParser {
 				}
 			}
 		}
+
 		libxml_clear_errors();
+
+		if ($this->error)
+			return;
+
+		$this->xpath = new DOMXPath($this->doc);
+		$this->xpath->registerNamespace('atom', 'http://www.w3.org/2005/Atom');
+		$this->xpath->registerNamespace('atom03', 'http://purl.org/atom/ns#');
+		$this->xpath->registerNamespace('media', 'http://search.yahoo.com/mrss/');
+		$this->xpath->registerNamespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
+		$this->xpath->registerNamespace('slash', 'http://purl.org/rss/1.0/modules/slash/');
+		$this->xpath->registerNamespace('dc', 'http://purl.org/dc/elements/1.1/');
+		$this->xpath->registerNamespace('content', 'http://purl.org/rss/1.0/modules/content/');
+		$this->xpath->registerNamespace('thread', 'http://purl.org/syndication/thread/1.0');
 	}
 
-	function init() : void {
-		$xpath = new DOMXPath($this->doc);
-		$xpath->registerNamespace('atom', 'http://www.w3.org/2005/Atom');
-		$xpath->registerNamespace('atom03', 'http://purl.org/atom/ns#');
-		$xpath->registerNamespace('media', 'http://search.yahoo.com/mrss/');
-		$xpath->registerNamespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
-		$xpath->registerNamespace('slash', 'http://purl.org/rss/1.0/modules/slash/');
-		$xpath->registerNamespace('dc', 'http://purl.org/dc/elements/1.1/');
-		$xpath->registerNamespace('content', 'http://purl.org/rss/1.0/modules/content/');
-		$xpath->registerNamespace('thread', 'http://purl.org/syndication/thread/1.0');
+	/**
+	 * @return bool false if initialization couldn't occur (e.g. parsing error or unrecognized feed type), otherwise true
+	 */
+	function init(): bool {
+		if ($this->error)
+			return false;
 
-		$this->xpath = $xpath;
+		$type = $this->get_type();
 
-		$root_list = $xpath->query("(//atom03:feed|//atom:feed|//channel|//rdf:rdf|//rdf:RDF)");
+		if ($type === self::FEED_UNKNOWN)
+			return false;
 
-		if (!empty($root_list) && $root_list->length > 0) {
+		$xpath = $this->xpath;
 
-			/** @var DOMElement|null $root */
-			$root = $root_list->item(0);
-
-			if ($root) {
-				$this->type = match (mb_strtolower($root->tagName)) {
-					'rdf:rdf' => $this::FEED_RDF,
-					'channel' => $this::FEED_RSS,
-					'feed', 'atom:feed' => $this::FEED_ATOM,
-					default => $this::FEED_UNKNOWN,
-				};
-
-				if ($this->type === $this::FEED_UNKNOWN) {
-					$this->error ??= 'Unknown/unsupported feed type';
-					return;
-				}
-			}
-
-			switch ($this->type) {
+		switch ($type) {
 			case $this::FEED_ATOM:
-
-				$title = $xpath->query("//atom:feed/atom:title")->item(0);
-
-				if (!$title)
-					$title = $xpath->query("//atom03:feed/atom03:title")->item(0);
-
+				$title = $xpath->query('//atom:feed/atom:title')->item(0)
+					?? $xpath->query('//atom03:feed/atom03:title')->item(0);
 
 				if ($title) {
 					$this->title = $title->nodeValue;
 				}
 
-				$link = $xpath->query("//atom:feed/atom:link[not(@rel)]")->item(0);
-
-				if (!$link)
-					$link = $xpath->query("//atom:feed/atom:link[@rel='alternate']")->item(0);
-
-				if (!$link)
-					$link = $xpath->query("//atom03:feed/atom03:link[not(@rel)]")->item(0);
-
-				if (!$link)
-					$link = $xpath->query("//atom03:feed/atom03:link[@rel='alternate']")->item(0);
-
 				/** @var DOMElement|null $link */
-				if ($link && $link->hasAttributes()) {
-					$this->link = $link->getAttribute("href");
-				}
+				$link = $xpath->query('//atom:feed/atom:link[not(@rel)]')->item(0)
+					?? $xpath->query("//atom:feed/atom:link[@rel='alternate']")->item(0)
+					?? $xpath->query('//atom03:feed/atom03:link[not(@rel)]')->item(0)
+					?? $xpath->query("//atom03:feed/atom03:link[@rel='alternate']")->item(0);
+
+				if ($link?->getAttribute('href'))
+					$this->link = $link->getAttribute('href');
 
 				$articles = $xpath->query("//atom:entry");
 
@@ -165,16 +151,15 @@ class FeedParser {
 				}
 
 				break;
-
-			}
-
-			if ($this->title) $this->title = trim($this->title);
-			if ($this->link) $this->link = trim($this->link);
-
-		} else {
-			$this->error ??= "Unknown/unsupported feed type";
-			return;
 		}
+
+		if ($this->title)
+			$this->title = trim($this->title);
+
+		if ($this->link)
+			$this->link = trim($this->link);
+
+		return true;
 	}
 
 	/** @deprecated use Errors::format_libxml_error() instead */
@@ -190,6 +175,33 @@ class FeedParser {
 	/** @return array<string> - WARNING: may return invalid unicode data */
 	function errors() : array {
 		return $this->libxml_errors;
+	}
+
+	/**
+	 * @return FeedParser::FEED_*
+	 */
+	function get_type(): int {
+		if ($this->type !== self::FEED_UNKNOWN || $this->error)
+			return $this->type;
+
+		$root_list = $this->xpath->query('(//atom03:feed|//atom:feed|//channel|//rdf:rdf|//rdf:RDF)');
+
+		if ($root_list && $root_list->length > 0) {
+			/** @var DOMElement $root */
+			$root = $root_list->item(0);
+
+			$this->type = match (mb_strtolower($root->tagName)) {
+				'rdf:rdf' => self::FEED_RDF,
+				'channel' => self::FEED_RSS,
+				'feed', 'atom:feed' => self::FEED_ATOM,
+				default => self::FEED_UNKNOWN,
+			};
+		}
+
+		if ($this->type === self::FEED_UNKNOWN)
+			$this->error ??= 'Unknown/unsupported feed type';
+
+		return $this->type;
 	}
 
 	function get_link() : string {

@@ -2232,6 +2232,18 @@ class Feeds extends Handler_Protected {
 						if (!$not) array_push($search_words, $k);
 					}
 					break;
+				case "tag":
+					if ($keyword_value) {
+							array_push($query_keywords, "($not
+								(ttrss_user_entries.int_id IN (
+									SELECT post_int_id FROM ttrss_tags WHERE
+										tag_name = ".$pdo->quote($keyword_value).")))");
+					} else {
+						array_push($query_keywords, "(UPPER(ttrss_entries.title) $not LIKE UPPER(".$pdo->quote("%$k%").")
+								OR UPPER(ttrss_entries.content) $not LIKE UPPER(".$pdo->quote("%$k%")."))");
+						if (!$not) array_push($search_words, $k);
+					}
+					break;
 				case "unread":
 					if ($keyword_value) {
 						if ($keyword_value == "true")

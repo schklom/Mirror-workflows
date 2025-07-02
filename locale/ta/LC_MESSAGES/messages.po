@@ -1615,7 +1615,7 @@ msgstr ""
 
 #: classes/Pref_System.php:36
 msgid "Last executed"
-msgstr "கடைசியாகப் பயன்படுத்தப்பட்டது"
+msgstr "கடைசியாகப் இயக்கப்பட்டது"
 
 #: classes/Pref_System.php:37
 msgid "Duration (seconds)"

@@ -405,7 +405,7 @@ msgstr "தெரியாத செயல்: %d"
 #: classes/Pref_Filters.php:726 js/PrefFilterTree.js:180
 #, java-printf-format, javascript-format, php-format
 msgid "Clone of %s"
-msgstr "%s நகலி"
+msgstr "%s இன் நகலி"
 
 #: classes/Pref_Filters.php:752 classes/Pref_Users.php:215
 #: classes/Pref_Feeds.php:934 classes/Pref_Prefs.php:840 js/Feeds.js:668
@@ -1614,10 +1614,8 @@ msgid "Task name"
 msgstr ""
 
 #: classes/Pref_System.php:36
-#, fuzzy
-#| msgid "Last used"
 msgid "Last executed"
-msgstr "கடைசியாக பயன்படுத்தப்பட்டது"
+msgstr "கடைசியாகப் பயன்படுத்தப்பட்டது"
 
 #: classes/Pref_System.php:37
 msgid "Duration (seconds)"

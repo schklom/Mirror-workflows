@@ -30,4 +30,9 @@ while [ ! -s $DST_DIR/config.php -a -e $DST_DIR/.app_is_ready ]; do
 	sleep 3
 done
 
+# this is some next level bullshit
+# - https://stackoverflow.com/questions/65622914/why-would-i-get-a-php-pdoexception-complaining-that-it-cant-make-a-postgres-con
+# - fatal error: could not open certificate file "/root/.postgresql/postgresql.crt": Permission denied
+chown -R app:app /root # /.postgresql
+
 sudo -E -u app "${TTRSS_PHP_EXECUTABLE}" $APP_INSTALL_BASE_DIR/tt-rss/update_daemon2.php "$@"

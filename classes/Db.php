@@ -26,8 +26,10 @@ class Db {
 	public static function get_dsn(): string {
 		$db_port = Config::get(Config::DB_PORT) ? ';port=' . Config::get(Config::DB_PORT) : '';
 		$db_host = Config::get(Config::DB_HOST) ? ';host=' . Config::get(Config::DB_HOST) : '';
+		$db_sslmode = Config::get(Config::DB_SSLMODE);
 
-		return 'pgsql:dbname=' . Config::get(Config::DB_NAME) . $db_host . $db_port;
+		return 'pgsql:dbname=' . Config::get(Config::DB_NAME) . $db_host . $db_port .
+			";sslmode=$db_sslmode";
 	}
 
 	// this really shouldn't be used unless a separate PDO connection is needed

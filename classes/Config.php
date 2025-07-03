@@ -45,6 +45,9 @@ class Config {
 	/** database server port */
 	const DB_PORT = "DB_PORT";
 
+	/** PostgreSQL SSL mode (prefer, require, disabled) */
+	const DB_SSLMODE = "DB_SSLMODE";
+
 	/** this is a fallback falue for the CLI SAPI, it should be set to a fully-qualified tt-rss URL */
 	const SELF_URL_PATH = "SELF_URL_PATH";
 
@@ -219,6 +222,7 @@ class Config {
 		Config::DB_NAME => [ "", 											Config::T_STRING ],
 		Config::DB_PASS => [ "", 											Config::T_STRING ],
 		Config::DB_PORT => [ "5432",										Config::T_STRING ],
+		Config::DB_SSLMODE => [ "prefer",                        Config::T_STRING ],
 		Config::SELF_URL_PATH => [ "https://example.com/tt-rss", Config::T_STRING ],
 		Config::SINGLE_USER_MODE => [ "",								Config::T_BOOL ],
 		Config::PHP_EXECUTABLE => [ "/usr/bin/php",					Config::T_STRING ],

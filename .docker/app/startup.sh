@@ -56,6 +56,11 @@ for d in cache lock feed-icons plugins.local themes.local templates.local cache/
 	sudo -u app mkdir -p $DST_DIR/$d
 done
 
+# this is some next level bullshit
+# - https://stackoverflow.com/questions/65622914/why-would-i-get-a-php-pdoexception-complaining-that-it-cant-make-a-postgres-con
+# - fatal error: could not open certificate file "/root/.postgresql/postgresql.crt": Permission denied
+chown -R app:app /root # /.postgresql
+
 for d in cache lock feed-icons; do
 	chmod 777 $DST_DIR/$d
 	find $DST_DIR/$d -type f -exec chmod 666 {} \;

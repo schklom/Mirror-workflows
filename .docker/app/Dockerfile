@@ -47,6 +47,7 @@ ARG CI_COMMIT_SHA
 ENV CI_COMMIT_SHA=${CI_COMMIT_SHA}
 
 ADD .docker/app/startup.sh ${SCRIPT_ROOT}
+ADD .docker/app/update.sh ${SCRIPT_ROOT}
 ADD .docker/app/updater.sh ${SCRIPT_ROOT}
 ADD .docker/app/dcron.sh ${SCRIPT_ROOT}
 ADD .docker/app/backup.sh /etc/periodic/weekly/backup

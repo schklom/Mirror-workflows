@@ -84,6 +84,9 @@ function ttrss_fatal_handler(): bool {
 			return Logger::log_error((int)$errno, $errstr, $file, (int)$line, $context);
 	}
 
+	if (php_sapi_name() == 'cli')
+		exit(1);
+
 	return false;
 }
 

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2025-05-05 16:06+0000\n"
+"PO-Revision-Date: 2025-07-03 22:07+0000\n"
 "Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/tt-rss/webui/ta/>\n"
 "Language: ta\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -403,10 +403,9 @@ msgid "Unknown action: %d"
 msgstr "தெரியாத செயல்: %d"
 
 #: classes/Pref_Filters.php:726 js/PrefFilterTree.js:180
-#, fuzzy, java-printf-format, javascript-format, php-format
-#| msgid "Clone"
+#, java-printf-format, javascript-format, php-format
 msgid "Clone of %s"
-msgstr "நகலி"
+msgstr "%s இன் நகலி"
 
 #: classes/Pref_Filters.php:752 classes/Pref_Users.php:215
 #: classes/Pref_Feeds.php:934 classes/Pref_Prefs.php:840 js/Feeds.js:668
@@ -1612,21 +1611,19 @@ msgstr "TT-RSS இலிருந்து செய்தி சோதனை"
 
 #: classes/Pref_System.php:35
 msgid "Task name"
-msgstr ""
+msgstr "பணி பெயர்"
 
 #: classes/Pref_System.php:36
-#, fuzzy
-#| msgid "Last used"
 msgid "Last executed"
-msgstr "கடைசியாக பயன்படுத்தப்பட்டது"
+msgstr "கடைசியாக இயக்கப்பட்டது"
 
 #: classes/Pref_System.php:37
 msgid "Duration (seconds)"
-msgstr ""
+msgstr "காலம் (விநாடிகள்)"
 
 #: classes/Pref_System.php:38
 msgid "Return code"
-msgstr ""
+msgstr "திரும்பிய குறியீடு"
 
 #: classes/Pref_System.php:108 js/PrefHelpers.js:622
 msgid "Refresh"
@@ -1695,7 +1692,7 @@ msgstr "சோதனை மின்னஞ்சலை அனுப்பவு�
 
 #: classes/Pref_System.php:240
 msgid "Scheduled tasks"
-msgstr ""
+msgstr "திட்டமிடப்பட்ட பணிகள்"
 
 #: classes/Pref_System.php:251
 msgid "PHP Information"
@@ -2218,22 +2215,16 @@ msgid "Removing selected filters..."
 msgstr "தேர்ந்தெடுக்கப்பட்ட வடிப்பான்களை நீக்குதல் ..."
 
 #: js/PrefFilterTree.js:179
-#, fuzzy
-#| msgid "Name for cloned profile:"
 msgid "Name for new filter:"
-msgstr "நகலி செய்யப்பட்ட சுயவிவரத்திற்கான பெயர்:"
+msgstr "வடிப்பிக்கான பெயர்:"
 
 #: js/PrefFilterTree.js:187
-#, fuzzy
-#| msgid "Combine selected filters?"
 msgid "Clone selected filters?"
-msgstr "தேர்ந்தெடுக்கப்பட்ட வடிப்பான்களை இணைக்கவா?"
+msgstr "தேர்ந்தெடுக்கப்பட்ட வடிப்பான்களை நகலி?"
 
 #: js/PrefFilterTree.js:191
-#, fuzzy
-#| msgid "Removing selected filters..."
 msgid "Cloning selected filters..."
-msgstr "தேர்ந்தெடுக்கப்பட்ட வடிப்பான்களை நீக்குதல் ..."
+msgstr "தேர்ந்தெடுக்கப்பட்ட வடிப்பான்களை நகலி ..."
 
 #: js/CommonFilters.js:14
 msgid "Edit filter"
@@ -2253,8 +2244,7 @@ msgid "Articles matching this filter:"
 msgstr "இந்த வடிப்பானுடன் பொருந்தக்கூடிய கட்டுரைகள்:"
 
 #: js/CommonFilters.js:70
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Found %d articles matching this filter:"
+#, java-printf-format, javascript-format
 msgid "Found at least %d articles matching this filter:"
 msgstr "இந்த வடிப்பானுடன் பொருந்தக்கூடிய %d கட்டுரைகள் காணப்படுகின்றன:"
 

@@ -73,7 +73,8 @@ class RSSUtils {
 		if (!$limit) $limit = Config::get(Config::DAEMON_FEED_LIMIT);
 
 		if (Config::get_schema_version() != Config::SCHEMA_VERSION) {
-			die("Schema version is wrong, please upgrade the database.\n");
+			print("Schema version is wrong, please upgrade the database.\n");
+			exit(1);
 		}
 
 		self::init_housekeeping_tasks();

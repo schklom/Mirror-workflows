@@ -1,4 +1,7 @@
 #!/bin/sh -e
+#
+# this scripts waits for startup.sh to finish (implying a shared volume) and runs multiprocess daemon when working copy is available
+#
 
 # We don't need those here (HTTP_HOST would cause false SELF_URL_PATH check failures)
 unset HTTP_PORT
@@ -15,6 +18,7 @@ if ! id app; then
 	adduser -D -h $APP_INSTALL_BASE_DIR -G app -u $OWNER_UID app
 fi
 
+# TODO this should do a reasonable amount of attempts and terminate with an error
 while ! pg_isready -h $TTRSS_DB_HOST -U $TTRSS_DB_USER -p $TTRSS_DB_PORT; do
 	echo waiting until $TTRSS_DB_HOST is ready...
 	sleep 3

@@ -1,5 +1,9 @@
 #!/bin/sh -e
+#
+# this script initializes the working copy on a persistent volume and starts PHP FPM
+#
 
+# TODO this should do a reasonable amount of attempts and terminate with an error
 while ! pg_isready -h $TTRSS_DB_HOST -U $TTRSS_DB_USER -p $TTRSS_DB_PORT; do
 	echo waiting until $TTRSS_DB_HOST is ready...
 	sleep 3
@@ -61,6 +65,7 @@ done
 # - fatal error: could not open certificate file "/root/.postgresql/postgresql.crt": Permission denied
 chown -R app:app /root # /.postgresql
 
+# TODO chown -R app:app should be enough (?)
 for d in cache lock feed-icons; do
 	chmod 777 $DST_DIR/$d
 	find $DST_DIR/$d -type f -exec chmod 666 {} \;

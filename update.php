@@ -141,7 +141,8 @@
 	}
 
 	if (!isset($options['update-schema']) && Config::is_migration_needed()) {
-		die("Schema version is wrong, please upgrade the database (--update-schema).\n");
+		print("Schema version is wrong, please upgrade the database (--update-schema).\n");
+		exit(1);
 	}
 
 	Debug::set_enabled(true);
@@ -188,8 +189,9 @@
 
 	// Try to lock a file in order to avoid concurrent update.
 	if (!$lock_handle) {
-		die("error: Can't create lockfile ($lock_filename). ".
+		print("error: Can't create lockfile ($lock_filename). ".
 			"Maybe another update process is already running.\n");
+		exit(1);
 	}
 
 	if (isset($options["force-update"])) {

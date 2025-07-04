@@ -13,16 +13,18 @@
 	Config::sanity_check();
 
 	if (!function_exists('pcntl_fork')) {
-		die("error: This script requires PHP compiled with PCNTL module.\n");
+		print("error: This script requires PHP compiled with PCNTL module.\n");
+		exit(1);
 	}
 
 	$options = getopt("");
 
 	if (!is_array($options)) {
-		die("error: getopt() failed. ".
+		print("error: getopt() failed. ".
 			"Most probably you are using PHP CGI to run this script ".
 			"instead of required PHP CLI. Check tt-rss wiki page on updating feeds for ".
 			"additional information.\n");
+		exit(1);
 	}
 
 
@@ -188,20 +190,23 @@
 	}
 
 	if (file_is_locked("update_daemon.lock")) {
-		die("error: Can't create lockfile. ".
+		print("error: Can't create lockfile. ".
 			"Maybe another daemon is already running.\n");
+		exit(1);
 	}
 
 	// Try to lock a file in order to avoid concurrent update.
 	$lock_handle = make_lockfile("update_daemon.lock");
 
 	if (!$lock_handle) {
-		die("error: Can't create lockfile. ".
+		print("error: Can't create lockfile. ".
 			"Maybe another daemon is already running.\n");
+		exit(1);
 	}
 
 	if (Config::is_migration_needed()) {
-		die("Schema version is wrong, please upgrade the database.\n");
+		print("Schema version is wrong, please upgrade the database.\n");
+		exit(1);
 	}
 
 	// Protip: children close shared database handle when terminating, it's a bad idea to
@@ -225,7 +230,8 @@
 			for ($j = count($children); $j < $max_jobs; $j++) {
 				$pid = pcntl_fork();
 				if ($pid == -1) {
-					die("fork failed!\n");
+					print("fork failed!\n");
+					exit(1);
 				} else if ($pid) {
 
 					if (!$master_handlers_installed) {

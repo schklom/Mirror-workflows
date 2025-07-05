@@ -125,6 +125,8 @@ func initSQLite(path string) *FMDDB {
 	db.AutoMigrate(&FMDUser{}, &Location{}, &Picture{})
 	db.AutoMigrate(&DBSetting{})
 
+	migrateDatabase(db)
+
 	return &FMDDB{DB: db}
 }
 

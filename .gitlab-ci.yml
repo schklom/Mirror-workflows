@@ -27,7 +27,12 @@ format:
     - go mod tidy
     - go fmt $(go list ./... | grep -v /vendor/)
     - go vet $(go list ./... | grep -v /vendor/)
-    - go test -race $(go list ./... | grep -v /vendor/)
+
+unit-test:
+  stage: test
+  script:
+    - *go-setup
+    - go test -race $(go list ./... | grep -v /vendor/)\
 
 nil-safety:
   stage: test

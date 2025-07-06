@@ -1,6 +1,7 @@
 # Databases
 *.mdb
 *.sqlite
+*.sqlite-journal
 
 # FMD Server config
 config.json

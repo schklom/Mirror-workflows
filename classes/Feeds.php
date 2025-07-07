@@ -999,7 +999,7 @@ class Feeds extends Handler_Protected {
 	 *     Here you should call extractfeedurls in rpc-backend
 	 *     to get all possible feeds.
 	 * 5 - Couldn't download the URL content.
-	 * 6 - currently unused
+	 * 6 - Feed parsing failure (invalid content)
 	 * 7 - Error while creating feed database entry.
 	 * 8 - Permission denied (ACCESS_LEVEL_READONLY).
 	 */
@@ -1058,6 +1058,11 @@ class Feeds extends Handler_Protected {
 			//use feed url as new URL
 			$url = key($feedUrls);
 		}
+
+		// Don't allow subscribing if the content is invalid
+		$fp = new FeedParser($contents);
+		if ($fp->error() || $fp->get_type() === FeedParser::FEED_UNKNOWN)
+			return ['code' => 6, 'message' => truncate_string(clean($contents), 250, '…')];
 
 		$feed = ORM::for_table('ttrss_feeds')
 			->where('feed_url', $url)

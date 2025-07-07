@@ -195,6 +195,9 @@ const	CommonDialogs = {
 												case 5:
 													dialog.show_error(__("Couldn't download the specified URL."), App.escapeHtml(rc['message']));
 													break;
+												case 6:
+													dialog.show_error(__("Invalid content."), App.escapeHtml(rc['message']));
+													break;
 												case 7:
 													dialog.show_error(__("Error while creating feed database entry."));
 													break;

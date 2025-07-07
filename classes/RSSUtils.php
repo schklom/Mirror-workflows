@@ -305,9 +305,8 @@ class RSSUtils {
 
 				if ($feed_data) {
 					$rss = new FeedParser($feed_data);
-					$rss->init();
 
-					if (!$rss->error()) {
+					if ($rss->init()) {
 						$basic_info = [
 							'title' => mb_substr(clean($rss->get_title()), 0, 199),
 							'site_url' => mb_substr(UrlHelper::rewrite_relative($feed->feed_url, clean($rss->get_link())), 0, 245),
@@ -590,9 +589,8 @@ class RSSUtils {
 		}
 
 		$rss = new FeedParser($feed_data);
-		$rss->init();
 
-		if (!$rss->error()) {
+		if ($rss->init()) {
 
 			Debug::log("running HOOK_FEED_PARSED handlers...", Debug::LOG_VERBOSE);
 

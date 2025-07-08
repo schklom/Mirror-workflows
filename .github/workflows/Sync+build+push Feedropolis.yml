@@ -60,7 +60,10 @@ jobs:
         with:
           ref: 'Feedropolis' # branch
       - name: Add python3 and vite and build-essential to apt-get install, for a linux/arm/v7,linux/arm64 image
-        run: sed -i 's/apt-get install -y/apt-get install -y python3 vite build-essential/' Dockerfile
+        run: |
+          sed -i 's/apt-get install -y/apt-get install -y python3 build-essential/' Dockerfile
+          sed -i '/apt-get install -y/a npm install -g vite' Dockerfile
+
       # https://github.com/marketplace/actions/git-auto-commit
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v6

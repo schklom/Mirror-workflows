@@ -28,7 +28,8 @@ FROM node:18-buster-slim as run
 ENV DEBIAN_FRONTEND noninteractive
 ENV HOME /home/node
 RUN apt-get update \
- && apt-get install -y xvfb libasound2 libnss3 libgconf-2-4 libxss1 libgtk-3-0 libgbm-dev --no-install-recommends
+ && apt-get install -y python3 build-essential xvfb libasound2 libnss3 libgconf-2-4 libxss1 libgtk-3-0 libgbm-dev --no-install-recommends
+RUN npm install -g vite
 
 COPY --from=build /app /app/
 

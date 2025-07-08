@@ -123,15 +123,12 @@ const Article = {
 		Article.setActive(0);
 	},
 	displayUrl: function (id) {
-		const query = {op: "Article", method: "getmetadatabyid", id: id};
+		const hl = Headlines.objectById(id);
 
-		xhr.json("backend.php", query, (reply) => {
-			if (reply && reply.link) {
-				prompt(__("Article URL:"), reply.link);
-			} else {
-				alert(__("No URL could be displayed for this article."));
-			}
-		});
+		if (hl?.link)
+			prompt(__("Article URL:"), hl.link);
+		else
+			alert(__("No URL could be displayed for this article."));
 	},
 	openInNewWindow: function (id) {
 		/* global __csrf_token */

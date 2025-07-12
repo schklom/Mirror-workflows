@@ -65,10 +65,9 @@ done
 # - fatal error: could not open certificate file "/root/.postgresql/postgresql.crt": Permission denied
 chown -R app:app /root # /.postgresql
 
-# TODO chown -R app:app should be enough (?)
 for d in cache lock feed-icons; do
-	chmod 777 $DST_DIR/$d
-	find $DST_DIR/$d -type f -exec chmod 666 {} \;
+	chown -R app:app $DST_DIR/$d
+	chmod -R u=rwX,g=rX,o=rX $DST_DIR/$d
 done
 
 sudo -u app cp ${SCRIPT_ROOT}/config.docker.php $DST_DIR/config.php

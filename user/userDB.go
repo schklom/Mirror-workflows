@@ -120,11 +120,6 @@ func initSQLite(path string) *FMDDB {
 		return nil
 	}
 
-	//Disabled Feature: CommandLogs
-	//db.AutoMigrate(&FMDUser{}, &Location{}, &Picture{}, &CommandLogEntry{})
-	db.AutoMigrate(&FMDUser{}, &Location{}, &Picture{})
-	db.AutoMigrate(&DBSetting{})
-
 	migrateDatabase(db)
 
 	return &FMDDB{DB: db}

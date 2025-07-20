@@ -2,6 +2,7 @@ package user
 
 import (
 	"errors"
+	"fmd-server/migrations"
 	"fmt"
 	"strconv"
 
@@ -15,6 +16,15 @@ const KeyVersion = "fmd_db_version"
 
 func migrateDatabase(db *gorm.DB) {
 	log.Info().Msg("migrating database...")
+
+	// This initial migration MUST be idempotent.
+	// It should use IF NOT EXISTS in order to work correctly
+	// with existing installtions (and not break them).
+	err := runMigration("000001_create_tables", db)
+	if err != nil {
+		log.Fatal().Err(err).Msg("failed to create initial database layout")
+		return
+	}
 
 	var dbSetting DBSetting
 	res := db.First(&dbSetting, "setting = ?", KeyVersion)
@@ -45,4 +55,13 @@ func migrateDatabase(db *gorm.DB) {
 	// (e.g., the program cancelled), they are re-run upon the next start.
 	db.Model(&dbSetting).Update("Value", fmt.Sprint(CurrentSqlVersion))
 	log.Info().Msg("database successfully migrated")
+}
+
+func runMigration(name string, db *gorm.DB) error {
+	sql, err := migrations.MigrationFS.ReadFile(fmt.Sprintf("%s.up.sql", name))
+	if err != nil {
+		return err
+	}
+	err = db.Exec(string(sql)).Error
+	return err
 }

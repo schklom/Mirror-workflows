@@ -147,6 +147,11 @@ async function doLogin(fmdid, password, useLongSession) {
     let saltJson = await response.json();
     let salt = saltJson.Data;
 
+    if (salt == "") {
+        alert("This account does not exist.");
+        return;
+    }
+
     let passwordHash;
     try {
         passwordHash = await hashPasswordForLogin(password, salt);

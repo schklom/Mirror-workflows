@@ -376,8 +376,15 @@ async function locate(requestedIndex) {
             // Highlight the selected marker
             marker._icon.classList.add("marker-selected");
 
-            // Zoom to the currently selected point
-            map.setView(target, 16);
+            // Center map on the currently selected point
+            //
+            // Only set zoom if this is the first point displayed.
+            // On later points, we want to preserve the user's chosen zoom level.
+            if (locCache.length == 1) {
+                map.setView(target, 16);
+            } else {
+                map.panTo(target);
+            }
         }
     });
 

@@ -159,7 +159,7 @@ async function doLogin(fmdid, password, useLongSession) {
         console.log(error.message, error.code);
         alert("Failed to hash password!\n\n"
             + `The error was: ${error.message}\n\n`
-            + "If you use Vanadium, please enable JavaScript JIT (needed for WebAssembly). "
+            + "If you are using GrapheneOS with the Vanadium browser, please enable JavaScript JIT (needed for WebAssembly). "
             + "Then reload the page and try again.");
         return;
     }

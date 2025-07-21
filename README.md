@@ -22,10 +22,6 @@ https://github.com/Metastem/Wikiless/wiki
 
 Visit ```http://localhost:8180``` in your web browser to use Wikiless locally.
 
-# Contributing
-
-Contributions are welcome! 
-
 # License
 
 This project is licensed under the GNU Affero General Public License v3.0.

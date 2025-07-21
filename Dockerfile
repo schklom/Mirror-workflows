@@ -3,7 +3,7 @@
 FROM node:23.5.0-alpine3.20 AS build
 WORKDIR /wikiless
 COPY . /wikiless
-RUN npm install --no-optional
+RUN npm install --omit-optional
 FROM gcr.io/distroless/nodejs22-debian11
 COPY --from=build /wikiless /wikiless
 WORKDIR /wikiless

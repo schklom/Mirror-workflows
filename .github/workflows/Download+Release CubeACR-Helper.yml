@@ -53,7 +53,8 @@ jobs:
         if: ${{ env.current_hash != env.new_hash }}
         run: |
           sudo apt install -y aapt
-          version=`aapt d badging ${{ env.filename }} | grep -Po "(?<=\sversionName=')([0-9.]+)"`
+          # get versionName string, remove "versionName=, remove "'". This is more readable than lookaheads/lookbehinds
+          version=`aapt dump badging ${{ env.filename }} | grep -Po "versionName='.+?'" | sed "s/versionName=//" | sed "s/'//g"`
           echo "version=${version}" >> $GITHUB_ENV
 #          unzip -d apk_files ${{ env.filename }}
 #          echo "version=$(grep "Version" apk_files/assets/about.html | grep -oP '[0-9\.]+')" >> $GITHUB_ENV

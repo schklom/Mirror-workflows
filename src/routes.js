@@ -1,5 +1,5 @@
 module.exports = (app, utils) => {
-  const config = require('../config')
+  const config = require('../wikiless.config')
   const path = require('path')
 
   app.all(/.*/, (req, res, next) => {

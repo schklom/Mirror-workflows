@@ -12,9 +12,13 @@
     "node-html-parser": "^7.0.1",
     "redis": "^5.6.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jest": "^30.0.5",
+    "redis-mock": "^0.56.3",
+    "supertest": "^7.1.4"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --coverage",
     "start": "node src/wikiless.js"
   },
   "repository": {

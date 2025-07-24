@@ -4,75 +4,65 @@ module.exports = function(redis) {
   const fs = require('fs').promises
   const { createWriteStream, existsSync } = require('fs')
   const path = require('path')
-  const got = require('got')
   const stream = require('stream')
   const { promisify } = require('util')
   const pipeline = promisify(stream.pipeline)
 
+  let _got;
+
   this.download = async (url, params = '') => {
-    if(!url) {
-      return { success: false, reason: 'MISSING_URL' }
+    if (!url) return { success: false, reason: 'MISSING_URL' };
+
+    if (!_got) {
+      const mod = await import('got');
+      _got = mod.default;
     }
-
-    if(url.includes('?')) {
-      let wikipage = url.split('wikipedia.org/wiki/')[1]
-      let uriencoded_wikipage = ''
-
-      if(wikipage) {
-        uriencoded_wikipage = encodeURIComponent(wikipage)
-      }
-      url = url.replace(wikipage, uriencoded_wikipage)
+  
+    if (url.includes('?')) {
+      const wikipage = url.split('wikipedia.org/wiki/')[1];
+      if (wikipage) url = url.replace(wikipage, encodeURIComponent(wikipage));
     }
-    
-    
-    
-
-    if(params) {
-      url = `${url}?${params}&useskin=vector`
+  
+    const u = new URL(url);
+    if (params) {
+      params.split('&').forEach(p => {
+        const [k, v] = p.split('=');
+        u.searchParams.set(k, v);
+      });
     }
-    else {
-      url= `${url}?useskin=vector`
-    }
-
-
-    let data = ''
+    u.searchParams.set('useskin', 'vector');
+    url = u.toString();
+  
+    const UA = config.wikimedia_useragent;
+  
     try {
-      if(redis.isOpen === false) {
-        await redis.connect()
+      if (!redis.isOpen) await redis.connect();
+      const cached = await redis.get(url);
+      if (cached) {
+        console.log(`Got key ${url} from cache.`);
+        return { success: true, html: cached, processed: true, url };
       }
-      data = await redis.get(url)
-    } catch(err) {
-      console.log(`Error while fetching key ${url} from cache. Error: ${err}`)
+    } catch (err) {
+      console.error(`Redis GET error for ${url}:`, err);
     }
-
-    if(data) {
-      console.log(`Got key ${url} from cache.`)
-      return { success: true, html: data, processed: true, url: url }
-    }
+  
     try {
-      const gotUrl = new URL(url)
-      const { body } = await got(gotUrl)
-
-      console.log(`Fetched url ${url} from Wikipedia.`)
-      return { success: true, html: body, processed: false, url: url }
-    } catch(err) {
-      let status_code = null
-      if(err.response) {
-        status_code = err.response.statusCode
-      }
-      if(status_code !== 200) {
-        if(status_code === 404) {
-          // let's redirect 404s to homepage
-          // TODO: maybe add some 404 page?
-          console.log(`Didn't find ${url} HTTP status code: ${status_code}`)
-          return { success: false, reason: 'REDIRECT', url: 'https://wikipedia.org/' }
-        }
-
-        console.log(`Error while fetching data from ${url}. HTTP status code: ${status_code}`)
-        return { success: false, reason: `INVALID_HTTP_RESPONSE: ${status_code}` }
-      }
+      const { body } = await _got(url, {
+        headers: { 'User-Agent': UA },
+        timeout: { request: 10000 }
+      });
+      console.log(`Fetched ${url} from Wikipedia.`);
+      return { success: true, html: body, processed: false, url };
+    } catch (err) {
+      const status = err.response?.statusCode ?? 'NO_RESPONSE';
+      console.error(`Download error for ${url}:`, err.code ?? err.message);
+      return {
+        success: false,
+        reason: status === 404 ? 'REDIRECT' : `INVALID_HTTP_RESPONSE: ${status}`,
+        url: status === 404 ? 'https://wikipedia.org/' : undefined
+      };
     }
-  }
+  };
 
   this.applyUserMods = (data, theme, lang) => {
     /**
@@ -266,6 +256,11 @@ module.exports = function(redis) {
   }
 
   this.saveFile = async (url, file_path) => {
+    if (!_got) {
+      const mod = await import('got');
+      _got = mod.default;
+    }
+
     let media_path = ''
     if(url.href.startsWith('https://maps.wikimedia.org/')) {
       media_path = path.join(__dirname, '../media/maps_wikimedia_org')
@@ -290,7 +285,7 @@ module.exports = function(redis) {
 
       try {
         await pipeline(
-          got.stream(url, options),
+          _got.stream(url, options),
           createWriteStream(path_with_filename)
         )
       } catch(err) {

@@ -2,7 +2,7 @@ module.exports = (app, utils) => {
   const config = require('../config')
   const path = require('path')
 
-  app.all('*', (req, res, next) => {
+  app.all(/.*/, (req, res, next) => {
     let themeOverride = req.query.theme
     if(themeOverride) {
       themeOverride = themeOverride.toLowerCase()
@@ -24,7 +24,7 @@ module.exports = (app, utils) => {
     return next()
   })
 
-  app.get('*', async (req, res, next) => {
+  app.get(/.*/, async (req, res, next) => {
     if(req.url.startsWith('/w/load.php')) {
       return res.sendStatus(404)
     }
@@ -84,7 +84,17 @@ module.exports = (app, utils) => {
     return next()
   })
 
-  app.get('/wiki/:page?/:sub_page?', (req, res, next) => {
+  app.get('/wiki/:page/:sub_page', (req, res, next) => {
+    const pageName = req.params.page;
+    if (pageName && pageName.startsWith('File:')) {
+        const encodedFileName = encodeURIComponent(pageName.split(':')[1])
+        const mediaPath = `/media/wikipedia/commons/thumb/${encodedFileName}`
+        return res.redirect(mediaPath)
+    }
+    return handleWikiPage(req, res, '/wiki/')
+  })
+
+  app.get('/wiki/:page', (req, res, next) => {
     const pageName = req.params.page;
     if (pageName && pageName.startsWith('File:')) {
         const encodedFileName = encodeURIComponent(pageName.split(':')[1])
@@ -110,7 +120,7 @@ module.exports = (app, utils) => {
     return handleWikiPage(req, res, '/w/')
   })
 
-  app.get('/wiki/Special:Map/*', (req, res, next) => {
+  app.get(/^\/wiki\/Special:Map\/.*$/, (req, res, next) => {
     return handleWikiPage(req, res, '/wiki/Map')
   })
 
@@ -129,7 +139,7 @@ module.exports = (app, utils) => {
   })
 
   // handle chinese variants
-  app.get('/zh*', (req, res, next) => {
+  app.get(/^\/zh.*$/, (req, res, next) => {
     const pathSplit = req.path.split('/')
     const lang = pathSplit[1]
     const page = pathSplit[2]

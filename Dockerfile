@@ -4,7 +4,7 @@ FROM node:24.4-alpine3.21 AS build
 WORKDIR /wikiless
 COPY . /wikiless
 RUN npm install --no-optional
-FROM gcr.io/distroless/nodejs22-debian11
+FROM gcr.io/distroless/nodejs22-debian12
 COPY --from=build /wikiless /wikiless
 WORKDIR /wikiless
 COPY wikiless.config config.js

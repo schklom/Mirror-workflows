@@ -8,6 +8,9 @@ const app = express()
 const r = require('redis')
 const bodyParser = require('body-parser')
 
+// Health endpoint
+app.get('/health', (req, res) => res.sendStatus(200));
+
 const redis = (() => {
   const redisOptions = {
     url: config.redis_url,

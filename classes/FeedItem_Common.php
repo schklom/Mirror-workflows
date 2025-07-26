@@ -84,6 +84,7 @@ abstract class FeedItem_Common extends FeedItem {
 	/**
 	 * this is common for both Atom and RSS types and deals with various 'media:' elements
 	 *
+	 * @see https://www.rssboard.org/media-rss
 	 * @return array<int, FeedEnclosure>
 	 */
 	function get_enclosures(): array {
@@ -142,7 +143,7 @@ abstract class FeedItem_Common extends FeedItem {
 			}
 		}
 
-		$enclosures = $this->xpath->query("media:thumbnail", $this->elem);
+		$enclosures = $this->xpath->query("(.|media:content|media:group|media:group/media:content)/media:thumbnail", $this->elem);
 
 		/** @var DOMElement $enclosure */
 		foreach ($enclosures as $enclosure) {

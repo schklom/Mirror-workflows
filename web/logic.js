@@ -394,7 +394,7 @@ async function locate(requestedIndex) {
     });
 
     // Add the lines between the points
-    L.polyline(lat_long, { color: 'blue' }).addTo(markers);
+    L.polyline(lat_long).addTo(markers);
 
     updateLocateOlderButton(currentLocIdx);
 }

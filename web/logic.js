@@ -1,4 +1,4 @@
-let map, markers;
+let map, markers, accuracyCircles;
 
 let currentLocIdx = -1;
 const locCache = new Array();
@@ -49,6 +49,7 @@ function init() {
     const element = document.getElementById('map');
     map = L.map(element);
     markers = L.layerGroup().addTo(map);
+    accuracyCircles = L.layerGroup().addTo(map);
 
     // tileServerUrl is from config.js which is dynamically created by the server
     L.tileLayer(tileServerUrl, {
@@ -366,6 +367,7 @@ async function locate(requestedIndex) {
     // TODO: This could be more efficient. No need to re-draw everything all the time.
     const lat_long = []   // All locations in an array. Needed for the line between points.
     markers.clearLayers();
+    accuracyCircles.clearLayers();
 
     // Iterate through the cache and add every point to the map
     locCache.forEach((locPair) => {
@@ -376,7 +378,9 @@ async function locate(requestedIndex) {
         lat_long.push(target)
         const locTime = new Date(locEntry.time);
 
+        // Pin
         const marker = L.marker(target).bindTooltip(locTime.toLocaleString()).addTo(markers);
+
         if (index == currentLocIdx) {
             // Highlight the selected marker
             marker._icon.classList.add("marker-selected");
@@ -389,6 +393,15 @@ async function locate(requestedIndex) {
                 map.setView(target, 16);
             } else {
                 map.panTo(target);
+            }
+        }
+
+        // Accuracy circle
+        if ("accuracy" in locEntry) {
+            const accCirc = L.circle(target, locEntry["accuracy"]).addTo(accuracyCircles);
+
+            if (index == currentLocIdx) {
+                accCirc.setStyle({ color: "#e5528c" });
             }
         }
     });

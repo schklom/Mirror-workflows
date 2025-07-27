@@ -14,6 +14,7 @@ const App = {
    global_unread: -1,
    _widescreen_mode: false,
    _loading_progress: 0,
+   _night_mode_retry_timeout: false,
    hotkey_actions: {},
    is_prefs: false,
    LABEL_BASE_INDEX: -1024,
@@ -167,12 +168,25 @@ const App = {
 	setInitParam: function(k, v) {
 		this._initParams[k] = v;
 	},
-	nightModeChanged: function(is_night, link) {
-		console.log("night mode changed to", is_night);
+	nightModeChanged: function(is_night, link, retry = 0) {
+		console.log("nightModeChanged: night mode changed to", is_night, "retry", retry);
 
 		if (link) {
-			const css_override = is_night ? "themes/night.css" : "themes/light.css";
-			link.setAttribute("href", css_override + "?" + Date.now());
+			if (navigator.onLine) {
+				const css_override = is_night ? "themes/night.css" : "themes/light.css";
+				link.setAttribute("href", css_override + "?" + Date.now());
+			} else if (retry < 5) {
+				console.log("nightModeChanged: we're offline, will attempt to retry...");
+
+				window.clearTimeout(this._night_mode_retry_timeout);
+
+				this._night_mode_retry_timeout = window.setTimeout(
+					() => this.nightModeChanged(is_night, link, ++retry),
+					3000);
+
+			} else {
+				console.log("nightModeChanged: too many retries, giving up");
+			}
 		}
 	},
 	setupNightModeDetection: function(callback) {

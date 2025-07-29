@@ -378,8 +378,27 @@ async function locate(requestedIndex) {
         lat_long.push(target)
         const locTime = new Date(locEntry.time);
 
+        // Pin Hover Text
+        let tooltipText = locTime.toLocaleString();
+        if ("accuracy" in locEntry) {
+            const accuracy = Math.round(locEntry["accuracy"]);
+            // XXX: \n would be nicer, but the linebreak doesn't take effect (?)
+            tooltipText += ` Accuracy: ${accuracy}m`;
+        }
+        if ("altitude" in locEntry) {
+            const altitude = Math.round(locEntry["altitude"]);
+            tooltipText += ` Altitude: ${altitude}m`;
+        }
+        if ("bearing" in locEntry) {
+            tooltipText += ` Bearing: ${locEntry["bearing"]}°`;
+        }
+        if ("speed" in locEntry) {
+            const speed = Math.round(locEntry["speed"] * 3.6);
+            tooltipText += ` Speed: ${speed}km/h`;
+        }
+
         // Pin
-        const marker = L.marker(target).bindTooltip(locTime.toLocaleString()).addTo(markers);
+        const marker = L.marker(target).bindTooltip(tooltipText).addTo(markers);
 
         if (index == currentLocIdx) {
             // Highlight the selected marker

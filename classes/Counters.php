@@ -164,6 +164,7 @@ class Counters {
 			->select_many_expr([
 				'count' => 'SUM(CASE WHEN ue.unread THEN 1 ELSE 0 END)',
 				'count_marked' => 'SUM(CASE WHEN ue.marked THEN 1 ELSE 0 END)',
+				'count_published' => 'SUM(CASE WHEN ue.published THEN 1 ELSE 0 END)',
 				'last_updated' => 'SUBSTRING_FOR_DATE(f.last_updated,1,19)',
 			])
 			->join('ttrss_user_entries', [ 'ue.feed_id', '=', 'f.id'], 'ue')

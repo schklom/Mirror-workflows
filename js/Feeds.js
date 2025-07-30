@@ -105,6 +105,7 @@ const	Feeds = {
 			this.setUnread(id, (kind == "cat"), ctr);
 			this.setValue(id, (kind == "cat"), 'auxcounter', parseInt(elems[l].auxcounter));
 			this.setValue(id, (kind == "cat"), 'markedcounter', parseInt(elems[l].markedcounter));
+			this.setValue(id, (kind == "cat"), 'publishedcounter', parseInt(elems[l].publishedcounter));
 
 			if (kind != "cat") {
 				this.setValue(id, false, 'error', error);

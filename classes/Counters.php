@@ -35,6 +35,7 @@ class Counters {
 	static private function get_cat_children(int $cat_id, int $owner_uid): array {
 		$unread = 0;
 		$marked = 0;
+		$published = 0;
 
 		$cats = ORM::for_table('ttrss_feed_categories')
 					->where('owner_uid', $owner_uid)
@@ -42,13 +43,14 @@ class Counters {
 					->find_many();
 
 		foreach ($cats as $cat) {
-			list ($tmp_unread, $tmp_marked) = self::get_cat_children($cat->id, $owner_uid);
+			list ($tmp_unread, $tmp_marked, $tmp_published) = self::get_cat_children($cat->id, $owner_uid);
 
 			$unread += $tmp_unread + Feeds::_get_cat_unread($cat->id, $owner_uid);
 			$marked += $tmp_marked + Feeds::_get_cat_marked($cat->id, $owner_uid);
+			$published += $tmp_published + Feeds::_get_cat_published($cat->id, $owner_uid);
 		}
 
-		return [$unread, $marked];
+		return [$unread, $marked, $published];
 	}
 
 	/**
@@ -75,8 +77,9 @@ class Counters {
 
 			$sth = $pdo->prepare("SELECT fc.id,
 					SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
-						SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
-						(SELECT COUNT(id) FROM ttrss_feed_categories fcc
+					SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
+					SUM(CASE WHEN published THEN 1 ELSE 0 END) AS count_published,
+					(SELECT COUNT(id) FROM ttrss_feed_categories fcc
 						WHERE fcc.parent_cat = fc.id) AS num_children
 				FROM ttrss_feed_categories fc
 					LEFT JOIN ttrss_feeds f ON (f.cat_id = fc.id)
@@ -86,8 +89,9 @@ class Counters {
 			UNION
 				SELECT 0,
 					SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
-						SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
-						0
+					SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
+					SUM(CASE WHEN published THEN 1 ELSE 0 END) AS count_published,
+					0
 				FROM ttrss_feeds f, ttrss_user_entries ue
 				WHERE f.cat_id IS NULL AND
 					ue.feed_id = f.id AND
@@ -98,8 +102,9 @@ class Counters {
 		} else {
 			$sth = $pdo->prepare("SELECT fc.id,
 					SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
-						SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
-						(SELECT COUNT(id) FROM ttrss_feed_categories fcc
+					SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
+					SUM(CASE WHEN published THEN 1 ELSE 0 END) AS count_published,
+					(SELECT COUNT(id) FROM ttrss_feed_categories fcc
 						WHERE fcc.parent_cat = fc.id) AS num_children
 				FROM ttrss_feed_categories fc
 					LEFT JOIN ttrss_feeds f ON (f.cat_id = fc.id)
@@ -109,8 +114,9 @@ class Counters {
 			UNION
 				SELECT 0,
 					SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
-						SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
-						0
+					SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
+					SUM(CASE WHEN published THEN 1 ELSE 0 END) AS count_published,
+					0
 				FROM ttrss_feeds f, ttrss_user_entries ue
 				WHERE f.cat_id IS NULL AND
 					ue.feed_id = f.id AND
@@ -121,16 +127,18 @@ class Counters {
 
 		while ($line = $sth->fetch()) {
 			if ($line["num_children"] > 0) {
-				list ($child_counter, $child_marked_counter) = self::get_cat_children($line["id"], $_SESSION["uid"]);
+				list ($child_counter, $child_marked_counter, $child_published_counter) = self::get_cat_children($line["id"], $_SESSION["uid"]);
 			} else {
 				$child_counter = 0;
 				$child_marked_counter = 0;
+				$child_published_counter = 0;
 			}
 
 			$cv = [
 				"id" => (int)$line["id"],
 				"kind" => "cat",
 				"markedcounter" => (int) $line["count_marked"] + $child_marked_counter,
+				"publishedcounter" => (int) $line["count_published"] + $child_published_counter,
 				"counter" => (int) $line["count"] + $child_counter
 			];
 
@@ -156,6 +164,7 @@ class Counters {
 			->select_many_expr([
 				'count' => 'SUM(CASE WHEN ue.unread THEN 1 ELSE 0 END)',
 				'count_marked' => 'SUM(CASE WHEN ue.marked THEN 1 ELSE 0 END)',
+				'count_published' => 'SUM(CASE WHEN ue.published THEN 1 ELSE 0 END)',
 				'last_updated' => 'SUBSTRING_FOR_DATE(f.last_updated,1,19)',
 			])
 			->join('ttrss_user_entries', [ 'ue.feed_id', '=', 'f.id'], 'ue')
@@ -173,6 +182,7 @@ class Counters {
 				'updated' => TimeHelper::make_local_datetime($feed->last_updated),
 				'counter' => (int) $feed->count,
 				'markedcounter' => (int) $feed->count_marked,
+				'publishedcounter' => (int) $feed->count_published,
 				'ts' => Feeds::_has_icon($feed->id) ? (int) filemtime(Feeds::_get_icon_file($feed->id)) : 0,
 			];
 		}
@@ -228,6 +238,9 @@ class Counters {
 			if ($feed_id == Feeds::FEED_STARRED)
 				$cv["markedcounter"] = $auxctr;
 
+			if ($feed_id == Feeds::FEED_PUBLISHED)
+				$cv["publishedcounter"] = $auxctr;
+
 			array_push($ret, $cv);
 		}
 
@@ -270,6 +283,7 @@ class Counters {
 						caption,
 						SUM(CASE WHEN u1.unread = true THEN 1 ELSE 0 END) AS count_unread,
 						SUM(CASE WHEN u1.marked = true THEN 1 ELSE 0 END) AS count_marked,
+						SUM(CASE WHEN u1.published = true THEN 1 ELSE 0 END) AS count_published,
 						COUNT(u1.unread) AS total
 				FROM ttrss_labels2 LEFT JOIN ttrss_user_labels2 ON
 					(ttrss_labels2.id = label_id)
@@ -282,6 +296,7 @@ class Counters {
 						caption,
 						SUM(CASE WHEN u1.unread = true THEN 1 ELSE 0 END) AS count_unread,
 						SUM(CASE WHEN u1.marked = true THEN 1 ELSE 0 END) AS count_marked,
+						SUM(CASE WHEN u1.published = true THEN 1 ELSE 0 END) AS count_published,
 						COUNT(u1.unread) AS total
 				FROM ttrss_labels2 LEFT JOIN ttrss_user_labels2 ON
 					(ttrss_labels2.id = label_id)
@@ -300,6 +315,7 @@ class Counters {
 				"counter" => (int) $line["count_unread"],
 				"auxcounter" => (int) $line["total"],
 				"markedcounter" => (int) $line["count_marked"],
+				"publishedcounter" => (int) $line["count_published"],
 				"description" => $line["caption"]
 			];
 

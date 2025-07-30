@@ -173,6 +173,9 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 			tnode.markedCounterNode = dojo.create('span', { className: 'counterNode marked', innerHTML: args.item.markedcounter });
 			domConstruct.place(tnode.markedCounterNode, tnode.rowNode, 'first');
 
+			tnode.publishedCounterNode = dojo.create('span', { className: 'counterNode published', innerHTML: args.item.publishedcounter });
+			domConstruct.place(tnode.publishedCounterNode, tnode.rowNode, 'first');
+
 			tnode.auxCounterNode = dojo.create('span', { className: 'counterNode aux', innerHTML: args.item.auxcounter });
 			domConstruct.place(tnode.auxCounterNode, tnode.rowNode, 'first');
 
@@ -188,7 +191,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 		updateCounter: function (item) {
 			const tree = this;
 
-			//console.log("updateCounter: " + item.id[0] + " " + item.unread + " " + tree);
+			// console.log("updateCounter: " + item.id[0] + " U: " + item.unread + " P: " + item.publishedcounter + " M: " + item.markedcounter);
 
 			let treeNode = tree._itemNodesMap[item.id];
 
@@ -198,6 +201,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 				treeNode.unreadCounterNode.innerHTML = item.unread;
 				treeNode.auxCounterNode.innerHTML = item.auxcounter;
 				treeNode.markedCounterNode.innerHTML = item.markedcounter;
+				treeNode.publishedCounterNode.innerHTML = item.publishedcounter;
 			}
 		},
 		getTooltip: function (item) {
@@ -224,6 +228,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 			if (item.unread > 0) rc += " Unread";
 			if (item.auxcounter > 0) rc += " Has_Aux";
 			if (item.markedcounter > 0) rc += " Has_Marked";
+			if (item.publishedcounter > 0) rc += " Has_Published";
 			if (item.updates_disabled > 0) rc += " UpdatesDisabled";
 			if (item.bare_id >= App.LABEL_BASE_INDEX && item.bare_id < 0 && !is_cat || item.bare_id == Feeds.FEED_ARCHIVED && !is_cat) rc += " Special";
 			if (item.bare_id == Feeds.CATEGORY_SPECIAL && is_cat) rc += " AlwaysVisible";

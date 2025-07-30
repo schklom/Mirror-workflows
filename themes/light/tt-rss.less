@@ -646,7 +646,7 @@ body.ttrss_main {
 						height : 14px;
 						flex-shrink : 0;
 
-						&.aux, &.marked {
+						&.aux, &.marked, &.published {
 							background : @color-panel-bg;
 							color : lighten(@default-text, 10%);
 							border-color : darken(@color-panel-bg, 10%);
@@ -654,7 +654,12 @@ body.ttrss_main {
 
 						&.marked {
 							border-color : @color-accent-marked;
-							background : lighten(@color-accent-marked, 60%);
+							background : @default-bg;
+						}
+
+						&.published {
+							border-color : @color-accent-published;
+							background : @default-bg;
 						}
 					}
 
@@ -1141,8 +1146,22 @@ body.ttrss_main[view-mode="marked"] #feeds-holder #feedTree {
 	}
 }
 
+body.ttrss_main[view-mode="published"] #feeds-holder #feedTree {
+	.dijitTreeRow.Has_Published .dijitTreeLabel {
+		color : @color-accent-published;
+	}
+	.dijitTreeRow.Has_Published .counterNode.published {
+		display : inline-block;
+	}
+}
+
 body.ttrss_main[view-mode="marked"][hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree
 	.dijitTreeRow:not(.AlwaysVisible):not(.Special):not(.Has_Marked) {
+		display : none;
+}
+
+body.ttrss_main[view-mode="published"][hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree
+	.dijitTreeRow:not(.AlwaysVisible):not(.Special):not(.Has_Published) {
 		display : none;
 }
 
@@ -1151,8 +1170,12 @@ body.ttrss_main[view-mode="marked"][hide-read-feeds="true"][hide-read-shows-spec
 		display : none;
 }
 
+body.ttrss_main[view-mode="published"][hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree
+	.dijitTreeRow:not(.AlwaysVisible):not(.Has_Published) {
+		display : none;
+}
 
-body.ttrss_main:not([view-mode="marked"]) #feeds-holder #feedTree {
+body.ttrss_main:not([view-mode="marked"]):not([view-mode="published"]) #feeds-holder #feedTree {
 	.dijitTreeRow.Unread .counterNode.unread {
 		display : inline-block;
 	}
@@ -1161,12 +1184,12 @@ body.ttrss_main:not([view-mode="marked"]) #feeds-holder #feedTree {
 	}
 }
 
-body.ttrss_main:not([view-mode="marked"])[hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree
+body.ttrss_main:not([view-mode="marked"]):not([view-mode="published"])[hide-read-feeds="true"][hide-read-shows-special="true"] #feeds-holder #feedTree
 	.dijitTreeRow:not(.Unread):not(.AlwaysVisible):not(.Special) {
 		display : none;
 }
 
-body.ttrss_main:not([view-mode="marked"])[hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree
+body.ttrss_main:not([view-mode="marked"]):not([view-mode="published"])[hide-read-feeds="true"][hide-read-shows-special="false"] #feeds-holder #feedTree
 	.dijitTreeRow:not(.Unread):not(.AlwaysVisible) {
 		display : none;
 }

@@ -4,6 +4,9 @@
 @import "../lib/flat-ttrss/flat_combined_dark.css";
 
 @color-accent: #b87d2c;
+@color-accent-marked: @color-accent;
+@color-accent-published: desaturate(@color-published, 40%);
+
 @color-panel-bg : #222;
 @default-text: #ccc;
 @default-fg: @default-text;
@@ -64,14 +67,21 @@ body.flat.ttrss_main {
 
 		#feedTree {
 			.dijitTreeRow {
-				.counterNode.aux, .counterNode.marked {
-					background: @color-panel-bg;
-					color: @default-text;
-					border-color: @default-bg;
-				}
 
-				.counterNode.marked {
-					border-color : @color-accent-marked;
+				.counterNode {
+					&.aux, &.marked, &.published {
+						background: @color-panel-bg;
+						color: @default-text;
+						border-color: @default-bg;
+					}
+
+					&.marked {
+						border-color : @color-accent-marked;
+					}
+
+					&.published {
+						border-color : @color-accent-published;
+					}
 				}
 
 				.dijitTreeRowSelected {

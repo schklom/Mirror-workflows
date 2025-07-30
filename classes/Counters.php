@@ -77,8 +77,9 @@ class Counters {
 
 			$sth = $pdo->prepare("SELECT fc.id,
 					SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
-						SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
-						(SELECT COUNT(id) FROM ttrss_feed_categories fcc
+					SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
+					SUM(CASE WHEN published THEN 1 ELSE 0 END) AS count_published,
+					(SELECT COUNT(id) FROM ttrss_feed_categories fcc
 						WHERE fcc.parent_cat = fc.id) AS num_children
 				FROM ttrss_feed_categories fc
 					LEFT JOIN ttrss_feeds f ON (f.cat_id = fc.id)
@@ -88,8 +89,9 @@ class Counters {
 			UNION
 				SELECT 0,
 					SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
-						SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
-						0
+					SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
+					SUM(CASE WHEN published THEN 1 ELSE 0 END) AS count_published,
+					0
 				FROM ttrss_feeds f, ttrss_user_entries ue
 				WHERE f.cat_id IS NULL AND
 					ue.feed_id = f.id AND
@@ -100,9 +102,9 @@ class Counters {
 		} else {
 			$sth = $pdo->prepare("SELECT fc.id,
 					SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
-						SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
-						SUM(CASE WHEN published THEN 1 ELSE 0 END) AS count_published,
-						(SELECT COUNT(id) FROM ttrss_feed_categories fcc
+					SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
+					SUM(CASE WHEN published THEN 1 ELSE 0 END) AS count_published,
+					(SELECT COUNT(id) FROM ttrss_feed_categories fcc
 						WHERE fcc.parent_cat = fc.id) AS num_children
 				FROM ttrss_feed_categories fc
 					LEFT JOIN ttrss_feeds f ON (f.cat_id = fc.id)
@@ -112,9 +114,9 @@ class Counters {
 			UNION
 				SELECT 0,
 					SUM(CASE WHEN unread THEN 1 ELSE 0 END) AS count,
-						SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
-						SUM(CASE WHEN published THEN 1 ELSE 0 END) AS count_published,
-						0
+					SUM(CASE WHEN marked THEN 1 ELSE 0 END) AS count_marked,
+					SUM(CASE WHEN published THEN 1 ELSE 0 END) AS count_published,
+					0
 				FROM ttrss_feeds f, ttrss_user_entries ue
 				WHERE f.cat_id IS NULL AND
 					ue.feed_id = f.id AND

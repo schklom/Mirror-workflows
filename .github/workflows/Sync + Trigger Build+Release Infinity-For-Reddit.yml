@@ -141,15 +141,13 @@ jobs:
           what_to_add="
               - name: Sign APK
                 id: sign_apk
-                uses: ilharp/sign-android-release@v1
+                uses: ilharp/sign-android-release@v2
                 with:
                   releaseDir: app/build/outputs/apk/
                   signingKey: ${{ '\${{ secrets.APK_KEYSTORE_FILE_BASE64 }}' }}
                   keyAlias: ${{ '\${{ secrets.APK_KEYSTORE_ALIAS }}' }}
                   keyStorePassword: ${{ '\${{ secrets.APK_KEYSTORE_PASSWORD }}' }}
                   keyPassword: ${{ '\${{ secrets.APK_KEYSTORE_PASSWORD }}' }}
-                  # https://github.com/ilharp/sign-android-release/issues/24#issuecomment-2414013354
-                  buildToolsVersion: 35.0.0
           "
           where_to_add="arguments: build -x lint"
           sed -i "\|$where_to_add|r"<(echo "$what_to_add") $file

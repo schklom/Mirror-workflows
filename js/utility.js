@@ -7,8 +7,11 @@ window.addEventListener("load", function() {
         apply_night_mode: function (is_night, link) {
             console.log("night mode changed to", is_night);
 
+            const light_theme = typeof __default_light_theme != 'undefined' ? __default_light_theme : 'themes/light.css';
+            const dark_theme = typeof __default_dark_theme != 'undefined' ? __default_dark_theme : 'themes/dark.css';
+
             if (link) {
-                const css_override = is_night ? "themes/night.css" : "themes/light.css";
+                const css_override = is_night ? dark_theme : light_theme;
 
                 link.setAttribute("href", css_override + "?" + Date.now());
             }

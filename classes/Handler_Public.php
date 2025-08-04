@@ -438,14 +438,22 @@ class Handler_Public extends Handler {
 			<link rel="icon" type="image/png" sizes="72x72" href="images/favicon-72px.png">
 			<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 			<?php
-				echo stylesheet_tag("themes/light.css");
 				echo javascript_tag("lib/dojo/dojo.js");
 				echo javascript_tag("lib/dojo/tt-rss-layer.js");
+				echo javascript_tag("js/common.js");
+				echo javascript_tag("js/utility.js");
 			?>
 			<?= Config::get_override_links() ?>
 		</head>
-		<body class='flat ttrss_utility'>
+		<body class='flat ttrss_utility css_loading'>
 		<div class='container'>
+
+		<script type="text/javascript">
+			const __csrf_token = "<?= $_SESSION["csrf_token"]; ?>";
+
+			const __default_light_theme = "<?= get_theme_path(Config::get(Config::DEFAULT_LIGHT_THEME), 'themes/light.css') ?>";
+			const __default_dark_theme = "<?= get_theme_path(Config::get(Config::DEFAULT_DARK_THEME), 'themes/night.css') ?>";
+		</script>
 
 		<script type="text/javascript">
 		require(['dojo/parser', "dojo/ready", 'dijit/form/Button','dijit/form/CheckBox', 'dijit/form/Form',
@@ -455,6 +463,19 @@ class Handler_Public extends Handler {
 			});
 		});
 		</script>
+
+		<style type="text/css">
+			@media (prefers-color-scheme: dark) {
+				body {
+					background : #303030;
+				}
+			}
+
+			body.css_loading * {
+				display : none;
+			}
+		</style>
+
 		<?php
 
 		print "<h1>".__("Password recovery")."</h1>";

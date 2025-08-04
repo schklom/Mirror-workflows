@@ -20,33 +20,6 @@ class OPML extends Handler_Protected {
 		return $rc;
 	}
 
-	function import(): void {
-		$owner_uid = $_SESSION["uid"];
-
-		header('Content-Type: text/html; charset=utf-8');
-
-		print "<html>
-			<head>
-				".stylesheet_tag("themes/light.css")."
-				<title>".__("OPML Utility")."</title>
-				<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>
-			</head>
-			<body class='claro ttrss_utility'>
-			<h1>".__('OPML Utility')."</h1><div class='content'>";
-
-		Feeds::_add_cat("Imported feeds", $owner_uid);
-
-		$this->opml_notice(__("Importing OPML..."));
-
-		$this->opml_import($owner_uid);
-
-		print "<br><form method=\"GET\" action=\"prefs.php\">
-			<input type=\"submit\" value=\"".__("Return to preferences")."\">
-			</form>";
-
-		print "</div></body></html>";
-	}
-
 	// Export
 
 	private function opml_export_category(int $owner_uid, int $cat_id, bool $hide_private_feeds = false, bool $include_settings = true): string {

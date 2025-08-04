@@ -214,6 +214,12 @@ class Config {
 	/** scheduled task to send digests, value should be valid cron expression */
 	const SCHEDULE_SEND_HEADLINES_DIGESTS = "SCHEDULE_SEND_HEADLINES_DIGESTS";
 
+	/** default (fallback) light theme path */
+	const DEFAULT_LIGHT_THEME = "DEFAULT_LIGHT_THEME";
+
+	/** default (fallback) dark (night) theme path */
+	const DEFAULT_DARK_THEME = "DEFAULT_DARK_THEME";
+
 	/** default values for all global configuration options */
 	private const _DEFAULTS = [
 		Config::DB_TYPE => [ "pgsql", 									Config::T_STRING ],
@@ -280,6 +286,8 @@ class Config {
 		Config::SCHEDULE_EXPIRE_ERROR_LOG => ["@hourly", 			Config::T_STRING],
 		Config::SCHEDULE_EXPIRE_LOCK_FILES => ["@hourly", 			Config::T_STRING],
 		Config::SCHEDULE_SEND_HEADLINES_DIGESTS => ["@hourly", 	Config::T_STRING],
+		Config::DEFAULT_LIGHT_THEME => [ "light.css",     			Config::T_STRING],
+		Config::DEFAULT_DARK_THEME => [ "night.css",     			Config::T_STRING],
 	];
 
 	private static ?Config $instance = null;

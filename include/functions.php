@@ -464,14 +464,14 @@
 		return false;
 	}
 
-	function get_theme_path(string $theme): string {
+	function get_theme_path(string $theme, string $default = ""): string {
 		$check = "themes/$theme";
 		if (file_exists($check)) return $check;
 
 		$check = "themes.local/$theme";
 		if (file_exists($check)) return $check;
 
-		return "";
+		return $default;
 	}
 
 	function theme_exists(string $theme): bool {

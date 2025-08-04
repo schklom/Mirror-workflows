@@ -29,6 +29,9 @@
 
 	<script type="text/javascript">
 		const __csrf_token = "<?= $_SESSION["csrf_token"]; ?>";
+
+		const __default_light_theme = "<?= get_theme_path(Config::get(Config::DEFAULT_LIGHT_THEME), 'themes/light.css') ?>";
+		const __default_dark_theme = "<?= get_theme_path(Config::get(Config::DEFAULT_DARK_THEME), 'themes/night.css') ?>";
 	</script>
 
 	<?php UserHelper::print_user_stylesheet() ?>

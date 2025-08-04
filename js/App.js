@@ -173,7 +173,7 @@ const App = {
 
 		if (link) {
 			if (navigator.onLine) {
-				const css_override = is_night ? "themes/night.css" : "themes/light.css";
+				const css_override = is_night ? App.getInitParam("default_dark_theme") : App.getInitParam("default_light_theme");
 				link.setAttribute("href", css_override + "?" + Date.now());
 			} else if (retry < 5) {
 				console.log("nightModeChanged: we're offline, will attempt to retry...");
@@ -704,6 +704,8 @@ const App = {
       window.onerror = this.Error.onWindowError;
 
       this.setInitParam("csrf_token", __csrf_token);
+      this.setInitParam("default_light_theme", __default_light_theme);
+      this.setInitParam("default_dark_theme", __default_dark_theme);
 
       this.setupNightModeDetection(() => {
          parser.parse();

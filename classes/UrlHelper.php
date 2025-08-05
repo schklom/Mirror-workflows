@@ -460,7 +460,7 @@ class UrlHelper {
 		$regexps = [
 			"/\/\/www\.youtube-nocookie\.com\/v\/([\w-]+)/",
 			"/\/\/www\.youtube-nocookie\.com\/embed\/([\w-]+)/",
-			"/\/\/www\.youtube-nocookie\.com\/watch?v=([\w-]+)/",
+			"/\/\/www\.youtube-nocookie\.com\/watch\?v=([\w-]+)/",
 			"/\/\/youtu.be\/([\w-]+)/",
 		];
 

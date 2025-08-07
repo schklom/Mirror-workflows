@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2025-08-07 05:01+0000\n"
-"Last-Translator: \"ℂ𝕠𝕠𝕠𝕝 (𝕘𝕚𝕥𝕙𝕦𝕓.𝕔𝕠𝕞/ℂ𝕠𝕠𝕠𝕝)\" <coool@mail.lv>\n"
+"PO-Revision-Date: 2025-08-08 09:02+0000\n"
+"Last-Translator: Edgars Andersons <Edgars+Weblate@gaitenis.id.lv>\n"
 "Language-Team: Latvian <https://hosted.weblate.org/projects/tt-rss/webui/lv/>"
 "\n"
 "Language: lv_LV\n"
@@ -169,11 +169,11 @@ msgstr "Noklusējuma"
 
 #: index.php:194
 msgid "Newest first"
-msgstr "Jaunākos augšgalā"
+msgstr "Vispirms jaunākie"
 
 #: index.php:195
 msgid "Oldest first"
-msgstr "Vecākos augšgalā"
+msgstr "Vispirms vecākie"
 
 #: index.php:196 js/CommonFilters.js:430
 msgid "Title"

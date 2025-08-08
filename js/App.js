@@ -172,21 +172,21 @@ const App = {
 		console.log("nightModeChanged: night mode changed to", is_night, "retry", retry);
 
 		if (link) {
-			if (navigator.onLine) {
-				const css_override = is_night ? App.getInitParam("default_dark_theme") : App.getInitParam("default_light_theme");
-				link.setAttribute("href", css_override + "?" + Date.now());
-			} else if (retry < 5) {
-				console.log("nightModeChanged: we're offline, will attempt to retry...");
-
+			if (retry < 5) {
 				window.clearTimeout(this._night_mode_retry_timeout);
 
 				this._night_mode_retry_timeout = window.setTimeout(
 					() => this.nightModeChanged(is_night, link, ++retry),
 					3000);
-
-			} else {
-				console.log("nightModeChanged: too many retries, giving up");
 			}
+
+			xhr.post("backend.php", {op: "RPC", method: "getRuntimeInfo"}, () => {
+				const css_override = is_night ? App.getInitParam("default_dark_theme") : App.getInitParam("default_light_theme");
+
+				link.setAttribute("href", css_override + "?" + Date.now());
+
+				window.clearTimeout(this._night_mode_retry_timeout);
+			});
 		}
 	},
 	setupNightModeDetection: function(callback) {

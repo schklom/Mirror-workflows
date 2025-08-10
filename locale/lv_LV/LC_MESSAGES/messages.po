@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2025-08-08 09:02+0000\n"
+"PO-Revision-Date: 2025-08-09 12:01+0000\n"
 "Last-Translator: Edgars Andersons <Edgars+Weblate@gaitenis.id.lv>\n"
 "Language-Team: Latvian <https://hosted.weblate.org/projects/tt-rss/webui/lv/>"
 "\n"
@@ -1934,7 +1934,7 @@ msgstr "Mainīt raksta piezīmes"
 
 #: include/login_form.php:145
 msgid "I forgot my password"
-msgstr "Esmu aizmirsis paroli"
+msgstr "Es aizmirsu savu paroli"
 
 #: include/login_form.php:151
 msgid "Profile:"

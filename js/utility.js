@@ -8,7 +8,7 @@ window.addEventListener("load", function() {
             console.log("night mode changed to", is_night);
 
             const light_theme = typeof __default_light_theme != 'undefined' ? __default_light_theme : 'themes/light.css';
-            const dark_theme = typeof __default_dark_theme != 'undefined' ? __default_dark_theme : 'themes/dark.css';
+            const dark_theme = typeof __default_dark_theme != 'undefined' ? __default_dark_theme : 'themes/night.css';
 
             if (link) {
                 const css_override = is_night ? dark_theme : light_theme;

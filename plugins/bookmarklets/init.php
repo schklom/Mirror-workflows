@@ -60,6 +60,9 @@ class Bookmarklets extends Plugin {
 			</head>
 			<body class='flat ttrss_utility css_loading'>
 			<script type="text/javascript">
+				const __default_light_theme = "<?= get_theme_path(Config::get(Config::DEFAULT_LIGHT_THEME), 'themes/light.css') ?>";
+				const __default_dark_theme = "<?= get_theme_path(Config::get(Config::DEFAULT_DARK_THEME), 'themes/night.css') ?>";
+
 				const UtilityApp = {
 					init: function() {
                         require(['dojo/parser', "dojo/ready", 'dijit/form/Button','dijit/form/CheckBox', 'dijit/form/Form',
@@ -207,6 +210,9 @@ class Bookmarklets extends Plugin {
 		</head>
 		<body class='flat ttrss_utility share_popup css_loading'>
 			<script type="text/javascript">
+				const __default_light_theme = "<?= get_theme_path(Config::get(Config::DEFAULT_LIGHT_THEME), 'themes/light.css') ?>";
+				const __default_dark_theme = "<?= get_theme_path(Config::get(Config::DEFAULT_DARK_THEME), 'themes/night.css') ?>";
+
 				const UtilityApp = {
 					init: function() {
 						require(['dojo/parser', "dojo/ready", 'dijit/form/Button','dijit/form/CheckBox', 'dijit/form/Form',

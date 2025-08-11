@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2025-06-03 12:01+0000\n"
+"PO-Revision-Date: 2025-08-11 16:02+0000\n"
 "Last-Translator: Patrick Ahles <p.ahles@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tt-rss/webui/fr/>"
 "\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -1627,10 +1627,8 @@ msgid "Task name"
 msgstr ""
 
 #: classes/Pref_System.php:36
-#, fuzzy
-#| msgid "Last connected"
 msgid "Last executed"
-msgstr "Dernière connexion"
+msgstr "Dernière exécuté"
 
 #: classes/Pref_System.php:37
 msgid "Duration (seconds)"
@@ -2235,22 +2233,16 @@ msgid "Removing selected filters..."
 msgstr "Suppression des filtres sélectionnés…"
 
 #: js/PrefFilterTree.js:179
-#, fuzzy
-#| msgid "Name for cloned profile:"
 msgid "Name for new filter:"
-msgstr "Nom du profile cloné :"
+msgstr "Nom du filtre nouveau:"
 
 #: js/PrefFilterTree.js:187
-#, fuzzy
-#| msgid "Combine selected filters?"
 msgid "Clone selected filters?"
-msgstr "Combiner les filtres sélectionnés ?"
+msgstr "Cloner des filtres sélectionnés ?"
 
 #: js/PrefFilterTree.js:191
-#, fuzzy
-#| msgid "Removing selected filters..."
 msgid "Cloning selected filters..."
-msgstr "Suppression des filtres sélectionnés…"
+msgstr "Cloner des filtres sélectionnés…"
 
 #: js/CommonFilters.js:14
 msgid "Edit filter"
@@ -2270,10 +2262,9 @@ msgid "Articles matching this filter:"
 msgstr "Articles correspondants à ce filtre :"
 
 #: js/CommonFilters.js:70
-#, fuzzy, java-printf-format, javascript-format
-#| msgid "Found %d articles matching this filter:"
+#, java-printf-format, javascript-format
 msgid "Found at least %d articles matching this filter:"
-msgstr "%d articles correspondent à ce filtre :"
+msgstr "Du moins %d articles correspondent à ce filtre :"
 
 #: js/CommonFilters.js:77
 msgid "Error while trying to get filter test results."

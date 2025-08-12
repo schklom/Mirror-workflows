@@ -38,7 +38,7 @@ jobs:
           destination_branch: "Matterbridge"
           ssh_private_key: ${{ secrets.GITSYNCACTION }}
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: 'Matterbridge'
       - name: get most recent commit id on original repo, for next comparison on sync
@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: 'Matterbridge' # branch
       # https://github.com/docker/setup-qemu-action#usage

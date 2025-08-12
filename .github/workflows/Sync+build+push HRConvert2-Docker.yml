@@ -22,7 +22,7 @@ jobs:
       REMOTE_DOCKERFILE: ${{ steps.commits.outputs.SETREMOTE_DOCKERFILE }} 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: 'HRConvert2-Docker' # branch
       - name: set local and remote latest commit as environment variables
@@ -50,7 +50,7 @@ jobs:
           destination_branch: "HRConvert2-Docker"
           ssh_private_key: ${{ secrets.GITSYNCACTION }}
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: 'HRConvert2-Docker' # branch
       - name: get most recent commit id on original repo, for next comparison on sync
@@ -68,7 +68,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: 'HRConvert2-Docker' # branch
       # https://github.com/docker/setup-qemu-action#usage

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2025-05-09 04:01+0000\n"
+"PO-Revision-Date: 2025-08-13 19:02+0000\n"
 "Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/tt-rss/webui/gl/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.13-dev\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -93,7 +93,7 @@ msgstr "Só lectura"
 
 #: backend.php:93 classes/Pref_System.php:150
 msgid "User"
-msgstr "Usuaria"
+msgstr "Identificador"
 
 #: backend.php:94
 msgid "Power User"
@@ -302,7 +302,7 @@ msgstr "Perfil por defecto"
 
 #: classes/Handler_Public.php:401
 msgid "Incorrect username or password"
-msgstr "Nome de usuaria ou contrasinal incorrectos"
+msgstr "Identificador ou contrasinal incorrectos"
 
 #: classes/Handler_Public.php:461
 msgid "Password recovery"
@@ -328,7 +328,7 @@ msgstr ""
 #: plugins/bookmarklets/init.php:306 include/login_form.php:122
 #: js/CommonDialogs.js:596 js/PrefUsers.js:64
 msgid "Login:"
-msgstr "Usuaria:"
+msgstr "Identificador:"
 
 #: classes/Handler_Public.php:513
 msgid "Email:"
@@ -357,7 +357,7 @@ msgstr "[tt-rss] Solicitado restablecemento contrasinal"
 
 #: classes/Handler_Public.php:590
 msgid "Sorry, login and email combination not found."
-msgstr "Sentimos dicir que non atopamos esta combinación de usuaria e email."
+msgstr "Sentimos dicir que non atopamos esta combinación de usuaria e correo."
 
 #: classes/Handler_Public.php:610
 msgid "Your access level is insufficient to run this script."
@@ -787,11 +787,11 @@ msgstr "Non se puido crear a usuaria %s"
 #: classes/Pref_Users.php:174
 #, php-format
 msgid "User %s already exists."
-msgstr "Xa existe a usuaria %s."
+msgstr "Xa existe a conta %s."
 
 #: classes/Pref_Users.php:231
 msgid "Create user"
-msgstr "Crear usuaria"
+msgstr "Crear conta"
 
 #: classes/Pref_Users.php:252 js/PrefFeedTree.js:457 js/CommonDialogs.js:90
 msgid "Login"
@@ -1538,7 +1538,7 @@ msgstr "Instalar complemento"
 
 #: classes/Pref_Prefs.php:928
 msgid "Personal data / Authentication"
-msgstr "Datos personais / Autenticación"
+msgstr "Datos persoais / Autenticación"
 
 #: classes/Pref_Prefs.php:976
 msgid "Incorrect one time password"
@@ -1582,7 +1582,7 @@ msgstr ""
 #: classes/UserHelper.php:263
 #, php-format
 msgid "Changed password of user %s to %s"
-msgstr "Cambiou o contrasinal da usuaria de %s a %s"
+msgstr "Cambiouse o contrasinal da conta de %s a %s"
 
 #: classes/Config.php:391
 #, php-format
@@ -2065,7 +2065,7 @@ msgid ""
 "You are using default tt-rss password. Please change it in the Preferences "
 "(Personal data / Authentication)."
 msgstr ""
-"Estás usando o contrasinal por defecto de tt-rss. Cámbiao nos Axusts (Datos "
+"Estás usando o contrasinal por defecto de tt-rss. Cámbiao nos Axustes (Datos "
 "personais / Autenticación)."
 
 #: js/Feeds.js:450
@@ -2795,15 +2795,15 @@ msgstr "(Des)pregar"
 
 #: js/PrefUsers.js:19
 msgid "Please enter username:"
-msgstr "Escribe o nome de usuaria:"
+msgstr "Escribe o identificador:"
 
 #: js/PrefUsers.js:22
 msgid "Adding user..."
-msgstr "Engadindo usuaria..."
+msgstr "Engadindo conta..."
 
 #: js/PrefUsers.js:39 js/PrefUsers.js:60
 msgid "Edit user"
-msgstr "Editar usuaria"
+msgstr "Editar conta"
 
 #: js/PrefUsers.js:136 js/PrefUsers.js:175
 msgid "No users selected."
@@ -2815,23 +2815,23 @@ msgstr "Elixe unha usuaria."
 
 #: js/PrefUsers.js:145
 msgid "Reset password of selected user?"
-msgstr "Restablecer contrasinal da usuaria?"
+msgstr "Restablecer o contrasinal da conta?"
 
 #: js/PrefUsers.js:146
 msgid "Resetting password for selected user..."
-msgstr "Restablecendo contrasinal da usuaria seleccionada..."
+msgstr "Restablecendo contrasinal da conta seleccionada..."
 
 #: js/PrefUsers.js:161
 msgid ""
 "Remove selected users? Neither default admin nor your account will be "
 "removed."
 msgstr ""
-"Eliminar usuarias seleccionadas? Non se eliminarán a túa conta nin a da "
-"admin por defecto."
+"Eliminar contas seleccionadas? Non se eliminarán a túa conta nin a da admin "
+"por defecto."
 
 #: js/PrefUsers.js:162
 msgid "Removing selected users..."
-msgstr "Eliminando usuarias seleccionadas..."
+msgstr "Eliminando contas seleccionadas..."
 
 #: js/PrefLabelTree.js:71
 msgid "Edit label"

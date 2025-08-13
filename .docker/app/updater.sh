@@ -18,6 +18,8 @@ if ! id app; then
 	adduser -D -h $APP_INSTALL_BASE_DIR -G app -u $OWNER_UID app
 fi
 
+update-ca-certificates || true
+
 # TODO this should do a reasonable amount of attempts and terminate with an error
 while ! pg_isready -h $TTRSS_DB_HOST -U $TTRSS_DB_USER -p $TTRSS_DB_PORT; do
 	echo waiting until $TTRSS_DB_HOST is ready...

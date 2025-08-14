@@ -172,7 +172,7 @@ const App = {
 		console.log("nightModeChanged: night mode changed to", is_night, "retry", retry);
 
 		if (link) {
-			if (retry < 5) {
+			if (retry < 15) {
 				window.clearTimeout(this._night_mode_retry_timeout);
 
 				this._night_mode_retry_timeout = window.setTimeout(

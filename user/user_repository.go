@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/rs/zerolog/log"
 )
@@ -35,7 +36,16 @@ func (u *UserRepository) CheckAccessTokenAndGetUser(providedAccessToken string) 
 	if err != nil {
 		return nil, err
 	}
-	return u.UB.GetByID(userId)
+
+	user, err := u.UB.GetByID(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	user.LastSeenTime = time.Now().Unix()
+	u.UB.Save(&user)
+
+	return user, nil
 }
 
 var ErrUsernameInvalid = errors.New("the requested username must be alphanumeric")

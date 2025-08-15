@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-const CurrentSqlVersion = 1
+const CurrentSqlVersion = 2
 
 const KeyVersion = "fmd_db_version"
 
@@ -50,6 +50,18 @@ func migrateDatabase(db *gorm.DB) {
 		log.Info().Msg("nothing to migrate")
 		return
 	}
+
+	if actualVersion < 2 {
+		err := runMigration("000002_add_last_seen_time", db)
+		if err != nil {
+			log.Fatal().Err(err).Msg("failed migration=000002_add_last_seen_time")
+			return
+		}
+	}
+
+	// Use this to let GORM write a migration. Then inspect the created SQLite schema,
+	// and write an "up" migration from hand.
+	// db.AutoMigrate(&DBSetting{})
 
 	// Set this at the end. This way, if the migrations are interrupted
 	// (e.g., the program cancelled), they are re-run upon the next start.

@@ -29,6 +29,7 @@ type FMDUser struct {
 	CommandTime    uint64
 	CommandSig     string
 	PushUrl        string
+	LastSeenTime   int64
 	Locations      []Location `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
 	Pictures       []Picture  `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
 	//CommandLogs    []CommandLogEntry `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`

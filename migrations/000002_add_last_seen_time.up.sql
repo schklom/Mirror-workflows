@@ -1,0 +1,1 @@
+ALTER TABLE fmd_users ADD COLUMN last_seen_time INTEGER NOT NULL DEFAULT 0;

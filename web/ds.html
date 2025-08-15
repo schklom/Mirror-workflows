@@ -45,30 +45,16 @@
     </ul>
     <p>Important: you need to keep your password safe! Your password is used to unlock the encrypted private key.</p>
 
+    <h3>How exactly does the encryption work?</h3>
+    <p>
+        Please see the description on the
+        <a href="https://fmd-foss.org/docs/fmd-server/security" target="_blank">project website</a>.
+    </p>
+
     <h3>Is my data transferred/sold/etc?</h3>
     <p>
         Your data is only used to provide the functionality of finding and controlling your device.
         It is not given to other parties.
-    </p>
-
-    <h3>How exactly does the encryption work?</h3>
-    <p>
-        Your device creates an RSA-3072 keypair during registration. The private key is encrypted symmetrically with
-        AES-GCM-256 with an Argon2 hash of your password as a key. Then the keypair is uploaded to the server.
-    </p>
-    <p>
-        Every time your device sends data, it uses the public key to encrypt this data and uploads the encrypted data to
-        the server.
-    </p>
-
-    <p>
-        When you access the web page and enter your user id and password, the web page derives another Argon2 hash (with
-        a different context string)
-        from your password and sends it to the server. This proves to the server that you know the password without
-        actually sending it to the server.
-        The web page then downloads the keypair from the server and decrypts the RSA private key.
-        It can then download any other data, such as the location, and can locally decrypt them in your browser using
-        the RSA private key.
     </p>
 
     <h3>Who has access to the data?</h3>
@@ -76,6 +62,13 @@
 
     <h3>How can I delete my data from the server?</h3>
     <p>You can delete your account using the "Delete Account" button in the web interface and in the Android app.</p>
+
+    <h3>How can I export my data?</h3>
+    <p>
+        Log in via the web interface, click on the settings icon, and then click on "Export Data".
+        This will fetch all data from the server, decrypt it locally,
+        and locally create a ZIP file that you can save to your computer.
+    </p>
 
 </body>
 

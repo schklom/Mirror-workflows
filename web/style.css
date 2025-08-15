@@ -20,10 +20,13 @@ h3 {
 }
 
 p,
-a,
 label {
     color: whitesmoke;
     margin: 10px;
+}
+
+a {
+    color: whitesmoke;
 }
 
 input {

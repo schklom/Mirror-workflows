@@ -25,3 +25,7 @@ cmd/test/web
 # Release builds
 *.zip
 *.zip.sha256sum
+
+# Varia
+*.patch
+

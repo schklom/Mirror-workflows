@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/rand"
 	"errors"
+	"fmd-server/metrics"
 	"math/big"
 	"net/http"
 	"regexp"
@@ -22,12 +23,31 @@ type UserRepository struct {
 }
 
 func NewUserRepository(dbDir string, userIDLength int, maxSavedLoc int, maxSavedPic int) UserRepository {
+	db := NewFMDDB(dbDir)
+
+	// Initialise all metrics. Later, they are kept up-to-date incrementally.
+	var userCount int64
+	db.DB.Model(&FMDUser{}).Count(&userCount)
+	metrics.Accounts.Set(float64(userCount))
+
+	var locationCount int64
+	db.DB.Model(&Location{}).Count(&locationCount)
+	metrics.Locations.Set(float64(locationCount))
+
+	var pictureCount int64
+	db.DB.Model(&Picture{}).Count(&pictureCount)
+	metrics.Pictures.Set(float64(pictureCount))
+
+	var pendingCommandCount int64
+	db.DB.Model(&FMDUser{}).Where("command_to_user IS NOT NULL AND command_to_user <> ''").Count(&pendingCommandCount)
+	metrics.PendingCommands.Set(float64(pendingCommandCount))
+
 	return UserRepository{
 		userIDLength: userIDLength,
 		maxSavedLoc:  maxSavedLoc,
 		maxSavedPic:  maxSavedPic,
 		ACC:          NewAccessController(),
-		UB:           NewFMDDB(dbDir),
+		UB:           db,
 	}
 }
 
@@ -93,6 +113,7 @@ func (u *UserRepository) CreateNewUser(
 	log.Info().Str("userid", requestedUsername).Msg("registering new user")
 
 	u.UB.Create(&FMDUser{UID: id, Salt: salt, HashedPassword: hashedPassword, PrivateKey: privKey, PublicKey: pubKey})
+	metrics.Accounts.Inc()
 	return id, nil
 }
 
@@ -109,11 +130,13 @@ func (u *UserRepository) AddLocation(user *FMDUser, loc string) {
 	u.UB.PreloadLocations(user)
 
 	u.UB.Create(&Location{Position: loc, UserID: user.Id})
+	metrics.Locations.Inc()
 
 	if len(user.Locations) > u.maxSavedLoc {
 		locationsToDelete := user.Locations[:(len(user.Locations) - u.maxSavedLoc)]
 		for _, locationToDelete := range locationsToDelete {
 			u.UB.Delete(&locationToDelete)
+			metrics.Locations.Dec()
 		}
 	}
 }
@@ -122,11 +145,13 @@ func (u *UserRepository) AddPicture(user *FMDUser, pic string) {
 	u.UB.PreloadPictures(user)
 
 	u.UB.Create(&Picture{Content: pic, UserID: user.Id})
+	metrics.Pictures.Inc()
 
 	if len(user.Pictures) > u.maxSavedPic {
 		picturesToDelete := user.Pictures[:(len(user.Pictures) - u.maxSavedPic)]
 		for _, pictureToDelete := range picturesToDelete {
 			u.UB.Delete(&pictureToDelete)
+			metrics.Pictures.Dec()
 		}
 	}
 }
@@ -135,6 +160,7 @@ func (u *UserRepository) DeleteUser(user *FMDUser) {
 	log.Info().Str("userid", user.UID).Msg("deleting user")
 
 	u.UB.Delete(&user)
+	metrics.Accounts.Dec()
 }
 
 func (u *UserRepository) GetLocation(user *FMDUser, idx int) string {
@@ -230,6 +256,14 @@ func (u *UserRepository) addCommandLogEntry(user *FMDUser, entry string) {
 */
 
 func (u *UserRepository) SetCommandToUser(user *FMDUser, cmd string, cmdTime uint64, cmdSig string) {
+	if cmd != "" {
+		// Only increment if this is not overwriting an existing pending command.
+		// TODO: Support delivering more than one command.
+		if user.CommandToUser == "" {
+			metrics.PendingCommands.Inc()
+		}
+	}
+
 	user.CommandToUser = cmd
 	user.CommandTime = cmdTime
 	user.CommandSig = cmdSig
@@ -240,6 +274,7 @@ func (u *UserRepository) SetCommandToUser(user *FMDUser, cmd string, cmdTime uin
 
 		u.pushUser(user)
 	}
+
 	u.UB.Save(&user)
 }
 
@@ -248,7 +283,17 @@ func (u *UserRepository) GetCommandToUser(user *FMDUser) (string, uint64, string
 	// 	logEntry := fmt.Sprintf("Command \"%s\" received by device!", user.CommandToUser)
 	// 	u.addCommandLogEntry(user, logEntry)
 	// }
-	return user.CommandToUser, user.CommandTime, user.CommandSig
+
+	c, t, s := user.CommandToUser, user.CommandTime, user.CommandSig
+
+	if user.CommandToUser != "" {
+		metrics.PendingCommands.Dec()
+	}
+
+	// Clear the command so that the app only gets it once
+	u.SetCommandToUser(user, "", 0, "")
+
+	return c, t, s
 }
 
 /*

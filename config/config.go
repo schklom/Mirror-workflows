@@ -34,6 +34,8 @@ const CONF_REMOTE_IP_HEADER = "RemoteIpHeader"
 
 const CONF_TILE_SERVER_URL = "TileServerUrl"
 
+const CONF_METRICS_ADDR_PORT = "MetricsAddrPort"
+
 // Default values
 
 const DEF_TILE_SERVER_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -65,6 +67,8 @@ func setDefaults(config *viper.Viper) {
 	config.SetDefault(CONF_REMOTE_IP_HEADER, "")
 
 	config.SetDefault(CONF_TILE_SERVER_URL, DEF_TILE_SERVER_URL)
+
+	config.SetDefault(CONF_METRICS_ADDR_PORT, "[::1]:9100")
 }
 
 // Initialise a config struct with all default values.

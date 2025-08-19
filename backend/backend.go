@@ -2,6 +2,7 @@ package backend
 
 import (
 	conf "fmd-server/config"
+	"fmd-server/metrics"
 	"fmd-server/user"
 	"io/fs"
 	"net"
@@ -130,5 +131,6 @@ func RunServer(config *viper.Viper) {
 	initDb(config)
 
 	// Run server
+	go metrics.HandleMetrics(config)
 	handleRequests(config)
 }

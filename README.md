@@ -275,6 +275,16 @@ journalctl -t fmd-server
 less /var/log/syslog | grep fmd-server
 ```
 
+## Metrics
+
+FMD Server exposes metrics that can be scraped by [Prometheus](https://prometheus.io/).
+
+By default, they are only exposed on localhost for security reasons.
+You can change this to a different IP address.
+For example, when running in a container you want to listen on a specific IP address
+or on all interfaces *inside* the container.
+The default port is 9100, which is also configurable.
+
 ## Donate
 
 <script src="https://liberapay.com/Nulide/widgets/button.js"></script>

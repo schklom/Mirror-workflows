@@ -287,9 +287,6 @@ func getCommand(w http.ResponseWriter, r *http.Request) {
 	result, _ := json.Marshal(reply)
 	w.Header().Set(HEADER_CONTENT_TYPE, CT_APPLICATION_JSON)
 	w.Write([]byte(result))
-
-	// Clear the command so that the app only GETs it once
-	uio.SetCommandToUser(user, "", 0, "")
 }
 
 func postCommand(w http.ResponseWriter, r *http.Request) {

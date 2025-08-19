@@ -2,6 +2,7 @@ package user
 
 import (
 	"errors"
+	"fmd-server/metrics"
 	"time"
 )
 
@@ -62,10 +63,16 @@ func (a *AccessController) IncrementLock(id string) {
 	lId.ExpirationTime = now + DURATION_LOCKED_SECS
 
 	a.lockedIDs[id] = lId
+
+	// It is fiddly to distinguish between "locked accounts" (attemps >= 5)
+	// and "accounts with failed login attempts".
+	// Thus the metrics simply expose the latter.
+	metrics.FailedLoginAccounts.Set(float64(len(a.lockedIDs)))
 }
 
 func (a *AccessController) ResetLock(id string) {
 	delete(a.lockedIDs, id)
+	metrics.FailedLoginAccounts.Set(float64(len(a.lockedIDs)))
 }
 
 func (a *AccessController) IsLocked(id string) bool {
@@ -82,6 +89,7 @@ func (a *AccessController) IsLocked(id string) bool {
 	lockExpired := lId.ExpirationTime < time.Now().Unix()
 	if lockExpired {
 		delete(a.lockedIDs, id)
+		metrics.FailedLoginAccounts.Set(float64(len(a.lockedIDs)))
 		return false
 	}
 
@@ -98,6 +106,7 @@ func (a *AccessController) CheckAccessToken(tokenToCheck string) (string, error)
 	tokenExpired := tk.ExpirationTime < time.Now().Unix()
 	if tokenExpired {
 		delete(a.accessTokens, tokenToCheck)
+		metrics.ActiveSessions.Set(float64(len(a.accessTokens)))
 		return "", errors.New("token expired")
 	}
 
@@ -123,6 +132,7 @@ func (a *AccessController) CreateNewAccessToken(id string, sessionDurationSecond
 	}
 
 	a.accessTokens[tokenValue] = token
+	metrics.ActiveSessions.Set(float64(len(a.accessTokens)))
 	return token
 }
 
@@ -146,5 +156,8 @@ func (a *AccessController) cronRemoveExpired() {
 				delete(a.lockedIDs, key)
 			}
 		}
+
+		metrics.ActiveSessions.Set(float64(len(a.accessTokens)))
+		metrics.FailedLoginAccounts.Set(float64(len(a.lockedIDs)))
 	}
 }

@@ -34,10 +34,12 @@ const DEFAULT_TOKEN_VALID_SECS = 15 * 60      // 15 mins
 const MAX_TOKEN_VALID_SECS = 7 * 24 * 60 * 60 // 1 week
 
 func NewAccessController() AccessController {
-	return AccessController{
+	controller := AccessController{
 		accessTokens: make(map[string]AccessToken),
 		lockedIDs:    make(map[string]LockedId),
 	}
+	go controller.cronRemoveExpired()
+	return controller
 }
 
 func (a *AccessController) IncrementLock(id string) {
@@ -122,4 +124,27 @@ func (a *AccessController) CreateNewAccessToken(id string, sessionDurationSecond
 
 	a.accessTokens[tokenValue] = token
 	return token
+}
+
+// Remove expired tokens and locks from the controller.
+func (a *AccessController) cronRemoveExpired() {
+	for range time.Tick(15 * time.Minute) {
+		now := time.Now().Unix()
+
+		// Remove expired access tokens
+		// Note the deleting elements while iterating over the map is safe:
+		// https://stackoverflow.com/a/23230406/11076036
+		for key, value := range a.accessTokens {
+			if value.ExpirationTime < now {
+				delete(a.accessTokens, key)
+			}
+		}
+
+		// Remove expired locks
+		for key, value := range a.lockedIDs {
+			if value.ExpirationTime < now {
+				delete(a.lockedIDs, key)
+			}
+		}
+	}
 }

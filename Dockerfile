@@ -12,6 +12,7 @@ COPY go.sum .
 COPY main.go .
 COPY cmd/ cmd/
 COPY backend/ backend/
+COPY config/ config/
 COPY user/ user/
 COPY utils/ utils/
 COPY web/ web/

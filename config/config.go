@@ -1,4 +1,4 @@
-package backend
+package config
 
 import (
 	"net/url"
@@ -165,7 +165,7 @@ func mergeUserConfigFile(config *viper.Viper) {
 //
 // Expected input is something like:
 // https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
-func validateTileServerUrl(raw string) (string, string) {
+func ValidateTileServerUrl(raw string) (string, string) {
 	if raw == "" {
 		raw = DEF_TILE_SERVER_URL
 	}

@@ -1,11 +1,11 @@
-package backend
+package config
 
 import (
 	"testing"
 )
 
 func testValidateTileServerUrl(t *testing.T, input string, expectedOrigin string) {
-	actualRaw, actualOrigin := validateTileServerUrl(input)
+	actualRaw, actualOrigin := ValidateTileServerUrl(input)
 
 	expectedRaw := input
 	if input == "" {

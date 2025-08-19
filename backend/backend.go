@@ -1,6 +1,7 @@
 package backend
 
 import (
+	conf "fmd-server/config"
 	"fmd-server/user"
 	"io/fs"
 	"net"
@@ -18,12 +19,12 @@ func handleRequests(config *viper.Viper) {
 	mux := buildServeMux(config)
 
 	// Cache config values (to avoid re-reading them between usages, which has the risk of them changing)
-	socketPath := config.GetString(CONF_UNIX_SOCKET_PATH)
-	socketChmod := config.GetInt(CONF_UNIX_SOCKET_CHMOD)
-	portSecure := config.GetInt(CONF_PORT_SECURE)
-	portInsecure := config.GetInt(CONF_PORT_INSECURE)
-	serverCrt := config.GetString(CONF_SERVER_CERT)
-	serverKey := config.GetString(CONF_SERVER_KEY)
+	socketPath := config.GetString(conf.CONF_UNIX_SOCKET_PATH)
+	socketChmod := config.GetInt(conf.CONF_UNIX_SOCKET_CHMOD)
+	portSecure := config.GetInt(conf.CONF_PORT_SECURE)
+	portInsecure := config.GetInt(conf.CONF_PORT_INSECURE)
+	serverCrt := config.GetString(conf.CONF_SERVER_CERT)
+	serverKey := config.GetString(conf.CONF_SERVER_KEY)
 
 	if len(socketPath) > 0 {
 		handleRequestsSocket(mux, socketPath, socketChmod)
@@ -121,8 +122,8 @@ func fileExists(filename string) bool {
 func RunServer(config *viper.Viper) {
 	log.Info().
 		Str("version", VERSION).
-		Str("dbDir", config.GetString(CONF_DATABASE_DIR)).
-		Str("webDir", config.GetString(CONF_WEB_DIR)).
+		Str("dbDir", config.GetString(conf.CONF_DATABASE_DIR)).
+		Str("webDir", config.GetString(conf.CONF_WEB_DIR)).
 		Msg("starting FMD Server")
 
 	// Initialisation

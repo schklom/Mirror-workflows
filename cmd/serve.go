@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmd-server/backend"
+	conf "fmd-server/config"
+
 	"fmt"
 	"io"
 	"log/syslog"
@@ -16,7 +18,7 @@ import (
 )
 
 var (
-	config viper.Viper = backend.InitConfig()
+	config viper.Viper = conf.InitConfig()
 
 	configPath string
 	dbDir      string // used indirectly via config.BindPFlag
@@ -28,7 +30,7 @@ var (
 		Short: "Run the server",
 		Run: func(cmd *cobra.Command, args []string) {
 			setupLogging(jsonLog)
-			backend.ReadConfigFile(&config, configPath)
+			conf.ReadConfigFile(&config, configPath)
 			backend.RunServer(&config)
 		},
 	}
@@ -68,8 +70,8 @@ func init() {
 	serveCmd.Flags().StringVarP(&dbDir, "db-dir", "d", "", "Path to the database directory")
 	serveCmd.Flags().StringVarP(&webDir, "web-dir", "w", "", "Optional path to the web static files directory. If unset, the embedded static files are used")
 
-	config.BindPFlag(backend.CONF_DATABASE_DIR, serveCmd.Flags().Lookup("db-dir"))
-	config.BindPFlag(backend.CONF_WEB_DIR, serveCmd.Flags().Lookup("web-dir"))
+	config.BindPFlag(conf.CONF_DATABASE_DIR, serveCmd.Flags().Lookup("db-dir"))
+	config.BindPFlag(conf.CONF_WEB_DIR, serveCmd.Flags().Lookup("web-dir"))
 
 	serveCmd.Flags().BoolVar(&jsonLog, "log-json", false, "Print log messages as JSON. This only affects stderr. Syslog always uses JSON.")
 }

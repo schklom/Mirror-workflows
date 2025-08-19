@@ -1,6 +1,7 @@
 package backend
 
 import (
+	conf "fmd-server/config"
 	frontend "fmd-server/web"
 	"fmt"
 	"net/http"
@@ -47,11 +48,11 @@ func securityHeadersMiddleware(next http.Handler, tileServerOrigin string) http.
 
 func buildServeMux(config *viper.Viper) *http.ServeMux {
 	// Workaround: cache value in global field to avoid needing to pass down the config into the API code
-	remoteIpHeaderName = config.GetString(CONF_REMOTE_IP_HEADER)
+	remoteIpHeaderName = config.GetString(conf.CONF_REMOTE_IP_HEADER)
 
-	tileServerUrl, tileServerOrigin := validateTileServerUrl(config.GetString(CONF_TILE_SERVER_URL))
+	tileServerUrl, tileServerOrigin := conf.ValidateTileServerUrl(config.GetString(conf.CONF_TILE_SERVER_URL))
 
-	mainDeviceHandler := mainDeviceHandler{createDeviceHandler{config.GetString(CONF_REGISTRATION_TOKEN)}}
+	mainDeviceHandler := mainDeviceHandler{createDeviceHandler{config.GetString(conf.CONF_REGISTRATION_TOKEN)}}
 
 	apiV1Mux := http.NewServeMux()
 	apiV1Mux.HandleFunc("/command", mainCommand)
@@ -93,10 +94,10 @@ func buildServeMux(config *viper.Viper) *http.ServeMux {
 	// staticFilesMux := http.NewServeMux()
 	// staticFilesMux.Handle("/", http.FileServer(http.FS(frontend.WebDir())))
 	// Handling --web-dir parameter/config
-	if config.GetString(CONF_WEB_DIR) == "" {
+	if config.GetString(conf.CONF_WEB_DIR) == "" {
 		apiV1Mux.Handle("/", http.FileServer(http.FS(frontend.WebDir())))
 	} else {
-		apiV1Mux.Handle("/", http.FileServer(http.Dir(config.GetString(CONF_WEB_DIR))))
+		apiV1Mux.Handle("/", http.FileServer(http.Dir(config.GetString(conf.CONF_WEB_DIR))))
 	}
 
 	muxFinal := http.NewServeMux()

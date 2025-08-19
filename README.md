@@ -71,15 +71,14 @@ cause conflicts if a package update changes the config.yml).
 
 Values in local.yml override their counterpart in config.yml.
 
-### Self-hosting with Docker Compose
+## Self-hosting with Docker
 
 > ⚠️ FMD Server is still pre-1.0. Therefore, minor versions can introduce breaking changes.
 > It is recommended to pin a version and read [the changelog](https://gitlab.com/fmd-foss/fmd-server/-/releases)
 > before upgrading.
 
-The following is an (incomplete) example for deploying FMD Server with Docker Compose.
+The following is an (incomplete) example `docker-compose.yml` for deploying FMD Server with Docker Compose.
 
-`docker-compose.yml`
 ```yml
 services:
     fmd:
@@ -111,19 +110,48 @@ Instead of the port binding you can also use Docker networks (e.g. to connect yo
 
 Run with `docker compose up --build --detach`.
 
-### Reverse Proxy
+## Container hardening
 
-#### With Caddy
+It is recommended to harden your Docker containers as decribed by [OWASP](https://cheatsheetseries.owasp.org/cheatsheets/Docker_Security_Cheat_Sheet.html).
+This means:
 
-`Caddyfile`
+- Run a [read-only container](https://blog.ploetzli.ch/2025/docker-best-practices-read-only-containers/).
+  - The only path that FMD Server writes to is the database directory, which should be mounted as a volume.
+- Drop all capabilities.
+- Disallow acquiring new privileges.
+
+On the Docker CLI, pass:
+
+```sh
+docker run --read-only --cap-drop=all --security-opt=no-new-privileges # ... rest of command
+```
+
+In Docker Compose, set:
+
+```yml
+services:
+    fmd:
+        # other lines omitted
+        read_only: true
+        cap_drop: [ALL]
+        security_opt: [no-new-privileges]
+```
+
+## Reverse Proxy
+
+### With Caddy
+
+Use the following Caddyfile:
+
 ```
 fmd.example.com {
 	reverse_proxy localhost:8080
 }
 ```
-Caddy will automatically create a Let's Encrypt certificate for you.
 
-#### With nginx
+Caddy will automatically obtain a certificate from Let's Encrypt for you.
+
+### With nginx
 
 See the [example nginx config](nginx-example.conf).
 
@@ -134,7 +162,7 @@ To fix this increase the maximum body size, e.g to 20 MB:
 client_max_body_size 20m;
 ```
 
-#### Hosting in a subdirectory
+### Hosting in a subdirectory
 
 The FMD Server binary (whether run in Docker or not) assumes that request paths start at the root ("/").
 That is, it assumes that you host FMD Server on a (sub-)domain, e.g., `https://fmd.example.com`.
@@ -268,8 +296,6 @@ less /var/log/syslog | grep fmd-server
 This project was funded through the NGI Mobifree Fund.
 For more details, visit our [project page](https://nlnet.nl/project/FMD/)
 
-
 ## License
 
 FMD Server is published under [GPLv3-or-later](LICENSE).
-

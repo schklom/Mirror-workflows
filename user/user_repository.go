@@ -6,8 +6,6 @@ import (
 	"errors"
 	"math/big"
 	"net/http"
-	"os"
-	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -22,31 +20,14 @@ type UserRepository struct {
 	UB           *FMDDB
 }
 
-func (u *UserRepository) Init(dbDir string, userIDLength int, maxSavedLoc int, maxSavedPic int) {
-	u.userIDLength = userIDLength
-	u.maxSavedLoc = maxSavedLoc
-	u.maxSavedPic = maxSavedPic
-
-	dbFile := filepath.Join(dbDir, "fmd.sqlite")
-
-	// Check if SQL Database exists
-	_, err := os.Stat(dbFile)
-	if os.IsNotExist(err) {
-		log.Info().Msg("no SQLite DB found, creating one")
-
-		// Create directory
-		err := os.MkdirAll(filepath.Join(dbDir), 0770)
-		if err != nil {
-			log.Fatal().Err(err).Msg("failed to create dbDir")
-		}
-
-		// Create file
-		_, err = os.Create(dbFile)
-		if err != nil {
-			log.Fatal().Err(err).Msg("failed to create database file")
-		}
+func NewUserRepository(dbDir string, userIDLength int, maxSavedLoc int, maxSavedPic int) UserRepository {
+	return UserRepository{
+		userIDLength: userIDLength,
+		maxSavedLoc:  maxSavedLoc,
+		maxSavedPic:  maxSavedPic,
+		ACC:          NewAccessController(),
+		UB:           NewFMDDB(dbDir),
 	}
-	u.UB = initSQLite(dbFile)
 }
 
 func (u *UserRepository) CheckAccessTokenAndGetUser(providedAccessToken string) (*FMDUser, error) {

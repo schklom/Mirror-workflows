@@ -102,12 +102,11 @@ func handleRequestsSocket(mux *http.ServeMux, socketPath string, socketChmod int
 
 func initDb(config *viper.Viper) {
 	log.Info().Msg("loading database")
-	uio = user.UserRepository{}
-	uio.Init(
-		config.GetString(CONF_DATABASE_DIR),
-		config.GetInt(CONF_USER_ID_LENGTH),
-		config.GetInt(CONF_MAX_SAVED_LOC),
-		config.GetInt(CONF_MAX_SAVED_PIC),
+	uio = user.NewUserRepository(
+		config.GetString(conf.CONF_DATABASE_DIR),
+		config.GetInt(conf.CONF_USER_ID_LENGTH),
+		config.GetInt(conf.CONF_MAX_SAVED_LOC),
+		config.GetInt(conf.CONF_MAX_SAVED_PIC),
 	)
 }
 

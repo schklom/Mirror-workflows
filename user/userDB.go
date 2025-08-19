@@ -3,6 +3,7 @@ package user
 import (
 	"errors"
 	"os"
+	"path/filepath"
 
 	"github.com/glebarez/sqlite"
 	"github.com/rs/zerolog/log"
@@ -67,6 +68,29 @@ type DBSetting struct {
 	Id      uint64 `gorm:"primaryKey"`
 	Setting string `gorm:"uniqueIndex"`
 	Value   string
+}
+
+func NewFMDDB(dbDir string) *FMDDB {
+	dbFile := filepath.Join(dbDir, "fmd.sqlite")
+
+	// Check if SQL Database exists
+	_, err := os.Stat(dbFile)
+	if os.IsNotExist(err) {
+		log.Info().Msg("no SQLite DB found, creating one")
+
+		// Create directory
+		err := os.MkdirAll(filepath.Join(dbDir), 0770)
+		if err != nil {
+			log.Fatal().Err(err).Msg("failed to create dbDir")
+		}
+
+		// Create file
+		_, err = os.Create(dbFile)
+		if err != nil {
+			log.Fatal().Err(err).Msg("failed to create database file")
+		}
+	}
+	return initSQLite(dbFile)
 }
 
 func initSQLite(path string) *FMDDB {

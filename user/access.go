@@ -29,6 +29,13 @@ const DURATION_LOCKED_SECS = 10 * 60          // 10 mins
 const DEFAULT_TOKEN_VALID_SECS = 15 * 60      // 15 mins
 const MAX_TOKEN_VALID_SECS = 7 * 24 * 60 * 60 // 1 week
 
+func NewAccessController() AccessController {
+	return AccessController{
+		accessTokens: make([]AccessToken, 0, 100),
+		lockedIDs:    make([]LockedId, 0, 100),
+	}
+}
+
 func (a *AccessController) IncrementLock(id string) {
 	for index, lId := range a.lockedIDs {
 		if lId.DeviceId == id {

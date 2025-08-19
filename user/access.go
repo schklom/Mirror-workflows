@@ -6,8 +6,13 @@ import (
 )
 
 type AccessController struct {
-	accessTokens []AccessToken
-	lockedIDs    []LockedId
+	// map token values to token structs
+	// This is because a given user id can have multiple active sessions
+	// in parallel, for example, Android and web.
+	accessTokens map[string]AccessToken
+
+	// map user ids to locks
+	lockedIDs map[string]LockedId
 }
 
 type AccessToken struct {
@@ -18,9 +23,8 @@ type AccessToken struct {
 }
 
 type LockedId struct {
-	DeviceId  string
-	Failed    int
-	Timestamp int64
+	FailedCount    int
+	ExpirationTime int64
 }
 
 const MAX_ALLOWED_ATTEMPTS = 5
@@ -31,87 +35,71 @@ const MAX_TOKEN_VALID_SECS = 7 * 24 * 60 * 60 // 1 week
 
 func NewAccessController() AccessController {
 	return AccessController{
-		accessTokens: make([]AccessToken, 0, 100),
-		lockedIDs:    make([]LockedId, 0, 100),
+		accessTokens: make(map[string]AccessToken),
+		lockedIDs:    make(map[string]LockedId),
 	}
 }
 
 func (a *AccessController) IncrementLock(id string) {
-	for index, lId := range a.lockedIDs {
-		if lId.DeviceId == id {
-			if lId.Timestamp < time.Now().Unix() {
-				a.lockedIDs[index].Failed = 1
-				a.lockedIDs[index].Timestamp = time.Now().Unix() + DURATION_LOCKED_SECS
-			} else {
-				a.lockedIDs[index].Failed++
-				a.lockedIDs[index].Timestamp = time.Now().Unix() + DURATION_LOCKED_SECS
-			}
-			return
-		}
-	}
-	lId := LockedId{DeviceId: id, Timestamp: time.Now().Unix() + DURATION_LOCKED_SECS, Failed: 1}
-	a.lockedIDs = append(a.lockedIDs, lId)
-}
+	now := time.Now().Unix()
+	lId, exists := a.lockedIDs[id]
 
-func (a *AccessController) IsLocked(idToCheck string) bool {
-	for index, lId := range a.lockedIDs {
-		if lId.DeviceId == idToCheck {
-			if lId.Failed > MAX_ALLOWED_ATTEMPTS {
-				if lId.Timestamp < time.Now().Unix() {
-					a.lockedIDs[index] = a.lockedIDs[len(a.lockedIDs)-1]
-					a.lockedIDs = a.lockedIDs[:len(a.lockedIDs)-1]
-					return false
-				} else {
-					return true
-				}
-			} else {
-				return false
-			}
+	if exists {
+		if lId.ExpirationTime < now {
+			// lock expired, start new
+			lId.FailedCount = 1
+		} else {
+			lId.FailedCount++
+		}
+	} else {
+		lId = LockedId{
+			FailedCount: 1,
 		}
 	}
-	return false
+	// Extend lock time
+	lId.ExpirationTime = now + DURATION_LOCKED_SECS
+
+	a.lockedIDs[id] = lId
 }
 
 func (a *AccessController) ResetLock(id string) {
-	for index, lId := range a.lockedIDs {
-		if lId.DeviceId == id {
-			a.lockedIDs[index].Failed = 0
-			return
-		}
+	delete(a.lockedIDs, id)
+}
+
+func (a *AccessController) IsLocked(id string) bool {
+	lId, exists := a.lockedIDs[id]
+
+	if !exists {
+		return false
 	}
+
+	if lId.FailedCount <= MAX_ALLOWED_ATTEMPTS {
+		return false
+	}
+
+	lockExpired := lId.ExpirationTime < time.Now().Unix()
+	if lockExpired {
+		delete(a.lockedIDs, id)
+		return false
+	}
+
+	return true
 }
 
 func (a *AccessController) CheckAccessToken(tokenToCheck string) (string, error) {
-	for index, id := range a.accessTokens {
-		if id.Token == tokenToCheck {
-			tokenExpired := id.ExpirationTime < time.Now().Unix()
-			if tokenExpired {
-				a.accessTokens[index] = a.accessTokens[len(a.accessTokens)-1]
-				a.accessTokens = a.accessTokens[:len(a.accessTokens)-1]
-				return "", errors.New("token expired")
-			} else {
-				return id.DeviceId, nil
-			}
-		}
-	}
-	return "", errors.New("token not found")
-}
+	tk, exists := a.accessTokens[tokenToCheck]
 
-func (a *AccessController) tokenAlreadyExists(toCheck string) bool {
-	for _, id := range a.accessTokens {
-		if id.Token == toCheck {
-			return true
-		}
+	if !exists {
+		return "", errors.New("token not found")
 	}
-	return false
-}
 
-func (a *AccessController) generateNewAccessToken() string {
-	newId := genRandomString(20)
-	for a.tokenAlreadyExists(newId) {
-		newId = genRandomString(20)
+	tokenExpired := tk.ExpirationTime < time.Now().Unix()
+	if tokenExpired {
+		delete(a.accessTokens, tokenToCheck)
+		return "", errors.New("token expired")
 	}
-	return newId
+
+	return tk.DeviceId, nil
 }
 
 func (a *AccessController) CreateNewAccessToken(id string, sessionDurationSeconds uint64) AccessToken {
@@ -121,13 +109,17 @@ func (a *AccessController) CreateNewAccessToken(id string, sessionDurationSecond
 		sessionDurationSeconds = MAX_TOKEN_VALID_SECS
 	}
 
+	// long enough to be guaranteed to be unique
+	tokenValue := genRandomString(32)
 	now := time.Now().Unix()
+
 	token := AccessToken{
 		DeviceId:       id,
-		Token:          a.generateNewAccessToken(),
+		Token:          tokenValue,
 		CreationTime:   now,
 		ExpirationTime: now + int64(sessionDurationSeconds),
 	}
-	a.accessTokens = append(a.accessTokens, token)
+
+	a.accessTokens[tokenValue] = token
 	return token
 }

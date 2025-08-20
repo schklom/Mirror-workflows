@@ -373,7 +373,7 @@ func (u *UserRepository) RequestAccess(id string, hashedPW string, sessionDurati
 		return nil, ErrAccountLocked
 	}
 
-	if strings.EqualFold(strings.ToLower(user.HashedPassword), strings.ToLower(hashedPW)) {
+	if user.HashedPassword == hashedPW {
 		u.ACC.ResetLock(id)
 		token := u.ACC.CreateNewAccessToken(id, sessionDurationSeconds)
 		return &token, nil

@@ -127,10 +127,14 @@ func (u *UserRepository) UpdateUserPassword(user *FMDUser, privKey string, salt 
 }
 
 func (u *UserRepository) AddLocation(user *FMDUser, loc string) {
-	u.UB.PreloadLocations(user)
-
 	u.UB.Create(&Location{Position: loc, UserID: user.Id})
 	metrics.Locations.Inc()
+	u.pruneLocations(user)
+}
+
+func (u *UserRepository) pruneLocations(user *FMDUser) {
+	// Preload needed to get the correct latest length
+	u.UB.PreloadLocations(user)
 
 	if len(user.Locations) > u.maxSavedLoc {
 		locationsToDelete := user.Locations[:(len(user.Locations) - u.maxSavedLoc)]
@@ -142,10 +146,14 @@ func (u *UserRepository) AddLocation(user *FMDUser, loc string) {
 }
 
 func (u *UserRepository) AddPicture(user *FMDUser, pic string) {
-	u.UB.PreloadPictures(user)
-
 	u.UB.Create(&Picture{Content: pic, UserID: user.Id})
 	metrics.Pictures.Inc()
+	u.prunePictures(user)
+}
+
+func (u *UserRepository) prunePictures(user *FMDUser) {
+	// Preload needed to get the correct latest length
+	u.UB.PreloadPictures(user)
 
 	if len(user.Pictures) > u.maxSavedPic {
 		picturesToDelete := user.Pictures[:(len(user.Pictures) - u.maxSavedPic)]

@@ -376,6 +376,23 @@ func (u *UserRepository) RequestAccess(id string, hashedPW string, sessionDurati
 	if user.HashedPassword == hashedPW {
 		u.ACC.ResetLock(id)
 		token := u.ACC.CreateNewAccessToken(id, sessionDurationSeconds)
+
+		// Push user after login to make sure that they fetch the pending command
+		if user.CommandToUser != "" {
+			go func() {
+				time.Sleep(15 * time.Second)
+
+				// Get the latest user from the DB, since after the login
+				// e.g. the pushUrl may have changed.
+				user, err := u.UB.GetByID(id)
+				if err == nil {
+					if user.CommandToUser != "" {
+						u.pushUser(user)
+					}
+				}
+			}()
+		}
+
 		return &token, nil
 	} else {
 		u.ACC.IncrementLock(id)

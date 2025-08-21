@@ -158,6 +158,18 @@ module.exports = (app, utils) => {
     return res.send(preferencesPage(req, res))
   })
 
+  // Helper to validate safe redirect paths
+  function isSafeRedirectPath(path) {
+    // Must start with a single slash, not double slash, not contain backslash, not contain protocol
+    return (
+      typeof path === 'string' &&
+      path.startsWith('/') &&
+      !path.startsWith('//') &&
+      !path.includes('\\') &&
+      !/^\/(http|https):/.test(path)
+    );
+  }
+
   app.post('/preferences', (req, res, next) => {
     const theme = req.body.theme
     const default_lang = req.body.default_lang
@@ -166,7 +178,7 @@ module.exports = (app, utils) => {
     res.cookie('theme', theme, { maxAge: 365 * 24 * 60 * 60 * 1000, httpOnly: true })
     res.cookie('default_lang', default_lang, { maxAge: 365 * 24 * 60 * 60 * 1000, httpOnly: true })
 
-    if(back === 'undefined' || !back.startsWith('/')) {
+    if (!isSafeRedirectPath(back)) {
       back = '/'
     }
 

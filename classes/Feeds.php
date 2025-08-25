@@ -580,6 +580,7 @@ class Feeds extends Handler_Protected {
 
 	function opensite(): void {
 		$feed = ORM::for_table('ttrss_feeds')
+			->where('owner_uid', $_SESSION['uid'])
 			->find_one((int)$_REQUEST['feed_id']);
 
 		if ($feed) {
@@ -1198,25 +1199,21 @@ class Feeds extends Handler_Protected {
 
 			$label_id = Labels::feed_to_label_id($id);
 
-			$sth = $pdo->prepare("SELECT caption FROM ttrss_labels2 WHERE id = ?");
-			$sth->execute([$label_id]);
+			$label = ORM::for_table('ttrss_labels2')
+				->select('caption')
+				->where('owner_uid', $_SESSION['uid'])
+				->find_one($label_id);
 
-			if ($row = $sth->fetch()) {
-				return $row["caption"];
-			} else {
-				return "Unknown label ($label_id)";
-			}
+			return $label ? $label->caption : "Unknown label ($label_id)";
 
 		} else if (is_numeric($id) && $id > 0) {
 
-		    $sth = $pdo->prepare("SELECT title FROM ttrss_feeds WHERE id = ?");
-		    $sth->execute([$id]);
+				$feed = ORM::for_table('ttrss_feeds')
+					->select('title')
+					->where('owner_uid', $_SESSION['uid'])
+					->find_one($id);
 
-		    if ($row = $sth->fetch()) {
-				return $row["title"];
-			} else {
-				return "Unknown feed ($id)";
-			}
+				return $feed ? $feed->title : "Unknown feed ($id)";
 
 		} else {
 			return "$id";
@@ -1358,6 +1355,7 @@ class Feeds extends Handler_Protected {
 				return __("Labels");
 			default:
 				$cat = ORM::for_table('ttrss_feed_categories')
+					->where('owner_uid', $_SESSION['uid'])
 					->find_one($cat_id);
 
 				if ($cat) {

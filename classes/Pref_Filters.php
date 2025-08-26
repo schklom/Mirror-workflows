@@ -871,6 +871,15 @@ class Pref_Filters extends Handler_Protected {
 		/** @var array<int, int> */
 		$ids = array_map("intval", explode(",", clean($_REQUEST["ids"])));
 
+		// fail early if any provided filter IDs aren't owned by the current user
+		$unowned_filter_count = ORM::for_table('ttrss_filters2')
+			->where_in('id', $ids)
+			->where_not_equal('owner_uid', $_SESSION['uid'])
+			->count();
+
+		if ($unowned_filter_count)
+			return;
+
 		if (count($ids) > 1) {
 			$base_id = array_shift($ids);
 			$ids_qmarks = arr_qmarks($ids);

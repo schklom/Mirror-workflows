@@ -657,8 +657,10 @@ class Article extends Handler_Protected {
 
 		$entries = ORM::for_table('ttrss_entries')
 			->table_alias('e')
-			->join('ttrss_user_entries', ['ref_id', '=', 'id'], 'ue')
-			->where_in('id', $article_ids)
+			->select('ue.label_cache')
+			->join('ttrss_user_entries', ['ue.ref_id', '=', 'e.id'], 'ue')
+			->where_in('e.id', $article_ids)
+			->where('ue.owner_uid', $_SESSION['uid'])
 			->find_many();
 
 		$rv = [];
@@ -687,8 +689,10 @@ class Article extends Handler_Protected {
 
 		$entries = ORM::for_table('ttrss_entries')
 			->table_alias('e')
-			->join('ttrss_user_entries', ['ref_id', '=', 'id'], 'ue')
-			->where_in('id', $article_ids)
+			->select('ue.feed_id')
+			->join('ttrss_user_entries', ['ue.ref_id', '=', 'e.id'], 'ue')
+			->where_in('e.id', $article_ids)
+			->where('ue.owner_uid', $_SESSION['uid'])
 			->find_many();
 
 		$rv = [];

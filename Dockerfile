@@ -1,8 +1,10 @@
 FROM linuxserver/homeassistant:latest
 
+RUN id abc
+
 # To ping (iputils), and to speak words into any audio output device (espeak + alsa-utils)
 RUN apk update && \
-    apk add --no-cache iputils espeak alsa-utils 
+    apk add --no-cache iputils espeak alsa-utils
 
 # To avoid the mess in https://github.com/linuxserver/docker-homeassistant/blob/main/root/etc/s6-overlay/s6-rc.d/init-config-homeassistant/run
 # This may introduce a overlayfs bug apparently, and this prevents letting PUID:PGID own the folder (https://github.com/linuxserver/docker-homeassistant/issues/116)
@@ -17,7 +19,7 @@ RUN PY_LOCAL_PATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d | cut 
         mv "${PY_LOCAL_PATH}.bak" "${PY_LOCAL_PATH}"; \
         \
         echo -e "\nChange ownership of the folder ${PY_LOCAL_PATH}\n"; \
-        chown -R abc:abc "${PY_LOCAL_PATH}"; \
+        chown -R 33:33 "${PY_LOCAL_PATH}"; \
     fi
 
 # Get python package requirements for the watchman and waste collection addons
@@ -39,5 +41,5 @@ RUN PYTHONPATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d); \
 
 # Redo a chown just in case
 RUN PYTHONPATH=$(find /usr/local/lib -maxdepth 1 -name python* -type d); \
-    chown -R abc:abc "${PYTHONPATH}"
+    chown -R 33:33 "${PYTHONPATH}"
 RUN

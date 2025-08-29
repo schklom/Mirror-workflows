@@ -677,7 +677,7 @@ class Feeds extends Handler_Protected {
 		</script>
 
 			<div class="container">
-				<h1>Feed Debugger: <?= "$feed_id: " . $this->_get_title($feed_id, false, $_SESSION['uid']) ?></h1>
+				<h1>Feed Debugger: <?= "$feed_id: " . $this->_get_title($feed_id, $_SESSION['uid']) ?></h1>
 				<div class="content">
 					<form method="post" action="" dojoType="dijit.form.Form">
 						<?= \Controls\hidden_tag("op", "Feeds") ?>
@@ -1178,7 +1178,7 @@ class Feeds extends Handler_Protected {
 		}
 	}
 
-	static function _get_title(int|string $id, bool $cat = false, int $owner_uid): string {
+	static function _get_title(int|string $id, int $owner_uid, bool $cat = false): string {
 		if ($cat) {
 			return self::_get_cat_title($id, $owner_uid);
 		} else if ($id == Feeds::FEED_STARRED) {
@@ -1638,7 +1638,7 @@ class Feeds extends Handler_Protected {
 					$last_error = $row["last_error"];
 					$last_updated = $row["last_updated"];
 				} else {
-					$feed_title = self::_get_title($feed, false, $owner_uid);
+					$feed_title = self::_get_title($feed, $owner_uid);
 				}
 			}
 		}

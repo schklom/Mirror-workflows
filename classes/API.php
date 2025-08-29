@@ -574,7 +574,7 @@ class API extends Handler {
 					$unread = Feeds::_get_counters($i, false, true);
 
 					if ($unread || !$unread_only) {
-						$title = Feeds::_get_title($i, false, $_SESSION['uid']);
+						$title = Feeds::_get_title($i, $_SESSION['uid']);
 
 						$row = [
 							'id' => $i,

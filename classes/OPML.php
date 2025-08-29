@@ -200,7 +200,7 @@ class OPML extends Handler_Protected {
 								}
 							} else {
 								if ($feed_id) {
-									array_push($match, [Feeds::_get_title((int)$feed_id, false, $_SESSION['uid']), false, false]);
+									array_push($match, [Feeds::_get_title((int)$feed_id, false, $owner_uid), false, false]);
 								} else {
 									array_push($match, [0, false, true]);
 								}

@@ -175,7 +175,7 @@ class API extends Handler {
 				if ($unread || !$unread_only) {
 					array_push($cats, [
 						'id' => $cat_id,
-						'title' => Feeds::_get_cat_title($cat_id),
+						'title' => Feeds::_get_cat_title($cat_id, $_SESSION['uid']),
 						'unread' => (int) $unread,
 					]);
 				}
@@ -574,7 +574,7 @@ class API extends Handler {
 					$unread = Feeds::_get_counters($i, false, true);
 
 					if ($unread || !$unread_only) {
-						$title = Feeds::_get_title($i);
+						$title = Feeds::_get_title($i, $_SESSION['uid']);
 
 						$row = [
 							'id' => $i,

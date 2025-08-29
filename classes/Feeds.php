@@ -677,7 +677,7 @@ class Feeds extends Handler_Protected {
 		</script>
 
 			<div class="container">
-				<h1>Feed Debugger: <?= "$feed_id: " . $this->_get_title($feed_id) ?></h1>
+				<h1>Feed Debugger: <?= "$feed_id: " . $this->_get_title($feed_id, $_SESSION['uid']) ?></h1>
 				<div class="content">
 					<form method="post" action="" dojoType="dijit.form.Form">
 						<?= \Controls\hidden_tag("op", "Feeds") ?>
@@ -1178,11 +1178,9 @@ class Feeds extends Handler_Protected {
 		}
 	}
 
-	static function _get_title(int|string $id, bool $cat = false): string {
-		$pdo = Db::pdo();
-
+	static function _get_title(int|string $id, int $owner_uid, bool $cat = false): string {
 		if ($cat) {
-			return self::_get_cat_title($id);
+			return self::_get_cat_title($id, $owner_uid);
 		} else if ($id == Feeds::FEED_STARRED) {
 			return __("Starred articles");
 		} else if ($id == Feeds::FEED_PUBLISHED) {
@@ -1201,7 +1199,7 @@ class Feeds extends Handler_Protected {
 
 			$label = ORM::for_table('ttrss_labels2')
 				->select('caption')
-				->where('owner_uid', $_SESSION['uid'])
+				->where('owner_uid', $owner_uid)
 				->find_one($label_id);
 
 			return $label ? $label->caption : "Unknown label ($label_id)";
@@ -1210,7 +1208,7 @@ class Feeds extends Handler_Protected {
 
 				$feed = ORM::for_table('ttrss_feeds')
 					->select('title')
-					->where('owner_uid', $_SESSION['uid'])
+					->where('owner_uid', $owner_uid)
 					->find_one($id);
 
 				return $feed ? $feed->title : "Unknown feed ($id)";
@@ -1345,7 +1343,7 @@ class Feeds extends Handler_Protected {
 		return $row["count"] ?? 0;
 	}
 
-	static function _get_cat_title(int $cat_id): string {
+	static function _get_cat_title(int $cat_id, int $owner_uid): string {
 		switch ($cat_id) {
 			case Feeds::CATEGORY_UNCATEGORIZED:
 				return __("Uncategorized");
@@ -1355,7 +1353,7 @@ class Feeds extends Handler_Protected {
 				return __("Labels");
 			default:
 				$cat = ORM::for_table('ttrss_feed_categories')
-					->where('owner_uid', $_SESSION['uid'])
+					->where('owner_uid', $owner_uid)
 					->find_one($cat_id);
 
 				if ($cat) {
@@ -1627,7 +1625,7 @@ class Feeds extends Handler_Protected {
 			$feed_title = T_sprintf("Search results: %s", $search);
 		} else {
 			if ($cat_view) {
-				$feed_title = self::_get_cat_title($feed);
+				$feed_title = self::_get_cat_title($feed, $owner_uid);
 			} else {
 				if (is_numeric($feed) && $feed > 0) {
 					$ssth = $pdo->prepare("SELECT title,site_url,last_error,last_updated
@@ -1640,7 +1638,7 @@ class Feeds extends Handler_Protected {
 					$last_error = $row["last_error"];
 					$last_updated = $row["last_updated"];
 				} else {
-					$feed_title = self::_get_title($feed);
+					$feed_title = self::_get_title($feed, $owner_uid);
 				}
 			}
 		}

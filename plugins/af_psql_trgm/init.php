@@ -210,7 +210,7 @@ class Af_Psql_Trgm extends Plugin {
 						<li>
 							<i class='material-icons'>rss_feed</i>
 							<a href='#'	onclick="CommonDialogs.editFeed(<?= $f ?>)">
-									<?= Feeds::_get_title($f) ?>
+									<?= Feeds::_get_title($f, $_SESSION['uid']) ?>
 							</a>
 						</li>
 					<?php } ?>

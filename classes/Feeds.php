@@ -677,7 +677,7 @@ class Feeds extends Handler_Protected {
 		</script>
 
 			<div class="container">
-				<h1>Feed Debugger: <?= "$feed_id: " . $this->_get_title($feed_id) ?></h1>
+				<h1>Feed Debugger: <?= "$feed_id: " . $this->_get_title($feed_id, false, $_SESSION['uid']) ?></h1>
 				<div class="content">
 					<form method="post" action="" dojoType="dijit.form.Form">
 						<?= \Controls\hidden_tag("op", "Feeds") ?>
@@ -1178,13 +1178,9 @@ class Feeds extends Handler_Protected {
 		}
 	}
 
-	static function _get_title(int|string $id, bool $cat = false, ?int $owner_uid = null): string {
-		// We can't rely on the session existing here due to syndicated feeds
-		if (!$owner_uid)
-			$owner_uid = $_SESSION['uid'];
-
+	static function _get_title(int|string $id, bool $cat = false, int $owner_uid): string {
 		if ($cat) {
-			return self::_get_cat_title($id);
+			return self::_get_cat_title($id, $owner_uid);
 		} else if ($id == Feeds::FEED_STARRED) {
 			return __("Starred articles");
 		} else if ($id == Feeds::FEED_PUBLISHED) {
@@ -1347,11 +1343,7 @@ class Feeds extends Handler_Protected {
 		return $row["count"] ?? 0;
 	}
 
-	static function _get_cat_title(int $cat_id, ?int $owner_uid = null): string {
-		// We can't rely on the session existing here due to syndicated feeds
-		if (!$owner_uid)
-			$owner_uid = $_SESSION['uid'];
-
+	static function _get_cat_title(int $cat_id, int $owner_uid): string {
 		switch ($cat_id) {
 			case Feeds::CATEGORY_UNCATEGORIZED:
 				return __("Uncategorized");
@@ -1646,7 +1638,7 @@ class Feeds extends Handler_Protected {
 					$last_error = $row["last_error"];
 					$last_updated = $row["last_updated"];
 				} else {
-					$feed_title = self::_get_title($feed, $owner_uid);
+					$feed_title = self::_get_title($feed, false, $owner_uid);
 				}
 			}
 		}

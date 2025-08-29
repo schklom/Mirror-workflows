@@ -1103,7 +1103,7 @@ class Pref_Feeds extends Handler_Protected {
 		return [
 			'id' => 'CAT:' . $cat_id,
 			'items' => array(),
-			'name' => Feeds::_get_cat_title($cat_id),
+			'name' => Feeds::_get_cat_title($cat_id, $_SESSION['uid']),
 			'type' => 'category',
 			'unread' => -1, //(int) Feeds::_get_cat_unread($cat_id);
 			'bare_id' => $cat_id,
@@ -1115,7 +1115,7 @@ class Pref_Feeds extends Handler_Protected {
 	 */
 	private function feedlist_init_feed(int $feed_id, ?string $title = null, bool $unread = false, string $error = '', string $updated = ''): array {
 		if (!$title)
-			$title = Feeds::_get_title($feed_id, false);
+			$title = Feeds::_get_title($feed_id, false, $_SESSION['uid']);
 
 		if ($unread === false)
 			$unread = Feeds::_get_counters($feed_id, false, true);
@@ -1284,7 +1284,7 @@ class Pref_Feeds extends Handler_Protected {
 		]);
 
 		print json_encode([
-			"title" => Feeds::_get_title($feed_id, $is_cat),
+			"title" => Feeds::_get_title($feed_id, $is_cat, $_SESSION['uid']),
 			"link" => $link
 		]);
 	}

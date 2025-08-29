@@ -261,10 +261,10 @@ class Pref_Filters extends Handler_Protected {
 
 						if (str_starts_with($feed_id, "CAT:")) {
 							$feed_id = (int)substr($feed_id, 4);
-							array_push($feeds_fmt, Feeds::_get_cat_title($feed_id));
+							array_push($feeds_fmt, Feeds::_get_cat_title($feed_id, $_SESSION['uid']));
 						} else {
 							if ($feed_id)
-								array_push($feeds_fmt, Feeds::_get_title((int)$feed_id));
+								array_push($feeds_fmt, Feeds::_get_title((int)$feed_id, false, $_SESSION['uid']));
 							else
 								array_push($feeds_fmt, __("All feeds"));
 						}
@@ -274,9 +274,9 @@ class Pref_Filters extends Handler_Protected {
 
 			} else {
 				$where = $rule->cat_filter ?
-						Feeds::_get_cat_title($rule->cat_id ?? 0) :
+						Feeds::_get_cat_title($rule->cat_id ?? 0, $_SESSION['uid']) :
 					($rule->feed_id ?
-						Feeds::_get_title($rule->feed_id) : __("All feeds"));
+						Feeds::_get_title($rule->feed_id, false, $_SESSION['uid']) : __("All feeds"));
 			}
 
 			$inverse_class = $rule->inverse ? "inverse" : "";
@@ -460,10 +460,10 @@ class Pref_Filters extends Handler_Protected {
 
             if (str_starts_with($feed_id, "CAT:")) {
                 $feed_id = (int)substr($feed_id, 4);
-                array_push($feeds_fmt, Feeds::_get_cat_title($feed_id));
+                array_push($feeds_fmt, Feeds::_get_cat_title($feed_id, $_SESSION['uid']));
             } else {
                 if ($feed_id)
-                    array_push($feeds_fmt, Feeds::_get_title((int)$feed_id));
+                    array_push($feeds_fmt, Feeds::_get_title((int)$feed_id, false, $_SESSION['uid']));
                 else
                     array_push($feeds_fmt, __("All feeds"));
             }

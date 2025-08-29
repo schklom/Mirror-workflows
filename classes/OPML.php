@@ -182,7 +182,8 @@ class OPML extends Handler_Protected {
 						if ($cat_filter && $tmp_line["cat_id"] || $tmp_line["feed_id"]) {
 							$tmp_line["feed"] = Feeds::_get_title(
 								$cat_filter ? $tmp_line["cat_id"] : $tmp_line["feed_id"],
-								$cat_filter);
+								$cat_filter,
+								$_SESSION['uid']);
 						} else {
 							$tmp_line["feed"] = "";
 						}
@@ -193,13 +194,13 @@ class OPML extends Handler_Protected {
 							if (str_starts_with($feed_id, "CAT:")) {
 								$feed_id = (int)substr($feed_id, 4);
 								if ($feed_id) {
-									array_push($match, [Feeds::_get_cat_title($feed_id), true, false]);
+									array_push($match, [Feeds::_get_cat_title($feed_id, $owner_uid), true, false]);
 								} else {
 									array_push($match, [0, true, true]);
 								}
 							} else {
 								if ($feed_id) {
-									array_push($match, [Feeds::_get_title((int)$feed_id), false, false]);
+									array_push($match, [Feeds::_get_title((int)$feed_id, false, $_SESSION['uid']), false, false]);
 								} else {
 									array_push($match, [0, false, true]);
 								}

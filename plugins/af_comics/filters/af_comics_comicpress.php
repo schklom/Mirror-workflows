@@ -48,7 +48,7 @@ class Af_Comics_ComicPress extends Af_ComicFilter {
 		return false;
 	}
 
-	private function cleanup($xpath, $content_node) {
+	private function cleanup(DOMXPath $xpath, DOMNode $content_node): void {
 		$toUpdates = $xpath->query('//img[@data-src]', $content_node);
 		$this->move_all_attributes($toUpdates, 'data-src', 'src');
 
@@ -64,7 +64,7 @@ class Af_Comics_ComicPress extends Af_ComicFilter {
 		}
 	}
 
-	private function move_all_attributes($toUpdates, $srcName, $dstName) {
+	private function move_all_attributes(DOMNodeList $toUpdates, string $srcName, string $dstName): void {
 		foreach ($toUpdates as $toUpdate) {
 			$attributeValue = $toUpdate->getAttribute($srcName);
 			$toUpdate->setAttribute($dstName, $attributeValue);

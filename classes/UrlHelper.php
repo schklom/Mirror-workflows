@@ -293,12 +293,15 @@ class UrlHelper {
 			return false;
 		}
 
-		$url_host = parse_url($url, PHP_URL_HOST);
-		$ip_addr = gethostbyname($url_host);
+		// this skip is needed for integration tests, please don't enable in production
+		if (!getenv('__URLHELPER_ALLOW_LOOPBACK')) {
+			$url_host = parse_url($url, PHP_URL_HOST);
+			$ip_addr = gethostbyname($url_host);
 
-		if (!$ip_addr || str_starts_with($ip_addr, '127.')) {
-			self::$fetch_last_error = "URL hostname failed to resolve or resolved to a loopback address ($ip_addr)";
-			return false;
+			if (!$ip_addr || str_starts_with($ip_addr, '127.')) {
+				self::$fetch_last_error = "URL hostname failed to resolve or resolved to a loopback address ($ip_addr)";
+				return false;
+			}
 		}
 
 		$req_options = [
@@ -435,10 +438,13 @@ class UrlHelper {
 		// @phpstan-ignore argument.type (prior validation ensures the host value exists)
 		self::$fetch_effective_ip_addr = gethostbyname(parse_url(self::$fetch_effective_url, PHP_URL_HOST));
 
-		if (!self::$fetch_effective_ip_addr || str_starts_with(self::$fetch_effective_ip_addr, '127.')) {
-			self::$fetch_last_error = 'URL hostname received after redirection failed to resolve or resolved to a loopback address (' .
-				self::$fetch_effective_ip_addr . ')';
-			return false;
+		// this skip is needed for integration tests, please don't enable in production
+		if (!getenv('__URLHELPER_ALLOW_LOOPBACK')) {
+			if (!self::$fetch_effective_ip_addr || str_starts_with(self::$fetch_effective_ip_addr, '127.')) {
+				self::$fetch_last_error = 'URL hostname received after redirection failed to resolve or resolved to a loopback address (' .
+					self::$fetch_effective_ip_addr . ')';
+				return false;
+			}
 		}
 
 		$body = (string) $response->getBody();

@@ -4,10 +4,12 @@ use PHPUnit\Framework\TestCase;
 /** @group integration */
 final class ApiTest extends TestCase {
 	private string $api_url = "";
+	private string $app_url = "";
 	private string $sid = "";
 
 	function __construct() {
 		$this->api_url = getenv('API_URL');
+		$this->app_url = getenv('APP_URL');
 
 		parent::__construct();
 	}
@@ -73,8 +75,10 @@ final class ApiTest extends TestCase {
 	}
 
 	public function test_subscribeToFeed() : void {
-		$resp = $this->api(["op" => "subscribeToFeed", "feed_url" => "https://gitlab.tt-rss.org/tt-rss/tt-rss.atom"]);
+		$resp = $this->api(["op" => "subscribeToFeed", "feed_url" => $this->app_url . "/feed.xml"]);
 		$this->common_assertions($resp);
+
+		print_r($resp);
 
 		$this->assertArrayHasKey("feed_id", $resp['content']['status']);
 	}

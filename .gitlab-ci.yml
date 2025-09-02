@@ -98,6 +98,7 @@ phpunit-integration:
     FF_NETWORK_PER_BUILD: "true"
     APP_WEB_ROOT: /builds/shared-root
     APP_INSTALL_BASE_DIR: ${APP_WEB_ROOT}
+    APP_BASE: "/tt-rss"
     APP_FASTCGI_PASS: app:9000 # skip resolver
     AUTO_CREATE_USER: test
     AUTO_CREATE_USER_PASS: 'test'
@@ -106,6 +107,7 @@ phpunit-integration:
     APP_URL: http://web-nginx/tt-rss
     API_URL: ${APP_URL}/api/
     HEALTHCHECK_URL: ${APP_URL}/public.php?op=healthcheck
+    __URLHELPER_ALLOW_LOOPBACK: 'true'
   services:
     - &svc_db
       name: registry.fakecake.org/docker.io/postgres:15-alpine
@@ -129,6 +131,7 @@ phpunit-integration:
         sleep 5
       done
   script:
+    - cp tests/integration/feed.xml ${APP_WEB_ROOT}/${APP_BASE}/
     - php84 vendor/bin/phpunit --group integration --do-not-cache-result --log-junit phpunit-report.xml --coverage-cobertura phpunit-coverage.xml --coverage-text --colors=never
   artifacts:
     when: always

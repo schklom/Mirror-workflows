@@ -9,40 +9,40 @@ class Af_Comics_ComicPress extends Af_ComicFilter {
 
 	function process(&$article) {
 		if (str_contains($article["guid"], "bunicomic.com") ||
-			str_contains($article["guid"], "buttersafe.com") ||
-			str_contains($article["guid"], "extrafabulouscomics.com") ||
-			str_contains($article["guid"], "danbydraws.com") ||
-			str_contains($article["guid"], "theduckwebcomics.com/Powerup_Comics") ||
-			str_contains($article["guid"], "happyjar.com") ||
-			str_contains($article["guid"], "nedroid.com") ||
-			str_contains($article["guid"], "stonetoss.com") ||
-			str_contains($article["guid"], "csectioncomics.com")) {
+				str_contains($article["guid"], "buttersafe.com") ||
+				str_contains($article["guid"], "extrafabulouscomics.com") ||
+				str_contains($article["guid"], "danbydraws.com") ||
+				str_contains($article["guid"], "theduckwebcomics.com/Powerup_Comics") ||
+				str_contains($article["guid"], "happyjar.com") ||
+				str_contains($article["guid"], "nedroid.com") ||
+				str_contains($article["guid"], "stonetoss.com") ||
+				str_contains($article["guid"], "csectioncomics.com")) {
 
-			$res = UrlHelper::fetch(["url" => $article["link"]]);
+				$res = UrlHelper::fetch(["url" => $article["link"]]);
 
-			$doc = new DOMDocument();
+				$doc = new DOMDocument();
 
-			if ($res && $doc->loadHTML($res)) {
-				$xpath = new DOMXPath($doc);
-				$img = $xpath->query('//div[@id="comic"]')->item(0);
-				$text = $xpath->query('//div[@class="entry" or @class="entry-content"]')->item(0);
+				if ($res && $doc->loadHTML($res)) {
+					$xpath = new DOMXPath($doc);
+					$img = $xpath->query('//div[@id="comic"]')->item(0);
+					$text = $xpath->query('//div[@class="entry" or @class="entry-content"]')->item(0);
 
-				if ($img || $text) {
-					$article["content"] = '';
+					if ($img || $text) {
+						$article["content"] = '';
 
-					if ($img) {
-						$this->cleanup($xpath, $img);
-						$article["content"] .= $doc->saveHTML($img);
+						if ($img) {
+							$this->cleanup($xpath, $img);
+							$article["content"] .= $doc->saveHTML($img);
+						}
+
+						if ($text) {
+							$this->cleanup($xpath, $text);
+							$article["content"] .= $doc->saveHTML($text);
+						}
+
+						return true;
 					}
-
-					if ($text) {
-						$this->cleanup($xpath, $text);
-						$article["content"] .= $doc->saveHTML($text);
-					}
-
-					return true;
 				}
-			}
 		}
 
 		return false;

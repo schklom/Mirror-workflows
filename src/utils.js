@@ -182,11 +182,11 @@ module.exports = function(redis) {
       data.html = data.html.toString()
 
       // replace upload.wikimedia.org with /media
-      const upload_wikimedia_regx = /((https:|http:|)\/\/?upload.wikimedia.org)/gm
+      const upload_wikimedia_regx = /((https:|http:|)\/\/?upload\.wikimedia\.org)/gm
       data.html = data.html.replace(upload_wikimedia_regx, '/media')
 
       // replace maps.wikimedia.org with /media/maps_wikimedia_org
-      const maps_wikimedia_regx = /((https:|http:|)\/\/?maps.wikimedia.org)/gm
+      const maps_wikimedia_regx = /((https:|http:|)\/\/?maps\.wikimedia\.org)/gm
       data.html = data.html.replace(maps_wikimedia_regx, '/media/maps_wikimedia_org')
 
       // replace wikimedia.org with /media
@@ -194,7 +194,7 @@ module.exports = function(redis) {
       data.html = data.html.replace(wikimedia_regex, '/media')
 
       // replace wiki links
-      const wiki_href_regx = /(href=\"(https:|http:|)\/\/([A-z.-]+\.)?(wikipedia.org|wikimedia.org|wikidata.org|mediawiki.org))/gm
+      const wiki_href_regx = /(href=\"(https:|http:|)\/\/([A-Za-z.-]+\.)?(wikipedia\.org|wikimedia\.org|wikidata\.org|mediawiki\.org))/gm
       data.html = data.html.replace(wiki_href_regx, 'href="')
 
       try {

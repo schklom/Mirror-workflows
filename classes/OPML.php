@@ -182,7 +182,7 @@ class OPML extends Handler_Protected {
 						if ($cat_filter && $tmp_line["cat_id"] || $tmp_line["feed_id"]) {
 							$tmp_line["feed"] = Feeds::_get_title(
 								$cat_filter ? $tmp_line["cat_id"] : $tmp_line["feed_id"],
-								$_SESSION['uid'],
+								$owner_uid,
 								$cat_filter);
 						} else {
 							$tmp_line["feed"] = "";

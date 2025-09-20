@@ -309,6 +309,8 @@ func (u *UserRepository) GetSalt(id string) string {
 var ErrAccountLocked = errors.New("too many attempts, account locked")
 
 func (u *UserRepository) RequestAccess(id string, hashedPW string, sessionDurationSeconds uint64, remoteIp string) (*AccessToken, error) {
+	log.Debug().Msg("new login attempt")
+
 	user, err := u.UB.GetByID(id)
 	if err != nil {
 		return nil, err

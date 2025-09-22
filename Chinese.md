@@ -16,7 +16,7 @@
 
 运行 Wikiless 的步骤如下：
 ```
-https://github.com/V4NT-ORG/Wikiless/wiki
+https://github.com/Metastem/Wikiless/wiki
 ```
 
 

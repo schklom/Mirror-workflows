@@ -16,7 +16,7 @@
 
 برای اجرای Wikiless مراحل زیر را دنبال کنید:
 ```
-https://github.com/V4NT-ORG/Wikiless/wiki
+https://github.com/Metastem/Wikiless/wiki
 ```
 
 

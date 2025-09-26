@@ -70,6 +70,7 @@ func migrateDatabase(db *gorm.DB) {
 }
 
 func runMigration(name string, db *gorm.DB) error {
+	log.Info().Str("name", name).Msg("running sql")
 	sql, err := migrations.MigrationFS.ReadFile(fmt.Sprintf("%s.up.sql", name))
 	if err != nil {
 		return err

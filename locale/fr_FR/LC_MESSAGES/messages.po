@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: Tiny Tiny RSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2025-08-11 16:02+0000\n"
-"Last-Translator: Patrick Ahles <p.ahles@gmail.com>\n"
+"PO-Revision-Date: 2025-09-27 10:02+0000\n"
+"Last-Translator: BlueTurtle <skayzmomo@hotmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/tt-rss/webui/fr/>"
 "\n"
 "Language: fr_FR\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -150,7 +150,7 @@ msgstr "Tous les articles"
 
 #: index.php:183 classes/RPC.php:550
 msgid "Starred"
-msgstr "Remarquables"
+msgstr "Favoris"
 
 #: index.php:184 classes/RPC.php:551
 msgid "Published"
@@ -265,7 +265,7 @@ msgstr "Autres actions :"
 
 #: index.php:270
 msgid "Keyboard shortcuts help"
-msgstr "Aide sur les raccourcis clavier"
+msgstr "Guide des raccourcis clavier"
 
 #: index.php:279
 msgid "Logout"
@@ -569,15 +569,15 @@ msgstr "Article"
 
 #: classes/RPC.php:508 js/Headlines.js:1447 js/Headlines.js:670
 msgid "Toggle starred"
-msgstr "Marquer comme (non) remarquable"
+msgstr "Ajouter/enlever des favoris"
 
 #: classes/RPC.php:509 js/Headlines.js:1459 js/Headlines.js:671
 msgid "Toggle published"
-msgstr "Marquer comme (non) publié"
+msgstr "Basculer la publication (publié/non publié)"
 
 #: classes/RPC.php:510 js/Headlines.js:1434 js/Headlines.js:669
 msgid "Toggle unread"
-msgstr "Marquer comme (non) lu"
+msgstr "Basculer l'état de lecture (lu/non lu)"
 
 #: classes/RPC.php:511
 msgid "Edit tags"
@@ -645,7 +645,7 @@ msgstr "Sélectionner les articles non-lus"
 
 #: classes/RPC.php:528
 msgid "Select starred"
-msgstr "Sélectionner les articles remarquables"
+msgstr "Sélectionner les articles favoris"
 
 #: classes/RPC.php:529
 msgid "Select published"
@@ -874,7 +874,7 @@ msgstr "Mettre les médias en cache"
 
 #: classes/Pref_Feeds.php:631 js/CommonDialogs.js:515
 msgid "Mark updated articles as unread"
-msgstr "Marquer les article mis à jour comme non lus"
+msgstr "Marquer les articles mis à jour comme non lus"
 
 #: classes/Pref_Feeds.php:642 classes/Pref_Prefs.php:36 js/CommonDialogs.js:522
 msgid "General"
@@ -1024,7 +1024,7 @@ msgstr "Aucun article mis à jour à afficher."
 
 #: classes/Feeds.php:391
 msgid "No starred articles found to display."
-msgstr "Aucun article remarquable à afficher."
+msgstr "Aucun article favori à afficher."
 
 #: classes/Feeds.php:393
 msgid ""
@@ -1052,7 +1052,7 @@ msgstr ""
 
 #: classes/Feeds.php:1169
 msgid "Starred articles"
-msgstr "Articles remarquables"
+msgstr "Articles favoris"
 
 #: classes/Feeds.php:1171
 msgid "Published articles"
@@ -1624,7 +1624,7 @@ msgstr "Message de test de tt-rss"
 
 #: classes/Pref_System.php:35
 msgid "Task name"
-msgstr ""
+msgstr "Nom de tâche"
 
 #: classes/Pref_System.php:36
 msgid "Last executed"
@@ -1632,11 +1632,11 @@ msgstr "Dernière exécuté"
 
 #: classes/Pref_System.php:37
 msgid "Duration (seconds)"
-msgstr ""
+msgstr "Durée (secondes)"
 
 #: classes/Pref_System.php:38
 msgid "Return code"
-msgstr ""
+msgstr "Code de retour"
 
 #: classes/Pref_System.php:108 js/PrefHelpers.js:622
 msgid "Refresh"
@@ -1705,7 +1705,7 @@ msgstr "Envoyer un courriel de test"
 
 #: classes/Pref_System.php:240
 msgid "Scheduled tasks"
-msgstr ""
+msgstr "Tâches planifiées"
 
 #: classes/Pref_System.php:251
 msgid "PHP Information"
@@ -2234,7 +2234,7 @@ msgstr "Suppression des filtres sélectionnés…"
 
 #: js/PrefFilterTree.js:179
 msgid "Name for new filter:"
-msgstr "Nom du filtre nouveau:"
+msgstr "Nom du nouveau filtre :"
 
 #: js/PrefFilterTree.js:187
 msgid "Clone selected filters?"
@@ -2432,7 +2432,7 @@ msgstr "Flux avec des erreurs de mise à jour"
 
 #: js/CommonDialogs.js:263
 msgid "Debug selected feeds?"
-msgstr "Déboguer les flux sélectionnés?"
+msgstr "Déboguer les flux sélectionnés ?"
 
 #: js/CommonDialogs.js:264
 msgid "Opening debugger for selected feeds..."

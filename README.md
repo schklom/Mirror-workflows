@@ -27,7 +27,7 @@ we recommend to run FMD Server with Docker.
 Quickly try FMD Server on your laptop from the command line:
 
 ```bash
-docker run --rm -p 8080:8080 registry.gitlab.com/fmd-foss/fmd-server:v0.11.0
+docker run --rm -p 8080:8080 registry.gitlab.com/fmd-foss/fmd-server:v0.12.0
 ```
 
 You can now visit FMD Server's web interface in your browser at http://localhost:8080.
@@ -83,9 +83,9 @@ The following is an (incomplete) example `docker-compose.yml` for deploying FMD 
 services:
     fmd:
         # Use the prebuilt image
-        image: registry.gitlab.com/fmd-foss/fmd-server:v0.11.0
+        image: registry.gitlab.com/fmd-foss/fmd-server:v0.12.0
         # Or build the image yourself
-        # build: https://gitlab.com/fmd-foss/fmd-server.git#v0.11.0
+        # build: https://gitlab.com/fmd-foss/fmd-server.git#v0.12.0
         container_name: fmd
         ports:
          - 127.0.0.1:8080:8080

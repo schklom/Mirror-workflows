@@ -2,6 +2,7 @@
 
 This document describes how to publish a new release for FMD Server.
 
+1. Build and test both the binary **and** the Docker container.
 1. Update the `const VERSION = ...` in Go.
 1. Update the version examples in the README.
 1. Commit and push.

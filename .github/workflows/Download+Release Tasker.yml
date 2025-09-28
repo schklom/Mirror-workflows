@@ -36,7 +36,8 @@ jobs:
           #url="https://drive.usercontent.google.com/download?id=${fileid}&export=download&authuser=0&confirm=t"
           #curl -L "${url}=${fileid}" -o ${filename}
 
-          url="https://tasker.joaoapps.com/direct_purchase_download"
+          # Get the dropbox link and remove the quotation marks
+          url="$(curl -is https://tasker.joaoapps.com/direct_purchase_download | grep -o '".*dropbox.*"' | tr -d '"')"
           curl -L "${url}" -o ${filename}
       
       - name: Store md5 hash of new apk

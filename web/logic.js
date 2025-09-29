@@ -416,9 +416,8 @@ async function locate(requestedIndex) {
         }
 
         // Accuracy circle
-        if ("accuracy" in locEntry) {
+        if ("accuracy" in locEntry && currentLocIdx - 5 <= index && index <= currentLocIdx + 5) {
             const accCirc = L.circle(target, locEntry["accuracy"]).addTo(accuracyCircles);
-
             if (index == currentLocIdx) {
                 accCirc.setStyle({ color: "#e5528c" });
             }

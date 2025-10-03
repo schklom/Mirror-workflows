@@ -86,7 +86,7 @@ if [ -z "$TTRSS_NO_STARTUP_PLUGIN_UPDATES" ]; then
 			cd $PLUGIN && \
 				sudo -u app git config core.filemode false && \
 				sudo -u app git config pull.rebase false && \
-				sudo -u app git pull origin master || echo warning: attempt to update plugin $PLUGIN failed.
+				sudo -u app git pull origin main || sudo -u app git pull origin master || echo warning: attempt to update plugin $PLUGIN failed.
 		fi
 	done
 else

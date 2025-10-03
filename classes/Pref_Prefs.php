@@ -1087,9 +1087,19 @@ class Pref_Prefs extends Handler_Protected {
 				2 => ["pipe", "w"], // STDERR
 			];
 
-			$proc = proc_open("git fetch -q origin -a && git log HEAD..origin/master --oneline", $descriptorspec, $pipes, $plugin_dir);
+			// TODO: clean up handling main+master
+			$proc = proc_open("git fetch -q origin -a && git log HEAD..origin/main --oneline", $descriptorspec, $pipes, $plugin_dir);
 
 			if (is_resource($proc)) {
+				$rv = [
+					"stdout" => stream_get_contents($pipes[1]),
+					"stderr" => stream_get_contents($pipes[2]),
+					"git_status" => proc_close($proc),
+				];
+				$rv["need_update"] = !empty($rv["stdout"]);
+			} else {
+				$proc = proc_open("git fetch -q origin -a && git log HEAD..origin/master --oneline", $descriptorspec, $pipes, $plugin_dir);
+
 				$rv = [
 					"stdout" => stream_get_contents($pipes[1]),
 					"stderr" => stream_get_contents($pipes[2]),
@@ -1119,12 +1129,25 @@ class Pref_Prefs extends Handler_Protected {
 				2 => ["pipe", "w"], // STDERR
 			];
 
-			$proc = proc_open("git fetch origin -a && git log HEAD..origin/master --oneline && git pull --ff-only origin master", $descriptorspec, $pipes, $plugin_dir);
+			// TODO: clean up handling main+master
+			$proc = proc_open("git fetch origin -a && git log HEAD..origin/main --oneline && git pull --ff-only origin main", $descriptorspec, $pipes, $plugin_dir);
 
 			if (is_resource($proc)) {
-				$rv["stdout"] = stream_get_contents($pipes[1]);
-				$rv["stderr"] = stream_get_contents($pipes[2]);
-				$rv["git_status"] = proc_close($proc);
+				$rv = [
+					'stdout' => stream_get_contents($pipes[1]),
+					'stderr' => stream_get_contents($pipes[2]),
+					'git_status' => proc_close($proc),
+				];
+			} else {
+				$proc = proc_open("git fetch origin -a && git log HEAD..origin/master --oneline && git pull --ff-only origin master", $descriptorspec, $pipes, $plugin_dir);
+
+				if (is_resource($proc)) {
+					$rv = [
+						'stdout' => stream_get_contents($pipes[1]),
+						'stderr' => stream_get_contents($pipes[2]),
+						'git_status' => proc_close($proc),
+					];
+				}
 			}
 		}
 

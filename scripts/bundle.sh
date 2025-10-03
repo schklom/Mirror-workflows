@@ -13,8 +13,8 @@ if [ -z "$REF" ]; then
     exit 1
 fi
 
-ZIPNAME="fmdserver-${REF}.zip"
-HASHNAME="fmdserver-${REF}.zip.sha256sum"
+ZIPNAME="fmd-server-${REF}.zip"
+HASHNAME="fmd-server-${REF}.zip.sha256sum"
 
 OUTDIR="$PWD"
 BUILDDIR=/tmp/fmdbuild

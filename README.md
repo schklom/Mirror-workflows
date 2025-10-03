@@ -1,10 +1,19 @@
-Tiny Tiny RSS
-=============
+Tiny Tiny RSS (tt-rss)
+======================
 
-Web-based news feed aggregator, designed to allow you to read news from 
+Web-based news feed aggregator, designed to allow you to read news from
 any location, while feeling as close to a real desktop application as possible.
 
-http://tt-rss.org
+## Some notes
+
+* The original tt-rss project, hosted at https://tt-rss.org/ and its various subdomains, [will be gone after 2025-11-01](https://community.tt-rss.org/t/the-end-of-tt-rss-org/7164).
+  * Massive thanks to fox for maintaining tt-rss (and absolutely everything else that went along with it) for so many years.
+* https://github.com/supahgreg/tt-rss is a fork of tt-rss as of 2025-10-03, created by one of its long-time contributors (`wn` on `tt-rss.org`, `supahgreg` on GitHub).
+  * For now, just treat this as a slightly-tweaked mirror of the original project (initially just removing `tt-rss.org` references and integrations).
+* Plugins that were under https://gitlab.tt-rss.org/tt-rss/plugins have been mirrored to `https://github.com/supahgreg/tt-rss-plugin-*` (NOTE: names have changed)
+* The repository that held the content for https://tt-rss.org has been mirrored to https://github.com/supahgreg/tt-rss-web-static.
+
+## License
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

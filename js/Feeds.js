@@ -658,7 +658,7 @@ const	Feeds = {
 										<footer>
 											${reply.show_syntax_help ?
 												`${App.FormFields.button_tag(App.FormFields.icon("help") + " " + __("Search syntax"), "",
-													{class: 'alt-info pull-left', onclick: "window.open('https://tt-rss.org/wiki/SearchSyntax')"})}
+													{class: 'alt-info pull-left', onclick: "window.open('https://github.com/supahgreg/tt-rss-web-static/blob/main/docs/wiki/SearchSyntax.md')"})}
 													` : ''}
 
 											${App.FormFields.submit_tag(App.FormFields.icon("search") + " " + __('Search'), {onclick: "App.dialogOf(this).execute()"})}

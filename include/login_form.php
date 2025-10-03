@@ -211,8 +211,7 @@
 	</div>
 
 	<div class="footer">
-		<a href="https://tt-rss.org/">Tiny Tiny RSS</a>
-		&copy; 2005&ndash;<?= date('Y') ?> <a href="https://fakecake.org/">Andrew Dolgov</a>
+		<a href="https://github.com/supahgreg/tt-rss">Tiny Tiny RSS</a>
 	</div>
 
 </div>

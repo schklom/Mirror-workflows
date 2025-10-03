@@ -161,10 +161,8 @@
         ?>
         </div>
 		<div id="footer" dojoType="dijit.layout.ContentPane" region="bottom">
-			<a class="text-muted" target="_blank" href="https://tt-rss.org/">Tiny Tiny RSS</a>
+			<a class="text-muted" target="_blank" href="https://github.com/supahgreg/tt-rss">Tiny Tiny RSS</a>
 				<span>v<?= Config::get_version_html() ?></span>
-				&copy; 2005-<?= date('Y') ?>
-			<a class="text-muted" target="_blank" href="https://fakecake.org/">Andrew Dolgov</a>
     </div>
 </div>
 

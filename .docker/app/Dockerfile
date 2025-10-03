@@ -59,7 +59,7 @@ ADD .docker/app/config.docker.php ${SCRIPT_ROOT}
 
 COPY . ${SRC_DIR}
 
-ARG ORIGIN_REPO_XACCEL=https://git.tt-rss.org/fox/ttrss-nginx-xaccel.git
+ARG ORIGIN_REPO_XACCEL=https://github.com/supahgreg/tt-rss-plugin-nginx-xaccel.git
 
 RUN git clone --depth=1 ${ORIGIN_REPO_XACCEL} ${SRC_DIR}/plugins.local/nginx_xaccel
 

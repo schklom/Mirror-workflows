@@ -647,7 +647,7 @@ class Pref_Prefs extends Handler_Protected {
 						<?= \Controls\button_tag(\Controls\icon("palette") . " " . __("Customize"), "",
 								["onclick" => "Helpers.Prefs.customizeCSS()"]) ?>
 						<?= \Controls\button_tag(\Controls\icon("open_in_new") . " " . __("More themes..."), "",
-								["class" => "alt-info", "onclick" => "window.open(\"https://tt-rss.org/Themes/\")"]) ?>
+								["class" => "alt-info", "onclick" => "window.open(\"https://github.com/supahgreg/tt-rss-web-static/blob/main/docs/Themes.md\")"]) ?>
 
 						<?php
 
@@ -713,7 +713,7 @@ class Pref_Prefs extends Handler_Protected {
 
 						print \Controls\button_tag(\Controls\icon("help") . " " . __("More info..."), "", [
 							"class" => "alt-info",
-							"onclick" => "window.open('https://tt-rss.org/wiki/SSL%20Certificate%20Authentication')"]);
+							"onclick" => "window.open('https://github.com/supahgreg/tt-rss-web-static/blob/main/docs/wiki/SSL%20Certificate%20Authentication.md')"]);
 
 					} else if ($pref_name == Prefs::DIGEST_PREFERRED_TIME) {
 						print "<input dojoType=\"dijit.form.ValidationTextBox\"
@@ -878,7 +878,7 @@ class Pref_Prefs extends Handler_Protected {
 							print_error(
 								T_sprintf("The following plugins use per-feed content hooks. This may cause excessive data usage and origin server load resulting in a ban of your instance: <b>%s</b>" ,
 									implode(", ", array_map(fn($plugin) => get_class($plugin), $feed_handlers))
-								) . " (<a href='https://tt-rss.org/wiki/FeedHandlerPlugins' target='_blank'>".__("More info...")."</a>)"
+								) . " (<a href='https://github.com/supahgreg/tt-rss-web-static/blob/main/docs/wiki/FeedHandlerPlugins.md' target='_blank'>".__("More info...")."</a>)"
 							);
 						}
 					?> -->
@@ -890,7 +890,7 @@ class Pref_Prefs extends Handler_Protected {
 				</div>
 				<div dojoType="dijit.layout.ContentPane" region="bottom">
 
-					<button dojoType='dijit.form.Button' class="alt-info pull-right" onclick='window.open("https://tt-rss.org/Plugins/")'>
+					<button dojoType='dijit.form.Button' class="alt-info pull-right" onclick='window.open("https://github.com/supahgreg/tt-rss-web-static/blob/main/docs/Plugins.md")'>
 						<i class='material-icons'>help</i>
 						<?= __("More info") ?>
 					</button>
@@ -1274,8 +1274,10 @@ class Pref_Prefs extends Handler_Protected {
 	 * @return array<int, array{'name': string, 'description': string, 'topics': array<int, string>, 'html_url': string, 'clone_url': string, 'last_update': string}>
 	 */
 	private function _get_available_plugins(): array {
+		// TODO: Get this working again.  https://tt-rss.org/plugins.json won't exist after 2025-11-01 (probably).
 		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN && Config::get(Config::ENABLE_PLUGIN_INSTALLER)) {
-			$content = json_decode(UrlHelper::fetch(['url' => 'https://tt-rss.org/plugins.json']), true);
+			// $content = json_decode(UrlHelper::fetch(['url' => 'https://tt-rss.org/plugins.json']), true);
+			$content = false;
 
 			if ($content) {
 				return $content;

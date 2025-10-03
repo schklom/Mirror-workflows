@@ -1989,8 +1989,6 @@ class RSSUtils {
 	}
 
 	/**
-	 * @see https://community.tt-rss.org/t/problem-with-img-srcset/3519
-	 *
 	 * @return array<int, array<string, string>> An array of srcset subitem arrays with keys "url" and "size"
 	 */
 	static function decode_srcset(string $srcset): array {

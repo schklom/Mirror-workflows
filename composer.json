@@ -9,7 +9,7 @@
 		{
 			"name": "j4mie/idiorm",
 			"type": "vcs",
-			"url": "https://git.tt-rss.org/fox/idiorm.git"
+			"url": "https://github.com/supahgreg/tt-rss-idiorm.git"
 		}
 	],
 	"autoload": {

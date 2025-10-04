@@ -31,7 +31,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
 
-    - name: Setup PHP
+    - name: Set up PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.4'
@@ -42,7 +42,7 @@ jobs:
       run: vendor/bin/phpstan analyze --no-progress
 
   phpunit:
-    name: PHPUnit
+    name: "PHPUnit (PHP: ${{ matrix.php }}, experimental: ${{ matrix.experimental }})"
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}
     strategy:
@@ -58,7 +58,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
 
-    - name: Setup PHP ${{ matrix.php }}
+    - name: Set up PHP ${{ matrix.php }}
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}

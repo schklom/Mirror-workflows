@@ -42,7 +42,7 @@ jobs:
       run: vendor/bin/phpstan analyze --no-progress
 
   phpunit:
-    name: "PHPUnit (PHP: ${{ matrix.php }}, experimental: ${{ matrix.experimental }})"
+    name: PHPUnit
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}
     strategy:

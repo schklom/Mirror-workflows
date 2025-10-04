@@ -329,6 +329,7 @@ class RPC extends Handler_Protected {
 			// $content = @UrlHelper::fetch(["url" => "https://tt-rss.org/version.json"]);
 			$content = false;
 
+			/** @phpstan-ignore if.alwaysFalse (intentionally disabling for now) */
 			if ($content) {
 				$content = json_decode($content, true);
 

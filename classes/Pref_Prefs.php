@@ -1302,6 +1302,7 @@ class Pref_Prefs extends Handler_Protected {
 			// $content = json_decode(UrlHelper::fetch(['url' => 'https://tt-rss.org/plugins.json']), true);
 			$content = false;
 
+			/** @phpstan-ignore if.alwaysFalse (intentionally disabling for now) */
 			if ($content) {
 				return $content;
 			}

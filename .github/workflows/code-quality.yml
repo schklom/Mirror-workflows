@@ -1,0 +1,40 @@
+name: Code Quality
+
+on:
+  pull_request:
+    paths:
+    - '**.php'
+    - 'phpstan.neon'
+  push:
+    branches:
+    - main
+    paths:
+    - '**.php'
+    - 'phpstan.neon'
+  # Allow manual triggering
+  workflow_dispatch:
+
+env:
+  fail-fast: true
+
+permissions:
+  contents: read
+
+jobs:
+  static-analysis:
+    name: PHPStan
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.4'
+        coverage: none
+        tools: none
+
+    - name: Run PHPStan
+      run: vendor/bin/phpstan analyze --no-progress

@@ -62,8 +62,10 @@ jobs:
       with:
         images: ${{ matrix.image.repository }}
         tags: |
-          # set latest tag for default branch
-          type=raw,value=latest,enable={{is_default_branch}}
+          # update 'latest'
+          type=raw,value=latest
+          # short SHA with a 'sha-' prefix (e.g. sha-abc123)
+          type=sha
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3

@@ -1458,11 +1458,11 @@ class RSSUtils {
 			$last_processed_rule = false;
 			$regexp_matches = [];
 
+			/** @var array{reg_exp: string, type: string, inverse: bool} $rule */
 			foreach ($filter["rules"] as $rule) {
 				$match = false;
 				$reg_exp = str_replace('/', '\/', (string)$rule["reg_exp"]);
 				$reg_exp = str_replace("\n", "", $reg_exp); // reg_exp may be formatted with CRs now because of textarea, we need to strip those
-				$rule_inverse = $rule["inverse"] ?? false;
 				$last_processed_rule = $rule;
 
 				if (empty($reg_exp))
@@ -1503,7 +1503,8 @@ class RSSUtils {
 						break;
 				}
 
-				if ($rule_inverse) $match = !$match;
+				if ($rule['inverse'])
+					$match = !$match;
 
 				if ($match_any_rule) {
 					if ($match) {
@@ -1863,13 +1864,11 @@ class RSSUtils {
 					$match_on = json_decode($rule_line["match_on"], true);
 
 					if (in_array("0", $match_on) || in_array($feed_id, $match_on) || count(array_intersect($check_cats_fullids, $match_on)) > 0) {
-
-						$rule = array();
-						$rule["reg_exp"] = $rule_line["reg_exp"];
-						$rule["type"] = $rule_line["type_name"];
-						$rule["inverse"] = sql_bool_to_bool($rule_line["inverse"]);
-
-						array_push($rules, $rule);
+						array_push($rules, [
+							'reg_exp' => $rule_line['reg_exp'],
+							'type' => $rule_line['type_name'],
+							'inverse' => sql_bool_to_bool($rule_line['inverse']),
+						]);
 					} else if (!$match_any_rule) {
 						// this filter contains a rule that doesn't match to this feed/category combination
 						// thus filter has to be rejected
@@ -1879,13 +1878,11 @@ class RSSUtils {
 					}
 
 				} else {
-
-					$rule = array();
-					$rule["reg_exp"] = $rule_line["reg_exp"];
-					$rule["type"] = $rule_line["type_name"];
-					$rule["inverse"] = sql_bool_to_bool($rule_line["inverse"]);
-
-					array_push($rules, $rule);
+					array_push($rules, [
+						'reg_exp' => $rule_line['reg_exp'],
+						'type' => $rule_line['type_name'],
+						'inverse' => sql_bool_to_bool($rule_line['inverse']),
+					]);
 				}
 			}
 
@@ -1898,25 +1895,21 @@ class RSSUtils {
 				$sth2->execute([$filter_id]);
 
 				while ($action_line = $sth2->fetch()) {
-					#				print_r($action_line);
-
-					$action = array();
-					$action["type"] = $action_line["type_name"];
-					$action["param"] = $action_line["action_param"];
-
-					array_push($actions, $action);
+					array_push($actions, [
+						'type' => $action_line['type_name'],
+						'param' => $action_line['action_param'],
+					]);
 				}
 			}
 
-			$filter = [];
-			$filter["id"] = $filter_id;
-			$filter["match_any_rule"] = sql_bool_to_bool($line["match_any_rule"]);
-			$filter["inverse"] = sql_bool_to_bool($line["inverse"]);
-			$filter["rules"] = $rules;
-			$filter["actions"] = $actions;
-
 			if (count($rules) > 0 && count($actions) > 0) {
-				array_push($filters, $filter);
+				array_push($filters, [
+					'id' => $filter_id,
+					'match_any_rule' => sql_bool_to_bool($line['match_any_rule']),
+					'inverse' => sql_bool_to_bool($line['inverse']),
+					'rules' => $rules,
+					'actions' => $actions,
+				]);
 			}
 		}
 

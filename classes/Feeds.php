@@ -356,9 +356,7 @@ class Feeds extends Handler_Protected {
 					}
 				}
 
-				if (isset($rgba_cache[$feed_id])) {
-				    $line['feed_bg_color'] = 'rgba(' . implode(",", $rgba_cache[$feed_id]) . ',0.3)';
-				}
+				$line['feed_bg_color'] = 'rgba(' . implode(',', $rgba_cache[$feed_id]) . ',0.3)';
 
 				PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_RENDER_ARTICLE_CDM,
 					function ($result, $plugin) use (&$line) {

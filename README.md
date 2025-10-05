@@ -13,6 +13,7 @@ any location, while feeling as close to a real desktop application as possible.
   * Due to use of `invalid@email.com` on my pre-2025-10-03 commits GitHub incorrectly shows `ivanivanov884` (the GitHub user associated with that e-mail address) as the committer.  Oops. `¯\_(ツ)_/¯`
 * Plugins that were under https://gitlab.tt-rss.org/tt-rss/plugins have been mirrored to `https://github.com/supahgreg/tt-rss-plugin-*` (NOTE: names have changed)
 * The repository that held the content for https://tt-rss.org has been mirrored to https://github.com/supahgreg/tt-rss-web-static.
+* Docker images are being published to Docker Hub-- see https://hub.docker.com/r/supahgreg/tt-rss/tags and https://hub.docker.com/r/supahgreg/tt-rss-web-nginx/tags .
 
 ## License
 

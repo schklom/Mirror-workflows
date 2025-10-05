@@ -90,7 +90,7 @@ class Pref_Filters extends Handler_Protected {
 
 		/** @var string $rule_json */
 		foreach (clean($_REQUEST['rule']) as $rule_json) {
-			/** @var array{'reg_exp': string, 'filter_type': int, 'feed_id': array<int, int|string>, 'name': string}|null */
+			/** @var array{reg_exp: string, filter_type: int, feed_id: array<int, int|string>, name: string, inverse?: bool}|null */
 			$rule = json_decode($rule_json, true);
 
 			if (is_array($rule)) {

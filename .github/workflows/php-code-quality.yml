@@ -6,13 +6,6 @@ on:
     - '**.php'
     - 'phpstan.neon'
     - 'phpunit.xml'
-  push:
-    branches:
-    - main
-    paths:
-    - '**.php'
-    - 'phpstan.neon'
-    - 'phpunit.xml'
   # Allow manual triggering
   workflow_dispatch:
   # Allow other workflows (e.g. Publish) to invoke this one.

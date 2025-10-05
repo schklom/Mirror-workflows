@@ -1,0 +1,57 @@
+name: Enhancement Request
+description: Request a new enhancement/feature
+labels: [enhancement]
+
+body:
+- type: textarea
+  id: description
+  attributes:
+    label: Description
+    description: Short description of the enhancement/feature you are proposing.
+  validations:
+    required: true
+
+- type: textarea
+  id: use-case
+  attributes:
+    label: Use Case
+    description: Why do you need this feature?
+  validations:
+    required: true
+
+- type: textarea
+  id: solution
+  attributes:
+    label: Proposed Solution
+    description: |
+      (If known) How would you propose the enhancement/feature be implemented?
+  validations:
+    required: false
+
+- type: input
+  id: version
+  attributes:
+    label: tt-rss Version
+    description: Which version (commit) of tt-rss are you currently using?
+  validations:
+    required: true
+
+- type: textarea
+  id: other
+  attributes:
+    label: Other Information
+    description: |
+      Anything else you want to provide (e.g. related issues, suggestions on how to implement, links for context, etc.).
+  validations:
+    required: false
+
+- type: checkboxes
+  id: acknowledgments
+  attributes:
+    label: Acknowledge
+    description: Please mark any checkbox that apply (otherwise leave unchecked).
+    options:
+    - label: I'm interested in implementing the feature
+      required: false
+    - label: This feature might result in a breaking change
+      required: false

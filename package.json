@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "devDependencies": {
-    "eslint": "^7.9.0",
-    "eslint-formatter-gitlab": "^5.1.0",
-    "gulp": "^4.0.2",
-    "gulp-less": "^4.0.1",
+    "eslint": "^9.37.0",
+    "eslint-formatter-gitlab": "^6.0.1",
+    "gulp": "^5.0.1",
+    "gulp-less": "^5.0.0",
     "gulp-touch-fd": "^2.0.0",
-    "less": "^3.12.2"
+    "less": "^4.4.1"
   }
 }

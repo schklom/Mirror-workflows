@@ -15,12 +15,17 @@ on:
     - 'phpunit.xml'
   # Allow manual triggering
   workflow_dispatch:
+  # Allow other workflows (e.g. Publish) to invoke this one.
+  workflow_call:
+
 
 env:
   fail-fast: true
 
+
 permissions:
   contents: read
+
 
 jobs:
   phpstan:
@@ -28,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Check out code
       uses: actions/checkout@v5
 
     - name: Set up PHP
@@ -55,7 +60,7 @@ jobs:
           experimental: true
 
     steps:
-    - name: Checkout code
+    - name: Check out code
       uses: actions/checkout@v5
 
     - name: Set up PHP ${{ matrix.php }}

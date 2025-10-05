@@ -1,0 +1,66 @@
+name: Publish
+
+on:
+  push:
+    branches: [main]
+  # Allow manual triggering
+  workflow_dispatch:
+
+
+permissions:
+  contents: read
+
+
+jobs:
+  test-php:
+    uses: ./.github/workflows/php-code-quality.yml
+
+  publish-dockerhub:
+    name: Publish ${{ matrix.image.name }} to Docker Hub
+    needs:
+    - test-php
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image:
+        - name: app
+          dockerfile: ./.docker/app/Dockerfile
+          repository: supahgreg/tt-rss
+        # - name: web-nginx
+        #   dockerfile: ./.docker/web-nginx/Dockerfile
+        #   repository: supahgreg/tt-rss-web-nginx
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v5
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ matrix.image.repository }}
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build and push to Docker Hub
+      id: push
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        file: ${{ matrix.image.dockerfile }}
+        platforms: linux/arm64,linux/amd64
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        provenance: true
+        sbom: true
+        push: true

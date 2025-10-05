@@ -95,6 +95,7 @@ class Pref_Filters extends Handler_Protected {
 
 			if (is_array($rule)) {
 				$rule['type'] = $filter_types[$rule['filter_type']];
+				$rule['inverse'] ??= false;
 				array_push($filter['rules'], $rule);
 
 				$scope_inner_qparts = [];

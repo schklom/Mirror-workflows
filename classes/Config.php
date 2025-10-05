@@ -632,9 +632,9 @@ class Config {
 
 						<?php foreach ($errors as $error) { echo self::format_error($error); } ?>
 
-						<p>You might want to check the tt-rss <a target="_blank" href="https://github.com/supahgreg/tt-rss-web-static/blob/main/docs/wiki/InstallationNotes.md">wiki</a> or
-							<a target="_blank" href="https://github.com/supahgreg/tt-rss/discussions">discussions</a> for more information. Please search before creating a new topic
-							for your question.</p>
+						<p>You might want to check the tt-rss <a target="_blank" href="https://github.com/supahgreg/tt-rss/wiki/Installation-Notes">wiki</a> or
+							<a target="_blank" href="https://github.com/supahgreg/tt-rss/discussions">discussions</a> for more information.
+							Please search before creating a new topic for your question.</p>
 					</div>
 				</body>
 			</html>

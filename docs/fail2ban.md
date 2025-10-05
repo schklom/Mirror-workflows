@@ -21,6 +21,7 @@ To view the logs:
 
 ```sh
 journalctl -t fmd-server
+journalctl -q _SYSTEMD_UNIT=fmd-server-prod.service
 ```
 
 ## Configuring fail2ban
@@ -33,7 +34,7 @@ journalctl -t fmd-server
 1. Install the filter, by creating the file `/etc/fail2ban/filter.d/fmd-server.local`
    with the following content:
 
-```
+```conf
 # Filter for FMD Server
 
 [INCLUDES]
@@ -47,7 +48,7 @@ failregex = ^.*"remoteIp":"<ADDR>:?\d*".*"message":"(?:failed|blocked) login att
 1. Install the jail, by creating the file `/etc/fail2ban/jail.d/fmd-server.local`
    with the following content:
 
-```
+```conf
 # Jail for FMD Server
 
 [fmd-server]
@@ -86,4 +87,3 @@ To manually test the filter regex:
 ```sh
 sudo fail2ban-regex -v --journalmatch='SYSLOG_IDENTIFIER="fmd-server"' systemd-journal[journalflags=1] fmd-server
 ```
-

@@ -3,6 +3,16 @@ name: Publish
 on:
   push:
     branches: [main]
+    paths-ignore:
+    - '.**'
+    - 'tests/**'
+    - '*.*-dist'
+    - '*.js'
+    - '*.json'
+    - '*.lock'
+    - '*.md'
+    - '*.neon'
+    - '*.xml'
   # Allow manual triggering
   workflow_dispatch:
 

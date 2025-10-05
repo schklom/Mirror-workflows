@@ -45,6 +45,9 @@ jobs:
       uses: docker/metadata-action@v5
       with:
         images: ${{ matrix.image.repository }}
+        tags: |
+          # set latest tag for default branch
+          type=raw,value=latest,enable={{is_default_branch}}
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3

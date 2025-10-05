@@ -26,9 +26,9 @@ jobs:
         - name: app
           dockerfile: ./.docker/app/Dockerfile
           repository: supahgreg/tt-rss
-        # - name: web-nginx
-        #   dockerfile: ./.docker/web-nginx/Dockerfile
-        #   repository: supahgreg/tt-rss-web-nginx
+        - name: web-nginx
+          dockerfile: ./.docker/web-nginx/Dockerfile
+          repository: supahgreg/tt-rss-web-nginx
 
     steps:
     - name: Check out code

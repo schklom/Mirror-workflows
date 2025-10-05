@@ -4,8 +4,7 @@
       {
         "builtIn": 1,
         "datasource": {
-          "type": "grafana",
-          "uid": "-- Grafana --"
+          "type": "grafana"
         },
         "enable": true,
         "hide": true,
@@ -36,8 +35,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "000000001"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -85,8 +83,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "000000001"
+            "type": "prometheus"
           },
           "disableTextWrap": false,
           "editorMode": "builder",
@@ -104,8 +101,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "000000001"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -153,8 +149,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "000000001"
+            "type": "prometheus"
           },
           "disableTextWrap": false,
           "editorMode": "builder",
@@ -172,8 +167,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "000000001"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -233,8 +227,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "000000001"
+            "type": "prometheus"
           },
           "disableTextWrap": false,
           "editorMode": "code",
@@ -265,8 +258,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "000000001"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -329,8 +321,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "000000001"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -393,8 +384,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "000000001"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -442,8 +432,7 @@
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "000000001"
+            "type": "prometheus"
           },
           "disableTextWrap": false,
           "editorMode": "builder",
@@ -461,8 +450,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "000000001"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -538,8 +526,7 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "000000001"
+        "type": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -648,6 +635,5 @@
   "timepicker": {},
   "timezone": "browser",
   "title": "FMD Server",
-  "uid": "b4aa6836-0a38-4e9c-8337-211e8e013e39",
   "version": 7
 }

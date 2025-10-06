@@ -14,10 +14,10 @@ Please refer to [the wiki](https://github.com/supahgreg/tt-rss/wiki).
 * This project (https://github.com/supahgreg/tt-rss) is a fork of tt-rss as of 2025-10-03, created by one of its long-time contributors (`wn_`/`wn_name` on `tt-rss.org`, `supahgreg` on `github.com`).
   * The goal is to continue tt-rss development, with an initial focus on replacing `tt-rss.org` references and integrations + getting things working.
   * Developer note: Due to use of `invalid@email.com` on `supahgreg`'s pre-2025-10-03 commits (which were done on `tt-rss.org`) GitHub incorrectly shows `ivanivanov884`
-    (the GitHub user associated with that e-mail address) instead of `wn_`/`supahgreg`.  Apologies for any confusion.  `¯\_(ツ)_/¯`
+    (the GitHub user associated with that e-mail address) as the author instead of `wn_`/`supahgreg`.  Apologies for any confusion.  `¯\_(ツ)_/¯`
 * Plugins that were under https://gitlab.tt-rss.org/tt-rss/plugins have been mirrored to `https://github.com/supahgreg/tt-rss-plugin-*`.
   * Plugin repository names have changed to get a consistent `tt-rss-plugin-*` prefix.
-* Documentation from https://tt-rss.org has recreated in https://github.com/supahgreg/tt-rss/wiki .
+* Documentation from https://tt-rss.org has been recreated in https://github.com/supahgreg/tt-rss/wiki .
   * The repository that held the content for https://tt-rss.org was mirrored to https://github.com/supahgreg/tt-rss-web-static .
     Some content tweaks were made after mirroring (prior to the wiki being set up), and the repository is now archived.
 * Docker images are being built and published to Docker Hub [via GitHub Actions](https://github.com/supahgreg/tt-rss/actions/workflows/publish.yml).
@@ -28,7 +28,7 @@ Please refer to [the wiki](https://github.com/supahgreg/tt-rss/wiki).
 
 * Contributions (code, translations, reporting issues, etc.) are welcome.
 * Development and issue tracking primarily happens in https://github.com/supahgreg/tt-rss .
-* (not quite ready for this post-`tt-rss.org`) ~~Help translate tt-rss into your own language using [Weblate](https://hosted.weblate.org/engage/tt-rss/)~~
+* (not quite ready for this yet) ~~Help translate tt-rss into your own language using [Weblate](https://hosted.weblate.org/engage/tt-rss/)~~
 
 ## License
 

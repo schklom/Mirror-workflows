@@ -272,7 +272,7 @@ class Config {
 		Config::CHECK_FOR_PLUGIN_UPDATES => [ "true",				Config::T_BOOL ],
 		Config::ENABLE_PLUGIN_INSTALLER => [ "true",					Config::T_BOOL ],
 		Config::AUTH_MIN_INTERVAL => [ 5,								Config::T_INT ],
-		Config::HTTP_USER_AGENT => [ 'Tiny Tiny RSS/%s (https://github.com/supahgreg/tt-rss)',
+		Config::HTTP_USER_AGENT => [ 'Tiny Tiny RSS/%s (https://github.com/tt-rss/tt-rss)',
 																					Config::T_STRING ],
 		Config::HTTP_429_THROTTLE_INTERVAL => [ 3600,				Config::T_INT ],
 		Config::DISABLE_LOGIN_FORM => [ "",								Config::T_BOOL ],
@@ -632,8 +632,8 @@ class Config {
 
 						<?php foreach ($errors as $error) { echo self::format_error($error); } ?>
 
-						<p>You might want to check the tt-rss <a target="_blank" href="https://github.com/supahgreg/tt-rss/wiki">wiki</a> or
-							<a target="_blank" href="https://github.com/supahgreg/tt-rss/discussions">discussions</a> for more information.
+						<p>You might want to check the tt-rss <a target="_blank" href="https://github.com/tt-rss/tt-rss/wiki">wiki</a> or
+							<a target="_blank" href="https://github.com/tt-rss/tt-rss/discussions">discussions</a> for more information.
 							Please search before creating a new topic for your question.</p>
 					</div>
 				</body>

@@ -2,7 +2,7 @@
 <!-- $BeginBlock feed -->
 <feed xmlns="http://www.w3.org/2005/Atom">
 <title>${FEED_TITLE}</title>
-<generator uri="https://github.com/supahgreg/tt-rss">Tiny Tiny RSS/${VERSION}</generator>
+<generator uri="https://github.com/tt-rss/tt-rss">Tiny Tiny RSS/${VERSION}</generator>
 <updated>${FEED_UPDATED}</updated>
 <id>${FEED_URL}</id>
 <link href="${FEED_URL}" rel="self"/>

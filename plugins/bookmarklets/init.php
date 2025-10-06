@@ -9,7 +9,7 @@ class Bookmarklets extends Plugin {
 			"Easy feed subscription and web page sharing using bookmarklets",
 			"fox",
 			false,
-			"https://github.com/supahgreg/tt-rss/wiki/Share-Anything");
+			"https://github.com/tt-rss/tt-rss/wiki/Share-Anything");
   }
 
 	function init($host) {
@@ -371,7 +371,7 @@ class Bookmarklets extends Plugin {
 			</label>
 
 			<?= \Controls\button_tag(\Controls\icon("help") . " " . __("More info..."), "",
-									["class" => 'alt-info', "onclick" => "window.open('https://github.com/supahgreg/tt-rss/wiki/Share-Anything')"]) ?>
+									["class" => 'alt-info', "onclick" => "window.open('https://github.com/tt-rss/tt-rss/wiki/Share-Anything')"]) ?>
 
 		</div>
 

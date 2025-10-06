@@ -161,7 +161,7 @@
         ?>
         </div>
 		<div id="footer" dojoType="dijit.layout.ContentPane" region="bottom">
-			<a class="text-muted" target="_blank" href="https://github.com/supahgreg/tt-rss">Tiny Tiny RSS</a>
+			<a class="text-muted" target="_blank" href="https://github.com/tt-rss/tt-rss">Tiny Tiny RSS</a>
 				<span>v<?= Config::get_version_html() ?></span>
     </div>
 </div>

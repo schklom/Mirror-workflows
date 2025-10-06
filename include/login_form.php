@@ -211,7 +211,7 @@
 	</div>
 
 	<div class="footer">
-		<a href="https://github.com/supahgreg/tt-rss">Tiny Tiny RSS</a>
+		<a href="https://github.com/tt-rss/tt-rss">Tiny Tiny RSS</a>
 	</div>
 
 </div>

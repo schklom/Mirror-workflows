@@ -329,7 +329,7 @@
 	}
 
 	/** Convert values accepted by tt-rss as true/false to PHP booleans
-	 * @see https://github.com/supahgreg/tt-rss/wiki/API-Reference#boolean-values
+	 * @see https://github.com/tt-rss/tt-rss/wiki/API-Reference#boolean-values
 	 * @param null|string $s null values are considered false
 	 */
 	function sql_bool_to_bool(?string $s): bool {

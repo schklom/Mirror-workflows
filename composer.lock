@@ -560,7 +560,7 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/supahgreg/tt-rss-idiorm.git",
+                "url": "https://github.com/tt-rss/tt-rss-idiorm.git",
                 "reference": "efc8ea06698f53e2c479c7696f2b154c47c3a3cb"
             },
             "dist": {

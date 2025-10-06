@@ -226,7 +226,7 @@ const	Filters = {
 
 								<footer>
 									${App.FormFields.button_tag(App.FormFields.icon("help") + " " + __("More info"), "", {class: 'pull-left alt-info',
-										onclick: "window.open('https://github.com/supahgreg/tt-rss/wiki/Content-Filters')"})}
+										onclick: "window.open('https://github.com/tt-rss/tt-rss/wiki/Content-Filters')"})}
 									${App.FormFields.submit_tag(App.FormFields.icon("save") + " " + __("Save"), {onclick: "App.dialogOf(this).execute()"})}
 									${App.FormFields.cancel_dialog_tag(__("Cancel"))}
 								</footer>

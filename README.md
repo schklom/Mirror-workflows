@@ -20,7 +20,7 @@ Please refer to [the wiki](https://github.com/tt-rss/tt-rss/wiki).
 * Documentation from https://tt-rss.org has been recreated in https://github.com/tt-rss/tt-rss/wiki .
   * The repository that held the content for https://tt-rss.org was mirrored to https://github.com/tt-rss/tt-rss-web-static .
     Some content tweaks were made after mirroring (prior to the wiki being set up), and the repository is now archived.
-* Docker images are being built and published to Docker Hub [via GitHub Actions](https://github.com/tt-rss/tt-rss/actions/workflows/publish.yml).
+* Docker images (for `linux/amd64` and `linux/arm64`) are being built and published to Docker Hub [via GitHub Actions](https://github.com/tt-rss/tt-rss/actions/workflows/publish.yml).
   * See https://hub.docker.com/r/supahgreg/tt-rss/ and https://hub.docker.com/r/supahgreg/tt-rss-web-nginx/ , and
     [the installation guide](https://github.com/tt-rss/tt-rss/wiki/Installation-Guide) for how they can be used.
 
@@ -28,7 +28,7 @@ Please refer to [the wiki](https://github.com/tt-rss/tt-rss/wiki).
 
 * Contributions (code, translations, reporting issues, etc.) are welcome.
 * Development and issue tracking primarily happens in https://github.com/tt-rss/tt-rss .
-* (not quite ready for this yet) ~~Help translate tt-rss into your own language using [Weblate](https://hosted.weblate.org/engage/tt-rss/)~~
+* Help translate tt-rss into your own language using [Weblate](https://hosted.weblate.org/engage/tt-rss/).
 
 ## License
 

@@ -563,6 +563,12 @@
                 "url": "https://github.com/supahgreg/tt-rss-idiorm.git",
                 "reference": "efc8ea06698f53e2c479c7696f2b154c47c3a3cb"
             },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/supahgreg/tt-rss-idiorm/zipball/efc8ea06698f53e2c479c7696f2b154c47c3a3cb",
+                "reference": "efc8ea06698f53e2c479c7696f2b154c47c3a3cb",
+                "shasum": ""
+            },
             "require": {
                 "php": ">=5.2.0"
             },

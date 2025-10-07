@@ -40,15 +40,6 @@ body:
   attributes:
     label: Other Information
     description: |
-      Anything else you want to provide (e.g. related issues, suggestions on how to fix, links for context, etc.).
+      Anything else you want to provide (e.g. related issues, suggestions on how to fix, whether you want to work on the fix, links for context, etc.).
   validations:
     required: false
-
-- type: checkboxes
-  id: acknowledgments
-  attributes:
-    label: Acknowledge
-    description: Please mark any checkbox that applies (otherwise leave unchecked).
-    options:
-      - label: I'm interested in implementing the fix
-        required: false

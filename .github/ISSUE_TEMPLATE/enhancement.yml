@@ -41,17 +41,6 @@ body:
   attributes:
     label: Other Information
     description: |
-      Anything else you want to provide (e.g. related issues, suggestions on how to implement, links for context, etc.).
+      Anything else you want to provide (e.g. related issues, suggestions on how to implement, whether you want to work on the implementation, links for context, etc.).
   validations:
     required: false
-
-- type: checkboxes
-  id: acknowledgments
-  attributes:
-    label: Acknowledge
-    description: Please mark any checkbox that apply (otherwise leave unchecked).
-    options:
-    - label: I'm interested in implementing the enhancement/feature
-      required: false
-    - label: This enhancement/feature might result in a breaking change
-      required: false

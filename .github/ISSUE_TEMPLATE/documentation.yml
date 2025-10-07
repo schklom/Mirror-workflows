@@ -9,12 +9,3 @@ body:
     label: What is the issue?
   validations:
     required: true
-
-- type: checkboxes
-  id: acknowledgments
-  attributes:
-    label: Acknowledge
-    description: Please mark any checkbox that apply (otherwise leave unchecked).
-    options:
-    - label: I'm interested in implementing the fix
-      required: false

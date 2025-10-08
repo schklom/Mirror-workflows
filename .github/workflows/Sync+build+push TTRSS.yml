@@ -26,7 +26,7 @@ jobs:
         # echo "::set-output name=SETREMOTE::$(git ls-remote https://git.tt-rss.org/fox/ttrss-docker-compose.git HEAD | awk '{ print $1 }')"
         # fox updates the docker image based on the tt-rss repo instead of ttrss-docker-compose for some reason, so it's better to do the same
         run: |
-          echo "SETREMOTE=$(git ls-remote https://git.tt-rss.org/fox/tt-rss.git HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+          echo "SETREMOTE=$(git ls-remote https://github.com/tt-rss/tt-rss.git HEAD | awk '{ print $1 }')" >> $GITHUB_OUTPUT
           echo "SETLOCAL=$(cat last_sync_with_original_repo_commit_id)" >> $GITHUB_OUTPUT
   
   repo_sync:
@@ -38,7 +38,7 @@ jobs:
       - name: repo-sync
         uses: wei/git-sync@v3
         with:
-          source_repo: "https://git.tt-rss.org/fox/tt-rss.git"
+          source_repo: "https://github.com/tt-rss/tt-rss.git"
           source_branch: "master"
           destination_repo: "git@github.com:schklom/Mirror-workflows.git"
           destination_branch: "TTRSS-docker"
@@ -54,7 +54,7 @@ jobs:
         with:
           ref: 'TTRSS-docker' # branch
       - name: get most recent commit id on original repo, for next comparison on sync
-        run: git ls-remote https://git.tt-rss.org/fox/tt-rss.git HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
+        run: git ls-remote https://github.com/tt-rss/tt-rss.git HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
       - name: Commit and push the change
         uses: stefanzweifel/git-auto-commit-action@v6
         with:

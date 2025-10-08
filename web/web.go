@@ -5,7 +5,7 @@ import (
 	"io/fs"
 )
 
-//go:embed assets node_modules *.html *.css *.js *.svg *.ico *.json
+//go:embed assets node_modules *.html *.css *.js *.svg *.ico *.json *.txt
 var webDir embed.FS
 
 func WebDir() fs.FS {

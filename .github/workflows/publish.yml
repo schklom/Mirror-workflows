@@ -4,8 +4,10 @@ on:
   push:
     branches: [main]
     paths-ignore:
-    - '.**'
+    - '.github/**'
+    - '.vscode/**'
     - 'tests/**'
+    - '.*'
     - '*.*-dist'
     - '*.js'
     - '*.json'

@@ -83,10 +83,41 @@ if [ -z "$TTRSS_NO_STARTUP_PLUGIN_UPDATES" ]; then
 		if [ -d $PLUGIN/.git ]; then
 			echo updating $PLUGIN...
 
-			cd $PLUGIN && \
-				sudo -u app git config core.filemode false && \
-				sudo -u app git config pull.rebase false && \
-				sudo -u app git pull origin main || sudo -u app git pull origin master || echo warning: attempt to update plugin $PLUGIN failed.
+			cd $PLUGIN
+
+			# Unless disallowed, migrate plugins in 'plugins.local' that were pulling from repos on tt-rss.org to their GitHub equivalent.
+			if [ -z "$SKIP_LEGACY_ORIGIN_REPLACE" ]; then
+				ORIGIN_URL=$(sudo -u app git config --get remote.origin.url)
+
+				case "$ORIGIN_URL" in
+					https://git.tt-rss.org/fox/ttrss-*.git)
+						NEW_ORIGIN_URL="https://github.com/tt-rss/tt-rss-plugin-${ORIGIN_URL#'https://git.tt-rss.org/fox/ttrss-'}"
+						;;
+					https://gitlab.tt-rss.org/tt-rss/plugins/ttrss-*.git)
+						NEW_ORIGIN_URL="https://github.com/tt-rss/tt-rss-plugin-${ORIGIN_URL#'https://gitlab.tt-rss.org/tt-rss/plugins/ttrss-'}"
+						;;
+					*)
+						NEW_ORIGIN_URL=""
+						;;
+				esac
+
+				if [ -n "$NEW_ORIGIN_URL" ]; then
+					if [ $(sudo -u app git branch --show-current) = "master" ]; then
+						echo "Migrating origin remote from ${ORIGIN_URL} to ${NEW_ORIGIN_URL}"
+						sudo -u app git remote set-url origin "$NEW_ORIGIN_URL"
+						sudo -u app git branch -m master main
+						sudo -u app git fetch origin
+						sudo -u app git branch --set-upstream-to origin/main main
+						sudo -u app git remote set-head origin --auto
+					else
+						echo "Skipping migration of origin remote from ${ORIGIN_URL} to ${NEW_ORIGIN_URL} (local branch is not 'master')"
+					fi
+				fi
+			fi
+
+			sudo -u app git config core.filemode false && \
+			sudo -u app git config pull.rebase false && \
+			sudo -u app git pull origin main || sudo -u app git pull origin master || echo warning: attempt to update plugin $PLUGIN failed.
 		fi
 	done
 else

@@ -102,16 +102,26 @@ if [ -z "$TTRSS_NO_STARTUP_PLUGIN_UPDATES" ]; then
 				esac
 
 				if [ -n "$NEW_ORIGIN_URL" ]; then
-					if [ $(sudo -u app git branch --show-current) = "master" ]; then
-						echo "Migrating origin remote from ${ORIGIN_URL} to ${NEW_ORIGIN_URL}"
-						sudo -u app git remote set-url origin "$NEW_ORIGIN_URL"
-						sudo -u app git branch -m master main
-						sudo -u app git fetch origin
-						sudo -u app git branch --set-upstream-to origin/main main
-						sudo -u app git remote set-head origin --auto
-					else
-						echo "Skipping migration of origin remote from ${ORIGIN_URL} to ${NEW_ORIGIN_URL} (local branch is not 'master')"
-					fi
+					case $(sudo -u app git branch --show-current) in
+						master)
+							echo "Migrating origin remote from ${ORIGIN_URL} to ${NEW_ORIGIN_URL} (and switching the branch from 'master' to 'main')"
+							sudo -u app git remote set-url origin "$NEW_ORIGIN_URL"
+							sudo -u app git branch -m master main
+							sudo -u app git fetch origin
+							sudo -u app git branch --set-upstream-to origin/main main
+							sudo -u app git remote set-head origin --auto
+							;;
+						main)
+							echo "Migrating origin remote from ${ORIGIN_URL} to ${NEW_ORIGIN_URL}"
+							sudo -u app git remote set-url origin "$NEW_ORIGIN_URL"
+							sudo -u app git fetch origin
+							sudo -u app git branch --set-upstream-to origin/main main
+							sudo -u app git remote set-head origin --auto
+							;;
+						*)
+							echo "Skipping migration of origin remote from ${ORIGIN_URL} to ${NEW_ORIGIN_URL} (local branch is not 'master' or 'main')"
+							;;
+					esac
 				fi
 			fi
 

@@ -23,6 +23,8 @@ class Pref_Prefs extends Handler_Protected {
 	const PI_ERR_PLUGIN_NOT_FOUND = "PI_ERR_PLUGIN_NOT_FOUND";
 	const PI_ERR_NO_WORKDIR = "PI_ERR_NO_WORKDIR";
 
+	private const PLUGIN_UPDATE_ALLOWED_BRANCHES = ['main', 'master'];
+
 	function csrf_ignore(string $method) : bool {
 		$csrf_ignored = array("index", "updateself", "otpqrcode");
 
@@ -1072,6 +1074,45 @@ class Pref_Prefs extends Handler_Protected {
 	}
 
 	/**
+	 * @todo Switch to something better.  We don't need to be reinventing the wheel, and someone else has done it better.
+	 * @return array{'stdout': false|string, 'stderr': false|string, 'exit_code': int}|null
+	 */
+	private static function _run_command(string $command, string $dir): ?array {
+		$pipes = [];
+
+		$descriptor_spec = [
+			// 0 => ['pipe', 'r'], // STDIN
+			1 => ['pipe', 'w'], // STDOUT
+			2 => ['pipe', 'w'], // STDERR
+		];
+
+		$proc = proc_open($command, $descriptor_spec, $pipes, $dir);
+
+		if (is_resource($proc)) {
+			return [
+				'stdout' => stream_get_contents($pipes[1]),
+				'stderr' => stream_get_contents($pipes[2]),
+				'exit_code' => proc_close($proc),
+			];
+		}
+
+		return null;
+	}
+
+	/**
+	 * @param string $dir a git repo directory
+	 * @return null|string the current branch if it can be determined, otherwise null (latter includes detached HEAD)
+	 */
+	private static function _git_current_branch(string $dir): ?string {
+		$result = self::_run_command('git rev-parse --abbrev-ref HEAD', $dir);
+
+		if ($result === null || $result['exit_code'] !== 0 || $result['stdout'] === 'HEAD')
+			return null;
+
+		return trim($result['stdout']);
+	}
+
+	/**
 	 * @return array{'stdout': false|string, 'stderr': false|string, 'git_status': int, 'need_update': bool}|null
 	 */
 	private static function _plugin_needs_update(string $root_dir, string $plugin_name): ?array {
@@ -1079,33 +1120,22 @@ class Pref_Prefs extends Handler_Protected {
 		$rv = null;
 
 		if (is_dir($plugin_dir) && is_dir("$plugin_dir/.git")) {
-			$pipes = [];
+			$current_branch = self::_git_current_branch($plugin_dir);
 
-			$descriptorspec = [
-				//0 => ["pipe", "r"], // STDIN
-				1 => ["pipe", "w"], // STDOUT
-				2 => ["pipe", "w"], // STDERR
-			];
+			// be very careful about which values are allowed here (currently used as-is in the command below, improvements planned)
+			if (!in_array($current_branch, self::PLUGIN_UPDATE_ALLOWED_BRANCHES))
+				return $rv;
 
-			// TODO: clean up handling main+master
-			$proc = proc_open("git fetch -q origin -a && git log HEAD..origin/main --oneline", $descriptorspec, $pipes, $plugin_dir);
+			$result = self::_run_command("git fetch --quiet origin --append && git log HEAD..origin/{$current_branch} --oneline", $plugin_dir);
 
-			if (is_resource($proc)) {
+			if (is_array($result)) {
 				$rv = [
-					"stdout" => stream_get_contents($pipes[1]),
-					"stderr" => stream_get_contents($pipes[2]),
-					"git_status" => proc_close($proc),
+					'stdout' => $result['stdout'],
+					'stderr' => $result['stderr'],
+					'git_status' => $result['exit_code'],
 				];
-				$rv["need_update"] = !empty($rv["stdout"]);
-			} else {
-				$proc = proc_open("git fetch -q origin -a && git log HEAD..origin/master --oneline", $descriptorspec, $pipes, $plugin_dir);
 
-				$rv = [
-					"stdout" => stream_get_contents($pipes[1]),
-					"stderr" => stream_get_contents($pipes[2]),
-					"git_status" => proc_close($proc),
-				];
-				$rv["need_update"] = !empty($rv["stdout"]);
+				$rv['need_update'] = !empty($rv['stdout']);
 			}
 		}
 
@@ -1114,44 +1144,30 @@ class Pref_Prefs extends Handler_Protected {
 
 
 	/**
-	 * @return array{'stdout': false|string, 'stderr': false|string, 'git_status': int}
+	 * @return array{}|array{stdout: false|string, stderr: false|string, git_status: int}
 	 */
 	private function _update_plugin(string $root_dir, string $plugin_name): array {
 		$plugin_dir = "$root_dir/plugins.local/" . basename($plugin_name);
-		$rv = [];
 
 		if (is_dir($plugin_dir) && is_dir("$plugin_dir/.git")) {
-			$pipes = [];
+			$current_branch = self::_git_current_branch($plugin_dir);
 
-			$descriptorspec = [
-				//0 => ["pipe", "r"], // STDIN
-				1 => ["pipe", "w"], // STDOUT
-				2 => ["pipe", "w"], // STDERR
-			];
+			// be very careful about which values are allowed here (currently used as-is in the command below, improvements planned)
+			if (!in_array($current_branch, self::PLUGIN_UPDATE_ALLOWED_BRANCHES))
+				return [];
 
-			// TODO: clean up handling main+master
-			$proc = proc_open("git fetch origin -a && git log HEAD..origin/main --oneline && git pull --ff-only origin main", $descriptorspec, $pipes, $plugin_dir);
+			$result = self::_run_command("git fetch origin --append && git log HEAD..origin/{$current_branch} --oneline && git pull --ff-only origin {$current_branch}", $plugin_dir);
 
-			if (is_resource($proc)) {
-				$rv = [
-					'stdout' => stream_get_contents($pipes[1]),
-					'stderr' => stream_get_contents($pipes[2]),
-					'git_status' => proc_close($proc),
+			if (is_array($result)) {
+				return [
+					'stdout' => $result['stdout'],
+					'stderr' => $result['stderr'],
+					'git_status' => $result['exit_code'],
 				];
-			} else {
-				$proc = proc_open("git fetch origin -a && git log HEAD..origin/master --oneline && git pull --ff-only origin master", $descriptorspec, $pipes, $plugin_dir);
-
-				if (is_resource($proc)) {
-					$rv = [
-						'stdout' => stream_get_contents($pipes[1]),
-						'stderr' => stream_get_contents($pipes[2]),
-						'git_status' => proc_close($proc),
-					];
-				}
 			}
 		}
 
-		return $rv;
+		return [];
 	}
 
 	// https://gist.github.com/mindplay-dk/a4aad91f5a4f1283a5e2#gistcomment-2036828
@@ -1232,13 +1248,13 @@ class Pref_Prefs extends Handler_Protected {
 
 							$pipes = [];
 
-							$descriptorspec = [
+							$descriptor_spec = [
 								1 => ["pipe", "w"], // STDOUT
 								2 => ["pipe", "w"], // STDERR
 							];
 
 							$proc = proc_open("git clone " . escapeshellarg($plugin['clone_url']) . " " . $tmp_dir,
-											$descriptorspec, $pipes, sys_get_temp_dir());
+											$descriptor_spec, $pipes, sys_get_temp_dir());
 
 							if (is_resource($proc)) {
 								$rv["stdout"] = stream_get_contents($pipes[1]);

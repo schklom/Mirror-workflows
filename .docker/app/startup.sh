@@ -13,6 +13,23 @@ done
 unset HTTP_PORT
 unset HTTP_HOST
 
+# allow setting environment variables with docker secrets 
+# the format is <variable-name>_FILE
+suffix="_FILE"
+
+# Loop through all environment variables
+for var in $(printenv | awk -F= '{print $1}'); do
+  if [[ $var == *"$suffix" ]]; then
+		envFileName=`printenv ${var}`
+		if [[ -f "$envFileName" ]]; then
+			envVar="${var%$suffix}"   # generate the original env var without suffix
+			val=`cat $envFileName`    # get the value of the secret from file
+			export "${envVar}"="$val" # set the original env var
+			echo "${envVar} environment variable was set by secret ${envFileName}"
+		fi
+  fi
+done
+
 if ! id app >/dev/null 2>&1; then
 	addgroup -g $OWNER_GID app
 	adduser -D -h $APP_INSTALL_BASE_DIR -G app -u $OWNER_UID app

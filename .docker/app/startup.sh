@@ -96,6 +96,12 @@ if [ -z "$TTRSS_NO_STARTUP_PLUGIN_UPDATES" ]; then
 					https://gitlab.tt-rss.org/tt-rss/plugins/ttrss-*.git)
 						NEW_ORIGIN_URL="https://github.com/tt-rss/tt-rss-plugin-${ORIGIN_URL#'https://gitlab.tt-rss.org/tt-rss/plugins/ttrss-'}"
 						;;
+					https://dev.tt-rss.org/tt-rss/ttrss-*.git)
+						NEW_ORIGIN_URL="https://github.com/tt-rss/tt-rss-plugin-${ORIGIN_URL#'https://dev.tt-rss.org/tt-rss/ttrss-'}"
+						;;
+					https://dev.tt-rss.org/tt-rss/plugins/ttrss-*.git)
+						NEW_ORIGIN_URL="https://github.com/tt-rss/tt-rss-plugin-${ORIGIN_URL#'https://dev.tt-rss.org/tt-rss/plugins/ttrss-'}"
+						;;
 					*)
 						NEW_ORIGIN_URL=""
 						;;

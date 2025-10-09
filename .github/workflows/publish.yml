@@ -21,7 +21,6 @@ on:
 
 permissions:
   contents: read
-  packages: write
 
 
 jobs:
@@ -33,6 +32,9 @@ jobs:
     needs:
     - test-php
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     strategy:
       matrix:
         image:

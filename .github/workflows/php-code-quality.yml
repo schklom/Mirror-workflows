@@ -34,7 +34,7 @@ jobs:
       with:
         php-version: '8.4'
         coverage: none
-        tools: none
+        tools: phpstan
 
     - name: Run PHPStan
       run: vendor/bin/phpstan analyze --no-progress
@@ -61,7 +61,7 @@ jobs:
       with:
         php-version: ${{ matrix.php }}
         coverage: none
-        tools: none
+        tools: phpunit
 
     - name: Run PHPUnit
       run: vendor/bin/phpunit --exclude integration --coverage-filter classes --coverage-filter include

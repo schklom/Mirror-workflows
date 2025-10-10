@@ -237,16 +237,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 			return rc;
 		},
 		getLabel: function(item) {
-			let name = String(item.name);
-
-			/* Horrible */
-			name = name.replace(/&quot;/g, "\"");
-			name = name.replace(/&amp;/g, "&");
-			name = name.replace(/&mdash;/g, "-");
-			name = name.replace(/&lt;/g, "<");
-			name = name.replace(/&gt;/g, ">");
-
-			return name;
+			return App.unescapeHtml(item.name);
 		},
 		expandParentNodes: function(feed, is_cat, list) {
 			try {

@@ -411,19 +411,35 @@ const App = {
    },
    // htmlspecialchars()-alike for headlines data-content attribute
    escapeHtml: function(p) {
-      if (typeof p == "string") {
-         const map = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#039;'
-         };
-
-         return p.replace(/[&<>"']/g, function(m) { return map[m]; });
-      } else {
+      if (typeof p !== 'string')
          return p;
-      }
+
+      const map = {
+         '&': '&amp;',
+         '<': '&lt;',
+         '>': '&gt;',
+         '"': '&quot;',
+         "'": '&#x27;',
+         '/': '&#x2F;',
+      };
+
+      return p.replace(/[&<>"'\/]/g, m => map[m]);
+   },
+   unescapeHtml: function(p) {
+      if (typeof p !== 'string' || p.indexOf('&') === -1)
+         return p;
+
+      return p.replace(/&(?:amp|lt|gt|quot|#x27|#x2F|#039|#47);/g, function(entity) {
+         switch (entity) {
+            case '&amp;': return '&';
+            case '&lt;': return '<';
+            case '&gt;': return '>';
+            case '&quot;': return '"';
+            case '&#x27;': case '&#039;': return "'";
+            case '&#x2F;': case '&#47;': return '/';
+            default: return entity;
+         }
+      });
    },
    // http://stackoverflow.com/questions/6251937/how-to-get-selecteduser-highlighted-text-in-contenteditable-element-and-replac
    getSelectedText: function() {

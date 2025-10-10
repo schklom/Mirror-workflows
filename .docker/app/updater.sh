@@ -1,4 +1,7 @@
 #!/bin/sh -e
+#
+# this scripts waits for startup.sh to finish (implying a shared volume) and runs multiprocess daemon when working copy is available
+#
 
 # We don't need those here (HTTP_HOST would cause false SELF_URL_PATH check failures)
 unset HTTP_PORT
@@ -36,9 +39,12 @@ sleep 30
 
 if ! id app; then
 	addgroup -g $OWNER_GID app
-	adduser -D -h /var/www/html -G app -u $OWNER_UID app
+	adduser -D -h $APP_INSTALL_BASE_DIR -G app -u $OWNER_UID app
 fi
 
+update-ca-certificates || true
+
+# TODO this should do a reasonable amount of attempts and terminate with an error
 while ! pg_isready -h $TTRSS_DB_HOST -U $TTRSS_DB_USER -p $TTRSS_DB_PORT; do
 	echo waiting until $TTRSS_DB_HOST is ready...
 	sleep 3
@@ -47,11 +53,16 @@ done
 sed -i.bak "s/^\(memory_limit\) = \(.*\)/\1 = ${PHP_WORKER_MEMORY_LIMIT}/" \
 	/etc/php${PHP_SUFFIX}/php.ini
 
-DST_DIR=/var/www/html/tt-rss
+DST_DIR=$APP_INSTALL_BASE_DIR/tt-rss
 
 while [ ! -s $DST_DIR/config.php -a -e $DST_DIR/.app_is_ready ]; do
 	echo waiting for app container...
 	sleep 3
 done
 
-sudo -E -u app "${TTRSS_PHP_EXECUTABLE}" /var/www/html/tt-rss/update_daemon2.php "$@"
+# this is some next level bullshit
+# - https://stackoverflow.com/questions/65622914/why-would-i-get-a-php-pdoexception-complaining-that-it-cant-make-a-postgres-con
+# - fatal error: could not open certificate file "/root/.postgresql/postgresql.crt": Permission denied
+chown -R app:app /root # /.postgresql
+
+sudo -E -u app "${TTRSS_PHP_EXECUTABLE}" $APP_INSTALL_BASE_DIR/tt-rss/update_daemon2.php "$@"

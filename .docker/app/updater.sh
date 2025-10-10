@@ -21,13 +21,12 @@ for VAR in $(printenv | awk -F= '{print $1}'); do
 			echo "warning: Both $ENV_VAR and $VAR are set. $VAR will override $ENV_VAR."
 		fi
 
-		if [[ -f "$ENV_FILE_NAME" ]]; then
+		if [[ -r "$ENV_FILE_NAME" ]]; then
 			VALUE="$(cat "$ENV_FILE_NAME")"
 			export "$ENV_VAR"="$VALUE"
 			echo "$ENV_VAR environment variable was set by secret file $ENV_FILE_NAME"
 		else
-			echo "warning: Secret file $ENV_FILE_NAME for $VAR does not exist or is not a regular file."
-
+			echo "warning: Secret file $ENV_FILE_NAME for $VAR is not readable or does not exist."
 		fi
 	fi
 done

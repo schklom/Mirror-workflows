@@ -80,38 +80,15 @@ docker-build:
   stage: build
   services:
     - docker:dind
-  before_script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
-    - tags=""
-    # docker tag for branch
-    - |
-      if [[ "$CI_COMMIT_BRANCH" != "" ]]; then
-        tags="$tags --tag $CI_REGISTRY_IMAGE:${CI_COMMIT_BRANCH}"
-      fi
-    # docker tag for git tags
     - |
       if [[ "$CI_COMMIT_TAG" != "" ]]; then
-        tags="$tags --tag $CI_REGISTRY_IMAGE:${CI_COMMIT_TAG}"
-        tags="$tags --tag $CI_REGISTRY_IMAGE:latest"
-        echo "Piepline is a release"
-      fi
-    - |
-      if [[ "$tags" == "" ]] || [[ "$CI_PIPELINE_SOURCE" == "$merge_request_event" ]] || [[ "$CI_PIPELINE_SOURCE" == "$external_pull_request_event" ]]; then
-        push=""
-        echo "Image will not be pushed. Pipeline is a merge request or tags are empty."
+        ./docker/build_images.sh "$CI_COMMIT_TAG"
       else
-        push="--push"
-        echo "Image will be pushed."
+        echo "No git tag! Not building image."
       fi
-    # Build the images
-    # buildx multiplatform build sometimes fails in Gitlab CI: https://github.com/docker/buildx/issues/584
-    - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes; docker buildx create --use
-    - docker buildx build --pull ${push} --platform linux/amd64,linux/arm/v7,linux/arm64/v8 $tags .
   retry: 2
   rules:
-    - exists:
-        - Dockerfile
       # Only run this job on tagging a release. This is to save pipeline minutes.
-      # This step takes ~40 mins, thus quickly eating up pipeline minutes.
-      if: $CI_COMMIT_TAG =~ /^v?[0-9\.]+$/
+      # This step takes 10 to 40 mins, thus quickly eating up pipeline minutes.
+    - if: $CI_COMMIT_TAG =~ /^v?[0-9\.]+$/

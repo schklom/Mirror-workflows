@@ -1,0 +1,49 @@
+FROM --platform=$BUILDPLATFORM debian:trixie-slim AS builder
+
+ARG FMD_SERVER_VERSION
+
+RUN apt update && \
+    apt install --no-install-recommends -y ca-certificates curl unzip && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /tmp/fmd
+
+RUN curl -o server.zip "https://packages.fmd-foss.org/server/fmd-server-v${FMD_SERVER_VERSION}.zip" && \
+    unzip server.zip
+
+
+FROM debian:trixie-slim
+
+ARG TARGETARCH
+
+RUN apt update && \
+    apt install --no-install-recommends -y ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create user
+RUN useradd --no-create-home --uid 1000 fmd-server
+
+# Copy files and configure permissions
+# Note that the directories must be executable (for file listing, etc.)
+
+ARG BIN_FILE=/opt/fmd-server
+ARG DB_DIR=/var/lib/fmd-server/db
+
+COPY --from=builder \
+    --chown=root:root \
+    --chmod=755 \
+    "/tmp/fmd/fmd-server-${TARGETARCH}" "$BIN_FILE"
+
+RUN mkdir -p "$DB_DIR" && \
+    chown -R fmd-server:fmd-server "$DB_DIR" && \
+    chmod -R 0660 "$DB_DIR" && \
+    chmod 0770 "$DB_DIR"
+
+# Change to user
+USER fmd-server
+
+EXPOSE 8080/tcp
+EXPOSE 8443/tcp
+
+# XXX: Using $BIN_FILE doesn't work
+ENTRYPOINT ["/opt/fmd-server", "serve", "--db-dir", "/var/lib/fmd-server/db"]

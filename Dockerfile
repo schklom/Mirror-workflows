@@ -1,3 +1,6 @@
+# This Dockerfile is for building from source, e.g., during development.
+# The production images are build from the Dockerfiles in the docker/ directory.
+
 FROM golang:1.24-bookworm AS builder
 
 WORKDIR /go/src/fmd-server
@@ -23,7 +26,7 @@ COPY web/ web/
 RUN go build -o /tmp/fmd main.go
 
 
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 
 RUN apt update && \
     apt install --no-install-recommends -y ca-certificates && \

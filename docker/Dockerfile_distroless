@@ -1,0 +1,49 @@
+FROM --platform=$BUILDPLATFORM debian:trixie-slim AS builder
+
+ARG FMD_SERVER_VERSION
+
+ARG DB_DIR=/var/lib/fmd-server/db
+
+RUN apt update && \
+    apt install --no-install-recommends -y ca-certificates curl unzip && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /tmp/fmd
+
+RUN curl -o server.zip "https://packages.fmd-foss.org/server/fmd-server-v${FMD_SERVER_VERSION}.zip" && \
+    unzip server.zip
+
+
+# Prepare directories to be copied into the image.
+# In the distroless image there is no shell and no tools that we can use,
+# thus we need to prepare all directories and permissions in the builder stage.
+
+# Create the database directory so that the image can run
+# even if no volume is mounted.
+RUN mkdir -p "$DB_DIR"
+
+
+# https://github.com/GoogleContainerTools/distroless
+# The uid of the nonroot user is 65532.
+FROM gcr.io/distroless/static-debian12:nonroot
+
+ARG TARGETARCH
+
+ARG BIN_FILE=/opt/fmd-server
+ARG DB_DIR=/var/lib/fmd-server/db
+
+COPY --from=builder \
+    --chown=root:root \
+    --chmod=755 \
+    "/tmp/fmd/fmd-server-${TARGETARCH}" "$BIN_FILE"
+
+COPY --from=builder \
+    --chown=65532:65532 \
+    --chmod=0770 \
+    "$DB_DIR" "$DB_DIR"
+
+EXPOSE 8080/tcp
+EXPOSE 8443/tcp
+
+# XXX: Using $BIN_FILE doesn't work
+ENTRYPOINT ["/opt/fmd-server", "serve", "--db-dir", "/var/lib/fmd-server/db"]

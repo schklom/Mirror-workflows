@@ -19,10 +19,6 @@ HASHNAME="fmd-server-${REF}.zip.sha256sum"
 OUTDIR="$PWD"
 BUILDDIR=/tmp/fmdbuild
 
-# TODO: support more targets
-export GOOS=linux
-export GOARCH=amd64
-
 # -f is needed because some of git's file a write-protected by default
 rm -rf $BUILDDIR || true
 mkdir $BUILDDIR
@@ -36,11 +32,17 @@ git checkout --quiet "$REF"
 # Reproducibility: Disable cgo.
 # cgo use glibc, which will result in different binaries when compiled on different OSes.
 export CGO_ENABLED=0
+export GOOS=linux
 
-# Reproducibility: Trim metadata.
-# https://xnacly.me/posts/2023/go-metadata/
-echo "Compiling Go..."
-go build -ldflags="-w -s -buildid=" -trimpath
+# go tool dist list
+for ARCH in "amd64" "arm" "arm64"; do
+    export GOARCH=$ARCH
+
+    # Reproducibility: Trim metadata.
+    # https://xnacly.me/posts/2023/go-metadata/
+    echo "Compiling Go for GOOS=$GOOS GOARCH=$GOARCH..."
+    go build -ldflags="-w -s -buildid=" -trimpath -o "fmd-server-$GOARCH"
+done
 
 # Reproducibility: Include go version in ZIP.
 go version | cut -d " " -f 3 > goversion.txt
@@ -66,7 +68,9 @@ echo "Zipping file..."
 # Reproducibility: Fix timezone.
 # Reproducibility: Use -X to remove subfields such as 0x7875.
 TZ=utc zip -X "$ZIPNAME" \
-    fmd-server \
+    fmd-server-amd64 \
+    fmd-server-arm \
+    fmd-server-arm64 \
     $WEBFILES \
     config.example.yml \
     gen_cert.sh \

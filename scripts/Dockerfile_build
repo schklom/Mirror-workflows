@@ -1,0 +1,11 @@
+# Image to build FMD Server reproducibly.
+# Simple Debian/stable.
+# Installs all the build dependencies from the main Debian repository.
+
+FROM debian:13-slim
+
+RUN apt update && \
+    apt install --no-install-recommends -y ca-certificates git golang zip && \
+    rm -rf /var/lib/apt/lists/*
+
+# TODO: This builds as root, so the files end up being owned as root.

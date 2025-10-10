@@ -3,6 +3,8 @@
 # Script to build and bundle FMD Server.
 # This script should produce reproducible ZIPs (if the same version of Go is used!).
 
+export LC_ALL=C # Reproducibility
+
 set -eu
 
 REF=${1-}
@@ -50,7 +52,7 @@ go version | cut -d " " -f 3 > goversion.txt
 # Reproducibility: Workaround to recursively include all files in web/.
 # We cannot use "zip -r" because on some systems, this includes depth-first while on other
 # systems it does breadth-first. This results in different orderings in the ZIP file.
-WEBFILES=$(find web/ -type f | sort | tr '\n' ' ')
+WEBFILES=$(find web/ -type f | sort --stable | tr '\n' ' ')
 
 # Reproducibility: Set the timestamp of all files to the timestamp of the commit from which we build
 GITTIME=$(git log -1 --format="%aI")

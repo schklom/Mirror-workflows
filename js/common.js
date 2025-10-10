@@ -167,10 +167,6 @@ Array.prototype.uniq = function() {
 	return this.filter((v, i, a) => a.indexOf(v) === i);
 };
 
-String.prototype.stripTags = function() {
-	return this.replace(/<\w+(\s+("[^"]*"|'[^']*'|[^>])+)?(\/)?>|<\/\w+>/gi, '');
-}
-
 /* exported xhr */
 const xhr = {
 	_ts: 0,

@@ -12,7 +12,7 @@ Please refer to [the wiki](https://github.com/tt-rss/tt-rss/wiki).
 * The original tt-rss project, hosted at https://tt-rss.org/ and its various subdomains, [will be gone after 2025-11-01](https://community.tt-rss.org/t/the-end-of-tt-rss-org/7164).
   * Massive thanks to fox for creating tt-rss, and maintaining it (and absolutely everything else that went along with it) for so many years.
 * This project (https://github.com/tt-rss/tt-rss) is a fork of tt-rss as of 2025-10-03, created by one of its long-time contributors (`wn_`/`wn_name` on `tt-rss.org`, `supahgreg` on `github.com`).
-  * The goal is to continue tt-rss development, with an initial focus on replacing `tt-rss.org` references and integrations + getting things working.
+  * The goal is to continue tt-rss development, with an initial focus on getting things working as expected without `tt-rss.org`.
   * Developer note: Due to use of `invalid@email.com` on `supahgreg`'s pre-2025-10-03 commits (which were done on `tt-rss.org`) GitHub incorrectly shows `ivanivanov884`
     (the GitHub user associated with that e-mail address) as the author instead of `wn_`/`supahgreg`.  Apologies for any confusion.  `¯\_(ツ)_/¯`
 * Plugins that were under https://gitlab.tt-rss.org/tt-rss/plugins have been mirrored to `https://github.com/tt-rss/tt-rss-plugin-*`.
@@ -20,9 +20,11 @@ Please refer to [the wiki](https://github.com/tt-rss/tt-rss/wiki).
 * Documentation from https://tt-rss.org has been recreated in https://github.com/tt-rss/tt-rss/wiki .
   * The repository that held the content for https://tt-rss.org was mirrored to https://github.com/tt-rss/tt-rss-web-static .
     Some content tweaks were made after mirroring (prior to the wiki being set up), and the repository is now archived.
-* Docker images (for `linux/amd64` and `linux/arm64`) are being built and published to Docker Hub [via GitHub Actions](https://github.com/tt-rss/tt-rss/actions/workflows/publish.yml).
-  * See https://hub.docker.com/r/supahgreg/tt-rss/ and https://hub.docker.com/r/supahgreg/tt-rss-web-nginx/ , and
-    [the installation guide](https://github.com/tt-rss/tt-rss/wiki/Installation-Guide) for how they can be used.
+* Docker images (for `linux/amd64` and `linux/arm64`) are being built and published ([via GitHub Actions](https://github.com/tt-rss/tt-rss/actions/workflows/publish.yml)) to:
+  * Docker Hub (as [supahgreg/tt-rss](https://hub.docker.com/r/supahgreg/tt-rss/) and [supahgreg/tt-rss-web-nginx](https://hub.docker.com/r/supahgreg/tt-rss-web-nginx/)).
+  * GitHub Container Registry (as [ghcr.io/tt-rss/tt-rss](https://github.com/orgs/tt-rss/packages/container/package/tt-rss)
+    and [ghcr.io/tt-rss/tt-rss-web-nginx](https://github.com/orgs/tt-rss/packages/container/package/tt-rss-web-nginx)).
+  * See [the installation guide](https://github.com/tt-rss/tt-rss/wiki/Installation-Guide) for how the images can be used.
 
 ## Development and contributing
 

@@ -13,6 +13,30 @@ done
 unset HTTP_PORT
 unset HTTP_HOST
 
+# allow setting environment variables with docker secrets 
+# the format is <variable-name>__FILE
+SUFFIX="__FILE"
+
+# loop through all environment variables
+for VAR in $(printenv | awk -F= '{print $1}'); do
+	if [[ $VAR == *"$SUFFIX" ]]; then
+		ENV_FILE_NAME="$(printenv "${VAR}")"
+		ENV_VAR="${VAR%$SUFFIX}"
+
+		if printenv "$ENV_VAR" &>/dev/null; then
+			echo "warning: Both $ENV_VAR and $VAR are set. $VAR will override $ENV_VAR."
+		fi
+
+		if [[ -r "$ENV_FILE_NAME" ]]; then
+			VALUE="$(cat "$ENV_FILE_NAME")"
+			export "$ENV_VAR"="$VALUE"
+			echo "$ENV_VAR environment variable was set by secret file $ENV_FILE_NAME"
+		else
+			echo "warning: Secret file $ENV_FILE_NAME for $VAR is not readable or does not exist."
+		fi
+	fi
+done
+
 if ! id app >/dev/null 2>&1; then
 	addgroup -g $OWNER_GID app
 	adduser -D -h $APP_INSTALL_BASE_DIR -G app -u $OWNER_UID app

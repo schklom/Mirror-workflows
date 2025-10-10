@@ -14,20 +14,28 @@ unset HTTP_PORT
 unset HTTP_HOST
 
 # allow setting environment variables with docker secrets 
-# the format is <variable-name>_FILE
-suffix="_FILE"
+# the format is <variable-name>__FILE
+SUFFIX="__FILE"
 
-# Loop through all environment variables
-for var in $(printenv | awk -F= '{print $1}'); do
-  if [[ $var == *"$suffix" ]]; then
-		envFileName=`printenv ${var}`
-		if [[ -f "$envFileName" ]]; then
-			envVar="${var%$suffix}"   # generate the original env var without suffix
-			val=`cat $envFileName`    # get the value of the secret from file
-			export "${envVar}"="$val" # set the original env var
-			echo "${envVar} environment variable was set by secret ${envFileName}"
+# loop through all environment variables
+for VAR in $(printenv | awk -F= '{print $1}'); do
+	if [[ $VAR == *"$SUFFIX" ]]; then
+		ENV_FILE_NAME="$(printenv "${VAR}")"
+		ENV_VAR="${VAR%$SUFFIX}"
+
+		if printenv "$ENV_VAR" &>/dev/null; then
+			echo "warning: Both $ENV_VAR and $VAR are set. $VAR will override $ENV_VAR."
 		fi
-  fi
+
+		if [[ -f "$ENV_FILE_NAME" ]]; then
+			VALUE="$(cat "$ENV_FILE_NAME")"
+			export "$ENV_VAR"="$VALUE"
+			echo "$ENV_VAR environment variable was set by secret file $ENV_FILE_NAME"
+		else
+			echo "warning: Secret file $ENV_FILE_NAME for $VAR does not exist or is not a regular file."
+
+		fi
+	fi
 done
 
 if ! id app >/dev/null 2>&1; then

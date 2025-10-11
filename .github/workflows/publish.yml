@@ -24,12 +24,16 @@ permissions:
 
 
 jobs:
+  test-docker:
+    uses: ./.github/workflows/docker-code-quality.yml
+
   test-php:
     uses: ./.github/workflows/php-code-quality.yml
 
   publish:
     name: Publish Docker image ${{ matrix.image.name }}
     needs:
+    - test-docker
     - test-php
     runs-on: ubuntu-latest
     permissions:

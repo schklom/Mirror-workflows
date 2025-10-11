@@ -5,3 +5,21 @@ updates:
   directory: /
   schedule:
     interval: weekly
+  commit-message:
+    prefix: 'Composer:'
+
+- package-ecosystem: docker
+  directories:
+  - /.docker/app
+  - /.docker/web-nginx
+  schedule:
+    interval: weekly
+  commit-message:
+    prefix: 'Docker:'
+
+- package-ecosystem: github-actions
+  directory: /
+  schedule:
+    interval: weekly
+  commit-message:
+    prefix: 'GitHub Actions:'

@@ -1,5 +1,5 @@
 ARG PROXY_REGISTRY
-FROM ${PROXY_REGISTRY}nginx:alpine
+FROM ${PROXY_REGISTRY}nginx:1.29.2-alpine
 
 HEALTHCHECK CMD curl --fail http://localhost${APP_BASE}/index.php || exit 1
 

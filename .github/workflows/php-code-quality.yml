@@ -37,8 +37,26 @@ jobs:
         # PHPUnit is installed to support PHPStan checking tests/
         tools: phpstan/phpstan:2.1.31, phpunit/phpunit:9.6.29
 
+    # https://phpstan.org/user-guide/result-cache
+    - name: Restore result cache
+      uses: actions/cache/restore@v4
+      with:
+        path: .phpstan-tmp
+        key: phpstan-result-cache-${{ github.run_id }}
+        restore-keys: |
+          phpstan-result-cache-
+
     - name: Run PHPStan
       run: phpstan analyze --no-progress
+
+    # https://phpstan.org/user-guide/result-cache
+    - name: Save result cache
+      uses: actions/cache/save@v4
+      if: ${{ !cancelled() }}
+      with:
+        # same as in phpstan.neon
+        path: .phpstan-tmp
+        key: phpstan-result-cache-${{ github.run_id }}
 
   phpunit:
     name: PHPUnit

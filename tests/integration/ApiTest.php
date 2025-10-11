@@ -7,13 +7,6 @@ final class ApiTest extends TestCase {
 	private string $app_url = "";
 	private string $sid = "";
 
-	function __construct() {
-		$this->api_url = getenv('API_URL');
-		$this->app_url = getenv('APP_URL');
-
-		parent::__construct();
-	}
-
 	/** @param array<mixed> $payload
 	 * @return array<mixed>
 	 */
@@ -44,6 +37,8 @@ final class ApiTest extends TestCase {
 	}
 
 	public function setUp(): void {
+		$this->api_url = getenv('API_URL');
+		$this->app_url = getenv('APP_URL');
 		$this->test_login();
 	}
 

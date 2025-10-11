@@ -30,8 +30,8 @@
 		"dragonmantank/cron-expression": "^3.4"
 	},
 	"require-dev": {
-		"phpstan/phpstan": "2.1.30",
-		"phpunit/phpunit": "9.5.16",
+		"phpstan/phpstan": "2.1.31",
+		"phpunit/phpunit": "9.6.29",
 		"phpunit/php-code-coverage": "^9.2"
 	}
 }

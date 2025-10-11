@@ -252,6 +252,7 @@ class OPML extends Handler_Protected {
 		$outlines = $xpath->query("//outline[@title]");
 
 		// cleanup empty categories
+		/** @var DOMElement $node */
 		foreach ($outlines as $node) {
 			if ($node->getElementsByTagName('outline')->length == 0)
 				$node->parentNode->removeChild($node);
@@ -540,6 +541,7 @@ class OPML extends Handler_Protected {
 		//$this->opml_notice("[CAT] $cat_title id: $cat_id P_id: $parent_id");
 		$this->opml_notice(T_sprintf("Processing category: %s", $cat_title ? $cat_title : __("Uncategorized")), $nest);
 
+		/** @var DOMElement $node */
 		foreach ($outlines as $node) {
 			if ($node->hasAttributes() && strtolower($node->tagName) == "outline") {
 				$attrs = $node->attributes;

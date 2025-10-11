@@ -34,10 +34,11 @@ jobs:
       with:
         php-version: '8.4'
         coverage: none
-        tools: none
+        # PHPUnit is installed to support PHPStan checking tests/
+        tools: phpstan/phpstan:2.1.31, phpunit/phpunit:9.6.29
 
     - name: Run PHPStan
-      run: vendor/bin/phpstan analyze --no-progress
+      run: phpstan analyze --no-progress
 
   phpunit:
     name: PHPUnit
@@ -61,7 +62,7 @@ jobs:
       with:
         php-version: ${{ matrix.php }}
         coverage: none
-        tools: none
+        tools: phpunit/phpunit:9.6.29
 
     - name: Run PHPUnit
-      run: vendor/bin/phpunit --exclude integration --coverage-filter classes --coverage-filter include
+      run: phpunit --exclude integration --coverage-filter classes --coverage-filter include

@@ -1,7 +1,7 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
-final class SelfUrlPathTest extends TestCase {
+final class ConfigTest extends TestCase {
 	public function test_self_url_a(): void {
 		$_SERVER = [];
 

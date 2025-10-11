@@ -1,7 +1,8 @@
 <?php
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-/** @group integration */
+#[Group('integration')]
 final class SanitizerTest extends TestCase {
 	public function test_sanitize_non_ascii(): void {
 		$this->assertEquals(

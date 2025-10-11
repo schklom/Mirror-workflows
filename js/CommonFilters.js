@@ -527,6 +527,8 @@ const	Filters = {
 				`);
 
 				if (!App.isPrefs()) {
+					// TODO: This section isn't working as expected (under Firefox 143, at least).
+					// `selectedText` is always empty at this point (tested by selecting some article text).
 					const selectedText = App.getSelectedText();
 
 					if (selectedText != "") {

@@ -411,40 +411,39 @@ const App = {
    },
    // htmlspecialchars()-alike for headlines data-content attribute
    escapeHtml: function(p) {
-      if (typeof p == "string") {
-         const map = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#039;'
-         };
-
-         return p.replace(/[&<>"']/g, function(m) { return map[m]; });
-      } else {
+      if (typeof p !== 'string')
          return p;
-      }
+
+      const map = {
+         '&': '&amp;',
+         '<': '&lt;',
+         '>': '&gt;',
+         '"': '&quot;',
+         "'": '&#x27;',
+         '/': '&#x2F;',
+      };
+
+      return p.replace(/[&<>"'\/]/g, m => map[m]);
    },
-   // http://stackoverflow.com/questions/6251937/how-to-get-selecteduser-highlighted-text-in-contenteditable-element-and-replac
+   unescapeHtml: function(p) {
+      if (typeof p !== 'string' || p.indexOf('&') === -1)
+         return p;
+
+      return p.replace(/&(?:amp|lt|gt|quot|#x27|#x2F|#039|#47);/g, function(entity) {
+         switch (entity) {
+            case '&amp;': return '&';
+            case '&lt;': return '<';
+            case '&gt;': return '>';
+            case '&quot;': return '"';
+            case '&#x27;': case '&#039;': return "'";
+            case '&#x2F;': case '&#47;': return '/';
+            default: return entity;
+         }
+      });
+   },
    getSelectedText: function() {
-      let text = "";
-
-      if (typeof window.getSelection != "undefined") {
-         const sel = window.getSelection();
-         if (sel.rangeCount) {
-            const container = document.createElement("div");
-            for (let i = 0, len = sel.rangeCount; i < len; ++i) {
-               container.appendChild(sel.getRangeAt(i).cloneContents());
-            }
-            text = container.innerHTML;
-         }
-      } else if (typeof document.selection != "undefined") {
-         if (document.selection.type == "Text") {
-            text = document.selection.createRange().textText;
-         }
-      }
-
-      return text.stripTags();
+      const sel = window.getSelection();
+      return sel ? sel.toString().trim() : "";
    },
    displayIfChecked: function(checkbox, elemId) {
       if (checkbox.checked) {

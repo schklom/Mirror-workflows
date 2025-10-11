@@ -223,11 +223,12 @@ class UrlHelper {
 	}
 
 	/**
+	 * @todo the multiple-argument approach has been deprecated for a long time, and should be removed
+	 * @todo validate options
+	 *
 	 * @param array<string, bool|int|string>|string $options
 	 * @return false|string false if something went wrong, otherwise string contents
 	 */
-	// TODO: max_size currently only works for CURL transfers
-	// TODO: multiple-argument way is deprecated, first parameter is a hash now
 	public static function fetch(array|string $options /* previously: 0: $url , 1: $type = false, 2: $login = false, 3: $pass = false,
 				4: $post_query = false, 5: $timeout = false, 6: $timestamp = 0, 7: $useragent = false, 8: $encoding = false,
 				9: $auth_type = "basic" */): false|string {
@@ -281,10 +282,9 @@ class UrlHelper {
 		$http_referrer = $options["http_referrer"] ?? false;
 		$encoding = $options["encoding"] ?? false;
 
-		$url = ltrim($url, ' ');
-		$url = str_replace(' ', '%20', $url);
+		$url = str_replace(' ', '%20', ltrim($url ?? '', ' '));
 
-		Debug::log("[UrlHelper] fetching: $url", Debug::LOG_EXTENDED);
+		Debug::log("[UrlHelper] handling URL: $url", Debug::LOG_EXTENDED);
 
 		$url = self::validate($url, true);
 

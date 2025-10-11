@@ -13,6 +13,6 @@ Thumbs.db
 /lock/*
 /.vscode/settings.json
 /vendor/**/.git
-/.phpunit.result.cache
+/.phpunit.cache
 /.phpstan-tmp
 /.tools/

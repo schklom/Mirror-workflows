@@ -100,4 +100,4 @@ ENV TTRSS_DB_PORT="5432"
 ENV TTRSS_PHP_EXECUTABLE="/usr/bin/php${PHP_SUFFIX}"
 ENV TTRSS_PLUGINS="auth_internal, note, nginx_xaccel"
 
-CMD ${SCRIPT_ROOT}/startup.sh
+CMD ["/bin/sh", "-c", "${SCRIPT_ROOT}/startup.sh"]

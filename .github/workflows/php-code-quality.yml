@@ -35,7 +35,7 @@ jobs:
         php-version: '8.4'
         coverage: none
         # PHPUnit is installed to support PHPStan checking tests/
-        tools: phpstan/phpstan:2.1.31, phpunit/phpunit:9.6.29
+        tools: phpstan/phpstan:^2.1, phpunit/phpunit:^12.4
 
     # https://phpstan.org/user-guide/result-cache
     - name: Restore result cache
@@ -80,7 +80,7 @@ jobs:
       with:
         php-version: ${{ matrix.php }}
         coverage: none
-        tools: phpunit/phpunit:9.6.29
+        tools: phpunit/phpunit:^12.4
 
     - name: Run PHPUnit
-      run: phpunit --exclude integration --coverage-filter classes --coverage-filter include
+      run: phpunit --exclude-group integration --coverage-filter classes --coverage-filter include

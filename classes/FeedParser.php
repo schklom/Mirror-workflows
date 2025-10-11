@@ -100,6 +100,7 @@ class FeedParser {
 				if (empty($articles) || $articles->length == 0)
 					$articles = $xpath->query("//atom03:entry");
 
+				/** @var DOMElement $article */
 				foreach ($articles as $article) {
 					array_push($this->items, new FeedItem_Atom($article, $this->doc, $this->xpath));
 				}
@@ -124,6 +125,7 @@ class FeedParser {
 
 				$articles = $xpath->query("//channel/item");
 
+				/** @var DOMElement $article */
 				foreach ($articles as $article) {
 					array_push($this->items, new FeedItem_RSS($article, $this->doc, $this->xpath));
 				}
@@ -146,6 +148,7 @@ class FeedParser {
 
 				$articles = $xpath->query("//rssfake:item");
 
+				/** @var DOMElement $article */
 				foreach ($articles as $article) {
 					array_push($this->items, new FeedItem_RSS($article, $this->doc, $this->xpath));
 				}

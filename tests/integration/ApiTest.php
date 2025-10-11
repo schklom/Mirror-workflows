@@ -1,7 +1,8 @@
 <?php
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-/** @group integration */
+#[Group('integration')]
 final class ApiTest extends TestCase {
 	private string $api_url = "";
 	private string $app_url = "";

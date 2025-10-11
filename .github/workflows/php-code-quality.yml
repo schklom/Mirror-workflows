@@ -35,7 +35,7 @@ jobs:
         php-version: '8.4'
         coverage: none
         # PHPUnit is installed to support PHPStan checking tests/
-        tools: phpstan/phpstan:2.1.30, phpunit/phpunit:9.5.16
+        tools: phpstan/phpstan:2.1.31, phpunit/phpunit:9.5.28
 
     - name: Run PHPStan
       run: phpstan analyze --no-progress

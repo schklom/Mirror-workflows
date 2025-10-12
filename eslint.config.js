@@ -30,6 +30,9 @@ export default [
         navigator: 'readonly',
         Event: 'readonly',
         CustomEvent: 'readonly',
+        Element: 'readonly',
+        IntersectionObserver: 'readonly',
+        MutationObserver: 'readonly',
 
         // Dojo
         dojo: 'readonly',

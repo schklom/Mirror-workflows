@@ -98,7 +98,7 @@ Element.prototype.fadeOut = function() {
 		if ((self.style.opacity -= 0.1) < 0) {
 			self.style.display = "none";
 		} else {
-			requestAnimationFrame(fade);
+			window.requestAnimationFrame(fade);
 		}
 	}());
 };
@@ -112,7 +112,7 @@ Element.prototype.fadeIn = function(display = undefined){
 		let val = parseFloat(self.style.opacity);
 		if (!((val += 0.1) > 1)) {
 			self.style.opacity = val;
-			requestAnimationFrame(fade);
+			window.requestAnimationFrame(fade);
 		}
 	}());
 };

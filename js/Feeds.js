@@ -334,6 +334,8 @@ const	Feeds = {
 	setActive: function(id, is_cat) {
 		console.log('setActive', id, is_cat);
 
+		id = parseInt(id);
+
 		window.requestIdleCallback(() => {
 			App.Hash.set({
 				f: id,

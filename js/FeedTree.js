@@ -224,7 +224,9 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 			else
 				rc += " Is_Feed";
 
-			if (!is_cat && item.error !== '') rc += " Error";
+			// TODO: item.error is `[""]` for feeds.  Need to look into what's happening on the frontend to cause that-- the backend sends a string.
+			// For now, just adding a check for `[""]`.
+			if (!is_cat && item.error !== '' && !(Array.isArray(item.error) && item.error.length === 1 && item.error[0] === '')) rc += ' Error';
 			if (item.unread > 0) rc += " Unread";
 			if (item.auxcounter > 0) rc += " Has_Aux";
 			if (item.markedcounter > 0) rc += " Has_Marked";

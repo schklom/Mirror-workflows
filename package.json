@@ -1,7 +1,8 @@
 {
   "name": "tt-rss",
+  "description": "A free, flexible, open-source, web-based news feed (RSS/Atom/other) reader and aggregator.",
   "version": "1.0.0",
-  "description": "",
+  "type": "module",
   "devDependencies": {
     "eslint": "^9.37.0",
     "gulp": "^5.0.1",

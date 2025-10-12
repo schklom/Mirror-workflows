@@ -1,4 +1,3 @@
-/* eslint-disable prefer-rest-params */
 /* global define */
 // FIXME: there probably is a better, more dojo-like notation for custom data- properties
 define(["dojo/_base/declare",

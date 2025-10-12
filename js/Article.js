@@ -1,6 +1,5 @@
 'use strict'
 
-/* eslint-disable no-new */
 /* global __, ngettext, App, Headlines, xhr, PluginHost, Notify, fox */
 
 const Article = {

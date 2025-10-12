@@ -1,6 +1,5 @@
 'use strict';
 
-/* eslint-disable no-new */
 /* global __, Tables, Notify, xhr, App, fox */
 
 const	Helpers = {

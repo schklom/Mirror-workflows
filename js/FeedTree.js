@@ -1,4 +1,3 @@
-/* eslint-disable prefer-rest-params */
 /* global __, define, App, Feeds, CommonDialogs */
 
 define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/cookie", "dijit/Tree", "dijit/Menu"], function (declare, domConstruct, array, cookie) {
@@ -208,7 +207,6 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 			return [item.updated, item.error].filter((x) => x && x !== "").join(" - ");
 		},
 		getIconClass: function (item, opened) {
-			// eslint-disable-next-line no-nested-ternary
 			return (!item || this.model.mayHaveChildren(item)) ? (opened ? "dijitFolderOpened" : "dijitFolderClosed") : "feed-icon";
 		},
 		getLabelClass: function (item/* , opened */) {

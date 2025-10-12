@@ -1,7 +1,6 @@
 'use strict';
 
 /* global App, __csrf_token */
-/* eslint-disable no-new */
 
 /* exported __ */
 function __(msg) {

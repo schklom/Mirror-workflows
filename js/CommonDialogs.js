@@ -1,8 +1,5 @@
 'use strict'
 
-/* eslint-disable new-cap */
-/* eslint-disable no-new */
-
 /* global __, Notify, App, Feeds, xhr, Tables, fox */
 
 /* exported CommonDialogs */

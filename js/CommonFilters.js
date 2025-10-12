@@ -1,7 +1,5 @@
 'use strict'
 
-/* eslint-disable no-new */
-
 /* global __, App, Article, Lists, fox */
 /* global xhr, Notify, Feeds */
 

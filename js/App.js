@@ -1,6 +1,5 @@
 'use strict';
 
-/* eslint-disable new-cap */
 /* global __, Article, Headlines, Filters, fox */
 /* global xhr, PluginHost, Notify, Feeds, Cookie */
 /* global CommonDialogs, Plugins */

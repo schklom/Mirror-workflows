@@ -1,4 +1,3 @@
-/* eslint-disable prefer-rest-params */
 /* global __, lib, define, CommonDialogs, Notify, Tables, xhr, fox, App */
 
 define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_base/array", "dojo/cookie"],
@@ -143,7 +142,6 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 			return rc;
 		},
 		getIconClass: function (item, opened) {
-			// eslint-disable-next-line no-nested-ternary
 			return (!item || this.model.store.getValue(item, 'type') === 'category') ? (opened ? "dijitFolderOpened" : "dijitFolderClosed") : "feed-icon";
 		},
 		reload: function() {

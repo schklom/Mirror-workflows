@@ -15,7 +15,7 @@ define(["dojo/_base/declare",
 		startup: function() {
          this.inherited(arguments);
 
-			if (this.attr('data-dropdown-skip-first') == 'true') {
+			if (this.attr('data-dropdown-skip-first') === 'true') {
 				aspect.before(this, "_loadChildren", () => {
 					this.options = this.options.splice(1);
 				});
@@ -26,7 +26,7 @@ define(["dojo/_base/declare",
 			//
 		},
 		_setValueAttr: function(/*anything*/ newValue, /*Boolean?*/ priorityChange){
-			if (this.attr('data-prevent-value-change') == 'true' && newValue != '')
+			if (this.attr('data-prevent-value-change') === 'true' && newValue !== '')
 				return;
 
 			this.inherited(arguments);

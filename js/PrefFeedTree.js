@@ -49,7 +49,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 				// var oreo = cookie(this.cookieName);
 				let oreo = localStorage.getItem(this.cookieName);
 				// migrate old data if nothing in localStorage
-				if (oreo == null || oreo === '') {
+				if (oreo === null || oreo === '') {
 					oreo = cookie(this.cookieName);
 					cookie(this.cookieName, null, { expires: -1 });
 				}
@@ -135,7 +135,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 		},
 		// eslint-disable-next-line no-unused-vars
 		getRowClass: function (item, opened) {
-			let rc = (!item.error || item.error == '') ? "dijitTreeRow" :
+			let rc = (!item.error || item.error === '') ? "dijitTreeRow" :
 				"dijitTreeRow Error";
 
 			if (item.updates_disabled > 0) rc += " UpdatesDisabled";
@@ -144,7 +144,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 		},
 		getIconClass: function (item, opened) {
 			// eslint-disable-next-line no-nested-ternary
-			return (!item || this.model.store.getValue(item, 'type') == 'category') ? (opened ? "dijitFolderOpened" : "dijitFolderClosed") : "feed-icon";
+			return (!item || this.model.store.getValue(item, 'type') === 'category') ? (opened ? "dijitFolderOpened" : "dijitFolderClosed") : "feed-icon";
 		},
 		reload: function() {
 			const searchElem = App.byId("feed_search");
@@ -175,11 +175,11 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 			//console.log(id + " " + position + " " + source_id);
 
 			if (source_id.match("FEED:")) {
-				return ((id.match("CAT:") && position == "over") ||
-				(id.match("FEED:") && position != "over"));
+				return ((id.match("CAT:") && position === "over") ||
+				(id.match("FEED:") && position !== "over"));
 			} else if (source_id.match("CAT:")) {
 				return ((id.match("CAT:") && !id.match("CAT:0")) ||
-				(id.match("root") && position == "over"));
+				(id.match("root") && position === "over"));
 			}
 		},
 		resetFeedOrder: function() {
@@ -293,7 +293,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 		editSelectedFeed: function() {
 			const rows = this.getSelectedFeeds();
 
-			if (rows.length == 0) {
+			if (rows.length === 0) {
 				alert(__("No feeds selected."));
 				return;
 			}
@@ -309,7 +309,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 		editMultiple: function() {
 			const rows = this.getSelectedFeeds();
 
-			if (rows.length == 0) {
+			if (rows.length === 0) {
 				alert(__("No feeds selected."));
 				return;
 			}
@@ -340,7 +340,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 							target.attr('disabled', !checkbox.attr('checked'));
 							console.log(target, target.attr('type'));
 
-							if (target.attr('type') == "checkbox") {
+							if (target.attr('type') === "checkbox") {
 								const label = checkbox.domNode.closest("label");
 
 								if (checkbox.attr('checked'))
@@ -358,7 +358,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 								Object.keys(query).forEach((key) => {
 									const val = query[key];
 
-									if (typeof val == "object" && val.length == 0)
+									if (typeof val === "object" && val.length === 0)
 										query[key] = ["off"];
 								});
 
@@ -384,12 +384,12 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 		},
 		editCategory: function(id, item) {
 			// uncategorized
-			if (String(item.id) == "CAT:0")
+			if (String(item.id) === "CAT:0")
 				return;
 
 			const new_name = prompt(__('Rename category to:'), item.name);
 
-			if (new_name && new_name != item.name) {
+			if (new_name && new_name !== item.name) {
 
 				Notify.progress("Loading, please wait...");
 

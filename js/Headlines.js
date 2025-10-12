@@ -56,7 +56,7 @@ const Headlines = {
 		const modified = [];
 
 		mutations.forEach((m) => {
-			if (m.type == 'attributes' && ['class', 'data-score'].indexOf(m.attributeName) != -1) {
+			if (m.type === 'attributes' && ['class', 'data-score'].indexOf(m.attributeName) !== -1) {
 
 				const row = m.target;
 				const id = row.getAttribute("data-article-id");
@@ -105,22 +105,22 @@ const Headlines = {
 		};
 
 		modified.forEach(function (m) {
-			if (m.old.marked != m.new.marked)
+			if (m.old.marked !== m.new.marked)
 				ops.tmark.push(m.id);
 
-			if (m.old.published != m.new.published)
+			if (m.old.published !== m.new.published)
 				ops.tpub.push(m.id);
 
-			if (m.old.unread != m.new.unread)
+			if (m.old.unread !== m.new.unread)
 				m.new.unread ? ops.unread.push(m.id) : ops.read.push(m.id);
 
-			if (m.old.selected != m.new.selected)
+			if (m.old.selected !== m.new.selected)
 				m.new.selected ? ops.select.push(m.row) : ops.deselect.push(m.row);
 
-			if (m.old.active != m.new.active)
+			if (m.old.active !== m.new.active)
 				m.new.active ? ops.activate.push(m.row) : ops.deactivate.push(m.row);
 
-			if (m.old.score != m.new.score) {
+			if (m.old.score !== m.new.score) {
 				const score = m.new.score;
 
 				ops.rescore[score] = ops.rescore[score] || [];
@@ -158,25 +158,25 @@ const Headlines = {
 
 		const promises = [];
 
-		if (ops.tmark.length != 0)
+		if (ops.tmark.length !== 0)
 			promises.push(xhr.post("backend.php",
 				{op: "RPC", method: "markSelected", "ids[]": ops.tmark, cmode: 2}));
 
-		if (ops.tpub.length != 0)
+		if (ops.tpub.length !== 0)
 			promises.push(xhr.post("backend.php",
 				{op: "RPC", method: "publishSelected", "ids[]": ops.tpub, cmode: 2}));
 
-		if (ops.read.length != 0)
+		if (ops.read.length !== 0)
 			promises.push(xhr.post("backend.php",
 				{op: "RPC", method: "catchupSelected", "ids[]": ops.read, cmode: 0}));
 
-		if (ops.unread.length != 0)
+		if (ops.unread.length !== 0)
 			promises.push(xhr.post("backend.php",
 				{op: "RPC", method: "catchupSelected", "ids[]": ops.unread, cmode: 1}));
 
 		const scores = Object.keys(ops.rescore);
 
-		if (scores.length != 0) {
+		if (scores.length !== 0) {
 			scores.forEach((score) => {
 				promises.push(xhr.post("backend.php",
 					{op: "Article", method: "setScore", "ids[]": ops.rescore[score], score: score}));
@@ -236,7 +236,7 @@ const Headlines = {
 					Article.openInNewWindow(id);
 					Headlines.toggleUnread(id, 0);
 
-				} else if (Article.getActive() != id) {
+				} else if (Article.getActive() !== id) {
 
 					Headlines.select('none');
 
@@ -309,7 +309,7 @@ const Headlines = {
 				offset = unread_in_buffer;
 				break;
 			case "adaptive":
-				if (!(Feeds.getActive() == Feeds.FEED_STARRED && !Feeds.activeIsCat()))
+				if (!(Feeds.getActive() === Feeds.FEED_STARRED && !Feeds.activeIsCat()))
 					offset = num_unread > 0 ? unread_in_buffer : num_all;
 				break;
 		}
@@ -352,7 +352,7 @@ const Headlines = {
 					const last_row = hsp.previousSibling;
 
 					// invoke lazy load if last article in buffer is nearly visible OR is active
-					if (Article.getActive() == last_row.getAttribute("data-article-id") || last_row.offsetTop - 250 <= container.scrollTop + container.offsetHeight) {
+					if (Article.getActive() === last_row.getAttribute("data-article-id") || last_row.offsetTop - 250 <= container.scrollTop + container.offsetHeight) {
 						hsp.innerHTML = `<span class='text-muted text-small text-center'><img class="icon-three-dots" src="${App.getInitParam('icon_three_dots')}"> ${__("Loading, please wait...")}</span>`;
 
 						Headlines.loadMore();
@@ -466,7 +466,7 @@ const Headlines = {
 		if (hl.unread) row_class += " Unread";
 		if (headlines.vfeed_group_enabled) row_class += " vgrlf";
 
-		if (headlines.vfeed_group_enabled && hl.feed_title && this.vgroup_last_feed != hl.feed_id) {
+		if (headlines.vfeed_group_enabled && hl.feed_title && this.vgroup_last_feed !== hl.feed_id) {
 			const vgrhdr = `<div data-feed-id='${hl.feed_id}' class='feed-title'>
 									<div class="pull-right icon-feed" title="${App.escapeHtml(hl.feed_title)}"
 										onclick="Feeds.open({feed:${hl.feed_id}})">${Feeds.renderIcon(hl.feed_id, hl.has_icon)}</div>
@@ -635,7 +635,7 @@ const Headlines = {
 
 		target.destroyDescendants();
 
-		if (tb && typeof tb == 'object') {
+		if (tb && typeof tb === 'object') {
 			target.attr('innerHTML',
 			`
 				<span class='left'>
@@ -672,7 +672,7 @@ const Headlines = {
 						<option></option>
 						<option value='headlines_catchupSelection'>${__('Mark as read')}</option>
 						<option value='article_selectionSetScore'>${__('Set score')}</option>
-						${tb.plugin_menu_items != '' ?
+						${tb.plugin_menu_items !== '' ?
 							`
 							<option></option>
 							${tb.plugin_menu_items}
@@ -747,7 +747,7 @@ const Headlines = {
 			feed_id = reply['headlines']['id'];
 			Feeds.last_search_query = reply['headlines']['search_query'];
 
-			if (feed_id != Feeds.FEED_ERROR && (feed_id != Feeds.getActive() || is_cat != Feeds.activeIsCat()))
+			if (feed_id !== Feeds.FEED_ERROR && (feed_id !== Feeds.getActive() || is_cat !== Feeds.activeIsCat()))
 				return;
 
 			const headlines_count = reply['headlines-info']['count'];
@@ -758,7 +758,7 @@ const Headlines = {
 			console.log('received', headlines_count, 'headlines');
 
 			if (!append) {
-				Feeds.infscroll_disabled = parseInt(headlines_count) != 30;
+				Feeds.infscroll_disabled = parseInt(headlines_count) !== 30;
 				console.log('infscroll_disabled=', Feeds.infscroll_disabled);
 
 				// also called in renderAgain() after view mode switch
@@ -790,7 +790,7 @@ const Headlines = {
 
 				Headlines.renderToolbar(reply['headlines']);
 
-				if (typeof reply['headlines']['content'] == 'string') {
+				if (typeof reply['headlines']['content'] === 'string') {
 					App.byId("headlines-frame").innerHTML = reply['headlines']['content'];
 				} else {
 					App.byId("headlines-frame").innerHTML = '';
@@ -831,7 +831,7 @@ const Headlines = {
 
 				Headlines.updateCurrentUnread();
 
-			} else if (headlines_count > 0 && feed_id == Feeds.getActive() && is_cat == Feeds.activeIsCat()) {
+			} else if (headlines_count > 0 && feed_id === Feeds.getActive() && is_cat === Feeds.activeIsCat()) {
 				const c = dijit.byId("headlines-frame");
 
 				let hsp = App.byId("headlines-spacer");
@@ -841,7 +841,7 @@ const Headlines = {
 
 				let headlines_appended = 0;
 
-				if (typeof reply['headlines']['content'] == 'string') {
+				if (typeof reply['headlines']['content'] === 'string') {
 					App.byId("headlines-frame").innerHTML = reply['headlines']['content'];
 				} else {
 					for (let i = 0; i < reply['headlines']['content'].length; i++) {
@@ -856,7 +856,7 @@ const Headlines = {
 					}
 				}
 
-				Feeds.infscroll_disabled = headlines_appended == 0;
+				Feeds.infscroll_disabled = headlines_appended === 0;
 
 				console.log('appended', headlines_appended, 'headlines, infscroll_disabled=', Feeds.infscroll_disabled);
 
@@ -931,7 +931,7 @@ const Headlines = {
 		const toolbar = dijit.byId("toolbar-main");
 		let order_by = toolbar.getValues().order_by;
 
-		if (order_by != "date_reverse")
+		if (order_by !== "date_reverse")
 			order_by = "date_reverse";
 		else
 			order_by = App.getInitParam("default_view_order_by");
@@ -939,11 +939,11 @@ const Headlines = {
 		toolbar.setValues({order_by: order_by});
 	},
 	selectionToggleUnread: function (params = {}) {
-		const cmode = params.cmode != undefined ? params.cmode : 2;
+		const cmode = params.cmode !== undefined ? params.cmode : 2;
 		const no_error = params.no_error || false;
 		const ids = params.ids || Headlines.getSelected();
 
-		if (ids.length == 0) {
+		if (ids.length === 0) {
 			if (!no_error)
 				alert(__("No articles selected."));
 
@@ -970,7 +970,7 @@ const Headlines = {
 	selectionToggleMarked: function (ids) {
 		ids = ids || Headlines.getSelected();
 
-		if (ids.length == 0) {
+		if (ids.length === 0) {
 			alert(__("No articles selected."));
 			return;
 		}
@@ -982,7 +982,7 @@ const Headlines = {
 	selectionTogglePublished: function (ids) {
 		ids = ids || Headlines.getSelected();
 
-		if (ids.length == 0) {
+		if (ids.length === 0) {
 			alert(__("No articles selected."));
 			return;
 		}
@@ -1022,13 +1022,13 @@ const Headlines = {
 			const rows = Headlines.getLoaded();
 
 			for (let i = 0; i < rows.length; i++) {
-				if (rows[i] == current_id) {
+				if (rows[i] === current_id) {
 
 					// Account for adjacent identical article ids.
 					if (i > 0) prev_id = rows[i - 1];
 
 					for (let j = i + 1; j < rows.length; j++) {
-						if (rows[j] != current_id) {
+						if (rows[j] !== current_id) {
 							next_id = rows[j];
 							break;
 						}
@@ -1059,7 +1059,7 @@ const Headlines = {
 					const next = row.nextSibling;
 
 					// hsp has half-screen height in auto catchup mode therefore we use its first child (normally A element)
-					if (next && Element.visible(next) && next.id == "headlines-spacer" && next.firstChild) {
+					if (next && Element.visible(next) && next.id === "headlines-spacer" && next.firstChild) {
 						const offset = App.byId("headlines-spacer").offsetTop - App.byId("headlines-frame").offsetHeight + next.firstChild.offsetHeight;
 
 						// don't jump back either
@@ -1107,7 +1107,7 @@ const Headlines = {
 		const row = App.byId(`RROW-${id}`);
 
 		if (row) {
-			if (typeof cmode == "undefined") cmode = 2;
+			if (typeof cmode === "undefined") cmode = 2;
 
 			switch (cmode) {
 				case 0:
@@ -1125,7 +1125,7 @@ const Headlines = {
 	selectionRemoveLabel: function (id, ids) {
 		if (!ids) ids = Headlines.getSelected();
 
-		if (ids.length == 0) {
+		if (ids.length === 0) {
 			alert(__("No articles selected."));
 			return;
 		}
@@ -1142,7 +1142,7 @@ const Headlines = {
 	selectionAssignLabel: function (id, ids) {
 		if (!ids) ids = Headlines.getSelected();
 
-		if (ids.length == 0) {
+		if (ids.length === 0) {
 			alert(__("No articles selected."));
 			return;
 		}
@@ -1159,7 +1159,7 @@ const Headlines = {
 	deleteSelection: function () {
 		const rows = Headlines.getSelected();
 
-		if (rows.length == 0) {
+		if (rows.length === 0) {
 			alert(__("No articles selected."));
 			return;
 		}
@@ -1167,7 +1167,7 @@ const Headlines = {
 		const fn = Feeds.getName(Feeds.getActive(), Feeds.activeIsCat());
 		let str;
 
-		if (Feeds.getActive() != 0) {
+		if (Feeds.getActive() !== 0) {
 			str = ngettext("Delete %d selected article in %s?", "Delete %d selected articles in %s?", rows.length);
 		} else {
 			str = ngettext("Delete %d selected article?", "Delete %d selected articles?", rows.length);
@@ -1229,7 +1229,7 @@ const Headlines = {
 		}
 	},
 	getRange: function (start, stop) {
-		if (start == stop)
+		if (start === stop)
 			return [start];
 
 		const rows = App.findAll("#headlines-frame > div[id*=RROW]");
@@ -1240,7 +1240,7 @@ const Headlines = {
 			const row = rows[i];
 			const id = row.getAttribute('data-article-id');
 
-			if (id == start || id == stop) {
+			if (id === start || id === stop) {
 				if (!collecting) {
 					collecting = true;
 				} else {
@@ -1296,7 +1296,7 @@ const Headlines = {
 	catchupSelection: function () {
 		const rows = Headlines.getSelected();
 
-		if (rows.length == 0) {
+		if (rows.length === 0) {
 			alert(__("No articles selected."));
 			return;
 		}
@@ -1329,7 +1329,7 @@ const Headlines = {
 
 		if (!below) {
 			for (let i = 0; i < visible_ids.length; i++) {
-				if (visible_ids[i] != id) {
+				if (visible_ids[i] !== id) {
 					const e = App.byId(`RROW-${visible_ids[i]}`);
 
 					if (e && e.hasClassName("Unread")) {
@@ -1341,7 +1341,7 @@ const Headlines = {
 			}
 		} else {
 			for (let i = visible_ids.length - 1; i >= 0; i--) {
-				if (visible_ids[i] != id) {
+				if (visible_ids[i] !== id) {
 					const e = App.byId(`RROW-${visible_ids[i]}`);
 
 					if (e && e.hasClassName("Unread")) {
@@ -1353,12 +1353,12 @@ const Headlines = {
 			}
 		}
 
-		if (ids_to_mark.length == 0) {
+		if (ids_to_mark.length === 0) {
 			alert(__("No articles found to mark"));
 		} else {
 			const msg = ngettext("Mark %d article as read?", "Mark %d articles as read?", ids_to_mark.length).replace("%d", ids_to_mark.length);
 
-			if (App.getInitParam("confirm_feed_catchup") != 1 || confirm(msg)) {
+			if (App.getInitParam("confirm_feed_catchup") !== 1 || confirm(msg)) {
 
 				for (let i = 0; i < ids_to_mark.length; i++) {
 					const e = App.byId(`RROW-${ids_to_mark[i]}`);
@@ -1437,7 +1437,7 @@ const Headlines = {
 				let ids = Headlines.getSelected();
 				// cast to string
 				const id = (this.getParent().currentTarget.getAttribute("data-article-id")) + "";
-				ids = ids.length != 0 && ids.indexOf(id) != -1 ? ids : [id];
+				ids = ids.length !== 0 && ids.indexOf(id) !== -1 ? ids : [id];
 
 				Headlines.selectionToggleUnread({ids: ids, no_error: 1});
 			}
@@ -1449,7 +1449,7 @@ const Headlines = {
 				let ids = Headlines.getSelected();
 				// cast to string
 				const id = (this.getParent().currentTarget.getAttribute("data-article-id")) + "";
-				ids = ids.length != 0 && ids.indexOf(id) != -1 ? ids : [id];
+				ids = ids.length !== 0 && ids.indexOf(id) !== -1 ? ids : [id];
 
 				Headlines.selectionToggleMarked(ids);
 			}
@@ -1461,7 +1461,7 @@ const Headlines = {
 				let ids = Headlines.getSelected();
 				// cast to string
 				const id = (this.getParent().currentTarget.getAttribute("data-article-id")) + "";
-				ids = ids.length != 0 && ids.indexOf(id) != -1 ? ids : [id];
+				ids = ids.length !== 0 && ids.indexOf(id) !== -1 ? ids : [id];
 
 				Headlines.selectionTogglePublished(ids);
 			}
@@ -1506,7 +1506,7 @@ const Headlines = {
 						// cast to string
 						const id = (this.getParent().ownerMenu.currentTarget.getAttribute("data-article-id")) + "";
 
-						ids = ids.length != 0 && ids.indexOf(id) != -1 ? ids : [id];
+						ids = ids.length !== 0 && ids.indexOf(id) !== -1 ? ids : [id];
 
 						Headlines.selectionAssignLabel(this.labelId, ids);
 					}
@@ -1520,7 +1520,7 @@ const Headlines = {
 						// cast to string
 						const id = (this.getParent().ownerMenu.currentTarget.getAttribute("data-article-id")) + "";
 
-						ids = ids.length != 0 && ids.indexOf(id) != -1 ? ids : [id];
+						ids = ids.length !== 0 && ids.indexOf(id) !== -1 ? ids : [id];
 
 						Headlines.selectionRemoveLabel(this.labelId, ids);
 					}

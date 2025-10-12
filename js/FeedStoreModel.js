@@ -56,7 +56,7 @@ define(["dojo/_base/declare", "dijit/tree/ForestStoreModel"], function (declare)
 		},
 		hasCats: function () {
 			if (this.store && this.store._itemsByIdentity)
-				return this.store._itemsByIdentity['CAT:-1'] != undefined;
+				return this.store._itemsByIdentity['CAT:-1'] !== undefined;
 			else
 				return false;
 		},

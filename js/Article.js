@@ -166,7 +166,7 @@ const Article = {
 					`<div class='attachments-inline'>
 						${enclosures.entries.map((enc) => {
 							if (!enclosures.inline_text_only) {
-								if (enc.content_type && enc.content_type.indexOf("image/") != -1) {
+								if (enc.content_type && enc.content_type.indexOf("image/") !== -1) {
 									return `<p>
 										<img loading="lazy"
 											width="${enc.width ? enc.width : ''}"
@@ -174,7 +174,7 @@ const Article = {
 											src="${App.escapeHtml(enc.content_url)}"
 											title="${App.escapeHtml(enc.title ? enc.title : enc.content_url)}"/>
 									</p>`
-								} else if (enc.content_type && enc.content_type.indexOf("audio/") != -1 && App.audioCanPlay(enc.content_type)) {
+								} else if (enc.content_type && enc.content_type.indexOf("audio/") !== -1 && App.audioCanPlay(enc.content_type)) {
 									return `<p class='inline-player' title="${App.escapeHtml(enc.content_url)}">
 										<audio preload="none" controls="controls">
 											<source type="${App.escapeHtml(enc.content_type)}" src="${App.escapeHtml(enc.content_url)}"/>
@@ -250,7 +250,7 @@ const Article = {
 		return comments;
 	},
 	unpack: function(row) {
-		if (row.getAttribute("data-is-packed") == "1") {
+		if (row.getAttribute("data-is-packed") === "1") {
 			console.log("unpacking: " + row.id);
 
 			const container = row.querySelector(".content-inner");
@@ -260,7 +260,7 @@ const Article = {
 			dojo.parser.parse(container);
 
 			// blank content element might screw up onclick selection and keyboard moving
-			if (container.textContent.length == 0)
+			if (container.textContent.length === 0)
 				container.innerHTML += "&nbsp;";
 
 			// in expandable mode, save content for later, so that we can pack unfocused rows back
@@ -273,7 +273,7 @@ const Article = {
 		}
 	},
 	pack: function(row) {
-		if (row.getAttribute("data-is-packed") != "1") {
+		if (row.getAttribute("data-is-packed") !== "1") {
 			console.log("packing", row.id);
 			row.setAttribute("data-is-packed", "1");
 
@@ -428,7 +428,7 @@ const Article = {
 		}
 	},
 	setActive: function (id) {
-		if (id != Article.getActive()) {
+		if (id !== Article.getActive()) {
 			console.log("setActive", id, "was", Article.getActive());
 
 			App.findAll("div[id*=RROW][class*=active]").forEach((row) => {

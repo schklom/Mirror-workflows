@@ -11,7 +11,7 @@ define(["dojo/_base/declare", "dojo/_base/lang", "dijit/form/MultiSelect", ],
                 this.baseClass += ' dijitValidationMultiSelect';
             },
             validate: function(/*Boolean*/ isFocused){
-                if (this.required && this.attr('value').length == 0)
+                if (this.required && this.attr('value').length === 0)
                     return false;
 
                 return true;

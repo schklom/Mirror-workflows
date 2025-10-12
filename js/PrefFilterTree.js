@@ -29,7 +29,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 
 			if (param) {
 				param = dojo.doc.createElement('ul');
-				param.className = (enabled != false) ? 'actions_summary' : 'actions_summary filterDisabled';
+				param.className = (enabled !== false) ? 'actions_summary' : 'actions_summary filterDisabled';
 				param.innerHTML = args.item.param[0];
 				domConstruct.place(param, tnode.rowNode, 'first');
 			}
@@ -85,7 +85,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			// disable copying items
 			source.copyState = function() { return false; };
 
-			return position != 'over';
+			return position !== 'over';
 		},
 		onDndDrop: function() {
 			this.inherited(arguments);
@@ -132,7 +132,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 		joinSelectedFilters: function() {
 			const rows = this.getSelectedFilters();
 
-			if (rows.length == 0) {
+			if (rows.length === 0) {
 				alert(__("No filters selected."));
 				return;
 			}

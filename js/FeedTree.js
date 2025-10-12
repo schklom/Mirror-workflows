@@ -26,7 +26,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 				// var oreo = cookie(this.cookieName);
 				let oreo = localStorage.getItem(this.cookieName);
 				// migrate old data if nothing in localStorage
-				if (oreo == null || oreo === '') {
+				if (oreo === null || oreo === '') {
 					oreo = cookie(this.cookieName);
 					cookie(this.cookieName, null, { expires: -1 });
 				}
@@ -50,7 +50,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 			let iconNode;
 
 			if (iconName) {
-				if (iconName.indexOf("/") == -1) {
+				if (iconName.indexOf("/") === -1) {
 					iconNode = dojo.create("i", { className: "material-icons icon icon-" + iconName, innerHTML: iconName });
 				} else {
 					iconNode = dojo.create('img', { className: 'icon' });
@@ -156,7 +156,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 				domConstruct.place(tnode.loadingNode, tnode.expandoNode, 'only');
 			}
 
-			if (id.match("CAT:") && bare_id == -1) {
+			if (id.match("CAT:") && bare_id === -1) {
 				const menu = new dijit.Menu();
 				menu.row_id = bare_id;
 
@@ -205,7 +205,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 			}
 		},
 		getTooltip: function (item) {
-			return [item.updated, item.error].filter((x) => x && x != "").join(" - ");
+			return [item.updated, item.error].filter((x) => x && x !== "").join(" - ");
 		},
 		getIconClass: function (item, opened) {
 			// eslint-disable-next-line no-nested-ternary
@@ -217,21 +217,21 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 		getRowClass: function (item/*, opened */) {
 			let rc = "dijitTreeRow dijitTreeRowFlex";
 
-			const is_cat = String(item.id).indexOf('CAT:') != -1;
+			const is_cat = String(item.id).indexOf('CAT:') !== -1;
 
 			if (is_cat)
 				rc += " Is_Cat";
 			else
 				rc += " Is_Feed";
 
-			if (!is_cat && item.error != '') rc += " Error";
+			if (!is_cat && item.error !== '') rc += " Error";
 			if (item.unread > 0) rc += " Unread";
 			if (item.auxcounter > 0) rc += " Has_Aux";
 			if (item.markedcounter > 0) rc += " Has_Marked";
 			if (item.publishedcounter > 0) rc += " Has_Published";
 			if (item.updates_disabled > 0) rc += " UpdatesDisabled";
-			if (item.bare_id >= App.LABEL_BASE_INDEX && item.bare_id < 0 && !is_cat || item.bare_id == Feeds.FEED_ARCHIVED && !is_cat) rc += " Special";
-			if (item.bare_id == Feeds.CATEGORY_SPECIAL && is_cat) rc += " AlwaysVisible";
+			if (item.bare_id >= App.LABEL_BASE_INDEX && item.bare_id < 0 && !is_cat || item.bare_id === Feeds.FEED_ARCHIVED && !is_cat) rc += " Special";
+			if (item.bare_id === Feeds.CATEGORY_SPECIAL && is_cat) rc += " AlwaysVisible";
 			if (item.bare_id < App.LABEL_BASE_INDEX) rc += " Label";
 
 			return rc;
@@ -266,7 +266,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 					const items = this.model.store._arrayOfTopLevelItems;
 
 					for (let i = 0; i < items.length; i++) {
-						if (String(items[i].id) == test_id) {
+						if (String(items[i].id) === test_id) {
 							this.expandParentNodes(feed, is_cat, parents);
 						} else {
 							this.findNodeParentsAndExpandThem(feed, is_cat, items[i], []);
@@ -276,13 +276,13 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 						parents.push(root);
 
 						for (let i = 0; i < root.items.length; i++) {
-							if (String(root.items[i].id) == test_id) {
+							if (String(root.items[i].id) === test_id) {
 								this.expandParentNodes(feed, is_cat, parents);
 							} else {
 								this.findNodeParentsAndExpandThem(feed, is_cat, root.items[i], parents.slice(0));
 							}
 						}
-					} else if (String(root.id) == test_id) {
+					} else if (String(root.id) === test_id) {
 							this.expandParentNodes(feed, is_cat, parents.slice(0));
 						}
 			} catch (e) {
@@ -423,7 +423,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 			const items = this.model.store._arrayOfAllItems;
 			const start = items.indexOf(treeItem);
 
-			if (start != -1) {
+			if (start !== -1) {
 				let item = this._nextTreeItemFromIndex(start, unread_only);
 
 				// let's try again from the top
@@ -469,7 +469,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 			const items = this.model.store._arrayOfAllItems;
 			const start = items.indexOf(treeItem);
 
-			if (start != -1) {
+			if (start !== -1) {
 				let item = this._prevTreeItemFromIndex(start, unread_only);
 
 				// wrap from the bottom

@@ -19,7 +19,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 			const type = this.model.store.getValue(args.item, 'type');
 			//const bare_id = this.model.store.getValue(args.item, 'bare_id');
 
-			if (type == 'label') {
+			if (type === 'label') {
 				const label = dojo.doc.createElement('i');
 				//const fg_color = args.item.fg_color[0];
 				const bg_color = String(args.item.bg_color);

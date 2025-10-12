@@ -32,7 +32,7 @@ const	Users = {
 	edit: function(id) {
 		xhr.json('backend.php', {op: 'Pref_Users', method: 'edit', id: id}, (reply) => {
 			const user = reply.user;
-			const admin_disabled = (user.id == 1);
+			const admin_disabled = (user.id === 1);
 
 			const dialog = new fox.SingleUseDialog({
 				id: "userEditDlg",
@@ -132,7 +132,7 @@ const	Users = {
 	resetSelected: function() {
 		const rows = this.getSelection();
 
-		if (rows.length == 0) {
+		if (rows.length === 0) {
 			alert(__("No users selected."));
 			return;
 		}

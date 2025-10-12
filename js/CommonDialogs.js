@@ -332,7 +332,7 @@ const	CommonDialogs = {
 		addLabel: function() {
 			const caption = prompt(__("Please enter label caption:"), "");
 
-			if (caption != undefined && caption.trim().length > 0) {
+			if (caption !== undefined && caption.trim().length > 0) {
 
 				const query = {op: "Pref_Labels", method: "add", caption: caption.trim()};
 
@@ -351,7 +351,7 @@ const	CommonDialogs = {
 
 			const msg = __("Unsubscribe from %s?").replace("%s", title);
 
-			if (typeof title == "undefined" || confirm(msg)) {
+			if (typeof title === "undefined" || confirm(msg)) {
 				Notify.progress("Removing feed...");
 
 				const query = {op: "Pref_Feeds", quiet: 1, method: "remove", ids: feed_id};
@@ -360,7 +360,7 @@ const	CommonDialogs = {
 					if (App.isPrefs()) {
 						dijit.byId("feedTree").reload();
 					} else {
-						if (feed_id == Feeds.getActive())
+						if (feed_id === Feeds.getActive())
 							setTimeout(() => {
 									Feeds.openDefaultFeed();
 								},
@@ -396,10 +396,10 @@ const	CommonDialogs = {
                }
 				},
 				uploadIcon: function(input) {
-					if (input.files.length != 0) {
+					if (input.files.length !== 0) {
 						const icon_file = input.files[0];
 
-						if (icon_file.type.indexOf("image/") == -1) {
+						if (icon_file.type.indexOf("image/") === -1) {
 							alert(__("Please select an image file."));
 							return;
 						}
@@ -501,7 +501,7 @@ const	CommonDialogs = {
 
 				xhr.json("backend.php", {op: "Pref_Feeds", method: "editfeed", id: feed_id}, (reply) => {
 					const feed = reply.feed;
-					const is_readonly = reply.user.access_level == App.UserAccessLevels.ACCESS_LEVEL_READONLY;
+					const is_readonly = reply.user.access_level === App.UserAccessLevels.ACCESS_LEVEL_READONLY;
 
 					// for unsub prompt
 					dialog.feed_title = feed.title;

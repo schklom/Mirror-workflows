@@ -15,7 +15,7 @@ const	Helpers = {
 		removeSelected: function() {
 			const rows = this.getSelected();
 
-			if (rows.length == 0) {
+			if (rows.length === 0) {
 				alert("No passwords selected.");
 			} else if (confirm(__("Remove selected app passwords?"))) {
 
@@ -131,7 +131,7 @@ const	Helpers = {
 				cloneSelected: function() {
 					const sel_rows = this.getSelectedProfiles();
 
-					if (sel_rows.length == 1) {
+					if (sel_rows.length === 1) {
 						const new_title = prompt(__("Name for cloned profile:"));
 
 						if (new_title) {
@@ -238,7 +238,7 @@ const	Helpers = {
 				execute: function () {
 					const sel_rows = this.getSelectedProfiles();
 
-					if (sel_rows.length == 1) {
+					if (sel_rows.length === 1) {
 						if (confirm(__("Activate selected profile?"))) {
 							Notify.progress("Loading, please wait...");
 
@@ -386,11 +386,11 @@ const	Helpers = {
 
 			this._list_of_plugins.plugins.forEach((plugin) => {
 
-				if (search_tokens.length == 0 ||
+				if (search_tokens.length === 0 ||
 					Object.values(plugin).filter((pval) =>
 						search_tokens.filter((stoken) =>
-							(pval.toString().indexOf(stoken) != -1 ? stoken : null)
-						).length == search_tokens.length).length > 0) {
+							(pval.toString().indexOf(stoken) !== -1 ? stoken : null)
+						).length === search_tokens.length).length > 0) {
 
 						++results_rendered;
 
@@ -433,7 +433,7 @@ const	Helpers = {
 					}
 			});
 
-			if (results_rendered == 0) {
+			if (results_rendered === 0) {
 				container.innerHTML += `<li class='text-center text-info'>${__("Could not find any plugins for this search query.")}</li>`;
 			}
 
@@ -456,7 +456,7 @@ const	Helpers = {
 				Notify.progress("Loading, please wait...");
 
 				xhr.json("backend.php", {op: "Pref_Prefs", method: "uninstallPlugin", plugin: plugin}, (reply) => {
-					if (reply && reply.status == 1)
+					if (reply && reply.status === 1)
 						Helpers.Plugins.reload();
 					else {
 						Notify.error("Plugin uninstallation failed.");
@@ -562,11 +562,11 @@ const	Helpers = {
 							const is_installed = (dialog.installed_plugins
 								.filter((p) => plugin.topics.map((t) => t.replace(/-/g, "_")).includes(p))).length > 0;
 
-							if (search_tokens.length == 0 ||
+							if (search_tokens.length === 0 ||
 									Object.values(plugin).filter((pval) =>
 										search_tokens.filter((stoken) =>
-											(pval.indexOf(stoken) != -1 ? stoken : null)
-										).length == search_tokens.length).length > 0) {
+											(pval.indexOf(stoken) !== -1 ? stoken : null)
+										).length === search_tokens.length).length > 0) {
 
 								++results_rendered;
 
@@ -592,7 +592,7 @@ const	Helpers = {
 							}
 						});
 
-						if (results_rendered == 0) {
+						if (results_rendered === 0) {
 							container.innerHTML = `<li class='text-center text-info'>${__("Could not find any plugins for this search query.")}</li>`;
 						}
 
@@ -664,7 +664,7 @@ const	Helpers = {
 							container.innerHTML = "";
 
 							reply.forEach((p) => {
-								if (p.rv.git_status == 0)
+								if (p.rv.git_status === 0)
 									dialog.need_refresh = true;
 								else
 									enable_update_btn = true;
@@ -704,7 +704,7 @@ const	Helpers = {
 							dialog.attr('title', __("No updates available"));
 
 						dijit.getEnclosingWidget(dialog.domNode.querySelector(".update-btn"))
-									.attr('disabled', num_updated == 0);
+									.attr('disabled', num_updated === 0);
 
 					}
 				},
@@ -735,7 +735,7 @@ const	Helpers = {
 											update_button.domNode.show();
 									}
 
-									if (p.rv.need_update || p.rv.git_status != 0) {
+									if (p.rv.need_update || p.rv.git_status !== 0) {
 										container.innerHTML +=
 										`
 										<li><h3>${p.plugin}</h3>
@@ -787,7 +787,7 @@ const	Helpers = {
 		import: function() {
 			const opml_file = App.byId("opml_file");
 
-			if (opml_file.value.length == 0) {
+			if (opml_file.value.length === 0) {
 				alert(__("Please choose an OPML file first."));
 				return false;
 			} else {

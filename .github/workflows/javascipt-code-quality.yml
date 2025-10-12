@@ -1,0 +1,62 @@
+name: JavaScript Code Quality
+
+on:
+  pull_request:
+    paths:
+    - 'js/**.js'
+    - 'plugins/**.js'
+    - 'package.json'
+    - 'package-lock.json'
+    - '.eslintrc.*'
+    - 'eslint.config.*'
+    - '.github/workflows/javascript-code-quality.yml'
+  # Allow manual triggering
+  workflow_dispatch:
+  # Allow other workflows (e.g. Publish) to invoke this one.
+  workflow_call:
+
+
+env:
+  fail-fast: true
+
+
+permissions:
+  contents: read
+
+
+jobs:
+  eslint:
+    name: ESLint
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v5
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v5
+      with:
+        node-version: lts/*
+
+    - name: Restore Node.js dependencies cache
+      uses: actions/cache/restore@v4
+      id: cache-restore
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Install dependencies
+      if: steps.cache-restore.outputs.cache-hit != 'true'
+      run: npm install
+
+    - name: Save Node.js dependencies cache
+      if: steps.cache-restore.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+
+    - name: Run ESLint
+      run: npx eslint js plugins

@@ -184,7 +184,7 @@ const	CommonDialogs = {
 														select.addOption({value: '', label: __("Expand to select feed")});
 
 														for (const feedUrl in feeds) {
-															if (feeds.hasOwnProperty(feedUrl)) {
+															if (Object.prototype.hasOwnProperty.call(feeds, feedUrl)) {
 																select.addOption({value: feedUrl, label: feeds[feedUrl]});
 															}
 														}

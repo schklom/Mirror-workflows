@@ -332,7 +332,7 @@ const App = {
 		const hotkeys_map = this.getInitParam("hotkeys");
 
 		for (const seq in hotkeys_map[1]) {
-			if (hotkeys_map[1].hasOwnProperty(seq)) {
+			if (Object.prototype.hasOwnProperty.call(hotkeys_map[1], seq)) {
 				if (seq === sequence) {
 					return hotkeys_map[1][seq];
 				}

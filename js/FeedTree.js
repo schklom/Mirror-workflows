@@ -1,5 +1,5 @@
 /* eslint-disable prefer-rest-params */
-/* global __, dojo, dijit, define, App, Feeds, CommonDialogs */
+/* global __, define, App, Feeds, CommonDialogs */
 
 define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/cookie", "dijit/Tree", "dijit/Menu"], function (declare, domConstruct, array, cookie) {
 

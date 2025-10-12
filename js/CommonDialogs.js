@@ -3,7 +3,7 @@
 /* eslint-disable new-cap */
 /* eslint-disable no-new */
 
-/* global __, dojo, dijit, Notify, App, Feeds, xhr, Tables, fox */
+/* global __, Notify, App, Feeds, xhr, Tables, fox */
 
 /* exported CommonDialogs */
 const	CommonDialogs = {

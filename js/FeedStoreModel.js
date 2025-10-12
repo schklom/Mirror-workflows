@@ -1,4 +1,4 @@
-/* global define, dijit */
+/* global define */
 
 define(["dojo/_base/declare", "dijit/tree/ForestStoreModel"], function (declare) {
 

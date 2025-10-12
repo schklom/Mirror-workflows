@@ -1,7 +1,7 @@
 'use strict'
 
 /* eslint-disable no-new */
-/* global __, ngettext, App, Headlines, xhr, dojo, dijit, PluginHost, Notify, fox */
+/* global __, ngettext, App, Headlines, xhr, PluginHost, Notify, fox */
 
 const Article = {
 	_scroll_reset_timeout: false,

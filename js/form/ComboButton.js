@@ -1,5 +1,5 @@
 /* eslint-disable prefer-rest-params */
-/* global dijit, define */
+/* global define */
 define(["dojo/_base/declare", "dijit/form/ComboButton"], function (declare) {
 	return declare("fox.form.ComboButton", dijit.form.ComboButton, {
 		startup: function() {

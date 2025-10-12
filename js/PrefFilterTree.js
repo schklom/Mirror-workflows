@@ -1,5 +1,5 @@
 /* eslint-disable prefer-rest-params */
-/* global __, define, lib, dijit, dojo, xhr, App, Notify, Filters */
+/* global __, define, lib, xhr, App, Notify, Filters */
 
 define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], function (declare, domConstruct) {
 

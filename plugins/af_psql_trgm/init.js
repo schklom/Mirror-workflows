@@ -1,4 +1,4 @@
-/* global dijit, dojo, Plugins, xhr, __ */
+/* global Plugins, xhr, __ */
 
 Plugins.Psql_Trgm = {
 	showRelated: function (id) {

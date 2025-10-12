@@ -1,6 +1,6 @@
 'use strict'
 
-/* global __, App, Headlines, xhr, dojo, dijit, fox, PluginHost, Notify, fox */
+/* global __, App, Headlines, xhr, fox, PluginHost, Notify, fox */
 
 const	Feeds = {
 	FEED_ARCHIVED: 0,

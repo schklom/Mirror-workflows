@@ -1,4 +1,4 @@
-/* global dojo, Plugins, App, Notify, fox, xhr, __ */
+/* global Plugins, App, Notify, fox, xhr, __ */
 
 Plugins.Share = {
 	shareArticle: function(id) {

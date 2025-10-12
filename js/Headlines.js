@@ -1,7 +1,7 @@
 'use strict';
 
 /* global __, ngettext, Article, App */
-/* global dojo, dijit, PluginHost, Notify, xhr, Feeds */
+/* global PluginHost, Notify, xhr, Feeds */
 /* global CommonDialogs */
 
 const Headlines = {

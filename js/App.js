@@ -423,7 +423,7 @@ const App = {
          '/': '&#x2F;',
       };
 
-      return p.replace(/[&<>"'\/]/g, m => map[m]);
+      return p.replace(/[&<>"'/]/g, m => map[m]);
    },
    unescapeHtml: function(p) {
       if (typeof p !== 'string' || p.indexOf('&') === -1)

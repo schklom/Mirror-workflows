@@ -1,5 +1,5 @@
 /* eslint-disable prefer-rest-params */
-/* global __, lib, dijit, define, dojo, CommonDialogs, Notify, Tables, xhr, fox, App */
+/* global __, lib, define, CommonDialogs, Notify, Tables, xhr, fox, App */
 
 define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_base/array", "dojo/cookie"],
 	function (declare, domConstruct, checkBoxTree, array, cookie) {

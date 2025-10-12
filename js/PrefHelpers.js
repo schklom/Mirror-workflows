@@ -1,7 +1,7 @@
 'use strict';
 
 /* eslint-disable no-new */
-/* global __, dijit, dojo, Tables, Notify, xhr, App, fox */
+/* global __, Tables, Notify, xhr, App, fox */
 
 const	Helpers = {
 	AppPasswords: {

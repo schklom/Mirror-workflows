@@ -3,7 +3,7 @@
 /* eslint-disable no-new */
 
 /* global __, App, Article, Lists, fox */
-/* global xhr, dojo, dijit, Notify, Feeds */
+/* global xhr, Notify, Feeds */
 
 /* exported Filters */
 const	Filters = {

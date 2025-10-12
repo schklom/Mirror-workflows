@@ -1,6 +1,6 @@
 'use strict';
 
-/* global dijit, App, dojo, __csrf_token */
+/* global App, __csrf_token */
 /* eslint-disable no-new */
 
 /* exported __ */

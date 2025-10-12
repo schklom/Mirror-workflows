@@ -39,6 +39,8 @@ jobs:
       
       - name: Read current and new hash of apk
         run: |
+          # Create hash_current_file if it doesn't exist
+          touch hash_current_file
           echo "current_hash=$(cat hash_current_file)" >> $GITHUB_ENV
           echo "new_hash=$(cat hash_new_file)" >> $GITHUB_ENV
       
@@ -75,7 +77,8 @@ jobs:
         if: ${{ env.current_hash != env.new_hash }}
         uses: stefanzweifel/git-auto-commit-action@v6
         with:
-          commit_message: Update the apk, its hash, and update date
+          commit_message: "Update the apk's hash and update date"
+          file_pattern: hash_current_file last_update_date
         
       - name: Release apk if hashes are different
         if: ${{ env.current_hash != env.new_hash }}

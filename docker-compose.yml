@@ -25,26 +25,26 @@ services:
         - wikiless_redis
 
   wikiless_redis:
-  image: redis:8-alpine
-  container_name: wikiless_redis
-  hostname: wikiless_redis
-  restart: always
-  networks:
-    - wikiless_net
-  security_opt:
-    - no-new-privileges:true
-  volumes:
-    - ./redis-data:/data
-  user: redis
-  cap_drop:
-    - ALL
-  cap_add:
-    - SETUID
-    - SETGID
-  deploy:
-    resources:
-      limits:
-        memory: 256M
+    image: redis:8-alpine
+    container_name: wikiless_redis
+    hostname: wikiless_redis
+    restart: always
+    networks:
+      - wikiless_net
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./redis-data:/data
+    user: redis
+    cap_drop:
+      - ALL
+    cap_add:
+      - SETUID
+      - SETGID
+    deploy:
+      resources:
+        limits:
+          memory: 256M
 
 networks:
   wikiless_net:

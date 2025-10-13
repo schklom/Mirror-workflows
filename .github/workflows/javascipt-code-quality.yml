@@ -8,7 +8,6 @@ on:
     - 'eslint.config.js'
     - 'package.json'
     - 'package-lock.json'
-    - '.github/workflows/javascript-code-quality.yml'
   # Allow manual triggering
   workflow_dispatch:
   # Allow other workflows (e.g. Publish) to invoke this one.

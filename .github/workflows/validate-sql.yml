@@ -5,7 +5,6 @@ on:
     paths:
       - 'sql/pgsql/schema.sql'
       - 'sql/pgsql/migrations/*.sql'
-      - '.github/workflows/validate-sql.yml'
   # Allow manual triggering
   workflow_dispatch:
   # Allow other workflows (e.g. Publish) to invoke this one.

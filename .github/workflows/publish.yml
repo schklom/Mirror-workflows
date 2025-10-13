@@ -24,17 +24,21 @@ permissions:
 
 
 jobs:
-  test-docker:
+  docker-code-quality:
     uses: ./.github/workflows/docker-code-quality.yml
 
-  test-php:
+  javascript-code-quality:
+    uses: ./.github/workflows/javascript-code-quality.yml
+
+  php-code-quality:
     uses: ./.github/workflows/php-code-quality.yml
 
   publish:
     name: Publish Docker image ${{ matrix.image.name }}
     needs:
-    - test-docker
-    - test-php
+    - docker-code-quality
+    - javascript-code-quality
+    - php-code-quality
     runs-on: ubuntu-latest
     permissions:
       contents: read

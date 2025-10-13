@@ -181,7 +181,7 @@ jobs:
           # Instead, we trigger a push if there was a change, because "push" is a trigger for the build
       
       - name: Commit and push the change
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: Add Change API key + change User-Agent + Keystore + remove codeql workflow + Add last_sync_with_original_repo_version
 
@@ -205,7 +205,7 @@ jobs:
 #           curl "$url" -o ".github/workflows/$file"
 #           
 #       - name: Commit and push the change (modified workflow)
-#         uses: stefanzweifel/git-auto-commit-action@v6
+#         uses: stefanzweifel/git-auto-commit-action@v7
 #         id: auto-commit-action
 #         with:
 #           commit_message: Copy modified workflow

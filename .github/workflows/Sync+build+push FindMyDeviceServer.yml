@@ -55,7 +55,7 @@ jobs:
       - name: get most recent commit id on original repo, for next comparison on sync
         run: git ls-remote https://gitlab.com/Nulide/findmydeviceserver.git HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
       - name: Commit and push the change
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: Add last_sync_with_original_repo_commit_id
 

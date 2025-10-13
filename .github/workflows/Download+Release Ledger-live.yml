@@ -58,7 +58,7 @@ jobs:
       
       - name: Commit and push the change
         if: ${{ env.version_current_appimage != env.version_new_appimage }}
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: Update the apk, its hash, and update date
         

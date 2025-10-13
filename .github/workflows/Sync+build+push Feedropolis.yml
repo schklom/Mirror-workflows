@@ -47,7 +47,7 @@ jobs:
     - name: get most recent commit id on original repo, for next comparison on sync
       run: git ls-remote https://github.com/schklom/Mirror-workflows.git refs/heads/Feedropolis | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
     - name: Commit and push the change
-      uses: stefanzweifel/git-auto-commit-action@v6
+      uses: stefanzweifel/git-auto-commit-action@v7
       with:
         commit_message: Add last_sync_with_original_repo_commit_id
 
@@ -66,7 +66,7 @@ jobs:
 
       # https://github.com/marketplace/actions/git-auto-commit
       - name: Commit and push the change
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: Add python3 and vite and build-essential to apt-get install, for a linux/arm/v7,linux/arm64 image
       # https://github.com/docker/setup-qemu-action#usage

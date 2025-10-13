@@ -70,7 +70,7 @@ jobs:
           curl -s 'https://api.github.com/repos/ProtonMail/proton-bridge/releases' | jq -r '[.[] | select(.prerelease == false)][0].published_at' > last_sync_with_original_parent_repo_latest_published_date
       
       - name: Commit and push the change
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: Add last_sync_with_original_repo_commit_id + last_sync_with_original_parent_repo_latest_published_date
 
@@ -80,7 +80,7 @@ jobs:
           # sed -i "s|carlosedp/golang:1.18|golang:latest|" $filename
       
       # - name: Commit and push the change
-        # uses: stefanzweifel/git-auto-commit-action@v6
+        # uses: stefanzweifel/git-auto-commit-action@v7
         # with:
           # commit_message: Patch to compile
 

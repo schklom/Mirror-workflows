@@ -24,17 +24,9 @@ export default [
     },
 
     rules: {
-      'no-undef': 'warn',
-      'no-unused-vars': 'warn',
       'no-console': 'off',
-
       'prefer-const': 'error',
-      'no-var': 'warn',
-
       'eqeqeq': ['error', 'always'],
-      'no-caller': 'error',
-      'no-proto': 'error',
-
       'no-empty': ['error', { 'allowEmptyCatch': true }],
 
       // Stylistic rules (replacing those deprecated in ESLint)

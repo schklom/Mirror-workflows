@@ -1,3 +1,4 @@
+import globals from 'globals';
 import js from '@eslint/js';
 
 export default [
@@ -9,30 +10,7 @@ export default [
       ecmaVersion: 2022,
       sourceType: 'script',
       globals: {
-        // Browser
-        window: 'readonly',
-        document: 'readonly',
-        console: 'readonly',
-        alert: 'readonly',
-        confirm: 'readonly',
-        setTimeout: 'readonly',
-        setInterval: 'readonly',
-        clearTimeout: 'readonly',
-        clearInterval: 'readonly',
-        fetch: 'readonly',
-        XMLHttpRequest: 'readonly',
-        FormData: 'readonly',
-        URLSearchParams: 'readonly',
-        localStorage: 'readonly',
-        sessionStorage: 'readonly',
-        location: 'readonly',
-        history: 'readonly',
-        navigator: 'readonly',
-        Event: 'readonly',
-        CustomEvent: 'readonly',
-        Element: 'readonly',
-        IntersectionObserver: 'readonly',
-        MutationObserver: 'readonly',
+        ...globals.browser,
 
         // Dojo
         dojo: 'readonly',

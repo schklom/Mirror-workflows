@@ -72,7 +72,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 		getIconClass: function (item, opened) {
 			return (!item || this.model.mayHaveChildren(item)) ? (opened ? "dijitFolderOpened" : "dijitFolderClosed") : "invisible";
 		},
-		getRowClass: function (item, opened) {
+		getRowClass: function (item /*, opened */) {
 			const enabled = this.model.store.getValue(item, 'enabled');
 
 			return enabled ? "dijitTreeRow" : "dijitTreeRow filterDisabled";

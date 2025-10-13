@@ -16,7 +16,7 @@ const Headlines = {
 	default_move_on_expand: true,
 	line_scroll_offset: 120, /* px */
 	sticky_header_observer: new IntersectionObserver(
-		(entries, observer) => {
+		(entries) => {
 			entries.forEach((entry) => {
 				const header = entry.target.closest('.cdm').querySelector(".header");
 
@@ -32,7 +32,7 @@ const Headlines = {
 		{threshold: [0, 1], root: document.querySelector("#headlines-frame")}
 	),
 	sticky_content_observer: new IntersectionObserver(
-		(entries, observer) => {
+		(entries) => {
 			entries.forEach((entry) => {
 				const header = entry.target.closest('.cdm').querySelector(".header");
 
@@ -44,7 +44,7 @@ const Headlines = {
 		{threshold: [0, 1], root: document.querySelector("#headlines-frame")}
 	),
 	unpack_observer: new IntersectionObserver(
-		(entries, observer) => {
+		(entries) => {
 			entries.forEach((entry) => {
 				if (entry.intersectionRatio > 0)
 					Article.unpack(entry.target);

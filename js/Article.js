@@ -220,7 +220,7 @@ const Article = {
 
 		try {
 			c.domNode.scrollTop = 0;
-		} catch (e) {
+		} catch {
 		}
 
 		c.attr('content', article);
@@ -230,7 +230,7 @@ const Article = {
 
 		try {
 			c.focus();
-		} catch (e) {
+		} catch {
 		}
 	},
 	formatComments: function(hl) {

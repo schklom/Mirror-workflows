@@ -1,3 +1,5 @@
+/* global Plugins, Feeds */
+
 Plugins.Toggle_Sidebar = {
     toggle: function() {
         Feeds.toggle();

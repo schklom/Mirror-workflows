@@ -132,8 +132,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 			this.inherited(arguments);
 			this.tree.model.store.save();
 		},
-		// eslint-disable-next-line no-unused-vars
-		getRowClass: function (item, opened) {
+		getRowClass: function (item /*, opened */) {
 			let rc = (!item.error || item.error === '') ? "dijitTreeRow" :
 				"dijitTreeRow Error";
 

@@ -544,7 +544,7 @@ const	Feeds = {
 			if (tree && tree.model)
 				return tree.model.getFeedUnread(feed, is_cat);
 
-		} catch (e) {
+		} catch {
 			//
 		}
 
@@ -557,7 +557,7 @@ const	Feeds = {
 			if (tree && tree.model)
 				return tree.getFeedCategory(feed);
 
-		} catch (e) {
+		} catch {
 			//
 		}
 
@@ -584,7 +584,7 @@ const	Feeds = {
 			if (tree && tree.model)
 				return tree.model.setFeedValue(feed, is_cat, key, value);
 
-		} catch (e) {
+		} catch {
 			//
 		}
 	},
@@ -595,7 +595,7 @@ const	Feeds = {
 			if (tree && tree.model)
 				return tree.model.getFeedValue(feed, is_cat, key);
 
-		} catch (e) {
+		} catch {
 			//
 		}
 		return '';

@@ -196,7 +196,7 @@ const App = {
 				mql.addEventListener("change", () => {
 					this.nightModeChanged(mql.matches, App.byId("theme_auto_css"));
 				});
-			} catch (e) {
+			} catch {
 				console.warn("exception while trying to set MQL event listener");
 			}
 
@@ -276,7 +276,7 @@ const App = {
 		try {
          const results = new RegExp('[?&]' + name + '=([^&#]*)').exec(window.location.href);
          return decodeURIComponent(results[1].replace(/\+/g, " ")) || 0;
-      } catch (e) {
+      } catch {
          return 0;
       }
 	},
@@ -701,6 +701,7 @@ const App = {
       this.is_prefs = is_prefs;
       window.onerror = this.Error.onWindowError;
 
+      /* global __default_dark_theme, __default_light_theme */
       this.setInitParam("csrf_token", __csrf_token);
       this.setInitParam("default_light_theme", __default_light_theme);
       this.setInitParam("default_dark_theme", __default_dark_theme);

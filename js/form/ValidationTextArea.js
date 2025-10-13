@@ -5,7 +5,7 @@ define(["dojo/_base/declare", "dojo/_base/lang", "dijit/form/SimpleTextarea", "d
     function(declare, lang, SimpleTextarea, ValidationTextBox) {
 
         return declare('fox.form.ValidationTextArea', [SimpleTextarea, ValidationTextBox], {
-            constructor: function(params){
+            constructor: function(/* params */) {
                 this.constraints = {};
                 this.baseClass += ' dijitValidationTextArea';
             },
@@ -19,7 +19,7 @@ define(["dojo/_base/declare", "dojo/_base/lang", "dijit/form/SimpleTextarea", "d
                 if (this.validregexp) {
                     try {
                         new RegExp("/" + value + "/");
-                    } catch (e) {
+                    } catch {
                         return false;
                     }
                 }

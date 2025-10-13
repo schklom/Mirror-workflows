@@ -209,10 +209,10 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 		getIconClass: function (item, opened) {
 			return (!item || this.model.mayHaveChildren(item)) ? (opened ? "dijitFolderOpened" : "dijitFolderClosed") : "feed-icon";
 		},
-		getLabelClass: function (item/* , opened */) {
+		getLabelClass: function (item /*, opened */) {
 			return (item.unread <= 0) ? "dijitTreeLabel" : "dijitTreeLabel Unread";
 		},
-		getRowClass: function (item/*, opened */) {
+		getRowClass: function (item /*, opened */) {
 			let rc = "dijitTreeRow dijitTreeRowFlex";
 
 			const is_cat = String(item.id).indexOf('CAT:') !== -1;
@@ -490,7 +490,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 					_itemsByIdentity["FEED:" + feed])[0].
 				getParent().item.bare_id[0];
 
-			} catch (e) {
+			} catch {
 				return false;
 			}
 		},

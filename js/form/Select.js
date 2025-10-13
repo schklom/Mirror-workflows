@@ -24,7 +24,7 @@ define(["dojo/_base/declare",
 		onItemClick: function(/*item, menu*/) {
 			//
 		},
-		_setValueAttr: function(/*anything*/ newValue, /*Boolean?*/ priorityChange){
+		_setValueAttr: function(/*anything*/ newValue, /*Boolean? priorityChange */){
 			if (this.attr('data-prevent-value-change') === 'true' && newValue !== '')
 				return;
 

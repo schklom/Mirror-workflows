@@ -104,6 +104,12 @@ jobs:
         context: .
         file: ${{ matrix.image.dockerfile }}
         platforms: linux/arm64,linux/amd64
+        cache-from: |
+          type=gha,scope=${{ matrix.image.name }}
+          type=registry,ref=${{ matrix.image.repository_ghcr }}:cache
+        cache-to: |
+          type=gha,scope=${{ matrix.image.name }},mode=max
+          type=registry,ref=${{ matrix.image.repository_ghcr }}:cache,mode=max
         # TODO: clean up build arg and environment variable naming.
         build-args: |
           CI_COMMIT_BRANCH=${{ github.ref_name }}

@@ -71,16 +71,20 @@ const App = {
                      ${this.attributes_to_string(attributes)} id="${App.escapeHtml(id)}">`
       },
       select_tag: function(name, value, values = [], attributes = {}, id = "") {
+         value = String(value);
+
          return `
             <select name="${name}" dojoType="fox.form.Select" id="${App.escapeHtml(id)}" ${this.attributes_to_string(attributes)}>
-               ${values.map((v) =>
+               ${values.map((v) => {
+                  v = String(v);
                   `<option ${v === value ? 'selected="selected"' : ''} value="${App.escapeHtml(v)}">${App.escapeHtml(v)}</option>`
-               ).join("")}
+               }).join("")}
             </select>
          `
       },
       select_hash: function(name, value, values = {}, attributes = {}, id = "", params = {}) {
 			let keys = Object.keys(values);
+			value = String(value);
 
 			if (params.numeric_sort)
 				keys = keys.sort((a,b) => a - b);

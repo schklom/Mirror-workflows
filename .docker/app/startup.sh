@@ -3,6 +3,16 @@
 # this script initializes the working copy on a persistent volume and starts PHP FPM
 #
 
+# helper to run git commands as the 'app' user while preserving proxy environment variables
+git_as_app() {
+    sudo -u app \
+      HTTP_PROXY="${HTTP_PROXY:-}" http_proxy="${http_proxy:-}" \
+      HTTPS_PROXY="${HTTPS_PROXY:-}" https_proxy="${https_proxy:-}" \
+      NO_PROXY="${NO_PROXY:-}" no_proxy="${no_proxy:-}" \
+      ALL_PROXY="${ALL_PROXY:-}" all_proxy="${all_proxy:-}" \
+      git "$@"
+}
+
 # TODO this should do a reasonable amount of attempts and terminate with an error
 while ! pg_isready -h $TTRSS_DB_HOST -U $TTRSS_DB_USER -p $TTRSS_DB_PORT; do
 	echo waiting until $TTRSS_DB_HOST is ready...
@@ -111,7 +121,7 @@ if [ -z "$TTRSS_NO_STARTUP_PLUGIN_UPDATES" ]; then
 
 			# Unless disallowed, migrate plugins in 'plugins.local' that were pulling from repos on tt-rss.org to their GitHub equivalent.
 			if [ -z "$SKIP_LEGACY_ORIGIN_REPLACE" ]; then
-				ORIGIN_URL=$(sudo -u app git config --get remote.origin.url)
+				ORIGIN_URL=$(git_as_app config --get remote.origin.url)
 
 				case "$ORIGIN_URL" in
 					https://git.tt-rss.org/fox/ttrss-*.git)
@@ -132,21 +142,21 @@ if [ -z "$TTRSS_NO_STARTUP_PLUGIN_UPDATES" ]; then
 				esac
 
 				if [ -n "$NEW_ORIGIN_URL" ]; then
-					case $(sudo -u app git branch --show-current) in
+					case $(git_as_app branch --show-current) in
 						master)
 							echo "Migrating origin remote from ${ORIGIN_URL} to ${NEW_ORIGIN_URL} (and switching the branch from 'master' to 'main')"
-							sudo -u app git remote set-url origin "$NEW_ORIGIN_URL"
-							sudo -u app git branch -m master main
-							sudo -u app git fetch origin
-							sudo -u app git branch --set-upstream-to origin/main main
-							sudo -u app git remote set-head origin --auto
+							git_as_app remote set-url origin "$NEW_ORIGIN_URL"
+							git_as_app branch -m master main
+							git_as_app fetch origin
+							git_as_app branch --set-upstream-to origin/main main
+							git_as_app remote set-head origin --auto
 							;;
 						main)
 							echo "Migrating origin remote from ${ORIGIN_URL} to ${NEW_ORIGIN_URL}"
-							sudo -u app git remote set-url origin "$NEW_ORIGIN_URL"
-							sudo -u app git fetch origin
-							sudo -u app git branch --set-upstream-to origin/main main
-							sudo -u app git remote set-head origin --auto
+							git_as_app remote set-url origin "$NEW_ORIGIN_URL"
+							git_as_app fetch origin
+							git_as_app branch --set-upstream-to origin/main main
+							git_as_app remote set-head origin --auto
 							;;
 						*)
 							echo "Skipping migration of origin remote from ${ORIGIN_URL} to ${NEW_ORIGIN_URL} (local branch is not 'master' or 'main')"
@@ -155,9 +165,9 @@ if [ -z "$TTRSS_NO_STARTUP_PLUGIN_UPDATES" ]; then
 				fi
 			fi
 
-			sudo -u app git config core.filemode false && \
-			sudo -u app git config pull.rebase false && \
-			sudo -u app git pull origin main || sudo -u app git pull origin master || echo warning: attempt to update plugin $PLUGIN failed.
+			git_as_app config core.filemode false && \
+			git_as_app config pull.rebase false && \
+			git_as_app pull origin main || git_as_app pull origin master || echo warning: attempt to update plugin $PLUGIN failed.
 		fi
 	done
 else

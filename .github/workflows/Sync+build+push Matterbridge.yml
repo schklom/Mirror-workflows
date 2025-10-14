@@ -46,7 +46,7 @@ jobs:
       - name: Remove everything under .github/ because I don't need it
         run: rm -rf .github
       - name: Commit and push the change
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: Add last_sync_with_original_repo_commit_id and delete .github/
   

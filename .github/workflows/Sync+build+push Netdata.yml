@@ -58,7 +58,7 @@ jobs:
         run: git ls-remote https://github.com/netdata/netdata.git HEAD | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
       # https://github.com/marketplace/actions/git-auto-commit
       - name: pushing web Dockerfile changes to main branch
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           # Optional but recommended
           # Defaults to "Apply automatic changes"

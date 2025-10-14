@@ -66,7 +66,7 @@ jobs:
       - name: get most recent commit id on original repo, for next comparison on sync
         run: git ls-remote "${{ needs.parameters.outputs.REMOTE_REPOSITORY_1 }}" "${{ needs.parameters.outputs.REMOTE_REPOSITORY_1_BRANCH }}" | awk '{ print $1 }' > last_sync_with_original_repo_commit_id
       - name: Commit and push the change
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: Add last_sync_with_original_repo_commit_id
 

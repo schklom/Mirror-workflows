@@ -166,7 +166,7 @@ const	Filters = {
 					title: ruleStr ? __("Edit rule") : __("Add rule"),
 					execute: function () {
 						if (this.validate()) {
-							dialog.insertRule(App.byId("filterDlg_Matches"), replaceNode);
+							dialog.insertRule(document.getElementById("filterDlg_Matches"), replaceNode);
 							this.hide();
 						}
 					},
@@ -262,7 +262,7 @@ const	Filters = {
 					},
 					execute: function () {
 						if (this.validate()) {
-							dialog.insertAction(App.byId("filterDlg_Actions"), replaceNode);
+							dialog.insertAction(document.getElementById("filterDlg_Actions"), replaceNode);
 							this.hide();
 						}
 					},

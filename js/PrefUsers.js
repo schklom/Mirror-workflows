@@ -5,7 +5,7 @@
 const	Users = {
 	reload: function(sort) {
 		return new Promise((resolve, reject) => {
-			const user_search = App.byId("user_search");
+			const user_search = document.getElementById("user_search");
 			const search = user_search ? user_search.value : "";
 
 			xhr.post("backend.php", { op: "Pref_Users", sort: sort, search: search }, (reply) => {

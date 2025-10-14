@@ -52,7 +52,7 @@ Plugins.Shorten_Expanded = {
 		this.observer.observe(row);
 	},
 	expand: function(id) {
-		const row = App.byId(id);
+		const row = document.getElementById(id);
 
 		if (row) {
 			const link = row.querySelector('.expand-prompt');

@@ -116,7 +116,7 @@ const	CommonDialogs = {
 								</form>
 							`,
 							show_error: function (msg, additional_info) {
-								const elem = App.byId("fadd_error_message");
+								const elem = document.getElementById("fadd_error_message");
 
 								elem.innerHTML = `${msg}${additional_info ? `<br><br><h4>${__('Additional information')}</h4>${additional_info}` : ''}`;
 

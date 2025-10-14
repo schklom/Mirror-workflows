@@ -239,7 +239,7 @@ const Headlines = {
 
 					Headlines.select('none');
 
-					const scroll_position_A = App.byId(`RROW-${id}`).offsetTop - App.byId("headlines-frame").scrollTop;
+					const scroll_position_A = document.getElementById(`RROW-${id}`).offsetTop - document.getElementById("headlines-frame").scrollTop;
 
 					Article.setActive(id);
 
@@ -250,10 +250,10 @@ const Headlines = {
 
 						Headlines.toggleUnread(id, 0);
 					} else {
-						const scroll_position_B = App.byId(`RROW-${id}`).offsetTop - App.byId("headlines-frame").scrollTop;
+						const scroll_position_B = document.getElementById(`RROW-${id}`).offsetTop - document.getElementById("headlines-frame").scrollTop;
 
 						// this would only work if there's enough space
-						App.byId("headlines-frame").scrollTop -= scroll_position_A-scroll_position_B;
+						document.getElementById("headlines-frame").scrollTop -= scroll_position_A-scroll_position_B;
 
 						if (this.default_move_on_expand)
 							Article.cdmMoveToId(id);
@@ -280,7 +280,7 @@ const Headlines = {
 		return false;
 	},
 	initScrollHandler: function () {
-		App.byId("headlines-frame").onscroll = (event) => {
+		document.getElementById("headlines-frame").onscroll = (event) => {
 			clearTimeout(this._headlines_scroll_timeout);
 			this._headlines_scroll_timeout = window.setTimeout(function () {
 				//console.log('done scrolling', event);
@@ -317,7 +317,7 @@ const Headlines = {
 		Feeds.open({feed: Feeds.getActive(), is_cat: Feeds.activeIsCat(), offset: offset, append: true});
 	},
 	isChildVisible: function (elem) {
-		return App.Scrollable.isChildVisible(elem, App.byId("headlines-frame"));
+		return App.Scrollable.isChildVisible(elem, document.getElementById("headlines-frame"));
 	},
 	firstVisible: function () {
 		const rows = document.querySelectorAll('#headlines-frame > div[id*=RROW]');
@@ -343,8 +343,8 @@ const Headlines = {
 	scrollHandler: function (/*event*/) {
 		try {
 			if (!Feeds.infscroll_disabled && !Feeds.infscroll_in_progress) {
-				const hsp = App.byId("headlines-spacer");
-				const container = App.byId("headlines-frame");
+				const hsp = document.getElementById("headlines-spacer");
+				const container = document.getElementById("headlines-frame");
 
 				if (hsp && hsp.previousSibling) {
 					const last_row = hsp.previousSibling;
@@ -361,7 +361,7 @@ const Headlines = {
 			}
 
 			if (App.isCombinedMode() && App.getInitParam("cdm_expanded")) {
-				const container = App.byId("headlines-frame")
+				const container = document.getElementById("headlines-frame")
 
 				/* don't do anything until there was some scrolling */
 				if (container.scrollTop > 0)
@@ -375,7 +375,7 @@ const Headlines = {
 				for (let i = 0; i < rows.length; i++) {
 					const row = rows[i];
 
-					if (App.byId("headlines-frame").scrollTop > (row.offsetTop + row.offsetHeight / 2)) {
+					if (document.getElementById("headlines-frame").scrollTop > (row.offsetTop + row.offsetHeight / 2)) {
 						row.classList.remove('Unread');
 					} else {
 						break;
@@ -393,7 +393,7 @@ const Headlines = {
 		return this.headlines[id];
 	},
 	setCommonClasses: function (headlines_count) {
-		const container = App.byId("headlines-frame");
+		const container = document.getElementById("headlines-frame");
 
 		container.classList.remove('cdm', 'normal');
 
@@ -404,10 +404,10 @@ const Headlines = {
 		container.setAttribute("data-is-cdm-expanded", App.getInitParam("cdm_expanded"));
 
 		// for floating title because it's placed outside of headlines-frame
-		App.byId('main').classList.remove('expandable', 'expanded');
+		document.getElementById('main').classList.remove('expandable', 'expanded');
 
 		if (App.isCombinedMode())
-			App.byId('main').classList.add(App.getInitParam('cdm_expanded') ? 'expanded' : 'expandable');
+			document.getElementById('main').classList.add(App.getInitParam('cdm_expanded') ? 'expanded' : 'expandable');
 	},
 	renderAgain: function () {
 		// TODO: wrap headline elements into a knockoutjs model to prevent all this stuff
@@ -476,7 +476,7 @@ const Headlines = {
 			const tmp = document.createElement("div");
 			tmp.innerHTML = vgrhdr;
 
-			App.byId("headlines-frame").appendChild(tmp.firstChild);
+			document.getElementById("headlines-frame").appendChild(tmp.firstChild);
 
 			this.vgroup_last_feed = hl.feed_id;
 		}
@@ -609,11 +609,11 @@ const Headlines = {
 		return tmp.firstChild;
 	},
 	updateCurrentUnread: function () {
-		if (App.byId("feed_current_unread")) {
+		if (document.getElementById("feed_current_unread")) {
 			const feed_unread = Feeds.getUnread(Feeds.getActive(), Feeds.activeIsCat());
 
 			if (feed_unread > 0 && !Element.visible("feeds-holder")) {
-				App.byId("feed_current_unread").innerText = feed_unread;
+				document.getElementById("feed_current_unread").innerText = feed_unread;
 				Element.show("feed_current_unread");
 			} else {
 				Element.hide("feed_current_unread");
@@ -762,18 +762,18 @@ const Headlines = {
 				Headlines.setCommonClasses(headlines_count);
 
 				/** TODO: remove @deprecated */
-				App.byId("headlines-frame").setAttribute("is-vfeed",
+				document.getElementById("headlines-frame").setAttribute("is-vfeed",
 					reply['headlines']['is_vfeed'] ? 1 : 0);
 
-				App.byId("headlines-frame").setAttribute("data-is-vfeed",
+				document.getElementById("headlines-frame").setAttribute("data-is-vfeed",
 					reply['headlines']['is_vfeed'] ? "true" : "false");
 
 				Article.setActive(0);
 
 				try {
-					App.byId('headlines-frame').classList.remove('smooth-scroll');
-					App.byId('headlines-frame').scrollTop = 0;
-					App.byId('headlines-frame').classList.add('smooth-scroll');
+					document.getElementById('headlines-frame').classList.remove('smooth-scroll');
+					document.getElementById('headlines-frame').scrollTop = 0;
+					document.getElementById('headlines-frame').classList.add('smooth-scroll');
 				} catch (e) {
 					console.warn(e);
 				}
@@ -781,27 +781,27 @@ const Headlines = {
 				this.headlines = [];
 				this.vgroup_last_feed = undefined;
 
-				/*dojo.html.set(App.byId("toolbar-headlines"),
+				/*dojo.html.set(document.getElementById("toolbar-headlines"),
 					reply['headlines']['toolbar'],
 					{parseContent: true});*/
 
 				Headlines.renderToolbar(reply['headlines']);
 
 				if (typeof reply['headlines']['content'] === 'string') {
-					App.byId("headlines-frame").innerHTML = reply['headlines']['content'];
+					document.getElementById("headlines-frame").innerHTML = reply['headlines']['content'];
 				} else {
-					App.byId("headlines-frame").innerHTML = '';
+					document.getElementById("headlines-frame").innerHTML = '';
 
 					for (let i = 0; i < reply['headlines']['content'].length; i++) {
 						const hl = reply['headlines']['content'][i];
 
-						App.byId("headlines-frame").appendChild(this.render(reply['headlines'], hl));
+						document.getElementById("headlines-frame").appendChild(this.render(reply['headlines'], hl));
 
 						this.headlines[parseInt(hl.id)] = hl;
 					}
 				}
 
-				let hsp = App.byId("headlines-spacer");
+				let hsp = document.getElementById("headlines-spacer");
 
 				if (!hsp) {
 					hsp = document.createElement("div");
@@ -821,7 +821,7 @@ const Headlines = {
 
 				/*
 				if (Feeds._search_query) {
-					App.byId("feed_title").innerHTML += "<span id='cancel_search'>" +
+					document.getElementById("feed_title").innerHTML += "<span id='cancel_search'>" +
 						" (<a href='#' onclick='Feeds.cancelSearch()'>" + __("Cancel search") + "</a>)" +
 						"</span>";
 				} */
@@ -831,7 +831,7 @@ const Headlines = {
 			} else if (headlines_count > 0 && feed_id === Feeds.getActive() && is_cat === Feeds.activeIsCat()) {
 				const c = dijit.byId("headlines-frame");
 
-				let hsp = App.byId("headlines-spacer");
+				let hsp = document.getElementById("headlines-spacer");
 
 				if (hsp)
 					c.domNode.removeChild(hsp);
@@ -839,13 +839,13 @@ const Headlines = {
 				let headlines_appended = 0;
 
 				if (typeof reply['headlines']['content'] === 'string') {
-					App.byId("headlines-frame").innerHTML = reply['headlines']['content'];
+					document.getElementById("headlines-frame").innerHTML = reply['headlines']['content'];
 				} else {
 					for (let i = 0; i < reply['headlines']['content'].length; i++) {
 						const hl = reply['headlines']['content'][i];
 
 						if (!this.headlines[parseInt(hl.id)]) {
-							App.byId("headlines-frame").appendChild(this.render(reply['headlines'], hl));
+							document.getElementById("headlines-frame").appendChild(this.render(reply['headlines'], hl));
 
 							this.headlines[parseInt(hl.id)] = hl;
 							++headlines_appended;
@@ -880,7 +880,7 @@ const Headlines = {
 
 				console.log("no headlines received, infscroll_disabled=", Feeds.infscroll_disabled, 'first_id_changed=', first_id_changed);
 
-				const hsp = App.byId("headlines-spacer");
+				const hsp = document.getElementById("headlines-spacer");
 
 				if (hsp) {
 					if (first_id_changed) {
@@ -948,7 +948,7 @@ const Headlines = {
 		}
 
 		ids.forEach((id) => {
-			const row = App.byId(`RROW-${id}`);
+			const row = document.getElementById(`RROW-${id}`);
 
 			if (row) {
 				switch (cmode) {
@@ -987,11 +987,11 @@ const Headlines = {
 		ids.forEach(id => this.togglePub(id));
 	},
 	toggleMark: function (id) {
-		App.byId(`RROW-${id}`)?.classList.toggle('marked');
+		document.getElementById(`RROW-${id}`)?.classList.toggle('marked');
 
 	},
 	togglePub: function (id) {
-		App.byId(`RROW-${id}`)?.classList.toggle('published');
+		document.getElementById(`RROW-${id}`)?.classList.toggle('published');
 	},
 	move: function (mode, params = {}) {
 		const no_expand = params.no_expand || false;
@@ -1002,7 +1002,7 @@ const Headlines = {
 		let next_id = false;
 		let current_id = Article.getActive();
 
-		if (!Headlines.isChildVisible(App.byId(`RROW-${current_id}`))) {
+		if (!Headlines.isChildVisible(document.getElementById(`RROW-${current_id}`))) {
 			console.log('active article is obscured, resetting to first visible...');
 			current_id = Headlines.firstVisible();
 			prev_id = current_id;
@@ -1041,15 +1041,15 @@ const Headlines = {
 				}
 			} else if (App.isCombinedMode()) {
 				// try to show hsp if no next article exists, in case there's useful information like first_id_changed etc
-				const row = App.byId(`RROW-${current_id}`);
-				const ctr = App.byId("headlines-frame");
+				const row = document.getElementById(`RROW-${current_id}`);
+				const ctr = document.getElementById("headlines-frame");
 
 				if (row) {
 					const next = row.nextSibling;
 
 					// hsp has half-screen height in auto catchup mode therefore we use its first child (normally A element)
 					if (next && Element.visible(next) && next.id === "headlines-spacer" && next.firstChild) {
-						const offset = App.byId("headlines-spacer").offsetTop - App.byId("headlines-frame").offsetHeight + next.firstChild.offsetHeight;
+						const offset = document.getElementById("headlines-spacer").offsetTop - document.getElementById("headlines-frame").offsetHeight + next.firstChild.offsetHeight;
 
 						// don't jump back either
 						if (ctr.scrollTop < offset)
@@ -1061,8 +1061,8 @@ const Headlines = {
 			if (prev_id || current_id) {
 				if (App.isCombinedMode()) {
 					window.requestAnimationFrame(() => {
-						const row = App.byId(`RROW-${current_id}`);
-						const ctr = App.byId("headlines-frame");
+						const row = document.getElementById(`RROW-${current_id}`);
+						const ctr = document.getElementById("headlines-frame");
 						const delta_px = Math.round(row.offsetTop) - Math.round(ctr.scrollTop);
 
 						console.log('moving back, delta_px', delta_px);
@@ -1083,7 +1083,7 @@ const Headlines = {
 	},
 	updateSelectedPrompt: function () {
 		const count = Headlines.getSelected().length;
-		const elem = App.byId("selected_prompt");
+		const elem = document.getElementById("selected_prompt");
 
 		if (elem) {
 			elem.innerHTML = ngettext("%d article selected",
@@ -1093,7 +1093,7 @@ const Headlines = {
 		}
 	},
 	toggleUnread: function (id, cmode) {
-		const row = App.byId(`RROW-${id}`);
+		const row = document.getElementById(`RROW-${id}`);
 
 		if (row) {
 			if (typeof cmode === "undefined") cmode = 2;
@@ -1316,7 +1316,7 @@ const Headlines = {
 		if (!below) {
 			for (let i = 0; i < visible_ids.length; i++) {
 				if (visible_ids[i] !== id) {
-					const e = App.byId(`RROW-${visible_ids[i]}`);
+					const e = document.getElementById(`RROW-${visible_ids[i]}`);
 
 					if (e && e.classList.contains('Unread')) {
 						ids_to_mark.push(visible_ids[i]);
@@ -1328,7 +1328,7 @@ const Headlines = {
 		} else {
 			for (let i = visible_ids.length - 1; i >= 0; i--) {
 				if (visible_ids[i] !== id) {
-					const e = App.byId(`RROW-${visible_ids[i]}`);
+					const e = document.getElementById(`RROW-${visible_ids[i]}`);
 
 					if (e && e.classList.contains('Unread')) {
 						ids_to_mark.push(visible_ids[i]);
@@ -1347,7 +1347,7 @@ const Headlines = {
 			if (App.getInitParam("confirm_feed_catchup") !== 1 || confirm(msg)) {
 
 				for (let i = 0; i < ids_to_mark.length; i++) {
-					const e = App.byId(`RROW-${ids_to_mark[i]}`);
+					const e = document.getElementById(`RROW-${ids_to_mark[i]}`);
 					e.classList.remove('Unread');
 				}
 			}
@@ -1379,8 +1379,8 @@ const Headlines = {
 		}
 	},
 	scrollToArticleId: function (id) {
-		const container = App.byId("headlines-frame");
-		const row = App.byId(`RROW-${id}`);
+		const container = document.getElementById("headlines-frame");
+		const row = document.getElementById(`RROW-${id}`);
 
 		if (!container || !row) return;
 
@@ -1525,10 +1525,10 @@ const Headlines = {
 		}
 	},
 	scrollByPages: function (page_offset) {
-		App.Scrollable.scrollByPages(App.byId("headlines-frame"), page_offset);
+		App.Scrollable.scrollByPages(document.getElementById("headlines-frame"), page_offset);
 	},
 	scroll: function (offset) {
-		App.Scrollable.scroll(App.byId("headlines-frame"), offset);
+		App.Scrollable.scroll(document.getElementById("headlines-frame"), offset);
 	},
 	initHeadlinesMenu: function () {
 		if (!dijit.byId("headlinesMenu")) {

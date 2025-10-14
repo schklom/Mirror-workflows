@@ -144,7 +144,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 			return (!item || this.model.store.getValue(item, 'type') === 'category') ? (opened ? "dijitFolderOpened" : "dijitFolderClosed") : "feed-icon";
 		},
 		reload: function() {
-			const searchElem = App.byId("feed_search");
+			const searchElem = document.getElementById("feed_search");
 			const search = (searchElem) ? searchElem.value : "";
 
 			xhr.post("backend.php", { op: "Pref_Feeds", search: search }, (reply) => {

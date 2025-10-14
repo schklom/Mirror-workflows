@@ -16,12 +16,6 @@ function ngettext(msg1, msg2, n) {
 	return __((parseInt(n) > 1) ? msg2 : msg1);
 }
 
-/* exported $ */
-function $(id) {
-	console.warn("FIXME: please use App.byId() or document.getElementById() instead of $():", id);
-	return document.getElementById(id);
-}
-
 // polyfill for safari https://raw.githubusercontent.com/pladaria/requestidlecallback-polyfill/master/index.js
 window.requestIdleCallback =
 	window.requestIdleCallback ||
@@ -364,7 +358,7 @@ const Notify = {
 		kind = kind || this.KIND_GENERIC;
 		keep = keep || false;
 
-		const notify = App.byId("notify");
+		const notify = document.getElementById("notify");
 
 		window.clearTimeout(this.timeout);
 

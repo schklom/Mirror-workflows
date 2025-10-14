@@ -140,9 +140,6 @@ const App = {
          }
       }
    },
-   byId: function(id) {
-      return document.getElementById(id);
-   },
    find: function(query) {
       return document.querySelector(query)
    },
@@ -190,12 +187,12 @@ const App = {
 		}
 	},
 	setupNightModeDetection: function(callback) {
-		if (!App.byId("theme_css")) {
+		if (!document.getElementById("theme_css")) {
 			const mql = window.matchMedia('(prefers-color-scheme: dark)');
 
 			try {
 				mql.addEventListener("change", () => {
-					this.nightModeChanged(mql.matches, App.byId("theme_auto_css"));
+					this.nightModeChanged(mql.matches, document.getElementById("theme_auto_css"));
 				});
 			} catch {
 				console.warn("exception while trying to set MQL event listener");
@@ -295,7 +292,7 @@ const App = {
 			dijit.byId("loading_bar").update({progress: this._loading_progress});
 
 		if (this._loading_progress >= 90) {
-			App.byId("overlay").hide();
+			document.getElementById("overlay").hide();
 		}
 
 	},
@@ -352,7 +349,7 @@ const App = {
 		if (!this.hotkey_prefix && hotkeys_map[0].indexOf(keychar) !== -1) {
 
 			this.hotkey_prefix = keychar;
-			App.byId("cmdline").innerHTML = keychar;
+			document.getElementById("cmdline").innerHTML = keychar;
 			Element.show("cmdline");
 
 			window.clearTimeout(this.hotkey_prefix_timeout);
@@ -562,7 +559,7 @@ const App = {
                   break;
                case "cdm_auto_catchup":
                   {
-                     const headlines = App.byId("headlines-frame");
+                     const headlines = document.getElementById("headlines-frame");
 
                   // we could be in preferences
                      if (headlines)
@@ -873,7 +870,7 @@ const App = {
          .then((reply) => {
             console.log('update reply', reply);
 
-            const icon = App.byId("updates-available");
+            const icon = document.getElementById("updates-available");
 
             if (reply.changeset.id || reply.plugins.length > 0) {
                icon.show();
@@ -933,7 +930,7 @@ const App = {
 		this._widescreen_mode = wide;
 
       const article_id = Article.getActive();
-      const headlines_frame = App.byId("headlines-frame");
+      const headlines_frame = document.getElementById("headlines-frame");
       const content_insert = dijit.byId("content-insert");
 
       // TODO: setStyle stuff should probably be handled by CSS
@@ -1238,7 +1235,7 @@ const App = {
 			this.hotkey_actions['select_article_cursor'] = () => {
 				const id = Article.getUnderPointer();
 				if (id)
-					App.byId(`RROW-${id}`)?.classList.toggle('Selected');
+					document.getElementById(`RROW-${id}`)?.classList.toggle('Selected');
 			};
          this.hotkey_actions["create_label"] = () => {
             CommonDialogs.addLabel();

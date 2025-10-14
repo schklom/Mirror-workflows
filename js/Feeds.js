@@ -227,7 +227,7 @@ const	Feeds = {
 				dojo.disconnect(tmph);
 			});
 
-			App.byId("feeds-holder").appendChild(tree.domNode);
+			document.getElementById("feeds-holder").appendChild(tree.domNode);
 
 			const tmph2 = dojo.connect(tree, 'onLoad', function () {
 				dojo.disconnect(tmph2);
@@ -247,13 +247,13 @@ const	Feeds = {
 		}
 	},
 	onHide: function() {
-		App.byId("feeds-holder_splitter").hide();
+		document.getElementById("feeds-holder_splitter").hide();
 
 		dijit.byId("main").resize();
 		Headlines.updateCurrentUnread();
 	},
 	onShow: function() {
-		App.byId("feeds-holder_splitter").show();
+		document.getElementById("feeds-holder_splitter").show();
 
 		dijit.byId("main").resize();
 		Headlines.updateCurrentUnread();
@@ -261,7 +261,7 @@ const	Feeds = {
 	init: function() {
 		console.log("in feedlist init");
 
-		this._feeds_holder_observer.observe(App.byId("feeds-holder"));
+		this._feeds_holder_observer.observe(document.getElementById("feeds-holder"));
 
 		App.setLoadingProgress(50);
 
@@ -350,7 +350,7 @@ const	Feeds = {
 		this._active_feed_id = id;
 		this._active_feed_is_cat = is_cat;
 
-		const container = App.byId("headlines-frame");
+		const container = document.getElementById("headlines-frame");
 
 		// TODO @deprecated: these two should be removed (replaced with data- attributes below)
 		container.setAttribute("feed-id", id);

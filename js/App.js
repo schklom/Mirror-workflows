@@ -146,9 +146,6 @@ const App = {
    find: function(query) {
       return document.querySelector(query)
    },
-   findAll: function(query) {
-      return document.querySelectorAll(query);
-   },
    dialogOf: function (elem) {
 
       // elem could be a Dijit widget
@@ -408,7 +405,7 @@ const App = {
 			dojo.destroy(d.domNode);
 		});
 
-		App.findAll("#" + root + " *").forEach(function (i) {
+		document.querySelectorAll(`#${root} *`).forEach(function (i) {
 			i.parentNode ? i.parentNode.removeChild(i) : true;
 		});
    },

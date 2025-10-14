@@ -290,8 +290,8 @@ const Headlines = {
 	},
 	loadMore: function () {
 		const view_mode = dijit.byId("toolbar-main").getValues().view_mode;
-		const unread_in_buffer = App.findAll("#headlines-frame > div[id*=RROW][class*=Unread]").length;
-		const num_all = App.findAll("#headlines-frame > div[id*=RROW]").length;
+		const unread_in_buffer = document.querySelectorAll('#headlines-frame > div[id*=RROW][class*=Unread]').length;
+		const num_all = document.querySelectorAll('#headlines-frame > div[id*=RROW]').length;
 		const num_unread = Feeds.getUnread(Feeds.getActive(), Feeds.activeIsCat());
 
 		// TODO implement marked & published
@@ -320,7 +320,7 @@ const Headlines = {
 		return App.Scrollable.isChildVisible(elem, App.byId("headlines-frame"));
 	},
 	firstVisible: function () {
-		const rows = App.findAll("#headlines-frame > div[id*=RROW]");
+		const rows = document.querySelectorAll('#headlines-frame > div[id*=RROW]');
 
 		for (let i = 0; i < rows.length; i++) {
 			const row = rows[i];
@@ -331,7 +331,7 @@ const Headlines = {
 		}
 	},
 	unpackVisible: function(container) {
-		const rows = App.findAll("#headlines-frame > div[id*=RROW][data-content].cdm");
+		const rows = document.querySelectorAll('#headlines-frame > div[id*=RROW][data-content].cdm');
 
 		for (let i = 0; i < rows.length; i++) {
 			if (App.Scrollable.isChildVisible(rows[i], container)) {
@@ -370,7 +370,7 @@ const Headlines = {
 
 			if (App.getInitParam("cdm_auto_catchup")) {
 
-				const rows = App.findAll("#headlines-frame > div[id*=RROW][class*=Unread]");
+				const rows = document.querySelectorAll('#headlines-frame > div[id*=RROW][class*=Unread]');
 
 				for (let i = 0; i < rows.length; i++) {
 					const row = rows[i];
@@ -413,7 +413,7 @@ const Headlines = {
 		// TODO: wrap headline elements into a knockoutjs model to prevent all this stuff
 		Headlines.setCommonClasses(this.headlines.filter((h) => h.id).length);
 
-		App.findAll("#headlines-frame > div[id*=RROW]").forEach((row) => {
+		document.querySelectorAll('#headlines-frame > div[id*=RROW]').forEach((row) => {
 			const id = parseInt(row.getAttribute('data-article-id'));
 			const hl = this.headlines[id];
 
@@ -436,16 +436,16 @@ const Headlines = {
 			}
 		});
 
-		App.findAll(".cdm .header-sticky-guard").forEach((e) => {
+		document.querySelectorAll('.cdm .header-sticky-guard').forEach((e) => {
 			this.sticky_header_observer.observe(e)
 		});
 
-		App.findAll(".cdm .content").forEach((e) => {
+		document.querySelectorAll('.cdm .content').forEach((e) => {
 			this.sticky_content_observer.observe(e)
 		});
 
 		if (App.getInitParam("cdm_expanded"))
-			App.findAll("#headlines-frame > div[id*=RROW].cdm").forEach((e) => {
+			document.querySelectorAll('#headlines-frame > div[id*=RROW].cdm').forEach((e) => {
 				this.unpack_observer.observe(e)
 			});
 
@@ -893,16 +893,16 @@ const Headlines = {
 				}
 			}
 
-			App.findAll(".cdm .header-sticky-guard").forEach((e) => {
+			document.querySelectorAll('.cdm .header-sticky-guard').forEach((e) => {
 				this.sticky_header_observer.observe(e)
 			});
 
-			App.findAll(".cdm .content").forEach((e) => {
+			document.querySelectorAll('.cdm .content').forEach((e) => {
 				this.sticky_content_observer.observe(e)
 			});
 
-			if (App.getInitParam("cdm_expanded"))
-				App.findAll("#headlines-frame > div[id*=RROW].cdm").forEach((e) => {
+			if (App.getInitParam('cdm_expanded'))
+				document.querySelectorAll('#headlines-frame > div[id*=RROW].cdm').forEach((e) => {
 					this.unpack_observer.observe(e)
 				});
 
@@ -1176,8 +1176,8 @@ const Headlines = {
 		});
 	},
 	getSelected: function () {
-		const selected = App.findAll("#headlines-frame > div[id*=RROW][class*=Selected]")
-			.map(child => parseInt(child.getAttribute('data-article-id')));
+		const selected = Array.from(document.querySelectorAll('#headlines-frame > div[id*=RROW][class*=Selected]'),
+			child => parseInt(child.getAttribute('data-article-id')));
 
 		const active = Article.getActive();
 
@@ -1189,7 +1189,7 @@ const Headlines = {
 	getLoaded: function () {
 		const rv = [];
 
-		const children = App.findAll("#headlines-frame > div[id*=RROW-]");
+		const children = document.querySelectorAll('#headlines-frame > div[id*=RROW-]');
 
 		children.forEach(function (child) {
 			if (Element.visible(child)) {
@@ -1218,7 +1218,7 @@ const Headlines = {
 		if (start === stop)
 			return [start];
 
-		const rows = App.findAll("#headlines-frame > div[id*=RROW]");
+		const rows = document.querySelectorAll('#headlines-frame > div[id*=RROW]');
 		const results = [];
 		let collecting = false;
 
@@ -1265,7 +1265,7 @@ const Headlines = {
 				console.warn("select: unknown mode", mode);
 		}
 
-		App.findAll(query).forEach((row) => {
+		document.querySelectorAll(query).forEach((row) => {
 
 			switch (mode) {
 				case 'none':
@@ -1359,7 +1359,7 @@ const Headlines = {
 				this.headlines[data.id].tags = data.tags;
 			}
 
-			App.findAll(`span[data-tags-for="${data.id}"`).forEach((ctr) => {
+			document.querySelectorAll(`span[data-tags-for="${data.id}"`).forEach((ctr) => {
 				ctr.innerHTML = Article.renderTags(data.id, data.tags);
 			});
 		}
@@ -1372,7 +1372,7 @@ const Headlines = {
 					this.headlines[row.id].labels = row.labels;
 				}
 
-				App.findAll(`span[data-labels-for="${row.id}"]`).forEach((ctr) => {
+				document.querySelectorAll(`span[data-labels-for="${row.id}"]`).forEach((ctr) => {
 					ctr.innerHTML = Article.renderLabels(row.id, row.labels);
 				});
 			});

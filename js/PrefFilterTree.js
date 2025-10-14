@@ -111,7 +111,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			});
 		},
 		hideOrShowFilterRules(hide) {
-			App.findAll("body")[0].setAttribute("hide-filter-rules", !!hide);
+			document.body.setAttribute('hide-filter-rules', !!hide);
 		},
 		toggleRules: function() {
 			const hide = !parseInt(localStorage.getItem("ttrss:hide-filter-rules"));

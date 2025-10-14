@@ -22,12 +22,6 @@ function $(id) {
 	return document.getElementById(id);
 }
 
-/* exported $$ */
-function $$(query) {
-	console.warn("FIXME: please use App.findAll() or document.querySelectorAll() instead of $$():", query);
-	return document.querySelectorAll(query);
-}
-
 // polyfill for safari https://raw.githubusercontent.com/pladaria/requestidlecallback-polyfill/master/index.js
 window.requestIdleCallback =
 	window.requestIdleCallback ||

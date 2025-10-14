@@ -425,7 +425,7 @@ const Article = {
 		if (id !== Article.getActive()) {
 			console.log("setActive", id, "was", Article.getActive());
 
-			App.findAll("div[id*=RROW][class*=active]").forEach((row) => {
+			document.querySelectorAll('div[id*=RROW][class*=active]').forEach((row) => {
 				row.classList.remove('active');
 
 				if (App.isCombinedMode() && !App.getInitParam("cdm_expanded"))

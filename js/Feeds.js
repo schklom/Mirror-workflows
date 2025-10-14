@@ -383,8 +383,8 @@ const	Feeds = {
 		if (tree)
 			return tree.hideRead(hide, App.getInitParam("hide_read_shows_special"));*/
 
-		App.findAll("body")[0].setAttribute("hide-read-feeds", !!hide);
-		App.findAll("body")[0].setAttribute("hide-read-shows-special", !!App.getInitParam("hide_read_shows_special"));
+		document.body.setAttribute('hide-read-feeds', !!hide);
+		document.body.setAttribute('hide-read-shows-special', !!App.getInitParam('hide_read_shows_special'));
 	},
 	open: function(params) {
 		const feed = params.feed;
@@ -531,12 +531,8 @@ const	Feeds = {
 		const str = __("Mark all articles in %s as read?").replace("%s", title);
 
 		if (App.getInitParam("confirm_feed_catchup") !== 1 || confirm(str)) {
-
-			const rows = App.findAll("#headlines-frame > div[id*=RROW][class*=Unread][data-orig-feed-id='" + id + "']");
-
-			rows.forEach((row) => {
-				row.classList.remove('Unread');
-			})
+			document.querySelectorAll("#headlines-frame > div[id*=RROW][class*=Unread][data-orig-feed-id='" + id + "']")
+				.forEach(row => row.classList.remove('Unread'));
 		}
 	},
 	getUnread: function(feed, is_cat) {

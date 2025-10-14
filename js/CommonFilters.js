@@ -374,14 +374,10 @@ const	Filters = {
 				this.editRule();
 			},
 			deleteAction: function () {
-				App.findAll("#filterDlg_Actions li[class*=Selected]").forEach(function (e) {
-					e.parentNode.removeChild(e)
-				});
+				document.querySelectorAll('#filterDlg_Actions li[class*=Selected]').forEach(e => e.parentNode.removeChild(e));
 			},
 			deleteRule: function () {
-				App.findAll("#filterDlg_Matches li[class*=Selected]").forEach(function (e) {
-					e.parentNode.removeChild(e)
-				});
+				document.querySelectorAll('#filterDlg_Matches li[class*=Selected]').forEach(e => e.parentNode.removeChild(e));
 			},
 			execute: function () {
 				if (this.validate()) {

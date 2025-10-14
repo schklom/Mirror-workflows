@@ -217,21 +217,22 @@ const xhr = {
 
 				console.log('xhr.json', '<<<', obj, (new Date().getTime() - xhr._ts) + " ms");
 
-			if (obj && typeof App !== "undefined")
-				if (!App.handleRpcJson(obj)) {
+				if (obj && typeof App !== 'undefined') {
+					if (!App.handleRpcJson(obj)) {
 
-					if (typeof failed === 'function')
-						failed(obj);
+						if (typeof failed === 'function')
+							failed(obj);
 
-					reject(obj);
-					return;
+						reject(obj);
+						return;
+					}
 				}
 
-			if (typeof complete === 'function')
-				complete(obj);
+				if (typeof complete === 'function')
+					complete(obj);
 
-			resolve(obj);
-		}));
+				resolve(obj);
+			}));
 	}
 };
 

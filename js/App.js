@@ -912,7 +912,7 @@ const App = {
       if (action_name) {
          const action_func = this.hotkey_actions[action_name];
 
-         if (action_func !== null) {
+         if (typeof action_func === 'function') {
             action_func(event);
             event.stopPropagation();
             return false;

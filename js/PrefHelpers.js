@@ -455,7 +455,7 @@ const	Helpers = {
 				Notify.progress("Loading, please wait...");
 
 				xhr.json("backend.php", {op: "Pref_Prefs", method: "uninstallPlugin", plugin: plugin}, (reply) => {
-					if (reply && reply.status === 1)
+					if (reply?.status === true)
 						Helpers.Plugins.reload();
 					else {
 						Notify.error("Plugin uninstallation failed.");

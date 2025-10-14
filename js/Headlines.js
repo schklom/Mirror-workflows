@@ -59,7 +59,7 @@ const Headlines = {
 			if (m.type === 'attributes' && ['class', 'data-score'].indexOf(m.attributeName) !== -1) {
 
 				const row = m.target;
-				const id = row.getAttribute("data-article-id");
+				const id = parseInt(row.getAttribute('data-article-id'));
 
 				if (Headlines.headlines[id]) {
 					const hl = Headlines.headlines[id];
@@ -326,7 +326,7 @@ const Headlines = {
 			const row = rows[i];
 
 			if (this.isChildVisible(row)) {
-				return row.getAttribute("data-article-id");
+				return parseInt(row.getAttribute('data-article-id'));
 			}
 		}
 	},
@@ -350,7 +350,8 @@ const Headlines = {
 					const last_row = hsp.previousSibling;
 
 					// invoke lazy load if last article in buffer is nearly visible OR is active
-					if (Article.getActive() === last_row.getAttribute("data-article-id") || last_row.offsetTop - 250 <= container.scrollTop + container.offsetHeight) {
+					if (Article.getActive() === parseInt(last_row.getAttribute('data-article-id'))
+						|| last_row.offsetTop - 250 <= container.scrollTop + container.offsetHeight) {
 						hsp.innerHTML = `<span class='text-muted text-small text-center'><img class="icon-three-dots" src="${App.getInitParam('icon_three_dots')}"> ${__("Loading, please wait...")}</span>`;
 
 						Headlines.loadMore();
@@ -415,7 +416,7 @@ const Headlines = {
 		Headlines.setCommonClasses(this.headlines.filter((h) => h.id).length);
 
 		App.findAll("#headlines-frame > div[id*=RROW]").forEach((row) => {
-			const id = row.getAttribute("data-article-id");
+			const id = parseInt(row.getAttribute('data-article-id'));
 			const hl = this.headlines[id];
 
 			if (hl) {
@@ -1189,7 +1190,7 @@ const Headlines = {
 
 		App.findAll("#headlines-frame > div[id*=RROW][class*=Selected]").forEach(
 			function (child) {
-				rv.push(child.getAttribute("data-article-id"));
+				rv.push(parseInt(child.getAttribute('data-article-id')));
 			});
 
 		// consider active article a honorary member of selected articles
@@ -1205,7 +1206,7 @@ const Headlines = {
 
 		children.forEach(function (child) {
 			if (Element.visible(child)) {
-				rv.push(child.getAttribute("data-article-id"));
+				rv.push(parseInt(child.getAttribute('data-article-id')));
 			}
 		});
 
@@ -1236,7 +1237,7 @@ const Headlines = {
 
 		for (let i = 0; i < rows.length; i++) {
 			const row = rows[i];
-			const id = row.getAttribute('data-article-id');
+			const id = parseInt(row.getAttribute('data-article-id'));
 
 			if (id === start || id === stop) {
 				if (!collecting) {
@@ -1415,14 +1416,16 @@ const Headlines = {
 		menu.addChild(new dijit.MenuItem({
 			label: __("Open original article"),
 			onClick: function (/* event */) {
-				Article.openInNewWindow(this.getParent().currentTarget.getAttribute("data-article-id"));
+				const id = parseInt(this.getParent().currentTarget.getAttribute('data-article-id'));
+				Article.openInNewWindow(id);
 			}
 		}));
 
 		menu.addChild(new dijit.MenuItem({
 			label: __("Display article URL"),
 			onClick: function (/* event */) {
-				Article.displayUrl(this.getParent().currentTarget.getAttribute("data-article-id"));
+				const id = parseInt(this.getParent().currentTarget.getAttribute('data-article-id'));
+				Article.displayUrl(id);
 			}
 		}));
 
@@ -1431,11 +1434,10 @@ const Headlines = {
 		menu.addChild(new dijit.MenuItem({
 			label: __("Toggle unread"),
 			onClick: function () {
+				const id = parseInt(this.getParent().currentTarget.getAttribute('data-article-id'));
 
 				let ids = Headlines.getSelected();
-				// cast to string
-				const id = (this.getParent().currentTarget.getAttribute("data-article-id")) + "";
-				ids = ids.length !== 0 && ids.indexOf(id) !== -1 ? ids : [id];
+				ids = ids.includes(id) ? ids : [id];
 
 				Headlines.selectionToggleUnread({ids: ids, no_error: 1});
 			}
@@ -1444,10 +1446,10 @@ const Headlines = {
 		menu.addChild(new dijit.MenuItem({
 			label: __("Toggle starred"),
 			onClick: function () {
+				const id = parseInt(this.getParent().currentTarget.getAttribute('data-article-id'));
+
 				let ids = Headlines.getSelected();
-				// cast to string
-				const id = (this.getParent().currentTarget.getAttribute("data-article-id")) + "";
-				ids = ids.length !== 0 && ids.indexOf(id) !== -1 ? ids : [id];
+				ids = ids.includes(id) ? ids : [id];
 
 				Headlines.selectionToggleMarked(ids);
 			}
@@ -1456,10 +1458,10 @@ const Headlines = {
 		menu.addChild(new dijit.MenuItem({
 			label: __("Toggle published"),
 			onClick: function () {
+				const id = parseInt(this.getParent().currentTarget.getAttribute('data-article-id'));
+
 				let ids = Headlines.getSelected();
-				// cast to string
-				const id = (this.getParent().currentTarget.getAttribute("data-article-id")) + "";
-				ids = ids.length !== 0 && ids.indexOf(id) !== -1 ? ids : [id];
+				ids = ids.includes(id) ? ids : [id];
 
 				Headlines.selectionTogglePublished(ids);
 			}
@@ -1470,14 +1472,14 @@ const Headlines = {
 		menu.addChild(new dijit.MenuItem({
 			label: __("Mark above as read"),
 			onClick: function () {
-				Headlines.catchupRelativeTo(0, this.getParent().currentTarget.getAttribute("data-article-id"));
+				Headlines.catchupRelativeTo(0, parseInt(this.getParent().currentTarget.getAttribute('data-article-id')));
 			}
 		}));
 
 		menu.addChild(new dijit.MenuItem({
 			label: __("Mark below as read"),
 			onClick: function () {
-				Headlines.catchupRelativeTo(1, this.getParent().currentTarget.getAttribute("data-article-id"));
+				Headlines.catchupRelativeTo(1, parseInt(this.getParent().currentTarget.getAttribute('data-article-id')));
 			}
 		}));
 
@@ -1499,12 +1501,10 @@ const Headlines = {
 					label: name,
 					labelId: bare_id,
 					onClick: function () {
+						const id = parseInt(this.ownerMenu.currentTarget.getAttribute('data-article-id'));
 
 						let ids = Headlines.getSelected();
-						// cast to string
-						const id = (this.getParent().ownerMenu.currentTarget.getAttribute("data-article-id")) + "";
-
-						ids = ids.length !== 0 && ids.indexOf(id) !== -1 ? ids : [id];
+						ids = ids.includes(id) ? ids : [id];
 
 						Headlines.selectionAssignLabel(this.labelId, ids);
 					}
@@ -1514,11 +1514,10 @@ const Headlines = {
 					label: name,
 					labelId: bare_id,
 					onClick: function () {
-						let ids = Headlines.getSelected();
-						// cast to string
-						const id = (this.getParent().ownerMenu.currentTarget.getAttribute("data-article-id")) + "";
+						const id = parseInt(this.ownerMenu.currentTarget.getAttribute('data-article-id'));
 
-						ids = ids.length !== 0 && ids.indexOf(id) !== -1 ? ids : [id];
+						let ids = Headlines.getSelected();
+						ids = ids.includes(id) ? ids : [id];
 
 						Headlines.selectionRemoveLabel(this.labelId, ids);
 					}

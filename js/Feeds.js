@@ -334,7 +334,9 @@ const	Feeds = {
 	setActive: function(id, is_cat) {
 		console.log('setActive', id, is_cat);
 
-		id = parseInt(id);
+		// id might be a tag string, so check if we have something int-ish
+		if (Number.isInteger(Number(id)))
+			id = parseInt(id);
 
 		window.requestIdleCallback(() => {
 			App.Hash.set({

@@ -445,17 +445,13 @@ const Article = {
 				row.removeClassName("Unread");
 				row.addClassName("active");
 
-				PluginHost.run(PluginHost.HOOK_ARTICLE_SET_ACTIVE, row.getAttribute("data-article-id"));
+				PluginHost.run(PluginHost.HOOK_ARTICLE_SET_ACTIVE, parseInt(row.getAttribute('data-article-id')));
 			}
 		}
 	},
 	getActive: function () {
 		const row = document.querySelector("#headlines-frame > div[id*=RROW][class*=active]");
-
-		if (row)
-			return row.getAttribute("data-article-id");
-		else
-			return 0;
+		return row ? parseInt(row.getAttribute('data-article-id')) : 0;
 	},
 	scrollByPages: function (page_offset) {
 		App.Scrollable.scrollByPages(App.byId("content-insert"), page_offset);

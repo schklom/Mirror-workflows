@@ -204,7 +204,9 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 			}
 		},
 		getTooltip: function (item) {
-			return [item.updated, item.error].filter((x) => x && x !== "").join(" - ");
+			// TODO: item.error is `[""]` for feeds.  Need to look into what's happening on the frontend to cause that-- the backend sends a string.
+			// For now, just adding a check for `[""]`.
+			return [item.updated, item.error].filter((x) => x && x !== '' && !(Array.isArray(x) && x.length === 1 && x[0] === '')).join(' - ');
 		},
 		getIconClass: function (item, opened) {
 			return (!item || this.model.mayHaveChildren(item)) ? (opened ? "dijitFolderOpened" : "dijitFolderClosed") : "feed-icon";

@@ -77,7 +77,7 @@ const App = {
             <select name="${name}" dojoType="fox.form.Select" id="${App.escapeHtml(id)}" ${this.attributes_to_string(attributes)}>
                ${values.map((v) => {
                   v = String(v);
-                  `<option ${v === value ? 'selected="selected"' : ''} value="${App.escapeHtml(v)}">${App.escapeHtml(v)}</option>`
+                  return `<option ${v === value ? 'selected="selected"' : ''} value="${App.escapeHtml(v)}">${App.escapeHtml(v)}</option>`
                }).join("")}
             </select>
          `

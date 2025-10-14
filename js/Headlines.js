@@ -1501,7 +1501,7 @@ const Headlines = {
 					label: name,
 					labelId: bare_id,
 					onClick: function () {
-						const id = parseInt(this.ownerMenu.currentTarget.getAttribute('data-article-id'));
+						const id = parseInt(this.getParent().ownerMenu.currentTarget.getAttribute('data-article-id'));
 
 						let ids = Headlines.getSelected();
 						ids = ids.includes(id) ? ids : [id];
@@ -1514,7 +1514,7 @@ const Headlines = {
 					label: name,
 					labelId: bare_id,
 					onClick: function () {
-						const id = parseInt(this.ownerMenu.currentTarget.getAttribute('data-article-id'));
+						const id = parseInt(this.getParent().ownerMenu.currentTarget.getAttribute('data-article-id'));
 
 						let ids = Headlines.getSelected();
 						ids = ids.includes(id) ? ids : [id];

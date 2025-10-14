@@ -210,7 +210,7 @@ const App = {
 
 			if (callback) {
 						link.onload = function() {
-							document.querySelector("body").removeClassName("css_loading");
+							document.body.classList.remove('css_loading');
 							callback();
 						};
 
@@ -221,9 +221,9 @@ const App = {
 
 			this.nightModeChanged(mql.matches, link);
 
-			document.querySelector("head").appendChild(link);
+			document.head.appendChild(link);
 		} else {
-			document.querySelector("body").removeClassName("css_loading");
+			document.body.classList.remove('css_loading');
 
 			if (callback) callback();
 		}
@@ -1238,15 +1238,11 @@ const App = {
          this.hotkey_actions["goto_prefs"] = () => {
             App.openPreferences();
          };
-         this.hotkey_actions["select_article_cursor"] = () => {
-            const id = Article.getUnderPointer();
-            if (id) {
-               const row = App.byId(`RROW-${id}`);
-
-               if (row)
-                  row.toggleClassName("Selected");
-            }
-         };
+			this.hotkey_actions['select_article_cursor'] = () => {
+				const id = Article.getUnderPointer();
+				if (id)
+					App.byId(`RROW-${id}`)?.classList.toggle('Selected');
+			};
          this.hotkey_actions["create_label"] = () => {
             CommonDialogs.addLabel();
          };

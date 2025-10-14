@@ -535,7 +535,7 @@ const	Feeds = {
 			const rows = App.findAll("#headlines-frame > div[id*=RROW][class*=Unread][data-orig-feed-id='" + id + "']");
 
 			rows.forEach((row) => {
-				row.removeClassName("Unread");
+				row.classList.remove('Unread');
 			})
 		}
 	},

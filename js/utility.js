@@ -26,9 +26,9 @@ window.addEventListener("load", function() {
             link.id = "theme_auto_css";
 
             link.onload = function() {
-                document.querySelector("body").removeClassName("css_loading");
+                document.body.classList.remove('css_loading');
 
-                if (typeof UtilityApp !== "undefined")
+                if (typeof UtilityApp !== 'undefined')
                     UtilityApp.init();
             };
 

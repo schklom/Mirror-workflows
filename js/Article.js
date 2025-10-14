@@ -48,11 +48,11 @@ const Article = {
 
 						["score-low", "score-high", "score-half-low", "score-half-high", "score-neutral"]
 							.forEach(function(scl) {
-								if (row.hasClassName(scl))
-									row.removeClassName(scl);
+								if (row.classList.contains(scl))
+									row.classList.remove(scl);
 							});
 
-						row.addClassName(Article.getScoreClass(score));
+						row.classList.add(Article.getScoreClass(score));
 					}
 				});
 			}
@@ -76,13 +76,8 @@ const Article = {
 				pic.innerHTML = Article.getScorePic(score);
 				pic.setAttribute("title", score);
 
-				["score-low", "score-high", "score-half-low", "score-half-high", "score-neutral"]
-					.forEach(function(scl) {
-						if (row.hasClassName(scl))
-							row.removeClassName(scl);
-					});
-
-				row.addClassName(Article.getScoreClass(score));
+				row.classList.remove('score-low', 'score-high', 'score-half-low', 'score-half-high', 'score-neutral');
+				row.classList.add(Article.getScoreClass(score));
 			}
 		}
 	},
@@ -96,7 +91,7 @@ const Article = {
 		const row = App.byId(`RROW-${id}`);
 
 		if (row) {
-			row.toggleClassName('grid-span-row');
+			row.classList.toggle('grid-span-row');
 
 			this.setActive(id);
 			this.cdmMoveToId(id);
@@ -106,7 +101,7 @@ const Article = {
 		const row = App.byId(`RROW-${Article.getActive()}`);
 
 		if (row) {
-			row.removeClassName("active");
+			row.classList.remove('active');
 
 			if (event)
 				event.stopPropagation();
@@ -263,7 +258,7 @@ const Article = {
 				container.innerHTML += "&nbsp;";
 
 			// in expandable mode, save content for later, so that we can pack unfocused rows back
-			if (App.isCombinedMode() && App.byId("main").hasClassName("expandable"))
+			if (App.isCombinedMode() && App.byId('main').classList.contains('expandable'))
 				row.setAttribute("data-content-original", row.getAttribute("data-content"));
 
 			row.setAttribute("data-is-packed", "0");
@@ -431,7 +426,7 @@ const Article = {
 			console.log("setActive", id, "was", Article.getActive());
 
 			App.findAll("div[id*=RROW][class*=active]").forEach((row) => {
-				row.removeClassName("active");
+				row.classList.remove('active');
 
 				if (App.isCombinedMode() && !App.getInitParam("cdm_expanded"))
 					Article.pack(row);
@@ -442,8 +437,8 @@ const Article = {
 			if (row) {
 				Article.unpack(row);
 
-				row.removeClassName("Unread");
-				row.addClassName("active");
+				row.classList.remove('Unread');
+				row.classList.add('active');
 
 				PluginHost.run(PluginHost.HOOK_ARTICLE_SET_ACTIVE, parseInt(row.getAttribute('data-article-id')));
 			}

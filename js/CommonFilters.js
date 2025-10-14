@@ -109,7 +109,7 @@ const	Filters = {
 				xhr.post("backend.php", {op: "Pref_Filters", method: "printrulename", rule: rule}, (reply) => {
 					try {
 						const li = document.createElement('li');
-						li.addClassName("rule");
+						li.classList.add('rule');
 
 						li.innerHTML = `${App.FormFields.checkbox_tag("", false, "", {onclick: 'Lists.onRowChecked(this)'})}
 								<span class="name" onclick='App.dialogOf(this).onRuleClicked(this)'>${reply}</span>
@@ -141,7 +141,7 @@ const	Filters = {
 				xhr.post("backend.php", { op: "Pref_Filters", method: "printactionname", action: action }, (reply) => {
 					try {
 						const li = document.createElement('li');
-						li.addClassName("action");
+						li.classList.add('action');
 
 						li.innerHTML = `${App.FormFields.checkbox_tag("", false, "", {onclick: 'Lists.onRowChecked(this)'})}
 								<span class="name" onclick='App.dialogOf(this).onActionClicked(this)'>${reply}</span>

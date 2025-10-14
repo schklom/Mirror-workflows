@@ -55,10 +55,9 @@ Plugins.Shorten_Expanded = {
 		const row = App.byId(id);
 
 		if (row) {
-			const content = row.querySelector(".content-shrink-wrap");
-			const link = row.querySelector(".expand-prompt");
+			const link = row.querySelector('.expand-prompt');
 
-			if (content) content.removeClassName("content-shrink-wrap");
+			row.querySelector('.content-shrink-wrap')?.classList.remove('content-shrink-wrap');
 			if (link) Element.hide(link);
 		}
 

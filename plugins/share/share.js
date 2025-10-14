@@ -23,10 +23,7 @@ Plugins.Share = {
 								target.href = target.href.replace(/&key=.*$/,
 									"&key=" + new_link);
 
-								const icon = document.querySelector(".share-icon-" + id);
-
-								if (icon)
-									icon.addClassName("is-shared");
+								document.querySelector('.share-icon-' + id)?.classList.add('is-shared');
 
 								Notify.close();
 
@@ -42,12 +39,7 @@ Plugins.Share = {
 				if (confirm(__("Remove sharing for this article?"))) {
 					xhr.post("backend.php", App.getPhArgs("share", "unshare", {id: id}), (reply) => {
 						Notify.info(reply);
-
-						const icon = document.querySelector(".share-icon-" + id);
-
-						if (icon)
-							icon.removeClassName("is-shared");
-
+						document.querySelector('.share-icon-' + id)?.classList.remove('is-shared');
 						dialog.hide();
 					});
 				}
@@ -61,11 +53,7 @@ Plugins.Share = {
 
 			xhr.post("backend.php", App.getPhArgs("share", "shareDialog", {id: id}), (reply) => {
 				dialog.attr('content', reply)
-
-				const icon = document.querySelector(".share-icon-" + id);
-
-				if (icon)
-					icon.addClassName("is-shared");
+				document.querySelector('.share-icon-' + id)?.classList.add('is-shared');
 			});
 		});
 

@@ -360,11 +360,11 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 				treeNode = treeNode[0];
 
 				if (show) {
-					treeNode.loadingNode.addClassName("visible");
+					treeNode.loadingNode.classList.add('visible');
 					treeNode.loadingNode.setAttribute("src",
 						is_cat ? App.getInitParam("icon_three_dots") : App.getInitParam("icon_oval"));
 				} else {
-					treeNode.loadingNode.removeClassName("visible");
+					treeNode.loadingNode.classList.remove('visible');
 					treeNode.loadingNode.setAttribute("src", App.getInitParam("icon_blank"))
 				}
 

@@ -67,15 +67,15 @@ const Headlines = {
 					if (hl) {
 						const hl_old = {...{}, ...hl};
 
-						hl.unread = row.hasClassName("Unread");
-						hl.marked = row.hasClassName("marked");
-						hl.published = row.hasClassName("published");
+						hl.unread = row.classList.contains('Unread');
+						hl.marked = row.classList.contains('marked');
+						hl.published = row.classList.contains('published');
 
 						// not sent by backend
-						hl.selected = row.hasClassName("Selected");
-						hl.active = row.hasClassName("active");
+						hl.selected = row.classList.contains('Selected');
+						hl.active = row.classList.contains('active');
 
-						hl.score = row.getAttribute("data-score");
+						hl.score = row.getAttribute('data-score');
 
 						modified.push({id: hl.id, new: hl, old: hl_old, row: row});
 					}
@@ -138,7 +138,7 @@ const Headlines = {
 		ops.deselect.forEach((row) => {
 			const cb = dijit.getEnclosingWidget(row.querySelector(".rchk"));
 
-			if (cb && !row.hasClassName("active"))
+			if (cb && !row.classList.contains('active'))
 				cb.attr('checked', false);
 		});
 
@@ -152,7 +152,7 @@ const Headlines = {
 		ops.deactivate.forEach((row) => {
 			const cb = dijit.getEnclosingWidget(row.querySelector(".rchk"));
 
-			if (cb && !row.hasClassName("Selected"))
+			if (cb && !row.classList.contains('Selected'))
 				cb.attr('checked', false);
 		});
 
@@ -376,7 +376,7 @@ const Headlines = {
 					const row = rows[i];
 
 					if (App.byId("headlines-frame").scrollTop > (row.offsetTop + row.offsetHeight / 2)) {
-						row.removeClassName("Unread");
+						row.classList.remove('Unread');
 					} else {
 						break;
 					}
@@ -395,21 +395,19 @@ const Headlines = {
 	setCommonClasses: function (headlines_count) {
 		const container = App.byId("headlines-frame");
 
-		container.removeClassName("cdm");
-		container.removeClassName("normal");
+		container.classList.remove('cdm', 'normal');
 
-		container.addClassName(App.isCombinedMode() ? "cdm" : "normal");
+		container.classList.add(App.isCombinedMode() ? 'cdm' : 'normal');
 		container.setAttribute("data-enable-grid", App.getInitParam("cdm_enable_grid") ? "true" : "false");
 		container.setAttribute("data-headlines-count", parseInt(headlines_count));
 		container.setAttribute("data-is-cdm", App.isCombinedMode() ? "true" : "false");
 		container.setAttribute("data-is-cdm-expanded", App.getInitParam("cdm_expanded"));
 
 		// for floating title because it's placed outside of headlines-frame
-		App.byId("main").removeClassName("expandable");
-		App.byId("main").removeClassName("expanded");
+		App.byId('main').classList.remove('expandable', 'expanded');
 
 		if (App.isCombinedMode())
-			App.byId("main").addClassName(App.getInitParam("cdm_expanded") ? "expanded" : "expandable");
+			App.byId('main').classList.add(App.getInitParam('cdm_expanded') ? 'expanded' : 'expandable');
 	},
 	renderAgain: function () {
 		// TODO: wrap headline elements into a knockoutjs model to prevent all this stuff
@@ -425,7 +423,7 @@ const Headlines = {
 				row.parentNode.replaceChild(new_row, row);
 
 				if (hl.active) {
-					new_row.addClassName("active");
+					new_row.classList.add('active');
 					Article.unpack(new_row);
 
 					if (App.isCombinedMode())
@@ -773,9 +771,9 @@ const Headlines = {
 				Article.setActive(0);
 
 				try {
-					App.byId("headlines-frame").removeClassName("smooth-scroll");
-					App.byId("headlines-frame").scrollTop = 0;
-					App.byId("headlines-frame").addClassName("smooth-scroll");
+					App.byId('headlines-frame').classList.remove('smooth-scroll');
+					App.byId('headlines-frame').scrollTop = 0;
+					App.byId('headlines-frame').classList.add('smooth-scroll');
 				} catch (e) {
 					console.warn(e);
 				}
@@ -955,13 +953,13 @@ const Headlines = {
 			if (row) {
 				switch (cmode) {
 					case 0:
-						row.removeClassName("Unread");
+						row.classList.remove('Unread');
 						break;
 					case 1:
-						row.addClassName("Unread");
+						row.classList.add('Unread');
 						break;
 					case 2:
-						row.toggleClassName("Unread");
+						row.classList.toggle('Unread');
 				}
 			}
 		});
@@ -982,26 +980,18 @@ const Headlines = {
 		ids = ids || Headlines.getSelected();
 
 		if (ids.length === 0) {
-			alert(__("No articles selected."));
+			alert(__('No articles selected.'));
 			return;
 		}
 
-		ids.forEach((id) => {
-			this.togglePub(id);
-		});
+		ids.forEach(id => this.togglePub(id));
 	},
 	toggleMark: function (id) {
-		const row = App.byId(`RROW-${id}`);
-
-		if (row)
-			row.toggleClassName("marked");
+		App.byId(`RROW-${id}`)?.classList.toggle('marked');
 
 	},
 	togglePub: function (id) {
-		const row = App.byId(`RROW-${id}`);
-
-		if (row)
-			row.toggleClassName("published");
+		App.byId(`RROW-${id}`)?.classList.toggle('published');
 	},
 	move: function (mode, params = {}) {
 		const no_expand = params.no_expand || false;
@@ -1110,13 +1100,13 @@ const Headlines = {
 
 			switch (cmode) {
 				case 0:
-					row.removeClassName("Unread");
+					row.classList.remove('Unread');
 					break;
 				case 1:
-					row.addClassName("Unread");
+					row.classList.add('Unread');
 					break;
 				case 2:
-					row.toggleClassName("Unread");
+					row.classList.toggle('Unread');
 					break;
 			}
 		}
@@ -1186,18 +1176,15 @@ const Headlines = {
 		});
 	},
 	getSelected: function () {
-		const rv = [];
+		const selected = App.findAll("#headlines-frame > div[id*=RROW][class*=Selected]")
+			.map(child => parseInt(child.getAttribute('data-article-id')));
 
-		App.findAll("#headlines-frame > div[id*=RROW][class*=Selected]").forEach(
-			function (child) {
-				rv.push(parseInt(child.getAttribute('data-article-id')));
-			});
+		const active = Article.getActive();
 
-		// consider active article a honorary member of selected articles
-		if (Article.getActive())
-			rv.push(Article.getActive());
+		if (active)
+			selected.push(active);
 
-		return rv.uniq();
+		return [...new Set(selected)];
 	},
 	getLoaded: function () {
 		const rv = [];
@@ -1216,15 +1203,15 @@ const Headlines = {
 		const row = elem.domNode.closest("div[id*=RROW]");
 
 		// do not allow unchecking active article checkbox
-		if (row.hasClassName("active")) {
+		if (row.classList.contains('active')) {
 			elem.attr("checked", 1);
 			return;
 		}
 
-		if (elem.attr("checked")) {
-			row.addClassName("Selected");
+		if (elem.attr('checked')) {
+			row.classList.add('Selected');
 		} else {
-			row.removeClassName("Selected");
+			row.classList.remove('Selected');
 		}
 	},
 	getRange: function (start, stop) {
@@ -1281,14 +1268,14 @@ const Headlines = {
 		App.findAll(query).forEach((row) => {
 
 			switch (mode) {
-				case "none":
-					row.removeClassName("Selected");
+				case 'none':
+					row.classList.remove('Selected');
 					break;
-				case "invert":
-					row.toggleClassName("Selected");
+				case 'invert':
+					row.classList.toggle('Selected');
 					break;
 				default:
-					row.addClassName("Selected");
+					row.classList.add('Selected');
 			}
 		});
 	},
@@ -1331,7 +1318,7 @@ const Headlines = {
 				if (visible_ids[i] !== id) {
 					const e = App.byId(`RROW-${visible_ids[i]}`);
 
-					if (e && e.hasClassName("Unread")) {
+					if (e && e.classList.contains('Unread')) {
 						ids_to_mark.push(visible_ids[i]);
 					}
 				} else {
@@ -1343,7 +1330,7 @@ const Headlines = {
 				if (visible_ids[i] !== id) {
 					const e = App.byId(`RROW-${visible_ids[i]}`);
 
-					if (e && e.hasClassName("Unread")) {
+					if (e && e.classList.contains('Unread')) {
 						ids_to_mark.push(visible_ids[i]);
 					}
 				} else {
@@ -1361,7 +1348,7 @@ const Headlines = {
 
 				for (let i = 0; i < ids_to_mark.length; i++) {
 					const e = App.byId(`RROW-${ids_to_mark[i]}`);
-					e.removeClassName("Unread");
+					e.classList.remove('Unread');
 				}
 			}
 		}

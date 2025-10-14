@@ -143,8 +143,8 @@ const	Feeds = {
 	},
    onViewModeChanged: function() {
 		// TODO: is this still needed?
-      App.find("body").setAttribute("view-mode",
-			dijit.byId("toolbar-main").getValues().view_mode);
+      document.body.setAttribute('view-mode',
+			dijit.byId('toolbar-main').getValues().view_mode);
 
       return Feeds.reloadCurrent('');
    },

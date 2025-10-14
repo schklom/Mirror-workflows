@@ -140,9 +140,6 @@ const App = {
          }
       }
    },
-   find: function(query) {
-      return document.querySelector(query)
-   },
    dialogOf: function (elem) {
 
       // elem could be a Dijit widget
@@ -461,7 +458,7 @@ const App = {
    },
 	handleRpcJson: function(reply) {
 
-		const netalert = App.find(".net-alert");
+		const netalert = document.querySelector('.net-alert');
 
       if (reply) {
          const error = reply['error'];
@@ -518,7 +515,7 @@ const App = {
          }
 
          if (k === "recent_log_events") {
-            const alert = App.find(".log-alert");
+            const alert = document.querySelector('.log-alert');
 
             if (alert) {
                v > 0 ? alert.show() : alert.hide();

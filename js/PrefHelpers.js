@@ -728,7 +728,7 @@ const	Helpers = {
 										dialog.plugins_to_update.push(p.plugin);
 
 										const update_button = dijit.getEnclosingWidget(
-											App.find(`*[data-update-btn-for-plugin="${p.plugin}"]`));
+											document.querySelector(`*[data-update-btn-for-plugin="${p.plugin}"]`));
 
 										if (update_button)
 											update_button.domNode.show();

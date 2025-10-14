@@ -46,12 +46,7 @@ const Article = {
 						pic.innerHTML = Article.getScorePic(score);
 						pic.setAttribute("title", score);
 
-						["score-low", "score-high", "score-half-low", "score-half-high", "score-neutral"]
-							.forEach(function(scl) {
-								if (row.classList.contains(scl))
-									row.classList.remove(scl);
-							});
-
+						row.classList.remove('score-low', 'score-high', 'score-half-low', 'score-half-high', 'score-neutral');
 						row.classList.add(Article.getScoreClass(score));
 					}
 				});

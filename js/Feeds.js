@@ -1,6 +1,6 @@
 'use strict'
 
-/* global __, App, Headlines, xhr, dojo, dijit, fox, PluginHost, Notify, fox */
+/* global __, App, Headlines, xhr, fox, PluginHost, Notify, fox */
 
 const	Feeds = {
 	FEED_ARCHIVED: 0,
@@ -31,7 +31,7 @@ const	Feeds = {
 			entries.forEach((entry) => {
 				//console.log('feeds',entry.target, entry.intersectionRatio);
 
-				if (entry.intersectionRatio == 0)
+				if (entry.intersectionRatio === 0)
 					Feeds.onHide(entry);
 				else
 					Feeds.onShow(entry);
@@ -50,7 +50,7 @@ const	Feeds = {
 
 		// If number of properties is different,
 		// objects are not equivalent
-		if (aProps.length != bProps.length) {
+		if (aProps.length !== bProps.length) {
 			return false;
 		}
 
@@ -87,13 +87,13 @@ const	Feeds = {
 			const ts = elems[l].ts;
 			const updated = elems[l].updated;
 
-			if (id == "global-unread") {
+			if (id === "global-unread") {
 				App.global_unread = ctr;
 				App.updateTitle();
 				continue;
 			}
 
-			if (id == "subscribed-feeds") {
+			if (id === "subscribed-feeds") {
 				/* feeds_found = ctr; */
 				continue;
 			}
@@ -102,12 +102,14 @@ const	Feeds = {
 					(kind == "cat")) {
 			}*/
 
-			this.setUnread(id, (kind == "cat"), ctr);
-			this.setValue(id, (kind == "cat"), 'auxcounter', parseInt(elems[l].auxcounter));
-			this.setValue(id, (kind == "cat"), 'markedcounter', parseInt(elems[l].markedcounter));
-			this.setValue(id, (kind == "cat"), 'publishedcounter', parseInt(elems[l].publishedcounter));
+			const is_cat = (kind === 'cat');
 
-			if (kind != "cat") {
+			this.setUnread(id, is_cat, ctr);
+			this.setValue(id, is_cat, 'auxcounter', parseInt(elems[l].auxcounter));
+			this.setValue(id, is_cat, 'markedcounter', parseInt(elems[l].markedcounter));
+			this.setValue(id, is_cat, 'publishedcounter', parseInt(elems[l].publishedcounter));
+
+			if (!is_cat) {
 				this.setValue(id, false, 'error', error);
 				this.setValue(id, false, 'updated', updated);
 
@@ -130,7 +132,7 @@ const	Feeds = {
 		PluginHost.run(PluginHost.HOOK_COUNTERS_PROCESSED, elems);
 	},
 	reloadCurrent: function(method) {
-		if (this.getActive() != undefined) {
+		if (this.getActive() !== undefined) {
 			console.log("reloadCurrent", this.getActive(), this.activeIsCat(), method);
 
 			this.open({feed: this.getActive(), is_cat: this.activeIsCat(), method: method});
@@ -274,7 +276,7 @@ const	Feeds = {
 		if (hash.query)
 			this._search_query = {query: hash.query, search_language: hash.search_language};
 
-		if (hash.f != undefined) {
+		if (hash.f !== undefined) {
 			this.open({feed: parseInt(hash.f), is_cat: parseInt(hash.c)});
 		} else {
 			this.openDefaultFeed();
@@ -331,6 +333,10 @@ const	Feeds = {
 	},
 	setActive: function(id, is_cat) {
 		console.log('setActive', id, is_cat);
+
+		// id might be a tag string, so check if we have something int-ish
+		if (Number.isInteger(Number(id)))
+			id = parseInt(id);
 
 		window.requestIdleCallback(() => {
 			App.Hash.set({
@@ -389,7 +395,7 @@ const	Feeds = {
 		// this is used to quickly switch between feeds, sets active but xhr is on a timeout
 		const delayed = params.delayed || false;
 
-		if (offset != 0) {
+		if (offset !== 0) {
 			if (this.infscroll_in_progress)
 				return;
 
@@ -419,9 +425,9 @@ const	Feeds = {
 			query = Object.assign(query, this._search_query);
 		}
 
-		if (offset != 0) {
+		if (offset !== 0) {
 			query.skip = offset;
-		} else if (!is_cat && feed == this.getActive() && !params.method) {
+		} else if (!is_cat && feed === this.getActive() && !params.method) {
 			query.m = "ForceUpdate";
 		}
 
@@ -450,7 +456,7 @@ const	Feeds = {
 	catchupAll: function() {
 		const str = __("Mark all articles as read?");
 
-		if (App.getInitParam("confirm_feed_catchup") != 1 || confirm(str)) {
+		if (App.getInitParam("confirm_feed_catchup") !== 1 || confirm(str)) {
 
 			Notify.progress("Marking all feeds as read...");
 
@@ -509,7 +515,7 @@ const	Feeds = {
 				if (next_feed !== false) {
 					this.open({feed: next_feed, is_cat: next_is_cat});
 				}
-			} else if (feed == this.getActive() && is_cat == this.activeIsCat()) {
+			} else if (feed === this.getActive() && is_cat === this.activeIsCat()) {
 				this.reloadCurrent();
 			}
 
@@ -524,7 +530,7 @@ const	Feeds = {
 
 		const str = __("Mark all articles in %s as read?").replace("%s", title);
 
-		if (App.getInitParam("confirm_feed_catchup") != 1 || confirm(str)) {
+		if (App.getInitParam("confirm_feed_catchup") !== 1 || confirm(str)) {
 
 			const rows = App.findAll("#headlines-frame > div[id*=RROW][class*=Unread][data-orig-feed-id='" + id + "']");
 
@@ -540,7 +546,7 @@ const	Feeds = {
 			if (tree && tree.model)
 				return tree.model.getFeedUnread(feed, is_cat);
 
-		} catch (e) {
+		} catch {
 			//
 		}
 
@@ -553,7 +559,7 @@ const	Feeds = {
 			if (tree && tree.model)
 				return tree.getFeedCategory(feed);
 
-		} catch (e) {
+		} catch {
 			//
 		}
 
@@ -580,7 +586,7 @@ const	Feeds = {
 			if (tree && tree.model)
 				return tree.model.setFeedValue(feed, is_cat, key, value);
 
-		} catch (e) {
+		} catch {
 			//
 		}
 	},
@@ -591,7 +597,7 @@ const	Feeds = {
 			if (tree && tree.model)
 				return tree.model.getFeedValue(feed, is_cat, key);
 
-		} catch (e) {
+		} catch {
 			//
 		}
 		return '';

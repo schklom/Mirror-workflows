@@ -1,4 +1,3 @@
-/* eslint-disable prefer-rest-params */
 /* global define */
 // FIXME: there probably is a better, more dojo-like notation for custom data- properties
 define(["dojo/_base/declare",
@@ -15,7 +14,7 @@ define(["dojo/_base/declare",
 		startup: function() {
          this.inherited(arguments);
 
-			if (this.attr('data-dropdown-skip-first') == 'true') {
+			if (this.attr('data-dropdown-skip-first') === 'true') {
 				aspect.before(this, "_loadChildren", () => {
 					this.options = this.options.splice(1);
 				});
@@ -25,8 +24,8 @@ define(["dojo/_base/declare",
 		onItemClick: function(/*item, menu*/) {
 			//
 		},
-		_setValueAttr: function(/*anything*/ newValue, /*Boolean?*/ priorityChange){
-			if (this.attr('data-prevent-value-change') == 'true' && newValue != '')
+		_setValueAttr: function(/*anything*/ newValue, /*Boolean? priorityChange */){
+			if (this.attr('data-prevent-value-change') === 'true' && newValue !== '')
 				return;
 
 			this.inherited(arguments);

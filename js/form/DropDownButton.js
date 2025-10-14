@@ -1,5 +1,4 @@
-/* eslint-disable prefer-rest-params */
-/* global dijit, define */
+/* global define */
 define(["dojo/_base/declare", "dijit/form/DropDownButton"], function (declare) {
 	return declare("fox.form.DropDownButton", dijit.form.DropDownButton, {
 		startup: function() {

@@ -1,9 +1,7 @@
 'use strict'
 
-/* eslint-disable no-new */
-
 /* global __, App, Article, Lists, fox */
-/* global xhr, dojo, dijit, Notify, Feeds */
+/* global xhr, Notify, Feeds */
 
 /* exported Filters */
 const	Filters = {
@@ -61,7 +59,7 @@ const	Filters = {
 									// all done-- either the backend found no more pre-filtering entries, or test limits were reached
 									test_dialog.domNode.querySelector(".loading-indicator").hide();
 
-									if (test_dialog.results == 0) {
+									if (test_dialog.results === 0) {
 										results_list.innerHTML = `<li class="text-center text-muted">
 											${__('No recent articles matching this filter have been found.')}</li>`;
 
@@ -132,9 +130,9 @@ const	Filters = {
 			insertAction: function(parentNode, replaceNode) {
 				const form = document.forms["filter_new_action_form"];
 
-				if (form.action_id.value == 7) {
+				if (form.action_id.value === '7') {
 					form.action_param.value = form.action_param_label.value;
-				} else if (form.action_id.value == 9) {
+				} else if (form.action_id.value === '9') {
 					form.action_param.value = form.action_param_plugin.value;
 				}
 
@@ -254,11 +252,11 @@ const	Filters = {
 						dijit.byId("filterDlg_actionParamPlugin").domNode.hide();
 
 						// if selected action supports parameters, enable params field
-						if (action == dialog.ACTION_LABEL) {
+						if (action === dialog.ACTION_LABEL) {
 							dijit.byId("filterDlg_actionParamLabel").domNode.show();
-						} else if (action == dialog.ACTION_PLUGIN) {
+						} else if (action === dialog.ACTION_PLUGIN) {
 							dijit.byId("filterDlg_actionParamPlugin").domNode.show();
-						} else if (dialog.PARAM_ACTIONS.indexOf(action) != -1) {
+						} else if (dialog.PARAM_ACTIONS.indexOf(action) !== -1) {
 							dijit.byId("filterDlg_actionParam").domNode.show();
 						}
 					},
@@ -531,7 +529,7 @@ const	Filters = {
 					// `selectedText` is always empty at this point (tested by selecting some article text).
 					const selectedText = App.getSelectedText();
 
-					if (selectedText != "") {
+					if (selectedText !== '') {
 						const feed_id = Feeds.activeIsCat() ? 'CAT:' + parseInt(Feeds.getActive()) :
 							Feeds.getActive();
 						const rule = {reg_exp: selectedText, feed_id: [feed_id], filter_type: 1};

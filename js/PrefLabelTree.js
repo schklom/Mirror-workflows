@@ -1,5 +1,4 @@
-/* eslint-disable prefer-rest-params */
-/* global __, define, lib, dijit, dojo, xhr, Notify, fox, App */
+/* global __, define, lib, xhr, Notify, fox, App */
 
 define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/form/DropDownButton"], function (declare, domConstruct) {
 
@@ -19,7 +18,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 			const type = this.model.store.getValue(args.item, 'type');
 			//const bare_id = this.model.store.getValue(args.item, 'bare_id');
 
-			if (type == 'label') {
+			if (type === 'label') {
 				const label = dojo.doc.createElement('i');
 				//const fg_color = args.item.fg_color[0];
 				const bg_color = String(args.item.bg_color);
@@ -40,7 +39,6 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 			return tnode;
 		},
 		getIconClass: function (item, opened) {
-			// eslint-disable-next-line no-nested-ternary
 			return (!item || this.model.mayHaveChildren(item)) ? (opened ? "dijitFolderOpened" : "dijitFolderClosed") : "invisible";
 		},
 		getSelectedLabels: function() {

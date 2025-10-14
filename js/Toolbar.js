@@ -1,4 +1,4 @@
-/* global dijit, define */
+/* global define */
 
 define(["dojo/_base/declare", "dijit/Toolbar"], function (declare) {
 	return declare("fox.Toolbar", dijit.Toolbar, {

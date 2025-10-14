@@ -1,4 +1,4 @@
-/* global define, dojo */
+/* global define */
 
 define(["dojo/_base/declare", "dojo/data/ItemFileWriteStore"], function (declare) {
 

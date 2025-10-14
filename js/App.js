@@ -1,8 +1,7 @@
 'use strict';
 
-/* eslint-disable new-cap */
 /* global __, Article, Headlines, Filters, fox */
-/* global xhr, dojo, dijit, PluginHost, Notify, Feeds, Cookie */
+/* global xhr, PluginHost, Notify, Feeds, Cookie */
 /* global CommonDialogs, Plugins */
 
 const App = {
@@ -75,7 +74,7 @@ const App = {
          return `
             <select name="${name}" dojoType="fox.form.Select" id="${App.escapeHtml(id)}" ${this.attributes_to_string(attributes)}>
                ${values.map((v) =>
-                  `<option ${v == value ? 'selected="selected"' : ''} value="${App.escapeHtml(v)}">${App.escapeHtml(v)}</option>`
+                  `<option ${v === value ? 'selected="selected"' : ''} value="${App.escapeHtml(v)}">${App.escapeHtml(v)}</option>`
                ).join("")}
             </select>
          `
@@ -89,7 +88,7 @@ const App = {
          return `
             <select name="${name}" dojoType="fox.form.Select" id="${App.escapeHtml(id)}" ${this.attributes_to_string(attributes)}>
                ${keys.map((vk) =>
-                     `<option ${vk == value ? 'selected="selected"' : ''} value="${App.escapeHtml(vk)}">${App.escapeHtml(values[vk])}</option>`
+                     `<option ${vk === value ? 'selected="selected"' : ''} value="${App.escapeHtml(vk)}">${App.escapeHtml(values[vk])}</option>`
                ).join("")}
             </select>
          `
@@ -197,7 +196,7 @@ const App = {
 				mql.addEventListener("change", () => {
 					this.nightModeChanged(mql.matches, App.byId("theme_auto_css"));
 				});
-			} catch (e) {
+			} catch {
 				console.warn("exception while trying to set MQL event listener");
 			}
 
@@ -277,7 +276,7 @@ const App = {
 		try {
          const results = new RegExp('[?&]' + name + '=([^&#]*)').exec(window.location.href);
          return decodeURIComponent(results[1].replace(/\+/g, " ")) || 0;
-      } catch (e) {
+      } catch {
          return 0;
       }
 	},
@@ -332,8 +331,8 @@ const App = {
 		const hotkeys_map = this.getInitParam("hotkeys");
 
 		for (const seq in hotkeys_map[1]) {
-			if (hotkeys_map[1].hasOwnProperty(seq)) {
-				if (seq == sequence) {
+			if (Object.prototype.hasOwnProperty.call(hotkeys_map[1], seq)) {
+				if (seq === sequence) {
 					return hotkeys_map[1][seq];
 				}
 			}
@@ -345,11 +344,11 @@ const App = {
 		const keycode = event.which;
 		const keychar = String.fromCharCode(keycode);
 
-		if (keycode == 27) { // escape and drop prefix
+		if (keycode === 27) { // escape and drop prefix
 			this.hotkey_prefix = false;
 		}
 
-		if (!this.hotkey_prefix && hotkeys_map[0].indexOf(keychar) != -1) {
+		if (!this.hotkey_prefix && hotkeys_map[0].indexOf(keychar) !== -1) {
 
 			this.hotkey_prefix = keychar;
 			App.byId("cmdline").innerHTML = keychar;
@@ -370,7 +369,7 @@ const App = {
 
 		let hotkey_name = "";
 
-		if (event.type == "keydown") {
+		if (event.type === 'keydown') {
 			hotkey_name = "(" + keycode + ")";
 
 			// ensure ^*char notation
@@ -423,7 +422,7 @@ const App = {
          '/': '&#x2F;',
       };
 
-      return p.replace(/[&<>"'\/]/g, m => map[m]);
+      return p.replace(/[&<>"'/]/g, m => map[m]);
    },
    unescapeHtml: function(p) {
       if (typeof p !== 'string' || p.indexOf('&') === -1)
@@ -473,20 +472,20 @@ const App = {
          const counters = reply['counters'];
          const runtime_info = reply['runtime-info'];
 
-         if (error && error.code && error.code != App.Error.E_SUCCESS) {
+         if (error && error.code && error.code !== App.Error.E_SUCCESS) {
             console.warn("handleRpcJson: fatal error", error);
             this.Error.fatal(error.code, error.params);
             return false;
          }
 
-         if (seq && this.get_seq() != seq) {
+         if (seq && this.get_seq() !== seq) {
             console.warn("handleRpcJson: sequence mismatch: ", seq, '!=', this.get_seq());
             return false;
          }
 
          // not in preferences
-         if (typeof Feeds != "undefined") {
-            if (message == "UPDATE_COUNTERS") {
+         if (typeof Feeds !== 'undefined') {
+            if (message === 'UPDATE_COUNTERS') {
                console.log("need to refresh counters for", reply.feeds);
                Feeds.requestCounters(reply.feeds);
             }
@@ -515,12 +514,12 @@ const App = {
 
          console.log("RI:", k, "=>", v);
 
-         if (k == "daemon_is_running" && v != 1) {
+         if (k === "daemon_is_running" && v !== 1) {
             Notify.error("Update daemon is not running.", true);
             return;
          }
 
-         if (k == "recent_log_events") {
+         if (k === "recent_log_events") {
             const alert = App.find(".log-alert");
 
             if (alert) {
@@ -528,14 +527,14 @@ const App = {
             }
          }
 
-         if (k == "daemon_stamp_ok" && v != 1) {
+         if (k === "daemon_stamp_ok" && v !== 1) {
             Notify.error("Update daemon is not updating feeds.", true);
             return;
          }
 
-         if (typeof Feeds != "undefined") {
-            if (k == "max_feed_id" || k == "num_feeds") {
-               if (this.getInitParam(k) && this.getInitParam(k) != v) {
+         if (typeof Feeds !== 'undefined') {
+            if (k === "max_feed_id" || k === "num_feeds") {
+               if (this.getInitParam(k) && this.getInitParam(k) !== v) {
                   console.log("feed count changed, need to reload feedlist:", this.getInitParam(k), v);
                   Feeds.reload();
                }
@@ -609,13 +608,13 @@ const App = {
       E_SCHEMA_MISMATCH: "E_SCHEMA_MISMATCH",
       E_URL_SCHEME_MISMATCH: "E_URL_SCHEME_MISMATCH",
 		fatal: function (error, params = {}) {
-         if (error == App.Error.E_UNAUTHORIZED) {
+         if (error === App.Error.E_UNAUTHORIZED) {
             window.location.href = "index.php";
             return;
-         } else if (error == App.Error.E_SCHEMA_MISMATCH) {
+         } else if (error === App.Error.E_SCHEMA_MISMATCH) {
             window.location.href = "public.php?op=dbupdate";
             return;
-         } else if (error == App.Error.E_URL_SCHEME_MISMATCH) {
+         } else if (error === App.Error.E_URL_SCHEME_MISMATCH) {
             params.description = __("URL scheme reported by your browser (%a) doesn't match server-configured SELF_URL_PATH (%b), check X-Forwarded-Proto.")
                .replace("%a", params.client_scheme)
                .replace("%b", params.server_scheme);
@@ -702,6 +701,7 @@ const App = {
       this.is_prefs = is_prefs;
       window.onerror = this.Error.onWindowError;
 
+      /* global __default_dark_theme, __default_light_theme */
       this.setInitParam("csrf_token", __csrf_token);
       this.setInitParam("default_light_theme", __default_light_theme);
       this.setInitParam("default_dark_theme", __default_dark_theme);
@@ -744,12 +744,12 @@ const App = {
          }
       });
 
-      if (typeof Promise.allSettled == "undefined") {
+      if (typeof Promise.allSettled === "undefined") {
          errorMsg = `Browser check failed: <code>Promise.allSettled</code> is not defined.`;
          throw new Error(errorMsg);
       }
 
-      return errorMsg == "";
+      return errorMsg === "";
    },
    updateRuntimeInfo: function() {
       xhr.json("backend.php", {op: "RPC", method: "getruntimeinfo"}, () => {
@@ -902,18 +902,17 @@ const App = {
       document.title = tmp;
    },
    hotkeyHandler: function(event) {
-      if (event.target.nodeName == "INPUT" || event.target.nodeName == "TEXTAREA") return;
+      if (event.target.nodeName === "INPUT" || event.target.nodeName === "TEXTAREA") return;
 
       // Arrow buttons and escape are not reported via keypress, handle them via keydown.
       // escape = 27, left = 37, up = 38, right = 39, down = 40, pgup = 33, pgdn = 34, insert = 45, delete = 46
-      if (event.type == "keydown" && event.which != 27 && (event.which < 33 || event.which > 46)) return;
-
+      if (event.type === "keydown" && event.which !== 27 && (event.which < 33 || event.which > 46)) return;
       const action_name = this.keyeventToAction(event);
 
       if (action_name) {
          const action_func = this.hotkey_actions[action_name];
 
-         if (action_func != null) {
+         if (typeof action_func === 'function') {
             action_func(event);
             event.stopPropagation();
             return false;
@@ -1120,7 +1119,7 @@ const App = {
             }
          };
          this.hotkey_actions["email_article"] = () => {
-            if (typeof Plugins.Mail != "undefined") {
+            if (typeof Plugins.Mail !== "undefined") {
                Plugins.Mail.onHotkey(Headlines.getSelected());
             } else {
                alert(__("Please enable mail or mailto plugin first."));
@@ -1145,7 +1144,7 @@ const App = {
             Headlines.select('none');
          };
          this.hotkey_actions["feed_refresh"] = () => {
-            if (typeof Feeds.getActive() != "undefined") {
+            if (typeof Feeds.getActive() !== "undefined") {
                Feeds.open({feed: Feeds.getActive(), is_cat: Feeds.activeIsCat()});
             }
          };
@@ -1191,7 +1190,7 @@ const App = {
                CommonDialogs.editFeed(Feeds.getActive());
          };
          this.hotkey_actions["feed_catchup"] = () => {
-            if (typeof Feeds.getActive() != "undefined") {
+            if (typeof Feeds.getActive() !== "undefined") {
                Feeds.catchupCurrent();
             }
          };
@@ -1254,7 +1253,7 @@ const App = {
             Feeds.toggle();
          };
          this.hotkey_actions["toggle_full_text"] = () => {
-            if (typeof Plugins.Af_Readability != "undefined") {
+            if (typeof Plugins.Af_Readability !== "undefined") {
                if (Article.getActive())
                   Plugins.Af_Readability.embed(Article.getActive());
             } else {

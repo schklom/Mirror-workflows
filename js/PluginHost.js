@@ -24,7 +24,7 @@ const PluginHost = {
 	HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM2: 19,
 	hooks: [],
 	register: function (name, callback) {
-		if (typeof(this.hooks[name]) == 'undefined')
+		if (typeof(this.hooks[name]) === 'undefined')
 			this.hooks[name] = [];
 
 		this.hooks[name].push(callback);
@@ -32,7 +32,7 @@ const PluginHost = {
 	run: function (name, args) {
 		//console.warn('PluginHost.run', name);
 
-		if (typeof(this.hooks[name]) != 'undefined')
+		if (typeof(this.hooks[name]) !== 'undefined')
 			for (let i = 0; i < this.hooks[name].length; i++) {
 				this.hooks[name][i](args);
 			}
@@ -40,9 +40,9 @@ const PluginHost = {
 	run_until: function (name, check, ...args) {
 		//console.warn('PluginHost.run_until', name, check, args);
 
-		if (typeof(this.hooks[name]) != 'undefined')
+		if (typeof(this.hooks[name]) !== 'undefined')
 			for (let i = 0; i < this.hooks[name].length; i++) {
-				if (this.hooks[name][i](args) == check)
+				if (this.hooks[name][i](args) === check)
 					return true;
 			}
 
@@ -50,7 +50,7 @@ const PluginHost = {
 	},
 	unregister: function (name, callback) {
 		for (let i = 0; i < this.hooks[name].length; i++)
-			if (this.hooks[name][i] == callback)
+			if (this.hooks[name][i] === callback)
 				this.hooks[name].splice(i, 1);
 	}
 };

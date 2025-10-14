@@ -1,4 +1,4 @@
-/* global Plugins, Notify, xhr, App */
+/* global __, Plugins, Notify, xhr, App */
 
 Plugins.Share = {
 	clearKeys: function() {

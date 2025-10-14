@@ -63,7 +63,7 @@ require(["dojo/_base/kernel",
 		try {
 			App.init(parser, true);
 		} catch (e) {
-			if (typeof App != "undefined" && App.Error)
+			if (typeof App !== "undefined" && App.Error)
 				App.Error.report(e);
 			else
 				alert(e + "\n\n" + e.stack);

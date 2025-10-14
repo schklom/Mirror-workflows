@@ -1,4 +1,4 @@
-/* global Plugins, __, require, PluginHost, App, dojo */
+/* global Plugins, __, require, PluginHost, App */
 
 Plugins.Shorten_Expanded = {
 	threshold: 1.5, // of window height

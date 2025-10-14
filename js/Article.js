@@ -1,7 +1,6 @@
 'use strict'
 
-/* eslint-disable no-new */
-/* global __, ngettext, App, Headlines, xhr, dojo, dijit, PluginHost, Notify, fox */
+/* global __, ngettext, App, Headlines, xhr, PluginHost, Notify, fox */
 
 const Article = {
 	_scroll_reset_timeout: false,
@@ -166,7 +165,7 @@ const Article = {
 					`<div class='attachments-inline'>
 						${enclosures.entries.map((enc) => {
 							if (!enclosures.inline_text_only) {
-								if (enc.content_type && enc.content_type.indexOf("image/") != -1) {
+								if (enc.content_type && enc.content_type.indexOf("image/") !== -1) {
 									return `<p>
 										<img loading="lazy"
 											width="${enc.width ? enc.width : ''}"
@@ -174,7 +173,7 @@ const Article = {
 											src="${App.escapeHtml(enc.content_url)}"
 											title="${App.escapeHtml(enc.title ? enc.title : enc.content_url)}"/>
 									</p>`
-								} else if (enc.content_type && enc.content_type.indexOf("audio/") != -1 && App.audioCanPlay(enc.content_type)) {
+								} else if (enc.content_type && enc.content_type.indexOf("audio/") !== -1 && App.audioCanPlay(enc.content_type)) {
 									return `<p class='inline-player' title="${App.escapeHtml(enc.content_url)}">
 										<audio preload="none" controls="controls">
 											<source type="${App.escapeHtml(enc.content_type)}" src="${App.escapeHtml(enc.content_url)}"/>
@@ -221,7 +220,7 @@ const Article = {
 
 		try {
 			c.domNode.scrollTop = 0;
-		} catch (e) {
+		} catch {
 		}
 
 		c.attr('content', article);
@@ -231,7 +230,7 @@ const Article = {
 
 		try {
 			c.focus();
-		} catch (e) {
+		} catch {
 		}
 	},
 	formatComments: function(hl) {
@@ -250,7 +249,7 @@ const Article = {
 		return comments;
 	},
 	unpack: function(row) {
-		if (row.getAttribute("data-is-packed") == "1") {
+		if (row.getAttribute("data-is-packed") === "1") {
 			console.log("unpacking: " + row.id);
 
 			const container = row.querySelector(".content-inner");
@@ -260,7 +259,7 @@ const Article = {
 			dojo.parser.parse(container);
 
 			// blank content element might screw up onclick selection and keyboard moving
-			if (container.textContent.length == 0)
+			if (container.textContent.length === 0)
 				container.innerHTML += "&nbsp;";
 
 			// in expandable mode, save content for later, so that we can pack unfocused rows back
@@ -273,7 +272,7 @@ const Article = {
 		}
 	},
 	pack: function(row) {
-		if (row.getAttribute("data-is-packed") != "1") {
+		if (row.getAttribute("data-is-packed") !== "1") {
 			console.log("packing", row.id);
 			row.setAttribute("data-is-packed", "1");
 
@@ -428,7 +427,7 @@ const Article = {
 		}
 	},
 	setActive: function (id) {
-		if (id != Article.getActive()) {
+		if (id !== Article.getActive()) {
 			console.log("setActive", id, "was", Article.getActive());
 
 			App.findAll("div[id*=RROW][class*=active]").forEach((row) => {
@@ -446,17 +445,13 @@ const Article = {
 				row.removeClassName("Unread");
 				row.addClassName("active");
 
-				PluginHost.run(PluginHost.HOOK_ARTICLE_SET_ACTIVE, row.getAttribute("data-article-id"));
+				PluginHost.run(PluginHost.HOOK_ARTICLE_SET_ACTIVE, parseInt(row.getAttribute('data-article-id')));
 			}
 		}
 	},
 	getActive: function () {
 		const row = document.querySelector("#headlines-frame > div[id*=RROW][class*=active]");
-
-		if (row)
-			return row.getAttribute("data-article-id");
-		else
-			return 0;
+		return row ? parseInt(row.getAttribute('data-article-id')) : 0;
 	},
 	scrollByPages: function (page_offset) {
 		App.Scrollable.scrollByPages(App.byId("content-insert"), page_offset);

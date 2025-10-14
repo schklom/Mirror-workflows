@@ -1,5 +1,4 @@
-/* eslint-disable prefer-rest-params */
-/* global __, define, lib, dijit, dojo, xhr, App, Notify, Filters */
+/* global __, define, lib, xhr, App, Notify, Filters */
 
 define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], function (declare, domConstruct) {
 
@@ -29,7 +28,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 
 			if (param) {
 				param = dojo.doc.createElement('ul');
-				param.className = (enabled != false) ? 'actions_summary' : 'actions_summary filterDisabled';
+				param.className = (enabled !== false) ? 'actions_summary' : 'actions_summary filterDisabled';
 				param.innerHTML = args.item.param[0];
 				domConstruct.place(param, tnode.rowNode, 'first');
 			}
@@ -71,10 +70,9 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			return label;
 		},
 		getIconClass: function (item, opened) {
-			// eslint-disable-next-line no-nested-ternary
 			return (!item || this.model.mayHaveChildren(item)) ? (opened ? "dijitFolderOpened" : "dijitFolderClosed") : "invisible";
 		},
-		getRowClass: function (item, opened) {
+		getRowClass: function (item /*, opened */) {
 			const enabled = this.model.store.getValue(item, 'enabled');
 
 			return enabled ? "dijitTreeRow" : "dijitTreeRow filterDisabled";
@@ -85,7 +83,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			// disable copying items
 			source.copyState = function() { return false; };
 
-			return position != 'over';
+			return position !== 'over';
 		},
 		onDndDrop: function() {
 			this.inherited(arguments);
@@ -132,7 +130,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 		joinSelectedFilters: function() {
 			const rows = this.getSelectedFilters();
 
-			if (rows.length == 0) {
+			if (rows.length === 0) {
 				alert(__("No filters selected."));
 				return;
 			}

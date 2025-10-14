@@ -1,11 +1,10 @@
 'use strict';
 
-/* global dijit, App, dojo, __csrf_token */
-/* eslint-disable no-new */
+/* global App, __csrf_token */
 
 /* exported __ */
 function __(msg) {
-	if (typeof App != "undefined") {
+	if (typeof App !== "undefined") {
 		return App.l10n.__(msg);
 	} else {
 		return msg;
@@ -99,59 +98,59 @@ Element.prototype.fadeOut = function() {
 		if ((self.style.opacity -= 0.1) < 0) {
 			self.style.display = "none";
 		} else {
-			requestAnimationFrame(fade);
+			window.requestAnimationFrame(fade);
 		}
 	}());
 };
 
 Element.prototype.fadeIn = function(display = undefined){
 	this.style.opacity = 0;
-	this.style.display = display == undefined ? "block" : display;
+	this.style.display = display === undefined ? "block" : display;
 	const self = this;
 
 	(function fade() {
 		let val = parseFloat(self.style.opacity);
 		if (!((val += 0.1) > 1)) {
 			self.style.opacity = val;
-			requestAnimationFrame(fade);
+			window.requestAnimationFrame(fade);
 		}
 	}());
 };
 
 Element.prototype.visible = function() {
-	return window.getComputedStyle(this).display != "none"; //&& this.offsetHeight != 0 && this.offsetWidth != 0;
+	return window.getComputedStyle(this).display !== "none"; //&& this.offsetHeight !== 0 && this.offsetWidth !== 0;
 }
 
 Element.visible = function(elem) {
-	if (typeof elem == "string")
+	if (typeof elem === "string")
 		elem = document.getElementById(elem);
 
 	return elem.visible();
 }
 
 Element.show = function(elem) {
-	if (typeof elem == "string")
+	if (typeof elem === "string")
 		elem = document.getElementById(elem);
 
 	return elem.show();
 }
 
 Element.hide = function(elem) {
-	if (typeof elem == "string")
+	if (typeof elem === "string")
 		elem = document.getElementById(elem);
 
 	return elem.hide();
 }
 
 Element.toggle = function(elem) {
-	if (typeof elem == "string")
+	if (typeof elem === "string")
 		elem = document.getElementById(elem);
 
 	return elem.toggle();
 }
 
 Element.hasClassName = function (elem, className) {
-	if (typeof elem == "string")
+	if (typeof elem === "string")
 		elem = document.getElementById(elem);
 
 	return elem.hasClassName(className);
@@ -159,7 +158,7 @@ Element.hasClassName = function (elem, className) {
 
 Array.prototype.remove = function(s) {
 	for (let i=0; i < this.length; i++) {
-		if (s == this[i]) this.splice(i, 1);
+		if (s === this[i]) this.splice(i, 1);
 	}
 };
 
@@ -176,14 +175,14 @@ const xhr = {
 		console.log('xhr.post', '>>>', params);
 
 		return new Promise((resolve, reject) => {
-			if (typeof __csrf_token != "undefined")
+			if (typeof __csrf_token !== "undefined")
 				params = {...params, ...{csrf_token: __csrf_token}};
 
 			dojo.xhrPost({url: url,
 				postData: dojo.objectToQuery(params),
 				handleAs: "text",
 				error: function(error) {
-					if (failed != undefined)
+					if (failed !== undefined)
 						failed(error);
 
 					reject(error);
@@ -191,7 +190,7 @@ const xhr = {
 				load: function(data, ioargs) {
 					console.log('xhr.post', '<<<', ioargs.xhr, (new Date().getTime() - xhr._ts) + " ms");
 
-					if (complete != undefined)
+					if (typeof complete === 'function')
 						complete(data, ioargs.xhr);
 
 					resolve(data)
@@ -209,7 +208,7 @@ const xhr = {
 				} catch (e) {
 					console.error("xhr.json", e, xhr);
 
-					if (failed != undefined)
+					if (typeof failed === 'function')
 						failed(e);
 
 					reject(e);
@@ -218,21 +217,22 @@ const xhr = {
 
 				console.log('xhr.json', '<<<', obj, (new Date().getTime() - xhr._ts) + " ms");
 
-				if (obj && typeof App != "undefined")
+				if (obj && typeof App !== 'undefined') {
 					if (!App.handleRpcJson(obj)) {
 
-						if (failed != undefined)
+						if (typeof failed === 'function')
 							failed(obj);
 
 						reject(obj);
 						return;
 					}
+				}
 
-				if (complete != undefined) complete(obj);
+				if (typeof complete === 'function')
+					complete(obj);
 
 				resolve(obj);
-			}
-		));
+			}));
 	}
 };
 
@@ -241,7 +241,7 @@ function xhrPost(url, params = {}, complete = undefined) {
 	console.log("xhrPost:", params);
 
 	return new Promise((resolve, reject) => {
-		if (typeof __csrf_token != "undefined")
+		if (typeof __csrf_token !== "undefined")
 			params = {...params, ...{csrf_token: __csrf_token}};
 
 		dojo.xhrPost({url: url,
@@ -251,7 +251,7 @@ function xhrPost(url, params = {}, complete = undefined) {
 				reject(error);
 			},
 			load: function(data, ioargs) {
-				if (complete != undefined)
+				if (complete !== undefined)
 					complete(ioargs.xhr);
 
 				resolve(ioargs.xhr)
@@ -279,7 +279,7 @@ const Lists = {
 			checked ? row.addClassName("Selected") : row.removeClassName("Selected");
 	},
 	select: function(elem, selected) {
-		if (typeof elem == "string")
+		if (typeof elem === "string")
 			elem = document.getElementById(elem);
 
 		elem.querySelectorAll("li").forEach((row) => {
@@ -300,7 +300,7 @@ const Lists = {
 	getSelected: function(elem) {
 		const rv = [];
 
-		if (typeof elem == "string")
+		if (typeof elem === "string")
 			elem = document.getElementById(elem);
 
 		elem.querySelectorAll("li").forEach((row) => {
@@ -337,7 +337,7 @@ const Tables = {
 
 	},
 	select: function(elem, selected) {
-		if (typeof elem == "string")
+		if (typeof elem === "string")
 			elem = document.getElementById(elem);
 
 		elem.querySelectorAll("tr").forEach((row) => {
@@ -358,7 +358,7 @@ const Tables = {
 	getSelected: function(elem) {
 		const rv = [];
 
-		if (typeof elem == "string")
+		if (typeof elem === "string")
 			elem = document.getElementById(elem);
 
 		elem.querySelectorAll("tr").forEach((row) => {
@@ -394,8 +394,8 @@ const Cookie = {
 		const ca = document.cookie.split(';');
 		for (let i=0; i < ca.length; i++) {
 			let c = ca[i];
-			while (c.charAt(0) == ' ') c = c.substring(1);
-			if (c.indexOf(name) == 0) return decodeURIComponent(c.substring(name.length, c.length));
+			while (c.charAt(0) === ' ') c = c.substring(1);
+			if (c.indexOf(name) === 0) return decodeURIComponent(c.substring(name.length, c.length));
 		}
 		return "";
 	},
@@ -455,7 +455,7 @@ const Notify = {
 		}
 
 		if (icon)
-			if (icon.indexOf("data:image") != -1)
+			if (icon.indexOf("data:image") !== -1)
 				msgfmt = "<img src=\"%s\">".replace("%s", icon) + msgfmt;
 			else
 				msgfmt = "<i class='material-icons icon-notify'>%s</i>".replace("%s", icon) + msgfmt;

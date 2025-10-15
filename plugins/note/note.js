@@ -5,7 +5,7 @@ require(['dojo/_base/kernel', 'dojo/ready'], function  (dojo, ready) {
 
 		Plugins.Note = {
 			set_click_handler: function() {
-				App.findAll(".article-note[data-note-for]").forEach((note) => {
+				document.querySelectorAll('.article-note[data-note-for]').forEach((note) => {
 					note.onclick = function() {
 						Plugins.Note.edit(this.getAttribute('data-note-for'));
 					}
@@ -23,13 +23,9 @@ require(['dojo/_base/kernel', 'dojo/ready'], function  (dojo, ready) {
 								dialog.hide();
 
 								if (reply) {
-									App.findAll(`div[data-note-for="${reply.id}"]`).forEach((elem) => {
-										elem.querySelector(".body").innerHTML = reply.note;
-
-										if (reply.note)
-											elem.show();
-										else
-											elem.hide();
+									document.querySelectorAll(`div[data-note-for="${reply.id}"]`).forEach((elem) => {
+										elem.querySelector('.body').innerHTML = reply.note;
+										reply.note ? elem.show() : elem.hide();
 									});
 								}
 							});

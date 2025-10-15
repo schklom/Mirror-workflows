@@ -309,7 +309,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 
 				// focus headlines to route key events there
 				setTimeout(() => {
-					App.byId("headlines-frame").focus();
+					document.getElementById("headlines-frame").focus();
 
 					if (treeNode) {
 						const node = treeNode.rowNode;
@@ -318,7 +318,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 						if (node && tree) {
 							// scroll tree to selection if needed
 							if (node.offsetTop < tree.scrollTop || node.offsetTop > tree.scrollTop + tree.clientHeight) {
-								App.byId("feedTree").scrollTop = node.offsetTop;
+								document.getElementById("feedTree").scrollTop = node.offsetTop;
 							}
 						}
 					}
@@ -360,11 +360,11 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 				treeNode = treeNode[0];
 
 				if (show) {
-					treeNode.loadingNode.addClassName("visible");
+					treeNode.loadingNode.classList.add('visible');
 					treeNode.loadingNode.setAttribute("src",
 						is_cat ? App.getInitParam("icon_three_dots") : App.getInitParam("icon_oval"));
 				} else {
-					treeNode.loadingNode.removeClassName("visible");
+					treeNode.loadingNode.classList.remove('visible');
 					treeNode.loadingNode.setAttribute("src", App.getInitParam("icon_blank"))
 				}
 

@@ -1,4 +1,4 @@
-/* global __, define, lib, xhr, App, Notify, Filters */
+/* global __, define, lib, xhr, Notify, Filters */
 
 define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], function (declare, domConstruct) {
 
@@ -101,7 +101,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			return rv;
 		},
 		reload: function() {
-			const user_search = App.byId("filter_search");
+			const user_search = document.getElementById("filter_search");
 			let search = "";
 			if (user_search) { search = user_search.value; }
 
@@ -111,7 +111,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree"], functio
 			});
 		},
 		hideOrShowFilterRules(hide) {
-			App.findAll("body")[0].setAttribute("hide-filter-rules", !!hide);
+			document.body.setAttribute('hide-filter-rules', !!hide);
 		},
 		toggleRules: function() {
 			const hide = !parseInt(localStorage.getItem("ttrss:hide-filter-rules"));

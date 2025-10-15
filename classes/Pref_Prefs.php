@@ -345,14 +345,14 @@ class Pref_Prefs extends Handler_Protected {
 							Notify.close();
 							if (reply.indexOf('ERROR: ') == 0) {
 
-								App.byId('pwd_change_infobox').innerHTML =
+								document.getElementById('pwd_change_infobox').innerHTML =
 								reply.replace('ERROR: ', '');
 
 							} else {
-								App.byId('pwd_change_infobox').innerHTML =
+								document.getElementById('pwd_change_infobox').innerHTML =
 								reply.replace('ERROR: ', '');
 
-								const warn = App.byId('default_pass_warning');
+								const warn = document.getElementById('default_pass_warning');
 								if (warn) Element.hide(warn);
 							}
 

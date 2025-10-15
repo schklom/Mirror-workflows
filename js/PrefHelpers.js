@@ -8,7 +8,7 @@ const	Helpers = {
 			return Tables.getSelected("app-password-list");
 		},
 		updateContent: function(data) {
-			App.byId("app_passwords_holder").innerHTML = data;
+			document.getElementById("app_passwords_holder").innerHTML = data;
 			dojo.parser.parse("app_passwords_holder");
 		},
 		removeSelected: function() {
@@ -264,7 +264,7 @@ const	Helpers = {
 				apply: function() {
 					xhr.post("backend.php", this.attr('value'), () => {
 						Element.show("css_edit_apply_msg");
-						App.byId("user_css_style").innerText = this.attr('value');
+						document.getElementById("user_css_style").innerText = this.attr('value');
 					});
 				},
 				execute: function () {
@@ -728,7 +728,7 @@ const	Helpers = {
 										dialog.plugins_to_update.push(p.plugin);
 
 										const update_button = dijit.getEnclosingWidget(
-											App.find(`*[data-update-btn-for-plugin="${p.plugin}"]`));
+											document.querySelector(`*[data-update-btn-for-plugin="${p.plugin}"]`));
 
 										if (update_button)
 											update_button.domNode.show();
@@ -784,7 +784,7 @@ const	Helpers = {
 	},
 	OPML: {
 		import: function() {
-			const opml_file = App.byId("opml_file");
+			const opml_file = document.getElementById("opml_file");
 
 			if (opml_file.value.length === 0) {
 				alert(__("Please choose an OPML file first."));
@@ -826,7 +826,7 @@ const	Helpers = {
 					dialog.show();
 				};
 
-				xhr.send(new FormData(App.byId("opml_import_form")));
+				xhr.send(new FormData(document.getElementById("opml_import_form")));
 
 				return false;
 			}

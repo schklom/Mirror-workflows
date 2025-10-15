@@ -143,8 +143,8 @@ const	Feeds = {
 	},
    onViewModeChanged: function() {
 		// TODO: is this still needed?
-      App.find("body").setAttribute("view-mode",
-			dijit.byId("toolbar-main").getValues().view_mode);
+      document.body.setAttribute('view-mode',
+			dijit.byId('toolbar-main').getValues().view_mode);
 
       return Feeds.reloadCurrent('');
    },
@@ -227,7 +227,7 @@ const	Feeds = {
 				dojo.disconnect(tmph);
 			});
 
-			App.byId("feeds-holder").appendChild(tree.domNode);
+			document.getElementById("feeds-holder").appendChild(tree.domNode);
 
 			const tmph2 = dojo.connect(tree, 'onLoad', function () {
 				dojo.disconnect(tmph2);
@@ -247,13 +247,13 @@ const	Feeds = {
 		}
 	},
 	onHide: function() {
-		App.byId("feeds-holder_splitter").hide();
+		document.getElementById("feeds-holder_splitter").hide();
 
 		dijit.byId("main").resize();
 		Headlines.updateCurrentUnread();
 	},
 	onShow: function() {
-		App.byId("feeds-holder_splitter").show();
+		document.getElementById("feeds-holder_splitter").show();
 
 		dijit.byId("main").resize();
 		Headlines.updateCurrentUnread();
@@ -261,7 +261,7 @@ const	Feeds = {
 	init: function() {
 		console.log("in feedlist init");
 
-		this._feeds_holder_observer.observe(App.byId("feeds-holder"));
+		this._feeds_holder_observer.observe(document.getElementById("feeds-holder"));
 
 		App.setLoadingProgress(50);
 
@@ -350,7 +350,7 @@ const	Feeds = {
 		this._active_feed_id = id;
 		this._active_feed_is_cat = is_cat;
 
-		const container = App.byId("headlines-frame");
+		const container = document.getElementById("headlines-frame");
 
 		// TODO @deprecated: these two should be removed (replaced with data- attributes below)
 		container.setAttribute("feed-id", id);
@@ -383,8 +383,8 @@ const	Feeds = {
 		if (tree)
 			return tree.hideRead(hide, App.getInitParam("hide_read_shows_special"));*/
 
-		App.findAll("body")[0].setAttribute("hide-read-feeds", !!hide);
-		App.findAll("body")[0].setAttribute("hide-read-shows-special", !!App.getInitParam("hide_read_shows_special"));
+		document.body.setAttribute('hide-read-feeds', !!hide);
+		document.body.setAttribute('hide-read-shows-special', !!App.getInitParam('hide_read_shows_special'));
 	},
 	open: function(params) {
 		const feed = params.feed;
@@ -531,12 +531,8 @@ const	Feeds = {
 		const str = __("Mark all articles in %s as read?").replace("%s", title);
 
 		if (App.getInitParam("confirm_feed_catchup") !== 1 || confirm(str)) {
-
-			const rows = App.findAll("#headlines-frame > div[id*=RROW][class*=Unread][data-orig-feed-id='" + id + "']");
-
-			rows.forEach((row) => {
-				row.removeClassName("Unread");
-			})
+			document.querySelectorAll("#headlines-frame > div[id*=RROW][class*=Unread][data-orig-feed-id='" + id + "']")
+				.forEach(row => row.classList.remove('Unread'));
 		}
 	},
 	getUnread: function(feed, is_cat) {

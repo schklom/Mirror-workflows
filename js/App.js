@@ -140,15 +140,6 @@ const App = {
          }
       }
    },
-   byId: function(id) {
-      return document.getElementById(id);
-   },
-   find: function(query) {
-      return document.querySelector(query)
-   },
-   findAll: function(query) {
-      return document.querySelectorAll(query);
-   },
    dialogOf: function (elem) {
 
       // elem could be a Dijit widget
@@ -193,12 +184,12 @@ const App = {
 		}
 	},
 	setupNightModeDetection: function(callback) {
-		if (!App.byId("theme_css")) {
+		if (!document.getElementById("theme_css")) {
 			const mql = window.matchMedia('(prefers-color-scheme: dark)');
 
 			try {
 				mql.addEventListener("change", () => {
-					this.nightModeChanged(mql.matches, App.byId("theme_auto_css"));
+					this.nightModeChanged(mql.matches, document.getElementById("theme_auto_css"));
 				});
 			} catch {
 				console.warn("exception while trying to set MQL event listener");
@@ -210,7 +201,7 @@ const App = {
 
 			if (callback) {
 						link.onload = function() {
-							document.querySelector("body").removeClassName("css_loading");
+							document.body.classList.remove('css_loading');
 							callback();
 						};
 
@@ -221,9 +212,9 @@ const App = {
 
 			this.nightModeChanged(mql.matches, link);
 
-			document.querySelector("head").appendChild(link);
+			document.head.appendChild(link);
 		} else {
-			document.querySelector("body").removeClassName("css_loading");
+			document.body.classList.remove('css_loading');
 
 			if (callback) callback();
 		}
@@ -298,7 +289,7 @@ const App = {
 			dijit.byId("loading_bar").update({progress: this._loading_progress});
 
 		if (this._loading_progress >= 90) {
-			App.byId("overlay").hide();
+			document.getElementById("overlay").hide();
 		}
 
 	},
@@ -355,7 +346,7 @@ const App = {
 		if (!this.hotkey_prefix && hotkeys_map[0].indexOf(keychar) !== -1) {
 
 			this.hotkey_prefix = keychar;
-			App.byId("cmdline").innerHTML = keychar;
+			document.getElementById("cmdline").innerHTML = keychar;
 			Element.show("cmdline");
 
 			window.clearTimeout(this.hotkey_prefix_timeout);
@@ -408,7 +399,7 @@ const App = {
 			dojo.destroy(d.domNode);
 		});
 
-		App.findAll("#" + root + " *").forEach(function (i) {
+		document.querySelectorAll(`#${root} *`).forEach(function (i) {
 			i.parentNode ? i.parentNode.removeChild(i) : true;
 		});
    },
@@ -467,7 +458,7 @@ const App = {
    },
 	handleRpcJson: function(reply) {
 
-		const netalert = App.find(".net-alert");
+		const netalert = document.querySelector('.net-alert');
 
       if (reply) {
          const error = reply['error'];
@@ -524,7 +515,7 @@ const App = {
          }
 
          if (k === "recent_log_events") {
-            const alert = App.find(".log-alert");
+            const alert = document.querySelector('.log-alert');
 
             if (alert) {
                v > 0 ? alert.show() : alert.hide();
@@ -565,7 +556,7 @@ const App = {
                   break;
                case "cdm_auto_catchup":
                   {
-                     const headlines = App.byId("headlines-frame");
+                     const headlines = document.getElementById("headlines-frame");
 
                   // we could be in preferences
                      if (headlines)
@@ -876,7 +867,7 @@ const App = {
          .then((reply) => {
             console.log('update reply', reply);
 
-            const icon = App.byId("updates-available");
+            const icon = document.getElementById("updates-available");
 
             if (reply.changeset.id || reply.plugins.length > 0) {
                icon.show();
@@ -936,7 +927,7 @@ const App = {
 		this._widescreen_mode = wide;
 
       const article_id = Article.getActive();
-      const headlines_frame = App.byId("headlines-frame");
+      const headlines_frame = document.getElementById("headlines-frame");
       const content_insert = dijit.byId("content-insert");
 
       // TODO: setStyle stuff should probably be handled by CSS
@@ -1238,15 +1229,11 @@ const App = {
          this.hotkey_actions["goto_prefs"] = () => {
             App.openPreferences();
          };
-         this.hotkey_actions["select_article_cursor"] = () => {
-            const id = Article.getUnderPointer();
-            if (id) {
-               const row = App.byId(`RROW-${id}`);
-
-               if (row)
-                  row.toggleClassName("Selected");
-            }
-         };
+			this.hotkey_actions['select_article_cursor'] = () => {
+				const id = Article.getUnderPointer();
+				if (id)
+					document.getElementById(`RROW-${id}`)?.classList.toggle('Selected');
+			};
          this.hotkey_actions["create_label"] = () => {
             CommonDialogs.addLabel();
          };

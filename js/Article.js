@@ -36,7 +36,7 @@ const Article = {
 
 			if (!isNaN(parseInt(score))) {
 				ids.forEach((id) => {
-					const row = App.byId(`RROW-${id}`);
+					const row = document.getElementById(`RROW-${id}`);
 
 					if (row) {
 						row.setAttribute("data-score", score);
@@ -46,13 +46,8 @@ const Article = {
 						pic.innerHTML = Article.getScorePic(score);
 						pic.setAttribute("title", score);
 
-						["score-low", "score-high", "score-half-low", "score-half-high", "score-neutral"]
-							.forEach(function(scl) {
-								if (row.hasClassName(scl))
-									row.removeClassName(scl);
-							});
-
-						row.addClassName(Article.getScoreClass(score));
+						row.classList.remove('score-low', 'score-high', 'score-half-low', 'score-half-high', 'score-neutral');
+						row.classList.add(Article.getScoreClass(score));
 					}
 				});
 			}
@@ -76,13 +71,8 @@ const Article = {
 				pic.innerHTML = Article.getScorePic(score);
 				pic.setAttribute("title", score);
 
-				["score-low", "score-high", "score-half-low", "score-half-high", "score-neutral"]
-					.forEach(function(scl) {
-						if (row.hasClassName(scl))
-							row.removeClassName(scl);
-					});
-
-				row.addClassName(Article.getScoreClass(score));
+				row.classList.remove('score-low', 'score-high', 'score-half-low', 'score-half-high', 'score-neutral');
+				row.classList.add(Article.getScoreClass(score));
 			}
 		}
 	},
@@ -93,20 +83,20 @@ const Article = {
 		w.location = url;
 	},
 	cdmToggleGridSpan: function(id) {
-		const row = App.byId(`RROW-${id}`);
+		const row = document.getElementById(`RROW-${id}`);
 
 		if (row) {
-			row.toggleClassName('grid-span-row');
+			row.classList.toggle('grid-span-row');
 
 			this.setActive(id);
 			this.cdmMoveToId(id);
 		}
 	},
 	cdmUnsetActive: function (event) {
-		const row = App.byId(`RROW-${Article.getActive()}`);
+		const row = document.getElementById(`RROW-${Article.getActive()}`);
 
 		if (row) {
-			row.removeClassName("active");
+			row.classList.remove('active');
 
 			if (event)
 				event.stopPropagation();
@@ -263,7 +253,7 @@ const Article = {
 				container.innerHTML += "&nbsp;";
 
 			// in expandable mode, save content for later, so that we can pack unfocused rows back
-			if (App.isCombinedMode() && App.byId("main").hasClassName("expandable"))
+			if (App.isCombinedMode() && document.getElementById('main').classList.contains('expandable'))
 				row.setAttribute("data-content-original", row.getAttribute("data-content"));
 
 			row.setAttribute("data-is-packed", "0");
@@ -330,7 +320,7 @@ const Article = {
 		return false;
 	},
 	autocompleteInject: function(elem, targetId) {
-		const target = App.byId(targetId);
+		const target = document.getElementById(targetId);
 
 		if (!target)
 			return;
@@ -393,15 +383,15 @@ const Article = {
 
 			xhr.json("backend.php", {op: "Article", method: "printArticleTags", id: id}, (reply) => {
 
-				dijit.getEnclosingWidget(App.byId("tags_str"))
+				dijit.getEnclosingWidget(document.getElementById("tags_str"))
 					.attr('value', reply.tags.join(", "))
 					.attr('disabled', false);
 
-				App.byId('tags_str').onkeyup = (e) => {
+				document.getElementById('tags_str').onkeyup = (e) => {
 					const last_tag = e.target.value.split(',').pop().trim();
 
 					xhr.json("backend.php", {op: 'Article', method: 'completeTags', search: last_tag}, (data) => {
-						App.byId("tags_choices").innerHTML = `${data.map((tag) =>
+						document.getElementById("tags_choices").innerHTML = `${data.map((tag) =>
 							`<a href="#" onclick="Article.autocompleteInject(this, 'tags_str')">${tag}</a>` )
 								.join(', ')}`
 					});
@@ -415,8 +405,8 @@ const Article = {
 	cdmMoveToId: function (id, params = {}) {
 		const force_to_top = params.force_to_top || false;
 
-		const ctr = App.byId("headlines-frame");
-		const row = App.byId(`RROW-${id}`);
+		const ctr = document.getElementById("headlines-frame");
+		const row = document.getElementById(`RROW-${id}`);
 
 		if (ctr && row) {
 			const grid_gap = parseInt(window.getComputedStyle(ctr).gridGap) || 0;
@@ -430,20 +420,20 @@ const Article = {
 		if (id !== Article.getActive()) {
 			console.log("setActive", id, "was", Article.getActive());
 
-			App.findAll("div[id*=RROW][class*=active]").forEach((row) => {
-				row.removeClassName("active");
+			document.querySelectorAll('div[id*=RROW][class*=active]').forEach((row) => {
+				row.classList.remove('active');
 
 				if (App.isCombinedMode() && !App.getInitParam("cdm_expanded"))
 					Article.pack(row);
 			});
 
-			const row = App.byId(`RROW-${id}`);
+			const row = document.getElementById(`RROW-${id}`);
 
 			if (row) {
 				Article.unpack(row);
 
-				row.removeClassName("Unread");
-				row.addClassName("active");
+				row.classList.remove('Unread');
+				row.classList.add('active');
 
 				PluginHost.run(PluginHost.HOOK_ARTICLE_SET_ACTIVE, parseInt(row.getAttribute('data-article-id')));
 			}
@@ -454,10 +444,10 @@ const Article = {
 		return row ? parseInt(row.getAttribute('data-article-id')) : 0;
 	},
 	scrollByPages: function (page_offset) {
-		App.Scrollable.scrollByPages(App.byId("content-insert"), page_offset);
+		App.Scrollable.scrollByPages(document.getElementById("content-insert"), page_offset);
 	},
 	scroll: function (offset) {
-		App.Scrollable.scroll(App.byId("content-insert"), offset);
+		App.Scrollable.scroll(document.getElementById("content-insert"), offset);
 	},
 	mouseIn: function (id) {
 		this.post_under_pointer = id;

@@ -209,7 +209,7 @@ class Pref_System extends Handler_Administrative {
 							evt.preventDefault();
 							if (this.validate()) {
 								xhr.json("backend.php", this.getValues(), (reply) => {
-									const msg = App.byId("mail-test-result");
+									const msg = document.getElementById("mail-test-result");
 
 									if (reply.rc) {
 										msg.innerHTML = __("Mail sent.");

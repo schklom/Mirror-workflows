@@ -67,15 +67,15 @@ const Headlines = {
 					if (hl) {
 						const hl_old = {...{}, ...hl};
 
-						hl.unread = row.hasClassName("Unread");
-						hl.marked = row.hasClassName("marked");
-						hl.published = row.hasClassName("published");
+						hl.unread = row.classList.contains('Unread');
+						hl.marked = row.classList.contains('marked');
+						hl.published = row.classList.contains('published');
 
 						// not sent by backend
-						hl.selected = row.hasClassName("Selected");
-						hl.active = row.hasClassName("active");
+						hl.selected = row.classList.contains('Selected');
+						hl.active = row.classList.contains('active');
 
-						hl.score = row.getAttribute("data-score");
+						hl.score = row.getAttribute('data-score');
 
 						modified.push({id: hl.id, new: hl, old: hl_old, row: row});
 					}
@@ -138,7 +138,7 @@ const Headlines = {
 		ops.deselect.forEach((row) => {
 			const cb = dijit.getEnclosingWidget(row.querySelector(".rchk"));
 
-			if (cb && !row.hasClassName("active"))
+			if (cb && !row.classList.contains('active'))
 				cb.attr('checked', false);
 		});
 
@@ -152,7 +152,7 @@ const Headlines = {
 		ops.deactivate.forEach((row) => {
 			const cb = dijit.getEnclosingWidget(row.querySelector(".rchk"));
 
-			if (cb && !row.hasClassName("Selected"))
+			if (cb && !row.classList.contains('Selected'))
 				cb.attr('checked', false);
 		});
 
@@ -239,7 +239,7 @@ const Headlines = {
 
 					Headlines.select('none');
 
-					const scroll_position_A = App.byId(`RROW-${id}`).offsetTop - App.byId("headlines-frame").scrollTop;
+					const scroll_position_A = document.getElementById(`RROW-${id}`).offsetTop - document.getElementById("headlines-frame").scrollTop;
 
 					Article.setActive(id);
 
@@ -250,10 +250,10 @@ const Headlines = {
 
 						Headlines.toggleUnread(id, 0);
 					} else {
-						const scroll_position_B = App.byId(`RROW-${id}`).offsetTop - App.byId("headlines-frame").scrollTop;
+						const scroll_position_B = document.getElementById(`RROW-${id}`).offsetTop - document.getElementById("headlines-frame").scrollTop;
 
 						// this would only work if there's enough space
-						App.byId("headlines-frame").scrollTop -= scroll_position_A-scroll_position_B;
+						document.getElementById("headlines-frame").scrollTop -= scroll_position_A-scroll_position_B;
 
 						if (this.default_move_on_expand)
 							Article.cdmMoveToId(id);
@@ -280,7 +280,7 @@ const Headlines = {
 		return false;
 	},
 	initScrollHandler: function () {
-		App.byId("headlines-frame").onscroll = (event) => {
+		document.getElementById("headlines-frame").onscroll = (event) => {
 			clearTimeout(this._headlines_scroll_timeout);
 			this._headlines_scroll_timeout = window.setTimeout(function () {
 				//console.log('done scrolling', event);
@@ -290,8 +290,8 @@ const Headlines = {
 	},
 	loadMore: function () {
 		const view_mode = dijit.byId("toolbar-main").getValues().view_mode;
-		const unread_in_buffer = App.findAll("#headlines-frame > div[id*=RROW][class*=Unread]").length;
-		const num_all = App.findAll("#headlines-frame > div[id*=RROW]").length;
+		const unread_in_buffer = document.querySelectorAll('#headlines-frame > div[id*=RROW][class*=Unread]').length;
+		const num_all = document.querySelectorAll('#headlines-frame > div[id*=RROW]').length;
 		const num_unread = Feeds.getUnread(Feeds.getActive(), Feeds.activeIsCat());
 
 		// TODO implement marked & published
@@ -317,10 +317,10 @@ const Headlines = {
 		Feeds.open({feed: Feeds.getActive(), is_cat: Feeds.activeIsCat(), offset: offset, append: true});
 	},
 	isChildVisible: function (elem) {
-		return App.Scrollable.isChildVisible(elem, App.byId("headlines-frame"));
+		return App.Scrollable.isChildVisible(elem, document.getElementById("headlines-frame"));
 	},
 	firstVisible: function () {
-		const rows = App.findAll("#headlines-frame > div[id*=RROW]");
+		const rows = document.querySelectorAll('#headlines-frame > div[id*=RROW]');
 
 		for (let i = 0; i < rows.length; i++) {
 			const row = rows[i];
@@ -331,7 +331,7 @@ const Headlines = {
 		}
 	},
 	unpackVisible: function(container) {
-		const rows = App.findAll("#headlines-frame > div[id*=RROW][data-content].cdm");
+		const rows = document.querySelectorAll('#headlines-frame > div[id*=RROW][data-content].cdm');
 
 		for (let i = 0; i < rows.length; i++) {
 			if (App.Scrollable.isChildVisible(rows[i], container)) {
@@ -343,8 +343,8 @@ const Headlines = {
 	scrollHandler: function (/*event*/) {
 		try {
 			if (!Feeds.infscroll_disabled && !Feeds.infscroll_in_progress) {
-				const hsp = App.byId("headlines-spacer");
-				const container = App.byId("headlines-frame");
+				const hsp = document.getElementById("headlines-spacer");
+				const container = document.getElementById("headlines-frame");
 
 				if (hsp && hsp.previousSibling) {
 					const last_row = hsp.previousSibling;
@@ -361,7 +361,7 @@ const Headlines = {
 			}
 
 			if (App.isCombinedMode() && App.getInitParam("cdm_expanded")) {
-				const container = App.byId("headlines-frame")
+				const container = document.getElementById("headlines-frame")
 
 				/* don't do anything until there was some scrolling */
 				if (container.scrollTop > 0)
@@ -370,13 +370,13 @@ const Headlines = {
 
 			if (App.getInitParam("cdm_auto_catchup")) {
 
-				const rows = App.findAll("#headlines-frame > div[id*=RROW][class*=Unread]");
+				const rows = document.querySelectorAll('#headlines-frame > div[id*=RROW][class*=Unread]');
 
 				for (let i = 0; i < rows.length; i++) {
 					const row = rows[i];
 
-					if (App.byId("headlines-frame").scrollTop > (row.offsetTop + row.offsetHeight / 2)) {
-						row.removeClassName("Unread");
+					if (document.getElementById("headlines-frame").scrollTop > (row.offsetTop + row.offsetHeight / 2)) {
+						row.classList.remove('Unread');
 					} else {
 						break;
 					}
@@ -393,29 +393,27 @@ const Headlines = {
 		return this.headlines[id];
 	},
 	setCommonClasses: function (headlines_count) {
-		const container = App.byId("headlines-frame");
+		const container = document.getElementById("headlines-frame");
 
-		container.removeClassName("cdm");
-		container.removeClassName("normal");
+		container.classList.remove('cdm', 'normal');
 
-		container.addClassName(App.isCombinedMode() ? "cdm" : "normal");
+		container.classList.add(App.isCombinedMode() ? 'cdm' : 'normal');
 		container.setAttribute("data-enable-grid", App.getInitParam("cdm_enable_grid") ? "true" : "false");
 		container.setAttribute("data-headlines-count", parseInt(headlines_count));
 		container.setAttribute("data-is-cdm", App.isCombinedMode() ? "true" : "false");
 		container.setAttribute("data-is-cdm-expanded", App.getInitParam("cdm_expanded"));
 
 		// for floating title because it's placed outside of headlines-frame
-		App.byId("main").removeClassName("expandable");
-		App.byId("main").removeClassName("expanded");
+		document.getElementById('main').classList.remove('expandable', 'expanded');
 
 		if (App.isCombinedMode())
-			App.byId("main").addClassName(App.getInitParam("cdm_expanded") ? "expanded" : "expandable");
+			document.getElementById('main').classList.add(App.getInitParam('cdm_expanded') ? 'expanded' : 'expandable');
 	},
 	renderAgain: function () {
 		// TODO: wrap headline elements into a knockoutjs model to prevent all this stuff
 		Headlines.setCommonClasses(this.headlines.filter((h) => h.id).length);
 
-		App.findAll("#headlines-frame > div[id*=RROW]").forEach((row) => {
+		document.querySelectorAll('#headlines-frame > div[id*=RROW]').forEach((row) => {
 			const id = parseInt(row.getAttribute('data-article-id'));
 			const hl = this.headlines[id];
 
@@ -425,7 +423,7 @@ const Headlines = {
 				row.parentNode.replaceChild(new_row, row);
 
 				if (hl.active) {
-					new_row.addClassName("active");
+					new_row.classList.add('active');
 					Article.unpack(new_row);
 
 					if (App.isCombinedMode())
@@ -438,16 +436,16 @@ const Headlines = {
 			}
 		});
 
-		App.findAll(".cdm .header-sticky-guard").forEach((e) => {
+		document.querySelectorAll('.cdm .header-sticky-guard').forEach((e) => {
 			this.sticky_header_observer.observe(e)
 		});
 
-		App.findAll(".cdm .content").forEach((e) => {
+		document.querySelectorAll('.cdm .content').forEach((e) => {
 			this.sticky_content_observer.observe(e)
 		});
 
 		if (App.getInitParam("cdm_expanded"))
-			App.findAll("#headlines-frame > div[id*=RROW].cdm").forEach((e) => {
+			document.querySelectorAll('#headlines-frame > div[id*=RROW].cdm').forEach((e) => {
 				this.unpack_observer.observe(e)
 			});
 
@@ -478,7 +476,7 @@ const Headlines = {
 			const tmp = document.createElement("div");
 			tmp.innerHTML = vgrhdr;
 
-			App.byId("headlines-frame").appendChild(tmp.firstChild);
+			document.getElementById("headlines-frame").appendChild(tmp.firstChild);
 
 			this.vgroup_last_feed = hl.feed_id;
 		}
@@ -611,11 +609,11 @@ const Headlines = {
 		return tmp.firstChild;
 	},
 	updateCurrentUnread: function () {
-		if (App.byId("feed_current_unread")) {
+		if (document.getElementById("feed_current_unread")) {
 			const feed_unread = Feeds.getUnread(Feeds.getActive(), Feeds.activeIsCat());
 
 			if (feed_unread > 0 && !Element.visible("feeds-holder")) {
-				App.byId("feed_current_unread").innerText = feed_unread;
+				document.getElementById("feed_current_unread").innerText = feed_unread;
 				Element.show("feed_current_unread");
 			} else {
 				Element.hide("feed_current_unread");
@@ -764,18 +762,19 @@ const Headlines = {
 				Headlines.setCommonClasses(headlines_count);
 
 				/** TODO: remove @deprecated */
-				App.byId("headlines-frame").setAttribute("is-vfeed",
+				document.getElementById("headlines-frame").setAttribute("is-vfeed",
 					reply['headlines']['is_vfeed'] ? 1 : 0);
 
-				App.byId("headlines-frame").setAttribute("data-is-vfeed",
+				document.getElementById("headlines-frame").setAttribute("data-is-vfeed",
 					reply['headlines']['is_vfeed'] ? "true" : "false");
 
 				Article.setActive(0);
 
 				try {
-					App.byId("headlines-frame").removeClassName("smooth-scroll");
-					App.byId("headlines-frame").scrollTop = 0;
-					App.byId("headlines-frame").addClassName("smooth-scroll");
+					const headlines_frame = document.getElementById('headlines-frame');
+					headlines_frame.classList.remove('smooth-scroll');
+					headlines_frame.scrollTop = 0;
+					headlines_frame.classList.add('smooth-scroll');
 				} catch (e) {
 					console.warn(e);
 				}
@@ -783,27 +782,27 @@ const Headlines = {
 				this.headlines = [];
 				this.vgroup_last_feed = undefined;
 
-				/*dojo.html.set(App.byId("toolbar-headlines"),
+				/*dojo.html.set(document.getElementById("toolbar-headlines"),
 					reply['headlines']['toolbar'],
 					{parseContent: true});*/
 
 				Headlines.renderToolbar(reply['headlines']);
 
 				if (typeof reply['headlines']['content'] === 'string') {
-					App.byId("headlines-frame").innerHTML = reply['headlines']['content'];
+					document.getElementById("headlines-frame").innerHTML = reply['headlines']['content'];
 				} else {
-					App.byId("headlines-frame").innerHTML = '';
+					document.getElementById("headlines-frame").innerHTML = '';
 
 					for (let i = 0; i < reply['headlines']['content'].length; i++) {
 						const hl = reply['headlines']['content'][i];
 
-						App.byId("headlines-frame").appendChild(this.render(reply['headlines'], hl));
+						document.getElementById("headlines-frame").appendChild(this.render(reply['headlines'], hl));
 
 						this.headlines[parseInt(hl.id)] = hl;
 					}
 				}
 
-				let hsp = App.byId("headlines-spacer");
+				let hsp = document.getElementById("headlines-spacer");
 
 				if (!hsp) {
 					hsp = document.createElement("div");
@@ -823,7 +822,7 @@ const Headlines = {
 
 				/*
 				if (Feeds._search_query) {
-					App.byId("feed_title").innerHTML += "<span id='cancel_search'>" +
+					document.getElementById("feed_title").innerHTML += "<span id='cancel_search'>" +
 						" (<a href='#' onclick='Feeds.cancelSearch()'>" + __("Cancel search") + "</a>)" +
 						"</span>";
 				} */
@@ -833,7 +832,7 @@ const Headlines = {
 			} else if (headlines_count > 0 && feed_id === Feeds.getActive() && is_cat === Feeds.activeIsCat()) {
 				const c = dijit.byId("headlines-frame");
 
-				let hsp = App.byId("headlines-spacer");
+				let hsp = document.getElementById("headlines-spacer");
 
 				if (hsp)
 					c.domNode.removeChild(hsp);
@@ -841,13 +840,13 @@ const Headlines = {
 				let headlines_appended = 0;
 
 				if (typeof reply['headlines']['content'] === 'string') {
-					App.byId("headlines-frame").innerHTML = reply['headlines']['content'];
+					document.getElementById("headlines-frame").innerHTML = reply['headlines']['content'];
 				} else {
 					for (let i = 0; i < reply['headlines']['content'].length; i++) {
 						const hl = reply['headlines']['content'][i];
 
 						if (!this.headlines[parseInt(hl.id)]) {
-							App.byId("headlines-frame").appendChild(this.render(reply['headlines'], hl));
+							document.getElementById("headlines-frame").appendChild(this.render(reply['headlines'], hl));
 
 							this.headlines[parseInt(hl.id)] = hl;
 							++headlines_appended;
@@ -882,7 +881,7 @@ const Headlines = {
 
 				console.log("no headlines received, infscroll_disabled=", Feeds.infscroll_disabled, 'first_id_changed=', first_id_changed);
 
-				const hsp = App.byId("headlines-spacer");
+				const hsp = document.getElementById("headlines-spacer");
 
 				if (hsp) {
 					if (first_id_changed) {
@@ -895,16 +894,16 @@ const Headlines = {
 				}
 			}
 
-			App.findAll(".cdm .header-sticky-guard").forEach((e) => {
+			document.querySelectorAll('.cdm .header-sticky-guard').forEach((e) => {
 				this.sticky_header_observer.observe(e)
 			});
 
-			App.findAll(".cdm .content").forEach((e) => {
+			document.querySelectorAll('.cdm .content').forEach((e) => {
 				this.sticky_content_observer.observe(e)
 			});
 
-			if (App.getInitParam("cdm_expanded"))
-				App.findAll("#headlines-frame > div[id*=RROW].cdm").forEach((e) => {
+			if (App.getInitParam('cdm_expanded'))
+				document.querySelectorAll('#headlines-frame > div[id*=RROW].cdm').forEach((e) => {
 					this.unpack_observer.observe(e)
 				});
 
@@ -950,18 +949,18 @@ const Headlines = {
 		}
 
 		ids.forEach((id) => {
-			const row = App.byId(`RROW-${id}`);
+			const row = document.getElementById(`RROW-${id}`);
 
 			if (row) {
 				switch (cmode) {
 					case 0:
-						row.removeClassName("Unread");
+						row.classList.remove('Unread');
 						break;
 					case 1:
-						row.addClassName("Unread");
+						row.classList.add('Unread');
 						break;
 					case 2:
-						row.toggleClassName("Unread");
+						row.classList.toggle('Unread');
 				}
 			}
 		});
@@ -982,26 +981,18 @@ const Headlines = {
 		ids = ids || Headlines.getSelected();
 
 		if (ids.length === 0) {
-			alert(__("No articles selected."));
+			alert(__('No articles selected.'));
 			return;
 		}
 
-		ids.forEach((id) => {
-			this.togglePub(id);
-		});
+		ids.forEach(id => this.togglePub(id));
 	},
 	toggleMark: function (id) {
-		const row = App.byId(`RROW-${id}`);
-
-		if (row)
-			row.toggleClassName("marked");
+		document.getElementById(`RROW-${id}`)?.classList.toggle('marked');
 
 	},
 	togglePub: function (id) {
-		const row = App.byId(`RROW-${id}`);
-
-		if (row)
-			row.toggleClassName("published");
+		document.getElementById(`RROW-${id}`)?.classList.toggle('published');
 	},
 	move: function (mode, params = {}) {
 		const no_expand = params.no_expand || false;
@@ -1012,7 +1003,7 @@ const Headlines = {
 		let next_id = false;
 		let current_id = Article.getActive();
 
-		if (!Headlines.isChildVisible(App.byId(`RROW-${current_id}`))) {
+		if (!Headlines.isChildVisible(document.getElementById(`RROW-${current_id}`))) {
 			console.log('active article is obscured, resetting to first visible...');
 			current_id = Headlines.firstVisible();
 			prev_id = current_id;
@@ -1051,15 +1042,15 @@ const Headlines = {
 				}
 			} else if (App.isCombinedMode()) {
 				// try to show hsp if no next article exists, in case there's useful information like first_id_changed etc
-				const row = App.byId(`RROW-${current_id}`);
-				const ctr = App.byId("headlines-frame");
+				const row = document.getElementById(`RROW-${current_id}`);
+				const ctr = document.getElementById("headlines-frame");
 
 				if (row) {
 					const next = row.nextSibling;
 
 					// hsp has half-screen height in auto catchup mode therefore we use its first child (normally A element)
 					if (next && Element.visible(next) && next.id === "headlines-spacer" && next.firstChild) {
-						const offset = App.byId("headlines-spacer").offsetTop - App.byId("headlines-frame").offsetHeight + next.firstChild.offsetHeight;
+						const offset = document.getElementById("headlines-spacer").offsetTop - document.getElementById("headlines-frame").offsetHeight + next.firstChild.offsetHeight;
 
 						// don't jump back either
 						if (ctr.scrollTop < offset)
@@ -1071,8 +1062,8 @@ const Headlines = {
 			if (prev_id || current_id) {
 				if (App.isCombinedMode()) {
 					window.requestAnimationFrame(() => {
-						const row = App.byId(`RROW-${current_id}`);
-						const ctr = App.byId("headlines-frame");
+						const row = document.getElementById(`RROW-${current_id}`);
+						const ctr = document.getElementById("headlines-frame");
 						const delta_px = Math.round(row.offsetTop) - Math.round(ctr.scrollTop);
 
 						console.log('moving back, delta_px', delta_px);
@@ -1093,7 +1084,7 @@ const Headlines = {
 	},
 	updateSelectedPrompt: function () {
 		const count = Headlines.getSelected().length;
-		const elem = App.byId("selected_prompt");
+		const elem = document.getElementById("selected_prompt");
 
 		if (elem) {
 			elem.innerHTML = ngettext("%d article selected",
@@ -1103,20 +1094,20 @@ const Headlines = {
 		}
 	},
 	toggleUnread: function (id, cmode) {
-		const row = App.byId(`RROW-${id}`);
+		const row = document.getElementById(`RROW-${id}`);
 
 		if (row) {
 			if (typeof cmode === "undefined") cmode = 2;
 
 			switch (cmode) {
 				case 0:
-					row.removeClassName("Unread");
+					row.classList.remove('Unread');
 					break;
 				case 1:
-					row.addClassName("Unread");
+					row.classList.add('Unread');
 					break;
 				case 2:
-					row.toggleClassName("Unread");
+					row.classList.toggle('Unread');
 					break;
 			}
 		}
@@ -1186,23 +1177,21 @@ const Headlines = {
 		});
 	},
 	getSelected: function () {
-		const rv = [];
+		const selected = Array.from(document.querySelectorAll('#headlines-frame > div[id*=RROW][class*=Selected]'),
+			child => parseInt(child.getAttribute('data-article-id')));
 
-		App.findAll("#headlines-frame > div[id*=RROW][class*=Selected]").forEach(
-			function (child) {
-				rv.push(parseInt(child.getAttribute('data-article-id')));
-			});
+		const active = Article.getActive();
 
 		// consider active article a honorary member of selected articles
-		if (Article.getActive())
-			rv.push(Article.getActive());
+		if (active)
+			selected.push(active);
 
-		return rv.uniq();
+		return [...new Set(selected)];
 	},
 	getLoaded: function () {
 		const rv = [];
 
-		const children = App.findAll("#headlines-frame > div[id*=RROW-]");
+		const children = document.querySelectorAll('#headlines-frame > div[id*=RROW-]');
 
 		children.forEach(function (child) {
 			if (Element.visible(child)) {
@@ -1216,22 +1205,22 @@ const Headlines = {
 		const row = elem.domNode.closest("div[id*=RROW]");
 
 		// do not allow unchecking active article checkbox
-		if (row.hasClassName("active")) {
+		if (row.classList.contains('active')) {
 			elem.attr("checked", 1);
 			return;
 		}
 
-		if (elem.attr("checked")) {
-			row.addClassName("Selected");
+		if (elem.attr('checked')) {
+			row.classList.add('Selected');
 		} else {
-			row.removeClassName("Selected");
+			row.classList.remove('Selected');
 		}
 	},
 	getRange: function (start, stop) {
 		if (start === stop)
 			return [start];
 
-		const rows = App.findAll("#headlines-frame > div[id*=RROW]");
+		const rows = document.querySelectorAll('#headlines-frame > div[id*=RROW]');
 		const results = [];
 		let collecting = false;
 
@@ -1278,17 +1267,17 @@ const Headlines = {
 				console.warn("select: unknown mode", mode);
 		}
 
-		App.findAll(query).forEach((row) => {
+		document.querySelectorAll(query).forEach((row) => {
 
 			switch (mode) {
-				case "none":
-					row.removeClassName("Selected");
+				case 'none':
+					row.classList.remove('Selected');
 					break;
-				case "invert":
-					row.toggleClassName("Selected");
+				case 'invert':
+					row.classList.toggle('Selected');
 					break;
 				default:
-					row.addClassName("Selected");
+					row.classList.add('Selected');
 			}
 		});
 	},
@@ -1329,9 +1318,9 @@ const Headlines = {
 		if (!below) {
 			for (let i = 0; i < visible_ids.length; i++) {
 				if (visible_ids[i] !== id) {
-					const e = App.byId(`RROW-${visible_ids[i]}`);
+					const e = document.getElementById(`RROW-${visible_ids[i]}`);
 
-					if (e && e.hasClassName("Unread")) {
+					if (e && e.classList.contains('Unread')) {
 						ids_to_mark.push(visible_ids[i]);
 					}
 				} else {
@@ -1341,9 +1330,9 @@ const Headlines = {
 		} else {
 			for (let i = visible_ids.length - 1; i >= 0; i--) {
 				if (visible_ids[i] !== id) {
-					const e = App.byId(`RROW-${visible_ids[i]}`);
+					const e = document.getElementById(`RROW-${visible_ids[i]}`);
 
-					if (e && e.hasClassName("Unread")) {
+					if (e && e.classList.contains('Unread')) {
 						ids_to_mark.push(visible_ids[i]);
 					}
 				} else {
@@ -1360,8 +1349,8 @@ const Headlines = {
 			if (App.getInitParam("confirm_feed_catchup") !== 1 || confirm(msg)) {
 
 				for (let i = 0; i < ids_to_mark.length; i++) {
-					const e = App.byId(`RROW-${ids_to_mark[i]}`);
-					e.removeClassName("Unread");
+					const e = document.getElementById(`RROW-${ids_to_mark[i]}`);
+					e.classList.remove('Unread');
 				}
 			}
 		}
@@ -1372,7 +1361,7 @@ const Headlines = {
 				this.headlines[data.id].tags = data.tags;
 			}
 
-			App.findAll(`span[data-tags-for="${data.id}"`).forEach((ctr) => {
+			document.querySelectorAll(`span[data-tags-for="${data.id}"`).forEach((ctr) => {
 				ctr.innerHTML = Article.renderTags(data.id, data.tags);
 			});
 		}
@@ -1385,15 +1374,15 @@ const Headlines = {
 					this.headlines[row.id].labels = row.labels;
 				}
 
-				App.findAll(`span[data-labels-for="${row.id}"]`).forEach((ctr) => {
+				document.querySelectorAll(`span[data-labels-for="${row.id}"]`).forEach((ctr) => {
 					ctr.innerHTML = Article.renderLabels(row.id, row.labels);
 				});
 			});
 		}
 	},
 	scrollToArticleId: function (id) {
-		const container = App.byId("headlines-frame");
-		const row = App.byId(`RROW-${id}`);
+		const container = document.getElementById("headlines-frame");
+		const row = document.getElementById(`RROW-${id}`);
 
 		if (!container || !row) return;
 
@@ -1538,10 +1527,10 @@ const Headlines = {
 		}
 	},
 	scrollByPages: function (page_offset) {
-		App.Scrollable.scrollByPages(App.byId("headlines-frame"), page_offset);
+		App.Scrollable.scrollByPages(document.getElementById("headlines-frame"), page_offset);
 	},
 	scroll: function (offset) {
-		App.Scrollable.scroll(App.byId("headlines-frame"), offset);
+		App.Scrollable.scroll(document.getElementById("headlines-frame"), offset);
 	},
 	initHeadlinesMenu: function () {
 		if (!dijit.byId("headlinesMenu")) {

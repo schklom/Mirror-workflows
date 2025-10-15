@@ -82,7 +82,7 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dijit/f
 							color = bg;
 						}
 
-						const e = App.byId(`icon-label-${id}`);
+						const e = document.getElementById(`icon-label-${id}`);
 
 						if (e) {
 							if (bg) e.style.color = bg;

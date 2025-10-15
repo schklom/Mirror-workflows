@@ -16,18 +16,6 @@ function ngettext(msg1, msg2, n) {
 	return __((parseInt(n) > 1) ? msg2 : msg1);
 }
 
-/* exported $ */
-function $(id) {
-	console.warn("FIXME: please use App.byId() or document.getElementById() instead of $():", id);
-	return document.getElementById(id);
-}
-
-/* exported $$ */
-function $$(query) {
-	console.warn("FIXME: please use App.findAll() or document.querySelectorAll() instead of $$():", query);
-	return document.querySelectorAll(query);
-}
-
 // polyfill for safari https://raw.githubusercontent.com/pladaria/requestidlecallback-polyfill/master/index.js
 window.requestIdleCallback =
 	window.requestIdleCallback ||
@@ -48,45 +36,20 @@ window.cancelIdleCallback =
 			clearTimeout(id);
 		};
 
-Element.prototype.hasClassName = function(className) {
-	return this.classList.contains(className);
-};
-
-Element.prototype.addClassName = function(className) {
-	return this.classList.add(className);
-};
-
-Element.prototype.removeClassName = function(className) {
-	return this.classList.remove(className);
-};
-
-Element.prototype.toggleClassName = function(className) {
-	if (this.hasClassName(className))
-		return this.removeClassName(className);
-	else
-		return this.addClassName(className);
-};
-
-
 Element.prototype.setStyle = function(args) {
-	Object.keys(args).forEach((k) => {
-		this.style[k] = args[k];
-	});
+  Object.assign(this.style, args);
 };
 
 Element.prototype.show = function() {
-	this.style.display = "";
+	this.style.display = '';
 };
 
 Element.prototype.hide = function() {
-	this.style.display = "none";
+	this.style.display = 'none';
 };
 
 Element.prototype.toggle = function() {
-	if (this.visible())
-		this.hide();
-	else
-		this.show();
+	this.visible() ? this.hide() : this.show();
 };
 
 // https://gist.github.com/alirezas/c4f9f43e9fe1abba9a4824dd6fc60a55
@@ -148,23 +111,6 @@ Element.toggle = function(elem) {
 
 	return elem.toggle();
 }
-
-Element.hasClassName = function (elem, className) {
-	if (typeof elem === "string")
-		elem = document.getElementById(elem);
-
-	return elem.hasClassName(className);
-}
-
-Array.prototype.remove = function(s) {
-	for (let i=0; i < this.length; i++) {
-		if (s === this[i]) this.splice(i, 1);
-	}
-};
-
-Array.prototype.uniq = function() {
-	return this.filter((v, i, a) => a.indexOf(v) === i);
-};
 
 /* exported xhr */
 const xhr = {
@@ -269,14 +215,10 @@ function xhrJson(url, params = {}, complete = undefined) {
 /* exported Lists */
 const Lists = {
 	onRowChecked: function(elem) {
-		const checked = elem.domNode ? elem.attr("checked") : elem.checked;
 		// account for dojo checkboxes
+		const checked = elem.domNode ? elem.attr('checked') : elem.checked;
 		elem = elem.domNode || elem;
-
-		const row = elem.closest("li");
-
-		if (row)
-			checked ? row.addClassName("Selected") : row.removeClassName("Selected");
+		elem.closest('li')?.classList.toggle('Selected', checked);
 	},
 	select: function(elem, selected) {
 		if (typeof elem === "string")
@@ -304,7 +246,7 @@ const Lists = {
 			elem = document.getElementById(elem);
 
 		elem.querySelectorAll("li").forEach((row) => {
-			if (row.hasClassName("Selected")) {
+			if (row.classList.contains('Selected')) {
 				const rowVal = row.getAttribute("data-row-value");
 
 				if (rowVal) {
@@ -327,14 +269,9 @@ const Lists = {
 const Tables = {
 	onRowChecked: function(elem) {
 		// account for dojo checkboxes
-		const checked = elem.domNode ? elem.attr("checked") : elem.checked;
+		const checked = elem.domNode ? elem.attr('checked') : elem.checked;
 		elem = elem.domNode || elem;
-
-		const row = elem.closest("tr");
-
-		if (row)
-			checked ? row.addClassName("Selected") : row.removeClassName("Selected");
-
+		elem.closest('tr')?.classList.toggle('Selected', checked);
 	},
 	select: function(elem, selected) {
 		if (typeof elem === "string")
@@ -362,7 +299,7 @@ const Tables = {
 			elem = document.getElementById(elem);
 
 		elem.querySelectorAll("tr").forEach((row) => {
-			if (row.hasClassName("Selected")) {
+			if (row.classList.contains('Selected')) {
 				const rowVal = row.getAttribute("data-row-value");
 
 				if (rowVal) {
@@ -421,12 +358,12 @@ const Notify = {
 		kind = kind || this.KIND_GENERIC;
 		keep = keep || false;
 
-		const notify = App.byId("notify");
+		const notify = document.getElementById("notify");
 
 		window.clearTimeout(this.timeout);
 
 		if (!msg) {
-			notify.removeClassName("visible");
+			notify.classList.remove('visible');
 			return;
 		}
 
@@ -439,19 +376,19 @@ const Notify = {
 
 		switch (kind) {
 			case this.KIND_INFO:
-				notify.addClassName("notify_info")
-				icon = "notifications";
+				notify.classList.add('notify_info')
+				icon = 'notifications';
 				break;
 			case this.KIND_ERROR:
-				notify.addClassName("notify_error");
-				icon = "error";
+				notify.classList.add('notify_error');
+				icon = 'error';
 				break;
 			case this.KIND_PROGRESS:
-				notify.addClassName("notify_progress");
-				icon = App.getInitParam("icon_oval")
+				notify.classList.add('notify_progress');
+				icon = App.getInitParam('icon_oval');
 				break;
 			default:
-				icon = "notifications";
+				icon = 'notifications';
 		}
 
 		if (icon)
@@ -464,11 +401,11 @@ const Notify = {
 			__("Click to close") + "\" onclick=\"Notify.close()\">close</i>";
 
 		notify.innerHTML = msgfmt;
-		notify.addClassName("visible");
+		notify.classList.add('visible');
 
 		if (!keep)
 			this.timeout = window.setTimeout(() => {
-				notify.removeClassName("visible");
+				notify.classList.remove('visible');
 			}, this.default_timeout);
 
 	},

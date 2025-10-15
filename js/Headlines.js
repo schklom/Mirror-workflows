@@ -771,9 +771,10 @@ const Headlines = {
 				Article.setActive(0);
 
 				try {
-					document.getElementById('headlines-frame').classList.remove('smooth-scroll');
-					document.getElementById('headlines-frame').scrollTop = 0;
-					document.getElementById('headlines-frame').classList.add('smooth-scroll');
+					const headlines_frame = document.getElementById('headlines-frame');
+					headlines_frame.classList.remove('smooth-scroll');
+					headlines_frame.scrollTop = 0;
+					headlines_frame.classList.add('smooth-scroll');
 				} catch (e) {
 					console.warn(e);
 				}
@@ -1181,6 +1182,7 @@ const Headlines = {
 
 		const active = Article.getActive();
 
+		// consider active article a honorary member of selected articles
 		if (active)
 			selected.push(active);
 

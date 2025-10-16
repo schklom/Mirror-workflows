@@ -140,6 +140,14 @@ const App = {
          }
       }
    },
+   /** @deprecated use document.querySelector */
+   find: function(query) {
+      return document.querySelector(query)
+   },
+   /** @deprecated use document.querySelectorAll */
+   findAll: function(query) {
+      return document.querySelectorAll(query);
+   },
    dialogOf: function (elem) {
 
       // elem could be a Dijit widget

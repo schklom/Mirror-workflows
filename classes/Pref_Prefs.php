@@ -1314,7 +1314,7 @@ class Pref_Prefs extends Handler_Protected {
 	 */
 	private function _get_available_plugins(): array {
 		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN && Config::get(Config::ENABLE_PLUGIN_INSTALLER)) {
-			$content = json_decode(UrlHelper::fetch(['url' => 'https://tt-rss.github.io/tt-rss/plugins.json']), true);
+			$content = json_decode(UrlHelper::fetch(['url' => 'https://tt-rss.org/tt-rss/plugins.json']), true);
 
 			if ($content) {
 				return $content;

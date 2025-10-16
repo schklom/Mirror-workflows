@@ -140,6 +140,10 @@ const App = {
          }
       }
    },
+   /** @deprecated use document.getElementById */
+   byId: function(id) {
+      return document.getElementById(id);
+   },
    /** @deprecated use document.querySelector */
    find: function(query) {
       return document.querySelector(query)

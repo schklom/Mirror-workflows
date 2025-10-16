@@ -1313,12 +1313,9 @@ class Pref_Prefs extends Handler_Protected {
 	 * @return array<int, array{'name': string, 'description': string, 'topics': array<int, string>, 'html_url': string, 'clone_url': string, 'last_update': string}>
 	 */
 	private function _get_available_plugins(): array {
-		// TODO: Get this working again.  https://tt-rss.org/plugins.json won't exist after 2025-11-01 (probably).
 		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN && Config::get(Config::ENABLE_PLUGIN_INSTALLER)) {
-			// $content = json_decode(UrlHelper::fetch(['url' => 'https://tt-rss.org/plugins.json']), true);
-			$content = false;
+			$content = json_decode(UrlHelper::fetch(['url' => 'https://tt-rss.github.io/tt-rss/plugins.json']), true);
 
-			/** @phpstan-ignore if.alwaysFalse (intentionally disabling for now) */
 			if ($content) {
 				return $content;
 			}

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: tt-rss git\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2025-08-14 20:02+0000\n"
+"PO-Revision-Date: 2025-10-16 12:07+0000\n"
 "Last-Translator: Edgars Andersons <Edgars+Weblate@gaitenis.id.lv>\n"
 "Language-Team: Latvian <https://hosted.weblate.org/projects/tt-rss/webui/lv/>"
 "\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -764,7 +764,7 @@ msgstr "Pēdējo reizi pieteicies"
 
 #: classes/Pref_Users.php:64 classes/Pref_Users.php:254
 msgid "Subscribed feeds"
-msgstr "Pasūtītās barotnes"
+msgstr "Abonētās barotnes"
 
 #: classes/Pref_Users.php:69
 msgid "Stored articles"
@@ -889,7 +889,7 @@ msgstr "Starplaiks starp atjaunināšanu:"
 
 #: classes/Pref_Feeds.php:670 js/CommonDialogs.js:583
 msgid "Article purging:"
-msgstr "Dzēšu rakstu:"
+msgstr "Rakstu izdzēšana:"
 
 #: classes/Pref_Feeds.php:677 plugins/auth_internal/init.php:85
 #: js/PrefFeedTree.js:455 js/CommonDialogs.js:593
@@ -1784,7 +1784,7 @@ msgstr "Iestatījumi ir saglabāti."
 #: plugins/bookmarklets/init.php:91 js/PrefFeedTree.js:472
 #: js/CommonDialogs.js:113
 msgid "Subscribe"
-msgstr "Pasūtīt"
+msgstr "Abonēt"
 
 #: plugins/bookmarklets/init.php:104
 #, php-format
@@ -1799,7 +1799,7 @@ msgstr "Pasūtījis <b>%s</b>."
 #: plugins/bookmarklets/init.php:110
 #, php-format
 msgid "Could not subscribe to <b>%s</b>."
-msgstr "Neizdevās pasūtīt <b>%s</b>."
+msgstr "Neizdevās abonēt <b>%s</b>."
 
 #: plugins/bookmarklets/init.php:113
 #, php-format
@@ -1809,7 +1809,7 @@ msgstr "<b>%s</b> barotne netika atrasta."
 #: plugins/bookmarklets/init.php:119
 #, php-format
 msgid "Could not subscribe to <b>%s</b>.<br>Can't download the Feed URL."
-msgstr "Neizdevās pasūtīt <b>%s</b>.<br>Nevarēju lejuplādēt barotnes URL."
+msgstr "Neizdevās abonēt <b>%s</b>.<br>Nevar lejupielādēt barotnes URL."
 
 #: plugins/bookmarklets/init.php:130
 msgid "Multiple feed URLs found:"
@@ -1858,7 +1858,7 @@ msgstr "Pieteikties"
 #: plugins/bookmarklets/init.php:346
 #, php-format
 msgid "Subscribe to %s in Tiny Tiny RSS?"
-msgstr "Pasūtīt %s Tiny Tiny RSS?"
+msgstr "Abonēt %s Tiny Tiny RSS?"
 
 #: plugins/bookmarklets/init.php:353
 msgid "Bookmarklets"
@@ -1874,7 +1874,7 @@ msgstr ""
 
 #: plugins/bookmarklets/init.php:358
 msgid "Subscribe in Tiny Tiny RSS"
-msgstr "Pasūtīt Tiny Tiny RSS"
+msgstr "Abonēt Tiny Tiny RSS"
 
 #: plugins/bookmarklets/init.php:361
 msgid "Use this bookmarklet to publish arbitrary pages using Tiny Tiny RSS"
@@ -2373,7 +2373,7 @@ msgstr "Jūs jau esat pasūtījis šo barotni."
 #: js/CommonDialogs.js:159
 #, java-printf-format, javascript-format
 msgid "Subscribed to %s"
-msgstr "Pasūtīta barotne %s"
+msgstr "%s abonēta"
 
 #: js/CommonDialogs.js:168
 msgid "Specified URL seems to be invalid."

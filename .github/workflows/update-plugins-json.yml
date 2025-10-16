@@ -66,31 +66,8 @@ jobs:
         for ($i = 0; $i < count($tokens); $i++) {
           $token = $tokens[$i];
 
-          // Skip non-array tokens unless we're in return statement
-          if (!is_array($token)) {
-            if ($in_return && $array_depth > 0) {
-              if ($token === '[') {
-                $array_depth++;
-              } elseif ($token === ']' || $token === ')') {
-                $array_depth--;
-                if ($array_depth === 0) {
-                  // End of return array - save any pending element
-                  if ($current_element !== '') {
-                    $array_elements[] = $current_element;
-                  }
-                  break;
-                }
-              } elseif ($token === ',') {
-                // Comma separates array elements
-                $array_elements[] = $current_element;
-                $current_element = '';
-              }
-            }
-            continue;
-          }
-
           // Look for 'function about'
-          if ($token[0] === T_FUNCTION) {
+          if (is_array($token) && $token[0] === T_FUNCTION) {
             // Check if next non-whitespace token is 'about'
             $j = $i + 1;
             while ($j < count($tokens) && is_array($tokens[$j]) && $tokens[$j][0] === T_WHITESPACE) {
@@ -103,14 +80,20 @@ jobs:
             }
           }
 
-          if ($in_about && $token[0] === T_RETURN) {
+          if ($in_about && is_array($token) && $token[0] === T_RETURN) {
             $in_return = true;
             continue;
           }
 
           if ($in_return) {
+            // Handle [ syntax for arrays (short array syntax)
+            if (!is_array($token) && $token === '[') {
+              $array_depth++;
+              continue;
+            }
+
             // Track array() syntax
-            if ($token[0] === T_ARRAY) {
+            if (is_array($token) && $token[0] === T_ARRAY) {
               // Look ahead for opening parenthesis (skip whitespace)
               $k = $i + 1;
               while ($k < count($tokens) && is_array($tokens[$k]) && $tokens[$k][0] === T_WHITESPACE) {
@@ -119,24 +102,45 @@ jobs:
               if ($k < count($tokens) && $tokens[$k] === '(') {
                 $array_depth++;
               }
-            } elseif ($array_depth > 0) {
-              // We're inside the array, collect element values
-              if ($token[0] === T_CONSTANT_ENCAPSED_STRING) {
-                // String literal
-                $str = $token[1];
-                $str = substr($str, 1, -1);
-                $str = stripcslashes($str);
-                $current_element = $str;
-              } elseif ($token[0] === T_STRING && in_array(strtolower($token[1]), ['null', 'true', 'false'])) {
-                // null, true, false keywords
-                $current_element = $token[1];
+              continue;
+            }
+
+            if ($array_depth > 0) {
+              // Check for array end
+              if (!is_array($token) && ($token === ']' || $token === ')')) {
+                $array_depth--;
+                if ($array_depth === 0) {
+                  // End of return array - save any pending element
+                  if ($current_element !== '') {
+                    $array_elements[] = $current_element;
+                  }
+                  break;
+                }
+                continue;
+              }
+
+              // Check for comma separator
+              if (!is_array($token) && $token === ',') {
+                // Comma separates array elements
+                $array_elements[] = $current_element;
+                $current_element = '';
+                continue;
+              }
+
+              // Collect element values
+              if (is_array($token)) {
+                if ($token[0] === T_CONSTANT_ENCAPSED_STRING) {
+                  // String literal
+                  $str = $token[1];
+                  $str = substr($str, 1, -1);
+                  $str = stripcslashes($str);
+                  $current_element = $str;
+                } elseif ($token[0] === T_STRING && in_array(strtolower($token[1]), ['null', 'true', 'false'])) {
+                  // null, true, false keywords
+                  $current_element = $token[1];
+                }
               }
             }
-          }
-
-          // Handle [ syntax for arrays
-          if ($in_return && !is_array($token) && $token === '[') {
-            $array_depth = 1;
           }
         }
 

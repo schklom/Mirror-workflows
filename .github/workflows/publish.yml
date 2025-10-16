@@ -63,7 +63,7 @@ jobs:
       run: echo "COMMIT_TIMESTAMP=$(git show -s --format=%ci HEAD)" >> $GITHUB_ENV
 
     - name: Get commit short SHA
-      run: echo "COMMIT_SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+      run: echo "COMMIT_SHORT_SHA=$(git rev-parse --abbrev=8 --short HEAD)" >> $GITHUB_ENV
 
     - name: Log in to GitHub Container Registry
       uses: docker/login-action@v3
@@ -137,8 +137,7 @@ jobs:
     - name: Generate version.json
       run: |
         # Get the commit short SHA (8 characters) expected by the backend
-        # TODO: switch to the full SHA everywhere
-        COMMIT_SHORT_SHA=$(git rev-parse --short HEAD)
+        COMMIT_SHORT_SHA=$(git rev-parse --abbrev=8 --short HEAD)
 
         # Get the commit timestamp in Unix format
         COMMIT_TIMESTAMP=$(git show -s --format=%ct HEAD)

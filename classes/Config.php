@@ -406,7 +406,7 @@ class Config {
 			"timestamp" => 0,
 		];
 
-		$proc = proc_open("git --no-pager log --pretty=\"version-%ct-%h\" -n1 HEAD",
+		$proc = proc_open('git --no-pager log --pretty="version-%ct-%h" --abbrev=8 -n1 HEAD',
 						$descriptorspec, $pipes, $dir);
 
 		if (is_resource($proc)) {

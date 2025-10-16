@@ -324,12 +324,9 @@ class RPC extends Handler_Protected {
 		$git_timestamp = $version["timestamp"] ?? false;
 		$git_commit = $version["commit"] ?? false;
 
-		// TODO: Get this working again.  https://tt-rss.org/version.json won't exist after 2025-11-01 (probably).
 		if (Config::get(Config::CHECK_FOR_UPDATES) && $_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN && $git_timestamp) {
-			// $content = @UrlHelper::fetch(["url" => "https://tt-rss.org/version.json"]);
-			$content = false;
+			$content = @UrlHelper::fetch(['url' => 'https://tt-rss.org/tt-rss/version.json']);
 
-			/** @phpstan-ignore if.alwaysFalse (intentionally disabling for now) */
 			if ($content) {
 				$content = json_decode($content, true);
 

@@ -121,3 +121,73 @@ jobs:
         provenance: true
         sbom: true
         push: true
+
+  publish-version:
+    name: Publish version.json
+    needs:
+    - publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v5
+
+    - name: Generate version.json
+      run: |
+        # Get the full commit SHA
+        COMMIT_SHA=$(git rev-parse HEAD)
+
+        # Get the commit timestamp in Unix format
+        COMMIT_TIMESTAMP=$(git show -s --format=%ct HEAD)
+
+        # Create version.json with the expected format for RPC#checkforupdates()
+        jq -n \
+          --arg commit_id "$COMMIT_SHA" \
+          --argjson commit_timestamp "$COMMIT_TIMESTAMP" \
+          '{
+            changeset: {
+              id: $commit_id,
+              timestamp: $commit_timestamp
+            }
+          }' > version.json
+
+        cat version.json
+
+    - name: Deploy version.json to gh-pages
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Save version.json to a safe location outside the repo
+        cp version.json /tmp/version.json
+
+        # Fetch gh-pages branch
+        git fetch origin gh-pages 2>/dev/null || true
+
+        if git rev-parse --verify origin/gh-pages >/dev/null 2>&1; then
+          # gh-pages exists
+          # Remove the local version.json first to avoid conflicts when switching branches
+          rm -f version.json
+          git checkout gh-pages
+        else
+          # Create new orphan gh-pages branch
+          git checkout --orphan gh-pages
+          git rm -rf . 2>/dev/null || true
+        fi
+
+        # Restore version.json from safe location
+        cp /tmp/version.json version.json
+        git add version.json
+
+        # Check if there are changes to commit
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          # Set up git authentication for GitHub-signed commits
+          gh auth setup-git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update version info [automated]"
+          git push origin gh-pages || { echo "Failed to push to gh-pages"; exit 1; }
+        fi

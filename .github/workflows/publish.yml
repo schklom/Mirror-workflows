@@ -141,7 +141,7 @@ jobs:
     - name: Generate version.json
       run: |
         # Get the commit short SHA (8 characters) expected by the backend
-        COMMIT_SHORT_SHA=$(git rev-parse --abbrev=8 --short HEAD)
+        COMMIT_SHORT_SHA=$(git rev-parse --short=8 HEAD)
 
         # Get the commit timestamp in Unix format
         COMMIT_TIMESTAMP=$(git show -s --format=%ct HEAD)

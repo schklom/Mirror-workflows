@@ -307,10 +307,12 @@ jobs:
         if git diff --staged --quiet; then
           echo "No changes to commit"
         else
-          # Set up git authentication for GitHub-signed commits
-          gh auth setup-git
+          # Configure git for GitHub Actions bot
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Update plugins list [automated]"
+
+          # Push using GitHub CLI with GITHUB_TOKEN
+          gh auth setup-git
           git push origin gh-pages || { echo "Failed to push to gh-pages"; exit 1; }
         fi

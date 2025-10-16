@@ -280,7 +280,7 @@ jobs:
 
     - name: Deploy to gh-pages branch
       run: |
-        # Save plugins.json to a safe location
+        # Save plugins.json to a safe location outside the repo
         cp plugins.json /tmp/plugins.json
 
         git config user.name "github-actions[bot]"
@@ -290,7 +290,9 @@ jobs:
         git fetch origin gh-pages 2>/dev/null || true
 
         if git rev-parse --verify origin/gh-pages >/dev/null 2>&1; then
-          # gh-pages exists, check it out
+          # gh-pages exists
+          # Remove the local plugins.json first to avoid conflicts
+          rm -f plugins.json
           git checkout gh-pages
         else
           # Create new orphan gh-pages branch

@@ -56,25 +56,34 @@ jobs:
           }
         }
 
-        // Find about() function and extract description from return array
+        // Extract the description from about()
         $in_about = false;
         $in_return = false;
         $array_depth = 0;
-        $strings = [];
+        $array_elements = [];
+        $current_element = '';
 
         for ($i = 0; $i < count($tokens); $i++) {
           $token = $tokens[$i];
 
           // Skip non-array tokens unless we're in return statement
           if (!is_array($token)) {
-            if ($in_return) {
+            if ($in_return && $array_depth > 0) {
               if ($token === '[') {
                 $array_depth++;
               } elseif ($token === ']' || $token === ')') {
                 $array_depth--;
                 if ($array_depth === 0) {
-                  break; // End of return array
+                  // End of return array - save any pending element
+                  if ($current_element !== '') {
+                    $array_elements[] = $current_element;
+                  }
+                  break;
                 }
+              } elseif ($token === ',') {
+                // Comma separates array elements
+                $array_elements[] = $current_element;
+                $current_element = '';
               }
             }
             continue;
@@ -110,20 +119,30 @@ jobs:
               if ($k < count($tokens) && $tokens[$k] === '(') {
                 $array_depth++;
               }
-            } elseif ($token[0] === T_CONSTANT_ENCAPSED_STRING) {
-              // This is a string literal
-              $str = $token[1];
-              // Remove quotes and decode
-              $str = substr($str, 1, -1);
-              $str = stripcslashes($str);
-              $strings[] = $str;
+            } elseif ($array_depth > 0) {
+              // We're inside the array, collect element values
+              if ($token[0] === T_CONSTANT_ENCAPSED_STRING) {
+                // String literal
+                $str = $token[1];
+                $str = substr($str, 1, -1);
+                $str = stripcslashes($str);
+                $current_element = $str;
+              } elseif ($token[0] === T_STRING && in_array(strtolower($token[1]), ['null', 'true', 'false'])) {
+                // null, true, false keywords
+                $current_element = $token[1];
+              }
             }
+          }
+
+          // Handle [ syntax for arrays
+          if ($in_return && !is_array($token) && $token === '[') {
+            $array_depth = 1;
           }
         }
 
         // Description is at index 1
-        if (isset($strings[1])) {
-          $description = $strings[1];
+        if (isset($array_elements[1])) {
+          $description = $array_elements[1];
         }
 
         echo json_encode(['class_name' => $class_name, 'description' => $description], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);

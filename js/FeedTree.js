@@ -58,6 +58,9 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 					} else {
 						iconNode.src = 'images/blank_icon.gif';
 					}
+					iconNode.onerror = () => {
+						Feeds._handleIconError(iconNode);
+					};
 				}
 			}
 
@@ -342,6 +345,9 @@ define(["dojo/_base/declare", "dojo/dom-construct", "dojo/_base/array", "dojo/co
 
 				if (icon) {
 					icon.src = src;
+					icon.onerror = () => {
+						Feeds._handleIconError(icon);
+					};
 
 					return true;
 				}

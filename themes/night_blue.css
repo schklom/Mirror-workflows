@@ -881,6 +881,9 @@ body.ttrss_main img.icon {
   line-height: 16px;
   vertical-align: middle;
   display: inline-block;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+  object-fit: contain;
 }
 body.ttrss_main ul#filterDlg_Matches,
 body.ttrss_main ul#filterDlg_Actions {

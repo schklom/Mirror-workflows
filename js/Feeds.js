@@ -747,10 +747,16 @@ const	Feeds = {
 
 	},
 	renderIcon: function(feed_id, exists) {
-		const icon_url = App.getInitParam("icons_url") + '?' + dojo.objectToQuery({op: 'feed_icon', id: feed_id});
+		const icon_url = App.getInitParam('icons_url') + '?' + dojo.objectToQuery({op: 'feed_icon', id: feed_id});
 
 		return feed_id && exists ?
-			`<img class="icon" src="${App.escapeHtml(icon_url)}">` :
+			`<img class='icon' src='${App.escapeHtml(icon_url)}' width='16' height='16' alt='feed icon' onerror='Feeds._handleIconError(this)'>` :
 				`<i class='icon-no-feed material-icons'>rss_feed</i>`;
+	},
+	_handleIconError: (img) => {
+		const icon = document.createElement('i');
+		icon.className = 'icon-no-feed material-icons';
+		icon.textContent = 'rss_feed';
+		img.replaceWith(icon);
 	}
 };

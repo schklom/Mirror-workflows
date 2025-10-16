@@ -1,7 +1,7 @@
 // Less configuration
-const gulp = require('gulp');
-const less = require('gulp-less');
-const touch = require('gulp-touch-fd');
+import gulp from 'gulp';
+import less from 'gulp-less';
+import touch from 'gulp-touch-fd';
 
 function swallowError(error) {
 	console.log(error.toString())

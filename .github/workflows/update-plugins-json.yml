@@ -279,12 +279,11 @@ jobs:
         cat plugins.json
 
     - name: Deploy to gh-pages branch
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         # Save plugins.json to a safe location outside the repo
         cp plugins.json /tmp/plugins.json
-
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
 
         # Fetch gh-pages branch
         git fetch origin gh-pages 2>/dev/null || true
@@ -308,6 +307,10 @@ jobs:
         if git diff --staged --quiet; then
           echo "No changes to commit"
         else
+          # Set up git authentication for GitHub-signed commits
+          gh auth setup-git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git commit -m "Update plugins list [automated]"
-          git push origin gh-pages
+          git push origin gh-pages || { echo "Failed to push to gh-pages"; exit 1; }
         fi

@@ -136,15 +136,16 @@ jobs:
 
     - name: Generate version.json
       run: |
-        # Get the full commit SHA
-        COMMIT_SHA=$(git rev-parse HEAD)
+        # Get the commit short SHA (8 characters) expected by the backend
+        # TODO: switch to the full SHA everywhere
+        COMMIT_SHORT_SHA=$(git rev-parse --short HEAD)
 
         # Get the commit timestamp in Unix format
         COMMIT_TIMESTAMP=$(git show -s --format=%ct HEAD)
 
         # Create version.json with the expected format for RPC#checkforupdates()
         jq -n \
-          --arg commit_id "$COMMIT_SHA" \
+          --arg commit_id "$COMMIT_SHORT_SHA" \
           --argjson commit_timestamp "$COMMIT_TIMESTAMP" \
           '{
             changeset: {

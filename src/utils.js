@@ -90,6 +90,14 @@ module.exports = function(redis) {
       data = data.replace('</head>', `<link rel="stylesheet" href="/styles${lang_suffix}.css"></head>`)
     }
 
+      if (isMobile) {
+        if (!data.includes('class="is-mobile"')) {
+          data = data.replace('<html', '<html class="is-mobile"')
+        }
+      data = data.replace('</head>', `<link rel="stylesheet" href="/mobile.css"></head>`)
+    }
+
+
     return data
   }
 

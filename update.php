@@ -1,13 +1,10 @@
 #!/usr/bin/env php
 <?php
-	set_include_path(__DIR__ ."/include" . PATH_SEPARATOR .
-		get_include_path());
-
 	define('DISABLE_SESSIONS', true);
 
 	chdir(__DIR__);
 
-	require_once "autoload.php";
+	require_once __DIR__ . '/include/autoload.php';
 
 
 	if (php_sapi_name() != "cli") {
@@ -137,7 +134,7 @@
 	}
 
 	if (!isset($options['daemon'])) {
-		require_once "errorhandler.php";
+		require_once __DIR__ . '/include/errorhandler.php';
 	}
 
 	if (!isset($options['update-schema']) && Config::is_migration_needed()) {

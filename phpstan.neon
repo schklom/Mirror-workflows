@@ -3,18 +3,6 @@ parameters:
    tmpDir: .phpstan-tmp
    reportUnmatchedIgnoredErrors: false
    ignoreErrors:
-      # set_include_path detection issue
-      - message: '#"(autoload|colors|config|errorhandler|login_form|sessions)\.php"#'
-        identifier: requireOnce.fileNotFound
-
-      # undetected as DOMElement
-      - '#Call to an undefined method DOMNode::#'
-      - '#Access to an undefined property DOMNode::#'
-      - '#expects DOMElement, DOMNode given#'
-
-      # allow passing a 'strlen' string, etc. as the array_filter callback
-      - "/Parameter #2 \\$callback of function array_filter expects .+ '.+' given/"
-
       - message: '##'
         paths:
           - lib/*

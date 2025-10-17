@@ -1,9 +1,7 @@
 <?php
 namespace Colors;
 
-if (file_exists("lib/floIcon.php")) {
-	require_once "lib/floIcon.php";
-}
+require_once __DIR__ . '/../lib/floIcon.php';
 
 function _resolve_htmlcolor(string $color): string {
 	$htmlcolors = array ("aliceblue" => "#f0f8ff",

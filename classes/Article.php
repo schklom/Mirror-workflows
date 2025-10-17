@@ -270,10 +270,11 @@ class Article extends Handler_Protected {
 	private function _label_ops(bool $assign): void {
 		$reply = array();
 
-		$ids = array_map("intval", array_filter(explode(",", clean($_REQUEST["ids"] ?? "")), "strlen"));
-		$label_id = clean($_REQUEST["lid"]);
+		$ids = array_map('intval',
+			array_filter(explode(',', clean($_REQUEST['ids'] ?? '')), fn($i) => strlen($i) > 0));
 
-		$label = Labels::find_caption($label_id, $_SESSION["uid"]);
+		$label_id = clean($_REQUEST['lid']);
+		$label = Labels::find_caption($label_id, $_SESSION['uid']);
 
 		$reply["labels-for"] = [];
 

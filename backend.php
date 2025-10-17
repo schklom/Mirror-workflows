@@ -1,7 +1,4 @@
 <?php
-	set_include_path(__DIR__ ."/include" . PATH_SEPARATOR .
-		get_include_path());
-
 	$op = $_REQUEST['op'] ?? '';
 	$method = !empty($_REQUEST['subop']) ?
 		$_REQUEST['subop'] :
@@ -23,8 +20,8 @@
 
 	$csrf_token = $_POST['csrf_token'] ?? "";
 
-	require_once "autoload.php";
-	require_once "sessions.php";
+	require_once __DIR__ . '/include/autoload.php';
+	require_once __DIR__ . '/include/sessions.php';
 
 	$op = (string)clean($op);
 	$method = (string)clean($method);

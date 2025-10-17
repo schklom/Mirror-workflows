@@ -203,7 +203,7 @@ abstract class FeedItem_Common extends FeedItem {
 		}, $tmp);
 
 		// remove empty values
-		$tmp = array_filter($tmp, 'strlen');
+		$tmp = array_filter($tmp, fn($c) => strlen($c) > 0);
 
 		asort($tmp);
 

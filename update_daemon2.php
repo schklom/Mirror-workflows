@@ -1,14 +1,11 @@
 #!/usr/bin/env php
 <?php
-	set_include_path(__DIR__ ."/include" . PATH_SEPARATOR .
-		get_include_path());
-
 	declare(ticks = 1);
 	chdir(__DIR__);
 
 	define('DISABLE_SESSIONS', true);
 
-	require_once "autoload.php";
+	require_once __DIR__ . '/include/autoload.php';
 
 	Config::sanity_check();
 

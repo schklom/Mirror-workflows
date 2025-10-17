@@ -64,7 +64,7 @@ class Af_Comics_ComicPress extends Af_ComicFilter {
 	}
 
 	/**
-	 * @param DOMNodeList<DOMNode> $toUpdates
+	 * @param DOMNodeList<DOMElement> $toUpdates
 	 */
 	private function move_all_attributes(DOMNodeList $toUpdates, string $srcName, string $dstName): void {
 		foreach ($toUpdates as $toUpdate) {

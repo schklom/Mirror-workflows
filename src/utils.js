@@ -64,7 +64,7 @@ module.exports = function(redis) {
     }
   };
 
-  this.applyUserMods = (data, theme, lang) => {
+  this.applyUserMods = (data, theme, lang, isMobile=false) => {
     /**
     * We have already processed the HTML, but we haven't applied the user's
     * cookie specific modifications to it yet. Let's do it.
@@ -78,25 +78,29 @@ module.exports = function(redis) {
       lang_suffix = '_' + lang
     }
 
+    // ensure responsive viewport meta
+    if (!data.includes('name="viewport"')) {
+      data = data.replace('</head>', `<meta name="viewport" content="width=device-width, initial-scale=1">\r\n</head>`)
+    }
+
     if(theme === 'white') {
       // if the user has chosen the white theme from the preferences
       data = data.replace('</head>', `<link rel="stylesheet" href="/wikipedia_styles_light${lang_suffix}.css"></head>`)
     } else if(theme === 'dark') {
       // if the user has chosen the dark theme from the preferences
-      data = data.replace('</head>', `<link rel="stylesheet" href="/wikipedia_styles_light${lang_suffix}.css">
-                                      <link rel="stylesheet" href="/wikipedia_styles_dark${lang_suffix}.css"></head>`)
+      data = data.replace('</head>', `<link rel="stylesheet" href="/wikipedia_styles_light${lang_suffix}.css">\r\n                                      <link rel="stylesheet" href="/wikipedia_styles_dark${lang_suffix}.css"></head>`)
     } else {
       // default, auto theme
       data = data.replace('</head>', `<link rel="stylesheet" href="/styles${lang_suffix}.css"></head>`)
     }
 
-      if (isMobile) {
-        if (!data.includes('class="is-mobile"')) {
-          data = data.replace('<html', '<html class="is-mobile"')
-        }
+    // if mobile/tablet UA, mark html and load mobile overrides
+    if (isMobile) {
+      if (!data.includes('class="is-mobile"')) {
+        data = data.replace('<html', '<html class="is-mobile"')
+      }
       data = data.replace('</head>', `<link rel="stylesheet" href="/mobile.css"></head>`)
     }
-
 
     return data
   }
@@ -324,6 +328,10 @@ module.exports = function(redis) {
     let page = ''
     let sub_page = ''
 
+    // Detect mobile/tablet user-agents to enable mobile layout
+    const ua = (req.headers && req.headers['user-agent']) || ''
+    const isMobile = /Android|iPhone|iPad|iPod|Mobile|Tablet|Windows Phone|webOS|BlackBerry/i.test(ua)
+
     switch (prefix) {
       case '/wiki/':
         let wiki = 'wiki'
@@ -389,14 +397,14 @@ module.exports = function(redis) {
     }
 
     if(result.processed === true) {
-      return res.send(applyUserMods(result.html, req.cookies.theme, lang))
+      return res.send(applyUserMods(result.html, req.cookies.theme, lang, isMobile))
     }
 
     // wikiless params
     const down_params = new URLSearchParams(req.query).toString()
     const process_html = await processHtml(result, url, down_params, lang, req.cookies)
     if(process_html.success === true) {
-      return res.send(applyUserMods(process_html.html.toString(), req.cookies.theme, lang))
+      return res.send(applyUserMods(process_html.html.toString(), req.cookies.theme, lang, isMobile))
     }
     return res.status(500).send(process_html.reason)
   }

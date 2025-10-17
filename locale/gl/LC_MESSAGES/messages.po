@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-04 13:44+0300\n"
-"PO-Revision-Date: 2025-08-13 19:02+0000\n"
+"PO-Revision-Date: 2025-10-20 04:54+0000\n"
 "Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/tt-rss/webui/gl/"
 ">\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.14-dev\n"
 
 #: backend.php:61
 msgid "Use default"
@@ -141,7 +141,7 @@ msgstr "Adaptable"
 
 #: index.php:182
 msgid "All Articles"
-msgstr "Tódolos Artigos"
+msgstr "Todos os Artigos"
 
 #: index.php:183 classes/RPC.php:550
 msgid "Starred"
@@ -232,7 +232,7 @@ msgstr "Retirar subscrición"
 
 #: index.php:260
 msgid "All feeds:"
-msgstr "Tódalas canles:"
+msgstr "Todas as canles:"
 
 #: index.php:262
 msgid "(Un)hide read feeds"
@@ -386,7 +386,7 @@ msgstr ""
 #: classes/Pref_Filters.php:269 classes/Pref_Filters.php:279
 #: classes/Pref_Filters.php:468 classes/Pref_Filters.php:976
 msgid "All feeds"
-msgstr "Tódalas canles"
+msgstr "Todas as canles"
 
 #: classes/Pref_Filters.php:288 classes/Pref_Filters.php:489
 #: classes/Pref_Filters.php:492
@@ -712,7 +712,7 @@ msgstr "Ir a"
 
 #: classes/RPC.php:548 classes/Feeds.php:1175
 msgid "All articles"
-msgstr "Tódolos artigos"
+msgstr "Todos os artigos"
 
 #: classes/RPC.php:549
 msgid "Fresh"
@@ -1980,7 +1980,7 @@ msgstr "Eliminar categoría"
 msgid ""
 "Remove category %s? Any nested feeds would be placed into Uncategorized."
 msgstr ""
-"Eliminar a categoría %s? Tódalas canles que conteña irán a Sen Categoría."
+"Eliminar a categoría %s? Todas as canles que conteña irán a Sen Categoría."
 
 #: js/PrefFeedTree.js:201
 msgid "Removing category..."
@@ -2972,7 +2972,7 @@ msgid ""
 "Tiny Tiny RSS is running in safe mode. All themes and plugins are disabled. "
 "You will need to log out and back in to disable it."
 msgstr ""
-"Tiny Tiny RSS estase executando en modo seguro. Tódolos decorados e "
+"Tiny Tiny RSS estase executando en modo seguro. Todos os decorados e "
 "complementos están desactivados. Terás que pechar sesión e volver a acceder "
 "para desactivalo."
 

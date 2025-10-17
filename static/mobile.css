@@ -1,0 +1,169 @@
+html.is-mobile,
+html.is-mobile body {
+  margin: 0;
+  padding: 0;
+  font-family: "Helvetica Neue", "Noto Sans SC", sans-serif;
+  background: #fff;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+html.is-mobile:not(.home) #mw-panel,
+html.is-mobile:not(.home) .vector-column-start,
+html.is-mobile:not(.home) .vector-column-end,
+html.is-mobile:not(.home) #mw-head-base,
+html.is-mobile:not(.home) #mw-page-base {
+  display: none !important;
+}
+
+html.is-mobile.home #mw-panel,
+html.is-mobile.home #p-logo {
+  display: block !important;
+  position: relative;
+  z-index: 2;
+}
+
+html.is-mobile.home #mw-panel {
+  float: none !important;
+  display: block !important;
+  width: auto !important;
+  margin: 0 auto 10px auto !important;
+  text-align: center;
+}
+
+html.is-mobile #content,
+html.is-mobile .mw-body,
+html.is-mobile .vector-body,
+html.is-mobile .mw-content-container {
+  margin: 0 !important;
+  padding: 14px 16px !important;
+  max-width: 100% !important;
+  width: auto !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+html.is-mobile:not(.home) #content {
+  margin-left: 0 !important;
+}
+
+html.is-mobile #mw-head {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 100;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  padding: 8px 10px;
+}
+
+html.is-mobile #searchform {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 8px 0;
+}
+html.is-mobile #searchInput {
+  width: 100%;
+  font-size: 16px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+html.is-mobile nav#p-personal,
+html.is-mobile #p-personal {
+  display: flex !important;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 0.95rem;
+  background: #fff;
+  position: relative;
+  z-index: 200;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+html.is-mobile nav#p-personal a,
+html.is-mobile #p-personal a {
+  color: #0366d6;
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+html.is-mobile nav#p-personal a:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+html.is-mobile #p-logo,
+html.is-mobile .mw-wiki-logo {
+  display: block !important;
+  position: relative;
+  margin: 12px auto 8px !important;
+  max-width: 120px !important;
+  height: auto !important;
+  text-align: center;
+  z-index: 150;
+}
+
+html.is-mobile #p-lang ul {
+  display: flex;
+  overflow-x: auto;
+  padding: 6px 0;
+  gap: 8px;
+  white-space: nowrap;
+  list-style: none;
+}
+html.is-mobile #p-lang ul li {
+  flex: 0 0 auto;
+}
+html.is-mobile #p-lang a {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #f6f6f6;
+  border: 1px solid rgba(0,0,0,0.1);
+  text-decoration: none;
+  color: #000;
+  font-size: 0.9rem;
+}
+
+html.is-mobile table {
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-collapse: separate !important;
+  border-spacing: 0;
+}
+html.is-mobile th,
+html.is-mobile td {
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  padding: 6px 8px;
+}
+html.is-mobile .infobox {
+  width: 100% !important;
+  float: none !important;
+  margin: 10px 0 !important;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  background: #fff;
+}
+html.is-mobile .thumb,
+html.is-mobile .thumbinner,
+html.is-mobile .thumb img {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block;
+  margin: 0 auto;
+}
+html.is-mobile #footer {
+  font-size: 0.9rem;
+  padding: 20px;
+  text-align: center;
+  color: #444;
+}
+
+html.is-mobile .firstHeading {
+  margin-top: 1em !important;
+  padding-top: 0.4em !important;
+}

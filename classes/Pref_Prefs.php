@@ -1347,7 +1347,7 @@ class Pref_Prefs extends Handler_Protected {
 
 	function updateLocalPlugins(): void {
 		if ($_SESSION["access_level"] >= UserHelper::ACCESS_LEVEL_ADMIN) {
-			$plugins = array_filter(explode(",", $_REQUEST["plugins"] ?? ""), "strlen");
+			$plugins = array_filter(explode(',', $_REQUEST['plugins'] ?? ''), fn($p) => strlen($p) > 0);
 			$root_dir = Config::get_self_dir();
 			$rv = [];
 

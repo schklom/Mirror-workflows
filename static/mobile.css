@@ -4,106 +4,110 @@ html.is-mobile body {
   padding: 0;
   font-family: "Helvetica Neue", "Noto Sans SC", sans-serif;
   background: #fff;
-  line-height: 1.6;
+  line-height: 1.7;
   overflow-x: hidden;
+  font-size: 1.05rem !important;
+  color: #111 !important;
 }
 
-html.is-mobile:not(.home) #mw-panel,
-html.is-mobile:not(.home) .vector-column-start,
-html.is-mobile:not(.home) .vector-column-end,
-html.is-mobile:not(.home) #mw-head-base,
-html.is-mobile:not(.home) #mw-page-base {
+html.is-mobile #mw-head-base,
+html.is-mobile #mw-page-base,
+html.is-mobile .vector-column-start,
+html.is-mobile .vector-column-end,
+html.is-mobile #p-logo,
+html.is-mobile .mw-wiki-logo {
   display: none !important;
 }
 
-html.is-mobile.home #mw-panel,
-html.is-mobile.home #p-logo {
+html.is-mobile.home #mw-panel {
   display: block !important;
   position: relative;
-  z-index: 2;
-}
-
-html.is-mobile.home #mw-panel {
+  width: auto !important;
   float: none !important;
-  display: block !important;
-  width: auto !important;
   margin: 0 auto 10px auto !important;
-  text-align: center;
+  padding: 0 12px;
+  box-sizing: border-box;
 }
-
-html.is-mobile #content,
-html.is-mobile .mw-body,
-html.is-mobile .vector-body,
-html.is-mobile .mw-content-container {
-  margin: 0 !important;
-  padding: 14px 16px !important;
-  max-width: 100% !important;
-  width: auto !important;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-}
-
-html.is-mobile:not(.home) #content {
-  margin-left: 0 !important;
+html.is-mobile:not(.home) #mw-panel {
+  display: none !important;
 }
 
 html.is-mobile #mw-head {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   background: #fff;
-  z-index: 100;
+  z-index: 300;
   border-bottom: 1px solid rgba(0,0,0,0.1);
-  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  gap: 8px;
+  box-sizing: border-box;
 }
 
 html.is-mobile #searchform {
-  width: 100%;
-  box-sizing: border-box;
-  margin: 8px 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  max-width: 600px;
 }
 html.is-mobile #searchInput {
   width: 100%;
-  font-size: 16px;
+  font-size: 15px;
   padding: 8px 10px;
   border-radius: 6px;
   border: 1px solid #ccc;
   box-sizing: border-box;
 }
 
-html.is-mobile nav#p-personal,
 html.is-mobile #p-personal {
   display: flex !important;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 6px 0;
-  font-size: 0.95rem;
-  background: #fff;
-  position: relative;
-  z-index: 200;
-  border-bottom: 1px solid rgba(0,0,0,0.08);
+  gap: 10px;
+  flex-shrink: 0;
+  align-items: center;
 }
-
-html.is-mobile nav#p-personal a,
 html.is-mobile #p-personal a {
   color: #0366d6;
   text-decoration: none;
-  padding: 6px 10px;
-  border-radius: 8px;
+  font-size: 0.9rem;
+  padding: 4px 6px;
+  border-radius: 6px;
 }
-html.is-mobile nav#p-personal a:hover {
-  background: rgba(0,0,0,0.05);
+html.is-mobile #p-personal a:hover {
+  background: rgba(0, 0, 0, 0.05);
 }
 
-html.is-mobile #p-logo,
-html.is-mobile .mw-wiki-logo {
-  display: block !important;
-  position: relative;
-  margin: 12px auto 8px !important;
-  max-width: 120px !important;
-  height: auto !important;
-  text-align: center;
-  z-index: 150;
+html.is-mobile body {
+  padding-top: 70px !important;
+}
+
+html.is-mobile #content,
+html.is-mobile .mw-body,
+html.is-mobile .vector-body,
+html.is-mobile .mw-content-container,
+html.is-mobile .mw-parser-output {
+  margin: 0 !important;
+  padding: 14px 16px !important;
+  max-width: 100% !important;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+  font-size: 1.05rem !important;
+  line-height: 1.7 !important;
+  color: #111 !important;
+}
+
+html.is-mobile p,
+html.is-mobile li,
+html.is-mobile ul,
+html.is-mobile ol,
+html.is-mobile span,
+html.is-mobile div {
+  font-size: inherit !important;
+  line-height: inherit !important;
+  color: inherit !important;
 }
 
 html.is-mobile #p-lang ul {
@@ -113,9 +117,6 @@ html.is-mobile #p-lang ul {
   gap: 8px;
   white-space: nowrap;
   list-style: none;
-}
-html.is-mobile #p-lang ul li {
-  flex: 0 0 auto;
 }
 html.is-mobile #p-lang a {
   display: inline-block;
@@ -129,27 +130,17 @@ html.is-mobile #p-lang a {
 }
 
 html.is-mobile table {
-  display: block;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  border-collapse: separate !important;
-  border-spacing: 0;
+  width: 100% !important;
+  border-collapse: collapse !important;
+  table-layout: auto !important;
 }
 html.is-mobile th,
 html.is-mobile td {
   border-bottom: 1px solid rgba(0,0,0,0.05);
   padding: 6px 8px;
+  font-size: 1.05rem !important;
+  line-height: 1.7 !important;
 }
-html.is-mobile .infobox {
-  width: 100% !important;
-  float: none !important;
-  margin: 10px 0 !important;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  background: #fff;
-}
-html.is-mobile .thumb,
-html.is-mobile .thumbinner,
 html.is-mobile .thumb img {
   max-width: 100% !important;
   height: auto !important;
@@ -157,13 +148,94 @@ html.is-mobile .thumb img {
   margin: 0 auto;
 }
 html.is-mobile #footer {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   padding: 20px;
   text-align: center;
   color: #444;
 }
 
 html.is-mobile .firstHeading {
-  margin-top: 1em !important;
+  margin-top: 0.8em !important;
   padding-top: 0.4em !important;
+}
+
+html.is-mobile table.infobox,
+html.is-mobile table.infobox.vevent,
+html.is-mobile table.infobox-vevent,
+html.is-mobile .mw-parser-output > table.infobox,
+html.is-mobile .mw-parser-output > table.infobox-vevent {
+  display: table !important;
+  table-layout: fixed !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 1em 0 !important;
+  border-collapse: collapse !important;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 8px;
+  background: #fff;
+  box-sizing: border-box !important;
+  overflow: hidden;
+}
+
+/* remove fixed colgroup widths */
+html.is-mobile table.infobox colgroup,
+html.is-mobile table.infobox col {
+  width: auto !important;
+  display: table-column !important;
+}
+
+html.is-mobile table.infobox tr {
+  display: table-row !important;
+}
+html.is-mobile table.infobox th,
+html.is-mobile table.infobox td {
+  display: table-cell !important;
+  vertical-align: top !important;
+  word-wrap: break-word !important;
+  white-space: normal !important;
+  padding: 10px 12px !important;
+  border: none !important;
+  box-sizing: border-box !important;
+  font-size: 1.05rem !important;
+  line-height: 1.7 !important;
+  color: #111 !important;
+}
+
+html.is-mobile table.infobox caption {
+  display: table-caption !important;
+  caption-side: top !important;
+  text-align: center !important;
+  font-weight: 700 !important;
+  font-size: 1.1rem !important;
+  padding: 8px 12px !important;
+  background: #fafafa !important;
+}
+
+html.is-mobile table.infobox img,
+html.is-mobile table.infobox-vevent img {
+  display: block !important;
+  max-width: 100% !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 8px auto !important;
+  border-radius: 6px;
+  object-fit: contain !important;
+}
+
+html.is-mobile table.infobox th[scope=row] {
+  font-weight: 700 !important;
+  text-align: left !important;
+  display: table-cell !important;
+  vertical-align: top !important;
+}
+
+html.is-mobile table.infobox [style*="width"] {
+  width: auto !important;
+  max-width: 100% !important;
+}
+
+@media (max-width: 480px) {
+  html.is-mobile table.infobox {
+    table-layout: auto !important;
+  }
 }

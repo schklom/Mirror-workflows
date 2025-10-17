@@ -7,11 +7,6 @@ parameters:
       - message: '#"(autoload|colors|config|errorhandler|login_form|sessions)\.php"#'
         identifier: requireOnce.fileNotFound
 
-      # undetected as DOMElement
-      - '#Call to an undefined method DOMNode::#'
-      - '#Access to an undefined property DOMNode::#'
-      - '#expects DOMElement, DOMNode given#'
-
       - message: '##'
         paths:
           - lib/*

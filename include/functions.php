@@ -18,8 +18,10 @@
 	ini_set('display_startup_errors', "false");
 
 	// config.php is optional
-	if (stream_resolve_include_path("config.php"))
-		require_once "config.php";
+	$config_path = stream_resolve_include_path('config.php');
+
+	if ($config_path)
+		require_once $config_path;
 
 	require_once "autoload.php";
 
@@ -80,7 +82,7 @@
 		return $t;
 	}
 
-	require_once "lib/gettext/gettext.inc.php";
+	require_once __DIR__ . '/../lib/gettext/gettext.inc.php';
 
 	function startup_gettext(): void {
 

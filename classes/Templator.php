@@ -1,5 +1,5 @@
 <?php
-require_once "lib/MiniTemplator.class.php";
+require_once __DIR__ . '/../lib/MiniTemplator.class.php';
 
 class Templator extends MiniTemplator {
 

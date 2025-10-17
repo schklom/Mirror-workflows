@@ -3,10 +3,6 @@ parameters:
    tmpDir: .phpstan-tmp
    reportUnmatchedIgnoredErrors: false
    ignoreErrors:
-      # set_include_path detection issue
-      - message: '#"(autoload|colors|config|errorhandler|login_form|sessions)\.php"#'
-        identifier: requireOnce.fileNotFound
-
       - message: '##'
         paths:
           - lib/*

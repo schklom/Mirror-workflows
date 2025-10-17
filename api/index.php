@@ -1,17 +1,12 @@
 <?php
 	error_reporting(E_ERROR | E_PARSE);
 
-	set_include_path(__DIR__ . PATH_SEPARATOR .
-		dirname(__DIR__) . PATH_SEPARATOR .
-		dirname(__DIR__) . "/include" . PATH_SEPARATOR .
-  		get_include_path());
-
 	chdir("..");
 
 	define('NO_SESSION_AUTOSTART', true);
 
-	require_once "autoload.php";
-	require_once "sessions.php";
+	require_once __DIR__ . '/../include/autoload.php';
+	require_once __DIR__ . '/../include/sessions.php';
 
 	ini_set('session.use_cookies', "0");
 	ini_set("session.gc_maxlifetime", "86400");

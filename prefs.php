@@ -1,8 +1,6 @@
 <?php
-	set_include_path(__DIR__ . "/include" . PATH_SEPARATOR . get_include_path());
-
-	require_once "autoload.php";
-	require_once "sessions.php";
+	require_once __DIR__ . '/include/autoload.php';
+	require_once __DIR__ . '/include/sessions.php';
 
 	Config::sanity_check();
 

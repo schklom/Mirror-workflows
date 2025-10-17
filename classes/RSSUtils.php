@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../include/colors.php';
+
 class RSSUtils {
 
 	/**
@@ -646,8 +648,6 @@ class RSSUtils {
 				/* terrible hack: if we crash on floicon shit here, we won't check
 				 * the icon avgcolor again (unless icon got updated) */
 				if (file_exists($favicon_cache->get_full_path($feed)) && function_exists("imagecreatefromstring") && empty($feed_obj->favicon_avg_color)) {
-					require_once "colors.php";
-
 					Debug::log("favicon: trying to calculate average color...", Debug::LOG_VERBOSE);
 
 					$feed_obj->favicon_avg_color = 'fail';

@@ -1,5 +1,5 @@
 <?php
-require_once "colors.php";
+require_once __DIR__ . '/../include/colors.php';
 
 class Feeds extends Handler_Protected {
 	/** special feed for archived articles */
@@ -345,8 +345,6 @@ class Feeds extends Handler_Protected {
 
 			    //setting feed headline background color, needs to change text color based on dark/light
 				$fav_color = $line['favicon_avg_color'] ?? false;
-
-				require_once "colors.php";
 
 				if (!isset($rgba_cache[$feed_id])) {
 					if ($fav_color && $fav_color != 'fail') {

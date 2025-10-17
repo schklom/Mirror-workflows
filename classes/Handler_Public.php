@@ -847,7 +847,7 @@ class Handler_Public extends Handler {
 		if ($return_to)
 			$_REQUEST['return'] = $return_to;
 
-		require_once "login_form.php";
+		require_once __DIR__ . '/../include/login_form.php';
 		exit;
 	}
 

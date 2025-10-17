@@ -1,5 +1,5 @@
 <?php
-require_once 'lib/gettext/gettext.inc.php';
+require_once __DIR__ . '/../lib/gettext/gettext.inc.php';
 
 /**
  * @todo look into making this behave closer to what SessionHandlerInterface intends

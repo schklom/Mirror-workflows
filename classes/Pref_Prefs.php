@@ -611,8 +611,8 @@ class Pref_Prefs extends Handler_Protected {
 							["style" => 'width : 220px; margin : 0px']);
 
 					} else if ($pref_name == Prefs::USER_TIMEZONE) {
-
-						$timezones = explode("\n", file_get_contents("lib/timezones.txt"));
+						$timezones = DateTimeZone::listIdentifiers(DateTimeZone::ALL_WITH_BC);
+						array_unshift($timezones, 'Automatic');
 
 						print \Controls\select_tag($pref_name, $value, $timezones, ["dojoType" => "dijit.form.FilteringSelect"]);
 

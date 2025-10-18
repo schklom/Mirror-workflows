@@ -137,7 +137,7 @@ class Sanitizer {
 
 		// is it a good idea to possibly rewrite urls to our own prefix?
 		// $rewrite_base_url = $site_url ? $site_url : Config::get_self_url();
-		$rewrite_base_url = $site_url ? $site_url : "http://domain.invalid/";
+		$rewrite_base_url = $site_url ?: "http://domain.invalid/";
 
 		$entries = $xpath->query('(//a[@href]|//img[@src]|//source[@srcset|@src]|//video[@poster])');
 

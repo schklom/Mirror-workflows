@@ -219,7 +219,7 @@ class Share extends Plugin {
 							</div>
 						</div>
 
-						<div class='content' lang="<?= $line['lang'] ? $line['lang'] : "en" ?>">
+						<div class='content' lang="<?= $line['lang'] ?: "en" ?>">
 							<?= $line["content"] ?>
 						</div>
 					</div>

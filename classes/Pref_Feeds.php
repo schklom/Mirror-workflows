@@ -761,7 +761,7 @@ class Pref_Feeds extends Handler_Protected {
 			if ($feed) {
 
 				$feed->title = 							$feed_title;
-				$feed->cat_id = 							$cat_id ? $cat_id : null;
+				$feed->cat_id = 							$cat_id ?: null;
 				$feed->feed_url = 						$feed_url;
 				$feed->site_url = 						$site_url;
 				$feed->update_interval =				$upd_intl;
@@ -1249,7 +1249,7 @@ class Pref_Feeds extends Handler_Protected {
 				$csth->execute([$feed, $_SESSION['uid']]);
 
 				if (!$csth->fetch()) {
-					$isth->execute([$_SESSION['uid'], $feed, $cat_id ? $cat_id : null, $login, $pass]);
+					$isth->execute([$_SESSION['uid'], $feed, $cat_id ?: null, $login, $pass]);
 				}
 
 				$this->pdo->commit();

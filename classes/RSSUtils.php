@@ -186,7 +186,7 @@ class RSSUtils {
 			if ($tline = $usth->fetch()) {
 				Debug::log(sprintf("=> %s (ID: %d, U: %s [%d]), last updated: %s", $tline["title"], $tline["id"],
 					$tline["owner"], $tline["owner_uid"],
-					$tline["last_updated"] ? $tline["last_updated"] : "never"));
+					$tline["last_updated"] ?: "never"));
 
 				if (!in_array($tline["owner_uid"], $batch_owners))
 					array_push($batch_owners, $tline["owner_uid"]);

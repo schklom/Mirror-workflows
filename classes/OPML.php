@@ -520,7 +520,7 @@ class OPML extends Handler_Protected {
 				if ($cat_id === 0) {
 					$order_id = (int) $root_node->attributes->getNamedItem('ttrssSortOrder')->nodeValue;
 
-					Feeds::_add_cat($cat_title, $owner_uid, $parent_id ? $parent_id : null, (int)$order_id);
+					Feeds::_add_cat($cat_title, $owner_uid, $parent_id ?: null, (int)$order_id);
 					$cat_id = $this->get_feed_category($cat_title, $owner_uid, $parent_id);
 				}
 
@@ -539,7 +539,7 @@ class OPML extends Handler_Protected {
 		}
 
 		//$this->opml_notice("[CAT] $cat_title id: $cat_id P_id: $parent_id");
-		$this->opml_notice(T_sprintf("Processing category: %s", $cat_title ? $cat_title : __("Uncategorized")), $nest);
+		$this->opml_notice(T_sprintf("Processing category: %s", $cat_title ?: __("Uncategorized")), $nest);
 
 		/** @var DOMElement $node */
 		foreach ($outlines as $node) {

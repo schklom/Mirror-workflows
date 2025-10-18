@@ -1075,7 +1075,7 @@ class Feeds extends Handler_Protected {
 				'owner_uid' => $_SESSION['uid'],
 				'feed_url' => $url,
 				'title' => "[Unknown]",
-				'cat_id' => $cat_id ? $cat_id : null,
+				'cat_id' => $cat_id ?: null,
 				'auth_login' => (string)$auth_login,
 				'auth_pass' => (string)$auth_pass,
 				'update_method' => 0,
@@ -1157,12 +1157,12 @@ class Feeds extends Handler_Protected {
 
 		if ($cat) {
 			$res = ORM::for_table('ttrss_feed_categories')
-				->where('owner_uid', $owner_uid ? $owner_uid : $_SESSION['uid'])
+				->where('owner_uid', $owner_uid ?: $_SESSION['uid'])
 				->where('title', $title)
 				->find_one();
 		} else {
 			$res = ORM::for_table('ttrss_feeds')
-				->where('owner_uid', $owner_uid ? $owner_uid : $_SESSION['uid'])
+				->where('owner_uid', $owner_uid ?: $_SESSION['uid'])
 				->where('title', $title)
 				->find_one();
 		}
@@ -1230,7 +1230,7 @@ class Feeds extends Handler_Protected {
 					AND owner_uid = :uid)
 				AND owner_uid = :uid");
 
-			$sth->execute(["cat" => $cat ? $cat : null, "uid" => $owner_uid]);
+			$sth->execute(["cat" => $cat ?: null, "uid" => $owner_uid]);
 
 			if ($row = $sth->fetch()) {
 				return (int) $row["marked"];
@@ -1255,7 +1255,7 @@ class Feeds extends Handler_Protected {
 						AND owner_uid = :uid)
 					AND owner_uid = :uid");
 
-				$sth->execute(["cat" => $cat ? $cat : null, "uid" => $owner_uid]);
+				$sth->execute(["cat" => $cat ?: null, "uid" => $owner_uid]);
 
 				if ($row = $sth->fetch()) {
 					return (int) $row["marked"];
@@ -1279,7 +1279,7 @@ class Feeds extends Handler_Protected {
 					AND owner_uid = :uid)
 				AND owner_uid = :uid");
 
-			$sth->execute(["cat" => $cat ? $cat : null, "uid" => $owner_uid]);
+			$sth->execute(["cat" => $cat ?: null, "uid" => $owner_uid]);
 
 			if ($row = $sth->fetch()) {
 				return (int) $row["unread"];

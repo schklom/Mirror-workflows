@@ -401,7 +401,7 @@
 	}
 
 	function uniqid_short(): string {
-		return uniqid(base_convert((string)rand(), 10, 36));
+		return uniqid(base_convert((string)random_int(0, mt_getrandmax()), 10, 36));
 	}
 
 	function T_sprintf(): string {

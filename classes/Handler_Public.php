@@ -534,8 +534,8 @@ class Handler_Public extends Handler {
 				<input dojoType='dijit.form.TextBox' type='email' name='email' value='' required>
 				</fieldset>";
 
-			$_SESSION["pwdreset:testvalue1"] = rand(1,10);
-			$_SESSION["pwdreset:testvalue2"] = rand(1,10);
+			$_SESSION["pwdreset:testvalue1"] = random_int(1,10);
+			$_SESSION["pwdreset:testvalue2"] = random_int(1,10);
 
 			print "<fieldset>
 				<label>".T_sprintf("How much is %d + %d:", $_SESSION["pwdreset:testvalue1"], $_SESSION["pwdreset:testvalue2"])."</label>
@@ -563,8 +563,8 @@ class Handler_Public extends Handler {
 					</form>";
 			} else {
 				// prevent submitting this form multiple times
-				$_SESSION["pwdreset:testvalue1"] = rand(1, 1000);
-				$_SESSION["pwdreset:testvalue2"] = rand(1, 1000);
+				$_SESSION["pwdreset:testvalue1"] = random_int(1, 1000);
+				$_SESSION["pwdreset:testvalue2"] = random_int(1, 1000);
 
 				$user = ORM::for_table('ttrss_users')
 					->select('id')

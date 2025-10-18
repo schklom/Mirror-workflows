@@ -524,7 +524,7 @@ class RSSUtils {
 			} else if (UrlHelper::$fetch_last_error_code == 429) {
 
 				// randomize interval using Config::HTTP_429_THROTTLE_INTERVAL as a base value (1-2x)
-				$http_429_throttle_interval = rand(Config::get(Config::HTTP_429_THROTTLE_INTERVAL),
+				$http_429_throttle_interval = random_int(Config::get(Config::HTTP_429_THROTTLE_INTERVAL),
 					Config::get(Config::HTTP_429_THROTTLE_INTERVAL)*2);
 
 				$error_message = UrlHelper::$fetch_last_error;

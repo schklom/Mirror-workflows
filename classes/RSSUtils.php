@@ -1809,8 +1809,7 @@ class RSSUtils {
 	}
 
 	static function is_gzipped(string $feed_data): bool {
-		return strpos(substr($feed_data, 0, 3),
-				"\x1f" . "\x8b" . "\x08", 0) === 0;
+		return str_starts_with(substr($feed_data, 0, 3), "\x1f" . "\x8b" . "\x08");
 	}
 
 	/**

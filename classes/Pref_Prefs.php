@@ -822,7 +822,7 @@ class Pref_Prefs extends Handler_Protected {
 			]);
 		}
 
-		usort($rv, function($a, $b) { return strcmp($a["name"], $b["name"]); });
+		usort($rv, fn($a, $b) => strcmp($a["name"], $b["name"]));
 
 		print json_encode(['plugins' => $rv, 'is_admin' => $_SESSION['access_level'] >= UserHelper::ACCESS_LEVEL_ADMIN]);
 	}

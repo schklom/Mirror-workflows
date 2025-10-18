@@ -5,8 +5,6 @@
 window.addEventListener("load", function() {
     const UtilityJS = {
         apply_night_mode: function (is_night, link) {
-            console.log("night mode changed to", is_night);
-
             /* global __default_dark_theme, __default_light_theme */
             const light_theme = typeof __default_light_theme !== 'undefined' ? __default_light_theme : 'themes/light.css';
             const dark_theme = typeof __default_dark_theme !== 'undefined' ? __default_dark_theme : 'themes/night.css';

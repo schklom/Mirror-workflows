@@ -199,13 +199,12 @@ const Headlines = {
 							labels = labels.concat(obj.labels);
 
 					} catch (e) {
-						console.warn(e, res);
+						console.warn('Error parsing mutation result:', e, res);
 					}
 				}
 			});
 
 			if (feeds.length > 0) {
-				console.log('requesting counters for', feeds, labels);
 				Feeds.requestCounters(feeds, labels);
 			}
 
@@ -219,8 +218,6 @@ const Headlines = {
 			Headlines.select('none');
 
 			const ids = Headlines.getRange(Article.getActive(), id);
-
-			console.log(Article.getActive(), id, ids);
 
 			for (let i = 0; i < ids.length; i++)
 				Headlines.select('all', ids[i]);
@@ -301,7 +298,7 @@ const Headlines = {
 		switch (view_mode) {
 			case "marked":
 			case "published":
-				console.warn("loadMore: ", view_mode, "not implemented");
+				console.warn('loadMore:', view_mode, 'not implemented');
 				break;
 			case "unread":
 				offset = unread_in_buffer;
@@ -335,7 +332,6 @@ const Headlines = {
 
 		for (let i = 0; i < rows.length; i++) {
 			if (App.Scrollable.isChildVisible(rows[i], container)) {
-				console.log('force unpacking:', rows[i].getAttribute('id'));
 				Article.unpack(rows[i]);
 			}
 		}
@@ -386,7 +382,7 @@ const Headlines = {
 			PluginHost.run(PluginHost.HOOK_HEADLINES_SCROLL_HANDLER);
 
 		} catch (e) {
-			console.warn("scrollHandler", e);
+			console.error('scrollHandler error:', e);
 		}
 	},
 	objectById: function (id) {
@@ -727,14 +723,12 @@ const Headlines = {
 						break;
 					default:
 						if (!PluginHost.run_until(PluginHost.HOOK_HEADLINE_TOOLBAR_SELECT_MENU_ITEM2, true, action))
-							console.warn('unknown headlines action', action);
+							console.warn('unknown headlines action:', action);
 				}
 			}
 		);
 	},
 	onLoaded: function (reply, offset, append) {
-		console.log("Headlines.onLoaded: offset=", offset, "append=", append);
-
 		let is_cat = false;
 		let feed_id = false;
 
@@ -752,11 +746,8 @@ const Headlines = {
 			//this.vgroup_last_feed = reply['headlines-info']['vgroup_last_feed'];
 			this.current_first_id = reply['headlines']['first_id'];
 
-			console.log('received', headlines_count, 'headlines');
-
 			if (!append) {
 				Feeds.infscroll_disabled = parseInt(headlines_count) !== 30;
-				console.log('infscroll_disabled=', Feeds.infscroll_disabled);
 
 				// also called in renderAgain() after view mode switch
 				Headlines.setCommonClasses(headlines_count);
@@ -776,7 +767,7 @@ const Headlines = {
 					headlines_frame.scrollTop = 0;
 					headlines_frame.classList.add('smooth-scroll');
 				} catch (e) {
-					console.warn(e);
+					console.error('Error resetting headlines scroll:', e);
 				}
 
 				this.headlines = [];
@@ -856,8 +847,6 @@ const Headlines = {
 
 				Feeds.infscroll_disabled = headlines_appended === 0;
 
-				console.log('appended', headlines_appended, 'headlines, infscroll_disabled=', Feeds.infscroll_disabled);
-
 				if (!hsp) {
 					hsp = document.createElement("div");
 					hsp.id = "headlines-spacer";
@@ -878,8 +867,6 @@ const Headlines = {
 			} else {
 				Feeds.infscroll_disabled = true;
 				const first_id_changed = reply['headlines']['first_id_changed'];
-
-				console.log("no headlines received, infscroll_disabled=", Feeds.infscroll_disabled, 'first_id_changed=', first_id_changed);
 
 				const hsp = document.getElementById("headlines-spacer");
 
@@ -1004,7 +991,6 @@ const Headlines = {
 		let current_id = Article.getActive();
 
 		if (!Headlines.isChildVisible(document.getElementById(`RROW-${current_id}`))) {
-			console.log('active article is obscured, resetting to first visible...');
 			current_id = Headlines.firstVisible();
 			prev_id = current_id;
 			next_id = current_id;
@@ -1027,8 +1013,6 @@ const Headlines = {
 				}
 			}
 		}
-
-		console.log("cur: " + current_id + " next: " + next_id + " prev:" + prev_id);
 
 		if (mode === "next") {
 			if (next_id) {
@@ -1065,8 +1049,6 @@ const Headlines = {
 						const row = document.getElementById(`RROW-${current_id}`);
 						const ctr = document.getElementById("headlines-frame");
 						const delta_px = Math.round(row.offsetTop) - Math.round(ctr.scrollTop);
-
-						console.log('moving back, delta_px', delta_px);
 
 						if (!force_previous && row && delta_px < -8) {
 							Article.setActive(current_id);

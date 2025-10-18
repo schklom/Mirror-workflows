@@ -649,7 +649,6 @@ const	Helpers = {
 				performUpdate: function() {
 					const container = dialog.domNode.querySelector(".update-results");
 
-					console.log('updating', dialog.plugins_to_update);
 					dialog.attr('title', __('Updating...'));
 
 					container.innerHTML = `<li class='text-center'>${__("Updating, please wait...")}</li>`;
@@ -708,8 +707,6 @@ const	Helpers = {
 					}
 				},
 				checkUpdates: function(name) {
-					console.log('checkUpdates', name);
-
 					const container = dialog.domNode.querySelector(".update-results");
 
 					dialog.attr('title', __("Checking: %s").replace("%s", name));
@@ -832,7 +829,6 @@ const	Helpers = {
 			}
 		},
 		export: function() {
-			console.log("export");
 			window.open("backend.php?op=OPML&method=export&" + dojo.formToQuery("opmlExportForm"));
 		},
 	}

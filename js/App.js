@@ -175,8 +175,6 @@ const App = {
 		this._initParams[k] = v;
 	},
 	nightModeChanged: function(is_night, link, retry = 0) {
-		console.log("nightModeChanged: night mode changed to", is_night, "retry", retry);
-
 		if (link) {
 			if (retry < 15) {
 				window.clearTimeout(this._night_mode_retry_timeout);
@@ -400,8 +398,6 @@ const App = {
 			action_name = this.getActionByHotkeySequence(hotkey_full);
 		}
 
-		console.log('keyeventToAction', hotkey_full, '=>', action_name);
-
 		return action_name;
 	},
 	cleanupMemory: function(root) {
@@ -493,7 +489,6 @@ const App = {
          // not in preferences
          if (typeof Feeds !== 'undefined') {
             if (message === 'UPDATE_COUNTERS') {
-               console.log("need to refresh counters for", reply.feeds);
                Feeds.requestCounters(reply.feeds);
             }
 
@@ -519,8 +514,6 @@ const App = {
 		Object.keys(data).forEach((k) => {
          const v = data[k];
 
-         console.log("RI:", k, "=>", v);
-
          if (k === "daemon_is_running" && v !== 1) {
             Notify.error("Update daemon is not running.", true);
             return;
@@ -542,7 +535,6 @@ const App = {
          if (typeof Feeds !== 'undefined') {
             if (k === "max_feed_id" || k === "num_feeds") {
                if (this.getInitParam(k) && this.getInitParam(k) !== v) {
-                  console.log("feed count changed, need to reload feedlist:", this.getInitParam(k), v);
                   Feeds.reload();
                }
             }
@@ -559,7 +551,6 @@ const App = {
 		const params = reply['init-params'];
 
 		if (params) {
-			console.log('reading init-params...');
 
 			Object.keys(params).forEach((k) => {
             switch (k) {
@@ -591,7 +582,6 @@ const App = {
                   break;
             }
 
-            console.log("IP:", k, "=>", params[k]);
             this.setInitParam(k, params[k]);
 			});
 
@@ -603,7 +593,6 @@ const App = {
       const translations = reply['translations'];
 
       if (translations) {
-         console.log('reading translations...');
          App._translations = translations;
       }
 
@@ -644,10 +633,7 @@ const App = {
 						file: params.filename ? params.filename : error.fileName,
 						line: params.lineno ? params.lineno : error.lineNumber,
 						msg: message,
-						context: error.stack},
-					(reply) => {
-						console.warn("[Error.report] log response", reply);
-					});
+						context: error.stack});
 			} catch (re) {
 				console.error("[Error.report] exception while saving logging error on server", re);
 			}
@@ -715,8 +701,6 @@ const App = {
 
       this.setupNightModeDetection(() => {
          parser.parse();
-
-         console.log('is_prefs', this.is_prefs);
 
          if (!this.checkBrowserFeatures())
             return;
@@ -873,11 +857,8 @@ const App = {
 
    },
    checkForUpdates: function() {
-      console.log('checking for updates...');
-
       xhr.json("backend.php", {op: 'RPC', method: 'checkforupdates'})
          .then((reply) => {
-            console.log('update reply', reply);
 
             const icon = document.getElementById("updates-available");
 
@@ -1349,7 +1330,7 @@ const App = {
             this.hotkeyHelp()
             break;
          default:
-            console.log("quickMenuGo: unknown action: " + opid);
+            console.warn("quickMenuGo: unknown action:", opid);
       }
    },
 }

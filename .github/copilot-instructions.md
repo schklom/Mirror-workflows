@@ -3,6 +3,26 @@
 ## Project Overview
 Tiny Tiny RSS is a web-based RSS/Atom feed reader and aggregator built with PHP (backend) and JavaScript with Dojo Toolkit (frontend). Forked in October 2025 to continue development after original tt-rss.org shutdown.
 
+## General Coding Conventions
+
+### String Quotes (All Languages)
+- **Prefer single quotes** (`'`) over double quotes (`"`) for string literals across all languages (JavaScript, PHP, YAML, etc.)
+- **Exceptions**:
+  - Use double quotes when the string contains single quotes to avoid escaping
+  - Template literals/interpolation: Use language-specific interpolation syntax (e.g., backticks in JS, double quotes in PHP)
+  - Multi-line strings: Use appropriate syntax for the language (backticks in JS, heredoc/nowdoc in PHP)
+- **Examples**:
+  ```javascript
+  const name = 'tt-rss';  // Good
+  const message = "User's feed";  // Good - contains single quote
+  const html = `<div>${name}</div>`;  // Good - interpolation
+  ```
+  ```php
+  $name = 'tt-rss';  // Good
+  $message = "User's feed";  // Good - contains single quote
+  $html = "Hello, $name";  // Good - interpolation
+  ```
+
 ## Architecture & Stack
 
 ### Backend (PHP 8.2+)

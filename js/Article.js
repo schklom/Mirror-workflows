@@ -240,8 +240,6 @@ const Article = {
 	},
 	unpack: function(row) {
 		if (row.getAttribute("data-is-packed") === "1") {
-			console.log("unpacking: " + row.id);
-
 			const container = row.querySelector(".content-inner");
 
 			container.innerHTML = row.getAttribute("data-content").trim() + row.getAttribute("data-rendered-enclosures").trim();
@@ -263,7 +261,6 @@ const Article = {
 	},
 	pack: function(row) {
 		if (row.getAttribute("data-is-packed") !== "1") {
-			console.log("packing", row.id);
 			row.setAttribute("data-is-packed", "1");
 
 			const content_inner = row.querySelector(".content-inner");
@@ -418,8 +415,6 @@ const Article = {
 	},
 	setActive: function (id) {
 		if (id !== Article.getActive()) {
-			console.log("setActive", id, "was", Article.getActive());
-
 			document.querySelectorAll('div[id*=RROW][class*=active]').forEach((row) => {
 				row.classList.remove('active');
 

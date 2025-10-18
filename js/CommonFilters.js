@@ -70,11 +70,9 @@ const	Filters = {
 									}
 
 								} else if (!result) {
-									console.log("getTestResults: can't parse results object");
+									console.error("getTestResults: can't parse results object");
 									test_dialog.domNode.querySelector(".loading-indicator").hide();
 									Notify.error("Error while trying to get filter test results.");
-								} else {
-									console.log("getTestResults: dialog closed, bailing out.");
 								}
 							} catch (e) {
 								App.Error.report(e);
@@ -189,8 +187,6 @@ const	Filters = {
 						};
 					}
 
-					console.log(rule, dialog.filter_info);
-
 					xhr.json("backend.php", {op: "Pref_Filters", method: "editrule", ids: rule.feed_id.join(",")}, function (editrule) {
 						edit_rule_dialog.attr('content',
 							`
@@ -282,8 +278,6 @@ const	Filters = {
 							action_param: ""
 						};
 					}
-
-					console.log(action);
 
 					edit_action_dialog.attr('content',
 					`
@@ -540,12 +534,8 @@ const	Filters = {
 							if (reply && reply.title) title = reply.title;
 
 							if (title || Feeds.getActive() || Feeds.activeIsCat()) {
-								console.log(title + " " + Feeds.getActive());
-
-								const feed_id = Feeds.activeIsCat() ? 'CAT:' + parseInt(Feeds.getActive()) :
-									Feeds.getActive();
+								const feed_id = Feeds.activeIsCat() ? 'CAT:' + parseInt(Feeds.getActive()) : Feeds.getActive();
 								const rule = {reg_exp: title, feed_id: [feed_id], filter_type: 1};
-
 								dialog.editRule(null, dojo.toJson(rule));
 							}
 						});

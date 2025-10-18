@@ -370,8 +370,6 @@ const	CommonDialogs = {
 			if (feed_id <= 0)
 				return alert(__("You can't edit this kind of feed."));
 
-			const query = {op: "Pref_Feeds", method: "editfeed", id: feed_id};
-
 			const dialog = new fox.SingleUseDialog({
 				id: "feedEditDlg",
 				title: __("Edit feed"),

@@ -435,7 +435,6 @@ class UrlHelper {
 			return false;
 		}
 
-		// @phpstan-ignore argument.type (prior validation ensures the host value exists)
 		self::$fetch_effective_ip_addr = gethostbyname(parse_url(self::$fetch_effective_url, PHP_URL_HOST));
 
 		// this skip is needed for integration tests, please don't enable in production

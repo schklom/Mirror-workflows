@@ -147,7 +147,6 @@ class Pref_Filters extends Handler_Protected {
 			$feed_filter['rules'] = [];
 
 			// only add rules which match result from specific feed or category ID or rules matching all feeds
-			// @phpstan-ignore foreach.emptyArray
 			foreach ($filter['rules'] as $rule) {
 				foreach ($rule['feed_id'] as $rule_feed) {
 					if (($rule_feed === 'CAT:0' && $entry['cat_id'] === null) || 			// rule matches Uncategorized

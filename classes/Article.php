@@ -507,9 +507,10 @@ class Article extends Handler_Protected {
 	}
 
 	/**
-	 * @return array<int, array<int, int|string>>
+	 * @return array{'no-labels': 1}|array<int, array{int, string, string, string}>
 	 */
 	static function _get_labels(int $id, ?int $owner_uid = null): array {
+		/** @var array{'no-labels': 1}|array<int, array{int, string, string, string}> */
 		$rv = [];
 
 		if (!$owner_uid) $owner_uid = $_SESSION["uid"];
@@ -525,11 +526,7 @@ class Article extends Handler_Protected {
 
 			if ($label_cache) {
 				$tmp = json_decode($label_cache, true);
-
-				if (empty($tmp) || ($tmp["no-labels"] ?? 0) == 1)
-					return $rv;
-				else
-					return $tmp;
+				return (empty($tmp) || ($tmp['no-labels'] ?? 0) == 1) ? $rv : $tmp;
 			}
 		}
 
@@ -542,18 +539,15 @@ class Article extends Handler_Protected {
 		$sth->execute([$id, $owner_uid]);
 
 		while ($line = $sth->fetch()) {
-			$rk = [Labels::label_to_feed_id($line["label_id"]),
-				$line["caption"], $line["fg_color"],
-				$line["bg_color"]];
-			array_push($rv, $rk);
+			$rv[] = [
+				Labels::label_to_feed_id($line['label_id']),
+				$line['caption'],
+				$line['fg_color'],
+				$line['bg_color'],
+			];
 		}
 
-		if (count($rv) > 0)
-			// PHPStan has issues with the shape of $rv for some reason (array vs non-empty-array).
-			// @phpstan-ignore-next-line
-			Labels::update_cache($owner_uid, $id, $rv);
-		else
-			Labels::update_cache($owner_uid, $id, ["no-labels" => 1]);
+		Labels::update_cache($owner_uid, $id, count($rv) > 0 ? $rv : ['no-labels' => 1]);
 
 		return $rv;
 	}

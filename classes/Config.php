@@ -470,7 +470,7 @@ class Config {
 	private function _get(string $param): bool|int|string {
 		[$value, $type_hint] = $this->params[$param];
 
-		return $this->cast_to($value, $type_hint);
+		return static::cast_to($value, $type_hint);
 	}
 
 	private function _add(string $param, string $default, int $type_hint): void {

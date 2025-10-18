@@ -80,7 +80,7 @@ class Feeds extends Handler_Protected {
 		}
 
 		if ($method_split[0] == "MarkAllReadGR")  {
-			$this->_catchup($method_split[1], false);
+			static::_catchup($method_split[1], false);
 		}
 
 		// FIXME: might break tag display?
@@ -142,7 +142,7 @@ class Feeds extends Handler_Protected {
                 "order_by" => $order_by
 			];
 
-			$qfh_ret = $this->_get_headlines($params);
+			$qfh_ret = static::_get_headlines($params);
 		}
 
 		$vfeed_group_enabled = Prefs::get(Prefs::VFEED_GROUP_BY_FEED, $_SESSION['uid'], $profile) &&
@@ -673,7 +673,7 @@ class Feeds extends Handler_Protected {
 		</script>
 
 			<div class="container">
-				<h1>Feed Debugger: <?= "$feed_id: " . $this->_get_title($feed_id, $_SESSION['uid']) ?></h1>
+				<h1>Feed Debugger: <?= "$feed_id: " . static::_get_title($feed_id, $_SESSION['uid']) ?></h1>
 				<div class="content">
 					<form method="post" action="" dojoType="dijit.form.Form">
 						<?= \Controls\hidden_tag("op", "Feeds") ?>

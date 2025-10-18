@@ -124,7 +124,7 @@ class API extends Handler {
 		$offset = (int) clean($_REQUEST["offset"] ?? 0);
 		$include_nested = self::_param_to_bool($_REQUEST["include_nested"] ?? false);
 
-		$feeds = $this->_api_get_feeds($cat_id, $unread_only, $limit, $offset, $include_nested);
+		$feeds = self::_api_get_feeds($cat_id, $unread_only, $limit, $offset, $include_nested);
 
 		return $this->_wrap(self::STATUS_OK, $feeds);
 	}
@@ -218,10 +218,7 @@ class API extends Handler {
 
 			$search = clean($_REQUEST["search"] ?? "");
 
-			[$headlines, $headlines_header] = $this->_api_get_headlines($feed_id, $limit, $offset,
-				$filter, $is_cat, $show_excerpt, $show_content, $view_mode, $override_order,
-				$include_attachments, $since_id, $search,
-				$include_nested, $sanitize_content, $force_update, $excerpt_length, $check_first_id, $skip_first_id_check);
+			[$headlines, $headlines_header] = self::_api_get_headlines($feed_id, $limit, $offset, $filter, $is_cat, $show_excerpt, $show_content, $view_mode, $override_order, $include_attachments, $since_id, $search, $include_nested, $sanitize_content, $force_update, $excerpt_length, $check_first_id, $skip_first_id_check);
 
 			if ($include_header) {
 				return $this->_wrap(self::STATUS_OK, [$headlines_header, $headlines]);

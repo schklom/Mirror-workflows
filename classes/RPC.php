@@ -102,7 +102,7 @@ class RPC extends Handler_Protected {
 
 	function getRuntimeInfo(): void {
 		$reply = [
-			'runtime-info' => $this->_make_runtime_info()
+			'runtime-info' => static::_make_runtime_info()
 		];
 
 		print json_encode($reply);
@@ -201,7 +201,7 @@ class RPC extends Handler_Protected {
 			$reply = [];
 
 			$reply['init-params'] = $this->_make_init_params();
-			$reply['runtime-info'] = $this->_make_runtime_info();
+			$reply['runtime-info'] = static::_make_runtime_info();
 			$reply['translations'] = $this->_translations_as_array();
 
 			print json_encode($reply);
@@ -393,7 +393,7 @@ class RPC extends Handler_Protected {
 		$params["self_url_prefix"] = Config::get_self_url();
 		$params["max_feed_id"] = (int) $max_feed_id;
 		$params["num_feeds"] = (int) $num_feeds;
-		$params["hotkeys"] = $this->get_hotkeys_map();
+		$params["hotkeys"] = static::get_hotkeys_map();
 		$params["widescreen"] = (int) Prefs::get(Prefs::WIDESCREEN_MODE, $_SESSION['uid'], $profile);
 		$params["icon_indicator_white"] = $this->image_to_base64("images/indicator_white.gif");
 		$params["icon_oval"] = $this->image_to_base64("images/oval.svg");

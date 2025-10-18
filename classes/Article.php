@@ -237,7 +237,7 @@ class Article extends Handler_Protected {
 		$this->pdo->commit();
 
 		// get latest tags from the database, original $tags is sometimes JSON-encoded as a hash ({}) - ???
-		print json_encode(["id" => (int)$id, "tags" => $this->_get_tags($id)]);
+		print json_encode(["id" => (int)$id, "tags" => static::_get_tags($id)]);
 	}
 
 	function completeTags(): void {
@@ -286,7 +286,7 @@ class Article extends Handler_Protected {
 					Labels::remove_article($id, $label, $_SESSION["uid"]);
 
 				array_push($reply["labels-for"],
-					["id" => (int)$id, "labels" => $this->_get_labels($id)]);
+					["id" => (int)$id, "labels" => static::_get_labels($id)]);
 			}
 		}
 

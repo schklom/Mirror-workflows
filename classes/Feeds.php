@@ -251,7 +251,7 @@ class Feeds extends Handler_Protected {
 					array_push($topmost_article_ids, $id);
 				}
 
-				$line["feed_title"] = $line["feed_title"] ?? "";
+				$line["feed_title"] ??= "";
 
 				$button_doc = new DOMDocument();
 

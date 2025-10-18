@@ -36,11 +36,7 @@ class Sessions implements \SessionHandlerInterface {
 		if (isset($_COOKIE[$this->session_name]) && $this->session_expire > 0) {
 			return setcookie($this->session_name,
 				$_COOKIE[$this->session_name],
-				time() + $this->session_expire,
-				ini_get('session.cookie_path'),
-				ini_get('session.cookie_domain'),
-				ini_get('session.cookie_secure'),
-				ini_get('session.cookie_httponly'));
+                ['expires' => time() + $this->session_expire, 'path' => ini_get('session.cookie_path'), 'domain' => ini_get('session.cookie_domain'), 'secure' => ini_get('session.cookie_secure'), 'httponly' => ini_get('session.cookie_httponly')]);
 		}
 		return false;
 	}

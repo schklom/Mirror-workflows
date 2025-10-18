@@ -874,12 +874,12 @@ class Pref_Prefs extends Handler_Protected {
 						];
 
 						$feed_handlers = array_filter($feed_handlers,
-							fn($plugin) => in_array(get_class($plugin), $feed_handler_whitelist) === false);
+							fn($plugin) => in_array($plugin::class, $feed_handler_whitelist) === false);
 
 						if (count($feed_handlers) > 0) {
 							print_error(
 								T_sprintf("The following plugins use per-feed content hooks. This may cause excessive data usage and origin server load resulting in a ban of your instance: <b>%s</b>" ,
-									implode(", ", array_map(fn($plugin) => get_class($plugin), $feed_handlers))
+									implode(", ", array_map(fn($plugin) => $plugin::class, $feed_handlers))
 								) . " (<a href='https://github.com/tt-rss/tt-rss/wiki/Feed-Handler-Plugins' target='_blank'>".__("More info...")."</a>)"
 							);
 						}
@@ -1035,7 +1035,7 @@ class Pref_Prefs extends Handler_Protected {
 			return T_sprintf("v%.2f, by %s", $about[0], $about[2]);
 		}
 
-		$ref = new ReflectionClass(get_class($plugin));
+		$ref = new ReflectionClass($plugin::class);
 
 		$plugin_dir = dirname($ref->getFileName());
 

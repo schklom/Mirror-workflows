@@ -911,7 +911,7 @@ class PluginHost {
 	// TODO: use get_plugin_dir()
 	function is_local(Plugin $plugin): bool {
 		$ref = new ReflectionClass(get_class($plugin));
-		return basename(dirname(dirname($ref->getFileName()))) == "plugins.local";
+		return basename(dirname($ref->getFileName(), 2)) == "plugins.local";
 	}
 
 	/**

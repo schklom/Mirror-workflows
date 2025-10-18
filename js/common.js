@@ -118,8 +118,6 @@ const xhr = {
 	post: function(url, params = {}, complete = undefined, failed = undefined) {
 		this._ts = new Date().getTime();
 
-		console.log('xhr.post', '>>>', params);
-
 		return new Promise((resolve, reject) => {
 			if (typeof __csrf_token !== "undefined")
 				params = {...params, ...{csrf_token: __csrf_token}};
@@ -134,8 +132,6 @@ const xhr = {
 					reject(error);
 				},
 				load: function(data, ioargs) {
-					console.log('xhr.post', '<<<', ioargs.xhr, (new Date().getTime() - xhr._ts) + " ms");
-
 					if (typeof complete === 'function')
 						complete(data, ioargs.xhr);
 
@@ -152,7 +148,7 @@ const xhr = {
 				try {
 					obj = JSON.parse(data);
 				} catch (e) {
-					console.error("xhr.json", e, xhr);
+					console.error('xhr.json: JSON parse error', e);
 
 					if (typeof failed === 'function')
 						failed(e);
@@ -160,8 +156,6 @@ const xhr = {
 					reject(e);
 					return;
 				}
-
-				console.log('xhr.json', '<<<', obj, (new Date().getTime() - xhr._ts) + " ms");
 
 				if (obj && typeof App !== 'undefined') {
 					if (!App.handleRpcJson(obj)) {
@@ -184,8 +178,6 @@ const xhr = {
 
 /* exported xhrPost */
 function xhrPost(url, params = {}, complete = undefined) {
-	console.log("xhrPost:", params);
-
 	return new Promise((resolve, reject) => {
 		if (typeof __csrf_token !== "undefined")
 			params = {...params, ...{csrf_token: __csrf_token}};
@@ -371,8 +363,6 @@ const Notify = {
 		let icon = "";
 
 		notify.className = "notify";
-
-		console.warn('notify', msg, kind);
 
 		switch (kind) {
 			case this.KIND_INFO:

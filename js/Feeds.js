@@ -133,8 +133,6 @@ const	Feeds = {
 	},
 	reloadCurrent: function(method) {
 		if (this.getActive() !== undefined) {
-			console.log("reloadCurrent", this.getActive(), this.activeIsCat(), method);
-
 			this.open({feed: this.getActive(), is_cat: this.activeIsCat(), method: method});
 		}
 	},
@@ -222,8 +220,7 @@ const	Feeds = {
 				id: "feedTree",
 			}, "feedTree");
 
-			const tmph = dojo.connect(dijit.byId('feedMenu'), '_openMyself', function (event) {
-				console.log(dijit.getEnclosingWidget(event.target));
+			const tmph = dojo.connect(dijit.byId('feedMenu'), '_openMyself', function (/*event*/) {
 				dojo.disconnect(tmph);
 			});
 
@@ -259,8 +256,6 @@ const	Feeds = {
 		Headlines.updateCurrentUnread();
 	},
 	init: function() {
-		console.log("in feedlist init");
-
 		this._feeds_holder_observer.observe(document.getElementById("feeds-holder"));
 
 		App.setLoadingProgress(50);
@@ -270,8 +265,6 @@ const	Feeds = {
 		window.onresize = () => { Headlines.scrollHandler(); }
 
 		const hash = App.Hash.get();
-
-		console.log('got hash', hash);
 
 		if (hash.query)
 			this._search_query = {query: hash.query, search_language: hash.search_language};
@@ -332,8 +325,6 @@ const	Feeds = {
 		return this._active_feed_id;
 	},
 	setActive: function(id, is_cat) {
-		console.log('setActive', id, is_cat);
-
 		// id might be a tag string, so check if we have something int-ish
 		if (Number.isInteger(Number(id)))
 			id = parseInt(id);
@@ -403,7 +394,7 @@ const	Feeds = {
 
 			window.clearTimeout(this._infscroll_timeout);
 			this._infscroll_timeout = window.setTimeout(() => {
-				console.log('infscroll request timed out, aborting');
+				console.warn('infscroll request timed out, aborting');
 				this.infscroll_in_progress = 0;
 
 				// call scroll handler to maybe repeat infscroll request

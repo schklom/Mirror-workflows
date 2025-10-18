@@ -124,8 +124,6 @@ const	CommonDialogs = {
 							},
 							execute: function () {
 								if (this.validate()) {
-									console.log(dojo.objectToQuery(this.attr('value')));
-
 									const feed_url = this.attr('value').feed;
 
 									Element.show("feed_add_spinner");
@@ -144,8 +142,6 @@ const	CommonDialogs = {
 
 											Notify.close();
 											Element.hide("feed_add_spinner");
-
-											console.log(rc);
 
 											switch (parseInt(rc['code'])) {
 												case 0:
@@ -375,8 +371,6 @@ const	CommonDialogs = {
 				return alert(__("You can't edit this kind of feed."));
 
 			const query = {op: "Pref_Feeds", method: "editfeed", id: feed_id};
-
-			console.log("editFeed", query);
 
 			const dialog = new fox.SingleUseDialog({
 				id: "feedEditDlg",

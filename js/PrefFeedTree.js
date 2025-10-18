@@ -335,7 +335,6 @@ define(["dojo/_base/declare", "dojo/dom-construct", "lib/CheckBoxTree", "dojo/_b
 							const target = dijit.getEnclosingWidget(dialog.domNode.querySelector(`input[name="${name}"]`));
 
 							target.attr('disabled', !checkbox.attr('checked'));
-							console.log(target, target.attr('type'));
 
 							if (target.attr('type') === 'checkbox') {
 								const label = checkbox.domNode.closest('label');

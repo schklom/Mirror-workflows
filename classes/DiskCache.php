@@ -412,7 +412,7 @@ class DiskCache implements Cache_Adapter {
 
 			/** @var DOMElement $entry */
 			foreach ($entries as $entry) {
-				foreach (array('src', 'poster') as $attr) {
+				foreach (['src', 'poster'] as $attr) {
 					if ($entry->hasAttribute($attr)) {
 						$url = $entry->getAttribute($attr);
 						$cached_filename = sha1($url);

@@ -62,8 +62,8 @@ class Counters {
 
 		/* Labels category */
 
-		$cv = array("id" => Feeds::CATEGORY_LABELS, "kind" => "cat",
-			"counter" => Feeds::_get_cat_unread(Feeds::CATEGORY_LABELS));
+		$cv = ["id" => Feeds::CATEGORY_LABELS, "kind" => "cat",
+			"counter" => Feeds::_get_cat_unread(Feeds::CATEGORY_LABELS)];
 
 		array_push($ret, $cv);
 

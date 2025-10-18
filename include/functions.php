@@ -46,7 +46,7 @@
 	 * @return array<string, string>
 	 */
 	function get_translations(): array {
-		$t = array(
+		$t = [
 					"auto"  => __("Detect automatically"),
 					"ar_SA" => "العربيّة (Arabic)",
 					"be"    => "Беларуская",
@@ -77,7 +77,7 @@
 					"sv_SE" => "Svenska",
 					"fi_FI" => "Suomi",
 					"ta"    => "Tamil",
-					"tr_TR" => "Türkçe");
+					"tr_TR" => "Türkçe"];
 
 		return $t;
 	}

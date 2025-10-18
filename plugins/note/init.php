@@ -2,9 +2,9 @@
 class Note extends Plugin {
 
 	function about() {
-		return array(null,
+		return [null,
 			"Adds support for setting article notes",
-			"fox");
+			"fox"];
 	}
 
 	function init($host) {

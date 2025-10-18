@@ -16,7 +16,7 @@ class Sanitizer {
 			}
 
 			if ($entry->hasAttributes()) {
-				$attrs_to_remove = array();
+				$attrs_to_remove = [];
 
 				foreach ($entry->attributes as $attr) {
 
@@ -70,7 +70,7 @@ class Sanitizer {
 				$res = $doc->saveHTML();
 
 				/* strip everything outside of <body>...</body> */
-				$res_frag = array();
+				$res_frag = [];
 
 				if (preg_match('/<body>(.*)<\/body>/is', $res, $res_frag)) {
 					return $res_frag[1];
@@ -217,7 +217,7 @@ class Sanitizer {
 			}
 		}
 
-		$allowed_elements = array('a', 'abbr', 'address', 'acronym', 'audio', 'article', 'aside',
+		$allowed_elements = ['a', 'abbr', 'address', 'acronym', 'audio', 'article', 'aside',
 			'b', 'bdi', 'bdo', 'big', 'blockquote', 'body', 'br',
 			'caption', 'cite', 'center', 'code', 'col', 'colgroup',
 			'data', 'dd', 'del', 'details', 'description', 'dfn', 'div', 'dl', 'font',
@@ -227,11 +227,11 @@ class Sanitizer {
 			'ol', 'p', 'picture', 'pre', 'q', 'ruby', 'rp', 'rt', 's', 'samp', 'section',
 			'small', 'source', 'span', 'strike', 'strong', 'sub', 'summary',
 			'sup', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'time',
-			'tr', 'track', 'tt', 'u', 'ul', 'var', 'wbr', 'video', 'xml:namespace' );
+			'tr', 'track', 'tt', 'u', 'ul', 'var', 'wbr', 'video', 'xml:namespace' ];
 
 		if ($_SESSION['hasSandbox'] ?? false) $allowed_elements[] = 'iframe';
 
-		$disallowed_attributes = array('id', 'style', 'class', 'width', 'height', 'allow');
+		$disallowed_attributes = ['id', 'style', 'class', 'width', 'height', 'allow'];
 
 		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_SANITIZE,
 			function ($result) use (&$doc, &$allowed_elements, &$disallowed_attributes) {
@@ -263,7 +263,7 @@ class Sanitizer {
 
 		/* strip everything outside of <body>...</body> */
 
-		$res_frag = array();
+		$res_frag = [];
 		if (preg_match('/<body>(.*)<\/body>/is', $res, $res_frag)) {
 			return $res_frag[1];
 		} else {

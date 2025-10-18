@@ -46,7 +46,7 @@ class RPC extends Handler_Protected {
 		Prefs::set($key, !Prefs::get($key, $_SESSION['uid'], $profile), $_SESSION['uid'], $profile);
 		$value = Prefs::get($key, $_SESSION['uid'], $profile);
 
-		print json_encode(array("param" =>$key, "value" => $value));
+		print json_encode(["param" =>$key, "value" => $value]);
 	}
 
 	function setpref(): void {
@@ -56,7 +56,7 @@ class RPC extends Handler_Protected {
 
 		Prefs::set($key, $value, $_SESSION['uid'], $_SESSION['profile'] ?? null, $key != 'USER_STYLESHEET');
 
-		print json_encode(array("param" =>$key, "value" => $value));
+		print json_encode(["param" =>$key, "value" => $value]);
 	}
 
 	function mark(): void {
@@ -71,7 +71,7 @@ class RPC extends Handler_Protected {
 
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_MARK_TOGGLED, [$id]);
 
-		print json_encode(array("message" => "UPDATE_COUNTERS"));
+		print json_encode(["message" => "UPDATE_COUNTERS"]);
 	}
 
 	function delete(): void {
@@ -82,7 +82,7 @@ class RPC extends Handler_Protected {
 			WHERE ref_id IN ($ids_qmarks) AND owner_uid = ?");
 		$sth->execute([...$ids, $_SESSION['uid']]);
 
-		print json_encode(array("message" => "UPDATE_COUNTERS"));
+		print json_encode(["message" => "UPDATE_COUNTERS"]);
 	}
 
 	function publ(): void {
@@ -97,7 +97,7 @@ class RPC extends Handler_Protected {
 
 		PluginHost::getInstance()->run_hooks(PluginHost::HOOK_ARTICLES_PUBLISH_TOGGLED, [$id]);
 
-		print json_encode(array("message" => "UPDATE_COUNTERS"));
+		print json_encode(["message" => "UPDATE_COUNTERS"]);
 	}
 
 	function getRuntimeInfo(): void {
@@ -312,7 +312,7 @@ class RPC extends Handler_Protected {
 			Logger::log_error(E_USER_WARNING,
 				$msg, 'client-js:' . $file, $line, $context);
 
-			echo json_encode(array("message" => "HOST_ERROR_LOGGED"));
+			echo json_encode(["message" => "HOST_ERROR_LOGGED"]);
 		}
 	}
 
@@ -350,7 +350,7 @@ class RPC extends Handler_Protected {
 	 */
 	private function _make_init_params(): array {
 		$profile = $_SESSION['profile'] ?? null;
-		$params = array();
+		$params = [];
 
 		foreach ([Prefs::ON_CATCHUP_SHOW_NEXT_FEED, Prefs::HIDE_READ_FEEDS,
 			Prefs::ENABLE_FEED_CATS, Prefs::FEEDS_SORT_BY_UNREAD,
@@ -420,7 +420,7 @@ class RPC extends Handler_Protected {
 	 * @return array<string, mixed>
 	 */
 	static function _make_runtime_info(): array {
-		$data = array();
+		$data = [];
 
 		$pdo = Db::pdo();
 
@@ -487,8 +487,8 @@ class RPC extends Handler_Protected {
 	 * @return array<string, array<string, string>>
 	 */
 	static function get_hotkeys_info(): array {
-		$hotkeys = array(
-			__("Navigation") => array(
+		$hotkeys = [
+			__("Navigation") => [
 				"next_feed" => __("Open next feed"),
 				"next_unread_feed" => __("Open next unread feed"),
 				"prev_feed" => __("Open previous feed"),
@@ -502,8 +502,8 @@ class RPC extends Handler_Protected {
 				"next_article_noexpand" => __("Move to next article (don't expand)"),
 				"prev_article_noexpand" => __("Move to previous article (don't expand)"),
 				"search_dialog" => __("Show search dialog"),
-				"cancel_search" => __("Cancel active search")),
-			__("Article") => array(
+				"cancel_search" => __("Cancel active search")],
+			__("Article") => [
 				"toggle_mark" => __("Toggle starred"),
 				"toggle_publ" => __("Toggle published"),
 				"toggle_unread" => __("Toggle unread"),
@@ -520,15 +520,15 @@ class RPC extends Handler_Protected {
 				"close_article" => __("Close/collapse article"),
 				"toggle_expand" => __("Toggle article expansion (combined mode)"),
 				"toggle_widescreen" => __("Toggle widescreen mode"),
-				"toggle_full_text" => __("Toggle full article text via Readability")),
-			__("Article selection") => array(
+				"toggle_full_text" => __("Toggle full article text via Readability")],
+			__("Article selection") => [
 				"select_all" => __("Select all articles"),
 				"select_unread" => __("Select unread"),
 				"select_marked" => __("Select starred"),
 				"select_published" => __("Select published"),
 				"select_invert" => __("Invert selection"),
-				"select_none" => __("Deselect everything")),
-			__("Feed") => array(
+				"select_none" => __("Deselect everything")],
+			__("Feed") => [
 				"feed_refresh" => __("Refresh current feed"),
 				"feed_unhide_read" => __("Un/hide read feeds"),
 				"feed_subscribe" => __("Subscribe to feed"),
@@ -542,20 +542,20 @@ class RPC extends Handler_Protected {
 				"catchup_all" => __("Mark all feeds as read"),
 				"cat_toggle_collapse" => __("Un/collapse current category"),
 				"toggle_cdm_expanded" => __("Toggle auto expand in combined mode"),
-				"toggle_combined_mode" => __("Toggle combined mode")),
-			__("Go to") => array(
+				"toggle_combined_mode" => __("Toggle combined mode")],
+			__("Go to") => [
 				"goto_all" => __("All articles"),
 				"goto_fresh" => __("Fresh"),
 				"goto_marked" => __("Starred"),
 				"goto_published" => __("Published"),
 				"goto_read" => __("Recently read"),
-				"goto_prefs" => __("Preferences")),
-			__("Other") => array(
+				"goto_prefs" => __("Preferences")],
+			__("Other") => [
 				"create_label" => __("Create label"),
 				"create_filter" => __("Create filter"),
 				"collapse_sidebar" => __("Un/collapse sidebar"),
-				"help_dialog" => __("Show help dialog"))
-		);
+				"help_dialog" => __("Show help dialog")]
+		];
 
 		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HOTKEY_INFO,
 			function ($result) use (&$hotkeys) {
@@ -573,7 +573,7 @@ class RPC extends Handler_Protected {
 	 * @return array{0: array<int, string>, 1: array<string, string>} $prefixes, $hotkeys
 	 */
 	static function get_hotkeys_map() {
-		$hotkeys = array(
+		$hotkeys = [
 			"k" => "next_feed",
 			"K" => "next_unread_feed",
 			"j" => "prev_feed",
@@ -635,7 +635,7 @@ class RPC extends Handler_Protected {
 			"c f" => "create_filter",
 			"c s" => "collapse_sidebar",
 			"?" => "help_dialog",
-		);
+		];
 
 		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HOTKEY_MAP,
 			function ($result) use (&$hotkeys) {
@@ -643,7 +643,7 @@ class RPC extends Handler_Protected {
 			},
 			$hotkeys);
 
-		$prefixes = array();
+		$prefixes = [];
 
 		foreach (array_keys($hotkeys) as $hotkey) {
 			$pair = explode(" ", (string)$hotkey, 2);
@@ -653,7 +653,7 @@ class RPC extends Handler_Protected {
 			}
 		}
 
-		return array($prefixes, $hotkeys);
+		return [$prefixes, $hotkeys];
 	}
 
 	function hotkeyHelp(): void {

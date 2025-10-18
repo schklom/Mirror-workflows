@@ -2,7 +2,7 @@
 class Af_Comics_TheOatmeal extends Af_ComicFilter {
 
 	function supported() {
-		return array("The Oatmeal");
+		return ["The Oatmeal"];
 	}
 
 	function process(&$article) {

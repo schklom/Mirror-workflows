@@ -4,9 +4,9 @@ class Share extends Plugin {
 	private $host;
 
 	function about() {
-		return array(null,
+		return [null,
 			"Share article by unique URL",
-			"fox");
+			"fox"];
 	}
 
 	function init($host) {

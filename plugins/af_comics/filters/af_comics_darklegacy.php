@@ -2,7 +2,7 @@
 class Af_Comics_DarkLegacy extends Af_ComicFilter {
 
 	function supported() {
-		return array("Dark Legacy Comics");
+		return ["Dark Legacy Comics"];
 	}
 
 	function process(&$article) {

@@ -2,7 +2,7 @@
 class OPML extends Handler_Protected {
 
 	function csrf_ignore(string $method): bool {
-		$csrf_ignored = array("export", "import");
+		$csrf_ignored = ["export", "import"];
 
 		return array_search($method, $csrf_ignored) !== false;
 	}
@@ -165,8 +165,8 @@ class OPML extends Handler_Protected {
 			$sth->execute([$owner_uid]);
 
 			while ($line = $sth->fetch(PDO::FETCH_ASSOC)) {
-				$line["rules"] = array();
-				$line["actions"] = array();
+				$line["rules"] = [];
+				$line["actions"] = [];
 
 				$tmph = $this->pdo->prepare("SELECT * FROM ttrss_filters2_rules
 					WHERE filter_id = ?");
@@ -514,7 +514,7 @@ class OPML extends Handler_Protected {
 			if (!$cat_title)
 				$cat_title = mb_substr($root_node->attributes->getNamedItem('title')->nodeValue, 0, 250);
 
-			if (!in_array($cat_title, array("tt-rss-filters", "tt-rss-labels", "tt-rss-prefs"))) {
+			if (!in_array($cat_title, ["tt-rss-filters", "tt-rss-labels", "tt-rss-prefs"])) {
 				$cat_id = $this->get_feed_category($cat_title, $owner_uid, $parent_id);
 
 				if ($cat_id === 0) {

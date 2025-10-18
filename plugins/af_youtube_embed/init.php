@@ -2,9 +2,9 @@
 class Af_Youtube_Embed extends Plugin {
 
 	function about() {
-		return array(null,
+		return [null,
 			"Embed videos in Youtube RSS feeds (and whitelist Youtube iframes)",
-			"fox");
+			"fox"];
 	}
 
 	function init($host) {

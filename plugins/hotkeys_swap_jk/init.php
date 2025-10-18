@@ -2,9 +2,9 @@
 class Hotkeys_Swap_JK extends Plugin {
 
 	function about() {
-		return array(null,
+		return [null,
 			"Swap j and k hotkeys (for vi brethren)",
-			"fox");
+			"fox"];
 	}
 
 	function init($host) {

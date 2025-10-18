@@ -31,7 +31,7 @@ class Handler_Public extends Handler {
 			};
 		}
 
-		$params = array(
+		$params = [
 			"owner_uid" => $owner_uid,
 			"feed" => $feed,
 			"limit" => $limit,
@@ -43,7 +43,7 @@ class Handler_Public extends Handler {
 			"ignore_vfeed_group" => true,
 			"offset" => $offset,
 			"start_ts" => $start_ts
-		);
+		];
 
 		if (!$is_cat && is_numeric($feed) && $feed < PLUGIN_FEED_BASE_INDEX && $feed > LABEL_BASE_INDEX) {
 			// TODO: _ENABLED_PLUGINS is profile-specific, so use of the default profile's plugins here should
@@ -236,7 +236,7 @@ class Handler_Public extends Handler {
 				$enclosures = Article::_get_enclosures($line["id"]);
 
 				if (count($enclosures) > 0) {
-					$article['enclosures'] = array();
+					$article['enclosures'] = [];
 
 					foreach ($enclosures as $e) {
 						$article['enclosures'][] = [

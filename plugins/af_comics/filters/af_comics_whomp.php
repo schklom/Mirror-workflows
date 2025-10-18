@@ -2,7 +2,7 @@
 class Af_Comics_Whomp extends Af_ComicFilter {
 
 	function supported() {
-		return array("Whomp!");
+		return ["Whomp!"];
 	}
 
 	function process(&$article) {

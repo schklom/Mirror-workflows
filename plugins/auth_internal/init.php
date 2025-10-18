@@ -2,10 +2,10 @@
 class Auth_Internal extends Auth_Base implements IAuthModule2 {
 
 	function about() {
-		return array(null,
+		return [null,
 			"Authenticates against internal tt-rss database",
 			"fox",
-			true);
+			true];
 	}
 
 	function init($host) {

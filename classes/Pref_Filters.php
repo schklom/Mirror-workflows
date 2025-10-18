@@ -27,7 +27,7 @@ class Pref_Filters extends Handler_Protected {
 	}
 
 	function csrf_ignore(string $method): bool {
-		$csrf_ignored = array("index", "getfiltertree", "savefilterorder");
+		$csrf_ignored = ["index", "getfiltertree", "savefilterorder"];
 
 		return array_search($method, $csrf_ignored) !== false;
 	}
@@ -597,8 +597,8 @@ class Pref_Filters extends Handler_Protected {
 		if ($filter_id) {
 			/* create rules */
 
-			$rules = array();
-			$actions = array();
+			$rules = [];
+			$actions = [];
 
 			foreach (clean($_REQUEST["rule"]) as $rule) {
 				$rule = json_decode($rule, true);
@@ -916,8 +916,8 @@ class Pref_Filters extends Handler_Protected {
 			WHERE filter_id = ?");
 		$sth->execute([$id]);
 
-		$tmp = array();
-		$dupe_ids = array();
+		$tmp = [];
+		$dupe_ids = [];
 
 		while ($line = $sth->fetch()) {
 			$id = $line["id"];
@@ -940,8 +940,8 @@ class Pref_Filters extends Handler_Protected {
 			WHERE filter_id = ?");
 		$sth->execute([$id]);
 
-		$tmp = array();
-		$dupe_ids = array();
+		$tmp = [];
+		$dupe_ids = [];
 
 		while ($line = $sth->fetch()) {
 			$id = $line["id"];

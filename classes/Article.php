@@ -52,7 +52,7 @@ class Article extends Handler_Protected {
 		if ($labels_str != "") {
 			$labels = explode(",", $labels_str);
 		} else {
-			$labels = array();
+			$labels = [];
 		}
 
 		$rc = false;
@@ -200,7 +200,7 @@ class Article extends Handler_Protected {
 
 		if ($row = $sth->fetch()) {
 
-			$tags_to_cache = array();
+			$tags_to_cache = [];
 
 			$int_id = $row['int_id'];
 
@@ -268,7 +268,7 @@ class Article extends Handler_Protected {
 	}
 
 	private function _label_ops(bool $assign): void {
-		$reply = array();
+		$reply = [];
 
 		$ids = array_map('intval',
 			array_filter(explode(',', clean($_REQUEST['ids'] ?? '')), fn($i) => strlen($i) > 0));
@@ -387,7 +387,7 @@ class Article extends Handler_Protected {
 			WHERE post_int_id = (SELECT int_id FROM ttrss_user_entries WHERE
 			ref_id = ? AND owner_uid = ? LIMIT 1) ORDER BY tag_name");
 
-		$tags = array();
+		$tags = [];
 
 		/* check cache first */
 
@@ -510,7 +510,7 @@ class Article extends Handler_Protected {
 	 * @return array<int, array<int, int|string>>
 	 */
 	static function _get_labels(int $id, ?int $owner_uid = null): array {
-		$rv = array();
+		$rv = [];
 
 		if (!$owner_uid) $owner_uid = $_SESSION["uid"];
 
@@ -542,9 +542,9 @@ class Article extends Handler_Protected {
 		$sth->execute([$id, $owner_uid]);
 
 		while ($line = $sth->fetch()) {
-			$rk = array(Labels::label_to_feed_id($line["label_id"]),
+			$rk = [Labels::label_to_feed_id($line["label_id"]),
 				$line["caption"], $line["fg_color"],
-				$line["bg_color"]);
+				$line["bg_color"]];
 			array_push($rv, $rk);
 		}
 
@@ -553,7 +553,7 @@ class Article extends Handler_Protected {
 			// @phpstan-ignore-next-line
 			Labels::update_cache($owner_uid, $id, $rv);
 		else
-			Labels::update_cache($owner_uid, $id, array("no-labels" => 1));
+			Labels::update_cache($owner_uid, $id, ["no-labels" => 1]);
 
 		return $rv;
 	}

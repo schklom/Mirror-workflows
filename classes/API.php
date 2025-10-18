@@ -33,12 +33,12 @@ class API extends Handler {
 			header("Content-Type: application/json");
 
 			if (empty($_SESSION["uid"]) && $method != "login" && $method != "isloggedin") {
-				$this->_wrap(self::STATUS_ERR, array("error" => self::E_NOT_LOGGED_IN));
+				$this->_wrap(self::STATUS_ERR, ["error" => self::E_NOT_LOGGED_IN]);
 				return false;
 			}
 
 			if (!empty($_SESSION["uid"]) && $method != "logout" && !Prefs::get(Prefs::ENABLE_API_ACCESS, $_SESSION["uid"])) {
-				$this->_wrap(self::STATUS_ERR, array("error" => self::E_API_DISABLED));
+				$this->_wrap(self::STATUS_ERR, ["error" => self::E_API_DISABLED]);
 				return false;
 			}
 
@@ -50,12 +50,12 @@ class API extends Handler {
 	}
 
 	function getVersion(): bool {
-		$rv = array("version" => Config::get_version());
+		$rv = ["version" => Config::get_version()];
 		return $this->_wrap(self::STATUS_OK, $rv);
 	}
 
 	function getApiLevel(): bool {
-		$rv = array("level" => self::API_LEVEL);
+		$rv = ["level" => self::API_LEVEL];
 		return $this->_wrap(self::STATUS_OK, $rv);
 	}
 
@@ -79,26 +79,26 @@ class API extends Handler {
 					// needed for _get_config()
 					UserHelper::load_user_plugins($_SESSION['uid']);
 
-					return $this->_wrap(self::STATUS_OK, array("session_id" => session_id(),
+					return $this->_wrap(self::STATUS_OK, ["session_id" => session_id(),
 						"config" => $this->_get_config(),
-						"api_level" => self::API_LEVEL));
+						"api_level" => self::API_LEVEL]);
 				} else {
-					return $this->_wrap(self::STATUS_ERR, array("error" => self::E_LOGIN_ERROR));
+					return $this->_wrap(self::STATUS_ERR, ["error" => self::E_LOGIN_ERROR]);
 				}
 			} else {
-				return $this->_wrap(self::STATUS_ERR, array("error" => self::E_API_DISABLED));
+				return $this->_wrap(self::STATUS_ERR, ["error" => self::E_API_DISABLED]);
 			}
 		}
-		return $this->_wrap(self::STATUS_ERR, array("error" => self::E_LOGIN_ERROR));
+		return $this->_wrap(self::STATUS_ERR, ["error" => self::E_LOGIN_ERROR]);
 	}
 
 	function logout(): bool {
 		UserHelper::logout();
-		return $this->_wrap(self::STATUS_OK, array("status" => "OK"));
+		return $this->_wrap(self::STATUS_OK, ["status" => "OK"]);
 	}
 
 	function isLoggedIn(): bool {
-		return $this->_wrap(self::STATUS_OK, array("status" => (bool)($_SESSION["uid"] ?? '')));
+		return $this->_wrap(self::STATUS_OK, ["status" => (bool)($_SESSION["uid"] ?? '')]);
 	}
 
 	function getUnread(): bool {
@@ -106,9 +106,9 @@ class API extends Handler {
 		$is_cat = self::_param_to_bool($_REQUEST["is_cat"] ?? false);
 
 		if ($feed_id) {
-			return $this->_wrap(self::STATUS_OK, array("unread" => Feeds::_get_counters($feed_id, $is_cat, true)));
+			return $this->_wrap(self::STATUS_OK, ["unread" => Feeds::_get_counters($feed_id, $is_cat, true)]);
 		} else {
-			return $this->_wrap(self::STATUS_OK, array("unread" => Feeds::_get_global_unread()));
+			return $this->_wrap(self::STATUS_OK, ["unread" => Feeds::_get_global_unread()]);
 		}
 	}
 
@@ -224,12 +224,12 @@ class API extends Handler {
 				$include_nested, $sanitize_content, $force_update, $excerpt_length, $check_first_id, $skip_first_id_check);
 
 			if ($include_header) {
-				return $this->_wrap(self::STATUS_OK, array($headlines_header, $headlines));
+				return $this->_wrap(self::STATUS_OK, [$headlines_header, $headlines]);
 			} else {
 				return $this->_wrap(self::STATUS_OK, $headlines);
 			}
 		} else {
-			return $this->_wrap(self::STATUS_ERR, array("error" => self::E_INCORRECT_USAGE));
+			return $this->_wrap(self::STATUS_ERR, ["error" => self::E_INCORRECT_USAGE]);
 		}
 	}
 
@@ -292,11 +292,11 @@ class API extends Handler {
 
 			$num_updated = $sth->rowCount();
 
-			return $this->_wrap(self::STATUS_OK, array("status" => "OK",
-				"updated" => $num_updated));
+			return $this->_wrap(self::STATUS_OK, ["status" => "OK",
+				"updated" => $num_updated]);
 
 		} else {
-			return $this->_wrap(self::STATUS_ERR, array("error" => self::E_INCORRECT_USAGE));
+			return $this->_wrap(self::STATUS_ERR, ["error" => self::E_INCORRECT_USAGE]);
 		}
 	}
 
@@ -400,7 +400,7 @@ class API extends Handler {
 			RSSUtils::update_rss_feed($feed_id);
 		}
 
-		return $this->_wrap(self::STATUS_OK, array("status" => "OK"));
+		return $this->_wrap(self::STATUS_OK, ["status" => "OK"]);
 	}
 
 	function catchupFeed(): bool {
@@ -415,13 +415,13 @@ class API extends Handler {
 
 		Feeds::_catchup($feed_id, $is_cat, $_SESSION["uid"], $mode, [$search_query, $search_lang]);
 
-		return $this->_wrap(self::STATUS_OK, array("status" => "OK"));
+		return $this->_wrap(self::STATUS_OK, ["status" => "OK"]);
 	}
 
 	function getPref(): bool {
 		$pref_name = clean($_REQUEST["pref_name"]);
 
-		return $this->_wrap(self::STATUS_OK, array("value" => Prefs::get($pref_name, $_SESSION["uid"], $_SESSION["profile"] ?? null)));
+		return $this->_wrap(self::STATUS_OK, ["value" => Prefs::get($pref_name, $_SESSION["uid"], $_SESSION["profile"] ?? null)]);
 	}
 
 	function getLabels(): bool {
@@ -484,8 +484,8 @@ class API extends Handler {
 			}
 		}
 
-		return $this->_wrap(self::STATUS_OK, array("status" => "OK",
-			"updated" => $num_updated));
+		return $this->_wrap(self::STATUS_OK, ["status" => "OK",
+			"updated" => $num_updated]);
 
 	}
 
@@ -498,7 +498,7 @@ class API extends Handler {
 			return $this->_wrap($reply[0], $reply[1]);
 
 		} else {
-			return $this->_wrap(self::STATUS_ERR, array("error" => self::E_UNKNOWN_METHOD, "method" => $method));
+			return $this->_wrap(self::STATUS_ERR, ["error" => self::E_UNKNOWN_METHOD, "method" => $method]);
 		}
 	}
 
@@ -513,9 +513,9 @@ class API extends Handler {
 			$content = $_REQUEST["content"];
 
 		if (Article::_create_published_article($title, $url, $content, "", $_SESSION["uid"])) {
-			return $this->_wrap(self::STATUS_OK, array("status" => 'OK'));
+			return $this->_wrap(self::STATUS_OK, ["status" => 'OK']);
 		} else {
-			return $this->_wrap(self::STATUS_ERR, array("error" => self::E_OPERATION_FAILED));
+			return $this->_wrap(self::STATUS_ERR, ["error" => self::E_OPERATION_FAILED]);
 		}
 	}
 
@@ -695,7 +695,7 @@ class API extends Handler {
 				$handler = PluginHost::getInstance()->get_feed_handler($pfeed_id);
 
 				if ($handler) {
-					$params = array(
+					$params = [
 						"feed" => $feed_id,
 						"limit" => $limit,
 						"view_mode" => $view_mode,
@@ -707,14 +707,14 @@ class API extends Handler {
 						"include_children" => $include_nested,
 						"check_first_id" => $check_first_id,
 						"skip_first_id_check" => $skip_first_id_check
-					);
+					];
 
 					$qfh_ret = $handler->get_headlines($pfeed_id, $params);
 				}
 
 			} else {
 
-				$params = array(
+				$params = [
 					"feed" => $feed_id,
 					"limit" => $limit,
 					"view_mode" => $view_mode,
@@ -726,7 +726,7 @@ class API extends Handler {
 					"include_children" => $include_nested,
 					"check_first_id" => $check_first_id,
 					"skip_first_id_check" => $skip_first_id_check
-				);
+				];
 
 				$qfh_ret = Feeds::_get_headlines($params);
 			}
@@ -735,12 +735,12 @@ class API extends Handler {
 			$feed_title = $qfh_ret[1];
 			$first_id = $qfh_ret[6];
 
-			$headlines = array();
+			$headlines = [];
 
-			$headlines_header = array(
+			$headlines_header = [
 				'id' => $feed_id,
 				'first_id' => $first_id,
-				'is_cat' => $is_cat);
+				'is_cat' => $is_cat];
 
 			if (!is_numeric($result)) {
 				while ($line = $result->fetch()) {
@@ -773,7 +773,7 @@ class API extends Handler {
 
 					if (!is_array($labels)) $labels = Article::_get_labels($line["id"]);
 
-					$headline_row = array(
+					$headline_row = [
 						"id" => (int)$line["id"],
 						"guid" => $line["guid"],
 						"unread" => self::_param_to_bool($line["unread"]),
@@ -785,7 +785,7 @@ class API extends Handler {
 						"link" => $line["link"],
 						"feed_id" => $line["feed_id"] ? $line['feed_id'] : 0,
 						"tags" => $tags,
-					);
+					];
 
 					$enclosures = Article::_get_enclosures($line['id']);
 
@@ -857,7 +857,7 @@ class API extends Handler {
 				$headlines_header['first_id_changed'] = true;
 			}
 
-			return array($headlines, $headlines_header);
+			return [$headlines, $headlines_header];
 	}
 
 	function unsubscribeFeed(): bool {
@@ -884,9 +884,9 @@ class API extends Handler {
 		if ($feed_url) {
 			$rc = Feeds::_subscribe($feed_url, $category_id, $login, $password);
 
-			return $this->_wrap(self::STATUS_OK, array("status" => $rc));
+			return $this->_wrap(self::STATUS_OK, ["status" => $rc]);
 		} else {
-			return $this->_wrap(self::STATUS_ERR, array("error" => self::E_INCORRECT_USAGE));
+			return $this->_wrap(self::STATUS_ERR, ["error" => self::E_INCORRECT_USAGE]);
 		}
 	}
 
@@ -899,7 +899,7 @@ class API extends Handler {
 		$_REQUEST['force_show_empty'] = $include_empty;
 
 		return $this->_wrap(self::STATUS_OK,
-			array("categories" => $pf->_makefeedtree()));
+			["categories" => $pf->_makefeedtree()]);
 	}
 
 	function getFeedIcon(): bool {
@@ -909,7 +909,7 @@ class API extends Handler {
 		if ($cache->exists((string)$id)) {
 			return $cache->send((string)$id) > 0;
 		} else {
-			return $this->_wrap(self::STATUS_ERR, array("error" => self::E_NOT_FOUND));
+			return $this->_wrap(self::STATUS_ERR, ["error" => self::E_NOT_FOUND]);
 		}
 	}
 

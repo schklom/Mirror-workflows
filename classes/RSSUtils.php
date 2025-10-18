@@ -136,7 +136,7 @@ class RSSUtils {
 
 		$res = $pdo->query($query);
 
-		$feeds_to_update = array();
+		$feeds_to_update = [];
 		while ($line = $res->fetch()) {
 			array_push($feeds_to_update, $line['feed_url']);
 		}
@@ -775,7 +775,7 @@ class RSSUtils {
 				} else {
 					$base_entry_id = false;
 					$entry_stored_hash = "";
-					$article_labels = array();
+					$article_labels = [];
 				}
 
 				Debug::log("looking for enclosures...", Debug::LOG_VERBOSE);
@@ -783,7 +783,7 @@ class RSSUtils {
 				// enclosures
 
 				/** @var array<int, FeedEnclosure> */
-				$enclosures = array();
+				$enclosures = [];
 
 				$encs = $item->get_enclosures();
 
@@ -804,7 +804,7 @@ class RSSUtils {
 					array_push($enclosures, $e);
 				}
 
-				$article = array("owner_uid" => $feed_obj->owner_uid, // read only
+				$article = ["owner_uid" => $feed_obj->owner_uid, // read only
 					"guid" => $entry_guid, // read only
 					"guid_hashed" => $entry_guid_hashed, // read only
 					"title" => $entry_title,
@@ -819,11 +819,11 @@ class RSSUtils {
 					"timestamp" => $entry_timestamp,
 					"num_comments" => $num_comments,
 					"enclosures" => $enclosures,
-					"feed" => array("id" => $feed,
+					"feed" => ["id" => $feed,
 						"fetch_url" => $feed_obj->feed_url,
 						"site_url" => $feed_obj->site_url,
-						"cache_images" => $feed_obj->cache_images)
-				);
+						"cache_images" => $feed_obj->cache_images]
+				];
 
 				$entry_plugin_data = "";
 				$entry_current_hash = self::calculate_article_hash($article, $pluginhost);
@@ -1343,9 +1343,9 @@ class RSSUtils {
 					Debug::log("cache_enclosures: downloading: $src to $local_filename", Debug::LOG_VERBOSE);
 
 					if (!$cache->exists($local_filename)) {
-						$file_content = UrlHelper::fetch(array("url" => $src,
+						$file_content = UrlHelper::fetch(["url" => $src,
 							"http_referrer" => $src,
-							"max_size" => Config::get(Config::MAX_CACHE_FILE_SIZE)));
+							"max_size" => Config::get(Config::MAX_CACHE_FILE_SIZE)]);
 
 						if ($file_content) {
 							$cache->put($local_filename, $file_content);
@@ -1368,9 +1368,9 @@ class RSSUtils {
 		if (!$cache->exists($local_filename)) {
 			Debug::log("cache_media: downloading: $url to $local_filename", Debug::LOG_VERBOSE);
 
-			$file_content = UrlHelper::fetch(array("url" => $url,
+			$file_content = UrlHelper::fetch(["url" => $url,
 				"http_referrer" => $url,
-				"max_size" => Config::get(Config::MAX_CACHE_FILE_SIZE)));
+				"max_size" => Config::get(Config::MAX_CACHE_FILE_SIZE)]);
 
 			if ($file_content) {
 				$cache->put($local_filename, $file_content);
@@ -1393,7 +1393,7 @@ class RSSUtils {
 
 				/** @var DOMElement $entry */
 				foreach ($entries as $entry) {
-					foreach (array('src', 'poster') as $attr) {
+					foreach (['src', 'poster'] as $attr) {
 						if ($entry->hasAttribute($attr) && !str_starts_with($entry->getAttribute($attr), "data:")) {
 							self::cache_media_url($cache, $entry->getAttribute($attr), $site_url);
 						}
@@ -1449,7 +1449,7 @@ class RSSUtils {
 	 * @return array<int, array{'type': string, 'param': string}> An array of filter actions from matched filters
 	 */
 	static function eval_article_filters(array $filters, string $title, string $content, string $link, string $author, array $tags, ?array &$matched_rules = null, ?array &$matched_filters = null): array {
-		$matches = array();
+		$matches = [];
 
 		foreach ($filters as $filter) {
 			$match_any_rule = $filter["match_any_rule"] ?? false;
@@ -1559,7 +1559,7 @@ class RSSUtils {
 	 * @return array<int, array{'type': string, 'param': string}> An array of filter actions of type $filter_action_type
 	 */
 	static function find_article_filter_actions(array $filter_actions, string $filter_action_type): array {
-		$results = array();
+		$results = [];
 
 		foreach ($filter_actions as $fa) {
 			if ($fa["type"] == $filter_action_type) {
@@ -1817,7 +1817,7 @@ class RSSUtils {
 	 * @return array<int, array{'id': int, 'match_any_rule': bool, 'inverse': bool, 'rules': array<int,mixed>, 'actions': array<int,mixed>}> An array of filters
 	 */
 	static function load_filters(int $feed_id, int $owner_uid): array {
-		$filters = array();
+		$filters = [];
 
 		$feed_id = (int) $feed_id;
 		$cat_id = Feeds::_cat_of($feed_id);
@@ -1854,8 +1854,8 @@ class RSSUtils {
 						filter_type = t.id AND filter_id = ?");
 			$sth2->execute([$feed_id, $filter_id]);
 
-			$rules = array();
-			$actions = array();
+			$rules = [];
+			$actions = [];
 
 			while ($rule_line = $sth2->fetch()) {
 				#				print_r($rule_line);

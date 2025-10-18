@@ -25,7 +25,7 @@ abstract class Plugin {
 		/* associative array, possible keys:
 			needs_curl = boolean
 		*/
-		return array();
+		return [];
 	}
 
 	/**

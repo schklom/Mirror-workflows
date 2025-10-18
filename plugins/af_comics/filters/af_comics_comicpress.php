@@ -2,9 +2,9 @@
 class Af_Comics_ComicPress extends Af_ComicFilter {
 
 	function supported() {
-		return array("Buni", "Buttersafe", "Happy Jar", "CSection",
+		return ["Buni", "Buttersafe", "Happy Jar", "CSection",
 			"Extra Fabulous Comics", "Nedroid", "Stonetoss",
-			"Powerup Comics");
+			"Powerup Comics"];
 	}
 
 	function process(&$article) {

@@ -2,7 +2,7 @@
 class Af_Comics_Twp extends Af_ComicFilter {
 
 	function supported() {
-		return array("Three Word Phrase");
+		return ["Three Word Phrase"];
 	}
 
 	function process(&$article) {

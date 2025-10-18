@@ -7,10 +7,10 @@ class Auth_Remote extends Auth_Base {
 	const AUTH_REMOTE_POST_LOGOUT_URL = "AUTH_REMOTE_POST_LOGOUT_URL";
 
 	function about() {
-		return array(null,
+		return [null,
 			"Authenticates against external passwords (HTTP Authentication, SSL certificates)",
 			"fox",
-			true);
+			true];
 	}
 
 	function init($host) {

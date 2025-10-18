@@ -3,7 +3,7 @@
 class Af_Comics_Dilbert extends Af_ComicFilter {
 
 	function supported() {
-		return array("Dilbert");
+		return ["Dilbert"];
 	}
 
 	function process(&$article) {
@@ -30,7 +30,7 @@ class Af_Comics_Dilbert extends Af_ComicFilter {
 
 					// Get tags from the article
 					$matches = $xpath->query('(//p[contains(@class, "comic-tags")][1]//a)');
-					$tags = array();
+					$tags = [];
 
 					foreach ($matches as $tag) {
 						// Only strings starting with a number sign are considered tags

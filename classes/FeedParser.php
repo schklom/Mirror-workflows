@@ -222,7 +222,7 @@ class FeedParser {
 
 	/** @return array<string> */
 	function get_links(string $rel) : array {
-		$rv = array();
+		$rv = [];
 
 		switch ($this->type) {
 		case $this::FEED_ATOM:

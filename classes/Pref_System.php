@@ -5,7 +5,7 @@ class Pref_System extends Handler_Administrative {
 	private const LOG_PAGE_LIMIT = 15;
 
 	function csrf_ignore(string $method): bool {
-		$csrf_ignored = array("index");
+		$csrf_ignored = ["index"];
 
 		return array_search($method, $csrf_ignored) !== false;
 	}

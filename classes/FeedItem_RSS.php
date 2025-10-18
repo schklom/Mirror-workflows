@@ -139,7 +139,7 @@ class FeedItem_RSS extends FeedItem_Common {
 	function get_enclosures(): array {
 		$enclosures = $this->elem->getElementsByTagName("enclosure");
 
-		$encs = array();
+		$encs = [];
 
 		foreach ($enclosures as $enclosure) {
 			$enc = new FeedEnclosure();

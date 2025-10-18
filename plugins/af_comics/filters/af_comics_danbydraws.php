@@ -2,7 +2,7 @@
 class Af_Comics_DanbyDraws extends Af_ComicFilter {
 
 	function supported() {
-		return array("Danby Draws");
+		return ["Danby Draws"];
 	}
 
 	function process(&$article) {

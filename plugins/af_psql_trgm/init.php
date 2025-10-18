@@ -11,9 +11,9 @@ class Af_Psql_Trgm extends Plugin {
 	private $default_min_length = 32;
 
 	function about() {
-		return array(null,
+		return [null,
 			"Marks similar articles as read (requires pg_trgm)",
-			"fox");
+			"fox"];
 	}
 
 	/** @return void */
@@ -341,7 +341,7 @@ class Af_Psql_Trgm extends Plugin {
 	 * @throws PDOException
 	 */
 	private function filter_unknown_feeds($enabled_feeds) : array {
-		$tmp = array();
+		$tmp = [];
 
 		foreach ($enabled_feeds as $feed) {
 

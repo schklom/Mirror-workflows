@@ -574,10 +574,10 @@ class PluginHost {
 	function add_command(string $command, string $description, Plugin $sender, string $suffix = "", string $arghelp = ""): void {
 		$command = str_replace("-", "_", strtolower($command));
 
-		$this->commands[$command] = array("description" => $description,
+		$this->commands[$command] = ["description" => $description,
 			"suffix" => $suffix,
 			"arghelp" => $arghelp,
-			"class" => $sender);
+			"class" => $sender];
 	}
 
 	function del_command(string $command): void {

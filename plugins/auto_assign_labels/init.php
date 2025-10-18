@@ -2,9 +2,9 @@
 class Auto_Assign_Labels extends Plugin {
 
 	function about() {
-		return array(null,
+		return [null,
 			"Assign labels automatically based on article title, content, and tags",
-			"fox");
+			"fox"];
 	}
 
 	function init($host) {
@@ -17,15 +17,15 @@ class Auto_Assign_Labels extends Plugin {
 	 * @throws PDOException
 	 */
 	private function get_all_labels_filter_format(int $owner_uid) : array {
-		$rv = array();
+		$rv = [];
 
 		// TODO: use Labels::get_all()
 		$sth = $this->pdo->prepare("SELECT id, fg_color, bg_color, caption FROM ttrss_labels2 WHERE owner_uid = ?");
 		$sth->execute([$owner_uid]);
 
 		while ($line = $sth->fetch()) {
-			array_push($rv, array(Labels::label_to_feed_id($line["id"]),
-				$line["caption"], $line["fg_color"], $line["bg_color"]));
+			array_push($rv, [Labels::label_to_feed_id($line["id"]),
+				$line["caption"], $line["fg_color"], $line["bg_color"]]);
 		}
 
 		return $rv;

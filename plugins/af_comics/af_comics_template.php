@@ -2,7 +2,7 @@
 class Af_Comics_Template extends Af_ComicFilter {
 
 	function supported() {
-		return array("Example");
+		return ["Example"];
 	}
 
 	function process(&$article) {

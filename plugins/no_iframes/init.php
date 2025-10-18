@@ -2,9 +2,9 @@
 class No_Iframes extends Plugin {
 
 	function about() {
-		return array(null,
+		return [null,
 			"Remove embedded iframes (unless whitelisted)",
-			"fox");
+			"fox"];
 	}
 
 	function init($host) {
@@ -22,7 +22,7 @@ class No_Iframes extends Plugin {
 				$entry->parentNode->removeChild($entry);
 		}
 
-		return array($doc, $allowed_elements, $disallowed_attributes);
+		return [$doc, $allowed_elements, $disallowed_attributes];
 	}
 
 	function api_version() {

@@ -1435,7 +1435,7 @@ class Feeds extends Handler_Protected {
 
 			try {
 				$test_sth->execute();
-			} catch (PDOException $e) {
+			} catch (PDOException) {
 				// looks like tsquery syntax is invalid
 				$search_query_part = "false";
 

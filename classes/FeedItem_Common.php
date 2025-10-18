@@ -15,7 +15,7 @@ abstract class FeedItem_Common extends FeedItem {
 			// we don't need <source> element
 			if ($source)
 				$elem->removeChild($source);
-		} catch (DOMException $e) {
+		} catch (DOMException) {
 			//
 		}
 	}

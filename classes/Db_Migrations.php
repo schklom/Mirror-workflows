@@ -58,7 +58,7 @@ class Db_Migrations {
 			} else {
 				return -1;
 			}
-		} catch (PDOException $e) {
+		} catch (PDOException) {
 			$this->create_migrations_table();
 
 			return -1;
@@ -120,7 +120,7 @@ class Db_Migrations {
 			Debug::log("Migration failed: " . $e->getMessage(), Debug::LOG_VERBOSE);
 			try {
 				$this->pdo->rollback();
-			} catch (PDOException $ie) {
+			} catch (PDOException) {
 				//
 			}
 			throw $e;

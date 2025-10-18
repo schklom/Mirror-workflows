@@ -286,7 +286,7 @@
 
 			try {
 				$idx = function_exists("random_int") ? random_int(0, strlen($possible) - 1) : mt_rand(0, strlen($possible) - 1);
-			} catch (Exception $e) {
+			} catch (Exception) {
 				$idx = mt_rand(0, strlen($possible) - 1);
 			}
 

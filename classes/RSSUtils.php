@@ -245,7 +245,7 @@ class RSSUtils {
 
 						try {
 							$pdo->rollback();
-						} catch (PDOException $e) {
+						} catch (PDOException) {
 							// it doesn't matter if there wasn't actually anything to rollback, PDO Exception can be
 							// thrown outside of an active transaction during feed update
 						}

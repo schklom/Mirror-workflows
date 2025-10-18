@@ -53,7 +53,7 @@ class TimeHelper {
 
 			try {
 				if (!$user_tz) $user_tz = new DateTimeZone($user_tz_string);
-			} catch (Exception $e) {
+			} catch (Exception) {
 				$user_tz = $utc_tz;
 			}
 
@@ -87,7 +87,7 @@ class TimeHelper {
 
 		try {
 			$dest_tz = new DateTimeZone($dest_tz);
-		} catch (Exception $e) {
+		} catch (Exception) {
 			$dest_tz = new DateTimeZone('UTC');
 		}
 

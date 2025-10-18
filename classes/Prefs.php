@@ -363,7 +363,7 @@ class Prefs {
 
 			try {
 				$this->pdo->beginTransaction();
-			} catch (PDOException $e) {
+			} catch (PDOException) {
 				$in_nested_tr = true;
 			}
 

@@ -158,7 +158,7 @@ class Labels
 
 		try {
 			$pdo->beginTransaction();
-		} catch (Exception $e) {
+		} catch (Exception) {
 			$tr_in_progress = true;
 		}
 
@@ -207,7 +207,7 @@ class Labels
 
 		try {
 			$pdo->beginTransaction();
-		} catch (Exception $e) {
+		} catch (Exception) {
 			$tr_in_progress = true;
 		}
 

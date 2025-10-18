@@ -32,21 +32,21 @@
 	 * @deprecated by Prefs::get()
 	 */
 	function get_pref(string $pref_name, ?int $owner_uid = null): bool|int|null|string {
-		return Prefs::get($pref_name, $owner_uid ? $owner_uid : $_SESSION["uid"], $_SESSION["profile"] ?? null);
+		return Prefs::get($pref_name, $owner_uid ?: $_SESSION["uid"], $_SESSION["profile"] ?? null);
 	}
 
 	/**
 	 * @deprecated by Prefs::set()
 	 */
 	function set_pref(string $pref_name, bool|int|string $value, ?int $owner_uid = null, bool $strip_tags = true): bool {
-		return Prefs::set($pref_name, $value, $owner_uid ? $owner_uid : $_SESSION["uid"], $_SESSION["profile"] ?? null, $strip_tags);
+		return Prefs::set($pref_name, $value, $owner_uid ?: $_SESSION["uid"], $_SESSION["profile"] ?? null, $strip_tags);
 	}
 
 	/**
 	 * @return array<string, string>
 	 */
 	function get_translations(): array {
-		$t = array(
+		$t = [
 					"auto"  => __("Detect automatically"),
 					"ar_SA" => "العربيّة (Arabic)",
 					"be"    => "Беларуская",
@@ -77,7 +77,7 @@
 					"sv_SE" => "Svenska",
 					"fi_FI" => "Suomi",
 					"ta"    => "Tamil",
-					"tr_TR" => "Türkçe");
+					"tr_TR" => "Türkçe"];
 
 		return $t;
 	}
@@ -286,7 +286,7 @@
 
 			try {
 				$idx = function_exists("random_int") ? random_int(0, strlen($possible) - 1) : mt_rand(0, strlen($possible) - 1);
-			} catch (Exception $e) {
+			} catch (Exception) {
 				$idx = mt_rand(0, strlen($possible) - 1);
 			}
 
@@ -401,7 +401,7 @@
 	}
 
 	function uniqid_short(): string {
-		return uniqid(base_convert((string)rand(), 10, 36));
+		return uniqid(base_convert((string)random_int(0, mt_getrandmax()), 10, 36));
 	}
 
 	function T_sprintf(): string {

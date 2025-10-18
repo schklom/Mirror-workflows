@@ -25,6 +25,7 @@ parameters:
       - plugins/**/tests/*
       - plugins/*/vendor/intervention/*
       - plugins/*/vendor/psr/log/*
+      - rector.php
       - vendor/**/*
    paths:
       - .

@@ -2,7 +2,7 @@
 class Pref_Labels extends Handler_Protected {
 
 	function csrf_ignore(string $method): bool {
-		$csrf_ignored = array("index", "getlabeltree");
+		$csrf_ignored = ["index", "getlabeltree"];
 
 		return array_search($method, $csrf_ignored) !== false;
 	}
@@ -18,10 +18,10 @@ class Pref_Labels extends Handler_Protected {
 	}
 
 	function getlabeltree(): void {
-		$root = array();
+		$root = [];
 		$root['id'] = 'root';
 		$root['name'] = __('Labels');
-		$root['items'] = array();
+		$root['items'] = [];
 
 		$sth = $this->pdo->prepare("SELECT *
 			FROM ttrss_labels2
@@ -30,7 +30,7 @@ class Pref_Labels extends Handler_Protected {
 		$sth->execute([$_SESSION['uid']]);
 
 		while ($line = $sth->fetch()) {
-			$label = array();
+			$label = [];
 			$label['id'] = 'LABEL:' . $line['id'];
 			$label['bare_id'] = $line['id'];
 			$label['name'] = $line['caption'];
@@ -42,10 +42,10 @@ class Pref_Labels extends Handler_Protected {
 			array_push($root['items'], $label);
 		}
 
-		$fl = array();
+		$fl = [];
 		$fl['identifier'] = 'id';
 		$fl['label'] = 'name';
-		$fl['items'] = array($root);
+		$fl['items'] = [$root];
 
 		print json_encode($fl);
 	}

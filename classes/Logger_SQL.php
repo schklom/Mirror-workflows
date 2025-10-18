@@ -2,7 +2,7 @@
 class Logger_SQL implements Logger_Adapter {
 
 	function __construct() {
-		$conn = get_class($this);
+		$conn = static::class;
 
 		ORM::configure(Db::get_dsn(), null, $conn);
 		ORM::configure('username', Config::get(Config::DB_USER), $conn);
@@ -40,7 +40,7 @@ class Logger_SQL implements Logger_Adapter {
 			// this would cause a PDOException on insert below
 			$owner_uid = !empty($_SESSION["uid"]) ? $_SESSION["uid"] : null;
 
-			$entry = ORM::for_table('ttrss_error_log', get_class($this))->create();
+			$entry = ORM::for_table('ttrss_error_log', static::class)->create();
 
 			$entry->set([
 				'errno' => $errno,

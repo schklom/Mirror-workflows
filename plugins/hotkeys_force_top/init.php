@@ -1,9 +1,9 @@
 <?php
 class Hotkeys_Force_Top extends Plugin {
         function about() {
-                return array(null,
+                return [null,
                         "Force open article to the top",
-                        "itsamenathan");
+                        "itsamenathan"];
         }
 
         function init($host) {

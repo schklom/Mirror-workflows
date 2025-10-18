@@ -6,7 +6,7 @@ class Db_Migrations {
 	private string $migrations_path;
 	private string $migrations_table;
 	private bool $base_is_latest;
-	private PDO $pdo;
+	private readonly PDO $pdo;
 	private int $cached_version = 0;
 	private int $cached_max_version = 0;
 	private int $max_version_override;
@@ -18,7 +18,7 @@ class Db_Migrations {
 	function initialize_for_plugin(Plugin $plugin, bool $base_is_latest = true, string $schema_suffix = "sql"): void {
 		$plugin_dir = PluginHost::getInstance()->get_plugin_dir($plugin);
 		$this->initialize("{$plugin_dir}/{$schema_suffix}",
-			strtolower("ttrss_migrations_plugin_" . get_class($plugin)),
+			strtolower("ttrss_migrations_plugin_" . $plugin::class),
 			$base_is_latest);
 	}
 
@@ -58,7 +58,7 @@ class Db_Migrations {
 			} else {
 				return -1;
 			}
-		} catch (PDOException $e) {
+		} catch (PDOException) {
 			$this->create_migrations_table();
 
 			return -1;
@@ -120,7 +120,7 @@ class Db_Migrations {
 			Debug::log("Migration failed: " . $e->getMessage(), Debug::LOG_VERBOSE);
 			try {
 				$this->pdo->rollback();
-			} catch (PDOException $ie) {
+			} catch (PDOException) {
 				//
 			}
 			throw $e;

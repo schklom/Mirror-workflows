@@ -17,9 +17,9 @@ class Cache_Starred_Images extends Plugin {
 	private $max_cache_attempts = 5;
 
 	function about() {
-		return array(null,
+		return [null,
 			"Automatically cache media files in Starred articles",
-			"fox");
+			"fox"];
 	}
 
 	function init($host) {
@@ -90,7 +90,7 @@ class Cache_Starred_Images extends Plugin {
 				$article_exists = 1;
 
 				foreach ($files as $file) {
-					list ($article_id, $hash) = explode("-", basename($file));
+					[$article_id, $hash] = explode("-", basename($file));
 
 					if ($article_id != $last_article_id) {
 						$last_article_id = $article_id;

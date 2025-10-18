@@ -2,7 +2,7 @@
 class Af_Comics_DumbingOfAge extends Af_ComicFilter {
 
 	function supported() {
-		return array("Dumbing of Age");
+		return ["Dumbing of Age"];
 	}
 
 	function process(&$article) {

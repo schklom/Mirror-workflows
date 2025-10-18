@@ -27,8 +27,8 @@
 
 	$master_handlers_installed = false;
 
-	$children = array();
-	$ctimes = array();
+	$children = [];
+	$ctimes = [];
 
 	$last_checkpoint = -1;
 
@@ -39,7 +39,7 @@
 		global $children;
 		global $ctimes;
 
-		$tmp = array();
+		$tmp = [];
 
 		foreach ($children as $pid) {
 			if (pcntl_waitpid($pid, $status, WNOHANG) != $pid) {
@@ -119,12 +119,12 @@
 
 	pcntl_signal(SIGCHLD, 'sigchld_handler');
 
-	$longopts = array("log:",
+	$longopts = ["log:",
 			"log-level:",
 			"tasks:",
 			"interval:",
 			"quiet",
-			"help");
+			"help"];
 
 	$options = getopt("", $longopts);
 

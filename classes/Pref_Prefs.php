@@ -26,7 +26,7 @@ class Pref_Prefs extends Handler_Protected {
 	private const PLUGIN_UPDATE_ALLOWED_BRANCHES = ['main', 'master'];
 
 	function csrf_ignore(string $method) : bool {
-		$csrf_ignored = array("index", "updateself", "otpqrcode");
+		$csrf_ignored = ["index", "updateself", "otpqrcode"];
 
 		return array_search($method, $csrf_ignored) !== false;
 	}
@@ -97,38 +97,38 @@ class Pref_Prefs extends Handler_Protected {
 		];
 
 		$this->pref_help = [
-			Prefs::BLACKLISTED_TAGS => array(__("Blacklisted tags"), ""),
-			Prefs::DEFAULT_SEARCH_LANGUAGE => array(__("Default language"), __("Used for full-text search")),
-			Prefs::CDM_AUTO_CATCHUP => array(__("Mark read on scroll"), __("Mark articles as read as you scroll past them")),
-			Prefs::CDM_EXPANDED => array(__("Always expand articles")),
-			Prefs::COMBINED_DISPLAY_MODE => array(__("Combined mode"), __("Show flat list of articles instead of separate panels")),
-			Prefs::CONFIRM_FEED_CATCHUP => array(__("Confirm marking feeds as read")),
-			Prefs::DEFAULT_UPDATE_INTERVAL => array(__("Default update interval")),
-			Prefs::DIGEST_CATCHUP => array(__("Mark sent articles as read")),
-			Prefs::DIGEST_ENABLE => array(__("Enable digest"), __("Send daily digest of new (and unread) headlines to your e-mail address")),
-			Prefs::DIGEST_PREFERRED_TIME => array(__("Try to send around this time"), __("Time in UTC")),
-			Prefs::ENABLE_API_ACCESS => array(__("Enable API"), __("Allows accessing this account through the API")),
-			Prefs::ENABLE_FEED_CATS => array(__("Enable categories")),
-			Prefs::FRESH_ARTICLE_MAX_AGE => array(__("Maximum age of fresh articles"), "<strong>" . __("hours") . "</strong>"),
-			Prefs::HIDE_READ_FEEDS => array(__("Hide read feeds")),
-			Prefs::HIDE_READ_SHOWS_SPECIAL => array(__("Always show special feeds"), __("While hiding read feeds")),
-			Prefs::LONG_DATE_FORMAT => array(__("Long date format"), __("Syntax is identical to PHP <a href='http://php.net/manual/function.date.php'>date()</a> function.")),
-			Prefs::ON_CATCHUP_SHOW_NEXT_FEED => array(__("Automatically show next feed"), __("After marking one as read")),
-			Prefs::PURGE_OLD_DAYS => array(__("Purge articles older than"), __("<strong>days</strong> (0 disables)")),
-			Prefs::PURGE_UNREAD_ARTICLES => array(__("Purge unread articles")),
-			Prefs::SHORT_DATE_FORMAT => array(__("Short date format")),
-			Prefs::SHOW_CONTENT_PREVIEW => array(__("Show content preview in headlines")),
-			Prefs::SSL_CERT_SERIAL => array(__("SSL client certificate")),
-			Prefs::STRIP_IMAGES => array(__("Do not embed media")),
-			Prefs::USER_TIMEZONE => array(__("Time zone")),
-			Prefs::VFEED_GROUP_BY_FEED => array(__("Group by feed"), __("Group multiple-feed output by originating feed")),
-			Prefs::USER_LANGUAGE => array(__("Language")),
-			Prefs::USER_CSS_THEME => array(__("Theme")),
-			Prefs::HEADLINES_NO_DISTINCT => array(__("Don't enforce DISTINCT headlines"), __("May produce duplicate entries")),
-			Prefs::DEBUG_HEADLINE_IDS => array(__("Show article and feed IDs"), __("In the headlines buffer")),
-			Prefs::DISABLE_CONDITIONAL_COUNTERS => array(__("Disable conditional counter updates"), __("May increase server load")),
-			Prefs::CDM_ENABLE_GRID => array(__("Grid view"), __("On wider screens, if always expanded")),
-			Prefs::DIGEST_MIN_SCORE => array(__("Required score"), __("Include articles with this or above score")),
+			Prefs::BLACKLISTED_TAGS => [__("Blacklisted tags"), ""],
+			Prefs::DEFAULT_SEARCH_LANGUAGE => [__("Default language"), __("Used for full-text search")],
+			Prefs::CDM_AUTO_CATCHUP => [__("Mark read on scroll"), __("Mark articles as read as you scroll past them")],
+			Prefs::CDM_EXPANDED => [__("Always expand articles")],
+			Prefs::COMBINED_DISPLAY_MODE => [__("Combined mode"), __("Show flat list of articles instead of separate panels")],
+			Prefs::CONFIRM_FEED_CATCHUP => [__("Confirm marking feeds as read")],
+			Prefs::DEFAULT_UPDATE_INTERVAL => [__("Default update interval")],
+			Prefs::DIGEST_CATCHUP => [__("Mark sent articles as read")],
+			Prefs::DIGEST_ENABLE => [__("Enable digest"), __("Send daily digest of new (and unread) headlines to your e-mail address")],
+			Prefs::DIGEST_PREFERRED_TIME => [__("Try to send around this time"), __("Time in UTC")],
+			Prefs::ENABLE_API_ACCESS => [__("Enable API"), __("Allows accessing this account through the API")],
+			Prefs::ENABLE_FEED_CATS => [__("Enable categories")],
+			Prefs::FRESH_ARTICLE_MAX_AGE => [__("Maximum age of fresh articles"), "<strong>" . __("hours") . "</strong>"],
+			Prefs::HIDE_READ_FEEDS => [__("Hide read feeds")],
+			Prefs::HIDE_READ_SHOWS_SPECIAL => [__("Always show special feeds"), __("While hiding read feeds")],
+			Prefs::LONG_DATE_FORMAT => [__("Long date format"), __("Syntax is identical to PHP <a href='http://php.net/manual/function.date.php'>date()</a> function.")],
+			Prefs::ON_CATCHUP_SHOW_NEXT_FEED => [__("Automatically show next feed"), __("After marking one as read")],
+			Prefs::PURGE_OLD_DAYS => [__("Purge articles older than"), __("<strong>days</strong> (0 disables)")],
+			Prefs::PURGE_UNREAD_ARTICLES => [__("Purge unread articles")],
+			Prefs::SHORT_DATE_FORMAT => [__("Short date format")],
+			Prefs::SHOW_CONTENT_PREVIEW => [__("Show content preview in headlines")],
+			Prefs::SSL_CERT_SERIAL => [__("SSL client certificate")],
+			Prefs::STRIP_IMAGES => [__("Do not embed media")],
+			Prefs::USER_TIMEZONE => [__("Time zone")],
+			Prefs::VFEED_GROUP_BY_FEED => [__("Group by feed"), __("Group multiple-feed output by originating feed")],
+			Prefs::USER_LANGUAGE => [__("Language")],
+			Prefs::USER_CSS_THEME => [__("Theme")],
+			Prefs::HEADLINES_NO_DISTINCT => [__("Don't enforce DISTINCT headlines"), __("May produce duplicate entries")],
+			Prefs::DEBUG_HEADLINE_IDS => [__("Show article and feed IDs"), __("In the headlines buffer")],
+			Prefs::DISABLE_CONDITIONAL_COUNTERS => [__("Disable conditional counter updates"), __("May increase server load")],
+			Prefs::CDM_ENABLE_GRID => [__("Grid view"), __("On wider screens, if always expanded")],
+			Prefs::DIGEST_MIN_SCORE => [__("Required score"), __("Include articles with this or above score")],
 		];
 
 		// hidden in the main prefs UI (use to hide things that have description set above)
@@ -822,7 +822,7 @@ class Pref_Prefs extends Handler_Protected {
 			]);
 		}
 
-		usort($rv, function($a, $b) { return strcmp($a["name"], $b["name"]); });
+		usort($rv, fn($a, $b) => strcmp($a["name"], $b["name"]));
 
 		print json_encode(['plugins' => $rv, 'is_admin' => $_SESSION['access_level'] >= UserHelper::ACCESS_LEVEL_ADMIN]);
 	}
@@ -874,12 +874,12 @@ class Pref_Prefs extends Handler_Protected {
 						];
 
 						$feed_handlers = array_filter($feed_handlers,
-							fn($plugin) => in_array(get_class($plugin), $feed_handler_whitelist) === false);
+							fn($plugin) => in_array($plugin::class, $feed_handler_whitelist) === false);
 
 						if (count($feed_handlers) > 0) {
 							print_error(
 								T_sprintf("The following plugins use per-feed content hooks. This may cause excessive data usage and origin server load resulting in a ban of your instance: <b>%s</b>" ,
-									implode(", ", array_map(fn($plugin) => get_class($plugin), $feed_handlers))
+									implode(", ", array_map(fn($plugin) => $plugin::class, $feed_handlers))
 								) . " (<a href='https://github.com/tt-rss/tt-rss/wiki/Feed-Handler-Plugins' target='_blank'>".__("More info...")."</a>)"
 							);
 						}
@@ -1035,7 +1035,7 @@ class Pref_Prefs extends Handler_Protected {
 			return T_sprintf("v%.2f, by %s", $about[0], $about[2]);
 		}
 
-		$ref = new ReflectionClass(get_class($plugin));
+		$ref = new ReflectionClass($plugin::class);
 
 		$plugin_dir = dirname($ref->getFileName());
 

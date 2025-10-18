@@ -136,7 +136,7 @@ class RSSUtils {
 
 		$res = $pdo->query($query);
 
-		$feeds_to_update = array();
+		$feeds_to_update = [];
 		while ($line = $res->fetch()) {
 			array_push($feeds_to_update, $line['feed_url']);
 		}
@@ -186,7 +186,7 @@ class RSSUtils {
 			if ($tline = $usth->fetch()) {
 				Debug::log(sprintf("=> %s (ID: %d, U: %s [%d]), last updated: %s", $tline["title"], $tline["id"],
 					$tline["owner"], $tline["owner_uid"],
-					$tline["last_updated"] ? $tline["last_updated"] : "never"));
+					$tline["last_updated"] ?: "never"));
 
 				if (!in_array($tline["owner_uid"], $batch_owners))
 					array_push($batch_owners, $tline["owner_uid"]);
@@ -245,7 +245,7 @@ class RSSUtils {
 
 						try {
 							$pdo->rollback();
-						} catch (PDOException $e) {
+						} catch (PDOException) {
 							// it doesn't matter if there wasn't actually anything to rollback, PDO Exception can be
 							// thrown outside of an active transaction during feed update
 						}
@@ -429,7 +429,7 @@ class RSSUtils {
 		$pluginhost->chain_hooks_callback(PluginHost::HOOK_FETCH_FEED,
 			function ($result, $plugin) use (&$feed_data, $start_ts) {
 				$feed_data = $result;
-				Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)), Debug::LOG_VERBOSE);
+				Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, $plugin::class), Debug::LOG_VERBOSE);
 			},
 			$feed_data, $hff_feed_url, $hff_owner_uid, $feed, $last_article_timestamp, $feed_obj->auth_login, $feed_auth_pass_plaintext);
 
@@ -524,7 +524,7 @@ class RSSUtils {
 			} else if (UrlHelper::$fetch_last_error_code == 429) {
 
 				// randomize interval using Config::HTTP_429_THROTTLE_INTERVAL as a base value (1-2x)
-				$http_429_throttle_interval = rand(Config::get(Config::HTTP_429_THROTTLE_INTERVAL),
+				$http_429_throttle_interval = random_int(Config::get(Config::HTTP_429_THROTTLE_INTERVAL),
 					Config::get(Config::HTTP_429_THROTTLE_INTERVAL)*2);
 
 				$error_message = UrlHelper::$fetch_last_error;
@@ -572,7 +572,7 @@ class RSSUtils {
 		$pluginhost->chain_hooks_callback(PluginHost::HOOK_FEED_FETCHED,
 			function ($result, $plugin) use (&$feed_data, $start_ts) {
 				$feed_data = $result;
-				Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)), Debug::LOG_VERBOSE);
+				Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, $plugin::class), Debug::LOG_VERBOSE);
 			},
 			$feed_data, $pff_feed_url, $pff_owner_uid, $feed);
 
@@ -601,7 +601,7 @@ class RSSUtils {
 			$start_ts = microtime(true);
 			$pluginhost->chain_hooks_callback(PluginHost::HOOK_FEED_PARSED,
 				function($result, $plugin) use ($start_ts) {
-					Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)), Debug::LOG_VERBOSE);
+					Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, $plugin::class), Debug::LOG_VERBOSE);
 				},
 				$rss, $feed);
 
@@ -775,7 +775,7 @@ class RSSUtils {
 				} else {
 					$base_entry_id = false;
 					$entry_stored_hash = "";
-					$article_labels = array();
+					$article_labels = [];
 				}
 
 				Debug::log("looking for enclosures...", Debug::LOG_VERBOSE);
@@ -783,7 +783,7 @@ class RSSUtils {
 				// enclosures
 
 				/** @var array<int, FeedEnclosure> */
-				$enclosures = array();
+				$enclosures = [];
 
 				$encs = $item->get_enclosures();
 
@@ -804,7 +804,7 @@ class RSSUtils {
 					array_push($enclosures, $e);
 				}
 
-				$article = array("owner_uid" => $feed_obj->owner_uid, // read only
+				$article = ["owner_uid" => $feed_obj->owner_uid, // read only
 					"guid" => $entry_guid, // read only
 					"guid_hashed" => $entry_guid_hashed, // read only
 					"title" => $entry_title,
@@ -819,11 +819,11 @@ class RSSUtils {
 					"timestamp" => $entry_timestamp,
 					"num_comments" => $num_comments,
 					"enclosures" => $enclosures,
-					"feed" => array("id" => $feed,
+					"feed" => ["id" => $feed,
 						"fetch_url" => $feed_obj->feed_url,
 						"site_url" => $feed_obj->site_url,
-						"cache_images" => $feed_obj->cache_images)
-				);
+						"cache_images" => $feed_obj->cache_images]
+				];
 
 				$entry_plugin_data = "";
 				$entry_current_hash = self::calculate_article_hash($article, $pluginhost);
@@ -854,9 +854,9 @@ class RSSUtils {
 					function ($result, $plugin) use (&$article, &$entry_plugin_data, $start_ts) {
 						$article = $result;
 
-						$entry_plugin_data .= mb_strtolower(get_class($plugin)) . ",";
+						$entry_plugin_data .= mb_strtolower($plugin::class) . ",";
 
-						Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)),
+						Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, $plugin::class),
 							Debug::LOG_VERBOSE);
 					},
 					$article);
@@ -925,7 +925,7 @@ class RSSUtils {
 					Debug::log("applying plugin filter actions...", Debug::LOG_VERBOSE);
 
 					foreach ($plugin_filter_actions as $pfa) {
-						list($pfclass,$pfaction) = explode(":", $pfa["param"]);
+						[$pfclass, $pfaction] = explode(":", $pfa["param"]);
 
 						if (isset($pluginhost_filter_actions[$pfclass])) {
 							$plugin = $pluginhost->get_plugin($pfclass);
@@ -1343,9 +1343,9 @@ class RSSUtils {
 					Debug::log("cache_enclosures: downloading: $src to $local_filename", Debug::LOG_VERBOSE);
 
 					if (!$cache->exists($local_filename)) {
-						$file_content = UrlHelper::fetch(array("url" => $src,
+						$file_content = UrlHelper::fetch(["url" => $src,
 							"http_referrer" => $src,
-							"max_size" => Config::get(Config::MAX_CACHE_FILE_SIZE)));
+							"max_size" => Config::get(Config::MAX_CACHE_FILE_SIZE)]);
 
 						if ($file_content) {
 							$cache->put($local_filename, $file_content);
@@ -1368,9 +1368,9 @@ class RSSUtils {
 		if (!$cache->exists($local_filename)) {
 			Debug::log("cache_media: downloading: $url to $local_filename", Debug::LOG_VERBOSE);
 
-			$file_content = UrlHelper::fetch(array("url" => $url,
+			$file_content = UrlHelper::fetch(["url" => $url,
 				"http_referrer" => $url,
-				"max_size" => Config::get(Config::MAX_CACHE_FILE_SIZE)));
+				"max_size" => Config::get(Config::MAX_CACHE_FILE_SIZE)]);
 
 			if ($file_content) {
 				$cache->put($local_filename, $file_content);
@@ -1393,7 +1393,7 @@ class RSSUtils {
 
 				/** @var DOMElement $entry */
 				foreach ($entries as $entry) {
-					foreach (array('src', 'poster') as $attr) {
+					foreach (['src', 'poster'] as $attr) {
 						if ($entry->hasAttribute($attr) && !str_starts_with($entry->getAttribute($attr), "data:")) {
 							self::cache_media_url($cache, $entry->getAttribute($attr), $site_url);
 						}
@@ -1449,7 +1449,7 @@ class RSSUtils {
 	 * @return array<int, array{'type': string, 'param': string}> An array of filter actions from matched filters
 	 */
 	static function eval_article_filters(array $filters, string $title, string $content, string $link, string $author, array $tags, ?array &$matched_rules = null, ?array &$matched_filters = null): array {
-		$matches = array();
+		$matches = [];
 
 		foreach ($filters as $filter) {
 			$match_any_rule = $filter["match_any_rule"] ?? false;
@@ -1559,7 +1559,7 @@ class RSSUtils {
 	 * @return array<int, array{'type': string, 'param': string}> An array of filter actions of type $filter_action_type
 	 */
 	static function find_article_filter_actions(array $filter_actions, string $filter_action_type): array {
-		$results = array();
+		$results = [];
 
 		foreach ($filter_actions as $fa) {
 			if ($fa["type"] == $filter_action_type) {
@@ -1809,15 +1809,14 @@ class RSSUtils {
 	}
 
 	static function is_gzipped(string $feed_data): bool {
-		return strpos(substr($feed_data, 0, 3),
-				"\x1f" . "\x8b" . "\x08", 0) === 0;
+		return str_starts_with(substr($feed_data, 0, 3), "\x1f" . "\x8b" . "\x08");
 	}
 
 	/**
 	 * @return array<int, array{'id': int, 'match_any_rule': bool, 'inverse': bool, 'rules': array<int,mixed>, 'actions': array<int,mixed>}> An array of filters
 	 */
 	static function load_filters(int $feed_id, int $owner_uid): array {
-		$filters = array();
+		$filters = [];
 
 		$feed_id = (int) $feed_id;
 		$cat_id = Feeds::_cat_of($feed_id);
@@ -1854,8 +1853,8 @@ class RSSUtils {
 						filter_type = t.id AND filter_id = ?");
 			$sth2->execute([$feed_id, $filter_id]);
 
-			$rules = array();
-			$actions = array();
+			$rules = [];
+			$actions = [];
 
 			while ($rule_line = $sth2->fetch()) {
 				#				print_r($rule_line);

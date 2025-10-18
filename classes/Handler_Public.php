@@ -21,7 +21,7 @@ class Handler_Public extends Handler {
 		if (!$limit)
 			$limit = 60;
 
-		list($override_order, $skip_first_id_check) = Feeds::_order_to_override_query($order);
+		[$override_order, $skip_first_id_check] = Feeds::_order_to_override_query($order);
 
 		if (!$override_order) {
 			$override_order = match (true) {
@@ -31,7 +31,7 @@ class Handler_Public extends Handler {
 			};
 		}
 
-		$params = array(
+		$params = [
 			"owner_uid" => $owner_uid,
 			"feed" => $feed,
 			"limit" => $limit,
@@ -43,7 +43,7 @@ class Handler_Public extends Handler {
 			"ignore_vfeed_group" => true,
 			"offset" => $offset,
 			"start_ts" => $start_ts
-		);
+		];
 
 		if (!$is_cat && is_numeric($feed) && $feed < PLUGIN_FEED_BASE_INDEX && $feed > LABEL_BASE_INDEX) {
 			// TODO: _ENABLED_PLUGINS is profile-specific, so use of the default profile's plugins here should
@@ -167,7 +167,7 @@ class Handler_Public extends Handler {
 					$tpl->setVariable('ARTICLE_ENCLOSURE_LENGTH', "", true);
 				}
 
-				list ($og_image, $og_stream) = Article::_get_image($enclosures, $line['content'], $feed_site_url, $line);
+				[$og_image, $og_stream] = Article::_get_image($enclosures, $line['content'], $feed_site_url, $line);
 
 				$tpl->setVariable('ARTICLE_OG_IMAGE', $og_image, true);
 
@@ -236,7 +236,7 @@ class Handler_Public extends Handler {
 				$enclosures = Article::_get_enclosures($line["id"]);
 
 				if (count($enclosures) > 0) {
-					$article['enclosures'] = array();
+					$article['enclosures'] = [];
 
 					foreach ($enclosures as $e) {
 						$article['enclosures'][] = [
@@ -493,7 +493,7 @@ class Handler_Public extends Handler {
 					->find_one();
 
 				if ($user) {
-					list($timestamp, $resetpass_token) = explode(":", $user->resetpass_token);
+					[$timestamp, $resetpass_token] = explode(":", $user->resetpass_token);
 
 					if ($timestamp && $resetpass_token &&
 						$timestamp >= time() - 15*60*60 &&
@@ -534,8 +534,8 @@ class Handler_Public extends Handler {
 				<input dojoType='dijit.form.TextBox' type='email' name='email' value='' required>
 				</fieldset>";
 
-			$_SESSION["pwdreset:testvalue1"] = rand(1,10);
-			$_SESSION["pwdreset:testvalue2"] = rand(1,10);
+			$_SESSION["pwdreset:testvalue1"] = random_int(1,10);
+			$_SESSION["pwdreset:testvalue2"] = random_int(1,10);
 
 			print "<fieldset>
 				<label>".T_sprintf("How much is %d + %d:", $_SESSION["pwdreset:testvalue1"], $_SESSION["pwdreset:testvalue2"])."</label>
@@ -563,8 +563,8 @@ class Handler_Public extends Handler {
 					</form>";
 			} else {
 				// prevent submitting this form multiple times
-				$_SESSION["pwdreset:testvalue1"] = rand(1, 1000);
-				$_SESSION["pwdreset:testvalue2"] = rand(1, 1000);
+				$_SESSION["pwdreset:testvalue1"] = random_int(1, 1000);
+				$_SESSION["pwdreset:testvalue2"] = random_int(1, 1000);
 
 				$user = ORM::for_table('ttrss_users')
 					->select('id')
@@ -628,7 +628,7 @@ class Handler_Public extends Handler {
 
 		if (!Config::get(Config::SINGLE_USER_MODE) && ($_SESSION["access_level"] ?? 0) < 10) {
 			$_SESSION["login_error_msg"] = __("Your access level is insufficient to run this script.");
-			$this->_render_login_form();
+			static::_render_login_form();
 			exit;
 		}
 
@@ -767,7 +767,7 @@ class Handler_Public extends Handler {
 	}
 
 	function cached(): void {
-		list ($cache_dir, $filename) = explode("/", $_GET["file"], 2);
+		[$cache_dir, $filename] = explode("/", $_GET["file"], 2);
 
 		// we do not allow files with extensions at the moment
 		$filename = str_replace(".", "", $filename);

@@ -2,7 +2,7 @@
 class Af_Comics_Explosm extends Af_ComicFilter {
 
 	function supported() {
-		return array("Cyanide and Happiness");
+		return ["Cyanide and Happiness"];
 	}
 
 	function process(&$article) {

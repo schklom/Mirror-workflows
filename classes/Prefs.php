@@ -198,11 +198,11 @@ class Prefs {
 	private function _get_all(int $owner_uid, ?int $profile_id = null): array {
 		$rv = [];
 
-		$ref = new ReflectionClass(get_class($this));
+		$ref = new ReflectionClass(static::class);
 
 		foreach ($ref->getConstants() as $const => $cvalue) {
 			if (isset($this::_DEFAULTS[$const])) {
-				list ($def_val, $type_hint) = $this::_DEFAULTS[$const];
+				[$def_val, $type_hint] = $this::_DEFAULTS[$const];
 
 				array_push($rv, [
 					"pref_name" => $const,
@@ -219,10 +219,10 @@ class Prefs {
 		if (!$profile_id) $profile_id = null;
 
 		// fill cache with defaults
-		$ref = new ReflectionClass(get_class($this));
+		$ref = new ReflectionClass(static::class);
 		foreach ($ref->getConstants() as $const => $cvalue) {
 			if (isset($this::_DEFAULTS[$const])) {
-				list ($def_val, $type_hint) = $this::_DEFAULTS[$const];
+				[$def_val, $type_hint] = $this::_DEFAULTS[$const];
 
 				$this->_set_cache($const, $def_val, $owner_uid, $profile_id);
 			}
@@ -250,7 +250,7 @@ class Prefs {
 		if (isset(self::_DEFAULTS[$pref_name])) {
 			if (!$profile_id || in_array($pref_name, self::_PROFILE_BLACKLIST)) $profile_id = null;
 
-			list ($def_val, $type_hint) = self::_DEFAULTS[$pref_name];
+			[$def_val, $type_hint] = self::_DEFAULTS[$pref_name];
 
 			if ($this->_is_cached($pref_name, $owner_uid, $profile_id)) {
 				$cached_value = $this->_get_cache($pref_name, $owner_uid, $profile_id);
@@ -309,7 +309,7 @@ class Prefs {
 			return false;
 
 		if (isset(self::_DEFAULTS[$pref_name])) {
-			list ($def_val, $type_hint) = self::_DEFAULTS[$pref_name];
+			[$def_val, $type_hint] = self::_DEFAULTS[$pref_name];
 
 			if ($strip_tags)
 				$value = trim(strip_tags($value));
@@ -363,7 +363,7 @@ class Prefs {
 
 			try {
 				$this->pdo->beginTransaction();
-			} catch (PDOException $e) {
+			} catch (PDOException) {
 				$in_nested_tr = true;
 			}
 
@@ -374,7 +374,7 @@ class Prefs {
 
 			while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
 				if (isset(self::_DEFAULTS[$row["pref_name"]])) {
-					list ($def_val, $type_hint) = self::_DEFAULTS[$row["pref_name"]];
+					[$def_val, $type_hint] = self::_DEFAULTS[$row["pref_name"]];
 
 					$user_val = Config::cast_to($row["value"], $type_hint);
 

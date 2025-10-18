@@ -55,7 +55,7 @@ class Labels
 	 * @return array<int, array<string, string>> An array of label detail arrays
 	 */
 	static function get_all(int $owner_uid)	{
-		$rv = array();
+		$rv = [];
 
 		$pdo = Db::pdo();
 
@@ -158,7 +158,7 @@ class Labels
 
 		try {
 			$pdo->beginTransaction();
-		} catch (Exception $e) {
+		} catch (Exception) {
 			$tr_in_progress = true;
 		}
 
@@ -207,7 +207,7 @@ class Labels
 
 		try {
 			$pdo->beginTransaction();
-		} catch (Exception $e) {
+		} catch (Exception) {
 			$tr_in_progress = true;
 		}
 

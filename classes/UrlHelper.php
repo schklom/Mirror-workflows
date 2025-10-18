@@ -213,7 +213,7 @@ class UrlHelper {
 					'Connection' => 'close',
 				],
 			]);
-		} catch (Exception $ex) {
+		} catch (Exception) {
 			return false;
 		}
 

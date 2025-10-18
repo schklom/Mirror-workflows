@@ -12,7 +12,7 @@
 
 	// shortcut syntax for public (exposed) methods (?op=plugin--pmethod&...params)
 	if (str_contains($method, PluginHost::PUBLIC_METHOD_DELIMITER)) {
-		list ($plugin, $pmethod) = explode(PluginHost::PUBLIC_METHOD_DELIMITER, $method, 2);
+		[$plugin, $pmethod] = explode(PluginHost::PUBLIC_METHOD_DELIMITER, $method, 2);
 
 		// TODO: better implementation that won't modify $_REQUEST
 		$_REQUEST["plugin"] = $plugin;

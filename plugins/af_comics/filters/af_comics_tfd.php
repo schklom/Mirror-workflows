@@ -2,7 +2,7 @@
 class Af_Comics_Tfd extends Af_ComicFilter {
 
 	function supported() {
-		return array("Toothpaste For Dinner", "Married to the Sea");
+		return ["Toothpaste For Dinner", "Married to the Sea"];
 	}
 
 	function process(&$article) {

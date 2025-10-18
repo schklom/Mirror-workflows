@@ -4,9 +4,9 @@ class Share extends Plugin {
 	private $host;
 
 	function about() {
-		return array(null,
+		return [null,
 			"Share article by unique URL",
-			"fox");
+			"fox"];
 	}
 
 	function init($host) {
@@ -153,7 +153,7 @@ class Share extends Plugin {
 				$line);
 
 			$enclosures = Article::_get_enclosures($line["id"]);
-			list ($og_image, $og_stream) = Article::_get_image($enclosures, $line['content'], $line["site_url"] ?? "", $line);
+			[$og_image, $og_stream] = Article::_get_image($enclosures, $line['content'], $line["site_url"] ?? "", $line);
 
 			$content_decoded = html_entity_decode($line["title"], ENT_NOQUOTES | ENT_HTML401);
 			$parsed_updated = TimeHelper::make_local_datetime($line["updated"], true, $owner_uid, true);
@@ -219,7 +219,7 @@ class Share extends Plugin {
 							</div>
 						</div>
 
-						<div class='content' lang="<?= $line['lang'] ? $line['lang'] : "en" ?>">
+						<div class='content' lang="<?= $line['lang'] ?: "en" ?>">
 							<?= $line["content"] ?>
 						</div>
 					</div>

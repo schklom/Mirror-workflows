@@ -377,7 +377,7 @@
 	}
 
 	if (isset($options["opml-export"])) {
-		list ($user, $filename) = explode(":", $options["opml-export"], 2);
+		[$user, $filename] = explode(":", $options["opml-export"], 2);
 
 		Debug::log("Exporting feeds of user $user to $filename as OPML...");
 
@@ -395,7 +395,7 @@
 	}
 
 	if (isset($options["opml-import"])) {
-		list ($user, $filename) = explode(":", $options["opml-import"], 2);
+		[$user, $filename] = explode(":", $options["opml-import"], 2);
 
 		Debug::log("Importing feeds of user $user from OPML file $filename...");
 
@@ -414,7 +414,7 @@
 	}
 
 	if (isset($options["user-add"])) {
-		list ($login, $password, $access_level) = explode(":", $options["user-add"], 3);
+		[$login, $password, $access_level] = explode(":", $options["user-add"], 3);
 
 		$uid = UserHelper::find_user_by_login($login);
 
@@ -452,7 +452,7 @@
 	}
 
 	if (isset($options["user-set-password"])) {
-		list ($login, $password) = explode(":", $options["user-set-password"], 2);
+		[$login, $password] = explode(":", $options["user-set-password"], 2);
 
 		$uid = UserHelper::find_user_by_login($login);
 
@@ -472,7 +472,7 @@
 	}
 
 	if (isset($options["user-set-access-level"])) {
-		list ($login, $access_level) = explode(":", $options["user-set-access-level"], 2);
+		[$login, $access_level] = explode(":", $options["user-set-access-level"], 2);
 
 		$uid = UserHelper::find_user_by_login($login);
 
@@ -497,7 +497,7 @@
 	}
 
 	if (isset($options["user-enable-api"])) {
-		list ($login, $enable) = explode(":", $options["user-enable-api"], 2);
+		[$login, $enable] = explode(":", $options["user-enable-api"], 2);
 
 		$uid = UserHelper::find_user_by_login($login);
 		$enable = Handler::_param_to_bool($enable);
@@ -560,7 +560,7 @@
 	}
 
 	if (isset($options["user-check-password"])) {
-		list ($login, $password) = explode(":", $options["user-check-password"], 2);
+		[$login, $password] = explode(":", $options["user-check-password"], 2);
 
 		$uid = UserHelper::find_user_by_login($login);
 

@@ -49,14 +49,11 @@ class Crypt {
 
 		if (!$key)
 			throw new Exception("Crypt::decrypt_string() failed to decrypt - key is not available");
-
-		// only one is supported for the time being
-		switch ($encrypted_data['algo']) {
-			case self::ENCRYPT_ALGO:
-				return sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($encrypted_data['payload'], '', $encrypted_data['nonce'], hex2bin($key));
-		}
-
-		throw new Exception('Crypt::decrypt_string() failed to decrypt passed encrypted data object, unsupported algo: ' . $encrypted_data['algo']);
+        // only one is supported for the time being
+        return match ($encrypted_data['algo']) {
+            self::ENCRYPT_ALGO => sodium_crypto_aead_xchacha20poly1305_ietf_decrypt($encrypted_data['payload'], '', $encrypted_data['nonce'], hex2bin($key)),
+            default => throw new Exception('Crypt::decrypt_string() failed to decrypt passed encrypted data object, unsupported algo: ' . $encrypted_data['algo']),
+        };
 	}
 
 }

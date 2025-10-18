@@ -68,7 +68,7 @@ class UserHelper {
 				function ($result, $plugin) use (&$user_id, &$auth_module) {
 					if ($result) {
 						$user_id = (int)$result;
-						$auth_module = strtolower(get_class($plugin));
+						$auth_module = strtolower($plugin::class);
 						return true;
 					}
 				},
@@ -232,7 +232,7 @@ class UserHelper {
 			session_destroy();
 
 		if (isset($_COOKIE[session_name()])) {
-		   setcookie(session_name(), '', time()-42000, '/');
+		   setcookie(session_name(), '', ['expires' => time()-42000, 'path' => '/']);
 
 		}
 		session_commit();
@@ -252,7 +252,7 @@ class UserHelper {
 			$login = $user->login;
 
 			$new_salt = self::get_salt();
-			$tmp_user_pwd = $new_password ? $new_password : make_password();
+			$tmp_user_pwd = $new_password ?: make_password();
 
 			$pwd_hash = self::hash_password($tmp_user_pwd, $new_salt, self::HASH_ALGOS[0]);
 

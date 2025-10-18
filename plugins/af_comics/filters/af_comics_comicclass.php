@@ -2,7 +2,7 @@
 class Af_Comics_ComicClass extends Af_ComicFilter {
 
 	function supported() {
-		return array("Loading Artist");
+		return ["Loading Artist"];
 	}
 
 	function process(&$article) {

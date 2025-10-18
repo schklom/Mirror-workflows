@@ -2,12 +2,12 @@
 class Af_Comics extends Plugin {
 
 	/** @var array<object> $filters */
-	private $filters = array();
+	private $filters = [];
 
 	function about() {
-		return array(null,
+		return [null,
 			"Fixes RSS feeds of assorted comic strips",
-			"fox");
+			"fox"];
 	}
 
 	function init($host) {

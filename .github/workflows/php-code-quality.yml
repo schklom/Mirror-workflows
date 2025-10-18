@@ -85,3 +85,39 @@ jobs:
 
     - name: Run PHPUnit
       run: phpunit --exclude-group integration --coverage-filter classes --coverage-filter include
+
+  rector:
+    name: Rector
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v5
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: latest
+        coverage: none
+        tools: rector/rector:^2.2
+
+    # https://getrector.com/documentation/cache-in-ci#content-github-actions
+    - name: Restore result cache
+      uses: actions/cache/restore@v4
+      with:
+        path: .rector-tmp
+        key: rector-result-cache-${{ github.run_id }}
+        restore-keys: |
+          rector-result-cache-
+
+    - name: Run Rector (dry run)
+      run: rector --dry-run
+
+    # https://getrector.com/documentation/cache-in-ci#content-github-actions
+    - name: Save result cache
+      uses: actions/cache/save@v4
+      if: ${{ !cancelled() }}
+      with:
+        # same as in rector.php
+        path: .rector-tmp
+        key: rector-result-cache-${{ github.run_id }}

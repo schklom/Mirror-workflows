@@ -47,7 +47,7 @@ class Feeds extends Handler_Protected {
 	const NEVER_GROUP_BY_DATE = [ Feeds::FEED_PUBLISHED, Feeds::FEED_STARRED, Feeds::FEED_FRESH ];
 
 	function csrf_ignore(string $method): bool {
-		$csrf_ignored = array("index");
+		$csrf_ignored = ["index"];
 
 		return array_search($method, $csrf_ignored) !== false;
 	}
@@ -80,7 +80,7 @@ class Feeds extends Handler_Protected {
 		}
 
 		if ($method_split[0] == "MarkAllReadGR")  {
-			$this->_catchup($method_split[1], false);
+			static::_catchup($method_split[1], false);
 		}
 
 		// FIXME: might break tag display?
@@ -108,7 +108,7 @@ class Feeds extends Handler_Protected {
 				PluginHost::feed_to_pfeed_id($feed));
 
 			if ($handler) {
-				$options = array(
+				$options = [
 					"limit" => $limit,
 					"view_mode" => $view_mode,
 					"cat_view" => $cat_view,
@@ -119,7 +119,7 @@ class Feeds extends Handler_Protected {
 					"filter" => false,
 					"since_id" => 0,
 					"include_children" => $include_children,
-					"order_by" => $order_by);
+					"order_by" => $order_by];
 
 				$qfh_ret = $handler->get_headlines(PluginHost::feed_to_pfeed_id($feed),
 					$options);
@@ -127,7 +127,7 @@ class Feeds extends Handler_Protected {
 
 		} else {
 
-			$params = array(
+			$params = [
 				"feed" => $feed,
 				"limit" => $limit,
 				"view_mode" => $view_mode,
@@ -140,9 +140,9 @@ class Feeds extends Handler_Protected {
 				"check_first_id" => $check_first_id,
 				"skip_first_id_check" => $skip_first_id_check,
                 "order_by" => $order_by
-			);
+			];
 
-			$qfh_ret = $this->_get_headlines($params);
+			$qfh_ret = static::_get_headlines($params);
 		}
 
 		$vfeed_group_enabled = Prefs::get(Prefs::VFEED_GROUP_BY_FEED, $_SESSION['uid'], $profile) &&
@@ -251,7 +251,7 @@ class Feeds extends Handler_Protected {
 					array_push($topmost_article_ids, $id);
 				}
 
-				$line["feed_title"] = $line["feed_title"] ?? "";
+				$line["feed_title"] ??= "";
 
 				$button_doc = new DOMDocument();
 
@@ -266,13 +266,13 @@ class Feeds extends Handler_Protected {
 							if ($child) {
 								do {
 									/** @var DOMElement|null $child */
-									$child->setAttribute('data-plugin-name', get_class($plugin));
+									$child->setAttribute('data-plugin-name', $plugin::class);
 								} while ($child = $child->nextSibling);
 
 								$line["buttons_left"] .= $button_doc->saveXML($button_doc->firstChild);
 							}
 						} else if ($result) {
-							user_error(get_class($plugin) .
+							user_error($plugin::class .
 								" plugin: content provided in HOOK_ARTICLE_LEFT_BUTTON is not valid XML: " .
 								Errors::libxml_last_error() . " $result", E_USER_WARNING);
 						}
@@ -291,13 +291,13 @@ class Feeds extends Handler_Protected {
 							if ($child) {
 								do {
 									/** @var DOMElement|null $child */
-									$child->setAttribute('data-plugin-name', get_class($plugin));
+									$child->setAttribute('data-plugin-name', $plugin::class);
 								} while ($child = $child->nextSibling);
 
 								$line["buttons"] .= $button_doc->saveXML($button_doc->firstChild);
 							}
 						} else if ($result) {
-							user_error(get_class($plugin) .
+							user_error($plugin::class .
 								" plugin: content provided in HOOK_ARTICLE_BUTTON is not valid XML: " .
 								Errors::libxml_last_error() . " $result", E_USER_WARNING);
 						}
@@ -424,7 +424,7 @@ class Feeds extends Handler_Protected {
 			}
 		}
 
-		return array($topmost_article_ids, $headlines_count, $feed, $disable_cache, $reply);
+		return [$topmost_article_ids, $headlines_count, $feed, $disable_cache, $reply];
 	}
 
 	function catchupAll(): void {
@@ -432,13 +432,13 @@ class Feeds extends Handler_Protected {
 						last_read = NOW(), unread = false WHERE unread = true AND owner_uid = ?");
 		$sth->execute([$_SESSION['uid']]);
 
-		print json_encode(array("message" => "UPDATE_COUNTERS"));
+		print json_encode(["message" => "UPDATE_COUNTERS"]);
 	}
 
 	function view(): void {
 		$profile = $_SESSION['profile'] ?? null;
 
-		$reply = array();
+		$reply = [];
 
 		$feed = $_REQUEST["feed"];
 		$method = $_REQUEST["m"] ?? "";
@@ -500,7 +500,7 @@ class Feeds extends Handler_Protected {
 
 		$reply['headlines'] = [];
 
-		list($override_order, $skip_first_id_check) = self::_order_to_override_query($order_by);
+		[$override_order, $skip_first_id_check] = self::_order_to_override_query($order_by);
 
 		$ret = $this->_format_headlines_list($feed, $method,
 			$view_mode, $limit, $cat_view, $offset,
@@ -536,7 +536,7 @@ class Feeds extends Handler_Protected {
 	 * @return array<string, mixed>
 	 */
 	private function _generate_error_feed(string $error): array {
-		$reply = array();
+		$reply = [];
 
 		$reply['headlines']['id'] = Feeds::FEED_ERROR;
 		$reply['headlines']['is_cat'] = false;
@@ -544,9 +544,9 @@ class Feeds extends Handler_Protected {
 		$reply['headlines']['toolbar'] = '';
 		$reply['headlines']['content'] = "<div class='whiteBox'>". $error . "</div>";
 
-		$reply['headlines-info'] = array("count" => 0,
+		$reply['headlines-info'] = ["count" => 0,
 			"unread" => 0,
-			"disable_cache" => true);
+			"disable_cache" => true];
 
 		return $reply;
 	}
@@ -673,7 +673,7 @@ class Feeds extends Handler_Protected {
 		</script>
 
 			<div class="container">
-				<h1>Feed Debugger: <?= "$feed_id: " . $this->_get_title($feed_id, $_SESSION['uid']) ?></h1>
+				<h1>Feed Debugger: <?= "$feed_id: " . static::_get_title($feed_id, $_SESSION['uid']) ?></h1>
 				<div class="content">
 					<form method="post" action="" dojoType="dijit.form.Form">
 						<?= \Controls\hidden_tag("op", "Feeds") ?>
@@ -736,7 +736,7 @@ class Feeds extends Handler_Protected {
 			PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_SEARCH,
 				function ($result) use (&$search_qpart, &$search_words) {
 					if (!empty($result)) {
-						list($search_qpart, $search_words) = $result;
+						[$search_qpart, $search_words] = $result;
 						return true;
 					}
 				},
@@ -744,7 +744,7 @@ class Feeds extends Handler_Protected {
 
 			// fall back in case of no plugins
 			if (empty($search_qpart)) {
-				list($search_qpart, $search_words) = self::_search_to_sql($search[0], $search[1], $owner_uid, $profile);
+				[$search_qpart, $search_words] = self::_search_to_sql($search[0], $search[1], $owner_uid, $profile);
 			}
 		} else {
 			$search_qpart = "true";
@@ -978,7 +978,7 @@ class Feeds extends Handler_Protected {
 
 		$rc = Feeds::_subscribe($feed, $cat, $login, $pass, $update_interval);
 
-		print json_encode(array("result" => $rc));
+		print json_encode(["result" => $rc]);
 	}
 
 	/**
@@ -1038,7 +1038,7 @@ class Feeds extends Handler_Protected {
 			Logger::log(E_USER_NOTICE, "An attempt to subscribe to '{$url}' failed (User: '{$user->login}'; ID: {$user->id}).",
 				truncate_string(UrlHelper::$fetch_last_error, 500, '…'));
 
-			return array("code" => 5, "message" => truncate_string(clean(UrlHelper::$fetch_last_error), 250, '…'));
+			return ["code" => 5, "message" => truncate_string(clean(UrlHelper::$fetch_last_error), 250, '…')];
 		}
 
 		if (str_contains(UrlHelper::$fetch_last_content_type, "html") && self::_is_html($contents)) {
@@ -1048,9 +1048,9 @@ class Feeds extends Handler_Protected {
 				Logger::log(E_USER_NOTICE, "An attempt to subscribe to '{$url}' failed due to content being HTML without detected feed URLs (User: '{$user->login}'; ID: {$user->id}).",
 					truncate_string($contents, 500, '…'));
 
-				return array("code" => 3, "message" => truncate_string(clean($contents), 250, '…'));
+				return ["code" => 3, "message" => truncate_string(clean($contents), 250, '…')];
 			} else if (count($feedUrls) > 1) {
-				return array("code" => 4, "feeds" => $feedUrls);
+				return ["code" => 4, "feeds" => $feedUrls];
 			}
 			//use feed url as new URL
 			$url = key($feedUrls);
@@ -1075,7 +1075,7 @@ class Feeds extends Handler_Protected {
 				'owner_uid' => $_SESSION['uid'],
 				'feed_url' => $url,
 				'title' => "[Unknown]",
-				'cat_id' => $cat_id ? $cat_id : null,
+				'cat_id' => $cat_id ?: null,
 				'auth_login' => (string)$auth_login,
 				'auth_pass' => (string)$auth_pass,
 				'update_method' => 0,
@@ -1157,12 +1157,12 @@ class Feeds extends Handler_Protected {
 
 		if ($cat) {
 			$res = ORM::for_table('ttrss_feed_categories')
-				->where('owner_uid', $owner_uid ? $owner_uid : $_SESSION['uid'])
+				->where('owner_uid', $owner_uid ?: $_SESSION['uid'])
 				->where('title', $title)
 				->find_one();
 		} else {
 			$res = ORM::for_table('ttrss_feeds')
-				->where('owner_uid', $owner_uid ? $owner_uid : $_SESSION['uid'])
+				->where('owner_uid', $owner_uid ?: $_SESSION['uid'])
 				->where('title', $title)
 				->find_one();
 		}
@@ -1230,7 +1230,7 @@ class Feeds extends Handler_Protected {
 					AND owner_uid = :uid)
 				AND owner_uid = :uid");
 
-			$sth->execute(["cat" => $cat ? $cat : null, "uid" => $owner_uid]);
+			$sth->execute(["cat" => $cat ?: null, "uid" => $owner_uid]);
 
 			if ($row = $sth->fetch()) {
 				return (int) $row["marked"];
@@ -1255,7 +1255,7 @@ class Feeds extends Handler_Protected {
 						AND owner_uid = :uid)
 					AND owner_uid = :uid");
 
-				$sth->execute(["cat" => $cat ? $cat : null, "uid" => $owner_uid]);
+				$sth->execute(["cat" => $cat ?: null, "uid" => $owner_uid]);
 
 				if ($row = $sth->fetch()) {
 					return (int) $row["marked"];
@@ -1279,7 +1279,7 @@ class Feeds extends Handler_Protected {
 					AND owner_uid = :uid)
 				AND owner_uid = :uid");
 
-			$sth->execute(["cat" => $cat ? $cat : null, "uid" => $owner_uid]);
+			$sth->execute(["cat" => $cat ?: null, "uid" => $owner_uid]);
 
 			if ($row = $sth->fetch()) {
 				return (int) $row["unread"];
@@ -1419,7 +1419,7 @@ class Feeds extends Handler_Protected {
 			PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_SEARCH,
 				function ($result) use (&$search_query_part, &$search_words) {
 					if (!empty($result)) {
-						list($search_query_part, $search_words) = $result;
+						[$search_query_part, $search_words] = $result;
 						return true;
 					}
 				},
@@ -1427,7 +1427,7 @@ class Feeds extends Handler_Protected {
 
 			// fall back in case of no plugins
 			if (!$search_query_part) {
-				list($search_query_part, $search_words) = self::_search_to_sql($search, $search_language, $owner_uid, $profile);
+				[$search_query_part, $search_words] = self::_search_to_sql($search, $search_language, $owner_uid, $profile);
 			}
 
 			$test_sth = $pdo->prepare("select $search_query_part
@@ -1435,7 +1435,7 @@ class Feeds extends Handler_Protected {
 
 			try {
 				$test_sth->execute();
-			} catch (PDOException $e) {
+			} catch (PDOException) {
 				// looks like tsquery syntax is invalid
 				$search_query_part = "false";
 
@@ -1740,7 +1740,7 @@ class Feeds extends Handler_Protected {
 					$first_id = (int)$row["id"];
 
 					if ($offset > 0 && $first_id && $check_first_id && $first_id != $check_first_id) {
-						return array(-1, $feed_title, $feed_site_url, $last_error, $last_updated, $search_words, $first_id, $vfeed_query_part != "", $query_error_override);
+						return [-1, $feed_title, $feed_site_url, $last_error, $last_updated, $search_words, $first_id, $vfeed_query_part != "", $query_error_override];
 					}
 				}
 			}
@@ -1849,14 +1849,14 @@ class Feeds extends Handler_Protected {
 			$res = $pdo->query($query);
 		}
 
-		return array($res, $feed_title, $feed_site_url, $last_error, $last_updated, $search_words, $first_id, $vfeed_query_part != "", $query_error_override);
+		return [$res, $feed_title, $feed_site_url, $last_error, $last_updated, $search_words, $first_id, $vfeed_query_part != "", $query_error_override];
 	}
 
 	/**
 	 * @return array<int, int>
 	 */
 	static function _get_parent_cats(int $cat, int $owner_uid): array {
-		$rv = array();
+		$rv = [];
 
 		$pdo = Db::pdo();
 
@@ -1876,7 +1876,7 @@ class Feeds extends Handler_Protected {
 	 * @return array<int, int>
 	 */
 	static function _get_child_cats(int $cat, int $owner_uid): array {
-		$rv = array();
+		$rv = [];
 
 		$pdo = Db::pdo();
 
@@ -2153,9 +2153,9 @@ class Feeds extends Handler_Protected {
 		// $keywords will be an array like ['"title:hello world"', 'some', 'words']
 		$keywords = str_getcsv($search_csv_str, ' ', '"', '');
 
-		$query_keywords = array();
-		$search_words = array();
-		$search_query_leftover = array();
+		$query_keywords = [];
+		$search_words = [];
+		$search_query_leftover = [];
 
 		$pdo = Db::pdo();
 
@@ -2331,7 +2331,7 @@ class Feeds extends Handler_Protected {
 			print "WORDS: " . json_encode($search_words) . "\n";
 		}
 
-		return array($search_query_part, $search_words);
+		return [$search_query_part, $search_words];
 	}
 
 	/**
@@ -2343,7 +2343,7 @@ class Feeds extends Handler_Protected {
 
 		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HEADLINES_CUSTOM_SORT_OVERRIDE,
 			function ($result) use (&$query, &$skip_first_id) {
-				list ($query, $skip_first_id) = $result;
+				[$query, $skip_first_id] = $result;
 
 				// run until first hard match
 				return !empty($query);

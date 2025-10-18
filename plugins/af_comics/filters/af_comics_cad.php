@@ -2,7 +2,7 @@
 class Af_Comics_Cad extends Af_ComicFilter {
 
 	function supported() {
-		return array("Ctrl+Alt+Del");
+		return ["Ctrl+Alt+Del"];
 	}
 
 	function process(&$article) {

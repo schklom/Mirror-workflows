@@ -15,4 +15,5 @@ Thumbs.db
 /vendor/**/.git
 /.phpunit.cache
 /.phpstan-tmp
+/.rector-tmp
 /.tools/

@@ -1,9 +1,9 @@
 <?php
 class Hotkeys_Noscroll extends Plugin {
 	function about() {
-		return array(null,
+		return [null,
 			"n/p (and up/down) hotkeys move between articles without scrolling",
-			"fox");
+			"fox"];
 	}
 
 	function init($host) {

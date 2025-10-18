@@ -5,8 +5,8 @@ require_once __DIR__ . '/../lib/gettext/gettext.inc.php';
  * @todo look into making this behave closer to what SessionHandlerInterface intends
  */
 class Sessions implements \SessionHandlerInterface {
-	private int $session_expire;
-	private string $session_name;
+	private readonly int $session_expire;
+	private readonly string $session_name;
 
 	public function __construct() {
 		$this->session_expire = min(2147483647 - time() - 1, Config::get(Config::SESSION_COOKIE_LIFETIME));

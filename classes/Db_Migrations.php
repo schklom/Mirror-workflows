@@ -6,7 +6,7 @@ class Db_Migrations {
 	private string $migrations_path;
 	private string $migrations_table;
 	private bool $base_is_latest;
-	private PDO $pdo;
+	private readonly PDO $pdo;
 	private int $cached_version = 0;
 	private int $cached_max_version = 0;
 	private int $max_version_override;

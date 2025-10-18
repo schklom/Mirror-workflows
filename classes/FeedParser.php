@@ -1,6 +1,6 @@
 <?php
 class FeedParser {
-	private DOMDocument $doc;
+	private readonly DOMDocument $doc;
 
 	private ?string $error = null;
 

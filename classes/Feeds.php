@@ -500,7 +500,7 @@ class Feeds extends Handler_Protected {
 
 		$reply['headlines'] = [];
 
-		list($override_order, $skip_first_id_check) = self::_order_to_override_query($order_by);
+		[$override_order, $skip_first_id_check] = self::_order_to_override_query($order_by);
 
 		$ret = $this->_format_headlines_list($feed, $method,
 			$view_mode, $limit, $cat_view, $offset,
@@ -736,7 +736,7 @@ class Feeds extends Handler_Protected {
 			PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_SEARCH,
 				function ($result) use (&$search_qpart, &$search_words) {
 					if (!empty($result)) {
-						list($search_qpart, $search_words) = $result;
+						[$search_qpart, $search_words] = $result;
 						return true;
 					}
 				},
@@ -744,7 +744,7 @@ class Feeds extends Handler_Protected {
 
 			// fall back in case of no plugins
 			if (empty($search_qpart)) {
-				list($search_qpart, $search_words) = self::_search_to_sql($search[0], $search[1], $owner_uid, $profile);
+				[$search_qpart, $search_words] = self::_search_to_sql($search[0], $search[1], $owner_uid, $profile);
 			}
 		} else {
 			$search_qpart = "true";
@@ -1419,7 +1419,7 @@ class Feeds extends Handler_Protected {
 			PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_SEARCH,
 				function ($result) use (&$search_query_part, &$search_words) {
 					if (!empty($result)) {
-						list($search_query_part, $search_words) = $result;
+						[$search_query_part, $search_words] = $result;
 						return true;
 					}
 				},
@@ -1427,7 +1427,7 @@ class Feeds extends Handler_Protected {
 
 			// fall back in case of no plugins
 			if (!$search_query_part) {
-				list($search_query_part, $search_words) = self::_search_to_sql($search, $search_language, $owner_uid, $profile);
+				[$search_query_part, $search_words] = self::_search_to_sql($search, $search_language, $owner_uid, $profile);
 			}
 
 			$test_sth = $pdo->prepare("select $search_query_part
@@ -2343,7 +2343,7 @@ class Feeds extends Handler_Protected {
 
 		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_HEADLINES_CUSTOM_SORT_OVERRIDE,
 			function ($result) use (&$query, &$skip_first_id) {
-				list ($query, $skip_first_id) = $result;
+				[$query, $skip_first_id] = $result;
 
 				// run until first hard match
 				return !empty($query);

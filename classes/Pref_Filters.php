@@ -509,7 +509,7 @@ class Pref_Filters extends Handler_Protected {
 			T_sprintf('Unknown action: %d', $action['action_id']);
 
 		if ($action["action_id"] == self::ACTION_PLUGIN) {
-			list ($pfclass, $pfaction) = explode(":", $action["action_param"]);
+			[$pfclass, $pfaction] = explode(":", $action["action_param"]);
 
 			$filter_actions = PluginHost::getInstance()->get_filter_actions();
 

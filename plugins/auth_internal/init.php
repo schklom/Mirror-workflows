@@ -180,7 +180,7 @@ class Auth_Internal extends Auth_Base implements IAuthModule2 {
 			$login = $user['login'];
 			$pwd_hash = $user['pwd_hash'];
 
-			list ($pwd_algo, $raw_hash) = explode(":", $pwd_hash, 2);
+			[$pwd_algo, $raw_hash] = explode(":", $pwd_hash, 2);
 
 			// check app password only if service is specified
 			if ($service && Config::get_schema_version() > 138) {
@@ -265,7 +265,7 @@ class Auth_Internal extends Auth_Base implements IAuthModule2 {
 		$sth->execute([$login, $service]);
 
 		while ($row = $sth->fetch()) {
-			list ($pwd_algo, $raw_hash, $salt) = explode(":", $row["pwd_hash"]);
+			[$pwd_algo, $raw_hash, $salt] = explode(":", $row["pwd_hash"]);
 
 			$test_hash = UserHelper::hash_password($password, $salt, $pwd_algo);
 

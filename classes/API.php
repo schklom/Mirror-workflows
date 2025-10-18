@@ -212,13 +212,13 @@ class API extends Handler {
 
 			$_SESSION['hasSandbox'] = $has_sandbox;
 
-			list($override_order, $skip_first_id_check) = Feeds::_order_to_override_query(clean($_REQUEST["order_by"] ?? ""));
+			[$override_order, $skip_first_id_check] = Feeds::_order_to_override_query(clean($_REQUEST["order_by"] ?? ""));
 
 			/* do not rely on params below */
 
 			$search = clean($_REQUEST["search"] ?? "");
 
-			list($headlines, $headlines_header) = $this->_api_get_headlines($feed_id, $limit, $offset,
+			[$headlines, $headlines_header] = $this->_api_get_headlines($feed_id, $limit, $offset,
 				$filter, $is_cat, $show_excerpt, $show_content, $view_mode, $override_order,
 				$include_attachments, $since_id, $search,
 				$include_nested, $sanitize_content, $force_update, $excerpt_length, $check_first_id, $skip_first_id_check);
@@ -830,7 +830,7 @@ class API extends Handler {
 					if ($show_content) {
 						$hook_object = ["headline" => &$headline_row];
 
-						list ($flavor_image, $flavor_stream, $flavor_kind) = Article::_get_image($enclosures,
+						[$flavor_image, $flavor_stream, $flavor_kind] = Article::_get_image($enclosures,
 																												$line["content"], // unsanitized
 																												$line["site_url"] ?? "", // could be null if archived article
 																												$headline_row);

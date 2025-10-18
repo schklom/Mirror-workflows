@@ -392,7 +392,7 @@ class OPML extends Handler_Protected {
 							$match_on = [];
 
 							foreach ($rule["match"] as $match) {
-								list ($name, $is_cat, $is_id) = $match;
+								[$name, $is_cat, $is_id] = $match;
 
 								if ($is_id) {
 									array_push($match_on, ($is_cat ? "CAT:" : "") . $name);

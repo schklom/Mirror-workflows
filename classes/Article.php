@@ -571,7 +571,7 @@ class Article extends Handler_Protected {
 
 		PluginHost::getInstance()->chain_hooks_callback(PluginHost::HOOK_ARTICLE_IMAGE,
 			function ($result, $plugin) use (&$article_image, &$article_stream, &$content) {
-				list ($article_image, $article_stream, $content) = $result;
+				[$article_image, $article_stream, $content] = $result;
 
 				// run until first hard match
 				return !empty($article_image);

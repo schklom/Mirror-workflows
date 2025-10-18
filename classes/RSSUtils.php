@@ -925,7 +925,7 @@ class RSSUtils {
 					Debug::log("applying plugin filter actions...", Debug::LOG_VERBOSE);
 
 					foreach ($plugin_filter_actions as $pfa) {
-						list($pfclass,$pfaction) = explode(":", $pfa["param"]);
+						[$pfclass, $pfaction] = explode(":", $pfa["param"]);
 
 						if (isset($pluginhost_filter_actions[$pfclass])) {
 							$plugin = $pluginhost->get_plugin($pfclass);

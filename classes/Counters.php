@@ -43,7 +43,7 @@ class Counters {
 					->find_many();
 
 		foreach ($cats as $cat) {
-			list ($tmp_unread, $tmp_marked, $tmp_published) = self::get_cat_children($cat->id, $owner_uid);
+			[$tmp_unread, $tmp_marked, $tmp_published] = self::get_cat_children($cat->id, $owner_uid);
 
 			$unread += $tmp_unread + Feeds::_get_cat_unread($cat->id, $owner_uid);
 			$marked += $tmp_marked + Feeds::_get_cat_marked($cat->id, $owner_uid);
@@ -127,7 +127,7 @@ class Counters {
 
 		while ($line = $sth->fetch()) {
 			if ($line["num_children"] > 0) {
-				list ($child_counter, $child_marked_counter, $child_published_counter) = self::get_cat_children($line["id"], $_SESSION["uid"]);
+				[$child_counter, $child_marked_counter, $child_published_counter] = self::get_cat_children($line["id"], $_SESSION["uid"]);
 			} else {
 				$child_counter = 0;
 				$child_marked_counter = 0;

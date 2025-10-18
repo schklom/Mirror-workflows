@@ -21,7 +21,7 @@ class Handler_Public extends Handler {
 		if (!$limit)
 			$limit = 60;
 
-		list($override_order, $skip_first_id_check) = Feeds::_order_to_override_query($order);
+		[$override_order, $skip_first_id_check] = Feeds::_order_to_override_query($order);
 
 		if (!$override_order) {
 			$override_order = match (true) {
@@ -167,7 +167,7 @@ class Handler_Public extends Handler {
 					$tpl->setVariable('ARTICLE_ENCLOSURE_LENGTH', "", true);
 				}
 
-				list ($og_image, $og_stream) = Article::_get_image($enclosures, $line['content'], $feed_site_url, $line);
+				[$og_image, $og_stream] = Article::_get_image($enclosures, $line['content'], $feed_site_url, $line);
 
 				$tpl->setVariable('ARTICLE_OG_IMAGE', $og_image, true);
 
@@ -493,7 +493,7 @@ class Handler_Public extends Handler {
 					->find_one();
 
 				if ($user) {
-					list($timestamp, $resetpass_token) = explode(":", $user->resetpass_token);
+					[$timestamp, $resetpass_token] = explode(":", $user->resetpass_token);
 
 					if ($timestamp && $resetpass_token &&
 						$timestamp >= time() - 15*60*60 &&
@@ -767,7 +767,7 @@ class Handler_Public extends Handler {
 	}
 
 	function cached(): void {
-		list ($cache_dir, $filename) = explode("/", $_GET["file"], 2);
+		[$cache_dir, $filename] = explode("/", $_GET["file"], 2);
 
 		// we do not allow files with extensions at the moment
 		$filename = str_replace(".", "", $filename);

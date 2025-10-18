@@ -318,7 +318,7 @@ class Config {
 			if (isset(self::_DEFAULTS[$const])) {
 				$override = getenv(self::_ENVVAR_PREFIX . $const);
 
-				list ($defval, $deftype) = self::_DEFAULTS[$const];
+				[$defval, $deftype] = self::_DEFAULTS[$const];
 
 				$this->params[$cvalue] = [ self::cast_to($override !== false ? $override : $defval, $deftype), $deftype ];
 			}
@@ -416,7 +416,7 @@ class Config {
 
 			$rv["status"] = $status;
 
-			list($check, $timestamp, $commit) = explode("-", $stdout);
+			[$check, $timestamp, $commit] = explode("-", $stdout);
 
 			if ($check == "version") {
 
@@ -468,7 +468,7 @@ class Config {
 	}
 
 	private function _get(string $param): bool|int|string {
-		list ($value, $type_hint) = $this->params[$param];
+		[$value, $type_hint] = $this->params[$param];
 
 		return $this->cast_to($value, $type_hint);
 	}

@@ -312,7 +312,7 @@ class Config {
 	}
 
 	function __construct() {
-		$ref = new ReflectionClass(get_class($this));
+		$ref = new ReflectionClass(static::class);
 
 		foreach ($ref->getConstants() as $const => $cvalue) {
 			if (isset(self::_DEFAULTS[$const])) {

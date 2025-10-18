@@ -212,7 +212,7 @@ class PluginHost {
 	const KIND_USER = 3;
 
 	static function object_to_domain(Plugin $plugin): string {
-		return strtolower(get_class($plugin));
+		return strtolower($plugin::class);
 	}
 
 	function __construct() {
@@ -258,7 +258,7 @@ class PluginHost {
 		$names = [];
 
 		foreach ($this->plugins as $p) {
-			array_push($names, get_class($p));
+			array_push($names, $p::class);
 		}
 
 		return $names;
@@ -370,7 +370,7 @@ class PluginHost {
 		if (!method_exists($sender, strtolower((string)$type))) {
 			user_error(
 				sprintf("Plugin %s tried to register a hook without implementation: %s",
-					get_class($sender), $type),
+					$sender::class, $type),
 				E_USER_WARNING
 			);
 			return;
@@ -670,13 +670,13 @@ class PluginHost {
 		$profile_id = $_SESSION["profile"] ?? null;
 
 		if ($profile_id) {
-			$idx = get_class($sender);
+			$idx = $sender::class;
 
 			$this->storage[$idx] ??= [];
 			$this->storage[$idx][$profile_id] ??= [];
 			$this->storage[$idx][$profile_id][$name] = $value;
 
-			$this->save_data(get_class($sender));
+			$this->save_data($sender::class);
 		} else {
 			$this->set($sender, $name, $value);
 		}
@@ -686,26 +686,26 @@ class PluginHost {
 	 * @param mixed $value
 	 */
 	function set(Plugin $sender, string $name, $value): void {
-		$idx = get_class($sender);
+		$idx = $sender::class;
 
 		$this->storage[$idx] ??= [];
 		$this->storage[$idx][$name] = $value;
 
-		$this->save_data(get_class($sender));
+		$this->save_data($sender::class);
 	}
 
 	/**
 	 * @param array<int|string, mixed> $params
 	 */
 	function set_array(Plugin $sender, array $params): void {
-		$idx = get_class($sender);
+		$idx = $sender::class;
 
 		$this->storage[$idx] ??= [];
 
 		foreach ($params as $name => $value)
 			$this->storage[$idx][$name] = $value;
 
-		$this->save_data(get_class($sender));
+		$this->save_data($sender::class);
 	}
 
 	/**
@@ -718,7 +718,7 @@ class PluginHost {
 		$profile_id = $_SESSION["profile"] ?? null;
 
 		if ($profile_id) {
-			$idx = get_class($sender);
+			$idx = $sender::class;
 			$this->load_data();
 			return $this->storage[$idx][$profile_id][$name] ?? $default_value;
 		} else {
@@ -731,7 +731,7 @@ class PluginHost {
 	 * @return mixed
 	 */
 	function get(Plugin $sender, string $name, $default_value = false) {
-		$idx = get_class($sender);
+		$idx = $sender::class;
 		$this->load_data();
 		return $this->storage[$idx][$name] ?? $default_value;
 	}
@@ -752,14 +752,14 @@ class PluginHost {
 	 * @return array<string, mixed>
 	 */
 	function get_all(Plugin $sender) {
-		$idx = get_class($sender);
+		$idx = $sender::class;
 
 		return $this->storage[$idx] ?? [];
 	}
 
 	function clear_data(Plugin $sender): void {
 		if ($this->owner_uid) {
-			$idx = get_class($sender);
+			$idx = $sender::class;
 
 			unset($this->storage[$idx]);
 
@@ -838,7 +838,7 @@ class PluginHost {
 	}
 
 	function add_filter_action(Plugin $sender, string $action_name, string $action_desc): void {
-		$sender_class = get_class($sender);
+		$sender_class = $sender::class;
 
 		$this->plugin_actions[$sender_class] ??= [];
 
@@ -869,7 +869,7 @@ class PluginHost {
 		return Config::get_self_url() . "/backend.php?" .
 			http_build_query([
 				'op' => 'pluginhandler',
-				'plugin' => strtolower(get_class($sender)),
+				'plugin' => strtolower($sender::class),
 				'method' => $method,
 				...$params,
 			]);
@@ -895,22 +895,22 @@ class PluginHost {
 		if ($sender->is_public_method($method)) {
 			return Config::get_self_url() . "/public.php?" .
 				http_build_query([
-					'op' => strtolower(get_class($sender) . self::PUBLIC_METHOD_DELIMITER . $method),
+					'op' => strtolower($sender::class . self::PUBLIC_METHOD_DELIMITER . $method),
 					...$params,
 				]);
 		}
-		user_error("get_public_method_url: requested method '$method' of '" . get_class($sender) . "' is private.");
+		user_error("get_public_method_url: requested method '$method' of '" . $sender::class . "' is private.");
 		return null;
 	}
 
 	function get_plugin_dir(Plugin $plugin): string {
-		$ref = new ReflectionClass(get_class($plugin));
+		$ref = new ReflectionClass($plugin::class);
 		return dirname($ref->getFileName());
 	}
 
 	// TODO: use get_plugin_dir()
 	function is_local(Plugin $plugin): bool {
-		$ref = new ReflectionClass(get_class($plugin));
+		$ref = new ReflectionClass($plugin::class);
 		return basename(dirname($ref->getFileName(), 2)) == "plugins.local";
 	}
 
@@ -926,9 +926,9 @@ class PluginHost {
 	*/
 	function add_scheduled_task(Plugin $sender, string $task_name, string $cron_expression, Closure $callback): bool {
 		if ($this->is_system($sender))
-			$task_name = get_class($sender) . ':' . $task_name;
+			$task_name = $sender::class . ':' . $task_name;
 		else
-			$task_name = get_class($sender) . ':' . $task_name . ':' . $this->owner_uid;
+			$task_name = $sender::class . ':' . $task_name . ':' . $this->owner_uid;
 
 		return $this->scheduler->add_scheduled_task($task_name, $cron_expression, $callback);
 	}

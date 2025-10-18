@@ -198,7 +198,7 @@ class Prefs {
 	private function _get_all(int $owner_uid, ?int $profile_id = null): array {
 		$rv = [];
 
-		$ref = new ReflectionClass(get_class($this));
+		$ref = new ReflectionClass(static::class);
 
 		foreach ($ref->getConstants() as $const => $cvalue) {
 			if (isset($this::_DEFAULTS[$const])) {
@@ -219,7 +219,7 @@ class Prefs {
 		if (!$profile_id) $profile_id = null;
 
 		// fill cache with defaults
-		$ref = new ReflectionClass(get_class($this));
+		$ref = new ReflectionClass(static::class);
 		foreach ($ref->getConstants() as $const => $cvalue) {
 			if (isset($this::_DEFAULTS[$const])) {
 				[$def_val, $type_hint] = $this::_DEFAULTS[$const];

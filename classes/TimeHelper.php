@@ -81,7 +81,7 @@ class TimeHelper {
 
 		try {
 			$source_tz = new DateTimeZone($source_tz);
-		} catch (Exception $e) {
+		} catch (Exception) {
 			$source_tz = new DateTimeZone('UTC');
 		}
 

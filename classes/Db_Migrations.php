@@ -18,7 +18,7 @@ class Db_Migrations {
 	function initialize_for_plugin(Plugin $plugin, bool $base_is_latest = true, string $schema_suffix = "sql"): void {
 		$plugin_dir = PluginHost::getInstance()->get_plugin_dir($plugin);
 		$this->initialize("{$plugin_dir}/{$schema_suffix}",
-			strtolower("ttrss_migrations_plugin_" . get_class($plugin)),
+			strtolower("ttrss_migrations_plugin_" . $plugin::class),
 			$base_is_latest);
 	}
 

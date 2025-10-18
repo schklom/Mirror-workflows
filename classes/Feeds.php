@@ -266,13 +266,13 @@ class Feeds extends Handler_Protected {
 							if ($child) {
 								do {
 									/** @var DOMElement|null $child */
-									$child->setAttribute('data-plugin-name', get_class($plugin));
+									$child->setAttribute('data-plugin-name', $plugin::class);
 								} while ($child = $child->nextSibling);
 
 								$line["buttons_left"] .= $button_doc->saveXML($button_doc->firstChild);
 							}
 						} else if ($result) {
-							user_error(get_class($plugin) .
+							user_error($plugin::class .
 								" plugin: content provided in HOOK_ARTICLE_LEFT_BUTTON is not valid XML: " .
 								Errors::libxml_last_error() . " $result", E_USER_WARNING);
 						}
@@ -291,13 +291,13 @@ class Feeds extends Handler_Protected {
 							if ($child) {
 								do {
 									/** @var DOMElement|null $child */
-									$child->setAttribute('data-plugin-name', get_class($plugin));
+									$child->setAttribute('data-plugin-name', $plugin::class);
 								} while ($child = $child->nextSibling);
 
 								$line["buttons"] .= $button_doc->saveXML($button_doc->firstChild);
 							}
 						} else if ($result) {
-							user_error(get_class($plugin) .
+							user_error($plugin::class .
 								" plugin: content provided in HOOK_ARTICLE_BUTTON is not valid XML: " .
 								Errors::libxml_last_error() . " $result", E_USER_WARNING);
 						}

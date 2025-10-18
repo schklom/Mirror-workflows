@@ -13,7 +13,7 @@ function format_backtrace(array $trace): string {
 			if (is_array($e["args"] ?? false)) {
 				foreach ($e["args"] as $a) {
 					if (is_object($a)) {
-						array_push($fmt_args, "{" . get_class($a) . "}");
+						array_push($fmt_args, "{" . $a::class . "}");
 					} else if (is_array($a)) {
 						array_push($fmt_args, "[" . truncate_string(json_encode($a), 256, "...")) . "]";
 					} else if (is_resource($a)) {

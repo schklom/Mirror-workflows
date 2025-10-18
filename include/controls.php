@@ -25,12 +25,12 @@
    } */
 
    function public_method_tags(\Plugin $plugin, string $method): string {
-      return hidden_tag("op", strtolower(get_class($plugin) . \PluginHost::PUBLIC_METHOD_DELIMITER . $method));
+      return hidden_tag("op", strtolower($plugin::class . \PluginHost::PUBLIC_METHOD_DELIMITER . $method));
    }
 
    function pluginhandler_tags(\Plugin $plugin, string $method): string {
       return hidden_tag("op", "PluginHandler") .
-               hidden_tag("plugin", strtolower(get_class($plugin))) .
+               hidden_tag("plugin", strtolower($plugin::class)) .
                hidden_tag("method", $method);
    }
 

@@ -68,7 +68,7 @@ class UserHelper {
 				function ($result, $plugin) use (&$user_id, &$auth_module) {
 					if ($result) {
 						$user_id = (int)$result;
-						$auth_module = strtolower(get_class($plugin));
+						$auth_module = strtolower($plugin::class);
 						return true;
 					}
 				},

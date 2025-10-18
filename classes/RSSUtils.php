@@ -429,7 +429,7 @@ class RSSUtils {
 		$pluginhost->chain_hooks_callback(PluginHost::HOOK_FETCH_FEED,
 			function ($result, $plugin) use (&$feed_data, $start_ts) {
 				$feed_data = $result;
-				Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)), Debug::LOG_VERBOSE);
+				Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, $plugin::class), Debug::LOG_VERBOSE);
 			},
 			$feed_data, $hff_feed_url, $hff_owner_uid, $feed, $last_article_timestamp, $feed_obj->auth_login, $feed_auth_pass_plaintext);
 
@@ -572,7 +572,7 @@ class RSSUtils {
 		$pluginhost->chain_hooks_callback(PluginHost::HOOK_FEED_FETCHED,
 			function ($result, $plugin) use (&$feed_data, $start_ts) {
 				$feed_data = $result;
-				Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)), Debug::LOG_VERBOSE);
+				Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, $plugin::class), Debug::LOG_VERBOSE);
 			},
 			$feed_data, $pff_feed_url, $pff_owner_uid, $feed);
 
@@ -601,7 +601,7 @@ class RSSUtils {
 			$start_ts = microtime(true);
 			$pluginhost->chain_hooks_callback(PluginHost::HOOK_FEED_PARSED,
 				function($result, $plugin) use ($start_ts) {
-					Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)), Debug::LOG_VERBOSE);
+					Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, $plugin::class), Debug::LOG_VERBOSE);
 				},
 				$rss, $feed);
 
@@ -854,9 +854,9 @@ class RSSUtils {
 					function ($result, $plugin) use (&$article, &$entry_plugin_data, $start_ts) {
 						$article = $result;
 
-						$entry_plugin_data .= mb_strtolower(get_class($plugin)) . ",";
+						$entry_plugin_data .= mb_strtolower($plugin::class) . ",";
 
-						Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, get_class($plugin)),
+						Debug::log(sprintf("=== %.4f (sec) %s", microtime(true) - $start_ts, $plugin::class),
 							Debug::LOG_VERBOSE);
 					},
 					$article);

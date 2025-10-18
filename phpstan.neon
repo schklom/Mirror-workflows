@@ -1,31 +1,18 @@
 parameters:
-   level: 6
-   tmpDir: .phpstan-tmp
-   reportUnmatchedIgnoredErrors: false
-   ignoreErrors:
-      - message: '##'
-        paths:
-          - lib/*
-          - vendor/*
-          - plugins/*/vendor/*
-          - plugins.local/*/vendor/*
-   excludePaths:
-      - lib/**/test/*
-      - lib/**/tests/*
-      - lib/dojo-src/*
-      - node_modules/*
-      - plugins.local/**/test/*
-      - plugins.local/**/tests/*
-      - plugins.local/*/vendor/intervention/*
-      - plugins.local/*/vendor/psr/log/*
-      - plugins.local/af_readability/*
-      - plugins.local/cache_s3/vendor/*
-      - plugins/**/test/*
-      - plugins/**/Test/*
-      - plugins/**/tests/*
-      - plugins/*/vendor/intervention/*
-      - plugins/*/vendor/psr/log/*
-      - rector.php
-      - vendor/**/*
-   paths:
-      - .
+    level: 6
+    tmpDir: .phpstan-tmp
+    paths:
+        - .
+    scanFiles:
+        - lib/gettext/gettext.inc.php
+        - lib/gettext/streams.php
+        - lib/floIcon.php
+        - lib/jimIcon.php
+        - lib/MiniTemplator.class.php
+    excludePaths:
+        - lib
+        - node_modules
+        - plugins.local
+        - tests
+        - vendor
+        - rector.php

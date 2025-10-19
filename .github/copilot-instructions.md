@@ -5,23 +5,34 @@ Tiny Tiny RSS is a web-based RSS/Atom feed reader and aggregator built with PHP 
 
 ## General Coding Conventions
 
-### String Quotes (All Languages)
-- **Prefer single quotes** (`'`) over double quotes (`"`) for string literals across all languages (JavaScript, PHP, YAML, etc.)
-- **Exceptions**:
-  - Use double quotes when the string contains single quotes to avoid escaping
-  - Template literals/interpolation: Use language-specific interpolation syntax (e.g., backticks in JS, double quotes in PHP)
-  - Multi-line strings: Use appropriate syntax for the language (backticks in JS, heredoc/nowdoc in PHP)
-- **Examples**:
-  ```javascript
-  const name = 'tt-rss';  // Good
-  const message = "User's feed";  // Good - contains single quote
-  const html = `<div>${name}</div>`;  // Good - interpolation
-  ```
-  ```php
-  $name = 'tt-rss';  // Good
-  $message = "User's feed";  // Good - contains single quote
-  $html = "Hello, $name";  // Good - interpolation
-  ```
+### String Quotes
+- **JavaScript & PHP**: Prefer single quotes (`'`) over double quotes (`"`) for string literals
+  - **Exceptions**:
+    - Use double quotes when the string contains single quotes to avoid escaping
+    - Template literals/interpolation: Use language-specific interpolation syntax (e.g., backticks in JS, double quotes in PHP)
+    - Multi-line strings: Use appropriate syntax for the language (backticks in JS, heredoc/nowdoc in PHP)
+  - **Examples**:
+    ```javascript
+    const name = 'tt-rss';  // Good
+    const message = "User's feed";  // Good - contains single quote
+    const html = `<div>${name}</div>`;  // Good - interpolation
+    ```
+    ```php
+    $name = 'tt-rss';  // Good
+    $message = "User's feed";  // Good - contains single quote
+    $html = "Hello, $name";  // Good - interpolation
+    ```
+- **YAML & Configuration Files**: Prefer unquoted strings when possible
+  - Only use quotes when required (e.g., strings with special characters, leading/trailing spaces, boolean-like values)
+  - When quotes are needed, prefer single quotes unless escaping is required (e.g., use double quotes for strings containing apostrophes)
+  - **Examples**:
+    ```yaml
+    name: tt-rss  # Good - no quotes needed
+    version: 1.0.0  # Good
+    message: "User's feed"  # Good - double quotes avoid escaping apostrophe
+    path: /var/www/html  # Good - no quotes needed
+    special: 'true'  # Good - quotes prevent boolean interpretation
+    ```
 
 ## Architecture & Stack
 
@@ -320,3 +331,18 @@ cd lib/dojo-src
 - **Theme Changes**: Run `npx gulp` to recompile LESS after CSS edits
 - **ORM Caching**: Idiorm uses identity map - call `ORM::reset_db()` to clear
 - **Database-Only**: PostgreSQL is the only supported database (MySQL support removed)
+
+## AI Agent Best Practices
+
+### Grounding Responses in Code Analysis
+When answering questions about the tt-rss codebase, always ground responses in actual code analysis:
+
+- **Search Before Answering**: Use `grep_search`, `semantic_search`, or `read_file` to verify facts about code structure, dependencies, and relationships
+- **Avoid Assumptions**: Don't make claims about file inclusions, function calls, or code patterns without checking the actual source
+- **Provide Evidence**: When stating that code exists or doesn't exist, reference the specific files or search results that support the claim
+- **Check Transitive Dependencies**: When analyzing file relationships (e.g., for PHPStan `scanFiles`), verify both direct and indirect inclusions via `require`, `include`, or autoloading
+- **Examples of Good Practice**:
+  - ✅ "After searching the codebase, `lib/jimIcon.php` is included by `lib/floIcon.php` via `require_once 'jimIcon.php'` on line 4"
+  - ✅ "Searching for references to `streams.php` returns no results in tt-rss PHP files outside the gettext library"
+  - ❌ "File X is not included by any other file" (without performing a search)
+  - ❌ "This function is used in multiple places" (without identifying those places)

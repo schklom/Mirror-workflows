@@ -12,7 +12,13 @@ Please refer to [the wiki](https://github.com/tt-rss/tt-rss/wiki).
 * The original tt-rss project, hosted at https://tt-rss.org/ and its various subdomains, [will be gone after 2025-11-01](https://community.tt-rss.org/t/the-end-of-tt-rss-org/7164).
   * Massive thanks to fox for creating tt-rss, and maintaining it (and absolutely everything else that went along with it) for so many years.
 * This project (https://github.com/tt-rss/tt-rss) is a fork of tt-rss as of 2025-10-03, created by one of its long-time contributors (`wn_`/`wn_name` on `tt-rss.org`, `supahgreg` on `github.com`).
-  * The goal is to continue tt-rss development, with an initial focus on getting things working as expected without `tt-rss.org`.
+  * The goal is (as you might expect) to continue tt-rss development.
+  * No major breaking changes are planned.
+  * Like the original project:
+    * The minimum PHP version supported by tt-rss will match what's in Debian's current [`stable` release](https://www.debian.org/releases/).
+    * What's on the `main` branch (or `latest` and newest `sha-*` tag for the Docker images) is intended to be stable
+      and safe for use.  Like all software, however, bugs sometimes slip through; the goal is to address those bugs promptly.
+    * Using the latest code/image is strongly encouraged, and may be a prerequisite to getting support in certain situations.
   * Developer note: Due to use of `invalid@email.com` on `supahgreg`'s pre-2025-10-03 commits (which were done on `tt-rss.org`) GitHub incorrectly shows `ivanivanov884`
     (the GitHub user associated with that e-mail address) as the author instead of `wn_`/`supahgreg`.  Apologies for any confusion.  `¯\_(ツ)_/¯`
 * Plugins that were under https://gitlab.tt-rss.org/tt-rss/plugins have been mirrored to `https://github.com/tt-rss/tt-rss-plugin-*`.

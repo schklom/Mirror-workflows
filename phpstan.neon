@@ -9,6 +9,7 @@ parameters:
         - lib/MiniTemplator.class.php
     excludePaths:
         - lib
+        - node_modules (?)
         - plugins.local
         - tests
         - vendor

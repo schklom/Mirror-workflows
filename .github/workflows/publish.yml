@@ -24,6 +24,9 @@ permissions:
 
 
 jobs:
+  css-lint:
+    uses: ./.github/workflows/css-lint.yml
+
   docker-code-quality:
     uses: ./.github/workflows/docker-code-quality.yml
 
@@ -36,6 +39,7 @@ jobs:
   publish:
     name: Publish Docker image ${{ matrix.image.name }}
     needs:
+    - css-lint
     - docker-code-quality
     - javascript-code-quality
     - php-code-quality

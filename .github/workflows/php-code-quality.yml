@@ -83,8 +83,12 @@ jobs:
         coverage: none
         tools: phpunit/phpunit:^12.4
 
-    - name: Run PHPUnit
-      run: phpunit --exclude-group integration --coverage-filter classes --coverage-filter include
+    - name: Run PHPUnit (standard tests)
+      run: phpunit --exclude-group integration
+
+    - name: PHPUnit (tests with mocked dependencies)
+      run: |
+        phpunit --no-configuration --bootstrap tests/MockedDepsBootstrap.php tests/mocked/
 
   rector:
     name: Rector

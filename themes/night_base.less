@@ -1,24 +1,34 @@
-@import "light/defines.less";
-@import "light/utility.less";
-@import "light/zoom.less";
-@import "../lib/flat-ttrss/flat_combined_dark.css";
+@import url("light/defines.less");
+@import url("light/utility.less");
+@import url("light/zoom.less");
+@import url("../lib/flat-ttrss/flat_combined_dark.css");
 
 @color-accent: #b87d2c;
+
 @color-accent-marked: @color-accent;
+
 @color-accent-published: desaturate(@color-published, 40%);
 
 @color-panel-bg : #222;
+
 @default-text: #ccc;
+
 @default-fg: @default-text;
+
 @border-default: #222;
+
 @default-bg : #333;
+
 @color-icon: #999;
+
 @border-light : #666;
 
 @fg-text-muted: darken(@default-text, 20%);
+
 @fg-light : lighten(@default-text, 10%);
 
 @color-alert-info : #3a87ad;
+
 @color-alert-danger : #b94a48;
 
 @color-tooltip-bg : lighten(@color-accent, 10%);
@@ -63,7 +73,7 @@ body.flat.ttrss_main {
 
 	#feeds-holder {
 		background : @color-panel-bg;
-		box-shadow : inset -1px 0px 2px -1px @border-light;
+		box-shadow : inset -1px 0 2px -1px @border-light;
 
 		#feedTree {
 			.dijitTreeRow {
@@ -106,19 +116,19 @@ body.flat.ttrss_main {
 	}
 
 	#headlines-frame {
-		.hl:not(.active):not(.Selected):not(.Unread),
-		.cdm.expandable:not(.active):not(.Selected):not(.Unread) {
+		.hl:not(.active, .Selected, .Unread),
+		.cdm.expandable:not(.active, .Selected, .Unread) {
 			background : @default-bg;
 		}
 
-		.hl.Unread:not(.active):not(.Selected),
-		.cdm.expandable.Unread:not(.active):not(.Selected) {
+		.hl.Unread:not(.active, .Selected),
+		.cdm.expandable.Unread:not(.active, .Selected) {
 			background : @color-panel-bg;
 		}
 
-		/*.cdm.expanded {
+		/* .cdm.expanded {
 			background: @default-bg;
-		}*/
+		} */
 
 		.hl.Unread .title,
 		.cdm.Unread .title {
@@ -215,7 +225,7 @@ body.flat.ttrss_main {
 	}
 
 	.dijitSplitterHover {
-		background-color : rgba(255, 255, 255, 0.25);
+		background-color : rgb(255 255 255 / 25%);
 	}
 
 	.dijitCheckBox:not(.dijitChecked)::before {

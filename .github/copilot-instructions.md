@@ -45,8 +45,42 @@ Tiny Tiny RSS is a web-based RSS/Atom feed reader and aggregator built with PHP 
 - **Issue**: UrlHelper::url_to_youtube_vid() test missed despite being high-value pure logic
 - **Root cause**: Focused only on methods already in test file, no systematic review
 - **Improvement**: Added "Completeness Check: Review for Missing Tests" with grep workflow for all public methods
+- **Issue**: CSS/Less linting infrastructure created but instructions not updated
+- **Root cause**: Forgot to proactively update instructions after completing new code quality workflow
+- **Improvement**: Added explicit reminder to update instructions when adding code quality tools, workflows, or discovering project patterns
+- **Issue**: Used outdated "CSS3" terminology in documentation
+- **Root cause**: Didn't verify terminology against authoritative sources (MDN)
+- **Improvement**: Added requirement to check authoritative documentation sources for technical terminology
 
 **Goal**: Continuously improve these instructions based on real-world usage patterns and mistakes.
+
+**CRITICAL: When to Update Instructions Automatically**:
+- **New code quality tools added** (linters, formatters, static analyzers) → Update "Code Quality & Testing" section
+- **New project conventions discovered** (coding style, architecture patterns) → Add to relevant convention sections
+- **Build/workflow changes** (GitHub Actions, Docker, dependencies) → Update relevant workflow sections
+- **Deprecation patterns identified** → Add to "Deprecation & Migration" section
+- **Testing patterns established** (new test types, bootstrap methods) → Update "Testing & Test Development" section
+- **Configuration files created** (`.stylelintrc.json`, `phpstan.neon`, etc.) → Document in relevant sections
+
+**CRITICAL: Verify Terminology Against Authoritative Sources**:
+When writing documentation about web technologies, programming languages, or frameworks:
+1. **Check official documentation first** - Use authoritative sources for terminology
+   - CSS/HTML: https://developer.mozilla.org/en-US/docs/Web/CSS (MDN Web Docs)
+   - PHP: https://www.php.net/manual/en/ (Official PHP Manual)
+   - JavaScript: https://developer.mozilla.org/en-US/docs/Web/JavaScript (MDN Web Docs)
+2. **Avoid outdated terminology** - Don't use deprecated version names or legacy terms
+   - ❌ "CSS3", "HTML5" (versioned names are deprecated - use "CSS", "HTML")
+   - ❌ "AJAX" (use "fetch API" or "XMLHttpRequest")
+   - ❌ "MySQL" for PostgreSQL (verify actual database in use)
+3. **Use precise technical terms** - Prefer official specification terminology
+   - ✅ "pseudo-elements" not "pseudo elements"
+   - ✅ "alpha channel" not "alpha value"
+   - ✅ "space-separated syntax" not "new syntax"
+4. **When uncertain** - Search the official documentation before documenting
+   - Example: Search MDN for "CSS versions" before using "CSS3"
+   - Example: Check PHP RFC/manual before claiming a feature is deprecated
+
+**When NOT to create separate documentation**: Only update this file - avoid creating standalone markdown files unless specifically requested by user for reference purposes.
 
 ### Documentation Practices
 
@@ -112,7 +146,7 @@ Tiny Tiny RSS is a web-based RSS/Atom feed reader and aggregator built with PHP 
 - **Widgets**: dijit (Dojo UI library) - `dojoType="dijit.form.TextBox"`, `dijit.Dialog`, etc.
 - **Global Object**: `App` in `js/App.js` - contains utilities, translations, form helpers
 - **Main Modules**: `Feeds.js`, `Headlines.js`, `Article.js`, `CommonDialogs.js`
-- **Build**: Gulp for LESS compilation (`gulpfile.js`) - run `npx gulp` to watch/compile themes
+- **Build**: Gulp for Less compilation (`gulpfile.js`) - run `npx gulp` to watch/compile themes
 
 ### Database & ORM Patterns
 ```php
@@ -145,7 +179,7 @@ composer install
 
 # Install JS dependencies & watch
 npm install
-npx gulp  # Watch LESS files and compile on changes
+npx gulp  # Watch Less files and compile on changes
 ```
 
 ### Code Quality & Testing
@@ -159,12 +193,15 @@ vendor/bin/rector process  # PHP 8.2 upgrades, config in rector.php
 # JavaScript Linting
 npx eslint js/**/*.js plugins/**/*.js  # Config in eslint.config.js
 
-```bash
+# CSS/Less Linting
+npm run lint:css  # Stylelint, config in .stylelintrc.json
+# Scope: lib/flat-ttrss, themes, plugins/*/*.css
+# Known issues: Mostly legacy Dojo styles with IE hacks and outdated syntax
+
 # Unit Tests
 ./phpunit  # Uses phpunit.xml config and tests/autoload.php bootstrap
 # For tests that need custom bootstrap (e.g., to mock DB dependencies):
 ./phpunit --no-configuration --bootstrap tests/CustomBootstrap.php tests/SpecificTest.php
-```
 ```
 
 ### Translation Management
@@ -211,6 +248,22 @@ cd lib/dojo-src
 - **Dojo Queries**: `dojo.query()`, `dojo.queryToObject()`, `dijit.byId()`
 - **XHR**: `xhr.json()` wrapper (custom) or `dojo.xhrPost()`
 - **Dialogs**: Create via `App.dialogOf(this).hide()` or `new SingleUseDialog({})`
+
+### CSS/Less Style
+- **Indentation**: 2 spaces (enforced by `.editorconfig` and Stylelint)
+- **Modern CSS**: Use current CSS syntax where possible
+  - Pseudo-elements: `::before`, `::after` (not `:before`, `:after`)
+  - Color functions: `rgb(0 0 0 / 30%)` space-separated (not `rgba(0, 0, 0, 0.3)` comma-separated)
+  - Alpha channel: Percentages `30%` (not decimals `.3`)
+- **Zero Values**: Omit units (`padding: 0` not `padding: 0px`)
+- **Hex Colors**: Use shorthand when possible (`#090` not `#009900`)
+- **Legacy Dojo Styles**: `lib/flat-ttrss/*.css` contains Dojo Toolkit widget styles, now maintained by tt-rss
+  - Known legacy issues: `filter: alpha()` (IE6-9), single-colon pseudo-elements, deprecated properties
+  - These files are part of tt-rss codebase and should be incrementally modernized
+  - Most issues are auto-fixable; apply fixes incrementally with testing
+- **Linting**: Run `npm run lint:css` before committing CSS/Less changes
+  - Config: `.stylelintrc.json` extends `stylelint-config-standard`
+  - Auto-fix: `npx stylelint --fix` for most issues
 
 ### Code Generation & Templates
 - **PHP HTML Helpers**: Prefer `\Controls\*` functions (e.g., `\Controls\submit_tag()`, `\Controls\hidden_tag()`, `\Controls\select_tag()`)
@@ -355,7 +408,7 @@ cd lib/dojo-src
 - **Images**: Built via GitHub Actions (`.github/workflows/publish.yml`)
   - GitHub Container Registry: `ghcr.io/tt-rss/tt-rss` (app) and `ghcr.io/tt-rss/tt-rss-web-nginx` (web)
   - Docker Hub: `supahgreg/tt-rss` (app) and `supahgreg/tt-rss-web-nginx` (web)
-- **PHP Version Strategy**: 
+- **PHP Version Strategy**:
   - Docker images use `PHP_SUFFIX` env var (currently `84`) to determine PHP version → runs on PHP 8.4
   - Codebase maintains backward compatibility with PHP 8.2 for non-Docker users
   - Source of truth for minimum version: `Config::sanity_check()` checks PHP 8.2.0
@@ -493,9 +546,9 @@ public function testVersionSpecificBehavior(): void {
     if (PHP_VERSION_ID >= 80400) {
         $this->expectException(ValueError::class);
     }
-    
+
     $result = some_function();
-    
+
     if (PHP_VERSION_ID < 80400) {
         $this->assertFalse($result);
     }
@@ -511,7 +564,7 @@ public function testVersionSpecificBehavior(): void {
   - **Problem**: Classes like `Prefs` instantiate and call `Db::pdo()` in constructor, causing PDO errors in tests
   - **Solution**: Place test files in `tests/mocked/` directory and they will use `tests/MockedDepsBootstrap.php` automatically
   - **If test fails with missing class**: Add mock for that class to `tests/MockedDepsBootstrap.php` (see "Extending MockedDepsBootstrap" section)
-  
+
 ### Mocking Database-Dependent Classes
 When testing classes that depend on `Prefs`, `Config`, `PluginHost`, or `Db`:
 
@@ -668,6 +721,6 @@ grep -E '(Config::|Prefs::|PluginHost::|Db::)' classes/YourClass.php
 ## Common Gotchas
 - **Config Changes**: Restart Docker containers after modifying `.env`
 - **Plugin State**: Plugin data cached in `ttrss_plugin_storage` - may need DB clear for dev
-- **Theme Changes**: Run `npx gulp` to recompile LESS after CSS edits
+- **Theme Changes**: Run `npx gulp` to recompile Less after CSS edits
 - **ORM Caching**: Idiorm uses identity map - call `ORM::reset_db()` to clear
 - **Database-Only**: PostgreSQL is the only supported database (MySQL support removed)

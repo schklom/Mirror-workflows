@@ -2091,6 +2091,9 @@ body.ttrss_utility.share_popup .content {
 .flat .dijitTab:not(.dijitTabChecked) {
   background: #f5f5f5;
 }
+.flat .dijitCheckBox {
+  background: rgba(204, 204, 204, 0.1);
+}
 body.ttrss_zoom {
   max-width: 900px;
   margin: 2em auto;

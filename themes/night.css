@@ -174,7 +174,7 @@ body.ttrss_main #notify {
   align-items: center;
   padding: 10px;
   transition: opacity 0.2s linear;
-  box-shadow: 0 0 8px rgb(0 0 0 / 10%);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
 }
 body.ttrss_main #notify img {
   vertical-align: middle;
@@ -519,7 +519,7 @@ body.ttrss_main #feeds-holder {
   border: 0 solid #222;
   overflow: hidden;
   background: #222;
-  box-shadow: inset -1px 0 2px -1px rgb(0 0 0 / 10%);
+  box-shadow: inset -1px 0 2px -1px rgba(0, 0, 0, 0.1);
   -webkit-overflow-scrolling: touch;
 }
 body.ttrss_main #feeds-holder #feedTree {
@@ -599,7 +599,7 @@ body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.Error .diji
   color: red;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow.dijitTreeRowSelected {
-  box-shadow: -1px 0 2px -1px rgb(0 0 0 / 10%);
+  box-shadow: -1px 0 2px -1px rgba(0, 0, 0, 0.1);
   border-color: #222 transparent;
   background: #333;
   color: #ccc;
@@ -608,7 +608,7 @@ body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow .dijitIcon.
   margin-right: 2px;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow i.icon.icon-inbox {
-  color: #fff;
+  color: #ffffff;
 }
 body.ttrss_main #feeds-holder #feedTree .dijitTreeNode .dijitTreeRow i.icon.icon-archive {
   color: #cf7800;
@@ -808,8 +808,7 @@ body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines .left .feed_title,
 body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines .left .cancel_search {
   margin-left: 4px;
 }
-
-@media (width <= 768px) {
+@media (max-width: 768px) {
   body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines .left .feed_title,
   body.ttrss_main #toolbar-frame #toolbar #toolbar-headlines .left i.icon-syndicate {
     display: none;
@@ -829,14 +828,12 @@ body.ttrss_main #toolbar-frame #toolbar #selected_prompt {
   margin-right: 4px;
   color: #b87d2c;
 }
-
-@media (width <= 768px) {
+@media (max-width: 768px) {
   body.ttrss_main #toolbar-frame #toolbar #selected_prompt {
     display: none;
   }
 }
-
-@media (width <= 576px) {
+@media (max-width: 576px) {
   body.ttrss_main #toolbar-frame #toolbar .select-articles-dropdown,
   body.ttrss_main #toolbar-frame #toolbar .catchup-button {
     display: none;
@@ -1176,7 +1173,7 @@ body.ttrss_utility .text-warning {
 }
 body.ttrss_main .text-muted,
 body.ttrss_utility .text-muted {
-  color: #999;
+  color: #999999;
 }
 body.ttrss_main .text-small,
 body.ttrss_utility .text-small,
@@ -1515,10 +1512,10 @@ body.ttrss_utility hr {
 }
 .cdm.expandable.active .header[data-is-stuck],
 .cdm.expanded .header[data-is-stuck] {
-  box-shadow: 0 1px 1px -1px rgb(0 0 0 / 10%);
+  box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.1);
   border: 0 solid #222;
   border-bottom-width: 1px;
-  background: rgb(51 51 51 / 90%) ! important;
+  background: rgba(51, 51, 51, 0.9) ! important;
   backdrop-filter: blur(6px);
 }
 body.ttrss_prefs {
@@ -1538,7 +1535,7 @@ body.ttrss_prefs select[multiple="multiple"] option {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 body.ttrss_prefs .text-muted {
-  color: #999;
+  color: #999999;
 }
 body.ttrss_prefs .dijitContentPane > h1:first-of-type,
 body.ttrss_prefs .dijitContentPane > h2:first-of-type,
@@ -1662,8 +1659,7 @@ body.ttrss_prefs ul.prefs-plugin-list li label.checkbox .name {
   font-weight: bold;
   margin-right: 20px;
 }
-
-@media (width <= 992px) {
+@media (max-width: 992px) {
   body.ttrss_prefs ul.prefs-plugin-list li label.checkbox .name {
     min-width: 200px ! important;
   }
@@ -1853,7 +1849,7 @@ body.ttrss_prefs[hide-filter-rules="true"] ul.actions_summary li:last-child::aft
   top: 2px;
 }
 .flat .dijitAccordionContainer {
-  box-shadow: 0 0 8px rgb(0 0 0 / 10%);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
 }
 .flat .dijitCheckBox.dijitCheckBoxChecked {
   background-color: #69C671;
@@ -1961,7 +1957,6 @@ body.ttrss_prefs[hide-filter-rules="true"] ul.actions_summary li:last-child::aft
 .flat .dijitDialog {
   width: 600px;
 }
-
 @font-face {
   font-family: 'Material Icons';
   font-style: normal;
@@ -2007,7 +2002,7 @@ body.ttrss_utility .content {
   background: #333;
   border: 1px solid #222;
   padding: 20px;
-  box-shadow: 0 1px 1px -1px rgb(0 0 0 / 10%);
+  box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.1);
 }
 body.ttrss_utility .content h2:first-of-type {
   margin-top: 0;
@@ -2098,7 +2093,7 @@ body.ttrss_zoom {
 body.ttrss_zoom div.post {
   border: 1px solid #222;
   background: #333;
-  box-shadow: 0 1px 1px -1px rgb(0 0 0 / 10%);
+  box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.1);
 }
 body.ttrss_zoom div.post .attachments {
   display: none;
@@ -2167,7 +2162,7 @@ body.flat.ttrss_main.ttrss_prefs #footer a {
 }
 body.flat.ttrss_main.ttrss_prefs td.filename,
 body.flat.ttrss_main.ttrss_prefs div.prefHelp {
-  color: #999;
+  color: #999999;
 }
 body.flat.ttrss_main.ttrss_prefs hr {
   border-color: #666;
@@ -2213,7 +2208,7 @@ body.flat.ttrss_main #feeds-holder #feedTree .dijitTreeRow .dijitTreeRowSelected
   text-shadow: none;
 }
 body.flat.ttrss_main #feeds-holder #feedTree .dijitTreeRow i.icon.icon-inbox {
-  color: #999;
+  color: #999999;
 }
 body.flat.ttrss_main #feeds-holder #feedTree .dijitTreeRow .loadingNode {
   filter: invert(1);
@@ -2277,7 +2272,7 @@ body.flat.ttrss_main #headlines-frame .cdm .title {
 }
 body.flat.ttrss_main #headlines-frame .hl .author,
 body.flat.ttrss_main #headlines-frame .cdm .author {
-  color: #999;
+  color: #999999;
 }
 body.flat.ttrss_main #headlines-frame .hl .updated,
 body.flat.ttrss_main #headlines-frame .cdm .updated,
@@ -2306,14 +2301,14 @@ body.flat.ttrss_main .dijitToolbar .dijitSelect:not(.dijitHover) .dijitButtonNod
   background-color: #222;
 }
 body.flat.ttrss_main .dijitSplitterHover {
-  background-color: rgb(255 255 255 / 25%);
+  background-color: rgba(255, 255, 255, 0.25);
 }
 body.flat.ttrss_main .dijitCheckBox:not(.dijitChecked)::before {
-  color: #999;
+  color: #999999;
   background: #222;
 }
 body.flat.ttrss_main .text-muted {
-  color: #999;
+  color: #999999;
 }
 body.flat.ttrss_main .dijitAccordionInnerContainerSelected .dijitAccordionTitle {
   color: white;

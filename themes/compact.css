@@ -1966,7 +1966,7 @@ body.ttrss_utility.share_popup .content {
 .flat .dijitCheckBox {
   margin: 1px;
 }
-.flat .dijitCheckBox::before {
+.flat .dijitCheckBox.dijitCheckBoxChecked::before {
   font-family: flat-icon;
   content: "\f00c";
   color: white;
@@ -2090,9 +2090,6 @@ body.ttrss_utility.share_popup .content {
 }
 .flat .dijitTab:not(.dijitTabChecked) {
   background: #f5f5f5;
-}
-.flat .dijitCheckBox {
-  background: #ccc;
 }
 body.ttrss_zoom {
   max-width: 900px;

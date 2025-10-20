@@ -1868,7 +1868,7 @@ body.ttrss_prefs[hide-filter-rules="true"] ul.actions_summary li:last-child::aft
 .flat .dijitCheckBox {
   margin: 1px;
 }
-.flat .dijitCheckBox::before {
+.flat .dijitCheckBox.dijitCheckBoxChecked::before {
   font-family: flat-icon;
   content: "\f00c";
   color: white;

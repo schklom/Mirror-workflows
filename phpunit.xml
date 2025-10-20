@@ -12,6 +12,7 @@
     <testsuites>
         <testsuite name="default">
             <directory>tests</directory>
+            <exclude>tests/mocked</exclude>
         </testsuite>
     </testsuites>
 

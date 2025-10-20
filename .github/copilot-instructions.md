@@ -3,36 +3,87 @@
 ## Project Overview
 Tiny Tiny RSS is a web-based RSS/Atom feed reader and aggregator built with PHP (backend) and JavaScript with Dojo Toolkit (frontend). Forked in October 2025 to continue development after original tt-rss.org shutdown.
 
+## CRITICAL: Essential Prerequisites
+
+### Always Examine Actual Source Code
+**NEVER make assumptions about code behavior, dependencies, or structure.**
+
+- ❌ **Bad**: "FeedParser probably uses PluginHost for extensibility"
+- ✅ **Good**: Read `classes/FeedParser.php` and grep for `PluginHost::` to verify
+
+**Before making any claim about a class**:
+1. **Read the actual file** - Use `read_file` tool to examine the source
+2. **Check dependencies** - Use `grep -E '(Config::|Prefs::|PluginHost::|Db::)'` to verify what it uses
+3. **Verify assumptions** - Don't trust intuition; verify with code
+
+**Examples of dangerous assumptions**:
+- Assuming a parser class uses plugins (it might be pure DOM parsing)
+- Assuming a utility class needs database (it might be pure logic)
+- Assuming behavior based on class name (check actual implementation)
+
+**This applies to**:
+- Determining test type (standard vs mocked vs integration)
+- Identifying dependencies before refactoring
+- Understanding code behavior for bug fixes
+- Adding new features to existing classes
+
+### Self-Improving Instructions
+
+**When encountering issues or patterns that could improve future work:**
+
+1. **Identify the gap**: What went wrong? What knowledge was missing?
+2. **Root cause analysis**: Why did the issue occur? (e.g., incomplete guidance, missing example, ambiguous wording)
+3. **Propose improvement**: Draft specific instruction updates to prevent recurrence
+4. **Validate improvement**: Ensure new guidance is clear, actionable, and doesn't contradict existing instructions
+5. **Update this file**: Make targeted changes to `.github/copilot-instructions.md`
+6. **Provide concise summary in chat**: Summarize changes verbally rather than creating documentation files
+
+**Examples of self-improvements made**:
+- **Issue**: FeedParser falsely assumed to use PluginHost
+- **Root cause**: Didn't systematically check all methods, relied on intuition
+- **Improvement**: Added "Always Examine Actual Source Code" as critical prerequisite with grep workflow
+- **Issue**: UrlHelper::url_to_youtube_vid() test missed despite being high-value pure logic
+- **Root cause**: Focused only on methods already in test file, no systematic review
+- **Improvement**: Added "Completeness Check: Review for Missing Tests" with grep workflow for all public methods
+
+**Goal**: Continuously improve these instructions based on real-world usage patterns and mistakes.
+
+### Documentation Practices
+
+**DO NOT create ad-hoc documentation files** like:
+- ❌ `DEBUG-TEST-SUMMARY.md`, `MISSING-TESTS-REVIEW.md`, `TEST-QUALITY-GUIDELINES.md`, etc.
+- ❌ Summary files that duplicate information in this instruction file
+- ❌ One-off documentation that becomes stale
+
+**DO provide information through**:
+- ✅ **Concise summaries in chat** - Clear, actionable responses to user questions
+- ✅ **Code comments** - When explaining complex logic in production code
+- ✅ **This instruction file** - For patterns, conventions, and reusable guidance
+
+**Rationale**: Ad-hoc documentation files clutter the repository and become outdated. Information should live in either:
+1. This centralized instruction file (for AI agent guidance)
+2. Code comments (for implementation details)
+3. Chat responses (for one-time explanations)
+
 ## General Coding Conventions
 
-### String Quotes
-- **JavaScript & PHP**: Prefer single quotes (`'`) over double quotes (`"`) for string literals
-  - **Exceptions**:
-    - Use double quotes when the string contains single quotes to avoid escaping
-    - Template literals/interpolation: Use language-specific interpolation syntax (e.g., backticks in JS, double quotes in PHP)
-    - Multi-line strings: Use appropriate syntax for the language (backticks in JS, heredoc/nowdoc in PHP)
-  - **Examples**:
-    ```javascript
-    const name = 'tt-rss';  // Good
-    const message = "User's feed";  // Good - contains single quote
-    const html = `<div>${name}</div>`;  // Good - interpolation
-    ```
-    ```php
-    $name = 'tt-rss';  // Good
-    $message = "User's feed";  // Good - contains single quote
-    $html = "Hello, $name";  // Good - interpolation
-    ```
-- **YAML & Configuration Files**: Prefer unquoted strings when possible
-  - Only use quotes when required (e.g., strings with special characters, leading/trailing spaces, boolean-like values)
-  - When quotes are needed, prefer single quotes unless escaping is required (e.g., use double quotes for strings containing apostrophes)
-  - **Examples**:
-    ```yaml
-    name: tt-rss  # Good - no quotes needed
-    version: 1.0.0  # Good
-    message: "User's feed"  # Good - double quotes avoid escaping apostrophe
-    path: /var/www/html  # Good - no quotes needed
-    special: 'true'  # Good - quotes prevent boolean interpretation
-    ```
+### String Quotes (All Languages)
+- **Prefer single quotes** (`'`) over double quotes (`"`) for string literals across all languages (JavaScript, PHP, YAML, etc.)
+- **Exceptions**:
+  - Use double quotes when the string contains single quotes to avoid escaping
+  - Template literals/interpolation: Use language-specific interpolation syntax (e.g., backticks in JS, double quotes in PHP)
+  - Multi-line strings: Use appropriate syntax for the language (backticks in JS, heredoc/nowdoc in PHP)
+- **Examples**:
+  ```javascript
+  const name = 'tt-rss';  // Good
+  const message = "User's feed";  // Good - contains single quote
+  const html = `<div>${name}</div>`;  // Good - interpolation
+  ```
+  ```php
+  $name = 'tt-rss';  // Good
+  $message = "User's feed";  // Good - contains single quote
+  $html = "Hello, $name";  // Good - interpolation
+  ```
 
 ## Architecture & Stack
 
@@ -108,8 +159,12 @@ vendor/bin/rector process  # PHP 8.2 upgrades, config in rector.php
 # JavaScript Linting
 npx eslint js/**/*.js plugins/**/*.js  # Config in eslint.config.js
 
+```bash
 # Unit Tests
-vendor/bin/phpunit  # Bootstrap: tests/autoload.php, config: phpunit.xml
+./phpunit  # Uses phpunit.xml config and tests/autoload.php bootstrap
+# For tests that need custom bootstrap (e.g., to mock DB dependencies):
+./phpunit --no-configuration --bootstrap tests/CustomBootstrap.php tests/SpecificTest.php
+```
 ```
 
 ### Translation Management
@@ -320,8 +375,293 @@ cd lib/dojo-src
   - Docker Secrets: Support `<VAR>__FILE` suffix (e.g., `TTRSS_DB_PASS__FILE=/run/secrets/db_password`)
   - XDebug: `TTRSS_XDEBUG_ENABLED`, `TTRSS_XDEBUG_HOST`, `TTRSS_XDEBUG_PORT`
 
-## Testing Notes
+## Testing & Test Development
+
+### Test Execution
+- **Standard Tests**: Run `./phpunit` (uses `phpunit.xml` config, excludes `@group integration` and `tests/mocked/` directory)
+- **Tests with Mocked Dependencies**: Place in `tests/mocked/` directory and run:
+  ```bash
+  ./phpunit --no-configuration --bootstrap tests/MockedDepsBootstrap.php tests/mocked/
+  ```
+- **Integration Tests**: Run `./phpunit --group integration` (requires database setup)
+
+### Writing Unit Tests
+
+#### Test Quality Guidelines
+
+**Focus on high-value tests** - omit low-value or trivial tests:
+
+**✅ Write tests for:**
+- **Input validation & edge cases** - Invalid inputs, boundary conditions, security checks
+- **Complex logic** - Algorithms, calculations, transformations with multiple code paths
+- **Filtering & conditional behavior** - Logic that changes based on state/configuration
+- **Error handling** - Exception paths, error recovery, validation failures
+- **Format transformations** - Parsing, serialization, output formatting
+- **State management** - Stateful operations where order matters
+
+**❌ Skip low-value tests:**
+- **Simple getters/setters without logic** - `getX()` that returns `$this->x`
+- **Constant definitions** - Testing that `const FOO = 'FOO'` equals `'FOO'`
+- **Trivial wrappers** - Pass-through methods with no logic
+- **Impossible failures** - Conditions that can't occur in practice
+- **Implementation details** - Testing private methods or internal structure
+
+**Example - Debug.php tests (23 tests generated):**
+- ✅ **Included**: `map_loglevel()` validation (rejects invalid levels), log level filtering (VERBOSE includes NORMAL), HTML vs plain text output formatting
+- ❌ **Omitted**: Simple `get_loglevel()` / `set_loglevel()` without testing the filtering logic, constant value checks
+
+**Goal**: Each test should verify meaningful behavior that could realistically break or regress.
+
+#### Completeness Check: Review for Missing Tests
+
+**After generating tests, systematically review the class for untested high-value methods:**
+
+1. **List all public/static methods** in the class:
+   ```bash
+   grep -E '^\s*(public|static)\s+(static\s+)?function\s+\w+' classes/ClassName.php
+   ```
+
+2. **For each method, ask**:
+   - Is it pure logic (no external I/O, HTTP, DB)?
+   - Does it have multiple code paths or complex behavior?
+   - Could it realistically break or regress?
+
+3. **Common oversights**:
+   - **Utility methods in classes with HTTP/DB methods** - Example: `UrlHelper::url_to_youtube_vid()` is pure regex but was overlooked because other methods do HTTP
+   - **Static utility methods in otherwise complex classes** - Example: `FeedItem_Common::normalize_categories()` is pure transformation but overlooked among DOM parsing methods
+   - **Public methods assumed to be covered** - Always verify with explicit checks
+
+4. **If high-value methods are missing**:
+   - Add tests immediately
+   - Document why they were initially overlooked
+   - Update this guide if the oversight reveals a systematic gap
+
+**Example - UrlHelper oversight**:
+- Generated 30 tests for `build_url()`, `rewrite_relative()`, `validate()`
+- **Missed** `url_to_youtube_vid()` - pure regex with no Config dependencies
+- **Cause**: Focused on methods already started in test file, didn't systematically check all public methods
+- **Fix**: Added 12 YouTube tests in separate file `UrlHelper_YoutubeTest.php`
+
+#### Standard Test Development
+- **Standard Approach**: Place tests in `tests/` directory, extend `PHPUnit\Framework\TestCase`
+- **PHPUnit Version**: Currently using PHPUnit 12.4.1 - prefers PHP 8 attributes over docblock annotations
+- **Code Style**: Use **completely empty lines** (no whitespace) between methods and sections
+  - ❌ **Bad**: Lines with only spaces/tabs (flagged by Rector and code quality tools)
+  - ✅ **Good**: Completely empty lines with no characters at all
+  - When generating test files, ensure blank lines contain zero characters
+- **Database Dependencies**: Many tt-rss classes (`Prefs`, `Config`, `PluginHost`) have tight coupling to database
+  - **Problem**: Classes like `Prefs` instantiate and call `Db::pdo()` in constructor, causing PDO errors in tests
+  - **Solution**: Place test files in `tests/mocked/` directory and they will use `tests/MockedDepsBootstrap.php` automatically
+  - **If test fails with missing class**: Add mock for that class to `tests/MockedDepsBootstrap.php` (see "Extending MockedDepsBootstrap" section)
+
+### Multi-Version PHP Testing
+
+**tt-rss tests against multiple PHP versions** in CI/CD (see `.github/workflows/php-code-quality.yml` for current matrix) - handle version-specific behavior properly:
+
+#### Version-Specific Behavior Changes
+
+**Example**: PHP 8.4 changed `DOMDocument::loadXML()` behavior:
+- **PHP 8.3 and earlier**: `loadXML('')` returns `false` and sets libxml error
+- **PHP 8.4+**: `loadXML('')` throws `ValueError: must not be empty`
+
+#### Best Practice: Handle in Production Code
+
+**Prefer fixing production code** over version-conditional tests:
+
+```php
+// FeedParser.php - GOOD approach
+function __construct(string $data) {
+    if (empty($data)) {
+        $this->error = 'Empty feed data provided';
+        return;  // Consistent behavior across all PHP versions
+    }
+    // ... rest of constructor
+}
+```
+
+Benefits:
+- Consistent behavior across PHP versions
+- Better error messages
+- Simpler tests (no version conditionals)
+
+#### Alternative: Version-Conditional Tests (Use Sparingly)
+
+Only when production code can't be changed:
+
+```php
+public function testVersionSpecificBehavior(): void {
+    if (PHP_VERSION_ID >= 80400) {
+        $this->expectException(ValueError::class);
+    }
+    
+    $result = some_function();
+    
+    if (PHP_VERSION_ID < 80400) {
+        $this->assertFalse($result);
+    }
+}
+```
+
+**Use `PHP_VERSION_ID`** for version checks (e.g., `80400` = PHP 8.4.0)
+
+### Writing Unit Tests
+- **Standard Approach**: Place tests in `tests/` directory, extend `PHPUnit\Framework\TestCase`
+- **PHPUnit Version**: Currently using PHPUnit 12.4.1 - prefers PHP 8 attributes over docblock annotations
+- **Database Dependencies**: Many tt-rss classes (`Prefs`, `Config`, `PluginHost`) have tight coupling to database
+  - **Problem**: Classes like `Prefs` instantiate and call `Db::pdo()` in constructor, causing PDO errors in tests
+  - **Solution**: Place test files in `tests/mocked/` directory and they will use `tests/MockedDepsBootstrap.php` automatically
+  - **If test fails with missing class**: Add mock for that class to `tests/MockedDepsBootstrap.php` (see "Extending MockedDepsBootstrap" section)
+  
+### Mocking Database-Dependent Classes
+When testing classes that depend on `Prefs`, `Config`, `PluginHost`, or `Db`:
+
+1. **Place Test in `tests/mocked/` Directory**:
+   ```php
+   use PHPUnit\Framework\TestCase;
+
+   final class YourTest extends TestCase {
+   ```
+
+2. **How MockedDepsBootstrap Works** (see `tests/MockedDepsBootstrap.php`):
+   ```php
+   <?php
+   // Define mocks BEFORE loading vendor autoload
+   if (!class_exists('Prefs')) {
+       class Prefs {
+           const STRIP_IMAGES = 'STRIP_IMAGES';
+           // Mock static methods to prevent instantiation
+           public static function get(string $pref_name, ?int $owner_uid = null, $profile = null) {
+               return false;  // Don't instantiate - just return mock value
+           }
+           public function __construct() {
+               // Empty - don't call Db::pdo()
+           }
+       }
+   }
+   // Repeat for Config, PluginHost, Db...
+   require_once __DIR__ . '/../vendor/autoload.php';
+   ```
+
+3. **Key Insights**:
+   - `Prefs::get()` is static but internally calls `get_instance()` → `__construct()` → `Db::pdo()`
+   - Must mock the **static method** to prevent instantiation entirely
+   - Use `if (!class_exists())` guards so mocks are defined before autoloader loads real classes
+   - Mock `Config::get_user_agent()` if vendor autoload needs it
+
+4. **Run Tests**:
+   ```bash
+   ./phpunit --no-configuration --bootstrap tests/MockedDepsBootstrap.php tests/mocked/
+   ```
+
+5. **Not Typical Pattern**: This bootstrap mocking approach is a pragmatic workaround for legacy code with tight coupling
+   - Standard practice would use PHPUnit's `createMock()`/`createStub()` with dependency injection
+   - tt-rss uses static methods and global state, making traditional mocking difficult
+   - Consider this acceptable for testing legacy code without major refactoring
+
+6. **Directory Organization**: Tests requiring mocked dependencies go in `tests/mocked/` directory
+   - This directory is excluded from standard `phpunit.xml` test discovery
+   - Run separately with custom bootstrap: `./phpunit --no-configuration --bootstrap tests/MockedDepsBootstrap.php tests/mocked/`
+   - Keeps test organization clean and prevents accidental execution without proper mocking
+
+7. **Extending MockedDepsBootstrap**: When writing new tests that encounter undefined classes or PDO errors:
+   - **Identify the dependency**: Check error message for class name (e.g., "Undefined class 'Sessions'" or "could not find driver" from Sessions accessing Db)
+   - **Add mock to bootstrap**: Add new `if (!class_exists('ClassName'))` block BEFORE vendor autoload
+   - **Mock only what's needed**: Start with empty class/methods, add constants and methods as tests require them
+   - **Follow existing patterns**: Mock static methods to return false/defaults, empty constructors to prevent DB access
+   - **Current mocks**: `Config`, `PluginHost`, `Prefs`, `Db` - covers most common utility class testing needs
+   - **Potential future needs**: `Sessions`, `Logger`, `UserHelper` - add only when actually needed for specific tests
+   - **Keep it minimal**: Don't pre-emptively mock classes - wait until a test fails to add mocks
+
+### Test Coverage
+- **Standard Tests**: `tests/` directory
+  - Pure utility functions and DOM parsing, no Config/Prefs/PluginHost/Db dependencies
+  - Examples: `ErrorsTest`, `FeedParserTest`, `FeedItemTest`
+  - Run with: `./phpunit --exclude-group integration`
+- **Mocked Tests**: `tests/mocked/` directory
+  - Classes that call Config/Prefs/PluginHost/Db static methods
+  - Examples: `SanitizerUnitTest`, `UrlHelperTest`, `TimeHelperTest`, `CryptTest`
+  - Run with: `./phpunit --no-configuration --bootstrap tests/MockedDepsBootstrap.php tests/mocked/`
+- **Integration Tests**: `tests/integration/` - require database setup
+- **Manual Testing**: Use Docker Compose setup with local source mounted
+
+### Identifying Testable Classes - Key Insights
+
+These guidelines help determine which classes are suitable for unit testing and which test type to use.
+
+#### ✅ Highly Testable Classes (Standard tests/)
+
+These classes use **only** pure PHP built-ins and utility functions - NO Config/Prefs/PluginHost/Db:
+
+1. **FeedParser** - Pure XML/DOMDocument parsing
+   - Dependencies: DOMDocument, DOMXPath, libxml, `Errors::format_libxml_error()`, `clean()`, `UConverter`
+   - **Common misconception**: "Uses PluginHost" - FALSE! No plugin dependencies at all
+   - Tests cover: RSS 2.0, Atom 1.0/0.3, RDF/RSS 1.0, error handling, type detection
+
+2. **FeedItem_RSS / FeedItem_Atom / FeedItem_Common** - Feed item extraction
+   - Dependencies: DOMDocument, DOMXPath, `clean()`, `UrlHelper::rewrite_relative()`
+   - Tests cover: ID/link/date/title/content extraction, fallback behavior, priority rules
+
+3. **Errors** - Error formatting utilities
+   - Dependencies: None - pure string formatting
+   - Tests cover: JSON error formatting, libXML error handling, UTF-8 transcoding
+
+#### ⚠️ Testable with Mocks (tests/mocked/)
+
+These classes call Config/Prefs/PluginHost static methods - need MockedDepsBootstrap:
+
+4. **UrlHelper** - URL manipulation and HTTP fetching
+   - Dependencies: `Config::get()` for HTTP_PROXY, timeouts, user agent
+   - **Testable methods**: `build_url()`, `rewrite_relative()`, `validate()` - pure logic
+   - **Needs mocking**: HTTP fetch methods that call Config
+
+5. **Sanitizer** - HTML sanitization and XSS prevention
+   - Dependencies: `PluginHost::getInstance()`, `Config::get_self_url()`, `Prefs::get()`
+   - Tests cover: Script removal, attribute filtering, URL rewriting, security attributes
+
+6. **TimeHelper** - Date/time formatting
+   - Dependencies: `Prefs::get()` for date format strings and timezone
+   - Testable: Epoch handling, timezone math (but format tests need Prefs mocking)
+
+7. **Crypt** - Encryption/decryption
+   - Dependencies: `Config::get(Config::ENCRYPTION_KEY)`
+   - Tests cover: Key generation, encrypt/decrypt workflow, error handling
+
+#### ❌ Require Integration Tests
+
+These have tight database coupling or external dependencies:
+
+8. **Handler classes** - Extend Handler/Handler_Protected/Handler_Administrative
+   - Require: Sessions, database, full app context
+   - Use `$this->pdo` for all operations
+
+9. **Database-heavy utilities** - OPML, Labels (most methods), Article, Feeds
+   - Most methods query/update database directly
+   - Exception: `Labels::label_to_feed_id()` and `Labels::feed_to_label_id()` are pure math (testable)
+
+10. **Mailer** - Email sending
+    - Dependencies: `mail()` function, `PluginHost` hooks
+    - External system interaction makes unit testing impractical
+
+### How to Determine Test Type for a Class
+
+**Step 1**: Search for dependency usage:
+```bash
+grep -E '(Config::|Prefs::|PluginHost::|Db::)' classes/YourClass.php
+```
+
+**Step 2**: Classify based on results:
+- **No matches** → Standard test in `tests/` (e.g., FeedParser, FeedItem_*)
+- **Only Config::get()** → Mocked test in `tests/mocked/` (e.g., UrlHelper, Crypt)
+- **Config + Prefs + PluginHost** → Mocked test in `tests/mocked/` (e.g., Sanitizer, TimeHelper)
+- **Db::pdo() or $this->pdo** → Integration test (e.g., Handlers, OPML)
+
+**Step 3**: Verify by reading the actual source code
+- Don't assume a class uses PluginHost just because it seems like it should
+- Always check the actual implementation to verify dependencies
+
+### Test Coverage
 - **Unit Tests**: Limited coverage (see `tests/` directory)
+  - Example: `tests/SanitizerTest.php` - 51 tests covering XSS prevention, HTML sanitization, URL rewriting
 - **Integration Tests**: `tests/integration/` - require database setup
 - **Manual Testing**: Use Docker Compose setup with local source mounted
 
@@ -331,18 +671,3 @@ cd lib/dojo-src
 - **Theme Changes**: Run `npx gulp` to recompile LESS after CSS edits
 - **ORM Caching**: Idiorm uses identity map - call `ORM::reset_db()` to clear
 - **Database-Only**: PostgreSQL is the only supported database (MySQL support removed)
-
-## AI Agent Best Practices
-
-### Grounding Responses in Code Analysis
-When answering questions about the tt-rss codebase, always ground responses in actual code analysis:
-
-- **Search Before Answering**: Use `grep_search`, `semantic_search`, or `read_file` to verify facts about code structure, dependencies, and relationships
-- **Avoid Assumptions**: Don't make claims about file inclusions, function calls, or code patterns without checking the actual source
-- **Provide Evidence**: When stating that code exists or doesn't exist, reference the specific files or search results that support the claim
-- **Check Transitive Dependencies**: When analyzing file relationships (e.g., for PHPStan `scanFiles`), verify both direct and indirect inclusions via `require`, `include`, or autoloading
-- **Examples of Good Practice**:
-  - ✅ "After searching the codebase, `lib/jimIcon.php` is included by `lib/floIcon.php` via `require_once 'jimIcon.php'` on line 4"
-  - ✅ "Searching for references to `streams.php` returns no results in tt-rss PHP files outside the gettext library"
-  - ❌ "File X is not included by any other file" (without performing a search)
-  - ❌ "This function is used in multiple places" (without identifying those places)

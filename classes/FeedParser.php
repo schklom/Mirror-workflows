@@ -29,8 +29,12 @@ class FeedParser {
 		libxml_clear_errors();
 
 		$this->type = $this::FEED_UNKNOWN;
-
 		$this->doc = new DOMDocument();
+
+		if (empty($data)) {
+			$this->error = 'Empty feed data provided';
+			return;
+		}
 		$this->doc->loadXML($data);
 
 		mb_substitute_character("none");

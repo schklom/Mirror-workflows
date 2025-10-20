@@ -356,6 +356,10 @@ class DiskCache implements Cache_Adapter {
 		header("Content-Disposition: inline; filename=\"{$filename}{$fake_extension}\"");
 		header("Content-type: $mimetype");
 
+		$size = $this->get_size($filename);
+		if ($size && $size > 0)
+			header("Content-Length: $size");
+
 		$stamp_expires = gmdate("D, d M Y H:i:s",
 			(int)$this->get_mtime($filename) + 86400 * Config::get(Config::CACHE_MAX_DAYS)) . " GMT";
 
